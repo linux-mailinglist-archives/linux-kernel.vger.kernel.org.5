@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-147685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66B388A77B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:19:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43D6D8A77B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:19:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC0901F23E47
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:19:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67D461C21C6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:19:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ACAE13A24D;
-	Tue, 16 Apr 2024 22:18:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FC3413AA39;
+	Tue, 16 Apr 2024 22:18:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=LIVE.NL header.i=@LIVE.NL header.b="s3rOz04a"
+	dkim=pass (2048-bit key) header.d=LIVE.NL header.i=@LIVE.NL header.b="tWq1uH37"
 Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01olkn2060.outbound.protection.outlook.com [40.92.64.60])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C2884DED;
-	Tue, 16 Apr 2024 22:18:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735F913777C;
+	Tue, 16 Apr 2024 22:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.64.60
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713305922; cv=fail; b=DtXLfpsw/BzDEyTmTKpevRKkO60CfMZ47SOPpLmTYg2pX39i9LmZ9ZiENSG+llGi/nlR/b0QCK/ihok0DVqHvyNNSi7fLsb51rtGBL5NaYH+79GWBvsDs+F9UCUmjvDWSL6eZlYmokMbWLawYYOp8p/u1N75iQ72EvLgZa13YU4=
+	t=1713305924; cv=fail; b=Rx15WlWaG6FHz9C1PLOch7yEDOJAL8XFyUuS++gch7RekMizyKrhkCRyvW0eS9CDqkMOpupiKl2iPmpkN1oTYnTP14AuGbl7tr/Tp3u17ReCsCm5CKkbz1xbEdvsDJJPlGVxrrCOaUANXh0qxSX/qhLYu/hSiiX/WY1gKmxS8Jw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713305922; c=relaxed/simple;
-	bh=t0xYnJcdrcQS/j6B2jl17gEkTHRnrcPfbUjN17E+ZoA=;
+	s=arc-20240116; t=1713305924; c=relaxed/simple;
+	bh=QDJJvpAHPsNCSVqmuCO7kQVxCxCVVOsklX++k4Jq5OI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=qS3NCVVmEzKVABE6tvz6m6NiFpb3sgenkgpVyQxs0e8NywkJJQrLTBrX6TZGMPvJDF+fBap8a9IOOw18rIPN1h6FU2Zch291vJRVz8vTjQYqir8rTOQOcF5XVn3BiX+0sTc5UiRbpyz4nJGdd94B8NqQCN2blUxRnKvGtf8RtlE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=live.nl; spf=pass smtp.mailfrom=live.nl; dkim=pass (2048-bit key) header.d=LIVE.NL header.i=@LIVE.NL header.b=s3rOz04a; arc=fail smtp.client-ip=40.92.64.60
+	 Content-Type:MIME-Version; b=LwdDi2V5jc+LEf5foeuX1vt5GjX/clD6IDt6lB+nTtpxZrZI8hD5ES/Uxg/qyZ9geaB+holqajamFwEHgMZUtIJ4ps4JNabWknINRyYaGfxn2QKsGyYe3QARYSMeHDUOnrLLhU7QaU3akmPj8c7L0bUgCcD4Rr3DUn1Nlxgke7s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=live.nl; spf=pass smtp.mailfrom=live.nl; dkim=pass (2048-bit key) header.d=LIVE.NL header.i=@LIVE.NL header.b=tWq1uH37; arc=fail smtp.client-ip=40.92.64.60
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=live.nl
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=live.nl
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D6GwgwAG8jhDDX3XfjTuj6MVWRQod75N6/sSgYGNTKdgBbt3IEXq6J3XlmzbzVdnOD6hvju02QG6s//gqT5f8GL/E2caZNm5eE9ncBIiayZ4gN46n4wAV/DH6+VLb7B6s7SUiTwxLGCk3bfzdtAZPYput/5TyRGoqQd7CM8GQqiUvLhgiJNdb6j4o9Jx2FE+hzR8vkTx5ZGuZA2+Z6ll9VJlh5X0z8bKhU151yiWMOQygZWam8Sj8gZRgM/yDwJkq+yDCb/pNlVHGz9yTPaUD5yavWOkENsS+9VxDGc9v4wTrvine6n44OMBCYZy3mHRa/R3jB7VXDZogZboGJXW6Q==
+ b=cBGsNbCEuZdIaFQWGEnNkS/nvwkz8l/UqE8uLlxA+zyo5LXXOhquyq3QWcPK1splGIfxrcwbje/cfFnGaxT/sDDSKq8asmm8U3I0AGhgzu78dBykAHA3tY8213RnQMfTEckH9lTROuuP+OHgFz0JPO2N6vExy7d7AJciYzoUn9ktgrSimdR9mBOq30Gx1AxCQ5FN72pweYRek6TjtuyIaJubojkD3PJAitErjN2rDgnK71h0nMzNypYm59kCiCwR7zyCpA3M7Ux4Y6CPVdZue52GMchf4qCsAuxyJ8m/WK+cogajZWo7dqq4rCLAaOy0O9hJwEXslFBfR/CduLPsbQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=N9wK63hsNnLDHV3UlerEtuvkGUw4te9yNuEsJmOarEo=;
- b=Nftz95PYFf+QXMlR3j5MHdjxuH2olEC2KlB+CcX0FWh0x9wAvkByKVfCvM0RNEQfr3/Re15JpCJuEEP33UQX1gBKDT56RKM5BSNbJ+7kqs0G+LWsBGtEXC0/UsfpJiCRen91lqqtq/qkjyj+r4o5oQITArqDz/WHy0bBlQzD71vAHYm59id/IBvMIthIMas7Y87BBhT6XP2/Oob/l9al0qe7XVzvpeJ1E2QzRjVafVv9T3Pd+korcUQlfXHCzeE0JASBXcJiq5rDPxYAW3J+EaUxB35f6pnTWmiEAVUaXTvzuBEBEL45uLjZDShHCmSyr67tC1km3T9QuLqrGmh/AQ==
+ bh=K39q10R9C1RayyooyeKvFUTWftpyWkmzP58m9XrM/IA=;
+ b=XPrr/zra0EDbc0HBp1vwG4zd6ki/xtaOqKEgMin9QtoG2NIHCPT5FsuCGuhU4+luwq5g4anSBtg4hHGJUlhljEcpjL8olhamCzBVYEFh0nzBvbzV5xmqfVHRrlY0lE+Ig9VJ1R1QxiZlyZJJBokbzQKSxHGzqqkf6+tzLHXNcuofCqSM7MDffBm6jgkAr67ApZjZcC4ktyTqAz2+NFZAGbHQjXEOPybAHydT7Xz+DXwHpUigpDKePA4JBkjEvWpu7qwT0ldAN7ohnuKfwr/m4JcF6IYj/iKYgDZzuchgyLn0Q+iIS1mE991bqB0oI8xbJuXSByHDQHpxvAPuqOaomg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=LIVE.NL; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N9wK63hsNnLDHV3UlerEtuvkGUw4te9yNuEsJmOarEo=;
- b=s3rOz04aQtokYlkMo5k+TfbWQhupXno8lKu5KPZFlTCKogYA6ea04lsmRprN8Srec0QuytQ27Cv6dkEA8vncMBzy0KXZnYeG3QewGjiLnrBjGvsrWQqtLTuJ1PAyKrBsiwGvtCRsmeKu7Fs0fGcBpWgaCnMP2nHMU7ELn8cF404xuR0hS/1ZbCVzYQc0RuI/7bu5QI6pjsFjxyffBFoagL8qIhaRQyHVKUFdSTOCmRAurJCJkMGN5o/dKM7EqxrvN42HI0EVSRFqTqK6rZ7Vn3poRr58Hd1obeRDchSwwnVsAWZWaGc2/WnNL5LFvN4DlxXEYtVOfTLZhPMoEwjxKg==
+ bh=K39q10R9C1RayyooyeKvFUTWftpyWkmzP58m9XrM/IA=;
+ b=tWq1uH37v9WCxbRGBzn8DfesmjM3yFX0jmTlaGhsKL4UJROlG7UpRZmisV9rv3NXClaLaPZj3QndYtusl8JNzatVCUaR/wmrCcJSLFeApxWSifLpZLHw66unqZ1jRmCmXXTKTJpgIUC8yUnn4fh/K97KK3PmGvlWJ+gQJDBzjMIleDlbieBpEp/buQgmUNU7BETh731bhQ2WpmFUSIWYey0Eq+C0fP9vLqXHBYp2STIolo18pIfSXIhjHrRjjQc1Uy6pV8oxLxMzhBEUTxk7MqalHyAQ/ZKzFywEpUmIpx5IGOeS5If5Wri0GwLi9AuAkC1gKzxjSYXzGB7wpI20Wg==
 Received: from AM0PR09MB2675.eurprd09.prod.outlook.com (2603:10a6:208:d3::24)
  by DU2PR09MB5357.eurprd09.prod.outlook.com (2603:10a6:10:276::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
- 2024 22:18:37 +0000
+ 2024 22:18:38 +0000
 Received: from AM0PR09MB2675.eurprd09.prod.outlook.com
  ([fe80::6881:178c:bae6:1644]) by AM0PR09MB2675.eurprd09.prod.outlook.com
  ([fe80::6881:178c:bae6:1644%6]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
- 22:18:37 +0000
+ 22:18:38 +0000
 From: Paul Geurts <paul_geurts@live.nl>
 To: mgreer@animalcreek.com,
 	krzk@kernel.org,
@@ -66,21 +66,21 @@ To: mgreer@animalcreek.com,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Paul Geurts <paul_geurts@live.nl>
-Subject: [PATCH 1/2] dt-bindings: net/nfc: ti,trf7970a: Add rx-gain-reduction option
-Date: Wed, 17 Apr 2024 00:18:15 +0200
+Subject: [PATCH 2/2] NFC: trf7970a: Create device-tree parameter for RX gain reduction
+Date: Wed, 17 Apr 2024 00:18:16 +0200
 Message-ID:
- <AM0PR09MB267553535F7A85EA639D739C95082@AM0PR09MB2675.eurprd09.prod.outlook.com>
+ <AM0PR09MB2675AB84E150CCF698CF73BC95082@AM0PR09MB2675.eurprd09.prod.outlook.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1713305374.git.paul_geurts@live.nl>
 References: <cover.1713305374.git.paul_geurts@live.nl>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [ggxY9ltyv+sILJH1vuaZ3hcE7+EvDSKNqZyvyedAYQzqiWftGNnEZTC1Z1qdEgZF]
+X-TMN: [GMe95/uJwlAuyKkMPCMvZSzF08AmRkc6u01mCI1d9sco6cIb0NAABeDPFfoM8ySM]
 X-ClientProxiedBy: AM0PR03CA0093.eurprd03.prod.outlook.com
  (2603:10a6:208:69::34) To AM0PR09MB2675.eurprd09.prod.outlook.com
  (2603:10a6:208:d3::24)
 X-Microsoft-Original-Message-ID:
- <2bcf524807880aee5c9aeaf079b2b04de695db5d.1713305374.git.paul_geurts@live.nl>
+ <19a371556f8770c551ae89a107c43b3eb5eb378f.1713305374.git.paul_geurts@live.nl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,40 +90,40 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM0PR09MB2675:EE_|DU2PR09MB5357:EE_
-X-MS-Office365-Filtering-Correlation-Id: e8021eba-9f6f-4f06-641f-08dc5e632976
+X-MS-Office365-Filtering-Correlation-Id: a6c87ffb-95a0-4116-142c-08dc5e632a2a
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	RGqUkIaGd7EaM+owMLVNPIP8nWbKMaxhTTOLSwb76e0isIGj5VEZcsw4lIO8Zazp8f4aPov4S7EM6EvXnxstc3C0sLdkvYe9RcgIhCcleCbyRgmH0ckhZsgF4AIGuX0mamvMY/cMKeneyKPxPDyFGUYIHr8mJVYzUmHP3H/ZdWMKzV8s9Dv3SJmtPGedGAStgmtEKcaf2sYMBrsQWhNyyDSMFQcIl87tZcJCn0uFLIJyYe8YKP/Ua6SoU7KNDyUtk5SYc+WGUMTmWvXR0BBmPSpRfe/s/PuER5PP1UtpWaP0LRQHjLoazrqGcPqXoonWz8gfkwuR3GM/ZMVZB+KPfmLEcz5JAPP9pjzd3zQjPxeTRCwoJDqhyeLvFYEFLI3/S3L7tejuvFk0jpc9UY8UJ0/K9dsU1jgONXmb9VoA+GrEbx3FUh9h4jW2PLUNjW1RcW5u55/WKB8qOsomh20dFvtifWEN95c/il9K6e4LXQxjGY+2JrdY7jZQxqwTME8KEYpWKi9yKwzXP3sSG/EjARdqoO5odBJ3U4QB6/72kD7gwk76r7dH4aqUI/A7qRFBlRdOHLEu0s958vwQJjWEP7Ic1oLUjiTIlXwkFuFEKtNM/92sI4CHoOJ9Axd61eHb
+	V/LCffn7N6ZdxdbWenCtLA7T59BbsJdZ67KYvXxLWAVdjUQvfgT9EcltNpaHETDpVtvhvOkPdFKSRI08dLB1Ce5xxeGqbmb6pmTTP3spNisj9SrYZMOMPKjpzxGddHaqJRlBv4X3rI5WgoO9ExHhhLzNf6qWFYyHb2G5bfISn8Hl7btJIa3aV0xw0D5568GCVv/sup6G91Dq/4FSzOL2NKVLLIaG/eJ8Yu9WdxmPIEEUYzAUGlH8N0u9MAhuBdue9SLSGaceVMEqI5elSG+FSLgU8eKPKXEQs25l10/gief1GKIPlGAa07YGK7yuN92J9VxIjqmvfrosxz7WdF+RfR84boNJMR0UYUxiF2553kqDoYy7jeS/BJTSo9O1Ng5aYXdwyD/ZV7I7RY1yeR2nXKcG7ORqRmltTcttbVCnAIE/FaMopE0Lf05v0WaC5iwx8f8o28D/UJagM2dehhyTS2ycgYsLXqLybB0/xLdT23cyAstSohEIOPYH9pmrPoqBNin0QdwtMhCd6M+yIIEf31MKu0YMVGWbPiHdMslVK/RagYBMa+APD/fmNK0XN67DMAxLG7eRZlhFk74sNFQZh9MqPwEBHZXr9V1LYD8D216jaDesgHE2ab0fE5m5nldw
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Qn15LyvDsFBE5X17M9WL5e/6fhgXQpWGHDbabL0NtjQurbU8FlWgu9o3O4vQ?=
- =?us-ascii?Q?ttKuwusEzgQ5MHqU9YJBuP7xAmckYxTmYRW90OXCHgEFwy37HTFGvv2rIEaO?=
- =?us-ascii?Q?giPeoj8SwC/hG80vQw6V65hIuH4SE5gwhe0x2cSgzIPyZ0n3trzbqifwdFZt?=
- =?us-ascii?Q?4HZl2pPEoHP3H6vBYHJ0k2LjJ0GjTcQEsz1wXF4bXf9V+o2bM9nhngxbbEOA?=
- =?us-ascii?Q?L31GEKhvCsUxCvBxH05/AmRm5rGl+u9Vj0uzScbfiwLMUQEZpC7LEdKRMWQz?=
- =?us-ascii?Q?lB6bz1ULQIWy9GWD8KEEw+VulGiMQxUmmY470uMYL0L4U3/sfhNGF5qKWyv6?=
- =?us-ascii?Q?W7PN4og0hFX6YzxLtpITWNZ3f5GTA5+h7Mn0bKvdBwEQ9BcPPdbdKVTbhivT?=
- =?us-ascii?Q?XTRWOtbRxwhMtrBGIkytuYl/fCf/XJUV5nw4LtWQjj8X1g7creD9fStn8m6B?=
- =?us-ascii?Q?PNvznRjAJTzY4bc4TtANdCDpcUwxJ50aySt36uzo2/4R7b0S12lJHDln3zEm?=
- =?us-ascii?Q?qM3kxPfs73q5s9oMjV/NYR+MZU5OM0BlbxAFWcL+AeMognIRZ5nNoGx6/ilt?=
- =?us-ascii?Q?lTvhqKajXcrFi9ca9XP2qvMWQ6SUy+QchTsPPCdNGVHumM5/X4CGMsaGml7S?=
- =?us-ascii?Q?2iCwZkAd1dntMDqg1iTZofQskEfhoOE3HNFoXMaJk00w9sdRtaoQ8CKrISKf?=
- =?us-ascii?Q?QRWGscYCb/lJpjCCz6wG3T6+oK631zewy3X9elieyDHitmwHLc7vThje22oe?=
- =?us-ascii?Q?nmEJKYQvtSOlr6kkFxPdfAwuavxNQd9ISvIUsRwcE2aUfTrLn0SyjEVEMsS1?=
- =?us-ascii?Q?iA1/hFWeQiRBp4dSkCFUrnxukzUGU6YKRZ8TKgni2tnT3hALCAcYdRLyILWe?=
- =?us-ascii?Q?wkIveaoWl299UL15SX5YTcDS32Fx5fMXXulnWFprnqKQj2Bl0OtXcQGN6s25?=
- =?us-ascii?Q?lOztH7d2O6Jpgt6v3jFT5IBe/xdE4Q/cPbC7JzNZKhfVBkt6JOSw8tW56jyt?=
- =?us-ascii?Q?mu0YOVzRW1+SZ5Qj39HhglAOCHK5FAG+mKgydznBwPZf2P52VGHHGvfXoWXo?=
- =?us-ascii?Q?rJ/fQA2CzEgZ0mlSn1CAzdn+W7SR3kDxh4VMhFFyT0FYQtB33DRDK7GUxKvh?=
- =?us-ascii?Q?Xwo4WVxrvLTnRu9yErSKYUNNiKSuK0PQUOPg4jme3Y7wdjWgCOF075XhQFOf?=
- =?us-ascii?Q?mQ8BpZ7+tM4vJ3LGsVYpNNnWTuRtRxfBNuttkZXF5vkw05lAxJihmkMwb9O/?=
- =?us-ascii?Q?x3cgmhCCDBQkVohZ+uXRt4cWmyegMwMn6mZhIJysopsJ029EQ1AtNVZJiO5m?=
- =?us-ascii?Q?yZc=3D?=
+	=?us-ascii?Q?dUEHAWh7XeXWKJcYZ9T3w/tGoKBue/qKmnSDZI2/57P3BY0KupdV4MI1A3en?=
+ =?us-ascii?Q?37GpaUsRK/e8BwtXMG4ibcJo0NmEbhMrJL2/gP3FF+JSoHdsRsbSSojBruYm?=
+ =?us-ascii?Q?jGjJGQji8cCXS1eCmmNVjGy2fYIjZQ12b/xH2xeVg0x/2OkCh7gIMPyBQRDv?=
+ =?us-ascii?Q?1f2jgBTTG8upEa7BcYHXCR04/xRmSYPo8FELQXPRGdQycieQQweWJXky8OxH?=
+ =?us-ascii?Q?Rr3Szewkw5QGam+vjBvZ+Q4dI7UuzkZSiMBbyG7QrUpSLpJrCg0KxbgTn62D?=
+ =?us-ascii?Q?xar0XMN1irX9aIaLiPojtm7BsBpqvnPaJ5Ji2036rqvKS6PAuyWQGTLQhu+k?=
+ =?us-ascii?Q?9OnLFaRoggC10MCWGzQfWvLEWkCwbqX6h4ftQT1/63knFFPYnaI5e5enXE1V?=
+ =?us-ascii?Q?kP7QZrkYE23MveimIPxcSp/LiCsIiwCe/OpNgWuPB6mSfm5RquT0LYSw1Wpm?=
+ =?us-ascii?Q?wK2sAioFDVAk3myyCAzhA8yPOn1gJBBjBRP9eSsGz1I4EvmXtyTs06x4oQjX?=
+ =?us-ascii?Q?10RYVMoPPyMjqBTkwLQFpU4I0WkR+PoIt87Wf3oLQjisiICAXC2fMrrQY0Yc?=
+ =?us-ascii?Q?ajkYcdSFOx9n45vZIlR/mpkAm2z2TbgDKou82K91zDpqLFGEirjjB/ddnb0+?=
+ =?us-ascii?Q?CweiT5HOmOjqE2taT4JEETUbky/9KL81wBKFfBQbYqiJjxS5Roj1SraTMD5i?=
+ =?us-ascii?Q?B560NFTbn07ko5f1pI28hUF+++g16ZKmcnzcyyv96AqKig0Pj4H/wkN5aYS4?=
+ =?us-ascii?Q?vG1RVwhiahoT0wb6YATsfNoxFVCqLM7vws2BqRVvHZ5C9Mt8gxC+QQmwd5Tt?=
+ =?us-ascii?Q?PHcf7201wZ7VgIi4EPuKvzvsdPz2KvwnzaVYfHloKdwb8ws4m/p13yzPPryv?=
+ =?us-ascii?Q?ru4MuQFYEtiHSXLUS0wlkndyfPJuw3pH6DeOEwZdRV6ZC8YYYcGbFSgfv3Rf?=
+ =?us-ascii?Q?g7DUTuPrmsiT1nizCwTjUsQjDKAi/MEMTjzWH1AHV64CiLmI4CpxR6CSZo0U?=
+ =?us-ascii?Q?hJpqqS6pmmHUeXXVWD8xzlJHQpfAOyVji9b0eIpXR3a6AEXhzVvKbmPK6Zx/?=
+ =?us-ascii?Q?vVq59tZgAGUHuAG7xvRNgOT24equ7I9d+5kSgmXb29QyZXxZ4QmKoBA9V1XE?=
+ =?us-ascii?Q?ZV8r6XX2fFJhkQXcYLklMzUJD05niBUEQwjVEehZi7e3K0bXJUjsU71dJU3Y?=
+ =?us-ascii?Q?nKMmzGo8YBcOLEcUCNswlDEfNaJBP+IlNk1Nv1yy7h4IN+6NnPhPeN5FpnJ5?=
+ =?us-ascii?Q?po/ScGMucJMGZCHNvtBn58PUn2e8nt22ABh7YaStC+9r6ldH4EIG9KLHw2nz?=
+ =?us-ascii?Q?7Yk=3D?=
 X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-64da6.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8021eba-9f6f-4f06-641f-08dc5e632976
+X-MS-Exchange-CrossTenant-Network-Message-Id: a6c87ffb-95a0-4116-142c-08dc5e632a2a
 X-MS-Exchange-CrossTenant-AuthSource: AM0PR09MB2675.eurprd09.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 22:18:37.2654
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 22:18:38.5039
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -131,37 +131,204 @@ X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR09MB5357
 
-Add option to reduce the RX antenna gain to be able to reduce the
-sensitivity.
+The TRF7970a device is sensitive to RF disturbances, which can make it
+hard to pass some EMC immunity tests. By reducing the RX antenna gain,
+the device becomes less sensitive to EMC disturbances, as a trade-off
+against antenna performance.
+
+Add a device tree option to select RX gain reduction to improve EMC
+performance.
+
+Selecting a communication standard in the ISO control register resets
+the RX antenna gain settings. Therefore set the RX gain reduction
+everytime the ISO control register changes, when the option is used.
 
 Signed-off-by: Paul Geurts <paul_geurts@live.nl>
 ---
- Documentation/devicetree/bindings/net/nfc/ti,trf7970a.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/nfc/trf7970a.c | 86 ++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 75 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/nfc/ti,trf7970a.yaml b/Documentation/devicetree/bindings/net/nfc/ti,trf7970a.yaml
-index d0332eb76ad2..bbd045f6cf04 100644
---- a/Documentation/devicetree/bindings/net/nfc/ti,trf7970a.yaml
-+++ b/Documentation/devicetree/bindings/net/nfc/ti,trf7970a.yaml
-@@ -55,6 +55,11 @@ properties:
-     description: |
-       Regulator for supply voltage to VIN pin
+diff --git a/drivers/nfc/trf7970a.c b/drivers/nfc/trf7970a.c
+index 7eb17f46a815..0991c717a5de 100644
+--- a/drivers/nfc/trf7970a.c
++++ b/drivers/nfc/trf7970a.c
+@@ -274,10 +274,14 @@
  
-+  rx-gain-reduction:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      Specify a RX gain reduction to reduce antenna sensitivity.
+ #define TRF7970A_RX_SPECIAL_SETTINGS_NO_LIM	BIT(0)
+ #define TRF7970A_RX_SPECIAL_SETTINGS_AGCR	BIT(1)
+-#define TRF7970A_RX_SPECIAL_SETTINGS_GD_0DB	(0x0 << 2)
+-#define TRF7970A_RX_SPECIAL_SETTINGS_GD_5DB	(0x1 << 2)
+-#define TRF7970A_RX_SPECIAL_SETTINGS_GD_10DB	(0x2 << 2)
+-#define TRF7970A_RX_SPECIAL_SETTINGS_GD_15DB	(0x3 << 2)
++#define TRF7970A_RX_SPECIAL_SETTINGS_GD_SHIFT	2
++#define TRF7970A_RX_SPECIAL_SETTINGS_GD_MAX	(0x3)
++#define TRF7970A_RX_SPECIAL_SETTINGS_GD_MASK	(TRF7970A_RX_SPECIAL_SETTINGS_GD_MAX << \
++							TRF7970A_RX_SPECIAL_SETTINGS_GD_SHIFT)
++#define TRF7970A_RX_SPECIAL_SETTINGS_GD_0DB	(0x0 << TRF7970A_RX_SPECIAL_SETTINGS_GD_SHIFT)
++#define TRF7970A_RX_SPECIAL_SETTINGS_GD_5DB	(0x1 << TRF7970A_RX_SPECIAL_SETTINGS_GD_SHIFT)
++#define TRF7970A_RX_SPECIAL_SETTINGS_GD_10DB	(0x2 << TRF7970A_RX_SPECIAL_SETTINGS_GD_SHIFT)
++#define TRF7970A_RX_SPECIAL_SETTINGS_GD_15DB	(0x3 << TRF7970A_RX_SPECIAL_SETTINGS_GD_SHIFT)
+ #define TRF7970A_RX_SPECIAL_SETTINGS_HBT	BIT(4)
+ #define TRF7970A_RX_SPECIAL_SETTINGS_M848	BIT(5)
+ #define TRF7970A_RX_SPECIAL_SETTINGS_C424	BIT(6)
+@@ -451,6 +455,8 @@ struct trf7970a {
+ 	unsigned int			timeout;
+ 	bool				ignore_timeout;
+ 	struct delayed_work		timeout_work;
++	u8				rx_gain_reduction;
++	bool			custom_rx_gain_reduction;
+ };
+ 
+ static int trf7970a_cmd(struct trf7970a *trf, u8 opcode)
+@@ -550,6 +556,41 @@ static int trf7970a_read_irqstatus(struct trf7970a *trf, u8 *status)
+ 	return ret;
+ }
+ 
++static int trf7970a_update_rx_gain_reduction(struct trf7970a *trf)
++{
++	int ret = 0;
++	u8 reg;
 +
- required:
-   - compatible
-   - interrupts
-@@ -95,5 +100,6 @@ examples:
-             irq-status-read-quirk;
-             en2-rf-quirk;
-             clock-frequency = <27120000>;
-+            rx-gain-reduction = <3>;
-         };
-     };
++	if (!trf->custom_rx_gain_reduction)
++		return 0;
++
++	ret = trf7970a_read(trf, TRF7970A_RX_SPECIAL_SETTINGS, &reg);
++	if (ret)
++		return ret;
++	reg &= ~(TRF7970A_RX_SPECIAL_SETTINGS_GD_MASK);
++	reg |= trf->rx_gain_reduction;
++
++	ret = trf7970a_write(trf, TRF7970A_RX_SPECIAL_SETTINGS, reg);
++
++	return ret;
++}
++
++static int trf7970a_update_iso_ctrl_register(struct trf7970a *trf, u8 iso_ctrl)
++{
++	int ret;
++
++	ret = trf7970a_write(trf, TRF7970A_ISO_CTRL, iso_ctrl);
++	if (ret)
++		return ret;
++	/*
++	 * Every time the ISO_CTRL register is written, the RX special setting register is reset by
++	 * the chip. When a custom gain reguduction is required, it should be rewritten now.
++	 */
++	ret = trf7970a_update_rx_gain_reduction(trf);
++
++	return ret;
++}
++
+ static int trf7970a_read_target_proto(struct trf7970a *trf, u8 *target_proto)
+ {
+ 	int ret;
+@@ -929,8 +970,7 @@ static irqreturn_t trf7970a_irq(int irq, void *dev_id)
+ 			}
+ 
+ 			if (iso_ctrl != trf->iso_ctrl) {
+-				ret = trf7970a_write(trf, TRF7970A_ISO_CTRL,
+-						     iso_ctrl);
++				ret = trf7970a_update_iso_ctrl_register(trf, iso_ctrl);
+ 				if (ret)
+ 					goto err_unlock_exit;
+ 
+@@ -1034,6 +1074,11 @@ static int trf7970a_init(struct trf7970a *trf)
+ 	if (ret)
+ 		goto err_out;
+ 
++	/* Set the gain reduction after soft init */
++	ret = trf7970a_update_rx_gain_reduction(trf);
++	if (ret)
++		goto err_out;
++
+ 	ret = trf7970a_cmd(trf, TRF7970A_CMD_IDLE);
+ 	if (ret)
+ 		goto err_out;
+@@ -1308,7 +1353,7 @@ static int trf7970a_in_config_framing(struct trf7970a *trf, int framing)
+ 	}
+ 
+ 	if (iso_ctrl != trf->iso_ctrl) {
+-		ret = trf7970a_write(trf, TRF7970A_ISO_CTRL, iso_ctrl);
++		ret = trf7970a_update_iso_ctrl_register(trf, iso_ctrl);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -1440,7 +1485,7 @@ static int trf7970a_per_cmd_config(struct trf7970a *trf,
+ 		}
+ 
+ 		if (iso_ctrl != trf->iso_ctrl) {
+-			ret = trf7970a_write(trf, TRF7970A_ISO_CTRL, iso_ctrl);
++			ret = trf7970a_update_iso_ctrl_register(trf, iso_ctrl);
+ 			if (ret)
+ 				return ret;
+ 
+@@ -1604,8 +1649,7 @@ static int trf7970a_tg_config_rf_tech(struct trf7970a *trf, int tech)
+ 	 */
+ 	if ((trf->framing == NFC_DIGITAL_FRAMING_NFC_DEP_ACTIVATED) &&
+ 	    (trf->iso_ctrl_tech != trf->iso_ctrl)) {
+-		ret = trf7970a_write(trf, TRF7970A_ISO_CTRL,
+-				     trf->iso_ctrl_tech);
++		ret = trf7970a_update_iso_ctrl_register(trf, trf->iso_ctrl_tech);
+ 
+ 		trf->iso_ctrl = trf->iso_ctrl_tech;
+ 	}
+@@ -1653,7 +1697,7 @@ static int trf7970a_tg_config_framing(struct trf7970a *trf, int framing)
+ 	trf->framing = framing;
+ 
+ 	if (iso_ctrl != trf->iso_ctrl) {
+-		ret = trf7970a_write(trf, TRF7970A_ISO_CTRL, iso_ctrl);
++		ret = trf7970a_update_iso_ctrl_register(trf, iso_ctrl);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -1754,6 +1798,10 @@ static int _trf7970a_tg_listen(struct nfc_digital_dev *ddev, u16 timeout,
+ 	if (ret)
+ 		goto out_err;
+ 
++	ret = trf7970a_update_rx_gain_reduction(trf);
++	if (ret)
++		goto out_err;
++
+ 	ret = trf7970a_write(trf, TRF7970A_REG_IO_CTRL,
+ 			     trf->io_ctrl | TRF7970A_REG_IO_CTRL_VRS(0x1));
+ 	if (ret)
+@@ -1944,6 +1992,10 @@ static int trf7970a_startup(struct trf7970a *trf)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = trf7970a_update_rx_gain_reduction(trf);
++	if (ret)
++		return ret;
++
+ 	pm_runtime_set_active(trf->dev);
+ 	pm_runtime_enable(trf->dev);
+ 	pm_runtime_mark_last_busy(trf->dev);
+@@ -1992,6 +2044,7 @@ static int trf7970a_probe(struct spi_device *spi)
+ 	struct trf7970a *trf;
+ 	int uvolts, autosuspend_delay, ret;
+ 	u32 clk_freq = TRF7970A_13MHZ_CLOCK_FREQUENCY;
++	u32 rx_gain_reduction;
+ 
+ 	if (!np) {
+ 		dev_err(&spi->dev, "No Device Tree entry\n");
+@@ -2053,6 +2106,17 @@ static int trf7970a_probe(struct spi_device *spi)
+ 		trf->modulator_sys_clk_ctrl = 0;
+ 	}
+ 
++	if (of_property_read_u32(np, "rx-gain-reduction", &rx_gain_reduction) == 0) {
++		if (rx_gain_reduction > TRF7970A_RX_SPECIAL_SETTINGS_GD_MAX) {
++			dev_warn(trf->dev, "invalid RX gain reduction setting: %u. Limiting to %u\n",
++				 rx_gain_reduction, TRF7970A_RX_SPECIAL_SETTINGS_GD_MAX);
++			rx_gain_reduction = TRF7970A_RX_SPECIAL_SETTINGS_GD_MAX;
++		}
++		trf->rx_gain_reduction = (rx_gain_reduction <<
++			TRF7970A_RX_SPECIAL_SETTINGS_GD_SHIFT);
++		trf->custom_rx_gain_reduction = true;
++	}
++
+ 	ret = devm_request_threaded_irq(trf->dev, spi->irq, NULL,
+ 					trf7970a_irq,
+ 					IRQF_TRIGGER_RISING | IRQF_ONESHOT,
 -- 
 2.20.1
 
