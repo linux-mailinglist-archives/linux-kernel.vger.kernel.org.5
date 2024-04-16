@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-147385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D490C8A7338
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:29:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0131B8A733A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:30:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1119E1C219B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:29:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 970401F21F55
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:30:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57CDD13698E;
-	Tue, 16 Apr 2024 18:29:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73981369B9;
+	Tue, 16 Apr 2024 18:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="drMw/duP"
+	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="Wg4PaEEn"
 Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A64D3135A67
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C2D2C6A3;
+	Tue, 16 Apr 2024 18:30:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713292188; cv=none; b=BLZHcy3hC40vOY60lHFZgpDzKrKJQYKI7sYYGXSBiqSJTjjvabHVDp1AtVfxeUR2DppMOyJnzOQJ+ZfVwR0Phdvd+KF9PS3VD6yVbRffS0R/bHpqUcHiV9iKPSRvXy41GXwQn9Euef9rYfmGTdy49lIR4MJE4EVoRD5APBbsQyg=
+	t=1713292229; cv=none; b=FVNreKo/6EBc30QB7Pjn3v9jme7no77Xv1cb1NOeTsqHka4eeB3XaRrwfkBHri96u1KPIjnytY6XJp1sReS5s8tQ8wl553obsv2l3QfTDIvakIDGLLE+fUc6MfD9xuRPn4kkOayY2ZTArrkTJ3C61tOGRqKo/NOp+hf3HiJMbaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713292188; c=relaxed/simple;
-	bh=dOxdME2FokB9hRdd7JjcniyIFSzAQyPzxZ7AzsMbJMg=;
+	s=arc-20240116; t=1713292229; c=relaxed/simple;
+	bh=BOgkAFFdf2wnO9hL/ivSNkM9DBF2bbinKHnkCviT4l8=;
 	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=etDAuC3NubfusdP6tDMGqAAEhaVqVYVI97xPPvHad1dkjvLoncRUhZ60vEou2z0PcI5kUJeRbeniOIDwdir3ugSRuCB/oAFSO5i6TJIPcsrQr6BZ5LXyfN1fIfBRWWqE6i6g0T+RilWgoskYAkEjsSa3iRRVDxZ+aBRHGC2TXVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=drMw/duP; arc=none smtp.client-ip=185.70.40.131
+	 MIME-Version:Content-Type; b=FiH4wni/L5MfstRP6f8Q5YSvkgp4lt7gvjXhV+toA+oCEeRXr/Dab6oydIP4ob83Us520dZJjWzmtywomEpSplGJ9AzIXbLr3pNBoiJbqFOXgsU67wJ5qHRUm0iUQ+T83nWxkKh/0N65FYpCivcn5POlm8eXbad4ySBxzN2vVKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=Wg4PaEEn; arc=none smtp.client-ip=185.70.40.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1713292178; x=1713551378;
-	bh=BIDs04sJtbgfAiuNZcYHHoKZXettnAp939uQ5VQM0HI=;
+	s=protonmail3; t=1713292225; x=1713551425;
+	bh=62YpHOvZnZ8olaQOV9AE7phGelntP6xtyhEl8JdkA54=;
 	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
 	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
 	 Message-ID:BIMI-Selector;
-	b=drMw/duP6znu7Y72oZiB/i9v4BXv5LGJ1LGuqiNtu8Un+mKz9Hvh7yqtus9C/O/rV
-	 5rIiQc2qWvKxo4Bd5tLuMOTGXvEIskNXTcoRXx9t/jscvzYWtEKpJw3JrtJ1cOQKxg
-	 4ZPms01ZQ67CM9enosRbZhFIV13dyMM2kXJPvUr9W8Bn3phL+t6aCgdGRlLKlAD6PC
-	 /uFQs5LuBK4NBqO3NxUP4j61cUU+y1KYMfQ/RcAaCe2nwiQnDPUi8QbyLA4BojZrZ0
-	 UO580tFo+yvHje6+vMKdmxENrIASYQZW2ns8c0t+bEbbcoeVBivSDJcs1k206RX7W7
-	 GXFurFSJ3VFEw==
-Date: Tue, 16 Apr 2024 18:29:28 +0000
+	b=Wg4PaEEnIx5Lk0zDGjMn6BASw1bt7to6J/Otm4Qg5gGACUkF2rEBqmcYuHbduwckQ
+	 H1eo4AJvG3DCpM9CG0k90JV04Y95S8+grRhuFgIlKPdbbC7n44ZULp+QPalg+XNLE0
+	 By9mcXrdmEjIw0e41WckW7a/gmG3c5RRA9bNKkfaeuNIIGFAssv+jM1995X88Mgm/N
+	 A/sID5Ok081/ygln9wjKqztDlG21Rm6msq3y/xotQbnVtCAQXlK4v5kYzlj+A9mgla
+	 qhJNgvAlLImKeJAI7VVqwLilQfcatPe1Sk/FYo5r7zrxe/g0QpIhyB1cVmU2Yh/Xt5
+	 OgauEt/0LlMRw==
+Date: Tue, 16 Apr 2024 18:29:56 +0000
 To: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>
 From: Michael Pratt <mcpratt@pm.me>
 Cc: Wander Lairson Costa <wander@redhat.com>, =?utf-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vamshi Gajjela <vamshigajjela@google.com>, Michael Pratt <mcpratt@pm.me>
-Subject: [PATCH v2 1/3] serial: core: Store fifo timeout again
-Message-ID: <20240416182741.22514-2-mcpratt@pm.me>
+Subject: [PATCH v2 2/3] serial: 8250: Store whether fifo device is enabled
+Message-ID: <20240416182741.22514-3-mcpratt@pm.me>
 In-Reply-To: <20240416182741.22514-1-mcpratt@pm.me>
 References: <20240416182741.22514-1-mcpratt@pm.me>
 Feedback-ID: 27397442:user:proton
@@ -60,50 +60,51 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-This is a partial revert of Commit f9008285bb69
-("serial: Drop timeout from uart_port").
+Currently, there are 7 checks for whether to enable
+the internal fifo device of a 8250/16550 type uart.
 
-In order to prevent having to calculate a timeout
-for the fifo device during a write operation, if enabled,
-calculate it ahead of time and store the value of the timeout
-in a struct member of uart_port.
+Instead of checking all 7 values again whenever
+we need to know whether we have the fifo device enabled,
+store the result as a struct member of uart_8250_port.
+
+This can, for example, lessen the amount
+of calculations done during a write operation.
 
 Signed-off-by: Michael Pratt <mcpratt@pm.me>
 ---
 V1 -> V2: new commit
 
- drivers/tty/serial/serial_core.c | 3 +++
- include/linux/serial_core.h      | 1 +
- 2 files changed, 4 insertions(+)
+ drivers/tty/serial/8250/8250_port.c | 2 ++
+ include/linux/serial_8250.h         | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_c=
-ore.c
-index ff85ebd3a007..9b3176d684a4 100644
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -414,6 +414,9 @@ uart_update_timeout(struct uart_port *port, unsigned in=
-t cflag,
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/=
+8250_port.c
+index fc9dd5d45295..5b0cfe6bc98c 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -3392,6 +3392,8 @@ void serial8250_console_write(struct uart_8250_port *=
+up, const char *s,
+ =09=09 */
+ =09=09!(up->port.flags & UPF_CONS_FLOW);
 =20
- =09temp *=3D NSEC_PER_SEC;
- =09port->frame_time =3D (unsigned int)DIV64_U64_ROUND_UP(temp, baud);
++=09up->fifo_enable =3D use_fifo;
 +
-+=09if (port->fifosize > 1)
-+=09=09port->timeout =3D uart_fifo_timeout(port);
- }
- EXPORT_SYMBOL(uart_update_timeout);
-=20
-diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
-index 0a0f6e21d40e..c6422021152f 100644
---- a/include/linux/serial_core.h
-+++ b/include/linux/serial_core.h
-@@ -561,6 +561,7 @@ struct uart_port {
-=20
- =09bool=09=09=09hw_stopped;=09=09/* sw-assisted CTS flow state */
- =09unsigned int=09=09mctrl;=09=09=09/* current modem ctrl settings */
-+=09unsigned long=09=09timeout;=09=09/* character-based timeout */
- =09unsigned int=09=09frame_time;=09=09/* frame timing in ns */
- =09unsigned int=09=09type;=09=09=09/* port type */
- =09const struct uart_ops=09*ops;
+ =09if (likely(use_fifo))
+ =09=09serial8250_console_fifo_write(up, s, count);
+ =09else
+diff --git a/include/linux/serial_8250.h b/include/linux/serial_8250.h
+index fd59ed2cca53..017429f0e743 100644
+--- a/include/linux/serial_8250.h
++++ b/include/linux/serial_8250.h
+@@ -127,6 +127,7 @@ struct uart_8250_port {
+ =09struct list_head=09list;=09=09/* ports on this IRQ */
+ =09u32=09=09=09capabilities;=09/* port capabilities */
+ =09u16=09=09=09bugs;=09=09/* port bugs */
++=09unsigned int=09=09fifo_enable;=09/* fifo enabled if capable */
+ =09unsigned int=09=09tx_loadsz;=09/* transmit fifo load size */
+ =09unsigned char=09=09acr;
+ =09unsigned char=09=09fcr;
 --=20
 2.30.2
 
