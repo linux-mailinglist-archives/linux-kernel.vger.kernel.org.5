@@ -1,121 +1,169 @@
-Return-Path: <linux-kernel+bounces-147358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92C3C8A72E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:13:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 554658A72E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:13:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49AC3282967
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:13:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D47B31F22B29
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:13:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E94D13667E;
-	Tue, 16 Apr 2024 18:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E7D135418;
+	Tue, 16 Apr 2024 18:13:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VF+Shdl5"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="LxmMU96F"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1FB13343F;
-	Tue, 16 Apr 2024 18:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D950784A32;
+	Tue, 16 Apr 2024 18:13:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713291164; cv=none; b=q7EZJtaOb8pKbLLHMfVpHjIMPcsWiyzd5Zqn2iEyp5vkbrWONQJ7IDtleiYAtFVTj3jPW7H+rcvKzdhHv9Ph55dVsXsHgG3gErnvfyqLeSINJanf9PLAyfG8eSrfPaPw5w4ktKBDDYUT3StS6gynndhPU+i94fqUDb/s6UED+LE=
+	t=1713291188; cv=none; b=IYH8c1hc9IKVJHOw+yNHv80dhdHm9O5OqAzGkCUWQuErj0Titp5bt8QmGq5Tl8+YtH6h76h4IdxeUVT0IXoC40YTMrPwzrlUYf8aqS/9y+xPies8VHgmCtzu+2FbG63f/jpH1609wJseQcaRpD3Zkeab8djxfH1GJ0z/n01ouK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713291164; c=relaxed/simple;
-	bh=w2WOdK+HDz1fazSED3Oxm9eq69k3yabhpN25jQHSvKA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CDpQb7pMfVHw8t/uM5cgMjxda9n5Z7BKViHaGKw5AREb5Mnjjtsr25zAblcy24lxWiGzGUS+uCWQwUaAjca7VxL3IzfjzAJoaRaRAhv8tPAyajgAA2dXioi2bGz3nGcsr1KdC09ACqLZ4jCyEqUse4tgB4W+SZDOsSLVTIPSmUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VF+Shdl5; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-570441bc23bso1277774a12.0;
-        Tue, 16 Apr 2024 11:12:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713291161; x=1713895961; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+DxrBa0GRP7KC9Ck4Q7bz92lpzIac44ohmTeC1MwbNU=;
-        b=VF+Shdl5n2le2uTJdl36RR5bNLp+CkcxIvayYDceMyc9EJIUT7Hfl1NJh/NM85uVNA
-         jgBvTwbXV41UO3eIpmc3zH9430JhdoqSjontKYilq1FphhXG499naUbJ+EDGO9YOf2hp
-         3aMKR0hIUfMWUeG67KTbd4EzI+K4BOwX7H1fMz4yV2NoYqC2ipG/2oJ1pGe42P5HCB/U
-         G2LLqVmvEdujyf/5AhNHVZA4QfBk6TggK/tSvK2lJpRO3C3IT6cZinvRhzuZ62waxon2
-         BVNz0TUJe4ppOEIjMbUMR0snl4fsNejVIfPVw5IyO/hm3bKFov+ORclaelypYccO58+4
-         QHTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713291161; x=1713895961;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+DxrBa0GRP7KC9Ck4Q7bz92lpzIac44ohmTeC1MwbNU=;
-        b=aonmYTLdawPJSco9uFP+1kg0y8Q17nXoFN1Eq1Ae70SFbmNuF7aJXwPZCNxA0r0Lkp
-         mzgysVgb20vQpZ+GgE9m1jdAXzG/96nrjuCGC99dEC9kSCo1HZuxbWnPWXGzZbe9EQRm
-         GmExDOUMZ8okVVtjYGeowPiUYATHF7JDcOb4uy/lS8j/P2LCvTIWe+u0vlAiGbPA1XNH
-         CMHct8+v+gvBR39bPnTakipDgJuc5ZcMkt+d8LOS10o2xu+DugVCLcQeGx7CV5Wwb6H3
-         2qrAWzF579cDb5A03UTDMzf2dgypA1iSAxmbk0Qy4WjahHDr934W9kcTutnAeindn+h4
-         HeEg==
-X-Forwarded-Encrypted: i=1; AJvYcCWya67GB6X5riUHQXdQf0qF0yRM60dwD157FMQPG1lu08lnqCzqbC8yFonWc8pZwH6m0QsfWbNVsd9dbpBd3Vt5Vcgh2UohAryTxBKGFg1D9uqvpuO3gid7SZkUkDtQyEeu/3OPetQqQCRcM/oTlCIMMe46Kwl71XIREYsASZ8ATkkujlsS/4D4ZZE6gk9M
-X-Gm-Message-State: AOJu0YzN/7JQDFMEq69qCP9+pDjJTalGorQVSbvQgYxMjxFvEg8PZr4Z
-	J8LZF0Epx17g+lX+hYkiSpSOKg/qTuthhI99BWxIf6vBgWx5OPdN
-X-Google-Smtp-Source: AGHT+IEi27VqQOVvq3KICDHbzcbhpfiY9hUDzKEjxbQmObbqYcwoFQmAo/mQ7qL2GxHkuGyWZ+kFDA==
-X-Received: by 2002:a17:907:d2a:b0:a52:2f19:f1d7 with SMTP id gn42-20020a1709070d2a00b00a522f19f1d7mr9931916ejc.53.1713291161232;
-        Tue, 16 Apr 2024 11:12:41 -0700 (PDT)
-Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
-        by smtp.gmail.com with ESMTPSA id lb10-20020a170906adca00b00a526fd6362asm2616106ejb.117.2024.04.16.11.12.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Apr 2024 11:12:40 -0700 (PDT)
-Message-ID: <ee8c39ab-d47a-481d-a19c-1d656519e66d@gmail.com>
-Date: Tue, 16 Apr 2024 20:12:41 +0200
+	s=arc-20240116; t=1713291188; c=relaxed/simple;
+	bh=AA6SJbQhGfB9M3x1QbK3z/D1vMSid8qosIO1GNXxywM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bYecA10Gt9HTPJaTWm+1IeGVKsNF+9IcilYc28iSw/TDehWQoaS7Q/qPqxiJUmqamU61rTQh5AFNsv1KC6ykG2uf9q0f6Qrqk9YVwMAJ9Tg4ew88uIWxFs2+aKJl+inHmwOqpWDKi6Biq3UIFR15djNBfZgRqLz/eNhd3u9hqlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=LxmMU96F; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=36ZXpuO31IIMkNaMOUNE9BMTLk6qz2b58hlyspvsh9M=; b=LxmMU96F7hOkagMMuarOGWvM2P
+	iVEy91jkVu6Y+T2Ub1KdC1k6J+5O7cFaujlahZKKGdFUQP6OsgZzD3cjkqzKb6RWTIbX40Y9weyRe
+	12pw+XjIzratPnUlLJkPIiCD3w+FFB+MQiqjMZsDSa00FTMCrfGjES55si1xevo4dkbc6l/YEX1FB
+	jucTBymlDlyp9pd4TJoNCrGFf7DcmoD/ItwBeMgwHGQDArIt9VjLXQ956G94/m8RaBkhOd4z1fm/k
+	VQ0tsBd4c/5rNMYNP6KMzeH/WMjrwenFlSko2KQXaSzPapRpdzff1RWBqiBhf+rIbjCstQeQfNKOn
+	+FYKNOMQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57804)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rwnIZ-0000oT-2i;
+	Tue, 16 Apr 2024 19:12:51 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rwnIX-000537-Sy; Tue, 16 Apr 2024 19:12:49 +0100
+Date: Tue, 16 Apr 2024 19:12:49 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Stefan Eichenberger <eichest@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	lxu@maxlinear.com, hkallweit1@gmail.com, michael@walle.cc,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] net: phy: mxl-gpy: add new device tree property
+ to disable SGMII autoneg
+Message-ID: <Zh6/oVHUvnOVtHaC@shell.armlinux.org.uk>
+References: <20240416121032.52108-1-eichest@gmail.com>
+ <20240416121032.52108-3-eichest@gmail.com>
+ <3f7f278f-e490-47f1-971c-ecf44a70cee4@lunn.ch>
+ <Zh6clAtI3NO+nMEi@eichest-laptop>
+ <5ed39628-4ac0-4c4e-9a16-fd4bf9a6db29@lunn.ch>
+ <Zh6mIv1Ee+1h21Xo@shell.armlinux.org.uk>
+ <Zh6z90iCpLqF4fla@eichest-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] hwmon: Add thermal sensor driver for Surface
- Aggregator Module
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Jean Delvare <jdelvare@suse.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>, Ivor Wanders <ivor@iwanders.net>,
- linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
- linux-hwmon@vger.kernel.org
-References: <20240330112409.3402943-1-luzmaximilian@gmail.com>
- <20240330112409.3402943-2-luzmaximilian@gmail.com>
- <7ba2554a-4f71-4ca0-ab49-59dbd03e1968@roeck-us.net>
-Content-Language: en-US
-From: Maximilian Luz <luzmaximilian@gmail.com>
-In-Reply-To: <7ba2554a-4f71-4ca0-ab49-59dbd03e1968@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zh6z90iCpLqF4fla@eichest-laptop>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On 4/16/24 3:27 PM, Guenter Roeck wrote:
-> On Sat, Mar 30, 2024 at 12:24:00PM +0100, Maximilian Luz wrote:
->> Some of the newer Microsoft Surface devices (such as the Surface Book
->> 3 and Pro 9) have thermal sensors connected via the Surface Aggregator
->> Module (the embedded controller on those devices). Add a basic driver
->> to read out the temperature values of those sensors.
->>
->> Link: https://github.com/linux-surface/surface-aggregator-module/issues/59
->> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
->> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
->> ---
-> [ ... ]
->> +	hwmon_dev = devm_hwmon_device_register_with_info(&sdev->dev,
->> +			"surface_thermal", ssam_temp, &ssam_temp_hwmon_chip_info,
->> +			NULL);
->> +	if (IS_ERR(hwmon_dev))
->> +		return PTR_ERR(hwmon_dev);
->> +
->> +	return 0;
+On Tue, Apr 16, 2024 at 07:23:03PM +0200, Stefan Eichenberger wrote:
+> Hi Russell and Andrew,
 > 
-> 	return PTR_ERR_OR_ZERO(hwmon_dev);
+> On Tue, Apr 16, 2024 at 05:24:02PM +0100, Russell King (Oracle) wrote:
+> > On Tue, Apr 16, 2024 at 06:02:08PM +0200, Andrew Lunn wrote:
+> > > On Tue, Apr 16, 2024 at 05:43:16PM +0200, Stefan Eichenberger wrote:
+> > > > Hi Andrew,
+> > > > 
+> > > > Thanks a lot for the feedback.
+> > > > 
+> > > > On Tue, Apr 16, 2024 at 03:46:19PM +0200, Andrew Lunn wrote:
+> > > > > On Tue, Apr 16, 2024 at 02:10:32PM +0200, Stefan Eichenberger wrote:
+> > > > > > Add a new device tree property to disable SGMII autonegotiation and
+> > > > > > instead use the option to match the SGMII speed to what was negotiated
+> > > > > > on the twisted pair interface (tpi).
+> > > > > 
+> > > > > Could you explain this is more detail.
+> > > > > 
+> > > > > SGMII always runs its clocks at 1000Mbps. The MAC needs to duplicate
+> > > > > the symbols 100 times when running at 10Mbs, and 10 times when running
+> > > > > at 100Mbps.
+> > > > 
+> > > > Currently, the mxl-gpy driver uses SGMII autonegotiation for 10 Mbps,
+> > > > 100 Mbps, and 1000 Mbps. For our Ethernet controller, which is on an
+> > > > Octeon TX2 SoC, this means that we have to enable "in-band-status" on
+> > > > the controller. This will work for all three speed settings. However, if
+> > > > we have a link partner that can do 2.5 Gbps, the mxl-gpy driver will
+> > > > disable SGMII autonegotiation in gpy_update_interface. This is not
+> > > > supported by this Ethernet controller because in-band-status is still
+> > > > enabled. Therefore, we will not be able to transfer data at 2.5 Gbps,
+> > > > the SGMII link will not go into a working state.
+> > > 
+> > > This is where i expect Russel to point out that SGMII does not support
+> > > 2.5G. What you actually mean is that the PHY swaps to 2500BaseX. And
+> > > 2500BaseX does not perform speed negotiation, since it only supports
+> > > 2500. So you also need the MAC to swap to 2500BaseX.
+> > 
+> > Yes, absolutely true that SGMII does not support 2.5G... and when
+> > operating faster, than 2500base-X is normally used.
+> > 
+> > How, 2500base-X was slow to be standardised, and consequently different
+> > manufacturers came up with different ideas. The common theme is that
+> > it's 1000base-X up-clocked by 2.5x. Where the ideas differ is whether
+> > in-band negotiation is supported or not. This has been a pain point for
+> > a while now.
+> > 
+> > As I mentioned in my previous two messages, I have an experimental
+> > patch series that helps to address this.
+> > 
+> > The issue is that implementations mix manufacturers, so we need to
+> > know the capabilities of the PHY and the capabilities of the PCS, and
+> > then hope that we can find some common ground between their
+> > requirements.
+> > 
+> > There is then the issue that if you're not using phylink, then...
+> > guess what... you either need to convert to use phylink or implement
+> > the logic in your own MAC driver to detect what the PHY is doing
+> > and what its capabilities are - but I think from what you've said,
+> > you are using phylink.
+> 
+> Thanks for the patch series and the explanation. In our use case we have
+> the mismatch between the PHY and the mvpp2 driver in 2500BaseX mode.
 
-ACK. Will fix this and the blank lines.
+Ah, mvpp2. This is one of those cases where I think you have a
+disagreement between manufacturers over 2500base-X.
 
-Thanks,
-Max
+Marvell's documentation clearly states that when operating in 1000base-X
+mode, AN _must_ be enabled. Since programming 2500base-X is programming
+the mvpp2 hardware for 1000base-X and then configuring the COMPHY to
+clock faster, AN must also be enabled when operating at 2500base-X.
+
+It seems you've coupled it with the mxl-gpy PHY which doesn't apparently
+support AN when in 2500base-X.
+
+Welcome to the mess of 2500base-X, and sadly we finally have the
+situation that I've feared for years: one end of a 2500base-X link
+that's documented as requiring AN, and the other end not providing it.
+
+Sigh. If only the IEEE 802.3 committee had been more pro-active and
+standardised 2500base-X _before_ manufacturers went off and did their
+own different things.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
