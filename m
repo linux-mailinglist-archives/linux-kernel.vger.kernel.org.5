@@ -1,252 +1,230 @@
-Return-Path: <linux-kernel+bounces-146856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B9038A6BF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:14:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C1BD8A6BF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:15:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE9951F2155A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:14:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B533C1F21441
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:15:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424F212C495;
-	Tue, 16 Apr 2024 13:14:23 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F75B1292C9
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 13:14:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4A1712C481;
+	Tue, 16 Apr 2024 13:14:47 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3342C12AAE7;
+	Tue, 16 Apr 2024 13:14:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713273262; cv=none; b=g/veikIciJQTcx5RfvD4VpMRHUFeLbn7daVcZ2DNVG9VN8DQ9N+yV0AnJlx/TMvUTj0am/r4K+tdUnFvA9L5w0jU5bvbr/veE6+BWHt8l8IRi3iwohTNr89+Q38h1TOEW5G0UkJydefFhMlwdarSBhNnCgsTL9Oo0P072hYdQ24=
+	t=1713273287; cv=none; b=BpJK+Q5sriHAV23cZgYEyoFIIUDtDbPmiEMLr4pYGSv6cqB0iYkag47w/OeXILsYxC7EQJX/gYFtaAtMBzvzb214GOwWrwZB0Sef0qLGmjTvbzkc8EjR1m7yIbynj/02DsQGxn9sZfedb1iHtBowQ3bdgXTSGrCqYdtRd7QM0TE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713273262; c=relaxed/simple;
-	bh=H2aDO5hRUHxVtBzoQM9q506rMIo3n75KR3eMoKFiDYc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=XTqo6URdvlVmcWZ8bVwEkUBZYbb9HPoGtznx7oFmVrM2TuXdlvJTEDp/zQJXb5NzyUpdGsbeTFp9j+hUZSyvqA2BkkGRokwOx/ldKwh+U/5NgGff1tdul+RtpS+19MGQFxwl6klSvkN67sxUgBENWbT4ouk1na686W1nHGhpxgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7d9913d3174so195840839f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 06:14:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713273260; x=1713878060;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=H6OYGGa+wa2bluQBe1fsFpWf24/pbrMDuPRSn5WUZ0s=;
-        b=XIE7lC2PlFb5mnw0hxQKCfi0+KoY056OhNAMEGvTfook0AJSjYg46reJlF6+Ofrww4
-         +nihU+8dmsjiousOw1Utb8XmCs8ct6gsjlJIq3KdyjEp60UCVnBnpbS43r6hyHGBihHE
-         aKq4ooBQKGfsH0FJaV8na7FCtU8kXwYYIXl21uWfcvVqAKgf0+FGfXjzJdX9GNHTkVMD
-         A5r3L8+jbMtI5trxJy4srXEy7EHsj4es70HynWEi7Or5xZH2ma6VZCzuoHdKEzrRLfRk
-         311e6W7MwPs0wyQOo3Y8DaWG+VIJLDKMxV0ZkYr0smhmIDt9zlSsKhazTvMf8gAuoP27
-         OKSA==
-X-Forwarded-Encrypted: i=1; AJvYcCX13T/oND4/LN4ECMhZmSsSPqmC7gkaOqzg2UFHQaqEDOFQu3qfMieb3xmr+zfb6xyPBT0mEfsOgZJk88R+ozpikhm6m/55F6AKngWX
-X-Gm-Message-State: AOJu0YyaL8nx0F0I9YbtELLRg3+JYIok+ejhAHWWHB0TgOdmI0TL0JTD
-	FQRodRIHZSWyPGmR/d6JzU0pXOSMVo9S4uMNSrTjRCw/aMNAC3tygmJvkZ6pZ/5qYhuYmKHo2tO
-	sp728dtYxkDXOkw152qgJnW8pdfmgF4HcR1+vVz4D2VVKuuGK9qHUc6I=
-X-Google-Smtp-Source: AGHT+IHFcLT+SeKYEa1nZIMuGAxPYbpk88VWrLpxCjt8Qya/sIvTrCRjnTAnuQM08lS23mL0hGpTJ231t2DRdz+1Kckmt7Fs5b21
+	s=arc-20240116; t=1713273287; c=relaxed/simple;
+	bh=gu/7yEmTZO3eRUr56dElM2gFoo/BiAjK7fnL+Q6GZV0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dR+YjrK1YGaNolBRRhAazwoqOkkfveJoJi8l0swPY7xYWFCuncf/7gI8dCgEvg2O4fyJwAUuLNJiWdYxClg2qbK/qbVcKkFjrEtT8Fbrtt7tuX5V1EVOsU0Tdtp+uG0ZUofDCK7v/N0FdY9v8Bqevvu6ofDDx7yKsEVydHK3m1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B3C19DA7;
+	Tue, 16 Apr 2024 06:15:11 -0700 (PDT)
+Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 458AF3F738;
+	Tue, 16 Apr 2024 06:14:41 -0700 (PDT)
+Message-ID: <b8019da1-d361-445b-a224-0761640aa616@arm.com>
+Date: Tue, 16 Apr 2024 14:14:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8917:b0:482:fa6f:78f1 with SMTP id
- jc23-20020a056638891700b00482fa6f78f1mr571514jab.6.1713273260230; Tue, 16 Apr
- 2024 06:14:20 -0700 (PDT)
-Date: Tue, 16 Apr 2024 06:14:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000145ce00616368490@google.com>
-Subject: [syzbot] [exfat?] possible deadlock in exfat_page_mkwrite
-From: syzbot <syzbot+d88216a7af9446d57d59@syzkaller.appspotmail.com>
-To: linkinjeon@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, sj1557.seo@samsung.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 06/43] arm64: RME: Add wrappers for RMI calls
+To: Steven Price <steven.price@arm.com>, kvm@vger.kernel.org,
+ kvmarm@lists.linux.dev
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
+ Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
+ Oliver Upton <oliver.upton@linux.dev>, Zenghui Yu <yuzenghui@huawei.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Joey Gouly <joey.gouly@arm.com>, Alexandru Elisei
+ <alexandru.elisei@arm.com>, Christoffer Dall <christoffer.dall@arm.com>,
+ Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
+ Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+References: <20240412084056.1733704-1-steven.price@arm.com>
+ <20240412084309.1733783-1-steven.price@arm.com>
+ <20240412084309.1733783-7-steven.price@arm.com>
+Content-Language: en-US
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20240412084309.1733783-7-steven.price@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello,
+Hi Steven
 
-syzbot found the following issue on:
+On 12/04/2024 09:42, Steven Price wrote:
+> The wrappers make the call sites easier to read and deal with the
+> boiler plate of handling the error codes from the RMM.
+> 
 
-HEAD commit:    66e4190e92ce Add linux-next specific files for 20240416
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15817767180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c247afaa437e6409
-dashboard link: https://syzkaller.appspot.com/bug?extid=d88216a7af9446d57d59
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+I have compared the parameters and output values to that of the RMM spec
+and they match. There are some minor nits below.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> Signed-off-by: Steven Price <steven.price@arm.com>
+> ---
+>   arch/arm64/include/asm/rmi_cmds.h | 509 ++++++++++++++++++++++++++++++
+>   1 file changed, 509 insertions(+)
+>   create mode 100644 arch/arm64/include/asm/rmi_cmds.h
+> 
+> diff --git a/arch/arm64/include/asm/rmi_cmds.h b/arch/arm64/include/asm/rmi_cmds.h
+> new file mode 100644
+> index 000000000000..c21414127e8e
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/rmi_cmds.h
+> @@ -0,0 +1,509 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2023 ARM Ltd.
+> + */
+> +
+> +#ifndef __ASM_RMI_CMDS_H
+> +#define __ASM_RMI_CMDS_H
+> +
+> +#include <linux/arm-smccc.h>
+> +
+> +#include <asm/rmi_smc.h>
+> +
+> +struct rtt_entry {
+> +	unsigned long walk_level;
+> +	unsigned long desc;
+> +	int state;
+> +	int ripas;
+> +};
+> +
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/86891dae5f9c/disk-66e4190e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1ca383660bf2/vmlinux-66e4190e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/bf6ff37d3fcc/bzImage-66e4190e.xz
+..
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d88216a7af9446d57d59@syzkaller.appspotmail.com
+> +/**
+> + * rmi_data_destroy() - Destroy a Data Granule
+> + * @rd: PA of the RD
+> + * @ipa: IPA at which the granule is mapped in the guest
+> + * @data_out: PA of the granule which was destroyed
+> + * @top_out: Top IPA of non-live RTT entries
+> + *
+> + * Transitions the granule to DESTROYED state, the address cannot be used by
+> + * the guest for the lifetime of the Realm.
+> + *
+> + * Return: RMI return code
+> + */
+> +static inline int rmi_data_destroy(unsigned long rd, unsigned long ipa,
+> +				   unsigned long *data_out,
+> +				   unsigned long *top_out)
+> +{
+> +	struct arm_smccc_res res;
+> +
+> +	arm_smccc_1_1_invoke(SMC_RMI_DATA_DESTROY, rd, ipa, &res);
+> +
+> +	*data_out = res.a1;
+> +	*top_out = res.a2;
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.9.0-rc4-next-20240416-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.0/17125 is trying to acquire lock:
-ffff88805e616b38 (&sb->s_type->i_mutex_key#24){++++}-{3:3}, at: inode_lock include/linux/fs.h:791 [inline]
-ffff88805e616b38 (&sb->s_type->i_mutex_key#24){++++}-{3:3}, at: exfat_page_mkwrite+0x43a/0xea0 fs/exfat/file.c:629
+minor nit: Do we need to be safer by checking the parameters before 
+filling them in ? i.e.,
 
-but task is already holding lock:
-ffff88802dc76518 (sb_pagefaults#4){.+.+}-{0:0}, at: do_page_mkwrite+0x19b/0x480 mm/memory.c:3097
+	if (ptr)
+		*ptr = result_out;
 
-which lock already depends on the new lock.
+This applies for others calls below.
 
+> +
+> +	return res.a0;
+> +}
 
-the existing dependency chain (in reverse order) is:
+> +
+> +/**
+> + * rmi_realm_destroy() - Destroy a Realm
+> + * @rd: PA of the RD
+> + *
+> + * Destroys a Realm, all objects belonging to the Realm must be destroyed first.
+> + *
+> + * Return: RMI return code
+> + */
+> +static inline int rmi_realm_destroy(unsigned long rd)
+> +{
+> +	struct arm_smccc_res res;
+> +
+> +	arm_smccc_1_1_invoke(SMC_RMI_REALM_DESTROY, rd, &res);
+> +
+> +	return res.a0;
+> +}
+> +
+> +/**
+> + * rmi_rec_aux_count() - Get number of auxiliary Granules required
+> + * @rd: PA of the RD
+> + * @aux_count: Number of pages written to this pointer
+> + *
+> + * A REC may require extra auxiliary pages to be delegateed for the RMM to
 
--> #2 (sb_pagefaults#4){.+.+}-{0:0}:
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1659 [inline]
-       sb_start_pagefault include/linux/fs.h:1824 [inline]
-       exfat_page_mkwrite+0x161/0xea0 fs/exfat/file.c:619
-       do_page_mkwrite+0x19b/0x480 mm/memory.c:3097
-       do_shared_fault mm/memory.c:4977 [inline]
-       do_fault mm/memory.c:5039 [inline]
-       do_pte_missing mm/memory.c:3881 [inline]
-       handle_pte_fault+0x1298/0x6dc0 mm/memory.c:5359
-       __handle_mm_fault mm/memory.c:5500 [inline]
-       handle_mm_fault+0x10e7/0x1bb0 mm/memory.c:5665
-       do_user_addr_fault arch/x86/mm/fault.c:1420 [inline]
-       handle_page_fault arch/x86/mm/fault.c:1512 [inline]
-       exc_page_fault+0x2b9/0x900 arch/x86/mm/fault.c:1570
-       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-       __put_user_4+0x11/0x20 arch/x86/lib/putuser.S:86
-       __sys_socketpair+0x186/0x720 net/socket.c:1756
-       __do_sys_socketpair net/socket.c:1822 [inline]
-       __se_sys_socketpair net/socket.c:1819 [inline]
-       __x64_sys_socketpair+0x9b/0xb0 net/socket.c:1819
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+minor nit: "s/delegateed/delegated/"
 
--> #1 (&mm->mmap_lock){++++}-{3:3}:
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-       gup_fast_fallback+0x24c/0x2b40 mm/gup.c:3442
-       pin_user_pages_fast+0xcc/0x160 mm/gup.c:3566
-       iov_iter_extract_user_pages lib/iov_iter.c:1583 [inline]
-       iov_iter_extract_pages+0x3db/0x720 lib/iov_iter.c:1646
-       dio_refill_pages fs/direct-io.c:173 [inline]
-       dio_get_page fs/direct-io.c:214 [inline]
-       do_direct_IO fs/direct-io.c:916 [inline]
-       __blockdev_direct_IO+0x150a/0x49b0 fs/direct-io.c:1249
-       blockdev_direct_IO include/linux/fs.h:3182 [inline]
-       exfat_direct_IO+0x1b4/0x3d0 fs/exfat/inode.c:526
-       generic_file_read_iter+0x231/0x430 mm/filemap.c:2783
-       new_sync_read fs/read_write.c:395 [inline]
-       vfs_read+0x9c4/0xbd0 fs/read_write.c:476
-       ksys_read+0x1a0/0x2c0 fs/read_write.c:619
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+..
 
--> #0 (&sb->s_type->i_mutex_key#24){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
-       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-       down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
-       inode_lock include/linux/fs.h:791 [inline]
-       exfat_page_mkwrite+0x43a/0xea0 fs/exfat/file.c:629
-       do_page_mkwrite+0x19b/0x480 mm/memory.c:3097
-       do_shared_fault mm/memory.c:4977 [inline]
-       do_fault mm/memory.c:5039 [inline]
-       do_pte_missing mm/memory.c:3881 [inline]
-       handle_pte_fault+0x1298/0x6dc0 mm/memory.c:5359
-       __handle_mm_fault mm/memory.c:5500 [inline]
-       handle_mm_fault+0x10e7/0x1bb0 mm/memory.c:5665
-       do_user_addr_fault arch/x86/mm/fault.c:1420 [inline]
-       handle_page_fault arch/x86/mm/fault.c:1512 [inline]
-       exc_page_fault+0x2b9/0x900 arch/x86/mm/fault.c:1570
-       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+> +/**
+> + * rmi_rtt_read_entry() - Read an RTTE
+> + * @rd: PA of the RD
+> + * @ipa: IPA for which to read the RTTE
+> + * @level: RTT level at which to read the RTTE
+> + * @rtt: Output structure describing the RTTE
+> + *
+> + * Reads a RTTE (Realm Translation Table Entry).
+> + *
+> + * Return: RMI return code
+> + */
+> +static inline int rmi_rtt_read_entry(unsigned long rd, unsigned long ipa,
+> +				     long level, struct rtt_entry *rtt)
+> +{
+> +	struct arm_smccc_1_2_regs regs = {
+> +		SMC_RMI_RTT_READ_ENTRY,
+> +		rd, ipa, level
+> +	};
+> +
+> +	arm_smccc_1_2_smc(&regs, &regs);
+> +
+> +	rtt->walk_level = regs.a1;
+> +	rtt->state = regs.a2 & 0xFF;
 
-other info that might help us debug this:
+minor nit: We mask the state, but not the "ripas". Both of them are u8. 
+For consistency, we should mask both or neither.
 
-Chain exists of:
-  &sb->s_type->i_mutex_key#24 --> &mm->mmap_lock --> sb_pagefaults#4
+> +	rtt->desc = regs.a3;
+> +	rtt->ripas = regs.a4;
+> +
+> +	return regs.a0;
+> +}
+> +
 
- Possible unsafe locking scenario:
+..
 
-       CPU0                    CPU1
-       ----                    ----
-  rlock(sb_pagefaults#4);
-                               lock(&mm->mmap_lock);
-                               lock(sb_pagefaults#4);
-  lock(&sb->s_type->i_mutex_key#24);
+> +/**
+> + * rmi_rtt_get_phys() - Get the PA from a RTTE
+> + * @rtt: The RTTE
+> + *
+> + * Return: the physical address from a RTT entry.
+> + */
+> +static inline phys_addr_t rmi_rtt_get_phys(struct rtt_entry *rtt)
+> +{
+> +	return rtt->desc & GENMASK(47, 12);
+> +}
 
- *** DEADLOCK ***
-
-2 locks held by syz-executor.0/17125:
- #0: ffff88804e4ce098 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:163 [inline]
- #0: ffff88804e4ce098 (&mm->mmap_lock){++++}-{3:3}, at: get_mmap_lock_carefully mm/memory.c:5692 [inline]
- #0: ffff88804e4ce098 (&mm->mmap_lock){++++}-{3:3}, at: lock_mm_and_find_vma+0x32/0x2f0 mm/memory.c:5752
- #1: ffff88802dc76518 (sb_pagefaults#4){.+.+}-{0:0}, at: do_page_mkwrite+0x19b/0x480 mm/memory.c:3097
-
-stack backtrace:
-CPU: 1 PID: 17125 Comm: syz-executor.0 Not tainted 6.9.0-rc4-next-20240416-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
- __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
- down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
- inode_lock include/linux/fs.h:791 [inline]
- exfat_page_mkwrite+0x43a/0xea0 fs/exfat/file.c:629
- do_page_mkwrite+0x19b/0x480 mm/memory.c:3097
- do_shared_fault mm/memory.c:4977 [inline]
- do_fault mm/memory.c:5039 [inline]
- do_pte_missing mm/memory.c:3881 [inline]
- handle_pte_fault+0x1298/0x6dc0 mm/memory.c:5359
- __handle_mm_fault mm/memory.c:5500 [inline]
- handle_mm_fault+0x10e7/0x1bb0 mm/memory.c:5665
- do_user_addr_fault arch/x86/mm/fault.c:1420 [inline]
- handle_page_fault arch/x86/mm/fault.c:1512 [inline]
- exc_page_fault+0x2b9/0x900 arch/x86/mm/fault.c:1570
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-RIP: 0033:0x7f59f325f107
-Code: 7e 6f 44 16 e0 48 29 fe 48 83 e1 e0 48 01 ce 0f 1f 40 00 c5 fe 6f 4e 60 c5 fe 6f 56 40 c5 fe 6f 5e 20 c5 fe 6f 26 48 83 c6 80 <c5> fd 7f 49 60 c5 fd 7f 51 40 c5 fd 7f 59 20 c5 fd 7f 21 48 83 c1
-RSP: 002b:00007ffd52a03428 EFLAGS: 00010203
-RAX: 00000000200027c0 RBX: 0000000000000004 RCX: 0000000020003c20
-RDX: 0000000000001500 RSI: 00007f59f2e02adf RDI: 00000000200027c0
-RBP: 00007f59f33ac050 R08: 0000000000000000 R09: 0000000000000054
-R10: 0000000000000000 R11: 0000000000000001 R12: 00007ffd52a035e0
-R13: 0000000000000001 R14: ffffffffffffffff R15: 00007f59f3234cb0
- </TASK>
+I guess this may need to change with the LPA2 support in RMM and must be
+used in conjunction with the "realm" object to make the correct
+conversion.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Suzuki
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+> +
+> +#endif
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
