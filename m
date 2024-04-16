@@ -1,317 +1,347 @@
-Return-Path: <linux-kernel+bounces-146578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79B858A6787
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:55:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAA138A678A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:55:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6560B21176
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:54:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCE981C2171F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:55:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D74C48627E;
-	Tue, 16 Apr 2024 09:54:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B3E02907;
+	Tue, 16 Apr 2024 09:55:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="gDa6psdS"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=j.neuschaefer@gmx.net header.b="EF2vSz/h"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F56483A1D;
-	Tue, 16 Apr 2024 09:54:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B025585929;
+	Tue, 16 Apr 2024 09:55:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713261281; cv=none; b=NlH3yu8vUxRWoPPH/KftYDXZKRgcg6+1DF9dxt89LvCN8pWnvWENXS9e9oKizijzHvqUz1/lzpJMqMzGbqkqGpBzKhr7xWZFTnIDBK+QzDuADRdZ+zmIuxAhVEiiIMR5nQAW4jRHbr3zKJhrqDyR8p0GmfP5OdTfaU6Sru2BRus=
+	t=1713261314; cv=none; b=Ij20/Os2HLBSjAdUdGnsPen/R4YILgQuxbhDbx7BHpljhyqPVrTkG0Nxo5/L2Mra1wyOc3XTeTbZ9+8fwAn5FID7dDb+qU7Jp/QC6+DhwQ+/k83kdBDA/M/n8lc6Xvsbf90okjnLNpZcvqQKBVA5FE5Gb0PYyfiRiSJzeP2KPk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713261281; c=relaxed/simple;
-	bh=d/axHEsoKPtMdq4EobGsBDnIydxxsT8ZT/VXcZAXKrs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=M9uLqxcW7DV3XBfB7BryDYnnePS7LjYctSl3XMs3ubTZu05cGd9ADADevp6r7GJ/MGGn3BM4lndTkX/uGZkHFUZ+s1dTiwxSbR5UXAt5simwiRD3Aorbhoeah71UeyFfCsIPpZlF+53B+66O11JYnHgTUslyArfdNSAVB1wKinI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=gDa6psdS; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43G9sU4E086084;
-	Tue, 16 Apr 2024 04:54:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713261270;
-	bh=+i/pi2WVm6HfzfrIA7NqOBsQWfyXmuXYmrgtRRKDplw=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=gDa6psdSUzaR/Su0qo4GXYEJMSyunf5HUFsKI2WEuarqXVtL/HHT8Mf9Jf11hohn1
-	 PaHeTRse4l6/54fy54pLq7XmshNyhbElS1jcVdoFJEbjMm46mRqJNz6VAKFi2wiIRa
-	 bUg3OcB/fhZaCCNiF8tfm1t0ts9R/6JGyg3ygehY=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43G9sU3M025595
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 16 Apr 2024 04:54:30 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 16
- Apr 2024 04:54:30 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 16 Apr 2024 04:54:30 -0500
-Received: from [172.24.31.60] (lt5cd2489kgj.dhcp.ti.com [172.24.31.60])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43G9sQhu031871;
-	Tue, 16 Apr 2024 04:54:27 -0500
-Message-ID: <9c7f0e3d-4558-4a73-bbb1-ceb7ebe02cd9@ti.com>
-Date: Tue, 16 Apr 2024 15:24:26 +0530
+	s=arc-20240116; t=1713261314; c=relaxed/simple;
+	bh=NDVVz2tNW8u2IWNrr+miCbFi17mYCzGc+pwSHtSoFQU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UqAJIh/6zKEiXVAvxG/3oR/hVjGGBbsIaqEFV6lNTgIlxIIpAGeH+yrPKMoZ31oQ4Bx2B9gBFJ7gcoctjmmWy3LwL1tAw0t61hQuzZF+3W0pDDZUOX/7kGPrqpvZtlGnKP707cQSNxsYFi/ifWJSY/mXtlYtq9lM7PosL6DNRuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=j.neuschaefer@gmx.net header.b=EF2vSz/h; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1713261301; x=1713866101; i=j.neuschaefer@gmx.net;
+	bh=8VCPRF0Vi4vNnqUQWVncBOVnCYeatzGZKVzuabhLX+s=;
+	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:In-Reply-To:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=EF2vSz/hH2dfmb22obzz/aifo+GrF6I9VZadrZtCJqQDB4p8FWRV36dq2aTp4Dsb
+	 eVBDPQ8Jb8VguliZdqtgeC9I4v9sfefz6kuOfgQ5MKsszJxVqXW2L6EHr/7/7Zgrt
+	 PCo7RySPIMzg4lZNpsPndMCtCOyC3BgjA1t2l/k7a/RokiUsHj6q4UeFUOeYKBRG3
+	 8M26XuL0UqfAi4iFvRhZFVYZiLgcgP+iILkoBQOdDnbhQMyG2Uyn1/9YQmZ4gYIQ2
+	 PHSVWe+Rg92dH28OUCRAD9iF2JhseI2Ww/KeRm8bOLgzRoh5+QJSjKsq+Z9PMwT7U
+	 MM0uOi2lwAXlz3vWKw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from probook ([5.226.147.226]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MrhUK-1sZMJd1W56-00ne89; Tue, 16
+ Apr 2024 11:55:01 +0200
+Date: Tue, 16 Apr 2024 11:54:59 +0200
+From: Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+	devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+	openbmc@lists.ozlabs.org,
+	Michael Turquette <mturquette@baylibre.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 3/4] clk: wpcm450: Add Nuvoton WPCM450 clock/reset
+ controller driver
+Message-ID: <Zh5K8_FuUtPq7Pqj@probook>
+References: <20240401-wpcm-clk-v11-0-379472961244@gmx.net>
+ <20240401-wpcm-clk-v11-3-379472961244@gmx.net>
+ <9be144291cda6d9714252c9cd83649c2.sboyd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: k3-j784s4-evm: Add support for multiple
- CAN instances
-To: Bhavya Kapoor <b-kapoor@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <vigneshr@ti.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <conor+dt@kernel.org>,
-        <krzk+dt@kernel.org>, <robh@kernel.org>, <kristo@kernel.org>,
-        <nm@ti.com>
-References: <20240411201747.18697-1-b-kapoor@ti.com>
- <85ea2b33-05ac-400f-8017-5539d21ebe32@ti.com>
- <8d9a6dc7-7590-412d-aa81-18a6cf5d09ca@ti.com>
-Content-Language: en-US
-From: "Kumar, Udit" <u-kumar1@ti.com>
-In-Reply-To: <8d9a6dc7-7590-412d-aa81-18a6cf5d09ca@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-
-Hello Bhavya
-
-On 4/16/2024 2:52 PM, Bhavya Kapoor wrote:
-> On 15/04/24 10:42, Kumar, Udit wrote:
->> Hello Bhavya,
->>
->> On 4/12/2024 1:47 AM, Bhavya Kapoor wrote:
->>> CAN instances 0 and 1 in the mcu domain and 16 in the main domain are
->>> brought on the evm through headers J42, J43 and J46 respectively. Thus,
->>> add their respective transceiver's 0, 1 and 2 dt nodes to add support
->>> for these CAN instances.
->> Looking at schematic and board data sheet, it appears, board has 6 CAN interfaces.
->>
->> [J41--J46],  but we are enabling only 4.
->>
->> I understand, other interfaces might be used for other purpose.
->>
->> Vignesh/Nishanth,
->>
->> Do you think, this make sense to code all available interfaces on board and
->>
->> mark as reserved, if used for other purpose , similar to what is done for wkup_uart for this board.
->>
-> Hi Udit, there is a mux that is used between audio and the signal lines of other 2 cans.
->
-> If we turn on the other 2 cans or even mark  them as reserved, we will still have to
->
-> alter the mux sel lines which will impact the audio.
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="WXvGHi2mgeFMSsi1"
+Content-Disposition: inline
+In-Reply-To: <9be144291cda6d9714252c9cd83649c2.sboyd@kernel.org>
+X-Provags-ID: V03:K1:8gvjSYTbOrJ8fToEjyuFJf3piXDlv7j1XoNQPn/z0zjfW3S9ii/
+ AbXWqO5laHqjLXgSi2ovXuHD8lcJpKZacUrHKJ0EwXhbyPIVxSLD0CkTxBGVCs5SQGEl4Dv
+ pAlNH3+UU55RVFOouCg10LcqK9o2lgET3zDa4E3XXPSeyKR8dXZNRoycy8hmgl87N5bKZW4
+ Sa9+Bp6LoLq6Mj4t9vPGQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:UhqP2+Ik+Xo=;kbab+yCYAiyFtXldN06Ow8ypsUN
+ 4o0jeI2HJYKOcan0gge7tswtUJbeQYWuosKkrI0P253EuSTIHjVXW1/6SRu47SmPIvV3FiVth
+ tpXCQdJC+y7Jakv36eQwkN5wnQQLIEstQGzWqRWtV+IGkvxOmD+YrBV0sjh7ipiRUg+e164NM
+ PSs+NT1H2VBSUyam4v9V2oN4GII3kGkZ2z9+sXEth8FmuZ1F8CDB4Z/mc3A0xad+LrmIfI6Fc
+ cIqrDtUDA8FhFOMBtnjGY+DBoZrTaOLR4uGQEW+ST5g3nMdQAZS71L2chW5P1TsA5acDUA5GF
+ PzcwLa2X/pIC+3XsstMiE2iDPlMSZz5Z/y/aN74/Xjpsr0yfq1j8gL+1xYR2XqcI/1mkY2icG
+ bK5LI0uGTPo9MfL+DioQYXTpuEwuxxKAqQSrsHn4QlBmfqVoAWs5D1YCoAtDSgs//dANB/jl/
+ RdxyFvoKDoan0nxI3/kddECMBjRC59YfJO5aGqBuqcoM+j1llIRbo4nZEYbXDGJoooz1JYX0h
+ Nr5aEI+DNd99DYvIk4fFa3pqVmv4NDOrE0suRaCKkKgyQlFROyeKOCMSjC6whB9LqT0LZR+Ey
+ gswGo0sMu/d5bi2YI8aOfYxRY5qf0GWn5BMusWowdZnh6uxoqovz+zAKfMh3tihyLLi2CSNJP
+ MeaLjeitfv2Uwt+6cTsw+sPLL8sLbhm3ROaafwUW0P11I16ZJ5tHFEXWYVNVI0Prbck4Cmz8w
+ d+m+JvdO0lHoTaYqlGPOzi0tCtHvzt5iptnrWRj+ZCzqULykOFMqmaDlg6FeTVy5j3ujChHhQ
+ 9NRx5t4iorFDXB3PJU34wxwOnTqCjSfrADywnsTClUr8Q=
 
 
-How it will impact ?
+--WXvGHi2mgeFMSsi1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Audio and CAN lines goes to 1B port of mux .
+Hi,
 
-IMO, even CAN or Audio does mux select they are going to select same 
-port no ?
+On Fri, Apr 12, 2024 at 12:25:05AM -0700, Stephen Boyd wrote:
+> Quoting Jonathan Neusch=C3=A4fer (2024-04-01 07:06:32)
+> > This driver implements the following features w.r.t. the clock and reset
+> > controller in the WPCM450 SoC:
+> >=20
+> > - It calculates the rates for all clocks managed by the clock controller
+> > - It leaves the clock tree mostly unchanged, except that it enables/
+> >   disables clock gates based on usage.
+> > - It exposes the reset lines managed by the controller using the
+> >   Generic Reset Controller subsystem
+> >=20
+> > NOTE: If the driver and the corresponding devicetree node are present,
+> >       the driver will disable "unused" clocks. This is problem until
+> >       the clock relations are properly declared in the devicetree (in a
+> >       later patch). Until then, the clk_ignore_unused kernel parameter
+> >       can be used as a workaround.
+> >=20
+> > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+> > Reviewed-by: Joel Stanley <joel@jms.id.au>
+> > ---
+> >=20
+> > I have considered converting this driver to a platform driver instead of
+> > using CLK_OF_DECLARE, because platform drivers are generally the way
+> > forward. However, the timer-npcm7xx driver used on the same platform
+> > requires is initialized with TIMER_OF_DECLARE and thus requires the
+> > clocks to be available earlier than a platform driver can provide them.
+>=20
+> In that case you can use CLK_OF_DECLARE_DRIVER(), register the clks
+> needed for the timer driver to probe, and then put the rest of the clk
+> registration in a normal platform driver.
 
-I refer U58 and U50 MUX of schematic, Hope we are on same page
+I'll give it a try. I'm not sure how to make it work correctly without
+calling (devm_)of_clk_add_hw_provider twice, though (once for the early
+clock, timer0; once for the rest).
 
+Another (probably simpler) approach seems be to declare a fixed-clock or
+fixed-factor-clock in the DT, and use that in the timer:
 
->
-> Thanks.
->
-> ~B-Kapoor
->
->>> CAN instance 4 in the main domain is brought on the evm through header
->>> J45. The CAN High and Low lines from the SoC are routed through a mux
->>> on the evm. The select lines need to be set for the CAN signals to
->>> reach to its transceiver on the evm. Therefore, add transceiver 3
->>> dt node to add support for this CAN instance.
->>>
->>> Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
->>> ---
->>>
->>> rebased to next-20240411
->>>
->>>    arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 107 +++++++++++++++++++++++
->>>    1 file changed, 107 insertions(+)
->>>
->>> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
->>> index 81fd7afac8c5..e56901973895 100644
->>> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
->>> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
->>> @@ -272,6 +272,45 @@ dp0_connector_in: endpoint {
->>>                };
->>>            };
->>>        };
->>> +
->>> +    transceiver0: can-phy0 {
->>> +        compatible = "ti,tcan1042";
->>> +        #phy-cells = <0>;
->>> +        max-bitrate = <5000000>;
->>> +        pinctrl-names = "default";
->>> +        pinctrl-0 = <&mcu_mcan0_gpio_pins_default>;
->>> +        standby-gpios = <&wkup_gpio0 69 GPIO_ACTIVE_HIGH>;
->>> +    };
->>> +
->>> +    transceiver1: can-phy1 {
->>> +        compatible = "ti,tcan1042";
->>> +        #phy-cells = <0>;
->>> +        max-bitrate = <5000000>;
->>> +        pinctrl-names = "default";
->>> +        pinctrl-0 = <&mcu_mcan1_gpio_pins_default>;
->>> +        standby-gpios = <&wkup_gpio0 2 GPIO_ACTIVE_HIGH>;
->>> +    };
->>> +
->>> +    transceiver2: can-phy2 {
->>> +        /* standby pin has been grounded by default */
->>> +        compatible = "ti,tcan1042";
->>> +        #phy-cells = <0>;
->>> +        max-bitrate = <5000000>;
->>> +    };
->>> +
->>> +    transceiver3: can-phy3 {
->>> +        compatible = "ti,tcan1042";
->>> +        #phy-cells = <0>;
->>> +        max-bitrate = <5000000>;
->>> +        standby-gpios = <&exp2 7 GPIO_ACTIVE_HIGH>;
->>> +        mux-states = <&mux1 1>;
->>> +    };
->>> +
->>> +    mux1: mux-controller {
->>> +        compatible = "gpio-mux";
->>> +        #mux-state-cells = <1>;
->>> +        mux-gpios = <&exp2 14 GPIO_ACTIVE_HIGH>;
->> Could you help here on logic to choose pin 14
->>
->> As I see for this mux
->>
->> S0 is CANUART_MUX_SEL0 [Pin 14, which you want to control as high]
->>
->> S1 is Pin 15 is "CANUART_MUX2_SEL1"
->>
->> S2 is high
->>
->> So in order to get CAN on mux output
->>
->> All, S0, S1 and S2 should be high.
->>
->> IMO, you should control both S0 and S1, or just S1 and S0 with dip switch
-> Hi Udit, S0 comes at a default Active High State always. Thus, i have kept it the same.
->
-> This was done in the same way as it was done for mux2 for  j721s2. mcan 5
->
-> Thanks
+	refclk_div2: clock-div2 {
+		compatible =3D "fixed-factor-clock";
+		clocks =3D <&refclk>;
+		#clock-cells =3D <0>;
+		clock-mult =3D <1>;
+		clock-div =3D <2>;
+	};
 
-May be i was not clear in my previous comment
+	timer0: timer@b8001000 {
+		compatible =3D "nuvoton,wpcm450-timer";
+		interrupts =3D <12 IRQ_TYPE_LEVEL_HIGH>;
+		reg =3D <0xb8001000 0x1c>;
+		clocks =3D <&refclk_div2>;
+	};
 
-Looking at schematic
-
-S0 is CANUART_MUX_SEL0 , which is connected with DIP switch and IO 
-expander U173
-
-S1 is CANUART_MUX2_SEL1, which is connected only IO with expander U173
-
-S2 is CANUART_MUX_SEL2 is pulled high by hardware itself .
-
-Here all lines high are needed to route CAN correctly out from mux.
-
-So this patch is controlling CANUART_MUX_SEL0 but not controlling 
-CANUART_MUX2_SEL1.
-
-IMO, CANUART_MUX_SEL0 can be controlled by dip switch and 
-CANUART_MUX2_SEL1 should be controlled by driver.
+=2E.. and additionally to mark the timer clocks as critical in
+clk-wpcm450.c, so they don't get disabled for being "unused".
 
 
->>> +    };
->>>    };
->>>      &wkup_gpio0 {
->>> @@ -336,6 +375,20 @@ J784S4_IOPAD(0x014, PIN_INPUT_PULLUP, 8) /* (AG33) MCAN14_TX.I2C4_SCL */
->>>                J784S4_IOPAD(0x010, PIN_INPUT_PULLUP, 8) /* (AH33) MCAN13_RX.I2C4_SDA */
->>>            >;
->>>        };
->>> +
->>> +    main_mcan4_pins_default: main-mcan4-default-pins {
->>> +        pinctrl-single,pins = <
->>> +            J784S4_IOPAD(0x088, PIN_INPUT, 0) /* (AF36) MCAN4_RX */
->>> +            J784S4_IOPAD(0x084, PIN_OUTPUT, 0) /* (AG38) MCAN4_TX */
->>> +        >;
->>> +    };
->>> +
->>> +    main_mcan16_pins_default: main-mcan16-default-pins {
->>> +        pinctrl-single,pins = <
->>> +            J784S4_IOPAD(0x028, PIN_INPUT, 0) /* (AE33) MCAN16_RX */
->>> +            J784S4_IOPAD(0x024, PIN_OUTPUT, 0) /* (AH34) MCAN16_TX */
->>> +        >;
->>> +    };
->>>    };
->>>      &wkup_pmx2 {
->>> @@ -415,6 +468,32 @@ J784S4_WKUP_IOPAD(0x104, PIN_INPUT, 0) /* (U33) MCU_ADC1_AIN6 */
->>>                J784S4_WKUP_IOPAD(0x108, PIN_INPUT, 0) /* (Y36) MCU_ADC1_AIN7 */
->>>            >;
->>>        };
->>> +
->>> +    mcu_mcan0_pins_default: mcu-mcan0-default-pins {
->>> +        pinctrl-single,pins = <
->>> +            J784S4_WKUP_IOPAD(0x050, PIN_OUTPUT, 0) /* (K33) MCU_MCAN0_TX */
->>> +            J784S4_WKUP_IOPAD(0x054, PIN_INPUT, 0) /* (F38) MCU_MCAN0_RX */
->>> +        >;
->>> +    };
->>> +
->>> +    mcu_mcan1_pins_default: mcu-mcan1-default-pins {
->>> +        pinctrl-single,pins = <
->>> +            J784S4_WKUP_IOPAD(0x068, PIN_OUTPUT, 0) /* (H35) WKUP_GPIO0_4.MCU_MCAN1_TX */
->>> +            J784S4_WKUP_IOPAD(0x06c, PIN_INPUT, 0) /* (K36) WKUP_GPIO0_5.MCU_MCAN1_RX */
->>> +        >;
->>> +    };
->>> +
->>> +    mcu_mcan0_gpio_pins_default: mcu-mcan0-gpio-default-pins {
->>> +        pinctrl-single,pins = <
->>> +            J784S4_WKUP_IOPAD(0x040, PIN_INPUT, 7) /* (J38) MCU_SPI0_D1.WKUP_GPIO0_69 */
->>> +        >;
->>> +    };
->>> +
->>> +    mcu_mcan1_gpio_pins_default: mcu-mcan1-gpio-default-pins {
->>> +        pinctrl-single,pins = <
->>> +            J784S4_WKUP_IOPAD(0x060, PIN_INPUT, 7) /* (J35) WKUP_GPIO0_2 */
->>> +        >;
->>> +    };
->>>    };
->>>      &wkup_pmx1 {
->>> @@ -1105,3 +1184,31 @@ dp0_out: endpoint {
->>>            };
->>>        };
->>>    };
->>> +
->>> +&mcu_mcan0 {
->>> +    status = "okay";
->>> +    pinctrl-names = "default";
->>> +    pinctrl-0 = <&mcu_mcan0_pins_default>;
->>> +    phys = <&transceiver0>;
->>> +};
->>> +
->>> +&mcu_mcan1 {
->>> +    status = "okay";
->>> +    pinctrl-names = "default";
->>> +    pinctrl-0 = <&mcu_mcan1_pins_default>;
->>> +    phys = <&transceiver1>;
->>> +};
->>> +
->>> +&main_mcan16 {
->>> +    status = "okay";
->>> +    pinctrl-names = "default";
->>> +    pinctrl-0 = <&main_mcan16_pins_default>;
->>> +    phys = <&transceiver2>;
->>> +};
->>> +
->>> +&main_mcan4 {
->>> +    status = "okay";
->>> +    pinctrl-names = "default";
->>> +    pinctrl-0 = <&main_mcan4_pins_default>;
->>> +    phys = <&transceiver3>;
->>> +};
+> > diff --git a/drivers/clk/nuvoton/clk-wpcm450.c b/drivers/clk/nuvoton/cl=
+k-wpcm450.c
+> > new file mode 100644
+> > index 00000000000000..9100c4b8a56483
+> > --- /dev/null
+> > +++ b/drivers/clk/nuvoton/clk-wpcm450.c
+> > @@ -0,0 +1,372 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Nuvoton WPCM450 clock and reset controller driver.
+> > + *
+> > + * Copyright (C) 2022 Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+> > + */
+> > +
+> > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>=20
+> Isn't KBUILD_MODNAME an option already for dynamic debug?
+
+Indeed, it's the +m option.
+
+My motivation for setting pr_fmt in the first place should become
+obsolete with the move towards a platform driver anyway, because then I
+can use dev_err() etc. I'll remove the #define.
+
+>=20
+> > +
+> > +#include <linux/bitfield.h>
+> > +#include <linux/clk-provider.h>
+> > +#include <linux/io.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of.h>
+> > +#include <linux/of_address.h>
+> > +#include <linux/reset-controller.h>
+> > +#include <linux/reset/reset-simple.h>
+> > +#include <linux/slab.h>
+> > +
+> [...]
+> > +
+> > +static const struct clk_parent_data default_parents[] =3D {
+> > +       { .name =3D "pll0" },
+> > +       { .name =3D "pll1" },
+> > +       { .name =3D "ref" },
+> > +};
+> > +
+> > +static const struct clk_parent_data huart_parents[] =3D {
+> > +       { .fw_name =3D "ref" },
+> > +       { .name =3D "refdiv2" },
+>=20
+> Please remove all .name elements and use indexes or direct pointers.
+
+Will do.
+
+What I'm not yet sure about, is which of these is better:
+
+ 1. Having two kinds of indexes, 1. for internal use in the driver,
+    identifying all clocks, 2. public as part of the devicetree binding
+    ABI (defined in include/dt-bindings/clock/nuvoton,wpcm450-clk.h)
+ 2. Unifying the two and giving every clock a public index
+ 3. Using the same number space, but only providing public definitions
+    (in the binding) for clocks that can be used outside the clock
+    controller.
+
+Option 3 sounds fairly reasonable.
+
+> > +static const struct wpcm450_clken_data clken_data[] =3D {
+> > +       { "fiu", { .name =3D "ahb3" }, WPCM450_CLK_FIU, 0 },
+>=20
+> This actually is  { .index =3D 0, .name =3D "ahb3" } and that is a bad
+> combination. struct clk_parent_data should only have .name as a fallback
+> when there's an old binding out there that doesn't have the 'clocks'
+> property for the clk provider node. There shouldn't be any .name
+> property because this is new code and a new binding.
+
+I'll try switching to .index or .hw instead for the references to
+internal clocks.
+
+
+[...]
+> > +/*
+> > + * NOTE: Error handling is very rudimentary here. If the clock driver =
+initial-
+> > + * ization fails, the system is probably in bigger trouble than what i=
+s caused
+>=20
+> Don't break words across lines with hyphens.
+
+Good point.
+
+(Due to the switch to a platform driver, this comment will probably
+become obsolete anyway.)
+
+> > + * by a few leaked resources.
+> > + */
+> > +
+> > +static void __init wpcm450_clk_init(struct device_node *np)
+> > +{
+> > +       struct clk_hw_onecell_data *clk_data;
+> > +       static struct clk_hw **hws;
+> > +       static struct clk_hw *hw;
+> > +       void __iomem *clk_base;
+> > +       int i, ret;
+> > +       struct reset_simple_data *reset;
+> > +
+> > +       clk_base =3D of_iomap(np, 0);
+> > +       if (!clk_base) {
+> > +               pr_err("%pOFP: failed to map registers\n", np);
+> > +               of_node_put(np);
+> > +               return;
+> > +       }
+> > +       of_node_put(np);
+>=20
+> The 'np' is used later when registering PLLs. You can only put the node
+> after it's no longer used. Also, you never got the node with
+> of_node_get(), so putting it here actually causes an underflow on the
+> refcount. Just remove all the get/puts instead.
+
+That simplifies it, thanks for the hint!
+
+> > +
+> > +       clk_data =3D kzalloc(struct_size(clk_data, hws, WPCM450_NUM_CLK=
+S), GFP_KERNEL);
+> > +       if (!clk_data)
+> > +               return;
+> > +
+> > +       clk_data->num =3D WPCM450_NUM_CLKS;
+> [...]
+> > +       /* Reset controller */
+> > +       reset =3D kzalloc(sizeof(*reset), GFP_KERNEL);
+> > +       if (!reset)
+> > +               return;
+> > +       reset->rcdev.owner =3D THIS_MODULE;
+> > +       reset->rcdev.nr_resets =3D WPCM450_NUM_RESETS;
+> > +       reset->rcdev.ops =3D &reset_simple_ops;
+> > +       reset->rcdev.of_node =3D np;
+> > +       reset->membase =3D clk_base + REG_IPSRST;
+> > +       ret =3D reset_controller_register(&reset->rcdev);
+> > +       if (ret)
+> > +               pr_err("Failed to register reset controller: %pe\n", ER=
+R_PTR(ret));
+>=20
+> It would be nicer to register this device as an auxiliary device with a
+> single API call and then have all the resets exist in that file
+> instead of this file. The driver would be put in drivers/reset/ as well.
+
+Not sure I'd move ten lines to a whole new file, but moving them to a
+separate function definitely makes sense, I'll do that.
+
+>=20
+> > +
+> > +       of_node_put(np);
+>=20
+> Drop this of_node_put()
+
+Ok.
+
+
+Thanks for your detailed review!
+
+I'll send the next revision after testing my changes on the relevant
+hardware (which I currently don't have with me).
+
+-jn
+
+--WXvGHi2mgeFMSsi1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmYeSscACgkQCDBEmo7z
+X9v2Tw/+OlPtGnFxff1/A/65NMHgzu86TjFdCRf3hxLcDRlAcW/QKbbFIzrLimmf
+1Fqx7I1qjUNBbQ67QDDgRPm1lebJRE9zVjWJIjXFC6LC1juGXPTts/GSHNJYcUpR
+ueDuLC4+qql/oQbLr5L3yye1uljuFc/LTA80iUl6figpSkRLxVdyfMBqdVuDMQSH
+7B0hWc/fwsU5/OLQR01vYtPzFrWCBQ9/gM8dHITdemGD8bJEvEzDxi6LJb4+yijd
+kdnIDhQmVhLU9OCWaUO6SoXiyN3pAFbydCSi3z2sY21/8Ic+HiPttsMeqycThlKV
+fHPFr4Ra4pFDbRuQwgSbVejseZukrnfVAAew6VgLCJLSUr+sw2Ub3iA2v87vnID6
+Ur3FG0W+QB2W8O8NJ82NXJO3UTRLVejuTrcmaemyBPXK3qkWIWYLkDBhcd5++QAw
+e/d0KkKHhxKgqe7f1oEcZv3el2f8daslpew+9SARp6OMXf61YqI7FihXjpsWXTNv
+u7TyPBrfFlBw9mOMxr3WbNGzPJJc2wBokiAvGJWmbaQvdT2SNFadQM2fczS8oIdG
+S0LTPzd5Vg0Gy288r1jUQiN8sedUeY2Ya+hipCYxzA1ftF0+VjoaQUv+BzH3P1F5
+UtBnZEcs7UiRxStFPJdyHqmIZVQ5NTfoDvwDAXgH5riSqKlLRRk=
+=6Ug7
+-----END PGP SIGNATURE-----
+
+--WXvGHi2mgeFMSsi1--
 
