@@ -1,240 +1,158 @@
-Return-Path: <linux-kernel+bounces-146682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F2FF8A6943
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:02:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6AB38A6946
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:02:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E2EE281583
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:02:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7C921C20DAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:02:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E2912838C;
-	Tue, 16 Apr 2024 11:02:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E1C128816;
+	Tue, 16 Apr 2024 11:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="HbDKskit";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OgWQBOga"
-Received: from fhigh5-smtp.messagingengine.com (fhigh5-smtp.messagingengine.com [103.168.172.156])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WdfLqDfI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92BE0127E36
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:02:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3710F763F1;
+	Tue, 16 Apr 2024 11:02:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713265325; cv=none; b=sJKc/vIa05n5yT/3veCkXXGZSA7giXjB7mTd8yat5UDMPtJzWqXAk9Nj7lfMihpPPS4MuZqs5O2seF8T36uyW25oaR8f1VO1QO5YZeiwNHVCBho12RVjD0T2VWzBaBX+yTbo6uVN3LLOlESt89xg8fYxY0RPCccjj0DKYRZAlfE=
+	t=1713265345; cv=none; b=cOmxgg08H2J6NRQZcuvoWW03invD8O0FsYqF3ZVq4H325LjHCFiSnnBVxl5lTBdL1aXVPZxsCuXTjE+0UOPT5GqTORDTBnA2FAxq2xv24YJbKPdsil/Ue39kwMc0XwijoAo0yHvZ9Y4WOWKDB2DrqdHvzQjnLROursnFvf4c6cM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713265325; c=relaxed/simple;
-	bh=2vrUTW6+WcHv+DgzAcm9LFf6YmCXBn2YtJKqYcs7wxo=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=UcvfJaFYEv8EMbTgm51wPeXa6en8XahYz/S96o0ZlfXNhMF6zyv23nNXxG+Zl6ARMs0WOP/OXgu1JVZheIq9ujQsEyOzn+xarUNgzMIpXtiIHJ2CaJQKPYmkrQeTSa+2fmr3TmfdftWcvQGUouafHpyDPTR4sw/jgTin74kNcVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=HbDKskit; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OgWQBOga; arc=none smtp.client-ip=103.168.172.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id A0623114011E;
-	Tue, 16 Apr 2024 07:02:02 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 16 Apr 2024 07:02:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1713265322; x=1713351722; bh=Zk60bWbrel
-	joGat0WtfbefJblBLK6E0eub+WvGF0SQM=; b=HbDKskitWj9XmebUrXWe+Yy5eN
-	3nGz9gIRgp4xDsxGLdoBktSMz64WxXhyAcZhJ08gU1lXksV2N5VW2JU7ChpqIDIf
-	c4GnSeH5jFAPBEVW9vm+Yeqdp6Qynv/uvO7oufK2N11Qsvh+349Sos6KLCOi71Lj
-	TLSTyUjXu7yYqS+taHLfhQt5A31XEPvzV0ffixqP7uyszvyEt0+29L3KnQ9IaVlj
-	VUDUnRKVJTQxm+Y3Iw7+ZnSo3gNdXdX+i3oI1kn9KH3k1zURvfziI8XgDuVi69Xc
-	1U7yAzwKQeJmSCEXWynAFWiASIWS/xoNsou4x0gpjgnUcIFDxyGh6l0b6Lqw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1713265322; x=1713351722; bh=Zk60bWbreljoGat0WtfbefJblBLK
-	6E0eub+WvGF0SQM=; b=OgWQBOgaXnXDm5d6p7LLC2FcZeJdIUUk7D8N/8LAdWzQ
-	b2HaAMqdQDEAmNiBuf3nM/WP0cVxsl+3C1a7eFO7ieE8S0TNMlMbJBSaez0okP/+
-	X/1G63wOkFllnO9O2UfeaqMb2+dAWxnNAFSfRUfCh/BYWjb4b9bQog9z5O3bM8Np
-	lZ0ud3tzLCtDNvQDKzlF8RMCmJbiuoTCEBtYp/ibB6kBKW17hii2hhC65oyjkfJZ
-	TKjez9JWLcQ6tR/tJ4sIfJIkPXFhzpmA6wSLOd8WPrXl/G0WUAbw9WkRzhNQ0PTI
-	OV3BzdevM7UdaD2C4EEOzoL3g4gX4d8RybJTnxD21g==
-X-ME-Sender: <xms:qloeZgevYlSYamvN8FpLEHbJx9OAazGHte8yuhsKb2h4ObsHCnj9nQ>
-    <xme:qloeZiPsrku04fHUFUKHMWbigf9b4jNgii9MF_F1ZsrTrjxv3PtAfElVhngcNPydB
-    eCGll9HJdZZFEgPz5A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejhedguddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:qloeZhhVRmPJRpPHgYgp81YRLa0Nu2yK8OLZLyZz2kiET15nqMhMXA>
-    <xmx:qloeZl83afwa1bkGrYxT60jHi4QHQOGtYwhTA353OxKaVjV4JpwIfw>
-    <xmx:qloeZsuxY6rnmjKKjvugyA_ObPxL_vnocWJ9e8XAR3kZb3CSr2FcAQ>
-    <xmx:qloeZsGxOZDhT1CxpUzz-EPwMpoYLG29dF8oszhc4uRRpAh_Qo_Jew>
-    <xmx:qloeZsFEfjETAS5RZ62CiwM-mzcDHWozQ_gk0DgU-z57iYj7mR6zGrEn>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 05DC2B6008F; Tue, 16 Apr 2024 07:02:02 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
+	s=arc-20240116; t=1713265345; c=relaxed/simple;
+	bh=bkDgWr7XyI1pfPFJlziFtGVw4ovew4FuLAiRHzSxUPg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QRaEVIsIHuiuR9Jg+TOW/3YijLOge9nRiOTgw05INiISq0+2wJ7NmckPhSWRrCoLL8+UByESwLKRTz0T/BIwZMCZ3+VvS+E49zruJQ5U3W+wFvvhyasngIgMrQQJ8n3JHdh8GwELnutGX00NHwx9QhWDA+WtE9WcLDGVS6se0xQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WdfLqDfI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3845CC113CE;
+	Tue, 16 Apr 2024 11:02:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713265344;
+	bh=bkDgWr7XyI1pfPFJlziFtGVw4ovew4FuLAiRHzSxUPg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=WdfLqDfI1HZOvcHPxnKxS8UR3ya06gFVkKMTxtYXUfQLGiVD+iYLjLjfs+Cc4Ayu6
+	 JkbkQ5r/TOID5m3ht8wZdsRgOfD02I/a2tciX+BhNltGkMqmJETnXK59mqiV7BLYs5
+	 0Hnfkwn0ir7rFqPFWZSm4bZEEfaPlxpzGe1r8biQHxpShDstBCWBz6GXbMT4ImHssM
+	 fpsAlJsTYaHvI8McL1S07XGqFsa+EKugasztU7N6UjIjUk4kO6gD3dTa0hGjh70ZwO
+	 gOJChqN8/gmcu5OGH5mxvMY1TsYYbkYrad78+Rkgy74O7lAxpmpZXrelRy2NdFuTPZ
+	 aLfhw0hmzfZhA==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Christian Brauner <brauner@kernel.org>, Nam Cao <namcao@linutronix.de>,
+ Mike Rapoport <rppt@kernel.org>
+Cc: Andreas Dilger <adilger@dilger.ca>, Al Viro <viro@zeniv.linux.org.uk>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>, Ext4
+ Developers List <linux-ext4@vger.kernel.org>, Conor Dooley
+ <conor@kernel.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Anders Roxell <anders.roxell@linaro.org>, Alexandre Ghiti <alex@ghiti.fr>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+In-Reply-To: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
+References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
+Date: Tue, 16 Apr 2024 13:02:20 +0200
+Message-ID: <8734rlo9j7.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <3d139886-9549-4384-918a-2d18480eb758@app.fastmail.com>
-In-Reply-To: 
- <CA+G9fYtEh8zmq8k8wE-8RZwW-Qr927RLTn+KqGnq1F=ptaaNsA@mail.gmail.com>
-References: 
- <CA+G9fYtEh8zmq8k8wE-8RZwW-Qr927RLTn+KqGnq1F=ptaaNsA@mail.gmail.com>
-Date: Tue, 16 Apr 2024 13:01:40 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Naresh Kamboju" <naresh.kamboju@linaro.org>,
- "open list" <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- "Linux Regressions" <regressions@lists.linux.dev>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc: "Anders Roxell" <anders.roxell@linaro.org>,
- "Dan Carpenter" <dan.carpenter@linaro.org>,
- clang-built-linux <llvm@lists.linux.dev>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Jeff Xu" <jeffxu@chromium.org>, "Kees Cook" <keescook@chromium.org>,
- "Niklas Schnelle" <schnelle@linux.ibm.com>
-Subject: Re: powerpc: io-defs.h:43:1: error: performing pointer arithmetic on a null
- pointer has undefined behavior [-Werror,-Wnull-pointer-arithmetic]
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024, at 11:32, Naresh Kamboju wrote:
-> The Powerpc clang builds failed due to following warnings / errors on the
-> Linux next-20240416 tag.
->
-> Powerpc:
->  - tqm8xx_defconfig + clang-17 - Failed
->  - allnoconfig + clang-17 - Failed
->  - tinyconfig + clang-17 - Failed
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Christian Brauner <brauner@kernel.org> writes:
 
-I'm not sure why this showed up now, but there is a series from
-in progress that will avoid this in the future, as the same
-issue is present on a couple of other architectures.
+> [Adding Mike who's knowledgeable in this area]
 
-The broken definitions are in the !CONFIG_PCI path of
+>> > Further, it seems like riscv32 indeed inserts a page like that to the
+>> > buddy allocator, when the memblock is free'd:
+>> >=20
+>> >   | [<c024961c>] __free_one_page+0x2a4/0x3ea
+>> >   | [<c024a448>] __free_pages_ok+0x158/0x3cc
+>> >   | [<c024b1a4>] __free_pages_core+0xe8/0x12c
+>> >   | [<c0c1435a>] memblock_free_pages+0x1a/0x22
+>> >   | [<c0c17676>] memblock_free_all+0x1ee/0x278
+>> >   | [<c0c050b0>] mem_init+0x10/0xa4
+>> >   | [<c0c1447c>] mm_core_init+0x11a/0x2da
+>> >   | [<c0c00bb6>] start_kernel+0x3c4/0x6de
+>> >=20
+>> > Here, a page with VA 0xfffff000 is a added to the freelist. We were ju=
+st
+>> > lucky (unlucky?) that page was used for the page cache.
+>>=20
+>> I just educated myself about memory mapping last night, so the below
+>> may be complete nonsense. Take it with a grain of salt.
+>>=20
+>> In riscv's setup_bootmem(), we have this line:
+>> 	max_low_pfn =3D max_pfn =3D PFN_DOWN(phys_ram_end);
+>>=20
+>> I think this is the root cause: max_low_pfn indicates the last page
+>> to be mapped. Problem is: nothing prevents PFN_DOWN(phys_ram_end) from
+>> getting mapped to the last page (0xfffff000). If max_low_pfn is mapped
+>> to the last page, we get the reported problem.
+>>=20
+>> There seems to be some code to make sure the last page is not used
+>> (the call to memblock_set_current_limit() right above this line). It is
+>> unclear to me why this still lets the problem slip through.
+>>=20
+>> The fix is simple: never let max_low_pfn gets mapped to the last page.
+>> The below patch fixes the problem for me. But I am not entirely sure if
+>> this is the correct fix, further investigation needed.
+>>=20
+>> Best regards,
+>> Nam
+>>=20
+>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>> index fa34cf55037b..17cab0a52726 100644
+>> --- a/arch/riscv/mm/init.c
+>> +++ b/arch/riscv/mm/init.c
+>> @@ -251,7 +251,8 @@ static void __init setup_bootmem(void)
+>>  	}
+>>=20=20
+>>  	min_low_pfn =3D PFN_UP(phys_ram_base);
+>> -	max_low_pfn =3D max_pfn =3D PFN_DOWN(phys_ram_end);
+>> +	max_low_pfn =3D PFN_DOWN(memblock_get_current_limit());
+>> +	max_pfn =3D PFN_DOWN(phys_ram_end);
+>>  	high_memory =3D (void *)(__va(PFN_PHYS(max_low_pfn)));
+>>=20=20
+>>  	dma32_phys_limit =3D min(4UL * SZ_1G, (unsigned long)PFN_PHYS(max_low_=
+pfn));
 
-#ifndef CONFIG_PCI
-#define _IO_BASE        0
-#define _ISA_MEM_BASE   0
-#define PCI_DRAM_OFFSET 0
-#elif defined(CONFIG_PPC32)
-#define _IO_BASE        isa_io_base
-#define _ISA_MEM_BASE   isa_mem_base
-#define PCI_DRAM_OFFSET pci_dram_offset
-#else
-#define _IO_BASE        pci_io_base
-#define _ISA_MEM_BASE   isa_mem_base
-#define PCI_DRAM_OFFSET 0
-#endif
+Yeah, AFAIU memblock_set_current_limit() only limits the allocation from
+memblock. The "forbidden" page (PA 0xc03ff000 VA 0xfffff000) will still
+be allowed in the zone.
 
-Once the series is merged, the !PCI case can disable
-CONFIG_HAS_IOPORT and move all references to it into #ifdef
-sections, something like the (incomplete) patch below.
+I think your patch requires memblock_set_current_limit() is
+unconditionally called, which currently is not done.
 
-It looks like regardless of this, powerpc can also just set
-_IO_BASE to ISA_IO_BASE unconditionally, but I could be missing
-something there.
+The hack I tried was (which seems to work):
 
-     Arnd
+--
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index fe8e159394d8..3a1f25d41794 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -245,8 +245,10 @@ static void __init setup_bootmem(void)
+         */
+        if (!IS_ENABLED(CONFIG_64BIT)) {
+                max_mapped_addr =3D __pa(~(ulong)0);
+-               if (max_mapped_addr =3D=3D (phys_ram_end - 1))
++               if (max_mapped_addr =3D=3D (phys_ram_end - 1)) {
+                        memblock_set_current_limit(max_mapped_addr - 4096);
++                       phys_ram_end -=3D 4096;
++               }
+        }
+=20
+        min_low_pfn =3D PFN_UP(phys_ram_base);
+--
 
----
-diff --git a/arch/powerpc/include/asm/io.h b/arch/powerpc/include/asm/io.h
-index 08c550ed49be..29e002b9316c 100644
---- a/arch/powerpc/include/asm/io.h
-+++ b/arch/powerpc/include/asm/io.h
-@@ -36,11 +36,8 @@ extern struct pci_dev *isa_bridge_pcidev;
-  * bases. Most of this file only uses _IO_BASE though which we
-  * define properly based on the platform
-  */
--#ifndef CONFIG_PCI
--#define _IO_BASE	0
--#define _ISA_MEM_BASE	0
--#define PCI_DRAM_OFFSET 0
--#elif defined(CONFIG_PPC32)
-+#ifdef CONFIG_HAS_IOPORT
-+#ifdef CONFIG_PPC32
- #define _IO_BASE	isa_io_base
- #define _ISA_MEM_BASE	isa_mem_base
- #define PCI_DRAM_OFFSET	pci_dram_offset
-@@ -486,8 +483,7 @@ static inline u64 __raw_rm_readq(volatile void __iomem *paddr)
-  * to port it over
-  */
- 
--#ifdef CONFIG_PPC32
--
-+#if defined(CONFIG_PPC32) && defined(CONFIG_HAS_IOPORT)
- #define __do_in_asm(name, op)				\
- static inline unsigned int name(unsigned int port)	\
- {							\
-@@ -534,7 +530,7 @@ __do_out_asm(_rec_outb, "stbx")
- __do_out_asm(_rec_outw, "sthbrx")
- __do_out_asm(_rec_outl, "stwbrx")
- 
--#endif /* CONFIG_PPC32 */
-+#endif /* CONFIG_PPC32 && CONFIG_HAS_IOPORT */
- 
- /* The "__do_*" operations below provide the actual "base" implementation
-  * for each of the defined accessors. Some of them use the out_* functions
-@@ -577,6 +573,7 @@ __do_out_asm(_rec_outl, "stwbrx")
- #define __do_readq_be(addr)	in_be64(PCI_FIX_ADDR(addr))
- #endif /* !defined(CONFIG_EEH) */
- 
-+#ifdef CONFIG_HAS_IOPORT
- #ifdef CONFIG_PPC32
- #define __do_outb(val, port)	_rec_outb(val, port)
- #define __do_outw(val, port)	_rec_outw(val, port)
-@@ -592,6 +589,7 @@ __do_out_asm(_rec_outl, "stwbrx")
- #define __do_inw(port)		readw((PCI_IO_ADDR)_IO_BASE + port);
- #define __do_inl(port)		readl((PCI_IO_ADDR)_IO_BASE + port);
- #endif /* !CONFIG_PPC32 */
-+#endif
- 
- #ifdef CONFIG_EEH
- #define __do_readsb(a, b, n)	eeh_readsb(PCI_FIX_ADDR(a), (b), (n))
-@@ -606,12 +604,14 @@ __do_out_asm(_rec_outl, "stwbrx")
- #define __do_writesw(a, b, n)	_outsw(PCI_FIX_ADDR(a),(b),(n))
- #define __do_writesl(a, b, n)	_outsl(PCI_FIX_ADDR(a),(b),(n))
- 
-+#ifdef CONFIG_HAS_IOPORT
- #define __do_insb(p, b, n)	readsb((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
- #define __do_insw(p, b, n)	readsw((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
- #define __do_insl(p, b, n)	readsl((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
- #define __do_outsb(p, b, n)	writesb((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
- #define __do_outsw(p, b, n)	writesw((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
- #define __do_outsl(p, b, n)	writesl((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
-+#endif
- 
- #define __do_memset_io(addr, c, n)	\
- 				_memset_io(PCI_FIX_ADDR(addr), c, n)
-@@ -689,6 +689,8 @@ static inline void name at					\
- #define writesb writesb
- #define writesw writesw
- #define writesl writesl
-+
-+#ifdef CONFIG_HAS_IOPORT
- #define inb inb
- #define inw inw
- #define inl inl
-@@ -701,6 +703,8 @@ static inline void name at					\
- #define outsb outsb
- #define outsw outsw
- #define outsl outsl
-+#endif
-+
- #ifdef __powerpc64__
- #define readq	readq
- #define writeq	writeq
+I'd really like to see an actual MM person (Mike or Alex?) have some
+input here, and not simply my pasta-on-wall approach. ;-)
+
+
+Bj=C3=B6rn
 
