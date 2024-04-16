@@ -1,225 +1,231 @@
-Return-Path: <linux-kernel+bounces-146583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDDD68A679C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:02:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6743C8A679E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:03:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E889BB22FDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:02:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DE79282E06
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E73126F03;
-	Tue, 16 Apr 2024 10:02:35 +0000 (UTC)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74918664C;
-	Tue, 16 Apr 2024 10:02:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185F48665A;
+	Tue, 16 Apr 2024 10:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="muTS7mYA"
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE6286250;
+	Tue, 16 Apr 2024 10:03:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713261754; cv=none; b=NweeCxB1PezywmQV43LRPCbQoRs6DJ3ZgXIPLuV1bEzu999o/EeU1in0W2nE/fA8NFsvZPtJYfvRA63nzmNp7LKweFFAFbbFfi2keSujbzW79Q6DEKRmJ791Boc4kHWlNf3aJl9Ah7g2yAepDlph7PA4ErGFmPSXTFfNVdeuACA=
+	t=1713261813; cv=none; b=phuDmf2Jh/1TXgkhibLu/+DoHWPT77Jzj4fmRPWsRsEc1OnBnTkihufdDA3dfbYy8aJuxnHBh+mtYr3b6EOV2FKO/yUOWpClUSH/KQN/BT8OaIMmDA4eIBqWVXYgc2wCCDkXo8HgQ9SY9YtQRFVmsJJn/gxMM1cbVuj/4EVoizY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713261754; c=relaxed/simple;
-	bh=apbdStBkpWbe9AW+IH08+glDBEysUgLIAGoqEQX+quQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EP808350J3QJi/RTVOiiEBvdUeJNtxsStGyXw9BWIjuOzGU56R+CT3HVSoTuzpOyOveLmO5WuvMs2Vhzg2GkAUQYOJVx17ajqLifBgoKxLqkwN4cjxOJxk5HMbL8GXIL2yIhIbL0Gf/kn6fmjWCTl/mNTflT7M8TNmKcOOd0j2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9AD7D40E02A5;
-	Tue, 16 Apr 2024 10:02:24 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id JmD6dkakvZkF; Tue, 16 Apr 2024 10:02:19 +0000 (UTC)
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DA5E640E00B2;
-	Tue, 16 Apr 2024 10:02:11 +0000 (UTC)
-Date: Tue, 16 Apr 2024 12:02:06 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-	tony.luck@intel.com, x86@kernel.org, Avadhut.Naik@amd.com,
-	John.Allen@amd.com
-Subject: Re: [PATCH v2 01/16] x86/mce: Define mce_setup() helpers for common
- and per-CPU fields
-Message-ID: <20240416100206.GEZh5MnlDJMeaERfQ5@fat_crate.local>
-References: <20240404151359.47970-1-yazen.ghannam@amd.com>
- <20240404151359.47970-2-yazen.ghannam@amd.com>
+	s=arc-20240116; t=1713261813; c=relaxed/simple;
+	bh=SN4IUAq5bmhscaEdijCRuZmEAV3xRahsqPJDF2f8f1U=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=t5ePNIXQIjpn6zGWGj3EjXt05OsQAXmjTCbRVcm+rhMEEaFQu4BU6gjlVCoHCF5C5i3FJBhRcnOJWUlPkBFA8GKC3EVWnGWvvjXlJcaLwhmg3fcEr4n+DTVC8e6QcNFnDRVwd0Nb50UL+Nd6fHGyfEqitRyhCMdl+Iwh3CsF/jQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=muTS7mYA; arc=none smtp.client-ip=45.254.50.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=EdPlS
+	CMSc12aTLouKCP42sYxhfQQhuRNfRrOOylTQwA=; b=muTS7mYALyE3QAFvJKw8Z
+	KrzDFLsq5tTk1gzKNUiyb8uyus6HNGZ2H6/L537IxLTFEzg6ysUgcKOWlH925qYy
+	i+9b5bK4z1e1FahmTg4LbqXTYFyhqWFse2eidJ4RNU4I/AB/cwUk3253vRD/jj1I
+	8ws9xwV+FDiZFxi2O1pu9M=
+Received: from smtp.163.com (unknown [124.89.89.114])
+	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wDnt3jQTB5my6VABQ--.14663S4;
+	Tue, 16 Apr 2024 18:02:57 +0800 (CST)
+From: Vanillan Wang <vanillanwang@163.com>
+To: johan@kernel.org,
+	gregkh@linuxfoundation.org
+Cc: linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Vanillan Wang <vanillanwang@163.com>
+Subject: [PATCH v2] USB:serial:option: add Rolling moudles support
+Date: Tue, 16 Apr 2024 18:02:55 +0800
+Message-Id: <20240416100255.22911-1-vanillanwang@163.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240404151359.47970-2-yazen.ghannam@amd.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDnt3jQTB5my6VABQ--.14663S4
+X-Coremail-Antispam: 1Uf129KBjvJXoW3GFy8WFyxtr4kZr1fCF18uFg_yoW3ur1UpF
+	4rAa1SqFyrXF1YqFnIkr1xZFWFgas7ur47CayDZwsaqFWSyrs7Jr1UArWIgF1qkr4Skr4q
+	q3yDG3y8Gas7tFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UgeOXUUUUU=
+X-CM-SenderInfo: pydqxz5odq4tlqj6il2tof0z/1tbiExLCUmXAkuAsNQAAsf
 
-On Thu, Apr 04, 2024 at 10:13:44AM -0500, Yazen Ghannam wrote:
-> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-> index b5cc557cfc37..7a857b33f515 100644
-> --- a/arch/x86/kernel/cpu/mce/core.c
-> +++ b/arch/x86/kernel/cpu/mce/core.c
-> @@ -117,20 +117,32 @@ static struct irq_work mce_irq_work;
->   */
->  BLOCKING_NOTIFIER_HEAD(x86_mce_decoder_chain);
->  
-> -/* Do initial initialization of a struct mce */
-> -void mce_setup(struct mce *m)
-> +void mce_setup_common(struct mce *m)
+Update the USB serial option driver support for the Rolling
+LTE modules.
 
-Since we're touching this...
+- VID:PID 33f8:01a2, RW101-GL for laptop debug M.2 cards(with MBIM
+interface for /Linux/Chrome OS)
+0x01a2: mbim, diag, at, pipe
+- VID:PID 33f8:01a3, RW101-GL for laptop debug M.2 cards(with MBIM
+interface for /Linux/Chrome OS)
+0x01a3: mbim, pipe
+- VID:PID 33f8:01a4, RW101-GL for laptop debug M.2 cards(with MBIM
+interface for /Linux/Chrome OS)
+0x01a4: mbim, diag, at, pipe
+- VID:PID 33f8:0104, RW101-GL for laptop debug M.2 cards(with RMNET
+interface for /Linux/Chrome OS)
+0x0104: RMNET, diag, at, pipe
+- VID:PID 33f8:0115, RW135-GL for laptop debug M.2 cards(with MBIM
+interface for /Linux/Chrome OS)
+0x0115: MBIM, diag, at, pipe
 
-mce_setup() is a perfectly wrong name for what it does. So let's clean
-it up. Diff ontop below.
+Here are the outputs of usb-devices:
+T:  Bus=01 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#=  5 Spd=480 MxCh= 0
+D:  Ver= 2.01 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+P:  Vendor=33f8 ProdID=01a2 Rev=05.15
+S:  Manufacturer=Rolling Wireless S.a.r.l.
+S:  Product=Rolling Module
+S:  SerialNumber=12345678
+C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
+I:  If#= 0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
+E:  Ad=82(I) Atr=03(Int.) MxPS=  64 Ivl=32ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:  If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
+E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=84(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+I:  If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:  If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
 
-* mce_prep_record() - the name says what the function does.
+T:  Bus=01 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#=  8 Spd=480 MxCh= 0
+D:  Ver= 2.01 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+P:  Vendor=33f8 ProdID=01a3 Rev=05.15
+S:  Manufacturer=Rolling Wireless S.a.r.l.
+S:  Product=Rolling Module
+S:  SerialNumber=12345678
+C:  #Ifs= 3 Cfg#= 1 Atr=a0 MxPwr=500mA
+I:  If#= 0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
+E:  Ad=82(I) Atr=03(Int.) MxPS=  64 Ivl=32ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:  If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
 
-* mce_prep_record_per_cpu() - "per_cpu" as this is a common kernel
-concept and we do use per_cpu data in there.
+T:  Bus=01 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#= 17 Spd=480 MxCh= 0
+D:  Ver= 2.01 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+P:  Vendor=33f8 ProdID=01a4 Rev=05.15
+S:  Manufacturer=Rolling Wireless S.a.r.l.
+S:  Product=Rolling Module
+S:  SerialNumber=12345678
+C:  #Ifs= 6 Cfg#= 1 Atr=a0 MxPwr=500mA
+I:  If#= 0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
+E:  Ad=82(I) Atr=03(Int.) MxPS=  64 Ivl=32ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:  If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:  If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
+E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+I:  If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
+E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:  If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=87(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
 
-Please do this in two patches:
+T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=5000 MxCh= 0
+D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
+P:  Vendor=33f8 ProdID=0104 Rev=05.04
+S:  Manufacturer=Rolling Wireless S.a.r.l.
+S:  Product=Rolling Module
+S:  SerialNumber=ba2eb033
+C:  #Ifs= 6 Cfg#= 1 Atr=a0 MxPwr=896mA
+I:  If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+E:  Ad=01(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=81(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I:  If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
+E:  Ad=02(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+I:  If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
+E:  Ad=03(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=84(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+I:  If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=40 Driver=option
+E:  Ad=04(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=86(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=87(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+I:  If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=50 Driver=qmi_wwan
+E:  Ad=0f(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=88(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
+E:  Ad=8e(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I:  If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
+E:  Ad=05(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=89(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
 
-- the first one renames mce_setup() only without adding the additional
-  functionality
+T:  Bus=01 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#= 16 Spd=480 MxCh= 0
+D:  Ver= 2.01 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+P:  Vendor=33f8 ProdID=0115 Rev=05.15
+S:  Manufacturer=Rolling Wireless S.a.r.l.
+S:  Product=Rolling Module
+S:  SerialNumber=12345678
+C:  #Ifs= 6 Cfg#= 1 Atr=a0 MxPwr=500mA
+I:  If#= 0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
+E:  Ad=82(I) Atr=03(Int.) MxPS=  64 Ivl=32ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:  If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:  If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
+E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+I:  If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:  If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
+E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=87(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
 
-- the second one does the split
+Signed-off-by: Vanillan Wang <vanillanwang@163.com>
+---
+ drivers/usb/serial/option.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Thx.
-
-diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
-index dfd2e9699bd7..491f3d78c46a 100644
---- a/arch/x86/include/asm/mce.h
-+++ b/arch/x86/include/asm/mce.h
-@@ -221,7 +221,7 @@ static inline int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
- 					     u64 lapic_id) { return -EINVAL; }
- #endif
- 
--void mce_setup(struct mce *m);
-+void mce_prep_record(struct mce *m);
- void mce_log(struct mce *m);
- DECLARE_PER_CPU(struct device *, mce_device);
- 
-diff --git a/arch/x86/kernel/cpu/mce/amd.c b/arch/x86/kernel/cpu/mce/amd.c
-index 9a0133ef7e20..14bf8c232e45 100644
---- a/arch/x86/kernel/cpu/mce/amd.c
-+++ b/arch/x86/kernel/cpu/mce/amd.c
-@@ -780,7 +780,7 @@ static void __log_error(unsigned int bank, u64 status, u64 addr, u64 misc)
- {
- 	struct mce m;
- 
--	mce_setup(&m);
-+	mce_prep_record(&m);
- 
- 	m.status = status;
- 	m.misc   = misc;
-diff --git a/arch/x86/kernel/cpu/mce/apei.c b/arch/x86/kernel/cpu/mce/apei.c
-index 7f7309ff67d0..8f509c8a4e98 100644
---- a/arch/x86/kernel/cpu/mce/apei.c
-+++ b/arch/x86/kernel/cpu/mce/apei.c
-@@ -44,7 +44,7 @@ void apei_mce_report_mem_error(int severity, struct cper_sec_mem_err *mem_err)
- 	else
- 		lsb = PAGE_SHIFT;
- 
--	mce_setup(&m);
-+	mce_prep_record(&m);
- 	m.bank = -1;
- 	/* Fake a memory read error with unknown channel */
- 	m.status = MCI_STATUS_VAL | MCI_STATUS_EN | MCI_STATUS_ADDRV | MCI_STATUS_MISCV | 0x9f;
-@@ -97,7 +97,7 @@ int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
- 	if (ctx_info->reg_arr_size < 48)
- 		return -EINVAL;
- 
--	mce_setup(&m);
-+	mce_prep_record(&m);
- 
- 	m.extcpu = -1;
- 	m.socketid = -1;
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index c0ce2de7fb51..a89508327b0d 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -117,7 +117,7 @@ static struct irq_work mce_irq_work;
-  */
- BLOCKING_NOTIFIER_HEAD(x86_mce_decoder_chain);
- 
--void mce_setup_common(struct mce *m)
-+void mce_prep_record_common(struct mce *m)
- {
- 	memset(m, 0, sizeof(struct mce));
- 
-@@ -128,21 +128,21 @@ void mce_setup_common(struct mce *m)
- 	m->time		= __ktime_get_real_seconds();
- }
- 
--void mce_setup_for_cpu(unsigned int cpu, struct mce *m)
-+void mce_prep_record_per_cpu(unsigned int cpu, struct mce *m)
- {
--	m->cpu			= cpu;
--	m->extcpu		= cpu;
--	m->apicid		= cpu_data(m->extcpu).topo.initial_apicid;
--	m->microcode		= cpu_data(m->extcpu).microcode;
--	m->ppin			= cpu_data(m->extcpu).ppin;
--	m->socketid		= cpu_data(m->extcpu).topo.pkg_id;
-+	m->cpu		= cpu;
-+	m->extcpu	= cpu;
-+	m->apicid	= cpu_data(m->extcpu).topo.initial_apicid;
-+	m->microcode	= cpu_data(m->extcpu).microcode;
-+	m->ppin		= cpu_data(m->extcpu).ppin;
-+	m->socketid	= cpu_data(m->extcpu).topo.pkg_id;
- }
- 
- /* Do initial initialization of a struct mce */
--void mce_setup(struct mce *m)
-+void mce_prep_record(struct mce *m)
- {
--	mce_setup_common(m);
--	mce_setup_for_cpu(smp_processor_id(), m);
-+	mce_prep_record_common(m);
-+	mce_prep_record_per_cpu(smp_processor_id(), m);
- }
- 
- DEFINE_PER_CPU(struct mce, injectm);
-@@ -448,11 +448,11 @@ static noinstr void mce_wrmsrl(u32 msr, u64 v)
- static noinstr void mce_gather_info(struct mce *m, struct pt_regs *regs)
- {
- 	/*
--	 * Enable instrumentation around mce_setup() which calls external
-+	 * Enable instrumentation around mce_prep_record() which calls external
- 	 * facilities.
- 	 */
- 	instrumentation_begin();
--	mce_setup(m);
-+	mce_prep_record(m);
- 	instrumentation_end();
- 
- 	m->mcgstatus = mce_rdmsrl(MSR_IA32_MCG_STATUS);
-diff --git a/arch/x86/kernel/cpu/mce/internal.h b/arch/x86/kernel/cpu/mce/internal.h
-index e86e53695828..43c7f3b71df5 100644
---- a/arch/x86/kernel/cpu/mce/internal.h
-+++ b/arch/x86/kernel/cpu/mce/internal.h
-@@ -261,8 +261,8 @@ enum mca_msr {
- 
- /* Decide whether to add MCE record to MCE event pool or filter it out. */
- extern bool filter_mce(struct mce *m);
--void mce_setup_common(struct mce *m);
--void mce_setup_for_cpu(unsigned int cpu, struct mce *m);
-+void mce_prep_record_common(struct mce *m);
-+void mce_prep_record_per_cpu(unsigned int cpu, struct mce *m);
- 
- #ifdef CONFIG_X86_MCE_AMD
- extern bool amd_filter_mce(struct mce *m);
-
+diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
+index 55a65d941ccb..71340b1a1783 100644
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -2281,6 +2281,14 @@ static const struct usb_device_id option_ids[] = {
+ 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1404, 0xff) },			/* GosunCn GM500 RNDIS */
+ 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1405, 0xff) },			/* GosunCn GM500 MBIM */
+ 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1406, 0xff) },			/* GosunCn GM500 ECM/NCM */
++	{ USB_DEVICE(0x33f8, 0x0104),						/* Rolling RW101-GL (laptop RMNET) */
++	  .driver_info = RSVD(4) | RSVD(5) },
++	{ USB_DEVICE_INTERFACE_CLASS(0x33f8, 0x01a2, 0xff) },			/* Rolling RW101-GL (laptop MBIM) */
++	{ USB_DEVICE_INTERFACE_CLASS(0x33f8, 0x01a3, 0xff) },			/* Rolling RW101-GL (laptop MBIM) */
++	{ USB_DEVICE_INTERFACE_CLASS(0x33f8, 0x01a4, 0xff),			/* Rolling RW101-GL (laptop MBIM) */
++	  .driver_info = RSVD(4) },
++	{ USB_DEVICE_INTERFACE_CLASS(0x33f8, 0x0115, 0xff),			/* Rolling RW135-GL (laptop MBIM) */
++	  .driver_info = RSVD(5) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(OPPO_VENDOR_ID, OPPO_PRODUCT_R11, 0xff, 0xff, 0x30) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(SIERRA_VENDOR_ID, SIERRA_PRODUCT_EM9191, 0xff, 0xff, 0x30) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(SIERRA_VENDOR_ID, SIERRA_PRODUCT_EM9191, 0xff, 0xff, 0x40) },
 -- 
-Regards/Gruss,
-    Boris.
+2.34.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
