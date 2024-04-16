@@ -1,181 +1,137 @@
-Return-Path: <linux-kernel+bounces-146736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70E488A6A16
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:02:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 361388A6A1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:03:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9427E1C21116
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:02:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF3191F217C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:03:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ED6D12A174;
-	Tue, 16 Apr 2024 12:02:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9853912B15A;
+	Tue, 16 Apr 2024 12:02:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mvrzWBhU"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="efSm+JIt"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B206F129E78;
-	Tue, 16 Apr 2024 12:02:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1003512A170;
+	Tue, 16 Apr 2024 12:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713268945; cv=none; b=OkbW4+cnkP+c1Rhq8W7yMCGBCLQk+0fiBg+QxczpARr4MIHmGrUMHC2613jbQmnVymcG8yvidS3AOcEBBpTBFthJ9/UjVY5XxL7G8KNs5E/TwU1mR7iWEugUJn0kAWENcGorx8yhzkRTmDVsmMhTCZPQCCod7UyrfXqU/CH7//8=
+	t=1713268957; cv=none; b=qs+6Lp/t4es8xR/mTx8r/p0tRQN+tUKBQOGKdHteoDv+gz3skqtNawlIWioCl79E1uODTjzRjnc7vYN7Mmc6J+UPs2WR+B6HOjYsf+8EBlyPPnQl+kx+2NSc3O1K9w1Zpl7o13kJ9x+s6tslBSzJo+vZWHHyJnD95O4/slBGnDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713268945; c=relaxed/simple;
-	bh=mehokU/oPv9zSJz1ECT72XIz6TIwRXXiUhrnhSfTj5M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DsfYT2yuODAxIC7lW/PC4H3nehZ0/Skw128u962Vj/hawjm/mIl5/2gELmulmsE0uBt9tEJNm1hfRqzQC59v4Obco7/S9Vkm6G3LIeivMexMmjk98p1A+Kwy+nwDEFes5B1NLKHaOVu3hzTcmFwPcL8leNfx2vhrVNiY/V+VbMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mvrzWBhU; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a524ecaf215so361156866b.2;
-        Tue, 16 Apr 2024 05:02:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713268942; x=1713873742; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QIxLUAMbjgurxXoHq9EdG3sBEmu/NGzsdsQ94b87puk=;
-        b=mvrzWBhUo9A9k76i9yZG+WtcVLVFI1iyQHDi0dn372xytKMVG/9wqc2fZVUBR8kYsu
-         r9S9d24VYHYYHNssCKecYV3QI4FIu85YYFpFYaVUhtjBSah7AgfUA//v2Adon5oTYrOk
-         P/F9PKfP51dxaptKO6qjdkA/dnQTZiF9ry/ce3AbWCj5OapEKFEmsJCto6cwqDmbeVhe
-         dfWpxktBSXz2vh/NdlbCOyCXOElMUJlfE/W/xLnp/z6IZ9yt9zlJ2pn9hR6p1heeXFQU
-         QV+8Cx6EgRaLHDut69T9Z6WIqXN3hIub4zJdBolzy5WF6aRO1Kz9elxr+jYqI8oTUBG2
-         IWrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713268942; x=1713873742;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QIxLUAMbjgurxXoHq9EdG3sBEmu/NGzsdsQ94b87puk=;
-        b=egfsNxF/zxwl256gN7UzPZZNxRRhKEvO/L8ojA0+2pecGBiO6fYasXfBh1nneXdo6P
-         hG6niyTkz5RCtKKoX4BPU1SNBjCGilFjvDct8HaPf+I/1YyKSJ0Y9xU0iDgNWI29UBHt
-         itpJpUX4foZplNrwhp5QLCzwE/bKr1jSdoYDNVhZbOeGpEbQYBT1JNJTEAv3yZUbgZYq
-         35sBB/rNSFCgW1qsE4q0iYLHYOFhqgxaAVxt49he839yaLQFP6gw6B0WzHXlF0RxGDiw
-         i3Igis4u7o9zOjakBvXhcWFZCaqnih8GZE3x8nJUOM7zVMcJi2ejzy43WJV/HpzORXwm
-         x8OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWeGi4n1jE7QptQNMgkkihuTLfF2GBTnFc5B+iYnDEmsmKbOj8E9t3rqUVeOn8u4NsHdBdAjiEk+ar+JoLsn4C2j/hESqwH
-X-Gm-Message-State: AOJu0YyjOn8U8xbpG67B5YSjCJuIMzoJVhJaG0/SOW33dpzQlyo9mkNr
-	GYBm1vkoYlQFa4+GrxHUYYdzZ1LnA8mpDn1MvsdLoyhW/78Udam+Y7407ROQVhmq16+9mipFF0B
-	Zu0JHmtRKTmrXD3gAbFUo/GPwqWBI29/CmeI8apa0
-X-Google-Smtp-Source: AGHT+IHr6onz1rxoSR673FwAnVKaunv+548JVGn3CKC2tFRdh/wB3XKIZwJvSd13d1YzW0b9cY5jwSdjwfKpRGciYH4=
-X-Received: by 2002:a17:906:29cb:b0:a52:61b9:be48 with SMTP id
- y11-20020a17090629cb00b00a5261b9be48mr4119771eje.35.1713268941706; Tue, 16
- Apr 2024 05:02:21 -0700 (PDT)
+	s=arc-20240116; t=1713268957; c=relaxed/simple;
+	bh=ZWpYfz4eCT9K2GMgCPAps04fnJ+d32kW6EGhaGfLoCc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mB+RDllI98riywtAjuUbNbhD+xJtc2jlnIS96FTaSkZupu6EV9Dhe1iqlEEWN4QmQcOW2j51DVwnXqOypM0raiKhzLXX4lt7Myo+hLSmgmNFwXAyRQmuhVTmz366aYQJ8zWRvzV0nh99znDzm+PImg+deDIGINKM3kMU0rwT2eY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=efSm+JIt; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43GAScMb031904;
+	Tue, 16 Apr 2024 12:02:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=RL4SldF35NlNvMsqOFwvpvMKNHxNrohbBmlz5SARb3A=;
+ b=efSm+JItYNBcGoyKi3IcXexxmeDEg0KGkbcb0KrVvHA3ComO6H83i1SwsZehZzFpptME
+ diu1IoirH4sLxgs5gV2a+OlehqNnsUMziuxq2jS0w6isJyOzvrxikXZLE5rPeoexUsnL
+ JAGDLFU9O9U0adFa3FI1VuikA7JRT/ECHnfkzv96gwQ1E1OJUNR2HUN7EWEekxG/zsFP
+ Sw5rg8UgwDDkRPEvflR6qavz4FO1zzBa5o+0ChV5hyM4cSThjmPjlMKfkNa1IYznvX4u
+ qG80nmD4zh42mpx7P1TOjTVCx9dt/kz5E+YL0TQYXIbuY2qFVoB1MHLD735YkOWzWlrN MQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhqky0598-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Apr 2024 12:02:30 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43GC28mM004926;
+	Tue, 16 Apr 2024 12:02:29 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhqky0595-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Apr 2024 12:02:29 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43G9drqv015506;
+	Tue, 16 Apr 2024 12:02:29 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xg5vm5sye-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Apr 2024 12:02:28 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43GC2NBS40042794
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Apr 2024 12:02:25 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3764D2004B;
+	Tue, 16 Apr 2024 12:02:23 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 914B120043;
+	Tue, 16 Apr 2024 12:02:22 +0000 (GMT)
+Received: from [9.152.224.222] (unknown [9.152.224.222])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 16 Apr 2024 12:02:22 +0000 (GMT)
+Message-ID: <20d1d8c5-70e9-4b00-965b-918f275cfae7@linux.ibm.com>
+Date: Tue, 16 Apr 2024 14:02:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEkJfYMdDQKY1C-wBZLiaJ=dCqfM9r=rykwwf+J-XHsFp7D9Ag@mail.gmail.com>
- <Zh5M_9K3g6-9U2VA@Laptop-X1>
-In-Reply-To: <Zh5M_9K3g6-9U2VA@Laptop-X1>
-From: Sam Sun <samsun1006219@gmail.com>
-Date: Tue, 16 Apr 2024 20:02:10 +0800
-Message-ID: <CAEkJfYNZ+X7U2-pDTy0X4q+D8O7H0ZPVdN3Z2hK6b1wFZfQekw@mail.gmail.com>
-Subject: Re: [PATCH net v2] drivers/net/bonding: Fix out-of-bounds read in bond_option_arp_ip_targets_set()
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, j.vosburgh@gmail.com, 
-	andy@greyhouse.net, davem@davemloft.net, Eric Dumazet <edumazet@google.com>, 
-	kuba@kernel.org, pabeni@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Apr 16, 2024 at 6:03=E2=80=AFPM Hangbin Liu <liuhangbin@gmail.com> =
-wrote:
->
-> On Tue, Apr 16, 2024 at 03:28:02PM +0800, Sam Sun wrote:
-> > In function bond_option_arp_ip_targets_set(), if newval->string is an
-> > empty string, newval->string+1 will point to the byte after the
-> > string, causing an out-of-bound read.
-> >
-> > BUG: KASAN: slab-out-of-bounds in strlen+0x7d/0xa0 lib/string.c:418
-> > Read of size 1 at addr ffff8881119c4781 by task syz-executor665/8107
-> > CPU: 1 PID: 8107 Comm: syz-executor665 Not tainted 6.7.0-rc7 #1
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04=
-/01/2014
-> > Call Trace:
-> >  <TASK>
-> >  __dump_stack lib/dump_stack.c:88 [inline]
-> >  dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
-> >  print_address_description mm/kasan/report.c:364 [inline]
-> >  print_report+0xc1/0x5e0 mm/kasan/report.c:475
-> >  kasan_report+0xbe/0xf0 mm/kasan/report.c:588
-> >  strlen+0x7d/0xa0 lib/string.c:418
-> >  __fortify_strlen include/linux/fortify-string.h:210 [inline]
-> >  in4_pton+0xa3/0x3f0 net/core/utils.c:130
-> >  bond_option_arp_ip_targets_set+0xc2/0x910
-> > drivers/net/bonding/bond_options.c:1201
-> >  __bond_opt_set+0x2a4/0x1030 drivers/net/bonding/bond_options.c:767
-> >  __bond_opt_set_notify+0x48/0x150 drivers/net/bonding/bond_options.c:79=
-2
-> >  bond_opt_tryset_rtnl+0xda/0x160 drivers/net/bonding/bond_options.c:817
-> >  bonding_sysfs_store_option+0xa1/0x120 drivers/net/bonding/bond_sysfs.c=
-:156
-> >  dev_attr_store+0x54/0x80 drivers/base/core.c:2366
-> >  sysfs_kf_write+0x114/0x170 fs/sysfs/file.c:136
-> >  kernfs_fop_write_iter+0x337/0x500 fs/kernfs/file.c:334
-> >  call_write_iter include/linux/fs.h:2020 [inline]
-> >  new_sync_write fs/read_write.c:491 [inline]
-> >  vfs_write+0x96a/0xd80 fs/read_write.c:584
-> >  ksys_write+0x122/0x250 fs/read_write.c:637
-> >  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> >  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
-> >  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> > ---[ end trace ]---
-> >
-> > Fix it by adding a check of string length before using it. Remove
-> > target address in netdev_err message since target is not initialized
-> > in error path and will not provide useful information.
-> >
-> > Fixes: 4fb0ef585eb2 ("bonding: convert arp_ip_target to use the new opt=
-ion API")
-> > Signed-off-by: Yue Sun <samsun1006219@gmail.com>
->
-> I think the fixes tag should be
->
-> f9de11a16594 ("bonding: add ip checks when store ip target").
->
-
-Sorry for my mistake. I will change the fixes label to this commit.
-
-Best,
-Yue
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] s390/mm: re-enable the shared zeropage for !PV and
+ !skeys KVM guests
+To: Alexander Gordeev <agordeev@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens
+ <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org
+References: <20240411161441.910170-1-david@redhat.com>
+ <20240411161441.910170-3-david@redhat.com>
+ <Zh1w1QTNSy+rrCH7@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+ <8533cb18-42ff-42bc-b9e5-b0537aa51b21@redhat.com>
+ <Zh4cqZkuPR9V1t1o@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+Content-Language: en-US
+From: Christian Borntraeger <borntraeger@linux.ibm.com>
+In-Reply-To: <Zh4cqZkuPR9V1t1o@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: rOCqEBPwxOZabIO0iThK6HIAofE6o9PZ
+X-Proofpoint-ORIG-GUID: c0NOLnVFYJU1pyCLAA0PU_HqyxkdNqbp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-16_08,2024-04-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
+ bulkscore=0 mlxlogscore=768 spamscore=0 mlxscore=0 adultscore=0
+ malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2404010000 definitions=main-2404160074
 
 
-> Thanks
-> Hangbin
->
-> > ---
-> >  drivers/net/bonding/bond_options.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/net/bonding/bond_options.c
-> > b/drivers/net/bonding/bond_options.c
-> > index 4cdbc7e084f4..8f3fb91897b3 100644
-> > --- a/drivers/net/bonding/bond_options.c
-> > +++ b/drivers/net/bonding/bond_options.c
-> > @@ -1214,9 +1214,9 @@ static int bond_option_arp_ip_targets_set(struct
-> > bonding *bond,
-> >      __be32 target;
-> >
-> >      if (newval->string) {
-> > -        if (!in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) =
-{
-> > -            netdev_err(bond->dev, "invalid ARP target %pI4 specified\n=
-",
-> > -                   &target);
-> > +        if (!(strlen(newval->string)) ||
-> > +            !in4_pton(newval->string + 1, -1, (u8 *)&target, -1, NULL)=
-) {
-> > +            netdev_err(bond->dev, "invalid ARP target I4 specified\n")=
-;
-> >              return ret;
-> >          }
-> >          if (newval->string[0] =3D=3D '+')
-> > --
-> > 2.34.1
+
+Am 16.04.24 um 08:37 schrieb Alexander Gordeev:
+
+>> We could piggy-back on vm_fault_to_errno(). We could use
+>> vm_fault_to_errno(rc, FOLL_HWPOISON), and only continue (retry) if the rc is 0 or
+>> -EFAULT, otherwise fail with the returned error.
+>>
+>> But I'd do that as a follow up, and also use it in break_ksm() in the same fashion.
+> 
+> @Christian, do you agree with this suggestion?
+
+I would need to look into that more closely to give a proper answer. In general I am ok
+with this but I prefer to have more eyes on that.
+ From what I can tell we should cover all the normal cases with our CI as soon as it hits
+next. But maybe we should try to create/change a selftest to trigger these error cases?
 
