@@ -1,100 +1,119 @@
-Return-Path: <linux-kernel+bounces-147034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B32D8A6E77
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:36:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFF788A6E7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:37:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B66211F219E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:36:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 656A3281CED
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:36:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF5F31304B7;
-	Tue, 16 Apr 2024 14:35:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E97130AD6;
+	Tue, 16 Apr 2024 14:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="fGmNj4lL"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EfCE4Bqn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC011CAA6;
-	Tue, 16 Apr 2024 14:35:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EABF12D741;
+	Tue, 16 Apr 2024 14:35:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713278122; cv=none; b=pxFz11x/SG6StjXxLE/g5YaFSDN5nOlyg0D3dlbb1h3h6oLenRYEVby3oNPDWgFyDTJ/66/We0zNS7y3oMEvkb1OV2jKitpVam+VQayhFvqloTSmb4I1zrqgF3iAf+skAHRGvL5zLxRRAGvh+y0IDUyHDFmBOyBBUpI6WIXZnRo=
+	t=1713278137; cv=none; b=g73pDEXN6uYlrqLwTTLRDXBL12lvkwSH7IrKHM5nUsrwrixaw5uWTKR9YBV8jR6vfb9oXiWF0u3olJpUhtL0x1Bv+Vs1RkxWqNmoohRgfTSLcyD3sMh8rg3cA+eIm28b5mJwfgiVXkPuZSHO26WJRJJo6rMwVlPw1HNUTgoGJ8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713278122; c=relaxed/simple;
-	bh=Ny7bREgebSey8yrqgmDqsKUa8GrfP9MN5joKmG/2kP0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mO3DjJw/TbQgXQTS71Xus7/qT99nB9HK7VP49dXpXpccAtrW4d3QC5TN7ISekFA9cgaxkl0B0Vd+IfpoCKlKAukx7lSeAZT9dz7IHxk+f0zXNHMk6NwUjnLlelWeKlnr9ArUgRpNRwFV+Uj+YvMJjixf+wdwlCxMgp7ZxD9pr9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=fGmNj4lL; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1713278115;
-	bh=Ny7bREgebSey8yrqgmDqsKUa8GrfP9MN5joKmG/2kP0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=fGmNj4lLvW1m/TDfOEYNR8p0KPZH7PzExxSJEe2JH4h0XpFxRpWBE4LozH2qyEBGa
-	 yt+U6CsAwJ+WqOcmOY+oPmVhr+koSnPfEjRNCr+K2Kl0uJ3Nab4PJyz6xObQxNXTJU
-	 Hi4JAsh9mgPkdJcZ5E9YNJt/FLNJCwMIgTZA3S6f+dqoR0GITkhxDRJY2OsabFG844
-	 JX/cTwfoEZIuwTfLOkRkynogiabk4/4auYXLYz6EIf/lkkj0GNeQ23tSdbQgrKVUrr
-	 gmlUzLJojWO0lKZc3wW4tqm7o56YzJJB8o5pFLiJZD8oYRZSMhNmVACXeIoWd/6IdN
-	 Oog5ejWza7yRA==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4VJmm32YTczvxK;
-	Tue, 16 Apr 2024 10:35:15 -0400 (EDT)
-Message-ID: <f9ba99e8-195a-4674-8177-c2ba6c3c4cff@efficios.com>
-Date: Tue, 16 Apr 2024 10:35:17 -0400
+	s=arc-20240116; t=1713278137; c=relaxed/simple;
+	bh=bucavU5HfQwA1yemtOpcU4H0NN+3+/h4cXMCk96/A6s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s+RP/jmVu4/RQg7HHAJr4GMla/sLeaMaw1IxJGQ8htkkzzrHjuroV7fKP0IakspcLWcKDQi/9QyxEIVORLaHlORx1ZUs5Mn7hCOmp6BLa4nqzBBEtLv+YhBXO+IigPM3mZ8tbRlFyZSXNo5FAoppZR1Z1XcVNchjkl6KRRUm5RE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EfCE4Bqn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 220D1C113CE;
+	Tue, 16 Apr 2024 14:35:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713278136;
+	bh=bucavU5HfQwA1yemtOpcU4H0NN+3+/h4cXMCk96/A6s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EfCE4BqnmunYvNboW8U7r6o8if1ruEE5iowfEac9iRxH4d4Xm3OTot+uQA2GiM5Ej
+	 H7RHsx5q2j+CbSW9LMVB9w0LR7PojkHBgceHEEQFKeuXf/vfZKUs7YVAW/wdfdLT49
+	 FZGKZFgzUTQPx4PuNaWX/ZLVrSvf15Pfi4Uzq7tXXdOyPwl4+CWO4CqKk0zb4lYas4
+	 Oc/QbSjsEP6v9m/Sxk3rEQEB3kgNvttj4aJaktOMnfh6fj/v5OfIUeDfHIiCi/26D6
+	 urAHd0PnMxQ40jtgJoKU0miGkV+H2OHw+qJK8ZlNDiyBbUq71T5or4uaa+jXOJAzns
+	 GIMFhnOfSnuQQ==
+Date: Tue, 16 Apr 2024 15:35:30 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Peng Fan <peng.fan@nxp.com>
+Cc: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>,
+	"pabeni@redhat.com" <pabeni@redhat.com>,
+	"robh@kernel.org" <robh@kernel.org>,
+	"krzk+dt@kernel.org" <krzk+dt@kernel.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"shawnguo@kernel.org" <shawnguo@kernel.org>,
+	"s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+	"kernel@pengutronix.de" <kernel@pengutronix.de>,
+	"festevam@gmail.com" <festevam@gmail.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	dl-linux-imx <linux-imx@nxp.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"imx@lists.linux.dev" <imx@lists.linux.dev>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] dt-bindings: net: nxp,dwmac-imx: allow nvmem cells
+ property
+Message-ID: <20240416-simplify-septic-0fd3f7fe4b31@spud>
+References: <20240415103621.1644735-1-peng.fan@oss.nxp.com>
+ <20240415-limes-chasing-dbc111fa9cf2@spud>
+ <DU0PR04MB94173B23CBB11E8DC736E90788082@DU0PR04MB9417.eurprd04.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] sched: rseq mm_cid updates
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
- <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Valentin Schneider <vschneid@redhat.com>, "levi . yun"
- <yeoreum.yun@arm.com>, Catalin Marinas <catalin.marinas@arm.com>,
- Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
- Aaron Lu <aaron.lu@intel.com>, Thomas Gleixner <tglx@linutronix.de>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
- Andrew Morton <akpm@linux-foundation.org>, linux-arch@vger.kernel.org,
- linux-mm@kvack.org, x86@kernel.org
-References: <20240415152114.59122-1-mathieu.desnoyers@efficios.com>
- <Zh5tTmwmWauIajeB@gmail.com>
-Content-Language: en-US
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <Zh5tTmwmWauIajeB@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 2024-04-16 08:21, Ingo Molnar wrote:
-[...]
->>
->> Mathieu Desnoyers (2):
->>    sched: Add missing memory barrier in switch_mm_cid
->>    sched: Move mm_cid code from sched.h to core.c
-> 
-> I've applied the first patch to tip:sched/urgent, and will queue up the
-> code movement patch in the scheduler tree for v6.10, thanks Mathieu!
-
-Thanks for reviewing and queuing those patches!
-
-Mathieu
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="LbFcVf2EOeZRzbNd"
+Content-Disposition: inline
+In-Reply-To: <DU0PR04MB94173B23CBB11E8DC736E90788082@DU0PR04MB9417.eurprd04.prod.outlook.com>
 
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+--LbFcVf2EOeZRzbNd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Apr 16, 2024 at 01:52:18PM +0000, Peng Fan wrote:
+> > Subject: Re: [PATCH] dt-bindings: net: nxp,dwmac-imx: allow nvmem cells
+> > property
+> >=20
+> > On Mon, Apr 15, 2024 at 06:36:21PM +0800, Peng Fan (OSS) wrote:
+> > > From: Peng Fan <peng.fan@nxp.com>
+> > >
+> > > Allow nvmem-cells and nvmem-cell-names to get mac_address from onchip
+> > > fuse.
+> >=20
+> > Is this valid for all 3 devices in this binding?
+>=20
+> Yes. It is valid for all the three devices.
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Ty,
+Conor.
+
+--LbFcVf2EOeZRzbNd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh6MsQAKCRB4tDGHoIJi
+0qwpAP4yvTjwx08VV0VAKWzRYa9NlvgQYCEVtOlvbUu9rEG4VwEAhqWVRlHReAgp
+ezG+zW9kzq6/B7Zd0xKKWyPpR4NZaws=
+=TITW
+-----END PGP SIGNATURE-----
+
+--LbFcVf2EOeZRzbNd--
 
