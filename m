@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-146470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C98DF8A65BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C01E58A65BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:10:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53EE11F23A94
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:10:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D7C31F23D30
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB16415B105;
-	Tue, 16 Apr 2024 08:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19E5615B14C;
+	Tue, 16 Apr 2024 08:08:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Kb0+ra/R"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CBZA/GJ4"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC47615ADAF
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:08:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E9315B127
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:08:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713254919; cv=none; b=M+5PCnEjY1g0xOP4tUGl1vKSduFFUMb3tb1B0RiKT4GnxORc0rrf6IVxTiQ55M0UMd6YVpNjBkuAO03Xrrfw33uBzTESncZzSBNsJ+ZUo6DhxqYnX6/FyN1AlTH8IS9mKv2ujVt874A4RVkts/73uC3qKCAubXKe8yGT4CjpOaw=
+	t=1713254922; cv=none; b=SdI0JCGND1BCl2lEGooSg6As2FQKe5sthaZ6WjE3TOJWVjpAaZ0R6XU7hN1HFb0std+Q2OPzzUHHAKJ1eaKCwJbGqWTk7U6fS6AH8DZVsikkUwsVa1XcC6QqM25yp9kBYiCixylOFGVMfCCQtnmkdyxnHyoSUYK5dBJxTRUUPXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713254919; c=relaxed/simple;
-	bh=+B1K+3RGNJMZ4qg4nKfxt0LCCXm/Psgjhstoi04IBCI=;
+	s=arc-20240116; t=1713254922; c=relaxed/simple;
+	bh=V680ycHPUfqmVjuXb51HZ8jYdFB/NYvdXh4MnokrY/s=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dYscQSwPN4JXbh09mbNoSqYbQ8PFebLuorjRbOPUruOB9o91OlcXqIbVLdwAf4cpDPTf50kqWhpBQU4m+k9m5Bgfh1WW71o+aGT3V5/Yxh666VElO8u9v0VYC/YBnXXnmHDyPg4ZIyXbiqmrbkHkRuMNcULOxMHKl/FvLUNzLMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Kb0+ra/R; arc=none smtp.client-ip=198.175.65.15
+	 MIME-Version; b=A6VyPI5su5nJZv8Co9FFmN3rAQQzg1Slf/XrFHMNvt9OwEmoRyjDjtbWtkjQfFWuD0OU/HR65GkQI18k6yrtQojhthO42QKCy7Hjx8f7cxL65UmPaiDCYtfRiXSVnvn31t1l9SjMnVqQCHem4zOWpVrzn9dy7+BSj8rpe/o+fKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CBZA/GJ4; arc=none smtp.client-ip=198.175.65.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713254918; x=1744790918;
+  t=1713254921; x=1744790921;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=+B1K+3RGNJMZ4qg4nKfxt0LCCXm/Psgjhstoi04IBCI=;
-  b=Kb0+ra/RthTiMllmy/kbtUivtWn9eQJYH6D0CzNQ/trZerBuw+B1f9l5
-   sknEechUe/ZutcD6PyjAfWNvrjCj+X6xKaskOA7G3L3NM9p9p9cUHB8/e
-   Pzr6mxuvmRNMedjil57n4GvBq8y3PQ8tZPDBegHi6O6CIGTrTPqdF+42x
-   TeuGYlkLcpeIJJKDr74u0EcIW3dP97imI3nR7WaIBpNXL9VFccXBJIV9+
-   vrF4tmNWYmTy0vlkYQxPnpRtCQBa6mokCVlEycwZNXSXuqmbmIbP4lQYl
-   2i/D4ggEtAPS7V3UUZolEpqtIj48ddEm3qD35mhIw5fSCsveYfETcCcKd
-   A==;
-X-CSE-ConnectionGUID: jiqhwyqNTPaIGzGX1mGTgQ==
-X-CSE-MsgGUID: BGMtd0Y1T5KMeLpPmQ1aYw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="12466497"
+  bh=V680ycHPUfqmVjuXb51HZ8jYdFB/NYvdXh4MnokrY/s=;
+  b=CBZA/GJ4Xo5FoZv48JtyDl8JBQFXpCgThmjn8btW5C1B7ezjD3jvT+FR
+   7owvyEsib0oZZxhIw7vXZCj2ziRzRz+7WdnUPJtkHWryzDq5Daf/OTYzW
+   PVs6svAuzIVjHDlJPNdLOFB2ST+YqoGyKCJFuj4PcpPgNnYBrqVFqlRlq
+   4N2zbAkC1WMo3CNvdzF7GaO/5+wUlYJSmjieaJ/bYmkBT3qS5jg01PO46
+   +ShkLMt40MovoHfEsOMNTGzlJ8UebWAskHXxWSZ8dwek4guBPtZRAoaiu
+   k0InOLcraV/xCTByofa7eXtjm3eqS6KDqweB8LD60pwxiPczsBhkpkjb7
+   w==;
+X-CSE-ConnectionGUID: 1G1v0AaDQva6CukgJIX5mA==
+X-CSE-MsgGUID: 8bRCUG/IQhybUlhKM3BsJg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="12466508"
 X-IronPort-AV: E=Sophos;i="6.07,205,1708416000"; 
-   d="scan'208";a="12466497"
+   d="scan'208";a="12466508"
 Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 01:08:37 -0700
-X-CSE-ConnectionGUID: cCrMESowQOmPAg6FzGnh7w==
-X-CSE-MsgGUID: sK9UMUfHRXqFSd68+c3Yqw==
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 01:08:40 -0700
+X-CSE-ConnectionGUID: Iorg2ExmQQeClEKGFxe7Sg==
+X-CSE-MsgGUID: HpC6GngLT8uPCcGRZz3SLg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,205,1708416000"; 
-   d="scan'208";a="22077786"
+   d="scan'208";a="22077797"
 Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
-  by orviesa010.jf.intel.com with ESMTP; 16 Apr 2024 01:08:36 -0700
+  by orviesa010.jf.intel.com with ESMTP; 16 Apr 2024 01:08:39 -0700
 From: Lu Baolu <baolu.lu@linux.intel.com>
 To: Joerg Roedel <joro@8bytes.org>,
 	Will Deacon <will@kernel.org>,
@@ -68,9 +68,9 @@ Cc: Tina Zhang <tina.zhang@intel.com>,
 	iommu@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v3 08/12] iommu/vt-d: Use cache_tag_flush_range() in cache_invalidate_user
-Date: Tue, 16 Apr 2024 16:06:52 +0800
-Message-Id: <20240416080656.60968-9-baolu.lu@linux.intel.com>
+Subject: [PATCH v3 09/12] iommu/vt-d: Use cache helpers in arch_invalidate_secondary_tlbs
+Date: Tue, 16 Apr 2024 16:06:53 +0800
+Message-Id: <20240416080656.60968-10-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240416080656.60968-1-baolu.lu@linux.intel.com>
 References: <20240416080656.60968-1-baolu.lu@linux.intel.com>
@@ -82,100 +82,149 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The cache_invalidate_user callback is called to invalidate a range
-of caches for the affected user domain. Use cache_tag_flush_range()
-in this callback.
+The arch_invalidate_secondary_tlbs callback is called in the SVA mm
+notification path. It invalidates all or a range of caches after the
+CPU page table is modified. Use the cache tag helps in this path.
+
+The mm_types defines vm_end as the first byte after the end address
+which is different from the iommu gather API, hence convert the end
+parameter from mm_types to iommu gather scheme before calling the
+cache_tag helper.
 
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 ---
- drivers/iommu/intel/iommu.h  |  6 +++++
- drivers/iommu/intel/nested.c | 50 +++---------------------------------
- 2 files changed, 9 insertions(+), 47 deletions(-)
+ drivers/iommu/intel/iommu.h |  1 +
+ drivers/iommu/intel/svm.c   | 81 +++++--------------------------------
+ 2 files changed, 11 insertions(+), 71 deletions(-)
 
 diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-index e17683ecef4b..b1d04aa36d31 100644
+index b1d04aa36d31..31bbce8ffe7e 100644
 --- a/drivers/iommu/intel/iommu.h
 +++ b/drivers/iommu/intel/iommu.h
-@@ -1050,6 +1050,12 @@ static inline unsigned long aligned_nrpages(unsigned long host_addr, size_t size
- 	return PAGE_ALIGN(host_addr + size) >> VTD_PAGE_SHIFT;
+@@ -1167,6 +1167,7 @@ struct intel_svm {
+ 	struct mm_struct *mm;
+ 	u32 pasid;
+ 	struct list_head devs;
++	struct dmar_domain *domain;
+ };
+ #else
+ static inline void intel_svm_check(struct intel_iommu *iommu) {}
+diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+index 641d0cef3737..e6d25a0f25f6 100644
+--- a/drivers/iommu/intel/svm.c
++++ b/drivers/iommu/intel/svm.c
+@@ -168,88 +168,25 @@ void intel_svm_check(struct intel_iommu *iommu)
+ 	iommu->flags |= VTD_FLAG_SVM_CAPABLE;
  }
  
-+/* Return a size from number of VTD pages. */
-+static inline unsigned long nrpages_to_size(unsigned long npages)
-+{
-+	return npages << VTD_PAGE_SHIFT;
-+}
-+
- /* Convert value to context PASID directory size field coding. */
- #define context_pdts(pds)	(((pds) & 0x7) << 9)
- 
-diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
-index 13406ee742bf..16a2bcf5cfeb 100644
---- a/drivers/iommu/intel/nested.c
-+++ b/drivers/iommu/intel/nested.c
-@@ -88,50 +88,6 @@ static void intel_nested_domain_free(struct iommu_domain *domain)
- 	kfree(dmar_domain);
- }
- 
--static void nested_flush_dev_iotlb(struct dmar_domain *domain, u64 addr,
--				   unsigned int mask)
+-static void __flush_svm_range_dev(struct intel_svm *svm,
+-				  struct intel_svm_dev *sdev,
+-				  unsigned long address,
+-				  unsigned long pages, int ih)
 -{
--	struct device_domain_info *info;
--	unsigned long flags;
--	u16 sid, qdep;
+-	struct device_domain_info *info = dev_iommu_priv_get(sdev->dev);
 -
--	spin_lock_irqsave(&domain->lock, flags);
--	list_for_each_entry(info, &domain->devices, link) {
--		if (!info->ats_enabled)
--			continue;
--		sid = info->bus << 8 | info->devfn;
--		qdep = info->ats_qdep;
--		qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
--				   qdep, addr, mask);
--		quirk_extra_dev_tlb_flush(info, addr, mask,
--					  IOMMU_NO_PASID, qdep);
--	}
--	spin_unlock_irqrestore(&domain->lock, flags);
--}
--
--static void intel_nested_flush_cache(struct dmar_domain *domain, u64 addr,
--				     u64 npages, bool ih)
--{
--	struct iommu_domain_info *info;
--	unsigned int mask;
--	unsigned long i;
--
--	xa_for_each(&domain->iommu_array, i, info)
--		qi_flush_piotlb(info->iommu,
--				domain_id_iommu(domain, info->iommu),
--				IOMMU_NO_PASID, addr, npages, ih);
--
--	if (!domain->has_iotlb_device)
+-	if (WARN_ON(!pages))
 -		return;
 -
--	if (npages == U64_MAX)
--		mask = 64 - VTD_PAGE_SHIFT;
--	else
--		mask = ilog2(__roundup_pow_of_two(npages));
--
--	nested_flush_dev_iotlb(domain, addr, mask);
+-	qi_flush_piotlb(sdev->iommu, sdev->did, svm->pasid, address, pages, ih);
+-	if (info->ats_enabled) {
+-		qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid, info->pfsid,
+-					 svm->pasid, sdev->qdep, address,
+-					 order_base_2(pages));
+-		quirk_extra_dev_tlb_flush(info, address, order_base_2(pages),
+-					  svm->pasid, sdev->qdep);
+-	}
 -}
 -
- static int intel_nested_cache_invalidate_user(struct iommu_domain *domain,
- 					      struct iommu_user_data_array *array)
+-static void intel_flush_svm_range_dev(struct intel_svm *svm,
+-				      struct intel_svm_dev *sdev,
+-				      unsigned long address,
+-				      unsigned long pages, int ih)
+-{
+-	unsigned long shift = ilog2(__roundup_pow_of_two(pages));
+-	unsigned long align = (1ULL << (VTD_PAGE_SHIFT + shift));
+-	unsigned long start = ALIGN_DOWN(address, align);
+-	unsigned long end = ALIGN(address + (pages << VTD_PAGE_SHIFT), align);
+-
+-	while (start < end) {
+-		__flush_svm_range_dev(svm, sdev, start, align >> VTD_PAGE_SHIFT, ih);
+-		start += align;
+-	}
+-}
+-
+-static void intel_flush_svm_range(struct intel_svm *svm, unsigned long address,
+-				unsigned long pages, int ih)
+-{
+-	struct intel_svm_dev *sdev;
+-
+-	rcu_read_lock();
+-	list_for_each_entry_rcu(sdev, &svm->devs, list)
+-		intel_flush_svm_range_dev(svm, sdev, address, pages, ih);
+-	rcu_read_unlock();
+-}
+-
+-static void intel_flush_svm_all(struct intel_svm *svm)
+-{
+-	struct device_domain_info *info;
+-	struct intel_svm_dev *sdev;
+-
+-	rcu_read_lock();
+-	list_for_each_entry_rcu(sdev, &svm->devs, list) {
+-		info = dev_iommu_priv_get(sdev->dev);
+-
+-		qi_flush_piotlb(sdev->iommu, sdev->did, svm->pasid, 0, -1UL, 0);
+-		if (info->ats_enabled) {
+-			qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid, info->pfsid,
+-						 svm->pasid, sdev->qdep,
+-						 0, 64 - VTD_PAGE_SHIFT);
+-			quirk_extra_dev_tlb_flush(info, 0, 64 - VTD_PAGE_SHIFT,
+-						  svm->pasid, sdev->qdep);
+-		}
+-	}
+-	rcu_read_unlock();
+-}
+-
+ /* Pages have been freed at this point */
+ static void intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
+ 					struct mm_struct *mm,
+ 					unsigned long start, unsigned long end)
  {
-@@ -164,9 +120,9 @@ static int intel_nested_cache_invalidate_user(struct iommu_domain *domain,
- 			break;
- 		}
+ 	struct intel_svm *svm = container_of(mn, struct intel_svm, notifier);
++	struct dmar_domain *domain = svm->domain;
  
--		intel_nested_flush_cache(dmar_domain, inv_entry.addr,
--					 inv_entry.npages,
--					 inv_entry.flags & IOMMU_VTD_INV_FLAGS_LEAF);
-+		cache_tag_flush_range(dmar_domain, inv_entry.addr,
-+				      inv_entry.addr + nrpages_to_size(inv_entry.npages) - 1,
-+				      inv_entry.flags & IOMMU_VTD_INV_FLAGS_LEAF);
- 		processed++;
+ 	if (start == 0 && end == -1UL) {
+-		intel_flush_svm_all(svm);
++		cache_tag_flush_all(domain);
+ 		return;
  	}
+ 
+-	intel_flush_svm_range(svm, start,
+-			      (end - start + PAGE_SIZE - 1) >> VTD_PAGE_SHIFT, 0);
++	/*
++	 * The mm_types defines vm_end as the first byte after the end address,
++	 * different from IOMMU subsystem using the last address of an address
++	 * range.
++	 */
++	cache_tag_flush_range(domain, start, end - 1, 0);
+ }
+ 
+ static void intel_mm_release(struct mmu_notifier *mn, struct mm_struct *mm)
+@@ -336,6 +273,7 @@ static int intel_svm_set_dev_pasid(struct iommu_domain *domain,
+ 		INIT_LIST_HEAD_RCU(&svm->devs);
+ 
+ 		svm->notifier.ops = &intel_mmuops;
++		svm->domain = to_dmar_domain(domain);
+ 		ret = mmu_notifier_register(&svm->notifier, mm);
+ 		if (ret) {
+ 			kfree(svm);
+@@ -801,6 +739,7 @@ struct iommu_domain *intel_svm_domain_alloc(void)
+ 	if (!domain)
+ 		return NULL;
+ 	domain->domain.ops = &intel_svm_domain_ops;
++	domain->use_first_level = true;
+ 	INIT_LIST_HEAD(&domain->cache_tags);
+ 	spin_lock_init(&domain->cache_lock);
  
 -- 
 2.34.1
