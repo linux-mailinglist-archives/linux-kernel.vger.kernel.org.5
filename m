@@ -1,347 +1,213 @@
-Return-Path: <linux-kernel+bounces-147201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA8E78A70EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 98ACB8A70EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:10:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B7342834C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:09:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54953285259
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60C30131BC0;
-	Tue, 16 Apr 2024 16:08:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C6F2131756;
+	Tue, 16 Apr 2024 16:10:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i2cX1f/8"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="QSIslBDK"
+Received: from outbound.mail.protection.outlook.com (mail-dm6nam11on2040.outbound.protection.outlook.com [40.107.223.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC4612BE9F;
-	Tue, 16 Apr 2024 16:08:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713283735; cv=none; b=CQLGcVlIEtwiPTTD47RKb/EsJ0WJS2PbPnuqIt6r88uV9KqK9If+dLBtIpUEBYV8cF6GtcqNcPo6dfs9W9ZB6fZHyL8nmphTUbqKzmrRPw+jrMeBwkeQ3sqv5gHy+P1DVnFoRdV56tPSvGp/zQkoRbtOtsU4ZAPdvvEeVTEsvIk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713283735; c=relaxed/simple;
-	bh=xJTZUAnxgcV31l2lk2qqoJPE2M8jusD+gc6I2kuThFU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GEf1AjueclYDyTOSbfS8T+SLlalPWsGYkIRzbeNJiZm3tUqMN3CXpNL+/ynVjlgPNt5nyQLiPbNHnQMYO4RZeXM7I4yLnAecmCj+zbFMrJI8O2KcUv9n5tJM5GmDLoYgoDdZzQ2DV43NZJ/O87PAdIdR2OdFqg6yhLqiVlj+XmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i2cX1f/8; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3454fbdd88aso4004782f8f.3;
-        Tue, 16 Apr 2024 09:08:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713283732; x=1713888532; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TfqeinlZEWtIXVEkZjds66VVZ8TL7yzBqLVW5+SS5fc=;
-        b=i2cX1f/8kayXC5spMaZvlCaQwf0f79sHNgNeBLm9OBpr1fWbS/BVWXbRpGRHh2K/kh
-         tSMfsoZjERMEphOcqCkmJZZcnEyoby9z2t84tgWRT4BvT1u1VKe3K0w652kckRH+svt1
-         35AS/wPljoQ3II/t+64qHTL3oABoJ1DSgtHMCLXOorWqU2M0jTJNK0GMF23/1J6BAW/r
-         6DS8TMV6Fc7tnTql2TZrKNsHmcAsV8xJoRD10H3ypHAuP7EzKg+kNpTLuX7BWEoBEQYr
-         v0opZBN7poOeChnFqBUueN2XDr1hvfVxDI5F17C49SR0EAzGi96lrIMw54bEANdjNfMB
-         5OVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713283732; x=1713888532;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TfqeinlZEWtIXVEkZjds66VVZ8TL7yzBqLVW5+SS5fc=;
-        b=d3t0yC+9t4P/HVTjOsj/yKncYuYZIgETCcANbEKZWO4LcLy+Z/GcNMa1CYh7hgNdJN
-         nWnzSjfZohqEEGoE7qBVI6ZuqSb7DSYvcFMucJG3pfx0p9DrmAh+NMm7PDJW3ChlAJ7D
-         LeOZSSecs1DgiBfBcgCSOnCNAlU/wXm1F2wWQt6Odm+MMuSqVrscTioizrIsDeanGlU4
-         jz5ul+NqvdS0lD1Xcz1ByxbnpO8XImT5avk8xyr6d2MRqU09xJ3KEt58BMneTLIQqplN
-         iqKiaLw6E29rDnHmk7i95zH/mSLWQdlRDYfAqwshUS5U4OnAoZQv5QjIpiedSYEczsQV
-         Sd/g==
-X-Forwarded-Encrypted: i=1; AJvYcCXgrqUJQmgIl+2yj3eS9+CWigwCDyfjbfQdHQNpTSL1kvkGr+ufRPhBDtS2uakn0+/3HYuoWHJpc1NSCNFJo0e5KQSEATvtCuW1GfKJXvoVo323fEDOFSljivZJKa2gHeK/D1A0
-X-Gm-Message-State: AOJu0YwRtRn9FKrtybFpuH/1oig2ERU7/8on5dShbU59QfMtdYTVN07a
-	au+JIcEqZOFfoh7q6vaDBt8Pi82yyQc0s5hz9MQq+ab2eMJ3SR94XCAsrFPN9UYJV1V5Bu3jJbn
-	W4zu/Bt+PaNcQ02iTBd+2ALdw53k=
-X-Google-Smtp-Source: AGHT+IGF5abEcTvau2mHvo9SZL7EcchFBWSdkvIwcQqqBgNJB7O3i8rimyfDFs0cfpgylrUUTfGBxVDks5HFfnr/FOY=
-X-Received: by 2002:a5d:510f:0:b0:346:cd1c:dc73 with SMTP id
- s15-20020a5d510f000000b00346cd1cdc73mr11149953wrt.46.1713283731429; Tue, 16
- Apr 2024 09:08:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF1912FB09
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:10:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713283821; cv=fail; b=lYFmTh4CFtBcuDLOBtFIlateOLCP/EFu3i8HQ1wvgIPmONnr+zP38OSzX/VaeuckhexipwRBn97GJ6aXxjkmUBWGijuSrzuh/3A/o8xjSCzxet+zyQ82hxShdAEdqC9a6ZML0JndckRbpEvMC3OPZwW7OrFn3Mwj/B/xqz3NmaU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713283821; c=relaxed/simple;
+	bh=wrvrhX7C8oOVq3Rpzx9bbGXlze0jGgXrEXC86sVUWeo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ka8D+yxNPR2R87a3+9VLzM7ruIx1EXZkOZCVG1mNvHfaBWJqanVnX6LCaGB/H+VgEDjKOzgAX7EfLCIsnOJqBMfIHte4zuCoOzHVuFtSPtjuD7QhCEvjWd/cCccgDemHH5vbjQpfNfV4z+uWZmpYCd8rJsUkACIim4GP1MtXZSQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=QSIslBDK; arc=fail smtp.client-ip=40.107.223.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WXb7sID7Hju8SqOK4UDEhyzd/lrRIcVyx2mJqH/m7xKYscGUam2WAekTYEvIjV9apEu72tWdpFjW6E+9YtsWPuUxweUOilfPiyYUGAU07TeGGYfNyT4EfxR7pLODNquDPMJcuCw7TrvwacImxJhBd2J7FPQW3QxNeGg+D6AtZ/L9XGgrCjSaElqIEH4BjPU/HvpJ9iJjlvfwsqqwKnhgbxnvs5et7dY13Ka47OHSjqGEi2fwSb1+ANKJTXhaW3KsDSWNoGrWpuUJAjpGRvTEdmTO/6jrwyaINP/z+FFAW4x4UUc5YQHvLXPkt5FSFMvk+wMwj5cY2C1Z3ur5fIo1HQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pvhTamlKAD8kTuh0c9KJ8e4dW0bdeuao5MGTe54skuk=;
+ b=PV8mlFHh962ScYHt3oWjREZxOqPfcPzjytNYmActbm+bAlrk7wkmrvEkjJO0W9sjpoFGrYcIts3/hTnFSsDvv3GFpDDtRQ9YNiuuOxzJapI0EZvHpXZs8PihQ3tIHBmtWffTJBbwtc2HWV2OYVlXmtnWhj2ztwFJ/Q+eSOxBXunekOfl++5+ReKBzmm+tlTFgg1g0F0UJvwea9pIev2sS3M9QwV8VdzsiX3lsjbsmFdRd4BHrtJC5Wv9i30oc2s1nloXOpWnJ07GToE+9fkdBWWksXJMd8eZrK+DaIeBmi188qwlinZ95L3MeuJ6H1iOSuy1Eo1tgzmyPHNIPPiaOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pvhTamlKAD8kTuh0c9KJ8e4dW0bdeuao5MGTe54skuk=;
+ b=QSIslBDKHm94tHa88MllztuYdxTIEdZlYrUPRF8Evbngl9VaouBuJ5DbsJtxwEJLmTqm1cvwFEP7bB0FB2GsSZppyXjNCmKJUPAct/WCETB6qVJR+sfH7IwF59jMZ3ua3M3qw+fGKc35Exh8MG08MpPZD48FlCBT+5Q+2Zb9WJ8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
+ by PH8PR12MB7181.namprd12.prod.outlook.com (2603:10b6:510:22a::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
+ 2024 16:10:17 +0000
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::bf0:d462:345b:dc52]) by BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::bf0:d462:345b:dc52%6]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
+ 16:10:17 +0000
+Message-ID: <18dfff9a-b8e0-9d43-8538-366f74d74a7d@amd.com>
+Date: Tue, 16 Apr 2024 11:10:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 13/14] x86/sev: Hide SVSM attestation entries if not
+ running under an SVSM
+Content-Language: en-US
+To: Dan Williams <dan.j.williams@intel.com>, linux-kernel@vger.kernel.org,
+ x86@kernel.org, linux-coco@lists.linux.dev, svsm-devel@coconut-svsm.dev
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Michael Roth <michael.roth@amd.com>,
+ Ashish Kalra <ashish.kalra@amd.com>, Joel Becker <jlbec@evilplan.org>,
+ Christoph Hellwig <hch@lst.de>
+References: <cover.1711405593.git.thomas.lendacky@amd.com>
+ <67893f352bc54de61160bfe251cba0bdf0431f37.1711405593.git.thomas.lendacky@amd.com>
+ <661e14a2cdb12_4d561294c7@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+From: Tom Lendacky <thomas.lendacky@amd.com>
+In-Reply-To: <661e14a2cdb12_4d561294c7@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR01CA0032.prod.exchangelabs.com (2603:10b6:805:b6::45)
+ To BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415131941.51153-1-linyunsheng@huawei.com> <20240415131941.51153-7-linyunsheng@huawei.com>
-In-Reply-To: <20240415131941.51153-7-linyunsheng@huawei.com>
-From: Alexander Duyck <alexander.duyck@gmail.com>
-Date: Tue, 16 Apr 2024 09:08:14 -0700
-Message-ID: <CAKgT0UdAW9EBh_eauHMArxjUeV-mwC9arZuCYPk=scn5yvW9gQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 06/15] mm: page_frag: change page_frag_alloc_*
- API to accept align param
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Eric Dumazet <edumazet@google.com>, 
-	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, linux-mm@kvack.org, 
-	linux-afs@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|PH8PR12MB7181:EE_
+X-MS-Office365-Filtering-Correlation-Id: 16d62ab3-e79f-4c9a-7c6a-08dc5e2fb4c8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	RfZJZPhst6ctgOyjrxk+zvjwsAM7DK8w1n46tsM6MEVWWiRcR68QUbizoxl2ePF9DZresb1OzEBlwmMhHpmC1c1zNU8kkIgWGjznYbwyc5G0CEle7lEbcTgvoexeh4gc05bLCNpDQyasVAtVYA9EQKR4xuWM/bHaN1fn8wmRDuolPpecJyBZdtSr762Hk2sLUqsQX+xOvixRFk4OL4ELNdKX0RtM3TmTyVBNF3iCVFI2iNpt7QRZy8vMYSlt36Ys7YUYDEcMQQGB08ZTXI5jiJt/2VVskAdxdCGrHMuo3dFfdbYIB2hdiS30saK+FpCKqO50FAOcnFyUie+9LWjIBXztpcbvBNEypplJHwh72yNVEq4+2cfZIXzDNbJp+L9gmo1V7LOdQ1GgGQA/31PbW4sWi6L18XqukjdfEGw8muoaQPyUwiJMwsTrDCpqeFocKb/7g9iM5dT2rmsQGC60yg7zDUMKYHU5rOQnfiBUfosyz/peATjD2rF+Yh5ttGIHaoFmy2mdfiwtrS0J0sFpjTIyYsE4xqulSfWPdo1esYtKASpaybQ6gpu0lcL3d1k1EmWD7RAmq1IMMY0lMwgEEVvtwPb+qJ+lWMluatRs6EbmdeDZfGsv79gueaJG+ukCMAZRa5nnbUp1/P0NRCdYxqhJcAiQINaHj4HsJ2+adyM=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Um5RblBWbXl4aTFQeTRQSUhDYjJ4UmVnbXY4OUFySTNTT2pFc1RWQlRrY0ln?=
+ =?utf-8?B?MzlVUzlQZHk1WWovMzdnWVNpYVZUQnJNZEszMlFEQm9UWTNtSEwrWEQ0NTVi?=
+ =?utf-8?B?TWllVlRRS3NFSk5yb1E0VXpTdDdTa3B2d2k1a0xGNUNjT25TekpaUHRWTGpY?=
+ =?utf-8?B?QkZGVzJmdldnUXZkWno1MjdmR0RoREtCOHZKZkZpcGlyWGdUVVdLSEZrYkRr?=
+ =?utf-8?B?UHIxVndiVUowbVQ1WGZ4RHBGZHpRejAwVmNnR0pzT2lHWGYyc0ZXMk5sSmcz?=
+ =?utf-8?B?TnRyNXhmSlV5Z3pyazYrM3g5T0d3Z0FmbTdjb1FjSU8ybkdwTEVWbEFLamx5?=
+ =?utf-8?B?S3RMMWUycFBqOWNKN1RmTkNtVFhwdjlFTHlMS2I5OWNnS0dGZmNmU0JvRnU0?=
+ =?utf-8?B?YldHOW5QZ2FicDBGOG4zaGphdU9kZGF6cXFuSzRtNE1EOC9vcUpzazczbmVn?=
+ =?utf-8?B?anl5ZlBQU2xSZFJqRVZCVzBhY0FzRlplVGJ5RzduMHdqcWJHUExoRzJnTXcz?=
+ =?utf-8?B?clBEMTdqNUpaRTJsZHllUVFIQWRiL1FTQ2J2bTRJelZMQnk2VmdEK1YvRm15?=
+ =?utf-8?B?ZTFXbGg0VWwrb2x1dFVJS0liTHRndTdpaVNXdFZlbXFha3plR2J2Y1h5NWQx?=
+ =?utf-8?B?OFhaQ0hLVUdYTmY1ckdsUlRwa0VkZlNEOW4rdDZaN2hJdXpndlVtVlRqUFhM?=
+ =?utf-8?B?cWt2Z3lUQ1FUZ2tHUHBwNzl0NHM5cmJIaS91alRaM1NTTi9jcDN4WENKdFEw?=
+ =?utf-8?B?bUI1WnhMVW1TWTdXZFFnM0IvdlVabnpJTDlQVEppQTRyRUtmSmYwU0lFR3Q3?=
+ =?utf-8?B?UHpBZGsvR2FtU09NSkFDcHhqTit4bThBeFdaRG1vTXpNK2JmTHNSNEo2RlVi?=
+ =?utf-8?B?cGpUY00rMWlLUnZpR2ExcVFhMVZsTjN0YW1XUjIvN29heUVRL0VBLzFuenFw?=
+ =?utf-8?B?MzlCYUUxUU8zekdDZVQ4U05YaXpNY05oSnhHc1BLZi9rWDQyd0ozV0hvdFF5?=
+ =?utf-8?B?eVdHcEtkQ2R5RUxqaWNNZjkzc1AzeFM0Szkzc0wzWWZXV2tITWlPYnVhVWI3?=
+ =?utf-8?B?L1FHYVkxV2pZTk9GU1Z4bEc1MVRIYU9NR3U1SDhFam1lK2FtNWtCNGN6RmQ2?=
+ =?utf-8?B?d2tJRXIzMmtKQTA1K1UrTk4wejVITUhXUThuZG5VQjhLSjVxWUxRZ1BxMzlV?=
+ =?utf-8?B?M2pkLytXOWJ5RHJLVEhsdTZvRzEzTjFhczR1aEZVcFNBZTNpd09LSG9OTis4?=
+ =?utf-8?B?THBaQXJMTWtDNHR3WDRrYUkyd1h3RTl4bDJETkthbk9NeTlHRTB6UnFwZWU5?=
+ =?utf-8?B?Z0d2WXhhTUV5QTEwVlFkb29KamQ3Q0VweGIzYkJVdXNhb3RKbjJSdFRzR1ps?=
+ =?utf-8?B?TCtHNWlRd3ZITmF0b284ekFSenhFMUZpcm83WGovWWNiUGZObzJOVys4c0sw?=
+ =?utf-8?B?eGVGVjRQeG1DcXhrcmtMSlVIdHFVRDg5bFk1ZnU5VG9KWThGZlExejdkMnpW?=
+ =?utf-8?B?OVdWQWtyTExlK2cvWkppeit6dldVZlN4UGhsY0hxcjdJUUQ2K2J6ZGticzh6?=
+ =?utf-8?B?VXVla202bml1cjBUd3F0T0VpdXFxVmRibzdSODNwN2Rwb0EvSDc3VEtnUW9Q?=
+ =?utf-8?B?aTd1Tmhodm84eCtRME8wN3pCZ0hUbFNMTndPM3lhbTUzRldDZk1UWUhQcU5M?=
+ =?utf-8?B?bTEzQ2h4QzhRNDlhdFh5Y0IrZzNBbFRMTG9IcFQzdXMrVkovUEdyNlMrck9O?=
+ =?utf-8?B?UGhuaXVEeGVBem5zVk9ZVWpzeTMrTnBrN3ZoZ25UdDlOa3VReHM5VVZoVllx?=
+ =?utf-8?B?KytXb2EzQmJidjFZdFRzSkRLQndkOFVlSDk5U1o5SWZjK1pGYzEwRkVrdytl?=
+ =?utf-8?B?UVQxR1ZRY3FMaWxUbkZ5b2FUN25WOVRjOHFmcnZDSGpYR2dmRXExTGZDSlhj?=
+ =?utf-8?B?cUpveHVuczNveldkcHI2T2QvOHJqOHBqSGhZRG5aQzZ6NEJaY3IyWHphVXFT?=
+ =?utf-8?B?QTdDQlh2bDlTNkJpdVJ2bGV3UCs3dDJrbEZmajFjYk01TXo0WlR2MTVrejhC?=
+ =?utf-8?B?elJ4QmZOVDhuOVJtbGxDeHkzcnAwOFZlSUZrdmQ5cFhudUpJRFAwQzE0d3hu?=
+ =?utf-8?Q?2ef16k0vuybz45amrGQEyyDa3?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16d62ab3-e79f-4c9a-7c6a-08dc5e2fb4c8
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 16:10:17.0857
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xC4oWDf84az9im+eLeAdzzZsf1Y+4ISswBaTFsMKWiyPy4u8g7tw2woFWcptml/HSXoIQWoeZT6n4v3M6LjWJg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7181
 
-On Mon, Apr 15, 2024 at 6:22=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
->
-> When page_frag_alloc_* API doesn't need data alignment, the
-> ALIGN() operation is unnecessary, so change page_frag_alloc_*
-> API to accept align param instead of align_mask param, and do
-> the ALIGN()'ing in the inline helper when needed.
->
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 
-The vast majority of callers are using this aligned one way or
-another. If anything with your recent changes we should probably be
-making sure to align the fragsz as well as the offset since most
-callers were only using the alignment of the fragsz in order to get
-their alignment.
 
-My main concern is that this change implies that most are using an
-unaligned setup when it is in fact quite the opposite.
+On 4/16/24 01:03, Dan Williams wrote:
+> Tom Lendacky wrote:
+>> Config-fs provides support to hide individual attribute entries. Using
+>> this support, base the display of the SVSM related entries on the presence
+>> of an SVSM.
+>>
+>> Cc: Joel Becker <jlbec@evilplan.org>
+>> Cc: Christoph Hellwig <hch@lst.de>
+>> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+>> ---
+>>   arch/x86/coco/core.c        |  4 ++++
+>>   drivers/virt/coco/tsm.c     | 14 ++++++++++----
+>>   include/linux/cc_platform.h |  8 ++++++++
+>>   3 files changed, 22 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
+>> index d07be9d05cd0..efa0f648f754 100644
+>> --- a/arch/x86/coco/core.c
+>> +++ b/arch/x86/coco/core.c
+>> @@ -12,6 +12,7 @@
+>>   
+>>   #include <asm/coco.h>
+>>   #include <asm/processor.h>
+>> +#include <asm/sev.h>
+>>   
+>>   enum cc_vendor cc_vendor __ro_after_init = CC_VENDOR_NONE;
+>>   u64 cc_mask __ro_after_init;
+>> @@ -78,6 +79,9 @@ static bool noinstr amd_cc_platform_has(enum cc_attr attr)
+>>   	case CC_ATTR_GUEST_STATE_ENCRYPT:
+>>   		return sev_status & MSR_AMD64_SEV_ES_ENABLED;
+>>   
+>> +	case CC_ATTR_GUEST_SVSM_PRESENT:
+>> +		return snp_get_vmpl();
+>> +
+>>   	/*
+>>   	 * With SEV, the rep string I/O instructions need to be unrolled
+>>   	 * but SEV-ES supports them through the #VC handler.
+>> diff --git a/drivers/virt/coco/tsm.c b/drivers/virt/coco/tsm.c
+>> index 46f230bf13ac..d30471874e87 100644
+>> --- a/drivers/virt/coco/tsm.c
+>> +++ b/drivers/virt/coco/tsm.c
+>> @@ -64,6 +64,12 @@ static struct tsm_report_state *to_state(struct tsm_report *report)
+>>   	return container_of(report, struct tsm_report_state, report);
+>>   }
+>>   
+>> +static bool provider_visibility(const struct config_item *item,
+>> +				const struct configfs_attribute *attr)
+>> +{
+>> +	return cc_platform_has(CC_ATTR_GUEST_SVSM_PRESENT);
+>> +}
+> 
+> I expect this needs to be a callback into the provider ops because one
+> of the other use cases for this visibility check is to get rid of the
+> "extra" attributes and handle that visibility with the same mechanism.
 
-> ---
->  include/linux/page_frag_cache.h | 20 ++++++++++++--------
->  include/linux/skbuff.h          | 12 ++++++------
->  mm/page_frag_cache.c            |  9 ++++-----
->  net/core/skbuff.c               | 12 +++++-------
->  net/rxrpc/txbuf.c               |  5 +++--
->  5 files changed, 30 insertions(+), 28 deletions(-)
->
-> diff --git a/include/linux/page_frag_cache.h b/include/linux/page_frag_ca=
-che.h
-> index 04810d8d6a7d..cc0ede0912f3 100644
-> --- a/include/linux/page_frag_cache.h
-> +++ b/include/linux/page_frag_cache.h
-> @@ -25,21 +25,25 @@ struct page_frag_cache {
->
->  void page_frag_cache_drain(struct page_frag_cache *nc);
->  void __page_frag_cache_drain(struct page *page, unsigned int count);
-> -void *__page_frag_alloc_align(struct page_frag_cache *nc, unsigned int f=
-ragsz,
-> -                             gfp_t gfp_mask, unsigned int align_mask);
-> +void *page_frag_alloc(struct page_frag_cache *nc, unsigned int fragsz,
-> +                     gfp_t gfp_mask);
-> +
-> +static inline void *__page_frag_alloc_align(struct page_frag_cache *nc,
-> +                                           unsigned int fragsz, gfp_t gf=
-p_mask,
-> +                                           unsigned int align)
-> +{
-> +       nc->offset =3D ALIGN(nc->offset, align);
-> +
-> +       return page_frag_alloc(nc, fragsz, gfp_mask);
-> +}
->
+Yes, worked through on the other thread.
 
-I would rather not have us breaking up the alignment into another
-function. It makes this much more difficult to work with. In addition
-you are adding offsets without actually adding to the pages which
-makes this seem exploitable. Basically just pass an alignment value of
-32K and you are forcing a page eviction regardless.
+But the "extra" attributes are likely to remain visible if we go in the 
+group visibility direction, to provide compatibility.
 
->  static inline void *page_frag_alloc_align(struct page_frag_cache *nc,
->                                           unsigned int fragsz, gfp_t gfp_=
-mask,
->                                           unsigned int align)
->  {
->         WARN_ON_ONCE(!is_power_of_2(align));
-> -       return __page_frag_alloc_align(nc, fragsz, gfp_mask, -align);
-> -}
->
-> -static inline void *page_frag_alloc(struct page_frag_cache *nc,
-> -                                   unsigned int fragsz, gfp_t gfp_mask)
-> -{
-> -       return page_frag_alloc_align(nc, fragsz, gfp_mask, ~0u);
-> +       return __page_frag_alloc_align(nc, fragsz, gfp_mask, align);
->  }
->
->  void page_frag_free(void *addr);
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index f2dc1f735c79..43c704589deb 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -3268,7 +3268,7 @@ static inline void skb_queue_purge(struct sk_buff_h=
-ead *list)
->  unsigned int skb_rbtree_purge(struct rb_root *root);
->  void skb_errqueue_purge(struct sk_buff_head *list);
->
-> -void *__netdev_alloc_frag_align(unsigned int fragsz, unsigned int align_=
-mask);
-> +void *__netdev_alloc_frag_align(unsigned int fragsz, unsigned int align)=
-;
->
->  /**
->   * netdev_alloc_frag - allocate a page fragment
-> @@ -3279,14 +3279,14 @@ void *__netdev_alloc_frag_align(unsigned int frag=
-sz, unsigned int align_mask);
->   */
->  static inline void *netdev_alloc_frag(unsigned int fragsz)
->  {
-> -       return __netdev_alloc_frag_align(fragsz, ~0u);
-> +       return __netdev_alloc_frag_align(fragsz, 1u);
->  }
->
->  static inline void *netdev_alloc_frag_align(unsigned int fragsz,
->                                             unsigned int align)
->  {
->         WARN_ON_ONCE(!is_power_of_2(align));
-> -       return __netdev_alloc_frag_align(fragsz, -align);
-> +       return __netdev_alloc_frag_align(fragsz, align);
->  }
->
->  struct sk_buff *__netdev_alloc_skb(struct net_device *dev, unsigned int =
-length,
-> @@ -3346,18 +3346,18 @@ static inline void skb_free_frag(void *addr)
->         page_frag_free(addr);
->  }
->
-> -void *__napi_alloc_frag_align(unsigned int fragsz, unsigned int align_ma=
-sk);
-> +void *__napi_alloc_frag_align(unsigned int fragsz, unsigned int align);
->
->  static inline void *napi_alloc_frag(unsigned int fragsz)
->  {
-> -       return __napi_alloc_frag_align(fragsz, ~0u);
-> +       return __napi_alloc_frag_align(fragsz, 1u);
->  }
->
->  static inline void *napi_alloc_frag_align(unsigned int fragsz,
->                                           unsigned int align)
->  {
->         WARN_ON_ONCE(!is_power_of_2(align));
-> -       return __napi_alloc_frag_align(fragsz, -align);
-> +       return __napi_alloc_frag_align(fragsz, align);
->  }
->
->  struct sk_buff *napi_alloc_skb(struct napi_struct *napi, unsigned int le=
-ngth);
-> diff --git a/mm/page_frag_cache.c b/mm/page_frag_cache.c
-> index dc864ee09536..b4408187e1ab 100644
-> --- a/mm/page_frag_cache.c
-> +++ b/mm/page_frag_cache.c
-> @@ -61,9 +61,8 @@ void __page_frag_cache_drain(struct page *page, unsigne=
-d int count)
->  }
->  EXPORT_SYMBOL(__page_frag_cache_drain);
->
-> -void *__page_frag_alloc_align(struct page_frag_cache *nc,
-> -                             unsigned int fragsz, gfp_t gfp_mask,
-> -                             unsigned int align_mask)
-> +void *page_frag_alloc(struct page_frag_cache *nc, unsigned int fragsz,
-> +                     gfp_t gfp_mask)
->  {
->         unsigned int size, offset;
->         struct page *page;
-> @@ -92,7 +91,7 @@ void *__page_frag_alloc_align(struct page_frag_cache *n=
-c,
->         size =3D PAGE_SIZE;
->  #endif
->
-> -       offset =3D ALIGN(nc->offset, -align_mask);
-> +       offset =3D nc->offset;
->         if (unlikely(offset + fragsz > size)) {
->                 page =3D virt_to_page(nc->va);
->
-> @@ -129,7 +128,7 @@ void *__page_frag_alloc_align(struct page_frag_cache =
-*nc,
->
->         return nc->va + offset;
->  }
-> -EXPORT_SYMBOL(__page_frag_alloc_align);
-> +EXPORT_SYMBOL(page_frag_alloc);
->
->  /*
->   * Frees a page fragment allocated out of either a compound or order 0 p=
-age.
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index ea052fa710d8..676e2d857f02 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -306,18 +306,17 @@ void napi_get_frags_check(struct napi_struct *napi)
->         local_bh_enable();
->  }
->
-> -void *__napi_alloc_frag_align(unsigned int fragsz, unsigned int align_ma=
-sk)
-> +void *__napi_alloc_frag_align(unsigned int fragsz, unsigned int align)
->  {
->         struct napi_alloc_cache *nc =3D this_cpu_ptr(&napi_alloc_cache);
->
->         fragsz =3D SKB_DATA_ALIGN(fragsz);
->
+Thanks,
+Tom
 
-So this is a perfect example. This caller is aligning the size by
-SMP_CACHE_BYTES. This is the most typical case. Either this or
-L1_CACHE_BYTES. As such all requests should be aligned to at least
-that. I would prefer it if we didn't strip the alignment code out of
-our main allocating function. If anything, maybe we should make it
-more specific that the expectation is that fragsz is a multiple of the
-alignment.
-
-> -       return __page_frag_alloc_align(&nc->page, fragsz, GFP_ATOMIC,
-> -                                      align_mask);
-> +       return __page_frag_alloc_align(&nc->page, fragsz, GFP_ATOMIC, ali=
-gn);
->  }
->  EXPORT_SYMBOL(__napi_alloc_frag_align);
->
-> -void *__netdev_alloc_frag_align(unsigned int fragsz, unsigned int align_=
-mask)
-> +void *__netdev_alloc_frag_align(unsigned int fragsz, unsigned int align)
->  {
->         void *data;
->
-> @@ -325,15 +324,14 @@ void *__netdev_alloc_frag_align(unsigned int fragsz=
-, unsigned int align_mask)
->         if (in_hardirq() || irqs_disabled()) {
->                 struct page_frag_cache *nc =3D this_cpu_ptr(&netdev_alloc=
-_cache);
->
-> -               data =3D __page_frag_alloc_align(nc, fragsz, GFP_ATOMIC,
-> -                                              align_mask);
-> +               data =3D __page_frag_alloc_align(nc, fragsz, GFP_ATOMIC, =
-align);
->         } else {
->                 struct napi_alloc_cache *nc;
->
->                 local_bh_disable();
->                 nc =3D this_cpu_ptr(&napi_alloc_cache);
->                 data =3D __page_frag_alloc_align(&nc->page, fragsz, GFP_A=
-TOMIC,
-> -                                              align_mask);
-> +                                              align);
->                 local_bh_enable();
->         }
->         return data;
-> diff --git a/net/rxrpc/txbuf.c b/net/rxrpc/txbuf.c
-> index e0679658d9de..eb640875bf07 100644
-> --- a/net/rxrpc/txbuf.c
-> +++ b/net/rxrpc/txbuf.c
-> @@ -32,9 +32,10 @@ struct rxrpc_txbuf *rxrpc_alloc_data_txbuf(struct rxrp=
-c_call *call, size_t data_
->                 hoff =3D round_up(sizeof(*whdr), data_align) - sizeof(*wh=
-dr);
->         total =3D hoff + sizeof(*whdr) + data_size;
->
-> +       data_align =3D max_t(size_t, data_align, L1_CACHE_BYTES);
->         mutex_lock(&call->conn->tx_data_alloc_lock);
-> -       buf =3D __page_frag_alloc_align(&call->conn->tx_data_alloc, total=
-, gfp,
-> -                                     ~(data_align - 1) & ~(L1_CACHE_BYTE=
-S - 1));
-> +       buf =3D page_frag_alloc_align(&call->conn->tx_data_alloc, total, =
-gfp,
-> +                                   data_align);
->         mutex_unlock(&call->conn->tx_data_alloc_lock);
->         if (!buf) {
->                 kfree(txb);
-> --
-> 2.33.0
->
 
