@@ -1,109 +1,168 @@
-Return-Path: <linux-kernel+bounces-146837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7A458A6B9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:57:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BA9E8A6BBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:05:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BC54B225CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:57:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBF67B20DD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:05:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99F412CD96;
-	Tue, 16 Apr 2024 12:56:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 217B912BF28;
+	Tue, 16 Apr 2024 13:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="aNM5L+Vc"
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ss/kIJQt"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C36F5129A7B;
-	Tue, 16 Apr 2024 12:56:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518E112BF15
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 13:05:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713272217; cv=none; b=IUr/EV1Mts8iBWhobb8b+Yt1Jb4U1fzJXiA0r5WkoOR8My8HOIgtGH1OZfqUD2dikevHkjM/e9TZ/i/PSSsoWK1+Djw5UK2lqSzcv4vWhFUP3INSFYV/l82YdZp11c5jnjeyHxKP7QJ6IUAL6x1xX+fHmQgZJFhFczks4lGSsh8=
+	t=1713272705; cv=none; b=o36FM4kQwgQIEfy3S/jhF2ndZ5K8hUGeb4OMZ1Sy5cXCgtfNptkBn2eaYyaGnkcV5eVg9+aFF6AmJJRJBXizFrJE+Zfyy/CGBga2ATgSMYIlmfgSYcE0CWp/lDDzA4vtBg7gX+qN6/o1ftWPgpNViCpJ61jKi0BxA1q09hmPldE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713272217; c=relaxed/simple;
-	bh=SE7iXRSRUv3LNcIGi2TykYUAc4S8x29BhFlqFfsK0/Y=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=iUNnjmzs9V0VwJE9+5vGrEuMUjd0gqMmWtp8v6yC1tUuBUlUvjG8x34TlU3TBfyuETVMYpr8+h49/EG84aotaZF+gnsxfVuj23bE7g2lgCTAOr6IwBpPsPQZPsAg4PygURariEKB6SutWnP8wPQIBideMQwhfgy+elu2ETtuVmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=aNM5L+Vc; arc=none smtp.client-ip=192.134.164.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=H21fvQtQ7WtagqXZixGpBpqK/Mf2KBTn3BMn7sI6Xwo=;
-  b=aNM5L+VcxO66+rnB0hrRLAaQ7ltle4u+tjVsgiIcGM/6+KSsIiVloa8h
-   6T5/bjbuUhkdmon2C/f4fRUxnH/0MxnwhPqEEHqJrqp5Pz9sASMNsGN47
-   eaViXdS0DYtY1iFSc2drIjE5rWOAbjxAEf3P5NybCbo0e6bzoSQz4uMLB
-   c=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.07,206,1708383600"; 
-   d="scan'208";a="84954712"
-Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 14:56:51 +0200
-Date: Tue, 16 Apr 2024 14:56:50 +0200 (CEST)
-From: Julia Lawall <julia.lawall@inria.fr>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-cc: Markus Elfring <Markus.Elfring@web.de>, 
-    Michael Ellerman <mpe@ellerman.id.au>, 
-    "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, 
-    "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, 
-    "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
-    "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
-    Nicholas Piggin <npiggin@gmail.com>, LKML <linux-kernel@vger.kernel.org>, 
-    "cocci@inria.fr" <cocci@inria.fr>
-Subject: Re: [0/2] powerpc/powernv/vas: Adjustments for two function
- implementations
-In-Reply-To: <3711cad3-a627-4a6e-8769-ce916c1919ee@csgroup.eu>
-Message-ID: <3f22920-9543-efd1-a32a-477ae18a2b2a@inria.fr>
-References: <7be66990-de9e-488b-ad6d-fafd1c7bb34c@web.de> <ee6022b8-3aeb-4e6e-99f5-2668dd344e0a@web.de> <87plupbm0c.fsf@mail.lhotse> <795ca003-4231-45c0-8bb6-178597950fa5@csgroup.eu> <33a38d7e-26da-46e0-90d4-7137f9ec0c90@web.de>
- <3711cad3-a627-4a6e-8769-ce916c1919ee@csgroup.eu>
+	s=arc-20240116; t=1713272705; c=relaxed/simple;
+	bh=UEzTGUe3r7acXf8Yb95hdOs5Y9KDHJwibjjQOPb+gas=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kJ6Myv/x5CFUyw4nsRiIrkcNMHfdcZod+KXGkElDksL8UJe43qxfpZJK7cBTT7jdVsMBmqYzxgp5yARvcqB9fyeuCwoY85hF5knpiHWvGP0SExF8HnqvEr0zP8u6GjJm3epBbtq/ZX3CdCK5BjooDVf8GzmFokbcexhxn5bth0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ss/kIJQt; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713272700; x=1744808700;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=UEzTGUe3r7acXf8Yb95hdOs5Y9KDHJwibjjQOPb+gas=;
+  b=Ss/kIJQt0zdXtxEjiSitKwj7zdB5qFc5n3xjBi1ZGBBafSqJ7h6TrYDJ
+   3YXhT6bUedorDPCFBZXFfCPZIaPeIo8sjZiv9UHyZPt3DSdjGZ7GEKZsw
+   OGEd/+jF3rSGT6SefuYmXieE2BkmGDM9VpDQW0Y+Z0tcWIdAeZT0oeGKE
+   v8YogGoMKIRA0l90ziYopg22AwajqeKw6fhpd9m0jXyoP22+TtXM/N3cS
+   mLe2isZCuErAhXmsj9/m9i5FdfFBka0cIPfNR6cIdXuLSOChrYR7AiWPl
+   O0+nsDJFlFUp3sIXlpCpk65J14i8SiSPtaGBV+nqO9P4aEWW/9fW1/TJK
+   g==;
+X-CSE-ConnectionGUID: C09H0YPgQVO8g29tx/zPrQ==
+X-CSE-MsgGUID: ODC00vwjQ+SX1JYJ1SMIng==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8569445"
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="8569445"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 06:04:59 -0700
+X-CSE-ConnectionGUID: fDp3iuRyQJiH1ahnVv75ZQ==
+X-CSE-MsgGUID: KKXIiKUHRK6bNxue6PaYcQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="22321830"
+Received: from irvmail002.ir.intel.com ([10.43.11.120])
+  by fmviesa009.fm.intel.com with ESMTP; 16 Apr 2024 06:04:55 -0700
+Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id DDBE332EA4;
+	Tue, 16 Apr 2024 14:04:50 +0100 (IST)
+From: Larysa Zaremba <larysa.zaremba@intel.com>
+To: Tony Nguyen <anthony.l.nguyen@intel.com>,
+	intel-wired-lan@lists.osuosl.org,
+	linux-kernel@vger.kernel.org
+Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
+	alan.brady@intel.com,
+	maciej.fijalkowski@intel.com,
+	jesse.brandeburg@intel.com,
+	Emil Tantilov <emil.s.tantilov@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Lukasz Czapnik <lukasz.czapnik@intel.com>,
+	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+Subject: [PATCH iwl-net] ice: Interpret .set_channels() input differently
+Date: Tue, 16 Apr 2024 14:58:54 +0200
+Message-ID: <20240416125856.1263314-1-larysa.zaremba@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-563611295-1713272210=:3643"
+Content-Transfer-Encoding: 8bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+A bug occurs because a safety check guarding AF_XDP-related queues in
+ethnl_set_channels(), does not trigger. This happens, because kernel and
+ice driver interpret the ethtool command differently.
 
---8323329-563611295-1713272210=:3643
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+How the bug occurs:
+1. ethtool -l <IFNAME> -> combined: 40
+2. Attach AF_XDP to queue 30
+3. ethtool -L <IFNAME> rx 15 tx 15
+   combined number is not specified, so command becomes {rx_count = 15,
+   tx_count = 15, combined_count = 40}.
+4. ethnl_set_channels checks, if there are any AF_XDP of queues from the
+   new (combined_count + rx_count) to the old one, so from 55 to 40, check
+   does not trigger.
+5. ice interprets `rx 15 tx 15` as 15 combined channels and deletes the
+   queue that AF_XDP is attached to.
 
+Interpret the command in a way that is more consistent with ethtool
+manual [0] (--show-channels and --set-channels).
 
+Considering that in the ice driver only the difference between RX and TX
+queues forms dedicated channels, change the correct way to set number of
+channels to:
 
-On Tue, 16 Apr 2024, Christophe Leroy wrote:
+ethtool -L <IFNAME> combined 10 /* For symmetric queues */
+ethtool -L <IFNAME> combined 8 tx 2 rx 0 /* For asymmetric queues */
 
->
->
-> Le 16/04/2024 à 14:14, Markus Elfring a écrit :
-> >> This is explicit in Kernel documentation:
-> >>
-> >> /**
-> >>    * kfree - free previously allocated memory
-> >>    * @object: pointer returned by kmalloc() or kmem_cache_alloc()
-> >>    *
-> >>    * If @object is NULL, no operation is performed.
-> >>    */
-> >>
-> >> That's exactly the same behaviour as free() in libc.
-> >>
-> >> So Coccinelle should be fixed if it reports an error for that.
-> >
-> > Redundant function calls can occasionally be avoided accordingly,
-> > can't they?
->
-> Sure they can, but is that worth it here ?
+[0] https://man7.org/linux/man-pages/man8/ethtool.8.html
 
-Coccinelle does what the developer of the semantic patch tells it to do.
-It doesn't spontaneously report errors for anything.
+Fixes: 87324e747fde ("ice: Implement ethtool ops for channels")
+Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+---
+ drivers/net/ethernet/intel/ice/ice_ethtool.c | 22 ++++++--------------
+ 1 file changed, 6 insertions(+), 16 deletions(-)
 
-julia
---8323329-563611295-1713272210=:3643--
+diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+index 78b833b3e1d7..d91f41f61bce 100644
+--- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
++++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+@@ -3593,7 +3593,6 @@ static int ice_set_channels(struct net_device *dev, struct ethtool_channels *ch)
+ 	struct ice_pf *pf = vsi->back;
+ 	int new_rx = 0, new_tx = 0;
+ 	bool locked = false;
+-	u32 curr_combined;
+ 	int ret = 0;
+ 
+ 	/* do not support changing channels in Safe Mode */
+@@ -3615,22 +3614,13 @@ static int ice_set_channels(struct net_device *dev, struct ethtool_channels *ch)
+ 		return -EOPNOTSUPP;
+ 	}
+ 
+-	curr_combined = ice_get_combined_cnt(vsi);
++	if (!ch->combined_count) {
++		netdev_err(dev, "Please specify at least 1 combined channel\n");
++		return -EINVAL;
++	}
+ 
+-	/* these checks are for cases where user didn't specify a particular
+-	 * value on cmd line but we get non-zero value anyway via
+-	 * get_channels(); look at ethtool.c in ethtool repository (the user
+-	 * space part), particularly, do_schannels() routine
+-	 */
+-	if (ch->rx_count == vsi->num_rxq - curr_combined)
+-		ch->rx_count = 0;
+-	if (ch->tx_count == vsi->num_txq - curr_combined)
+-		ch->tx_count = 0;
+-	if (ch->combined_count == curr_combined)
+-		ch->combined_count = 0;
+-
+-	if (!(ch->combined_count || (ch->rx_count && ch->tx_count))) {
+-		netdev_err(dev, "Please specify at least 1 Rx and 1 Tx channel\n");
++	if (ch->rx_count && ch->tx_count) {
++		netdev_err(dev, "Dedicated RX or TX channels cannot be used simultaneously\n");
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.43.0
+
 
