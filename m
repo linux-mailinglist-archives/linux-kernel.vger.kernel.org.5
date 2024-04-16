@@ -1,154 +1,120 @@
-Return-Path: <linux-kernel+bounces-146753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 629418A6A59
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:10:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDF388A6A5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:10:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FFA21C20B24
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:10:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 942D71F217FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B0312AAC7;
-	Tue, 16 Apr 2024 12:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5EB12AAD2;
+	Tue, 16 Apr 2024 12:10:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B+7NA3Cg"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ldypGjqz"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67D6483CCD;
-	Tue, 16 Apr 2024 12:09:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4B2127B57;
+	Tue, 16 Apr 2024 12:10:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713269400; cv=none; b=dQzyVXJiDN2RNL9PRkE0PP7YwRhdOJmcxngCMlvL0PzDWMNYSABi02ktLDVRqISZ0BYLbGFOvPnMf3IeuGFsgWSz/QB5U8lH4Lli754mkUwAk/SEJwCYuD+6llw2MRBeuz99KFSrVWTvLy7eb4kIglnRV6l9lsbDFar4vqPdwzU=
+	t=1713269436; cv=none; b=p026pyuLHyrqmvssIaCnV0ApyeQAV3sNkRs0UeGltQdKuzgLuSdNFuOKBaG7u0aCEcGYtzZmoYjg1ZFX/rN4SXGNkylAM85VifioubalDT6moiZNZLtgY0urkH+1CPAED5z2iBDF3F3bmJwwQYP8pFDbENYJlFotMdNf2GSxVQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713269400; c=relaxed/simple;
-	bh=Uen2rRKFKoG4Sxu6FqqVSKDfaN228vkN/gXhjnxasDQ=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=l4S+EQAGQ/jA5FU8AIbrzxu3/YM3tQHnQwtM9HYHASxSgwMmWFm0z/wFL3Xtkg3oI24h1qQ9FTRn3L4FwXJ3h3NLwOJg/OaosLgFBK11ZzBNBxZz8JyYXXI6P0AhA/jr6ZQyzAYg123RMky9/fQNACJseDMMf50e1Tk8oBW12pQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B+7NA3Cg; arc=none smtp.client-ip=209.85.208.43
+	s=arc-20240116; t=1713269436; c=relaxed/simple;
+	bh=oeygwidh8JjsndjXzqBY/y0hHXvLxr6263bY5yFGTNQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Lndot2FXB8cwZ35d0IFqQyagJQGLlWFgWDjs8THwEIYgu4YmnCGmsOgUfbXjPKygEsmhCtS0PeYO0a+rcgt6Hcc6q0LutSmiYd89iJ2jOCG52WSLHc5jFnvGgVy+nGiLYH/QGzspXXyocWcvTi9KbV0fbienTGlUPix0IS17ZZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ldypGjqz; arc=none smtp.client-ip=209.85.208.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56fd7df9ea9so5016906a12.0;
-        Tue, 16 Apr 2024 05:09:58 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-57030fa7381so1915691a12.2;
+        Tue, 16 Apr 2024 05:10:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713269396; x=1713874196; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/lLyDDdxfjIRk/DKPWfZEfUg5akyK70I6US/ujRYhAk=;
-        b=B+7NA3CgVdq1JOFaWFTyfo2beJzBsdTHBlq7VBvVgjupoTAafNFB+BwNUbRTU4wTyn
-         18SJKvUSgixbPbUHsWA71evzNP3d7d9mAU+p+d94U8hSmVlzyvtDExm8+hHAOko7DS6N
-         1TGbTS2Xn7YihzzQLbCQfnbdE7waltf+KYDwF+hnHiKSfS9db6V+PDYrsc5x/AK9OHtm
-         wei/1Gr1QfPByqY5jG+uCkpuaeL4znFoOXQDYOj5pUny23ayPuetAd+TfrxSaPWB2UaL
-         SfMMaUReRU83veNSeho1ejT8AOJgp29wSwWNSB8OBQz/GU4AdHy+VLxWVxfRN0Cp/XZt
-         SHyw==
+        d=gmail.com; s=20230601; t=1713269433; x=1713874233; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rqic+xVQD7P5NplkS6N+DUp4Zv72nWmu6XLdwVwHsWQ=;
+        b=ldypGjqz5fLuig2yA9ppMaghbRhG9KJuSLdYpX0+Yjmn23GXVkdoI7QzLDEjmVgKyG
+         /nketclHvTb9FbJTEbGvRIXqEpkwOqXlzpia1R+WknuitblRtw1nrIQQT1zNg8T6Qxfr
+         J0EK6ViDg6V/cL6roJI4GrzVEG74+4uMEnPRScwbn0zpXe7HoEnqYC23YbBplko9xu2n
+         boyMS1rwmtMfuoSgkynr6yz8DXPjHumJnQ8DkrB5JR4u9aktww3Jws3pTr6MLBHQx0dG
+         FbvQAUd2Fe/dE5fWt51M1Yo6wtEHr3CkbVJfBtwEZXFXRJFAVevwsgLqG1q8xYFIeYKW
+         88Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713269396; x=1713874196;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/lLyDDdxfjIRk/DKPWfZEfUg5akyK70I6US/ujRYhAk=;
-        b=T6BYJ26pTNi2p8srurxCUR6+DSH/vp+Nd4F2LcoaHkA4FmF/IjKYBpyShe/nbVZZet
-         0fTze+LFzWUYTTLCahmP27uCuDsXXIbPIX6kGYvTen5zswxZ3mnQtWlgOXv2U6BG34bR
-         WPlEogDZ+0phr5VPMbyTzsTaX7uzjkI7EcJ4rJVJ8f/2JuJ+kKOsTXlexWA3/q+WmFpu
-         ytgRdMP1XEZHBOMOgP0tvZ1web0bnMgjX4boCDC0fczm5pmZdrkZmGuNCrXevTQNGvTL
-         xYEGv9YUCIcn3/Rh7koFI7ra3leAXPopIguq/icKui2CcAdKP5MxoTamEfkmklu0CxRl
-         +Z2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX2DNTSKxXHlOI8bL6puyw2zg8oHFSwMtBrOIDmbyQlo4AdtwakZWy9TEBOOFNiIgQwLnn6yRUnJ4NM9ZoFPLkdPqCfXVo8
-X-Gm-Message-State: AOJu0Yze7lJAniF7zNgns8aDaUDyMfgHP5vhcuIbtLv7wvxePys1IH8e
-	ecp8Iy/ec98DRrZltRQx95lD5+OlXY+9kCjBmh0pS4x/JnuKHwiBbyppx4LhZ1guH943sqKd6CP
-	AeMAwYmMfOLONmaiV+OjrwAyRQZfpxnKdLLXIZdm/
-X-Google-Smtp-Source: AGHT+IGJkH+WvN9Tq4w9FrgndS0RzhjW7g8+1wfSzjVF1i6XPgJ0QqwJUNz6U6CtUfR3jknTFQdZNAyXG4v50zrsuiI=
-X-Received: by 2002:a17:906:c358:b0:a52:42e4:96e5 with SMTP id
- ci24-20020a170906c35800b00a5242e496e5mr5872060ejb.6.1713269396241; Tue, 16
- Apr 2024 05:09:56 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713269433; x=1713874233;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rqic+xVQD7P5NplkS6N+DUp4Zv72nWmu6XLdwVwHsWQ=;
+        b=MHf/aRhxRZ7udtNec8CgRvzWLDQtMoxMOlett0msUP5qFWOQYrdN4wRK+gS9rOoosK
+         Z5KkTwbW4S3miHDDj66Gr2ABV58gekdcJt2wFWSWbKd45cViCkH34vL4evplrYHaY958
+         iw0OawEBYe238YUYN8PHKBmhU7pmACXhWnCLpFiSGIwFAHwDtMvQ5ztyoFu0x40oUKF/
+         Ei307gB71ShbTVuOdqI8Uutba60QttD4ddfXJM2OQu6dBFJSpLX2sQx0EKYrnMZ3t1Cu
+         AtPFMI7KAT2nbsn4QpSvCx41v1Ge7pt0dQCJHkWU3qYxlMtsnSWGlzS53hQLA79gd3mk
+         xkag==
+X-Forwarded-Encrypted: i=1; AJvYcCWZsmLHgPKt8PuvICEuntWJERIlC6oSJ+008CJLDR0f4HddboGuQ+vlDof8pnbpHKxZTTAl8IAnEMno4iavea+ysnTdc+AkYrRudzPHYNHmbaQEJLYLavRzDtR0dHFJsGndadwWLVWhLg==
+X-Gm-Message-State: AOJu0Yw3oUbZJmaB+klLBtDWZbHh7/YEoIRU1pL7LnT6W1MSloEyxcb8
+	by/9agMUM+JVM9Ii6cB9s1s8yTQ0lLgUk3Sep4eblbj9K/hZqX4d
+X-Google-Smtp-Source: AGHT+IFNRxgcUBqzcZL/4BDXxV4A+yo+1Eh41CrxJTp7WTXdCd0ry8qbZ8DnIqH6GfmzwX+AS/KLYQ==
+X-Received: by 2002:a17:907:7e87:b0:a51:adac:d6e0 with SMTP id qb7-20020a1709077e8700b00a51adacd6e0mr10553313ejc.62.1713269433453;
+        Tue, 16 Apr 2024 05:10:33 -0700 (PDT)
+Received: from eichest-laptop.netmodule.intranet ([77.109.188.34])
+        by smtp.gmail.com with ESMTPSA id hg17-20020a170906f35100b00a469d3df3c1sm6767509ejb.96.2024.04.16.05.10.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 05:10:33 -0700 (PDT)
+From: Stefan Eichenberger <eichest@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	lxu@maxlinear.com,
+	andrew@lunn.ch,
+	hkallweit1@gmail.com,
+	linux@armlinux.org.uk,
+	michael@walle.cc
+Cc: netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/2] mxl-gpy: add option to match SGMII speed to the TPI speed
+Date: Tue, 16 Apr 2024 14:10:30 +0200
+Message-Id: <20240416121032.52108-1-eichest@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Sam Sun <samsun1006219@gmail.com>
-Date: Tue, 16 Apr 2024 20:09:44 +0800
-Message-ID: <CAEkJfYOnsLLiCrtgOpq2Upr+_W0dViYVHU8YdjJOi-mxD8H9oQ@mail.gmail.com>
-Subject: [PATCH net v3] drivers/net/bonding: Fix out-of-bounds read in bond_option_arp_ip_targets_set()
-To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, j.vosburgh@gmail.com, 
-	Hangbin Liu <liuhangbin@gmail.com>, Eric Dumazet <edumazet@google.com>, pabeni@redhat.com, 
-	kuba@kernel.org, andy@greyhouse.net, davem@davemloft.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-In function bond_option_arp_ip_targets_set(), if newval->string is an
-empty string, newval->string+1 will point to the byte after the
-string, causing an out-of-bound read.
+The mxl-gpy phy supports a mode in which it sets the SGMII speed to that
+negotiated over the twisted pair interface (tpi). This is useful if the
+Ethernet controller is not capable of autonegotiation over SGMII, or
+does not support the mode implemented by the mxl-gpy driver. This patch
+adds a new property to the device tree bindings to enable this mode.
 
-BUG: KASAN: slab-out-of-bounds in strlen+0x7d/0xa0 lib/string.c:418
-Read of size 1 at addr ffff8881119c4781 by task syz-executor665/8107
-CPU: 1 PID: 8107 Comm: syz-executor665 Not tainted 6.7.0-rc7 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc1/0x5e0 mm/kasan/report.c:475
- kasan_report+0xbe/0xf0 mm/kasan/report.c:588
- strlen+0x7d/0xa0 lib/string.c:418
- __fortify_strlen include/linux/fortify-string.h:210 [inline]
- in4_pton+0xa3/0x3f0 net/core/utils.c:130
- bond_option_arp_ip_targets_set+0xc2/0x910
-drivers/net/bonding/bond_options.c:1201
- __bond_opt_set+0x2a4/0x1030 drivers/net/bonding/bond_options.c:767
- __bond_opt_set_notify+0x48/0x150 drivers/net/bonding/bond_options.c:792
- bond_opt_tryset_rtnl+0xda/0x160 drivers/net/bonding/bond_options.c:817
- bonding_sysfs_store_option+0xa1/0x120 drivers/net/bonding/bond_sysfs.c:156
- dev_attr_store+0x54/0x80 drivers/base/core.c:2366
- sysfs_kf_write+0x114/0x170 fs/sysfs/file.c:136
- kernfs_fop_write_iter+0x337/0x500 fs/kernfs/file.c:334
- call_write_iter include/linux/fs.h:2020 [inline]
- new_sync_write fs/read_write.c:491 [inline]
- vfs_write+0x96a/0xd80 fs/read_write.c:584
- ksys_write+0x122/0x250 fs/read_write.c:637
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
----[ end trace ]---
+I marked this series as an RFC because I'm not sure if adding a new
+property is the way to go or if we should use the in-band-status of the
+phylink instead. Unfortunately, it is not possible to access the phylink
+structure in the phy context. This would mean that I would have to add a
+new function to the phylink driver that would allow us to access the
+cur_link_an_mode property, or am I missing something?
 
-Fix it by adding a check of string length before using it.
+Stefan Eichenberger (2):
+  dt-bindings: net: phy: gpy2xx: add sgmii-match-tpi-speed property
+  net: phy: mxl-gpy: add new device tree property to disable SGMII
+    autoneg
 
-v2
-According to Jay and Hangbin's opinion, remove target address in
-netdev_err message since target is not initialized in error path and
-will not provide useful information.
+ .../bindings/net/maxlinear,gpy2xx.yaml         |  6 ++++++
+ drivers/net/phy/mxl-gpy.c                      | 18 +++++++++++++++++-
+ 2 files changed, 23 insertions(+), 1 deletion(-)
 
-v3
-According to Hangbin's opinion, change Fixes tag from 4fb0ef585eb2
-("bonding: convert arp_ip_target to use the new option API") to
-f9de11a16594 ("bonding: add ip checks when store ip target").
-
-Fixes: f9de11a16594 ("bonding: add ip checks when store ip target")
-Signed-off-by: Yue Sun <samsun1006219@gmail.com>
----
- drivers/net/bonding/bond_options.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/bonding/bond_options.c
-b/drivers/net/bonding/bond_options.c
-index 4cdbc7e084f4..8f3fb91897b3 100644
---- a/drivers/net/bonding/bond_options.c
-+++ b/drivers/net/bonding/bond_options.c
-@@ -1214,9 +1214,9 @@ static int bond_option_arp_ip_targets_set(struct
-bonding *bond,
-     __be32 target;
-
-     if (newval->string) {
--        if (!in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) {
--            netdev_err(bond->dev, "invalid ARP target %pI4 specified\n",
--                   &target);
-+        if (!(strlen(newval->string)) ||
-+            !in4_pton(newval->string + 1, -1, (u8 *)&target, -1, NULL)) {
-+            netdev_err(bond->dev, "invalid ARP target I4 specified\n");
-             return ret;
-         }
-         if (newval->string[0] == '+')
 -- 
-2.34.1
+2.40.1
+
 
