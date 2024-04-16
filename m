@@ -1,285 +1,146 @@
-Return-Path: <linux-kernel+bounces-146424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21F528A650B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:27:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46E108A650E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:28:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FE501C21255
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:27:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B7C5283C69
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E932277F30;
-	Tue, 16 Apr 2024 07:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B058005B;
+	Tue, 16 Apr 2024 07:28:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IwsIWxly"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R6oV3cls"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF09F179B7;
-	Tue, 16 Apr 2024 07:27:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.17
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713252462; cv=fail; b=D7+T9N3grhW0AzpLCclHfJIgth0leMOINTyfOuDw1HgTmbiktbPjpkS/1lAZSK2DITeBQt+vm0ZTTXF3Yrxt/2VlB2smrFHM/cP8IKnZ8OpCEkmC9VmIWZFHwEu1VbEg9FP65jK7SClFl5rmIEocHxT4w9IZ9GvQwUHCh8jLg+4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713252462; c=relaxed/simple;
-	bh=nEcC8360w9TvNI14XlKWe86MbCaW2mLHi9Rr5uBMezY=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=vFkF4vFpm+zQKEeFiBHClhvBBMAgS3o3nqY3mbqyeqbXAlVIRG9xMiUgG9BXyXjsn8qLkLOh6OcOCuFoxq5Wn+r64kzqtr24R6RxPOCA+kB/7R/xnZ2IfHzRC0x2kxfi3FGQORQNxhdoVEHx4XAOqtk092ZdRBCaTJI5i1P/UvQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IwsIWxly; arc=fail smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713252460; x=1744788460;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=nEcC8360w9TvNI14XlKWe86MbCaW2mLHi9Rr5uBMezY=;
-  b=IwsIWxlynPg4e+yGm5DWIrEVA4l0SYs1aYVDtSq9tajd1wH9vhs7/Oae
-   jwVhl1bXm4WgpOPJq+3N1Q5Jt+aki/NSvZT2u9O0OBLuKJeARc7xb5Kk7
-   7j8QmFZNcnet3kYyzTqnNVeE8FOIckHCff9ul63n3oBp83205pozRx0Ap
-   dLNiYccM6up4Pp4dfFa3NFlP2rRHFEPSQ4xIe59UoFykbr/MJg3y4tdQH
-   fpZLyFPq037LhjWcyTD8YpE/kAwOA8JxYhZCnXhJnXVTjyYTwEWpB0L9R
-   dU2S1jutV59+a1CVF8n+N1Anpf02519J09p/+GD7nuG0Zr3L8nsD0w0+O
-   A==;
-X-CSE-ConnectionGUID: OQCKPpswQ7yHj7cmOx57dA==
-X-CSE-MsgGUID: NfhYIjiARB2MgMYwi7uwQw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="8784627"
-X-IronPort-AV: E=Sophos;i="6.07,205,1708416000"; 
-   d="scan'208";a="8784627"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 00:27:40 -0700
-X-CSE-ConnectionGUID: 5CK1+CwmQCOPlEzrfz73vw==
-X-CSE-MsgGUID: Oh59OCDbQX+uzPao1BqsSA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,205,1708416000"; 
-   d="scan'208";a="45461962"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Apr 2024 00:27:39 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 16 Apr 2024 00:27:39 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 16 Apr 2024 00:27:38 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 16 Apr 2024 00:27:38 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 16 Apr 2024 00:27:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dMpOV7/7sCTgZ1fFfzLVBRQKqqCAwkaSUjatwUtjHLNnNBftQRSj7XpcuXagme3EE69BAzlLTtuaTggSulVOWQE9LCppc2OpfipCLOTmU4Qt5u3UyJh9FUS8EIIeVabLDUdSy/4S6g49q2BevVK61J3m0WchqBwhcYx6l3Fc+XDsXQRgBj2AJjAKLYY6Wv3gvKH5WS0I+XWNDDkuIFtC6YptRgir1JTUUNx26IPXsCuuox4z5WLt4XpfP1iiu4b+Yx36vOkauTnv8uH94Ifzq1hClDvukRdmG6ox5GKDmOOuCJdu6HLMrcxgTQJj9Yusgb7Rkjehb/INv0TehTzwKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZmL/7q5V12UUEcHSgsR0RPgQkDeE/iO/vskPAaiPUno=;
- b=WJa1EcRxE0f6dRWf50UoEK9F0JYbaQ6IGa5+/5roQsM3f7U6WHxADAZrHdXfV1ithgt+IHezrBTHcBOFblaZ4TLmuWrtGNWyy7WnsxOw6mH5HyieFzMTTz9wWpZM8AfoaB3yaLGP8VeZkt3yAUqn9ZiAjWFKI640w5mjoZr1BGWfAnqO+zUUEg81kuKRwRLcO1RXZsNRljU+0XQChZ6zn6vv7X0wHf7zujNFIJ1jSnIjQQsqbP+2WkjC+vs9MxBgZ8hugHUfAOKjXRx02IvUgExub7FDD2JiD/nCR1d26qkTLhqaHmd8kEdLMneZoj5haoXAgt9p2XqAKphF11m60A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from IA1PR11MB7200.namprd11.prod.outlook.com (2603:10b6:208:42f::11)
- by SN7PR11MB7604.namprd11.prod.outlook.com (2603:10b6:806:343::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
- 2024 07:27:37 +0000
-Received: from IA1PR11MB7200.namprd11.prod.outlook.com
- ([fe80::c990:5065:ed39:c165]) by IA1PR11MB7200.namprd11.prod.outlook.com
- ([fe80::c990:5065:ed39:c165%6]) with mapi id 15.20.7409.023; Tue, 16 Apr 2024
- 07:27:37 +0000
-Message-ID: <b4a721c2-567d-4ab3-8a85-963e3f323e61@intel.com>
-Date: Tue, 16 Apr 2024 15:27:27 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 3/6] PCI/AER: Enable RCEC to report internal error for
- CXL root port
-To: Terry Bowman <Terry.Bowman@amd.com>, <dan.j.williams@intel.com>,
-	<rrichter@amd.com>
-CC: <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240313083602.239201-1-ming4.li@intel.com>
- <20240313083602.239201-4-ming4.li@intel.com>
- <7172ec2f-7cba-460b-a6c6-9fff45ba938b@amd.com>
-Content-Language: en-US
-From: "Li, Ming" <ming4.li@intel.com>
-Organization: Intel
-In-Reply-To: <7172ec2f-7cba-460b-a6c6-9fff45ba938b@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR03CA0131.apcprd03.prod.outlook.com
- (2603:1096:4:91::35) To IA1PR11MB7200.namprd11.prod.outlook.com
- (2603:10b6:208:42f::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE433B78B;
+	Tue, 16 Apr 2024 07:28:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713252497; cv=none; b=V2lLqdpFB3RL9vTyxhJ+XczvoXXabAtUlTA8oFR0ChfrjzXfaHAtlXKGgbfD6MLtlvCqV4FrcnvZtWShLE/LPyxnROGgHL1quwGriyhkc5PQuLZ+9BIU0x3QTTlnr+PWq6vM8f9JEdrFfiMjvDV3HLdLeW88UipVNWBscKieQcI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713252497; c=relaxed/simple;
+	bh=F1ZY/I6/nCY7bzIXAtOKE5cqSyOxKiOJFgMz5yMepl4=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=RcMES2l5fuhVp8XTubU9KgOl099Sr3xOOg5HjXA78I5WPXAPo2iAvY7rC100dPJUPZFjahU5YJA2pedYV8dSb4tdMu8IWcjsTyzvEVn8j65x6njX8EYX3U6avLqxsRaI9I4SQsMEsseCEmQM/7axTxF+nOo0hXZ6gHhOS0G5c/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R6oV3cls; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a44f2d894b7so442182266b.1;
+        Tue, 16 Apr 2024 00:28:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713252494; x=1713857294; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yxVv0LhJm5HT/6Ae8eAzf3XoGU2gXg4O6Y8MwCsSeJw=;
+        b=R6oV3clsZc1IFIBnI9ZJt1hyQXVjD9GfsjjK9P4tKlabK9lknsz6o4NlqxZYSWnNrR
+         GKrkod1yPKYKbg62CHIBilBMKreFzXqAcL4BBq34h2yQueRsGFwFBhNEcGQpS2QFXqdh
+         7rPeu5lFJ8/nfHXZCWNxYx84lbs2+BiWGiwhLH4VYFD6meGUcdIdyYYKFxmkP9ZAajSH
+         4VW30dHp1oNlpD2ek/jsPObXEx+LSBPOjD13V+OxTdAP9Zyfhfz7i/01wxRwsdo+O+wh
+         yzL3jWDSC1fyJb8eSL0Vjft9vzfAr/379eR0lQHZuKvTW/0MXzrgcLUiAgINemTZNBgA
+         vDXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713252494; x=1713857294;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yxVv0LhJm5HT/6Ae8eAzf3XoGU2gXg4O6Y8MwCsSeJw=;
+        b=R1Ceo9zOyyVFH5IixRg0f6XNhYKw9PpTCOuhAieQaWMfYeQOvqdTwzb7Wv+PvjEzV7
+         aV2NwW12eW397mZJen7VEA+d9Cvl5G+jG4JZW23WamcKqE7CjG4AxTnA9momNiDY2bZ7
+         UYpQPJjAbyj8qsDbNbl8Ixtunp3NO8uJrrNk8IjoPJK6rv7QB100V9UEIeboZZJTZakO
+         neOGaMYXhceV2I9x74OrhFR1DBNQSBFsGxDDFPRULqsAKHi2fy9WmGHwjSA3NpgXXPxa
+         PWDWht2VRwauVQEHG9fJO/V8jxO7roakJRSfG+jFNh/9UqpIzY5pLnDU7bZ8QCEz+2Qf
+         SNqQ==
+X-Gm-Message-State: AOJu0YyniLXIyPQVD/mvOioycCajhspmVDMeGxwZtPhzMXjZrcqaGg53
+	MQ1iRl98fenNtSm4ntn5I/9cx0N7Lfqd910+U7+jmD76+hokO+yjWB0hLIqEN26IXElTU6SMQEU
+	BgNDCTaTDM0UE4OeQeVkT/WCamxGnbmIH7gIHHg==
+X-Google-Smtp-Source: AGHT+IF+XT79nJii8BhDLY6zr3LkvmkUDI3E8OtlpbQLfk/XlGWZpP6kF/DOSxok1XxT5Nq+n2ltK570QbQMOTQVqD8=
+X-Received: by 2002:a17:906:d936:b0:a52:5916:da16 with SMTP id
+ rn22-20020a170906d93600b00a525916da16mr5047765ejb.37.1713252494118; Tue, 16
+ Apr 2024 00:28:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR11MB7200:EE_|SN7PR11MB7604:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2b79f351-9e5a-4934-60cd-08dc5de6b099
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +zUXPyye8qb/oJIGKTlHZqlqSNHZldrBf9L3fxT7OpDGICmEqhrlSR16xL+DWBZAyb16WCJAeY5TeG8xveUTMy54krv30hgcelLKpgjbX9m9LXOgeY8edJTJ6ncb6UhmthDL8reytfbqyu3r1LqoH+XvX7g/twds0AxH6cIa92QGYvTBklMCsvtSNzhZnzzzw3WXJ1holCUWtVOQBUb50VPQARSla2EfzRzs7l1M6FSB0MSL8HQxBAKNxDyvT7zOE3WNPTmry+IjAwKicXYxdlMQIKyC61/dwsYEa+tgtIzEHeBrjgYvzfk+5U/P5FB9cUVEut2KAtUXMVGg+4MsR2+W+OMNZtO+vHtxuCMApcS/Eq9c+ZK0IV6EZosy1k4xjTKLFRViJXGO/T+la6176Fvbz5JULoRc/sTNDxKilqPU/UncinhQ65lgrp1LlK2VoVr6/BNqbihi8SUXtISmtljPXxareor4ZPcSQow1CdAH3SIL/mZG3pq3bNyIBWxeUMRJX8wOhaW5R8akrynwOtk7llJz8rNhcQLMi9iehzhWiRSrTabWETsxdUztY+FJiqE6AqWsbHJCq78Q9DkZ+AWhm1QQw5IKHbt7BorAD5sqSh2fvaus1i3D8Hr0V+boUEALqe7sWEN9syBHbeVNDFDX9CpXHU9OtoSDW7qSYC4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB7200.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RVB2dFRuTHdrMS9NNUN4dmYzeFR3cS9LRWRDVDdjYW9FNVkxbkZZY2NUV3h0?=
- =?utf-8?B?QXBJYXRpMXkrT0ppZm1Kb3dPc1plV1JJQnpqdGgzN3hlM1hiRk4xNGxkSWhZ?=
- =?utf-8?B?bHd1VHpBUTVPWEZ3Sm11Nkh0ZG9hY05KeHlxc3lpQkpPWTdBdVIwUDF6NU5J?=
- =?utf-8?B?bW1sQmZUTG9DUWxFQzU5N1Q4VTZySlY3UmdJKzd1aEVqekZmUE1LcHhlMEpn?=
- =?utf-8?B?K0dpQ2hZeGw1andIVHlOQ2U0RFZaaGRtbG1xSWhORkxuZGFNRzlCNjVCTnho?=
- =?utf-8?B?TEozZ1RBM1lidGY0WjdkMTNGclhoU0g1dzJMWHVaQVhZdklkZExZM2VKMFFF?=
- =?utf-8?B?Q09yTXRyZDh3aU1sUnlIYmFFeVpLY0xWWGx0RHNmMjdXc3JLcWxhNk1Ya2Yr?=
- =?utf-8?B?TlpSdjc3bjZlSWdLQVNMTm5nNjdRdnk1VThhWUJoZmU1RC9QZDZMOGIvUXJo?=
- =?utf-8?B?ZjBLOU1vUlZaaE0yZ2s5Y2lzbkN6d3J1WDVReHN1cXdOL3FDS0xtUUNZaS81?=
- =?utf-8?B?Zm83aEx0c0hyYXQ0SnAwUXV4K3h0QlUxbG4rc1U0MkNKS3hJZFdZWGNiZjR0?=
- =?utf-8?B?TUJXL08yVmxGR2p6a0JEckllOWJ1clNMT1hvYVo4MXpqNmlMaEd3c3BOSkVq?=
- =?utf-8?B?UTRNT2lxQTNrUVUxY1k2ZFpWV2M0WjdFOWM2c2NSdk9mV3VDd084NzRHK2lY?=
- =?utf-8?B?a1VMRE1JcUZEdW5hU1JhS0VLYW5IWFpkYVF2MWpnK0VRMDNSRm9JRlNtL1Jw?=
- =?utf-8?B?U2lDYndOK21JMEJ5eXdDUkpOakZHaWtvUTVzbjduejFlaE9YQm0yeDFySWcy?=
- =?utf-8?B?S0pWOXJ3SXZxYk95SS9RcUcyVkYwRGxNYlF3cjdJVHZPeDJ3YTE4YVRwTEdX?=
- =?utf-8?B?V1F1Y2VVS0E5dC93Qm4yZE5hSzhOZkJhTzgyVlNQWTF4dGRYZ0I1MmJ1TGxr?=
- =?utf-8?B?NFVvTHdFNy8xbGJtaFJDaDRVd2s2Yi9qQ0xhUVpRQk4zZnJMNVRzZkUyYVhZ?=
- =?utf-8?B?V1dJdnFtWkU5UzZ3dUlwc1hFbElMdS91WTlISXN5V08rUGFSbVI4WTM2aWcy?=
- =?utf-8?B?U01TeE53UmNZNzNuR3lVTXAyU1BlWFI1QldId05DRnQ1eXpzL2ZkSlFNeHRp?=
- =?utf-8?B?MWRGalJWSU5xd2FuRkROY1VZQWtLOWNSeUJmNzdLQXU1RXpVajd4aGFLQkVn?=
- =?utf-8?B?RjdGYkhPWmYvUG5EWUc4TnphVTF3WkhXdUIrdFJ3Z2tMSWJqYVR6aUFlNDJk?=
- =?utf-8?B?WmRjNlVuaEE2Y1ZDQlk2bWg0VG9KMExneDN0L0NiWDd6MFZhVXlyekRla3By?=
- =?utf-8?B?UVBGbzdLUE1tV1c0c3RkR2VTRk5wREMyR08xWWtYRm53RTFxS0lPRXM0WjFm?=
- =?utf-8?B?Y3FmOVhzUWp6cFA3VS9hakxxeHlwQ2ZDMytNb2NYMmhkZzVCRTJwMUpuRkw0?=
- =?utf-8?B?QlNnZStiQ2N5RHdqVm1OUG5tK0J2Q2ZUaGJHSjJJZm9ZdE42OUpITXRtc0Fq?=
- =?utf-8?B?elQrc08yL0hyL2dzcUhBNXNBS25kYjhnRkxOSi9SeFg1bDI3elF5SWRIUGp6?=
- =?utf-8?B?SmdqRWkwY3NSZTZzdGhOaWlXamxrejA3SzJPMXpRS0d4WUdEUUF5SFFJWk5O?=
- =?utf-8?B?eWduSDBRSWl5ak9vN0R2cnozTzkzeG1aR0xhZnRsam1tODFNZW1KdU5TeEdx?=
- =?utf-8?B?SDFLOUtHTVJFbzQ4aXlPMUlRTDdtRy9SMVlCZzlTcDhrb0VnOGNIODF4Zm5o?=
- =?utf-8?B?SjltSmlTSEpJVlcyNUtaMlA0YnowekZlQ0xmMHFUOHNyQjJuUkcvTzFneWdr?=
- =?utf-8?B?NDFPU2pTZXc0bXQ3UEs3YU1kbGlrRWRQNnpQMGoyV0QyMFF3S3Vtamh4QjBV?=
- =?utf-8?B?YWQzREdnMHNnMmIwaFBldEZhWk1GcXkrZEEwVzM0ZjFlQmlJS1B5dzdyVHpv?=
- =?utf-8?B?MFk1dVhrSnJwdmJ2eWsvSjZhYm5sN2w3VVcwcENzS00wMi9uQWtOc2MzZmha?=
- =?utf-8?B?V0NvTGJKR2wrR1BGbysydGtnMER1ZTNPYTR2TmNIUzYxdzk3eU9wRENjL0hS?=
- =?utf-8?B?TnU0RGJVYW9oVkRKQzBEYUN2UWRZeUQyd1YvRUxBcndaTjVWS01wT0pnZDVq?=
- =?utf-8?Q?xiqqOIgZYEws9FIapEGqcKFVA?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2b79f351-9e5a-4934-60cd-08dc5de6b099
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB7200.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 07:27:36.9634
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HUIPJp+vX3O47Uwi9lR8A7sc2fC7BM94cVbv8jn1S6GwaouB1jlSziCxuP3M/tL46Ca/DpHyGpV5nwmraqYmVw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7604
-X-OriginatorOrg: intel.com
+From: Sam Sun <samsun1006219@gmail.com>
+Date: Tue, 16 Apr 2024 15:28:02 +0800
+Message-ID: <CAEkJfYMdDQKY1C-wBZLiaJ=dCqfM9r=rykwwf+J-XHsFp7D9Ag@mail.gmail.com>
+Subject: [PATCH net v2] drivers/net/bonding: Fix out-of-bounds read in bond_option_arp_ip_targets_set()
+To: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org, j.vosburgh@gmail.com, andy@greyhouse.net, 
+	davem@davemloft.net, Eric Dumazet <edumazet@google.com>, kuba@kernel.org, 
+	pabeni@redhat.com, Hangbin Liu <liuhangbin@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 3/26/2024 3:42 AM, Terry Bowman wrote:
-> Hi Li, 
-> 
-> I added comments below.
-> 
-> On 3/13/24 03:35, Li Ming wrote:
->> Per CXl r3.1 section 12.2.2, CXL.cachemem protocol erros detected by CXL
->> root port could be logged in RCEC AER Extended Capability as
->> PCI_ERR_UNC_INTN or PCI_ERR_COR_INTERNAL. Unmask these errors for that
->> case.
->>
->> Signed-off-by: Li Ming <ming4.li@intel.com>
->> ---
->>  drivers/pci/pcie/aer.c | 24 +++++++++++++++++-------
->>  1 file changed, 17 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
->> index 42a3bd35a3e1..364c74e47273 100644
->> --- a/drivers/pci/pcie/aer.c
->> +++ b/drivers/pci/pcie/aer.c
->> @@ -985,7 +985,7 @@ static bool cxl_error_is_native(struct pci_dev *dev)
->>  {
->>  	struct pci_host_bridge *host = pci_find_host_bridge(dev->bus);
->>  
->> -	return (pcie_ports_native || host->native_aer);
->> +	return (pcie_ports_native || host->native_aer) && host->is_cxl;
->>  }
->>  
->>  static bool is_internal_error(struct aer_err_info *info)
->> @@ -1041,8 +1041,13 @@ static int handles_cxl_error_iter(struct pci_dev *dev, void *data)
->>  {
->>  	bool *handles_cxl = data;
->>  
->> -	if (!*handles_cxl)
->> -		*handles_cxl = is_cxl_mem_dev(dev) && cxl_error_is_native(dev);
->> +	if (!*handles_cxl && cxl_error_is_native(dev)) {
->> +		if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END &&
->> +		    dev->rcec && is_cxl_mem_dev(dev))
->> +			*handles_cxl = true;
->> +		if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT)
->> +			*handles_cxl = true;
->> +	}
-> I understand a root port can be found under an RCEC. It's possible. But, does the downstream 
-> root port forward AER to the upstream RCEC? My understanding is AER is handled and processed
-> at the first root port/RCEC upstream from the device/RCH/USP/DSP.
->  
-> Regards,
-> Terry
-> 
+In function bond_option_arp_ip_targets_set(), if newval->string is an
+empty string, newval->string+1 will point to the byte after the
+string, causing an out-of-bound read.
 
-CXL r3.1 section 12.2.2 mentions this:
+BUG: KASAN: slab-out-of-bounds in strlen+0x7d/0xa0 lib/string.c:418
+Read of size 1 at addr ffff8881119c4781 by task syz-executor665/8107
+CPU: 1 PID: 8107 Comm: syz-executor665 Not tainted 6.7.0-rc7 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc1/0x5e0 mm/kasan/report.c:475
+ kasan_report+0xbe/0xf0 mm/kasan/report.c:588
+ strlen+0x7d/0xa0 lib/string.c:418
+ __fortify_strlen include/linux/fortify-string.h:210 [inline]
+ in4_pton+0xa3/0x3f0 net/core/utils.c:130
+ bond_option_arp_ip_targets_set+0xc2/0x910
+drivers/net/bonding/bond_options.c:1201
+ __bond_opt_set+0x2a4/0x1030 drivers/net/bonding/bond_options.c:767
+ __bond_opt_set_notify+0x48/0x150 drivers/net/bonding/bond_options.c:792
+ bond_opt_tryset_rtnl+0xda/0x160 drivers/net/bonding/bond_options.c:817
+ bonding_sysfs_store_option+0xa1/0x120 drivers/net/bonding/bond_sysfs.c:156
+ dev_attr_store+0x54/0x80 drivers/base/core.c:2366
+ sysfs_kf_write+0x114/0x170 fs/sysfs/file.c:136
+ kernfs_fop_write_iter+0x337/0x500 fs/kernfs/file.c:334
+ call_write_iter include/linux/fs.h:2020 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x96a/0xd80 fs/read_write.c:584
+ ksys_write+0x122/0x250 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+---[ end trace ]---
 
-"If the CXL.cachemem protocol errors detected by a CXL root port are logged as
-CIEs or UIEs in an RCEC’s AER Extended Capability, it is recommended that the System
-Firmware populate an RDPAS record (see Section 9.18.1.5) to establish the association
-between the RCEC and the root port."
+Fix it by adding a check of string length before using it. Remove
+target address in netdev_err message since target is not initialized
+in error path and will not provide useful information.
 
-I think it means that CXL root port is possible to forward its AER to RCEC.
+Fixes: 4fb0ef585eb2 ("bonding: convert arp_ip_target to use the new option API")
+Signed-off-by: Yue Sun <samsun1006219@gmail.com>
+---
+ drivers/net/bonding/bond_options.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks
-Ming
+diff --git a/drivers/net/bonding/bond_options.c
+b/drivers/net/bonding/bond_options.c
+index 4cdbc7e084f4..8f3fb91897b3 100644
+--- a/drivers/net/bonding/bond_options.c
++++ b/drivers/net/bonding/bond_options.c
+@@ -1214,9 +1214,9 @@ static int bond_option_arp_ip_targets_set(struct
+bonding *bond,
+     __be32 target;
 
->>  
->>  	/* Non-zero terminates iteration */
->>  	return *handles_cxl;
->> @@ -1054,13 +1059,18 @@ static bool handles_cxl_errors(struct pci_dev *rcec)
->>  
->>  	if (pci_pcie_type(rcec) == PCI_EXP_TYPE_RC_EC &&
->>  	    pcie_aer_is_native(rcec))
->> -		pcie_walk_rcec(rcec, handles_cxl_error_iter, &handles_cxl);
->> +		pcie_walk_rcec_all(rcec, handles_cxl_error_iter, &handles_cxl);
->>  
->>  	return handles_cxl;
->>  }
->>  
->> -static void cxl_rch_enable_rcec(struct pci_dev *rcec)
->> +static void cxl_enable_rcec(struct pci_dev *rcec)
->>  {
->> +	/*
->> +	 * Enable RCEC's internal error report for two cases:
->> +	 * 1. RCiEP detected CXL.cachemem protocol errors
->> +	 * 2. CXL root port detected CXL.cachemem protocol errors.
->> +	 */
->>  	if (!handles_cxl_errors(rcec))
->>  		return;
->>  
->> @@ -1069,7 +1079,7 @@ static void cxl_rch_enable_rcec(struct pci_dev *rcec)
->>  }
->>  
->>  #else
->> -static inline void cxl_rch_enable_rcec(struct pci_dev *dev) { }
->> +static inline void cxl_enable_rcec(struct pci_dev *dev) { }
->>  static inline void cxl_rch_handle_error(struct pci_dev *dev,
->>  					struct aer_err_info *info) { }
->>  #endif
->> @@ -1494,7 +1504,7 @@ static int aer_probe(struct pcie_device *dev)
->>  		return status;
->>  	}
->>  
->> -	cxl_rch_enable_rcec(port);
->> +	cxl_enable_rcec(port);
->>  	aer_enable_rootport(rpc);
->>  	pci_info(port, "enabled with IRQ %d\n", dev->irq);
->>  	return 0;
-
+     if (newval->string) {
+-        if (!in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) {
+-            netdev_err(bond->dev, "invalid ARP target %pI4 specified\n",
+-                   &target);
++        if (!(strlen(newval->string)) ||
++            !in4_pton(newval->string + 1, -1, (u8 *)&target, -1, NULL)) {
++            netdev_err(bond->dev, "invalid ARP target I4 specified\n");
+             return ret;
+         }
+         if (newval->string[0] == '+')
+-- 
+2.34.1
 
