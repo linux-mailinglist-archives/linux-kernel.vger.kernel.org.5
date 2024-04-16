@@ -1,97 +1,111 @@
-Return-Path: <linux-kernel+bounces-147005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39E178A6E22
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:26:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AF9C8A6E24
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:27:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E85622810B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:26:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC59D1C22986
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165DA130496;
-	Tue, 16 Apr 2024 14:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7FB1311A0;
+	Tue, 16 Apr 2024 14:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kqDr96a+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dHFs35ra"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A434128805;
-	Tue, 16 Apr 2024 14:23:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A7D1128805;
+	Tue, 16 Apr 2024 14:23:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713277399; cv=none; b=ZxLT2ZlXb763qxbrvA6py5mqqUVnNoUzR+D0Mjnrh1gciBfqWU3C1hNtMYlJNS2aZ+aVHXMZr4znG5RcgOl8BksV0n4v9sZrGq0aB27STz1G1KmbptrFoxIdq05rEKzyPZEEF7oiD7oNUSnmZ1sNGi4JgkI7QrhpbiKufxuGaAg=
+	t=1713277406; cv=none; b=CgF+FesKF4J4LRL0x3zh6QuQeFSKbwyQT97K+KALjtuZdLAv6L2a3XHd6gNTGiZ0FR/ocM/U1YIyhdYCriSN9ZCUsb/F8lHeNsFwvMNDdnK8MOMZ8g0zkLb7EiaPdC2HRNU6WLNkuf3XwKc2IHrnvpUeruSvHxOVqGsd8DvjoHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713277399; c=relaxed/simple;
-	bh=ehDmFxuzMc0GABhu9Np0Q5YsywD0jqWWuiNwfGgzy7Y=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=Qc8SwEezAXpF9ji40lDQhcS4ioykpT5JdPgkcUonCeZvNQNSuDselS4RUfCuiLhuW0fgmqA5gRR3vjTC05XuJhSvtR/uwGBKDAwsw1wp97uev+D/OvdCeA7bwCVgWZRVrIxtQzQcwoZHIAC387bWdGJznK/QHmToVofdDRtmDHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kqDr96a+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F67DC2BD10;
-	Tue, 16 Apr 2024 14:23:12 +0000 (UTC)
+	s=arc-20240116; t=1713277406; c=relaxed/simple;
+	bh=58RkNN441ASwLnkSEKiz2PfX3QCesXCmqb6Tn1mJXoo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J0DTgvcoAX9VrfzFcc4CUv9z1IXkn56FKDE6Kv04YhI4guEMZGWLVlna4OV9YN5GUuc5c9bYxKv457ueJ291njFeaf5CH4lGRtulaOiT4aQv3tc0YzO67+1feOt7XuFm554sO4jD96U87XlvlWwFjQ+2FNqjzNRPMwsXkUDKfxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dHFs35ra; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30198C113CE;
+	Tue, 16 Apr 2024 14:23:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713277399;
-	bh=ehDmFxuzMc0GABhu9Np0Q5YsywD0jqWWuiNwfGgzy7Y=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=kqDr96a+/EJLMGuxGhyn7HPaDovtgGPCfVn3A8iRwpoRF+dWD3mgbIj3UY4hSvYfo
-	 NFt34q7YXC5XQxqtIpgKYYDnXon0jFDN33kRrsQdqlwIvudhe0V29TxoEUKJuGJ6az
-	 tzE7Xdkra2kIZ+p6LSI6J3pDsd+dkboMo9LwilVhY8TlPY27f2ZVLw5R8fC4L8VbA0
-	 7urXrm8UItbRGNb7UFPSnxt/OyYLFP3Z8wvoBZBcq/tbHeTUXvaBW1Pcl3Y28IMOCJ
-	 dad87sgoJqYCWh2s5JhWG0T9hGsS/WG4hOet6yuKtJTmqgFcMxFDakskBbt0e0wT21
-	 GKslGlHo4IftQ==
+	s=k20201202; t=1713277404;
+	bh=58RkNN441ASwLnkSEKiz2PfX3QCesXCmqb6Tn1mJXoo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dHFs35rafTRXGYB4DLjWfm2CAQJyChKJAeupgqZBMrcpVrfd1mltGOXTkkgC/Ekkd
+	 vHH9B8qVs07tISfP3i4gZ/Gnv30Mi5XEHVkxznVlyjsPPbMUerEFWkAoKZSws5kIzT
+	 5T7Q+JYK9EIeVxhkclIE53jfTRsyzFtZcZWLrHV9MaQaER4b2kz+5gkjCKr/h2P4ur
+	 VZ8Xr04JSd9Ay+sqPosrNrrnEYXPvt5Ycu/i4cCDTLEcc7pg2LgKezFw2x4HWdbzAf
+	 WgYU9vl8Gm7lkb3hF3Qpxhl+L3Xfw0mp+F6QsgvJ14kXOXj7o3HWhyjlykx99u2KoR
+	 fjUU/7zEuJJJA==
+Date: Tue, 16 Apr 2024 11:23:21 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 1/4] perf annotate-data: Improve debug message with
+ location info
+Message-ID: <Zh6J2WHVBHV7fXE6@x1>
+References: <20240412183310.2518474-1-namhyung@kernel.org>
+ <20240412183310.2518474-2-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 16 Apr 2024 17:23:10 +0300
-Message-Id: <D0LM5BP1D90R.2OLRV9OQG5596@kernel.org>
-Subject: Re: [PATCH v4 01/14] lib: Add TLV parser
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Randy Dunlap" <rdunlap@infradead.org>, "Roberto Sassu"
- <roberto.sassu@huaweicloud.com>, <corbet@lwn.net>, <paul@paul-moore.com>,
- <jmorris@namei.org>, <serge@hallyn.com>, <akpm@linux-foundation.org>,
- <shuah@kernel.org>, <mcoquelin.stm32@gmail.com>,
- <alexandre.torgue@foss.st.com>, <mic@digikod.net>
-Cc: <linux-security-module@vger.kernel.org>, <linux-doc@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
- <bpf@vger.kernel.org>, <zohar@linux.ibm.com>, <dmitry.kasatkin@gmail.com>,
- <linux-integrity@vger.kernel.org>, <wufan@linux.microsoft.com>,
- <pbrobinson@gmail.com>, <zbyszek@in.waw.pl>, <hch@lst.de>,
- <mjg59@srcf.ucam.org>, <pmatilai@redhat.com>, <jannh@google.com>,
- <dhowells@redhat.com>, <jikos@kernel.org>, <mkoutny@suse.com>,
- <ppavlu@suse.com>, <petr.vorel@gmail.com>, <mzerqung@0pointer.de>,
- <kgold@linux.ibm.com>, "Roberto Sassu" <roberto.sassu@huawei.com>
-X-Mailer: aerc 0.17.0
-References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
- <20240415142436.2545003-2-roberto.sassu@huaweicloud.com>
- <D0KXTHHYLSX6.1IDLSEIVS9PA5@kernel.org>
- <805af99c-4c78-4f2c-a15b-de69a4b8da99@infradead.org>
-In-Reply-To: <805af99c-4c78-4f2c-a15b-de69a4b8da99@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240412183310.2518474-2-namhyung@kernel.org>
 
-On Tue Apr 16, 2024 at 12:07 AM EEST, Randy Dunlap wrote:
->
->
-> On 4/15/24 12:19 PM, Jarkko Sakkinen wrote:
-> > On Mon Apr 15, 2024 at 5:24 PM EEST, Roberto Sassu wrote:
-> >> From: Roberto Sassu <roberto.sassu@huawei.com>
-> >>
-> >> Add a parser of a generic TLV format:
-> >=20
-> > What is TLV?
->
-> type-length-value
->
-> i.e., a descriptor that contains a value.
->
-> IIUC.
+On Fri, Apr 12, 2024 at 11:33:07AM -0700, Namhyung Kim wrote:
+> To verify it found the correct variable, let's add the location
+> expression to the debug message.
 
-Thanks Randy. If it had been "time-length-value (TLV)" then it would
-have been obvious :-)
+Added the patch below, following your existing convention of casting
+Dwarf_Offset/Darf_Word to long.
 
-BR, Jarkko
+- Arnaldo
+
+diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
+index c6eb5b2cc4d50d79..e53d66c46c540b75 100644
+--- a/tools/perf/util/annotate-data.c
++++ b/tools/perf/util/annotate-data.c
+@@ -110,24 +110,24 @@ static void pr_debug_location(Dwarf_Die *die, u64 pc, int reg)
+ 			break;
+ 		case DW_OP_breg0 ...DW_OP_breg31:
+ 			pr_info("base=reg%d, offset=%#lx\n",
+-				ops->atom - DW_OP_breg0, ops->number);
++				ops->atom - DW_OP_breg0, (long)ops->number);
+ 			break;
+ 		case DW_OP_regx:
+-			pr_info("reg%ld\n", ops->number);
++			pr_info("reg%ld\n", (long)ops->number);
+ 			break;
+ 		case DW_OP_bregx:
+ 			pr_info("base=reg%ld, offset=%#lx\n",
+-				ops->number, ops->number2);
++				(long)ops->number, (long)ops->number2);
+ 			break;
+ 		case DW_OP_fbreg:
+-			pr_info("use frame base, offset=%#lx\n", ops->number);
++			pr_info("use frame base, offset=%#lx\n", (long)ops->number);
+ 			break;
+ 		case DW_OP_addr:
+-			pr_info("address=%#lx\n", ops->number);
++			pr_info("address=%#lx\n", (long)ops->number);
+ 			break;
+ 		default:
+ 			pr_info("unknown: code=%#x, number=%#lx\n",
+-				ops->atom, ops->number);
++				ops->atom, (long)ops->number);
+ 			break;
+ 		}
+ 		break;
 
