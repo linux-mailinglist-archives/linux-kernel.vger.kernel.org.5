@@ -1,217 +1,202 @@
-Return-Path: <linux-kernel+bounces-147423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B01D8A73CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:53:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C61558A73D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:53:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 186851F2193E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:53:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CDD4282428
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:53:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E03CC146D7F;
-	Tue, 16 Apr 2024 18:45:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4498D137C29;
+	Tue, 16 Apr 2024 18:47:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="gDiR/Hb7"
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fpAzZnHr"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C0B145FFA
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B947134CFA;
+	Tue, 16 Apr 2024 18:47:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713293118; cv=none; b=FQUEUWIZeczpkptS4bUDqq275Om4AjiQjK06IDD+TQbCrEDGCqfx/0e6eGz0mG0X2ZmUwwbTtfLNIP/EAc5m8Gv9ql/7/iQ/VFE5U9aL1Jjq9VF7aYrfrT/K4xvYmo0S1NDG9QVwa5+opqMIw5bR9APEnz2mspuZl+6+VPgCzfI=
+	t=1713293230; cv=none; b=BsC9pcdapi431BgF27aZ1gwtA5bxb8GvtBmkka0VTBS9Ri+Dn21dSqym77zro5irVLMGBqh9EsTcTVs4rn+YEMSx+KsNgTxfX2Y4zzjDG+IH+JRYoUJhfkwHX2h62vuVrY47tSg0j3qhsvT7LNSqcoNEvkB50x/ubyUzRZtL/mE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713293118; c=relaxed/simple;
-	bh=4h0IzOtLBFbHmqIztYQtJnRQ5i+JxAIa21rlgcy6DFI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=invkQfMW8+ciSdxuq8XHXLlu/kMcV4V2HuizVu8Ssc5LRNfkBvHo6KX8MfPY9PVSGuBqsKUP2BRO0gMLmGwJ+GaqsXN8jWo3xzeTzGeyHZcgf/BypykC1BddMF7Q/CAp5xwim0PhhnDQ533659Kc0TQnmoaVh5IbZWazEMA5duQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=gDiR/Hb7; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2a2d248a2e1so48786a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:45:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713293116; x=1713897916; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k8dppvgVnh54sEjPJluz+VPGn0XVIgbI5aDFYcuHKMk=;
-        b=gDiR/Hb7dfZWte/qAVI7hwrqpsxUDO9Y6vLg5/aP2wlJOeuMhrIGJNIAG/C3KvorM2
-         ATqjJ5wyUXjjmLXdYpCQ8cOM6SqAu6hwBKL0RLLD4vitoI2Re6fwY32WO2ebzQEweVX1
-         2wVWzJLs+Q8bMYGNFOtNTNFYvx+VVFC1nZMw+2z5eUv1oeBoWhakxYlHNkpIItYX0x30
-         imIyUqmkuNE5hAUS9rI/ES1mfjnnttRstTd9QVRzN+kx42Rlz7h+FCfI8lDqllxGfHtl
-         +UGiqTnouub2dQQsjAm4FpMGRzMU39wmt8p7FHJOa1AxnsIID8D4guTtMhYNanx7TfnN
-         +4Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713293116; x=1713897916;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k8dppvgVnh54sEjPJluz+VPGn0XVIgbI5aDFYcuHKMk=;
-        b=N3WSSP68xeCcbxCJG+bYZmnzspaJS8D79Cz3t/ELSS+ZZ2mfsF8QgeusUwD5+b5owd
-         SkvYK+wZMF/YuuSwde/MxHnhnMTpxTWiX4nNqjsLG/gHKAtutqBm1vGp+JzL1oZZMY9l
-         4EbWNRtWsusuay5Kz8hpnFsuFG3OxEMEDgxUieG3hOry0PsNXiwYHnU5c+73Pc+zjCh1
-         Xw83Oq2eJ+xZLpNe5KiQ3pRa2ZTbQJco9elMQB0vT4gVPkrJ8flOZao5MNKlEEW5JOoG
-         nn0xwpVB+tvB+6gMG2ugV1YU1jFNIYB0DOyxG2asEa7UDlcFScP1HA434rersFrpHsrF
-         rFaQ==
-X-Gm-Message-State: AOJu0YxAlvooni8fbv2ZbiSZjemrJuY/hU0fFtR4pv/UTNFH7D3+TCqU
-	BCVaX0KxRISGyOc6hLMl4wKdV+DDt7pWV34oK/W7H1K83h8IeM0cZBFhSl3Uj16uCBXaWr9HMcF
-	0
-X-Google-Smtp-Source: AGHT+IHzc2MYBxQtrmJtlm+A3Ba+b1xBo3biutdeONIY5AZoPZgv68J1XHzbTpk7PKvAcyeeK8RTRQ==
-X-Received: by 2002:a17:90b:1a88:b0:2a2:faf4:71da with SMTP id ng8-20020a17090b1a8800b002a2faf471damr4887452pjb.10.1713293115724;
-        Tue, 16 Apr 2024 11:45:15 -0700 (PDT)
-Received: from atishp.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id o19-20020a17090aac1300b002a269828bb8sm8883645pjq.40.2024.04.16.11.45.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 11:45:15 -0700 (PDT)
-From: Atish Patra <atishp@rivosinc.com>
-To: linux-kernel@vger.kernel.org
-Cc: Atish Patra <atishp@rivosinc.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Ajay Kaher <ajay.kaher@broadcom.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Anup Patel <anup@brainfault.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Juergen Gross <jgross@suse.com>,
-	kvm-riscv@lists.infradead.org,
-	kvm@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Mark Rutland <mark.rutland@arm.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Shuah Khan <shuah@kernel.org>,
-	virtualization@lists.linux.dev,
-	Will Deacon <will@kernel.org>,
-	x86@kernel.org
-Subject: [PATCH v7 24/24] KVM: riscv: selftests: Add commandline option for SBI PMU test
-Date: Tue, 16 Apr 2024 11:44:21 -0700
-Message-Id: <20240416184421.3693802-25-atishp@rivosinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240416184421.3693802-1-atishp@rivosinc.com>
-References: <20240416184421.3693802-1-atishp@rivosinc.com>
+	s=arc-20240116; t=1713293230; c=relaxed/simple;
+	bh=sLh7jAnxEgDhzrphM2vEc6n61fuaaaO6jruIdretCgo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RnWj49opBVXqAHIvhDINZaBUHYZPtgh+dKe5e2YXJnd/kKruDF0EIdSYVRWK6kwkrY+rLECWp/u2v35oCoyT35b9iyq/lkWFpUPIATslj0X1UsR62gTYz+etB65CgA90VTJPEFpRFcgrVyZ/qSXO2Sttg5WNIemJ8yNiSksf9lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fpAzZnHr; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713293229; x=1744829229;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=sLh7jAnxEgDhzrphM2vEc6n61fuaaaO6jruIdretCgo=;
+  b=fpAzZnHrcytTBpZ3LfofDSpFuLuiIaP6maCbJfjmKEkxZaIv3bWqfK6U
+   /UKtqJBZRtP2mmjkt4dcwa/hxwkKDjFhWMuzG2JCcGRknRZ3f/gYpqPfO
+   SlBbcBN/Jh23UD+QGw3fjJYsPUJOgdpbPQChO4hmFS21twUt4B6+TyZ3e
+   EFz6XCGBRXUSwqN/YFSHTbVKEirezrVlexSjitMkMd75tLW9ei8bs/7j0
+   G21dahg4Y3W7rklPFj+8Zegfn/28aS12su/zNUUTLVUQZP4eBvp7+/xYL
+   TcwkBXlzUDh8udHzGfch3i7bHQlzhWRheVz8/ySAzwfT+zjMwNKyzUBzu
+   w==;
+X-CSE-ConnectionGUID: 9pOB0gXcQpy5MlprmTVsgw==
+X-CSE-MsgGUID: 2AC8O8geRQm4iTCxti+csw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8635859"
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="8635859"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 11:47:08 -0700
+X-CSE-ConnectionGUID: w3p3xxn4RA2V89Fo/JnbYw==
+X-CSE-MsgGUID: SewNWemiSEWsv6xMweAcTA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="22422655"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 11:47:05 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rwnpe-00000004nLf-2an3;
+	Tue, 16 Apr 2024 21:47:02 +0300
+Date: Tue, 16 Apr 2024 21:47:02 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [PATCH 2/4] dmaengine: dw: Add memory bus width verification
+Message-ID: <Zh7Hpuo-TzSmlz69@smile.fi.intel.com>
+References: <20240416162908.24180-1-fancer.lancer@gmail.com>
+ <20240416162908.24180-3-fancer.lancer@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416162908.24180-3-fancer.lancer@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-SBI PMU test comprises of multiple tests and user may want to run
-only a subset depending on the platform. The most common case would
-be to run all to validate all the tests. However, some platform may
-not support all events or all ISA extensions.
+On Tue, Apr 16, 2024 at 07:28:56PM +0300, Serge Semin wrote:
+> Currently in case of the DEV_TO_MEM or MEM_TO_DEV DMA transfers the memory
+> data width (single transfer width) is determined based on the buffer
+> length, buffer base address or DMA master-channel max address width
+> capability. It isn't enough in case of the channel disabling prior the
+> block transfer is finished. Here is what DW AHB DMA IP-core databook says
+> regarding the port suspension (DMA-transfer pause) implementation in the
+> controller:
+> 
+> "When CTLx.SRC_TR_WIDTH < CTLx.DST_TR_WIDTH and the CFGx.CH_SUSP bit is
+> high, the CFGx.FIFO_EMPTY is asserted once the contents of the FIFO do not
+> permit a single word of CTLx.DST_TR_WIDTH to be formed. However, there may
+> still be data in the channel FIFO, but not enough to form a single
+> transfer of CTLx.DST_TR_WIDTH. In this scenario, once the channel is
+> disabled, the remaining data in the channel FIFO is not transferred to the
+> destination peripheral."
+> 
+> So in case if the port gets to be suspended and then disabled it's
+> possible to have the data silently discarded even though the controller
+> reported that FIFO is empty and the CTLx.BLOCK_TS indicated the dropped
+> data already received from the source device. This looks as if the data
+> somehow got lost on a way from the peripheral device to memory and causes
+> problems for instance in the DW APB UART driver, which pauses and disables
+> the DMA-transfer as soon as the recv data timeout happens. Here is the way
+> it looks:
+> 
+>  Memory <------- DMA FIFO <------ UART FIFO <---------------- UART
+>   DST_TR_WIDTH -+--------|       |         |
+>                 |        |       |         |                No more data
+>    Current lvl -+--------|       |---------+- DMA-burst lvl
+>                 |        |       |---------+- Leftover data
+>                 |        |       |---------+- SRC_TR_WIDTH
+>                -+--------+-------+---------+
+> 
+> In the example above: no more data is getting received over the UART port
+> and BLOCK_TS is not even close to be fully received; some data is left in
+> the UART FIFO, but not enough to perform a bursted DMA-xfer to the DMA
+> FIFO; some data is left in the DMA FIFO, but not enough to be passed
+> further to the system memory in a single transfer. In this situation the
+> 8250 UART driver catches the recv timeout interrupt, pauses the
+> DMA-transfer and terminates it completely, after which the IRQ handler
+> manually fetches the leftover data from the UART FIFO into the
+> recv-buffer. But since the DMA-channel has been disabled with the data
+> left in the DMA FIFO, that data will be just discarded and the recv-buffer
+> will have a gap of the "current lvl" size in the recv-buffer at the tail
+> of the lately received data portion. So the data will be lost just due to
+> the misconfigured DMA transfer.
+> 
+> Note this is only relevant for the case of the transfer suspension and
+> _disabling_. No problem will happen if the transfer will be re-enabled
+> afterwards or the block transfer is fully completed. In the later case the
+> "FIFO flush mode" will be executed at the transfer final stage in order to
+> push out the data left in the DMA FIFO.
+> 
+> In order to fix the denoted problem the DW AHB DMA-engine driver needs to
+> make sure that the _bursted_ source transfer width is greater or equal to
+> the single destination transfer (note the HW databook describes more
+> strict constraint than actually required). Since the peripheral-device
+> side is prescribed by the client driver logic, the memory-side can be only
+> used for that. The solution can be easily implemented for the DEV_TO_MEM
+> transfers just by adjusting the memory-channel address width. Sadly it's
+> not that easy for the MEM_TO_DEV transfers since the mem-to-dma burst size
+> is normally dynamically determined by the controller. So the only thing
+> that can be done is to make sure that memory-side address width can be
+> greater than the peripheral device address width.
 
-The commandline option allows user to disable any set of tests if
-they want to.
+..
 
-Suggested-by: Andrew Jones <ajones@ventanamicro.com>
-Signed-off-by: Atish Patra <atishp@rivosinc.com>
----
- .../selftests/kvm/riscv/sbi_pmu_test.c        | 73 ++++++++++++++++---
- 1 file changed, 64 insertions(+), 9 deletions(-)
+> +static int dwc_verify_m_buswidth(struct dma_chan *chan)
+> +{
+> +	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
+> +	struct dw_dma *dw = to_dw_dma(chan->device);
+> +	u32 reg_width, reg_burst, mem_width;
+> +
+> +	mem_width = dw->pdata->data_width[dwc->dws.m_master];
+> +
+> +	/* Make sure src and dst word widths are coherent */
+> +	if (dwc->dma_sconfig.direction == DMA_MEM_TO_DEV) {
+> +		reg_width = dwc->dma_sconfig.dst_addr_width;
+> +		if (mem_width < reg_width)
+> +			return -EINVAL;
+> +
+> +		dwc->dma_sconfig.src_addr_width = mem_width;
+> +	} else if (dwc->dma_sconfig.direction == DMA_DEV_TO_MEM) {
+> +		reg_width = dwc->dma_sconfig.src_addr_width;
+> +		reg_burst = rounddown_pow_of_two(dwc->dma_sconfig.src_maxburst);
+> +
+> +		dwc->dma_sconfig.dst_addr_width = min(mem_width, reg_width * reg_burst);
 
-diff --git a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
-index 0fd9b76ae838..69bb94e6b227 100644
---- a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
-+++ b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
-@@ -33,6 +33,13 @@ static unsigned long counter_mask_available;
- 
- static bool illegal_handler_invoked;
- 
-+#define SBI_PMU_TEST_BASIC	BIT(0)
-+#define SBI_PMU_TEST_EVENTS	BIT(1)
-+#define SBI_PMU_TEST_SNAPSHOT	BIT(2)
-+#define SBI_PMU_TEST_OVERFLOW	BIT(3)
-+
-+static int disabled_tests;
-+
- unsigned long pmu_csr_read_num(int csr_num)
- {
- #define switchcase_csr_read(__csr_num, __val)		{\
-@@ -608,19 +615,67 @@ static void test_vm_events_overflow(void *guest_code)
- 	test_vm_destroy(vm);
- }
- 
--int main(void)
-+static void test_print_help(char *name)
-+{
-+	pr_info("Usage: %s [-h] [-d <test name>]\n", name);
-+	pr_info("\t-d: Test to disable. Available tests are 'basic', 'events', 'snapshot', 'overflow'\n");
-+	pr_info("\t-h: print this help screen\n");
-+}
-+
-+static bool parse_args(int argc, char *argv[])
-+{
-+	int opt;
-+
-+	while ((opt = getopt(argc, argv, "hd:")) != -1) {
-+		switch (opt) {
-+		case 'd':
-+			if (!strncmp("basic", optarg, 5))
-+				disabled_tests |= SBI_PMU_TEST_BASIC;
-+			else if (!strncmp("events", optarg, 6))
-+				disabled_tests |= SBI_PMU_TEST_EVENTS;
-+			else if (!strncmp("snapshot", optarg, 8))
-+				disabled_tests |= SBI_PMU_TEST_SNAPSHOT;
-+			else if (!strncmp("overflow", optarg, 8))
-+				disabled_tests |= SBI_PMU_TEST_OVERFLOW;
-+			else
-+				goto done;
-+			break;
-+		case 'h':
-+		default:
-+			goto done;
-+		}
-+	}
-+
-+	return true;
-+done:
-+	test_print_help(argv[0]);
-+	return false;
-+}
-+
-+int main(int argc, char *argv[])
- {
--	test_vm_basic_test(test_pmu_basic_sanity);
--	pr_info("SBI PMU basic test : PASS\n");
-+	if (!parse_args(argc, argv))
-+		exit(KSFT_SKIP);
-+
-+	if (!(disabled_tests & SBI_PMU_TEST_BASIC)) {
-+		test_vm_basic_test(test_pmu_basic_sanity);
-+		pr_info("SBI PMU basic test : PASS\n");
-+	}
- 
--	test_vm_events_test(test_pmu_events);
--	pr_info("SBI PMU event verification test : PASS\n");
-+	if (!(disabled_tests & SBI_PMU_TEST_EVENTS)) {
-+		test_vm_events_test(test_pmu_events);
-+		pr_info("SBI PMU event verification test : PASS\n");
-+	}
- 
--	test_vm_events_snapshot_test(test_pmu_events_snaphost);
--	pr_info("SBI PMU event verification with snapshot test : PASS\n");
-+	if (!(disabled_tests & SBI_PMU_TEST_SNAPSHOT)) {
-+		test_vm_events_snapshot_test(test_pmu_events_snaphost);
-+		pr_info("SBI PMU event verification with snapshot test : PASS\n");
-+	}
- 
--	test_vm_events_overflow(test_pmu_events_overflow);
--	pr_info("SBI PMU event verification with overflow test : PASS\n");
-+	if (!(disabled_tests & SBI_PMU_TEST_OVERFLOW)) {
-+		test_vm_events_overflow(test_pmu_events_overflow);
-+		pr_info("SBI PMU event verification with overflow test : PASS\n");
-+	}
- 
- 	return 0;
- }
+I understand the desire to go this way, but wouldn't be better to have
+a symmetrical check and return an error?
+
+> +	}
+> +
+> +	return 0;
+> +}
+
+IIRC MEM side of the DMA channel will ignore those in HW, so basically you are
+(re-)using them purely for the __ffs() corrections.
+
+..
+
+>  	dwc->dma_sconfig.src_maxburst =
+> -		clamp(dwc->dma_sconfig.src_maxburst, 0U, dwc->max_burst);
+> +		clamp(dwc->dma_sconfig.src_maxburst, 1U, dwc->max_burst);
+>  	dwc->dma_sconfig.dst_maxburst =
+> -		clamp(dwc->dma_sconfig.dst_maxburst, 0U, dwc->max_burst);
+> +		clamp(dwc->dma_sconfig.dst_maxburst, 1U, dwc->max_burst);
+
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
 
