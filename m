@@ -1,111 +1,113 @@
-Return-Path: <linux-kernel+bounces-147347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAFA48A72C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:06:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95BB88A72C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:05:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87832284491
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:06:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B7FB1F22C3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:05:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4A6136671;
-	Tue, 16 Apr 2024 18:05:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84D65134CD4;
+	Tue, 16 Apr 2024 18:05:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="Zx/0mIB3"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tgo4Q4p1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF06135A59
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD4AD134405;
+	Tue, 16 Apr 2024 18:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713290746; cv=none; b=BX63twQUj9dix8TSBqSJFTHQi+gssxGOu/fvBdCAnp5WpngZAt5MDkWPTf37QSvnCbYbAAONx61BXl0LHzXnbVSD7Rwraeq+CYFMnA+ZXamzCaoL3RwT97Z2pklNN93M7xY5hABxbOsrjk85ogBNv4CMijtY481qmRBDUnboHzo=
+	t=1713290742; cv=none; b=DAzxnTW1OaZ5IwJ3CeOHUg9vuiSisnJUMNLdYxare0GWFBnqGD2PpRgxOc4gMzVERz45HQTpE8/KLulug8eFG8Q3w6UL34T1xPVNTK04h1sGVjxMNhJFQbFxxes9fXHSHUSUOc3naU9ea0d81+BkrBcLKOsJQuHfzLUTbfLLNjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713290746; c=relaxed/simple;
-	bh=vNxatr6wmhiPowTIKjuTwwXXbIbHjyR7xpA57RzBFm4=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=mA2m5hGcpX6UDCtNouYAZWbh7Gfil1ruxzpq3HhV6o0C8IhA6QCFyE4Ejd0e6cmbm4fy+uuO2uzOqrVWHQMRZvaoU7jwlRQmXgC4BudmfeZceym4IAih4dEairEes52/hRqu/b+g8MXXpSZymzKyJkC2mrOKuoHzUrkQBFIqJOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=Zx/0mIB3; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 43GI5Ep23333977
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Tue, 16 Apr 2024 11:05:15 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 43GI5Ep23333977
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024041401; t=1713290715;
-	bh=J8pxXkE58AUR7hivIEpGL3T2EshFPqjzkbL423tGcGA=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=Zx/0mIB343ew2Y582XPfh8wl84ROu2m6y7q1UjSjWuiNu2/bm2AbSZ1UVdHlVimsx
-	 HYH0vp8mvsVHTjOMbOrMdmUWWepYBv6MTJrPHjME+NQcUBbZldsgIK+NDkKJSlu+wR
-	 mj7vRWP3+K09j/Voqw0gXYwzhqWY9sCA3ZMcG0Jyt7VbuKqosoLjOzI4DtDt2SPG81
-	 J2b3z7MiPWEfZpYea/AnI8AEBRMz/fdwGNrUcwPL45PXC6t6qiuz6KrSjcgVb9I4wY
-	 1GGFjnyg6CXd+Xe4DWjyzq+hJCUaiTvPBnAoVx23BNSANcPxUhF5TRowmpfi1kuGQB
-	 aKG1sSjPcWiMQ==
-Date: Tue, 16 Apr 2024 11:05:09 -0700
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Borislav Petkov <bp@alien8.de>, "Xin Li (Intel)" <xin@zytor.com>
-CC: linux-kernel@vger.kernel.org, luto@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org
-Subject: Re: [PATCH v1 1/1] x86/fred: Fix int80 emulation for FRED
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20240416101147.GDZh5O473e4X_ZG1lZ@fat_crate.local>
-References: <20240412234058.1106744-1-xin@zytor.com> <20240416101147.GDZh5O473e4X_ZG1lZ@fat_crate.local>
-Message-ID: <1AE9FA53-A130-4F95-8408-C1990DD031AA@zytor.com>
+	s=arc-20240116; t=1713290742; c=relaxed/simple;
+	bh=ofwzRbETYmRwC0pS8n9dd+EPWVyzyXzVpzRfaZ5N3ro=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=TBDIWM73injrFYZ2wu+ERtNZnz+C3e9CBNCJ0dprvBsfsFmV/S7ZzPuy0VEyv5tONGehuXKBoo6PQp720a6bpz6l3AqFsERz8TK8EW3kM2phYRrk9+BO3BANum4eJqtR6jEVoZEB02DmKVkL4/R5zv3XJu2/Q+oK1Ya1V4NDVK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tgo4Q4p1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5310C2BD11;
+	Tue, 16 Apr 2024 18:05:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713290742;
+	bh=ofwzRbETYmRwC0pS8n9dd+EPWVyzyXzVpzRfaZ5N3ro=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=tgo4Q4p1d1p9T0puSKluE1QgYZa7w62lj9a8aH0yC4TeNdxnVmji8JSX+Bf4sgn3F
+	 eYMgcoM9yOR5Io4NBynQVzUaTT5/syfShwg0UNBIeW9Id0U/kQIk1qqH9NmV+Cj27a
+	 47gIOUAsyoLBzsU9COXbsbFn1GO3RC2GZ+QMPJCkj+GRIZcHD5QiP1sZHlr5rcYZyu
+	 3sbr6n5gIMkjenovcrb8ogVhK+KO+0eOpTBDQupNx+h9Np8tLGSUoTo1SVGUKPB/2H
+	 6I5hzm3QznH1igAiCrfCZF0kdZB+r6veXZb0qnoa5YV/lMOwj0v4wWRJrbHVsd0O2i
+	 Xawofm9TvBNGQ==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Nam Cao <namcao@linutronix.de>
+Cc: Mike Rapoport <rppt@kernel.org>, Christian Brauner <brauner@kernel.org>,
+ Andreas Dilger <adilger@dilger.ca>, Al Viro <viro@zeniv.linux.org.uk>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>, Ext4
+ Developers List <linux-ext4@vger.kernel.org>, Conor Dooley
+ <conor@kernel.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Anders
+ Roxell <anders.roxell@linaro.org>, Alexandre Ghiti <alex@ghiti.fr>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+In-Reply-To: <20240416181944.23af44ee@namcao>
+References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
+ <8734rlo9j7.fsf@all.your.base.are.belong.to.us>
+ <Zh6KNglOu8mpTPHE@kernel.org> <20240416171713.7d76fe7d@namcao>
+ <20240416173030.257f0807@namcao>
+ <87v84h2tee.fsf@all.your.base.are.belong.to.us>
+ <20240416181944.23af44ee@namcao>
+Date: Tue, 16 Apr 2024 20:05:38 +0200
+Message-ID: <875xwhuqrx.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On April 16, 2024 3:11:47 AM PDT, Borislav Petkov <bp@alien8=2Ede> wrote:
->On Fri, Apr 12, 2024 at 04:40:58PM -0700, Xin Li (Intel) wrote:
->> Commit 55617fb991df
->
->Use the full commit abbreviation when mentioning commits:
->
->"Commit
->
->  55617fb991df ("x86/entry: Do not allow external 0x80 interrupts")
->
->=2E=2E=2E"
->
->> added a bunch of tests to the int $0x80 path,
->
->Added a bunch of tests?
->
->What does that even mean?
->
->> however they are unnecessary and event wrong in fact under FRED=2E
->
->Are the bunch of tests wrong or is do_int80_emulation() simply the wrong
->handler to use on a FRED?
->
->> First FRED distinguishes external interrupts from software interrupts,
->> thus int80_emulation() should NEVER be called for handling an external
->> interrupt, and then int80_is_external() should be skipped under FRED=2E
->>=20
->> Second, the FRED kernel entry handler NEVER dispatches INTx, which is
->> of event type EVENT_TYPE_SWINT, so the user mode checking in
->> do_int80_emulation() is redundant, and should be skipped=2E
->>=20
->> It might be even better to strip down do_int80_emulation() to a lean
->> fred_int80_emulation(), not to mention int80_emulation() does a
->> CLEAR_BRANCH_HISTORY=2E
->
->Yah, how about you do a FRED-specific INT80 handler instead of
->sprinkling moar tests around? fred_intx() looks like the right place to
->stuff it in=2E=2E=2E
->
+Nam Cao <namcao@linutronix.de> writes:
 
-The question was if you wanted a quick fix for x86/urgent=2E It's pretty o=
-bvious that a FRED fork of the int80 code is called for=2E
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index fa34cf55037b..f600cfee0aef 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -197,7 +197,6 @@ early_param("mem", early_mem);
+>  static void __init setup_bootmem(void)
+>  {
+>  	phys_addr_t vmlinux_end =3D __pa_symbol(&_end);
+> -	phys_addr_t max_mapped_addr;
+>  	phys_addr_t phys_ram_end, vmlinux_start;
+>=20=20
+>  	if (IS_ENABLED(CONFIG_XIP_KERNEL))
+> @@ -238,17 +237,9 @@ static void __init setup_bootmem(void)
+>  	/*
+>  	 * memblock allocator is not aware of the fact that last 4K bytes of
+>  	 * the addressable memory can not be mapped because of IS_ERR_VALUE
+> -	 * macro. Make sure that last 4k bytes are not usable by memblock
+> -	 * if end of dram is equal to maximum addressable memory.  For 64-bit
+> -	 * kernel, this problem can't happen here as the end of the virtual
+> -	 * address space is occupied by the kernel mapping then this check must
+> -	 * be done as soon as the kernel mapping base address is determined.
+> +	 * macro. Make sure that last 4k bytes are not usable by memblock.
+>  	 */
+> -	if (!IS_ENABLED(CONFIG_64BIT)) {
+> -		max_mapped_addr =3D __pa(~(ulong)0);
+> -		if (max_mapped_addr =3D=3D (phys_ram_end - 1))
+> -			memblock_set_current_limit(max_mapped_addr - 4096);
+> -	}
+> +	memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE);
+>=20=20
+>  	min_low_pfn =3D PFN_UP(phys_ram_base);
+>  	max_low_pfn =3D max_pfn =3D PFN_DOWN(phys_ram_end);
+
+Nice! Would you mind submitting this as a proper fix (unless there's a
+way to do it non-arch specific like Matthew pointed out).
+
+
+Bj=C3=B6rn
 
