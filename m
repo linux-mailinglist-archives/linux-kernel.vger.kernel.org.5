@@ -1,318 +1,393 @@
-Return-Path: <linux-kernel+bounces-147224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AA238A7134
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:20:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96FFD8A7141
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:21:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01019283A2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:20:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA51A1C21F80
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:21:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACC3F131BD0;
-	Tue, 16 Apr 2024 16:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3B513173C;
+	Tue, 16 Apr 2024 16:21:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WG5DK3+S"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gu6YTQ10"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 410F4131750
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:20:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713284408; cv=fail; b=jqfy1mKWEUW672PeIhwH60OL4RS4o9xoJGdDbkrSXFZj5WbLFsRZ/QWPELZto+ZRzOcVGUqJM14x00jfEyI9wekAJ+00tAyGAclUaUYwqZlzmIXfkhoFZviAbENW5rignKUvwuD8bS2SaMHzJy0wme9XF7+jTygOu3LnrXIg6ME=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713284408; c=relaxed/simple;
-	bh=tqnHBt08iPmhzxbME0xHsYae6YSGaA7ncoXD6G3ZAB4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=nEVumpxW9rubkbrug3Y7uxWA0OlfIX1Mo5HMcD4iyOZOWcGsUli4OwQfVrwm4FYC/tAtCsC+4udfYjU60PAHoiWoktMcK2L6ILk1LojURuMTXADX9yzxCKWy/U+6FpRltvL4kj8YnSW+N4l32AR0N7VR4P173+9eGFxRIb9FNF0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WG5DK3+S; arc=fail smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713284405; x=1744820405;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=tqnHBt08iPmhzxbME0xHsYae6YSGaA7ncoXD6G3ZAB4=;
-  b=WG5DK3+S59gzC6INaSFSIb0KYxn2QKe/xcrb9Yy5GQEunp3N/xifu7g9
-   Xv7nWQFeCOjR2Yb4MhHY+GmDdu8xn8AIThD138YGKN61xOokdmIZVvoYO
-   299ueB4NFoo62q9aSLc+tfms2Js77WulopKuSZHAtGKqUf6rweH2E//dV
-   qNaO+0/f0MoQoCFETnrrdobQp4DEqpxCLoa87f6pYeH5/QOiLg3k/TTdo
-   pG5bBsgBj2Bk8xJEC0hUaRJnscqhmcwOq6MKmz6Vk1OFaZE7HcMR8CtaV
-   pF2/KevXyRc+GF3gUfMmvdXWHWtZW3zIq6F4EtD11oW4d81bW2+Nw9rU9
-   w==;
-X-CSE-ConnectionGUID: 5WycAkv7TVS+YnY38MvOqw==
-X-CSE-MsgGUID: ZjdXGP2fSmGxmrekl+y1AQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8615160"
-X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="8615160"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 09:20:03 -0700
-X-CSE-ConnectionGUID: vMVSO4A6S6STifvm7nD4fg==
-X-CSE-MsgGUID: /yEsQkVjRtasZham0Sx9rg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="22380119"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Apr 2024 09:20:03 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 16 Apr 2024 09:20:01 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 16 Apr 2024 09:20:01 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 16 Apr 2024 09:20:01 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 16 Apr 2024 09:20:00 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N2YxWBzSPsYK/TH6F/2BxoWGYsQ09T2dY76LbEdYhEQA5FDtedp48kKXT8Eu6Vgda3TcTSUDG0odqfOrSVDoV9ck+wkRMRggTD2tNeMlF9/K3LCX22vvvwy2ViCDPnQ8EUVk7CXXwR8TyUdxQnhRj2Gdg4igCQMcs94DRyFXdtk7aHVnHQBV5UzajeZ99CyiqUZSgPa0/iNJveoAs3kmpjr6TP2Wj9CV3AA5x50lZWxx9MZWWcQPVgL+YlIZeJbKFVETBr4tkV0EMGeVswifmdKD4cQN8lbfJNqy2pCrAc3SUSaF/NerKe1/8X8jgAfZ5T2i5bFGvoQGUraZBDXfIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7beU0BVULEWkxfb/DMmOTEx/TdIliJ0sTn7ro4i/Mx4=;
- b=e9fgffA3lWd9+OeKL8KuMSx9UP117gx6IvlmxnRsomAwJ7di0I+lcKcdZw0qJ5gJ0aJwmAIvLiksIvBkyr42MNpXXIR4v/W90euSjFAz88/S/Ac1SpF120s9F23oijh+S6mIFXMM7wGYrQ8dzbQKIENitkbo7FLmOevseo0SvDok3rCLva/uxXhdiasLGMlBxU0cjgY65i+6UwP4pxLAG0KAjaE2bCQA6UMlkbI6bMXNbHz4JHnpQdzAYqpCC3mwhdgIodNajBGaH4XcGSCH/a7g1u2Msr08Xmkq22IaucoicW1fQGqe22LBoPOtLz4byDSxrES5uVA3BYLFNLodQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by SA3PR11MB7535.namprd11.prod.outlook.com (2603:10b6:806:307::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.28; Tue, 16 Apr
- 2024 16:19:57 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::82fd:75df:40d7:ed71]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::82fd:75df:40d7:ed71%4]) with mapi id 15.20.7452.046; Tue, 16 Apr 2024
- 16:19:57 +0000
-Date: Tue, 16 Apr 2024 09:19:54 -0700
-From: Dan Williams <dan.j.williams@intel.com>
-To: Tom Lendacky <thomas.lendacky@amd.com>, Dan Williams
-	<dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-	<linux-coco@lists.linux.dev>, <svsm-devel@coconut-svsm.dev>
-CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, "Peter
- Zijlstra" <peterz@infradead.org>, Michael Roth <michael.roth@amd.com>, Ashish
- Kalra <ashish.kalra@amd.com>
-Subject: Re: [PATCH v3 11/14] x86/sev: Extend the config-fs attestation
- support for an SVSM
-Message-ID: <661ea52a53541_4d56129416@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <cover.1711405593.git.thomas.lendacky@amd.com>
- <1ca853e149fe37be748c028a9b0d00237eb73938.1711405593.git.thomas.lendacky@amd.com>
- <661e0e9418862_4d5612941c@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <3732b0d2-0471-48ce-89b8-43f425040846@amd.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <3732b0d2-0471-48ce-89b8-43f425040846@amd.com>
-X-ClientProxiedBy: MW4PR04CA0093.namprd04.prod.outlook.com
- (2603:10b6:303:83::8) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C34131BA1
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713284490; cv=none; b=kSeL2aSnv+zLwY7S+s8409oWb0rdn7jsGcHxNNIng40KUI9WXlPniy319ie1zPV9B+q/3giv6Xr28OaRaV9WJbfgnyniu1oqFwF5xkSa4x6q0bmi2tMVXDrdHpJfL7jM/jO/Q+VZ4fc16oxlgvIgFQvf+vtYT/mx9VUfnVziRZA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713284490; c=relaxed/simple;
+	bh=LBaNh8aKL4DV54OtrVYLE36TZWBtU1SUkkDnzVmMTpA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=evcf9DhW4kYxAZJ0gLhVC6WNsWv1eTICfLvTjTI1wXrFnPzZU+VUwezmmFkar6DlG2pRcp6HlRqkNRMUQ1upoQwbnvC4dj9aOxlftWfDR27rfGmW5I60qbkYxQkmZm33wluMoulYvugW2A55/tHm2R1RJ8Mf4yzn5AtqCTM4L4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gu6YTQ10; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dd14d8e7026so4380356276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 09:21:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713284486; x=1713889286; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=hEvZfaEmxwcI8wMe4jWsSrr189JgI0uoTVpextxqfmc=;
+        b=gu6YTQ10wC3IKO/wkwOmxqyP5fa6azT3PtdjQo/AhYS4zNICgFW20Vm36Me0KBYZD6
+         4wiAEWjnXZYTm1YEcK7srVWKu3hW97FZSxlxid0bFhIg4rVSFVd2O7dadAvZDtNwKa2G
+         9N8mJ3Picr4EbHf0QTQPrrSgy4lInN6QtXasD4umtmi6/Jf9XvAL0L+mlfefXSvAt3Ws
+         CpGT2qNyYWv9Jh+zcLbU98asqKr+php0ZKzCvS/yXpP3AxbnU2eLWByLXxNCHDa1648I
+         DNxE+uaDD0sPv5Cz6wmTq04fQBVCep246QhKGC/XtfzbnPawp/KnCUZAUL5DPu6j2mNp
+         MINw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713284486; x=1713889286;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hEvZfaEmxwcI8wMe4jWsSrr189JgI0uoTVpextxqfmc=;
+        b=fyI8ym2KS0dXwRXXqJfZ0voLTSt/+L63BPVlwnX4l6Stnp5+cegU1NbvTN0swf/IJI
+         1Kri0LE2THPxBFmamgUd0Jf5P/DCNxUXQZ4VIMTsCwpRvn/BnjSwebVDRQAOikD+zKcK
+         h/8BWcqyudcskJ3/u900m/KpnA06eDSAg/78yWQ4gdq/DNzl9FYXoYV4Dy+6Powf5f3U
+         qYdCr9Wvid7T1UxtbpjeQ8TEwjye/hyvj+KsMyPoOJVE0pmGL7P7V8lMdjkMHVpuw9dG
+         KMmCVUbsZLikMgHHARREMfCXWP1QWcWLqw8f7I0L9OtIBcMW4wUNXslIuW6Oc0fzEcMU
+         MoZg==
+X-Forwarded-Encrypted: i=1; AJvYcCUL4G79MHvfRfetYome2m+dbo9ArKwZqkLVZb2ZgP06nIS+E5W30AYp8ngmLwDEh7IGUJaamXXgMo+iV0neEhwYbY3de3sMydlroFUu
+X-Gm-Message-State: AOJu0YxANUFqWXUROum7yGWte/zpCI/9NugIwQaaVYYhFulUiVRAxbdK
+	5eL1TmDjS5NmxYxw6wEmH2ADe5JWsgjktBS5qp3pc4H7o1M8i9RRXUUXYMCpKF35kw9ytYpQEAT
+	hNETfKNvnxxsHU0PysDsuRQinV+mlcaGVvdmN0w==
+X-Google-Smtp-Source: AGHT+IHs2A/yxNesuXs8eVGZJt+nh2Nt5NC9lR/fK5Z5dVdIiyD9iu9XKitJNNp++pQSha9xQQFEQ59qAR3QbKEq6JI=
+X-Received: by 2002:a25:b0b:0:b0:dc7:4c92:16a3 with SMTP id
+ 11-20020a250b0b000000b00dc74c9216a3mr12452857ybl.27.1713284486417; Tue, 16
+ Apr 2024 09:21:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SA3PR11MB7535:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8b350771-add9-482d-19d6-08dc5e310e92
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vXhMDVJmN/B8wAssoWK7XGlWf2sYQPKbUUdYva1jh0FoNXmgdAFvJj9+r/6aQOtjGk8sYoY4nKfBsq4fP7cTKKuj2zEk0t/MxfYdb+kgUAmQ4fVCr2TFfv/34SSXwIek7bY7ldN99qwGfFPkR5g/R9vXjATkuFfK0YQC3x9GLq93U7KE2CwdVrzC5wytZw783O4C1oH0H3SrJLgEDgLchWju0o8uVxJApeLhRqllfW0ZI2AZ45BxA89FHZ7b9DhLgi+Z2ZQBpQqWW6LIPMPhOoevxusGEUAvWCU09uPIxjvhYDlLPnBjKdwcvZXy5Z83ZwIIZ8nP6qpjH08btKrLBdesDgapGGtOTyJM3kAtdudLH3bDfcwe6JFsLnw5pvMLeQKj268sijvs/NCC87BBnTO7on6QWfmPk0tZtsB8RU4LKzo1XLY1lxZmCsBgDiSnkoEU/IkIO4dV0DCPTz7XRGjdc9hDAw6ZxTclYuixfGN5FgkZNvjEWFIA4qrdKzvV5hPBDITIwLW405XQdYp64z478kqjESrtBHiBLAZeKyCbH5pAQBJP10P2rKB76Y/QEUgZZ1fikKx6CmfU5steJG68ZVYG5gAOtqbH3S1DoFc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(7416005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DoqthFbhLYZDPWVxN4/uSSeJky44OhYmTaXvKJMx3Z6H9o2d0k/3QV2eGft3?=
- =?us-ascii?Q?dD6m5cAAxiIKALhYlLe/1Ab2HxmR9/RaSy7fxjm2umOE2fs4UZINo4evuzdZ?=
- =?us-ascii?Q?EYmVd0WDVLxPSs6gMgHrSN0nGcbfRvxwUeXUEaPSQlvoGMpKoEGPHZ1zMVHO?=
- =?us-ascii?Q?fOYHTpId7vugXGX4PMOxhZT/Yr709w1y7Z8wZuKIeztgnjYKEtfApfZm7wqk?=
- =?us-ascii?Q?ZrO5f48IeBnAt6Vo2FBIbLP1idRPQ0iFQmmsHAQkNkt5fJfkU8+LGRLYBLfC?=
- =?us-ascii?Q?lpmgqGqMoBrpmCyCBYsWcOkP+D6PvBkrOQ+tt2C+ukpE5bGoRKzUxatqM4qd?=
- =?us-ascii?Q?gMeYlswITTfRRcKNwmEQD0XQRqDx8JXGGqLcXspEVroX0fRtlRkoh/MRO1FW?=
- =?us-ascii?Q?zo/bCu3YK2AhFRu/YOaMFVM0im2EiayeWS7zhOPcV1J+egmOgonRp5Jphboi?=
- =?us-ascii?Q?fbAP3u+SLNQpSXkiBlmEQ1keDQziJkQskt86XjoFexMtuqlPJuE8zPQ882i0?=
- =?us-ascii?Q?GKG7j/F1C6tjIUfLhBGPukINGbWGKug5MTeP03tXU3Mj7Uyd51U8ekGMrwyz?=
- =?us-ascii?Q?LxKHyA2e61BXiODBZK+Pr7h0DXQC0Icu3gNt7xcs97n+XRQBSottzPydwV1z?=
- =?us-ascii?Q?LqhpU1OU72UKi05lnTDUBLEQhu0bwWytq+aMJeSzRy2VoAyhTZIynzqn06rO?=
- =?us-ascii?Q?Tmq6X3miAJOyFqCPkI+fPfYWn+v2K8JN5l+tqkgN2DcruE7O362qORbH4MqD?=
- =?us-ascii?Q?TUvFlowVSe/CZ4UWtpF15W52oyj+20QVi39ZWlSGi1wMcqN69nXIinkGXCAd?=
- =?us-ascii?Q?5LmPgH8ZwElc9KrfHUUjJXK4mlIzyr9HJ7ihbjKj0qYKRo0dKEgZIBUosD+g?=
- =?us-ascii?Q?8EbYob63HbzSIVIzQt14HV/MirBuT1LxP7GYhvxAVZeD6225j0+yZ+sBotD8?=
- =?us-ascii?Q?YVfiVWaFP1bsJlsP1GDy5sIy1V10sxv0OA+4CPVz3PsF2KNzCzj04QNMkg1R?=
- =?us-ascii?Q?ocMMahKYKaI5dRooOOUNCtahluvKm8u1u9ltfwgUtVJnBGneLYLUB4MbeQBK?=
- =?us-ascii?Q?rXlgLismyDlaAheMILyugYzYUHksv7BbutMUOnYnv7/gk5UdsFL+4vVUxtOm?=
- =?us-ascii?Q?tWumcMWCEwS9QmDWM5PI/zQn4U8VVABDp2bDca5MLun5HBJKhgfWID961dPt?=
- =?us-ascii?Q?7bcdF5Nbbp2NO1y0XDgGAbXVisCHWtpzAuCIzd8nnoIzkssHyi7u94FPNuP2?=
- =?us-ascii?Q?I1HzIgiMYEMCIgnIQssN8RhxjAlJ5t9wW/+hyzimtW9wUODM4SeUYWF59MuC?=
- =?us-ascii?Q?baO+Eqb2T46C7xJEXen/oqTzxt/NRoVeEpXKGQ39T486+JT/QheR1kBUMjt8?=
- =?us-ascii?Q?Z0V3tAE41SfIpdKy4qbGqBot7rN5Ok/7P9u7eUpT5mVnasX/XHTNaeD9Ju22?=
- =?us-ascii?Q?p7uTKTXbd/hiVEuIE+oli+hmTENyqMR0+bau5thhdnOdCdgmBwy9q7t/Pzwx?=
- =?us-ascii?Q?XR1z4Lk7baqWvKbeDVDZ2VR0LJOftrhD0IJoKmBVW4PmbX2DCVYo/VE92GZV?=
- =?us-ascii?Q?OuUDA6gTbV3vpaiRupBwqM4pJlwxeMHWkyFGFiHbdtHd+3/DxBzovaJa2/vc?=
- =?us-ascii?Q?EQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8b350771-add9-482d-19d6-08dc5e310e92
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 16:19:57.2018
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PoThPnt/+o/H1K3m1K+9ihI3FjgDzQzUwxN0ENApeonUw3TXaOw/r9GXx5MADidKCNaof7AwNjmpAtzIBfQVG+G5S3WWDpFknsDj8Z7/lVg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB7535
-X-OriginatorOrg: intel.com
+References: <20240328095044.2926125-1-quic_sibis@quicinc.com> <20240328095044.2926125-3-quic_sibis@quicinc.com>
+In-Reply-To: <20240328095044.2926125-3-quic_sibis@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 16 Apr 2024 19:21:15 +0300
+Message-ID: <CAA8EJpoQyzF1E2xFPHvzz5Nk=w3J2abd3Y13nc+4FK-jRQbnFw@mail.gmail.com>
+Subject: Re: [PATCH 2/5] mailbox: Add support for QTI CPUCP mailbox controller
+To: Sibi Sankar <quic_sibis@quicinc.com>
+Cc: sudeep.holla@arm.com, cristian.marussi@arm.com, andersson@kernel.org, 
+	konrad.dybcio@linaro.org, jassisinghbrar@gmail.com, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	quic_rgottimu@quicinc.com, quic_kshivnan@quicinc.com, conor+dt@kernel.org, 
+	quic_gkohli@quicinc.com, quic_nkela@quicinc.com, quic_psodagud@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
-Tom Lendacky wrote:
-> On 4/16/24 00:37, Dan Williams wrote:
-> > Tom Lendacky wrote:
-> >> When an SVSM is present, the guest can also request attestation reports
-> >> from the SVSM. These SVSM attestation reports can be used to attest the
-> >> SVSM and any services running within the SVSM.
-> >>
-> >> Extend the config-fs attestation support to allow for an SVSM attestation
-> >> report. This involves creating four (4) new config-fs attributes:
-> >>
-> >>    - 'service-provider' (input)
-> >>      This attribute is used to determine whether the attestation request
-> >>      should be sent to the specified service provider or to the SEV
-> >>      firmware. The SVSM service provider is represented by the value
-> >>      'svsm'.
-> >>
-> >>    - 'service_guid' (input)
-> >>      Used for requesting the attestation of a single service within the
-> >>      service provider. A null GUID implies that the SVSM_ATTEST_SERVICES
-> >>      call should be used to request the attestation report. A non-null
-> >>      GUID implies that the SVSM_ATTEST_SINGLE_SERVICE call should be used.
-> >>
-> >>    - 'service_manifest_version' (input)
-> >>      Used with the SVSM_ATTEST_SINGLE_SERVICE call, the service version
-> >>      represents a specific service manifest version be used for the
-> >>      attestation report.
-> >>
-> >>    - 'manifestblob' (output)
-> >>      Used to return the service manifest associated with the attestation
-> >>      report.
-> >>
-> >> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-[..]
-> >> +What:		/sys/kernel/config/tsm/report/$name/service_provider
-> >> +Date:		January, 2024
-> >> +KernelVersion:	v6.10
-> >> +Contact:	linux-coco@lists.linux.dev
-> >> +Description:
-> >> +		(WO) Attribute is visible if a TSM implementation provider
-> >> +		supports the concept of attestation reports from a service
-> >> +		provider for TVMs, like SEV-SNP running under an SVSM.
-> >> +		Specifying the service provider via this attribute will create
-> >> +		an attestation report as specified by the service provider.
-> >> +		Currently supported service-providers are:
-> >> +			svsm
-> >> +
-> >> +		For the SVSM service provider, see the Secure VM Service Module
-> >> +		for SEV-SNP Guests v1.00 Section 7.
-> >> +		https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58019.pdf
-> > 
-> > Given "SVSM" is a cross vendor concept should this explicitly
-> > callout: "For provider.service_provider == sev_guest.svsm" as
-> > preparation for other implementations defining their "svsm" manifest
-> > format?
-> 
-> I'm not sure. Do we need to get that specific? If SVSM is cross vendor, 
-> will it be using / adding to the existing SVSM specification? If not, 
-> then each vendor is likely to have its own name for the SVSM concept 
-> that would be unique enough...
+On Thu, 28 Mar 2024 at 11:52, Sibi Sankar <quic_sibis@quicinc.com> wrote:
+>
+> Add support for CPUSS Control Processor (CPUCP) mailbox controller,
+> this driver enables communication between AP and CPUCP by acting as
+> a doorbell between them.
+>
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> ---
+>
+> rfc:
+> * Use chan->lock and chan->cl to detect if the channel is no longer
+>   Available. [Dmitry]
+> * Use BIT() instead of using manual shifts. [Dmitry]
+> * Don't use integer as a pointer value. [Dmitry]
+> * Allow it to default to of_mbox_index_xlate. [Dmitry]
+> * Use devm_of_iomap. [Dmitry]
+> * Use module_platform_driver instead of module init/exit. [Dmitry]
+> * Get channel number using mailbox core (like other drivers) and
+>   further simplify the driver by dropping setup_mbox func.
+>
+>  drivers/mailbox/Kconfig           |   8 ++
+>  drivers/mailbox/Makefile          |   2 +
+>  drivers/mailbox/qcom-cpucp-mbox.c | 205 ++++++++++++++++++++++++++++++
+>  3 files changed, 215 insertions(+)
+>  create mode 100644 drivers/mailbox/qcom-cpucp-mbox.c
+>
+> diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
+> index 42940108a187..23741a6f054e 100644
+> --- a/drivers/mailbox/Kconfig
+> +++ b/drivers/mailbox/Kconfig
+> @@ -273,6 +273,14 @@ config SPRD_MBOX
+>           to send message between application processors and MCU. Say Y here if
+>           you want to build the Spreatrum mailbox controller driver.
+>
+> +config QCOM_CPUCP_MBOX
+> +       tristate "Qualcomm Technologies, Inc. CPUCP mailbox driver"
+> +       depends on ARCH_QCOM || COMPILE_TEST
+> +       help
+> +         Qualcomm Technologies, Inc. CPUSS Control Processor (CPUCP) mailbox
+> +         controller driver enables communication between AP and CPUCP. Say
+> +         Y here if you want to build this driver.
+> +
+>  config QCOM_IPCC
+>         tristate "Qualcomm Technologies, Inc. IPCC driver"
+>         depends on ARCH_QCOM || COMPILE_TEST
+> diff --git a/drivers/mailbox/Makefile b/drivers/mailbox/Makefile
+> index 18793e6caa2f..53b512800bde 100644
+> --- a/drivers/mailbox/Makefile
+> +++ b/drivers/mailbox/Makefile
+> @@ -59,4 +59,6 @@ obj-$(CONFIG_SUN6I_MSGBOX)    += sun6i-msgbox.o
+>
+>  obj-$(CONFIG_SPRD_MBOX)                += sprd-mailbox.o
+>
+> +obj-$(CONFIG_QCOM_CPUCP_MBOX)  += qcom-cpucp-mbox.o
+> +
+>  obj-$(CONFIG_QCOM_IPCC)                += qcom-ipcc.o
+> diff --git a/drivers/mailbox/qcom-cpucp-mbox.c b/drivers/mailbox/qcom-cpucp-mbox.c
+> new file mode 100644
+> index 000000000000..e27a258fe57a
+> --- /dev/null
+> +++ b/drivers/mailbox/qcom-cpucp-mbox.c
+> @@ -0,0 +1,205 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2024, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <linux/interrupt.h>
+> +#include <linux/irq.h>
+> +#include <linux/irqdomain.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/mailbox_controller.h>
+> +#include <linux/module.h>
+> +
+> +#define APSS_CPUCP_IPC_CHAN_SUPPORTED          3
+> +#define APSS_CPUCP_MBOX_CMD_OFF                        0x4
+> +
+> +/* Tx Registers */
+> +#define APSS_CPUCP_TX_MBOX_IDR                 0
+> +#define APSS_CPUCP_TX_MBOX_CMD                 0x100
+> +
+> +/* Rx Registers */
+> +#define APSS_CPUCP_RX_MBOX_IDR                 0
+> +#define APSS_CPUCP_RX_MBOX_CMD                 0x100
+> +#define APSS_CPUCP_RX_MBOX_MAP                 0x4000
+> +#define APSS_CPUCP_RX_MBOX_STAT                        0x4400
+> +#define APSS_CPUCP_RX_MBOX_CLEAR               0x4800
+> +#define APSS_CPUCP_RX_MBOX_EN                  0x4C00
+> +#define APSS_CPUCP_RX_MBOX_CMD_MASK            0xFFFFFFFFFFFFFFFF
+> +
+> +/**
+> + * struct qcom_cpucp_mbox - Holder for the mailbox driver
+> + * @chans:                     The mailbox channel
+> + * @mbox:                      The mailbox controller
+> + * @tx_base:                   Base address of the CPUCP tx registers
+> + * @rx_base:                   Base address of the CPUCP rx registers
+> + * @dev:                       Device associated with this instance
+> + * @irq:                       CPUCP to AP irq
+> + */
+> +struct qcom_cpucp_mbox {
+> +       struct mbox_chan chans[APSS_CPUCP_IPC_CHAN_SUPPORTED];
+> +       struct mbox_controller mbox;
+> +       void __iomem *tx_base;
+> +       void __iomem *rx_base;
+> +       struct device *dev;
+> +       int irq;
+> +};
+> +
+> +static inline int channel_number(struct mbox_chan *chan)
+> +{
+> +       return chan - chan->mbox->chans;
+> +}
+> +
+> +static irqreturn_t qcom_cpucp_mbox_irq_fn(int irq, void *data)
+> +{
+> +       struct qcom_cpucp_mbox *cpucp = data;
+> +       struct mbox_chan *chan;
+> +       unsigned long flags;
+> +       u64 status;
+> +       u32 val;
+> +       int i;
+> +
+> +       status = readq(cpucp->rx_base + APSS_CPUCP_RX_MBOX_STAT);
+> +
+> +       for (i = 0; i < APSS_CPUCP_IPC_CHAN_SUPPORTED; i++) {
+> +               val = 0;
+> +               if (status & ((u64)1 << i)) {
 
-Yeah, I guess we can kick can that down the road and see what other
-vendors do. I know the coconut-svsm project is cross vendor, but I do
-not know the details.
+BIT() or test_bit()
 
-> >> +
-> >> +What:		/sys/kernel/config/tsm/report/$name/service_manifest_version
-> >> +Date:		January, 2024
-> >> +KernelVersion:	v6.10
-> >> +Contact:	linux-coco@lists.linux.dev
-> >> +Description:
-> >> +		(WO) Attribute is visible if a TSM implementation provider
-> >> +		supports the concept of attestation reports from a service
-> >> +		provider for TVMs, like SEV-SNP running under an SVSM.
-> >> +		Indicates the service manifest version requested for the
-> >> +		attestation report. If this field is not set by the user,
-> >> +		the default manifest version of the service (the service's
-> >> +		initial/first manifest version) is returned. The initial
-> >> +		manifest version is always available.
-> > 
-> > ...and that number is zero? Is there any expectation that the kernel
-> 
-> Yes, that number is zero.
-> 
-> > sanity checks this version, or how does the user figure out they need to
-> > roll this request back?
-> 
-> Right now there aren't any non-zero versions, so there is nothing for 
-> the user to figure out. However, the service will determine when it 
-> creates a new version and then the user will need to understand what the 
-> reason for that is and decide. I'm not sure I can give you a specific 
-> answer at this stage, but we need to allow for a change in the manifest 
-> without affecting existing users.
+> +                       val = readl(cpucp->rx_base + APSS_CPUCP_RX_MBOX_CMD + (i * 8) + APSS_CPUCP_MBOX_CMD_OFF);
 
-Right, but it feels odd that userspace could write UINT_MAX to this
-value and the kernel says, "yup, looks like a valid manifest version to
-me".
+#define APSS_CPUCP_MBOX_CMD_OFF(i)
 
-> And since the spec has been approved already, I can't really go back and 
-> add a requirement that manifest format always be additive.
+> +                       chan = &cpucp->chans[i];
+> +                       spin_lock_irqsave(&chan->lock, flags);
+> +                       if (chan->cl)
+> +                               mbox_chan_received_data(chan, &val);
+> +                       spin_unlock_irqrestore(&chan->lock, flags);
+> +                       writeq(status, cpucp->rx_base + APSS_CPUCP_RX_MBOX_CLEAR);
 
-Those breaking changes have not arrived yet so still a chance to
-influence, no?
+Why is status written from inside the loop? If the bits are cleared by
+writing 1, then you should be writing BIT(i) to that register. Also
+make sure that it is written at the correct time, so that if there is
+an event before notifying the driver, it doesn't get lost.
 
-The documentation here at least guarantees that the initial manifest
-version is always valid, and I expect the spec authors to realize that
-the kernel has a role to play in not breaking existing userspace. I.e.
-it is not in the spec's interest to disallow fallback to any
-version between 0 and N-1 where N is the latest.
+> +               }
+> +       }
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
+> +static int qcom_cpucp_mbox_startup(struct mbox_chan *chan)
+> +{
+> +       struct qcom_cpucp_mbox *cpucp = container_of(chan->mbox, struct qcom_cpucp_mbox, mbox);
+> +       unsigned long chan_id = channel_number(chan);
+> +       u64 val;
+> +
+> +       val = readq(cpucp->rx_base + APSS_CPUCP_RX_MBOX_EN);
+> +       val |= BIT(chan_id);
+> +       writeq(val, cpucp->rx_base + APSS_CPUCP_RX_MBOX_EN);
+> +
+> +       return 0;
+> +}
+> +
+> +static void qcom_cpucp_mbox_shutdown(struct mbox_chan *chan)
+> +{
+> +       struct qcom_cpucp_mbox *cpucp = container_of(chan->mbox, struct qcom_cpucp_mbox, mbox);
+> +       unsigned long chan_id = channel_number(chan);
+> +       u64 val;
+> +
+> +       val = readq(cpucp->rx_base + APSS_CPUCP_RX_MBOX_EN);
+> +       val &= ~BIT(chan_id);
+> +       writeq(val, cpucp->rx_base + APSS_CPUCP_RX_MBOX_EN);
+> +}
+> +
+> +static int qcom_cpucp_mbox_send_data(struct mbox_chan *chan, void *data)
+> +{
+> +       struct qcom_cpucp_mbox *cpucp = container_of(chan->mbox, struct qcom_cpucp_mbox, mbox);
+> +       unsigned long chan_id = channel_number(chan);
+> +       u32 *val = data;
+> +
+> +       writel(*val, cpucp->tx_base + APSS_CPUCP_TX_MBOX_CMD + (chan_id * 8) + APSS_CPUCP_MBOX_CMD_OFF);
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct mbox_chan_ops qcom_cpucp_mbox_chan_ops = {
+> +       .startup = qcom_cpucp_mbox_startup,
+> +       .send_data = qcom_cpucp_mbox_send_data,
+> +       .shutdown = qcom_cpucp_mbox_shutdown
+> +};
+> +
+> +static int qcom_cpucp_mbox_probe(struct platform_device *pdev)
+> +{
+> +       struct qcom_cpucp_mbox *cpucp;
+> +       struct mbox_controller *mbox;
+> +       int ret;
+> +
+> +       cpucp = devm_kzalloc(&pdev->dev, sizeof(*cpucp), GFP_KERNEL);
+> +       if (!cpucp)
+> +               return -ENOMEM;
+> +
+> +       cpucp->dev = &pdev->dev;
+> +
+> +       cpucp->rx_base = devm_of_iomap(cpucp->dev, cpucp->dev->of_node, 0, NULL);
+> +       if (IS_ERR(cpucp->rx_base))
+> +               return PTR_ERR(cpucp->rx_base);
+> +
+> +       cpucp->tx_base = devm_of_iomap(cpucp->dev, cpucp->dev->of_node, 1, NULL);
+> +       if (IS_ERR(cpucp->tx_base))
+> +               return PTR_ERR(cpucp->tx_base);
+> +
+> +       writeq(0, cpucp->rx_base + APSS_CPUCP_RX_MBOX_EN);
+> +       writeq(0, cpucp->rx_base + APSS_CPUCP_RX_MBOX_CLEAR);
+> +       writeq(0, cpucp->rx_base + APSS_CPUCP_RX_MBOX_MAP);
+> +
+> +       cpucp->irq = platform_get_irq(pdev, 0);
+> +       if (cpucp->irq < 0) {
+> +               dev_err(&pdev->dev, "Failed to get the IRQ\n");
+> +               return cpucp->irq;
 
-The kernel need not tolerate version induced breakage from ACPI
-specification updates because that spec is committed to compatibility,
-why does this spec need to be less disciplined than that?
+It already prints the error message.
 
-> >> +
-> >> +		For the SVSM service provider, see the Secure VM Service Module
-> >> +		for SEV-SNP Guests v1.00 Section 7.
-> >> +		https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58019.pdf
-> > 
-> 
-> >> +static ssize_t tsm_report_service_provider_store(struct config_item *cfg,
-> >> +						 const char *buf, size_t len)
-> >> +{
-> >> +	struct tsm_report *report = to_tsm_report(cfg);
-> >> +	size_t sp_len;
-> >> +	char *sp;
-> >> +	int rc;
-> >> +
-> >> +	guard(rwsem_write)(&tsm_rwsem);
-> >> +	rc = try_advance_write_generation(report);
-> >> +	if (rc)
-> >> +		return rc;
-> >> +
-> >> +	sp_len = (buf[len - 1] != '\n') ? len : len - 1;
-> > 
-> > This feels like it wants a sysfs_strdup().
-> 
-> If there start to be more string oriented operations in the file, then 
-> it might be worth it. For now I don't really see a reason.
+> +       }
+> +
+> +       ret = devm_request_irq(&pdev->dev, cpucp->irq, qcom_cpucp_mbox_irq_fn,
+> +                              IRQF_TRIGGER_HIGH, "apss_cpucp_mbox", cpucp);
+> +       if (ret < 0) {
+> +               dev_err(&pdev->dev, "Failed to register the irq: %d\n", ret);
+> +               return ret;
 
-To be clear I was thinking of occurrences of this patten outside of this
-file. Turns out this pattern is not as prevalent as I would have
-guessed, resource_alignment_store() was the only occurrence I could
-find. Skip for now works for me.
+return dev_err_probe();
+
+> +       }
+> +
+> +       writeq(APSS_CPUCP_RX_MBOX_CMD_MASK, cpucp->rx_base + APSS_CPUCP_RX_MBOX_MAP);
+> +
+> +       mbox = &cpucp->mbox;
+> +       mbox->dev = cpucp->dev;
+> +       mbox->num_chans = APSS_CPUCP_IPC_CHAN_SUPPORTED;
+> +       mbox->chans = cpucp->chans;
+> +       mbox->ops = &qcom_cpucp_mbox_chan_ops;
+> +       mbox->txdone_irq = false;
+> +       mbox->txdone_poll = false;
+> +
+> +       ret = mbox_controller_register(mbox);
+
+Use devm_mbox_controller_register()
+
+> +       if (ret) {
+> +               dev_err(&pdev->dev, "Failed to create mailbox\n");
+> +               return ret;
+
+return dev_err_probe();
+
+> +       }
+> +
+> +       platform_set_drvdata(pdev, cpucp);
+> +
+> +       return 0;
+> +}
+> +
+> +static int qcom_cpucp_mbox_remove(struct platform_device *pdev)
+> +{
+> +       struct qcom_cpucp_mbox *cpucp = platform_get_drvdata(pdev);
+> +
+> +       mbox_controller_unregister(&cpucp->mbox);
+
+This will be replaced by devm_mbox_controller_register().
+
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct of_device_id qcom_cpucp_mbox_of_match[] = {
+> +       { .compatible = "qcom,x1e80100-cpucp-mbox"},
+> +       {}
+> +};
+> +MODULE_DEVICE_TABLE(of, qcom_cpucp_mbox_of_match);
+> +
+> +static struct platform_driver qcom_cpucp_mbox_driver = {
+> +       .probe = qcom_cpucp_mbox_probe,
+> +       .remove = qcom_cpucp_mbox_remove,
+> +       .driver = {
+> +               .name = "qcom_cpucp_mbox",
+> +               .of_match_table = qcom_cpucp_mbox_of_match,
+> +               .suppress_bind_attrs = true,
+
+No need to. Please drop.
+
+> +       },
+> +};
+> +module_platform_driver(qcom_cpucp_mbox_driver);
+> +
+> +MODULE_DESCRIPTION("QTI CPUCP MBOX Driver");
+> +MODULE_LICENSE("GPL");
+> --
+> 2.34.1
+>
+>
+
+
+-- 
+With best wishes
+Dmitry
 
