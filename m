@@ -1,258 +1,171 @@
-Return-Path: <linux-kernel+bounces-147326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B61B48A728D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:42:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D81E98A7291
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:43:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 456551F220B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:42:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07D5D1C20F8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:43:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18538133997;
-	Tue, 16 Apr 2024 17:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7AD133435;
+	Tue, 16 Apr 2024 17:43:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Mgy1JR3E"
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VguIuLX/"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A399A133406
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:41:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21166131737
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:43:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713289310; cv=none; b=CvLO2FJxE3xA6X2CqgwUfPPH12cGdOK/0EixGW+orwyN75cWYKplnTx4AVzQjzjC3eE5JwxT5O+l5r17T+UjEbzYAilhYCG/rnlEwS4pvXVpaHMY7e9hgBBMZUX1kGoobP80SxBi6Is3EuMt7GV1y4m2EA0QXISzlqwsH4yKVQM=
+	t=1713289419; cv=none; b=Wlunv5LVhuxc5U08+R9qKN0qdveoMERrIojdbwNcTjoNr5shKVfutwWpABW95O39aDqEp45bO3/7bJ6BhfpBSpEpyhJyfG7Thq0I0v5vL2g+fY1bftooITyzWWNOW8Yr3hl8y7CUGBH0VF3QSZBWO2wCsEaKed1XZQL/OYnX2Og=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713289310; c=relaxed/simple;
-	bh=uKVZxVZlSo4tSfHTbZrt8QwnCT7MxtMg82Aru1PM+u8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AFoE1Zn9bPi91W7X77sLA809ENzJY0/+p9ylp5PkxYXV1SFgfRoJpLE/US9fD7E8oimhd40cfnDFkvLkztE4ESXkbwQvKnD/qfC1W1761KUNAjnvhae4X4PAgCpAKviwk+Y646yNsxM4VMi8vddxnQZYgdnYrWwodLbgcXHvSoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Mgy1JR3E; arc=none smtp.client-ip=209.85.222.41
+	s=arc-20240116; t=1713289419; c=relaxed/simple;
+	bh=6dBR7/U90ulcku8SAcSbBXZb2GmWWXMQ7JiRkQprz9Q=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=jnAQuShx+p/lfYPAB54ehx3e+ng8ZmC+yp/D4dHLOs+fCwpxb2R1mLN15Yb3i3zg+YOXKWHEnNKpmGP4Yr26wTm4VQ/ex4OAXNUtYHQaUPAPGV2SojpIqVW/uiPVE5/61iuhpKBvrLe4XVeE44BT3DJG/9hPYkUa2RnGS+RcXgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VguIuLX/; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7dacc916452so529974241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:41:48 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ece8991654so4229897b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:43:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713289307; x=1713894107; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WnPrPrshaoqEgDMfeskW4XuFf5a8CzPJbeeAH4eg1mE=;
-        b=Mgy1JR3E9Vsur5ZlHMWzpTWsyNILiUCWGhzslPjYUNRww5e2xPpD+XivgOpASyZ1D1
-         GLkYFUheF/nwvu5YHjIfbAi/6Ax1SJPA13zPmGvR2TLo5putFx+oYTUQSVYosD56OtHE
-         IncOhxn/CygVBU95NtRKVougqP8jwWOLkBbmzQdTjMMUWTsx3l1ewyLw0R8awEo8qgfs
-         U4U5pWYiOmQRR/kQ2R5+11UvgHWlYhapvWp7U8aivSccF0zZiwqJ3gAZUKuqaQIXCH1M
-         lSSwE5n+cSDyHt/VpRxpX8gQFoYzjyv13rZLsvxLq5f0TYRfRiAqAfpNlNXJvLAcZ5Ga
-         tTDg==
+        d=linaro.org; s=google; t=1713289417; x=1713894217; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eUEau/pEpt9AkOO4LFO9sGSkzJlYdG9OShqBDzpNMbY=;
+        b=VguIuLX/nA9Nz1vWtjUDhv2rgYjxF3XnrJgZdvfbavfhtNaWu47OnJxxKR1shAjnx9
+         0ieZ1/hP0YGk3q3MRNpU+eaPycgDlA9bf0paD2VYvkn4tO6DCyzHJUDIViynXvf9JGnJ
+         hlZW+0XK23+bGh3XsxHgYOsZueGngC5N9FbmeMoes2Q0eyxBG8rHtqiMdCIc+5aRT4xP
+         X7AsuahYXfcqN+7wnmJr6t4FyUT8wWCmudFhbD6wWLgJyGCxwj7J7FeJrj9xXNE3vpk5
+         iNeXFmRENBI8dvQHH1TfxbQ2K6LLh1eoNS34ieA4VTbNzLBIS4iIs6z4DfNqzmAlIAv4
+         +mng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713289307; x=1713894107;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WnPrPrshaoqEgDMfeskW4XuFf5a8CzPJbeeAH4eg1mE=;
-        b=sLLuopEeaUkW6Lt5jGKFuK6JsqhuY89mEwRluOttqYcwGYZK+evrlPTOpSg3S/RT1R
-         WUmrFk3w/joX0Wn3KLFOIAOQQT/iQImGLurXQkJIrBQteAnaTKpz+64orL14bwLqsAxV
-         RohW897Aeftxj2Oxf0o8GnAOzNq910ruYVCUYJArrTNC4qxdHDcEbdzYBQ4qFtHvyL4E
-         AKlILDV+b98ZLnSgh9kwd5SiJgV09hCpR8xNjgQOaREUJ03gjsp+yvWgC31UvdxTZ3eR
-         3onuVB/kFq5jwqvpcDxSrP+Byvjx0IuifSBb7XsrM85uhQkcmbAcXi/wSmVAUID9cJFM
-         DknQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW0ta9STKHVaaf4qZZl4FCa2UPuIh6h3EPfh0ALif/+OBwOUnHd51p+mO+hdd8e6khojiYNyZ+sMOMUR4QvQl2lJcSmOnYc4ilXIbMY
-X-Gm-Message-State: AOJu0YwOlGDn6MMISsG8kTlEKIvZUjPMiryOj89eQuzsBcERhmiMOO/e
-	cAP/Q4TiWej5gLh4k7l1rE+jtCKo3gbsS2UBTCM9cXPqsPogH+eVbZtzTfdgUwOb4LJAp6DrEDL
-	SGlO8rDhg1R8yLqvip+JQuVjDMLSWW5wSa0okMw==
-X-Google-Smtp-Source: AGHT+IGQOiRJVB0i9nfTAHucMka5bk9jMtq3i/B9OdHXAz7Tlx+yTSFzDhb7vY49vXsiPkVKXzwjOnCxxwy7cZedC4E=
-X-Received: by 2002:a05:6102:1629:b0:47b:a037:99ca with SMTP id
- cu41-20020a056102162900b0047ba03799camr1332168vsb.1.1713289306728; Tue, 16
- Apr 2024 10:41:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713289417; x=1713894217;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=eUEau/pEpt9AkOO4LFO9sGSkzJlYdG9OShqBDzpNMbY=;
+        b=Ao2ap0X2Nnusc8OSKXRbbDOd22ZxMUhaEQvss3JlT8bAy+xs4SMtY8Twq3vdQparLr
+         UGxFJXaLiLeQdNvsXNPGr8MmMeVSTD6m7N/M3PIuaUkiIZIg6Fchu9DgLaGa1CRAtmsZ
+         nf3XRGbWSP3levkDkVNmxWHPSPyPzxIHDyOBkb1JHu3gESWfmsuclPGaddmBgns9AlC8
+         j2O9OAjwePLZsHeTBuXElhi2ko+V27/5/2GfRWGq1KfJ4fH5BxsUSZ1F6rUL4EdcPSG1
+         rgphtnDGeJ5A4sFYNMlAs9x5T2sVfBJPRVhoyl0RwwF1YWbNvlU74t29yeFKExxuRVMe
+         hcVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVlE74YjRx9uDoAWsySKD6duuD9Eg/rN1FSDXUbpkRfJ77AfcGzrmr3YqBzBlPflc9gC92/ngbiw+HpJLuq2XZ8GW7OgQEnNdQpkz78
+X-Gm-Message-State: AOJu0YwggQGWzp0DUCaiZBRSOTY6IsMDVUCn7kSusw7Ofwni15rrY+Bw
+	SFX7D62bsL67/MOBWNEoGprqHwvltIA69lz9aZQ++YzLxjh4/AnzsoQ8t7k7G/Q=
+X-Google-Smtp-Source: AGHT+IFRHoGMcojV7sRgDp2sh67vGhlINTD73jHd6Lrwp10g0HQj6Lso/F+xzibAylchEXJh5urGzg==
+X-Received: by 2002:a05:6a21:2791:b0:1a8:4266:3d02 with SMTP id rn17-20020a056a21279100b001a842663d02mr15369692pzb.30.1713289417249;
+        Tue, 16 Apr 2024 10:43:37 -0700 (PDT)
+Received: from [10.36.52.145] ([24.75.208.156])
+        by smtp.gmail.com with ESMTPSA id gx13-20020a056a001e0d00b006ecf25d0b8dsm9284521pfb.184.2024.04.16.10.43.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Apr 2024 10:43:36 -0700 (PDT)
+Message-ID: <6a05d4ff-1f27-4b7d-88f2-050288d8dc7b@linaro.org>
+Date: Tue, 16 Apr 2024 19:43:35 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415141959.976094777@linuxfoundation.org>
-In-Reply-To: <20240415141959.976094777@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 16 Apr 2024 23:11:35 +0530
-Message-ID: <CA+G9fYscTZr0qJH5k8eycnD7Mj50XGgNbzcmk65=RKtme1tVpg@mail.gmail.com>
-Subject: Re: [PATCH 6.8 000/172] 6.8.7-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
-	broonie@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v3 8/9] drm/panel: novatek-nt35950: Don't log an error
+ when DSI host can't be found
+To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
+ Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ owen <qwt9588@gmail.com>, Jagan Teki <jagan@amarulasolutions.com>,
+ Marek Vasut <marex@denx.de>, Adrien Grassein <adrien.grassein@gmail.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Sam Ravnborg <sam@ravnborg.org>, Bjorn Andersson <andersson@kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Dmitry Baryshkov
+ <dmitry.baryshkov@linaro.org>, Vinay Simha BN <simhavcs@gmail.com>,
+ Christopher Vollo <chris@renewoutreach.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Cc: kernel@collabora.com, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+References: <20240415-anx7625-defer-log-no-dsi-host-v3-0-619a28148e5c@collabora.com>
+ <20240415-anx7625-defer-log-no-dsi-host-v3-8-619a28148e5c@collabora.com>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <20240415-anx7625-defer-log-no-dsi-host-v3-8-619a28148e5c@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, 15 Apr 2024 at 19:54, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.8.7 release.
-> There are 172 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 17 Apr 2024 14:19:30 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.8.7-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.8.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 15/04/2024 23:49, Nícolas F. R. A. Prado wrote:
+> Given that failing to find a DSI host causes the driver to defer probe,
+> make use of dev_err_probe() to log the reason. This makes the defer
+> probe reason available and avoids alerting userspace about something
+> that is not necessarily an error.
+> 
+> Fixes: 623a3531e9cf ("drm/panel: Add driver for Novatek NT35950 DSI DriverIC panels")
+> Suggested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> ---
+>   drivers/gpu/drm/panel/panel-novatek-nt35950.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-novatek-nt35950.c b/drivers/gpu/drm/panel/panel-novatek-nt35950.c
+> index 648ce9201426..028fdac293f7 100644
+> --- a/drivers/gpu/drm/panel/panel-novatek-nt35950.c
+> +++ b/drivers/gpu/drm/panel/panel-novatek-nt35950.c
+> @@ -556,10 +556,8 @@ static int nt35950_probe(struct mipi_dsi_device *dsi)
+>   		}
+>   		dsi_r_host = of_find_mipi_dsi_host_by_node(dsi_r);
+>   		of_node_put(dsi_r);
+> -		if (!dsi_r_host) {
+> -			dev_err(dev, "Cannot get secondary DSI host\n");
+> -			return -EPROBE_DEFER;
+> -		}
+> +		if (!dsi_r_host)
+> +			return dev_err_probe(dev, -EPROBE_DEFER, "Cannot get secondary DSI host\n");
+>   
+>   		nt->dsi[1] = mipi_dsi_device_register_full(dsi_r_host, info);
+>   		if (!nt->dsi[1]) {
+> 
 
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 6.8.7-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.8.y
-* git commit: 367141eaada2c7635234576914bcd1f480d62731
-* git describe: v6.8.6-173-g367141eaada2
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.8.y/build/v6.8.6=
--173-g367141eaada2
-
-## Test Regressions (compared to v6.8.6)
-
-## Metric Regressions (compared to v6.8.6)
-
-## Test Fixes (compared to v6.8.6)
-
-## Metric Fixes (compared to v6.8.6)
-
-## Test result summary
-total: 285130, pass: 247210, fail: 3619, skip: 33930, xfail: 371
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 133 total, 131 passed, 2 failed
-* arm64: 41 total, 41 passed, 0 failed
-* i386: 32 total, 32 passed, 0 failed
-* mips: 25 total, 25 passed, 0 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 19 total, 19 passed, 0 failed
-* s390: 13 total, 13 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 6 passed, 2 failed
-* x86_64: 37 total, 36 passed, 1 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mm
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-hugetlb
-* ltp-io
-* ltp-io[
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-smoketest
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
