@@ -1,216 +1,186 @@
-Return-Path: <linux-kernel+bounces-146573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D19248A6776
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BFFD8A6779
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:53:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 007B31C2153A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:51:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ED2A1C212AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:53:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B678624F;
-	Tue, 16 Apr 2024 09:51:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40C6686268;
+	Tue, 16 Apr 2024 09:53:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HHaod8eq"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="j2FfJYFS"
+Received: from mail-lf1-f74.google.com (mail-lf1-f74.google.com [209.85.167.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79CA62907
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 09:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF63B85C76
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 09:53:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713261108; cv=none; b=cHPt/xmFcNMwj9GTNpRDzsU9hv1JxWjL6cB1oOQU/mk3AXQHYRd3/E574eeZlCjvjzE5j6Uxwjsx4nJ2kIgXb++14cVcLFEZQoE75AWOx+zGV4pRwlcDHnkLGMyag76sq6OJjW32umF+aBOfEcKNWdUgEhXKLJsVxX7SHTbx2jo=
+	t=1713261210; cv=none; b=sZxWU9+P6oQb+Nh/ksLNeVxn2UmqGHE1StYND/CPNplPHz+HxbPDwNqq0F2jsfiVNMSDvo/T6xFlgpqniGX0r7CdRM65jgxZZ0wuK29f2dvA42MFLm6GKQWKaGe2XfizKXOsMbYbJhbeW9u3rBXOUzPNh7DHG4Jt10Y0HDSSt3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713261108; c=relaxed/simple;
-	bh=gteI/DmouFD5OQxhjdH5ZZaky62/tQjR8yeIjjDgkws=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pad5NSxBt3/r5i221jCtOcAiSaIvAdj48XzA/HfF2A6h2VXSXKLHMD8/HxRnnmeI44J6Kx42Sj75BPsSZXAhgwIb8vnUgbrE4DbKi/ZWYZv5/QeP+i5tAPZ/ApytY7NEJ4iLeKfhBtVHuhePM6iBGZdv1qq2T8jlFCgSSNm/fpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HHaod8eq; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-516d3a470d5so4806870e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:51:45 -0700 (PDT)
+	s=arc-20240116; t=1713261210; c=relaxed/simple;
+	bh=+ks73W1omqYfmJvTwfhN753jtSbBbxFN221Kk1utxwY=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=BmL12tqHPgNXuZdNED40jkkIFlhGGC8NBlRR4aHYVJYPZkoeMi36ECiNLLVGLa8xQBZb/uk8xye6yFFVzjpGksWAIowuNVuBaC1O29BBtGN6aIQChSo+K2sCIqRGk7WiSDLChAad3haXR8j9NiHsZ6ZGdJBWbVYWpmYprUqp4qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=j2FfJYFS; arc=none smtp.client-ip=209.85.167.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
+Received: by mail-lf1-f74.google.com with SMTP id 2adb3069b0e04-516d2c322d5so3943491e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:53:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1713261103; x=1713865903; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fL9oRAEQBQvGhmNGMCM7exxQhRHWrknxFSUiFj28JAw=;
-        b=HHaod8eqI9lgNVzWHm+2CcHLqPivJNCB2FsAew0xTKzlCED4iOPhL9oKq3PWXMqHVa
-         S9rDLjL+R0+nEPHSqqS2KBRy4CNP9IUcD4BEfMetN7huSDhdsTXQWOT8kFAqcAVbGstP
-         LluuuF9rv2bmmoCBdeoT85dM3BNy8ll0fls0cd6iOdEYnRytet9omRbUCJZ//tBKlU3o
-         7ytiVi33QUENi6x/4xGoTDyXVO+Dyu/8IHhBT9bWEjwBt9qXmsTrIk3g7dJSLjpypjd+
-         Q/i6T012dsRNpyICsM74KqT7gixnbfQqR2EB1nasZxFUMa7rCb/myD3EDIQKk41j1R60
-         TowA==
+        d=google.com; s=20230601; t=1713261207; x=1713866007; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VxdCRYYXGANGytr9D/dXdYZGmP8QPln1sFHz1kYy8RA=;
+        b=j2FfJYFSSK+ZhF2A6r10hk8CLu9maZpWXEf1Fep1M6Ge9H52RIftK0aErA4aaKkQBT
+         DF8x2qw+jdxo/RZzs2APKyhYwy8Aouzf5dad1lsdBbGahgprnckkCSr8FnPAOB6TiTTB
+         B5uiyCXklB5GrnzZVYy5x3pc+gFwQ3hQ32w4TtVF+HX+XAQbaaoowcpGXAQI3c3RBmWq
+         FQuLr14m37mxduyNzVJCby4kHL4f+A/EM8g5PiHG7uem2L2Q1q580PCzzVomy5PwUn5/
+         nOLoUCP29I8DBtBY+kumpfiKsIsGybfw0CYf+hixf8Jjx1trH2qkvt66U0eWMFSUtwg0
+         yEZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713261103; x=1713865903;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fL9oRAEQBQvGhmNGMCM7exxQhRHWrknxFSUiFj28JAw=;
-        b=udZoQLn8kveqhMZc+PHueKlHBininy4T0Tzoj9FHhBMHbwiuTqeWEQqgLHgsaQMZnq
-         xh1kKn7kNYv0rxqxA58SH+ZmQ35uWr/gIr3A6rYofu9Ndp2Ld0JuyhxxhrOHPSU5prRt
-         G7U/HJPMKKgW6JmkK7aQCF5K4BEZMVm6DbNQAsZZd1zTb86wweIo2FGsY2MpxcxCEijZ
-         p7w62SuPuNlXnQZqIHfS1ja4xgIqpfko2OepV3G7g68zGHSydf+2KqOniNG7ML3/KzIv
-         1DrP4g7LrVgjctgy3GEGVU1FixVJkrzsJwhOa+vkL34jXI2GLw6+7idCI3PJIOeYnogh
-         2I+w==
-X-Forwarded-Encrypted: i=1; AJvYcCVTrBeOrxpZ0QiOBJ8MhKlY9WW3rmZfxtafefY87jbfSVHnZEyq4gHvKLZEE0ZEvu+C8B1UGv8bMM1s8+l1wYEkNuaE2xc2sAziWmY7
-X-Gm-Message-State: AOJu0Yzh+qhiHxQ8CSpk2Z3IR+tFrbMCApMkMpZAHWmtLiCBMqFEOwrl
-	nH6UWgUGhhYv4vhWFBMjYuaI6kA5qtUQs8+2PQogBuBe/c2yU//qDt4T6vh1EDw=
-X-Google-Smtp-Source: AGHT+IFCJCSoio9mvk85DFr+4ST9x0ZdKGh3XfMdYankytdOA3BpIqnIkrMLkefDVVqGPXz5En4DFQ==
-X-Received: by 2002:a05:6512:4021:b0:518:b886:5e16 with SMTP id br33-20020a056512402100b00518b8865e16mr7665164lfb.59.1713261103494;
-        Tue, 16 Apr 2024 02:51:43 -0700 (PDT)
-Received: from pathway.suse.cz ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id j20-20020a5d4534000000b003434f526cb5sm14323688wra.95.2024.04.16.02.51.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 02:51:43 -0700 (PDT)
-Date: Tue, 16 Apr 2024 11:51:41 +0200
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH printk v4 27/27] lockdep: Mark emergency sections in
- lockdep splats
-Message-ID: <Zh5J_dxNi0rHG9-I@pathway.suse.cz>
-References: <20240402221129.2613843-1-john.ogness@linutronix.de>
- <20240402221129.2613843-28-john.ogness@linutronix.de>
+        d=1e100.net; s=20230601; t=1713261207; x=1713866007;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VxdCRYYXGANGytr9D/dXdYZGmP8QPln1sFHz1kYy8RA=;
+        b=Ukeg7hDL2bFalajPGYj6uRF4NMuIMSRqkIRpf5afihFass2z/LJgtP6IViM/IDMbSt
+         T5bftwr9Q1znTIstPpRfNYygQxEfIu7pXUwPvaTVjg5zUi/NdCSZkO0091QTRCKKz2tF
+         KFPBjD79ZKk2OhQrsQ/909R+RXcuT/3BerndqVCX4NhVdXyGahhOMaJDVAi2RdoqOkWf
+         /fdynEPPGlUhe0Fm0tTxtDEA1VN9a1MkWeieZT1y50y38eBNpd8QBGnIRe6FaB+2VJG9
+         gE2KC0zBngcw3nbrWCliMYYHq9PMMGtq3YBgjgFZM+BV/6qY88TWyXkhWuETuZkuSlSf
+         0E+A==
+X-Forwarded-Encrypted: i=1; AJvYcCVaR/cB3ok3L6Wd57AmsOTuisrdcz7Ji//ecWCqCO3yG8QFYBWj2Br0K1Oh+1n4n7KflQrqcc+0hTwJNH7GmvgEUOSertN/j6XMcNTn
+X-Gm-Message-State: AOJu0YxLKRt7VWKc+xNeDWmzv7YE/qqUcW3b2TOvrVx1+c0aFskR/b/e
+	1LfRd2MnPEgc+MtpJdNPR4GKzEcxI7Cd2XY/Xs1fM2NGx8gYt4sqzaL3F3ndfB6eKAq2x1GzbvY
+	c0HgvMcBwuvYSLA==
+X-Google-Smtp-Source: AGHT+IGpPtly0O4lKmm2yAf8fr9xPygMFFUf09ZonUzlU30soeqhDzuRYrLmXwh9qvhO3H43GdRtnBrPRPBC5Kk=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a05:6512:951:b0:518:cc3d:45d1 with SMTP
+ id u17-20020a056512095100b00518cc3d45d1mr6198lft.11.1713261206597; Tue, 16
+ Apr 2024 02:53:26 -0700 (PDT)
+Date: Tue, 16 Apr 2024 09:53:23 +0000
+In-Reply-To: <Zh2hw0uQrkN5yVVA@boqun-archlinux>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402221129.2613843-28-john.ogness@linutronix.de>
+Mime-Version: 1.0
+References: <Zh2hw0uQrkN5yVVA@boqun-archlinux>
+X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
+Message-ID: <20240416095323.1107928-1-aliceryhl@google.com>
+Subject: Re: [PATCH v5 1/4] rust: uaccess: add userspace pointers
+From: Alice Ryhl <aliceryhl@google.com>
+To: boqun.feng@gmail.com
+Cc: a.hindborg@samsung.com, akpm@linux-foundation.org, alex.gaynor@gmail.com, 
+	aliceryhl@google.com, arnd@arndb.de, arve@android.com, benno.lossin@proton.me, 
+	bjorn3_gh@protonmail.com, brauner@kernel.org, cmllamas@google.com, 
+	gary@garyguo.net, gregkh@linuxfoundation.org, joel@joelfernandes.org, 
+	keescook@chromium.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	maco@android.com, ojeda@kernel.org, rust-for-linux@vger.kernel.org, 
+	surenb@google.com, tkjos@android.com, viro@zeniv.linux.org.uk, 
+	wedsonaf@gmail.com, willy@infradead.org
+Content-Type: text/plain; charset="utf-8"
 
-On Wed 2024-04-03 00:17:29, John Ogness wrote:
-> Mark emergency sections wherever multiple lines of
-> lock debugging output are generated. In an emergency
-> section the CPU will not perform console output for the
-> printk() calls. Instead, a flushing of the console
-> output is triggered when exiting the emergency section.
-> This allows the full message block to be stored as
-> quickly as possible in the ringbuffer.
+Boqun Feng <boqun.feng@gmail.com> writes:
+> On Mon, Apr 15, 2024 at 07:13:53AM +0000, Alice Ryhl wrote:
+>> From: Wedson Almeida Filho <wedsonaf@gmail.com>
+>> 
+>> A pointer to an area in userspace memory, which can be either read-only
+>> or read-write.
+>> 
+>> All methods on this struct are safe: attempting to read or write on bad
+>> addresses (either out of the bound of the slice or unmapped addresses)
+>> will return `EFAULT`. Concurrent access, *including data races to/from
+>> userspace memory*, is permitted, because fundamentally another userspace
+>> thread/process could always be modifying memory at the same time (in the
+>> same way that userspace Rust's `std::io` permits data races with the
+>> contents of files on disk). In the presence of a race, the exact byte
+>> values read/written are unspecified but the operation is well-defined.
+>> Kernelspace code should validate its copy of data after completing a
+>> read, and not expect that multiple reads of the same address will return
+>> the same value.
+>> 
+>> These APIs are designed to make it difficult to accidentally write
+>> TOCTOU bugs. Every time you read from a memory location, the pointer is
+>> advanced by the length so that you cannot use that reader to read the
+>> same memory location twice. Preventing double-fetches avoids TOCTOU
+>> bugs. This is accomplished by taking `self` by value to prevent
+>> obtaining multiple readers on a given `UserSlicePtr`, and the readers
+>> only permitting forward reads. If double-fetching a memory location is
+>> necessary for some reason, then that is done by creating multiple
+>> readers to the same memory location.
+>> 
+>> Constructing a `UserSlicePtr` performs no checks on the provided
+>> address and length, it can safely be constructed inside a kernel thread
+>> with no current userspace process. Reads and writes wrap the kernel APIs
+>> `copy_from_user` and `copy_to_user`, which check the memory map of the
+>> current process and enforce that the address range is within the user
+>> range (no additional calls to `access_ok` are needed).
+>> 
+>> This code is based on something that was originally written by Wedson on
+>> the old rust branch. It was modified by Alice by removing the
+>> `IoBufferReader` and `IoBufferWriter` traits, and various other changes.
+>> 
+>> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
+>> Co-developed-by: Alice Ryhl <aliceryhl@google.com>
+>> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 > 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> ---
->  kernel/locking/lockdep.c | 91 ++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 88 insertions(+), 3 deletions(-)
+> Thanks!
 > 
-> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> index 151bd3de5936..80cfbe7b340e 100644
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -5150,6 +5211,7 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
->  #endif
->  	if (unlikely(curr->lockdep_depth >= MAX_LOCK_DEPTH)) {
->  		debug_locks_off();
-> +		nbcon_cpu_emergency_enter();
->  		print_lockdep_off("BUG: MAX_LOCK_DEPTH too low!");
->  		printk(KERN_DEBUG "depth: %i  max: %lu!\n",
->  		       curr->lockdep_depth, MAX_LOCK_DEPTH);
-> @@ -5157,6 +5219,7 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
->  		lockdep_print_held_locks(current);
->  		debug_show_all_locks();
+> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 
-My concern is that the dump of all locks would not fit into the
-buffer. And it might even trigger softlockup. See below.
+Thanks for taking a look!
 
+>> ---
+>>  rust/helpers.c         |  14 +++
+>>  rust/kernel/lib.rs     |   1 +
+>>  rust/kernel/uaccess.rs | 304 +++++++++++++++++++++++++++++++++++++++++++++++++
+>>  3 files changed, 319 insertions(+)
+>> 
+> [...]
+>> +    /// Reads raw data from the user slice into a kernel buffer.
+>> +    ///
+>> +    /// Fails with `EFAULT` if the read happens on a bad address.
+> 
+> ... we probably want to mention that `out` may get modified even in
+> failure cases.
 
->  		dump_stack();
-> +		nbcon_cpu_emergency_exit();
->  
->  		return 0;
->  	}
-> @@ -6609,6 +6688,7 @@ void debug_show_all_locks(void)
->  		pr_warn("INFO: lockdep is turned off.\n");
->  		return;
->  	}
-> +	nbcon_cpu_emergency_enter();
->  	pr_warn("\nShowing all locks held in the system:\n");
->  
->  	rcu_read_lock();
+Will do.
 
-The code dumping the locks looks like:
+>> +    pub fn read_slice(&mut self, out: &mut [u8]) -> Result {
+>> +        // SAFETY: The types are compatible and `read_raw` doesn't write uninitialized bytes to
+>> +        // `out`.
+>> +        let out = unsafe { &mut *(out as *mut [u8] as *mut [MaybeUninit<u8>]) };
+>> +        self.read_raw(out)
+>> +    }
+>> +
+> [...]
+>> +
+>> +impl UserSliceWriter {
+> [...]
+>> +
+>> +    /// Writes raw data to this user pointer from a kernel buffer.
+>> +    ///
+>> +    /// Fails with `EFAULT` if the write happens on a bad address.
+> 
+> Same here, probably mention that: the userspace memory may be modified
+> even in failure cases.
 
-	for_each_process_thread(g, p) {
-		if (!p->lockdep_depth)
-			continue;
-		lockdep_print_held_locks(p);
-		touch_nmi_watchdog();
-		touch_all_softlockup_watchdogs();
-	}
+Will do.
 
-I see two problems here:
+> Anyway, they are not correctness critical, so we can do these in later
+> patches.
 
-1. I belive that the watchdogs are touched for a reason. And they will
-   be useless when we print everything in a single emergency context
-   and emit all messages at the end.
+It looks like I'll have to send another version anyway due to the
+conflict with [1], so I can take care of it.
 
-2. The default config LOG_BUF_SHIFT is 17. So the default kernel
-   buffer size is 128kB. The number of messages is bound by
-   the number of processes. I am afraid that all messages might
-   not fit into the buffer.
+Alice
 
-
-I see two solutions:
-
-1. Take the emergency context only around single dump:
-
-		nbcon_cpu_emergency_enter();
-		lockdep_print_held_locks(p);
-		nbcon_cpu_emergency_exit();
-
-
-2. Explicitely flush the printk buffer here. Something like:
-
-		lockdep_print_held_locks(p);
-		nbcon_cpu_emergency_flush();
-		touch_nmi_watchdog();
-		touch_all_softlockup_watchdogs();
-
-
-, where nbcon_cpu_emergency_flush() would do something like:
-
-/**
- * nbcon_cpu_emergency_flush - Explicitly flush consoles in
- *	the middle of emergency context.
- *
- * Both nbcon and legacy consoles are flushed.
- *
- * It should be used only when there are too many messages printed
- * in emergency context, for example, printing backtraces of all
- * CPUs or processes. It is typically needed when the watchdogs
- * have to be touched as well.
- *
-void nbcon_cpu_emergency_flush()
-{
-	/* The explicit flush is needed only in the emergency context. */
-	if (!nbcon_get_cpu_emergency_nesting())
-		return;
-
-	nbcon_atomic_flush_pending();
-
-	if (printing_via_unlock && !in_nmi()) {
-		if (console_trylock())
-			console_unlock();
-	}
-}
-
-
-I like the 2nd solution. The rule is more or less clear. The
-explicit flush is needed when the the code needed to touch watchdogs.
-
-Maybe, we should go even further and call the flush directly
-from the touch_*_*watchdog() API. It has effect only in emergency
-context.
-
-Best Regards,
-Petr
+[1]: https://lore.kernel.org/rust-for-linux/20240328013603.206764-1-wedsonaf@gmail.com/
 
