@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-146421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E038B8A6508
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:24:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B4218A6509
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:24:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DA551C21255
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:24:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C836B283A33
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:24:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674C21598E7;
-	Tue, 16 Apr 2024 07:23:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AB3C15A49D;
+	Tue, 16 Apr 2024 07:23:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FoxT+UxJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iKr/BaH/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB044158D98
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:23:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E26E159915
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:23:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713252213; cv=none; b=VTMSB/DCC1KIBxkoUiL+FhIZ0HS/WO9qBsuXOsqafrRZ3JzfSP/6uGnkt0vPzEfEUSj1L/F9WSBEeZUwngBhcridu1w14jhkKYEAYjzy1jS9220Z0hNYo8yWtFOCw08NaAAqthrTo+dqzvBrZyRp7dMS3qVqbGwbzpmaIlywz4Q=
+	t=1713252215; cv=none; b=dWGQmvb/LRt7U4KAdr8amSrMIkjOgVV3kOI7VSM1Nti00w/bheij6G2nsKN9MgxSGcl2k1wv8QTcmQJ3NXPB/mTlWt1QOXKJh0okYIh0OtzlXM+/dbJnJ7pGvYakhf1ONqMRwxVvploxLvXYLOV805OffHBbACM8IcrkBxwaSkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713252213; c=relaxed/simple;
-	bh=+rHA/TjA7B8eR6kxVZ+90vp2Y9xGqpF27dl9oDGOTCU=;
+	s=arc-20240116; t=1713252215; c=relaxed/simple;
+	bh=gnYDk6OX4XE3h8kNjiuhBPTQmlA/CYDOhV8fZAtl/TE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lQwtEPhHcOrJTIOvLmt0jVg094H0YLkMQlOyXA0fvk4r9lNZrrmRYo6wclaDcC92Bosphn4CGacPoKLBPEeNImzhy5x4/t/fPOuRX1Yvbj0lRyi5/wxkwsi9elLB94EcGfPFgt3MVPDI2DewitACVKvm0+j36JW6wFvzYo9KRE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FoxT+UxJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCED4C4AF07;
-	Tue, 16 Apr 2024 07:23:31 +0000 (UTC)
+	 MIME-Version; b=WlADdYURbdrLcvJQkYG6BtvPc9JdwwrURAPUxSHxEipe/yCZw69aaJMABhqN+L0cvQN/y3h3oFhVZyWD8tCGkisGfG0ou67jbl5lWFwnL/n1gXPXtOT2bZ2XUxpvonVhotknDWeEW5sbgjgKtiwZi8WuoE0ktbc5k05mkpau/K4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iKr/BaH/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B632AC32781;
+	Tue, 16 Apr 2024 07:23:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713252213;
-	bh=+rHA/TjA7B8eR6kxVZ+90vp2Y9xGqpF27dl9oDGOTCU=;
+	s=k20201202; t=1713252215;
+	bh=gnYDk6OX4XE3h8kNjiuhBPTQmlA/CYDOhV8fZAtl/TE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FoxT+UxJEf+VaWlxWxF+lc6GlEDeXmwoSWwYq9YqLCgs+z6+8IJV+I34mp1l1k5QC
-	 I8Qf1H7YCeViM7zxMI3Rk4rsntyhRzjYyKLkmqqjYqlFYz5RBYUnXfaGZNE1Poz6Sk
-	 W/V5d+tyfya1T/tozU40xqeBgLUFOrnc8Z4OOBXiLcVFLBFuxmTRzm60gi9Rem3L9x
-	 FXJr81HS8fFpRn8C3RvBhTnlV/AIvMdize9pZQpdu0r604uTJyo6jq9JBYWM2ru8KZ
-	 8uB2OM8Y6m0GpH2diij3Xrx5aMZGateWpOZheqLPEx7ldeMX0uiiNC/7IqnARph3UV
-	 aXbjHwY1JKhqg==
+	b=iKr/BaH/HhEmeD863rF3i7syD3sDhrr/9HjkgyFmT7PK4IRCWvQwzvceTrBshObS3
+	 g0uD4prp+Q/18p80UXodqWcbJCq3HKHsfNmNiCdUcBLs2YFiKYCh4x6wtG7x8BbE2Z
+	 n/n2M7WcqfizbXZKpoQCBfnL+SPKudjKo5roM5dfZvUq+66TkQfPFaweQUT1t/fKoH
+	 Ff4+i63bJlrkCxHPTWwxdJg3+dNJ6kYz/fX+bkY7DtehKuPoEI5mcUGget4S/+nRig
+	 huv+2Sti2U9KKYlICEZupnrDRKHdmpwrYvjbP2WzXItYqhwiabcU4ROsuWncx3I94F
+	 Li46IaVrVVzvA==
 From: Chao Yu <chao@kernel.org>
 To: jaegeuk@kernel.org
 Cc: linux-f2fs-devel@lists.sourceforge.net,
 	linux-kernel@vger.kernel.org,
 	Chao Yu <chao@kernel.org>
-Subject: [PATCH 2/4] f2fs: convert f2fs_read_single_page() to use folio
-Date: Tue, 16 Apr 2024 15:23:16 +0800
-Message-Id: <20240416072318.6486-2-chao@kernel.org>
+Subject: [PATCH 3/4] f2fs: convert f2fs_read_inline_data() to use folio
+Date: Tue, 16 Apr 2024 15:23:17 +0800
+Message-Id: <20240416072318.6486-3-chao@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240416072318.6486-1-chao@kernel.org>
 References: <20240416072318.6486-1-chao@kernel.org>
@@ -59,105 +59,153 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Convert f2fs_read_single_page() to use folio and related
-functionality.
+Convert f2fs_read_inline_data() to use folio and related
+functionality, and also convert its caller to use folio.
 
 Signed-off-by: Chao Yu <chao@kernel.org>
 ---
- fs/f2fs/data.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+ fs/f2fs/data.c   | 11 +++++------
+ fs/f2fs/f2fs.h   |  4 ++--
+ fs/f2fs/inline.c | 34 +++++++++++++++++-----------------
+ 3 files changed, 24 insertions(+), 25 deletions(-)
 
 diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 14dcd621acaa..c35107657c97 100644
+index c35107657c97..3eb90b9b0f8b 100644
 --- a/fs/f2fs/data.c
 +++ b/fs/f2fs/data.c
-@@ -2092,7 +2092,7 @@ static inline loff_t f2fs_readpage_limit(struct inode *inode)
- 	return i_size_read(inode);
+@@ -2487,20 +2487,19 @@ static int f2fs_mpage_readpages(struct inode *inode,
+ 
+ static int f2fs_read_data_folio(struct file *file, struct folio *folio)
+ {
+-	struct page *page = &folio->page;
+-	struct inode *inode = page_file_mapping(page)->host;
++	struct inode *inode = folio_file_mapping(folio)->host;
+ 	int ret = -EAGAIN;
+ 
+-	trace_f2fs_readpage(page, DATA);
++	trace_f2fs_readpage(&folio->page, DATA);
+ 
+ 	if (!f2fs_is_compress_backend_ready(inode)) {
+-		unlock_page(page);
++		folio_unlock(folio);
+ 		return -EOPNOTSUPP;
+ 	}
+ 
+ 	/* If the file has inline data, try to read it directly */
+ 	if (f2fs_has_inline_data(inode))
+-		ret = f2fs_read_inline_data(inode, page);
++		ret = f2fs_read_inline_data(inode, folio);
+ 	if (ret == -EAGAIN)
+ 		ret = f2fs_mpage_readpages(inode, NULL, folio);
+ 	return ret;
+@@ -3429,7 +3428,7 @@ static int prepare_write_begin(struct f2fs_sb_info *sbi,
+ 
+ 	if (f2fs_has_inline_data(inode)) {
+ 		if (pos + len <= MAX_INLINE_DATA(inode)) {
+-			f2fs_do_read_inline_data(page, ipage);
++			f2fs_do_read_inline_data(page_folio(page), ipage);
+ 			set_inode_flag(inode, FI_DATA_EXIST);
+ 			if (inode->i_nlink)
+ 				set_page_private_inline(ipage);
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 34acd791c198..13dee521fbe8 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -4153,10 +4153,10 @@ extern struct kmem_cache *f2fs_inode_entry_slab;
+ bool f2fs_may_inline_data(struct inode *inode);
+ bool f2fs_sanity_check_inline_data(struct inode *inode);
+ bool f2fs_may_inline_dentry(struct inode *inode);
+-void f2fs_do_read_inline_data(struct page *page, struct page *ipage);
++void f2fs_do_read_inline_data(struct folio *folio, struct page *ipage);
+ void f2fs_truncate_inline_inode(struct inode *inode,
+ 						struct page *ipage, u64 from);
+-int f2fs_read_inline_data(struct inode *inode, struct page *page);
++int f2fs_read_inline_data(struct inode *inode, struct folio *folio);
+ int f2fs_convert_inline_page(struct dnode_of_data *dn, struct page *page);
+ int f2fs_convert_inline_inode(struct inode *inode);
+ int f2fs_try_convert_inline_dir(struct inode *dir, struct dentry *dentry);
+diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
+index 3d3218a4b29d..7638d0d7b7ee 100644
+--- a/fs/f2fs/inline.c
++++ b/fs/f2fs/inline.c
+@@ -61,22 +61,22 @@ bool f2fs_may_inline_dentry(struct inode *inode)
+ 	return true;
  }
  
--static int f2fs_read_single_page(struct inode *inode, struct page *page,
-+static int f2fs_read_single_page(struct inode *inode, struct folio *folio,
- 					unsigned nr_pages,
- 					struct f2fs_map_blocks *map,
- 					struct bio **bio_ret,
-@@ -2105,9 +2105,10 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
- 	sector_t last_block;
- 	sector_t last_block_in_file;
- 	sector_t block_nr;
-+	pgoff_t index = folio_index(folio);
- 	int ret = 0;
+-void f2fs_do_read_inline_data(struct page *page, struct page *ipage)
++void f2fs_do_read_inline_data(struct folio *folio, struct page *ipage)
+ {
+-	struct inode *inode = page->mapping->host;
++	struct inode *inode = folio_file_mapping(folio)->host;
  
--	block_in_file = (sector_t)page_index(page);
-+	block_in_file = (sector_t)index;
- 	last_block = block_in_file + nr_pages;
- 	last_block_in_file = bytes_to_blks(inode,
- 			f2fs_readpage_limit(inode) + blocksize - 1);
-@@ -2138,7 +2139,7 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
- got_it:
- 	if ((map->m_flags & F2FS_MAP_MAPPED)) {
- 		block_nr = map->m_pblk + block_in_file - map->m_lblk;
--		SetPageMappedToDisk(page);
-+		folio_set_mappedtodisk(folio);
+-	if (PageUptodate(page))
++	if (folio_test_uptodate(folio))
+ 		return;
  
- 		if (!f2fs_is_valid_blkaddr(F2FS_I_SB(inode), block_nr,
- 						DATA_GENERIC_ENHANCE_READ)) {
-@@ -2147,15 +2148,15 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
- 		}
- 	} else {
- zero_out:
--		zero_user_segment(page, 0, PAGE_SIZE);
--		if (f2fs_need_verity(inode, page->index) &&
--		    !fsverity_verify_page(page)) {
-+		folio_zero_segment(folio, 0, folio_size(folio));
-+		if (f2fs_need_verity(inode, index) &&
-+		    !fsverity_verify_folio(folio)) {
- 			ret = -EIO;
- 			goto out;
- 		}
--		if (!PageUptodate(page))
--			SetPageUptodate(page);
+-	f2fs_bug_on(F2FS_P_SB(page), page->index);
++	f2fs_bug_on(F2FS_I_SB(inode), folio_index(folio));
+ 
+-	zero_user_segment(page, MAX_INLINE_DATA(inode), PAGE_SIZE);
++	folio_zero_segment(folio, MAX_INLINE_DATA(inode), folio_size(folio));
+ 
+ 	/* Copy the whole inline data block */
+-	memcpy_to_page(page, 0, inline_data_addr(inode, ipage),
++	memcpy_to_folio(folio, 0, inline_data_addr(inode, ipage),
+ 		       MAX_INLINE_DATA(inode));
+-	if (!PageUptodate(page))
+-		SetPageUptodate(page);
++	if (!folio_test_uptodate(folio))
++		folio_mark_uptodate(folio);
+ }
+ 
+ void f2fs_truncate_inline_inode(struct inode *inode,
+@@ -97,13 +97,13 @@ void f2fs_truncate_inline_inode(struct inode *inode,
+ 		clear_inode_flag(inode, FI_DATA_EXIST);
+ }
+ 
+-int f2fs_read_inline_data(struct inode *inode, struct page *page)
++int f2fs_read_inline_data(struct inode *inode, struct folio *folio)
+ {
+ 	struct page *ipage;
+ 
+ 	ipage = f2fs_get_node_page(F2FS_I_SB(inode), inode->i_ino);
+ 	if (IS_ERR(ipage)) {
 -		unlock_page(page);
-+		if (!folio_test_uptodate(folio))
-+			folio_mark_uptodate(folio);
 +		folio_unlock(folio);
- 		goto out;
+ 		return PTR_ERR(ipage);
  	}
  
-@@ -2165,14 +2166,14 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
- 	 */
- 	if (bio && (!page_is_mergeable(F2FS_I_SB(inode), bio,
- 				       *last_block_in_bio, block_nr) ||
--		    !f2fs_crypt_mergeable_bio(bio, inode, page->index, NULL))) {
-+		    !f2fs_crypt_mergeable_bio(bio, inode, index, NULL))) {
- submit_and_realloc:
- 		f2fs_submit_read_bio(F2FS_I_SB(inode), bio, DATA);
- 		bio = NULL;
+@@ -112,15 +112,15 @@ int f2fs_read_inline_data(struct inode *inode, struct page *page)
+ 		return -EAGAIN;
  	}
- 	if (bio == NULL) {
- 		bio = f2fs_grab_read_bio(inode, block_nr, nr_pages,
--				is_readahead ? REQ_RAHEAD : 0, page->index,
-+				is_readahead ? REQ_RAHEAD : 0, index,
- 				false);
- 		if (IS_ERR(bio)) {
- 			ret = PTR_ERR(bio);
-@@ -2187,7 +2188,7 @@ static int f2fs_read_single_page(struct inode *inode, struct page *page,
- 	 */
- 	f2fs_wait_on_block_writeback(inode, block_nr);
  
--	if (bio_add_page(bio, page, blocksize, 0) < blocksize)
-+	if (!bio_add_folio(bio, folio, blocksize, 0))
- 		goto submit_and_realloc;
+-	if (page->index)
+-		zero_user_segment(page, 0, PAGE_SIZE);
++	if (folio_index(folio))
++		folio_zero_segment(folio, 0, folio_size(folio));
+ 	else
+-		f2fs_do_read_inline_data(page, ipage);
++		f2fs_do_read_inline_data(folio, ipage);
  
- 	inc_page_count(F2FS_I_SB(inode), F2FS_RD_DATA);
-@@ -2453,7 +2454,7 @@ static int f2fs_mpage_readpages(struct inode *inode,
- read_single_page:
- #endif
+-	if (!PageUptodate(page))
+-		SetPageUptodate(page);
++	if (!folio_test_uptodate(folio))
++		folio_mark_uptodate(folio);
+ 	f2fs_put_page(ipage, 1);
+-	unlock_page(page);
++	folio_unlock(folio);
+ 	return 0;
+ }
  
--		ret = f2fs_read_single_page(inode, &folio->page, max_nr_pages, &map,
-+		ret = f2fs_read_single_page(inode, folio, max_nr_pages, &map,
- 					&bio, &last_block_in_bio, rac);
- 		if (ret) {
- #ifdef CONFIG_F2FS_FS_COMPRESSION
+@@ -166,7 +166,7 @@ int f2fs_convert_inline_page(struct dnode_of_data *dn, struct page *page)
+ 
+ 	f2fs_bug_on(F2FS_P_SB(page), folio_test_writeback(page_folio(page)));
+ 
+-	f2fs_do_read_inline_data(page, dn->inode_page);
++	f2fs_do_read_inline_data(page_folio(page), dn->inode_page);
+ 	set_page_dirty(page);
+ 
+ 	/* clear dirty state */
 -- 
 2.40.1
 
