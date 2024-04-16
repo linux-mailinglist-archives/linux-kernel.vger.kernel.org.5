@@ -1,352 +1,317 @@
-Return-Path: <linux-kernel+bounces-146577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBFA58A677C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:54:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79B858A6787
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:55:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50FFF1F2148E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:54:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6560B21176
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:54:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA9C86258;
-	Tue, 16 Apr 2024 09:53:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D74C48627E;
+	Tue, 16 Apr 2024 09:54:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="RwNaJezF"
-Received: from mail-lf1-f73.google.com (mail-lf1-f73.google.com [209.85.167.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="gDa6psdS"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0631272B7
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 09:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F56483A1D;
+	Tue, 16 Apr 2024 09:54:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713261219; cv=none; b=HKzMh4DUX6+yE7Qis8aRPQKw8fL3krna44RrsY69bdedl3UagnYdsBL93/0jVA/JDza5RkLDvmN5RT/rxBYzQ46UsM3vMlbhxzIginhrlJmSNdEARZiL3W78An8ERJBZsTDk3ZD3lOp6DgWCtWv2S73/1DCSyH5vmW2TL35DiXI=
+	t=1713261281; cv=none; b=NlH3yu8vUxRWoPPH/KftYDXZKRgcg6+1DF9dxt89LvCN8pWnvWENXS9e9oKizijzHvqUz1/lzpJMqMzGbqkqGpBzKhr7xWZFTnIDBK+QzDuADRdZ+zmIuxAhVEiiIMR5nQAW4jRHbr3zKJhrqDyR8p0GmfP5OdTfaU6Sru2BRus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713261219; c=relaxed/simple;
-	bh=83s13mn2KXx82X2UotydUVvraiEuoD5bk0bv+uKQ0j4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=rewO3UxoRrNmL3AcXQI0LN5xXCxme0Ixiz0O7ujxBm0S6aDU4cmA8qzmVzg9vg39LCtXirvzFZWHuCxQ46MkZ4StDyVV+OHqD/j8LrxolS6d9/VWEdpeu/2AF3Ov2m90iIsyAHrQEpjuiP6+7ZBHmDp9xQTFxmjcTldtATTbSYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RwNaJezF; arc=none smtp.client-ip=209.85.167.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-lf1-f73.google.com with SMTP id 2adb3069b0e04-516d92389e0so3696945e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:53:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713261215; x=1713866015; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8dWBKU5D27aRchDLY2aDBlpODU4i4Munl9LNc7I7ZXQ=;
-        b=RwNaJezFECdtmEn9L+eBtjPzr4gWDohJiORigLsmbEJuH3+kkNvlhmVJ6aRsw133sZ
-         4BA6LepBODJMiWVuRUKUR3G8K2tH+WIY2m08Z2N1B0JFGUAEoGbrYHVpYDxMbdCm2C47
-         KpIqF9qwPGGPf2bGjpqVNtwKFq2FBELYFfgeD6MHcGK7ilNGJ6rcpZf/iORN88ZH+lhT
-         UMl8/cEeckLjGlRkNvTXO11GSYXW52p9aUI/U5Twh640zgg3qwu7w9O6LT3CSL0K5+3u
-         0I09oLlGJnQSgqriga9B7KQ0FijqTtG9BAooGcoSALW2AeAZgxJHDubxdmUpqpadNx/p
-         AVHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713261215; x=1713866015;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8dWBKU5D27aRchDLY2aDBlpODU4i4Munl9LNc7I7ZXQ=;
-        b=KAw7ryUjGCt8d5RaFXYDQA0uZMrvw49LRBtFKKUtiuEwktCsfznLNT0LHA9Dz9KnbB
-         MCUj2ag1qaR7xdAf6HlGzfcWx881a9tXA88rS6SrnIWCCCqwJSibdMXxxW76tRPj71yz
-         ZZ+th1lgZgeoxkcK40aqeuGnbpRGsbHOOzKI6eS3z4uxYTQQrppbTDN/4gITTR36EXME
-         MIWIKO8JuzABM78twT9OzdVBaJYkZLuJhZjr1HlEbwY9w94F/JhmAbb0caODuPAPef4Z
-         OmThnWaMl6mblhLERlM+BnM8yF/wxMyX6VrP8cjjPVDa7mLNUVyvF9oXUYkXm9sCoXvD
-         5W0g==
-X-Forwarded-Encrypted: i=1; AJvYcCWlQki0IlUoNneRCuqhX/aITmxn7qR5Jd0l2zeQm5XhGIe4LPeygCbKKtgdgdcq59ukOTOzpbeuEaYwFL3LQirL/XNQcl2IZeItthvB
-X-Gm-Message-State: AOJu0YwQRfn0g5S0AFZ6v/HrqmTkQX84s75mKW60FL70BDTPQ6DJwJMP
-	npBucGoA3aWvXVJqoIuMTaI9JyFHCigX/GZHZhbntCJwhIy06/IU+2rndNhfpmHSuiKPb54ZLy5
-	YhgRyVkrM1oGFPw==
-X-Google-Smtp-Source: AGHT+IHcsJ5hw/vAV99RGLFobjm/zsOzmQtTDncHcg7emEQfzy1uf60bL8m87fTCzGgApod6m1hAcwICRv+RptI=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6512:3411:b0:518:a967:e2b3 with SMTP
- id i17-20020a056512341100b00518a967e2b3mr9083lfr.0.1713261215426; Tue, 16 Apr
- 2024 02:53:35 -0700 (PDT)
-Date: Tue, 16 Apr 2024 09:53:32 +0000
-In-Reply-To: <CALNs47tEZqL201jsExfF1j7m+yW37YRAws-NTF6hwsxohSKoQA@mail.gmail.com>
+	s=arc-20240116; t=1713261281; c=relaxed/simple;
+	bh=d/axHEsoKPtMdq4EobGsBDnIydxxsT8ZT/VXcZAXKrs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=M9uLqxcW7DV3XBfB7BryDYnnePS7LjYctSl3XMs3ubTZu05cGd9ADADevp6r7GJ/MGGn3BM4lndTkX/uGZkHFUZ+s1dTiwxSbR5UXAt5simwiRD3Aorbhoeah71UeyFfCsIPpZlF+53B+66O11JYnHgTUslyArfdNSAVB1wKinI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=gDa6psdS; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43G9sU4E086084;
+	Tue, 16 Apr 2024 04:54:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713261270;
+	bh=+i/pi2WVm6HfzfrIA7NqOBsQWfyXmuXYmrgtRRKDplw=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=gDa6psdSUzaR/Su0qo4GXYEJMSyunf5HUFsKI2WEuarqXVtL/HHT8Mf9Jf11hohn1
+	 PaHeTRse4l6/54fy54pLq7XmshNyhbElS1jcVdoFJEbjMm46mRqJNz6VAKFi2wiIRa
+	 bUg3OcB/fhZaCCNiF8tfm1t0ts9R/6JGyg3ygehY=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43G9sU3M025595
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 16 Apr 2024 04:54:30 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 16
+ Apr 2024 04:54:30 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 16 Apr 2024 04:54:30 -0500
+Received: from [172.24.31.60] (lt5cd2489kgj.dhcp.ti.com [172.24.31.60])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43G9sQhu031871;
+	Tue, 16 Apr 2024 04:54:27 -0500
+Message-ID: <9c7f0e3d-4558-4a73-bbb1-ceb7ebe02cd9@ti.com>
+Date: Tue, 16 Apr 2024 15:24:26 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <CALNs47tEZqL201jsExfF1j7m+yW37YRAws-NTF6hwsxohSKoQA@mail.gmail.com>
-X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-Message-ID: <20240416095333.1108884-1-aliceryhl@google.com>
-Subject: Re: [PATCH v5 4/4] rust: add abstraction for `struct page`
-From: Alice Ryhl <aliceryhl@google.com>
-To: tmgross@umich.edu
-Cc: a.hindborg@samsung.com, akpm@linux-foundation.org, alex.gaynor@gmail.com, 
-	aliceryhl@google.com, arnd@arndb.de, arve@android.com, benno.lossin@proton.me, 
-	bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org, 
-	cmllamas@google.com, gary@garyguo.net, gregkh@linuxfoundation.org, 
-	joel@joelfernandes.org, keescook@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, maco@android.com, ojeda@kernel.org, 
-	rust-for-linux@vger.kernel.org, surenb@google.com, tkjos@android.com, 
-	viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: ti: k3-j784s4-evm: Add support for multiple
+ CAN instances
+To: Bhavya Kapoor <b-kapoor@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <vigneshr@ti.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <conor+dt@kernel.org>,
+        <krzk+dt@kernel.org>, <robh@kernel.org>, <kristo@kernel.org>,
+        <nm@ti.com>
+References: <20240411201747.18697-1-b-kapoor@ti.com>
+ <85ea2b33-05ac-400f-8017-5539d21ebe32@ti.com>
+ <8d9a6dc7-7590-412d-aa81-18a6cf5d09ca@ti.com>
+Content-Language: en-US
+From: "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <8d9a6dc7-7590-412d-aa81-18a6cf5d09ca@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Trevor Gross <tmgross@umich.edu> writes:
-> On Mon, Apr 15, 2024 at 3:15=E2=80=AFAM Alice Ryhl <aliceryhl@google.com>=
- wrote:
+Hello Bhavya
+
+On 4/16/2024 2:52 PM, Bhavya Kapoor wrote:
+> On 15/04/24 10:42, Kumar, Udit wrote:
+>> Hello Bhavya,
 >>
->> Adds a new struct called `Page` that wraps a pointer to `struct page`.
->> This struct is assumed to hold ownership over the page, so that Rust
->> code can allocate and manage pages directly.
+>> On 4/12/2024 1:47 AM, Bhavya Kapoor wrote:
+>>> CAN instances 0 and 1 in the mcu domain and 16 in the main domain are
+>>> brought on the evm through headers J42, J43 and J46 respectively. Thus,
+>>> add their respective transceiver's 0, 1 and 2 dt nodes to add support
+>>> for these CAN instances.
+>> Looking at schematic and board data sheet, it appears, board has 6 CAN interfaces.
 >>
->> The page type has various methods for reading and writing into the page.
->> These methods will temporarily map the page to allow the operation. All
->> of these methods use a helper that takes an offset and length, performs
->> bounds checks, and returns a pointer to the given offset in the page.
+>> [J41--J46],  but we are enabling only 4.
 >>
->> This patch only adds support for pages of order zero, as that is all
->> Rust Binder needs. However, it is written to make it easy to add support
->> for higher-order pages in the future. To do that, you would add a const
->> generic parameter to `Page` that specifies the order. Most of the
->> methods do not need to be adjusted, as the logic for dealing with
->> mapping multiple pages at once can be isolated to just the
->> `with_pointer_into_page` method.
+>> I understand, other interfaces might be used for other purpose.
 >>
->> Rust Binder needs to manage pages directly as that is how transactions
->> are delivered: Each process has an mmap'd region for incoming
->> transactions. When an incoming transaction arrives, the Binder driver
->> will choose a region in the mmap, allocate and map the relevant pages
->> manually, and copy the incoming transaction directly into the page. This
->> architecture allows the driver to copy transactions directly from the
->> address space of one process to another, without an intermediate copy
->> to a kernel buffer.
+>> Vignesh/Nishanth,
 >>
->> This code is based on Wedson's page abstractions from the old rust
->> branch, but it has been modified by Alice by removing the incomplete
->> support for higher-order pages, by introducing the `with_*` helpers
->> to consolidate the bounds checking logic into a single place, and by
->> introducing gfp flags.
+>> Do you think, this make sense to code all available interfaces on board and
 >>
->> Co-developed-by: Wedson Almeida Filho <wedsonaf@gmail.com>
->> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
->> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
->=20
-> I have a couple questions about naming, and think an example would be
-> good for the functions that are trickier to use correctly. But I
-> wouldn't block on this, implementation looks good to me.
->=20
-> Reviewed-by: Trevor Gross <tmgross@umich.edu>
+>> mark as reserved, if used for other purpose , similar to what is done for wkup_uart for this board.
+>>
+> Hi Udit, there is a mux that is used between audio and the signal lines of other 2 cans.
+>
+> If we turn on the other 2 cans or even mark  them as reserved, we will still have to
+>
+> alter the mux sel lines which will impact the audio.
 
-Thanks for taking a look!
 
->> +/// Flags for the "get free page" function that underlies all memory al=
-locations.
->> +pub mod flags {
->> +    /// gfp flags.
->=20
-> Uppercase acronym, maybe with a description:
->=20
->     GFP (Get Free Page) flags.
->=20
->> +    #[allow(non_camel_case_types)]
->> +    pub type gfp_t =3D bindings::gfp_t;
->=20
-> Why not GfpFlags, do we do this elsewhere?
->=20
->> +    /// `GFP_KERNEL` is typical for kernel-internal allocations. The ca=
-ller requires `ZONE_NORMAL`
->> +    /// or a lower zone for direct access but can direct reclaim.
->> +    pub const GFP_KERNEL: gfp_t =3D bindings::GFP_KERNEL;
->> +    /// `GFP_ZERO` returns a zeroed page on success.
->> +    pub const __GFP_ZERO: gfp_t =3D bindings::__GFP_ZERO;
->> +    /// `GFP_HIGHMEM` indicates that the allocated memory may be locate=
-d in high memory.
->> +    pub const __GFP_HIGHMEM: gfp_t =3D bindings::__GFP_HIGHMEM;
->=20
-> It feels a bit weird to have dunder constants on the rust side that
-> aren't also `#[doc(hidden)]` or just nonpublic. Makes me think they
-> are an implementation detail or not really meant to be used - could
-> you update the docs if this is the case?
+How it will impact ?
 
-All of this is going away in the next version because it will be based
-on [1], which defines the gfp flags type for us.
+Audio and CAN lines goes to 1B port of mux .
 
-[1]: https://lore.kernel.org/rust-for-linux/20240328013603.206764-1-wedsona=
-f@gmail.com/
+IMO, even CAN or Audio does mux select they are going to select same 
+port no ?
 
->> +
->> +impl Page {
->> +    /// Allocates a new page.
->=20
-> Could you add a small example here?
+I refer U58 and U50 MUX of schematic, Hope we are on same page
 
-I can add an example that shows how to pass gfp flags.
 
->> +    pub fn alloc_page(gfp_flags: flags::gfp_t) -> Result<Self, AllocErr=
-or> {
->> [...]
->> +    }
->> +
->> +    /// Returns a raw pointer to the page.
->=20
-> Could you add a note about how the pointer needs to be used correctly,
-> if it is for anything more than interfacing with kernel APIs?
+>
+> Thanks.
+>
+> ~B-Kapoor
+>
+>>> CAN instance 4 in the main domain is brought on the evm through header
+>>> J45. The CAN High and Low lines from the SoC are routed through a mux
+>>> on the evm. The select lines need to be set for the CAN signals to
+>>> reach to its transceiver on the evm. Therefore, add transceiver 3
+>>> dt node to add support for this CAN instance.
+>>>
+>>> Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
+>>> ---
+>>>
+>>> rebased to next-20240411
+>>>
+>>>    arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 107 +++++++++++++++++++++++
+>>>    1 file changed, 107 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>>> index 81fd7afac8c5..e56901973895 100644
+>>> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>>> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>>> @@ -272,6 +272,45 @@ dp0_connector_in: endpoint {
+>>>                };
+>>>            };
+>>>        };
+>>> +
+>>> +    transceiver0: can-phy0 {
+>>> +        compatible = "ti,tcan1042";
+>>> +        #phy-cells = <0>;
+>>> +        max-bitrate = <5000000>;
+>>> +        pinctrl-names = "default";
+>>> +        pinctrl-0 = <&mcu_mcan0_gpio_pins_default>;
+>>> +        standby-gpios = <&wkup_gpio0 69 GPIO_ACTIVE_HIGH>;
+>>> +    };
+>>> +
+>>> +    transceiver1: can-phy1 {
+>>> +        compatible = "ti,tcan1042";
+>>> +        #phy-cells = <0>;
+>>> +        max-bitrate = <5000000>;
+>>> +        pinctrl-names = "default";
+>>> +        pinctrl-0 = <&mcu_mcan1_gpio_pins_default>;
+>>> +        standby-gpios = <&wkup_gpio0 2 GPIO_ACTIVE_HIGH>;
+>>> +    };
+>>> +
+>>> +    transceiver2: can-phy2 {
+>>> +        /* standby pin has been grounded by default */
+>>> +        compatible = "ti,tcan1042";
+>>> +        #phy-cells = <0>;
+>>> +        max-bitrate = <5000000>;
+>>> +    };
+>>> +
+>>> +    transceiver3: can-phy3 {
+>>> +        compatible = "ti,tcan1042";
+>>> +        #phy-cells = <0>;
+>>> +        max-bitrate = <5000000>;
+>>> +        standby-gpios = <&exp2 7 GPIO_ACTIVE_HIGH>;
+>>> +        mux-states = <&mux1 1>;
+>>> +    };
+>>> +
+>>> +    mux1: mux-controller {
+>>> +        compatible = "gpio-mux";
+>>> +        #mux-state-cells = <1>;
+>>> +        mux-gpios = <&exp2 14 GPIO_ACTIVE_HIGH>;
+>> Could you help here on logic to choose pin 14
+>>
+>> As I see for this mux
+>>
+>> S0 is CANUART_MUX_SEL0 [Pin 14, which you want to control as high]
+>>
+>> S1 is Pin 15 is "CANUART_MUX2_SEL1"
+>>
+>> S2 is high
+>>
+>> So in order to get CAN on mux output
+>>
+>> All, S0, S1 and S2 should be high.
+>>
+>> IMO, you should control both S0 and S1, or just S1 and S0 with dip switch
+> Hi Udit, S0 comes at a default Active High State always. Thus, i have kept it the same.
+>
+> This was done in the same way as it was done for mux2 for  j721s2. mcan 5
+>
+> Thanks
 
-I can clarify that it's a pointer to the `struct page` and not the
-actual PAGE_SIZE bytes stored in the page, and that it's for use with
-the raw C apis. I won't go into more details than that.
+May be i was not clear in my previous comment
 
->> +    pub fn as_ptr(&self) -> *mut bindings::page {
->> +        self.page.as_ptr()
->> +    }
->> +
->> +    /// Runs a piece of code with this page mapped to an address.
->> +    ///
->> +    /// The page is unmapped when this call returns.
->> +    ///
->> +    /// # Using the raw pointer
->> +    ///
->> +    /// It is up to the caller to use the provided raw pointer correctl=
-y. The pointer is valid for
->> +    /// `PAGE_SIZE` bytes and for the duration in which the closure is =
-called. The pointer might
->> +    /// only be mapped on the current thread, and when that is the case=
-, dereferencing it on other
->> +    /// threads is UB. Other than that, the usual rules for dereferenci=
-ng a raw pointer apply: don't
->> +    /// cause data races, the memory may be uninitialized, and so on.
->> +    ///
->> +    /// If multiple threads map the same page at the same time, then th=
-ey may reference with
->> +    /// different addresses. However, even if the addresses are differe=
-nt, the underlying memory is
->> +    /// still the same for these purposes (e.g., it's still a data race=
- if they both write to the
->> +    /// same underlying byte at the same time).
->> +    fn with_page_mapped<T>(&self, f: impl FnOnce(*mut u8) -> T) -> T {
->> [...]
->> +    }
->=20
-> Could you add an example of how to use this correctly?
+Looking at schematic
 
-This is a private function, you're not supposed to use it directly.
-Anyone who is modifying this file directly can look at the existing
-users for examples.
+S0 is CANUART_MUX_SEL0 , which is connected with DIP switch and IO 
+expander U173
 
->> +    /// Runs a piece of code with a raw pointer to a slice of this page=
-, with bounds checking.
->> +    ///
->> +    /// If `f` is called, then it will be called with a pointer that po=
-ints at `off` bytes into the
->> +    /// page, and the pointer will be valid for at least `len` bytes. T=
-he pointer is only valid on
->> +    /// this task, as this method uses a local mapping.
->> +    ///
->> +    /// If `off` and `len` refers to a region outside of this page, the=
-n this method returns
->> +    /// `EINVAL` and does not call `f`.
->> +    ///
->> +    /// # Using the raw pointer
->> +    ///
->> +    /// It is up to the caller to use the provided raw pointer correctl=
-y. The pointer is valid for
->> +    /// `len` bytes and for the duration in which the closure is called=
- The pointer might only be
->> +    /// mapped on the current thread, and when that is the case, derefe=
-rencing it on other threads
->> +    /// is UB. Other than that, the usual rules for dereferencing a raw=
- pointer apply: don't cause
->> +    /// data races, the memory may be uninitialized, and so on.
->> +    ///
->> +    /// If multiple threads map the same page at the same time, then th=
-ey may reference with
->> +    /// different addresses. However, even if the addresses are differe=
-nt, the underlying memory is
->> +    /// still the same for these purposes (e.g., it's still a data race=
- if they both write to the
->> +    /// same underlying byte at the same time).
->=20
-> This could probably also use an example. A note about how to select
-> between with_pointer_into_page and with_page_mapped would also be nice
-> to guide usage, e.g. "prefer with_pointer_into_page for all cases
-> except when..."
+S1 is CANUART_MUX2_SEL1, which is connected only IO with expander U173
 
-Same as above. This is a private function.
+S2 is CANUART_MUX_SEL2 is pulled high by hardware itself .
 
->> +    fn with_pointer_into_page<T>(
->> +        &self,
->> +        off: usize,
->> +        len: usize,
->> +        f: impl FnOnce(*mut u8) -> Result<T>,
->> +    ) -> Result<T> {
->> [...]
->> +    /// Maps the page and zeroes the given slice.
->> +    ///
->> +    /// This method will perform bounds checks on the page offset. If `=
-offset .. offset+len` goes
->> +    /// outside ot the page, then this call returns `EINVAL`.
->> +    ///
->> +    /// # Safety
->> +    ///
->> +    /// Callers must ensure that this call does not race with a read or=
- write to the same page that
->> +    /// overlaps with this write.
->> +    pub unsafe fn fill_zero(&self, offset: usize, len: usize) -> Result=
- {
->> +        self.with_pointer_into_page(offset, len, move |dst| {
->> +            // SAFETY: If `with_pointer_into_page` calls into this clos=
-ure, then it has performed a
->> +            // bounds check and guarantees that `dst` is valid for `len=
-` bytes.
->> +            //
->> +            // There caller guarantees that there is no data race.
->> +            unsafe { ptr::write_bytes(dst, 0u8, len) };
->> +            Ok(())
->> +        })
->> +    }
->=20
-> Could this be named `fill_zero_raw` to leave room for a safe
-> `fill_zero(&mut self, ...)`?
+Here all lines high are needed to route CAN correctly out from mux.
 
-I suppose I can rename these _raw as well.
+So this patch is controlling CANUART_MUX_SEL0 but not controlling 
+CANUART_MUX2_SEL1.
 
->> +    /// Copies data from userspace into this page.
->> +    ///
->> +    /// This method will perform bounds checks on the page offset. If `=
-offset .. offset+len` goes
->> +    /// outside ot the page, then this call returns `EINVAL`.
->> +    ///
->> +    /// Like the other `UserSliceReader` methods, data races are allowe=
-d on the userspace address.
->> +    /// However, they are not allowed on the page you are copying into.
->> +    ///
->> +    /// # Safety
->> +    ///
->> +    /// Callers must ensure that this call does not race with a read or=
- write to the same page that
->> +    /// overlaps with this write.
->> +    pub unsafe fn copy_from_user_slice(
->> +        &self,
->> +        reader: &mut UserSliceReader,
->> +        offset: usize,
->> +        len: usize,
->> +    ) -> Result {
->> +        self.with_pointer_into_page(offset, len, move |dst| {
->> +            // SAFETY: If `with_pointer_into_page` calls into this clos=
-ure, then it has performed a
->> +            // bounds check and guarantees that `dst` is valid for `len=
-` bytes. Furthermore, we have
->> +            // exclusive access to the slice since the caller guarantee=
-s that there are no races.
->> +            reader.read_raw(unsafe { core::slice::from_raw_parts_mut(ds=
-t.cast(), len) })
->> +        })
->> +    }
->> +}
->=20
-> Same as above, `copy_from_user_slice_raw` would leave room for a safe API=
-.
+IMO, CANUART_MUX_SEL0 can be controlled by dip switch and 
+CANUART_MUX2_SEL1 should be controlled by driver.
 
-Okay
 
-Alice
+>>> +    };
+>>>    };
+>>>      &wkup_gpio0 {
+>>> @@ -336,6 +375,20 @@ J784S4_IOPAD(0x014, PIN_INPUT_PULLUP, 8) /* (AG33) MCAN14_TX.I2C4_SCL */
+>>>                J784S4_IOPAD(0x010, PIN_INPUT_PULLUP, 8) /* (AH33) MCAN13_RX.I2C4_SDA */
+>>>            >;
+>>>        };
+>>> +
+>>> +    main_mcan4_pins_default: main-mcan4-default-pins {
+>>> +        pinctrl-single,pins = <
+>>> +            J784S4_IOPAD(0x088, PIN_INPUT, 0) /* (AF36) MCAN4_RX */
+>>> +            J784S4_IOPAD(0x084, PIN_OUTPUT, 0) /* (AG38) MCAN4_TX */
+>>> +        >;
+>>> +    };
+>>> +
+>>> +    main_mcan16_pins_default: main-mcan16-default-pins {
+>>> +        pinctrl-single,pins = <
+>>> +            J784S4_IOPAD(0x028, PIN_INPUT, 0) /* (AE33) MCAN16_RX */
+>>> +            J784S4_IOPAD(0x024, PIN_OUTPUT, 0) /* (AH34) MCAN16_TX */
+>>> +        >;
+>>> +    };
+>>>    };
+>>>      &wkup_pmx2 {
+>>> @@ -415,6 +468,32 @@ J784S4_WKUP_IOPAD(0x104, PIN_INPUT, 0) /* (U33) MCU_ADC1_AIN6 */
+>>>                J784S4_WKUP_IOPAD(0x108, PIN_INPUT, 0) /* (Y36) MCU_ADC1_AIN7 */
+>>>            >;
+>>>        };
+>>> +
+>>> +    mcu_mcan0_pins_default: mcu-mcan0-default-pins {
+>>> +        pinctrl-single,pins = <
+>>> +            J784S4_WKUP_IOPAD(0x050, PIN_OUTPUT, 0) /* (K33) MCU_MCAN0_TX */
+>>> +            J784S4_WKUP_IOPAD(0x054, PIN_INPUT, 0) /* (F38) MCU_MCAN0_RX */
+>>> +        >;
+>>> +    };
+>>> +
+>>> +    mcu_mcan1_pins_default: mcu-mcan1-default-pins {
+>>> +        pinctrl-single,pins = <
+>>> +            J784S4_WKUP_IOPAD(0x068, PIN_OUTPUT, 0) /* (H35) WKUP_GPIO0_4.MCU_MCAN1_TX */
+>>> +            J784S4_WKUP_IOPAD(0x06c, PIN_INPUT, 0) /* (K36) WKUP_GPIO0_5.MCU_MCAN1_RX */
+>>> +        >;
+>>> +    };
+>>> +
+>>> +    mcu_mcan0_gpio_pins_default: mcu-mcan0-gpio-default-pins {
+>>> +        pinctrl-single,pins = <
+>>> +            J784S4_WKUP_IOPAD(0x040, PIN_INPUT, 7) /* (J38) MCU_SPI0_D1.WKUP_GPIO0_69 */
+>>> +        >;
+>>> +    };
+>>> +
+>>> +    mcu_mcan1_gpio_pins_default: mcu-mcan1-gpio-default-pins {
+>>> +        pinctrl-single,pins = <
+>>> +            J784S4_WKUP_IOPAD(0x060, PIN_INPUT, 7) /* (J35) WKUP_GPIO0_2 */
+>>> +        >;
+>>> +    };
+>>>    };
+>>>      &wkup_pmx1 {
+>>> @@ -1105,3 +1184,31 @@ dp0_out: endpoint {
+>>>            };
+>>>        };
+>>>    };
+>>> +
+>>> +&mcu_mcan0 {
+>>> +    status = "okay";
+>>> +    pinctrl-names = "default";
+>>> +    pinctrl-0 = <&mcu_mcan0_pins_default>;
+>>> +    phys = <&transceiver0>;
+>>> +};
+>>> +
+>>> +&mcu_mcan1 {
+>>> +    status = "okay";
+>>> +    pinctrl-names = "default";
+>>> +    pinctrl-0 = <&mcu_mcan1_pins_default>;
+>>> +    phys = <&transceiver1>;
+>>> +};
+>>> +
+>>> +&main_mcan16 {
+>>> +    status = "okay";
+>>> +    pinctrl-names = "default";
+>>> +    pinctrl-0 = <&main_mcan16_pins_default>;
+>>> +    phys = <&transceiver2>;
+>>> +};
+>>> +
+>>> +&main_mcan4 {
+>>> +    status = "okay";
+>>> +    pinctrl-names = "default";
+>>> +    pinctrl-0 = <&main_mcan4_pins_default>;
+>>> +    phys = <&transceiver3>;
+>>> +};
 
