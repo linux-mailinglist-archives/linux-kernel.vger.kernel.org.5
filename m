@@ -1,116 +1,114 @@
-Return-Path: <linux-kernel+bounces-146348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 673CB8A63C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:32:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85A3A8A63D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:34:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E41DAB22511
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:32:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5FFF1C20BD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:34:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93EAA6CDD5;
-	Tue, 16 Apr 2024 06:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E91006D1A3;
+	Tue, 16 Apr 2024 06:34:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kwJ/DjB3"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NrYXPnCS"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6556F35280;
-	Tue, 16 Apr 2024 06:32:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E185CA38;
+	Tue, 16 Apr 2024 06:34:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713249147; cv=none; b=SUzWmEEGs7XCP/XwhPdyd/bF11JKB1OxvmxOXHmMHHlm27vSzRLzdGVZGm2mZ66p4TqEFvVZRtctBoUGhBYGNJidf7FjBA+0wSPx4+t4d3lkNGTKMu8VpDnhhGbWTFatpDsKn08bGq9jEH2HfldCNYo2X8AsBIhDZZF8vvlEyo0=
+	t=1713249263; cv=none; b=APXRXCXwc0CZPDwDCqM15tBTnnuVT42H92mtYvflaZKnkO+C7PNEP1X2mVxVT55XYGpNaAki3xaRheZPnEZ5aUAU15MtQLJKrIzHxTD3CfKNq1+8vdqw+Wbj313sOk6MBeo5EdpwATx3APyKaPy62ffMcmAtR0MgbyXFuWzvguo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713249147; c=relaxed/simple;
-	bh=L0uSowqXWaOKHmbvtmcvv3CH+kLSNUKlVoz9ET8Wz6M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Qa8VYHEudPY31JJdD+UU8OZdqvQpGv63AKNF0svQfSVw5Xh14AvyPonaoC+epHbVT2kirsG2Ztp7qkHmFUqbHzVwuS7gRculL+TF8BHMVN6jdz+4OggZZPfEI9NylsARd5l/6DvLjtKOVYneZntETr1M9c68zDe7CLNDZgLkYzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kwJ/DjB3; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a523dad53e0so509272466b.1;
-        Mon, 15 Apr 2024 23:32:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713249145; x=1713853945; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uvT0ik8y9YSN8TDWnzi97O0pi4EAtF0id/yb9bB2ojE=;
-        b=kwJ/DjB33koeKyzv4BjVTnC43isP4efqTrl03W4nc5rUUQKqNEAmQ9x5EZAf9u6AVC
-         KE24d9n0Udu80DA0pEbn8R+8jWHZ8W84xWZ8LkWRIJA81E/+AYb2g3BXEfTgnSFJzBX0
-         bxHmI/m85ggSaj9PU+vWGinTmr+P71/Q7glHUZTLDBLfONWZn2QTdEoAzU1qpv5axMVR
-         U+3V/cGUKpWsa8q6wW1JyGVs/bNqPBvwJws8IiedWIB/9LiFivl1zIt4CyipA1Sjr5ZE
-         BSAB5nfPEZopLWobjCxjjbHoO0m0bzkoEBKRV4iqqDGuX+xG29OKTAVV3e5jNDERaM2+
-         RoJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713249145; x=1713853945;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uvT0ik8y9YSN8TDWnzi97O0pi4EAtF0id/yb9bB2ojE=;
-        b=lMmTOumPSzZqpDy43jVEHZel1Ut1WBNa1VWOm7T4K4usSzeX/eGCkXeI1kLL82qKSp
-         KVezE9g81HlQ3nT3BE6FGvVoT7VFF/9PByUb4TsS8R9w0IqxMPGL29VqZfJRt4ekFqyL
-         VBx3oIxi2QI56R2BPLxs5r2+ZZNBw6jHz9iEsaly6jkgICByFb/95j6QYf07mEMTiZ/9
-         yZ3NEa6FHTCtS+vxIbKH2uGdQO23HTviTQFS78ppKMXbZESvl60fHiFxL85CQ/16yyPK
-         GmlsWISLpS1Zqo9EW3Z5irpeqcNBttMNN4RtH3hckxZY3NHMKq4IJxFElVPfL7dEzc8a
-         W8HQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXktxvWw7p2h+X3yalTSQse6ta0rZS52r5fHPC20S8GGGAATTfkhyY4SVg3Yo/ZU74Am4YQaeZB1X65M0Y7nq32l5HwJHhu4FliMw==
-X-Gm-Message-State: AOJu0YydB0INslDQP7H6Hhh8xIpDq6t6QJjEGQjoy8zuC14jNwv6tMlE
-	rzuUiSqZa9+7VoK8LaR1DIoLv1MQJbZRoKX4hJ4g2mI1s3zuQaS++UQNSNu/etKRkRNMcl8ykL6
-	7D3mCK8pPURgCD+9VjdYcOm3JZdM=
-X-Google-Smtp-Source: AGHT+IFxCqi2XVU3mI19z9HnKc+NcVHkZkkUQWCwzy9Il40jnhoF1q2Jp8UC32a+LmEsQ3Lc2W0VGzTG/8DDEWMGnLg=
-X-Received: by 2002:a17:906:8d1:b0:a52:1bba:7458 with SMTP id
- o17-20020a17090608d100b00a521bba7458mr1427775eje.0.1713249144472; Mon, 15 Apr
- 2024 23:32:24 -0700 (PDT)
+	s=arc-20240116; t=1713249263; c=relaxed/simple;
+	bh=aUB2sz5q+pwDDgokv+BkgppIYgiz6sSwYxbo6bVyyPk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=QPe2eQQKjRhLPhwXTaNGiwolELC5rAZ+qtmmds9S9D0UQpJdkvoNRsggRu2NG+91lDziJHwpRqfGoAOXoIUIN6dLvXffxogQXM/F6EvPWEJuszrZz4hneZTt1vJ79MD6ipIR3QwT7dK9CVib1LgJvNo3Q0bYX5zSpW8G8XhuMIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=NrYXPnCS; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43G6Y18b054914;
+	Tue, 16 Apr 2024 01:34:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713249241;
+	bh=aUB2sz5q+pwDDgokv+BkgppIYgiz6sSwYxbo6bVyyPk=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=NrYXPnCSaCc6HHmFgI38YHbIaOtJ5hW8rPs3CMxbDMNn2N8TtRhDylLSA7VunCVAx
+	 Snvu0NFMQ+t4PN++JoEZFZjqDfjrmrsgLE03JxB32wjbkYERLdKAhVKB4KWfjGTS4m
+	 rABNwLmLcX4artr7On8yfqcs6DxQeYFLDo7QMENI=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43G6Y12l005530
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 16 Apr 2024 01:34:01 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 16
+ Apr 2024 01:34:01 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 16 Apr 2024 01:34:01 -0500
+Received: from [10.249.132.198] ([10.249.132.198])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43G6Xubk035621;
+	Tue, 16 Apr 2024 01:33:57 -0500
+Message-ID: <d79cfcb1-5883-4596-a601-040769a16182@ti.com>
+Date: Tue, 16 Apr 2024 12:03:55 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEkJfYNguDt47=KnEUX7tLwx_46ggBx3Oh3-3dAcZxqndL_OWQ@mail.gmail.com>
- <48043100-a817-4ca2-a141-60e3ab9cbfef@acm.org>
-In-Reply-To: <48043100-a817-4ca2-a141-60e3ab9cbfef@acm.org>
-From: Sam Sun <samsun1006219@gmail.com>
-Date: Tue, 16 Apr 2024 14:32:12 +0800
-Message-ID: <CAEkJfYP1eieCj72nnbWQFOq3PmDi_amtRfrG89kViiQy+bePaA@mail.gmail.com>
-Subject: Re: [PATCH] drivers: scsi: fix shift-out-of-bounds in sg_build_indirect
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: linux-kernel@vger.kernel.org, martin.petersen@oracle.com, 
-	linux-scsi@vger.kernel.org, xrivendell7@gmail.com, 
-	syzkaller-bugs@googlegroups.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 3/3] arm64: dts: ti: k3-am62a: Disable USB LPM
+To: Roger Quadros <rogerq@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh
+ Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>, Rob Herring
+	<robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: Andrew Davis <afd@ti.com>, <b-liu@ti.com>, <srk@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Ravi Gunasekaran <r-gunasekaran@ti.com>
+References: <20240412-for-v6-10-am62-usb-typec-dt-v7-0-93b827adf97e@kernel.org>
+ <20240412-for-v6-10-am62-usb-typec-dt-v7-3-93b827adf97e@kernel.org>
+Content-Language: en-US
+From: Ravi Gunasekaran <r-gunasekaran@ti.com>
+In-Reply-To: <20240412-for-v6-10-am62-usb-typec-dt-v7-3-93b827adf97e@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Tue, Apr 16, 2024 at 1:26=E2=80=AFAM Bart Van Assche <bvanassche@acm.org=
-> wrote:
+
+
+On 4/12/2024 5:32 PM, Roger Quadros wrote:
+> As per AM62A TRM [1] USB Link Power Management (LPM)
+> feature is not supported. Disable it else it may
+> cause enumeration failure on some devices.
 >
-> On 4/14/24 20:14, Sam Sun wrote:
-> > -    num =3D scatter_elem_sz;
-> > +    num =3D max(scatter_elem_sz, PAGE_SIZE);
+>> 4.9.2.1 USB2SS Unsupported Features
+>> The following features are not supported on this family of devices:
+>> ...
+>> - USB 2.0 ECN: Link Power Management (LPM)
+>> ...
+> [1] - https://www.ti.com/lit/pdf/spruj16
 >
-> Shouldn't the following statements be modified instead of the above
-> statement? I think these are the only statements that can cause
-> scatter_elem_sz to become smaller than PAGE_SIZE:
->
->         scatter_elem_sz =3D ret_sz;
->         scatter_elem_sz_prev =3D ret_sz;
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
+> Changelog:
+> v7 - Rebased to v6.9-rc1
+> v6 - Rebased on next-20240226
+> v5 - new patch
+> ---
+
+Reviewed-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
+
 >
 
-Yes, these statements are the only statements that modify
-scatter_elem_sz. However, ret_sz will never be less than PAGE_SIZE,
-since it is calculated by 1 << (PAGE_SIZE + order), and order will not
-be less than zero. So I think these statements do not need to be
-modified.
-
-scatter_elem_sz is also exported to userspace by sysfs interface
-(macro module_param_named()), and privileged users could modify it to
-any int they want. So I also set the exported type to uint in this
-patch. Should I also change the type of scatter_elem_sz and
-scatter_elem_sz_prev also to uint?
-
-Best Regards,
-Yue
 
