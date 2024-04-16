@@ -1,97 +1,145 @@
-Return-Path: <linux-kernel+bounces-146037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 490A38A5F40
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 71B438A5F50
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:34:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A83E0B21753
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:29:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1AF3B21713
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:34:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE48C81F;
-	Tue, 16 Apr 2024 00:29:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9074417C9;
+	Tue, 16 Apr 2024 00:34:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hTj2+TkF"
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="k2T2ijEP"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0358386
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A12A2631
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:34:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713227366; cv=none; b=nWL1sA4CyRnv2MUfeEGqgVhKbRSvDux6ZdHbQXogPpXK2drXvlxMu+jHLTdm/ZqM0qtzFNNP+BDsk1cytCNxJV/Itfu3x0F5apVRXJeY5rvqzlr+lzrFCEIEuC+uFsoV0+ORBpI5obaA9QVNqpAXCf2pzaFyjtQH+UEBf/SwTuw=
+	t=1713227678; cv=none; b=DJ1hS3Gs2v1uhBt8Yd+Lh3kdObkeNTCFPGVau1wheHytndSgg7xC491MCNYN0rg7t0u3WysxhMnqKmgiOyUsYB3xkXkinKsdOdJ6Dj13utunAf2WEYnBZrpJyuxvqntmmfQjP0RWPjB4Maw5F4qYUAwrIoLnrvIHckYhVEJkC/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713227366; c=relaxed/simple;
-	bh=Yf1gUr1tvKmKsM1pOVHTcwnl8aKHEskvwPqkV6rEw7A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HRhyttG/oXXPmhaybLj6U4yS9liNhOgzvbjZAhkf7GrmWcwbgETqKr8JbzPiyb543Y+esG2idDBiwegWxkgHZA5gDsGi7v7hPVoUaONyjjlK413BMQPBFo6u1odm4tA68oNlmqyRkmJxIRJyA4G46r5twA1nKnR3+syusqaRvGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hTj2+TkF; arc=none smtp.client-ip=209.85.219.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-69b514d3cf4so32801026d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 17:29:24 -0700 (PDT)
+	s=arc-20240116; t=1713227678; c=relaxed/simple;
+	bh=Uu0M7GIvUdTs6LdT4T9XsdKueP/wSc1aG5j1PLQFwBc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hkjn2FsVZyihHkuGQvAhMbtT/d2KOSQ+gxp93C4KNKbL+ipDRrAPDER6SyOEdYr2b6Il2D4iE0c9etykMxjv+UVInuEPk0zPQwpgctGca0AYUzNN4VRBPuxBQOY0KztCFWg1BumymWylQDyitTZsJcqaLBklERBFp2JzJ/72Pv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=k2T2ijEP; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ed691fb83eso3133490b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 17:34:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713227364; x=1713832164; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yf1gUr1tvKmKsM1pOVHTcwnl8aKHEskvwPqkV6rEw7A=;
-        b=hTj2+TkFD6CPsP8ZKVu1z6bJ0mdCGSgR7+fCCMzNz7am4UXZsXPwoqo2OFZrZQQP7k
-         AnOCTcfxIP/Fu0js3+YzS9dL2mWMfbi5Ga6Peb6VS6b8Sgvz2xZ1Duw7LJ/CoyWJueB3
-         ZPNxeDhM9AVMjcTO98Bq30kN8gV/R8+Lqg9u78icJmdOk4EcssNJJivwbsOD/Sdu3TH1
-         2Qxp1GDx51gn8PUhnMYHl1RzpEOZXAt3CKVx1WvlESzm6u+ohRu2G1LL96Xq7Gv3T9yU
-         3bsd2mMa4FNI+FlufTJ9w+MUhc7dQuu5IeJgiwhC4YFoFqFadyxoWk+jxHx5nmo48EuZ
-         47eg==
+        d=chromium.org; s=google; t=1713227677; x=1713832477; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tECMZdHIf57W8gG8gWlbX6tFu4h7YfeqS1rrPxFzlBU=;
+        b=k2T2ijEPy9ATFpZz/wsPlE3zFzhdzzQn/9qLRM0InwfNvYvNJh8pVl5kKgUy0zNFaK
+         OHFP9A0qPNggYNdzB3LI/BGEdnnKDTvwls09p+OCGdfZKK/O8WCPl/yXSei38fcnJ8KY
+         hw2q3x0CXGxQJtQoDhqiFRVhz32XvARinF0/Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713227364; x=1713832164;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yf1gUr1tvKmKsM1pOVHTcwnl8aKHEskvwPqkV6rEw7A=;
-        b=s2X3+UHmf+yEjBpPHcE6GJFP5vxlkMotL1Ya7cuavYUvrPTtf6smIxxRyij3Ic/cGi
-         VUT4T+MUlSxh+2vqkXoTErzmTHYu5z8zlGuswgyaeLuCzlkAm2QUsX7U5p+Vpy18feQt
-         eq3ZhF2Dbu/YLyKdECIlLMuiyOLtViSCTTrdlhcuHTxZl0KcpBr/jkbNjyen8u0c+YrN
-         TZBGHw1fn1w9LI1cZ6ewCigOqOfq9tv9DIU0k8oq8HCBimTC99hn0Wz3r1yvuXbv7h/C
-         /td5HdYMe2qM6kQJ5rLdnmM9JnL444vhrGW2Fkbyri3Ank220Er9jD0XxQ6HkdkrZtjI
-         8pLw==
-X-Forwarded-Encrypted: i=1; AJvYcCX3WfpZvhBBrgGKHb1pZMiR7fPno5u8p5lNarLFMh66ygvoGH7DYdRarLB9M0yh8IqPoTcXuM+WCC4VOlyR+FaIMnIgu2JLuV/D/ICd
-X-Gm-Message-State: AOJu0YxvZj4oTAzrPwY4OgvoxlVCAboV+bwUiuefwt32d8a7ghvCmEtQ
-	f3oudYONMuI9KNQwPv1j7BfXC2sejJIK8RWCyXgNNPCUoxZpY1OO6yPK/h9QgeljoWhu9eYH7CK
-	WY3zZRC/VCMKzoJlK/6t6BfOqh+o=
-X-Google-Smtp-Source: AGHT+IFprmh+7vT78kNblQOtapK06gC/CQ9a7Zl18oKXuT/I8ULx3XNzmCJY5UzBGVmcdWWmKctXD7+TkZTWYk1wx8g=
-X-Received: by 2002:a0c:e944:0:b0:69b:7a52:a894 with SMTP id
- n4-20020a0ce944000000b0069b7a52a894mr5297027qvo.46.1713227363836; Mon, 15 Apr
- 2024 17:29:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713227677; x=1713832477;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tECMZdHIf57W8gG8gWlbX6tFu4h7YfeqS1rrPxFzlBU=;
+        b=H5RJLmVUoKmm4wkhMiEszoTD8dYu2OOCliJhSbKIEQhbMLO/Or5bXVw87TkD1JYgFb
+         j52qTOfjsAADKABsM2SZZ98ZcmvVno57f9eWqH7Ad1A/CCgDrrHtgZi0RKEdOHt9w5AQ
+         HH+rcE8aPw/Xa/iYua26K+S099OIQa6KmTTbJZe9RxSMs2jg7sbT9xKd0ILl/+6fqidz
+         N4PwkW9CvMT2CaoQl1PavhrbyGCj00SYAHsueMRW9m99Zpc1+KCRylIxhqYqYOVEG1jB
+         JLCTFvaOmyoCAbOoGdz89TQkwY5rN+x5Ttlut3JfJjv4LH7HXXP9DVCd9DU1fMAkIsdm
+         InPg==
+X-Forwarded-Encrypted: i=1; AJvYcCVq4xssLo//7f6zCXx1HEvZrypeZIpYsMxP8UmVt2glHqrw8HhUHYRL7tSSwMgkLrqA/T3esPyhtw1weK2KFpEkwE/3OIvdBrlyBBtl
+X-Gm-Message-State: AOJu0YyJxlA/1OQm4monRGLudPmDe2mHNE0R5o9O7wxYhOeh5m1zRZIz
+	TUFlI6/sxRLEPbDM3OO8WpPiJHPTh2GsAkKEnO/PJxP3aKnoY8y3XyJCmITRQQ==
+X-Google-Smtp-Source: AGHT+IHBTYQNm0G/5iTIWcqtCpBMx8eO+Lcv57FnkpUl7K+iOvZATxbmc2iNNHMdthR59l4Mz4CqSQ==
+X-Received: by 2002:a05:6a21:4987:b0:1a6:b689:8c29 with SMTP id ax7-20020a056a21498700b001a6b6898c29mr10500341pzc.61.1713227676987;
+        Mon, 15 Apr 2024 17:34:36 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id k3-20020a170902694300b001e24988b99asm8503932plt.250.2024.04.15.17.34.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 17:34:36 -0700 (PDT)
+Date: Mon, 15 Apr 2024 17:34:35 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Jeff Xu <jeffxu@chromium.org>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	akpm@linux-foundation.org, jannh@google.com, sroettger@google.com,
+	willy@infradead.org, gregkh@linuxfoundation.org,
+	torvalds@linux-foundation.org, corbet@lwn.net,
+	Liam.Howlett@oracle.com, surenb@google.com, merimus@google.com,
+	rdunlap@infradead.org, jeffxu@google.com, jorgelo@chromium.org,
+	groeck@chromium.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+	pedro.falcato@gmail.com, dave.hansen@intel.com,
+	linux-hardening@vger.kernel.org, deraadt@openbsd.org
+Subject: Re: [PATCH v10 3/5] selftest mm/mseal memory sealing
+Message-ID: <202404151733.59C3EF3@keescook>
+References: <20240415163527.626541-1-jeffxu@chromium.org>
+ <20240415163527.626541-4-jeffxu@chromium.org>
+ <e1744539-a843-468a-9101-ce7a08669394@collabora.com>
+ <CABi2SkVnhcOpeA63XoKq97Uc_VyWdLUqYdOtUXxJ1fos5-Tq2g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240413022407.785696-1-yosryahmed@google.com> <20240413022407.785696-3-yosryahmed@google.com>
-In-Reply-To: <20240413022407.785696-3-yosryahmed@google.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Mon, 15 Apr 2024 17:29:12 -0700
-Message-ID: <CAKEwX=MXKTWzCxPLy8VtdUxM8JFSpX4cR9agMDVtta_O-ZXFVQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] mm: zswap: refactor limit checking from zswap_store()
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Dan Streetman <ddstreet@ieee.org>, Vitaly Wool <vitaly.wool@konsulko.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABi2SkVnhcOpeA63XoKq97Uc_VyWdLUqYdOtUXxJ1fos5-Tq2g@mail.gmail.com>
 
-On Fri, Apr 12, 2024 at 7:24=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> Refactor limit and acceptance threshold checking outside of
-> zswap_store(). This code will be moved around in a following patch, so
-> it would be cleaner to move a function call around.
->
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+On Mon, Apr 15, 2024 at 01:27:32PM -0700, Jeff Xu wrote:
+> On Mon, Apr 15, 2024 at 11:32 AM Muhammad Usama Anjum
+> <usama.anjum@collabora.com> wrote:
+> >
+> > Please fix following for this and fifth patch as well:
+> >
+> > --> checkpatch.pl --codespell tools/testing/selftests/mm/mseal_test.c
+> >
+> > WARNING: Macros with flow control statements should be avoided
+> > #42: FILE: tools/testing/selftests/mm/mseal_test.c:42:
+> > +#define FAIL_TEST_IF_FALSE(c) do {\
+> > +               if (!(c)) {\
+> > +                       ksft_test_result_fail("%s, line:%d\n", __func__,
+> > __LINE__);\
+> > +                       goto test_end;\
+> > +               } \
+> > +       } \
+> > +       while (0)
+> >
+> > WARNING: Macros with flow control statements should be avoided
+> > #50: FILE: tools/testing/selftests/mm/mseal_test.c:50:
+> > +#define SKIP_TEST_IF_FALSE(c) do {\
+> > +               if (!(c)) {\
+> > +                       ksft_test_result_skip("%s, line:%d\n", __func__,
+> > __LINE__);\
+> > +                       goto test_end;\
+> > +               } \
+> > +       } \
+> > +       while (0)
+> >
+> > WARNING: Macros with flow control statements should be avoided
+> > #59: FILE: tools/testing/selftests/mm/mseal_test.c:59:
+> > +#define TEST_END_CHECK() {\
+> > +               ksft_test_result_pass("%s\n", __func__);\
+> > +               return;\
+> > +test_end:\
+> > +               return;\
+> > +}
+> >
+> I tried to fix those warnings of checkpatch in the past, but no good
+> solution. If I put the condition check in the test, the code will have
+> too many "if" and decrease readability.  If there is a better
+> solution, I'm happy to do that, suggestions are welcome.
 
-LGTM!
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+Yeah, these are more "conventions" from checkpatch. I think it's fine to
+ignore this warning, especially for selftests.
+
+-- 
+Kees Cook
 
