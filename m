@@ -1,159 +1,204 @@
-Return-Path: <linux-kernel+bounces-147312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B2E08A725D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:30:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 261158A7260
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:30:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2518428376D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:30:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D83B3284158
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:30:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 065E61339B1;
-	Tue, 16 Apr 2024 17:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39EEB13342C;
+	Tue, 16 Apr 2024 17:30:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tm7yarSz"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="peVMTXH5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CA010A22;
-	Tue, 16 Apr 2024 17:29:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C05EF9F0;
+	Tue, 16 Apr 2024 17:30:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713288585; cv=none; b=EO5cvI97u2f33n2fHjnuhvMry9u0PQo7DqIBkYzHy/yFFzUyDfUbI5ZcKNMrc+Z1Vj24LV5fUbKG2hM7zXelPYxH59PUbjw4sHD5iotxPet/Ju+8t24B2GUJZ5gJ7AxwZ4TQni4QwNbcTLxzOxhwFDiGJpm1MB0Xlmwn1LFiNAI=
+	t=1713288630; cv=none; b=FACgbarAy11Ie2V//1Is8uY24ekW8CaVrvb4xItmHKz2oCEdFqvro379UPqs4XdlGuUozSPDsJO5QMqRDWQvTjRRZ36X/g6eIUOAbM2QYRinDXLXTCffWuIm+p6ptbbu/kE66gdG7HsHgV1gtT3Y6Hp5KofmFQ9Gc7NmzSr6IKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713288585; c=relaxed/simple;
-	bh=u4a+StXvoc7WZc5sUtyqx0k9GiGrDUHS6kRfh3byeo8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Z7+tsYaXPJSUdF+if0EENAUujDbyDrptqpkqXYOE2Vmk+NTRcFizezzfvTmItTe+vdQIzP/3HWLPH5/SI5gKfuprhejNtcKCc8/rTecsEfxW9v7lJltVz249XCJdaw1sbv/Y5lMzOr+EqY5oV+MZ6+zdQOs3f2klzSGNHfn0sI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tm7yarSz; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a53f131d9deso288670166b.3;
-        Tue, 16 Apr 2024 10:29:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713288582; x=1713893382; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZP0IzBwvbXB7gkSUghvhzzGvmfIuLQzpi5ckhJzdidI=;
-        b=Tm7yarSzgLpPWOLjyUyNjlw2Z/hbjtIpnMx5JTnz6U4e4kU7t2X7zQAGiIAt2sr4ga
-         LpBnJkxur9hDOM/gZGtKx8jPmHlesH84CStERlojGPV1xSfPAYWjqyDYhRbn0eXZRKRQ
-         U9I9y0sZRQZek6kRT00Mkn9DmP67BbmPI37m5UPhYPwNU2LHFbwb/KSUkWJbKyEDynK1
-         R1gJCCvj98DykH6oVhyFDtMO0/FNMPo2p6MEu7K+3exwqiCsGp4k1Jiv8peDTmOaLITU
-         Rz2QlTySmx2245KyhOVAd3NhJZlHOufBxXCvMTvStOgmHEL/oobHu95kLgJj6fmIKbps
-         HUAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713288582; x=1713893382;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZP0IzBwvbXB7gkSUghvhzzGvmfIuLQzpi5ckhJzdidI=;
-        b=JqKoLA1p0GJGMmvadSajEeyKf2bFoaLV8RAotJ64S+8ObsS7pKoilYQ2akprk9s7Yx
-         rVUD/e5N80MbyzkLVfB4I0Ct0EGXGMbRrlhROGo6ug/bW/CQPgs3O+PaKpeuB4yekhJK
-         XCP5U4zhitLSzhjc5NzRte9ghDf0Uxv7RwADeBS89RDj2yGJH/wjFm3DMdFEEfrROWGK
-         8SEI/YLtBnbBlALS73E1TXuNelwT+lrmzBVB/dWIDshUGijYpECS84YdZzLLE+MamuSY
-         B5AONRz+RUV3/omZXBpoiwQ0fvNImvqV68PdYIlQhcsarNRou6rgjWFPLfYvZqmSPxRk
-         3wKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXVgVHHscM0PFStqJpLr7Q+rOSsF0NuoDX0sfPKggPvq9Sw5s9A8HIG+5SFyYHBFbOP/TtaKZj2IGKbSuvseRPdLMOTIp0FvzK4KMWXFH9nSK3Xks80gfJCxSo4mXqiSfjY4lShYL7/sSWM0lsL/haOKBOomgyMq5n6+wLEe+hEwwkbhNdF3x4EpLhQzpOY5CbQTG1PPbVHCQr9/ns7vHiVC1E9GL1lHA==
-X-Gm-Message-State: AOJu0Yz7phvj0jpSWP8d2GXZUJUdbjho77aM/9UTWx7IbkDIqBdiCytB
-	54jm8j1Qzh7Xr+HbLjqgWTS6jA5sr+tLei9DrToKclJ486E2ky/vXe0ZL6N80vQXA3STLc9GgFD
-	FSG9AlmFRsp3Mw5fy1mgHwURTMPmTwWrX
-X-Google-Smtp-Source: AGHT+IGCWdqkd/mwwc21XqeYTFY6CEqZUxRw4U6LgrWgKvfvcMlwntLhuogiSWo4ZNwPxC6TWjiuSC76CYM2vJHDCx0=
-X-Received: by 2002:a17:907:724b:b0:a52:5a04:fb0d with SMTP id
- ds11-20020a170907724b00b00a525a04fb0dmr5603113ejc.3.1713288581874; Tue, 16
- Apr 2024 10:29:41 -0700 (PDT)
+	s=arc-20240116; t=1713288630; c=relaxed/simple;
+	bh=XS4hUiQRaKWKxZ54JJm6tIu8KmrPOVRJYpat6/cOu/w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GUqkNDAc1xaGPMMr/5ObBXVyBJ0/HDQF1QbkHp2KApEqkaO09NW6QI8bsgGalUkqFKg6I5zv/Y/VPYTgwZgfC8f7wOhY2YSw+ETnk6UAanCKp8OM5u6yZ5p5e14srLFXHqSIrrsJPuqYxRd2wLu46VfPTCBB7dbaptIh/uZCK94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=peVMTXH5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6269DC113CE;
+	Tue, 16 Apr 2024 17:30:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713288630;
+	bh=XS4hUiQRaKWKxZ54JJm6tIu8KmrPOVRJYpat6/cOu/w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=peVMTXH5eF7pekueJv97cqfGgMnF5D9QmHNZ/BvBc0ERATh0KcYTfOhZE72qeet5T
+	 3qAJjziGx/cr9NSmS4wsvKCgBSsTSCVYeN+A3B+ce2DfyYSt2SyIQHEarZ8LFQT6tY
+	 TMulnWeGAIGcHloWMxoBNPpfSnzpBkpCB/BexAIVcoozLjcOx0SCNmGldPQyxtRYVK
+	 gCTRzmcywanWRZp2dL0D59SWouf0IwEUcxt2jFoMbBon/mIaFUl611pd41ZwwLLUtx
+	 6wpKl0FbZ7e3KFun0wTB6jQ4l2hk2KOXLUXIU7diGh24DqY9N++wFBWtI8UEobEHtX
+	 j/E/YI7vuYghQ==
+Date: Tue, 16 Apr 2024 18:30:24 +0100
+From: Conor Dooley <conor@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: djakov@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, matthias.bgg@gmail.com, lgirdwood@gmail.com,
+	broonie@kernel.org, keescook@chromium.org, gustavoars@kernel.org,
+	henryc.chen@mediatek.com, linux-pm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, kernel@collabora.com,
+	wenst@chromium.org, amergnat@baylibre.com
+Subject: Re: [PATCH v1 1/6] dt-bindings: soc: mediatek: Add DVFSRC bindings
+ for MT8183 and MT8195
+Message-ID: <20240416-onion-prone-44b45d5a003e@spud>
+References: <20240416153805.431118-1-angelogioacchino.delregno@collabora.com>
+ <20240416153805.431118-2-angelogioacchino.delregno@collabora.com>
+ <20240416-grope-blissful-a914854b3732@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416053909.256319-1-hpa@redhat.com> <20240416053909.256319-3-hpa@redhat.com>
-In-Reply-To: <20240416053909.256319-3-hpa@redhat.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 16 Apr 2024 20:29:05 +0300
-Message-ID: <CAHp75Vdw6gCN=45iRdKcm=qT07Z90+z6Cw=inYR+C6+5gML+_Q@mail.gmail.com>
-Subject: Re: [PATCH v6 2/5] leds: rgb: leds-ktd202x: Get device properties
- through fwnode to support ACPI
-To: Kate Hsuan <hpa@redhat.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, linux-leds@vger.kernel.org, 
-	platform-driver-x86@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	=?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>, 
-	linux-kernel@vger.kernel.org, Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="wP1ObGMFQC4n3zme"
+Content-Disposition: inline
+In-Reply-To: <20240416-grope-blissful-a914854b3732@spud>
+
+
+--wP1ObGMFQC4n3zme
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 8:39=E2=80=AFAM Kate Hsuan <hpa@redhat.com> wrote:
->
-> This LED controller is installed on a Xiaomi pad2 and it is an x86
-> platform. The original driver is based on the device tree and can't be
-> used for this ACPI based system. This patch migrated the driver to use
-> fwnode to access the properties. Moreover, the fwnode API supports the
-> device tree so this work won't affect the original implementations.
+On Tue, Apr 16, 2024 at 06:28:58PM +0100, Conor Dooley wrote:
+> On Tue, Apr 16, 2024 at 05:38:00PM +0200, AngeloGioacchino Del Regno wrot=
+e:
+> > Add bindings for the MediaTek Dynamic Voltage and Frequency Scaling
+> > Resource Collector (DVFSRC), a hardware module used to collect all the
+> > requests from both software and the various remote processors embedded
+> > into the SoC and decide about a minimum operating voltage and a minimum
+> > DRAM frequency to fulfill those requests in an effort to provide the
+> > best achievable performance per watt.
+> >=20
+> > This hardware IP is capable of transparently performing direct register
+> > R/W on all of the DVFSRC-controlled regulators and SoC bandwidth knobs.
+> >=20
+> > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@co=
+llabora.com>
+> > ---
+> >  .../soc/mediatek/mediatek,mt8183-dvfsrc.yaml  | 57 +++++++++++++++++++
+> >  1 file changed, 57 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/soc/mediatek/medi=
+atek,mt8183-dvfsrc.yaml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/soc/mediatek/mediatek,mt=
+8183-dvfsrc.yaml b/Documentation/devicetree/bindings/soc/mediatek/mediatek,=
+mt8183-dvfsrc.yaml
+> > new file mode 100644
+> > index 000000000000..12bcc3fdfd07
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/soc/mediatek/mediatek,mt8183-dv=
+fsrc.yaml
+> > @@ -0,0 +1,57 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/soc/mediatek/mediatek,mt8183-dvfsrc=
+=2Eyaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: MediaTek Dynamic Voltage and Frequency Scaling Resource Collect=
+or (DVFSRC)
+> > +
+> > +description:
+> > +  The Dynamic Voltage and Frequency Scaling Resource Collector (DVFSRC=
+) is a
+> > +  Hardware module used to collect all the requests from both software =
+and the
+> > +  various remote processors embedded into the SoC and decide about a m=
+inimum
+> > +  operating voltage and a minimum DRAM frequency to fulfill those requ=
+ests in
+> > +  an effort to provide the best achievable performance per watt.
+> > +  This hardware IP is capable of transparently performing direct regis=
+ter R/W
+> > +  on all of the DVFSRC-controlled regulators and SoC bandwidth knobs.
+> > +
+> > +maintainers:
+> > +  - AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.co=
+m>
+> > +  - Henry Chen <henryc.chen@mediatek.com>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - items:
+>=20
+> This items should not be needed with the enum, right?
+>=20
+> > +          - enum:
+> > +              - mediatek,mt8183-dvfsrc
+> > +              - mediatek,mt8195-dvfsrc
+> > +      - items:
+> > +          - const: mediatek,mt8192-dvfsrc
+> > +          - const: mediatek,mt8195-dvfsrc
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +    description: DVFSRC common register address and length.
+> > +
+> > +patternProperties:
+> > +  "@[0-9a-f]+$":
+> > +    type: object
+>=20
+> Why is there no enforcement of what a child could be here?
 
-..
+Seems like you know exactly what the children are: regulators and an
+interconnect? What am I missing?
 
-> -       int num_channels;
-> +       int num_channels =3D 0;
+>=20
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    soc {
+> > +        #address-cells =3D <2>;
+> > +        #size-cells =3D <2>;
+> > +
+> > +        dvfsrc@10012000 {
+>=20
+> "dvfsrc" looks like something my (imaginary given allergies) cat would
+> produce from sitting on my keyboard. Could you use full words for the
+> node name and make it something that attempts to be generic please?
+>=20
+> > +            compatible =3D "mediatek,mt8195-dvfsrc";
+> > +            reg =3D <0 0x10012000 0 0x1000>;
+> > +        };
+> > +    };
+> > --=20
+> > 2.44.0
+> >=20
 
-Split this assignment, so...
 
->         int i =3D 0;
 
-> -       num_channels =3D of_get_available_child_count(np);
+--wP1ObGMFQC4n3zme
+Content-Type: application/pgp-signature; name="signature.asc"
 
-..it become
+-----BEGIN PGP SIGNATURE-----
 
-  num_channels =3D 0;
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh61sAAKCRB4tDGHoIJi
+0kmFAP93becCTty5zhdZz9iHDigSwk/4jcVZ97Bb+qr2Aa9DnAEA3ztf7bZFSh7q
+Dy/w11JkKRpcOGwlnr3cqLVVUtw4zgs=
+=XJy2
+-----END PGP SIGNATURE-----
 
-here.
-
-> +       fwnode_for_each_available_child_node(fwnode, child)
-> +               num_channels++;
-
-..
-
-> -static int ktd202x_add_led(struct ktd202x *chip, struct device_node *np,=
- unsigned int index)
-> +static int ktd202x_add_led(struct ktd202x *chip,
-> +                          struct fwnode_handle *fwnode,
-> +                          unsigned int index)
-
-Why split over 3 lines? I believe it can be still two or one
-(depending if you use a relaxed limit).
-
-..
-
->  static int ktd202x_probe_dt(struct ktd202x *chip)
-
-Perhaps you want to rename this to something like ktd202x_probe_fw().
-
-..
-
-> +       fwnode =3D dev_fwnode(dev);
-
-Will be no use if the bellow applied, right?
-
-..
-
-> -       for_each_available_child_of_node(np, child) {
-> +       fwnode_for_each_available_child_node(fwnode, child) {
-
-Use device_for_each_child_node() instead.
-
->         }
-
-..
-
-> -       .shutdown =3D ktd202x_shutdown,
-> +       .shutdown =3D ktd202x_shutdown
-
-Stray change.
-
---=20
-With Best Regards,
-Andy Shevchenko
+--wP1ObGMFQC4n3zme--
 
