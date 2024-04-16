@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-147575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2D3F8A764F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:22:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B32148A764D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:22:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9ECEE282DC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:22:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53FFF1F21FB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:22:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1491813C3C4;
-	Tue, 16 Apr 2024 21:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F4C13BC2A;
+	Tue, 16 Apr 2024 21:20:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="csSR8/3p"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iV2QxvFa"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E5713A24A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B72713792A
 	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 21:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713302406; cv=none; b=tcFcta/1ySQhE56ndHpyUFm9XPSmR5ZzujOgVVAMbh3pbR+L1XfvuBUEyLrKCw1L7BHx/QioMpr9DF4gK113nWOWpiyfaTKQQNn2YTSAxMH8+yeWhOMZlerTTMCuyd6w1YuxtyWpYZufsgHNXRFiog2d+l2mvlfJ3yNQoALSP3Y=
+	t=1713302406; cv=none; b=SPLW/+GWZZwlFdkYkkIagGbtmfKiNhD+RnF++PKjFgfdvmq+uQse97gquqGJ5oOsYiKYbOAj2WYF03BRPuAYLFIn9RGJQsiHHCoFvHVSwKIs99OJR6IQ0NbUJlFX2QTJrQahH1tcW/uDJP/9+c0orzAnh8Df4OTni/zD6/Gfw2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713302406; c=relaxed/simple;
-	bh=dndizT9Ulq9m7aFlxgyZ2k3frDvJlY8U1hLr/jIpAEk=;
+	bh=9rMjpqoCOgRty8mRKqjOBHEBAP+bItOsOB0U8/8T0P4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TUqshfIAexodPOw0Px9NOqymbXGPgoUL8fh2nl/B0q8jhtTc1YRp2BMoOP0jiSpDHK8EAFkRmgi/XQZoymEu8zq1ZA2EBf8keZ5Y8cTY037q24wmYqMm+HXboYupQDw/d+ltpNR24Vbi7w4HxbazVJNs6x+4YqkNCCraezhybnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=csSR8/3p; arc=none smtp.client-ip=198.175.65.13
+	 MIME-Version; b=hL2FZMLkO297kb6kBvGf6qZKbN68/sJnPbh2L4ZkLcTHkw4P6dcsry4RhJTQhFB4LyBgLumKnYv0d6aORirEhJd1qL3lP5V5Z9LVcnj6jwyd7pTIXR9erNHED7GMenbm+ldIrn7WGPwaUgnL0rD9NVWSitrDa+qZXDT1jZ7ClsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iV2QxvFa; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713302404; x=1744838404;
+  t=1713302405; x=1744838405;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=dndizT9Ulq9m7aFlxgyZ2k3frDvJlY8U1hLr/jIpAEk=;
-  b=csSR8/3pPcmoweSuRtHtWpWycbDFTfYhSGAJPXMDjEbNoJU9aJBbUh2w
-   KGfgNzEN81pcOBcJZT1nLj5BmU4l4nuJIApKrb43rWWLM6GzPLI+oWj6v
-   8uj6cHr1I2NLPjNRW0EZVVIPen3qeFbqpVZdPcaKPU6XuJeWny+9K1Ecr
-   lWc4yHbu4Ruiyn48+SzvMeu9k9nvE8WWkSKKS137u9v1dXDtGJIox6+pb
-   zP3JrNmK7QlMnFdnReUnJ49gdwm4G1RMFS52RdBObeuMDVhFd+rAJXTHJ
-   Hq+Yf6nwyQC9zPDY1vz89wprPbUYNjwtW8cTIYuYKHwa/QLQfdHKkCDAB
+  bh=9rMjpqoCOgRty8mRKqjOBHEBAP+bItOsOB0U8/8T0P4=;
+  b=iV2QxvFapwmZUwPaX95tOlW7ckBP553azep7pymHT31vZ6+vstkHZKFP
+   0xWLKpLRD0LUk74eTZ7ZSKfBaB2U1ILN8K1pK/qGOwXsSIJx2RA4PdQeP
+   ygf32q3RVMXd/m1X+nyaydh/tT6fWjqx299fIFpUKSfP8B134Gq1RYvC5
+   v+rbrvBtiD26CZ6t9F6BAVjV3BL8My+to7c3o8U3pYBnNLd7qYn8LBvMa
+   S11Fn4klFVcnegoECa0NpPo7M92FDcU7lcVG6lb6LIsTY/1QxQL+LY2D4
+   GDC8lFiYX5PXLT7Vyd2Bo7tHQpCzxqqMp1paDikhe9hNEA0eiSDBILNBT
    Q==;
-X-CSE-ConnectionGUID: K68XQnEySLe/6qj6DPSrUA==
-X-CSE-MsgGUID: pJY3tUEuSrynlFKRmy1utg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="19914727"
+X-CSE-ConnectionGUID: iwB49Z5KS5C8FkumH/IhKw==
+X-CSE-MsgGUID: VO/wbKMQSMailo7iJwvNyw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="19914731"
 X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="19914727"
+   d="scan'208";a="19914731"
 Received: from orviesa007.jf.intel.com ([10.64.159.147])
   by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 14:19:59 -0700
-X-CSE-ConnectionGUID: flv1RO1ORNO662lmqvguqw==
-X-CSE-MsgGUID: SQhwVD34QViMG6w4D1ELgw==
+X-CSE-ConnectionGUID: YUK96iGlSaKHEjtCOTElvQ==
+X-CSE-MsgGUID: ta7dmJMkQ2y2WixUX0MqCw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="22871922"
+   d="scan'208";a="22871926"
 Received: from agluck-desk3.sc.intel.com ([172.25.222.105])
   by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 14:19:58 -0700
 From: Tony Luck <tony.luck@intel.com>
@@ -63,9 +63,9 @@ Cc: x86@kernel.org,
 	linux-kernel@vger.kernel.org,
 	patches@lists.linux.dev,
 	Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v3 14/74] x86/cpu/vfm: Update arch/x86/kernel/apic/apic.c
-Date: Tue, 16 Apr 2024 14:19:16 -0700
-Message-ID: <20240416211941.9369-15-tony.luck@intel.com>
+Subject: [PATCH v3 15/74] x86/cpu/vfm: Update arch/x86/kernel/cpu/aperfmperf.c
+Date: Tue, 16 Apr 2024 14:19:17 -0700
+Message-ID: <20240416211941.9369-16-tony.luck@intel.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240416211941.9369-1-tony.luck@intel.com>
 References: <20240416211941.9369-1-tony.luck@intel.com>
@@ -81,65 +81,47 @@ New CPU #defines encode vendor and family as well as model.
 
 Signed-off-by: Tony Luck <tony.luck@intel.com>
 ---
- arch/x86/kernel/apic/apic.c | 38 ++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+ arch/x86/kernel/cpu/aperfmperf.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index c5f5561406bd..8e0514eb552b 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -497,32 +497,32 @@ static struct clock_event_device lapic_clockevent = {
- static DEFINE_PER_CPU(struct clock_event_device, lapic_events);
+diff --git a/arch/x86/kernel/cpu/aperfmperf.c b/arch/x86/kernel/cpu/aperfmperf.c
+index fdbb5f07448f..f9a8c7b7943f 100644
+--- a/arch/x86/kernel/cpu/aperfmperf.c
++++ b/arch/x86/kernel/cpu/aperfmperf.c
+@@ -124,25 +124,24 @@ static bool __init slv_set_max_freq_ratio(u64 *base_freq, u64 *turbo_freq)
+ 	return true;
+ }
  
- static const struct x86_cpu_id deadline_match[] __initconst = {
--	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(HASWELL_X, X86_STEPPINGS(0x2, 0x2), 0x3a), /* EP */
--	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(HASWELL_X, X86_STEPPINGS(0x4, 0x4), 0x0f), /* EX */
-+	X86_MATCH_VFM_STEPPINGS(INTEL_HASWELL_X, X86_STEPPINGS(0x2, 0x2), 0x3a), /* EP */
-+	X86_MATCH_VFM_STEPPINGS(INTEL_HASWELL_X, X86_STEPPINGS(0x4, 0x4), 0x0f), /* EX */
+-#define X86_MATCH(model)					\
+-	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(INTEL, 6,		\
+-		INTEL_FAM6_##model, X86_FEATURE_APERFMPERF, NULL)
++#define X86_MATCH(vfm)						\
++	X86_MATCH_VFM_FEATURE(vfm, X86_FEATURE_APERFMPERF, NULL)
  
--	X86_MATCH_INTEL_FAM6_MODEL( BROADWELL_X,	0x0b000020),
-+	X86_MATCH_VFM(INTEL_BROADWELL_X,	0x0b000020),
- 
--	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(BROADWELL_D, X86_STEPPINGS(0x2, 0x2), 0x00000011),
--	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(BROADWELL_D, X86_STEPPINGS(0x3, 0x3), 0x0700000e),
--	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(BROADWELL_D, X86_STEPPINGS(0x4, 0x4), 0x0f00000c),
--	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(BROADWELL_D, X86_STEPPINGS(0x5, 0x5), 0x0e000003),
-+	X86_MATCH_VFM_STEPPINGS(INTEL_BROADWELL_D, X86_STEPPINGS(0x2, 0x2), 0x00000011),
-+	X86_MATCH_VFM_STEPPINGS(INTEL_BROADWELL_D, X86_STEPPINGS(0x3, 0x3), 0x0700000e),
-+	X86_MATCH_VFM_STEPPINGS(INTEL_BROADWELL_D, X86_STEPPINGS(0x4, 0x4), 0x0f00000c),
-+	X86_MATCH_VFM_STEPPINGS(INTEL_BROADWELL_D, X86_STEPPINGS(0x5, 0x5), 0x0e000003),
- 
--	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(SKYLAKE_X, X86_STEPPINGS(0x3, 0x3), 0x01000136),
--	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(SKYLAKE_X, X86_STEPPINGS(0x4, 0x4), 0x02000014),
--	X86_MATCH_INTEL_FAM6_MODEL_STEPPINGS(SKYLAKE_X, X86_STEPPINGS(0x5, 0xf), 0),
-+	X86_MATCH_VFM_STEPPINGS(INTEL_SKYLAKE_X, X86_STEPPINGS(0x3, 0x3), 0x01000136),
-+	X86_MATCH_VFM_STEPPINGS(INTEL_SKYLAKE_X, X86_STEPPINGS(0x4, 0x4), 0x02000014),
-+	X86_MATCH_VFM_STEPPINGS(INTEL_SKYLAKE_X, X86_STEPPINGS(0x5, 0xf), 0),
- 
--	X86_MATCH_INTEL_FAM6_MODEL( HASWELL,		0x22),
--	X86_MATCH_INTEL_FAM6_MODEL( HASWELL_L,		0x20),
--	X86_MATCH_INTEL_FAM6_MODEL( HASWELL_G,		0x17),
-+	X86_MATCH_VFM(INTEL_HASWELL,		0x22),
-+	X86_MATCH_VFM(INTEL_HASWELL_L,		0x20),
-+	X86_MATCH_VFM(INTEL_HASWELL_G,		0x17),
- 
--	X86_MATCH_INTEL_FAM6_MODEL( BROADWELL,		0x25),
--	X86_MATCH_INTEL_FAM6_MODEL( BROADWELL_G,	0x17),
-+	X86_MATCH_VFM(INTEL_BROADWELL,		0x25),
-+	X86_MATCH_VFM(INTEL_BROADWELL_G,	0x17),
- 
--	X86_MATCH_INTEL_FAM6_MODEL( SKYLAKE_L,		0xb2),
--	X86_MATCH_INTEL_FAM6_MODEL( SKYLAKE,		0xb2),
-+	X86_MATCH_VFM(INTEL_SKYLAKE_L,		0xb2),
-+	X86_MATCH_VFM(INTEL_SKYLAKE,		0xb2),
- 
--	X86_MATCH_INTEL_FAM6_MODEL( KABYLAKE_L,		0x52),
--	X86_MATCH_INTEL_FAM6_MODEL( KABYLAKE,		0x52),
-+	X86_MATCH_VFM(INTEL_KABYLAKE_L,		0x52),
-+	X86_MATCH_VFM(INTEL_KABYLAKE,		0x52),
- 
- 	{},
+ static const struct x86_cpu_id has_knl_turbo_ratio_limits[] __initconst = {
+-	X86_MATCH(XEON_PHI_KNL),
+-	X86_MATCH(XEON_PHI_KNM),
++	X86_MATCH(INTEL_XEON_PHI_KNL),
++	X86_MATCH(INTEL_XEON_PHI_KNM),
+ 	{}
  };
+ 
+ static const struct x86_cpu_id has_skx_turbo_ratio_limits[] __initconst = {
+-	X86_MATCH(SKYLAKE_X),
++	X86_MATCH(INTEL_SKYLAKE_X),
+ 	{}
+ };
+ 
+ static const struct x86_cpu_id has_glm_turbo_ratio_limits[] __initconst = {
+-	X86_MATCH(ATOM_GOLDMONT),
+-	X86_MATCH(ATOM_GOLDMONT_D),
+-	X86_MATCH(ATOM_GOLDMONT_PLUS),
++	X86_MATCH(INTEL_ATOM_GOLDMONT),
++	X86_MATCH(INTEL_ATOM_GOLDMONT_D),
++	X86_MATCH(INTEL_ATOM_GOLDMONT_PLUS),
+ 	{}
+ };
+ 
 -- 
 2.44.0
 
