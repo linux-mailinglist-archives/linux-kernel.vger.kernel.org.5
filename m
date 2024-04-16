@@ -1,169 +1,149 @@
-Return-Path: <linux-kernel+bounces-147343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50BA78A72C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80AD18A72C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:03:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F3A51C21490
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:01:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1CC21C2150C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:03:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE4E134429;
-	Tue, 16 Apr 2024 18:00:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55773134431;
+	Tue, 16 Apr 2024 18:02:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bEUfc3NF"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aaKd75up"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70E2612EBCE;
-	Tue, 16 Apr 2024 18:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DF5B134405;
+	Tue, 16 Apr 2024 18:02:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713290458; cv=none; b=PS5P/0ZkUnmz1xJ9FkLP+2MG3+Dk5jedEvkCp4Qxr8wEioWNXPNIoSCw3ag8dpBpfyZie2sq1WVhyaKtjJsFpHejAOEU7yhzEZSmpHUNhROH3mqUZLOqvA6oTsZotrhf8CfJInGTio/z+HoFLGdRzuUbPBcoo+pGuCOo3KayVdU=
+	t=1713290574; cv=none; b=Y3p5+Y2vvADz3ocC1TxJYOhcIF1yKBStYU6A0TPUB5gnvsPTw0tH1i++jVbONn/wCO1CwuFnyb5gP5p5CIqYjXvgTrpYIoz/U8EWqoiyDse5SKmutRVORpkKAYL0F8IZBeB6KxNeE1/WmrpPwwI2f5E7CfujO36MGwQwqZLGi9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713290458; c=relaxed/simple;
-	bh=SLEcQwrdeAyJMhsUpPs/WnfkDUuxw6+ip8W3cRvk0co=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sQwCjj0GhfrGUI/DLIWvT4FXQ67F0TCh/LSLYndcvUBUkg5wh+hIDWwS3x8XZYwSMyG9NTAHmu3OoGLVQ0YGE/0A9q1g5rAFC7K7ySixDkII4vulHUTBqlKNNm1uuCminw0nspFE6HmZgXn28/O7w7m/1IMYZYBxu4RwEWNeKZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bEUfc3NF; arc=none smtp.client-ip=198.175.65.19
+	s=arc-20240116; t=1713290574; c=relaxed/simple;
+	bh=RGobAnthjkgsb/QzuzeMGs8pm1LeGhwCVTyS3CsT0Qo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YtLOfg7SlvZiw7SLTnUrVOWtf0eWWLHVGXM/8nmDP76Bo2FkLZNZADoELtNIH6vHL2isIMaq2XJFEICQPyAg9s97jWcU9Q88fX6+WTqtdNh6ilEKmUT6kHavQ1RweGFtwRG0KTCZgtkrNycSn6IcV6RF2KzpLbhi/VLoKx+kOHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aaKd75up; arc=none smtp.client-ip=192.198.163.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713290457; x=1744826457;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SLEcQwrdeAyJMhsUpPs/WnfkDUuxw6+ip8W3cRvk0co=;
-  b=bEUfc3NFS0M4y7Pky1k5ipynrK64UAqKGt6PSU5JpcauGMDRZdbxwMug
-   YSC6y9QptD9NYt1Osrvk4Jz6Ow0/3Voh+OBVNORjevddzYaZCv+9HJKw/
-   CCfDhljpj4KS2C03xX+WN5ueephWSyWMDqv2hfvqAlizC6tfok18Ne2BA
-   emohluekBv3tgR8SqSmze630exkxABetFxVaJDirsoUUcMKL3vmJbeqTy
-   5gEZaP5gKS8U6kAt67HOrX69GzwCCKluZlZnA+SoTeDIQ9QpYWJdpcpU7
-   VJirddfwgQOGJrpZK5OzxYst9ovCvDAnhuAPTC2JjsWF69HYuLl1h0bLm
-   Q==;
-X-CSE-ConnectionGUID: teptYAYDQIWJfRYu5MGpQQ==
-X-CSE-MsgGUID: c+XwvYTzRjq5a46ksPCwUA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8629024"
+  t=1713290573; x=1744826573;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=RGobAnthjkgsb/QzuzeMGs8pm1LeGhwCVTyS3CsT0Qo=;
+  b=aaKd75upi/K+6pDjCRzh7nt+arqPqhJDkENHlWeRrQo+61ivaSNUg7yk
+   5V2bHavWGyPT/+haOKHjn87FMQkS8a5hCFaichSVCy/s5NPEvtenaSdMQ
+   jdlcgRJiSK9gAr+VAi1HG7CBv0AFjk9WN4yajTrHBUilIfDXVLnOg31el
+   oVyPLwOYiALA/TMA+v0UuLIQn+3hQApJIFA8jlNb9Uz8uQC/wGajFAQUp
+   0yZc7ZgdRGebSWKXffid8xyXuwZr39KsPvneeOtr82cb8ekzH/4bs0GiV
+   jvWVN0Z/u8g2U4IqePK8fSgSevLg6fnPPEkaxD+gb5x5mf183W9ufW/+j
+   A==;
+X-CSE-ConnectionGUID: s+hj1Wd5Q9+WrHXDP73pWg==
+X-CSE-MsgGUID: CMVVbtEqSRy96DFBsokpEA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8919455"
 X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="8629024"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 11:00:56 -0700
-X-CSE-ConnectionGUID: HhquDLfRQROq+SUyssmTNA==
-X-CSE-MsgGUID: 8Pbg0ZewSZqGG9bjbWRyiQ==
+   d="scan'208";a="8919455"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 11:02:51 -0700
+X-CSE-ConnectionGUID: CzZ0kg0PQoSYEmRkCRwOgw==
+X-CSE-MsgGUID: eBu4AKCaTcm/ARo6DiMKeg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="27026244"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 11:00:53 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rwn6w-00000004mUp-3DzS;
-	Tue, 16 Apr 2024 21:00:50 +0300
-Date: Tue, 16 Apr 2024 21:00:50 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] dmaengine: dw: Add peripheral bus width verification
-Message-ID: <Zh680h4h6hURIb82@smile.fi.intel.com>
-References: <20240416162908.24180-1-fancer.lancer@gmail.com>
- <20240416162908.24180-2-fancer.lancer@gmail.com>
+   d="scan'208";a="22821944"
+Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
+  by orviesa007.jf.intel.com with ESMTP; 16 Apr 2024 11:02:52 -0700
+From: kan.liang@linux.intel.com
+To: peterz@infradead.org,
+	mingo@kernel.org,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Cc: irogers@google.com,
+	mpetlan@redhat.com,
+	eranian@google.com,
+	ak@linux.intel.com,
+	Kan Liang <kan.liang@linux.intel.com>,
+	stable@vger.kernel.org
+Subject: [RESEND PATCH] perf/x86/intel/uncore: Fix the bits of the CHA extended umask for SPR
+Date: Tue, 16 Apr 2024 11:01:45 -0700
+Message-Id: <20240416180145.2309913-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416162908.24180-2-fancer.lancer@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 16, 2024 at 07:28:55PM +0300, Serge Semin wrote:
-> Currently the src_addr_width and dst_addr_width fields of the
-> dma_slave_config structure are mapped to the CTLx.SRC_TR_WIDTH and
-> CTLx.DST_TR_WIDTH fields of the peripheral bus side in order to have the
-> properly aligned data passed to the target device. It's done just by
-> converting the passed peripheral bus width to the encoded value using the
-> __ffs() function. This implementation has several problematic sides:
-> 
-> 1. __ffs() is undefined if no bit exist in the passed value. Thus if the
-> specified addr-width is DMA_SLAVE_BUSWIDTH_UNDEFINED, __ffs() may return
-> unexpected value depending on the platform-specific implementation.
-> 
-> 2. DW AHB DMA-engine permits having the power-of-2 transfer width limited
-> by the DMAH_Mk_HDATA_WIDTH IP-core synthesize parameter. Specifying
-> bus-width out of that constraints scope will definitely cause unexpected
-> result since the destination reg will be only partly touched than the
-> client driver implied.
-> 
-> Let's fix all of that by adding the peripheral bus width verification
-> method which would make sure that the passed source or destination address
-> width is valid and if undefined then the driver will just fallback to the
-> 1-byte width transfer.
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Please, add a word that you apply the check in the dwc_config() which is
-supposed to be called before preparing any transfer?
+The perf stat errors out with UNC_CHA_TOR_INSERTS.IA_HIT_CXL_ACC_LOCAL
+event.
 
-..
+ $perf stat -e uncore_cha_55/event=0x35,umask=0x10c0008101/ -a -- ls
+    event syntax error: '..0x35,umask=0x10c0008101/'
+                                      \___ Bad event or PMU
 
-> +static int dwc_verify_p_buswidth(struct dma_chan *chan)
-> +{
-> +	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
-> +	struct dw_dma *dw = to_dw_dma(chan->device);
-> +	u32 reg_width, max_width;
-> +
-> +	if (dwc->dma_sconfig.direction == DMA_MEM_TO_DEV)
-> +		reg_width = dwc->dma_sconfig.dst_addr_width;
-> +	else if (dwc->dma_sconfig.direction == DMA_DEV_TO_MEM)
-> +		reg_width = dwc->dma_sconfig.src_addr_width;
+The definition of the CHA umask is config:8-15,32-55, which is 32bit.
+However, the umask of the event is bigger than 32bit.
+This is an error in the original uncore spec.
 
-> +	else /* DMA_MEM_TO_MEM */
+Add a new umask_ext5 for the new CHA umask range.
 
-Actually not only this direction, but TBH I do not see value in these comments.
+Fixes: 949b11381f81 ("perf/x86/intel/uncore: Add Sapphire Rapids server CHA support")
+Closes: https://lore.kernel.org/linux-perf-users/alpine.LRH.2.20.2401300733310.11354@Diego/
+Reviewed-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Cc: stable@vger.kernel.org
+---
+ arch/x86/events/intel/uncore_snbep.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> +		return 0;
-> +
-> +	max_width = dw->pdata->data_width[dwc->dws.p_master];
-> +
-> +	/* Fall-back to 1byte transfer width if undefined */
-
-1-byte
-(as you even used in the commit message correctly)
-
-> +	if (reg_width == DMA_SLAVE_BUSWIDTH_UNDEFINED)
-> +		reg_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
-> +	else if (!is_power_of_2(reg_width) || reg_width > max_width)
-> +		return -EINVAL;
-> +	else /* bus width is valid */
-> +		return 0;
-> +
-> +	/* Update undefined addr width value */
-> +	if (dwc->dma_sconfig.direction == DMA_MEM_TO_DEV)
-> +		dwc->dma_sconfig.dst_addr_width = reg_width;
-> +	else /* DMA_DEV_TO_MEM */
-> +		dwc->dma_sconfig.src_addr_width = reg_width;
-
-So, can't you simply call clamp() for both fields in dwc_config()?
-
-> +	return 0;
-> +}
-
-..
-
-> +	int err;
-
-Hmm... we have two functions one of which is using different name for this.
-Can we have a patch to convert to err the other one?
-
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index a96496bef678..7924f315269a 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -461,6 +461,7 @@
+ #define SPR_UBOX_DID				0x3250
+ 
+ /* SPR CHA */
++#define SPR_CHA_EVENT_MASK_EXT			0xffffffff
+ #define SPR_CHA_PMON_CTL_TID_EN			(1 << 16)
+ #define SPR_CHA_PMON_EVENT_MASK			(SNBEP_PMON_RAW_EVENT_MASK | \
+ 						 SPR_CHA_PMON_CTL_TID_EN)
+@@ -477,6 +478,7 @@ DEFINE_UNCORE_FORMAT_ATTR(umask_ext, umask, "config:8-15,32-43,45-55");
+ DEFINE_UNCORE_FORMAT_ATTR(umask_ext2, umask, "config:8-15,32-57");
+ DEFINE_UNCORE_FORMAT_ATTR(umask_ext3, umask, "config:8-15,32-39");
+ DEFINE_UNCORE_FORMAT_ATTR(umask_ext4, umask, "config:8-15,32-55");
++DEFINE_UNCORE_FORMAT_ATTR(umask_ext5, umask, "config:8-15,32-63");
+ DEFINE_UNCORE_FORMAT_ATTR(qor, qor, "config:16");
+ DEFINE_UNCORE_FORMAT_ATTR(edge, edge, "config:18");
+ DEFINE_UNCORE_FORMAT_ATTR(tid_en, tid_en, "config:19");
+@@ -5957,7 +5959,7 @@ static struct intel_uncore_ops spr_uncore_chabox_ops = {
+ 
+ static struct attribute *spr_uncore_cha_formats_attr[] = {
+ 	&format_attr_event.attr,
+-	&format_attr_umask_ext4.attr,
++	&format_attr_umask_ext5.attr,
+ 	&format_attr_tid_en2.attr,
+ 	&format_attr_edge.attr,
+ 	&format_attr_inv.attr,
+@@ -5993,7 +5995,7 @@ ATTRIBUTE_GROUPS(uncore_alias);
+ static struct intel_uncore_type spr_uncore_chabox = {
+ 	.name			= "cha",
+ 	.event_mask		= SPR_CHA_PMON_EVENT_MASK,
+-	.event_mask_ext		= SPR_RAW_EVENT_MASK_EXT,
++	.event_mask_ext		= SPR_CHA_EVENT_MASK_EXT,
+ 	.num_shared_regs	= 1,
+ 	.constraints		= skx_uncore_chabox_constraints,
+ 	.ops			= &spr_uncore_chabox_ops,
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.35.1
 
 
