@@ -1,299 +1,127 @@
-Return-Path: <linux-kernel+bounces-147038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 281F08A6E91
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 828AA8A6E94
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:39:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A76CB2814F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:39:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D6D0281A9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:39:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7E412EBDC;
-	Tue, 16 Apr 2024 14:38:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B80512E1E4;
+	Tue, 16 Apr 2024 14:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sacCH3/J"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z9giONP2"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C58E12C7E8;
-	Tue, 16 Apr 2024 14:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC5A612CD91
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:39:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713278334; cv=none; b=IT/9ZYV+edtH/VxKwDRxEYVKyj9TRUlfTG+wSlX2uq9QwFID9AEU+fazE0sqrEFe7447z7IF/sm+1cH1SN/X01Wlr/zYXObTmOAP5TBl02yeFCxXkdBVVghpdHrS6Vtt3Tu174VP6Z42WWDpU4P/urfzyV+NCWUC8m4F5p0Qh/I=
+	t=1713278371; cv=none; b=hZcdsxyf5pD4QvWXNT55+F+d7vyjXs/uuM/CbDsgurYkpPJBRm48s3V0sD1artRtya/WGO1lsKeyZKZTYH1xPL9gxqYL9nHm3yCYM7ipvZXK/Ew0QodIj7graNE47f8IbC2Ay+2BzNM5avRBpofE0jNw9RCEJ+6AWnqt7FTkb6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713278334; c=relaxed/simple;
-	bh=2R7F1isO2xOOSpgMGMh56I33MgrIP3erN8kOYYqyONM=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=oYVVNjiYtPQBkxNd9viuXEMM1PlNfIkB1UcE1Al0Nz1l7rNBzAs1FzuMoEgVBUtgaBN1HiZmufCVlCC5S5pOnkbkl/tEQCscalyHfnaW+fLk7rUcWQddFwnfq5HVyzeYZhxKKZZsBzM0ZIOMWl/aXMiZj/XOLY879xPyOGlmtDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sacCH3/J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2724C113CE;
-	Tue, 16 Apr 2024 14:38:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713278333;
-	bh=2R7F1isO2xOOSpgMGMh56I33MgrIP3erN8kOYYqyONM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sacCH3/JgIX+T339z31GrHeNRJy+o4FkjaLvCHlLA3zyhe9mHKfEacotjjowHeFYi
-	 N4D6mYP5cgXitdmUW7LO4yfYxmAxKgDCu+qRa17t9VTrc7mCseZSkXLiC7D3K8Y892
-	 edkZlRqUl1T17b5AIJP9+vfFUYwF0uOrrs4rX6uAvKLQsGCRaaJB7hRLOQn0it8pzp
-	 u6hlkqfd/xT435/umWGVGXlIPfMZ3Rq71zIqepWhZIraIUohoBUzspMt8alXRh++DZ
-	 LhLU/mbtOoxBEiaJnw+u4C6+m2hxtFwQCqNirGpJfLh7uXdulgaxSFp+VUhCzdSn/j
-	 /MuEHKUfjcLSQ==
+	s=arc-20240116; t=1713278371; c=relaxed/simple;
+	bh=8mgu7k7er0cG/LWWBfVot7y4xrG2X6Pda5/j6HoeJ9U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ML4Mk5P2M76KNbkEV+HHQVGno6iSztpbdFm51YVaLdrZXkEVAeVX7RzEGg6ZbZo5H8GoLzHamLjDHdnIBbPPhSGPNgfAR8tCwIb1QNqFqWjG+8iglRfBnyxNw+AUmAfDYgRyMeObf+whF8RzCsNV9l4l5c7AUrLA7EG5+GqES20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Z9giONP2; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5176f217b7bso7794930e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:39:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713278368; x=1713883168; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aKE+g2uxmcwZKMXDL+tbh31r08+JhFyXRHabiw8XKP4=;
+        b=Z9giONP2B1+bjslr9x6dU4IKza7LZcwtFpsndRB200Sog9JXznl/ZMlocsV6RGjIL1
+         L0Wc2Vk1Qd1td5A2Gf9SxoMSBF7nYZtma09uQxoVTDW45KPbI/ohFUMhRQ5TpYdu05JH
+         hJjI6fGF6qMVr/0U2mMCABajpRDDKDaoTfaTXnUrzmD+xCM/LFE1WvQuH9zNZYWIUdIz
+         6DPHV2+bti2tNhanfs69LBs4IbOFHtdH/pBRzSBsQpq8jgc34tVOH9zXb5+zYR2UsezU
+         7sajGsxKm7Ntf8UXgYYOZcAyBLujgQNiTF95mr6Q5bpgdGRrMBXerYZBrSI+N0DN1Fmx
+         oMxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713278368; x=1713883168;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aKE+g2uxmcwZKMXDL+tbh31r08+JhFyXRHabiw8XKP4=;
+        b=CAAbdFWRmB4PmR8d2434CNpTcxPRzdqyfW5Yj9YoaXseNsA1Wc4mGYtxIrJTD+ZxW3
+         5epsCDFGNjCW88rWq73YHr043rxhvpnduRV33XtCJbc47cNBLWZ+Hp3It9Djaza1DRI6
+         U8X6gOzpdgU965B71S34meo+ZyntnFYxZqyZyq2HCJ6uR7DUyVgW0sr6z2Fu2xU5AzBv
+         aijqQmzpmP1jyPMB94wiQtR1+s4DDnJBSCSWL7cAIZFDTypjKbtDpIg9clV35cT9H0GZ
+         Bb4Gr/9jwGYB6Cnd1wbW6RKBt9pFt76plgGjuL+cyYTczm31f3wDmXZnxYCEm1TiSRgD
+         kjSw==
+X-Forwarded-Encrypted: i=1; AJvYcCUjOsLQajDNC4qzRs61HdVXoj6Ux5N45NF+xOkyyMFdj+iL3srxmGXOFW8dipOyEbrIlCmLfnHBhsK1AngNryOrg+u+/CFTRKC7lW4B
+X-Gm-Message-State: AOJu0YwY93/pmC5sINAm/r+o5lxdPIxXc24jy2WoI0myywigadeCxF0+
+	+HEnVw9VGqUCzJjm1M52U+TSNKSu8fYqFJHoIcswgr2nahQidK+iDHLJKz/quDQ=
+X-Google-Smtp-Source: AGHT+IGxEc8JWYlRRVBwo5GpOuhEyTvZ2rYm6axlJLpQ4twJi6sB5/ATPpNBTtlI8hkbiRTPatcArA==
+X-Received: by 2002:a05:6512:4014:b0:518:7df6:d9e1 with SMTP id br20-20020a056512401400b005187df6d9e1mr12975591lfb.10.1713278367884;
+        Tue, 16 Apr 2024 07:39:27 -0700 (PDT)
+Received: from [172.30.205.49] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id d3-20020a05651221c300b00515a5784750sm1611882lft.268.2024.04.16.07.39.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Apr 2024 07:39:27 -0700 (PDT)
+Message-ID: <886befb2-2be2-4db0-b205-b3d1043cde62@linaro.org>
+Date: Tue, 16 Apr 2024 16:39:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 16 Apr 2024 17:38:46 +0300
-Message-Id: <D0LMH9CLMVY5.2XEMXNU4K5985@kernel.org>
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Roberto Sassu" <roberto.sassu@huaweicloud.com>, <corbet@lwn.net>,
- <paul@paul-moore.com>, <jmorris@namei.org>, <serge@hallyn.com>,
- <akpm@linux-foundation.org>, <shuah@kernel.org>,
- <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
- <mic@digikod.net>
-Cc: <linux-security-module@vger.kernel.org>, <linux-doc@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
- <bpf@vger.kernel.org>, <zohar@linux.ibm.com>, <dmitry.kasatkin@gmail.com>,
- <linux-integrity@vger.kernel.org>, <wufan@linux.microsoft.com>,
- <pbrobinson@gmail.com>, <zbyszek@in.waw.pl>, <hch@lst.de>,
- <mjg59@srcf.ucam.org>, <pmatilai@redhat.com>, <jannh@google.com>,
- <dhowells@redhat.com>, <jikos@kernel.org>, <mkoutny@suse.com>,
- <ppavlu@suse.com>, <petr.vorel@gmail.com>, <mzerqung@0pointer.de>,
- <kgold@linux.ibm.com>, "Roberto Sassu" <roberto.sassu@huawei.com>
-Subject: Re: [PATCH v4 03/14] digest_cache: Add securityfs interface
-X-Mailer: aerc 0.17.0
-References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
- <20240415142436.2545003-4-roberto.sassu@huaweicloud.com>
- <D0KY3YSZCLTG.24OGZPYS4AKDY@kernel.org>
- <d50530db-4a5e-4f58-997f-82090797398b@huaweicloud.com>
-In-Reply-To: <d50530db-4a5e-4f58-997f-82090797398b@huaweicloud.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] arm64: dts: qcom: sc7280: Remove CTS/RTS configuration
+To: Luca Weiss <luca.weiss@fairphone.com>,
+ Viken Dadhaniya <quic_vdadhani@quicinc.com>,
+ cros-qcom-dts-watchers@chromium.org, andersson@kernel.org,
+ swboyd@chromium.org, robh@kernel.org, krzk+dt@kernel.org,
+ linux-arm-msm@vger.kernel.org, conor+dt@kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ rajpat@codeaurora.org, mka@chromium.org, rojay@codeaurora.org
+Cc: quic_msavaliy@quicinc.com, quic_anupkulk@quicinc.com
+References: <20240416105650.2626-1-quic_vdadhani@quicinc.com>
+ <D0LINETM8WNA.27BORT75W1N0C@fairphone.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <D0LINETM8WNA.27BORT75W1N0C@fairphone.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue Apr 16, 2024 at 1:15 PM EEST, Roberto Sassu wrote:
-> On 4/15/2024 9:32 PM, Jarkko Sakkinen wrote:
-> > On Mon Apr 15, 2024 at 5:24 PM EEST, Roberto Sassu wrote:
-> >> From: Roberto Sassu <roberto.sassu@huawei.com>
-> >>
-> >> Add the digest_cache_path file in securityfs, to let root change/read =
-the
-> >> default path (file or directory) from where digest lists are looked up=
-.
-> >>
-> >> An RW semaphore prevents the default path from changing while
-> >> digest_list_new() and read_default_path() are executed, so that those =
-read
-> >> a stable value. Multiple digest_list_new() and read_default_path() cal=
-ls,
-> >> instead, can be done in parallel, since they are the readers.
-> >>
-> >> Changing the default path does not affect digest caches created with t=
-he
-> >> old path.
-> >>
-> >> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> >> ---
-> >>   security/digest_cache/Kconfig    |  4 ++
-> >>   security/digest_cache/Makefile   |  2 +-
-> >>   security/digest_cache/internal.h |  1 +
-> >>   security/digest_cache/main.c     | 10 +++-
-> >>   security/digest_cache/secfs.c    | 87 ++++++++++++++++++++++++++++++=
-++
-> >>   5 files changed, 102 insertions(+), 2 deletions(-)
-> >>   create mode 100644 security/digest_cache/secfs.c
-> >>
-> >> diff --git a/security/digest_cache/Kconfig b/security/digest_cache/Kco=
-nfig
-> >> index e53fbf0779d6..dfabe5d6e3ca 100644
-> >> --- a/security/digest_cache/Kconfig
-> >> +++ b/security/digest_cache/Kconfig
-> >> @@ -14,3 +14,7 @@ config DIGEST_LIST_DEFAULT_PATH
-> >>   	default "/etc/digest_lists"
-> >>   	help
-> >>   	  Default directory where digest_cache LSM expects to find digest l=
-ists.
-> >> +
-> >> +	  It can be changed at run-time, by writing the new path to the
-> >> +	  securityfs interface. Digest caches created with the old path are
-> >> +	  not affected by the change.
-> >> diff --git a/security/digest_cache/Makefile b/security/digest_cache/Ma=
-kefile
-> >> index 48848c41253e..1330655e33b1 100644
-> >> --- a/security/digest_cache/Makefile
-> >> +++ b/security/digest_cache/Makefile
-> >> @@ -4,4 +4,4 @@
-> >>  =20
-> >>   obj-$(CONFIG_SECURITY_DIGEST_CACHE) +=3D digest_cache.o
-> >>  =20
-> >> -digest_cache-y :=3D main.o
-> >> +digest_cache-y :=3D main.o secfs.o
-> >> diff --git a/security/digest_cache/internal.h b/security/digest_cache/=
-internal.h
-> >> index 5f04844af3a5..bbf5eefe5c82 100644
-> >> --- a/security/digest_cache/internal.h
-> >> +++ b/security/digest_cache/internal.h
-> >> @@ -49,6 +49,7 @@ struct digest_cache_security {
-> >>  =20
-> >>   extern struct lsm_blob_sizes digest_cache_blob_sizes;
-> >>   extern char *default_path_str;
-> >> +extern struct rw_semaphore default_path_sem;
-> >>  =20
-> >>   static inline struct digest_cache_security *
-> >>   digest_cache_get_security(const struct inode *inode)
-> >> diff --git a/security/digest_cache/main.c b/security/digest_cache/main=
-c
-> >> index 14dba8915e99..661c8d106791 100644
-> >> --- a/security/digest_cache/main.c
-> >> +++ b/security/digest_cache/main.c
-> >> @@ -18,6 +18,9 @@ static struct kmem_cache *digest_cache_cache __read_=
-mostly;
-> >>  =20
-> >>   char *default_path_str =3D CONFIG_DIGEST_LIST_DEFAULT_PATH;
-> >>  =20
-> >> +/* Protects default_path_str. */
-> >> +struct rw_semaphore default_path_sem;
-> >> +
-> >>   /**
-> >>    * digest_cache_alloc_init - Allocate and initialize a new digest ca=
-che
-> >>    * @path_str: Path string of the digest list
-> >> @@ -274,9 +277,12 @@ struct digest_cache *digest_cache_get(struct dent=
-ry *dentry)
-> >>  =20
-> >>   	/* Serialize accesses to inode for which the digest cache is used. =
-*/
-> >>   	mutex_lock(&dig_sec->dig_user_mutex);
-> >> -	if (!dig_sec->dig_user)
-> >> +	if (!dig_sec->dig_user) {
-> >> +		down_read(&default_path_sem);
-> >>   		/* Consume extra reference from digest_cache_create(). */
-> >>   		dig_sec->dig_user =3D digest_cache_new(dentry);
-> >> +		up_read(&default_path_sem);
-> >> +	}
-> >>  =20
-> >>   	if (dig_sec->dig_user)
-> >>   		/* Increment ref. count for reference returned to the caller. */
-> >> @@ -386,6 +392,8 @@ static const struct lsm_id digest_cache_lsmid =3D =
-{
-> >>    */
-> >>   static int __init digest_cache_init(void)
-> >>   {
-> >> +	init_rwsem(&default_path_sem);
-> >> +
-> >>   	digest_cache_cache =3D kmem_cache_create("digest_cache_cache",
-> >>   					       sizeof(struct digest_cache),
-> >>   					       0, SLAB_PANIC,
-> >> diff --git a/security/digest_cache/secfs.c b/security/digest_cache/sec=
-fs.c
-> >> new file mode 100644
-> >> index 000000000000..d3a37bf3588e
-> >> --- /dev/null
-> >> +++ b/security/digest_cache/secfs.c
-> >> @@ -0,0 +1,87 @@
-> >> +// SPDX-License-Identifier: GPL-2.0
-> >> +/*
-> >> + * Copyright (C) 2023-2024 Huawei Technologies Duesseldorf GmbH
-> >> + *
-> >> + * Author: Roberto Sassu <roberto.sassu@huawei.com>
-> >> + *
-> >> + * Implement the securityfs interface of the digest_cache LSM.
-> >> + */
-> >> +
-> >> +#define pr_fmt(fmt) "DIGEST CACHE: "fmt
-> >> +#include <linux/security.h>
-> >> +
-> >> +#include "internal.h"
-> >> +
-> >> +static struct dentry *default_path_dentry;
-> >> +
-> >> +/**
-> >> + * write_default_path - Write default path
-> >> + * @file: File descriptor of the securityfs file
-> >> + * @buf: User space buffer
-> >> + * @datalen: Amount of data to write
-> >> + * @ppos: Current position in the file
-> >> + *
-> >> + * This function sets the new default path where digest lists can be =
-found.
-> >> + * Can be either a regular file or a directory.
-> >> + *
-> >> + * Return: Length of path written on success, a POSIX error code othe=
-rwise.
-> >> + */
-> >> +static ssize_t write_default_path(struct file *file, const char __use=
-r *buf,
-> >> +				  size_t datalen, loff_t *ppos)
-> >> +{
-> >> +	char *new_default_path_str;
-> >> +
-> >> +	new_default_path_str =3D memdup_user_nul(buf, datalen);
-> >> +	if (IS_ERR(new_default_path_str))
-> >> +		return PTR_ERR(new_default_path_str);
-> >> +
-> >> +	down_write(&default_path_sem);
-> >> +	kfree_const(default_path_str);
-> >> +	default_path_str =3D new_default_path_str;
-> >> +	up_write(&default_path_sem);
-> >> +	return datalen;
-> >> +}
-> >> +
-> >> +/**
-> >> + * read_default_path - Read default path
-> >> + * @file: File descriptor of the securityfs file
-> >> + * @buf: User space buffer
-> >> + * @datalen: Amount of data to read
-> >> + * @ppos: Current position in the file
-> >> + *
-> >> + * This function returns the current default path where digest lists =
-can be
-> >> + * found. Can be either a regular file or a directory.
-> >> + *
-> >> + * Return: Length of path read on success, a POSIX error code otherwi=
-se.
-> >> + */
-> >> +static ssize_t read_default_path(struct file *file, char __user *buf,
-> >> +				 size_t datalen, loff_t *ppos)
-> >> +{
-> >> +	int ret;
-> >> +
-> >> +	down_read(&default_path_sem);
-> >> +	ret =3D simple_read_from_buffer(buf, datalen, ppos, default_path_str=
-,
-> >> +				      strlen(default_path_str) + 1);
-> >> +	up_read(&default_path_sem);
-> >> +	return ret;
-> >> +}
-> >> +
-> >> +static const struct file_operations default_path_ops =3D {
-> >> +	.open =3D generic_file_open,
-> >> +	.write =3D write_default_path,
-> >> +	.read =3D read_default_path,
-> >> +	.llseek =3D generic_file_llseek,
-> >> +};
-> >> +
-> >> +static int __init digest_cache_path_init(void)
-> >> +{
-> >> +	default_path_dentry =3D securityfs_create_file("digest_cache_path", =
-0660,
-> >> +						     NULL, NULL,
-> >> +						     &default_path_ops);
-> >> +	if (IS_ERR(default_path_dentry))
-> >> +		return -EFAULT;
-> >=20
-> > Nit: when overwriting error value with another error value it would be
-> > best to document it with an inline comment. Otherwise, it is fine.
->
-> Seems to make sense to return the right error. Will check why this one=20
-> (I probably took from somewhere).
 
-Yeah, I mean often when I read legacy code from kernel and find
-places like these I spend even few hours finding the root for
-doing something like this so it really has value to do it when
-the code is still fresh :-) Nothing wrong in the action itself
-when it makes sense given the circumstances.
 
-BR, Jarkko
+On 4/16/24 13:38, Luca Weiss wrote:
+> On Tue Apr 16, 2024 at 12:56 PM CEST, Viken Dadhaniya wrote:
+>> Remove CTS and RTS pinctrl configuration for UART5 node as
+>> it's designed for debug UART for all the board variants of the
+>> sc7280 chipset.
+>>
+>> Also change compatible string to debug UART.
+> 
+> This change has little to do with the SoC design though and is dependent
+> on the usage on a given board, right? Also the QCM6490 datasheet
+> mentions gpio21 & gpio22 can be used for UART_CTS and UART_RFR.
+
+Yeah, using it as a debug uart doesn't rule out flow control I don't think
+
+> 
+> But at least consistency-wise this change makes sense, in practically
+> all other SoCs one UART is marked as geni-debug-uart.
+> 
+> But with this patch you should then also remove some overrides that are
+> placed in various boards already?
+> 
+> arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts:     compatible = "qcom,geni-debug-uart";
+> arch/arm64/boot/dts/qcom/qcm6490-idp.dts:       compatible = "qcom,geni-debug-uart";
+> arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts:   compatible = "qcom,geni-debug-uart";
+> arch/arm64/boot/dts/qcom/sc7280-idp.dtsi:       compatible = "qcom,geni-debug-uart";
+> arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi:     compatible = "qcom,geni-debug-uart";
+
+Definitely
+
+Konrad
 
