@@ -1,127 +1,100 @@
-Return-Path: <linux-kernel+bounces-147039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147040-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 828AA8A6E94
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:39:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0DC88A6E9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:40:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D6D0281A9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:39:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E9A41C22937
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B80512E1E4;
-	Tue, 16 Apr 2024 14:39:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D15FC12EBDC;
+	Tue, 16 Apr 2024 14:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z9giONP2"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mizTO6zH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC5A612CD91
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:39:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F12612C7E1;
+	Tue, 16 Apr 2024 14:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713278371; cv=none; b=hZcdsxyf5pD4QvWXNT55+F+d7vyjXs/uuM/CbDsgurYkpPJBRm48s3V0sD1artRtya/WGO1lsKeyZKZTYH1xPL9gxqYL9nHm3yCYM7ipvZXK/Ew0QodIj7graNE47f8IbC2Ay+2BzNM5avRBpofE0jNw9RCEJ+6AWnqt7FTkb6s=
+	t=1713278428; cv=none; b=q/r0lJWPa2sZmojctEvePQrfxcSxuPeFCdYw/iWYLPhVwraNwRGyqwq+pKihp7EgvbNYRy14R06U/lGyMcHaxZilXJW9emypkRn2B6sKjozFR4i1fQVGo+ck1qx4mKNv1W7b6oDwAkbBozUkPsp+ke4d3sYIDBEt0zFCACwyEAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713278371; c=relaxed/simple;
-	bh=8mgu7k7er0cG/LWWBfVot7y4xrG2X6Pda5/j6HoeJ9U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ML4Mk5P2M76KNbkEV+HHQVGno6iSztpbdFm51YVaLdrZXkEVAeVX7RzEGg6ZbZo5H8GoLzHamLjDHdnIBbPPhSGPNgfAR8tCwIb1QNqFqWjG+8iglRfBnyxNw+AUmAfDYgRyMeObf+whF8RzCsNV9l4l5c7AUrLA7EG5+GqES20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Z9giONP2; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5176f217b7bso7794930e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:39:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713278368; x=1713883168; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aKE+g2uxmcwZKMXDL+tbh31r08+JhFyXRHabiw8XKP4=;
-        b=Z9giONP2B1+bjslr9x6dU4IKza7LZcwtFpsndRB200Sog9JXznl/ZMlocsV6RGjIL1
-         L0Wc2Vk1Qd1td5A2Gf9SxoMSBF7nYZtma09uQxoVTDW45KPbI/ohFUMhRQ5TpYdu05JH
-         hJjI6fGF6qMVr/0U2mMCABajpRDDKDaoTfaTXnUrzmD+xCM/LFE1WvQuH9zNZYWIUdIz
-         6DPHV2+bti2tNhanfs69LBs4IbOFHtdH/pBRzSBsQpq8jgc34tVOH9zXb5+zYR2UsezU
-         7sajGsxKm7Ntf8UXgYYOZcAyBLujgQNiTF95mr6Q5bpgdGRrMBXerYZBrSI+N0DN1Fmx
-         oMxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713278368; x=1713883168;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aKE+g2uxmcwZKMXDL+tbh31r08+JhFyXRHabiw8XKP4=;
-        b=CAAbdFWRmB4PmR8d2434CNpTcxPRzdqyfW5Yj9YoaXseNsA1Wc4mGYtxIrJTD+ZxW3
-         5epsCDFGNjCW88rWq73YHr043rxhvpnduRV33XtCJbc47cNBLWZ+Hp3It9Djaza1DRI6
-         U8X6gOzpdgU965B71S34meo+ZyntnFYxZqyZyq2HCJ6uR7DUyVgW0sr6z2Fu2xU5AzBv
-         aijqQmzpmP1jyPMB94wiQtR1+s4DDnJBSCSWL7cAIZFDTypjKbtDpIg9clV35cT9H0GZ
-         Bb4Gr/9jwGYB6Cnd1wbW6RKBt9pFt76plgGjuL+cyYTczm31f3wDmXZnxYCEm1TiSRgD
-         kjSw==
-X-Forwarded-Encrypted: i=1; AJvYcCUjOsLQajDNC4qzRs61HdVXoj6Ux5N45NF+xOkyyMFdj+iL3srxmGXOFW8dipOyEbrIlCmLfnHBhsK1AngNryOrg+u+/CFTRKC7lW4B
-X-Gm-Message-State: AOJu0YwY93/pmC5sINAm/r+o5lxdPIxXc24jy2WoI0myywigadeCxF0+
-	+HEnVw9VGqUCzJjm1M52U+TSNKSu8fYqFJHoIcswgr2nahQidK+iDHLJKz/quDQ=
-X-Google-Smtp-Source: AGHT+IGxEc8JWYlRRVBwo5GpOuhEyTvZ2rYm6axlJLpQ4twJi6sB5/ATPpNBTtlI8hkbiRTPatcArA==
-X-Received: by 2002:a05:6512:4014:b0:518:7df6:d9e1 with SMTP id br20-20020a056512401400b005187df6d9e1mr12975591lfb.10.1713278367884;
-        Tue, 16 Apr 2024 07:39:27 -0700 (PDT)
-Received: from [172.30.205.49] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id d3-20020a05651221c300b00515a5784750sm1611882lft.268.2024.04.16.07.39.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Apr 2024 07:39:27 -0700 (PDT)
-Message-ID: <886befb2-2be2-4db0-b205-b3d1043cde62@linaro.org>
-Date: Tue, 16 Apr 2024 16:39:25 +0200
+	s=arc-20240116; t=1713278428; c=relaxed/simple;
+	bh=ulix9quus3PlYbJVuwvHVIOelWLtNPYkNwdfm+1e6eg=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=H09SLdq6RSSqykwvwcshy8PwtKqXqOIMtwKjG/SErt95JFl+l5093fCiGBvQUVW16gSStqKnjpVHTSZ4PR6aM2iyke6sePVZBUQf4WbIRXUNZQvwvbztltV8+FJVNPY5rs8nrTGfEUzqn0o49jhbWnGZA6rGHkB0ZuvVhHfwBY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mizTO6zH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7DEEEC2BD10;
+	Tue, 16 Apr 2024 14:40:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713278427;
+	bh=ulix9quus3PlYbJVuwvHVIOelWLtNPYkNwdfm+1e6eg=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=mizTO6zHQsmhhoJXPvj7Bd6z6SPnKSeEeEX1PNLVcS2zL7EWaQJl9v1W/RV70RYXL
+	 rQHmcie6fJHXC1AaGvx3pZ2GthYw8agK9VgZoj43fXbvDnxG9CLrb7nyvmdLKCnkkV
+	 IJCkust3+LFhAwgsXg1SkA0zbGV1lt54TCAGUUu6L6OZZGHBi1UYfvPQfiQ2v/yrfF
+	 /MGgpvv7ahlKkdGp4IfXxAQw2Gg/AEjXrD1wN9NqkjOPlxi6r+xp0+oj1z71jwCjgq
+	 GT6fhUwqUzzb3h3saCJAAUs55eNYm/ndolg2LdBOiel95QXFmDG2jy9IUCEPx1bKf6
+	 eoS8J4Zh0arBg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 67E56D4F15E;
+	Tue, 16 Apr 2024 14:40:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] arm64: dts: qcom: sc7280: Remove CTS/RTS configuration
-To: Luca Weiss <luca.weiss@fairphone.com>,
- Viken Dadhaniya <quic_vdadhani@quicinc.com>,
- cros-qcom-dts-watchers@chromium.org, andersson@kernel.org,
- swboyd@chromium.org, robh@kernel.org, krzk+dt@kernel.org,
- linux-arm-msm@vger.kernel.org, conor+dt@kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- rajpat@codeaurora.org, mka@chromium.org, rojay@codeaurora.org
-Cc: quic_msavaliy@quicinc.com, quic_anupkulk@quicinc.com
-References: <20240416105650.2626-1-quic_vdadhani@quicinc.com>
- <D0LINETM8WNA.27BORT75W1N0C@fairphone.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <D0LINETM8WNA.27BORT75W1N0C@fairphone.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 0/3] kbuild: Avoid weak external linkage where possible
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171327842741.29461.3030265084386428643.git-patchwork-notify@kernel.org>
+Date: Tue, 16 Apr 2024 14:40:27 +0000
+References: <20240415162041.2491523-5-ardb+git@google.com>
+In-Reply-To: <20240415162041.2491523-5-ardb+git@google.com>
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, ardb@kernel.org, masahiroy@kernel.org,
+ arnd@arndb.de, martin.lau@linux.dev, linux-arch@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, andrii@kernel.org,
+ olsajiri@gmail.com
 
+Hello:
 
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-On 4/16/24 13:38, Luca Weiss wrote:
-> On Tue Apr 16, 2024 at 12:56 PM CEST, Viken Dadhaniya wrote:
->> Remove CTS and RTS pinctrl configuration for UART5 node as
->> it's designed for debug UART for all the board variants of the
->> sc7280 chipset.
->>
->> Also change compatible string to debug UART.
+On Mon, 15 Apr 2024 18:20:42 +0200 you wrote:
+> From: Ard Biesheuvel <ardb@kernel.org>
 > 
-> This change has little to do with the SoC design though and is dependent
-> on the usage on a given board, right? Also the QCM6490 datasheet
-> mentions gpio21 & gpio22 can be used for UART_CTS and UART_RFR.
-
-Yeah, using it as a debug uart doesn't rule out flow control I don't think
-
+> Weak external linkage is intended for cases where a symbol reference
+> can remain unsatisfied in the final link. Taking the address of such a
+> symbol should yield NULL if the reference was not satisfied.
 > 
-> But at least consistency-wise this change makes sense, in practically
-> all other SoCs one UART is marked as geni-debug-uart.
+> Given that ordinary RIP or PC relative references cannot produce NULL,
+> some kind of indirection is always needed in such cases, and in position
+> independent code, this results in a GOT entry. In ordinary code, it is
+> arch specific but amounts to the same thing.
 > 
-> But with this patch you should then also remove some overrides that are
-> placed in various boards already?
-> 
-> arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts:     compatible = "qcom,geni-debug-uart";
-> arch/arm64/boot/dts/qcom/qcm6490-idp.dts:       compatible = "qcom,geni-debug-uart";
-> arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts:   compatible = "qcom,geni-debug-uart";
-> arch/arm64/boot/dts/qcom/sc7280-idp.dtsi:       compatible = "qcom,geni-debug-uart";
-> arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi:     compatible = "qcom,geni-debug-uart";
+> [...]
 
-Definitely
+Here is the summary with links:
+  - [v4,1/3] kallsyms: Avoid weak references for kallsyms symbols
+    (no matching commit)
+  - [v4,2/3] vmlinux: Avoid weak reference to notes section
+    (no matching commit)
+  - [v4,3/3] btf: Avoid weak external references
+    https://git.kernel.org/bpf/bpf-next/c/fc5eb4a84e4c
 
-Konrad
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
