@@ -1,131 +1,105 @@
-Return-Path: <linux-kernel+bounces-146235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FAF68A6285
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:41:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E82D8A6288
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:46:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47434284B62
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:41:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83B2B1C20AA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:46:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E5E381DE;
-	Tue, 16 Apr 2024 04:41:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B29A6364AB;
+	Tue, 16 Apr 2024 04:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QA+XMZEQ"
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NJjtLljZ"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 106E327715
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 04:41:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B90F79C4
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 04:45:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713242493; cv=none; b=RAni4G0WOJJMKMQbJLFd0MxIqatP6SOPo6Gdy9uVYxfrh0VoeEeyCd4mOUitDOHC6efk78FPyXOfKHB/aCwBcIPz7lP/a52VUPCFtwxybCRrWqLfaNn4xEryQ7V1ySQmQISpg1QHRG3PioxtYBIYoFn8foEDkuW5wdodAFfyVcg=
+	t=1713242759; cv=none; b=nzpkH+34sMoMyIzlteJYlJAIcvMO1frgAbkXZm6h4gzjBLFEArZzsIsRXAkytI2sBUTuYJGzvGd82Gsl1S0CpGP2Ahd+aXjLnSh3qccbG4Ta9pNeaawqn113bKOr70vc9TkDgS2mTPlVVBb2g7NTgbNiVDvnLREZMAwUCOdYlWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713242493; c=relaxed/simple;
-	bh=DqDyd4MpI+rvYMYAT3Ft5xs95IMJydJhHOHuJjyBxW4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pPbY9i7b0NYgOJOCirJ49oR/xn6/+uXcJBKZSuNZjNtjIfoGZ7hiMENDQMMmTjQNJ/+IW9pDUm7B0A7Ta/A4bGglLNGXNLo9LDElbjL0M35vLlgy1wbugVVsOFAnJzrg+susjv0iADBvxWkaN9U0e9m1SLcQKYJqw7ZyTPx+fLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=QA+XMZEQ; arc=none smtp.client-ip=209.85.160.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-22fa7e4b0beso2581224fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 21:41:30 -0700 (PDT)
+	s=arc-20240116; t=1713242759; c=relaxed/simple;
+	bh=QKB+fts9+FSOSdB9lddQnPbhqERI/yOafNkOO10c0Jc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ctZqVJOb7/2QkjG9CPQZC70RLfgiybKDAQsoKlnI5vWlO/a09CJY6uwKImGjGIytGHfK7XFm5IdP6UlqfURCxFlTZQlJp7TfvFyYHDKy+D++uJUG6FL+UWCo4B/5ukD0FIVRYYbKLxBMrIReDHDtvYwc9DZamOJwPwFVzENWtrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NJjtLljZ; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d094bc2244so45479191fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 21:45:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713242490; x=1713847290; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zlvfKPvFfqMVTjgmkdQ2dgHupdBvuhJAjVeekD23sMY=;
-        b=QA+XMZEQ4TSKlDwKnkstTwNqATtBiFbsIwW6mmZH78ughkAzpgyenMvV1Lpd/vMyHP
-         7NTsFHch3jvOiJ+obKYa+FzwWUXuVaEChF4zTRRV/GQklNftpHjFe/lFZUezfns1dkt4
-         k677k7WQs69PISiVPzIYtOUUow0YCd559kxZ8=
+        d=linaro.org; s=google; t=1713242755; x=1713847555; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QKB+fts9+FSOSdB9lddQnPbhqERI/yOafNkOO10c0Jc=;
+        b=NJjtLljZjtOkR9lapv1wWTXavwLdNSLNO/o5BTNc7KJ9fD49JBXxNYfb84tGBDfCON
+         r9JDlJTA1pMR6co1ed/6TjIx6vtpsQxumH1cNUe37X9HVljCzKL7u6xr1KCDxgn0rDre
+         oDLrGFRKUA74QNt2HwGDcpUapIlcKVxKIpvTGTQTHKroid620rCuT9WL5aRDtfwSq3nv
+         VNmOHhNgXlyjv2Uj4Ag+7f6fSM8VAzvIkmLEB1VIciXOk/HjOWYvzSHdlREw5aLxJRrW
+         Idyf2+6Qncxxhg7sy/tBlgcAfn2YuVofgxBDpuKVhMq8WC+Zhl6TqH1Q9SRZOGOIwMIU
+         fRgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713242490; x=1713847290;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zlvfKPvFfqMVTjgmkdQ2dgHupdBvuhJAjVeekD23sMY=;
-        b=TgCLIaywQzzxXrgMMmb27N0yTDWFaUeOzKKRgkj+D8xzx45H1haXusfCE9xHy1gE7U
-         lfLjoVa9clYHXB3yNXN8GIIf11mdsEBH16Gr6PxVYRRaqZuhDuRLRyPkW2wjTLoV77+e
-         stby7+s3yH90/YSJcJP5VtzrR+tXflGCpHref5Ci2WMA8wVBOrPImMHVWvVY3DaxZmJU
-         eUovpVaw5sFzzwElreMVVPDlHNtnaF+0LZm5k9Xp9Hx5N31OWkbnenLDNPcZ7ew5h9Wk
-         Dp3CcJ4qT109lxvGJKl/Gi6vnShjLgZ+/shnWoDTWKlzCMeqNOH1O72/tifkax3KhPhp
-         /0bQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUZKiDHIbrD4kNe3JI44PnmNKbvHlB3+fhnGGgDWnl4PxwBa7I6QiZHxvqEuA0pmpgYCuFdbh/z7StfhI8UYGS47EhfMWr91n3Ce2gc
-X-Gm-Message-State: AOJu0Yz3vVJ4kV/2nNlkia+W8G/U6Y2u4+d4EBElL9UGMA8lK3mgrtRy
-	nwg2aqql3xYyN5OqtMoSyUThGXUPld44DCmDicPPltGZPOOuI5ZYOgKb+SaFNw==
-X-Google-Smtp-Source: AGHT+IFGNPBipDIE0AiNQc/Cqlxd5431Vef5ObfevA6hF44fnzurKBxD1B4lS2oVTJREu9b1YFAdCg==
-X-Received: by 2002:a05:6870:89a4:b0:22d:fcf9:bd97 with SMTP id f36-20020a05687089a400b0022dfcf9bd97mr15408827oaq.26.1713242490147;
-        Mon, 15 Apr 2024 21:41:30 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:203:1137:d3d7:a09d:5379])
-        by smtp.gmail.com with ESMTPSA id r4-20020a056a00216400b006edd05e3751sm8284703pff.176.2024.04.15.21.41.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 21:41:29 -0700 (PDT)
-Date: Tue, 16 Apr 2024 13:41:19 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Martin Tuma <martin.tuma@digiteqautomotive.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Hugues Fruchet <hugues.fruchet@foss.st.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Sowjanya Komatineni <skomatineni@nvidia.com>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
-	Abylay Ospan <aospan@netup.ru>,
-	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-	Dmitry Osipenko <digetx@gmail.com>,
-	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-	Vikash Garodia <quic_vgarodia@quicinc.com>,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-	Sylvain Petinot <sylvain.petinot@foss.st.com>,
-	Jacopo Mondi <jacopo+renesas@jmondi.org>,
-	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-	Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
-	Pavel Machek <pavel@ucw.cz>, linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 04/35] media: uvcvideo: Use max() macro
-Message-ID: <20240416044119.GB14947@google.com>
-References: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
- <20240415-fix-cocci-v1-4-477afb23728b@chromium.org>
+        d=1e100.net; s=20230601; t=1713242755; x=1713847555;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QKB+fts9+FSOSdB9lddQnPbhqERI/yOafNkOO10c0Jc=;
+        b=ijOshNIWicVp2BqufpNCh70pcdVudlBwGJqXNoxoM/fNye5EVGD/wOfSROwk7IDvO0
+         6s2dZ9Z3p8On8Ao4bHx5IVZavdDMDBJHAIIpSMecbk6CUDqKqF/ep9tb1akGJj+ME+Rt
+         XCZUKohE2mlhPUWHZLj+she3Im5vQtw8lwB7ZOi+GyUFelIc6kvymGBETatSA1139asb
+         hF2Nzvd0LVYfC/MFT6hEy9U1+TotWJoObcm3/QIrruJeHX8wMeLwhaB/M1ylp1VSizqq
+         2JF+7Uwb3f/gg5zYd7sBpN2AblOsY2nkjCPHa+6f33PDnkcZ+HZVvkAGJr0a/q9AINh1
+         X3Iw==
+X-Forwarded-Encrypted: i=1; AJvYcCW+9Y0rezw8e6E5zakX6Kh93qlpuB+PlzsnhFye/nLWef4Q5ilLnZeMjnxhFOiWh1syEz9DWzlpjV17zYyrbf7Mk9yQOPJMYRzkFWBZ
+X-Gm-Message-State: AOJu0YwBo2s3wyWm2NQ5ztXR7HjbUWMJbrZk+Dhu7nqwQG1HweanJcTF
+	H6/FTnsjRFsntBuE2WNLg6QejhgADqMdIwLlzp22C0xAoxzmjCpOP6mEaJ6rtM1D0SfvrZ7qmDa
+	I
+X-Google-Smtp-Source: AGHT+IGVCkk+bcdkhwjYIyaGOu3n5uDE8fKeovKRVpv0oYfV/HU33/rsUXCy5MMVPlmhCYZr+JWPPg==
+X-Received: by 2002:a05:651c:546:b0:2d8:9537:6d37 with SMTP id q6-20020a05651c054600b002d895376d37mr9825139ljp.21.1713242755412;
+        Mon, 15 Apr 2024 21:45:55 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.35])
+        by smtp.gmail.com with ESMTPSA id he8-20020a05600c540800b00416a08788a5sm21697294wmb.27.2024.04.15.21.45.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 21:45:55 -0700 (PDT)
+Message-ID: <e3c9352a-a770-4952-b15f-bd307aa284c5@linaro.org>
+Date: Tue, 16 Apr 2024 05:45:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240415-fix-cocci-v1-4-477afb23728b@chromium.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/6] mtd: spi-nor: Remove support for Xilinx S3AN
+ flashes
+To: Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+References: <20240412134405.381832-1-mwalle@kernel.org>
+ <20240412134405.381832-2-mwalle@kernel.org>
+ <7b2fc5cb-d1ab-4e9d-b955-b88698322057@linaro.org>
+ <D0I76PPKBWF9.X2XFZAO5OE7S@kernel.org> <mafs0a5lu8x5y.fsf@kernel.org>
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <mafs0a5lu8x5y.fsf@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On (24/04/15 19:34), Ricardo Ribalda wrote:
-> It makes the code slightly more clear and makes cocci incredibly happy:
-> 
-> drivers/media/usb/uvc/uvc_ctrl.c:839:22-23: WARNING opportunity for max()
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+
+On 4/15/24 16:26, Pratyush Yadav wrote:
+> Also, I think we should let this patch cook in linux-next for some time
+> before merging to give people a chance to complain if we break
+> something. Since now there isn't much time left until the SPI NOR pull
+> request goes out (around 2 weeks I reckon), it would probably make sense
+> to merge it in the next cycle.
+
+sounds good to me!
 
