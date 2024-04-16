@@ -1,254 +1,128 @@
-Return-Path: <linux-kernel+bounces-146423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 858E38A650A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:25:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AA3F8A6507
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:24:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3894B21F61
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:25:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 318B11F21632
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:24:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 374F015AAA5;
-	Tue, 16 Apr 2024 07:23:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7DE7158D94;
+	Tue, 16 Apr 2024 07:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XNr7HcJx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S4I51/Cs"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63DFA158D98
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:23:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642326EB75;
+	Tue, 16 Apr 2024 07:23:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713252217; cv=none; b=RTECXWDBvN8qHUFDQgvhtVWKze/97mFPFyMzh9dymxFcL0eSY3xrI2cR27L6gt2d/GeTwQHwrAoLHhhtLbN12I1AuE2OTGNfxEf0sMPixqCv2C4XG0ZUKgCEiJz2MKfamcwuxyOlo2qBPtHexj3XT5Y2IkcMenOs1BXkRP7LDJk=
+	t=1713252213; cv=none; b=JhFjWBMiPA4k4yE6ZlDRDUUJq1+hGxtS/VhcuOA1swuRmjjFZZxclnvsrEC7+uexIW+aZ5vx/7+YlPx8a/fhi78+6k6HXiOOwHZpoiNcWf+C7ttHWxKYXOICQcJ+MxyGgKu7AR4820bYWFZ8Yna2pqdyEYjERkntjXaD6WjCe1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713252217; c=relaxed/simple;
-	bh=yUmaqz0X2leLyEtaGKKFRv7XkWM87V0UO7GQWcOJJgU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FJY/Zb7twTKJBRcu9tjU+dc13b9tRTH35lPQnk+XuXtosqovv6zWhLQYL0M4EXqmtFIjxTYuHDuN9ENehjZW3+350WU+JuDCavEiwgM32KO3VEMgPsG3o8ZAB5+JXBmyoaQMpRhqpE38ySji5zaYdvXXqipcVuIjLu1PFiAPa5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XNr7HcJx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A21E4C32781;
-	Tue, 16 Apr 2024 07:23:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713252217;
-	bh=yUmaqz0X2leLyEtaGKKFRv7XkWM87V0UO7GQWcOJJgU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XNr7HcJx5M5YA+w5jFOmPY72vMb7k70IPgptRYiFc4faHnpDQpE67a9nGIM8jgYOq
-	 +4PqtM0v3T+Mec0qeWCD41e2oND6173A09YEnMf0TQa66AwKUwpCWYo8ZB7MhylIXw
-	 0uesNtuMjEdd68M7k0G90bPqmOxndJctPQdjSdak7omhbWDp21BxH1CFhp78EhxIPo
-	 6BT+MtPaFKuawTILlY6fCKFkz94sbW1YBN2KKVf2NBGRO+2JSv9f9IMvRNfb0LKgcG
-	 aryb9tGw9QVtMa22lJr0y5g1QxGdvmJJ84z9wreAVPa/0bT6R06S7XXrRGcBLZXqmu
-	 GinxU2m2lvHkA==
-From: Chao Yu <chao@kernel.org>
-To: jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>
-Subject: [PATCH 4/4] f2fs: convert f2fs__page tracepoint class to use folio
-Date: Tue, 16 Apr 2024 15:23:18 +0800
-Message-Id: <20240416072318.6486-4-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240416072318.6486-1-chao@kernel.org>
-References: <20240416072318.6486-1-chao@kernel.org>
+	s=arc-20240116; t=1713252213; c=relaxed/simple;
+	bh=9Cw6OWP2u9Aes3pseofoNzXPv/fz2bmg6PUjArK3J9Y=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b5FZaHubs+S9GvyfRTBpO+VKhJJ5elVGI8Qsq2/aCQRpJgaW3tsX2vmHj3TAN7Wei8ZpSVQa1XxWwJotxgX8UjkdcIW0lfsELLVOMkRGDANH7sF/2KwyvWu/XHw+r/VO57eAAR33eVUjSoZE7cfC2uvlou+XkEvKK0E/wvpTT7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S4I51/Cs; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2da888330b2so35731731fa.2;
+        Tue, 16 Apr 2024 00:23:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713252209; x=1713857009; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HwPoHiyB6a6BiMxMqmc7hqhHWyqah1NK8r1aIJ0ba5s=;
+        b=S4I51/CsFzVhu+N+qiQyLSN01aHZba4oUcXjcLbG1+nnj6o0c2GV59fK9HmTwZ8YwF
+         rJGi/m7D3BJOTKHeUyh/5PzvVZvA+LJG7hz+V90PE417Fs2VwfW87zivfEV3eFA6CbUm
+         MGVlJ15H8vQhN9gPn0ryh419GXLLCn57hqBpIYexIKzkv4wDwssyTfFD6hvniGASKpB2
+         /G8tf1ff/JhL6+HavCnVvX6eBMUSjNlhQS48GrRQeguLEVXJgWnIA1TlXoVsnpD/L5wq
+         iaEBRXQ8/FaDrPXNBl4GPi+5FWpPn1DY+wnrh0NNPfaobcG3mL7OQS6sqL/J/3tjPJd5
+         oUFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713252209; x=1713857009;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HwPoHiyB6a6BiMxMqmc7hqhHWyqah1NK8r1aIJ0ba5s=;
+        b=DsjmnOOQ1Zr6Lg4zXMXJF53RiQEKyPWbAeq5QV3CY96ZtsPpB0atxJJHw2bdJx5Je0
+         n8iADHnDd6NQXcfCjfOZDsS/MvQXjvsj6v7y0s3gNt9dtgW3B/6mKsPM0nPRs5Xoeja7
+         XJIQqSlbqASxicGVchJmp9Y3OHmKGaB6yTyKkc8t98JKgBr2l8tm7U8Cxc8X9ifyaQqT
+         FaUbK9VGL5lQ3ofulmtqfNQuqilV1kdSLYKNRguieCPfidFSJWL6eV6l7JY1uz2gYv3e
+         iCaqoN+bEHhRpo21x07DS1ywDxyiVO9Ik8q6WRSggHGawkeAaxloYgVbRy0GV7/sBtmR
+         przw==
+X-Forwarded-Encrypted: i=1; AJvYcCUzgU7zIt4IPsO6lsSKO/w3j24HiBnjT+qRyJnQJbVHmr+M1jvFvJPDH9ScXmg58BeYLhn/IjeON7mChFrN1ACEFg0oS10ej5oRdrGrklGs4pA3UYHjzCoEaZDCiJwWCy1/
+X-Gm-Message-State: AOJu0YwS3bj2NvLCSXWHHl5lnfzcwTrRjE9n0RIj/cLcfXMD7ldoslOP
+	4NqM3i2t0398Dh2QitJzmXvvbwMrAOW7kjzsjtDXyAbdg5ExaszQ
+X-Google-Smtp-Source: AGHT+IH5Ye6SPlxy35avdKYsBR2Hv9ZPOjQHKm4uKt9nII/+USCnYiYvMkvevpeOqYTruYF+4XVduw==
+X-Received: by 2002:a19:381c:0:b0:518:ed96:6b12 with SMTP id f28-20020a19381c000000b00518ed966b12mr3381349lfa.61.1713252209223;
+        Tue, 16 Apr 2024 00:23:29 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id bf14-20020a170907098e00b00a52225b44e4sm6323741ejc.115.2024.04.16.00.23.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 00:23:28 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 16 Apr 2024 09:23:26 +0200
+To: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
+Cc: olsajiri@gmail.com, andrii@kernel.org, ast@kernel.org,
+	bpf@vger.kernel.org, daniel@iogearbox.net, dxu@dxuuu.xyz,
+	eddyz87@gmail.com, haoluo@google.com, john.fastabend@gmail.com,
+	khazhy@chromium.org, kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+	ncopa@alpinelinux.org, ndesaulniers@google.com, sdf@google.com,
+	song@kernel.org, vmalik@redhat.com, yonghong.song@linux.dev
+Subject: Re: [PATCH bpf-next v2] bpf: btf: include linux/types.h for u32
+Message-ID: <Zh4nbvndaho6kCRP@krava>
+References: <Zh0ZhEU1xhndl2k8@krava>
+ <20240416051527.3109380-1-dmitrii.bundin.a@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416051527.3109380-1-dmitrii.bundin.a@gmail.com>
 
-Convert f2fs__page tracepoint class() and its instances to use folio
-and related functionality, and rename it to f2fs__folio().
+On Tue, Apr 16, 2024 at 08:15:27AM +0300, Dmitrii Bundin wrote:
+> Inclusion of the header linux/btf_ids.h relies on indirect inclusion of
+> the header linux/types.h. Including it directly on the top level helps
+> to avoid potential problems if linux/types.h hasn't been included
+> before.
+> 
+> Signed-off-by: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
 
-Signed-off-by: Chao Yu <chao@kernel.org>
----
- fs/f2fs/checkpoint.c        |  4 ++--
- fs/f2fs/data.c              | 10 ++++-----
- fs/f2fs/node.c              |  4 ++--
- include/trace/events/f2fs.h | 42 ++++++++++++++++++-------------------
- 4 files changed, 30 insertions(+), 30 deletions(-)
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index eac698b8dd38..5d05a413f451 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -345,7 +345,7 @@ static int __f2fs_write_meta_page(struct page *page,
- {
- 	struct f2fs_sb_info *sbi = F2FS_P_SB(page);
- 
--	trace_f2fs_writepage(page, META);
-+	trace_f2fs_writepage(page_folio(page), META);
- 
- 	if (unlikely(f2fs_cp_error(sbi))) {
- 		if (is_sbi_flag_set(sbi, SBI_IS_CLOSE)) {
-@@ -492,7 +492,7 @@ long f2fs_sync_meta_pages(struct f2fs_sb_info *sbi, enum page_type type,
- static bool f2fs_dirty_meta_folio(struct address_space *mapping,
- 		struct folio *folio)
- {
--	trace_f2fs_set_page_dirty(&folio->page, META);
-+	trace_f2fs_set_page_dirty(folio, META);
- 
- 	if (!folio_test_uptodate(folio))
- 		folio_mark_uptodate(folio);
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 3eb90b9b0f8b..cf6d31e3e630 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -2490,7 +2490,7 @@ static int f2fs_read_data_folio(struct file *file, struct folio *folio)
- 	struct inode *inode = folio_file_mapping(folio)->host;
- 	int ret = -EAGAIN;
- 
--	trace_f2fs_readpage(&folio->page, DATA);
-+	trace_f2fs_readpage(folio, DATA);
- 
- 	if (!f2fs_is_compress_backend_ready(inode)) {
- 		folio_unlock(folio);
-@@ -2739,7 +2739,7 @@ int f2fs_do_write_data_page(struct f2fs_io_info *fio)
- 		} else {
- 			set_inode_flag(inode, FI_UPDATE_WRITE);
- 		}
--		trace_f2fs_do_write_data_page(fio->page, IPU);
-+		trace_f2fs_do_write_data_page(page_folio(page), IPU);
- 		return err;
- 	}
- 
-@@ -2768,7 +2768,7 @@ int f2fs_do_write_data_page(struct f2fs_io_info *fio)
- 
- 	/* LFS mode write path */
- 	f2fs_outplace_write_data(&dn, fio);
--	trace_f2fs_do_write_data_page(page, OPU);
-+	trace_f2fs_do_write_data_page(page_folio(page), OPU);
- 	set_inode_flag(inode, FI_APPEND_WRITE);
- out_writepage:
- 	f2fs_put_dnode(&dn);
-@@ -2815,7 +2815,7 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
- 		.last_block = last_block,
- 	};
- 
--	trace_f2fs_writepage(page, DATA);
-+	trace_f2fs_writepage(page_folio(page), DATA);
- 
- 	/* we should bypass data pages to proceed the kworker jobs */
- 	if (unlikely(f2fs_cp_error(sbi))) {
-@@ -3789,7 +3789,7 @@ static bool f2fs_dirty_data_folio(struct address_space *mapping,
- {
- 	struct inode *inode = mapping->host;
- 
--	trace_f2fs_set_page_dirty(&folio->page, DATA);
-+	trace_f2fs_set_page_dirty(folio, DATA);
- 
- 	if (!folio_test_uptodate(folio))
- 		folio_mark_uptodate(folio);
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index 3b9eb5693683..95cecf08cb37 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -1624,7 +1624,7 @@ static int __write_node_page(struct page *page, bool atomic, bool *submitted,
- 	};
- 	unsigned int seq;
- 
--	trace_f2fs_writepage(page, NODE);
-+	trace_f2fs_writepage(page_folio(page), NODE);
- 
- 	if (unlikely(f2fs_cp_error(sbi))) {
- 		/* keep node pages in remount-ro mode */
-@@ -2171,7 +2171,7 @@ static int f2fs_write_node_pages(struct address_space *mapping,
- static bool f2fs_dirty_node_folio(struct address_space *mapping,
- 		struct folio *folio)
- {
--	trace_f2fs_set_page_dirty(&folio->page, NODE);
-+	trace_f2fs_set_page_dirty(folio, NODE);
- 
- 	if (!folio_test_uptodate(folio))
- 		folio_mark_uptodate(folio);
-diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-index 7ed0fc430dc6..371ba28415f5 100644
---- a/include/trace/events/f2fs.h
-+++ b/include/trace/events/f2fs.h
-@@ -1304,11 +1304,11 @@ TRACE_EVENT(f2fs_write_end,
- 		__entry->copied)
- );
- 
--DECLARE_EVENT_CLASS(f2fs__page,
-+DECLARE_EVENT_CLASS(f2fs__folio,
- 
--	TP_PROTO(struct page *page, int type),
-+	TP_PROTO(struct folio *folio, int type),
- 
--	TP_ARGS(page, type),
-+	TP_ARGS(folio, type),
- 
- 	TP_STRUCT__entry(
- 		__field(dev_t,	dev)
-@@ -1321,14 +1321,14 @@ DECLARE_EVENT_CLASS(f2fs__page,
- 	),
- 
- 	TP_fast_assign(
--		__entry->dev	= page_file_mapping(page)->host->i_sb->s_dev;
--		__entry->ino	= page_file_mapping(page)->host->i_ino;
-+		__entry->dev	= folio_file_mapping(folio)->host->i_sb->s_dev;
-+		__entry->ino	= folio_file_mapping(folio)->host->i_ino;
- 		__entry->type	= type;
- 		__entry->dir	=
--			S_ISDIR(page_file_mapping(page)->host->i_mode);
--		__entry->index	= page->index;
--		__entry->dirty	= PageDirty(page);
--		__entry->uptodate = PageUptodate(page);
-+			S_ISDIR(folio_file_mapping(folio)->host->i_mode);
-+		__entry->index	= folio_index(folio);
-+		__entry->dirty	= folio_test_dirty(folio);
-+		__entry->uptodate = folio_test_uptodate(folio);
- 	),
- 
- 	TP_printk("dev = (%d,%d), ino = %lu, %s, %s, index = %lu, "
-@@ -1341,32 +1341,32 @@ DECLARE_EVENT_CLASS(f2fs__page,
- 		__entry->uptodate)
- );
- 
--DEFINE_EVENT(f2fs__page, f2fs_writepage,
-+DEFINE_EVENT(f2fs__folio, f2fs_writepage,
- 
--	TP_PROTO(struct page *page, int type),
-+	TP_PROTO(struct folio *folio, int type),
- 
--	TP_ARGS(page, type)
-+	TP_ARGS(folio, type)
- );
- 
--DEFINE_EVENT(f2fs__page, f2fs_do_write_data_page,
-+DEFINE_EVENT(f2fs__folio, f2fs_do_write_data_page,
- 
--	TP_PROTO(struct page *page, int type),
-+	TP_PROTO(struct folio *folio, int type),
- 
--	TP_ARGS(page, type)
-+	TP_ARGS(folio, type)
- );
- 
--DEFINE_EVENT(f2fs__page, f2fs_readpage,
-+DEFINE_EVENT(f2fs__folio, f2fs_readpage,
- 
--	TP_PROTO(struct page *page, int type),
-+	TP_PROTO(struct folio *folio, int type),
- 
--	TP_ARGS(page, type)
-+	TP_ARGS(folio, type)
- );
- 
--DEFINE_EVENT(f2fs__page, f2fs_set_page_dirty,
-+DEFINE_EVENT(f2fs__folio, f2fs_set_page_dirty,
- 
--	TP_PROTO(struct page *page, int type),
-+	TP_PROTO(struct folio *folio, int type),
- 
--	TP_ARGS(page, type)
-+	TP_ARGS(folio, type)
- );
- 
- TRACE_EVENT(f2fs_replace_atomic_write_block,
--- 
-2.40.1
+jirka
 
+> ---
+> 
+> Changes in v2: Add bpf-next to the subject
+> 
+>  include/linux/btf_ids.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> index e24aabfe8ecc..c0e3e1426a82 100644
+> --- a/include/linux/btf_ids.h
+> +++ b/include/linux/btf_ids.h
+> @@ -3,6 +3,8 @@
+>  #ifndef _LINUX_BTF_IDS_H
+>  #define _LINUX_BTF_IDS_H
+>  
+> +#include <linux/types.h> /* for u32 */
+> +
+>  struct btf_id_set {
+>  	u32 cnt;
+>  	u32 ids[];
+> -- 
+> 2.34.1
+> 
 
