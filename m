@@ -1,253 +1,208 @@
-Return-Path: <linux-kernel+bounces-147356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E21BA8A72DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:12:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7D588A72E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:13:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82B6E1F223EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:12:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C413B21E55
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:13:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DBDE136664;
-	Tue, 16 Apr 2024 18:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3F4136E12;
+	Tue, 16 Apr 2024 18:12:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="IeTXk+Z7"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="heJ3p54w"
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8504134435;
-	Tue, 16 Apr 2024 18:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD378134CD4;
+	Tue, 16 Apr 2024 18:12:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713291137; cv=none; b=C+mHonjv7AsklBFDDWiY9aHSshF/vJ3cNeJ3SGp+WLgh/KiNxdgyvKg7SS52QrGiQo7+wJ7StgNWg4EZtovx6sFT0kTjpfF7gqznsEDR6u3eEyMHwDw2G3dQBybF8Iv3i7HlJ5KaUgLYFj2A4lL2i9VVM5h6Sg9ESXQnB1BXpSM=
+	t=1713291151; cv=none; b=gwAsldPZOciEMa6ihtz7MGCR6DN9bnk1RvqkFN6VPbBwSctV9N/Uk9wBXBrxzruM9cC7yKLjZoi+W3XTDOaSgedwGx+63ymyGF0TTNV1eWJmEBokK3FBI3AP/lg+T9Dv+q07lO4ltlRQXHNl4EdA3poeUcoMS2NnPrnxVOilr68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713291137; c=relaxed/simple;
-	bh=Vmw4aEQZNgF1MZK5diVS7D95NUEyNcPU6RgyKHjzLoM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=WcT2MGyW8keDhxcjNQoRg+8KP1YnXcsFVZVU5MlUrqsyBFFVOYX+5ztASkSH0Dd0izfmS0xiWY9w1RjjOe93HVpF2ES7TRNcL7H71kZZsoRqfuxy3pASf49dNEQunY9x6DMPoRjI4fx1uTawc5FhdhdnBBOd7KpSQtROZiwxgy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=IeTXk+Z7; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43GD66PV000532;
-	Tue, 16 Apr 2024 18:12:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=qivhKUQzvzA991+4YJXxICyKrQ8l43Yn9blU0XnTCiU=; b=Ie
-	TXk+Z7UlzjaeSzA5Qq8iwCDFopCT9i8dfixS7lOYRU2kfoCm3ad100Ty+W14hBjf
-	LTCi4QRv54DqTnJld6bGuja0zPWhkeBgaM17Pnb8F23bDsofDA8WKW4wmp4LwxI6
-	ZyyOAP6wdGBJ8nLF8H6wN/VG6Yr0QqjS91ZUiq7IIo9HXIVwsxh1z/nNXft7/YC+
-	6FJiedF6quFVQKFp3TIdo1oLXBVVQtX0156o+oJaUPnuMZH+cozzslBQHmK6IK1Z
-	sUAGyqrEicb6EgqO6R/05e4trOeFI0wOw+ZJP03g2QDaLZtT37WyGQO0IjkRrRc/
-	phErLKK71TUXcGXNzqeA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xhswvrxqf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 18:12:05 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43GIC4xx016500
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 18:12:04 GMT
-Received: from [10.110.122.232] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 16 Apr
- 2024 11:12:04 -0700
-Message-ID: <adb9ab3d-0fd2-4afe-96d7-573b1822e0c3@quicinc.com>
-Date: Tue, 16 Apr 2024 11:12:03 -0700
+	s=arc-20240116; t=1713291151; c=relaxed/simple;
+	bh=o/Pz18+RKaep+hg8mtEP9kW2B/vTbdfUmQG+bVJKW20=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nfmRvLYL57p3HBjgfcfW7THHcpfvYtPFlAPtqx0u6W2CN2XnogLXMuZAqwB71HCRElvOetnMW8YUd1y1+nKeLIz0iQMGHgdOLDWEE63t1YbV9mLBmkRFEDP/Y5NE3X76SAJJrFq+Sh4v1krrgXUdTjsLDahZKOej658jPBi3Ckc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=heJ3p54w; arc=none smtp.client-ip=209.85.210.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6eb8ae9b14eso1044890a34.0;
+        Tue, 16 Apr 2024 11:12:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713291149; x=1713895949; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iKA01nHZWWeCUMwezGVKQPv6dB8WRSswCOMzscXKYBI=;
+        b=heJ3p54wCh+Vu5wIz2uayiU9dyUbZxLrWAv1WTjzFOCjbiE79JFK3LDV8PipJALN/6
+         e568ozu5vwDOZPG4C3m7OgW1Hxs85oxEUaU8/GoZlfd629aqLNDnu79R2StPeI98ZpLF
+         DhHCjTdPVYLS5a1uc1//P8SGODC5AJ56KOCaFMinIR3aw+iYlxW0TUldIGQqXExDUkin
+         8A9BmDCxHvAWq8JekbzDW50Ddh/0AAVL5E/ExYURIdOebDKiSUHdPyJypbw0WBYplt7c
+         2MZPG0VE/xFTPAYoE+Pf88YB77TJp/Sr73rDYymTsIBkCvDEHbOrnZ04+slgMzJFpX5v
+         W59g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713291149; x=1713895949;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iKA01nHZWWeCUMwezGVKQPv6dB8WRSswCOMzscXKYBI=;
+        b=r7qq5R0bPw8EB3XuKBw13g6HPMmG0ZulezUlfQfTZD0bIHwfvq1DWd2PmRfzc+YXG7
+         edtDnSxUILsMVTe3RTQ7Szt5Ahy4UKl97Kkislmv9I2MNLZxfaBstsV+Q7y9YruISvPf
+         P4aquINR3hOWoy4raPX5kMFh5DS3q4nBXW1R9fFeXQqCVVPWaxfyJb6iZM4nYSWqWnjB
+         G8DfRS6cVdYSZV0orDyW7h5iXi227WyDRo6VEpJn95PZg4XL5rlZWfgwCGFxV8CEVQjs
+         KaG+LN0m7WWzyEfdUHhetlyiSsnx5nftduGNXLY+9roI6EJTdOlX4tkkIAqvaZ36KzFI
+         14oQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVbffWMoZDWX+piLgzm4VLzZNITVKNVIa2wvj4l1Yv7VVva6KiuYT241OeQrPmDrpM9kLFKy7nt4urxGTfNLO9gEah04Bzj/KDzTd30CBa08kNTF5Id1+GvsSVLSb3+a9P2R30iNzDB8uLL7RBmdq1hAwzT1yW7CbRTQLOxKt03sHG8fTF+d/Z+x4IiLuCQ1ObCmdK9loDgtJ9pv+JaUUlS9tbUPZunCA==
+X-Gm-Message-State: AOJu0YxSApu6IvetWOUq4FjnBRZL2004FGG8CoHEPXpCiIoJtVAYaYUf
+	QUYogQew185tUZr4TzYpxUNaus2WLH3Cz1o0jbszacnHV2bQ0wrS
+X-Google-Smtp-Source: AGHT+IEsvpJ9PHMdwG/Acyze2YUbjWscWF8ldU9oec4TpSg6OiR2NDXpJYNLstl4DLb3bNX7ulcKpA==
+X-Received: by 2002:a9d:4d95:0:b0:6eb:7bc3:12a5 with SMTP id u21-20020a9d4d95000000b006eb7bc312a5mr7305200otk.32.1713291148792;
+        Tue, 16 Apr 2024 11:12:28 -0700 (PDT)
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id c25-20020a05620a135900b0078edf6393edsm3676965qkl.73.2024.04.16.11.12.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 11:12:28 -0700 (PDT)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 028C71200077;
+	Tue, 16 Apr 2024 14:12:27 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Tue, 16 Apr 2024 14:12:27 -0400
+X-ME-Sender: <xms:ir8eZgbEqxjfyHkI9qB6eRHZtvYXA4CtzwbfjRa8Q9nQWC1N5sjDCg>
+    <xme:ir8eZrb2vQTeWI0X7Cgm8I1_h9eZ_azk6RYDQZwGdjAgFWUPWz2sMDBoBJpE1i8mN
+    _PnYtt-AwnaAXB2RA>
+X-ME-Received: <xmr:ir8eZq_nseswGJfnz61rVpvbjRq6ebg_nJ6t-u9aaEFSnOUchA8Tr1r6beQs5Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejiedgiedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeethfejhfekjeffueegieejudegjeetveeuhfelhfevvdfgfeekkeevkeel
+    veekgfenucffohhmrghinhepghhithhhuhgsrdgtohhmpdhgnhhurdhorhhgnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgv
+    shhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehhe
+    ehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:ir8eZqpLHs0k5ul5Kl4J28dibHTNjP5Vh5cyp9QHQJQd6yPUbs_FNg>
+    <xmx:ir8eZrq33PYRO9PrGL2Yfs8a7lJGFjsKKbnSWmqOANo95-kfzbZrTQ>
+    <xmx:ir8eZoTyaZUzqZWAFPHRd6_-J5x-ZoqDEyCPR7Fw_thdspTrBtD85Q>
+    <xmx:ir8eZrprTEoLpgQxmH34yK7TRsic4zq1awIzCuzXq0KRGHL30-39mg>
+    <xmx:ir8eZg7He--6XEZRAbQoK6NRHu9hhc_fg22dV2jkYR8ZhJ7QNBonEKn4>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 16 Apr 2024 14:12:26 -0400 (EDT)
+Date: Tue, 16 Apr 2024 11:12:07 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	llvm@lists.linux.dev, Miguel Ojeda <ojeda@kernel.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,	Gary Guo <gary@garyguo.net>,
+	"Bj\"orn Roy Baron" <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Alice Ryhl <aliceryhl@google.com>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Andrea Parri <parri.andrea@gmail.com>,	Will Deacon <will@kernel.org>,
+ Nicholas Piggin <npiggin@gmail.com>,	David Howells <dhowells@redhat.com>,
+	Jade Alglave <j.alglave@ucl.ac.uk>,	Luc Maranget <luc.maranget@inria.fr>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Akira Yokosawa <akiyks@gmail.com>,	Daniel Lustig <dlustig@nvidia.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,	kent.overstreet@gmail.com,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, elver@google.com,
+	Thomas Gleixner <tglx@linutronix.de>,	Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,	torvalds@linux-foundation.org,
+ linux-arm-kernel@lists.infradead.org,	linux-fsdevel@vger.kernel.org
+Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
+Message-ID: <Zh6_d1T48qpANoCk@boqun-archlinux>
+References: <20240322233838.868874-1-boqun.feng@gmail.com>
+ <ZgFVnar3nS4F8eIX@FVFF77S0Q05N>
+ <ZgHly_fioG7X4wGE@boqun-archlinux>
+ <20240409105015.GC21779@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/3] bus: mhi: host: pci_generic: Add edl callback to
- enter EDL
-Content-Language: en-US
-To: Qiang Yu <quic_qianyu@quicinc.com>, <mani@kernel.org>,
-        <quic_jhugo@quicinc.com>
-CC: <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>
-References: <1713170945-44640-1-git-send-email-quic_qianyu@quicinc.com>
- <1713170945-44640-4-git-send-email-quic_qianyu@quicinc.com>
- <17d94b91-137c-409c-8af3-f32f1af2eb71@quicinc.com>
- <4b684db2-d384-404a-9c54-60d79ac7cf9f@quicinc.com>
-From: Mayank Rana <quic_mrana@quicinc.com>
-In-Reply-To: <4b684db2-d384-404a-9c54-60d79ac7cf9f@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: NqJhOr7DK6bGdMRmD-1rvF-YCgtBLaeB
-X-Proofpoint-ORIG-GUID: NqJhOr7DK6bGdMRmD-1rvF-YCgtBLaeB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_16,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 spamscore=0 impostorscore=0 bulkscore=0 adultscore=0
- lowpriorityscore=0 malwarescore=0 clxscore=1015 suspectscore=0 mlxscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404160113
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409105015.GC21779@noisy.programming.kicks-ass.net>
 
+On Tue, Apr 09, 2024 at 12:50:15PM +0200, Peter Zijlstra wrote:
+> On Mon, Mar 25, 2024 at 01:59:55PM -0700, Boqun Feng wrote:
+> > On Mon, Mar 25, 2024 at 10:44:45AM +0000, Mark Rutland wrote:
+> > [...]
+> > > > 
+> > > > * I choose to re-implement atomics in Rust `asm` because we are still
+> > > >   figuring out how we can make it easy and maintainable for Rust to call
+> > > >   a C function _inlinely_ (Gary makes some progress [2]). Otherwise,
+> > > >   atomic primitives would be function calls, and that can be performance
+> > > >   bottleneck in a few cases.
+> > > 
+> > > I don't think we want to maintain two copies of each architecture's atomics.
+> > > This gets painful very quickly (e.g. as arm64's atomics get patched between
+> > > LL/SC and LSE forms).
+> > > 
+> > 
+> > No argument here ;-)
+> 
+> Didn't we talk about bindgen being able to convert inline C functions
+> into equivalent inline Rust functions? ISTR that getting stuck on Rust
 
+Yes, we did.
 
-On 4/15/2024 8:50 PM, Qiang Yu wrote:
+> not having a useful inline asm.
 > 
-> On 4/16/2024 7:53 AM, Mayank Rana wrote:
->> Hi Qiang
->>
->> On 4/15/2024 1:49 AM, Qiang Yu wrote:
->>> Add mhi_pci_generic_edl_trigger as edl_trigger for some devices (eg. 
->>> SDX65)
->>> to enter EDL mode by writing the 0xEDEDEDED cookie to the channel 91
->>> doorbell register and forcing an SOC reset afterwards.
->>>
->>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
->>> ---
->>>   drivers/bus/mhi/host/pci_generic.c | 47 
->>> ++++++++++++++++++++++++++++++++++++++
->>>   1 file changed, 47 insertions(+)
->>>
->>> diff --git a/drivers/bus/mhi/host/pci_generic.c 
->>> b/drivers/bus/mhi/host/pci_generic.c
->>> index 51639bf..cbf8a58 100644
->>> --- a/drivers/bus/mhi/host/pci_generic.c
->>> +++ b/drivers/bus/mhi/host/pci_generic.c
->>> @@ -27,12 +27,19 @@
->>>   #define PCI_VENDOR_ID_THALES    0x1269
->>>   #define PCI_VENDOR_ID_QUECTEL    0x1eac
->>>   +#define MHI_EDL_DB            91
->>> +#define MHI_EDL_COOKIE            0xEDEDEDED
->>> +
->>> +/* Device can enter EDL by first setting edl cookie then issuing 
->>> inband reset*/
->>> +#define MHI_PCI_GENERIC_EDL_TRIGGER    BIT(0)
->>> +
->>>   /**
->>>    * struct mhi_pci_dev_info - MHI PCI device specific information
->>>    * @config: MHI controller configuration
->>>    * @name: name of the PCI module
->>>    * @fw: firmware path (if any)
->>>    * @edl: emergency download mode firmware path (if any)
->>> + * @edl_trigger: each bit represents a different way to enter EDL
->>>    * @bar_num: PCI base address register to use for MHI MMIO register 
->>> space
->>>    * @dma_data_width: DMA transfer word size (32 or 64 bits)
->>>    * @mru_default: default MRU size for MBIM network packets
->>> @@ -44,6 +51,7 @@ struct mhi_pci_dev_info {
->>>       const char *name;
->>>       const char *fw;
->>>       const char *edl;
->>> +    unsigned int edl_trigger;
->>>       unsigned int bar_num;
->>>       unsigned int dma_data_width;
->>>       unsigned int mru_default;
->>> @@ -292,6 +300,7 @@ static const struct mhi_pci_dev_info 
->>> mhi_qcom_sdx75_info = {
->>>       .name = "qcom-sdx75m",
->>>       .fw = "qcom/sdx75m/xbl.elf",
->>>       .edl = "qcom/sdx75m/edl.mbn",
->>> +    .edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
->>>       .config = &modem_qcom_v2_mhiv_config,
->>>       .bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->>>       .dma_data_width = 32,
->>> @@ -302,6 +311,7 @@ static const struct mhi_pci_dev_info 
->>> mhi_qcom_sdx65_info = {
->>>       .name = "qcom-sdx65m",
->>>       .fw = "qcom/sdx65m/xbl.elf",
->>>       .edl = "qcom/sdx65m/edl.mbn",
->>> +    .edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
->>>       .config = &modem_qcom_v1_mhiv_config,
->>>       .bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->>>       .dma_data_width = 32,
->>> @@ -312,6 +322,7 @@ static const struct mhi_pci_dev_info 
->>> mhi_qcom_sdx55_info = {
->>>       .name = "qcom-sdx55m",
->>>       .fw = "qcom/sdx55m/sbl1.mbn",
->>>       .edl = "qcom/sdx55m/edl.mbn",
->>> +    .edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
->>>       .config = &modem_qcom_v1_mhiv_config,
->>>       .bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->>>       .dma_data_width = 32,
->>> @@ -928,6 +939,39 @@ static void health_check(struct timer_list *t)
->>>       mod_timer(&mhi_pdev->health_check_timer, jiffies + 
->>> HEALTH_CHECK_PERIOD);
->>>   }
->>>   +static int mhi_pci_generic_edl_trigger(struct mhi_controller 
->>> *mhi_cntrl)
->>> +{
->>> +    void __iomem *base = mhi_cntrl->regs;
->>> +    void __iomem *edl_db;
->>> +    int ret;
->>> +    u32 val;
->>> +
->>> +    ret = mhi_device_get_sync(mhi_cntrl->mhi_dev);
->>> +    if (ret) {
->>> +        dev_err(mhi_cntrl->cntrl_dev, "Wake up device fail before 
->>> trigger EDL\n");
->>> +        return ret;
->>> +    }
->>> +
->>> +    pm_wakeup_event(&mhi_cntrl->mhi_dev->dev, 0);
->>> +    mhi_cntrl->runtime_get(mhi_cntrl);
->>> +
->>> +    ret = mhi_get_channel_doorbell(mhi_cntrl, &val);
->>> +    if (ret)
->>> +        return ret;
->> Don't we need error handling part here i.e. calling 
->> mhi_cntrl->runtime_put() as well mhi_device_put() ?
-> 
-> Hi Mayank
-> 
-> After soc_reset, device will reboot to EDL mode and MHI state will be 
-> SYSERR. So host will fail to suspend
-> anyway. The "error handling" we need here is actually to enter EDL mode, 
-> this will be done by SYSERR irq.
-> Here, mhi_cntrl->runtime_put() and mhi_device_put() are only to balance 
-> mhi_cntrl->runtime_get() and
-> mhi_device_get_sync().
-> 
-> Thanks,
-> Qiang
-I am saying is there possibility that mhi_get_channel_doorbell() returns 
-error ?
-If yes, then why don't we need error handling as part of it. you are 
-exiting if this API return error without doing anything.
->>> +    edl_db = base + val + (8 * MHI_EDL_DB);
->>> +
->>> +    mhi_cntrl->write_reg(mhi_cntrl, edl_db + 4, 
->>> upper_32_bits(MHI_EDL_COOKIE));
->>> +    mhi_cntrl->write_reg(mhi_cntrl, edl_db, 
->>> lower_32_bits(MHI_EDL_COOKIE));
->>> +
->>> +    mhi_soc_reset(mhi_cntrl);
->>> +
->>> +    mhi_cntrl->runtime_put(mhi_cntrl);
->>> +    mhi_device_put(mhi_cntrl->mhi_dev);
->>> +
->>> +    return 0;
->>> +}
->>> +
->>>   static int mhi_pci_probe(struct pci_dev *pdev, const struct 
->>> pci_device_id *id)
->>>   {
->>>       const struct mhi_pci_dev_info *info = (struct mhi_pci_dev_info 
->>> *) id->driver_data;
->>> @@ -962,6 +1006,9 @@ static int mhi_pci_probe(struct pci_dev *pdev, 
->>> const struct pci_device_id *id)
->>>       mhi_cntrl->runtime_put = mhi_pci_runtime_put;
->>>       mhi_cntrl->mru = info->mru_default;
->>>   +    if (info->edl_trigger & MHI_PCI_GENERIC_EDL_TRIGGER)
->>> +        mhi_cntrl->edl_trigger = mhi_pci_generic_edl_trigger;
->>> +
->>>       if (info->sideband_wake) {
->>>           mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
->>>           mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
->> Regards,
->> Mayank
+
+Mostly two features were missing: 1) asm goto and 2) memory operands,
+#1 gets implemented[1] by Gary, and should be available in Rust 1.78
+(plan to release at May 2, 2024); For #2, my understanding is that
+arch-specific effort is needed (since different architectures may have
+different contraints on memory operands), I haven't yet found anyone is
+working on this.
+
+(background explanation for broader audience: in GCC's inline asm, you
+can specify an memory location, other than a register location, as an
+input or output of an asm block's operand[2], but current Rust inline
+asm doesn't provide this functionality, by default, without option
+"pure", "nomem", etc, every asm block in Rust can be thought as a C asm
+block with "memory" clobber)
+
+That being said, if you look at the link I shared or this gist from
+Gary:
+
+	https://gist.github.com/nbdd0121/d4bf7dd7f9b6d6b50fa18b1092f45a3c
+
+there is another way (yeah, we probably also have discussed this
+previously), basically what it does is compiling the functions in a C
+file as LLVM IR, so that Rust can call these functions at LLVM IR level.
+This in theory is doing some local LTO, and I've tested that it works
+for asm blocks. We still need to tweak our build system to make this
+work, but should it work, it would mean that Rust can call a C function
+in a pretty efficient way.
+
+> But fixing all that in a hurry seems like the much saner path forward.
+
+So a sane plan to me is wiring our atomics into Rust functions via what
+Mark has (i.e. starting off as FFI calls), then we can switch to the
+"local LTO" approach when it's ready. In case that "local LTO" needs
+more work and we do have performance need, we can always either 1)
+manually implement some primitives in Rust asm, or 2) look into how
+bindgen or other tools can translate simple C functions (asm blocks)
+into Rust.
+
+Regards,
+Boqun
+
+[1]: https://github.com/rust-lang/rust/pull/119365
+[2]: https://gcc.gnu.org/onlinedocs/gcc/Simple-Constraints.html#index-m-in-constraint
 
