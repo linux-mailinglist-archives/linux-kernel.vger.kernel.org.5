@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-147612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5CE98A7685
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:31:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 173B98A7687
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:31:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7155C281565
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:31:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 489C71C22AEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:31:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC5514BFBC;
-	Tue, 16 Apr 2024 21:22:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E78C7150995;
+	Tue, 16 Apr 2024 21:22:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L/feUj0W"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Sdj/G/4D"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D11B14AD2C
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 21:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB61914EC5A;
+	Tue, 16 Apr 2024 21:22:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713302537; cv=none; b=l6VRXDOlYLM+o7b0IuFCwnzizoAF5lRvkmeFoGFj2q2BAI7oPyhVrTDl0dsegTPp7kA8nT0kf/Xw7WqYzUSl9XWfpBpwR6RagSrvhjGvC8g2mgN/oMsKgFHNUBEaNkPZ/ZAYNUEbkf/6mlAOKK9PysgA44GUXFrAY+RqFn9QyQ4=
+	t=1713302539; cv=none; b=OUcKDYyUyHVG38HpaRkvtVYl06nR5dNQjlkDJQIEzo1Za7AIG0kB/H2lQ1r/8HeP0cB5e8jXclRKSfGuYSBfmdhAqjElbQxCMr4/8Y4+sUUkbvc9epAeuJGO3+SGGqebZ8VJjo14v9+/1PqJfaGoud4jWVMuFKIBEEcXs4FbSi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713302537; c=relaxed/simple;
-	bh=xK5hwg6ILPkC2v4d4nuHc6WucRElJH7HgJqquuK12yY=;
+	s=arc-20240116; t=1713302539; c=relaxed/simple;
+	bh=TH6/8w9pkWktCUcxRMlnQFc4unYcczUDErtWtr3bsHw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PELgEEYK5EPYRl5ce7gHK0ei+PRsfnN4MRCn2APnPSS5WFysgaMIYj6CwoNAV/FgMzRTwaz5OuhR0EIPseA9UqG8kjdhuJgC/IYp1QOPZcDDZs57SAX4ZLCMxMnXJ5HkOyt7BOX7hnC9hZTO2qGVNSNESGfTXuP9BvwgkijBUfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L/feUj0W; arc=none smtp.client-ip=198.175.65.10
+	 MIME-Version; b=KDqv40eaNo0aM0oDwSjjrLfXTnZ+9J2Qv4MCFy8S2CL1R30MctFvOB/fvK5a95mrkGuZv7dh/gNte/xeoIdFtS9+3FsCvqwL7ntXjM48hYTsMXyx02Kr5ER++mouvPuCvxELv2jOGkSulgB88Jff1W3C/wLSHrZ2FzbJmnVZjgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Sdj/G/4D; arc=none smtp.client-ip=198.175.65.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713302537; x=1744838537;
+  t=1713302538; x=1744838538;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=xK5hwg6ILPkC2v4d4nuHc6WucRElJH7HgJqquuK12yY=;
-  b=L/feUj0WM8Zp80HCX1O5aBEr6gu1e1ndaDjKGLxm/kpZdAYdREo7git+
-   B00Y0QrQvDoWhcWCATeEjLeaAHX3Ckl6wgL2zLCg6bW8qcP1wG0CJcz+s
-   oHgpDz96DhZ2qC54gtZbSxlpn347lIBwquErt23WSD0bv9eaNV/hwPm9w
-   RLQUM89LpKlWR+S5fqIVHre5G3DQwBGxdXbMpYlFaf5CaSdxWjBWrbFVK
-   7FCtxLXsTyC+6knZGjyCV3X7xjfVC0ObLS1jtQT30TMi8bW2Uev8LZbxw
-   Kmn0c44TfNM/vSSdMF/vnoRO9i5IJmnuhnip6FZYleXvHItp9dPmhAKLs
-   w==;
-X-CSE-ConnectionGUID: Cp99rpEuQCaZhSd9vW67CQ==
-X-CSE-MsgGUID: BRx1kkzcTvKeeKyXwsHjCA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="26234906"
+  bh=TH6/8w9pkWktCUcxRMlnQFc4unYcczUDErtWtr3bsHw=;
+  b=Sdj/G/4Dxe91wesBDAj96cDVjLV04lGXFTa6RdO+nyfZh9bT2uMYVQi9
+   nUV5Qk0D0TBJEVzwsV0j9BMchal+fQ4CRRZDWV3t1Hwr2og2J9DK6Gn3m
+   DUDrmCbYmXSUq+1rSD+8VUIcmToYIM+id/LBoqLyInb13mVTaQM/O+p6M
+   0w7ZGA56NctlqW5wSmq3VaDSxzQQM2O7y7O3xDN+B5AgJlM7yp/61W8r6
+   tUoqJcsY6amjNqHEpXJbyJpof0BcbpP9Cqxplopyq7lfOa8Fkrf1151kK
+   uh15P+fweruP1B0OVI+T9LpAFq/ccFWey6hBK0Qe75Cz9mQiDfcc3Rwtt
+   g==;
+X-CSE-ConnectionGUID: JwGVbOn4TK+mvoR+2tA+WQ==
+X-CSE-MsgGUID: H9Y6s+26RzmIJ+3OIpNJ5A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="26234911"
 X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="26234906"
+   d="scan'208";a="26234911"
 Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 14:22:16 -0700
-X-CSE-ConnectionGUID: +ndZgGKYQ0imf9VwF7ErZw==
-X-CSE-MsgGUID: Oqq5z7szTvOQQYmf6H0VbA==
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 14:22:18 -0700
+X-CSE-ConnectionGUID: hTy9SK5eSamZQKFrVmcg8w==
+X-CSE-MsgGUID: 9JDhzo0QSLeGlvnVyKw/pw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="22267078"
+   d="scan'208";a="22267083"
 Received: from agluck-desk3.sc.intel.com ([172.25.222.105])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 14:22:16 -0700
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 14:22:17 -0700
 From: Tony Luck <tony.luck@intel.com>
-To: MyungJoo Ham <myungjoo.ham@samsung.com>,
-	Chanwoo Choi <cw00.choi@samsung.com>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Hans de Goede <hdegoede@redhat.com>
-Cc: linux-kernel@vger.kernel.org,
+To: Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>
+Cc: Iwona Winiarska <iwona.winiarska@intel.com>,
+	linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
 	patches@lists.linux.dev,
 	Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v3 49/74] x86/cpu/vfm: Update drivers/extcon/extcon-axp288.c
-Date: Tue, 16 Apr 2024 14:22:14 -0700
-Message-ID: <20240416212214.9586-1-tony.luck@intel.com>
+Subject: [PATCH v3 50/74] x86/cpu/vfm: Update drivers/hwmon/peci/cputemp.c
+Date: Tue, 16 Apr 2024 14:22:16 -0700
+Message-ID: <20240416212216.9605-1-tony.luck@intel.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240416211941.9369-1-tony.luck@intel.com>
 References: <20240416211941.9369-1-tony.luck@intel.com>
@@ -83,22 +83,34 @@ New CPU #defines encode vendor and family as well as model.
 
 Signed-off-by: Tony Luck <tony.luck@intel.com>
 ---
- drivers/extcon/extcon-axp288.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hwmon/peci/cputemp.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/extcon/extcon-axp288.c b/drivers/extcon/extcon-axp288.c
-index a703a8315634..d3bcbe839c09 100644
---- a/drivers/extcon/extcon-axp288.c
-+++ b/drivers/extcon/extcon-axp288.c
-@@ -108,7 +108,7 @@ struct axp288_extcon_info {
- };
+diff --git a/drivers/hwmon/peci/cputemp.c b/drivers/hwmon/peci/cputemp.c
+index a812c15948d9..28cec5c318d4 100644
+--- a/drivers/hwmon/peci/cputemp.c
++++ b/drivers/hwmon/peci/cputemp.c
+@@ -11,6 +11,7 @@
+ #include <linux/peci-cpu.h>
+ #include <linux/units.h>
  
- static const struct x86_cpu_id cherry_trail_cpu_ids[] = {
--	X86_MATCH_INTEL_FAM6_MODEL(ATOM_AIRMONT,	NULL),
-+	X86_MATCH_VFM(INTEL_ATOM_AIRMONT,	NULL),
- 	{}
- };
++#include <asm/cpu_device_id.h>
+ #include "common.h"
  
+ #define CORE_NUMS_MAX		64
+@@ -361,9 +362,9 @@ static int init_core_mask(struct peci_cputemp *priv)
+ 
+ 	/* Get the RESOLVED_CORES register value */
+ 	switch (peci_dev->info.model) {
+-	case INTEL_FAM6_ICELAKE_X:
+-	case INTEL_FAM6_ICELAKE_D:
+-	case INTEL_FAM6_SAPPHIRERAPIDS_X:
++	case VFM_MODEL(INTEL_ICELAKE_X):
++	case VFM_MODEL(INTEL_ICELAKE_D):
++	case VFM_MODEL(INTEL_SAPPHIRERAPIDS_X):
+ 		ret = peci_ep_pci_local_read(peci_dev, 0, reg->bus, reg->dev,
+ 					     reg->func, reg->offset + 4, &data);
+ 		if (ret)
 -- 
 2.44.0
 
