@@ -1,160 +1,245 @@
-Return-Path: <linux-kernel+bounces-147084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5C848A6F3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:02:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17DE88A6F44
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:03:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C666281E0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:02:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2D2B285995
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:03:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D1DC13048D;
-	Tue, 16 Apr 2024 15:02:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24A413048D;
+	Tue, 16 Apr 2024 15:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YVsrEKEv"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d1EqWvM4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168A712E1E4
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 15:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF9B212C47A;
+	Tue, 16 Apr 2024 15:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713279743; cv=none; b=gmV9212K7vdGm8qMIG27UQUGem3WbkJSgU8DF1GezHjlP60vvOi1oHrL6H+vr32m1F9z05ZjU4fHmNFlradjSaQCTAgHfGjFnrS9JkRZ4FyJz1KtB9kwzXQJan0CwHZ4W/IYLNb2eKqLZc7b56HyCudWjogJ1S9chmXd9rVLr6M=
+	t=1713279808; cv=none; b=KPNA/zk5UcfMaSaPnr8cB/Np2gpqC9pvjstoJ9nFmgcg9c/ROw+QpjrwmfjDkjHk8zw5csA+gJFawI5xfxdeTTyOReBKqyhOUAnMbMSeGUkBLJayk/qUNrxQSHC2YFHsZEzXk5F/zN2dlAeiaPpgqHea3IZ8zKsFq/3OSLU2gA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713279743; c=relaxed/simple;
-	bh=ZbcUx0LjIshTKQSB2RWvHwkodSiKalk8PnN6LGYty9A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FQC7EkN2cugh0Xk8E7cNksCs3cflrexjV+DxNr3q6iebvz8kb2FPeTU+0of8sHVXtYduAwhiDS6B85AW7y9ujnQGvZoTk02p0NkHJGvieO4U/f9to5YeRY7o2M0ryhl/Wd4Rs5569sOfYWFQULfH5Kt96jZhjL6GBgwxmKe+q4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YVsrEKEv; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713279741;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=20Zel+aRdlxG5vA0u0sR8PKm+d7Ok5LOR3V8qTEvc4o=;
-	b=YVsrEKEvZlTTe9S2e5w6v6x0/d8XmeSrHomwv8pxqez3p9hRk9s9kxTISZc7/81a3RfP7g
-	Rp8bM5lRQsudmfo2LsN80UL4FDeld5aAcl+gDrh3olBebT8+Un8Qkb4JFzNVrdij/NXBHe
-	ZnOvMAoLnBOUjG3NON7W2EnM7YVwIrI=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-542-XLDehmTtP32UjuSPGpPTtQ-1; Tue, 16 Apr 2024 11:02:19 -0400
-X-MC-Unique: XLDehmTtP32UjuSPGpPTtQ-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-417c92b77e1so19477395e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:02:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713279738; x=1713884538;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=20Zel+aRdlxG5vA0u0sR8PKm+d7Ok5LOR3V8qTEvc4o=;
-        b=O49q2el9We+jg5TU25r1Hznxo//9EiWx2poHHYGavxVvf4FUBbF9P/e60FM4VeSDn1
-         IieMTKZ4KrVqRPnYaAYJXz8IBwpbpq7nStZCTV4qmf9LZ2VUmV1JGqDM7SZ8yNlDrOYc
-         ie7kMw39EE+X/ILAag5JP9Bm3p5EsFBHu0GKK5oEM5yUQWMLPBgv2D6LsBKFiUz+H/zk
-         N0dyvH86PKkqz5JSV0ddVwlFrnCILm5/d/DQBiBYEHEH/AgHelqnOL+TH44tc3XJeYrc
-         ++KSRoVcQUMrre1qbcT5tCvw2NbEMQ/i4TiGDBgUrCae6dCBy3ymRdnIfns9EmqWzX3+
-         0S1A==
-X-Forwarded-Encrypted: i=1; AJvYcCXMsBKydfABFQ9G9EHLBes5W9SMfAXErocyecCId5UKeTRRZrVGL+d01/eWJkXgvU3agmQ8H31dN3qdAM+3gNwC/P8S45RHvrMCqI+W
-X-Gm-Message-State: AOJu0YzT/ir8+Y2VPB8Ayd1JmwSM5lh+m9Vb9C9dtbBD9YDYiJScoZSW
-	QcbrlEBmdT0YxcHvAjEGbwjZtewCKvPvWVuEaonGkEQFKLoJ3algg37sWZXINn8/VRn0HN0bq+H
-	nQqy/LNiqxJ+Hs2W0IeqAQsgvR9RNJjWg6BcowjtSdOOuY5jyrXv2s0d+li7nDw==
-X-Received: by 2002:a05:600c:501e:b0:418:5ed2:5aa7 with SMTP id n30-20020a05600c501e00b004185ed25aa7mr4790477wmr.14.1713279738255;
-        Tue, 16 Apr 2024 08:02:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFi2pKS93+Xt7rzUXlMXsLMRf4Zlz0vXqPpUsXZElodhI+YuY++sL82WC1J9WjtGv0jYrQpGw==
-X-Received: by 2002:a05:600c:501e:b0:418:5ed2:5aa7 with SMTP id n30-20020a05600c501e00b004185ed25aa7mr4790456wmr.14.1713279737963;
-        Tue, 16 Apr 2024 08:02:17 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c718:6400:7621:b88a:e99e:2fa8? (p200300cbc71864007621b88ae99e2fa8.dip0.t-ipconnect.de. [2003:cb:c718:6400:7621:b88a:e99e:2fa8])
-        by smtp.gmail.com with ESMTPSA id k21-20020a05600c1c9500b004182a36b185sm13074649wms.2.2024.04.16.08.02.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Apr 2024 08:02:17 -0700 (PDT)
-Message-ID: <0e692fb6-023d-4d24-bdaa-99dec7569ce4@redhat.com>
-Date: Tue, 16 Apr 2024 17:02:16 +0200
+	s=arc-20240116; t=1713279808; c=relaxed/simple;
+	bh=0dFehR7bAofXvwdhbQHUWpVwxNS4jlbytNrjxajS/Pg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hs5MoXZHwUfWUwQj15pwRco7LA3j6dTuBf5CqMZ9YERMPKwc//W3NFqHf8SJ3L0WPOvI4zCxKisHt2fVQK3K51iU+6weopSu3AsEhVirFte9CzpgrJEKp1O9LThMk757OCHESk3Z3K3SH7/93aqsqUk+DGcwyzu1bJGtnB5qcWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d1EqWvM4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBA14C113CE;
+	Tue, 16 Apr 2024 15:03:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713279807;
+	bh=0dFehR7bAofXvwdhbQHUWpVwxNS4jlbytNrjxajS/Pg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=d1EqWvM4R01QG++RsWmY7K55v0olQvvgXIenexsbrc4JKA4nwVfDNHbXnpJ2hODiu
+	 uKXP42Z5t3X8ceOGrFIX++T91LRgNZrljeuacqKst+uLTaMHaV99gERfLC1bHjBbod
+	 uCrU9jKaCvpAs4YTPg8bY4yfClF1wx8tsQqjMthQc5BA0EToSY6K1fPSqef/N+PSro
+	 ozaY5pPAqJBmIuxx6sHAeyRk60Mr9DyVOlmvpu+y3z4jVI9aHvcO3wiChQu9vPek6+
+	 ANtnjbfUJ/4nZQqhFLpPwXnHN61iI1y9UYuY2KOIzVPTHSIbTmXWfY9vUYJGk1R2cL
+	 GwKYqAUJQnPDg==
+Date: Tue, 16 Apr 2024 16:03:20 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 01/17] riscv: cpufeature: Fix thead vector hwcap
+ removal
+Message-ID: <20240416-swipe-flattered-7cdccc01f0fe@spud>
+References: <20240415-dev-charlie-support_thead_vector_6_9-v2-0-c7d68c603268@rivosinc.com>
+ <20240415-dev-charlie-support_thead_vector_6_9-v2-1-c7d68c603268@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/3] mm/arm64: override clear_young_dirty_ptes() batch
- helper
-To: Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org
-Cc: ryan.roberts@arm.com, 21cnbao@gmail.com, mhocko@suse.com,
- fengwei.yin@intel.com, zokeefe@google.com, shy828301@gmail.com,
- xiehuan09@gmail.com, wangkefeng.wang@huawei.com, songmuchun@bytedance.com,
- peterx@redhat.com, minchan@kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240416033457.32154-1-ioworker0@gmail.com>
- <20240416033457.32154-3-ioworker0@gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240416033457.32154-3-ioworker0@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="RbQjJEERG41bUbGr"
+Content-Disposition: inline
+In-Reply-To: <20240415-dev-charlie-support_thead_vector_6_9-v2-1-c7d68c603268@rivosinc.com>
 
-On 16.04.24 05:34, Lance Yang wrote:
-> The per-pte get_and_clear/modify/set approach would result in
-> unfolding/refolding for contpte mappings on arm64. So we need
-> to override clear_young_dirty_ptes() for arm64 to avoid it.
-> 
-> Suggested-by: David Hildenbrand <david@redhat.com>
 
-I could have sworn my suggestion would have better applied to patch #1 :)
+--RbQjJEERG41bUbGr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
+On Mon, Apr 15, 2024 at 09:11:58PM -0700, Charlie Jenkins wrote:
+> The riscv_cpuinfo struct that contains mvendorid and marchid is not
+> populated until all harts are booted which happens after the DT parsing.
+> Use the vendorid/archid values from the DT if available or assume all
+> harts have the same values as the boot hart as a fallback.
+>=20
+> Fixes: d82f32202e0d ("RISC-V: Ignore V from the riscv,isa DT property on =
+older T-Head CPUs")
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/sbi.h   |  2 ++
+>  arch/riscv/kernel/cpu.c        | 36 ++++++++++++++++++++++++++++++++----
+>  arch/riscv/kernel/cpufeature.c | 12 ++++++++++--
+>  3 files changed, 44 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+> index 6e68f8dff76b..0fab508a65b3 100644
+> --- a/arch/riscv/include/asm/sbi.h
+> +++ b/arch/riscv/include/asm/sbi.h
+> @@ -370,6 +370,8 @@ static inline int sbi_remote_fence_i(const struct cpu=
+mask *cpu_mask) { return -1
+>  static inline void sbi_init(void) {}
+>  #endif /* CONFIG_RISCV_SBI */
+> =20
+> +unsigned long riscv_get_mvendorid(void);
+> +unsigned long riscv_get_marchid(void);
+>  unsigned long riscv_cached_mvendorid(unsigned int cpu_id);
+>  unsigned long riscv_cached_marchid(unsigned int cpu_id);
+>  unsigned long riscv_cached_mimpid(unsigned int cpu_id);
+> diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
+> index d11d6320fb0d..8c8250b98752 100644
+> --- a/arch/riscv/kernel/cpu.c
+> +++ b/arch/riscv/kernel/cpu.c
+> @@ -139,6 +139,34 @@ int riscv_of_parent_hartid(struct device_node *node,=
+ unsigned long *hartid)
+>  	return -1;
+>  }
+> =20
+> +unsigned long __init riscv_get_marchid(void)
+> +{
+> +	struct riscv_cpuinfo *ci =3D this_cpu_ptr(&riscv_cpuinfo);
+> +
+> +#if IS_ENABLED(CONFIG_RISCV_SBI)
+> +	ci->marchid =3D sbi_spec_is_0_1() ? 0 : sbi_get_marchid();
+> +#elif IS_ENABLED(CONFIG_RISCV_M_MODE)
+> +	ci->marchid =3D csr_read(CSR_MARCHID);
+> +#else
+> +	ci->marchid =3D 0;
+> +#endif
+> +	return ci->marchid;
+> +}
+> +
+> +unsigned long __init riscv_get_mvendorid(void)
+> +{
+> +	struct riscv_cpuinfo *ci =3D this_cpu_ptr(&riscv_cpuinfo);
+> +
+> +#if IS_ENABLED(CONFIG_RISCV_SBI)
+> +	ci->mvendorid =3D sbi_spec_is_0_1() ? 0 : sbi_get_mvendorid();
+> +#elif IS_ENABLED(CONFIG_RISCV_M_MODE)
+> +	ci->mvendorid =3D csr_read(CSR_MVENDORID);
+> +#else
+> +	ci->mvendorid =3D 0;
+> +#endif
+> +	return ci->mvendorid;
+> +}
+> +
+>  DEFINE_PER_CPU(struct riscv_cpuinfo, riscv_cpuinfo);
+> =20
+>  unsigned long riscv_cached_mvendorid(unsigned int cpu_id)
+> @@ -170,12 +198,12 @@ static int riscv_cpuinfo_starting(unsigned int cpu)
+>  	struct riscv_cpuinfo *ci =3D this_cpu_ptr(&riscv_cpuinfo);
+> =20
+>  #if IS_ENABLED(CONFIG_RISCV_SBI)
+> -	ci->mvendorid =3D sbi_spec_is_0_1() ? 0 : sbi_get_mvendorid();
+> -	ci->marchid =3D sbi_spec_is_0_1() ? 0 : sbi_get_marchid();
+> +	ci->mvendorid =3D ci->mvendorid ? ci->mvendorid : sbi_spec_is_0_1() ? 0=
+ : sbi_get_mvendorid();
+> +	ci->marchid =3D ci->marchid ? ci->marchid : sbi_spec_is_0_1() ? 0 : sbi=
+_get_marchid();
+
+Can we please not have double ternary stuff? This is awful to grok :(
+Can you do
+if (!ci->m*id)
+	sbi_spec_is_0_1() ? 0 : sbi_get_m*id();
+instead? I think that is much easier to understand.
+Otherwise,
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
 Cheers,
+Conor.
 
-David / dhildenb
+>  	ci->mimpid =3D sbi_spec_is_0_1() ? 0 : sbi_get_mimpid();
+>  #elif IS_ENABLED(CONFIG_RISCV_M_MODE)
+> -	ci->mvendorid =3D csr_read(CSR_MVENDORID);
+> -	ci->marchid =3D csr_read(CSR_MARCHID);
+> +	ci->mvendorid =3D ci->mvendorid ? ci->mvendorid : csr_read(CSR_MVENDORI=
+D);
+> +	ci->marchid =3D ci->marchid ? ci->marchid : csr_read(CSR_MARCHID);
+>  	ci->mimpid =3D csr_read(CSR_MIMPID);
+>  #else
+>  	ci->mvendorid =3D 0;
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
+e.c
+> index 3ed2359eae35..c6e27b45e192 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -490,6 +490,8 @@ static void __init riscv_fill_hwcap_from_isa_string(u=
+nsigned long *isa2hwcap)
+>  	struct acpi_table_header *rhct;
+>  	acpi_status status;
+>  	unsigned int cpu;
+> +	u64 boot_vendorid;
+> +	u64 boot_archid;
+> =20
+>  	if (!acpi_disabled) {
+>  		status =3D acpi_get_table(ACPI_SIG_RHCT, 0, &rhct);
+> @@ -497,6 +499,13 @@ static void __init riscv_fill_hwcap_from_isa_string(=
+unsigned long *isa2hwcap)
+>  			return;
+>  	}
+> =20
+> +	/*
+> +	 * Naively assume that all harts have the same mvendorid/marchid as the
+> +	 * boot hart.
+> +	 */
+> +	boot_vendorid =3D riscv_get_mvendorid();
+> +	boot_archid =3D riscv_get_marchid();
+> +
+>  	for_each_possible_cpu(cpu) {
+>  		struct riscv_isainfo *isainfo =3D &hart_isa[cpu];
+>  		unsigned long this_hwcap =3D 0;
+> @@ -544,8 +553,7 @@ static void __init riscv_fill_hwcap_from_isa_string(u=
+nsigned long *isa2hwcap)
+>  		 * CPU cores with the ratified spec will contain non-zero
+>  		 * marchid.
+>  		 */
+> -		if (acpi_disabled && riscv_cached_mvendorid(cpu) =3D=3D THEAD_VENDOR_I=
+D &&
+> -		    riscv_cached_marchid(cpu) =3D=3D 0x0) {
+> +		if (acpi_disabled && boot_vendorid =3D=3D THEAD_VENDOR_ID && boot_arch=
+id =3D=3D 0x0) {
+>  			this_hwcap &=3D ~isa2hwcap[RISCV_ISA_EXT_v];
+>  			clear_bit(RISCV_ISA_EXT_v, isainfo->isa);
+>  		}
+>=20
+> --=20
+> 2.44.0
+>=20
 
+--RbQjJEERG41bUbGr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh6TOAAKCRB4tDGHoIJi
+0ugHAP9wq53A/rRMZA7YNcwk3t+YkspiOROzoX/lB6mQceQcywEA6kOQ31DLs19U
+K7NuAGuzzBkZ9AZreTReZw47pw/tXwo=
+=YaUr
+-----END PGP SIGNATURE-----
+
+--RbQjJEERG41bUbGr--
 
