@@ -1,141 +1,204 @@
-Return-Path: <linux-kernel+bounces-147229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAC318A714C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:24:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6577D8A714D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:25:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98219285641
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:24:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5403B225F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82F571327E0;
-	Tue, 16 Apr 2024 16:24:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="wHhoQ0VX"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D856A43AA5;
-	Tue, 16 Apr 2024 16:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8130131BDB;
+	Tue, 16 Apr 2024 16:25:44 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D801131750
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:25:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713284659; cv=none; b=Fusj6dVU8cGlvkg97Tkv5iqH60xSkiWoadcxUwKxYaUO1q0FjhGEQxumjwK87zX7ost+j7llSw39Py8FpFrhdfkFagBvLc3rd7FgA28+u4i243UksU8U6x/oP2IuQunYOmJ0axhmLyjm7pFoDU6eY2jkT/h+5eLoHjZ/5b5W6Ig=
+	t=1713284744; cv=none; b=C59K1AWE+k6HvghBpHvzDWAhLgBO/MZqYPFf7YWN6L1IVgJIVRlrHNnn4J4a3xlTrw+Q6SGrK95JIQeHEglnmQsoAM75fju7nLi5fB3x/VXWuOJtmpyRi4/uKUF1l/svcAwveGdWDnwLTnAMOv9vbcGGsX+uwprUj+DF6RFdAV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713284659; c=relaxed/simple;
-	bh=LXD6sGC7ShZwC4XuH56juxpwduozJ54f6l/hd3qy1JI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vCxpBZLfPn1BGN7rpFQM6LE6G2yqZV0g6ZD0afmFqJk1kevR5rdpSaV45e+ii1/68e09ywKeblhfmcsAanzSV8KrJXIInUV2OnIzq83vspApfKDTJ6aZ58WRzZpUAjBHPbfQ0Y38WC7/YqLmtkfUAsMACy/mf9bqZwF+OdDIGGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=wHhoQ0VX; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=EafU4aiUFWAg4n1i3C5qywi8YkpDQMqeSo4IU9drGL8=; b=wHhoQ0VXF2dXp8ma/AE6evD/s6
-	QEVXU9/p8kWTKdBV3Shx+k2MG3D/KjQLhaz2LvhgEt8nPMFI0CLdeLosUcYNmc7IiNOabqTNbSMP5
-	JsTufL2pU2bfBEkEKipN1P5a+w6uGLMe4dooqp/B377ob3gs/hKJq+Y3ZYzYQn+nT60OG1r2DHHTl
-	EiaOVAmiKtqKlXDrXTZhRIBMrNbXJk/4nnQv6MIASp7KC9NYA++N+VEKaRIE6/MJpBNI7bQb9fRaK
-	DLkrHcHqUENqA8kb3W1e19U44okMRMi4omlnbWejLmCb1fb+9ThQlksB6uh1qwPYtpgGwBRYA69Tr
-	pmyRv28Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41312)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rwlbH-0000et-1X;
-	Tue, 16 Apr 2024 17:24:03 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rwlbG-0004yv-9z; Tue, 16 Apr 2024 17:24:02 +0100
-Date: Tue, 16 Apr 2024 17:24:02 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Stefan Eichenberger <eichest@gmail.com>, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, lxu@maxlinear.com, hkallweit1@gmail.com,
-	michael@walle.cc, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] net: phy: mxl-gpy: add new device tree property
- to disable SGMII autoneg
-Message-ID: <Zh6mIv1Ee+1h21Xo@shell.armlinux.org.uk>
-References: <20240416121032.52108-1-eichest@gmail.com>
- <20240416121032.52108-3-eichest@gmail.com>
- <3f7f278f-e490-47f1-971c-ecf44a70cee4@lunn.ch>
- <Zh6clAtI3NO+nMEi@eichest-laptop>
- <5ed39628-4ac0-4c4e-9a16-fd4bf9a6db29@lunn.ch>
+	s=arc-20240116; t=1713284744; c=relaxed/simple;
+	bh=yBO4eUI1vmYvSn1FlgZd+SWDy6MXclS1NXS9IT3JYv0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FBLmv+88Drr0m7NfxcWJIggzegDnVOUXfbG1sDGxVd7QTBbeCjhP7QC5IAltmL6ZAmDLqBUGInkEovV/JoF/uKPCcChMEFVoInI53FOY8qbwTXkjXg/bWnBPvi98wIt0occ8NT5RQdODCoWSU93YY5K+v5ZZhIOkUq32j1pZQ1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82B4C339;
+	Tue, 16 Apr 2024 09:26:09 -0700 (PDT)
+Received: from [10.1.39.189] (XHFQ2J9959.cambridge.arm.com [10.1.39.189])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85D273F792;
+	Tue, 16 Apr 2024 09:25:39 -0700 (PDT)
+Message-ID: <3c4b1711-5a84-4e7a-b54a-d4955d62ec59@arm.com>
+Date: Tue, 16 Apr 2024 17:25:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5ed39628-4ac0-4c4e-9a16-fd4bf9a6db29@lunn.ch>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 1/3] mm/madvise: introduce clear_young_dirty_ptes()
+ batch helper
+Content-Language: en-GB
+To: Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org
+Cc: david@redhat.com, 21cnbao@gmail.com, mhocko@suse.com,
+ fengwei.yin@intel.com, zokeefe@google.com, shy828301@gmail.com,
+ xiehuan09@gmail.com, wangkefeng.wang@huawei.com, songmuchun@bytedance.com,
+ peterx@redhat.com, minchan@kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240416033457.32154-1-ioworker0@gmail.com>
+ <20240416033457.32154-2-ioworker0@gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240416033457.32154-2-ioworker0@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 16, 2024 at 06:02:08PM +0200, Andrew Lunn wrote:
-> On Tue, Apr 16, 2024 at 05:43:16PM +0200, Stefan Eichenberger wrote:
-> > Hi Andrew,
-> > 
-> > Thanks a lot for the feedback.
-> > 
-> > On Tue, Apr 16, 2024 at 03:46:19PM +0200, Andrew Lunn wrote:
-> > > On Tue, Apr 16, 2024 at 02:10:32PM +0200, Stefan Eichenberger wrote:
-> > > > Add a new device tree property to disable SGMII autonegotiation and
-> > > > instead use the option to match the SGMII speed to what was negotiated
-> > > > on the twisted pair interface (tpi).
-> > > 
-> > > Could you explain this is more detail.
-> > > 
-> > > SGMII always runs its clocks at 1000Mbps. The MAC needs to duplicate
-> > > the symbols 100 times when running at 10Mbs, and 10 times when running
-> > > at 100Mbps.
-> > 
-> > Currently, the mxl-gpy driver uses SGMII autonegotiation for 10 Mbps,
-> > 100 Mbps, and 1000 Mbps. For our Ethernet controller, which is on an
-> > Octeon TX2 SoC, this means that we have to enable "in-band-status" on
-> > the controller. This will work for all three speed settings. However, if
-> > we have a link partner that can do 2.5 Gbps, the mxl-gpy driver will
-> > disable SGMII autonegotiation in gpy_update_interface. This is not
-> > supported by this Ethernet controller because in-band-status is still
-> > enabled. Therefore, we will not be able to transfer data at 2.5 Gbps,
-> > the SGMII link will not go into a working state.
+On 16/04/2024 04:34, Lance Yang wrote:
+> This commit introduces clear_young_dirty_ptes() to replace mkold_ptes().
+> By doing so, we can use the same function for both use cases
+> (madvise_pageout and madvise_free), and it also provides the flexibility
+> to only clear the dirty flag in the future if needed.
 > 
-> This is where i expect Russel to point out that SGMII does not support
-> 2.5G. What you actually mean is that the PHY swaps to 2500BaseX. And
-> 2500BaseX does not perform speed negotiation, since it only supports
-> 2500. So you also need the MAC to swap to 2500BaseX.
+> Suggested-by: Ryan Roberts <ryan.roberts@arm.com>
+> Signed-off-by: Lance Yang <ioworker0@gmail.com>
 
-Yes, absolutely true that SGMII does not support 2.5G... and when
-operating faster, than 2500base-X is normally used.
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
 
-How, 2500base-X was slow to be standardised, and consequently different
-manufacturers came up with different ideas. The common theme is that
-it's 1000base-X up-clocked by 2.5x. Where the ideas differ is whether
-in-band negotiation is supported or not. This has been a pain point for
-a while now.
+> ---
+>  include/linux/mm_types.h |  9 +++++
+>  include/linux/pgtable.h  | 74 ++++++++++++++++++++++++----------------
+>  mm/madvise.c             |  3 +-
+>  3 files changed, 55 insertions(+), 31 deletions(-)
+> 
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index c432add95913..28822cd65d2a 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -1367,6 +1367,15 @@ enum fault_flag {
+>  
+>  typedef unsigned int __bitwise zap_flags_t;
+>  
+> +/* Flags for clear_young_dirty_ptes(). */
+> +typedef int __bitwise cydp_t;
+> +
+> +/* Clear the access bit */
+> +#define CYDP_CLEAR_YOUNG		((__force cydp_t)BIT(0))
+> +
+> +/* Clear the dirty bit */
+> +#define CYDP_CLEAR_DIRTY		((__force cydp_t)BIT(1))
+> +
+>  /*
+>   * FOLL_PIN and FOLL_LONGTERM may be used in various combinations with each
+>   * other. Here is what they mean, and how to use them:
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index e2f45e22a6d1..18019f037bae 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -361,36 +361,6 @@ static inline int ptep_test_and_clear_young(struct vm_area_struct *vma,
+>  }
+>  #endif
+>  
+> -#ifndef mkold_ptes
+> -/**
+> - * mkold_ptes - Mark PTEs that map consecutive pages of the same folio as old.
+> - * @vma: VMA the pages are mapped into.
+> - * @addr: Address the first page is mapped at.
+> - * @ptep: Page table pointer for the first entry.
+> - * @nr: Number of entries to mark old.
+> - *
+> - * May be overridden by the architecture; otherwise, implemented as a simple
+> - * loop over ptep_test_and_clear_young().
+> - *
+> - * Note that PTE bits in the PTE range besides the PFN can differ. For example,
+> - * some PTEs might be write-protected.
+> - *
+> - * Context: The caller holds the page table lock.  The PTEs map consecutive
+> - * pages that belong to the same folio.  The PTEs are all in the same PMD.
+> - */
+> -static inline void mkold_ptes(struct vm_area_struct *vma, unsigned long addr,
+> -		pte_t *ptep, unsigned int nr)
+> -{
+> -	for (;;) {
+> -		ptep_test_and_clear_young(vma, addr, ptep);
+> -		if (--nr == 0)
+> -			break;
+> -		ptep++;
+> -		addr += PAGE_SIZE;
+> -	}
+> -}
+> -#endif
+> -
+>  #ifndef __HAVE_ARCH_PMDP_TEST_AND_CLEAR_YOUNG
+>  #if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_ARCH_HAS_NONLEAF_PMD_YOUNG)
+>  static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+> @@ -489,6 +459,50 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
+>  }
+>  #endif
+>  
+> +#ifndef clear_young_dirty_ptes
+> +/**
+> + * clear_young_dirty_ptes - Mark PTEs that map consecutive pages of the
+> + *		same folio as old/clean.
+> + * @mm: Address space the pages are mapped into.
+> + * @addr: Address the first page is mapped at.
+> + * @ptep: Page table pointer for the first entry.
+> + * @nr: Number of entries to mark old/clean.
+> + * @flags: Flags to modify the PTE batch semantics.
+> + *
+> + * May be overridden by the architecture; otherwise, implemented by
+> + * get_and_clear/modify/set for each pte in the range.
+> + *
+> + * Note that PTE bits in the PTE range besides the PFN can differ. For example,
+> + * some PTEs might be write-protected.
+> + *
+> + * Context: The caller holds the page table lock.  The PTEs map consecutive
+> + * pages that belong to the same folio.  The PTEs are all in the same PMD.
+> + */
+> +static inline void clear_young_dirty_ptes(struct vm_area_struct *vma,
+> +					  unsigned long addr, pte_t *ptep,
+> +					  unsigned int nr, cydp_t flags)
+> +{
+> +	pte_t pte;
+> +
+> +	for (;;) {
+> +		if (flags == CYDP_CLEAR_YOUNG)
+> +			ptep_test_and_clear_young(vma, addr, ptep);
+> +		else {
+> +			pte = ptep_get_and_clear(vma->vm_mm, addr, ptep);
+> +			if (flags & CYDP_CLEAR_YOUNG)
+> +				pte = pte_mkold(pte);
+> +			if (flags & CYDP_CLEAR_DIRTY)
+> +				pte = pte_mkclean(pte);
+> +			set_pte_at(vma->vm_mm, addr, ptep, pte);
+> +		}
+> +		if (--nr == 0)
+> +			break;
+> +		ptep++;
+> +		addr += PAGE_SIZE;
+> +	}
+> +}
+> +#endif
+> +
+>  static inline void ptep_clear(struct mm_struct *mm, unsigned long addr,
+>  			      pte_t *ptep)
+>  {
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index f59169888b8e..edb592adb749 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -507,7 +507,8 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+>  			continue;
+>  
+>  		if (!pageout && pte_young(ptent)) {
+> -			mkold_ptes(vma, addr, pte, nr);
+> +			clear_young_dirty_ptes(vma, addr, pte, nr,
+> +					       CYDP_CLEAR_YOUNG);
+>  			tlb_remove_tlb_entries(tlb, pte, nr, addr);
+>  		}
+>  
 
-As I mentioned in my previous two messages, I have an experimental
-patch series that helps to address this.
-
-The issue is that implementations mix manufacturers, so we need to
-know the capabilities of the PHY and the capabilities of the PCS, and
-then hope that we can find some common ground between their
-requirements.
-
-There is then the issue that if you're not using phylink, then...
-guess what... you either need to convert to use phylink or implement
-the logic in your own MAC driver to detect what the PHY is doing
-and what its capabilities are - but I think from what you've said,
-you are using phylink.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
