@@ -1,89 +1,111 @@
-Return-Path: <linux-kernel+bounces-146231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D5298A627A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:39:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C02F8A627B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:39:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03E2F2824C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:39:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 775B01F21A45
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E15C37152;
-	Tue, 16 Apr 2024 04:39:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 223852E622;
+	Tue, 16 Apr 2024 04:39:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b="t3Lrh75t"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2121.outbound.protection.outlook.com [40.107.236.121])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Z/jAyfFi"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A2712E4A;
-	Tue, 16 Apr 2024 04:39:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.121
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934FC39863;
+	Tue, 16 Apr 2024 04:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.16
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713242353; cv=fail; b=rW7xI6vskn4dZlDGFmmg9Dk9+LRCf7LAmBO5OtUtELyP46HNu2GdqPL+BQyKM66bEV1nTMe7cCWBNa5stUDsA3CS62nayeTRjKhcg/aARFK1JxfrW+wClKboYl9L3ti3OmUfciBGeYJ+zXNWILSuF9s57xQUWzyA0Ti4RXTjWog=
+	t=1713242364; cv=fail; b=mEJItmtc9XB1+mQCyEYKvngkaFpYekwHfS4tMOdhO7CZK/uYSlgJ67TQkQDGL5P2p1+rqH5V2jgCmxJQgIu4HTJq6kyi+kEKc25iBc2XdLcQjtxnxzSIM1vnwk5j0YGCbsXFSd5a+u3jsZ1iIr+ePIoFhgo9/j2Khw9jVpUPL3U=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713242353; c=relaxed/simple;
-	bh=fXArbvZl3ymYODyLpBqNAOk943FAWL0hnpf/wat55oY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=GrGs/87M/J0oh3KO+/SM3Yk6Qc6gDt8MeA3rsSL/w7u79afA/VUmIE7SwnEqerVJ8bUxKB1hAAmNTC8SSlk06ctzAiZY/QwbGELNsc3Tkq1hYOWbV0pie2YivzUPFAfGREL+NOAiwqLN4lV2vzCgOu/OrnxnszbDFOfMG0ofgNk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=fail (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b=t3Lrh75t reason="key not found in DNS"; arc=fail smtp.client-ip=40.107.236.121
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
+	s=arc-20240116; t=1713242364; c=relaxed/simple;
+	bh=FC5hvb+HaAiBZV/JUGPFW0iF5iauPI4SbQ6lkSiB+zg=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=bf4XPdXT2jsaKayIyyvRUar6+yiqhZEGik/56uzQCK/NIkoxcY/E4tOwVNVzK4dCc9WeCzjzuk2ZN3CJHbAaNpakFj+6JGyeO04jCUGJx5Yo+4OlWWxluS3Ih0KE6vNP0kC0XtdveT9dDDuJERBU5aiuQYbePVH7yNA6CQZzodc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Z/jAyfFi; arc=fail smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713242362; x=1744778362;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=FC5hvb+HaAiBZV/JUGPFW0iF5iauPI4SbQ6lkSiB+zg=;
+  b=Z/jAyfFihxsLIntd++XZkLfi5Jd36XM4XBa23fXUlQ+kRRhPPA9B1a8R
+   KV1FB4I61mOoruCHO6rOx7bZp7AfTfmWnYUWHQqSzRiwYnAXblzw7reO/
+   au4N14hxU3hHiLN3QAk+a/vTGOmO4NmnIVem/HZ8jShCbUsVR1QIvYWid
+   uH/ElmkxJh++GfPeDNaDIjOaPPPM6MXTdtCWtikvTI+0ufi1FGVlX9fZ7
+   adRYIE3y2L+hrYe9Zo/I1nsdqe2PtRkIpMPTfAmnMG55yaBCereNID10j
+   2DMszb2Cd4Q/vOc3ikV4OdWwyo0lhDNx1ehuSK5t5DnUbWnUZ6TWBk+4i
+   w==;
+X-CSE-ConnectionGUID: jU+cIr9PQIe0pU9rP0Vi/A==
+X-CSE-MsgGUID: wGrRWpD/QDiRVemxswtK8w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="8786655"
+X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
+   d="scan'208";a="8786655"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 21:39:21 -0700
+X-CSE-ConnectionGUID: 6vBHPO/5RV6sPmPJUFGGlQ==
+X-CSE-MsgGUID: tbk/AvswSom7jT56THj8zg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
+   d="scan'208";a="22600880"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Apr 2024 21:39:21 -0700
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 15 Apr 2024 21:39:11 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 15 Apr 2024 21:39:11 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 15 Apr 2024 21:39:11 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hDMfBNcwMbXHaehsm9XS3hcCxIUOoEoHkvhLTQkh42OyWtypLrPdn8P+fig5wFuuZmy6/IzWEBSCdFO2d7mLL5Saixev+ElrpaIdHdqhWW1a4yX2NxGyTaWC2EWwbiEyRw/0wedzwabBj8gTNQw6RpDPGzN5snFNenbRzZpHYicXBPeA8k6hfs/UhNMfvq3u8Ytb9bJdJvwIw/eRuXHa9wq9g7YtcfjFmn64YNRadP0O0M0sVMZMl45KPJWNKMvhfB8+X8eORrqDKrXHDTwC5ZLArPqROZ3Ow09CisJ5bT1eZ6elEVC9cjxi4ZH9s/bSjx2GT6/NcOjxaugs1VCkLw==
+ b=Sa3EOIKdIk7tG06XOD7PtndE54Q44Q+J7MBPUrk3lD+yxgPLpUh/QMYCZBVA2OAMqLgF5p8uJIUFhMctUTO4MScbiQmGT166iKJxk7PcffqL9NMMXn5gBvFVaqaunZmSQlwsYlec46Zr9PLgqsa72lwQsS9cQCrk+D+qc+iKyhML63AdGT5VYe9YWTPL4fTqBsum5UJ581yJ+VwEfO6nSRpMwnsCewKDN30MFUHrfdcWTWnwROi1d6L7E6fyCiTmi07QDM5LnIXKY9mD5ZmYS/8l93gubux0KWuSoe9tw7xexmZSYalHQzKQYdetTYKXF/AyqrzyOJf1FdpvlVu1pw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ax5DanL14r/GomlVtrD4nbwtVqEQc0x+zpwIHeLB6k8=;
- b=hSxM0j0wot7RRClgaLTdoMKhDH6pmJY85HrLykaYS3QIw6nP46bqiHHWlGS4fY2igLp1j+UupvsCaq3ms3yv8E+56k/aAO6dzno2FAuPWj5keixRCDeV6uEHM7A62hgYEpVBwjbRrqXZeRB7J3/UFdOujC8zL2aeZoRAt3uOll10Uma3muRqchPzpzbh8BeOaY61ZAfqSO9zwnDhX8k4XX25V6UQohLwmfbVpTjxnCYxew+xEuuuREkodAUYT+THGDmIiiDA8gsGjkjOhAHufTVhed/u5xFFDBZPbHUKlXqAn80cF5B+k4ub2KMOnRRLYyE9VI5xt0kEE1bQ4Da83g==
+ bh=/57S9Yl+ner5fT2gfl+3lVzhoHraxDNGoPGwRr/sx8w=;
+ b=lq7v/UpkvbqMOZpG17tH2a9JE72aAe7eP6OhnCqNZOyzqMiwhUD18faNaD+HUXuuSvubnvDlNUWtR5D9jsBGZY2YtjHPllZrehpRt8YA4XyE3ee6y5uAMxTKaXRxIU23pH2GTWks0xo6mvhZztAasxXwFpA5CfY9io7xYoNkQEJ7SE7htN5RfYCf/UZEo3O8aHmUtz45GU0sx7IzDDgYYj//uaec0jnprDDolATWHIKmrPs85xvoOAjQIZ5rLshn4EWxm4F7tFekPSVRl68Klr46a85kMe9uNQ97TGrsOdexAh4mky3hKiCpLltS/sduqW6RK+YlFFYALlXa/dGYQA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=amperemail.onmicrosoft.com; dkim=pass
- header.d=amperemail.onmicrosoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ax5DanL14r/GomlVtrD4nbwtVqEQc0x+zpwIHeLB6k8=;
- b=t3Lrh75t3DpDryTK85PK1136ubJcd3WwaiOHrSI8b+5q3/iQU1RB6ejctvdigv2XRlOx9C913j9IOTZtV+kAmlaxRg4FB2uJeLFv4FXDdwq3s8BrkH0D5tT7Njr4GzcGVwGoLYPKDzNoDsntgB/O4GntPSLtkmWuk0y7+LwnQPM=
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
-Received: from DM6PR01MB5947.prod.exchangelabs.com (2603:10b6:5:1dd::12) by
- MW4PR01MB6435.prod.exchangelabs.com (2603:10b6:303:76::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.50; Tue, 16 Apr 2024 04:39:05 +0000
-Received: from DM6PR01MB5947.prod.exchangelabs.com
- ([fe80::b557:13cd:8a29:ae08]) by DM6PR01MB5947.prod.exchangelabs.com
- ([fe80::b557:13cd:8a29:ae08%4]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
- 04:39:04 +0000
-Message-ID: <15faebc0-9b20-4d0f-a946-c047bc6ae564@amperemail.onmicrosoft.com>
-Date: Tue, 16 Apr 2024 11:38:53 +0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] dt-bindings: hwmon: Add maxim max31790 bindings
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Chanh Nguyen <chanh@os.amperecomputing.com>, Jean Delvare
- <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Justin Ledford
- <justinledford@google.com>, devicetree@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
- OpenBMC Maillist <openbmc@lists.ozlabs.org>,
- Open Source Submission <patches@amperecomputing.com>
-Cc: Phong Vo <phong@os.amperecomputing.com>,
- Thang Nguyen <thang@os.amperecomputing.com>,
- Quan Nguyen <quan@os.amperecomputing.com>
-References: <20240414042246.8681-1-chanh@os.amperecomputing.com>
- <20240414042246.8681-2-chanh@os.amperecomputing.com>
- <80effcab-74b8-4e15-a4db-9982b000b6b1@linaro.org>
-Content-Language: en-US
-From: Chanh Nguyen <chanh@amperemail.onmicrosoft.com>
-In-Reply-To: <80effcab-74b8-4e15-a4db-9982b000b6b1@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CY5PR16CA0006.namprd16.prod.outlook.com
- (2603:10b6:930:10::35) To DM6PR01MB5947.prod.exchangelabs.com
- (2603:10b6:5:1dd::12)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by LV3PR11MB8460.namprd11.prod.outlook.com (2603:10b6:408:1b4::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.29; Tue, 16 Apr
+ 2024 04:39:09 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::82fd:75df:40d7:ed71]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::82fd:75df:40d7:ed71%4]) with mapi id 15.20.7452.046; Tue, 16 Apr 2024
+ 04:39:09 +0000
+Date: Mon, 15 Apr 2024 21:39:07 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Terry Bowman <Terry.Bowman@amd.com>, Li Ming <ming4.li@intel.com>,
+	<dan.j.williams@intel.com>, <rrichter@amd.com>
+CC: <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/6] PCI/RCEC: Introduce pcie_walk_rcec_all()
+Message-ID: <661e00eb808e4_4d56129429@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <20240313083602.239201-1-ming4.li@intel.com>
+ <20240313083602.239201-2-ming4.li@intel.com>
+ <d69c2157-a0da-4d8c-8684-d42afd285191@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <d69c2157-a0da-4d8c-8684-d42afd285191@amd.com>
+X-ClientProxiedBy: MW3PR06CA0028.namprd06.prod.outlook.com
+ (2603:10b6:303:2a::33) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,197 +113,165 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR01MB5947:EE_|MW4PR01MB6435:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5503807a-474d-49cb-1d23-08dc5dcf251d
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|LV3PR11MB8460:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4775f0c3-0115-47ea-0411-08dc5dcf2846
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?bnA1dnh6cFMrY2QyKzIwc1NkOTNwV1VHR2xyamtyY1ZHdW5HRi9Za0dDalo4?=
- =?utf-8?B?VXZQOUx3L1VCVnRiVGhBSG5KWlQxZ1RQREZRcFBtekJtWEdLVStwOEk1YlJ6?=
- =?utf-8?B?YXAwSmsxTzNucVZXZGlzbzlOMlFoT1lwWHVkTmJ2S1pQczcrclBwT0RvZ256?=
- =?utf-8?B?K3I0WGpqeFBJS3U3S0lUS3FmYXQzK1NTYjhHTWdnK3p5S3liT2hkM3BJeDB4?=
- =?utf-8?B?VHdRalBIck4xc05maFJsbnJFZzZuY3VXVXBDV1VXUHVwcm5tSS9lNEp3alVZ?=
- =?utf-8?B?UVNpWGg0VU5MNkhJWnV3ZmRYMjNTNUN5WjFwUzV3aDcvRW8wYnFBSzdlcTVP?=
- =?utf-8?B?WWxQZW1INmxQaFpZVzVSYVl4V3hlOFgxbnRGcUN6OFprSGVKVHF5aXpFUm1S?=
- =?utf-8?B?UXMyZnRuVTYyZnp3OTc4TmlRM25peXpyTlJBWlpBUzVLSnBKZTcyN2FpVysv?=
- =?utf-8?B?MmVrY2pGZ0JHTUt5T21vWEwxZWJPL3FzZStBcjFYT0NUeXVET1FZUGtCc2RO?=
- =?utf-8?B?K0N2cDNSZkR1VnZTaHQzNWRWTy8yZVZnclI1U1Rhd0NwaFZpeTg4RWpBZXMw?=
- =?utf-8?B?YWZTdGhkSGlLMjFtUFlJZjMzNU9BNmdWbnpvMkliSGdJSjdJVjhmZHh3MENW?=
- =?utf-8?B?d0YxWkNqUWllRWlBbTFCOVR1WVArMWF0cFlFQ3pDR3E4RDFKd3ZMMGZqU09S?=
- =?utf-8?B?SnR6NlBTZTdWMm9RUDkyeXpoTUFBSk9PMWlHWTl4Rjh6REpmNkpISlFHeWN2?=
- =?utf-8?B?ZGJYcTRoRnFselFxcGwrdnQvZnNQMUtRczhaSkNyUWVFNEU5bFdWMFEwcVZ4?=
- =?utf-8?B?MHdydnJ1dXdmWnlNb0gwVzJpcldKYmFlckFjUkcxeTdBSlpnQ3FZb2VqMDJU?=
- =?utf-8?B?NGVJYUFnNVQ0SDBxaUI3aXYxcEVNRlBKU2k5eDNtR0RwNE1VRzd6LzRZK0ln?=
- =?utf-8?B?SHFlM0ZhY2ZZZk5CNkUxNHYvQkZ5U2V6THFqclFFZjh0VytPV2k0aW54aGRO?=
- =?utf-8?B?b1ZJOG5kSjVveGltSVA3Y3BpWmloeHpPUnVpMVJtRlZCWEtBSExsMUN4a3Jt?=
- =?utf-8?B?em9vck5ZdW5SOVJ4UGdPdXN0TVZ5TjhhVmVzR0VCd0xHN05JRUFOSFFxb2ZH?=
- =?utf-8?B?WnNSZS85clhlUGUvelZhZmxHejUzSjBwcHFpWXIxdjFnUjMwRllKSzdWQWFl?=
- =?utf-8?B?aGRyL3hyRVlDQ2FnMnpHYzVvTERsdDhTQkdXMW0vMHE5Umh1RXo3dWNLRTds?=
- =?utf-8?B?VUQ3d2hKbERFVncxQWdnSjNQUmgzUEkwN3h6VW5RVlFVdWpUZmRheWhicmtH?=
- =?utf-8?B?em5kZ1hrMllpbGNzQkFQbU13Rjl4ZzBxdWYvTkQyS2F5dGJ6dEo2ekNuclds?=
- =?utf-8?B?QjV4amdoN08weVBtQlNMNkF3bDJoSzdzREhHUk8wa3B3V1UwZG9wLy9qSWRl?=
- =?utf-8?B?RFdJUnVJSUthZW5JNUZEQk1sSGRZZzRmQ1dHSk1KQXB2bUVjNFh3dmdyRHE4?=
- =?utf-8?B?UHFKUGN1TVFneXAyVVhWdUlHcUdmanhmUGRuQmRwL2JPblRucWE5OW1MeDNR?=
- =?utf-8?B?ZXh3dHE5VktrdW96K0FYNnpqbUtIWlVqbGN2alB5QnpRbjZvckZvSFU0dzRB?=
- =?utf-8?B?NHIydE03VGhSMFJLcnRXbGdOeUh1dU1HQ2hhQktxanhWVVVJVVZKVjNWYWJQ?=
- =?utf-8?B?WGprTHRFTVlLWVdlK0VKS1JLTDZrUk5SdjhQR0lsZ2FDc0IvRUdXQjdRPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB5947.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(366007)(376005)(921011);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: OiXfA/cCj/3zoxS2K5pEU4KvPID0fmLKLrjgK3TDz3faYaGe6iUdKKUATwZ0muDZKFoWrIW+PmakVq6dhcCKm3vF41rntyXthqnXqTmhiNQilGfiCX8V9Kb5pV+E3qCN3LIJTWPl60DYVUJU4D+LCU8wr6Nh/KMpUZYtDI1N4KUE0MMhj1hMLfuNRPmm6KZ6jox01l+C1mShP6/VzIcAGQfmoHqIEbNlv6yv4/6Zrzx4o5fJ7CYuyw33U9jM8c8jhBAuQQgQE8Swl9AENW0RHTAxr2M3Lir9VGWF6GOS2kbfa2zCb+oDTv7T3UNl+oHKXLzMpgIz/P2rcAn2emJFEaulWnbTWokCocx42g+WERfSSHdreI31w79+RSq4frjUWXjgFzY6jtSScFOiTWQCmiKJemfftTCxZIdnLiPlD6z+Pn6WfA5RbYwjk67Qw52k1jUlTHTsWUhNObAp4d3IpMMakHo3FM8zUF2IYCyLg/GyLgRYsz3pk3o86yZw8OCdkwCOAEyLIWhjuJGuTTdCwBskLzgNAIF5I6IGORQinZod0YvZdjstQ87C9USfiFxBPxkq3ougXI+zeQdjkJ7OzC7UGGNy4CE7ku36UX+uPaKUkM76xp07CD9soHimAci6hwlPIH6Xv6WzItRrhBkwo918l+E/DMkMAxSQQmnRRg4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?a2NraGJSaTBlY2VRYm5ydzB4aENFVUplUG0rbW5qa296K2VtYkozSWpwNkZa?=
- =?utf-8?B?Y1VrNmlSaW5LeEpWWG5yVnJkdVF3dU9iZXlEZGlGK2ZHSXZJNjZ2K1pnaHJw?=
- =?utf-8?B?UWlMVW45UHNoV25hb29oRGlveEJYMGhCK0M1WXNlczkxTFNwQUsrUnRNWS8z?=
- =?utf-8?B?VGVpVTM5UlVTczU1aUo5ZzRDanYxV1VlYS9yUXpGa08xaUZDdCtrRmRCSW5I?=
- =?utf-8?B?TUcvNjN5MGVCUFM4YkM4bG1MdTJCVklCdTlGby9idksxVDhITU9Ob1FzSUY5?=
- =?utf-8?B?ZkxFZkl5UEl3TkxNbFVVQ3QwVXVjSVFHTFdxdUpXQU1jZnFkbEpPTTNSWVlN?=
- =?utf-8?B?Y3hvcURES3RnVnpCY2FlM0p4bldPWHByU1hwMnd1RnNqL1RER0RmQ3J1dFp6?=
- =?utf-8?B?Q3ZhbWk0aEpWUXh2U0lPSWM2TER2U1VLM2RuYUx2Um03NEEzVUtlN3FIcld6?=
- =?utf-8?B?aUxvRkJuS1ZKZWZnOERlUk5PZCtjdStnaGVyNjU5Qkl6ekRhRXZOK0w2dkhz?=
- =?utf-8?B?VDRHTkY2bmhrRVprL1p6RGhNamhuQzNTV0Z2VGVVSWozeXdOYzdqemNKQVRx?=
- =?utf-8?B?QlpwZzM0M3NtZmhOYnlkSmtCd0IxWSthL05BRnd2LzJLQklFNml3eHdYajR6?=
- =?utf-8?B?M2M3SE5iS0Q0L3JNaEczSENUUnhGNnFRN3NXS2puajVMSkt6NHlLY0ZxeHda?=
- =?utf-8?B?V3dxd1F4YzNmS21QV0ZBMG8zMUZLSFIveW5iZnZUajRkVVNaeE5pUWdNdGFn?=
- =?utf-8?B?WVZlMzVZV2Irbm5RaDhaN2lyblRlRlgwOEhEcFo0L1A0N3FtQksvaEpEU0dB?=
- =?utf-8?B?eGJtaVlsUFIrSHUrVlh2b2hheEkxZ25vam4xWlN3ait0VWVUYVE1Qkt1ZE9L?=
- =?utf-8?B?emlldjQ3a3FGeDUvZmNOMGNyNkd3Zk5LR01ib0ExS0d5V3prMThhSE5RK05G?=
- =?utf-8?B?NGdrMXoyNEltLyt6TnVOaEZwS1NFUWcyY1MvL1NETHIrRHRHQy8xRW5ya3lF?=
- =?utf-8?B?cEZoU21tUUxYVUl3clFNTnEvaUZ5NHJUZ05wRXhPNUZDSDZFTmg4R1g2Qmtv?=
- =?utf-8?B?V0JEbU5URkI5REV4Rlc1TGZCaTlkL2ExdVBka3FNN3diMWYvSDRLZTNpNTBH?=
- =?utf-8?B?RkYveVpnUFhkZjNSdGg0MmpOZlpGUVZDS2RXNC8zTkU3V01UUWVGU1RuMDd5?=
- =?utf-8?B?dnFWR3QxbHk0T2dKMVp5OS9BcE5kZkR4bnFhTGcwb21GUlo2MzVLcVEvZnpG?=
- =?utf-8?B?VU5rQzUwa3pZZEFZOTA5ekVCdzQ2N2h4WHJmREZBTlNjQlBzR2Vid25WOWcr?=
- =?utf-8?B?S0dmcTFSR1FHbnV4UmVmdDVtV3F5TVJVcU90S0VxZ2Zmd2xITjQ5R2Y4Rlhz?=
- =?utf-8?B?SVFoTGJpOXZZenc5Mi9zaWZTM3JmdVJ5eGVXVUQ2bnB2NzNhUEZWMWRVKzhC?=
- =?utf-8?B?ZVlZWlljT0tkcFhWSjgwUWt5SG1McllaMk83cTZ6ZXVUMDhXRG9WbXhqMlpn?=
- =?utf-8?B?bU5qM2hrOWg2R1FYbm9DYU1BT3JhcEl3dkFnMko4R2EwTDRhTk14QjArdy9V?=
- =?utf-8?B?TVplREpXcU1PODcrdmpuTTNBU2hTY0pTcEtnR2RiS2tqS0VKZXRybGY3ZWpi?=
- =?utf-8?B?QmdHdWFvU2tDV3ovbTBqMWJFTllPK25MRUFZTjI1Y0s1V2Jpam9wWXR1QndL?=
- =?utf-8?B?d3plQ2t4MjlwL2xKajZiYkIwNVZjLzdyV2F4R042cEV6V0d6REJLSnZjK01x?=
- =?utf-8?B?a3BuVmRjengxaUtwVTFUc3VYSkJHemdyR0lYMzVXWG9xSFo3bzIwdFpqSHkv?=
- =?utf-8?B?MFBWR1BEUG1Ja0Y5NUc2YnhNL2Q5ZmxxSjdKTjVlWVVESGw2YVMvN09VZHEr?=
- =?utf-8?B?Rmo3TWNqRGdJbUJGK2g4Y291aXpRNWdXZVltSHRHU0RMRS9XUVlDemgxNHRa?=
- =?utf-8?B?WTFtd3cyc0IwV1BYZmM0Z2xBS1dockdXd1RMQzdNQXZGNDhVR2FJc096RWY3?=
- =?utf-8?B?YnZoNFFFUWxWTDIvM2pnN3dhazdhRFlka2lIRmVrbGE2OXVRQ0poZDZvcVpp?=
- =?utf-8?B?d295Z1NUMHBDM1AwTzhPenJBVS8yd29DSE4vWFlGc2NSV2VjOWpJZ0IxN0J6?=
- =?utf-8?B?YnlaUXMvaFRXa1dPM1NGVTdnMHFSZ2IvOXhOWTJuZnBMUkUxNElNNVl0a3k5?=
- =?utf-8?Q?4TUvcXpB0f8oIptI1vakWuw=3D?=
-X-OriginatorOrg: amperemail.onmicrosoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5503807a-474d-49cb-1d23-08dc5dcf251d
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB5947.prod.exchangelabs.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hdIEfURpLEakVtey+vTTtjRb6fGoPUUIviIe+1WVESFht3C7MNk/xcXAheGt?=
+ =?us-ascii?Q?3lansrzUkTheqIpG7cU1q/3fDoebYupNVKS6srlo7J6cs2AX3dRCH7dBAyFb?=
+ =?us-ascii?Q?Er+F9qogxtqJ8NbHtvI0u2HXLiy6n1XD5hBI3nQjTIAxKKxC/0y8X4etWjdP?=
+ =?us-ascii?Q?1Xq1yWrvoiKsp3/FMi4czK7p7Apn++Zy+wVbeHP0GYcKujIl9288p4iSv/tj?=
+ =?us-ascii?Q?5+2GExv/knEjip6MunjSU1pB35Y03sYNe62lYpyX3VU4p3rCAY2mSwRISNsf?=
+ =?us-ascii?Q?k8imiwqd7phpyfUIOS/YwKOuMASVQL9T6rpmQYrYetbRbvCT4OcBE5ZMxvkI?=
+ =?us-ascii?Q?11eQ0LUfFgcN8SWkM92yPpF07Me7MJ2Gp3g3ypn+cbsNRp4GbIB+ERNEBH94?=
+ =?us-ascii?Q?lwaWn6zEyhtVe4vbdyRJyhEBkv1oAdRUD+BRX6XiJWFN8cOynY0jQQ2m7cY3?=
+ =?us-ascii?Q?LGgtQ+8OssMylCqSDvXX8s6XE4gT8JyleTPt1UnIGMJ1GGC+xqcFj5DgUi9+?=
+ =?us-ascii?Q?nsA87nf9yNzLB5uDf5FOW63kykWOwRVpPkcgV+s+ih/H0vI9eIAdCM7mc/AB?=
+ =?us-ascii?Q?CyI47fRd/FNB+DnWeNpNsx/mwaHSzugpzHS3Ow1pnyvC34egVP3byUz0s0F0?=
+ =?us-ascii?Q?0KLLbxP8euL+ukwnFSJxhfeluIgIJjKQiWINqwpBUwtDm66AgCKjVUK7PMFv?=
+ =?us-ascii?Q?1Z9h4Z6jgzFKxIC/2PE2WLUSRk28bxjnhwIU2Q0R1Z80qbwAi19I8Gn6PXiA?=
+ =?us-ascii?Q?0AentnHgLX0PWWf10A+nz307njFsxJBSG37qPK9YEuXdX2WK42908wwbRfF3?=
+ =?us-ascii?Q?Om6eeCnUgVYsKV9jEnYjNIlh58jC5WXSSPbsbb4EJNIOXRwwnRLODvl4fEU6?=
+ =?us-ascii?Q?4GBw8g49RmRwaa8s8BYJHNpoEjy8DDP0mbZ+q905mbMht+OshPT6yzaQP9B7?=
+ =?us-ascii?Q?H2XHrP/IiQ0fapmvoj84jemxy/O3E2v87yv5Gl0wR695kF+JxGWmyEmBouwe?=
+ =?us-ascii?Q?nesOJ9n8OYUPhl8OnmJOg92qaQ6NNYy/ynPF281YSGDXAoS6yZ2OO27aqsRl?=
+ =?us-ascii?Q?y0zmEMGUiIfpI7GUvBAQFAVLtU61kGKkGQrOjgPqYevD60P18L1i4sw+GrUF?=
+ =?us-ascii?Q?INX0M7rYtO6Zp6LTh9Nl0X7UDceckPLiJbGcHPlUSh9DeJ4E7ElW7oS3rGAa?=
+ =?us-ascii?Q?mosNNVeedUIovOyHntR2NjzMZPVWLLcX7q99I7w6wpCGl+l+Ds9JlMas98vt?=
+ =?us-ascii?Q?E2n5kAfzgPQuHoOrq+7fYImuO7SgXi4y9hXLsCl9he73dWAfHXpph+OMWjjs?=
+ =?us-ascii?Q?4HA/N6dG4HsG0EcqcaN5kVd5PhAl/JrivjSqlfi0uuzE37RUrykS6t1Mba6d?=
+ =?us-ascii?Q?chBhB8GyUkC5JJyaZ1n6kzC/XxlTiEMDMOyINx1vSa1M4zgzWsr3CnsIPd9k?=
+ =?us-ascii?Q?dO2xU7Z5UrDrnBrIvGTuxDXK/TQLxG8+qR55gxAk8oksbzWPf3gp0rpBLn7W?=
+ =?us-ascii?Q?JM8fvWP/2+CKesXqSZ8cBp1kRjXZTlgfjMntPUKOFqwm9OJwh50lY6xPlKxk?=
+ =?us-ascii?Q?bhUVTqiIn8RfcC2kOHqSHwuFpy/QMRI4wQ87EsoU2UK8oDijNiNqaXl5U42o?=
+ =?us-ascii?Q?1Q=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4775f0c3-0115-47ea-0411-08dc5dcf2846
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 04:39:04.6123
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 04:39:09.6436
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Nyr2HFYBFo1t5hFZjAEoPF/QVj57c1u/LsW+SNry+kXa3tgKMWmfniz/LePE/c860sD15Wu8UFWn/t0a0lEAGMU8l/C+P6nopyrsRs8lB/b3coBigzta0rhQ/2XiWSYj
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR01MB6435
+X-MS-Exchange-CrossTenant-UserPrincipalName: bzvdfGuaXhvneaD8FRXCF345kT/S+NMRGiAcBkIBiMWcBBLMCufNB9Q9AOM7+HYFhJfSy4snGeacY9cKS88V5LILxVYr1SQNZFeJ5dLXTgU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR11MB8460
+X-OriginatorOrg: intel.com
 
-
-
-On 14/04/2024 13:03, Krzysztof Kozlowski wrote:
-> On 14/04/2024 06:22, Chanh Nguyen wrote:
->> Add a device tree bindings for max31790 device.
->>
+Terry Bowman wrote:
+> Hi Li,
 > 
-> Nothing improved in commit msg, where is the rationale of split of bindings?
+> I added comments below.
 > 
-
-Yes Krzysztof, I will use "tach-ch" property from the fan-common.yaml to 
-solve my case. So I will not need a split of bindings.
-
-Finally, my patch series will only be two patches. They are 
-"dt-bindings: hwmon: Add maxim max31790" and "hwmon: (max31790): Support 
-config PWM output becomes TACH".
-
-I'm going to update that in the patch v3 series.
-
-> A nit, subject: drop second/last, redundant "bindings". The
-> "dt-bindings" prefix is already stating that these are bindings.
-> See also:
-> https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
+> On 3/13/24 03:35, Li Ming wrote:
+> > PCIe RCEC core only provides pcie_walk_rcec() to walk all RCiEP devices
+> > associating with RCEC, but CXL subsystem needs a helper function which
+> > can walk all devices in RCEC associated bus range other than RCiEPs for
+> > below RAS error case.
+> > 
+> > CXL r3.1 section 12.2.2 mentions that the CXL.cachemem protocol errors
+> > detected by a CXL root port could be logged in RCEC AER Extended
+> > Capability. The recommendation solution from CXL r3.1 section 9.18.1.5
+> > is:
+> > 
+> > 	"Probe all CXL Downstream Ports and determine whether they have
+> > 	logged an error in the CXL.io or CXL.cachemem status registers."
+> > 
+> > The new helper function called pcie_walk_rcec_all(), CXL RAS error
+> > handler can use it to locate all CXL root ports or CXL devices in RCEC
+> > associated bus range.
 > 
-
-Thank Krzysztof, I'll drop "bindings" in commit msg.
-
->> Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
->> ---
->> Changes in v2:
->>   - Update filename of the maxim,max31790.yaml                            [Krzysztof]
->>   - Add the common fan schema to $ref                                     [Krzysztof]
->>   - Update the node name to "fan-controller" in maxim,max31790.yaml       [Krzysztof]
->>   - Drop "driver" in commit title                                         [Krzysztof]
->> ---
->>   .../bindings/hwmon/maxim,max31790.yaml        | 52 +++++++++++++++++++
->>   1 file changed, 52 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml b/Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml
->> new file mode 100644
->> index 000000000000..a561e5a3e9e4
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml
->> @@ -0,0 +1,52 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/hwmon/maxim,max31790.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: The Maxim MAX31790 Fan Controller
->> +
->> +maintainers:
->> +  - Guenter Roeck <linux@roeck-us.net>
->> +
->> +description: >
->> +  The MAX31790 controls the speeds of up to six fans using six
->> +  independent PWM outputs. The desired fan speeds (or PWM duty cycles)
->> +  are written through the I2C interface.
->> +
->> +  Datasheets:
->> +    https://datasheets.maximintegrated.com/en/ds/MAX31790.pdf
->> +
->> +properties:
->> +  compatible:
->> +    const: maxim,max31790
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +  resets:
->> +    maxItems: 1
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +
->> +allOf:
->> +  - $ref: fan-common.yaml#
->> +
->> +unevaluatedProperties: false
->> +
->> +examples:
->> +  - |
->> +    i2c {
->> +      #address-cells = <1>;
->> +      #size-cells = <0>;
->> +
->> +      fan-controller@20 {
->> +        compatible = "maxim,max31790";
->> +        reg = <0x20>;
+> The RCEC-root port relation you mention is new to me. Typically, not in 
+> all cases, RCH-RCD has a RCEC. And a VH mode system has a root port 
+> instead. The RCH RCEC and VH root port are both bound to the PCIeport 
+> bus driver that supports handling and logging AER. This allows the PCIe 
+> port bus driver to handle AER in a RCEC and root port AER using the same 
+> procedure and accesses to the AER capability registers. 
 > 
-> Make the example complete - add all properties, like clocks, resets and
-> any others which are applicable.
+> This is oversimplified but are you looking to handle root port AER error 
+> in the RCEC from the below diagram? 
 > 
-
-Ok Krzysztof, I'll update that in the patch v3
-
-> Best regards,
-> Krzysztof
+> RCEC <--> CXL root port (bridge) <--> Endpoint
 > 
+> > 
+> > Signed-off-by: Li Ming <ming4.li@intel.com>
+> > ---
+> >  drivers/pci/pci.h       |  6 ++++++
+> >  drivers/pci/pcie/rcec.c | 44 +++++++++++++++++++++++++++++++++++++++--
+> >  2 files changed, 48 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> > index 5ecbcf041179..a068f2d7dd28 100644
+> > --- a/drivers/pci/pci.h
+> > +++ b/drivers/pci/pci.h
+> > @@ -444,6 +444,9 @@ void pcie_link_rcec(struct pci_dev *rcec);
+> >  void pcie_walk_rcec(struct pci_dev *rcec,
+> >  		    int (*cb)(struct pci_dev *, void *),
+> >  		    void *userdata);
+> > +void pcie_walk_rcec_all(struct pci_dev *rcec,
+> > +			int (*cb)(struct pci_dev *, void *),
+> > +			void *userdata);
+> >  #else
+> >  static inline void pci_rcec_init(struct pci_dev *dev) { }
+> >  static inline void pci_rcec_exit(struct pci_dev *dev) { }
+> > @@ -451,6 +454,9 @@ static inline void pcie_link_rcec(struct pci_dev *rcec) { }
+> >  static inline void pcie_walk_rcec(struct pci_dev *rcec,
+> >  				  int (*cb)(struct pci_dev *, void *),
+> >  				  void *userdata) { }
+> > +static inline void pcie_walk_rcec_all(struct pci_dev *rcec,
+> > +				      int (*cb)(struct pci_dev *, void *),
+> > +				      void *userdata) { }
+> >  #endif
+> >  
+> >  #ifdef CONFIG_PCI_ATS
+> > diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
+> > index d0bcd141ac9c..189de280660c 100644
+> > --- a/drivers/pci/pcie/rcec.c
+> > +++ b/drivers/pci/pcie/rcec.c
+> > @@ -65,6 +65,15 @@ static int walk_rcec_helper(struct pci_dev *dev, void *data)
+> >  	return 0;
+> >  }
+> >  
+> > +static int walk_rcec_all_helper(struct pci_dev *dev, void *data)
+> > +{
+> > +	struct walk_rcec_data *rcec_data = data;
+> > +
+> > +	rcec_data->user_callback(dev, rcec_data->user_data);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static void walk_rcec(int (*cb)(struct pci_dev *dev, void *data),
+> >  		      void *userdata)
+> >  {
+> > @@ -83,7 +92,7 @@ static void walk_rcec(int (*cb)(struct pci_dev *dev, void *data),
+> >  	nextbusn = rcec->rcec_ea->nextbusn;
+> >  	lastbusn = rcec->rcec_ea->lastbusn;
+> >  
+> > -	/* All RCiEP devices are on the same bus as the RCEC */
+> > +	/* All devices are on the same bus as the RCEC */
+> 
+> RCiEPs are not guaranteed to be on same bus as RCEC. Details for associated 
+> next and last busses:
+> 
+> "This register does not indicate association between an Event Collector and 
+> any Function on the same Bus Number as the Event Collector itself, however 
+> it is permitted for the Association Bus Range to include the Bus Number of 
+> the Root Complex Event Collector."[1]
+> 
+> [1] PCI Spec 6.0 - RCEC Associated Bus Numbers Register 9Ofset 08h)
+
+Hi Terry,
+
+This patchset is responding to the implications of the implementation
+note in 9.18.1.5 RCEC Downstream Port Association Structure (RDPAS).
+That says that CXL.io and CXL.cachemem errors in Root Ports may indeed
+be signaled to an RCEC. Do you expect that implementation note to cause
+any issues on platforms that do not follow that CXL spec behavior?
+
+My expectation is that it may just cause extra polling for errors, but
+not cause any harm.
 
