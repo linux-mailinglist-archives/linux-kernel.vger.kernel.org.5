@@ -1,228 +1,210 @@
-Return-Path: <linux-kernel+bounces-147067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 844D98A6EFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:51:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FF5F8A6F09
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:53:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7F7F1C22751
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:51:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08AF2281B73
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:53:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B2F1311A7;
-	Tue, 16 Apr 2024 14:49:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE01212F5AA;
+	Tue, 16 Apr 2024 14:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BwJ6tVrV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="guJwuaJO"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 412C713048E
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:49:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7718912EBD7
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:53:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713278989; cv=none; b=cQ48UOKO0n9d3lNKlLZSjyKjmHMNXW0YIZLIvwFrOHRpOQb1HlyE/2LtggrZdpTzUGx5rSm5og58cu/QL9YjezMZgp+owsokOnpZAXNFW59OpdGcStQup0f2XC9g6rZS6lKYZzzUmZsGzcEtkt06mUnadVvpuQg2pO0y4QCqFmQ=
+	t=1713279196; cv=none; b=QAMxf+dxkWWDY7E5up4k5362dgN8d7IR/Rzr/SLDz88and1VuahOOc+iGs6yg8CMymDf0ak3h6Nxz1eusYo7wmO41Lsn8JaOm7AlLdusfgw0LIVlXY4xC4E7mRta87/OsXQiTfdXwwGyu/Un7R6qGx6KqVDmKg5Ofa9s1w99keM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713278989; c=relaxed/simple;
-	bh=slUT4zBHYjU9qi8tHgbYouEcTeqwtszCaEUoidxe348=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RMVyURkceeZedYzGrkZW9kgG0M88LIo2mSL4j4oODtrO7hYrrfDhlo57H27k7zLYok1OGW4oDbzEsY/Kv15zxkyUU5uTSmm4HcCn1lDhB07CHZ3imxnErkLTagu81KhLbPCprdvg6uSxtb8BcTRsbydcXVKSiocBBH5Hxy2RDpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BwJ6tVrV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5D70C113CE;
-	Tue, 16 Apr 2024 14:49:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713278988;
-	bh=slUT4zBHYjU9qi8tHgbYouEcTeqwtszCaEUoidxe348=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BwJ6tVrV6sLRveHEptvfeuji50XNganjw9kogO6idtAG3H8A9mSvncwvjCcmVfbFv
-	 zTorwrpg9izqbjDm7SieTN/cb04YaKvWKn1by/rFzilt25q8cpJ1wZF+tIMBeA/U/B
-	 UDXo9tIxYZb14rYbyO7KNFwbsyEgFfxBA5MDYw6O0a60pZHbNwdSMBS6oXVFydoPTi
-	 9yIO+eUUOnaIHyhyIGxWx8vwo3kfJMFqVfbgANJ2M/va34gBiSExNvUTPHtdlRXmkn
-	 wxi/FQwGYetQWXOU1gAsMir3XyQVjtFJUCjqdWqtwpbs2oFMLongmOukuOkXzABxkV
-	 MxXrw2JZHDrSw==
-Date: Tue, 16 Apr 2024 22:49:47 +0800
-From: Gao Xiang <xiang@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Baokun Li <libaokun1@huawei.com>, xiang@kernel.org,
-	linux-erofs@lists.ozlabs.org, chao@kernel.org, huyue2@coolpad.com,
-	jefflexu@linux.alibaba.com, viro@zeniv.linux.org.uk,
-	linux-kernel@vger.kernel.org, yangerkun@huawei.com,
-	houtao1@huawei.com
-Subject: Re: [PATCH] erofs: set SB_NODEV sb_flags when mounting with fsid
-Message-ID: <Zh6QC0++kpUUL5nf@debian>
-Mail-Followup-To: Christian Brauner <brauner@kernel.org>,
-	Baokun Li <libaokun1@huawei.com>, xiang@kernel.org,
-	linux-erofs@lists.ozlabs.org, chao@kernel.org, huyue2@coolpad.com,
-	jefflexu@linux.alibaba.com, viro@zeniv.linux.org.uk,
-	linux-kernel@vger.kernel.org, yangerkun@huawei.com,
-	houtao1@huawei.com
-References: <20240415121746.1207242-1-libaokun1@huawei.com>
- <20240415-betagten-querlatte-feb727ed56c1@brauner>
- <15ab9875-5123-7bc2-bb25-fc683129ad9e@huawei.com>
- <Zh3NAgWvNASTZSea@debian>
- <e70a28b4-074e-c48a-b717-3e17f1aae61d@huawei.com>
- <20240416-blumig-dachgeschoss-bc683f4ef1bf@brauner>
+	s=arc-20240116; t=1713279196; c=relaxed/simple;
+	bh=KIC6X+A9AYUCWOuCpVq36IJ1kaFjZbZdLH2BMqqVvzk=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=A/+NZ+9dvP+8BW5YN/6Dxb5tt8lcrRjoFUi2rXBPW4l0/ox2sKIfnt6lyGQZYHL3Dxmawf2vycOFFbETZlCd27SLkB8K4J00TgrwK1u/r3Zl4R5x3p5BfOWj69TKzu/lSxu5E0mKybpO2z7juaGfrY81xklAIugJZYxBB4qX0Fw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=guJwuaJO; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2da888330b2so44980411fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:53:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713279192; x=1713883992; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jl7BVtQwBTSlw5Q7jIravMMMPvXbs3wbcyyUN/ZkIBg=;
+        b=guJwuaJOpi3G6os/rcCx/qdSQ1olgCH0l2gDfF0IEj+9rEbNuGa/ivpTqZMoHljJtd
+         vVhW3NSJXbeWaX9q42VPX66nfX4LVNLbs6FF2CQL0TjFyoeE0i9OIeELfMfVIPHmI687
+         v9mNgjwDQNzMF06u5cPeptbXvR6Ga2A43CTXwhoeoisFOfM2orDrI5ttkVw9SAMPWSLF
+         aH2iACFL1kKU9mVsnVmo/3LiT76p+W40ccFXi51kQX+HQh4I2Vu/jXHC6zFjlfoK74nR
+         5lIgMFgb1xezWgPlvpUK6sLvmXYtBwdBRRJEkxFhdKbh2pOw1/iEtPjoOQI4RrG3kw1K
+         oJpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713279192; x=1713883992;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jl7BVtQwBTSlw5Q7jIravMMMPvXbs3wbcyyUN/ZkIBg=;
+        b=Q8QmDFJVLIluBvvwj7nl6dOqxjr2YjoYYU5WIKAiHHQx1874ohHfHEesbILxpsH4eB
+         Hggh1SSwx962eFFmLW/jD1CKIf+3QiyBl3O7GzaAn4nFfmMcdDg4z8z9a9e5ujYe/Hmw
+         kz2QpsLLqEFwkK3Vk8UX1Mjx2/9Nnsa67WIQ0A42WEQyMeYDlH6EASlc8rcInh+2gBhb
+         WU0wMODJOtL3e5zhBaRPcYtUeSk+jzHoGHeVEsfKmrovxwk7kXXLhtL2+G5UYl8XOp6C
+         hke2peQD25OJai36STNzlQ+HpcSm9iWl7G/YuiTDIcybDYw5E/+Qy5leIBSnxsYoHjeT
+         8X7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVsQxAev+BROqzj3EtD3Nxlst/FsNCktVvTTbMcXn1ad0Fugt6/QvT5MqmoPl/hjIer+Mp2szEOPl/8r9FPHlqwpM1KbMN8Wo18C+7H
+X-Gm-Message-State: AOJu0YzGyJoAyElae8xpt6ybuhaquWVBDlu/m/8CPqRDSM8Z334o2Kz3
+	zuah0xjj07qEHWo9UIAqCFz5AyQF3m7rAFzNiubDf9ny5NCUbdqw/B8KUMaiaO0=
+X-Google-Smtp-Source: AGHT+IEBkb7ExU6KDoUwKQB+1TjGigkCAfuqOmSxkIfxlJN0jQEFEyh9q8oXdurLDbr/zM7/PUjBBw==
+X-Received: by 2002:a2e:9517:0:b0:2d8:19fe:4863 with SMTP id f23-20020a2e9517000000b002d819fe4863mr10223169ljh.41.1713279189026;
+        Tue, 16 Apr 2024 07:53:09 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id c19-20020a170906529300b00a4da28f42f1sm6995974ejm.177.2024.04.16.07.53.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Apr 2024 07:53:08 -0700 (PDT)
+Message-ID: <96d90ddd-2910-4419-ba90-64a09a3dbf1e@baylibre.com>
+Date: Tue, 16 Apr 2024 16:53:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240416-blumig-dachgeschoss-bc683f4ef1bf@brauner>
+User-Agent: Mozilla Thunderbird
+From: Alexandre Mergnat <amergnat@baylibre.com>
+Subject: Re: [PATCH 14/18] drm/mediatek: dpi: add support for dpi clock
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: dri-devel@lists.freedesktop.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-mediatek@lists.infradead.org, Will Deacon <will@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, CK Hu <ck.hu@mediatek.com>,
+ Rob Herring <robh+dt@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+ David Airlie <airlied@gmail.com>, Xinlei Lee <xinlei.lee@mediatek.com>,
+ Jitao Shi <jitao.shi@mediatek.com>, linux-arm-kernel@lists.infradead.org,
+ linux-pwm@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Fabien Parent <fparent@baylibre.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>
+References: <20231023-display-support-v1-0-5c860ed5c33b@baylibre.com>
+ <20231023-display-support-v1-14-5c860ed5c33b@baylibre.com>
+ <cf25a3cc-6411-45f5-bc7a-6b69cf28c860@collabora.com>
+Content-Language: en-US
+In-Reply-To: <cf25a3cc-6411-45f5-bc7a-6b69cf28c860@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 16, 2024 at 02:35:08PM +0200, Christian Brauner wrote:
-> > > I'm not sure how to resolve it in EROFS itself, anyway...
+
+
+On 24/10/2023 11:12, AngeloGioacchino Del Regno wrote:
+> Il 23/10/23 16:40, amergnat@baylibre.com ha scritto:
+>> From: Fabien Parent <fparent@baylibre.com>
+>>
+>> MT8365 requires an additional clock for DPI. Add support for that
+>> additional clock.
+>>
+>> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+>> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
 > 
-> Instead of allocating the erofs_sb_info in fill_super() allocate it
-> during erofs_get_tree() and then you can ensure that you always have the
-> info you need available during erofs_kill_sb(). See the appended
-> (untested) patch.
-
-Hi Christian,
-
-Yeah, that is a good way I think.  Although sbi will be allocated
-unconditionally instead but that is minor.
-
-I'm on OSSNA this week, will test this patch more when returning.
-
-Hi Baokun,
-
-Could you also check this on your side?
-
-Thanks,
-Gao Xiang
-
-
-> From e4f586a41748b6edc05aca36d49b7b39e55def81 Mon Sep 17 00:00:00 2001
-> From: Christian Brauner <brauner@kernel.org>
-> Date: Mon, 15 Apr 2024 20:17:46 +0800
-> Subject: [PATCH] erofs: reliably distinguish block based and fscache mode
+> I'm not convinced that this is right... at all.
 > 
-> When erofs_kill_sb() is called in block dev based mode, s_bdev may not have
-> been initialised yet, and if CONFIG_EROFS_FS_ONDEMAND is enabled, it will
-> be mistaken for fscache mode, and then attempt to free an anon_dev that has
-> never been allocated, triggering the following warning:
+>  From a fast check of the MT8365 DPI clocks, I can see that the DPI0 
+> clock declares
+> parent VPLL_DPIX (a fixed clock), but nothing ever has VPLL_DPIX_EN 
+> (which is the
+> GATE clock, enabling output of DPIx VPLL?).
 > 
-> ============================================
-> ida_free called for id=0 which is not allocated.
-> WARNING: CPU: 14 PID: 926 at lib/idr.c:525 ida_free+0x134/0x140
-> Modules linked in:
-> CPU: 14 PID: 926 Comm: mount Not tainted 6.9.0-rc3-dirty #630
-> RIP: 0010:ida_free+0x134/0x140
-> Call Trace:
->  <TASK>
->  erofs_kill_sb+0x81/0x90
->  deactivate_locked_super+0x35/0x80
->  get_tree_bdev+0x136/0x1e0
->  vfs_get_tree+0x2c/0xf0
->  do_new_mount+0x190/0x2f0
->  [...]
-> ============================================
-> 
-> Instead of allocating the erofs_sb_info in fill_super() allocate it
-> during erofs_get_tree() and ensure that erofs can always have the info
-> available during erofs_kill_sb().
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
-> ---
->  fs/erofs/super.c | 29 ++++++++++++++++-------------
->  1 file changed, 16 insertions(+), 13 deletions(-)
-> 
-> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-> index c0eb139adb07..4ed80154edf8 100644
-> --- a/fs/erofs/super.c
-> +++ b/fs/erofs/super.c
-> @@ -581,7 +581,7 @@ static const struct export_operations erofs_export_ops = {
->  static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
->  {
->  	struct inode *inode;
-> -	struct erofs_sb_info *sbi;
-> +	struct erofs_sb_info *sbi = EROFS_SB(sb);
->  	struct erofs_fs_context *ctx = fc->fs_private;
->  	int err;
->  
-> @@ -590,15 +590,10 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
->  	sb->s_maxbytes = MAX_LFS_FILESIZE;
->  	sb->s_op = &erofs_sops;
->  
-> -	sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
-> -	if (!sbi)
-> -		return -ENOMEM;
-> -
->  	sb->s_fs_info = sbi;
->  	sbi->opt = ctx->opt;
->  	sbi->devs = ctx->devs;
->  	ctx->devs = NULL;
-> -	sbi->fsid = ctx->fsid;
->  	ctx->fsid = NULL;
->  	sbi->domain_id = ctx->domain_id;
->  	ctx->domain_id = NULL;
-> @@ -707,8 +702,15 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
->  static int erofs_fc_get_tree(struct fs_context *fc)
->  {
->  	struct erofs_fs_context *ctx = fc->fs_private;
-> +	struct erofs_sb_info *sbi;
-> +
-> +	sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
-> +	if (!sbi)
-> +		return -ENOMEM;
->  
-> -	if (IS_ENABLED(CONFIG_EROFS_FS_ONDEMAND) && ctx->fsid)
-> +	fc->s_fs_info = sbi;
-> +	sbi->fsid = ctx->fsid;
-> +	if (IS_ENABLED(CONFIG_EROFS_FS_ONDEMAND) && sbi->fsid)
->  		return get_tree_nodev(fc, erofs_fc_fill_super);
->  
->  	return get_tree_bdev(fc, erofs_fc_fill_super);
-> @@ -762,11 +764,15 @@ static void erofs_free_dev_context(struct erofs_dev_context *devs)
->  static void erofs_fc_free(struct fs_context *fc)
->  {
->  	struct erofs_fs_context *ctx = fc->fs_private;
-> +	struct erofs_sb_info *sbi = fc->s_fs_info;
->  
->  	erofs_free_dev_context(ctx->devs);
->  	kfree(ctx->fsid);
->  	kfree(ctx->domain_id);
->  	kfree(ctx);
-> +
-> +	if (sbi)
-> +		kfree(sbi);
->  }
->  
->  static const struct fs_context_operations erofs_context_ops = {
-> @@ -783,6 +789,7 @@ static int erofs_init_fs_context(struct fs_context *fc)
->  	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
->  	if (!ctx)
->  		return -ENOMEM;
-> +
->  	ctx->devs = kzalloc(sizeof(struct erofs_dev_context), GFP_KERNEL);
->  	if (!ctx->devs) {
->  		kfree(ctx);
-> @@ -799,17 +806,13 @@ static int erofs_init_fs_context(struct fs_context *fc)
->  
->  static void erofs_kill_sb(struct super_block *sb)
->  {
-> -	struct erofs_sb_info *sbi;
-> +	struct erofs_sb_info *sbi = EROFS_SB(sb);
->  
-> -	if (erofs_is_fscache_mode(sb))
-> +	if (IS_ENABLED(CONFIG_EROFS_FS_ONDEMAND) && sbi->fsid)
->  		kill_anon_super(sb);
->  	else
->  		kill_block_super(sb);
->  
-> -	sbi = EROFS_SB(sb);
-> -	if (!sbi)
-> -		return;
-> -
->  	erofs_free_dev_context(sbi->devs);
->  	fs_put_dax(sbi->dax_dev, NULL);
->  	erofs_fscache_unregister_fs(sb);
-> -- 
-> 2.43.0
-> 
+> But then, there's even more: no clock ever references the 
+> CLK_TOP_DPI0_SEL nor the
+> CLK_TOP_DPI1_SEL gate, which is a PLL parent selector... in other 
+> platforms, that
+> is muxing through the TVDPLL, but on MT8365 that is LVDSPLL?!
 
+AFAI see into mt8365 documentation, there is no TVDPLL, only LVDSPLL
+
+> 
+> I have many questions now:
+> * Two PLLs are apparently brought up, but which one is the right one?!
+>    * Is the LVDS PLL really used for DisplayPort? (dpi0_sel)
+
+Seems to be LVDS
+
+                                  enable  prepare  protect                                duty  hardware
+    clock                          count    count    count        rate   accuracy phase  cycle    enable
+-------------------------------------------------------------------------------------------------------
+  clk26m                              18       19        1    26000000          0     0         Y
+     vpll_dpix                         1        1        0    75000000          0     0  50000         Y
+        mm_flvdstx_pxl                 0        0        0    75000000          0     0  50000         N
+        mm_dpi0_dpi0                   1        1        0    75000000          0     0  50000         Y
+        vpll_dpix_en                   0        0        0    75000000          0     0  50000         N
+     lvdspll                           1        1        0   283999497          0     0  50000         Y
+        lvdspll_d16                    0        0        0    17749968          0     0  50000         Y
+        lvdspll_d8                     0        0        0    35499937          0     0  50000         Y
+        lvdspll_d4                     0        0        0    70999874          0     0  50000         Y
+        lvdspll_d2                     1        1        0   141999748          0     0  50000         Y
+           dpi0_sel                    1        1        0   141999748          0     0  50000         Y
+           dpi1_sel                    0        0        0   141999748          0     0  50000         N
+     mmpll                             1        1        0   456999909          0     0  50000         Y
+        mmpll_ck                       1        1        0   456999909          0     0  50000         Y
+           mm_sel                     15       15        0   456999909          0     0  50000         Y
+              mm_dpi0                  1        1        0   456999909          0     0  50000         Y
+
+
+
+> * Are you sure that CLK_MM_DPI0_DPI0's parent shouldn't be dpi0_sel 
+> instead?
+
+I'm agree with you. After few change, it works.
+
+-       GATE_MM0(CLK_MM_DPI0_DPI0, "mm_dpi0_dpi0", "vpll_dpix", 20),
++       GATE_MM0(CLK_MM_DPI0_DPI0, "mm_dpi0_dpi0", "dpi0_sel", 20),
+
+-                       clocks = <&topckgen CLK_TOP_DPI0_SEL>,
++                       clocks = <&mmsys CLK_MM_DPI0_DPI0>,
+
+
+                                  enable  prepare  protect                                duty  hardware
+    clock                          count    count    count        rate   accuracy phase  cycle    enable
+-------------------------------------------------------------------------------------------------------
+     vpll_dpix                        0       0        0        75000000    0          0     50000      Y
+        mm_flvdstx_pxl                0       0        0        75000000    0          0     50000      N
+        vpll_dpix_en                  0       0        0        75000000    0          0     50000      N
+
+     lvdspll                          1       1        0        283999497   0          0     50000      Y
+        lvdspll_d16                   0       0        0        17749968    0          0     50000      Y
+        lvdspll_d8                    0       0        0        35499937    0          0     50000      Y
+        lvdspll_d4                    0       0        0        70999874    0          0     50000      Y
+        lvdspll_d2                    1       1        0        141999748   0          0     50000      Y
+           dpi0_sel                   1       1        0        141999748   0          0     50000      Y
+              mm_dpi0_dpi0            1       1        0        141999748   0          0     50000      Y
+           dpi1_sel                   0       0        0        141999748   0          0     50000      N
+
+     mmpll                            1       1        0        456999909   0          0     50000      Y
+        mmpll_d2                      0       0        0        228499954   0          0     50000      Y
+        mmpll_ck                      1       1        0        456999909   0          0     50000      Y
+           mm_sel                     15      15       0        456999909   0          0     50000      Y
+              mm_dpi0                 1       1        0        456999909   0          0     50000      Y
+
+
+> * Where is DPI1 in this SoC? Why is there a dpi1_sel clock, but no MM clock
+>    for the DPI1 controller? Is there any DPI1 controller, even?!
+
+DPI1 isn't documented.
+
+>    * Why is there a DPI1 MUX, if there's no DPI1 controller?!
+
+Good question, I don't know. Legacy of the downstream code.
+
+That will be fixed for the next version.
+
+-- 
+Regards,
+Alexandre
 
