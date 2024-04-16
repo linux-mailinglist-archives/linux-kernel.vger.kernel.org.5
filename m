@@ -1,87 +1,120 @@
-Return-Path: <linux-kernel+bounces-146425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C55F8A650C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:28:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72CA18A6510
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:28:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 339751F2225E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:28:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D16F8B219EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9006C78C66;
-	Tue, 16 Apr 2024 07:28:07 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBBA285268;
+	Tue, 16 Apr 2024 07:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="REhlQGam"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44BB3B78B
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:28:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8AC8120A;
+	Tue, 16 Apr 2024 07:28:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713252487; cv=none; b=KHmPfbaLycrOV6fgzUES1b7I6mnkBGIGLLFZ9atURyGt5mmh2255b9F/UXrFRRkA1y8r4ii0rb8UEmSvbq4M2tuV1zHRrfDK7VJG21Dr0sgHJvo1XyjAlfJaAwWS81P/0kppwHqlEkCwK3IhwrXK7tDp8K69L6gRjC75h+xlb3U=
+	t=1713252500; cv=none; b=MV9BPskicz7ExV/Ab0bSTJFBVx1i+u/ehlPtYrPekq4b1vNr1rUv6Roc6xoNeiA9Q+cgm2/4KYeVXt1y28i8+mhIO2wknZxn9jnwcwR+pNoyev7u2OPARDmdXDjywFsUhYudgdwMrPAreEGsoW6FVnRYY1wTS+zElCsgd/hQJYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713252487; c=relaxed/simple;
-	bh=dBOS1dsgw3gyJy7mjbSylK/Bajt7FVKsVBXOvHub2Nw=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=ZsSwNiNChVNntMFif3qbt8uKbX8TmxtKcwLGUYSMWE8tpHP1z9HRgsK7xKgJ1fMChjUYlclDJa+tZ+LPuuG2IOGl7G3YgKH1ELe+RG4VNHbSkEcwnTEYaExq6JneBch/avY2Fam/ALs+kGaFBrbvU2VGj5oljKv8yot5cbol37Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36a1989a5ecso46584205ab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:28:05 -0700 (PDT)
+	s=arc-20240116; t=1713252500; c=relaxed/simple;
+	bh=fUz2ULHO4vQM0iAFiGLWeq+An9hACICk4W7WdzUWjr8=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K7w7fgd5fpMbwIGo9PQvPIrm8EUG761r4vsBAcqcSY/wBzZBnnBSxa/njlzW+NNyki2RV7lDgEI6ObvbB75sT73ye11ljzebEpTn+Qh5WKfzvPLFDLe2M4W0R0fHlj3wQM/1tuPd3fBIr9wa6Nml3cbLduPLn/zVszPHFX4lw5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=REhlQGam; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d8b4778f5fso28537771fa.3;
+        Tue, 16 Apr 2024 00:28:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713252497; x=1713857297; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZVbg0XEuYD0ISZnmCPk7SJEed6iK2Cd+clJNUGNCXzw=;
+        b=REhlQGamumpJ6h85O6hrUv2gsuHtySxA/AMo1br5wbi5D6whMAT3W/fTUtDMP+nZV9
+         w2w4zZEwepe6W5TlKza5fSuN6PwvNFxlnGWA2jw8SL+gK154eEfqTt75XE+mEN9CYRmZ
+         0pFH4ZykL31LgOwWPhiraTXRj/89oZYxKZwvnZb0GefaJi/+JG9ggonK57fJ4NvpQuea
+         kwwzsdAUhOhKzDb8Pk2cBxzj8ImpHCVfRaOTtqDBI/s6exc5pjLxLHWBAvfJHcDmPigu
+         tLo6vyKFxvapzvKUyA9nlAQk++MQVnYeGHrkXiSB3T3OgzZUcmJsvr93LUnZFAzC+0rg
+         Y7MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713252485; x=1713857285;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1713252497; x=1713857297;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L3YNb/BQo9qdNgnowLsQAsmr6DsyiaoOlrRVzxGcNH4=;
-        b=R6MREJ2J1o0ruihpJVXkGSb1n/mskjj0IkbxBTshhv/Vv/uvbnklkGvqNGctfTI9ps
-         VDn68Ys9KG0P/BfHANHI+K5ieEPj3rkHhYJir+Ue22kVBnDM12TIC2bGgIaO7NMNFZcx
-         qkiHx4gMPIA7qNZRWX8RuH1uxBfflB+vVlT3uE/+4kIaN7Gm0jDPRbhnVcVJIwN0jATx
-         QgrnggvAx3S0z1OippTtc80nciJEo2sDUY4q1pwLD0da8O1B2oH4kwgg6zLBUpw98gui
-         JN4gi/LM8J/Lcwp82SXVc9RKBUX+xhf7qN3aLl4vIQDUqzUt9Wprzzsvh4FiffIgtAMi
-         4xdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX/K7JV/1aMVmzkl69CP1zquCpwFvL0kUDTC9TrMJfFrHOFHAilqxFgOR/T2Thl01PsXUHibSHj3/6+giMibXJTfr/caNEptxvfjarK
-X-Gm-Message-State: AOJu0Yw/H6eG4E/4YDoo7jtbyZugLuvyvADFI6HO6Rw+BA2bbuDfNmyC
-	foKdCN3HW68UG8PvHO53QExGIF3nG6byjk8qyBk02RaCxUShGejnTAS7kDCvE3+SRk+kK/kvoW6
-	6uo8F0e7zUnvkhvPiakXaOCoEnzYH5MyeNgZms03Mz9T8wx3fu0B0KIA=
-X-Google-Smtp-Source: AGHT+IF50829uF3qaEI04PAWHiUx0GXukVLUYFzAlylN87l17rHHOY0lH7LB1h3+1yKlqpOdZDvHSrhY4/eFHaEHtTghgdGLLvJ/
+        bh=ZVbg0XEuYD0ISZnmCPk7SJEed6iK2Cd+clJNUGNCXzw=;
+        b=af2YKwkJiGIqxWb5k/sGGg28pxhapmvMwpQyGn6qqIfqGazrn8cvcZykooffj6K900
+         QAVK0anha50XOCpre5WenNQZSGTM3moK+17nosx8Dg9NZ8NN5dj14uNJQ6VK9dQytHxe
+         e/ygTLpsVa///XCwJVFfg8MAP8iDE32prnlu6MVU2T/5+HXLuICJ9DukPwQJC4P39+Zj
+         s2J5zOKVtSsSFQzhrQ9mei79YVQXPcV3KZ6jTB34X8xDqihP+ShD8YQ13OwTtMHTFCLF
+         vaff+Dazu2LAdDUjV9gHzr1hgpsCBKIaXwmUs6u0E+Jb9opKXluo0RGP8UjhBKnkpT+/
+         N0Yg==
+X-Forwarded-Encrypted: i=1; AJvYcCWqHAUiytJS614o7RtcU3OW2Csc1aOPh2YHm2TsRxTldaYfmZ4ogB7fjN38bktppP7qF3Ny1AuFsoPsLzyPTWalOgyY/292v7JR4CNXrcuyI1ZL8B8ajmb37V7H+svLIPe0
+X-Gm-Message-State: AOJu0Yw3vUGqTXNGybjj0zdEwZPU1HQNR1NtPOWYnJvATs3Wvw6kb127
+	N3tVWZXe6EUWQkXoDqh3d3lYty7PF+RXN6xKpT03CNsS4B1Sflql
+X-Google-Smtp-Source: AGHT+IG2gqMBH6kLPwUn6KCJfMr7TISak+pyID3GCPxN0bPio8S5npb+dB3UDx0/hupJ9snCuIvavA==
+X-Received: by 2002:a2e:a696:0:b0:2da:c37f:655e with SMTP id q22-20020a2ea696000000b002dac37f655emr991334lje.16.1713252496774;
+        Tue, 16 Apr 2024 00:28:16 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id g15-20020a05600c4ecf00b00414659ba8c2sm19059251wmq.37.2024.04.16.00.28.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 00:28:16 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 16 Apr 2024 09:28:14 +0200
+To: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, haoluo@google.com, sdf@google.com,
+	kpsingh@kernel.org, john.fastabend@gmail.com,
+	yonghong.song@linux.dev, song@kernel.org, eddyz87@gmail.com,
+	andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+	martin.lau@linux.dev, khazhy@chromium.org, vmalik@redhat.com,
+	ndesaulniers@google.com, ncopa@alpinelinux.org, dxu@dxuuu.xyz
+Subject: Re: [PATCH] bpf: btf: include linux/types.h for u32
+Message-ID: <Zh4ojsD-aV2vHROI@krava>
+References: <20240414045124.3098560-1-dmitrii.bundin.a@gmail.com>
+ <Zh0ZhEU1xhndl2k8@krava>
+ <CANXV_Xwmf-VH5EfNdv=wcv8J=2W5L5RtOs8n-Uh5jm5a1yiMKw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1cad:b0:36a:2a2a:1a12 with SMTP id
- x13-20020a056e021cad00b0036a2a2a1a12mr592273ill.3.1713252485144; Tue, 16 Apr
- 2024 00:28:05 -0700 (PDT)
-Date: Tue, 16 Apr 2024 00:28:05 -0700
-In-Reply-To: <Zh2kuFX9BWOGN1Mo@fedora>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c9b3d4061631ad9c@google.com>
-Subject: Re: [syzbot] [mm?] KASAN: slab-use-after-free Read in __vma_reservation_common
-From: syzbot <syzbot+ad1b592fc4483655438b@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, muchun.song@linux.dev, syzkaller-bugs@googlegroups.com, 
-	vishal.moola@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANXV_Xwmf-VH5EfNdv=wcv8J=2W5L5RtOs8n-Uh5jm5a1yiMKw@mail.gmail.com>
 
-Hello,
+On Tue, Apr 16, 2024 at 08:27:21AM +0300, Dmitrii Bundin wrote:
+> On Mon, Apr 15, 2024 at 3:11 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+> > lgtm, did it actualy cause problem anywhere?
+> >
+> > there's also tools/include/linux/btf_ids.h
+> 
+> It caused the problems exactly in the file
+> tools/include/linux/btf_ids.h and was reported in
+> https://bugzilla.kernel.org/show_bug.cgi?id=218647
+> The patch including linux/types.h in tools/include/linux/btf_ids.h is
+> already there https://lore.kernel.org/all/20240328110103.28734-1-ncopa@alpinelinux.org/
+> I also faced the same compile-error of the form
+> 
+>     error: unknown type name 'u32'
+>                               u32 cnt;
+>                               ^~~
+> when compiling the bpf tool with glibc 2.28.
+> 
+> I think it might be reasonable to add the inclusion in
+> include/linux/btf_ids.h as well to prevent build problems like this.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+ok, it's in the bpf/master already
 
-Reported-and-tested-by: syzbot+ad1b592fc4483655438b@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         9ed46da1 Add linux-next specific files for 20240412
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=15f0023b180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7ea0abc478c49859
-dashboard link: https://syzkaller.appspot.com/bug?extid=ad1b592fc4483655438b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1065003b180000
-
-Note: testing is done by a robot and is best-effort only.
+jirka
 
