@@ -1,213 +1,871 @@
-Return-Path: <linux-kernel+bounces-147217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A59A8A7117
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:18:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 559388A711C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:18:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B412DB21D6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:18:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78ACA1C21BCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 994EB131BB9;
-	Tue, 16 Apr 2024 16:17:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617F212EBCB;
+	Tue, 16 Apr 2024 16:18:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="hhDylQkD"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2080.outbound.protection.outlook.com [40.107.244.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="LvwEmY5K"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D9913173F
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:17:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.80
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713284265; cv=fail; b=b5a/uVEew7PkicY8Muewez2Wgt5wY8shRiNm6gLPGt8VXJYZ+jE7f1dbjxK8hZJg7otQvHtcMYvKSpWZ/x5roC7/Q6GvlFkxxXCqJH7EPY/sTscanJK6TpKOr5eCVLzkpN2KFxC7tiLBM0/P4yty3RVKMQvGqwpyRf9qwRISJZI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713284265; c=relaxed/simple;
-	bh=Od9L+I+4nR/RorJhpqxRxteGKOyvLUmF4MEPfOSaYzg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=q1mpelSQdcY0UEsx6PgnTqL2shFUQuZZJrDCX6YtFWK7HNAX2Ay+89hzwomw/RDADxjfqG/h4iJHjH0PZnBoIdZPlz/u0IH1ziEdaLJXqCm/BCsYnkvr+k9it3jzz8LgiwgdP3nXgooLwz0P1m77wcLXo7s9l7hLMzPLcvrfT94=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=hhDylQkD; arc=fail smtp.client-ip=40.107.244.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GbAyjbLugWVSSidV09i+4fEHkzoh2FXaIYd/3PsnIvsGlpBBUjTZfB+5AyGHWWtieEEZ6qoxhykG2UIBFJN7jJfNc6awlC3QfGO0ccsrUg/1bA9GIc0y7sIGJLJy+0OiNg7NfIoE3goYXgg/wmmEzlMcTmX7AgSDCadK0XM9DSHKaaspGPjSixK5LQmHGSkllWHEJCbY2gUcrSDqdatrtGDTQBILUGKtYNQrz0dDS4Tj217cEbjklQI1nlBOuZrSExKcyYR+uiJDhlRw9DnepCEKgy8RYMVX2FP2toAPuGqRH1/CVKhXnYpyPAgdrKVJajq+6KgAXogJVDvU4P2M8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tM1tEwro2rjm4FGZZZCeUi509ZVthQoM1tWA6AA7Sbo=;
- b=l9cn6tPtnbkoJj8kYsvKaSHWU26YhDCHK7oOJJHexv+T0awLa1axSHXOoklbyfGOPh2yvmE/VK/4Dv24O4QGsvbcBLqEyMojCYDpX+/hm/m0zEwzoxHWPi4Tn4xTILR1tQmbW8T1kfDAJpII2/YTP7ZFGT2i2qGcacah2UkSTnx759T6C+C35AYZjuqUgAEUKD3s2E0U9wqy/yOu+VDGV3jwJN6bfhKJRlyQS89E4PvknNtA5BW820AO5V/VdTyudzVzHBhiJ6PO6XmJeQtvM09snvBiaLTOtS6TDxlD6OgezVtPay5Kgrvt40A7YFPfENP1l3JW5nsdEgPxE3uDKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tM1tEwro2rjm4FGZZZCeUi509ZVthQoM1tWA6AA7Sbo=;
- b=hhDylQkDH7+uZc1J7PU2tcSsfkre+y+ziye8Y6ZlRMpHw7amVWRDX2mY0q+ABb1XvyIyPN5fORpwC1AJhEWyunlAGQvpQT9etKAkRGWMIO6MjPxRZ9fEWXYKbvRAasdcL5W/eE8eV9L/vCG5Vj/pmIfFa+wXTfHQhQldYlaICzA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
- by DS7PR12MB8372.namprd12.prod.outlook.com (2603:10b6:8:eb::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.50; Tue, 16 Apr 2024 16:17:41 +0000
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::bf0:d462:345b:dc52]) by BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::bf0:d462:345b:dc52%6]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
- 16:17:41 +0000
-Message-ID: <2be81e12-9c62-7fa0-5f3c-ab195406b6b6@amd.com>
-Date: Tue, 16 Apr 2024 11:17:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 10/14] configfs-tsm: Allow the privlevel_floor
- attribute to be updated
-Content-Language: en-US
-To: Dan Williams <dan.j.williams@intel.com>, linux-kernel@vger.kernel.org,
- x86@kernel.org, linux-coco@lists.linux.dev, svsm-devel@coconut-svsm.dev
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Michael Roth <michael.roth@amd.com>,
- Ashish Kalra <ashish.kalra@amd.com>
-References: <cover.1711405593.git.thomas.lendacky@amd.com>
- <bb088b1409283cd323515138feda224759a247ec.1711405593.git.thomas.lendacky@amd.com>
- <661e04cd345af_4d56129468@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <061802e1-7c95-f1f0-b462-3aca27583d76@amd.com>
- <661ea007d1844_4d5612948c@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-From: Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <661ea007d1844_4d5612948c@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA0PR13CA0004.namprd13.prod.outlook.com
- (2603:10b6:806:130::9) To BL1PR12MB5732.namprd12.prod.outlook.com
- (2603:10b6:208:387::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B822113119E
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713284287; cv=none; b=XCpWTEB8KLWKpin9dsD0me61NU7XkbarkpuHUl4nD0qCkgo7DiQFSO+72FoT7Y6Z2qwgIBLd2sriZKDSjHVKl6FbPu+h1N91UhBrdHzPxqIcwpMLMl9mf+fX2ObUWdrgvEETj8paXkYvCW8wVVzeRMV3mWufY6BuNgunG316vMY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713284287; c=relaxed/simple;
+	bh=yP/aIZf8Rkv4ERAupvBcxcOehWNu5MWFY23+tXTmJGg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SypGZf1GAaFN6uR85G4BnCFOLQLDmcODOQbYbvEHAdREwz681Wb/kXkzAC3xg/G4b3+pyXCFn7pNeaYk0/crTkhY6S8XSQQP77R1MMMJ7EIQRrvwB075GXAfO/sn0rtOXux2JWyJLg6aLwSFXecUuj2Zy0rrLvaSZSWQZ7cNQek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=LvwEmY5K; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516d0162fa1so5878409e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 09:18:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1713284283; x=1713889083; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TIVAWcgidJ0OA7neZ5s/LX9vP8exwr/rYdbbyB5oLnY=;
+        b=LvwEmY5KdMktwzc2mbUkwj0EfOgEEreBRFdjXvOyFDfhQvaC8A0HIz3qCdzr/3Da8/
+         s8Az/8WG0VAqnaN2aiewbwUYLaWS43EXgGirJBZjC/1JGdeATGRhiTSk8cSVw1nlJTrP
+         yc8UaUAeL/YSb3kDOIR8GTnAmI6YURGY/y/Jk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713284283; x=1713889083;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TIVAWcgidJ0OA7neZ5s/LX9vP8exwr/rYdbbyB5oLnY=;
+        b=XDZXIqOzWbtnXojwVS3G3NrEB41uKKyLoR996MI+lkRTDQy5LHohb857jkMlQi4uml
+         vRxzLS8hir8VDWX15wnd06vOkLEKm9/vu6mIZ3dfzcbWklYVBpYcVerags+NiSpew5cn
+         3NazIL2S/hA1S5zSm8KcYHyFBliTi4hwokuRSdfCg+2IhqPJFJZMuNizr20cP3m5ktB3
+         BymKkWYY/W/1ChQcHMTi9BHMz+VjLlVLbDsPNuJyXwQLFsl+aJ6njUZyJovNOgiWygvd
+         BpSz8w0+o/DKy+j/S5DQ9MWEfGkkaCHN9b1JpQQGyzSVJodWSlGsaaNazDzA+W6AoYuW
+         WS0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWdwZh0jtC63qoNFUjjtQRtgdqpK7iYYPbPbMy4EQM0G4pFm5gBvkFK4fV6R+3RXMPHXMuAKYp9WpLqnNe2tsEk4mgVEOigCh45ePsV
+X-Gm-Message-State: AOJu0Ywt4OQDRdRnBb/3JSr/hC1lwkN8PHXL7a9Gb5tVp3L2b7wb84Na
+	M4it7gWb1/AOrjDdA1f7VvV6NCAFlqiA6A7lTEodfL1n6jKjfHDtR0BTHHciibxA7UJ9ZnOo6ea
+	z4n2LrUpKYzSZ+kZ+AtLbhs4DKdQvHy9MQ9cM
+X-Google-Smtp-Source: AGHT+IHd3FuMdkRH2B+m1t22F5J0b9lB9i76uqs/HVE2M1qIhyR/juqTrWYrvg9PEcbvZCvdu2fwNVBha52/X8Mf9Do=
+X-Received: by 2002:ac2:5b08:0:b0:518:a17a:2331 with SMTP id
+ v8-20020ac25b08000000b00518a17a2331mr7207744lfn.65.1713284282651; Tue, 16 Apr
+ 2024 09:18:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|DS7PR12MB8372:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5fc44203-06aa-42d5-92a0-08dc5e30bdad
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	yZEmqPdcQkofu8qbO8LzXNaQ8xCjIaaWgtX25aAqe9kVPI1UWKMsxIOpA7pSfQ28BAxs69mmGYw8Xu0sqdslko5nlcuvCqc+9zvAxxyWE2/AM3UI3inXNyvutr3IryvgkGt8T1gZHgZoFriE775qyDQZfNpvQA2D4vtjcVrAE0r3KIg+wtBnHO9pN+ZZVPgFfOdiL3h4sjq8OZka37lxZ18bCZMaWnWKJULxRe1jSBPgExs6YN7xTuKObizbGqvCJJEOG18o8ZgFasS3KXgcNihpMk6tIbTAAp8Rk55sPVJWe7qYgb6N79juFnTNnHtThuKIT2XJQYTF4sCWSebw49RNCjWklljDvSUnK3U9Ny5zsP17trUWVoVgUnh3cNIQ/vxUC9HDtaIcEfPMxOlv8bxtO4FlDX8ytFxPQRDxHZ8f3jc3t5HFhfNY49UuJ1hMhZcUj9JAReUT8WJuC6gp47rTfijLLnFXMzUJ34+jSP/g9YmEbb8Jh0kYmA0Ny4FTJzIHUjPLzg1h2VWLExaEKb364xBloTy1ehFCGlOj2k6sx0LSSWkDYozJM6FKrRtTwq7knjVys+DgmNNeGXctiACsidVF4jfixjCOGLyjxhpmnlu++g4VuzIuN+fPg0HQWrvVGS/CaaFdYOAI7NQAcrxSPnOAftvspk2Zz0I0O/4=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZjVQQ1NZdXRJMVhycWVuRGh0dDZBZDhGYnJUWTJrSmdvVlB0MDFtUU00ZGM5?=
- =?utf-8?B?ZzEwaGUyYkVUMVNyN1dIL24vR29YdUlHajNLU3lLSzl0cDZpb2JlZ2dGR1Fo?=
- =?utf-8?B?VWh1R0dTZDRMOW1oUVNEOU9lZXdHbWJuUUw1WFF3ZmFhanpiYkJBUXVOdTFM?=
- =?utf-8?B?ZnJvaGs5Z1NFdXg1RzRnbEVEUkFGWGlvM0w1RDE0MVJUNFJIL1VWbmpZaUgr?=
- =?utf-8?B?TW1CV0lNdVh6M0VMcWs2dXBWSzBZRmtFa3hWeVdZU3JSWFVtZFd1Yzh0eUtj?=
- =?utf-8?B?Qk4zN1R1Wmx0cDRYOU1RdG54Y0xtb1ZaZ3FWN2FIQnNRZFVlVmN5dXE0WjVh?=
- =?utf-8?B?MkF4UUFCR0lIQy9YZnJXbUNRZmNSZVI5Znc3Qm5SNjQ2aVRreDVueTUxK1VD?=
- =?utf-8?B?em9IMHcxWXl1UUpoNkxtYjJGazFrQzZ6UWlBZFhQL1V5U3B1cmsraVNTcXk1?=
- =?utf-8?B?ZGVWalI4N3hzZmhuSERmNG42WUMwUWhoc3FxK2V3UHMyY3lSUDFVZ0FIM0Js?=
- =?utf-8?B?emQycE8wbU1RTkNydGQzRXZONFVXdXFnTEtVTlY3UTdabHlMQUsxUFplbXgv?=
- =?utf-8?B?UWxXemp1YTNzM3E2MVZKdDVrRUErdjZZWFBHdGZvc2VhRWcydjRzNFkvL3Zl?=
- =?utf-8?B?bU13bVpBbStabWhGQ3FzUVdBYVZCeFdSeXVRS3V2WFdQUWRoK3FoZnFvdlNj?=
- =?utf-8?B?L3FZbTF5bmRTMldvOVM0SmZoVXdPV1dqR0FJS09tTUdneG5rd3VZZkVkdlpD?=
- =?utf-8?B?QjZDZUhML29qZk5KMjJTNTlieW5wZ2c0eEdqY3hHY1ZLU21Ea3JpbisvUC9s?=
- =?utf-8?B?S0pGcWRVVHVLNmxhNHRReGt3SHp2MkpUY2VTb3RKSWFONzNDeS9ZbkhDRWV6?=
- =?utf-8?B?cTVXRWVwVVRRcmRpVnJHNENvd25MWDNyamdaSlRseHc2MWFrUmlvU0dPenJO?=
- =?utf-8?B?RnFNRDVvY0w3R0dpcUVBSDg1MU1SblkwMVZQd2tvSnFUby9jVFBzVmNQOEto?=
- =?utf-8?B?TUhBZ0Fhb3R6eUxIUFlsSTZNUFFlMXNvaWN2QmJ5RU9GK3hiRU1zaE42Rmh0?=
- =?utf-8?B?aWh5VkVla2dsaU5GUk9sWUNDNjI0OEZkT2kxQXR4bW1IbHpPZmVTVzloOVpu?=
- =?utf-8?B?d1JMSGJWZzN1OGxsWW5NWWV4Vk41SnVqczBqV3lBbkNQUDA2eDR1SEtEQ0h6?=
- =?utf-8?B?VEFsd3RpY2ZPUWw0NHQrY25naFQxU1VBSkJEcGQ0NUdtN0E5SlF6ZkUrSXZB?=
- =?utf-8?B?YkVjSHdxY1NFWk9xMDhWTHVtd2E1SjJqVktaMmVJcmQ5dlFOVDA3aTRhaHow?=
- =?utf-8?B?WEcyS21saUxmREtmQTdKMmRmWnczUGxjdHNDQ0FNdmNUSkJsZ0w4RFU5VTRX?=
- =?utf-8?B?Y2JYNERBWW5iQXd0NTRzdHFSNWdWSE1EZXlSMW5XbGRjRlhXbjlQRWJUQjZa?=
- =?utf-8?B?YnJNTDZnOXh2bGg2YkRpcE5vVXIyeWJlRHhLSXFGaTdjOVVHMlJXMXFYY3Bj?=
- =?utf-8?B?TGhVVExzVmJ3RSswbC80LzZ5Mmc3ZUlJK3ZUVXlHelk2SThpSlc1Y0tDUk8z?=
- =?utf-8?B?NHUrYTRNQnBCdWExeG82MDNsVlVvcTFraytVdlIvOWRTdUxtMWtQWVhZOENu?=
- =?utf-8?B?QWRrN2dNN0U1ZmZDS1RpdTVGWXhhcFdocHltQTV6MGxiaXN2U3BYb1pXTWx1?=
- =?utf-8?B?OEVuVFRKd3JLd1hSR1MySVozL1h3ZCt2aWs0VCtqVytXN3huOEk4OEVLMk0r?=
- =?utf-8?B?Y0E5enU0aE82aEJ1MDE1dmtzSGJXRms3QWU2S0dhVGk3V2pPMEFQOGNNV3N3?=
- =?utf-8?B?RlU3MlhLNExBOGRMY1BEQ2RrTTBRMkdtZTF0TXh3cExjWmdIN3RnRWtLS2JD?=
- =?utf-8?B?dUtTZWZVbHpjczZ0THNWOG5HTURzYWkrT1lVK0pQSGZzbExjTWpNUUdYZ2pI?=
- =?utf-8?B?Ylh2aE1OWkh2K0d0WlJlN1REMGlmc200NHNvbW9DdE9wZTdVUEhzYUNteEdP?=
- =?utf-8?B?dUdJL2kvWkM3WmR0WWUvRGFZOERDSzNKY1dqTXJUK29uVFRkditUTFd4WmNw?=
- =?utf-8?B?MmRWR0VGL3RSUkVEK3V5ZnV1RHUydEFaak81RzhnTnBsMTdqeGpvendabDF3?=
- =?utf-8?Q?G0/YAlebHa4gtcyyDdHF7AsiO?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5fc44203-06aa-42d5-92a0-08dc5e30bdad
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 16:17:41.5014
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qtcILDQwWjvPWbe8oWK4dq2DnpimzwmAEDt5pP881JAEjdHO3uVHob0C7cxOYc6Mw8QZtkYQHP+/Zbno/yFI6A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8372
+References: <20240416050616.6056-1-gakula@marvell.com> <20240416050616.6056-3-gakula@marvell.com>
+In-Reply-To: <20240416050616.6056-3-gakula@marvell.com>
+From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
+Date: Tue, 16 Apr 2024 21:47:50 +0530
+Message-ID: <CAH-L+nNJ2QB5jVudi1D9vYk_0W_8z22Fh8gLZuJKwLtapMr-hw@mail.gmail.com>
+Subject: Re: [net-next PATCH 2/9] octeontx2-pf: RVU representor driver
+To: Geetha sowjanya <gakula@marvell.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org, 
+	davem@davemloft.net, pabeni@redhat.com, edumazet@google.com, 
+	sgoutham@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000001a9d190616391558"
 
-On 4/16/24 10:57, Dan Williams wrote:
-> Tom Lendacky wrote:
->> On 4/15/24 23:55, Dan Williams wrote:
->>> Tom Lendacky wrote:
->>>> With the introduction of an SVSM, Linux will be running at a non-zero
->>>> VMPL. Any request for an attestation report at a higher priviledge VMPL
->>>> than what Linux is currently running will result in an error. Allow for
->>>> the privlevel_floor attribute to be updated dynamically so that the
->>>> attribute may be set dynamically.
->>>>
->>>> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
->>>> ---
->>>>    drivers/virt/coco/sev-guest/sev-guest.c | 5 ++++-
->>>>    include/linux/tsm.h                     | 2 +-
->>>>    2 files changed, 5 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
->>>> index 1ff897913bf4..bba6531cb606 100644
->>>> --- a/drivers/virt/coco/sev-guest/sev-guest.c
->>>> +++ b/drivers/virt/coco/sev-guest/sev-guest.c
->>>> @@ -885,7 +885,7 @@ static int sev_report_new(struct tsm_report *report, void *data)
->>>>    	return 0;
->>>>    }
->>>>    
->>>> -static const struct tsm_ops sev_tsm_ops = {
->>>> +static struct tsm_ops sev_tsm_ops = {
->>>>    	.name = KBUILD_MODNAME,
->>>>    	.report_new = sev_report_new,
->>>>    };
->>>> @@ -972,6 +972,9 @@ static int __init sev_guest_probe(struct platform_device *pdev)
->>>>    	snp_dev->input.resp_gpa = __pa(snp_dev->response);
->>>>    	snp_dev->input.data_gpa = __pa(snp_dev->certs_data);
->>>>    
->>>> +	/* Set the privlevel_floor attribute based on the current VMPL */
->>>> +	sev_tsm_ops.privlevel_floor = snp_get_vmpl();
->>>
->>> Why is this not vmpck_id?
->>
->> Good catch, this probably should be pulled out separately and submitted
->> as a Fixes: against the current support. If you think it's important
->> enough, I can do that and put this at the beginning of the series. Or I
->> can just modify this to use the vmpck_id value. Any preference?
-> 
-> I dunno, you tell me. What breaks if privlevel_floor is mismatched vs
-> vmpl and/or vmpck_id? If it warrants a "Fixes:" it should probably be
-> broken out.
-> 
-> However, I *guess* it is just adding some sanity checking precision to
-> userspace requests and makes some input validation not catch errors when
-> userspace tries to generate reports from the wrong level, right? I.e.
-> privlevel_floor may be lower than expected, but userspace should not be
-> depending on that since the report generation will fail.
+--0000000000001a9d190616391558
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Yeah, it just results in a different type of error. If the VMPL 
-specified by the user is numerically lower than the vmpck_id, then the 
-request will fail with a specific return code value. With the change to 
-privlevel_floor to use vmpck_id, then you would just get the error that 
-much sooner when trying to set a value that is lower than the floor.
+On Tue, Apr 16, 2024 at 10:37=E2=80=AFAM Geetha sowjanya <gakula@marvell.co=
+m> wrote:
+>
+> This patch adds basic driver for the RVU representor.
+> Driver on probe does pci specific initialization and does hw
+> resources configuration.
+> Introduces RVU_ESWITCH kernel config to enable/disable
+> this driver. Representor and NIC shares the code but represenotrs
+> netdev support subset of NIC functionality. Hence "is_rep_dev"
+> api helps to skip the features initialization that are not supported
+> by the representors.
+>
+> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+> ---
+>  .../net/ethernet/marvell/octeontx2/Kconfig    |   8 +
+>  .../ethernet/marvell/octeontx2/af/Makefile    |   3 +-
+>  .../net/ethernet/marvell/octeontx2/af/mbox.h  |   8 +
+>  .../net/ethernet/marvell/octeontx2/af/rvu.h   |  11 +
+>  .../ethernet/marvell/octeontx2/af/rvu_nix.c   |  19 +-
+>  .../ethernet/marvell/octeontx2/af/rvu_rep.c   |  48 ++++
+>  .../ethernet/marvell/octeontx2/nic/Makefile   |   2 +
+>  .../marvell/octeontx2/nic/otx2_common.h       |  12 +-
+>  .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  17 +-
+>  .../marvell/octeontx2/nic/otx2_txrx.c         |  19 +-
+>  .../net/ethernet/marvell/octeontx2/nic/rep.c  | 221 ++++++++++++++++++
+>  .../net/ethernet/marvell/octeontx2/nic/rep.h  |  32 +++
+>  12 files changed, 383 insertions(+), 17 deletions(-)
+>  create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_rep.c
+>  create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/rep.c
+>  create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/rep.h
+>
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/Kconfig b/drivers/net=
+/ethernet/marvell/octeontx2/Kconfig
+> index a32d85d6f599..72f57d6f8a87 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/Kconfig
+> +++ b/drivers/net/ethernet/marvell/octeontx2/Kconfig
+> @@ -46,3 +46,11 @@ config OCTEONTX2_VF
+>         depends on OCTEONTX2_PF
+>         help
+>           This driver supports Marvell's OcteonTX2 NIC virtual function.
+> +
+> +config RVU_ESWITCH
+> +       tristate "Marvell RVU E-Switch support"
+> +       depends on OCTEONTX2_PF && NET_SWITCHDEV
+> +       default m
+> +       help
+> +         This driver supports Marvell's RVU E-Switch that
+> +         provides internal SRIOV packet steering and switching for the
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/Makefile b/drivers=
+/net/ethernet/marvell/octeontx2/af/Makefile
+> index 3cf4c8285c90..ccea37847df8 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/Makefile
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/Makefile
+> @@ -11,4 +11,5 @@ rvu_mbox-y :=3D mbox.o rvu_trace.o
+>  rvu_af-y :=3D cgx.o rvu.o rvu_cgx.o rvu_npa.o rvu_nix.o \
+>                   rvu_reg.o rvu_npc.o rvu_debugfs.o ptp.o rvu_npc_fs.o \
+>                   rvu_cpt.o rvu_devlink.o rpm.o rvu_cn10k.o rvu_switch.o =
+\
+> -                 rvu_sdp.o rvu_npc_hash.o mcs.o mcs_rvu_if.o mcs_cnf10kb=
+o
+> +                 rvu_sdp.o rvu_npc_hash.o mcs.o mcs_rvu_if.o mcs_cnf10kb=
+o \
+> +                 rvu_rep.o
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/n=
+et/ethernet/marvell/octeontx2/af/mbox.h
+> index 10efbd56abd1..c77c02730cf9 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+> @@ -143,6 +143,7 @@ M(LMTST_TBL_SETUP,  0x00a, lmtst_tbl_setup, lmtst_tbl=
+_setup_req,    \
+>                                 msg_rsp)                                \
+>  M(SET_VF_PERM,         0x00b, set_vf_perm, set_vf_perm, msg_rsp)       \
+>  M(PTP_GET_CAP,         0x00c, ptp_get_cap, msg_req, ptp_get_cap_rsp)   \
+> +M(GET_REP_CNT,         0x00d, get_rep_cnt, msg_req, get_rep_cnt_rsp)   \
+>  /* CGX mbox IDs (range 0x200 - 0x3FF) */                               \
+>  M(CGX_START_RXTX,      0x200, cgx_start_rxtx, msg_req, msg_rsp)        \
+>  M(CGX_STOP_RXTX,       0x201, cgx_stop_rxtx, msg_req, msg_rsp)         \
+> @@ -1524,6 +1525,13 @@ struct ptp_get_cap_rsp {
+>         u64 cap;
+>  };
+>
+> +struct get_rep_cnt_rsp {
+> +       struct mbox_msghdr hdr;
+> +       u16 rep_cnt;
+> +       u16 rep_pf_map[64];
+> +       u64 rsvd;
+> +};
+> +
+>  struct flow_msg {
+>         unsigned char dmac[6];
+>         unsigned char smac[6];
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h b/drivers/ne=
+t/ethernet/marvell/octeontx2/af/rvu.h
+> index e7ff2f1b021f..1d76d52d7a5d 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
+> @@ -593,6 +593,9 @@ struct rvu {
+>         spinlock_t              cpt_intr_lock;
+>
+>         struct mutex            mbox_lock; /* Serialize mbox up and down =
+msgs */
+> +       u16                     rep_pcifunc;
+> +       int                     rep_cnt;
+> +       u16                     *rep2pfvf_map;
+>  };
+>
+>  static inline void rvu_write64(struct rvu *rvu, u64 block, u64 offset, u=
+64 val)
+> @@ -821,6 +824,14 @@ bool is_sdp_pfvf(u16 pcifunc);
+>  bool is_sdp_pf(u16 pcifunc);
+>  bool is_sdp_vf(struct rvu *rvu, u16 pcifunc);
+>
+> +static inline bool is_rep_dev(struct rvu *rvu, u16 pcifunc)
+> +{
+> +       if (rvu->rep_pcifunc && rvu->rep_pcifunc =3D=3D pcifunc)
+> +               return true;
+> +
+> +       return false;
+> +}
+> +
+>  /* CGX APIs */
+>  static inline bool is_pf_cgxmapped(struct rvu *rvu, u8 pf)
+>  {
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/driver=
+s/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+> index cb795d09971e..4ef5bb7b337f 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+> @@ -329,7 +329,8 @@ static bool is_valid_txschq(struct rvu *rvu, int blka=
+ddr,
+>
+>         /* TLs aggegating traffic are shared across PF and VFs */
+>         if (lvl >=3D hw->cap.nix_tx_aggr_lvl) {
+> -               if (rvu_get_pf(map_func) !=3D rvu_get_pf(pcifunc))
+> +               if ((nix_get_tx_link(rvu, map_func) !=3D nix_get_tx_link(=
+rvu, pcifunc)) &&
+> +                   (rvu_get_pf(map_func) !=3D rvu_get_pf(pcifunc)))
+>                         return false;
+>                 else
+>                         return true;
+> @@ -1631,6 +1632,12 @@ int rvu_mbox_handler_nix_lf_alloc(struct rvu *rvu,
+>         cfg =3D NPC_TX_DEF_PKIND;
+>         rvu_write64(rvu, blkaddr, NIX_AF_LFX_TX_PARSE_CFG(nixlf), cfg);
+>
+> +       if (is_rep_dev(rvu, pcifunc)) {
+> +               pfvf->tx_chan_base =3D RVU_SWITCH_LBK_CHAN;
+> +               pfvf->tx_chan_cnt =3D 1;
+> +               goto exit;
+> +       }
+> +
+>         intf =3D is_lbk_vf(rvu, pcifunc) ? NIX_INTF_TYPE_LBK : NIX_INTF_T=
+YPE_CGX;
+>         if (is_sdp_pfvf(pcifunc))
+>                 intf =3D NIX_INTF_TYPE_SDP;
+> @@ -1701,6 +1708,9 @@ int rvu_mbox_handler_nix_lf_free(struct rvu *rvu, s=
+truct nix_lf_free_req *req,
+>         if (nixlf < 0)
+>                 return NIX_AF_ERR_AF_LF_INVALID;
+>
+> +       if (is_rep_dev(rvu, pcifunc))
+> +               goto free_lf;
+> +
+>         if (req->flags & NIX_LF_DISABLE_FLOWS)
+>                 rvu_npc_disable_mcam_entries(rvu, pcifunc, nixlf);
+>         else
+> @@ -1712,6 +1722,7 @@ int rvu_mbox_handler_nix_lf_free(struct rvu *rvu, s=
+truct nix_lf_free_req *req,
+>
+>         nix_interface_deinit(rvu, pcifunc, nixlf);
+>
+> +free_lf:
+>         /* Reset this NIX LF */
+>         err =3D rvu_lf_reset(rvu, block, nixlf);
+>         if (err) {
+> @@ -2007,7 +2018,7 @@ static void nix_get_txschq_range(struct rvu *rvu, u=
+16 pcifunc,
+>         struct rvu_hwinfo *hw =3D rvu->hw;
+>         int pf =3D rvu_get_pf(pcifunc);
+>
+> -       if (is_lbk_vf(rvu, pcifunc)) { /* LBK links */
+> +       if (is_lbk_vf(rvu, pcifunc) || is_rep_dev(rvu, pcifunc)) { /* LBK=
+ links */
+>                 *start =3D hw->cap.nix_txsch_per_cgx_lmac * link;
+>                 *end =3D *start + hw->cap.nix_txsch_per_lbk_lmac;
+>         } else if (is_pf_cgxmapped(rvu, pf)) { /* CGX links */
+> @@ -4519,7 +4530,7 @@ int rvu_mbox_handler_nix_set_hw_frs(struct rvu *rvu=
+, struct nix_frs_cfg *req,
+>         if (!nix_hw)
+>                 return NIX_AF_ERR_INVALID_NIXBLK;
+>
+> -       if (is_lbk_vf(rvu, pcifunc))
+> +       if (is_lbk_vf(rvu, pcifunc) || is_rep_dev(rvu, pcifunc))
+>                 rvu_get_lbk_link_max_frs(rvu, &max_mtu);
+>         else
+>                 rvu_get_lmac_link_max_frs(rvu, &max_mtu);
+> @@ -4547,6 +4558,8 @@ int rvu_mbox_handler_nix_set_hw_frs(struct rvu *rvu=
+, struct nix_frs_cfg *req,
+>                 /* For VFs of PF0 ingress is LBK port, so config LBK link=
+ */
+>                 pfvf =3D rvu_get_pfvf(rvu, pcifunc);
+>                 link =3D hw->cgx_links + pfvf->lbkid;
+> +       } else if (is_rep_dev(rvu, pcifunc)) {
+> +               link =3D hw->cgx_links + 0;
+>         }
+>
+>         if (link < 0)
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_rep.c b/driver=
+s/net/ethernet/marvell/octeontx2/af/rvu_rep.c
+> new file mode 100644
+> index 000000000000..d07cb356d3d6
+> --- /dev/null
+> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_rep.c
+> @@ -0,0 +1,48 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Marvell RVU Admin Function driver
+> + *
+> + * Copyright (C) 2024 Marvell.
+> + *
+> + */
+> +
+> +#include <linux/types.h>
+> +#include <linux/device.h>
+> +#include <linux/module.h>
+> +#include <linux/pci.h>
+> +
+> +#include "rvu.h"
+> +#include "rvu_reg.h"
+> +
+> +int rvu_mbox_handler_get_rep_cnt(struct rvu *rvu, struct msg_req *req,
+> +                                struct get_rep_cnt_rsp *rsp)
+> +{
+> +       int pf, vf, numvfs, hwvf, rep =3D 0;
+> +       u16 pcifunc;
+> +
+> +       rvu->rep_pcifunc =3D req->hdr.pcifunc;
+> +       rsp->rep_cnt =3D rvu->cgx_mapped_pfs + rvu->cgx_mapped_vfs;
+> +       rvu->rep_cnt =3D rsp->rep_cnt;
+> +
+> +       rvu->rep2pfvf_map =3D devm_kzalloc(rvu->dev, rvu->rep_cnt *
+> +                                        sizeof(u16), GFP_KERNEL);
+[Kalesh] Any reason to use "devm_kzalloc" here? Why not kzalloc()
+> +       if (!rvu->rep2pfvf_map)
+> +               return -ENOMEM;
+> +
+> +       for (pf =3D 0; pf < rvu->hw->total_pfs; pf++) {
+> +               if (!is_pf_cgxmapped(rvu, pf))
+> +                       continue;
+> +               pcifunc =3D pf << RVU_PFVF_PF_SHIFT;
+> +               rvu->rep2pfvf_map[rep] =3D pcifunc;
+> +               rsp->rep_pf_map[rep] =3D pcifunc;
+> +               rep++;
+> +               rvu_get_pf_numvfs(rvu, pf, &numvfs, &hwvf);
+> +               for (vf =3D 0; vf < numvfs; vf++) {
+> +                       rvu->rep2pfvf_map[rep] =3D pcifunc |
+> +                               ((vf + 1) & RVU_PFVF_FUNC_MASK);
+> +                       rsp->rep_pf_map[rep] =3D rvu->rep2pfvf_map[rep];
+> +                       rep++;
+> +               }
+> +       }
+> +       return 0;
+> +}
+> +
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/Makefile b/driver=
+s/net/ethernet/marvell/octeontx2/nic/Makefile
+> index 5664f768cb0c..69ee78dc8aad 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/Makefile
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/Makefile
+> @@ -5,11 +5,13 @@
+>
+>  obj-$(CONFIG_OCTEONTX2_PF) +=3D rvu_nicpf.o otx2_ptp.o
+>  obj-$(CONFIG_OCTEONTX2_VF) +=3D rvu_nicvf.o otx2_ptp.o
+> +obj-$(CONFIG_RVU_ESWITCH) +=3D rvu_rep.o
+>
+>  rvu_nicpf-y :=3D otx2_pf.o otx2_common.o otx2_txrx.o otx2_ethtool.o \
+>                 otx2_flows.o otx2_tc.o cn10k.o otx2_dmac_flt.o \
+>                 otx2_devlink.o qos_sq.o qos.o
+>  rvu_nicvf-y :=3D otx2_vf.o otx2_devlink.o
+> +rvu_rep-y :=3D rep.o
+>
+>  rvu_nicpf-$(CONFIG_DCB) +=3D otx2_dcbnl.o
+>  rvu_nicvf-$(CONFIG_DCB) +=3D otx2_dcbnl.o
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/d=
+rivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+> index e6d7b2487ed1..79ec86035c16 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+> @@ -29,6 +29,7 @@
+>  #include "otx2_devlink.h"
+>  #include <rvu_trace.h>
+>  #include "qos.h"
+> +#include "rep.h"
+>
+>  /* IPv4 flag more fragment bit */
+>  #define IPV4_FLAG_MORE                         0x20
+> @@ -439,6 +440,7 @@ struct otx2_nic {
+>  #define OTX2_FLAG_DMACFLTR_SUPPORT             BIT_ULL(14)
+>  #define OTX2_FLAG_PTP_ONESTEP_SYNC             BIT_ULL(15)
+>  #define OTX2_FLAG_ADPTV_INT_COAL_ENABLED BIT_ULL(16)
+> +#define OTX2_FLAG_REP_MODE_ENABLED              BIT_ULL(17)
+>         u64                     flags;
+>         u64                     *cq_op_addr;
+>
+> @@ -506,11 +508,19 @@ struct otx2_nic {
+>  #if IS_ENABLED(CONFIG_MACSEC)
+>         struct cn10k_mcs_cfg    *macsec_cfg;
+>  #endif
+> +
+> +#if IS_ENABLED(CONFIG_RVU_ESWITCH)
+> +       struct rep_dev          **reps;
+> +       int                     rep_cnt;
+> +       u16                     rep_pf_map[RVU_MAX_REP];
+> +       u16                     esw_mode;
+> +#endif
+>  };
+>
+>  static inline bool is_otx2_lbkvf(struct pci_dev *pdev)
+>  {
+> -       return pdev->device =3D=3D PCI_DEVID_OCTEONTX2_RVU_AFVF;
+> +       return (pdev->device =3D=3D PCI_DEVID_OCTEONTX2_RVU_AFVF) ||
+> +               (pdev->device =3D=3D PCI_DEVID_RVU_REP);
+>  }
+>
+>  static inline bool is_96xx_A0(struct pci_dev *pdev)
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drive=
+rs/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> index 88886ea864cc..119c99768a85 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> @@ -1502,10 +1502,11 @@ int otx2_init_hw_resources(struct otx2_nic *pf)
+>         hw->sqpool_cnt =3D otx2_get_total_tx_queues(pf);
+>         hw->pool_cnt =3D hw->rqpool_cnt + hw->sqpool_cnt;
+>
+> -       /* Maximum hardware supported transmit length */
+> -       pf->tx_max_pktlen =3D pf->netdev->max_mtu + OTX2_ETH_HLEN;
+> -
+> -       pf->rbsize =3D otx2_get_rbuf_size(pf, pf->netdev->mtu);
+> +       if (!is_rep_dev(pf->pdev)) {
+> +               /* Maximum hardware supported transmit length */
+> +               pf->tx_max_pktlen =3D pf->netdev->max_mtu + OTX2_ETH_HLEN=
+;
+> +               pf->rbsize =3D otx2_get_rbuf_size(pf, pf->netdev->mtu);
+> +       }
+>
+>         mutex_lock(&mbox->lock);
+>         /* NPA init */
+> @@ -1634,11 +1635,12 @@ void otx2_free_hw_resources(struct otx2_nic *pf)
+>                 otx2_pfc_txschq_stop(pf);
+>  #endif
+>
+> -       otx2_clean_qos_queues(pf);
+> +       if (!is_rep_dev(pf->pdev))
+> +               otx2_clean_qos_queues(pf);
+>
+>         mutex_lock(&mbox->lock);
+>         /* Disable backpressure */
+> -       if (!(pf->pcifunc & RVU_PFVF_FUNC_MASK))
+> +       if (!is_otx2_lbkvf(pf->pdev))
+>                 otx2_nix_config_bp(pf, false);
+>         mutex_unlock(&mbox->lock);
+>
+> @@ -1670,7 +1672,8 @@ void otx2_free_hw_resources(struct otx2_nic *pf)
+>         otx2_free_cq_res(pf);
+>
+>         /* Free all ingress bandwidth profiles allocated */
+> -       cn10k_free_all_ipolicers(pf);
+> +       if (!is_rep_dev(pf->pdev))
+> +               cn10k_free_all_ipolicers(pf);
+>
+>         mutex_lock(&mbox->lock);
+>         /* Reset NIX LF */
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/dri=
+vers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> index 8223780fc269..2a2cfa77bd4d 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+> @@ -375,11 +375,13 @@ static void otx2_rcv_pkt_handler(struct otx2_nic *p=
+fvf,
+>                 }
+>                 start +=3D sizeof(*sg);
+>         }
+> -       otx2_set_rxhash(pfvf, cqe, skb);
+>
+> -       skb_record_rx_queue(skb, cq->cq_idx);
+> -       if (pfvf->netdev->features & NETIF_F_RXCSUM)
+> -               skb->ip_summed =3D CHECKSUM_UNNECESSARY;
+> +       if (!(pfvf->flags & OTX2_FLAG_REP_MODE_ENABLED)) {
+> +               otx2_set_rxhash(pfvf, cqe, skb);
+> +               skb_record_rx_queue(skb, cq->cq_idx);
+> +               if (pfvf->netdev->features & NETIF_F_RXCSUM)
+> +                       skb->ip_summed =3D CHECKSUM_UNNECESSARY;
+> +       }
+>
+>         skb_mark_for_recycle(skb);
+>
+> @@ -463,7 +465,11 @@ static int otx2_tx_napi_handler(struct otx2_nic *pfv=
+f,
+>  process_cqe:
+>         qidx =3D cq->cq_idx - pfvf->hw.rx_queues;
+>         sq =3D &pfvf->qset.sq[qidx];
+> -       ndev =3D pfvf->netdev;
+> +
+> +       if (pfvf->flags & OTX2_FLAG_REP_MODE_ENABLED)
+> +               ndev =3D pfvf->reps[qidx]->netdev;
+> +       else
+> +               ndev =3D pfvf->netdev;
+>
+>         while (likely(processed_cqe < budget) && cq->pend_cqe) {
+>                 cqe =3D (struct nix_cqe_tx_s *)otx2_get_next_cqe(cq);
+> @@ -500,6 +506,9 @@ static int otx2_tx_napi_handler(struct otx2_nic *pfvf=
+,
+>
+>                 if (qidx >=3D pfvf->hw.tx_queues)
+>                         qidx -=3D pfvf->hw.xdp_queues;
+> +
+> +               if (pfvf->flags & OTX2_FLAG_REP_MODE_ENABLED)
+> +                       qidx =3D 0;
+>                 txq =3D netdev_get_tx_queue(pfvf->netdev, qidx);
+>                 netdev_tx_completed_queue(txq, tx_pkts, tx_bytes);
+>                 /* Check if queue was stopped earlier due to ring full */
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/rep.c b/drivers/n=
+et/ethernet/marvell/octeontx2/nic/rep.c
+> new file mode 100644
+> index 000000000000..b892a7fe3ddc
+> --- /dev/null
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/rep.c
+> @@ -0,0 +1,221 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Marvell RVU representor driver
+> + *
+> + * Copyright (C) 2024 Marvell.
+> + *
+> + */
+> +
+> +#include <linux/etherdevice.h>
+> +#include <linux/module.h>
+> +#include <linux/pci.h>
+> +#include <linux/net_tstamp.h>
+> +
+> +#include "otx2_common.h"
+> +#include "cn10k.h"
+> +#include "otx2_reg.h"
+> +#include "rep.h"
+> +
+> +#define DRV_NAME       "rvu_rep"
+> +#define DRV_STRING     "Marvell RVU Representor Driver"
+> +
+> +static const struct pci_device_id rvu_rep_id_table[] =3D {
+> +       { PCI_DEVICE(PCI_VENDOR_ID_CAVIUM, PCI_DEVID_RVU_REP) },
+> +       { }
+> +};
+> +
+> +MODULE_AUTHOR("Marvell International Ltd.");
+> +MODULE_DESCRIPTION(DRV_STRING);
+> +MODULE_LICENSE("GPL");
+> +MODULE_DEVICE_TABLE(pci, rvu_rep_id_table);
+> +
+> +static int rvu_rep_rsrc_free(struct otx2_nic *priv)
+[Kalesh] You can change this to a void function
+> +{
+> +       struct otx2_qset *qset =3D &priv->qset;
+> +       int wrk;
+> +
+> +       for (wrk =3D 0; wrk < priv->qset.cq_cnt; wrk++)
+> +               cancel_delayed_work_sync(&priv->refill_wrk[wrk].pool_refi=
+ll_work);
+> +       devm_kfree(priv->dev, priv->refill_wrk);
+> +
+> +       otx2_free_hw_resources(priv);
+> +       otx2_free_queue_mem(qset);
+> +       return 0;
+> +}
+> +
+> +static int rvu_rep_rsrc_init(struct otx2_nic *priv)
+> +{
+> +       struct otx2_qset *qset =3D &priv->qset;
+> +       int err =3D 0;
+[Kalesh] No need to initialize "rc" here
+> +
+> +       err =3D otx2_alloc_queue_mem(priv);
+> +       if (err)
+> +               return err;
+> +
+> +       priv->hw.max_mtu =3D otx2_get_max_mtu(priv);
+> +       priv->tx_max_pktlen =3D priv->hw.max_mtu + OTX2_ETH_HLEN;
+> +       priv->rbsize =3D ALIGN(priv->hw.rbuf_len, OTX2_ALIGN) + OTX2_HEAD=
+_ROOM;
+> +
+> +       err =3D otx2_init_hw_resources(priv);
+> +       if (err)
+> +               goto err_free_rsrc;
+> +
+> +       /* Set maximum frame size allowed in HW */
+> +       err =3D otx2_hw_set_mtu(priv, priv->hw.max_mtu);
+> +       if (err) {
+> +               dev_err(priv->dev, "Failed to set HW MTU\n");
+> +               goto err_free_rsrc;
+> +       }
+> +       return 0;
+> +
+> +err_free_rsrc:
+> +       otx2_free_hw_resources(priv);
+> +       otx2_free_queue_mem(qset);
+> +       return err;
+> +}
+> +
+> +static int rvu_get_rep_cnt(struct otx2_nic *priv)
+> +{
+> +       struct get_rep_cnt_rsp *rsp;
+> +       struct mbox_msghdr *msghdr;
+> +       struct msg_req *req;
+> +       int err, rep;
+> +
+> +       mutex_lock(&priv->mbox.lock);
+> +       req =3D otx2_mbox_alloc_msg_get_rep_cnt(&priv->mbox);
+> +       if (!req) {
+> +               mutex_unlock(&priv->mbox.lock);
+> +               return -ENOMEM;
+> +       }
+> +       err =3D otx2_sync_mbox_msg(&priv->mbox);
+> +       if (err)
+> +               goto exit;
+> +
+> +       msghdr =3D otx2_mbox_get_rsp(&priv->mbox.mbox, 0, &req->hdr);
+> +       if (IS_ERR(msghdr)) {
+> +               err =3D PTR_ERR(rsp);
+[Kalesh] "rsp" is not initialized here. Did you mean "err =3D PTR_ERR(msghd=
+r);"?
+> +               goto exit;
+> +       }
+> +
+> +       rsp =3D (struct get_rep_cnt_rsp *)msghdr;
+> +       priv->hw.tx_queues =3D rsp->rep_cnt;
+> +       priv->hw.rx_queues =3D rsp->rep_cnt;
+> +       priv->rep_cnt =3D rsp->rep_cnt;
+> +       for (rep =3D 0; rep < priv->rep_cnt; rep++)
+> +               priv->rep_pf_map[rep] =3D rsp->rep_pf_map[rep];
+> +
+> +exit:
+> +       mutex_unlock(&priv->mbox.lock);
+> +       return err;
+> +}
+> +
+> +static int rvu_rep_probe(struct pci_dev *pdev, const struct pci_device_i=
+d *id)
+> +{
+> +       struct device *dev =3D &pdev->dev;
+> +       struct otx2_nic *priv;
+> +       struct otx2_hw *hw;
+> +       int err;
+> +
+> +       err =3D pcim_enable_device(pdev);
+> +       if (err) {
+> +               dev_err(dev, "Failed to enable PCI device\n");
+> +               return err;
+> +       }
+> +
+> +       err =3D pci_request_regions(pdev, DRV_NAME);
+> +       if (err) {
+> +               dev_err(dev, "PCI request regions failed 0x%x\n", err);
+> +               return err;
+> +       }
+> +
+> +       err =3D dma_set_mask_and_coherent(dev, DMA_BIT_MASK(48));
+> +       if (err) {
+> +               dev_err(dev, "DMA mask config failed, abort\n");
+> +               goto err_release_regions;
+> +       }
+> +
+> +       pci_set_master(pdev);
+> +
+> +       priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +       if (!priv)
+> +               return -ENOMEM;
+[Kalesh: goto err_release_regions; ??
+> +       pci_set_drvdata(pdev, priv);
+> +       priv->pdev =3D pdev;
+> +       priv->dev =3D dev;
+> +       priv->flags |=3D OTX2_FLAG_INTF_DOWN;
+> +       priv->flags |=3D OTX2_FLAG_REP_MODE_ENABLED;
+> +
+> +       hw =3D &priv->hw;
+> +       hw->pdev =3D pdev;
+> +       hw->max_queues =3D OTX2_MAX_CQ_CNT;
+> +       hw->rbuf_len =3D OTX2_DEFAULT_RBUF_LEN;
+> +       hw->xqe_size =3D 128;
+> +
+> +       err =3D otx2_init_rsrc(pdev, priv);
+> +       if (err)
+> +               goto err_release_regions;
+> +
+> +       err =3D rvu_get_rep_cnt(priv);
+> +       if (err)
+> +               goto err_detach_rsrc;
+> +
+> +       err =3D rvu_rep_rsrc_init(priv);
+> +       if (err)
+> +               goto err_detach_rsrc;
+> +
+> +       return 0;
+> +
+> +err_detach_rsrc:
+> +       if (priv->hw.lmt_info)
+> +               free_percpu(priv->hw.lmt_info);
+> +       if (test_bit(CN10K_LMTST, &priv->hw.cap_flag))
+> +               qmem_free(priv->dev, priv->dync_lmt);
+> +       otx2_detach_resources(&priv->mbox);
+> +       otx2_disable_mbox_intr(priv);
+> +       otx2_pfaf_mbox_destroy(priv);
+> +       pci_free_irq_vectors(pdev);
+> +err_release_regions:
+> +       pci_set_drvdata(pdev, NULL);
+> +       pci_release_regions(pdev);
+> +       return err;
+> +}
+> +
+> +static void rvu_rep_remove(struct pci_dev *pdev)
+> +{
+> +       struct otx2_nic *priv =3D pci_get_drvdata(pdev);
+> +
+> +       rvu_rep_rsrc_free(priv);
+> +       otx2_detach_resources(&priv->mbox);
+> +       if (priv->hw.lmt_info)
+> +               free_percpu(priv->hw.lmt_info);
+> +       if (test_bit(CN10K_LMTST, &priv->hw.cap_flag))
+> +               qmem_free(priv->dev, priv->dync_lmt);
+> +       otx2_disable_mbox_intr(priv);
+> +       otx2_pfaf_mbox_destroy(priv);
+> +       pci_free_irq_vectors(priv->pdev);
+> +       pci_set_drvdata(pdev, NULL);
+> +       pci_release_regions(pdev);
+> +}
+> +
+> +static struct pci_driver rvu_rep_driver =3D {
+> +       .name =3D DRV_NAME,
+> +       .id_table =3D rvu_rep_id_table,
+> +       .probe =3D rvu_rep_probe,
+> +       .remove =3D rvu_rep_remove,
+> +       .shutdown =3D rvu_rep_remove,
+> +};
+> +
+> +static int __init rvu_rep_init_module(void)
+> +{
+> +       pr_info("%s: %s\n", DRV_NAME, DRV_STRING);
+> +
+> +       return pci_register_driver(&rvu_rep_driver);
+> +}
+> +
+> +static void __exit rvu_rep_cleanup_module(void)
+> +{
+> +       pci_unregister_driver(&rvu_rep_driver);
+> +}
+> +
+> +module_init(rvu_rep_init_module);
+> +module_exit(rvu_rep_cleanup_module);
+> +
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/rep.h b/drivers/n=
+et/ethernet/marvell/octeontx2/nic/rep.h
+> new file mode 100644
+> index 000000000000..30cce17eb48b
+> --- /dev/null
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/rep.h
+> @@ -0,0 +1,32 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/* Marvell RVU REPRESENTOR driver
+> + *
+> + * Copyright (C) 2024 Marvell.
+> + *
+> + */
+> +
+> +#ifndef REP_H
+> +#define REP_H
+> +
+> +#include <linux/pci.h>
+> +
+> +#include "otx2_reg.h"
+> +#include "otx2_txrx.h"
+> +#include "otx2_common.h"
+> +
+> +#define PCI_DEVID_RVU_REP      0xA0E0
+> +
+> +#define RVU_MAX_REP    OTX2_MAX_CQ_CNT
+> +struct rep_dev {
+> +       struct otx2_nic *mdev;
+> +       struct net_device *netdev;
+> +       u16 rep_id;
+> +       u16 pcifunc;
+> +};
+> +
+> +static inline bool is_rep_dev(struct pci_dev *pdev)
+> +{
+> +       return pdev->device =3D=3D PCI_DEVID_RVU_REP;
+> +}
+> +
+> +#endif /* REP_H */
+> --
+> 2.25.1
+>
 
-Since I don't think the vmpck_id module parameter is a common case 
-today, let's just leave that change in this patch.
 
-Thanks,
-Tom
+--=20
+Regards,
+Kalesh A P
+
+--0000000000001a9d190616391558
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIQiwYJKoZIhvcNAQcCoIIQfDCCEHgCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg3iMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
+MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
+rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
+aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
+e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
+cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
+MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
+KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
+/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
+TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
+YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
+b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
+c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
+CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
+BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
+jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
+9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
+/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
+jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
+AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
+dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
+MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
+IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
+XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
+J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
+nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBWowggRSoAMCAQICDDfBRQmwNSI92mit0zANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwODI5NTZaFw0yNTA5MTAwODI5NTZaMIGi
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xHzAdBgNVBAMTFkthbGVzaCBBbmFra3VyIFB1cmF5aWwxMjAw
+BgkqhkiG9w0BCQEWI2thbGVzaC1hbmFra3VyLnB1cmF5aWxAYnJvYWRjb20uY29tMIIBIjANBgkq
+hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxnv1Reaeezfr6NEmg3xZlh4cz9m7QCN13+j4z1scrX+b
+JfnV8xITT5yvwdQv3R3p7nzD/t29lTRWK3wjodUd2nImo6vBaH3JbDwleIjIWhDXLNZ4u7WIXYwx
+aQ8lYCdKXRsHXgGPY0+zSx9ddpqHZJlHwcvas3oKnQN9WgzZtsM7A8SJefWkNvkcOtef6bL8Ew+3
+FBfXmtsPL9I2vita8gkYzunj9Nu2IM+MnsP7V/+Coy/yZDtFJHp30hDnYGzuOhJchDF9/eASvE8T
+T1xqJODKM9xn5xXB1qezadfdgUs8k8QAYyP/oVBafF9uqDudL6otcBnziyDBQdFCuAQN7wIDAQAB
+o4IB5DCCAeAwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZC
+aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJj
+YTIwMjAuY3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3Iz
+cGVyc29uYWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcC
+ARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNV
+HR8EQjBAMD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNp
+Z24yY2EyMDIwLmNybDAuBgNVHREEJzAlgSNrYWxlc2gtYW5ha2t1ci5wdXJheWlsQGJyb2FkY29t
+LmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGP
+zzAdBgNVHQ4EFgQUI3+tdStI+ABRGSqksMsiCmO9uDAwDQYJKoZIhvcNAQELBQADggEBAGfe1o9b
+4wUud0FMjb/FNdc433meL15npjdYWUeioHdlCGB5UvEaMGu71QysfoDOfUNeyO9YKp0h0fm7clvo
+cBqeWe4CPv9TQbmLEtXKdEpj5kFZBGmav69mGTlu1A9KDQW3y0CDzCPG2Fdm4s73PnkwvemRk9E2
+u9/kcZ8KWVeS+xq+XZ78kGTKQ6Wii3dMK/EHQhnDfidadoN/n+x2ySC8yyDNvy81BocnblQzvbuB
+a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
+x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
+VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
+bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcN
+AQkEMSIEIHmHFcD01v9GiIZEVhiRJItqXi4eE6sLXHYOhuLZwqggMBgGCSqGSIb3DQEJAzELBgkq
+hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDQxNjE2MTgwM1owaQYJKoZIhvcNAQkPMVwwWjAL
+BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
+9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAHPqmEcA3p
+iPQ3exy3vwafl4OwuFBIm/KxwUPRmrQn3TE/gJPl3baf5VQBHDlsDYBGK2tz/fYvdN0b4601G/Rk
+DqgS+gb0eBKdjb8pyvFKVAuyC4Z4SemOTOrVwx2Ps7g7Vin1BDw/+OkmkdCmg+aLdsWaCmNI0vj6
+MfFULQ6KAa7lkmDrYjt/inCboOIZC3bQKK4N+PiJfLUeiirkrkXsMMZt1x/p8S2e8bkRJK2EG7wU
+M39KEd/VmbB4KVsoHDvgUFAyfvTeRCGQ3eshbxgUjaEaVr/cpOrMNvD7/9702t/Pv1JLEbc18RwH
+b2d7VGqsIHAMDDT8YU4TTzA6DM0v
+--0000000000001a9d190616391558--
 
