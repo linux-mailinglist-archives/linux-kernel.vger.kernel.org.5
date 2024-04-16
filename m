@@ -1,527 +1,257 @@
-Return-Path: <linux-kernel+bounces-146053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45E6C8A5F88
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 460168A600C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 03:15:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BA46B21BDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:59:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B713B228FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BC2F185E;
-	Tue, 16 Apr 2024 00:59:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E78E115B12D;
+	Tue, 16 Apr 2024 01:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lF3Gb/vJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="Y3Uki57o"
+Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 903A71849
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:59:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C274B7489;
+	Tue, 16 Apr 2024 01:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713229147; cv=none; b=kp3EYFZcPGuLdXQ9v46NAB/1hOb/MwS4OWz3bVl8ADy7nkVD/oRhcmGioLtK4N4NekQ/3dyD0BBQNu9ZZaoKxm8PHT+jRBV8B5DHbySdvSuag4WrwOtUTv2OAmTibWkroS8BDANd+8u2eEERNjDkyWdUJoRiD4eUY3uz5CYSTko=
+	t=1713229833; cv=none; b=lkddO63/r+NWHMskuxO/76KLeJywUcEBubhSmxEzIo+hdfVDBag1/MhYcB3dBc5WSLfW//7zWAe74azVXIYAni3SxNenej3467wcq+KcXVCSEqZ+8m6uTkAiad5sm8o757j//Oaeu30+wmDNB1ThQGgRDcyE22ifFDZoFVphqvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713229147; c=relaxed/simple;
-	bh=h4MYnrPwIktwbUCiMF7I33uM7wPi3BfrFMB/2M+DyxA=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=hc029n7Sqgdrc870tXMi6UhOLGsjd/44tsOTogAAZECDJSZS5hoY6pkV87v9KWvRPDDW3aL9WoNXKPNyn34BXJalTEdIwzJ7mRKDydJuCtYQri7atP/hEEHznsFXY4lJ3fTQvvDJcKUNqvhjMF7lgG1RktLPuKmJz0I3AIzot8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lF3Gb/vJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57F21C32786;
-	Tue, 16 Apr 2024 00:59:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713229147;
-	bh=h4MYnrPwIktwbUCiMF7I33uM7wPi3BfrFMB/2M+DyxA=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=lF3Gb/vJAGSSoHaCb/JB/YuDOTJ+s0yxidqIASIqP6Ra5eCSrgr8tKryMiYLNVCpK
-	 qXTtVGCrOGlejtjLJFHl/9PjWhZSQ7JCnq2R2OS0McnMvkyo5jrK0rDRIaL3lWIvSq
-	 f5qZ1M+zllTB6w2HbyMjat/zKsFt1Pup/6Guwm3emCTfaGTHU3p6ZBduYQEbCVsDxr
-	 c6KhK9pLgN41SMCzOgHe51wCnieU5B9aHgkeSUvMBnVpnWBsxa//6RTIO47OiFBn7X
-	 Zr/MN9FwQkQOZJOH0gPkDhP+qddLEzy2dsJSK88oM8vKdyrQtJLtubDbZJbmkTDmDb
-	 xEJR2cG7TWYgw==
-Message-ID: <ca038b66-7dc0-4315-807d-bd1dc9cc281b@kernel.org>
-Date: Tue, 16 Apr 2024 08:59:02 +0800
+	s=arc-20240116; t=1713229833; c=relaxed/simple;
+	bh=CfGfgdOAAKKMC5wFm2zy4hEYCNA54sn4dKMYMos0ND8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z2/mSoo/gNnoh3SSI/wTTMZTIB/z0a93qSGliALLmWO8V1Hb4LoH/4RyqmQmEk8pIGwvurbruL6Wr8rX3fPOkflwIivQZZyCgO8dCy2+aKbRLrxTFQ6SY5aIvQiatGTAMK1pBAne+RxEqL8zHkxy5HOLy+6MiM/JAL6hf8DiTgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=Y3Uki57o; arc=none smtp.client-ip=4.36.192.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
+	bh=k/J/xiqsIy5k1U4w1kZGUWaht5CJpXBMInaaIcC0oiY=; b=Y3Uki57orxWhxbiyUq9z3KxXuT
+	dibRcItgLRG9rebmojAQ857nUCBwnvGMet1tTm7Opv/M+5XJLSlqpg++1CbcoNRtmEtSX0z/yztdW
+	DS9RSvijD4I4/SbZNrzgxLV0x41jmESeh0grMHXpQPxSX7+aBF1tPySIvMqkx8UwPCHhWKZRuZGhO
+	XTaVv+sCNclYioj0J9r6NoELBXzmy8c51bJtSBXvU02udDSPkqRziBUUM293H8WsBn/N36N/uwDoZ
+	yREBT+4J7yjSKqUUbAPuU45la3olin1e5A6H04osWXKSleJxI2MkJ/uwy19TJ2T08v009ncFleMl+
+	YFEAIVWw==;
+Received: from cw137ip160.mn.codeweavers.com ([10.69.137.160] helo=camazotz.mn.codeweavers.com)
+	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <zfigura@codeweavers.com>)
+	id 1rwXKy-00FbQv-0Y;
+	Mon, 15 Apr 2024 20:10:16 -0500
+From: Elizabeth Figura <zfigura@codeweavers.com>
+To: Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org,
+	wine-devel@winehq.org,
+	=?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>,
+	Wolfram Sang <wsa@kernel.org>,
+	Arkadiusz Hiler <ahiler@codeweavers.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Elizabeth Figura <zfigura@codeweavers.com>
+Subject: [PATCH v4 00/30] NT synchronization primitive driver
+Date: Mon, 15 Apr 2024 20:08:10 -0500
+Message-ID: <20240416010837.333694-1-zfigura@codeweavers.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH v3] f2fs: zone: don't block IO if there is
- remained open zone
-From: Chao Yu <chao@kernel.org>
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-References: <20240407135848.3638669-1-chao@kernel.org>
- <Zhmje71C7FOTIfom@google.com>
- <2ca3cb91-1db5-4a9b-9dd0-8caad2d09f31@kernel.org>
- <Zhvz-_pqlCEZrUHB@google.com>
- <2dee7da9-e65d-47c0-a7f5-2e952e4aa784@kernel.org>
- <36c2974c-8a4a-4da0-b497-aef4c9647f94@kernel.org>
-Content-Language: en-US
-In-Reply-To: <36c2974c-8a4a-4da0-b497-aef4c9647f94@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 2024/4/15 22:01, Chao Yu wrote:
-> On 2024/4/15 11:26, Chao Yu wrote:
->> On 2024/4/14 23:19, Jaegeuk Kim wrote:
->>> It seems this caused kernel hang. Chao, have you tested this patch enough?
->>
->> Jaegeuk,
->>
->> Oh, I've checked this patch w/ fsstress before submitting it, but missed
->> the SPO testcase... do you encounter kernel hang w/ SPO testcase?
-> 
-> I did see any hang issue w/ por_fsstress testcase, which testcase do you use?
+This patch series implements a new char misc driver, /dev/ntsync, which is used
+to implement Windows NT synchronization primitives.
 
-Sorry, I mean I haven't reproduced it yet...
+NT synchronization primitives are unique in that the wait functions both are
+vectored, operate on multiple types of object with different behaviour (mutex,
+semaphore, event), and affect the state of the objects they wait on. This model
+is not compatible with existing kernel synchronization objects or interfaces,
+and therefore the ntsync driver implements its own wait queues and locking.
 
-Thanks,
+Hence I would like to request review from someone familiar with locking to make
+sure that the usage of low-level kernel primitives is correct and that the wait
+queues work as intended, and to that end I've CC'd the locking maintainers.
 
-> 
-> Thanks,
-> 
->>
->> Anyway, let me test it more.
->>
->> Thanks,
->>
->>>
->>> On 04/13, Chao Yu wrote:
->>>> On 2024/4/13 5:11, Jaegeuk Kim wrote:
->>>>> On 04/07, Chao Yu wrote:
->>>>>> max open zone may be larger than log header number of f2fs, for
->>>>>> such case, it doesn't need to wait last IO in previous zone, let's
->>>>>> introduce available_open_zone semaphore, and reduce it once we
->>>>>> submit first write IO in a zone, and increase it after completion
->>>>>> of last IO in the zone.
->>>>>>
->>>>>> Cc: Daeho Jeong <daeho43@gmail.com>
->>>>>> Signed-off-by: Chao Yu <chao@kernel.org>
->>>>>> ---
->>>>>> v3:
->>>>>> - avoid race condition in between __submit_merged_bio()
->>>>>> and __allocate_new_segment().
->>>>>>    fs/f2fs/data.c    | 105 ++++++++++++++++++++++++++++++----------------
->>>>>>    fs/f2fs/f2fs.h    |  34 ++++++++++++---
->>>>>>    fs/f2fs/iostat.c  |   7 ++++
->>>>>>    fs/f2fs/iostat.h  |   2 +
->>>>>>    fs/f2fs/segment.c |  43 ++++++++++++++++---
->>>>>>    fs/f2fs/segment.h |  12 +++++-
->>>>>>    fs/f2fs/super.c   |   2 +
->>>>>>    7 files changed, 156 insertions(+), 49 deletions(-)
->>>>>>
->>>>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->>>>>> index 0d88649c60a5..18a4ac0a06bc 100644
->>>>>> --- a/fs/f2fs/data.c
->>>>>> +++ b/fs/f2fs/data.c
->>>>>> @@ -373,11 +373,10 @@ static void f2fs_write_end_io(struct bio *bio)
->>>>>>    #ifdef CONFIG_BLK_DEV_ZONED
->>>>>>    static void f2fs_zone_write_end_io(struct bio *bio)
->>>>>>    {
->>>>>> -    struct f2fs_bio_info *io = (struct f2fs_bio_info *)bio->bi_private;
->>>>>> +    struct f2fs_sb_info *sbi = iostat_get_bio_private(bio);
->>>>>> -    bio->bi_private = io->bi_private;
->>>>>> -    complete(&io->zone_wait);
->>>>>>        f2fs_write_end_io(bio);
->>>>>> +    up(&sbi->available_open_zones);
->>>>>>    }
->>>>>>    #endif
->>>>>> @@ -531,6 +530,24 @@ static void __submit_merged_bio(struct f2fs_bio_info *io)
->>>>>>        if (!io->bio)
->>>>>>            return;
->>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>> +    if (io->open_zone) {
->>>>>> +        /*
->>>>>> +         * if there is no open zone, it will wait for last IO in
->>>>>> +         * previous zone before submitting new IO.
->>>>>> +         */
->>>>>> +        down(&fio->sbi->available_open_zones);
->>>>>> +        io->open_zone = false;
->>>>>> +        io->zone_openned = true;
->>>>>> +    }
->>>>>> +
->>>>>> +    if (io->close_zone) {
->>>>>> +        io->bio->bi_end_io = f2fs_zone_write_end_io;
->>>>>> +        io->zone_openned = false;
->>>>>> +        io->close_zone = false;
->>>>>> +    }
->>>>>> +#endif
->>>>>> +
->>>>>>        if (is_read_io(fio->op)) {
->>>>>>            trace_f2fs_prepare_read_bio(io->sbi->sb, fio->type, io->bio);
->>>>>>            f2fs_submit_read_bio(io->sbi, io->bio, fio->type);
->>>>>> @@ -601,9 +618,9 @@ int f2fs_init_write_merge_io(struct f2fs_sb_info *sbi)
->>>>>>                INIT_LIST_HEAD(&sbi->write_io[i][j].bio_list);
->>>>>>                init_f2fs_rwsem(&sbi->write_io[i][j].bio_list_lock);
->>>>>>    #ifdef CONFIG_BLK_DEV_ZONED
->>>>>> -            init_completion(&sbi->write_io[i][j].zone_wait);
->>>>>> -            sbi->write_io[i][j].zone_pending_bio = NULL;
->>>>>> -            sbi->write_io[i][j].bi_private = NULL;
->>>>>> +            sbi->write_io[i][j].open_zone = false;
->>>>>> +            sbi->write_io[i][j].zone_openned = false;
->>>>>> +            sbi->write_io[i][j].close_zone = false;
->>>>>>    #endif
->>>>>>            }
->>>>>>        }
->>>>>> @@ -634,6 +651,31 @@ static void __f2fs_submit_merged_write(struct f2fs_sb_info *sbi,
->>>>>>        f2fs_up_write(&io->io_rwsem);
->>>>>>    }
->>>>>> +void f2fs_blkzoned_submit_merged_write(struct f2fs_sb_info *sbi, int type)
->>>>>> +{
->>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>> +    struct f2fs_bio_info *io;
->>>>>> +
->>>>>> +    if (!f2fs_sb_has_blkzoned(sbi))
->>>>>> +        return;
->>>>>> +
->>>>>> +    io = sbi->write_io[PAGE_TYPE(type)] + type_to_temp(type);
->>>>>> +
->>>>>> +    f2fs_down_write(&io->io_rwsem);
->>>>>> +    if (io->zone_openned) {
->>>>>> +        if (io->bio) {
->>>>>> +            io->close_zone = true;
->>>>>> +            __submit_merged_bio(io);
->>>>>> +        } else if (io->zone_openned) {
->>>>>> +            up(&sbi->available_open_zones);
->>>>>> +            io->zone_openned = false;
->>>>>> +        }
->>>>>> +    }
->>>>>> +    f2fs_up_write(&io->io_rwsem);
->>>>>> +#endif
->>>>>> +
->>>>>> +}
->>>>>> +
->>>>>>    static void __submit_merged_write_cond(struct f2fs_sb_info *sbi,
->>>>>>                    struct inode *inode, struct page *page,
->>>>>>                    nid_t ino, enum page_type type, bool force)
->>>>>> @@ -918,22 +960,16 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
->>>>>>    }
->>>>>>    #ifdef CONFIG_BLK_DEV_ZONED
->>>>>> -static bool is_end_zone_blkaddr(struct f2fs_sb_info *sbi, block_t blkaddr)
->>>>>> +static bool is_blkaddr_zone_boundary(struct f2fs_sb_info *sbi,
->>>>>> +                    block_t blkaddr, bool start)
->>>>>>    {
->>>>>> -    int devi = 0;
->>>>>> +    if (!f2fs_blkaddr_in_seqzone(sbi, blkaddr))
->>>>>> +        return false;
->>>>>> +
->>>>>> +    if (start)
->>>>>> +        return (blkaddr % sbi->blocks_per_blkz) == 0;
->>>>>> +    return (blkaddr % sbi->blocks_per_blkz == sbi->blocks_per_blkz - 1);
->>>>>> -    if (f2fs_is_multi_device(sbi)) {
->>>>>> -        devi = f2fs_target_device_index(sbi, blkaddr);
->>>>>> -        if (blkaddr < FDEV(devi).start_blk ||
->>>>>> -            blkaddr > FDEV(devi).end_blk) {
->>>>>> -            f2fs_err(sbi, "Invalid block %x", blkaddr);
->>>>>> -            return false;
->>>>>> -        }
->>>>>> -        blkaddr -= FDEV(devi).start_blk;
->>>>>> -    }
->>>>>> -    return bdev_is_zoned(FDEV(devi).bdev) &&
->>>>>> -        f2fs_blkz_is_seq(sbi, devi, blkaddr) &&
->>>>>> -        (blkaddr % sbi->blocks_per_blkz == sbi->blocks_per_blkz - 1);
->>>>>>    }
->>>>>>    #endif
->>>>>> @@ -944,20 +980,14 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>>>>>        struct f2fs_bio_info *io = sbi->write_io[btype] + fio->temp;
->>>>>>        struct page *bio_page;
->>>>>>        enum count_type type;
->>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>> +    bool blkzoned = f2fs_sb_has_blkzoned(sbi) && btype < META;
->>>>>> +#endif
->>>>>>        f2fs_bug_on(sbi, is_read_io(fio->op));
->>>>>>        f2fs_down_write(&io->io_rwsem);
->>>>>>    next:
->>>>>> -#ifdef CONFIG_BLK_DEV_ZONED
->>>>>> -    if (f2fs_sb_has_blkzoned(sbi) && btype < META && io->zone_pending_bio) {
->>>>>> -        wait_for_completion_io(&io->zone_wait);
->>>>>> -        bio_put(io->zone_pending_bio);
->>>>>> -        io->zone_pending_bio = NULL;
->>>>>> -        io->bi_private = NULL;
->>>>>> -    }
->>>>>> -#endif
->>>>>> -
->>>>>>        if (fio->in_list) {
->>>>>>            spin_lock(&io->io_lock);
->>>>>>            if (list_empty(&io->io_list)) {
->>>>>> @@ -985,6 +1015,11 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>>>>>        type = WB_DATA_TYPE(bio_page, fio->compressed_page);
->>>>>>        inc_page_count(sbi, type);
->>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>> +    if (blkzoned && is_blkaddr_zone_boundary(sbi, fio->new_blkaddr, true))
->>>>>> +        io->open_zone = true;
->>>>>> +#endif
->>>>>> +
->>>>>>        if (io->bio &&
->>>>>>            (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
->>>>>>                      fio->new_blkaddr) ||
->>>>>> @@ -1010,15 +1045,11 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>>>>>        io->last_block_in_bio = fio->new_blkaddr;
->>>>>>        trace_f2fs_submit_page_write(fio->page, fio);
->>>>>> +
->>>>>>    #ifdef CONFIG_BLK_DEV_ZONED
->>>>>> -    if (f2fs_sb_has_blkzoned(sbi) && btype < META &&
->>>>>> -            is_end_zone_blkaddr(sbi, fio->new_blkaddr)) {
->>>>>> -        bio_get(io->bio);
->>>>>> -        reinit_completion(&io->zone_wait);
->>>>>> -        io->bi_private = io->bio->bi_private;
->>>>>> -        io->bio->bi_private = io;
->>>>>> -        io->bio->bi_end_io = f2fs_zone_write_end_io;
->>>>>> -        io->zone_pending_bio = io->bio;
->>>>>> +    if (blkzoned &&
->>>>>> +        is_blkaddr_zone_boundary(sbi, fio->new_blkaddr, false)) {
->>>>>> +        io->close_zone = true;
->>>>>>            __submit_merged_bio(io);
->>>>>>        }
->>>>>>    #endif
->>>>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->>>>>> index 694f8a52cb84..8a26530cf4fb 100644
->>>>>> --- a/fs/f2fs/f2fs.h
->>>>>> +++ b/fs/f2fs/f2fs.h
->>>>>> @@ -1234,16 +1234,16 @@ struct f2fs_bio_info {
->>>>>>        struct bio *bio;        /* bios to merge */
->>>>>>        sector_t last_block_in_bio;    /* last block number */
->>>>>>        struct f2fs_io_info fio;    /* store buffered io info. */
->>>>>> -#ifdef CONFIG_BLK_DEV_ZONED
->>>>>> -    struct completion zone_wait;    /* condition value for the previous open zone to close */
->>>>>> -    struct bio *zone_pending_bio;    /* pending bio for the previous zone */
->>>>>> -    void *bi_private;        /* previous bi_private for pending bio */
->>>>>> -#endif
->>>>>>        struct f2fs_rwsem io_rwsem;    /* blocking op for bio */
->>>>>>        spinlock_t io_lock;        /* serialize DATA/NODE IOs */
->>>>>>        struct list_head io_list;    /* track fios */
->>>>>>        struct list_head bio_list;    /* bio entry list head */
->>>>>>        struct f2fs_rwsem bio_list_lock;    /* lock to protect bio entry list */
->>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>> +    bool open_zone;            /* open a zone */
->>>>>> +    bool zone_openned;        /* zone has been openned */
->>>>>> +    bool close_zone;        /* close a zone */
->>>>>> +#endif
->>>>>>    };
->>>>>>    #define FDEV(i)                (sbi->devs[i])
->>>>>> @@ -1560,6 +1560,7 @@ struct f2fs_sb_info {
->>>>>>    #ifdef CONFIG_BLK_DEV_ZONED
->>>>>>        unsigned int blocks_per_blkz;        /* F2FS blocks per zone */
->>>>>>        unsigned int max_open_zones;        /* max open zone resources of the zoned device */
->>>>>> +    struct semaphore available_open_zones;    /* available open zones */
->>>>>>    #endif
->>>>>>        /* for node-related operations */
->>>>>> @@ -3822,6 +3823,7 @@ void f2fs_destroy_bio_entry_cache(void);
->>>>>>    void f2fs_submit_read_bio(struct f2fs_sb_info *sbi, struct bio *bio,
->>>>>>                  enum page_type type);
->>>>>>    int f2fs_init_write_merge_io(struct f2fs_sb_info *sbi);
->>>>>> +void f2fs_blkzoned_submit_merged_write(struct f2fs_sb_info *sbi, int type);
->>>>>>    void f2fs_submit_merged_write(struct f2fs_sb_info *sbi, enum page_type type);
->>>>>>    void f2fs_submit_merged_write_cond(struct f2fs_sb_info *sbi,
->>>>>>                    struct inode *inode, struct page *page,
->>>>>> @@ -4469,6 +4471,28 @@ static inline bool f2fs_blkz_is_seq(struct f2fs_sb_info *sbi, int devi,
->>>>>>        return test_bit(zno, FDEV(devi).blkz_seq);
->>>>>>    }
->>>>>> +
->>>>>> +static inline bool f2fs_blkaddr_in_seqzone(struct f2fs_sb_info *sbi,
->>>>>> +                            block_t blkaddr)
->>>>>> +{
->>>>>> +    int devi = 0;
->>>>>> +
->>>>>> +    if (f2fs_is_multi_device(sbi)) {
->>>>>> +        devi = f2fs_target_device_index(sbi, blkaddr);
->>>>>> +        if (blkaddr < FDEV(devi).start_blk ||
->>>>>> +            blkaddr > FDEV(devi).end_blk) {
->>>>>> +            f2fs_err(sbi, "Invalid block %x", blkaddr);
->>>>>> +            return false;
->>>>>> +        }
->>>>>> +        blkaddr -= FDEV(devi).start_blk;
->>>>>> +    }
->>>>>> +
->>>>>> +    if (!bdev_is_zoned(FDEV(devi).bdev) ||
->>>>>> +        !f2fs_blkz_is_seq(sbi, devi, blkaddr))
->>>>>> +        return false;
->>>>>> +
->>>>>> +    return true;
->>>>>
->>>>> Applied as below.
->>>>>
->>>>> @@ -4485,11 +4485,8 @@ static inline bool f2fs_blkaddr_in_seqzone(struct f2fs_sb_info *sbi,
->>>>>                   blkaddr -= FDEV(devi).start_blk;
->>>>>           }
->>>>>
->>>>> -       if (!bdev_is_zoned(FDEV(devi).bdev) ||
->>>>> -               !f2fs_blkz_is_seq(sbi, devi, blkaddr))
->>>>> -               return false;
->>>>> -
->>>>> -       return true;
->>>>> +       return bdev_is_zoned(FDEV(devi).bdev) &&
->>>>> +               f2fs_blkz_is_seq(sbi, devi, blkaddr);
->>>>
->>>> Looks good, thank you for cleanup.
->>>>
->>>> Thanks,
->>>>
->>>>>    }
->>>>>    #endif
->>>>>
->>>>>> +}
->>>>>>    #endif
->>>>>>    static inline int f2fs_bdev_index(struct f2fs_sb_info *sbi,
->>>>>> diff --git a/fs/f2fs/iostat.c b/fs/f2fs/iostat.c
->>>>>> index f8703038e1d8..a8626e297876 100644
->>>>>> --- a/fs/f2fs/iostat.c
->>>>>> +++ b/fs/f2fs/iostat.c
->>>>>> @@ -237,6 +237,13 @@ static inline void __update_iostat_latency(struct bio_iostat_ctx *iostat_ctx,
->>>>>>        spin_unlock_irqrestore(&sbi->iostat_lat_lock, flags);
->>>>>>    }
->>>>>> +void *iostat_get_bio_private(struct bio *bio)
->>>>>> +{
->>>>>> +    struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
->>>>>> +
->>>>>> +    return iostat_ctx->sbi;
->>>>>> +}
->>>>>> +
->>>>>>    void iostat_update_and_unbind_ctx(struct bio *bio)
->>>>>>    {
->>>>>>        struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
->>>>>> diff --git a/fs/f2fs/iostat.h b/fs/f2fs/iostat.h
->>>>>> index eb99d05cf272..9006c3d41590 100644
->>>>>> --- a/fs/f2fs/iostat.h
->>>>>> +++ b/fs/f2fs/iostat.h
->>>>>> @@ -58,6 +58,7 @@ static inline struct bio_post_read_ctx *get_post_read_ctx(struct bio *bio)
->>>>>>        return iostat_ctx->post_read_ctx;
->>>>>>    }
->>>>>> +extern void *iostat_get_bio_private(struct bio *bio);
->>>>>>    extern void iostat_update_and_unbind_ctx(struct bio *bio);
->>>>>>    extern void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
->>>>>>            struct bio *bio, struct bio_post_read_ctx *ctx);
->>>>>> @@ -68,6 +69,7 @@ extern void f2fs_destroy_iostat(struct f2fs_sb_info *sbi);
->>>>>>    #else
->>>>>>    static inline void f2fs_update_iostat(struct f2fs_sb_info *sbi, struct inode *inode,
->>>>>>            enum iostat_type type, unsigned long long io_bytes) {}
->>>>>> +static inline void *iostat_get_bio_private(struct bio *bio) { return bio->bi_private; }
->>>>>>    static inline void iostat_update_and_unbind_ctx(struct bio *bio) {}
->>>>>>    static inline void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
->>>>>>            struct bio *bio, struct bio_post_read_ctx *ctx) {}
->>>>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->>>>>> index 4fd76e867e0a..4a3cf2888faf 100644
->>>>>> --- a/fs/f2fs/segment.c
->>>>>> +++ b/fs/f2fs/segment.c
->>>>>> @@ -3140,6 +3140,9 @@ static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
->>>>>>            return err;
->>>>>>        stat_inc_seg_type(sbi, curseg);
->>>>>>        locate_dirty_segment(sbi, old_segno);
->>>>>> +
->>>>>> +    f2fs_blkzoned_submit_merged_write(sbi, type);
->>>>>> +
->>>>>>        return 0;
->>>>>>    }
->>>>>> @@ -3461,12 +3464,7 @@ static int __get_segment_type(struct f2fs_io_info *fio)
->>>>>>            f2fs_bug_on(fio->sbi, true);
->>>>>>        }
->>>>>> -    if (IS_HOT(type))
->>>>>> -        fio->temp = HOT;
->>>>>> -    else if (IS_WARM(type))
->>>>>> -        fio->temp = WARM;
->>>>>> -    else
->>>>>> -        fio->temp = COLD;
->>>>>> +    fio->temp = type_to_temp(type);
->>>>>>        return type;
->>>>>>    }
->>>>>> @@ -4132,6 +4130,27 @@ static int restore_curseg_summaries(struct f2fs_sb_info *sbi)
->>>>>>            return -EINVAL;
->>>>>>        }
->>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>> +    if (f2fs_sb_has_blkzoned(sbi)) {
->>>>>> +        for (type = 0; type < NR_PERSISTENT_LOG; type++) {
->>>>>> +            struct curseg_info *curseg = CURSEG_I(sbi, type);
->>>>>> +            enum page_type ptype;
->>>>>> +            enum temp_type temp;
->>>>>> +
->>>>>> +            if (!(curseg->next_blkoff % sbi->blocks_per_blkz))
->>>>>> +                continue;
->>>>>> +
->>>>>> +            if (!f2fs_blkaddr_in_seqzone(sbi,
->>>>>> +                    START_BLOCK(sbi, curseg->segno)))
->>>>>> +                continue;
->>>>>> +
->>>>>> +            ptype = PAGE_TYPE(type);
->>>>>> +            temp = type_to_temp(type);
->>>>>> +            down(&sbi->available_open_zones);
->>>>>> +            sbi->write_io[ptype][temp].zone_openned = true;
->>>>>> +        }
->>>>>> +    }
->>>>>> +#endif
->>>>>>        return 0;
->>>>>>    }
->>>>>> @@ -5451,6 +5470,18 @@ static void destroy_curseg(struct f2fs_sb_info *sbi)
->>>>>>        for (i = 0; i < NR_CURSEG_TYPE; i++) {
->>>>>>            kfree(array[i].sum_blk);
->>>>>>            kfree(array[i].journal);
->>>>>> +
->>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>> +        if (f2fs_sb_has_blkzoned(sbi)) {
->>>>>> +            enum page_type ptype = PAGE_TYPE(i);
->>>>>> +            enum temp_type temp = type_to_temp(i);
->>>>>> +
->>>>>> +            if (sbi->write_io[ptype][temp].zone_openned) {
->>>>>> +                up(&sbi->available_open_zones);
->>>>>> +                sbi->write_io[ptype][temp].zone_openned = false;
->>>>>> +            }
->>>>>> +        }
->>>>>> +#endif
->>>>>>        }
->>>>>>        kfree(array);
->>>>>>    }
->>>>>> diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
->>>>>> index e1c0f418aa11..855978ca869f 100644
->>>>>> --- a/fs/f2fs/segment.h
->>>>>> +++ b/fs/f2fs/segment.h
->>>>>> @@ -24,7 +24,8 @@
->>>>>>    #define IS_DATASEG(t)    ((t) <= CURSEG_COLD_DATA)
->>>>>>    #define IS_NODESEG(t)    ((t) >= CURSEG_HOT_NODE && (t) <= CURSEG_COLD_NODE)
->>>>>> -#define SE_PAGETYPE(se)    ((IS_NODESEG((se)->type) ? NODE : DATA))
->>>>>> +#define PAGE_TYPE(t)    (IS_NODESEG(t) ? NODE : DATA)
->>>>>> +#define SE_PAGETYPE(se)    (PAGE_TYPE((se)->type))
->>>>>>    static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
->>>>>>                            unsigned short seg_type)
->>>>>> @@ -965,3 +966,12 @@ static inline unsigned int first_zoned_segno(struct f2fs_sb_info *sbi)
->>>>>>                return GET_SEGNO(sbi, FDEV(devi).start_blk);
->>>>>>        return 0;
->>>>>>    }
->>>>>> +
->>>>>> +static inline enum temp_type type_to_temp(int type)
->>>>>> +{
->>>>>> +    if (IS_HOT(type))
->>>>>> +        return HOT;
->>>>>> +    else if (IS_WARM(type))
->>>>>> +        return WARM;
->>>>>> +    return COLD;
->>>>>> +}
->>>>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->>>>>> index fdf358c7f808..954baa6c100d 100644
->>>>>> --- a/fs/f2fs/super.c
->>>>>> +++ b/fs/f2fs/super.c
->>>>>> @@ -3893,6 +3893,8 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
->>>>>>                    sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
->>>>>>                return -EINVAL;
->>>>>>            }
->>>>>> +
->>>>>> +        sema_init(&sbi->available_open_zones, sbi->max_open_zones);
->>>>>>        }
->>>>>>        zone_sectors = bdev_zone_sectors(bdev);
->>>>>> -- 
->>>>>> 2.40.1
->>
->>
->> _______________________________________________
->> Linux-f2fs-devel mailing list
->> Linux-f2fs-devel@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+== Background ==
+
+The Wine project emulates the Windows API in user space. One particular part of
+that API, namely the NT synchronization primitives, have historically been
+implemented via RPC to a dedicated "kernel" process. However, more recent
+applications use these APIs more strenuously, and the overhead of RPC has become
+a bottleneck.
+
+The NT synchronization APIs are too complex to implement on top of existing
+primitives without sacrificing correctness. Certain operations, such as
+NtPulseEvent() or the "wait-for-all" mode of NtWaitForMultipleObjects(), require
+direct control over the underlying wait queue, and implementing a wait queue
+sufficiently robust for Wine in user space is not possible. This proposed
+driver, therefore, implements the problematic interfaces directly in the Linux
+kernel.
+
+This driver was presented at Linux Plumbers Conference 2023. For those further
+interested in the history of synchronization in Wine and past attempts to solve
+this problem in user space, a recording of the presentation can be viewed here:
+
+    https://www.youtube.com/watch?v=NjU4nyWyhU8
+
+
+== Performance ==
+
+The gain in performance varies wildly depending on the application in question
+and the user's hardware. For some games NT synchronization is not a bottleneck
+and no change can be observed, but for others frame rate improvements of 50 to
+150 percent are not atypical. The following table lists frame rate measurements
+from a variety of games on a variety of hardware, taken by users Dmitry
+Skvortsov, FuzzyQuils, OnMars, and myself:
+
+Game                            Upstream        ntsync          improvement
+===========================================================================
+Anger Foot                       69              99              43%
+Call of Juarez                   99.8           224.1           125%
+Dirt 3                          110.6           860.7           678%
+Forza Horizon 5                 108             160              48%
+Lara Croft: Temple of Osiris    141             326             131%
+Metro 2033                      164.4           199.2            21%
+Resident Evil 2                  26              77             196%
+The Crew                         26              51              96%
+Tiny Tina's Wonderlands         130             360             177%
+Total War Saga: Troy            109             146              34%
+===========================================================================
+
+
+== Patches ==
+
+The intended semantics of the patches are broadly intended to match those of the
+corresponding Windows functions. For those not already familiar with the Windows
+functions (or their undocumented behaviour), patch 27/27 provides a detailed
+specification, and individual patches also include a brief description of the
+API they are implementing.
+
+The patches making use of this driver in Wine can be retrieved or browsed here:
+
+    https://repo.or.cz/wine/zf.git/shortlog/refs/heads/ntsync5
+
+
+== Implementation ==
+
+Some aspects of the implementation may deserve particular comment:
+
+* In the interest of performance, each object is governed only by a single
+  spinlock. However, NTSYNC_IOC_WAIT_ALL requires that the state of multiple
+  objects be changed as a single atomic operation. In order to achieve this, we
+  first take a device-wide lock ("wait_all_lock") any time we are going to lock
+  more than one object at a time.
+
+  The maximum number of objects that can be used in a vectored wait, and
+  therefore the maximum that can be locked simultaneously, is 64. This number is
+  NT's own limit.
+
+  The acquisition of multiple spinlocks will degrade performance. This is a
+  conscious choice, however. Wait-for-all is known to be a very rare operation
+  in practice, especially with counts that approach the maximum, and it is the
+  intent of the ntsync driver to optimize wait-for-any at the expense of
+  wait-for-all as much as possible.
+
+* NT mutexes are tied to their threads on an OS level, and the kernel includes
+  builtin support for "robust" mutexes. In order to keep the ntsync driver
+  self-contained and avoid touching more code than necessary, it does not hook
+  into task exit nor use pids.
+
+  Instead, the user space emulator is expected to manage thread IDs and pass
+  them as an argument to any relevant functions; this is the "owner" field of
+  ntsync_wait_args and ntsync_mutex_args.
+
+  When the emulator detects that a thread dies, it should therefore call
+  NTSYNC_IOC_MUTEX_KILL on any open mutexes.
+
+* ntsync is module-capable mostly because there was nothing preventing it, and
+  because it aided development. It is not a hard requirement, though.
+
+
+== Previous versions ==
+
+Changes from v3:
+
+* Add .gitignore and use KHDR_INCLUDES in selftest build files, per Muhammad
+  Usama Anjum.
+
+* Try to explain why we are rolling our own primitives a little better, per Greg
+  Kroah-Hartman.
+
+* Link to v3: https://lore.kernel.org/lkml/20240329000621.148791-1-zfigura@codeweavers.com/
+* Link to v2: https://lore.kernel.org/lkml/20240219223833.95710-1-zfigura@codeweavers.com/
+* Link to v1: https://lore.kernel.org/lkml/20240214233645.9273-1-zfigura@codeweavers.com/
+* Link to RFC v2: https://lore.kernel.org/lkml/20240131021356.10322-1-zfigura@codeweavers.com/
+* Link to RFC v1: https://lore.kernel.org/lkml/20240124004028.16826-1-zfigura@codeweavers.com/
+
+Elizabeth Figura (27):
+  ntsync: Introduce NTSYNC_IOC_WAIT_ANY.
+  ntsync: Introduce NTSYNC_IOC_WAIT_ALL.
+  ntsync: Introduce NTSYNC_IOC_CREATE_MUTEX.
+  ntsync: Introduce NTSYNC_IOC_MUTEX_UNLOCK.
+  ntsync: Introduce NTSYNC_IOC_MUTEX_KILL.
+  ntsync: Introduce NTSYNC_IOC_CREATE_EVENT.
+  ntsync: Introduce NTSYNC_IOC_EVENT_SET.
+  ntsync: Introduce NTSYNC_IOC_EVENT_RESET.
+  ntsync: Introduce NTSYNC_IOC_EVENT_PULSE.
+  ntsync: Introduce NTSYNC_IOC_SEM_READ.
+  ntsync: Introduce NTSYNC_IOC_MUTEX_READ.
+  ntsync: Introduce NTSYNC_IOC_EVENT_READ.
+  ntsync: Introduce alertable waits.
+  selftests: ntsync: Add some tests for semaphore state.
+  selftests: ntsync: Add some tests for mutex state.
+  selftests: ntsync: Add some tests for NTSYNC_IOC_WAIT_ANY.
+  selftests: ntsync: Add some tests for NTSYNC_IOC_WAIT_ALL.
+  selftests: ntsync: Add some tests for wakeup signaling with
+    WINESYNC_IOC_WAIT_ANY.
+  selftests: ntsync: Add some tests for wakeup signaling with
+    WINESYNC_IOC_WAIT_ALL.
+  selftests: ntsync: Add some tests for manual-reset event state.
+  selftests: ntsync: Add some tests for auto-reset event state.
+  selftests: ntsync: Add some tests for wakeup signaling with events.
+  selftests: ntsync: Add tests for alertable waits.
+  selftests: ntsync: Add some tests for wakeup signaling via alerts.
+  selftests: ntsync: Add a stress test for contended waits.
+  maintainers: Add an entry for ntsync.
+  docs: ntsync: Add documentation for the ntsync uAPI.
+
+ Documentation/userspace-api/index.rst         |    1 +
+ Documentation/userspace-api/ntsync.rst        |  399 +++++
+ MAINTAINERS                                   |    9 +
+ drivers/misc/ntsync.c                         |  925 ++++++++++-
+ include/uapi/linux/ntsync.h                   |   39 +
+ tools/testing/selftests/Makefile              |    1 +
+ .../selftests/drivers/ntsync/.gitignore       |    1 +
+ .../testing/selftests/drivers/ntsync/Makefile |    7 +
+ tools/testing/selftests/drivers/ntsync/config |    1 +
+ .../testing/selftests/drivers/ntsync/ntsync.c | 1407 +++++++++++++++++
+ 10 files changed, 2786 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/userspace-api/ntsync.rst
+ create mode 100644 tools/testing/selftests/drivers/ntsync/.gitignore
+ create mode 100644 tools/testing/selftests/drivers/ntsync/Makefile
+ create mode 100644 tools/testing/selftests/drivers/ntsync/config
+ create mode 100644 tools/testing/selftests/drivers/ntsync/ntsync.c
+
+
+base-commit: ebbc1a4789c666846b9854ef845a37a64879e5f9
+-- 
+2.43.0
+
 
