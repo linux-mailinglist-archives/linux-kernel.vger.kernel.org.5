@@ -1,153 +1,287 @@
-Return-Path: <linux-kernel+bounces-146551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B063D8A6707
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:22:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16BE38A6710
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:22:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3DB51C2241C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:22:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C238C285376
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:22:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3863D85293;
-	Tue, 16 Apr 2024 09:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B093D85299;
+	Tue, 16 Apr 2024 09:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NbQOtonw"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="jVtLZmr8"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEF4C84E0A
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 09:21:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A2175808;
+	Tue, 16 Apr 2024 09:22:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713259316; cv=none; b=tKnz0HwaWyEUhD+kGppgJ0ss2Crdl4jdd0+FwqCsXFQGar40ZQdVJWsQfTNZDVCXG2JC+ugNmlJJ+QnHbisxq8VxB43jLcOYBVuIMdk7bx2NYauvuOlOlEDV2AAEUVfj51UMBmOgMRVaK33sW/J7tSY0aueQTnFwePQQFZw/aYc=
+	t=1713259362; cv=none; b=bqBLyHx3wJyGzJYqSE62va39P+Q7Euvlty9nYaY2wbF0YzGKNY4Is1y8pgfYsNjcE4TymWnnpJrDO1xbZKR3m4TnFkcgY3ln1vJnhopw63cjLxxuaAUbshr1DSYqlgBq5sDT2iNt6K01PRsbdDnc8k2OM2e0N1z0E5gzmQC46+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713259316; c=relaxed/simple;
-	bh=vfMO8tSbWBgg6gzH7n20CTUmvHM2LxNEXzFSeilrvF0=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=EauTgH1zY6S9cZf0xFXn6Yb6PhLOLs3HQ4fh+d26VdTtLlE43pZRzYHzIhlFXQTYUppeP1N7K4wBkaKw0JedZpK2bDvyMw5lo1krS/aoStH7CKGao4k2KXt7z0OEnNDzZEQdklLpeHoh6Yi/ZAVy3wbr4/qjmKn1VtFOkrawros=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NbQOtonw; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713259313;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=zRFDx/vUOOS7DFozqqtqYWupAKoGiHleDbCWTUfR1E8=;
-	b=NbQOtonwOMSb0ECHsMrglnDTVfpMDX3RT7Wh6TNlPdIY0ECpRqGslB3aOG7D8NG02LfJee
-	HRjUdFa96HR6GJF2YvFXVhAs4mGhA9oKtE8eB4IBivV0WRQ4nwmODc02CoWCNYUuTcqm14
-	TIX9NgMN3v/7QQlVUOloh1O8Fpcmwdc=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-689-Bw3YVrjQO4Kg2JORnkrCeA-1; Tue, 16 Apr 2024 05:21:51 -0400
-X-MC-Unique: Bw3YVrjQO4Kg2JORnkrCeA-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-347744e151aso547398f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:21:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713259311; x=1713864111;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zRFDx/vUOOS7DFozqqtqYWupAKoGiHleDbCWTUfR1E8=;
-        b=POg3L43lrC+EzwMaviXQtSnf7J8/k4a9OqxekGq87EQRna/Mc5TLB5j0rQTr1rTtXt
-         iffhWYZx9eD6bWJ8MhBSq1ZoCergj8EXFEpUUoN5Y2dEGOcVV0l94eufXRABRka63jJM
-         4Mq6Yr7gdeST8/lL81REZ2IyA4HhvhaLSv7HjgNYW3LafjV9len5LeimyLPUnOn9NyIY
-         MH2v43kDAKRBiIoz36Yu4VdloHz/0EDJYFdBhnJXmZZXkoJ9rKkYoHblU0INL6Xd74Fm
-         DF0/PArr4i8bBimHdBT0Mt4G0XREGj2M4hiwidbnE3EsnogsaXPC4GBwoLDmrVWm4BYK
-         vM4g==
-X-Forwarded-Encrypted: i=1; AJvYcCVYZ+F9VxsBh8dRH9nlBO0ZWyW/8LEAXiwMo3tgXgxMNzlYI4kyM+00ZbHUDgt7z5sZQn5+bjtdGZTKl5dhKG8vRNoQJUKRs1qdW5JV
-X-Gm-Message-State: AOJu0YxvoonyB1JCwER0mt8EsaQ9hxP1i+uvRdvuShLcGRhxOotHegvg
-	IJdQc6e4UILvxzcZyR99rPthH4DNn8/kHyS70bdnvBkcbG+8gFvsLQo/5u/5n4TWFtc9gi9tmjC
-	IkswfpCmDKyKkB22iYD9VG+mnmbBxinXzd8BKiEvspL2lA7YSbWZyjpJD5/W6fA==
-X-Received: by 2002:adf:f011:0:b0:348:4164:d021 with SMTP id j17-20020adff011000000b003484164d021mr1074838wro.4.1713259310743;
-        Tue, 16 Apr 2024 02:21:50 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE94UtjFd+tU5lKwzbZ/ZDGhbZTrc5plMo/4GjbVh06s0/kn96ypaGk71SsEjCQmY23yOT08A==
-X-Received: by 2002:adf:f011:0:b0:348:4164:d021 with SMTP id j17-20020adff011000000b003484164d021mr1074828wro.4.1713259310387;
-        Tue, 16 Apr 2024 02:21:50 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-231-31.dyn.eolo.it. [146.241.231.31])
-        by smtp.gmail.com with ESMTPSA id k1-20020a5d6281000000b003445bb2362esm14241043wru.65.2024.04.16.02.21.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 02:21:49 -0700 (PDT)
-Message-ID: <a36bf0b117f7786bbf028494d68185486025777d.camel@redhat.com>
-Subject: Re: [PATCH net-next v7 2/3] net: gro: move L3 flush checks to
- tcp_gro_receive and udp_gro_receive_segment
-From: Paolo Abeni <pabeni@redhat.com>
-To: Richard Gobert <richardbgobert@gmail.com>, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, dsahern@kernel.org, 
-	willemdebruijn.kernel@gmail.com, shuah@kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Date: Tue, 16 Apr 2024 11:21:48 +0200
-In-Reply-To: <20240412155533.115507-3-richardbgobert@gmail.com>
-References: <20240412155533.115507-1-richardbgobert@gmail.com>
-	 <20240412155533.115507-3-richardbgobert@gmail.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1713259362; c=relaxed/simple;
+	bh=TrJ/Q28VAtgprkFjLa0pIwPhp/2GUqAfaWAC2y1jeSY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Zyvpk/SsyIV4XCO5su/G7qosKXAooj6R4lWhDrRnsdQD1CTnikXaAX7ZKfoUsla9Q4tn1wLsAZ2aQvcVxQ2PBSLdFWGYVWrF9CvkzT2LJWjdPoLcJhmTMbjl9APLXjGcuRG7CCT93puK/hpFu0tIhKohYlRGHFqUdyfMGoXQM0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=jVtLZmr8; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43G9MQlO079672;
+	Tue, 16 Apr 2024 04:22:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713259346;
+	bh=TrJ/Q28VAtgprkFjLa0pIwPhp/2GUqAfaWAC2y1jeSY=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=jVtLZmr8qftJBNoHwbayLBcepl8njNH/iuAZ5MQKUh6WqykWUyPvbntZwZlwjlxWw
+	 ZdJcY85n0QQZzkc3EV196cZlO+90pTaSLqcGXZ30yAsqEHLbdh/WqrwER9nXSF7HLg
+	 6ldqKr//w0q2nYvrkIZZEIdVRvkYJdklhAWD9i2Y=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43G9MQP9026080
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 16 Apr 2024 04:22:26 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 16
+ Apr 2024 04:22:25 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 16 Apr 2024 04:22:25 -0500
+Received: from [10.249.132.168] ([10.249.132.168])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43G9MLVo029730;
+	Tue, 16 Apr 2024 04:22:22 -0500
+Message-ID: <8d9a6dc7-7590-412d-aa81-18a6cf5d09ca@ti.com>
+Date: Tue, 16 Apr 2024 14:52:21 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: ti: k3-j784s4-evm: Add support for multiple
+ CAN instances
+To: "Kumar, Udit" <u-kumar1@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <vigneshr@ti.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <conor+dt@kernel.org>,
+        <krzk+dt@kernel.org>, <robh@kernel.org>, <kristo@kernel.org>,
+        <nm@ti.com>
+References: <20240411201747.18697-1-b-kapoor@ti.com>
+ <85ea2b33-05ac-400f-8017-5539d21ebe32@ti.com>
+Content-Language: en-US
+From: Bhavya Kapoor <b-kapoor@ti.com>
+In-Reply-To: <85ea2b33-05ac-400f-8017-5539d21ebe32@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, 2024-04-12 at 17:55 +0200, Richard Gobert wrote:
-> {inet,ipv6}_gro_receive functions perform flush checks (ttl, flags,
-> iph->id, ...) against all packets in a loop. These flush checks are used
-> currently in all tcp flows and in some UDP flows in GRO.
->=20
-> These checks need to be done only once and only against the found p skb,
-> since they only affect flush and not same_flow.
->=20
-> Leveraging the previous commit in the series, in which correct network
-> header offsets are saved for both outer and inner network headers -
-> allowing these checks to be done only once, in tcp_gro_receive and
-> udp_gro_receive_segment. As a result, NAPI_GRO_CB(p)->flush is not used a=
-t
-> all. In addition, flush_id checks are more declarative and contained in
-> inet_gro_flush, thus removing the need for flush_id in napi_gro_cb.
->=20
-> This results in less parsing code for UDP flows and non-loop flush tests
-> for TCP flows.
->=20
-> To make sure results are not within noise range - I've made netfilter dro=
-p
-> all TCP packets, and measured CPU performance in GRO (in this case GRO is
-> responsible for about 50% of the CPU utilization).
->=20
-> L3 flush/flush_id checks are not relevant to UDP connections where
-> skb_gro_receive_list is called. The only code change relevant to this flo=
-w
-> is inet_gro_receive. The rest of the code parsing this flow stays the
-> same.
->=20
-> All concurrent connections tested are with the same ip srcaddr and
-> dstaddr.
->=20
-> perf top while replaying 64 concurrent IP/UDP connections (UDP fwd flow):
-> net-next:
->         3.03%  [kernel]  [k] inet_gro_receive
->=20
-> patch applied:
->         2.78%  [kernel]  [k] inet_gro_receive
 
-Why there are no figures for
-udp_gro_receive_segment()/gro_network_flush() here?
+On 15/04/24 10:42, Kumar, Udit wrote:
+> Hello Bhavya,
+>
+> On 4/12/2024 1:47 AM, Bhavya Kapoor wrote:
+>> CAN instances 0 and 1 in the mcu domain and 16 in the main domain are
+>> brought on the evm through headers J42, J43 and J46 respectively. Thus,
+>> add their respective transceiver's 0, 1 and 2 dt nodes to add support
+>> for these CAN instances.
+>
+> Looking at schematic and board data sheet, it appears, board has 6 CAN interfaces.
+>
+> [J41--J46],  but we are enabling only 4.
+>
+> I understand, other interfaces might be used for other purpose.
+>
+> Vignesh/Nishanth,
+>
+> Do you think, this make sense to code all available interfaces on board and
+>
+> mark as reserved, if used for other purpose , similar to what is done for wkup_uart for this board.
+>
+Hi Udit, there is a mux that is used between audio and the signal lines of other 2 cans.
 
-Also you should be able to observer a very high amount of CPU usage by
-GRO even with TCP with very high speed links, keeping the BH/GRO on a
-CPU and the user-space/data copy on a different one (or using rx zero
-copy).
+If we turn on the other 2 cans or even mark  them as reserved, we will still have to
 
-Thanks,
+alter the mux sel lines which will impact the audio.
 
-Paolo
+Thanks.
 
+~B-Kapoor
+
+>
+>> CAN instance 4 in the main domain is brought on the evm through header
+>> J45. The CAN High and Low lines from the SoC are routed through a mux
+>> on the evm. The select lines need to be set for the CAN signals to
+>> reach to its transceiver on the evm. Therefore, add transceiver 3
+>> dt node to add support for this CAN instance.
+>>
+>> Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
+>> ---
+>>
+>> rebased to next-20240411
+>>
+>>   arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 107 +++++++++++++++++++++++
+>>   1 file changed, 107 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>> index 81fd7afac8c5..e56901973895 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+>> @@ -272,6 +272,45 @@ dp0_connector_in: endpoint {
+>>               };
+>>           };
+>>       };
+>> +
+>> +    transceiver0: can-phy0 {
+>> +        compatible = "ti,tcan1042";
+>> +        #phy-cells = <0>;
+>> +        max-bitrate = <5000000>;
+>> +        pinctrl-names = "default";
+>> +        pinctrl-0 = <&mcu_mcan0_gpio_pins_default>;
+>> +        standby-gpios = <&wkup_gpio0 69 GPIO_ACTIVE_HIGH>;
+>> +    };
+>> +
+>> +    transceiver1: can-phy1 {
+>> +        compatible = "ti,tcan1042";
+>> +        #phy-cells = <0>;
+>> +        max-bitrate = <5000000>;
+>> +        pinctrl-names = "default";
+>> +        pinctrl-0 = <&mcu_mcan1_gpio_pins_default>;
+>> +        standby-gpios = <&wkup_gpio0 2 GPIO_ACTIVE_HIGH>;
+>> +    };
+>> +
+>> +    transceiver2: can-phy2 {
+>> +        /* standby pin has been grounded by default */
+>> +        compatible = "ti,tcan1042";
+>> +        #phy-cells = <0>;
+>> +        max-bitrate = <5000000>;
+>> +    };
+>> +
+>> +    transceiver3: can-phy3 {
+>> +        compatible = "ti,tcan1042";
+>> +        #phy-cells = <0>;
+>> +        max-bitrate = <5000000>;
+>> +        standby-gpios = <&exp2 7 GPIO_ACTIVE_HIGH>;
+>> +        mux-states = <&mux1 1>;
+>> +    };
+>> +
+>> +    mux1: mux-controller {
+>> +        compatible = "gpio-mux";
+>> +        #mux-state-cells = <1>;
+>> +        mux-gpios = <&exp2 14 GPIO_ACTIVE_HIGH>;
+>
+> Could you help here on logic to choose pin 14
+>
+> As I see for this mux
+>
+> S0 is CANUART_MUX_SEL0 [Pin 14, which you want to control as high]
+>
+> S1 is Pin 15 is "CANUART_MUX2_SEL1"
+>
+> S2 is high
+>
+> So in order to get CAN on mux output
+>
+> All, S0, S1 and S2 should be high.
+>
+> IMO, you should control both S0 and S1, or just S1 and S0 with dip switch
+
+Hi Udit, S0 comes at a default Active High State always. Thus, i have kept it the same.
+
+This was done in the same way as it was done for mux2 for  j721s2. mcan 5
+
+Thanks
+
+>
+>> +    };
+>>   };
+>>     &wkup_gpio0 {
+>> @@ -336,6 +375,20 @@ J784S4_IOPAD(0x014, PIN_INPUT_PULLUP, 8) /* (AG33) MCAN14_TX.I2C4_SCL */
+>>               J784S4_IOPAD(0x010, PIN_INPUT_PULLUP, 8) /* (AH33) MCAN13_RX.I2C4_SDA */
+>>           >;
+>>       };
+>> +
+>> +    main_mcan4_pins_default: main-mcan4-default-pins {
+>> +        pinctrl-single,pins = <
+>> +            J784S4_IOPAD(0x088, PIN_INPUT, 0) /* (AF36) MCAN4_RX */
+>> +            J784S4_IOPAD(0x084, PIN_OUTPUT, 0) /* (AG38) MCAN4_TX */
+>> +        >;
+>> +    };
+>> +
+>> +    main_mcan16_pins_default: main-mcan16-default-pins {
+>> +        pinctrl-single,pins = <
+>> +            J784S4_IOPAD(0x028, PIN_INPUT, 0) /* (AE33) MCAN16_RX */
+>> +            J784S4_IOPAD(0x024, PIN_OUTPUT, 0) /* (AH34) MCAN16_TX */
+>> +        >;
+>> +    };
+>>   };
+>>     &wkup_pmx2 {
+>> @@ -415,6 +468,32 @@ J784S4_WKUP_IOPAD(0x104, PIN_INPUT, 0) /* (U33) MCU_ADC1_AIN6 */
+>>               J784S4_WKUP_IOPAD(0x108, PIN_INPUT, 0) /* (Y36) MCU_ADC1_AIN7 */
+>>           >;
+>>       };
+>> +
+>> +    mcu_mcan0_pins_default: mcu-mcan0-default-pins {
+>> +        pinctrl-single,pins = <
+>> +            J784S4_WKUP_IOPAD(0x050, PIN_OUTPUT, 0) /* (K33) MCU_MCAN0_TX */
+>> +            J784S4_WKUP_IOPAD(0x054, PIN_INPUT, 0) /* (F38) MCU_MCAN0_RX */
+>> +        >;
+>> +    };
+>> +
+>> +    mcu_mcan1_pins_default: mcu-mcan1-default-pins {
+>> +        pinctrl-single,pins = <
+>> +            J784S4_WKUP_IOPAD(0x068, PIN_OUTPUT, 0) /* (H35) WKUP_GPIO0_4.MCU_MCAN1_TX */
+>> +            J784S4_WKUP_IOPAD(0x06c, PIN_INPUT, 0) /* (K36) WKUP_GPIO0_5.MCU_MCAN1_RX */
+>> +        >;
+>> +    };
+>> +
+>> +    mcu_mcan0_gpio_pins_default: mcu-mcan0-gpio-default-pins {
+>> +        pinctrl-single,pins = <
+>> +            J784S4_WKUP_IOPAD(0x040, PIN_INPUT, 7) /* (J38) MCU_SPI0_D1.WKUP_GPIO0_69 */
+>> +        >;
+>> +    };
+>> +
+>> +    mcu_mcan1_gpio_pins_default: mcu-mcan1-gpio-default-pins {
+>> +        pinctrl-single,pins = <
+>> +            J784S4_WKUP_IOPAD(0x060, PIN_INPUT, 7) /* (J35) WKUP_GPIO0_2 */
+>> +        >;
+>> +    };
+>>   };
+>>     &wkup_pmx1 {
+>> @@ -1105,3 +1184,31 @@ dp0_out: endpoint {
+>>           };
+>>       };
+>>   };
+>> +
+>> +&mcu_mcan0 {
+>> +    status = "okay";
+>> +    pinctrl-names = "default";
+>> +    pinctrl-0 = <&mcu_mcan0_pins_default>;
+>> +    phys = <&transceiver0>;
+>> +};
+>> +
+>> +&mcu_mcan1 {
+>> +    status = "okay";
+>> +    pinctrl-names = "default";
+>> +    pinctrl-0 = <&mcu_mcan1_pins_default>;
+>> +    phys = <&transceiver1>;
+>> +};
+>> +
+>> +&main_mcan16 {
+>> +    status = "okay";
+>> +    pinctrl-names = "default";
+>> +    pinctrl-0 = <&main_mcan16_pins_default>;
+>> +    phys = <&transceiver2>;
+>> +};
+>> +
+>> +&main_mcan4 {
+>> +    status = "okay";
+>> +    pinctrl-names = "default";
+>> +    pinctrl-0 = <&main_mcan4_pins_default>;
+>> +    phys = <&transceiver3>;
+>> +};
 
