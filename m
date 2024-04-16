@@ -1,166 +1,104 @@
-Return-Path: <linux-kernel+bounces-146725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C50F08A69EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:50:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 060328A69EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:50:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E832A1C211C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:50:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B61D12834BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:50:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6510A129E64;
-	Tue, 16 Apr 2024 11:49:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECA99129E70;
+	Tue, 16 Apr 2024 11:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="U4Lrr7X4"
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="GzkmVhX3"
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C4384E0A
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:49:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7C7127B4E
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713268198; cv=none; b=V/YR2Se+4TMlYoFlqlm3blZsdbl2iN3V39k+UKDTIV9PDy8tcevcTCFhKhE52JWyNM+KDWYxNoHC1EuV27PooA0sB3ZXmH6hcLzlVMttayNVwYLAXUoYqbPHTjB4gLlNPEg4JIwaI1guByp762shBPZSauPx9VJCLEARi+vNLFg=
+	t=1713268232; cv=none; b=i4wrJIj34WCvQT0oOEjPVqEq302TfUq/2ZY++h5rbNMzuYzGjDqdg796uxPBq6F2Dp5fnMusm2jCXxM6bp8TSzU8UQx7yssDeOHC6FWyXqbWGISED3RwaTAcTlGsAbxgMLew0QfKx80mcf8TGoEYauzHup19+uKlXmClhZCgXj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713268198; c=relaxed/simple;
-	bh=rmvpFPUTIYgHV2p8/6H+ARfWisXS/Az8htu2TVN/PtI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TSvDThqckoeX7mN78C+G1eiRwhHWE2bdUWVO0FhhddO3V6a4k0/cJbGxPNxVOsRd4YxhJESNE4w9Q+ZwBP1UBxngtyNdnUvdtYaVxy2BDIKPAo1IsEAkg/Q0MH2TmT5q5hk2aDkpUcjGhi4XtP7gyXokaCh0KciFFYGPCK4bJWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=U4Lrr7X4; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-69b3d05e945so26765416d6.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 04:49:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1713268196; x=1713872996; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QCTi/88RzK0ECiO7fDP6JKGXgjJySXc+KTjtiX7cVN8=;
-        b=U4Lrr7X4VFI0pd/Ny7N11t4/jnUQMrFGxsq5QcV2H08YfQkoOzmnlmsbMwgLTLgzVU
-         3Zfa3nUHoBGyzcKmXVzPc7vSI44qjP4fhdNAj2WwLvBxlOiDxYc+fIm2BeC2U5tdhSd7
-         2rAaypOLCBpWZc/s2O6Z6dRNXxN48IBUorCTwr2j0pUn/wfxh68ksgO0U5XQXPTuMEP/
-         TyvqqYbp5s9b05BkXT28xVAoxuvVlUpETJ3GN8lRdHdyz9FrkMeUoZuDchGG/NpbPw7K
-         MVGHyompLwGTP1cZAGX7zs+Wa78MJRKMaxY08awEEKrRKnK/bjlLv2vENMpdUlk+fH59
-         RnTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713268196; x=1713872996;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QCTi/88RzK0ECiO7fDP6JKGXgjJySXc+KTjtiX7cVN8=;
-        b=D5toocMaXn/RRKRkSl7Y+a3DpubvM5Gh05Or/g3nlFGy1pkkhmN3brK2+yLfuP5XyF
-         c7nBvunRPhdOpmcEFPwbuh1n/FFrTbCHgaqwtpgmqQMExFnpRpL+44P9PMlkkkhnBQmo
-         A1D8c7hoUFV4tpffsGT01TCZQ8Q5wbtzcbMQ5PWs4BIpntGResWvYpR88EgKPODXcaWX
-         ZPlzjA3jd4NCUHMR5ir1qagg6M0osMGWxJAca2ZU9z4OnV1i4UZyV6yC3xlcXTqhT1mt
-         C/+bc5GxKIVroQJNqha170hUYUe7+km55uVLvMZEeGV1/Vsza1yQlVrWwI3Dnp8aJPyt
-         TaJg==
-X-Forwarded-Encrypted: i=1; AJvYcCWDDc0Tq97DrEo7O0ksgIJJNHipmRw5JYg7kmdI8rBinTUg9u1fShv48Hvh84+qHHL9HGt53ZZlCR9hN0hou8kPGViuJI73eb9T/oYF
-X-Gm-Message-State: AOJu0YzZDkKljDtuUBFG8B144ANLZHhpQFbalSVVYhYS+HtMVZgpxInk
-	zxPzVTLI5Bk+twx50YEju1JSiOAbtk2dNQOYfu7+i6b99YH5dByExbZqOgUC8uE=
-X-Google-Smtp-Source: AGHT+IESqldpjft/eXho3+hgJTTcbX6pmRWAM7oqr10WigziCiL0y4fcBwniEWrqOwd0oNhEvyEagw==
-X-Received: by 2002:a0c:efc6:0:b0:69e:b96d:26a0 with SMTP id a6-20020a0cefc6000000b0069eb96d26a0mr1003878qvt.27.1713268196162;
-        Tue, 16 Apr 2024 04:49:56 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id r18-20020ad44052000000b00698e65cdfefsm7335858qvp.87.2024.04.16.04.49.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 04:49:55 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rwhJz-008b7B-5T;
-	Tue, 16 Apr 2024 08:49:55 -0300
-Date: Tue, 16 Apr 2024 08:49:55 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: Vasant Hegde <vasant.hegde@amd.com>, Eric Wagner <ewagner12@gmail.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: Kernel 6.7 regression doesn't boot if using AMD eGPU
-Message-ID: <20240416114955.GT223006@ziepe.ca>
-References: <CAHudX3zLH6CsRmLE-yb+gRjhh-v4bU5_1jW_xCcxOo_oUUZKYg@mail.gmail.com>
- <20240415163056.GP223006@ziepe.ca>
- <CAHudX3zhagFWBv4isZzAtC8dA7EAAtY6Yk7fkJ31hf0D9zrNqw@mail.gmail.com>
- <65d4d7e0-4d90-48d7-8e4a-d16800df148a@arm.com>
- <20240416003903.GR223006@ziepe.ca>
- <47d4bfd6-1d76-4bb8-a33c-c9c99b86656b@arm.com>
+	s=arc-20240116; t=1713268232; c=relaxed/simple;
+	bh=z6yCp8A2RnLDBkLpXNPwXaq/ZW8mMLmH/UyxYRY5y5o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TKIpRSWE8XYO0gZzrNGdTaez+lPV3YU+9yF2FMA+xR6hIBLFwZuIpY3vwWBlTFl7beedDbr/pu7tDev+cK9zRh3yv1lFz/hc9b2TH5lE+ZJvYnnAO+w2xACGe1Th+6oEssG0jCC7CvATab6LXnE1Ds7h+LDgZSXDx9o/VQhJciA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=GzkmVhX3; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713268222; x=1713873022; i=markus.elfring@web.de;
+	bh=z6yCp8A2RnLDBkLpXNPwXaq/ZW8mMLmH/UyxYRY5y5o=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=GzkmVhX3uhJHoqwJCF8XTrDcUimnut9xdxj2AlqD9ZK7PwkTlSlEVvdGIXPdmxTY
+	 H/sXe4XsPFSPiBq7A5f/kLGqJlNQegWq2rFFZfFrDJHfnwZZextihTv3IZMsFvvq5
+	 wHtXb2SlJdQ+Wq+aA+kJq8vHhjsINChRnvRAMNqMPuy5QEdb3mnNEBq2XFHdPbCyy
+	 wU5+iG3Z8Sz/fiQMXSkqfpJA6jH1+S4WB/GJ8YhR6i1ufvDRN7sktToIazuH0DIzF
+	 JxnTp5WrXYmxGH03dM8sg7Cu/g9Zc8cDt0YN3aJvHp4iKjRSoygr/eAPeCcwZUCxt
+	 DjklRVhxEaEjQ9qeuA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1M3Eut-1rtfzH1vPZ-003Ku4; Tue, 16
+ Apr 2024 13:50:22 +0200
+Message-ID: <60df00eb-41ca-417f-8b8b-90dba6eaaf65@web.de>
+Date: Tue, 16 Apr 2024 13:50:21 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <47d4bfd6-1d76-4bb8-a33c-c9c99b86656b@arm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] coccinelle: misc: minmax: Suppress reports for err
+ returns
+To: Ricardo Ribalda <ribalda@chromium.org>,
+ Julia Lawall <Julia.Lawall@inria.fr>, cocci@inria.fr
+Cc: LKML <linux-kernel@vger.kernel.org>, Denis Efremov <efremov@linux.com>,
+ Nicolas Palix <nicolas.palix@imag.fr>
+References: <20240415-minimax-v1-1-5feb20d66a79@chromium.org>
+ <fbf22b53-7b68-4e60-99c7-ab38a77a53c8@web.de>
+ <CANiDSCuvXvjfhw2mjSef1wR8RiL=9KrDEoh+3o1ed4+8P+AqGw@mail.gmail.com>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <CANiDSCuvXvjfhw2mjSef1wR8RiL=9KrDEoh+3o1ed4+8P+AqGw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:erpsgFEDzw3lU2+TiQWtHiU0faieFL+3p022YHoNrdra8FXwoCM
+ OE0z2LsY7kfeawiB8EsNyrHF3rtmFua9waEdXv45XloHRdxLsk1xBDAT3bD63VHoJrxNdr7
+ iO4CGFnuxIKxx/J4itXVpXvPlfyUpkFLk7spsPbRJ6d+F4BmrQLi3FBKwXI8fLaLvujhEUK
+ fDAG95jXl6ZZd9MlSPbKQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:YPpAdII74q0=;7Yw/E+JgPK1W6ly78FwvzfQVjWO
+ oVjtCdY+0oBjOEDSWHAdKGIlGEB8j0r/BHQ3pOXTb1u4pZGmhLKtTqmCPLcbP0R1cDVES527p
+ W+9Mv3OySq/yF+FanhB0As8WQTMfeUwqhOvf5UWPYF8iNvr40CI2FlZOZ5nb6uXxYsf2pv62i
+ CXXhC8Q2dymv95mt5dKOvnT85h75g0MCqpvdLKxu6zFFS7ssO8yHd9Q6oVx4lgLDHq1rbbu4h
+ TFpzN/1A7DifFPw1Os1ejlcsTi+XUGU32AbYXkgz7SrMflncb+gnXGxOlDXpiOswGTywB2R/8
+ 0giLhLS8wCgWn24YQtbEPpZaddTV+jmGNH8TOnpwYXP7OxTEhNaLy+hI6SVK8eUBMaO3QXG9j
+ FRBYs3EAkEnyOQQMl4nm544kznz7LMoPNItu78wqtT7ZCoKCLZ3ah+/iuDtkC914RDvrUmX9m
+ NpOEwFoz7B4F7kqSwQ3r+xYtq6updkBbTjCzDvXSUtu33CLkZrxLPC9guiBV982iu3Ay9GwGt
+ 65rT4Dz2kVZPAVLYJoA+8NYXp0UBE02IOuj3c44+X8o55luPL3PDXzFmCxbDGtzeMxL3Xbt1p
+ h6U3jco27mQD0GwZuxovsKJHMTdqkcUQtvXcWIrbzyFH5hxBzk+hkpiGP2HkBOsyYRa8prL8G
+ +CixP8GTnMD2A8bw5/qCFxbkdGIPJZa2GASStPckFzP1L856ouDNFYmHsfybSba0C+oiwnEUz
+ Hk7a+kNpfRnmsz/DjbooDO3Wpz/8qNTdcaCYLX+7Kdy9SsH55W6uEaJy4MJsMz8yBEqbD4D9F
+ FDqw9LdZOb82XAw3zakC/bntC4p8UHhyGpuMIONvIxvrE=
 
-On Tue, Apr 16, 2024 at 12:25:52PM +0100, Robin Murphy wrote:
-> On 2024-04-16 1:39 am, Jason Gunthorpe wrote:
-> > On Mon, Apr 15, 2024 at 10:44:34PM +0100, Robin Murphy wrote:
-> > > On 2024-04-15 7:57 pm, Eric Wagner wrote:
-> > > > Apologies if I made a mistake in the first bisect, I'm new to kernel
-> > > > debugging.
-> > > > 
-> > > > I tested cedc811c76778bdef91d405717acee0de54d8db5 (x86/amd) and
-> > > > 3613047280ec42a4e1350fdc1a6dd161ff4008cc (core) directly and both were good.
-> > > > Then I ran git bisect again with e8cca466a84a75f8ff2a7a31173c99ee6d1c59d2
-> > > > as the bad and 6e6c6d6bc6c96c2477ddfea24a121eb5ee12b7a3 as the good and the
-> > > > bisect log is attached. It ended up at the same commit as before.
-> > > > 
-> > > > I've also attached a picture of the boot screen that occurs when it hangs.
-> > > > 0000:05:00.0 is the PCIe bus address of the RX 580 eGPU that's causing the
-> > > > problem.
-> > > 
-> > > Looks like 59ddce4418da483 probably broke things most - prior to that, the
-> > > fact that it's behind a Thunderbolt port would have always taken precedence
-> > > and forced IOMMU_DOMAIN_DMA regardless of what the driver may have wanted to
-> > > saywhereas now we ask the driver first, then complain that it conflicts
-> > > with the untrusted status and ultimately don't configure the IOMMU
-> > > at all.
-> > 
-> > Yes, if the driver wants to force a domain type it should be
-> > forced. Driver knows best. Eg AMD forces IDENTITY when the HW/driver
-> > is incapable of supporting otherwise.
-> 
-> No, in the case of AMD it only forces identity if it thinks the device might
-> want to use PASIDs (because of the architectural limitation that the RID
-> always operates in GPA space so can't have its own independent translation).
+> I think errcode needs to be executed in report and in patch mode,
 
-AMD forces this because it doesn't yet have a way to automatically
-choose it's v1/v2 page table format during alloc domain. It is just a
-SW bug.
+Adjustments for functionality of coccicheck operation modes can be clarified further.
 
-The CC/SNP limitation is also a SW bug but is more fatal as it can't
-even attach a v1 page table in this mode.
 
-> Either way, though, there's really little sense to that argument - if
-> enforcing strict translation *might* compromise the device's functionality,
-> we should instead go out of our way to ensure it's definitely as broken as
-> possible? I fail to see how that can be justified as useful or desirable
-> behaviour.
+> but there might be a better way to do it.
 
-For SNP cases the attach of a DMA domain will fail, so yes, moving the
-failure earlier and giving a clear message is desirable.
+Corresponding design options depend on varying development efforts and resources.
 
-> "Failing" iommu_probe_device is merely how we tell ourselves that we're not
-> interested in a device, and consequently tell the rest of the kernel it
-> doesn't have an IOMMU (via device_iommu_mapped() returning false). 
-
-Probing failing with ENODEV means the device has no iommu and the rest
-of the code should assume DMA direct will work.
-
-Probing failing with any other error code means the device has an
-iommu and it couldn't be setup. DMA direct probably won't work today.
-
-If you want all failure codes to mean the device is safe for DMA
-direct then we need to try and attach the IDENTITY domain on various
-probe failure paths too.
-
-> I think I've now satisfied myself that a simple fix for the core code is
-> appropriate and will write that up now; one other thing I couldn't
-> quite
-
-It really doesn't match the design here.
-
-Jason
+Regards,
+Markus
 
