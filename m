@@ -1,110 +1,121 @@
-Return-Path: <linux-kernel+bounces-147477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FF0E8A74D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:33:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 095F88A7506
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:37:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71E191C21790
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:33:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B210D1F2153C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:37:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97811384AD;
-	Tue, 16 Apr 2024 19:32:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0131386C8;
+	Tue, 16 Apr 2024 19:37:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BU5V0bVT"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WMXi/bbN"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5DEA13541F;
-	Tue, 16 Apr 2024 19:32:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89E632943C;
+	Tue, 16 Apr 2024 19:37:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713295969; cv=none; b=T4BP92vnhL1zdfyZg0jcPN3LF3cBuqtdScufX/Y5BWZMbGmV9VGIML1Zs7LorOTj3sGJ7d9oQzT0vo3HVTlg37Co/Agjnl4jPU2lcnC2KhkcLAkt9euHXJ5Qnryi09xyegHWhEYjv03AIIb5AS3ca4VT/DL1cK8iNX9FwTZj48o=
+	t=1713296253; cv=none; b=c559PKy0QojNWWl7s3Z2b2J9ZUNinI9QzfWpwQCAQs8x2VwH1q2sc4V2ToQ1RE826uy9+Vdo3W+ZPES9CcKlamawmutlsGQNPLlbMtcN+GdodPPAgW/s9kuKWf6APKpKb4KgyBAcQHK0lhnuwOpsRAz9rWWnr4Z0EzZKl/951wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713295969; c=relaxed/simple;
-	bh=I/hO0eOe4YB6IzK+K1OjKqka2paD2+CJJ6h1/oiAmAc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ICvDKZ/r5+OdbjbsPFeFmEtXKszILis5pg66ujR/75QpWWpepal8mA4mz5uoYlJhmGKIoZeO+0VUQORPIyBCq/rOz3Trt6PknCWdgzYZ9xu+MWGZCySs8rLsHMxr+AToxcS54dxUDPjtFpDja+l9vcPQHUz5RKlmfuHPNLR3jfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BU5V0bVT; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1713296253; c=relaxed/simple;
+	bh=F6vLZMw5iKbm8/K6P0sUwSZXxcZ1d1VPqXfAJPc1ClE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=p5TG7N4bCpFLlVJDTBfST+bEH7UYmWkTSo80/X7IaeHCxppdvLm7YTw/QcQQ10aMXMixxoDDvdIs2FA7VkJCL88lseyHIp5PsRJBNUbviLunNHMHObGgq5T9TBR17CgZSxZdydARTrb2xUp1eIq7iE1wM/kn3aMRhYQhz4eLwJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WMXi/bbN; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e3f17c6491so41201315ad.2;
-        Tue, 16 Apr 2024 12:32:47 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-518e5a74702so88164e87.1;
+        Tue, 16 Apr 2024 12:37:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713295967; x=1713900767; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bEDpy+KIDUbfpAeVl3AnQZ5WnXTO3Q8SS3ZqkxRNcqQ=;
-        b=BU5V0bVTB7Y/yV7gL1rSr1QbF9U3PYLvSgJA86SixydqPaUGTC/NT2Rq3wS1z3gost
-         650gWffwcM9Ka2/1FdCRD5DdXIzpzsKI5YVl8rd5+fdrFdCY4+7LtjlF0ec9BBesSEaY
-         1Ixa4eLV/azElt1HZ4E1lu+e7lQjGGyY7yYcP6IqMMlRPWamcX8WgJM4ytaNzYHbM9g2
-         TrccC1u5/ossIzdCrhqdGIv1looqWD8lRC9Sbq06h2nlkRyYfIeB50UuPgZfcYk5RHf8
-         NADXQgNGdknP/IvA6A/BjvJorwkfpYbMUIh/kiWMfnoH0KIezCiGSV3rwhNi01K5QcZk
-         6b2Q==
+        d=gmail.com; s=20230601; t=1713296250; x=1713901050; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bhWQKc/eYOwik0yE3g6ijPo7WAzZsqUpRV7UJ5RlYZU=;
+        b=WMXi/bbNsOSmogIMC9C18YcFhLsiKGKEYUUIZwmagPvQ3yxDHooK1xtAOLiiHZzHZS
+         j4VMm37RjOqEUBNJh0Ma7/43Dlk2SXyrYKMv0LXncXACUJInyMZG/hcfZPjTyyH5AXoF
+         3SQgqxd3/wgeJvwYcPF2M6XmFK+7jL0/gAINLK70YePQVSbXn6RTnk+m+BNFdfBz12+G
+         jmUPNeG6KQM/c43KOVyQYV40WGvqaAz676YUDc2d4yzANop7wsAFmuUUi/iauHdfY5lL
+         4adMfXxF4SAvCS19TMdOiVvBWdLmiBETxMGtnias8j8Ym4NPpEvo59ATJmphO1x9eWrR
+         VtEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713295967; x=1713900767;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bEDpy+KIDUbfpAeVl3AnQZ5WnXTO3Q8SS3ZqkxRNcqQ=;
-        b=XjcRSJBunm8zsNn5zOeMWCux4GeVc9rQ1QZoTHlO1zfspsxo1shS/Shl08U64LP0Uw
-         6foi7wRvVnGS5RYlmp9jZJil4iyqsA/GudMO7qNx62DkD2trA7iqseDNpud8iZrTTH4U
-         +BVnfeqyZKprwCgTe0J2MsJceYWlacfS+4E4Vc6wAycw83+yvoIGlyS1+QqDBEGJA99c
-         TO2bThxhG0iYGEEJfSF5Dkr4NfBeJRFhUr6mucLQoP+HNqm3QKIm1a5AmYz5dvUXled6
-         hxpJBUBqxKhHkliTElMg71qiuT4BhWdpTILQhjDYQVrenSKjKT0GvbynY19f+TFnZpCq
-         Wtkg==
-X-Forwarded-Encrypted: i=1; AJvYcCW64BmkA9cByQrmWcLRLbEtWs+I0hplf237eV+NLM4sEyzTB+guoDmJI19mPnjayTTxGBUT0drowy7569aQZcIYNRZ8bPlf1ME1GV3pjanLLDPXx4yBbarBZGxL2g5I5ahBOpht0hc5pEM07O6bhQUSm9JYyLTvJO8+O3JrOhuirdBR5X6KRum0
-X-Gm-Message-State: AOJu0YxzA/bAEzZNMX41xh4CSzaf1kLbrM2v6E/fCX6KJRwBc9BrIG+q
-	Mb6GEw0+yYYAjKlmNDhOfHX10szV1kMz3cFPV6A5qmZEbf5xCUG/
-X-Google-Smtp-Source: AGHT+IEbbLHhwWxyXlCIk8S/OXxwgKIsI413Xgv8iveLC01IeJL80AMj/0wSuruUOvFGACrPYE4apQ==
-X-Received: by 2002:a17:90b:3b48:b0:2a5:24ab:1a94 with SMTP id ot8-20020a17090b3b4800b002a524ab1a94mr11123312pjb.49.1713295966910;
-        Tue, 16 Apr 2024 12:32:46 -0700 (PDT)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id g33-20020a631121000000b005f05c9ee8d3sm9019948pgl.93.2024.04.16.12.32.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 12:32:46 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 16 Apr 2024 09:32:45 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>
-Subject: Re: [PATCH v4 0/6] pids controller events rework
-Message-ID: <Zh7SXQSobt9qIQRG@slm.duckdns.org>
-References: <20240416142014.27630-1-mkoutny@suse.com>
+        d=1e100.net; s=20230601; t=1713296250; x=1713901050;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bhWQKc/eYOwik0yE3g6ijPo7WAzZsqUpRV7UJ5RlYZU=;
+        b=UM7WA56DItfDCe0+TpTN4WW6WR/2jCrQnzaIelwk29f/zk+Hy0vCrAPIuGlcBr8oSP
+         SAUNDj/H+XGcecZvfbr9QKB/MCCSaYYWGp2HD6Oc3C4/cSyhR5BHGFdvB7OK2Au4VvjA
+         EXeAignAewozd181OYppKNJYBKuELeur/5sO3R/vBGtEdRG1DRBy64EzHsQ9ERouccCM
+         3XE3K+ljIk+br6HOf9NaCOGWVxfHYUJgKJ7HBsB67CdoVkotro7QEat/k+DD+m4dFfjo
+         a/20WK6aLhCZJSZVPluSlKlCXJE0q6fusJ1LpI5Zvgsqc9E4JNEN9Nn7dvrtCCPCBGgY
+         j5NQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUvphNQmojbAKa5dw7+OOE0O74iNOvpB9QqCatdfIqWbqRMLgxOwGN2EXbnpEbvxY75KENrO4YuBWG3rNPG6LHg3h49IEOWtV2K4pRtyBb3VbUOSZ/fc5s6H45BNhJzMJfVcmI13UuuH00Qc/4VcrdLFRNoT0K4UxYpPv2vDOHDu7dV4WQ=
+X-Gm-Message-State: AOJu0Yw/M1JeuJhOV6rfj1P2syhrq8fSfW9NHPoSuIFnmwMH2Dh1TcXX
+	tmvWvcwfu25q6pQxOR4gOSkgD2y6Pgjadh1yrMwss2f4sf3tOT64y/YUOkoqlgAqlElkqd4gp57
+	YwulPiNE2Sci7hltuW6SmZ3ppCYk=
+X-Google-Smtp-Source: AGHT+IH9hPdu6JNc6JS8yjgqhAuaq5GbLqml3teWtRplC+EvlAKU3fTiFGUAx2AXF00rfhMM9xrkMQebrE8LWS5Kmiw=
+X-Received: by 2002:a2e:6e0c:0:b0:2da:f300:90ff with SMTP id
+ j12-20020a2e6e0c000000b002daf30090ffmr700414ljc.2.1713296249388; Tue, 16 Apr
+ 2024 12:37:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240416142014.27630-1-mkoutny@suse.com>
+References: <20240401185222.12015-1-benno.lossin@proton.me>
+ <CANiq72=M0L+RG6v701ThedXgYj4SUgotx-BcVoWbMxOcKY5--w@mail.gmail.com> <Zh6wTDoMgvjJZ7T9@boqun-archlinux>
+In-Reply-To: <Zh6wTDoMgvjJZ7T9@boqun-archlinux>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Tue, 16 Apr 2024 21:36:30 +0200
+Message-ID: <CANiq72m4P8NNr7M0Bv6bFpLonPu=WZC_x-k1KdtzqUd=vtLObA@mail.gmail.com>
+Subject: Re: [PATCH v2] rust: macros: fix soundness issue in `module!` macro
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Benno Lossin <benno.lossin@proton.me>, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
+	Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Asahi Lina <lina@asahilina.net>, 
+	Sumera Priyadarsini <sylphrenadin@gmail.com>, Neal Gompa <neal@gompa.dev>, 
+	Thomas Bertschinger <tahbertschinger@gmail.com>, Andrea Righi <andrea.righi@canonical.com>, 
+	Matthew Bakhtiari <dev@mtbk.me>, Adam Bratschi-Kaye <ark.email@gmail.com>, stable@vger.kernel.org, 
+	Masahiro Yamada <masahiroy@kernel.org>, Wedson Almeida Filho <wedsonaf@google.com>, Finn Behrens <me@kloenk.dev>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 04:20:08PM +0200, Michal Koutný wrote:
-> This makes pids.events:max affine to pids.max limit.
-> 
-> How are the new events supposed to be useful?
-> 
-> - pids.events.local:max
->   - tells that cgroup's limit is hit (too tight?)
-> - pids.events:*
->   - "only" directs top-down search to cgroups of interest
+On Tue, Apr 16, 2024 at 7:07=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
+rote:
+>
+> As reported by Dirk Behme:
+>
+>         https://rust-for-linux.zulipchat.com/#narrow/stream/291565-Help/t=
+opic/How.20to.20use.20THIS_MODULE.20with.20.22.20rust.3A.20macros.3A.20fix.=
+20soundness.20.2E.22/near/433512583
+>
+> The following is needed to allow modules using `THIS_MODULE` as a static
+> variable. That being said, maybe we can merge this patch as it is, since
+> it doesn't break mainline, and the following change can be done in a
+> separate patch.
 
-Generally look great to me. If you resend with the couple nits addressed,
-I'll apply the rest of the series.
+Fixed in `rust-fixes` now.
 
-Thanks.
+    [ Moved `THIS_MODULE` out of the private-in-private modules since it
+      should remain public, as Dirk Behme noticed [1]. Capitalized comments=
+,
+      avoided newline in non-list SAFETY comments and reworded to add
+      Reported-by and newline. ]
+    Link: https://rust-for-linux.zulipchat.com/#narrow/stream/291565-Help/t=
+opic/x/near/433512583
+[1]
 
--- 
-tejun
+Cheers,
+Miguel
 
