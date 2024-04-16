@@ -1,118 +1,114 @@
-Return-Path: <linux-kernel+bounces-147066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEC088A6EFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:51:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD2D48A6F00
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:52:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 766FA1F21C63
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:51:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE4761C21DDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:52:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4339212FF9E;
-	Tue, 16 Apr 2024 14:49:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B46CF130496;
+	Tue, 16 Apr 2024 14:50:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RrpBiHO1"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vC5cP3gH"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5730812F5B1
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:49:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A988013048E
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713278982; cv=none; b=it+RJyGMFyUNzIrX0p3/8u0lR6Mw65FZGAuQJF9IpQCd4b7XF1BocBvvg03tqA85bf/AMxQmPCVpn1eZL+I9W1fVrsybtf0alxr5JWZHrOIbkLtIyXFVnOkvNtQPy//tBTeKUye9R5VNQv715wnDmlQvTvYHGnAfSOGv6YYb43s=
+	t=1713279000; cv=none; b=ImBLcDIvfEtXCynZa96TWSA7T6DLL/6BUzjREHCs8mGbThh0GUfoIUFOIpRWZF8//c++xYcTju5y7tzf9zMBFh7jO9BYk9A8P6nPtdSOyUSRYgucMfyCCR5RepvayeUQaeW8yv3CUlNKdcTSGuGlC1ccT6yjljqPQiv7Ef4R3Lk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713278982; c=relaxed/simple;
-	bh=7ARtCr6gtBIZWPixhMOKo/+c9HV56ed5oMvKe8ko6Dw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EnsH/dKHHRK0bbr8/UHwIFDqhryao9dEr7tSpLVROQF9Pi6bEUUg/Wqpq4RE8kx0vG5AvP53n822jkzJVtwir4aXGLUBoqmbI1eRu9ulLvP8gI5+unPOg3Z03n2xOZv0yFOlJWnVmMHbpU2gwo/1cIEAkw8Szud69yAFplVoxYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RrpBiHO1; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713278979;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Kro/6N3hNJUz0mvlhxtTHwRpm8U0aOExj9xAbQAp3R0=;
-	b=RrpBiHO1J9ueoJSFRY1JNYQkAQmKftHGnGlkKZAHe+j6pxRPKitgQhAS2ckgQA2bUd9ScV
-	1KTx/+t5g3SZlpPec3/6CRIF6SqiFhf0YoIVH9dtTb71kSc9Lor06auzZqHhwDLIYFcFze
-	lqmbnAynkzj7KgCbPm1Qfzq5Pu6xhUg=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-488-F48Bfbb7NgShjBLlx_GDCQ-1; Tue,
- 16 Apr 2024 10:49:35 -0400
-X-MC-Unique: F48Bfbb7NgShjBLlx_GDCQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 860931C4C3A0;
-	Tue, 16 Apr 2024 14:49:34 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.39.194.131])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id C9847492BD4;
-	Tue, 16 Apr 2024 14:49:31 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: kvm@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	llvm@lists.linux.dev,
-	David Hildenbrand <david@redhat.com>,
-	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH v1] LoongArch/tlb: fix "error: parameter 'ptep' set but not used" due to __tlb_remove_tlb_entry()
-Date: Tue, 16 Apr 2024 16:49:26 +0200
-Message-ID: <20240416144926.599101-1-david@redhat.com>
+	s=arc-20240116; t=1713279000; c=relaxed/simple;
+	bh=3u9Sa7giDgPt1Wvl9jEHgyYRd2FVkBY5rzmWZa3BbG4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uHoFYmU+SGJJsLjaFNz8J14cIZkzakms405jqDjfFZ2CiYHjoGK7drWoFXcyEKn2EqSyryEH7CzeaRKdmhdQDzcQQksMmlv7dUzF0LemYO2oT1YYv4yDR/z88ZfdUtTW+7FDM5syJs7sR0kFHSUQFpfIU1uu8CviHSHlZmvX5WQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vC5cP3gH; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dcd9e34430cso4951525276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:49:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713278997; x=1713883797; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qJzGnOg1SHKsRCJmdbwuM9RJK+vob+tb6vu88judbOk=;
+        b=vC5cP3gHToBZy30b/F1+l33Y23Zj4TQil2fSr7OpOEEKXZpfAa1IjRZsMc6OiQh9pJ
+         xyd8+5NdqyKJ8wniYTrIeIRi8voZmTWw2huFADFFkMVPr2gac8chBeP8RprQy+OY8G5I
+         B+rHQF3aKAkH/S3brxY3/j/q5jrisNjr6c2gcG5n7g5h0HTCEEhLYl3PFe6EXasT5ZHu
+         ghaBR6bMf+j3K5VcoVHjHwHJGzwbLN43EghB5kT/rxEUCBHbTspiDDMHJcpNLIhwsMbq
+         9WSpFvi0mgNEi8pLqrtpisJG/mixYzoB5G7BXbS+O6irqtrdwZK9G6IXxzvNqnKw/dmc
+         D5Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713278997; x=1713883797;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qJzGnOg1SHKsRCJmdbwuM9RJK+vob+tb6vu88judbOk=;
+        b=eoKcEaIWfvw1q9H23F9wzT7kh5bpJEvzKBfanJRoXp7Zvpbz4Va0xMD4qxlqxuBN++
+         d5dn0iIX0JCWKw/kMbjU0g2NukXIhK3V6lVkrjoHgudOgfS5No5CUX8aoxhZ+S2zBhVx
+         7PrLYEVdqBCA5Q3jD3pM4M5pYnLTwQBTU20JODPOga1QP1J4y67IK4PgSGpLRjE+i8R9
+         3hKrGGrkum3hSTH2LvenueJBXeBGS4RttPGzYxFEwBY5oKtFfoMAl9qHFqJytX7r3PNk
+         +2xW5ZToObbomH3qDlZu/Z4KU5PzjPBqfIPWYy+wzG5mP81XthzuUtdjwZLuEMzS6El4
+         X0JQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVYu1gfaFdspz79RYa9EXpUfKgr/CP3r8tr/9uHoo2HH+c/PXgB6oFFOAcOGjow3RqJMA6WhDVkLWEpLPl3jG5s7H6wS/C43AJGSdj0
+X-Gm-Message-State: AOJu0YygvDVisaAqX8eYMDGLNrDoj4VF3O6YbXOEQ9VMIMRMs5MfOqDQ
+	AS8kVgvH0iPmjaKAamP+P2fMlN793K4+K71E4ZVZj4saR8pG4XASxjFkQHcb5x/LvNdceKhdG8V
+	+GpW4Gq2/yfzHISNqcfUDvRoaqytDyUxKAmH5vQ==
+X-Google-Smtp-Source: AGHT+IENg3f4q4qDx4Uo22QWVhG5m/PHgSy1nPplO90P/inGp0NQFhD+3BgUC9UMslfVeoHnbLKK/wtJ+SfdgTeRyHU=
+X-Received: by 2002:a25:74c5:0:b0:dc7:464c:e979 with SMTP id
+ p188-20020a2574c5000000b00dc7464ce979mr12879999ybc.28.1713278997544; Tue, 16
+ Apr 2024 07:49:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+References: <20240416-ucsi-glink-altmode-v1-0-890db00877ac@linaro.org>
+ <20240416-ucsi-glink-altmode-v1-3-890db00877ac@linaro.org> <1545d3fb-88f3-44e7-b981-610df6bdf6f7@linaro.org>
+In-Reply-To: <1545d3fb-88f3-44e7-b981-610df6bdf6f7@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 16 Apr 2024 17:49:46 +0300
+Message-ID: <CAA8EJpom1vnbjqOU6gD89TdZxDBzY_3upgrdvmXyJLA1tsDBvw@mail.gmail.com>
+Subject: Re: [PATCH 3/8] usb: typec: ucsi: glink: check message data sizes
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Bjorn Andersson <andersson@kernel.org>, linux-usb@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-With LLVM=1 and W=1 we get:
+On Tue, 16 Apr 2024 at 17:33, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>
+>
+>
+> On 4/16/24 04:20, Dmitry Baryshkov wrote:
+> > The driver gets data from the DSP firmware. Sanitize data size before
+> > reading corresponding message structures.
+> >
+> > Fixes: 62b5412b1f4a ("usb: typec: ucsi: add PMIC Glink UCSI driver")
+> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > ---
+>
+> I think more backstory would be beneficial here.. Does this happen often?
+> What are the consequences? What are the causes? Can there be one-off invalid
+> messages, or does that mean the firwmare has entered some unstable state?
+>
+> And I suppose, if answer to the last question is "unstable state", are we
+> doing something incorrectly in Linux that causes it to happen?
 
-  ./include/asm-generic/tlb.h:629:10: error: parameter 'ptep' set
-  but not used [-Werror,-Wunused-but-set-parameter]
+No. I haven't seen such cases. However as we are getting the data from
+external entity which don't control, we should check that the messages
+conform to what we are expecting.
 
-We fixed a similar issue via Arnd in the introducing commit, missed the
-loongarch variant. Turns out, there is no need for loongarch to have a
-custom variant, so let's just drop it and rely on the asm-generic one.
 
-Reported-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Closes: https://lkml.kernel.org/r/CANiq72mQh3O9S4umbvrKBgMMorty48UMwS01U22FR0mRyd3cyQ@mail.gmail.com
-Fixes: 4d5bf0b6183f ("mm/mmu_gather: add tlb_remove_tlb_entries()")
-Tested-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Huacai Chen <chenhuacai@kernel.org>
-Cc: WANG Xuerui <kernel@xen0n.name>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- arch/loongarch/include/asm/tlb.h | 2 --
- 1 file changed, 2 deletions(-)
 
-diff --git a/arch/loongarch/include/asm/tlb.h b/arch/loongarch/include/asm/tlb.h
-index da7a3b5b9374a..e071f5e9e8580 100644
---- a/arch/loongarch/include/asm/tlb.h
-+++ b/arch/loongarch/include/asm/tlb.h
-@@ -132,8 +132,6 @@ static __always_inline void invtlb_all(u32 op, u32 info, u64 addr)
- 		);
- }
- 
--#define __tlb_remove_tlb_entry(tlb, ptep, address) do { } while (0)
--
- static void tlb_flush(struct mmu_gather *tlb);
- 
- #define tlb_flush tlb_flush
 -- 
-2.44.0
-
+With best wishes
+Dmitry
 
