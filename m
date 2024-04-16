@@ -1,347 +1,121 @@
-Return-Path: <linux-kernel+bounces-146579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAA138A678A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:55:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AF108A678E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:57:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCE981C2171F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:55:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDEB8B21EE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B3E02907;
-	Tue, 16 Apr 2024 09:55:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09238664D;
+	Tue, 16 Apr 2024 09:57:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=j.neuschaefer@gmx.net header.b="EF2vSz/h"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FbuDV7Ew"
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B025585929;
-	Tue, 16 Apr 2024 09:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E85885929
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 09:57:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713261314; cv=none; b=Ij20/Os2HLBSjAdUdGnsPen/R4YILgQuxbhDbx7BHpljhyqPVrTkG0Nxo5/L2Mra1wyOc3XTeTbZ9+8fwAn5FID7dDb+qU7Jp/QC6+DhwQ+/k83kdBDA/M/n8lc6Xvsbf90okjnLNpZcvqQKBVA5FE5Gb0PYyfiRiSJzeP2KPk4=
+	t=1713261438; cv=none; b=mJZWauJx5fCNPbnOMMMoydZJV4LkBGVGKkGytU7kM5E6uYKsdEUemIHEuZz8Z7awc+uKB7LcYtoPJhclu9P8n9+JAfHojYVSVV+OmcSdPKMrzkos5t1+7AIAdo9GQlp9pz0hLEFtCWeUBTW6Q9Tqm8juzoSwmMrgDZqZ9nMl4Uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713261314; c=relaxed/simple;
-	bh=NDVVz2tNW8u2IWNrr+miCbFi17mYCzGc+pwSHtSoFQU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UqAJIh/6zKEiXVAvxG/3oR/hVjGGBbsIaqEFV6lNTgIlxIIpAGeH+yrPKMoZ31oQ4Bx2B9gBFJ7gcoctjmmWy3LwL1tAw0t61hQuzZF+3W0pDDZUOX/7kGPrqpvZtlGnKP707cQSNxsYFi/ifWJSY/mXtlYtq9lM7PosL6DNRuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=j.neuschaefer@gmx.net header.b=EF2vSz/h; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
-	s=s31663417; t=1713261301; x=1713866101; i=j.neuschaefer@gmx.net;
-	bh=8VCPRF0Vi4vNnqUQWVncBOVnCYeatzGZKVzuabhLX+s=;
-	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:In-Reply-To:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=EF2vSz/hH2dfmb22obzz/aifo+GrF6I9VZadrZtCJqQDB4p8FWRV36dq2aTp4Dsb
-	 eVBDPQ8Jb8VguliZdqtgeC9I4v9sfefz6kuOfgQ5MKsszJxVqXW2L6EHr/7/7Zgrt
-	 PCo7RySPIMzg4lZNpsPndMCtCOyC3BgjA1t2l/k7a/RokiUsHj6q4UeFUOeYKBRG3
-	 8M26XuL0UqfAi4iFvRhZFVYZiLgcgP+iILkoBQOdDnbhQMyG2Uyn1/9YQmZ4gYIQ2
-	 PHSVWe+Rg92dH28OUCRAD9iF2JhseI2Ww/KeRm8bOLgzRoh5+QJSjKsq+Z9PMwT7U
-	 MM0uOi2lwAXlz3vWKw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from probook ([5.226.147.226]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MrhUK-1sZMJd1W56-00ne89; Tue, 16
- Apr 2024 11:55:01 +0200
-Date: Tue, 16 Apr 2024 11:54:59 +0200
-From: Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-	devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-	openbmc@lists.ozlabs.org,
-	Michael Turquette <mturquette@baylibre.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 3/4] clk: wpcm450: Add Nuvoton WPCM450 clock/reset
- controller driver
-Message-ID: <Zh5K8_FuUtPq7Pqj@probook>
-References: <20240401-wpcm-clk-v11-0-379472961244@gmx.net>
- <20240401-wpcm-clk-v11-3-379472961244@gmx.net>
- <9be144291cda6d9714252c9cd83649c2.sboyd@kernel.org>
+	s=arc-20240116; t=1713261438; c=relaxed/simple;
+	bh=NHiCoxCRUNDM+U/esFCAFumYpu6ndbBWZi/5QFnqRTc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LCmB0tHUwmA4qXMYp9YiUrxHpddOK1cpm+CIx8d34kX4SSQhERpYNofPhVNgFYPVyhYE4sKsrGEqRjZB/XKyQstL6JfRVdZkz0QeNllx3owIpBpLNcspryswKCIW41qiCX7XyPe5gYUhatEwqo3JbXtTtL/NfuT6u57n1c4WraY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FbuDV7Ew; arc=none smtp.client-ip=209.85.217.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-47a404c6decso1113705137.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713261435; x=1713866235; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NHiCoxCRUNDM+U/esFCAFumYpu6ndbBWZi/5QFnqRTc=;
+        b=FbuDV7EwX+FwQw93U6rtrmn01IWg6/YjrdhIk21GdG9dQ3oDnnsqJktJjTvtaPouHD
+         +OZUJcC1c3R7WEqRae5PcN5GZ8QyOHxULY7fePWEyzFnLr7dWVLoJiTNaZNLNPavVH7N
+         0bkOWmSpkheevBAWtGk082wEB5u/giX9SSZ7B1VgGT1oe2z6wgNE7nYvsK2vtzaR4dLW
+         hGWKpRugoPFuUA03fAfQrecF1rMG45bv6kIVl/PKYk37yfb6OW2buNkaDOBfbuFqghl4
+         5cmLhkccCeC1fuJ9XgcCSA+10AUqZ5OZkw4ZjymDQiOOxuwhq5HlhjmRNiPPsQG+YPIu
+         jnyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713261435; x=1713866235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NHiCoxCRUNDM+U/esFCAFumYpu6ndbBWZi/5QFnqRTc=;
+        b=hlGFOBeyyl3UmhSnPnlI45YtLmIj+OuLbrBRZp+wu2V5rkh6VkdEJB3Nk2HiRvDIgI
+         wMX8ihlus8q5qlZKRlpPWaxr7tnolxXyHiuWednr7SuCwXV0j4XUtswOkcnaUN4PEkO+
+         dry0njyDwU5zMexCItRmroL/CJJ4vTvcQjOREOgmvFh+4R+nFZSxxyfcaCIyP+bouBll
+         ZuQD2xhS9DaqzTbRLHzVY26vo7v9MBNoxe/a9W4I6T5NhR0U9fDAezFKIm2faWiaU88C
+         UZARj+DhqyBkxZUjGB0kHyKdcuHs0SstfMGhOtYCZ5cdCIngeiWX/jKgDNlAxKhCWGlL
+         SfTw==
+X-Forwarded-Encrypted: i=1; AJvYcCXkvlRGIZu6Ro7Xc/H0z+wY7CLHiBkkjtnmx0xCSMmyQP+VLQyCgKcT8qgiwkcb8FhMJi1KAoPlqq8tuiulGx3iF6n+ezVplxIxkfe5
+X-Gm-Message-State: AOJu0Yy93sydMr01Wz59EOvLW46B5hc03SeBN4JrBy2yUkvpt/uW2Yr1
+	sxNsF7V9DDKAHaxyQ7YKpKabK+qtS7Y3ATeFFiwEvrqhxbwo19cspm0RGxzUzKon6ZfemyyXHgx
+	Xtgy+dshqR3s41ZUqHa6lRTPsa1nycBizIks6
+X-Google-Smtp-Source: AGHT+IEPsW05phYUIrlx5Uy8pAv8kP3cZvEoCRY/OH7h5cbl24CtY5s86HrRZB2SYuf+ooWwSmXNWVN1t06Z6diHe0c=
+X-Received: by 2002:a05:6102:dcd:b0:47a:296c:def with SMTP id
+ e13-20020a0561020dcd00b0047a296c0defmr11930644vst.29.1713261435254; Tue, 16
+ Apr 2024 02:57:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="WXvGHi2mgeFMSsi1"
-Content-Disposition: inline
-In-Reply-To: <9be144291cda6d9714252c9cd83649c2.sboyd@kernel.org>
-X-Provags-ID: V03:K1:8gvjSYTbOrJ8fToEjyuFJf3piXDlv7j1XoNQPn/z0zjfW3S9ii/
- AbXWqO5laHqjLXgSi2ovXuHD8lcJpKZacUrHKJ0EwXhbyPIVxSLD0CkTxBGVCs5SQGEl4Dv
- pAlNH3+UU55RVFOouCg10LcqK9o2lgET3zDa4E3XXPSeyKR8dXZNRoycy8hmgl87N5bKZW4
- Sa9+Bp6LoLq6Mj4t9vPGQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:UhqP2+Ik+Xo=;kbab+yCYAiyFtXldN06Ow8ypsUN
- 4o0jeI2HJYKOcan0gge7tswtUJbeQYWuosKkrI0P253EuSTIHjVXW1/6SRu47SmPIvV3FiVth
- tpXCQdJC+y7Jakv36eQwkN5wnQQLIEstQGzWqRWtV+IGkvxOmD+YrBV0sjh7ipiRUg+e164NM
- PSs+NT1H2VBSUyam4v9V2oN4GII3kGkZ2z9+sXEth8FmuZ1F8CDB4Z/mc3A0xad+LrmIfI6Fc
- cIqrDtUDA8FhFOMBtnjGY+DBoZrTaOLR4uGQEW+ST5g3nMdQAZS71L2chW5P1TsA5acDUA5GF
- PzcwLa2X/pIC+3XsstMiE2iDPlMSZz5Z/y/aN74/Xjpsr0yfq1j8gL+1xYR2XqcI/1mkY2icG
- bK5LI0uGTPo9MfL+DioQYXTpuEwuxxKAqQSrsHn4QlBmfqVoAWs5D1YCoAtDSgs//dANB/jl/
- RdxyFvoKDoan0nxI3/kddECMBjRC59YfJO5aGqBuqcoM+j1llIRbo4nZEYbXDGJoooz1JYX0h
- Nr5aEI+DNd99DYvIk4fFa3pqVmv4NDOrE0suRaCKkKgyQlFROyeKOCMSjC6whB9LqT0LZR+Ey
- gswGo0sMu/d5bi2YI8aOfYxRY5qf0GWn5BMusWowdZnh6uxoqovz+zAKfMh3tihyLLi2CSNJP
- MeaLjeitfv2Uwt+6cTsw+sPLL8sLbhm3ROaafwUW0P11I16ZJ5tHFEXWYVNVI0Prbck4Cmz8w
- d+m+JvdO0lHoTaYqlGPOzi0tCtHvzt5iptnrWRj+ZCzqULykOFMqmaDlg6FeTVy5j3ujChHhQ
- 9NRx5t4iorFDXB3PJU34wxwOnTqCjSfrADywnsTClUr8Q=
-
-
---WXvGHi2mgeFMSsi1
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20240415-alice-mm-v5-0-6f55e4d8ef51@google.com>
+ <20240415-alice-mm-v5-2-6f55e4d8ef51@google.com> <202404151605.6EFC791E@keescook>
+In-Reply-To: <202404151605.6EFC791E@keescook>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Tue, 16 Apr 2024 11:57:03 +0200
+Message-ID: <CAH5fLgg1UiU0b-1Wewz9Wm_V_G44G+TUb4L1beQF7mkAcCXKfg@mail.gmail.com>
+Subject: Re: [PATCH v5 2/4] uaccess: always export _copy_[from|to]_user with CONFIG_RUST
+To: Kees Cook <keescook@chromium.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Tue, Apr 16, 2024 at 1:05=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> On Mon, Apr 15, 2024 at 07:13:54AM +0000, Alice Ryhl wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > Rust code needs to be able to access _copy_from_user and _copy_to_user
+> > so that it can skip the check_copy_size check in cases where the length
+> > is known at compile-time, mirroring the logic for when C code will skip
+> > check_copy_size. To do this, we ensure that exported versions of these
+> > methods are available when CONFIG_RUST is enabled.
+> >
+> > Alice has verified that this patch passes the CONFIG_TEST_USER_COPY tes=
+t
+> > on x86 using the Android cuttlefish emulator.
+> >
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> Thanks for the updates and the comment on testing. :)
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-On Fri, Apr 12, 2024 at 12:25:05AM -0700, Stephen Boyd wrote:
-> Quoting Jonathan Neusch=C3=A4fer (2024-04-01 07:06:32)
-> > This driver implements the following features w.r.t. the clock and reset
-> > controller in the WPCM450 SoC:
-> >=20
-> > - It calculates the rates for all clocks managed by the clock controller
-> > - It leaves the clock tree mostly unchanged, except that it enables/
-> >   disables clock gates based on usage.
-> > - It exposes the reset lines managed by the controller using the
-> >   Generic Reset Controller subsystem
-> >=20
-> > NOTE: If the driver and the corresponding devicetree node are present,
-> >       the driver will disable "unused" clocks. This is problem until
-> >       the clock relations are properly declared in the devicetree (in a
-> >       later patch). Until then, the clk_ignore_unused kernel parameter
-> >       can be used as a workaround.
-> >=20
-> > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-> > Reviewed-by: Joel Stanley <joel@jms.id.au>
-> > ---
-> >=20
-> > I have considered converting this driver to a platform driver instead of
-> > using CLK_OF_DECLARE, because platform drivers are generally the way
-> > forward. However, the timer-npcm7xx driver used on the same platform
-> > requires is initialized with TIMER_OF_DECLARE and thus requires the
-> > clocks to be available earlier than a platform driver can provide them.
->=20
-> In that case you can use CLK_OF_DECLARE_DRIVER(), register the clks
-> needed for the timer driver to probe, and then put the rest of the clk
-> registration in a normal platform driver.
+Thanks for taking a look :)
 
-I'll give it a try. I'm not sure how to make it work correctly without
-calling (devm_)of_clk_add_hw_provider twice, though (once for the early
-clock, timer0; once for the rest).
-
-Another (probably simpler) approach seems be to declare a fixed-clock or
-fixed-factor-clock in the DT, and use that in the timer:
-
-	refclk_div2: clock-div2 {
-		compatible =3D "fixed-factor-clock";
-		clocks =3D <&refclk>;
-		#clock-cells =3D <0>;
-		clock-mult =3D <1>;
-		clock-div =3D <2>;
-	};
-
-	timer0: timer@b8001000 {
-		compatible =3D "nuvoton,wpcm450-timer";
-		interrupts =3D <12 IRQ_TYPE_LEVEL_HIGH>;
-		reg =3D <0xb8001000 0x1c>;
-		clocks =3D <&refclk_div2>;
-	};
-
-=2E.. and additionally to mark the timer clocks as critical in
-clk-wpcm450.c, so they don't get disabled for being "unused".
-
-
-> > diff --git a/drivers/clk/nuvoton/clk-wpcm450.c b/drivers/clk/nuvoton/cl=
-k-wpcm450.c
-> > new file mode 100644
-> > index 00000000000000..9100c4b8a56483
-> > --- /dev/null
-> > +++ b/drivers/clk/nuvoton/clk-wpcm450.c
-> > @@ -0,0 +1,372 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Nuvoton WPCM450 clock and reset controller driver.
-> > + *
-> > + * Copyright (C) 2022 Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-> > + */
-> > +
-> > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
->=20
-> Isn't KBUILD_MODNAME an option already for dynamic debug?
-
-Indeed, it's the +m option.
-
-My motivation for setting pr_fmt in the first place should become
-obsolete with the move towards a platform driver anyway, because then I
-can use dev_err() etc. I'll remove the #define.
-
->=20
-> > +
-> > +#include <linux/bitfield.h>
-> > +#include <linux/clk-provider.h>
-> > +#include <linux/io.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/of.h>
-> > +#include <linux/of_address.h>
-> > +#include <linux/reset-controller.h>
-> > +#include <linux/reset/reset-simple.h>
-> > +#include <linux/slab.h>
-> > +
-> [...]
-> > +
-> > +static const struct clk_parent_data default_parents[] =3D {
-> > +       { .name =3D "pll0" },
-> > +       { .name =3D "pll1" },
-> > +       { .name =3D "ref" },
-> > +};
-> > +
-> > +static const struct clk_parent_data huart_parents[] =3D {
-> > +       { .fw_name =3D "ref" },
-> > +       { .name =3D "refdiv2" },
->=20
-> Please remove all .name elements and use indexes or direct pointers.
-
-Will do.
-
-What I'm not yet sure about, is which of these is better:
-
- 1. Having two kinds of indexes, 1. for internal use in the driver,
-    identifying all clocks, 2. public as part of the devicetree binding
-    ABI (defined in include/dt-bindings/clock/nuvoton,wpcm450-clk.h)
- 2. Unifying the two and giving every clock a public index
- 3. Using the same number space, but only providing public definitions
-    (in the binding) for clocks that can be used outside the clock
-    controller.
-
-Option 3 sounds fairly reasonable.
-
-> > +static const struct wpcm450_clken_data clken_data[] =3D {
-> > +       { "fiu", { .name =3D "ahb3" }, WPCM450_CLK_FIU, 0 },
->=20
-> This actually is  { .index =3D 0, .name =3D "ahb3" } and that is a bad
-> combination. struct clk_parent_data should only have .name as a fallback
-> when there's an old binding out there that doesn't have the 'clocks'
-> property for the clk provider node. There shouldn't be any .name
-> property because this is new code and a new binding.
-
-I'll try switching to .index or .hw instead for the references to
-internal clocks.
-
-
-[...]
-> > +/*
-> > + * NOTE: Error handling is very rudimentary here. If the clock driver =
-initial-
-> > + * ization fails, the system is probably in bigger trouble than what i=
-s caused
->=20
-> Don't break words across lines with hyphens.
-
-Good point.
-
-(Due to the switch to a platform driver, this comment will probably
-become obsolete anyway.)
-
-> > + * by a few leaked resources.
-> > + */
-> > +
-> > +static void __init wpcm450_clk_init(struct device_node *np)
-> > +{
-> > +       struct clk_hw_onecell_data *clk_data;
-> > +       static struct clk_hw **hws;
-> > +       static struct clk_hw *hw;
-> > +       void __iomem *clk_base;
-> > +       int i, ret;
-> > +       struct reset_simple_data *reset;
-> > +
-> > +       clk_base =3D of_iomap(np, 0);
-> > +       if (!clk_base) {
-> > +               pr_err("%pOFP: failed to map registers\n", np);
-> > +               of_node_put(np);
-> > +               return;
-> > +       }
-> > +       of_node_put(np);
->=20
-> The 'np' is used later when registering PLLs. You can only put the node
-> after it's no longer used. Also, you never got the node with
-> of_node_get(), so putting it here actually causes an underflow on the
-> refcount. Just remove all the get/puts instead.
-
-That simplifies it, thanks for the hint!
-
-> > +
-> > +       clk_data =3D kzalloc(struct_size(clk_data, hws, WPCM450_NUM_CLK=
-S), GFP_KERNEL);
-> > +       if (!clk_data)
-> > +               return;
-> > +
-> > +       clk_data->num =3D WPCM450_NUM_CLKS;
-> [...]
-> > +       /* Reset controller */
-> > +       reset =3D kzalloc(sizeof(*reset), GFP_KERNEL);
-> > +       if (!reset)
-> > +               return;
-> > +       reset->rcdev.owner =3D THIS_MODULE;
-> > +       reset->rcdev.nr_resets =3D WPCM450_NUM_RESETS;
-> > +       reset->rcdev.ops =3D &reset_simple_ops;
-> > +       reset->rcdev.of_node =3D np;
-> > +       reset->membase =3D clk_base + REG_IPSRST;
-> > +       ret =3D reset_controller_register(&reset->rcdev);
-> > +       if (ret)
-> > +               pr_err("Failed to register reset controller: %pe\n", ER=
-R_PTR(ret));
->=20
-> It would be nicer to register this device as an auxiliary device with a
-> single API call and then have all the resets exist in that file
-> instead of this file. The driver would be put in drivers/reset/ as well.
-
-Not sure I'd move ten lines to a whole new file, but moving them to a
-separate function definitely makes sense, I'll do that.
-
->=20
-> > +
-> > +       of_node_put(np);
->=20
-> Drop this of_node_put()
-
-Ok.
-
-
-Thanks for your detailed review!
-
-I'll send the next revision after testing my changes on the relevant
-hardware (which I currently don't have with me).
-
--jn
-
---WXvGHi2mgeFMSsi1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmYeSscACgkQCDBEmo7z
-X9v2Tw/+OlPtGnFxff1/A/65NMHgzu86TjFdCRf3hxLcDRlAcW/QKbbFIzrLimmf
-1Fqx7I1qjUNBbQ67QDDgRPm1lebJRE9zVjWJIjXFC6LC1juGXPTts/GSHNJYcUpR
-ueDuLC4+qql/oQbLr5L3yye1uljuFc/LTA80iUl6figpSkRLxVdyfMBqdVuDMQSH
-7B0hWc/fwsU5/OLQR01vYtPzFrWCBQ9/gM8dHITdemGD8bJEvEzDxi6LJb4+yijd
-kdnIDhQmVhLU9OCWaUO6SoXiyN3pAFbydCSi3z2sY21/8Ic+HiPttsMeqycThlKV
-fHPFr4Ra4pFDbRuQwgSbVejseZukrnfVAAew6VgLCJLSUr+sw2Ub3iA2v87vnID6
-Ur3FG0W+QB2W8O8NJ82NXJO3UTRLVejuTrcmaemyBPXK3qkWIWYLkDBhcd5++QAw
-e/d0KkKHhxKgqe7f1oEcZv3el2f8daslpew+9SARp6OMXf61YqI7FihXjpsWXTNv
-u7TyPBrfFlBw9mOMxr3WbNGzPJJc2wBokiAvGJWmbaQvdT2SNFadQM2fczS8oIdG
-S0LTPzd5Vg0Gy288r1jUQiN8sedUeY2Ya+hipCYxzA1ftF0+VjoaQUv+BzH3P1F5
-UtBnZEcs7UiRxStFPJdyHqmIZVQ5NTfoDvwDAXgH5riSqKlLRRk=
-=6Ug7
------END PGP SIGNATURE-----
-
---WXvGHi2mgeFMSsi1--
+Alice
 
