@@ -1,168 +1,169 @@
-Return-Path: <linux-kernel+bounces-147342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CBE68A72BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 50BA78A72C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:01:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FD141C212ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:58:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F3A51C21490
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:01:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB0E134411;
-	Tue, 16 Apr 2024 17:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE4E134429;
+	Tue, 16 Apr 2024 18:00:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="di+jfiIr"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bEUfc3NF"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C3013440E
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:58:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70E2612EBCE;
+	Tue, 16 Apr 2024 18:00:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713290315; cv=none; b=LZUbD50axT3lZa8F1WZvm9PByAoiVkiEc2yUBNCCkrq1N3gZmSY9hZFJYtKiLpICh50HabrKdhxT0orWUFJdMirR/B6ebZQdVMXIOb7wVeilNvVHbUZOB8NRbI07HQPDcfRu09a2tnykCDijtarsCrKSb4z8XQ31agDGevcdiCk=
+	t=1713290458; cv=none; b=PS5P/0ZkUnmz1xJ9FkLP+2MG3+Dk5jedEvkCp4Qxr8wEioWNXPNIoSCw3ag8dpBpfyZie2sq1WVhyaKtjJsFpHejAOEU7yhzEZSmpHUNhROH3mqUZLOqvA6oTsZotrhf8CfJInGTio/z+HoFLGdRzuUbPBcoo+pGuCOo3KayVdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713290315; c=relaxed/simple;
-	bh=N/CT3P+7Omjf+N3+98a/akj+c61vNBEbUc2l3yWJgv4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IJuUtS+JliN4aMY+0vViXJZmgbqOkHmFoGg2TpcdohYvrhQ+wKtABpzFcTxDj3hFckxthdec+qtrekf4eQG6YwHw0U5pBIEk4B06eQ3YAQqoOl0ygitHHHGTl8SDbGdPrHc6tXiM8kPRHWA0yh7mCnz3JLeiN/7olCJqiKpqHMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=di+jfiIr; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from terminus.zytor.com (terminus.zytor.com [IPv6:2607:7c80:54:3:0:0:0:136])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 43GHw45O3329010
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-	Tue, 16 Apr 2024 10:58:08 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 43GHw45O3329010
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024041401; t=1713290288;
-	bh=qHKdQNIRLeXfXAGjCu8RT/wfxxJhV8OqX6DD/MneApw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=di+jfiIrG6pz7i7B5odEOQg74nBlpvV0sgG1uPd6eG0A5nYJzFiIYQ/EwAqeYUyL2
-	 uIHPnAQLPOAnRdtBCtufd7mEz17smmJxBAqP4fILmIqK+Xa9LiHnFQb2GzdKjURG62
-	 14xjSHRMXdeojiWoW0HIkURtfxJWPOcXYHUxCxYEI2fMzlhTfkYkonGB0ulmr4OVbO
-	 QYwjpWhUIJdUMz3ID60PvsXhNlwMsQCsc3lOBXA/8Nm/6244CsVxuePiKTFm0JZB4e
-	 5srF40hM96gyDE/0lwA/FkVcgC/lTRTU41qfHsRByJpWYccYHLJZgttMecb5yT1BxK
-	 rvG6IG4GEqRnQ==
-From: "Xin Li (Intel)" <xin@zytor.com>
-To: linux-kernel@vger.kernel.org
-Cc: luto@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com
-Subject: [PATCH v2 1/1] x86/fred: Fix INT80 emulation for FRED
-Date: Tue, 16 Apr 2024 10:58:03 -0700
-Message-ID: <20240416175804.3328999-1-xin@zytor.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713290458; c=relaxed/simple;
+	bh=SLEcQwrdeAyJMhsUpPs/WnfkDUuxw6+ip8W3cRvk0co=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sQwCjj0GhfrGUI/DLIWvT4FXQ67F0TCh/LSLYndcvUBUkg5wh+hIDWwS3x8XZYwSMyG9NTAHmu3OoGLVQ0YGE/0A9q1g5rAFC7K7ySixDkII4vulHUTBqlKNNm1uuCminw0nspFE6HmZgXn28/O7w7m/1IMYZYBxu4RwEWNeKZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bEUfc3NF; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713290457; x=1744826457;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SLEcQwrdeAyJMhsUpPs/WnfkDUuxw6+ip8W3cRvk0co=;
+  b=bEUfc3NFS0M4y7Pky1k5ipynrK64UAqKGt6PSU5JpcauGMDRZdbxwMug
+   YSC6y9QptD9NYt1Osrvk4Jz6Ow0/3Voh+OBVNORjevddzYaZCv+9HJKw/
+   CCfDhljpj4KS2C03xX+WN5ueephWSyWMDqv2hfvqAlizC6tfok18Ne2BA
+   emohluekBv3tgR8SqSmze630exkxABetFxVaJDirsoUUcMKL3vmJbeqTy
+   5gEZaP5gKS8U6kAt67HOrX69GzwCCKluZlZnA+SoTeDIQ9QpYWJdpcpU7
+   VJirddfwgQOGJrpZK5OzxYst9ovCvDAnhuAPTC2JjsWF69HYuLl1h0bLm
+   Q==;
+X-CSE-ConnectionGUID: teptYAYDQIWJfRYu5MGpQQ==
+X-CSE-MsgGUID: c+XwvYTzRjq5a46ksPCwUA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8629024"
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="8629024"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 11:00:56 -0700
+X-CSE-ConnectionGUID: HhquDLfRQROq+SUyssmTNA==
+X-CSE-MsgGUID: 8Pbg0ZewSZqGG9bjbWRyiQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="27026244"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 11:00:53 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rwn6w-00000004mUp-3DzS;
+	Tue, 16 Apr 2024 21:00:50 +0300
+Date: Tue, 16 Apr 2024 21:00:50 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] dmaengine: dw: Add peripheral bus width verification
+Message-ID: <Zh680h4h6hURIb82@smile.fi.intel.com>
+References: <20240416162908.24180-1-fancer.lancer@gmail.com>
+ <20240416162908.24180-2-fancer.lancer@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416162908.24180-2-fancer.lancer@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Add a FRED-specific INT80 handler fred_int80_emulation().
+On Tue, Apr 16, 2024 at 07:28:55PM +0300, Serge Semin wrote:
+> Currently the src_addr_width and dst_addr_width fields of the
+> dma_slave_config structure are mapped to the CTLx.SRC_TR_WIDTH and
+> CTLx.DST_TR_WIDTH fields of the peripheral bus side in order to have the
+> properly aligned data passed to the target device. It's done just by
+> converting the passed peripheral bus width to the encoded value using the
+> __ffs() function. This implementation has several problematic sides:
+> 
+> 1. __ffs() is undefined if no bit exist in the passed value. Thus if the
+> specified addr-width is DMA_SLAVE_BUSWIDTH_UNDEFINED, __ffs() may return
+> unexpected value depending on the platform-specific implementation.
+> 
+> 2. DW AHB DMA-engine permits having the power-of-2 transfer width limited
+> by the DMAH_Mk_HDATA_WIDTH IP-core synthesize parameter. Specifying
+> bus-width out of that constraints scope will definitely cause unexpected
+> result since the destination reg will be only partly touched than the
+> client driver implied.
+> 
+> Let's fix all of that by adding the peripheral bus width verification
+> method which would make sure that the passed source or destination address
+> width is valid and if undefined then the driver will just fallback to the
+> 1-byte width transfer.
 
-Commit
-  55617fb991df ("x86/entry: Do not allow external 0x80 interrupts")
-added a bunch of checks to the int $0x80 path, however they are
-unnecessary and event wrong in fact under FRED.
+Please, add a word that you apply the check in the dwc_config() which is
+supposed to be called before preparing any transfer?
 
-1) FRED distinguishes external interrupts from software interrupts,
-   thus int80_emulation() should NEVER be called for handling an
-   external interrupt, and then int80_is_external() is meaningless
-   when FRED is enabled.
+..
 
-2) The FRED kernel entry handler NEVER dispatches INTx, which is
-   of event type EVENT_TYPE_SWINT, so the user mode checking in
-   do_int80_emulation() is redundant.
+> +static int dwc_verify_p_buswidth(struct dma_chan *chan)
+> +{
+> +	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
+> +	struct dw_dma *dw = to_dw_dma(chan->device);
+> +	u32 reg_width, max_width;
+> +
+> +	if (dwc->dma_sconfig.direction == DMA_MEM_TO_DEV)
+> +		reg_width = dwc->dma_sconfig.dst_addr_width;
+> +	else if (dwc->dma_sconfig.direction == DMA_DEV_TO_MEM)
+> +		reg_width = dwc->dma_sconfig.src_addr_width;
 
-3) int80_emulation() does a CLEAR_BRANCH_HISTORY, which is likly
-   an overkill for new x86 CPU implementations that support FRED.
+> +	else /* DMA_MEM_TO_MEM */
 
-A dedicated FRED INT80 handler duplicates most of the code in
-do_int80_emulation(), but it avoids sprinkling moar tests and
-seems more readable.
+Actually not only this direction, but TBH I do not see value in these comments.
 
-Suggested-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-Signed-off-by: Xin Li (Intel) <xin@zytor.com>
----
+> +		return 0;
+> +
+> +	max_width = dw->pdata->data_width[dwc->dws.p_master];
+> +
+> +	/* Fall-back to 1byte transfer width if undefined */
 
-Change since v1:
-* Prefer a FRED-specific INT80 handler instead of sprinkling moar
-  tests around (Borislav Petkov).
----
- arch/x86/entry/common.c     | 40 +++++++++++++++++++++++++++++++++++++
- arch/x86/entry/entry_fred.c |  2 +-
- 2 files changed, 41 insertions(+), 1 deletion(-)
+1-byte
+(as you even used in the commit message correctly)
 
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index 6de50b80702e..3cfc7c4fe1a2 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -255,6 +255,46 @@ __visible noinstr void do_int80_emulation(struct pt_regs *regs)
- 	instrumentation_end();
- 	syscall_exit_to_user_mode(regs);
- }
-+
-+#ifdef CONFIG_X86_FRED
-+/*
-+ * Called only if a user level application executes "int $0x80".
-+ *
-+ * Note, under FRED interrupt 0x80 could be used as a hardware interrupt.
-+ */
-+DEFINE_FREDENTRY_RAW(int80_emulation)
-+{
-+	int nr;
-+
-+	enter_from_user_mode(regs);
-+
-+	instrumentation_begin();
-+	add_random_kstack_offset();
-+
-+	/*
-+	 * FRED pushed 0 into regs::orig_ax and regs::ax contains the
-+	 * syscall number.
-+	 *
-+	 * User tracing code (ptrace or signal handlers) might assume
-+	 * that the regs::orig_ax contains a 32-bit number on invoking
-+	 * a 32-bit syscall.
-+	 *
-+	 * Establish the syscall convention by saving the 32bit truncated
-+	 * syscall number in regs::orig_ax and by invalidating regs::ax.
-+	 */
-+	regs->orig_ax = regs->ax & GENMASK(31, 0);
-+	regs->ax = -ENOSYS;
-+
-+	nr = syscall_32_enter(regs);
-+
-+	local_irq_enable();
-+	nr = syscall_enter_from_user_mode_work(regs, nr);
-+	do_syscall_32_irqs_on(regs, nr);
-+
-+	instrumentation_end();
-+	syscall_exit_to_user_mode(regs);
-+}
-+#endif
- #else /* CONFIG_IA32_EMULATION */
- 
- /* Handles int $0x80 on a 32bit kernel */
-diff --git a/arch/x86/entry/entry_fred.c b/arch/x86/entry/entry_fred.c
-index ac120cbdaaf2..9fa18b8c7f26 100644
---- a/arch/x86/entry/entry_fred.c
-+++ b/arch/x86/entry/entry_fred.c
-@@ -66,7 +66,7 @@ static noinstr void fred_intx(struct pt_regs *regs)
- 	/* INT80 */
- 	case IA32_SYSCALL_VECTOR:
- 		if (ia32_enabled())
--			return int80_emulation(regs);
-+			return fred_int80_emulation(regs);
- 		fallthrough;
- #endif
- 
+> +	if (reg_width == DMA_SLAVE_BUSWIDTH_UNDEFINED)
+> +		reg_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
+> +	else if (!is_power_of_2(reg_width) || reg_width > max_width)
+> +		return -EINVAL;
+> +	else /* bus width is valid */
+> +		return 0;
+> +
+> +	/* Update undefined addr width value */
+> +	if (dwc->dma_sconfig.direction == DMA_MEM_TO_DEV)
+> +		dwc->dma_sconfig.dst_addr_width = reg_width;
+> +	else /* DMA_DEV_TO_MEM */
+> +		dwc->dma_sconfig.src_addr_width = reg_width;
 
-base-commit: 367dc2b68007e8ca00a0d8dc9afb69bff5451ae7
+So, can't you simply call clamp() for both fields in dwc_config()?
+
+> +	return 0;
+> +}
+
+..
+
+> +	int err;
+
+Hmm... we have two functions one of which is using different name for this.
+Can we have a patch to convert to err the other one?
+
 -- 
-2.44.0
+With Best Regards,
+Andy Shevchenko
+
 
 
