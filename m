@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-147405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08F568A737F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A88E38A7384
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:47:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3EC1284553
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:46:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60DD92847C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:47:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAAB313A865;
-	Tue, 16 Apr 2024 18:44:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6E513AA51;
+	Tue, 16 Apr 2024 18:44:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="JsQZ3Vkq"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="sih91rTS"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0AF4139D19
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B3A13A410
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:44:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713293092; cv=none; b=MfO3r/slRGBUjMEyPSexHaGqXMQDBnbB6rkD0SFzsb7sX1Tsg0POWoYXn9uA2xQpYipcUGox8dBlt0AHFpXXaHsdo55S2Rj4hkQx5Y5kqI7NwoOdtv6zrY4JVKVfU+r81sx8RAtKNjo5rP5EIBWw5aErVY1gRRSeRwLvgwyiWlI=
+	t=1713293094; cv=none; b=sYfzbhKG13QtYCHgMQsJfxT44mn9qUy4r7nXRjHy2cl3QWCL3Y579EdQUVJoXy7Yd8qFU5197ZjMBNJz3dnw7UQX2rmoP4WTiQ8kMfT5WjbH60d0r79ev5j9tu2Ju6eDEEuJy0Md4ORcfNFzebrGs/Gc9f73pebwe25Xfb7C3YA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713293092; c=relaxed/simple;
-	bh=akgdKSazpCJozBL9deA+0ximAc5a6b6WW9ag1TZQiU0=;
+	s=arc-20240116; t=1713293094; c=relaxed/simple;
+	bh=H8usdALoznAt2isX7oNnrfLpFcaNKxvOOWa8DDbamCs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HCzEu8uMVqqdP4FQpLg27yYVFUik72g0ZPbnkX0zepDPWByLbjgRFInOaft+uFDaKusRHiUNwBAnlxNOowxLivyFVvwssUErVC0ppyiATKBRws6ay2276s4DDlrCJEAmbz6ni+3ZrDusBXhBmwwzPJ1w+eS2UDrYnLv8RUIatXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=JsQZ3Vkq; arc=none smtp.client-ip=209.85.210.180
+	 MIME-Version; b=RybjcYg+uyRQJZyWUj9VXBqovh6qSpWhQp9T2RvZGHAnjg1Ddz6fDyirBLW5pukkT0aeMsaUGVl2AvhNVudvFQCoLwNl5RtVfmWtDXWGl/I3hfBJVhhu1mZTwL8GeqSXr9pFH/i/cnWk30AvG4DLrDtKc88+WoIu4yYiYEruecc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=sih91rTS; arc=none smtp.client-ip=209.85.216.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ecf3943040so3838317b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:44:50 -0700 (PDT)
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2a475bdd4a6so2768470a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:44:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713293090; x=1713897890; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713293091; x=1713897891; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CkMvEzo278xPIa/MSXztYs2ivQ6wYMeKBg/aNDTTbzU=;
-        b=JsQZ3VkqjXvHHU+77Vrv9wwB873ugOsKHttOzF+wr3sLEluFhKMf+o4GXfbxn+hvEx
-         U4aXYtndUDdTRS3CrbMtZQ6s4SzWggKnFCcSHZ7kkuri/+m1LjN7XZzB4axAAXPkkhZ7
-         GcPj8pzeVJbaJa4NctStgPnUbtR9jZzvpEwjcmm/ppP7py7JsCqqEbZOPxaJESpfGwxg
-         7kXV3kyj1SHUVNTuUK+J62cfXyENCxgiQfK1nBXm8f5pZYU+/9juG5Jz0DrVVxwaBkNx
-         bUOiZ6vf01iusaX6TEy7L/D2mENYL9UY8+Qd7vL3c88S6kQEGye7BpeXlKnuBxfYTbpg
-         UhVg==
+        bh=rU9bTQzimBlb4bBeVGV64JD8vBjMh3ZSXWmumJprSMc=;
+        b=sih91rTShDqoyV9/xzv6ODbOQ9WzXUI0NA2N1u5hPo4SN8KN0LHQo1ZKOgYVCGwTup
+         ooHHf3cdnJAc8xN7jJgrHvCGIXVIZ64R18tYAbskUBMrZBHusxX4d5LgQmPbWDAJAzF0
+         Fae4+KQcuB9wmkjoliYD5KUG9qO3YBVeZrBEfAlO7lGQ43bbJCvCyNer94VMG1OpDuiT
+         N+TEOuIfBx/WJqG/ajyuJimeA8ZpQGEmEpYu3eyAItpFJWMbcP+6Rt0oCw9D+w9+0+bK
+         HThFiybcQVw+QrT04+tgmTVeQyP4IzdlRbwj62zlatrQP0ZVf/tXoXPzmHM8xZBHL8So
+         KxEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713293090; x=1713897890;
+        d=1e100.net; s=20230601; t=1713293091; x=1713897891;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CkMvEzo278xPIa/MSXztYs2ivQ6wYMeKBg/aNDTTbzU=;
-        b=nAQT9q8cT1TDfWrSktgXhvX0qk3K54TnKi4rd5rBAOZTLHz53DKPDubXb2tfebDTVt
-         ucTfGAjWr4zsc7z7dTunG/v5Uqs6fwKWpXtCgxsESM7LqFx4F3exsSjZXSB+SstQzcJy
-         QmnkMi9F/qSbf7ps8sna2UJXHvVfcrzflpRnRdPgfk5cnyTl4fg5jWlZ3UlZbcRWQQus
-         63KeozpMktRp+YoVRTtrepAW8SaP6vWyI9zAuwJoZ/bDz0xBQ2mDLosOtit8A3SPM5+n
-         dgeP4/0P8tTh4nXMC5Fe6ayjUETd6lO2oIqrx/xpmkVgF4TcNYgbM1BeIp/x8XKh+AsZ
-         6eSw==
-X-Gm-Message-State: AOJu0YwfV8oGIAka9e1nTq1m6jjCbyzgfZrMH7q+HctHeEjthZY862Qn
-	5sEYjfaToSeQSv9JWeiyOHHz+qZOAefPtqd11uUKyXma5cVY2lcg8URCbK9qSKodUWHkt7jccrr
-	v
-X-Google-Smtp-Source: AGHT+IGM/xMcNq2URIBfBDJhi/NG6PhYcgLXKc1qFGAS/Qi1GtucOy269101P8ESZBPlkDMSrXALyQ==
-X-Received: by 2002:a05:6a20:6e22:b0:1a3:3c5f:2ebd with SMTP id go34-20020a056a206e2200b001a33c5f2ebdmr10182304pzb.59.1713293089911;
-        Tue, 16 Apr 2024 11:44:49 -0700 (PDT)
+        bh=rU9bTQzimBlb4bBeVGV64JD8vBjMh3ZSXWmumJprSMc=;
+        b=LnFaOtmC9rjLcEc9lv2U5hJ9fCP620weLhYINxDP+B/F+jVVjARVK6clAsEP3VeRGF
+         4tD+mN/fqdyZDHsM6yAkdd29GQ2kPGIYiwUUgqvHNCa+lfg/+KWEHUPqndcOGQXd4L6e
+         3Q//pnpb5FG38ND3BMDt7kJ3PckFzonEm3/F8+jgDdlO3UDy3a9c9H3kxm6iKDCsXBbR
+         frYGaGxm4vXykVo4kVnL5AWTKSM/+nv1Qawcfjg858QT38TYD9RC+JJgG77/WVKi4OOK
+         eSFb2AQNRbqbSO/kPs5psZGlJVddcKsU91cYOBwUW9SyLwxgE6xn/d2pczhCP2jxLFrK
+         TUyg==
+X-Gm-Message-State: AOJu0YybKmYgZZy4jXKFsZMubA2CfGii5lqezO7KnpQzcqiWQnnSJxoO
+	He0lMt03x3EW+4aDtyYBU5Vs2Viz1rzFPdR3fLNpvKEspsFLrSKjBhmbVcruw7meo30NhesEXRW
+	g
+X-Google-Smtp-Source: AGHT+IFO7gBokex9KDHR7FMDDghsIz2thvCcgFt0g1hVdtn3kLkpEMXY9Ea3s80HyJZdLNzoP7x/LQ==
+X-Received: by 2002:a17:90b:46c8:b0:2a2:50ef:ece2 with SMTP id jx8-20020a17090b46c800b002a250efece2mr12099952pjb.17.1713293091321;
+        Tue, 16 Apr 2024 11:44:51 -0700 (PDT)
 Received: from atishp.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id o19-20020a17090aac1300b002a269828bb8sm8883645pjq.40.2024.04.16.11.44.48
+        by smtp.gmail.com with ESMTPSA id o19-20020a17090aac1300b002a269828bb8sm8883645pjq.40.2024.04.16.11.44.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 11:44:49 -0700 (PDT)
+        Tue, 16 Apr 2024 11:44:50 -0700 (PDT)
 From: Atish Patra <atishp@rivosinc.com>
 To: linux-kernel@vger.kernel.org
 Cc: Atish Patra <atishp@rivosinc.com>,
@@ -88,9 +88,9 @@ Cc: Atish Patra <atishp@rivosinc.com>,
 	virtualization@lists.linux.dev,
 	Will Deacon <will@kernel.org>,
 	x86@kernel.org
-Subject: [PATCH v7 06/24] RISC-V: KVM: Rename the SBI_STA_SHMEM_DISABLE to a generic name
-Date: Tue, 16 Apr 2024 11:44:03 -0700
-Message-Id: <20240416184421.3693802-7-atishp@rivosinc.com>
+Subject: [PATCH v7 07/24] RISC-V: Use the minor version mask while computing sbi version
+Date: Tue, 16 Apr 2024 11:44:04 -0700
+Message-Id: <20240416184421.3693802-8-atishp@rivosinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240416184421.3693802-1-atishp@rivosinc.com>
 References: <20240416184421.3693802-1-atishp@rivosinc.com>
@@ -102,70 +102,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-SBI_STA_SHMEM_DISABLE is a macro to invoke disable shared memory
-commands. As this can be invoked from other SBI extension context
-as well, rename it to more generic name as SBI_SHMEM_DISABLE.
+As per the SBI specification, minor version is encoded in the
+lower 24 bits only. Make sure that the SBI version is computed
+with the appropriate mask.
+
+Currently, there is no minor version in use. Thus, it doesn't
+change anything functionality but it is good to be compliant with
+the specification.
 
 Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 Signed-off-by: Atish Patra <atishp@rivosinc.com>
 ---
- arch/riscv/include/asm/sbi.h  | 2 +-
- arch/riscv/kernel/paravirt.c  | 6 +++---
- arch/riscv/kvm/vcpu_sbi_sta.c | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ arch/riscv/include/asm/sbi.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-index 9aada4b9f7b5..f31650b10899 100644
+index f31650b10899..112a0a0d9f46 100644
 --- a/arch/riscv/include/asm/sbi.h
 +++ b/arch/riscv/include/asm/sbi.h
-@@ -277,7 +277,7 @@ struct sbi_sta_struct {
- 	u8 pad[47];
- } __packed;
- 
--#define SBI_STA_SHMEM_DISABLE		-1
-+#define SBI_SHMEM_DISABLE		-1
- 
- /* SBI spec version fields */
- #define SBI_SPEC_VERSION_DEFAULT	0x1
-diff --git a/arch/riscv/kernel/paravirt.c b/arch/riscv/kernel/paravirt.c
-index 0d6225fd3194..fa6b0339a65d 100644
---- a/arch/riscv/kernel/paravirt.c
-+++ b/arch/riscv/kernel/paravirt.c
-@@ -62,7 +62,7 @@ static int sbi_sta_steal_time_set_shmem(unsigned long lo, unsigned long hi,
- 	ret = sbi_ecall(SBI_EXT_STA, SBI_EXT_STA_STEAL_TIME_SET_SHMEM,
- 			lo, hi, flags, 0, 0, 0);
- 	if (ret.error) {
--		if (lo == SBI_STA_SHMEM_DISABLE && hi == SBI_STA_SHMEM_DISABLE)
-+		if (lo == SBI_SHMEM_DISABLE && hi == SBI_SHMEM_DISABLE)
- 			pr_warn("Failed to disable steal-time shmem");
- 		else
- 			pr_warn("Failed to set steal-time shmem");
-@@ -84,8 +84,8 @@ static int pv_time_cpu_online(unsigned int cpu)
- 
- static int pv_time_cpu_down_prepare(unsigned int cpu)
+@@ -367,8 +367,8 @@ static inline unsigned long sbi_minor_version(void)
+ static inline unsigned long sbi_mk_version(unsigned long major,
+ 					    unsigned long minor)
  {
--	return sbi_sta_steal_time_set_shmem(SBI_STA_SHMEM_DISABLE,
--					    SBI_STA_SHMEM_DISABLE, 0);
-+	return sbi_sta_steal_time_set_shmem(SBI_SHMEM_DISABLE,
-+					    SBI_SHMEM_DISABLE, 0);
+-	return ((major & SBI_SPEC_VERSION_MAJOR_MASK) <<
+-		SBI_SPEC_VERSION_MAJOR_SHIFT) | minor;
++	return ((major & SBI_SPEC_VERSION_MAJOR_MASK) << SBI_SPEC_VERSION_MAJOR_SHIFT)
++		| (minor & SBI_SPEC_VERSION_MINOR_MASK);
  }
  
- static u64 pv_time_steal_clock(int cpu)
-diff --git a/arch/riscv/kvm/vcpu_sbi_sta.c b/arch/riscv/kvm/vcpu_sbi_sta.c
-index d8cf9ca28c61..5f35427114c1 100644
---- a/arch/riscv/kvm/vcpu_sbi_sta.c
-+++ b/arch/riscv/kvm/vcpu_sbi_sta.c
-@@ -93,8 +93,8 @@ static int kvm_sbi_sta_steal_time_set_shmem(struct kvm_vcpu *vcpu)
- 	if (flags != 0)
- 		return SBI_ERR_INVALID_PARAM;
- 
--	if (shmem_phys_lo == SBI_STA_SHMEM_DISABLE &&
--	    shmem_phys_hi == SBI_STA_SHMEM_DISABLE) {
-+	if (shmem_phys_lo == SBI_SHMEM_DISABLE &&
-+	    shmem_phys_hi == SBI_SHMEM_DISABLE) {
- 		vcpu->arch.sta.shmem = INVALID_GPA;
- 		return 0;
- 	}
+ int sbi_err_map_linux_errno(int err);
 -- 
 2.34.1
 
