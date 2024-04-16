@@ -1,174 +1,71 @@
-Return-Path: <linux-kernel+bounces-147721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB5738A782C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:51:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25BF28A782E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:51:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1418AB20D38
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:51:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 569B41C22CD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0423D13C3D5;
-	Tue, 16 Apr 2024 22:48:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aFtoFe/N"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B99413A261;
+	Tue, 16 Apr 2024 22:50:44 +0000 (UTC)
+Received: from mail115-118.sinamail.sina.com.cn (mail115-118.sinamail.sina.com.cn [218.30.115.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F92313A3E8;
-	Tue, 16 Apr 2024 22:48:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F052913959C
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 22:50:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713307728; cv=none; b=by6Hj23pucjEctQoKSNm0jo36Z5p7ZVlAE1POzqMu3W0vS/OUa/Gn/MlWtn6otFrZY3d9xF5ZeQI1cd1q1fqVT8i4+PojJTPZW86CIb+8h7NBt7grwTcNlcsu7vod5v2RpLppNH0rBVAbY0CUfi3/MifNhY0OGVWmRmMPtWkdFI=
+	t=1713307843; cv=none; b=ZYkNXkzkREejoi29TT9/HPzqSNGF7paM06aSCU7WD5Jy4sjPo+PR3kctGxdLd6cnMaEjWJy5olYqL9vMtPsOCGX1Ceis4YgRrNSvBOMZu4xe5/s0XzKyk7PhbTHln0eQPkkzAE5Gm8LS8ev06CfE6YODk9ik4MX4vdKdOBH1A10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713307728; c=relaxed/simple;
-	bh=Vp1j4MGmUcagkQYsn9tWw5+GZ2D1D6UXf7Y83LOqr+A=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=F9+hvJ10XVw9d79zzF09g4XWvPGFLC1Qgu3w7+vb4Nc+PN4mZWYVm+OmnYRnvPEFw+gxgTwMCkKtHfYdpIFMo30tRjfkr6kmQr9otEblVcxPuQ9d9Sm9LUdS0q8CozLjPdlKRbulBaBp1b1Pmxhm6/O2GOesPdOMXFhmZB1y2Yg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aFtoFe/N; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713307726; x=1744843726;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=Vp1j4MGmUcagkQYsn9tWw5+GZ2D1D6UXf7Y83LOqr+A=;
-  b=aFtoFe/N0UUn/Uw841LVQUsAhOGNckpcxAlcTbTWwWoaw9Kl9KH9yOKG
-   1BiC2qjqFRZ8bncaI7IU4ZTx04ZdAYVtvvZk0Eeyln4JgSb8PtAz6SsWJ
-   ZZoggxXIMORRyveDKcjwGCRIBmM5ZOBteNlxxCLJHFyDebWu//sIpmLwg
-   MO8VW2tkT0TkCfXSOTHstXV6GsGil1Udj15OKKX/aLAJfEOhGxkTtDsOz
-   pzPJqlYJGajA/uw7gR2MFcGsn/vo90g3SQUofutXUnjvBbcOgv1V2ym7b
-   6L2TquDO/NrCT51EM8mrIyqMBJ8UEPBA2VAoDh+n+3poU1rcMmQ500RMU
-   g==;
-X-CSE-ConnectionGUID: Ni75NYzhRh+KT5Zdk+XBYw==
-X-CSE-MsgGUID: c0EIKclwQca5nrKEiJ1PTA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="19336704"
-X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="19336704"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 15:48:46 -0700
-X-CSE-ConnectionGUID: N0PoXSc6RoKbelsFxJEn3A==
-X-CSE-MsgGUID: jNW5Aq0JTYqyypRWex69ZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="22411950"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 16 Apr 2024 15:48:35 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
- <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
- <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
- <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v12 07/14] x86/sgx: Abstract tracking reclaimable pages in
- LRU
-References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
- <20240416032011.58578-8-haitao.huang@linux.intel.com>
- <e218d2aab5d793a3b4c64f90f7bad997c745ba91.camel@intel.com>
-Date: Tue, 16 Apr 2024 17:48:29 -0500
+	s=arc-20240116; t=1713307843; c=relaxed/simple;
+	bh=YeW+c02zlbQb6rsuXkQfr7/IYDgDntYzr/uY8KhNTu8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=enCXjm9Cd8WCe0mFWPFDdL+0SzbPE+xxH6HPiI87tKc+AujMknc5S3F3PLdu/5TUyDVmzJQadfOHuDykR4zTtInBpFWPqjXag/3ysJb6gFqvLsw6jQai6Lu8gkrTqP2kifB+w6pR7ZChWW+zdrups2fDX9gFp6JWzAWNbCt8yn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([116.24.8.68])
+	by sina.com (172.16.235.25) with ESMTP
+	id 661F00B40000621C; Tue, 17 Apr 2024 06:50:31 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 7612834210511
+X-SMAIL-UIID: E08D810DB814446B87925F5D9CD96290-20240417-065031-1
+From: Hillf Danton <hdanton@sina.com>
+To: Jan Kara <jack@suse.cz>
+Cc: Amir Goldstein <amir73il@gmail.com>,
+	syzbot <syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com>,
+	linux-fsdevel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	linux-kernel@vger.kernel.org,
+	Christian Brauner <brauner@kernel.org>
+Subject: Re: [syzbot] Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in fsnotify
+Date: Wed, 17 Apr 2024 06:50:27 +0800
+Message-Id: <20240416225027.2499-1-hdanton@sina.com>
+In-Reply-To: <20240416173211.4lnmgctyo4jn5fha@quack3>
+References: <00000000000095bb400615f4b0ed@google.com> <20240413084519.1774-1-hdanton@sina.com> <CAOQ4uxhh4Tm6j+Hh+F2aQFuHfpCh_kJ10FYTfXo+AxoP4m01ag@mail.gmail.com> <20240415140333.y44rk5ggbadv4oej@quack3> <CAOQ4uxiG_7HGESMNkrJ7QmsXbgOneUGpMjx8vob87kntwTzUTQ@mail.gmail.com> <20240416132207.idn7rjzq4d4rayaz@quack3> <CAOQ4uxjJK3YT1+s_OwtM+=p_C8RCvXaAm6v5V+atyqvRKuKp+g@mail.gmail.com> <20240416173211.4lnmgctyo4jn5fha@quack3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2mcey3spwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <e218d2aab5d793a3b4c64f90f7bad997c745ba91.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Transfer-Encoding: 8bit
 
-On Tue, 16 Apr 2024 09:07:33 -0500, Huang, Kai <kai.huang@intel.com> wrote:
-
-> On Mon, 2024-04-15 at 20:20 -0700, Haitao Huang wrote:
->> From: Kristen Carlson Accardi <kristen@linux.intel.com>
->>
->> The functions, sgx_{mark,unmark}_page_reclaimable(), manage the tracking
->> of reclaimable EPC pages: sgx_mark_page_reclaimable() adds a newly
->> allocated page into the global LRU list while
->> sgx_unmark_page_reclaimable() does the opposite. Abstract the hard coded
->> global LRU references in these functions to make them reusable when
->> pages are tracked in per-cgroup LRUs.
->>
->> Create a helper, sgx_lru_list(), that returns the LRU that tracks a  
->> given
->> EPC page. It simply returns the global LRU now, and will later return
->> the LRU of the cgroup within which the EPC page was allocated. Replace
->> the hard coded global LRU with a call to this helper.
->>
->> Next patches will first get the cgroup reclamation flow ready while
->> keeping pages tracked in the global LRU and reclaimed by ksgxd before we
->> make the switch in the end for sgx_lru_list() to return per-cgroup
->> LRU.
+On Tue, 16 Apr 2024 19:32:11 +0200 Jan Kara <jack@suse.cz>
 >
-> I found the first paragraph hard to read.  Provide my version below for
-> your reference:
+> Hum, thinking about this some more - what if we just freed sb_info from
+> destroy_super_work()? By then we definitely are not getting fsnotify()
+> calls for the superblock so all the problems are solved.
 >
-> "
-> The SGX driver tracks reclaimable EPC pages via
-> sgx_mark_page_reclaimable(), which adds the newly allocated page into the
-> global LRU list.  sgx_unmark_page_reclaimable() does the opposite.
->
-> To support SGX EPC cgroup, the SGX driver will need to maintain an LRU
-> list for each cgroup, and the new allocated EPC page will need to be  
-> added
-> to the LRU of associated cgroup, but not always the global LRU list.
->
-> When sgx_mark_page_reclaimable() is called, the cgroup that the new
-> allocated EPC page belongs to is already known, i.e., it has been set to
-> the 'struct sgx_epc_page'.
->
-> Add a helper, sgx_lru_list(), to return the LRU that the EPC page should
-> be/is added to for the given EPC page.  Currently it just returns the
-> global LRU.  Change sgx_{mark|unmark}_page_reclaimable() to use the  
-> helper
-> function to get the LRU from the EPC page instead of referring to the
-> global LRU directly.
->
-> This allows EPC page being able to be tracked in "per-cgroup" LRU when
-> that becomes ready.
-> "
->
-Thanks. Will use
-
-> Nit:
->
-> That being said, is sgx_epc_page_lru() better than sgx_lru_list()?
->
-
-Sure
-
->>
->> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
->> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
->> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
->> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
->> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
->> Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
->> ---
->>
->
-> Feel free to add:
->
-> Reviewed-by: Kai Huang <kai.huang@intel.com>
-
-Thanks
-Haitao
+Sounds better :)
 
