@@ -1,439 +1,560 @@
-Return-Path: <linux-kernel+bounces-146567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98FA28A6757
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DF72B8A6765
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:46:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB5011C20FA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:44:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D0661C21548
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:46:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A32C486243;
-	Tue, 16 Apr 2024 09:44:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0729086653;
+	Tue, 16 Apr 2024 09:46:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dQgAJx+O"
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="akGBHeQw"
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E699185953;
-	Tue, 16 Apr 2024 09:44:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E993FE2A;
+	Tue, 16 Apr 2024 09:46:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713260656; cv=none; b=LRa02rqkwEcorND7vNxmu8eeiJBuHAD4JgLUIeNZTWTcL9VFtl/iTjocFLoAm8uDBMsrRObhW7srUtH2V0Fv5/W6RiWUM+RAz1A66z02nqBmWkRjpti6tI5WWfT7i6C2ci6z8tA7cJI5vRnF+xqOpHTcO/yWp1DtuBjXpBVwmtk=
+	t=1713260771; cv=none; b=ToWlLNY4aM3uv35ipRbqb2ErI+FyAYnfJ4a5hPh/wNCaOnST1p2HYytErvcxmxC8/aMZLeGMkLOT94LJiVDVJQtFmd6vtqJDavkg97nk/x0FyeOwJWEOoR9IcfgQ+H/edDDrqG/3gx32VsN0m+tGQ9UB+IDtxlXWyfY1Na6t4dQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713260656; c=relaxed/simple;
-	bh=fNikXJuYg5SG5QpCHG7YDyuIaciRXUnjGkOWdoioi10=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mdKgj1pDJwFAfkV8RHTLzsrXPzUrJPdOSSXiV2OoeHX1RI/ZKviDaZZiUjWSh37fK3cYDfmfsd+NMGzNbXFeoUCjA/BFkPKwBUE9tevwfBb7gCNuXN6uNqp4zi/sDu6/UD0pAlv6gGe72k7jP5DMuD/8mLopmg8b3FpOP3WGx5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dQgAJx+O; arc=none smtp.client-ip=209.85.161.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5aa2a74c238so3159649eaf.3;
-        Tue, 16 Apr 2024 02:44:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713260654; x=1713865454; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3dEljCr7NV7JzTHbmyGC+LjJmna98i2xthF5OsFqHKw=;
-        b=dQgAJx+Oaf1U0M8SIia9yRLssi9pVSQ4E8afyOmN/5JXR71EpGKQjMf+6LSopGGeCq
-         falDiAeI0fMZobkE1jpl6YvcUUw159Wdky1tGGPDPOXjafoAWYMhRQQDrvE0U249fMT/
-         cXskZqx6SWxKBfr6HJGBvKlB1ayjSdVo3b4/GTd9SBXI7dHQ5LkgB41VHWyVOboNvD5f
-         VYUnknOBhfTi+3e6EnIDNJ6UyyEDffDbvW2fYdHVch0tfpKhGgDh0ppTE9QBXb/br7Tr
-         dYqSRfK6n6If2/FB3s5rskMAIyYgP9DfQbXg74pSps5Gsff5+Buz3mEfy/EfoBO+6s2Y
-         hseA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713260654; x=1713865454;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3dEljCr7NV7JzTHbmyGC+LjJmna98i2xthF5OsFqHKw=;
-        b=E9IL71M+1R6p2rg8A57SJC6NUJPaHK9yDF7mn84iDyuulRQhA5gj8WayGA78JRljsm
-         to1ib7y/kYT6jey23ZXBwXQkU7Vg13EtOnQV04QxI6HXYE1nZPzwmwknR2wgD6LcVMlI
-         sIcfvQcVTRJDLa4J1xJ9yuakyR5AsSIeSJFXykU2kSJNTtA2FMrsZt85DUl1kYS6pXaz
-         dTPgiga2wG0BJxUBsvgB7eZIDF8wW8Dd+qFijZfsy08/bFI3/LWto+WZBWy1kXbytl+G
-         hMKsTokGNKof6Hdv93Q7shWFMFG7aOYdzREpAC8+/Q39tLlPDZzx9xKa4GFlulc03rKn
-         piAg==
-X-Forwarded-Encrypted: i=1; AJvYcCWtesemFpvMrKdVqyl8VXUuAoEQBT8zxPhyG+ECVfeRC4vwk/bzWv7OGuwjRp7QghnPjbjvoyjPGJRzww/SimtWbuhQKCFZWzwGnlvp+FmQnmac4duGBNkIY0uIq0AzK84/iu3Yd7fz
-X-Gm-Message-State: AOJu0YyVEip5T147UK8RA9Ki7bTzAclBwIUjFybch08UeiostHvDfZKo
-	boBgeYlu+jhOBctqAcVyIWzUF5Cab5aPtTeFKB/g9jUEObUsnFsC
-X-Google-Smtp-Source: AGHT+IGFM62z1NFha0fX4zYN6GFjLfHep5ryQJDeYEhpfe8pHot69hbg5j5Fof76jV+RJ+a0vvpTdg==
-X-Received: by 2002:a4a:8c2a:0:b0:5ac:bdbe:33f5 with SMTP id u39-20020a4a8c2a000000b005acbdbe33f5mr3776546ooj.3.1713260653971;
-        Tue, 16 Apr 2024 02:44:13 -0700 (PDT)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id m5-20020a4abc85000000b005a4b2172e48sm2443103oop.41.2024.04.16.02.44.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 02:44:12 -0700 (PDT)
-From: Chen Wang <unicornxw@gmail.com>
-To: adrian.hunter@intel.com,
-	ulf.hansson@linaro.org,
-	linux-mmc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	jszhang@kernel.org,
-	dfustini@baylibre.com,
-	yifeng.zhao@rock-chips.com,
-	shawn.lin@rock-chips.com,
-	chao.wei@sophgo.com,
-	haijiao.liu@sophgo.com,
-	xiaoguang.xing@sophgo.com,
-	tingzhu.wang@sophgo.com,
-	guoren@kernel.org,
-	inochiama@outlook.com
-Cc: Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH 1/1] mmc: sdhci-of-dwcmshc: add callback framework for expansion
-Date: Tue, 16 Apr 2024 17:44:04 +0800
-Message-Id: <c35752345c542cc34c9029902b5a39280bb36857.1713257181.git.unicorn_wang@outlook.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1713257181.git.unicorn_wang@outlook.com>
-References: <cover.1713257181.git.unicorn_wang@outlook.com>
+	s=arc-20240116; t=1713260771; c=relaxed/simple;
+	bh=uXQMpkZp5QlQNFUNub6ZSj3OPwnbQNxhmGJCwt/zU8s=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:References; b=ENkmeGGCDLK6p0B3X2JpCaTMGU236ND0jeBkkWDl8CV2xJ2eTwi/GwVIHtlU5ArZST6fsTt8qRICBgC6+6EZ4XveIqXSqmPaE4QF1sdfnmMmcSLYzjIWLZIrFBglQsoU0b8+GGj56DyZqVxrX4lwXUpq8HPzG8zd4qSy1Bl6PV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=akGBHeQw; arc=none smtp.client-ip=210.118.77.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240416094603euoutp01a63210abc6544e168a540e59677af9d6~GuZZOPdH92260422604euoutp01D;
+	Tue, 16 Apr 2024 09:46:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240416094603euoutp01a63210abc6544e168a540e59677af9d6~GuZZOPdH92260422604euoutp01D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1713260763;
+	bh=GHjgo16yMr2ICjYjoTR5zqnRFYJVBWHEV2Cr4i030JI=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=akGBHeQwVoWQ0SlsvhKcvMjX3S58ezAaAJ4w6rWLoe7iRISvthzZGBiuQOAui9aic
+	 SkfUBlHVljNVZ0/Jx+5ffsJ3flw5Dpd2MMfKrOZBujcK9cHJoTlNialbChxNxSQQiI
+	 Mtfi/aAKmcn9jL4dAVbgGuywAhoGlgtA3zljEoyc=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240416094603eucas1p19f7a948d2bb067938601f7d21af77da3~GuZY9Yv-L2964929649eucas1p1B;
+	Tue, 16 Apr 2024 09:46:03 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges2new.samsung.com (EUCPMTA) with SMTP id 6F.AC.09875.AD84E166; Tue, 16
+	Apr 2024 10:46:02 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240416094602eucas1p13dc1f72cc2fc8f0025860a4826b33bac~GuZYU4A2m2696126961eucas1p1q;
+	Tue, 16 Apr 2024 09:46:02 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240416094602eusmtrp27349951c78142cb3cfd1638b0a98d520~GuZYSrJS02835728357eusmtrp2O;
+	Tue, 16 Apr 2024 09:46:02 +0000 (GMT)
+X-AuditID: cbfec7f4-11bff70000002693-76-661e48daf588
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms1.samsung.com (EUCPMTA) with SMTP id 4D.C9.08810.AD84E166; Tue, 16
+	Apr 2024 10:46:02 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240416094602eusmtip1907d198c6ca6f10cddd6f00a0f55dea8~GuZX8vk1l2186321863eusmtip1g;
+	Tue, 16 Apr 2024 09:46:02 +0000 (GMT)
+Received: from localhost (106.210.248.128) by CAMSVWEXC02.scsc.local
+	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+	Tue, 16 Apr 2024 10:46:00 +0100
+Date: Tue, 16 Apr 2024 11:45:56 +0200
+From: Joel Granados <j.granados@samsung.com>
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+CC: <devnull+j.granados.samsung.com@kernel.org>, <Dai.Ngo@oracle.com>,
+	<alex.aring@gmail.com>, <alibuda@linux.alibaba.com>,
+	<allison.henderson@oracle.com>, <anna@kernel.org>, <bridge@lists.linux.dev>,
+	<chuck.lever@oracle.com>, <coreteam@netfilter.org>, <courmisch@gmail.com>,
+	<davem@davemloft.net>, <dccp@vger.kernel.org>, <dhowells@redhat.com>,
+	<dsahern@kernel.org>, <edumazet@google.com>, <fw@strlen.de>,
+	<geliang@kernel.org>, <guwen@linux.alibaba.com>,
+	<herbert@gondor.apana.org.au>, <horms@verge.net.au>, <ja@ssi.bg>,
+	<jaka@linux.ibm.com>, <jlayton@kernel.org>, <jmaloy@redhat.com>,
+	<jreuter@yaina.de>, <kadlec@netfilter.org>, <keescook@chromium.org>,
+	<kolga@netapp.com>, <kuba@kernel.org>, <linux-afs@lists.infradead.org>,
+	<linux-hams@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-nfs@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-s390@vger.kernel.org>, <linux-sctp@vger.kernel.org>,
+	<linux-wpan@vger.kernel.org>, <linux-x25@vger.kernel.org>,
+	<lucien.xin@gmail.com>, <lvs-devel@vger.kernel.org>,
+	<marc.dionne@auristor.com>, <marcelo.leitner@gmail.com>,
+	<martineau@kernel.org>, <matttbe@kernel.org>, <mcgrof@kernel.org>,
+	<miquel.raynal@bootlin.com>, <mptcp@lists.linux.dev>, <ms@dev.tdt.de>,
+	<neilb@suse.de>, <netdev@vger.kernel.org>,
+	<netfilter-devel@vger.kernel.org>, <pabeni@redhat.com>,
+	<pablo@netfilter.org>, <ralf@linux-mips.org>, <razor@blackwall.org>,
+	<rds-devel@oss.oracle.com>, <roopa@nvidia.com>, <stefan@datenfreihafen.org>,
+	<steffen.klassert@secunet.com>, <tipc-discussion@lists.sourceforge.net>,
+	<tom@talpey.com>, <tonylu@linux.alibaba.com>,
+	<trond.myklebust@hammerspace.com>, <wenjia@linux.ibm.com>,
+	<ying.xue@windriver.com>
+Subject: Re: [PATCH v3 1/4] networking: Remove the now superfluous sentinel
+ elements from ctl_table array
+Message-ID: <20240416094556.cv4k3uqthqqpln3h@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="ebocjdihejx32jpt"
+Content-Disposition: inline
+In-Reply-To: <20240415231210.22785-1-kuniyu@amazon.com>
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTaVBTZxSG/e6WQEWvgco3Su0Ul2kptdUuHruhjlPvjMXW+sOOU7VMuYAI
+	wSbi1lJjAhrZxNJKQSRsDZFIbCFEFsUMRZCoEIoKUqISQWYwgiUiBYSUcHHqTP895z3ve75z
+	fnxiUvKTeJ54h3Q3L5OGRPkznpSpfqT5jQ5uQdhbBa3vQ61iBXSdT6RBEX+YgIRKFwWmgiQC
+	XLZeAsYrj5Dg7OqlQZNfxkB2czwF421JDLSe6iagXzlGgaEqgYCeersITCl6BHplJwXneocZ
+	SOrzA1X5EILuY3YarmsfMTCiLRbBnSE7BSOpL0BmooqAq0nRUGHrpsBqSqVBm1zCQJplGdw8
+	ZyOgtSqbAav5Cg33a1MoSMtTkdCT+4CGznQtBeYLGgT2swMEqDSDJKic90gY1TXQ0JTiIiHL
+	UExCe1oPgj+O1NBw9axSBE9yLpNwQaOgoD53LqQZLBQ8ueJAkOG4QcKf5xeB5bGLgKYyJw3O
+	7FchXWckoProPyIwNkeCZdRCwL3hXgZc7UGr1nA6ayLNddiHSK6/qRFxOWe+404qWihudCSA
+	M56+RXBJdX0kV5llE3Em82IutzSWe1r7u4grLT7KcJdOlxBcZddKLi3fjD733+L5YSgftWMP
+	L3vz4689I2xFt0W7TvD7nhoKGAU6viEReYgx+w5OKbyG3CxhdQjfuxOXiDwn+THCE5cviYSG
+	E+HMwahngTatjhFMRQifOj5CC8Wk6ZazjhSKcoSHzz1g3BGKXYybSs5QbmbYQNzs6CTd7MO+
+	htWG5Kk0yZZ54cajbbS74c3uxJYsx1TYi12F64bVIoHn4MbM7qlBJLsP30nXTg4ST/J8XDQh
+	dsse7Apcfv8kKay6ECvthbTAcdhi7CDcb2G2ZSYu0x+aNq3FLQkJjMDeuK/BKBLYD7sqNdOB
+	dIQvTjwSCYUeYe2hIUJwfYDjr3dPJ1bjzsyiqY0wOwu3P5wjLDoL/2jKmJa9sPqwRHAvwfrb
+	DioNLcx67rSs507L+u80QQ7EudWDzP/k17E27wEp8EfYYBigcpGoGPnysfLocF6+XMrvXSoP
+	iZbHSsOXfhMTXYomP+uViYbHFaio7++ltYgQo1q0aDJs/01vRfMoaYyU9/fxivd+KUziFRqy
+	/wAvi9kui43i5bVovpjy9/VaHPoyL2HDQ3bzO3l+Fy971iXEHvMUxItaK54TeJAIPLDBsvnu
+	nqGtpgFp5omqma6HCqOu+tpZqeTa3ct+XRGxrSt+terXt+yK27D1ujfj2R3WVbGpQeb4QdUS
+	75ux7UtzfuONn80leyJzPl23xFpzPor1+eQLZVhGe++oRnJ3iWN8cP/NfogJ/iunKaDG3PPL
+	ewtjdEcinInMKx2pHraCdbM1eV3JlrZ9A6PK/s2bDs2InF1Bz01XRASrq+CYLml10NgALi9T
+	RY4Vfn8pOnTBSHbhynq5eONXtvp3/fLHbaXDu+9vUQYf7A3aob4YDHHbFPi0MX7GmrdPfqb2
+	O7F8Zsp+dZT4YVCA9tuajQMV2/PGXNb1W/bGRvr6U/KIkGUBpEwe8i+cf3vQJwUAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTeVBTZxTF/d6WAAUj0frErZPq1FKMRlluqGvHP15d2k6t1bYuTfWhqCSa
+	BAboOEaWCoFIHJ1BI0KUNkXAaASCuEJEwGDD5oKOaBNZFKKUsklkKRE7dab//eac75zvzp25
+	XNzXxPHjhkuVrFwq2S2gPInq4cqmuQ+ZGWHzq1wTwKIKAfsVNQmqhF8wSCwZIcCcnYLBSFMb
+	BkMlB3HotreRkHW6gIKMmgQChu6nUNBwshmDl3GvCTBeSsSgpcLBAbMmD0Fe3CMCitv6KUhp
+	nwbxRb0ImtMcJNwx/EXBgCGXA096HQQMHPKC4+p4DG6nRMDFpmYCas2HSDCknqVAaxXBveIm
+	DBouZVBQW1pNQqtFQ4D2VDwOLfoOEh4dMRBQejULgeNcJwbxWX/jEN/9FAdXTiUJNs0IDjpj
+	Lg6N2hYENw5eI+H2uTgO9GVW4XA1S0VAhf590BqtBPRVOxGkO+/iUH9lFlh7RjCwFXST0J0x
+	B47kFGJwOfkVBwprdoLVZcXgaX8bBSONS5d9xuTUqknmoaMXZ17abiEmM/9n5oSqjmBcA/5M
+	4ZkHGJNS3o4zJbomDmMunc3oL0QygxYTh7mQm0wxN8+cxZgSu5jRni5FXwm+Fy6SyyKV7Ac7
+	ZArlYsEPIlggFIlBuCBQLBQtDNkUuiBIMG/Jom3s7vAoVj5vyY/CHab+k9ieo2x0R1UZUqG0
+	L9TIg0vzAun7hhxKjTy5vrzfEH00L48zZkyjTT13yTHm04P31G8fdSH6Qd1z5DZ8eUWIrk/3
+	cjPBm03bzuYTbqZ4AXSN8xHu5om8j+kkYyrpDuM8kzftzKt5Y/B5u2irzkm52Zu3jC7vT+KM
+	/VCN6OYzf7w1JtC3jje/acV5UXR60YtRnTvKU+nfh7lu2YMXQhe1nsDHJv2QjnP8+nbqfXT3
+	UCvSIr7unSbdO026/5rGZH+6cfg59j/5E9pwqgMf48W00dhJ6BEnF01kIxUR2yMUIqFCEqGI
+	lG4XbpVFXECj92KuGCi4iDLbu4QWhHGRBc0aTTrO59UiP0Iqk7KCid4J/Olhvt7bJDGxrFy2
+	RR65m1VYUNDoGg/jfpO2ykaPT6rcIgqeHyQKDBbPDxIHLxRM9v58T5LEl7ddomR3seweVv5v
+	DuN6+KmwgICrzpvjaO2X0ameM6P9Y7i5zyxr1mRMXaeMr7n/9BhsK+/71kZ4VG44rNGvrs9a
+	f0yRXiYd3/WTQVURu7R4bfnKB0lhe48PvV7ZMykq2XEjQLLfywTZ4tay9x7XtVkbXs1I04Rn
+	Hx03XP71kxdVVY/nSIY0g117v1m/iapXLpnbYhajyTPyp6QfCG14daB+fOdGYkNP4WRCfl12
+	edV3rSsqp5HnNX8iByd0XZjPM00cFfipV6And/ZHrglrl3vo6+w7s6+bSJ/UmdT0mNWFaSHM
+	RvvWBHtiSOPqWH74oE8+v6B41WZb2XmBa8WAefOqZI/May6nc8q+/VF+5didrkvGawJCsUMi
+	8sflCsk/bruVFcQEAAA=
+X-CMS-MailID: 20240416094602eucas1p13dc1f72cc2fc8f0025860a4826b33bac
+X-Msg-Generator: CA
+X-RootMTR: 20240415231242eucas1p2c2b98fffb9b4752a3771f343d7a53dfe
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240415231242eucas1p2c2b98fffb9b4752a3771f343d7a53dfe
+References: <20240412-jag-sysctl_remset_net-v3-1-11187d13c211@samsung.com>
+	<CGME20240415231242eucas1p2c2b98fffb9b4752a3771f343d7a53dfe@eucas1p2.samsung.com>
+	<20240415231210.22785-1-kuniyu@amazon.com>
 
-From: Chen Wang <unicorn_wang@outlook.com>
+--ebocjdihejx32jpt
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The current framework is not easily extended to support new SOCs.
-For example, in the current code we see that the SOC-level
-structure `rk35xx_priv` and related logic are distributed in
-functions such as dwcmshc_probe/dwcmshc_remove/dwcmshc_suspend/......,
-which is inappropriate.
+On Mon, Apr 15, 2024 at 04:12:10PM -0700, Kuniyuki Iwashima wrote:
+> From: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.o=
+rg>
+> Date: Fri, 12 Apr 2024 16:48:29 +0200
+> > From: Joel Granados <j.granados@samsung.com>
+=2E..
+> > Signed-off-by: Joel Granados <j.granados@samsung.com>
+> > ---
+> >  net/core/neighbour.c                | 5 +----
+> >  net/core/sysctl_net_core.c          | 9 ++++-----
+> >  net/dccp/sysctl.c                   | 2 --
+> >  net/ieee802154/6lowpan/reassembly.c | 6 +-----
+> >  net/ipv4/devinet.c                  | 5 ++---
+> >  net/ipv4/ip_fragment.c              | 2 --
+> >  net/ipv4/route.c                    | 8 ++------
+> >  net/ipv4/sysctl_net_ipv4.c          | 7 +++----
+> >  net/ipv4/xfrm4_policy.c             | 1 -
+> >  net/ipv6/addrconf.c                 | 5 +----
+> >  net/ipv6/icmp.c                     | 1 -
+> >  net/ipv6/reassembly.c               | 2 --
+> >  net/ipv6/route.c                    | 5 -----
+> >  net/ipv6/sysctl_net_ipv6.c          | 4 +---
+> >  net/ipv6/xfrm6_policy.c             | 1 -
+> >  net/llc/sysctl_net_llc.c            | 8 ++------
+> >  net/mpls/af_mpls.c                  | 3 +--
+> >  net/mptcp/ctrl.c                    | 1 -
+> >  net/netrom/sysctl_net_netrom.c      | 1 -
+> >  net/phonet/sysctl.c                 | 1 -
+> >  net/rds/ib_sysctl.c                 | 1 -
+> >  net/rds/sysctl.c                    | 1 -
+> >  net/rds/tcp.c                       | 1 -
+> >  net/rose/sysctl_net_rose.c          | 1 -
+> >  net/rxrpc/sysctl.c                  | 1 -
+> >  net/sctp/sysctl.c                   | 6 +-----
+> >  net/smc/smc_sysctl.c                | 1 -
+> >  net/sunrpc/sysctl.c                 | 1 -
+> >  net/sunrpc/xprtrdma/svc_rdma.c      | 1 -
+> >  net/sunrpc/xprtrdma/transport.c     | 1 -
+> >  net/sunrpc/xprtsock.c               | 1 -
+> >  net/tipc/sysctl.c                   | 1 -
+> >  net/unix/sysctl_net_unix.c          | 1 -
+> >  net/x25/sysctl_net_x25.c            | 1 -
+> >  net/xfrm/xfrm_sysctl.c              | 5 +----
+> >  35 files changed, 20 insertions(+), 81 deletions(-)
+>=20
+> You may want to split patch based on subsystem or the type of changes
+> to make review easier.
 
-The solution is to abstract some possible common operations of soc
-into virtual members of `dwcmshc_priv`. Each soc implements its own
-corresponding callback function and registers it in init function.
-dwcmshc framework is responsible for calling these callback functions
-in those dwcmshc_xxx functions.
+That is fair. It is a big chunk:). I'll put the trivial patches together
+to avoid having an 18 commits to instead have 8. This is my proposal
+based on MAINTAINERS file:
 
-Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
----
- drivers/mmc/host/sdhci-of-dwcmshc.c | 185 ++++++++++++++++------------
- 1 file changed, 107 insertions(+), 78 deletions(-)
+### Not in MAINTAINERS / Orphaned
+net/core/neighbour.c
+net/core/sysctl_net_core.c
+net/ieee802154/6lowpan/reassembly.c
+net/mpls/af_mpls.c
+net/unix/sysctl_net_unix.c
+net/dccp/sysctl.c
 
-diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-index ab4b964d4058..1ac8537361de 100644
---- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-+++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-@@ -200,6 +200,10 @@ struct dwcmshc_priv {
- 	void *priv; /* pointer to SoC private stuff */
- 	u16 delay_line;
- 	u16 flags;
-+
-+	void (*soc_postinit)(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv);
-+	int (*soc_clks_enable)(struct dwcmshc_priv *dwc_priv);
-+	void (*soc_clks_disable)(struct dwcmshc_priv *dwc_priv);
- };
- 
- /*
-@@ -758,37 +762,81 @@ static const struct sdhci_pltfm_data sdhci_dwcmshc_cv18xx_pdata = {
- 	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
- };
- 
--static int dwcmshc_rk35xx_init(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
-+static void dwcmshc_rk35xx_postinit(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
-+{
-+	/*
-+	 * Don't support highspeed bus mode with low clk speed as we
-+	 * cannot use DLL for this condition.
-+	 */
-+	if (host->mmc->f_max <= 52000000) {
-+		dev_info(mmc_dev(host->mmc), "Disabling HS200/HS400, frequency too low (%d)\n",
-+			 host->mmc->f_max);
-+		host->mmc->caps2 &= ~(MMC_CAP2_HS200 | MMC_CAP2_HS400);
-+		host->mmc->caps &= ~(MMC_CAP_3_3V_DDR | MMC_CAP_1_8V_DDR);
-+	}
-+}
-+
-+static int dwcmshc_rk35xx_clks_enable(struct dwcmshc_priv *dwc_priv)
-+{
-+	struct rk35xx_priv *soc = dwc_priv->priv;
-+	int ret = 0;
-+
-+	if (soc)
-+		ret = clk_bulk_prepare_enable(RK35xx_MAX_CLKS, soc->rockchip_clks);
-+	return ret;
-+}
-+
-+static void dwcmshc_rk35xx_clks_disable(struct dwcmshc_priv *dwc_priv)
-+{
-+	struct rk35xx_priv *rk_priv = dwc_priv->priv;
-+
-+	if (rk_priv)
-+		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
-+					   rk_priv->rockchip_clks);
-+}
-+
-+static int dwcmshc_rk35xx_init(struct device *dev,
-+			       struct sdhci_host *host,
-+			       struct dwcmshc_priv *dwc_priv)
- {
- 	int err;
--	struct rk35xx_priv *priv = dwc_priv->priv;
-+	struct rk35xx_priv *rk_priv;
- 
--	priv->reset = devm_reset_control_array_get_optional_exclusive(mmc_dev(host->mmc));
--	if (IS_ERR(priv->reset)) {
--		err = PTR_ERR(priv->reset);
-+	rk_priv = devm_kzalloc(dev, sizeof(struct rk35xx_priv), GFP_KERNEL);
-+	if (!rk_priv)
-+		return -ENOMEM;
-+
-+	if (of_device_is_compatible(dev->of_node, "rockchip,rk3588-dwcmshc"))
-+		rk_priv->devtype = DWCMSHC_RK3588;
-+	else
-+		rk_priv->devtype = DWCMSHC_RK3568;
-+
-+	rk_priv->reset = devm_reset_control_array_get_optional_exclusive(mmc_dev(host->mmc));
-+	if (IS_ERR(rk_priv->reset)) {
-+		err = PTR_ERR(rk_priv->reset);
- 		dev_err(mmc_dev(host->mmc), "failed to get reset control %d\n", err);
- 		return err;
- 	}
- 
--	priv->rockchip_clks[0].id = "axi";
--	priv->rockchip_clks[1].id = "block";
--	priv->rockchip_clks[2].id = "timer";
-+	rk_priv->rockchip_clks[0].id = "axi";
-+	rk_priv->rockchip_clks[1].id = "block";
-+	rk_priv->rockchip_clks[2].id = "timer";
- 	err = devm_clk_bulk_get_optional(mmc_dev(host->mmc), RK35xx_MAX_CLKS,
--					 priv->rockchip_clks);
-+					 rk_priv->rockchip_clks);
- 	if (err) {
- 		dev_err(mmc_dev(host->mmc), "failed to get clocks %d\n", err);
- 		return err;
- 	}
- 
--	err = clk_bulk_prepare_enable(RK35xx_MAX_CLKS, priv->rockchip_clks);
-+	err = clk_bulk_prepare_enable(RK35xx_MAX_CLKS, rk_priv->rockchip_clks);
- 	if (err) {
- 		dev_err(mmc_dev(host->mmc), "failed to enable clocks %d\n", err);
- 		return err;
- 	}
- 
- 	if (of_property_read_u8(mmc_dev(host->mmc)->of_node, "rockchip,txclk-tapnum",
--				&priv->txclk_tapnum))
--		priv->txclk_tapnum = DLL_TXCLK_TAPNUM_DEFAULT;
-+				&rk_priv->txclk_tapnum))
-+		rk_priv->txclk_tapnum = DLL_TXCLK_TAPNUM_DEFAULT;
- 
- 	/* Disable cmd conflict check */
- 	sdhci_writel(host, 0x0, dwc_priv->vendor_specific_area1 + DWCMSHC_HOST_CTRL3);
-@@ -796,21 +844,41 @@ static int dwcmshc_rk35xx_init(struct sdhci_host *host, struct dwcmshc_priv *dwc
- 	sdhci_writel(host, 0, DWCMSHC_EMMC_DLL_TXCLK);
- 	sdhci_writel(host, 0, DWCMSHC_EMMC_DLL_STRBIN);
- 
-+	dwc_priv->priv = rk_priv;
-+	dwc_priv->soc_postinit = dwcmshc_rk35xx_postinit;
-+	dwc_priv->soc_clks_enable = dwcmshc_rk35xx_clks_enable;
-+	dwc_priv->soc_clks_disable = dwcmshc_rk35xx_clks_disable;
-+
- 	return 0;
- }
- 
--static void dwcmshc_rk35xx_postinit(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
-+static int dwcmshc_th1520_init(struct device *dev,
-+			       struct sdhci_host *host,
-+			       struct dwcmshc_priv *dwc_priv)
- {
-+	dwc_priv->delay_line = PHY_SDCLKDL_DC_DEFAULT;
-+
-+	if (device_property_read_bool(dev, "mmc-ddr-1_8v") ||
-+	    device_property_read_bool(dev, "mmc-hs200-1_8v") ||
-+	    device_property_read_bool(dev, "mmc-hs400-1_8v"))
-+		dwc_priv->flags |= FLAG_IO_FIXED_1V8;
-+	else
-+		dwc_priv->flags &= ~FLAG_IO_FIXED_1V8;
-+
- 	/*
--	 * Don't support highspeed bus mode with low clk speed as we
--	 * cannot use DLL for this condition.
-+	 * start_signal_voltage_switch() will try 3.3V first
-+	 * then 1.8V. Use SDHCI_SIGNALING_180 rather than
-+	 * SDHCI_SIGNALING_330 to avoid setting voltage to 3.3V
-+	 * in sdhci_start_signal_voltage_switch().
- 	 */
--	if (host->mmc->f_max <= 52000000) {
--		dev_info(mmc_dev(host->mmc), "Disabling HS200/HS400, frequency too low (%d)\n",
--			 host->mmc->f_max);
--		host->mmc->caps2 &= ~(MMC_CAP2_HS200 | MMC_CAP2_HS400);
--		host->mmc->caps &= ~(MMC_CAP_3_3V_DDR | MMC_CAP_1_8V_DDR);
-+	if (dwc_priv->flags & FLAG_IO_FIXED_1V8) {
-+		host->flags &= ~SDHCI_SIGNALING_330;
-+		host->flags |=  SDHCI_SIGNALING_180;
- 	}
-+
-+	sdhci_enable_v4_mode(host);
-+
-+	return 0;
- }
- 
- static const struct of_device_id sdhci_dwcmshc_dt_ids[] = {
-@@ -859,7 +927,6 @@ static int dwcmshc_probe(struct platform_device *pdev)
- 	struct sdhci_pltfm_host *pltfm_host;
- 	struct sdhci_host *host;
- 	struct dwcmshc_priv *priv;
--	struct rk35xx_priv *rk_priv = NULL;
- 	const struct sdhci_pltfm_data *pltfm_data;
- 	int err;
- 	u32 extra;
-@@ -915,46 +982,15 @@ static int dwcmshc_probe(struct platform_device *pdev)
- 	host->mmc_host_ops.hs400_enhanced_strobe = dwcmshc_hs400_enhanced_strobe;
- 
- 	if (pltfm_data == &sdhci_dwcmshc_rk35xx_pdata) {
--		rk_priv = devm_kzalloc(&pdev->dev, sizeof(struct rk35xx_priv), GFP_KERNEL);
--		if (!rk_priv) {
--			err = -ENOMEM;
--			goto err_clk;
--		}
--
--		if (of_device_is_compatible(pdev->dev.of_node, "rockchip,rk3588-dwcmshc"))
--			rk_priv->devtype = DWCMSHC_RK3588;
--		else
--			rk_priv->devtype = DWCMSHC_RK3568;
--
--		priv->priv = rk_priv;
--
--		err = dwcmshc_rk35xx_init(host, priv);
-+		err = dwcmshc_rk35xx_init(dev, host, priv);
- 		if (err)
- 			goto err_clk;
- 	}
- 
- 	if (pltfm_data == &sdhci_dwcmshc_th1520_pdata) {
--		priv->delay_line = PHY_SDCLKDL_DC_DEFAULT;
--
--		if (device_property_read_bool(dev, "mmc-ddr-1_8v") ||
--		    device_property_read_bool(dev, "mmc-hs200-1_8v") ||
--		    device_property_read_bool(dev, "mmc-hs400-1_8v"))
--			priv->flags |= FLAG_IO_FIXED_1V8;
--		else
--			priv->flags &= ~FLAG_IO_FIXED_1V8;
--
--		/*
--		 * start_signal_voltage_switch() will try 3.3V first
--		 * then 1.8V. Use SDHCI_SIGNALING_180 rather than
--		 * SDHCI_SIGNALING_330 to avoid setting voltage to 3.3V
--		 * in sdhci_start_signal_voltage_switch().
--		 */
--		if (priv->flags & FLAG_IO_FIXED_1V8) {
--			host->flags &= ~SDHCI_SIGNALING_330;
--			host->flags |=  SDHCI_SIGNALING_180;
--		}
--
--		sdhci_enable_v4_mode(host);
-+		err = dwcmshc_th1520_init(dev, host, priv);
-+		if (err)
-+			goto err_clk;
- 	}
- 
- #ifdef CONFIG_ACPI
-@@ -972,8 +1008,8 @@ static int dwcmshc_probe(struct platform_device *pdev)
- 	if (err)
- 		goto err_rpm;
- 
--	if (rk_priv)
--		dwcmshc_rk35xx_postinit(host, priv);
-+	if (priv->soc_postinit)
-+		priv->soc_postinit(host, priv);
- 
- 	err = __sdhci_add_host(host);
- 	if (err)
-@@ -991,9 +1027,8 @@ static int dwcmshc_probe(struct platform_device *pdev)
- err_clk:
- 	clk_disable_unprepare(pltfm_host->clk);
- 	clk_disable_unprepare(priv->bus_clk);
--	if (rk_priv)
--		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
--					   rk_priv->rockchip_clks);
-+	if (priv->soc_clks_disable)
-+		priv->soc_clks_disable(priv);
- free_pltfm:
- 	sdhci_pltfm_free(pdev);
- 	return err;
-@@ -1004,15 +1039,13 @@ static void dwcmshc_remove(struct platform_device *pdev)
- 	struct sdhci_host *host = platform_get_drvdata(pdev);
- 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
- 	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
--	struct rk35xx_priv *rk_priv = priv->priv;
- 
- 	sdhci_remove_host(host, 0);
- 
- 	clk_disable_unprepare(pltfm_host->clk);
- 	clk_disable_unprepare(priv->bus_clk);
--	if (rk_priv)
--		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
--					   rk_priv->rockchip_clks);
-+	if (priv->soc_clks_disable)
-+		priv->soc_clks_disable(priv);
- 	sdhci_pltfm_free(pdev);
- }
- 
-@@ -1022,7 +1055,6 @@ static int dwcmshc_suspend(struct device *dev)
- 	struct sdhci_host *host = dev_get_drvdata(dev);
- 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
- 	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
--	struct rk35xx_priv *rk_priv = priv->priv;
- 	int ret;
- 
- 	pm_runtime_resume(dev);
-@@ -1035,9 +1067,8 @@ static int dwcmshc_suspend(struct device *dev)
- 	if (!IS_ERR(priv->bus_clk))
- 		clk_disable_unprepare(priv->bus_clk);
- 
--	if (rk_priv)
--		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
--					   rk_priv->rockchip_clks);
-+	if (priv->soc_clks_disable)
-+		priv->soc_clks_disable(priv);
- 
- 	return ret;
- }
-@@ -1047,7 +1078,6 @@ static int dwcmshc_resume(struct device *dev)
- 	struct sdhci_host *host = dev_get_drvdata(dev);
- 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
- 	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
--	struct rk35xx_priv *rk_priv = priv->priv;
- 	int ret;
- 
- 	ret = clk_prepare_enable(pltfm_host->clk);
-@@ -1060,23 +1090,22 @@ static int dwcmshc_resume(struct device *dev)
- 			goto disable_clk;
- 	}
- 
--	if (rk_priv) {
--		ret = clk_bulk_prepare_enable(RK35xx_MAX_CLKS,
--					      rk_priv->rockchip_clks);
-+	if (priv->soc_clks_enable) {
-+		ret = priv->soc_clks_enable(priv);
- 		if (ret)
- 			goto disable_bus_clk;
- 	}
- 
- 	ret = sdhci_resume_host(host);
- 	if (ret)
--		goto disable_rockchip_clks;
-+		goto disable_soc_clks;
- 
- 	return 0;
- 
--disable_rockchip_clks:
--	if (rk_priv)
--		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
--					   rk_priv->rockchip_clks);
-+disable_soc_clks:
-+	if (priv->soc_clks_disable)
-+		priv->soc_clks_disable(priv);
-+
- disable_bus_clk:
- 	if (!IS_ERR(priv->bus_clk))
- 		clk_disable_unprepare(priv->bus_clk);
--- 
-2.25.1
+### NETWORKING
+net/ipv4/devinet.c
+net/ipv4/ip_fragment.c
+net/ipv4/route.c
+net/ipv4/sysctl_net_ipv4.c
+net/ipv4/xfrm4_policy.c
+net/ipv6/addrconf.c
+net/ipv6/icmp.c
+net/ipv6/reassembly.c
+net/ipv6/route.c
+net/ipv6/sysctl_net_ipv6.c
+net/ipv6/xfrm6_policy.c
 
+### RDS
+net/rds/ib_sysctl.c
+net/rds/sysctl.c
+net/rds/tcp.c
+
+### SUNRPC
+net/sunrpc/sysctl.c
+net/sunrpc/xprtrdma/svc_rdma.c
+net/sunrpc/xprtrdma/transport.c
+net/sunrpc/xprtsock.c
+
+### LLC/MTCP/NETROM/PHONET/ROSE/RXRPC/SCTP/SMC/TIPC/x.25/IPSEC
+net/llc/sysctl_net_llc.c
+net/mptcp/ctrl.c
+net/netrom/sysctl_net_netrom.c
+net/phonet/sysctl.c
+net/rose/sysctl_net_rose.c
+net/rxrpc/sysctl.c
+net/sctp/sysctl.c
+net/smc/smc_sysctl.c
+net/tipc/sysctl.c
+net/x25/sysctl_net_x25.c
+net/xfrm/xfrm_sysctl.c
+
+>=20
+>=20
+> >=20
+> > diff --git a/net/core/neighbour.c b/net/core/neighbour.c
+> > index 552719c3bbc3..b0327402b3e6 100644
+> > --- a/net/core/neighbour.c
+> > +++ b/net/core/neighbour.c
+> > @@ -3728,7 +3728,7 @@ static int neigh_proc_base_reachable_time(struct =
+ctl_table *ctl, int write,
+> > =20
+> >  static struct neigh_sysctl_table {
+> >  	struct ctl_table_header *sysctl_header;
+> > -	struct ctl_table neigh_vars[NEIGH_VAR_MAX + 1];
+> > +	struct ctl_table neigh_vars[NEIGH_VAR_MAX];
+> >  } neigh_sysctl_template __read_mostly =3D {
+> >  	.neigh_vars =3D {
+> >  		NEIGH_SYSCTL_ZERO_INTMAX_ENTRY(MCAST_PROBES, "mcast_solicit"),
+> > @@ -3779,7 +3779,6 @@ static struct neigh_sysctl_table {
+> >  			.extra2		=3D SYSCTL_INT_MAX,
+> >  			.proc_handler	=3D proc_dointvec_minmax,
+> >  		},
+> > -		{},
+> >  	},
+> >  };
+> > =20
+> > @@ -3807,8 +3806,6 @@ int neigh_sysctl_register(struct net_device *dev,=
+ struct neigh_parms *p,
+> >  	if (dev) {
+> >  		dev_name_source =3D dev->name;
+> >  		/* Terminate the table early */
+>=20
+> You can remove this comment.
+Why? I do not think we should remove it because it is what the change to
+neigh_vars_size is doing.
+
+>=20
+>=20
+> > -		memset(&t->neigh_vars[NEIGH_VAR_GC_INTERVAL], 0,
+> > -		       sizeof(t->neigh_vars[NEIGH_VAR_GC_INTERVAL]));
+> >  		neigh_vars_size =3D NEIGH_VAR_BASE_REACHABLE_TIME_MS + 1;
+> >  	} else {
+> >  		struct neigh_table *tbl =3D p->tbl;
+> > diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+> > index 6973dda3abda..46f5143e86be 100644
+> > --- a/net/core/sysctl_net_core.c
+> > +++ b/net/core/sysctl_net_core.c
+> > @@ -660,7 +660,6 @@ static struct ctl_table net_core_table[] =3D {
+> >  		.proc_handler	=3D proc_dointvec_minmax,
+> >  		.extra1		=3D SYSCTL_ZERO,
+> >  	},
+> > -	{ }
+> >  };
+> > =20
+> >  static struct ctl_table netns_core_table[] =3D {
+> > @@ -697,7 +696,6 @@ static struct ctl_table netns_core_table[] =3D {
+> >  		.extra2		=3D SYSCTL_ONE,
+> >  		.proc_handler	=3D proc_dou8vec_minmax,
+> >  	},
+> > -	{ }
+> >  };
+> > =20
+> >  static int __init fb_tunnels_only_for_init_net_sysctl_setup(char *str)
+> > @@ -715,7 +713,8 @@ __setup("fb_tunnels=3D", fb_tunnels_only_for_init_n=
+et_sysctl_setup);
+> > =20
+> >  static __net_init int sysctl_core_net_init(struct net *net)
+> >  {
+> > -	struct ctl_table *tbl, *tmp;
+> > +	struct ctl_table *tbl;
+> > +	size_t table_size =3D ARRAY_SIZE(netns_core_table);
+>=20
+> When you add a new variable, please keep reverse xmas tree.
+Thx for pointing this out. Was not aware of this quirk in net code. Will
+include it for my next version.
+
+>=20
+> Also, you can reuse this variable for the following
+> register_net_sysctl_sz(), but it's inconsistent in the
+> this patch..
+>=20
+>   table_size
+>   * sysctl_route_net_init
+>   * ipv4_sysctl_init_net
+>=20
+>   ARRAY_SIZE
+>   * __addrconf_sysctl_register
+>   * ipv6_sysctl_net_init
+>   * mpls_dev_sysctl_register
+>   * sctp_sysctl_net_register
+>=20
+>=20
+> > =20
+> >  	tbl =3D netns_core_table;
+> >  	if (!net_eq(net, &init_net)) {
+> > @@ -723,8 +722,8 @@ static __net_init int sysctl_core_net_init(struct n=
+et *net)
+> >  		if (tbl =3D=3D NULL)
+> >  			goto err_dup;
+> > =20
+> > -		for (tmp =3D tbl; tmp->procname; tmp++)
+> > -			tmp->data +=3D (char *)net - (char *)&init_net;
+> > +		for (int i =3D 0; i < table_size; ++i)
+> >  	.devinet_vars =3D {
+=2E..
+> >  		.extra1		=3D SYSCTL_ONE,
+> >  	},
+> > -	{ }
+> >  };
+> > =20
+> >  static __net_init int ipv4_sysctl_init_net(struct net *net)
+> >  {
+> >  	struct ctl_table *table;
+> > +	size_t table_size =3D ARRAY_SIZE(ipv4_net_table);
+>=20
+> nit: keep reverse xmax tree order.
+Ok.
+
+>=20
+>=20
+> > =20
+> >  	table =3D ipv4_net_table;
+> >  	if (!net_eq(net, &init_net)) {
+> > @@ -1517,7 +1516,7 @@ static __net_init int ipv4_sysctl_init_net(struct=
+ net *net)
+> >  		if (!table)
+> >  			goto err_alloc;
+> > =20
+> > -		for (i =3D 0; i < ARRAY_SIZE(ipv4_net_table) - 1; i++) {
+=2E..
+> > =20
+> >  static int __addrconf_sysctl_register(struct net *net, char *dev_name,
+> > @@ -7197,7 +7194,7 @@ static int __addrconf_sysctl_register(struct net =
+*net, char *dev_name,
+> >  	if (!table)
+> >  		goto out;
+> > =20
+> > -	for (i =3D 0; table[i].data; i++) {
+> > +	for (i =3D 0; i < ARRAY_SIZE(addrconf_sysctl); i++) {
+>=20
+>                         ^^^
+Did you mean reuse variable here? What does this mean?
+
+>=20
+>=20
+> >  		table[i].data +=3D (char *)p - (char *)&ipv6_devconf;
+> >  		/* If one of these is already set, then it is not safe to
+> >  		 * overwrite either of them: this makes proc_dointvec_minmax
+> > diff --git a/net/ipv6/icmp.c b/net/ipv6/icmp.c
+> > index 1635da07285f..91cbf8e8009f 100644
+> > --- a/net/ipv6/icmp.c
+> > +++ b/net/ipv6/icmp.c
+> > @@ -1206,7 +1206,6 @@ static struct ctl_table ipv6_icmp_table_template[=
+] =3D {
+> >  		.extra1		=3D SYSCTL_ZERO,
+=2E..
+> > -	{ }
+> >  };
+> > =20
+> >  static int __net_init ipv6_sysctl_net_init(struct net *net)
+> > @@ -264,7 +262,7 @@ static int __net_init ipv6_sysctl_net_init(struct n=
+et *net)
+> >  	if (!ipv6_table)
+> >  		goto out;
+> >  	/* Update the variables to point into the current struct net */
+> > -	for (i =3D 0; i < ARRAY_SIZE(ipv6_table_template) - 1; i++)
+> > +	for (i =3D 0; i < ARRAY_SIZE(ipv6_table_template); i++)
+>=20
+>                         ^^^
+Did you mean reuse variable here? What does this mean?
+>=20
+>=20
+> >  		ipv6_table[i].data +=3D (void *)net - (void *)&init_net;
+> > =20
+> >  	ipv6_route_table =3D ipv6_route_sysctl_init(net);
+> > diff --git a/net/ipv6/xfrm6_policy.c b/net/ipv6/xfrm6_policy.c
+> > index 42fb6996b077..499b5f5c19fc 100644
+> > --- a/net/ipv6/xfrm6_policy.c
+> > +++ b/net/ipv6/xfrm6_policy.c
+> > @@ -184,7 +184,6 @@ static struct ctl_table xfrm6_policy_table[] =3D {
+> >  		.mode		=3D 0644,
+> >  		.proc_handler   =3D proc_dointvec,
+> >  	},
+> > -	{ }
+> >  };
+> > =20
+> >  static int __net_init xfrm6_net_sysctl_init(struct net *net)
+> > diff --git a/net/llc/sysctl_net_llc.c b/net/llc/sysctl_net_llc.c
+> > index 8443a6d841b0..72e101135f8c 100644
+> > --- a/net/llc/sysctl_net_llc.c
+> > +++ b/net/llc/sysctl_net_llc.c
+> > @@ -44,11 +44,6 @@ static struct ctl_table llc2_timeout_table[] =3D {
+> >  		.mode		=3D 0644,
+> >  		.proc_handler   =3D proc_dointvec_jiffies,
+> >  	},
+> > -	{ },
+> > -};
+> > -
+> > -static struct ctl_table llc_station_table[] =3D {
+> > -	{ },
+> >  };
+> > =20
+> >  static struct ctl_table_header *llc2_timeout_header;
+> > @@ -56,8 +51,9 @@ static struct ctl_table_header *llc_station_header;
+> > =20
+> >  int __init llc_sysctl_init(void)
+> >  {
+> > +	struct ctl_table empty[1] =3D {};
+> >  	llc2_timeout_header =3D register_net_sysctl(&init_net, "net/llc/llc2/=
+timeout", llc2_timeout_table);
+> > -	llc_station_header =3D register_net_sysctl(&init_net, "net/llc/statio=
+n", llc_station_table);
+> > +	llc_station_header =3D register_net_sysctl_sz(&init_net, "net/llc/sta=
+tion", empty, 0);
+>=20
+> Do we really need this ... ??
+That is a good question, but its something that needs to be address
+outside this patchset. I'm just keeping current behaviour.
+
+>=20
+>=20
+> > =20
+> >  	if (!llc2_timeout_header || !llc_station_header) {
+> >  		llc_sysctl_exit();
+> > diff --git a/net/mpls/af_mpls.c b/net/mpls/af_mpls.c
+> > index 6dab883a08dd..e163fac55ffa 100644
+> > --- a/net/mpls/af_mpls.c
+> > +++ b/net/mpls/af_mpls.c
+> > @@ -1393,7 +1393,6 @@ static const struct ctl_table mpls_dev_table[] =
+=3D {
+> >  		.proc_handler	=3D mpls_conf_proc,
+> >  		.data		=3D MPLS_PERDEV_SYSCTL_OFFSET(input_enabled),
+> >  	},
+> > -	{ }
+> >  };
+> > =20
+> >  static int mpls_dev_sysctl_register(struct net_device *dev,
+> > @@ -2689,7 +2688,7 @@ static int mpls_net_init(struct net *net)
+> >  	/* Table data contains only offsets relative to the base of
+> >  	 * the mdev at this point, so make them absolute.
+> >  	 */
+> > -	for (i =3D 0; i < ARRAY_SIZE(mpls_table) - 1; i++)
+> > +	for (i =3D 0; i < ARRAY_SIZE(mpls_table); i++)
+>=20
+>                         ^^^
+>=20
+>=20
+> >  		table[i].data =3D (char *)net + (uintptr_t)table[i].data;
+> > =20
+> >  	net->mpls.ctl =3D register_net_sysctl_sz(net, "net/mpls", table,
+> > diff --git a/net/mptcp/ctrl.c b/net/mptcp/ctrl.c
+> > index 13fe0748dde8..8bf7c26a0878 100644
+> > --- a/net/mptcp/ctrl.c
+> > +++ b/net/mptcp/ctrl.c
+=2E..
+> > =20
+> >  	net->xfrm.sysctl_hdr =3D register_net_sysctl_sz(net, "net/core", tabl=
+e,
+> >  						      table_size);
+> >=20
+> > --=20
+> > 2.43.0
+> B
+
+Thx for the review
+
+Best
+--=20
+
+Joel Granados
+
+--ebocjdihejx32jpt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmYeSNMACgkQupfNUreW
+QU8rEQv+MUi7fm5oXY0H9hoW3rH7wTOOXoaWiXD+2m4X9BCFtR+IO7Hbi4TCr+vb
+jnK7Yvsbcj8krLpOAr3GlcUtn7MvnzUBu4gR2vQ1PWNrHdZfVF2h+qb6R4lBazhK
+Ri7yXSJrCB2IdfryrmFqvFCwBQjVvZv5B8p8vK2BtIRqSN6N2acqMmp5UbfE6HWj
+pvFakjOfrMPY6XUabRE3+P3xMHOqlBEtgugMwlLQ++0MG+6URTFeXYt7Av0iTwas
+xkK/6Kx7G5p+4qTYrfm48BP51HyIFhzbE5Tapp7ytO3xHvXyRBm04Nw6Gj2Ta7W0
+7HlDyKSiZNwGVf2wElQfifKlgJPZUmSdz4x87++8QSPdv8omF8qiR0PSWPSSIjhh
+NxKUMRp3TnxCHEu3opx9NODX2JWD5dUoAJ7iCLctAYu7QHk1Oj5uoT8CCmzLwcSJ
+IcrwHRFVUjfe5mgmC2MnVB/uvqWPstV1ntAQY6mxXIx3L/QxRC3SlKgEZS4X7jS5
+u+CGwYd+
+=O6yr
+-----END PGP SIGNATURE-----
+
+--ebocjdihejx32jpt--
 
