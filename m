@@ -1,233 +1,348 @@
-Return-Path: <linux-kernel+bounces-147132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C60538A6FE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:36:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 238408A7032
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:51:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F58D1F22236
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:36:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 468201C2188C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:51:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76134131186;
-	Tue, 16 Apr 2024 15:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC2F1131745;
+	Tue, 16 Apr 2024 15:50:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="no3BpmVc"
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2043.outbound.protection.outlook.com [40.107.15.43])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bwzGbiMo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88421CFBC;
-	Tue, 16 Apr 2024 15:36:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.15.43
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713281793; cv=fail; b=dp6iaYL4v7gySTQB1ed/Jj2PErZ5XQ0eQX6mt6Ibs6p+rJLwMe1oYDLwSuNNwVNGT75Y/eHd2eDPHS1jRUhsroX239g66SHgPzplu/XcRFheSxJichL9RXYuAReuwh9H3qU7QLkpJ3xWMzTDC5bbQ7qQJtyDhPosB3qPw+ogI9c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713281793; c=relaxed/simple;
-	bh=BjwfwTDNrDjl9D/7tX7nJd/QFc2pjbNb4geX9bnBLBM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=ErrTK9sdqXlUeyYPG3GNs11iM0Lhw+dcZMe6ASOlpFZZLQ9SRjvHNv9A3l9GIQ2F3UIDlnYdFJ4DNYvN7Kt8kE5iupuF3Wkhi3b8mREYHgfDNQK0883NIqGo3WmCyOI2uAOXfJsZQpB66FjXOgOB5Jd55ZUra0yPWDufY1ctPBM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=no3BpmVc; arc=fail smtp.client-ip=40.107.15.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kuaKM6zPPMH3V/JSr9SVjs7WCwoH0Qw8/SoUpcDwogR7oJpPiLGGL79vZEOHuyjqoGE9YOtYNhiixE6c5APUp1itTbhDNNfE2TtcW1QGUWyeHkffnJlVFD3R8qLH1wHBkB5ObgSgLlireoJJuw4YKg3jacK0Cv3DSHa27ZZsxJ8oby/GA+FFHX26tFgMkEyq7nDnehmyuyt6H1aKkL0VnvIO092tZUKk6JcE7ITgCGX7peha/FYapimyXXUpzfZFFWv7OdiQDL+6owxI9kY2o4+n5NVIfufERro8B0RLeqRPwMZfnnj82lV8hBvauPlBW8IMV9TgnC/eeUMXPJm6Dg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Z6S75QYqxjvNbSvVNAHNmmNef8rusuK9Y2YQJXAzrxc=;
- b=Ny1mUoOOfuGB305DmzIcx0e7ZuYY89HeCpmqxx5rkCcZUf8ua9M3Z3Dg6C1Gmox7sUqqUjdH92gxnLxgU7vhRshKSsbNGwFarbTdFvw64zQrdVdEQv0YBJ7iClgJPaOjS4eFhggjLCnbrHHiSOy71oSI4u2jnCpfFrvjN6JyYlPjIxpdeLXx6VNInJ6CosevuOGYlKIzujafLkMQafbQ6nmd+j4wSE2F9/ZukV3xljOZjdMpNwSKFJxkKnoVruH2cmBKXtzaS4B1W1c6JN7gf54jQUt/dIe3lFHLCIZTbIZ18qfUJlj0H+DLX8reEfIiDbARvgcfHQMQNSllLJQflg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z6S75QYqxjvNbSvVNAHNmmNef8rusuK9Y2YQJXAzrxc=;
- b=no3BpmVc7L9hER1SMcIIRrKCn/zgdp5dxAi5VcEDJTuaQO5PGNVRjZx6Bj95vuqV7hc59ld11a7fI/4SNAUCGd6S7vLIQkchH5dHUsuCgrWDfb/PT1D1t8px/n8nzhUlRLqYIrZYze7IccNTBcZOxSiyKmihe67zioAMAOGKba0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by AS4PR04MB9549.eurprd04.prod.outlook.com (2603:10a6:20b:4f8::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
- 2024 15:36:29 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
- 15:36:29 +0000
-Date: Tue, 16 Apr 2024 11:36:20 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH 01/11] arm64: dts: imx93: add dma support for lpi2c[1..8]
-Message-ID: <Zh6a9E+MSiv8HuP7@lizhi-Precision-Tower-5810>
-References: <20240416-imx93-dts-4-13-v1-0-da8ac02e8413@nxp.com>
- <20240416-imx93-dts-4-13-v1-1-da8ac02e8413@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416-imx93-dts-4-13-v1-1-da8ac02e8413@nxp.com>
-X-ClientProxiedBy: BYAPR04CA0035.namprd04.prod.outlook.com
- (2603:10b6:a03:40::48) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6ACC1311B4;
+	Tue, 16 Apr 2024 15:50:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713282653; cv=none; b=cIgrQQGoS3wk1a0liJ44Ny6zBYyuVDYHQ1Gg3pybyucdeJ94/8VG2ZdYMIb7G/SOpbTVnaYEoHhuDrLoGDARZVAfPpXQHKLzFhcsviXJQGfPk7xTG7NVhPGel38mbQGElxQkZsnHC5BA4eL641Jpva/KwAwuqr1Rfn+SEZBEqXE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713282653; c=relaxed/simple;
+	bh=wE/1nQW03EOW2WjxRav5KhI1biPyJvYQafxlZ0n0QgY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m5N6nYzwTmhib6mQcDVA9xWmt+wihdrLGUppQYvIweZ+JNmEA2HIM8VmcnOkXjg3wo2JGcYzeOdEnjZchYrX7Ia+qvtPRkr+ed79T8IweCqpRmzJJH6PMS/PL+IqFCyfmrcIzj1JHrmyzsuudIlUKuUWEgG7J+Fnczl4Y3nZsMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bwzGbiMo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57ED3C113CE;
+	Tue, 16 Apr 2024 15:50:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713282652;
+	bh=wE/1nQW03EOW2WjxRav5KhI1biPyJvYQafxlZ0n0QgY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bwzGbiMo8w/Nh/4Nrlp02t8ZIxpU1s16/LVWkVMivNOFKZt6GWHPxrTcVYMmu0Vh0
+	 pR0OYwF7Pedi8E5biwG6+xiq6b9MRmdEPItHRtphbobBcpO3L6Lp3e9J6XQ3IgIiBI
+	 LnSurHWuqKEsPtQpbLS4g917/g4T4/EMZ5QIyp/bybMTLQFqfmR+Gfo1dbin1Ls8B2
+	 w42jZEHEhO/a5IE0s3O4i5h4bPAxLjRC8B6FYwHiqXndS4PrnHxAOklM3Pnokz0GMN
+	 7dVKNBJWV3nPJgFVhejsZPF/QBt6se0aCkmstJ9+cGGOCKYC96CXwCEdcF42WHMMFO
+	 PgUI+iwjPTOiw==
+Date: Tue, 16 Apr 2024 23:37:23 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Chen Wang <unicornxw@gmail.com>
+Cc: adrian.hunter@intel.com, aou@eecs.berkeley.edu, conor+dt@kernel.org,
+	guoren@kernel.org, inochiama@outlook.com,
+	krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com,
+	paul.walmsley@sifive.com, robh@kernel.org, ulf.hansson@linaro.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	chao.wei@sophgo.com, haijiao.liu@sophgo.com,
+	xiaoguang.xing@sophgo.com, tingzhu.wang@sophgo.com,
+	Chen Wang <unicorn_wang@outlook.com>
+Subject: Re: [PATCH 2/3] mmc: sdhci-of-dwcmshc: Add support for Sophgo SG2042
+Message-ID: <Zh6bM2EQnAFYFhiV@xhacker>
+References: <cover.1713258948.git.unicorn_wang@outlook.com>
+ <e5aa1338d74504e141ba833b484d588cafb7ab38.1713258948.git.unicorn_wang@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS4PR04MB9549:EE_
-X-MS-Office365-Filtering-Correlation-Id: c83abeb0-23b8-4611-fb2c-08dc5e2afbfe
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	T3lwJl8NwTxvv9y74jEp74XLxOg+I1ICzRYQiZgGrbpMHzdDHV+fxJ+CrHpuPRCA7BsYClWmodgji4Mxehi4aKaEFqYR6udL0xDByS/qOtmXqs5U0PrOBXYcSpV4mDQQCajo2AZA1eEUs/L6FKv5mV6AF4/7guKH3kkPle9dZ7v3hQTmd+ArPOAQn614SY73HqDt1EOyX29QbePBc+eJdcqayjeWROZRu1ymJQke8TtqD7hqAw/yr2mQZs0bAIIW/Wfpul3cj6s4DA8dL9M3q5Rk0SO9ABRPEsetqUzapbI50DbKoDWa42GlzONKlYFOEgm5t5V432WndVPmIId1s1nkWtficoboh8ElfnbMGaVf5n4qB0wSg72CfAJDHWaJ5nQM2Q5hC6NKPJhIjVJqy7vHgXmPdUPDYud52jMFdvZdo/lXy903FVyaMil8zPwnLzZ9gYg5cHWcCDIRY+pXyU0pFqBInkTFxGV2dAOcidPtJZchpqJfWz1JToLUbHfqa7FlKVZQxyiBoYEtTd4gPHiKkJHL5Zs1T2miU1cjEBEN5uCmQEnqeWVhwyd7EtOrEckoAvxvkqc0/BCfKdAcyd1Irq3fYHkMU59nFqXdDjnScBWMBfSYD5zm5jntfH7jNRf++iD9YKcLnlmzIDSJpyoliTDc/IdJvh9LJRPkEAGjrgdatS+7u0mez62BGlkAsxB3I0etAAbXQjnLI9TQLA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(366007)(52116005)(1800799015)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Gej7AJh8INbmf+WBKajCq26qY7k6I2MoqBZaf3q616FOucNNn6vlhzAlFVIL?=
- =?us-ascii?Q?y+bfCFbR1lBP8tCxoYoH5ypJdVsvD2a7WSnD6varkhVaTXSTe3Y11ZSELkn8?=
- =?us-ascii?Q?qGRDd+PqzG8iVl4+AErZ4m+tGOx5PbREL8UM78eLxgPPbkZvYrahjf+gpMWi?=
- =?us-ascii?Q?rxpBDhWFY87iHuoO/3hk6P1zOcgP6DVkPQUka5K+tPFTocS5yIlr+u1ndb/p?=
- =?us-ascii?Q?zbshzQ9f6b3CXr+861jmf9SDkrn+/uxkmbwfg2hdH8Mtz3pYBTu0XW5Yi6Vq?=
- =?us-ascii?Q?ljPcyMjpbAGqjRX+JZ8Tp7AWmjDNstwHTL2ETmJQ6uYiBzePKovg1cBdmwR8?=
- =?us-ascii?Q?1Vb89FrA2TA2qn2NNXQM5UgBdFDoCINDmji3EdZ7nmj+eg/YfdIFOMH0UbF3?=
- =?us-ascii?Q?7rnwAPQZucNQ1GBlqOr9yMeL2wgSPot6tvrcVOzJHCNA21z43grzWZLzsybn?=
- =?us-ascii?Q?IHHkDMls+OxMqUJq5mrjejhFZj0uTc5Ld0vFFDX2xNyYrV7t1dzJf7btS2kQ?=
- =?us-ascii?Q?gd8zTTO0TGeVv2WOmYH0bjO2xjH2V8W5xaBBfSrawUpPESduDJVgtf1q7bNj?=
- =?us-ascii?Q?j8dOs3RjHybA8MY3f+TztWlsKa88ef0MT4a0k281r73xj+Yij14I8OAriQFQ?=
- =?us-ascii?Q?y68AA44EQVEKF+DnKYNKk5HNmAJiHnpgJO2/MetZvLzaX/xQD5dq5sbgjrbb?=
- =?us-ascii?Q?sgK4Zbj637IxD+8AT3VL9PgOyrxRgltyPgpiLMvrnu6l3cuUmuXMnIY0RciM?=
- =?us-ascii?Q?jcDiB0OxNpvO+kEwBXC0O7PaCQPLEhzkobP1EGchwDKcVzQuFdOzucMpoLsa?=
- =?us-ascii?Q?v/gEzW0CJmGB4vJZYY4ZI1hFlwwBAMT11u0eWTLgT4xGQS1C364i2wqdlnJA?=
- =?us-ascii?Q?lYRhaPcsaRbEILl3xiUEALkuavjeXbYVEoUeI1UZZ8hGVmYHWSTlrwf2HmFa?=
- =?us-ascii?Q?4i7WiqO1v/D0Y2h4B13MD7TazB13GMZUd9M3QNrE8pu42gF6RJic9zIy028A?=
- =?us-ascii?Q?0watMFi5NUISoqRjL/2XfC9O+OAnX0JmpMSgrWMV+CmBETCflkLyrIHwZDB/?=
- =?us-ascii?Q?SlC1hTFBGINi49TovMleSBRBIALEaivtEHEBG2B97I7+KJ+1aIC8EVytrKjm?=
- =?us-ascii?Q?a1uo/Ac5uJ98z7MXcRQ9bhw5hLm0hCPToqSt/x+z81zeCAU0QSG0L85Prfon?=
- =?us-ascii?Q?JOzvD6sstKoXdbquhWhMmyxxZ+E2Xe2XbXCvwbwr9PBSWCchcm9+3sRyK1b1?=
- =?us-ascii?Q?cblRVcwKXqLG0kCgQTVV6m1HMWfLGaM1DG5R4fDkaWOSGFF35H/gLGqk5PeE?=
- =?us-ascii?Q?TfkkstAN+S558w88JWkSXLxLuVVCKkDzEGbfzj7HQBEQHaJlnovrbmH0Djy5?=
- =?us-ascii?Q?9y85FNMpu+3g6aRJ5wyzWdvSTfK/KhCwegFltc8TaiG8aWS6S/Zag5MWYskB?=
- =?us-ascii?Q?gYtnrTCVzPikbIjaf47q/tonSsWnz+krBFUneY0v++kCtJc7k//e7eaQX84l?=
- =?us-ascii?Q?3vJ9VjqV4TOsRSRfq6gTTW214/Ymv6iV51Bv5/0WH0ZuxbgLawGyvmuDdrDc?=
- =?us-ascii?Q?UB5szzwZ17DsSkZbmYjS32uWWP38WsmMzd8wM8Ti?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c83abeb0-23b8-4611-fb2c-08dc5e2afbfe
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 15:36:29.0724
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jL0C+v0q74kmRDRCEcQQl66EOfAuf/TBk4MQJQYFeX0+/B4wbH2s2mMBXhXH9uS/8iRJNKqOqDPstG0Nz3G96Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR04MB9549
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e5aa1338d74504e141ba833b484d588cafb7ab38.1713258948.git.unicorn_wang@outlook.com>
 
-On Tue, Apr 16, 2024 at 11:26:37PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Tue, Apr 16, 2024 at 05:50:57PM +0800, Chen Wang wrote:
+> From: Chen Wang <unicorn_wang@outlook.com>
 > 
-> Add dma support for lpi2c[1..8].
+> Add support for the mmc controller of Sophgo SG2042.
 > 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> SG2042 uses Synopsys PHY the same as TH1520 so we reuse the tuning
+> logic from TH1520. Besides this, this patch implement some SG2042
+> specific work, such as clocks and reset ops.
+> 
+> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
 > ---
->  arch/arm64/boot/dts/freescale/imx93.dtsi | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
+>  drivers/mmc/host/sdhci-of-dwcmshc.c | 173 ++++++++++++++++++++++++++--
+>  1 file changed, 166 insertions(+), 7 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi b/arch/arm64/boot/dts/freescale/imx93.dtsi
-> index b8ef9b938856..5c08e8787989 100644
-> --- a/arch/arm64/boot/dts/freescale/imx93.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
+> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> index 1a0b7ded7f9f..432ce0398163 100644
+> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> @@ -106,12 +106,13 @@
+>  #define DWC_MSHC_PTR_PHY_R	0x300
+>  
+>  /* PHY general configuration */
+> -#define PHY_CNFG_R		(DWC_MSHC_PTR_PHY_R + 0x00)
+> -#define PHY_CNFG_RSTN_DEASSERT	0x1  /* Deassert PHY reset */
+> -#define PHY_CNFG_PAD_SP_MASK	GENMASK(19, 16) /* bits [19:16] */
+> -#define PHY_CNFG_PAD_SP		0x0c /* PMOS TX drive strength */
+> -#define PHY_CNFG_PAD_SN_MASK	GENMASK(23, 20) /* bits [23:20] */
+> -#define PHY_CNFG_PAD_SN		0x0c /* NMOS TX drive strength */
+> +#define PHY_CNFG_R			(DWC_MSHC_PTR_PHY_R + 0x00)
+> +#define PHY_CNFG_RSTN_DEASSERT		0x1  /* Deassert PHY reset */
+> +#define PHY_CNFG_PHY_PWRGOOD_MASK	BIT_MASK(1) /* bit [1] */
+> +#define PHY_CNFG_PAD_SP_MASK		GENMASK(19, 16) /* bits [19:16] */
+> +#define PHY_CNFG_PAD_SP			0x0c /* PMOS TX drive strength */
+> +#define PHY_CNFG_PAD_SN_MASK		GENMASK(23, 20) /* bits [23:20] */
+> +#define PHY_CNFG_PAD_SN			0x0c /* NMOS TX drive strength */
+>  
+>  /* PHY command/response pad settings */
+>  #define PHY_CMDPAD_CNFG_R	(DWC_MSHC_PTR_PHY_R + 0x04)
+> @@ -143,7 +144,8 @@
+>  
+>  /* PHY CLK delay line settings */
+>  #define PHY_SDCLKDL_CNFG_R		(DWC_MSHC_PTR_PHY_R + 0x1d)
+> -#define PHY_SDCLKDL_CNFG_UPDATE	BIT(4) /* set before writing to SDCLKDL_DC */
+> +#define PHY_SDCLKDL_CNFG_EXTDLY_EN	BIT(0)
+> +#define PHY_SDCLKDL_CNFG_UPDATE		BIT(4) /* set before writing to SDCLKDL_DC */
+>  
+>  /* PHY CLK delay line delay code */
+>  #define PHY_SDCLKDL_DC_R		(DWC_MSHC_PTR_PHY_R + 0x1e)
+> @@ -151,6 +153,9 @@
+>  #define PHY_SDCLKDL_DC_DEFAULT		0x32 /* default delay code */
+>  #define PHY_SDCLKDL_DC_HS400		0x18 /* delay code for HS400 mode */
+>  
+> +#define PHY_SMPLDL_CNFG_R		(DWC_MSHC_PTR_PHY_R + 0x20)
+> +#define PHY_SMPLDL_CNFG_BYPASS_EN	BIT(1)
+> +
+>  /* PHY drift_cclk_rx delay line configuration setting */
+>  #define PHY_ATDL_CNFG_R			(DWC_MSHC_PTR_PHY_R + 0x21)
+>  #define PHY_ATDL_CNFG_INPSEL_MASK	GENMASK(3, 2) /* bits [3:2] */
+> @@ -194,6 +199,11 @@ struct rk35xx_priv {
+>  	u8 txclk_tapnum;
+>  };
+>  
+> +#define SG2042_MAX_CLKS 2
 
-#include <dt-bindings/dma/fsl-edma.h>
+I don't think "bulk" is suitable here for max 2 clks, no?
 
-> @@ -316,6 +316,8 @@ lpi2c1: i2c@44340000 {
->  				clocks = <&clk IMX93_CLK_LPI2C1_GATE>,
->  					 <&clk IMX93_CLK_BUS_AON>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma1 7 0 0>, <&edma1 8 0 1>;
+> +struct sg2042_priv {
+> +	struct clk_bulk_data clks[SG2042_MAX_CLKS];
 
-1: should be FSL_EDMA_RX
+useless either
 
-Frank
+> +};
+> +
+>  struct dwcmshc_priv {
+>  	struct clk	*bus_clk;
+>  	int vendor_specific_area1; /* P_VENDOR_SPECIFIC_AREA reg */
+> @@ -690,6 +700,76 @@ static void cv18xx_sdhci_reset(struct sdhci_host *host, u8 mask)
+>  	sdhci_writel(host, val, priv->vendor_specific_area1 + CV18XX_SDHCI_PHY_TX_RX_DLY);
+>  }
+>  
+> +static inline void sg2042_sdhci_phy_init(struct sdhci_host *host)
+> +{
+> +	u32 val;
+> +
+> +	/* Asset phy reset & set tx drive strength */
+> +	val = sdhci_readl(host, PHY_CNFG_R);
+> +	val &= ~PHY_CNFG_RSTN_DEASSERT;
+> +	val |= FIELD_PREP(PHY_CNFG_PHY_PWRGOOD_MASK, 1);
+> +	val |= FIELD_PREP(PHY_CNFG_PAD_SP_MASK, 9);
+> +	val |= FIELD_PREP(PHY_CNFG_PAD_SN_MASK, 8);
+> +	sdhci_writel(host, val, PHY_CNFG_R);
+> +
+> +	/* Configure phy pads */
+> +	val = PHY_PAD_RXSEL_3V3;
+> +	val |= FIELD_PREP(PHY_PAD_WEAKPULL_MASK, PHY_PAD_WEAKPULL_PULLUP);
+> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, 3);
+> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, 2);
+> +	sdhci_writew(host, val, PHY_CMDPAD_CNFG_R);
+> +	sdhci_writew(host, val, PHY_DATAPAD_CNFG_R);
+> +	sdhci_writew(host, val, PHY_RSTNPAD_CNFG_R);
+> +
+> +	val = PHY_PAD_RXSEL_3V3;
+> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, 3);
+> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, 2);
+> +	sdhci_writew(host, val, PHY_CLKPAD_CNFG_R);
+> +
+> +	val = PHY_PAD_RXSEL_3V3;
+> +	val |= FIELD_PREP(PHY_PAD_WEAKPULL_MASK, PHY_PAD_WEAKPULL_PULLDOWN);
+> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, 3);
+> +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, 2);
+> +	sdhci_writew(host, val, PHY_STBPAD_CNFG_R);
+> +
+> +	/* Configure delay line */
+> +	/* Enable fixed delay */
+> +	sdhci_writeb(host, PHY_SDCLKDL_CNFG_EXTDLY_EN, PHY_SDCLKDL_CNFG_R);
+> +	/*
+> +	 * Set delay line.
+> +	 * Its recommended that bit UPDATE_DC[4] is 1 when SDCLKDL_DC is being written.
+> +	 * Ensure UPDATE_DC[4] is '0' when not updating code.
+> +	 */
+> +	val = sdhci_readb(host, PHY_SDCLKDL_CNFG_R);
+> +	val |= PHY_SDCLKDL_CNFG_UPDATE;
+> +	sdhci_writeb(host, val, PHY_SDCLKDL_CNFG_R);
+> +	/* Add 10 * 70ps = 0.7ns for output delay */
+> +	sdhci_writeb(host, 10, PHY_SDCLKDL_DC_R);
+> +	val = sdhci_readb(host, PHY_SDCLKDL_CNFG_R);
+> +	val &= ~(PHY_SDCLKDL_CNFG_UPDATE);
+> +	sdhci_writeb(host, val, PHY_SDCLKDL_CNFG_R);
+> +
+> +	/* Set SMPLDL_CNFG, Bypass */
+> +	sdhci_writeb(host, PHY_SMPLDL_CNFG_BYPASS_EN, PHY_SMPLDL_CNFG_R);
+> +
+> +	/* Set ATDL_CNFG, tuning clk not use for init */
+> +	val = FIELD_PREP(PHY_ATDL_CNFG_INPSEL_MASK, 2);
 
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
+magic "2" needs a meaningful macro definition.
+
+> +	sdhci_writeb(host, val, PHY_ATDL_CNFG_R);
+> +
+> +	/* Deasset phy reset */
+> +	val = sdhci_readl(host, PHY_CNFG_R);
+> +	val |= PHY_CNFG_RSTN_DEASSERT;
+> +	sdhci_writel(host, val, PHY_CNFG_R);
+> +}
+> +
+> +static void sg2042_sdhci_reset(struct sdhci_host *host, u8 mask)
+> +{
+> +	sdhci_reset(host, mask);
+> +
+> +	if (mask & SDHCI_RESET_ALL)
+> +		sg2042_sdhci_phy_init(host);
+> +}
+> +
+>  static const struct sdhci_ops sdhci_dwcmshc_ops = {
+>  	.set_clock		= sdhci_set_clock,
+>  	.set_bus_width		= sdhci_set_bus_width,
+> @@ -728,6 +808,16 @@ static const struct sdhci_ops sdhci_dwcmshc_cv18xx_ops = {
+>  	.adma_write_desc	= dwcmshc_adma_write_desc,
+>  };
 >  
-> @@ -328,6 +330,8 @@ lpi2c2: i2c@44350000 {
->  				clocks = <&clk IMX93_CLK_LPI2C2_GATE>,
->  					 <&clk IMX93_CLK_BUS_AON>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma1 9 0 0>, <&edma1 10 0 1>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
+> +static const struct sdhci_ops sdhci_dwcmshc_sg2042_ops = {
+> +	.set_clock              = sdhci_set_clock,
+> +	.set_bus_width          = sdhci_set_bus_width,
+> +	.set_uhs_signaling      = dwcmshc_set_uhs_signaling,
+> +	.get_max_clock		= dwcmshc_get_max_clock,
+> +	.platform_execute_tuning = th1520_execute_tuning,
+> +	.reset                  = sg2042_sdhci_reset,
+> +	.adma_write_desc        = dwcmshc_adma_write_desc,
+> +};
+> +
+>  static const struct sdhci_pltfm_data sdhci_dwcmshc_pdata = {
+>  	.ops = &sdhci_dwcmshc_ops,
+>  	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
+> @@ -763,6 +853,13 @@ static const struct sdhci_pltfm_data sdhci_dwcmshc_cv18xx_pdata = {
+>  	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
+>  };
 >  
-> @@ -692,6 +696,8 @@ lpi2c3: i2c@42530000 {
->  				clocks = <&clk IMX93_CLK_LPI2C3_GATE>,
->  					 <&clk IMX93_CLK_BUS_WAKEUP>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma2 8 0 0>, <&edma2 9 0 1>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
+> +static const struct sdhci_pltfm_data sdhci_dwcmshc_sg2042_pdata = {
+> +	.ops = &sdhci_dwcmshc_sg2042_ops,
+> +	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN |
+> +		  SDHCI_QUIRK_INVERTED_WRITE_PROTECT,
+
+is "wp-inverted" property better?
+
+> +	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
+> +};
+> +
+>  static void dwcmshc_rk35xx_postinit(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
+>  {
+>  	/*
+> @@ -882,6 +979,58 @@ static int dwcmshc_th1520_init(struct device *dev,
+>  	return 0;
+>  }
 >  
-> @@ -704,6 +710,8 @@ lpi2c4: i2c@42540000 {
->  				clocks = <&clk IMX93_CLK_LPI2C4_GATE>,
->  					 <&clk IMX93_CLK_BUS_WAKEUP>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma2 10 0 0>, <&edma2 11 0 1>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
+> +static int dwcmshc_sg2042_clks_enable(struct dwcmshc_priv *dwc_priv)
+> +{
+> +	int ret = 0;
+> +	struct sg2042_priv *soc = dwc_priv->priv;
+> +
+> +	if (soc)
+> +		ret = clk_bulk_prepare_enable(SG2042_MAX_CLKS, soc->clks);
+> +	return ret;
+> +}
+> +
+> +static void dwcmshc_sg2042_clks_disable(struct dwcmshc_priv *dwc_priv)
+> +{
+> +	struct sg2042_priv *soc = dwc_priv->priv;
+> +
+> +	if (soc)
+> +		clk_bulk_disable_unprepare(SG2042_MAX_CLKS,
+> +					   soc->clks);
+> +}
+> +
+> +static int dwcmshc_sg2042_init(struct device *dev,
+> +			       struct sdhci_host *host,
+> +			       struct dwcmshc_priv *dwc_priv)
+> +{
+> +	int err;
+> +	struct sg2042_priv *soc = NULL;
+> +
+> +	soc = devm_kzalloc(dev, sizeof(struct sg2042_priv), GFP_KERNEL);
+> +	if (!soc)
+> +		return -ENOMEM;
+> +
+> +	soc->clks[0].id = "card";
+> +	soc->clks[1].id = "timer";
+
+Interesting, only "card" and "timer", so which clk is for clk input of the ip?
+
+> +	err = devm_clk_bulk_get_optional(mmc_dev(host->mmc), SG2042_MAX_CLKS,
+> +					 soc->clks);
+> +	if (err) {
+> +		dev_err(mmc_dev(host->mmc), "failed to get clocks %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	err = clk_bulk_prepare_enable(SG2042_MAX_CLKS, soc->clks);
+> +	if (err) {
+> +		dev_err(mmc_dev(host->mmc), "failed to enable clocks %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	dwc_priv->priv = soc;
+> +	dwc_priv->soc_clks_enable = dwcmshc_sg2042_clks_enable;
+> +	dwc_priv->soc_clks_disable = dwcmshc_sg2042_clks_disable;
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct of_device_id sdhci_dwcmshc_dt_ids[] = {
+>  	{
+>  		.compatible = "rockchip,rk3588-dwcmshc",
+> @@ -907,6 +1056,10 @@ static const struct of_device_id sdhci_dwcmshc_dt_ids[] = {
+>  		.compatible = "thead,th1520-dwcmshc",
+>  		.data = &sdhci_dwcmshc_th1520_pdata,
+>  	},
+> +	{
+> +		.compatible = "sophgo,sg2042-dwcmshc",
+> +		.data = &sdhci_dwcmshc_sg2042_pdata,
+> +	},
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(of, sdhci_dwcmshc_dt_ids);
+> @@ -994,6 +1147,12 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>  			goto err_clk;
+>  	}
 >  
-> @@ -881,6 +889,8 @@ lpi2c5: i2c@426b0000 {
->  				clocks = <&clk IMX93_CLK_LPI2C5_GATE>,
->  					 <&clk IMX93_CLK_BUS_WAKEUP>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma2 71 0 0>, <&edma2 72 0 1>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
->  
-> @@ -893,6 +903,8 @@ lpi2c6: i2c@426c0000 {
->  				clocks = <&clk IMX93_CLK_LPI2C6_GATE>,
->  					 <&clk IMX93_CLK_BUS_WAKEUP>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma2 73 0 0>, <&edma2 74 0 1>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
->  
-> @@ -905,6 +917,8 @@ lpi2c7: i2c@426d0000 {
->  				clocks = <&clk IMX93_CLK_LPI2C7_GATE>,
->  					 <&clk IMX93_CLK_BUS_WAKEUP>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma2 75 0 0>, <&edma2 76 0 1>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
->  
-> @@ -917,6 +931,8 @@ lpi2c8: i2c@426e0000 {
->  				clocks = <&clk IMX93_CLK_LPI2C8_GATE>,
->  					 <&clk IMX93_CLK_BUS_WAKEUP>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma2 77 0 0>, <&edma2 78 0 1>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
->  
-> 
+> +	if (pltfm_data == &sdhci_dwcmshc_sg2042_pdata) {
+> +		err = dwcmshc_sg2042_init(dev, host, priv);
+> +		if (err)
+> +			goto err_clk;
+> +	}
+> +
+>  #ifdef CONFIG_ACPI
+>  	if (pltfm_data == &sdhci_dwcmshc_bf3_pdata)
+>  		sdhci_enable_v4_mode(host);
 > -- 
-> 2.37.1
+> 2.25.1
 > 
 
