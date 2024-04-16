@@ -1,280 +1,237 @@
-Return-Path: <linux-kernel+bounces-146701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E07428A698B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:23:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDDC98A698D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:24:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45921B21DE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:23:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 334701F21EA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:24:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58D21292CF;
-	Tue, 16 Apr 2024 11:23:12 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A76128396;
-	Tue, 16 Apr 2024 11:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E44271292CE;
+	Tue, 16 Apr 2024 11:24:19 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F43B128828;
+	Tue, 16 Apr 2024 11:24:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713266592; cv=none; b=Jg4vsstHDUkhpp7M1EGumffXYrgP4005rzzo4hHLurscgORRRY9CNDdFKuCNYMdf4WCODn2gWIosrmLmoApbU7gvh/g9zp/5/rF46u/WcjhqpEGLDpK4ODSP0eems+txicsSwl2m5VGx/gACGntKZwLmGlBj6nCGa78Ig5R8AVQ=
+	t=1713266659; cv=none; b=uKyOWugpAB9N92XNgsKPjUk0HPx/zSoc/E9MUHPdifDY+iI/m9Xdz9+RSWt3CwaUemi3EA74JRGm1UVdP/TpJbjwA1ePt3CrE3x08q/qTl3+kgJDImqZMAqwis+h76gTz8Q1LwuUw4PtFXrNaSEHm7ZsDbmWdlh142Mz/iTYZxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713266592; c=relaxed/simple;
-	bh=Y3llxjIXmfW7rF8sJgQDYyWp+vAUQOKaIP1rcLgHknU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GMrPqxhYjwLG9531j5F/AXA7cDhVmdcZInL5MTHvtpGPRcXdrlN54XOgQJB43SGNXAc8+5EifCvz6EYmtSPYz5q9nFoMdTVpnNm9n6Ga668DqTDOvv9Rjd9Ik8p9MPQPK2TmXRgqlbMGankC731XXliKJujDTUR2bItS8rtKebY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 463A2339;
-	Tue, 16 Apr 2024 04:23:38 -0700 (PDT)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2B96B3F738;
-	Tue, 16 Apr 2024 04:23:08 -0700 (PDT)
-Date: Tue, 16 Apr 2024 12:23:05 +0100
-From: Andre Przywara <andre.przywara@arm.com>
-To: John Watts <contact@jookia.org>
-Cc: Chen-Yu Tsai <wens@csie.org>, Lee Jones <lee@kernel.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring
- <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev, Jernej Skrabec
- <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, Ryan
- Walklin <ryan@testtoast.com>, Chris Morgan <macroalpha82@gmail.com>
-Subject: Re: [PATCH 1/4] regulator: axp20x: AXP717: fix LDO supply rails and
- off-by-ones
-Message-ID: <20240416122305.3ffc2bda@donnerap.manchester.arm.com>
-In-Reply-To: <ZhuNCUnJri4hBOxx@titan>
-References: <20240329235033.25309-1-andre.przywara@arm.com>
-	<20240329235033.25309-2-andre.przywara@arm.com>
-	<ZhuNCUnJri4hBOxx@titan>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
+	s=arc-20240116; t=1713266659; c=relaxed/simple;
+	bh=sBjv/qwRLtegjlxLd5y3j7HuvcFzTXceeLcLshqbaac=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LluLC+E+pWC2fXlJb0OJXUeviNngjliw6p5BPhHclziRT3Xrlf92x+E5up6wfC1j5LUxdjcTRfL8WzEBp3kYp19sY65zijbZA3mBRGCRB9lDeoyA+kfTbc+S1a8txLvEn6rWnnlUjAC1RPruUSCJvldTuys6c98WU1Q6JT83jNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VJhS73dSxzwS0s;
+	Tue, 16 Apr 2024 19:21:11 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (unknown [7.185.36.15])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8BEE9180032;
+	Tue, 16 Apr 2024 19:24:13 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 16 Apr 2024 19:24:13 +0800
+From: Zheng Yejian <zhengyejian1@huawei.com>
+To: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <mark.rutland@arm.com>,
+	<mathieu.desnoyers@efficios.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	<zhengyejian1@huawei.com>
+Subject: [PATCH v2] ftrace: Fix possible use-after-free issue in ftrace_location()
+Date: Tue, 16 Apr 2024 19:24:59 +0800
+Message-ID: <20240416112459.1444612-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240401125543.1282845-1-zhengyejian1@huawei.com>
+References: <20240401125543.1282845-1-zhengyejian1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
 
-On Sun, 14 Apr 2024 18:00:09 +1000
-John Watts <contact@jookia.org> wrote:
+KASAN reports a bug:
 
-Hi John,
+  BUG: KASAN: use-after-free in ftrace_location+0x90/0x120
+  Read of size 8 at addr ffff888141d40010 by task insmod/424
+  CPU: 8 PID: 424 Comm: insmod Tainted: G        W          6.9.0-rc2+
+  [...]
+  Call Trace:
+   <TASK>
+   dump_stack_lvl+0x68/0xa0
+   print_report+0xcf/0x610
+   kasan_report+0xb5/0xe0
+   ftrace_location+0x90/0x120
+   register_kprobe+0x14b/0xa40
+   kprobe_init+0x2d/0xff0 [kprobe_example]
+   do_one_initcall+0x8f/0x2d0
+   do_init_module+0x13a/0x3c0
+   load_module+0x3082/0x33d0
+   init_module_from_file+0xd2/0x130
+   __x64_sys_finit_module+0x306/0x440
+   do_syscall_64+0x68/0x140
+   entry_SYSCALL_64_after_hwframe+0x71/0x79
 
-many thanks for the detailed review (also on the other two patches), much
-appreciated!
+The root cause is that when lookup_rec() is lookuping ftrace record of
+an address in ftrace pages of some module, and those ftrace pages may
+at the same time being freed in ftrace_release_mod() as the corresponding
+module is being deleted:
 
-> On Fri, Mar 29, 2024 at 11:50:30PM +0000, Andre Przywara wrote:
-> > The X-Powers AXP717 PMIC has separate input supply pins for each group
-> > of LDOs, so they are not all using the same DCDC1 input, as described
-> > currently.
-> > 
-> > Replace the "supply" member of each LDO description with the respective
-> > group supply name, so that the supply dependencies can be correctly
-> > described in the devicetree.
-> > Also fix two off-by-ones in the regulator macros, after some double
-> > checking the numbers against the datasheet.
-> > 
-> > Fixes: d2ac3df75c3a ("regulator: axp20x: add support for the AXP717")
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>  
-> 
-> Hi,
-> 
-> > ---
-> >  drivers/regulator/axp20x-regulator.c | 28 ++++++++++++++--------------
-> >  1 file changed, 14 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/drivers/regulator/axp20x-regulator.c b/drivers/regulator/axp20x-regulator.c
-> > index 34fcdd82b2eaa..3907606b091f6 100644
-> > --- a/drivers/regulator/axp20x-regulator.c
-> > +++ b/drivers/regulator/axp20x-regulator.c
-> > @@ -140,7 +140,7 @@
-> >  
-> >  #define AXP717_DCDC1_NUM_VOLTAGES	88
-> >  #define AXP717_DCDC2_NUM_VOLTAGES	107
-> > -#define AXP717_DCDC3_NUM_VOLTAGES	104
-> > +#define AXP717_DCDC3_NUM_VOLTAGES	103
-> >  #define AXP717_DCDC_V_OUT_MASK		GENMASK(6, 0)
-> >  #define AXP717_LDO_V_OUT_MASK		GENMASK(4, 0)
-> >  
-> > @@ -766,7 +766,7 @@ static const struct linear_range axp717_dcdc1_ranges[] = {
-> >  static const struct linear_range axp717_dcdc2_ranges[] = {
-> >  	REGULATOR_LINEAR_RANGE(500000,   0,  70,  10000),
-> >  	REGULATOR_LINEAR_RANGE(1220000, 71,  87,  20000),
-> > -	REGULATOR_LINEAR_RANGE(1600000, 88, 107, 100000),
-> > +	REGULATOR_LINEAR_RANGE(1600000, 88, 106, 100000),
-> >  };  
-> 
-> I'm not entirely sure these are correct after reading the datasheet.
-> 
-> From what I can tell REGULATOR_LINEAR_RANGE is inclusive, so for DCDC1
-> we have these ranges (we agree DCDC1 is correct, it is not affected by
-> this patch):
-> 
-> #define AXP717_DCDC1_NUM_VOLTAGES	88
-> static const struct linear_range axp717_dcdc1_ranges[] = {
-> 	REGULATOR_LINEAR_RANGE(500000,   0, 70, 10000),
-> 	REGULATOR_LINEAR_RANGE(1220000, 71, 87, 20000),
-> };
-> 
-> The datasheet says this for the register:
-> 
-> 0.5~1.2V,10mV/step,71steps
-> 1.22~1.54V,20mV/step,17steps
-> 0000000: 0.50V
-> 0000001: 0.51V
-> ...
-> 1000110: 1.20V
-> 1000111: 1.22V
-> 1001000: 1.24V
-> ...
-> 1010111: 1.54V
-> 1011000~1111111: Reserve
-> 
-> Converting to decimal:
-> 
-> 0: 0.50V (range 1 start)
-> 1: 0.51V
-> ...
-> 70: 1.20V (range 1 end)
-> 71: 1.22V (range 2 start)
-> 72: 1.24V
-> ...
-> 87: 1.54V (range 2 end)
-> 88 onwards: reserved
-> 
-> The maximum voltages are the last value plus one (to include voltage zero).
-> 
-> For DCDC2 after applying this patch we get:
-> 
-> #define AXP717_DCDC2_NUM_VOLTAGES	107
-> static const struct linear_range axp717_dcdc2_ranges[] = {
-> 	REGULATOR_LINEAR_RANGE(500000,   0,  70,  10000),
-> 	REGULATOR_LINEAR_RANGE(1220000, 71,  87,  20000),
-> 	REGULATOR_LINEAR_RANGE(1600000, 88, 106, 100000),
-> };
-> 
-> The datasheet marks the maximum value as 1101011: 3.40V, so 106 (the old
-> value for range) seems correct, but the NUM_VOLTAGES seems like it
-> should be bumped up to 108. I think you fixed the wrong thing here.
+  register_kprobes() {
+    check_kprobe_address_safe() {
+      arch_check_ftrace_location() {
+        ftrace_location() {
+          lookup_rec()  // access memory that has been freed by
+                        // ftrace_release_mod() !!!
 
-I see what you mean, though I actually looked at the number of steps
-mentioned in the first part of the register description. Now
-triple-checking this I came up with this table (generated by a spreadsheet
-to minimise human error):
-voltage	decimal	binary	
-1600	88	1011000
-1700	89	1011001
-1800	90	1011010
-1900	91	1011011
-2000	92	1011100
-2100	93	1011101
-2200	94	1011110
-2300	95	1011111
-2400	96	1100000
-2500	97	1100001
-2600	98	1100010
-2700	99	1100011
-2800	100	1100100
-2900	101	1100101
-3000	102	1100110
-3100	103	1100111
-3200	104	1101000
-3300	105	1101001
-3400	106	1101010
+To fix it, we hold rcu lock as lookuping ftrace record, and call
+synchronize_rcu() before freeing any ftrace pages.
 
-Which means the final binary value in the datasheet is wrong, as 1101011
-would mean 3.5V.
-Also  1101010 = 106
-     -1011000 = 88
-=============
-      0010010 = 18
-and 18 * 100 + 1600 = 3400, right?
+Fixes: ae6aa16fdc16 ("kprobes: introduce ftrace based optimization")
+Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+---
+ kernel/trace/ftrace.c | 43 +++++++++++++++++++++++++++----------------
+ 1 file changed, 27 insertions(+), 16 deletions(-)
 
-This *is* admittedly quite bonkers, especially since the representations
-between the manual and the code are so different, but can you check that
-this makes sense?
+v2:
+ - Use RCU lock instead of holding ftrace_lock as suggested by Steve.
+   Link: https://lore.kernel.org/all/20240410112823.1d084c8f@gandalf.local.home/
 
-I discovered some other issue in the original patch (missed declaring the
-range of IRQ acknowledge registers in the MFD part), so I will send a v2 of
-this series soonish.
+v1:
+ - Link: https://lore.kernel.org/all/20240401125543.1282845-1-zhengyejian1@huawei.com/
 
-> For DCDC3 after applying this patch we get:
-> 
-> #define AXP717_DCDC3_NUM_VOLTAGES	103
-> static const struct linear_range axp717_dcdc3_ranges[] = {
-> 	REGULATOR_LINEAR_RANGE(500000,   0,  70, 10000),
-> 	REGULATOR_LINEAR_RANGE(1220000, 71, 102, 20000),
-> };
-> 
-> The datasheet marks the maximum value as 1100110: 1.84V, which is 102.
-> So this patch to correct the AXP717_DCDC3_NUM_VOLTAGES is correct here.
-
-I agree ;-) thanks for checking!
-
-Cheers,
-Andre
-
-> >  static const struct linear_range axp717_dcdc3_ranges[] = {
-> > @@ -790,40 +790,40 @@ static const struct regulator_desc axp717_regulators[] = {
-> >  	AXP_DESC(AXP717, DCDC4, "dcdc4", "vin4", 1000, 3700, 100,
-> >  		 AXP717_DCDC4_CONTROL, AXP717_DCDC_V_OUT_MASK,
-> >  		 AXP717_DCDC_OUTPUT_CONTROL, BIT(3)),
-> > -	AXP_DESC(AXP717, ALDO1, "aldo1", "vin1", 500, 3500, 100,
-> > +	AXP_DESC(AXP717, ALDO1, "aldo1", "aldoin", 500, 3500, 100,
-> >  		 AXP717_ALDO1_CONTROL, AXP717_LDO_V_OUT_MASK,
-> >  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(0)),
-> > -	AXP_DESC(AXP717, ALDO2, "aldo2", "vin1", 500, 3500, 100,
-> > +	AXP_DESC(AXP717, ALDO2, "aldo2", "aldoin", 500, 3500, 100,
-> >  		 AXP717_ALDO2_CONTROL, AXP717_LDO_V_OUT_MASK,
-> >  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(1)),
-> > -	AXP_DESC(AXP717, ALDO3, "aldo3", "vin1", 500, 3500, 100,
-> > +	AXP_DESC(AXP717, ALDO3, "aldo3", "aldoin", 500, 3500, 100,
-> >  		 AXP717_ALDO3_CONTROL, AXP717_LDO_V_OUT_MASK,
-> >  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(2)),
-> > -	AXP_DESC(AXP717, ALDO4, "aldo4", "vin1", 500, 3500, 100,
-> > +	AXP_DESC(AXP717, ALDO4, "aldo4", "aldoin", 500, 3500, 100,
-> >  		 AXP717_ALDO4_CONTROL, AXP717_LDO_V_OUT_MASK,
-> >  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(3)),
-> > -	AXP_DESC(AXP717, BLDO1, "bldo1", "vin1", 500, 3500, 100,
-> > +	AXP_DESC(AXP717, BLDO1, "bldo1", "bldoin", 500, 3500, 100,
-> >  		 AXP717_BLDO1_CONTROL, AXP717_LDO_V_OUT_MASK,
-> >  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(4)),
-> > -	AXP_DESC(AXP717, BLDO2, "bldo2", "vin1", 500, 3500, 100,
-> > +	AXP_DESC(AXP717, BLDO2, "bldo2", "bldoin", 500, 3500, 100,
-> >  		 AXP717_BLDO2_CONTROL, AXP717_LDO_V_OUT_MASK,
-> >  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(5)),
-> > -	AXP_DESC(AXP717, BLDO3, "bldo3", "vin1", 500, 3500, 100,
-> > +	AXP_DESC(AXP717, BLDO3, "bldo3", "bldoin", 500, 3500, 100,
-> >  		 AXP717_BLDO3_CONTROL, AXP717_LDO_V_OUT_MASK,
-> >  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(6)),
-> > -	AXP_DESC(AXP717, BLDO4, "bldo4", "vin1", 500, 3500, 100,
-> > +	AXP_DESC(AXP717, BLDO4, "bldo4", "bldoin", 500, 3500, 100,
-> >  		 AXP717_BLDO4_CONTROL, AXP717_LDO_V_OUT_MASK,
-> >  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(7)),
-> > -	AXP_DESC(AXP717, CLDO1, "cldo1", "vin1", 500, 3500, 100,
-> > +	AXP_DESC(AXP717, CLDO1, "cldo1", "cldoin", 500, 3500, 100,
-> >  		 AXP717_CLDO1_CONTROL, AXP717_LDO_V_OUT_MASK,
-> >  		 AXP717_LDO1_OUTPUT_CONTROL, BIT(0)),
-> > -	AXP_DESC(AXP717, CLDO2, "cldo2", "vin1", 500, 3500, 100,
-> > +	AXP_DESC(AXP717, CLDO2, "cldo2", "cldoin", 500, 3500, 100,
-> >  		 AXP717_CLDO2_CONTROL, AXP717_LDO_V_OUT_MASK,
-> >  		 AXP717_LDO1_OUTPUT_CONTROL, BIT(1)),
-> > -	AXP_DESC(AXP717, CLDO3, "cldo3", "vin1", 500, 3500, 100,
-> > +	AXP_DESC(AXP717, CLDO3, "cldo3", "cldoin", 500, 3500, 100,
-> >  		 AXP717_CLDO3_CONTROL, AXP717_LDO_V_OUT_MASK,
-> >  		 AXP717_LDO1_OUTPUT_CONTROL, BIT(2)),
-> > -	AXP_DESC(AXP717, CLDO4, "cldo4", "vin1", 500, 3500, 100,
-> > +	AXP_DESC(AXP717, CLDO4, "cldo4", "cldoin", 500, 3500, 100,
-> >  		 AXP717_CLDO4_CONTROL, AXP717_LDO_V_OUT_MASK,
-> >  		 AXP717_LDO1_OUTPUT_CONTROL, BIT(3)),
-> >  	AXP_DESC(AXP717, CPUSLDO, "cpusldo", "vin1", 500, 1400, 50,
-> > -- 
-> > 2.35.8
-> >   
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index da1710499698..2b41837a2fac 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -1581,7 +1581,7 @@ static struct dyn_ftrace *lookup_rec(unsigned long start, unsigned long end)
+ }
+ 
+ /**
+- * ftrace_location_range - return the first address of a traced location
++ * ftrace_location_range_rcu - return the first address of a traced location
+  *	if it touches the given ip range
+  * @start: start of range to search.
+  * @end: end of range to search (inclusive). @end points to the last byte
+@@ -1592,7 +1592,7 @@ static struct dyn_ftrace *lookup_rec(unsigned long start, unsigned long end)
+  * that is either a NOP or call to the function tracer. It checks the ftrace
+  * internal tables to determine if the address belongs or not.
+  */
+-unsigned long ftrace_location_range(unsigned long start, unsigned long end)
++static unsigned long ftrace_location_range_rcu(unsigned long start, unsigned long end)
+ {
+ 	struct dyn_ftrace *rec;
+ 
+@@ -1603,6 +1603,16 @@ unsigned long ftrace_location_range(unsigned long start, unsigned long end)
+ 	return 0;
+ }
+ 
++unsigned long ftrace_location_range(unsigned long start, unsigned long end)
++{
++	unsigned long loc;
++
++	rcu_read_lock();
++	loc = ftrace_location_range_rcu(start, end);
++	rcu_read_unlock();
++	return loc;
++}
++
+ /**
+  * ftrace_location - return the ftrace location
+  * @ip: the instruction pointer to check
+@@ -1614,25 +1624,22 @@ unsigned long ftrace_location_range(unsigned long start, unsigned long end)
+  */
+ unsigned long ftrace_location(unsigned long ip)
+ {
+-	struct dyn_ftrace *rec;
++	unsigned long loc;
+ 	unsigned long offset;
+ 	unsigned long size;
+ 
+-	rec = lookup_rec(ip, ip);
+-	if (!rec) {
++	loc = ftrace_location_range(ip, ip);
++	if (!loc) {
+ 		if (!kallsyms_lookup_size_offset(ip, &size, &offset))
+ 			goto out;
+ 
+ 		/* map sym+0 to __fentry__ */
+ 		if (!offset)
+-			rec = lookup_rec(ip, ip + size - 1);
++			loc = ftrace_location_range(ip, ip + size - 1);
+ 	}
+ 
+-	if (rec)
+-		return rec->ip;
+-
+ out:
+-	return 0;
++	return loc;
+ }
+ 
+ /**
+@@ -6596,6 +6603,7 @@ static int ftrace_process_locs(struct module *mod,
+ 	/* We should have used all pages unless we skipped some */
+ 	if (pg_unuse) {
+ 		WARN_ON(!skipped);
++		synchronize_rcu();
+ 		ftrace_free_pages(pg_unuse);
+ 	}
+ 	return ret;
+@@ -6809,6 +6817,8 @@ void ftrace_release_mod(struct module *mod)
+  out_unlock:
+ 	mutex_unlock(&ftrace_lock);
+ 
++	if (tmp_page)
++		synchronize_rcu();
+ 	for (pg = tmp_page; pg; pg = tmp_page) {
+ 
+ 		/* Needs to be called outside of ftrace_lock */
+@@ -7142,6 +7152,7 @@ void ftrace_free_mem(struct module *mod, void *start_ptr, void *end_ptr)
+ 	unsigned long start = (unsigned long)(start_ptr);
+ 	unsigned long end = (unsigned long)(end_ptr);
+ 	struct ftrace_page **last_pg = &ftrace_pages_start;
++	struct ftrace_page *tmp_page = NULL;
+ 	struct ftrace_page *pg;
+ 	struct dyn_ftrace *rec;
+ 	struct dyn_ftrace key;
+@@ -7183,12 +7194,8 @@ void ftrace_free_mem(struct module *mod, void *start_ptr, void *end_ptr)
+ 		ftrace_update_tot_cnt--;
+ 		if (!pg->index) {
+ 			*last_pg = pg->next;
+-			if (pg->records) {
+-				free_pages((unsigned long)pg->records, pg->order);
+-				ftrace_number_of_pages -= 1 << pg->order;
+-			}
+-			ftrace_number_of_groups--;
+-			kfree(pg);
++			pg->next = tmp_page;
++			tmp_page = pg;
+ 			pg = container_of(last_pg, struct ftrace_page, next);
+ 			if (!(*last_pg))
+ 				ftrace_pages = pg;
+@@ -7205,6 +7212,10 @@ void ftrace_free_mem(struct module *mod, void *start_ptr, void *end_ptr)
+ 		clear_func_from_hashes(func);
+ 		kfree(func);
+ 	}
++	if (tmp_page) {
++		synchronize_rcu();
++		ftrace_free_pages(tmp_page);
++	}
+ }
+ 
+ void __init ftrace_free_init_mem(void)
+-- 
+2.25.1
 
 
