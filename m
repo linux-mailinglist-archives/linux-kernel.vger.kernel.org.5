@@ -1,113 +1,139 @@
-Return-Path: <linux-kernel+bounces-147718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7AC88A781A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:49:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB95C8A7825
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:50:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65C8FB23BBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:49:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 777F8282167
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872C113AA31;
-	Tue, 16 Apr 2024 22:46:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D51613B787;
+	Tue, 16 Apr 2024 22:48:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ldtuQV0L"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KFQrQH9N"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50ED113A88F;
-	Tue, 16 Apr 2024 22:46:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89CC684E0D
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 22:48:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713307576; cv=none; b=mlrgFLwme1hfnENbzUyFnaPe3s1jzQH6gD/Pmw2uZ/TvhSGIG9VVgiRM5x0+3h5jNG93VBiEUq8DlRshSLu89t7dQUpx3v6kLF3ItriBQInjk9R5qz+NgYkAsRwhZAy+sfhRV00+r3CT4G36tNnyttSHMIB2s98kOGFgSM1i4+o=
+	t=1713307694; cv=none; b=dMinxWosxg4zKxCeOA+HMXpY1ThKVBlbtOEKeP0+oBz1cW2wouaYCVj/fpCsFvg2vptSgGe1LsWcR9U3y310WtyCeQd3sB5meLEWUokUnaGpsDwL9eqWKamFRzu0MEF1M2BlpVFNnGrWIpMXyt/nYRcn40GDeBE/9RawBS0HD3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713307576; c=relaxed/simple;
-	bh=llxZo58VP9At2K8lhG3Bchvf9TeT0/Wc3kqodjf0g5U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VxgApvzHieGpXtYlcC9BUJLnZk+wA7/g7ra3Pfqc6erznDK5yDA8JN5cJ4fj3rJfB5n2/fldHlKne0vq7OOOWk9d53715Tq85hU1TzXp7Iq4uaQ/En+u4eZMggamUb5ptytaVX14n5CMdlAWxkmA0wVIsegmo85txI1fyEXlax8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ldtuQV0L; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713307575; x=1744843575;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=llxZo58VP9At2K8lhG3Bchvf9TeT0/Wc3kqodjf0g5U=;
-  b=ldtuQV0LGbagicObrNxGJReppzd2E04ODtx6XWK8GULxHFNJHU7eR7O7
-   S0KBKJpvVq3ypMzF6IInKlPyVELWK1CUAk7cwjzaes7ZHzqbEpTYH4OAZ
-   vtfyGSoo4xPjwT25zXtvFuIFo55PQD/KWMvYNPsQuf8MYvEPNfHExDbQ0
-   9BCaH8xhnR3RQkjR82kLTipqVpbCFSTxpY1z8HSkvNwHJXbe4jSACKbyI
-   vUabdjorata/GtINvVWjxPB0wDr/84C9otork/O7etYqdG55h0iyVaChN
-   1YGeFFHwIBHJJtSmDLo2QjzZR2bfiG3YbR2n7ueSogUrGpE1VLOjwVjjf
-   Q==;
-X-CSE-ConnectionGUID: cXNZCiyXTD+e3KA4U3XlGw==
-X-CSE-MsgGUID: ufHSL9WeQjezHbV0yb772w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8641070"
-X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="8641070"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 15:46:14 -0700
-X-CSE-ConnectionGUID: IwhoHhQ0SmaPL59GKQy8TQ==
-X-CSE-MsgGUID: CI93jiQiTi2bbLD+EoKvsw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="22480291"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by fmviesa009.fm.intel.com with ESMTP; 16 Apr 2024 15:46:13 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rwrZ5-0005o0-0K;
-	Tue, 16 Apr 2024 22:46:11 +0000
-Date: Wed, 17 Apr 2024 06:45:55 +0800
-From: kernel test robot <lkp@intel.com>
-To: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH 4/4] kbuild: use $(src) instead of $(srctree)/$(src) for
- source directory
-Message-ID: <202404170634.BlqTaYA0-lkp@intel.com>
-References: <20240416121838.95427-5-masahiroy@kernel.org>
+	s=arc-20240116; t=1713307694; c=relaxed/simple;
+	bh=e0f7bSzmGtIK19I0RYLYT2KkAAvf40uPWF4pZ8AJVio=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=Gl9mDt69fX03uhruNgf5E9lSllmbYSHZqAAqiTklX3508UABrtIbl7UDeoJIYjUPONDt4DWOYaW8RMK5ySvwzieCy+M8UNzwPCHYKfeuJYKmJIN4RxCroggDk/kSRdiqAZE87/x/BjzUAERGnTPKJu3BuzBmMwiet5GBFqCq0lo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KFQrQH9N; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713307692;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dQOrgp2MD172t9l6XQGW4lrZCkMqV6c2thjTwzveTuc=;
+	b=KFQrQH9NEppkZ3XfxFkmZFHpp54IWP5Gp5Y//SpdVkYT9Kzu9VAwtZjR1RoQIpBuk60jLt
+	VoWOwNTHbjVXU3JZL3zMDEQWAl0pFlHBQ27a2sLUgFMnCfYDSmf5c89mhK8h9+2chIZ96a
+	CB9KoEO0sw6Dd8Eaai1vi8BX/GRYDUg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-587-dt0tRQhmPu-rFZtjV6hU-A-1; Tue, 16 Apr 2024 18:48:08 -0400
+X-MC-Unique: dt0tRQhmPu-rFZtjV6hU-A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C46DD80A1B9;
+	Tue, 16 Apr 2024 22:48:06 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.10])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id DCEA51BDAA;
+	Tue, 16 Apr 2024 22:48:02 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <b6b6f41b9de1fc4128c3b3fe5aefc82d07a2347b.camel@kernel.org>
+References: <b6b6f41b9de1fc4128c3b3fe5aefc82d07a2347b.camel@kernel.org> <20240328163424.2781320-1-dhowells@redhat.com> <20240328163424.2781320-4-dhowells@redhat.com>
+To: Jeff Layton <jlayton@kernel.org>, Steve French <smfrench@gmail.com>
+Cc: dhowells@redhat.com, Christian Brauner <christian@brauner.io>,
+    Gao Xiang <hsiangkao@linux.alibaba.com>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Matthew Wilcox <willy@infradead.org>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Ilya Dryomov <idryomov@gmail.com>, netfs@lists.linux.dev,
+    linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+    linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+    ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
+    linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org, Steve French <sfrench@samba.org>,
+    Shyam Prasad N <nspmangalore@gmail.com>,
+    Rohith Surabattula <rohiths.msft@gmail.com>
+Subject: Re: [PATCH 03/26] netfs: Update i_blocks when write committed to pagecache
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416121838.95427-5-masahiroy@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2755235.1713307678.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 16 Apr 2024 23:47:58 +0100
+Message-ID: <2755236.1713307678@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-Hi Masahiro,
+Jeff Layton <jlayton@kernel.org> wrote:
 
-kernel test robot noticed the following build warnings:
+> > Update i_blocks when i_size is updated when we finish making a write t=
+o the
+> > pagecache to reflect the amount of space we think will be consumed.
+> > =
 
-[auto build test WARNING on masahiroy-kbuild/for-next]
-[cannot apply to masahiroy-kbuild/fixes wireless-next/main wireless/main linus/master v6.9-rc4 next-20240416]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> =
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Masahiro-Yamada/arch-use-obj-instead-of-src-for-preprocessed-linker-scripts/20240416-202308
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git for-next
-patch link:    https://lore.kernel.org/r/20240416121838.95427-5-masahiroy%40kernel.org
-patch subject: [PATCH 4/4] kbuild: use $(src) instead of $(srctree)/$(src) for source directory
-config: openrisc-defconfig (https://download.01.org/0day-ci/archive/20240417/202404170634.BlqTaYA0-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240417/202404170634.BlqTaYA0-lkp@intel.com/reproduce)
+> Umm ok, but why? I get that the i_size and i_blocks would be out of sync
+> until we get back new attrs from the server, but is that a problem? I'm
+> mainly curious as to what's paying attention to the i_blocks during this
+> window.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404170634.BlqTaYA0-lkp@intel.com/
+This is taking over from a cifs patch that does the same thing - but in co=
+de
+that is removed by my cifs-netfs branch, so I should probably let Steve sp=
+eak
+to that, though I think the problem with cifs is that these fields aren't
+properly updated until the closure occurs and the server is consulted.
 
-All warnings (new ones prefixed by >>):
+    commit dbfdff402d89854126658376cbcb08363194d3cd
+    Author: Steve French <stfrench@microsoft.com>
+    Date:   Thu Feb 22 00:26:52 2024 -0600
 
->> cc1: warning: -I: No such file or directory [-Wmissing-include-dirs]
+    smb3: update allocation size more accurately on write completion
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+    Changes to allocation size are approximated for extending writes of ca=
+ched
+    files until the server returns the actual value (on SMB3 close or quer=
+y info
+    for example), but it was setting the estimated value for number of blo=
+cks
+    to larger than the file size even if the file is likely sparse which
+    breaks various xfstests (e.g. generic/129, 130, 221, 228).
+    =
+
+    When i_size and i_blocks are updated in write completion do not increa=
+se
+    allocation size more than what was written (rounded up to 512 bytes).
+
+David
+
 
