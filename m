@@ -1,213 +1,137 @@
-Return-Path: <linux-kernel+bounces-147202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98ACB8A70EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:10:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C4E18A70F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:12:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54953285259
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:10:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D12DB1F2246B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:12:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C6F2131756;
-	Tue, 16 Apr 2024 16:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D02C3132489;
+	Tue, 16 Apr 2024 16:12:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="QSIslBDK"
-Received: from outbound.mail.protection.outlook.com (mail-dm6nam11on2040.outbound.protection.outlook.com [40.107.223.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PNYd/+WM"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF1912FB09
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713283821; cv=fail; b=lYFmTh4CFtBcuDLOBtFIlateOLCP/EFu3i8HQ1wvgIPmONnr+zP38OSzX/VaeuckhexipwRBn97GJ6aXxjkmUBWGijuSrzuh/3A/o8xjSCzxet+zyQ82hxShdAEdqC9a6ZML0JndckRbpEvMC3OPZwW7OrFn3Mwj/B/xqz3NmaU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713283821; c=relaxed/simple;
-	bh=wrvrhX7C8oOVq3Rpzx9bbGXlze0jGgXrEXC86sVUWeo=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ka8D+yxNPR2R87a3+9VLzM7ruIx1EXZkOZCVG1mNvHfaBWJqanVnX6LCaGB/H+VgEDjKOzgAX7EfLCIsnOJqBMfIHte4zuCoOzHVuFtSPtjuD7QhCEvjWd/cCccgDemHH5vbjQpfNfV4z+uWZmpYCd8rJsUkACIim4GP1MtXZSQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=QSIslBDK; arc=fail smtp.client-ip=40.107.223.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WXb7sID7Hju8SqOK4UDEhyzd/lrRIcVyx2mJqH/m7xKYscGUam2WAekTYEvIjV9apEu72tWdpFjW6E+9YtsWPuUxweUOilfPiyYUGAU07TeGGYfNyT4EfxR7pLODNquDPMJcuCw7TrvwacImxJhBd2J7FPQW3QxNeGg+D6AtZ/L9XGgrCjSaElqIEH4BjPU/HvpJ9iJjlvfwsqqwKnhgbxnvs5et7dY13Ka47OHSjqGEi2fwSb1+ANKJTXhaW3KsDSWNoGrWpuUJAjpGRvTEdmTO/6jrwyaINP/z+FFAW4x4UUc5YQHvLXPkt5FSFMvk+wMwj5cY2C1Z3ur5fIo1HQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pvhTamlKAD8kTuh0c9KJ8e4dW0bdeuao5MGTe54skuk=;
- b=PV8mlFHh962ScYHt3oWjREZxOqPfcPzjytNYmActbm+bAlrk7wkmrvEkjJO0W9sjpoFGrYcIts3/hTnFSsDvv3GFpDDtRQ9YNiuuOxzJapI0EZvHpXZs8PihQ3tIHBmtWffTJBbwtc2HWV2OYVlXmtnWhj2ztwFJ/Q+eSOxBXunekOfl++5+ReKBzmm+tlTFgg1g0F0UJvwea9pIev2sS3M9QwV8VdzsiX3lsjbsmFdRd4BHrtJC5Wv9i30oc2s1nloXOpWnJ07GToE+9fkdBWWksXJMd8eZrK+DaIeBmi188qwlinZ95L3MeuJ6H1iOSuy1Eo1tgzmyPHNIPPiaOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pvhTamlKAD8kTuh0c9KJ8e4dW0bdeuao5MGTe54skuk=;
- b=QSIslBDKHm94tHa88MllztuYdxTIEdZlYrUPRF8Evbngl9VaouBuJ5DbsJtxwEJLmTqm1cvwFEP7bB0FB2GsSZppyXjNCmKJUPAct/WCETB6qVJR+sfH7IwF59jMZ3ua3M3qw+fGKc35Exh8MG08MpPZD48FlCBT+5Q+2Zb9WJ8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
- by PH8PR12MB7181.namprd12.prod.outlook.com (2603:10b6:510:22a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
- 2024 16:10:17 +0000
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::bf0:d462:345b:dc52]) by BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::bf0:d462:345b:dc52%6]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
- 16:10:17 +0000
-Message-ID: <18dfff9a-b8e0-9d43-8538-366f74d74a7d@amd.com>
-Date: Tue, 16 Apr 2024 11:10:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 13/14] x86/sev: Hide SVSM attestation entries if not
- running under an SVSM
-Content-Language: en-US
-To: Dan Williams <dan.j.williams@intel.com>, linux-kernel@vger.kernel.org,
- x86@kernel.org, linux-coco@lists.linux.dev, svsm-devel@coconut-svsm.dev
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Michael Roth <michael.roth@amd.com>,
- Ashish Kalra <ashish.kalra@amd.com>, Joel Becker <jlbec@evilplan.org>,
- Christoph Hellwig <hch@lst.de>
-References: <cover.1711405593.git.thomas.lendacky@amd.com>
- <67893f352bc54de61160bfe251cba0bdf0431f37.1711405593.git.thomas.lendacky@amd.com>
- <661e14a2cdb12_4d561294c7@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-From: Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <661e14a2cdb12_4d561294c7@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN6PR01CA0032.prod.exchangelabs.com (2603:10b6:805:b6::45)
- To BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4C6B131726;
+	Tue, 16 Apr 2024 16:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713283938; cv=none; b=UV1qUmnZ4BkxM8W9OlcTxkV+WRELxfWf3m6KM8f0EATt10F7uAPVK3X5HpUP0sBXLBGRIrmSngqWrDhOsvY3T4IUCSngPShP5D6dPhcdyAb+JfhFa3S2wN2MKiN9n3qGHnvMZhjC5ZGk/53OUWpJEFJ0NyFwuJz/Qf7GJPsIj3k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713283938; c=relaxed/simple;
+	bh=EKrDgIJgNXo/R8quzpUy0yW7erzp8PxvHvcTe/50ujU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=q7UxvlvWIMrRYgIqavvjuZXm4TWeJvaYaQKqnjkrro0MXCmAbgj+dBsv/sJfDssMNJhQLfk5Jg9l6fc14Hk5uVvMC/Xf6WARZ9oBWxrfhgs6cAOyhbJMjm9hZP9qmRTd6Phch63S5xwkhyk7rtP/wgzMYWGqJqNa7y7sGo+14hI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PNYd/+WM; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e5715a9ebdso36956275ad.2;
+        Tue, 16 Apr 2024 09:12:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713283935; x=1713888735; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=EKrDgIJgNXo/R8quzpUy0yW7erzp8PxvHvcTe/50ujU=;
+        b=PNYd/+WMCJkxq3lys23g1hgaUEyZDH1rNd3cGHTeIZzcTbiGxR4EJSJfGjllMpxSRE
+         zVGBGd5oBS2dqmpSQXwo9F5Jd0Uc6F4W0NHSefezL2ECSOf0Ol9weMtdjPRDiNxQ8Veh
+         Otl5fuAjZMdnHg8Xryp27Np2YneqRbR4up7gua7mzTdj6YEEBSE3njQfHDHaZA5WfbPU
+         hJk6I7oY1eYDa8eJIdBhQJH02XnfXL6L6yt8cGeR5cp5POgzfyrt8VCgB0DV0IHLshmO
+         +Cy1H8oHpuS/p7BI12gVvm3quEpQLICCIUrgUjtUh9jdY+zA+nB5VEsEZhInhr4zx1bL
+         wfUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713283935; x=1713888735;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EKrDgIJgNXo/R8quzpUy0yW7erzp8PxvHvcTe/50ujU=;
+        b=uIhZvmNcPkotHAjbcXNcvgaGy9oZV/gOuvauDmOAkT4wf5M3ANTTEabBcVqZMGghwa
+         f7Zb4d9GRAZOkrhSjMT7AHbbsYWmP9dT6EZbSzPfi96/Lz7BTV7egzW0vX1MX+fmquRR
+         rnCYyKKYFrK/Ei3r1zfT6Fmzx5pZfCCpxVqnuC23Aiq0G/Eer+zHcNSYhfY37IixN96Q
+         VUFJuKijSmsBK0SOCSj3pKVohMAUf5iCnd/y1P9bbIxY7bUA/2jUglcA8rlBgvcd0NrC
+         bxpIyUrAotBypc0OGDIKH9nSTS8I8AIzkxZU/arxOWxiOMp9F7krPJdxvRb849xj/wkz
+         WxwA==
+X-Forwarded-Encrypted: i=1; AJvYcCVS0MgTdoo7wFMTLSulSEvz+2b7OO/s6+WmAyns19h5rAmY/ze0RUpCsuu6PmdQgy+K9TKk5Z89wqfaXUV1RiUgrMEBS32EopEE79EK07YJqNBMguwwapqcpH6UrfR79mNhYs08tcWb+fGBRmBCVbrJMibsLExNth2xNi865QDetTSXhSQQ5lcgPeU1yLQckkNK
+X-Gm-Message-State: AOJu0YzWpY1EXhk3exoVoit84aRuoDx8ttU6/o+KVRDblvcLjVSUwj/s
+	8cGcGaBsXKVhs4Y0PoAdSDp+ndNr69++X0C0/owHehkAqwTKIyrf
+X-Google-Smtp-Source: AGHT+IEaBhKQrtE4y17EN+JRfoZ0nAtlgq9TOIgtvD46kDZyqFoPetYC3y2iMwccARAF9quBrezxcQ==
+X-Received: by 2002:a17:903:595:b0:1e3:e4ff:7054 with SMTP id jv21-20020a170903059500b001e3e4ff7054mr10328895plb.38.1713283934861;
+        Tue, 16 Apr 2024 09:12:14 -0700 (PDT)
+Received: from ?IPv6:2605:59c8:43f:400:82ee:73ff:fe41:9a02? ([2605:59c8:43f:400:82ee:73ff:fe41:9a02])
+        by smtp.googlemail.com with ESMTPSA id lf16-20020a170902fb5000b001e5119c1923sm10005822plb.71.2024.04.16.09.12.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 09:12:14 -0700 (PDT)
+Message-ID: <18ca19fa64267b84bee10473a81cbc63f53104a0.camel@gmail.com>
+Subject: Re: [PATCH net-next v2 07/15] mm: page_frag: add '_va' suffix to
+ page_frag API
+From: Alexander H Duyck <alexander.duyck@gmail.com>
+To: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+ kuba@kernel.org,  pabeni@redhat.com
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Jeroen de Borst
+ <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, 
+ Shailend Chand <shailend@google.com>, Eric Dumazet <edumazet@google.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen
+ <anthony.l.nguyen@intel.com>,  Sunil Goutham <sgoutham@marvell.com>, Geetha
+ sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
+ hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, Sean Wang
+ <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
+ Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith
+ Busch <kbusch@kernel.org>,  Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
+ <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,  Chaitanya Kulkarni
+ <kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang
+ <jasowang@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  David Howells
+ <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, Chuck Lever
+ <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown
+ <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo
+ <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Trond Myklebust
+ <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, 
+ intel-wired-lan@lists.osuosl.org, linux-arm-kernel@lists.infradead.org, 
+ linux-mediatek@lists.infradead.org, linux-nvme@lists.infradead.org, 
+ kvm@vger.kernel.org, virtualization@lists.linux.dev, linux-mm@kvack.org, 
+ bpf@vger.kernel.org, linux-afs@lists.infradead.org,
+ linux-nfs@vger.kernel.org
+Date: Tue, 16 Apr 2024 09:12:01 -0700
+In-Reply-To: <20240415131941.51153-8-linyunsheng@huawei.com>
+References: <20240415131941.51153-1-linyunsheng@huawei.com>
+	 <20240415131941.51153-8-linyunsheng@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|PH8PR12MB7181:EE_
-X-MS-Office365-Filtering-Correlation-Id: 16d62ab3-e79f-4c9a-7c6a-08dc5e2fb4c8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	RfZJZPhst6ctgOyjrxk+zvjwsAM7DK8w1n46tsM6MEVWWiRcR68QUbizoxl2ePF9DZresb1OzEBlwmMhHpmC1c1zNU8kkIgWGjznYbwyc5G0CEle7lEbcTgvoexeh4gc05bLCNpDQyasVAtVYA9EQKR4xuWM/bHaN1fn8wmRDuolPpecJyBZdtSr762Hk2sLUqsQX+xOvixRFk4OL4ELNdKX0RtM3TmTyVBNF3iCVFI2iNpt7QRZy8vMYSlt36Ys7YUYDEcMQQGB08ZTXI5jiJt/2VVskAdxdCGrHMuo3dFfdbYIB2hdiS30saK+FpCKqO50FAOcnFyUie+9LWjIBXztpcbvBNEypplJHwh72yNVEq4+2cfZIXzDNbJp+L9gmo1V7LOdQ1GgGQA/31PbW4sWi6L18XqukjdfEGw8muoaQPyUwiJMwsTrDCpqeFocKb/7g9iM5dT2rmsQGC60yg7zDUMKYHU5rOQnfiBUfosyz/peATjD2rF+Yh5ttGIHaoFmy2mdfiwtrS0J0sFpjTIyYsE4xqulSfWPdo1esYtKASpaybQ6gpu0lcL3d1k1EmWD7RAmq1IMMY0lMwgEEVvtwPb+qJ+lWMluatRs6EbmdeDZfGsv79gueaJG+ukCMAZRa5nnbUp1/P0NRCdYxqhJcAiQINaHj4HsJ2+adyM=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Um5RblBWbXl4aTFQeTRQSUhDYjJ4UmVnbXY4OUFySTNTT2pFc1RWQlRrY0ln?=
- =?utf-8?B?MzlVUzlQZHk1WWovMzdnWVNpYVZUQnJNZEszMlFEQm9UWTNtSEwrWEQ0NTVi?=
- =?utf-8?B?TWllVlRRS3NFSk5yb1E0VXpTdDdTa3B2d2k1a0xGNUNjT25TekpaUHRWTGpY?=
- =?utf-8?B?QkZGVzJmdldnUXZkWno1MjdmR0RoREtCOHZKZkZpcGlyWGdUVVdLSEZrYkRr?=
- =?utf-8?B?UHIxVndiVUowbVQ1WGZ4RHBGZHpRejAwVmNnR0pzT2lHWGYyc0ZXMk5sSmcz?=
- =?utf-8?B?TnRyNXhmSlV5Z3pyazYrM3g5T0d3Z0FmbTdjb1FjSU8ybkdwTEVWbEFLamx5?=
- =?utf-8?B?S3RMMWUycFBqOWNKN1RmTkNtVFhwdjlFTHlMS2I5OWNnS0dGZmNmU0JvRnU0?=
- =?utf-8?B?YldHOW5QZ2FicDBGOG4zaGphdU9kZGF6cXFuSzRtNE1EOC9vcUpzazczbmVn?=
- =?utf-8?B?anl5ZlBQU2xSZFJqRVZCVzBhY0FzRlplVGJ5RzduMHdqcWJHUExoRzJnTXcz?=
- =?utf-8?B?clBEMTdqNUpaRTJsZHllUVFIQWRiL1FTQ2J2bTRJelZMQnk2VmdEK1YvRm15?=
- =?utf-8?B?ZTFXbGg0VWwrb2x1dFVJS0liTHRndTdpaVNXdFZlbXFha3plR2J2Y1h5NWQx?=
- =?utf-8?B?OFhaQ0hLVUdYTmY1ckdsUlRwa0VkZlNEOW4rdDZaN2hJdXpndlVtVlRqUFhM?=
- =?utf-8?B?cWt2Z3lUQ1FUZ2tHUHBwNzl0NHM5cmJIaS91alRaM1NTTi9jcDN4WENKdFEw?=
- =?utf-8?B?bUI1WnhMVW1TWTdXZFFnM0IvdlVabnpJTDlQVEppQTRyRUtmSmYwU0lFR3Q3?=
- =?utf-8?B?UHpBZGsvR2FtU09NSkFDcHhqTit4bThBeFdaRG1vTXpNK2JmTHNSNEo2RlVi?=
- =?utf-8?B?cGpUY00rMWlLUnZpR2ExcVFhMVZsTjN0YW1XUjIvN29heUVRL0VBLzFuenFw?=
- =?utf-8?B?MzlCYUUxUU8zekdDZVQ4U05YaXpNY05oSnhHc1BLZi9rWDQyd0ozV0hvdFF5?=
- =?utf-8?B?eVdHcEtkQ2R5RUxqaWNNZjkzc1AzeFM0Szkzc0wzWWZXV2tITWlPYnVhVWI3?=
- =?utf-8?B?L1FHYVkxV2pZTk9GU1Z4bEc1MVRIYU9NR3U1SDhFam1lK2FtNWtCNGN6RmQ2?=
- =?utf-8?B?d2tJRXIzMmtKQTA1K1UrTk4wejVITUhXUThuZG5VQjhLSjVxWUxRZ1BxMzlV?=
- =?utf-8?B?M2pkLytXOWJ5RHJLVEhsdTZvRzEzTjFhczR1aEZVcFNBZTNpd09LSG9OTis4?=
- =?utf-8?B?THBaQXJMTWtDNHR3WDRrYUkyd1h3RTl4bDJETkthbk9NeTlHRTB6UnFwZWU5?=
- =?utf-8?B?Z0d2WXhhTUV5QTEwVlFkb29KamQ3Q0VweGIzYkJVdXNhb3RKbjJSdFRzR1ps?=
- =?utf-8?B?TCtHNWlRd3ZITmF0b284ekFSenhFMUZpcm83WGovWWNiUGZObzJOVys4c0sw?=
- =?utf-8?B?eGVGVjRQeG1DcXhrcmtMSlVIdHFVRDg5bFk1ZnU5VG9KWThGZlExejdkMnpW?=
- =?utf-8?B?OVdWQWtyTExlK2cvWkppeit6dldVZlN4UGhsY0hxcjdJUUQ2K2J6ZGticzh6?=
- =?utf-8?B?VXVla202bml1cjBUd3F0T0VpdXFxVmRibzdSODNwN2Rwb0EvSDc3VEtnUW9Q?=
- =?utf-8?B?aTd1Tmhodm84eCtRME8wN3pCZ0hUbFNMTndPM3lhbTUzRldDZk1UWUhQcU5M?=
- =?utf-8?B?bTEzQ2h4QzhRNDlhdFh5Y0IrZzNBbFRMTG9IcFQzdXMrVkovUEdyNlMrck9O?=
- =?utf-8?B?UGhuaXVEeGVBem5zVk9ZVWpzeTMrTnBrN3ZoZ25UdDlOa3VReHM5VVZoVllx?=
- =?utf-8?B?KytXb2EzQmJidjFZdFRzSkRLQndkOFVlSDk5U1o5SWZjK1pGYzEwRkVrdytl?=
- =?utf-8?B?UVQxR1ZRY3FMaWxUbkZ5b2FUN25WOVRjOHFmcnZDSGpYR2dmRXExTGZDSlhj?=
- =?utf-8?B?cUpveHVuczNveldkcHI2T2QvOHJqOHBqSGhZRG5aQzZ6NEJaY3IyWHphVXFT?=
- =?utf-8?B?QTdDQlh2bDlTNkJpdVJ2bGV3UCs3dDJrbEZmajFjYk01TXo0WlR2MTVrejhC?=
- =?utf-8?B?elJ4QmZOVDhuOVJtbGxDeHkzcnAwOFZlSUZrdmQ5cFhudUpJRFAwQzE0d3hu?=
- =?utf-8?Q?2ef16k0vuybz45amrGQEyyDa3?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16d62ab3-e79f-4c9a-7c6a-08dc5e2fb4c8
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 16:10:17.0857
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xC4oWDf84az9im+eLeAdzzZsf1Y+4ISswBaTFsMKWiyPy4u8g7tw2woFWcptml/HSXoIQWoeZT6n4v3M6LjWJg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7181
 
+On Mon, 2024-04-15 at 21:19 +0800, Yunsheng Lin wrote:
+> Currently most of the API for page_frag API is returning
+> 'virtual address' as output or expecting 'virtual address'
+> as input, in order to differentiate the API handling between
+> 'virtual address' and 'struct page', add '_va' suffix to the
+> corresponding API mirroring the page_pool_alloc_va() API of
+> the page_pool.
+>=20
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 
+This patch is a total waste of time. By that logic we should be
+renaming __get_free_pages since it essentially does the same thing.
 
-On 4/16/24 01:03, Dan Williams wrote:
-> Tom Lendacky wrote:
->> Config-fs provides support to hide individual attribute entries. Using
->> this support, base the display of the SVSM related entries on the presence
->> of an SVSM.
->>
->> Cc: Joel Becker <jlbec@evilplan.org>
->> Cc: Christoph Hellwig <hch@lst.de>
->> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
->> ---
->>   arch/x86/coco/core.c        |  4 ++++
->>   drivers/virt/coco/tsm.c     | 14 ++++++++++----
->>   include/linux/cc_platform.h |  8 ++++++++
->>   3 files changed, 22 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
->> index d07be9d05cd0..efa0f648f754 100644
->> --- a/arch/x86/coco/core.c
->> +++ b/arch/x86/coco/core.c
->> @@ -12,6 +12,7 @@
->>   
->>   #include <asm/coco.h>
->>   #include <asm/processor.h>
->> +#include <asm/sev.h>
->>   
->>   enum cc_vendor cc_vendor __ro_after_init = CC_VENDOR_NONE;
->>   u64 cc_mask __ro_after_init;
->> @@ -78,6 +79,9 @@ static bool noinstr amd_cc_platform_has(enum cc_attr attr)
->>   	case CC_ATTR_GUEST_STATE_ENCRYPT:
->>   		return sev_status & MSR_AMD64_SEV_ES_ENABLED;
->>   
->> +	case CC_ATTR_GUEST_SVSM_PRESENT:
->> +		return snp_get_vmpl();
->> +
->>   	/*
->>   	 * With SEV, the rep string I/O instructions need to be unrolled
->>   	 * but SEV-ES supports them through the #VC handler.
->> diff --git a/drivers/virt/coco/tsm.c b/drivers/virt/coco/tsm.c
->> index 46f230bf13ac..d30471874e87 100644
->> --- a/drivers/virt/coco/tsm.c
->> +++ b/drivers/virt/coco/tsm.c
->> @@ -64,6 +64,12 @@ static struct tsm_report_state *to_state(struct tsm_report *report)
->>   	return container_of(report, struct tsm_report_state, report);
->>   }
->>   
->> +static bool provider_visibility(const struct config_item *item,
->> +				const struct configfs_attribute *attr)
->> +{
->> +	return cc_platform_has(CC_ATTR_GUEST_SVSM_PRESENT);
->> +}
-> 
-> I expect this needs to be a callback into the provider ops because one
-> of the other use cases for this visibility check is to get rid of the
-> "extra" attributes and handle that visibility with the same mechanism.
-
-Yes, worked through on the other thread.
-
-But the "extra" attributes are likely to remain visible if we go in the 
-group visibility direction, to provide compatibility.
-
-Thanks,
-Tom
+This just seems like more code changes for the sake of adding code
+changes rather than fixing anything. In my opinion it should be dropped
+from the set.
 
 
