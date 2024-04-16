@@ -1,268 +1,248 @@
-Return-Path: <linux-kernel+bounces-146530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 086778A66A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:02:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A6B08A667F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:53:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 870C51F21B24
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:02:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B063EB2158B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:53:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0423884FDB;
-	Tue, 16 Apr 2024 09:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF36584A36;
+	Tue, 16 Apr 2024 08:52:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Fax2au8N"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rQTCc1DG"
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245A883CD1;
-	Tue, 16 Apr 2024 09:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734BB71B50
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:52:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713258133; cv=none; b=hfwPMZQcGI/whqrdAuhgHlMAUZHXV0hE1+aVGlFVjTAK2Nt2aNG527tGId7kJpYD7aljg9xGqoTs/Iakf4HqSa17SQzHUtySHsV4iwIt0Or++yBJcWYuo+gAN4mCTwCIm6woHXqywElWxHLzsXqz/KtWRv5lS1L7j3vfj9Bg6UM=
+	t=1713257577; cv=none; b=f2slnv6vjbCpxtJ/hQBrpxn1xtp1lqnIticzz5sNyejLmHBxQqGdDzJcmywbqNUDKs3ObgadYSgHEsX4zPCoy/qrEHniHF4tL8M2aQRezR1Fmdt29idcdeodV5kPzxXA65QJ/n5+fRivVu5b8jOPEMgdzxa+OBDcCJUBCHjDYko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713258133; c=relaxed/simple;
-	bh=g/FqV19rKWb535cexKioS66bqLX57/QzG0Uv51rTSZs=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Exh07IV488gnDlXCkGDXbFSOjq+C7o+Kw8G5CP1uPaZKrMnCvrFTm4FyNEiniMC3/6QyGWY974gujITPPgjVslm29Nf72Jz6ZqLk0Hj5E1Zv92W0Mvfg4aK0CnurnUc83MJQpeu6A32BrVSjqYO7nr9aFXGmTNFKGbgepvEYJHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=Fax2au8N; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id E725F12000C;
-	Tue, 16 Apr 2024 12:02:01 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru E725F12000C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1713258121;
-	bh=nlvCjxCsDmswnKHUR9zLC0s4ABtaZZnkhgMtH/U3PBg=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=Fax2au8NBRg6oQLiW1pgS6MAwaHUT+aTcYWb6WgGUioTTPUe7ysJfipCbchyOIzFi
-	 9vsRIKlGk0Ki1jY0SV1yEjNX9yjsLEZ4Y8Ih8Kc/NylVIKdXgj9yD033aXSK3OetJd
-	 BZ2IfDKZS7+QxAJQm5NaXM1I4MR50m1iebUcs7gwNpG2/J2a7u513i1syMI1APCErn
-	 J78q8WENHskiRBvv6pkWwGuTA+u/QHzo6QIgZxoP9Zregjdoxg26yq39hoCt0/f9RA
-	 GEsHiHNOw0yk9NzJbrHxPeD7wLDoCSs4U3Pmvw9arqSsLFWwoUUVx85165gtdAMicm
-	 tZGFggLbNTQyg==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Tue, 16 Apr 2024 12:02:01 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 16 Apr 2024 12:02:01 +0300
-From: Arseniy Krasnov <avkrasnov@salutedevices.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Neil
- Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
-	<martin.blumenstingl@googlemail.com>
-CC: <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <oxffffaa@gmail.com>,
-	<kernel@sberdevices.ru>, Arseniy Krasnov <avkrasnov@salutedevices.com>
-Subject: [PATCH v5 2/2] mtd: rawnand: meson: support R/W mode for boot ROM
-Date: Tue, 16 Apr 2024 11:51:01 +0300
-Message-ID: <20240416085101.740458-3-avkrasnov@salutedevices.com>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20240416085101.740458-1-avkrasnov@salutedevices.com>
-References: <20240416085101.740458-1-avkrasnov@salutedevices.com>
+	s=arc-20240116; t=1713257577; c=relaxed/simple;
+	bh=FdtQyAHvdiOXO6ti4ShXTouSZM7Z22hhscY+ZntVPlM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oMgcrrRIX+icPpdb/V2j92Z0Pn+Gty3UKwNYxKZAqnMcPMo7pKgHATRZ+E5CV124m1zFn0FnqVsfhjrGjp6tYQQe4jbWcFYShVLw6EZTgpSsqh65cGv+i2FDBTFfoHSTO5KQjMjEF7sdHBPlTgcm4DaO/p7v3zBLBdR/qRwccV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rQTCc1DG; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-78d743f3654so390039385a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 01:52:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713257574; x=1713862374; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hPVk/nT4EhdKCio3Wn9r/Arl5MCpgxnJeUxrDI8MyIE=;
+        b=rQTCc1DGz3frrxpKbhy/9ejG+WfVduUruCugxkAc5sFgADXwdcpj9zCZyUgziljJFi
+         ctU904t/17GeCTCltvetKp2HQ/9uH09h342nj+MfpObZ57wpPqrIuE1D/sCSXSRFue51
+         zMpaLbTculKnw2XZaTKJWNGNpRly48LZHif+ZGMJIFmRA+DTNt1RDFCvRXMFnshEKqPf
+         o7jxFMYdhIYE2M8gF0HtpBigUurWFU/hOinYcHbyzUcSLXYTnZO5IiNudXtFDHs2Jyla
+         EQr52YF4rilEFO2AiobMhUdOiBmV8fuMgJecc3q6v0OX+UZIeaAdVlsmKOPk3+KVob6D
+         i3pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713257574; x=1713862374;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hPVk/nT4EhdKCio3Wn9r/Arl5MCpgxnJeUxrDI8MyIE=;
+        b=xNHKNvw5ehf8raGA7x/NRl0zzpi/Iw/0tFj17VzXfCPbuT45Q+POQd9Tr9vmTI8Pm/
+         zbzqzFIcjkERTB74HlaFgNcxC9ijTOY2OK/UiLZZEDl5KWy53xl6h/Vdqg/tLAHJkQPG
+         ghXfCTWHmMA4YYRvYWbEz9dXI0xi8AfEQp03uWqL+q+Tv/OznT52dQeuGpJOiq5gJF9r
+         w/Ndx+YJK5At7xRFFQ9uA9hqmG7mRmsKjRMvMBu09Q1DFp4fQ2dIxMcDn2vFR7R0nJfF
+         uAh0r8vxx8CITxYPbKmY72KeTLuyc86M8MINUNTL7Zbro7p41Td37bZLY4Ea4CBSdpxH
+         3bXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWdbpVWO0uMarghsN9ds0tjWp8GHO82TI6cf+na/Uk02UCZLFQYbltACsikAvf3A8eIkjqbCp4Wft4YgsLLDgrDEYN08lX9WpvJeoXT
+X-Gm-Message-State: AOJu0YwcUayTmVoh31aAKs7DNbcO4k9jRgG5ldMIQsd/WXKNDqfPvS/E
+	esQy0fsSHEQBOcfQdgRfjB5rwO5iPzpAIFlMzsUoi/hweJWbyGG1k0CMHCeJfL74EVr4UlX4Xrr
+	+L25T1Knsc9G5sf5c3/g/I9QDaeRWhX46MVep
+X-Google-Smtp-Source: AGHT+IEVH1GgftNMpoMJgPffHF/J8q7xcxKz2P8Pi0PJGcyYrQzTS/Zde01ylrcWnYqhEA7c7VJkWeiB58NSk9HcEN8=
+X-Received: by 2002:ad4:4ba2:0:b0:69b:7145:b2ee with SMTP id
+ i2-20020ad44ba2000000b0069b7145b2eemr6105996qvw.4.1713257574178; Tue, 16 Apr
+ 2024 01:52:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184729 [Apr 16 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 17 0.3.17 f2153f38d75b12894d9cf445f96cd15c9ef63a9d, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/16 06:39:00 #24817376
-X-KSMG-AntiVirus-Status: Clean, skipped
+References: <000000000000fe696d0615f120bb@google.com> <20240415131837.411c6e05eb7b0af077d6424a@linux-foundation.org>
+ <CAADnVQ+E=j1Z4MOuk2f-U33oqvUmmrRcvWvsDrmLXvD8FhUmsQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+E=j1Z4MOuk2f-U33oqvUmmrRcvWvsDrmLXvD8FhUmsQ@mail.gmail.com>
+From: Alexander Potapenko <glider@google.com>
+Date: Tue, 16 Apr 2024 10:52:12 +0200
+Message-ID: <CAG_fn=Uxaq1juuq-3cA1qQu6gB7ZB=LpyxBEdKf7DpYfAo3zmg@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] KMSAN: kernel-infoleak in bpf_probe_write_user
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	syzbot <syzbot+79102ed905e5b2dc0fc3@syzkaller.appspotmail.com>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Boot ROM code on Meson requires that some pages on NAND must be written
-in special mode: "short" ECC mode where each block is 384 bytes and
-scrambling mode is on. Such pages located with the specified interval
-within specified offset. Both interval and offset are located in the
-device tree and used by driver if 'nand-is-boot-medium' is set for
-NAND chip.
+On Mon, Apr 15, 2024 at 11:06=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> Hi,
+>
+> syzbot folks, please disable such "bug" reporting.
+> The whole point of bpf is to pass such info to userspace.
+> probe_write_user, various ring buffers, bpf_*_printk-s, bpf maps
+> all serve this purpose of "infoleak".
+>
 
-Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
----
- drivers/mtd/nand/raw/meson_nand.c | 88 +++++++++++++++++++++----------
- 1 file changed, 59 insertions(+), 29 deletions(-)
+Hi Alexei,
 
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index 00ce0e5bb970..9ee11243b257 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -35,6 +35,7 @@
- #define NFC_CMD_RB		BIT(20)
- #define NFC_CMD_SCRAMBLER_ENABLE	BIT(19)
- #define NFC_CMD_SCRAMBLER_DISABLE	0
-+#define NFC_CMD_SHORTMODE_ENABLE	1
- #define NFC_CMD_SHORTMODE_DISABLE	0
- #define NFC_CMD_RB_INT		BIT(14)
- #define NFC_CMD_RB_INT_NO_PIN	((0xb << 10) | BIT(18) | BIT(16))
-@@ -78,6 +79,8 @@
- #define DMA_DIR(dir)		((dir) ? NFC_CMD_N2M : NFC_CMD_M2N)
- #define DMA_ADDR_ALIGN		8
- 
-+#define NFC_SHORT_MODE_ECC_SZ	384
-+
- #define ECC_CHECK_RETURN_FF	(-1)
- 
- #define NAND_CE0		(0xe << 10)
-@@ -125,6 +128,8 @@ struct meson_nfc_nand_chip {
- 	u32 twb;
- 	u32 tadl;
- 	u32 tbers_max;
-+	u32 boot_pages;
-+	u32 boot_page_step;
- 
- 	u32 bch_mode;
- 	u8 *data_buf;
-@@ -298,28 +303,49 @@ static void meson_nfc_cmd_seed(struct meson_nfc *nfc, u32 seed)
- 	       nfc->reg_base + NFC_REG_CMD);
- }
- 
--static void meson_nfc_cmd_access(struct nand_chip *nand, int raw, bool dir,
--				 int scrambler)
-+static int meson_nfc_page_is_boot(struct nand_chip *nand, int page)
-+{
-+	const struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
-+
-+	return (nand->options & NAND_IS_BOOT_MEDIUM) &&
-+	       !(page % meson_chip->boot_page_step) &&
-+	       (page < meson_chip->boot_pages);
-+}
-+
-+static void meson_nfc_cmd_access(struct nand_chip *nand, bool raw, bool dir, int page)
- {
-+	const struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
- 	struct mtd_info *mtd = nand_to_mtd(nand);
- 	struct meson_nfc *nfc = nand_get_controller_data(mtd_to_nand(mtd));
--	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
--	u32 bch = meson_chip->bch_mode, cmd;
- 	int len = mtd->writesize, pagesize, pages;
-+	int scrambler;
-+	u32 cmd;
- 
--	pagesize = nand->ecc.size;
-+	if (nand->options & NAND_NEED_SCRAMBLING)
-+		scrambler = NFC_CMD_SCRAMBLER_ENABLE;
-+	else
-+		scrambler = NFC_CMD_SCRAMBLER_DISABLE;
- 
- 	if (raw) {
- 		len = mtd->writesize + mtd->oobsize;
- 		cmd = len | scrambler | DMA_DIR(dir);
--		writel(cmd, nfc->reg_base + NFC_REG_CMD);
--		return;
--	}
-+	} else if (meson_nfc_page_is_boot(nand, page)) {
-+		pagesize = NFC_SHORT_MODE_ECC_SZ >> 3;
-+		pages = mtd->writesize / 512;
-+
-+		scrambler = NFC_CMD_SCRAMBLER_ENABLE;
-+		cmd = CMDRWGEN(DMA_DIR(dir), scrambler, NFC_ECC_BCH8_1K,
-+			       NFC_CMD_SHORTMODE_ENABLE, pagesize, pages);
-+	} else {
-+		pagesize = nand->ecc.size >> 3;
-+		pages = len / nand->ecc.size;
- 
--	pages = len / nand->ecc.size;
-+		cmd = CMDRWGEN(DMA_DIR(dir), scrambler, meson_chip->bch_mode,
-+			       NFC_CMD_SHORTMODE_DISABLE, pagesize, pages);
-+	}
- 
--	cmd = CMDRWGEN(DMA_DIR(dir), scrambler, bch,
--		       NFC_CMD_SHORTMODE_DISABLE, pagesize, pages);
-+	if (scrambler == NFC_CMD_SCRAMBLER_ENABLE)
-+		meson_nfc_cmd_seed(nfc, page);
- 
- 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
- }
-@@ -743,15 +769,7 @@ static int meson_nfc_write_page_sub(struct nand_chip *nand,
- 	if (ret)
- 		return ret;
- 
--	if (nand->options & NAND_NEED_SCRAMBLING) {
--		meson_nfc_cmd_seed(nfc, page);
--		meson_nfc_cmd_access(nand, raw, DIRWRITE,
--				     NFC_CMD_SCRAMBLER_ENABLE);
--	} else {
--		meson_nfc_cmd_access(nand, raw, DIRWRITE,
--				     NFC_CMD_SCRAMBLER_DISABLE);
--	}
--
-+	meson_nfc_cmd_access(nand, raw, DIRWRITE, page);
- 	cmd = nfc->param.chip_select | NFC_CMD_CLE | NAND_CMD_PAGEPROG;
- 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
- 	meson_nfc_queue_rb(nand, PSEC_TO_MSEC(sdr->tPROG_max), false);
-@@ -829,15 +847,7 @@ static int meson_nfc_read_page_sub(struct nand_chip *nand,
- 	if (ret)
- 		return ret;
- 
--	if (nand->options & NAND_NEED_SCRAMBLING) {
--		meson_nfc_cmd_seed(nfc, page);
--		meson_nfc_cmd_access(nand, raw, DIRREAD,
--				     NFC_CMD_SCRAMBLER_ENABLE);
--	} else {
--		meson_nfc_cmd_access(nand, raw, DIRREAD,
--				     NFC_CMD_SCRAMBLER_DISABLE);
--	}
--
-+	meson_nfc_cmd_access(nand, raw, DIRREAD, page);
- 	ret = meson_nfc_wait_dma_finish(nfc);
- 	meson_nfc_check_ecc_pages_valid(nfc, nand, raw);
- 
-@@ -1436,6 +1446,26 @@ meson_nfc_nand_chip_init(struct device *dev,
- 	if (ret)
- 		return ret;
- 
-+	if (nand->options & NAND_IS_BOOT_MEDIUM) {
-+		ret = of_property_read_u32(np, "amlogic,boot-pages",
-+					   &meson_chip->boot_pages);
-+		if (ret) {
-+			dev_err(dev, "could not retrieve 'amlogic,boot-pages' property: %d",
-+				ret);
-+			nand_cleanup(nand);
-+			return ret;
-+		}
-+
-+		ret = of_property_read_u32(np, "amlogic,boot-page-step",
-+					   &meson_chip->boot_page_step);
-+		if (ret) {
-+			dev_err(dev, "could not retrieve 'amlogic,boot-page-step' property: %d",
-+				ret);
-+			nand_cleanup(nand);
-+			return ret;
-+		}
-+	}
-+
- 	ret = mtd_device_register(mtd, NULL, 0);
- 	if (ret) {
- 		dev_err(dev, "failed to register MTD device: %d\n", ret);
--- 
-2.35.0
+From KMSAN's perspective it is fine to pass information to the
+userspace, unless it is marked as uninitialized.
+It could be that we are missing some initialization in kernel/bpf/core.c th=
+ough.
+Do you know which part of the code is supposed to initialize the stack
+in PROG_NAME?
 
+> On Mon, Apr 15, 2024 at 1:18=E2=80=AFPM Andrew Morton <akpm@linux-foundat=
+ion.org> wrote:
+> >
+> > (cc bpf@)
+> >
+> > On Fri, 12 Apr 2024 19:27:25 -0700 syzbot <syzbot+79102ed905e5b2dc0fc3@=
+syzkaller.appspotmail.com> wrote:
+> >
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    fec50db7033e Linux 6.9-rc3
+> > > git tree:       upstream
+> > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D16509ba11=
+80000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D13e7da432=
+565d94c
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3D79102ed905e=
+5b2dc0fc3
+> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for=
+ Debian) 2.40
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D10a4af9=
+d180000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D12980f9d1=
+80000
+> > >
+> > > Downloadable assets:
+> > > disk image: https://storage.googleapis.com/syzbot-assets/901017b36ccc=
+/disk-fec50db7.raw.xz
+> > > vmlinux: https://storage.googleapis.com/syzbot-assets/16bfcf5618d3/vm=
+linux-fec50db7.xz
+> > > kernel image: https://storage.googleapis.com/syzbot-assets/dc9c5a1e7d=
+02/bzImage-fec50db7.xz
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the =
+commit:
+> > > Reported-by: syzbot+79102ed905e5b2dc0fc3@syzkaller.appspotmail.com
+> > >
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> > > BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/=
+instrumented.h:114 [inline]
+> > > BUG: KMSAN: kernel-infoleak in __copy_to_user_inatomic include/linux/=
+uaccess.h:125 [inline]
+> > > BUG: KMSAN: kernel-infoleak in copy_to_user_nofault+0x129/0x1f0 mm/ma=
+ccess.c:149
+> > >  instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+> > >  __copy_to_user_inatomic include/linux/uaccess.h:125 [inline]
+> > >  copy_to_user_nofault+0x129/0x1f0 mm/maccess.c:149
+> > >  ____bpf_probe_write_user kernel/trace/bpf_trace.c:349 [inline]
+> > >  bpf_probe_write_user+0x104/0x180 kernel/trace/bpf_trace.c:327
+> > >  ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+> > >  __bpf_prog_run64+0xb5/0xe0 kernel/bpf/core.c:2236
+> > >  bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+> > >  __bpf_prog_run include/linux/filter.h:657 [inline]
+> > >  bpf_prog_run include/linux/filter.h:664 [inline]
+> > >  __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+> > >  bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+> > >  __bpf_trace_kfree+0x29/0x40 include/trace/events/kmem.h:94
+> > >  trace_kfree include/trace/events/kmem.h:94 [inline]
+> > >  kfree+0x6a5/0xa30 mm/slub.c:4377
+> > >  vfs_writev+0x12bf/0x1450 fs/read_write.c:978
+> > >  do_writev+0x251/0x5c0 fs/read_write.c:1018
+> > >  __do_sys_writev fs/read_write.c:1091 [inline]
+> > >  __se_sys_writev fs/read_write.c:1088 [inline]
+> > >  __x64_sys_writev+0x98/0xe0 fs/read_write.c:1088
+> > >  do_syscall_64+0xd5/0x1f0
+> > >  entry_SYSCALL_64_after_hwframe+0x72/0x7a
+> > >
+> > > Local variable stack created at:
+> > >  __bpf_prog_run64+0x45/0xe0 kernel/bpf/core.c:2236
+> > >  bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+> > >  __bpf_prog_run include/linux/filter.h:657 [inline]
+> > >  bpf_prog_run include/linux/filter.h:664 [inline]
+> > >  __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+> > >  bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+> > >
+> > > Bytes 0-7 of 8 are uninitialized
+> > > Memory access of size 8 starts at ffff888121ec7ae8
+> > > Data copied to user address 00000000ffffffff
+> > >
+> > > CPU: 1 PID: 4779 Comm: dhcpcd Not tainted 6.9.0-rc3-syzkaller #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BI=
+OS Google 03/27/2024
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> > >
+> > >
+> > > ---
+> > > This report is generated by a bot. It may contain errors.
+> > > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > >
+> > > syzbot will keep track of this issue. See:
+> > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > >
+> > > If the report is already addressed, let syzbot know by replying with:
+> > > #syz fix: exact-commit-title
+> > >
+> > > If you want syzbot to run the reproducer, reply with:
+> > > #syz test: git://repo/address.git branch-or-commit-hash
+> > > If you attach or paste a git patch, syzbot will apply it before testi=
+ng.
+> > >
+> > > If you want to overwrite report's subsystems, reply with:
+> > > #syz set subsystems: new-subsystem
+> > > (See the list of subsystem names on the web dashboard)
+> > >
+> > > If the report is a duplicate of another one, reply with:
+> > > #syz dup: exact-subject-of-another-report
+> > >
+> > > If you want to undo deduplication, reply with:
+> > > #syz undup
+> >
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/syzkaller-bugs/CAADnVQ%2BE%3Dj1Z4MOuk2f-U33oqvUmmrRcvWvsDrmLXvD8FhUmsQ%40=
+mail.gmail.com.
+
+
+
+--
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
 
