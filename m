@@ -1,149 +1,141 @@
-Return-Path: <linux-kernel+bounces-147345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80AD18A72C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:03:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29DFD8A72C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:01:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1CC21C2150C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:03:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AAC01C2141A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:01:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55773134431;
-	Tue, 16 Apr 2024 18:02:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5D43134424;
+	Tue, 16 Apr 2024 18:01:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aaKd75up"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KUbsnRSo"
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DF5B134405;
-	Tue, 16 Apr 2024 18:02:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C73F912EBCE
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:01:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713290574; cv=none; b=Y3p5+Y2vvADz3ocC1TxJYOhcIF1yKBStYU6A0TPUB5gnvsPTw0tH1i++jVbONn/wCO1CwuFnyb5gP5p5CIqYjXvgTrpYIoz/U8EWqoiyDse5SKmutRVORpkKAYL0F8IZBeB6KxNeE1/WmrpPwwI2f5E7CfujO36MGwQwqZLGi9M=
+	t=1713290511; cv=none; b=hDvpMSYq/dlOOlexQno+00C7VC9KaQeYcxV2fS58F1k7dUnum7g9/QNckU8AtNy4A5FZGIvCYEPbi18eQKfLOfUqxhzW7Zf/K6J/R0SICU6CCrUpameHhkLLSJMtQz325kvp5FS/eCcCZhI68sSkRux4nWWI6BwMw+fqwqx3LtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713290574; c=relaxed/simple;
-	bh=RGobAnthjkgsb/QzuzeMGs8pm1LeGhwCVTyS3CsT0Qo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YtLOfg7SlvZiw7SLTnUrVOWtf0eWWLHVGXM/8nmDP76Bo2FkLZNZADoELtNIH6vHL2isIMaq2XJFEICQPyAg9s97jWcU9Q88fX6+WTqtdNh6ilEKmUT6kHavQ1RweGFtwRG0KTCZgtkrNycSn6IcV6RF2KzpLbhi/VLoKx+kOHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aaKd75up; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713290573; x=1744826573;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=RGobAnthjkgsb/QzuzeMGs8pm1LeGhwCVTyS3CsT0Qo=;
-  b=aaKd75upi/K+6pDjCRzh7nt+arqPqhJDkENHlWeRrQo+61ivaSNUg7yk
-   5V2bHavWGyPT/+haOKHjn87FMQkS8a5hCFaichSVCy/s5NPEvtenaSdMQ
-   jdlcgRJiSK9gAr+VAi1HG7CBv0AFjk9WN4yajTrHBUilIfDXVLnOg31el
-   oVyPLwOYiALA/TMA+v0UuLIQn+3hQApJIFA8jlNb9Uz8uQC/wGajFAQUp
-   0yZc7ZgdRGebSWKXffid8xyXuwZr39KsPvneeOtr82cb8ekzH/4bs0GiV
-   jvWVN0Z/u8g2U4IqePK8fSgSevLg6fnPPEkaxD+gb5x5mf183W9ufW/+j
-   A==;
-X-CSE-ConnectionGUID: s+hj1Wd5Q9+WrHXDP73pWg==
-X-CSE-MsgGUID: CMVVbtEqSRy96DFBsokpEA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8919455"
-X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="8919455"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 11:02:51 -0700
-X-CSE-ConnectionGUID: CzZ0kg0PQoSYEmRkCRwOgw==
-X-CSE-MsgGUID: eBu4AKCaTcm/ARo6DiMKeg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="22821944"
-Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
-  by orviesa007.jf.intel.com with ESMTP; 16 Apr 2024 11:02:52 -0700
-From: kan.liang@linux.intel.com
-To: peterz@infradead.org,
-	mingo@kernel.org,
-	acme@kernel.org,
-	namhyung@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org
-Cc: irogers@google.com,
-	mpetlan@redhat.com,
-	eranian@google.com,
-	ak@linux.intel.com,
-	Kan Liang <kan.liang@linux.intel.com>,
-	stable@vger.kernel.org
-Subject: [RESEND PATCH] perf/x86/intel/uncore: Fix the bits of the CHA extended umask for SPR
-Date: Tue, 16 Apr 2024 11:01:45 -0700
-Message-Id: <20240416180145.2309913-1-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.35.1
+	s=arc-20240116; t=1713290511; c=relaxed/simple;
+	bh=znLI4zxgUUfVwkoWj6V0iecQ92LLVJ6EoK5+qpGTLwY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NQzrRD+7fx8nYRiRqNGMgYTPucu84Jv21D0boA3z3QfHVH1IuPzS9lN6jcA05FEpa/nPou9lxFpWJ8LYMFGxSM7V5L8ZOufTUTAI2Ggd/7MVgPFuNXZUPDF7Sy6GHqP4PkQqKn13IRy3jnKMKYPK9tj3k+llgY8BSpcCsg7Wkzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KUbsnRSo; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-61ac183ee82so28617b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:01:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713290509; x=1713895309; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vUkBLA7UpkIvZvH5R1i37nHgSYLBeEs/jD+f4KMnAhc=;
+        b=KUbsnRSouBrIyb/qgoTuevfRRiREhkEAmGyfbYRhXNuvqE+6HPnSycJAnLkSNtc24g
+         4LscSJ1GYNi26pMNWeOveI5n4aG9WK5LLsIdzO4d40SNAkI25kNVdkyeAuCRSYbw4sG+
+         L3uC/CYEKA591qjbX3GjB62Bb2XjM0J7REI2dfl6XGFoByAINLVN1IG8x9GnA+r9ibuB
+         ed1LWXclGnzK0tYyusyeicgW2SiEjNXn85JJbziKYaOj9j8VwndmlUnCNBplAEBl7XS8
+         05LDFLXC6rHD/7OYWvh+ty/tyAeRYJDe3YIrlF7WUbFUkFe8D+0wABsho3HI1uP/qycg
+         TmMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713290509; x=1713895309;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vUkBLA7UpkIvZvH5R1i37nHgSYLBeEs/jD+f4KMnAhc=;
+        b=rxz9con1Vv+z31queHrD47wtFJ79Eb23+a/EmMeUC9dCF1MQdIfg0CRnhXkUi4mxyw
+         eJCVmwMx4pOiWN8FlavQ3FYccW3SBoa+Z+OnuLazr5ZgnOvTqjl87IA3vCijNdBS4zf1
+         J2TLQ14JmSMSiozEq+72QPqCUXyzUmf9GrkcZq3j2k/5Nhi0K/0d+QRsyetvJJSoeZDK
+         URBuWHIvFotdQ6UB21Dn8dnifJxzQ8PLOpPiWZJT8tle2aXTRp+U8ihOzRvy8lZtANGn
+         W+mGBINO+qFMfbC+sPAYIk14uWGAF1dleCM53iDSoZqY7wUATScsRqLDXshADv9BL5tL
+         QcJw==
+X-Forwarded-Encrypted: i=1; AJvYcCUZVjFlKWXEaXnSGUa7YoJ2u5VVblMsE4sLzVDIl9leFqUmH+RIGVyMFsERraMBYOgpJfWHI3R2GeCjZ2rl1ALEr13H0ciOXPAWLrVs
+X-Gm-Message-State: AOJu0Yxq7zloUBB6HbqEn7RgFTHgoPRM13Ly2/JjKMeupIdMPfle7LmF
+	3fScqBcVUaeDJbDgS0ffG1w2Ckuv5jgNwBY8gbP48L7kW7DY4Ol6
+X-Google-Smtp-Source: AGHT+IEXTjg1F7THHEFrWAT56rXYTuwXr2/dkiThVy/LqXzGwzrbeaa6ce/doZWifWma5daBH80UGg==
+X-Received: by 2002:a81:a102:0:b0:61a:e4d1:50b3 with SMTP id y2-20020a81a102000000b0061ae4d150b3mr2255358ywg.18.1713290508656;
+        Tue, 16 Apr 2024 11:01:48 -0700 (PDT)
+Received: from localhost ([2601:344:8301:57f0:2767:ac3e:3052:cd0])
+        by smtp.gmail.com with ESMTPSA id ft11-20020a05690c360b00b0061af7439278sm237788ywb.77.2024.04.16.11.01.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 11:01:48 -0700 (PDT)
+Date: Tue, 16 Apr 2024 11:01:47 -0700
+From: Yury Norov <yury.norov@gmail.com>
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: tglx@linutronix.de, rafael@kernel.org, akpm@linux-foundation.org,
+	maz@kernel.org, florian.fainelli@broadcom.com,
+	chenhuacai@kernel.org, jiaxun.yang@flygoat.com, anup@brainfault.org,
+	palmer@dabbelt.com, samuel.holland@sifive.com,
+	linux@rasmusvillemoes.dk, daniel.lezcano@linaro.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/7] irqchip/loongson-eiointc: Avoid explicit cpumask
+ allocation on stack
+Message-ID: <Zh69CzD26Z4hw6R9@yury-ThinkPad>
+References: <20240416085454.3547175-1-dawei.li@shingroup.cn>
+ <20240416085454.3547175-5-dawei.li@shingroup.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416085454.3547175-5-dawei.li@shingroup.cn>
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On Tue, Apr 16, 2024 at 04:54:51PM +0800, Dawei Li wrote:
+> In general it's preferable to avoid placing cpumasks on the stack, as
+> for large values of NR_CPUS these can consume significant amounts of
+> stack space and make stack overflows more likely.
+> 
+> Use cpumask_first_and_and() to avoid the need for a temporary cpumask on
+> the stack.
+> 
+> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+> ---
+>  drivers/irqchip/irq-loongson-eiointc.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
+> index 4f5e6d21d77d..c7ddebf312ad 100644
+> --- a/drivers/irqchip/irq-loongson-eiointc.c
+> +++ b/drivers/irqchip/irq-loongson-eiointc.c
+> @@ -93,19 +93,15 @@ static int eiointc_set_irq_affinity(struct irq_data *d, const struct cpumask *af
+>  	unsigned int cpu;
+>  	unsigned long flags;
+>  	uint32_t vector, regaddr;
+> -	struct cpumask intersect_affinity;
+>  	struct eiointc_priv *priv = d->domain->host_data;
+>  
+>  	raw_spin_lock_irqsave(&affinity_lock, flags);
+>  
+> -	cpumask_and(&intersect_affinity, affinity, cpu_online_mask);
+> -	cpumask_and(&intersect_affinity, &intersect_affinity, &priv->cpuspan_map);
+> -
+> -	if (cpumask_empty(&intersect_affinity)) {
 
-The perf stat errors out with UNC_CHA_TOR_INSERTS.IA_HIT_CXL_ACC_LOCAL
-event.
+This was unneeded because cpumask_and() returns true if there are set
+bits.
 
- $perf stat -e uncore_cha_55/event=0x35,umask=0x10c0008101/ -a -- ls
-    event syntax error: '..0x35,umask=0x10c0008101/'
-                                      \___ Bad event or PMU
+For the series:
 
-The definition of the CHA umask is config:8-15,32-55, which is 32bit.
-However, the umask of the event is bigger than 32bit.
-This is an error in the original uncore spec.
+Reviewed-by: Yury Norov <yury.norov@gmail.com>
 
-Add a new umask_ext5 for the new CHA umask range.
-
-Fixes: 949b11381f81 ("perf/x86/intel/uncore: Add Sapphire Rapids server CHA support")
-Closes: https://lore.kernel.org/linux-perf-users/alpine.LRH.2.20.2401300733310.11354@Diego/
-Reviewed-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Cc: stable@vger.kernel.org
----
- arch/x86/events/intel/uncore_snbep.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index a96496bef678..7924f315269a 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -461,6 +461,7 @@
- #define SPR_UBOX_DID				0x3250
- 
- /* SPR CHA */
-+#define SPR_CHA_EVENT_MASK_EXT			0xffffffff
- #define SPR_CHA_PMON_CTL_TID_EN			(1 << 16)
- #define SPR_CHA_PMON_EVENT_MASK			(SNBEP_PMON_RAW_EVENT_MASK | \
- 						 SPR_CHA_PMON_CTL_TID_EN)
-@@ -477,6 +478,7 @@ DEFINE_UNCORE_FORMAT_ATTR(umask_ext, umask, "config:8-15,32-43,45-55");
- DEFINE_UNCORE_FORMAT_ATTR(umask_ext2, umask, "config:8-15,32-57");
- DEFINE_UNCORE_FORMAT_ATTR(umask_ext3, umask, "config:8-15,32-39");
- DEFINE_UNCORE_FORMAT_ATTR(umask_ext4, umask, "config:8-15,32-55");
-+DEFINE_UNCORE_FORMAT_ATTR(umask_ext5, umask, "config:8-15,32-63");
- DEFINE_UNCORE_FORMAT_ATTR(qor, qor, "config:16");
- DEFINE_UNCORE_FORMAT_ATTR(edge, edge, "config:18");
- DEFINE_UNCORE_FORMAT_ATTR(tid_en, tid_en, "config:19");
-@@ -5957,7 +5959,7 @@ static struct intel_uncore_ops spr_uncore_chabox_ops = {
- 
- static struct attribute *spr_uncore_cha_formats_attr[] = {
- 	&format_attr_event.attr,
--	&format_attr_umask_ext4.attr,
-+	&format_attr_umask_ext5.attr,
- 	&format_attr_tid_en2.attr,
- 	&format_attr_edge.attr,
- 	&format_attr_inv.attr,
-@@ -5993,7 +5995,7 @@ ATTRIBUTE_GROUPS(uncore_alias);
- static struct intel_uncore_type spr_uncore_chabox = {
- 	.name			= "cha",
- 	.event_mask		= SPR_CHA_PMON_EVENT_MASK,
--	.event_mask_ext		= SPR_RAW_EVENT_MASK_EXT,
-+	.event_mask_ext		= SPR_CHA_EVENT_MASK_EXT,
- 	.num_shared_regs	= 1,
- 	.constraints		= skx_uncore_chabox_constraints,
- 	.ops			= &spr_uncore_chabox_ops,
--- 
-2.35.1
-
+> +	cpu = cpumask_first_and_and(&priv->cpuspan_map, affinity, cpu_online_mask);
+> +	if (cpu >= nr_cpu_ids) {
+>  		raw_spin_unlock_irqrestore(&affinity_lock, flags);
+>  		return -EINVAL;
+>  	}
+> -	cpu = cpumask_first(&intersect_affinity);
+>  
+>  	vector = d->hwirq;
+>  	regaddr = EIOINTC_REG_ENABLE + ((vector >> 5) << 2);
+> -- 
+> 2.27.0
 
