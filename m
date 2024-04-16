@@ -1,269 +1,119 @@
-Return-Path: <linux-kernel+bounces-147336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 070CC8A72AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:52:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FF0B8A72B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:53:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72ADD1F21CCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:52:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1F80283B31
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 809F6137774;
-	Tue, 16 Apr 2024 17:51:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E125813667E;
+	Tue, 16 Apr 2024 17:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rBTGA/j4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bYUG29Sq"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98950134433;
-	Tue, 16 Apr 2024 17:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC8F1353F5
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:52:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713289905; cv=none; b=DJfenTjdETCQEVgJda860L8ShI6LGm6KhkE2xw/+SsBwYRu+61Pjwi95VMpVeXHGb/qDHD2CZF27Wzq3KE308i0TCHWmCOVuMCXLbOtdXqgLVswHGvbf3p3nhnqKiDsquTjEgvZbzTGP8LZuTibS5vBQ9FU0w+WCAT1FG7aR7/Y=
+	t=1713289947; cv=none; b=kPo8++Rznv7R0kUDieHQZu2MmTRQmUXgHOivTCRGk69cXG4Gk4Wq0IQt9TGxMpllRDWAMGWS0ub8XGaxwZjr3gwlWq7Z0IiCie2/xiyGAmwmrbSAgKQFyr1iTRUoWMSqZxvs27irwVBI9FuACDSGvXfT1LjqCpl2BXmu/nDKapw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713289905; c=relaxed/simple;
-	bh=xykn9xlAKIRlCdpBDJjUFA6u/Fh4oeaFhP6Oe5BJZ9w=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lOZet7CEiS9THFD9w6v5DpK/KnksXQhlmTOtl47Z8+adlRULND+7dlStWMFICv41GnYev1G5X6a7Wjt9QRZB9yvUd3SgNdvcxC7WOGCIl7yJfuCfJVDGwCRRdGak4dKJUcfLGhrymjx70TQBoGii38Pq+mdbaLQBQq392l+V/ZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rBTGA/j4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0820FC2BD11;
-	Tue, 16 Apr 2024 17:51:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713289905;
-	bh=xykn9xlAKIRlCdpBDJjUFA6u/Fh4oeaFhP6Oe5BJZ9w=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=rBTGA/j4eYXaha1zep2XsWqQMo/7AuaFqKvR+9ztUt384qlMMGAN+2aCqPtF1UGaK
-	 U2ZPG0IxNZ5eBgCilfLyWL7Af8dqomP8JBPxoNHkHEQrQ9yumvgnBhvEkzyfFooiYh
-	 UfuchUwUlMiYHINfQ1r4Of3CW93zlTmy08apcPnyltNYZTekRluD60kr7Yi5rvjlco
-	 eKvF5OPmD8pQ46Zmo4DAUT/lv+uhsTwiXWRXDTCWzlfR2mmHCpoiw3Bnwu4NSLAo0f
-	 BbHg1J8OD7NoRHbsi3B6F+e5OyqeUQ1cNugA+Vu+KrvrJNxx1NXzHZ2s1+sDQcTf3h
-	 yFyl/RclpMJmg==
-Subject: [PATCH v1 3/3] cgroup/rstat: introduce ratelimited rstat flushing
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-To: tj@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com,
- cgroups@vger.kernel.org, yosryahmed@google.com, longman@redhat.com
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, shakeel.butt@linux.dev,
- kernel-team@cloudflare.com, linux-kernel@vger.kernel.org,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org
-Date: Tue, 16 Apr 2024 19:51:40 +0200
-Message-ID: <171328990014.3930751.10674097155895405137.stgit@firesoul>
-In-Reply-To: <171328983017.3930751.9484082608778623495.stgit@firesoul>
-References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
-User-Agent: StGit/1.5
+	s=arc-20240116; t=1713289947; c=relaxed/simple;
+	bh=RL5eJnIJalr+wZY+keQX44XIkYazCOOVBqQCLKNHyck=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CTSk4ip1f6NE5/nAWtxsjSIr+r0jRXHZxCFIVWzLYCuKAGmqTh59dgDp27t9LF41rEztZclkYf5OLi0q5fWXIgaFbDmK7W3kXoSqRafubJGmNXXxFOHqyxjbr46ZjqKA+7Gg1KW3GysTbmyea1liDIeeTuRea/TxvcHjl+XzF0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bYUG29Sq; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713289944;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SF0Zwul4Q3WHBBYBSPasOP7oJvF1qRnA4BYTQJG/BZI=;
+	b=bYUG29SqVMO5jCmg+QLvy6N3Yz/UoGyv6/uj5kjXDuuxPIYQ5kODICYnh9IKQHElF8RBHJ
+	O+R0mC6vJmnUpbd+3ZkSH7hE17CJsKMNx4qO4UOb8dctQuFy+svdiUuxgy/fCQ8bFvJzFd
+	9Rva5L2q1R1nGeQAuSNrNNC0iqK6at0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-93-si_pZQEbNnC__cjJdcrPLQ-1; Tue, 16 Apr 2024 13:52:21 -0400
+X-MC-Unique: si_pZQEbNnC__cjJdcrPLQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-343e46df264so2436737f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:52:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713289939; x=1713894739;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SF0Zwul4Q3WHBBYBSPasOP7oJvF1qRnA4BYTQJG/BZI=;
+        b=B5qxNrp6qiFAgDzu0WtWkErPaN4mrMLeRk+KoY1zICKHa9uVGdiFsl7XAFNG7djyem
+         pjhIVQ8uZo0M6eFioKyE+Ke28SWM6jfrKSGV2Fp3aK3I9Dz9EmAQfixnXh1FWY4jyQ8i
+         2+85liTkBp5XeC0jDH6g8uxlqChDFOW7QPQe3KR+JLMW8GpDledV2/cWhdi0X5u5WOfu
+         vdfgBaAbrw5PkDZZp+U4zOQ9h0rja0/XT7AglPzI8GbMLdXJfxMl1fDgcDLdHdcNS8b4
+         54bngmIfnR3uzEMA5FLlHhsElstQwL2yj/bu0ffbr2oYAT4UePTv21jeKFcr+DSp33h3
+         47WQ==
+X-Gm-Message-State: AOJu0YxyY5xRNLQyn2ikS2I3vXS0SrI8dieESy5evz/3PvtG4WcdsWnk
+	bewTztedalNFj9rEbphK9W6OK6Z9sLsATO6FNaKvLEYOF0M0ZXRUF6x2S27n9fzfjV8EEsdfUKp
+	3KCkcyb7VhQYrzo7RmOM3FmULt1nCte9nWRwtooeg9JajZ9qHsbCSUd7XYvUXtfEjX19h8ltrH1
+	R7TsUZL1YO53vIYJz8MSzP0ImihDd3sPwn6TaTf7D8z6Lp2SQ=
+X-Received: by 2002:adf:eb12:0:b0:343:9d4b:d920 with SMTP id s18-20020adfeb12000000b003439d4bd920mr8641687wrn.40.1713289939444;
+        Tue, 16 Apr 2024 10:52:19 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHy7ivQXIfAyRYzvSmU//iKgpRiLbz5LJuWHhAqMPpsWN86EtR3FUEfuESD8Ag5BMPC4LO1AHCvyL1UG0bDSfQ=
+X-Received: by 2002:adf:eb12:0:b0:343:9d4b:d920 with SMTP id
+ s18-20020adfeb12000000b003439d4bd920mr8641674wrn.40.1713289939105; Tue, 16
+ Apr 2024 10:52:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20240412173532.3481264-1-pbonzini@redhat.com> <20240412173532.3481264-8-pbonzini@redhat.com>
+ <Zh0p6Jz5eKBBmWci@chao-email>
+In-Reply-To: <Zh0p6Jz5eKBBmWci@chao-email>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Tue, 16 Apr 2024 19:52:08 +0200
+Message-ID: <CABgObfbsZKRidj7P72suZRAKcNQiRwFb73hi8iELU_g7kvt4Ug@mail.gmail.com>
+Subject: Re: [PATCH 07/10] KVM: VMX: Introduce test mode related to EPT
+ violation VE
+To: Chao Gao <chao.gao@intel.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	Isaku Yamahata <isaku.yamahata@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch aims to reduce userspace-triggered pressure on the global
-cgroup_rstat_lock by introducing a mechanism to limit how often reading
-stat files causes cgroup rstat flushing.
+On Mon, Apr 15, 2024 at 3:22=E2=80=AFPM Chao Gao <chao.gao@intel.com> wrote=
+:
+>
+> >
+> >-      if (cpu_has_secondary_exec_ctrls())
+> >+      if (cpu_has_secondary_exec_ctrls()) {
+> >               secondary_exec_controls_set(vmx, vmx_secondary_exec_contr=
+ol(vmx));
+> >+              if (secondary_exec_controls_get(vmx) &
+> >+                  SECONDARY_EXEC_EPT_VIOLATION_VE) {
+> >+                      if (!vmx->ve_info) {
+>
+> how about allocating ve_info in vmx_vcpu_create()? It is better to me bec=
+ause:
+>
+> a. symmetry. ve_info is free'd in vmx_vcpu_free().
+> b. no need to check if this is the first call of init_vmcs(). and ENOMEM =
+can
+> be returned on allocation failure.
 
-In the memory cgroup subsystem, memcg_vmstats_needs_flush() combined with
-mem_cgroup_flush_stats_ratelimited() already limits pressure on the
-global lock (cgroup_rstat_lock). As a result, reading memory-related stat
-files (such as memory.stat, memory.numa_stat, zswap.current) is already
-a less userspace-triggerable issue.
+There is no need to return ENOMEM however, it is okay to disable the test.
 
-However, other userspace users of cgroup_rstat_flush(), such as when
-reading io.stat (blk-cgroup.c) and cpu.stat, lack a similar system to
-limit pressure on the global lock. Furthermore, userspace can easily
-trigger this issue by reading those stat files.
+However I agree that doing it in vmx_vcpu_create(), conditional on
+vmcs_config.cpu_based_2nd_exec_ctrl, is a bit cleaner.
 
-Typically, normal userspace stats tools (e.g., cadvisor, nomad, systemd)
-spawn threads that read io.stat, cpu.stat, and memory.stat (even from the
-same cgroup) without realizing that on the kernel side, they share the
-same global lock. This limitation also helps prevent malicious userspace
-applications from harming the kernel by reading these stat files in a
-tight loop.
-
-To address this, the patch introduces cgroup_rstat_flush_ratelimited(),
-similar to memcg's mem_cgroup_flush_stats_ratelimited().
-
-Flushing occurs per cgroup (even though the lock remains global) a
-variable named rstat_flush_last_time is introduced to track when a given
-cgroup was last flushed. This variable, which contains the jiffies of the
-flush, shares properties and a cache line with rstat_flush_next and is
-updated simultaneously.
-
-For cpu.stat, we need to acquire the lock (via cgroup_rstat_flush_hold)
-because other data is read under the lock, but we skip the expensive
-flushing if it occurred recently.
-
-Regarding io.stat, there is an opportunity outside the lock to skip the
-flush, but inside the lock, we must recheck to handle races.
-
-Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
----
- block/blk-cgroup.c          |    2 +
- include/linux/cgroup-defs.h |    1 +
- include/linux/cgroup.h      |    3 +-
- kernel/cgroup/rstat.c       |   60 ++++++++++++++++++++++++++++++++++++++++++-
- mm/memcontrol.c             |    1 +
- 5 files changed, 63 insertions(+), 4 deletions(-)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index bdbb557feb5a..4156fedbb910 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -1162,7 +1162,7 @@ static int blkcg_print_stat(struct seq_file *sf, void *v)
- 	if (!seq_css(sf)->parent)
- 		blkcg_fill_root_iostats();
- 	else
--		cgroup_rstat_flush(blkcg->css.cgroup);
-+		cgroup_rstat_flush_ratelimited(blkcg->css.cgroup);
- 
- 	rcu_read_lock();
- 	hlist_for_each_entry_rcu(blkg, &blkcg->blkg_list, blkcg_node) {
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index ea48c861cd36..366dc644e075 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -509,6 +509,7 @@ struct cgroup {
- 	 * cgroup_rstat_flush_locked() and protected by cgroup_rstat_lock.
- 	 */
- 	struct cgroup	*rstat_flush_next;
-+	unsigned long	rstat_flush_last_time;
- 
- 	/* cgroup basic resource statistics */
- 	struct cgroup_base_stat last_bstat;
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 2150ca60394b..8622b222453e 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -689,7 +689,8 @@ static inline void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen)
-  */
- void cgroup_rstat_updated(struct cgroup *cgrp, int cpu);
- void cgroup_rstat_flush(struct cgroup *cgrp);
--void cgroup_rstat_flush_hold(struct cgroup *cgrp);
-+int cgroup_rstat_flush_hold(struct cgroup *cgrp);
-+int cgroup_rstat_flush_ratelimited(struct cgroup *cgrp);
- void cgroup_rstat_flush_release(struct cgroup *cgrp);
- 
- /*
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index a90d68a7c27f..8c71af67b197 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -193,6 +193,7 @@ static struct cgroup *cgroup_rstat_updated_list(struct cgroup *root, int cpu)
- 	/* Push @root to the list first before pushing the children */
- 	head = root;
- 	root->rstat_flush_next = NULL;
-+	root->rstat_flush_last_time = jiffies;
- 	child = rstatc->updated_children;
- 	rstatc->updated_children = root;
- 	if (child != root)
-@@ -261,12 +262,15 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp)
- 
- 	lockdep_assert_held(&cgroup_rstat_lock);
- 
-+	cgrp->rstat_flush_last_time = jiffies;
-+
- 	for_each_possible_cpu(cpu) {
- 		struct cgroup *pos = cgroup_rstat_updated_list(cgrp, cpu);
- 
- 		for (; pos; pos = pos->rstat_flush_next) {
- 			struct cgroup_subsys_state *css;
- 
-+			pos->rstat_flush_last_time = jiffies;
- 			cgroup_base_stat_flush(pos, cpu);
- 			bpf_rstat_flush(pos, cgroup_parent(pos), cpu);
- 
-@@ -309,6 +313,49 @@ __bpf_kfunc void cgroup_rstat_flush(struct cgroup *cgrp)
- 	__cgroup_rstat_unlock(cgrp, -1);
- }
- 
-+#define FLUSH_TIME	msecs_to_jiffies(50)
-+
-+/**
-+ * cgroup_rstat_flush_ratelimited - limit pressure on global lock (cgroup_rstat_lock)
-+ * @cgrp: target cgroup
-+ *
-+ * Trade accuracy for less pressure on global lock. Only use this when caller
-+ * don't need 100% up-to-date stats.
-+ *
-+ * Userspace stats tools spawn threads reading io.stat, cpu.stat and memory.stat
-+ * from same cgroup, but kernel side they share same global lock.  This also
-+ * limit malicious userspace from hurting kernel by reading these stat files in
-+ * a tight loop.
-+ *
-+ * This function exit early if flush recently happened.
-+ *
-+ * Returns 1 if flush happened
-+ */
-+int cgroup_rstat_flush_ratelimited(struct cgroup *cgrp)
-+{
-+	int res = 0;
-+
-+	might_sleep();
-+
-+	/* Outside lock: check if this flush and lock can be skipped */
-+	if (time_before(jiffies,
-+			READ_ONCE(cgrp->rstat_flush_last_time) + FLUSH_TIME))
-+		return 0;
-+
-+	__cgroup_rstat_lock(cgrp, -1);
-+
-+	/* Recheck inside lock, do flush after enough time have passed */
-+	if (time_after(jiffies,
-+		       cgrp->rstat_flush_last_time + FLUSH_TIME)) {
-+		cgroup_rstat_flush_locked(cgrp);
-+		res = 1;
-+	}
-+
-+	__cgroup_rstat_unlock(cgrp, -1);
-+
-+	return res;
-+}
-+
- /**
-  * cgroup_rstat_flush_hold - flush stats in @cgrp's subtree and hold
-  * @cgrp: target cgroup
-@@ -317,13 +364,22 @@ __bpf_kfunc void cgroup_rstat_flush(struct cgroup *cgrp)
-  * paired with cgroup_rstat_flush_release().
-  *
-  * This function may block.
-+ *
-+ * Returns 1 if flush happened
-  */
--void cgroup_rstat_flush_hold(struct cgroup *cgrp)
-+int cgroup_rstat_flush_hold(struct cgroup *cgrp)
- 	__acquires(&cgroup_rstat_lock)
- {
- 	might_sleep();
- 	__cgroup_rstat_lock(cgrp, -1);
--	cgroup_rstat_flush_locked(cgrp);
-+
-+	/* Only do expensive flush after enough time have passed */
-+	if (time_after(jiffies,
-+		       cgrp->rstat_flush_last_time + FLUSH_TIME)) {
-+		cgroup_rstat_flush_locked(cgrp);
-+		return 1;
-+	}
-+	return 0;
- }
- 
- /**
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index fabce2b50c69..771261612ec1 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -742,6 +742,7 @@ static void do_flush_stats(struct mem_cgroup *memcg)
- 	if (mem_cgroup_is_root(memcg))
- 		WRITE_ONCE(flush_last_time, jiffies_64);
- 
-+	/* memcg have own ratelimit layer */
- 	cgroup_rstat_flush(memcg->css.cgroup);
- }
- 
-
+Paolo
 
 
