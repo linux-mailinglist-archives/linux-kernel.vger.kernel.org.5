@@ -1,82 +1,57 @@
-Return-Path: <linux-kernel+bounces-147308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D54C58A7245
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:28:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE6B18A7247
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:28:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A6701F22AA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:28:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0BB91C2153F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:28:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C7031332B6;
-	Tue, 16 Apr 2024 17:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="T3Jz4KJm"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E49A1332B8;
+	Tue, 16 Apr 2024 17:28:19 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B25713280C
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:28:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0738F10A22;
+	Tue, 16 Apr 2024 17:28:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713288485; cv=none; b=laWV4IDC2ozt4MPkguPaybRIh353H7VD+yMslGC3iN9Er+0IV17ALTOwpy3Vdne9PxeyLh8ZtLK6lW1al5PlEoK/oxBKIaXRrWMuRo9UANX2zCqoG+osQvuPHb0u4sonwcQghTbIeWdGKVUMBLH4UnfFZoPGndzIo0MMHhDkUcc=
+	t=1713288499; cv=none; b=iUuEnuxCBGF1ZZJye/kujOMjzs4jLYxorePrSmPs3dGK93Xel+BK0H0C3c77zFTXYPzmf3YNXldVIq05lnNoa5RKq1XSZSN6IkOOOhd/+rbIE1YSTq7Ty5A4WduBF2xj+HOJuGmQDOhREbYcnCuB8ifUrb1nF0Qdk4K47DB5Neg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713288485; c=relaxed/simple;
-	bh=P9tX21C2H32XeRZpclyE1jUdcQxT5hx7EiLUM0Xs90o=;
+	s=arc-20240116; t=1713288499; c=relaxed/simple;
+	bh=fzIQWinEL64tdKbuV71MRaTNL67LcKX8BvwcAqWO8DA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZvdWRHdi62cHm/MPFtbTyIvV3KVJMqby4rAD+LABt1Rb/wau2rgJGRKquPmCix3sYIg7092DJCrSmQ1XUOHY9SyZm4zQgFM6ta2e1kao96xYiU3UzolMd8rmsRg+GDydldOWf2Qf8P2qN0NYJUgnIlUOWq8pg5Ppc+VWj9TOxCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=T3Jz4KJm; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so2677528a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:28:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713288484; x=1713893284; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CbYixWM2CqQRL1wOMDrzHbCtgA+kuvvqBpiFHzx5mPI=;
-        b=T3Jz4KJmnyq/mTIRQ0mnFEDpa8wKySv7YgYqQnu9UivT9y7iBBrKCtqCHQ9AwQcjcI
-         46vAdaph0tV8XogvavUwHlrPVsiXkEa8VxHf4SauwBJFTdvRYB3+CFHAheCf4HilFJ2u
-         iqGTZAHqZZto8HFgVIoteloaIQ3+r4azZG3YI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713288484; x=1713893284;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CbYixWM2CqQRL1wOMDrzHbCtgA+kuvvqBpiFHzx5mPI=;
-        b=T1ZcPdWvn16MIvqKFaDAM3Y/37V72tncJLyjjrWOjiBfWJnJIblNZGL8wMkzd8Aaib
-         AgLaldecYsnWInQK+ugPBMJXpri5yGyLe5U6EU+GhQh+JBRLJh0qGxLfg28r2vBK21nW
-         /x4tfN2kZJTuHzwosDddYoeW+3BrirXexH/j18QYV0ZBnx1JyHOA21xW5Iu737AspTSq
-         krf3uuFGrN/cMGwfY8bW11E1O6tyeqbzPYsUXgx0c8Dfb6b7dxuFEozfO1lo4jxKCgXK
-         1BSdTL33s7jQDqDIBbbmzA4C9D3td58CbvZm6iOMt8H4GP9Ldf+1v0ewERvRMbdv0uOa
-         kjJA==
-X-Forwarded-Encrypted: i=1; AJvYcCXbkSLyjirOKr3BCBH6G/r9jHt19xtFUPTehIc9vR44ifzqgFPQWDPYIKaezqt08xPspAsZREOJ6oMLofVYRYqAuqT5npCMU0rnXPCG
-X-Gm-Message-State: AOJu0YxGzEN38ghoBlPIgwmWxLxswaoDwyOW1te+m8UR3Z/h+38u7Zml
-	ivEoOrdQBSa77LIiIkzsBnc0SBxf5uOp1TWS4jhzDkYy75RJCew3Qizd0OomJw==
-X-Google-Smtp-Source: AGHT+IHbN76rCh1Qe3W01Nc2eeKTGXKJ8Gpa83X/WpafmSVHalfqd6xohNVPAcA7T0vL3gX2KQ5VZA==
-X-Received: by 2002:a17:90b:3bc7:b0:2a2:672f:ef6d with SMTP id ph7-20020a17090b3bc700b002a2672fef6dmr10647646pjb.49.1713288483774;
-        Tue, 16 Apr 2024 10:28:03 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h16-20020a17090a051000b002a2e4b593cdsm11862530pjh.51.2024.04.16.10.28.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 10:28:03 -0700 (PDT)
-Date: Tue, 16 Apr 2024 10:28:02 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: Eric Biederman <ebiederm@xmission.com>, Shuah Khan <shuah@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Yang Yingliang <yangyingliang@huawei.com>, kernel@collabora.com,
-	linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH v2] selftests: exec: make binaries position independent
-Message-ID: <202404161027.63F4D4FDEB@keescook>
-References: <20240416152831.3199999-1-usama.anjum@collabora.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PztHaNVNL3lnP8oWdrLxK2Td98SEWtPYCEyrTUUM6tbq7cL4wHvrWxr2DAk29C9p/SuFfFQi6I8IOkX5Sx+uY5m3Go/dROjxOOP5f/zRcshBMivArsEQAh3AIUE9wNc96tHuWEgfbSpwxuQ5+Z327kuXtgOXKg2pE6MJ+SVSWPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EABFC113CE;
+	Tue, 16 Apr 2024 17:28:13 +0000 (UTC)
+Date: Tue, 16 Apr 2024 18:28:10 +0100
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Marc Zyngier <maz@kernel.org>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Mark Brown <broonie@kernel.org>, stable@vger.kernel.org,
+	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+	allen.lkml@gmail.com, Yihuang Yu <yihyu@redhat.com>,
+	Gavin Shan <gshan@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Shaoqin Huang <shahuang@redhat.com>, Will Deacon <will@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: [PATCH 6.6 000/122] 6.6.28-rc1 review
+Message-ID: <Zh61KobDt_y1O46-@arm.com>
+References: <20240415141953.365222063@linuxfoundation.org>
+ <Zh5UJh31PlBkpZWd@finisterre.sirena.org.uk>
+ <CA+G9fYu-AjRm-BBA=8fWS8oCbBJ5W443JHPh3uddD7ea7MY-YA@mail.gmail.com>
+ <86y19dqw74.wl-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,25 +60,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240416152831.3199999-1-usama.anjum@collabora.com>
+In-Reply-To: <86y19dqw74.wl-maz@kernel.org>
 
-On Tue, Apr 16, 2024 at 08:28:29PM +0500, Muhammad Usama Anjum wrote:
-> The -static overrides the -pie and binaries aren't position independent
-> anymore. Use -static-pie instead which would produce a static and
-> position independent binary. This has been caught by clang's warnings:
+On Tue, Apr 16, 2024 at 02:22:07PM +0100, Marc Zyngier wrote:
+> On Tue, 16 Apr 2024 14:07:30 +0100,
+> Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > On Tue, 16 Apr 2024 at 16:04, Mark Brown <broonie@kernel.org> wrote:
+> > > On Mon, Apr 15, 2024 at 04:19:25PM +0200, Greg Kroah-Hartman wrote:
+> > > > This is the start of the stable review cycle for the 6.6.28 release.
+> > > > There are 122 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > >
+> > > The bisect of the boot issue that's affecting the FVP in v6.6 (only)
+> > > landed on c9ad150ed8dd988 (arm64: tlb: Fix TLBI RANGE operand),
+> > > e3ba51ab24fdd in mainline, as being the first bad commit - it's also in
+> > > the -rc for v6.8 but that seems fine.  I've done no investigation beyond
+> > > the bisect and looking at the commit log to pull out people to CC and
+> > > note that the fix was explicitly targeted at v6.6.
+> > 
+> > Anders investigated this reported issues and bisected and also found
+> > the missing commit for stable-rc 6.6 is
+> > e2768b798a19 ("arm64/mm: Modify range-based tlbi to decrement scale")
 > 
->   clang: warning: argument unused during compilation: '-pie'
->   [-Wunused-command-line-argument]
-> 
-> Tested with both gcc and clang after this change.
-> 
-> Fixes: 4d1cd3b2c5c1 ("tools/testing/selftests/exec: fix link error")
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> Which is definitely *not* stable candidate. We need to understand why
+> the invalidation goes south when the scale go up instead of down.
 
-Thanks for this!
+If you backport e3ba51ab24fd ("arm64: tlb: Fix TLBI RANGE operand")
+which fixes 117940aa6e5f ("KVM: arm64: Define
+kvm_tlb_flush_vmid_range()") but without the newer e2768b798a19
+("arm64/mm: Modify range-based tlbi to decrement scale"), it looks like
+"scale" in __flush_tlb_range_op() goes out of range to 4. Tested on my
+CBMC model, not on the actual kernel. It may be worth adding some
+WARN_ONs in __flush_tlb_range_op() if scale is outside the 0..3 range or
+num greater than 31.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+I haven't investigated properly (and I'm off tomorrow, back on Thu) but
+it's likely the original code was not very friendly to the maximum
+range, never tested. Anyway, if one figures out why it goes out of
+range, I think the solution is to also backport e2768b798a19 to stable.
 
 -- 
-Kees Cook
+Catalin
 
