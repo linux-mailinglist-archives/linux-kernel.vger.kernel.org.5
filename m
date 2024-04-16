@@ -1,148 +1,179 @@
-Return-Path: <linux-kernel+bounces-147446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4EC18A7454
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:06:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BC888A745A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:07:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29D681F2207D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:06:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D60B1C2185E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03D52137777;
-	Tue, 16 Apr 2024 19:06:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ifIZpPfR"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AF6E137766;
+	Tue, 16 Apr 2024 19:07:23 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9C71137773;
-	Tue, 16 Apr 2024 19:06:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25912137777
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 19:07:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713294382; cv=none; b=dV8mMG4v/Or3+SuEziOazvwraCOtTDUKdAAFmQ7vpOrGLSr2O5Nht4hnl4IOfWIFt9/M4qCzhzGrq60WlbbWDIxCrxySEbM8gUqpDiWwJ8vpJgEfoLRkt52m/oHl9hsFum0gKpjGBDn68F+xo/rX0vM1deg+O4Ut5Mx/DIP2g50=
+	t=1713294442; cv=none; b=dURz54mftZNNfXSF5mWMZR89XDwtKNnwM32DVX59jRj0wnSuKe8XuIOgiRC1c/bImPRXx7NhxbCAIIniphN/AaS6ttvN6CtjiaP1H3oZuMD/hN051TzV2h/ajHr1qXPpaRrlA/jxCQsvEysaZMmi7QT77b65aJVgfL25Xqw6wqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713294382; c=relaxed/simple;
-	bh=JV74h6ugmWJWllAEo9CVzy4KzXEpE6XFPH27SRlteCw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ZBo9/y1Pbmv3bLw23u1apuwSDzfaPvBkFgBAdORna/U0aOdewaS49HzAIW4cl5aNrw56Ds7URqYexsmMNLeo7R0JE/Vbj0QLOlY6mAGISd3MJfmpHSX0Gway/gKpo9Ky7wZzEbKJ3rCTMRbT21GQ3hVmtGVWzIAZZ5OceOAOzxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ifIZpPfR; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43GJ3x3s007178;
-	Tue, 16 Apr 2024 19:05:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=ZXEajgVpQqjjiKL7gWWqFW9gr9jf3cJKxB2S+A5ihvE=;
- b=ifIZpPfRNDUlUSueY+mz25om9I+G9S4F1y84xT74HTIyOFWDfryljZGJj8BP6R0IfbWn
- qzPk+4Okm9M8XDOhRdTiHhP+EjXjWQCdR8dv59FmYSkYu/LlVHy28uUkGO4nQ0mpnmF5
- Wjxce3ujQ+9ZHY2XI4+KaHHj8DHsSTDsN45Qbj2EqU+/TuqnxWokOyYpVVR+cX17AsNf
- 0SOQnvvqcoxZZ6Ecis03AyoUTqb6zpEKgSMZw1ZO7PMr978IeNvTNL/xchaBHgo4+EDW
- Jwcj/Zwi16rHxDKOOZ1e1WYTwEoGofkAHpQGP3wpRkAILV267WWp5BdupZfWPvFXBPBV aA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhy56804q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 19:05:54 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43GJ5rYq009266;
-	Tue, 16 Apr 2024 19:05:53 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhy56804p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 19:05:53 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43GI9DZQ027323;
-	Tue, 16 Apr 2024 19:05:53 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xg4s004u0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 19:05:53 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-	by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43GJ5obU40042812
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Apr 2024 19:05:52 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 594865805E;
-	Tue, 16 Apr 2024 19:05:50 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B54CD58064;
-	Tue, 16 Apr 2024 19:05:49 +0000 (GMT)
-Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.41.175])
-	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 16 Apr 2024 19:05:49 +0000 (GMT)
-Message-ID: <254ee35d6534089e99f7396582572606f24ff3a2.camel@linux.ibm.com>
-Subject: Re: [RFC 2/2] ima: Fix detection of read/write violations on
- stacked filesystems
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Stefan Berger <stefanb@linux.ibm.com>,
-        Amir Goldstein
- <amir73il@gmail.com>, linux-integrity@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        roberto.sassu@huawei.com, Christian Brauner <brauner@kernel.org>
-Date: Tue, 16 Apr 2024 15:05:49 -0400
-In-Reply-To: <CAJfpeguzh6VzhdnwOPf_hM4x0FbsK8hhZp=VK4kWpCYn0xeBCg@mail.gmail.com>
-References: <20240412140122.2607743-1-stefanb@linux.ibm.com>
-	 <20240412140122.2607743-3-stefanb@linux.ibm.com>
-	 <CAOQ4uxjDQO91cjA0sgyPStkwc_7+NxAOhyve94qUvXSM3ytk1g@mail.gmail.com>
-	 <89b4fb29-5906-4b21-8b5b-6b340701ffe4@linux.ibm.com>
-	 <CAJfpeguctirEYECoigcAsJwpGPCX2NyfMZ8H8GHGW-0UyKfjgg@mail.gmail.com>
-	 <b74a9a3edc52d96a7a34d6ba327fdb2a5a79a80d.camel@linux.ibm.com>
-	 <CAJfpegvPwpS5_S4qrrVbeC1RovP8jeNuDCYLbdcZ_XDFgfgftQ@mail.gmail.com>
-	 <52645fb25b424e10e68f0bde3b80906bbf8b9a37.camel@linux.ibm.com>
-	 <CAJfpegsHJ1JsM3SxNk5gnUM+aucqOqNm3RTrsYgePkcQYR4EEw@mail.gmail.com>
-	 <e052c1b5d2aa29b3a1f3a8086af4fb8a94c4d318.camel@linux.ibm.com>
-	 <CAJfpeguzh6VzhdnwOPf_hM4x0FbsK8hhZp=VK4kWpCYn0xeBCg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-23.el8_9) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 0cE_8gVBjb0xU08ZcWZVEk4g120-Dq2F
-X-Proofpoint-ORIG-GUID: HdahjFhZZ3X1Rggzms1FFm8K0iBNvr4p
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1713294442; c=relaxed/simple;
+	bh=LLiGBtrSxbvzMH3qbceGm1plgiO+v5WFSSgkT35pVoU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=UBYEzo02/i7XNgfFtXYFpobEzVwHAppsP+HPRsHZpFzKOsvTf4eHp05PRs7XgKNCNUZoy1ZtxhjVSaMmAD/+RNYcqBerhDAKptdR7gFCFQAajlKMgMzm49IyUHKVV20z09Z5PXwWohKOJMf5GQDEYCilqVB+YDjmgyzgS9IJ4fo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d9913d3174so240925139f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 12:07:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713294440; x=1713899240;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=v1VcHZ4INMjp0zCuMH+FIZ5CsXArd0hgI2BAMVJG3no=;
+        b=AwuttZifeBibVk5Icws54HKYTGOSiChyy+81fwGOqKLEJE2SYVtA8l+5+RiNDrksKj
+         VoX8nIf3WMHAnpCxeWPNYj5C5ZHKri1GaDHxUAuSwPbNgNy6SDAlg/vvjrtZ13NW+YN6
+         vzD/qPMPuLSSmvMPrqbLEJkKUuDD1w3k6CZ8HPzWbV2iA1QOKipayrgM8lif5samptcF
+         lrr+RqMS7Zq+1QcL38/0aqwOnZqnPlxRjK+aFXhASHAaLSNaZRxuQi1E2tbPv2PDkH0Q
+         TvyBFy8E2coaTE5PZ9eBYYjGNrw+wZ7yimUuBam1Q2bBMrifbcKtRpHifAM55+X7m0AV
+         ci9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUViTHCE17K/ZhY8aT2zXYnRXMLvNccuejZNgMkN4D1sxPrm+jNSUKz7gQLmBJZ6NYbzTeOU+EBpWxihKKwcpOmbYnWfmGIqk3a2N4L
+X-Gm-Message-State: AOJu0YxXOwC9N40rxrr/FCXjbXcMdtPCOGYSA/4AswFRgWjua2KLM+XH
+	22KKE849czZ8uUxQujfsu6I490/8s5YXLJwHqGgUyuQF8Svbol/Z4nl/1qiKZEogCtMxrOhz6N0
+	5dNYwuwA6mfc46XFAZWJXJ1smPzUf2jg25dnzeRic+Tp+n75NFC3+F58=
+X-Google-Smtp-Source: AGHT+IFUKU8/iHzfO7+tKwtsMUVve55/lQeWydzqxxxSnV47Rf3/GqF46hwD3XfW5GJpHncOu1YlKV+LxlXHjj25HwGdyWqLtcPL
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_16,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- bulkscore=0 mlxlogscore=945 clxscore=1015 lowpriorityscore=0 phishscore=0
- suspectscore=0 adultscore=0 spamscore=0 impostorscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404160120
+X-Received: by 2002:a05:6638:1496:b0:47f:1ad4:2c66 with SMTP id
+ j22-20020a056638149600b0047f1ad42c66mr839461jak.5.1713294440332; Tue, 16 Apr
+ 2024 12:07:20 -0700 (PDT)
+Date: Tue, 16 Apr 2024 12:07:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008312ad06163b7225@google.com>
+Subject: [syzbot] [bpf?] KMSAN: uninit-value in htab_lru_percpu_map_lookup_percpu_elem
+From: syzbot <syzbot+1971e47e5210c718db3c@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 2024-04-16 at 16:46 +0200, Miklos Szeredi wrote:
-> On Tue, 16 Apr 2024 at 14:18, Mimi Zohar <zohar@linux.ibm.com> wrote:
-> > Originally there was a single measureent unless the filesystem was mounted with
-> > SB_I_VERSION.  With commit a2a2c3c8580a ("ima: Use i_version only when
-> > filesystem supports it") this changed to always re-measure the file if the
-> > filesystem wasn't mounted with SB_I_VERSION.
-> 
-> Does the i_version get stored and compared only while the inode is in memory?
-> 
-> In that case I think it should be possible to support a version number
-> for the overlay inode.
+Hello,
 
-i_version was insufficient to detect a file change for overlay.  Commit
-b836c4d29f27 ("ima: detect changes to the backing overlay") also compares the
-i_ino and s_dev as well.  Refer to 
-https://lore.kernel.org/lkml/20231025143906.133218-1-zohar@linux.ibm.com/.
+syzbot found the following issue on:
 
-Here in this patch set we need to detect IMA read/write violations, based on the
-i_readcount/i_writecount.  If an overlay file is opened for read, but the
-backing file is already opened for write, the file measurement is
-meaningless.  An "open-writers" violation needs to be generated; and the IMA
-measurement list needs to be invalidated.
+HEAD commit:    7efd0a74039f Merge tag 'ata-6.9-rc4' of git://git.kernel.o..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1492cb93180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b5bc506ebba90cbf
+dashboard link: https://syzkaller.appspot.com/bug?extid=1971e47e5210c718db3c
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ce7393180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=155451eb180000
 
-thanks,
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/9fd81e15f087/disk-7efd0a74.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2e4915d51565/vmlinux-7efd0a74.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/110eeae33f94/bzImage-7efd0a74.xz
 
-Mimi
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1971e47e5210c718db3c@syzkaller.appspotmail.com
 
+=====================================================
+BUG: KMSAN: uninit-value in __htab_map_lookup_elem kernel/bpf/hashtab.c:691 [inline]
+BUG: KMSAN: uninit-value in htab_lru_percpu_map_lookup_percpu_elem+0x3f8/0x630 kernel/bpf/hashtab.c:2343
+ __htab_map_lookup_elem kernel/bpf/hashtab.c:691 [inline]
+ htab_lru_percpu_map_lookup_percpu_elem+0x3f8/0x630 kernel/bpf/hashtab.c:2343
+ ____bpf_map_lookup_percpu_elem kernel/bpf/helpers.c:133 [inline]
+ bpf_map_lookup_percpu_elem+0x67/0x90 kernel/bpf/helpers.c:130
+ ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+ __bpf_prog_run32+0xb2/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+ __bpf_trace_kfree+0x29/0x40 include/trace/events/kmem.h:94
+ trace_kfree include/trace/events/kmem.h:94 [inline]
+ kfree+0x6a5/0xa30 mm/slub.c:4377
+ security_task_free+0x115/0x150 security/security.c:3032
+ __put_task_struct+0x17f/0x730 kernel/fork.c:976
+ put_task_struct include/linux/sched/task.h:138 [inline]
+ delayed_put_task_struct+0x8a/0x280 kernel/exit.c:229
+ rcu_do_batch kernel/rcu/tree.c:2196 [inline]
+ rcu_core+0xa59/0x1e70 kernel/rcu/tree.c:2471
+ rcu_core_si+0x12/0x20 kernel/rcu/tree.c:2488
+ __do_softirq+0x1c0/0x7d7 kernel/softirq.c:554
+ invoke_softirq kernel/softirq.c:428 [inline]
+ __irq_exit_rcu kernel/softirq.c:633 [inline]
+ irq_exit_rcu+0x6a/0x130 kernel/softirq.c:645
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
+ sysvec_apic_timer_interrupt+0x83/0x90 arch/x86/kernel/apic/apic.c:1043
+ asm_sysvec_apic_timer_interrupt+0x1f/0x30 arch/x86/include/asm/idtentry.h:702
+ __msan_metadata_ptr_for_load_8+0x31/0x40 mm/kmsan/instrumentation.c:92
+ filter_irq_stacks+0x60/0x1a0 kernel/stacktrace.c:397
+ stack_depot_save_flags+0x2c/0x6e0 lib/stackdepot.c:609
+ stack_depot_save+0x12/0x20 lib/stackdepot.c:685
+ __msan_poison_alloca+0x106/0x1b0 mm/kmsan/instrumentation.c:285
+ arch_local_save_flags arch/x86/include/asm/irqflags.h:67 [inline]
+ arch_local_irq_save arch/x86/include/asm/irqflags.h:103 [inline]
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+ _raw_spin_lock_irqsave+0x35/0xc0 kernel/locking/spinlock.c:162
+ remove_wait_queue+0x36/0x270 kernel/sched/wait.c:54
+ do_wait+0x34a/0x530 kernel/exit.c:1640
+ kernel_wait4+0x2ab/0x480 kernel/exit.c:1790
+ __do_sys_wait4 kernel/exit.c:1818 [inline]
+ __se_sys_wait4 kernel/exit.c:1814 [inline]
+ __x64_sys_wait4+0x14e/0x310 kernel/exit.c:1814
+ x64_sys_call+0x6e6/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:62
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Local variable stack created at:
+ __bpf_prog_run32+0x43/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+
+CPU: 0 PID: 5018 Comm: strace-static-x Not tainted 6.9.0-rc3-syzkaller-00355-g7efd0a74039f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
