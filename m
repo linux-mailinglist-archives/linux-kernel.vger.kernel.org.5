@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-146407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C20528A64DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:19:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A1BC8A64E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:19:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F375B1C214CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:19:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10FB1283C8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 528461598F3;
-	Tue, 16 Apr 2024 07:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 911BC15A4B1;
+	Tue, 16 Apr 2024 07:17:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PKHvZH05"
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AMRSYHw7"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D03115921E
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:17:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A5415A482
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:17:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713251872; cv=none; b=bN/p15nYxCSlWzrImLe2x8frJm1Wq6gs3wrUJQvvucmScpTaN3ZToa9N3kQKZnjgET4sWxEfxah9LcDs3op3h7/i+R2bs6UVhTDISZ+gGMK/d/fyGQ2f53xlT4a9t0fccv6UJVGsWmoS6yH8W9Q/PMmuW4fanKtj+QsU0G+DgME=
+	t=1713251874; cv=none; b=cFt7B/rXqfLx7deXOmBSPbIbxpZY39i6kI9zq0+T86kFRd6cW8ztuearTqJ5ciaV8lq8mn1gRNaBln7rb6Huj/S42FwF7eAPTAsb4uq/tD3Rtk5mCLbPb2sjvslmVJkhzLTdOq7DHmbbJl8uw0JkHggpofDUca2EL6h9mtxDuzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713251872; c=relaxed/simple;
-	bh=kzdlZqYQWNrIXSnJqwtpoqwSYY1qBtvI2I8Lo4LwsCA=;
+	s=arc-20240116; t=1713251874; c=relaxed/simple;
+	bh=55gbjDjFA8TyGhJfeRJbHTOAEYaKy6v7j3ItuuPVYIU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XOYu1V30DdzorjsvGTPgDZI9+zGsTNHEyrS4rZfG8zz119S4aGkD95IYK25zxfasym2F7jDqa+3C6BC65Vow0UIFcAagnWCSxlOnznYLv41AfowZlkqtIm7JVb/l7SfRVFoO1jkLJMtPhb9UnQYU4/008UHYqn8BmcoNlUF13EU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PKHvZH05; arc=none smtp.client-ip=209.85.160.44
+	 MIME-Version; b=VxINrwdQ5DwsuYaDq9xscIJvvFZPMS2zhwQGqopZDtBxMLC+nyAS+4dVQubNzn+2OGwJOqBzZrzpz+ZNBBi9ZiVAj93uLMHr0Cbdh5z43FQmXP9B33THZN3ODvmFtuwWUFbsWTg7s+v0MiTvfBb3HLzqQ+j3jPJmtxSUr7WQZq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AMRSYHw7; arc=none smtp.client-ip=209.85.210.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-22ed72b0082so2724213fac.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:17:51 -0700 (PDT)
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ee12766586so2674318b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:17:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713251870; x=1713856670; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713251872; x=1713856672; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=F+Z2hNJP+z3T6EfHmF6/rzbCctrFBIWGBJWrf7iP/Ig=;
-        b=PKHvZH05CSHHTCzGQYcpfewmlVPCHavBPJwc/OXAqABmm33u7/c9R4JBABsQYpms2J
-         Pbl8rMEt+IeFkdTVVfaJ7ojwp0VIOQgoDg8awiXEQLa6lNzCDnBvijExqGgRUw5TpQEy
-         7jBtcaKUtK3NM/M/0R7JVFe6R/GFTixPV+L3j4XZkvaduuFDWiTDgcfXsbE3568c1wuu
-         KGI7b8j6cQSBkT8vdC84wWzSFzfCIVUxxWgQKn2l+yBEreSFFu93nJa4h50jlNpsqtTm
-         qy98gkus5GAaAuSbWvfSKA+9jze6OmrMozhbDgYo6tabb3W/e89kzll9KwLqPJUr6tHE
-         QuCw==
+        bh=MHV2+XE+cugEfsKZfQ4KNnLWAEqkFV7dIjX6To9XLTs=;
+        b=AMRSYHw7IAAzIzWaFhOvbdPbF77WNy6uOW4Y4rSnOKBCqt7KohKjhvcOtcrkg0v1M2
+         BQS+E32cxaUy25h0+p3YfhldDCZXIskywT6G8iOsCXbN/sV1VmHzgGQrLjVPj3yCSmpK
+         l5Ap1qzD6fqS1fDO5g4vcCedL4x2Z21GWEVlt9+YuLE4KvqdMY3ecc98zrNjZx6GLnrw
+         Mx+iU7+GiqfQsf2YXZYljO8xQDC7HBjcyvgB2dK8m7NztiYquKaie7b9ZNnUWBYtwJWz
+         BC8JgfwtX6iSsTdv0OwcSY7ThZT7k4dLLf0EFf4gA699oIlAso4c2CJtThzp10EXvazz
+         M3eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713251870; x=1713856670;
+        d=1e100.net; s=20230601; t=1713251872; x=1713856672;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=F+Z2hNJP+z3T6EfHmF6/rzbCctrFBIWGBJWrf7iP/Ig=;
-        b=VcKsjignJmjyNcx5vEvTarynMCmMMT13AnVpjDJ8U7sBc0rnVfvjy6dLLc6uZU88ao
-         9JSDOF4mibWi3F3kMPcYl7aw/1aJmkN4SY9RCy5o6/HPR7QYHUr8oDKrvw41z7pj8nlv
-         hrlR6gR8KyiF/Kq+aboWGhMTjG0ojgksMFXH3mjWo/Il5OOZhkarSb6e8ReJjNF5IZSd
-         FgXFNJDlMnNA7sBFrzvxed/n2HGdCuZ6LxecByy5Atv0LHOHx3Lxc6zQvvoqZ5qBQk+W
-         mHRZcsJodlxsSlmDUQbe5msxCTneODTa4KdpVBiHhoEQlnaMKoRu/LvA76mY69xfhfJE
-         UCnA==
-X-Forwarded-Encrypted: i=1; AJvYcCW/PL8MTaWtIymfPf+/fMzHXuTpe9DvgWdlKmoD7hc99/hd/3b2knfNL1fwpAUvh6ZbuphWUELiREjoDqpl0bnIMtCHLKXcp78D2s3e
-X-Gm-Message-State: AOJu0YyGF8JVbNf67mdNHZjmw2KG9/bqmSuPFLmFYwqzNY+2i/WEskSm
-	VlK8XRGM1BLjnUeRXh5doc9rLL9Mx1XJk3t4xQjd4I2ogirRlbJ4
-X-Google-Smtp-Source: AGHT+IGTlCysBm/YOmaGrEGYXumxXfgrNAPvhr2uKFZUXitXWelGd6XrYs4GaN3Yt1Z5t4vLHkZtFQ==
-X-Received: by 2002:a05:6870:7312:b0:22e:e0c5:c729 with SMTP id q18-20020a056870731200b0022ee0c5c729mr15807231oal.3.1713251870398;
-        Tue, 16 Apr 2024 00:17:50 -0700 (PDT)
+        bh=MHV2+XE+cugEfsKZfQ4KNnLWAEqkFV7dIjX6To9XLTs=;
+        b=ir3oenqenIT8nQmnvfKiRv1OXyqOPU97cVrIhL09LaBc6F1VBRRdJbdnppiJZPQev4
+         +mmIyqfARh5zmtur+FMNHX1EqlRersNZU7XZvfBzqHLCnxOkHPvIMeaTmYrHHt54BWEY
+         zfqlbKTuh71mt7U3mpttb5ndsxoK57u6Kjg/oW9xk42Q81qdYxSfd0m4FHdIElzAaN1S
+         lbt8Akvp5OL1Fp2QoWsrV8s8ZE32AtA1kAIhGkncZ5cPSn7egF3+d/F/HtO5F/1vm9Zp
+         Lth6pnSTVkKrEL79Wl3gBGjD82Vx71TMvNwmYIblqSqCIOJRIZLBIQK10ZU2Z03C5zr5
+         j7MA==
+X-Forwarded-Encrypted: i=1; AJvYcCUKuoC5gXj9tOrPo0K2hanp7R/SQu3BXmdmCsM++XVosh6gJFhSi7QNcv95lP8VkIbQK+mFiYcMidXf2XfmPCfVAjpxyizVIvEm8tS4
+X-Gm-Message-State: AOJu0YwDwn/wKwdPi2e7mvYCm9TsG04Xnw2mNZOl6EzTK+NnPRwK9hzZ
+	Ewj3mBMplNNjingkpQaCHaRvg2HBab/KzaOOabfTu2CXyURt1Xl8
+X-Google-Smtp-Source: AGHT+IESJwVhtcMf3m99N3mRkzrlYgFLHCki4Z3/LDKtQDjTD4+lFVo8Wfkqwv+ogYZO1JOFNTHWzw==
+X-Received: by 2002:a05:6a00:39a6:b0:6ea:9b37:c288 with SMTP id fi38-20020a056a0039a600b006ea9b37c288mr1644456pfb.15.1713251872585;
+        Tue, 16 Apr 2024 00:17:52 -0700 (PDT)
 Received: from KASONG-MB2.tencent.com ([43.132.141.21])
-        by smtp.gmail.com with ESMTPSA id lr48-20020a056a0073b000b006e724ccdc3esm8340029pfb.55.2024.04.16.00.17.48
+        by smtp.gmail.com with ESMTPSA id lr48-20020a056a0073b000b006e724ccdc3esm8340029pfb.55.2024.04.16.00.17.50
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 16 Apr 2024 00:17:50 -0700 (PDT)
+        Tue, 16 Apr 2024 00:17:52 -0700 (PDT)
 From: Kairui Song <ryncsn@gmail.com>
 To: linux-mm@kvack.org
 Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Matthew Wilcox <willy@infradead.org>,
 	linux-kernel@vger.kernel.org,
 	Kairui Song <kasong@tencent.com>
-Subject: [PATCH v4 2/4] mm/filemap: clean up hugetlb exclusion code
-Date: Tue, 16 Apr 2024 15:17:20 +0800
-Message-ID: <20240416071722.45997-3-ryncsn@gmail.com>
+Subject: [PATCH v4 3/4] lib/xarray: introduce a new helper xas_get_order
+Date: Tue, 16 Apr 2024 15:17:21 +0800
+Message-ID: <20240416071722.45997-4-ryncsn@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240416071722.45997-1-ryncsn@gmail.com>
 References: <20240416071722.45997-1-ryncsn@gmail.com>
@@ -89,70 +89,173 @@ Content-Transfer-Encoding: 8bit
 
 From: Kairui Song <kasong@tencent.com>
 
-__filemap_add_folio only has two callers, one never passes hugetlb folio
-and one always passes in hugetlb folio. So move the hugetlb related
-cgroup charging out of it to make the code cleaner.
+It can be used after xas_load to check the order of loaded entries.
+Compared to xa_get_order, it saves an XA_STATE and avoid a rewalk.
+
+Added new test for xas_get_order, to make the test work, we have to
+export xas_get_order with EXPORT_SYMBOL_GPL.
+
+Also fix a sparse warning by checking the slot value with xa_entry
+instead of accessing it directly, as suggested by Matthew Wilcox.
 
 Signed-off-by: Kairui Song <kasong@tencent.com>
-Acked-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- mm/filemap.c | 21 ++++++++-------------
- 1 file changed, 8 insertions(+), 13 deletions(-)
+ include/linux/xarray.h |  6 ++++++
+ lib/test_xarray.c      | 34 +++++++++++++++++++++++++++++
+ lib/xarray.c           | 49 ++++++++++++++++++++++++++----------------
+ 3 files changed, 71 insertions(+), 18 deletions(-)
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index d447b36ffd41..7f734b7ad273 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -853,20 +853,12 @@ noinline int __filemap_add_folio(struct address_space *mapping,
- {
- 	XA_STATE(xas, &mapping->i_pages, index);
- 	bool huge = folio_test_hugetlb(folio);
--	bool charged = false;
--	long nr = 1;
-+	long nr;
+diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+index cb571dfcf4b1..d9d479334c9e 100644
+--- a/include/linux/xarray.h
++++ b/include/linux/xarray.h
+@@ -1548,6 +1548,7 @@ void xas_create_range(struct xa_state *);
  
- 	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
- 	VM_BUG_ON_FOLIO(folio_test_swapbacked(folio), folio);
- 	mapping_set_update(&xas, mapping);
- 
--	if (!huge) {
--		int error = mem_cgroup_charge(folio, NULL, gfp);
--		if (error)
--			return error;
--		charged = true;
--	}
--
- 	VM_BUG_ON_FOLIO(index & (folio_nr_pages(folio) - 1), folio);
- 	xas_set_order(&xas, index, folio_order(folio));
- 	nr = folio_nr_pages(folio);
-@@ -931,8 +923,6 @@ noinline int __filemap_add_folio(struct address_space *mapping,
- 	trace_mm_filemap_add_to_page_cache(folio);
+ #ifdef CONFIG_XARRAY_MULTI
+ int xa_get_order(struct xarray *, unsigned long index);
++int xas_get_order(struct xa_state *xas);
+ void xas_split(struct xa_state *, void *entry, unsigned int order);
+ void xas_split_alloc(struct xa_state *, void *entry, unsigned int order, gfp_t);
+ #else
+@@ -1556,6 +1557,11 @@ static inline int xa_get_order(struct xarray *xa, unsigned long index)
  	return 0;
- error:
--	if (charged)
--		mem_cgroup_uncharge(folio);
- 	folio->mapping = NULL;
- 	/* Leave page->index set: truncation relies upon it */
- 	folio_put_refs(folio, nr);
-@@ -946,11 +936,16 @@ int filemap_add_folio(struct address_space *mapping, struct folio *folio,
- 	void *shadow = NULL;
- 	int ret;
+ }
  
-+	ret = mem_cgroup_charge(folio, NULL, gfp);
-+	if (ret)
-+		return ret;
++static inline int xas_get_order(struct xa_state *xas)
++{
++	return 0;
++}
 +
- 	__folio_set_locked(folio);
- 	ret = __filemap_add_folio(mapping, folio, index, gfp, &shadow);
--	if (unlikely(ret))
-+	if (unlikely(ret)) {
-+		mem_cgroup_uncharge(folio);
- 		__folio_clear_locked(folio);
--	else {
-+	} else {
- 		/*
- 		 * The folio might have been evicted from cache only
- 		 * recently, in which case it should be activated like
+ static inline void xas_split(struct xa_state *xas, void *entry,
+ 		unsigned int order)
+ {
+diff --git a/lib/test_xarray.c b/lib/test_xarray.c
+index ebe2af2e072d..0efde8f93490 100644
+--- a/lib/test_xarray.c
++++ b/lib/test_xarray.c
+@@ -1984,6 +1984,39 @@ static noinline void check_get_order(struct xarray *xa)
+ 	}
+ }
+ 
++static noinline void check_xas_get_order(struct xarray *xa)
++{
++	XA_STATE(xas, xa, 0);
++
++	unsigned int max_order = IS_ENABLED(CONFIG_XARRAY_MULTI) ? 20 : 1;
++	unsigned int order;
++	unsigned long i, j;
++
++	for (order = 0; order < max_order; order++) {
++		for (i = 0; i < 10; i++) {
++			xas_set_order(&xas, i << order, order);
++			do {
++				xas_lock(&xas);
++				xas_store(&xas, xa_mk_value(i));
++				xas_unlock(&xas);
++			} while (xas_nomem(&xas, GFP_KERNEL));
++
++			for (j = i << order; j < (i + 1) << order; j++) {
++				xas_set_order(&xas, j, 0);
++				rcu_read_lock();
++				xas_load(&xas);
++				XA_BUG_ON(xa, xas_get_order(&xas) != order);
++				rcu_read_unlock();
++			}
++
++			xas_lock(&xas);
++			xas_set_order(&xas, i << order, order);
++			xas_store(&xas, NULL);
++			xas_unlock(&xas);
++		}
++	}
++}
++
+ static noinline void check_destroy(struct xarray *xa)
+ {
+ 	unsigned long index;
+@@ -2035,6 +2068,7 @@ static int xarray_checks(void)
+ 	check_multi_store(&array);
+ 	check_multi_store_advanced(&array);
+ 	check_get_order(&array);
++	check_xas_get_order(&array);
+ 	check_xa_alloc();
+ 	check_find(&array);
+ 	check_find_entry(&array);
+diff --git a/lib/xarray.c b/lib/xarray.c
+index 39f07bfc4dcc..da79128ad754 100644
+--- a/lib/xarray.c
++++ b/lib/xarray.c
+@@ -1750,39 +1750,52 @@ void *xa_store_range(struct xarray *xa, unsigned long first,
+ EXPORT_SYMBOL(xa_store_range);
+ 
+ /**
+- * xa_get_order() - Get the order of an entry.
+- * @xa: XArray.
+- * @index: Index of the entry.
++ * xas_get_order() - Get the order of an entry.
++ * @xas: XArray operation state.
++ *
++ * Called after xas_load, the xas should not be in an error state.
+  *
+  * Return: A number between 0 and 63 indicating the order of the entry.
+  */
+-int xa_get_order(struct xarray *xa, unsigned long index)
++int xas_get_order(struct xa_state *xas)
+ {
+-	XA_STATE(xas, xa, index);
+-	void *entry;
+ 	int order = 0;
+ 
+-	rcu_read_lock();
+-	entry = xas_load(&xas);
+-
+-	if (!entry)
+-		goto unlock;
+-
+-	if (!xas.xa_node)
+-		goto unlock;
++	if (!xas->xa_node)
++		return 0;
+ 
+ 	for (;;) {
+-		unsigned int slot = xas.xa_offset + (1 << order);
++		unsigned int slot = xas->xa_offset + (1 << order);
+ 
+ 		if (slot >= XA_CHUNK_SIZE)
+ 			break;
+-		if (!xa_is_sibling(xas.xa_node->slots[slot]))
++		if (!xa_is_sibling(xa_entry(xas->xa, xas->xa_node, slot)))
+ 			break;
+ 		order++;
+ 	}
+ 
+-	order += xas.xa_node->shift;
+-unlock:
++	order += xas->xa_node->shift;
++	return order;
++}
++EXPORT_SYMBOL_GPL(xas_get_order);
++
++/**
++ * xa_get_order() - Get the order of an entry.
++ * @xa: XArray.
++ * @index: Index of the entry.
++ *
++ * Return: A number between 0 and 63 indicating the order of the entry.
++ */
++int xa_get_order(struct xarray *xa, unsigned long index)
++{
++	XA_STATE(xas, xa, index);
++	int order = 0;
++	void *entry;
++
++	rcu_read_lock();
++	entry = xas_load(&xas);
++	if (entry)
++		order = xas_get_order(&xas);
+ 	rcu_read_unlock();
+ 
+ 	return order;
 -- 
 2.44.0
 
