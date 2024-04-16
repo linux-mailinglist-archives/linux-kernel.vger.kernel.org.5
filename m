@@ -1,231 +1,165 @@
-Return-Path: <linux-kernel+bounces-146584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6743C8A679E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DA038A67A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:03:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DE79282E06
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:03:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 252BE28304D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:03:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185F48665A;
-	Tue, 16 Apr 2024 10:03:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21DAB86ADC;
+	Tue, 16 Apr 2024 10:03:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="muTS7mYA"
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE6286250;
-	Tue, 16 Apr 2024 10:03:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.219
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SLSwLxUI"
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1062283CBD;
+	Tue, 16 Apr 2024 10:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713261813; cv=none; b=phuDmf2Jh/1TXgkhibLu/+DoHWPT77Jzj4fmRPWsRsEc1OnBnTkihufdDA3dfbYy8aJuxnHBh+mtYr3b6EOV2FKO/yUOWpClUSH/KQN/BT8OaIMmDA4eIBqWVXYgc2wCCDkXo8HgQ9SY9YtQRFVmsJJn/gxMM1cbVuj/4EVoizY=
+	t=1713261831; cv=none; b=CCTbutw7sOoqETZSePZD7NHexKt2y4w5USUwcjrnvIl2H7+PwR5jQzwpFPKZxvkymuomsHaVwAFou77Rl3znKGbF0m3y+dFGhTwIogADdgUNbLwi1BU+KzVMberjkBjCj4hmiJUymNSdroIgUkKX4rPGd/YO1+3W5x+uPq3CHHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713261813; c=relaxed/simple;
-	bh=SN4IUAq5bmhscaEdijCRuZmEAV3xRahsqPJDF2f8f1U=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=t5ePNIXQIjpn6zGWGj3EjXt05OsQAXmjTCbRVcm+rhMEEaFQu4BU6gjlVCoHCF5C5i3FJBhRcnOJWUlPkBFA8GKC3EVWnGWvvjXlJcaLwhmg3fcEr4n+DTVC8e6QcNFnDRVwd0Nb50UL+Nd6fHGyfEqitRyhCMdl+Iwh3CsF/jQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=muTS7mYA; arc=none smtp.client-ip=45.254.50.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=EdPlS
-	CMSc12aTLouKCP42sYxhfQQhuRNfRrOOylTQwA=; b=muTS7mYALyE3QAFvJKw8Z
-	KrzDFLsq5tTk1gzKNUiyb8uyus6HNGZ2H6/L537IxLTFEzg6ysUgcKOWlH925qYy
-	i+9b5bK4z1e1FahmTg4LbqXTYFyhqWFse2eidJ4RNU4I/AB/cwUk3253vRD/jj1I
-	8ws9xwV+FDiZFxi2O1pu9M=
-Received: from smtp.163.com (unknown [124.89.89.114])
-	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wDnt3jQTB5my6VABQ--.14663S4;
-	Tue, 16 Apr 2024 18:02:57 +0800 (CST)
-From: Vanillan Wang <vanillanwang@163.com>
-To: johan@kernel.org,
-	gregkh@linuxfoundation.org
-Cc: linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Vanillan Wang <vanillanwang@163.com>
-Subject: [PATCH v2] USB:serial:option: add Rolling moudles support
-Date: Tue, 16 Apr 2024 18:02:55 +0800
-Message-Id: <20240416100255.22911-1-vanillanwang@163.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713261831; c=relaxed/simple;
+	bh=Bb1D3KrKedP6JVJJvJg6ZDfHxFVvZygGKN9CvvTV7co=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IrFJMdNTq+m7GEmEt5FQVVGOACdJNhtZuRzqYnDZb6bWY3BkREFc8ni/wDodUZmvedrz4Q3FMWZ8ewIYnsn+7QX9T0KRrAr9Rx7WarUP+71/Jeq7NJ5mlubecmXKA2JAaSBziAGihZ5CWJ2XRTIgg13R0uXXqy+dYt+u81iSa3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SLSwLxUI; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2a526803fccso2397173a91.1;
+        Tue, 16 Apr 2024 03:03:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713261829; x=1713866629; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XDnwsDO84mVc+05BpNmMsEUqsfPZm5hg+4IFgnGZSy4=;
+        b=SLSwLxUIXbPXcwJla0a+DJsPbHpqNIPEjMnkUB4Ao7Kly8rQCMo97tNrV96orh0vGs
+         KIxvyx3XxoR1keQURbGVVZTqtNT7kCh/33V0NOYiqKnHqHUNyxudJA3uud6pjbQeTh0t
+         Mnh2g2lNc089L0Zo8abJ/wgZ9q269c/Jxw/Akl8gjo29FWBX1yL0t1KgCEk4KhxpNxEW
+         D5nSlCOXWJdhr1SSQpBjC4noN2YoxXDjzD02WyWMmJWe2wzmw9u+BhVE8F8WwVfHG460
+         vNY51ECaShDRyUcM5JY3tRsx2o5kfyzFCx7thUQKsoEvxJaUuUOtyjYXKn3HWZyhBlo8
+         zwEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713261829; x=1713866629;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XDnwsDO84mVc+05BpNmMsEUqsfPZm5hg+4IFgnGZSy4=;
+        b=heJjQrltLHGNMFVnSTa91si3cVJdCBxCSyBNJJD1Dai02IW3Ui8nQre+S266crflBx
+         /Hs+xVW1PF8ZPykfvpR1Fp1XiK6Wm5EAXo9jDs9n/MumSXOYvBNguX5ZtCYRml3F2EvG
+         3AFD1FcSOxo2B0h+JtHpsiKj7r1Vh+aYeuNPkZ7KzEoMVP+3jP0YylJ/aK68HTiuk8ux
+         GgbWYHsZjp675uHTv9ZhR3/HajWkKF3UyjVbxGA5wnW1tTkw+ZItyGXTyMotBDgMYJ5h
+         n/kEMsbsrFscUIFyM2d8dWvbgmu056Cxfkqg4zeghMYBEBibzdXY9Im32WUCMOYuZ2ig
+         selQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVH0AZo26UDyUbGX/FRh7ocgjy5DnuPQdcRowB108mbZOLhGAy++mNpOw4zvJFpv8g0ZRCHYRwVlhuXCrCWh0OQkgwYgf+Q
+X-Gm-Message-State: AOJu0Yw1TKK5c2xGA9cR3aoDLpK5ZOz/zC1pRkfgG0aUSfPBIkWfSfRf
+	XroMcsJVZ/mpTvaOHy5xn8r6Tz0JH6c9n0OYcI6vKR2LzGzHzG6h
+X-Google-Smtp-Source: AGHT+IHHqBLvFvHLCTH0SiKYfmmW5OcnrBkFzfxkUpPRn/7IyGJGSmwwgeBwqOXW7VvBFu73J4Oq1w==
+X-Received: by 2002:a17:90a:fb82:b0:2a5:2db0:cc9a with SMTP id cp2-20020a17090afb8200b002a52db0cc9amr12022268pjb.15.1713261829338;
+        Tue, 16 Apr 2024 03:03:49 -0700 (PDT)
+Received: from Laptop-X1 ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id f22-20020a17090ace1600b002a25bf61931sm10410194pju.29.2024.04.16.03.03.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 03:03:48 -0700 (PDT)
+Date: Tue, 16 Apr 2024 18:03:43 +0800
+From: Hangbin Liu <liuhangbin@gmail.com>
+To: Sam Sun <samsun1006219@gmail.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	j.vosburgh@gmail.com, andy@greyhouse.net, davem@davemloft.net,
+	Eric Dumazet <edumazet@google.com>, kuba@kernel.org,
+	pabeni@redhat.com
+Subject: Re: [PATCH net v2] drivers/net/bonding: Fix out-of-bounds read in
+ bond_option_arp_ip_targets_set()
+Message-ID: <Zh5M_9K3g6-9U2VA@Laptop-X1>
+References: <CAEkJfYMdDQKY1C-wBZLiaJ=dCqfM9r=rykwwf+J-XHsFp7D9Ag@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDnt3jQTB5my6VABQ--.14663S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW3GFy8WFyxtr4kZr1fCF18uFg_yoW3ur1UpF
-	4rAa1SqFyrXF1YqFnIkr1xZFWFgas7ur47CayDZwsaqFWSyrs7Jr1UArWIgF1qkr4Skr4q
-	q3yDG3y8Gas7tFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UgeOXUUUUU=
-X-CM-SenderInfo: pydqxz5odq4tlqj6il2tof0z/1tbiExLCUmXAkuAsNQAAsf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEkJfYMdDQKY1C-wBZLiaJ=dCqfM9r=rykwwf+J-XHsFp7D9Ag@mail.gmail.com>
 
-Update the USB serial option driver support for the Rolling
-LTE modules.
+On Tue, Apr 16, 2024 at 03:28:02PM +0800, Sam Sun wrote:
+> In function bond_option_arp_ip_targets_set(), if newval->string is an
+> empty string, newval->string+1 will point to the byte after the
+> string, causing an out-of-bound read.
+> 
+> BUG: KASAN: slab-out-of-bounds in strlen+0x7d/0xa0 lib/string.c:418
+> Read of size 1 at addr ffff8881119c4781 by task syz-executor665/8107
+> CPU: 1 PID: 8107 Comm: syz-executor665 Not tainted 6.7.0-rc7 #1
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+>  print_address_description mm/kasan/report.c:364 [inline]
+>  print_report+0xc1/0x5e0 mm/kasan/report.c:475
+>  kasan_report+0xbe/0xf0 mm/kasan/report.c:588
+>  strlen+0x7d/0xa0 lib/string.c:418
+>  __fortify_strlen include/linux/fortify-string.h:210 [inline]
+>  in4_pton+0xa3/0x3f0 net/core/utils.c:130
+>  bond_option_arp_ip_targets_set+0xc2/0x910
+> drivers/net/bonding/bond_options.c:1201
+>  __bond_opt_set+0x2a4/0x1030 drivers/net/bonding/bond_options.c:767
+>  __bond_opt_set_notify+0x48/0x150 drivers/net/bonding/bond_options.c:792
+>  bond_opt_tryset_rtnl+0xda/0x160 drivers/net/bonding/bond_options.c:817
+>  bonding_sysfs_store_option+0xa1/0x120 drivers/net/bonding/bond_sysfs.c:156
+>  dev_attr_store+0x54/0x80 drivers/base/core.c:2366
+>  sysfs_kf_write+0x114/0x170 fs/sysfs/file.c:136
+>  kernfs_fop_write_iter+0x337/0x500 fs/kernfs/file.c:334
+>  call_write_iter include/linux/fs.h:2020 [inline]
+>  new_sync_write fs/read_write.c:491 [inline]
+>  vfs_write+0x96a/0xd80 fs/read_write.c:584
+>  ksys_write+0x122/0x250 fs/read_write.c:637
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> ---[ end trace ]---
+> 
+> Fix it by adding a check of string length before using it. Remove
+> target address in netdev_err message since target is not initialized
+> in error path and will not provide useful information.
+> 
+> Fixes: 4fb0ef585eb2 ("bonding: convert arp_ip_target to use the new option API")
+> Signed-off-by: Yue Sun <samsun1006219@gmail.com>
 
-- VID:PID 33f8:01a2, RW101-GL for laptop debug M.2 cards(with MBIM
-interface for /Linux/Chrome OS)
-0x01a2: mbim, diag, at, pipe
-- VID:PID 33f8:01a3, RW101-GL for laptop debug M.2 cards(with MBIM
-interface for /Linux/Chrome OS)
-0x01a3: mbim, pipe
-- VID:PID 33f8:01a4, RW101-GL for laptop debug M.2 cards(with MBIM
-interface for /Linux/Chrome OS)
-0x01a4: mbim, diag, at, pipe
-- VID:PID 33f8:0104, RW101-GL for laptop debug M.2 cards(with RMNET
-interface for /Linux/Chrome OS)
-0x0104: RMNET, diag, at, pipe
-- VID:PID 33f8:0115, RW135-GL for laptop debug M.2 cards(with MBIM
-interface for /Linux/Chrome OS)
-0x0115: MBIM, diag, at, pipe
+I think the fixes tag should be
 
-Here are the outputs of usb-devices:
-T:  Bus=01 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#=  5 Spd=480 MxCh= 0
-D:  Ver= 2.01 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=33f8 ProdID=01a2 Rev=05.15
-S:  Manufacturer=Rolling Wireless S.a.r.l.
-S:  Product=Rolling Module
-S:  SerialNumber=12345678
-C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:  If#= 0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
-E:  Ad=82(I) Atr=03(Int.) MxPS=  64 Ivl=32ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
-E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:  If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=84(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-I:  If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:  If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+f9de11a16594 ("bonding: add ip checks when store ip target").
 
-T:  Bus=01 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#=  8 Spd=480 MxCh= 0
-D:  Ver= 2.01 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=33f8 ProdID=01a3 Rev=05.15
-S:  Manufacturer=Rolling Wireless S.a.r.l.
-S:  Product=Rolling Module
-S:  SerialNumber=12345678
-C:  #Ifs= 3 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:  If#= 0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
-E:  Ad=82(I) Atr=03(Int.) MxPS=  64 Ivl=32ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
-E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:  If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+Thanks
+Hangbin
 
-T:  Bus=01 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#= 17 Spd=480 MxCh= 0
-D:  Ver= 2.01 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=33f8 ProdID=01a4 Rev=05.15
-S:  Manufacturer=Rolling Wireless S.a.r.l.
-S:  Product=Rolling Module
-S:  SerialNumber=12345678
-C:  #Ifs= 6 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:  If#= 0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
-E:  Ad=82(I) Atr=03(Int.) MxPS=  64 Ivl=32ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
-E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:  If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:  If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
-E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-I:  If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
-E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:  If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=87(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-
-T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=5000 MxCh= 0
-D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
-P:  Vendor=33f8 ProdID=0104 Rev=05.04
-S:  Manufacturer=Rolling Wireless S.a.r.l.
-S:  Product=Rolling Module
-S:  SerialNumber=ba2eb033
-C:  #Ifs= 6 Cfg#= 1 Atr=a0 MxPwr=896mA
-I:  If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-E:  Ad=01(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=81(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:  If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
-E:  Ad=02(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-I:  If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
-E:  Ad=03(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=84(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-I:  If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=40 Driver=option
-E:  Ad=04(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=86(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=87(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-I:  If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=50 Driver=qmi_wwan
-E:  Ad=0f(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=88(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
-E:  Ad=8e(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:  If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
-E:  Ad=05(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=89(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-
-T:  Bus=01 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#= 16 Spd=480 MxCh= 0
-D:  Ver= 2.01 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=33f8 ProdID=0115 Rev=05.15
-S:  Manufacturer=Rolling Wireless S.a.r.l.
-S:  Product=Rolling Module
-S:  SerialNumber=12345678
-C:  #Ifs= 6 Cfg#= 1 Atr=a0 MxPwr=500mA
-I:  If#= 0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
-E:  Ad=82(I) Atr=03(Int.) MxPS=  64 Ivl=32ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
-E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:  If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:  If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
-E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-I:  If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:  If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
-E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=87(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-
-Signed-off-by: Vanillan Wang <vanillanwang@163.com>
----
- drivers/usb/serial/option.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-index 55a65d941ccb..71340b1a1783 100644
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -2281,6 +2281,14 @@ static const struct usb_device_id option_ids[] = {
- 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1404, 0xff) },			/* GosunCn GM500 RNDIS */
- 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1405, 0xff) },			/* GosunCn GM500 MBIM */
- 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1406, 0xff) },			/* GosunCn GM500 ECM/NCM */
-+	{ USB_DEVICE(0x33f8, 0x0104),						/* Rolling RW101-GL (laptop RMNET) */
-+	  .driver_info = RSVD(4) | RSVD(5) },
-+	{ USB_DEVICE_INTERFACE_CLASS(0x33f8, 0x01a2, 0xff) },			/* Rolling RW101-GL (laptop MBIM) */
-+	{ USB_DEVICE_INTERFACE_CLASS(0x33f8, 0x01a3, 0xff) },			/* Rolling RW101-GL (laptop MBIM) */
-+	{ USB_DEVICE_INTERFACE_CLASS(0x33f8, 0x01a4, 0xff),			/* Rolling RW101-GL (laptop MBIM) */
-+	  .driver_info = RSVD(4) },
-+	{ USB_DEVICE_INTERFACE_CLASS(0x33f8, 0x0115, 0xff),			/* Rolling RW135-GL (laptop MBIM) */
-+	  .driver_info = RSVD(5) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(OPPO_VENDOR_ID, OPPO_PRODUCT_R11, 0xff, 0xff, 0x30) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(SIERRA_VENDOR_ID, SIERRA_PRODUCT_EM9191, 0xff, 0xff, 0x30) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(SIERRA_VENDOR_ID, SIERRA_PRODUCT_EM9191, 0xff, 0xff, 0x40) },
--- 
-2.34.1
-
+> ---
+>  drivers/net/bonding/bond_options.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/bonding/bond_options.c
+> b/drivers/net/bonding/bond_options.c
+> index 4cdbc7e084f4..8f3fb91897b3 100644
+> --- a/drivers/net/bonding/bond_options.c
+> +++ b/drivers/net/bonding/bond_options.c
+> @@ -1214,9 +1214,9 @@ static int bond_option_arp_ip_targets_set(struct
+> bonding *bond,
+>      __be32 target;
+> 
+>      if (newval->string) {
+> -        if (!in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) {
+> -            netdev_err(bond->dev, "invalid ARP target %pI4 specified\n",
+> -                   &target);
+> +        if (!(strlen(newval->string)) ||
+> +            !in4_pton(newval->string + 1, -1, (u8 *)&target, -1, NULL)) {
+> +            netdev_err(bond->dev, "invalid ARP target I4 specified\n");
+>              return ret;
+>          }
+>          if (newval->string[0] == '+')
+> -- 
+> 2.34.1
 
