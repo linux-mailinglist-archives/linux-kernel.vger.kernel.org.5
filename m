@@ -1,139 +1,174 @@
-Return-Path: <linux-kernel+bounces-147720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB95C8A7825
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:50:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB5738A782C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:51:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 777F8282167
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:50:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1418AB20D38
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:51:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D51613B787;
-	Tue, 16 Apr 2024 22:48:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0423D13C3D5;
+	Tue, 16 Apr 2024 22:48:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KFQrQH9N"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aFtoFe/N"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89CC684E0D
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 22:48:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F92313A3E8;
+	Tue, 16 Apr 2024 22:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713307694; cv=none; b=dMinxWosxg4zKxCeOA+HMXpY1ThKVBlbtOEKeP0+oBz1cW2wouaYCVj/fpCsFvg2vptSgGe1LsWcR9U3y310WtyCeQd3sB5meLEWUokUnaGpsDwL9eqWKamFRzu0MEF1M2BlpVFNnGrWIpMXyt/nYRcn40GDeBE/9RawBS0HD3Q=
+	t=1713307728; cv=none; b=by6Hj23pucjEctQoKSNm0jo36Z5p7ZVlAE1POzqMu3W0vS/OUa/Gn/MlWtn6otFrZY3d9xF5ZeQI1cd1q1fqVT8i4+PojJTPZW86CIb+8h7NBt7grwTcNlcsu7vod5v2RpLppNH0rBVAbY0CUfi3/MifNhY0OGVWmRmMPtWkdFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713307694; c=relaxed/simple;
-	bh=e0f7bSzmGtIK19I0RYLYT2KkAAvf40uPWF4pZ8AJVio=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=Gl9mDt69fX03uhruNgf5E9lSllmbYSHZqAAqiTklX3508UABrtIbl7UDeoJIYjUPONDt4DWOYaW8RMK5ySvwzieCy+M8UNzwPCHYKfeuJYKmJIN4RxCroggDk/kSRdiqAZE87/x/BjzUAERGnTPKJu3BuzBmMwiet5GBFqCq0lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KFQrQH9N; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713307692;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dQOrgp2MD172t9l6XQGW4lrZCkMqV6c2thjTwzveTuc=;
-	b=KFQrQH9NEppkZ3XfxFkmZFHpp54IWP5Gp5Y//SpdVkYT9Kzu9VAwtZjR1RoQIpBuk60jLt
-	VoWOwNTHbjVXU3JZL3zMDEQWAl0pFlHBQ27a2sLUgFMnCfYDSmf5c89mhK8h9+2chIZ96a
-	CB9KoEO0sw6Dd8Eaai1vi8BX/GRYDUg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-587-dt0tRQhmPu-rFZtjV6hU-A-1; Tue, 16 Apr 2024 18:48:08 -0400
-X-MC-Unique: dt0tRQhmPu-rFZtjV6hU-A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C46DD80A1B9;
-	Tue, 16 Apr 2024 22:48:06 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.10])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id DCEA51BDAA;
-	Tue, 16 Apr 2024 22:48:02 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <b6b6f41b9de1fc4128c3b3fe5aefc82d07a2347b.camel@kernel.org>
-References: <b6b6f41b9de1fc4128c3b3fe5aefc82d07a2347b.camel@kernel.org> <20240328163424.2781320-1-dhowells@redhat.com> <20240328163424.2781320-4-dhowells@redhat.com>
-To: Jeff Layton <jlayton@kernel.org>, Steve French <smfrench@gmail.com>
-Cc: dhowells@redhat.com, Christian Brauner <christian@brauner.io>,
-    Gao Xiang <hsiangkao@linux.alibaba.com>,
-    Dominique Martinet <asmadeus@codewreck.org>,
-    Matthew Wilcox <willy@infradead.org>,
-    Marc Dionne <marc.dionne@auristor.com>,
-    Paulo Alcantara <pc@manguebit.com>,
-    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-    Eric Van Hensbergen <ericvh@kernel.org>,
-    Ilya Dryomov <idryomov@gmail.com>, netfs@lists.linux.dev,
-    linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-    linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-    ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
-    linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-    linux-mm@kvack.org, netdev@vger.kernel.org,
-    linux-kernel@vger.kernel.org, Steve French <sfrench@samba.org>,
-    Shyam Prasad N <nspmangalore@gmail.com>,
-    Rohith Surabattula <rohiths.msft@gmail.com>
-Subject: Re: [PATCH 03/26] netfs: Update i_blocks when write committed to pagecache
+	s=arc-20240116; t=1713307728; c=relaxed/simple;
+	bh=Vp1j4MGmUcagkQYsn9tWw5+GZ2D1D6UXf7Y83LOqr+A=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=F9+hvJ10XVw9d79zzF09g4XWvPGFLC1Qgu3w7+vb4Nc+PN4mZWYVm+OmnYRnvPEFw+gxgTwMCkKtHfYdpIFMo30tRjfkr6kmQr9otEblVcxPuQ9d9Sm9LUdS0q8CozLjPdlKRbulBaBp1b1Pmxhm6/O2GOesPdOMXFhmZB1y2Yg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aFtoFe/N; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713307726; x=1744843726;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=Vp1j4MGmUcagkQYsn9tWw5+GZ2D1D6UXf7Y83LOqr+A=;
+  b=aFtoFe/N0UUn/Uw841LVQUsAhOGNckpcxAlcTbTWwWoaw9Kl9KH9yOKG
+   1BiC2qjqFRZ8bncaI7IU4ZTx04ZdAYVtvvZk0Eeyln4JgSb8PtAz6SsWJ
+   ZZoggxXIMORRyveDKcjwGCRIBmM5ZOBteNlxxCLJHFyDebWu//sIpmLwg
+   MO8VW2tkT0TkCfXSOTHstXV6GsGil1Udj15OKKX/aLAJfEOhGxkTtDsOz
+   pzPJqlYJGajA/uw7gR2MFcGsn/vo90g3SQUofutXUnjvBbcOgv1V2ym7b
+   6L2TquDO/NrCT51EM8mrIyqMBJ8UEPBA2VAoDh+n+3poU1rcMmQ500RMU
+   g==;
+X-CSE-ConnectionGUID: Ni75NYzhRh+KT5Zdk+XBYw==
+X-CSE-MsgGUID: c0EIKclwQca5nrKEiJ1PTA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="19336704"
+X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
+   d="scan'208";a="19336704"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 15:48:46 -0700
+X-CSE-ConnectionGUID: N0PoXSc6RoKbelsFxJEn3A==
+X-CSE-MsgGUID: jNW5Aq0JTYqyypRWex69ZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
+   d="scan'208";a="22411950"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 16 Apr 2024 15:48:35 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
+ <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
+ <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v12 07/14] x86/sgx: Abstract tracking reclaimable pages in
+ LRU
+References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
+ <20240416032011.58578-8-haitao.huang@linux.intel.com>
+ <e218d2aab5d793a3b4c64f90f7bad997c745ba91.camel@intel.com>
+Date: Tue, 16 Apr 2024 17:48:29 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2755235.1713307678.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 16 Apr 2024 23:47:58 +0100
-Message-ID: <2755236.1713307678@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2mcey3spwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <e218d2aab5d793a3b4c64f90f7bad997c745ba91.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-Jeff Layton <jlayton@kernel.org> wrote:
+On Tue, 16 Apr 2024 09:07:33 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-> > Update i_blocks when i_size is updated when we finish making a write t=
-o the
-> > pagecache to reflect the amount of space we think will be consumed.
-> > =
+> On Mon, 2024-04-15 at 20:20 -0700, Haitao Huang wrote:
+>> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>>
+>> The functions, sgx_{mark,unmark}_page_reclaimable(), manage the tracking
+>> of reclaimable EPC pages: sgx_mark_page_reclaimable() adds a newly
+>> allocated page into the global LRU list while
+>> sgx_unmark_page_reclaimable() does the opposite. Abstract the hard coded
+>> global LRU references in these functions to make them reusable when
+>> pages are tracked in per-cgroup LRUs.
+>>
+>> Create a helper, sgx_lru_list(), that returns the LRU that tracks a  
+>> given
+>> EPC page. It simply returns the global LRU now, and will later return
+>> the LRU of the cgroup within which the EPC page was allocated. Replace
+>> the hard coded global LRU with a call to this helper.
+>>
+>> Next patches will first get the cgroup reclamation flow ready while
+>> keeping pages tracked in the global LRU and reclaimed by ksgxd before we
+>> make the switch in the end for sgx_lru_list() to return per-cgroup
+>> LRU.
+>
+> I found the first paragraph hard to read.  Provide my version below for
+> your reference:
+>
+> "
+> The SGX driver tracks reclaimable EPC pages via
+> sgx_mark_page_reclaimable(), which adds the newly allocated page into the
+> global LRU list.  sgx_unmark_page_reclaimable() does the opposite.
+>
+> To support SGX EPC cgroup, the SGX driver will need to maintain an LRU
+> list for each cgroup, and the new allocated EPC page will need to be  
+> added
+> to the LRU of associated cgroup, but not always the global LRU list.
+>
+> When sgx_mark_page_reclaimable() is called, the cgroup that the new
+> allocated EPC page belongs to is already known, i.e., it has been set to
+> the 'struct sgx_epc_page'.
+>
+> Add a helper, sgx_lru_list(), to return the LRU that the EPC page should
+> be/is added to for the given EPC page.  Currently it just returns the
+> global LRU.  Change sgx_{mark|unmark}_page_reclaimable() to use the  
+> helper
+> function to get the LRU from the EPC page instead of referring to the
+> global LRU directly.
+>
+> This allows EPC page being able to be tracked in "per-cgroup" LRU when
+> that becomes ready.
+> "
+>
+Thanks. Will use
 
-> =
+> Nit:
+>
+> That being said, is sgx_epc_page_lru() better than sgx_lru_list()?
+>
 
-> Umm ok, but why? I get that the i_size and i_blocks would be out of sync
-> until we get back new attrs from the server, but is that a problem? I'm
-> mainly curious as to what's paying attention to the i_blocks during this
-> window.
+Sure
 
-This is taking over from a cifs patch that does the same thing - but in co=
-de
-that is removed by my cifs-netfs branch, so I should probably let Steve sp=
-eak
-to that, though I think the problem with cifs is that these fields aren't
-properly updated until the closure occurs and the server is consulted.
+>>
+>> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+>> Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
+>> ---
+>>
+>
+> Feel free to add:
+>
+> Reviewed-by: Kai Huang <kai.huang@intel.com>
 
-    commit dbfdff402d89854126658376cbcb08363194d3cd
-    Author: Steve French <stfrench@microsoft.com>
-    Date:   Thu Feb 22 00:26:52 2024 -0600
-
-    smb3: update allocation size more accurately on write completion
-
-    Changes to allocation size are approximated for extending writes of ca=
-ched
-    files until the server returns the actual value (on SMB3 close or quer=
-y info
-    for example), but it was setting the estimated value for number of blo=
-cks
-    to larger than the file size even if the file is likely sparse which
-    breaks various xfstests (e.g. generic/129, 130, 221, 228).
-    =
-
-    When i_size and i_blocks are updated in write completion do not increa=
-se
-    allocation size more than what was written (rounded up to 512 bytes).
-
-David
-
+Thanks
+Haitao
 
