@@ -1,113 +1,138 @@
-Return-Path: <linux-kernel+bounces-146928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 468908A6D1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:59:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B98878A6D20
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:59:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F07681F2212C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:59:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF401B22EAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D355112D773;
-	Tue, 16 Apr 2024 13:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0C4112DD9B;
+	Tue, 16 Apr 2024 13:57:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nM/FuKIa"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L9Eo1z78"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A18212D771
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 13:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752FD12C7F8;
+	Tue, 16 Apr 2024 13:57:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713275770; cv=none; b=Z7am/niymTg5zo4vdaE1JDKM9zg3xkVlN1cou9yZ2EeV4mf/jeDa8ixfFeKhNfTN9V0AZtYN0dbj7U8SC17W9mQaBusANRjVvZgI8YoOI6W45IXMG0skWDox5Hr6Jb4fsJrozw0HfZn8MF685ZItaot9Ih6LUnRhc3P07q2QRGo=
+	t=1713275855; cv=none; b=XpeYtENb47EI61mraym5HEeAUn6pk/BVmF6qLoE0HiSLt20tc1HkeEf6lSFzzXuKeZu17t+C78ABlki3iw+rh1qDqya3drrllXolVdFgfixLUk8Qp8iw2tRD30YhwQHEHfP/5efJlPHqyZDi62Oj2kAQfh9sdewTkeR1BFG5hx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713275770; c=relaxed/simple;
-	bh=+4LDQwbWUnQ/u6d9IMbWLH0F0s+2LEHatpx9y5lrd3M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i42R4CSWpQRw5cCiyKat+mFuC1MnXLU6VgL0XASne6lpcCg9zuMGUU4852Y0NVweP/EVMjTQAGmtNzIPFNNYR86CihrtOGUX0qG23y1VB38UykNWlK1iFMU+PqpS+YnEy8xYpXdIOoh6x5gqSwXoRN3N2a764PvHh19onlgMPB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nM/FuKIa; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2da01cb187cso79414791fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 06:56:08 -0700 (PDT)
+	s=arc-20240116; t=1713275855; c=relaxed/simple;
+	bh=XIW4cnpJhG3AOb3n0mnc7xu18Bd4Jf9pnUIE7j52tDo=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=rwE84lPm7B1I8yL2KOInKc3TmG1Idy7mQ9u2DPQRk2m3kKh6iNkiQcqt12v757I3lY7T0M+Hk7DJfrikxmkpjpjdgf8q3rPOs+FWhYCClFdUDVBcWL8xCLmNae4M9Y6DqH86hcACA15g2kn02Fl7Y7U6rgp7Bv7RsNcoSOWgcIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L9Eo1z78; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d6ff0422a2so55021121fa.2;
+        Tue, 16 Apr 2024 06:57:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713275767; x=1713880567; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=go38N7jjGrvQlCPvOb3B+Q4rvfjpWKNjxgnorhqbV90=;
-        b=nM/FuKIaKl0MzV1QXGmTrr6iok/ydYgEGSg4rVbXO0JKpIcDmOBHVsrsxkk3FoKOyR
-         6wMFyAVjblqmh/sZxq0Q3F6MzJM3lYDFIuzpG+cZiWI+bj2iEGB35urzrK7+GJQT2p4L
-         a87MZK7sn4WyMtd8cXyp8K1cPqzI2MEkXE+WXu/6G2L/ZcfaH3qZcuiT7+AjjoYHyKI7
-         To4oXjBO7s4bmEbeQVFxxoUdDav0LaSYcsb4zUtlkKtpQohHTMgE7oNvCZwawr3mSk7y
-         15yrewbkcXB1yHjiy9VhdL9NMYzG/kf/eyDVYNx7S1CQ8Lvk8bWzK4paF4AQBc8Id7vN
-         tW/Q==
+        d=gmail.com; s=20230601; t=1713275851; x=1713880651; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GM/ZPv+V4DboncDOmOt7I89cvjgBB42SqfpjqZrobso=;
+        b=L9Eo1z78KBZYiPPsap4fmtjpgTAuWur/TE26Dvsywa625RdAbz0WAeZdV0U7/Ie98v
+         D4pVEXYRA1M5AmK1hWgnSuXd1wTswIBd0yuHcTWHqJFruQDF3PriJJl4gEjE4kipXV1W
+         OZ5OBajzv03UUYqXioiIJmFjHV6BrfVWoANLE40TkleahSPnz1dzrKddUX+aKkOJSqur
+         ir2eubDZIm/c+ErKrNff7OI0nh1RovVpLQYZKYTmca0uhDgcmJl0WGkGWhgyvFX24DSn
+         O2jq8Z0vOU+TmELUH8XEpfQ72mw+4P/pCZNknY2oJnhYI42ZLOk580xlr3ndsfez+HTq
+         CJFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713275767; x=1713880567;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1713275851; x=1713880651;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=go38N7jjGrvQlCPvOb3B+Q4rvfjpWKNjxgnorhqbV90=;
-        b=vSrziV8ziPbkFKVc9hBeW2cGHrGr/RUK3Ew6XGChFNIq4o4oUXWyos2/gW7i0LBHlm
-         +3L7ZHNWh+AoM2Hu7LPPix9jYr+EMXQHCdQgm3QH25OasE7qiRccLzSmCzCmRO+0yQnk
-         Iv94eh8AvhL4ivn0sBLJRzfH/YUHjVygI3UOW6ZzeAa3MwZthNOhS2tL9mdErMli5Axz
-         SEerxuMiAjwIyEcTpqcceV9iUKQY2F9ewKoMiBugyM5iQqbJCI+J3vqqPKUtp1ziI/2Y
-         ZKr7/Q7puzVf4za4HC0k/nh20uV/Hg3axKops175rr8w+CszK5uNIImipDjvpez2KpR4
-         jl7w==
-X-Forwarded-Encrypted: i=1; AJvYcCUx26d01MQuMKxdzfzVBT9daSjxszklC/toSg2q8u32/qYiLAH7ezHgfE8v2T42hYnXy0zAJmxjK9Z0KmfWzvJaXmE6kBW4/urCAoAT
-X-Gm-Message-State: AOJu0YwYcTvQPzOZjF4KxId3LyumXx/yY74ZYyG4TFZU0hF3l4lpthD6
-	//z/eYK04p+VsrHpUbKw5idzGSP1rja5MJz8rz3kXsV2Xkxol5+Zf5FKOkcgMEs=
-X-Google-Smtp-Source: AGHT+IGBoOH/dF2Qf/A4OxGdVP2d0F0wbeBPrw2HCrMwWOY4foTr5XgGAAw952VOVUq95qHni+KiDg==
-X-Received: by 2002:a2e:3307:0:b0:2d8:5a4b:17b1 with SMTP id d7-20020a2e3307000000b002d85a4b17b1mr9907557ljc.15.1713275766843;
-        Tue, 16 Apr 2024 06:56:06 -0700 (PDT)
-Received: from [172.30.205.49] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id t12-20020a2e9c4c000000b002d9fb88a7cfsm1282899ljj.102.2024.04.16.06.56.04
+        bh=GM/ZPv+V4DboncDOmOt7I89cvjgBB42SqfpjqZrobso=;
+        b=PbtNo2S4lm/koqiMun1njQpnetU4FfF+du+4E1OvaRIfkSUwK9h/U7Yr3payEdFX5V
+         wEFU6EmNQlE1OcmrmN5V8mwMPYnZ2qvP/fTcQkQ3vK8+qc8Lrl5Bap/yQ9I2wWcG8K65
+         2als0UdEKsN0c6EK5e0Qd20+m9KoIOpmjqfUCu9ETkZkPeUV/LfLdAQyJS4dlyC5zve4
+         2x1ivJqZO9/L49pe8S3Gf7hst7B8Y/YNzp8xK47I88o89JEAsd0aYsi4r+3Ln0HvzZhV
+         6srZKWOcU1VmnIpce4aIc26/hFeps5ogFqEpiy+llEHde6N9kk8VY8/P5cBPnyM5Aqwj
+         zzTw==
+X-Forwarded-Encrypted: i=1; AJvYcCWv4fjRtHgNloVFzf6DFctTAKbvgppWGGthrDeH7fDxjTmsoGYMd8n9d/XHWDzorleqIDxX290glT/mpAw+yjJedpYX+Xo/
+X-Gm-Message-State: AOJu0YxLiG5GpWJcxhNvBnamG+f851k8vqMp4NtxQpIe1r1yyfJDBAey
+	5n/mFFodi1FxbVsf9o/1vASN3nn3W1fbqdUiMBi+hirYm5x9Q2xk
+X-Google-Smtp-Source: AGHT+IHkAJ5vcr5U+nmNThgYGL4nmSjAZHJfhmArM42d0zEyrM5TlmrJFdY+QJqpgZMwNKOGJ1+bOw==
+X-Received: by 2002:a05:651c:b0b:b0:2d8:2799:fbcf with SMTP id b11-20020a05651c0b0b00b002d82799fbcfmr10286762ljr.34.1713275851408;
+        Tue, 16 Apr 2024 06:57:31 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
+        by smtp.gmail.com with ESMTPSA id b13-20020a05600c4e0d00b0041898fc168bsm2111798wmq.36.2024.04.16.06.57.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Apr 2024 06:56:06 -0700 (PDT)
-Message-ID: <3c2355de-e79f-4c95-96d9-d835cd91394a@linaro.org>
-Date: Tue, 16 Apr 2024 15:56:03 +0200
+        Tue, 16 Apr 2024 06:57:30 -0700 (PDT)
+Subject: Re: [PATCH net-next] sfc: use flow_rule_no_unsupp_control_flags()
+To: =?UTF-8?Q?Asbj=c3=b8rn_Sloth_T=c3=b8nnesen?= <ast@fiberby.net>,
+ netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Martin Habets <habetsm.xilinx@gmail.com>,
+ linux-net-drivers@amd.com
+References: <20240416134432.9527-1-ast@fiberby.net>
+From: Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <496dba36-1d40-e7d1-1250-a350bc590902@gmail.com>
+Date: Tue, 16 Apr 2024 14:57:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 1/3] input: pm8xxx-vibrator: refactor to support new
- SPMI vibrator
-To: quic_fenglinw@quicinc.com, kernel@quicinc.com,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20240416-pm8xxx-vibrator-new-design-v11-0-7b1c951e1515@quicinc.com>
- <20240416-pm8xxx-vibrator-new-design-v11-1-7b1c951e1515@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240416-pm8xxx-vibrator-new-design-v11-1-7b1c951e1515@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20240416134432.9527-1-ast@fiberby.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 
-
-
-On 4/16/24 04:44, Fenglin Wu via B4 Relay wrote:
-> From: Fenglin Wu <quic_fenglinw@quicinc.com>
+On 16/04/2024 14:44, Asbjørn Sloth Tønnesen wrote:
+> Adopt nfp-style *_FLOWER_SUPPORTED_CTLFLAGS define.
 > 
-> Currently, vibrator control register addresses are hard coded,
-> including the base address and offsets, it's not flexible to
-> support new SPMI vibrator module which is usually included in
-> different PMICs with different base address. Refactor it by using
-> the base address defined in devicetree.
+> Change the check for unsupported control flags, to use the new helper
+> flow_rule_is_supp_control_flags().
 > 
-> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+> Since the helper was based on sfc, then nothing really changes.
+> 
+> Compile-tested, and compiled objects are identical.
+> 
+> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+
+Subject line doesn't match the patch (I guess because the helper
+ got renamed).
+
 > ---
+>  drivers/net/ethernet/sfc/tc.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/sfc/tc.c b/drivers/net/ethernet/sfc/tc.c
+> index 82e8891a619a..5f73f1dea524 100644
+> --- a/drivers/net/ethernet/sfc/tc.c
+> +++ b/drivers/net/ethernet/sfc/tc.c
+> @@ -21,6 +21,10 @@
+>  #include "ef100_rep.h"
+>  #include "efx.h"
+>  
+> +#define SFC_FLOWER_SUPPORTED_CTLFLAGS \
+> +	(FLOW_DIS_IS_FRAGMENT | \
+> +	 FLOW_DIS_FIRST_FRAG)
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+I'd rather keep the flags in-line, next to where they're actually
+ used.  I.e. we have
+    if (flags & FRAGMENT)
+        blah;
+    if (flags & FIRST_FRAG)
+        foo;
+    if (!blah_supported(FRAGMENT | FIRST_FRAG))
+        return -EEK;
+ and it's very clear that anyone changing one of those parts also
+ needs to change the other.  Whereas with your #define it's not
+ immediately obvious to someone reading the code where that set
+ of supported flags comes from conceptually.
 
-Konrad
+-ed
 
