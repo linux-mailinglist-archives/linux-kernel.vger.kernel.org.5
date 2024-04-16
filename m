@@ -1,173 +1,99 @@
-Return-Path: <linux-kernel+bounces-147442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEDC28A743D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:03:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3B428A7441
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:04:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C65A91C20AB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:03:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F883282DD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:04:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7840113848A;
-	Tue, 16 Apr 2024 19:02:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B9DF1384AD;
+	Tue, 16 Apr 2024 19:03:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BsZ1iD5N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b5l/mDaJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96926137748;
-	Tue, 16 Apr 2024 19:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42947137916;
+	Tue, 16 Apr 2024 19:02:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713294135; cv=none; b=J8532YG/+dSFdyWs350DZ7mlGmO8IBjXm3D6FKT9d/mg4jFJ0dEC9qcSp1eMYExbX2WxAKDPWKk/o3hr8HuN3wrXNSbVRKiQ52E9jNRTdfcFa0ju5K03jmYf80ijmBf4YI5SfvnxO0rdJfh7rgAEsrzIWlGidpo8VDOjMK7fWoA=
+	t=1713294179; cv=none; b=qOxX8WPxhcwIt09HD/gLt/2xyQBuZeNtrFgd4mZxv8Qvv9RvYAnJWwRvDGLmZHe19t+EDQ4OaD/uKcJvxZcyXKFpToIzD6L+rXF1YpHeGT97rhEK5F8Nmw7FQkOJuls90y55nOhBmOyBk6HcGLYOkfmfkP1+c6OGSHxnDtXD/gc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713294135; c=relaxed/simple;
-	bh=xbskRV8m/+XN6NH2m8afNoKnmWeG0OzTrmA+SGInC2k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tVse+Dfmmqt1tdelpXUrMImcUbRqJyAbR0TrJu8PFFeNncW4Klq30+eo9yXRnrUMH4bS1Ck59Xnhv9s8+DmoSElP+0s4TwXLKt1Zq2s2dqkg0h6V4SptWl9rLwh0VbyX/0zf0aDQOwKzh/WXuktWGeH/xH6IuMqJZwlnCBj+O/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BsZ1iD5N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5478BC4AF0E;
-	Tue, 16 Apr 2024 19:02:15 +0000 (UTC)
+	s=arc-20240116; t=1713294179; c=relaxed/simple;
+	bh=ymLn4ViqJi6azNlarzfVSe+0BD6thD1UTD9JMNYrPbA=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZoQIBKOGBdXznYRPa3gzFlQ/2f1ubUeKCnHpd/ZRrDckjGZoOMcvvG88hXE8bdOOmEWzz4Un8F5o1i6k+Pg3pLXk+/4DGvfpTfmDlGxQiwX2DyJ5WOrg57DbMCoRkdDG2UY8s7axLED8eSGxpePpIet8VwiWKvTz5NuNok2AFw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b5l/mDaJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B4D6C32781;
+	Tue, 16 Apr 2024 19:02:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713294135;
-	bh=xbskRV8m/+XN6NH2m8afNoKnmWeG0OzTrmA+SGInC2k=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=BsZ1iD5Nd0d4B6HXNkBHNhwT4LiiWc88yZUQZOPWqCQret+uyX993UiVDEdXnTQpZ
-	 i+0iRxF78oS0mCLtwntmBow82cS81/MNHk/euznN+1VogyU2uvGQNlFiP3RAekV8ZZ
-	 JUyUoVCxOUgz5WA1BpUwqxv6orExQ6CEOkIl7Ln5jgg1FrwS1lxDBRn7+JLvJ5lDsn
-	 qfIZDWeWTFh5naNuIBI1NkF4/TaI7mxKxaobY5r/KUieAf/+pzCcjsTF4Wih403x9q
-	 s5GnRQ7NhXx3QnWrU9BEPwOT48kAMz7YncYjrHuetrhWT0p7Kwou0NeqRGFTJ7KbSp
-	 rFw6bdV4pLu+Q==
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5acdbfa7a45so89186eaf.2;
-        Tue, 16 Apr 2024 12:02:15 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWpdebi6ZoqTkcKV2RNxmQnMTB4GKRTK8FXXM+4WkvGpD26OOpnf7tZyh20o/8y2g5BAt1WA1ig8oAu+N8WexL02SXP3Jf1jcWBsylmVnau1OsJE/Mygn144IbR6jEPICVdjKqaWJ4JSV0NXTg9Tf0pG0WrsHA8DUKGfxgr9E4LOEoINhmY1I0AvynvHrDWz9ENzQuBADn+adz8QOnreQ==
-X-Gm-Message-State: AOJu0YxWDSA63iSWjSmIhpoqKhX6//OKcRA2UmPem1LFr/3GzbPvo3vY
-	CGwbBeCWPqZXj2HKpc3IP8ZxQukAqgTiihHUjD6SVr3/NbVpnOKHSSMdDnNKqQtHrCBwshqdOKI
-	GI7ksXKuwVeKFeI0HXkP91QMDZY8=
-X-Google-Smtp-Source: AGHT+IGfLxmXEH+uUXC9TAUq3KwcPBawoHi+dzfu7++eeN3j3YN9GuWwKcm2PcJPtxo1jL4YEoWhIRWKjGy4htEVqRk=
-X-Received: by 2002:a05:6820:4008:b0:5aa:6b2e:36f0 with SMTP id
- fh8-20020a056820400800b005aa6b2e36f0mr16275342oob.0.1713294134546; Tue, 16
- Apr 2024 12:02:14 -0700 (PDT)
+	s=k20201202; t=1713294178;
+	bh=ymLn4ViqJi6azNlarzfVSe+0BD6thD1UTD9JMNYrPbA=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=b5l/mDaJZMTRccDQU4oHPPsiNUGhNVjwt5i3LJfiFvJ1YIe4JWS7ccHxJbPQhP+rD
+	 J/79Uqz96QG3JYUoyAjJZvKdAIF0seIEzlK3r6+96vq5miomFqbEdksH/nd1/CpvOJ
+	 bDgSRndgM/MYoFTFba31wgTREhjmD7o4jIGezKSjI0jy+vBIz2dyDnTeQfqEnV5L78
+	 Emztim/IwxeIc6VF0RCvge7DcLl83r7wC32fogZHYf1kQ3ut6pFZXEDTgbDFLdiOR8
+	 JtjXsJAPJFlP67O/F7i0R2IofsZmbOuiCRiJRfybCPCu4TZE5MVxrCrZshifvqXqiP
+	 ePxtnDOoJQDdA==
+Date: Tue, 16 Apr 2024 21:02:54 +0200
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, Dragan Simic <dsimic@manjaro.org>, linux-i2c@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 13/18] i2c: rk3x: remove printout on handled timeouts
+Message-ID: <kxlb62ejtnaacgvlkdnyxtap23oesagq7p52z7kqhhydqdjhbt@gpvwnr4rb67a>
+References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
+ <hgdhrf2jiovfxcppdtsq32sfbk4xuq7ewiwq4awwztj4mp3yez@kj6ixihkcxhe>
+ <af8ac48f10a1636ab2486aef91e01c3f@manjaro.org>
+ <8358604.T7Z3S40VBb@diego>
+ <dnh4yiajjqcxcq7xjvj35quda7yrf7tubp2l2ktsaf4zgzai4n@xdefxkk76yyg>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com>
- <20240412143719.11398-4-Jonathan.Cameron@huawei.com> <CAJZ5v0gNvy2e=hOGQQ2kLpnrDr8=QGBax-E5odEJ=7BA8qW-9A@mail.gmail.com>
- <ZhmWkE+fCEG/WFoi@shell.armlinux.org.uk> <87bk6ez4hj.ffs@tglx>
- <ZhmtO6zBExkQGZLk@shell.armlinux.org.uk> <878r1iyxkr.ffs@tglx>
- <20240415094552.000008d7@Huawei.com> <CAJZ5v0ireu4pOedLjMjK2NrLkq_2vySpdgEgGccQEiFC5=otWQ@mail.gmail.com>
- <20240415125649.00001354@huawei.com> <CAJZ5v0iNSmV6EsBOc5oYWSTR9UvFOeg8_mj8Ofhum4Tonb3kNQ@mail.gmail.com>
- <20240415132351.00007439@huawei.com> <20240416184116.0000513c@huawei.com>
-In-Reply-To: <20240416184116.0000513c@huawei.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 16 Apr 2024 21:02:02 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0iK61_ihUZX_tXoSGdhpYDWFhEBbEuFf6WFiiD0QSeTDg@mail.gmail.com>
-Message-ID: <CAJZ5v0iK61_ihUZX_tXoSGdhpYDWFhEBbEuFf6WFiiD0QSeTDg@mail.gmail.com>
-Subject: Re: [PATCH v5 03/18] ACPI: processor: Register deferred CPUs from acpi_processor_get_info()
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	"Russell King (Oracle)" <linux@armlinux.org.uk>, linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	kvmarm@lists.linux.dev, x86@kernel.org, Miguel Luis <miguel.luis@oracle.com>, 
-	James Morse <james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, linuxarm@huawei.com, justin.he@arm.com, 
-	jianyong.wu@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dnh4yiajjqcxcq7xjvj35quda7yrf7tubp2l2ktsaf4zgzai4n@xdefxkk76yyg>
 
-On Tue, Apr 16, 2024 at 7:41=E2=80=AFPM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Mon, 15 Apr 2024 13:23:51 +0100
-> Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
->
-> > On Mon, 15 Apr 2024 14:04:26 +0200
-> > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+Hi,
 
-[cut]
+On Sat, Apr 13, 2024 at 04:35:06PM +0200, Wolfram Sang wrote:
+> > Also we're talking about two lines of code, I wouldn't call that bloat ;-)
+> 
+> With this patch, yes. But once you allow debug code, it is hard to draw
+> a line which debug is still okay and which is too fine-grained. And then
+> you end up with a lot. Over the years, I developed the tendency to try
+> to have less but meaningful error printouts. But I don't enforce it
+> strictly because it is too much bike-shedding discussion.
+> 
+> In case of this error printout here, it is just wrong. But, see, it also
+> came from this tendency I don't like to have printouts for every error.
 
-> > > > I'm still very much stuck on the hotadd_init flag however, so any s=
-uggestions
-> > > > on that would be very welcome!
-> > >
-> > > I need to do some investigation which will take some time I suppose.
-> >
-> > I'll do so as well once I've gotten the rest sorted out.  That whole
-> > structure seems overly complex and liable to race, though maybe suffici=
-ent
-> > locking happens to be held that it's not a problem.
->
-> Back to this a (maybe) last outstanding problem.
->
-> Superficially I think we might be able to get around this by always
-> doing the setup in the initial online. In brief that looks something the
-> below code.  Relying on the cpu hotplug callback registration calling
-> the acpi_soft_cpu_online for all instances that are already online.
->
-> Very lightly tested on arm64 and x86 with cold and hotplugged CPUs.
-> However this is all in emulation and I don't have access to any significa=
-nt
-> x86 test farms :( So help will be needed if it's not immediately obvious =
-why
-> we can't do this.
+I agree with Wolfram here. Debug messages are OK if they are
+providing real useful information to a final product.
 
-AFAICS, this should work.  At least I don't see why it wouldn't.
+Besides, as I explained earlier, the patter:
 
-> Of course, I'm open to other suggestions!
->
-> For now I'll put a tidied version of this one is as an RFC with the rest =
-of v6.
->
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.=
-c
-> index 06e718b650e5..97ca53b516d0 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -340,7 +340,7 @@ static int acpi_processor_get_info(struct acpi_device=
- *device)
->          */
->         per_cpu(processor_device_array, pr->id) =3D device;
->         per_cpu(processors, pr->id) =3D pr;
-> -
-> +       pr->flags.need_hotplug_init =3D 1;
->         /*
->          *  Extra Processor objects may be enumerated on MP systems with
->          *  less than the max # of CPUs. They should be ignored _iff
-> diff --git a/drivers/acpi/processor_driver.c b/drivers/acpi/processor_dri=
-ver.c
-> index 67db60eda370..930f911fc435 100644
-> --- a/drivers/acpi/processor_driver.c
-> +++ b/drivers/acpi/processor_driver.c
-> @@ -206,7 +206,7 @@ static int acpi_processor_start(struct device *dev)
->
->         /* Protect against concurrent CPU hotplug operations */
->         cpu_hotplug_disable();
-> -       ret =3D __acpi_processor_start(device);
-> +       //      ret =3D __acpi_processor_start(device);
->         cpu_hotplug_enable();
->         return ret;
->  }
+	dev_dbg("timed out")
+	return -ETIMEDOUT;
 
-So it looks like acpi_processor_start() is not necessary any more, is it?
+(print a debug but return error) doesn't make much sense.
 
-> @@ -279,7 +279,7 @@ static int __init acpi_processor_driver_init(void)
->         if (result < 0)
->                 return result;
->
-> -       result =3D cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
-> +       result =3D cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
->                                            "acpi/cpu-drv:online",
->                                            acpi_soft_cpu_online, NULL);
->         if (result < 0)
-> >
-> > Jonathan
+But, I this is all personal preference. So that I can also leave
+it to the specific maintainer.
 
-Thanks!
+From my side all patches in this series are r-b'ed, except for
+patch 6 where there are 3 dev_dbg in a row stating the same
+thing.
+
+Thanks Dragan and Heiko for your feedback.
+
+Andi
 
