@@ -1,80 +1,69 @@
-Return-Path: <linux-kernel+bounces-147360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B73668A72EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:16:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA5358A72F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:19:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6CBC1C2194A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:16:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B9AC1F21B46
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:19:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765DB134CE8;
-	Tue, 16 Apr 2024 18:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95D11136647;
+	Tue, 16 Apr 2024 18:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TiFk10Rv"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TJFISS3f"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A503B84A32
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:16:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0DDE134CD0;
+	Tue, 16 Apr 2024 18:19:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713291369; cv=none; b=mGd/wKh6DM8cAoJON7u+MkjNFHkYtVobEX4l/5s/MAtlkTZvAD1GxprWgKCYzVN2lvCc6Mes5wClcjLZRxmWIGYIyp+xCQahryt9SQ5l/I/DVwfy2At+H46kN9rIFjZG+X/6bEMkqdsA6I7j+HZiY0+R1SEdJ6y/skbVOCkbovI=
+	t=1713291552; cv=none; b=IDof4kg6bRLphZVGTa90U5oL3yYJQYIXhtnDmfY8qmIhIOvHv2c4e8BIpm9vO/W4SsMudFZx7F02uNJpwcGfn76hfHv49ufSBhZtJeiVHrucb1yo+lMnqQCyNZfQkRSKQ3Da95iLy/FunRYLcjqZBQ7vwK/eIk1BJcutYCiOf3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713291369; c=relaxed/simple;
-	bh=NEewj1CKW99Q8HY/ZVFl8Uew1VV2WqrmJhOA7mr3/5c=;
+	s=arc-20240116; t=1713291552; c=relaxed/simple;
+	bh=OSFyHt08QH9EQT0OH6l2mjM6TDXgg4K1qPiqN9EnzTQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TGkiTMq3Wj3Zci3L5R9NBDgiDB22ocGXKb6AU382jVNS66GoxRhYBa+CqhMn2U7Eu90lHjtsW9s98AqHCnOPpjZvkj8IVn07fQlACj8OZrWjjhPX414Infot4TRuDLYeNI8U4/IuqmmN4CwBUkdtKxVNVyHCSiNdT0ZaQitbwI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TiFk10Rv; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713291367; x=1744827367;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NEewj1CKW99Q8HY/ZVFl8Uew1VV2WqrmJhOA7mr3/5c=;
-  b=TiFk10RvzBwSMy+d2qeqTfHvYJlLy4ltyIj9nru5cYZcijKoDq6LHxsf
-   wcTJ8PFpZL5mnZ4cBvKTNFW7ro/6q871eEbAI+hY4wgXlEa/XgwJOWhqD
-   +vRBtJn9rBpr6hpQc6ybKoFiTcXunzKVSZlfZpk9r3s2+k8kTTydZg8OV
-   L2ZpIS2k2krhka/y4AkRyBVZ+dF+rCCaFcZPxPBmdwizaSXjxRluFDUI0
-   6G6hFTwykp7+4n83+qBouohnd1uiZa9f/3FMKqDuOR604xPlQlnl5a91p
-   sktCFqfBc3giwHB/DSIRWvT0WiK520tnNp5I2ROcax5zrsdgO1ifhvCR2
-   A==;
-X-CSE-ConnectionGUID: dl06NTwrRGyOfNzrsJvyMA==
-X-CSE-MsgGUID: YNBjIZDUT5OfP/Mjg2dbQw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8921720"
-X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="8921720"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 11:16:07 -0700
-X-CSE-ConnectionGUID: v+Ou0dG3T5Ka4X/8UlERcA==
-X-CSE-MsgGUID: 4xQo2RBzSxeNCWa75Wq5YA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="22930317"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.105])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 11:16:06 -0700
-Date: Tue, 16 Apr 2024 11:16:05 -0700
-From: Tony Luck <tony.luck@intel.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>, "x86@kernel.org" <x86@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/74] x86/cpu/vfm: Add/initialize x86_vfm field to
- struct cpuinfo_x86
-Message-ID: <Zh7AZY5X8_uyHrjz@agluck-desk3>
-References: <20240328164811.GDZgWfSzAWZXO7dUky@fat_crate.local>
- <20240328165251.GEZgWgY1Clb9z4t3VX@fat_crate.local>
- <SJ1PR11MB6083AADC97E50462C1137D71FC3B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240328171204.GGZgWk5JNOzQzoaEql@fat_crate.local>
- <SJ1PR11MB6083D8BB65748452B204ED8AFC3B2@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240329114007.GAZgaolwSFtjHStiuL@fat_crate.local>
- <Zgr6kT8oULbnmEXx@agluck-desk3>
- <20240407105407.GAZhJ7T0fEhzow2MN2@fat_crate.local>
- <SJ1PR11MB60837E437DFA0595DF5B25D0FC002@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <20240409082217.GAZhT6uW7aELQCHOwL@fat_crate.local>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ktixbaK0mtmPhVBhY7SP8XepjcNYspSFTkHw+r+/R6nmHSy6B7QFl/+ZqGDvRr6tjj51VOeuWxk0Rbc3zoi9o1LrzrnQWcK1sEVzi/cMiJX3Ib68krsfhwHycXTC85KC/SIksYCUz0RVKXxexpexeiHqEfDr91dMkakuHnfF/4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TJFISS3f; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E1C2C113CE;
+	Tue, 16 Apr 2024 18:19:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713291552;
+	bh=OSFyHt08QH9EQT0OH6l2mjM6TDXgg4K1qPiqN9EnzTQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TJFISS3fPUcd6DEOOP0W+iLg/MehqWAKn84NatA9HD2x9ox4VLLzoRForSafJLD5Z
+	 7bknIRzjCT4DAd3BU/lMIEJKmiIGlav6YBMZMbz/DN4vug1w5ufeLyipa8GyG6ee/E
+	 2VBwwcud1ujgQzDiV0AkCdaD7egYm3HrIcJ+CWH2QlbK/4r+shqzCLAI8Y66FlC6Qm
+	 Df/4O359q3sLIf8HsChGbNGebitD1yY8qQTqMgKU2HRSnIW4bSh5OtY1xFENmbcjcw
+	 CvvFesh2ElTtCjgpJuW7rKi4ipanh0qwGxR5nqaPQG5AFADuX/VcD+oLP/Ps2rpJT6
+	 4j5kRjU+IlUHw==
+Date: Tue, 16 Apr 2024 21:18:02 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Nam Cao <namcao@linutronix.de>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Andreas Dilger <adilger@dilger.ca>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>,
+	Ext4 Developers List <linux-ext4@vger.kernel.org>,
+	Conor Dooley <conor@kernel.org>,
+	Anders Roxell <anders.roxell@linaro.org>,
+	Alexandre Ghiti <alex@ghiti.fr>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+Message-ID: <Zh7A2o59dOIwaRjA@kernel.org>
+References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
+ <8734rlo9j7.fsf@all.your.base.are.belong.to.us>
+ <Zh6KNglOu8mpTPHE@kernel.org>
+ <20240416171713.7d76fe7d@namcao>
+ <Zh6lD8d7cUZdkZJb@kernel.org>
+ <Zh6n952Y7qKRMnMj@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,24 +72,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240409082217.GAZhT6uW7aELQCHOwL@fat_crate.local>
+In-Reply-To: <Zh6n952Y7qKRMnMj@casper.infradead.org>
 
-On Tue, Apr 09, 2024 at 10:22:17AM +0200, Borislav Petkov wrote:
-> On Mon, Apr 08, 2024 at 04:20:36PM +0000, Luck, Tony wrote:
-> > So are parts 1-3 ready for TIP? If they get added I can start collecting
-> > reviews for parts 4-72.
+On Tue, Apr 16, 2024 at 05:31:51PM +0100, Matthew Wilcox wrote:
+> On Tue, Apr 16, 2024 at 07:19:27PM +0300, Mike Rapoport wrote:
+> > > "last page of the first gigabyte" - why first gigabyte? Do you mean
+> > > last page of *last* gigabyte?
+> >  
+> > With 3G-1G split linear map can map only 1G from 0xc0000000 to 0xffffffff
+> > (or 0x00000000 with 32-bit overflow):
+> > 
+> > [    0.000000]       lowmem : 0xc0000000 - 0x00000000   (1024 MB)
 > 
-> I'd like for tglx to have a look at this first too.
+> ... but you can't map that much.  You need to reserve space for (may not
+> be exhaustive):
+> 
+>  - PCI BARs (or other MMIO)
+>  - vmap
+>  - kmap
+>  - percpu
+>  - ioremap
+>  - modules
+>  - fixmap
+>  - Maybe EFI runtime services?
+> 
+> You'll be lucky to get 800MB of ZONE_NORMAL.
 
-Boris,
+But that does not mean that the last page won't get to the buddy
 
-Thomas gave his Reviewed-by for parts 1-3
-
-Link: https://lore.kernel.org/all/871q7e7lfu.ffs@tglx/
-Link: https://lore.kernel.org/all/87y19m66tu.ffs@tglx/
-Link: https://lore.kernel.org/all/87v84q66sn.ffs@tglx/
-
-Is there anyone else that needs a quick poke to look at these?
-
--Tony
+-- 
+Sincerely yours,
+Mike.
 
