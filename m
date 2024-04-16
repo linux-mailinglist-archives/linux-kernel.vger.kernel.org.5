@@ -1,464 +1,322 @@
-Return-Path: <linux-kernel+bounces-146145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A988A614F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 05:14:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CFC28A6150
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 05:14:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99F32282CFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 03:13:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 352D9282DEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 03:14:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 608A2171D2;
-	Tue, 16 Apr 2024 03:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qaeq2xDc"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82D44C7E
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 03:13:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D282D1803D;
+	Tue, 16 Apr 2024 03:13:55 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F5614A82
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 03:13:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713237233; cv=none; b=ZOzniYwDkRX49Wbyh1zraCAQ7ya2S/4BMSSoX0m18nXHC4GwaEKfPCXkNJSRpLzXI0Ndiq7rAas8IpXwZvf1n//IikzDrEhD1pk9NkInJUH3KCfAXBeC9Exy6dLvZ9H7ClJxjVAkoG4K1HVLxMvvNw59DLxRd9WT1SvdxTu0KW0=
+	t=1713237235; cv=none; b=NRSar8Fm0BdvzLYscizvNOm/x0hAdXtb0sp86XdjGsK/JgDsrol1PPVRwy7+nNsZlala0KUgEia1oQk2y7kYSx/ViUknneZbNp5sEVy01yflFhShDyHiR0qQGmhRbqMv6/sNGlgww+0YZQHLNGzRdT7/S9FP8eo+ZyYrAVmsz1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713237233; c=relaxed/simple;
-	bh=a3lCO5CRuQ7dH+oGyY4l/JpmVdIjZPWkFTGDcgYnwQo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=CA8X5KOXzps9R68L1vc9l4EVFEj6JVmxPZN0asJ8mJDOk7cx0HHiBEuQEzsD+sj5eg1xNsBRgiyUbVk20JMQeI7Tlm8RgqM6MAgxLWAUHODfU9zrG6Ghqy2W8jIP1cUnv39rYdmvWKXnfn17g4kLr8E3+B+qIrcRHcpDJFyDgGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qaeq2xDc; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713237231; x=1744773231;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=a3lCO5CRuQ7dH+oGyY4l/JpmVdIjZPWkFTGDcgYnwQo=;
-  b=Qaeq2xDcnh+frG9G4Am6fuN2Ir7hKyq85a0nORywHLN3tr+Yhc6ntr0Y
-   PV4HJVbfpoAoeNAy2ayG3wCMC1UA721tMw64jqkERv5K3RFgGXNjdrTPA
-   pbRq9AmCmAawakF1qzV2UGkMjM4bmQt/lFd6GdirSU2vUSNyBnNayGiy3
-   gWdcqXkTMwQkDdl9VxGnb2uh4XeWGTcI7azF31CWPSrABHLbLBpWRP5q5
-   HNr/I42pWQVPjwLpeG7pG/ynLlJawkve75tsTizWBnKAo57l1Ngd9Q6FM
-   KMYdfvxNICkRkfnPJMBUCfzbN+Fp+Fg17SQD5gfxUO5iYSnGfC7YmC5fT
-   w==;
-X-CSE-ConnectionGUID: bG3iPpofT6W7pF9ECGPlFA==
-X-CSE-MsgGUID: JLlQWrWpT/ehnksCLd8Q7Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="8533437"
-X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
-   d="scan'208";a="8533437"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 20:13:49 -0700
-X-CSE-ConnectionGUID: CzUKsPNHTGS4XTQx9u+IPQ==
-X-CSE-MsgGUID: A8JIzK4SQkKPcRKUNJOqbA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
-   d="scan'208";a="45406842"
-Received: from unknown (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 20:13:44 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org,  linux-mm@kvack.org,
-  baolin.wang@linux.alibaba.com,  chrisl@kernel.org,  david@redhat.com,
-  hanchuanhua@oppo.com,  hannes@cmpxchg.org,  hughd@google.com,
-  kasong@tencent.com,  ryan.roberts@arm.com,  surenb@google.com,
-  v-songbaohua@oppo.com,  willy@infradead.org,  xiang@kernel.org,
-  yosryahmed@google.com,  yuzhao@google.com,  ziy@nvidia.com,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] mm: swap: introduce swap_free_nr() for batched
- swap_free()
-In-Reply-To: <CAGsJ_4yim-PQW0JBjZD8dpGBG3FQm=xZb1V51+Nr37nJEwEPzA@mail.gmail.com>
-	(Barry Song's message of "Tue, 16 Apr 2024 14:08:50 +1200")
-References: <20240409082631.187483-1-21cnbao@gmail.com>
-	<20240409082631.187483-2-21cnbao@gmail.com>
-	<87y19f2lq3.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAGsJ_4yPQyQpWvB2KmuOh2vyUQA0A6hNHsypEC9Gptp9XtuDgg@mail.gmail.com>
-	<87jzkz2g3t.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAGsJ_4wm4SfkyTBHpU46EPTFvhq8e54F3KRkKj6gTBcnOjCw1g@mail.gmail.com>
-	<87bk6b2elo.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAGsJ_4zH4RHhZembtXOqzBDL75MA5NiEjMHx7eCN-a1ifnKTBw@mail.gmail.com>
-	<877cgy2ifu.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAGsJ_4yim-PQW0JBjZD8dpGBG3FQm=xZb1V51+Nr37nJEwEPzA@mail.gmail.com>
-Date: Tue, 16 Apr 2024 11:11:51 +0800
-Message-ID: <87ttk20zns.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1713237235; c=relaxed/simple;
+	bh=U6p2ts7qX92k33AKHQGKDDr+K7bfe4jrt0INl11Qnwc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rzcdW53Ua2329baGOy7+kbU3gSGH9TNTSLEZ9+GTogUbal8/5ZdpyMzcmAQA97owYbTwCSepmSNQTdtbpQPsko0B6o3hyEXvYkVjVyD3y2MlpBmubmTCixcZvFx6YtpQxkdr4kdE/J3fA+KPNqw8XAhYt/iIk9IsaR1oAOpNkKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C442F2F4;
+	Mon, 15 Apr 2024 20:14:19 -0700 (PDT)
+Received: from [10.163.59.235] (unknown [10.163.59.235])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E49363F64C;
+	Mon, 15 Apr 2024 20:13:46 -0700 (PDT)
+Message-ID: <b63e6914-03c6-4c76-a81a-4af2fbe557e0@arm.com>
+Date: Tue, 16 Apr 2024 08:43:44 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 8/8] arm64/hw_breakpoint: Enable FEAT_Debugv8p9
+Content-Language: en-US
+To: Marc Zyngier <maz@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, Jonathan Corbet <corbet@lwn.net>,
+ Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240405080008.1225223-1-anshuman.khandual@arm.com>
+ <20240405080008.1225223-9-anshuman.khandual@arm.com>
+ <868r1st8an.wl-maz@kernel.org>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <868r1st8an.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Barry Song <21cnbao@gmail.com> writes:
 
-> On Tue, Apr 16, 2024 at 1:42=E2=80=AFPM Huang, Ying <ying.huang@intel.com=
-> wrote:
->>
->> Barry Song <21cnbao@gmail.com> writes:
->>
->> > On Mon, Apr 15, 2024 at 8:53=E2=80=AFPM Huang, Ying <ying.huang@intel.=
-com> wrote:
->> >>
->> >> Barry Song <21cnbao@gmail.com> writes:
->> >>
->> >> > On Mon, Apr 15, 2024 at 8:21=E2=80=AFPM Huang, Ying <ying.huang@int=
-el.com> wrote:
->> >> >>
->> >> >> Barry Song <21cnbao@gmail.com> writes:
->> >> >>
->> >> >> > On Mon, Apr 15, 2024 at 6:19=E2=80=AFPM Huang, Ying <ying.huang@=
-intel.com> wrote:
->> >> >> >>
->> >> >> >> Barry Song <21cnbao@gmail.com> writes:
->> >> >> >>
->> >> >> >> > From: Chuanhua Han <hanchuanhua@oppo.com>
->> >> >> >> >
->> >> >> >> > While swapping in a large folio, we need to free swaps relate=
-d to the whole
->> >> >> >> > folio. To avoid frequently acquiring and releasing swap locks=
-, it is better
->> >> >> >> > to introduce an API for batched free.
->> >> >> >> >
->> >> >> >> > Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
->> >> >> >> > Co-developed-by: Barry Song <v-songbaohua@oppo.com>
->> >> >> >> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
->> >> >> >> > ---
->> >> >> >> >  include/linux/swap.h |  5 +++++
->> >> >> >> >  mm/swapfile.c        | 51 ++++++++++++++++++++++++++++++++++=
-++++++++++
->> >> >> >> >  2 files changed, 56 insertions(+)
->> >> >> >> >
->> >> >> >> > diff --git a/include/linux/swap.h b/include/linux/swap.h
->> >> >> >> > index 11c53692f65f..b7a107e983b8 100644
->> >> >> >> > --- a/include/linux/swap.h
->> >> >> >> > +++ b/include/linux/swap.h
->> >> >> >> > @@ -483,6 +483,7 @@ extern void swap_shmem_alloc(swp_entry_t);
->> >> >> >> >  extern int swap_duplicate(swp_entry_t);
->> >> >> >> >  extern int swapcache_prepare(swp_entry_t);
->> >> >> >> >  extern void swap_free(swp_entry_t);
->> >> >> >> > +extern void swap_free_nr(swp_entry_t entry, int nr_pages);
->> >> >> >> >  extern void swapcache_free_entries(swp_entry_t *entries, int=
- n);
->> >> >> >> >  extern void free_swap_and_cache_nr(swp_entry_t entry, int nr=
-);
->> >> >> >> >  int swap_type_of(dev_t device, sector_t offset);
->> >> >> >> > @@ -564,6 +565,10 @@ static inline void swap_free(swp_entry_t=
- swp)
->> >> >> >> >  {
->> >> >> >> >  }
->> >> >> >> >
->> >> >> >> > +void swap_free_nr(swp_entry_t entry, int nr_pages)
->> >> >> >> > +{
->> >> >> >> > +}
->> >> >> >> > +
->> >> >> >> >  static inline void put_swap_folio(struct folio *folio, swp_e=
-ntry_t swp)
->> >> >> >> >  {
->> >> >> >> >  }
->> >> >> >> > diff --git a/mm/swapfile.c b/mm/swapfile.c
->> >> >> >> > index 28642c188c93..f4c65aeb088d 100644
->> >> >> >> > --- a/mm/swapfile.c
->> >> >> >> > +++ b/mm/swapfile.c
->> >> >> >> > @@ -1356,6 +1356,57 @@ void swap_free(swp_entry_t entry)
->> >> >> >> >               __swap_entry_free(p, entry);
->> >> >> >> >  }
->> >> >> >> >
->> >> >> >> > +/*
->> >> >> >> > + * Free up the maximum number of swap entries at once to lim=
-it the
->> >> >> >> > + * maximum kernel stack usage.
->> >> >> >> > + */
->> >> >> >> > +#define SWAP_BATCH_NR (SWAPFILE_CLUSTER > 512 ? 512 : SWAPFI=
-LE_CLUSTER)
->> >> >> >> > +
->> >> >> >> > +/*
->> >> >> >> > + * Called after swapping in a large folio,
->> >> >> >>
->> >> >> >> IMHO, it's not good to document the caller in the function defi=
-nition.
->> >> >> >> Because this will discourage function reusing.
->> >> >> >
->> >> >> > ok. right now there is only one user that is why it is added. bu=
-t i agree
->> >> >> > we can actually remove this.
->> >> >> >
->> >> >> >>
->> >> >> >> > batched free swap entries
->> >> >> >> > + * for this large folio, entry should be for the first subpa=
-ge and
->> >> >> >> > + * its offset is aligned with nr_pages
->> >> >> >>
->> >> >> >> Why do we need this?
->> >> >> >
->> >> >> > This is a fundamental requirement for the existing kernel, folio=
-'s
->> >> >> > swap offset is naturally aligned from the first moment add_to_sw=
-ap
->> >> >> > to add swapcache's xa. so this comment is describing the existing
->> >> >> > fact. In the future, if we want to support swap-out folio to dis=
-contiguous
->> >> >> > and not-aligned offsets, we can't pass entry as the parameter, w=
-e should
->> >> >> > instead pass ptep or another different data struct which can con=
-nect
->> >> >> > multiple discontiguous swap offsets.
->> >> >> >
->> >> >> > I feel like we only need "for this large folio, entry should be =
-for
->> >> >> > the first subpage" and drop "and its offset is aligned with nr_p=
-ages",
->> >> >> > the latter is not important to this context at all.
->> >> >>
->> >> >> IIUC, all these are requirements of the only caller now, not the
->> >> >> function itself.  If only part of the all swap entries of a mTHP a=
-re
->> >> >> called with swap_free_nr(), can swap_free_nr() still do its work? =
- If
->> >> >> so, why not make swap_free_nr() as general as possible?
->> >> >
->> >> > right , i believe we can make swap_free_nr() as general as possible.
->> >> >
->> >> >>
->> >> >> >>
->> >> >> >> > + */
->> >> >> >> > +void swap_free_nr(swp_entry_t entry, int nr_pages)
->> >> >> >> > +{
->> >> >> >> > +     int i, j;
->> >> >> >> > +     struct swap_cluster_info *ci;
->> >> >> >> > +     struct swap_info_struct *p;
->> >> >> >> > +     unsigned int type =3D swp_type(entry);
->> >> >> >> > +     unsigned long offset =3D swp_offset(entry);
->> >> >> >> > +     int batch_nr, remain_nr;
->> >> >> >> > +     DECLARE_BITMAP(usage, SWAP_BATCH_NR) =3D { 0 };
->> >> >> >> > +
->> >> >> >> > +     /* all swap entries are within a cluster for mTHP */
->> >> >> >> > +     VM_BUG_ON(offset % SWAPFILE_CLUSTER + nr_pages > SWAPFI=
-LE_CLUSTER);
->> >> >> >> > +
->> >> >> >> > +     if (nr_pages =3D=3D 1) {
->> >> >> >> > +             swap_free(entry);
->> >> >> >> > +             return;
->> >> >> >> > +     }
->> >> >> >>
->> >> >> >> Is it possible to unify swap_free() and swap_free_nr() into one=
- function
->> >> >> >> with acceptable performance?  IIUC, the general rule in mTHP ef=
-fort is
->> >> >> >> to avoid duplicate functions between mTHP and normal small foli=
-o.
->> >> >> >> Right?
->> >> >> >
->> >> >> > I don't see why.
->> >> >>
->> >> >> Because duplicated implementation are hard to maintain in the long=
- term.
->> >> >
->> >> > sorry, i actually meant "I don't see why not",  for some reason, th=
-e "not"
->> >> > was missed. Obviously I meant "why not", there was a "but" after it=
- :-)
->> >> >
->> >> >>
->> >> >> > but we have lots of places calling swap_free(), we may
->> >> >> > have to change them all to call swap_free_nr(entry, 1); the othe=
-r possible
->> >> >> > way is making swap_free() a wrapper of swap_free_nr() always usi=
-ng
->> >> >> > 1 as the argument. In both cases, we are changing the semantics =
-of
->> >> >> > swap_free_nr() to partially freeing large folio cases and have t=
-o drop
->> >> >> > "entry should be for the first subpage" then.
->> >> >> >
->> >> >> > Right now, the semantics is
->> >> >> > * swap_free_nr() for an entire large folio;
->> >> >> > * swap_free() for one entry of either a large folio or a small f=
-olio
->> >> >>
->> >> >> As above, I don't think the these semantics are important for
->> >> >> swap_free_nr() implementation.
->> >> >
->> >> > right. I agree. If we are ready to change all those callers, nothing
->> >> > can stop us from removing swap_free().
->> >> >
->> >> >>
->> >> >> >>
->> >> >> >> > +
->> >> >> >> > +     remain_nr =3D nr_pages;
->> >> >> >> > +     p =3D _swap_info_get(entry);
->> >> >> >> > +     if (p) {
->> >> >> >> > +             for (i =3D 0; i < nr_pages; i +=3D batch_nr) {
->> >> >> >> > +                     batch_nr =3D min_t(int, SWAP_BATCH_NR, =
-remain_nr);
->> >> >> >> > +
->> >> >> >> > +                     ci =3D lock_cluster_or_swap_info(p, off=
-set);
->> >> >> >> > +                     for (j =3D 0; j < batch_nr; j++) {
->> >> >> >> > +                             if (__swap_entry_free_locked(p,=
- offset + i * SWAP_BATCH_NR + j, 1))
->> >> >> >> > +                                     __bitmap_set(usage, j, =
-1);
->> >> >> >> > +                     }
->> >> >> >> > +                     unlock_cluster_or_swap_info(p, ci);
->> >> >> >> > +
->> >> >> >> > +                     for_each_clear_bit(j, usage, batch_nr)
->> >> >> >> > +                             free_swap_slot(swp_entry(type, =
-offset + i * SWAP_BATCH_NR + j));
->> >> >> >> > +
->> >> >> >> > +                     bitmap_clear(usage, 0, SWAP_BATCH_NR);
->> >> >> >> > +                     remain_nr -=3D batch_nr;
->> >> >> >> > +             }
->> >> >> >> > +     }
->> >> >> >> > +}
->> >> >> >> > +
->> >> >> >> >  /*
->> >> >> >> >   * Called after dropping swapcache to decrease refcnt to swa=
-p entries.
->> >> >> >> >   */
->> >> >> >>
->> >> >> >> put_swap_folio() implements batching in another method.  Do you=
- think
->> >> >> >> that it's good to use the batching method in that function here=
-?  It
->> >> >> >> avoids to use bitmap operations and stack space.
->> >> >> >
->> >> >> > Chuanhua has strictly limited the maximum stack usage to several
->> >> >> > unsigned long,
->> >> >>
->> >> >> 512 / 8 =3D 64 bytes.
->> >> >>
->> >> >> So, not trivial.
->> >> >>
->> >> >> > so this should be safe. on the other hand, i believe this
->> >> >> > implementation is more efficient, as  put_swap_folio() might loc=
-k/
->> >> >> > unlock much more often whenever __swap_entry_free_locked returns
->> >> >> > 0.
->> >> >>
->> >> >> There are 2 most common use cases,
->> >> >>
->> >> >> - all swap entries have usage count =3D=3D 0
->> >> >> - all swap entries have usage count !=3D 0
->> >> >>
->> >> >> In both cases, we only need to lock/unlock once.  In fact, I didn't
->> >> >> find possible use cases other than above.
->> >> >
->> >> > i guess the point is free_swap_slot() shouldn't be called within
->> >> > lock_cluster_or_swap_info? so when we are freeing nr_pages slots,
->> >> > we'll have to unlock and lock nr_pages times?  and this is the most
->> >> > common scenario.
->> >>
->> >> No.  In put_swap_folio(), free_entries is either SWAPFILE_CLUSTER (th=
-at
->> >> is, nr_pages) or 0.  These are the most common cases.
->> >>
->> >
->> > i am actually talking about the below code path,
->> >
->> > void put_swap_folio(struct folio *folio, swp_entry_t entry)
->> > {
->> >         ...
->> >
->> >         ci =3D lock_cluster_or_swap_info(si, offset);
->> >         ...
->> >         for (i =3D 0; i < size; i++, entry.val++) {
->> >                 if (!__swap_entry_free_locked(si, offset + i, SWAP_HAS=
-_CACHE)) {
->> >                         unlock_cluster_or_swap_info(si, ci);
->> >                         free_swap_slot(entry);
->> >                         if (i =3D=3D size - 1)
->> >                                 return;
->> >                         lock_cluster_or_swap_info(si, offset);
->> >                 }
->> >         }
->> >         unlock_cluster_or_swap_info(si, ci);
->> > }
->> >
->> > but i guess you are talking about the below code path:
->> >
->> > void put_swap_folio(struct folio *folio, swp_entry_t entry)
->> > {
->> >         ...
->> >
->> >         ci =3D lock_cluster_or_swap_info(si, offset);
->> >         if (size =3D=3D SWAPFILE_CLUSTER) {
->> >                 map =3D si->swap_map + offset;
->> >                 for (i =3D 0; i < SWAPFILE_CLUSTER; i++) {
->> >                         val =3D map[i];
->> >                         VM_BUG_ON(!(val & SWAP_HAS_CACHE));
->> >                         if (val =3D=3D SWAP_HAS_CACHE)
->> >                                 free_entries++;
->> >                 }
->> >                 if (free_entries =3D=3D SWAPFILE_CLUSTER) {
->> >                         unlock_cluster_or_swap_info(si, ci);
->> >                         spin_lock(&si->lock);
->> >                         mem_cgroup_uncharge_swap(entry, SWAPFILE_CLUST=
-ER);
->> >                         swap_free_cluster(si, idx);
->> >                         spin_unlock(&si->lock);
->> >                         return;
->> >                 }
->> >         }
->> > }
->>
->> I am talking about both code paths.  In 2 most common cases,
->> __swap_entry_free_locked() will return 0 or !0 for all entries in range.
->
-> I grasp your point, but if conditions involving 0 or non-0 values fail, w=
-e'll
-> end up repeatedly unlocking and locking. Picture a scenario with a large
-> folio shared by multiple processes. One process might unmap a portion
-> while another still holds an entire mapping to it. This could lead to sit=
-uations
-> where free_entries doesn't equal 0 and free_entries doesn't equal
-> nr_pages, resulting in multiple unlock and lock operations.
 
-This is impossible in current caller, because the folio is in the swap
-cache.  But if we move the change to __swap_entry_free_nr(), we may run
-into this situation.
+On 4/5/24 15:56, Marc Zyngier wrote:
+> On Fri, 05 Apr 2024 09:00:08 +0100,
+> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+>>
+>> Currently there can be maximum 16 breakpoints, and 16 watchpoints available
+>> on a given platform - as detected from ID_AA64DFR0_EL1.[BRPs|WRPs] register
+>> fields. But these breakpoint, and watchpoints can be extended further up to
+>> 64 via a new arch feature FEAT_Debugv8p9.
+>>
+>> This first enables banked access for the breakpoint and watchpoint register
+>> set via MDSELR_EL1, extended exceptions via MDSCR_EL1.EMBWE and determining
+>> available breakpoints and watchpoints in the platform from ID_AA64DFR1_EL1,
+>> when FEAT_Debugv8p9 is enabled.
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>  arch/arm64/include/asm/debug-monitors.h |  2 +-
+>>  arch/arm64/include/asm/hw_breakpoint.h  | 46 +++++++++++++++++++------
+>>  arch/arm64/kernel/debug-monitors.c      | 16 ++++++---
+>>  arch/arm64/kernel/hw_breakpoint.c       | 33 ++++++++++++++++++
+>>  4 files changed, 82 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/debug-monitors.h b/arch/arm64/include/asm/debug-monitors.h
+>> index 13d437bcbf58..75eedba2abbe 100644
+>> --- a/arch/arm64/include/asm/debug-monitors.h
+>> +++ b/arch/arm64/include/asm/debug-monitors.h
+>> @@ -19,7 +19,7 @@
+>>  /* MDSCR_EL1 enabling bits */
+>>  #define DBG_MDSCR_KDE		(1 << 13)
+>>  #define DBG_MDSCR_MDE		(1 << 15)
+>> -#define DBG_MDSCR_MASK		~(DBG_MDSCR_KDE | DBG_MDSCR_MDE)
+>> +#define DBG_MDSCR_EMBWE		(1UL << 32)
+>>  
+>>  #define	DBG_ESR_EVT(x)		(((x) >> 27) & 0x7)
+>>  
+>> diff --git a/arch/arm64/include/asm/hw_breakpoint.h b/arch/arm64/include/asm/hw_breakpoint.h
+>> index bd81cf17744a..6b9822140f71 100644
+>> --- a/arch/arm64/include/asm/hw_breakpoint.h
+>> +++ b/arch/arm64/include/asm/hw_breakpoint.h
+>> @@ -79,8 +79,8 @@ static inline void decode_ctrl_reg(u32 reg,
+>>   * Limits.
+>>   * Changing these will require modifications to the register accessors.
+>>   */
+>> -#define ARM_MAX_BRP		16
+>> -#define ARM_MAX_WRP		16
+>> +#define ARM_MAX_BRP		64
+>> +#define ARM_MAX_WRP		64
+>>  
+>>  /* Virtual debug register bases. */
+>>  #define AARCH64_DBG_REG_BVR	0
+>> @@ -135,22 +135,48 @@ static inline void ptrace_hw_copy_thread(struct task_struct *task)
+>>  }
+>>  #endif
+>>  
+>> +static inline bool is_debug_v8p9_enabled(void)
+>> +{
+>> +	u64 dfr0 = read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1);
+>> +	int dver = cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_DebugVer_SHIFT);
+>> +
+>> +	return dver == ID_AA64DFR0_EL1_DebugVer_V8P9;
+>> +}
+>> +
+>>  /* Determine number of BRP registers available. */
+>>  static inline int get_num_brps(void)
+>>  {
+>> -	u64 dfr0 = read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1);
+>> -	return 1 +
+>> -		cpuid_feature_extract_unsigned_field(dfr0,
+>> -						ID_AA64DFR0_EL1_BRPs_SHIFT);
+>> +	u64 dfr0, dfr1;
+>> +	int dver, brps;
+>> +
+>> +	dfr0 = read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1);
+>> +	dver = cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_DebugVer_SHIFT);
+>> +	if (dver == ID_AA64DFR0_EL1_DebugVer_V8P9) {
+>> +		dfr1 = read_sanitised_ftr_reg(SYS_ID_AA64DFR1_EL1);
+>> +		brps = cpuid_feature_extract_unsigned_field_width(dfr1,
+>> +								  ID_AA64DFR1_EL1_BRPs_SHIFT, 8);
+>> +	} else {
+>> +		brps = cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_BRPs_SHIFT);
+>> +	}
+>> +	return 1 + brps;
+>>  }
+>>  
+>>  /* Determine number of WRP registers available. */
+>>  static inline int get_num_wrps(void)
+>>  {
+>> -	u64 dfr0 = read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1);
+>> -	return 1 +
+>> -		cpuid_feature_extract_unsigned_field(dfr0,
+>> -						ID_AA64DFR0_EL1_WRPs_SHIFT);
+>> +	u64 dfr0, dfr1;
+>> +	int dver, wrps;
+>> +
+>> +	dfr0 = read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1);
+>> +	dver = cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_DebugVer_SHIFT);
+>> +	if (dver == ID_AA64DFR0_EL1_DebugVer_V8P9) {
+>> +		dfr1 = read_sanitised_ftr_reg(SYS_ID_AA64DFR1_EL1);
+>> +		wrps = cpuid_feature_extract_unsigned_field_width(dfr1,
+>> +								  ID_AA64DFR1_EL1_WRPs_SHIFT, 8);
+>> +	} else {
+>> +		wrps = cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_WRPs_SHIFT);
+>> +	}
+>> +	return 1 + wrps;
+>>  }
+>>  
+>>  #ifdef CONFIG_CPU_PM
+>> diff --git a/arch/arm64/kernel/debug-monitors.c b/arch/arm64/kernel/debug-monitors.c
+>> index 64f2ecbdfe5c..3299d1e8dc61 100644
+>> --- a/arch/arm64/kernel/debug-monitors.c
+>> +++ b/arch/arm64/kernel/debug-monitors.c
+>> @@ -23,6 +23,7 @@
+>>  #include <asm/debug-monitors.h>
+>>  #include <asm/system_misc.h>
+>>  #include <asm/traps.h>
+>> +#include <asm/hw_breakpoint.h>
+> 
+> include order.
 
-> Chuanhua has invested significant effort in following Ryan's suggestion
-> for the current approach, which generally handles all cases, especially
-> partial unmapping. Additionally, the widespread use of swap_free_nr()
-> as you suggested across various scenarios is noteworthy.
->
-> Unless there's evidence indicating performance issues or bugs, I believe
-> the current approach remains preferable.
+Sure, will fix the order here.
 
-TBH, I don't like the large stack space usage (64 bytes).  How about use
-a "unsigned long" as bitmap?  Then, we use much less stack space, use
-bitmap =3D=3D 0 and bitmap =3D=3D (unsigned long)(-1) to check the most com=
-mon
-use cases.  And, we have enough batching.
+> 
+>>  
+>>  /* Determine debug architecture. */
+>>  u8 debug_monitors_arch(void)
+>> @@ -34,7 +35,7 @@ u8 debug_monitors_arch(void)
+>>  /*
+>>   * MDSCR access routines.
+>>   */
+>> -static void mdscr_write(u32 mdscr)
+>> +static void mdscr_write(u64 mdscr)
+>>  {
+>>  	unsigned long flags;
+>>  	flags = local_daif_save();
+>> @@ -43,7 +44,7 @@ static void mdscr_write(u32 mdscr)
+>>  }
+>>  NOKPROBE_SYMBOL(mdscr_write);
+>>  
+>> -static u32 mdscr_read(void)
+>> +static u64 mdscr_read(void)
+>>  {
+>>  	return read_sysreg(mdscr_el1);
+>>  }
+>> @@ -76,10 +77,11 @@ early_param("nodebugmon", early_debug_disable);
+>>   */
+>>  static DEFINE_PER_CPU(int, mde_ref_count);
+>>  static DEFINE_PER_CPU(int, kde_ref_count);
+>> +static DEFINE_PER_CPU(int, embwe_ref_count);
+>>  
+>>  void enable_debug_monitors(enum dbg_active_el el)
+>>  {
+>> -	u32 mdscr, enable = 0;
+>> +	u64 mdscr, enable = 0;
+>>  
+>>  	WARN_ON(preemptible());
+>>  
+>> @@ -90,6 +92,9 @@ void enable_debug_monitors(enum dbg_active_el el)
+>>  	    this_cpu_inc_return(kde_ref_count) == 1)
+>>  		enable |= DBG_MDSCR_KDE;
+>>  
+>> +	if (is_debug_v8p9_enabled() && this_cpu_inc_return(embwe_ref_count) == 1)
+>> +		enable |= DBG_MDSCR_EMBWE;
+>> +
+>>  	if (enable && debug_enabled) {
+>>  		mdscr = mdscr_read();
+>>  		mdscr |= enable;
+>> @@ -100,7 +105,7 @@ NOKPROBE_SYMBOL(enable_debug_monitors);
+>>  
+>>  void disable_debug_monitors(enum dbg_active_el el)
+>>  {
+>> -	u32 mdscr, disable = 0;
+>> +	u64 mdscr, disable = 0;
+>>  
+>>  	WARN_ON(preemptible());
+>>  
+>> @@ -111,6 +116,9 @@ void disable_debug_monitors(enum dbg_active_el el)
+>>  	    this_cpu_dec_return(kde_ref_count) == 0)
+>>  		disable &= ~DBG_MDSCR_KDE;
+>>  
+>> +	if (is_debug_v8p9_enabled() && this_cpu_dec_return(embwe_ref_count) == 0)
+>> +		disable &= ~DBG_MDSCR_EMBWE;
+>> +
+>>  	if (disable) {
+>>  		mdscr = mdscr_read();
+>>  		mdscr &= disable;
+>> diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
+>> index 2f5755192c2b..7b9169535b76 100644
+>> --- a/arch/arm64/kernel/hw_breakpoint.c
+>> +++ b/arch/arm64/kernel/hw_breakpoint.c
+>> @@ -103,10 +103,40 @@ int hw_breakpoint_slots(int type)
+>>  	WRITE_WB_REG_CASE(OFF, 14, REG, VAL);	\
+>>  	WRITE_WB_REG_CASE(OFF, 15, REG, VAL)
+>>  
+>> +static int set_bank_index(int n)
+>> +{
+>> +	int mdsel_bank;
+>> +	int bank = n / 16, index = n % 16;
+>> +
+>> +	switch (bank) {
+>> +	case 0:
+>> +		mdsel_bank = MDSELR_EL1_BANK_BANK_0;
+>> +		break;
+>> +	case 1:
+>> +		mdsel_bank = MDSELR_EL1_BANK_BANK_1;
+>> +		break;
+>> +	case 2:
+>> +		mdsel_bank = MDSELR_EL1_BANK_BANK_2;
+>> +		break;
+>> +	case 3:
+>> +		mdsel_bank = MDSELR_EL1_BANK_BANK_3;
+>> +		break;
+>> +	default:
+>> +		pr_warn("Unknown register bank %d\n", bank);
+>> +		return -EINVAL;
+>> +	}
+>> +	write_sysreg_s(mdsel_bank << MDSELR_EL1_BANK_SHIFT, SYS_MDSELR_EL1);
+>> +	isb();
+>> +	return index;
+>> +}
+>> +
+>>  static u64 read_wb_reg(int reg, int n)
+>>  {
+>>  	u64 val = 0;
+>>  
+>> +	if (is_debug_v8p9_enabled())
+>> +		n = set_bank_index(n);
+>> +
+>>  	switch (reg + n) {
+>>  	GEN_READ_WB_REG_CASES(AARCH64_DBG_REG_BVR, AARCH64_DBG_REG_NAME_BVR, val);
+>>  	GEN_READ_WB_REG_CASES(AARCH64_DBG_REG_BCR, AARCH64_DBG_REG_NAME_BCR, val);
+>> @@ -122,6 +152,9 @@ NOKPROBE_SYMBOL(read_wb_reg);
+>>  
+>>  static void write_wb_reg(int reg, int n, u64 val)
+>>  {
+>> +	if (is_debug_v8p9_enabled())
+>> +		n = set_bank_index(n);
+>> +
+>>  	switch (reg + n) {
+>>  	GEN_WRITE_WB_REG_CASES(AARCH64_DBG_REG_BVR, AARCH64_DBG_REG_NAME_BVR, val);
+>>  	GEN_WRITE_WB_REG_CASES(AARCH64_DBG_REG_BCR, AARCH64_DBG_REG_NAME_BCR, val);
+> 
+> Are these things guaranteed to be only used in contexts where there
+> can be no interleaving of such operations? If any interleaving can
+> occur, this is broken.
 
->>
->> > we are mTHP, so we can't assume our size is SWAPFILE_CLUSTER?
->> > or you want to check free_entries =3D=3D "1 << swap_entry_order(folio_=
-order(folio))"
->> > instead of SWAPFILE_CLUSTER for the "for (i =3D 0; i < size; i++, entr=
-y.val++)"
->> > path?
->>
->> Just replace SWAPFILE_CLUSTER with "nr_pages" in your code.
->>
->> >
->> >> >>
->> >> >> And, we should add batching in __swap_entry_free().  That will help
->> >> >> free_swap_and_cache_nr() too.
->> >
->> > Chris Li and I actually discussed it before, while I completely
->> > agree this can be batched. but i'd like to defer this as an incremental
->> > patchset later to keep this swapcache-refault small.
->>
->> OK.
->>
->> >>
->> >> Please consider this too.
+That is a valid concern, breakpoints and watchpoints get used in multiple
+code paths such perf, ptrace etc, where preemption might cause wrong bank
+to be selected before the breakpoint-watchpoint registers being read thus
+impacting the state. I guess preemption should be disabled between those
+two operations i.e selection of the bank and reading its registers
 
---
-Best Regards,
-Huang, Ying
+> 
+> 	M.
+> 
 
