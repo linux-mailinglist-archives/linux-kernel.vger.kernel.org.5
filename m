@@ -1,210 +1,207 @@
-Return-Path: <linux-kernel+bounces-146185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A87CB8A61CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 05:45:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 057CF8A61CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 05:46:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCAF2B23CF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 03:45:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 891941F23A59
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 03:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3FDC210EC;
-	Tue, 16 Apr 2024 03:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E3261AACC;
+	Tue, 16 Apr 2024 03:46:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YFWUj28Y"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UH/TkX03"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01CD217999;
-	Tue, 16 Apr 2024 03:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713239125; cv=fail; b=jt3tjMc9CzcYjDeCA9sLRJHJLjDQrL92tknubjymRssO+YQ3jg9RlQ8YBnVhmctfbzy3uoFaSUf6V1i/Hau7Hd3dblegYzQwxrM8qneRNqnhPK7BYGffzJ5COOh3B+VxoPft1upgEAUNReWH/HaTvIVn90ElMIICN9luAQ6dR3Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713239125; c=relaxed/simple;
-	bh=g6byyn0l/VicaIYQ3h1XMnMSBzwxRgwI2zmMJBsVAjY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=U2aeP8BbL5IZac1L6Y/gCiqbHuAwbt8y+pGMUQLXyTt7D3o+OYa7cU7VWKEQKJ03ScL/NwABEF9uc7+PItVWVs6IJVm/IlPHrs8Qkc1bsCbasN7WmsZjaH+nmTMhwm4hEq/kv2Uk7euRvxBLfNo0nCJRNtKXIe3BIVHIdGXrb3Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YFWUj28Y; arc=fail smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713239124; x=1744775124;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=g6byyn0l/VicaIYQ3h1XMnMSBzwxRgwI2zmMJBsVAjY=;
-  b=YFWUj28Y71azKjt7+NCYaAdDsF6Tv0gZFKoefAv33fvaU+E+HFEg2Kah
-   KrRpdKEknmDVvcqEJUmKqKEvyW9ET9r9d730pKJ4WMboGUQTbfkD2J1lP
-   rHf+4Lw9JP0Pms3Xu2/LSI+AoNIuhYMjHvgq+6Z46y8Hazaz4Xv6990MZ
-   btKw6VHab2d/i0vAHXak6ibRAxI9ki+kok4JI5DnhSsYvafIWJbaK/lua
-   KuIgMjH3UT1oyw8z/XylyMnlNkw84ArNdTzR9UlN4BDwOUKAfT/QTd0GK
-   cWCoPhZo9xJw3m2F9hTJ7diphOraeBUe9Kk/NQA30OOsULjw+XDVk0JGG
-   g==;
-X-CSE-ConnectionGUID: nZXHcCMTSYSxt/u4oeLZew==
-X-CSE-MsgGUID: s1THP2e3RBmgt0pWJg81oA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="19364875"
-X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
-   d="scan'208";a="19364875"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 20:45:23 -0700
-X-CSE-ConnectionGUID: WY9RlofQSa6ml9O9juTkJQ==
-X-CSE-MsgGUID: 3WNGxG5GQ9yusSxPQitPVA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
-   d="scan'208";a="59571574"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Apr 2024 20:45:23 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 15 Apr 2024 20:45:22 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 15 Apr 2024 20:45:22 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 15 Apr 2024 20:45:22 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gDCZBNjND7gjUmQEwo9h6rHYB6mOwg2bBKdKpHtm28XWmImVxGniH791Sc3cNWF4WsUIVnxuZ6qhc63pZptr5V8WN7OJxrN4h8RKQwOBxNqi4d85Rn66/siSAmBs+vUDm0JjsIg10V5fkxl4tC2CicrX4e7+IYmie3ZpcOTHiXoWNcDlU96C2nK5lUQiNY6PYBszSeNVPkRhxorv9ed74SMV01knOCX7tbprJiLA0aSv6ZPt4hTV8evlN9NRqFEHkTDrpA7DSjx0Any59A9CE5cGjcjm44lFwG/trnHdImXKPEnn16UF6Mx/0zXLJck7I7Yz5sC8BxiblRp6L5XcCg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=g6byyn0l/VicaIYQ3h1XMnMSBzwxRgwI2zmMJBsVAjY=;
- b=XEtWxx11YhZ/qlQ2FORgVU1m4hkk2IEJv8f7K3JuyNkIvkbvoEtNlDkYBzAnpKeI4l7EO35oXj2NgfjnMRZM1MLnMTHDJTv6KbhZcUuJ5dSdIw83Ixb/JyQSTbx+Z6fZHL5CfD3fDeFR6c1BH4Oues9JgBNPNyQFZ3eMNc27XOiPL2SdLBoeZuC2thqUyM9B25cGxGzBqWotNiTo7C1yz8Yr2VoLGleKPqQLr4ziSs3AX3CXt9bGrNdflZXh03MEzMi0kZN99tzrY6VhJznL7u1qgs8pz2HGBvgKo6aAGAigUYlkFCTfFa0C/rrsYrLxHG34W6ZvgiGh0395l8jtTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by MN0PR11MB6010.namprd11.prod.outlook.com (2603:10b6:208:371::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.28; Tue, 16 Apr
- 2024 03:45:20 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::6c9f:86e:4b8e:8234]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::6c9f:86e:4b8e:8234%6]) with mapi id 15.20.7472.027; Tue, 16 Apr 2024
- 03:45:20 +0000
-From: "Tian, Kevin" <kevin.tian@intel.com>
-To: Sean Christopherson <seanjc@google.com>
-CC: Jacob Pan <jacob.jun.pan@linux.intel.com>, LKML
-	<linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter Zijlstra
-	<peterz@infradead.org>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	Thomas Gleixner <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "Hansen, Dave"
-	<dave.hansen@intel.com>, Joerg Roedel <joro@8bytes.org>, Peter Anvin
-	<hpa@zytor.com>, Borislav Petkov <bp@alien8.de>, Ingo Molnar
-	<mingo@redhat.com>, "Luse, Paul E" <paul.e.luse@intel.com>, "Williams, Dan J"
-	<dan.j.williams@intel.com>, Jens Axboe <axboe@kernel.dk>, "Raj, Ashok"
-	<ashok.raj@intel.com>, "maz@kernel.org" <maz@kernel.org>, Robin Murphy
-	<robin.murphy@arm.com>, "jim.harris@samsung.com" <jim.harris@samsung.com>,
-	"a.manzanares@samsung.com" <a.manzanares@samsung.com>, Bjorn Helgaas
-	<helgaas@kernel.org>, "Zeng, Guang" <guang.zeng@intel.com>,
-	"robert.hoo.linux@gmail.com" <robert.hoo.linux@gmail.com>
-Subject: RE: [PATCH v2 05/13] x86/irq: Reserve a per CPU IDT vector for posted
- MSIs
-Thread-Topic: [PATCH v2 05/13] x86/irq: Reserve a per CPU IDT vector for
- posted MSIs
-Thread-Index: AQHah6hds9I+TESl7kiFR5xiGDPLp7FkZAcAgABXwgCABZSTEA==
-Date: Tue, 16 Apr 2024 03:45:20 +0000
-Message-ID: <BN9PR11MB527615053A012DB570999FB08C082@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
- <20240405223110.1609888-6-jacob.jun.pan@linux.intel.com>
- <BN9PR11MB527609928EA2290709CDB3E78C042@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZhlEh7-NoknHcNX7@google.com>
-In-Reply-To: <ZhlEh7-NoknHcNX7@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|MN0PR11MB6010:EE_
-x-ms-office365-filtering-correlation-id: dea89496-3e9c-46a3-9202-08dc5dc7a378
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FQoA1UMpqDA0N5nZFhMq+dKsvx/3p/x42vVyjgI7+JO65aN3eCMbUrfUZlcsE9Vz/bcXcjHltzURWsp+cdUAw6UUpfMdcYqYj3MMb5F/n5N+B923msF8bOB4f6pmCWSs6avc81V+ofvUngH0GZplbczsfk6R2Qw2aXvGxR68XpUot52aeCsrHMHm2o7A/RztJxkpv8U2OC1dR3TPIi/Jgo8ROhS+iAuOAHREucAaG4bDRIfj6tUCdMWI1fe4ClPUfio+HAKyXllj7okseMDzoW7j1NKW976h+/kN5JyDA6AoZggEm7gIVeQz1gJPJ9jHCht0B+UERvspySBSYDHf/5+atvkcG7QtBggJBoOgjUmaJ+u9TQLuEy5LD+pyiReAMivhZk6YbNKvemQbf+ASCU89rGupA/sX9Z3G0rSoLqYhzhfVuA+h0d3FXwqOAseCkXL8DFsQrejpuXip/A1rTIsU8X1eydXhWoqrpTAxqVLKZFqIk+EReuobchiOY/31D/E+2CFax3Ge9i9yGd6+XMX9b5+Mx8rKkb+PQUVx5aAluAQ1grDqmoDj8r792wVN4OPPCoMw3WygKmfG6bnIRfowUnXVjR5HRq8x+3SUKG2OpSqfhpVw4PWXjhGb4zBnL32QKs/YYFwydomPnCsnIk8itsJfHZ5Wx+rQlPMTKk4KP/ezKbA66chxG4A9fHwl9LUrqVmjBQsYIYnoDk5tOARxXWu9FuYC3POxDha30n4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(7416005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TTZMTXVOc2EyZ0lJTDEwVDZaN0tQOXJWczFVQXZlOW4vZnJwWnBjam10cXFp?=
- =?utf-8?B?NXlwQWdPTkNzZGpEcWowUzZuU2xFeC9yZWRnOHFaK1JrYllxZ3pNd0R2RDlt?=
- =?utf-8?B?RXU4TmVqZlRLQUp5VEZrKzNQQmhmelJKVU4rS2JxcmNHZm5YS3ZMaWtKQUtq?=
- =?utf-8?B?RFg1T3BnQ0pWNlBwWnN5ZGw4UjhnK25LSjZJZmFIWmUzYjhKRUlrYWhNODZQ?=
- =?utf-8?B?TXNsSTB0SHZwemx0OXoyRmdQVjB3MXRKdmlUbmtuSm1RdkthZ2l5cERaWXFE?=
- =?utf-8?B?Q2xVcnYyS2tlVU9DeVZtTFRxOGoxS1dnWEEzNjRlb0kxUWx4Nno4OHNDRWdI?=
- =?utf-8?B?blVxVVpnNE9Yak5yZU91SWFxczMzT1dkalVKTUxnMloxNFowK2RSRjZ2V2Mv?=
- =?utf-8?B?eG9FNFliYnR0RHNpNjBwR0Vab205RUwzc3FDQXhyOVovbk10cXVkTnpoWVh0?=
- =?utf-8?B?RXo1NjNSUW5wbHB0MlZlM3NLVzVGYnFkajVnTGtMN2grRTRSRGlGbWE5L1Ro?=
- =?utf-8?B?d21pTmFvcW5uM1R0ek9kZkhucmFQd2txUDVEcmVVcjh2VFpXZlFKNGU2cFRX?=
- =?utf-8?B?N21maVM3TDUxcVZuS2pkK3BGbGVxOU5ESnZ3aEQ2MHVXdjdwTEtqSkpiZDZv?=
- =?utf-8?B?STlzVFJ2UXp4TktnS2MySnU1K2dJSWt6eHY3Y0ZLTTVRM3ZxUGhBUHVCOXpz?=
- =?utf-8?B?TTZEdkUrRFNSdnZ2aDRXL0pXeE05NnZBQWNCckp6WXlPakh0b0xvZ0VlSVZS?=
- =?utf-8?B?RE1rbmRhcFlxdVZSamdUMXFDY09mb1h1RlYwTTRlODRxSGVPOGxWMkIxN0Ry?=
- =?utf-8?B?SHpieWVUQXB1aEMwaFgvc20rNFZPQ3FkcERxNFQza2lLcXBCWCsyejhVOFFq?=
- =?utf-8?B?SWdvZHJNTVUreUZtSEs2WkdxVTBwU2Q0VE5NSTdNbGJCbDRxT08xcmNjaGo3?=
- =?utf-8?B?WFdubFp3UzZWdVhoTUVXS2pkTVk2YWFCSDREVDRnbnBVYkx2SDdQdHUzTXNK?=
- =?utf-8?B?MU14MHJ3bng0Mitaa1JXSU1XSGZTbTZPcW1YcUh1MWNyVjhyNzNac01reElo?=
- =?utf-8?B?bjgxS28xTFZsa3VFb29YeWMwdnRJdW56SUZXNlFBbG1tNnZlNFJzZjV0ZVdM?=
- =?utf-8?B?T0ZTeE5mYTUxbGptS2JCSFk3am1YbGdjRjdDT0RBZjE0Ymd1QWtHRGFjK2gw?=
- =?utf-8?B?VGdTWklVRHFmdy94TU5DYjlzL3FBSHUyNk8xeTZReC9CaEpSVVl5SW16ck9I?=
- =?utf-8?B?Rk4va24zRmVYWjl1Ti92NndpdDAvb1pOcUZaM2owSE9RczdySVFmY21BZGR0?=
- =?utf-8?B?MWRCaEFIalNGc1VTU0VwN0E5SkI1Nk40SFFubFp2bGlEb1I3TllDU1ZoOGFG?=
- =?utf-8?B?cERydnRCUEFrTUY2VDdmVFg4c0w2ZG56RkhnbG9HM2JQMHZGb2U1cHkwQU5v?=
- =?utf-8?B?b2xrb1BhUUYzYmM3WGRrZjNPaTZoRFNKTHR2UHFDWGorT2NTMXAxVklGdktz?=
- =?utf-8?B?VGRFSEIvTEZGWUNmUUV1K2g0akdlUEVWNDIwcU44ZjVvZlVKTm1YbGlsRnRr?=
- =?utf-8?B?Kzl1SDJOSUN6RnlTZzlCTEVYcWZEa3VKZnJGRlUrdlc4a1ZydHJRT1JBTlIw?=
- =?utf-8?B?Z2d4cWtObXNxQmswdFFPUEM1Zlk0T29LT1dOY000aUI3K1FrbHRmL25pZzIy?=
- =?utf-8?B?WEdmdVNsRlMwWHA1VXA3Z1RYY1plNkMyUzZ6SzhhYU4zMkdZMGdRSkF0ZUpW?=
- =?utf-8?B?NERXTDBKVFRUcDRHR0xEUHpuRXlZcXpLMmlzdWh3WVZHQmY4dEtYVWJmZHZk?=
- =?utf-8?B?Q28rZE9jczFnOWhEb1VQTEk4M1JRd2F0eTlhT0VOdk45N3hYVGk2VnJSQlU2?=
- =?utf-8?B?WkN4OHNxejM4eHVYSHZZZjNXY0FVWmVDMU15b0JxcDBLY0xmbEVaelRhNURk?=
- =?utf-8?B?emttNnR3a0xzbG1kTVlFT3NEMjBRM2JsUnBscHNFNXU5L3ZLTTNxOEFvdlFV?=
- =?utf-8?B?ejRFMmExa3FpdmVYWW16REJwRWo0VVZiRy9MNk45L0xYMHZGTS9yZUpUWDQy?=
- =?utf-8?B?T3hDcFVVSGR5VmpKN0sxaGczSmlGeW5oUEVqTjAzZXNhVm9pWit1RFhXTmJp?=
- =?utf-8?Q?oZJsiA27Bqb5e6jq3OFMLN+Il?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F28C515AF6
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 03:46:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713239190; cv=none; b=n67d1MuoYEpmmcbn86fFR0vbRj8x6r0DewuSW1AVFDAMluGh5E6qmyMmXJ5qnkLi8+EnDeZqoNhPA5u4YbRCvUVm7mcujPQyXynumR/oWBN8/YFqwzFeeq6q5EO3Ui67WiolWzG+0tCSZSwj7BD6WhgmlumXKeIqIt5PDWdGP2M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713239190; c=relaxed/simple;
+	bh=5AHDPoNYz6OYyTQyPh89LCxQ98eQH/ZTlnsO1SaMREA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dQb/ktuoxgc4VIiboIaCtGCUsOq2VsKScTmyGwDhH//XMlbMNEUbhBXnbB7IgbxRCfPps4yHbh5DwcwMD1ONldfukxrP9cmhUiI1/YQmN7jTv7wr8i9kzlBloaN9yEk1P7QJxLdUF1Ys6NzH7Bl0bvCFnGKBbtbMNx2uysm26oI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UH/TkX03; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713239187;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZZDbR0tmZA4tU6Egi/VdC3qpLsZIOkOjLEJ7+EXDz74=;
+	b=UH/TkX03E7QYDcRz+oQ530VqRLQVaZWHux/9TYZKwb5CkHFlIeQX3biBvf8+uRwiKRd0c8
+	sOOwcCPRUGcPZVLuYXLCyTF2SLbhMQVvU529ntfo1z7ZSxS78H5yUr8zu0u6U5McZZw5nv
+	LGydW33Z7EI+iNLqR849hMsMFoeW1to=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-543-bY-cuf55NQSxXfO8i3kVrA-1; Mon, 15 Apr 2024 23:46:26 -0400
+X-MC-Unique: bY-cuf55NQSxXfO8i3kVrA-1
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6ed663aa4a7so2500429b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 20:46:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713239185; x=1713843985;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZZDbR0tmZA4tU6Egi/VdC3qpLsZIOkOjLEJ7+EXDz74=;
+        b=XvcnFwsiq0FD8Gd7jc7UmijaJtBvcm9uHroNqq1DAYpF8UM4cIlC/zLEXQqyBXKJeM
+         /UQ6vRqjN0HISHIM0W6xRQePeN20y7/GkRaPJzkQa8gfmCree/fsyuNn6sDWbvo1D+dJ
+         dy1YiuAgRz4bwIwJwFSfkroXMlM1kBkyUz6I3FouuErFQItfIWBoDaEKptaDXZ5Df/xk
+         aURoD4440OHdWr5ZRAM4mavqXn8wRe+DW7U6RCp6kh+yAbxQLFc4UQKvPX7meCA9gWEi
+         FuThPp2K0k/VSkdq0STj0/1VvkNCP9bRD6lv7VWKoDmMsHYSgJ6uTZokrwXXVIBNbVTg
+         aglA==
+X-Forwarded-Encrypted: i=1; AJvYcCVxY1rc2fpcbRuK3Fk/ATjmIU8lC/BFpUBv61/6bF2Q89GwX9RjSJedNidQ65XXrHcOiiCVIHrsgDVLPbDKSC0ADfeeWvtMWqeKxj4I
+X-Gm-Message-State: AOJu0Yz1yZtqSK2Zq2uKDK/rZWk086v27Wmn7CWElG4zs7uSUSO43I3u
+	xUt9eetNq7y+gg1iAliw3eEnM38KXCVrZdUdBHNA7RORBgoORpm9wwtqYOghcXNNgWSDr3pkTUw
+	3Z6DO2Rn98XmhcgM0UG6w1/2Rj/YuVOcVb+iYn+xoRCgAPmxIeOKspzufjHoZUDioT+tPSTMAXx
+	FLjFGqSiIlR5TYustspeDlxM12hUyrbFQHCBA2
+X-Received: by 2002:a05:6a20:9794:b0:1a7:bb6d:6589 with SMTP id hx20-20020a056a20979400b001a7bb6d6589mr9991417pzc.29.1713239185036;
+        Mon, 15 Apr 2024 20:46:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IECsgVpj59BkwFlZnMgbtejU9EUN4yHlVQ2ayU0ha7t4veTjEQGaado8SRmWHQWczu46plU8EdMhF53J+KNXtw=
+X-Received: by 2002:a05:6a20:9794:b0:1a7:bb6d:6589 with SMTP id
+ hx20-20020a056a20979400b001a7bb6d6589mr9991405pzc.29.1713239184690; Mon, 15
+ Apr 2024 20:46:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dea89496-3e9c-46a3-9202-08dc5dc7a378
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2024 03:45:20.1944
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pzwUr/nccrdHsq3qwfzI2Njj+JIppEN9B/WwwqY4rh69tqwc1xd3s2ue90ynLz1n3DCqTzW7ZAGAMJTSJPSmMw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR11MB6010
-X-OriginatorOrg: intel.com
+References: <20240412133017.483407-1-lulu@redhat.com> <20240412133017.483407-6-lulu@redhat.com>
+In-Reply-To: <20240412133017.483407-6-lulu@redhat.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Tue, 16 Apr 2024 11:46:13 +0800
+Message-ID: <CACGkMEt3qpm=3Y=CDeA1Kyd7te-Wm-gk3j5iR96=_CaP0PrVtQ@mail.gmail.com>
+Subject: Re: [PATCH v5 5/5] Documentation: Add reconnect process for VDUSE
+To: Cindy Lu <lulu@redhat.com>
+Cc: mst@redhat.com, linux-kernel@vger.kernel.org, 
+	virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-PiBGcm9tOiBTZWFuIENocmlzdG9waGVyc29uIDxzZWFuamNAZ29vZ2xlLmNvbT4NCj4gU2VudDog
-RnJpZGF5LCBBcHJpbCAxMiwgMjAyNCAxMDoyOCBQTQ0KPiANCj4gT24gRnJpLCBBcHIgMTIsIDIw
-MjQsIEtldmluIFRpYW4gd3JvdGU6DQo+ID4gPiBGcm9tOiBKYWNvYiBQYW4gPGphY29iLmp1bi5w
-YW5AbGludXguaW50ZWwuY29tPg0KPiA+ID4gU2VudDogU2F0dXJkYXksIEFwcmlsIDYsIDIwMjQg
-NjozMSBBTQ0KPiA+ID4NCj4gPiA+ICsvKg0KPiA+ID4gKyAqIFBvc3RlZCBpbnRlcnJ1cHQgbm90
-aWZpY2F0aW9uIHZlY3RvciBmb3IgYWxsIGRldmljZSBNU0lzIGRlbGl2ZXJlZCB0bw0KPiA+ID4g
-KyAqIHRoZSBob3N0IGtlcm5lbC4NCj4gPiA+ICsgKi8NCj4gPiA+ICsjZGVmaW5lIFBPU1RFRF9N
-U0lfTk9USUZJQ0FUSU9OX1ZFQ1RPUgkweGViDQo+ID4gPiAgI2RlZmluZSBOUl9WRUNUT1JTCQkJ
-IDI1Ng0KPiA+ID4NCj4gPg0KPiA+IEV2ZXJ5IGludGVycnVwdCBpcyBraW5kIG9mIGEgbm90aWZp
-Y2F0aW9uLg0KPiANCj4gRldJVywgSSBmaW5kIHZhbHVlIGluIGhhdmluZyAibm90aWZpY2F0aW9u
-IiBpbiB0aGUgbmFtZSB0byBkaWZmZXJlbnRpYXRlDQo+IGJldHdlZW4NCj4gdGhlIElSUSB0aGF0
-IGlzIG5vdGlmeWluZyB0aGUgQ1BVIHRoYXQgdGhlcmUncyBhIHBvc3RlZCBJUlEgdG8gYmUgcHJv
-Y2Vzc2VkLA0KPiBhbmQNCj4gdGhlIHBvc3RlZCBJUlEgaXRzZWxmLg0KDQpJTUhPIG9uZSB3aG8g
-a25vd3MgcG9zdGVkIG1zaSBkb2Vzbid0IG5lZWQgdGhlIGV4dHJhDQonbm90aWZpY2F0aW9uJyBp
-biB0aGUgbmFtZSB0byBkaWZmZXJlbnRpYXRlLg0KDQpvbmUgd2hvIGRvZXNuJ3Qga25vdyB3aGF0
-IHBvc3RlZCBtc2kgaXMgYW55d2F5IG5lZWRzIHRvDQpsb29rIGF0IHRoZSBzdXJyb3VuZGluZyBj
-b2RlIGluY2x1ZGluZyB0aGUgYWJvdmUgY29tbWVudC4NCmhhdmluZyAnbm90aWZpY2F0aW9uJyBp
-biB0aGUgbmFtZSBhbG9uZSBkb2Vzbid0IHJlYWxseSBoZWxwLg0KDQpidXQgSSdkIG5vdCBob2xk
-IHN0cm9uZyBvbiB0aGlzLi4uIPCfmIoNCg==
+On Fri, Apr 12, 2024 at 9:31=E2=80=AFPM Cindy Lu <lulu@redhat.com> wrote:
+>
+> Add a document explaining the reconnect process, including what the
+> Userspace App needs to do and how it works with the kernel.
+>
+> Signed-off-by: Cindy Lu <lulu@redhat.com>
+> ---
+>  Documentation/userspace-api/vduse.rst | 41 +++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>
+> diff --git a/Documentation/userspace-api/vduse.rst b/Documentation/usersp=
+ace-api/vduse.rst
+> index bdb880e01132..7faa83462e78 100644
+> --- a/Documentation/userspace-api/vduse.rst
+> +++ b/Documentation/userspace-api/vduse.rst
+> @@ -231,3 +231,44 @@ able to start the dataplane processing as follows:
+>     after the used ring is filled.
+>
+>  For more details on the uAPI, please see include/uapi/linux/vduse.h.
+> +
+> +HOW VDUSE devices reconnection works
+> +------------------------------------
+> +1. What is reconnection?
+> +
+> +   When the userspace application loads, it should establish a connectio=
+n
+> +   to the vduse kernel device. Sometimes,the userspace application exist=
+s,
+
+I guess you meant "exists"? If yes, it should be better to say "exits
+unexpectedly"
+
+> +   and we want to support its restart and connect to the kernel device a=
+gain
+> +
+> +2. How can I support reconnection in a userspace application?
+
+Better to say "How reconnection is supported"?
+
+> +
+> +2.1 During initialization, the userspace application should first verify=
+ the
+> +    existence of the device "/dev/vduse/vduse_name".
+> +    If it doesn't exist, it means this is the first-time for connection.=
+ goto step 2.2
+> +    If it exists, it means this is a reconnection, and we should goto st=
+ep 2.3
+> +
+> +2.2 Create a new VDUSE instance with ioctl(VDUSE_CREATE_DEV) on
+> +    /dev/vduse/control.
+> +    When ioctl(VDUSE_CREATE_DEV) is called, kernel allocates memory for
+> +    the reconnect information. The total memory size is PAGE_SIZE*vq_mum=
+ber.
+
+I think we need to mention that this should be part of the previous
+"VDUSE devices are created as follows"?
+
+> +
+> +2.3 Check if the information is suitable for reconnect
+> +    If this is reconnection :
+> +    Before attempting to reconnect, The userspace application needs to u=
+se the
+> +    ioctl(VDUSE_DEV_GET_CONFIG, VDUSE_DEV_GET_STATUS, VDUSE_DEV_GET_FEAT=
+URES...)
+> +    to get the information from kernel.
+> +    Please review the information and confirm if it is suitable to recon=
+nect.
+
+Need to define "review" here and how to decide if it is not suitable
+to reconnect.
+
+> +
+> +2.4 Userspace application needs to mmap the memory to userspace
+> +    The userspace application requires mapping one page for every vq. Th=
+ese pages
+> +    should be used to save vq-related information during system running.
+
+Not a native speaker, but it looks better with
+
+"should be used by the userspace to store virtqueue specific information".
+
+> Additionally,
+> +    the application must define its own structure to store information f=
+or reconnection.
+> +
+> +2.5 Completed the initialization and running the application.
+> +    While the application is running, it is important to store relevant =
+information
+> +    about reconnections in mapped pages.
+
+I think we need some link/code examples to demonstrate what needs to be sto=
+red.
+
+> When calling the ioctl VDUSE_VQ_GET_INFO to
+> +    get vq information, it's necessary to check whether it's a reconnect=
+ion.
+
+Better with some examples of codes.
+
+> If it is
+> +    a reconnection, the vq-related information must be get from the mapp=
+ed pages.
+> +
+> +2.6 When the Userspace application exits, it is necessary to unmap all t=
+he
+> +    pages for reconnection
+
+This seems to be unnecessary, for example there could be an unexpected exit=
+.
+
+Thanks
+
+> --
+> 2.43.0
+>
+
 
