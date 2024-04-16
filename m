@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-146569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A55B28A676A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:50:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBBB58A676E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:50:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A05B1F220F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:50:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE8441C21573
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CE4286250;
-	Tue, 16 Apr 2024 09:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29A9586264;
+	Tue, 16 Apr 2024 09:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OHNgwoEa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="evP/gDb2"
 Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CC953FE2A;
-	Tue, 16 Apr 2024 09:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E6D85955;
+	Tue, 16 Apr 2024 09:50:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713261029; cv=none; b=Ue69jMq65sjrW6nXrvP5tmfE4FlySak2ZXlbShIL2wNvlYqy7Hm9j+g66QfMWJzOfOy6mLI/m6HybD2VWmTyLLZta4bhCYR87//btZyXnnp+tsWNQfhaTPZGjNU2JxsPdNYan/Mn4008biEwkr+6kFLgM/NpIV2KWUX0qaV5C20=
+	t=1713261050; cv=none; b=CxL+tkXUeLzhBL1jNCwnlxjaTh1UIcr1L6UNSFVEmPassN0hhDDaxnPR/AQrWJUOZy3oq3oagyt+YgW6OqnQXRcW+q+Pw6cg8AYpqCHK6/kpKppIMcFarrK6Ib7pmVfGcezC8hOkDtsP1hhJj0cN3kXP2oteQdc19dswnPnak8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713261029; c=relaxed/simple;
-	bh=AmL4OzNOa5RSLZU8EnoXbFMAeiXWA1+x1kMtQF2XERw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WF+QEyiqa5u1rbp/FxyLtodmH7tMy6xlK67i3w9iSuJ5i9HqyibKycB81oQ+Du7hyFM1PXpUgFaeWRA8Olpsy5izhH/ATH/e5ztp+7z75az9dSrwg82eoYQ3KoQzcc6j7bTaGBb+8hOyp1kVh6ykqlTP5VZYFh4v2kvCedLASlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OHNgwoEa; arc=none smtp.client-ip=209.85.161.47
+	s=arc-20240116; t=1713261050; c=relaxed/simple;
+	bh=rJxuOVYfhO9valRP+XblmWf6WsATk4XWKvDb25yDuq4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=IqvTYghbv5oyrtHMEpLk/wFYYQXF7WYf/5SxjDLFHdOIzzAOsJm2J9hsO9QyZFdGcTmocFZFbKdbF2AlV0UG0jRZMklZg59haFfrUNtu6aMwcky4KZAKBO3mK74z5tbbBWgCDmRXV4ogw26LD/6YSofjKsAyaN3/0MOYzdDbeoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=evP/gDb2; arc=none smtp.client-ip=209.85.161.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5aa17c69cf7so3033026eaf.2;
-        Tue, 16 Apr 2024 02:50:27 -0700 (PDT)
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5ac61cf3fffso2645248eaf.3;
+        Tue, 16 Apr 2024 02:50:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713261027; x=1713865827; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AzPu/UiUvA3k3gEc6xFuTsUjWTRQgYweYisjZPbivEY=;
-        b=OHNgwoEavC/a/ubPpkYKWMXIy+mA16+GoURqTW3NbxzrAwg82VUFHdINat9jOemO3P
-         7d9zMKHVNpJNOj/EM0hVkiLSoehb/UCxbhaX9x936QNkK3oU6C4vFU8IBbMsn7IJLVWO
-         kjRmlIZ7c5Gpxg3DMqg/vmTe/EjE376BvpWJTFnYnmGyTGiFmrPB6xoCCQ669n8AyA+Y
-         mXKHWV+9O+J4pt5YJ/6VrdlrTc4HxyiVOyUTB5TUz5s0MnWEUjM+OnKVXyhLhMw4IiHa
-         g9pn3G3+RA6xnGt/DAD+0jPXt1IcXjTQAseMbvoJsY30IPWGKEAUB/hW5Df009m1wL8r
-         CitA==
+        d=gmail.com; s=20230601; t=1713261048; x=1713865848; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2p5OSXn24EKOZqy7EDcmeeMFADHFv6owcaxiqAYNSKE=;
+        b=evP/gDb2dPp8mxu8Jr87ApP5rOtxK1zk21mCHV/MDGrY+e02hH7N9Ohgy5hZT39b13
+         KunENNtB1wdCi3az91hnaCnn/6rh0SRr3N//mgleasgARkg3Qtj/Irf1GAeMOephMBH5
+         8bmaAkGsHvCpAnEEHofAoS+n9Rt7Ik+HMagG24nQzWNuZudR4Q7y0nnPkQYB3TS/FCz6
+         mqdLlsD43qfizGlNZG4outBZsPqMsqIuOloIshyp+I5Xhd3dAWTsL9YNugk4JUcpUkrB
+         7mk6g3BnOhKahru7i6rNX2RZVVWDo18OjtUy/JH5319f1q5wSsEEE44seLus3xGQgi94
+         A5EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713261027; x=1713865827;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AzPu/UiUvA3k3gEc6xFuTsUjWTRQgYweYisjZPbivEY=;
-        b=P2LrSpVBFnLjjMUvOCywNT98S4WO8Z3DFw5u9uaiFvpm8weMudlMOV6T1VKvFgN0ie
-         U9qoisFgA/5qfQki+BUl/OUmmrGGPOpefC9vMlDQFr0i4kzD2pXbbxHZW0PBigV0bUnk
-         rQsxab1Wdomza2xlTNUjJKc5/QPhVdftuCMEW9egkomgD9fgy6wijgbttRc3JT8Ptlhh
-         opX6HJR3KmckxzHaCS7GNCdrYl0Z6ppswM8X33w367R/E+dBvG2lpPappfcnMRcT/IRq
-         iZiT3kvm1sbGxDka4s9pofMFvQKrwOJJ+AGV4YIRTPpMQr7i4vncqBacrIMcY8LLj48x
-         3rwg==
-X-Forwarded-Encrypted: i=1; AJvYcCX04335TyQ8duxuOS0wjAB+Zs60xLMc8tbgQToBgSH0QaKHyvxmijpmtEICZ2dTsN9ObtjzED054k1btOUKa8wWGBR6f/QX+bEwYmwcp6A5FJKEBbjVYsFsofaJHWnAQSUhYIwOJvheN5tFXppV/E9B9cRVZW8VOHgv+DI6eAX2WrI6Xg==
-X-Gm-Message-State: AOJu0YzoEUS2pbUPWGADK0dGhNpc6ezn9NfU5esdcwrTz4Wv8Y4pfWm+
-	WGDYs7uXEp9Z/nkxgj5+CsF74S1KBnBDDFRmRdRgC2nyPKYjh3oC
-X-Google-Smtp-Source: AGHT+IFnGRfaqTMKMw+sqVlviPGyiJjLh5HEIewQkEWrBktvio2oxeHymaib3oW5wQ8ddqOkyMzKGA==
-X-Received: by 2002:a4a:1a85:0:b0:5ac:9e85:59d8 with SMTP id 127-20020a4a1a85000000b005ac9e8559d8mr5605165oof.1.1713261027313;
-        Tue, 16 Apr 2024 02:50:27 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713261048; x=1713865848;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2p5OSXn24EKOZqy7EDcmeeMFADHFv6owcaxiqAYNSKE=;
+        b=DPrxpWCs79JuS92UFLD98h3a87cVaC0Lc4eyJ7UdpepmsUfqJu1zQMMl8RzCkJypCT
+         C/oTj7IPl4Qp1o8ILwu0dn5EQBP4WsVy6n4I9eZPZ0FbI1MqU0MMi6en3pf0FkP/F6UW
+         8+DFHB3TA29PRMC2VhmjcHRfhd8GejqN5w3kW3E1COkkqTDggg5FnM85pTw6yiJjT0Kx
+         Tsrv5gLfyLN5PohdWXzIkADZMoz8ePM96sQs0FlBxQ4MERiKolPda2H5p/x/ZVTSNQCx
+         4pIPDq1wZQWfKxDkJr+9g4A0gWEY8hxv9RjC2f9LOflGtPwMSJGZdkKMxGds9ss15Nny
+         SqKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVOG17db3zld3Abglr6B2/mmfT6qI2E3PSKSqUBR+JcXo2bG1p23CIi3AhL84jT3BtTIQkHNPOAS8mxUL0WGtat+bz/ZWhx0p44EQCxjg7d+fk1JD98p9AnZzawWdAZq+Qx2S/aC4kxEU6ulrFppV7t/3VSLkNmoS+1h/5xuCv874rRQw==
+X-Gm-Message-State: AOJu0YxkkGjL90pZDZ4haxtQXzi/TdiWHYCk+bHTab1mcGUL6jmSufY1
+	xgFLrkDGu6qiW2OprFfPoIh5BYTZlz2QSrSt9LyXNIElP96N+wJ2
+X-Google-Smtp-Source: AGHT+IGUJuaKo6/23XXIC/onjoXbCFQXGz0jHnqblFr3WK+l8O/XfNWE2Bm+VrI66kMAcwyD+8R2Ew==
+X-Received: by 2002:a05:6820:217:b0:5aa:6a1f:f673 with SMTP id bw23-20020a056820021700b005aa6a1ff673mr13329923oob.1.1713261047983;
+        Tue, 16 Apr 2024 02:50:47 -0700 (PDT)
 Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id by27-20020a056820201b00b005aa4e48efc3sm2460056oob.37.2024.04.16.02.50.24
+        by smtp.gmail.com with ESMTPSA id dc6-20020a056820278600b005a796851f5bsm2458798oob.35.2024.04.16.02.50.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 02:50:26 -0700 (PDT)
+        Tue, 16 Apr 2024 02:50:47 -0700 (PDT)
 From: Chen Wang <unicornxw@gmail.com>
 To: adrian.hunter@intel.com,
 	aou@eecs.berkeley.edu,
@@ -85,10 +87,12 @@ To: adrian.hunter@intel.com,
 	xiaoguang.xing@sophgo.com,
 	tingzhu.wang@sophgo.com
 Cc: Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH 0/3] mmc: sdhci-of-dwcmshc: support Sophgo SG2042
-Date: Tue, 16 Apr 2024 17:50:17 +0800
-Message-Id: <cover.1713258948.git.unicorn_wang@outlook.com>
+Subject: [PATCH 1/3] dt-bindings: mmc: sdhci-of-dwcmhsc: Add Sophgo SG2042 support
+Date: Tue, 16 Apr 2024 17:50:37 +0800
+Message-Id: <032c06642b01f06c86ba8bcd2108d18c005b57eb.1713258948.git.unicorn_wang@outlook.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1713258948.git.unicorn_wang@outlook.com>
+References: <cover.1713258948.git.unicorn_wang@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -99,35 +103,115 @@ Content-Transfer-Encoding: 8bit
 
 From: Chen Wang <unicorn_wang@outlook.com>
 
-Add support for the mmc controller for Sophgo SG2042.
-Adding corresponding new compatible strings, and implement
-custom sdhci_ops.
+SG2042 use Synopsys dwcnshc IP for SD/eMMC controllers.
 
-This patchset is based on v6.9-rc1 and depends on following pathsets:
+SG2042 defines 3 clocks for SD/eMMC controllers.
+- AXI_EMMC/AXI_SD for aclk/hclk(Bus interface clocks in DWC_mshc)
+  and blck(Core Base Clock in DWC_mshc), these 3 clocks share one
+  source, so reuse existing "core".
+- 100K_EMMC/100K_SD for cqetmclk(Timer clocks in DWC_mshc), so reuse
+  existing "timer" which was added for rockchip specified.
+- EMMC_100M/SD_100M for cclk(Card clocks in DWC_mshc), add new "card".
 
-- [PATCH 0/1] mmc: sdhci-of-dwcmshc: enhance framework [1]
-- [PATCH v14 0/5] riscv: sophgo: add clock support for sg2042 [2]
-- [PATCH v1] mmc: sdhci-of-dwcmshc: th1520: Increase tuning loop count to 128 [3]
+Adding some examples.
 
-
-Link: https://lore.kernel.org/linux-kernel/cover.1713257181.git.unicorn_wang@outlook.com/ [1]
-Link: https://lore.kernel.org/linux-riscv/cover.1713164546.git.unicorn_wang@outlook.com/ [2]
-Link: https://lore.kernel.org/all/20240402093539.184287-1-bigunclemax@gmail.com/ [3]
-
-
+Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
 ---
+ .../bindings/mmc/snps,dwcmshc-sdhci.yaml      | 67 ++++++++++++++-----
+ 1 file changed, 51 insertions(+), 16 deletions(-)
 
-Chen Wang (3):
-  dt-bindings: mmc: sdhci-of-dwcmhsc: Add Sophgo SG2042 support
-  mmc: sdhci-of-dwcmshc: Add support for Sophgo SG2042
-  riscv: dts: add mmc controllers for Sophgo SG2042 SoC
-
- .../bindings/mmc/snps,dwcmshc-sdhci.yaml      |  67 +++++--
- .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  |  15 ++
- arch/riscv/boot/dts/sophgo/sg2042.dtsi        |  32 ++++
- drivers/mmc/host/sdhci-of-dwcmshc.c           | 173 +++++++++++++++++-
- 4 files changed, 264 insertions(+), 23 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+index 4d3031d9965f..a04ccae216cf 100644
+--- a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
++++ b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+@@ -21,6 +21,7 @@ properties:
+       - snps,dwcmshc-sdhci
+       - sophgo,cv1800b-dwcmshc
+       - sophgo,sg2002-dwcmshc
++      - sophgo,sg2042-dwcmshc
+       - thead,th1520-dwcmshc
+ 
+   reg:
+@@ -30,23 +31,36 @@ properties:
+     maxItems: 1
+ 
+   clocks:
+-    minItems: 1
+-    items:
+-      - description: core clock
+-      - description: bus clock for optional
+-      - description: axi clock for rockchip specified
+-      - description: block clock for rockchip specified
+-      - description: timer clock for rockchip specified
+-
++    anyOf:
++      - minItems: 1
++        items:
++          - description: core clock
++          - description: bus clock for optional
++          - description: axi clock for rockchip specified
++          - description: block clock for rockchip specified
++          - description: timer clock for rockchip specified
++
++      - minItems: 1
++        items:
++          - description: core clock
++          - description: timer clock
++          - description: card clock
+ 
+   clock-names:
+-    minItems: 1
+-    items:
+-      - const: core
+-      - const: bus
+-      - const: axi
+-      - const: block
+-      - const: timer
++    anyOf:
++      - minItems: 1
++        items:
++          - const: core
++          - const: bus
++          - const: axi
++          - const: block
++          - const: timer
++
++      - minItems: 1
++        items:
++          - const: core
++          - const: timer
++          - const: card
+ 
+   resets:
+     maxItems: 5
+@@ -96,5 +110,26 @@ examples:
+       #address-cells = <1>;
+       #size-cells = <0>;
+     };
+-
++  - |
++    mmc@bb0000 {
++      compatible = "snps,dwcmshc-sdhci";
++      reg = <0xbb000 0x1000>;
++      interrupts = <0 25 0x4>;
++      clocks = <&cru 17>;
++      clock-names = "core";
++      bus-width = <8>;
++      #address-cells = <1>;
++      #size-cells = <0>;
++    };
++  - |
++    mmc@cc0000 {
++      compatible = "snps,dwcmshc-sdhci";
++      reg = <0xcc000 0x1000>;
++      interrupts = <0 25 0x4>;
++      clocks = <&cru 17>, <&cru 18>, <&cru 19>;
++      clock-names = "core", "timer", "card";
++      bus-width = <8>;
++      #address-cells = <1>;
++      #size-cells = <0>;
++    };
+ ...
 -- 
 2.25.1
 
