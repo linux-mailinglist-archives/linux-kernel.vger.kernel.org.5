@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-146397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 753898A64C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:17:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C5048A64C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:17:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B6EB281C98
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:17:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ED221C21540
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:17:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B10CA15B967;
-	Tue, 16 Apr 2024 07:14:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A1115CD4D;
+	Tue, 16 Apr 2024 07:14:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="fYTAnl9w"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="E4JXSJaJ"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C1D15B56D;
-	Tue, 16 Apr 2024 07:14:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C963A15B968;
+	Tue, 16 Apr 2024 07:14:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713251694; cv=none; b=qIu/2xDFXPNaGGTCD/o/ORXMwUHhomQBUeuPvbsrmiT5pcpNye9B5clkyfiSjQ2q8e4I8YUnH9OUTaeRThNVgVOwC9KqujpU7aIf3tEEIjfEsp0T/GcHho3/zx09QFsAIms8m0C3Bo2yEYLTUcFU9kqUm0tc81Kftebs2n6/nJU=
+	t=1713251697; cv=none; b=FxBuucpSoDQ/IVG9iQWjDP7QqS4y6Al+b+tU6MaKyyq3tqwv9zN1X61u5XablNBklTVtghEjz0aBWrPGIWRtXC/KW2edH4OGiBcr9StDwYp/z/rLUUkfprWAUfhbpV5l1Xh608/HNC8g7Ul0dGZuYF4UqMJswgC1jzxmikcNx5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713251694; c=relaxed/simple;
-	bh=l/YgE2jHDgEGiO5tZpMnwUUm+KuVZjmQoNRva6TC6eM=;
+	s=arc-20240116; t=1713251697; c=relaxed/simple;
+	bh=6SqN9wWBxnCEthQ3e1Jy5DMt1UHcxaWeOQWQPNIAVhw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WMT1TB7XfSJBj/+tBWjvgKiWp2F+0pMn9c2waCApVdxu/HF+GfrpMmdirT3YrVQCH0oBktd1VDG00nmydCU5ZzD8dBQBzgqN05sBTcxxaW2bW7KexESol5ch+LOuofe3B4XJ9tr+Og7jMArqd7QvsyAGcH72kISFwXGjAibZdR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=fYTAnl9w; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version; b=ZKR59e5KYZtPm8XmmzEoMQ5ldiCQO7ZE8csYdG6s/aE7VUlCN+VAM3ezVhvISGNxPpcU8XxGJOfPrcUaonLWFS8xAZfofrfPiEyLJiaz5/w/Q9SAdy2fFFED7rP6fiMfvXe8T1uhd+h4v5gWg1v7Lkwl6Hh+8KrsLZx8ENl1jt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=E4JXSJaJ; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713251691;
-	bh=l/YgE2jHDgEGiO5tZpMnwUUm+KuVZjmQoNRva6TC6eM=;
+	s=mail; t=1713251694;
+	bh=6SqN9wWBxnCEthQ3e1Jy5DMt1UHcxaWeOQWQPNIAVhw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fYTAnl9wUuwE0R1aGy712w49sD5mzXirOnwJn5yVauxOU6KFy6Gz24C2YdlxEtwYI
-	 Kn8fJUyYWUBpSi09VisqJE+/5wl1GlIP3jbqJbzH5+hLmca2ODeSLom20TZMC7jdnz
-	 2HWGvaZBYHLCZDmpMmxyyV1kkjLR3nBh3p4zG0YB0g2+UiNsO+MeTKUg6eUXMfkZUd
-	 SO+P1i//UHG5gT/rl8dy5lkmGFs3AoGtqNNDH1xyen6CK7tcRPRne8rS25cYLfeZae
-	 8DU9hTs8SSnvyLIpAFJ55vnpNmP//g9LcRRO+cUb6SFooBaVHG5LeZOKoahqeo529r
-	 m3F/4ift/AqHw==
+	b=E4JXSJaJwGngvDelju68u5X7cw8l3GwdnPtw54YixTw0JrrOa7aLYg5IBVK2+A+vt
+	 n1mkPVQ8rtNODQH8XStw7EfbioZBwxWMebUW2AzG3q0URiPy+Ag2fuviBXyOOu2/JC
+	 nh2guHaPUDr1UvMAoVLEtyJEL2O/6Uf07LuepIJAjuUrsB/VfyW4bAJL96gB7xIaq4
+	 aJX7mEajAKsqbPlYMPt5xayDkmBXagS0Bejst8CofHgdloGWZakS5nRGk4o0KKUpRd
+	 ERFNt4Fc/Ixd5jTAHjYvkenR7FGkPMyFb25aaVxAs2stI9PdM0h2cdO2HcfLhyuVke
+	 oaXt9tEREdYdw==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id AF68A3782123;
-	Tue, 16 Apr 2024 07:14:49 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1806637820F9;
+	Tue, 16 Apr 2024 07:14:52 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: broonie@kernel.org
 Cc: wenst@chromium.org,
@@ -86,9 +86,9 @@ Cc: wenst@chromium.org,
 	linux-mediatek@lists.infradead.org,
 	kernel@collabora.com,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v5 14/18] ASoC: dt-bindings: mt8195: Document audio-routing and dai-link subnode
-Date: Tue, 16 Apr 2024 09:14:06 +0200
-Message-ID: <20240416071410.75620-15-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v5 15/18] ASoC: dt-bindings: mt8192: Document audio-routing and dai-link subnode
+Date: Tue, 16 Apr 2024 09:14:07 +0200
+Message-ID: <20240416071410.75620-16-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240416071410.75620-1-angelogioacchino.delregno@collabora.com>
 References: <20240416071410.75620-1-angelogioacchino.delregno@collabora.com>
@@ -104,7 +104,7 @@ Document the dai-link subnodes and the audio-routing property, allowing
 to describe machine specific audio hardware and links in device tree.
 
 While at it, also deprecate the old properties which were previously
-used with driver hardcoded configuration.
+used with the driver's partially hardcoded configuration.
 
 Also, since describing machine specific audio hardware and links replaces
 the now deprecated old logic doing the same in a driver hardcoded fashion,
@@ -113,16 +113,16 @@ it is not allowed to have both the old and new properties together.
 Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- .../bindings/sound/mt8195-mt6359.yaml         | 134 ++++++++++++++++++
- 1 file changed, 134 insertions(+)
+ .../sound/mt8192-mt6359-rt1015-rt5682.yaml    | 139 ++++++++++++++++--
+ 1 file changed, 129 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8195-mt6359.yaml b/Documentation/devicetree/bindings/sound/mt8195-mt6359.yaml
-index c1ddbf672ca3..2af1d8ffbd8b 100644
---- a/Documentation/devicetree/bindings/sound/mt8195-mt6359.yaml
-+++ b/Documentation/devicetree/bindings/sound/mt8195-mt6359.yaml
-@@ -12,6 +12,9 @@ maintainers:
+diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+index 7e50f5d65c8f..c4e68f31aaab 100644
+--- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
++++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+@@ -13,6 +13,9 @@ maintainers:
  description:
-   This binding describes the MT8195 sound card.
+   This binding describes the MT8192 sound card.
  
 +allOf:
 +  - $ref: sound-card-common.yaml#
@@ -130,9 +130,9 @@ index c1ddbf672ca3..2af1d8ffbd8b 100644
  properties:
    compatible:
      enum:
-@@ -23,6 +26,33 @@ properties:
-     $ref: /schemas/types.yaml#/definitions/string
-     description: User specified audio sound card name
+@@ -20,6 +23,31 @@ properties:
+       - mediatek,mt8192_mt6359_rt1015p_rt5682
+       - mediatek,mt8192_mt6359_rt1015p_rt5682s
  
 +  audio-routing:
 +    description:
@@ -145,8 +145,8 @@ index c1ddbf672ca3..2af1d8ffbd8b 100644
 +    items:
 +      enum:
 +        # Sinks
-+        - Ext Spk
-+        - Headphone
++        - Speakers
++        - Headphone Jack
 +        - IN1P
 +        - Left Spk
 +        - Right Spk
@@ -155,36 +155,44 @@ index c1ddbf672ca3..2af1d8ffbd8b 100644
 +        - Headset Mic
 +        - HPOL
 +        - HPOR
-+        - Left BE_OUT
 +        - Left SPO
-+        - Right BE_OUT
 +        - Right SPO
 +        - Speaker
 +
    mediatek,platform:
      $ref: /schemas/types.yaml#/definitions/phandle
-     description: The phandle of MT8195 ASoC platform.
-@@ -30,10 +60,12 @@ properties:
-   mediatek,dptx-codec:
-     $ref: /schemas/types.yaml#/definitions/phandle
-     description: The phandle of MT8195 Display Port Tx codec node.
-+    deprecated: true
- 
+     description: The phandle of MT8192 ASoC platform.
+@@ -27,10 +55,12 @@ properties:
    mediatek,hdmi-codec:
      $ref: /schemas/types.yaml#/definitions/phandle
-     description: The phandle of MT8195 HDMI codec node.
+     description: The phandle of HDMI codec.
 +    deprecated: true
  
-   mediatek,adsp:
-     $ref: /schemas/types.yaml#/definitions/phandle
-@@ -45,20 +77,122 @@ properties:
-       A list of the desired dai-links in the sound card. Each entry is a
-       name defined in the machine driver.
+   headset-codec:
+     type: object
+     additionalProperties: false
++    deprecated: true
  
+     properties:
+       sound-dai:
+@@ -41,6 +71,7 @@ properties:
+   speaker-codecs:
+     type: object
+     additionalProperties: false
++    deprecated: true
+ 
+     properties:
+       sound-dai:
+@@ -51,33 +82,121 @@ properties:
+     required:
+       - sound-dai
+ 
+-additionalProperties: false
 +patternProperties:
 +  ".*-dai-link$":
 +    type: object
 +    additionalProperties: false
++
 +    description:
 +      Container for dai-link level properties and CODEC sub-nodes.
 +
@@ -192,13 +200,17 @@ index c1ddbf672ca3..2af1d8ffbd8b 100644
 +      link-name:
 +        description: Indicates dai-link name and PCM stream name
 +        enum:
-+          - DPTX_BE
-+          - ETDM1_IN_BE
-+          - ETDM2_IN_BE
-+          - ETDM1_OUT_BE
-+          - ETDM2_OUT_BE
-+          - ETDM3_OUT_BE
-+          - PCM1_BE
++          - I2S0
++          - I2S1
++          - I2S2
++          - I2S3
++          - I2S4
++          - I2S5
++          - I2S6
++          - I2S7
++          - I2S8
++          - I2S9
++          - TDM
 +
 +      codec:
 +        description: Holds subnode which indicates codec dai.
@@ -223,12 +235,14 @@ index c1ddbf672ca3..2af1d8ffbd8b 100644
 +    required:
 +      - link-name
 +
- additionalProperties: false
++unevaluatedProperties: false
  
  required:
    - compatible
    - mediatek,platform
- 
+-  - headset-codec
+-  - speaker-codecs
++
 +# Disallow legacy properties if xxx-dai-link nodes are specified
 +if:
 +  not:
@@ -236,70 +250,71 @@ index c1ddbf672ca3..2af1d8ffbd8b 100644
 +      ".*-dai-link$": false
 +then:
 +  properties:
-+    mediatek,dptx-codec: false
++    headset-codec: false
++    speaker-codecs: false
 +    mediatek,hdmi-codec: false
-+
+ 
  examples:
    - |
  
-     sound: mt8195-sound {
-         compatible = "mediatek,mt8195_mt6359_rt1019_rt5682";
-+        model = "mt8195_r1019_5682";
-         mediatek,platform = <&afe>;
-         pinctrl-names = "default";
-         pinctrl-0 = <&aud_pins_default>;
+     sound: mt8192-sound {
+         compatible = "mediatek,mt8192_mt6359_rt1015_rt5682";
+-        mediatek,platform = <&afe>;
+-        mediatek,hdmi-codec = <&anx_bridge_dp>;
++        model = "mt8192_mt6359_rt1015_rt5682";
+         pinctrl-names = "aud_clk_mosi_off",
+                         "aud_clk_mosi_on";
+         pinctrl-0 = <&aud_clk_mosi_off>;
+         pinctrl-1 = <&aud_clk_mosi_on>;
++        mediatek,platform = <&afe>;
 +
 +        audio-routing =
-+                "Headphone", "HPOL",
-+                "Headphone", "HPOR",
++                "Headphone Jack", "HPOL",
++                "Headphone Jack", "HPOR",
 +                "IN1P", "Headset Mic",
-+                "Ext Spk", "Speaker";
++                "Speakers", "Speaker";
 +
-+        mm-dai-link {
-+                link-name = "ETDM1_IN_BE";
++        spk-playback-dai-link {
++                link-name = "I2S3";
++                dai-format = "i2s";
 +                mediatek,clk-provider = "cpu";
++                codec {
++                        sound-dai = <&rt1015p>;
++                };
 +        };
 +
 +        hs-playback-dai-link {
-+                link-name = "ETDM1_OUT_BE";
++                link-name = "I2S8";
++                dai-format = "i2s";
 +                mediatek,clk-provider = "cpu";
 +                codec {
-+                        sound-dai = <&headset_codec>;
++                        sound-dai = <&rt5682 0>;
 +                };
 +        };
-+
+ 
+-        headset-codec {
+-            sound-dai = <&rt5682>;
 +        hs-capture-dai-link {
-+                link-name = "ETDM2_IN_BE";
++                link-name = "I2S9";
++                dai-format = "i2s";
 +                mediatek,clk-provider = "cpu";
 +                codec {
-+                        sound-dai = <&headset_codec>;
++                        sound-dai = <&rt5682 0>;
 +                };
-+        };
-+
-+        spk-playback-dai-link {
-+                link-name = "ETDM2_OUT_BE";
-+                mediatek,clk-provider = "cpu";
-+                codec {
-+                        sound-dai = <&spk_amplifier>;
-+                };
-+        };
-+
-+        hdmi-dai-link {
-+                link-name = "ETDM3_OUT_BE";
-+                codec {
-+                        sound-dai = <&hdmi_tx>;
-+                };
-+        };
-+
+         };
+ 
+-        speaker-codecs {
+-            sound-dai = <&rt1015_l>,
+-                        <&rt1015_r>;
 +        displayport-dai-link {
-+                link-name = "DPTX_BE";
++                link-name = "TDM";
++                dai-format = "dsp_a";
 +                codec {
-+                        sound-dai = <&dp_tx>;
++                        sound-dai = <&anx_bridge_dp>;
 +                };
-+        };
+         };
      };
  
- ...
 -- 
 2.44.0
 
