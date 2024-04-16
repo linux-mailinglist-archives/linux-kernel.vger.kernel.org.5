@@ -1,39 +1,47 @@
-Return-Path: <linux-kernel+bounces-146703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B02A8A6990
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:26:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0555B8A6992
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:26:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9555A1C20BA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:26:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93FE71F21F29
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:26:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A756A1292D2;
-	Tue, 16 Apr 2024 11:25:57 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8DA06D1BC
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:25:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C58091292D7;
+	Tue, 16 Apr 2024 11:26:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PZMtk6Ax"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F8D6D1BC;
+	Tue, 16 Apr 2024 11:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713266757; cv=none; b=niGggI0sHkvNrvBNMEwNcBG+obS2xgUxgprs6eg4sqva5xWVN8gaDsPmU54TXH+dY2XgrWaY5q4U3VK9hFJR0bR8bobn9ILG5O6toYPaBzPADRARkmWJ2MZ7UUtoBkN4j+0Rcu3Uo3bmj/zzzGMxpATGA2GgEe9eDTDQ170fo5I=
+	t=1713266804; cv=none; b=VPG1H4PnBtRsXvh+hYqg4/JGBOF4EtvE9gmTXIus49dWg+viI9zuUQzkxgzBksSKYHdUeerDmSo4Nx6GgaBEZ7SE7AOt3o4qpfCYhp8nf0ywYdSYV5LozCCC4gXr+Ld68sFlaxDIFgDAt4FBgQ8po6uu5FO3GA9s2nhi+oQRPNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713266757; c=relaxed/simple;
-	bh=UG4jP07F2hYAqQijSJCJ54Bps/Mjtct7kysvFkNFmsY=;
+	s=arc-20240116; t=1713266804; c=relaxed/simple;
+	bh=jinWfPJk3/OTABs9+MqTy+eTXirJ2lwng/pPgUtjUhI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dIzTDv9OeUAJ9HvNfc4RM5XQQSLvskqXqf/OFjQH/gXQMN5C/muyhMv0xKMAkC8DB9Xm6lne26WUw9/pv2kKhZZ+LvVUz4Ow8q877j9Kvgmxx9NL3fxM7FCvlvXdUPyWv75V9dLU5i1Adv4owbE5Pm386caHICwZRY/S+wMEWo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 431CD339;
-	Tue, 16 Apr 2024 04:26:23 -0700 (PDT)
-Received: from [10.57.19.239] (unknown [10.57.19.239])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 950753F738;
-	Tue, 16 Apr 2024 04:25:53 -0700 (PDT)
-Message-ID: <47d4bfd6-1d76-4bb8-a33c-c9c99b86656b@arm.com>
-Date: Tue, 16 Apr 2024 12:25:52 +0100
+	 In-Reply-To:Content-Type; b=kL2Mhbv6o6yfTPTUq0u+DHGFxqDmETmsY2YPImpzcV66xa9Tw60WlsJH/1GpSRuEWF3Tlu8deD/6teu/ks8+tb0Dh9QU0DBLj93jFh3+PimwwqCWj65Dd6UQI4cZJ8t+b6vrHEjQYayPDEVaUaMO5NHcxeC55tkn4JmkJYkkDmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PZMtk6Ax; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E78ABC2BD10;
+	Tue, 16 Apr 2024 11:26:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713266801;
+	bh=jinWfPJk3/OTABs9+MqTy+eTXirJ2lwng/pPgUtjUhI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=PZMtk6Axgd9o3aITOuDYguiqxCx9bnmcY+4/Qwv83S57yzq3F6ug0Jx5tnoX6jTwC
+	 FjNnlZu6XOJH+jqjARwFpXktgHNfdZBOC4uE8xQFop+NpG3GEfVO20eWr+gw8BMRAo
+	 JfaMdQmWzzD/9nPDqHSNWHAJWD5qaSCESF01W3iP2h7r0VMU9As+nyJH/26z7EGY3k
+	 EUkHNCw1H+mdtc1xQ2ENzsowMy7K6ta9vXWzrmh8+FWncC50zGrhjB6qCmHA2vBnT9
+	 +Zwc0V7sjXDagQ7O+Oocnls5CC4IYEiaMOwWGhjdSlnN14VvUlxpnzJ++n8YDEFB6t
+	 nNBdP/7CvAnQg==
+Message-ID: <43994879-bc23-47d5-8f95-491b531271a0@kernel.org>
+Date: Tue, 16 Apr 2024 14:26:35 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,98 +49,102 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Kernel 6.7 regression doesn't boot if using AMD eGPU
-To: Jason Gunthorpe <jgg@ziepe.ca>, Vasant Hegde <vasant.hegde@amd.com>
-Cc: Eric Wagner <ewagner12@gmail.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>,
- Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
- iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <CAHudX3zLH6CsRmLE-yb+gRjhh-v4bU5_1jW_xCcxOo_oUUZKYg@mail.gmail.com>
- <20240415163056.GP223006@ziepe.ca>
- <CAHudX3zhagFWBv4isZzAtC8dA7EAAtY6Yk7fkJ31hf0D9zrNqw@mail.gmail.com>
- <65d4d7e0-4d90-48d7-8e4a-d16800df148a@arm.com>
- <20240416003903.GR223006@ziepe.ca>
-From: Robin Murphy <robin.murphy@arm.com>
-Content-Language: en-GB
-In-Reply-To: <20240416003903.GR223006@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v2] arm64: dts: ti: beagleplay: Fix Ethernet PHY RESET
+ GPIOs
+To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: srk@ti.com, s-vadapalli@ti.com, r-gunasekaran@ti.com,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240305-b4-for-v6-9-am65-beagleplay-ethernet-reset-v2-1-2bf463a7bf13@kernel.org>
+Content-Language: en-US
+From: Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20240305-b4-for-v6-9-am65-beagleplay-ethernet-reset-v2-1-2bf463a7bf13@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2024-04-16 1:39 am, Jason Gunthorpe wrote:
-> On Mon, Apr 15, 2024 at 10:44:34PM +0100, Robin Murphy wrote:
->> On 2024-04-15 7:57 pm, Eric Wagner wrote:
->>> Apologies if I made a mistake in the first bisect, I'm new to kernel
->>> debugging.
->>>
->>> I tested cedc811c76778bdef91d405717acee0de54d8db5 (x86/amd) and
->>> 3613047280ec42a4e1350fdc1a6dd161ff4008cc (core) directly and both were good.
->>> Then I ran git bisect again with e8cca466a84a75f8ff2a7a31173c99ee6d1c59d2
->>> as the bad and 6e6c6d6bc6c96c2477ddfea24a121eb5ee12b7a3 as the good and the
->>> bisect log is attached. It ended up at the same commit as before.
->>>
->>> I've also attached a picture of the boot screen that occurs when it hangs.
->>> 0000:05:00.0 is the PCIe bus address of the RX 580 eGPU that's causing the
->>> problem.
->>
->> Looks like 59ddce4418da483 probably broke things most - prior to that, the
->> fact that it's behind a Thunderbolt port would have always taken precedence
->> and forced IOMMU_DOMAIN_DMA regardless of what the driver may have wanted to
->> saywhereas now we ask the driver first, then complain that it conflicts
->> with the untrusted status and ultimately don't configure the IOMMU
->> at all.
+Hi Vignesh & Nishanth,
+
+Could you please pick this in the v6.9-rc cycle?
+This patch should still apply cleanly.
+
+On 05/03/2024 15:15, Roger Quadros wrote:
+> The RESET GPIO pinmux should be part of MDIO bus node
+> so that they can be in the right state before the PHY
+> can be probed via MDIO bus scan.
 > 
-> Yes, if the driver wants to force a domain type it should be
-> forced. Driver knows best. Eg AMD forces IDENTITY when the HW/driver
-> is incapable of supporting otherwise.
-
-No, in the case of AMD it only forces identity if it thinks the device 
-might want to use PASIDs (because of the architectural limitation that 
-the RID always operates in GPA space so can't have its own independent 
-translation).
-
-Either way, though, there's really little sense to that argument - if 
-enforcing strict translation *might* compromise the device's 
-functionality, we should instead go out of our way to ensure it's 
-definitely as broken as possible? I fail to see how that can be 
-justified as useful or desirable behaviour.
-
->> Meanwhile the GPU driver presumably goes on to believe it's using dma-direct
->> with no IOMMU present, resulting in fireworks when its traffic reaches the
->> IOMMU. Great :(
+> The GPIO pin should be setup with PIN_INPUT so that
+> input circuitry is enabled in case software wants to
+> check pin status. Without this, incorrect status is shown
+> in /sys/kernel/debug/gpio.
 > 
-> I wonder where is the missing error handling.. iommu probe failure
-> should not go on to allow driver attach, there is no guarentee any DMA
-> works now that many iommus are booting up in BLOCKED.
+> Add GPIO reset for the Gigabit Ethernet PHY. As per
+> RTL8211F datasheet, reset assert width is 10ms and
+> PHY registers can be access accessed after 50ms of
+> reset deassert.
+> 
+> Fixes: f5a731f0787f ("arm64: dts: ti: Add k3-am625-beagleplay")
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
+> Changes in v2:
+> - Fix Subject to "arm64"
+> - Enable PIN_INPUT for SPE_RESET to fix GPIO status.
+> - Add Fixes tag.
+> - Link to v1: https://lore.kernel.org/r/20240229-b4-for-v6-9-am65-beagleplay-ethernet-reset-v1-1-b3e4b33378bd@kernel.org
+> ---
+>  arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+> index a34e0df2ab86..8ab838f1697c 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+> @@ -292,6 +292,8 @@ mdio0_pins_default: mdio0-default-pins {
+>  		pinctrl-single,pins = <
+>  			AM62X_IOPAD(0x0160, PIN_OUTPUT, 0) /* (AD24) MDIO0_MDC */
+>  			AM62X_IOPAD(0x015c, PIN_INPUT, 0) /* (AB22) MDIO0_MDIO */
+> +			AM62X_IOPAD(0x003c, PIN_INPUT, 7) /* (M25) GPMC0_AD0.GPIO0_15 */
+> +			AM62X_IOPAD(0x018c, PIN_INPUT, 7) /* (AC21) RGMII2_RD2.GPIO1_5 */
+>  		>;
+>  	};
+>  
+> @@ -383,7 +385,6 @@ AM62X_IOPAD(0x017c, PIN_INPUT, 1) /* (AD22) RGMII2_RX_CTL.RMII2_RX_ER */
+>  			AM62X_IOPAD(0x016c, PIN_INPUT, 1) /* (Y18) RGMII2_TD0.RMII2_TXD0 */
+>  			AM62X_IOPAD(0x0170, PIN_INPUT, 1) /* (AA18) RGMII2_TD1.RMII2_TXD1 */
+>  			AM62X_IOPAD(0x0164, PIN_INPUT, 1) /* (AA19) RGMII2_TX_CTL.RMII2_TX_EN */
+> -			AM62X_IOPAD(0x018c, PIN_OUTPUT, 7) /* (AC21) RGMII2_RD2.GPIO1_5 */
+>  			AM62X_IOPAD(0x0190, PIN_INPUT, 7) /* (AE22) RGMII2_RD3.GPIO1_6 */
+>  			AM62X_IOPAD(0x01f0, PIN_OUTPUT, 5) /* (A18) EXT_REFCLK1.CLKOUT0 */
+>  		>;
+> @@ -597,6 +598,9 @@ &cpsw3g_mdio {
+>  
+>  	cpsw3g_phy0: ethernet-phy@0 {
+>  		reg = <0>;
+> +		reset-gpios = <&main_gpio0 15 GPIO_ACTIVE_LOW>;
+> +		reset-assert-us = <10000>;
+> +		reset-deassert-us = <50000>;
+>  	};
+>  
+>  	cpsw3g_phy1: ethernet-phy@1 {
+> @@ -615,7 +619,7 @@ &main_gpio0 {
+>  		"USR0", "USR1", "USR2", "USR3", "", "", "USR4",	/* 3-9 */
+>  		"EEPROM_WP",					/* 10 */
+>  		"CSI2_CAMERA_GPIO1", "CSI2_CAMERA_GPIO2",	/* 11-12 */
+> -		"CC1352P7_BOOT", "CC1352P7_RSTN", "", "", "",	/* 13-17 */
+> +		"CC1352P7_BOOT", "CC1352P7_RSTN", "GBE_RSTN", "", "",	/* 13-17 */
+>  		"USR_BUTTON", "", "", "", "", "", "", "", "",	/* 18-26 */
+>  		"", "", "", "", "", "", "", "", "", "HDMI_INT",	/* 27-36 */
+>  		"", "VDD_WLAN_EN", "", "", "WL_IRQ", "GBE_INTN",/* 37-42 */
+> 
+> ---
+> base-commit: bbef42084cc170cbfc035bf784f2ff055c939d7e
+> change-id: 20240229-b4-for-v6-9-am65-beagleplay-ethernet-reset-098f274fbf15
+> 
+> Best regards,
 
-What do you mean error handling? After you spent a year rewriting the 
-probing code to your own grand design, don't suggest you don't even know 
-how it fundamentally works...
-
-"Failing" iommu_probe_device is merely how we tell ourselves that we're 
-not interested in a device, and consequently tell the rest of the kernel 
-it doesn't have an IOMMU (via device_iommu_mapped() returning false). 
-This is normal and expected for devices which legitimately have no IOMMU 
-in the first place; conversely we don't do a great deal for unexpected 
-failures since those typically represent system-fatal conditions 
-whatever we might try to do. We've never had much of a notion of 
-expected failures when an IOMMU *is* present, but even then, denying any 
-trace of the IOMMU and removing ourselves from the picture is clearly 
-not the ideal way to approach that. We're running off a bus notifier (or 
-even later), so ultimately our return value is meaningless; at that 
-point the device already exists and has been added to its bus, we can't 
-undo that.
-
-However it looks to be even more fun if failure occurs in *deferred* 
-default domain creation via bus_iommu_probe(), since then we give up and 
-dismiss the entire IOMMU. Except the x86 drivers ignore the return from 
-iommu_device_register(), so further hilarity ensues...
-
-I think I've now satisfied myself that a simple fix for the core code is 
-appropriate and will write that up now; one other thing I couldn't quite 
-figure out is whether the AMD driver somehow prevents PASIDs being used 
-while the group is attached to a non-identity (and non-nested) domain - 
-that's probably one for Vasant to confirm.
-
-Thanks,
-Robin.
+-- 
+cheers,
+-roger
 
