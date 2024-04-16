@@ -1,219 +1,152 @@
-Return-Path: <linux-kernel+bounces-147148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B63118A701D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:48:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E31D8A7022
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:48:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70ED72860CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:48:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F4711C21289
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:48:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20A9B13119E;
-	Tue, 16 Apr 2024 15:47:41 +0000 (UTC)
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [195.130.137.90])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0112131758;
+	Tue, 16 Apr 2024 15:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gf1F0DdC";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gf1F0DdC"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4D1131756
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 15:47:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.90
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175A51311B5;
+	Tue, 16 Apr 2024 15:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713282460; cv=none; b=RTbpARYyj6cYamrMKrlOfU5T0SnLoPQygk1YTw7z58teIxR4LGE4Cj+pH5+NsaDUE8PJ5rrkD7MBwqeXy48wJHI9JQJIhfk2/YtutsjDEWjm1YaOoSu6CFFvWfUTiqLqvoo3HDck1YTFVUKkMHUesgYEWDu30GGfwLLpiA53Ek8=
+	t=1713282483; cv=none; b=NUWDHA1XEsGhOHKtzYCkxjwW7d0SmdeGPSGnFaHDAWk72W0zQeBzdxNEbZi3T2HJO7vg3TlQbP0KpVSIbPBh8caJ6z3/f8m2YK0EzhetaCEUSjmjVklAv2yFQQwfXrZRLWiXSj9pwwObqlhdfeRbV4P6dw0WXYJG9rwIsT+lu4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713282460; c=relaxed/simple;
-	bh=FdQr1h/L7g/vE47GLu19CgVt8kMTGmoLXr4TPLuHPec=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AtG09cdJP9zJSOjGcmhT1Gm2tkSMNWJrBK7xvr/FxH5DVlfuI3lPSqYDXWfnNlJ64TY8MCx5VJLQlJJh7flGGCivqffJ+re4VSLPVAuPIN5D03MpT++y0cjlURVn39Ots/yctxhUhg1syqdbug+pHY99TF/0pr4FIC09ruubeSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:76d0:2bff:fec8:549])
-	by albert.telenet-ops.be with bizsmtp
-	id BrnW2C00J0SSLxL06rnWYW; Tue, 16 Apr 2024 17:47:30 +0200
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rwl1K-008J68-TW;
-	Tue, 16 Apr 2024 17:47:30 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rwl1u-00Ebkk-B2;
-	Tue, 16 Apr 2024 17:47:30 +0200
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Cong Dang <cong.dang.xn@renesas.com>,
-	linux-renesas-soc@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 2/2] pinctrl: renesas: r8a779h0: Add INTC-EX pins, groups, and function
-Date: Tue, 16 Apr 2024 17:47:23 +0200
-Message-Id: <258d03b27b77f60cc03fc3257bb4c6715b612a61.1713282028.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1713282028.git.geert+renesas@glider.be>
-References: <cover.1713282028.git.geert+renesas@glider.be>
+	s=arc-20240116; t=1713282483; c=relaxed/simple;
+	bh=NZbRBNmAfMK+3yRMDzPReQ4j2EbQWHeftMW0C5d1kgM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lg7mPM7erFgzAJcCQzR/T7ERjNpKJX0gjMZkw+phKyV2QZLZs1nxlhDtCbnqwOLaNiPSJbQ23Apd4Z5917sScKPTBFJhYZMgvFY37xomiP91G/2u9wKAMwdDI2O/kI8BseZdcxm4CIUplJtcMmQ0mMGrDsQp4ArLX1HnsF29bhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gf1F0DdC; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gf1F0DdC; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4E1741F839;
+	Tue, 16 Apr 2024 15:47:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1713282478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XhHu6jDC7cPxVBgNGim8Ty4Xl/VPDyVPLXO3H+HEHLU=;
+	b=gf1F0DdCsPbSyTZntqKQhmd1fCFIF5GAMuucKYL9GyW+Rl53AIgDWqiFxtvWkMRvUg5ejE
+	AydMtfUHF8EbREB0/xk6Mna8SKL1XOvzTdKGeRFR+MHKvPFSLExHedp+wgBRSHGaavDk7o
+	bRNQoP9gKBZKvBgTS3LUcwfPUlR1PuI=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1713282478; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XhHu6jDC7cPxVBgNGim8Ty4Xl/VPDyVPLXO3H+HEHLU=;
+	b=gf1F0DdCsPbSyTZntqKQhmd1fCFIF5GAMuucKYL9GyW+Rl53AIgDWqiFxtvWkMRvUg5ejE
+	AydMtfUHF8EbREB0/xk6Mna8SKL1XOvzTdKGeRFR+MHKvPFSLExHedp+wgBRSHGaavDk7o
+	bRNQoP9gKBZKvBgTS3LUcwfPUlR1PuI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2F83813931;
+	Tue, 16 Apr 2024 15:47:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Fo7uCq6dHmZKDwAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Tue, 16 Apr 2024 15:47:58 +0000
+Date: Tue, 16 Apr 2024 17:47:48 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, chenhuacai@kernel.org, tj@kernel.org, 
+	josef@toxicpanda.com, jhs@mojatatu.com, svenjoac@gmx.de, raven@themaw.net, 
+	pctammela@mojatatu.com, yukuai3@huawei.com, qde@naccy.de, zhaotianrui@loongson.cn, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
+	cgroups@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v2 1/6] blk-throttle: remove
+ CONFIG_BLK_DEV_THROTTLING_LOW
+Message-ID: <f3jd5hflezlknl2np2ybrcmqpqohcsow2ldoh53xdzfe2vieti@zkd7e4oj4cgm>
+References: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
+ <20240406080059.2248314-2-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="xrzldp3lzaugn3vy"
+Content-Disposition: inline
+In-Reply-To: <20240406080059.2248314-2-yukuai1@huaweicloud.com>
+X-Spam-Flag: NO
+X-Spam-Score: -5.80
+X-Spam-Level: 
+X-Spamd-Result: default: False [-5.80 / 50.00];
+	BAYES_HAM(-2.90)[99.57%];
+	SIGNED_PGP(-2.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	RCVD_TLS_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmx.de];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.dk,kernel.org,toxicpanda.com,mojatatu.com,gmx.de,themaw.net,huawei.com,naccy.de,loongson.cn,vger.kernel.org,lists.linux.dev];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
-Add pins, groups, and function for the Interrupt Controller for External
-Devices (INTC-EX) on the Renesas R-Car V4M (R8A779H0) SoC.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/pinctrl/renesas/pfc-r8a779h0.c | 112 +++++++++++++++++++++++++
- 1 file changed, 112 insertions(+)
+--xrzldp3lzaugn3vy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/pinctrl/renesas/pfc-r8a779h0.c b/drivers/pinctrl/renesas/pfc-r8a779h0.c
-index 0cbfe7637fc97743..438d1f2739dd4bcd 100644
---- a/drivers/pinctrl/renesas/pfc-r8a779h0.c
-+++ b/drivers/pinctrl/renesas/pfc-r8a779h0.c
-@@ -1660,6 +1660,90 @@ static const unsigned int i2c3_mux[] = {
- 	SDA3_MARK, SCL3_MARK,
- };
- 
-+/* - INTC-EX ---------------------------------------------------------------- */
-+static const unsigned int intc_ex_irq0_a_pins[] = {
-+	/* IRQ0_A */
-+	RCAR_GP_PIN(0, 6),
-+};
-+static const unsigned int intc_ex_irq0_a_mux[] = {
-+	IRQ0_A_MARK,
-+};
-+static const unsigned int intc_ex_irq0_b_pins[] = {
-+	/* IRQ0_B */
-+	RCAR_GP_PIN(1, 20),
-+};
-+static const unsigned int intc_ex_irq0_b_mux[] = {
-+	IRQ0_B_MARK,
-+};
-+
-+static const unsigned int intc_ex_irq1_a_pins[] = {
-+	/* IRQ1_A */
-+	RCAR_GP_PIN(0, 5),
-+};
-+static const unsigned int intc_ex_irq1_a_mux[] = {
-+	IRQ1_A_MARK,
-+};
-+static const unsigned int intc_ex_irq1_b_pins[] = {
-+	/* IRQ1_B */
-+	RCAR_GP_PIN(1, 21),
-+};
-+static const unsigned int intc_ex_irq1_b_mux[] = {
-+	IRQ1_B_MARK,
-+};
-+
-+static const unsigned int intc_ex_irq2_a_pins[] = {
-+	/* IRQ2_A */
-+	RCAR_GP_PIN(0, 4),
-+};
-+static const unsigned int intc_ex_irq2_a_mux[] = {
-+	IRQ2_A_MARK,
-+};
-+static const unsigned int intc_ex_irq2_b_pins[] = {
-+	/* IRQ2_B */
-+	RCAR_GP_PIN(0, 13),
-+};
-+static const unsigned int intc_ex_irq2_b_mux[] = {
-+	IRQ2_B_MARK,
-+};
-+
-+static const unsigned int intc_ex_irq3_a_pins[] = {
-+	/* IRQ3_A */
-+	RCAR_GP_PIN(0, 3),
-+};
-+static const unsigned int intc_ex_irq3_a_mux[] = {
-+	IRQ3_A_MARK,
-+};
-+static const unsigned int intc_ex_irq3_b_pins[] = {
-+	/* IRQ3_B */
-+	RCAR_GP_PIN(1, 23),
-+};
-+static const unsigned int intc_ex_irq3_b_mux[] = {
-+	IRQ3_B_MARK,
-+};
-+
-+static const unsigned int intc_ex_irq4_a_pins[] = {
-+	/* IRQ4_A */
-+	RCAR_GP_PIN(1, 17),
-+};
-+static const unsigned int intc_ex_irq4_a_mux[] = {
-+	IRQ4_A_MARK,
-+};
-+static const unsigned int intc_ex_irq4_b_pins[] = {
-+	/* IRQ4_B */
-+	RCAR_GP_PIN(2, 3),
-+};
-+static const unsigned int intc_ex_irq4_b_mux[] = {
-+	IRQ4_B_MARK,
-+};
-+
-+static const unsigned int intc_ex_irq5_pins[] = {
-+	/* IRQ5 */
-+	RCAR_GP_PIN(2, 2),
-+};
-+static const unsigned int intc_ex_irq5_mux[] = {
-+	IRQ5_MARK,
-+};
-+
- /* - MMC -------------------------------------------------------------------- */
- static const unsigned int mmc_data_pins[] = {
- 	/* MMC_SD_D[0:3], MMC_D[4:7] */
-@@ -2416,6 +2500,18 @@ static const struct sh_pfc_pin_group pinmux_groups[] = {
- 	SH_PFC_PIN_GROUP(i2c2),
- 	SH_PFC_PIN_GROUP(i2c3),
- 
-+	SH_PFC_PIN_GROUP(intc_ex_irq0_a),
-+	SH_PFC_PIN_GROUP(intc_ex_irq0_b),
-+	SH_PFC_PIN_GROUP(intc_ex_irq1_a),
-+	SH_PFC_PIN_GROUP(intc_ex_irq1_b),
-+	SH_PFC_PIN_GROUP(intc_ex_irq2_a),
-+	SH_PFC_PIN_GROUP(intc_ex_irq2_b),
-+	SH_PFC_PIN_GROUP(intc_ex_irq3_a),
-+	SH_PFC_PIN_GROUP(intc_ex_irq3_b),
-+	SH_PFC_PIN_GROUP(intc_ex_irq4_a),
-+	SH_PFC_PIN_GROUP(intc_ex_irq4_b),
-+	SH_PFC_PIN_GROUP(intc_ex_irq5),
-+
- 	BUS_DATA_PIN_GROUP(mmc_data, 1),
- 	BUS_DATA_PIN_GROUP(mmc_data, 4),
- 	BUS_DATA_PIN_GROUP(mmc_data, 8),
-@@ -2629,6 +2725,20 @@ static const char * const i2c3_groups[] = {
- 	"i2c3",
- };
- 
-+static const char * const intc_ex_groups[] = {
-+	"intc_ex_irq0_a",
-+	"intc_ex_irq0_b",
-+	"intc_ex_irq1_a",
-+	"intc_ex_irq1_b",
-+	"intc_ex_irq2_a",
-+	"intc_ex_irq2_b",
-+	"intc_ex_irq3_a",
-+	"intc_ex_irq3_b",
-+	"intc_ex_irq4_a",
-+	"intc_ex_irq4_b",
-+	"intc_ex_irq5",
-+};
-+
- static const char * const mmc_groups[] = {
- 	"mmc_data1",
- 	"mmc_data4",
-@@ -2813,6 +2923,8 @@ static const struct sh_pfc_function pinmux_functions[] = {
- 	SH_PFC_FUNCTION(i2c2),
- 	SH_PFC_FUNCTION(i2c3),
- 
-+	SH_PFC_FUNCTION(intc_ex),
-+
- 	SH_PFC_FUNCTION(mmc),
- 
- 	SH_PFC_FUNCTION(msiof0),
--- 
-2.34.1
+On Sat, Apr 06, 2024 at 04:00:54PM +0800, Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>  Documentation/ABI/stable/sysfs-block       |  12 -
+>  arch/loongarch/configs/loongson3_defconfig |   1 -
+>  block/Kconfig                              |  11 -
+>  block/bio.c                                |   1 -
+>  block/blk-stat.c                           |   3 -
+>  block/blk-sysfs.c                          |   7 -
+>  block/blk-throttle.c                       | 901 +--------------------
+>  block/blk-throttle.h                       |  26 +-
+>  block/blk.h                                |  11 -
+>  9 files changed, 45 insertions(+), 928 deletions(-)
 
+I'm (also) not aware of any users of (be)low throttling.
+I like this cleanup.
+
+Michal
+
+--xrzldp3lzaugn3vy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZh6dogAKCRAGvrMr/1gc
+jmjlAPwLwNkZQJFhrEDRQd2UPVOTYJsmlBNuzIDoL+vMV1NMgAEAq01YDiSpW/+Z
+V1EP2A64wd4WcjGJKLfZ/x4r2l/8iA4=
+=cgb7
+-----END PGP SIGNATURE-----
+
+--xrzldp3lzaugn3vy--
 
