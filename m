@@ -1,122 +1,179 @@
-Return-Path: <linux-kernel+bounces-146047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7078E8A5F73
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41AE78A5F79
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:54:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F5FF1F21EE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:46:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A43F21F2225E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:54:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40F3A4C7E;
-	Tue, 16 Apr 2024 00:46:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D29E44C98;
+	Tue, 16 Apr 2024 00:54:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="P0gwi6j9"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="XtwmSwLX"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CE5D1849
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:46:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47531849;
+	Tue, 16 Apr 2024 00:54:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713228390; cv=none; b=uyQwhD7d+4oo08H5fx5AUF74JXDCggHoR42k17SNIRyoQE0CCIMppF9Th4woCMO1tZmXJX49HkjU+mZJiYSmTgZW7byI+Vct5vPn0URXStJrmKpJv33VwdeRqI2TrmvvMznGQJp3s/zU1sbZeoSj0d8pelNKCSF6cnvxaceRe5Y=
+	t=1713228870; cv=none; b=f6aJO03PppdIsV/kvoSiK7OjvdfD1MwIFpzHZxauUT+XUqy4Py5LHhrwa1+4S8pAthxCkI6ISA2vtgO3hmzKdFyP4AIyLvIYiAfiLC8tH5HMa8mgh96Pf3FpVPbY8IsTzl87vNegdZvqQOdb3Xj0+s8Y6GzHrpkuGj04n+iW7DA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713228390; c=relaxed/simple;
-	bh=015eEwhLzWafHkc0BsCRogWYfs3SqoEKVTXAAy/Fhf0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pdNGnz3UmRxvRuENG+s+z0IyOF/D62rxjB4waLI82LF70e+RJW5PBzOH0FuaXlnrycGUVT6/XiMsxGd1BWNZrZi2IH74eUNXjx/fubki0RufCfA0w4aq6wNd/coAGjFfDEk+VmyOJLmLczeHyj0nlNCgEgGBF/fMX4Vmm81EAn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=P0gwi6j9; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e51398cc4eso36781665ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 17:46:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713228388; x=1713833188; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SarbV9gzd7Ext5uREk+cO+VjFEa4L7Rs/CELnpCJsv8=;
-        b=P0gwi6j9oLI/Dwi5h7eAZTZi3aI00LBxvktANtbgHKKzHAFmz68iLfOWl05rx1bfUA
-         ldfTKzej5CEwBxGW74Sf6f2U2kl01+mMPBmpYzmOQhl9oYWn35vpzvak3m1jaTylVs+c
-         Ceq5Habm015Kj15goXxJKgXLhBfEglQax9Wl8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713228388; x=1713833188;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SarbV9gzd7Ext5uREk+cO+VjFEa4L7Rs/CELnpCJsv8=;
-        b=gZYed3egUnDOLXOLgdNCh2/fCzrRpeEDVq9awKWpdw7z3z1mNsvnIGrDQ/Vu6dkGLr
-         3kmRhjEFLPtNzzi9hJv+6agQQsz2izUtb0TUVvBzRHhd06zPBrsV5Qf8+kkjkrzf6nge
-         /gnOc9YvcjuGzgiQn5OKVoPG4BaE+og1K2ZJha4pQfkmke4uDevvxdU4jmXDR+GiwtST
-         KyP3vdasr6r/0429PoqqU8vKA5dD63joNOQcZcw3I8skpv+O0c64HABTo9To0/eCe6nH
-         HhxIsIxs9LbcFcmk4IPYpvxmjB44X19vXrqJ+9UxnzYIsSLGrXzmUfxwPlgyNc7xjcCH
-         +wtA==
-X-Forwarded-Encrypted: i=1; AJvYcCUM7voNuHTow4AdfFzz/tVlSoCBQXPVI1ArDS1Z8OV0eqDME7UTiAvEFPpztz3Pu1ZAegOg18g+RHXdU6iGKpoyBlGTq+onz9MLgbNf
-X-Gm-Message-State: AOJu0YzcBHn4fF0ZLD5mHWnMLGVeIiLwlzVl8XBx5sCJSjzj6C9jXjeH
-	aDdc2fPnTiC3M5kWX2WIowNtuJOv/qAHanHIcRkozT9RON0YvK0kQoZyb0rynw==
-X-Google-Smtp-Source: AGHT+IHX1mELGRta6OeQsH8t8lp3e5H1mp/8L3cNAf/ZlRUnfUwX1Jl3r6/rRS9SAEK7dC+5kIawkw==
-X-Received: by 2002:a17:902:82c4:b0:1e4:b4f5:5cfa with SMTP id u4-20020a17090282c400b001e4b4f55cfamr11411241plz.27.1713228388653;
-        Mon, 15 Apr 2024 17:46:28 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id im22-20020a170902bb1600b001e3d2314f4bsm8688355plb.132.2024.04.15.17.46.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 17:46:28 -0700 (PDT)
-Date: Mon, 15 Apr 2024 17:46:27 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Marco Elver <elver@google.com>, Justin Stitt <justinstitt@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	kasan-dev@googlegroups.com, linux-hardening@vger.kernel.org,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: Re: [PATCH] ubsan: Add awareness of signed integer overflow traps
-Message-ID: <202404151738.AC6F6C210@keescook>
-References: <20240415182832.work.932-kees@kernel.org>
- <20240415183454.GB1011455@dev-arch.thelio-3990X>
+	s=arc-20240116; t=1713228870; c=relaxed/simple;
+	bh=VNpMltkGybMDEtzsonkuvLdoNGOIcPPiObueOXkYm1A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gqEkgQpcFXQ9YnyaxXrbYzc+SvvqR+cgVrWBo2mCZN08lFpG5StjWL9yl44WTHLjJszCSez8+U6Hc1OjcOutgD0SklC7+EsVtSZ/2Z0dxRsusBxXK1GRA1UrCMgOpMBNI6ny7E8El04l1MRj8Bw8JdIWjn1TmafAeetKRs3kBTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=XtwmSwLX; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43G0Z1AI024971;
+	Tue, 16 Apr 2024 00:54:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=j0sZP/q8mi1WF1Ov9jUFp9LHWq75qUSInJQ3SCIhzEE=;
+ b=XtwmSwLXVhHwDxxtDwIRcYyydBYwCPFA+amYybror/WyLu5q/1lx1cyGuxQLXHPxWbHj
+ tid8LbvcGbVCiN4zuO4k6yuXevOn84hu2cX7LWRXwIpiW1m/8qM7WljPWU+b63JPQAwI
+ uEHjwyijRb+UD/ifzxvHWRwqi0BwrSliW2CWBHruPngQH5Y8J0AMI2RXkNGdIhmoytw6
+ OnO3r/j6QWqIzrDLOxnITh7DxRUTu4fSCbHxVvJG9WjXk0d/xOSpOWj2kHuV40vvW8N3
+ ZtmfibguQ1wssJPa1ocHQ7TDquCe8egSGYprq6Fpc0JaPoec0CC97IPULYaF+M3nfmxG JQ== 
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhewmr0jm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Apr 2024 00:54:18 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43FMesKr015835;
+	Tue, 16 Apr 2024 00:51:06 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xg5vm30hp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Apr 2024 00:51:06 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43G0p3a345613358
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Apr 2024 00:51:06 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9E0095804B;
+	Tue, 16 Apr 2024 00:51:03 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CBEFB58055;
+	Tue, 16 Apr 2024 00:51:02 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 16 Apr 2024 00:51:02 +0000 (GMT)
+Message-ID: <6442f387-e45e-4019-8af0-6ca309e4ce4f@linux.ibm.com>
+Date: Mon, 15 Apr 2024 20:51:02 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240415183454.GB1011455@dev-arch.thelio-3990X>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] crypto: ecdh - Pass private key in proper byte order
+ to check valid key
+Content-Language: en-US
+To: Jarkko Sakkinen <jarkko@kernel.org>, linux-crypto@vger.kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net
+Cc: linux-kernel@vger.kernel.org, ardb@kernel.org,
+        salvatore.benedetto@intel.com
+References: <20240415003026.2661270-1-stefanb@linux.ibm.com>
+ <20240415003026.2661270-2-stefanb@linux.ibm.com>
+ <D0KX9NQPXKO1.2RXZU000DD1BB@kernel.org>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <D0KX9NQPXKO1.2RXZU000DD1BB@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: pRLxEoG8gw_ZUmTtBWBSWuusgn_O5wJ0
+X-Proofpoint-GUID: pRLxEoG8gw_ZUmTtBWBSWuusgn_O5wJ0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-15_20,2024-04-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ phishscore=0 adultscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ priorityscore=1501 mlxlogscore=999 malwarescore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404160004
 
-On Mon, Apr 15, 2024 at 11:34:54AM -0700, Nathan Chancellor wrote:
-> On Mon, Apr 15, 2024 at 11:28:35AM -0700, Kees Cook wrote:
-> > On arm64, UBSAN traps can be decoded from the trap instruction. Add the
-> > add, sub, and mul overflow trap codes now that CONFIG_UBSAN_SIGNED_WRAP
-> > exists. Seen under clang 19:
-> > 
-> >   Internal error: UBSAN: unrecognized failure code: 00000000f2005515 [#1] PREEMPT SMP
-> > 
-> > Reported-by: Nathan Chancellor <nathan@kernel.org>
-> > Closes: https://lore.kernel.org/lkml/20240411-fix-ubsan-in-hardening-config-v1-0-e0177c80ffaa@kernel.org
-> > Fixes: 557f8c582a9b ("ubsan: Reintroduce signed overflow sanitizer")
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
+
+
+On 4/15/24 14:53, Jarkko Sakkinen wrote:
+> On Mon Apr 15, 2024 at 3:30 AM EEST, Stefan Berger wrote:
+>> ecc_is_key_valid expects a key with the most significant digit in the last
+>> entry of the digit array. Currently ecdh_set_secret passes a reversed key
+>> to ecc_is_key_valid that then passes the rather simple test checking
+>> whether the private key is in range [2, n-3]. For all current ecdh-
+>> supported curves (NIST P192/256/384) the 'n' parameter is a rather large
+>> number, therefore easily passing this test.
+>>
+>> Throughout the ecdh and ecc codebase the variable 'priv' is used for a
+>> private_key holding the bytes in proper byte order. Therefore, introduce
+>> priv in ecdh_set_secret and copy the bytes from ctx->private_key into
+>> priv in proper byte order by using ecc_swap_digits. Pass priv to
+>> ecc_is_valid_key.
+>>
+>> Cc: Ard Biesheuvel <ardb@kernel.org>
+>> Cc: Salvatore Benedetto <salvatore.benedetto@intel.com>
+>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>> ---
+>>   crypto/ecdh.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/crypto/ecdh.c b/crypto/ecdh.c
+>> index 3049f147e011..a73853bd44de 100644
+>> --- a/crypto/ecdh.c
+>> +++ b/crypto/ecdh.c
+>> @@ -27,6 +27,7 @@ static int ecdh_set_secret(struct crypto_kpp *tfm, const void *buf,
+>>   			   unsigned int len)
+>>   {
+>>   	struct ecdh_ctx *ctx = ecdh_get_ctx(tfm);
+>> +	u64 priv[ECC_MAX_DIGITS];
+>>   	struct ecdh params;
+>>   
+>>   	if (crypto_ecdh_decode_key(buf, len, &params) < 0 ||
+>> @@ -40,9 +41,10 @@ static int ecdh_set_secret(struct crypto_kpp *tfm, const void *buf,
+>>   				       ctx->private_key);
+>>   
+>>   	memcpy(ctx->private_key, params.key, params.key_size);
+>> +	ecc_swap_digits(ctx->private_key, priv, ctx->ndigits);
 > 
-> As I mentioned, CONFIG_UBSAN_SIGNED_INTEGER_WRAP needs to be
-> CONFIG_UBSAN_SIGNED_WRAP. I applied this change with that fix up and the
+> Does swapping speed up the test that follows are what effect does it
+> have to the ecc_is_key_valid() call?
+The goal of this particular patch is to fix an issue with the byte order 
+(as description says) and, as you can see in the 2nd patch, private key 
+is always copied into priv using ecc_swap_digits before priv is being 
+used instead of ctx->private_key (or whatever it is called in the 
+function it was passed to). This patch here has nothing to do with speed 
+up but a) fixing an issue and b) using priv here as well, so fixing this 
+'outlier' here. The speed-up comes in the 2nd patch when the bytes in 
+ctx->private_key are put into proper order right away and we can get rid 
+if priv, taking the swapped bytes of ctx->private_key, everywhere and we 
+can use ctx->private_key directly.
 
-Whoops; thanks!
+The test harness (testmgr.c) runs through part of this code here 
+providing the private key that is copied into ctx->private_key, so it's 
+being used and when you make a mistake (making the changes I did) the 
+ecdh test cases will fail.
 
-> warning now becomes:
+
+
 > 
->   Internal error: UBSAN: integer subtraction overflow: 00000000f2005515 [#1] PREEMPT SMP
-
-Perfecto. :)
-
-> So:
+> Just a question to understand what is going on, not actual review
+> feedback.
 > 
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
-
-Thanks!
-
--- 
-Kees Cook
+>>   
+>>   	if (ecc_is_key_valid(ctx->curve_id, ctx->ndigits,
+>> -			     ctx->private_key, params.key_size) < 0) {
+>> +			     priv, params.key_size) < 0) {
+>>   		memzero_explicit(ctx->private_key, params.key_size);
+>>   		return -EINVAL;
+>>   	}
+> 
+> BR, Jarkko
 
