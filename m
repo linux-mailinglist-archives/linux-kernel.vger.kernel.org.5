@@ -1,246 +1,115 @@
-Return-Path: <linux-kernel+bounces-146845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BE458A6BBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A3D58A6BC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:06:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF9111C214CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:04:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AF901C21C5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:06:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DECD12BF3A;
-	Tue, 16 Apr 2024 13:04:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BBAE12C462;
+	Tue, 16 Apr 2024 13:05:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="LL11ftvI"
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="PVsbVpvb"
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD433BB30;
-	Tue, 16 Apr 2024 13:04:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40EAA1292D7;
+	Tue, 16 Apr 2024 13:05:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713272653; cv=none; b=dBqs+7PryHtI/XdcYQz4c5Jp7aXoRSEyNRedCq/q/L7hZgkBIJGxrY5q1fS0ubpYv2HrPXnaUKZw14JnrszXfPJ9NPIQVt1YpyOe2/ps0Ecg0IDfPpsD8a0x5Tvt2aOgOqH7DI+VzeDTAibOZCiJcQvQAFrYgkXtwB/Nhou3+1Y=
+	t=1713272758; cv=none; b=rjKuc1Z0s21OB6K+9SxrBXL4pFe3KEZgUfPOYm5dsjCiztQwJkXG6XOmx3bbF3f6DbQPwk3n6gzoRTvbLqb25cVpc9DOH/+OXZ/b5mqqYHdkLJfQldZjhrRVKK7WjsmPPKCMEqtBo4WTiwL4IkSnfgwcImO08svqiGB/5nZQjDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713272653; c=relaxed/simple;
-	bh=jyl2cZDoiVvnuF7lXdamfX/f0T/b00HRDO03z0SlXSs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IVgE6XrRdCFNmaEYN07kXnJLHcaKw+G+iWJEx6u6dtCUwylLyPBlRPBq49eWlWODi8jRm5x8SixAU59FXnYfxXtjxblVSZWULP/Pz++dg+AKowenRXT4CyGLQVOKPVcTYBgiy3LmhMRIjrzOAqMP0KrBtjKeqD3Y//azwRXb71U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=LL11ftvI; arc=none smtp.client-ip=85.214.62.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: lukma@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id 717688840B;
-	Tue, 16 Apr 2024 15:04:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1713272647;
-	bh=SblT9Hg6Us3aYenhyXkE7xfTTuCdWBuQ0gQ35LqzdW8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LL11ftvI7PahbwlHIJlaTXrry/T+V2II4XKnF05LaycYiqjf4FdSIV/zfESBrhxAn
-	 XdFxMfLjX/5ub7EHxMVeP1bA32b8gvmme1fFScg3hiRAh/Q+Z4lh9scpNNzKzXu+8n
-	 GtGYF2a+Dnug6L1YJHcTsJOdcWBAqgq3D3MAvwePRa5lMQZA/MPTUO+OjQaEen6wRX
-	 yvAys1ZtfwLTYyKgsdTspLnQZfcEp1tUCXTCl0tmRFojKJ7d9Rv6OU8X2sT1YAGmuM
-	 BlPgBzrk/Kgm9FnmL84tzpkoKcenr4pKQgl2RsIrtwj2pYhewbl1i3POXeiFDRb+JF
-	 2l8MoWKdE4CQA==
-Date: Tue, 16 Apr 2024 15:03:59 +0200
-From: Lukasz Majewski <lukma@denx.de>
-To: Casper Andersson <casper.casan@gmail.com>
-Cc: netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>, Andrew Lunn
- <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Vladimir Oltean
- <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>, Jakub
- Kicinski <kuba@kernel.org>, Oleksij Rempel <o.rempel@pengutronix.de>,
- Tristram.Ha@microchip.com, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>, Ravi Gunasekaran <r-gunasekaran@ti.com>, Simon
- Horman <horms@kernel.org>, Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
- Murali Karicheri <m-karicheri2@ti.com>, Jiri Pirko <jiri@resnulli.us>, Dan
- Carpenter <dan.carpenter@linaro.org>, Ziyang Xuan
- <william.xuanziyang@huawei.com>, Shigeru Yoshida <syoshida@redhat.com>,
- "Ricardo B. Marliere" <ricardo@marliere.net>, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v5 1/4] net: hsr: Provide RedBox support
- (HSR-SAN)
-Message-ID: <20240416150359.7362c762@wsk>
-In-Reply-To: <86mspt7glf.fsf@gmail.com>
-References: <20240415124928.1263240-1-lukma@denx.de>
-	<20240415124928.1263240-2-lukma@denx.de>
-	<86mspt7glf.fsf@gmail.com>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713272758; c=relaxed/simple;
+	bh=ca8Cl3XLzplEVm904ERihnCNiIuaG/Q+OtrmyAAJcCI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Gg3tb+JZKk5F697Oha9pQCT2H2auyOxLtZLwXYV7Xg9GjOWa8bRlvkkdwIaLF83BzrJiPOAUU2ukngTmm/Ogus6psEbHAM/qz5pYOId+jhYS7vSR9hXzjvX/U9pKE8U/Wq2tJp9JvmDOhq30nSO9F199pH/CDb0HtU6egW8GE0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=PVsbVpvb; arc=none smtp.client-ip=212.227.17.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713272738; x=1713877538; i=markus.elfring@web.de;
+	bh=ca8Cl3XLzplEVm904ERihnCNiIuaG/Q+OtrmyAAJcCI=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=PVsbVpvbn3NmKytdDeRSUzNTv99lozcqE2+J6VBtKbbqUuI466dhg6SxG4YCpojt
+	 EcbYegfhuxm+kFJXgyC3dw7XaykV5nVLCkUGEkKCt8ToqnwAmIKlmZx8TV5nHugff
+	 SKFKjFy25uYu4pSF3BsP1CfWWMXGuwguqfKdMpEGSMXjCT7V6zFMhNkViNGtA7wYI
+	 ki4Nu6KiyU/7JRzAgi7uuyktzTwQY3lyXj7gCuJiVWNhzwLr30q5dsg1fTH7DOXeD
+	 qqQGRyoZ+cZHTxTf2pol5Ilxqno4JKDdAzxPvnzlvUL+wFsgsK4btyc96jyGMeFaI
+	 dYV6Xtla9wDjJOShRA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1M7Nmo-1rp0LG0iQW-0081qf; Tue, 16
+ Apr 2024 15:05:38 +0200
+Message-ID: <77288a25-6114-45e3-b849-4c48116af78e@web.de>
+Date: Tue, 16 Apr 2024 15:05:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/A+WHqGBLm_6dHzdxwFnq_a3";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-
---Sig_/A+WHqGBLm_6dHzdxwFnq_a3
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [0/2] powerpc/powernv/vas: Adjustments for two function
+ implementations
+To: Julia Lawall <julia.lawall@inria.fr>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
+ kernel-janitors@vger.kernel.org, "Aneesh Kumar K.V"
+ <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Nicholas Piggin <npiggin@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+References: <7be66990-de9e-488b-ad6d-fafd1c7bb34c@web.de>
+ <ee6022b8-3aeb-4e6e-99f5-2668dd344e0a@web.de> <87plupbm0c.fsf@mail.lhotse>
+ <795ca003-4231-45c0-8bb6-178597950fa5@csgroup.eu>
+ <33a38d7e-26da-46e0-90d4-7137f9ec0c90@web.de>
+ <3711cad3-a627-4a6e-8769-ce916c1919ee@csgroup.eu>
+ <3f22920-9543-efd1-a32a-477ae18a2b2a@inria.fr>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <3f22920-9543-efd1-a32a-477ae18a2b2a@inria.fr>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:QZe/Xfpby5Yzh4ML5dL/xWw0rfgIaR+vLFPEZOY+KKaRjk3XJ8q
+ JQ8iyJRZTIH9iwJR0LdwrgqQaKNhDtH6oyxbyP52cDntgHTbyCmjy+8kqySd6cgr0jrgpQC
+ hvKCDyUP2g8uh2oANsmrMHLU4oZ9c/P14wVLNn06QHfSxixH05aMaTEYTj8op34uLrRkpr1
+ xpRkH6J4FRKQBrucHiehA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:1M1alroXzts=;cqW/3yAUMIIAinMsv1rymEBg+14
+ LeCtlnZRH6mesVjMV1Cah0nudr15ldWC9pnjdv2KA49quwI7KQqSCvjfxFQOF6QuclWQs5LQN
+ 4feSeRqtTZxYXpKhbqjKVs99SY7Msprt4QbjPZfup2ogjk5ci0kSTJKq7fFaiGtXlBmUZW4DX
+ fHRRJk//Nc8+SpHtM22puc2R992esQ29XEnD4PYhmeIRdmOf2sVtwEno3JniXTLQ+MSKX/BHT
+ nk3HvEpavLKWVM06lsug3Nu2PsfAwJtfW0epszCeOhqNrlyMN0o2BcFfH1EZQxEfytNaMTJNS
+ LvMLN/HfIclphTAujelvwVFb7Nx2iLr3vGSWovjplNXaV/L11WVhpkaBQzCmNUg8o+OtyaZhH
+ WNbdD+wF+kGerEqyJkZMbKLE/MNysgkk6zwhbeNw9nhCkNESnkZAbGQhL89mfSphGvHrnNzVT
+ FMRXaxEeozL6kbXLoHXdQyMP2rSiMsQgmksEpTdzVJe8EaW16QK7xSBAFJsEFfqeusjQwes9s
+ zfxR33i34pTmtgQAFH5iiXosrDBVyhwe/hvFvywrsKFQz9S9ktqiT7dUfrhOgTnDzYLV6SE/t
+ Su7T3f/ZSvijnx9ezLJEKCOdT1ocutynBNBdANPDspCdUJXx0V3cAm2UkQUx56YIybQ2ZZwoc
+ If5RMUwjS8u13FTH/fwOCsW704Pfa7Ju0ICKffMhJF8vz4OBDYkQlT5oOJfmmwh+B7nN49qpM
+ KsKdJRktrGtX3qzyymArFnlNmzwnB9wMM0yjGlxd1r4isyERlifi00Y6+XazHF8jaif2Gs2U5
+ hhswF+8+j1lPI50UFpMdsIL/DkMvp105vjONzZMl0c4RI=
 
-Hi Casper,
+>>>> So Coccinelle should be fixed if it reports an error for that.
+>>>
+>>> Redundant function calls can occasionally be avoided accordingly,
+>>> can't they?
+>>
+>> Sure they can, but is that worth it here ?
+>
+> Coccinelle does what the developer of the semantic patch tells it to do.
+> It doesn't spontaneously report errors for anything.
 
-I've pasted the reply here, so we can discuss the newest patch set (v5).
+Some special source code search and transformation patterns are occasional=
+ly applied.
+The corresponding change acceptance can often be challenging.
 
-> Hi,
->=20
-> On 2024-04-15 14:49 +0200, Lukasz Majewski wrote:
-> > - Modify frame passed Port C (Interlink) to have RedBox's source
-> > address (SA) This fixes issue with connecting L2 switch to
-> > Interlink Port as switches drop frames with SA other than one
-> > registered in their (internal) routing tables. =20
->=20
-> You never responded to my comment regarding this on v4. The same SA
-> should be able to go through a whole HSR and/or PRP network without
-> being replaced.
-> https://lore.kernel.org/netdev/20240404125159.721fbc19@wsk/T/#m9f18ec6a8d=
-e3f2608908bd181a786ea2c4fbc5e7
->=20
-> BR,
-> Casper
-
-> Out of curiosity, are you planning to implement the remaining RedBox
-> modes too (PRP-SAN, HSR-HSR, HSR-PRP)?
->=20
-
-Currently I'm assigned to implement HSR-SAN.
-
-> On 2024-04-02 10:58 +0200, Lukasz Majewski wrote:
-> > Changes for v3:
-> >
-> > - Modify frame passed Port C (Interlink) to have RedBox's source
-> > address (SA) This fixes issue with connecting L2 switch to
-> > Interlink Port as switches drop frames with SA other than one
-> > registered in their (internal) routing tables. =20
->=20
-> > +	/* When HSR node is used as RedBox - the frame received
-> > from HSR ring
-> > +	 * requires source MAC address (SA) replacement to one
-> > which can be
-> > +	 * recognized by SAN devices (otherwise, frames are
-> > dropped by switch)
-> > +	 */
-> > +	if (port->type =3D=3D HSR_PT_INTERLINK)
-> > +		ether_addr_copy(eth_hdr(skb)->h_source,
-> > +				port->hsr->macaddress_redbox); =20
->=20
-> I'm not really understanding the reason for this change. Can you
-> explain it in more detail?
-
-According to the HSR standard [1] the RedBox device shall work as a
-"proxy" [*] between HSR network and SAN (i.e. "normal" ethernet)
-devices.
-
-This particular snippet handles the situation when frame from HSR node
-is supposed to be sent to SAN network. In that case the SA of HSR
-(SA_A) is replaced with SA of RedBox (SA_RB) as the MAC address of
-RedBox is known and used by SAN devices.
-
-
-Node A  hsr1  |=3D=3D=3D=3D=3D=3D| hsr1 Node Redbox |   |
-(SA_A) [**]   |	     |           eth3   |---| ethX SAN
-	      |      |        	 (SA_RB)|   |  (e.g switch)
-
-
-(the =3D=3D=3D=3D=3D=3D represents duplicate link - like lan1,lan2)
-
-If the SA_A would be passed to SAN (e.g. switch) the switch could get
-confused as also RedBox MAC address would be used. Hence, all the
-frames going out from "Node Redbox" have SA set to SA_RB.
-
-According to [1] - RedBox shall have the MAC address.
-This is similar to problem from [2].
-
-> The standard does not say to modify the
-> SA. However, it also does not say to *not* modify it in HSR-SAN mode
-> like it does in other places. In HSR-HSR and HSR-PRP mode modifying
-> SA breaks the duplicate discard.
-
-IMHO, the HSR-SAN shall be regarded as a "proxy" [*] between two types
-(and not fully compatible) networks.
-
-> So keeping the same behavior for all
-> modes would be ideal.
->=20
-> I imagine any HW offloaded solutions will not modify the SA, so if
-> possible the SW should also behave as such.
-
-The HW offloading in most cases works with HSR-HSR setup (i.e. it
-duplicates frames automatically or discards them when recived - like
-ksz9477 [3]).
-
-I think that RedBox HW offloading would be difficult to achieve to
-comply with standard. One "rough" idea would be to configure
-aforementioned ksz9477 to pass all frames in its HW between SAN and HSR
-network (but then it wouldn't filter them).
-
->=20
-> BR,
-> Casper
-
-Notes:
-
-[*] - However there is no specific "guidelines" on how the "proxy"
-shall be implemented.
-
-[**] - With current approach - the SAN MAC addresses are added to
-"node table" of Node A. For Node RedBox those are stored in a separate
-ProxyNodeTable. I'm not sure if this is the best possible approach
-[***], as ideally only MAC addresses of HSR "network" nodes shall be
-visible.
-
-[***] - I think that this "improvement" could be addressed when HSR
-support is added to Linux as it is the pre-requisite to add support for
-it to iproute2. Afterwards, the code can be further refined (as it
-would be added to net-next anyway).
-
-[****] - As I'm now "on the topic" - I can share full setup for busybox
-to run tests included to v5 of this patch set.
-
-
-Links:
-
-[1] - IEC 62439-3:2021
-
-[2] -
-https://elixir.bootlin.com/linux/latest/source/net/hsr/hsr_framereg.c#L397
-
-[3] -
-https://elixir.bootlin.com/linux/latest/source/drivers/net/dsa/microchip/ks=
-z9477.c#L1341
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/A+WHqGBLm_6dHzdxwFnq_a3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmYedz8ACgkQAR8vZIA0
-zr35uAgAwCtfMgEKKQfSUIvYDmNPdJcAri6fGbohes+LlnSPb36GLnMXOUmtYEMX
-ljUgmP+20s3PM3+t79HmXL8QvU0rAPGQIcPVgZw9yHyMvO5XVf9e0hN/3+LTycTR
-c0jPdgjBiWWQExpMTB3UeyKEO4sxmaWunayKZqdkTTvd6nAyS2TJyqvdDD4bUxc0
-+lHSLmcq/FDl8km7JSoiovaH5T+ROhLpVSX0REnkiOlMWuZg4DwRGWwKAEZa6kgY
-3zk7nY9MpTcXe9J4A+Uld6mtUZfdC3Dp9ueeARRh4oUq/RAy2TJvdkju1D5ooq69
-Cm6dO8TlP3c4YkH1Hq5oiWX7ZE/q4A==
-=Jbmo
------END PGP SIGNATURE-----
-
---Sig_/A+WHqGBLm_6dHzdxwFnq_a3--
+Regards,
+Markus
 
