@@ -1,298 +1,199 @@
-Return-Path: <linux-kernel+bounces-146135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D49E48A6131
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:52:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C1DE8A6134
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:54:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF33A1C210DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:52:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B13C28274A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:54:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F59910A14;
-	Tue, 16 Apr 2024 02:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB47A125B2;
+	Tue, 16 Apr 2024 02:54:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S+RKtPRp"
-Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="EnOWv3mz"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB9E9A38
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:52:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61B66A38
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:54:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713235958; cv=none; b=b6bZ1WM2hLqQQXoAJezIlbi5ZHo6hAMmCQ80PqrDFwaGrpSkUpu2LzM0jiFyf7sY4dCqv8jMQqkXzAOHwJ2FgojyFqv5S0XqkndeneS7Tr8ns8dVsVfTf74Ftgf3o5+U8oaxxKRbHrhL88V/1ucGJxCVyoTcjOVOSTvA6vwm/Wo=
+	t=1713236042; cv=none; b=SpnjKuj+T1t1MWxm4xoqoxcOKUbInzZ0VjptP7QkFIVuQrbZong/8A4s+BiFWMli3NSGGTCBoCUSSLkeLCUPr31S2xKGbnVfK6aewcFEWJMaCHMNatEmfdgsl2cnLb1KxgempG76Nj2mdKM9rLzd61lRYD38y39ghGD+aiqX/oI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713235958; c=relaxed/simple;
-	bh=8Pkir9qaqf83Jtkp/E3HQO9padGCKAwrP8HOfQFuQgI=;
+	s=arc-20240116; t=1713236042; c=relaxed/simple;
+	bh=IRel4Lsu2YoxCkxFMRRoIZ+lVMAqvPZv1ftyFTWXsh0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=REwhIbtkfKSm1xbk18uPYWD6WYu88zjuxDfv/LK93uXBxYW8WppA5IRdS8TxyecrkFQUqx8/ZA1ZXNoGvHnfkzP8VmXZPogbwJn6AF4d2eRFVRS29a+YM1ZhK4KlBNPF4kNKbSpLIv3TlJBZ42cPiZ5QYYb+LOLHRSVdKUKjloQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S+RKtPRp; arc=none smtp.client-ip=209.85.221.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4daa91c0344so1814515e0c.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:52:36 -0700 (PDT)
+	 To:Cc:Content-Type; b=HSdE2tGbzWVKWeaCR2Yltt85zO5YcyqLO187LXHRxpF2zoGtc9bQRDnEQs3Wiwo2CSd9YPAiWZQumInWfjeHerCYlrz/kifomDTtwuHj3+PLSc60aq/OWoW9QD7EYFygWqzeNrwZojirtNypHItCHd0vdardlszb3SXHsM0qFdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EnOWv3mz; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56e5174ffc2so4568a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:54:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713235956; x=1713840756; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1713236040; x=1713840840; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lFczH1dIfyyTRf2W5n4H9U/PB8b6sWya9Y+4vbVP4sA=;
-        b=S+RKtPRpeqU9yUrMKGebaI0q8LotYMTJYBF8LApO/xTNSj092JhgHjhwND7uJQQOBR
-         48QTd+oEmIKMOXdEWyBkqAugGv6xqRM+yBp0AWcEKZPU3B6AcEcJ7yV1baPFxvZG5811
-         CARrhqlW1b/VFDGkhhVn1SizjW2xGF7M7orKuA5f0T/KjACs7x+o5nGIsHQrYc/iwKyo
-         Ooq9xJi697V22ZBPFuvLh6l9jIvSyrsk8H5ZOKQG/XeCr55ExZ0lwlOZD+RzUEYJuJf0
-         uZzWGrvj7Xjlil/9Xr2BLv/sFSXgOCDFjxGarXWe40af6C3Hzawf0CPIDoM7GKInnRet
-         tblA==
+        bh=ZaSImIW1hTM0apnFwhhJ7XqvtxkKwtwLHWxv6+n7UWE=;
+        b=EnOWv3mzyfm0rDKRKtC0GRU5HCWIYQMK7OF/1epFYwmgVwL79xrCiAqKCN2jIQm+Jt
+         d3qXf3rAzN/mn+YvPJwir8nVDGd5GxQpM4ZB23x5VwpDPtQXwXqzTaXqnTMBI9vapfe0
+         AUlqQQJeJXhaXg/kF511CW8+Wpes2fdg2EaL/IDJECZ0zD1YrFqAb09YinmUQlu3AbPB
+         Yj0h+Ae/auAnSCpzclgKlTcO6Rv6aSV6X9aRTUYzIUl55xS7KLxEjP+CdjbVBv3i1Sk6
+         5Q1nSc2qfzb5y+wYSdyvuF1aYcQiCiurxzb6VyniUH+JY+hOfZRGQEg5TRzTm7PwNXc2
+         u4xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713235956; x=1713840756;
+        d=1e100.net; s=20230601; t=1713236040; x=1713840840;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lFczH1dIfyyTRf2W5n4H9U/PB8b6sWya9Y+4vbVP4sA=;
-        b=aC8oaB9+qk+lhk+PbW0fm17NUo7zogqZe2wiXEgXSMpVkxznFJQ9ZVWNakvOlWTNNM
-         rtocZfDDiL/zk7m+IHysJD5Vbmxnf0wE8v8+/TFBLOHa8Y9/hyLwghWdUEW31aTeYC53
-         Ru4H7sJseoJWeac524Y+uZNs22BnSH77t7a2KmnRmD7AEuZ43bFy5bYBiQVgxqkObWp5
-         RoSYhyjxHO+oOWtbYWRYnPX6HdWTklaQE+oxjMnuLSGPKW5oV92Tc1QrJOMEKNnuy2l1
-         6b78bG/FIIcseG4cUGGMCxHbjLDzS8Hp6coNhlhL8kmm5IsbdjK03BWOObZCyrevr4fH
-         loHg==
-X-Forwarded-Encrypted: i=1; AJvYcCWKN2jcTzt+u4V4HndeA0U6vqTQzW+mhpnomU0xu9Jg/mslhriElqWT1TKdRxWf0UrH4/pToYl7FcJy9xMkcsD91KK1zgXSmRpIQiMz
-X-Gm-Message-State: AOJu0Yz/7hyflu5BxqwK5eB33g63AN0JuGcuSxZped6TLAEyQP3zqvgr
-	kPaVxsmy54pcvwNEc2ju7BmseETx9kMibvRxk8DwhX8qbznz+BL3Xj30q9XC09yXSOqonczYrp6
-	xot0L+E63NtOxRbafcK58RkolRto=
-X-Google-Smtp-Source: AGHT+IHMrnSUhuVEuo4y3tiKOPKziGLcQQRIaE2TzTqfVCk8KiKNdVf22ivrucySUANuiuxuBay5T1zPpM1Wy/chv9Q=
-X-Received: by 2002:a05:6122:3d14:b0:4d4:ef9:719d with SMTP id
- ga20-20020a0561223d1400b004d40ef9719dmr9351058vkb.5.1713235955700; Mon, 15
- Apr 2024 19:52:35 -0700 (PDT)
+        bh=ZaSImIW1hTM0apnFwhhJ7XqvtxkKwtwLHWxv6+n7UWE=;
+        b=gITurPxJ7G4+tesFdWibbRY+FA+VH5UA9sQABeuMERA6ipr870aL9YG4nQqKn9S+qn
+         wpIJWuQ3r7VlUM3s9g52HxqZR8f0nFy49/upQXTcPFUl4ZAMtqH0q5ThcUf+Oh9AJVNr
+         Zv/QsMWFVKkQmOxYfZ8c/bXkUMtgxjOrMRDfoXQFChg8EIGPZKCd0Pk+w0cexZTy/otz
+         N+zfJ+nhIGIPd4xMdVe+OF2TjhubjGrx4DgY6MhQF5lzz8nQSdvNOAv1L1OGqNlsnS+4
+         LBOs3WaolsjcYPzxDyfCrcgHIcFxJQVq/b+ug6YLHPxjWLq9aE+1k6Yk1Wkz3T+dIGL6
+         eWbw==
+X-Forwarded-Encrypted: i=1; AJvYcCWp9BBPXo05oilCVpdeBEUSH+qKsMI0JanC76rWKzw5ytYKUOEl49xUWdHrwBqI1czKqCura9rNt2zbXhd2o7U32ntgjlityu51l5ku
+X-Gm-Message-State: AOJu0YxqnahfCVW6qZ2zyTEbhRtaC44Arb6Q1SQ/aBeV4QukuKXrsD4n
+	MEEU4z0yD0bsaSnDVet2bAnIVNbsLuu4bBX9DpE7y7OoduOTuWEpI6qIzKO+m87OH+/4lps4590
+	FWr23zjVUP4djvqaGWZP1nQm4pSe3n/b6NVcK
+X-Google-Smtp-Source: AGHT+IGZQ7v6n8rnAdMX07vEbWN6xVu0E1WerrXVb2RxsdXJKzkDUgNzJP6JnEDwvByBxmg2WGvOBWYueEk74xSmxSI=
+X-Received: by 2002:a05:6402:7cf:b0:570:257:8ea3 with SMTP id
+ u15-20020a05640207cf00b0057002578ea3mr55062edy.7.1713236039593; Mon, 15 Apr
+ 2024 19:53:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409082631.187483-1-21cnbao@gmail.com> <20240409082631.187483-5-21cnbao@gmail.com>
- <87frvn2f89.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAGsJ_4x_bOchG=bJjR8WE=vQxu3ke8fkxcDOFhqX5FS_a-0heA@mail.gmail.com>
- <8734rm2gdj.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAGsJ_4xHVN_QXu5Q8c_FcjsnffZYWsjOx4KR4G_2GNyaxfVWAw@mail.gmail.com>
- <87y19e115l.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87y19e115l.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 16 Apr 2024 14:52:24 +1200
-Message-ID: <CAGsJ_4xUna=wNNoLw0yCkzjD1d0pfJDKfqmWuA5zrSzWF+-cow@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] mm: swap: entirely map large folios found in swapcache
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: Khalid Aziz <khalid.aziz@oracle.com>, akpm@linux-foundation.org, linux-mm@kvack.org, 
-	baolin.wang@linux.alibaba.com, chrisl@kernel.org, david@redhat.com, 
-	hanchuanhua@oppo.com, hannes@cmpxchg.org, hughd@google.com, 
-	kasong@tencent.com, ryan.roberts@arm.com, surenb@google.com, 
-	v-songbaohua@oppo.com, willy@infradead.org, xiang@kernel.org, 
-	yosryahmed@google.com, yuzhao@google.com, ziy@nvidia.com, 
-	linux-kernel@vger.kernel.org
+References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
+ <661d93b4e3ec3_3010129482@willemb.c.googlers.com.notmuch> <65e3e88a53d466cf5bad04e5c7bc3f1648b82fd7.camel@mediatek.com>
+In-Reply-To: <65e3e88a53d466cf5bad04e5c7bc3f1648b82fd7.camel@mediatek.com>
+From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date: Mon, 15 Apr 2024 19:53:48 -0700
+Message-ID: <CANP3RGdkxT4TjeSvv1ftXOdFQd5Z4qLK1DbzwATq_t_Dk+V8ig@mail.gmail.com>
+Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without fraglist
+To: =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>
+Cc: "steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, "kuba@kernel.org" <kuba@kernel.org>, 
+	=?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?= <Shiming.Cheng@mediatek.com>, 
+	"pabeni@redhat.com" <pabeni@redhat.com>, "edumazet@google.com" <edumazet@google.com>, 
+	"willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>, 
+	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, "davem@davemloft.net" <davem@davemloft.net>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 2:41=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
-wrote:
+On Mon, Apr 15, 2024 at 7:14=E2=80=AFPM Lena Wang (=E7=8E=8B=E5=A8=9C) <Len=
+a.Wang@mediatek.com> wrote:
 >
-> Barry Song <21cnbao@gmail.com> writes:
->
-> > On Tue, Apr 16, 2024 at 2:27=E2=80=AFPM Huang, Ying <ying.huang@intel.c=
-om> wrote:
-> >>
-> >>
-> >> Added Khalid for arch_do_swap_page().
-> >>
-> >> Barry Song <21cnbao@gmail.com> writes:
-> >>
-> >> > On Mon, Apr 15, 2024 at 8:39=E2=80=AFPM Huang, Ying <ying.huang@inte=
-l.com> wrote:
-> >> >>
-> >> >> Barry Song <21cnbao@gmail.com> writes:
-> >>
-> >> [snip]
-> >>
-> >> >>
-> >> >> > +     bool any_swap_shared =3D false;
-> >> >> >
-> >> >> >       if (!pte_unmap_same(vmf))
-> >> >> >               goto out;
-> >> >> > @@ -4137,6 +4141,35 @@ vm_fault_t do_swap_page(struct vm_fault *v=
-mf)
-> >> >> >        */
-> >> >> >       vmf->pte =3D pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf-=
->address,
-> >> >> >                       &vmf->ptl);
-> >> >>
-> >> >> We should move pte check here.  That is,
-> >> >>
-> >> >>         if (unlikely(!vmf->pte || !pte_same(ptep_get(vmf->pte), vmf=
-->orig_pte)))
-> >> >>                 goto out_nomap;
-> >> >>
-> >> >> This will simplify the situation for large folio.
-> >> >
-> >> > the plan is moving the whole code block
-> >> >
-> >> > if (start_pte && folio_test_large(folio) && folio_test_swapcache(fol=
-io))
-> >> >
-> >> > after
-> >> >         if (unlikely(!folio_test_uptodate(folio))) {
-> >> >                 ret =3D VM_FAULT_SIGBUS;
-> >> >                 goto out_nomap;
-> >> >         }
-> >> >
-> >> > though we couldn't be !folio_test_uptodate(folio)) for hitting
-> >> > swapcache but it seems
-> >> > logically better for future use.
-> >>
-> >> LGTM, Thanks!
-> >>
-> >> >>
-> >> >> > +
-> >> >> > +     /* We hit large folios in swapcache */
-> >> >>
-> >> >> The comments seems unnecessary because the code tells that already.
-> >> >>
-> >> >> > +     if (start_pte && folio_test_large(folio) && folio_test_swap=
-cache(folio)) {
-> >> >> > +             int nr =3D folio_nr_pages(folio);
-> >> >> > +             int idx =3D folio_page_idx(folio, page);
-> >> >> > +             unsigned long folio_start =3D vmf->address - idx * =
-PAGE_SIZE;
-> >> >> > +             unsigned long folio_end =3D folio_start + nr * PAGE=
-_SIZE;
-> >> >> > +             pte_t *folio_ptep;
-> >> >> > +             pte_t folio_pte;
-> >> >> > +
-> >> >> > +             if (unlikely(folio_start < max(vmf->address & PMD_M=
-ASK, vma->vm_start)))
-> >> >> > +                     goto check_pte;
-> >> >> > +             if (unlikely(folio_end > pmd_addr_end(vmf->address,=
- vma->vm_end)))
-> >> >> > +                     goto check_pte;
-> >> >> > +
-> >> >> > +             folio_ptep =3D vmf->pte - idx;
-> >> >> > +             folio_pte =3D ptep_get(folio_ptep);
-> >> >>
-> >> >> It's better to construct pte based on fault PTE via generalizing
-> >> >> pte_next_swp_offset() (may be pte_move_swp_offset()).  Then we can =
-find
-> >> >> inconsistent PTEs quicker.
-> >> >
-> >> > it seems your point is getting the pte of page0 by pte_next_swp_offs=
-et()
-> >> > unfortunately pte_next_swp_offset can't go back. on the other hand,
-> >> > we have to check the real pte value of the 0nd entry right now becau=
-se
-> >> > swap_pte_batch() only really reads pte from the 1st entry. it assume=
-s
-> >> > pte argument is the real value for the 0nd pte entry.
-> >> >
-> >> > static inline int swap_pte_batch(pte_t *start_ptep, int max_nr, pte_=
-t pte)
-> >> > {
-> >> >         pte_t expected_pte =3D pte_next_swp_offset(pte);
-> >> >         const pte_t *end_ptep =3D start_ptep + max_nr;
-> >> >         pte_t *ptep =3D start_ptep + 1;
-> >> >
-> >> >         VM_WARN_ON(max_nr < 1);
-> >> >         VM_WARN_ON(!is_swap_pte(pte));
-> >> >         VM_WARN_ON(non_swap_entry(pte_to_swp_entry(pte)));
-> >> >
-> >> >         while (ptep < end_ptep) {
-> >> >                 pte =3D ptep_get(ptep);
-> >> >
-> >> >                 if (!pte_same(pte, expected_pte))
-> >> >                         break;
-> >> >
-> >> >                 expected_pte =3D pte_next_swp_offset(expected_pte);
-> >> >                 ptep++;
-> >> >         }
-> >> >
-> >> >         return ptep - start_ptep;
-> >> > }
-> >>
-> >> Yes.  You are right.
-> >>
-> >> But we may check whether the pte of page0 is same as "vmf->orig_pte -
-> >> folio_page_idx()" (fake code).
+> On Mon, 2024-04-15 at 16:53 -0400, Willem de Bruijn wrote:
 > >
-> > right, that is why we are reading and checking PTE0 before calling
-> > swap_pte_batch()
-> > right now.
+> > External email : Please do not click links or open attachments until
+> > you have verified the sender or the content.
+> >  shiming.cheng@ wrote:
+> > > From: Shiming Cheng <shiming.cheng@mediatek.com>
+> > >
+> > > A GRO packet without fraglist is crashed and backtrace is as below:
+> > >  [ 1100.812205][    C3] CPU: 3 PID: 0 Comm: swapper/3 Tainted:
+> > > G        W  OE      6.6.17-android15-0-g380371ea9bf1 #1
+> > >  [ 1100.812317][    C3]  __udp_gso_segment+0x298/0x4d4
+> > >  [ 1100.812335][    C3]  __skb_gso_segment+0xc4/0x120
+> > >  [ 1100.812339][    C3]  udp_rcv_segment+0x50/0x134
+> > >  [ 1100.812344][    C3]  udp_queue_rcv_skb+0x74/0x114
+> > >  [ 1100.812348][    C3]  udp_unicast_rcv_skb+0x94/0xac
+> > >  [ 1100.812358][    C3]  udp_rcv+0x20/0x30
+> > >
+> > > The reason that the packet loses its fraglist is that in ingress
+> > bpf
+> > > it makes a test pull with to make sure it can read packet headers
+> > > via direct packet access: In bpf_progs/offload.c
+> > > try_make_writable -> bpf_skb_pull_data -> pskb_may_pull ->
+> > > __pskb_pull_tail  This operation pull the data in fraglist into
+> > linear
+> > > and set the fraglist to null.
 > >
-> >   folio_ptep =3D vmf->pte - idx;
-> >   folio_pte =3D ptep_get(folio_ptep);
-> >   if (!is_swap_pte(folio_pte) || non_swap_entry(pte_to_swp_entry(folio_=
-pte)) ||
-> >       swap_pte_batch(folio_ptep, nr, folio_pte, &any_swap_shared) !=3D =
-nr)
-> >    goto check_pte;
+> > What is the right behavior from BPF with regard to SKB_GSO_FRAGLIST
+> > skbs?
 > >
-> > So, if I understand correctly, you're proposing that we should directly=
- check
-> > PTE0 in swap_pte_batch(). Personally, I don't have any objections to th=
-is idea.
-> > However, I'd also like to hear the feedback from Ryan and David :-)
+> > Some, like SCTP, cannot be linearized ever, as the do not have a
+> > single gso_size.
+> >
+> > Should this BPF operation just fail?
+> >
+> In most situation for big gso size packet, it indeed fails but BPF
+> doesn't check the result. It seems the udp GRO packet can't be pulled/
+> trimed/condensed or else it can't be segmented correctly.
 >
-> I mean that we can replace
+> As the BPF function comments it doesn't matter if the data pull failed
+> or pull less. It just does a blind best effort pull.
 >
->         !is_swap_pte(folio_pte) || non_swap_entry(pte_to_swp_entry(folio_=
-pte))
+> A patch to modify bpf pull length is upstreamed to Google before and
+> below are part of Google BPF expert maze's reply:
+> maze@google.com<maze@google.com> #5Apr 13, 2024 02:30AM
+> I *think* if that patch fixes anything, then it's really proving that
+> there's a bug in the kernel that needs to be fixed instead.
+> It should be legal to call try_make_writable(skb, X) with *any* value
+> of X.
 >
-> in above code with pte_same() with constructed expected first pte.
+> I add maze in loop and we could start more discussion here.
 
-Got it. It could be quite tricky, especially with considerations like
-pte_swp_soft_dirty, pte_swp_exclusive, and pte_swp_uffd_wp. We might
-require a helper function similar to pte_next_swp_offset() but capable of
-moving both forward and backward. For instance:
+Personally, I think bpf_skb_pull_data() should have automatically
+(ie. in kernel code) reduced how much it pulls so that it would pull
+headers only,
+and not packet content.
+(This is assuming the rest of the code isn't ready to deal with a longer pu=
+ll,
+which I think is the case atm.  Pulling too much, and then crashing or forc=
+ing
+the stack to drop packets because of them being malformed seems wrong...)
 
-pte_move_swp_offset(pte_t pte, long delta)
+In general it would be nice if there was a way to just say pull all headers=
+..
+(or possibly all L2/L3/L4 headers)
+You in general need to pull stuff *before* you've even looked at the packet=
+,
+so that you can look at the packet,
+so it's relatively hard/annoying to pull the correct length from bpf
+code itself.
 
-pte_next_swp_offset can insteadly call it by:
-pte_move_swp_offset(pte, 1);
+> > > BPF needs to modify a proper length to do pull data. However kernel
+> > > should also improve the flow to avoid crash from a bpf function
+> > call.
+> > > As there is no split flow and app may not decode the merged UDP
+> > packet,
+> > > we should drop the packet without fraglist in skb_segment_list
+> > here.
+> > >
+> > > Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist chaining.")
+> > > Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
+> > > Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+> > > ---
+> > >  net/core/skbuff.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > >
+> > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > > index b99127712e67..f68f2679b086 100644
+> > > --- a/net/core/skbuff.c
+> > > +++ b/net/core/skbuff.c
+> > > @@ -4504,6 +4504,9 @@ struct sk_buff *skb_segment_list(struct
+> > sk_buff *skb,
+> > >  if (err)
+> > >  goto err_linearize;
+> > >
+> > > +if (!list_skb)
+> > > +goto err_linearize;
+> > > +
+> > >  skb_shinfo(skb)->frag_list =3D NULL;
+> >
+> > In absense of plugging the issue in BPF, dropping here is the best
+> > we can do indeed, I think.
+> >
 
-Is it what you are proposing?
-
->
-> >>
-> >> You need to check the pte of page 0 anyway.
-> >>
-> >> >>
-> >> >> > +             if (!is_swap_pte(folio_pte) || non_swap_entry(pte_t=
-o_swp_entry(folio_pte)) ||
-> >> >> > +                 swap_pte_batch(folio_ptep, nr, folio_pte, &any_=
-swap_shared) !=3D nr)
-> >> >> > +                     goto check_pte;
-> >> >> > +
-> >> >> > +             start_address =3D folio_start;
-> >> >> > +             start_pte =3D folio_ptep;
-> >> >> > +             nr_pages =3D nr;
-> >> >> > +             entry =3D folio->swap;
-> >> >> > +             page =3D &folio->page;
-> >> >> > +     }
-> >> >> > +
-> >> >> > +check_pte:
-> >> >> >       if (unlikely(!vmf->pte || !pte_same(ptep_get(vmf->pte), vmf=
-->orig_pte)))
-> >> >> >               goto out_nomap;
-> >> >> >
-> >> >> > @@ -4190,6 +4223,10 @@ vm_fault_t do_swap_page(struct vm_fault *v=
-mf)
-> >> >> >                        */
-> >> >> >                       exclusive =3D false;
-> >> >> >               }
-> >> >> > +
-> >> >> > +             /* Reuse the whole large folio iff all entries are =
-exclusive */
-> >> >> > +             if (nr_pages > 1 && any_swap_shared)
-> >> >> > +                     exclusive =3D false;
-> >> >> >       }
-> >> >> >
->
-> [snip]
->
-> --
-> Best Regards,
-> Huang, Ying
+--
+Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
 
