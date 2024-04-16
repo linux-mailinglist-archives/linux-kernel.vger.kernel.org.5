@@ -1,231 +1,99 @@
-Return-Path: <linux-kernel+bounces-146737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F5058A6A1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:02:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FB7C8A6A21
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:03:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67DF7B22249
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:02:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1A1728368C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:03:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99EAC12A16C;
-	Tue, 16 Apr 2024 12:02:30 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF7CD12A16D
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 12:02:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6DD612A15A;
+	Tue, 16 Apr 2024 12:03:38 +0000 (UTC)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906CB128363;
+	Tue, 16 Apr 2024 12:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713268949; cv=none; b=Sg/fZILRKgXI1CBAdW0KMOHZAEvp1Ub/DRnYnEaJ+0/zgF6f3kNCjKbDVCDegkdGc1Uye8DG3ID/5O/JnVTgFxiXrGXCIF14fI7mgxIrOMXd8fn/ckYE6sR1vknJOPEtn90SjPxxahPymx1uPANGAYVjqiE6gxoDpSWsnaOvoUo=
+	t=1713269018; cv=none; b=hxJ6qRjMvC7aBZmwkfgCtVZ1+YxQFCJRAnf0pekMWGbvievE24kb1vyNEJDarg296WxR9SSxjINNnuFirULmekLTDCHtl0Xe0hqyb8HDGujlzBMiGJP8IpQurqHwlCpgyQtE3KtvDBIm+NWO9Hsyb5xvP+oS0rD8Xf4rdIEd7DM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713268949; c=relaxed/simple;
-	bh=1C8QensAqDcvNf44zqn5EdvvsKL0UVn3tH+ErfAOl+M=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ldZkS0rF+bM8+8jml7kTgUgfghdGaQTIP6s8g7TMlf24FXslUyiyaJyalDtLvjoQWBB/yPaqxZMFb1nz7Cy2vnTcUEnOc+0d/WThmSNmb1JnD79tnHII/Qa2KpVXnOZh0T3iI/6fLy5qMm6zDQe7sr4w0roevkNWC3fmKKGbuU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36a179df9fdso45535905ab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 05:02:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713268945; x=1713873745;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RliH/lwwNQjo2LcJr03DjdCa5kWkv5xAiJHUNHgwVYw=;
-        b=TsFAVpt7F/uEb2oMPQo8OpIyYHewHybTvhzRyeN3gCJNSoNAFYgYv5He8OUts6T5HY
-         jTp+VvwQql2I283zrMAQ/pgJ3ea7PhT+8orPV8dxLzBS3UXUOHu2vPqMGEc3Y5AefZOc
-         ABj42VnrCHqdM6UznGUQZIaSxTAhraoMUrWYihsZwVaT1APpWolRpiuuXdi439RqcpvB
-         9JspZ2FEhJQGrXIFuTD+ea748/lVyFq8GTVwHcjkdkkQJicgw2VXHwv/MKMWzKAz0ndK
-         HnMg7XLyQfXN5JwGvcEjl6FHx6bf8l9gQ0Eyk4LyOu+gF34CCa2xl6CDq5/4i690nZLe
-         xRog==
-X-Forwarded-Encrypted: i=1; AJvYcCWzdUkGcG+KH87Pg6KweT/CTdU+HuEtYrtR/EzXX9EwND5gEaJHid9OTksxngt9oQ5Kis2/FtyZ+oIseSEMdRa92SHJiv8OjzYdh3AH
-X-Gm-Message-State: AOJu0YzEDUJm/oxVhE9iLO0gu7NdmsZZBgAE2iYb4Z8uboGYvH0A+lCd
-	7rKx+gLh+yn2NiMdJ6Tz1odGV6umVYaSFFKxLrny6STfsC/D0JQEfHZD2BxyAvj4QuR4iE1lPWS
-	+8yps8Z3gFAIsGcZiGIxkx9I63d/JHLWioo1BgiKTQRSN3TF1k0vm07E=
-X-Google-Smtp-Source: AGHT+IGPHdee8JjKHOeuBQgVBStbNj/c5ul3p6q9T2b8cyMj+j+acL2QyjWoUjWV1FqPD1NBTzOcmL94+78qDTWCLGtM5nTs7iPr
+	s=arc-20240116; t=1713269018; c=relaxed/simple;
+	bh=HQoXKeBHkArTd9CmE/O7gZO7g4WAFGBHSEIJzFgu9yw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=jtlc1t6S7GSGbneYteD5tP4JGfcdvKN1xNvLqcp3L0e6boUEi5oLnLB2J29CpTzqMXiy2GSc3RBOEgi2RpL4hKAZ65+W1IOL7TaVwDNI8EirOkjt/F/3lLjMMO78cTA3XN27p9bGQh5AoH9vkbbLqJevpRG8M9yiWHsCTYdeGz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
+X-IronPort-AV: E=Sophos;i="6.07,205,1708354800"; 
+   d="scan'208";a="201616914"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 16 Apr 2024 21:03:28 +0900
+Received: from renesas-deb12.cephei.uk (unknown [10.226.93.86])
+	by relmlir5.idc.renesas.com (Postfix) with ESMTP id 78BAC400C44B;
+	Tue, 16 Apr 2024 21:03:23 +0900 (JST)
+From: Paul Barker <paul.barker.ct@bp.renesas.com>
+To: Sergey Shtylyov <s.shtylyov@omp.ru>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	=?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Paul Barker <paul.barker.ct@bp.renesas.com>,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	YueHaibing <yuehaibing@huawei.com>,
+	netdev@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [net PATCH v3 0/4] ravb Ethernet driver bugfixes
+Date: Tue, 16 Apr 2024 13:02:50 +0100
+Message-Id: <20240416120254.2620-1-paul.barker.ct@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2199:b0:36a:3f1f:bd4e with SMTP id
- j25-20020a056e02219900b0036a3f1fbd4emr836028ila.5.1713268945260; Tue, 16 Apr
- 2024 05:02:25 -0700 (PDT)
-Date: Tue, 16 Apr 2024 05:02:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e33add0616358204@google.com>
-Subject: [syzbot] [xfs?] possible deadlock in xfs_icwalk_ag (2)
-From: syzbot <syzbot+4248e91deb3db78358a2@syzkaller.appspotmail.com>
-To: chandan.babu@oracle.com, djwong@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello,
+These patches fix bugs found during recent work on the ravb driver.
 
-syzbot found the following issue on:
+Patches 1 & 2 affect the R-Car code paths so have been tested on an
+R-Car M3N Salvator-XS board - this is the only R-Car board I currently
+have access to.
 
-HEAD commit:    9ed46da14b9b Add linux-next specific files for 20240412
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=100fbfcb180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7ea0abc478c49859
-dashboard link: https://syzkaller.appspot.com/bug?extid=4248e91deb3db78358a2
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Patches 2, 3 & 4 affect the GbEth code paths so have been tested on
+RZ/G2L and RZ/G2UL SMARC EVK boards.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Changes v2->v3:
+  * Incorporate feedback from Niklas and add Reviewed-by tag to patch
+    "net: ravb: Count packets instead of descriptors in R-Car RX path".
+Changes v1->v2:
+  * Fixed typos in commit message of patch
+    "net: ravb: Allow RX loop to move past DMA mapping errors".
+  * Added Sergey's Reviewed-by tags.
+  * Expanded Cc list as Patchwork complained that I had missed people.
+  * Trimmed the call trace in accordance with the docs [1] in patch
+    "net: ravb: Fix GbEth jumbo packet RX checksum handling".
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/fc649744d68c/disk-9ed46da1.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/11eab7b9945d/vmlinux-9ed46da1.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e7885afd198d/bzImage-9ed46da1.xz
+[1]: https://docs.kernel.org/process/submitting-patches.html#backtraces-in-commit-messages
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4248e91deb3db78358a2@syzkaller.appspotmail.com
+Paul Barker (4):
+  net: ravb: Count packets instead of descriptors in R-Car RX path
+  net: ravb: Allow RX loop to move past DMA mapping errors
+  net: ravb: Fix GbEth jumbo packet RX checksum handling
+  net: ravb: Fix RX byte accounting for jumbo packets
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.9.0-rc3-next-20240412-syzkaller #0 Not tainted
-------------------------------------------------------
-kswapd0/88 is trying to acquire lock:
-ffff88807b8bc6d8 (&xfs_dir_ilock_class){++++}-{3:3}, at: xfs_reclaim_inode fs/xfs/xfs_icache.c:945 [inline]
-ffff88807b8bc6d8 (&xfs_dir_ilock_class){++++}-{3:3}, at: xfs_icwalk_process_inode fs/xfs/xfs_icache.c:1631 [inline]
-ffff88807b8bc6d8 (&xfs_dir_ilock_class){++++}-{3:3}, at: xfs_icwalk_ag+0x120e/0x1ad0 fs/xfs/xfs_icache.c:1713
-
-but task is already holding lock:
-ffffffff8e429e80 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat mm/vmscan.c:6819 [inline]
-ffffffff8e429e80 (fs_reclaim){+.+.}-{0:0}, at: kswapd+0xbe8/0x38a0 mm/vmscan.c:7201
-
-which lock already depends on the new lock.
+ drivers/net/ethernet/renesas/ravb_main.c | 68 +++++++++++-------------
+ 1 file changed, 32 insertions(+), 36 deletions(-)
 
 
-the existing dependency chain (in reverse order) is:
+base-commit: 75ce9506ee3dc66648a7d74ab3b0acfa364d6d43
+-- 
+2.39.2
 
--> #1 (fs_reclaim){+.+.}-{0:0}:
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-       __fs_reclaim_acquire mm/page_alloc.c:3825 [inline]
-       fs_reclaim_acquire+0x88/0x140 mm/page_alloc.c:3839
-       might_alloc include/linux/sched/mm.h:334 [inline]
-       slab_pre_alloc_hook mm/slub.c:3847 [inline]
-       slab_alloc_node mm/slub.c:3937 [inline]
-       __do_kmalloc_node mm/slub.c:4077 [inline]
-       __kmalloc_noprof+0xae/0x400 mm/slub.c:4091
-       kmalloc_noprof include/linux/slab.h:664 [inline]
-       xfs_attr_shortform_list+0x6f1/0x17b0 fs/xfs/xfs_attr_list.c:115
-       xfs_attr_list_ilocked fs/xfs/xfs_attr_list.c:527 [inline]
-       xfs_attr_list+0x25b/0x350 fs/xfs/xfs_attr_list.c:547
-       xfs_vn_listxattr+0x1d2/0x2c0 fs/xfs/xfs_xattr.c:314
-       vfs_listxattr fs/xattr.c:493 [inline]
-       listxattr+0x107/0x290 fs/xattr.c:840
-       path_listxattr fs/xattr.c:864 [inline]
-       __do_sys_listxattr fs/xattr.c:876 [inline]
-       __se_sys_listxattr fs/xattr.c:873 [inline]
-       __x64_sys_listxattr+0x176/0x240 fs/xattr.c:873
-       do_syscall_x64 arch/x86/entry/common.c:74 [inline]
-       do_syscall_64+0xfa/0x250 arch/x86/entry/common.c:105
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #0 (&xfs_dir_ilock_class){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
-       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-       down_write_nested+0x3d/0x50 kernel/locking/rwsem.c:1695
-       xfs_reclaim_inode fs/xfs/xfs_icache.c:945 [inline]
-       xfs_icwalk_process_inode fs/xfs/xfs_icache.c:1631 [inline]
-       xfs_icwalk_ag+0x120e/0x1ad0 fs/xfs/xfs_icache.c:1713
-       xfs_icwalk fs/xfs/xfs_icache.c:1762 [inline]
-       xfs_reclaim_inodes_nr+0x257/0x360 fs/xfs/xfs_icache.c:1011
-       super_cache_scan+0x40f/0x4b0 fs/super.c:227
-       do_shrink_slab+0x705/0x1160 mm/shrinker.c:435
-       shrink_slab+0x1092/0x14d0 mm/shrinker.c:662
-       shrink_one+0x453/0x880 mm/vmscan.c:4809
-       shrink_many mm/vmscan.c:4870 [inline]
-       lru_gen_shrink_node mm/vmscan.c:4970 [inline]
-       shrink_node+0x3b17/0x4310 mm/vmscan.c:5929
-       kswapd_shrink_node mm/vmscan.c:6741 [inline]
-       balance_pgdat mm/vmscan.c:6932 [inline]
-       kswapd+0x1882/0x38a0 mm/vmscan.c:7201
-       kthread+0x2f0/0x390 kernel/kthread.c:389
-       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(fs_reclaim);
-                               lock(&xfs_dir_ilock_class);
-                               lock(fs_reclaim);
-  lock(&xfs_dir_ilock_class);
-
- *** DEADLOCK ***
-
-2 locks held by kswapd0/88:
- #0: ffffffff8e429e80 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat mm/vmscan.c:6819 [inline]
- #0: ffffffff8e429e80 (fs_reclaim){+.+.}-{0:0}, at: kswapd+0xbe8/0x38a0 mm/vmscan.c:7201
- #1: ffff8880866840e0 (&type->s_umount_key#74){++++}-{3:3}, at: super_trylock_shared fs/super.c:561 [inline]
- #1: ffff8880866840e0 (&type->s_umount_key#74){++++}-{3:3}, at: super_cache_scan+0x94/0x4b0 fs/super.c:196
-
-stack backtrace:
-CPU: 1 PID: 88 Comm: kswapd0 Not tainted 6.9.0-rc3-next-20240412-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
- __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
- down_write_nested+0x3d/0x50 kernel/locking/rwsem.c:1695
- xfs_reclaim_inode fs/xfs/xfs_icache.c:945 [inline]
- xfs_icwalk_process_inode fs/xfs/xfs_icache.c:1631 [inline]
- xfs_icwalk_ag+0x120e/0x1ad0 fs/xfs/xfs_icache.c:1713
- xfs_icwalk fs/xfs/xfs_icache.c:1762 [inline]
- xfs_reclaim_inodes_nr+0x257/0x360 fs/xfs/xfs_icache.c:1011
- super_cache_scan+0x40f/0x4b0 fs/super.c:227
- do_shrink_slab+0x705/0x1160 mm/shrinker.c:435
- shrink_slab+0x1092/0x14d0 mm/shrinker.c:662
- shrink_one+0x453/0x880 mm/vmscan.c:4809
- shrink_many mm/vmscan.c:4870 [inline]
- lru_gen_shrink_node mm/vmscan.c:4970 [inline]
- shrink_node+0x3b17/0x4310 mm/vmscan.c:5929
- kswapd_shrink_node mm/vmscan.c:6741 [inline]
- balance_pgdat mm/vmscan.c:6932 [inline]
- kswapd+0x1882/0x38a0 mm/vmscan.c:7201
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
