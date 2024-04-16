@@ -1,131 +1,173 @@
-Return-Path: <linux-kernel+bounces-147447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 110CD8A7458
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:07:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B749A8A7448
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:04:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA1CC1F21272
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:07:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB8891C217FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:04:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68E0D137C23;
-	Tue, 16 Apr 2024 19:07:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 834CA137921;
+	Tue, 16 Apr 2024 19:04:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sr2rMEkY"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LH8EjPjQ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83084137748;
-	Tue, 16 Apr 2024 19:07:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E81D132C37;
+	Tue, 16 Apr 2024 19:04:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713294427; cv=none; b=mN+xIeaXlMDXFNXKlFIu5G0jU9eDdK5bd5g+9X3onMfgSc1PhXhzv3oeTbYs7nK5oef2aNqjzbi6fKMp4iZMhDCU8V1Ps0GR8FIjHpQt73rJlKEKSqNS7I3M358mmVJkYTx662CBJTZ72Ue5V75tKDtjAXSFOPQH7xbAzw9nm5I=
+	t=1713294289; cv=none; b=i5ihKY1n1e4AEFImh+c7SUA68fsZ4R2Hu+zh7lHrtjxfhuTa8C77njB5Nc735IH1IEYsjVaRTdZ2dMsKa+9UvVJwlbc2IDfx5ySXzmtLTSj9YEUdldyC5zUFLPmspBLLgQPog5AEOsDnI8PqIQQav1GrND9fEvaP9NGP8tcbpVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713294427; c=relaxed/simple;
-	bh=DAngsWtX5i5JPK0TVotIyyLHrT3kU1QwvuimQUMuUwg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=URqR5vnnprpmwX3lxHrPRHqsFUYRP+OToCIEji9wV/pzLTjGfDfSMTIHVU27Jez9Ehw8RW5+yc4PWdwuprp8GVrMWsN7c7v77TOi50ip2YyAZbI4izmHNXmhlUFyh6NLNkHS9cWZiahT5lS/GTps8KDWVKtkmxqKvyLh4gj2bfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sr2rMEkY; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ed04c91c46so4911461b3a.0;
-        Tue, 16 Apr 2024 12:07:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713294426; x=1713899226; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ymh6/7DVgNq/BVrdLDL6ajyFa00O1IrR2fX6zfmoZZQ=;
-        b=Sr2rMEkYhxxq9Vo8Dc+elN0e+8QHloyvN5HCHDRgr7FuuKC/4/j0heZH7rE1TZyviq
-         T8Bl2uruwY68YgloLPAJhHOwrMuMxekykKOYxtrUi3xBvG9RS1loTc7bAfC5wdnZkoeX
-         zCsO9v3W61yPtNlpHb9SnKobAwbRDWmiFQ1zCvd77YTQk8emxlOLhwTh7YXDIWxrZxY9
-         9bDuu7x+Q4yI7PbZgpsa4EsKvoU2F7kvg1nqVM9JF2egf15O2f1aZIdbhFfx9zOeVdHi
-         2/48unguQgueg3mlIIi+aVYelCgu0lbJTiPsJ4uEoakzAVuIhMjoi+TwxsINLMbft+US
-         ItZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713294426; x=1713899226;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ymh6/7DVgNq/BVrdLDL6ajyFa00O1IrR2fX6zfmoZZQ=;
-        b=c67fqQ2hmth2gVWhDrIgjk2l74Org+Vv6blRP6cSPlrIK4LHtehTNhU2oj0iIeQGHB
-         gOBmPHmZsRf4ESPk7gMBTCVxVeGxa+U+h7CKaVR4Bhz3AHACtTFFyEqXt6CgKEHHMnxH
-         pHUD9Zs87gTu6p5tJHPCMy0VdYxFHz/Ue8nuBUjGHO6FmIcVDIm4sDJiNO9hmuSSprck
-         DLH5sa8qZYUrfp65niUJfw3GRxY0MRr4oYtvT6yUGypdYS0DV8v8WpvB0LfvNGEB1Z+7
-         fx4nbkTeeVGTaT0ZCqjDFAebIb1t15umsI/tayprhV5iAQhHsxnEEfuyLQreFYW22JVq
-         MUdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWUSAf7Fe62oy4N6iC9uCcxoNGd3akU5reqY2K0Xb2ZiNBLpthTB0OEMKlwpucx6yZteRr2ij+Zwt3HWun2nIEI52jY8xO+nKBU1zHYjzGc3H8/m14hhlYJBOqKwrLbiPVHlTFK
-X-Gm-Message-State: AOJu0YzVOM6hOaP0lsi7NTBSz16wN6VcafCZA2Eqian4Q+26D/imdD75
-	2zNBMM5FtaEL618hk++8dKrMW2TJBPpITlmUPTFscg7AaKVNn1IyNgBtffl36viFvw==
-X-Google-Smtp-Source: AGHT+IGoEfX05qonJWd6vzzxV0e1rBcqS8DZ97ASOVz0k0L6okXuaCutvnvql2+UOdD0V4O9OW7O7A==
-X-Received: by 2002:a05:6a21:6d87:b0:1a7:c67:82ff with SMTP id wl7-20020a056a216d8700b001a70c6782ffmr17824895pzb.13.1713294425646;
-        Tue, 16 Apr 2024 12:07:05 -0700 (PDT)
-Received: from localhost.localdomain ([67.198.131.126])
-        by smtp.gmail.com with ESMTPSA id n21-20020a056a000d5500b006ed066ebed4sm9716764pfv.93.2024.04.16.12.07.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 12:07:05 -0700 (PDT)
-From: Yick Xie <yick.xie@gmail.com>
-To: willemdebruijn.kernel@gmail.com,
-	willemb@google.com
-Cc: netdev@vger.kernel.org,
-	davem@davemloft.net,
-	dsahern@kernel.org,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH net v2] udp: don't be set unconnected if only UDP cmsg
-Date: Wed, 17 Apr 2024 03:03:30 +0800
-Message-Id: <20240416190330.492972-1-yick.xie@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713294289; c=relaxed/simple;
+	bh=TMgqpUZdUJ/5xkRqaF/IXDu8yPiNOalFJmukz9JW/U4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bgi3vd58WznM7vHYHSHz6+W8Y0A5dO59brLS2NHOMLzsnkrzXzrnTPCp2Zc5vkCM9sOvaZs9VcAvhvNiR33PEnPA5dz/RyI16WEg/sGLt3tMd/uPOjvKaAMpBE65z3xizZZrEmutHVyptTFqiYnLr+V9s4Oj3jVyZqyBOgL27ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LH8EjPjQ; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713294288; x=1744830288;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TMgqpUZdUJ/5xkRqaF/IXDu8yPiNOalFJmukz9JW/U4=;
+  b=LH8EjPjQ9kMnqcHC/0Thf2BNYoOLRSNnlstHO+TyGEiQ5S/7UQTxfdMz
+   ATWegAk0Ob7kOFS0gONdiBZqixpDripkDNdGPm+Dcf9yeJz32y5LPL4OM
+   BVGaE4Kf04frlHOw+P/dTXGqrCV9iFff2Um1p98mzUKixLvLFVDy6D6fm
+   yIHAPZzJJejhIKBrHCPgJ81NKWPWwxZqPZjI90PQ9CeI321RdA80evK1j
+   JrWg2XjocGI3okwLgm2MXWxhetIXUMwVVjmvzC5Y5zoF6KENAjDC3FJli
+   xy3FFUeVagrF3bCQosYD1C0v0ZI2mHD/4I6V/UxHP+0OHa9Hrt7irvUO+
+   A==;
+X-CSE-ConnectionGUID: Q8klQHeTREiOBR5QPDL28w==
+X-CSE-MsgGUID: BvxwkojESieeRMBf3LdJwA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="31239003"
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="31239003"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 12:04:48 -0700
+X-CSE-ConnectionGUID: 9g7G1PcwQDi+S9kVsWu9VQ==
+X-CSE-MsgGUID: v4QV+caiSqyWtOBvrTsaCA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="22833773"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 12:04:46 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rwo6k-00000004nZa-2j6x;
+	Tue, 16 Apr 2024 22:04:42 +0300
+Date: Tue, 16 Apr 2024 22:04:42 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] dmaengine: dw: Simplify prepare CTL_LO methods
+Message-ID: <Zh7LyszPd2sNfWRm@smile.fi.intel.com>
+References: <20240416162908.24180-1-fancer.lancer@gmail.com>
+ <20240416162908.24180-4-fancer.lancer@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416162908.24180-4-fancer.lancer@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-If "udp_cmsg_send()" returned 0 (i.e. only UDP cmsg),
-"connected" should not be set to 0. Otherwise it stops
-the connected socket from using the cached route.
+On Tue, Apr 16, 2024 at 07:28:57PM +0300, Serge Semin wrote:
+> Currently the CTL LO fields are calculated on the platform-specific basis.
+> It's implemented by means of the prepare_ctllo() callbacks using the
+> ternary operator within the local variables init block at the beginning of
+> the block scope. The functions code currently is relatively hard to
+> comprehend and isn't that optimal since implies four conditional
+> statements executed and two additional local variables defined. Let's
+> simplify the DW AHB DMA prepare_ctllo() method by unrolling the ternary
+> operators into the normal if-else statement, dropping redundant
+> master-interface ID variables and initializing the local variables based
+> on the singly evaluated DMA-transfer direction check. Thus the method will
+> look much more readable since now the fields content can be easily
+> inferred right from the if-else branch. Provide the same update in the
+> Intel DMA32 core driver for sake of the driver code unification.
+> 
+> Note besides of the effects described above this update is basically a
+> preparation before dropping the max burst encoding callback. It will
+> require calling the burst fields calculation methods right in the
+> prepare_ctllo() callbacks, which would have made the later function code
+> even more complex.
 
-Fixes: 2e8de8576343 ("udp: add gso segment cmsg")
-Signed-off-by: Yick Xie <yick.xie@gmail.com>
-Cc: stable@vger.kernel.org
----
-v2: Add Fixes tag
-v1: https://lore.kernel.org/netdev/20240414195213.106209-1-yick.xie@gmail.com/
----
- net/ipv4/udp.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Yeah, this is inherited from the original driver where it used to be a macro.
 
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index c02bf011d4a6..420905be5f30 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -1123,16 +1123,17 @@ int udp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 
- 	if (msg->msg_controllen) {
- 		err = udp_cmsg_send(sk, msg, &ipc.gso_size);
--		if (err > 0)
-+		if (err > 0) {
- 			err = ip_cmsg_send(sk, msg, &ipc,
- 					   sk->sk_family == AF_INET6);
-+			connected = 0;
-+		}
- 		if (unlikely(err < 0)) {
- 			kfree(ipc.opt);
- 			return err;
- 		}
- 		if (ipc.opt)
- 			free = 1;
--		connected = 0;
- 	}
- 	if (!ipc.opt) {
- 		struct ip_options_rcu *inet_opt;
+..
+
+> +	if (dwc->direction == DMA_MEM_TO_DEV) {
+> +		sms = dwc->dws.m_master;
+> +		smsize = 0;
+> +		dms = dwc->dws.p_master;
+> +		dmsize = sconfig->dst_maxburst;
+
+I would group it differently, i.e.
+
+		sms = dwc->dws.m_master;
+		dms = dwc->dws.p_master;
+		smsize = 0;
+		dmsize = sconfig->dst_maxburst;
+
+> +	} else if (dwc->direction == DMA_DEV_TO_MEM) {
+> +		sms = dwc->dws.p_master;
+> +		smsize = sconfig->src_maxburst;
+> +		dms = dwc->dws.m_master;
+> +		dmsize = 0;
+> +	} else /* DMA_MEM_TO_MEM */ {
+> +		sms = dwc->dws.m_master;
+> +		smsize = 0;
+> +		dms = dwc->dws.m_master;
+> +		dmsize = 0;
+> +	}
+
+Ditto for two above cases.
+
+>  static u32 idma32_prepare_ctllo(struct dw_dma_chan *dwc)
+>  {
+>  	struct dma_slave_config	*sconfig = &dwc->dma_sconfig;
+> -	u8 smsize = (dwc->direction == DMA_DEV_TO_MEM) ? sconfig->src_maxburst : 0;
+> -	u8 dmsize = (dwc->direction == DMA_MEM_TO_DEV) ? sconfig->dst_maxburst : 0;
+> +	u8 smsize, dmsize;
+> +
+> +	if (dwc->direction == DMA_MEM_TO_DEV) {
+> +		smsize = 0;
+> +		dmsize = sconfig->dst_maxburst;
+> +	} else if (dwc->direction == DMA_DEV_TO_MEM) {
+> +		smsize = sconfig->src_maxburst;
+> +		dmsize = 0;
+> +	} else /* DMA_MEM_TO_MEM */ {
+> +		smsize = 0;
+> +		dmsize = 0;
+> +	}
+
+	u8 smsize = 0, dmsize = 0;
+
+	if (dwc->direction == DMA_MEM_TO_DEV)
+		dmsize = sconfig->dst_maxburst;
+	else if (dwc->direction == DMA_DEV_TO_MEM)
+		smsize = sconfig->src_maxburst;
+
+?
+
+Something similar also can be done in the Synopsys case above, no?
+
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
 
