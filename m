@@ -1,59 +1,58 @@
-Return-Path: <linux-kernel+bounces-146864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D901D8A6C08
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:19:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16F9D8A6C0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:21:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95AA1281A11
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:19:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 483BE1C21ADC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D360712C486;
-	Tue, 16 Apr 2024 13:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD52712C534;
+	Tue, 16 Apr 2024 13:21:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hFbmB18r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PcQvRfl1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 187E43BB30;
-	Tue, 16 Apr 2024 13:19:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D14A612BF29;
+	Tue, 16 Apr 2024 13:21:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713273583; cv=none; b=C3BYylojKRcZjH2bE8YnxipoNydDLhaC4Sl61tsMSn+nBsYmy/Jw0Uv6XMFj2CDJAG2QRPy0M7PrIgrBt0MHNrqCMH9A3W+SFwKhB1HDZcb7dMBzTAV97K2Oxga6dueIsXGdZrBFICBwZg6b66EtAB8hlOGIj6u7dHV7k5Tz6QA=
+	t=1713273687; cv=none; b=cj2y/ToxzWuDME2+m0FzRBOTZjmFJfh0ElmDAmPAyI5H41l1uZGMSsR0DDUwEU+hmKxL0kuNnko+k0vs5cyI5Pz6So5XnzN8JnA7X5oQ6Za7lU7A/o9soibO6gcoJRCpM0XJR2STUy7ml99I6JYKmQ0oerEiCphL1DvFquJWN/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713273583; c=relaxed/simple;
-	bh=BPjpllDPHaBuORONW/QmDln6MN91/EoL0La9ZnXvYe0=;
+	s=arc-20240116; t=1713273687; c=relaxed/simple;
+	bh=Z3szNAXs6ookddwvTqDP6loCkEgNjGn9QA3Y5AYjnD4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rDNYOJmyV8ZJ49PuL2sM/Tj64KOOuswOck246x2/BfCthIsUX+/VtOj8yP2PVHM/Q+5Tz6N4smsznBqhkPf5+hNjgE1DBtVJfRK5EmfO/6QeqoLikF23yXadpViq1cH/af10Lr7s3Cr+ISosV39i1s5JScA6yAx5BJZ0V6Ng0Tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hFbmB18r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64FF6C113CE;
-	Tue, 16 Apr 2024 13:19:42 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=JuXX28ezK8ONdgZtjeS4TKaePu4uPlHp0x39BH2SHzjA9alscDPlbnwHWdScOTkUQ2rHYtuJy31SSMW4KWFXFdEdhLPK4B//hUcNlq4p63/fdNsWhLqUWWCteALvAldx8ZweXx/t7+ctf+OrAwOaL40BXJ0AJtKWCjNb+UPe2r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PcQvRfl1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15684C113CE;
+	Tue, 16 Apr 2024 13:21:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713273582;
-	bh=BPjpllDPHaBuORONW/QmDln6MN91/EoL0La9ZnXvYe0=;
+	s=k20201202; t=1713273686;
+	bh=Z3szNAXs6ookddwvTqDP6loCkEgNjGn9QA3Y5AYjnD4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hFbmB18rIKIhsAmwQxX+oKqS+gZprFcE5OUMuuPiGpAT0tN6iKa8Lvu+cRbHJllcu
-	 mICK1UJzwOYVjG15lcogv6jNc2U1HQd6s91OgZ4qoTkgA4HBGULDkjYN33Z87QmF2E
-	 WFMcCzVyr1vgDqkwyAYVcTwcd4+qMOc+VPuuI34wcl0QS/2GE5qMx1GYpApCSsmIUg
-	 lVBzPLx1P25KVOMc0K1p4ZYI+23fWh3H8W8/X1m+prDM/MNSVsQ56952geE7eCBOHL
-	 /Dm3mZzP2t2mDXZf3i2hOHtpjeBYCJ6bRX/XKjNNO9kQKNqtqGzHK/BNZB7mV1lTwy
-	 2FF/YQsPzF04A==
-Date: Tue, 16 Apr 2024 08:19:40 -0500
+	b=PcQvRfl1PF1/Kl0BySnWfDqHKFK5MwmrpmyHjJdHuGazVgbWmowxihz+X9Z1ydyV6
+	 WQwFGwvxMPYCFMDwvHitP9bfrnn9N/7OWL8rLRe5hIU1QXetQ+FqBXTf6M2L4Es/Gq
+	 Y9Uvtb+U4nABOQ7FuBRAouvHSMziyxKaXAxvPocg6z7de6skX9QVzplTjqVDgcejaV
+	 I66+RuWPA40e0Y6inNySzxwOIYy1MEG1ji1fso7X3LWcACj4yWBuFTNHMYiWzkkYBU
+	 ie+0XMkKGuWj6Fmr6h93aoRpaG72qvwsuGwhFTatP8S1nnqSBW8GAV6CnYSx7l+HEV
+	 6Fxj87lCsurdg==
+Date: Tue, 16 Apr 2024 08:21:24 -0500
 From: Rob Herring <robh@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: krzk@kernel.org, 20240409185416.2224609-1-Frank.Li@nxp.com,
-	conor+dt@kernel.org, devicetree@vger.kernel.org,
-	dmaengine@vger.kernel.org, imx@lists.linux.dev,
-	krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-	pankaj.gupta@nxp.com, peng.fan@nxp.com, shengjiu.wang@nxp.com,
-	shenwei.wang@nxp.com, vkoul@kernel.org, xu.yang_2@nxp.com
-Subject: Re: [PATCH v4 2/2] dt-bindings: dma: fsl-edma: allow 'power-domains'
- property
-Message-ID: <20240416131940.GA2138646-robh@kernel.org>
-References: <20240412154208.881836-1-Frank.Li@nxp.com>
- <20240412154208.881836-2-Frank.Li@nxp.com>
+To: Robert Marko <robimarko@gmail.com>
+Cc: kvalo@kernel.org, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	jjohnson@kernel.org, linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	ath11k@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: net: wireless: ath11k: add
+ ieee80211-freq-limit property
+Message-ID: <20240416132124.GA2143558-robh@kernel.org>
+References: <20240412162510.29483-1-robimarko@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,68 +61,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240412154208.881836-2-Frank.Li@nxp.com>
+In-Reply-To: <20240412162510.29483-1-robimarko@gmail.com>
 
-On Fri, Apr 12, 2024 at 11:42:08AM -0400, Frank Li wrote:
-> Allow 'power-domains' property because i.MX8DXL i.MX8QM and i.MX8QXP need
-> it. EDMA supports each power-domain for each dma channel. So minItems and
-> maxItems align 'dma-channels'.
+On Fri, Apr 12, 2024 at 06:24:08PM +0200, Robert Marko wrote:
+> This is an existing optional property that ieee80211.yaml/cfg80211
+> provides. It's useful to further restrict supported frequencies
+> for a specified device through device-tree.
 > 
-> Change fsl,imx93-edma3 example to fsl,imx8qm-edma to reflect this variants.
-> 
-> Fixed below DTB_CHECK warning:
->   dma-controller@599f0000: Unevaluated properties are not allowed ('power-domains' was unexpected)
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> Signed-off-by: Robert Marko <robimarko@gmail.com>
 > ---
+>  .../devicetree/bindings/net/wireless/qcom,ath11k.yaml          | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> Notes:
->     Change from v3 to v4
->     - Remove 'contains' change should be belong to first patch when rebase.
->     
->     make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,edma.yaml
->       LINT    Documentation/devicetree/bindings
->       DTEX    Documentation/devicetree/bindings/dma/fsl,edma.example.dts
->       CHKDT   Documentation/devicetree/bindings/processed-schema.json
->       SCHEMA  Documentation/devicetree/bindings/processed-schema.json
->       DTC_CHK Documentation/devicetree/bindings/dma/fsl,edma.example.dtb
->     
->     After this patch no warning for imx8dxl-evk.dtb.
->     
->     touch arch/arm64/boot/dts/freescale/imx8dxl.dtsi
->     make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  CHECK_DTBS=y freescale/imx8dxl-evk.dtb
->       DTC_CHK arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb
->     
->     Change from v2 to v3
->     - set 'power-domains' false for other compatitble string
->     - change imx93 example to 8qm example to affect this change according to
->     Krzysztof Kozlowski's suggestion, choose least channel number edma
->     instance to reduce code copy. max channel number is 64.
->     
->     - Rebase to latest dmaengine/next, fixes conflicts.
->     
->     Change from v1 to v2
->     - using maxitem: 64. Each channel have one power domain. Max 64 dmachannel.
->     - add power-domains to 'required' when compatible string is fsl,imx8qm-adma
->         or fsl,imx8qm-edma
-> 
->  .../devicetree/bindings/dma/fsl,edma.yaml     | 77 ++++++++++---------
->  1 file changed, 39 insertions(+), 38 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/dma/fsl,edma.yaml b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
-> index fb5fbe4b9f9d4..012522612dc96 100644
-> --- a/Documentation/devicetree/bindings/dma/fsl,edma.yaml
-> +++ b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
-> @@ -71,6 +71,10 @@ properties:
->      minItems: 1
->      maxItems: 33
+> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
+> index 672282cdfc2f..907bbb646614 100644
+> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
+> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
+> @@ -55,6 +55,8 @@ properties:
+>        phandle to a node describing reserved memory (System RAM memory)
+>        used by ath11k firmware (see bindings/reserved-memory/reserved-memory.txt)
 >  
-> +  power-domains:
-> +    minItems: 1
-> +    maxItems: 64
+> +  ieee80211-freq-limit: true
+> +
 
-Please state here that number of power-domains are equal to number of 
-channels and in ascending order.
+Drop this and change additionalProperties to unevaluatedProperties.
 
-Rob
+>    iommus:
+>      minItems: 1
+>      maxItems: 2
+> @@ -88,6 +90,7 @@ required:
+>  additionalProperties: false
+>  
+>  allOf:
+> +  - $ref: ieee80211.yaml#
+>    - if:
+>        properties:
+>          compatible:
+> -- 
+> 2.44.0
+> 
 
