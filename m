@@ -1,219 +1,121 @@
-Return-Path: <linux-kernel+bounces-147268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77A098A71C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:57:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CB708A71C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:59:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33AF62843B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:57:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D04EDB228B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:59:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064C9130AE6;
-	Tue, 16 Apr 2024 16:57:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 935AF131BC0;
+	Tue, 16 Apr 2024 16:58:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xb5J9BNu"
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PIXy075l"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4C4F86255
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:57:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A45F43AA5
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:58:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713286667; cv=none; b=B5WjXwm7Q0OLpP9RABjXldwZVegxPeQIdpKWcz6uEcFwyGobB5IXv3h+Isez4JNCNBh6VurIEzdW9hW8kJUbxkmiPu4PaUHScjRU1nCJ+VrjOSUxu+XUa0Cfwm7KdsqiClaCKpPsl9uYMmrsFBLzkIXxYz9pcB6zkJO8bDQDnTY=
+	t=1713286734; cv=none; b=nssBWhPrph2jYwpMy474mv9WRhK5icBVJAflykZPIjv6U6MU4HSjmpWyfTJbPdHLjrnczJdr8y6e3ds945rpu/zJRpm/ko/Os7htrA7fBGQzclkVnyClqRuoCgmEo6rccdm0Y9AtYiGGWd0y/QEbG6VckGx5LvAHpwby+1IKsv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713286667; c=relaxed/simple;
-	bh=8B8T20wTCBW9BOKM/mQM//HuSXmdcJjW0wYxFxTR0RQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QH/IziCtmKn90ULxwlVaX56FK35oxIaHAarnXgn+tMMYbEBqIk/v/DGGnb0tX5SN6sY3WXHJtSrf0CrFSw+OHcmVpeyIs+/1FiK32T04NJE0F2EImKFLOcCnAjj4jQ03XrmcW+kAev7FqwgOb8rLm2wZzgwdMPGLOxc5UNx5svE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xb5J9BNu; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2a559928f46so2712262a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 09:57:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713286664; x=1713891464; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rw1srMaM4ShVIEeEfySOxO+TrGv+HQPY/srdrVtHzS4=;
-        b=xb5J9BNuJBwh6vNFAo2V3VJB50/6zhGP1aJZZBz3WqRgiRjWkbJD3wPzACia3Sc2xQ
-         2b3MaOVq2WiCsmArXaS371Prtkm2OwbzEM22PpOYyyCk2xcbPjxs5gxYwWxQpH805nOI
-         JMPRfXwdzibtN8Wj6Iii9Hjs+hc3z8k5Iyyd1pK/fh9BU9Ahlxf2LZC0VzF5eZYT9RYw
-         qV5ehu8YmQGjQnKvmBpCPUbKoSgj2uv3vO9NjhoZZFjXe4ahX1IdK+7+UWwcfJhJpuo1
-         SIZe+XENvdp/X1SR4DJ7nHXioPzdzjeK/SXdsMlu5HtXokDmiukEzXh2jMVor80Rhw87
-         UdqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713286664; x=1713891464;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rw1srMaM4ShVIEeEfySOxO+TrGv+HQPY/srdrVtHzS4=;
-        b=jSuPCv+fmV6PFI+eq0GMfVA9ou9cnTz/X7ujuJbMo7dEvrWH/GvycRlAcvaZEv0REN
-         ZYCZz/Ocpu6wKz1iKNAV07go1DNCivC7KM5OEqAFOEyqMfGE90AvbC1t6qP6j3u8jatj
-         A/COXxfmjHW2z4Mu1j0xqgIpNYwp2x4uPWwx3QUhDtLKcVIfDrV8kN8VjGwaw3QLxNMj
-         JY2CWrqIME108p3JVk9GLDLUBTOv6Hv+sXs1TftG3vZzGfwZXLMil5pV0OT5TQ4uWYPS
-         z9t1ut6gL50x4eXVrGh/Bfm01kVmbkQZSvvY3KWCA+b5bOgiw1tik9kqEeM67DLE24gf
-         iWQw==
-X-Forwarded-Encrypted: i=1; AJvYcCUDjTpJJiMpn7xkMlPLtnKNVg5XyKj3ikwD3iUc84Pd/xkoGQd1LFB8wXWCfgVttAHRjN9fRT1+rTFBYtH8168SFVZHc9WOYykXHD1H
-X-Gm-Message-State: AOJu0Yz4CQju14OrHPFVOnZ+Rewxr1mG0uOvhTclhHqiII6LLo+DFmP6
-	Zt7s/jqtdfjZPEyTVDfj3Htpz47/Stac1IVYB73IyBxWQMkCfR9SoLSQz+OE/Yc=
-X-Google-Smtp-Source: AGHT+IEp84o6IK282BkD3qXrX+vMTGaXMfMKPn9YJTqjKw0JZ1i5GYptiKbnVjjF3JOST3nhPrPtyQ==
-X-Received: by 2002:a17:90a:34ce:b0:2aa:ead0:900c with SMTP id m14-20020a17090a34ce00b002aaead0900cmr1113127pjf.24.1713286664143;
-        Tue, 16 Apr 2024 09:57:44 -0700 (PDT)
-Received: from p14s ([2604:3d09:148c:c800:6e4e:6aac:cff6:726e])
-        by smtp.gmail.com with ESMTPSA id ei18-20020a17090ae55200b002a2559fe52esm9147190pjb.56.2024.04.16.09.57.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 09:57:43 -0700 (PDT)
-Date: Tue, 16 Apr 2024 10:57:40 -0600
-From: Mathieu Poirier <mathieu.poirier@linaro.org>
-To: Tanmay Shah <tanmay.shah@amd.com>
-Cc: andersson@kernel.org, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	michal.simek@amd.com, ben.levinsky@amd.com,
-	linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v15 3/4] dts: zynqmp: add properties for TCM in remoteproc
-Message-ID: <Zh6uBDdyiTnSvrhg@p14s>
-References: <20240412183708.4036007-1-tanmay.shah@amd.com>
- <20240412183708.4036007-4-tanmay.shah@amd.com>
+	s=arc-20240116; t=1713286734; c=relaxed/simple;
+	bh=opPCA+XHxeV0l/Z0FrPaAC14zh+S8xVA6FNWxr5aA8w=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=DzFhcKcFh9av3hklgIWk2wE7p44KqjTP9RHGqvwzP64RbAa07nD5QYXyOWvuvp+egdOEr58bCppYkM6AWdi6l+UaV+VP0dWT47LkPPRPSzEfNFiHoRSt5a2YSXdhCVBFTCC8C6+BLFfyCeqbV4z/q2v/PLghws8NZXUQ/Iz8jk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PIXy075l; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713286732;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ACuK1BwAPedfa6Ho4auLQQiF3JZp7pyLXmhg4dg7VCQ=;
+	b=PIXy075lXq05oo2BlaaFbFgHxXQ04dZ4B8FqCP91kT3NRVMkUl3eZZ8uFQx0wvsVKdq48S
+	gfXnJxQInGopSwLGtukIdQ/EeawsVo7bM3BctXoIwy69KUZsWdXgoXXq0NKhcX2kPzR3tz
+	4qpb4o0itwCCuGgLZwopiFBntBcXzy4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-135-B2DbH90MP86kOa52DZy_Jg-1; Tue, 16 Apr 2024 12:58:49 -0400
+X-MC-Unique: B2DbH90MP86kOa52DZy_Jg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7F11180591B;
+	Tue, 16 Apr 2024 16:58:48 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.10])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 796A12124E4D;
+	Tue, 16 Apr 2024 16:58:47 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <14e66691a65e3d05d3d8d50e74dfb366@manguebit.com>
+References: <14e66691a65e3d05d3d8d50e74dfb366@manguebit.com> <3756406.1712244064@warthog.procyon.org.uk>
+To: Paulo Alcantara <pc@manguebit.com>
+Cc: dhowells@redhat.com, Steve French <sfrench@samba.org>,
+    Shyam Prasad N <sprasad@microsoft.com>, linux-cifs@vger.kernel.org,
+    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cifs: Fix reacquisition of volume cookie on still-live connection
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412183708.4036007-4-tanmay.shah@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2713339.1713286722.1@warthog.procyon.org.uk>
+Date: Tue, 16 Apr 2024 17:58:42 +0100
+Message-ID: <2713340.1713286722@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Fri, Apr 12, 2024 at 11:37:07AM -0700, Tanmay Shah wrote:
-> Add properties as per new bindings in zynqmp remoteproc node
-> to represent TCM address and size.
-> 
-> This patch also adds alternative remoteproc node to represent
-> remoteproc cluster in split mode. By default lockstep mode is
-> enabled and users should disable it before using split mode
-> dts. Both device-tree nodes can't be used simultaneously one
-> of them must be disabled. For zcu102-1.0 and zcu102-1.1 board
-> remoteproc split mode dts node is enabled and lockstep mode
-> dts is disabled.
-> 
-> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
-> ---
->  .../boot/dts/xilinx/zynqmp-zcu102-rev1.0.dts  |  8 +++
->  arch/arm64/boot/dts/xilinx/zynqmp.dtsi        | 67 +++++++++++++++++--
->  2 files changed, 70 insertions(+), 5 deletions(-)
->
+Paulo Alcantara <pc@manguebit.com> wrote:
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Can't we just move the cookie acquisition to cifs_get_tcon() before it
+> gets added to list @ses->tcon_list.  This way we'll guarantee that the
+> cookie is set only once for the new tcon.
 
-> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-rev1.0.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-rev1.0.dts
-> index c8f71a1aec89..495ca94b45db 100644
-> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-rev1.0.dts
-> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu102-rev1.0.dts
-> @@ -14,6 +14,14 @@ / {
->  	compatible = "xlnx,zynqmp-zcu102-rev1.0", "xlnx,zynqmp-zcu102", "xlnx,zynqmp";
->  };
->  
-> +&rproc_split {
-> +	status = "okay";
-> +};
-> +
-> +&rproc_lockstep {
-> +	status = "disabled";
-> +};
-> +
->  &eeprom {
->  	#address-cells = <1>;
->  	#size-cells = <1>;
-> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> index 25d20d803230..ef31b0fc73d1 100644
-> --- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> +++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-> @@ -260,19 +260,76 @@ fpga_full: fpga-full {
->  		ranges;
->  	};
->  
-> -	remoteproc {
-> +	rproc_lockstep: remoteproc@ffe00000 {
->  		compatible = "xlnx,zynqmp-r5fss";
->  		xlnx,cluster-mode = <1>;
-> +		xlnx,tcm-mode = <1>;
->  
-> -		r5f-0 {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +
-> +		ranges = <0x0 0x0 0x0 0xffe00000 0x0 0x10000>,
-> +			 <0x0 0x20000 0x0 0xffe20000 0x0 0x10000>,
-> +			 <0x0 0x10000 0x0 0xffe10000 0x0 0x10000>,
-> +			 <0x0 0x30000 0x0 0xffe30000 0x0 0x10000>;
-> +
-> +		r5f@0 {
-> +			compatible = "xlnx,zynqmp-r5f";
-> +			reg = <0x0 0x0 0x0 0x10000>,
-> +			      <0x0 0x20000 0x0 0x10000>,
-> +			      <0x0 0x10000 0x0 0x10000>,
-> +			      <0x0 0x30000 0x0 0x10000>;
-> +			reg-names = "atcm0", "btcm0", "atcm1", "btcm1";
-> +			power-domains = <&zynqmp_firmware PD_RPU_0>,
-> +					<&zynqmp_firmware PD_R5_0_ATCM>,
-> +					<&zynqmp_firmware PD_R5_0_BTCM>,
-> +					<&zynqmp_firmware PD_R5_1_ATCM>,
-> +					<&zynqmp_firmware PD_R5_1_BTCM>;
-> +			memory-region = <&rproc_0_fw_image>;
-> +		};
-> +
-> +		r5f@1 {
-> +			compatible = "xlnx,zynqmp-r5f";
-> +			reg = <0x1 0x0 0x0 0x10000>, <0x1 0x20000 0x0 0x10000>;
-> +			reg-names = "atcm0", "btcm0";
-> +			power-domains = <&zynqmp_firmware PD_RPU_1>,
-> +					<&zynqmp_firmware PD_R5_1_ATCM>,
-> +					<&zynqmp_firmware PD_R5_1_BTCM>;
-> +			memory-region = <&rproc_1_fw_image>;
-> +		};
-> +	};
-> +
-> +	rproc_split: remoteproc-split@ffe00000 {
-> +		status = "disabled";
-> +		compatible = "xlnx,zynqmp-r5fss";
-> +		xlnx,cluster-mode = <0>;
-> +		xlnx,tcm-mode = <0>;
-> +
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +
-> +		ranges = <0x0 0x0 0x0 0xffe00000 0x0 0x10000>,
-> +			 <0x0 0x20000 0x0 0xffe20000 0x0 0x10000>,
-> +			 <0x1 0x0 0x0 0xffe90000 0x0 0x10000>,
-> +			 <0x1 0x20000 0x0 0xffeb0000 0x0 0x10000>;
-> +
-> +		r5f@0 {
->  			compatible = "xlnx,zynqmp-r5f";
-> -			power-domains = <&zynqmp_firmware PD_RPU_0>;
-> +			reg = <0x0 0x0 0x0 0x10000>, <0x0 0x20000 0x0 0x10000>;
-> +			reg-names = "atcm0", "btcm0";
-> +			power-domains = <&zynqmp_firmware PD_RPU_0>,
-> +					<&zynqmp_firmware PD_R5_0_ATCM>,
-> +					<&zynqmp_firmware PD_R5_0_BTCM>;
->  			memory-region = <&rproc_0_fw_image>;
->  		};
->  
-> -		r5f-1 {
-> +		r5f@1 {
->  			compatible = "xlnx,zynqmp-r5f";
-> -			power-domains = <&zynqmp_firmware PD_RPU_1>;
-> +			reg = <0x1 0x0 0x0 0x10000>, <0x1 0x20000 0x0 0x10000>;
-> +			reg-names = "atcm0", "btcm0";
-> +			power-domains = <&zynqmp_firmware PD_RPU_1>,
-> +					<&zynqmp_firmware PD_R5_1_ATCM>,
-> +					<&zynqmp_firmware PD_R5_1_BTCM>;
->  			memory-region = <&rproc_1_fw_image>;
->  		};
->  	};
-> -- 
-> 2.25.1
-> 
+cifs_get_tcon() is used from more than one place and I'm not sure the second
+place (__cifs_construct_tcon()) actually wants a cookie.  I'm not sure what
+that path is for.  Could all the (re)setting up being done in
+cifs_mount_get_tcon() be pushed back into cifs_get_tcon()?
+
+> Besides, do we want to share a tcon with two different superblocks that
+> have 'fsc' and 'nofsc', respectively?  If not, it would be better to fix
+> match_tcon() as well to handle such case.
+
+Maybe?  What does a tcon *actually* represent?  I note that in
+cifs_match_super(), it's not the only criterion matched upon - so you can, at
+least in apparent theory, get different superblocks for the same tcon anyway.
+
+This suggests that the tcon might not be the best place for the fscache volume
+cookie as you can have multiple inodes wishing to use the same file cookie if
+there are multiple mounts mounting the same tcon but, say, with different
+mount parameters.
+
+I'm not sure what the right way around this is.  The root of the problem is
+coherency management.  If we make a change to an inode on one mounted
+superblock and this bounces a change notification over to the server that then
+pokes an inode in another mounted superblock on the same machine and causes it
+to be invalidated, you lose your local cache if both inodes refer to the same
+fscache cookie.
+
+Remember: fscache does not do this for you!  It's just a facility by which
+which data can be stored and retrieved.  The netfs is responsible for telling
+it when to invalidate and handling coherency.
+
+That said, it might be possible to time-share a cookie on cifs with leases,
+but the local superblocks would have to know about each other - in which case,
+why are they separate superblocks?
+
+David
+
 
