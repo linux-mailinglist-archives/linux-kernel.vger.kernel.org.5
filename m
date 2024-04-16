@@ -1,122 +1,117 @@
-Return-Path: <linux-kernel+bounces-147140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C5A08A6FFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:40:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 693118A7006
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:40:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B9E51F212C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:40:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99FF71C2134E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620A313172A;
-	Tue, 16 Apr 2024 15:39:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 371E71311AF;
+	Tue, 16 Apr 2024 15:40:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ujZk1EHT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gSHYndLg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90DF2130E55;
-	Tue, 16 Apr 2024 15:39:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76932130491;
+	Tue, 16 Apr 2024 15:40:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713281974; cv=none; b=QSfYZxlvMgPb/wsB1RMlclQZYB/uJ+cyBy3KUHQhLdOG79VdOeowFVmvydHL1rEjmAjRSDAGs5R5VDg4DB6SN9RY7bb6ou5NWxq5KFGFyLHl4UjZ2xQZgjX6e4JHNQMHcZsgAfajfZbkV/gmdpZ4zxEcE8iDqJXHsC08qukHx58=
+	t=1713282043; cv=none; b=TOrPcFZpcqcGFvIAyG0V3eLYlh1UFhj9ezWT1kUZVDb6QOPIVKAbxY+DhkXkAQWATcf+2F/I5DKXwJ3MHoT8xqwmeiTTjpmmiE5Zw1HLcVdh+OeTla4mY4BkWFV8Dn39hSCd+jcSkZd/cFxlqmThr6zB4DM9uneReiu6TKr4r54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713281974; c=relaxed/simple;
-	bh=KJDi6z6/U9cziW9yQDAhSzhquj/YiV34HJLdtVilEJM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pNzEuQpRIu3+1ujur7fgx9uPVMVnxEBu2Fmg+ZsaRlk3g/q9L/9NdEoXZJLWrcB611UYOeS95S1KqzQKC3DjV9HCoo5FypvspxbyyxBAkn1SGc80YEiqzhBbvnRLo7qvn3p/TwE8P+gnvCD6T+Bjei4R5Xj/WVKxzzBXFkmzjpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ujZk1EHT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F4CAC2BD10;
-	Tue, 16 Apr 2024 15:39:29 +0000 (UTC)
+	s=arc-20240116; t=1713282043; c=relaxed/simple;
+	bh=M8oXFOXC9510L1sS9yrQwCiqB9isOtApcFXKR6Um07A=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Jg9yqwHJXW7WbN5UeGKVEP/yAp+ZHkKxglcwjyJEqrB45MWdQaUzCNtQoq04Cmwde1QQ/kYxViGKuQismgIlxC7PfwtHvHK6+DihWfSSHN8gouEMK/Nb3LUMnhbXzJ/01bxRRlXC4Rg+lmiFQwaSHKXv1T3uUaHLra32fY7a/nM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gSHYndLg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 565EFC113CE;
+	Tue, 16 Apr 2024 15:40:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713281974;
-	bh=KJDi6z6/U9cziW9yQDAhSzhquj/YiV34HJLdtVilEJM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ujZk1EHTMYG6e3LIKsVhqs298UOQP1HsHzdkcfICrpHwZ3YUadJ4RC2OobgfiPNHI
-	 lAtOcI+YXVprYmBTkU2ebh69W4CDs8tLl+aB19+l8f7FcutfSctw0Aa6boskTtBI+D
-	 AWFlkLNLrnMUx2/zFkx8yQ/J+g9wO6I5/R6lR+a0vv2CHU7SZWJSu9Xkxk5xEeQbXx
-	 37RokpQuCiFj6tviL8/Ae8K84VyLdbTd2ubOoeeJ5Pmw0VdDAPXE/RJDHPB8NigPsR
-	 aL1UjrRjQT6wIjr9mDMEuT0mlNfdfCKuFi14iFBvH8AGKKx3s1z0luTqJLt7Mdembq
-	 IJwgP4grIJdvA==
-Date: Tue, 16 Apr 2024 16:39:27 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Heiko Stuebner <heiko@sntech.de>
-Subject: Re: [PATCH v2 00/17] riscv: Support vendor extensions and
- xtheadvector
-Message-ID: <20240416-hurry-garbage-c5b43241dbe0@spud>
-References: <20240415-dev-charlie-support_thead_vector_6_9-v2-0-c7d68c603268@rivosinc.com>
+	s=k20201202; t=1713282043;
+	bh=M8oXFOXC9510L1sS9yrQwCiqB9isOtApcFXKR6Um07A=;
+	h=Date:From:To:Cc:Subject:From;
+	b=gSHYndLgQ56O76u3RNiEF/RQ7gBGKZxI/UgP8M0MOMUZchr73UqFrltTx1Jaky37E
+	 2PDm6pZUSLadw3UTIQP6/kmZqgB2xo6Cs59UhIR5pc+Whxv2wKsc5sdxU7LBfRUgkk
+	 /de0az0CjUS1nwJTflxergcCYLsZ7ThrkvCkGGEMqmVkyTeOVNsf+LT+zmiCuRi6+/
+	 n2UhOXE8XK2MWY+jWNPueo3zeu9IWC6rwmSTjq0OLWCnXVu8Rh/4bLW2DIBKw0r3iW
+	 XcDfBGWrT08PV3LlFv0oeQ5c5V2rzeeJ/dhyGwUAwEkfyFaPHA7b8nvCo+I0jlMk2B
+	 yeRmPWg/pZ3iA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rwkvL-000000005yE-0UE6;
+	Tue, 16 Apr 2024 17:40:43 +0200
+Date: Tue, 16 Apr 2024 17:40:43 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>
+Cc: ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: ath11k: WCN6855: possible ring buffer corruption
+Message-ID: <Zh6b-38tGGXo-ee7@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="MtdbaA8z8FH3b/rB"
-Content-Disposition: inline
-In-Reply-To: <20240415-dev-charlie-support_thead_vector_6_9-v2-0-c7d68c603268@rivosinc.com>
-
-
---MtdbaA8z8FH3b/rB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 15, 2024 at 09:11:57PM -0700, Charlie Jenkins wrote:
+Hi Kalle and Jeff,
 
-> Changes in v2:
-> - Added commit hash to xtheadvector
-> - Simplified riscv,isa vector removal fix to not mess with the DT
->   riscv,vendorid
-> - Moved riscv,vendorid parsing into a different patch and cache the
->   value to be used by alternative patching
-> - Reduce riscv,vendorid missing severity to "info"
-> - Separate vendor extension list to vendor files
-> - xtheadvector no longer puts v in the elf_hwcap
+Over the past year I've received occasional reports from users of the
+Lenovo ThinkPad X13s (aarch64) that the wifi sometimes stops working.
+When this happens the kernel log is filled with errors like:
 
-> - Only patch vendor extension if all harts are associated with the same
->   vendor. This is the best chance the kernel has for working properly if
->   there are multiple vendors.
+[ 1164.962227] ath11k_warn: 222 callbacks suppressed
+[ 1164.962238] ath11k_pci 0006:01:00.0: HTC Rx: insufficient length, got 1484, expected 1492
+[ 1164.962309] ath11k_pci 0006:01:00.0: HTC Rx: insufficient length, got 1460, expected 1484
+[ 1164.962994] ath11k_pci 0006:01:00.0: HTC Rx: insufficient length, got 1476, expected 1484
+[ 1164.963405] ath11k_pci 0006:01:00.0: HTC Rx: insufficient length, got 1484, expected 1488
+[ 1164.963701] ath11k_pci 0006:01:00.0: HTC Rx: insufficient length, got 1480, expected 1484
+[ 1164.963852] ath11k_pci 0006:01:00.0: HTC Rx: insufficient length, got 1468, expected 1480
+[ 1164.964491] ath11k_pci 0006:01:00.0: HTC Rx: insufficient length, got 1484, expected 1492
+[ 1164.964733] ath11k_pci 0006:01:00.0: HTC Rx: insufficient length, got 1488, expected 1492
+[ 1165.198329] ath11k_pci 0006:01:00.0: HTC Rx: insufficient length, got 1460, expected 1488
+[ 1165.198470] ath11k_pci 0006:01:00.0: HTC Rx: insufficient length, got 1460, expected 1476
+[ 1166.266513] ath11k_pci 0006:01:00.0: wmi tlv parse failure of tag 2699 at byte 348 (1132 bytes left, 64788 expected)
+[ 1166.542803] ath11k_pci 0006:01:00.0: wmi tlv parse failure of tag 4270 at byte 348 (1128 bytes left, 63772 expected)
+[ 1166.768238] ath11k_pci 0006:01:00.0: wmi tlv parse failure of tag 0 at byte 376 (1112 bytes left, 11730 expected)
+[ 1166.900152] ath11k_pci 0006:01:00.0: wmi tlv parse failure of tag 3 at byte 790 (694 bytes left, 16256 expected)
+[ 1168.499073] ath11k_pci 0006:01:00.0: wmi tlv parse failure of tag 1 at byte 62 (1426 bytes left, 3089 expected)
+[ 1168.818086] ath11k_pci 0006:01:00.0: wmi tlv parse failure of tag 63063 at byte 1466 (10 bytes left, 50467 expected)
+[ 1169.032885] ath11k_pci 0006:01:00.0: wmi tlv parse failure of tag 0 at byte 364 (1120 bytes left, 12483 expected)
+[ 1169.308546] ath11k_pci 0006:01:00.0: wmi tlv parse failure of tag 3092 at byte 348 (1128 bytes left, 64780 expected)
+[ 1169.563928] ath11k_pci 0006:01:00.0: wmi tlv parse failure of tag 1 at byte 348 (1124 bytes left, 44062 expected)
 
-I don't agree with this lack of trust in what firmware is telling us.
+which after a quick look at the driver seems to suggest that we may be
+hitting some kind of ring buffer corruption.
 
-I'm not really gonna review this v2 until discussion has finished in v1
-about some things, I fundamentally disagree with handling the same
-extension differently for different CPU vendors and I don't wanna
-fracture that conversation further.
+Rebinding the driver supposedly sometimes make things work again, but
+not always.
 
-> - Split hwprobe vendor keys out into vendor file
-> - Add attribution for Heiko's patches
-> - Link to v1: https://lore.kernel.org/r/20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com
+The issue has been confirmed with the 6.8 kernel and the latest firmware
+WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.37.
 
---MtdbaA8z8FH3b/rB
-Content-Type: application/pgp-signature; name="signature.asc"
+I've triggered this issue twice myself with 6.6 and .23 firmware, but
+the reports date back to at least 6.2 and likely when using even older
+firmware.
 
------BEGIN PGP SIGNATURE-----
+An unconfirmed hypothesis is that we may be hitting this more often when
+enabling the GIC ITS so that the interrupt processing is spread out over
+all cores (unlike when using the DWC controller's internal MSI
+implementation). This change is now merged for 6.10.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh6brwAKCRB4tDGHoIJi
-0mfRAQDv3w5+C9suCRRRiwfjjVWoUxMRKczJo1O3djhERhZohQEA3PKM7ixcBZ/+
-gCDOCf12p1w6L8bmXsvYZ36xQsLl6g0=
-=ZdJE
------END PGP SIGNATURE-----
+Do you have any immediate theories about what could be causing this?
+Does it look like a firmware or driver issue to you, for example? Is it
+something you've seen before?
 
---MtdbaA8z8FH3b/rB--
+Note that I've previously reported this here:
+
+	https://bugzilla.kernel.org/show_bug.cgi?id=218623
+
+Johan
 
