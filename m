@@ -1,133 +1,149 @@
-Return-Path: <linux-kernel+bounces-146239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36E6D8A6291
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:49:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAA6D8A6297
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:49:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E724A285025
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:49:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62FB3B226EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:49:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57CD83770B;
-	Tue, 16 Apr 2024 04:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBBFA39AF2;
+	Tue, 16 Apr 2024 04:49:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="YcXIAjWD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kGsBsyY/"
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 702372E622
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 04:48:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2AB339FD0;
+	Tue, 16 Apr 2024 04:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713242939; cv=none; b=UwFy9QNSyNA7L3i8YEd8T1Y1d38LV4GAdOczwfqqNCPFTWpCZaqm1NfzrBkr0lO13dEcI+EymxCFgQdaqpBnBejOzS2I24lP4xBk5y5nnPufz+wzL8KFdksVhMCwPU+OIPuQY0bva+btnhx7fqmxzcuPAlfUbASSqhK1Pr134Ug=
+	t=1713242954; cv=none; b=HO18yl/qZKcDaTf4lXerc7gcuqFtRcnKVfekkWy0UuF3X6i4BLaGO5iDtOAm/JVR3/6MXSoKyZ7pjqMuQkFLTC8Mwf130dHnVXIwLw+htUja2kFW1XhnyjjYnqVr7oJZ+k92ytbqUBYlX0m9dVrorXlNmFsGcf7HoG8eIJVDU6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713242939; c=relaxed/simple;
-	bh=zFIazubz9lAZhK0n9voQjFdUXkFSTdqVGc2opJfNIlI=;
+	s=arc-20240116; t=1713242954; c=relaxed/simple;
+	bh=X0e/b4815dUU3yNfWs7rK8Qfqjm9Hb0r1rcD66zpWFc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W78u5Rg8qvawbTnCAZznedlvUM9Np2l7sUekxKmeXnFFN0dKTjDsa3I1ZxV/MfsRtoEcp2gLa0/XanYqbnZIkpUD5E3nI66Ygu2Qh5pyRKCjNlLwBZdc9LX/0s7mpVn8ib0fDplajWB92xoEIHUERsm/5oJvRom6LV11fk+CsNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=YcXIAjWD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12580C113CE;
-	Tue, 16 Apr 2024 04:48:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713242939;
-	bh=zFIazubz9lAZhK0n9voQjFdUXkFSTdqVGc2opJfNIlI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YcXIAjWD2zpfdoqqsN2r8BNAEA1fCmQpcrJOgojFttpa7Go/szfmanB00V6Yo+8UK
-	 PxHshPolYQSGuSecdepA9aDANpskzfe9tIRpUKDK2fIGsSR9wO+MnNJcp+qrwKQ/FR
-	 OHPwzQ5c/7WHpPx6AEaIP0iAqHlDICAtAu0OjDk4=
-Date: Tue, 16 Apr 2024 06:48:53 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Zhu Wang <wangzhu9@huawei.com>
-Cc: harry.wentland@amd.com, sunpeng.li@amd.com, alexander.deucher@amd.com,
-	christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-	sanglipeng1@jd.com, sashal@kernel.org, wayne.lin@amd.com,
-	joshua@froggi.es, hongao@uniontech.com, cssk@net-c.es,
-	nicholas.kazlauskas@amd.com, chiahsuan.chung@amd.com,
-	mwen@igalia.com, roman.li@amd.com, aurabindo.pillai@amd.com,
-	hansen.dsouza@amd.com, Rodrigo.Siqueira@amd.com,
-	konstantin.meskhidze@huawei.com, aric.cyr@amd.com,
-	zhangjialin11@huawei.com, jaehyun.chung@amd.com,
-	mario.limonciello@amd.com, amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5.10] drm/amd/display: Wake DMCUB before executing GPINT
- commands
-Message-ID: <2024041633-breath-unfiled-86c1@gregkh>
-References: <20240416024347.2446403-1-wangzhu9@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PED2eJ2i5X5B2mDhjhs285LAi9+DOiSFsEg+uCxPIeEdFbyRO5CaQX2ZPD45MkHSUNY+uGgY6ROGJWew609rcpmgyzExRtss246hafk1vCmNC81nKbEa3ynP9Cv0Tz50cf5eIrX9TCxpfFqnpquKt0UQe6xStt4BVz6ViAZlsXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kGsBsyY/; arc=none smtp.client-ip=209.85.167.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bbbc6b4ed1so2424288b6e.2;
+        Mon, 15 Apr 2024 21:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713242952; x=1713847752; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=X0e/b4815dUU3yNfWs7rK8Qfqjm9Hb0r1rcD66zpWFc=;
+        b=kGsBsyY/eG0fcYO2vm6JuStXj8mDolBmFcWNI+KC8PbHw4hn32dtUIAndWNHGpH4b6
+         eiszdp68Ca84nnCykEDe0kesDR0J94deRb5XuTDyNoiCK+7oLf3IRGJ1MngdBYyu+3Pe
+         bL1U3lEw0cZzfZ7AzLOY7DdXdgvvoQQWVGdVjrQqZB0Blb3q6NvG0NRwYZAWpnLL0kcu
+         2OT4gR7OjDxRRHUyJc5mYoe8C6aUVZ7u3aBtiOgT4ajmEHrWg1dZ2iicwGlQi3INTRgv
+         lpbjcZCLBxbSYdkJDHENqFIrTWoeBIKymxxcw9SCXU1qaCR8+oqYowLoRQg3Z2KMnwti
+         LkGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713242952; x=1713847752;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X0e/b4815dUU3yNfWs7rK8Qfqjm9Hb0r1rcD66zpWFc=;
+        b=duGh2vWX9dR+wCbavV3t1oZbCjlcqPxO0fFCLrfUKHnwLBvcb32rW3A553uIZy/H2e
+         WpLBdEgV7XYnXP8P4Z82k6IBafF1ACiWu97b+rRdYYu7bxEAUOBH3vM28Ko78z/gdfb+
+         NFw7O0A7NPpnp1DaU6eXgAoW6W/oZt+OjwiEiqPR4B19nUSWun3UUu1T2TTPhd15uVco
+         HyrDyOcwv102F7/RDhYgETn1PfpxQtvunMGfhDPwxznyf4Eg8RfBKQOVFvDeZUf0ztp2
+         dq3DRPzW4zCMh5eXWv2h+j0hBJVOMdxZ379OUvugl0JwQ1j+4iQLSnm+2NqA7z2wF9jb
+         N1vQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWbH5ABX1QI2kXX+QNlsI6pIiF7A8KOZvAyYu0O5ML3d3ROSTggc3lXXXiG6o+ZWBFkeq6r7bTwKrSG72TotxdO4BjgMRVgYrTAIUiB5O12LCnjbWgmbv3PLPotGc7GRfhu7Gnprc1aZuD6OqD0hdjcpNOhqbHUWmT168uvWZC/CyXkHcy90CF1YM/s4ramT3heqNoFLvmKxs1HaFhTHjD4AtgvocDwfg+I4EmkXcRXLrsoI+K99NuizwgIR3s4
+X-Gm-Message-State: AOJu0Ywe6n1JSue5DES8FTpQQn5Ffyn0pftSc347kk+jb/RGJEc4fIyV
+	CrfnLmEmcB6NrzqomAaDSI0K6KBn+YNg8ph9Y0OIyrtFSi7qK0Tj
+X-Google-Smtp-Source: AGHT+IGoloH1Cz2CDfxkFKegELxS+FD2Cf5LJ6XwCl9i4FMzbWDZYaoJWDAQEPh28jpTvMESJD+fqQ==
+X-Received: by 2002:a05:6808:3c6:b0:3c5:fd59:cfd2 with SMTP id o6-20020a05680803c600b003c5fd59cfd2mr13127438oie.37.1713242951652;
+        Mon, 15 Apr 2024 21:49:11 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id gh12-20020a056a00638c00b006ecc858b67fsm8312130pfb.175.2024.04.15.21.49.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 21:49:11 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id BA5A818462BA0; Tue, 16 Apr 2024 11:49:07 +0700 (WIB)
+Date: Tue, 16 Apr 2024 11:49:07 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>, corbet@lwn.net,
+	paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+	akpm@linux-foundation.org, shuah@kernel.org,
+	mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+	mic@digikod.net
+Cc: linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	bpf@vger.kernel.org, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+	linux-integrity@vger.kernel.org, wufan@linux.microsoft.com,
+	pbrobinson@gmail.com, zbyszek@in.waw.pl, hch@lst.de,
+	mjg59@srcf.ucam.org, pmatilai@redhat.com, jannh@google.com,
+	dhowells@redhat.com, jikos@kernel.org, mkoutny@suse.com,
+	ppavlu@suse.com, petr.vorel@gmail.com, mzerqung@0pointer.de,
+	kgold@linux.ibm.com, Roberto Sassu <roberto.sassu@huawei.com>
+Subject: Re: [PATCH v4 00/14] security: digest_cache LSM
+Message-ID: <Zh4DQ7RGxtWCam8K@archie.me>
+References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="BkMvQL07QYXGkkI3"
 Content-Disposition: inline
-In-Reply-To: <20240416024347.2446403-1-wangzhu9@huawei.com>
+In-Reply-To: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
 
-On Tue, Apr 16, 2024 at 02:43:47AM +0000, Zhu Wang wrote:
-> From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-> 
-> stable inclusion
-> from stable-v6.7.3
-> commit 	2ef98c6d753a7 ("drm/amd/display: Wake DMCUB before executing GPINT commands")
-> category: bugfix
-> bugzilla: https://gitee.com/src-openeuler/kernel/issues/I9BV4C
-> CVE: CVE-2023-52624
-> 
-> Reference: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2ef98c6d753a744e333b7e34b9cf687040fba57d
-> 
-> --------------------------------
-> 
-> [ Upstream commit e5ffd1263dd5b ("drm/amd/display: Wake DMCUB before executing GPINT commands") ]
-> 
-> [Why]
-> DMCUB can be in idle when we attempt to interface with the HW through
-> the GPINT mailbox resulting in a system hang.
-> 
-> [How]
-> Add dc_wake_and_execute_gpint() to wrap the wake, execute, sleep
-> sequence.
-> 
-> If the GPINT executes successfully then DMCUB will be put back into
-> sleep after the optional response is returned.
-> 
-> It functions similar to the inbox command interface.
-> 
-> Cc: Mario Limonciello <mario.limonciello@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: stable@vger.kernel.org
-> Reviewed-by: Hansen Dsouza <hansen.dsouza@amd.com>
-> Acked-by: Wayne Lin <wayne.lin@amd.com>
-> Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-> Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-> 
-> This patch comes from following commits:
-> 
->  115c7e7f0501 ("drm/amd/display: Add psr get_state call")
->  1d496907f1c5 ("drm/amd/display: Engage PSR synchronously")
->  34ba432c946d ("drm/amd/display: [FW Promotion] Release 0.0.44")
->  672251b223c1 ("drm/amd/display: [FW Promotion] Release 0.0.40")
->  04f3c88f0955 ("drm/amd/display: Retry getting PSR state if command times out")
->  b30eda8d416c ("drm/amd/display: Add ETW log to dmub_psr_get_state")
->  f59a66c1915e ("drm/amd/display: use do-while-0 for DC_TRACE_LEVEL_MESSAGE()")
->  e97cc04fe0fb ("drm/amd/display: refactor dmub commands into single function")
->  522b9a5d5852 ("drm/amd/display: drain dmub inbox if queue is full")
->  9dce8c2a5f1b ("drm/amd/display: [FW Promotion] Release 0.0.161.0")
->  276641775848 ("drm/amd/display: [FW Promotion] Release 0.0.162.0")
->  8774029f76b9 ("drm/amd/display: Add DCN35 CLK_MGR")
->  65138eb72e1f ("drm/amd/display: Add DCN35 DMUB")
->  dc01c4b79bfe ("drm/amd/display: Update driver and IPS interop")
->  5b7954272ae9 ("drm/amd/display: [FW Promotion] Release 0.0.183.0")
->  da2d16fcdda3 ("drm/amd/display: Fix IPS handshake for idle optimizations")
->  5e8a0d3598b4 ("drm/amd/display: Negate IPS allow and commit bits")
->  820c3870c491 ("drm/amd/display: Refactor DMCUB enter/exit idle interface")
->  2ef98c6d753a ("drm/amd/display: Wake DMCUB before executing GPINT commands")
-> 
-> Signed-off-by: Zhu Wang <wangzhu9@huawei.com>
 
-I'm confused, what are we supposed to do with this?
+--BkMvQL07QYXGkkI3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-greg k-h
+On Mon, Apr 15, 2024 at 04:24:22PM +0200, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>=20
+> Integrity detection and protection has long been a desirable feature, to
+> reach a large user base and mitigate the risk of flaws in the software
+> and attacks.
+>=20
+> However, while solutions exist, they struggle to reach the large user
+> base, due to requiring higher than desired constraints on performance,
+> flexibility and configurability, that only security conscious people are
+> willing to accept.
+>=20
+> This is where the new digest_cache LSM comes into play, it offers
+> additional support for new and existing integrity solutions, to make
+> them faster and easier to deploy.
+>=20
+> The full documentation with the motivation and the solution details can be
+> found in patch 14.
+>=20
+> The IMA integration patch set will be introduced separately. Also a PoC
+> based on the current version of IPE can be provided.
+>=20
+
+I can't cleanly apply this series (conflict on patch [13/14]). Can you
+point out the base commit of this series?
+
+Confused...
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--BkMvQL07QYXGkkI3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZh4DPQAKCRD2uYlJVVFO
+oxOIAP4gVyV6DAnmVLqQb6OkqAAY7l0rywBHayaYMF+T7O8BUwD9EU018eGv0r1C
+TUjWVbhQh6gRlmM3rI+Alg84QyqPvwg=
+=IWc9
+-----END PGP SIGNATURE-----
+
+--BkMvQL07QYXGkkI3--
 
