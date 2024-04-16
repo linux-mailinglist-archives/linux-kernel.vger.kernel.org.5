@@ -1,138 +1,113 @@
-Return-Path: <linux-kernel+bounces-147427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 582338A73E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:54:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B77618A73E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:54:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F02E282B9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:54:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7500B281BE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:54:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16DA6139597;
-	Tue, 16 Apr 2024 18:52:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC1A3137C4C;
+	Tue, 16 Apr 2024 18:53:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hE6e2M02"
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Pqdszqc4"
+Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0730137773
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:52:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0C90136E0A
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:53:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713293540; cv=none; b=snfpHepUZcyxH+y+QpllsHkpBLQbhyvfmm5KPUgQ0amdYBSvMJqCW87FjqmdpxdzL+ZbVNZSjIg7HeG2qc/WpH02w0epDZXhXa9dAoShttOj7DFv41RWfJoNHmbJJBhd3cz8ZmhBB57dj3VdNB3IRNEpp35IFZgVGJgDX4Khyf4=
+	t=1713293587; cv=none; b=lDQW2LvA0A+IvsjMKytWgY1hG+S/FrwZs+QE0K8lbCD8olMz1SH31mBD9fIi47BVNswAIWrw9SxGV5qJ+mL2OJjyoI7tQu+2jlrQEX/HtV0dNnsCmmX2qvavRRD/R7/TQbxTER4Z/TBvzG7jjn9XcKBxximjSMiI6Kh/vNcxRGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713293540; c=relaxed/simple;
-	bh=y0uVH3oZE1a3APxihRtxusmQeZlfaUfpI73EDsl34Ic=;
+	s=arc-20240116; t=1713293587; c=relaxed/simple;
+	bh=wJGknp5lUHANdPGAPLPnVm4IhArPwW8Lmavxx3DEeCc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JIlw/Zy66KCeFLwYVxRHZ4ltrCxSz8134NfQGV1/MogGgAN9FCSQwudJWYqbxVzuHjxxQJ2KfP5J6Y30zi7Rl+WR4kjgIp6VDH3/CvbPH7OTnDxq91tOtTxPj5/PZt/EsA6mia8pmN0xmIvhAk1zXYduRLhAt/vgtdwZs/FXWlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hE6e2M02; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso5078709276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:52:17 -0700 (PDT)
+	 To:Cc:Content-Type; b=BtnkPpCN2BsLjey9Wqk1gE9a5z+h7AMjEgCtTZHwwQg8GzyWnZpr2fUDW3jD+XLjly9rdzi0mtZ3isNmohbVjK5qVMTIVR99TIsApO6MBB/9CgHrsu7Dhw87n3ZSghmK9t9KyyuLssc3+/Q7joobOY5p800cKEOJguMsZQn0K+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Pqdszqc4; arc=none smtp.client-ip=209.85.166.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-36a3a4c9d11so17285ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:53:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713293537; x=1713898337; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=W5vQzyryFWgKw/gamp30zKVmQkGglywjftI1PpywStM=;
-        b=hE6e2M028SGdn1J6NmvTGc0lCnYRBo1IY3+/VzIBb3MWrQuKMXFHc5jKbZK2qWzNNt
-         7PdZ79yy7q11oLk6TiikHUAUGrFMokjcDDrzwcxbZ/GegpglgHJJK7qBAJn7X45jWl1n
-         S/14eYV+R3WcmcbxVIqX5vV6R/86JQykzksgHOj955lugAHoMt7897vfTVH9E6IOeuPn
-         XxbdKEQP3P+ls8G60k8KdRY51dpvxr8zD4E1ydjl++DTY0/FJLB7YaFQVxSO1FZv7C9J
-         +WigZwi3uCdz7KOm9N/b2svuqCmDMJE+RcEPVj/pTLwJLZjU6SVuRg/mrXwk7fsSb39K
-         Lq1w==
+        d=google.com; s=20230601; t=1713293585; x=1713898385; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tICw/qDwa1/FY+SKomp4c5dR3Tm8JBis2SFpQlX51nM=;
+        b=Pqdszqc4osD0CidaqAoTKC4OlSpg50X5RmnVR5oypvL8N44UErrFiksxgyWTHLMEua
+         CkBGdKX63vQ0aoG/voE/LsTVUjF7j76KPOx8V62F/xL0hjq2dunEnwmvQslCPHQd2o+3
+         LlqA/PZwaSz7PJk60+Q9ZuQ/zHnMY7mMTE4sBT1QPGKKxuIzD6MQqDGB4Ce1aXw5NCCQ
+         3VRBjWQMTEx5KFqDANIYF6YfCkCOdihnG4LDf5mp8RMNzjznLySao03iAOYAxc2RkwDo
+         5ZJrPfwIfHRAMX/gIP9gvBFDGi5lYTLTep9ZGBrzvoYJe8c8meQKAnKqsAg0VvnVYlIl
+         MJqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713293537; x=1713898337;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W5vQzyryFWgKw/gamp30zKVmQkGglywjftI1PpywStM=;
-        b=C/pG7nAfIm5wwmwFZFeOb8lXNCIwvacBcC7GsLcSjOAaAj3nQm0ocW6JiFBx6Ui3oB
-         HOVitqZFV1iXoQRBAogY5vyizlqiR27ql+YgIVa+UC2vYKoy7b/20rbOx/p1njGe4irj
-         Qu/VB5DiJRUY9LXxN/s9vIdPvMppliGZrmPps/+JMnSnUDGmAPl5A+jGtLW2DEZ64MS1
-         u/XArNpJunYfPephOb8IweDSuCgg8geWlluo6k/UpQqD+b56WhiVq1ySR9n/rfQLIoSH
-         Yf74a7NJNjuu7lijng2OzJY9x5hA0+3KHYx5doBQ9xypWiTr1AtiMUSXotSUWDrVqNJI
-         rIeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVRAJPYP+uBsIjoL+I2948JEcTEli6IqAPHuPcnYB4Gdmyy0/wT33v2REE/IrP+nsa3ZmjgoeqpqNWgbQQ7R3KkNkClPgjpymTCZkE0
-X-Gm-Message-State: AOJu0YxfDyaXSpkeQIYxDLCztfx/PW5qiEo+csfSMKNyLtyrpW6bDx7D
-	7JH7wNjbUEQ91QnkdT2TtqeAaMY6orH/Xl48odZB3HuZahTCoymp1VOH/ISc8oULHfy8SUtWeOe
-	RyBhAQQsNnNx0Y08VAsf1qKXm/SNLNVQnyWIm6w==
-X-Google-Smtp-Source: AGHT+IEJjJJdzKD55UTLRTScRGrfAh2UPKsgtVqF6P2ql9N19AKf5+ktuo3JFOBl4aK0CuRCXG6qMrNHQ+pcEav3Cwg=
-X-Received: by 2002:a25:1e56:0:b0:de1:1b21:4f8 with SMTP id
- e83-20020a251e56000000b00de11b2104f8mr10605271ybe.62.1713293536905; Tue, 16
- Apr 2024 11:52:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713293585; x=1713898385;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tICw/qDwa1/FY+SKomp4c5dR3Tm8JBis2SFpQlX51nM=;
+        b=b400OzUT9Rngp+KaZeCvCnncyetks1jw4+AOF/PKdbeSbrCdhSVP/uaDrGhgpMDglz
+         Kkj19lHdzNFMNP1pIWLzSyOniTKbWeQPj0mMb/XtfaSPdCAsLbbkU8rsgjQ1B46N/rBq
+         1SwV6Q75fXQ+6VgghDvk8hUiEb6EWd7VEmY/NFertFrMoGm3Crbi0+CvD6gI6aRTk4nq
+         W7MHmv6pwVRXdjiSMd7bLRRbvI5j8JW+/0xDG0qjzpJqI8/30iJHn8Bk+pb0VvsLmpxb
+         nCP0oMfBXmJN+VEYojbBEAT+k4LKllVHQgHMf+AdyAprmR7owfxPf+lD9ydI0GmjupK+
+         QNiw==
+X-Forwarded-Encrypted: i=1; AJvYcCXXX8ATKpiwRupdGtQdEof68QuBbcqFPVQpn3sEW+i7Pbk6+j8ruVfQ3Y/ntIjwFd8Vg2Pf1MargAuVXk22tQxHWRdFQo5inKnQkqdv
+X-Gm-Message-State: AOJu0YwecMEqY2+4LN3+y+RKxroLt1Phz+wsua8fZInJFlM4cngbHjud
+	THpOAGFgtCFii5z1MZugrDLOv+qPgrr55izUYlWaKU5N5P6CMhXCw5pE9gsAsRyJWKCScZjJ01l
+	8iB+w/bjVieHip2X1zY0Vk8DnoiMn6crACz+c
+X-Google-Smtp-Source: AGHT+IEL7EsPgyMdJjpjdlxNt7KIfzB/hOQUcGyXLmnPNXR7c20O7iK0IwGaFMb/Z8k6DNKtI+0c1SJjI7Hx0PC+IWI=
+X-Received: by 2002:a92:d68a:0:b0:36a:26bc:5f45 with SMTP id
+ p10-20020a92d68a000000b0036a26bc5f45mr30552iln.14.1713293584942; Tue, 16 Apr
+ 2024 11:53:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416182005.75422-1-quic_ajipan@quicinc.com> <20240416182005.75422-2-quic_ajipan@quicinc.com>
-In-Reply-To: <20240416182005.75422-2-quic_ajipan@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 16 Apr 2024 21:52:05 +0300
-Message-ID: <CAA8EJpox_C7hdHYxM4-w6YKHN2BMQqJ6xaGZqvzFdOYyrYtZFA@mail.gmail.com>
-Subject: Re: [PATCH V2 1/8] clk: qcom: clk-alpha-pll: Fix CAL_L_VAL override
- for LUCID EVO PLL
-To: Ajit Pandey <quic_ajipan@quicinc.com>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
-	Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, linux-arm-msm@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>, 
-	Jagadeesh Kona <quic_jkona@quicinc.com>, Imran Shaik <quic_imrashai@quicinc.com>, 
-	Satya Priya Kakitapalli <quic_skakitap@quicinc.com>, stable@vger.kernel.org
+References: <cover.1711674410.git.babu.moger@amd.com> <1a6bc747da259e8b3a85de339bc1d6bf94995c53.1711674410.git.babu.moger@amd.com>
+In-Reply-To: <1a6bc747da259e8b3a85de339bc1d6bf94995c53.1711674410.git.babu.moger@amd.com>
+From: Peter Newman <peternewman@google.com>
+Date: Tue, 16 Apr 2024 11:52:53 -0700
+Message-ID: <CALPaoCj_yb_muT78jFQ5gL0wkifohSAVwxMDTm2FX_2YVpANdw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 09/17] x86/resctrl: Introduce assign state for the
+ mon group
+To: Babu Moger <babu.moger@amd.com>
+Cc: corbet@lwn.net, fenghua.yu@intel.com, reinette.chatre@intel.com, 
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	paulmck@kernel.org, rdunlap@infradead.org, tj@kernel.org, 
+	peterz@infradead.org, yanjiewtw@gmail.com, kim.phillips@amd.com, 
+	lukas.bulwahn@gmail.com, seanjc@google.com, jmattson@google.com, 
+	leitao@debian.org, jpoimboe@kernel.org, rick.p.edgecombe@intel.com, 
+	kirill.shutemov@linux.intel.com, jithu.joseph@intel.com, kai.huang@intel.com, 
+	kan.liang@linux.intel.com, daniel.sneddon@linux.intel.com, 
+	pbonzini@redhat.com, sandipan.das@amd.com, ilpo.jarvinen@linux.intel.com, 
+	maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, eranian@google.com, james.morse@arm.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 16 Apr 2024 at 21:21, Ajit Pandey <quic_ajipan@quicinc.com> wrote:
->
-> In LUCID EVO PLL CAL_L_VAL and L_VAL bitfields are part of single
-> PLL_L_VAL register. Update for L_VAL bitfield values in PLL_L_VAL
-> register using regmap_write() API in __alpha_pll_trion_set_rate
-> callback will override LUCID EVO PLL initial configuration related
-> to PLL_CAL_L_VAL bit fields in PLL_L_VAL register.
->
-> Observed random PLL lock failures during PLL enable due to such
-> override in PLL calibration value. Use regmap_update_bits() with
-> L_VAL bitfield mask instead of regmap_write() API to update only
-> PLL_L_VAL bitfields in __alpha_pll_trion_set_rate callback.
->
-> Fixes: 260e36606a03 ("clk: qcom: clk-alpha-pll: add Lucid EVO PLL configuration interfaces")
-> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
-> Cc: stable@vger.kernel.org
+Hi Babu,
 
-S-o-B tag should be the last one. With that fixed:
+On Thu, Mar 28, 2024 at 6:08=E2=80=AFPM Babu Moger <babu.moger@amd.com> wro=
+te:
+>
+> +/*
+> + * monitor group's state when ABMC is supported
+> + */
+> +#define ASSIGN_NONE                    0
+> +#define ASSIGN_TOTAL                   BIT(0)
+> +#define ASSIGN_LOCAL                   BIT(1)
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+We already have an enumeration for the monitoring events (i.e.,
+QOS_L3_MBM_TOTAL_EVENT_ID), which should already be suitable for
+maintaining a bitmap of which events have assigned monitors.
 
-> ---
->  drivers/clk/qcom/clk-alpha-pll.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-> index 8a412ef47e16..81cabd28eabe 100644
-> --- a/drivers/clk/qcom/clk-alpha-pll.c
-> +++ b/drivers/clk/qcom/clk-alpha-pll.c
-> @@ -1656,7 +1656,7 @@ static int __alpha_pll_trion_set_rate(struct clk_hw *hw, unsigned long rate,
->         if (ret < 0)
->                 return ret;
->
-> -       regmap_write(pll->clkr.regmap, PLL_L_VAL(pll), l);
-> +       regmap_update_bits(pll->clkr.regmap, PLL_L_VAL(pll), LUCID_EVO_PLL_L_VAL_MASK,  l);
->         regmap_write(pll->clkr.regmap, PLL_ALPHA_VAL(pll), a);
->
->         /* Latch the PLL input */
-> --
-> 2.25.1
->
->
-
-
--- 
-With best wishes
-Dmitry
+-Peter
 
