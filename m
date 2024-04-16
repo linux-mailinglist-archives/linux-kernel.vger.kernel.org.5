@@ -1,133 +1,160 @@
-Return-Path: <linux-kernel+bounces-146621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E51958A6850
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:27:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FE038A6852
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:28:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4831FB215C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:27:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A2FC1F21231
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:28:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE47127E2E;
-	Tue, 16 Apr 2024 10:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C19128379;
+	Tue, 16 Apr 2024 10:27:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iUFkCVwg"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="APkcRoME"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD288127E23
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:27:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5993A127B68;
+	Tue, 16 Apr 2024 10:27:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713263262; cv=none; b=XeY/JCGAer1gVZYrLmpmp8CzuHX/O4Mql7xDjYYequcuDRq60qQpJdcsqQyFPtRAOkYhIU1J/NZkcOaD3U1z7HrWLu1uU2lgV3E8Ji8Hz8lIplZBdwMN12zuZrKKWjLcjEKvqwjU/WvQIkwYv0Qdw9W+/CJiAJTGdKpm2RVRvig=
+	t=1713263265; cv=none; b=mdQ+F14QVDK+VutYU2AHViVZ1bb1+w+oOtiQ07RNFhSmMWEUre3XjFXlyPWmBGEcWX7clUy+cmRaWC0LNtVCPYzvw8wWe4/ZYWn8QSJ8PiXHw0pVy36zQfK3oM1TuSSdcvRxL9FwZSw6IGH4UWVAPlPbD1PduSmXsrkx/PIOUug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713263262; c=relaxed/simple;
-	bh=jMpD+iqIk7sAa1/rHFlDW/A5fWkcr8iBWlFV+lTM674=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=t8za62Z3wqfqjjJmHICPtYTxzRXXACAFobdfq7sl2qQkj6RuIZfxKwiEsfAnpUOFALxQLqQeEcdXzsWMtvEvouwGsPd7lLXSYkEVHpZpQyZs7rD8r0945WUBxxU1gmRUZC7kKariwIOHDoBxA69+xD3NVQN8Vl0Spk7x6blgLZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iUFkCVwg; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713263259;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=jMpD+iqIk7sAa1/rHFlDW/A5fWkcr8iBWlFV+lTM674=;
-	b=iUFkCVwgmH+curvN/qYhgYWhrf9aF2xmG6sSGXIyq4D7mCLh4v75Iq8LmN2lC5p1en8eLF
-	A82zEzmiFTNXkp8DmABDQ3QoWJGaLlvki20vPVvPK2dz8b/9pl8psfwZUX4U5x+xUr5vng
-	QzWWufs6MbFV4Uybe/kXI4Eo74GgsZE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-158-I05zHnnOMDukKEOlSiBC5g-1; Tue, 16 Apr 2024 06:27:33 -0400
-X-MC-Unique: I05zHnnOMDukKEOlSiBC5g-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-343b9425ed1so927759f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 03:27:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713263252; x=1713868052;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jMpD+iqIk7sAa1/rHFlDW/A5fWkcr8iBWlFV+lTM674=;
-        b=vHDhdoW3zooCRHKTrQ/FVUMnQNOzO+Mt+w+i36Ma2yk4A4hLi4l7jQ6T0ZKyDmQI8L
-         RcedjmupKjAZ6SouSFp5d424aAb1ymuThHEL6fUl2RKv+HrlMt+9gQ2euAh1s6o5u9Gs
-         tLasoG4XvQ5HS899xI2DE2vd3rRrYW07bPL3UZUAr9IoLkjgvHy/UBYVwcA8Oeoj8z8m
-         vKHC4usjOdlVZ6r2r/lCiojZqS4RKJgHGkNGx95D/AB4NcpRZ8Z+9Ww/sNTNFzFaT17R
-         rdT495U33h1M4C+thw3lnnhtAUIMuEjCCJYJwVXGsNeWYkHkYb8auZO2tpkvP+ht4/So
-         /j0w==
-X-Forwarded-Encrypted: i=1; AJvYcCWJqsOtScg3oMyl5jgSv3o5+VV6jtNWoti1CSbnXWrB/EwClRHmf8j9zLJBFNIk7VsKg4lyKA5DuegfC2p4S7ZZbzN102mCNaF6pelV
-X-Gm-Message-State: AOJu0Yy5hbbG8d2N0y+hyJAEmFLb94lNnEALkp3FCymSgp6muvF7bL4I
-	sM0yfbUGecB2LkoIm5wiOgnuwr7siqQeA+yNiNx3P5Nmr/jWz/PmclXzFQsuaav3apLzGAis50k
-	dM1Pd4xd/WJeh9fLxod6HPBj8sfPaAW48ueqixOyF06SabOgNTENTTLZ/N4dzdQ==
-X-Received: by 2002:a05:600c:3556:b0:418:3cf7:7f7b with SMTP id i22-20020a05600c355600b004183cf77f7bmr5227094wmq.3.1713263252098;
-        Tue, 16 Apr 2024 03:27:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGFmIW53wsJsfJZC/vP6rHZszIiJj2G/P1JWmKG8lyXcE3DKFIYdVt+Ue4BVg0M23mZHLeZ3g==
-X-Received: by 2002:a05:600c:3556:b0:418:3cf7:7f7b with SMTP id i22-20020a05600c355600b004183cf77f7bmr5227078wmq.3.1713263251734;
-        Tue, 16 Apr 2024 03:27:31 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-231-31.dyn.eolo.it. [146.241.231.31])
-        by smtp.gmail.com with ESMTPSA id q12-20020a05600c46cc00b00416e2c8b290sm22581975wmo.1.2024.04.16.03.27.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 03:27:31 -0700 (PDT)
-Message-ID: <9644a96d17152014c8e7f91e9786dde26f67d7a5.camel@redhat.com>
-Subject: Re: [PATCH net-next 4/4] net: stmmac: Move MAC caps init to phylink
- MAC caps getter
-From: Paolo Abeni <pabeni@redhat.com>
-To: Serge Semin <fancer.lancer@gmail.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, "David
- S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>,  Russell King <linux@armlinux.org.uk>, Yanteng
- Si <siyanteng@loongson.cn>, Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Simon Horman <horms@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, 
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>, netdev@vger.kernel.org, 
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org,  linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Date: Tue, 16 Apr 2024 12:27:29 +0200
-In-Reply-To: <20240412180340.7965-5-fancer.lancer@gmail.com>
-References: <20240412180340.7965-1-fancer.lancer@gmail.com>
-	 <20240412180340.7965-5-fancer.lancer@gmail.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=mQINBGISiDUBEAC5uMdJicjm3ZlWQJG4u2EU1EhWUSx8IZLUTmEE8zmjPJFSYDcjtfGcbzLPb63BvX7FADmTOkO7gwtDgm501XnQaZgBUnCOUT8qv5MkKsFH20h1XJyqjPeGM55YFAXc+a4WD0YyO5M0+KhDeRLoildeRna1ey944VlZ6Inf67zMYw9vfE5XozBtytFIrRyGEWkQwkjaYhr1cGM8ia24QQVQid3P7SPkR78kJmrT32sGk+TdR4YnZzBvVaojX4AroZrrAQVdOLQWR+w4w1mONfJvahNdjq73tKv51nIpu4SAC1Zmnm3x4u9r22mbMDr0uWqDqwhsvkanYmn4umDKc1ZkBnDIbbumd40x9CKgG6ogVlLYeJa9WyfVMOHDF6f0wRjFjxVoPO6p/ZDkuEa67KCpJnXNYipLJ3MYhdKWBZw0xc3LKiKc+nMfQlo76T/qHMDfRMaMhk+L8gWc3ZlRQFG0/Pd1pdQEiRuvfM5DUXDo/YOZLV0NfRFU9SmtIPhbdm9cV8Hf8mUwubihiJB/9zPvVq8xfiVbdT0sPzBtxW0fXwrbFxYAOFvT0UC2MjlIsukjmXOUJtdZqBE3v3Jf7VnjNVj9P58+MOx9iYo8jl3fNd7biyQWdPDfYk9ncK8km4skfZQIoUVqrWqGDJjHO1W9CQLAxkfOeHrmG29PK9tHIwARAQABtB9QYW9sbyBBYmVuaSA8cGFiZW5pQHJlZGhhdC5jb20+iQJSBBMBCAA8FiEEg1AjqC77wbdLX2LbKSR5jcyPE6QFAmISiDUCGwMFCwkIBwIDIgIBBhUKCQgLAgQWAgMBAh4HAheAAAoJECkkeY3MjxOkJSYQAJcc6MTsuFxYdYZkeWjW//zbD3ApRHzpNlHLVSuJqHr9/aDS+tyszgS8jj9MiqALzgq4iZbg
- 7ZxN9ZsDL38qVIuFkSpgMZCiUHdxBC11J8nbBSLlpnc924UAyr5XrGA99 6Wl5I4Km3128GY6iAkH54pZpOmpoUyBjcxbJWHstzmvyiXrjA2sMzYjt3Xkqp0cJfIEekOi75wnNPofEEJg28XPcFrpkMUFFvB4Aqrdc2yyR8Y36rbw18sIX3dJdomIP3dL7LoJi9mfUKOnr86Z0xltgcLPGYoCiUZMlXyWgB2IPmmcMP2jLJrusICjZxLYJJLofEjznAJSUEwB/3rlvFrSYvkKkVmfnfro5XEr5nStVTECxfy7RTtltwih85LlZEHP8eJWMUDj3P4Q9CWNgz2pWr1t68QuPHWaA+PrXyasDlcRpRXHZCOcvsKhAaCOG8TzCrutOZ5NxdfXTe3f1jVIEab7lNgr+7HiNVS+UPRzmvBc73DAyToKQBn9kC4jh9HoWyYTepjdcxnio0crmara+/HEyRZDQeOzSexf85I4dwxcdPKXv0fmLtxrN57Ae82bHuRlfeTuDG3x3vl/Bjx4O7Lb+oN2BLTmgpYq7V1WJPUwikZg8M+nvDNcsOoWGbU417PbHHn3N7yS0lLGoCCWyrK1OY0QM4EVsL3TjOfUtCNQYW9sbyBBYmVuaSA8cGFvbG8uYWJlbmlAZ21haWwuY29tPokCUgQTAQgAPBYhBINQI6gu+8G3S19i2ykkeY3MjxOkBQJiEoitAhsDBQsJCAcCAyICAQYVCgkICwIEFgIDAQIeBwIXgAAKCRApJHmNzI8TpBzHD/45pUctaCnhee1vkQnmStAYvHmwrWwIEH1lzDMDCpJQHTUQOOJWDAZOFnE/67bxSS81Wie0OKW2jvg1ylmpBA0gPpnzIExQmfP72cQ1TBoeVColVT6Io35BINn+ymM7c0Bn8RvngSEpr3jBtqvvWXjvtnJ5/HbOVQCg62NC6ewosoKJPWpGXMJ9SKsVIOUHsmoWK60spzeiJoSmAwm3zTJQnM5kRh2q
- iWjoCy8L35zPqR5TV+f5WR5hTVCqmLHSgm1jxwKhPg9L+GfuE4d0SWd84y GeOB3sSxlhWsuTj1K6K3MO9srD9hr0puqjO9sAizd0BJP8ucf/AACfrgmzIqZXCfVS7jJ/M+0ic+j1Si3yY8wYPEi3dvbVC0zsoGj9n1R7B7L9c3g1pZ4L9ui428vnPiMnDN3jh9OsdaXeWLvSvTylYvw9q0DEXVQTv4/OkcoMrfEkfbXbtZ3PRlAiddSZA5BDEkkm6P9KA2YAuooi1OD9d4MW8LFAeEicvHG+TPO6jtKTacdXDRe611EfRwTjBs19HmabSUfFcumL6BlVyceIoSqXFe5jOfGpbBevTZtg4kTSHqymGb6ra6sKs+/9aJiONs5NXY7iacZ55qG3Ib1cpQTps9bQILnqpwL2VTaH9TPGWwMY3Nc2VEc08zsLrXnA/yZKqZ1YzSY9MGXWYLkCDQRiEog1ARAAyXMKL+x1lDvLZVQjSUIVlaWswc0nV5y2EzBdbdZZCP3ysGC+s+n7xtq0o1wOvSvaG9h5q7sYZs+AKbuUbeZPu0bPWKoO02i00yVoSgWnEqDbyNeiSW+vI+VdiXITV83lG6pS+pAoTZlRROkpb5xo0gQ5ZeYok8MrkEmJbsPjdoKUJDBFTwrRnaDOfb+Qx1D22PlAZpdKiNtwbNZWiwEQFm6mHkIVSTUe2zSemoqYX4QQRvbmuMyPIbwbdNWlItukjHsffuPivLF/XsI1gDV67S1cVnQbBgrpFDxN62USwewXkNl+ndwa+15wgJFyq4Sd+RSMTPDzDQPFovyDfA/jxN2SK1Lizam6o+LBmvhIxwZOfdYH8bdYCoSpqcKLJVG3qVcTwbhGJr3kpRcBRz39Ml6iZhJyI3pEoX3bJTlR5Pr1Kjpx13qGydSMos94CIYWAKhegI06aTdvvuiigBwjngo/Rk5S+iEGR5KmTqGyp27o6YxZy6D4NIc6PKUzhIUxfvuHNvfu
- sD2W1U7eyLdm/jCgticGDsRtweytsgCSYfbz0gdgUuL3EBYN3JLbAU+UZpy v/fyD4cHDWaizNy/KmOI6FFjvVh4LRCpGTGDVPHsQXaqvzUybaMb7HSfmBBzZqqfVbq9n5FqPjAgD2lJ0rkzb9XnVXHgr6bmMRlaTlBMAEQEAAYkCNgQYAQgAIBYhBINQI6gu+8G3S19i2ykkeY3MjxOkBQJiEog1AhsMAAoJECkkeY3MjxOkY1YQAKdGjHyIdOWSjM8DPLdGJaPgJdugHZowaoyCxffilMGXqc8axBtmYjUIoXurpl+f+a7S0tQhXjGUt09zKlNXxGcebL5TEPFqgJTHN/77ayLslMTtZVYHE2FiIxkvW48yDjZUlefmphGpfpoXe4nRBNto1mMB9Pb9vR47EjNBZCtWWbwJTIEUwHP2Z5fV9nMx9Zw2BhwrfnODnzI8xRWVqk7/5R+FJvl7s3nY4F+svKGD9QHYmxfd8Gx42PZc/qkeCjUORaOf1fsYyChTtJI4iNm6iWbD9HK5LTMzwl0n0lL7CEsBsCJ97i2swm1DQiY1ZJ95G2Nz5PjNRSiymIw9/neTvUT8VJJhzRl3Nb/EmO/qeahfiG7zTpqSn2dEl+AwbcwQrbAhTPzuHIcoLZYV0xDWzAibUnn7pSrQKja+b8kHD9WF+m7dPlRVY7soqEYXylyCOXr5516upH8vVBmqweCIxXSWqPAhQq8d3hB/Ww2A0H0PBTN1REVw8pRLNApEA7C2nX6RW0XmA53PIQvAP0EAakWsqHoKZ5WdpeOcH9iVlUQhRgemQSkhfNaP9LqR1XKujlTuUTpoyT3xwAzkmSxN1nABoutHEO/N87fpIbpbZaIdinF7b9srwUvDOKsywfs5HMiUZhLKoZzCcU/AEFjQsPTATACGsWf3JYPnWxL9
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1713263265; c=relaxed/simple;
+	bh=CBFlfJXfnRd9lj0QLT0BjStdJ6M5XGBrdlUNj/3gRvg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hv/Qa048z1kzmk7D3RBP3l1/2fkCgwKNEmcbJo86l2DqGqamHlV1Q/EnnM0MhgsI9PqGvXC52PumAY+NIIBl7qEdvBb+JYIJIhmsWunWdIRKGzOQh+q6BjMnBLveC1kxnX8Wfr4EJnIv//SONClF7NzV5vd8HsYvztfRoLtehvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=APkcRoME; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id A9751480;
+	Tue, 16 Apr 2024 12:26:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1713263215;
+	bh=CBFlfJXfnRd9lj0QLT0BjStdJ6M5XGBrdlUNj/3gRvg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=APkcRoMEO6zSeMRXN2LG5q6/fuDVKgtp7Brh+DZKxaKVpXOC3QWCIbu+6G+trJMaY
+	 kRtZAnWMbKm7XXRu3tg0ShLhP8mEf2oBYiIz+FZqypoeFDwxkZJE9y3Fd+d4sWxhR4
+	 2lw0wqV4j5zTxdJCC4XbSDMYheHEjH6aTLnMiPNM=
+Message-ID: <d2765261-e2ba-45f5-84af-4b55f8068318@ideasonboard.com>
+Date: Tue, 16 Apr 2024 13:27:38 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 6/9] media: subdev: Add v4l2_subdev_is_streaming()
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Hans Verkuil <hverkuil@xs4all.nl>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Umang Jain <umang.jain@ideasonboard.com>, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240410-enable-streams-impro-v3-0-e5e7a5da7420@ideasonboard.com>
+ <20240410-enable-streams-impro-v3-6-e5e7a5da7420@ideasonboard.com>
+ <20240412181558.GI31122@pendragon.ideasonboard.com>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Content-Language: en-US
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20240412181558.GI31122@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2024-04-12 at 21:03 +0300, Serge Semin wrote:
-> After a set of fixes the stmmac_phy_setup() and stmmac_reinit_queues()
-> method have turned to having some duplicated code. Let's get rid from the
-> duplication by moving the MAC-capabilities initialization to the PHYLINK
-> MAC-capabilities getter. The getter is called during each network device
-> interface open/close cycle. So the MAC-capabilities will be initialized i=
-n
-> normal device functioning and in case of the Tx/Rx queues
-> re-initialization as the original code semantics implies.
->=20
-> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+On 12/04/2024 21:15, Laurent Pinchart wrote:
+> Hi Tomi,
+> 
+> Thank you for the patch.
+> 
+> On Wed, Apr 10, 2024 at 03:35:53PM +0300, Tomi Valkeinen wrote:
+>> Add a helper function which returns whether the subdevice is streaming,
+>> i.e. if .s_stream or .enable_streams has been called successfully.
+>>
+>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>> ---
+>>   drivers/media/v4l2-core/v4l2-subdev.c | 25 +++++++++++++++++++++++++
+>>   include/media/v4l2-subdev.h           | 13 +++++++++++++
+>>   2 files changed, 38 insertions(+)
+>>
+>> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+>> index 3d2c9c224b8f..20b5a00cbeeb 100644
+>> --- a/drivers/media/v4l2-core/v4l2-subdev.c
+>> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
+>> @@ -2419,6 +2419,31 @@ void v4l2_subdev_notify_event(struct v4l2_subdev *sd,
+>>   }
+>>   EXPORT_SYMBOL_GPL(v4l2_subdev_notify_event);
+>>   
+>> +bool v4l2_subdev_is_streaming(struct v4l2_subdev *sd)
+>> +{
+>> +	struct v4l2_subdev_state *state;
+>> +
+>> +	if (!v4l2_subdev_has_op(sd, pad, enable_streams))
+>> +		return sd->streaming_enabled;
+>> +
+>> +	state = v4l2_subdev_get_locked_active_state(sd);
+>> +
+>> +	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS))
+>> +		return !!sd->enabled_pads;
+> 
+> I think this can be moved above the
+> v4l2_subdev_get_locked_active_state() call.
 
-This is a net-next follow-up for the previous 3 patches
-targeting=C2=A0'net', right?=20
+Yep. I think I originally thought that it'll be nice to get a warning 
+here if the state is not locked, but perhaps that's pointless.
 
-If so, you should have posted this one separately after the other would
-have been merged back into net-next.
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> 
+> Any plan to convert drivers to this ?
 
-We can apply the first 3 to 'net', but you will have to repost 4/4
-after ~Thu.
+No. Afaics, it will be per-driver manual work, no way to automate it.
 
-Thanks,
-
-Paolo
+  Tomi
 
 
