@@ -1,102 +1,176 @@
-Return-Path: <linux-kernel+bounces-147451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29C9F8A7464
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:10:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23BEA8A7467
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:12:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A6B51C2130D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:10:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54F771C21834
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:12:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976A4137C23;
-	Tue, 16 Apr 2024 19:10:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B4DD137939;
+	Tue, 16 Apr 2024 19:12:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="OVAL6Ibt"
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Uz67Q/fi"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5247313777F;
-	Tue, 16 Apr 2024 19:10:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8DE1C06;
+	Tue, 16 Apr 2024 19:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713294615; cv=none; b=jdspJkRVkPW1oLQGQ+RMWHO88WPTRIcpRiQ9Uv98SazMjALGUcBjLLZFtCt7096fUPJFOLJo0oA+SO6VFn3kW7XsRf23pLSPKMLrhWJAAMul2cVe7fBR5Y2mRS9vHTKRbOmdZTV1rdcprFbfq9iELcCsj1gAf07ewu9Bdb88Yqo=
+	t=1713294726; cv=none; b=CqVAelL4ji9X8vYwVk9YR0ifL84k6Lk+EdsfeUDgUwqgWCa+Yq+KhhlwR6WR3R0dY4he20xi2TDvQYa0xX5U313ebm8UDHcbhbO9bDD8FnYrVoh7BNqF8UvmfpVOjxjJF17LMAvJxm1/aUM3YDPjrLSwUnhqHptSzelrSZxhAlA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713294615; c=relaxed/simple;
-	bh=WQTkJLLntSkg4Yc3SDjamszWTI1ugXj8/1kk1dIE0XA=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pnF1BKwNd0VDHW40iMi03iVkzoQ36nrLCVaPNmJAi/6gGe2tZND5EsWMvoDqNaCZPwSv0pXmJL6rcD8nb5wYXwTMb3T5opVD+JMFOphBMPvQAlNqxRe1xHcenj/FU86E4nxlIgfbjsYd39OS8I4rDG3BG81h5Ab5xCn/bySX6O4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=OVAL6Ibt; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1713294606; x=1713553806;
-	bh=WQTkJLLntSkg4Yc3SDjamszWTI1ugXj8/1kk1dIE0XA=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=OVAL6IbtkrYJSVYkHbt/zf2IMqOMpqMBX3SR3yVmni9/IF1t1ZPHIAL38on6j0bEM
-	 Tu+7U6a+rbvr+YRgjqdUQ2UE0juI1uA/mRY6BRq9uv/yK0i/y0W5ObE9fxmwauQo02
-	 s561qIhmPsG/ot4kMUSYiORhQVVNWpqZLwsQG9BD88e0km4ztR1jmOjC9QT1Nf3jqT
-	 xN2tyse2iR9hbX51ltbuTfgVY0nbqEW0qrkSZCFMtcAQGEgKuzz4Vu1CDMgeC2KdFS
-	 P2AD9yMEel4CWeUqP9zuBCEA6dcCzeejPW3C7kRxn7gfozigLPumpRP5+7/veJah8B
-	 6+gbbDim6mcJA==
-Date: Tue, 16 Apr 2024 19:09:52 +0000
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-From: Michael Pratt <mcpratt@pm.me>
-Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Wander Lairson Costa <wander@redhat.com>, =?utf-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Vamshi Gajjela <vamshigajjela@google.com>
-Subject: Re: [PATCH v2 2/3] serial: 8250: Store whether fifo device is enabled
-Message-ID: <TYV02sftzpleM60PqVjM3niI3BqS03AyOPPAg0urAoBKyhgGGQyq1OSkZQM8aZ70Q-KaT7-lYiHl9xH-wjcdsMNvKPiJZDsvwC1uN5uEn7E=@pm.me>
-In-Reply-To: <Zh7Jqf2sJNw1mVyJ@smile.fi.intel.com>
-References: <20240416182741.22514-1-mcpratt@pm.me> <20240416182741.22514-3-mcpratt@pm.me> <Zh7Jqf2sJNw1mVyJ@smile.fi.intel.com>
-Feedback-ID: 27397442:user:proton
+	s=arc-20240116; t=1713294726; c=relaxed/simple;
+	bh=mZybZTymNAH3f/Y7Sm/uomKl1Kzz3zrHXsOi8TFOrSg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J0cWJhwpPJR4S8j5PqEGAY8i0Y4+5AcjG3L+RnR3PUuOX3xwlxij/ezWgx8NAAN6czXOdNu5B5mT2YiNduGF4plAx+9LHzNHKhg32Rt/qAGbT6OF3OLBKNAbRudULQVA9gvkonNQbgzpyKDKfW1KFOsa1kYtC5WczAS7Mdv0t9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Uz67Q/fi; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713294725; x=1744830725;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mZybZTymNAH3f/Y7Sm/uomKl1Kzz3zrHXsOi8TFOrSg=;
+  b=Uz67Q/fiXDSPTZui85Tad96vJh1rvGianWISmpgFNCKvzudbgo4qb16M
+   LiKSdNR2qbneOocXiaH1NJDkOuYZXtNCm0j9zpqb6352MjGaxIa13jmwi
+   H3gKV4lwq11EZjLpqbrCf3GyGZqo4uirCp+p5hNrCeD4cDeGCldMqR3B4
+   hKUBw0ih8QFfuvyYdFKq2+QZK+KFD9tobNQMr5wt92jx3Q8oSaFukVKwt
+   umSg7MaCaCNjeY491ny3c1HQZmXNxPJFSu4k6Aogq+5lR3s2zk7U82sXc
+   HqVO9PT+h9fQ+LVDxN4bweXnnAjKxdiR6/xZLyETg1+HQst2UvI/4uOl1
+   w==;
+X-CSE-ConnectionGUID: Iew+M3R9ThW03IKiDGl5mg==
+X-CSE-MsgGUID: U5z2Mt7iRkOrnUQ9bB+Azw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="19361165"
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="19361165"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 12:12:04 -0700
+X-CSE-ConnectionGUID: 5DQQbClPQzqkC6bnxu5n2A==
+X-CSE-MsgGUID: b5J4/MNyQ224oZL0/EWcyQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="22952611"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 12:12:01 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rwoDn-00000004nfK-09tW;
+	Tue, 16 Apr 2024 22:11:59 +0300
+Date: Tue, 16 Apr 2024 22:11:58 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] dmaengine: dw: Simplify max-burst calculation
+ procedure
+Message-ID: <Zh7NfmffgSBSjVWv@smile.fi.intel.com>
+References: <20240416162908.24180-1-fancer.lancer@gmail.com>
+ <20240416162908.24180-5-fancer.lancer@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416162908.24180-5-fancer.lancer@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hi Andy,
+On Tue, Apr 16, 2024 at 07:28:58PM +0300, Serge Semin wrote:
+> In order to have a more coherent DW AHB DMA slave configuration method
+> let's simplify the source and destination channel max-burst calculation
+> procedure:
+> 
+> 1. Create the max-burst verification method as it has been just done for
+> the memory and peripheral address widths. Thus the DWC DMA slave config
 
-On Tuesday, April 16th, 2024 at 14:55, Andy Shevchenko <andriy.shevchenko@l=
-inux.intel.com> wrote:
+dwc_config() method
 
->=20
-> > @@ -3392,6 +3392,8 @@ void serial8250_console_write(struct uart_8250_po=
-rt *up, const char *s,
->=20
-> > + up->fifo_enable =3D use_fifo;
->=20
->=20
-> This seems incorrect / not the only one place to assign this. What if the
-> console not enabled at compile time? What if it's not enabled at boot tim=
-e?
->
+?
 
-This is 8250 specific, and currently, it's the only place there
-where it's decided whether or not to use the fifo device
-by checking a bunch of flags and values.
+> method will turn to a set of the verification methods execution.
+> 
+> 2. Since both the generic DW AHB DMA and Intel DMA32 engines support the
 
-If you're suggesting that these checks are moved out of this function somew=
-here else,
-I would probably agree with that, but let's save that idea for the future..=
-.
+"i" in iDMA 32-bit stands for "integrated", so 'Intel iDMA 32-bit'
 
-If you're suggesting that there could be a null pointer, I don't think that=
-'s possible
-in this function... (the name of the pointer being "up" might be confusing?=
-)
+> power-of-2 bursts only, then the specified by the client driver max-burst
+> values can be converted to being power-of-2 right in the max-burst
+> verification method.
+> 
+> 3. Since max-burst encoded value is required on the CTL_LO fields
+> calculation stage, the encode_maxburst() callback can be easily dropped
+> from the dw_dma structure meanwhile the encoding procedure will be
+> executed right in the CTL_LO register value calculation.
+> 
+> Thus the update will provide the next positive effects: the internal
+> DMA-slave config structure will contain only the real DMA-transfer config
+> value, which will be encoded to the DMA-controller register fields only
+> when it's required on the buffer mapping; the redundant encode_maxburst()
+> callback will be dropped simplifying the internal HW-abstraction API;
+> DWC-config method will look more readable executing the verification
 
-Sorry if I'm misunderstanding what you mean.
+dwc_config() method
 
-> --
-> With Best Regards,
-> Andy Shevchenko
+?
 
---
-MCP
+> functions one-by-one.
+
+..
+
+> +static void dwc_verify_maxburst(struct dma_chan *chan)
+
+It's inconsistent to the rest of _verify methods. It doesn't verify as it
+doesn't return anything. Make it int or rename the function.
+
+> +{
+> +	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
+> +
+> +	dwc->dma_sconfig.src_maxburst =
+> +		clamp(dwc->dma_sconfig.src_maxburst, 1U, dwc->max_burst);
+> +	dwc->dma_sconfig.dst_maxburst =
+> +		clamp(dwc->dma_sconfig.dst_maxburst, 1U, dwc->max_burst);
+> +
+> +	dwc->dma_sconfig.src_maxburst =
+> +		rounddown_pow_of_two(dwc->dma_sconfig.src_maxburst);
+> +	dwc->dma_sconfig.dst_maxburst =
+> +		rounddown_pow_of_two(dwc->dma_sconfig.dst_maxburst);
+> +}
+
+..
+
+>  static int dwc_verify_p_buswidth(struct dma_chan *chan)
+> -		reg_burst = rounddown_pow_of_two(dwc->dma_sconfig.src_maxburst);
+> +		reg_burst = dwc->dma_sconfig.src_maxburst;
+
+Seems you have a dependency, need a comment below that maxburst has to be
+"verified" [whatever] first.
+
+..
+
+> +static inline u8 dw_dma_encode_maxburst(u32 maxburst)
+> +{
+> +	/*
+> +	 * Fix burst size according to dw_dmac. We need to convert them as:
+> +	 * 1 -> 0, 4 -> 1, 8 -> 2, 16 -> 3.
+> +	 */
+> +	return maxburst > 1 ? fls(maxburst) - 2 : 0;
+> +}
+
+Split these moves to another preparatory patch.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
