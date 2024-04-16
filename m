@@ -1,132 +1,81 @@
-Return-Path: <linux-kernel+bounces-146554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 615498A671F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:27:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97EE68A6724
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:30:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83E6D1C21704
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:27:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BAC8B21FA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1318528F;
-	Tue, 16 Apr 2024 09:27:47 +0000 (UTC)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C531B85954;
+	Tue, 16 Apr 2024 09:30:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n59vF7jk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D429B85272;
-	Tue, 16 Apr 2024 09:27:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B793BBEC;
+	Tue, 16 Apr 2024 09:30:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713259667; cv=none; b=Z7Lqhx06CAIYPH3v7E6DPE6B5nPCLd57Fwe29SNXLrdFMYJt8umWe4uD4tLvv+bSMqKOh2JCIT/KBEIue4m7vZYCq4T0J5RoFXIp+SV6nPICv4Hk55bxL6vFGRlzp0SZnH47vFAIg7Fi7eRkHWPHWEzFSk0QOSbcpzaC3LEMc/Y=
+	t=1713259810; cv=none; b=T5GyJpaoYlpCCd0vharTxY8Irmpvm7UBtJ/StxTURr4DfwfofWVs9cGk5mnbYmPfU/GKJsAQKwDiTLcZ/3sQFzD4YUp+/sKlASyS1Fwl5BHlZQBO04yxSVO5qqr+pjWBWqXObjPc5lxmV7JCtv49moYHKjbKACpW1GLViWaYOKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713259667; c=relaxed/simple;
-	bh=rl7/49N7v30krDSKR0so/zjNywMJUo2Pd9g6g4AOMFM=;
+	s=arc-20240116; t=1713259810; c=relaxed/simple;
+	bh=WkygNKfyFZB4KyWZpojMTvLTOsLkMXsRNu5G7hcxtJc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gHOemicuxIqa+SgqFkj9X92mv18UbTTxDyQGjrNE7cXK8L5zDIm3tEbKdqZXG0SXVPWyehIfMMKvMhI1A1+h+mbwrDBcMx2GuDlooPd6o6ot/C8CQM+GB7asCbhsmxropoD4SVN2HMbO6ha6aL8o9LZ5JQRUnTmjhWm2rwPAUXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 85AC540E024C;
-	Tue, 16 Apr 2024 09:27:42 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id UUDF4TFEKb9T; Tue, 16 Apr 2024 09:27:37 +0000 (UTC)
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 577B740E0177;
-	Tue, 16 Apr 2024 09:27:27 +0000 (UTC)
-Date: Tue, 16 Apr 2024 11:27:20 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Klara Modin <klarasmodin@gmail.com>
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
-	"Kaplan, David" <David.Kaplan@amd.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-tip-commits@vger.kernel.org" <linux-tip-commits@vger.kernel.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	"x86@kernel.org" <x86@kernel.org>,
-	David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH -v2] x86/retpoline: Ensure default return thunk isn't
- used at runtime
-Message-ID: <20240416092720.GCZh5EeB3bPWVDBMoV@fat_crate.local>
-References: <20231024201913.GHZTgmwf6QMkX8BGbo@fat_crate.local>
- <20240103184656.GEZZWroPmHLJuP6y5H@fat_crate.local>
- <20240104131210.GDZZauqoeKoZGpYwDd@fat_crate.local>
- <20240104132446.GEZZaxnrIgIyat0pqf@fat_crate.local>
- <20240104132623.GFZZax/wyf5Y3rMX5G@fat_crate.local>
- <20240207175010.nrr34b2pp3ewe3ga@treble>
- <20240207185328.GEZcPRqPsNInRXyNMj@fat_crate.local>
- <20240207194919.qw4jk2ykadjn5d4e@treble>
- <20240212104348.GCZcn2ZPr445KUyQ7k@fat_crate.local>
- <78e0d19c-b77a-4169-a80f-2eef91f4a1d6@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fLWDVQBvv0MKPUrT3qcwV86t3RSG9hjQIVKuoiyzVyiNjqUL57m5NI2w+b52g3sBHaL2141w53IqhcMx+eu1l+T/Tb+7CM7RQG363CVTiHZ3fT/nOiq9DGpvntYaOBBXUpyVP19+PnqawvJ3yWBPwOc6j/GS7mTMi5eCTMeYHC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n59vF7jk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A813C4AF1B;
+	Tue, 16 Apr 2024 09:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713259809;
+	bh=WkygNKfyFZB4KyWZpojMTvLTOsLkMXsRNu5G7hcxtJc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=n59vF7jkTOHxBhiQopo58oqJUX/HHosM4W0a+Mp+n85wMirrCz4rrUheI+yiS0I2r
+	 5WcC4aNMhD3lZMiv/qdz0lY+VvlbyVJLLo774Onj1+jB5cUCJstvLhM8U95+47e9uK
+	 g2SxRJm7MFvL1PVzcru2Q+LtHqLBSN717oQE0PDUijJ1TBxduB4Y1SesFbxPfdEhJu
+	 YU771e7Uy0yGES5DpCCSIgKSse6CCxIdgUQo9uvEa9nvp21MHrf4YMFlYdxj+ES1Ju
+	 0+7r/1wJl/R8j5Z3MMG/ILAN872lKr/YPKkgCGPBrvxEnrRjDCNG0cOKELu7pkG7K2
+	 BlvHInVxXMceA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rwf8h-000000005Ye-3g2V;
+	Tue, 16 Apr 2024 11:30:08 +0200
+Date: Tue, 16 Apr 2024 11:30:07 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Vanillan Wang <vanillanwang@163.com>
+Cc: gregkh@linuxfoundation.org, bjorn@mork.no, kuba@kernel.org,
+	netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB:serial:option/net:usb:qmi_wwan:add Rolling moudles
+ support
+Message-ID: <Zh5FH5iblkjq9XEL@hovoldconsulting.com>
+References: <20240416084409.21550-1-vanillanwang@163.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <78e0d19c-b77a-4169-a80f-2eef91f4a1d6@gmail.com>
+In-Reply-To: <20240416084409.21550-1-vanillanwang@163.com>
 
-On Wed, Apr 03, 2024 at 07:10:17PM +0200, Klara Modin wrote:
-> With this patch/commit, one of my machines (older P4 Xeon, 32-bit only)
-> hangs on boot with CONFIG_RETHUNK=y / CONFIG_MITIGATION_RETHUNK=y.
+On Tue, Apr 16, 2024 at 04:44:09PM +0800, Vanillan Wang wrote:
+> Update the USB serial option and qmi_wwan driver support for the Rolling
+> LTE modules.
 
-Ok, this should fix it:
+> Signed-off-by: Vanillan Wang <vanillanwang@163.com>
+> ---
+>  drivers/net/usb/qmi_wwan.c  | 1 +
+>  drivers/usb/serial/option.c | 8 ++++++++
+>  2 files changed, 9 insertions(+)
 
----
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
-Date: Mon, 15 Apr 2024 18:15:43 +0200
-Subject: [PATCH] x86/retpolines: Enable the default thunk warning only on relevant configs
+Please split this in two patches (they will go in through different
+subsystem trees).
 
-The using-default-thunk warning check makes sense only with
-configurations which actually enable the special return thunks.
-
-Otherwise, it fires on unrelated 32-bit configs on which the special
-return thunks won't even work (they're 64-bit only) and, what is more,
-those configs even go off into the weeds when booting in the
-alternatives patching code, leading to a dead machine.
-
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/78e0d19c-b77a-4169-a80f-2eef91f4a1d6@gmail.com
-Link: https://lore.kernel.org/r/20240413024956.488d474e@yea
----
- arch/x86/lib/retpoline.S | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-index e674ccf720b9..391059b2c6fb 100644
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -382,8 +382,15 @@ SYM_FUNC_END(call_depth_return_thunk)
- SYM_CODE_START(__x86_return_thunk)
- 	UNWIND_HINT_FUNC
- 	ANNOTATE_NOENDBR
-+#if defined(CONFIG_MITIGATION_UNRET_ENTRY) || \
-+    defined(CONFIG_MITIGATION_SRSO) || \
-+    defined(CONFIG_MITIGATION_CALL_DEPTH_TRACKING)
- 	ALTERNATIVE __stringify(ANNOTATE_UNRET_SAFE; ret), \
- 		   "jmp warn_thunk_thunk", X86_FEATURE_ALWAYS
-+#else
-+	ANNOTATE_UNRET_SAFE
-+	ret
-+#endif
- 	int3
- SYM_CODE_END(__x86_return_thunk)
- EXPORT_SYMBOL(__x86_return_thunk)
--- 
-2.43.0
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Johan
 
