@@ -1,138 +1,87 @@
-Return-Path: <linux-kernel+bounces-146697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B76F8A697F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:17:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93FAB8A6980
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:18:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82C85B21A68
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:17:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5B8E1C20DDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:18:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 149751292C9;
-	Tue, 16 Apr 2024 11:17:14 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4553086259;
-	Tue, 16 Apr 2024 11:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3855312882C;
+	Tue, 16 Apr 2024 11:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MnC69Yz+"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18CA0128820
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:18:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713266233; cv=none; b=KB6l//mmpzJkJ49crHCSgA5Nt14/wAqUHsGjyf3i4CdF1es4YtG0qWpGEa/XnHH4llffD+CQRXxKBsJzrOErZrB/yGDA0wYitzxQZVVtHyViSsfD3kEw7I5i+K7cwpnIoDhmShkbfEyfxQYQzDODNFK6026pSgUMO8TTDuw/4wI=
+	t=1713266282; cv=none; b=QHdJLMj+hrQmt29lCMPtE+dnzEAp8EBXGSsiDdXXyYz9tDADHkzY4EuSn8GIQBiy16k2ksg0dDh7j3f1MaKJq43O3WcMBIseWOaUIyRYHhKrcqkBQp+LXqsgVIagqQ3vLjoe3a3EdpIVzq/5ARSgI9jDL5+kozQRUxQ/AS73V3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713266233; c=relaxed/simple;
-	bh=9FhYJpvHXnQmHxgxXicQhyk+mTtDwkQy/D0WwG1gg9s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kDgWOsShuQSpg+eBdGRcUUa/VhxvZamVNCDniY/UETJv+xzmmRVPWWGJLJ7f57kaJXXQpy7g2dQca0Ku+TA7HDHIe89HxdoBNySmvVY2pUcwR3TKe0bEZcQGd9eD0pyrYWgsQZfN9CFHCx3dvSGpBE/LmEGIZT7XOSfgE0WmTu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A532F339;
-	Tue, 16 Apr 2024 04:17:38 -0700 (PDT)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3473C3F738;
-	Tue, 16 Apr 2024 04:17:08 -0700 (PDT)
-Message-ID: <d452859e-8b35-4aac-83d5-5b8d44ed4406@arm.com>
-Date: Tue, 16 Apr 2024 12:17:06 +0100
+	s=arc-20240116; t=1713266282; c=relaxed/simple;
+	bh=duFrP0x3+qNKG3tHLlle3sc6z5Hv/xwPHlK3OcIV2F4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bL8fBCT13a5+dbv/XfoEZSjIAxWhYvKeuqrNDKBQ+3FQVaSOXLuWDf85Jg+vPeDPKScZuEE1YIZpZ7SfWISezeyLUZ8yZ8inkg1cQpLWmiY7kvO+hau0tr1YYIGAF2xM6pA4w6FMVckLuIFAqONSXdRGjsRR8DxNu9iVUnflIoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=MnC69Yz+; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=duFrP0x3+qNKG3tHLlle3sc6z5Hv/xwPHlK3OcIV2F4=; b=MnC69Yz+ffXS32fDmSHhEEtzGi
+	uWCzvG/izsTyQ9o6+MJEEC3oewhucbyLwrVCZB3K3rAtGXzpPpG1j7vHmZDWOJfcil6bw2CxOU08J
+	u6mCZ588PSMIUAmtbkj82TizUTUJnzKJPymi/He1eHQTcqQspgM8ZfFhsvc8x5j7faZZuHqVniC85
+	iG/nMiO+JHu8pJ66akDNPt1mDBQhR9dVCProDP1aMrM/ll7enCO7rJsg+LPAQ/UhUyDcN3BYae/5+
+	v4DW1kvoGx8Od97MXsm6OJyWf+J3+ax1fhBw4jzU5GX7S+UQpvrYxJO3lb6vVl/wRlzIbLQvzHwyj
+	GFVTJbeQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rwgov-0000000B2oH-2MEV;
+	Tue, 16 Apr 2024 11:17:52 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 38E5C30040C; Tue, 16 Apr 2024 13:17:49 +0200 (CEST)
+Date: Tue, 16 Apr 2024 13:17:49 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Petr Mladek <pmladek@suse.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH printk v4 27/27] lockdep: Mark emergency sections in
+ lockdep splats
+Message-ID: <20240416111749.GM40213@noisy.programming.kicks-ass.net>
+References: <20240402221129.2613843-1-john.ogness@linutronix.de>
+ <20240402221129.2613843-28-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 04/43] arm64: RME: Handle Granule Protection Faults
- (GPFs)
-To: Steven Price <steven.price@arm.com>, kvm@vger.kernel.org,
- kvmarm@lists.linux.dev
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
- Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
- Oliver Upton <oliver.upton@linux.dev>, Zenghui Yu <yuzenghui@huawei.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Joey Gouly <joey.gouly@arm.com>, Alexandru Elisei
- <alexandru.elisei@arm.com>, Christoffer Dall <christoffer.dall@arm.com>,
- Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
- Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
-References: <20240412084056.1733704-1-steven.price@arm.com>
- <20240412084309.1733783-1-steven.price@arm.com>
- <20240412084309.1733783-5-steven.price@arm.com>
-Content-Language: en-US
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20240412084309.1733783-5-steven.price@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402221129.2613843-28-john.ogness@linutronix.de>
 
-On 12/04/2024 09:42, Steven Price wrote:
-> If the host attempts to access granules that have been delegated for use
-> in a realm these accesses will be caught and will trigger a Granule
-> Protection Fault (GPF).
-> 
-> A fault during a page walk signals a bug in the kernel and is handled by
-> oopsing the kernel. A non-page walk fault could be caused by user space
-> having access to a page which has been delegated to the kernel and will
-> trigger a SIGBUS to allow debugging why user space is trying to access a
-> delegated page.
-> 
-> Signed-off-by: Steven Price <steven.price@arm.com>
-> ---
->   arch/arm64/mm/fault.c | 29 ++++++++++++++++++++++++-----
->   1 file changed, 24 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> index 8251e2fea9c7..91da0f446dd9 100644
-> --- a/arch/arm64/mm/fault.c
-> +++ b/arch/arm64/mm/fault.c
-> @@ -765,6 +765,25 @@ static int do_tag_check_fault(unsigned long far, unsigned long esr,
->   	return 0;
->   }
->   
-> +static int do_gpf_ptw(unsigned long far, unsigned long esr, struct pt_regs *regs)
-> +{
-> +	const struct fault_info *inf = esr_to_fault_info(esr);
-> +
-> +	die_kernel_fault(inf->name, far, esr, regs);
-> +	return 0;
-> +}
-> +
-> +static int do_gpf(unsigned long far, unsigned long esr, struct pt_regs *regs)
-> +{
-> +	const struct fault_info *inf = esr_to_fault_info(esr);
-> +
-> +	if (!is_el1_instruction_abort(esr) && fixup_exception(regs))
-> +		return 0;
-> +
-> +	arm64_notify_die(inf->name, regs, inf->sig, inf->code, far, esr);
-> +	return 0;
-> +}
-> +
->   static const struct fault_info fault_info[] = {
->   	{ do_bad,		SIGKILL, SI_KERNEL,	"ttbr address size fault"	},
->   	{ do_bad,		SIGKILL, SI_KERNEL,	"level 1 address size fault"	},
-> @@ -802,11 +821,11 @@ static const struct fault_info fault_info[] = {
->   	{ do_alignment_fault,	SIGBUS,  BUS_ADRALN,	"alignment fault"		},
->   	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 34"			},
->   	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 35"			},
+On Wed, Apr 03, 2024 at 12:17:29AM +0206, John Ogness wrote:
+> Mark emergency sections wherever multiple lines of
+> lock debugging output are generated. In an emergency
+> section the CPU will not perform console output for the
+> printk() calls. Instead, a flushing of the console
+> output is triggered when exiting the emergency section.
+> This allows the full message block to be stored as
+> quickly as possible in the ringbuffer.
 
-Should this also be converted to do_gpf_ptw, "GPF at level -1", given we 
-support LPA2 ?
+I am confused, when in emergency I want the thing to dump everything to
+the atomic thing asap.
 
-
-> -	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 36"			},
-> -	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 37"			},
-> -	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 38"			},
-> -	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 39"			},
-> -	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 40"			},
-> +	{ do_gpf_ptw,		SIGKILL, SI_KERNEL,	"Granule Protection Fault at level 0" },
-> +	{ do_gpf_ptw,		SIGKILL, SI_KERNEL,	"Granule Protection Fault at level 1" },
-> +	{ do_gpf_ptw,		SIGKILL, SI_KERNEL,	"Granule Protection Fault at level 2" },
-> +	{ do_gpf_ptw,		SIGKILL, SI_KERNEL,	"Granule Protection Fault at level 3" },
-> +	{ do_gpf,		SIGBUS,  SI_KERNEL,	"Granule Protection Fault not on table walk" },
->   	{ do_bad,		SIGKILL, SI_KERNEL,	"level -1 address size fault"	},
->   	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 42"			},
->   	{ do_translation_fault,	SIGSEGV, SEGV_MAPERR,	"level -1 translation fault"	},
-
-
-Rest looks fine to me.
-
-Suzuki
+Storing it all up runs the risk of never getting to the 'complete' point
+because we're dead.
 
