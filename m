@@ -1,142 +1,183 @@
-Return-Path: <linux-kernel+bounces-146767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 870D48A6A9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:18:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FF3E8A6A9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:18:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D7851F21670
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:18:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 228C7281EA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:18:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9541612AAE2;
-	Tue, 16 Apr 2024 12:18:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B79912BE9E;
+	Tue, 16 Apr 2024 12:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sZ8Wn2Pk"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b="Szfs6bPo"
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2099.outbound.protection.outlook.com [40.107.7.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 720521DFF0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961DD12A15A;
 	Tue, 16 Apr 2024 12:18:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713269917; cv=none; b=n0paR+JdmVrc/6/+mz5tl7gSkFAMlozxZGbVPH+KTe8DlKFKAwB07VdSrNdqCBieInQoSX4kUpL+4v8Ge/gZL/Fo5aZdH3CCl+U4Sr/2ByAHHgcCO3utQ4/X4Uh1avrve98d2v66ebzHa+66ipeVrMFzDJsJ6W4KrXOvhLyKt80=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713269917; c=relaxed/simple;
-	bh=cvWIKbeUnvP57bXjt53Z0NbaRxeepsorfVlEBYvio2c=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:Mime-Version; b=eIP/WERI9/ic3EOq5IaqpSQvLk+Fe2fL84ayOXP54SQ7DFy1MbuMVrgnsM2QQCIPCpvyDgrFLPioI0H/SgMIopROdhWFtu7ScpoVzkgdSVfMhiuo4HTtTTJRYXbbkkPXjrAJgLiAUlo2CLbSFgb1or1sjsEqEvfSm2WCtLaiQyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sZ8Wn2Pk; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43GCHao0013920;
-	Tue, 16 Apr 2024 12:18:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=WL96dIFdwrfSeUs1UM3vLPDY/ZKkHY19krY1VdPDKKU=;
- b=sZ8Wn2Pk92GrLxhyYUq9ZMOPdU4hbeR+7q4O3wBflwpbzfagT/CkQ4FZrRHcWR24ZOUY
- VDCT1KZ3Bzro0E+merT20C0DcN7puQjSTp/Fwasd9glWQAkt7JWgAWsApYmmmN62zDY6
- bEPdhzwa6J3YEGLx7eLIZZmsCJnGdW+bBUQqFFhVGa2GOJbOtSnFjgJwegIIBszLSu5q
- dNfLR3Hxq8W2LBjuEQ8kLi5CLaCRhR60I2Sq2S+ZwDtkWjUI36ejwRml7iVFrB9AZZe2
- 0EB78f2FCRhxInygoSwrnF+AujBqsmDKRm/yntAxWuQyE8olzCtolcjPlfI7m6GuE9g8 qw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhs700019-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 12:18:16 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43GCIFT3014238;
-	Tue, 16 Apr 2024 12:18:15 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhs700018-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 12:18:15 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43G9GvYa015862;
-	Tue, 16 Apr 2024 12:18:14 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xg5vm5v7a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 12:18:14 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43GCIBPp66126236
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Apr 2024 12:18:13 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5C0D858061;
-	Tue, 16 Apr 2024 12:18:11 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8526158043;
-	Tue, 16 Apr 2024 12:18:10 +0000 (GMT)
-Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.56.73])
-	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 16 Apr 2024 12:18:10 +0000 (GMT)
-Message-ID: <e052c1b5d2aa29b3a1f3a8086af4fb8a94c4d318.camel@linux.ibm.com>
-Subject: Re: [RFC 2/2] ima: Fix detection of read/write violations on
- stacked filesystems
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Stefan Berger <stefanb@linux.ibm.com>,
-        Amir Goldstein
- <amir73il@gmail.com>, linux-integrity@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        roberto.sassu@huawei.com, Christian Brauner <brauner@kernel.org>
-Date: Tue, 16 Apr 2024 08:18:09 -0400
-In-Reply-To: <CAJfpegsHJ1JsM3SxNk5gnUM+aucqOqNm3RTrsYgePkcQYR4EEw@mail.gmail.com>
-References: <20240412140122.2607743-1-stefanb@linux.ibm.com>
-	 <20240412140122.2607743-3-stefanb@linux.ibm.com>
-	 <CAOQ4uxjDQO91cjA0sgyPStkwc_7+NxAOhyve94qUvXSM3ytk1g@mail.gmail.com>
-	 <89b4fb29-5906-4b21-8b5b-6b340701ffe4@linux.ibm.com>
-	 <CAJfpeguctirEYECoigcAsJwpGPCX2NyfMZ8H8GHGW-0UyKfjgg@mail.gmail.com>
-	 <b74a9a3edc52d96a7a34d6ba327fdb2a5a79a80d.camel@linux.ibm.com>
-	 <CAJfpegvPwpS5_S4qrrVbeC1RovP8jeNuDCYLbdcZ_XDFgfgftQ@mail.gmail.com>
-	 <52645fb25b424e10e68f0bde3b80906bbf8b9a37.camel@linux.ibm.com>
-	 <CAJfpegsHJ1JsM3SxNk5gnUM+aucqOqNm3RTrsYgePkcQYR4EEw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-23.el8_9) 
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.99
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713269918; cv=fail; b=AdGLt8j4LJNUyoGYPLugIOSQ0kq/p6Rw1Pm3EdVAFqOTqd1nJR+k9Z1P7Rc5rAN+/CPNN4CeeueGtZ4Q/NBL+GVhl01OcQk70mONlfvJeWxM/pPzAeB5jshFhSpaZyrxN41eEOwOGwGp0qb/icEygM+CxFDqMTK62LrNEgJBM6Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713269918; c=relaxed/simple;
+	bh=DbMIqFE48QPZGX3tHgZgmG8nnZPoAJxlzjCAIhzJTMg=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version:
+	 References; b=rsb2nDbODhMQa/H/h6j7wcQxfn+CdiWR7wv6osu0CUeo29Xzsg1m162KZ8Eno1ajoyRrkydPjX2ioq15UNFY0QkgsgevwteHfksv4BYz3eTC2DxGiBx7jSC/YOXOCM6M10qZCWNlKaZOPnzK2RYO9R1b2lgcpHOym1//eb0FnGM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl; spf=pass smtp.mailfrom=topic.nl; dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b=Szfs6bPo; arc=fail smtp.client-ip=40.107.7.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=topic.nl
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZsPBSlu59/niNcmtBL3HZ9YkjSM+GQZ6NnB1I4K/p34IZrQymUZncyIh8BW+qON7ZJhyv7StX5Fp2VMTxsUkNjKJ48guAVJGHImQE58KTFZQDvdEznaAeKeMxGvg/L+mTUej0qChf0dgXvGYhVHFSrngnLSiPwUFlkCVM8HtD1q92wwYV3ZRFKcAgf7LrpsS+W7O6NqLbwBUSqSibuuZGDspIJgwjqsTLeu0u8lcV+AyC4bbKO7doiJZwUtRKVMg8GZ6tgy+fCON5XOYP2u5rvnTDzPEs2gUj8HHzo84+psPJHwHJiJkilIlWDAzWL/kW9Tbz0AsM4wfK0XgJIVuww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SM0GYnb+LCQZA1SJ1xN8BGBtGWYPC+YBaACg2JyuFQ0=;
+ b=KfXUtN46cEcY2S0y7X/XQIQDyZzdkk7E29Kuxg7lIhd/WOzZfSNyZRscJk6hjRdcL7qVUcEXmz20Ge02XnCWCOeyS4KP6AgCdmj8SI1utWEyMLM73Vs1fIyFkDeVSb1wflI5AvEq0FDCxJZyzj21E2gmx0ZVsFTEe3bUo4xOZ+A8CLtnwLM+VUTup8Vt88wsR+x3T4sAXkHbsvmn1k1o9YNojdW2iXUINMgnjKYUDMcNW67oQRooBrbWaR3ozLJ0jxzDUDeDj7dve+F5Fs7vMXnVbob6FPl9scbeoUXPom3CT5teasW/74bAPHG6qPcrdHU1fJU/tMUtak4tzbiz8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 40.69.19.60) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=topic.nl;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=topic.nl;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=topic.nl; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SM0GYnb+LCQZA1SJ1xN8BGBtGWYPC+YBaACg2JyuFQ0=;
+ b=Szfs6bPoHvsDuFWbRvZwkijHzYMO0NU40DuaAmIdTEU0DbqKUKcHseZ6E5BdwxTy+pehxuUQOVH/KngP/RiijczKATjmQp9mF4DgpzM4lGwr6uCfuffO4Yq4u8wkab9oaqHIBPUq4XONZRfR50t4nrGnNBs8nqgUcUTMGVbxrFcOj7C3CKy/60LoCbKkiTh3TneFb0dz9YzwsH8Z7Xk1B4QdJ82hnDXnLn+pg8nZbPtthxHKSg3BOmK4edv61ifAWliI+6JbZbzlBGqgnwee1REjmSCf1yCM5WCgDSHBJRwqvv8+cEohOdb5Pa+tv44nZn2X0wPkHOKwKYta6Y62Tw==
+Received: from DUZPR01CA0285.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:4b7::23) by AM9PR04MB9013.eurprd04.prod.outlook.com
+ (2603:10a6:20b:409::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
+ 2024 12:18:32 +0000
+Received: from DU6PEPF0000B620.eurprd02.prod.outlook.com
+ (2603:10a6:10:4b7:cafe::45) by DUZPR01CA0285.outlook.office365.com
+ (2603:10a6:10:4b7::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.32 via Frontend
+ Transport; Tue, 16 Apr 2024 12:18:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 40.69.19.60)
+ smtp.mailfrom=topic.nl; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=topic.nl;
+Received-SPF: Pass (protection.outlook.com: domain of topic.nl designates
+ 40.69.19.60 as permitted sender) receiver=protection.outlook.com;
+ client-ip=40.69.19.60; helo=westeu100-emailsignatures-cloud.codetwo.com; pr=C
+Received: from westeu100-emailsignatures-cloud.codetwo.com (40.69.19.60) by
+ DU6PEPF0000B620.mail.protection.outlook.com (10.167.8.136) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.22 via Frontend Transport; Tue, 16 Apr 2024 12:18:32 +0000
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (104.47.51.169) by westeu100-emailsignatures-cloud.codetwo.com with CodeTwo SMTP Server (TLS12) via SMTP; Tue, 16 Apr 2024 12:18:30 +0000
+Authentication-Results-Original: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=topic.nl;
+Received: from AS8PR04MB8644.eurprd04.prod.outlook.com (2603:10a6:20b:42b::12)
+ by VE1PR04MB7230.eurprd04.prod.outlook.com (2603:10a6:800:1ab::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
+ 2024 12:18:24 +0000
+Received: from AS8PR04MB8644.eurprd04.prod.outlook.com
+ ([fe80::e86d:f110:534e:480a]) by AS8PR04MB8644.eurprd04.prod.outlook.com
+ ([fe80::e86d:f110:534e:480a%4]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
+ 12:18:24 +0000
+From: Mike Looijmans <mike.looijmans@topic.nl>
+To: linux-pm@vger.kernel.org
+CC: Mike Looijmans <mike.looijmans@topic.nl>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Sebastian Reichel <sre@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v5 1/5] dt-bindings: power: Extend battery chemistry with capacitor
+Date: Tue, 16 Apr 2024 14:18:14 +0200
+Message-ID: <20240416121818.543896-1-mike.looijmans@topic.nl>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: AM8P251CA0015.EURP251.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21b::20) To AS8PR04MB8644.eurprd04.prod.outlook.com
+ (2603:10a6:20b:42b::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 8cJAq3Bt05s6SuYHWYznc5KtABd67TTP
-X-Proofpoint-ORIG-GUID: FXyRC813uLMlb__JUepONO2KtIp5beHn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_08,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 clxscore=1015 mlxscore=0 lowpriorityscore=0 malwarescore=0
- mlxlogscore=999 spamscore=0 suspectscore=0 impostorscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404160076
+MIME-Version: 1.0
+X-MS-TrafficTypeDiagnostic:
+	AS8PR04MB8644:EE_|VE1PR04MB7230:EE_|DU6PEPF0000B620:EE_|AM9PR04MB9013:EE_
+X-MS-Office365-Filtering-Correlation-Id: 63f61ead-601f-494b-d773-08dc5e0f54e1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original:
+ 7SFKj+nr678/bhjbcggr4nUXPOju4BpzSmR32s9EOzyGpTR2nTKy/jVjMdXlMK4edcg0Bey4TXZgKvKldEetsGfMkyd6ifu0QiH4oSbACmf3TnltX3CW6nL9oiCVRWWniyZE2FQRPcoKIaUh8GZRwKiAuC3AERHoxrOggWZhe9uLesBg3lwkBerpX4OCAPBhoHV8FjGIsUFHBJe7nsU8+1nClgj7sAxFbJKX7sB9qgn+sUqclllq5gMkLMxkpH58zcgifm4emPFO4oiTxQWm1zIDjd+MKDkiRGwOUDN7iZKmkRD8vYUqtpDoHoYa+gR5diuVIg7dRdQmPN0Y6ErT6qSegd/9hJU7S5Wv61DCFe7rvsfup307BTa4unKPkWsB7A5I51aLgQvUc+o6tVFaY5H68SHu4d9KgeDWHNCgHHXHu18FFFMTKV1sQDjHcEwZqnP7L01cSju7qC8GxZXk+7Q4fz9uTsizbP/X685C6ZyWmv8rCfMyHFcL1L2HowzRc80r+611ckW/GMmzmS7tzFbpwlkgVhpj2PdKxx5+Oc+C767OWWluMpPIRc7n02NdIF2siMJGFeGxXhQk+ild6SgnSmBFqG6T2CVsMDUyI7LDeODI1L30g8RoYjLpsx27HmKv+FksPBMQxEbuj+Bl02i3CUHWnIA8WC6azkGpQRpsDU2Ns5P4/nJWbI/Mz0/D+LryRBWxpfIKOcbDciN9qQ==
+X-Forefront-Antispam-Report-Untrusted:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8644.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(52116005)(366007)(1800799015)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7230
+X-CodeTwo-MessageID: 1b5ac8c7-b024-4cb2-a073-9c05ed1eb553.20240416121830@westeu100-emailsignatures-cloud.codetwo.com
+X-CodeTwoProcessed: true
+References: <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.e2aac3eb-919a-41c3-81e9-f9030f4f80eb@emailsignatures365.codetwo.com>
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped:
+ DU6PEPF0000B620.eurprd02.prod.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id-Prvs:
+	eaff7fcb-be01-465e-3bbd-08dc5e0f500b
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	w3WfWYCmkA4M+URVtOuVSQSZLZyQBUmmibN4tPYDqBMCahXS1arH9pNfd11WGCxGMPLaOExQuyBSvJZ2QOM9bk9RNlMqwjMwN9dbjsCX2EsJlXP5bD9WIInams3arWgMFTD5GM+OalTUFr1ofu7s8ZbaEuLrP+tcBxXTRdER0C66AalPqTZAxSRDlSkVIbeqLKRpK+MQoHyLCw1Vb3TvkH31vqXjikjsFaoQKP2aWrvjsBvfkBAVRMB9QX5NVsZIoiptNxTABsbrbczJABqR0TVoWgqzSL5BrKkn1sFbn/a3fq4qwoDqsVzyitU4+1U5g/vIT3TL4gbFtHDOH4yosqMGproFHepQn8SYMiDCoxQ9lXbKJkmJUQyc2E+IyinxdGrG4ZoP37BWOa46GguCZyYjy39zMXiBO1S44bI+0cRqKqKzBRx6oq3TPb0Wd2K736sCJFeTnmusAdUshPdf3f0x39Q6ezLr/S05coKG6zHgFQG9a6bPbFcQJGLjLklbEIEQ2zgzph0sj4ubF2LDD/HnhKrAdMO7vg/59M8oinplSGVcWxDFacmI3MEb4f6XHB0ctGx9WZnuz+/HlLWbmPVOs/56HEpruW+j5snCBVQoU2HbWrvaabSBEZnuhDd0jWMUlV5b3f21pN9/KqFmEX7HIfJsfQSp3JF/mRadnNTwfXJOfnv6ke9e0Emcc3DE3XM1g63W38Ktxky0HiJ2hw==
+X-Forefront-Antispam-Report:
+	CIP:40.69.19.60;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:westeu100-emailsignatures-cloud.codetwo.com;PTR:westeu100-emailsignatures-cloud.codetwo.com;CAT:NONE;SFS:(13230031)(376005)(82310400014)(1800799015)(36860700004);DIR:OUT;SFP:1102;
+X-OriginatorOrg: topic.nl
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 12:18:32.1062
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63f61ead-601f-494b-d773-08dc5e0f54e1
+X-MS-Exchange-CrossTenant-Id: 449607a5-3517-482d-8d16-41dd868cbda3
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=449607a5-3517-482d-8d16-41dd868cbda3;Ip=[40.69.19.60];Helo=[westeu100-emailsignatures-cloud.codetwo.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DU6PEPF0000B620.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB9013
 
-On Tue, 2024-04-16 at 10:05 +0200, Miklos Szeredi wrote:
-> On Mon, 15 Apr 2024 at 20:35, Mimi Zohar <zohar@linux.ibm.com> wrote:
-> 
-> > Although "Changes to the underlying filesystems while part of a mounted overlay
-> > filesystem are not allowed.", from an integrity perspective these changes might
-> > affect overlay files.  So they need to be detected and possibly re-measured, re-
-> > appraised, and/or re-audited [1, 2].
-> 
-> How are changes of non-overlay files detected?
+Another technology to store energy is a (super)capacitor.
 
-Originally there was a single measureent unless the filesystem was mounted with
-SB_I_VERSION.  With commit a2a2c3c8580a ("ima: Use i_version only when
-filesystem supports it") this changed to always re-measure the file if the
-filesystem wasn't mounted with SB_I_VERSION.
+Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+---
 
-With commit db1d1e8b9867 ("IMA: use vfs_getattr_nosec to get the i_version")
-it's not directly accessing i_version.
+(no changes since v1)
 
-thanks,
+ Documentation/devicetree/bindings/power/supply/battery.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Mimi
+diff --git a/Documentation/devicetree/bindings/power/supply/battery.yaml b/=
+Documentation/devicetree/bindings/power/supply/battery.yaml
+index 491488e7b970..a22c97dfad88 100644
+--- a/Documentation/devicetree/bindings/power/supply/battery.yaml
++++ b/Documentation/devicetree/bindings/power/supply/battery.yaml
+@@ -44,6 +44,7 @@ properties:
+       - const: lithium-ion-polymer
+       - const: lithium-ion-iron-phosphate
+       - const: lithium-ion-manganese-oxide
++      - const: capacitor
+=20
+   over-voltage-threshold-microvolt:
+     description: battery over-voltage limit
+--=20
+2.34.1
 
 
-
+Met vriendelijke groet / kind regards,=0A=
+=0A=
+Mike Looijmans=0A=
+System Expert=0A=
+=0A=
+=0A=
+TOPIC Embedded Products B.V.=0A=
+Materiaalweg 4, 5681 RJ Best=0A=
+The Netherlands=0A=
+=0A=
+T: +31 (0) 499 33 69 69=0A=
+E: mike.looijmans@topic.nl=0A=
+W: www.topic.nl=0A=
+=0A=
+Please consider the environment before printing this e-mail=0A=
 
