@@ -1,150 +1,213 @@
-Return-Path: <linux-kernel+bounces-147222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73AC28A712F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:19:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17F858A7139
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:20:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AB331C21DD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:19:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BE8C1C22582
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:20:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7203312D741;
-	Tue, 16 Apr 2024 16:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23940132493;
+	Tue, 16 Apr 2024 16:20:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="n6oZDMS0"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JJ3JfecI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B4012F387;
-	Tue, 16 Apr 2024 16:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4209B12CD81;
+	Tue, 16 Apr 2024 16:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713284369; cv=none; b=lh4RxGFEoFRh6UAFdakO15yszLmlXshAntE/2Vff5ttQ/G3rx9sWMzgqllXWwR9JS4ybCAsCBZRiOKVVsT71GzypRcMKSy9/Ouw3RdAlOGzxaoSUEhCRY3BV67ronbkFU97ZL9UrjYwq88leWVg0qQ/wLLVZtPN7tH03VpYmNWU=
+	t=1713284438; cv=none; b=db0azZIaqhGblAM3+tpaFFOS5w7xY3gJB+nNcDHrVkg0xiy7c5sqRBPyQ3qBT88jCmNS2/benrxg/iDpyjRDI05Y35THJR8ja8NXyCJCURTTKx7E8b8uZ5tuh4tTKJ00xlZ5DJnjsq3myk64XpqshzM66pUqV6so0KTDIXbg1PM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713284369; c=relaxed/simple;
-	bh=3zAPfjvHteJBBddQNYzl55aQUUjHHppgPi7ePDJmnxg=;
+	s=arc-20240116; t=1713284438; c=relaxed/simple;
+	bh=IdxsQtYfDChkI825sswlPFFsLG18TizRixcQTe0GU+0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=trZaFr1yc+gUKGk0qeGLIShlKsPACRgLiQKFeqiyfxMkNXhe0fbdfuD89SCOxYXf6BIq79dA88cDMzkJw6+I4eR9nqZgjYQ4drGru0n/nETPSDhZKTrIZA7rrY8CvLEH+0w+1loIegJhu7QLK9x6eRLGRgiMwtBoB7yFbw0YdbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=n6oZDMS0; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=7Xh9QahWZwTjmL2IMPLsv4+7DG/WtPClJRGihDEPKvo=; b=n6oZDMS0oxpy46eVB6FiyrfWLd
-	rAK7xR44f9IZl5U2MJX65xNnu1i+rMDlGhugRD9htFwKlOoFSgqk8DRlZD4XhW4zGqtKnRehuwsp/
-	EFHzCP4zqGxa8VbgMSR2NEYSMFqK27id8cVxPiNeWy0DxEtRU89UOdnEGzazvZHEOEMDmBDjGMf6L
-	U0zhs4xx+pDGGqesbyaR5L4p3aW7XHWQ/p3Wu3o2q5m9Wrp/yBQu+hTRpnLhixgJ7wyprk//+XyqM
-	rOIExHsz57qXdMWU4kiASQSsN3H6IyoiE4Ik2i6i2Ar1gUc+6KHaoOOq3qWyzdvTCLAYyph90htdc
-	dAtX2orw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwlWf-0000000B9dS-2K6S;
-	Tue, 16 Apr 2024 16:19:18 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 3544C30047C; Tue, 16 Apr 2024 18:19:17 +0200 (CEST)
-Date: Tue, 16 Apr 2024 18:19:17 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Elizabeth Figura <zfigura@codeweavers.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	wine-devel@winehq.org,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	Wolfram Sang <wsa@kernel.org>,
-	Arkadiusz Hiler <ahiler@codeweavers.com>,
-	Andy Lutomirski <luto@kernel.org>, linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH v4 00/30] NT synchronization primitive driver
-Message-ID: <20240416161917.GD12673@noisy.programming.kicks-ass.net>
-References: <20240416010837.333694-1-zfigura@codeweavers.com>
- <20240416081421.GB31647@noisy.programming.kicks-ass.net>
- <20240416155014.GB12673@noisy.programming.kicks-ass.net>
- <20240416155345.GC12673@noisy.programming.kicks-ass.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oXy2MCQHPGM0Dad51RQFuirBmdy4gkRoct4iTYQ85rAKQW8Mgh/RC04S19CI3I4Bt+UTui3glSbDlqtT1/PpTkSMhHwbsyL++QlgeCSs2GJdXhhMfioqqtOUpq9h5oMbFnsZR8eT926JMD+iKQG1oDv07xMmNLLiuB6J26EOd20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JJ3JfecI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41E98C113CE;
+	Tue, 16 Apr 2024 16:20:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713284437;
+	bh=IdxsQtYfDChkI825sswlPFFsLG18TizRixcQTe0GU+0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JJ3JfecIfR0RG90DjjKBO/IzYxYgUZoinL+ICvju60akeupllGua+bdVjUkHeZoOU
+	 rrh8C2I5+D6gylneSLP41HrjfkZ/jOqUjXFJl1wcPlI9coCwFXf37RY466/46Dflk2
+	 uXKz1LZ4Em7voJLG1tQNdQ3cpqt0OttXJNpmAQ6MZ/o9jBu8928zDaLb05wPpTPoDZ
+	 X6MXOqMVy6GHFaE4uIxS+JDpwP+0hS145prGm6ZJjlWm1q98baevz2Hrw66dXwQV8Q
+	 09Om9vh1/uMByU3H9EFkyYnx6XjHo2uOJMZkjd80hsOypgW4EW219VBE7X6HjaSvJQ
+	 btkrDaW78I1Ew==
+Date: Tue, 16 Apr 2024 19:19:27 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Nam Cao <namcao@linutronix.de>
+Cc: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Andreas Dilger <adilger@dilger.ca>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>,
+	Ext4 Developers List <linux-ext4@vger.kernel.org>,
+	Conor Dooley <conor@kernel.org>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Anders Roxell <anders.roxell@linaro.org>,
+	Alexandre Ghiti <alex@ghiti.fr>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+Message-ID: <Zh6lD8d7cUZdkZJb@kernel.org>
+References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
+ <8734rlo9j7.fsf@all.your.base.are.belong.to.us>
+ <Zh6KNglOu8mpTPHE@kernel.org>
+ <20240416171713.7d76fe7d@namcao>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240416155345.GC12673@noisy.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240416171713.7d76fe7d@namcao>
 
-On Tue, Apr 16, 2024 at 05:53:45PM +0200, Peter Zijlstra wrote:
-> On Tue, Apr 16, 2024 at 05:50:14PM +0200, Peter Zijlstra wrote:
-> > On Tue, Apr 16, 2024 at 10:14:21AM +0200, Peter Zijlstra wrote:
+On Tue, Apr 16, 2024 at 05:17:13PM +0200, Nam Cao wrote:
+> On 2024-04-16 Mike Rapoport wrote:
+> > Hi,
 > > 
-> > > > Some aspects of the implementation may deserve particular comment:
-> > > > 
-> > > > * In the interest of performance, each object is governed only by a single
-> > > >   spinlock. However, NTSYNC_IOC_WAIT_ALL requires that the state of multiple
-> > > >   objects be changed as a single atomic operation. In order to achieve this, we
-> > > >   first take a device-wide lock ("wait_all_lock") any time we are going to lock
-> > > >   more than one object at a time.
-> > > > 
-> > > >   The maximum number of objects that can be used in a vectored wait, and
-> > > >   therefore the maximum that can be locked simultaneously, is 64. This number is
-> > > >   NT's own limit.
+> > On Tue, Apr 16, 2024 at 01:02:20PM +0200, Björn Töpel wrote:
+> > > Christian Brauner <brauner@kernel.org> writes:
+> > > 
+> > > > [Adding Mike who's knowledgeable in this area]
+> > > 
+> > > >> > Further, it seems like riscv32 indeed inserts a page like that to the
+> > > >> > buddy allocator, when the memblock is free'd:
+> > > >> > 
+> > > >> >   | [<c024961c>] __free_one_page+0x2a4/0x3ea
+> > > >> >   | [<c024a448>] __free_pages_ok+0x158/0x3cc
+> > > >> >   | [<c024b1a4>] __free_pages_core+0xe8/0x12c
+> > > >> >   | [<c0c1435a>] memblock_free_pages+0x1a/0x22
+> > > >> >   | [<c0c17676>] memblock_free_all+0x1ee/0x278
+> > > >> >   | [<c0c050b0>] mem_init+0x10/0xa4
+> > > >> >   | [<c0c1447c>] mm_core_init+0x11a/0x2da
+> > > >> >   | [<c0c00bb6>] start_kernel+0x3c4/0x6de
+> > > >> > 
+> > > >> > Here, a page with VA 0xfffff000 is a added to the freelist. We were just
+> > > >> > lucky (unlucky?) that page was used for the page cache.
+> > > >> 
+> > > >> I just educated myself about memory mapping last night, so the below
+> > > >> may be complete nonsense. Take it with a grain of salt.
+> > > >> 
+> > > >> In riscv's setup_bootmem(), we have this line:
+> > > >> 	max_low_pfn = max_pfn = PFN_DOWN(phys_ram_end);
+> > > >> 
+> > > >> I think this is the root cause: max_low_pfn indicates the last page
+> > > >> to be mapped. Problem is: nothing prevents PFN_DOWN(phys_ram_end) from
+> > > >> getting mapped to the last page (0xfffff000). If max_low_pfn is mapped
+> > > >> to the last page, we get the reported problem.
+> > > >> 
+> > > >> There seems to be some code to make sure the last page is not used
+> > > >> (the call to memblock_set_current_limit() right above this line). It is
+> > > >> unclear to me why this still lets the problem slip through.
+> > > >> 
+> > > >> The fix is simple: never let max_low_pfn gets mapped to the last page.
+> > > >> The below patch fixes the problem for me. But I am not entirely sure if
+> > > >> this is the correct fix, further investigation needed.
+> > > >> 
+> > > >> Best regards,
+> > > >> Nam
+> > > >> 
+> > > >> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > > >> index fa34cf55037b..17cab0a52726 100644
+> > > >> --- a/arch/riscv/mm/init.c
+> > > >> +++ b/arch/riscv/mm/init.c
+> > > >> @@ -251,7 +251,8 @@ static void __init setup_bootmem(void)
+> > > >>  	}
+> > > >>  
+> > > >>  	min_low_pfn = PFN_UP(phys_ram_base);
+> > > >> -	max_low_pfn = max_pfn = PFN_DOWN(phys_ram_end);
+> > > >> +	max_low_pfn = PFN_DOWN(memblock_get_current_limit());
+> > > >> +	max_pfn = PFN_DOWN(phys_ram_end);
+> > > >>  	high_memory = (void *)(__va(PFN_PHYS(max_low_pfn)));
+> > > >>  
+> > > >>  	dma32_phys_limit = min(4UL * SZ_1G, (unsigned long)PFN_PHYS(max_low_pfn));
+> > > 
+> > > Yeah, AFAIU memblock_set_current_limit() only limits the allocation from
+> > > memblock. The "forbidden" page (PA 0xc03ff000 VA 0xfffff000) will still
+> > > be allowed in the zone.
+> > > 
+> > > I think your patch requires memblock_set_current_limit() is
+> > > unconditionally called, which currently is not done.
+> > > 
+> > > The hack I tried was (which seems to work):
+> > > 
+> > > --
+> > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > > index fe8e159394d8..3a1f25d41794 100644
+> > > --- a/arch/riscv/mm/init.c
+> > > +++ b/arch/riscv/mm/init.c
+> > > @@ -245,8 +245,10 @@ static void __init setup_bootmem(void)
+> > >          */
+> > >         if (!IS_ENABLED(CONFIG_64BIT)) {
+> > >                 max_mapped_addr = __pa(~(ulong)0);
+> > > -               if (max_mapped_addr == (phys_ram_end - 1))
+> > > +               if (max_mapped_addr == (phys_ram_end - 1)) {
+> > >                         memblock_set_current_limit(max_mapped_addr - 4096);
+> > > +                       phys_ram_end -= 4096;
+> > > +               }
+> > >         }
 > > 
-> > AFAICT:
-> > 
-> > 	spin_lock(&dev->wait_all_lock);
-> > 	  list_for_each_entry(entry, &obj->all_waiters, node)
-> > 	    for (i=0; i<count; i++)
-> > 	      spin_lock_nest_lock(q->entries[i].obj->lock, &dev->wait_all_lock);
-> > 
-> > Where @count <= NTSYNC_MAX_WAIT_COUNT.
-> > 
-> > So while this nests at most 65 spinlocks, there is no actual bound on
-> > the amount of nested lock sections in total. That is, all_waiters list
-> > can be grown without limits.
-> > 
-> > Can we pretty please make wait_all_lock a mutex ?
+> > You can just memblock_reserve() the last page of the first gigabyte, e.g.
 > 
-> Hurmph, it's worse, you do that list walk while holding some obj->lock
-> spinlokc too. Still need to figure out how all that works....
+> "last page of the first gigabyte" - why first gigabyte? Do you mean
+> last page of *last* gigabyte?
+ 
+With 3G-1G split linear map can map only 1G from 0xc0000000 to 0xffffffff
+(or 0x00000000 with 32-bit overflow):
 
-So the point of having that other lock around is so that things like:
+[    0.000000]       lowmem : 0xc0000000 - 0x00000000   (1024 MB)
 
-	try_wake_all_obj(dev, sem)
-	try_wake_any_sem(sem)
+> > 	if (!IS_ENABLED(CONFIG_64BIT)
+> > 		memblock_reserve(SZ_1G - PAGE_SIZE, PAGE_SIZE);
+> > 
+> > The page will still be mapped, but it will never make it to the page
+> > allocator.
+> > 
+> > The nice thing about it is, that memblock lets you to reserve regions that are
+> > not necessarily populated, so there's no need to check where the actual RAM
+> > ends.
+> 
+> I tried the suggested code, it didn't work. I think there are 2
+> mistakes:
+>  - last gigabyte, not first
+>  - memblock_reserve() takes physical addresses as arguments, not
+>    virtual addresses
+> 
+> The below patch fixes the problem. Is this what you really meant?
+> 
+> Best regards,
+> Nam
+> 
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index fa34cf55037b..ac7efdd77be8 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -245,6 +245,7 @@ static void __init setup_bootmem(void)
+>  	 * be done as soon as the kernel mapping base address is determined.
+>  	 */
+>  	if (!IS_ENABLED(CONFIG_64BIT)) {
+> +		memblock_reserve(__pa(-PAGE_SIZE), __pa(PAGE_SIZE));
 
-are done under the same lock?
+__pa(-PAGE_SIZE) is what I meant, yes. 
 
-Where I seem to note that both those functions do that same list
-iteration.
+>  		max_mapped_addr = __pa(~(ulong)0);
+>  		if (max_mapped_addr == (phys_ram_end - 1))
+>  			memblock_set_current_limit(max_mapped_addr - 4096);
+> 
 
-Can't you write things like:
-
-static void try_wake_all_obj(struct nysync_device *dev,
-			     struct ntsync_obj *obj,
-			     void (*wake_obj)(struct ntsync_obj *obj))
-{
-	list_for_each_entry(entry, &obj->all_waiters, node) {
-		spin_lock(&obj->lock);
-		try_wake_all(dev, event->q, obj);
-		wake_obj(obj);
-		spin_unlock(&obj->lock);
-	}
-}
-
-And then instead of the above, write:
-
-	try_wake_all_obj(dev, sem, wake_sem);
-
-[[ Also, should not something like try_wake_any_sem -- wake_sem in the
-   above -- have something like:
-
-	WARN_ON_ONCE(sem->type != NTSYNC_TYPE_SEM);
-]]
-
-  
+-- 
+Sincerely yours,
+Mike.
 
