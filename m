@@ -1,152 +1,195 @@
-Return-Path: <linux-kernel+bounces-146415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19DC28A64F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D22D8A6501
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:23:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6037283ABF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:21:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7A2C28398E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:23:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1B6F7F486;
-	Tue, 16 Apr 2024 07:21:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1992177658;
+	Tue, 16 Apr 2024 07:23:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="S4ACNGQG"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ekk8HCBF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E007C3BBD5
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:21:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9336EB75;
+	Tue, 16 Apr 2024 07:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713252102; cv=none; b=npbEfzoea1UDWvMV3VlAthJGa/3sYnF92ZYuV5MDH4wRYDq/LdF1mBGCFj4lok1BtsK/1tbaNwo7W3cSgc+ehqP46+qRJMhfEyHQ0MQAWw4J5QZfhH8djUz57DZC/vYBsR88O2G7lCxQmGy/aLNECuWVmcivdNi074H6j/ci444=
+	t=1713252206; cv=none; b=VHkeyzIbKbKGyGXLYc8WCAkzSIf45pmkXFPO39XulTqCp8JJt/VEmI/5zqg1Jqo6Wmy/ZVyh5thfkGWRbDRnp74yq47yDxrd7F053nt8oEP+d4VPJgUEmNNM5xh9f+yPPiB28qE+352P3m7l/fO/+G+uFsyTPbXrNkjMhaV64ZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713252102; c=relaxed/simple;
-	bh=SLCPj/7F2BL7ZTrop3RmKKifmAw4+m++fdAnYSbkqjY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=iQMLfa6GvTaSjwu3CtYhscpol4A2dm3fQMQjz+HX4qvx+QpbniQFiJGwY7JXDPDTjfp0GW2BgXck5EJYyPJuxoAzXtel2hogCAL7yW/e0DlX+bPzk8YAMQzaPQUj+Tl3pDFGYnBh7uucFBAhIsYItt9p8HFpWxcXa59/l0vlkmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=S4ACNGQG; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ed01c63657so3633741b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:21:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713252100; x=1713856900; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KfZXB2BpFfIoHxhagie2lEibr4RlvT9R7XTtuJHOq8g=;
-        b=S4ACNGQGdxcSbMvny3VTIvmT2XWmaGCM52OqjpcAfPNtihycQOUV7Cn31t3opODFhS
-         7TegWWnP2NVy26tYouY+a36uerSkYCy0UJHXqubGmlHzEO2feuIXY0m6m5Os4VtLjWHB
-         GwZZrojpoIU4PPv+/ORpae4xdDlVNHABz49Og=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713252100; x=1713856900;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KfZXB2BpFfIoHxhagie2lEibr4RlvT9R7XTtuJHOq8g=;
-        b=HF7T4BLWzxFNemkowzPCvWSurlnJLoBqQ/V3MhjcvY+fxCK/ccs9YyRMbeY2MX2G4D
-         R9q5OR4ZQ1C0HfpVE23ntaGDtVGM2z5YTSdukzTkdmmbymemvVeRrRIgcmbJwxghfW3M
-         2klo3UvII0ZkqyzZccmSBvSSzGih0Rg6qkxmktO/AOO5H+HrBV/H49fnYwCUKioLfaqA
-         ANiYsGBo/Zulx0bhbloB4pMjshYDA7FKnq9HlTGINAs3YMqKT2hdaZzOCtsDhGtK/fWb
-         iyxc7H38bJ02/OFYLWChGl98hml/x3yGMBXGvz3bQQYxSuht4RCeX2Jt8pbZVxJKeokM
-         FbPg==
-X-Forwarded-Encrypted: i=1; AJvYcCWxReDtfoPHFNVlqv5Ba2BQt6hJ6k2J3jDIOXph47TKc7EosJxvNGs9pqkqNpY99qL9Aptn1VIBgLf1pJd9kVJqMPuUi6sUK6vOQGOD
-X-Gm-Message-State: AOJu0YzMF4wp1UF34KV2pEOMU4D9KGbh0zmHfbEcsYeKbSMd8mttNTSK
-	k8MZABDv08iejdEjqtuuiVjO+1LXTDYc/uKylZ/WJH3y+CSqCfde4WNepiJDcQ==
-X-Google-Smtp-Source: AGHT+IE7afWFhGfCo8YNIeMgjqQi06GV4Qk3C+gWZbRMgAZZl4K/rVD0mwLMuSGHZpf8I9hBZPpmJg==
-X-Received: by 2002:a05:6a20:2d08:b0:1a9:ab88:f938 with SMTP id g8-20020a056a202d0800b001a9ab88f938mr10966169pzl.19.1713252100098;
-        Tue, 16 Apr 2024 00:21:40 -0700 (PDT)
-Received: from yuanhsinte1.c.googlers.com (88.216.124.34.bc.googleusercontent.com. [34.124.216.88])
-        by smtp.gmail.com with ESMTPSA id j4-20020a056a00234400b006ead47a65d1sm8323679pfj.109.2024.04.16.00.21.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 00:21:39 -0700 (PDT)
-From: Hsin-Te Yuan <yuanhsinte@chromium.org>
-Date: Tue, 16 Apr 2024 07:21:35 +0000
-Subject: [PATCH RESEND v3] drm/bridge: anx7625: Update audio status while
- detecting
+	s=arc-20240116; t=1713252206; c=relaxed/simple;
+	bh=ULqJjlTCraVJ0ruf913jYz2dlG1gS6UCOgmOiRdXRlo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UjCvUPLzf0P3JLPBqJW2/Sn+xfkNer8nzPpJ1PQZr0VieC5pN2cPRDtF86WlRWoIMN163+SoQ1iEKRXtCwXwxWKOfl+DcQCsuFTcPeEUDF3NH+HFL84kVCy3ArKqnHlZf/m0tWDuZLJTDnBDJy2NWegGodnzs2laWUFeMHkhecM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ekk8HCBF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BBECC113CE;
+	Tue, 16 Apr 2024 07:23:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713252205;
+	bh=ULqJjlTCraVJ0ruf913jYz2dlG1gS6UCOgmOiRdXRlo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ekk8HCBFjthC7O7PxrFN7j/GM7z/nWOuO8k9QOUSLiGyz09GAO2cg64dmGZlUlds7
+	 00Ewxyx3C6wcPZBoIkKGD6lbL3qbO2ksVpnRUlonLdQr9BhpV1yf7+bx9loZNn41At
+	 rywVk+bWOXuipnXUZImOPnzXQlyIpQamAXCi97V5XEUtgpABiSiT97flmkQAEFDr7A
+	 YcuRY0rwjZPTJIRXEph9PF+jUZc4mOVTGomsCx8EugJ6WC8EEbdEckfhASAJlczMAM
+	 pEgjXqHCw7T7cVdoBUzlejwen9ZBJYRh+vjYrzCI4CZ6xsCi82SwkYS2yHPnvfOsma
+	 Wo31Nl9r7Gz/Q==
+Date: Tue, 16 Apr 2024 10:22:14 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Bj\"orn T\"opel" <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
+Message-ID: <Zh4nJp8rv1qRBs8m@kernel.org>
+References: <20240411160051.2093261-1-rppt@kernel.org>
+ <20240411160051.2093261-6-rppt@kernel.org>
+ <20240415075241.GF40213@noisy.programming.kicks-ass.net>
+ <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240416-anx7625-v3-1-f916ae31bdd7@chromium.org>
-X-B4-Tracking: v=1; b=H4sIAP4mHmYC/3XNPQ+CMBAG4L9COlvT9qCgk4OsDjoah9IP6ACYV
- hsM4b/bdNH4Mb5397w3I6+d1R5tsxk5Hay34xADrDIkOzG0GlsVM2KE5QRIgcUwlZwV2GjKFYi
- NglKheH112tgpNZ3RsT7Vhz26xHln/W10j/Qg0LT96goUU1yBViClETyXO9m5sbf3fj26NtUE9
- k75i7JISwqVJqRhRWN+UPhDIdINgZxxaEwB5IMuy/IE9nwxMh8BAAA=
-To: Andrzej Hajda <andrzej.hajda@intel.com>, 
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Xin Ji <xji@analogixsemi.com>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- Hsin-Te Yuan <yuanhsinte@chromium.org>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
 
-Previously, the audio status was not updated during detection, leading
-to a persistent audio despite hot plugging events. To resolve this
-issue, update the audio status during detection.
+On Mon, Apr 15, 2024 at 06:36:39PM +0100, Mark Rutland wrote:
+> On Mon, Apr 15, 2024 at 09:52:41AM +0200, Peter Zijlstra wrote:
+> > On Thu, Apr 11, 2024 at 07:00:41PM +0300, Mike Rapoport wrote:
+> > > +/**
+> > > + * enum execmem_type - types of executable memory ranges
+> > > + *
+> > > + * There are several subsystems that allocate executable memory.
+> > > + * Architectures define different restrictions on placement,
+> > > + * permissions, alignment and other parameters for memory that can be used
+> > > + * by these subsystems.
+> > > + * Types in this enum identify subsystems that allocate executable memory
+> > > + * and let architectures define parameters for ranges suitable for
+> > > + * allocations by each subsystem.
+> > > + *
+> > > + * @EXECMEM_DEFAULT: default parameters that would be used for types that
+> > > + * are not explcitly defined.
+> > > + * @EXECMEM_MODULE_TEXT: parameters for module text sections
+> > > + * @EXECMEM_KPROBES: parameters for kprobes
+> > > + * @EXECMEM_FTRACE: parameters for ftrace
+> > > + * @EXECMEM_BPF: parameters for BPF
+> > > + * @EXECMEM_TYPE_MAX:
+> > > + */
+> > > +enum execmem_type {
+> > > +	EXECMEM_DEFAULT,
+> > > +	EXECMEM_MODULE_TEXT = EXECMEM_DEFAULT,
+> > > +	EXECMEM_KPROBES,
+> > > +	EXECMEM_FTRACE,
+> > > +	EXECMEM_BPF,
+> > > +	EXECMEM_TYPE_MAX,
+> > > +};
+> > 
+> > Can we please get a break-down of how all these types are actually
+> > different from one another?
+> > 
+> > I'm thinking some platforms have a tiny immediate space (arm64 comes to
+> > mind) and has less strict placement constraints for some of them?
+> 
+> Yeah, and really I'd *much* rather deal with that in arch code, as I have said
+> several times.
+> 
+> For arm64 we have two bsaic restrictions: 
+> 
+> 1) Direct branches can go +/-128M
+>    We can expand this range by having direct branches go to PLTs, at a
+>    performance cost.
+> 
+> 2) PREL32 relocations can go +/-2G
+>    We cannot expand this further.
+> 
+> * We don't need to allocate memory for ftrace. We do not use trampolines.
+> 
+> * Kprobes XOL areas don't care about either of those; we don't place any
+>   PC-relative instructions in those. Maybe we want to in future.
+> 
+> * Modules care about both; we'd *prefer* to place them within +/-128M of all
+>   other kernel/module code, but if there's no space we can use PLTs and expand
+>   that to +/-2G. Since modules can refreence other modules, that ends up
+>   actually being halved, and modules have to fit within some 2G window that
+>   also covers the kernel.
+> 
+> * I'm not sure about BPF's requirements; it seems happy doing the same as
+>   modules.
 
-Fixes: 566fef1226c1 ("drm/bridge: anx7625: add HDMI audio function")
-Signed-off-by: Hsin-Te Yuan <yuanhsinte@chromium.org>
----
-
-
-Change-Id: I0b36c27d426b2988886db98452700cb7227d868c
----
-Changes in v3:
-- Add Fixes tag.
-- Link to v2: https://lore.kernel.org/r/20240306-anx7625-v2-1-7138e00b25bf@chromium.org
-
-Changes in v2:
-- Add a space after the colons in the subject line.
-- Link to v1: https://lore.kernel.org/r/20240305-anx7625-v1-1-83ed3ccfa64c@chromium.org
----
- drivers/gpu/drm/bridge/analogix/anx7625.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index 29d91493b101a..9f0d0c5b8ebf5 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -2481,15 +2481,22 @@ static void anx7625_bridge_atomic_disable(struct drm_bridge *bridge,
- 	mutex_unlock(&ctx->aux_lock);
- }
+BPF are happy with vmalloc().
  
-+static void
-+anx7625_audio_update_connector_status(struct anx7625_data *ctx,
-+				      enum drm_connector_status status);
-+
- static enum drm_connector_status
- anx7625_bridge_detect(struct drm_bridge *bridge)
- {
- 	struct anx7625_data *ctx = bridge_to_anx7625(bridge);
- 	struct device *dev = ctx->dev;
-+	enum drm_connector_status status;
- 
- 	DRM_DEV_DEBUG_DRIVER(dev, "drm bridge detect\n");
- 
--	return anx7625_sink_detect(ctx);
-+	status = anx7625_sink_detect(ctx);
-+	anx7625_audio_update_connector_status(ctx, status);
-+	return status;
- }
- 
- static struct edid *anx7625_bridge_get_edid(struct drm_bridge *bridge,
+> So if we *must* use a common execmem allocator, what we'd reall want is our own
+> types, e.g.
+> 
+> 	EXECMEM_ANYWHERE
+> 	EXECMEM_NOPLT
+> 	EXECMEM_PREL32
+> 
+> ... and then we use those in arch code to implement module_alloc() and friends.
 
----
-base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-change-id: 20240305-anx7625-fe16d3a9d37d
+I'm looking at execmem_types more as definition of the consumers, maybe I
+should have named the enum execmem_consumer at the first place.
 
-Best regards,
+And the arch constrains defined in struct execmem_range describe how memory
+should be allocated for each consumer.
+
+These constraints are defined early at boot and remain static, so
+initializing them once and letting a common allocator use them makes
+perfect sense to me.
+
+I agree that fallback_{start,end} are not ideal, but we have 3
+architectures that have preferred and secondary range for modules. And arm
+and powerpc use the same logic for kprobes as well, and I don't see why this
+code should be duplicated.
+
+And, for instance, if you decide to place PC-relative instructions if
+kprobes XOL areas, you'd only need to update execmem_range for kprobes to
+be more like the range for modules.
+
+With central allocator it's easier to deal with the things like
+VM_FLUSH_RESET_PERMS and caching of ROX memory and I think it will be more
+maintainable that module_alloc(), alloc_insn_page() and
+bpf_jit_alloc_exec() spread all over the place.
+ 
+> Mark.
+
 -- 
-Hsin-Te Yuan <yuanhsinte@chromium.org>
-
+Sincerely yours,
+Mike.
 
