@@ -1,227 +1,132 @@
-Return-Path: <linux-kernel+bounces-147665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D284F8A771E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:59:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CCE48A776C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:03:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01AD51C20FE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:59:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 876781C2107B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:03:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5C6278B49;
-	Tue, 16 Apr 2024 21:59:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DCF78C7F;
+	Tue, 16 Apr 2024 22:03:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SCwoeRXg"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SXN50O1Q"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C08F200D5
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 21:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E035A200D5
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 22:03:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713304789; cv=none; b=C597p9j7anwGCk8f8BzEc95enz1WNHuNfFEkdKX1t7Gd5xWweLSoZAQ9w19flUYiKVBLYuyJ7ZT1FeVckW1d0kIbGowddpSBGDACiPoJsBnOMHmR4HvdqjPfKHmhUHyRDl2TfmpA5xeydCIv4z4CzhmvuFdOeyIa/6NqsdMRNSQ=
+	t=1713305019; cv=none; b=t12/lsIqqfKyRz3v8tvpQ+wdsEHWh77SGpftXHM6e/uBJapV+4OZm4nXqA9WfWYmwna1wwqLfQMu135sqyOjH0sQUNC0UEy8q1m+1yipQPYTGC1js6tP8waCN0hiF3mP/KgnArLQkRkztVmOSu88lHUHTIMHsDumg7UdJ/cwk6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713304789; c=relaxed/simple;
-	bh=Us+8KZ2CVWtRVwH8+WDa/l+o8PJUgogpdqZsE1fj8a4=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=OcM+zY7SkuMi/zyE8tAYOMfTR2CR3ktSytqxtMk57xbQq31B3f6sdX1NuWx4ubFmoYCy955xJAR4kymVBM2Cpj1JuETaYdEqwXgJ/KQbTjjPmTg0QkgBoPPvCaJ4I8JyDeMsunN/jhBlMhMfdM6gMmxqsT0pbTv0qNu6Ry7X2PQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--maheshb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SCwoeRXg; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--maheshb.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-609fe93b5cfso74355017b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:59:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713304786; x=1713909586; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=e69wuLO8fARq/X2wQ5SgFqJQevGNwrRmMu/JkYZ/qlY=;
-        b=SCwoeRXgP0ecUv6EeJsB51pIpTi1/TbIoX8iqpGSJGhxqJoeGDib+EE7xYyohDY6a9
-         WnlbJRYOumas5mvqRlFKunvkUUlWWJcK5QjhUZlcxw6PJCXWdzGPNrUyCH7zO82vKBdQ
-         tRQTMocs29rAi7lIOUHk8wWsGAeYDVcgFxi6DDo8fZqx34+nMLhCEMpBF5oRp70bsIrO
-         f5e9T8JMtdFIXSaCZNlHcuiT5DGEZp0/u4KgeY8AvtSDIZJWpXX793dNLo5GAGvKPsDY
-         KnBSTbGmFVtQZIeydy6bpc1UvOT77BXsNRVoBv7z1fZwhEXYSnmVl73L4qx+6k9bnOhl
-         sQEw==
+	s=arc-20240116; t=1713305019; c=relaxed/simple;
+	bh=pgVBszKn+oJK1a+kEuPlUNLOHqXoa11Qlz/3X1dd+Pk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UZBDfjjg7DeJlJlzydtZ1ZDQJ1K0YbJRPLos60dG2CvIG06CGT8vXooQBNpGOrgU8oI6s65bzFnPECRWgM9OZPXgPvJdlzN+FZM45AZE9mlSQRgBDJ/XFlpUPwfhXLI3tl7BKWYchbVuOfzp8PPkx9JgvoLrgY7JoWbyqE1bt1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SXN50O1Q; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713305016;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0mXC6erWL5zoj0Mw8kxXnTBZ+XFTfEZhlYEfC3KPt4Q=;
+	b=SXN50O1QT6imDSoCo7YYLXqsbqF2PMERCAsVMOvW+qM/vzxD7dwe5m7hVNAbynExAjNGRQ
+	F1QqC/mGez6SflgYyDVAnjIYachiAX3oSnVjkRq8bMbTjdEkTG7wcsgP16t6CAGdPCezHO
+	jTQ4d1aluvp/KCXEM2kC66QzAOie4cg=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-518-4zxDV23APN2AohE6wP_0Cg-1; Tue, 16 Apr 2024 18:03:35 -0400
+X-MC-Unique: 4zxDV23APN2AohE6wP_0Cg-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3455cbdea2cso88709f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 15:03:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713304786; x=1713909586;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=e69wuLO8fARq/X2wQ5SgFqJQevGNwrRmMu/JkYZ/qlY=;
-        b=cH3X/WfJadzEl4hxAInqEInYdWAjln6UP7Gu+Zg12AGOL2VRbDgxc3D0Z8cVKTdF2F
-         lt4+oZxCo+ZSnVhCLmHmVvqublWht0S9nHl5Xu8UlVPv4b3fPUF8ttVtc5MM9zCESSSC
-         ZO6+j5haJKIK2BxFSn8xwc7ZJoYBu603NUOgFFr5HBKtZ93oK9HWJsTUxrjQwDviTtm5
-         WZRK2lViVPwX+/EV3sewF0jIEQ49jJ4ogYkBO7Ft4aA2XnJwmMMS1W3gCHj2sRiGk5Cn
-         RAjnfH6miinBtdOPxTZyiVoyPSGX0WmcYqo3jpiNA9wOsLQYOAut1gIbk+pjcmn8PLQd
-         GtDg==
-X-Forwarded-Encrypted: i=1; AJvYcCVVkBVz5nj/pu6LqgPSOY/WO+gwI6daknBwqtnHpRLF+d7X6QKAMNhestzEPj7jxPUYmiPpwO/xACc/UIqqaUR2vMIW0wiwODqTmWOF
-X-Gm-Message-State: AOJu0YzE0LdUzuDWJyYOJLEjQeFU/ufk+NTs8GzRsv8kfnNeXicT71cs
-	KBHfckI7GP7Ps0XNKOJNsAf70F0vAl7OpX8SYj2GUt+wwE6ZmSzTYOwZY6nOJpBJME1MRPRLv0X
-	gxs6Q9g==
-X-Google-Smtp-Source: AGHT+IESUA3BK8b9jgNOg0C7qhV2ZE92zst3SnbszP+3VfW70IOwr+vC/GkD+8k5Jnf4uzw+JG6TZgKPIYS9
-X-Received: from coldfire.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:2b7a])
- (user=maheshb job=sendgmr) by 2002:a0d:d402:0:b0:618:3b78:a851 with SMTP id
- w2-20020a0dd402000000b006183b78a851mr3397571ywd.6.1713304786582; Tue, 16 Apr
- 2024 14:59:46 -0700 (PDT)
-Date: Tue, 16 Apr 2024 14:59:42 -0700
+        d=1e100.net; s=20230601; t=1713305014; x=1713909814;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0mXC6erWL5zoj0Mw8kxXnTBZ+XFTfEZhlYEfC3KPt4Q=;
+        b=fdye4lqsY5bPntqZ7o4hP471cqCyVfJULeUrK5RWqvp9g2tzZ4U17z17S7EwsxW442
+         LKAbC4Un3YFEqxvJHN9leS4lXiveNcZ8PI/s3IH8HSQjlVzNIlQJkzIK0pSXJak/5FLv
+         GM8vwOeF6P150glRwAlRlTUBdXUYifHQMsmJC1XzQzDV/QE8qWaqxUGtVy/Hn3qnaMjl
+         mCzeKxZJ0SOQYojrFRXchhpVMJyZ86jug+CPo/5pTqWseIXEhC32uxIjajMERepKaJyZ
+         iFmQcv7j1rex8WRZMTkKrYBdvpPIkrf1wFuKn9yU6C8FlJo/CmofOrXmDzkDx8PqtK/i
+         tK3g==
+X-Forwarded-Encrypted: i=1; AJvYcCVxtSsK1xtPI7rkdVGko3IA8VHlEU/dg/76A30J3qfEza771hO/rMK/SbF5UHAUh35k9MwUXb3CE9uxWkUStejKPPDfJt4CpkOXgG8U
+X-Gm-Message-State: AOJu0Ywb3TnGRfUxOZJRbdksJcNiVSVkfM0nyW7KzinXuejdAefmJyRX
+	fC/1u34p/yOK742TodlbLbP0sqduPbCFriTPMDnz6VHGaRVVbj5arfgMbEn//2eVm6SP/ID/wn7
+	mciuZXDeg6Z/WFI4Ppcu2uWdNpLE19bm9h7gRUsK+YN5aD0u9XIyVLq9shiQ7JjRSzIhm3P1RHR
+	jhlsIjD7RZmRy83wBM+1pcv7CNh8xnXrwt8ooe
+X-Received: by 2002:adf:f304:0:b0:346:ac24:ee89 with SMTP id i4-20020adff304000000b00346ac24ee89mr416662wro.9.1713305014183;
+        Tue, 16 Apr 2024 15:03:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEfLfv5BpK9ErpOI8WTzMNuyWQvSg/gXs7odOI6qSNYdgMaRlG33KUK38HzJrw4XLe3Ak9IZUgnLRZyeVrbVfk=
+X-Received: by 2002:adf:f304:0:b0:346:ac24:ee89 with SMTP id
+ i4-20020adff304000000b00346ac24ee89mr416651wro.9.1713305013875; Tue, 16 Apr
+ 2024 15:03:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-Message-ID: <20240416215942.150202-1-maheshb@google.com>
-Subject: [PATCHv1 next] ptp: update gettimex64 to provide ts optionally in
- mono-raw base.
-From: Mahesh Bandewar <maheshb@google.com>
-To: Netdev <netdev@vger.kernel.org>, Linux <linux-kernel@vger.kernel.org>, 
-	David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Richard Cochran <richardcochran@gmail.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Sagi Maimon <maimon.sagi@gmail.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, John Stultz <jstultz@google.com>, 
-	Mahesh Bandewar <mahesh@bandewar.net>, Mahesh Bandewar <maheshb@google.com>
+MIME-Version: 1.0
+References: <20240416204729.2541743-1-boris.ostrovsky@oracle.com>
+ <c7091688-8af5-4e70-b2d7-6d0a7134dbbe@redhat.com> <66cc2113-3417-42d0-bf47-d707816cbb53@oracle.com>
+In-Reply-To: <66cc2113-3417-42d0-bf47-d707816cbb53@oracle.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Wed, 17 Apr 2024 00:03:21 +0200
+Message-ID: <CABgObfZ-dFnWK46pyvuaO8TKEKC5pntqa1nXm-7Cwr0rpg5a3w@mail.gmail.com>
+Subject: Re: [PATCH] KVM/x86: Do not clear SIPI while in SMM
+To: boris.ostrovsky@oracle.com
+Cc: kvm@vger.kernel.org, seanjc@google.com, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The current implementation of PTP_SYS_OFFSET_EXTENDED provides
-PHC reads in the form of [pre-TS, PHC, post-TS]. These pre and
-post timestamps are useful to measure the width of the PHC read.
-However, the current implementation provides these timestamps in
-CLOCK_REALTIME only. Since CLOCK_REALTIME is disciplined by NTP
-or NTP-like service(s), the value is subjected to change. This
-makes some applications that are very sensitive to time change
-have these timestamps delivered in different time-base.
+On Tue, Apr 16, 2024 at 10:57=E2=80=AFPM <boris.ostrovsky@oracle.com> wrote=
+:
+> On 4/16/24 4:53 PM, Paolo Bonzini wrote:
+> > On 4/16/24 22:47, Boris Ostrovsky wrote:
+> >> Keeping the SIPI pending avoids this scenario.
+> >
+> > This is incorrect - it's yet another ugly legacy facet of x86, but we
+> > have to live with it.  SIPI is discarded because the code is supposed
+> > to retry it if needed ("INIT-SIPI-SIPI").
+>
+> I couldn't find in the SDM/APM a definitive statement about whether SIPI
+> is supposed to be dropped.
 
-This patch updates the gettimex64 / ioctl op PTP_SYS_OFFSET_EXTENDED
-to provide these (sandwich) timestamps optionally in
-CLOCK_MONOTONIC_RAW timebase while maintaining the default behavior
-or giving them in CLOCK_REALTIME.
+I think the manual is pretty consistent that SIPIs are never latched,
+they're only ever used in wait-for-SIPI state.
 
-~# testptp -d /dev/ptp0 -x 3 -y raw
-extended timestamp request returned 3 samples
-sample # 0: mono-raw time before: 371.548640128
-            phc time: 371.579671788
-            mono-raw time after: 371.548640912
-sample # 1: mono-raw time before: 371.548642104
-            phc time: 371.579673346
-            mono-raw time after: 371.548642490
-sample # 2: mono-raw time before: 371.548643320
-            phc time: 371.579674652
-            mono-raw time after: 371.548643756
-~# testptp -d /dev/ptp0 -x 3
-extended timestamp request returned 3 samples
-sample # 0: system time before: 1713243413.403474250
-            phc time: 385.699915490
-            system time after: 1713243413.403474948
-sample # 1: system time before: 1713243413.403476220
-            phc time: 385.699917168
-            system time after: 1713243413.403476642
-sample # 2: system time before: 1713243413.403477555
-            phc time: 385.699918442
-            system time after: 1713243413.403477961
-~#
+> > The sender should set a flag as early as possible in the SIPI code so
+> > that it's clear that it was not received; and an extra SIPI is not a
+> > problem, it will be ignored anyway and will not cause trouble if
+> > there's a race.
+> >
+> > What is the reproducer for this?
+>
+> Hotplugging/unplugging cpus in a loop, especially if you oversubscribe
+> the guest, will get you there in 10-15 minutes.
+>
+> Typically (although I think not always) this is happening when OVMF if
+> trying to rendezvous and a processor is missing and is sent an extra SMI.
 
-Signed-off-by: Mahesh Bandewar <maheshb@google.com>
----
- drivers/ptp/ptp_chardev.c        |  5 ++++-
- include/linux/ptp_clock_kernel.h | 30 ++++++++++++++++++++++++++----
- include/uapi/linux/ptp_clock.h   |  7 ++++++-
- 3 files changed, 36 insertions(+), 6 deletions(-)
+Can you go into more detail? I wasn't even aware that OVMF's SMM
+supported hotplug - on real hardware I think there's extra work from
+the BMC to coordinate all SMIs across both existing and hotplugged
+packages(*)
 
-diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
-index 7513018c9f9a..34cd0ab79b10 100644
---- a/drivers/ptp/ptp_chardev.c
-+++ b/drivers/ptp/ptp_chardev.c
-@@ -359,10 +359,13 @@ long ptp_ioctl(struct posix_clock_context *pccontext, unsigned int cmd,
- 			break;
- 		}
- 		if (extoff->n_samples > PTP_MAX_SAMPLES
--		    || extoff->rsv[0] || extoff->rsv[1] || extoff->rsv[2]) {
-+		    || extoff->rsv[0] || extoff->rsv[1]
-+		    || (extoff->clockid != CLOCK_REALTIME
-+			&& extoff->clockid != CLOCK_MONOTONIC_RAW)) {
- 			err = -EINVAL;
- 			break;
- 		}
-+		sts.clockid = extoff->clockid;
- 		for (i = 0; i < extoff->n_samples; i++) {
- 			err = ptp->info->gettimex64(ptp->info, &ts, &sts);
- 			if (err)
-diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
-index 6e4b8206c7d0..7563da6db09b 100644
---- a/include/linux/ptp_clock_kernel.h
-+++ b/include/linux/ptp_clock_kernel.h
-@@ -47,10 +47,12 @@ struct system_device_crosststamp;
-  * struct ptp_system_timestamp - system time corresponding to a PHC timestamp
-  * @pre_ts: system timestamp before capturing PHC
-  * @post_ts: system timestamp after capturing PHC
-+ * @clockid: clockid used for cpaturing timestamp
-  */
- struct ptp_system_timestamp {
- 	struct timespec64 pre_ts;
- 	struct timespec64 post_ts;
-+	clockid_t clockid;
- };
- 
- /**
-@@ -457,14 +459,34 @@ static inline ktime_t ptp_convert_timestamp(const ktime_t *hwtstamp,
- 
- static inline void ptp_read_system_prets(struct ptp_system_timestamp *sts)
- {
--	if (sts)
--		ktime_get_real_ts64(&sts->pre_ts);
-+	if (sts) {
-+		switch (sts->clockid) {
-+		case CLOCK_REALTIME:
-+			ktime_get_real_ts64(&sts->pre_ts);
-+			break;
-+		case CLOCK_MONOTONIC_RAW:
-+			ktime_get_raw_ts64(&sts->pre_ts);
-+			break;
-+		default:
-+			break;
-+		}
-+	}
- }
- 
- static inline void ptp_read_system_postts(struct ptp_system_timestamp *sts)
- {
--	if (sts)
--		ktime_get_real_ts64(&sts->post_ts);
-+	if (sts) {
-+		switch (sts->clockid) {
-+		case CLOCK_REALTIME:
-+			ktime_get_real_ts64(&sts->post_ts);
-+			break;
-+		case CLOCK_MONOTONIC_RAW:
-+			ktime_get_raw_ts64(&sts->post_ts);
-+			break;
-+		default:
-+			break;
-+		}
-+	}
- }
- 
- #endif
-diff --git a/include/uapi/linux/ptp_clock.h b/include/uapi/linux/ptp_clock.h
-index 053b40d642de..fc5825e72330 100644
---- a/include/uapi/linux/ptp_clock.h
-+++ b/include/uapi/linux/ptp_clock.h
-@@ -157,7 +157,12 @@ struct ptp_sys_offset {
- 
- struct ptp_sys_offset_extended {
- 	unsigned int n_samples; /* Desired number of measurements. */
--	unsigned int rsv[3];    /* Reserved for future use. */
-+	/* The original implementation provided timestamps (always) in
-+	 * REALTIME clock-base. Since CLOCK_REALTIME is 0, adding
-+	 * clockid doesn't break backward compatibility.
-+	 */
-+	clockid_t clockid;	/* One of the supported clock-ids */
-+	unsigned int rsv[2];    /* Reserved for future use. */
- 	/*
- 	 * Array of [system, phc, system] time stamps. The kernel will provide
- 	 * 3*n_samples time stamps.
--- 
-2.44.0.683.g7961c838ac-goog
+What should happen is that SMIs are blocked on the new CPUs, so that
+only existing CPUs answer. These restore the 0x30000 segment to
+prepare for the SMI on the new CPUs, and send an INIT-SIPI to start
+the SMI on the new CPUs. Does OVMF do anything like that?
+
+Paolo
 
 
