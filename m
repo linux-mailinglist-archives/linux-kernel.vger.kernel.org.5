@@ -1,94 +1,154 @@
-Return-Path: <linux-kernel+bounces-147397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E03F78A735D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:40:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 817FF8A7360
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:41:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E03651C21839
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:40:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BDA22840DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:41:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E4EC136E0A;
-	Tue, 16 Apr 2024 18:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEEAC137753;
+	Tue, 16 Apr 2024 18:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lbetQuDr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Tg/YRJvi"
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CBD585C51;
-	Tue, 16 Apr 2024 18:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81177133283
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:41:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713292846; cv=none; b=WWW0RUYIErNiTvA2c1NvdOJrx0WDdbJ6W12MyRq5xldUavFrlCMjXVMqJJiBVIfKkL3SfQDE8qBGxPHVTa43qyOYRYaHpuG088Ie5IzrATbaCYW4mJZR/ITwXRJJp/2zBwD4VKM2r2GlT3wRbfdGjNcKWKk8CkZxpDGoWZS4yEY=
+	t=1713292886; cv=none; b=RFI8XHBLS++DQ5WDdMHJMnVFP/hIqjbik7x0VGdeoxlZR2T0qUfm5wlYWed/Z7zFqWku1Wz/ugWVR+1xb/z18nnP3dRoSrDPq1Mc7YWsyAyYvdPq0ErveLgmNacQ9hZ6Xj/LoYon+aJm+lVG/y889Fx9a4NAcrHAjZdWwXe8fxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713292846; c=relaxed/simple;
-	bh=nxSZFf13GJ6gPxVDpjdFx1f46eGRR2qmOA9vcH9/Ju8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ERGdvJFB5bj9FF0fnkPMS28Gs0gmCNPpEjQvhxrFWYPZpHKxUMBYYQvQXQRBACxfUfJ6/cmHW2l5CoMrT43jfuOqmAOihGq5hhEuxjdNs6zjFU7ix6++kt0sO9E0GwhHDBkf0fY2Y6VOjOWbOmXD48SBz0IZ2Vvn03ZZ+xrs/Eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lbetQuDr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1A0CC113CE;
-	Tue, 16 Apr 2024 18:40:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713292846;
-	bh=nxSZFf13GJ6gPxVDpjdFx1f46eGRR2qmOA9vcH9/Ju8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lbetQuDrOp+4N56X4d/A7V/XM/Y7aaLvqkAeawoYUJfiJ7UmbA7BGx766xosIC/ee
-	 acmlfTXt5jEQ2Q9SRGfzpGBVFvKEidyZyUJCXJ+EK+U7A6Ts+PwJBadW6phkF4hlXl
-	 UbuGGD1kiteSrVNpBOVDLkJMHqOsJoR4a5pnYQVwCJ9A1eZbn9eGulWzcZASbak8uN
-	 tQHgxiladEL8hKf7J0xFHGS1FE79lK6DJNIcpmNh4A+4BAqMO3x865Ou0B3EwA1hYE
-	 OidEg7Rfi/Vf01XLe1svoXqql4gO+T57UeVpGEojsDm5EWLCF+2oIe4xou2JxCQqXO
-	 3Po/mOXMqd3UQ==
-From: SeongJae Park <sj@kernel.org>
-To: SeongJae Park <sj@kernel.org>
-Cc: damon@lists.linux.dev,
-	linux-damon@amazon.com,
-	linux-damon-trial@amazon.com,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Third in-person DAMON Beer/Coffee/Tea chat
-Date: Tue, 16 Apr 2024 11:40:44 -0700
-Message-Id: <20240416184044.98993-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20220810225102.124459-1-sj@kernel.org>
-References: 
+	s=arc-20240116; t=1713292886; c=relaxed/simple;
+	bh=bmzjTTFBWVz12gXu4GvtCl6/if4RyTfGK18ivEjF9FA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lpumgiEVQYI3qHaJ/jZhirl0sBnGAtmqBjxtc6y4DwUmAksb/I86cdxhjzfVQ72RHJ+Mu73+YkwWfUS+S2Et2NBCLPB63bYc9uhHs9uylt8UWmg6gQ3iDVIDjkrYjFQiY0X7svZVkhBCWOoY+uP/uFjVOxZZ2HfsJD2gsz3ey80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Tg/YRJvi; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 16 Apr 2024 11:41:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713292882;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AARNMAAmv0ZXNznpgmWdVj/ZM3y0d0nkfa+epz38edo=;
+	b=Tg/YRJvi+gsorMTVglfkGMo25xZslc2DG+Q3niadqPeDe0UXXpz//oQEO/8rXho+keqy0O
+	fT0WCzxTkS7d3YdtM/X2cSn/g/keKmFcCaY8tWIWLgWq52vcuvbfGQXocNILOLXpK6doWM
+	I4E72O2k43z0IjPC4afmINIRpSVCOFU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Yosry Ahmed <yosryahmed@google.com>, Waiman Long <longman@redhat.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, 
+	Jesper Dangaard Brouer <jesper@cloudflare.com>, "David S. Miller" <davem@davemloft.net>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Shakeel Butt <shakeelb@google.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
+	kernel-team <kernel-team@cloudflare.com>, cgroups@vger.kernel.org, Linux-MM <linux-mm@kvack.org>, 
+	Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Ivan Babrou <ivan@cloudflare.com>
+Subject: Re: Advice on cgroup rstat lock
+Message-ID: <f6daabzdesdwo7zdouexow5mdub3qnzr7e67lonmhh3itjgk5j@qw3xpvqoyb7j>
+References: <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
+ <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org>
+ <96728c6d-3863-48c7-986b-b0b37689849e@redhat.com>
+ <CAJD7tkZrVjhe5PPUZQNoAZ5oOO4a+MZe283MVTtQHghGSxAUnA@mail.gmail.com>
+ <4fd9106c-40a6-415a-9409-c346d7ab91ce@redhat.com>
+ <f72ab971-989e-4a1c-9246-9b8e57201b60@kernel.org>
+ <CAJD7tka=1AnBNFn=frp7AwfjGsZMGcDjw=xiWeqNygC5rPf6uQ@mail.gmail.com>
+ <75d837cc-4d33-44f6-bb0c-7558f0488d4e@kernel.org>
+ <CAJD7tka_ESbcK6cspyEfVqv1yTW0uhWSvvoO4bqMJExn-j-SEg@mail.gmail.com>
+ <9f6333ec-f28c-4a91-b7b9-07a028d92225@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9f6333ec-f28c-4a91-b7b9-07a028d92225@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+On Tue, Apr 16, 2024 at 04:22:51PM +0200, Jesper Dangaard Brouer wrote:
 
-On Wed, 10 Aug 2022 22:51:02 +0000 SeongJae Park <sj@kernel.org> wrote:
+Sorry for the late response and I see there are patches posted as well
+which I will take a look but let me put somethings in perspective.
 
-> Hello,
 > 
 > 
-> In short, I'd like to start an open, regular, and informal virtual bi-weekly
-> meeting series for DAMON community.
+> > 
+> > I personally don't like mem_cgroup_flush_stats_ratelimited() very
+> > much, because it is time-based (unlike memcg_vmstats_needs_flush()),
+> > and a lot of changes can happen in a very short amount of time.
+> > However, it seems like for some workloads it's a necessary evil :/
+> > 
 
-I'm attending Open Source Summit North America 2024[1].  I just booked a time
-slot and a half of a room to use it as an unconference session for the third
-in-person DAMON Beer/Coffee/Tea Chat instance.
+Other than obj_cgroup_may_zswap(), there is no other place which really
+need very very accurate stats. IMO we should actually make ratelimited
+version the default one for all the places. Stats will always be out of
+sync for some time window even with non-ratelimited flush and I don't
+see any place where 2 second old stat would be any issue.
 
-- Time: 2024-04-17 (Wednesday) 16:55 to 17:35 PT
-- Place: Room 444 of the conference venue
+> 
+> I like the combination of the two mem_cgroup_flush_stats_ratelimited()
+> and memcg_vmstats_needs_flush().
+> IMHO the jiffies rate limit 2*FLUSH_TIME is too high, looks like 4 sec?
 
-The time slot is just after my LinuxCon DAMON talk[2], and just before the
-evening event of the conference.  I hope this to be a good chance to meet with
-other DAMON community members and chat anything fun.  Please feel free to join.
-Looking forward to meet you!
+4 sec is the worst case and I don't think anyone have seen or reported
+that they are seeing 4 sec delayed flush and if it is happening, it
+seems like no one cares. 
 
-[1] https://events.linuxfoundation.org/open-source-summit-north-america/
-[2] https://sched.co/1aBOg
+> 
+> 
+> > I briefly looked into a global scheme similar to
+> > memcg_vmstats_needs_flush() in core cgroups code, but I gave up
+> > quickly. Different subsystems have different incomparable stats, so we
+> > cannot have a simple magnitude of pending updates on a cgroup-level
+> > that represents all subsystems fairly.
+> > 
+> > I tried to have per-subsystem callbacks to update the pending stats
+> > and check if flushing is required -- but it got complicated quickly
+> > and performance was bad.
+> > 
+> 
+> I like the time-based limit because it doesn't require tracking pending
+> updates.
+> 
+> I'm looking at using a time-based limit, on how often userspace can take
+> the lock, but in the area of 50ms to 100 ms.
 
+Sounds good to me and you might just need to check obj_cgroup_may_zswap
+is not getting delayed or getting stale stats.
 
-Thanks,
-SJ
+> 
+> 
+> With a mutex lock contention will be less obvious, as converting this to
+> a mutex avoids multiple CPUs spinning while waiting for the lock, but
+> it doesn't remove the lock contention.
+> 
 
-[...]
+I don't like global sleepable locks as those are source of priority
+inversion issues on highly utilized multi-tenant systems but I still
+need to see how you are handling that.
+
+> Userspace can easily triggered pressure on the global cgroup_rstat_lock
+> via simply reading io.stat and cpu.stat files (under /sys/fs/cgroup/).
+> I think we need a system to mitigate lock contention from userspace
+> (waiting on code compiling with a proposal).  We see normal userspace
+> stats tools like cadvisor, nomad (and systemd) trigger this by reading
+> all the stat file on the system and even spawning parallel threads
+> without realizing that kernel side they share same global lock.
+> 
+> You have done a huge effort to mitigate lock contention from memcg,
+> thank you for that.  It would be sad if userspace reading these stat
+> files can block memcg.  On production I see shrink_node having a
+> congestion point happening on this global lock.
+
+Seems like another instance where we should use the ratelimited version
+of the flush function.
 
