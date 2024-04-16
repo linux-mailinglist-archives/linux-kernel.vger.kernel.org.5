@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-146822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B829E8A6B79
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:53:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 281E28A6B7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:53:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB5041C21C5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:53:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D6E6B22876
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:53:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5284212C467;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5280112C466;
 	Tue, 16 Apr 2024 12:53:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WLbBzn5g"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Q5ai+EHa"
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 629B112BE8C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9679912BEA9
 	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 12:53:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713271982; cv=none; b=Co52uTyk8UxL1qKow1D3aUdK4Lr9A5btxRyhu0kbBPxrPF+oY7FTyeGGzMBS6lKOggBzkV4j1gXPZYs61ZL7e2G02vLB8pCsUCfbE+TpR6g0sDgs+M+ul1T29Up2hVPlNh9dL0sv9eI3/Ykv2cORw10dUFLfWkbKPHllM68ckW0=
+	t=1713271982; cv=none; b=g4nBvSs996pAgUHjlBSoYIaOuGamTjnWITBaBlRtfX1ULUe5NT00H2aX9L/cz+Mcfq+OuISg7QCGwkne/IYw+9eYWxM/olBM5NQfq4idWVKQoNGw1GP8TCC6jrqygLFZHy25/2E963THDZTHRlTCZG8BkLur8T2fAggyV+VJXfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713271982; c=relaxed/simple;
-	bh=gDGwcPUlhrJ58tTxtAf4S10aFgybKlZmlLgO5JE33HE=;
+	bh=fVFt3TspoIf3x4uHfvW0rMMbgwzq4+eKFDrqeSJaUQo=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=AIkvclCzGHMjmte9LdYr32EZknBD8sn4kgsz5pWVSCKaywPb+vZylHkYzq8OQdonCTPQJMU6NBxwVfOGjxW1H7ZGPGFlnHHHNsqUNxABBBnambw+VgC6v5UtQwN6y2pNpM0k5rRIb0TSfHvHmLhZfFkjjt9cSS06AjCH67I5Koc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WLbBzn5g; arc=none smtp.client-ip=217.70.183.200
+	 In-Reply-To:To:Cc; b=Xm4MrJp0s7BcGnOQTvx3kxqFElrHrllUUmrQ3onaN5Q7ugeCmxvDRSEqskFpzXJ3FknF7059TOFVQHJFWz7pOV2A6Xfup0U9azgghIulWxvizYG4oRqZUnNm/gn1xMt1+IVqBnQ/u1349+dZ8dAZyW7ZRwN5kqPiWmQlpIN2R3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Q5ai+EHa; arc=none smtp.client-ip=217.70.183.200
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 26AC020009;
-	Tue, 16 Apr 2024 12:52:51 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E46DF20010;
+	Tue, 16 Apr 2024 12:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713271973;
+	t=1713271979;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9MU9XELe1rM5Qiqxbtkg8dW/yfnlPXWOR1yK6MM7gxg=;
-	b=WLbBzn5gy3ph07VsIR980IaL+R79W7fITyjAVQdORLdCv59T3lKm2bJ//bK+PZLVmHSuU4
-	3bybP5lxjM52va46BJHwEI1GW8jaxeKX7+5fY/2XQgS/3qN8TbJlNfy3K43HM4q0t3/fzk
-	EVZn9UMeKFnxAk/NjWQ9IgDvT0ppobvVOQIa23gLu08aW2nyoeR0zqOFtNAxPaIhxtGvWy
-	IVAu6QhHDfpQF2qQq6w4FeCL8W/mpvBJbRiIiLtylHfxj10FcEcNQ9BK2UvPT7QqHXt95r
-	kVIeex45iiRJd6lL43bwUUyGbZnbAATIq4BwWmNM41qlrjQTukj2O2mag8Z9CA==
+	bh=DkjYb/heaYMzCjQ4QnbfLecl4jtQfd543suxAgCkx34=;
+	b=Q5ai+EHaCMUt1LHzoBzp0RKUivr1riPA7SfjAObRdy9sv11F78Z2/Z2uVARG4ibWFm6KJQ
+	7T5qEbMlrPGdB72T8U8EXbDN5udTOluG2lVK4Ktfe19oq7QXEy5h4owMDTuh4+VYhBJYra
+	PIjpAltwcL7hCxDyMCFp8w4v+2f6SWckxX6Cju1FAx4TXg7b5CLTkDeWFp4f/YdmPgpKW7
+	xpNBzNNwi6/YTERptsBBLBsRXcSVL2s/P1wIcGWxIv9dLPR8fZqKRwS5TXE8SAJSNzV2A0
+	EzicZT71cPUzCyffhAgC9oH6el92omZVuB9HCFgZt8MVsFN6V7SrQ4gbGHL0AQ==
 From: Thomas Richard <thomas.richard@bootlin.com>
-Date: Tue, 16 Apr 2024 14:52:30 +0200
-Subject: [PATCH 1/8] phy: ti: phy-j721e-wiz: use dev_err_probe() instead of
- dev_err()
+Date: Tue, 16 Apr 2024 14:52:31 +0200
+Subject: [PATCH 2/8] phy: ti: phy-j721e-wiz: split wiz_clock_init()
+ function
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240412-j7200-phy-s2r-v1-1-f15815833974@bootlin.com>
+Message-Id: <20240412-j7200-phy-s2r-v1-2-f15815833974@bootlin.com>
 References: <20240412-j7200-phy-s2r-v1-0-f15815833974@bootlin.com>
 In-Reply-To: <20240412-j7200-phy-s2r-v1-0-f15815833974@bootlin.com>
 To: Vinod Koul <vkoul@kernel.org>, 
@@ -69,118 +69,126 @@ Cc: linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
 X-Mailer: b4 0.12.0
 X-GND-Sasl: thomas.richard@bootlin.com
 
-Use dev_err_probe() instead of dev_err() in wiz_clock_init() to simplify
-the code and standardize the error output.
+The wiz_clock_init() function mixes probe and hardware configuration.
+Rename the wiz_clock_init() to wiz_clock_probe() and move the hardware
+configuration part in a new function named wiz_clock_init().
+
+This hardware configuration sequence must be called during the resume
+stage of the driver.
 
 Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
 ---
- drivers/phy/ti/phy-j721e-wiz.c | 46 +++++++++++++++++++-----------------------
- 1 file changed, 21 insertions(+), 25 deletions(-)
+ drivers/phy/ti/phy-j721e-wiz.c | 66 +++++++++++++++++++++++-------------------
+ 1 file changed, 37 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
-index 00d7e6a6de03..5fea4df9404e 100644
+index 5fea4df9404e..ba670109e7ad 100644
 --- a/drivers/phy/ti/phy-j721e-wiz.c
 +++ b/drivers/phy/ti/phy-j721e-wiz.c
-@@ -1088,11 +1088,10 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
- 	int i;
+@@ -1076,26 +1076,12 @@ static int wiz_clock_register(struct wiz *wiz)
+ 	return ret;
+ }
  
- 	clk = devm_clk_get(dev, "core_ref_clk");
--	if (IS_ERR(clk)) {
--		dev_err(dev, "core_ref_clk clock not found\n");
--		ret = PTR_ERR(clk);
--		return ret;
--	}
+-static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
++static void wiz_clock_init(struct wiz *wiz)
+ {
+-	const struct wiz_clk_mux_sel *clk_mux_sel = wiz->clk_mux_sel;
+-	struct device *dev = wiz->dev;
+-	struct device_node *clk_node;
+-	const char *node_name;
+ 	unsigned long rate;
+-	struct clk *clk;
+-	int ret;
+-	int i;
+-
+-	clk = devm_clk_get(dev, "core_ref_clk");
+-	if (IS_ERR(clk))
+-		return dev_err_probe(dev, PTR_ERR(clk),
+-				     "core_ref_clk clock not found\n");
+ 
+-	wiz->input_clks[WIZ_CORE_REFCLK] = clk;
+-
+-	rate = clk_get_rate(clk);
+-	if (rate >= 100000000)
++	rate = clk_get_rate(wiz->input_clks[WIZ_CORE_REFCLK]);
++	if (rate >= REF_CLK_100MHZ)
+ 		regmap_field_write(wiz->pma_cmn_refclk_int_mode, 0x1);
+ 	else
+ 		regmap_field_write(wiz->pma_cmn_refclk_int_mode, 0x3);
+@@ -1119,6 +1105,38 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
+ 		break;
+ 	}
+ 
++	if (wiz->input_clks[WIZ_CORE_REFCLK1]) {
++		rate = clk_get_rate(wiz->input_clks[WIZ_CORE_REFCLK1]);
++		if (rate >= REF_CLK_100MHZ)
++			regmap_field_write(wiz->pma_cmn_refclk1_int_mode, 0x1);
++		else
++			regmap_field_write(wiz->pma_cmn_refclk1_int_mode, 0x3);
++	}
++
++	rate = clk_get_rate(wiz->input_clks[WIZ_EXT_REFCLK]);
++	if (rate >= REF_CLK_100MHZ)
++		regmap_field_write(wiz->pma_cmn_refclk_mode, 0x0);
++	else
++		regmap_field_write(wiz->pma_cmn_refclk_mode, 0x2);
++}
++
++static int wiz_clock_probe(struct wiz *wiz, struct device_node *node)
++{
++	const struct wiz_clk_mux_sel *clk_mux_sel = wiz->clk_mux_sel;
++	struct device *dev = wiz->dev;
++	struct device_node *clk_node;
++	const char *node_name;
++	struct clk *clk;
++	int ret;
++	int i;
++
++	clk = devm_clk_get(dev, "core_ref_clk");
 +	if (IS_ERR(clk))
 +		return dev_err_probe(dev, PTR_ERR(clk),
 +				     "core_ref_clk clock not found\n");
 +
- 	wiz->input_clks[WIZ_CORE_REFCLK] = clk;
- 
- 	rate = clk_get_rate(clk);
-@@ -1122,11 +1121,10 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
- 
++	wiz->input_clks[WIZ_CORE_REFCLK] = clk;
++
  	if (wiz->data->pma_cmn_refclk1_int_mode) {
  		clk = devm_clk_get(dev, "core_ref1_clk");
--		if (IS_ERR(clk)) {
--			dev_err(dev, "core_ref1_clk clock not found\n");
--			ret = PTR_ERR(clk);
--			return ret;
--		}
-+		if (IS_ERR(clk))
-+			return dev_err_probe(dev, PTR_ERR(clk),
-+					     "core_ref1_clk clock not found\n");
-+
- 		wiz->input_clks[WIZ_CORE_REFCLK1] = clk;
+ 		if (IS_ERR(clk))
+@@ -1126,12 +1144,6 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
+ 					     "core_ref1_clk clock not found\n");
  
- 		rate = clk_get_rate(clk);
-@@ -1137,11 +1135,10 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
+ 		wiz->input_clks[WIZ_CORE_REFCLK1] = clk;
+-
+-		rate = clk_get_rate(clk);
+-		if (rate >= 100000000)
+-			regmap_field_write(wiz->pma_cmn_refclk1_int_mode, 0x1);
+-		else
+-			regmap_field_write(wiz->pma_cmn_refclk1_int_mode, 0x3);
  	}
  
  	clk = devm_clk_get(dev, "ext_ref_clk");
--	if (IS_ERR(clk)) {
--		dev_err(dev, "ext_ref_clk clock not found\n");
--		ret = PTR_ERR(clk);
--		return ret;
--	}
-+	if (IS_ERR(clk))
-+		return dev_err_probe(dev, PTR_ERR(clk),
-+				     "ext_ref_clk clock not found\n");
-+
+@@ -1141,11 +1153,7 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
+ 
  	wiz->input_clks[WIZ_EXT_REFCLK] = clk;
  
- 	rate = clk_get_rate(clk);
-@@ -1157,8 +1154,9 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
- 	case J721S2_WIZ_10G:
- 		ret = wiz_clock_register(wiz);
- 		if (ret)
--			dev_err(dev, "Failed to register wiz clocks\n");
--		return ret;
-+			return dev_err_probe(dev, ret, "Failed to register wiz clocks\n");
-+
-+		return 0;
- 	default:
- 		break;
+-	rate = clk_get_rate(clk);
+-	if (rate >= 100000000)
+-		regmap_field_write(wiz->pma_cmn_refclk_mode, 0x0);
+-	else
+-		regmap_field_write(wiz->pma_cmn_refclk_mode, 0x2);
++	wiz_clock_init(wiz);
+ 
+ 	switch (wiz->type) {
+ 	case AM64_WIZ_10G:
+@@ -1589,7 +1597,7 @@ static int wiz_probe(struct platform_device *pdev)
+ 		goto err_get_sync;
  	}
-@@ -1167,16 +1165,15 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
- 		node_name = clk_mux_sel[i].node_name;
- 		clk_node = of_get_child_by_name(node, node_name);
- 		if (!clk_node) {
--			dev_err(dev, "Unable to get %s node\n", node_name);
--			ret = -EINVAL;
-+			ret = dev_err_probe(dev, -EINVAL, "Unable to get %s node\n", node_name);
- 			goto err;
- 		}
  
- 		ret = wiz_mux_of_clk_register(wiz, clk_node, wiz->mux_sel_field[i],
- 					      clk_mux_sel[i].table);
- 		if (ret) {
--			dev_err(dev, "Failed to register %s clock\n",
--				node_name);
-+			dev_err_probe(dev, ret, "Failed to register %s clock\n",
-+				      node_name);
- 			of_node_put(clk_node);
- 			goto err;
- 		}
-@@ -1188,16 +1185,15 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
- 		node_name = clk_div_sel[i].node_name;
- 		clk_node = of_get_child_by_name(node, node_name);
- 		if (!clk_node) {
--			dev_err(dev, "Unable to get %s node\n", node_name);
--			ret = -EINVAL;
-+			ret = dev_err_probe(dev, -EINVAL, "Unable to get %s node\n", node_name);
- 			goto err;
- 		}
- 
- 		ret = wiz_div_clk_register(wiz, clk_node, wiz->div_sel_field[i],
- 					   clk_div_sel[i].table);
- 		if (ret) {
--			dev_err(dev, "Failed to register %s clock\n",
--				node_name);
-+			dev_err_probe(dev, ret, "Failed to register %s clock\n",
-+				      node_name);
- 			of_node_put(clk_node);
- 			goto err;
- 		}
+-	ret = wiz_clock_init(wiz, node);
++	ret = wiz_clock_probe(wiz, node);
+ 	if (ret < 0) {
+ 		dev_warn(dev, "Failed to initialize clocks\n");
+ 		goto err_get_sync;
 
 -- 
 2.39.2
