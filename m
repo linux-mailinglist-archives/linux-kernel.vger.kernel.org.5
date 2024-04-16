@@ -1,105 +1,222 @@
-Return-Path: <linux-kernel+bounces-146940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D5FD8A6D49
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:05:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFFB18A6D4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:06:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE5A51C22337
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:05:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A48B6287C1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:06:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4A8712CDB6;
-	Tue, 16 Apr 2024 14:05:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39B2A12D750;
+	Tue, 16 Apr 2024 14:05:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="BV+rQywq"
-Received: from mout.web.de (mout.web.de [212.227.17.11])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a0r79liM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EEA012CD8E;
-	Tue, 16 Apr 2024 14:05:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E68F12C485;
+	Tue, 16 Apr 2024 14:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713276346; cv=none; b=AXj6+yPFvBdCz6Bs6S6plVJDU3PriQVY6mrHCxoJf22qFMSzaa40330MCoW2aZUD2VgbOCDesUz8TXUHuKzWjRm9Zwg5ePuIbFWmTdXiZNbWFx0p+J9n0fCPoSoni1ZKjxuCQA0FKmxP+BQX5Q2ZyZHdqr0pUfRITjrlj0GA8X0=
+	t=1713276358; cv=none; b=b+z4rFK8SWRXs6S3GTma6ekxDmNNc/ZRjgAhIA1jIDcKa/FcLSWKz5KCCRtWYxXzZ2xdXjLvczg6F9ImWwmGxm6jN93FLr+z03uJrF6K8ymeXTui4clu1OoVAJg/GdQuY302g6sdyJvll4YrX3G2wPZk5APYrFuLb92wQA2vUwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713276346; c=relaxed/simple;
-	bh=ICGpHm/MlVMTN5tT+yT0ALzoCJj/Nv+iChNyAF6Crfg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d0zeLrz7sYwAgFaliwKn242b5UXZCGg+8zu3QIOlOhOh+mTR3mj4tLGXUrMzDQ+AOt8IM2KG7Bz9w8ziGB+1ljve8g03pY/UuJP4ruCYFSoNHiJKVPvm33L5i9xrPnLkzQYo+Y76rvD82yfNw2QNVpbvUDsgL+S27oQFD0B2uAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=BV+rQywq; arc=none smtp.client-ip=212.227.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713276319; x=1713881119; i=markus.elfring@web.de;
-	bh=ICGpHm/MlVMTN5tT+yT0ALzoCJj/Nv+iChNyAF6Crfg=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=BV+rQywqAIdxBH0umDEn8bvGjPmvmzSqAzrxbTbKpM3uXumbe6gcX7CTQWSP5t56
-	 1YTSUpLCG0Qkdr5GcTCA8zLZjfpbU6p4mrszRpAZvRYSM9VOYa6+aaGMthQCEfzq1
-	 koDp5MNSqr1caICyB/lrzzdxDhdd6AJ66FSmF9Sah7Ukq0q7UR81HR0MRBd8WNzEo
-	 gIMMx8Kym/SaK6vj41JHkIPZEe3fEg9mr9PWEQUO6ZymdHSNcktb0sNgMLO2yy5v4
-	 RT5Wsby/gtVRlr/I9x7umdiBOZyMHWo/x4B5pcT0C+O7S02wDDOY0ze6WRgX8a/UW
-	 Gd/U5HLtEwtpoYY2xQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MTOha-1sJwDz34d2-00Tmq6; Tue, 16
- Apr 2024 16:05:19 +0200
-Message-ID: <d5304d62-0472-4d04-8727-9e9c88eb0533@web.de>
-Date: Tue, 16 Apr 2024 16:05:17 +0200
+	s=arc-20240116; t=1713276358; c=relaxed/simple;
+	bh=GW4b3JjjpzhyEgr0U37zkqjQS5CiLTeAstpJ8q/JZFw=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=bDw6ntiEFhsltMAKJZgDAUvxuUqjXXwam12E0F+G2Q9o6ZWFqn4dkjyFz+2ilKp13PNWrEPdb7FeCipkCsXpaSFFDCGCEHfxUkNQPPQwkP6IYNsyLJNHnsmLFs9ntbV4Um4J/dbL1SP32KHbKLyTYfRwptcZ8ZJ39KQ8ueGsU84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a0r79liM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60D8FC2BD11;
+	Tue, 16 Apr 2024 14:05:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713276357;
+	bh=GW4b3JjjpzhyEgr0U37zkqjQS5CiLTeAstpJ8q/JZFw=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=a0r79liMkvsBhViEXn4XE6QleDlH/AJGLeB5n+/BVBlotBeJNnn8hAwhK30d55/yB
+	 /hF0hI8/j4A5/tH1aKS7gPmqkwS+XkDBzYHw8mQaZ0vKJWejAyOYa4SMNjdv5MsTNo
+	 DWWBeHyY099jZTeGY1Es3XOlD1FQzDJZTufrpVEgtRK3a+YPgTygu+apaBvLzJJpdp
+	 BluSYTUE24rQqeZVRElwFhlyzyVbwuuyLPvc+DKA0UXjT38LFotuoleeI1riSwnNJE
+	 xp51dBj8+vuspWsVcjqqMiuZjroQQRw15lPun3mzVxhBNIQZbd4iOlfTZNbfVQYMJZ
+	 to9WKHuk8EMIg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [0/2] powerpc/powernv/vas: Adjustments for map_paste_region()?
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
- Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
- kernel-janitors@vger.kernel.org, "Aneesh Kumar K.V"
- <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Nicholas Piggin <npiggin@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
-References: <7be66990-de9e-488b-ad6d-fafd1c7bb34c@web.de>
- <ee6022b8-3aeb-4e6e-99f5-2668dd344e0a@web.de> <87plupbm0c.fsf@mail.lhotse>
- <795ca003-4231-45c0-8bb6-178597950fa5@csgroup.eu>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <795ca003-4231-45c0-8bb6-178597950fa5@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ORHzTV9JjHAw4zTbjE/EZ77vq6Kp7tJZyO1LnF5YwH3Wm4B8mFK
- 9CDJOEyKMNgNsdIz/BIs81MLc1apFVK4NmG3Y3ATeJNBaNil7jjERn3Fa5wqGOqCl1KyLRz
- 1VhgPaKUTJApamxerdglA5aKQf9MO0QMuQ4vq3mqg8TxdzwYK6lbYLIy5HkG2L7U1m1IqfH
- DufMlLVpDYZJHAnW7MGgA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:8bmhXE821EU=;0UoJ/5dv4u3lZzMfraFWbbkbMm4
- yeLO+yOeHL8YDFVOoNZgpij7RieJG+s7gkXK8aVZl/ACsMiPzoWF6m9Q6p4yZIYALncj1ACJr
- b/jCDP5O7arA/0kWG1R9vkkk+gJJgnU4PdAAtF05ygVx2jVuAFLupnLWpWIs0Pz3Ao1rSp8kK
- +dhuc3Avvp3hGe0AVp8cWXSPE7MOs7Ena1oB+RQuqcVNmNOHGhfMb1l1FVxNr7wya02Cqyb7+
- tHblnwm2E4tKis7qlwrWw/ykWxA7kK2DdLkFBMSKdI47fVaVe1HQ0Q4QUxSmPEHmkfmsCEEiV
- rARvo0HpbOeLpB0vDIICHwyNXizQosGq7K6VTECIL6CWWqgfs2CAVnWbDkJyA+SYscuxwqZmp
- khLfnIKB47aF5iKpcA0/QKUv7cD1L+m6khtXn+2Ku0A6pAiiabNBg6u7DpevsGtIrwtJsnayT
- X0EN0pXxEKg9zWZUXbKEDtD+N5WszzdTahq3di3KRZM6xyO4XTJrzb2MGzQpFzLJuR3VT8MqS
- k7kOszx53xL+KRmWWHPShcZCA+CXucKeJ45bPcQmmYIOgN4Lrb8nG06tr/CJj0W+4sn2HJt7m
- Lb6LxrVFzUuEMV6X8npgq3XiT+TpFx81Ub+gGIW1hRtRuorQ6s4vcrYGM8bvDb5jaDcVnCOb0
- 82Gpb0XwbudgMefEwunIqKhZhjhCN4CAHXStzYnZbDVjrlTD67B1YnQC8bQM8wsxBNKJ58Orm
- S4/VaoolUyjHNln2SBzYY905yLLKLXGztuakPb0Oe82JLKIADcaOrKFiA7AQhBHJ6Zp9ZCmS9
- f0GMV4Ue3Od0b5P/OxGxRmcyWbD9US4g/kmJvGmMjsI5E=
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 16 Apr 2024 17:05:51 +0300
+Message-Id: <D0LLS28WEXYA.G15BAG7WOJGR@kernel.org>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v12 14/14] selftests/sgx: Add scripts for EPC cgroup
+ testing
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>,
+ <dave.hansen@linux.intel.com>, <kai.huang@intel.com>, <tj@kernel.org>,
+ <mkoutny@suse.com>, <linux-kernel@vger.kernel.org>,
+ <linux-sgx@vger.kernel.org>, <x86@kernel.org>, <cgroups@vger.kernel.org>,
+ <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
+X-Mailer: aerc 0.17.0
+References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
+ <20240416032011.58578-15-haitao.huang@linux.intel.com>
+In-Reply-To: <20240416032011.58578-15-haitao.huang@linux.intel.com>
 
-> Looking at that function, I however see a missing region release when
-> ioremap_cache() fails.
+On Tue Apr 16, 2024 at 6:20 AM EEST, Haitao Huang wrote:
+> With different cgroups, the script starts one or multiple concurrent SGX
+> selftests (test_sgx), each to run the unclobbered_vdso_oversubscribed
+> test case, which loads an enclave of EPC size equal to the EPC capacity
+> available on the platform. The script checks results against the
+> expectation set for each cgroup and reports success or failure.
+>
+> The script creates 3 different cgroups at the beginning with following
+> expectations:
+>
+> 1) SMALL - intentionally small enough to fail the test loading an
+> enclave of size equal to the capacity.
+> 2) LARGE - large enough to run up to 4 concurrent tests but fail some if
+> more than 4 concurrent tests are run. The script starts 4 expecting at
+> least one test to pass, and then starts 5 expecting at least one test
+> to fail.
+> 3) LARGER - limit is the same as the capacity, large enough to run lots o=
+f
+> concurrent tests. The script starts 8 of them and expects all pass.
+> Then it reruns the same test with one process randomly killed and
+> usage checked to be zero after all processes exit.
+>
+> The script also includes a test with low mem_cg limit and LARGE sgx_epc
+> limit to verify that the RAM used for per-cgroup reclamation is charged
+> to a proper mem_cg. For this test, it turns off swapping before start,
+> and turns swapping back on afterwards.
+>
+> Add README to document how to run the tests.
+>
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
 
-Under which circumstances will the exception handling be completed also fo=
-r
-the implementation of the function =E2=80=9Cmap_paste_region=E2=80=9D?
-https://elixir.bootlin.com/linux/v6.9-rc4/source/arch/powerpc/platforms/po=
-wernv/vas-window.c#L67
+jarkko@mustatorvisieni:~/linux-tpmdd> sudo make -C tools/testing/selftests/=
+sgx run_tests
+make: Entering directory '/home/jarkko/linux-tpmdd/tools/testing/selftests/=
+sgx'
+gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
+./../tools/include -fPIC -c main.c -o /home/jarkko/linux-tpmdd/tools/testi=
+ng/selftests/sgx/main.o
+gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
+./../tools/include -fPIC -c load.c -o /home/jarkko/linux-tpmdd/tools/testi=
+ng/selftests/sgx/load.o
+gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
+./../tools/include -fPIC -c sigstruct.c -o /home/jarkko/linux-tpmdd/tools/=
+testing/selftests/sgx/sigstruct.o
+gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
+./../tools/include -fPIC -c call.S -o /home/jarkko/linux-tpmdd/tools/testi=
+ng/selftests/sgx/call.o
+gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
+./../tools/include -fPIC -c sign_key.S -o /home/jarkko/linux-tpmdd/tools/t=
+esting/selftests/sgx/sign_key.o
+gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
+./../tools/include -fPIC -o /home/jarkko/linux-tpmdd/tools/testing/selftes=
+ts/sgx/test_sgx /home/jarkko/linux-tpmdd/tools/testing/selftests/sgx/main.o=
+ /home/jarkko/linux-tpmdd/tools/testing/selftests/sgx/load.o /home/jarkko/l=
+inux-tpmdd/tools/testing/selftests/sgx/sigstruct.o /home/jarkko/linux-tpmdd=
+/tools/testing/selftests/sgx/call.o /home/jarkko/linux-tpmdd/tools/testing/=
+selftests/sgx/sign_key.o -z noexecstack -lcrypto
+gcc -Wall -Werror -static-pie -nostdlib -ffreestanding -fPIE -fno-stack-pro=
+tector -mrdrnd -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../../../=
+tools/include test_encl.c test_encl_bootstrap.S -o /home/jarkko/linux-tpmdd=
+/tools/testing/selftests/sgx/test_encl.elf -Wl,-T,test_encl.lds,--build-id=
+=3Dnone
+/usr/lib64/gcc/x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: w=
+arning: /tmp/ccqvDJVg.o: missing .note.GNU-stack section implies executable=
+ stack
+/usr/lib64/gcc/x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: N=
+OTE: This behaviour is deprecated and will be removed in a future version o=
+f the linker
+TAP version 13
+1..2
+# timeout set to 45
+# selftests: sgx: test_sgx
+# TAP version 13
+# 1..16
+# # Starting 16 tests from 1 test cases.
+# #  RUN           enclave.unclobbered_vdso ...
+# #            OK  enclave.unclobbered_vdso
+# ok 1 enclave.unclobbered_vdso
+# #  RUN           enclave.unclobbered_vdso_oversubscribed ...
+# #            OK  enclave.unclobbered_vdso_oversubscribed
+# ok 2 enclave.unclobbered_vdso_oversubscribed
+# #  RUN           enclave.unclobbered_vdso_oversubscribed_remove ...
+# # main.c:402:unclobbered_vdso_oversubscribed_remove:Creating an enclave w=
+ith 98566144 bytes heap may take a while ...
+# # main.c:457:unclobbered_vdso_oversubscribed_remove:Changing type of 9856=
+6144 bytes to trimmed may take a while ...
+# # main.c:473:unclobbered_vdso_oversubscribed_remove:Entering enclave to r=
+un EACCEPT for each page of 98566144 bytes may take a while ...
+# # main.c:494:unclobbered_vdso_oversubscribed_remove:Removing 98566144 byt=
+es from enclave may take a while ...
+# #            OK  enclave.unclobbered_vdso_oversubscribed_remove
+# ok 3 enclave.unclobbered_vdso_oversubscribed_remove
+# #  RUN           enclave.clobbered_vdso ...
+# #            OK  enclave.clobbered_vdso
+# ok 4 enclave.clobbered_vdso
+# #  RUN           enclave.clobbered_vdso_and_user_function ...
+# #            OK  enclave.clobbered_vdso_and_user_function
+# ok 5 enclave.clobbered_vdso_and_user_function
+# #  RUN           enclave.tcs_entry ...
+# #            OK  enclave.tcs_entry
+# ok 6 enclave.tcs_entry
+# #  RUN           enclave.pte_permissions ...
+# #            OK  enclave.pte_permissions
+# ok 7 enclave.pte_permissions
+# #  RUN           enclave.tcs_permissions ...
+# #            OK  enclave.tcs_permissions
+# ok 8 enclave.tcs_permissions
+# #  RUN           enclave.epcm_permissions ...
+# #            OK  enclave.epcm_permissions
+# ok 9 enclave.epcm_permissions
+# #  RUN           enclave.augment ...
+# #            OK  enclave.augment
+# ok 10 enclave.augment
+# #  RUN           enclave.augment_via_eaccept ...
+# #            OK  enclave.augment_via_eaccept
+# ok 11 enclave.augment_via_eaccept
+# #  RUN           enclave.tcs_create ...
+# #            OK  enclave.tcs_create
+# ok 12 enclave.tcs_create
+# #  RUN           enclave.remove_added_page_no_eaccept ...
+# #            OK  enclave.remove_added_page_no_eaccept
+# ok 13 enclave.remove_added_page_no_eaccept
+# #  RUN           enclave.remove_added_page_invalid_access ...
+# #            OK  enclave.remove_added_page_invalid_access
+# ok 14 enclave.remove_added_page_invalid_access
+# #  RUN           enclave.remove_added_page_invalid_access_after_eaccept .=
+.
+# #            OK  enclave.remove_added_page_invalid_access_after_eaccept
+# ok 15 enclave.remove_added_page_invalid_access_after_eaccept
+# #  RUN           enclave.remove_untouched_page ...
+# #            OK  enclave.remove_untouched_page
+# ok 16 enclave.remove_untouched_page
+# # PASSED: 16 / 16 tests passed.
+# # Totals: pass:16 fail:0 xfail:0 xpass:0 skip:0 error:0
+ok 1 selftests: sgx: test_sgx
+# timeout set to 45
+# selftests: sgx: run_epc_cg_selftests.sh
+# # Setting up limits.
+# ./run_epc_cg_selftests.sh: line 50: echo: write error: Invalid argument
+# # Failed setting up misc limits.
+not ok 2 selftests: sgx: run_epc_cg_selftests.sh # exit=3D1
+make: Leaving directory '/home/jarkko/linux-tpmdd/tools/testing/selftests/s=
+gx'
 
-Regards,
-Markus
+This is what happens now.
+
+BTW, I noticed a file that should not exist, i.e. README. Only thing
+that should exist is the tests for kselftest and anything else should
+not exist at all, so this file by definiton should not exist.
+
+BR, Jarkko
 
