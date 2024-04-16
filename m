@@ -1,185 +1,117 @@
-Return-Path: <linux-kernel+bounces-146733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 039DE8A6A0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:59:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 370AB8A6A14
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:02:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 269D81C20C9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:59:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0F661F216C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:02:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5626129E88;
-	Tue, 16 Apr 2024 11:59:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA52312A16B;
+	Tue, 16 Apr 2024 12:01:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sq7AS0AV"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="R6GDJn38"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE55129E70
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:59:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E42E9127B57;
+	Tue, 16 Apr 2024 12:01:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713268770; cv=none; b=r15pFUKB8yuE+nw9IM8in6PLa5MYMhQxBwrjcmMBxHw/9iDfYoQf3xA5GBBRBgDD7hHEX/TBrpMf+x6dr63GG9OSkW+s7OMG8JE0q3njkPE81IeORQkHThUc+mTi79+5TUNKGdK+AjyDKkELNfkX8xnHhoRzLqHwLAJy/rP9Yi0=
+	t=1713268913; cv=none; b=ix8DA2qTeoHyEYvFiMvNKTF7lNaxH7MWdi7OAHNGNme0Qag8hzJn5SnJ2SzQHzyb1sts02j9LzOLseelRLHFr5yrn65ndKRfXVQZ02V1zpxtYSEbIDW2jky/h5WpVpVwkRoug4Z2ijU4Cqd4zmEM/lkG2zKhmUkDR5v7Qwgdf/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713268770; c=relaxed/simple;
-	bh=qbqi+XsX6wxH4QDDPdchG2lSzTVOiuCarFXtt6z8m5g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iodQNTMN5sHqVIqhtG5RcSjbNF8LTg+8F4ByE4yeiLXtKO5HQ/tgCsHzeAnwiVUu/abhT/2+g6Y1IhCpL+M9aULmbfUp5FOZ0lqg1nmVTe2eVJIe7p15q2iMopSRIB0cWWlDJxLImlrk2Jnq3IyRQkNh5eEc25wuRl89J8+l94M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sq7AS0AV; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e36b7e7dd2so34128905ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 04:59:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713268768; x=1713873568; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hQ8Km8pUrRdj6HD7UNUZL3puRDpbGZKIzvHBUwGPNQw=;
-        b=Sq7AS0AVnoecKFWatpxGI2SSmdkhBbFCsgLii44duGuCJ4saM4AbnEXdoXDcXoY1t5
-         EiogZ5nylvlaTh8K8zviKfTr2C+ElWN/O7WS1r1BAHwnnjpkkxudDRj2b3eNpNhUPXIR
-         HXiHi0IFuOMXDZz2dudbSURVrymaF1fU2IQAp8CKH9NwqS5Z+OR2wdkxOlaHV76mN30f
-         Wx0zQC31+N/HW5qYyWOtKJFNKP0/7AUcjq7SsAhiIdy3W/qaKKjwrRohgAT/DkvdxqZS
-         HkIwepD3jH1ij0/y74nrAToWsg7ia+WUyKKhfBcs5LXtxbyOZNhtgjEBU6VpViqJU6Ro
-         ATuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713268768; x=1713873568;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hQ8Km8pUrRdj6HD7UNUZL3puRDpbGZKIzvHBUwGPNQw=;
-        b=NuFuOBhInaAibnuOZ1eGq17wL+JXbZ2ccFF0YVD9chN9AMBMl9YqYBB7v+j6sapA2k
-         hasT1p+zocY9q8g9WXfiXDDn7RXtoNfw0DxJYcJWlgj1duNI55TIf9rXv7DqwTu2Uob+
-         MJmIEHPJwnNoxgqKi/VOKiDi96nExkfjcYxd+lDyc0v9CKOGIHT/wBjhP4912Ntfk2Z5
-         /yAPSXADKLIOmCQdwbaDvoE4QzTd6VXU+W9gq6ETYEHjiDOGQirgGplNLJUyKq9N3gio
-         aDCE5IEHrc8q2jYWgyYcdmadEAQpiwyOVawK74L01SZuScvM+/QQryYOuNikCFJZvIWI
-         27JQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVKcFyCenRR6oaHP0o/HZ5aZvoH3E3YhvIx+9U2kHRa4eQ9K/zAxF6ARf/bvK3mUC2khZWWAyLMCeAxIwBT1d+CLUCjH/xRw05bLRKY
-X-Gm-Message-State: AOJu0Yw4athRS+YMhftXMCc2jy7rHeGZVszs3fwcGUmFgzTiJZdfte+6
-	5QcJyRo5U9xtwPFcbhMhOp33Gh+TasF//IdqUwq6jKeqVwFQJSnZ
-X-Google-Smtp-Source: AGHT+IG3114+5T4rKIudyGIHpqSw90eJAE+y4lnLAgiCoA96yKOqVpWxd3xunDkFep4E/G/a19QgEA==
-X-Received: by 2002:a17:902:f688:b0:1e2:6165:8086 with SMTP id l8-20020a170902f68800b001e261658086mr13188458plg.61.1713268768024;
-        Tue, 16 Apr 2024 04:59:28 -0700 (PDT)
-Received: from karan-IdeaPad-3-15ALC6-Ub.. ([2401:4900:1c96:c7dd:27d5:f53e:33a6:5717])
-        by smtp.gmail.com with ESMTPSA id k18-20020a170902c41200b001e3dff1e4d1sm9590941plk.268.2024.04.16.04.59.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 04:59:27 -0700 (PDT)
-From: Karan Sanghavi <karansanghvi98@gmail.com>
-To: gregkh@linuxfoundation.org
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Karan Sanghavi <karansanghvi98@gmail.com>
-Subject: [PATCH] Staging : ks7010 ks_wlan_net : Fixed Unnecessary Paranthesis, Prefer Fallthrough and Line spacing issue.
-Date: Tue, 16 Apr 2024 17:29:03 +0530
-Message-Id: <20240416115903.92706-1-karansanghvi98@gmail.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1713268913; c=relaxed/simple;
+	bh=y04OwjH/sbLKlcXwliMQHnCBgTseJ+PQ3aes3eUFGXQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jNbMHH9wY+jLN4IVESRdQes4EEQDWxP4jXeWTFUBgCvKYuI3G0GrWYjNnX+3e3OBJUZ5cOQzRBG9RQqWF6Ju7j2Du/ViQLCIhjyLUUB1j7SsAk57sQHiFC3ScQFM3b3yt9LSyZD2/qv4mOBjTe/W+O27QCghUnF65WfpCttnJwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=R6GDJn38; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=IsKWmq3S1tbhsPEHkpNJ+4wTjZvXqEyH5UAdmDYEQ5Q=; b=R6GDJn38hgKmNBGIc81JtA0h1Q
+	R3uScF+x+HDTqA8bIZi8vFrRKzu4vgwk6os8ntlO2z4sio2h40d5XAbu9VYldnSIq9/Uc2BFgxhWU
+	gYhHN/JWQBuDrHapNFeqQUlssHeUz7jEXzIuxbYOR+Oiam/vKXNlqS5aZKZVHPLStzH5rEMJFdeqp
+	xIQ6DJrAGZh1xsU74mUnzpwU4/s02XomHhPQoL9yiF7qk88W8YEcIa7iMY0o8e51JmSx2V1NTExas
+	kZAUfITBlX3IP8E9E9hqhJkAqpfhfBqhepNUAQFCPz8I/PhRvoptM3wQRl+1nbrmTPPkjr9jiogV0
+	sxjM8eCA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33062)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rwhUv-00009J-1B;
+	Tue, 16 Apr 2024 13:01:13 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rwhUo-0004pX-19; Tue, 16 Apr 2024 13:01:06 +0100
+Date: Tue, 16 Apr 2024 13:01:05 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Romain Gantois <romain.gantois@bootlin.com>
+Cc: Serge Semin <fancer.lancer@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Yanteng Si <siyanteng@loongson.cn>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Simon Horman <horms@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>, netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 4/4] net: stmmac: Move MAC caps init to phylink
+ MAC caps getter
+Message-ID: <Zh5ogZ433lrUOi9b@shell.armlinux.org.uk>
+References: <20240412180340.7965-1-fancer.lancer@gmail.com>
+ <20240412180340.7965-5-fancer.lancer@gmail.com>
+ <714199e5-edf2-dcbb-216b-563431d70488@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <714199e5-edf2-dcbb-216b-563431d70488@bootlin.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Fixed a coding style issue.
+On Tue, Apr 16, 2024 at 09:56:32AM +0200, Romain Gantois wrote:
+> Hi Serge,
+> 
+> On Fri, 12 Apr 2024, Serge Semin wrote:
+> 
+> > +static unsigned long stmmac_mac_get_caps(struct phylink_config *config,
+> > +					 phy_interface_t interface)
+> > +{
+> > +	struct stmmac_priv *priv = netdev_priv(to_net_dev(config->dev));
+> > +
+> > +	/* Get the MAC-specific capabilities */
+> > +	stmmac_mac_phylink_get_caps(priv);
+> 
+> This is a bit of a nitpick, but the terminology is quite confusing between 
+> stmmac_mac_phylink_get_caps() and stmmac_mac_get_caps(). Ideally, we could just 
+> get rid of the whole stmmac_do_void_callback() complexity and just call 
+> phylink_get_caps() directly. In the meantime, maybe renaming this to 
+> stmmac_mac_core_get_caps() would be acceptable?
 
-Signed-off-by: Karan Sanghavi <karansanghvi98@gmail.com>
----
- drivers/staging/ks7010/ks_wlan_net.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+I'd prefer not to do that. If the method is called mac_get_caps() then
+I'd much rather have method implementations called foo_mac_get_caps()
+which makes grep easier.
 
-diff --git a/drivers/staging/ks7010/ks_wlan_net.c b/drivers/staging/ks7010/ks_wlan_net.c
-index 0fb97a79ad0b..4b1b5d9b883b 100644
---- a/drivers/staging/ks7010/ks_wlan_net.c
-+++ b/drivers/staging/ks7010/ks_wlan_net.c
-@@ -12,7 +12,6 @@
- #include <linux/netdevice.h>
- #include <linux/timer.h>
- #include <linux/uaccess.h>
--
- static int wep_on_off;
- #define	WEP_OFF		0
- #define	WEP_ON_64BIT	1
-@@ -181,26 +180,26 @@ static int ks_wlan_set_freq(struct net_device *dev,
- 
- 	/* for SLEEP MODE */
- 	/* If setting by frequency, convert to a channel */
--	if ((fwrq->freq.e == 1) &&
--	    (fwrq->freq.m >= 241200000) && (fwrq->freq.m <= 248700000)) {
-+	if (fwrq->freq.e == 1 &&
-+	    fwrq->freq.m >= 241200000 && fwrq->freq.m <= 248700000) {
- 		int f = fwrq->freq.m / 100000;
- 		int c = 0;
- 
- 		while ((c < 14) && (f != frequency_list[c]))
- 			c++;
--		/* Hack to fall through... */
-+		[[fallthough]];
- 		fwrq->freq.e = 0;
- 		fwrq->freq.m = c + 1;
- 	}
- 	/* Setting by channel number */
--	if ((fwrq->freq.m > 1000) || (fwrq->freq.e > 0))
-+	if (fwrq->freq.m > 1000 || fwrq->freq.e >)
- 		return -EOPNOTSUPP;
- 
- 	channel = fwrq->freq.m;
- 	/* We should do a better check than that,
- 	 * based on the card capability !!!
- 	 */
--	if ((channel < 1) || (channel > 14)) {
-+	if (channel < 1 || channel > 14) {
- 		netdev_dbg(dev, "%s: New channel value of %d is invalid!\n",
- 			   dev->name, fwrq->freq.m);
- 		return -EINVAL;
-@@ -663,7 +662,7 @@ static int ks_wlan_set_rts(struct net_device *dev, struct iw_request_info *info,
- 	/* for SLEEP MODE */
- 	if (vwrq->rts.disabled)
- 		rthr = 2347;
--	if ((rthr < 0) || (rthr > 2347))
-+	if (rthr < 0 || rthr > 2347)
- 		return -EINVAL;
- 
- 	priv->reg.rts = rthr;
-@@ -701,7 +700,7 @@ static int ks_wlan_set_frag(struct net_device *dev,
- 	/* for SLEEP MODE */
- 	if (vwrq->frag.disabled)
- 		fthr = 2346;
--	if ((fthr < 256) || (fthr > 2346))
-+	if (fthr < 256 || fthr > 2346)
- 		return -EINVAL;
- 
- 	fthr &= ~0x1;	/* Get an even value - is it really needed ??? */
-@@ -780,7 +779,7 @@ static int ks_wlan_set_encode(struct net_device *dev,
- 		return -EINVAL;
- 
- 	/* for SLEEP MODE */
--	if ((index < 0) || (index > 4))
-+	if (index < 0 || index > 4)
- 		return -EINVAL;
- 
- 	index = (index == 0) ? priv->reg.wep_index : (index - 1);
-@@ -881,7 +880,7 @@ static int ks_wlan_get_encode(struct net_device *dev,
- 	}
- 
- 	/* Which key do we want ? -1 -> tx index */
--	if ((index < 0) || (index >= 4))
-+	if (index < 0 || index >= 4)
- 		index = priv->reg.wep_index;
- 	if (priv->reg.privacy_invoked) {
- 		enc->flags &= ~IW_ENCODE_DISABLED;
-@@ -1863,8 +1862,8 @@ static int ks_wlan_set_power_mgmt(struct net_device *dev,
- 	    uwrq->mode != POWER_MGMT_SAVE2)
- 		return -EINVAL;
- 
--	if ((uwrq->mode == POWER_MGMT_SAVE1 || uwrq->mode == POWER_MGMT_SAVE2) &&
--	    (priv->reg.operation_mode != MODE_INFRASTRUCTURE))
-+	if (uwrq->mode == POWER_MGMT_SAVE1 || uwrq->mode == POWER_MGMT_SAVE2 &&
-+	    priv->reg.operation_mode != MODE_INFRASTRUCTURE)
- 		return -EINVAL;
- 
- 	priv->reg.power_mgmt = uwrq->mode;
+So... stmmac_core_mac_get_caps() would be acceptable to me.
+
 -- 
-2.40.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
