@@ -1,110 +1,113 @@
-Return-Path: <linux-kernel+bounces-146875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE2A08A6C39
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:26:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 083098A6C3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:27:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AAFD281DB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:26:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B6101F21BC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:27:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5571112C48A;
-	Tue, 16 Apr 2024 13:26:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E09112C497;
+	Tue, 16 Apr 2024 13:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PSCuqPLY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OCvVQ16L"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8D212BF25
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 13:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7413E12A177;
+	Tue, 16 Apr 2024 13:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713273981; cv=none; b=D57jh7iwe9rRDmwXVBGQX0fJquT4rv2NLIonC3n7/M55XRx2f0/rjN1KfZ8CXbI94v6eGnhppSbiWonTslq0rp0MtzH3JHC45QYjo+A/evZOCLypDLGWTK9G+oJQlN+gZSz3ygny3626BpmGtQs6x3/PVWVGPNfN9Hi7M2THLhM=
+	t=1713274047; cv=none; b=jiitbg4UC9/fWO51Wpc7sHQ0IESaAPRPtelsdZTOdzfzsn3v6l+TzW+Mnhzd+B2j3ddAMPnNUPKps/v2D8xAC5eBbXA9B8IkDIPv4juWpB/liHRrNx8nWvSNn2kO192O2uClBSyne6EvSk7T0BeN/VoCo2uQQm9DCzeUlH8VStA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713273981; c=relaxed/simple;
-	bh=5aYaNxw9B1Vv3UwdMBqympkbBecQ21r1beQW8ZZq2DY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=UvcC2tvQyRVYcbBJGPGdGANlzNyyUWoFU731fJ3BTIpoK2KRR9l+TYSgMIVm4AqOX6DRlxPaErAeTIW6/avwhncOJrDdqi8CL/G4sUW/yc7B5T0+U6fHTXzeM2ipJqAtQK6USuDDYxUxi/GhlRELTjrtdDTEQIynsD9AZhppCA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PSCuqPLY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC1AEC113CE;
-	Tue, 16 Apr 2024 13:26:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713273981;
-	bh=5aYaNxw9B1Vv3UwdMBqympkbBecQ21r1beQW8ZZq2DY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=PSCuqPLYUlXJ9auMKlyd6garhl7QXySTp9eWlrmke6rMcEA6bSOA3LfnUC8fU3VqT
-	 GPEAto9Bkx2ZM8IF4P088l7kgOxqOuEnE+bNwHq16+/nePGty9YLofePGKDd43bcpO
-	 Bdahh5f5bc2i5XhtB1GX7qB/5fIWniJK4aX8YVhPxOh79o/Ndhs+KiNH0z6N0lVh55
-	 UybhBviVJQNPjuhuARdJgWkKgbX/9Zb/Cjx53bCtaBpu85N8j0GDbDman9uDJ9gcGd
-	 f8z5m6GHPRuEB5wi/1ujlFHNpXNGf85z3SDlMxwvjeeef71W5otMCS9CA0mdfRu71H
-	 ZR/8El87zWzzA==
-From: Robert Foss <rfoss@kernel.org>
-To: Jernej Skrabec <jernej.skrabec@gmail.com>, David Airlie <airlied@gmail.com>,
- Nícolas F. R. A. Prado <nfraprado@collabora.com>, Thomas Zimmermann <tzimmermann@suse.de>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Sam Ravnborg <sam@ravnborg.org>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Bjorn Andersson <andersson@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Andrzej Hajda <andrzej.hajda@intel.com>,
- Jonas Karlman <jonas@kwiboo.se>, Maxime Ripard <mripard@kernel.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>, Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Jagan Teki <jagan@amarulasolutions.com>,
- Adrien Grassein <adrien.grassein@gmail.com>, Vinay Simha BN <simhavcs@gmail.com>,
- Christopher Vollo <chris@renewoutreach.org>, Marijn Suijten <marijn.suijten@somainline.org>,
- Vinod Koul <vkoul@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, owen <qwt9588@gmail.com>,
- Marek Vasut <marex@denx.de>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>,
- dri-devel@lists.freedesktop.org, kernel@collabora.com, Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240415-anx7625-defer-log-no-dsi-host-v3-0-619a28148e5c@collabora.com>
-References: <20240415-anx7625-defer-log-no-dsi-host-v3-0-619a28148e5c@collabora.com>
-Subject: Re: [PATCH v3 0/9] drm: Switch from dev_err to dev_err_probe for missing DSI host error path
-Message-Id: <171327397342.20734.17712631533739758920.b4-ty@kernel.org>
-Date: Tue, 16 Apr 2024 15:26:13 +0200
+	s=arc-20240116; t=1713274047; c=relaxed/simple;
+	bh=ow2JBt0MMuxqLvHc9QBerHjRnLSOo+VKZ+by8z8sXuc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nuBHT3nSPQmuVFbMab8oErnWkMbBxjKhuxQ5B9u3V0obdTvnc3BPAga1cRCxCcabCX5qbXuavYuiUVKRr5C9uTl4aHsxwax2iR2QXfM04e/wQ3eM3ncMMe9myO+25skcnnKsSIUFQHUYFKwuko7P8VwMl5qgW6jMTTGrVf60QUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OCvVQ16L; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e2178b2cf2so40407375ad.0;
+        Tue, 16 Apr 2024 06:27:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713274045; x=1713878845; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p9NsG/h7I1qAatxqJoqHkekmP7IXYPTVQrQqbrESwUc=;
+        b=OCvVQ16LfVPBWUYTts4c0VO32t9tEzoH8PzrWX/VwShm6IyicfHBtXJVVCchvqL5EK
+         /zmliJ6GJpquXYOt3DDQx5BWUZCekRnLpC/bhWDVpc9h78Lp1s0j7gv+91HNt+uRhho7
+         CEnY6Yk50+40edxHwBNr1y+IwNGF1vutwfGYwD/6pi+d7DuOVAY5NIrh9ZqvUMLZ60bX
+         l/VMI9XJen+ZtOB8/Hs+wgETrPyu6k5IfjNNXTKlUssFjQO5MagcLccrHpS2ni7RVNKo
+         N1bwMwPhcFyFxtMr5TTgl793nFh7IqicKO78YX48wtLsOuWMHqiQ2kbTzoYtQ6H6l+4Y
+         qtzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713274045; x=1713878845;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p9NsG/h7I1qAatxqJoqHkekmP7IXYPTVQrQqbrESwUc=;
+        b=BO2+ke+1a3FNtdS+ICpuRQb5PDFXqdau78Au0Vw35lA7B7gc+vFH8KvcZW3Tjr8Ypv
+         Ui3Fuytng05fSKv61TiKyx9go7y0cKl5ye5MyMZPaSzf4PlfkGAmfrtlx3bw20x8l8D/
+         Nrp7sY/Kj0jlWiIzK0RH9uM2rxSbx4r5SEcDqPDBaPmgiW5TSAbRST39yW2PQZ6FUfgn
+         lHUlVZarcejH8zZKqhVlFQIkOU281sAT44vetMYXnDYKqsQPkiHIRU0+QBXd6/949oGR
+         p1gfLtkdJwguIkqJXfWXxZX75sL3rs1jNlFQ0K1tdAXqYtWVD7sZnbx3hslk16/JxJpq
+         i1lw==
+X-Forwarded-Encrypted: i=1; AJvYcCUY8Uf0ckGUpnzo6lgcPLBFYy6WMrDJTSp4AQdxTtrbEkDa4TMJ7WOd+FO6hilemTZcWfnil5sOjRqxDl7zRfoYrgYvBTgBzqd3mMhjm+n/lCf/LsFlW8HYp5YHzvCgqcgbQdrKsBX3CC7JLbfV+0GhkK/BP3CS9yfWM5qWp6UzamNK79te9AXwcOZqEpFX
+X-Gm-Message-State: AOJu0YyJLaJpbqsUOsrRrXJqUCswO8LGGl8OH1NIlCAGKssJ00qzetOC
+	hF/jENRnBAJBvlDub7lIUN5WFU23qyZDxXn/UncCGwCUfQxcOt4S
+X-Google-Smtp-Source: AGHT+IGP81onBIJvH28QglUmjzIfpVxw2YNsM852qyC2z/16XKfVARYLzBRJGuaX+IsdfrPmgWbhiQ==
+X-Received: by 2002:a17:902:d481:b0:1e3:cfc5:589c with SMTP id c1-20020a170902d48100b001e3cfc5589cmr17085328plg.28.1713274044687;
+        Tue, 16 Apr 2024 06:27:24 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b10-20020a170902d50a00b001e0f5034e95sm9680933plg.288.2024.04.16.06.27.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 06:27:24 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Tue, 16 Apr 2024 06:27:23 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Maximilian Luz <luzmaximilian@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Ivor Wanders <ivor@iwanders.net>, linux-kernel@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH 1/3] hwmon: Add thermal sensor driver for Surface
+ Aggregator Module
+Message-ID: <7ba2554a-4f71-4ca0-ab49-59dbd03e1968@roeck-us.net>
+References: <20240330112409.3402943-1-luzmaximilian@gmail.com>
+ <20240330112409.3402943-2-luzmaximilian@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240330112409.3402943-2-luzmaximilian@gmail.com>
 
-On Mon, 15 Apr 2024 17:49:28 -0400, Nícolas F. R. A. Prado wrote:
-> This series changes every occurrence of the following pattern:
+On Sat, Mar 30, 2024 at 12:24:00PM +0100, Maximilian Luz wrote:
+> Some of the newer Microsoft Surface devices (such as the Surface Book
+> 3 and Pro 9) have thermal sensors connected via the Surface Aggregator
+> Module (the embedded controller on those devices). Add a basic driver
+> to read out the temperature values of those sensors.
 > 
-> 	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
-> 	if (!dsi_host) {
-> 		dev_err(dev, "failed to find dsi host\n");
-> 		return -EPROBE_DEFER;
-> 	}
-> 
-> [...]
+> Link: https://github.com/linux-surface/surface-aggregator-module/issues/59
+> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+[ ... ]
+> +	hwmon_dev = devm_hwmon_device_register_with_info(&sdev->dev,
+> +			"surface_thermal", ssam_temp, &ssam_temp_hwmon_chip_info,
+> +			NULL);
+> +	if (IS_ERR(hwmon_dev))
+> +		return PTR_ERR(hwmon_dev);
+> +
+> +	return 0;
 
-Applied, thanks!
-
-[1/9] drm/bridge: anx7625: Don't log an error when DSI host can't be found
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=ef4a9204d594
-[2/9] drm/bridge: icn6211: Don't log an error when DSI host can't be found
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=275fafe58faa
-[3/9] drm/bridge: lt8912b: Don't log an error when DSI host can't be found
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=b3b4695ff47c
-[4/9] drm/bridge: lt9611: Don't log an error when DSI host can't be found
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=cd0a2c6a081f
-[5/9] drm/bridge: lt9611uxc: Don't log an error when DSI host can't be found
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=6d9e877cde7e
-[6/9] drm/bridge: tc358775: Don't log an error when DSI host can't be found
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=272377aa0e3d
-[7/9] drm/bridge: dpc3433: Don't log an error when DSI host can't be found
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=24f4f575214d
-[8/9] drm/panel: novatek-nt35950: Don't log an error when DSI host can't be found
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=5ff5505b9a2d
-[9/9] drm/panel: truly-nt35597: Don't log an error when DSI host can't be found
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=c1e4d3a6de48
-
-
-
-Rob
-
+	return PTR_ERR_OR_ZERO(hwmon_dev);
 
