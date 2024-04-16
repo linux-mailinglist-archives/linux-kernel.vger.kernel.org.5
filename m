@@ -1,99 +1,101 @@
-Return-Path: <linux-kernel+bounces-147466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AE0A8A748F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:20:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F8908A7496
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:21:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 558E5282C94
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:20:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34AEE1F21F42
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:21:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69577139597;
-	Tue, 16 Apr 2024 19:20:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03D5413849A;
+	Tue, 16 Apr 2024 19:20:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="b2zqqvY7"
-Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="JA4Q1Z/K"
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D28137934;
-	Tue, 16 Apr 2024 19:20:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2B2713792D
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 19:20:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713295211; cv=none; b=Yt+9aqD2vEZasuAGt+GAxwRlinKcEnYGFjiW1X/4U3zO1u2iiuK14lYd2VUxiY49TskUgxF1nTbrMH6ioCbu7MXZcyxS0ZvI/9bF9h9ikTtvs9NWZtM8I93IfDfKNXEzgRTQspuaL9FyWVFesxHIj3E71US198PErJadysewRzU=
+	t=1713295242; cv=none; b=AD+5QMmu0czB3LmjvRH4jB4A4RmycFXRK4UV1p8eohOyFDAAKncIpPwM9EV9q+6F/F+NSse5DHOJ10v/8aJ3twbkrOtmyOymD3XeE+Pfa3AIo/RbNwwNQWqUo+g5kKZeUXqo+RiJ4Itdgh9bxG8ST/0kxnDuhCvErbVWhj9y11o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713295211; c=relaxed/simple;
-	bh=ogCtVrBRBgX+wHrNXPPVDs4aHPlnhEfxlOiisGGj0kA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VPhz5odAIaK/d7EaVIq+PTknPLGBeqN7Fg5X/A1fJPzIgh3fxe74NBebI4/lhVeQTtLnzpPQV9YOhjPpiEuatrOoILbOp9fS+JU7169x8iyy0BlIvEBswbN07jw9iGcjebSZFx/zhb9MQ4KzS0Pta2fJJl0XihmWDZHeVoDNg00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=b2zqqvY7; arc=none smtp.client-ip=199.89.1.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 008.lax.mailroute.net (Postfix) with ESMTP id 4VJv4n5dDGz6Cnk8s;
-	Tue, 16 Apr 2024 19:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1713295208; x=1715887209; bh=Xdyvfbt1TIkpxYSFrkkGBbE7
-	xEwlKwVi2d5imCHf7/s=; b=b2zqqvY7wz5e6ZOxPCQE6VaPaRXCBNn95peMnK7j
-	j1ivgWvHtajM/diwASlsYvhtlLoMPXIGp75uXKvbd9h3sHduXJhFO1CRUx673CRR
-	1HdXyKgrQzt7I9e2saiVJqKaIVqegFsNtJjCNvsVy5A5Gtw/083aPLnjussG8OOF
-	YljCr8czGkEG6j9W/40gt3d9G6K2qvn87/ULVwRL93tbX2qOAxb7xVp6bkTNW/8q
-	gA3hGi3TGvHQ1cFXXedhdJK6wumi2YxgRt7nS5Hs2JO+kpPwiYpwKZe/u038hkKc
-	uXOoC1c/55gIddLkF9YDrT6r85hyPCvcpP8X48faw0/ezA==
-X-Virus-Scanned: by MailRoute
-Received: from 008.lax.mailroute.net ([127.0.0.1])
- by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id HNb3CA8AzuaF; Tue, 16 Apr 2024 19:20:08 +0000 (UTC)
-Received: from [100.96.154.26] (unknown [104.132.0.90])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4VJv4l1xk3z6Cnk8m;
-	Tue, 16 Apr 2024 19:20:06 +0000 (UTC)
-Message-ID: <0beac395-0c89-4fa6-b4a1-d0565373e60a@acm.org>
-Date: Tue, 16 Apr 2024 12:20:05 -0700
+	s=arc-20240116; t=1713295242; c=relaxed/simple;
+	bh=5qcKuUFEXJAj5jrbqiLvzMPkKKsc2Zpg7ofBMee6fJI=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ER3wZr/nbvyfSMjAxGo4D7Bd5GF7u54C5iOGKlG0nPMfLlFGVB5NlpTnlwjVGH0/EvZ2K04I/4BkUtVEHhcyhKzvFTq93Kl9fQpl3JxZrS5O0iToJI2Y135KifDRtrzPP2ZdvLd+3nAJwumyK1KyCCvCuxA19/b3p3ApQRqFyWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=JA4Q1Z/K; arc=none smtp.client-ip=185.70.40.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+	s=protonmail3; t=1713295238; x=1713554438;
+	bh=5qcKuUFEXJAj5jrbqiLvzMPkKKsc2Zpg7ofBMee6fJI=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=JA4Q1Z/Kfq2B9xCOZl1sB30t8BiUbqz3JtIqG/nmhdHw2stIKhIzySwnUjQcQm4kL
+	 9N9SJYuq7PCb9aYxb1nlhNteCmK1zdd7GS0rNex0PeOlC4xWVz+8xVbFNv19q4+4Rt
+	 /5CinoOCT60ubUyli1LBBD8mLjofcYW18Pb1+QzYPVzV6y1CvRwBZ6gj8Ct3pKaQf9
+	 +NjP1OHduxgTeap1cKc23acEcgLGach0T+290OBH+3TxdsVN8oR0ChnawQPQWQq4oC
+	 V00uRG5tuPM+EDZjFpXlJPdSPurYx6L52z5BE4H30RhY0zUW9dwTbqwIZmjG1/Un+3
+	 br9YAx1Mg4AwA==
+Date: Tue, 16 Apr 2024 19:20:18 +0000
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Michael Pratt <mcpratt@pm.me>
+Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Wander Lairson Costa <wander@redhat.com>, =?utf-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Vamshi Gajjela <vamshigajjela@google.com>
+Subject: Re: [PATCH v2 1/3] serial: core: Store fifo timeout again
+Message-ID: <zTaajAZtS59Hv5offvbHJV1ptivBxD4WaZP_M-zQkicUtDb4mokpuKCFGIzUVL3p2yDSqHx9Uf2vIYVlbGeHN8xMJ6H3VWxwH3MPe1cH5a4=@pm.me>
+In-Reply-To: <Zh7KV0FuM2B56J7w@smile.fi.intel.com>
+References: <20240416182741.22514-1-mcpratt@pm.me> <20240416182741.22514-2-mcpratt@pm.me> <Zh7KV0FuM2B56J7w@smile.fi.intel.com>
+Feedback-ID: 27397442:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] scsi: ufs: core: Make use of guard(mutex)
-To: Avri Altman <avri.altman@wdc.com>,
- "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240416102348.614-1-avri.altman@wdc.com>
- <20240416102348.614-5-avri.altman@wdc.com>
-Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240416102348.614-5-avri.altman@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 4/16/24 03:23, Avri Altman wrote:
-> @@ -5682,9 +5681,8 @@ int ufshcd_write_ee_control(struct ufs_hba *hba)
->   {
->   	int err;
->   
-> -	mutex_lock(&hba->ee_ctrl_mutex);
-> +	guard(mutex)(&hba->ee_ctrl_mutex);
->   	err = __ufshcd_write_ee_control(hba, hba->ee_ctrl_mask);
-> -	mutex_unlock(&hba->ee_ctrl_mutex);
->   	if (err)
->   		dev_err(hba->dev, "%s: failed to write ee control %d\n",
->   			__func__, err);
+Hi Andy,
 
-This change moves the dev_err() statement inside the code block
-protected by ee_ctrl_mutex. Please do not make such changes in this
-patch.
+On Tuesday, April 16th, 2024 at 14:58, Andy Shevchenko <andriy.shevchenko@l=
+inux.intel.com> wrote:
 
-Thanks,
+> ...
+>=20
+> > + if (port->fifosize > 1)
+> > + port->timeout =3D uart_fifo_timeout(port);
+>=20
+>=20
+> else
+> port->timeout =3D port->frame_time;
+>=20
 
-Bart.
+
+Consistent with what I said in the other reply, the only reason that
+I have an if statement here, is to avoid doing extra math for devices
+without a fifo, as a specifically calculated timeout value would be useless
+in those cases.
+
+However, if you don't like the 10 ms default timeout, perhaps port->frame_t=
+ime
+could actually be a more reasonable default value? That is, provided that w=
+e have a process
+for calculating the proper value already in place...
+
+>=20
+> --
+> With Best Regards,
+> Andy Shevchenko
+
+
+
+Thanks for taking a look :D
+
+--
+MCP
 
