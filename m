@@ -1,209 +1,123 @@
-Return-Path: <linux-kernel+bounces-147765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 904458A795F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:53:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87E618A7961
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:54:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7C8BB22D8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:53:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E62C1F23619
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:54:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41FEE13AA44;
-	Tue, 16 Apr 2024 23:53:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C43813AA43;
+	Tue, 16 Apr 2024 23:54:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="m0e0OL5p"
-Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01olkn2093.outbound.protection.outlook.com [40.92.102.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="eKuhO5D7"
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A25113AA2C;
-	Tue, 16 Apr 2024 23:53:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.102.93
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713311601; cv=fail; b=TnuxF4fLAPr1belfOZxJrgn7s/IGhoiHe6ng7aS+VxkEcC+27wtTKL4O+wV5BFS3KdCHhU24r1XeALYNffCgOECKmZgKZO8Yv32aRGRucjCS9X4G0Gd43fGj7TqgQSck1sIjyLgDVYY8/PykNj8rVstky2hm2+PJDEj5gzburwA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713311601; c=relaxed/simple;
-	bh=0xpkmCSvS5GaxhKOCxDU9VlEPJ321VhCa7DzdtauM6M=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=nGEAuRf6bW1YHH9ZWUmAiW+VISjsA53YqXUwMzBgQgD37UE2kzxX+Tsc+EjebKfg689cDAFHcF5Kn7RowOm2sgE6j8MHIcznmOnobKrdd2y6uack0iPEcul8lWUMs7Oka4IFrnqv2nhK6XMSA80mteMNX90qkPGDB8yReWLbf8U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=m0e0OL5p; arc=fail smtp.client-ip=40.92.102.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=II5pv2yMkLqO46du7BiwvqMVmLb846EcZUOQgNuAbXDaH03So9+LW0rBfF/WLewgG0dStYk7CPKd1ArqRj6sByBAVL9ch4cZlXrdAHt8qoXUjkKa6koI/Nae6KGzqWLf/HOfxKl4Zb9/QJFi8PD6GWq2bMSjimXFOhMET8DU2qgKfYz6zPKZ0/bsCGQ9OdiSp+bjLScszkkaO+etx8B1ZNnRnDctjyyC7MK0ofArK3fmwCUaxUVfPxQhPfdwVyZda0Yxk7EoC3O8WYHf15Fpr4OzC7OCuIQ9Kjk+i+Cv/5aLxe2jVR8P2JZBIoEdmOnS8kk4oCVMwkNLKIAjci7k2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MIvRWIOZNYc1YQjMUB/y5I9aaYtyFift4nEnGKBx0Pc=;
- b=lH1QHf2laovJLXdO2dMU04KCJwqVctSp41wmdRtrHZuY4BAcOhstnGHDJOQAorKuMEdE37vEY0TsNZxDXxEGmlTHus5H+6bljSpW4QiING5faclmrXgum0Qr/Oz99XkZ6s36oiP3gEwChcqRWlg6RkMj3vZhMfx7CvkNI+x8bqLLDQEFvlRPwOyFmN3VD0l8I0vzJkJ+pdT9bij8kIUcHsWJTFGZKYrsmq8NfmVMVWVedesNglsK9NdCOzUW2O7KIU3GMY72nEQRIWjREP9b2cCj8CA/dB+8BiTiQQRHUL0a8I5EaIh9ku5eKdabIPy1jow6idMF6aO/haYVtRWoXg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MIvRWIOZNYc1YQjMUB/y5I9aaYtyFift4nEnGKBx0Pc=;
- b=m0e0OL5p0JB2yJNPm/2u/T9V2ELNsjwoJqDdyFNqXKPI9sWrVA//SGHmloChXv4MZsq6frFcmPaLQ7Uhx1T4ZR1mnc/o583E+KGNEQ9qS02lCMhcQKt9hmsSoeVqRclWZcquUMlJ3BAc6UOJbrox8bsvCO7GxVQERGRY4QvvrJm95eQwye50Y9KGMedn01TxxmuyL2+yhR2AipyPdMRApP3r4EhKoXQhXu32zek4Iy0smZKTMkYapFWE5bSShkAZNJLlTqSkE0sjpdipwXVjOfYc2wEu3KvoAGMpR9QCAFx15a1QDlXWuL46SwJ8ytFlf/aTIfUW61XkmCtnF0k6Pg==
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
- by MAZP287MB0558.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:112::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.51; Tue, 16 Apr
- 2024 23:53:11 +0000
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::664:2ecc:c36:1f2c]) by MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::664:2ecc:c36:1f2c%3]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
- 23:53:11 +0000
-Message-ID:
- <MA0P287MB2822A5D78558176D9B23240CFE082@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
-Date: Wed, 17 Apr 2024 07:53:04 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] mmc: sdhci-of-dwcmshc: Add support for Sophgo SG2042
-To: Jisheng Zhang <jszhang@kernel.org>, Chen Wang <unicornxw@gmail.com>
-Cc: adrian.hunter@intel.com, aou@eecs.berkeley.edu, conor+dt@kernel.org,
- guoren@kernel.org, inochiama@outlook.com, krzysztof.kozlowski+dt@linaro.org,
- palmer@dabbelt.com, paul.walmsley@sifive.com, robh@kernel.org,
- ulf.hansson@linaro.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-riscv@lists.infradead.org, chao.wei@sophgo.com,
- haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com, tingzhu.wang@sophgo.com
-References: <cover.1713258948.git.unicorn_wang@outlook.com>
- <e5aa1338d74504e141ba833b484d588cafb7ab38.1713258948.git.unicorn_wang@outlook.com>
- <Zh6bM2EQnAFYFhiV@xhacker>
-From: Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <Zh6bM2EQnAFYFhiV@xhacker>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN: [tHilUJJeHqepzmerUrJyU0QckXI3onGW]
-X-ClientProxiedBy: SI2PR01CA0010.apcprd01.prod.exchangelabs.com
- (2603:1096:4:191::12) To MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:138::5)
-X-Microsoft-Original-Message-ID:
- <df6c2ce8-b956-4f1a-9bb6-8f207921ed78@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897D413A894
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713311649; cv=none; b=bKv2MU8PZ70m2svYzsDkqZkUj8nypQ/FJSNmoHmUzjm6bJP2oW+ql0fCiUmEUjtZw2mGkqP62kYLlNZISrRS/W3i9drG1n3AK+1MO8urSOG1yk/AvwxZ0EkCu3oGfu5sng5iyWaMKFQlKJYsvOJrNVNB99c77nxn3bo0Vj6V0nU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713311649; c=relaxed/simple;
+	bh=lELwXqX2GnBMmAHfLBmNlByJmdmG/bVTILIylDcO+sk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XHIN5Ug4XlwdbD/I9AYldd48Bb/zf9OOqCe9mxTwrOvLX3zs+2zf4S02B/IUZkNR0EFtG6EU/EIUnw113ltcbGQ8LI66V5DTrSAJnzYtQ8hcWnClBEWeFTHQflIpRvycLmwb3shBBubIc570QmVWLJiXt4IY/GCcNcKD71mOE3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=eKuhO5D7; arc=none smtp.client-ip=209.85.210.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6eb7a4d64e8so1082569a34.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:54:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1713311647; x=1713916447; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TR0TEYbFqb6c5b6HzlrOARuCR9bvnLhVJNRPXv/Uaxs=;
+        b=eKuhO5D7NVn72l1tCE7RCzD/rUsZvcYyMJQfwJqLEZebFqp+49LbN5ZSV3euBbHikF
+         3DJXX6vQjbW6r1osZKpWfI0JcEDY04hpWAcz21ALUw6oRP3NkAEXlyZ+MJKXWlV9ZhCU
+         m0FvX21gH4jfmfPXX3TprnV1ulpwdOeVFSfnM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713311647; x=1713916447;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TR0TEYbFqb6c5b6HzlrOARuCR9bvnLhVJNRPXv/Uaxs=;
+        b=fZcoP1zqXUQfGO+bebvgG8E7YES28q3vNj1Afhx0vTZCQplq6db+eNbWMt+pkF+ZyQ
+         kSkQtiTsPzJD79sTOsoUUx8ry2v230ctPTXRgm6gukU1/2CWzrSyWWIcsEYXf5trX8Zu
+         swh67STei4S8CwaRZ9dD2U/EtddfxuyO1AsT0L8JRwP0W2JnCN2U029A19VJ9SUnCSZc
+         h9vVTc8I6xE4M5zPfNz2ILl/uMEKThIu3/v/3U1uxeWBJuzUmlYDTh4JCG5UXypltw+k
+         DM2caKNmCgyCGp1ue8gG+08PZUi57uuGEpPh2Rd2asNbcOUijQw9wtKQ1LqGdMZU+C5q
+         Ie0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUF2jYwleWMPD/z3j1F/AKiAHnp7JnPPaK4wcEhpZVcwoaBYXTjwIMpizhV26KRPAQKDLpq3//Dm9Ji1gAqF3h0f/nYcioPU/JreAO0
+X-Gm-Message-State: AOJu0YxBHnxnBaxCGqtaGADf/JonyLfx6ze4RSsPIgLZAIjXuQdFeryP
+	b4G06UnbuC0aYv+ETVoldl7RatCBwLYryeB3s628XrHW3Ws5FYOMiR5MsWjMuKZvbeYeli1fCur
+	kDMA=
+X-Google-Smtp-Source: AGHT+IE0deEqv8RHKhl0RXyrVo47Iv1fvvJ8qSc+8jrpMU3Gj5qxW82X+IK0E4xoncbed3xqI33B5w==
+X-Received: by 2002:a4a:bb18:0:b0:5aa:14ff:4128 with SMTP id f24-20020a4abb18000000b005aa14ff4128mr14940743oop.1.1713311647605;
+        Tue, 16 Apr 2024 16:54:07 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id ay27-20020a056820151b00b005a47a6b8f67sm2795689oob.29.2024.04.16.16.54.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Apr 2024 16:54:06 -0700 (PDT)
+Message-ID: <69d0c6c6-ed82-410c-9102-09ed3b95ae05@linuxfoundation.org>
+Date: Tue, 16 Apr 2024 17:54:05 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB2822:EE_|MAZP287MB0558:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4c792ea2-e148-4491-1493-08dc5e705dfe
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	MaYWgKjdnYxiCFW0cSSDQo4CsQniJgAWPPFNokfaUWGHy3mtlqftBhLicRMX9mENk/Ax1E/grylHw5l0HvVW7QHrETh2Q9qRo28U3bRN7COzhhBqiCF7+n4XdZVfMLjVHXv3ZUBkvmoUVgF9zNXdv8rCKWNbw8zWu0+OAE6L/Vg11YB/hZzTQlcpJB2ywRUsWYmXWCUJhpt0dOA4fp0BVkTix0bTTkTP1WKcc/2H834XDSbN7r1qy4/b6ZxArhk5AYRbqv02zhXwGSE9LT0un2D1G1/tXUL/QEAnm8cpPAQmnFEK+BZKsgcZv2vdrDenK8AR1cS7w/G67VWonIOEeAN97NGkUXG6dSsB/hktsryVbWNxVDIQdUiLn8oH4nKxYb+4QL3XjymI80Yl3p8uiR8tSYE2+Jrb5hhCFVK70quaojH5SdN8XI35LDxx8/sz8JwZDsnzT7zqKR6cv2dCsd0bcPiVTkmXtCCoI74xQHzUPy8sH/qIZN802E2Q5H8dM7+b3pg39TAzWf4d3ErXiTyLudWYEoNIumWW1lUTfG/s59IATA7eFEyxhYSGpdMg
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WVR3MmE3dmQ2c29oRnhiOUlIYWs3b0k5TWUxNHVlbGE2TTd2VlQ4OE5MRlJZ?=
- =?utf-8?B?bktBSHQ4RFZBb241Z1BBT1F1aWJhVFNLUElDN09Vems5WnNZTXhaUUpBMko1?=
- =?utf-8?B?S01MZTh0bFJOY2ttMVFGRlR6N2FzeXF1bG0rVDlpQ3FpdU56WXUrcC9hRkF6?=
- =?utf-8?B?eFNoNHVKQmR0WUxCeVBjMzlCeCtpOURxOW5xTW1mVW1xdHBoYWwrK05BOWRs?=
- =?utf-8?B?UW1rU1FMbUxhU21QWlgrRDU1T0pEZ1Z1Y09yVHZMSXBtQVNmcy9lZFRKYzVh?=
- =?utf-8?B?eXJHVTYxVi9xaTBxTjdMQWZCZVdKRzhBL1pSSllMQUZxZDNCeTlxalNyU1RF?=
- =?utf-8?B?amxPR240QTFOVDMwaTRaRVE3OUpGbkFGZ3E1TDZNZzI2NWRhUkxDTW9Ca0RQ?=
- =?utf-8?B?TEx0RlpreVlLZVEyWGFadU9iN2tHUElreHA0VmRjK1dVTE9OaG90RFdzRGNL?=
- =?utf-8?B?S2NVRU5FcTVoSEF1M2lpdnJHUlVBazJONWk3ZDdUMHIyVERMTjU3MnV1bVlZ?=
- =?utf-8?B?a2tNNjVxMHgwQXZ1VVVSeHlnb1ozcjNxaFRTTHhJb21xVWRSZWx1VzZRSW4x?=
- =?utf-8?B?bldRN1FCYkRQazdXRmtLa2h6R0c2bmdtZDlvOTJCOGs1SkpvaWRRV3ZNWFdu?=
- =?utf-8?B?NUg1S2Rwa1ZqVWkrenJhS2tDb0ZKVitqR29BcXJMVUFTY0lwaWVIZmYwQWs5?=
- =?utf-8?B?UVlnL0paTnRrTW1pQkNsTElvTXFzaDZ3VW5FQURkRWI2UEcvWDV0ZkkwTjZU?=
- =?utf-8?B?MERlNHN6dTR2YnlEbEsyV3FiR2tnZnNPU25kSGNSQmdwempOUlhkdW9IY3Bv?=
- =?utf-8?B?TTRXY0lTRVR6RFE0YWtsUk5nZGczWE5IcnFRSzBYRWZVbWZRRWErUDZkQ3kx?=
- =?utf-8?B?MHpaVUZ3dDh3dFJXejR6NHdyWUtyWXlnbmhwR0psejBWQkVJS0E2aTYzQ0ZI?=
- =?utf-8?B?V1dDV0s2ZysvdVVvVGF5QzZacFV2NEdtY29xK0ZveklBYkJBQS9ZazliR1VL?=
- =?utf-8?B?b3lSbENXNlQ5OEdMQlJIM3ZjeWtxTEF2SXJocWdNcHFhTEJJSGJjKzU1ZmJ2?=
- =?utf-8?B?dDdqV1RZZm1VcVcyNmhqUHgwVUFGMk42L1FFM1ZBZ25MMFhlWXJ3VEhCNjU0?=
- =?utf-8?B?bFZGY21yK09oWmovRklpVjFSSnZROHhrenhuVDE3Z2pSOWJ3VGttUzZYQytF?=
- =?utf-8?B?bDV5dVJ0NjJrKzIxaW50RVNDcmRtN2NKSHdieHNVb1ovMVFPVjhsLzV3eFZX?=
- =?utf-8?B?YkxmbzhGK3Z6S2taMEpvUXBUSlFMcytiVXV3aDRVcFU2OTNWZy9vRktueTRw?=
- =?utf-8?B?cVpzS2hTbmV5UFlhZ3I4Q1RYS0dwV1Q5Z29IVGpTWDh1ZTZHNk9KQzJYZisz?=
- =?utf-8?B?bEQ3UWI4YXUzaTlJWjJrcnVKeHE3dHVyY25MdHo2YlltT1ZNY1NLMWM4YVNn?=
- =?utf-8?B?N2ZYblFqYk4wODRzK2wrWURQb2xQbXAvUm9qZVRlZ2dCRHZqZ01OaWUrQWFX?=
- =?utf-8?B?cWJwZXR3N1ZoTnpEUUZ4c0IxMEo4djRHMUZieStVYUc2ck9hMmNSU2hUajhX?=
- =?utf-8?B?RS9oNVlQemFnYUV6WGdkTWxxcVp1emRRd0FVYkNLQ3R6d01PT0dFdVUvTXFP?=
- =?utf-8?B?bGYybEhsTXRQQ3VhZ0t6YnFSWENpcHZwekNWdjBONFY4Y25tYkhKZzhURDQv?=
- =?utf-8?Q?26SG5wgKwnirN1o40/8n?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c792ea2-e148-4491-1493-08dc5e705dfe
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 23:53:10.0954
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MAZP287MB0558
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: manual merge of the kselftest tree with the tip tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Shuah Khan <shuah@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>
+Cc: John Stultz <jstultz@google.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240412155545.7b8ad20b@canb.auug.org.au>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240412155545.7b8ad20b@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 4/11/24 23:55, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the kselftest tree got a conflict in:
+> 
+>    tools/testing/selftests/timers/valid-adjtimex.c
+> 
+> between commit:
+> 
+>    076361362122 ("selftests: timers: Fix valid-adjtimex signed left-shift undefined behavior")
+> 
+> from the tip tree and commit:
+> 
+>    8e222dcf92a8 ("selftests: timers: Fix valid-adjtimex signed left-shift undefined behavior")
+> 
+> from the kselftest tree.
+> 
 
-On 2024/4/16 23:37, Jisheng Zhang wrote:
-> On Tue, Apr 16, 2024 at 05:50:57PM +0800, Chen Wang wrote:
-[......]
->>   
->> +#define SG2042_MAX_CLKS 2
-> I don't think "bulk" is suitable here for max 2 clks, no?
-Without "bulk",  I have to prepare/disable two times for each of clocks 
-and handle the exception if first one failed etc. I learn this from 
-rockchip, it has 3. Why you think it is  not suitable, please advise me, 
-thanks.
->> +struct sg2042_priv {
->> +	struct clk_bulk_data clks[SG2042_MAX_CLKS];
-> useless either
+Thank you. I dropped 8e222dcf92a8 from linux-kselftest next
 
-Sorry, what's this mean?
+> Slightly different versions of the same patch (whitespace differences).
+> 
+> I fixed it up (I (arbitrarily) used the former version) and can carry the
+> fix as necessary. This is now fixed as far as linux-next is concerned,
+> but any non trivial conflicts should be mentioned to your upstream
+> maintainer when your tree is submitted for merging.  You may also want
+> to consider cooperating with the maintainer of the conflicting tree to
+> minimise any particularly complex conflicts.
+> 
 
-[......]
-
->> +
->> +	/* Set ATDL_CNFG, tuning clk not use for init */
->> +	val = FIELD_PREP(PHY_ATDL_CNFG_INPSEL_MASK, 2);
-> magic "2" needs a meaningful macro definition.
-
-Agree, will improve this in next version.
-
-[......]
-
->>   
->> +static const struct sdhci_pltfm_data sdhci_dwcmshc_sg2042_pdata = {
->> +	.ops = &sdhci_dwcmshc_sg2042_ops,
->> +	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN |
->> +		  SDHCI_QUIRK_INVERTED_WRITE_PROTECT,
-> is "wp-inverted" property better?
-
-Yes, l will use this in next revision, thanks.
-
-[......]
-
->> +
->> +static int dwcmshc_sg2042_init(struct device *dev,
->> +			       struct sdhci_host *host,
->> +			       struct dwcmshc_priv *dwc_priv)
->> +{
->> +	int err;
->> +	struct sg2042_priv *soc = NULL;
->> +
->> +	soc = devm_kzalloc(dev, sizeof(struct sg2042_priv), GFP_KERNEL);
->> +	if (!soc)
->> +		return -ENOMEM;
->> +
->> +	soc->clks[0].id = "card";
->> +	soc->clks[1].id = "timer";
-> Interesting, only "card" and "timer", so which clk is for clk input of the ip?
-
-Copy my comments from bindings patch here for quick reference:
-
- > SG2042 defines 3 clocks for SD/eMMC controllers.
-
- >- AXI_EMMC/AXI_SD for aclk/hclk(Bus interface clocks in DWC_mshc)
- >  and bclk(Core Base Clock in DWC_mshc), these 3 clocks share one
- >  source, so reuse existing "core".
- >- 100K_EMMC/100K_SD for cqetmclk(Timer clocks in DWC_mshc), so reuse
- >  existing "timer" which was added for rockchip specified.
-
- >- EMMC_100M/SD_100M for cclk(Card clocks in DWC_mshc), add new "card".
-
-What you meant "clk input of the ip" is "core", right?
-
-[......]
-
+thanks,
+-- Shuah
 
