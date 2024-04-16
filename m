@@ -1,236 +1,160 @@
-Return-Path: <linux-kernel+bounces-147641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147642-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0389A8A76C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:37:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9736D8A76CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:37:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 276371C22AF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:37:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0E971C22C3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:37:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9445213C9CD;
-	Tue, 16 Apr 2024 21:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0528A13CFA9;
+	Tue, 16 Apr 2024 21:25:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BQnFdUBo"
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WeD9JxZV"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2582958203;
-	Tue, 16 Apr 2024 21:25:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0A0F6BFAC;
+	Tue, 16 Apr 2024 21:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713302734; cv=none; b=ta4Br4PVsYQSnmW3XKKqVtNaoMmAfH5Ze95KJOgps7p5JL8lHOQ0QBsigz1olxgMfyUr8tISVnxaKtcYJMeb/oQVlFogBwtQ+5hWhSG6CQUual8uyFZfe9ZtgNI+XKbRkwE6NXc59cklACqaKe5911EnFrEtX3aHacf5qIp5/t0=
+	t=1713302750; cv=none; b=X0MNfBGZaT63rBy33yG03Wh65kOUw0MfQpw+txJtUhxY9Jsn7UZULLKBi/DgoT8OzuQCXFL2OKI13Wxy2OYZ55vG4QUXVzP8/xBHXVtxGzJf/xAgrA2X91S8RmsQrlvENYF6p4aUHETggoyd8myNG3eD5XTky53NYVt6gnfheZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713302734; c=relaxed/simple;
-	bh=eO98DY7CIz7eC1ApeDbKUP4UlrTAg7IIAn5q3LTWsbE=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=lpZ7bM5tkr4VdDAsbM6neYmUFjHh6buWZyMx7a85fvOEh0jGrEhg04KW4yqF8WUDT8UrWpnuAOZdK5dLvqzmSb5ZnzYQHJbPCyxffO8Eyt4waAlEA/NFjJZbrr62aNDjLJlM/EYeWg5Lf5O/swLRj5PyleWltAkRLp+SGiXz+oc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BQnFdUBo; arc=none smtp.client-ip=209.85.210.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1713302750; c=relaxed/simple;
+	bh=RB4Rxo3I7P044H/tx+EKgHt+XNavBTu4zY8/fN6zuFE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=crSvuYYgosGmChOKRwc9WqJLmkNA21sy0smuyxSUIuN+JgfcDvdpJi7iRubYr2e8Xb+PZSpr1fAdgGWuBXXkSTKwseu+pQE+nHixXye7SwskOiO9vBtU0BhBhshzcax4Yz0Cb+cjSYRhZH7Mhf4rfyMaDM+zeevJjWni+5LB75U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WeD9JxZV; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e696ee8fa3so88792a34.1;
-        Tue, 16 Apr 2024 14:25:32 -0700 (PDT)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ee0642f718so143571b3a.0;
+        Tue, 16 Apr 2024 14:25:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713302732; x=1713907532; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WP41hdtXelUpwcI0aj34hpgq/euzrgZ/XyTOcECec+8=;
-        b=BQnFdUBoi1vGSiFGT3BKG/bmM80DEwec7AiTay7gzXFgnHZAms7Z7UwiweTCSf4vJi
-         p2aoSwSOdQwsvFASBdFw5S3NO5JWes+FH3o3yS/w8Shnng8pV2KTeHOKafprxUW/4tQC
-         ibuXmuNfXHevsbDcvn40LG3cC3KKnVPtVnSN4+bQwcfYHvJEa058nmHd/hGw2N46s/XG
-         Yu9y4lqq6jHIeJmuMKfiCP3G5S4dYpMEOk3XbDZDxYzRl5tZ1K6Us9HDlecSpa33DEJ5
-         RaTbw9mtqYOWY4tXsEdyJnvwyGTAe6UNT3i0x4oQ853OeTz798tMcmsR4TtXjLk0dDuq
-         PoHw==
+        d=gmail.com; s=20230601; t=1713302748; x=1713907548; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fP5MOJtrXkNm3fcuGMZuhHc4ZbLwMwjSduM2DxDigco=;
+        b=WeD9JxZV2986QGO1rYuPOYZd+V7uLLw+76x6UxC1HODRofqwsq2RMMyWjk7qQ6Z8M1
+         JEYZTtx3fA8hYNljtS/EmT1B3IYNh3csQJAbESEV0L7WrO/xG6aZZyhU96pHTGocQRbD
+         ioTZgy31Vl/9ZnRRqCNv+duODEaxrHnRQ8UYz1xxzm9rxf+hDvwfPHmTIM+VsloHFH5P
+         iz0fj4+9neHZWHWRq2Vz8leCnNoSD+Y67IwV9cfWtlDPSHZ3H14xVWr46o1Qvo7i28ZG
+         0RDwUaRdOPEi8bnZL+KRT+nOQRJxLZysCI0cIBMg0tjbDorYHwBCUYsGypvS0Ac4rc7J
+         89TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713302732; x=1713907532;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WP41hdtXelUpwcI0aj34hpgq/euzrgZ/XyTOcECec+8=;
-        b=VYjVkLYeFsT2KJSst+/E4mekhMQJtqILivRli6e9M0SmqYVzqXsz8h0pIGaJoaijzh
-         wM67e+RE7A07qbN4uqX1miKJkNbVh5JMWt4fnJ4CFzKcQvgCFKZADUDSwcPx21EyF81e
-         +YUmR8ZFVdoXdL66uPX6xnFg2rUD3njT8vemmL/uPdC/gKC5Fpiny9DjFmM8rCaqdHT9
-         i0GS80t/6kDm32CUE3H523fD9ciR+I7R+UJqDileg2SgVYXiQLCZQy4bSptTk/EpS5Yt
-         os98MZy6vqukuGUMHRUYS/Udr/tFRo0CX4jGgl6B/0Y6dnlNhh2lAR8M81P3cQdDsv5w
-         rmfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWIKFab3FjyC1zJJKN6ehOiWY0EEOgV5osLwlSqCHuMzECtkUokmbrylC16rxSJGGl28HsLUPIhxFOFmaxjZsHKDC35eH3xGtQIjz8IUF72CWxopL42Vn5cX8pPtB0+xgx489n2bqNi5cO8DXbpqhojE57sq5BzS8HQrhW3rmTky8cC9ShorAyYsVXSnqONioL8DIVuLFO2axALgq2I2OFkgmEBS0LX3PtT0qJ6C2RZaiFwWfiKhMOIsxUAwt4=
-X-Gm-Message-State: AOJu0YytqYmZxrdyZ45RM/bfSjlO6sREwEJwsZgmm0aVmKAkIrj9LXAQ
-	zYrSmuVpLE/8g2Ax5FlmKEWWGUuacNQlRDyTKpiLl3sm1IndoWcS
-X-Google-Smtp-Source: AGHT+IEfDmYbKj3xvgd6fPThcAdO/OKuBg0B8gvdcmmOULb0La1dI1vNl5sTDa1HjyWzJle9WGCrLQ==
-X-Received: by 2002:a05:6830:487b:b0:6eb:96b4:7018 with SMTP id dx27-20020a056830487b00b006eb96b47018mr429271otb.11.1713302731884;
-        Tue, 16 Apr 2024 14:25:31 -0700 (PDT)
-Received: from [192.168.7.110] (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
-        by smtp.gmail.com with ESMTPSA id eg7-20020a0568306f8700b006eb84466e68sm793940otb.55.2024.04.16.14.25.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Apr 2024 14:25:31 -0700 (PDT)
-Message-ID: <4a7b1e1d-ac68-4857-8925-f90c9e123fd1@gmail.com>
-Date: Tue, 16 Apr 2024 16:25:28 -0500
+        d=1e100.net; s=20230601; t=1713302748; x=1713907548;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fP5MOJtrXkNm3fcuGMZuhHc4ZbLwMwjSduM2DxDigco=;
+        b=oHW/2ly+y/Of1529X/mJNG+1w+z2DFetQT8jWm7k3Wpi7CBXHo2BKvAHdvrmErnY5u
+         usM+9fd7WbxtnzTOWbEQ9YuMkZ6mLIioxCQ2kl6j/HcrI2OjpOz6hPQFeMjdVujSNsvW
+         kEmxo1fbNxsxi47Jwdw4WaSRxWJxvbXGVHq5+b/Vh6wivMgwTflE1m4MAdb3agMOY3Qe
+         H/CNGBz9c9Ec2rnW7JFmY47RJQhtQuJINV4heyZtAx8tsAgqa80un8RsonVE/PyH+pXm
+         xo7UOaiWt5qt4dd7rk1dLRLfHR7niAhYyp9R/HyCRPsGaBDL/HxDrVIltRy6c31rqGGf
+         59Tw==
+X-Forwarded-Encrypted: i=1; AJvYcCUUtgmjHO9/DKhlp8Fw8Xj1CFkja7AExEm7e50w5nnV0HovNEGxxTIoTtgNkpZlUxq5GlDmtNa8BTXnLGOaWQdFBxDV82oJmqkNtPpKLI/ICXIMtaUNNBbF3tXhzWW6i9exWvT1oW9Q9p0=
+X-Gm-Message-State: AOJu0YyXofnSN/pEAo6tgfxuqoKx2X+isIpTONHHxK6CY50BT4qFFcxb
+	D1xakc4eY+bXtnYgd3JkvM+mi5amcflL+NgfYoVE1hfcXQ7HCzeQ
+X-Google-Smtp-Source: AGHT+IEhDhwTQnDdc0hwtRRPa0zKvBcAkWrkdpJ+nrPPjEM/bTQXfGHrNDWKJLE0uJCZDyYpfIbKCw==
+X-Received: by 2002:a05:6a21:3983:b0:1aa:6461:f6e5 with SMTP id ad3-20020a056a21398300b001aa6461f6e5mr1745736pzc.7.1713302748205;
+        Tue, 16 Apr 2024 14:25:48 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e15-20020aa798cf000000b006ea6ca5295bsm9308917pfm.164.2024.04.16.14.25.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 14:25:47 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Tue, 16 Apr 2024 14:25:46 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Naresh Solanki <naresh.solanki@9elements.com>
+Cc: krzysztof.kozlowski+dt@linaro.org, u.kleine-koenig@pengutronix.de,
+	Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] hwmon (max6639): Use regmap
+Message-ID: <65607114-89f8-4f48-83fc-b89d87fee247@roeck-us.net>
+References: <20240416171720.2875916-1-naresh.solanki@9elements.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 6/7] phy: qcom-qmp-pcie: add support for ipq9574 gen3x2
- PHY
-Content-Language: en-US
-From: "Alex G." <mr.nuke.me@gmail.com>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Manivannan Sadhasivam
- <manivannan.sadhasivam@linaro.org>, linux-arm-msm@vger.kernel.org,
- linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-clk@vger.kernel.org
-References: <20240415182052.374494-1-mr.nuke.me@gmail.com>
- <20240415182052.374494-7-mr.nuke.me@gmail.com>
- <CAA8EJpqY1aDZMaeqBULEOD26UeGYbLd8RsA16jZw7zXJ7_oGPQ@mail.gmail.com>
- <6726fa2b-f5fe-10fb-6aab-f76d61f0b3cd@gmail.com>
-In-Reply-To: <6726fa2b-f5fe-10fb-6aab-f76d61f0b3cd@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416171720.2875916-1-naresh.solanki@9elements.com>
 
-Hi Dmitry,
-
-On 4/15/24 16:25, mr.nuke.me@gmail.com wrote:
+On Tue, Apr 16, 2024 at 10:47:14PM +0530, Naresh Solanki wrote:
+> Add regmap support.
 > 
+
+Missing (and not really utilizing) the benefits of using regmap.
+
+> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+> ---
+>  drivers/hwmon/Kconfig   |   1 +
+>  drivers/hwmon/max6639.c | 157 ++++++++++++++++++++--------------------
+>  2 files changed, 80 insertions(+), 78 deletions(-)
 > 
-> On 4/15/24 15:10, Dmitry Baryshkov wrote:
->> On Mon, 15 Apr 2024 at 21:23, Alexandru Gagniuc <mr.nuke.me@gmail.com> 
->> wrote:
->>>
->>> Add support for the gen3x2 PCIe PHY on IPQ9574, ported form downstream
->>> 5.4 kernel. Only the serdes and pcs_misc tables are new, the others
->>> being reused from IPQ8074 and IPQ6018 PHYs.
->>>
->>> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
->>> ---
->>>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c      | 136 +++++++++++++++++-
->>>   .../phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h   |  14 ++
->>>   2 files changed, 149 insertions(+), 1 deletion(-)
->>>
->>
->> [skipped]
->>
->>> @@ -2448,7 +2542,7 @@ static inline void qphy_clrbits(void __iomem 
->>> *base, u32 offset, u32 val)
->>>
->>>   /* list of clocks required by phy */
->>>   static const char * const qmp_pciephy_clk_l[] = {
->>> -       "aux", "cfg_ahb", "ref", "refgen", "rchng", "phy_aux",
->>> +       "aux", "cfg_ahb", "ref", "refgen", "rchng", "phy_aux", 
->>> "anoc", "snoc"
->>
->> Are the NoC clocks really necessary to drive the PHY? I think they are
->> usually connected to the controllers, not the PHYs.
-> 
-> The system will hang if these clocks are not enabled. They are also 
-> attached to the PHY in the QCA 5.4 downstream kernel.
-> 
-They are named "anoc_lane", and "snoc_lane" in the downstream kernel. 
-Would you like me to use these names instead?
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index c89776d91795..257ec5360e35 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -1223,6 +1223,7 @@ config SENSORS_MAX6621
+>  config SENSORS_MAX6639
+>  	tristate "Maxim MAX6639 sensor chip"
+>  	depends on I2C
+> +	select REGMAP_I2C
+>  	help
+>  	  If you say yes here you get support for the MAX6639
+>  	  sensor chips.
+> diff --git a/drivers/hwmon/max6639.c b/drivers/hwmon/max6639.c
+> index aa7f21ab2395..1af93fc53cb5 100644
+> --- a/drivers/hwmon/max6639.c
+> +++ b/drivers/hwmon/max6639.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/err.h>
+>  #include <linux/mutex.h>
+>  #include <linux/platform_data/max6639.h>
+> +#include <linux/regmap.h>
+>  
+>  /* Addresses to scan */
+>  static const unsigned short normal_i2c[] = { 0x2c, 0x2e, 0x2f, I2C_CLIENT_END };
+> @@ -57,6 +58,8 @@ static const unsigned short normal_i2c[] = { 0x2c, 0x2e, 0x2f, I2C_CLIENT_END };
+>  
+>  #define MAX6639_FAN_CONFIG3_THERM_FULL_SPEED	0x40
+>  
+> +#define MAX6639_NDEV				2
+> +
+>  static const int rpm_ranges[] = { 2000, 4000, 8000, 16000 };
+>  
+>  #define FAN_FROM_REG(val, rpm_range)	((val) == 0 || (val) == 255 ? \
+> @@ -67,7 +70,7 @@ static const int rpm_ranges[] = { 2000, 4000, 8000, 16000 };
+>   * Client data (each client gets its own)
+>   */
+>  struct max6639_data {
+> -	struct i2c_client *client;
+> +	struct regmap *regmap;
+>  	struct mutex update_lock;
+>  	bool valid;		/* true if following fields are valid */
+>  	unsigned long last_updated;	/* In jiffies */
+> @@ -95,9 +98,8 @@ struct max6639_data {
+>  static struct max6639_data *max6639_update_device(struct device *dev)
+>  {
+>  	struct max6639_data *data = dev_get_drvdata(dev);
+> -	struct i2c_client *client = data->client;
+>  	struct max6639_data *ret = data;
+> -	int i;
+> +	int i, err;
+>  	int status_reg;
+>  
+>  	mutex_lock(&data->update_lock);
+> @@ -105,39 +107,35 @@ static struct max6639_data *max6639_update_device(struct device *dev)
 
-e>>>   };
->>>
->>>   /* list of regulators */
->>> @@ -2499,6 +2593,16 @@ static const struct qmp_pcie_offsets 
->>> qmp_pcie_offsets_v4x1 = {
->>>          .rx             = 0x0400,
->>>   };
->>>
->>> +static const struct qmp_pcie_offsets qmp_pcie_offsets_ipq9574 = {
->>> +       .serdes         = 0,
->>> +       .pcs            = 0x1000,
->>> +       .pcs_misc       = 0x1400,
->>> +       .tx             = 0x0200,
->>> +       .rx             = 0x0400,
->>> +       .tx2            = 0x0600,
->>> +       .rx2            = 0x0800,
->>> +};
->>> +
->>>   static const struct qmp_pcie_offsets qmp_pcie_offsets_v4x2 = {
->>>          .serdes         = 0,
->>>          .pcs            = 0x0a00,
->>> @@ -2728,6 +2832,33 @@ static const struct qmp_phy_cfg 
->>> sm8250_qmp_gen3x1_pciephy_cfg = {
->>>          .phy_status             = PHYSTATUS,
->>>   };
->>>
->>> +static const struct qmp_phy_cfg ipq9574_pciephy_gen3x2_cfg = {
->>> +       .lanes                  = 2,
->>> +
->>> +       .offsets                = &qmp_pcie_offsets_ipq9574,
->>> +
->>> +       .tbls = {
->>> +               .serdes         = ipq9574_gen3x2_pcie_serdes_tbl,
->>> +               .serdes_num     = 
->>> ARRAY_SIZE(ipq9574_gen3x2_pcie_serdes_tbl),
->>> +               .tx             = ipq8074_pcie_gen3_tx_tbl,
->>> +               .tx_num         = ARRAY_SIZE(ipq8074_pcie_gen3_tx_tbl),
->>> +               .rx             = ipq6018_pcie_rx_tbl,
->>> +               .rx_num         = ARRAY_SIZE(ipq6018_pcie_rx_tbl),
->>> +               .pcs            = ipq6018_pcie_pcs_tbl,
->>> +               .pcs_num        = ARRAY_SIZE(ipq6018_pcie_pcs_tbl),
->>> +               .pcs_misc       = ipq9574_gen3x2_pcie_pcs_misc_tbl,
->>> +               .pcs_misc_num   = 
->>> ARRAY_SIZE(ipq9574_gen3x2_pcie_pcs_misc_tbl),
->>> +       },
->>> +       .reset_list             = ipq8074_pciephy_reset_l,
->>> +       .num_resets             = ARRAY_SIZE(ipq8074_pciephy_reset_l),
->>> +       .vreg_list              = NULL,
->>> +       .num_vregs              = 0,
->>> +       .regs                   = pciephy_v4_regs_layout,
->>
->> So, is it v4 or v5?
-> 
-> Please give me a day or so to go over my notes and give you a more 
-> coherent explanation of why this versioning was chosen. I am only 
-> working from the QCA 5.4 downstream sources. I don't have any 
-> documentation for the silicon
+Conversions to regmap should drop all local caching and use regmap
+for caching (where appropriate) instead.
 
-The downstream QCA kernel uses the same table for ipq6018, ipq8074-gen3, 
-and ipq9574. It is named "ipq_pciephy_gen3_regs_layout". Thus, it made 
-sense to use the same upstream table for ipq9574, "pciephy_v4_regs_layout".
-
-As far as the register tables go, the pcs/pcs_misc are squashed into the 
-same table in the downstream 5.4 kernel. I was able to separate the two 
-tables because the pcs_misc registers were defined with an offset of 
-0x400. For example:
-
-/* QMP V2 PHY for PCIE gen3 2 Lane ports - PCS Misc registers */
-#define PCS_PCIE_X2_POWER_STATE_CONFIG2                    0x40c
-#define PCS_PCIE_X2_POWER_STATE_CONFIG4                    0x414
-#define PCS_PCIE_X2_ENDPOINT_REFCLK_DRIVE                  0x420
-#define PCS_PCIE_X2_L1P1_WAKEUP_DLY_TIME_AUXCLK_L          0x444
-#define PCS_PCIE_X2_L1P1_WAKEUP_DLY_TIME_AUXCLK_H          0x448
-#define PCS_PCIE_X2_L1P2_WAKEUP_DLY_TIME_AUXCLK_L          0x44c
-#define PCS_PCIE_X2_L1P2_WAKEUP_DLY_TIME_AUXCLK_H          0x450
-..
-
-Here, QPHY_V4_PCS_PCIE_POWER_STATE_CONFIG2 = 0xc would be correct, 
-assuming a pcs_misc offset of 0x400. However, starting with 
-ENDPOINT_REFCLK_DRIVE, the register would be 
-QPHY_V4_PCS_PCIE_ENDPOINT_REFCLK_DRIVE = 0x1c. Our offsets are off-by 0x4.
-
-The existing V5 offsets, on the other hand, were all correct. For this 
-reason, I considered that V5 is the most likely place to add the missing 
-PCS misc definitions.
-
-Is this explanation sufficiently convincing? Where does the v4/v5 scheme 
-in upstream kernel originate?
-
-Alex
-
+Guenter
 
