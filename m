@@ -1,148 +1,222 @@
-Return-Path: <linux-kernel+bounces-147694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 061B38A77D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:35:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 721708A77D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:35:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D62871F217A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:35:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DD692835DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 249F31E889;
-	Tue, 16 Apr 2024 22:34:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8825139D18;
+	Tue, 16 Apr 2024 22:35:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ChUkTmyH"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Y4YxzMZk"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0052439FCF;
-	Tue, 16 Apr 2024 22:34:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B26639FCF
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 22:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713306894; cv=none; b=LpY+7YCvRsKd6Z0jLqpwFeQulsP7IhrJZ11RH0I/HN4ekiSUpYavdz0gmBOibtAa5iFIK35UWc87uO1uyYe1VrQYznip7GYc7k27+sjeu+0mSI6KrC7gCc8/YmNrIxakhsUWOPuuDadDcAA/eUf5jbsA+QnpS2sUOhsURC2Px2E=
+	t=1713306900; cv=none; b=P4yLneAQrCKXAYv/rAo2fIIhBRDzXPgaySHCIy/Q3G/l0/SNyfU+LqOPsCzin4FGUGknQhwCtywR3uMizIa2q0F5AKTDOxNpcUt+vWbbSjNwSxOB4LJx/YnNzpw2nC+YtBw/2LGXSSN+AqIyJIoMMVJiuKjTo3T/dUpOZLUcfBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713306894; c=relaxed/simple;
-	bh=TIppXwoyy7JCBAG2mGLWtbBQ6zU3Bx81FBr226GDJ+A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fmHN7sMVkPP1hbUQTtfwNBovHBtlgm7SAB2PKwhtYzywnfK269TSKuZRWCPipw5GCJcXHfip2l0hkAt/by03Y4jNoVN3V28T3yNqIVUDUPNX7o+mC5NttNUyS1pAECa3XLg9aWDVrhrsoPZE01jjnKlZy0atc50zNcwKkY/9HZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ChUkTmyH; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ee13f19e7eso3733516b3a.1;
-        Tue, 16 Apr 2024 15:34:52 -0700 (PDT)
+	s=arc-20240116; t=1713306900; c=relaxed/simple;
+	bh=D6DW7vU+Ud1j1ZMm6riVY8+oFgwa63RdFWc+QIYQMB4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Zwm2w/8eE+/vQ6efgTkFnZUmdF0wMe0gvTIlYpiLDeJLfaOUB6svcXDQiGt4zpWGc1IEG5oPbR5HCqxavGxb2yqGNn6vlykggLJRXP6RXKzfMEZGk4aXpBBeKAxAPRbT8hJ+bgll1oZUvihh3xAAnW1kExIg3nBcN33LCuvTJgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Y4YxzMZk; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc0bcf9256so6911950276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 15:34:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713306892; x=1713911692; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+        d=google.com; s=20230601; t=1713306897; x=1713911697; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=gYEBHSAYBc3ncttOdz1OGEIHHb3oWxG6brf944qm+EY=;
-        b=ChUkTmyHQEOT7YuOAD6yPJOBOza0sjR79JtTCqlqeQnX6cgJNdOpKDsaAcu9JseqvK
-         nnTW82Rf7+aHtWTmpK/HQWP/F9a/rfXIwX8/8QVL2gvCFCu+0NMQER/IqgsCt6G2Pyz5
-         Y7NuP8CHbYssPRmQsGIlHYRZ04Io7uab3lhM+bn2niL0XGF9HqT6E98ybydxVVpqCdcZ
-         MqZSLdpZqTcA3jLXNLv+ZKAG7igdqxyqYvvbSMB5ejviOB4QOCTvwp3axnh+GQFGeUC7
-         2hoiSt90i48vCb/ytW8Lt5a9Wv7TO2btpZ7sHGplBjJ41f2V4WZOISAKtXQKNCvEDvET
-         Pi+g==
+        bh=N28jPTevDRZgDwN0Qgro9sWm7eqto+/tqAfBob/PiVg=;
+        b=Y4YxzMZkR7X03bGpIEEzVGQEnMLLB6bp3HvIraqvg+6pJOfvGlYod05bmxKJkH0qdY
+         ZWJ147Z4evUiZxFNPN14J89+LtJxzX87+xzbmUR49ifiTnqVnR/Lv8vU5WBxMdFJK7OO
+         GN1rZ17f0R3s2xRogLCPOkKDnir/zNtn39fh7NW1BjpGZf6kZVvBDtxJ4FDd5CFrfyI3
+         xLql/0/+IqY0Heztup1FIK3B18BdLSRBroRApYG8+sxDhDsfTpXgyXLiA3WQFztuCqx1
+         r5DipAYqErnWiOAv1xBR1BW5CyRG+wuEF+N0hZYREYYnXIqCDVfoIw7TwGOGcsjhUtjG
+         U1fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713306892; x=1713911692;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gYEBHSAYBc3ncttOdz1OGEIHHb3oWxG6brf944qm+EY=;
-        b=FNp/2uKR7ZoTQCiF+ombIzjMJPjLno5RnRHmMy9NiVX/iNx31omtZ79eztPB9DDtXX
-         S0ZThRpLm8u8K/EC1KoMGR1whTU5uUn8hCzpTpvWohRvUPtLNK3VNGX7FRTdqPeEsCQo
-         ZsC4GLzgcvfZVte04lTWFN0eCufeQaa/7xS+OcJ8953g9Fh7fUd43C3fxcUar8ahCNFE
-         mB5qEZLkSAUijNDZ1rWhbeXYitSWnfpBbqio2QOJ1H7WDO+Ichk4qU3hXtmRXLEU5nki
-         x2ICBad4qU9E/ZSmzfrJmTky7+NxbR/h3nq6yJqQR7qh9TR5TQXe7uOwJUrMy2b0Mumw
-         yVyg==
-X-Forwarded-Encrypted: i=1; AJvYcCVcuE30lOc92FSaIYfumvL/CRqDFEY0roQ3biKjMKIj/MdQgZGh2QiC12rAoEXv3D0KciD1ukVwvBuWU3tk30em6dInoAErIb0gmA2wCVA9rKalNIqTWn4KhtDrzDVr2EH4Ci+YznxJ6UA=
-X-Gm-Message-State: AOJu0Yxnt5cQXs2qqjo7fLTABlVs6ECjacPum3DFJTtc6Ir3H/6kPZtb
-	AIRNEeNTfkRpjll7zSWv6+2ePI2ad2phmEb9VX28X8VxbLZUsljp
-X-Google-Smtp-Source: AGHT+IFh/zIfLrwa77zo+Wv6gz7XzJ//wE0dD/DGVm2QVPsw21WOGIkW96K3P/dBgSNVdt8rRN1gYQ==
-X-Received: by 2002:a05:6a21:498a:b0:1a7:56d2:66c1 with SMTP id ax10-20020a056a21498a00b001a756d266c1mr13935301pzc.29.1713306892189;
-        Tue, 16 Apr 2024 15:34:52 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q14-20020a62ae0e000000b006ecde91bb6esm9413744pff.183.2024.04.16.15.34.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 15:34:51 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Tue, 16 Apr 2024 15:34:50 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Tony Luck <tony.luck@intel.com>
-Cc: Jean Delvare <jdelvare@suse.com>,
-	Iwona Winiarska <iwona.winiarska@intel.com>,
-	linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev
-Subject: Re: [PATCH v3 50/74] x86/cpu/vfm: Update drivers/hwmon/peci/cputemp.c
-Message-ID: <5869d164-25c4-42e5-bf87-c4aeeac57388@roeck-us.net>
-References: <20240416211941.9369-1-tony.luck@intel.com>
- <20240416212216.9605-1-tony.luck@intel.com>
+        d=1e100.net; s=20230601; t=1713306897; x=1713911697;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=N28jPTevDRZgDwN0Qgro9sWm7eqto+/tqAfBob/PiVg=;
+        b=RT5ppxNFC52heqxLfoK5ncir6VSB+Knb7GgxAd+iRa5m22xp3nhD6X/2JBcyKubtxe
+         3vQU8aNq6XLgH6Cio4Vw/Lr7Rb42BM69YwGIcq5AGk2DiJb2gzOeNsdFVAaho0EmA80y
+         9aiQhfkMcowxlRh68SKpAxT435hnVRNetpxROphFi7fOOP8XhOPQPRHLnvhxJj+wxOli
+         Z2ra7CS5mLyi1WGycGdaav4CJtezAAvQOL9Pr+ApC7evuN2dD4NQF8RkceIVAroSR3E7
+         qWV77AmlkDjMuzQN6vEFvcKjIwevcbgDB8aQxdRQmlnzkpfsQqDsVtPLGTGlFNnDrTjv
+         FDGw==
+X-Forwarded-Encrypted: i=1; AJvYcCXf44QTKDLdMVfoV2i5GHNABXmQLH2Ca0lSDDvhdLllzSqsr0MotE6ztSseo/QCAWUO0WyuoaLco8WZzR8nmqcGKFpxf7M0tP6TsLEY
+X-Gm-Message-State: AOJu0YzJ5f+IisKTtiUr5PIJAiTz7jepl+V+cTT7HcoFrt+3eR3VONEt
+	T1R4z5yPcp6Fg4NdtBxNHiRpRspcG+zOY39uABK6Vlcq2+hvYCiovGKlwNsNj9H5AbeMseEJm34
+	WLQ==
+X-Google-Smtp-Source: AGHT+IHijFgIMHcHKSmLYnGXqSMY0ztzAIixleUp7N8npxxMg8gLVi3C6uLdSPFh4cTT41VSi7yudkzO7dM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:ad23:0:b0:de1:2203:2031 with SMTP id
+ y35-20020a25ad23000000b00de122032031mr836200ybi.6.1713306897370; Tue, 16 Apr
+ 2024 15:34:57 -0700 (PDT)
+Date: Tue, 16 Apr 2024 15:34:55 -0700
+In-Reply-To: <CABgObfZ4kqaXLaOAOj4aGB5GAe9GxOmJmOP+7kdke6OqA35HzA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416212216.9605-1-tony.luck@intel.com>
+Mime-Version: 1.0
+References: <20240215160136.1256084-1-alejandro.j.jimenez@oracle.com>
+ <Zh6-h0lBCpYBahw7@google.com> <CABgObfZ4kqaXLaOAOj4aGB5GAe9GxOmJmOP+7kdke6OqA35HzA@mail.gmail.com>
+Message-ID: <Zh79D2BdtS0jKO6W@google.com>
+Subject: Re: [RFC 0/3] Export APICv-related state via binary stats interface
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, joao.m.martins@oracle.com, 
+	boris.ostrovsky@oracle.com, mark.kanda@oracle.com, 
+	suravee.suthikulpanit@amd.com, mlevitsk@redhat.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 02:22:16PM -0700, Tony Luck wrote:
-> New CPU #defines encode vendor and family as well as model.
-> 
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> ---
->  drivers/hwmon/peci/cputemp.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/hwmon/peci/cputemp.c b/drivers/hwmon/peci/cputemp.c
-> index a812c15948d9..28cec5c318d4 100644
-> --- a/drivers/hwmon/peci/cputemp.c
-> +++ b/drivers/hwmon/peci/cputemp.c
-> @@ -11,6 +11,7 @@
->  #include <linux/peci-cpu.h>
->  #include <linux/units.h>
->  
-> +#include <asm/cpu_device_id.h>
->  #include "common.h"
->  
->  #define CORE_NUMS_MAX		64
-> @@ -361,9 +362,9 @@ static int init_core_mask(struct peci_cputemp *priv)
->  
->  	/* Get the RESOLVED_CORES register value */
->  	switch (peci_dev->info.model) {
-> -	case INTEL_FAM6_ICELAKE_X:
-> -	case INTEL_FAM6_ICELAKE_D:
-> -	case INTEL_FAM6_SAPPHIRERAPIDS_X:
-> +	case VFM_MODEL(INTEL_ICELAKE_X):
-> +	case VFM_MODEL(INTEL_ICELAKE_D):
-> +	case VFM_MODEL(INTEL_SAPPHIRERAPIDS_X):
+On Tue, Apr 16, 2024, Paolo Bonzini wrote:
+> On Tue, Apr 16, 2024 at 8:08=E2=80=AFPM Sean Christopherson <seanjc@googl=
+e.com> wrote:
+> >
+> > On Thu, Feb 15, 2024, Alejandro Jimenez wrote:
+> > > The goal of this RFC is to agree on a mechanism for querying the stat=
+e (and
+> > > related stats) of APICv/AVIC. I clearly have an AVIC bias when approa=
+ching this
+> > > topic since that is the side that I have mostly looked at, and has th=
+e greater
+> > > number of possible inhibits, but I believe the argument applies for b=
+oth
+> > > vendor's technologies.
+> > >
+> > > Currently, a user or monitoring app trying to determine if APICv is a=
+ctually
+> > > being used needs implementation-specific knowlegde in order to look f=
+or specific
+> > > types of #VMEXIT (i.e. AVIC_INCOMPLETE_IPI/AVIC_NOACCEL), checking GA=
+Log events
+> > > by watching /proc/interrupts for AMD-Vi*-GA, etc. There are existing =
+tracepoints
+> > > (e.g. kvm_apicv_accept_irq, kvm_avic_ga_log) that make this task easi=
+er, but
+> > > tracefs is not viable in some scenarios. Adding kvm debugfs entries h=
+as similar
+> > > downsides. Suravee has previously proposed a new IOCTL interface[0] t=
+o expose
+> > > this information, but there has not been any development in that dire=
+ction.
+> > > Sean has mentioned a preference for using BPF to extract info from th=
+e current
+> > > tracepoints, which would require reworking existing structs to access=
+ some
+> > > desired data, but as far as I know there isn't any work done on that =
+approach
+> > > yet.
+> > >
+> > > Recently Joao mentioned another alternative: the binary stats framewo=
+rk that is
+> > > already supported by kernel[1] and QEMU[2].
+> >
+> > The hiccup with stats are that they are ABI, e.g. we can't (easily) dit=
+ch stats
+> > once they're added, and KVM needs to maintain the exact behavior.
+>=20
+> Stats are not ABI---why would they be?
 
-$ git describe
-v6.9-rc4-31-g96fca68c4fbf
-$ git grep VFM_MODEL
-$
+Because they exposed through an ioctl(), and userspace can and will use sta=
+ts for
+functional purposes?  Maybe I just had the wrong takeaway from an old threa=
+d about
+adding a big pile of stats[1], where unfortunately (for me) you weighed in =
+on
+whether or not tracepoints are ABI, but not stats.
 
-So I guess this depends on some other patch ?
-That might be worth mentioning, especially since
+And because I've have been operating under the assumption that stats are AB=
+I, I've
+been guiding people to using stats to make decisions in userspace.  E.g. KV=
+M doesn't
+currently expose is_guest_mode() in kvm_run, but it is a stat, so it's not =
+hard
+to imagine userspace using the stat to make decisions without needing to ca=
+ll back
+into KVM[2].
 
-$ git describe
-next-20240416
-$ git grep VFM_MODEL
-$
+And based on the old discussion[1] I doubt I'm though only one that has thi=
+s view.
 
-doesn't find it either.
+That said, I'm definitely not opposed to stats _not_ being ABI, because tha=
+t would
+give us a ton of flexibility.  E.g. we have a non-trivial number of interna=
+l stats
+that are super useful _for us_, but are rather heavy and might not be desir=
+able
+for most environments.  If stats aren't considered ABI, then I'm pretty sur=
+e we
+could land some of the more generally useful ones upstream, but off-by-defa=
+ult
+and guarded by a Kconfig.  E.g. we have a pile of stats related to mmu_lock=
+ that
+are very helpful in identifying performance issues, but they aren't things =
+I would
+want enabled by default.
 
-On top of that, it looks like
+But if we do decide stats aren't ABI, then we need to document and dissemin=
+ate
+that information.
 
-#include <asm/cpu_device_id.h>
+[1] https://lore.kernel.org/all/CALzav=3DcuzT=3Du6G0TCVZUfEgAKOCKTSCDE8x2v5=
+qc-Gd_NL-pzg@mail.gmail.com
+[2] https://lore.kernel.org/all/Zh6-e9hy7U6DD2QM@google.com
 
-introduces a dependency on X86 which is not currently the case.
-CONFIG_PECI is typically used on BMCs. Many of those do not use
-Intel CPUs. It does not seem appropriate to make support for PECI
-based hardware monitoring dependent on it running on an Intel CPU.
+> They have an established meaning and it's not a good idea to change it, b=
+ut
+> it's not an absolute no-no(*); and removing them is not a problem at all.
+>=20
+> For example, if stats were ABI, there would be no need for the
+> introspection mechanism, you could just use a struct like ethtool
+> stats (which *are* ABO).
+>=20
+> Not everything makes a good stat but, if in doubt and it's cheap
+> enough to collect it, go ahead and add it.
 
-Thanks,
-Guenter
+Marc raised the (IMO) valid concern that "if it's cheap, add it" will lead =
+to
+death by a thousand cuts.  E.g. add a few hundred vCPU stats and suddenly v=
+CPUs
+consumes an extra KiB or three of memory.
+
+A few APIC stats obviously aren't going to move the needle much, I'm just p=
+ointing
+out that not everyone agrees that KVM should be hyper permissive when it co=
+mes to
+adding new stats.
+
+> Cheap collection is the important point, because tracepoints in a hot pat=
+h
+> can be so expensive as to slow down the guest substantially, at least in
+> microbenchmarks.
+>=20
+> In this case I'm not sure _all_ inhibits makes sense and I certainly
+> wouldn't want a bitmask, but a generic APICv-enabled stat certainly
+> makes sense, and perhaps another for a weirdly-configured local APIC.
+>=20
+> Paolo
+>=20
+> (*) you have to draw a line somewhere. New processor models may
+> virtualize parts of the CPU in such a way that some stats become
+> meaningless or just stay at zero. Should KVM not support those
+> features because it is not possible anymore to introspect the guest
+> through stat?
 
