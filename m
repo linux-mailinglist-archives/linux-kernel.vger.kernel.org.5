@@ -1,70 +1,101 @@
-Return-Path: <linux-kernel+bounces-147267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00A998A71BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:56:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7D498A71E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:04:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 327FB1C21AE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:56:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77E081F23F9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD8A130E46;
-	Tue, 16 Apr 2024 16:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877AD1327F7;
+	Tue, 16 Apr 2024 17:04:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Cd9doH1V"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MDYr91ST";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2joM5M0e";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ae0gGnxd";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="amWRgvx/"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0232E7764E;
-	Tue, 16 Apr 2024 16:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68AB02EAF9;
+	Tue, 16 Apr 2024 17:04:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713286590; cv=none; b=YS4ov28skZFMMHaT8pQD2dZ8w6jpcSnah7BeymRoRe8ayZwuYrwWHo42sOOiqpv+KX0E4ab74ikMV8ZZtL4zS9E72IlxlcqWHRCdqJ5iNbrn22pwNrbzBPSycV7VlXXpOIfcLLVfQbGmRis9OkDju3ydVtg9qGMnGd/orBE5QrE=
+	t=1713287066; cv=none; b=cv7vwNCYNNWrhHryew0M3yqisn8p8UEYjZTFRquP7bBUg3oTeCaU0fNHSTKrsTRfr/pZpY67DYbEFEYcKJpn/pC6MpCS0uA1VwWMdFYO+s9KiOUv1qzDuhSi7dY3tx8RwP/wPEBGS7INad4Kf0oNlPCfmMrXavzBVunSg7Po+Vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713286590; c=relaxed/simple;
-	bh=XKB3FT4Mg1Gff+mXe9Mh5mHwZ84D8ow6gVjtrKU9f4A=;
+	s=arc-20240116; t=1713287066; c=relaxed/simple;
+	bh=smozM9jF1fgEa0jo5wcKDyao5GQFouQ/Furzv3/aqFM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SeQoD7jHtOFosnigX62EBrg9XeIY7DndUxlCt++ruQm7qthDyd1Q4hBkk9DHXX5o5MiqMZpdksQK3C58JNM3ArrbhXzAPcu99ukOYFVNdY60IK8OVh955Ve/S1+3KE0bS0/5HnpaKREtiKEe9udmxkXT4QfbFL6dvZJyWy7Xo1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Cd9doH1V; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=pC6bagQ6vg68uB6dljn9J+Y6O1xZqp8PVpkbc7gYlUM=; b=Cd9doH1VnwOV0U2dH8QwWtI+AJ
-	QXvht6YpWfeorYwCORZL5zO6r9HLjcBcEzARet+dOyF/kdrSEF+/ELpgs8LIkPdK3n9QfGSjfucRL
-	Y+zW4/3RfCNscqjBE9O75x9WTv93blXcjLQg2NPXTovy0crcu5sFJVyYrDwVBf7R82xSCiUmRCnf2
-	rJvS1b7c9IaKDC2bNhzeV5olxx6TP2+8KqxvEFgcduEKEmGCE85susTJBzcoSbgCpl9q56rnPFCFL
-	pIkLxZiWZbeNDGCkCHcXRhwc/IR5/eUrVC9vBNtUuxb+Csz1DpZobGYv6QN0Ci80q1nDpECTsgh1A
-	u/wRqUYA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37618)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rwm6T-0000h2-2A;
-	Tue, 16 Apr 2024 17:56:17 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rwm6R-0004zx-PO; Tue, 16 Apr 2024 17:56:15 +0100
-Date: Tue, 16 Apr 2024 17:56:15 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux@ew.tq-group.com
-Subject: Re: [PATCH net] net: dsa: mv88e6xx: fix supported_interfaces setup
- in mv88e6250_phylink_get_caps()
-Message-ID: <Zh6trxU0hB+yt6rV@shell.armlinux.org.uk>
-References: <20240416155054.3650354-1-matthias.schiffer@ew.tq-group.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oZjgcLEiet2FOW6/99SP5RwnzOVhzx9QaupSMID/uS+bfiN+tj1LpNnIOT8Fiyjv4Wdfm+xBJWdgs5BPHAaXFsUn3LvJGuyYewH8ONI0B0TP+M0vEgm4c/R2zVziyFSmab2zUhB3tJ/qazItrkOc7+smTrbX9wYaqV96qUt2o5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MDYr91ST; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2joM5M0e; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ae0gGnxd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=amWRgvx/; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6CAA81F7C4;
+	Tue, 16 Apr 2024 17:04:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713287059;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HmF+X66qXKP4uAwVMy4ZKy9VoRjMIrIQQD+AMJy3/rM=;
+	b=MDYr91STVJoNWxZhqSg2uy5Kw/MIdL6pC2WieISYnxY9HMaDRBMHgCBUd2f9BFVZRRJYyJ
+	fCO6/k6uH+2fpTspFFMk6tmRRanOmAvap1oKKgGfmqkRZBfJNeWazjC6V+nSqqcfDp5pMe
+	ILLp977WnrTzxjuEpUO27tmXdkA3u7I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713287059;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HmF+X66qXKP4uAwVMy4ZKy9VoRjMIrIQQD+AMJy3/rM=;
+	b=2joM5M0egcib8sTxUUqc6TrDI43rBAkVjVtCEg1SYgWpB8zoD/efYFIY50vMJbHCIGisMC
+	gdRZGy2264fm6aBQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713287058;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HmF+X66qXKP4uAwVMy4ZKy9VoRjMIrIQQD+AMJy3/rM=;
+	b=ae0gGnxd/wTLaP35Hhq8QbqNn1rtWeL1tBCL1XkgKi+bbABrBWF7NlJvbbhlmCkluKteGl
+	h5PcfVfBOyw2dOttqIjaOLZsCwCSKhRn2OG93UqISqwUS0WbuOiQ1rUeJ7nMwYSMRj9RMd
+	PsuU4WQRIAHTSkluuoViKVoqfoNjcJU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713287058;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HmF+X66qXKP4uAwVMy4ZKy9VoRjMIrIQQD+AMJy3/rM=;
+	b=amWRgvx/OUa0dd0i2x47/zLltJnD+n/BDPibTKM2vgWgECWLwE5xskJZhvpQrhdoL1KzAm
+	QswOoa635H1i4OAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 428DF13432;
+	Tue, 16 Apr 2024 17:04:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id lXwdEJKvHmYbKQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 16 Apr 2024 17:04:18 +0000
+Date: Tue, 16 Apr 2024 18:56:49 +0200
+From: David Sterba <dsterba@suse.cz>
+To: syzbot <syzbot+510a1abbb8116eeb341d@syzkaller.appspotmail.com>
+Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] KMSAN: kernel-infoleak in
+ btrfs_ioctl_logical_to_ino (2)
+Message-ID: <20240416165648.GS3492@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <000000000000196a39061636840a@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,73 +104,110 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240416155054.3650354-1-matthias.schiffer@ew.tq-group.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <000000000000196a39061636840a@google.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -1.50
+X-Spam-Level: 
+X-Spamd-Result: default: False [-1.50 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=87a805e655619c64];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TAGGED_RCPT(0.00)[510a1abbb8116eeb341d];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,appspotmail.com:email,syzkaller.appspot.com:url,storage.googleapis.com:url];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	SUBJECT_HAS_QUESTION(0.00)[]
 
-On Tue, Apr 16, 2024 at 05:50:54PM +0200, Matthias Schiffer wrote:
-> +int mv88e6250_port_get_mode(struct mv88e6xxx_chip *chip, int port,
-> +			    phy_interface_t *mode)
-> +{
-> +	int err;
-> +	u16 reg;
-> +
-> +	if (port < 5) {
-> +		*mode = PHY_INTERFACE_MODE_INTERNAL;
-> +		return 0;
-> +	}
+On Tue, Apr 16, 2024 at 06:14:20AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    cef27048e5c2 Merge tag 'bcachefs-2024-04-15' of https://ev..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11a1fec7180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=87a805e655619c64
+> dashboard link: https://syzkaller.appspot.com/bug?extid=510a1abbb8116eeb341d
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/fce0439cf562/disk-cef27048.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/99540e71cf72/vmlinux-cef27048.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/65fbfc2c486f/bzImage-cef27048.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+510a1abbb8116eeb341d@syzkaller.appspotmail.com
+> 
+> BTRFS info (device loop1): first mount of filesystem c9fe44da-de57-406a-8241-57ec7d4412cf
+> BTRFS info (device loop1): using crc32c (crc32c-generic) checksum algorithm
+> BTRFS info (device loop1): using free-space-tree
+> =====================================================
+> BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+> BUG: KMSAN: kernel-infoleak in _copy_to_user+0xbc/0x110 lib/usercopy.c:40
+>  instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+>  _copy_to_user+0xbc/0x110 lib/usercopy.c:40
+>  copy_to_user include/linux/uaccess.h:191 [inline]
+>  btrfs_ioctl_logical_to_ino+0x440/0x750 fs/btrfs/ioctl.c:3499
+>  btrfs_ioctl+0x714/0x1260
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:904 [inline]
+>  __se_sys_ioctl+0x261/0x450 fs/ioctl.c:890
+>  __x64_sys_ioctl+0x96/0xe0 fs/ioctl.c:890
+>  x64_sys_call+0x1883/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:17
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> 
+> Uninit was created at:
+>  __kmalloc_large_node+0x231/0x370 mm/slub.c:3921
+>  __do_kmalloc_node mm/slub.c:3954 [inline]
+>  __kmalloc_node+0xb07/0x1060 mm/slub.c:3973
+>  kmalloc_node include/linux/slab.h:648 [inline]
+>  kvmalloc_node+0xc0/0x2d0 mm/util.c:634
+>  kvmalloc include/linux/slab.h:766 [inline]
+>  init_data_container+0x49/0x1e0 fs/btrfs/backref.c:2779
 
-Note that if mv88e6xxx_phy_is_internal() returns TRUE for the port,
-then this will be handled automatically.
+2767 struct btrfs_data_container *init_data_container(u32 total_bytes)
+2768 {
+2769         struct btrfs_data_container *data;
+2770         size_t alloc_bytes;
+2771
+2772         alloc_bytes = max_t(size_t, total_bytes, sizeof(*data));
+2773         data = kvmalloc(alloc_bytes, GFP_KERNEL);
 
-> +
-> +	err = mv88e6xxx_port_read(chip, port, MV88E6XXX_PORT_STS, &reg);
-> +	if (err)
-> +		return err;
-> +
-> +	switch (reg & MV88E6250_PORT_STS_PORTMODE_MASK) {
-> +	case MV88E6250_PORT_STS_PORTMODE_MII_10_HALF_PHY:
-> +	case MV88E6250_PORT_STS_PORTMODE_MII_100_HALF_PHY:
-> +	case MV88E6250_PORT_STS_PORTMODE_MII_10_FULL_PHY:
-> +	case MV88E6250_PORT_STS_PORTMODE_MII_100_FULL_PHY:
-> +		*mode = PHY_INTERFACE_MODE_REVMII;
-> +		break;
-> +
-> +	case MV88E6250_PORT_STS_PORTMODE_MII_HALF:
-> +	case MV88E6250_PORT_STS_PORTMODE_MII_FULL:
-> +		*mode = PHY_INTERFACE_MODE_MII;
-> +		break;
-> +
-> +	case MV88E6250_PORT_STS_PORTMODE_MII_DUAL_100_RMII_FULL_PHY:
-> +	case MV88E6250_PORT_STS_PORTMODE_MII_200_RMII_FULL_PHY:
-> +	case MV88E6250_PORT_STS_PORTMODE_MII_10_100_RMII_HALF_PHY:
-> +	case MV88E6250_PORT_STS_PORTMODE_MII_10_100_RMII_FULL_PHY:
-> +		*mode = PHY_INTERFACE_MODE_REVRMII;
-> +		break;
-> +
-> +	case MV88E6250_PORT_STS_PORTMODE_MII_DUAL_100_RMII_FULL:
-> +	case MV88E6250_PORT_STS_PORTMODE_MII_10_100_RMII_FULL:
-> +		*mode = PHY_INTERFACE_MODE_RMII;
-> +		break;
-> +
-> +	case MV88E6250_PORT_STS_PORTMODE_MII_100_RGMII:
-> +		*mode = PHY_INTERFACE_MODE_RGMII;
-> +		break;
-> +
-> +	default:
-> +		*mode = PHY_INTERFACE_MODE_NA;
+and then data is passed around in the ioctl.
 
-What does this mean? I don't allow PHY_INTERFACE_MODE_NA to be set in
-the list of supported interfaces because it isn't an interface mode.
-If it's invalid, then it's probably best to return an error.
+>  btrfs_ioctl_logical_to_ino+0x17c/0x750 fs/btrfs/ioctl.c:3480
+>  btrfs_ioctl+0x714/0x1260
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:904 [inline]
+>  __se_sys_ioctl+0x261/0x450 fs/ioctl.c:890
+>  __x64_sys_ioctl+0x96/0xe0 fs/ioctl.c:890
+>  x64_sys_call+0x1883/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:17
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> 
+> Bytes 40-65535 of 65536 are uninitialized
 
-I wonder whether it would just be better to pass the
-supported_interfaces bitmap into this function and have it set the
-appropriate bit itself, renaming the function to something more
-better suited to that purpose.
-
-Thanks.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+It is possible to let the ioctl allocate a big buffer but return it
+filled only partially. So it should be kvcalloc.
 
