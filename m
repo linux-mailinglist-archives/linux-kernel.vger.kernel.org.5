@@ -1,165 +1,196 @@
-Return-Path: <linux-kernel+bounces-146878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF8B98A6C44
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:29:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A2AE8A6C4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:30:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99F4F2826E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:29:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AB3D1F22339
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:30:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 693D412C498;
-	Tue, 16 Apr 2024 13:29:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2089C12CD9D;
+	Tue, 16 Apr 2024 13:30:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="TSaeTHjp"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="h2r7DxJE"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09F8312AADC;
-	Tue, 16 Apr 2024 13:29:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D04912C549;
+	Tue, 16 Apr 2024 13:30:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713274142; cv=none; b=L3nsMkn6oQ5uvc9aRuZo7/HhoYLekq6nkL2HNuT5v0yGu6dREpybRrwAIumWTXNz7Y4Urqf9kDLE7KDnen4oXJ5xivOv0UxHmnRJ53eRDXQdri7OnKU7Tk4uwz72/jl83wplffiJDBsoG5bMeB49NF9CisAFG1zKANpjyrqfOVk=
+	t=1713274219; cv=none; b=Geqt+Pu4syu+eyWFzAKYchqXTorfUwhZBkCULMYRM5eMP+Bj1rPdtpdhpBzwoRXDW2LrfHk5LME++b5/Mb9ZLeVoioWWPLrNrdgIC/N7KdFN3LVM+Ri84sjkJLdY+GcigmRsuarzEbpbzLKpUAdqFicHv4CSdtS/WKdfU4M+d6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713274142; c=relaxed/simple;
-	bh=n8uAzu0fhjDkoEFhJa32or/1KBqUpuWXqGojl6rSobU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y+gIzNxALy90nCVeFo7MkaM/4JewBaq5Ph2WbXosTrYq4hBYc9t/07WKK6ZZocY1+zfZZ7uUcitkmPdsFTWDNZQwul9u0mvUlKku0diJTu5za3/UxOkhWnkRthtRimPVwyl1lmLjmtA6LlrrwtIXK0vYZ1DazST50z9IYIXpfzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=TSaeTHjp; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.1.105] (unknown [103.251.226.7])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 45190DFB;
-	Tue, 16 Apr 2024 15:28:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1713274092;
-	bh=n8uAzu0fhjDkoEFhJa32or/1KBqUpuWXqGojl6rSobU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=TSaeTHjp78FW/oI1sULfK4N2T4YxjndlfP4ZpCABqls7bpYSegOKqEvui7ZgbyQqi
-	 AxLmi6Fby0iSq2SwxqCDe0iwezbAVdB/S9BmuKGTR/Q/LzURQmFQgcRaGx3NCt7jqP
-	 EtfkTi5Ee2n3Ub8npzfE0cMr+cuTQhW1bTtJlYh8=
-Message-ID: <92279ce6-e410-40f2-bc6d-ad842aa9e106@ideasonboard.com>
-Date: Tue, 16 Apr 2024 18:58:51 +0530
+	s=arc-20240116; t=1713274219; c=relaxed/simple;
+	bh=k2CGSaqDP2m0Z3Oc2xnWpbaC6P75yXQgcSyVyBCP3zk=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=VxFf30XSoLD+8gmcmFqCklcEc8K7wXrjsEosRbeynr+1N8v1TKxtpDlb7uRZOJgobxrd6Q/0xXPfxrhQ+mFj7Rw6lsdfA7cOsScaCdHlAiGkx74oSqpHLE443NSVDpxfK0RVUOf2895XLb1eqa13+aAI613rDz8kSMEBgFrHSfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=h2r7DxJE; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1F88C40009;
+	Tue, 16 Apr 2024 13:30:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713274209;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=F0jrhu+me/D8W5kvgHhQRcQp1B1+GzO90q1V+X66rgI=;
+	b=h2r7DxJEUW6AVToxugShoo81Z5Enlb15aDdL8trr9lT6j61wVVhUni8KI+4/dzYmzhmwmP
+	KDM4RH7iJRitFCqBgXTZOM+06VajU1LbSMn1AxRuyTWLm5pE49VHij1a78iPwzLBHI0osX
+	bEDLsX1ndhqMIAxZBT9kH0qBuvxlwwpPY4ZlBPs9qtBU/9AZti/kvRGwfti1DdExRFOVWH
+	aAJnMwPj8x4B40aGf9nis/yUL0XFHukpqt70noNnjpcK+KyCRZipk6F7vH0HLT4YNcIvfV
+	xgdTlBRdWsg72mO72GuPnmRdMiZF6ZfYdLfqKym09/Ijkp3z4PXteUFjbH0eNw==
+From: Thomas Richard <thomas.richard@bootlin.com>
+Subject: [PATCH v5 00/11] Add suspend to ram support for PCIe on J7200
+Date: Tue, 16 Apr 2024 15:29:49 +0200
+Message-Id: <20240102-j7200-pcie-s2r-v5-0-4b8c46711ded@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 10/10] media: subdev: Support non-routing subdevs in
- v4l2_subdev_s_stream_helper()
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Hans Verkuil
- <hverkuil@xs4all.nl>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Sakari Ailus <sakari.ailus@linux.intel.com>
-References: <20240416-enable-streams-impro-v4-0-1d370c9c2b6d@ideasonboard.com>
- <20240416-enable-streams-impro-v4-10-1d370c9c2b6d@ideasonboard.com>
- <271933b0-7ac1-4fdf-b66a-0ed860a1ec8f@ideasonboard.com>
-Content-Language: en-US
-From: Umang Jain <umang.jain@ideasonboard.com>
-In-Reply-To: <271933b0-7ac1-4fdf-b66a-0ed860a1ec8f@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAE19HmYC/33NTQ7CIBAF4KsY1mJgANu68h7GBZ0OFqOlgabRm
+ N5dcGeMXb75+d6LJYqeEjtsXizS7JMPQw5mu2HY2+FC3Hc5MxCghRTArxUIwUf0xBNETthK21Q
+ NKVOx/NTaRLyNdsC+vN1tmiiWxRjJ+cen6XTOufdpCvH5KZ5lmf7tmCUXvNZkTGdNPhHHNoTp5
+ ocdhjsr2AzrABSAtKs6gJoQfgG1DqgMGATSVjmL0v0Ceh3QGdg76YxSjcDafAPLsrwBuBlYy4o
+ BAAA=
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>, Tony Lindgren <tony@atomide.com>, 
+ Aaro Koskinen <aaro.koskinen@iki.fi>, 
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, Vignesh R <vigneshr@ti.com>, 
+ Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, 
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+ Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
+ linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
+ thomas.petazzoni@bootlin.com, u-kumar1@ti.com, 
+ Thomas Richard <thomas.richard@bootlin.com>, 
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
+ Andy Shevchenko <andy.shevchenko@gmail.com>, 
+ Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+ Francesco Dolcini <francesco.dolcini@toradex.com>
+X-Mailer: b4 0.12.0
+X-GND-Sasl: thomas.richard@bootlin.com
 
-Hi Tomi
+This adds suspend to ram support for the PCIe (RC mode) on J7200 platform.
 
-On 16/04/24 4:13 pm, Tomi Valkeinen wrote:
-> Hi,
->
-> On 16/04/2024 13:40, Tomi Valkeinen wrote:
->> At the moment v4l2_subdev_s_stream_helper() only works for subdevices
->> that support routing. As enable/disable_streams now also works for
->> subdevices without routing, improve v4l2_subdev_s_stream_helper() to do
->> the same.
->
-> I forgot to mention, I have not tested this patch as I don't have a HW 
-> setup. And, of course, I now see that it has a bug. The BIT_ULL(1) 
-> should be BIT_ULL(0).
->
-> Umang, can you try a fixed one on your side? If it works, I'll send a v5.
+In this 5th iteration, the series was rebased on Linux 6.9-rc1.
 
-This doesn't work. Streaming fails as :
+The PHY patches were moved to a dedicated series.
 
-[  132.108845] rkisp1 32e10000.isp: streams 0xffff8000801fef88 already 
-enabled on imx283 1-001a:0
-[  133.140906] rkisp1 32e10000.isp: streams 0xffff8000801fef88 already 
-enabled on imx283 1-001a:0
+The patch for the pinctrl-single driver was removed, as it was already
+applied to the pinctrl tree.
 
-With locally applied:
+Regards,
 
-diff --git a/drivers/media/v4l2-core/v4l2-subdev.c 
-b/drivers/media/v4l2-core/v4l2-subdev.c
-index 04d85b5f23f5..4684e4e1984c 100644
---- a/drivers/media/v4l2-core/v4l2-subdev.c
-+++ b/drivers/media/v4l2-core/v4l2-subdev.c
-@@ -2203,7 +2203,7 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev 
-*sd, u32 pad,
-         }
+Thomas
 
-         if (enabled_streams) {
--               dev_dbg(dev, "streams 0x%llx already enabled on %s:%u\n",
-+               dev_err(dev, "streams 0x%llx already enabled on %s:%u\n",
-                         enabled_streams, sd->entity.name, pad);
-                 ret = -EINVAL;
-                 goto done;
-@@ -2376,7 +2376,7 @@ int v4l2_subdev_s_stream_helper(struct v4l2_subdev 
-*sd, int enable)
-                  * For non-streams subdevices, there's a single 
-implicit stream
-                  * per pad.
-                  */
--               source_mask = BIT_ULL(1);
-+               source_mask = BIT_ULL(0);
-         }
+Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+---
+Changes in v5:
+- all: series rebased on Linux 6.9-rc1
+- pinctrl-single: patch removed (already applied to the pinctrl tree)
+- phy: patches moved to a dedicated series.
+- pci: add T_PERST_CLK_US macro.
+- pci-j721e: update the comments about T_PERST_CLK_US.
+- Link to v4: https://lore.kernel.org/r/20240102-j7200-pcie-s2r-v4-0-6f1f53390c85@bootlin.com
 
->
->  Tomi
->
->> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->> ---
->>   drivers/media/v4l2-core/v4l2-subdev.c | 23 ++++++++++++++++-------
->>   1 file changed, 16 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c 
->> b/drivers/media/v4l2-core/v4l2-subdev.c
->> index 1c6b305839a1..83ebcde54a34 100644
->> --- a/drivers/media/v4l2-core/v4l2-subdev.c
->> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
->> @@ -2360,15 +2360,24 @@ int v4l2_subdev_s_stream_helper(struct 
->> v4l2_subdev *sd, int enable)
->>       if (WARN_ON(pad_index == -1))
->>           return -EINVAL;
->>   -    /*
->> -     * As there's a single source pad, just collect all the source 
->> streams.
->> -     */
->> -    state = v4l2_subdev_lock_and_get_active_state(sd);
->> +    if (sd->flags & V4L2_SUBDEV_FL_STREAMS) {
->> +        /*
->> +         * As there's a single source pad, just collect all the source
->> +         * streams.
->> +         */
->> +        state = v4l2_subdev_lock_and_get_active_state(sd);
->>   -    for_each_active_route(&state->routing, route)
->> -        source_mask |= BIT_ULL(route->source_stream);
->> +        for_each_active_route(&state->routing, route)
->> +            source_mask |= BIT_ULL(route->source_stream);
->>   -    v4l2_subdev_unlock_state(state);
->> +        v4l2_subdev_unlock_state(state);
->> +    } else {
->> +        /*
->> +         * For non-streams subdevices, there's a single implicit stream
->> +         * per pad.
->> +         */
->> +        source_mask = BIT_ULL(1);
->> +    }
->>         if (enable)
->>           return v4l2_subdev_enable_streams(sd, pad_index, source_mask);
->>
->
+Changes in v4:
+- all: use SoB/Co-developed-by for patches initially developed by Théo
+  Lebrun.
+- pinctrl-single: squash the two commits.
+- i2c-omap: fix line lenghts of the comment in omap_i2c_suspend().
+- mux: mux_chip_resume() return 0 or at the first error.
+- phy-j721e-wiz: clean code around dev_err_probe().
+- phy-j721e-wiz: use REF_CLK_100MHZ macros.
+- pci: fix subject line for all PCI patches.
+- pci-cadence: use fsleep() instead of usleep_range().
+- pci-cadence: remove cdns_torrent_clk_cleanup() call in
+  cdns_torrent_phy_resume_noirq().
+- pci-j721e: add a patch to use dev_err_probe() instead of dev_err() in the probe().
+- pci-j721e: fix unordered header files.
+- pci-j721e: remove some log spammers.
+- pci-j721e: add a missing clock disable in j721e_pcie_resume_noirq().
+- pci-j721e: simplify the patch "Add reset GPIO to struct j721e_pcie"
+- Link to v3: https://lore.kernel.org/r/20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com
+
+Changes in v3:
+- pinctrl-single: split patch in two parts, a first patch to remove the
+  dead code, a second to move suspend()/resume() callbacks to noirq.
+- i2c-omap: add a comments above the suspend_noirq() callback.
+- mux: now mux_chip_resume() try to restores all muxes, then return 0 if
+  all is ok or the first failure.
+- mmio: fix commit message.
+- phy-j721e-wiz: add a patch to use dev_err_probe() instead of dev_err() in
+  the wiz_clock_init() function.
+- phy-j721e-wiz: remove probe boolean for the wiz_clock_init(), rename the
+  function to wiz_clock_probe(), extract hardware configuration part in a
+  new function wiz_clock_init().
+- phy-cadence-torrent: use dev_err_probe() and fix commit messages
+- pcie-cadence-host: remove probe boolean for the cdns_pcie_host_setup()
+  function and extract the link setup part in a new function
+  cdns_pcie_host_link_setup().
+- pcie-cadence-host: make cdns_pcie_host_init() global.
+- pci-j721e: use the cdns_pcie_host_link_setup() cdns_pcie_host_init()
+  functions in the resume_noirq() callback.
+- Link to v2: https://lore.kernel.org/r/20240102-j7200-pcie-s2r-v2-0-8e4f7d228ec2@bootlin.com
+
+Changes in v2:
+- all: fix commits messages.
+- all: use DEFINE_NOIRQ_DEV_PM_OPS and pm_sleep_ptr macros.
+- all: remove useless #ifdef CONFIG_PM.
+- pinctrl-single: drop dead code
+- mux: add mux_chip_resume() function in mux core.
+- mmio: resume sequence is now a call to mux_chip_resume().
+- phy-cadence-torrent: fix typo in resume sequence (reset_control_assert()
+  instead of reset_control_put()).
+- phy-cadence-torrent: use PHY instead of phy.
+- pci-j721e: do not shadow cdns_pcie_host_setup return code in resume
+  sequence.
+- pci-j721e: drop dead code.
+- Link to v1: https://lore.kernel.org/r/20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com
+
+---
+Thomas Richard (8):
+      gpio: pca953x: move suspend()/resume() to suspend_noirq()/resume_noirq()
+      i2c: omap: wakeup the controller during suspend() callback
+      mux: add mux_chip_resume() function
+      PCI: cadence: Extract link setup sequence from cdns_pcie_host_setup()
+      PCI: cadence: Set cdns_pcie_host_init() global
+      PCI: j721e: Use dev_err_probe() in the probe() function
+      PCI: Add T_PERST_CLK_US macro
+      PCI: j721e: Use T_PERST_CLK_US macro
+
+Théo Lebrun (3):
+      mux: mmio: add resume support
+      PCI: j721e: Add reset GPIO to struct j721e_pcie
+      PCI: j721e: Add suspend and resume support
+
+ drivers/gpio/gpio-pca953x.c                        |   7 +-
+ drivers/i2c/busses/i2c-omap.c                      |  22 ++++
+ drivers/mux/core.c                                 |  29 +++++
+ drivers/mux/mmio.c                                 |  12 ++
+ drivers/pci/controller/cadence/pci-j721e.c         | 121 ++++++++++++++++++---
+ drivers/pci/controller/cadence/pcie-cadence-host.c |  44 +++++---
+ drivers/pci/controller/cadence/pcie-cadence.h      |  12 ++
+ drivers/pci/pci.h                                  |   3 +
+ include/linux/mux/driver.h                         |   1 +
+ 9 files changed, 214 insertions(+), 37 deletions(-)
+---
+base-commit: 3d31103a742d8c94924848dc0fb5e2ce6b701932
+change-id: 20240102-j7200-pcie-s2r-ecb1a979e357
+
+Best regards,
+-- 
+Thomas Richard <thomas.richard@bootlin.com>
 
 
