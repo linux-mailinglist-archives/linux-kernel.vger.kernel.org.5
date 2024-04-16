@@ -1,292 +1,184 @@
-Return-Path: <linux-kernel+bounces-146220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CAF78A6254
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:18:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 308C18A6257
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:23:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8597DB24082
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:18:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DAB11C2146F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:23:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FEDE376E5;
-	Tue, 16 Apr 2024 04:18:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00BAC2232B;
+	Tue, 16 Apr 2024 04:23:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="eNzKnc7/"
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="iBQO5Ac+"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2111.outbound.protection.outlook.com [40.107.244.111])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC33D2574D
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 04:18:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713241083; cv=none; b=NN7BADf8lCt9knilSYkSnTjwlW226LL+HnxrUEOY70P/EfoOdIsT3fx7R3hN1wPriLs5AjstVd235I8R8h+idePPzzqFJmI/4laLXArh/mBSRILIACxh/CDnvzNqluVfXgb9VUJ9xKXPX7q/+5O/e8CL/roPhzrV4SM+m5fpyFU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713241083; c=relaxed/simple;
-	bh=nqZc/zqeI8mE/EuLZR8yNvRozNBYcUlzSgf/sfXXHoM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QIq98Z/Kk6QAN+kEARO3Ny+sTqOR7sdXg/0nAI6412OfrM6Nh0vF/FsqkqEoZX5dPYDsGwVsAM3qNRxyTqSAFl3N1W3rx6AixcxrhH3U+60opdyDyldYxPdjx0QnrMzcgjlq/x4VLd/RPZac48VyKEwbaqv/4iOVGseTsoF7eUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=eNzKnc7/; arc=none smtp.client-ip=209.85.166.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
-Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-36b0e1301e3so14309655ab.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 21:18:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9696520B0E
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 04:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.111
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713241404; cv=fail; b=HFliG9J0q4wspYwNQJmayaxVgTUiuQ5tAOAKBSVXcxeRQtordOHOHDXPaiwsqaOKJ+V2m07QNUCcUzC40xym0A8TvWUxZ0n2ONEKkUU5ffZdO+ZSox1dRFVjtCOM+bol6kRLp5ZLHlGcW7z6egvYv7J/8hJ/UAXhHDRlqywQQSA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713241404; c=relaxed/simple;
+	bh=EpuAu2AyWhpODw25s62NJv9dsXMmUgPa8Nl211bOPpw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=hOhJcsUBdUCMhfQshdRrIAlkVzo9R0Wu7734Nc3SmFnLq6EvyEMqyFHfz7UADN43WYRkI2/aB6KCWnpQMMnKgKqIa4NpeKH1ARYQTv5DXxXKbDgLyuusy8Bf+JKf8eyA9faqPYflwJiJaYOeU/uSpjXtpILy9qufMyGiSnk33u0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=iBQO5Ac+; arc=fail smtp.client-ip=40.107.244.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bOWOD49bxkAkVNDFVuasnkkMTMMlOmMwU8sJ5hx8m1JJqkSlpBFRdWts9RiD6ZwvI9uzW5kQ1iae9BtP8eoS5SYQqZ0EAmK1bg9Y8itjo9N6vAi7SdRtV4GxdDLhd9ZJW+0RnGtCXnmIXrj6aDervhjR9XvOM34bNP6KrSx0744eiXVJevUISHowkS6BwJ1kcHtuCrxaXkKUeKDJuCMFbG4b0zZ3M27uGyin4XkyEV9JOWcxi0RMPTgyY0aM8CdtPCWsO7YBmixkRECr8FoAuLAVv/ylFrfe/L4X9FYPGNNEP/nXRyH5ewbMabLbAZxy2gaE94FTtf01j0Ib2QppWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qn7I3z0E5bRx9ojd0l8kIykTDOQ4g95uFxQfv47OQgI=;
+ b=LmEVcHFjM2lGgYlF0BJiEIa1Ehs/uxZ+lfBvex0b+lBo8hC6Z8KNSwRq/H2rumuFYPFJ7hf+Ti3Y0sRVdokKPhWIp8xWETIbegWQkw48SDORiJIYpeT1LMtR5VTZH+JCY7hZopqlFzdwhTjvCMcEpNoTvqMp8AJCC937ViyU7g3oUqxG6iaYTgS6yIk/63S+joH2SQhgCU7lfWhKN1J+EPdKM1uNo+i/Y7PB9JP3GLcHocNeKF7er0mDy3LJvmYa7AaELlPdRqD+Uv87yJt4dwQwjYIi9vwwMCkdWPul864mxu3APueZLG71r3x5+C6n4o+QO0h4VyXzc3+tZxdsLA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1713241080; x=1713845880; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gAuDnQkBePCCRBA4gBXUbNdcJ4A8ZQKpcK9ZYMj4ixU=;
-        b=eNzKnc7/UWTurTtAqwf0KDDuoIJgTADNgTrOYfshk0HO6gKjh/vrfLSguBapMjCfiR
-         HoW6qz/4a1hiwk4EHoJkRp4NJxTeAFN0hPQ2eq2x2oQOm0cu8OkE6dYmjaUfrQ7uc3iC
-         oC26iH7ZtNfjhIoV+xMa0qTL9mQwIIolX4c1F84IwzarnkjOlSXT9DxN/e2abBWIpHsl
-         b5e8G+lfM6pwc0UEfGwUZlbqZdW+MTp/cHqXLfthy+iUyYeYzQkT/qth22RyIdBiRlWT
-         krmgayDeL5VrOX3CEsWvqZTpn570MeweItgyFIppquyTPeROsUBBmTfyFcD1YxcRAanG
-         Rq9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713241080; x=1713845880;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gAuDnQkBePCCRBA4gBXUbNdcJ4A8ZQKpcK9ZYMj4ixU=;
-        b=TtHHkiClum1B3//iHKZNGwYGmkn8F/m6RBsQ7Whr3IuDTDOXnhK6FQeubT9vKsrwom
-         3Ry9s2TsGJyRjaRjaVgAdRPauxVMwPMCVcydjd71wyf4dn3nUb3dMTQentpYeXrpd3OG
-         5bcGaO6tuh2vs7qVof6CKhTYemNdp5j00HcgLDk0y94+zeE55uaNRRiSwRrG7UjPoGwo
-         fXgkhMNUyw9FWCo7azjgPCqfYpzmcAnRcYmdkIPbOwsInUZClEEfdZ9q64/fVjUEg4PH
-         Ooh/xXbaa+LSq6bkCa8W/uin521qyVpn6y7C9kacuK0KDQqivpLqKSN87PTfWfNvp6Wh
-         BDUA==
-X-Forwarded-Encrypted: i=1; AJvYcCXRCVXMw3WrpcVY4B5SPewmuU03xGEEmlVuMta7BKiszj+bznP6S9YMhxdR09LQZNuDF+JpNfb1mhVr89Ar9JwrJD0m/zYXfJckJw/s
-X-Gm-Message-State: AOJu0YxdE3LPCKiNLybzsdKOhgFdM1UKYA8XS+Q6ntTI8p3c3OcllXY1
-	xLnTUZSZ5/ccEdLgfZHGfvF2IzA7dHFPhKaN+yHRpiyBO+KABTsBnAMjM9cI1u827e9PtAbZgEn
-	R13yJKiir/b4bH2byL0cV7v6JNv9tOI3uyo/WEQ==
-X-Google-Smtp-Source: AGHT+IFWpllJyARxELteXeEA6GOzuq9CBW5v25j+rCyBIdCoAZC4nyDKJEv30B3yEb59er4ybvWD/POKnoWTKcvkxbE=
-X-Received: by 2002:a05:6e02:12cc:b0:36b:16:9b5e with SMTP id
- i12-20020a056e0212cc00b0036b00169b5emr15916805ilm.29.1713241079929; Mon, 15
- Apr 2024 21:17:59 -0700 (PDT)
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qn7I3z0E5bRx9ojd0l8kIykTDOQ4g95uFxQfv47OQgI=;
+ b=iBQO5Ac+v1S+Qd1/jhTcS26uavvmOJYpkILPxs/jryDMC/ufHXHdUP3BpX98YZpEWOCcne8OzcAzyj6GPKwZTCJXN6Fq1lUS/0o1oyJBTpBkJTTgk21VlKoKy2HYu816Bk4t4+b4GRCtbnBebeTKjw1jN4PXs5vM9vU/tdXPNns=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from MW4PR01MB6498.prod.exchangelabs.com (2603:10b6:303:79::19) by
+ LV2PR01MB7742.prod.exchangelabs.com (2603:10b6:408:174::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.50; Tue, 16 Apr 2024 04:23:19 +0000
+Received: from MW4PR01MB6498.prod.exchangelabs.com
+ ([fe80::4fc3:132:87ac:c13b]) by MW4PR01MB6498.prod.exchangelabs.com
+ ([fe80::4fc3:132:87ac:c13b%5]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
+ 04:23:13 +0000
+Date: Mon, 15 Apr 2024 21:23:10 -0700
+From: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+To: Beata Michalska <beata.michalska@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	ionela.voinescu@arm.com, sudeep.holla@arm.com, will@kernel.org, catalin.marinas@arm.com, 
+	vincent.guittot@linaro.org, sumitg@nvidia.com, yang@os.amperecomputing.com, 
+	lihuisong@huawei.com
+Subject: Re: [PATCH v4 4/4] cpufreq: Use arch specific feedback for
+ cpuinfo_cur_freq
+Message-ID: <76zutrz47zs6i2cquvjo2qn7myxpq7e3c6alhper7n3wrkhf5h@22l5t5pio2cd>
+References: <20240405133319.859813-1-beata.michalska@arm.com>
+ <20240405133319.859813-5-beata.michalska@arm.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20240405133319.859813-5-beata.michalska@arm.com>
+X-ClientProxiedBy: CH0PR03CA0186.namprd03.prod.outlook.com
+ (2603:10b6:610:e4::11) To MW4PR01MB6498.prod.exchangelabs.com
+ (2603:10b6:303:79::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415031131.23443-1-liangshenlin@eswincomputing.com> <20240415031131.23443-3-liangshenlin@eswincomputing.com>
-In-Reply-To: <20240415031131.23443-3-liangshenlin@eswincomputing.com>
-From: Anup Patel <anup@brainfault.org>
-Date: Tue, 16 Apr 2024 09:47:48 +0530
-Message-ID: <CAAhSdy2Lu_qdF+FqJGxZYqDHgNQCt7vkWtrV0bUOzzmKixALRw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] perf kvm/riscv: Port perf kvm stat to RISC-V
-To: peterz@infradead.org
-Cc: atishp@atishpatra.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
-	aou@eecs.berkeley.edu, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, mark.rutland@arm.com, 
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com, 
-	adrian.hunter@intel.com, linux-perf-users@vger.kernel.org, 
-	Shenlin Liang <liangshenlin@eswincomputing.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR01MB6498:EE_|LV2PR01MB7742:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7e23f762-c9fc-4208-eeb1-08dc5dccee69
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	K/aedHvAzkXsD2e5fS4m99//r9/M/wUfJHnnyFFOkZSa8RfmtuSXS+TCknngus4IXdMsrFlRVq1LXHPhSi64Shsp9Pp3p7ouAHX7uN9bHDQz3yUHZpIFRYmm7eqiJbl1FEvIscs3hNyqV+IYinXPGDxWoTdTR/8PQxU089CPyJImg6RvxU1EwIKJCg1/n+G9ogCrE136HQ560iEf7Y3uIu0CCGoX4Hf3hONYuPYxWSdWbYjM4lfE0uQcrLs80OnAX8yow347FH4hmOXD1hVAQR+i2Hsa7/i4qnY7gM26xpl8I6IjmAn1bCixGZOh2i35RwaEly6FXZ5/SYWFEfwdDoulnXjn7N4xdym1g9d+vyCOildbVWmOZ1oG18zvb4VXoyf+3dcupGyFQu6Z3aoW7zv4bJ7COCfD52ybCi+hqN1K2ZxX5Vp/9CqLmGspmxw7Cc+iv3m3+JUda3KIGh0Xq/kcjOAqRiC1vUnjiUw5fk9TadS1+xHKUSm5XyBdpEb5qzdxRonVQQsoprfZq2536W4eF7GLBs+aEQ8OxqUX9DGbcZ2s1IJYB6hnwkHh624Xcqg/zcuiwf93PfSzlvuqHrpQO/FcOVPxO4dfG/A3dmK1k/1tax3G269Ax14l0kurtn4FUd5AXcuJszTJ4FPNsgnHtD/4boaY9SLUQYF+794=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR01MB6498.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?p1+KBZ/zVpoYNaLzIEzXap0eCvED9WqZQG8TlKwTgoqjR21cRCvXqPiI11r9?=
+ =?us-ascii?Q?l6PBGwqwPKWbJ1+j7CrcXBvVPAEkTMnvwQZ469XMVVaJXHRH5U8WjDv+MsJx?=
+ =?us-ascii?Q?IM0t04YGM9l8y3QnzgWLY66WwSNX/tZWZtGid0nzxiRJi3jEgl9xNW4yc9Ga?=
+ =?us-ascii?Q?6JddPyk+LANUKmT6X+95uklmwQmAljo1D+B8aQ5tNUEDflkJziKqDvgPTNRB?=
+ =?us-ascii?Q?Ib2OVYIc1TJQkbFMgJILmMJjfr4ZwGmNo0FmWCTVIds3nZPwE875x8KSAlzE?=
+ =?us-ascii?Q?gDfhwvwikPczJWhGdkzHSwjcUM+M6qwffIzPAzpISYwUS8t02/kxKCSUl3Iz?=
+ =?us-ascii?Q?f0iOyQLmkkNNUhcIgJ8m003KbyMxn96CSPlO0eD8BEa+V/chp0CrJz4jm3pq?=
+ =?us-ascii?Q?ppAdxEY/9oRUfBjUqNqTaVj3hx+lot6rZrVP1uYJIabD2woFZhTAjYvgMGgF?=
+ =?us-ascii?Q?/p5q3Y0Y6Qj8Gr0jUBl1LZr4nSzniy7jKTv7idcS+mzncVma1/vNGa0f5p8J?=
+ =?us-ascii?Q?kXE07wFMWSikRvZ6z2GdfHVMBlZo+R4N+Z+r5L0EJC6TOYeRH8Zizap1V8Ai?=
+ =?us-ascii?Q?LVj1GwTAduNm9ZYJcttC9UmKkMNSd8QOfbFZEAUDI/ATD3KJxGT5j6ohxXFu?=
+ =?us-ascii?Q?RwCgSqn0Ah+/LgmPC9RHjDOMySAOm/Qh9CuM1GF5aSfR7yUU9mQNCn58Ua1U?=
+ =?us-ascii?Q?15n2vn6GU2ux9/9zSn8FM7R1p99N6/e7XYZcuQPNAKodFRAvxth6NRHtfWRI?=
+ =?us-ascii?Q?Y+PySNfeLUJlKTh2NHwVrBLU2k19Ph83Mttnp7YY8PlnW5MRhPvm59hqYWPL?=
+ =?us-ascii?Q?8g8ykeMUA5JE9A8KgVvL3kfgeoK6g6DAKNjDZ27HNueY76Jj8SLE6G1onY8N?=
+ =?us-ascii?Q?HydoD9rKKJ3dAuS8FZMOkpw2i3UVAGKIwOV3rMY22YU4RSRrtSxv+tZWJdR/?=
+ =?us-ascii?Q?NlQoK3ep8kjmtgjbkJ9YxfA67nMECWYpeuWgIswmU+gOmkjoa71isprbQGKn?=
+ =?us-ascii?Q?VEKaxf+/qzf5Y0qJN/vL3mdMIzQKFDMyFpE8Q+23mTNfEoNZVcghXSUArSx6?=
+ =?us-ascii?Q?THLutaCcfVWOIjOt8XLzpAupxE10soiMC8eROHlpAiszWdhNQyr6xfNoV9mP?=
+ =?us-ascii?Q?fZiNGYAETTDoTMgd7Do4OhKY5scEbhnnjzY8uvvwo1EFRc0SsA/6bY+0OYtS?=
+ =?us-ascii?Q?fnJ9SdoXDcNzer+msPE3m0S23LG5s8SOxcRfDAGG6d+eg9v6t8XfunIItVVX?=
+ =?us-ascii?Q?XYCVO7JddtE8a9ixyLFazVOHWOn3Lud7RoUtjrgrn0MlahRsSiX/WRfOK0dF?=
+ =?us-ascii?Q?nlJC9a00unyGlsfuB3kiwPhHBYOy0tjCao/QKOakh9D0q1gIvtO9kSbdkaUJ?=
+ =?us-ascii?Q?0ZPHCHevAU7Ae7rrHygtMWS9nk6i4uIBXscPmh4h4GyYqvK7TFrqcDvwFjvn?=
+ =?us-ascii?Q?NRb024SSU+r8BI0oEeDwKDpxduABBPe9OR5OoxMoakt2Ibdnp05H6TVJiq5W?=
+ =?us-ascii?Q?GMy4Vc58SWg0elc5O8Dy/yjhw1S7MKZRTdylOFg3qgknwb4wmeAgpFhiUgtu?=
+ =?us-ascii?Q?HKQPCPfGmKveew7BXNh7jTczyvjX228xRcyR96aWO8ksHJs3z76nH2N50Hm5?=
+ =?us-ascii?Q?RqyT4VTrqkQUJ10bYHrn2gw=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e23f762-c9fc-4208-eeb1-08dc5dccee69
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR01MB6498.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 04:23:13.6354
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pxZrgJ7pXUUIyEACKu+52WcyVNlkkUM4BZpBFTNVMNYoBCWIQCkMxg6PRy3m6478ZxQ36e3AeFz8EByD5aoE5jnXHxUkbnDJ9f2qxBgH4nLgofIej4JBy/qcG57thL+j
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR01MB7742
 
-On Mon, Apr 15, 2024 at 8:45=E2=80=AFAM Shenlin Liang
-<liangshenlin@eswincomputing.com> wrote:
+On Fri, Apr 05, 2024 at 02:33:19PM +0100, Beata Michalska wrote:
+>Some architectures provide a way to determine an average frequency over
+>a certain period of time based on available performance monitors (AMU on
+>ARM or APERF/MPERf on x86). With those at hand, enroll arch_freq_get_on_cpu
+>into cpuinfo_cur_freq policy sysfs attribute handler, which is expected to
+>represent the current frequency of a given CPU, as obtained by the hardware.
+>This is the type of feedback that counters do provide.
 >
-> 'perf kvm stat report/record' generates a statistical analysis of KVM
-> events and can be used to analyze guest exit reasons.
->
-> "report" reports statistical analysis of guest exit events.
->
-> To record kvm events on the host:
->  # perf kvm stat record -a
->
-> To report kvm VM EXIT events:
->  # perf kvm stat report --event=3Dvmexit
->
-> Signed-off-by: Shenlin Liang <liangshenlin@eswincomputing.com>
 
-LGTM.
+--- snip ---
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+While testing this patch series on AmpereOne system, I simulated CPU
+frequency throttling when the system is under power or thermal
+constraints.
 
-@Peter Zijlstra, is it okay to take this through the KVM RISC-V tree ?
+In this scenario, based on the user guilde, I expect scaling_cur_freq
+is the frequency the kernel requests from the hardware; cpuinfo_cur_freq
+is the actual frequency that the hardware is able to run at during the
+power or thermal constraints.
 
-Regards,
-Anup
+The AmpereOne system I'm testing on has the following configuration:
+- Max frequency is 3000000
+- Support for AMU registers
+- ACPI CPPC feedback counters use PCC register space
+- Fedora 39 with 6.7.5 kernel
+- Fedora 39 with 6.9.0-rc3 + this patch series
 
-> ---
->  tools/perf/arch/riscv/Makefile                |  1 +
->  tools/perf/arch/riscv/util/Build              |  1 +
->  tools/perf/arch/riscv/util/kvm-stat.c         | 78 +++++++++++++++++++
->  .../arch/riscv/util/riscv_exception_types.h   | 41 ++++++++++
->  4 files changed, 121 insertions(+)
->  create mode 100644 tools/perf/arch/riscv/util/kvm-stat.c
->  create mode 100644 tools/perf/arch/riscv/util/riscv_exception_types.h
->
-> diff --git a/tools/perf/arch/riscv/Makefile b/tools/perf/arch/riscv/Makef=
-ile
-> index a8d25d005207..e1e445615536 100644
-> --- a/tools/perf/arch/riscv/Makefile
-> +++ b/tools/perf/arch/riscv/Makefile
-> @@ -3,3 +3,4 @@ PERF_HAVE_DWARF_REGS :=3D 1
->  endif
->  PERF_HAVE_ARCH_REGS_QUERY_REGISTER_OFFSET :=3D 1
->  PERF_HAVE_JITDUMP :=3D 1
-> +HAVE_KVM_STAT_SUPPORT :=3D 1
-> \ No newline at end of file
-> diff --git a/tools/perf/arch/riscv/util/Build b/tools/perf/arch/riscv/uti=
-l/Build
-> index 603dbb5ae4dc..d72b04f8d32b 100644
-> --- a/tools/perf/arch/riscv/util/Build
-> +++ b/tools/perf/arch/riscv/util/Build
-> @@ -1,5 +1,6 @@
->  perf-y +=3D perf_regs.o
->  perf-y +=3D header.o
->
-> +perf-$(CONFIG_LIBTRACEEVENT) +=3D kvm-stat.o
->  perf-$(CONFIG_DWARF) +=3D dwarf-regs.o
->  perf-$(CONFIG_LIBDW_DWARF_UNWIND) +=3D unwind-libdw.o
-> diff --git a/tools/perf/arch/riscv/util/kvm-stat.c b/tools/perf/arch/risc=
-v/util/kvm-stat.c
-> new file mode 100644
-> index 000000000000..db7183e0f09f
-> --- /dev/null
-> +++ b/tools/perf/arch/riscv/util/kvm-stat.c
-> @@ -0,0 +1,78 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Arch specific functions for perf kvm stat.
-> + *
-> + * Copyright 2024 Beijing ESWIN Computing Technology Co., Ltd.
-> + *
-> + */
-> +#include <errno.h>
-> +#include <memory.h>
-> +#include "../../../util/evsel.h"
-> +#include "../../../util/kvm-stat.h"
-> +#include "riscv_exception_types.h"
-> +#include "debug.h"
-> +
-> +define_exit_reasons_table(riscv_exit_reasons, kvm_riscv_exception_class)=
-;
-> +
-> +const char *kvm_exit_reason =3D "scause";
-> +const char *kvm_entry_trace =3D "kvm:kvm_entry";
-> +const char *kvm_exit_trace =3D "kvm:kvm_exit";
-> +
-> +const char *kvm_events_tp[] =3D {
-> +       "kvm:kvm_entry",
-> +       "kvm:kvm_exit",
-> +       NULL,
-> +};
-> +
-> +static void event_get_key(struct evsel *evsel,
-> +                         struct perf_sample *sample,
-> +                         struct event_key *key)
-> +{
-> +       key->info =3D 0;
-> +       key->key =3D evsel__intval(evsel, sample, kvm_exit_reason);
-> +       key->key =3D (int)key->key;
-> +       key->exit_reasons =3D riscv_exit_reasons;
-> +}
-> +
-> +static bool event_begin(struct evsel *evsel,
-> +                       struct perf_sample *sample __maybe_unused,
-> +                       struct event_key *key __maybe_unused)
-> +{
-> +       return evsel__name_is(evsel, kvm_entry_trace);
-> +}
-> +
-> +static bool event_end(struct evsel *evsel,
-> +                     struct perf_sample *sample,
-> +                     struct event_key *key)
-> +{
-> +       if (evsel__name_is(evsel, kvm_exit_trace)) {
-> +               event_get_key(evsel, sample, key);
-> +               return true;
-> +       }
-> +       return false;
-> +}
-> +
-> +static struct kvm_events_ops exit_events =3D {
-> +       .is_begin_event =3D event_begin,
-> +       .is_end_event   =3D event_end,
-> +       .decode_key     =3D exit_event_decode_key,
-> +       .name           =3D "VM-EXIT"
-> +};
-> +
-> +struct kvm_reg_events_ops kvm_reg_events_ops[] =3D {
-> +       {
-> +               .name   =3D "vmexit",
-> +               .ops    =3D &exit_events,
-> +       },
-> +       { NULL, NULL },
-> +};
-> +
-> +const char * const kvm_skip_events[] =3D {
-> +       NULL,
-> +};
-> +
-> +int cpu_isa_init(struct perf_kvm_stat *kvm, const char *cpuid __maybe_un=
-used)
-> +{
-> +       kvm->exit_reasons_isa =3D "riscv64";
-> +       return 0;
-> +}
-> diff --git a/tools/perf/arch/riscv/util/riscv_exception_types.h b/tools/p=
-erf/arch/riscv/util/riscv_exception_types.h
-> new file mode 100644
-> index 000000000000..2e42150f72b2
-> --- /dev/null
-> +++ b/tools/perf/arch/riscv/util/riscv_exception_types.h
-> @@ -0,0 +1,41 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * RISCV exception types
-> + *
-> + * Copyright 2024 Beijing ESWIN Computing Technology Co., Ltd.
-> + *
-> + */
-> +#ifndef ARCH_PERF_RISCV_EXCEPTION_TYPES_H
-> +#define ARCH_PERF_RISCV_EXCEPTION_TYPES_H
-> +
-> +#define EXC_INST_MISALIGNED 0
-> +#define EXC_INST_ACCESS 1
-> +#define EXC_INST_ILLEGAL 2
-> +#define EXC_BREAKPOINT 3
-> +#define EXC_LOAD_MISALIGNED 4
-> +#define EXC_LOAD_ACCESS 5
-> +#define EXC_STORE_MISALIGNED 6
-> +#define EXC_STORE_ACCESS 7
-> +#define EXC_SYSCALL 8
-> +#define EXC_HYPERVISOR_SYSCALL 9
-> +#define EXC_SUPERVISOR_SYSCALL 10
-> +#define EXC_INST_PAGE_FAULT 12
-> +#define EXC_LOAD_PAGE_FAULT 13
-> +#define EXC_STORE_PAGE_FAULT 15
-> +#define EXC_INST_GUEST_PAGE_FAULT 20
-> +#define EXC_LOAD_GUEST_PAGE_FAULT 21
-> +#define EXC_VIRTUAL_INST_FAULT 22
-> +#define EXC_STORE_GUEST_PAGE_FAULT 23
-> +
-> +#define EXC(x) {EXC_##x, #x }
-> +
-> +#define kvm_riscv_exception_class                                       =
-    \
-> +       (EXC(INST_MISALIGNED), EXC(INST_ACCESS), EXC(INST_ILLEGAL),      =
-   \
-> +        EXC(BREAKPOINT), EXC(LOAD_MISALIGNED), EXC(LOAD_ACCESS),        =
-   \
-> +        EXC(STORE_MISALIGNED), EXC(STORE_ACCESS), EXC(SYSCALL),         =
-   \
-> +        EXC(HYPERVISOR_SYSCALL), EXC(SUPERVISOR_SYSCALL),               =
-   \
-> +        EXC(INST_PAGE_FAULT), EXC(LOAD_PAGE_FAULT), EXC(STORE_PAGE_FAULT=
-), \
-> +        EXC(INST_GUEST_PAGE_FAULT), EXC(LOAD_GUEST_PAGE_FAULT),         =
-   \
-> +        EXC(VIRTUAL_INST_FAULT), EXC(STORE_GUEST_PAGE_FAULT))
-> +
-> +#endif /* ARCH_PERF_RISCV_EXCEPTION_TYPES_H */
-> --
-> 2.37.2
->
+With 6.7.5 kernel:
+Core        scaling_cur_freq        cpuinfo_cur_freq
+----        ----------------        ----------------
+0             3000000                 2593000
+1             3000000                 2613000
+2             3000000                 2625000
+3             3000000                 2632000
+
+With 6.9.0-rc3 + this patch series:
+Core        scaling_cur_freq        cpuinfo_cur_freq
+----        ----------------        ----------------
+0             2671875                 2671875
+1             2589632                 2589632
+2             2648437                 2648437
+3             2698242                 2698242
+
+In the second case we can't identify that the CPU frequency is
+being throttled by the hardware. I noticed this behavior with
+or without this patch.
+
+Thanks,
+Vanshi
 
