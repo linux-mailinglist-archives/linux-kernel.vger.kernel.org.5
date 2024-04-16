@@ -1,222 +1,156 @@
-Return-Path: <linux-kernel+bounces-147695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 721708A77D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:35:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 700318A77D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:36:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DD692835DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:35:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D0D81C22CD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:36:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8825139D18;
-	Tue, 16 Apr 2024 22:35:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 006D213777C;
+	Tue, 16 Apr 2024 22:36:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Y4YxzMZk"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Te4SEjdi";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1JReEmpz"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B26639FCF
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 22:34:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3C339FCF;
+	Tue, 16 Apr 2024 22:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713306900; cv=none; b=P4yLneAQrCKXAYv/rAo2fIIhBRDzXPgaySHCIy/Q3G/l0/SNyfU+LqOPsCzin4FGUGknQhwCtywR3uMizIa2q0F5AKTDOxNpcUt+vWbbSjNwSxOB4LJx/YnNzpw2nC+YtBw/2LGXSSN+AqIyJIoMMVJiuKjTo3T/dUpOZLUcfBo=
+	t=1713307005; cv=none; b=tm4sBpkVgDSYSRjEVakhNiod1gJxOOdMuBKgXHVJnnGeY+MiLSp+pWUFis/AnLm7shEys67oM4bgGnsUYRqjNtgNZcu9wiGGmq5fY3nDT12/52UuHfNPSIrKg5cI3dffcWYNpS8C5RHvG6ZkpNvCr1ctGTn1gXpgmNNE/yebkDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713306900; c=relaxed/simple;
-	bh=D6DW7vU+Ud1j1ZMm6riVY8+oFgwa63RdFWc+QIYQMB4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Zwm2w/8eE+/vQ6efgTkFnZUmdF0wMe0gvTIlYpiLDeJLfaOUB6svcXDQiGt4zpWGc1IEG5oPbR5HCqxavGxb2yqGNn6vlykggLJRXP6RXKzfMEZGk4aXpBBeKAxAPRbT8hJ+bgll1oZUvihh3xAAnW1kExIg3nBcN33LCuvTJgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Y4YxzMZk; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc0bcf9256so6911950276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 15:34:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713306897; x=1713911697; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=N28jPTevDRZgDwN0Qgro9sWm7eqto+/tqAfBob/PiVg=;
-        b=Y4YxzMZkR7X03bGpIEEzVGQEnMLLB6bp3HvIraqvg+6pJOfvGlYod05bmxKJkH0qdY
-         ZWJ147Z4evUiZxFNPN14J89+LtJxzX87+xzbmUR49ifiTnqVnR/Lv8vU5WBxMdFJK7OO
-         GN1rZ17f0R3s2xRogLCPOkKDnir/zNtn39fh7NW1BjpGZf6kZVvBDtxJ4FDd5CFrfyI3
-         xLql/0/+IqY0Heztup1FIK3B18BdLSRBroRApYG8+sxDhDsfTpXgyXLiA3WQFztuCqx1
-         r5DipAYqErnWiOAv1xBR1BW5CyRG+wuEF+N0hZYREYYnXIqCDVfoIw7TwGOGcsjhUtjG
-         U1fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713306897; x=1713911697;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=N28jPTevDRZgDwN0Qgro9sWm7eqto+/tqAfBob/PiVg=;
-        b=RT5ppxNFC52heqxLfoK5ncir6VSB+Knb7GgxAd+iRa5m22xp3nhD6X/2JBcyKubtxe
-         3vQU8aNq6XLgH6Cio4Vw/Lr7Rb42BM69YwGIcq5AGk2DiJb2gzOeNsdFVAaho0EmA80y
-         9aiQhfkMcowxlRh68SKpAxT435hnVRNetpxROphFi7fOOP8XhOPQPRHLnvhxJj+wxOli
-         Z2ra7CS5mLyi1WGycGdaav4CJtezAAvQOL9Pr+ApC7evuN2dD4NQF8RkceIVAroSR3E7
-         qWV77AmlkDjMuzQN6vEFvcKjIwevcbgDB8aQxdRQmlnzkpfsQqDsVtPLGTGlFNnDrTjv
-         FDGw==
-X-Forwarded-Encrypted: i=1; AJvYcCXf44QTKDLdMVfoV2i5GHNABXmQLH2Ca0lSDDvhdLllzSqsr0MotE6ztSseo/QCAWUO0WyuoaLco8WZzR8nmqcGKFpxf7M0tP6TsLEY
-X-Gm-Message-State: AOJu0YzJ5f+IisKTtiUr5PIJAiTz7jepl+V+cTT7HcoFrt+3eR3VONEt
-	T1R4z5yPcp6Fg4NdtBxNHiRpRspcG+zOY39uABK6Vlcq2+hvYCiovGKlwNsNj9H5AbeMseEJm34
-	WLQ==
-X-Google-Smtp-Source: AGHT+IHijFgIMHcHKSmLYnGXqSMY0ztzAIixleUp7N8npxxMg8gLVi3C6uLdSPFh4cTT41VSi7yudkzO7dM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:ad23:0:b0:de1:2203:2031 with SMTP id
- y35-20020a25ad23000000b00de122032031mr836200ybi.6.1713306897370; Tue, 16 Apr
- 2024 15:34:57 -0700 (PDT)
-Date: Tue, 16 Apr 2024 15:34:55 -0700
-In-Reply-To: <CABgObfZ4kqaXLaOAOj4aGB5GAe9GxOmJmOP+7kdke6OqA35HzA@mail.gmail.com>
+	s=arc-20240116; t=1713307005; c=relaxed/simple;
+	bh=cSZY4ae4WAsue7NUAkAfbZWkSc+q0D62ObnXm+tgL3M=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SgPbXCljHZ7oLoPKirQ0K7lA/0DlF2HrrUOYrwD/tddxxqibJtQwmlhmeJ1eRSbRoHPNdSZ3WfCHm+yl15NG5OYjxDA1uG7kZaVJYNU1qtBeIiYclaYdDD+53UImNp94NthJS9CckibZC6q2OdBbLMO64a9/YE5GN//J/3itbec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Te4SEjdi; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1JReEmpz; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 17 Apr 2024 00:36:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713307001;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZvuIWFJvCJMoa+9u4CC8L6s+esR9l0aMrumFrkL3xew=;
+	b=Te4SEjdiIAtRl+sEaU2CE61/pWstSBJTyTvMhF0hRKt8Wb0II71K0I5eG60ljuA0kMImWq
+	KKyacGeI2WuzzTMdaJJ8MZe8SHKLLYhuzudTyxKuF+BtfxH1/2Ro1FT/EGVLWPxSVJpPCN
+	gQaCZC2X1aCeyUjRILimEQQmdYe93+dFDoADfCE8OCkq1a9uc0HeRrLvDYd/NVTT7Us+cX
+	xcWl6fRlolFTM+jNzsJ21OrVltzZcx073fs5K8/brt9q27dRRLN7LkLMS0xKSY77/+owMi
+	fGTD1V45mheTt9xeiXzrhDhQ9QLaLJDn1bIdJAnkUAL5eAnnRHSiuKQh1ZPKgw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713307001;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZvuIWFJvCJMoa+9u4CC8L6s+esR9l0aMrumFrkL3xew=;
+	b=1JReEmpzYenEyEPAqS7pF0uHMdoMdU/dE8wUr66hmDgCzsuooa4j1F8ymBqQjiWzrxxjf+
+	eXAqVLKEyOsjtuDA==
+From: Nam Cao <namcao@linutronix.de>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Christian Brauner <brauner@kernel.org>, Andreas Dilger
+ <adilger@dilger.ca>, Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel
+ <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>,
+ linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>, Ext4
+ Developers List <linux-ext4@vger.kernel.org>, Conor Dooley
+ <conor@kernel.org>, Anders Roxell <anders.roxell@linaro.org>, Alexandre
+ Ghiti <alex@ghiti.fr>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+Message-ID: <20240417003639.13bfd801@namcao>
+In-Reply-To: <Zh7Ey507KXIak8NW@kernel.org>
+References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
+	<8734rlo9j7.fsf@all.your.base.are.belong.to.us>
+	<Zh6KNglOu8mpTPHE@kernel.org>
+	<20240416171713.7d76fe7d@namcao>
+	<20240416173030.257f0807@namcao>
+	<87v84h2tee.fsf@all.your.base.are.belong.to.us>
+	<20240416181944.23af44ee@namcao>
+	<Zh6n-nvnQbL-0xss@kernel.org>
+	<Zh6urRin2-wVxNeq@casper.infradead.org>
+	<Zh7Ey507KXIak8NW@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240215160136.1256084-1-alejandro.j.jimenez@oracle.com>
- <Zh6-h0lBCpYBahw7@google.com> <CABgObfZ4kqaXLaOAOj4aGB5GAe9GxOmJmOP+7kdke6OqA35HzA@mail.gmail.com>
-Message-ID: <Zh79D2BdtS0jKO6W@google.com>
-Subject: Re: [RFC 0/3] Export APICv-related state via binary stats interface
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, joao.m.martins@oracle.com, 
-	boris.ostrovsky@oracle.com, mark.kanda@oracle.com, 
-	suravee.suthikulpanit@amd.com, mlevitsk@redhat.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 16, 2024, Paolo Bonzini wrote:
-> On Tue, Apr 16, 2024 at 8:08=E2=80=AFPM Sean Christopherson <seanjc@googl=
-e.com> wrote:
-> >
-> > On Thu, Feb 15, 2024, Alejandro Jimenez wrote:
-> > > The goal of this RFC is to agree on a mechanism for querying the stat=
-e (and
-> > > related stats) of APICv/AVIC. I clearly have an AVIC bias when approa=
-ching this
-> > > topic since that is the side that I have mostly looked at, and has th=
-e greater
-> > > number of possible inhibits, but I believe the argument applies for b=
-oth
-> > > vendor's technologies.
-> > >
-> > > Currently, a user or monitoring app trying to determine if APICv is a=
-ctually
-> > > being used needs implementation-specific knowlegde in order to look f=
-or specific
-> > > types of #VMEXIT (i.e. AVIC_INCOMPLETE_IPI/AVIC_NOACCEL), checking GA=
-Log events
-> > > by watching /proc/interrupts for AMD-Vi*-GA, etc. There are existing =
-tracepoints
-> > > (e.g. kvm_apicv_accept_irq, kvm_avic_ga_log) that make this task easi=
-er, but
-> > > tracefs is not viable in some scenarios. Adding kvm debugfs entries h=
-as similar
-> > > downsides. Suravee has previously proposed a new IOCTL interface[0] t=
-o expose
-> > > this information, but there has not been any development in that dire=
-ction.
-> > > Sean has mentioned a preference for using BPF to extract info from th=
-e current
-> > > tracepoints, which would require reworking existing structs to access=
- some
-> > > desired data, but as far as I know there isn't any work done on that =
-approach
-> > > yet.
-> > >
-> > > Recently Joao mentioned another alternative: the binary stats framewo=
-rk that is
-> > > already supported by kernel[1] and QEMU[2].
-> >
-> > The hiccup with stats are that they are ABI, e.g. we can't (easily) dit=
-ch stats
-> > once they're added, and KVM needs to maintain the exact behavior.
->=20
-> Stats are not ABI---why would they be?
+On 2024-04-16 Mike Rapoport wrote:
+> On Tue, Apr 16, 2024 at 06:00:29PM +0100, Matthew Wilcox wrote:
+> > On Tue, Apr 16, 2024 at 07:31:54PM +0300, Mike Rapoport wrote:
+> > > > -	if (!IS_ENABLED(CONFIG_64BIT)) {
+> > > > -		max_mapped_addr = __pa(~(ulong)0);
+> > > > -		if (max_mapped_addr == (phys_ram_end - 1))
+> > > > -			memblock_set_current_limit(max_mapped_addr - 4096);
+> > > > -	}
+> > > > +	memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE);
+> > > 
+> > > Ack.
+> > 
+> > Can this go to generic code instead of letting architecture maintainers
+> > fall over it?
+> 
+> Yes, it's just have to happen before setup_arch() where most architectures
+> enable memblock allocations.
 
-Because they exposed through an ioctl(), and userspace can and will use sta=
-ts for
-functional purposes?  Maybe I just had the wrong takeaway from an old threa=
-d about
-adding a big pile of stats[1], where unfortunately (for me) you weighed in =
-on
-whether or not tracepoints are ABI, but not stats.
+This also works, the reported problem disappears.
 
-And because I've have been operating under the assumption that stats are AB=
-I, I've
-been guiding people to using stats to make decisions in userspace.  E.g. KV=
-M doesn't
-currently expose is_guest_mode() in kvm_run, but it is a stat, so it's not =
-hard
-to imagine userspace using the stat to make decisions without needing to ca=
-ll back
-into KVM[2].
+However, I am confused about one thing: doesn't this make one page of
+physical memory inaccessible?
 
-And based on the old discussion[1] I doubt I'm though only one that has thi=
-s view.
+Is it better to solve this by setting max_low_pfn instead? Then at
+least the page is still accessible as high memory.
 
-That said, I'm definitely not opposed to stats _not_ being ABI, because tha=
-t would
-give us a ton of flexibility.  E.g. we have a non-trivial number of interna=
-l stats
-that are super useful _for us_, but are rather heavy and might not be desir=
-able
-for most environments.  If stats aren't considered ABI, then I'm pretty sur=
-e we
-could land some of the more generally useful ones upstream, but off-by-defa=
-ult
-and guarded by a Kconfig.  E.g. we have a pile of stats related to mmu_lock=
- that
-are very helpful in identifying performance issues, but they aren't things =
-I would
-want enabled by default.
+Best regards,
+Nam
 
-But if we do decide stats aren't ABI, then we need to document and dissemin=
-ate
-that information.
-
-[1] https://lore.kernel.org/all/CALzav=3DcuzT=3Du6G0TCVZUfEgAKOCKTSCDE8x2v5=
-qc-Gd_NL-pzg@mail.gmail.com
-[2] https://lore.kernel.org/all/Zh6-e9hy7U6DD2QM@google.com
-
-> They have an established meaning and it's not a good idea to change it, b=
-ut
-> it's not an absolute no-no(*); and removing them is not a problem at all.
->=20
-> For example, if stats were ABI, there would be no need for the
-> introspection mechanism, you could just use a struct like ethtool
-> stats (which *are* ABO).
->=20
-> Not everything makes a good stat but, if in doubt and it's cheap
-> enough to collect it, go ahead and add it.
-
-Marc raised the (IMO) valid concern that "if it's cheap, add it" will lead =
-to
-death by a thousand cuts.  E.g. add a few hundred vCPU stats and suddenly v=
-CPUs
-consumes an extra KiB or three of memory.
-
-A few APIC stats obviously aren't going to move the needle much, I'm just p=
-ointing
-out that not everyone agrees that KVM should be hyper permissive when it co=
-mes to
-adding new stats.
-
-> Cheap collection is the important point, because tracepoints in a hot pat=
-h
-> can be so expensive as to slow down the guest substantially, at least in
-> microbenchmarks.
->=20
-> In this case I'm not sure _all_ inhibits makes sense and I certainly
-> wouldn't want a bitmask, but a generic APICv-enabled stat certainly
-> makes sense, and perhaps another for a weirdly-configured local APIC.
->=20
-> Paolo
->=20
-> (*) you have to draw a line somewhere. New processor models may
-> virtualize parts of the CPU in such a way that some stats become
-> meaningless or just stay at zero. Should KVM not support those
-> features because it is not possible anymore to introspect the guest
-> through stat?
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index fa34cf55037b..6e3130cae675 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -197,7 +197,6 @@ early_param("mem", early_mem);
+ static void __init setup_bootmem(void)
+ {
+ 	phys_addr_t vmlinux_end = __pa_symbol(&_end);
+-	phys_addr_t max_mapped_addr;
+ 	phys_addr_t phys_ram_end, vmlinux_start;
+ 
+ 	if (IS_ENABLED(CONFIG_XIP_KERNEL))
+@@ -235,23 +234,9 @@ static void __init setup_bootmem(void)
+ 	if (IS_ENABLED(CONFIG_64BIT))
+ 		kernel_map.va_pa_offset = PAGE_OFFSET - phys_ram_base;
+ 
+-	/*
+-	 * memblock allocator is not aware of the fact that last 4K bytes of
+-	 * the addressable memory can not be mapped because of IS_ERR_VALUE
+-	 * macro. Make sure that last 4k bytes are not usable by memblock
+-	 * if end of dram is equal to maximum addressable memory.  For 64-bit
+-	 * kernel, this problem can't happen here as the end of the virtual
+-	 * address space is occupied by the kernel mapping then this check must
+-	 * be done as soon as the kernel mapping base address is determined.
+-	 */
+-	if (!IS_ENABLED(CONFIG_64BIT)) {
+-		max_mapped_addr = __pa(~(ulong)0);
+-		if (max_mapped_addr == (phys_ram_end - 1))
+-			memblock_set_current_limit(max_mapped_addr - 4096);
+-	}
+-
+ 	min_low_pfn = PFN_UP(phys_ram_base);
+-	max_low_pfn = max_pfn = PFN_DOWN(phys_ram_end);
++	max_pfn = PFN_DOWN(phys_ram_end);
++	max_low_pfn = min(max_pfn, PFN_DOWN(__pa(-PAGE_SIZE)));
+ 	high_memory = (void *)(__va(PFN_PHYS(max_low_pfn)));
+ 
+ 	dma32_phys_limit = min(4UL * SZ_1G, (unsigned long)PFN_PHYS(max_low_pfn));
 
