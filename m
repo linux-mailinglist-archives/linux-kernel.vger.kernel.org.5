@@ -1,166 +1,265 @@
-Return-Path: <linux-kernel+bounces-147265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFDFA8A71B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:53:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEEE08A71BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:55:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72EFE1F21BEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:53:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5CCF287FAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074FB12BE89;
-	Tue, 16 Apr 2024 16:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65485131BC9;
+	Tue, 16 Apr 2024 16:55:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NjTFfF5Z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fovZW8aR"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EFA41F956
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:53:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBA8612AAE3
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:55:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713286413; cv=none; b=TT8IiV/QEP0RwHl0WuqK8z66+MvDH2GCV1ezBQw/URLlFO8paGl9FW4pBNCCdh7ERGP3d6zZFo2HMUSe01gPxoUg9NvYe+A0dpkpjDKmaLeqiztf5W4L1qEm93bgql1UgIy85z/rKyZZGggzHxUU3DaxdZGItKfmDVBHEfznJZ4=
+	t=1713286525; cv=none; b=CN4arDMFs5A+ffRHwpBnlm2xN1fuF97AQ2470CJFVqERBylh8yertIWnWnekxKvP+qlOCNGK4ZJStxiDwmUd0BLmzhd8Y1pF/w07ZnWwHAbmei1ylJ+keiL6e3IFKOz8Z96GCBmB4AnGlwk8cBOMhXCybc0+TGFSyWuu+nhBgYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713286413; c=relaxed/simple;
-	bh=ezmFLIFNn/ZZBBwAdVS+xgDslQU7nT4nfmH+rCWjzn4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NoqdmRQaZqOlQ/LVptARu1n2a01eNUyc/L7RktncQkFHvgLZ1xuP9+Rtr245gzYv3AnxO5pU2V4FVUF6HBWFG0Pdo4dIQDRxCvTVSwrFx/p9+Kt6AR1JB8LkAfdsUEDFJCUTiQZ2eg1i18IjEetsNRJbOcw3STiyNFaUkqKhi/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NjTFfF5Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9681DC113CE;
-	Tue, 16 Apr 2024 16:53:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713286412;
-	bh=ezmFLIFNn/ZZBBwAdVS+xgDslQU7nT4nfmH+rCWjzn4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NjTFfF5ZRQPjgO7avZxPkAG7vsZZEREB0wcobTxKIQIgMTu8WSMxQHbjNkP+nfGsA
-	 UZWpeiLm3oVsdp8XG1ojM2puTFljifv5y5WjpVvVtnMk/lyA5ErYtYWdmN2DeyA5Ti
-	 aQhwv/NKo88jNt6Lyy20xFIadXpLcyxAPTmGk039Tjjhl0RVVoR1ZQ9dTjcMcDUhwJ
-	 Hl3Fei7ScL6iMcl8H2ou/CoGvKAOeheASItF9frPuUq6YLQ1OCgKPNPtUQyeZ7n7Mb
-	 nKtaBH2cbdD1BG+TCk/AcdWGhNBciLZuBwrhsYrnJ9L20oxk/J4x25ZHJxs5WvKziF
-	 nE6Q29xRRDJKA==
-Date: Tue, 16 Apr 2024 16:53:31 +0000
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Liao Yuanhong <liaoyuanhong@vivo.com>
-Cc: chao@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH] f2fs:add zone device priority option to the
- mount options
-Message-ID: <Zh6tC-fTZZlP5Dk2@google.com>
-References: <20240415091650.27825-1-liaoyuanhong@vivo.com>
+	s=arc-20240116; t=1713286525; c=relaxed/simple;
+	bh=hn4PejrHf/0xoIeGngF0uMMcOnNiG9soQVpr4eN2C28=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mxypMiwZEU2frQpdh6rSpAqHBL12X6ypBOyHw9t1oJTgFrOQmEsK7PeUvAARjBzeiqZ3bzQA+IYqxQaQb4QHPs9Yfx+M5nxg3xl4N5G8s04f/91p7Tr6DOKjO27V6yz4nl/Q1UVtVUJWsHDvYuHXwndwOrPBtDN8FzcqrQzgBNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fovZW8aR; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713286522;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=u+xQpuNwWw1Mss/aSYYGuvtFUaskyKzvL9S/zN6YeiM=;
+	b=fovZW8aR/t7gUOQ1TE/xEp4yZqovpFeHjBaa2ZIZKhkw2S7mVLvPkR6gGLdT1TFmHD1uiE
+	LH8SyWdEeri7mF8xQigChZYW87e/HEKX/xqWM/iWnO4wg/NacoyT9JQo9vFkmWGj7EGZy8
+	E6AvRgl/94KoCFCRdfUN63XHTBYhp64=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-558-DVpRlERyNK-yKRmwpYvnQA-1; Tue, 16 Apr 2024 12:55:18 -0400
+X-MC-Unique: DVpRlERyNK-yKRmwpYvnQA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-343c7fa0dd5so3078129f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 09:55:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713286517; x=1713891317;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u+xQpuNwWw1Mss/aSYYGuvtFUaskyKzvL9S/zN6YeiM=;
+        b=wNTWvTSb83Ktkh/+v3XL+Q9t2Az+Og3QBiczDfPpFcGER8wAZMPtXD7uAMqYII6QaV
+         On5dVYNMLBrJGNhlE6yy/uCW3nQgM8/7KAbcJauem4a2PMzwy4KvPaJ5vb495y+5lJfh
+         llC7OW4OEq38iTTUIxBZgx9auUKV+7Znb3KAhY5dOsxWijUDKCz17SUw2RmJSEmIjwj9
+         TJPEbXwXoyG77rNG1bf/w0Q/Vu/AqkWA9Pd9pAm0qvJ+lz0zKDdqNPGlcUdqAtbGm5pZ
+         VnagHWoxmRIjIJx/DP6Hgm+D2avsgVAVeOzklU7NyinX2yMIiLdlLB5gxEfvRFSjiU5G
+         6hrw==
+X-Forwarded-Encrypted: i=1; AJvYcCWifQHWvLMYZwuN69ZykQ0NQE5DsR/KFc3WR0Uer5sDMSdrqOX8hDyPU9mK+ipDkJSjltRv9+FN/NqfVghwaqqoEKApVcHkJuuv2I8i
+X-Gm-Message-State: AOJu0Yx0m0qliKMxQdEpArWMOsqX95l40lfR5T6iDJ0L9IFDDteGjexa
+	dKNGbM0DjgnSfmftlFCRI+Nye4Re8z/U0vri6JPkqRvsLXaMGuDSmXiNjck9A9+mT/gtwqza00f
+	c6O+9/A7YOaZnaEhcSE0jPKLZBZFgbYsklAd5Vc8yNu4HRkb6wej5/gQN5HrC+oD+gl6AhJNDtW
+	h6dxDC3oKrKyI8JwADHgZWRGZVWSv4G0X6l+gz
+X-Received: by 2002:adf:ef8f:0:b0:346:65dd:560a with SMTP id d15-20020adfef8f000000b0034665dd560amr8113225wro.3.1713286517318;
+        Tue, 16 Apr 2024 09:55:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGAcorU0V2YC1HmmO0dLUEzT/HK2cx+LJgepb7IEcMpi9K3mQ88H20AuTm1qARWPMyw7eXswIfJ6kMGrArsbL4=
+X-Received: by 2002:adf:ef8f:0:b0:346:65dd:560a with SMTP id
+ d15-20020adfef8f000000b0034665dd560amr8113212wro.3.1713286516895; Tue, 16 Apr
+ 2024 09:55:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240415091650.27825-1-liaoyuanhong@vivo.com>
+References: <20240411203529.1866998-1-seanjc@google.com>
+In-Reply-To: <20240411203529.1866998-1-seanjc@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Tue, 16 Apr 2024 18:55:05 +0200
+Message-ID: <CABgObfanoru0cEHFbNOw9QDv8EWAkye4YPzfyDMyBmUwpJjiTA@mail.gmail.com>
+Subject: Re: [GIT PULL] KVM: x86: Fixes for 6.9-rcN
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I don't see any point why we need this.
+On Thu, Apr 11, 2024 at 10:35=E2=80=AFPM Sean Christopherson <seanjc@google=
+com> wrote:
+>
+> Please pull a big pile of fixes for 6.9.  Many of these were sent even be=
+fore
+> the 6.9 merge window, but I was on vacation until rc2, and things piled u=
+p.
+>
+> The back half of the commits were _just_ rebased to drop my version of th=
+e
+> LVTPC masking fixes, but that's your fault. :-)  For giggles, I also push=
+ed
+> kvm-x86 tags/kvm-x86-fixed-6.9-rcN-unrebased if you or anyone else want a=
+ paper
+> trail for the pre-rebase commits.
+>
+> Note, there's a perf change in here that didn't get an Ack from anyone, b=
+ut the
+> fixes have been on-list for over a month, and I can't imagine anyone obje=
+cting
+> to adding a new feature flag to x86_pmu_capability, which for all intents=
+ and
+> purposes exists purely for KVM.
+>
+> Thanks!
 
-On 04/15, Liao Yuanhong wrote:
-> Add a zone device priority option in the mount options. When enabled, the 
-> file system will prioritize using zone devices free space instead of 
-> conventional devices when writing to the end of the storage space.
-> 
-> Signed-off-by: Liao Yuanhong <liaoyuanhong@vivo.com>
-> ---
->  fs/f2fs/f2fs.h    |  1 +
->  fs/f2fs/segment.c | 13 ++++++++++++-
->  fs/f2fs/super.c   | 20 ++++++++++++++++++++
->  3 files changed, 33 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index fced2b7652f4..e2438f7d2e13 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -116,6 +116,7 @@ extern const char *f2fs_fault_name[FAULT_MAX];
->  #define	F2FS_MOUNT_GC_MERGE		0x02000000
->  #define F2FS_MOUNT_COMPRESS_CACHE	0x04000000
->  #define F2FS_MOUNT_AGE_EXTENT_CACHE	0x08000000
-> +#define F2FS_MOUNT_PRIORITY_ZONED	0x10000000
->  
->  #define F2FS_OPTION(sbi)	((sbi)->mount_opt)
->  #define clear_opt(sbi, option)	(F2FS_OPTION(sbi).opt &= ~F2FS_MOUNT_##option)
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index 4fd76e867e0a..adbe68a11fa5 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -2697,7 +2697,18 @@ static int get_new_segment(struct f2fs_sb_info *sbi,
->  find_other_zone:
->  	secno = find_next_zero_bit(free_i->free_secmap, MAIN_SECS(sbi), hint);
->  	if (secno >= MAIN_SECS(sbi)) {
-> -		secno = find_first_zero_bit(free_i->free_secmap,
-> +		/* set hint to get section from zone device first */
-> +		if (test_opt(sbi, PRIORITY_ZONED)) {
-> +			hint = GET_SEC_FROM_SEG(sbi, first_zoned_segno(sbi));
-> +			secno = find_next_zero_bit(free_i->free_secmap,
-> +						MAIN_SECS(sbi), hint);
-> +
-> +			/* get section from clu if exceeding the size limit */
-> +			if (secno >= MAIN_SECS(sbi))
-> +				secno = find_first_zero_bit(free_i->free_secmap,
-> +							MAIN_SECS(sbi));
-> +		} else
-> +			secno = find_first_zero_bit(free_i->free_secmap,
->  							MAIN_SECS(sbi));
->  		if (secno >= MAIN_SECS(sbi)) {
->  			ret = -ENOSPC;
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index a4bc26dfdb1a..2742978a100a 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -126,6 +126,8 @@ enum {
->  	Opt_inline_data,
->  	Opt_inline_dentry,
->  	Opt_noinline_dentry,
-> +	Opt_priority_zoned,
-> +	Opt_nopriority_zoned,
->  	Opt_flush_merge,
->  	Opt_noflush_merge,
->  	Opt_barrier,
-> @@ -204,6 +206,8 @@ static match_table_t f2fs_tokens = {
->  	{Opt_inline_data, "inline_data"},
->  	{Opt_inline_dentry, "inline_dentry"},
->  	{Opt_noinline_dentry, "noinline_dentry"},
-> +	{Opt_priority_zoned, "priority_zoned"},
-> +	{Opt_nopriority_zoned, "nopriority_zoned"},
->  	{Opt_flush_merge, "flush_merge"},
->  	{Opt_noflush_merge, "noflush_merge"},
->  	{Opt_barrier, "barrier"},
-> @@ -805,6 +809,16 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->  		case Opt_noinline_dentry:
->  			clear_opt(sbi, INLINE_DENTRY);
->  			break;
-> +#ifdef CONFIG_BLK_DEV_ZONED
-> +		case Opt_priority_zoned:
-> +			if (f2fs_sb_has_blkzoned(sbi))
-> +				set_opt(sbi, PRIORITY_ZONED);
-> +			break;
-> +		case Opt_nopriority_zoned:
-> +			if (f2fs_sb_has_blkzoned(sbi))
-> +				clear_opt(sbi, PRIORITY_ZONED);
-> +			break;
-> +#endif
->  		case Opt_flush_merge:
->  			set_opt(sbi, FLUSH_MERGE);
->  			break;
-> @@ -1990,6 +2004,12 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->  		seq_puts(seq, ",inline_dentry");
->  	else
->  		seq_puts(seq, ",noinline_dentry");
-> +#ifdef CONFIG_BLK_DEV_ZONED
-> +	if (test_opt(sbi, PRIORITY_ZONED))
-> +		seq_puts(seq, ",priority_zoned");
-> +	else
-> +		seq_puts(seq, ",nopriority_zoned");
-> +#endif
->  	if (test_opt(sbi, FLUSH_MERGE))
->  		seq_puts(seq, ",flush_merge");
->  	else
-> -- 
-> 2.25.1
+Pulled, thanks.
+
+Paolo
+
+> The following changes since commit fec50db7033ea478773b159e0e2efb135270e3=
+b7:
+>
+>   Linux 6.9-rc3 (2024-04-07 13:22:46 -0700)
+>
+> are available in the Git repository at:
+>
+>   https://github.com/kvm-x86/linux.git tags/kvm-x86-fixes-6.9-rcN
+>
+> for you to fetch changes up to eefb85b3f0310c2f4149c50cb9b13094ed1dde25:
+>
+>   KVM: Drop unused @may_block param from gfn_to_pfn_cache_invalidate_star=
+t() (2024-04-11 12:58:53 -0700)
+>
+> ----------------------------------------------------------------
+> KVM fixes for 6.9-rcN:
+>
+>  - Fix a mostly benign bug in the gfn_to_pfn_cache infrastructure where K=
+VM
+>    would allow userspace to refresh the cache with a bogus GPA.  The bug =
+has
+>    existed for quite some time, but was exposed by a new sanity check add=
+ed in
+>    6.9 (to ensure a cache is either GPA-based or HVA-based).
+>
+>  - Drop an unused param from gfn_to_pfn_cache_invalidate_start() that got=
+ left
+>    behind during a 6.9 cleanup.
+>
+>  - Disable support for virtualizing adaptive PEBS, as KVM's implementatio=
+n is
+>    architecturally broken and can leak host LBRs to the guest.
+>
+>  - Fix a bug where KVM neglects to set the enable bits for general purpos=
+e
+>    counters in PERF_GLOBAL_CTRL when initializing the virtual PMU.  Both =
+Intel
+>    and AMD architectures require the bits to be set at RESET in order for=
+ v2
+>    PMUs to be backwards compatible with software that was written for v1 =
+PMUs,
+>    i.e. for software that will never manually set the global enables.
+>
+>  - Disable LBR virtualization on CPUs that don't support LBR callstacks, =
+as
+>    KVM unconditionally uses PERF_SAMPLE_BRANCH_CALL_STACK when creating t=
+he
+>    virtual LBR perf event, i.e. KVM will always fail to create LBR events=
+ on
+>    such CPUs.
+>
+>  - Fix a math goof in x86's hugepage logic for KVM_SET_MEMORY_ATTRIBUTES =
+that
+>    results in an array overflow (detected by KASAN).
+>
+>  - Fix a flaw in the max_guest_memory selftest that results in it exhaust=
+ing
+>    the supply of ucall structures when run with more than 256 vCPUs.
+>
+>  - Mark KVM_MEM_READONLY as supported for RISC-V in set_memory_region_tes=
+t.
+>
+>  - Fix a bug where KVM incorrectly thinks a TDP MMU root is an indirect s=
+hadow
+>    root due KVM unnecessarily clobbering root_role.direct when userspace =
+sets
+>    guest CPUID.
+>
+>  - Fix a dirty logging bug in the where KVM fails to write-protect TDP MM=
+U
+>    SPTEs used for L2 if Page-Modification Logging is enabled for L1 and t=
+he L1
+>    hypervisor is NOT using EPT (if nEPT is enabled, KVM doesn't use the T=
+DP MMU
+>    to run L2).  For simplicity, KVM always disables PML when running L2, =
+but
+>    the TDP MMU wasn't accounting for root-specific conditions that force =
+write-
+>    protect based dirty logging.
+>
+> ----------------------------------------------------------------
+> Andrew Jones (1):
+>       KVM: selftests: fix supported_flags for riscv
+>
+> David Matlack (4):
+>       KVM: x86/mmu: Write-protect L2 SPTEs in TDP MMU when clearing dirty=
+ status
+>       KVM: x86/mmu: Remove function comments above clear_dirty_{gfn_range=
+,pt_masked}()
+>       KVM: x86/mmu: Fix and clarify comments about clearing D-bit vs. wri=
+te-protecting
+>       KVM: selftests: Add coverage of EPT-disabled to vmx_dirty_log_test
+>
+> Maxim Levitsky (1):
+>       KVM: selftests: fix max_guest_memory_test with more that 256 vCPUs
+>
+> Rick Edgecombe (1):
+>       KVM: x86/mmu: x86: Don't overflow lpage_info when checking attribut=
+es
+>
+> Sean Christopherson (11):
+>       KVM: Add helpers to consolidate gfn_to_pfn_cache's page split check
+>       KVM: Check validity of offset+length of gfn_to_pfn_cache prior to a=
+ctivation
+>       KVM: Explicitly disallow activatating a gfn_to_pfn_cache with INVAL=
+ID_GPA
+>       KVM: x86/pmu: Disable support for adaptive PEBS
+>       KVM: x86/pmu: Set enable bits for GP counters in PERF_GLOBAL_CTRL a=
+t "RESET"
+>       KVM: selftests: Verify post-RESET value of PERF_GLOBAL_CTRL in PMCs=
+ test
+>       KVM: VMX: Snapshot LBR capabilities during module initialization
+>       perf/x86/intel: Expose existence of callback support to KVM
+>       KVM: VMX: Disable LBR virtualization if the CPU doesn't support LBR=
+ callstacks
+>       KVM: x86/mmu: Precisely invalidate MMU root_role during CPUID updat=
+e
+>       KVM: Drop unused @may_block param from gfn_to_pfn_cache_invalidate_=
+start()
+>
+> Tao Su (1):
+>       KVM: VMX: Ignore MKTME KeyID bits when intercepting #PF for allow_s=
+maller_maxphyaddr
+>
+>  arch/x86/events/intel/lbr.c                        |  1 +
+>  arch/x86/include/asm/perf_event.h                  |  1 +
+>  arch/x86/kvm/mmu/mmu.c                             |  9 ++--
+>  arch/x86/kvm/mmu/tdp_mmu.c                         | 51 ++++++++--------=
+--
+>  arch/x86/kvm/pmu.c                                 | 16 +++++-
+>  arch/x86/kvm/vmx/pmu_intel.c                       |  2 +-
+>  arch/x86/kvm/vmx/vmx.c                             | 41 ++++++++++++---
+>  arch/x86/kvm/vmx/vmx.h                             |  6 ++-
+>  .../testing/selftests/kvm/max_guest_memory_test.c  | 15 +++---
+>  .../testing/selftests/kvm/set_memory_region_test.c |  2 +-
+>  .../selftests/kvm/x86_64/pmu_counters_test.c       | 20 +++++++-
+>  .../selftests/kvm/x86_64/vmx_dirty_log_test.c      | 60 ++++++++++++++++=
++-----
+>  virt/kvm/kvm_main.c                                |  3 +-
+>  virt/kvm/kvm_mm.h                                  |  6 +--
+>  virt/kvm/pfncache.c                                | 50 ++++++++++++----=
+--
+>  15 files changed, 194 insertions(+), 89 deletions(-)
+>
+
 
