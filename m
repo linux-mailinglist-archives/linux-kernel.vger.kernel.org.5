@@ -1,67 +1,69 @@
-Return-Path: <linux-kernel+bounces-146754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDF388A6A5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:10:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AEF28A6A61
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:11:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 942D71F217FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:10:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86C37B2104A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:11:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5EB12AAD2;
-	Tue, 16 Apr 2024 12:10:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B3C712BEA9;
+	Tue, 16 Apr 2024 12:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ldypGjqz"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cRfw9yae"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4B2127B57;
-	Tue, 16 Apr 2024 12:10:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D16912A17F;
+	Tue, 16 Apr 2024 12:10:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713269436; cv=none; b=p026pyuLHyrqmvssIaCnV0ApyeQAV3sNkRs0UeGltQdKuzgLuSdNFuOKBaG7u0aCEcGYtzZmoYjg1ZFX/rN4SXGNkylAM85VifioubalDT6moiZNZLtgY0urkH+1CPAED5z2iBDF3F3bmJwwQYP8pFDbENYJlFotMdNf2GSxVQM=
+	t=1713269438; cv=none; b=fLV9sWjFslHjiQr8ax6pXp7zArsIEU67Jnu7j7hEGWcQTizirhEC3BQarIMUkIa4+jq0AqVGX9bzhsCexFRK8VATaeHqdPOHKTpkwmBQVZp+G0d7Tn0fDDmBjge0/tXcUZFfCuhAWCsvXgoifvEbABRit3C+9shSHFUqUuXY8nQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713269436; c=relaxed/simple;
-	bh=oeygwidh8JjsndjXzqBY/y0hHXvLxr6263bY5yFGTNQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Lndot2FXB8cwZ35d0IFqQyagJQGLlWFgWDjs8THwEIYgu4YmnCGmsOgUfbXjPKygEsmhCtS0PeYO0a+rcgt6Hcc6q0LutSmiYd89iJ2jOCG52WSLHc5jFnvGgVy+nGiLYH/QGzspXXyocWcvTi9KbV0fbienTGlUPix0IS17ZZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ldypGjqz; arc=none smtp.client-ip=209.85.208.54
+	s=arc-20240116; t=1713269438; c=relaxed/simple;
+	bh=7HYteCqzMBVNnPZJ467F/B4yXEixmL6lB2fxTh4FCiM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ruxgBufv77WWoworu+y9cfofJw95jsTmZnmvEskVKvfPb63y+MiRfTzYwb6yX7yMeod+tHliVPMjFHh5lRHswQg9qqqPtTsCJzyVh95rqnB1Y4g/FYaeapwCWHF4Xbh7pcki0akRy9H2JB+Vq3/g5qDoGm2967HEFVQlCtX5QBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cRfw9yae; arc=none smtp.client-ip=209.85.218.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-57030fa7381so1915691a12.2;
-        Tue, 16 Apr 2024 05:10:34 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a5200afe39eso533370366b.1;
+        Tue, 16 Apr 2024 05:10:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713269433; x=1713874233; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rqic+xVQD7P5NplkS6N+DUp4Zv72nWmu6XLdwVwHsWQ=;
-        b=ldypGjqz5fLuig2yA9ppMaghbRhG9KJuSLdYpX0+Yjmn23GXVkdoI7QzLDEjmVgKyG
-         /nketclHvTb9FbJTEbGvRIXqEpkwOqXlzpia1R+WknuitblRtw1nrIQQT1zNg8T6Qxfr
-         J0EK6ViDg6V/cL6roJI4GrzVEG74+4uMEnPRScwbn0zpXe7HoEnqYC23YbBplko9xu2n
-         boyMS1rwmtMfuoSgkynr6yz8DXPjHumJnQ8DkrB5JR4u9aktww3Jws3pTr6MLBHQx0dG
-         FbvQAUd2Fe/dE5fWt51M1Yo6wtEHr3CkbVJfBtwEZXFXRJFAVevwsgLqG1q8xYFIeYKW
-         88Eg==
+        d=gmail.com; s=20230601; t=1713269435; x=1713874235; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qunSwPKc7mLDKqqj/ytcrTEeCRQTTp7HPOMCEfR0Oks=;
+        b=cRfw9yaeg54xPTipDbj/+0hg9Rs7ufr+dezFea6I2sLaoAt1wh2AzYDOQv9gkgg+EN
+         d0dj5ZUuVfEigFZdg3ZJ73og1GWFB9bL6Of6R2CV7uIPM44Ys8DHJN8vXYcDIuVZpAEQ
+         GW2L7P/dBzmEzcQJvzgGPi4s0PaDhVpyV5qNeEa3Jo+tPYM7+SAbimq7yOJ+9pNmk3VK
+         O2iaNVezPUggTscs+DvS5E4p43K7bEbaVLZ8DwxzibIEiLrUJ0hcPWi+BtO/Nr9o3CkH
+         YSfHzbTiW6zgtKuKpPMxIi5I2OPExygaBYm4y8RmmTNlGupN++yuBz52vVIUleRssixR
+         flEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713269433; x=1713874233;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rqic+xVQD7P5NplkS6N+DUp4Zv72nWmu6XLdwVwHsWQ=;
-        b=MHf/aRhxRZ7udtNec8CgRvzWLDQtMoxMOlett0msUP5qFWOQYrdN4wRK+gS9rOoosK
-         Z5KkTwbW4S3miHDDj66Gr2ABV58gekdcJt2wFWSWbKd45cViCkH34vL4evplrYHaY958
-         iw0OawEBYe238YUYN8PHKBmhU7pmACXhWnCLpFiSGIwFAHwDtMvQ5ztyoFu0x40oUKF/
-         Ei307gB71ShbTVuOdqI8Uutba60QttD4ddfXJM2OQu6dBFJSpLX2sQx0EKYrnMZ3t1Cu
-         AtPFMI7KAT2nbsn4QpSvCx41v1Ge7pt0dQCJHkWU3qYxlMtsnSWGlzS53hQLA79gd3mk
-         xkag==
-X-Forwarded-Encrypted: i=1; AJvYcCWZsmLHgPKt8PuvICEuntWJERIlC6oSJ+008CJLDR0f4HddboGuQ+vlDof8pnbpHKxZTTAl8IAnEMno4iavea+ysnTdc+AkYrRudzPHYNHmbaQEJLYLavRzDtR0dHFJsGndadwWLVWhLg==
-X-Gm-Message-State: AOJu0Yw3oUbZJmaB+klLBtDWZbHh7/YEoIRU1pL7LnT6W1MSloEyxcb8
-	by/9agMUM+JVM9Ii6cB9s1s8yTQ0lLgUk3Sep4eblbj9K/hZqX4d
-X-Google-Smtp-Source: AGHT+IFNRxgcUBqzcZL/4BDXxV4A+yo+1Eh41CrxJTp7WTXdCd0ry8qbZ8DnIqH6GfmzwX+AS/KLYQ==
-X-Received: by 2002:a17:907:7e87:b0:a51:adac:d6e0 with SMTP id qb7-20020a1709077e8700b00a51adacd6e0mr10553313ejc.62.1713269433453;
-        Tue, 16 Apr 2024 05:10:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713269435; x=1713874235;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qunSwPKc7mLDKqqj/ytcrTEeCRQTTp7HPOMCEfR0Oks=;
+        b=hfXTaruIxuyWa/uB1dAjkbRccta7OReSNRf6fLi9ZkKQUdWcX37c/38ozWJveoDAHX
+         4wkanQDBMJqZRztsaZTyqhhWitV/ztLulkxI3tLJHRsBt+9wX4YWtiXhAmuytMB8Jvpp
+         CYY5TmNEB8ZQytS0YI7cpP4la4nDAihHAYweTnlDPaITZiYEZoTxvYgiOn25kdpATN/A
+         B4ipTM4oVxj6x+dCGbQBgQXFWOREsOKsPC9AEwhoKdFOkP7tffzasK1wMbJPAt6RBfx0
+         5TbWPIAMWcBdSxL9tfMlR0BQQh2sfXHiTKXwqEwP1CcXdW6E+QOPlJMjLZiOVi4kght5
+         NVfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU/Yo7PDFTrjSqdq9DZc1mmv8QPAOvEKF18t4+RuoNkYqitkidRSE4BJ6cw3oPuuOFFtuptLFQZuDLEP9RneuLe0pAPwoDzwbtkmu1m46rl4Jkmj6xEuPSDPruEIa6C6SgfJ/sgp0oEDA==
+X-Gm-Message-State: AOJu0YxTKoaVcKCL2hSOd/hQ0Ivn2RrKZf5XKft/y8mGx/ryUQAPmXTz
+	HLOrQepQyneb4kqttJVffBW+edHrb+wcZBPTBygr5OT2QaghMaUH
+X-Google-Smtp-Source: AGHT+IFLd32PpfiMZS/7VU2QkkCZR1Wf817qWky5Xivl1b/LeGM3OeLirKtJfDe2F38dHsegA/iweQ==
+X-Received: by 2002:a17:907:36c2:b0:a54:4f06:375d with SMTP id bj2-20020a17090736c200b00a544f06375dmr4575931ejc.62.1713269434792;
+        Tue, 16 Apr 2024 05:10:34 -0700 (PDT)
 Received: from eichest-laptop.netmodule.intranet ([77.109.188.34])
-        by smtp.gmail.com with ESMTPSA id hg17-20020a170906f35100b00a469d3df3c1sm6767509ejb.96.2024.04.16.05.10.32
+        by smtp.gmail.com with ESMTPSA id hg17-20020a170906f35100b00a469d3df3c1sm6767509ejb.96.2024.04.16.05.10.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 16 Apr 2024 05:10:33 -0700 (PDT)
 From: Stefan Eichenberger <eichest@gmail.com>
@@ -80,10 +82,12 @@ To: davem@davemloft.net,
 Cc: netdev@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 0/2] mxl-gpy: add option to match SGMII speed to the TPI speed
-Date: Tue, 16 Apr 2024 14:10:30 +0200
-Message-Id: <20240416121032.52108-1-eichest@gmail.com>
+Subject: [RFC PATCH 1/2] dt-bindings: net: phy: gpy2xx: add sgmii-match-tpi-speed property
+Date: Tue, 16 Apr 2024 14:10:31 +0200
+Message-Id: <20240416121032.52108-2-eichest@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240416121032.52108-1-eichest@gmail.com>
+References: <20240416121032.52108-1-eichest@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,28 +96,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The mxl-gpy phy supports a mode in which it sets the SGMII speed to that
-negotiated over the twisted pair interface (tpi). This is useful if the
-Ethernet controller is not capable of autonegotiation over SGMII, or
-does not support the mode implemented by the mxl-gpy driver. This patch
-adds a new property to the device tree bindings to enable this mode.
+Add a new sgmii-match-tpi-speed property to the gpy2xx binding to allow
+the phy to match the SGMII link speed to that negotiated on the TPI
+interface.
 
-I marked this series as an RFC because I'm not sure if adding a new
-property is the way to go or if we should use the in-band-status of the
-phylink instead. Unfortunately, it is not possible to access the phylink
-structure in the phy context. This would mean that I would have to add a
-new function to the phylink driver that would allow us to access the
-cur_link_an_mode property, or am I missing something?
+Signed-off-by: Stefan Eichenberger <eichest@gmail.com>
+---
+ Documentation/devicetree/bindings/net/maxlinear,gpy2xx.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Stefan Eichenberger (2):
-  dt-bindings: net: phy: gpy2xx: add sgmii-match-tpi-speed property
-  net: phy: mxl-gpy: add new device tree property to disable SGMII
-    autoneg
-
- .../bindings/net/maxlinear,gpy2xx.yaml         |  6 ++++++
- drivers/net/phy/mxl-gpy.c                      | 18 +++++++++++++++++-
- 2 files changed, 23 insertions(+), 1 deletion(-)
-
+diff --git a/Documentation/devicetree/bindings/net/maxlinear,gpy2xx.yaml b/Documentation/devicetree/bindings/net/maxlinear,gpy2xx.yaml
+index 8a3713abd1ca..9deae36bd837 100644
+--- a/Documentation/devicetree/bindings/net/maxlinear,gpy2xx.yaml
++++ b/Documentation/devicetree/bindings/net/maxlinear,gpy2xx.yaml
+@@ -27,6 +27,12 @@ properties:
+       Affected PHYs (as far as known) are GPY215B and GPY215C.
+     type: boolean
+ 
++  maxlinear,sgmii-match-tpi-speed:
++    description: |
++      When this property is present, the SGMII speed is set to the twisted
++      pair interface (tpi) speed.
++    type: boolean
++
+ dependencies:
+   maxlinear,use-broken-interrupts: [ interrupts ]
+ 
 -- 
 2.40.1
 
