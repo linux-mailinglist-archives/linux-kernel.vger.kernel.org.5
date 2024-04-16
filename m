@@ -1,124 +1,120 @@
-Return-Path: <linux-kernel+bounces-147393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1014C8A734C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:34:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0240F8A7352
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:36:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 423191C226AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:34:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAA991F231CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 246F61369B1;
-	Tue, 16 Apr 2024 18:34:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FB4F137748;
+	Tue, 16 Apr 2024 18:36:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="hn1CQ/Gg"
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B0XOvrLO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6B5132C37
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:34:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8F562D60A;
+	Tue, 16 Apr 2024 18:36:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713292467; cv=none; b=sBc7rUQ5PX/CvYU53wqCSUhOEV3f7aEjJs6V5n1xZl0+/YbCLVji4ckzz7ZbgWFOjCfNmoo7GWzlCHW51w42R3P3ttwEIQOvg6ukp5icORZb7RySOqpMSDWpQIlepMq1zEK1R2Ml99RzlxSGrWV1M+WcvriV+xvxHKdberkHpvo=
+	t=1713292561; cv=none; b=Lu6NlSY+3fEROkGqsyGPt40mpHBkgoCqr0PrM4OwTsfsaNMhGsh2UE7edhC3maQljhQ588Le6CrH3r4ZEtHK9y26vi3TKuRTseW0iMp5rGt5NllS0kmmxINf5UhMx6I8v0BREIuT3Ri8I4hH+OyMb2eAcTTgbFWPtxRi+viIoik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713292467; c=relaxed/simple;
-	bh=SZ9BlOq9LC/Dzi9Ke1GsgNFBMPYPVQktfTHm/zfvHdA=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NvZRASXD2WL6nz2LCGYn07KjUnbImM8WnLbK4MEu2CuS622qnPbmx7MCDOUUm6acjP5RuduhoyEV73Uk9z+QWNRHkuOkXswhKdWP6LVdP9Lu5hODyJfAI3tTneUxAHagYG4l/1lgWOnCTv5J+MLy1PJER+NeDzLkiFU0u1NJle0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=hn1CQ/Gg; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1713292463; x=1713551663;
-	bh=SZ9BlOq9LC/Dzi9Ke1GsgNFBMPYPVQktfTHm/zfvHdA=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=hn1CQ/GgpX9BczIc9SqdPGiPdserIrTIiPm9lk0gzJXJGax1LwhZF7As1Z2/jcgdi
-	 87gXJOIITzGmbfKhFfOzX8sWkhNDDmk7/SH3Na1c3QoQyv/c16KagIL70MLcKIgd6B
-	 FYpaT7ujVBkGCEPfrsSXTqMJuCTU6ipZ6LV3e9dZQPR7GDe0zR8AXjk1lbfYMX2leQ
-	 72I8cVZi/vi1mCmaXSvXwgvGw5YIwk30OYJPu27zKEUUIruOJIqtItQvbg9Buih8jV
-	 1m/t0+9MyoAasUQ74R4y+QNX/sg/KlvLbt0UsFvMIqqIFpnr73so2RFXBioOrV5XSB
-	 QYRUkR1ltL/vg==
-Date: Tue, 16 Apr 2024 18:34:10 +0000
-To: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>
-From: Michael Pratt <mcpratt@pm.me>
-Cc: Wander Lairson Costa <wander@redhat.com>, =?utf-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vamshi Gajjela <vamshigajjela@google.com>, Michael Pratt <mcpratt@pm.me>
-Subject: [PATCH v2 3/3] serial: 8250: Set fifo timeout using uart_fifo_timeout()
-Message-ID: <20240416182741.22514-4-mcpratt@pm.me>
-In-Reply-To: <20240416182741.22514-1-mcpratt@pm.me>
-References: <20240416182741.22514-1-mcpratt@pm.me>
-Feedback-ID: 27397442:user:proton
+	s=arc-20240116; t=1713292561; c=relaxed/simple;
+	bh=RUydQSI9IalFqEGbK9QMhcm64ilwdfZmZE3G8mYwjzg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g7ntnfBFNwCTT10vYndeQqSnwYJ+n4VbQp4hqvKKolS9TvvOphVlm1hKkCCk1MxuMAAdUm1qhKXR05Y9/r0p7IEDpLvmRd5EI8rt6fQp3RXfC/Oy3UW5P+T7UwHb+jS5p2d/5qfbh5rnwTRtYEYIbAOvBW5BinLYlkAFw0o/njk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B0XOvrLO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 165C3C113CE;
+	Tue, 16 Apr 2024 18:35:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713292561;
+	bh=RUydQSI9IalFqEGbK9QMhcm64ilwdfZmZE3G8mYwjzg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B0XOvrLOmIGvtvZ81QXFXzN4kYMmV6ckD/uMbpDkJL8LOZfAKxnJZFm4KYJoTWIoO
+	 M8TyNsvhgGRMql9wlIWgnTAj1yJcmch0lIXb0su80K1hgIpyMoUga4NhSei6/A4QCk
+	 lc7bJGNPIsemhUlHKhSgp7YZTyvWyEl+9p/aR5FZCziUNaaxjKV5J6CY9Vg7g0tRuw
+	 6BE159Fcux3KiPOeKvDdx07Lvy8+3/UBMYMRoW7yUZu5yxKDaYJFE6O04Tjv6grN+z
+	 fR1mt4uB/FYFf4+9WdGti/KqrBBHoPa3Dvg2s5jspWiwhLLJ4TP0WNg46JR094OSOl
+	 K+Kx+6gKRxQUQ==
+Date: Tue, 16 Apr 2024 21:34:51 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Nam Cao <namcao@linutronix.de>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Andreas Dilger <adilger@dilger.ca>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>,
+	Ext4 Developers List <linux-ext4@vger.kernel.org>,
+	Conor Dooley <conor@kernel.org>,
+	Anders Roxell <anders.roxell@linaro.org>,
+	Alexandre Ghiti <alex@ghiti.fr>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+Message-ID: <Zh7Ey507KXIak8NW@kernel.org>
+References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
+ <8734rlo9j7.fsf@all.your.base.are.belong.to.us>
+ <Zh6KNglOu8mpTPHE@kernel.org>
+ <20240416171713.7d76fe7d@namcao>
+ <20240416173030.257f0807@namcao>
+ <87v84h2tee.fsf@all.your.base.are.belong.to.us>
+ <20240416181944.23af44ee@namcao>
+ <Zh6n-nvnQbL-0xss@kernel.org>
+ <Zh6urRin2-wVxNeq@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zh6urRin2-wVxNeq@casper.infradead.org>
 
-Commit 8f3631f0f6eb ("serial/8250: Use fifo in 8250 console driver")
-reworked functions for basic 8250 and 16550 type serial devices
-in order to enable and use the internal fifo device for buffering,
-however the default timeout of 10 ms remained, which is proving
-to be insufficient for low baud rates like 9600, causing data overrun.
+On Tue, Apr 16, 2024 at 06:00:29PM +0100, Matthew Wilcox wrote:
+> On Tue, Apr 16, 2024 at 07:31:54PM +0300, Mike Rapoport wrote:
+> > > @@ -238,17 +237,9 @@ static void __init setup_bootmem(void)
+> > >  	/*
+> > >  	 * memblock allocator is not aware of the fact that last 4K bytes of
+> > >  	 * the addressable memory can not be mapped because of IS_ERR_VALUE
+> > > -	 * macro. Make sure that last 4k bytes are not usable by memblock
+> > > -	 * if end of dram is equal to maximum addressable memory.  For 64-bit
+> > > -	 * kernel, this problem can't happen here as the end of the virtual
+> > > -	 * address space is occupied by the kernel mapping then this check must
+> > > -	 * be done as soon as the kernel mapping base address is determined.
+> > > +	 * macro. Make sure that last 4k bytes are not usable by memblock.
+> > >  	 */
+> > 
+> > It's not only memblock, but buddy as well, so maybe
+> > 
+> > 	/*
+> > 	 * The last 4K bytes of the addressable memory can not be used
+> > 	 * because of IS_ERR_VALUE macro. Make sure that last 4K bytes are
+> > 	 * not usable by kernel memory allocators.
+> > 	 */
+> > 
+> > > -	if (!IS_ENABLED(CONFIG_64BIT)) {
+> > > -		max_mapped_addr = __pa(~(ulong)0);
+> > > -		if (max_mapped_addr == (phys_ram_end - 1))
+> > > -			memblock_set_current_limit(max_mapped_addr - 4096);
+> > > -	}
+> > > +	memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE);
+> > 
+> > Ack.
+> 
+> Can this go to generic code instead of letting architecture maintainers
+> fall over it?
 
-Unforunately, that commit was written and accepted just before commit
-31f6bd7fad3b ("serial: Store character timing information to uart_port")
-which introduced the frame_time member of the uart_port struct
-in order to store the amount of time it takes to send one uart frame
-relative to the baud rate and other serial port configuration,
-and commit f9008285bb69 ("serial: Drop timeout from uart_port")
-which established function uart_fifo_timeout() in order to
-calculate a reasonable timeout to wait until flushing
-the fifo device before writing data again when partially filled,
-using the now stored frame_time value and size of the buffer.
+Yes, it's just have to happen before setup_arch() where most architectures
+enable memblock allocations.
 
-Fix this by using the stored timeout value made with this new function
-to calculate the timeout for the fifo device, when enabled, and when
-the buffer is larger than 1 byte (unknown port default).
-
-The previous 2 commits add the struct members used here
-in order to store the values, so that the calculations
-are offloaded from the functions that are called
-during a write operation for better performance.
-
-Tested on a MIPS device (ar934x) at baud rates 625, 9600, 115200.
-
-Fixes: 8f3631f0f6eb ("serial/8250: Use fifo in 8250 console driver")
-Signed-off-by: Michael Pratt <mcpratt@pm.me>
----
-V1 -> V2:
- Use stored values instead of calling uart_fifo_timeout()
- or checking capability flags.
- The existence of the timeout value satisfies fifosize > 1.
-
- drivers/tty/serial/8250/8250_port.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/=
-8250_port.c
-index 5b0cfe6bc98c..cf67911a74f5 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -2066,7 +2066,10 @@ static void wait_for_lsr(struct uart_8250_port *up, =
-int bits)
- {
- =09unsigned int status, tmout =3D 10000;
-=20
--=09/* Wait up to 10ms for the character(s) to be sent. */
-+=09/* Wait for a time relative to buffer size and baud */
-+=09if (up->fifo_enable && up->port.timeout)
-+=09=09tmout =3D jiffies_to_usecs(up->port.timeout);
-+
- =09for (;;) {
- =09=09status =3D serial_lsr_in(up);
-=20
---=20
-2.30.2
-
-
+-- 
+Sincerely yours,
+Mike.
 
