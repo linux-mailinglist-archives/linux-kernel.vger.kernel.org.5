@@ -1,213 +1,182 @@
-Return-Path: <linux-kernel+bounces-146480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 617778A65D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E7DF8A65A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:04:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAA101F24385
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:14:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCCD11F21C0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:04:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB82156895;
-	Tue, 16 Apr 2024 08:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58B2136E2B;
+	Tue, 16 Apr 2024 08:04:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="DjfBfnCe"
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="F2qZYgyj"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 889CD8665B;
-	Tue, 16 Apr 2024 08:13:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02ECC132492
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:04:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713255235; cv=none; b=Bo/VO32gKEp/cQNXWiOm70qcDMlA02cenALcE6z6l2oQq1bn8M0loXAOsQkcvLLCNhQWf17j2nMruLHfHxedMt9sENrLUe+88n6R+ELmzat6/l3rncBx3nfmmZW4llL3weF7YqcnQo00IlGcIvPC165G7yKRDcrCuTVElOAvP8o=
+	t=1713254680; cv=none; b=FcM3xHbpLZ44/B3GlJul4rF9nhohxLJ8yGqUXxVHwl8/2BsVYmM4Rum78GaNni8WrTxDILMpyPz62RJZeF3PMwDyLC/PsGmFMNEW+m7Ze5JJa3jJZn/+R9YMk5N8i7ObNKWJ9muO7wXulyAg0W7/hIOzM739Ph+kxAgXAmJHZlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713255235; c=relaxed/simple;
-	bh=YqgOG9P2hP+Vazd20A7MBz6h2MRJHFt4LF2ghAPYO2E=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=k21OssrUmmuuo1y9eotbeHsjvdyJUkxEdiQ8UBShV4sw94s4UGOCFhnw3oRXRtKujCnYTzPAnMxWjwin+unHVYl5rbHJhOdR3sAQDpGbgV1dwEHq2/ggtoCBQIfO1cnPytLQtA6087WaK6+RbW28B0PjgLxiZYE6KpZ8mvaF6hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=DjfBfnCe; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240416081348euoutp01e986ae0c0420cbaa6fc619f69deca38c~GtI2QdGVB1646716467euoutp01L;
-	Tue, 16 Apr 2024 08:13:48 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240416081348euoutp01e986ae0c0420cbaa6fc619f69deca38c~GtI2QdGVB1646716467euoutp01L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1713255228;
-	bh=bIsb30PZaSLB5OiZcM1+QbJIYYQGcYX6Ld4HuDawoik=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=DjfBfnCeczMwC9VGzREMUcny6hjKUIOJoo9UY/piJvcw7sh4r6U0qajsOpPBvf5/a
-	 Am3tENqHGcwHVkdAyNnMNbfN0nb5zgR2HXcAz+cdr5eruKji3XZlXhuBFe53cTSFKr
-	 W7mDC4fAmyjv0YJa7FWCt6cSAqXOWsc+9rtiMLp4=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240416081348eucas1p21cb60b08f416405e6a309e4ef595fa28~GtI1_WOdJ1606116061eucas1p26;
-	Tue, 16 Apr 2024 08:13:48 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges3new.samsung.com (EUCPMTA) with SMTP id D9.06.09620.B333E166; Tue, 16
-	Apr 2024 09:13:47 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240416081347eucas1p2328252cc35f468c42c0954eaa09d59eb~GtI1f3yuF1895218952eucas1p2U;
-	Tue, 16 Apr 2024 08:13:47 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240416081347eusmtrp140e4080a0a0dac1890e78f8bb14248ff~GtI1dsrEb2457724577eusmtrp1W;
-	Tue, 16 Apr 2024 08:13:47 +0000 (GMT)
-X-AuditID: cbfec7f5-d1bff70000002594-a1-661e333b54e0
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id 18.75.09010.B333E166; Tue, 16
-	Apr 2024 09:13:47 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240416081347eusmtip12c7c7c247154a41e8dc385754f42215a~GtI1M5Wo13269232692eusmtip1G;
-	Tue, 16 Apr 2024 08:13:47 +0000 (GMT)
-Received: from localhost (106.210.248.128) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Tue, 16 Apr 2024 09:13:46 +0100
-Date: Tue, 16 Apr 2024 09:53:36 +0200
-From: Joel Granados <j.granados@samsung.com>
-To: Paul Moore <paul@paul-moore.com>
-CC: Andrew Morton <akpm@linux-foundation.org>, Muchun Song
-	<muchun.song@linux.dev>, Miaohe Lin <linmiaohe@huawei.com>, Naoya Horiguchi
-	<naoya.horiguchi@nec.com>, John Johansen <john.johansen@canonical.com>,
-	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
-	David Howells <dhowells@redhat.com>, Jarkko Sakkinen <jarkko@kernel.org>,
-	Kees Cook <keescook@chromium.org>, Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>, Jens Axboe <axboe@kernel.dk>, Pavel
-	Begunkov <asml.silence@gmail.com>, Atish Patra <atishp@atishpatra.org>, Anup
-	Patel <anup@brainfault.org>, Will Deacon <will@kernel.org>, Mark Rutland
-	<mark.rutland@arm.com>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
-	Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Luis
-	Chamberlain <mcgrof@kernel.org>, <linux-mm@kvack.org>,
-	<linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<apparmor@lists.ubuntu.com>, <linux-security-module@vger.kernel.org>,
-	<keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-	<io-uring@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 2/7] security: Remove the now superfluous sentinel
- element from ctl_table array
-Message-ID: <20240416075336.stuemtkatjdz4rqe@joelS2.panther.com>
+	s=arc-20240116; t=1713254680; c=relaxed/simple;
+	bh=aFtDoP+ptsA+xiiT/L0BTr1limxkEohlLYO2fK22oWU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=eYRWdUytvDTnl4nmkQmGyh2nEE7UGdgn8nIz9i/TIDw3I/xybBDEE/K+wMwwfr6is5I6uSjAYZyesjJJSJ/2u03f+fBx79wFnvOQg+9rfcBaD9SsVBXoa41SV6jJk0huk42FyMdrzcIylROfpIax1ITVbapepTnObkO1/Q/JESw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=F2qZYgyj; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713254674;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4mpnmnLcLPbxDi7bNweS52z62pdChPh+H06QF5Sioa0=;
+	b=F2qZYgyjcDR2W5A3YYPrsNiM8JOf/aO8M1CWmBhMZ/5AC2cZxvnFJD6fPewwYjcYQyhH9o
+	o9DjjDpiYHrpYveGsJlUfl35fI6NmvkhskR6lIkgRs/iJGRx/qOTmnZN0qG1n0cW2iB5Nd
+	ryfAV+89BS6a+MI5Ia4wIrfGoLxOU0k=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-264-xJHcP4_rPCO_8-01Z6Gu6A-1; Tue, 16 Apr 2024 04:04:33 -0400
+X-MC-Unique: xJHcP4_rPCO_8-01Z6Gu6A-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a51abd0d7c6so332121466b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 01:04:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713254671; x=1713859471;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4mpnmnLcLPbxDi7bNweS52z62pdChPh+H06QF5Sioa0=;
+        b=e3PyuHL5L5wDq38Dnp7qSttd/+1z9qUnCBj+NNyFUE3cmOHwwJ6DZaKb1CL+U832Fw
+         tF/xEVZz8ebHkzUqOJvVPGdviu8hstpTPOdjSRwbPnbnsxzT6AT0hVuw95zXbIO+f1WO
+         CX4hQcXnUX0ypRA/T+/m3DXmzVKTRsacBcLNfC1lSfKH5adNhtaJv5ghB54vQknPBLcx
+         dWvoevQpSfcKRc8LQuvyaxEPY/RQHMqkGf9mo1hi+MvxqdbRO4NpG4ox3P0lUsdpK0kg
+         iLpr3121VsdtIQlFNiGZHWn8dpFk4NvxxxN8ueeC/YvqGVTDjpAsVVIIlrRdLUTbfvRa
+         axew==
+X-Forwarded-Encrypted: i=1; AJvYcCWP2Eq2TRgAiS57HTcjESOeU/5FKn14Rb2Xe32okUlQi+5sv5CmrrblmMuHETaJgAU/YcVADx4xK4dBeGWT89PBNIMt9ezINLBFF+lZ
+X-Gm-Message-State: AOJu0YyQNXS9BZVJ5dHYNKdwo4SGnFpsNXh459Yh71QftfSX0zD+ejjP
+	JLEUIXtYttIPj+swh8D7Hpi+sOhbuTjFTltwIaQGh8pqAKZL9bo60DNP/BHm7E9lMrt52w1sESr
+	LrIF5IIDae1qTCICy8BJ2572jEAFBELMo++l7rCWpKtzRMFR/APIiQ9yBCQ0j7Crxk4wJkQ==
+X-Received: by 2002:a17:906:3110:b0:a51:dbd3:5ac4 with SMTP id 16-20020a170906311000b00a51dbd35ac4mr6705423ejx.30.1713254671483;
+        Tue, 16 Apr 2024 01:04:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEJ6qRV4BzR4P7/mlY/Gcc8MwqwRiPtqgpsZtFWVOxC9g1J4h2RQXqbM+ckQZjDTocTIt3mMg==
+X-Received: by 2002:a17:906:3110:b0:a51:dbd3:5ac4 with SMTP id 16-20020a170906311000b00a51dbd35ac4mr6705406ejx.30.1713254671065;
+        Tue, 16 Apr 2024 01:04:31 -0700 (PDT)
+Received: from [10.39.194.81] (5920ab7b.static.cust.trined.nl. [89.32.171.123])
+        by smtp.gmail.com with ESMTPSA id s8-20020a170906284800b00a4e07760215sm6503388ejc.69.2024.04.16.01.04.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Apr 2024 01:04:30 -0700 (PDT)
+From: Eelco Chaudron <echaudro@redhat.com>
+To: Jun Gu <jun.gu@easystack.cn>
+Cc: pshelar@ovn.org, dev@openvswitch.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [ovs-dev] [PATCH] net: openvswitch: Check vport name
+Date: Tue, 16 Apr 2024 10:04:29 +0200
+X-Mailer: MailMate (1.14r6029)
+Message-ID: <084E7217-6290-46D2-A47A-14ACB60EBBCA@redhat.com>
+In-Reply-To: <671d3c3b-a5c4-4dbd-800b-fbfec0fbe4dc@easystack.cn>
+References: <20240413084826.52417-1-jun.gu@easystack.cn>
+ <9D534A61-4CC2-4374-B2D8-761216745EDD@redhat.com>
+ <671d3c3b-a5c4-4dbd-800b-fbfec0fbe4dc@easystack.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="zfniyufgrrisfuqi"
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhT1ykCKnijSbsgPXO9o-5_LHAtSm=q=cdQ8N9QH+WA+tw@mail.gmail.com>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA1WTfVBUVRjGO/eevXdBgctHcUCzXKQUFGyIPKOSMCrdP/zDoqYxJnODKzDC
-	wuyKkdEItNIuH4Igs7au8ikou4EtsCpiEQlCIggkrMQugW7Fp8iHRNtgbBfL/vs97/s8M897
-	Zo6QdHlCeQpjJIc5qUQcK6LsoaFloWPTtoA1Bzf/2rcFa6p1FJZPTQpwnVVN49SWIgHWVBoA
-	VnSEYq0ph8KaTjnEk2lWiDNHV+PJ4x0Q5y3kAlxVXUrg1tnjFG7PjMN1A2kUVs6fh1h/v1eA
-	B80LBG643gZxT72GwmbdEwE2zMgpPJU1TOHzfV0ENuZaAC6/OgRxV2ojwCM9WSROVzvhn/NU
-	EHfe6aCxfCAweC2rO6cDbK/iG8gWWNshq07JptgzKV2QHR8ZgWztxXsE+4Nilmavqk00a2j0
-	Znuv7WPlNyYEbM/tRFZfqaRY/XQezbaetsK9Hh/Yb4/kYmOOcFL/Nw/YR2dOyImEbKeka3Ny
-	IgVMr8wAdkLEvI7qzUoyA9gLXZgLAPW1DVO8mAWoK/Ux5MUMQH+11hBPI/ON3TS/qABo4Pb3
-	1L+umeIbAl7UAVSY3QJtEch4o0nDCGljitmIOscH/mE3Zh0qtVQDG5NMoR1q/jrGxq4Mh+aV
-	nZSNHZhgpMo9KeDZGbV99QDy/iR0vfn+EguXeBWqWBTa0I55G/2RxfBFvVDacJmA58/Rj7X9
-	hK0aYk6tQKbC9OXFLpR71wh5dkWjN2tpnlejW/lZkA/kA/Td4hTNCy1A5alzy2+xDcl/erCc
-	CEE5f+oEthaIcUTGCWe+pyPKM6hIfuyAFOkuvPsVpDWPw1zgpX7mMvUzl6n/u4zHDai63v9/
-	U5vZF5UXj5E8B6GqqoewCNCVwJ1LlMVFcbIACfeJn0wcJ0uURPlFxMfpwdK/uLV4c+4KuDD6
-	yK8JEELQBNYthYcvae8ATyiJl3AiNwe564sHXRwixZ8e5aTxH0kTYzlZE1glhCJ3B+/IlzgX
-	Jkp8mDvEcQmc9OmWENp5phDvzEZt3Kr9bZNkopjMnJ0ym77ITl5vfW775SBL6bHwiApLWdDY
-	LxEPvUK6Q5nPRkP0ycSXDW2qoaEwUcKezYPRRSWPj5xs1pcwZFpTXfDLpNZpPGil4/r3usL0
-	SBYWSM1EtkV/23k3y/joqNKDe0twdj51Q8jg1v72feFKY8GhAxMnnqeNSWaf0/kvSKpMOwfm
-	h/yDfUtO0GyY3bvuY9M71vQrM1pnYk7VuJ/dD+5d7rAPf0M4new4/THrI67Z0uMbVBX1amhE
-	Q5/zlWiPvTpF/Ic7QsMvWQJ81Wuz2/cPZ2pWuDlfVHkk7vp99zFloDWnSEmY4lRJBbsrFf5N
-	ZcXv7+kWQVm0+DUfUioT/w3sC6XnkgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WSbUxTVxiAc3pvb1szxl0p41iVQQXNYBRaKB6QEseSefWHDMiybMBYA7eA
-	0hb74cY2F8TCgGJWiAbXNcKGhYEEhEAjc4sMFxSElo+AcxQWUDBFRJxExAqs0C0z2b/nvB/P
-	++bkZWNcM8Fn5yq1tFopyxMQ2/Bb6zcmw/ZH+ssjOs74IXNrM4H0S4tM1OkysdCp3lomMjdZ
-	ASq1vYsuTX5DILNdj6PFIheODPM70WKxDUdVq0aAWlrrGOjmcjGBBgwK1OkoIlDZigVH7XfH
-	mejPqVUG+vmXPhyN/mQm0FTzBhNZn+gJtFQxQyDL7WEG+t04C1B91zSOhk91A+QcrcBQickb
-	TVRV48g+ZGMhvUNyIJBqvtAMqPHSNpw65xrAKVPhGYL6rnAYpxacTpzqaLzDoK6XLrOoLtMk
-	i7J2B1PjVz+k9L89ZFKjgzqqvamMoNr/qmJRN8+78Pe2fySMU6t0WjogR6XRSgWpIiQWimKQ
-	UBwVIxRF7kuPFUsE4fFxWXRe7glaHR7/iTDn/rVFLN/g/VlXDa8QLL1SDjhsSEbBle4RVjnY
-	xuaSFgBLr/YRnsRO2LY8xvSwD3wxXk54ih4DOL1mwjyPTgAnvl7GN6twMhguWp3YJhPkW9C+
-	4NhiHhkE62ZbwWYDRtZw4IOuwS2tD0nDlTL71jgv8gCsNlYyPdZ6DLZ1FgJP4jXY9+29rQkY
-	eQL2N/e4rWw374AN6+xN5JBJ8FkF6dl0NyyaufjP1ifhk7U5YAQ+ppdEppdEpv9EnvBe+OLC
-	yP/DobD++weYh6WwpeURXgtYTYBH6zSKbIVGLNTIFBqdMluYqVK0A/dpWntXO66AxvnHwh7A
-	YIMeEOTunLl8aQjwcaVKSQt4XnqfXXKuV5as4HNarcpQ6/JoTQ+QuH+xEuP7Zqrcd67UZoii
-	IySiqOiYCElMdKTAz+tQfqmMS2bLtPQxms6n1f/2MdgcfiGjZuRgdpyjsvaN7csnMx3Pn6XP
-	cVPuWn9th0cXDtZZshpe95N4BdhW9xy22YPjGMf0az8MKnM+vciXPsJ2DIWNpHGS/phZOU7a
-	05PW/davBDSk7sl2vb+voqVE0ZtQHHtt/5Gze2efHr8/JZYaePKVRE7o6YxkueOGI7ZoY+rj
-	8FjX00NBIe8UXLeGGjZWv8q99eVt//w034LGkqW0DNv0wFD887bilIcVvBFHSpOxNbkkskr2
-	BU8eVkl3wMRX55x3TGNs/5AsnU9CdbX6vNXCCowXefu+3S8/fMTCT3pzgnfUeU6qTZQuGO71
-	X07OEvYOnN7N25UwJk6dPzv945T5g0ABrsmRiUIwtUb2Ny6p+ksvBAAA
-X-CMS-MailID: 20240416081347eucas1p2328252cc35f468c42c0954eaa09d59eb
-X-Msg-Generator: CA
-X-RootMTR: 20240328155911eucas1p23472e0c6505ca73df5c76fe019fdd483
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240328155911eucas1p23472e0c6505ca73df5c76fe019fdd483
-References: <20240328-jag-sysctl_remset_misc-v1-0-47c1463b3af2@samsung.com>
-	<CGME20240328155911eucas1p23472e0c6505ca73df5c76fe019fdd483@eucas1p2.samsung.com>
-	<20240328-jag-sysctl_remset_misc-v1-2-47c1463b3af2@samsung.com>
-	<20240415134406.5l6ygkl55yvioxgs@joelS2.panther.com>
-	<CAHC9VhTE+85xLytWD8LYrmdV8xcXdi-Tygy5fVvokaLCfk9bUQ@mail.gmail.com>
-	<CAHC9VhT1ykCKnijSbsgPXO9o-5_LHAtSm=q=cdQ8N9QH+WA+tw@mail.gmail.com>
-
---zfniyufgrrisfuqi
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 03:02:43PM -0400, Paul Moore wrote:
-> On Mon, Apr 15, 2024 at 10:17=E2=80=AFAM Paul Moore <paul@paul-moore.com>=
- wrote:
-> > On Mon, Apr 15, 2024 at 9:44=E2=80=AFAM Joel Granados <j.granados@samsu=
-ng.com> wrote:
-> > >
-> > > Hey
-> > >
-> > > This is the only patch that I have not seen added to the next tree.
-> > > I'll put this in the sysctl-next
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git/log=
-/?h=3Dsysctl-next
-> > > for testing. Please let me know if It is lined up to be upstream thro=
-ugh
-> > > another path.
-> >
-> > I was hoping to see some ACKs from the associated LSM maintainers, but
-> > it's minor enough I'll go ahead and pull it into the lsm/dev tree this
-> > week.  I'll send a note later when I do the merge.
->=20
-> ... and now it's merged, it should be in the next cut of the
-> linux-next tree.  Thanks!
 
-Awesome. I'll remove it from sysctl-next then to avoid any potential
-crashes.
 
-Thx
+On 16 Apr 2024, at 9:57, Jun Gu wrote:
 
---=20
+> Hi Chaudron, thanks for your reply. Considerthe following scenario:
+>
+> - set a net device alias name (such as *enpxx*) into ovs.
+>
+> - |OVS_VPORT_CMD_NEW -> ||dev_get_by_name can query the net device usin=
+g *enpxx* name, but the dev->name that return is *ensxx* name. the |net_d=
+evice|struct including: ``` |struct=C2=A0net_device=C2=A0{
+>     char			name[IFNAMSIZ];
+>     RH_KABI_REPLACE(struct=C2=A0hlist_node=C2=A0name_hlist,
+>     		struct=C2=A0netdev_name_node=C2=A0*name_node)
+> ...
+> |``` name_hlist include enpxx and ensxx name and both of them point to =
+the same net_device, the net_device's name is ensxx. So when using *enpxx=
+* name to query net device, the ||net device's name that return is *ensxx=
+* name.|
+> Then, openvswitch.ko will save the net device that name is*ensxx*  to a=
+ hash table. So this will cause the below process:
+> - ovs can'tobtain the enpxx net device by |OVS_VPORT_CMD_GET.|
+> -|dpif_netlink_port_poll will get a |notification after |OVS_VPORT_CMD_=
+NEW|, but the vport's name is ensxx. ovs will query the ensxx net device =
+from interface table, but nothing. So ovs will run the port_del operation=
+=2E
+> - this will cause|OVS_VPORT_CMD_NEW|  and OVS_VPORT_CMD_DEL operation t=
+o run repeatedly.
+> So the above issue can be avoided by the patch.
 
-Joel Granados
+Thanks for the clarification, I forgot about the alias case. And you are =
+right, OVS userspace does not support using interface aliases.
 
---zfniyufgrrisfuqi
-Content-Type: application/pgp-signature; name="signature.asc"
+Maybe you can update the commit message, and add a code comment to clarif=
+y this in your next revision?
 
------BEGIN PGP SIGNATURE-----
+Cheers,
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmYeLoAACgkQupfNUreW
-QU+Ongv9G1IzPsRmO5Fp8LNQGL3RVW2HEJRFRdhkpCF3CIV4X8DYxzsnolosycOY
-2BNak77S7o9TcL6MXnhQXS2tS8WNNdo1Yk9lpBb7Y1YlZhkjpXgaVj0lhoJiLskG
-tuFbgn+QlMbWUmTPbHcX5Y0ZMp/zA28aWtUEY7b3UD1o7RzOvio6Im7IchVCl3Mw
-xFsdxWtgzXO4dEsrwNg8RczshBE2lKLAiHAo5l8/EOw0bvdl8EtWP4wHnDlIWnkQ
-p6Ms7mmp/iSOogETWZ9pxejUaZvcnX1mL2TBTAKnsqw9/JNA5vOjgdrP1O37DEs1
-iUIVKlY8UqoUBYskAzCfwJFe5O5Unl4Y/hzWTTu0Vq75ZfkD9RN09R/ZUem1NxrZ
-5rZ5yYTloIANF7PhUkTmYQKqoNInjtY1m3VUdw9rypOjJQ80cdwOOpYdE5xMS1O9
-g+Ad9WDVhpCWhCsjONZ+GrRodtRsMlzOpQEd5HRqFWD8ciyCtWbcHgCBCffWLU0D
-R6qovg//
-=QO0O
------END PGP SIGNATURE-----
+Eelco
 
---zfniyufgrrisfuqi--
+
+> =E5=9C=A8 4/15/24 18:04, Eelco Chaudron =E5=86=99=E9=81=93:
+>>
+>> On 13 Apr 2024, at 10:48, jun.gu wrote:
+>>
+>>> Check vport name from dev_get_by_name, this can avoid to add and remo=
+ve
+>>> NIC repeatedly when NIC rename failed at system startup.
+>>>
+>>> Signed-off-by: Jun Gu<jun.gu@easystack.cn>
+>>> ---
+>>>   net/openvswitch/vport-netdev.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/net/openvswitch/vport-netdev.c b/net/openvswitch/vport-n=
+etdev.c
+>>> index 903537a5da22..de8977d7f329 100644
+>>> --- a/net/openvswitch/vport-netdev.c
+>>> +++ b/net/openvswitch/vport-netdev.c
+>>> @@ -78,7 +78,7 @@ struct vport *ovs_netdev_link(struct vport *vport, =
+const char *name)
+>>>   	int err;
+>>>
+>>>   	vport->dev =3D dev_get_by_name(ovs_dp_get_net(vport->dp), name);
+>>> -	if (!vport->dev) {
+>>> +	if (!vport->dev) || strcmp(name, ovs_vport_name(vport)) {
+>> Hi Jun, not sure if I get the point here, as ovs_vport_name() translat=
+es into vport->dev->name.
+>>
+>> So are we trying to catch the interface rename between the dev_get_by_=
+name(), and the code below? This rename could happen at any other place, =
+so this check does not guarantee anything. Or am I missing something?
+>>
+>>>   		err =3D -ENODEV;
+>>>   		goto error_free_vport;
+>>>   	}
+>>> -- =
+
+>>> 2.25.1
+>>>
+>>> _______________________________________________
+>>> dev mailing list
+>>> dev@openvswitch.org
+>>> https://mail.openvswitch.org/mailman/listinfo/ovs-dev
+>>
+
 
