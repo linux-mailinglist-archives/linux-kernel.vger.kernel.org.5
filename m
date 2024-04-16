@@ -1,157 +1,261 @@
-Return-Path: <linux-kernel+bounces-146248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 260A78A62BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:04:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 780638A62BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:05:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D542B2824AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 05:04:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06E201F22AB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 05:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3CB239ADB;
-	Tue, 16 Apr 2024 05:03:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D84C39ADB;
+	Tue, 16 Apr 2024 05:05:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nk/jTxL2"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="YAjzm/qZ"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9865E381C4;
-	Tue, 16 Apr 2024 05:03:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E12C381DE
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 05:05:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713243839; cv=none; b=tzsKNCfbnaehl+Ke8tN0C4jiqCLIl+WG8BUXG9YwZfHCm+XdwEPhuYgmxrXckuNCDcTrI1Z2OpHEqLK0ojo7RJ8N+lSYRZp1ArMoON7WhbVxvAGIQ+shQr67Hr8HGTbVmRsBVRh3K9aizO5+T86OLOTjtCREoC803+XYoY3Dvbc=
+	t=1713243935; cv=none; b=TDRNFyfFYWmixFePXHIkqbKfMBFq3XzsPZ1huqHWpBDJayFSjARgCpshYTta9YNoSebHpub+D2dNkMZ9Cj5MGgampbu8QUg93daUNHFeX+wGFrMdlvUbwpI0NmPvZ2SABIor2088rax/RT70rY+1sjJuTlFeY5PWqp4pD3Ky8lM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713243839; c=relaxed/simple;
-	bh=BmAO5cfNjGRgDXrBQ5fdgxvu5LWToVi7vPs5S0LNEhs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p3iRgzLIAbJExCrHf7mOy9lHAOXuiEciNfK+T3w4YAL9AwKoga/Pj/FSfdiKSDtav1El9eBEvKcm9Zlsm95VnZRARuc7Huhq71Fj+huJXS+B8X8O2s8SJEQiPx7goW2ECr6NPZJOG2oO0+FjFpIopFuUG7OqQgo937NykNGBhC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nk/jTxL2; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713243838; x=1744779838;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BmAO5cfNjGRgDXrBQ5fdgxvu5LWToVi7vPs5S0LNEhs=;
-  b=nk/jTxL20dJoxoTLm+ti3tVNADo0s5kdSmxxnKPMM/mGrzrnrgLbBNer
-   rvo1tEJXyyPq527u4MJNWcImERvR33UvGihghDIAflAOhoCqYjw6bRKD5
-   6xy3Q0JcsKTignhz2By9YGSc7nO2a+Va+oIk2LtpRuio6/NMkUHVcRbdv
-   PAvWx7FpOHR2i0NZ5HKvukRZnPZb4kqNr2s1JQcHwPhgsYXK2NMnQjyLD
-   Wp/cmuCxGKsMnpePmMnbe+pz72btxSF87rZBCdSvLskIgj6duwAaoC4ni
-   lwjEPwDEXcghJ8iGSNHw9vfC7N8F6JJ+pcao95D19aNzqAo1JF+n7O7rJ
-   g==;
-X-CSE-ConnectionGUID: +98Uazk+Tzq3K1YUQCWEjw==
-X-CSE-MsgGUID: WcGLKVplT8masosNATRfyQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="8522672"
-X-IronPort-AV: E=Sophos;i="6.07,205,1708416000"; 
-   d="scan'208";a="8522672"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 22:03:57 -0700
-X-CSE-ConnectionGUID: 0pv7ImchTRa3QmIWDC+K6w==
-X-CSE-MsgGUID: kBzoafTDS/i/5W0wywmRFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,205,1708416000"; 
-   d="scan'208";a="53094970"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa002.jf.intel.com with ESMTP; 15 Apr 2024 22:03:55 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id 2D40FE1; Tue, 16 Apr 2024 08:03:53 +0300 (EEST)
-Date: Tue, 16 Apr 2024 08:03:53 +0300
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Esther Shimanovich <eshimanovich@chromium.org>
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Rajat Jain <rajatja@google.com>
-Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-Message-ID: <20240416050353.GI112498@black.fi.intel.com>
-References: <20240118060002.GV2543524@black.fi.intel.com>
- <23ee70d5-d6c0-4dff-aeac-08cc48b11c54@amd.com>
- <ZalOCPrVA52wyFfv@google.com>
- <20240119053756.GC2543524@black.fi.intel.com>
- <20240119074829.GD2543524@black.fi.intel.com>
- <20240119102258.GE2543524@black.fi.intel.com>
- <03926c6c-43dc-4ec4-b5a0-eae57c17f507@amd.com>
- <20240123061820.GL2543524@black.fi.intel.com>
- <CA+Y6NJFMDcB7NV49r2WxFzcfgarRiWsWO0rEPwz43PKDiXk61g@mail.gmail.com>
- <CA+Y6NJGz6f8hE4kRDUTGgCj+jddUyHeD_8ocFBkARr7w90jmBw@mail.gmail.com>
+	s=arc-20240116; t=1713243935; c=relaxed/simple;
+	bh=hfrS2yAKVWrmnlB0XBYaEg3EmwdL7jtCR9WpkagwQzY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=r+4XrNY1cZ8JyGpa/Mif0IQahlUYXmbxWTSqYZGU6iwlgCZdFwDl3ZHLcuGupjPJVkLBWii12Wg4QM+5jcNRgZ0aiRN8fEWGpC5EVWHRVS1TEa6arR8ixpT1GrVScO/imNwjOlxcHJsftxnQ2f+s3xpde5dUstROUMOhEcTkIYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=YAjzm/qZ; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcc84ae94c1so3792420276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 22:05:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03; t=1713243931; x=1713848731; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qJmDU0qCtC6xbk/2Z6msCh6alcZpNMwqU1+ATj0oOrg=;
+        b=YAjzm/qZ/R1hse1bDtoP/wgCKaOM3uDAUbsMnNNtF7WxSfyHIuV5G5Aa3UUCBqWsHz
+         7DcNQvy7OOllrvR287oJQoTI3nZYJUn8iCDedGBMQ3CC/sHtE4A4Q+kN9jlL07C9HZan
+         wZL7tEjAHiJK8yD+p8XeO4FADRGtCU0nxbFeH7E1SV1fx4+XZ+G1tiTanrBRYZKHSPW8
+         Z4OeyErCEAud3YmpCTwEovJuKRepniZJriKlHYR3GFp9qqSDjcjFlVEmhGTXlI+ZQ1iW
+         m0f7FUK+dxVg6CkkLsF6TPpInumaOigtKdOGQ2FAOFPVJofTj5zT/2K2GkYAkbmDAusI
+         62qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713243931; x=1713848731;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qJmDU0qCtC6xbk/2Z6msCh6alcZpNMwqU1+ATj0oOrg=;
+        b=m6JiMWlr6AEIepJPOqkPF0mBIG/44DW7EEURQybuEYIIbbYHyzR2LaZhiy8q9qjxd0
+         1+QCd/0BGem4qfun4tVwrvJV7RxNBWEtfkcCBymooUO588nTJ2T27PpYWQErL/tPhS4P
+         N7lHNxI24F6u3BBHLA0FJ/c4BqK2CPvfGTSnNjYOMGj/l6R22cvmczV2R7jWvNZP9yCk
+         V5KwXF+cSPQA+MHNlrli2DMLDhWOOkCaU5sq90GEDU262hkim6x4X81A6HXaLjSjOavr
+         /hxTbHUho8X8wB3psD7Zqbe4Lqn5U2RwNhyT9CQJ59gEItbn3gYQsqCiAAfh6Vv6BJBU
+         UFAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTqaoO53ICI45KTRzCnwSKu9hPRGZ2Y3WbEPk3Y/Hg1UhVe1vpA/kOtQEoNln5Ruwyg5Tbda+JcG8RVyp8D2w9wpl5R/gDAIuXx1UQ
+X-Gm-Message-State: AOJu0Yx0Qti3+u/c/X88hwYCYFQshqlY6myvJ1Kw8doIiBLpNKzHuPGm
+	UAmJYTMllBDwNChwirt5rr4AdYjSEBBwLKaPDAQITk2w84qRqWVaEfdOSeHWrtG0I+wpRy8XUhD
+	KQzIp8u6lZNBDywr62u/KaYKbawvNoy3oK7XzYg==
+X-Google-Smtp-Source: AGHT+IGA2IjVKw8IkJCjL9FhLOVDIrOwEj1lKKmglsv29PQSjP7wQuUdMHMf3ycCLE4DIaLikqvNM7nDkFaVD2tnzjE=
+X-Received: by 2002:a25:ea05:0:b0:de1:27f4:38a5 with SMTP id
+ p5-20020a25ea05000000b00de127f438a5mr10411763ybd.14.1713243931364; Mon, 15
+ Apr 2024 22:05:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CA+Y6NJGz6f8hE4kRDUTGgCj+jddUyHeD_8ocFBkARr7w90jmBw@mail.gmail.com>
+References: <20240415-alice-mm-v5-0-6f55e4d8ef51@google.com> <20240415-alice-mm-v5-1-6f55e4d8ef51@google.com>
+In-Reply-To: <20240415-alice-mm-v5-1-6f55e4d8ef51@google.com>
+From: Trevor Gross <tmgross@umich.edu>
+Date: Tue, 16 Apr 2024 01:05:20 -0400
+Message-ID: <CALNs47vRk0cKKDkpkhy2XUkxcjtPW-CABUexAZfGZ6PHT=wKng@mail.gmail.com>
+Subject: Re: [PATCH v5 1/4] rust: uaccess: add userspace pointers
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, 
+	Kees Cook <keescook@chromium.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Mon, Apr 15, 2024 at 3:14=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> w=
+rote:
+>
+> From: Wedson Almeida Filho <wedsonaf@gmail.com>
+>
+> A pointer to an area in userspace memory, which can be either read-only
+> or read-write.
+>
+> All methods on this struct are safe: attempting to read or write on bad
+> addresses (either out of the bound of the slice or unmapped addresses)
+> will return `EFAULT`. Concurrent access, *including data races to/from
+> userspace memory*, is permitted, because fundamentally another userspace
+> thread/process could always be modifying memory at the same time (in the
+> same way that userspace Rust's `std::io` permits data races with the
+> contents of files on disk). In the presence of a race, the exact byte
+> values read/written are unspecified but the operation is well-defined.
+> Kernelspace code should validate its copy of data after completing a
+> read, and not expect that multiple reads of the same address will return
+> the same value.
+>
+> These APIs are designed to make it difficult to accidentally write
+> TOCTOU bugs. Every time you read from a memory location, the pointer is
+> advanced by the length so that you cannot use that reader to read the
+> same memory location twice. Preventing double-fetches avoids TOCTOU
+> bugs. This is accomplished by taking `self` by value to prevent
+> obtaining multiple readers on a given `UserSlicePtr`, and the readers
+> only permitting forward reads. If double-fetching a memory location is
+> necessary for some reason, then that is done by creating multiple
+> readers to the same memory location.
+>
+> Constructing a `UserSlicePtr` performs no checks on the provided
+> address and length, it can safely be constructed inside a kernel thread
+> with no current userspace process. Reads and writes wrap the kernel APIs
+> `copy_from_user` and `copy_to_user`, which check the memory map of the
+> current process and enforce that the address range is within the user
+> range (no additional calls to `access_ok` are needed).
+>
+> This code is based on something that was originally written by Wedson on
+> the old rust branch. It was modified by Alice by removing the
+> `IoBufferReader` and `IoBufferWriter` traits, and various other changes.
+>
+> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
+> Co-developed-by: Alice Ryhl <aliceryhl@google.com>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 
-On Mon, Apr 15, 2024 at 06:34:00PM -0400, Esther Shimanovich wrote:
-> Hey!
-> Asking for some help on implementation.
-> So I implemented most of this, and successfully tested the quirk on 6
-> different devices with various types of discrete fixed JHL Thunderbolt
-> chips.
-> 
-> However I want to add an additional check. A device wouldn't need this
-> quirk if it already has Thunderbolt functionality built in within its
-> Root Port.
+Reviewed-by: Trevor Gross <tmgross@umich.edu>
 
-There is really no "Thunderbolt functionality built in within its Root
-Port".
+I left some suggestions for documentation improvements and one
+question, but mostly LGTM.
 
-More accurate is that the Thunderbolt/USB4 controller is integrated into
-the CPU and the PCIe tunnels go out through the CPU PCIe Root Ports.
+> ---
+>  rust/helpers.c         |  14 +++
+>  rust/kernel/lib.rs     |   1 +
+>  rust/kernel/uaccess.rs | 304 +++++++++++++++++++++++++++++++++++++++++++=
+++++++
+>  3 files changed, 319 insertions(+)
+>
+> diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+> index be68d5e567b1..37f84223b83f 100644
+> --- a/rust/kernel/lib.rs
+> +++ b/rust/kernel/lib.rs
+> @@ -49,6 +49,7 @@
+>  pub mod task;
+>  pub mod time;
+>  pub mod types;
+> +pub mod uaccess;
+>  pub mod workqueue;
+>
+>  #[doc(hidden)]
+> diff --git a/rust/kernel/uaccess.rs b/rust/kernel/uaccess.rs
+> new file mode 100644
+> index 000000000000..c97029cdeba1
+> --- /dev/null
+> +++ b/rust/kernel/uaccess.rs
+> @@ -0,0 +1,304 @@
+> [...]
+> +impl UserSlice {
+> +    /// Constructs a user slice from a raw pointer and a length in bytes=
+.
+> +    ///
+> +    /// Constructing a [`UserSlice`] performs no checks on the provided =
+address and length, it can
+> +    /// safely be constructed inside a kernel thread with no current use=
+rspace process. Reads and
+> +    /// writes wrap the kernel APIs `copy_from_user` and `copy_to_user`,=
+ which check the memory map
+> +    /// of the current process and enforce that the address range is wit=
+hin the user range (no
+> +    /// additional calls to `access_ok` are needed).
 
-> I tried to use "is_thunderbolt" as an identifier for that type of
-> device--- but when I tested on a device with a thunderbolt root port,
-> "is_thunderbolt" was false for all the Thunderbolt PCI components
-> listed below.
+I would just add a note that pointer should be a valid userspace
+pointer, but that gets checked at read/write time
 
-You should not use is_thunderbolt for anything else than with the legacy
-Apple systems.
+> +    /// Callers must be careful to avoid time-of-check-time-of-use (TOCT=
+OU) issues. The simplest way
+> +    /// is to create a single instance of [`UserSlice`] per user memory =
+block as it reads each byte
+> +    /// at most once.
+> +    pub fn new(ptr: *mut c_void, length: usize) -> Self {
+> +        UserSlice { ptr, length }
+> +    }
 
-> ~ # lspci -nn | grep Thunderbolt
-> 00:07.0 PCI bridge [0604]: Intel Corporation Tiger Lake-LP Thunderbolt
-> 4 PCI Express Root Port #1 [8086:9a25] (rev 01)
-> 00:07.2 PCI bridge [0604]: Intel Corporation Tiger Lake-LP Thunderbolt
-> 4 PCI Express Root Port #2 [8086:9a27] (rev 01)
-> 00:0d.0 USB controller [0c03]: Intel Corporation Tiger Lake-LP
-> Thunderbolt 4 USB Controller [8086:9a13] (rev 01)
-> 00:0d.2 USB controller [0c03]: Intel Corporation Tiger Lake-LP
-> Thunderbolt 4 NHI #0 [8086:9a1b] (rev 01)
-> 00:0d.3 USB controller [0c03]: Intel Corporation Tiger Lake-LP
-> Thunderbolt 4 NHI #1 [8086:9a1d] (rev 01)
+> +impl UserSliceReader {
+> [...]
+> +    /// Reads raw data from the user slice into a kernel buffer.
+> +    ///
+> +    /// After a successful call to this method, all bytes in `out` are i=
+nitialized.
 
-Okay this is integrated Thunderbolt/USB4 controller.
+If this is guaranteed, could it return `Result<&mut [u8]>`? So the
+caller doesn't need to unsafely `assume_init` anything.
 
-> The device I tested was the Lenovo carbon X1 Gen 9. When
-> set_pcie_thunderbolt is run, the devices listed above return false on
-> the pci_find_next_ext_capability check.
-> 
-> I have spent some time trying to see if there are any ACPI values or
-> any alternative indicators to reliably know if a root port has
-> thunderbolt capabilities. I do see that ADBG is often set to TBT but
-> that looks like a debugging tool in ACPI.
-> 
-> I also looked through lspci -vvv and compared the output with a device
-> that has no Thunderbolt built into its CPU, which gave me nothing.
+> +    /// Fails with `EFAULT` if the read happens on a bad address.
 
-For integrated and most recent systems (that's with the software
-connection manager) the tunneled PCIe ports (Root or Downstream) can be
-identified by looking at "usb4-host-interface" ACPI _DSD property. In
-addition to this there is the "External Facing Port" ACPI _DSD property
-attached to them too. Maybe these help?
+This should also mention that the slice cannot be bigger than the
+reader's length.
 
-With the firmware connection manager there is only the "External Facing
-Port" _DSD though.
+> +    pub fn read_raw(&mut self, out: &mut [MaybeUninit<u8>]) -> Result {
+> +        let len =3D out.len();
+> +        let out_ptr =3D out.as_mut_ptr().cast::<c_void>();
+> +        if len > self.length {
+> +            return Err(EFAULT);
+> +        }
+> +        let Ok(len_ulong) =3D c_ulong::try_from(len) else {
+> +            return Err(EFAULT);
+> +        };
+> +        // SAFETY: `out_ptr` points into a mutable slice of length `len_=
+ulong`, so we may write
+> +        // that many bytes to it.
+> +        let res =3D unsafe { bindings::copy_from_user(out_ptr, self.ptr,=
+ len_ulong) };
+> +        if res !=3D 0 {
+> +            return Err(EFAULT);
+> +        }
+> +        // Userspace pointers are not directly dereferencable by the ker=
+nel, so we cannot use `add`,
+> +        // which has C-style rules for defined behavior.
+> +        self.ptr =3D self.ptr.wrapping_byte_add(len);
+> +        self.length -=3D len;
+> +        Ok(())
+> +    }
+> +
+> +    /// Reads raw data from the user slice into a kernel buffer.
+> +    ///
+> +    /// Fails with `EFAULT` if the read happens on a bad address.
+> +    pub fn read_slice(&mut self, out: &mut [u8]) -> Result {
+> +        // SAFETY: The types are compatible and `read_raw` doesn't write=
+ uninitialized bytes to
+> +        // `out`.
+> +        let out =3D unsafe { &mut *(out as *mut [u8] as *mut [MaybeUnini=
+t<u8>]) };
+> +        self.read_raw(out)
+> +    }
 
-The Microsoft documentation for this that we also use in Linux is here:
+If this is just a safe version of read_raw, could you crosslink the docs?
 
-https://learn.microsoft.com/en-us/windows-hardware/drivers/pci/dsd-for-pcie-root-ports
+> +impl UserSliceWriter {
+> +
+> +    /// Writes raw data to this user pointer from a kernel buffer.
+> +    ///
+> +    /// Fails with `EFAULT` if the write happens on a bad address.
+> +    pub fn write_slice(&mut self, data: &[u8]) -> Result {
+>   [...]
+> +    }
+
+Could use a note about length like `read_raw`.
 
