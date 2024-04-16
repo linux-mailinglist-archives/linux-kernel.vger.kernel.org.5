@@ -1,144 +1,130 @@
-Return-Path: <linux-kernel+bounces-146363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 672048A6443
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:44:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B4F58A6449
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:47:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9849A1C21342
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:44:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C755B220CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:47:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AF16EB75;
-	Tue, 16 Apr 2024 06:44:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0C86F514;
+	Tue, 16 Apr 2024 06:47:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="I4EpvtrB";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bJzRYCLQ"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="qEBjY4kS"
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3461D6CDB9;
-	Tue, 16 Apr 2024 06:44:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C6906D1D7
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 06:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713249863; cv=none; b=iqH2UZic1Qb+OUcGNn3hreBZCje74fkuIQyUcUPaxxlvzfA59D8aicDOtvencJYLkt/UdDC2/Dy/BTwGpCqASFhv2tid3vRhF104+MQzujtM+dv2YhiLdTDQ+BHNM3XKa/HHC9ifr6VXGzg10aY3DkN06q8iVhanF5wL9XK4K3U=
+	t=1713250028; cv=none; b=F6yrq6Tyygw5N7iNxj3lUo7vKb6QR9mm9VyPgkDnZ5ZZ+pU6zlio2fIiJEqNgrybJmtHbngEz7/8i/3OyThp9kl/iZBVAA17o+ki4NoXU5iEtXY3S2u+XKJbTSYxDr/p6fPqH7g5yX+NCHEwn/tqgWUa3P6HRyShkye+bfB8GZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713249863; c=relaxed/simple;
-	bh=IDXyCoMqGfsMJVQO4R4ACB5kFoxMOUpZEeJyD5og0ho=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HnVUmhyJSzpAzKJMnJbYhacoCpxhoxhDqfLA7DGLz8Vw3D0il0CE4sGjMysXCl7aj1NytG2jY25sKgks740uJ1EwVfFaTdYIQstZeayON4uuCXL1C8ZrXyDk1s2iEZdQnWFIwJZRfmxyd4lsGeNywed1nUcEHyuDkJYw3UIKz2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=I4EpvtrB; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bJzRYCLQ; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 16 Apr 2024 08:44:17 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713249860;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MXvhT03wv4aD4mG7No4QBS1v7N0JoskGOicMYBhMYkU=;
-	b=I4EpvtrBMDw8wtNcnN+FtV7XaKNKQxwSOUjI+gsa86yDttz6jik4c/ITUTbXRVSMCW5FgE
-	j1ybcCdXv3uk9RbqRiJmEvwk5X19kmTOqqW7XWK5vpS+z5gXt+zzrtLg+99Om0014tdyES
-	JOGcCCdqpzz9eib45hed8UOKMuFptKmg26d1n753cdw/gQeNFq8/Ci+ZBGGIEA7tYOKPTP
-	7+dPSEYQv42OGaQobWn8yXdYHZ/+NegmuisSyNJ4LpjxPnq/lfLTs6vY3NMEzyPVu1SGa3
-	g8U9b4BDtMDqJ8s+HwmPK7jcY5THj01jQ37v9JTWYtAJWMZcER3OE84d6Bzi1A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713249860;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MXvhT03wv4aD4mG7No4QBS1v7N0JoskGOicMYBhMYkU=;
-	b=bJzRYCLQmILvJC51K4zxw1Cp6h4ntNM+6v4foRDudJvLy+lpJM+x1SDNyCTogQ89bV3viq
-	bSPWcQsruKAKuDCA==
-From: Nam Cao <namcao@linutronix.de>
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, Andreas Dilger
- <adilger@dilger.ca>, Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel
- <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>,
- linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>, Ext4
- Developers List <linux-ext4@vger.kernel.org>, Conor Dooley
- <conor@kernel.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, Anders
- Roxell <anders.roxell@linaro.org>
-Subject: Re: riscv32 EXT4 splat, 6.8 regression?
-Message-ID: <20240416084417.569356d3@namcao>
-In-Reply-To: <87le5e393x.fsf@all.your.base.are.belong.to.us>
-References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
-	<20240413164318.7260c5ef@namcao>
-	<22E65CA5-A2C0-44A3-AB01-7514916A18FC@dilger.ca>
-	<20240414021555.GQ2118490@ZenIV>
-	<887E261B-3C76-4CD9-867B-5D087051D004@dilger.ca>
-	<87v84kujec.fsf@all.your.base.are.belong.to.us>
-	<20240415-festland-unattraktiv-2b5953a6dbc9@brauner>
-	<87le5e393x.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1713250028; c=relaxed/simple;
+	bh=wyuTHcxvbfB/eF+OxSPnCHP4j9uWKud0zd4en5i12/Q=;
+	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
+	 MIME-Version:Content-Type; b=mBnA9aqsQDou2yDs+DVhYEL45OqH4olQIMqofmks2FIUDhDZ43N2TkoPjKOJzf0E5nds9KUlvbSjs+n/EXwCJQ8dgllBSb6c1xIGd+CKgdJjBj5/HQITByCR9GTbDfDpEo1WYj7d7hpBjDobARosWPz3ADKStcj/MOmZH9kzoOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=qEBjY4kS; arc=none smtp.client-ip=35.89.44.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-6010a.ext.cloudfilter.net ([10.0.30.248])
+	by cmsmtp with ESMTPS
+	id wWgMrZFIzHXmAwcZPr543j; Tue, 16 Apr 2024 06:45:31 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id wcZOrNAUeF4XpwcZProH7G; Tue, 16 Apr 2024 06:45:31 +0000
+X-Authority-Analysis: v=2.4 cv=UpZlNfwB c=1 sm=1 tr=0 ts=661e1e8b
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=zTwTvwDJIkgUNqRoL0J4vERfpqlDMONOvnnBo8aW7Uw=; b=qEBjY4kSgXexvVHW5OL7x8nwTS
+	UnRsXoIU3XzcqBqZ+9khIN+DS5fKldsOW0zwgUU0Q6+sXB+c9/xo4KkSyhnBWH2xX4qdAcZbkMeXa
+	j26E9giMbt57++P+czg64xPO9xWVp9t1lgaTbjBv4uROLBH9jcbV0L/PeOA9OPWVojga6uE2SD1iR
+	cWNX5PMsV/DSQM3smRfqz5IZeX9DeIxPpedEHictUuuqQ4SslDw5mlkZr34Xyo/hv4bPS7YGQxeke
+	FdfW+RLj9HXL2LIH4cONSOWHG8NEKwPnNOu36iHVjHrD1R+jB/IEBP9Ezb9MlYMCXGaoNXeiLGgnj
+	i0C3Ve9Q==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:57920 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rwcZM-002INl-2a;
+	Tue, 16 Apr 2024 00:45:28 -0600
+Subject: Re: [PATCH 5.15 00/45] 5.15.156-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+References: <20240415141942.235939111@linuxfoundation.org>
+In-Reply-To: <20240415141942.235939111@linuxfoundation.org>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <16ea6882-897a-5ac3-3748-25822da92bf1@w6rz.net>
+Date: Mon, 15 Apr 2024 23:45:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rwcZM-002INl-2a
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:57920
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 61
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfAoNDXVodFYrBAlsus6ClbRwqE4QoW4QAhMH7j8qN5ZOQKuTvSpi7nuJge4vGAIw1S4faELq0SFes4f+MwpKAbvHUpfi39M0MUy8wvVHm103+jZL2BbU
+ MRqwwgidYZxMNinSTSlPBS2NMqp2Xdjf7JESJGsaKh6HNSvCkyF0jAMeHIDYK2FI9G/xt2/sRRWHIoYqrGs31PnzM4C4VZjPOls=
 
-On 2024-04-15 Bj=C3=B6rn T=C3=B6pel wrote:
-> Thanks for getting back! Spent some more time one it today.
->=20
-> It seems that the buddy allocator *can* return a page with a VA that can
-> wrap (0xfffff000 -- pointed out by Nam and myself).
->=20
-> Further, it seems like riscv32 indeed inserts a page like that to the
-> buddy allocator, when the memblock is free'd:
->=20
->   | [<c024961c>] __free_one_page+0x2a4/0x3ea
->   | [<c024a448>] __free_pages_ok+0x158/0x3cc
->   | [<c024b1a4>] __free_pages_core+0xe8/0x12c
->   | [<c0c1435a>] memblock_free_pages+0x1a/0x22
->   | [<c0c17676>] memblock_free_all+0x1ee/0x278
->   | [<c0c050b0>] mem_init+0x10/0xa4
->   | [<c0c1447c>] mm_core_init+0x11a/0x2da
->   | [<c0c00bb6>] start_kernel+0x3c4/0x6de
->=20
-> Here, a page with VA 0xfffff000 is a added to the freelist. We were just
-> lucky (unlucky?) that page was used for the page cache.
+On 4/15/24 7:21 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.156 release.
+> There are 45 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 17 Apr 2024 14:19:30 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.156-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I just educated myself about memory mapping last night, so the below
-may be complete nonsense. Take it with a grain of salt.
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-In riscv's setup_bootmem(), we have this line:
-	max_low_pfn =3D max_pfn =3D PFN_DOWN(phys_ram_end);
+Tested-by: Ron Economos <re@w6rz.net>
 
-I think this is the root cause: max_low_pfn indicates the last page
-to be mapped. Problem is: nothing prevents PFN_DOWN(phys_ram_end) from
-getting mapped to the last page (0xfffff000). If max_low_pfn is mapped
-to the last page, we get the reported problem.
-
-There seems to be some code to make sure the last page is not used
-(the call to memblock_set_current_limit() right above this line). It is
-unclear to me why this still lets the problem slip through.
-
-The fix is simple: never let max_low_pfn gets mapped to the last page.
-The below patch fixes the problem for me. But I am not entirely sure if
-this is the correct fix, further investigation needed.
-
-Best regards,
-Nam
-
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index fa34cf55037b..17cab0a52726 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -251,7 +251,8 @@ static void __init setup_bootmem(void)
- 	}
-=20
- 	min_low_pfn =3D PFN_UP(phys_ram_base);
--	max_low_pfn =3D max_pfn =3D PFN_DOWN(phys_ram_end);
-+	max_low_pfn =3D PFN_DOWN(memblock_get_current_limit());
-+	max_pfn =3D PFN_DOWN(phys_ram_end);
- 	high_memory =3D (void *)(__va(PFN_PHYS(max_low_pfn)));
-=20
- 	dma32_phys_limit =3D min(4UL * SZ_1G, (unsigned long)PFN_PHYS(max_low_pfn=
-));
 
