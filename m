@@ -1,159 +1,134 @@
-Return-Path: <linux-kernel+bounces-146380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D07B78A6480
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:05:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38CF28A64D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:19:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 868C01F222C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:05:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E400A281D32
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:19:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D93084DEA;
-	Tue, 16 Apr 2024 07:05:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97A2A156974;
+	Tue, 16 Apr 2024 07:16:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="uYYpoJTm"
-Received: from mout.web.de (mout.web.de [212.227.15.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="GLtrmbVV"
+Received: from sonic310-19.consmr.mail.sg3.yahoo.com (sonic310-19.consmr.mail.sg3.yahoo.com [106.10.244.139])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A2D07EEFD;
-	Tue, 16 Apr 2024 07:05:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C7978C68
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:16:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=106.10.244.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713251132; cv=none; b=Q8sEBSDiF6dCWwnkxz8z6t7SEq9F2oeYmA++DsD9TpbaVCp5qtfq3Cr46FLf9Gk5oj3Okf3rUiG1hIuJMl9SbuwrjwOmBXwcHlvMF4J7uf8awNAdBSuXvCdQHZx3uN6diTpd6QYS8ljuqJEK0qslwgpu/WGTB0fT+90mgua7r8Q=
+	t=1713251764; cv=none; b=vGTJuJJPXzrH482zW9OhJmsrK8EGzOdiSCbXwdqHqbh7ZjJAX2BlTSCkFhUdXZkuOf0rwv4W6269WKHpP0emT+QOqmzyde1zuN3koAB83Eife/gePXx9fGBWRxCARLY2pC1pAqzxSEEbha+XEvG0HqZBrY/3+Fen0jx1pU1HprY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713251132; c=relaxed/simple;
-	bh=fpIr7vk9ma0F1Ajyvw7T8mvDHmQiafMnVUv8cVES/Q8=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=pbkEDZxhkZLvYoVyF910qvs5e34ZpDev5m6tO4WEyRpE99ImAQMo4mt3vfmbrn1oSv4t9QDWcKQApg2pxyn408c1PDGEqzR/zxC5SujK2CGlch7uwhFETBC7RddPugDRdvp3YYRON8Gs7RaYJ1u4SjQgDozAOjoqr02+2SU+p+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=uYYpoJTm; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713251047; x=1713855847; i=markus.elfring@web.de;
-	bh=11Y55v0AlzuRPO7ifOFiCZQ7lrJESQhpZwvX7xtpFpc=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=uYYpoJTmRqgk2fHBG3KnNz2CLPavpRrEfJtq6/fkxsSHPHo9hr9qcnbetfR4rbAv
-	 WWYYcMCU5QC3KoHYZsERO/uCRV2oxChX6X+Rafq4yYRbQohsxFKvostPltnlOgZUZ
-	 uF9kX12zxQQdi44vnDxMP2KDpxbIBaLpo5hqzClbmR4INeL93ovd+wCPNkORolTKA
-	 RsWEq1pb7kj6jurgWDs/BjuRAGZTklJtZ686dqKAidxv8QQmS4EmEZg2pw3cisyw+
-	 IuhR26xDJ4uJ6w3UN1gJ6I/LtVomRg8m99Raf/c0Fc4QVAeD0lf4ST2m6UyLR9hF4
-	 nOhZqEsl8lmkPGi/9Q==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mvspv-1smFwO1js7-010uHt; Tue, 16
- Apr 2024 09:04:07 +0200
-Message-ID: <e0377059-4073-4779-8385-506b9b39301e@web.de>
-Date: Tue, 16 Apr 2024 09:03:36 +0200
+	s=arc-20240116; t=1713251764; c=relaxed/simple;
+	bh=qCnQDVa7gcBj72tko08cbYB/OWz9xGb3hgKYoiVKajc=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=M+j2A7GdMQEHHzF3DJ8igSJBUt0eE9LvGJ7ellKWKSCwKcL3G64lJgdUDEtZO6FYiS/wd2nDEC80D9wWndlYIYPYxxRCgQ36zOY0iZR22hNYct8JoeF1P+Jal0KW+o0Gr/EIpQVCZhTWIlL+kCDC09XVqmxIn4gfgTczl76ZfJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org; spf=fail smtp.mailfrom=fedoraproject.org; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=GLtrmbVV; arc=none smtp.client-ip=106.10.244.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=fedoraproject.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1713251759; bh=qCnQDVa7gcBj72tko08cbYB/OWz9xGb3hgKYoiVKajc=; h=Date:From:Reply-To:To:Cc:In-Reply-To:References:Subject:From:Subject:Reply-To; b=GLtrmbVVR7o2jYDVNGIkcSX+Uh3I76K9btp+MquhuTBr2n7nIrD//Z9CvksOk3P1D/aipgUyXoZo2mRTjV0Mzmt1QKYVCrRX3uBmRsiS3XEi4vHJDAJ6YfT4lSu4+3Op1F/tYTtHE0TSCbZZt6rgI83er69xkSWMg8Le9UvZJyhHMHs/R+3IAZlnP0b+5hVjvgUBD5bdi701PclPNbuPbZoEqlCLjcaW6qFnoUmmNz/3sgP559+9OKp9qMYM4GOM+VwF1FSjtyHucTfZ+dqhbX3ukJq3Vsr0587NIAoPEQzKID97mRjG1hCojA9qilZLjVhtVnmUskPVNTKT5ClW7g==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1713251759; bh=G1siwvP4ph/WCnDCmSpi/3bZJziYzv3ib4WWxYObHzt=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=CVXXRB+fuFU2aNlvPUGN5jdO0U64PBggjeV5pAsJbR+sege/JJEZ6lAsemQMXpXhOn0lfkIcU4hU/bRWkU2PbElPSD4Ko7bBBoxLeaP3CEGWKTHeoqEJz7vvd6g2WMf4TQINaPcqfb85SOuB2wMXM+IBg0b19qZ1kkbVjyjZcklV7FV81Xd9KHhNUgFkCq96IfcH+qgoCUusoGG4DyQETf0nDxFoHQmPa3dNiaK6bKC5yH+S5X930d3ENhDDeIqTgsLmA2+IYxjx1hrs/Rj55kNZ6gljp9FxyiUcZVA7/78ypt0SMojIx12mw8BL2NE2g5vjEstPFk2LYT0jYy3SYQ==
+X-YMail-OSG: BkiJP0IVM1l81WW11zRqwKNWozcJMufeJPXdttWFUgDSJHZ1o4QsvcXhUC0Baet
+ cEog_VVb1CvUTmOJYd_OtylWJPNjS7OqTFXkW58RV2L02dyQ6FH5ctg8EMZ9QEo3rN7SkV.w.SS0
+ HYb1g_WhNSe5TlqpZBSZG10S8FxaAqEtBLf3gAXZ9QZn7FNcIhu_vXYFZcggNSoMSt81D3pmDxGh
+ 1wXVmBnut2bq.DwUd66sq_CmnsKTulXBpQ9yRe0iSs6bNcgHlgKR0n7MDgJeDWYcTnKaR0H4vPX4
+ ef7mOUDsnoIXlVN4Iv6lQ6BqbpPw.vRRqtGDuovwRiVG5CHGG.uNa47B.dXd2db6hh_OnqXvwDub
+ VNo0FAQihiUg._zqKvEz0XcEZ.kMnctdp7rIVQ4dXZ3gLAc.hxggWHQNfecKYGxTD6L9Cy18Tdzc
+ joKX21ggLKZmcE_g3voNWE7BsXF6KAWgWMi3tMaQk9r.pSVkztzv8CtNYGgndDS2.XT8GwCkj6ZJ
+ cBjYUOkM2Gi8pf1V07kZaoX6PgpNqwEf.FQCyfTB1rtWbrfI0ETX_Yo9YxUn2h_GCiSpzZcnsK85
+ SMM3iW_Xj4bfjHhr1bhBfTxsL0PYYa3ht3YjwG6oK6fmRQfJFf3FylbH_iKNKtlo1dzJok5tBCJh
+ BTv_4bIc2LMwpdagg_XOyTEt1QAjKD2k1UWsOGPMSptR8eBxcRj0lgt2vepRjKjEvbUpIlDWwtN7
+ BizJBuDzgwuVkyChG4_dzE7AFq8t.Dauty5tcYcvpBJ5gUmBx09HfLZh4wYRf7SLQEyMrIso4m2g
+ WqH8OJfgsP_KFCyhUU3oCpocv.wuEPGcQ_LwjuxHQoeYjr.9BI4nw3F.CLXWrIh.ssn.XGrTNfOy
+ xbM2ZGgWFttty28CZwXY6D1pGCy2hb0KL6.OgvvOBb5GKuaOJC.9AmY41RuFtWmhZNkV__.ZJ8tB
+ ALGQCTLTvl8FGJi6insAS.SvSO9JsPILfOSCEEyWJQ.3GIltRikk9EH3h4aDXlvT6eK_7i93Azwy
+ 3iTvoKETCYw7sotla3g2.SSzxPSWtewhSjPQO50OTk0A8Fwq5Mo78pojtN174DhCmVWblrSKo2Vy
+ aWZVK5pyik7j2_eElIU4tRcrMQcqzex8isOeXvEhiT1s2qOzhdauk0D_hlri0740u286K0rT_qW.
+ 72cvpZgMmUya7zRIb1we2895GAn_YrimD14xNhS6wH8z.ZcoIbHw3DjBY7WBhp5b5YCU6Fh8_LUA
+ BCseL2B8KYcbG36kML2pIrzzOJ06kg7IKkwv_TqE9zmk.0qUkyRYkhhbc0zRHBUradBqeec7vI5f
+ k8mOFbWGuNn0iPDViMHmkVrubtNe_MAO4sH7dDQ5II.gsGl6Zs2x5xHl8ajOgmmfwlWOF.mMo_9x
+ 8IVgSS5jJ4Ko00UDn28zTWwPhXE.fDJAlDCp2FX4vnhoNw288vrvTQQ7lLJEoR7bUYJXKehC5x94
+ 6WhXy3IkNVP.zRKbarACS__SkOsdZ.VGwWlWrfFsxUGjGURCQ7TBUC5cOMv3mSjkUhB9TInw1wEd
+ D_cafYoAt81bjRhWfpiaEveiEGN043lf4F5rPBcMVfDASMfAqCVmKa4wnHDkZUvGogznGcWpeGcE
+ RpK0YuLJAJ2dGkWLuomJByDy0Bpmvbv0GMytDju8W_avx9O9thONG.SZpm2ifM5MRayt28ZC5G1D
+ JxXkbe6TdALg1.ekdx19ndKSd3MVsaZKMZBRi3xxDKKFxuGIff4wirsowdcoaJoJTl8_XJKI16Jg
+ KAIcEq.JnhVysHrBNy6ozw.K0gqk6MW2gDr7IjY10lRYXfcSD0RMDwoAZe4hxKqkChP4.u3suEZ2
+ KPQWOhrl_9g_IVnZ9d.VG.nisUD2k_7GHPxBAuWhm2PNt2pKCXgbZGKz8czMi4GHAdjpDg7EbpBu
+ wwRUsPgIQhIpU_vRkNmvF9S6g8JVA86_luacNP_F99VjFRnNr1de_Cj3l2bhNrsHoQsHZ.bMH7JD
+ nBJWL5tuTw15nQsj.FlmiOUwQnEIsWh7uGSZ8E.kiNQ5VzbIzh0KtYIZZ2Vke1e2fWkR74rBY5Cy
+ jdIyZdPdapZZAy59tMQ64vs24MIjMAAR1McCaJix8DYmt0k5STL2lTTACRQhgkx4dbW58QkYLz71
+ UHT0UehFb.TFfPTi5YlLajTLrWn4G5WkQcQyr_RabQo1PVW1piPksovAMwxsVAYGNu3EVldl1JWP
+ pYLWS4udc4cF6MQYm1xXrnzSxnLb1hMaeTgSOEioZt7r6IgbV3FSHVQyMHzWbNUmMFPO_nf2x
+X-Sonic-MF: <pjp@fedoraproject.org>
+X-Sonic-ID: 209efd66-4d69-40ed-b80b-1b3dc2d834a7
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.sg3.yahoo.com with HTTP; Tue, 16 Apr 2024 07:15:59 +0000
+Date: Tue, 16 Apr 2024 07:04:47 +0000 (UTC)
+From: Prasad Pandit <pjp@fedoraproject.org>
+Reply-To: Prasad Pandit <pj.pandit@yahoo.in>
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: Joe Perches <joe@perches.com>, Dwaipayan Ray <dwaipayanray1@gmail.com>, 
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, 
+	Greg KH <gregkh@linuxfoundation.org>, 
+	Andy Whitcroft <apw@canonical.com>
+Message-ID: <1568855168.5949322.1713251087824@mail.yahoo.com>
+In-Reply-To: <20240330033858.3272184-1-ppandit@redhat.com>
+References: <20240330033858.3272184-1-ppandit@redhat.com>
+Subject: Re: [PATCH] checkpatch: error if file terminates without a new-line
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Ricardo Ribalda <ribalda@chromium.org>, linux-media@vger.kernel.org,
- kernel-janitors@vger.kernel.org, Abylay Ospan <aospan@netup.ru>,
- Alain Volmat <alain.volmat@foss.st.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Angelo Gioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Chen-Yu Tsai <wens@csie.org>,
- Dmitry Osipenko <digetx@gmail.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Hans Verkuil <hverkuil@xs4all.nl>,
- Hugues Fruchet <hugues.fruchet@foss.st.com>,
- Jacopo Mondi <jacopo+renesas@jmondi.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Martin Tuma <martin.tuma@digiteqautomotive.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
- Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
- Pavel Machek <pavel@ucw.cz>, Sakari Ailus <sakari.ailus@linux.intel.com>,
- Samuel Holland <samuel@sholland.org>, Sergey Kozlov <serjk@netup.ru>,
- Sergey Senozhatsky <senozhatsky@chromium.org>,
- Sowjanya Komatineni <skomatineni@nvidia.com>,
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Sylvain Petinot <sylvain.petinot@foss.st.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
- linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
-References: <20240415-fix-cocci-v1-3-477afb23728b@chromium.org>
-Subject: Re: [PATCH 03/35] media: uvcvideo: Refactor iterators
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240415-fix-cocci-v1-3-477afb23728b@chromium.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sHR+TeGSFgoxPZvFUHAPIEuDVzgT2GvvVwRx2R0bQhoUCLrY21q
- 4aVwGDwLU20D7GafylHrOJidGYSPJoSoIzoqf+nPfG0K+ORf8VF8LHB5EhsUv86XaNhisus
- 3kmBAPbDemt8Lc42bbQEjY39bQYWH3PtxU6pQC03uggivELLPehSfNoyDhXXBzC0UmXhKFx
- xJrtOT5azfeT6A+OIpOdg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:03HI85af2Ns=;yQ8sKTONouBI76raH8Z58fLgdPG
- cDRdjqAFM/3eXwECjUZI9h4p6mlw8k+SOXiyN6GfwXod9KAZJOxaNqbO06huy2pgBzYXWcxaK
- 1yvcUyUm5nteIAvRh5GEJ6k2V8yU4C8rRXv94JjainnOHsSdDuPbk0aZXSWp65ziquDFaUUDN
- YJZN7AsXSRRYZMDVispdvHubrvkMarfGAxoCn4+Sw/adTSJ9UOxI6QREc49RSDDGj50+NsVZA
- I9/YrIlsRw4OeLnNC7dBSfeh2gas2lmTVPAdeZE5dk0sIs7aiTx7Cpr5FEHhCUFXrkReal3EO
- gELP/4ATALLJIJbZL8oac+FZhSpqW5irTqlO//L3y6eUAaDcuOSIPWLoaYJ2J97IzS1c9eCBT
- dPZVw6RcJR7I1g+6lDJwbla9AWsE0cHKjE7xI2z8RiMQz8Rg1JfobeDUi4lCAeun4aY23r5ct
- YWwBdDrs6QXbNlkfk+vAwFpDgJQbH27hI7BnJLDoXByi4vvXAuZw1dpfEkQ80cUKCCCXCdn7X
- PvxRBpoBI4VG9b+hFjsF5IAAMMrnv9iTADoQIOgnuUIHJ96lnDCSfdzxHRFAWt2M+05cdkCb1
- Xd22EYiLsJxLnQ9xjjeW2wTuQRB2DVUy1LO2KuI3z2ZDeT+FU9j9vuFhJTTTlhlzwnv9ycOI2
- FCqhmVe/n6PxH/5bS4hKkm4lYwNU/GheqGDyJrBHSbogo2OEAjGtEGI1SveFeBPQ/PKRQkiQ8
- msmag1gLjDLzUZ3GnLIpmC2bTBr5sENz7Knm/uddln2TX5kDsFZDCPf9L9KYANSpzIuCxNgkh
- +sdpCGJrmyr6dMFVvuLSI8fFEJx9x6/qw+iAMnV+HSLrk=
+X-Mailer: WebService/1.1.22205 YMailNorrin
 
-I would find a hint for a variable change more appropriate in the patch su=
-bject
-instead of the word =E2=80=9Citerators=E2=80=9D.
+[+linux-kernel]
 
+On Saturday, 30 March, 2024 at 09:09:12 am IST, Prasad Pandit <ppandit@redh=
+at.com> wrote:=C2=A0
+From: Prasad Pandit <pjp@fedoraproject.org>
 
-=E2=80=A6
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-=E2=80=A6
-> @@ -2175,16 +2177,16 @@ int uvc_xu_ctrl_query(struct uvc_video_chain *ch=
-ain,
->  	int ret;
->
->  	/* Find the extension unit. */
-=E2=80=A6
-> +	entity =3D NULL;
-> +	list_for_each_entry(iter, &chain->entities, chain) {
-=E2=80=A6
+Add check to flag an error if a patch terminates a file
+without a new line (\n) character.
 
-I suggest to move this assignment into the definition for the affected loc=
-al variable.
+Suggested-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Prasad Pandit <pjp@fedoraproject.org>
+---
+scripts/checkpatch.pl | 7 +++++++
+1 file changed, 7 insertions(+)
 
+-> https://lore.kernel.org/all/CAE8KmOxG=3D3sWKpeB5fdWTK-SCipS=3DJyDE-_DNgY=
+--DtoSQZ0Qw@mail.gmail.com/T/#t
 
-By the way:
-I see another source code adjustment opportunity in this function implemen=
-tation.
-https://elixir.bootlin.com/linux/v6.9-rc4/source/drivers/media/usb/uvc/uvc=
-_ctrl.c#L2165
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 9c4c4a61bc83..df34c0709410 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2795,6 +2795,13 @@ sub process {
+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 $is_patch =3D 1;
+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 }
 
-Can it be nicer to use labels =E2=80=9Cfree_data=E2=80=9D and =E2=80=9Cunl=
-ock=E2=80=9D (instead of =E2=80=9Cdone=E2=80=9D)?
-How do you think about to increase the application of scope-based resource=
- management here?
-
-Regards,
-Markus
++# check if patch terminates file without a new line (\n)
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 if ($line =3D~ /^\\ No newline at end of file$=
+/
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 and $rawlines[$linenr - 2] =3D~ =
+/^\+.*$/) {
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ERROR("NOEOL_FILE",
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 "patch term=
+inates file without a new line (\\n).");
++=C2=A0 =C2=A0 =C2=A0 =C2=A0 }
++
+#extract the line range in the file after the patch is applied
+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 if (!$in_commit_log &&
+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0 =C2=A0 $line =3D~ /^\@\@ -\d+(=
+?:,\d+)? \+(\d+)(,(\d+))? \@\@(.*)/) {
+--=20
+2.44.0
 
