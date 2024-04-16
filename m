@@ -1,289 +1,210 @@
-Return-Path: <linux-kernel+bounces-146359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C70E8A641E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3362A8A6421
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:39:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20588B2242C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:38:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D698B222E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:39:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C26158D98;
-	Tue, 16 Apr 2024 06:37:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1683C6EB75;
+	Tue, 16 Apr 2024 06:37:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KxHToYqR"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="C52ykLAI"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB8B15574E;
-	Tue, 16 Apr 2024 06:37:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD716E2BE;
+	Tue, 16 Apr 2024 06:37:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713249448; cv=none; b=LLRY5s6BrMrMOH/Ak3zHUR0S3BXsi/5urcOLlebo9OGy17XkSKJ4Def9VxsdGqr5cMqRFwbPd4ThyYJcsAkmjUKQCIDQKk41FaPceWysEYZNB0jpvQyYxi9HCM4exhsIxQ0XRo6w8SvUcq4zD5NwNq/X/WbKwdHCr4cKpdrrleM=
+	t=1713249467; cv=none; b=rJT58qiJK+W5ebceFAzrkye7zuLWl2TsItV7B+GBehVve8b/DWo8wzq5kVuHvjjDvlpGX8crYtwjn7PSe2NQdp5KO4fr9/v+2htifTgag6LZSHGk/dNbEfV0boplVoyHfVaxuj0kNnNEFQ1JkJIwxrK+2by7zbn93wSlfA5yF+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713249448; c=relaxed/simple;
-	bh=V6vBdqA+1/0QAN744yAvKXN/zayOAXioRLshFUwhcF0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=E6YuFIBS1AHm0oGreY15FSlxirLtrzINZ5h3BD7ZjydnNiPo3qZYwPxdD0vNk0eVa+wVETqcaDH4Z3U2H9duIp7/Mh+SMGGR2vS7Vt9nzHQxnV7QrbHlmtkrgR4SL5T+5nVCueaxN08WPXWMTQrFIT6iU2f3OYPgrJ8x+0PJnrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KxHToYqR; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43G4e6K8021136;
-	Tue, 16 Apr 2024 06:37:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=c6TdiCbWj5rHM2MNFsGN3bhjHBR3WKc7S23Su7X75S0=; b=Kx
-	HToYqRvP2PkMCuEKrAUhY+NWMQB1KM3VdVKPrkxCGiXpQ69wA8Y7rBkQJzeSHW4W
-	LKZVUM6iDulxVnvtm3rEYnjgCXQUYqtDPNtrcrZsppLYCrgqcgdD1KDCy3ag2DBX
-	FaottgX3mLWiMU/fdeFUH9+yQ5X+26TfK25N4vrYg43zK7UppNKnXWb7A4p/zvv6
-	mSrDxigzhf+LY1wwnh8hBuw9DGfVWJ5YKjsVXUXquzKwilRWjxTgWG2HHhcC9C5v
-	G2lHWVYz+/RJ6oH29aaEmJv94CzRqBf+kynGw0d0upAFTxJBZFIrWUGMF94YsfHk
-	Y5PTJEU4Lktg4m/G394w==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xhftw0n9k-1
+	s=arc-20240116; t=1713249467; c=relaxed/simple;
+	bh=s+gbjt6MpgxLQHQApyrgOzXlfWR857SWR8AJZfMyGMc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fIE6quxnXXRNFFcjJ/KGlYLSvToQ82vWFHokX5RfwIkEWf2qMzXLrPeRiUb1ZVieR7Ez03/ZK2szcPqSHDtzOpozLUtHQSzxFFX9vwlIz1IKrJpBZ2RqCyX33xoOGpauRGFbquAjv7iEky4kC9YMKb68NSaWe4tOFgtiJkS9MKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=C52ykLAI; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43G5fOSv004182;
+	Tue, 16 Apr 2024 06:37:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=DW16ByiGfzFf/HY70BHZqJnP86YV7zinx9U7rOft9MA=;
+ b=C52ykLAIL5hb9D87Z0TQLaf/5sslvrWqpVCXBCTQbhn9BD1krcLVW34ItjEuOov28X5y
+ YP2tSP1nI+MdLgYjocz5VK+noEtMXpb8K0iTS7F8BRUMfrEYygx8u0I6Z8Hvxip6yX9a
+ Y4wNo79g+F6N6Se53JH/1+maVulxeiXDo5p4JMbXz6z+Wt3vti3psg9J+O5aR3WEOqd6
+ aLLZVZYJ+JAlB7oBBILaNpDJet5wQYLy5LJ0IiefzhoGmDCK7mi7AkOPJLMD9tFpNu7g
+ 7phT32WfGXgBLV6CNqKXDkoIJ/adHBrxptsqH0Yc5xzBpFloX0Xbl+bHnFmQANgqLCNu fw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhk9pr37j-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 06:37:12 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43G6bCKb029457
+	Tue, 16 Apr 2024 06:37:38 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43G6TY0u011654;
+	Tue, 16 Apr 2024 06:37:38 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhk9pr37e-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 06:37:12 GMT
-Received: from hu-mohs-hyd.qualcomm.com (10.80.80.8) by
- nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Mon, 15 Apr 2024 23:37:07 -0700
-From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami
-	<bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
-	<broonie@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela
-	<perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-sound@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_rohkumar@quicinc.com>,
-        <quic_pkumpatl@quicinc.com>,
-        Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Subject: [PATCH v2 8/8] ASoC: codecs: wcd937x: add audio routing and Kconfig
-Date: Tue, 16 Apr 2024 12:06:00 +0530
-Message-ID: <20240416063600.309747-9-quic_mohs@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240416063600.309747-1-quic_mohs@quicinc.com>
-References: <20240416063600.309747-1-quic_mohs@quicinc.com>
+	Tue, 16 Apr 2024 06:37:37 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43G3nxam011111;
+	Tue, 16 Apr 2024 06:37:37 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xg732c2p5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Apr 2024 06:37:37 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43G6bV4948628208
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Apr 2024 06:37:34 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D703620067;
+	Tue, 16 Apr 2024 06:37:31 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DD6E62004B;
+	Tue, 16 Apr 2024 06:37:30 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.55.218])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 16 Apr 2024 06:37:30 +0000 (GMT)
+Date: Tue, 16 Apr 2024 08:37:29 +0200
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: David Hildenbrand <david@redhat.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] s390/mm: re-enable the shared zeropage for !PV
+ and !skeys KVM guests
+Message-ID: <Zh4cqZkuPR9V1t1o@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240411161441.910170-1-david@redhat.com>
+ <20240411161441.910170-3-david@redhat.com>
+ <Zh1w1QTNSy+rrCH7@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+ <8533cb18-42ff-42bc-b9e5-b0537aa51b21@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: VI0brMK1RMkKRZ22jcUpXRyBBwBVh7L6
-X-Proofpoint-ORIG-GUID: VI0brMK1RMkKRZ22jcUpXRyBBwBVh7L6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8533cb18-42ff-42bc-b9e5-b0537aa51b21@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: VQ3fX6EJCnt1qACDHjS0ldPm_TLFiIBK
+X-Proofpoint-ORIG-GUID: BHnBQ49bCE71R5CAArUmGZYPuxCu31hV
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_04,2024-04-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 mlxscore=0 phishscore=0 clxscore=1015 suspectscore=0
- bulkscore=0 mlxlogscore=999 adultscore=0 impostorscore=0
- lowpriorityscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2404160039
+ definitions=2024-04-16_03,2024-04-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 spamscore=0 suspectscore=0 clxscore=1015 adultscore=0
+ priorityscore=1501 bulkscore=0 malwarescore=0 impostorscore=0
+ mlxlogscore=781 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404160038
 
-From: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
+On Mon, Apr 15, 2024 at 09:14:03PM +0200, David Hildenbrand wrote:
+> > > +retry:
+> > > +		rc = walk_page_range_vma(vma, addr, vma->vm_end,
+> > > +					 &find_zeropage_ops, &addr);
+> > > +		if (rc <= 0)
+> > > +			continue;
+> > 
+> > So in case an error is returned for the last vma, __s390_unshare_zeropage()
+> > finishes with that error. By contrast, the error for a non-last vma would
+> > be ignored?
+> 
+> Right, it looks a bit off. walk_page_range_vma() shouldn't fail
+> unless find_zeropage_pte_entry() would fail -- which would also be
+> very unexpected.
+> 
+> To handle it cleanly in case we would ever get a weird zeropage where we
+> don't expect it, we should probably just exit early.
+> 
+> Something like the following (not compiled, addressing the comment below):
 
-This patch adds audio routing for both playback and capture and
-Makefile and Kconfigs changes for wcd937x.
+> @@ -2618,7 +2618,8 @@ static int __s390_unshare_zeropages(struct mm_struct *mm)
+>  	struct vm_area_struct *vma;
+>  	VMA_ITERATOR(vmi, mm, 0);
+>  	unsigned long addr;
+> -	int rc;
+> +	vm_fault_t rc;
+> +	int zero_page;
 
-Co-developed-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Signed-off-by: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
----
- sound/soc/codecs/Kconfig   | 20 ++++++++++
- sound/soc/codecs/Makefile  |  7 ++++
- sound/soc/codecs/wcd937x.c | 80 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 107 insertions(+)
+I would use "fault" for mm faults (just like everywhere else handle_mm_fault() is
+called) and leave rc as is:
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 995eab954dd5..daf42c0b0444 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -277,6 +277,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_UDA1380
- 	imply SND_SOC_WCD9335
- 	imply SND_SOC_WCD934X
-+	imply SND_SOC_WCD937X_SDW
- 	imply SND_SOC_WCD938X_SDW
- 	imply SND_SOC_WCD939X_SDW
- 	imply SND_SOC_LPASS_MACRO_COMMON
-@@ -2090,6 +2091,25 @@ config SND_SOC_WCD934X
- 	  The WCD9340/9341 is a audio codec IC Integrated in
- 	  Qualcomm SoCs like SDM845.
- 
-+config SND_SOC_WCD937X
-+	depends on SND_SOC_WCD937X_SDW
-+	tristate
-+	depends on SOUNDWIRE || !SOUNDWIRE
-+	select SND_SOC_WCD_CLASSH
-+
-+config SND_SOC_WCD937X_SDW
-+	tristate "WCD9370/WCD9375 Codec - SDW"
-+	select SND_SOC_WCD937X
-+	select SND_SOC_WCD_MBHC
-+	select REGMAP_IRQ
-+	depends on SOUNDWIRE
-+	select REGMAP_SOUNDWIRE
-+	help
-+	  The WCD9370/9375 is an audio codec IC used with SoCs
-+	  like SC7280 or QCM6490 chipsets, and it connected
-+	  via soundwire.
-+	  To compile this codec driver say Y or m.
-+
- config SND_SOC_WCD938X
- 	depends on SND_SOC_WCD938X_SDW
- 	tristate
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 9ba24fb870b1..09aad6c12449 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -315,6 +315,8 @@ snd-soc-wcd-classh-objs := wcd-clsh-v2.o
- snd-soc-wcd-mbhc-objs := wcd-mbhc-v2.o
- snd-soc-wcd9335-objs := wcd9335.o
- snd-soc-wcd934x-objs := wcd934x.o
-+snd-soc-wcd937x-objs := wcd937x.o
-+snd-soc-wcd937x-sdw-objs := wcd937x-sdw.o
- snd-soc-wcd938x-objs := wcd938x.o
- snd-soc-wcd938x-sdw-objs := wcd938x-sdw.o
- snd-soc-wcd939x-objs := wcd939x.o
-@@ -708,6 +710,11 @@ obj-$(CONFIG_SND_SOC_WCD_CLASSH)	+= snd-soc-wcd-classh.o
- obj-$(CONFIG_SND_SOC_WCD_MBHC)	+= snd-soc-wcd-mbhc.o
- obj-$(CONFIG_SND_SOC_WCD9335)	+= snd-soc-wcd9335.o
- obj-$(CONFIG_SND_SOC_WCD934X)	+= snd-soc-wcd934x.o
-+obj-$(CONFIG_SND_SOC_WCD937X)	+= snd-soc-wcd937x.o
-+ifdef CONFIG_SND_SOC_WCD937X_SDW
-+# avoid link failure by forcing sdw code built-in when needed
-+obj-$(CONFIG_SND_SOC_WCD937X) += snd-soc-wcd937x-sdw.o
-+endif
- obj-$(CONFIG_SND_SOC_WCD938X)	+= snd-soc-wcd938x.o
- ifdef CONFIG_SND_SOC_WCD938X_SDW
- # avoid link failure by forcing sdw code built-in when needed
-diff --git a/sound/soc/codecs/wcd937x.c b/sound/soc/codecs/wcd937x.c
-index 87e571dc4a11..d0795e39e99b 100644
---- a/sound/soc/codecs/wcd937x.c
-+++ b/sound/soc/codecs/wcd937x.c
-@@ -2421,6 +2421,77 @@ static const struct snd_soc_dapm_widget wcd9375_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("DMIC6_OUTPUT"),
- };
- 
-+static const struct snd_soc_dapm_route wcd937x_audio_map[] = {
-+	{ "ADC1_OUTPUT", NULL, "ADC1_MIXER" },
-+	{ "ADC1_MIXER", "Switch", "ADC1 REQ" },
-+	{ "ADC1 REQ", NULL, "ADC1" },
-+	{ "ADC1", NULL, "AMIC1" },
-+
-+	{ "ADC2_OUTPUT", NULL, "ADC2_MIXER" },
-+	{ "ADC2_MIXER", "Switch", "ADC2 REQ" },
-+	{ "ADC2 REQ", NULL, "ADC2" },
-+	{ "ADC2", NULL, "ADC2 MUX" },
-+	{ "ADC2 MUX", "INP3", "AMIC3" },
-+	{ "ADC2 MUX", "INP2", "AMIC2" },
-+
-+	{ "IN1_HPHL", NULL, "VDD_BUCK" },
-+	{ "IN1_HPHL", NULL, "CLS_H_PORT" },
-+	{ "RX1", NULL, "IN1_HPHL" },
-+	{ "RDAC1", NULL, "RX1" },
-+	{ "HPHL_RDAC", "Switch", "RDAC1" },
-+	{ "HPHL PGA", NULL, "HPHL_RDAC" },
-+	{ "HPHL", NULL, "HPHL PGA" },
-+
-+	{ "IN2_HPHR", NULL, "VDD_BUCK" },
-+	{ "IN2_HPHR", NULL, "CLS_H_PORT" },
-+	{ "RX2", NULL, "IN2_HPHR" },
-+	{ "RDAC2", NULL, "RX2" },
-+	{ "HPHR_RDAC", "Switch", "RDAC2" },
-+	{ "HPHR PGA", NULL, "HPHR_RDAC" },
-+	{ "HPHR", NULL, "HPHR PGA" },
-+
-+	{ "IN3_AUX", NULL, "VDD_BUCK" },
-+	{ "IN3_AUX", NULL, "CLS_H_PORT" },
-+	{ "RX3", NULL, "IN3_AUX" },
-+	{ "RDAC4", NULL, "RX3" },
-+	{ "AUX_RDAC", "Switch", "RDAC4" },
-+	{ "AUX PGA", NULL, "AUX_RDAC" },
-+	{ "AUX", NULL, "AUX PGA" },
-+
-+	{ "RDAC3_MUX", "RX3", "RX3" },
-+	{ "RDAC3_MUX", "RX1", "RX1" },
-+	{ "RDAC3", NULL, "RDAC3_MUX" },
-+	{ "EAR_RDAC", "Switch", "RDAC3" },
-+	{ "EAR PGA", NULL, "EAR_RDAC" },
-+	{ "EAR", NULL, "EAR PGA" },
-+};
-+
-+static const struct snd_soc_dapm_route wcd9375_audio_map[] = {
-+	{ "ADC3_OUTPUT", NULL, "ADC3_MIXER" },
-+	{ "ADC3_OUTPUT", NULL, "ADC3_MIXER" },
-+	{ "ADC3_MIXER", "Switch", "ADC3 REQ" },
-+	{ "ADC3 REQ", NULL, "ADC3" },
-+	{ "ADC3", NULL, "AMIC4" },
-+
-+	{ "DMIC1_OUTPUT", NULL, "DMIC1_MIXER" },
-+	{ "DMIC1_MIXER", "Switch", "DMIC1" },
-+
-+	{ "DMIC2_OUTPUT", NULL, "DMIC2_MIXER" },
-+	{ "DMIC2_MIXER", "Switch", "DMIC2" },
-+
-+	{ "DMIC3_OUTPUT", NULL, "DMIC3_MIXER" },
-+	{ "DMIC3_MIXER", "Switch", "DMIC3" },
-+
-+	{ "DMIC4_OUTPUT", NULL, "DMIC4_MIXER" },
-+	{ "DMIC4_MIXER", "Switch", "DMIC4" },
-+
-+	{ "DMIC5_OUTPUT", NULL, "DMIC5_MIXER" },
-+	{ "DMIC5_MIXER", "Switch", "DMIC5" },
-+
-+	{ "DMIC6_OUTPUT", NULL, "DMIC6_MIXER" },
-+	{ "DMIC6_MIXER", "Switch", "DMIC6" },
-+};
-+
- static int wcd937x_set_micbias_data(struct wcd937x_priv *wcd937x)
- {
- 	int vout_ctl[3];
-@@ -2557,6 +2628,13 @@ static int wcd937x_soc_codec_probe(struct snd_soc_component *component)
- 			dev_err(component->dev, "Failed to add snd_ctls\n");
- 			return ret;
- 		}
-+
-+		ret = snd_soc_dapm_add_routes(dapm, wcd9375_audio_map,
-+					      ARRAY_SIZE(wcd9375_audio_map));
-+		if (ret < 0) {
-+			dev_err(component->dev, "Failed to add routes\n");
-+			return ret;
-+		}
- 	}
- 
- 	ret = wcd937x_mbhc_init(component);
-@@ -2600,6 +2678,8 @@ static const struct snd_soc_component_driver soc_codec_dev_wcd937x = {
- 	.num_controls = ARRAY_SIZE(wcd937x_snd_controls),
- 	.dapm_widgets = wcd937x_dapm_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(wcd937x_dapm_widgets),
-+	.dapm_routes = wcd937x_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(wcd937x_audio_map),
- 	.set_jack = wcd937x_codec_set_jack,
- 	.endianness = 1,
- };
--- 
-2.25.1
+	vm_fault_t fault;
+	int rc;
 
+>  	for_each_vma(vmi, vma) {
+>  		/*
+> @@ -2631,9 +2632,11 @@ static int __s390_unshare_zeropages(struct mm_struct *mm)
+>  		addr = vma->vm_start;
+>  retry:
+> -		rc = walk_page_range_vma(vma, addr, vma->vm_end,
+> -					 &find_zeropage_ops, &addr);
+> -		if (rc <= 0)
+> +		zero_page = walk_page_range_vma(vma, addr, vma->vm_end,
+> +						&find_zeropage_ops, &addr);
+> +		if (zero_page < 0)
+> +			return zero_page;
+> +		else if (!zero_page)
+>  			continue;
+>  		/* addr was updated by find_zeropage_pte_entry() */
+> @@ -2656,7 +2659,7 @@ static int __s390_unshare_zeropages(struct mm_struct *mm)
+>  		goto retry;
+>  	}
+> -	return rc;
+> +	return 0;
+>  }
+>  static int __s390_disable_cow_sharing(struct mm_struct *mm)
+
+..
+
+> > > +		/* addr was updated by find_zeropage_pte_entry() */
+> > > +		rc = handle_mm_fault(vma, addr,
+> > > +				     FAULT_FLAG_UNSHARE | FAULT_FLAG_REMOTE,
+> > > +				     NULL);
+> > > +		if (rc & VM_FAULT_OOM)
+> > > +			return -ENOMEM;
+> > 
+> > Heiko pointed out that rc type is inconsistent vs vm_fault_t returned by
+> 
+> Right, let's use another variable for that.
+> 
+> > handle_mm_fault(). While fixing it up, I've got concerned whether is it
+> > fine to continue in case any other error is met (including possible future
+> > VM_FAULT_xxxx)?
+> 
+> Such future changes would similarly break break_ksm(). Staring at it, I do wonder
+> if break_ksm() should be handling VM_FAULT_HWPOISON ... very likely we should
+> handle it and fail -- we might get an MC while copying from the source page.
+> 
+> VM_FAULT_HWPOISON on the shared zeropage would imply a lot of trouble, so
+> I'm not concerned about that for the case here, but handling it in the future
+> would be cleaner.
+> 
+> Note that we always retry the lookup, so we won't just skip a zeropage on unexpected
+> errors.
+> 
+> We could piggy-back on vm_fault_to_errno(). We could use
+> vm_fault_to_errno(rc, FOLL_HWPOISON), and only continue (retry) if the rc is 0 or
+> -EFAULT, otherwise fail with the returned error.
+> 
+> But I'd do that as a follow up, and also use it in break_ksm() in the same fashion.
+
+@Christian, do you agree with this suggestion?
+
+Thanks!
 
