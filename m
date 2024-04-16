@@ -1,196 +1,175 @@
-Return-Path: <linux-kernel+bounces-146378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F4848A647A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:05:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C4078A647D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:05:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B21CB1C2138D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:05:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E03F1C21226
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3545978274;
-	Tue, 16 Apr 2024 07:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fyKjcNKm"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1ABA82864;
+	Tue, 16 Apr 2024 07:05:32 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA9736F077
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:05:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4013F7318A
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:05:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713251124; cv=none; b=svbejVI6A30cXXTrW8iPqCdjqIJzVn1Ftnt7hrnh0ntQnQ3GBIJQ43P9n9UGtdBu5wug4orOHcluSD3xUUZ9l+tC/1TAsIj1CXu/k4xJ5xecxDSAm6rxAflwNCR34mKFM2U+OG8mCsKEj5Qw+mIqG2wWHk8k+6cTgeAofDNf4O0=
+	t=1713251132; cv=none; b=ZejL0lYl8Y8maDjZlnJzw1Hf95dO3f7yp+BIf2u9+835oxuWV/E7DmOYn/NPqB1Tj554BR7v2+gt2UaaGrGdDoKomidURpVHOa+il1+8/yM8oIZaALd9j0kPRMFlfbVPzBwD6bORQSEt5kszfhk660b3wlZEK+YI3wPh19ZotVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713251124; c=relaxed/simple;
-	bh=MqLir6tbjPl4KI0Qo1IvoTUeFmCQzTEfmXPD+OQH28U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n5pWCPGQBPERNEPAEPRhej5HtTHouqRJUJJj3P5cnuj8tba95XIUUk6drsnoSLjiQIrfUQX+H7cM5n1OROrDdTM8I5p26wrBOceSWWyhN9stS7nTk6Q49i78v/FVh3fMR76w70nOYyQG2Tx0EqQ6ItmI7EVpIJotBYpWIsKR7KA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fyKjcNKm; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713251121;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Tz4KEvhtCmHEGUIA0vxbxLx7rkho8goMm8gMGcPPPuk=;
-	b=fyKjcNKmXPbIJbBEicrYrF14MmJIrAzYcDXar8lV9ktuJE26f75f6Z7KQAL5G0euvN+iAQ
-	ylkcsvQLxUakpEjkDvt1/qjdQ2DQSSACYCn9mXos0kzHlCs8xoHgmkiAhMN4km3qPo6u8e
-	e23oYq1SIrXp/XAl46eoHlV+NZIBxhQ=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-282-vcYb1-JINmiH2PJhQt4cgw-1; Tue, 16 Apr 2024 03:05:17 -0400
-X-MC-Unique: vcYb1-JINmiH2PJhQt4cgw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-417bf71efb4so21028035e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:05:17 -0700 (PDT)
+	s=arc-20240116; t=1713251132; c=relaxed/simple;
+	bh=uJ5ZUnk7pfsb6UR46LKGzjdr6dLAEIqQ64wVK9gBB1M=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=tob3SWNlcsXe3j57gPPOqhYe9AJCMg5Y0vU1rm3nyyONBy8qEnXaYuzrwlo5yF8WbTlvfQlAIALe2R04VGZ9vmvLCs8r61a/RCUIXYuqra1jxztOc3TNbsc5X1yu9wg9BCyG8AGyyPIPIaqDwkkNuP970gieKZ8k1YClKGGeCM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36a293aaeb8so40520325ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:05:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713251116; x=1713855916;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Tz4KEvhtCmHEGUIA0vxbxLx7rkho8goMm8gMGcPPPuk=;
-        b=T11HffCBUzq3EUEB1TrTbdaMLDJvPS8NAfd+YA4isSIsTdy+SJbZH+mgkD4uWUwYeL
-         +vpG0cIsKnuqsMaGQHhhc+SoCukB2hiKYt9vI19czIGEV+HwWDdmMXbtKvd7sy2FR1tb
-         DVE0DJ6DzZiRrtpiCQ2pwhyl/W1+8SovmXfvmYL9FejV5qki0GrrLaveb0XnByM8jJzG
-         MR3Bf5vohJTnaRoFf/BEWS7bxo7oHRF5xA7wFWqvuWgzzUHZ8QXVpaM6DQnBS9Kf0SXD
-         YJY3GU1g+ML9FSWRO0ducSc0l9Ez6fEp+6XCUGixH2C/iEdeFm5vSQ+vaOL5KaLs/qMC
-         Vz4A==
-X-Gm-Message-State: AOJu0YxfsyJS8Go0vwaNwqDb2ylFEFi0BTutLTX9tW8gYFkxcHlT1FaA
-	BMu4vxMLpVPx1cqn2UkXUSs42j5KyLvMPZ4o1hmEkL5JYVaNwRmHeHp1qB8DoxpsOFUxMH/5vRt
-	4jx7kJlUPgqM/jKQ4Hig+hjIUjjljYWQ9ux6Co5OoJB3hSSgeb04ZPaiShreJxA==
-X-Received: by 2002:a05:600c:3510:b0:418:2ab6:7123 with SMTP id h16-20020a05600c351000b004182ab67123mr862663wmq.10.1713251116248;
-        Tue, 16 Apr 2024 00:05:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHlh160Fkl72qlyyigfVzcARnzqPgQLteoNRsQ7hRBGSoEr70nam9SEPBDYWLmRrwtPfBMQ8g==
-X-Received: by 2002:a05:600c:3510:b0:418:2ab6:7123 with SMTP id h16-20020a05600c351000b004182ab67123mr862627wmq.10.1713251115799;
-        Tue, 16 Apr 2024 00:05:15 -0700 (PDT)
-Received: from [192.168.3.108] (p4ff2389d.dip0.t-ipconnect.de. [79.242.56.157])
-        by smtp.gmail.com with ESMTPSA id j12-20020a05600c190c00b004189a5ada3asm728027wmq.19.2024.04.16.00.05.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Apr 2024 00:05:15 -0700 (PDT)
-Message-ID: <bf252e6c-ccd8-4ebb-bff4-9b0c74ab2d9a@redhat.com>
-Date: Tue, 16 Apr 2024 09:05:12 +0200
+        d=1e100.net; s=20230601; t=1713251126; x=1713855926;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z5Ey7SxrivxDtrUFeSh/ovV2uYSaTIWLe8Gfag26aJM=;
+        b=X47oOCWglF47rxBBmF7ckW2aPHHd+30gBHkEKLxf1aRX9BuNSVOCdmsbXsGhISz8t8
+         04CGh9esSZGYy8Z0XmiU1svfHDlFYgky5WVyQZavyUZVd3CJ2z5H3Oq19hhP2I6aDbMl
+         pUTyAs8qthkOkQFich+5xSYnlm0p2dht48gu4U59JfDxA1sa2mwLpB/it6FvLZecJCuF
+         blYk6miDr4H6ZZ/fQdpeNEZNi0Q0ANfJXAkfXOaa9txzH/I8MPIn0md9uELu4ijiJAuP
+         qilWjOxQjNw0jQUCm2q7NUhTpKlkPbrHuPfd0ZPCN9HySrE64Xe+xD5kZN1bnZaKazcs
+         F8eQ==
+X-Gm-Message-State: AOJu0Yy1NFy+hHCVQ7NDAZTG/6CKRZxPC7WDycDSQ9NW01dJ9Xuso/cA
+	77NyY1q5iVS3i0s7l8jjzAPGy3z4qccTowSj0roGQZSQ+Pe/JcpCl2KTkEfZDAZ1NQlGdJl/BwG
+	PtyM6JPqpJTQJyY1ItbnkQNxh+dF4FjAy2DPPveHDMfHNC+dOVhJGY+U=
+X-Google-Smtp-Source: AGHT+IEaoQ+i4ET9he2l8MC4teCYVg+Uc0J5EsKJOBqmnmnkwkHZ48AcBdKh0Fvntmv5xpLbzVPG0fV8J4FRXGFCNYDOASZDXI1w
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] s390/mm: re-enable the shared zeropage for !PV and
- !skeys KVM guests
-To: Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Janosch Frank <frankja@linux.ibm.com>,
- Claudio Imbrenda <imbrenda@linux.ibm.com>, Heiko Carstens
- <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Andrew Morton <akpm@linux-foundation.org>, Peter Xu <peterx@redhat.com>,
- Sven Schnelle <svens@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
- linux-s390@vger.kernel.org
-References: <20240411161441.910170-1-david@redhat.com>
- <20240411161441.910170-3-david@redhat.com>
- <Zh1w1QTNSy+rrCH7@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
- <8533cb18-42ff-42bc-b9e5-b0537aa51b21@redhat.com>
- <Zh4cqZkuPR9V1t1o@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <Zh4cqZkuPR9V1t1o@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1a22:b0:36a:3c40:3e29 with SMTP id
+ g2-20020a056e021a2200b0036a3c403e29mr103135ile.3.1713251126512; Tue, 16 Apr
+ 2024 00:05:26 -0700 (PDT)
+Date: Tue, 16 Apr 2024 00:05:26 -0700
+In-Reply-To: <000000000000b24903061520f3e9@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ce9d000616315c11@google.com>
+Subject: Re: [syzbot] [kernel?] WARNING: suspicious RCU usage in __do_softirq
+From: syzbot <syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, peterz@infradead.org, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 
-On 16.04.24 08:37, Alexander Gordeev wrote:
-> On Mon, Apr 15, 2024 at 09:14:03PM +0200, David Hildenbrand wrote:
->>>> +retry:
->>>> +		rc = walk_page_range_vma(vma, addr, vma->vm_end,
->>>> +					 &find_zeropage_ops, &addr);
->>>> +		if (rc <= 0)
->>>> +			continue;
->>>
->>> So in case an error is returned for the last vma, __s390_unshare_zeropage()
->>> finishes with that error. By contrast, the error for a non-last vma would
->>> be ignored?
->>
->> Right, it looks a bit off. walk_page_range_vma() shouldn't fail
->> unless find_zeropage_pte_entry() would fail -- which would also be
->> very unexpected.
->>
->> To handle it cleanly in case we would ever get a weird zeropage where we
->> don't expect it, we should probably just exit early.
->>
->> Something like the following (not compiled, addressing the comment below):
-> 
->> @@ -2618,7 +2618,8 @@ static int __s390_unshare_zeropages(struct mm_struct *mm)
->>   	struct vm_area_struct *vma;
->>   	VMA_ITERATOR(vmi, mm, 0);
->>   	unsigned long addr;
->> -	int rc;
->> +	vm_fault_t rc;
->> +	int zero_page;
-> 
-> I would use "fault" for mm faults (just like everywhere else handle_mm_fault() is
-> called) and leave rc as is:
-> 
-> 	vm_fault_t fault;
-> 	int rc;
+syzbot has found a reproducer for the following issue on:
 
-Sure, let me know once discussion here stopped whether you want a v4 or 
-can fix that up.
+HEAD commit:    6bd343537461 Add linux-next specific files for 20240415
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=132b923b180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c247afaa437e6409
+dashboard link: https://syzkaller.appspot.com/bug?extid=dce04ed6d1438ad69656
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e7ff77180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=125e7767180000
 
--- 
-Cheers,
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/aaf63ca280e5/disk-6bd34353.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/353fdc5b9ee6/vmlinux-6bd34353.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/25a7a362b023/bzImage-6bd34353.xz
 
-David / dhildenb
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com
 
+=============================
+WARNING: suspicious RCU usage
+6.9.0-rc4-next-20240415-syzkaller #0 Not tainted
+-----------------------------
+kernel/rcu/tree.c:276 Illegal rcu_softirq_qs() in RCU read-side critical section!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 1
+1 lock held by ksoftirqd/0/16:
+ #0: ffffffff8e334160
+ (rcu_read_lock_sched){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ (rcu_read_lock_sched){....}-{1:2}, at: rcu_read_lock_sched include/linux/rcupdate.h:933 [inline]
+ (rcu_read_lock_sched){....}-{1:2}, at: pfn_valid include/linux/mmzone.h:2019 [inline]
+ (rcu_read_lock_sched){....}-{1:2}, at: __virt_addr_valid+0x183/0x520 arch/x86/mm/physaddr.c:65
+
+stack backtrace:
+CPU: 0 PID: 16 Comm: ksoftirqd/0 Not tainted 6.9.0-rc4-next-20240415-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ lockdep_rcu_suspicious+0x221/0x340 kernel/locking/lockdep.c:6712
+ rcu_softirq_qs+0xd9/0x370 kernel/rcu/tree.c:273
+ __do_softirq+0x5fd/0x980 kernel/softirq.c:568
+ invoke_softirq kernel/softirq.c:428 [inline]
+ __irq_exit_rcu+0xf2/0x1c0 kernel/softirq.c:633
+ irq_exit_rcu+0x9/0x30 kernel/softirq.c:645
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
+ sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1043
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+RIP: 0010:lock_acquire+0x264/0x550 kernel/locking/lockdep.c:5758
+Code: 2b 00 74 08 4c 89 f7 e8 8a fd 88 00 f6 44 24 61 02 0f 85 85 01 00 00 41 f7 c7 00 02 00 00 74 01 fb 48 c7 44 24 40 0e 36 e0 45 <4b> c7 44 25 00 00 00 00 00 43 c7 44 25 09 00 00 00 00 43 c7 44 25
+RSP: 0018:ffffc90000157820 EFLAGS: 00000206
+RAX: 0000000000000001 RBX: 1ffff9200002af10 RCX: 0000000000000001
+RDX: dffffc0000000000 RSI: ffffffff8bcac4e0 RDI: ffffffff8c1f8ee0
+RBP: ffffc90000157980 R08: ffffffff92f765a7 R09: 1ffffffff25eecb4
+R10: dffffc0000000000 R11: fffffbfff25eecb5 R12: 1ffff9200002af0c
+R13: dffffc0000000000 R14: ffffc90000157880 R15: 0000000000000246
+ rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ rcu_read_lock_sched include/linux/rcupdate.h:933 [inline]
+ pfn_valid include/linux/mmzone.h:2019 [inline]
+ __virt_addr_valid+0x1a0/0x520 arch/x86/mm/physaddr.c:65
+ kasan_addr_to_slab+0xd/0x80 mm/kasan/common.c:37
+ __kasan_record_aux_stack+0x11/0xc0 mm/kasan/generic.c:526
+ __call_rcu_common kernel/rcu/tree.c:3102 [inline]
+ call_rcu+0x167/0xa70 kernel/rcu/tree.c:3206
+ context_switch kernel/sched/core.c:5412 [inline]
+ __schedule+0x17f0/0x4a50 kernel/sched/core.c:6746
+ preempt_schedule_common+0x84/0xd0 kernel/sched/core.c:6925
+ preempt_schedule+0xe1/0xf0 kernel/sched/core.c:6949
+ preempt_schedule_thunk+0x1a/0x30 arch/x86/entry/thunk.S:12
+ smpboot_thread_fn+0x65b/0xa30 kernel/smpboot.c:163
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	2b 00                	sub    (%rax),%eax
+   2:	74 08                	je     0xc
+   4:	4c 89 f7             	mov    %r14,%rdi
+   7:	e8 8a fd 88 00       	call   0x88fd96
+   c:	f6 44 24 61 02       	testb  $0x2,0x61(%rsp)
+  11:	0f 85 85 01 00 00    	jne    0x19c
+  17:	41 f7 c7 00 02 00 00 	test   $0x200,%r15d
+  1e:	74 01                	je     0x21
+  20:	fb                   	sti
+  21:	48 c7 44 24 40 0e 36 	movq   $0x45e0360e,0x40(%rsp)
+  28:	e0 45
+* 2a:	4b c7 44 25 00 00 00 	movq   $0x0,0x0(%r13,%r12,1) <-- trapping instruction
+  31:	00 00
+  33:	43 c7 44 25 09 00 00 	movl   $0x0,0x9(%r13,%r12,1)
+  3a:	00 00
+  3c:	43                   	rex.XB
+  3d:	c7                   	.byte 0xc7
+  3e:	44                   	rex.R
+  3f:	25                   	.byte 0x25
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
