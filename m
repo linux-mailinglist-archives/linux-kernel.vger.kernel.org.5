@@ -1,137 +1,165 @@
-Return-Path: <linux-kernel+bounces-147203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C4E18A70F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:12:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9683D8A70F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:13:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D12DB1F2246B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:12:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BFD81C21CB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D02C3132489;
-	Tue, 16 Apr 2024 16:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E80131BDE;
+	Tue, 16 Apr 2024 16:12:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PNYd/+WM"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jgeZcO62"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4C6B131726;
-	Tue, 16 Apr 2024 16:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9857D13172A;
+	Tue, 16 Apr 2024 16:12:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713283938; cv=none; b=UV1qUmnZ4BkxM8W9OlcTxkV+WRELxfWf3m6KM8f0EATt10F7uAPVK3X5HpUP0sBXLBGRIrmSngqWrDhOsvY3T4IUCSngPShP5D6dPhcdyAb+JfhFa3S2wN2MKiN9n3qGHnvMZhjC5ZGk/53OUWpJEFJ0NyFwuJz/Qf7GJPsIj3k=
+	t=1713283976; cv=none; b=eIC+flYH6RJxox+AztmDUIIE6gI7iUt/3weDW51cjNomRjKPOf8RVJNtF22kG3aeG6TSeVrT2wM6LxvrVsnc0W8P7Fb9B5UL4KbEAWzu84LcVTsiaeL4SFTmm/JkjaAQo4kx5r8ly1UklEpbbjPeI17pHM/fCxJ6QvcderjpYwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713283938; c=relaxed/simple;
-	bh=EKrDgIJgNXo/R8quzpUy0yW7erzp8PxvHvcTe/50ujU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=q7UxvlvWIMrRYgIqavvjuZXm4TWeJvaYaQKqnjkrro0MXCmAbgj+dBsv/sJfDssMNJhQLfk5Jg9l6fc14Hk5uVvMC/Xf6WARZ9oBWxrfhgs6cAOyhbJMjm9hZP9qmRTd6Phch63S5xwkhyk7rtP/wgzMYWGqJqNa7y7sGo+14hI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PNYd/+WM; arc=none smtp.client-ip=209.85.214.169
+	s=arc-20240116; t=1713283976; c=relaxed/simple;
+	bh=/Y3zo1KcddHRAAx9chnFCnaj6B+PNjuHwGVWXwXYUVs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZinnrcTH9gnM5Dvr0jVKLXTGk7zRdDS/oywH/12LQ49YOeHkAsxVbFOE0wRhUJ37HhP6LM4EbVlN6FeCyvCVckNiA75M3TxwGsVRB8TW1k6FgwgL5d6XPEhtBTmL4GMqZS2bNYYCRT23j15gfL0vtEVSKGy8d5qiFe5Dpy9Ezpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jgeZcO62; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e5715a9ebdso36956275ad.2;
-        Tue, 16 Apr 2024 09:12:15 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3499f1bed15so214899f8f.1;
+        Tue, 16 Apr 2024 09:12:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713283935; x=1713888735; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=EKrDgIJgNXo/R8quzpUy0yW7erzp8PxvHvcTe/50ujU=;
-        b=PNYd/+WMCJkxq3lys23g1hgaUEyZDH1rNd3cGHTeIZzcTbiGxR4EJSJfGjllMpxSRE
-         zVGBGd5oBS2dqmpSQXwo9F5Jd0Uc6F4W0NHSefezL2ECSOf0Ol9weMtdjPRDiNxQ8Veh
-         Otl5fuAjZMdnHg8Xryp27Np2YneqRbR4up7gua7mzTdj6YEEBSE3njQfHDHaZA5WfbPU
-         hJk6I7oY1eYDa8eJIdBhQJH02XnfXL6L6yt8cGeR5cp5POgzfyrt8VCgB0DV0IHLshmO
-         +Cy1H8oHpuS/p7BI12gVvm3quEpQLICCIUrgUjtUh9jdY+zA+nB5VEsEZhInhr4zx1bL
-         wfUg==
+        d=gmail.com; s=20230601; t=1713283973; x=1713888773; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lE0iIAKwN26IHZrOzJQ+UkxUYWi8S6bm+npmiEEpfoU=;
+        b=jgeZcO62rlTkt2EpF+NykjONmJN1O/oMswfDCZfhs6kV+cDDesdn62aKBLNcKE0pYG
+         vC7Ebo+AVHi6MFrfopLw1WhrJ4tfSdfhuDdobCkriHs5DpO6mr6t9vJeHFULFHuOHg2Z
+         iAZ/pbQj6uf1P6p48UMmI6UOG2d56h6ky5OiNQgNcWZ0l/BALsKP5iXWYLEVLaTC7hPx
+         x7yKURhXNTw91spy/E/n/TJJmctYIX+WX3ikIbj4FslD6gwcKceGs6++yXlWaGKm9f6c
+         e+dCCdF7+W8XhrBpr8nXOxHGyXYy6S/WFWEYCintqIDv6i3FaP3PRzL5kxzAxmzF6Kgh
+         duPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713283935; x=1713888735;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EKrDgIJgNXo/R8quzpUy0yW7erzp8PxvHvcTe/50ujU=;
-        b=uIhZvmNcPkotHAjbcXNcvgaGy9oZV/gOuvauDmOAkT4wf5M3ANTTEabBcVqZMGghwa
-         f7Zb4d9GRAZOkrhSjMT7AHbbsYWmP9dT6EZbSzPfi96/Lz7BTV7egzW0vX1MX+fmquRR
-         rnCYyKKYFrK/Ei3r1zfT6Fmzx5pZfCCpxVqnuC23Aiq0G/Eer+zHcNSYhfY37IixN96Q
-         VUFJuKijSmsBK0SOCSj3pKVohMAUf5iCnd/y1P9bbIxY7bUA/2jUglcA8rlBgvcd0NrC
-         bxpIyUrAotBypc0OGDIKH9nSTS8I8AIzkxZU/arxOWxiOMp9F7krPJdxvRb849xj/wkz
-         WxwA==
-X-Forwarded-Encrypted: i=1; AJvYcCVS0MgTdoo7wFMTLSulSEvz+2b7OO/s6+WmAyns19h5rAmY/ze0RUpCsuu6PmdQgy+K9TKk5Z89wqfaXUV1RiUgrMEBS32EopEE79EK07YJqNBMguwwapqcpH6UrfR79mNhYs08tcWb+fGBRmBCVbrJMibsLExNth2xNi865QDetTSXhSQQ5lcgPeU1yLQckkNK
-X-Gm-Message-State: AOJu0YzWpY1EXhk3exoVoit84aRuoDx8ttU6/o+KVRDblvcLjVSUwj/s
-	8cGcGaBsXKVhs4Y0PoAdSDp+ndNr69++X0C0/owHehkAqwTKIyrf
-X-Google-Smtp-Source: AGHT+IEaBhKQrtE4y17EN+JRfoZ0nAtlgq9TOIgtvD46kDZyqFoPetYC3y2iMwccARAF9quBrezxcQ==
-X-Received: by 2002:a17:903:595:b0:1e3:e4ff:7054 with SMTP id jv21-20020a170903059500b001e3e4ff7054mr10328895plb.38.1713283934861;
-        Tue, 16 Apr 2024 09:12:14 -0700 (PDT)
-Received: from ?IPv6:2605:59c8:43f:400:82ee:73ff:fe41:9a02? ([2605:59c8:43f:400:82ee:73ff:fe41:9a02])
-        by smtp.googlemail.com with ESMTPSA id lf16-20020a170902fb5000b001e5119c1923sm10005822plb.71.2024.04.16.09.12.05
+        d=1e100.net; s=20230601; t=1713283973; x=1713888773;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lE0iIAKwN26IHZrOzJQ+UkxUYWi8S6bm+npmiEEpfoU=;
+        b=gSsDaq/QD6TGcfKm6n9XYeSRkg00S56kjDmsWcrqtL5JizFaAtRj3jzt6ePpNsNGBJ
+         z/jvpQ/L2sSANDc+7/xSNZ4k0mcu4/8nF6Pv+LJhYiJIeBLTKnQ6caaQftpcyBsUdMYJ
+         nxA0e4d8sVQX48AORWUz5ZTPXaSkAob2IbdWYwiREuF3xlD1LBwZjSLJMPASqa7wputd
+         m7SmRvQU2h72EQpIqsTRq34YmQhTzlI2TNK4g35Jsh4nfyTvxKblEg1veSgetYFbIds9
+         rN7r6vntQT4YWzBEPvG4esvxR/BRHC3PJuhzURn1fLyehpOZqRizEgdR5seUn66BY9Fl
+         CTjA==
+X-Forwarded-Encrypted: i=1; AJvYcCVWBzdsxe9Bz8BYl2PG0i7F3BffyzlY93L+HTW8i49IU52fGQpeaJfEwhC1JvcdWwYMZ+JRWY1cPuOwglMXBInWbwr7gFplmsshzpWeVQI/0w2RMB/Z76w22/FVQBR0CHky3LR5ytJ8ei64hki7TPcBa3zmtMEQM8a4VWZiCLWftyzu+os=
+X-Gm-Message-State: AOJu0Yyh0vJUIWPGH5qckW1wIhuhdMFGXjP+Y9+C0+jlVnVPlA5TgvNA
+	gp/tZcvEi6eGNeUFiNzFkV2OTmKg7sMt2U/vFW8RQvSQU4yO3l+7075W
+X-Google-Smtp-Source: AGHT+IG9ARM425fPZMKoPQYcOH+P46IbQ6VFXNx/9g39D202o1HbwRny8IvK1x5SH0HBZINbFbyuOg==
+X-Received: by 2002:a05:6000:1041:b0:33e:d139:412c with SMTP id c1-20020a056000104100b0033ed139412cmr2499659wrx.30.1713283972768;
+        Tue, 16 Apr 2024 09:12:52 -0700 (PDT)
+Received: from U4.lan ([91.66.160.190])
+        by smtp.gmail.com with ESMTPSA id t7-20020adfe447000000b00343eac2acc4sm15350743wrm.111.2024.04.16.09.12.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 09:12:14 -0700 (PDT)
-Message-ID: <18ca19fa64267b84bee10473a81cbc63f53104a0.camel@gmail.com>
-Subject: Re: [PATCH net-next v2 07/15] mm: page_frag: add '_va' suffix to
- page_frag API
-From: Alexander H Duyck <alexander.duyck@gmail.com>
-To: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
- kuba@kernel.org,  pabeni@redhat.com
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, 
- Shailend Chand <shailend@google.com>, Eric Dumazet <edumazet@google.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen
- <anthony.l.nguyen@intel.com>,  Sunil Goutham <sgoutham@marvell.com>, Geetha
- sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
- hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, Sean Wang
- <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
- Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith
- Busch <kbusch@kernel.org>,  Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
- <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,  Chaitanya Kulkarni
- <kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang
- <jasowang@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  David Howells
- <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, Chuck Lever
- <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown
- <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai Ngo
- <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Trond Myklebust
- <trond.myklebust@hammerspace.com>, Anna Schumaker <anna@kernel.org>, 
- intel-wired-lan@lists.osuosl.org, linux-arm-kernel@lists.infradead.org, 
- linux-mediatek@lists.infradead.org, linux-nvme@lists.infradead.org, 
- kvm@vger.kernel.org, virtualization@lists.linux.dev, linux-mm@kvack.org, 
- bpf@vger.kernel.org, linux-afs@lists.infradead.org,
- linux-nfs@vger.kernel.org
-Date: Tue, 16 Apr 2024 09:12:01 -0700
-In-Reply-To: <20240415131941.51153-8-linyunsheng@huawei.com>
-References: <20240415131941.51153-1-linyunsheng@huawei.com>
-	 <20240415131941.51153-8-linyunsheng@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 16 Apr 2024 09:12:52 -0700 (PDT)
+From: Alex Bee <knaerzche@gmail.com>
+To: Lee Jones <lee@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: Chris Zhong <zyw@rock-chips.com>,
+	Zhang Qing <zhangqing@rock-chips.com>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH v4 0/5] Add RK816 PMIC support
+Date: Tue, 16 Apr 2024 18:12:32 +0200
+Message-ID: <20240416161237.2500037-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2024-04-15 at 21:19 +0800, Yunsheng Lin wrote:
-> Currently most of the API for page_frag API is returning
-> 'virtual address' as output or expecting 'virtual address'
-> as input, in order to differentiate the API handling between
-> 'virtual address' and 'struct page', add '_va' suffix to the
-> corresponding API mirroring the page_pool_alloc_va() API of
-> the page_pool.
->=20
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+This series aims to add support for Rockchip RK816 PMIC series. As per
+datasheet it's targeted for RK3126/RK3128 (RK816-1), RK1108 (RK816-2) and
+PX3-SE (RK816-3) but might be used for other SoCs as well. The MFD consists
+of an integrated RTC, a GPIO controller, two 32k clock outputs, a power
+key, 3 buck- and 6 ldo regulators, 3 regulator-switches, and charger with
+integrated fuel gauge. Charger and fuel gauge are not part of this series.
+Two of the switches (otg/boost) are part of the binding, but not of
+the driver. They must only ever be enabled if no battery charging is
+happening, but it will be enabled automatically if a battery is attached
+and an external power source is connected. Thus that needs some
+incorporation of a yet to be added charger driver.
+Integration in the existing rk8xx-infrastructure was pretty straightforward
+and only needed very little tweaking. In order to not further bloat the
+driver(s) too much with additional `#define`s I tried to re-use existing
+ones wherever possible.
 
-This patch is a total waste of time. By that logic we should be
-renaming __get_free_pages since it essentially does the same thing.
+The patches are loosely based on the vendor's implementation, verified
+against the datasheet and tested/measured on a RK3126 board.
 
-This just seems like more code changes for the sake of adding code
-changes rather than fixing anything. In my opinion it should be dropped
-from the set.
+I'd like to gently ping pinctrl and regulator maintainers: please have a
+look at this series. I've now added Sebastian Reichel to the recipients, as
+he recently added RK806 support and re-worked parts of the rk8xx drivers.
+
+changes since v1:
+  - integrated Krzysztof's feedback for the bindings and the resulting
+    driver changes
+  - fixed a sparse warning 
+
+link to v1:
+https://lore.kernel.org/lkml/20240321143911.90210-2-knaerzche@gmail.com/
+
+changes since v2:
+  - integrated Krzysztof's feedback to v2 of the bindings and the resulting
+    driver changes
+
+link to v2:
+https://lore.kernel.org/lkml/20240323085852.116756-1-knaerzche@gmail.com/
+
+changes since v3:
+  - integrated Krzysztof's feedback to the bindings of v3 
+  - integrated Lee's feedback to the mfd part of v3 
+
+link to v3:
+https://lore.kernel.org/lkml/20240323132757.141861-2-knaerzche@gmail.com/
+
+Please see individual patches for details about the changes.
+
+Alex Bee (5):
+  dt-bindings: mfd: Add rk816 binding
+  mfd: rk8xx: Add RK816 support
+  pinctrl: rk805: Add rk816 pinctrl support
+  regulator: rk808: Support apply_bit for
+    rk808_set_suspend_voltage_range
+  regulator: rk808: Add RK816 support
+
+ .../bindings/mfd/rockchip,rk816.yaml          | 274 ++++++++++++++++++
+ drivers/mfd/Kconfig                           |   4 +-
+ drivers/mfd/rk8xx-core.c                      | 104 +++++++
+ drivers/mfd/rk8xx-i2c.c                       |  45 ++-
+ drivers/pinctrl/pinctrl-rk805.c               |  69 +++++
+ drivers/regulator/rk808-regulator.c           | 218 +++++++++++++-
+ include/linux/mfd/rk808.h                     | 144 +++++++++
+ 7 files changed, 851 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/rockchip,rk816.yaml
+
+-- 
+2.43.2
 
 
