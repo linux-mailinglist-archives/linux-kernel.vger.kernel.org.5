@@ -1,263 +1,158 @@
-Return-Path: <linux-kernel+bounces-147232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CE7C8A7153
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:27:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00D228A715B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:28:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 234AC28522D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:27:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E1AEB22670
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:28:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7180D1327EB;
-	Tue, 16 Apr 2024 16:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BE4B132484;
+	Tue, 16 Apr 2024 16:28:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eYSD1YLK"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FH+yTqMC"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246B6131750;
-	Tue, 16 Apr 2024 16:27:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7500F43AA5;
+	Tue, 16 Apr 2024 16:28:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713284837; cv=none; b=B6I5yyA8FP7Phn7iEqxKRAWNT4tZnrQnS9t510A2JHlX482apKWzOqcrWDAK6XHj/r68irN864hZW64FH47ofcoXFLtU3aFhij5vIvY3prAZxL5pGAGYUSPHS0BdkW/a3AUntawGgjFcdG7OkpH7pEkDpJpMNfg+wAueixxc+mg=
+	t=1713284913; cv=none; b=s98UsKO0O7L8fmn0P9J9bA0D7cjmNSpvJH7ksXP8ohpIxvfhoG6hSSgtpJvwEjcCPHVe5S2zo989TTySVXJ+gdBp5CAYKN7PMDffyZicTsfAjBFn9hfphZCYGQdHRcDdE0VhbnFayUXWi7x/HiHPwflJCeLe2JgwatFr0T3eQGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713284837; c=relaxed/simple;
-	bh=o94KrG4AORRcrfP2FGeeFqmjm+QABI/sj5NRotshdkc=;
+	s=arc-20240116; t=1713284913; c=relaxed/simple;
+	bh=T/abZooFugAj5fz0p2vl9vQhNez0p7OvvM+rxDxJ2ac=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e9Ozrbg6gF27IFtzts8TT+2dATI9vdzfHTarb0FqEjscTo4XH5Oraxac49XnFb+5PZpvS4BFEjgtwU6L5yzXoD4mrYG9lAdG0elbk457GmPBoQsLgl5rpZwpFiJySE9qNeCNCinzSvm+IPmBNWNrtKnL2a2lGqmYLhgWusUf7Mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eYSD1YLK; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6184acc1ef3so47363837b3.0;
-        Tue, 16 Apr 2024 09:27:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713284835; x=1713889635; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=VrcycaBRsHafe2yoJ2SKOElRVYaaX9jjI4hQ/cPVIno=;
-        b=eYSD1YLK5DmTdpRKqMFG1QP1EoyTD8M1p23b6L4vn1ebAHb+d98jSYbYJ1XCmPj7/4
-         DeIrgOqp0d8gZVSF606Knz+gsBDS+vRe46pACxG1O1SL0WlIvBWdGtPTF2qmciR1JE1E
-         nGN9aZ6EfBK2ghI4lmJK2s2ScuCO7lIhRffteYJmgosBEISPXuGH7WZ3I/L0Z3+Jb+0V
-         WFTNIy2IHF/vq1D6fGVYKfDUOQ3i/my9M2r9U6TFRU+peUKqurIS9KrCeRJzUQU3BGHu
-         AAphFU8drCt3myiil4Fd5h1lLPoMjzGyayRspfRORx1VkFqNk69+9/rmagXxh/aucD2z
-         lzjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713284835; x=1713889635;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VrcycaBRsHafe2yoJ2SKOElRVYaaX9jjI4hQ/cPVIno=;
-        b=Kfu+4IcH45FWBfZuwBH4CFoHhdOv8sMCyA4wfoLGo+QSikfo9NW59Dy4J/LSHgmwWs
-         j25YF0NV0pLh5ht/TavVZUWE0hqlkI3D48NQNdOPUqyrBaMrEorAVogdVlm85hN2V0I1
-         3F4HPqu8kzlGuvnf77Z2C7MowRUemicoxk4HIXYfjlCAketkKUtEMPgzeCMmbYpcxHdT
-         4DAik5lG29ds1S8W9DkPaqmY6RZW+QXMnP8ty6VIpQy+f8EEr4Nm36hOd57V5qS+sV4u
-         Yg8RcdbnchEiSpFFPAL1TWsBzaqwi3M8flj/eVp8dp0kzNHw0TrwAXg0ykotzIftLnKZ
-         aFLA==
-X-Forwarded-Encrypted: i=1; AJvYcCVdG6ZS0PwwA6Ppl3mDH3xPy0hbJKNf043du1PcXRJQqgF/tk56p+m/1ubj7XjhRLPG72hc0hQ9zXs7LGdU0I157jLZf+VsXTLtRuU3Z8FbMM/FOSXeYF5VkycBbXj5iUxW76q4TLJX9Yi5vWxrMHu4jVuniPYb6xOqz3J9IfZ3
-X-Gm-Message-State: AOJu0Yw5VAYJ2HHe7bP8Bs8Ct1za/y7xiIgagKgOfiMSATPrSMVPJh5g
-	fNfg9/X+6/QaAMVpuFn4XgwbfIQ/22SRFDg9y//7NA4ybQqcRKiFVw0rOUp9
-X-Google-Smtp-Source: AGHT+IEXsgvDfIFHbYoVQMrhr4GdjMrezfHdibLezRFh7yWqGPBE3jOHUOBRz/kf7LtpfJk57dd2MQ==
-X-Received: by 2002:a81:9f03:0:b0:615:800d:67b2 with SMTP id s3-20020a819f03000000b00615800d67b2mr12111673ywn.29.1713284834953;
-        Tue, 16 Apr 2024 09:27:14 -0700 (PDT)
-Received: from fedora (host-79-27-41-113.retail.telecomitalia.it. [79.27.41.113])
-        by smtp.gmail.com with ESMTPSA id b8-20020a81bd08000000b0061aea696527sm455640ywi.96.2024.04.16.09.27.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 09:27:14 -0700 (PDT)
-Date: Tue, 16 Apr 2024 18:27:10 +0200
-From: Francesco Valla <valla.francesco@gmail.com>
-To: Vincent Mailhol <vincent.mailhol@gmail.com>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Simon Horman <horms@kernel.org>,
-	Bagas Sanjaya <bagasdotme@gmail.com>, fabio@redaril.me
-Subject: Re: [PATCH v2 1/1] Documentation: networking: document ISO
- 15765-2:2016
-Message-ID: <Zh6m3jkRovDutKnZ@fedora>
-References: <20240329133458.323041-2-valla.francesco@gmail.com>
- <20240329133458.323041-3-valla.francesco@gmail.com>
- <CAMZ6RqKLaYb+8EaeoFMHofcaBT5G2-qdqSb4do73xrgMvWMZaA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hDqXKMIR/eiptbWtCRAxcRCkhLd0jGr8Gce2crBdsVmFhS1FRmSU+CRtU9uz1GxcS5PrnxRGeWQSGqiLI6OrLZ5Y8g8Rc3zyMwIkrBb7u0yUfetoG1nodu351LRQc0gEVaoDT1Jin4nrqNW/jep4YO7job7BP0na5sfkBndzmsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FH+yTqMC; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713284912; x=1744820912;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=T/abZooFugAj5fz0p2vl9vQhNez0p7OvvM+rxDxJ2ac=;
+  b=FH+yTqMCDvf8koO7XPBGBsxwKMrjuxaaJO/BwpmzYkQcYFYjIZWBGrQA
+   9M1Ra+YUhKT3mZuKUUjy34t61kkEX14bhSMlB8ifpFw12iTTLM3gS9+HW
+   tT9UWRL4B07dtP97NFlEVwAZoMxOPl8Dr0UP5WLHUqISUIgEMrQYLwEz7
+   ZxCEJpqTj8uZ9b6y2LcWgU5D/kQBnZ8HIaDMVIv5XmyXffOErcmHK9fLs
+   HywKaTEhFE8DM2+I2I9p4OPAavT1vvBaOyMm3w+/3VrrE0PL0ADfY5lZT
+   PCLK8OtEIoKY3ICTGG3dNME5Q9cxM6Gbles1Anfv4IIvueuH4ASqisWB5
+   g==;
+X-CSE-ConnectionGUID: nuVlL5YyTkW9qR9EFMHXRQ==
+X-CSE-MsgGUID: BPBa/PxVRauZUJnK9DCcuQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="19340694"
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="19340694"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 09:28:30 -0700
+X-CSE-ConnectionGUID: ybFrKtxWSpC4MSyQ4EzKyQ==
+X-CSE-MsgGUID: 3nxJX9YSRPaX5zL3yFj1wQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="22384243"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 09:28:30 -0700
+Date: Tue, 16 Apr 2024 09:28:29 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: Isaku Yamahata <isaku.yamahata@linux.intel.com>,
+	Yan Zhao <yan.y.zhao@intel.com>, isaku.yamahata@intel.com,
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+	erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, chen.bo@intel.com,
+	hang.yuan@intel.com, tina.zhang@intel.com,
+	Sean Christopherson <sean.j.christopherson@intel.com>,
+	Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: Re: [PATCH v19 027/130] KVM: TDX: Define TDX architectural
+ definitions
+Message-ID: <20240416162829.GX3039520@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <522cbfe6e5a351f88480790fe3c3be36c82ca4b1.1708933498.git.isaku.yamahata@intel.com>
+ <ZeGC64sAzg4EN3G5@yzhao56-desk.sh.intel.com>
+ <20240305082138.GD10568@ls.amr.corp.intel.com>
+ <34d64c12-9ed5-4c63-8465-29f7fdce20dc@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMZ6RqKLaYb+8EaeoFMHofcaBT5G2-qdqSb4do73xrgMvWMZaA@mail.gmail.com>
+In-Reply-To: <34d64c12-9ed5-4c63-8465-29f7fdce20dc@intel.com>
 
-Hi Vincent,
+On Tue, Apr 16, 2024 at 12:55:33PM +1200,
+"Huang, Kai" <kai.huang@intel.com> wrote:
 
-thank you for the review!
-
-I'll omit from this reply the issue about the standard to be referenced
-and the CAN-CC naming (discussed in another thread also with Oliver).
-
-About the typos and formatting observations: rst is not my native
-language (I'm more on the Markdown side), I'll apply all the corrections
-you suggested. Thank you.
-
-Some other considerations follow.
-
-On Sat, Apr 13, 2024 at 10:11:55PM +0900, Vincent Mailhol wrote:
-> Hi Francesco,
 > 
-> Thank you for the ISO-TP documentation.
 > 
-> I left a few comments, but overall, good work. Also, I did not double
-> check each individual option one by one.
-
-(...)
-
+> On 5/03/2024 9:21 pm, Isaku Yamahata wrote:
+> > On Fri, Mar 01, 2024 at 03:25:31PM +0800,
+> > Yan Zhao <yan.y.zhao@intel.com> wrote:
+> > 
+> > > > + * TD_PARAMS is provided as an input to TDH_MNG_INIT, the size of which is 1024B.
+> > > > + */
+> > > > +#define TDX_MAX_VCPUS	(~(u16)0)
+> > > This value will be treated as -1 in tdx_vm_init(),
+> > > 	"kvm->max_vcpus = min(kvm->max_vcpus, TDX_MAX_VCPUS);"
+> > > 
+> > > This will lead to kvm->max_vcpus being -1 by default.
+> > > Is this by design or just an error?
+> > > If it's by design, why not set kvm->max_vcpus = -1 in tdx_vm_init() directly.
+> > > If an unexpected error, may below is better?
+> > > 
+> > > #define TDX_MAX_VCPUS   (int)((u16)(~0UL))
+> > > or
+> > > #define TDX_MAX_VCPUS 65536
+> > 
+> > You're right. I'll use ((int)U16_MAX).
+> > As TDX 1.5 introduced metadata MAX_VCPUS_PER_TD, I'll update to get the value
+> > and trim it further. Something following.
+> > 
+> 
+> [...]
+> 
+> > +	u16 max_vcpus_per_td;
 > > +
-> > +- physical addressing is implemented by two node-specific addresses (CAN
-> > +  identifiers) and is used in 1-to-1 communication
-> > +- functional addressing is implemented by one node-specific address (CAN
-> > +  identifier) and is used in 1-to-N communication
-> > +
-> > +In a so-called "normal" addressing scenario, both these addresses are
-> > +represented by a 29-bit CAN ID. However, in order to support larger networks,
-> > +an "extended" addressing scheme can be adopted: in this case, the first byte of
-> > +the data payload is used as an additional component of the address (both for
-> > +the physical and functional cases); two different CAN IDs are still required.
 > 
-> There is more than that.
+> [...]
 > 
->   - The normal addressing can also use the non-extended 11 bits CAN ID.
->   - In addition to the normal and extended addressing mode, there
->     is a third mode: the mixed addressing.
+> > -	kvm->max_vcpus = min(kvm->max_vcpus, TDX_MAX_VCPUS);
+> > +	kvm->max_vcpus = min3(kvm->max_vcpus, tdx_info->max_vcpus_per_td,
+> > +			     TDX_MAX_VCPUS);
 > 
-> Ref:
+> [...]
 > 
->   - ISO 15765:2024 §10.3.1 "Addressing formats"
->   - https://www.embedded-communication.com/en/misc/iso-tp-addressing/
+> > -#define TDX_MAX_VCPUS	(~(u16)0)
+> > +#define TDX_MAX_VCPUS	((int)U16_MAX)
 > 
+> Why do you even need TDX_MAX_VCPUS, given it cannot exceed U16_MAX and you
+> will have the 'u16 max_vcpus_per_td' anyway?
+> 
+> IIUC, in KVM_ENABLE_CAP(KVM_CAP_MAX_VCPUS), we can overwrite the
+> kvm->max_vcpus to the 'max_vcpus' provided by the userspace, and make sure
+> it doesn't exceed tdx_info->max_vcpus_per_td.
+> 
+> Anything I am missing?
 
-You are right. I'll drop the reference to "29-bit" and add the mixed
-addressing (I did not know it, I'll have to investigate a bit - I
-personally always used the normal one).
+With the latest TDX 1.5 module, we don't need TDX_MAX_VCPUS.
 
-(...)
+The metadata MD_FIELD_ID_MAX_VCPUS_PER_TD was introduced at the middle version
+of TDX 1.5. (I don't remember the exact version.), the logic was something
+like as follows.  Now if we fail to read the metadata, disable TDX.
 
-> 
-> > +Unlike the CAN_RAW socket API, only the data payload shall be specified in all
-> > +these calls, as the CAN header is automatically filled by the ISO-TP stack
-> > +using information supplied during socket creation. In the same way, the stack
-> 
-> This is making a shortcut. There are the raw CAN payload and the
-> ISO-TP payload. In this paragraph it is not clear that "data payload"
-> is referring to the ISO-TP payload.
-> 
-> Also, what is the meaning of "the CAN header". Here, I think you mean
-> CAN ID plus some of the few first byte of the CAN payload.
-> 
-> I suggest that you use more precise vocabulary from the standard:
-> 
->   - Address information
->   - Protocol Information
->   - Data field
-> 
-> Something like:
-> 
->   only the ISO-TP data field (the actual payload) is sent. The
->   address information and the protocol information is
->   automatically filled by the ISO-TP stack...
->
+read metadata MD_FIELD_ID_MAX_VCPUS_PER_TD;
+if success
+  tdx_info->max_vcpu_per_td = the value read metadata
+else
+  tdx_info->max_vcpu_per_td = TDX_MAX_VCPUS;
 
-Indeed it is a shortcut. Your suggestion to adhere more to the standard
-is welcome, I'd rephrase as:
-
-  Unlike the CAN_RAW socket API, only the ISO-TP data field (the actual payload)
-  is sent and received by the userspace application using these calls. The address
-  information and the protocol information are automatically filled by the ISO-TP
-  stack using the configuration supplied during socket creation. In the same way,
-  the stack will use the transport mechanism when required (i.e., when the size
-  of the data payload exceeds the MTU of the underlying CAN bus).
-
-
-(...)
-
-> > +Examples
-> > +========
-> > +
-> > +Basic node example
-> > +------------------
-> > +
-> > +Following example implements a node using "normal" physical addressing, with
-> > +RX ID equal to 0x18DAF142 and a TX ID equal to 0x18DA42F1. All options are left
-> > +to their default.
-> > +
-> > +.. code-block:: C
-> > +
-> > +  int s;
-> > +  struct sockaddr_can addr;
-> 
-> Here, I would suggest the C99 designated field initialization:
-> 
->   struct sockaddr_can addr = {
->           .can_family = AF_CAN;
->           .can_ifindex = if_nametoindex("can0");
->           .tp.tx_id = 0x18DA42F1 | CAN_EFF_FLAG;
->           .tp.rx_id = 0x18DAF142 | CAN_EFF_FLAG;
->   };
-> 
-> Well, this is just a suggestion, feel free to reject it if you do not like it.
-> 
-
-Not a fan of C99 designated field initialization inside functions, TBH.
-Moreover, these parameters are typically specified through either the
-command line or some configuration file. I'll keep my version.
-
-> > +  int ret;
-> > +
-> > +  s = socket(PF_CAN, SOCK_DGRAM, CAN_ISOTP);
-> > +  if (s < 0)
-> > +      exit(1);
-> > +
-> > +  addr.can_family = AF_CAN;
-> > +  addr.can_ifindex = if_nametoindex("can0");
-> 
-> if_nametoindex() may fail. Because you are doing error handling in
-> this example, do it also here:
-> 
->   if (!addr.can_ifindex)
->           err("if_nametoindex()");
-> 
-> > +  addr.tp.tx_id = (0x18DA42F1 | CAN_EFF_FLAG);
-> > +  addr.tp.rx_id = (0x18DAF142 | CAN_EFF_FLAG);
-> 
-> Nitpick: the bracket are not needed here:
-> 
->   addr.tp.tx_id = 0x18DA42F1 | CAN_EFF_FLAG;
->   addr.tp.rx_id = 0x18DAF142 | CAN_EFF_FLAG;
->
-
-Ack.
-
-> > +
-> > +  ret = bind(s, (struct sockaddr *)&addr, sizeof(addr));
-> > +  if (ret < 0)
-> > +      exit(1);
-> > +
-> > +  // Data can now be received using read(s, ...) and sent using write(s, ...)
-> 
-> Kernel style prefers C style comments over C++. I think that should
-> also apply to the documentation:
-> 
->   /* Data can now be received using read(s, ...) and sent using write(s, ...) */
-> 
-
-Ack.
-
-
-Again, thank you for the review.
-
-Regards,
-Francesco
-
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
