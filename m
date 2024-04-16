@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-147505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF9058A7560
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:20:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37F7D8A7561
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:20:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A0D92834F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:20:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A407E1F226EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:20:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF5913A412;
-	Tue, 16 Apr 2024 20:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A8D713A869;
+	Tue, 16 Apr 2024 20:19:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NxlYu9Q2"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M+RvFzXx"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB1211181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6E0E139D0C
 	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 20:19:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713298783; cv=none; b=VC6ih5C+ygwBG94VGz3a5WUvwL1RWbwbtMy+QNiCoajWOHu9hDxkNSTR8PPl3DQ4CpaJFN2iIwuh7SkRJfmRT7jkrzWBMyNv7nsEP0GRubn2NfXl0WwnS+3XMQKK6WTBTOoy3bt1nFqiHOwKWs3eImhVf/wAs/I/Y+p+YXU5KtU=
+	t=1713298783; cv=none; b=RCIAuVEgZNS42wOMy2bYQIX4sWjq0t5vWwsBUC0nFLu8LvsgA1w2kDhl55w2Cw007ON9dkmiqgr4D8/VndGP0lcwJOhTyTmXHgdzN2DZEK3+/EVMdpaw7NP49vg8tm/Wmq24zKqagucZf+8/xl9bCzklhUPyIfytOuXz8NfYneo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713298783; c=relaxed/simple;
-	bh=2b9VxgtI5DOLz9r614k8oRTCR8Jyg8IeosuO6eo7xZ0=;
+	bh=YjX/06cQ6ZQ25fZLpkb7Kj2DDn9st6yNe4LsYowwFIE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gHf9pqs1qGKY2JT+MbztcznmUtxb5J6KWlaxBXU88vS7eKgJguJ6B2BVtwpBE3oaEfzVGIozW5nP3VBDslPbmIbDzt5s8ROpG0m9nImt8TxTCtA1ow+I7PagsZVjEcgRKOaNcO268uOjIIbpZ/O6On1ygqNl1GyjL2wJdvXrmPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NxlYu9Q2; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type; b=fM5ulEwM+rxhe4/nMPM41mqvaw855sI9pa7osMx07niRHPpZ8FSLQaCrFjkDoe74X+H2YSkwJzq2mrRrkbK2Y1iLoDiajgBvePFFXhaCYNjqKLHggsBxaItuepl7TYcZi0xQYNg/tStzUlquC81cAJW0y+0AJV0h/7lJWXFnBZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M+RvFzXx; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
@@ -36,23 +36,23 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Gcy2zYEU2Nttf/7LgpSSDLqdYIwKEk1g2jq5D1zfg24=;
-	b=NxlYu9Q2hBAZVpI5Hd2qjInz7nXrxIpc9tYN4l1vgUAvo7CZDLNhMA2TwJ+WhXnrgHALos
-	kOA9kuhM6u6iHIdRP6uXEKRwp4qVH3am+PtRR+zM2MJ1o7gjU9PHptybi12MvXP7ghKaIS
-	if+/rEpoD7V/PNnyvaSLsDGBpJVezXs=
+	bh=RpANWCnoonzcuXE3SFnF5+HA6HkatDPoVc2CRFiWCW8=;
+	b=M+RvFzXx6Ahjd7cCyPgRFWKS+uLi2Hee3SGSIC4L7cCu5Qhkm/ZOfvxQXV+Fuw3HUFLZGy
+	DnSJ9e0iGR9oAL8Uh5CLHvZz2epYGRpVFlu4ozJo/dh9gN1Z/vkX7kMpLXeQi0s5NNuudI
+	fN612ptMaVwzimE2VQ5x5ya0GTxybcc=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-528-oGvGiUmrNUK8ck4rMXKbXQ-1; Tue,
- 16 Apr 2024 16:19:38 -0400
-X-MC-Unique: oGvGiUmrNUK8ck4rMXKbXQ-1
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-483-e2XdyAs-Mgapr8S3DEfO-A-1; Tue,
+ 16 Apr 2024 16:19:39 -0400
+X-MC-Unique: e2XdyAs-Mgapr8S3DEfO-A-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 79FC41C0AF40;
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B26083C000AE;
 	Tue, 16 Apr 2024 20:19:38 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 49C174910E;
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 8281018209F;
 	Tue, 16 Apr 2024 20:19:38 +0000 (UTC)
 From: Paolo Bonzini <pbonzini@redhat.com>
 To: linux-kernel@vger.kernel.org,
@@ -60,11 +60,10 @@ To: linux-kernel@vger.kernel.org,
 Cc: isaku.yamahata@intel.com,
 	xiaoyao.li@intel.com,
 	binbin.wu@linux.intel.com,
-	chao.gao@intel.com,
-	Michael Roth <michael.roth@amd.com>
-Subject: [PATCH v2 08/10] KVM: x86/mmu: Pass around full 64-bit error code for KVM page faults
-Date: Tue, 16 Apr 2024 16:19:33 -0400
-Message-ID: <20240416201935.3525739-9-pbonzini@redhat.com>
+	chao.gao@intel.com
+Subject: [PATCH v2 09/10] KVM: x86/mmu: Use PFERR_GUEST_ENC_MASK to indicate fault is private
+Date: Tue, 16 Apr 2024 16:19:34 -0400
+Message-ID: <20240416201935.3525739-10-pbonzini@redhat.com>
 In-Reply-To: <20240416201935.3525739-1-pbonzini@redhat.com>
 References: <20240416201935.3525739-1-pbonzini@redhat.com>
 Precedence: bulk
@@ -77,93 +76,90 @@ Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-From: Isaku Yamahata <isaku.yamahata@intel.com>
+SEV-SNP defines PFERR_GUEST_ENC_MASK (bit 34) in page-fault error bits to
+represent the guest page is encrypted.  Use the bit to designate that the
+page fault is private and that it requires looking up memory attributes.
 
-In some cases the full 64-bit error code for the KVM page fault will be
-needed to determine things like whether or not a fault was for a private
-or shared guest page, so update related code to accept the full 64-bit
-value so it can be plumbed all the way through to where it is needed.
+The vendor kvm page fault handler should set PFERR_GUEST_ENC_MASK bit based
+on their fault information.  It may or may not use the hardware value
+directly or parse the hardware value to set the bit.
 
-The use of lower_32_bits() moves from kvm_mmu_page_fault() to
-FNAME(page_fault), since walking is independent of the data in the
-upper bits of the error code.
+Based on a patch by Isaku Yamahata.
 
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-Link: https://lore.kernel.org/kvm/20230612042559.375660-1-michael.roth@amd.com/T/#mbd0b20c9a2cf50319d5d2a27b63f73c772112076
-[mdr: drop references/changes to code not in current gmem tree, update
-      commit message]
-Signed-off-by: Michael Roth <michael.roth@amd.com>
-Message-Id: <20231230172351.574091-7-michael.roth@amd.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- arch/x86/kvm/mmu/mmu.c          | 3 +--
- arch/x86/kvm/mmu/mmu_internal.h | 4 ++--
- arch/x86/kvm/mmu/mmutrace.h     | 2 +-
- arch/x86/kvm/mmu/paging_tmpl.h  | 2 +-
- 4 files changed, 5 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/kvm_host.h | 2 ++
+ arch/x86/kvm/mmu/mmu.c          | 9 +++++++++
+ arch/x86/kvm/mmu/mmu_internal.h | 2 +-
+ 3 files changed, 12 insertions(+), 1 deletion(-)
 
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 9f92bdb78504..7c73952b6f4e 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -264,6 +264,7 @@ enum x86_intercept_stage;
+ #define PFERR_SGX_BIT 15
+ #define PFERR_GUEST_FINAL_BIT 32
+ #define PFERR_GUEST_PAGE_BIT 33
++#define PFERR_GUEST_ENC_BIT 34
+ #define PFERR_IMPLICIT_ACCESS_BIT 48
+ 
+ #define PFERR_PRESENT_MASK	BIT(PFERR_PRESENT_BIT)
+@@ -275,6 +276,7 @@ enum x86_intercept_stage;
+ #define PFERR_SGX_MASK		BIT(PFERR_SGX_BIT)
+ #define PFERR_GUEST_FINAL_MASK	BIT_ULL(PFERR_GUEST_FINAL_BIT)
+ #define PFERR_GUEST_PAGE_MASK	BIT_ULL(PFERR_GUEST_PAGE_BIT)
++#define PFERR_GUEST_ENC_MASK	BIT_ULL(PFERR_GUEST_ENC_BIT)
+ #define PFERR_IMPLICIT_ACCESS	BIT_ULL(PFERR_IMPLICIT_ACCESS_BIT)
+ 
+ #define PFERR_NESTED_GUEST_PAGE (PFERR_GUEST_PAGE_MASK |	\
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 45b6d8f9e359..00eef18ca1ae 100644
+index 00eef18ca1ae..33aea47dce8b 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5816,8 +5816,7 @@ int noinline kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 err
- 	}
- 
- 	if (r == RET_PF_INVALID) {
--		r = kvm_mmu_do_page_fault(vcpu, cr2_or_gpa,
--					  lower_32_bits(error_code), false,
-+		r = kvm_mmu_do_page_fault(vcpu, cr2_or_gpa, error_code, false,
- 					  &emulation_type);
- 		if (KVM_BUG_ON(r == RET_PF_INVALID, vcpu->kvm))
- 			return -EIO;
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index 5390a591a571..49b428cca04e 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -190,7 +190,7 @@ static inline bool is_nx_huge_page_enabled(struct kvm *kvm)
- struct kvm_page_fault {
- 	/* arguments to kvm_mmu_do_page_fault.  */
- 	const gpa_t addr;
--	const u32 error_code;
-+	const u64 error_code;
- 	const bool prefetch;
- 
- 	/* Derived from error_code.  */
-@@ -280,7 +280,7 @@ enum {
- };
- 
- static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
--					u32 err, bool prefetch, int *emulation_type)
-+					u64 err, bool prefetch, int *emulation_type)
+@@ -5793,6 +5793,7 @@ int noinline kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 err
  {
- 	struct kvm_page_fault fault = {
- 		.addr = cr2_or_gpa,
-diff --git a/arch/x86/kvm/mmu/mmutrace.h b/arch/x86/kvm/mmu/mmutrace.h
-index ae86820cef69..195d98bc8de8 100644
---- a/arch/x86/kvm/mmu/mmutrace.h
-+++ b/arch/x86/kvm/mmu/mmutrace.h
-@@ -260,7 +260,7 @@ TRACE_EVENT(
- 	TP_STRUCT__entry(
- 		__field(int, vcpu_id)
- 		__field(gpa_t, cr2_or_gpa)
--		__field(u32, error_code)
-+		__field(u64, error_code)
- 		__field(u64 *, sptep)
- 		__field(u64, old_spte)
- 		__field(u64, new_spte)
-diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-index 9aac3aa93d88..37c4f3d95738 100644
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -787,7 +787,7 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
- 	 * The bit needs to be cleared before walking guest page tables.
- 	 */
- 	r = FNAME(walk_addr)(&walker, vcpu, fault->addr,
--			     fault->error_code & ~PFERR_RSVD_MASK);
-+			     lower_32_bits(fault->error_code) & ~PFERR_RSVD_MASK);
+ 	int r, emulation_type = EMULTYPE_PF;
+ 	bool direct = vcpu->arch.mmu->root_role.direct;
++	struct kvm *kvm = vcpu->kvm;
  
  	/*
- 	 * The page is not mapped by the guest.  Let the guest handle it.
+ 	 * IMPLICIT_ACCESS is a KVM-defined flag used to correctly perform SMAP
+@@ -5808,6 +5809,14 @@ int noinline kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 err
+ 	if (WARN_ON_ONCE(!VALID_PAGE(vcpu->arch.mmu->root.hpa)))
+ 		return RET_PF_RETRY;
+ 
++	/*
++	 * There is no vendor code that can set PFERR_GUEST_ENC_MASK for
++	 * software-protected VMs.  Compute it here.
++	 */
++	if (kvm->arch.vm_type == KVM_X86_SW_PROTECTED_VM &&
++	    kvm_mem_is_private(kvm, cr2_or_gpa >> PAGE_SHIFT))
++		error_code |= PFERR_GUEST_ENC_MASK;
++
+ 	r = RET_PF_INVALID;
+ 	if (unlikely(error_code & PFERR_RSVD_MASK)) {
+ 		r = handle_mmio_page_fault(vcpu, cr2_or_gpa, direct);
+diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+index 49b428cca04e..7c2ba50cec68 100644
+--- a/arch/x86/kvm/mmu/mmu_internal.h
++++ b/arch/x86/kvm/mmu/mmu_internal.h
+@@ -290,6 +290,7 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+ 		.present = err & PFERR_PRESENT_MASK,
+ 		.rsvd = err & PFERR_RSVD_MASK,
+ 		.user = err & PFERR_USER_MASK,
++		.is_private = vcpu->kvm->arch.has_private_mem && (err & PFERR_GUEST_ENC_MASK),
+ 		.prefetch = prefetch,
+ 		.is_tdp = likely(vcpu->arch.mmu->page_fault == kvm_tdp_page_fault),
+ 		.nx_huge_page_workaround_enabled =
+@@ -298,7 +299,6 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+ 		.max_level = KVM_MAX_HUGEPAGE_LEVEL,
+ 		.req_level = PG_LEVEL_4K,
+ 		.goal_level = PG_LEVEL_4K,
+-		.is_private = kvm_mem_is_private(vcpu->kvm, cr2_or_gpa >> PAGE_SHIFT),
+ 	};
+ 	int r;
+ 
 -- 
 2.43.0
 
