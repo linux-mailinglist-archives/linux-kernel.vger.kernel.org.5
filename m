@@ -1,103 +1,98 @@
-Return-Path: <linux-kernel+bounces-147046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C61088A6EAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:44:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 273C98A6EC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:46:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02FF91C227D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:44:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D18221F236D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:46:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D141A12FF75;
-	Tue, 16 Apr 2024 14:44:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7F2212EBDC;
+	Tue, 16 Apr 2024 14:46:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="Ktc/mFMg"
-Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AjTq+sJg"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66AD212E1DE;
-	Tue, 16 Apr 2024 14:44:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C75DE12E1D9
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:46:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713278654; cv=none; b=rDqQp0+1/Pw7zlKa/7x8yKtlmaH01nkcJzuZIuIg35Qw/PqM8bWWAaKRTj4nhZqMfMM72kv4oh5zF1YNjNoH5ZSSbztCBi8OkDAuZGnNlWqnBbTvpOuecVZdgHb4cW0ZAM4yzKIotvyupwSNkVekgpYi66qyT/YK+PaxkKPxQuo=
+	t=1713278778; cv=none; b=s8CjX6ECOwZMkCx1QRJaGAmbglK7bnBiZuhniP7b+yEYnAMWRLCTWwIiA1BegHJPrYfp5k/0E32MWlaiJXTxOA/R6ouQjQavZrL0IKfFY2GLSthdr4RUii6JOElhVM1ad/hxPrse8XhVxDLlM7Qg+w6pVh5hZo0B9uHcy7HqRGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713278654; c=relaxed/simple;
-	bh=o4ZOIcqpBZ2ScPAygv+rbNYIAA7PYEWjMlaH8XOvMJM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cgyVMNjBYbFNlAIqpQDaM2yjdcBHfApMaO0AA9lB3remHZGbUhngZmVW2G8uVs80I2bvtuZWHeA8hlBOVq3TU4T2jG1wwEffEjt9i3mJXrTi/HIBvqo8uVf0KusKI7kwOe+yNvR6GOMuiFP+M9TCB/K1KTI/okM935fsUPBGsa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=Ktc/mFMg; arc=none smtp.client-ip=193.104.135.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
-Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
-	by mail1.fiberby.net (Postfix) with ESMTPSA id 74A76600A5;
-	Tue, 16 Apr 2024 14:43:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
-	s=202008; t=1713278649;
-	bh=o4ZOIcqpBZ2ScPAygv+rbNYIAA7PYEWjMlaH8XOvMJM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Ktc/mFMgo9hWpkLij6VpxVjtIpbb8Uz3yFZYMrAoUnaEMbxj6GSqFFT5zhwsjO5i8
-	 hZmsrUY1cb/rgAtajaLi0nRSWfJgmx+S4Bo4lyE+7Ayk6fqoxFmFuBFHEGgGMrkwcB
-	 5R/4uShxm7EcZLAzfedAF35xvctIBXUDILxejDOx2qRYKCw9YD4kJDI/KihKVyx5L7
-	 935YtTvCoD3pNs5FmKlsBbzV6iI5iwd+dAEvphsXCzDLWbBSLAY9A2JJDVVDQYQoa5
-	 a2fOloVEhEUvNE5ldQNofWfWxH+DphjGebSkiwCTbgwI5jjRfW93BUQIcGCojKCyD3
-	 TJ5Xc20wJu/ng==
-Received: by x201s (Postfix, from userid 1000)
-	id 8CFE32061E5; Tue, 16 Apr 2024 14:43:35 +0000 (UTC)
-From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
-To: intel-wired-lan@lists.osuosl.org
-Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: [PATCH iwl-next] igb: flower: validate control flags
-Date: Tue, 16 Apr 2024 14:43:35 +0000
-Message-ID: <20240416144335.15353-1-ast@fiberby.net>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1713278778; c=relaxed/simple;
+	bh=3TxHZ4ZRaEXdkE2iyGrPF64b8dJ88F1bx4hw6cwnxfY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o4V95eev489HF8RTrfzhCtCIyyPQa3AosGqPaPv7Zwyev7a5p5KXgB861+BWPwAMAYG6wlz8/Ex4IlAe4raoLU4hArh8FwcMb6TpWo/9MU8qD0CKtN60+X14OUH4Tdv1GUAJ/r8wQ8M+suUmbwCZfyp2th4SploruJnZIu3sty4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AjTq+sJg; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713278775;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3TxHZ4ZRaEXdkE2iyGrPF64b8dJ88F1bx4hw6cwnxfY=;
+	b=AjTq+sJgHbuUD9G3dUvNTkEgFhHKXYaroP+Z+HnhYsfUYSUeLnbAKftB/CiCtGF1ZOrJMU
+	w85IcvfRbUT3o9Lx6Ib3SyPXBQksjRIsbpxz8w4qLaZJrumA//CkenV6pzzO0VA/0cqYT8
+	KEXz0IANAZ4oQrX0YMoZhNG+GFm4xnE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-691-six1j7VsNiC3wbwE5cj3Qg-1; Tue, 16 Apr 2024 10:46:11 -0400
+X-MC-Unique: six1j7VsNiC3wbwE5cj3Qg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7DA7D80591B;
+	Tue, 16 Apr 2024 14:46:10 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.182])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 3BFB51C06667;
+	Tue, 16 Apr 2024 14:46:08 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Tue, 16 Apr 2024 16:44:45 +0200 (CEST)
+Date: Tue, 16 Apr 2024 16:44:38 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	John Stultz <jstultz@google.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+	Eric Biederman <ebiederm@xmission.com>
+Subject: Re: [patch V2 07/50] posix-cpu-timers: Split up posix_cpu_timer_get()
+Message-ID: <20240416144438.GA17990@redhat.com>
+References: <20240410164558.316665885@linutronix.de>
+ <20240410165551.376994018@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410165551.376994018@linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-This driver currently doesn't support any control flags.
+On 04/11, Thomas Gleixner wrote:
+>
+> In preparation for addressing issues in the timer_get() and timer_set()
+> functions of posix CPU timers.
 
-Use flow_rule_match_has_control_flags() to check for control flags,
-such as can be set through `tc flower ... ip_flags frag`.
+Cough... I must have missed something, but posix_cpu_timer_get()
+doesn't look right with or without this trivial patch.
 
-In case any control flags are masked, flow_rule_match_has_control_flags()
-sets a NL extended error message, and we return -EOPNOTSUPP.
+It doesn't initialize itp->it_value if cpu_timer_getexpires() == 0,
+this means that sys_timer_gettime() will copy the uninitialized
+cur_setting->it_value on the stack to userspace?
 
-Only compile-tested.
-
-Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
----
- drivers/net/ethernet/intel/igb/igb_main.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index 74a998fcaa6f..e4c65d3819d7 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -2597,6 +2597,9 @@ static int igb_parse_cls_flower(struct igb_adapter *adapter,
- 		return -EOPNOTSUPP;
- 	}
- 
-+	if (flow_rule_match_has_control_flags(rule, extack))
-+		return -EOPNOTSUPP;
-+
- 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_ETH_ADDRS)) {
- 		struct flow_match_eth_addrs match;
- 
--- 
-2.43.0
+Oleg.
 
 
