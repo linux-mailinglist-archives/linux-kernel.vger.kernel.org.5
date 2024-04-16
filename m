@@ -1,297 +1,108 @@
-Return-Path: <linux-kernel+bounces-147319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DE4D8A7277
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:35:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 615988A727C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:37:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BF561F2339A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:35:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 922981C2106F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:37:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0247C134401;
-	Tue, 16 Apr 2024 17:35:11 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEAAC133422;
+	Tue, 16 Apr 2024 17:37:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YRV08+ow"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EF311327FB;
-	Tue, 16 Apr 2024 17:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBB4742058;
+	Tue, 16 Apr 2024 17:37:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713288910; cv=none; b=FjMQWTKT78d7YKHeWMqIdCDxzYNeemwk/I8yyv5uHlbuwC+A2DojC2LhvROT5pklawV0wpk82iJcUJaiKkAS5hCMObE7Zv0rf3YADgo26mTlXxB5+rWujaYBq2+aB7W779VWoiw494rsikPTK8B/7kgpfmtpyZKVr+U6rtz8nKs=
+	t=1713289036; cv=none; b=WfIalDJc1k7ceUnB7z3uPjMMWXIoDIgUTYkbBviT0L6VVCY4ZyBOxL1ZLZxLPmKtv2xkkXWC+Z44GU9xMJhji34jc2p0udVf/6pmeRBmtJ9ff2NV9ba0D9KkKAGvbVIPzz5c05W3OTTSPXO1j6KqzFZck+29miCpZZGufNL+3Sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713288910; c=relaxed/simple;
-	bh=Z7BK1ffY1oFsL11vJXHcwMHmQHUgwlPvHa/5kupznIc=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rd2fGRHEhYMLy2hPL0iPECZ5e7lUIJ7LJBHbvhBCCdi7/FpFxmMicltBdLK47qdL5sMdyC2uNracLnLiVwrkqGdX8YHpN72UP7pdUdbxFpy6FAOGBDSzzetX0603wMf1o8CVOeisgTAA0QO6t7NwVGijzDQYCFMS7SiQkoBOgDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VJrdq4sLxz6K8xC;
-	Wed, 17 Apr 2024 01:30:07 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 185F11400D3;
-	Wed, 17 Apr 2024 01:35:04 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 16 Apr
- 2024 18:35:03 +0100
-Date: Tue, 16 Apr 2024 18:35:02 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: <linuxarm@huawei.com>, <linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, Miguel Luis
-	<miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
-	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
-	<justin.he@arm.com>, <jianyong.wu@arm.com>
-Subject: Re: [PATCH v5 02/18] ACPI: processor: Set the ACPI_COMPANION for
- the struct cpu instance
-Message-ID: <20240416183502.00007527@Huawei.com>
-In-Reply-To: <CAJZ5v0huAAa5UpK4kqR-Uz4ALfY-wQ-gv7CC8C-kx9UDFvCgUw@mail.gmail.com>
-References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com>
-	<20240412143719.11398-3-Jonathan.Cameron@huawei.com>
-	<CAJZ5v0izN5naWY7sTi16whds9ubXkLpgqV2gePQs869BoJTCDA@mail.gmail.com>
-	<20240415164854.0000264f@Huawei.com>
-	<CAJZ5v0hd+CNsnH9xY+UX0iy_AEaqUqJj4KdR=+yvtvy5FQEy5Q@mail.gmail.com>
-	<CAJZ5v0j6gMaHamrCvrF8s+SgC0QVtG+naXhA4Dwg0t1YJvh4Uw@mail.gmail.com>
-	<20240415175057.00002e11@Huawei.com>
-	<20240415183454.000072f6@Huawei.com>
-	<CAJZ5v0huAAa5UpK4kqR-Uz4ALfY-wQ-gv7CC8C-kx9UDFvCgUw@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1713289036; c=relaxed/simple;
+	bh=vlf65S5Zjhh3Eax5m1JDMKTSPqRK6yW4L+tVTaDRf4Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=t0LwzvQTEq8tssazL8SE9K+LBdsX6c4UElSB3HaZWAgBD/IRO3AlaHvKqVjXtp9IXQTO9P72T/KrlKyTrXhRbV3OoSZb8OKnVoltUuVFEx9LZd10P9PTprduazf8cD5mYG12a+aGvqqgSaFefpB4lqc7KkrmKclF6MNp4Us37vA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YRV08+ow; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-618769020bcso50569687b3.3;
+        Tue, 16 Apr 2024 10:37:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713289034; x=1713893834; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zEWp1yQiPG32wuIRE4i5gatwKrEB8wtcf9vjeF98l+E=;
+        b=YRV08+owdkNdh15g/EhcVL9k+93vdjW2kMVanLjjkOmNKU8dNgeJCmJdf7Wt8bF4di
+         QUUV4p2UMvSHOkD6T2fI5CsOAZX8VIGoY1py9BSUusjpYphERSMQHcLyYfRoVglu9tfF
+         +I+dTmuv+ZQCu0RyKhhkF1yjpduyeiR8X4rKbIfkdG9YgC9uOqloA0eGmiWt+1y3eu/4
+         aoTQvNemXZKKrJGkkqBJQNLMI5vN1c7OW7s3WCvE4HnIkZ8FMN68s51ltQtYMZcGnKBm
+         gJJHxL5e5xmTz+vA+S55ABkx2ervUCkcvJKKSoIucxRKAkyZBV18dQwU15+UnFy9v9eo
+         91kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713289034; x=1713893834;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zEWp1yQiPG32wuIRE4i5gatwKrEB8wtcf9vjeF98l+E=;
+        b=J+iN+jlAVfFZ6f0DcDU+bZ7GhoBUQos5WDxh+1kb9OkNplFJsvu9+bj4VIS5kTa9MS
+         lADG0+CgaQT+SilZMybjv+exDNpv5CmYE91tXL6TTWLvcpP+hNYNErzR3/UFODJAVWGc
+         oa6i/mHU4eytRC3OlpEa8WXc7tYCOLEaXcPc+xZZHUoez1uHnIkJ4cD07fFJLtivGhfV
+         YsA22xQ1zKGCZngZrI3pmrzu0Jlq5dZnTMm8UQPWTCl5cBTfZ1MTebk3xsQM4ghvZpxH
+         vNUvtxbraPH6krLQxEU7Dk/JWgixh8FYZqFQul2ahqm6zdalU/5mmxMhaeHVT4VkHKnP
+         wEqA==
+X-Forwarded-Encrypted: i=1; AJvYcCX3jVlQ1KfHMCV87J9eyrGMm/P2JqaHeGSBMkssiWmEFAsKERsfAZ2MXvIm6riaQ2d0v1NLkldfYiEXpE7H7bkaI2HfQgj1xzM+PYENA/OipymS7YgDJ6+lVp1mbCpIEF+frox9zkVXPQ==
+X-Gm-Message-State: AOJu0YyiDkWudHtTh2pjjcmdpsBUx5QMC3MvhFknFKW5Bk5v4JmQMK4I
+	zoPkhzWsrzvy+0OzyiONHVnbpTHrub+kg8/dgZ61aMikzXsPMqL/
+X-Google-Smtp-Source: AGHT+IFY7YY+aRjq9R8uzfcNgU7OCvXwhGHjMtMR78VoG4uemIhB1nJHmuqZIhgYdS3Sj709Wf7Rag==
+X-Received: by 2002:a0d:d48c:0:b0:61a:d3c8:4895 with SMTP id w134-20020a0dd48c000000b0061ad3c84895mr5699089ywd.15.1713289033659;
+        Tue, 16 Apr 2024 10:37:13 -0700 (PDT)
+Received: from localhost ([2601:344:8301:57f0:2767:ac3e:3052:cd0])
+        by smtp.gmail.com with ESMTPSA id a134-20020a0dd88c000000b00614605317dfsm2615988ywe.50.2024.04.16.10.37.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 10:37:12 -0700 (PDT)
+From: Yury Norov <yury.norov@gmail.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Yury Norov <yury.norov@gmail.com>
+Subject: [PATCH 0/2] MIPS: SGI-IP27: micro-optimize arch_init_irq()
+Date: Tue, 16 Apr 2024 10:37:09 -0700
+Message-Id: <20240416173711.613750-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Transfer-Encoding: 8bit
 
-On Mon, 15 Apr 2024 19:41:43 +0200
-"Rafael J. Wysocki" <rafael@kernel.org> wrote:
+A couple of cleanups for arch_init_irq()
 
-> On Mon, Apr 15, 2024 at 7:35=E2=80=AFPM Jonathan Cameron
-> <Jonathan.Cameron@huawei.com> wrote:
-> >
-> > On Mon, 15 Apr 2024 17:50:57 +0100
-> > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> > =20
-> > > On Mon, 15 Apr 2024 18:19:17 +0200
-> > > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> > > =20
-> > > > On Mon, Apr 15, 2024 at 6:16=E2=80=AFPM Rafael J. Wysocki <rafael@k=
-ernel.org> wrote: =20
-> > > > >
-> > > > > On Mon, Apr 15, 2024 at 5:49=E2=80=AFPM Jonathan Cameron
-> > > > > <Jonathan.Cameron@huawei.com> wrote: =20
-> > > > > >
-> > > > > > On Fri, 12 Apr 2024 20:10:54 +0200
-> > > > > > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> > > > > > =20
-> > > > > > > On Fri, Apr 12, 2024 at 4:38=E2=80=AFPM Jonathan Cameron
-> > > > > > > <Jonathan.Cameron@huawei.com> wrote: =20
-> > > > > > > >
-> > > > > > > > The arm64 specific arch_register_cpu() needs to access the =
-_STA
-> > > > > > > > method of the DSDT object so make it available by assigning=
- the
-> > > > > > > > appropriate handle to the struct cpu instance.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.co=
-m>
-> > > > > > > > ---
-> > > > > > > >  drivers/acpi/acpi_processor.c | 3 +++
-> > > > > > > >  1 file changed, 3 insertions(+)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/a=
-cpi_processor.c
-> > > > > > > > index 7a0dd35d62c9..93e029403d05 100644
-> > > > > > > > --- a/drivers/acpi/acpi_processor.c
-> > > > > > > > +++ b/drivers/acpi/acpi_processor.c
-> > > > > > > > @@ -235,6 +235,7 @@ static int acpi_processor_get_info(stru=
-ct acpi_device *device)
-> > > > > > > >         union acpi_object object =3D { 0 };
-> > > > > > > >         struct acpi_buffer buffer =3D { sizeof(union acpi_o=
-bject), &object };
-> > > > > > > >         struct acpi_processor *pr =3D acpi_driver_data(devi=
-ce);
-> > > > > > > > +       struct cpu *c;
-> > > > > > > >         int device_declaration =3D 0;
-> > > > > > > >         acpi_status status =3D AE_OK;
-> > > > > > > >         static int cpu0_initialized;
-> > > > > > > > @@ -314,6 +315,8 @@ static int acpi_processor_get_info(stru=
-ct acpi_device *device)
-> > > > > > > >                         cpufreq_add_device("acpi-cpufreq");
-> > > > > > > >         }
-> > > > > > > >
-> > > > > > > > +       c =3D &per_cpu(cpu_devices, pr->id);
-> > > > > > > > +       ACPI_COMPANION_SET(&c->dev, device); =20
-> > > > > > >
-> > > > > > > This is also set for per_cpu(cpu_sys_devices, pr->id) in
-> > > > > > > acpi_processor_add(), via acpi_bind_one(). =20
-> > > > > >
-> > > > > > Hi Rafael,
-> > > > > >
-> > > > > > cpu_sys_devices gets filled with a pointer to this same structu=
-re.
-> > > > > > The contents gets set in register_cpu() so at this point
-> > > > > > it doesn't point anywhere.  As a side note register_cpu()
-> > > > > > memsets to zero the value I set it to in the code above which i=
-sn't
-> > > > > > great, particularly as I want to use this in post_eject for
-> > > > > > arm64.
-> > > > > >
-> > > > > > We could make a copy of the handle and put it back after
-> > > > > > the memset in register_cpu() but that is also ugly.
-> > > > > > It's the best I've come up with to make sure this is still set
-> > > > > > come remove time but is rather odd. =20
-> > > > > > >
-> > > > > > > Moreover, there is some pr->id validation in acpi_processor_a=
-dd(), so
-> > > > > > > it seems premature to use it here this way.
-> > > > > > >
-> > > > > > > I think that ACPI_COMPANION_SET() should be called from here =
-on
-> > > > > > > per_cpu(cpu_sys_devices, pr->id) after validating pr->id (so =
-the
-> > > > > > > pr->id validation should all be done here) and then NULL can =
-be passed
-> > > > > > > as acpi_dev to acpi_bind_one() in acpi_processor_add().  Then=
-, there
-> > > > > > > will be one physical device corresponding to the processor AC=
-PI device
-> > > > > > > and no confusion. =20
-> > > > > >
-> > > > > > I'm fairly sure this is pointing to the same device but agreed =
-this
-> > > > > > is a tiny bit confusing. However we can't use cpu_sys_devices a=
-t this point
-> > > > > > so I'm not immediately seeing a cleaner solution :( =20
-> > > > >
-> > > > > Well, OK.
-> > > > >
-> > > > > Please at least consider doing the pr->id validation checks before
-> > > > > setting the ACPI companion for &per_cpu(cpu_devices, pr->id).
-> > > > >
-> > > > > Also, acpi_bind_one() needs to be called on the "physical" devices
-> > > > > passed to ACPI_COMPANION_SET() (with NULL as the second argument)=
- for
-> > > > > the reference counting and physical device lookup to work.
-> > > > >
-> > > > > Please also note that acpi_primary_dev_companion() should return
-> > > > > per_cpu(cpu_sys_devices, pr->id) for the processor ACPI device, w=
-hich
-> > > > > depends on the order of acpi_bind_one() calls involving the same =
-ACPI
-> > > > > device. =20
-> > > >
-> > > > Of course, if the value set by ACPI_COMPANION_SET() is cleared
-> > > > subsequently, the above is not needed, but then using
-> > > > ACPI_COMPANION_SET() is questionable overall. =20
-> > >
-> > > Agreed + smoothing over that by stashing and putting it back doesn't
-> > > work because there is an additional call to acpi_bind_one() inbetween
-> > > here and the one you reference.
-> > >
-> > > The arch_register_cpu() calls end up calling register_cpu() /
-> > > device_register() / acpi_device_notify() / acpi_bind_one()
-> > >
-> > > With current code that fails (silently) =20
->=20
-> And that's why there is an explicit acpi_bind_one() invocation in
-> acpi_processor_add().
->=20
-> > > If I make sure the handle is set before register_cpu() then it
-> > > succeeds, but we end up with duplicate sysfs files etc because we
-> > > bind twice. =20
->=20
-> Right, I should have recalled that earlier.
->=20
-> > > I think the only way around this is larger reorganization of the
-> > > CPU hotplug code to pull the arch_register_cpu() call to where
-> > > the acpi_bind_one() call is.  However that changes a lot more than I'=
-d like
-> > > (and I don't have it working yet). =20
->=20
-> I see.
->=20
-> > > Alternatively find somewhere else to stash the handle, or just add it=
- as
-> > > a parameter to arch_register_cpu(). Right now this feels the easier
-> > > path to me. arch_register_cpu(int cpu, acpi_handle handle)
-> > >
-> > > Would that be a path you'd consider? =20
-> >
-> > Another option would be to do the per_cpu(processors, pr->id) =3D pr
-> > a few lines earlier than currently and access that directly from the
-> > arch_register_cpu() call.  Similarly remove that reference a bit later =
-and
-> > use it in arch_unregister_cpu().
-> >
-> > This seems like the simplest solution, but I may be missing something. =
-=20
->=20
-> This should work AFAICS, but I'd move the entire piece of code between
-> BUG_ON() and setting per_cpu(processors, pr->id) inclusive:
+This is a follow-up for [1].
 
-Hi Rafael,
-
-Unfortunately this is more complex on x86 than I realized :(
-
-On x86 the initial pr->id is invalid, which is one of the conditions
-that leads to acpi_processor_hotadd_init() being called.
-It only become valid after acpi_map_cpu() in acpi_processor_hotadd_init().
-
-So the best I can immediately come up with is to factor out these checks an=
-d the
-setting of the per_cpu structures and set them either in acpi_processor_hot=
-add_init()
-or in an else for the non hotplug / normal registration path (where the pr-=
->id is valid).
-
-Naturally found this on my final set of tests...
-
-A little ugly but not 'too bad'.=20
-
-Jonathan
-p.s. No one minds if I break x86, right?
+Here:
+ - drop unused 'i' variable, as reported by kernel robot [2];
+ - fix typos in commit message;
+ - add 2nd patch to handle WARN_ON() better.
 
 
+[1] https://lore.kernel.org/lkml/20240413184913.69268-1-yury.norov@gmail.com/
+[2] https://lore.kernel.org/oe-kbuild-all/202404161933.izfqZ32k-lkp@intel.com/
 
+Yury Norov (2):
+  MIPS: SGI-IP27: micro-optimize arch_init_irq()
+  MIPS: SGI-IP27: use WARN_ON() output
 
+ arch/mips/sgi-ip27/ip27-irq.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
->=20
->     BUG_ON(pr->id >=3D nr_cpu_ids);
->=20
->     /*
->      * Buggy BIOS check.
->      * ACPI id of processors can be reported wrongly by the BIOS.
->      * Don't trust it blindly
->      */
->     if (per_cpu(processor_device_array, pr->id) !=3D NULL &&
->         per_cpu(processor_device_array, pr->id) !=3D device) {
->         dev_warn(&device->dev,
->             "BIOS reported wrong ACPI id %d for the processor\n",
->             pr->id);
->         /* Give up, but do not abort the namespace scan. */
->         goto err;
->     }
->     /*
->      * processor_device_array is not cleared on errors to allow buggy BIOS
->      * checks.
->      */
->     per_cpu(processor_device_array, pr->id) =3D device;
->     per_cpu(processors, pr->id) =3D pr;
->=20
-> into acpi_processor_get_info(), right after the point where pr->id is set.
+-- 
+2.40.1
 
 
