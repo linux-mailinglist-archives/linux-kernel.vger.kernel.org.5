@@ -1,158 +1,204 @@
-Return-Path: <linux-kernel+bounces-147285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA2A88A71F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:09:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5117D8A71F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:09:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE2981C213C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:09:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09127284573
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:09:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 084881332B6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6325D13340D;
 	Tue, 16 Apr 2024 17:09:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="BTFw3A44"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lvj6IuLo"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A86E130AE6;
-	Tue, 16 Apr 2024 17:09:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713287373; cv=none; b=kkjBRdpHkFSMs6bSeVFP12pQZUiVHeP7CtvoP6dZxp7HGcBOCG4OS+en9ar73pWSa6ljb3zsbQptkWRmsXJpE14SR6E5XpIJLf3ZbUxDNVOJPTyv/QWlNx0XtRsAWlHPkuD/z/IjIt8h75EtE5412He6q2FZbhgUCKySl5tzLvA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B881311AE;
+	Tue, 16 Apr 2024 17:09:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713287373; cv=fail; b=MyXsM+vDLa+Nrk1f4vV29rIosBnKvbHkD40qGnnMrX22ESC69OjFQqafBzL7Toe140DILmMYcfHEdcgtf60FEMe9F1UaRslGJJPSetz832OVtXTGtGNijx3iCYGeGizmI/3NhfHe8SC4cOW0zAHnxe/SJF6RcnTgQsZe9VuQpoY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713287373; c=relaxed/simple;
-	bh=m/Tcz8R++mISom9mrEtKMuE4r704qsJcDo93SFLFcY0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=GHY7KDnMCvyYQ2MQ+6miG04qjXSua84d7Fbvw9qKwoTJ2Zyjc8yuDgj5SUt1iXhFP06TRDIFOjBXlUctW5vfe2ToH1Iyi6rBXEr+F+++gWWXKyidVdvm1z2G+bbn3UTwhcalrRewWNOnEdrjMWPUlfuR6vbfp5r1iQKjqJQyR7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=BTFw3A44; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43GH8pt2048641;
-	Tue, 16 Apr 2024 12:08:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713287331;
-	bh=g7hmgb1jOpj4IRDr/inmA1TTBWR//ZWwh/OsLMd5UZ8=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=BTFw3A44FKCKcc4mtAio6BztildVoS9yqe6eMWVDz4sb++KRfWrgX6/WIl2h7+5SQ
-	 ngzF2hmRCS0RDg6lJaugBdRNXu05zL+4/C0LsRgtjd8YAX273DzofixYxHUdmDSWRr
-	 cCjyfclJtZ5YxTnG2ApiOWfCMo86uGpiaepHNX1w=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43GH8pk2003997
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 16 Apr 2024 12:08:51 -0500
-Received: from lewvowa01.ent.ti.com (10.180.75.79) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 16
- Apr 2024 12:08:51 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by lewvowa01.ent.ti.com
- (10.180.75.79) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2507.34; Tue, 16 Apr
- 2024 12:08:51 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 16 Apr 2024 12:08:51 -0500
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43GH8oNF012621;
-	Tue, 16 Apr 2024 12:08:50 -0500
-Message-ID: <fce93a8b-7225-4775-b265-d283a863f969@ti.com>
-Date: Tue, 16 Apr 2024 12:08:50 -0500
+	bh=OVZ76Aiynj8Ta+kR5P6i7hEj0Un8v0yIIab27on1vfQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=YxWAIFWLNRfUNdrNSIHRl3MtRu+Cqgt34fLs09GaVwBx6BkZA/ob55pitGYmFYt8uPR8ZrIdGvG8A73eyg1GFgzY7DsuShSxJU5/fbdGBz5+HfZT05pr0kpVftmlAJ7t0to7hplFjA4aSBEmlUnNTHuS7APg6roP9cgj9F7thvs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lvj6IuLo; arc=fail smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713287372; x=1744823372;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=OVZ76Aiynj8Ta+kR5P6i7hEj0Un8v0yIIab27on1vfQ=;
+  b=lvj6IuLobs9A5Uj4NxTcgQPp37CGn24xeDrZR9z5s/FotqKzn0TfaCV1
+   32i9LTy2ZfR+wsSGoHeHOq3bvKUJEeFf8pu+jy6Ic/yGwoZ0X2Lyt8Pao
+   uU3LZq2g5OOtuIZzgaJnMav8dcGDNw6g0vynpPbT1N5D6MT36cy1St9EY
+   HOdAjdOx/no/n32ylt9vCzNRJVl+NIXzpUeF9O5iWkZOhHqp0QPPeZ0Fq
+   7ZNtL8Oi15cyyP0/fyhMLNCWOXtzIoi2jRnqYz4nhG4I2u6s45HoP52vV
+   ZQhrU9EriFAEuY8gD0fZWeam3/dUlPwVfRNBo6tYgEAYjr/BJ7HCrajrd
+   w==;
+X-CSE-ConnectionGUID: 6WplKzDgSrCdp7qQBA4zUQ==
+X-CSE-MsgGUID: G8d1MOlMQ02SmsH1C0wpIQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="31224574"
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="31224574"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 10:09:29 -0700
+X-CSE-ConnectionGUID: sM4cjRyHTT2Z6+YcgiNASg==
+X-CSE-MsgGUID: oHI7nODLSX2uM+6NVHhbyg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="53309729"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Apr 2024 10:09:27 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 16 Apr 2024 10:09:25 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 16 Apr 2024 10:09:25 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 16 Apr 2024 10:09:25 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 16 Apr 2024 10:09:24 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EXGADQ9wnS0nUm6bGjnxS5FTc6Huvi4sOCa8u4iW/Gh0e3eLbJT5JSsooxpK7DxHwR0dE0MlixZTXZo7VJRyv1bNojQWfsrD6M6aw+t0lGUR+SdLnnFY8zNt78I2YQQ6QE5lKlqIZx7JU3NZ2wx73K08ansmLYyAPcppoJoo7eTAG6p08fEzMLS+TnJTWPHTcLDR/X2WAXWzqL7LNbfNthffcMZolu24paRSvoQWanIwD5jvX3WLE4GcfUaksKh0NhLd8T+FQVBkaNlk3XO931avVXb750GeBE2Htct6MTrGliYF4Zytg1SsnJrkGwDN33HL0HIlKmC50uER1U5Q4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OVZ76Aiynj8Ta+kR5P6i7hEj0Un8v0yIIab27on1vfQ=;
+ b=dwFLnEd5g+4ctIYTSVf0rplNDRG5+9aBoc4xS8PYu9I1FkLBzfyFnvsQah+D1T1JNlt/le77WAHezrAStLmc4KnlSIdSUrgwlPbVFwTjMX2tTeLXIbOD57MMZKIi8e6HnwO7HdZ2x5yKwduTgcm1Vd9AsCBg99iBGsLz01oUfLyvAPfMgawQfqFb1fp+2BNxXJRyldD+dJ5/aqRxuBTtcvFEv1AycCer+aAsb8QDMaVKTcYQ2/Alb/zwLf84wssXjRRaE74N9PgQOiUdrvQWohIzRblGKCV9lD7l9U2liBddaXIB8961Ps7WoIfwFm+Y8zeoHh5pV1+se/QQNcqJ0A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
+ by IA1PR11MB6099.namprd11.prod.outlook.com (2603:10b6:208:3d5::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.29; Tue, 16 Apr
+ 2024 17:09:18 +0000
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::1761:33ae:729c:a795]) by MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::1761:33ae:729c:a795%5]) with mapi id 15.20.7472.027; Tue, 16 Apr 2024
+ 17:09:18 +0000
+From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To: "jmattson@google.com" <jmattson@google.com>, "Gao, Chao"
+	<chao.gao@intel.com>, "seanjc@google.com" <seanjc@google.com>,
+	"vkuznets@redhat.com" <vkuznets@redhat.com>, "Annapurve, Vishal"
+	<vannapurve@google.com>, "Chatre, Reinette" <reinette.chatre@intel.com>, "Li,
+ Xiaoyao" <xiaoyao.li@intel.com>, "Aktas, Erdem" <erdemaktas@google.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>, "mlevitsk@redhat.com"
+	<mlevitsk@redhat.com>, "Yamahata, Isaku" <isaku.yamahata@intel.com>
+CC: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V4 0/4] KVM: x86: Make bus clock frequency for vAPIC timer
+ configurable
+Thread-Topic: [PATCH V4 0/4] KVM: x86: Make bus clock frequency for vAPIC
+ timer configurable
+Thread-Index: AQHae64tVrLEvOd2BUmbFm4CAYtKL7FrSkSA
+Date: Tue, 16 Apr 2024 17:09:18 +0000
+Message-ID: <6fae9b07de98d7f56b903031be4490490042ff90.camel@intel.com>
+References: <cover.1711035400.git.reinette.chatre@intel.com>
+In-Reply-To: <cover.1711035400.git.reinette.chatre@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.44.4-0ubuntu2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|IA1PR11MB6099:EE_
+x-ms-office365-filtering-correlation-id: f1a32054-2efa-42d2-7460-08dc5e37f381
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FhRwYjfylpL6uw0DhMXVuA5VVP2TKQXj+HaHexH7l/oE0K8jpKIHGdecCMRu09pLSQtetzbKycfWdOvgisCJhOpgi2+FvwCu/k7O6PRaqFFfSZZpNypjQedLWFKQMXLOdu+VHPdaPqRUgylI/QusisMqHSxC52FmS1nxrl0IkqukSKUtVgTEBkALvuM6CnWxWoZhI+5/LQGB2PLsmPXoRPtIk0fhc7Z+dFJSLV1znxJKZWpq1QePjr7HHADLvw46FZSW+topZsJJ4Clw7mR9swEuDyO8WPr6E9uv6SRlafdyANuJ46t/zPsh5zaSr3DRW6flYza+w7JzxSVTdtwY8BZdZPhEs2qcSX7AJjXL+k6kpmeK3A+OKw5ort4J5TbkX/zYlfGn4bkStfVLDfgMMkdNzqlgCRMQRFpfFT9cklXCQQPcXXmRYLCGc+PkTaipvJv3kQiVuAoYRY6z3qMUDlkCZsIHcTktQwPQ5nohUbAl3aX+nvv3VyxGIMvswlAyH1RMfX0Ay26AzQlh2tnGo7sk8WSxk0D28PpCfTIU0tTV3AbEZocH1jie9/c4TDYzyqDiGqUckekBAm3p3jSvaBmHpb+BiM8VGXZ/vQrl0NoOEyoCUB7W5Gk9YDStwjYjvQXjT2xot+a+1P5u8hTOvjJDptFdlVnz5zMhsNcRPDyHu8H8aqPcJo92Evzf2jiaQooRhpylU+6G7Be7/90FvLAgIomOh9UgLuj1BT8asc4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(921011)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZW93eHpXOGlWNVlvUTRhOFdqc2VKV0NrdHJSRklnVWEvVXBkR2YwZUxxRkR4?=
+ =?utf-8?B?V0xVYXRaWFNtWGQ3UVBZS1MzQ0lJSFY3ZjFuYm5hZ1hIM254QTZiNVdrMTVv?=
+ =?utf-8?B?QTE1T005KzJxaW8yY2hGU0NDM0dQVnRaOW5xeS82ZVd0eThES3N0a21zelhj?=
+ =?utf-8?B?endTRzd5NU1ENXVRdVd5Wk5vM0syWFJlRXBsbW52eHA3blViZC9UVHFiNTQ1?=
+ =?utf-8?B?Z21SSDlLVTZmQWc3N0lqWG1TTW16QUg2Z1MrNy9BMW5kcEVWN0FYeXNFWk1x?=
+ =?utf-8?B?V0tqMnZ5TU4rYjFvUUxKTTBEUlZOcEZ0Yk55Z0dRV0JjQStIbnlxNU8zMmxY?=
+ =?utf-8?B?dy81Nks2K0lueno1WkduelNjNDNPQk00aW16ZFlERjN6ekk4VDNsK2ZnbWxm?=
+ =?utf-8?B?NU9Xa0QvOFpjZ1M3UGJ0QkVHSWVHQ2NOYnVUdzJMVEN2V2ozaUpmVzBhcmVK?=
+ =?utf-8?B?aTZjSzQ2RkowMTFyaitac1FhL05pWjJBdXZ5dG5QaldtM2wzblczWEE0dSsw?=
+ =?utf-8?B?TkJVZ3o5bEdwcmxCUnBGNVFzUDZaRmtYTzBZdGhIRU4reFJ5RDJ6NHRBQlZJ?=
+ =?utf-8?B?K3ljYlQrY2ZiMnppVlpWREVybmEvenRBS1R4TEJiZG5YZmNtMFd5eGZ0K2RP?=
+ =?utf-8?B?dkpLbG40MHphd09Va29aeVFmSWdON1ZqcGlSeVRHWGhGb3lmMTNMTkFQMW5v?=
+ =?utf-8?B?M2RWdU9NU1VOb0R3WVY3aHJXajlLS1F2M0lkcEJGOThzVVBBRlJUbURSN2lV?=
+ =?utf-8?B?TkhyNW4xaHpLMWtlY1M0eEJFQWc1SWlZRy9ONVQzRUJEdEk1dGZBc1V6ZFlC?=
+ =?utf-8?B?cm9OTjhHalFWVTBHbWRXcFlyYU9TRXNrM1YrUk8xeEJNdk4wckNGN2NsYzQ0?=
+ =?utf-8?B?Yi9GckpDcFFFZWVsZGduQk9PanlyRVY0Z2FneG0rRk95L25uOTRuaXFmNjZi?=
+ =?utf-8?B?dzBLamQ0YmhwSzFaTWN4b2NxN0g1bFFkNmhXRmJVdkNpdGhGcUF0Mm1HaXFu?=
+ =?utf-8?B?SE1ZZU12SmpsTWlrL3VkWThFNU05YVZWVERyUW1OVU1JWVR4eHlTRnBIUTFk?=
+ =?utf-8?B?S3YzdWVnNkszcGI0ZWxsMjFvak96NlMweWVyeEVqNmdzUXhqZWhtNDJYWHp2?=
+ =?utf-8?B?SCs0RGc5WGJZaTJhSzZZR2hBWDJ3MDliR09wWGdOZVczZjNXTWVHdldYUDhS?=
+ =?utf-8?B?RUpDdnRkUzVDZUhUQy9TUnIzZ1dLaTk2MFU1Vk1UMmdSajRGMmN2dXAwME1D?=
+ =?utf-8?B?WHg4R1ViRTJKUFh1TTMrVTFOQWpFell2MER0MmZ4aVRBWWhpUExkczFGcnhU?=
+ =?utf-8?B?S3ltZXRtUzE4SWRqNFZGWXpSbUdqcHZrdVF0WnFJbG1qQWdFbXRqQ09JRkRD?=
+ =?utf-8?B?TUtPbjQxQ2FKQURpOXNSTVJYU3dEcEJ4UjNlQnhzNDVqWXV2L2h2SXpDcmNF?=
+ =?utf-8?B?VU9leHd4WEhyWXZKMitTUjB2aDN0RENkWjB5dFNEZXJjYXZtcCtrQUYrTStC?=
+ =?utf-8?B?a2FvZk9TTGFUcEMzcFNRUlNMT2xKNGdaamNwOXVUbk1oY01YV00zaFgreFgy?=
+ =?utf-8?B?WUVTL0Q1R3JJNGlXSWg0eWx4RVlBbmxjOXQzakgyK2htcUswdkVSano2d0VV?=
+ =?utf-8?B?M29xYnVFN04xT1p1TXZFV3NYT2lqUzVXaTR1cm1jbkNveDBtOUlXdkdwZEcw?=
+ =?utf-8?B?dVpWMGxrOW13djhIOFlOY1g2WkM5UUVoazhRNWFvaE9GTEdKNG9OejRxUmZl?=
+ =?utf-8?B?QmJkRzI4SUpSWlp0VHhUZGRTYXFtZmg4dlFqNE5KYzRtTDY3cDNJejZabkNl?=
+ =?utf-8?B?a3haZDZVR1podmUvR2c4TlIyc0FQNGJ3KzlPaU9hV0xUZEdjSytiZnpHdU5r?=
+ =?utf-8?B?ZXNZZFpKK3dDSHg2cHFRbDY0eU1lYXNGdXh4Rjc0ekI1NmdNNnBqbUkydVpE?=
+ =?utf-8?B?NHVLTlY0QjRkZ0NXbW1KdGQvdmRQSVpMaVdFVE14eUFTL0k0S0gzRURrbWVz?=
+ =?utf-8?B?eVErSDlOeWRjZ1djQUFpcExxakFUY1BzUHZnYXFrREwxWG9Oa1ZPSHFhR2ZV?=
+ =?utf-8?B?VHFiK3NxeWk3eWYxNnQ3MEN1ZjlMVC9rWFozdiswdlpvYm4zOXR4eFJidVh1?=
+ =?utf-8?B?LzZXVExsZnl2WVEzWDhoU0NjM3VqSDBnbHo1VVFRTUZPQUJCbEVnWHE5a1No?=
+ =?utf-8?Q?/M53RFg9XrD+Y20xI02dp1U=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F28CC98DFF2BCA4D88AA0BA2889B415D@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/31] Remove use of i2c_match_id in HWMON
-To: Guenter Roeck <linux@roeck-us.net>, Rob Herring <robh@kernel.org>
-CC: Jean Delvare <jdelvare@suse.com>, Juerg Haefliger <juergh@proton.me>,
-        "Riku Voipio" <riku.voipio@iki.fi>, <linux-hwmon@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240403203633.914389-1-afd@ti.com>
- <0e43aa83-2e02-49e2-96b8-24cac0362a7b@roeck-us.net>
- <77b2f8ce-0b71-4a7a-81bc-a64a1af3566d@ti.com>
- <fcafe904-383c-49c0-b576-81cbcde045c5@roeck-us.net>
- <cd6ae1f7-33e7-4e1b-bac8-c5566b22b392@roeck-us.net>
-Content-Language: en-US
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <cd6ae1f7-33e7-4e1b-bac8-c5566b22b392@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1a32054-2efa-42d2-7460-08dc5e37f381
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2024 17:09:18.0929
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: A9lENzML24O1W/4F6DxBquBHMHbjJzIPp4dQJWIqO8VmSLb/9HA5m6edRN0+PjBj2PxCU5PsbdZFdPCB0WP4AqaYVYZsbihTSvpJds8q/hU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6099
+X-OriginatorOrg: intel.com
 
-On 4/16/24 9:16 AM, Guenter Roeck wrote:
-> On Mon, Apr 08, 2024 at 04:49:43AM -0700, Guenter Roeck wrote:
->> On Wed, Apr 03, 2024 at 05:06:43PM -0500, Andrew Davis wrote:
->>> On 4/3/24 4:30 PM, Guenter Roeck wrote:
->>>> On Wed, Apr 03, 2024 at 03:36:02PM -0500, Andrew Davis wrote:
->>>>> Hello all,
->>>>>
->>>>> Goal here is to remove the i2c_match_id() function from all drivers.
->>>>> Using i2c_get_match_data() can simplify code and has some other
->>>>> benefits described in the patches.
->>>>>
->>>>
->>>> The return value from i2c_match_id() is typically an integer (chip ID)
->>>> starting with 0. Previously it has been claimed that this would be
->>>> unacceptable for i2c_get_match_data(), and chip IDs were changed to start
->>>> with 1. Commit ac0c26bae662 ("hwmon: (lm25066) Use i2c_get_match_data()")
->>>> is an example. Either this series is wrong, or the previous claim that
->>>> chip IDs (i.e., the content of .driver_data or .data) must not be 0 was
->>>> wrong. Which one is it ? I find it very confusing that the chip type for
->>>> some drivers now starts with 1 and for others with 0. Given that, I am not
->>>> inclined to accept this series unless it is explained in detail why the
->>>> chip type enum in, for example, drivers/hwmon/pmbus/lm25066.c has to start
->>>> with one but is ok to start with 0 for all drivers affected by this
->>>> series. Quite frankly, even if there is some kind of explanation, I am not
->>>> sure if I am going to accept it because future driver developers won't
->>>> know if they have to start chip types with 0 or 1.
->>>>
->>>
->>> i2c_get_match_data() has no issue with returning 0 when the driver_data
->>> for the match is also 0 (as it will be when the chip type is 0 here).
->>>
->>> The confusion might be that returning 0 is also considered a failure code.
->>> This is a problem in general with returning errors in-band with data, and
->>> that is nothing new as i2c_match_id() does the same thing.
->>>
->>> Actually, i2c_match_id() is worse as most of these drivers take the result
->>> from that and immediately dereference it. Meaning if i2c_match_id() ever did
->>> failed to find a match, they would crash before this series. Luckily i2c_match_id()
->>> can't fail to find a match as far as I can tell, and so for the same reason
->>> neither can i2c_get_match_data(), which means if 0 is returned it is always
->>> because the chip ID was actually 0.
->>>
->>> At some point we should switch all the *_get_match_data() functions to
->>> return an error code and put the match if found as a argument pointer.
->>> Forcing everyone to changing the chip type to avoid 0 as done in
->>> ac0c26bae662 is the wrong way to fix an issue like that.
->>>
->>
->> That doesn't really answer my question. It does not explain why it was
->> necessary to change the chip ID base for other drivers from 0 to 1,
->> but not for the drivers in this series. I fail to see the difference,
->> and I have to assume that others looking into the code will have the
->> same problem.
->>
-> 
-> Just to follow up: I am not going to apply this series until I understand
-> why the chip ID range had to be changed from 0.. to 1.. for other hardware
-> monitoring drivers (lm25066, nct6775) but not for the drivers changed
-> in this series. I have been telling people that chip IDs need to start
-> with 1 if i2c_get_match_data() is used. I'll need understand when and
-> why this is needed to be able to provide guidance to other developers.
-> 
-
-I was hoping one of those patch authors that made those 0->1 changes
-would speak up (+Rob), I can't know what their thinking was, only
-offer my best guess as I did above.
-
-Andrew
-
-> Guenter
+T24gVGh1LCAyMDI0LTAzLTIxIGF0IDA5OjM3IC0wNzAwLCBSZWluZXR0ZSBDaGF0cmUgd3JvdGU6
+DQo+IA0KPiBTdW1tYXJ5DQo+IC0tLS0tLS0NCj4gQWRkIEtWTV9DQVBfWDg2X0FQSUNfQlVTX0ZS
+RVFVRU5DWSBjYXBhYmlsaXR5IHRvIGNvbmZpZ3VyZSB0aGUgQVBJQw0KPiBidXMgY2xvY2sgZnJl
+cXVlbmN5IGZvciBBUElDIHRpbWVyIGVtdWxhdGlvbi4NCj4gQWxsb3cgS1ZNX0VOQUJMRV9DQVBB
+QklMSVRZKEtWTV9DQVBfWDg2X0FQSUNfQlVTX0ZSRVFVRU5DWSkgdG8gc2V0IHRoZQ0KPiBmcmVx
+dWVuY3kgaW4gbmFub3NlY29uZHMuIFdoZW4gdXNpbmcgdGhpcyBjYXBhYmlsaXR5LCB0aGUgdXNl
+ciBzcGFjZQ0KPiBWTU0gc2hvdWxkIGNvbmZpZ3VyZSBDUFVJRCBsZWFmIDB4MTUgdG8gYWR2ZXJ0
+aXNlIHRoZSBmcmVxdWVuY3kuDQoNCkxvb2tzIGdvb2QgdG8gbWUgYW5kLi4uDQpUZXN0ZWQtYnk6
+IFJpY2sgRWRnZWNvbWJlIDxyaWNrLnAuZWRnZWNvbWJlQGludGVsLmNvbT4NCg0KVGhlIG9ubHkg
+dGhpbmcgbWlzc2luZyBpcyBhY3R1YWxseSBpbnRlZ3JhdGluZyBpdCBpbnRvIFREWCBxZW11IHBh
+dGNoZXMgYW5kDQp0ZXN0aW5nIHRoZSByZXN1bHRpbmcgVEQuIEkgdGhpbmsgd2UgYXJlIG1ha2lu
+ZyBhIGZhaXIgYXNzdW1wdGlvbiB0aGF0IHRoZQ0KcHJvYmxlbSBzaG91bGQgYmUgcmVzb2x2ZWQg
+YmFzZWQgb24gdGhlIGFuYWx5c2lzLCBidXQgd2UgaGF2ZSBub3QgYWN0dWFsbHkNCnRlc3RlZCB0
+aGF0IHBhcnQuIElzIHRoYXQgcmlnaHQ/IFdoYXQgZG8geW91IHRoaW5rPw0K
 
