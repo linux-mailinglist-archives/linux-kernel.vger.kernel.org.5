@@ -1,79 +1,83 @@
-Return-Path: <linux-kernel+bounces-146405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 079608A64DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:19:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B64848A64DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:19:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F7F7B2190A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:19:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55D131F22CCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66F0984DE7;
-	Tue, 16 Apr 2024 07:17:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF77A1591FF;
+	Tue, 16 Apr 2024 07:17:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UNraq+km"
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kFA+Xwgt"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B0A78C68
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08D5A84DF0
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:17:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713251868; cv=none; b=kosfUDjCrwgvD5qod3AuTTysGMxNRk896Pv9ja988Zoi8s68PfBct45vKvaMetsOF9lLMjeGZHtPVR3YdjL7Uecsw9u73YKOofanBVpDTQ9RToZYjOWuKaBnuL9SuTtvp56br8VRGVSj506zI8/HzfMgA8wYVAxam4T0DmEFPUE=
+	t=1713251870; cv=none; b=hiiVq5Befy91sDGBKbtx1V/aWQEmRUJQnZrR9FczM++XfESUSTdqa0OoK3J5qorcNTEup+sEDA1wILBMDkk7HPDCcljuBBjjzu4MVZlQM9XZk3SHuchdEbo0TGC4x3c5VrFqoa+1GTsikW2Jm4kvhIP9L+wLUGDrTczDWlCKjc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713251868; c=relaxed/simple;
-	bh=wcyQ5gVyf+KKx9kuWHRyg4D2bhvtU+PMnIoNIeFRXbk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qXPhYLQjd9YVpLpwrHwhQWyOuW+vutZx5kvZUhNkqAaeoUI8p9v4/mh6Fb62nqU7fGvn8mW5LsWLZe1PSfx6s8YcxfwMra+SjiFvZaYApZ84lxPttVXfi+BCQ9d4PJypWYBmPKpN09VCxtFAP4BlJ7cEIlu5T7OvHatZ+T8adBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UNraq+km; arc=none smtp.client-ip=209.85.160.53
+	s=arc-20240116; t=1713251870; c=relaxed/simple;
+	bh=1k7Mo6A53sEnM9AVmjmMFSd6Kr0X66nFRotuTggUvfA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=oExlzZ+mx4JvOgTyTxyCo1YmIKuLPk2N6uAjUthKdAFZt9qJ9/JmJH1Fj5E4WVA2XX/LtYHH/zNEOxGV9LVDFiRGaczUY5+L7CkujMvOUBTCRhmjiE+YD8S00tnqvCZA/5nZLdmCoH5F9Zoni//F959paayQoM0SeSCfwzH1d3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kFA+Xwgt; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-22f078f1aecso2509052fac.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:17:46 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed627829e6so4427498b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:17:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713251866; x=1713856666; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3LBhWV67y6b0WgcIZ1Dkb9cu6NZAVWwfF3kgN+jwSeQ=;
-        b=UNraq+kmPHd5rpvk+bYk80BqDIc/OMGa7mCBwgDxcJ02V4ZwbvJZnHf7hpMxTaW5Qz
-         TaLLf5Zv+43l4rgeyFotcnrAYEF9d4ncd4JY0f1GBm4gziJoXRu27lifwLD0BXYRRr56
-         R1AeF3nFvXpLgDuLXkRTFAck4gp2midu43h0X4RFel2kk+7lv9FtnXtLNU9SsCTJA2Lh
-         5SXPT43BNbVO9N+elz/jDBQBE7q0OIF35FIsBwkglHrxL43xayjbK8Yagukp8wGU4Tbe
-         8fkZc9NTL5L30Axx7zjTYXxMGkSk5g73+sLD8wNc7QwTyGrN6M/5y1bkAHdyMaG6eeRc
-         61zQ==
+        d=gmail.com; s=20230601; t=1713251868; x=1713856668; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:references
+         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0LQlo9tV6jA7edPLPREtk8jPXGN28KNPzfvTbxW9Ygw=;
+        b=kFA+XwgtFqWJNWQJMA5iLnf1SEnD3Bh+Hd8uF0+gWd/ODr8p5Lm76xrta4mWeeecqI
+         hPB3qrP9e3e5hz42rb8wTlL/nuYwuO3HazcTm4iOo32zvzSGVFKiFgcpZKU0PhIadGoG
+         N6ZB3pPjTKWemR1KduOoMM7HlLS9eYWAGxY59sdj1MlXrKWLAqBSkGWEfRVlewlc/KtA
+         TOYLLY/iqpSwnV8N5es/iv1Aw9JVdwcLyJQxukbQ8rp9h6qKKttMAxYgJKeo96UYwqE0
+         KRkaRvaY00SEoisfXQNWAOqxlYADGW311Mjinb+39OKaLqwGulUrnnKDuPEtSmHRpBT/
+         P/Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713251866; x=1713856666;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3LBhWV67y6b0WgcIZ1Dkb9cu6NZAVWwfF3kgN+jwSeQ=;
-        b=fXdDKMTchk+H7XpjLJvk7qTqe0BLDhbHphXFeM0V0tbsbxnXGKShaYZXaD3OjK1fT7
-         wPQumvkSk77XizYhOmw2od3xnmCEkgptTdb6/hbzPvyKNeKV/RVm0srG6mLSOVfWYtMx
-         U88FXg/o+pNHg4oyFOFxF+TOjzlsMrzeL0RdQlbqgV99qygG4Mx5oamPUTUwb6qTQalg
-         VDXauQv0pOh+iXQ91lYfXM5YDshHOfqkNIgppQxnHCkiQWS6auwNbtv2FGQ6JU76JwVd
-         ewVhflR8UOs4WF3d0G6gP5qwDXpC8KHIGOkeznsyQy97Ug2kyTrXJCxewJmQlsIJi2hZ
-         4pTg==
-X-Forwarded-Encrypted: i=1; AJvYcCVJXBwHUm4lZ9dXj32WEC6e7VrLp1WlsHRU+vFE6EiyOb9bg2eJ2Li4hiTdV4Pot5n/GXGIs9CEFMh6VXmJsJQBeNwf8qyj2QxhhJMr
-X-Gm-Message-State: AOJu0YwXJJpu1AOE1OOlR/x8d58T/mq5qbjMPQNd5grN7auMnDLG07iP
-	ckO7A4ahKlOH99MppAVGeUzckpoYb07JTDpTxxL0i/bVuNsaMb3e/e5KRACw
-X-Google-Smtp-Source: AGHT+IHgv+eiaC3hjMju7rm9Qo7jLE7d9pZ+EJk4lWRkxaTVzSmh0SwpD32NoJ8kG1H43a01F3F4eQ==
-X-Received: by 2002:a05:6870:7012:b0:22e:ca59:8faa with SMTP id u18-20020a056870701200b0022eca598faamr13780993oae.34.1713251866075;
-        Tue, 16 Apr 2024 00:17:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713251868; x=1713856668;
+        h=content-transfer-encoding:mime-version:reply-to:references
+         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0LQlo9tV6jA7edPLPREtk8jPXGN28KNPzfvTbxW9Ygw=;
+        b=G3P+WChu4m5PRTQLKiyT02Uy9NrZoTdanfMGvqKi2PTX12wt3OqKZzi/J4FADu1XmR
+         X0fDmDcWFLou5okWMfGkA+HMsyKsrAF1mPtIHKwavcIPiVozpf8ao+iM+C7+yaBAAeVO
+         SpsC8u9yMoSvNHQcE/Jwj6K7o3Z3QAhn8NXr/5Nurg5xTzo1sdnGyfUAW/D1JEyQkMDk
+         MgN0snjQtVvEcOL9Opmx3sxymGlJj8I346ytTAlzVl9N6nkrWXTQQqARTainam6bRS4m
+         GGXoXt+b8kgBbmeKkojyQyEw1yrYk4xGnKRliR3x44F/bNqx0MyXS+zQfwOlcbYJZft1
+         CrMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXufIG0M83QKskk0xC/r9L507p5QO97kjryEc70/aH1DyyzJduDWklpP9lnQfKtvN1M09F26uD2gU1J0ynN9U6Xr9d5FdlkMiU6/A7O
+X-Gm-Message-State: AOJu0YyE+URnTWsLhH8Gg7gP8BruS138dsnmdzs6a7xIhdNWcnXwd9Il
+	lLN4S4UiGshWwKQMDfQQpng3TcFrGa8d6tg73HIkhSUd5eEYTFrq
+X-Google-Smtp-Source: AGHT+IFA2zmy9+KvgrKxSYzQek06HbyAOJH+OqT9zi1O7kh6mqKJgpjWl+AmhEUdNRhj7ZdCRoeZAQ==
+X-Received: by 2002:a05:6a00:399d:b0:6ea:c2c7:5d6a with SMTP id fi29-20020a056a00399d00b006eac2c75d6amr15984911pfb.2.1713251868205;
+        Tue, 16 Apr 2024 00:17:48 -0700 (PDT)
 Received: from KASONG-MB2.tencent.com ([43.132.141.21])
-        by smtp.gmail.com with ESMTPSA id lr48-20020a056a0073b000b006e724ccdc3esm8340029pfb.55.2024.04.16.00.17.44
+        by smtp.gmail.com with ESMTPSA id lr48-20020a056a0073b000b006e724ccdc3esm8340029pfb.55.2024.04.16.00.17.46
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 16 Apr 2024 00:17:45 -0700 (PDT)
+        Tue, 16 Apr 2024 00:17:47 -0700 (PDT)
 From: Kairui Song <ryncsn@gmail.com>
 To: linux-mm@kvack.org
 Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Matthew Wilcox <willy@infradead.org>,
 	linux-kernel@vger.kernel.org,
 	Kairui Song <kasong@tencent.com>
-Subject: [PATCH v4 0/4] mm/filemap: optimize folio adding and splitting
-Date: Tue, 16 Apr 2024 15:17:18 +0800
-Message-ID: <20240416071722.45997-1-ryncsn@gmail.com>
+Subject: [PATCH v4 1/4] mm/filemap: return early if failed to allocate memory for split
+Date: Tue, 16 Apr 2024 15:17:19 +0800
+Message-ID: <20240416071722.45997-2-ryncsn@gmail.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240416071722.45997-1-ryncsn@gmail.com>
+References: <20240416071722.45997-1-ryncsn@gmail.com>
 Reply-To: Kairui Song <kasong@tencent.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -81,108 +85,37 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 From: Kairui Song <kasong@tencent.com>
 
-Currently, at least 3 tree walks are needed for filemap folio adding if
-the folio is previously evicted. One for getting the order of current slot,
-one for ranged conflict check, and one for another order retrieving.
-If a split is needed, more walks are needed.
+xas_split_alloc could fail with NOMEM, and in such case, it should abort
+early instead of keep going and fail the xas_split below.
 
-This series is trying to merge these walks, and speed up filemap_add_folio,
-I see a 7.5% - 12.5% performance gain for fio stress test.
+Signed-off-by: Kairui Song <kasong@tencent.com>
+Acked-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ mm/filemap.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-So instead of doing multiple tree walks, do one optimism range check
-with lock hold, and exit if raced with another insertion. If a shadow
-exists, check it with a new xas_get_order helper before releasing the
-lock to avoid redundant tree walks for getting its order.
-
-Drop the lock and do the allocation only if a split is needed.
-
-In the best case, it only need to walk the tree once. If it needs
-to alloc and split, 3 walks are issued (One for first ranged
-conflict check and order retrieving, one for the second check after
-allocation, one for the insert after split).
-
-Testing with 4K pages, in an 8G cgroup, with 16G brd as block device:
-
-  echo 3 > /proc/sys/vm/drop_caches
-
-  fio -name=cached --numjobs=16 --filename=/mnt/test.img \
-    --buffered=1 --ioengine=mmap --rw=randread --time_based \
-    --ramp_time=30s --runtime=5m --group_reporting
-
-Before:
-bw (  MiB/s): min= 1027, max= 3520, per=100.00%, avg=2445.02, stdev=18.90, samples=8691
-iops        : min=263001, max=901288, avg=625924.36, stdev=4837.28, samples=8691
-
-After (+7.3%):
-bw (  MiB/s): min=  493, max= 3947, per=100.00%, avg=2625.56, stdev=25.74, samples=8651
-iops        : min=126454, max=1010681, avg=672142.61, stdev=6590.48, samples=8651
-
-Test result with THP (do a THP randread then switch to 4K page in hope it
-issues a lot of splitting):
-
-  echo 3 > /proc/sys/vm/drop_caches
-
-  fio -name=cached --numjobs=16 --filename=/mnt/test.img \
-      --buffered=1 --ioengine=mmap -thp=1 --readonly \
-      --rw=randread --time_based --ramp_time=30s --runtime=10m \
-      --group_reporting
-
-  fio -name=cached --numjobs=16 --filename=/mnt/test.img \
-      --buffered=1 --ioengine=mmap \
-      --rw=randread --time_based --runtime=5s --group_reporting
-
-Before:
-bw (  KiB/s): min= 4141, max=14202, per=100.00%, avg=7935.51, stdev=96.85, samples=18976
-iops        : min= 1029, max= 3548, avg=1979.52, stdev=24.23, samples=18976·
-
-READ: bw=4545B/s (4545B/s), 4545B/s-4545B/s (4545B/s-4545B/s), io=64.0KiB (65.5kB), run=14419-14419msec
-
-After (+10.4%):
-bw (  KiB/s): min= 4611, max=15370, per=100.00%, avg=8928.74, stdev=105.17, samples=19146
-iops        : min= 1151, max= 3842, avg=2231.27, stdev=26.29, samples=19146
-
-READ: bw=4635B/s (4635B/s), 4635B/s-4635B/s (4635B/s-4635B/s), io=64.0KiB (65.5kB), run=14137-14137msec
-
-The performance is better for both 4K (+7.5%) and THP (+12.5%) cached read.
-
-V3: https://lore.kernel.org/linux-mm/20240415171857.19244-1-ryncsn@gmail.com/
-Updates from V3:
-- Simplify comment, and fold in a sparse warning fix, as
-  suggested by Matthew Wilcox.
-
-V2: https://lore.kernel.org/lkml/20240325171405.99971-1-ryncsn@gmail.com/
-Updates from V2:
-- Fix the misusage of locks in test module:
-  https://lore.kernel.org/oe-lkp/202404151046.448e2d6e-lkp@intel.com
-
-V1: https://lore.kernel.org/lkml/20240319092733.4501-1-ryncsn@gmail.com/
-Updates from V1:
-- Collect Acks.
-- Add tests for new xas_get_order and combined usage of xas_get_order with
-  xas_for_each_conflict.
-- Fix a memleak for patch 4/4 and modify the function in place instead
-  of adding a new helper.
-- Update benchmark, I forgot to drop cache and disable THP for pervious
-  test, so the result was for mixed usaged of split and add. The result
-  is even better now.
-
-Kairui Song (4):
-  mm/filemap: return early if failed to allocate memory for split
-  mm/filemap: clean up hugetlb exclusion code
-  lib/xarray: introduce a new helper xas_get_order
-  mm/filemap: optimize filemap folio adding
-
- include/linux/xarray.h |  6 +++
- lib/test_xarray.c      | 93 ++++++++++++++++++++++++++++++++++++++++++
- lib/xarray.c           | 49 ++++++++++++++--------
- mm/filemap.c           | 74 +++++++++++++++++++++------------
- 4 files changed, 179 insertions(+), 43 deletions(-)
-
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 30de18c4fd28..d447b36ffd41 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -880,9 +880,12 @@ noinline int __filemap_add_folio(struct address_space *mapping,
+ 		unsigned int order = xa_get_order(xas.xa, xas.xa_index);
+ 		void *entry, *old = NULL;
+ 
+-		if (order > folio_order(folio))
++		if (order > folio_order(folio)) {
+ 			xas_split_alloc(&xas, xa_load(xas.xa, xas.xa_index),
+ 					order, gfp);
++			if (xas_error(&xas))
++				goto error;
++		}
+ 		xas_lock_irq(&xas);
+ 		xas_for_each_conflict(&xas, entry) {
+ 			old = entry;
 -- 
 2.44.0
 
