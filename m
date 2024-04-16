@@ -1,160 +1,245 @@
-Return-Path: <linux-kernel+bounces-146504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3847C8A663F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:36:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 811E88A6642
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:36:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBB61B222FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:36:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0D4C1F22628
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:36:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1FC0839E5;
-	Tue, 16 Apr 2024 08:36:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A4484D10;
+	Tue, 16 Apr 2024 08:36:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NYRh5pJ/"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FE6QZv0L"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AB3D205E10;
-	Tue, 16 Apr 2024 08:36:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2A97205E10
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713256581; cv=none; b=u+MEhjF68XgvNmRpV7xAkmQ8T7p0u5GDrbfQ+bKki2riJ97q0rl/FXtCX0Fquw//QBe98D1Fi2woFpUKHDYQWp8OCQOoSHHpMVdzCjDFBu5tGc6YpgQJfbU2DnrhYDX9VJwgezSYz0xV+YC0YShneY6Hx8UBEULIbTzYX1W2VTY=
+	t=1713256586; cv=none; b=ZLCUDBr29stSPyrkPXbAAfwMXzJoWLJWhQUicaTxXfrD3xr2ZBvujQSQCUWzjtgzkfwtsxWx388AJjwq+rfcsyFFvzy9vowE6876yQ+vI3E56I0o9Lm84z595fJaxQWudlmlBW2J2uFyTqzh2XQ2DSrpFat4Be3LoSLDS3wbuHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713256581; c=relaxed/simple;
-	bh=AveT/kzhMyKqy9qT8luIjlZhEw74u3Rg6QrwfWqr29U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=DU3YN6axj1wfTW3SFFGLR82rGaWUOi7edOsJ0d9mGMwH8dsv88GHGH3HSLxpsikPON9KckSeQAMnDbkYDR7+XdgXgBoTgqvwd/xAC8N4AsqYAoKaNV1S7Y6eAx6JtLn27WX0NqDDbSdIKJPeKUomDL6hsprJgJxlZ1x49vRJYoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=NYRh5pJ/; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43G8a5ET051699;
-	Tue, 16 Apr 2024 03:36:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713256565;
-	bh=gunZQjBXlTN74AuFxyYpvMjk5/cg4ebKFt9lvmAInR0=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=NYRh5pJ/awzVIVr4sD0Qm2nOpnz+fNtcJuwBVUH09sLg4gr37FOxU/L1UY1w/cTMV
-	 jxqZaAOI86/Aa1lA/vToagLbAxf/77FVw1WdPdL6DJRa1tM1yzlFlugUFkhNdnUeTi
-	 5cIgmeWO1Rz+oHEqVHNrdtLYDgDfOZEbX1bSFLlc=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43G8a5Uj060264
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 16 Apr 2024 03:36:05 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 16
- Apr 2024 03:36:05 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 16 Apr 2024 03:36:05 -0500
-Received: from [172.24.227.220] (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43G8a0Dr067512;
-	Tue, 16 Apr 2024 03:36:01 -0500
-Message-ID: <dc4563a4-949a-4e5e-a87b-2068a42eea85@ti.com>
-Date: Tue, 16 Apr 2024 14:05:59 +0530
+	s=arc-20240116; t=1713256586; c=relaxed/simple;
+	bh=aOdBoB93vxsijvwYVSFBSNuBZpGDotBJXt9pWDSyh08=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=b3SPXGptO69wIrHE4AOYqsmK3hAbJZcnyPVe5sIcYzG4w0OxR0VTHJlO/N9vSntDN3/cjF+mwBKN2hseWPuOU4hNPBZYTiEyyBFgf8cObGsneXaC10Gd9hEFZUFHmjd0ZdPeqGCN6ol18YVnq6THnfuVr0xfEGMtrdy8RKJdIF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FE6QZv0L; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713256583;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P9h0BHooKT4d+s5o9CfTkWVc8WVyWweFWg1hgv32sDw=;
+	b=FE6QZv0L1XKaDOlCFSV7y4DpVQQJixf0uVUYzVq3Fc3Ykoo9gmqXvmATZOfTQLMpAhGDra
+	NVLk07LcZnvD0CA0Je2U6WliyfA+vKSCP/1Gyh+Hl+WWh7SkLwYPnzUpBKipph2aX1GK+x
+	0yOYRhjWUoeSkX8PDRnICl2UAzXuOVk=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-176-T-yOrPNoMz-hJSJBQv5emw-1; Tue, 16 Apr 2024 04:36:22 -0400
+X-MC-Unique: T-yOrPNoMz-hJSJBQv5emw-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a51a2113040so261254866b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 01:36:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713256580; x=1713861380;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P9h0BHooKT4d+s5o9CfTkWVc8WVyWweFWg1hgv32sDw=;
+        b=TBSRNxcdX8Tg7z05Y5+SO21QdUEkTA3vPX2y/hSdjWMSdigl+/EfqY91KFD4umZ02W
+         coejj7i7eJUpjmb9Cm4iM+/QH26QmKbjD7Un/nnm4KAa264XgosSSqphTwgye98c/xci
+         po8+hEi0vh63g5fzCr9EOszlsVeCi3TeUGtdSiH+/K2CVTiKKF7ZgHzGMgE4cfyI2Knz
+         RM1Flgy3AlgG1dXkQgth6BUGK+Ae2LbmMMEJUWPeu9n1x+ecsRjFZxaBM/+5SdVEKfbo
+         jSSxz06vSAfZbNjrOO6W9X29uCkM18rQcikOFibiUtcKlEpUpX6eLA6h8/F4d4F5BiSw
+         RPMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXNAMQCG3hNSdcCu58r5EYgx+HUGUOq3cehVRAXU7Qu/49BPHtk1j49hW0YegjMj2qmfbbjlB7zP1DJEV7T9Mqrk23axHaLfS8giVaU
+X-Gm-Message-State: AOJu0YyXf1U6xrz72hKWrr/n4CDyCpZCpKVyrdAmFcJqntyiZDCfIv8f
+	ISaO/XhmC4klp8pfDibn2fBShUqlk+4dozXpgHeFFK2e/lYpo7IlBC8GzBf7GnLdCWeiC7pEO2W
+	IRwG5KauuOcdyQSJduPODIBwCkV5hrh5UAKUCQqh5V4NjClfkKE+WENQ+eyyEW6Y++Cj47Q==
+X-Received: by 2002:a17:906:fd89:b0:a52:24b7:b4fc with SMTP id xa9-20020a170906fd8900b00a5224b7b4fcmr9803962ejb.72.1713256579929;
+        Tue, 16 Apr 2024 01:36:19 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFcUTY/qJBHlbwy/q1b5NbiJban9UANxl5bmP8c8RwUfPyqxenDNL5DXXGruVveAU0+G2ypgw==
+X-Received: by 2002:a17:906:fd89:b0:a52:24b7:b4fc with SMTP id xa9-20020a170906fd8900b00a5224b7b4fcmr9803942ejb.72.1713256579538;
+        Tue, 16 Apr 2024 01:36:19 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id f10-20020a17090624ca00b00a46a2779475sm6490570ejb.101.2024.04.16.01.36.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 01:36:19 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: paulmck@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Peter Zijlstra <peterz@infradead.org>, Neeraj Upadhyay
+ <quic_neeraju@quicinc.com>, Joel Fernandes <joel@joelfernandes.org>, Josh
+ Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+ Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH 2/2] context_tracking, rcu: Rename RCU_DYNTICKS_IDX to
+ CT_DYNTICKS_IDX
+In-Reply-To: <Zh2XRgIGDILD6u7Q@pavilion.home>
+References: <20240327112902.1184822-1-vschneid@redhat.com>
+ <20240327112902.1184822-3-vschneid@redhat.com>
+ <Zg6tYD-9AFPkOOsW@localhost.localdomain>
+ <1ef9d1f9-16a2-4ddc-abd5-6c3b7cde290f@paulmck-laptop>
+ <ZhZqX0YqlzPoOK2b@localhost.localdomain>
+ <af3eed7e-a889-4008-ba47-045483ab79fc@paulmck-laptop>
+ <xhsmhjzky8tww.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <Zh2XRgIGDILD6u7Q@pavilion.home>
+Date: Tue, 16 Apr 2024 10:36:18 +0200
+Message-ID: <xhsmhh6g1901p.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 1/2] net: ethernet: ti: am65-cpts: Enable RX
- HW timestamp for PTP packets using CPTS FIFO
-Content-Language: en-US
-To: Paolo Abeni <pabeni@redhat.com>, Dan Carpenter <dan.carpenter@linaro.org>,
-        Siddharth Vadapalli <s-vadapalli@ti.com>,
-        Heiner Kallweit
-	<hkallweit1@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Roger Quadros
-	<rogerq@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jakub
- Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>,
-        "David S.
- Miller" <davem@davemloft.net>
-CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-References: <20240402114405.219100-1-c-vankar@ti.com>
- <20240402114405.219100-2-c-vankar@ti.com>
- <7c8be16329668d343a971e265e923543cba5e304.camel@redhat.com>
-From: Chintan Vankar <c-vankar@ti.com>
-In-Reply-To: <7c8be16329668d343a971e265e923543cba5e304.camel@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+On 15/04/24 23:08, Frederic Weisbecker wrote:
+> Le Mon, Apr 15, 2024 at 06:36:31PM +0200, Valentin Schneider a =C3=A9crit=
+ :
+>>
+>> Sounds good to me too, thanks for the suggestion :)
+>>
+>> Now, what about ct_dynticks() & friends? I was about to do:
+>>
+>> -static __always_inline int ct_dynticks(void)
+>> +static __always_inline int ct_rcu_watching(void)
+>>  {
+>> -	return atomic_read(this_cpu_ptr(&context_tracking.state)) & CT_DYNTICK=
+S_MASK;
+>> +	return atomic_read(this_cpu_ptr(&context_tracking.state)) & CT_RCU_WAT=
+CHING_MASK;
+>>  }
+>
+> Yup!
+>
+>>
+>> ... but then realised that there's more siblings to the rcu_dynticks*()
+>> family;
+>
+> Ouch right, sorry I forgot there is so much of this namespace. But in cas=
+e you're
+> willing to clean that up:
+>
 
+While I'm at it, I figure I might as well.
 
-On 04/04/24 16:10, Paolo Abeni wrote:
-> On Tue, 2024-04-02 at 17:14 +0530, Chintan Vankar wrote:
->> Add a new function "am65_cpts_rx_timestamp()" which checks for PTP
->> packets from header and timestamps them.
 >>
->> Add another function "am65_cpts_find_rx_ts()" which finds CPTS FIFO
->> Event to get the timestamp of received PTP packet.
+>> AFAICT dynticks_nesting could also get the rcu_watching prefix treatment,
+>> `rcu_dynticks_task_exit() -> rcu_watching_task_exit` doesn't sound as
+>
+> rcu_tasks_exit() ?
+>
+> But Paul, is there a reason why check_holdout_task() doesn't check
+> ct_dynticks_cpu(task_cpu(t)) instead of maintaining this separate counter?
+>
+>> obvious though. The rcu_dyntick event probably can't be renamed either.
+>
+> I think we can rename trace_rcu_dyntick() to trace_rcu_watching()
+>
 >>
->> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
->> ---
+>> I'm not sure how far to take the renaming; seeing things like:
 >>
->> Link to v4:
->> https://lore.kernel.org/r/20240327054234.1906957-1-c-vankar@ti.com/
+>>   notrace bool rcu_is_watching(void)
+>>   {
+>>           bool ret;
 >>
->> Changes from v4 to v5:
->> - Updated commit message.
->> - Replaced "list_del_entry()" and "list_add()" functions with equivalent
->>    "list_move()" function.
->>
->>   drivers/net/ethernet/ti/am65-cpts.c | 64 +++++++++++++++++++++++++++++
->>   drivers/net/ethernet/ti/am65-cpts.h |  6 +++
->>   2 files changed, 70 insertions(+)
->>
->> diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
->> index c66618d91c28..bc0bfda1db12 100644
->> --- a/drivers/net/ethernet/ti/am65-cpts.c
->> +++ b/drivers/net/ethernet/ti/am65-cpts.c
->> @@ -906,6 +906,70 @@ static int am65_skb_get_mtype_seqid(struct sk_buff *skb, u32 *mtype_seqid)
->>   	return 1;
+>>           preempt_disable_notrace();
+>>           ret =3D !rcu_dynticks_curr_cpu_in_eqs();
+>>           preempt_enable_notrace();
+>>           return ret;
 >>   }
->>   
->> +static u64 am65_cpts_find_rx_ts(struct am65_cpts *cpts, u32 skb_mtype_seqid)
->> +{
->> +	struct list_head *this, *next;
->> +	struct am65_cpts_event *event;
->> +	unsigned long flags;
->> +	u32 mtype_seqid;
->> +	u64 ns = 0;
->> +
->> +	am65_cpts_fifo_read(cpts);
->> +	spin_lock_irqsave(&cpts->lock, flags);
-> 
-> am65_cpts_fifo_read() acquires and releases this same lock. If moving
-> to a lockless schema is too complex, you should at least try to acquire
-> the lock only once. e.g. factor out a lockless  __am65_cpts_fifo_read
-> variant and explicitly acquire the lock before invoke it.
-> 
+>>   EXPORT_SYMBOL_GPL(rcu_is_watching);
+>>
+>> makes me think most of the rcu_*dynticks / rcu_*eqs stuff could get an
+>> rcu_watching facelift?
+>
+> The eqs part can stay as-is. But the *dynticks* needs an update.
+>
+>>
+>> Here are my current considerations for identifiers used in context_track=
+ing
+>> in decreasing order of confidence:
+>>
+>> | Old                                   | New                           =
+                                |
+>> |---------------------------------------+-------------------------------=
+--------------------------------|
+>> | RCU_DYNTICKS_IDX                      | CT_RCU_WATCHING               =
+                                |
+>> | RCU_DYNTICKS_MASK                     | CT_RCU_WATCHING_MASK          =
+                                |
+>> | context_tracking.dynticks_nesting     | context_tracking.rcu_watching_=
+nesting                         |
+>
+> This can be context_tracking.nesting (and yes one day we might need to lo=
+ck up
+> context_tracking.nesting and context_tracking.recursion together in a roo=
+m and see
+> who wins after a day or two).
+>
 
-Moving to a lockless schema is complex for now, but I will make the
-changes suggested by you in next version.
+Much better!
 
->> +	list_for_each_safe(this, next, &cpts->events) {
->> +		event = list_entry(this, struct am65_cpts_event, list);
->> +		if (time_after(jiffies, event->tmo)) {
->> +			list_del_init(&event->list);
->> +			list_add(&event->list, &cpts->pool);
-> 
-> Jakub suggested to use list_move() in v4, you should apply that here,
-> too.
-> 
-Okay. I will update that too.
+>> | context_tracking.dynticks_nmi_nesting | context_tracking.rcu_watching_=
+nmi_nesting [bit of a mouthful] |
+>
+> context_tracking.nmi_nesting
+>
+>> | rcu_dynticks_curr_cpu_in_eqs()        | rcu_watching_curr_cpu() [with =
+an added negation]              |
+>
+> Nice!
+>
+>> |---------------------------------------+-------------------------------=
+--------------------------------|
+>> | TRACE_EVENT_RCU(rcu_dyntick,          | [Can't change?]               =
+                                |
+>
+> It can change. Officially trace events aren't ABI. Unoficially I wouldn't=
+ dare
+> changing the sched switch trace event but this one is fine.
+>
 
-> Cheers,
-> 
-> Paolo
-> 
-> 
+Cool, away it goes then :)
+
+>> |---------------------------------------+-------------------------------=
+--------------------------------|
+>> | rcu_dynticks_task_enter()             | rcu_watching_task_enter()> | |
+>
+> rcu_tasks_enter() ?
+>
+>> | rcu_dynticks_task_exit()              | rcu_watching_task_exit()      =
+                                |
+>
+> rcu_tasks_exit() ?
+>
+>> | rcu_dynticks_task_trace_enter()       | rcu_watching_task_trace_enter(=
+)                               |
+>
+> rcu_tasks_trace_enter()?
+>
+>> | rcu_dynticks_task_trace_exit()        | rcu_watching_task_trace_exit()=
+                                |
+>
+> rcu_tasks_trace_exit() ?
+>
+
+Now that you point it out, it looks obvious!
+
+> Thanks.
+>
+>>
+>> Thoughts?
+>>
+
 
