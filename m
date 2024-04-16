@@ -1,157 +1,82 @@
-Return-Path: <linux-kernel+bounces-147759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 154D98A7942
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:43:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2F428A794E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:44:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6C39283FE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:43:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 524E51F223E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:44:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E1213AA37;
-	Tue, 16 Apr 2024 23:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6063B13AA2D;
+	Tue, 16 Apr 2024 23:43:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ScFb9Qhc"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="CkAuQl5G"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1988113A415;
-	Tue, 16 Apr 2024 23:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD16313A869;
+	Tue, 16 Apr 2024 23:43:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713311018; cv=none; b=TqDKpOD84vJ8KCUZxVheUPPp01K1XtiUNGBg9NreijF+zpQkpxixzzWn+HrlsyDEjNl1TjyDDES9zCyZF40VlKD7bBi7VbLX5C/5WtFja22zeW5t7zAm0NUZ/iuhk2WIE74eMHKnZjOOJt7b28UVOTAwE+l8aZJyCfdBhb75fdU=
+	t=1713311032; cv=none; b=DdKc9gb/zPtvS2C/UG01s0yXiDN2II515/0HFJkOAih4hvq7e93Y+up8YtGUviL2pKPEEhph+DzcY9vWUXg9rgI++cxe0ecMmARnBcHQbs0s15FW50c+o2QW4BOivqkzBMvJM36r6BPbDkoNI4RN2sg/Udrs2Y1uV6/rsdbPuJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713311018; c=relaxed/simple;
-	bh=8aUqXz+i9chtNJef9my3dWa4P1+x056EvnBQkIpWUR8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q4ZwGzCLKjfhB6XKfNBhtcN2HXXP0NeLmbw+X+ROstlqwXqpNtPs0OIuUeAQeUNkCUPrhDOZaljF97zPR0BLRQ8AnFzBBC0pamTsqo3mylrGUZR+hX3BE7EghHPRTHBqfHy1SePXzoS8KPyN7Yf5IchiGrbKS6n8Y9yODq0ODPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ScFb9Qhc; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713311016; x=1744847016;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8aUqXz+i9chtNJef9my3dWa4P1+x056EvnBQkIpWUR8=;
-  b=ScFb9QhcCypvNMmgU0lDLbqUYks3Je3MDtnw2AfMuIxOfGztcU7aJX7D
-   H8lV6z55FNFM8yaiu0mCVq26oHSA73X8PS7TA1XT3Lx1XM35I3rBMST0d
-   l8MJmEGqp7WDfkH+QHhqN0BdzjoPDwLNQfOeXgkzv3aQZBLHSxecwpMh1
-   TwnJZpVk5srGakibMsSlJ0+y1tWwgyeFfdfzbhfxYRQuZCNDtKkcf17py
-   YLHtnN3mqxL0xiE1I3PCd3DqXFKozaRrPePv9vJvHMWu8CW4+y2iYicFz
-   DbQFvS7M9YI+xYnOBLNI8c4EqhSLfn7tNkq/p9+pK47RB0YeX0e3HXgQb
-   g==;
-X-CSE-ConnectionGUID: TdUH60YqTuKhfLP9reL6YQ==
-X-CSE-MsgGUID: jNx1m/9pRuqzBIlHJBLQ1g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8645383"
-X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="8645383"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 16:43:35 -0700
-X-CSE-ConnectionGUID: fS8w87q+Rv2YO7ZuLxYjmw==
-X-CSE-MsgGUID: OGrvR6teSV+HtibVE03PkQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="22834585"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 16:43:35 -0700
-Date: Tue, 16 Apr 2024 16:43:34 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Chao Gao <chao.gao@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org, isaku.yamahata@gmail.com,
-	linux-kernel@vger.kernel.org,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Michael Roth <michael.roth@amd.com>,
-	David Matlack <dmatlack@google.com>,
-	Federico Parola <federico.parola@polito.it>,
-	Kai Huang <kai.huang@intel.com>, isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v2 03/10] KVM: x86/mmu: Extract __kvm_mmu_do_page_fault()
-Message-ID: <20240416234334.GA3039520@ls.amr.corp.intel.com>
-References: <cover.1712785629.git.isaku.yamahata@intel.com>
- <ddf1d98420f562707b11e12c416cce8fdb986bb1.1712785629.git.isaku.yamahata@intel.com>
- <Zh41S8fh0IvXlKwX@chao-email>
+	s=arc-20240116; t=1713311032; c=relaxed/simple;
+	bh=YEGQ8CgrUzK0nrt4Ie8QLISTZQV93JSwBQbWnBMJILI=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C12si8hQOMgs9q4bpQc7kkJwFnotYlpY/pLfBIF+uB576VM1NLNNpjKJNEnbwJrSPTGN4yIKZpBiZ64bt/j6J//8mlURG5WTmbwkdK6KnKnihkSExTqC1cf7/HMDVmDTbSl8xuDlxSjAW2f8gWsyHuP8X16Q76G5tcyC1iqz4I0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=CkAuQl5G; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 876A61BF203;
+	Tue, 16 Apr 2024 23:43:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713311029;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CNDZdf/uKaX+WgPhUphRKuqSwi/q4yBAoxXLi2+EWYs=;
+	b=CkAuQl5GbM1DukqBkJHugmme5K2t5dVxJU+RlFEP9U5jtQO1+svXT44hB1PbfU4oHhqROu
+	iVmles8c4/AZAaCxiQvZq7Xl+jhCu+TCIOrwywxf6XRsipB3d0+OumsStdeURaRodS7eua
+	SpaEPCsPHz9s8rIBZb3J5bQtjxwuJrj5wgHTq7u31FfTErOmYdIpBupaToi9bjIg5afbu7
+	WVnXfEDJ/oKsa8cOfJL/lCqpcxnHK1aeNrIdSQUl75kq0+8NaFl5lHsgY743uWGHhqGX8H
+	SrYPGFTOL4OPL/PvozJKxyQ3YOXmkxpn7DASTtTNqBeA7vxQUfECY3N5P31RZQ==
+Date: Wed, 17 Apr 2024 01:43:45 +0200
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH] rtc: mcp795: drop unneeded MODULE_ALIAS
+Message-ID: <171331101619.12461.12401501300609641415.b4-ty@bootlin.com>
+References: <20240414154910.126991-1-krzk@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zh41S8fh0IvXlKwX@chao-email>
+In-Reply-To: <20240414154910.126991-1-krzk@kernel.org>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-On Tue, Apr 16, 2024 at 04:22:35PM +0800,
-Chao Gao <chao.gao@intel.com> wrote:
-
+On Sun, 14 Apr 2024 17:49:10 +0200, Krzysztof Kozlowski wrote:
+> The ID table already has respective entry and MODULE_DEVICE_TABLE and
+> creates proper alias for SPI driver.  Having another MODULE_ALIAS causes
+> the alias to be duplicated.
 > 
-> >This patch makes the emulation_type always set irrelevant to the return
-> >code.  kvm_mmu_page_fault() is the only caller of kvm_mmu_do_page_fault(),
-> >and references the value only when PF_RET_EMULATE is returned.  Therefore,
-> >this adjustment doesn't affect functionality.
->
-> This is benign. But what's the benefit of doing this?
-
-To avoid increment vcpu->stat.  Because originally this was VM ioctl, I wanted
-to avoid touch vCPU stat.  Now it's vCPU ioctl, it's fine to increment them.
-
-Probably we can drop this patch and use kvm_mmu_do_page_fault().
-
 > 
-> >+static inline int __kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
-> >+					  u64 err, bool prefetch, int *emulation_type)
-> > {
-> > 	struct kvm_page_fault fault = {
-> > 		.addr = cr2_or_gpa,
-> >@@ -318,14 +318,6 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
-> > 		fault.slot = kvm_vcpu_gfn_to_memslot(vcpu, fault.gfn);
-> > 	}
-> > 
-> >-	/*
-> >-	 * Async #PF "faults", a.k.a. prefetch faults, are not faults from the
-> >-	 * guest perspective and have already been counted at the time of the
-> >-	 * original fault.
-> >-	 */
-> >-	if (!prefetch)
-> >-		vcpu->stat.pf_taken++;
-> >-
-> > 	if (IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) && fault.is_tdp)
-> > 		r = kvm_tdp_page_fault(vcpu, &fault);
-> > 	else
-> >@@ -333,12 +325,30 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
-> > 
-> > 	if (r == RET_PF_EMULATE && fault.is_private) {
-> > 		kvm_mmu_prepare_memory_fault_exit(vcpu, &fault);
-> >-		return -EFAULT;
-> >+		r = -EFAULT;
-> > 	}
-> > 
-> > 	if (fault.write_fault_to_shadow_pgtable && emulation_type)
-> > 		*emulation_type |= EMULTYPE_WRITE_PF_TO_SP;
-> > 
-> >+	return r;
-> >+}
-> >+
-> >+static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
-> >+					u64 err, bool prefetch, int *emulation_type)
-> >+{
-> >+	int r;
-> >+
-> >+	/*
-> >+	 * Async #PF "faults", a.k.a. prefetch faults, are not faults from the
-> >+	 * guest perspective and have already been counted at the time of the
-> >+	 * original fault.
-> >+	 */
-> >+	if (!prefetch)
-> >+		vcpu->stat.pf_taken++;
-> >+
-> >+	r = __kvm_mmu_do_page_fault(vcpu, cr2_or_gpa, err, prefetch, emulation_type);
-> 
-> bail out if r < 0?
 
-The following if clauses checks RET_PF_xxx > 0. 
+Applied, thanks!
+
+[1/1] rtc: mcp795: drop unneeded MODULE_ALIAS
+      https://git.kernel.org/abelloni/c/393e3d290f61
+
+Best regards,
+
 -- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
