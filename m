@@ -1,161 +1,168 @@
-Return-Path: <linux-kernel+bounces-146672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CB388A690E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:52:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F23A8A6913
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:53:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 006F01F21F03
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:52:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C874E2839B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:53:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 660AD128809;
-	Tue, 16 Apr 2024 10:52:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 173D9129A68;
+	Tue, 16 Apr 2024 10:52:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ap8fqOuj"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wclPlGpv"
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3374C3D38E;
-	Tue, 16 Apr 2024 10:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392D71292C4
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:52:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713264759; cv=none; b=N6FxHByjr6wYanxPhO1E7y8wBsi6VyiapjRXwr9B6ZyPqJ+N1hcQ+sOsRID8I1+h9NjcSVwSLq45pSMImpv9Q/5jN9Efxg8B0/BTDJDXBGiSqgPiLq5Z9UneXFvLG0VT8unQUazvzh5Dq+gY5HdAwAMvLj6/r7kPOE1FpmznwMU=
+	t=1713264764; cv=none; b=i5XblvCAR50i30yyamvHHKPXCTog/gSTkfJbLqbBokUuxRccOhO9E9BfoPpAXdCncVP6aWIHEjepdvnv6aaxWCWeMtpZs5DxtMkk1u8mkGBozbcSli+Sqa9GwB8dqpPNt03+iEBm963Dzq4IYJVw/fnLyZJB4JE5XQx/a58bccA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713264759; c=relaxed/simple;
-	bh=9gNKl0lrAyzFZuHgMx15OipfXoXEYkAjMfWK1Ym8ab8=;
+	s=arc-20240116; t=1713264764; c=relaxed/simple;
+	bh=jpcWEFpjeFpqj4mlg7734V1qNoTx1GGeLMyhzIC8jTI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rLv7dyNTJJcvHoWjjw3SlE/PgEbevI2mrm68h0zSCpbEoBd5h4u30nVCtj/JXDF44024gHEbWr0TfYbFZlJvVatwYyEOKwiuvq2mXh0SP3H/7oK0yBzXp9brvjCl7fiw+85479H3Lp+P5d3NG0zoUt4pM5oSo+x41l1IC6WhJh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ap8fqOuj; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5701dec0c0aso2762330a12.3;
-        Tue, 16 Apr 2024 03:52:37 -0700 (PDT)
+	 To:Cc:Content-Type; b=j40hfS9tK6fTIrFIejkv1X6H6FfEckhXNELi6jKUurbIv4POItbrV3sMaHFfJpyE0al9B/1zaNGToWwWwWE1S7pWOK09L1VHUbxFDN0XGiDhjxLiT4hdiOO31VDS3MLT98kyU+nWHxBlSOdHAVhImpdY2jiQ4hj1fPK4fa4F4Lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wclPlGpv; arc=none smtp.client-ip=209.85.161.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5aa1e9527d1so3026306eaf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 03:52:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713264756; x=1713869556; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1713264761; x=1713869561; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yj+Iuq37H5CQ3HHFDH6wk2fzVZAY8yC5nRKMEowsuSI=;
-        b=ap8fqOujQXb5mpgB3C4efzPlg/7yyqHRat9k3cFJ85hrykaPTIJGyxX8pJaHm+HrR6
-         ogizh78Ph4ntZZu4g+mO/kPXSPBDUjxKIlEEwUwpAV8HFS01UiL9Rko6zAw5BqefhHUv
-         V+lE7DUs9PuQWoyV8I9wRn+sQ/XcJmL9DQWwpOCRAIk2EksYzUm/nlxcoCqviFfdTLFj
-         eSKxh9wM9omkaCkpY0uRAiPS3MMyGJlvb4hdY8etENq/qZsy1KyZpJxV4yAs7yszfGOG
-         P1pOUFsrxtdjhLqaY25rmc6rTIIA0ecR/JRaq2VgD2fhdHAOizqIwS+v/F7FehzZi4i9
-         /uNA==
+        bh=E0TxxrwK3iCE49uLbQ7sQ5tDEvF/HbWHLGi4XWFVqlw=;
+        b=wclPlGpvY+oztbeNpgoJ4mU+4bHlRx1Jq8mzNA9YLYsoUzGWAAqVEoDYgR0C3ZDV2v
+         XvAyuG1yY7sgXsCOtK66cOzKhcGsnk/cgCrOkpDUn0mt3rRFzjTwcyyyOGOzL9fZcPS6
+         BVvI5SzwXrNUv7idZgf/bBaCjZOdEiVePaN+L/QH3rYtfLmBiNluht4bI5+ZSX6mU28j
+         xx6hCYv+0j6F2RB2sUZrSuzYazBEqFlQUWOobHvqqjCdtnO5ynnCepD1T9pYtyctkpGj
+         6NXFp5fruJ0rGK8CVQAFRkl8rHHyEG4YiO3QNdmVp0wp52tlmJrQoo6c0+ZgjA04SvJV
+         JcGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713264756; x=1713869556;
+        d=1e100.net; s=20230601; t=1713264761; x=1713869561;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yj+Iuq37H5CQ3HHFDH6wk2fzVZAY8yC5nRKMEowsuSI=;
-        b=o12jYCldbKHK+e6sjuCN0aIHqp012W3Qm7pww8ublz8rHoN+GPaa3qjYu0tMLnU1M6
-         FZgPwTEnTnRwiCH7uMQxpMcgcumdTFPhey06K/miWTpWXZ4TAbNbbaDdVRe6QwqLFpwe
-         GV10aX0+DN+jbvsSMkxSLGE7HqACQelcP5jM20xFEyhZkFIi6YER3arQGawWZzoEnCGK
-         aFbOZMcWztOPApmfOryic8qAg39ibGMNF8sXBQnl+Rr6Uaxc/JV1oHG16//VkZ8Zb4/o
-         uZQeRQHrEeW7WS9qszyNrnD/Rl/dwzo55Mbp0Rb2s5EToUdlrHILg1sYrEqmNt4+pNgn
-         UMnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUw7BMzUY/+6gqZ1nL4FafQ6jbtIg/cKuTJm0Aol8QRBGD6m0gLSgJpz0hqeqJwSsxxb+kTdJYEk/e6zZGMm4ztqGA8jF7JQn5oqzK2bpJvn+wKhf6nl9Z6Lgja1pUMCpGhUwF6X+mHxEMfkHU/1bV7foOO1rgQbk6XOhCWp132NKc/1pMCuuJwciyLX6uH4yYhXlMuoHQbPFkBdo2UWPCsWV93NTFTnQrb/Bf6nW7Rghvb+i4vIHgsxapVbGAXFGmIUL2ehatbj1xUB9M6xAtNAn0jl6dokl9aq3RbnA==
-X-Gm-Message-State: AOJu0Yxcpp1iaqEjsfGIbnaHnR2fvO6TOdqYCmqcD1+sntopREuEUfD6
-	lSrc65JU67rtJJe8EhStyKvwYUXAno/R1sV2ftRSq4itKjJAFhAkwVeiRzz0UE9mmdmjgKjNkty
-	PrRa4+qsE49bcpJqQv8mOqN/xgrY=
-X-Google-Smtp-Source: AGHT+IFon2Aw3ti4vkbB1b2ywIYBBfu+zHa7Gr7yH1CDPfXp+5JnTzJ9UBBOwEC/nOMEAZCzW6rVZshgLJrmc6B/ebQ=
-X-Received: by 2002:a50:f699:0:b0:570:2367:47e7 with SMTP id
- d25-20020a50f699000000b00570236747e7mr4030108edn.12.1713264756242; Tue, 16
- Apr 2024 03:52:36 -0700 (PDT)
+        bh=E0TxxrwK3iCE49uLbQ7sQ5tDEvF/HbWHLGi4XWFVqlw=;
+        b=l04GWrk9ESb8Arlg9kAOSSyT/RiUgHG1SNvmv3A/zQQSCQhtlUEWCrDqkQpISMHc8e
+         wwQ4m1gsQJCoqKRtCgKgxF91PSKmKAV0SJfguUl+Ngre+FrD62h/XVTpj0JpfIfgLbwd
+         9okYEqVwuRLT1yeb1VuA0ML++h8Ec6xVqBlXt/lFot1JfeKlTHu0oz+GZtjNjYVhh4pl
+         FIFMmSQMfAgQ5la8JoX8V4ksP21PJ70IJWC55zBIgs2LP1n5DHren9hTVjE/Dc2aooLM
+         wRuEwTfw0uzkTqNSIv6/1Bmc8Ci41MnOisfCo6skQxX4WlqvZAk1oCkCV2Rxc+YlFrd7
+         8iBg==
+X-Forwarded-Encrypted: i=1; AJvYcCXNNwiDUmI7kYwFS/o6RIE2rgbuUglhskaln9D0/SzhsDGaKWgng02tFtLz1mn8vDIU39RxENC8cOvWqgmGFMI/yc8mNe7ERwT8Tgoj
+X-Gm-Message-State: AOJu0Yzq/4dkdUtOcZeS86xiwv7O6JsNJaVf8WGw20LZQt9RtyWQhVpN
+	HfUc8ZE7wq79i9EM0zrzDh3Egb3ZGDNHWlV+lEbXdMHK3ksHYPgIyo6WO90kHLIVlB8GH+2C0L0
+	YTkZOHmuNP6gqEk4WKM322hzYhL/KnHIhxgsvkA==
+X-Google-Smtp-Source: AGHT+IEqEeJmQdQehCPTNQQMD/tcR6Uw0Nol676WtmyqwgXlvaaJnzKAMXtuWis/RQBtHTHTt/sD2iWj7telCINa9U0=
+X-Received: by 2002:a4a:aecb:0:b0:5ac:9efc:3b02 with SMTP id
+ v11-20020a4aaecb000000b005ac9efc3b02mr5382919oon.8.1713264761347; Tue, 16 Apr
+ 2024 03:52:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409192301.907377-6-david@redhat.com> <20240416104008.41979-1-ioworker0@gmail.com>
- <3ef81fe3-2584-4db8-ab66-eaa44c035707@redhat.com>
-In-Reply-To: <3ef81fe3-2584-4db8-ab66-eaa44c035707@redhat.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Tue, 16 Apr 2024 18:52:24 +0800
-Message-ID: <CAK1f24kph=hV6Da=fAXFuKChx5JVasPLYC7efQbPr+JT0WxQ1A@mail.gmail.com>
-Subject: Re: [PATCH v1 05/18] mm: improve folio_likely_mapped_shared() using
- the mapcount of large folios
-To: David Hildenbrand <david@redhat.com>
-Cc: akpm@linux-foundation.org, cgroups@vger.kernel.org, chris@zankel.net, 
-	corbet@lwn.net, dalias@libc.org, fengwei.yin@intel.com, 
-	glaubitz@physik.fu-berlin.de, hughd@google.com, jcmvbkbc@gmail.com, 
-	linmiaohe@huawei.com, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-sh@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, muchun.song@linux.dev, 
-	naoya.horiguchi@nec.com, peterx@redhat.com, richardycc@google.com, 
-	ryan.roberts@arm.com, shy828301@gmail.com, willy@infradead.org, 
-	ysato@users.sourceforge.jp, ziy@nvidia.com
+References: <20240404122559.898930-1-peter.griffin@linaro.org>
+ <20240404122559.898930-2-peter.griffin@linaro.org> <d1aaa3a350315b8eb60aaee416fad4382385ca3a.camel@linaro.org>
+In-Reply-To: <d1aaa3a350315b8eb60aaee416fad4382385ca3a.camel@linaro.org>
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Tue, 16 Apr 2024 11:52:30 +0100
+Message-ID: <CADrjBPoMWDqUQiW3YUxKxCRJAXzJb=-eL_kfpeMHgaqg8c1HJg@mail.gmail.com>
+Subject: Re: [PATCH 01/17] dt-bindings: clock: google,gs101-clock: add HSI2
+ clock management unit
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
+	krzk+dt@kernel.org, conor+dt@kernel.org, vkoul@kernel.org, kishon@kernel.org, 
+	alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org, 
+	s.nawrocki@samsung.com, cw00.choi@samsung.com, jejb@linux.ibm.com, 
+	martin.petersen@oracle.com, chanho61.park@samsung.com, ebiggers@kernel.org, 
+	linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-clk@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, tudor.ambarus@linaro.org, 
+	saravanak@google.com, willmcvicker@google.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 6:47=E2=80=AFPM David Hildenbrand <david@redhat.com=
-> wrote:
+Hi Andr=C3=A9,
+
+Thanks for the review feedback.
+
+On Fri, 5 Apr 2024 at 08:15, Andr=C3=A9 Draszik <andre.draszik@linaro.org> =
+wrote:
 >
-> On 16.04.24 12:40, Lance Yang wrote:
-> > Hey David,
+> Hi Pete,
+>
+> On Thu, 2024-04-04 at 13:25 +0100, Peter Griffin wrote:
+> > Add dt schema documentation and clock IDs for the High Speed Interface
+> > 2 (HSI2) clock management unit. This CMU feeds high speed interfaces
+> > such as PCIe and UFS.
 > >
-> > Maybe I spotted a bug below.
->
-> Thanks for the review!
->
+> > Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+> > ---
+> >  .../bindings/clock/google,gs101-clock.yaml    | 30 +++++++++++++++++--
+> >  1 file changed, 28 insertions(+), 2 deletions(-)
 > >
-> > [...]
-> >   static inline bool folio_likely_mapped_shared(struct folio *folio)
-> >   {
-> > -     return page_mapcount(folio_page(folio, 0)) > 1;
-> > +     int mapcount =3D folio_mapcount(folio);
-> > +
-> > +     /* Only partially-mappable folios require more care. */
-> > +     if (!folio_test_large(folio) || unlikely(folio_test_hugetlb(folio=
-)))
-> > +             return mapcount > 1;
-> > +
-> > +     /* A single mapping implies "mapped exclusively". */
-> > +     if (mapcount <=3D 1)
-> > +             return false;
-> > +
-> > +     /* If any page is mapped more than once we treat it "mapped share=
-d". */
-> > +     if (folio_entire_mapcount(folio) || mapcount > folio_nr_pages(fol=
-io))
-> > +             return true;
+> > diff --git a/Documentation/devicetree/bindings/clock/google,gs101-clock=
+yaml b/Documentation/devicetree/bindings/clock/google,gs101-
+> > clock.yaml
+> > index 1d2bcea41c85..a202fd5d1ead 100644
+> > --- a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+> > +++ b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+> > @@ -32,14 +32,15 @@ properties:
+> >        - google,gs101-cmu-misc
+> >        - google,gs101-cmu-peric0
+> >        - google,gs101-cmu-peric1
+> > +      - google,gs101-cmu-hsi2
+>
+> Can you keep this alphabetical and add hsi before misc please.
+
+Will fix
+
 > >
-> > bug: if a PMD-mapped THP is exclusively mapped, the folio_entire_mapcou=
-nt()
-> > function will return 1 (atomic_read(&folio->_entire_mapcount) + 1).
+> >    clocks:
+> >      minItems: 1
+> > -    maxItems: 3
+> > +    maxItems: 5
+> >
+> >    clock-names:
+> >      minItems: 1
+> > -    maxItems: 3
+> > +    maxItems: 5
+> >
+> >    "#clock-cells":
+> >      const: 1
+> > @@ -112,6 +113,31 @@ allOf:
+> >              - const: bus
+> >              - const: ip
+> >
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            enum:
+> > +              - google,gs101-cmu-hsi2
 >
-> If it's exclusively mapped, then folio_mapcount(folio)=3D=3D1. In which c=
-ase
-> the previous statement:
->
-> if (mapcount <=3D 1)
->         return false;
->
-> Catches it.
+> this block should also come before misc please.
 
-You're right!
+Will fix
 
 >
-> IOW, once we reach this point we now that folio_mapcount(folio) > 1, and
-> there must be something else besides the entire mapping ("more than once"=
-).
+> Once done, feel free to add
 >
->
-> Or did I not address your concern?
+> Reviewed-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
 
-Sorry, my mistake :(
+Thanks!
 
-Thanks,
-Lance
+regards,
 
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+Pete
 
