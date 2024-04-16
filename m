@@ -1,133 +1,105 @@
-Return-Path: <linux-kernel+bounces-146264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1C428A62E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:16:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A8F28A62EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:16:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24EB4B20D44
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 05:16:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B8581C22945
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 05:16:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D2BD39AFD;
-	Tue, 16 Apr 2024 05:15:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5CBF3A1C9;
+	Tue, 16 Apr 2024 05:16:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EdcQxBdw"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IkdYmYYi"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EB0C39ADB;
-	Tue, 16 Apr 2024 05:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD60622F14;
+	Tue, 16 Apr 2024 05:16:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713244545; cv=none; b=mWn9Au9LQD5A/Bbq1NfXaIxGUjR6tMtZSYcZmNblG228LS8Xve4pIpO+XVyCuvLe5IGkpbDO+bM5yr3nNXwEQ7rAcTIkGxL1WnFEcS0GxsNilY/IlawXmPNBx1HnhyahDggEZS9FsH6t160zxHeJvMDHSkqdLtGGdkO15NEtRGE=
+	t=1713244609; cv=none; b=AOJC9hwBCCIuNfUsnDNy9XpzTX+6FxdJyKoDzC3pPZ4qRcCzlH9OBeFLyWeOv86qe2xrFhpMbVEACqsrFlU52WPKTqc1MisyYP3himif7siI0CVeg7OE3MwdYG1R4aca3DDSsIoVoqj/ZziUkbbFT+uiAlpZtpj1ND4I7b+fTps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713244545; c=relaxed/simple;
-	bh=NKRLSKQh9GTrVLpQdC+orpgnX7CaNpuYCSVhDJ1A5oQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nesPFeLvWlCFxpAreLQufzrUMnMz1b93eC0IPyBpxD7TwNtj6nVYDAE6MLZ1MibZ/J2wN7FEusUM6RP+jKUDpSt4Sw6C049PRAleAbT61AUpj3QKKCeBtBJ9LB43HZTayQq1SBeG2KJnRpKhL8lmWvMHs95YS6048SDNGQcAaNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EdcQxBdw; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a5534506790so29776866b.1;
-        Mon, 15 Apr 2024 22:15:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713244542; x=1713849342; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h+jdsAeqCZ9ji/KUH4hSEhUfqGDV3k1TnFIBI36nkVQ=;
-        b=EdcQxBdwIbA8tQlZwH7HGJB6z1In1nPfgUVRz0xBnAEiNmsvztsQB3Oa6kvYbXMX05
-         p7NWX1eC35JwD0YDNAFNNHJXJXEvA1hrVpcNiPVqXWuVIm5+EzwWlAlNekGoSJDvgNWE
-         yisBkFT4NC7VtxxbSGSDOpCuNRqiYRIe2+aDNykYf+Bvp1rPakJ4btGppDFnuEXZzc/4
-         aAYDSOTVQ1nrLH4E2Jww7vWt4wlsS50vXjakFsU8+//lWiRT3J0WpKX69xGcJ6JjySVa
-         Lo1FdJ76alKADeXwpbJ+EH/Yslr2F/rl4ZGwEZF412R2DSDxZOJGtZ1QIXkaWF9hDvyn
-         ntvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713244542; x=1713849342;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h+jdsAeqCZ9ji/KUH4hSEhUfqGDV3k1TnFIBI36nkVQ=;
-        b=SOwnPnheXQKNdyzgzFaSoqtm1IsG7/DisB9HG0V4k/JhVgnY2t38DCQgiUf1dG7BB4
-         mNlAoC8ZDd9PSyHwvcTpaWvAhzwUVr3NoKR7i9dB8pS4a8rSUIRERR8+Xo0yVOSPp6s9
-         /51KBZAyIo1B7DyseJrU3FyRlH8W5Vor6hcRZ29gMHBE8xcetR4EyHmbPyYiwCcDH/Y3
-         skqU5q2VNkarM11dFlnbAxzIWTziqVg2P5gkt42wgDjastzuHAb8v7aNRpUtVHcRDzTR
-         6Th5DMYd//WfppkGXnWuAysapuwUoKJ1fv10rCijLx0o1s/X2Mfuvs1y2AqZwHiv6je3
-         i+/A==
-X-Forwarded-Encrypted: i=1; AJvYcCUezLrkT6FNhs4Lk72nzjWPRdkQPQLdIHFAvAUQBcJ5RBPrIC7gymDxLhovu7PCSHaJEH43sOVko3EpvvryKlidLODDEH3bD5fXGGfohwIc7DxbvT2AWAuXp+8IOHNEQRXP
-X-Gm-Message-State: AOJu0YyHKKu9Rqb2x+3CV3f3tDeTVKfQXZn3L56MS72lqczapITDW5FR
-	bjyKJVRZUeSXnLA2ef3/xtGlIKsbpZWPBQXMODrtul8Krum8+lMf
-X-Google-Smtp-Source: AGHT+IH5VnsFUJIDR+kM4iNcR9Gi+kXsrhs4Yd2WKI06S3nIR/atvJZZQhaftP7CdYt+msYQL+iRbQ==
-X-Received: by 2002:a17:906:eec9:b0:a55:144a:adc2 with SMTP id wu9-20020a170906eec900b00a55144aadc2mr2144455ejb.6.1713244541343;
-        Mon, 15 Apr 2024 22:15:41 -0700 (PDT)
-Received: from dmitrii-TM1701.. ([87.200.40.246])
-        by smtp.gmail.com with ESMTPSA id si5-20020a170906cec500b00a51a5c8ea6fsm6354091ejb.193.2024.04.15.22.15.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 22:15:41 -0700 (PDT)
-From: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
-To: olsajiri@gmail.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	dmitrii.bundin.a@gmail.com,
-	dxu@dxuuu.xyz,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	khazhy@chromium.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	ncopa@alpinelinux.org,
-	ndesaulniers@google.com,
-	sdf@google.com,
-	song@kernel.org,
-	vmalik@redhat.com,
-	yonghong.song@linux.dev
-Subject: [PATCH bpf-next v2] bpf: btf: include linux/types.h for u32
-Date: Tue, 16 Apr 2024 08:15:27 +0300
-Message-Id: <20240416051527.3109380-1-dmitrii.bundin.a@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <Zh0ZhEU1xhndl2k8@krava>
-References: <Zh0ZhEU1xhndl2k8@krava>
+	s=arc-20240116; t=1713244609; c=relaxed/simple;
+	bh=jBy2IewRT35w0O16kw4HewqwsLV3SmbRvdNFWu+EpLI=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=BGpb4Ubq6zw7AMyGF49mVIjAUZHD+3V/5nHF9e/8Sr1d9FbHz53sEVpRkwcbnBJsM/IGFeD6eKOBqRkj0k8KjpooRU6stIVqu++2Ive1VV7AGYEIpbNb0fFm2TCiUR1Mny/8pQDzImNG0/rNVUjQCebdHI0idgVsQpg06kZB3NY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IkdYmYYi; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713244608; x=1744780608;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=jBy2IewRT35w0O16kw4HewqwsLV3SmbRvdNFWu+EpLI=;
+  b=IkdYmYYi4rKyeYr7mBftrw/ZqBVU7XKG8c6GarVHs0qKI7wbiPg//sAJ
+   3RAIsFXK88KdENS8qBfFOIJY1pVbnzDYoZc1tlgxM/FkBKNTZobAtEYsD
+   BzWb2zGyWoyNMsm1HTd1xjOAfmGKr/laIQhRbrOC+I8h0YJuiASn8gN5R
+   95I3D/fltSLJWPaszK2irJ72GjgDZLmXiKPqt4jz+nTq27U33MXr4daYf
+   zd8ez1r8YFr00OrtTUSGJjUs4aO4A6xJ82N9V5C1tqWWVNkpoPOnoNKxl
+   sm4rI96G5/IAcULWNjlX/unRkMfPRybkW6UFeTCukcu+XbqoOgAZ3Q35+
+   w==;
+X-CSE-ConnectionGUID: vk/UG/Q2RR6tHj/3Y5oZuA==
+X-CSE-MsgGUID: iklVpIiyRYa9/NxIWU4MhQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="19371125"
+X-IronPort-AV: E=Sophos;i="6.07,205,1708416000"; 
+   d="scan'208";a="19371125"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 22:16:47 -0700
+X-CSE-ConnectionGUID: 3CF2FJ2aRjGB19ZOf7EivA==
+X-CSE-MsgGUID: kQjCeKBwQNqqdCzYAwZLhA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,205,1708416000"; 
+   d="scan'208";a="22216952"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 15 Apr 2024 22:16:44 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: jarkko@kernel.org, dave.hansen@linux.intel.com, kai.huang@intel.com,
+ tj@kernel.org, mkoutny@suse.com, linux-kernel@vger.kernel.org,
+ linux-sgx@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+ sohil.mehta@intel.com, tim.c.chen@linux.intel.com, "Haitao Huang"
+ <haitao.huang@linux.intel.com>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v12 14/14] selftests/sgx: Add scripts for EPC cgroup
+ testing
+References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
+ <20240416032011.58578-15-haitao.huang@linux.intel.com>
+Date: Tue, 16 Apr 2024 00:16:43 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2ma195shwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <20240416032011.58578-15-haitao.huang@linux.intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-Inclusion of the header linux/btf_ids.h relies on indirect inclusion of
-the header linux/types.h. Including it directly on the top level helps
-to avoid potential problems if linux/types.h hasn't been included
-before.
 
-Signed-off-by: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
----
+Missed adding the config file:
 
-Changes in v2: Add bpf-next to the subject
+index 000000000000..e7f1db1d3eff
+--- /dev/null
++++ b/tools/testing/selftests/sgx/config
+@@ -0,0 +1,4 @@
++CONFIG_CGROUPS=y
++CONFIG_CGROUP_MISC=y
++CONFIG_MEMCG=y
++CONFIG_X86_SGX=y
 
- include/linux/btf_ids.h | 2 ++
- 1 file changed, 2 insertions(+)
+I'll send a fixup for this patch or another version of the series if more  
+changes are needed.
 
-diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-index e24aabfe8ecc..c0e3e1426a82 100644
---- a/include/linux/btf_ids.h
-+++ b/include/linux/btf_ids.h
-@@ -3,6 +3,8 @@
- #ifndef _LINUX_BTF_IDS_H
- #define _LINUX_BTF_IDS_H
- 
-+#include <linux/types.h> /* for u32 */
-+
- struct btf_id_set {
- 	u32 cnt;
- 	u32 ids[];
--- 
-2.34.1
-
+Thanks
+Haitao
 
