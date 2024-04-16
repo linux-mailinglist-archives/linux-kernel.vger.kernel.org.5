@@ -1,162 +1,134 @@
-Return-Path: <linux-kernel+bounces-147559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BCE18A763D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:18:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07F618A763F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:19:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 000F6B22E41
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:18:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 343291C22B46
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95DC46EB4C;
-	Tue, 16 Apr 2024 21:18:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F96F69946;
+	Tue, 16 Apr 2024 21:18:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="ojmEvc5f"
-Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iKkfCZ7n"
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BFE35B201;
-	Tue, 16 Apr 2024 21:18:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A86358203;
+	Tue, 16 Apr 2024 21:18:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713302307; cv=none; b=GxxwGzl+pAT0CPUBetp1fjilbvNw6v3z2VtnqZUXkuRRlPgZk5nTQsIN4hUscrCkHF0TLDyugABJtdB/blTvedmNB0AAyqQ5HvGRmQ+ylWGfStOc+KLINOJYecGoW8ao/VgqnaCVUiLzDTSUesrvKLA1AtvLQADIJNkABof4ra8=
+	t=1713302333; cv=none; b=WDHqd/6/RXCmYdOnG7rS9zlv88ypBQza+pl2914L8swwj87AfBjZnbzc383LBoGQnPTt+PbFWzV9uSQKtJFyQSsHIAz30K48CbLGWF7Z1BlbZk3OGof8LixH7pHkdhXM0+bU+MMPXalfvY6RUxSV2BEm5aQP9pTnBsJnYv/LUvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713302307; c=relaxed/simple;
-	bh=LWziM6g41Gi1SkfEjjceEYfqpwAP7alcuM1I0NrWcXY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cAGwfepwGe1tw85DjrLbGwAI0hGbasMwuIeluesYntmdElyxhFKIv5V5LiIUVO4gl85FXfZuzHaQ0LRIwqyTzg3MDIUWLjhS+h4dP4pxRQ8tGkFdHvBnTZs7YJxz3/GGghMlhe9jqaq9HEt048wzn/k+dVC0F/GZ4ANriJT5lLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=ojmEvc5f; arc=none smtp.client-ip=4.36.192.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
-	bh=l72sHAs7dX/l/HK2vEslWTg7CeLW4YG1XlCQ3fodzZs=; b=ojmEvc5fEkty0TL3ErN55Cd+Nh
-	XvL7riabAmruEnkQwhqqkdGyY4yArMQQgAop8uR8jchwwbrh6lniTsJpzooZh4IGph/fr/P8iqAYV
-	Jd0fDz/H93rKoKLxMqlwLVsOjKHOHyNCf9MOHRFJMMbP4cAyAML+lPIlmNnn8DhPfdY8BVj467NUj
-	2TJwgBheYOBRgWkblJ9DbWNnpbcHk/rFl7O1JTx0xBvVvoVA4Wrg7IgVG/NADjy8Jpx6khQgZjWq+
-	yJlI6sB04iwgWtHf56/BW7w1S/lyFBZeqpvr7tAM2CJh7yNyjXFDo4lTxvGwxyX7lmEcMn5z9qoDu
-	9fjgVatg==;
-Received: from [10.69.139.14] (helo=terabithia.localnet)
-	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <zfigura@codeweavers.com>)
-	id 1rwqC8-00GSzR-2p;
-	Tue, 16 Apr 2024 16:18:25 -0500
-From: Elizabeth Figura <zfigura@codeweavers.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
- linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
- wine-devel@winehq.org,
- =?ISO-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
- Wolfram Sang <wsa@kernel.org>, Arkadiusz Hiler <ahiler@codeweavers.com>,
- Andy Lutomirski <luto@kernel.org>, linux-doc@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
- Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH v4 00/30] NT synchronization primitive driver
-Date: Tue, 16 Apr 2024 16:18:24 -0500
-Message-ID: <4340072.ejJDZkT8p0@terabithia>
-In-Reply-To: <20240416081421.GB31647@noisy.programming.kicks-ass.net>
-References:
- <20240416010837.333694-1-zfigura@codeweavers.com>
- <20240416081421.GB31647@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1713302333; c=relaxed/simple;
+	bh=rHxBWPbUv6UV42+sEgbA1iJcX867tFp5OytmZQZ3UGg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=afbRBju0EdysIdbh/hBKz4Uze/zHTsD7H4A5QS5SLHxfIygdWZ77rqDvuCLaqFcK0Zs2ofRZCHJq5T31G85LnZJwn9pWrb9va0CvvKnY2hwbAjdablxL5+KdkHawLpFkLU8Z9/a7trLAD8cxJiuHSyKlUDXIcyBa6c/tQV1MUro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iKkfCZ7n; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2aa67da7a1dso1468853a91.3;
+        Tue, 16 Apr 2024 14:18:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713302331; x=1713907131; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tBEr7AmEEZkKSiw3BsMpmaMNJ9Caj0ON73VIII8SWsI=;
+        b=iKkfCZ7nBgrWRgs8tRnni+CY+zd1ab1GbRxrFerN8YH5NYScv23E3vKlnO5mrMiiub
+         V75QOjMyzdNtdOIHuEQFrIa7Iogmt3y4s/iISfjZxZUKsF5sCMTZy8lYqEIbrSDqxlaH
+         0Jw+9LYAiLNbhR9NMOtM+A/p4RlcagDykwWX2PmSRMjqu2IkeBD22pCLOz+MjI+kRCsT
+         wEx2z1CrTD8nrhhHMz1fPljL7RZdM6Z4ccAcAEAImzni2ZhF0Gn5ILU6qrHzxVWZYyf/
+         Ex/V/mJNGPrH99/C9w/AxziQCoZc8I67SLzraAn7Rlyt5X6uGsTnHweXgaQ1XOy/wCSV
+         U9rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713302331; x=1713907131;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tBEr7AmEEZkKSiw3BsMpmaMNJ9Caj0ON73VIII8SWsI=;
+        b=V5hA/f4Mds2yYfnlZzuJg2M1QlbpXVR0k00UbK5w2Pn18xFZaWAN7nWimYVM/9iSR4
+         U1FbZYzXyhFlPYAE780JzZbxh0+VBntWRAlUQHRof2j/l606PXAEd5wbtL6VxIs2X6IN
+         4btO8dSX5WBtdLewQsWwMg5Kj7qAk68TND6vhEf4Nji7yIFQKVog0avtkNhDyxaOPYW7
+         lsKDfI38jxqqehXV+zhv8BHzokfdsn5wcwC4HctFVhqH3VS4SjWbcxCx2emjRD58fn/S
+         xiwzeEpCSKfENWd6YC5RAqS6NQSqk9CsGnbLkgFZvrhINEmcruFqXt7L4hadhb8XxUfB
+         j8IA==
+X-Forwarded-Encrypted: i=1; AJvYcCXfw36PPHVnyxefr+0hAsn7DFxFtKjmwX02wh0WrlgkJYxv63RWGXWHr0RnlqAezIWi2rUQ7KsWbtNlSxLiQKussFgwhXeAFQd7jdAFd3WG6Z1nBGpwABTI3aMa1kVz5g86x+s0OMXDsA==
+X-Gm-Message-State: AOJu0YxVgvAw34aS/FSYjOjfUcNufiKBAMsVISKXvh4HuaSkH9NZmHou
+	+SpHwYVpPg4loFSZQrg7CwgS//5X+mML6E7LYJ3jBx9ICIrAxO3fjkLlrPsS8hTJLImQFRg3igD
+	ZWUKBG42R959i8j/V2aQNNZgDpac=
+X-Google-Smtp-Source: AGHT+IFhlEFxkQR+ieC/Pa0fKkP87ACk2PMEqPN62geu1ZxkPfEDzM2tLQRrA2jUzsAT+yFWyAIlwAZgs2PhJ+8rSX4=
+X-Received: by 2002:a17:90b:180d:b0:29f:7fad:ba50 with SMTP id
+ lw13-20020a17090b180d00b0029f7fadba50mr13315078pjb.8.1713302330612; Tue, 16
+ Apr 2024 14:18:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20240305004859.201085-1-aford173@gmail.com> <20240305004859.201085-2-aford173@gmail.com>
+In-Reply-To: <20240305004859.201085-2-aford173@gmail.com>
+From: Adam Ford <aford173@gmail.com>
+Date: Tue, 16 Apr 2024 16:18:38 -0500
+Message-ID: <CAHCN7xLsEvP0A3mQJRzX=nXGr30WD4RU9vQVw9ynqzSi6cDNRg@mail.gmail.com>
+Subject: Re: [PATCH V2 2/2] arm64: dts: imx8mp-beacon-kit: Enable HDMI bridge HPD
+To: dri-devel@lists.freedesktop.org
+Cc: aford@beaconembedded.com, laurent.pinchart@ideasonboard.com, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, Andrzej Hajda <andrzej.hajda@intel.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	devicetree@vger.kernel.org, imx@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tuesday, 16 April 2024 03:14:21 CDT Peter Zijlstra wrote:
-> On Mon, Apr 15, 2024 at 08:08:10PM -0500, Elizabeth Figura wrote:
-> > This patch series implements a new char misc driver, /dev/ntsync, which is
-> > used to implement Windows NT synchronization primitives.
-> 
-> This patch series does not apply to anything I have at hand. Nor does it
-> state anything explicit to put it on top of.
+On Mon, Mar 4, 2024 at 6:49=E2=80=AFPM Adam Ford <aford173@gmail.com> wrote=
+:
+>
+> The DSI to HDMI bridge supports hot-plut-detect, but the
+> driver didn't previously support a shared IRQ GPIO.  With
+> the driver updated, the interrupt can be added to the bridge.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-It was written to apply against the 'char-misc-next' branch of gregkh/char-
-misc.git. I'll make a note of that next time, sorry for the inconvenience.
+Shawn,
 
-> > Hence I would like to request review from someone familiar with locking to
-> > make sure that the usage of low-level kernel primitives is correct and
-> > that the wait queues work as intended, and to that end I've CC'd the
-> > locking maintainers.
-> I am sadly very limited atm, but I'll try and read through it. If only I
-> could apply...
-> 
-> > == Patches ==
-> > 
-> > The intended semantics of the patches are broadly intended to match those
-> > of the corresponding Windows functions. For those not already familiar
-> > with the Windows functions (or their undocumented behaviour), patch 27/27
-> > provides a detailed specification, and individual patches also include a
-> > brief description of the API they are implementing.
-> > 
-> > The patches making use of this driver in Wine can be retrieved or browsed 
-here:
-> >     https://repo.or.cz/wine/zf.git/shortlog/refs/heads/ntsync5
-> 
-> I don't support GE has it in his builds? Last time I tried, building
-> Wine was a bit of a pain.
+Patch 1/2 has been applied and sits in linux-next.  Are you OK to
+apply this to the IMX branch so the hot-plug detection can work?
 
-It doesn't seem so. I tried to build a GE-compatible ntsync build, uploaded 
-here (thanks Arek for hosting):
+Thank you,
 
-    https://f002.backblazeb2.com/file/wine-ntsync/ntsync-wine.tar.xz
+adam
 
-> > Some aspects of the implementation may deserve particular comment:
-> > 
-> > * In the interest of performance, each object is governed only by a single
-> > 
-> >   spinlock. However, NTSYNC_IOC_WAIT_ALL requires that the state of
-> >   multiple
-> >   objects be changed as a single atomic operation. In order to achieve
-> >   this, we first take a device-wide lock ("wait_all_lock") any time we
-> >   are going to lock more than one object at a time.
-> >   
-> >   The maximum number of objects that can be used in a vectored wait, and
-> >   therefore the maximum that can be locked simultaneously, is 64. This
-> >   number is NT's own limit.
-> >   
-> >   The acquisition of multiple spinlocks will degrade performance. This is
-> >   a
-> >   conscious choice, however. Wait-for-all is known to be a very rare
-> >   operation in practice, especially with counts that approach the
-> >   maximum, and it is the intent of the ntsync driver to optimize
-> >   wait-for-any at the expense of wait-for-all as much as possible.
-> 
-> Per the example of percpu-rwsem, it would be possible to create a
-> mutex-spinlock hybrid scheme, where single locks are spinlocks while
-> held, but can block when the global thing is pending. And the global
-> lock is always mutex like.
-> 
-> If all that is worth it, I don't know. Nesting 64 spinlocks doesn't give
-> me warm and fuzzy feelings though.
-
-Is the concern about poor performance when ntsync is in use, or is nesting a 
-lot of spinlocks like that something that could cause problems for unrelated 
-tasks? I'm not familiar enough with the scheduler to know if this can be 
-abused.
-
-I think we don't care about performance problems within Wine, at least. FWIW, 
-the scheme here is actually similar to what Windows does (as described by one 
-of their kernel engineers), although slightly different. NT nests spinlocks as 
-well, but instead of using the outer lock like our "wait_all_lock" to prevent 
-lock inversion, they instead sort the inner locks (by address, I assume).
-
-If there's deeper problems... I can look into (ab)using a rwlock for this 
-purpose, at least for now.
-
-In any case making wait_all_lock into a sleeping mutex instead of a spinlock 
-should be fine. I'll rerun performance tests but I don't expect it to cause 
-any problems.
-
-
+adam
+> ---
+> V2:  No Change
+>
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts b/arch/a=
+rm64/boot/dts/freescale/imx8mp-beacon-kit.dts
+> index a08057410bde..fba8fd04398d 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
+> @@ -304,6 +304,8 @@ adv_bridge: hdmi@3d {
+>                 compatible =3D "adi,adv7535";
+>                 reg =3D <0x3d>, <0x3c>, <0x3e>, <0x3f>;
+>                 reg-names =3D "main", "cec", "edid", "packet";
+> +               interrupt-parent =3D <&gpio4>;
+> +               interrupts =3D <27 IRQ_TYPE_EDGE_FALLING>;
+>                 adi,dsi-lanes =3D <4>;
+>                 #sound-dai-cells =3D <0>;
+>
+> --
+> 2.43.0
+>
 
