@@ -1,67 +1,84 @@
-Return-Path: <linux-kernel+bounces-146898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01A458A6C9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:36:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12E268A6C95
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:35:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 378E6B21C4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:36:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDF39282A43
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:35:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B905412C49C;
-	Tue, 16 Apr 2024 13:36:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D05A312CD9A;
+	Tue, 16 Apr 2024 13:31:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jookia.org header.i=@jookia.org header.b="WsN+inhp"
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hoyExHp+"
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 617E512BF29
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 13:36:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1777312C801;
+	Tue, 16 Apr 2024 13:31:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713274568; cv=none; b=rFTCrPcU28+dq/Ea6sxdnPW5So9ndFLkqH3XI6/stG6Az+2bM28Ik/0YgWafAGcTBMM7guLZZf2dOqPhfYfdtMZZIJcW4N5/DsgT9H5qVtptkD/lh9OMhFUou5HC0iZ1lOsHtenh3Z6FvjFKYGjHSB2oNPxTVxUGMXjQsqlGP3U=
+	t=1713274266; cv=none; b=M6vy9MbacpAg5gfAHluGOlR3eK0mtcmeh/4GqKck5EedXZQ/Hd4roibBADGX55vtwC6RLMQ+Ez8pWNyNUHqRazxeQ8P9rwW0wVbiLCKXH+ddoOS4yYVUw0rj+EJySi9j5Att2zisE/5AqRWmiogcZEmrHFPMJH841ZjEUEDw5Os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713274568; c=relaxed/simple;
-	bh=ESXTOBerJ11ivDTEUscWQdRvIS+xShE+sRa69XlINm4=;
+	s=arc-20240116; t=1713274266; c=relaxed/simple;
+	bh=/eoRald5RQA5tlSO2Q1GOUyfGVlyA/xfmspKPYiGf6I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ctE/uTWRD9/y2wutMlMH9OTj1NxIRudvVNn0W7xkWYoCmHIAk7ngObk1TcJicXehmbFYDnzRyXioSPQq81PCJAVv8Q7P8WAd8RqSCHibxgpDbXfOqB6M+8YAHJPCx4shWz5n1A5EriJ0JnguSIXsUDup598o10qssPPDMgdzeBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jookia.org; spf=none smtp.mailfrom=jookia.org; dkim=pass (2048-bit key) header.d=jookia.org header.i=@jookia.org header.b=WsN+inhp; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jookia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jookia.org
-Date: Tue, 16 Apr 2024 23:30:43 +1000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-	t=1713274563;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Yi0/qfx4nmZfF6fdXRi1R9ZAidfFCHR7CYYCzr1ALiw=;
-	b=WsN+inhptWBlLAn4tYfGJsUTwLFrLAQSCnnMGn3U0Hj6QgcJ0wxYAoALpOZh7Oi3b5sI6g
-	ssaUcULn7c0mtcvWJpB5DP8Qxift4AYjIswvzH2NQmGSI++Cs1XukEkGoRC/byHQ7jsOMO
-	CBpOw1a/3pWu8VVA2M41nalYMiRHr3NqB8IzAnPX+iPHISnvSscRdyHTik1VSqmAuFSzAl
-	0cKjzNVkuR854rG/g0FK6mX9bCOzX9mAyPnrT3MQNEOHRQl4tzDPZwCR4Cld5ESfftonXn
-	sZ5BKACEjTG79h4w+ANMd8FiuEllga+k6ObB5tCsNVvAd/8FjNWdBw5IQmof/g==
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: John Watts <contact@jookia.org>
-To: Andre Przywara <andre.przywara@arm.com>
-Cc: Chen-Yu Tsai <wens@csie.org>, Lee Jones <lee@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Ryan Walklin <ryan@testtoast.com>,
-	Chris Morgan <macroalpha82@gmail.com>
-Subject: Re: [PATCH 1/4] regulator: axp20x: AXP717: fix LDO supply rails and
- off-by-ones
-Message-ID: <Zh59gzEB61lNdmMh@titan>
-References: <20240329235033.25309-1-andre.przywara@arm.com>
- <20240329235033.25309-2-andre.przywara@arm.com>
- <ZhuNCUnJri4hBOxx@titan>
- <20240416122305.3ffc2bda@donnerap.manchester.arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=P0/GguWnPf//6ygB9n4Zw37g7Liqmg3azn6Nv34UfJ6R8qarJf8tp+CXlDIYDIiBZIYEwSS25HCGlYf6rc3BzCu/o9+IcJ/kox4iu2LPNy48lPjIPNnFvGaMRwyGs6jaZrf2/BYXvNrofwvPvDNurELR4+SKa2Qpu4essb9p1XE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hoyExHp+; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5cddc5455aeso3030768a12.1;
+        Tue, 16 Apr 2024 06:31:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713274261; x=1713879061; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jJewvZ8b6e5v5IGKG7h4PM7qbBAo1UXL6Icq9IfphZs=;
+        b=hoyExHp+YXVsTQWM+cGHhM0aNrZ0Y74/4WaExasIap2/YOsgoAZGmFuCYLdZa0UgeA
+         RCBwtekbDZC0TqGDbdoUYlxVICtv+LRgbcVqwbihRn1LctlPFD83M4UUQxsPzyK6PrYG
+         sf09464BfWtT67nNsIrjnmiWu5CHgyosOuYaAdjw2uQmTHymcHtsen5dsG8xkGsb9iv7
+         Gp+1NVDR4rkOv2mfw9THfD+Ahhovc+ENvotgo52BZgBNK7bZi1AS1On4EYMTnTip/938
+         fL8ObUSsylFxZSPsGgEU1VK7T2FBqZNNYtD3wrOMgoMdGz0X+RxR7Sd8t0qdhvVct2f9
+         prXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713274261; x=1713879061;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jJewvZ8b6e5v5IGKG7h4PM7qbBAo1UXL6Icq9IfphZs=;
+        b=qEfcchivL2FMIyUtUHBgJI5g2AFn4LQ/2LEo25Nrdg0J2MI2VWDDEjvur4bNbDNZVy
+         D3bE5uqkSrzHr0qglsoO/AI8MFOOxLiPr0rcMSDzQwHE5KZ6mpq+Z23xzQteN8ibyoSp
+         WTl13+CJ2tnRwJYQeCvMl2BVnvlETdPC7OHYQ8WMO/qvvdNgkDTvUjd6vyGvWEtEFZ+2
+         QkYNnPEM8mTCbPHxXVOy1yfSXyF5mtUh1sMseavEpZ20ZEokvkcfDAo6xwsmYyvxanL4
+         0WttLhHjpvKWQmkwuLvzrSSBB6m0+Gi2auQS3SdVHy1BL5/tYwk9F8K7q8YtjQsAY9v1
+         Cpyg==
+X-Forwarded-Encrypted: i=1; AJvYcCW8kwxY4xcKN/jNBz9KCE08SSuZAfxTYAvg5eN7ZfoRlwmlqd02BkZKFpXrgGnw5g3CN5kHKOh9Ht4x6GuvWaiVmhK7ymqwcD0i2eq2Bq8asnLKNxpLKmvlqfnCP8W0IjY7aY5R+8mOjbhsrSTKJm021GgCGNHRQjn9NnXlCahksHb/Jfkscrt1WcquGa7K
+X-Gm-Message-State: AOJu0YyLyhOMkwz3UA2J3qxjcBC+uALnrto7rG2se8kQurj2tA0SIDk5
+	61oNLFmrGO+Gl8SytSzsdRgicGsKi8TDBxms3k1RGYPM6+b0oET75XFAOg==
+X-Google-Smtp-Source: AGHT+IEbwazAFR0wRkcKMFLBCnJrUE2p2zGUNubAcMoJVt/6w4BroKVdX4UglbroDqWaFd20Z0khjA==
+X-Received: by 2002:a17:90a:5ac4:b0:2a2:dd53:828b with SMTP id n62-20020a17090a5ac400b002a2dd53828bmr10638846pji.43.1713274261155;
+        Tue, 16 Apr 2024 06:31:01 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c9-20020a17090abf0900b002a610ef880bsm9168377pjs.6.2024.04.16.06.31.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 06:31:00 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Tue, 16 Apr 2024 06:30:59 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Maximilian Luz <luzmaximilian@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Ivor Wanders <ivor@iwanders.net>, linux-kernel@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH 2/3] hwmon: surface_temp: Add support for sensor names
+Message-ID: <43908511-198f-42ee-af21-dad79bdf799a@roeck-us.net>
+References: <20240330112409.3402943-1-luzmaximilian@gmail.com>
+ <20240330112409.3402943-3-luzmaximilian@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,115 +87,194 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240416122305.3ffc2bda@donnerap.manchester.arm.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240330112409.3402943-3-luzmaximilian@gmail.com>
 
-On Tue, Apr 16, 2024 at 12:23:05PM +0100, Andre Przywara wrote:
-> On Sun, 14 Apr 2024 18:00:09 +1000
-> John Watts <contact@jookia.org> wrote:
+On Sat, Mar 30, 2024 at 12:24:01PM +0100, Maximilian Luz wrote:
+> From: Ivor Wanders <ivor@iwanders.net>
 > 
-> Hi John,
+> The thermal subsystem of the Surface Aggregator Module allows us to
+> query the names of the respective thermal sensors. Forward those to
+> userspace.
 > 
-> many thanks for the detailed review (also on the other two patches), much
-> appreciated!
-
-No problem!
-
-> I see what you mean, though I actually looked at the number of steps
-> mentioned in the first part of the register description. Now
-> triple-checking this I came up with this table (generated by a spreadsheet
-> to minimise human error):
-> voltage	decimal	binary	
-> 1600	88	1011000
-> 1700	89	1011001
-> 1800	90	1011010
-> 1900	91	1011011
-> 2000	92	1011100
-> 2100	93	1011101
-> 2200	94	1011110
-> 2300	95	1011111
-> 2400	96	1100000
-> 2500	97	1100001
-> 2600	98	1100010
-> 2700	99	1100011
-> 2800	100	1100100
-> 2900	101	1100101
-> 3000	102	1100110
-> 3100	103	1100111
-> 3200	104	1101000
-> 3300	105	1101001
-> 3400	106	1101010
+> Signed-off-by: Ivor Wanders <ivor@iwanders.net>
+> Co-developed-by: Maximilian Luz <luzmaximilian@gmail.com>
+> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  drivers/hwmon/surface_temp.c | 112 +++++++++++++++++++++++++++++------
+>  1 file changed, 95 insertions(+), 17 deletions(-)
 > 
-> Which means the final binary value in the datasheet is wrong, as 1101011
-> would mean 3.5V.
-> Also  1101010 = 106
->      -1011000 = 88
-> =============
->       0010010 = 18
-> and 18 * 100 + 1600 = 3400, right?
-> 
-> This *is* admittedly quite bonkers, especially since the representations
-> between the manual and the code are so different, but can you check that
-> this makes sense?
+> diff --git a/drivers/hwmon/surface_temp.c b/drivers/hwmon/surface_temp.c
+> index 48c3e826713f6..7a2e1f638336c 100644
+> --- a/drivers/hwmon/surface_temp.c
+> +++ b/drivers/hwmon/surface_temp.c
+> @@ -17,6 +17,27 @@
+>  
+>  /* -- SAM interface. -------------------------------------------------------- */
+>  
+> +/*
+> + * Available sensors are indicated by a 16-bit bitfield, where a 1 marks the
+> + * presence of a sensor. So we have at most 16 possible sensors/channels.
+> + */
+> +#define SSAM_TMP_SENSOR_MAX_COUNT 16
 
-I wrote a program in Python that steps through each range and prints its
-value, and according to it value 106 is 3.4V. I dumped it at the end of
-this email for anyone curious. Your math checks out too.
+#define<space>DEFINITION<tab>value
 
-So the datasheet must be wrong. Maybe it originally supported up to 3.5V
-and someone who doesn't know binary updated the sheet.
+> +
+> +/*
+> + * All names observed so far are 6 characters long, but there's only
+> + * zeros after the name, so perhaps they can be longer. This number reflects
+> + * the maximum zero-padded space observed in the returned buffer.
+> + */
+> +#define SSAM_TMP_SENSOR_NAME_LENGTH 18
+> +
+> +struct ssam_tmp_get_name_rsp {
+> +	__le16 unknown1;
+> +	char unknown2;
+> +	char name[SSAM_TMP_SENSOR_NAME_LENGTH];
+> +} __packed;
+> +
+> +static_assert(sizeof(struct ssam_tmp_get_name_rsp) == 21);
+> +
+>  SSAM_DEFINE_SYNC_REQUEST_CL_R(__ssam_tmp_get_available_sensors, __le16, {
+>  	.target_category = SSAM_SSH_TC_TMP,
+>  	.command_id      = 0x04,
+> @@ -27,6 +48,11 @@ SSAM_DEFINE_SYNC_REQUEST_MD_R(__ssam_tmp_get_temperature, __le16, {
+>  	.command_id      = 0x01,
+>  });
+>  
+> +SSAM_DEFINE_SYNC_REQUEST_MD_R(__ssam_tmp_get_name, struct ssam_tmp_get_name_rsp, {
+> +	.target_category = SSAM_SSH_TC_TMP,
+> +	.command_id      = 0x0e,
+> +});
+> +
+>  static int ssam_tmp_get_available_sensors(struct ssam_device *sdev, s16 *sensors)
+>  {
+>  	__le16 sensors_le;
+> @@ -54,12 +80,37 @@ static int ssam_tmp_get_temperature(struct ssam_device *sdev, u8 iid, long *temp
+>  	return 0;
+>  }
+>  
+> +static int ssam_tmp_get_name(struct ssam_device *sdev, u8 iid, char *buf, size_t buf_len)
+> +{
+> +	struct ssam_tmp_get_name_rsp name_rsp;
+> +	int status;
+> +
+> +	status =  __ssam_tmp_get_name(sdev->ctrl, sdev->uid.target, iid, &name_rsp);
+> +	if (status)
+> +		return status;
+> +
+> +	/*
+> +	 * This should not fail unless the name in the returned struct is not
+> +	 * null-terminated or someone changed something in the struct
+> +	 * definitions above, since our buffer and struct have the same
+> +	 * capacity by design. So if this fails blow this up with a warning.
+> +	 * Since the more likely cause is that the returned string isn't
+> +	 * null-terminated, we might have received garbage (as opposed to just
+> +	 * an incomplete string), so also fail the function.
+> +	 */
+> +	status = strscpy(buf, name_rsp.name, buf_len);
+> +	WARN_ON(status < 0);
 
-I think you should add a note saying that the datasheet is wrong, to
-show people this isn't a bug and also save time of others trying to
-write their own drivers and check their logic. Something like this:
+Not acceptable. From include/asm-generic/bug.h:
 
-Warning, the datasheet specifies that 3.40V is 107, which is incorrect:
-- There are only 107 steps in total, making the highest step value 106
-- 1.60V is listed as 1011000 (88 in decimal), with 18 steps after that 
-- Adding 100mV for each of the 18 steps past 1.60V gives 3.4V
+ * Do not use these macros when checking for invalid external inputs
+ * (e.g. invalid system call arguments, or invalid data coming from
+ * network/devices), and on transient conditions like ENOMEM or EAGAIN.
+ * These macros should be used for recoverable kernel issues only.
 
-I think this logic convinces me at least. :)
+> +
+> +	return status < 0 ? status : 0;
+> +}
+> +
+>  
+>  /* -- Driver.---------------------------------------------------------------- */
+>  
+>  struct ssam_temp {
+>  	struct ssam_device *sdev;
+>  	s16 sensors;
+> +	char names[SSAM_TMP_SENSOR_MAX_COUNT][SSAM_TMP_SENSOR_NAME_LENGTH];
+>  };
+>  
+>  static umode_t ssam_temp_hwmon_is_visible(const void *data,
+> @@ -83,33 +134,47 @@ static int ssam_temp_hwmon_read(struct device *dev,
+>  	return ssam_tmp_get_temperature(ssam_temp->sdev, channel + 1, value);
+>  }
+>  
+> +static int ssam_temp_hwmon_read_string(struct device *dev,
+> +				       enum hwmon_sensor_types type,
+> +				       u32 attr, int channel, const char **str)
+> +{
+> +	const struct ssam_temp *ssam_temp = dev_get_drvdata(dev);
+> +
+> +	*str = ssam_temp->names[channel];
+> +	return 0;
+> +}
+> +
+>  static const struct hwmon_channel_info * const ssam_temp_hwmon_info[] = {
+>  	HWMON_CHANNEL_INFO(chip,
+>  			   HWMON_C_REGISTER_TZ),
+> -	/* We have at most 16 thermal sensor channels. */
+> +	/*
+> +	 * We have at most SSAM_TMP_SENSOR_MAX_COUNT = 16 thermal sensor
+> +	 * channels.
+> +	 */
 
-John.
+Pointless comment. Already explained above, and perfect example showing
+why it has no value separating this and the previous patch.
 
-> I discovered some other issue in the original patch (missed declaring the
-> range of IRQ acknowledge registers in the MFD part), so I will send a v2 of
-> this series soonish.
-> 
-> > For DCDC3 after applying this patch we get:
-> > 
-> > #define AXP717_DCDC3_NUM_VOLTAGES	103
-> > static const struct linear_range axp717_dcdc3_ranges[] = {
-> > 	REGULATOR_LINEAR_RANGE(500000,   0,  70, 10000),
-> > 	REGULATOR_LINEAR_RANGE(1220000, 71, 102, 20000),
-> > };
-> > 
-> > The datasheet marks the maximum value as 1100110: 1.84V, which is 102.
-> > So this patch to correct the AXP717_DCDC3_NUM_VOLTAGES is correct here.
-> 
-> I agree ;-) thanks for checking!
-> 
-> Cheers,
-> Andre
+>  	HWMON_CHANNEL_INFO(temp,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT,
+> -			   HWMON_T_INPUT),
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL,
+> +			   HWMON_T_INPUT | HWMON_T_LABEL),
 
----
+Another example. Why have me review the previous patch
+just to change the code here ?
 
-Python program:
+[ ... ]
 
-reg = 0
-value = 500
-for x in range(71):
-	print("%i: %imV" % (reg, value))
-	value += 10
-	reg += 1
-value = 1220
-for x in range(17):
-	print("%i: %imV" % (reg, value))
-	value += 20
-	reg += 1
-value = 1600
-for x in range(19):
-	print("%i: %imV" % (reg, value))
-	value += 100
-	reg += 1
+> +	/* Retrieve the name for each available sensor. */
+> +	for (channel = 0; channel < SSAM_TMP_SENSOR_MAX_COUNT; channel++) {
+> +		if (!(sensors & BIT(channel)))
+> +			continue;
+> +
+> +		status = ssam_tmp_get_name(sdev, channel + 1,
+> +					   ssam_temp->names[channel],
+> +					   SSAM_TMP_SENSOR_NAME_LENGTH);
+> +		if (status)
+> +			return status;
+
+Your call to fail probe in this case just because it can not find
+a sensor name. I personally find that quite aggressive.
+
+Guenter
 
