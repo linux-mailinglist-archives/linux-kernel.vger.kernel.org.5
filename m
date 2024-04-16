@@ -1,129 +1,116 @@
-Return-Path: <linux-kernel+bounces-147020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA08E8A6E4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:32:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 791C88A6E72
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:36:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 704981F212DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:32:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AE18B284A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8852282D9D;
-	Tue, 16 Apr 2024 14:32:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6884612BF14;
+	Tue, 16 Apr 2024 14:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="CRyCJdk9"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bKDDK3Gr"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6716B1CAA6;
-	Tue, 16 Apr 2024 14:32:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20DE4129A72
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713277936; cv=none; b=XbiRmG/hWkHFxRD7z/dyGcIsRtCfAkWKasDda9Kdwm1QG4xW/lG/fzAXT3sFmTc6OXr1Z40YJ9UQzr1y+zsD8E7oliAquQwXJMaAYrToRm6TuE8ZZ6dtVMtPFKrOt6IXkSP7o4e2i3M0Uo+rhdJwL5BSy6iFmWg7ZGsFFNITPXA=
+	t=1713277943; cv=none; b=Dau4nRqCWzGi3OP8qsUAvn8RbPQ2xBFHa3FfUWh/xebOsHM0dt93qIVBijtpRDryvvsP6JOppuf2tp1Wv3IdGk3Ck0bHw0CGdt3T6vTZ83lfXUdpCei9tUuK1RD9RHUWGJGgQQZ8WX0HIXWBHh0hQ+i7j4k3xakUsry8kfUz6UA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713277936; c=relaxed/simple;
-	bh=xwtOX3huVgNQWdzLmjX+ow6uv3bTrZuFvMHF8dtE9a4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mQOZMRfrqZyiI7U1v1kI/LI03UE/NngahIGrfgfwHle30Xe9c+dsA7AgRNpYanYrwgyqKWj+WPOoB27ZzZkd/Md+zEbiv9QPm8MVOYIVpJA0mK8oQvWVALFZgdlqrQbsY4icz37x0ZwvxIxVXU4RomWnizZD6Vq5KBb2MvXK7bM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=CRyCJdk9; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713277933;
-	bh=xwtOX3huVgNQWdzLmjX+ow6uv3bTrZuFvMHF8dtE9a4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CRyCJdk9BPM0d4kzXLOxXz4EylR0wqZhxNbJR89AC3uCDb+7PEoZ1pPCcQJx25jvv
-	 Y2xbXdD9hj6+yPwoulIB5puWXkEf21/Ba8OUxyvR1D4MoQ7Dy1ykkmLitxLXJ5IT0M
-	 4VOz6S+m74p/WqkxE45AX5HPwEYY32SePcmYjfHnm7Ce43lB6zI8pWwksZNl18SWQ3
-	 XwfqRnj/OzxJZpKmwEo3RtDoZRaoKV75oiN5BEAemk4n45cftF8PPO3QJxrWl5nlyf
-	 zCRAGkMR/9TUPCrcEJBCbeDQ7jXs24jTw9XtgqWHlssOyY4vQUSiaBqfaPPFrZQyg7
-	 wt8X90IFgqitw==
-Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B6BCE37820F9;
-	Tue, 16 Apr 2024 14:32:12 +0000 (UTC)
-Date: Tue, 16 Apr 2024 10:32:10 -0400
-From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Sebastian Reichel <sre@kernel.org>, kernel@collabora.com,
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] power: supply: sbs-battery: Handle unsupported
- PROP_TIME_TO_EMPTY_NOW
-Message-ID: <9f805ec3-1611-4682-831e-9499ba8284d5@notapiano>
-References: <20240415-sbs-time-empty-now-error-v2-1-32d8a747e308@collabora.com>
- <9ba1b4df-78dc-4f24-bb61-d7b168da18f8@collabora.com>
+	s=arc-20240116; t=1713277943; c=relaxed/simple;
+	bh=TrhX1jGQhTu2KIAciBeO1h+2JzMMjX7NZgRCla9EyWQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CJSmNgqosshLDXkfvoS41wvuLBMou4ThCGEoTGp5KpYavVqczryzKUnzDJQbBPLC6+aPChXRIom6QaknML7Q3pGf7A6qP2RJnuZRkD9AyT+vLKSQQAoGv5Q+GmJpbriuKbSxs+KurK7Xi+icn96t5at5igxRluRloqol2BFkRPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bKDDK3Gr; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2da888330b1so35017561fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:32:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713277940; x=1713882740; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q5Zyzq1jaXk2PTeBnsS/HFR/E4JVz+BBU5ff7XaF+Dw=;
+        b=bKDDK3GrYf4UfsxAMK8VpGZ2ZKJeaYNnJkBzL+ZmgIyU5hfp3QZzb1ZmkWE2xz1r21
+         f1L4WiVR0vlml863tNPD0zHCKbylnSKnUdMZdlr479PWBmFs5mDVt47FZatTyHH8ex+A
+         6yhlNlvutupCwqauiHVRYzWWrGw5/faAzTRSeCsNx/KWn109+aIMbqFsxqiRd/qB+PtC
+         FwNvl75qDSwcgdXwsTSEVO4FheHP4yvGeDzuvkydO+BOqqNYhFUS4G0mH4M9KCsbJVVh
+         b+8NVj5P+7bRi/lE8jzoK8uoiQ5BLz/z+LhBAEflD18fy0yJ+RMJHpCeXdeK+HMqS53T
+         Xekw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713277940; x=1713882740;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q5Zyzq1jaXk2PTeBnsS/HFR/E4JVz+BBU5ff7XaF+Dw=;
+        b=QDWzMh7eDSQsDhf1qC0BFTgoXNKkk/BzR/WBwLKbCXkWnrmSSr76xGvyzv60FGndpG
+         mhpAV6WuUFzZzkvJXbuJxyZvtp0m0W+cch+GB+6XsT0VtY704/VQWEv12ZUluMZOffhZ
+         F5xBx7Z8m5kdWvwXXLJpkE7ZaQrdOXflA/wEt5W1U5aOjwXEZQhxZKImQk+00iK9Vdim
+         I2vo8Yjpq8CoLP5j58+TV6gDxwblXmBbBpE1aeXkFXBYhwxKGAX9o+HEK3ONAvvfEVR7
+         D6xQJOwwvNHFcbpobzAcTSh8bSsj2vsiiFTTz3ugFBhpaIs8XeRwaqUKzXvS+eRwTmSR
+         PuQA==
+X-Forwarded-Encrypted: i=1; AJvYcCVqTgQb6GWiezkvp2EkcDqnVywc2utkrAdT5Yi5a9RpxfPho3Ey0W1AM+rB2oT/iv26v98dDNw0AXOo03Ws9DsWQnZ+NSXvgleDe8Po
+X-Gm-Message-State: AOJu0YxyYTzie2dkRYy9QBs7bG9xSFVFdmoIIf8ImAOaoY3NJeTALy+1
+	1hStgnATrtd3zY5ItgABLqFnLElUPKKfZ3iyrH6LXpms7hqwVvmqLUV7JAcrwo8=
+X-Google-Smtp-Source: AGHT+IHgRG8rLgID4Qny4NHJoC2rlBQsPSp4jOqaP3Q5e3/gt0VA66TrCMy+WlpbvQARubScC1KY0Q==
+X-Received: by 2002:a05:6512:3e0a:b0:519:2a88:add6 with SMTP id i10-20020a0565123e0a00b005192a88add6mr1250650lfv.55.1713277940250;
+        Tue, 16 Apr 2024 07:32:20 -0700 (PDT)
+Received: from [172.30.205.49] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id u9-20020ac248a9000000b00516cbd3e982sm1603141lfg.178.2024.04.16.07.32.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Apr 2024 07:32:19 -0700 (PDT)
+Message-ID: <c129b349-dfaa-4b10-9b8c-6098d04b9373@linaro.org>
+Date: Tue, 16 Apr 2024 16:32:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9ba1b4df-78dc-4f24-bb61-d7b168da18f8@collabora.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/8] usb: typec: altmode: add low level altmode
+ configuration helper
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org
+References: <20240416-ucsi-glink-altmode-v1-0-890db00877ac@linaro.org>
+ <20240416-ucsi-glink-altmode-v1-2-890db00877ac@linaro.org>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240416-ucsi-glink-altmode-v1-2-890db00877ac@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 16, 2024 at 09:46:56AM +0200, AngeloGioacchino Del Regno wrote:
-> Il 15/04/24 21:05, Nícolas F. R. A. Prado ha scritto:
-[..]
-> > +
-> > +static void sbs_update_quirks(struct sbs_info *chip)
-> > +{
-> > +	const char *model;
-> > +	const char *manufacturer;
-> > +	unsigned int i = 0;
-> 
-> Please reorder:
-> 
-> 	const char *manufacturer;
-> 	const char *model;
-> 	unsigned int i;
-> 
-> ...and please remove (like shown, of course) the double initialization of the
-> `i` variable, as you're initializing it again later in your for loop.
 
-Ack.
 
+On 4/16/24 04:20, Dmitry Baryshkov wrote:
+> In some obscure cases (Qualcomm PMIC Glink) altmode is completely
+> handled by the firmware. Linux does not get proper partner altmode info.
+> Instead we get the notification once the altmode is negotiated and
+> entered (or left). However even in such a case the driver has to switch
+> board components (muxes, switches and retimers) according to the altmode
+> selected by the hardware.
 > 
-> > +
-> > +	/* reset quirks from battery before the hot-plug event */
-> > +	chip->quirks = 0;
-> > +
-> > +	manufacturer = sbs_get_constant_string(chip, POWER_SUPPLY_PROP_MANUFACTURER);
-> > +	model = sbs_get_constant_string(chip, POWER_SUPPLY_PROP_MODEL_NAME);
-> > +	if (IS_ERR(manufacturer) || IS_ERR(model)) {
-> > +		dev_warn(&chip->client->dev, "Couldn't read manufacturer and model to set quirks\n");
-> > +		return;
-> > +	}
-> > +
-> > +	for (i = 0; i < ARRAY_SIZE(sbs_quirks); i++) {
-> > +		if (strcmp(manufacturer, sbs_quirks[i].manufacturer))
-> > +			continue;
-> > +		if (strcmp(model, sbs_quirks[i].model))
-> > +			continue;
-> > +		chip->quirks |= sbs_quirks[i].flags;
-> > +	}
-> > +
-> > +	if (chip->quirks & SBS_QUIRK_BROKEN_TTE_NOW)
-> > +		dev_info(&chip->client->dev, "Added quirk disabling TIME_TO_EMPTY_NOW\n");
+> We can not use existing typec_altmode_enter() / typec_altmode_exit() /
+> typec_altmode_notify() functions in such a case, since there is no
+> corresponding partner's altmode instance.
 > 
-> I don't really expect many quirks, but having a dev_info() print for every
-> quirk that gets set would make this driver too chatty, IMO.
-> 
-> Please, either turn that into a dev_dbg() or print a mask of the quirks .. or both.
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
 
-I wouldn't make this debug as it's pretty important information to be
-reported. I'd be ok with having a single message listing all the quirks, but at
-the same time I feel like this would be trying to fix a problem that we don't
-know will ever exist (one SBS battery that has many quirks). I propose we keep
-it the way it is - a nice clear message of what has happened - and adapt in the
-future if it turns out to be too much information.
+Should this now be called from e.g. typec_almode_notify to limit
+duplication?
 
-Thanks,
-Nícolas
+Konrad
 
