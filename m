@@ -1,330 +1,261 @@
-Return-Path: <linux-kernel+bounces-147527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F4F58A75BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:33:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0C808A75C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:34:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06763283429
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:33:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F39CE1C2150B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:34:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2BFA13A3E5;
-	Tue, 16 Apr 2024 20:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 845FF3C47B;
+	Tue, 16 Apr 2024 20:34:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="lWHkOTBu"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2042.outbound.protection.outlook.com [40.107.244.42])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="G2cdjuBH"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2088.outbound.protection.outlook.com [40.107.237.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 188AF84E01;
-	Tue, 16 Apr 2024 20:32:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C951839FD7
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 20:34:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.88
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713299530; cv=fail; b=LDZ6rBauBxrH066RVSlVH7povEPzTGPg7QskyA6fpLbAT6Le5AX+L6/pHscBxsvOB4NMadpU/d7IVfPsvLkpiqU02v9IjHhQjOeqZFSOYYcgt9K3EwzH6FlRoTsZWBuGwiFL6m/zKTmtVs0UoLbSFCB8GVhJCQSGNSNTL9h/0mY=
+	t=1713299644; cv=fail; b=SWjbM0eqml0MPhL0hfMZE1QlEYuPtNe6/ZDu+8fitZZUK2b4/lgZm4PVqbEYnyEjjwcrYspl+/0SALq3LaI7mvRMzPnSGhrud8iju7/6p6UFTH5YTOQ4YtKUj+Ghm2M1A+KqtpMsTQ+9/42Wjbns7W2VFE+mnwjsBFXEiFIbWwI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713299530; c=relaxed/simple;
-	bh=DQDuToZUbYaztNRGSCUeEGfmA4zMDWlB0+yD6Djukpk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=pcpM375G2C9OwBdTLDrYACmzc36dceLRidbs5NcZsZSLgwGjunAb5VtMZmCL8nBVKOJ46uIvRoroLU0W5dwWpPe1x2/2DdobQ36g/NRaT1XQW25VE1uKw09g4QrpA8g70kXpEEw40e/sgjhdNVZs1rQG0g9sE36ZxGxpkgN9QP0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=lWHkOTBu; arc=fail smtp.client-ip=40.107.244.42
+	s=arc-20240116; t=1713299644; c=relaxed/simple;
+	bh=OigiJmq90AAhWLsYeD7E4pd9O6vVi2heZ88SFegMpfw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=c8bv7xmATSBU5H83NOtA6tXepwg2ERBbi2oTg2MC8qTsqKpeBoqYvBuFj0Ul1Tvt3IP3P0DcF7+x3XFHE1Y5Xbnn0HJIh9x7vM6Q5SR9IZG3SYHKJY416VlnWO4HTqB7g5ZWRtKbxx7AW226HDMi+ya/fRqS9KIB7n78gnkFlXE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=G2cdjuBH; arc=fail smtp.client-ip=40.107.237.88
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UfC3xT9LxMtEutS1qYJWlU8TIKh2a6e6bFCOV14bQ/6Rzn2uCVHYrggnucuokR+b1cNNxI6m0cOEWAUdY2hDjxhWR8aLNIMsrIe5QBuegfI+M8hiJ8UUG2m4mdV1Q5EAFQDAKcANsh3S0543gm+OlYKNJXVBOlMnf5zEJeVJ5PIhZYsf13O7RKLwc8S4aIxNboT+6mRoCymC8jBerKWX4EJR9FAMXRdT5pKidC/yU6MbRGo4ZDU3lAlBrXdFo5IWpnv+zabieJ23AGHumEch8PCRnAuwp4ZN4N8abQmmjCyvc9V2ge1ngkemNsluKAIXmZj7/yCSQGmz/33Q4Gb9lQ==
+ b=ocg013CN6pHuGVILG5+WoepG5lPPAa00H6Hyv8SHGFUls3BU7rawUS5f+iL5NFEA1L9Q+o0B1ru/dPwlzUfAgaqS3hXWWvLMs47CLyrQ6rT786FYn92CP/b40lHMBTJLsa0rSoS07bA2VVxnA8w3gQzelvKBWbez2lCl6TX801+9JseM8JJ2pGapB11C83EC3Jx0FW7cz1SKUM9Iv1Z3QX9gdCpfDj0k8ctlBnzrYDafKnYnsNgc6ogkQjuT5gjWresQvuWM6A2s9fI0Zjm1b6D45YSVTf7PkuTcKyaoS/3NuG8hC1zqPcFn2cgnjRERimS4oBbK2IJAHMlZSGMZsQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=c0ImcF5+f8PxLy3F3qASiZOnUYitjVli58R3DNOhPXQ=;
- b=Xd9BM6zaygH4MV0QI4oLOnQ963ESAYkcDRvhf+XkNmJTkJO2y9Krn1SjCZIc/iC2zi88l67kRR5UECjJO1lKMdWrppLU/V+vIhCHjlNgdIjJVX3NK6iYD/+zYUT6RKEARFMem47ddbG2QF3+4/9boQ3n6k7dVCESTr2ADFoMlg2pXEgfjb30aT8TOuL7NX/igSyMUuCi4Z7aQfmexbQjRO+Z+Zh7Kjf0S9WQZlM6eG9ujqbxP13UjspuMhvZFsRzSyILKm5F6zpPYS1i8yYF+uOGiGiQdVmb/COvMftLBWgmvFcUMdT9gLW4ye36DG4he+xESjAGiUpxT0VZPqXnfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lists.infradead.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
+ bh=WTrdPTotxTJdIFLFGtYWFZM4XqkD101T7l44Qh7TgCY=;
+ b=JHS5giS2nAy7hbWCnZacDbMHelNjTszwTuynxGxXtwhnSj4FWsOK8eHJmWxOz7PO3qMRB1jdvSmHAYkEE/G/bEAziD8ad5bqDLaBu/TYT7mQIDzlvPBcydvk6gQdEXgvldY578Fhq7hIJzkWdgxXVL4RFWLTiIgkQZXoFFHDrLEMUy71UPxcVf/vWcsa31WwAnd+Fpuo1vsVTZGZtU670C6R4BPN7lAXxs06SPMUBpKHm6m64VfTTM+QWor4MCbfsw/K2gyKJhqCt7WQJV1yzlMLA0QQ2KVGdU6YjM9THA8AIF20Gs+O5mWjNgfdLPw4iVDMFktR1v4eHXBL3HNekw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c0ImcF5+f8PxLy3F3qASiZOnUYitjVli58R3DNOhPXQ=;
- b=lWHkOTBuuuzOE+b7TewSlcO0NZBpCKleDVLTG16uIByo+B6yDTZdsK+ElnpGuL5GwQU6F5LTCtcxOCCXCzbpxrBEvNzAxcbniD7lWbn3t10wnVR9wSTGfKw9IfKTFGiUq79Gvq4O+6ZNbEKhs/K8HNUkZGoit6Ur0m9wjxfMMEE=
-Received: from BL1PR13CA0239.namprd13.prod.outlook.com (2603:10b6:208:2bf::34)
- by IA1PR12MB7615.namprd12.prod.outlook.com (2603:10b6:208:428::17) with
+ bh=WTrdPTotxTJdIFLFGtYWFZM4XqkD101T7l44Qh7TgCY=;
+ b=G2cdjuBH4WS7pyWGtE9Mj3k2JYyWDigNZj83ImKos93imjOtOOL/7f0hJxBhBwWTAfHVaFXmdQgrPc0M7atXloUv8LSBHyg4StWsbZ/1hbp1EBrML8dGKvLbUHOt0pKxnybcAgjhzxnIASAdp5P+ej5fEsD3UEAwDdDiqNK5tHc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by SN7PR12MB6862.namprd12.prod.outlook.com (2603:10b6:806:265::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
- 2024 20:32:05 +0000
-Received: from BL6PEPF0001AB76.namprd02.prod.outlook.com
- (2603:10b6:208:2bf:cafe::f4) by BL1PR13CA0239.outlook.office365.com
- (2603:10b6:208:2bf::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.19 via Frontend
- Transport; Tue, 16 Apr 2024 20:32:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BL6PEPF0001AB76.mail.protection.outlook.com (10.167.242.169) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.22 via Frontend Transport; Tue, 16 Apr 2024 20:32:05 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 16 Apr
- 2024 15:32:02 -0500
-Received: from xsjanatoliy50.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Tue, 16 Apr 2024 15:32:00 -0500
-From: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-Date: Tue, 16 Apr 2024 13:31:42 -0700
-Subject: [PATCH v4 7/7] drm/atomic-helper: Add select_output_bus_format
- callback
+ 2024 20:33:59 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::57f3:51f5:d039:ed24]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::57f3:51f5:d039:ed24%5]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
+ 20:33:59 +0000
+Message-ID: <c754bf86-2c3f-43fc-86d9-0cfd306b50da@amd.com>
+Date: Tue, 16 Apr 2024 15:33:55 -0500
+User-Agent: Mozilla Thunderbird
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH v1 01/31] x86/resctrl: Fix allocation of cleanest CLOSID
+ on platforms with no monitors
+To: Dave Martin <Dave.Martin@arm.com>
+Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+ Reinette Chatre <reinette.chatre@intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
+ shameerali.kolothum.thodi@huawei.com,
+ D Scott Phillips OS <scott@os.amperecomputing.com>,
+ carl@os.amperecomputing.com, lcherian@marvell.com,
+ bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+ baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+ Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+ dfustini@baylibre.com, amitsinght@marvell.com,
+ David Hildenbrand <david@redhat.com>, Rex Nie <rex.nie@jaguarmicro.com>
+References: <20240321165106.31602-1-james.morse@arm.com>
+ <20240321165106.31602-2-james.morse@arm.com>
+ <36bdfb3c-2828-4188-88b1-b9d01b2a114f@amd.com>
+ <Zh6jtYS0mu9xdwgS@e133380.arm.com>
+Content-Language: en-US
+From: "Moger, Babu" <babu.moger@amd.com>
+In-Reply-To: <Zh6jtYS0mu9xdwgS@e133380.arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA0PR11CA0085.namprd11.prod.outlook.com
+ (2603:10b6:806:d2::30) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240416-dp-live-fmt-v4-7-c7f379b7168e@amd.com>
-References: <20240416-dp-live-fmt-v4-0-c7f379b7168e@amd.com>
-In-Reply-To: <20240416-dp-live-fmt-v4-0-c7f379b7168e@amd.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>, Michal Simek <michal.simek@amd.com>,
-	"Andrzej Hajda" <andrzej.hajda@intel.com>, Neil Armstrong
-	<neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, Jonas Karlman
-	<jonas@kwiboo.se>, "Jernej Skrabec" <jernej.skrabec@gmail.com>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-CC: <dri-devel@lists.freedesktop.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, Tomi Valkeinen
-	<tomi.valkeinen@ideasonboard.com>, <devicetree@vger.kernel.org>,
-	<linux-media@vger.kernel.org>, Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-X-Mailer: b4 0.13.0
-Received-SPF: None (SATLEXMB03.amd.com: anatoliy.klymenko@amd.com does not
- designate permitted sender hosts)
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB76:EE_|IA1PR12MB7615:EE_
-X-MS-Office365-Filtering-Correlation-Id: da737df2-7fd8-4601-d812-08dc5e5447d9
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|SN7PR12MB6862:EE_
+X-MS-Office365-Filtering-Correlation-Id: e5af71bc-5a79-44fb-26d1-08dc5e548bd6
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	jDA817bVm9BsEJpJDauXzLbudcC1L3b7BEA4b4AhwNvO6/6z2sCz4EqRn98HRTgm5Sqd48lPu4GbACHDaM7urQgcoWoXjQLcEUtGwDAlyCbEj4AkduErS0MwER/5BbciniXw2uMn9TbE9FoRcsA3SXfksjZubqGviRW9tjxtMP7mRBRFUQLP7ZPc743tHe7/VCxADLSgzLQ1kl2z2k9QzgUkap0yxqp4/DJMwMH46xih1I44XOMqYMv0Hs4YHBl3B+QaJbl0wQDGXFEz6+UpFP4K6WyeW34utrnxDtbZi/MI35inXfUuWlaXTitqQgHrtUKWKsWFU4k6/kJ0/y/vnTWtJgraEJuUTodSf0Lw33y3vr/37JUw2WVzS79UUsefC+HDncbKYrUSXfMSIoWOo2QibdBPCON/Br/MgTym53BRXsW/D+uYAJicaErVSFUZvr6h/N3El7U8mZFBugFPGzZO8078+AeocDM/TLXN+XS9Y116Zysg1apNWbh6tZLPQ4uGj93YAi90AbQ2tAK8Xz60dI0g2dTffWfunIeAt08q+Kft1IcgatG4CeHy/BC7c+zSd3gmO+/14i4Jgmmvul7Fh2EgvNwugMzOIYDeBITzZBBzJsw0k7RmrhMqa8F7GU4Dtl8Ssx6pXQXdcbh9qc5z4WXsv5ROgN+mFgiRTzyQJRU2L/XUz0cMlORHJtTikoM2kz+o8YGhSu0R4/89v28x0Sg0Oa7tWYi6oEi6Vbpd+auWhWbzaE7XhsvF94rwyfUdtWvg6jFgsiiQ/eb1oA==
+	9eevL/ZADjYVSUON+Wi2xR89pUJzmo4FTvgaJqStTu54ogQ47APdxxQUxovAzStZlXe6sFS8Ur6bMGSaUNQxTINLyZ2qWNPDSjfIV3GBnHlcVMhX4ZgiFJCnVdR07HKCFnKeKLpI4KA2Mnorr/CinKOgj9ufBH/sBxIe+UjktwTBku9AgmFyHVgKO4UX08OjTO6sxeQJU/dBhIbT2/ZwGkZ2OXDvq5PM/e9RO6nCW8Ie+MajPAfi8X5ZBtkf+H/VnUl5ySOrWPyjM/nkt//QDZ1Kilix+HUwDSqQqqfgbuRBc6KINHsvEbYvx13nk8fqKP7EV/aW1Oei5pzZXSesSrngn/baxRigdVjDCP+SyO2d+g26HqohAW64yUP2tPwWwoIYisS1Twu5iH1eG1pn/inOcr2DuqkZbj5d/0lmooDGz0PUXpupBC2XujF6Juc+BuxusdZGVbyuTqTkM0k+r4QQwzIzrn1SyJ24Xx7fFPNvRpnU4/ZyFEM5I115vOLWqOBX9GV2pmZ8C6lTSdhJ91j1grlzLk8jEQTCDBv0fjDIiLSx4SU7sxZvzcqLsR8wwbkGripHVDTVWtdkQhltP+AM+TJ9Wz6oPwfHYBMdWtKFk8KRJjAozWlPXrcyjgJNh0i5ShYZOzwmVAoxwZuLpa9YwtYppuu5JdX8JYpdmXk=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(1800799015)(376005)(7416005)(921011);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?T3lYTm9mZDVKMXZEOWhldHQyZ2NlWVBiaUhYQWNTeFBPVlE5SkxGK1l6Sjlw?=
+ =?utf-8?B?SWkrTDl5QmFuZk5ZVXIyL3ptTmRnZXlKaG1ZZmJaamR2UFhQOWhHZnNBeXVz?=
+ =?utf-8?B?TmY3azhIVXB2Z2VQU3hVR3AyMFVvbmIvL3U0dEFnbzZBRW8vOGt6cmZxbTQy?=
+ =?utf-8?B?MFBKaHFwamcxUVpwcjlyWmpYelhYWnI3T25Yb3djUEZOZTRNNjQ3eGxBOEt0?=
+ =?utf-8?B?Szgwa1Brc0lSR0VwU2FSRzdkL0MyTUkxL05IVFJHYlFubkJPSmtrb3E1Yytu?=
+ =?utf-8?B?ak5WTHZ0Y1g5dUVZWlVJb1ByZ2p5S05zbWZkT3NkSHdZbXZHUzcxeHVzWUVt?=
+ =?utf-8?B?U1NuRWhtVFRnb1RWZVd1WmVRUWFLRTdvZXpDUzdsTm8yQ0FaRjRCNEJCdFVL?=
+ =?utf-8?B?bEswYlBzOXhqeldHTmxMSDdMUFJZaE0xTWpoMjNiTklmMEFzMVdKOWxOU0Fz?=
+ =?utf-8?B?VVlIMHVQRG5lZFJ6cW5JTlhGWmYwVis1cldCYkxiVzJxOGpxd2YzRUkxendj?=
+ =?utf-8?B?aFVGNFI4dFIxQm5EUjN1NTE1a2NLV0xRNzJJRE53SklqNGRITVAvakcxTCts?=
+ =?utf-8?B?RnpRWjRNaThCb2pnOEFSaDVVd2ZtY2hBTjVwNkdjZU5RRENlR250dDh0MUZk?=
+ =?utf-8?B?MHRqZTR1WWlzalZzRDFrNUovS0N5WWhibGtlb25haS9Ta1BLVG5vQnRtQ00y?=
+ =?utf-8?B?ZjRXUWtDZWg4WVdkRVZBVDdWeVIzWmJsRG8xNWdRanQyVUtTc0QyN3BQSENq?=
+ =?utf-8?B?QzE0Q0prQlo5R0ZMZEYwMnpoRDRIUXV1Q29rN3hVKy9qQUJBbzdQVDEwTE14?=
+ =?utf-8?B?d0Z6cXdlTHBBTmZtNkJnTStld3Z3WGQ2S245ZEZFT0I3cWlETUJFSGtucm5Q?=
+ =?utf-8?B?eHVSSU1ibUh2L0Rnc0FVa2puQ1FBL2tlMDhqK3BKeGtvTlB0cWhXRXI4QVNE?=
+ =?utf-8?B?YjZnb3lTNUZ6KzRIMHhJakJkTEozVnhiY0YwM3Z1S25xbFFXWFRxMFEvUUJQ?=
+ =?utf-8?B?b2JwV2RZdm5ZajlKenVQYWhNcFhlTXNiNno3M3lQSUNIenBSYlRsYnNWTDB2?=
+ =?utf-8?B?N21kL2NpZnFqREZEdGNabWw0SmU3VnlQUVlTY1RwUVVwYWprOUw0azJFVWZt?=
+ =?utf-8?B?MEg1akt2RC8vOWRUeUVVTVRHWGJKa3VtQ1N3bHdqWW1EYmpXYjZoUm83bTlk?=
+ =?utf-8?B?UXlsR2RnY1hHaFNrZjd0STVLc1ZlVjdmT2VqUXowOFowdTd2Vkl3RVVDM1hZ?=
+ =?utf-8?B?aHhPbm1xMHc5cXJRQVF5b0Y0dlhqV2hjTHNFc1Z3b3B4TGZSNFN4bG1HQUhI?=
+ =?utf-8?B?U28vN1RRUVRFYnlQb2p3NFdvRGp4dDZ5S3d6VnBDV0Z6eHVCbEUrUkxXLzRS?=
+ =?utf-8?B?NlZnbjJLanhWdXl6WGhHVVV0VksxUHdIMVRVNVB1NjNYMTdhNnhiMVFQcGU2?=
+ =?utf-8?B?UStBQnpXQ01yRHB3MDd2dHhoMXhuV2lhekgyOENjaVBydGNVQ250WW43SlU5?=
+ =?utf-8?B?eS9qK1NOV0tvZ2JyWVdoUFZNeVV6L3BmMGJocHBtbWNhakIzM1NnK1dtOWdO?=
+ =?utf-8?B?TXFCQXp0Q2ZwTFBtSzBiRUcxQzhqVzgzcThOMVN6WE02WVA2L2lNMnJNUTk4?=
+ =?utf-8?B?cGVITEQvNzM3MzlrOFJ3L2U1RWlHeXUrNFVPY0pxVXJiL3lRV2tLUzNVcWk1?=
+ =?utf-8?B?WmFWdDRxbTMwcHZ4Z1VBUGV3RjFBWDdlbytnYW91Tit4VzNNd2p2cWxPNFh5?=
+ =?utf-8?B?NDU5bXZGSlg5Y0pBQk1SaW4xRFNCaUdKV1gzZnUxaVBzbzFvdURpdlhHTDdZ?=
+ =?utf-8?B?TlRYcUJjT1pwQm9idWI3NjRBOTNvSUtSdTZOTGZZNHV3Y1V3aWhvRVJSdVpm?=
+ =?utf-8?B?WmdpTTRKdG1EM0ErZmtiVGJlRlNCOHRxUzRmbEdhQ1VEdHBMOWtCbzRQYmlh?=
+ =?utf-8?B?UWR2NFhaVms3d0VKM1hjbG0yNGc5M01NVzdoM1ZwTmI0VFB1aDA2V3Zici81?=
+ =?utf-8?B?WnJoUVE2bitnZFpsWENQaXNhbzNjdTllMS80K0FwMG9KNHV6ajFaeVNlK0FH?=
+ =?utf-8?B?eHNkNHUxRERRczJSalNZcG13NU1sbUNVNEtpVkVRNDEvU25FVWRRZVgrNXpi?=
+ =?utf-8?Q?endo=3D?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 20:32:05.4396
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5af71bc-5a79-44fb-26d1-08dc5e548bd6
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 20:33:59.7831
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: da737df2-7fd8-4601-d812-08dc5e5447d9
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF0001AB76.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7615
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FOCM5v5fDcRS3rz0KlfU8XqFTBBPVW0bw6EYzj3J7RdxSMuf0cnt0pYHcosoPiYS
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6862
 
-Add optional drm_crtc_helper_funcs.select_output_bus_format callback. This
-callback allows to negotiate compatible media bus format on the link
-between CRTC and connected DRM encoder or DRM bridge chain. A good usage
-example is the CRTC implemented as FPGA soft IP. This kind of CRTC will
-most certainly support a single output media bus format, as supporting
-multiple runtime options consumes extra FPGA resources. A variety of
-options for the FPGA designs are usually achieved by synthesizing IP with
-different parameters.
+Hi Dave,
 
-Add drm_helper_crtc_select_output_bus_format that wraps
-drm_crtc_helper_funcs.select_output_bus_format.
+On 4/16/24 11:13, Dave Martin wrote:
+> On Mon, Apr 15, 2024 at 03:27:42PM -0500, Moger, Babu wrote:
+>>
+>>
+>> On 3/21/24 11:50, James Morse wrote:
+>>> commit 6eac36bb9eb0 ("x86/resctrl: Allocate the cleanest CLOSID by
+>>> searching closid_num_dirty_rmid") added a Kconfig option that causes
+>>
+>> This is not true. The Kconfig option is never added. It is added later in
+>> the series. There is also comment
+>> on this https://lore.kernel.org/lkml/ZhecyLQsGZ9Iv8wU@gmail.com/
+>>
+>>
+>> Shouldn't the Kconfig option added first before doing this change?
+>>
+>>> resctrl to search for the CLOSID with the fewest dirty cache lines when
+>>> creating a new control group. This depends on the values read from the
+>>> llc_occupancy counters.
+> 
+> See David's comments and previous discussion on this patch.
+> 
+> You're right to point out that the description of the original commit
+> does seem a bit garbled though: CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID is
+> not present in Kconfig here, but already referenced by other code.
+> 
+> We seem to have a consensus that it's OK to have a dangling IS_ENABLED()
+> so long as the option is added formally to Kconfig later, but it looks
+> like the commit message here should be reworded.
+> 
+> Does the following make sense?
+> 
+> --8<--
+> 
+> commit 6eac36bb9eb0 ("x86/resctrl: Allocate the cleanest CLOSID by
+> searching closid_num_dirty_rmid") added logic that causes resctrl to
+> search for the CLOSID with the fewest dirty cache lines when creating a
+> new control group, if requested by the arch code. This depends on the
+> values read from the llc_occupancy counters. The logic is applicable to
+> architectures where the CLOSID effectively forms part of the monitoring
+> identifier and so do not allow complete freedom to choose an unused
+> monitoring identifier for a given CLOSID.
+> 
+> -->8--
 
-Incorporate select_output_bus_format callback into the format negotiation
-stage to fix the input bus format of the first DRM bridge in the chain.
+That looks good. Thanks
 
-Save negotiated output media bus format in drm_crtc_state.
+> 
+> 
+> Although it would probably have been better if the Kconfig option had
+> been added upstream, this patch does not create that that situation and
+> the series (taken as a whole) resolves it.
+> 
+> So I am not sure that anything would be solved or improved by changing
+> the body of this patch, but if people still have concerns then I guess
+> we can look at it.
 
-Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
----
- drivers/gpu/drm/drm_bridge.c             | 14 ++++++++++--
- drivers/gpu/drm/drm_crtc_helper.c        | 38 ++++++++++++++++++++++++++++++++
- include/drm/drm_crtc.h                   | 11 +++++++++
- include/drm/drm_crtc_helper.h            |  5 +++++
- include/drm/drm_modeset_helper_vtables.h | 30 +++++++++++++++++++++++++
- 5 files changed, 96 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-index 521a71c61b16..955ca108cd4b 100644
---- a/drivers/gpu/drm/drm_bridge.c
-+++ b/drivers/gpu/drm/drm_bridge.c
-@@ -28,6 +28,7 @@
- 
- #include <drm/drm_atomic_state_helper.h>
- #include <drm/drm_bridge.h>
-+#include <drm/drm_crtc_helper.h>
- #include <drm/drm_debugfs.h>
- #include <drm/drm_edid.h>
- #include <drm/drm_encoder.h>
-@@ -879,7 +880,8 @@ static int select_bus_fmt_recursive(struct drm_bridge *first_bridge,
- 	unsigned int i, num_in_bus_fmts = 0;
- 	struct drm_bridge_state *cur_state;
- 	struct drm_bridge *prev_bridge;
--	u32 *in_bus_fmts;
-+	struct drm_crtc *crtc = crtc_state->crtc;
-+	u32 *in_bus_fmts, in_fmt;
- 	int ret;
- 
- 	prev_bridge = drm_bridge_get_prev_bridge(cur_bridge);
-@@ -933,7 +935,15 @@ static int select_bus_fmt_recursive(struct drm_bridge *first_bridge,
- 		return -ENOMEM;
- 
- 	if (first_bridge == cur_bridge) {
--		cur_state->input_bus_cfg.format = in_bus_fmts[0];
-+		in_fmt = drm_helper_crtc_select_output_bus_format(crtc,
-+							crtc_state,
-+							in_bus_fmts,
-+							num_in_bus_fmts);
-+		if (!in_fmt) {
-+			kfree(in_bus_fmts);
-+			return -ENOTSUPP;
-+		}
-+		cur_state->input_bus_cfg.format = in_fmt;
- 		cur_state->output_bus_cfg.format = out_bus_fmt;
- 		kfree(in_bus_fmts);
- 		return 0;
-diff --git a/drivers/gpu/drm/drm_crtc_helper.c b/drivers/gpu/drm/drm_crtc_helper.c
-index 2dafc39a27cb..4d3aa39c8a82 100644
---- a/drivers/gpu/drm/drm_crtc_helper.c
-+++ b/drivers/gpu/drm/drm_crtc_helper.c
-@@ -1055,3 +1055,41 @@ int drm_helper_force_disable_all(struct drm_device *dev)
- 	return ret;
- }
- EXPORT_SYMBOL(drm_helper_force_disable_all);
-+
-+/**
-+ * drm_helper_crtc_select_output_bus_format - Select output media bus format
-+ * @crtc: The CRTC to query
-+ * @crtc_state: The new CRTC state
-+ * @supported_fmts: List of media bus format options to pick from
-+ * @num_supported_fmts: Number of media bus formats in @supported_fmts list
-+ *
-+ * Encoder drivers may call this helper to give the connected CRTC a chance to
-+ * select compatible or preffered media bus format to use over the CRTC encoder
-+ * link. Encoders should provide list of supported input MEDIA_BUS_FMT_* for
-+ * CRTC to pick from. CRTC driver is expected to select preferred media bus
-+ * format from the list and, once enabled, generate the signal accordingly.
-+ *
-+ * Returns:
-+ * Selected preferred media bus format or 0 if CRTC does not support any from
-+ * @supported_fmts list.
-+ */
-+u32 drm_helper_crtc_select_output_bus_format(struct drm_crtc *crtc,
-+					     struct drm_crtc_state *crtc_state,
-+					     const u32 *supported_fmts,
-+					     unsigned int num_supported_fmts)
-+{
-+	if (!crtc || !crtc_state || !supported_fmts || !num_supported_fmts)
-+		return 0;
-+
-+	if (!crtc->helper_private ||
-+	    !crtc->helper_private->select_output_bus_format)
-+		crtc_state->output_bus_format = supported_fmts[0];
-+	else
-+		crtc_state->output_bus_format =
-+			crtc->helper_private->select_output_bus_format(crtc,
-+							crtc_state,
-+							supported_fmts,
-+							num_supported_fmts);
-+	return crtc_state->output_bus_format;
-+}
-+EXPORT_SYMBOL(drm_helper_crtc_select_output_bus_format);
-diff --git a/include/drm/drm_crtc.h b/include/drm/drm_crtc.h
-index 8b48a1974da3..cdaa27f50af7 100644
---- a/include/drm/drm_crtc.h
-+++ b/include/drm/drm_crtc.h
-@@ -317,6 +317,17 @@ struct drm_crtc_state {
- 	 */
- 	enum drm_scaling_filter scaling_filter;
- 
-+	/**
-+	 * @output_bus_format:
-+	 *
-+	 * CRTC output media bus format of the video signal negotiated between
-+	 * CRTC and encoder. This value should be one of MEDIA_BUS_FMT*
-+	 * from uapi/linux/media-bus-format.h. It is safe to ignore
-+	 * @output_bus_format if CRTC doesn't support multiple output bus format
-+	 * options.
-+	 */
-+	u32 output_bus_format;
-+
- 	/**
- 	 * @event:
- 	 *
-diff --git a/include/drm/drm_crtc_helper.h b/include/drm/drm_crtc_helper.h
-index 8c886fc46ef2..b7eb52f3ce41 100644
---- a/include/drm/drm_crtc_helper.h
-+++ b/include/drm/drm_crtc_helper.h
-@@ -38,6 +38,7 @@
- struct drm_atomic_state;
- struct drm_connector;
- struct drm_crtc;
-+struct drm_crtc_state;
- struct drm_device;
- struct drm_display_mode;
- struct drm_encoder;
-@@ -61,5 +62,9 @@ int drm_helper_connector_dpms(struct drm_connector *connector, int mode);
- 
- void drm_helper_resume_force_mode(struct drm_device *dev);
- int drm_helper_force_disable_all(struct drm_device *dev);
-+u32 drm_helper_crtc_select_output_bus_format(struct drm_crtc *crtc,
-+					     struct drm_crtc_state *crtc_state,
-+					     const u32 *supported_fmts,
-+					     unsigned int num_supported_fmts);
- 
- #endif
-diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
-index 881b03e4dc28..6d5a081e21a4 100644
---- a/include/drm/drm_modeset_helper_vtables.h
-+++ b/include/drm/drm_modeset_helper_vtables.h
-@@ -489,6 +489,36 @@ struct drm_crtc_helper_funcs {
- 				     bool in_vblank_irq, int *vpos, int *hpos,
- 				     ktime_t *stime, ktime_t *etime,
- 				     const struct drm_display_mode *mode);
-+
-+	/**
-+	 * @select_output_bus_format
-+	 *
-+	 * Called by the connected DRM encoder to negotiate input media bus
-+	 * format. CRTC is expected to pick preferable media formats from the
-+	 * list provided by the DRM encoder.
-+	 *
-+	 * This callback is optional.
-+	 *
-+	 * Parameters:
-+	 *
-+	 * crtc:
-+	 *     The CRTC.
-+	 * crcs_state:
-+	 *     New CRTC state.
-+	 * supported_fmts:
-+	 *     List of input bus formats supported by the encoder.
-+	 * num_supported_fmts:
-+	 *     Number of formats in the list.
-+	 *
-+	 * Returns:
-+	 *
-+	 * Preferred bus format from the list or 0 if CRTC doesn't support any
-+	 * from the provided list.
-+	 */
-+	u32 (*select_output_bus_format)(struct drm_crtc *crtc,
-+					struct drm_crtc_state *crtc_state,
-+					const u32 *supported_fmts,
-+					unsigned int num_supported_fmts);
- };
- 
- /**
+> 
+> 
+>>>
+>>> This support missed that some platforms may not have these counters.
+>>> This causes a NULL pointer dereference when creating a new control
+>>> group as the array was not allocated by dom_data_init().
+>>>
+>>> As this feature isn't necessary on platforms that don't have cache
+>>> occupancy monitors, add this to the check that occurs when a new
+>>> control group is allocated.
+>>>
+>>> The existing code is not selected by any upstream platform, it makes
+>>> no sense to backport this patch to stable.
+>>>
+>>> Signed-off-by: James Morse <james.morse@arm.com>
+>>> ---
+>>>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 3 ++-
+>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>>> index 011e17efb1a6..1767c1affa60 100644
+>>> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>>> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+>>> @@ -149,7 +149,8 @@ static int closid_alloc(void)
+>>>  
+>>>  	lockdep_assert_held(&rdtgroup_mutex);
+>>>  
+>>> -	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
+>>> +	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID) &&
+>>> +	    is_llc_occupancy_enabled()) {
+>>>  		cleanest_closid = resctrl_find_cleanest_closid();
+>>>  		if (cleanest_closid < 0)
+>>>  			return cleanest_closid;
+>>
+>> -- 
+>> Thanks
+>> Babu Moger
+>>
+> 
+> [...]
+> 
+> Cheers
+> ---Dave
 
 -- 
-2.25.1
-
+Thanks
+Babu Moger
 
