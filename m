@@ -1,53 +1,56 @@
-Return-Path: <linux-kernel+bounces-146413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E51218A64EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:21:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 346568A64F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:21:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A64D1F22BCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:21:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 664D01C21E79
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:21:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52CF87E563;
-	Tue, 16 Apr 2024 07:21:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC013BBD5;
+	Tue, 16 Apr 2024 07:21:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XBG7Ntgc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L/N0NDiq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97DE07602B
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:21:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331F77FBC6
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:21:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713252075; cv=none; b=RtPhRqXIOSCn4scRVVn+XFqkE42pCABvQ+YcrgGl9raBgHw6IYOZiTdavOahmwDTn/ZHR0k5CzoDRQ/uFBANLByFIfeIZetyp/rRnlCobhSTyAjNio+vq+dWkFJA7P1dtA9a/DrucND2z3KXdECZdBJs0+VKEf7k50ZUDbzjoFc=
+	t=1713252077; cv=none; b=T/9iWYPDfK4CocWpWpJSWrGtpZIhYpN+ZAnBganwh7k1k6DVNSvqXLjJxtDAe9gLVLDCYi2cUkZs7NTzYGx9/m+MdHA5YvOBPf77cJwuhp/40pAtndNryg/8nYfSGYwSllInwt7RJfCm+5CQEMzZ+q05/Ou6hqNKv/LmFo0jD8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713252075; c=relaxed/simple;
-	bh=0eAYPFz5NJz8CvYb2+reHHZOCHtdyUHNHA7JFN9scDM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lSYMyyDhetL5ijbyfXqxad0+NT4Hw1jRDwkIHoA1SynAEBY3f3/q1Ecg0WDmcIXofaYmNG2RPJ41Y0JHl5V8SMpS7GzD2ReOLayat+3H/3/1Y1zHK6fkSnErIfLGjXV53okS7cnxlK+XlATp2WgKZ3KEiOTOjTlbw6g7x35yuxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XBG7Ntgc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8F64C113CE;
-	Tue, 16 Apr 2024 07:21:13 +0000 (UTC)
+	s=arc-20240116; t=1713252077; c=relaxed/simple;
+	bh=djpKyoxPD0DIOaQ6IMcLFl5d0YTE8pMEG0ARTsy1XVc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=A5KWXnHZrSVWDnQOR+9m0RfvZpU0JOOhf4OdqPtZrSNtoIHkUPntcQXkVB1HeMXSxsXoJlj06zsZ/N9f0JexjTH9wj4vdtwJtCZx1yOa11Vgrf8diiK3kDzmPJVeVlWiNR0PVolJwPMoo4L7iofV2lpJIgNXiCOxcVO7n1r7N7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L/N0NDiq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD080C2BD10;
+	Tue, 16 Apr 2024 07:21:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713252075;
-	bh=0eAYPFz5NJz8CvYb2+reHHZOCHtdyUHNHA7JFN9scDM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=XBG7NtgcrQECr0YpoPjUOFyUyw2eqNUa6jVQRPDU3MaoW3IouNXXIHJ8kjMy3n81O
-	 XXS7DknigjgoYcLCtZe0+lCTSxQOrbNHKR4s2pLNEVJ25vlZ6anG6oMO4fYNNmLjqs
-	 v6VEEgbvfZhTWxifnycvVWkzVEshrl82iK6c744yo2hfzBHRdpvahYBS68hqKPx5Op
-	 +yqhcsFO4FVFu6U1TjzOsRtkcukDpP9VRco+z8g2Z+lmQozIS/fiXO4iur/ciZ7ODx
-	 QEhbxMQ8W3e2PvxyBIUJNfwyEnC5ukc9rvhkhPvBE61r7gP/lLwRMymtU69gRWt8U+
-	 56xngnOpHXVpQ==
+	s=k20201202; t=1713252077;
+	bh=djpKyoxPD0DIOaQ6IMcLFl5d0YTE8pMEG0ARTsy1XVc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=L/N0NDiqd9ZL7Q8iDqkpEjnMorp+1p7z58Z6PIaYlzoOqQ3QYbXnon6GN8Pt+9Cjn
+	 qlEjksywYkAYutBWKmOX2isenwRUFUSr3TwLf2sC54uu9zDntM06FxjFD/Wmeg0m9w
+	 +qbhvuZ92E5/zRm9WGKAxzq4fwEfNx2QqhHanMDN7BBrGo6CYBcyZbTH3gOQsozS7U
+	 BEnRbc8zSF4zI19StzSPBicX5OvH3GA073yU2SaWltNXw6ucfoMjaHDQFqD0bcB+zo
+	 ZQNHn3xEVrxs8uJPwznNs2oulYma54XN/ZVvE1aZ99u0HssYQpcUi7+xbU/LxP/1Ye
+	 tSuKANTYjZ2eg==
 From: Chao Yu <chao@kernel.org>
 To: jaegeuk@kernel.org
 Cc: linux-f2fs-devel@lists.sourceforge.net,
 	linux-kernel@vger.kernel.org,
 	Chao Yu <chao@kernel.org>
-Subject: [PATCH 1/2] f2fs: fix comment in sanity_check_raw_super()
-Date: Tue, 16 Apr 2024 15:21:07 +0800
-Message-Id: <20240416072108.5819-1-chao@kernel.org>
+Subject: [PATCH 2/2] f2fs: remove unnecessary block size check in init_f2fs_fs()
+Date: Tue, 16 Apr 2024 15:21:08 +0800
+Message-Id: <20240416072108.5819-2-chao@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240416072108.5819-1-chao@kernel.org>
+References: <20240416072108.5819-1-chao@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,27 +59,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Commit d7e9a9037de2 ("f2fs: Support Block Size == Page Size") missed to
-adjust comment in sanity_check_raw_super(), fix it.
+After commit d7e9a9037de2 ("f2fs: Support Block Size == Page Size"),
+F2FS_BLKSIZE equals to PAGE_SIZE, remove unnecessary check condition.
 
 Signed-off-by: Chao Yu <chao@kernel.org>
 ---
- fs/f2fs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/f2fs/super.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
 diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 0a34c8746782..6d1e4fc629e2 100644
+index 6d1e4fc629e2..32aa6d6fa871 100644
 --- a/fs/f2fs/super.c
 +++ b/fs/f2fs/super.c
-@@ -3456,7 +3456,7 @@ static int sanity_check_raw_super(struct f2fs_sb_info *sbi,
- 		}
- 	}
+@@ -4933,12 +4933,6 @@ static int __init init_f2fs_fs(void)
+ {
+ 	int err;
  
--	/* Currently, support only 4KB block size */
-+	/* only support block_size equals to PAGE_SIZE */
- 	if (le32_to_cpu(raw_super->log_blocksize) != F2FS_BLKSIZE_BITS) {
- 		f2fs_info(sbi, "Invalid log_blocksize (%u), supports only %u",
- 			  le32_to_cpu(raw_super->log_blocksize),
+-	if (PAGE_SIZE != F2FS_BLKSIZE) {
+-		printk("F2FS not supported on PAGE_SIZE(%lu) != BLOCK_SIZE(%lu)\n",
+-				PAGE_SIZE, F2FS_BLKSIZE);
+-		return -EINVAL;
+-	}
+-
+ 	err = init_inodecache();
+ 	if (err)
+ 		goto fail;
 -- 
 2.40.1
 
