@@ -1,80 +1,153 @@
-Return-Path: <linux-kernel+bounces-146908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FA2D8A6CC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:47:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6B6A8A6CC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:48:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59A6928424A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:47:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A25A1283A2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:48:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D7712C55D;
-	Tue, 16 Apr 2024 13:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3024C12C559;
+	Tue, 16 Apr 2024 13:48:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="zaU4dryC"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f/qWE53G"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657B91272AA;
-	Tue, 16 Apr 2024 13:46:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6768812BF2A;
+	Tue, 16 Apr 2024 13:48:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713275218; cv=none; b=D+BJOgZz9v+7pavhxp320MbUdPZ0/EFDuj+/ZgfaqJXla3Bjss3XEGsTYqN1PVxOqq3KBCWcJzJhl/TTjP3aN9vnJu1i9Oc+TJIM+oBZVBXzNDn6hjaQf/Kab8R+hpxuLHomIfjHmoV235JMcoxoZhZrE88rTHGP3+BoZyJTtrE=
+	t=1713275321; cv=none; b=Chc+6ZnfsYFLuW8hj1U7zVnSdgbS7n+Sph4hFtAlp7RcK/LHy6HutOgsNzLwhcWBrizml0J+t2Hek9n8WhkP3Dgl2ntHWhRo6nZ/AsetULjy1aKpzRmh+O/6z2tRk1K/LlXFuh9fspvEVpR8QfFq2fpR5l6PVn0Y4bJjkhFv70E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713275218; c=relaxed/simple;
-	bh=UFZS2qhw3Gwe+c8wfAS9gjs/ftg/X94cDZM2MpqoPnI=;
+	s=arc-20240116; t=1713275321; c=relaxed/simple;
+	bh=Oip3+4PrV0FMvAgVwYG7/089d61ifwAWxkR30pZ6edY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CfUNch0AL0YbYVNpStKxCUHI7jYhDZd18LRDoSapYWSdMrwNyDVWzxj+SPE2Kd0lAqUAI7jBHaf7aHe3M9+ea8CZGYmtO3yswTdIriIvmmD7KGBrQqZKyRIRxuTppsWQrvnqigVc5FcpwSsHY2hKnXX7qjon1swnlXQHFJpAF04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=zaU4dryC; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=kvfisbNrUr5sf0S3A1nPCGGsrN3i5lCUqXwLFDIDJxc=; b=zaU4dryChTbyn+h5fpt/46J1rO
-	ZWaTM9ZCNkBg0FOdMH661xyOE4pMiI7WKHLbw0t5ng66WnojzXZEze5V6zyrZfYbHSzmhqBDGZ1SE
-	cgYLgiXAaqwMMvKAuAeUaVvm6V3LJRBqiAkt5ibC3qPBEm0GUpw0Kj9mBVkMQlEX9BPY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rwj8d-00D8ld-OM; Tue, 16 Apr 2024 15:46:19 +0200
-Date: Tue, 16 Apr 2024 15:46:19 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Stefan Eichenberger <eichest@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	lxu@maxlinear.com, hkallweit1@gmail.com, linux@armlinux.org.uk,
-	michael@walle.cc, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] net: phy: mxl-gpy: add new device tree property
- to disable SGMII autoneg
-Message-ID: <3f7f278f-e490-47f1-971c-ecf44a70cee4@lunn.ch>
-References: <20240416121032.52108-1-eichest@gmail.com>
- <20240416121032.52108-3-eichest@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QKg618ksre6d9I5p5WIH+ZFJlUwpa95HaDwhHDCoHbhaMM93lIui2aGkerxzZ0eaLAE/sUpMOCM+bFzCopjo7kCNNwNG0QigwVtg+nFSO2urAa1Z1cVWi8FwzDwKbmWHDNWpxRuHrv3l/CgB4BgnsK0d/Np34D3yDDgooSRTOHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f/qWE53G; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713275320; x=1744811320;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=Oip3+4PrV0FMvAgVwYG7/089d61ifwAWxkR30pZ6edY=;
+  b=f/qWE53GG4LM/Wz9rT0xVBBw97QnqzuREfIMadU1gkDpltWAI7rDEffa
+   e5Q7HFVYrIHjBBdvv0phMIMigRenBbqTn+d0qfnH05uwI8+Qu2YQu0tFE
+   SXUwX9ye7djt/wSbaPLIZSAl1zw23CakDLgSONL/ejLEj0+Si4oZIQ9Zy
+   hPPyA/ln+uIrwwWCgeLmUHsd6kOzQvJYrl4m8tsNCPv3Fz0DSVrsDG/Zo
+   5W6jx2YV7egrypl1gBEHK1eCtx2yR+hK9Q7QArFNoLOVTUCWI7zJkxh/C
+   4c9U0HcpChUGE1U04vPC7Zq+NYwe4ytJtSdl23FtBSeWnEqzIkhuzJ8Lu
+   A==;
+X-CSE-ConnectionGUID: KO7/Yg9URuS2xb10rfkG5A==
+X-CSE-MsgGUID: lnhd2FcaQdagmezp8qEubQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8838455"
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="8838455"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 06:48:39 -0700
+X-CSE-ConnectionGUID: rDgqA8g5SjaGFC/H2FdqcA==
+X-CSE-MsgGUID: zEFE+wLAQ6S0aqY9WueuoQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="53445503"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 06:48:35 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1rwjAn-00000004i6e-19hx;
+	Tue, 16 Apr 2024 16:48:33 +0300
+Date: Tue, 16 Apr 2024 16:48:32 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Ferry Toth <fntoth@gmail.com>
+Cc: Hardik Gajjar <hgajjar@de.adit-jv.com>, gregkh@linuxfoundation.org,
+	s.hauer@pengutronix.de, jonathanh@nvidia.com,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+	quic_linyyuan@quicinc.com, paul@crapouillou.net,
+	quic_eserrao@quicinc.com, erosca@de.adit-jv.com
+Subject: Re: [PATCH v4] usb: gadget: u_ether: Replace netif_stop_queue with
+ netif_device_detach
+Message-ID: <Zh6BsK8F3gCzGJfE@smile.fi.intel.com>
+References: <ZaQS5x-XK08Jre6I@smile.fi.intel.com>
+ <20240115132720.GA98840@vmlxhi-118.adit-jv.com>
+ <f25283fc-4550-4725-960b-2ea783fd62e1@gmail.com>
+ <aeee83d8-dee3-42ed-b705-988b17800721@gmail.com>
+ <20240405113855.GA121923@vmlxhi-118.adit-jv.com>
+ <321e908e-0d10-4e36-8dc4-6997c73fe2eb@gmail.com>
+ <ZhbOZsp-XHemVhQz@smile.fi.intel.com>
+ <20240411142637.GA110162@vmlxhi-118.adit-jv.com>
+ <ZhgSPCq6sVejRjbj@smile.fi.intel.com>
+ <be8904bd-71ea-4ae1-b0bc-9170461fd0d9@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240416121032.52108-3-eichest@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <be8904bd-71ea-4ae1-b0bc-9170461fd0d9@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Tue, Apr 16, 2024 at 02:10:32PM +0200, Stefan Eichenberger wrote:
-> Add a new device tree property to disable SGMII autonegotiation and
-> instead use the option to match the SGMII speed to what was negotiated
-> on the twisted pair interface (tpi).
+On Thu, Apr 11, 2024 at 10:52:36PM +0200, Ferry Toth wrote:
+> Op 11-04-2024 om 18:39 schreef Andy Shevchenko:
+> > On Thu, Apr 11, 2024 at 04:26:37PM +0200, Hardik Gajjar wrote:
+> > > On Wed, Apr 10, 2024 at 08:37:42PM +0300, Andy Shevchenko wrote:
+> > > > On Sun, Apr 07, 2024 at 10:51:51PM +0200, Ferry Toth wrote:
+> > > > > Op 05-04-2024 om 13:38 schreef Hardik Gajjar:
 
-Could you explain this is more detail.
+..
 
-SGMII always runs its clocks at 1000Mbps. The MAC needs to duplicate
-the symbols 100 times when running at 10Mbs, and 10 times when running
-at 100Mbps.
+> > > > > Exactly. And this didn't happen before the 2 patches.
+> > > > > 
+> > > > > To be precise: /sys/class/net/usb0 is not removed and it is a link, the link
+> > > > > target /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/net/usb0 no
+> > > > > longer exists
+> > > So, it means that the /sys/class/net/usb0 is present, but the symlink is
+> > > broken. In that case, the dwc3 driver should recreate the device, and the
+> > > symlink should become active again
+> 
+> Yes, on first enabling gadget (when device mode is activated):
+> 
+> root@yuna:~# ls /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
+> driver  net  power  sound  subsystem  suspended  uevent
+> 
+> Then switching to host mode:
+> 
+> root@yuna:~# ls /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
+> ls: cannot access
+> '/sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/': No such file
+> or directory
+> 
+> Then back to device mode:
+> 
+> root@yuna:~# ls /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
+> driver  power  sound  subsystem  suspended  uevent
+> 
+> net is missing. But, network functions:
+> 
+> root@yuna:~# ping 10.42.0.1
+> PING 10.42.0.1 (10.42.0.1): 56 data bytes
+> 
+> Mass storage device is created and removed each time as expected.
 
-    Andrew
+So, what's the conclusion? Shall we move towards revert of those two changes?
+
+> > > I have the dwc3 IP base usb controller, Let me check with this patch and
+> > > share result here.  May be we need some fix in dwc3
+> Would have been nice if someone could test on other controller as well. But
+> another instance of dwc3 is also very welcome.
+> > It's quite possible, please test on your side.
+> > We are happy to test any fixes if you come up with.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
