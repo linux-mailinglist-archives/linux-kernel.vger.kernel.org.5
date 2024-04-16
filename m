@@ -1,139 +1,115 @@
-Return-Path: <linux-kernel+bounces-146757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CF018A6A6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:14:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B66D8A6A76
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:14:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF3601C20FD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:14:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BB4F1C20CB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 683D112AADC;
-	Tue, 16 Apr 2024 12:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 233FE85644;
+	Tue, 16 Apr 2024 12:14:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TgTsVXOy"
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="DzzFlkEU"
+Received: from mout.web.de (mout.web.de [217.72.192.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FCE71DFEF
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 12:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6427112A163;
+	Tue, 16 Apr 2024 12:14:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713269648; cv=none; b=Lql4G4eRr1WQrUi0HUmoOmCiAAHDfuYAv5Qc1lYzs6mICSM3mHNy72zY4xAE8Ju2Fa17BiCv5QVFCOGeZp8XIoF6BAQu6F3wHr6C9mnZHt5YWF0RQ5sfrSp9FOmR+AU9sQJa1tWejWalrvD2Q6LvZAyWENv5pSTuOr3d7RUU6iU=
+	t=1713269684; cv=none; b=bnvr7kTsmzhFPYHDyJaTicyxcXliQLtzVBUmCNT9ysZKSAY2W5YW+/hIgFO+GMI2HQFWGFytq9vhl8LbQU+6pIcZcEQ8bEJdLgHVJaDMDOb3mVPHr3cXIG99hArPTGdfSlNLcjGuWAZ+T1O//XIxjD1CybFM6y8PhVtC54/MeTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713269648; c=relaxed/simple;
-	bh=48Gr5eNn+Ssi4i2JyFoZuqgowPbwgV2AjpZpW+lUl3I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NJvYNZ0OH+5swrIxo15Za/72IZjUSuy7MJu8tdcKKkmEfgVl5H5gJl5HBoojhhSFEaQpG4Mh/BZeSBiUWtjTjKOan1m6LPQjOZa0L2raehXtKgCYtrXQcr0SDZgrN25iYwzGihNrx/ufsrGjnw2vYMFfo4sETxZWgRDeCsbSIn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TgTsVXOy; arc=none smtp.client-ip=209.85.161.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5aa28cde736so2521794eaf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 05:14:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713269646; x=1713874446; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z6x8KfkMeFuCLUkF0VuQt50edEuiXuMJGbYVUcWevqo=;
-        b=TgTsVXOy1BpfAVmNZd6pMis8Xm+uhVRYhI58Qf5crvUjjKkK2v9QVI4lbTBpSMDkdc
-         pg1Rakbv+OYxgl3xZ88b3I60ow/heXASw5e0dysEHExpeoiAZdCIxAVD1WtzUnAR+yCd
-         meOrqtKhi0Zpen295B1WWAqNwm9L7+waTIs/ZNjlwGwlFcjjdZ9CumLzTI+59roVspIL
-         L3DYE/ADhw7hpVujQQpAUOsDq3n7CN1UWKyOXcQSHuWE9ZYCyb+ZXkMYq4WRrxjJRhKW
-         N4eLvb+KucEpq7wDI2B8ZD2sTNJ2TeI2n06jtbZUFVAHCyrN8OJyuw8zkSJ9IDzYIcyq
-         WU4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713269646; x=1713874446;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z6x8KfkMeFuCLUkF0VuQt50edEuiXuMJGbYVUcWevqo=;
-        b=F/YpH6Lt9c/6rx35KnX+8CsNvRBBXpBkofE/2/gzqf3Kv11CpmiGfTjjgJJEuINcm/
-         GfyYFLsZzCVP744oGflyRTCBIWCj/6TvZnXAt7AKZnFwNFnF2jhAWdnFJ6O69HarjE+I
-         oLVgEnliQtnIk0r/0y6ISaRP7+P2xCuI18ir9fxXxzj0VfwgfEiz+BlkVZ0qq8PbP+o/
-         WQdhclGCnyQF8rGYTBLW6YhQLSnjV8NShDfDO2YLRBZX+WJGBYKwatOtHXOheOFzJeqf
-         Pey8eMf+1laOx1qpwIy/4icnVzU9dxs+vpgzIVqwb8Pix8mOTq7nc0qoE4VZV0c9NpIK
-         dUaA==
-X-Forwarded-Encrypted: i=1; AJvYcCWkqSCyrLzeZddqNoEZlvn9kEI/kK54cmqUImmRhVc+DZYdnqOyMMO9RJr9GQnv2J5lcknw80jDTzniN8zuhPgKJL7iJG+6qZ91sXd0
-X-Gm-Message-State: AOJu0YwKzeaoKuc7XMwAH4kgI5gXUO3y3yf63O0qRgkg3tf+PGdbqZsG
-	3u+z5Vz5dInllWWH+4KPQ6+FvdCIo7Syn6sGtVEajAF8Z3jmhqzdVhlWMuQgM87TlWK2IbCXg8t
-	S9AZkEhUEK+cCe+eCUWyoV6nXOh5NV/gO29kQcw==
-X-Google-Smtp-Source: AGHT+IHjbw9BdGe0LBffamuGVcO3Fjs/dxkO1OlPwbcLBOwnYZIDIIIMJZvaH9S0UdI3wP+pcdkx10/t2jWsgTG3mgE=
-X-Received: by 2002:a4a:9893:0:b0:5ac:9fc0:cc6a with SMTP id
- a19-20020a4a9893000000b005ac9fc0cc6amr6760168ooj.4.1713269645676; Tue, 16 Apr
- 2024 05:14:05 -0700 (PDT)
+	s=arc-20240116; t=1713269684; c=relaxed/simple;
+	bh=F3vyWR29X0lXAaTUtv3IWAlN8f9D6N5W3tJOFc7fnmo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Bp5ileCkouCkVYdBy6WSf92Ptz0VXbf0IQ+lhYVx/OuXusu7KYA+ms0OUrN2cG8C7wJLCuGjx+LrSwpyAkO5cqLHtTNLiZ13d4sJ/uIPCSNCiXJt/0+8Zop2f+y9rN6wJ4pkjTYypuLxM27D3qNEjvwMaNgYvEswdXSdALvOXVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=DzzFlkEU; arc=none smtp.client-ip=217.72.192.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713269670; x=1713874470; i=markus.elfring@web.de;
+	bh=Lv4Wq6qu9p1ZBlPnYwsPtJ9DrW7B8a2DGJ+zDiVy+Vo=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=DzzFlkEUke+DhEGxPHdIS8e4/ngQIMUtZ8HEZd1HZgFq6/3lNsQorRZX1khJ9Xwt
+	 0SGBJYOr+f/Dd3q8G4gJWCI+OR+6jFNWWoWBY1ra4Nv/dN6urer/7z/Tl7epWgF2B
+	 uydQzFiYsdAg+egdNjjkO8pYx6Dp55rvzfdB7q91aevhS8/NZnjWfzqjTeBb/I3ba
+	 hYVB6vNVLFlruAKhELns3sYA/a4DeEH/JolGvjt4w70i5L2ZvvrA+lqOmxcr/ib3v
+	 ii4b9cFFFqJs7GTx1jJ/4eevBEsJUqyL5AVkAxXOaDgakG1uSPihBBHFZSEhQSZYC
+	 zC62WaDdQp7G0L76IA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1M28WJ-1rullX0mPx-002YIA; Tue, 16
+ Apr 2024 14:14:30 +0200
+Message-ID: <33a38d7e-26da-46e0-90d4-7137f9ec0c90@web.de>
+Date: Tue, 16 Apr 2024 14:14:27 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404122559.898930-1-peter.griffin@linaro.org>
- <20240404122559.898930-7-peter.griffin@linaro.org> <560e9a5b236728f62be4bfd8df187071c4bffb23.camel@linaro.org>
-In-Reply-To: <560e9a5b236728f62be4bfd8df187071c4bffb23.camel@linaro.org>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Tue, 16 Apr 2024 13:13:54 +0100
-Message-ID: <CADrjBPois-nLGkNdXRp9SF2t4xv1fr4MvSK7yT-7GA+QwkA2NA@mail.gmail.com>
-Subject: Re: [PATCH 06/17] arm64: dts: exynos: gs101: Add the hsi2 sysreg node
-To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
-	krzk+dt@kernel.org, conor+dt@kernel.org, vkoul@kernel.org, kishon@kernel.org, 
-	alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org, 
-	s.nawrocki@samsung.com, cw00.choi@samsung.com, jejb@linux.ibm.com, 
-	martin.petersen@oracle.com, chanho61.park@samsung.com, ebiggers@kernel.org, 
-	linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-clk@vger.kernel.org, 
-	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, tudor.ambarus@linaro.org, 
-	saravanak@google.com, willmcvicker@google.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [0/2] powerpc/powernv/vas: Adjustments for two function
+ implementations
+To: Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Nicholas Piggin <npiggin@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+References: <7be66990-de9e-488b-ad6d-fafd1c7bb34c@web.de>
+ <ee6022b8-3aeb-4e6e-99f5-2668dd344e0a@web.de> <87plupbm0c.fsf@mail.lhotse>
+ <795ca003-4231-45c0-8bb6-178597950fa5@csgroup.eu>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <795ca003-4231-45c0-8bb6-178597950fa5@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:hsxChQyFzhPEKKvYCyvy7NgsHW1pjrvs8WruIhj+JKDV7dHWRe0
+ I4b/QJ8s8AXfyqEPsqrF3pGy3hn/sZ+YDLWr95BvPAPEz1iabte7Xs9qjteD3zPuY3bU47F
+ XW9ujYjwb5Ccas8EWQ2MHwVzl/UnDEYgne3L/Wx1VhSNyLAeOQUpOI803P39hx1YTXPc2OO
+ IuN9VbCGqj8aIop4FE3tg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:cgnuqKGvJbs=;A9nNALScgBDWwff956u51qJ3ddr
+ IwHS8JlxBuV4T5W7RhoUOEBY/k5hzh1H36Nvz681MqMc/Bt7X4y7ROd7hwnkWwz1GlenSxin8
+ rETv+oYf/jAVXATFkGSiM92DXMC5jKaPJDdnc0QAL2QhOyJ4YyiWehUfXE5guZ/cgkGjgX62U
+ k2ythW+58+lwecDDVYYL5+PxUsPJiLU8Zs5Zh2aJQB+jzsF8gFdbRgVrCh1hWfuEtEbQTTTXe
+ JdDTK7oPYgUHPa6WhdQRG8Mjdqft1ZSR+gQRdIU7wBLI7uSaS/R1fXVPh27xpU5B6PwusfQlL
+ GPjqUv0xkIuEfnYb3RJJTOqrc8WMxp4DuEAICG+MWlz5U5EwjDl2B050SoMaa0BOZkPybV62K
+ VUW1aGirQj9Bh7Tak4lhDw4vZwwG6swjpetwTsa29/9P0vBZTjJ7EWQPtS8GYg06RjMX6SJIi
+ 3H1arPp0IZvpSMBLt47D6xzFpq6/aJoa3ZZ2vk2BYTkrdnaFJOvU5tN7WUhAJiBbEh0RF7lou
+ V4ABevcKcEDkD60OQyW2eLpJL/TuyJ9SFhi4vI7Ftw0gFCjuEmysuw2F/Mfol0zQFpxj4MhOV
+ Sbo17qHtgKSZLewLIVsCDPO6VoWmmiLmtQBBKYNZ9/D0RnhX1FKcow29VoZYkecg592P92F3K
+ Z6JJ6m/oZ7MGneIspDw8jSKSET8DNH2aJ1fwn/wHTewvizMNI/t3QfTLaIzZgJkds+wyBERZp
+ 0AuiMSAbgoWWuxOhLSIzt0mvHFE5rX4rCBoBA/rrFgZH6pk+/OJBcSySbwGc3zk4nSkmL1IbS
+ vEVhAV0RbpMZDjzbF3ZDBuM5HgpXM1v0IzO0IG189sfSc=
 
-Hi Andr=C3=A9,
-
-Thanks for the review.
-
-On Fri, 5 Apr 2024 at 08:33, Andr=C3=A9 Draszik <andre.draszik@linaro.org> =
-wrote:
+> This is explicit in Kernel documentation:
 >
-> Hi Pete,
+> /**
+>   * kfree - free previously allocated memory
+>   * @object: pointer returned by kmalloc() or kmem_cache_alloc()
+>   *
+>   * If @object is NULL, no operation is performed.
+>   */
 >
-> On Thu, 2024-04-04 at 13:25 +0100, Peter Griffin wrote:
-> > This has some configuration bits such as sharability that
-> > are required by UFS.
-> >
-> > Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
-> > ---
-> >  arch/arm64/boot/dts/exynos/google/gs101.dtsi | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/=
-boot/dts/exynos/google/gs101.dtsi
-> > index 38ac4fb1397e..608369cec47b 100644
-> > --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> > +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> > @@ -1265,6 +1265,12 @@ cmu_hsi2: clock-controller@14400000 {
-> >                       clock-names =3D "oscclk", "bus", "pcie", "ufs_emb=
-d", "mmc_card";
-> >               };
-> >
-> > +             sysreg_hsi2: syscon@14420000 {
-> > +                     compatible =3D "google,gs101-hsi2-sysreg", "sysco=
-n";
-> > +                     reg =3D <0x14420000 0x1000>;
+> That's exactly the same behaviour as free() in libc.
 >
-> Should the length not be 0x10000?
+> So Coccinelle should be fixed if it reports an error for that.
 
-The downstream kernel uses a length of 0x1000 for all the
-foobar-sysreg nodes, but checking the specs it does indeed seem that
-the length should be 0x10000 (and that is what we've used for all the
-other sysreg nodes upstream).
+Redundant function calls can occasionally be avoided accordingly,
+can't they?
 
-Will update this in v2.
-
-regards,
-
-Pete
+Regards,
+Markus
 
