@@ -1,132 +1,68 @@
-Return-Path: <linux-kernel+bounces-146198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81AF08A61EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:00:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E5478A61F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:01:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D761EB23506
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:00:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B08A31F22B23
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:01:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16C8C210EC;
-	Tue, 16 Apr 2024 04:00:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="W1eJND6P"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56BA8210EC;
+	Tue, 16 Apr 2024 04:01:39 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D64C7D512
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 04:00:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E001ED512;
+	Tue, 16 Apr 2024 04:01:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713240007; cv=none; b=kDFppnG3KUhBYiyRp1mIKFA2FaxaL05pq2nT1jW9mbXdzPL7n0kkT7SvcwCKTYx5XUF1v5kWX4rQMfinmqieb5J/67YxUKgdPTriabHefsJFsL1MW3lsKUSEKRFrsSXjXgRqrcUgiQBYusPSCbdwmzfw8lITckZWrOUUPaVpmq8=
+	t=1713240098; cv=none; b=KY93rwmcGtnV1Gf9n/H1Hph2Pw5oUHuHmTkC4880NhMiNETMQbx8EUfBG7uHUIoENwJqY46TRy9ESKsOCh0FtKl+NvRHg/8HMJpfZTKMUjIGM77K+eNMXJ0g6mw2/2Cg7lrCjinrkqkImkeJvTARfpCW8gfw2ru4TAvKtZjboW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713240007; c=relaxed/simple;
-	bh=M71H6X5zt6I2PPvZyL9wihAZDyoIkvoQELS1aDcik+U=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ik70bKm1UDm0JlOTsw83Yw4S73+dIjqBdTGLomH9C/NFfMvyz//KJ5UnoxbpQufL2K6Ey9RvFHMmbjHfZvXqEiCQ74UjsL+NJS5zmx7hPrfDUJGx/tUw9mXq8xl6UECftCF7eCcJk8srxWWQ8oYDwkP2l4ZWAbunsxecOHruI2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=W1eJND6P; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 0EE412C05CC;
-	Tue, 16 Apr 2024 16:00:03 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1713240003;
-	bh=M71H6X5zt6I2PPvZyL9wihAZDyoIkvoQELS1aDcik+U=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=W1eJND6Pz++mwEeXBV2WfzVwvi/L9pLJODMmtNq2LX58H8kzSwkM4sQxBD3B8zPXe
-	 R2ESey7uehNRS75trq60yR3FG/YzvVVfm2P1uyCgc4VCljXVhP4beubMqE3tVzxlnV
-	 tfvUcNxSGk0KxuOdmdpT/AhAulnf7suTRuWyJp8mo1cU3B/I86CrFRhjoV5oecsAXp
-	 3pD0sSynWoSxBEQt87MWMDGDPTBB2dcVFd2GN5xKW8XYFdSa++ju06Z5/pGi0S8V4J
-	 QjeEf0FJQzvrTCM3nlP31aAc+6ufwSUPm0X0DzvWpG5s2uL2FmGZzlS96RX6+kbUxy
-	 zn/STGFvfZTzw==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B661df7c20001>; Tue, 16 Apr 2024 16:00:02 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.1544.9; Tue, 16 Apr 2024 16:00:02 +1200
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with Microsoft
- SMTP Server (TLS) id 15.0.1497.48; Tue, 16 Apr 2024 16:00:02 +1200
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1544.009; Tue, 16 Apr 2024 16:00:02 +1200
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Abhinav Jain <jain.abhinav177@gmail.com>, "andi.shyti@kernel.org"
-	<andi.shyti@kernel.org>, "linux-i2c@vger.kernel.org"
-	<linux-i2c@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-CC: "skhan@linuxfoundation.org" <skhan@linuxfoundation.org>,
-	"javier.carrasco.cruz@gmail.com" <javier.carrasco.cruz@gmail.com>, "Julia
- Lawall" <julia.lawall@inria.fr>
-Subject: Re: [PATCH] i2c: mpc: Removal of of_node_put with __free for auto
- cleanup
-Thread-Topic: [PATCH] i2c: mpc: Removal of of_node_put with __free for auto
- cleanup
-Thread-Index: AQHaj0/GzDJ4DPHHek+eKx0F5hnQY7FpfVMA
-Date: Tue, 16 Apr 2024 04:00:02 +0000
-Message-ID: <8d745069-3647-408b-b34c-b29053b121f8@alliedtelesis.co.nz>
-References: <20240415161220.8347-1-jain.abhinav177@gmail.com>
-In-Reply-To: <20240415161220.8347-1-jain.abhinav177@gmail.com>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F0B37EE7D034754284B08F9681F082E8@atlnz.lc>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1713240098; c=relaxed/simple;
+	bh=kS4QErR+G5uIGvj0PAK9ennM8nQwV+qB5T2YG2zXdII=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kMVO0gU3TUQ02QXdxqfHHONqjjKUsawzXQ6AZvkOZd9E6LYgApGxjNu5Emrw4SWENtBCvE5F3aceT8f7vEAGN8eSYmelHwB1ulAllUhK4jcNxM5soWHeXb1NUjhIsiQThWrbzvzq/6GcZPvqCrrnA683/E0KpdOBlV2SrNRIBy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BD1FC113CE;
+	Tue, 16 Apr 2024 04:01:37 +0000 (UTC)
+Date: Tue, 16 Apr 2024 00:01:33 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Luca Ceresoli <luca.ceresoli@bootlin.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>
+Subject: Re: TP_printk() bug with %c, and more?
+Message-ID: <20240416000133.4b990f36@rorschach.local.home>
+In-Reply-To: <20240416040846.00de86aa@booty>
+References: <20240315174900.14418f22@booty>
+	<20240315132146.29edf416@gandalf.local.home>
+	<20240315190312.2bd6a198@booty>
+	<20240315145852.46125ac5@gandalf.local.home>
+	<20240318164307.53c5595f@booty>
+	<20240415044431.308f2e09@rorschach.local.home>
+	<20240416040846.00de86aa@booty>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=dY4j3mXe c=1 sm=1 tr=0 ts=661df7c2 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=SQiHmE0Aj67H6G5b:21 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=pGLkceISAAAA:8 a=SFYO0tGWFC1vQ0iUQ38A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-DQpPbiAxNi8wNC8yNCAwNDoxMiwgQWJoaW5hdiBKYWluIHdyb3RlOg0KPiBSZW1vdmUgb2Zfbm9k
-ZV9wdXQgZnJvbSBub2RlX2N0cmwgYW5kIG5vZGUgc3RydWN0IGRldmljZV9ub2Rlcy4NCj4gTW92
-ZSB0aGUgZGVjbGFyYXRpb24gdG8gaW5pdGlhbGl6YXRpb24gZm9yIGVuc3VyaW5nIHNjb3BlIHNh
-bml0eS4NCj4NCj4gU3VnZ2VzdGVkLWJ5OiBKdWxpYSBMYXdhbGwgPGp1bGlhLmxhd2FsbEBpbnJp
-YS5mcj4NCj4gU2lnbmVkLW9mZi1ieTogQWJoaW5hdiBKYWluIDxqYWluLmFiaGluYXYxNzdAZ21h
-aWwuY29tPg0KDQpSZXZpZXdlZC1ieTogQ2hyaXMgUGFja2hhbSA8Y2hyaXMucGFja2hhbUBhbGxp
-ZWR0ZWxlc2lzLmNvLm56Pg0KDQo+IC0tLQ0KPiAgIGRyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXBj
-LmMgfCAxMSArKysrLS0tLS0tLQ0KPiAgIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyks
-IDcgZGVsZXRpb25zKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2kyYy9idXNzZXMvaTJj
-LW1wYy5jIGIvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tcGMuYw0KPiBpbmRleCA4ZDczYzBmNDA1
-ZWQuLmM0MjIzNTU2YjNiOCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1t
-cGMuYw0KPiArKysgYi9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW1wYy5jDQo+IEBAIC0zMDQsMTMg
-KzMwNCwxMiBAQCBzdGF0aWMgdm9pZCBtcGNfaTJjX3NldHVwXzUxMngoc3RydWN0IGRldmljZV9u
-b2RlICpub2RlLA0KPiAgIAkJCQkJIHN0cnVjdCBtcGNfaTJjICppMmMsDQo+ICAgCQkJCQkgdTMy
-IGNsb2NrKQ0KPiAgIHsNCj4gLQlzdHJ1Y3QgZGV2aWNlX25vZGUgKm5vZGVfY3RybDsNCj4gICAJ
-dm9pZCBfX2lvbWVtICpjdHJsOw0KPiAgIAl1MzIgaWR4Ow0KPiAgIA0KPiAgIAkvKiBFbmFibGUg
-STJDIGludGVycnVwdHMgZm9yIG1wYzUxMjEgKi8NCj4gLQlub2RlX2N0cmwgPSBvZl9maW5kX2Nv
-bXBhdGlibGVfbm9kZShOVUxMLCBOVUxMLA0KPiAtCQkJCQkgICAgImZzbCxtcGM1MTIxLWkyYy1j
-dHJsIik7DQo+ICsJc3RydWN0IGRldmljZV9ub2RlICpub2RlX2N0cmwgX19mcmVlKGRldmljZV9u
-b2RlKSA9DQo+ICsJCW9mX2ZpbmRfY29tcGF0aWJsZV9ub2RlKE5VTEwsIE5VTEwsICJmc2wsbXBj
-NTEyMS1pMmMtY3RybCIpOw0KPiAgIAlpZiAobm9kZV9jdHJsKSB7DQo+ICAgCQljdHJsID0gb2Zf
-aW9tYXAobm9kZV9jdHJsLCAwKTsNCj4gICAJCWlmIChjdHJsKSB7DQo+IEBAIC0zMjEsNyArMzIw
-LDYgQEAgc3RhdGljIHZvaWQgbXBjX2kyY19zZXR1cF81MTJ4KHN0cnVjdCBkZXZpY2Vfbm9kZSAq
-bm9kZSwNCj4gICAJCQlzZXRiaXRzMzIoY3RybCwgMSA8PCAoMjQgKyBpZHggKiAyKSk7DQo+ICAg
-CQkJaW91bm1hcChjdHJsKTsNCj4gICAJCX0NCj4gLQkJb2Zfbm9kZV9wdXQobm9kZV9jdHJsKTsN
-Cj4gICAJfQ0KPiAgIA0KPiAgIAkvKiBUaGUgY2xvY2sgc2V0dXAgZm9yIHRoZSA1Mnh4IHdvcmtz
-IGFsc28gZmluZSBmb3IgdGhlIDUxMnggKi8NCj4gQEAgLTM1OCwxMSArMzU2LDExIEBAIHN0YXRp
-YyBjb25zdCBzdHJ1Y3QgbXBjX2kyY19kaXZpZGVyIG1wY19pMmNfZGl2aWRlcnNfOHh4eFtdID0g
-ew0KPiAgIA0KPiAgIHN0YXRpYyB1MzIgbXBjX2kyY19nZXRfc2VjX2NmZ184eHh4KHZvaWQpDQo+
-ICAgew0KPiAtCXN0cnVjdCBkZXZpY2Vfbm9kZSAqbm9kZTsNCj4gICAJdTMyIF9faW9tZW0gKnJl
-ZzsNCj4gICAJdTMyIHZhbCA9IDA7DQo+ICAgDQo+IC0Jbm9kZSA9IG9mX2ZpbmRfbm9kZV9ieV9u
-YW1lKE5VTEwsICJnbG9iYWwtdXRpbGl0aWVzIik7DQo+ICsJc3RydWN0IGRldmljZV9ub2RlICpu
-b2RlIF9fZnJlZShkZXZpY2Vfbm9kZSkgPQ0KPiArCQlvZl9maW5kX25vZGVfYnlfbmFtZShOVUxM
-LCAiZ2xvYmFsLXV0aWxpdGllcyIpOw0KPiAgIAlpZiAobm9kZSkgew0KPiAgIAkJY29uc3QgdTMy
-ICpwcm9wID0gb2ZfZ2V0X3Byb3BlcnR5KG5vZGUsICJyZWciLCBOVUxMKTsNCj4gICAJCWlmIChw
-cm9wKSB7DQo+IEBAIC0zODMsNyArMzgxLDYgQEAgc3RhdGljIHUzMiBtcGNfaTJjX2dldF9zZWNf
-Y2ZnXzh4eHgodm9pZCkNCj4gICAJCQlpb3VubWFwKHJlZyk7DQo+ICAgCQl9DQo+ICAgCX0NCj4g
-LQlvZl9ub2RlX3B1dChub2RlKTsNCj4gICANCj4gICAJcmV0dXJuIHZhbDsNCj4gICB9
+On Tue, 16 Apr 2024 04:08:46 +0200
+Luca Ceresoli <luca.ceresoli@bootlin.com> wrote:
+
+> Thanks for the insight. I'm definitely trying to fix this based on your
+> hint as soon as I get my hand on a board.
+
+I have a patch I forgot to send out. Let me do that now.
+
+-- Steve
 
