@@ -1,161 +1,114 @@
-Return-Path: <linux-kernel+bounces-147056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95EED8A6EDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:48:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68E418A6F62
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:11:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1F2EB23B97
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:48:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7869B244AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:11:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD37012F5AA;
-	Tue, 16 Apr 2024 14:47:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478171304B9;
+	Tue, 16 Apr 2024 15:10:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AWQdZpZJ"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="T1xpcWHn"
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5046C12E1D9;
-	Tue, 16 Apr 2024 14:47:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37461130492;
+	Tue, 16 Apr 2024 15:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713278865; cv=none; b=G5mc9P4nIac2U8r7LGIDNnzBzFHS4Lc7zTTrvQzINIq2WbaCAPrpdd3y03TXN1nUCNiwX9egA/OGofjR4sDgJG1s5rpmTH959iP2eEDMV4j3+H0NdgL46oHFwP3DHvMq3FftkSKjUR73zQeReCYKIc3SNzNZa6tlWhIt80F+cW8=
+	t=1713280250; cv=none; b=Sy2ZoYns32+5rYJz+yLXIb85D/G2uCqTKNOruhZocGsKBQqKBnb/isWajPvd1NS3utaM48sZ2Ak+wrh7t8TP+pkdDkPKqcNs1SNJpKo7xhkjtDonq1HKoi0mktANN4afXMMaQlIzJHqgXPYtm/7q6oHtqQQF4kUikOMGw5vLoKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713278865; c=relaxed/simple;
-	bh=8cfg8Z9zJeLzJLzSRlYp8D+SSkO5uxZDS/dJ+fBVazA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f9jaWU7yKOXmaH6XGfbY0MS1fIkniDW9iYuQ0P5jRUTbU3UizQ6MMT2rMEaalv+rf9m4QvHtKV8UsBC90kOBcak8xbKQye+KjdPb7EbmnzpO7FK2VR4+o0+W7ObfWhl8daFQfPgoQxZCJhaB6uG1NqsJIwUxHE4fpoSvBsNgkk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AWQdZpZJ; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-516cdb21b34so5773581e87.1;
-        Tue, 16 Apr 2024 07:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713278861; x=1713883661; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=dbrXiXP1Z0BGggRg41SKIMpA/U+f24cxgl+dajAMLS8=;
-        b=AWQdZpZJaTaI5Puj5mDNb3YXgDGEGBEOtWa3yJGXTznQUhESQSfUKrtY/c6oGlfV6G
-         RgZ2eRvIqQHLsaEEGtHSUTONXWb9GQO2I/ZZuzmVR+lf5K56mEUB5syz95ATxgUfH8qu
-         cV4veDFfCfd3esU7Raww4PjT+zu+68JZo5D7cTv9vTxcpcdjM7pIUcvfoCyTBt9QgZ0g
-         k/57V2JGXzR7ukQR+bQQZPm46rXg+8SrZ5dni75UxgmtzFrNoJ+sCZN+9RcWCSlmaCqS
-         xDGfm6Kru1iSth0Jef5XxRV8+SOHgP4wr1FIh0sd/3lNg6rZiyrI/hXEIfLAc0fvegKH
-         jUoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713278861; x=1713883661;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dbrXiXP1Z0BGggRg41SKIMpA/U+f24cxgl+dajAMLS8=;
-        b=uOzV+Q2D3gpGcKjP1wnamwxDMnkWU7d+uwaRD93z5lne8O+QlHnCPiGg+IFsUmT9Or
-         9hhug+OthURJN1zu3em0BZ5zxEOp+gOyMjGSFrsI2LDUZr3LqEsVo6sBiHCtIENz1OV5
-         XGTQLSln6TIw3XxX3cpE/u25aGGGP4Tt17dT9SXB8KDmkjmGN8PBbNdqGQ4+xmqzQDir
-         bSpzqxABUebz/UkXIsodM33BR2dJh87nh6ZBUmVcVHjvcI4Z688lrRKu4Dqk8B8gAhqu
-         G3CgUwS44RW6YJT5Gz+XnjI2rN7bERcHlqRUQIrrYQUahTg9vGt/lZwJqjKELsjIDGYW
-         BzEg==
-X-Forwarded-Encrypted: i=1; AJvYcCVn0xx/aCC6D65TYbgvW6ctDAohlje87LQu6kHUP1BeyQgKrt2itIAL9tbaQD+VSVFBSTO5Ybbz3WVaOPKjB6KC8ZKH003TjOCQqrX367QY8QuOveMpZu3FYfyacp2e7YGSS2j7JbKIfJxfpSBQ7ZY8Xqw4Hdb7/3Nx+75j1Is1lJsO9way82juc3xW4DzLOt38hsLIMLp/NSY59yilVET6QfoK
-X-Gm-Message-State: AOJu0YzARsxRaf8JGvGdB754IY21WHYIcqfPk7jxvBreC95OC1LM/WRT
-	yJhiEcBXHVkFg4MD5cCJZy0/seDlN3ELwR2Lxz8yzTxAIoFTQ/Tp
-X-Google-Smtp-Source: AGHT+IGVhUdbPenkEaBQEHoVWuoYM/g4N2s7D3ZyC86/yvbgSIn/UZQYlQxGwuRqXOP8zkYj3k1bUg==
-X-Received: by 2002:a05:6512:473:b0:516:9f1a:929d with SMTP id x19-20020a056512047300b005169f1a929dmr8026763lfd.1.1713278861201;
-        Tue, 16 Apr 2024 07:47:41 -0700 (PDT)
-Received: from mobilestation.baikal.int (srv1.baikalchip.ru. [87.245.175.227])
-        by smtp.gmail.com with ESMTPSA id v17-20020a05651203b100b00516b07d95c0sm1606425lfp.217.2024.04.16.07.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 07:47:40 -0700 (PDT)
-Date: Tue, 16 Apr 2024 17:47:38 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Romain Gantois <romain.gantois@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Russell King <linux@armlinux.org.uk>, 
-	=?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net-next v3 4/5] net: stmmac: add support for RZ/N1 GMAC
-Message-ID: <xp34tp5cjmdshefxjczltz2prqtiikagfspf4lobznzypvsyah@ihpmwfynwzhh>
-References: <20240415-rzn1-gmac1-v3-0-ab12f2c4401d@bootlin.com>
- <20240415-rzn1-gmac1-v3-4-ab12f2c4401d@bootlin.com>
+	s=arc-20240116; t=1713280250; c=relaxed/simple;
+	bh=oWmtNqx34co9G/ruHlt/dfHkDFvWiSKVm75+2tdvFfI=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Ru0LZ9wMy9COYMYlpyCZCsyexxSxf93kAA/jYcWZ+jOcDZ+cyD6xLD/MdH8bPeaYuvLBmf72Vaxzc0Z+RJ1Oh+K3E5h9d/SSmxFZCICWXSOxHyamMXlxIZfzI/nPFw2xoLNxF6L8SpBB3Q3mXaaUY2867dZr8vSOj1jVaXSwc5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=T1xpcWHn; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=1dXsDJwOcsf1iP+JSaO0Xl2y5kp0qQjyv56XNwnMJfY=; b=T1xpcWHnfBxN9wyUld0D7uM6rc
+	2whbwCS9IP2z1zzo25aWi1qJ6hXvLcCEcHKemYGGPof+UGxZ7GVOIZVgYMxa4+p1KNs/7enneMEo7
+	Y2XwL4mYYtLHfnpiCzTfEIuy6gp7KSKW1ZFtiQiRr+4PYjrUgFEtP3LLpLq3vNoKsTaIatmNO9vo8
+	hG9ttWnHj6LFHo+PYags+uDSmlxDH1C4ynlRPzytIsvebtYs7upn2OnPJnw/eGVwf70YXFVyRTisH
+	eaeOtaY3OG9FE1JbRb6e1N0Y0yRPxptO/irkPOPHn9+ml9brPfpKuoo5pUq8ci2PwQtjwclN8aDok
+	rpmaNQ3g==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rwk60-000DNl-8N; Tue, 16 Apr 2024 16:47:40 +0200
+Received: from [178.197.249.50] (helo=linux.home)
+	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rwk5z-000E7n-02; Tue, 16 Apr 2024 16:47:39 +0200
+Subject: Re: [PATCH] bpf: btf: include linux/types.h for u32
+To: Jiri Olsa <olsajiri@gmail.com>,
+ Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
+Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, haoluo@google.com,
+ sdf@google.com, kpsingh@kernel.org, john.fastabend@gmail.com,
+ yonghong.song@linux.dev, song@kernel.org, eddyz87@gmail.com,
+ andrii@kernel.org, ast@kernel.org, martin.lau@linux.dev,
+ khazhy@chromium.org, vmalik@redhat.com, ndesaulniers@google.com,
+ ncopa@alpinelinux.org, dxu@dxuuu.xyz
+References: <20240414045124.3098560-1-dmitrii.bundin.a@gmail.com>
+ <Zh0ZhEU1xhndl2k8@krava>
+ <CANXV_Xwmf-VH5EfNdv=wcv8J=2W5L5RtOs8n-Uh5jm5a1yiMKw@mail.gmail.com>
+ <Zh4ojsD-aV2vHROI@krava>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ddc0ac5b-9bd4-f31a-a7ec-83f7a10e6ab1@iogearbox.net>
+Date: Tue, 16 Apr 2024 16:47:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <Zh4ojsD-aV2vHROI@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240415-rzn1-gmac1-v3-4-ab12f2c4401d@bootlin.com>
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27247/Tue Apr 16 10:25:32 2024)
 
-On Mon, Apr 15, 2024 at 11:18:44AM +0200, Romain Gantois wrote:
-> [...]
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-rzn1.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-rzn1.c
-> new file mode 100644
-> index 0000000000000..e85524c2017cf
-> --- /dev/null
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-rzn1.c
-> @@ -0,0 +1,88 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2024 Schneider-Electric
-> + *
-> + * Clément Léger <clement.leger@bootlin.com>
-> + */
-> +
-> +#include <linux/of.h>
-> +#include <linux/pcs-rzn1-miic.h>
-> +#include <linux/phylink.h>
-> +#include <linux/platform_device.h>
-> +
-> +#include "stmmac_platform.h"
-> +#include "stmmac.h"
-> +
-> +static int rzn1_dwmac_pcs_init(struct stmmac_priv *priv,
+On 4/16/24 9:28 AM, Jiri Olsa wrote:
+> On Tue, Apr 16, 2024 at 08:27:21AM +0300, Dmitrii Bundin wrote:
+>> On Mon, Apr 15, 2024 at 3:11â€¯PM Jiri Olsa <olsajiri@gmail.com> wrote:
+>>> lgtm, did it actualy cause problem anywhere?
+>>>
+>>> there's also tools/include/linux/btf_ids.h
+>>
+>> It caused the problems exactly in the file
+>> tools/include/linux/btf_ids.h and was reported in
+>> https://bugzilla.kernel.org/show_bug.cgi?id=218647
+>> The patch including linux/types.h in tools/include/linux/btf_ids.h is
+>> already there https://lore.kernel.org/all/20240328110103.28734-1-ncopa@alpinelinux.org/
+>> I also faced the same compile-error of the form
+>>
+>>      error: unknown type name 'u32'
+>>                                u32 cnt;
+>>                                ^~~
+>> when compiling the bpf tool with glibc 2.28.
+>>
+>> I think it might be reasonable to add the inclusion in
+>> include/linux/btf_ids.h as well to prevent build problems like this.
+> 
+> ok, it's in the bpf/master already
+Please add the error description as motivation aka "why" into the commit
+description, otherwise it's not really obvious looking at it at a later
+point in time why the include was needed.
 
-> +			       struct mac_device_info *hw)
-
-AFAICS hw is unused, and the mac_device_info instance is reached via
-the priv pointer. What about dropping the unused argument then?
-
-> +{
-> +	struct device_node *np = priv->device->of_node;
-> +	struct device_node *pcs_node;
-> +	struct phylink_pcs *pcs;
-> +
-> +	pcs_node = of_parse_phandle(np, "pcs-handle", 0);
-> +
-> +	if (pcs_node) {
-> +		pcs = miic_create(priv->device, pcs_node);
-> +		of_node_put(pcs_node);
-> +		if (IS_ERR(pcs))
-> +			return PTR_ERR(pcs);
-> +
-> +		priv->hw->phylink_pcs = pcs;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void rzn1_dwmac_pcs_exit(struct stmmac_priv *priv,
-
-> +				struct mac_device_info *hw)
-
-ditto.
-
--Serge(y)
-
-> +{
-> +	if (priv->hw->phylink_pcs)
-> +		miic_destroy(priv->hw->phylink_pcs);
-> +}
-> +
-> [...]
+Thanks,
+Daniel
 
