@@ -1,204 +1,143 @@
-Return-Path: <linux-kernel+bounces-147329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4A178A729A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:46:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09BB08A729C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:48:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CE0D1C21277
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:46:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCD681F21C45
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:48:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49BC5133983;
-	Tue, 16 Apr 2024 17:45:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D06EB1339B1;
+	Tue, 16 Apr 2024 17:48:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iwtyXygl"
+	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="eUDKjTlB"
 Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C03ED1327ED
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:45:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E217FC1F
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:48:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713289557; cv=none; b=R5oTWoSng8VhUldjUHU572CDAB0CaMM5MJV42FsWDSDKr6M3mHPZV3vBlJWMrjVGZwF3UjXt6ZK4S6MONATteoInva8kQ0XX5R1c1sohMKchH/2c+/785WrRLuGXSdMxDD3uWQbQ/i2Fp9Db93HfVdw4D/1z/4za3rDwHr32+Mg=
+	t=1713289691; cv=none; b=cClQ2hxpDJ2sx/ED1RuP1Sv7QqE7QajZBpV5HOwSMng+zsAHHbYnToKZ5Nr1+NyUcfMSKXedGlIwx0q74jDtBzLzyrhFijTDqqMmjya73PEw6d4vn5taUmC3Lp3vY9qPYOZVnNP/+ChO8kZNKYgyE1/Xo24e39u8trSxswl4oYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713289557; c=relaxed/simple;
-	bh=o9HyLcklcw6qXIEmpaLNIUhCnHYpytbuOpal8ZZ3TRY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kz+4ctnf7xRGg187BFSJwZUn30GgTZcqsknU3U+fP2rQtW/pmlhvNdJqkDQq3GaRBQa0zPefImOxnPq3rEk0HAdPLk9E3LCg2ZeZJ2LbkbT7T+Mj082zZbekZFz58J1Kw6pS5N0a+3DS1hwJ/p9IjJbHnKvgs0MKkkn92EBNZSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iwtyXygl; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so16967276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:45:55 -0700 (PDT)
+	s=arc-20240116; t=1713289691; c=relaxed/simple;
+	bh=CFLPbaTqHgy35LCkZ8/WIR4fdR8dupvDJeKom1cb3Tc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=t+08vVsPOnt/WUF45H7Z+uzmzQLxfbowlYAIv40q90rP1RGWnhJMw8KkNNxmJK8QtNPL6a1mb+9p+VtZ0k3AEo6aMiPsRQj/aYo3bBgtDukOoAjS1MCMTX1MOWLseezMash+X4DFBiJPQ7ZmX7pX8fUDdj7SXmXnpGKqcPE4LXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=eUDKjTlB; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcc80d6006aso4636369276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:48:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713289555; x=1713894355; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JeTAsENhmGxz6+PK9ZT/1dVcAVprad3zPiwx2Dlp4rA=;
-        b=iwtyXyglelsdXjw2eHFudaEy/QcJaesQ6qlseXfDYr/pTeMP6H19MHrkoxt2rEuVjH
-         O0rlnuHIzRORepeUz0wYsytR1cOI32cjIC2nBnld4Hy6QdIbrArBX2EoYNQLAE447M1c
-         HlDftxrk25bvJ+tlQslZqCKM8v9xM0LEXShbut/29jCqB4pCPw8sQ/Rvig22rVgzdlsh
-         Zd4iTOvrF/fQyEDg8+RleuPdPDRgVqrTTooSnEXZfhrDU0tViFanvOlTn7qbbmW9JT9c
-         sdb0071KreY5fmdVbE8Ezux8CXMIlzeQOvnTmyVSx3on+rlena2SE+AHJkdZprovTFbj
-         2Rmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713289555; x=1713894355;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=umich.edu; s=google-2016-06-03; t=1713289688; x=1713894488; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JeTAsENhmGxz6+PK9ZT/1dVcAVprad3zPiwx2Dlp4rA=;
-        b=I41/ljYOGmiZk4R11ZkO1cGZycpwftPKMivlLmM/5W+SyR1217/qCBfGiPxgrsdQ87
-         PcwtCytpZD2aeQ8FgDjaQ6jKmKK3voZMmTMrw0I4pYU5AdMLQ7VSfk/2Qfg6jOV02Fvf
-         PKjK4Mdc7l94GJcTYJtt59WD2pdCxshnH1+mgtUHMHULqPw476g+URgVUTLXHf7JLb37
-         e+hsh22r34u9CNgO8iZXLVtIyjytYyUfjA1hgkTdaCBKBpzrkHx0ab4hGilOy/73S2Xs
-         PxkazEbfXv32GH8jS76DX1/6Bj30iOur+CsQHSn3L7WOYDYyCC6JYaVKzDj41FPo9WGm
-         L6jw==
-X-Forwarded-Encrypted: i=1; AJvYcCXqNA0LBVyPUfVQ5Si3nKEAtMbXb7y9GMzMfxLeklv4VKObP94LxX5IDOTRt7U3/rqGMpoEvjLwfOWRvj1wh3xsEuNIjNfKTg0csPus
-X-Gm-Message-State: AOJu0YxHLl1QjNw9jxGqTzq0xQbeNZ44OHhDKlF7aOKl/+IZLUMSf22L
-	QECUg81jMx0g2divdu8ROnmekdRntz9V2AHDZ7j4fYG/Sm35yXOE
-X-Google-Smtp-Source: AGHT+IHVPEUgR+SZR98fzT/rCUVcLjb4H783BOfJQ44dE07On8wl+wA0pgIzCQ4NdjzCQxkEypGgzw==
-X-Received: by 2002:a05:6902:390:b0:dcf:a4a8:5fb3 with SMTP id f16-20020a056902039000b00dcfa4a85fb3mr2335820ybs.11.1713289554526;
-        Tue, 16 Apr 2024 10:45:54 -0700 (PDT)
-Received: from localhost ([2601:344:8301:57f0:2767:ac3e:3052:cd0])
-        by smtp.gmail.com with ESMTPSA id u40-20020a25ab2b000000b00dcd307dc310sm2583223ybi.56.2024.04.16.10.45.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 10:45:54 -0700 (PDT)
-Date: Tue, 16 Apr 2024 10:45:53 -0700
-From: Yury Norov <yury.norov@gmail.com>
-To: Dawei Li <dawei.li@shingroup.cn>
-Cc: tglx@linutronix.de, rafael@kernel.org, akpm@linux-foundation.org,
-	maz@kernel.org, florian.fainelli@broadcom.com,
-	chenhuacai@kernel.org, jiaxun.yang@flygoat.com, anup@brainfault.org,
-	palmer@dabbelt.com, samuel.holland@sifive.com,
-	linux@rasmusvillemoes.dk, daniel.lezcano@linaro.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] cpumask: introduce cpumask_first_and_and()
-Message-ID: <Zh65Uf3oWPS1/kyC@yury-ThinkPad>
-References: <20240416085454.3547175-1-dawei.li@shingroup.cn>
- <20240416085454.3547175-2-dawei.li@shingroup.cn>
+        bh=cgxo59IYhnHPL9WU4YKhZaxzeo3fMP1MrECdS5RGdv8=;
+        b=eUDKjTlBT29qfAlDcoUy2U1r+7cY8RglJ/6AU7pb+GfackqEn8tjBT63fCwXj8r6ph
+         vIHzVswQ1aD1xiHv3jXV5FyJALVltYXvFK8pgG/Ym5HtTIZHS++PW5hZah87Wml7yFqC
+         b+ai5iO//SnTNatl1C9pDoSOlvT+H28FDhW0HH5ET4iHKkgFrg8EtXaQdyCG4Brk0rVw
+         GGlB04Mij1r/0jNX2/DBE3PYmw5kSLimADJz4MjfJkwumGoGhb7HiAHFI+oih90oPeDW
+         h9EkLvDAH3lmGV09U8//u6YmLnZk6eWYVlgDGIge1PQ0xs8gv8whaCKZ5MbPaI6SKCEb
+         Kx9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713289688; x=1713894488;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cgxo59IYhnHPL9WU4YKhZaxzeo3fMP1MrECdS5RGdv8=;
+        b=dDMzyS1AVRLKBTCj4BkBV2DDxcyJbTqZV1a5iKhAJ6AowkZxKn14xmYZBOYEgYzxvL
+         sXHZedbEWjb0Ze/JHI6dENMEBJujuR/ir7Z6ziqRG6AooZbOci6EV+64Kfq2zSUwII9d
+         aneMwCBOL85j+qiS8IIVlifBFEqwbZovvNzjk3zAT28uv2SHIOl8ePIGos6qLVsCNxZm
+         AIR7h9sqpFftVgN9Sl7iS/MoUbWXcuGQlfU3Yzc17uYDrK6v8Bpeyxd6rDyxVBMzB+R+
+         IRK+vrkCb9yi79W+76SO+uSTcu8H0hwlsXRdTRPS5/0znQfIdNMxE3hSugtzkZjwrTAx
+         LdSg==
+X-Forwarded-Encrypted: i=1; AJvYcCWIIcd+/eRwf4gd9MiIvwVkpWgMhQJgg2apodSDZc+1pqzMmrXrrwB5JzHvDxnpbbCv+lvzp0Xypl3NnQGwTM96/L3oM4B3v1WVVxf5
+X-Gm-Message-State: AOJu0YzxwBlOstkOtNMayTgpNOFjuQ1smtV76CEXOdRcsdWPwJ4u17Os
+	CoBhFj465yHB8+q0HKmbu+5G0nlxVnWHtkvnKYaviYW2E1xIgkhAg/UXA1aTU7R36ZmGkLbBsXL
+	mVp5HZaWwZIYGSahbQvgzLOKIoeY5x54bvDuhYg==
+X-Google-Smtp-Source: AGHT+IFEcewgx6K0H5JoHC0s7S4uCrcrKg0tuesPZ6/XjGUTZZkpFY+pctxrZr4MfL7ku3gK9QgVdIyhlEaUIc8tLro=
+X-Received: by 2002:a25:2f0f:0:b0:de0:d728:1b21 with SMTP id
+ v15-20020a252f0f000000b00de0d7281b21mr10940224ybv.54.1713289688081; Tue, 16
+ Apr 2024 10:48:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416085454.3547175-2-dawei.li@shingroup.cn>
+References: <CALNs47tEZqL201jsExfF1j7m+yW37YRAws-NTF6hwsxohSKoQA@mail.gmail.com>
+ <20240416095333.1108884-1-aliceryhl@google.com>
+In-Reply-To: <20240416095333.1108884-1-aliceryhl@google.com>
+From: Trevor Gross <tmgross@umich.edu>
+Date: Tue, 16 Apr 2024 13:47:56 -0400
+Message-ID: <CALNs47vUXA9z8+bM4TOU-Q_NY3wbux3OA4nBVxegAWykzTd2zQ@mail.gmail.com>
+Subject: Re: [PATCH v5 4/4] rust: add abstraction for `struct page`
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: a.hindborg@samsung.com, akpm@linux-foundation.org, alex.gaynor@gmail.com, 
+	arnd@arndb.de, arve@android.com, benno.lossin@proton.me, 
+	bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org, 
+	cmllamas@google.com, gary@garyguo.net, gregkh@linuxfoundation.org, 
+	joel@joelfernandes.org, keescook@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, maco@android.com, ojeda@kernel.org, 
+	rust-for-linux@vger.kernel.org, surenb@google.com, tkjos@android.com, 
+	viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 04:54:48PM +0800, Dawei Li wrote:
-> Introduce cpumask_first_and_and() to get intersection between 3 cpumasks,
-> free of any intermediate cpumask variable. Instead, cpumask_first_and_and()
-> works in-place with all inputs and produce desired output directly.
-> 
-> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+On Tue, Apr 16, 2024 at 5:53=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> w=
+rote:
+>
+> >> +/// Flags for the "get free page" function that underlies all memory =
+allocations.
+> >> +pub mod flags {
+> >> +    /// gfp flags.
+> >
+> > Uppercase acronym, maybe with a description:
+> >
+> >     GFP (Get Free Page) flags.
+> >
+> >> +    #[allow(non_camel_case_types)]
+> >> +    pub type gfp_t =3D bindings::gfp_t;
+> >
+> > Why not GfpFlags, do we do this elsewhere?
+> >
+> >> +    /// `GFP_KERNEL` is typical for kernel-internal allocations. The =
+caller requires `ZONE_NORMAL`
+> >> +    /// or a lower zone for direct access but can direct reclaim.
+> >> +    pub const GFP_KERNEL: gfp_t =3D bindings::GFP_KERNEL;
+> >> +    /// `GFP_ZERO` returns a zeroed page on success.
+> >> +    pub const __GFP_ZERO: gfp_t =3D bindings::__GFP_ZERO;
+> >> +    /// `GFP_HIGHMEM` indicates that the allocated memory may be loca=
+ted in high memory.
+> >> +    pub const __GFP_HIGHMEM: gfp_t =3D bindings::__GFP_HIGHMEM;
+> >
+> > It feels a bit weird to have dunder constants on the rust side that
+> > aren't also `#[doc(hidden)]` or just nonpublic. Makes me think they
+> > are an implementation detail or not really meant to be used - could
+> > you update the docs if this is the case?
+>
+> All of this is going away in the next version because it will be based
+> on [1], which defines the gfp flags type for us.
+>
+> [1]: https://lore.kernel.org/rust-for-linux/20240328013603.206764-1-wedso=
+naf@gmail.com/
 
-Acked-by: Yury Norov <yury.norov@gmail.com>
+Great, thanks for the link.
 
-> ---
->  include/linux/cpumask.h | 17 +++++++++++++++++
->  include/linux/find.h    | 27 +++++++++++++++++++++++++++
->  lib/find_bit.c          | 12 ++++++++++++
->  3 files changed, 56 insertions(+)
-> 
-> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-> index 1c29947db848..c46f9e9e1d66 100644
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -187,6 +187,23 @@ unsigned int cpumask_first_and(const struct cpumask *srcp1, const struct cpumask
->  	return find_first_and_bit(cpumask_bits(srcp1), cpumask_bits(srcp2), small_cpumask_bits);
->  }
->  
-> +/**
-> + * cpumask_first_and_and - return the first cpu from *srcp1 & *srcp2 & *srcp3
-> + * @srcp1: the first input
-> + * @srcp2: the second input
-> + * @srcp3: the third input
-> + *
-> + * Return: >= nr_cpu_ids if no cpus set in all.
-> + */
-> +static inline
-> +unsigned int cpumask_first_and_and(const struct cpumask *srcp1,
-> +				   const struct cpumask *srcp2,
-> +				   const struct cpumask *srcp3)
-> +{
-> +	return find_first_and_and_bit(cpumask_bits(srcp1), cpumask_bits(srcp2),
-> +				      cpumask_bits(srcp3), small_cpumask_bits);
-> +}
-> +
->  /**
->   * cpumask_last - get the last CPU in a cpumask
->   * @srcp:	- the cpumask pointer
-> diff --git a/include/linux/find.h b/include/linux/find.h
-> index c69598e383c1..28ec5a03393a 100644
-> --- a/include/linux/find.h
-> +++ b/include/linux/find.h
-> @@ -29,6 +29,8 @@ unsigned long __find_nth_and_andnot_bit(const unsigned long *addr1, const unsign
->  					unsigned long n);
->  extern unsigned long _find_first_and_bit(const unsigned long *addr1,
->  					 const unsigned long *addr2, unsigned long size);
-> +unsigned long _find_first_and_and_bit(const unsigned long *addr1, const unsigned long *addr2,
-> +				      const unsigned long *addr3, unsigned long size);
->  extern unsigned long _find_first_zero_bit(const unsigned long *addr, unsigned long size);
->  extern unsigned long _find_last_bit(const unsigned long *addr, unsigned long size);
->  
-> @@ -345,6 +347,31 @@ unsigned long find_first_and_bit(const unsigned long *addr1,
->  }
->  #endif
->  
-> +/**
-> + * find_first_and_and_bit - find the first set bit in 3 memory regions
-> + * @addr1: The first address to base the search on
-> + * @addr2: The second address to base the search on
-> + * @addr3: The third address to base the search on
-> + * @size: The bitmap size in bits
-> + *
-> + * Returns the bit number for the first set bit
-> + * If no bits are set, returns @size.
-> + */
-> +static inline
-> +unsigned long find_first_and_and_bit(const unsigned long *addr1,
-> +				     const unsigned long *addr2,
-> +				     const unsigned long *addr3,
-> +				     unsigned long size)
-> +{
-> +	if (small_const_nbits(size)) {
-> +		unsigned long val = *addr1 & *addr2 & *addr3 & GENMASK(size - 1, 0);
-> +
-> +		return val ? __ffs(val) : size;
-> +	}
-> +
-> +	return _find_first_and_and_bit(addr1, addr2, addr3, size);
-> +}
-> +
->  #ifndef find_first_zero_bit
->  /**
->   * find_first_zero_bit - find the first cleared bit in a memory region
-> diff --git a/lib/find_bit.c b/lib/find_bit.c
-> index 32f99e9a670e..dacadd904250 100644
-> --- a/lib/find_bit.c
-> +++ b/lib/find_bit.c
-> @@ -116,6 +116,18 @@ unsigned long _find_first_and_bit(const unsigned long *addr1,
->  EXPORT_SYMBOL(_find_first_and_bit);
->  #endif
->  
-> +/*
-> + * Find the first set bit in three memory regions.
-> + */
-> +unsigned long _find_first_and_and_bit(const unsigned long *addr1,
-> +				      const unsigned long *addr2,
-> +				      const unsigned long *addr3,
-> +				      unsigned long size)
-> +{
-> +	return FIND_FIRST_BIT(addr1[idx] & addr2[idx] & addr3[idx], /* nop */, size);
-> +}
-> +EXPORT_SYMBOL(_find_first_and_and_bit);
-> +
->  #ifndef find_first_zero_bit
->  /*
->   * Find the first cleared bit in a memory region.
-> -- 
-> 2.27.0
+> > Could you add an example of how to use this correctly?
+>
+> This is a private function, you're not supposed to use it directly.
+> Anyone who is modifying this file directly can look at the existing
+> users for examples.
+
+Ah you're right, missed this bit.
+
+Thanks for the followup.
+
+Trevor
 
