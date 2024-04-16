@@ -1,166 +1,140 @@
-Return-Path: <linux-kernel+bounces-146760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B7738A6A7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:15:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A28BF8A6A7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:15:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B74AD2822D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:15:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0CDCFB210F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5FC812AAF4;
-	Tue, 16 Apr 2024 12:15:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6881212A163;
+	Tue, 16 Apr 2024 12:15:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SCyyr7pv"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fAL+717C"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8898E12AAC9
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 12:15:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98D1C12AACA;
+	Tue, 16 Apr 2024 12:15:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713269725; cv=none; b=nw27sv7vsMITO5hgsrfNaPKE2nkZJvPAOZsVNdKkO89MR9IZpLgoBBhgtKZzqPci/o7HS8TF0J1UMHQxvpWjNGZsPsHxW/ZPi9a18RekaMyynQmSxKmZN/Ku32CIbczTkNxAztll9hCKrY+E1gWC2H66dlGvMRb5EoPkKheiwZ4=
+	t=1713269723; cv=none; b=UrFm/NOTVNse0HQL22Ft0JHkaa+dj69J6kiPDO9UCGpQPY/urYTUFeJIA094UjB4cWsNLWbLomzrHis3ffIbQawqHRA1JE6KGcH3hIT4rGzTuS70F2Lq3+LjGpmKWGVc321yL2EyYrLN4ZnjTS9UoEcSCrjdH2CMQCIZptFOP3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713269725; c=relaxed/simple;
-	bh=wrKI7QZ6HanmjwtzPADRvU6WaXyrFt9p6yXSrd3Udu8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NzQmhZrH/vZCfFy1sE6BlvpHyl4jz26scLMPXwDJJ4SiCsopwMWwMXfIiOgEkaYxlxpFHBn6l09aY8YH4W/ZvBCCRcyUJHWKkNVWtiUDWxfX44NyNJvIYwiREuzhz4NKY6syG0rLCLuIn88woE8CNySf+7865c6p+sAXMSZB/AM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SCyyr7pv; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so2829667a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 05:15:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713269723; x=1713874523; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wlWFv7cOcND2wnTqRNzMBr2pMz9vnQZWAIMjfeiHzPY=;
-        b=SCyyr7pvkiW3U1u49nwW/xzY4yN0hrZaQ8l0pC4bO6gb2h/BLaz6Au7luNhlzRQIQf
-         ei/ATG1ovBIU3Nsz1aoKQ7yYjeS6tL3JvTfan/QMhZlY06B4dqhjuc4d/8F7D7jfd+VN
-         mFNJl3noiXwuc1GTXa0QRbMeiZuv0iiYS/D7gbt7Qm5snf1ny/gIOGOHGXGfhNm42qkv
-         F21bCc9cIJegyT/iwcZtF+ls85nc7hIzb+Rfsol1zFKAiPfSJYeIHoI5Yfn0SEevksA5
-         KD4gTc+/wYI5aDUN9vnkkOG/W7qa6am5OhMKvSuSrTIBbTCJzdnzvzRrOFEQ46QpZ5N8
-         dxnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713269723; x=1713874523;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wlWFv7cOcND2wnTqRNzMBr2pMz9vnQZWAIMjfeiHzPY=;
-        b=Ix9YtCucRlj197dLTTrZ2HU87+QBEF8ykH5didlP78EtlI2E5eKD1iO9RA6gjOfCwc
-         xyH51jDlfFbGRoW9mR0od7sqLzjR/Q6F/X8aUAtWAbnL/rjds2MBYfDDRVYzuy12424Y
-         sRH0Go3u2dW+f4gTOf7QanrRjMIBxqeRlFxkiCzZS0vnvlLjiMbuubeCOU8HzG/LDemE
-         xvw22HpdLpvliu/lmwCPmp0gLFb9sOP7kU+Jjdm8wSvkHHot33bxkCRJ7vP0AKl/w6uY
-         e7wujKwZqROV7CI47omDX4UEbQ9rJ2S5mEE4y/EeZdKgHCqLq/WZ45C9xsKlNln0oPN2
-         jPbA==
-X-Forwarded-Encrypted: i=1; AJvYcCVi1zSfJYFgrYnKGZveTXLH4A4TlRSF/Z4zANscekEolE5OJLgdY3WTsNTdSj0z0TFDUylcc9y9281jMmMvdMdCjGxPGQ8zhOFUKkkD
-X-Gm-Message-State: AOJu0YwSOIzQ82cTr41nPDqTqtKBKdSZ+xGRcMawYNLHon/LkR5efAj3
-	Vskq/2xE1PybHM1DqOWjNIMMOmLc7voeMwWo2uMYlqXYOMlqzLGBxHGHS6FFUq0q0GxiHzjqe6A
-	qp0pdGcAc2G/jyir8dKT/m5QqLvM=
-X-Google-Smtp-Source: AGHT+IG9hOFw3v1uT3o6QNr5qi+vZ+K75rWTQ53HPPqtkAcjF7Uht+4xETvra13YCmgVQ5ljS387JCgjPcZmuOU008s=
-X-Received: by 2002:a17:90b:4b48:b0:2a2:227a:50fc with SMTP id
- mi8-20020a17090b4b4800b002a2227a50fcmr9557932pjb.41.1713269722636; Tue, 16
- Apr 2024 05:15:22 -0700 (PDT)
+	s=arc-20240116; t=1713269723; c=relaxed/simple;
+	bh=Pn2alMweH9AQ/4nJwvXEDdpqKLi+Ur2nCRL4Qlf1KC0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i2Msh5JmTfhLuK53D8m1CrYD8L4XE0YV0boINHhi2ZygMTaNhTRdEKYMDGp/o+/PKpWGjJAYKe2G/nfUxnpRk+3LDjCW/emnBEBf9aBuQUMNckp7DqqZVyhqBZ3p1tuVBVz1gHjnYgZnihsHL+BLiZSGLEa8cx++ZA3Rr/R5D18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fAL+717C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8351C113CE;
+	Tue, 16 Apr 2024 12:15:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713269723;
+	bh=Pn2alMweH9AQ/4nJwvXEDdpqKLi+Ur2nCRL4Qlf1KC0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fAL+717Cp96qKDTmVR1p8gTgJLTXDR+pZ7qM9UmfwPrP9qjDZhfocycKBAc0HzXbv
+	 ZJrGRocKM5Gk2VdTrhCjKTS9TqVbRwEwCnXLMMWXQ4nE6bR/D5FeadFUb7wOHplYAW
+	 ed/QFXjaArF/gjiZ/iWNYhfmXkEj9OQeHkOql7tntP/TXeUNn4c1kVtx/2PQA50yfX
+	 sTk4jNZ2cKhK0EJQnEji/o7w3ww8hgzOu3o3O4KjfYadow93fD4EziL/EOVMK1Eajs
+	 +6KiWWNkX0qqjSn5gLifarM/nazrJ/zovC3l5BEBkFa1f47ShMyHoi0CtQXTtbBbre
+	 gJ+K9bfV5NLMw==
+Date: Tue, 16 Apr 2024 13:15:19 +0100
+From: Lee Jones <lee@kernel.org>
+To: Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-leds@vger.kernel.org, linux-pwm@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [regression] stm32mp1xx based targets stopped entering suspend
+ if pwm-leds exist
+Message-ID: <20240416121519.GS2399047@google.com>
+References: <5da6cf8a-4250-42f6-8b39-13bff7fcdd9c@leemhuis.info>
+ <2vbwacjy25z5vekylle3ehwi3be4urm6bssrbg6bxobtdlekt4@mazicwtgf4qb>
+ <256e3d3c-d43f-4bd6-9a7b-50fc870e75e4@leemhuis.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240211230931.188194-1-aford173@gmail.com> <20240211230931.188194-2-aford173@gmail.com>
-In-Reply-To: <20240211230931.188194-2-aford173@gmail.com>
-From: Adam Ford <aford173@gmail.com>
-Date: Tue, 16 Apr 2024 07:15:10 -0500
-Message-ID: <CAHCN7x+9YUj9xW-ytUqPeQBdwaRE0T5VVJyiL9cTss-EyihK8Q@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] drm/bridge: samsung-dsim: Fix porch calcalcuation rounding
-To: dri-devel@lists.freedesktop.org
-Cc: marex@denx.de, aford@beaconembedded.com, 
-	Frieder Schrempf <frieder.schrempf@kontron.de>, Inki Dae <inki.dae@samsung.com>, 
-	Jagan Teki <jagan@amarulasolutions.com>, Marek Szyprowski <m.szyprowski@samsung.com>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Marco Felsch <m.felsch@pengutronix.de>, Michael Tretter <m.tretter@pengutronix.de>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <256e3d3c-d43f-4bd6-9a7b-50fc870e75e4@leemhuis.info>
 
-On Sun, Feb 11, 2024 at 5:09=E2=80=AFPM Adam Ford <aford173@gmail.com> wrot=
-e:
->
-> When using video sync pulses, the HFP, HBP, and HSA are divided between
-> the available lanes if there is more than one lane.  For certain
-> timings and lane configurations, the HFP may not be evenly divisible.
-> If the HFP is rounded down, it ends up being too small which can cause
-> some monitors to not sync properly. In these instances, adjust htotal
-> and hsync to round the HFP up, and recalculate the htotal.
->
+On Tue, 16 Apr 2024, Linux regression tracking (Thorsten Leemhuis) wrote:
 
-Marek V and Marek S,
+> On 06.03.24 09:18, Uwe Kleine-König wrote:
+> > On Wed, Mar 06, 2024 at 08:05:15AM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
+> >>
+> >> Uwe, I noticed a report about a regression in bugzilla.kernel.org that
+> >> apparently is caused by a change of yours. As many (most?) kernel
+> >> developers don't keep an eye on it, I decided to forward it by mail.
+> >>
+> >> Note, you have to use bugzilla to reach the reporter, as I sadly[1] can
+> >> not CCed them in mails like this.
+> >>
+> >> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218559 :
+> >>
+> >>> Commit 76fe464c8e64e71b2e4af11edeef0e5d85eeb6aa ("leds: pwm: Don't
+> >>> disable the PWM when the LED should be off") prevents stm32mp1xx based
+> >>> targets from entering suspend if pwm-leds exist, as the stm32 PWM driver
+> >>> refuses to enter suspend if any PWM channels are still active ("PWM 0
+> >>> still in use by consumer" see stm32_pwm_suspend in drivers/pwm/stm32-pwm.c).
+> >>>
+> >>> Reverting the mentioned commit fixes this behaviour but I'm not
+> >>> certain if this is a problem with stm32-pwm or pwm-leds (what is the
+> >>> usual behaviour for suspend with active PWM channels?).
+> > 
+> > I'd assume the following patch fixes this report. I didn't test it
+> > though.
+> 
+> Jakob confirmed it helped in the bugzilla ticket. But the patch since
+> then didn't make any progress afaics -- or did it and I just missed it
+> in my search?
 
-Would either of you be willing to test that this doesn't break your
-applications?
+[...] 
 
-thanks
+> > ---->8----
+> > From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> > Subject: [PATCH] leds: pwm: Disable PWM when going to suspend
+> > 
+> > On stm32mp1xx based machines (and others) a PWM consumer has to disable
+> > the PWM because an enabled PWM refuses to suspend. So check the
+> > LED_SUSPENDED flag and depending on that set the .enabled property.
+> > 
+> > Link: https://bugzilla.kernel.org/show_bug.cgi?id=218559
+> > Fixes: 76fe464c8e64 ("leds: pwm: Don't disable the PWM when the LED should be off")
+> > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> > ---
+> >  drivers/leds/leds-pwm.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/leds/leds-pwm.c b/drivers/leds/leds-pwm.c
+> > index 4e3936a39d0e..e1b414b40353 100644
+> > --- a/drivers/leds/leds-pwm.c
+> > +++ b/drivers/leds/leds-pwm.c
+> > @@ -53,7 +53,13 @@ static int led_pwm_set(struct led_classdev *led_cdev,
+> >  		duty = led_dat->pwmstate.period - duty;
+> >  
+> >  	led_dat->pwmstate.duty_cycle = duty;
+> > -	led_dat->pwmstate.enabled = true;
+> > +	/*
+> > +	 * Disabling a PWM doesn't guarantee that it emits the inactive level.
+> > +	 * So keep it on. Only for suspending the PWM should be disabled because
+> > +	 * otherwise it refuses to suspend. The possible downside is that the
+> > +	 * LED might stay (or even go) on.
+> > +	 */
+> > +	led_dat->pwmstate.enabled = !(led_cdev->flags & LED_SUSPENDED);
+> >  	return pwm_apply_might_sleep(led_dat->pwm, &led_dat->pwmstate);
+> >  }
+> > 
+> > base-commit: 15facbd7bd3dbfa04721cb71e69954eb4686cb9e
+> > ---->8----
 
-adam
+Did you submit this?  I don't see it in LORE or in my inbox.
 
-> Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> # Kontron BL i.=
-MX8MM with HDMI monitor
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> ---
-> V2:  No changes
->
-> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/brid=
-ge/samsung-dsim.c
-> index 8476650c477c..52939211fe93 100644
-> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
-> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-> @@ -1606,6 +1606,27 @@ static int samsung_dsim_atomic_check(struct drm_br=
-idge *bridge,
->                 adjusted_mode->flags |=3D (DRM_MODE_FLAG_PHSYNC | DRM_MOD=
-E_FLAG_PVSYNC);
->         }
->
-> +       /*
-> +        * When using video sync pulses, the HFP, HBP, and HSA are divide=
-d between
-> +        * the available lanes if there is more than one lane.  For certa=
-in
-> +        * timings and lane configurations, the HFP may not be evenly div=
-isible.
-> +        * If the HFP is rounded down, it ends up being too small which c=
-an cause
-> +        * some monitors to not sync properly. In these instances, adjust=
- htotal
-> +        * and hsync to round the HFP up, and recalculate the htotal. Thr=
-ough trial
-> +        * and error, it appears that the HBP and HSA do not appearto nee=
-d the same
-> +        * correction that HFP does.
-> +        */
-> +       if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_SYNC_PULSE && dsi->lane=
-s > 1) {
-> +               int hfp =3D adjusted_mode->hsync_start - adjusted_mode->h=
-display;
-> +               int remainder =3D hfp % dsi->lanes;
-> +
-> +               if (remainder) {
-> +                       adjusted_mode->hsync_start +=3D remainder;
-> +                       adjusted_mode->hsync_end   +=3D remainder;
-> +                       adjusted_mode->htotal      +=3D remainder;
-> +               }
-> +       }
-> +
->         return 0;
->  }
->
-> --
-> 2.43.0
->
+-- 
+Lee Jones [李琼斯]
 
