@@ -1,169 +1,109 @@
-Return-Path: <linux-kernel+bounces-149171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24A408A8CC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:11:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7CE48A8CCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:11:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B69071F20FA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:11:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 833C1281698
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:11:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 998B3383A0;
-	Wed, 17 Apr 2024 20:11:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E71374D2;
+	Wed, 17 Apr 2024 20:11:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eimtY/Yj"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M60UwMkl"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4802208D6;
-	Wed, 17 Apr 2024 20:11:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D640A381BA
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 20:11:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713384674; cv=none; b=GzROvuIrV6q48YMdbIhGlXX7k+17WKMg6ODjsROmnxlsYbNX9nPqhGj8SarieiHoQBuff8S50nC8kF8z31eKXLMwkdlUeh2PBBLbhy53/8WD+PDOeEp87rU4MtOYjAAC95w1asEAzlA8ws3iiLbY5wuEPns27/j5+N8g/awsiFI=
+	t=1713384702; cv=none; b=lIBGIJjiVw5maSaMiS0nlUC1HjwqQOR2yPW6IpGjpU391xW/IjqqihFLoafyGgEEg2kM1HZ3Kmh4P2rXGW7pg1AeKfAqa0GFbuYMNLI0wFCji2eZYISbAMyRIYzvYMb2OrdsXquxD0o6arzKgwNryRJ2Oafa7R/mZiAE3hGeK1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713384674; c=relaxed/simple;
-	bh=WOJjjXPmt5T73gBoMsSOip3W1PBw8vG3OglSmkgGACQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X52qONXKGYtSKW6aIKM78Lfy6d9uXcl9J5LzuPujGEMJ8HIuC/+DajyWZ6p7wMtCD+MZsU9NBrSLjgxaJLBfwOH7kPMy1tYEKqLsr2HE2pP36gYCc4E7yyP+85FtJI/U7Q3vHdxsD+qeq8ekDJQMPENH+CbhO0Y3ApyXXlucryU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eimtY/Yj; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713384673; x=1744920673;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=WOJjjXPmt5T73gBoMsSOip3W1PBw8vG3OglSmkgGACQ=;
-  b=eimtY/YjR9PtC7cnPrO7XmcR2n805QQJFDB8phGYmAN0PolshS20jk1L
-   ZtkQ81ihYIADNHMC5Mbmwq8vkn3Rw469A5mqOTVItLDJbNEHiaYuQrDxI
-   yFT3yT4SPvafrh+wT5Vlbk/kLaKYU+bSYq4o+3DBHkZy2lg9l+2FHNSkP
-   WYcOujgpmmeygnV719Ju+YX98JnCNZZU3AANKpyjbi8Huqmjfdi/mBDbA
-   5RoPnDfu08R8QICgt9h3UaSBO7hWP1btGiiMlwhNrwej6M2GrEPBNnVbj
-   RG7dKq211yKzf/QfA0vZuS9Ym297+Sx6h2C8D4UqYBAU04KJ5KWmw4BaR
-   Q==;
-X-CSE-ConnectionGUID: QQz/d5juT4G8XOlvihFcIQ==
-X-CSE-MsgGUID: 1M1AL+4dQpqPAtXpF99YfQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="19504694"
-X-IronPort-AV: E=Sophos;i="6.07,210,1708416000"; 
-   d="scan'208";a="19504694"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 13:10:59 -0700
-X-CSE-ConnectionGUID: BwxQWrhIRgKaGHE0XVmIEA==
-X-CSE-MsgGUID: IpseWg/9TG6DSsxubstNxA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,210,1708416000"; 
-   d="scan'208";a="23336391"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 13:10:58 -0700
-Date: Wed, 17 Apr 2024 13:10:58 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Binbin Wu <binbin.wu@linux.intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 109/130] KVM: TDX: Handle TDX PV port io hypercall
-Message-ID: <20240417201058.GL3039520@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <4f4aaf292008608a8717e9553c3315ee02f66b20.1708933498.git.isaku.yamahata@intel.com>
- <00bb2871-8020-4d60-bdb6-d2cebe79d543@linux.intel.com>
+	s=arc-20240116; t=1713384702; c=relaxed/simple;
+	bh=UxcBn5qTWOKxcALlk6iE/TRzUBJWa3dvUXVgi2A57Pk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ro/JCJ8hhfKKsMD+x2DI794/a7h1Ukp361S0JP7suR7l70O5Pt2EB4XagdaCMJrJ5dS0RSsFX46C4Wz4e0JYXF6GM+BEQ+M0aS2LgfUuqmCH9WIVTZb77waydOczX88Hb0UCfjcKX//3o9lZbJgosWbV4jZBdzB4Qb/GqopgS2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M60UwMkl; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-343cfa6faf0so109724f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713384699; x=1713989499; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vZKIGJkS/DiIjyP+xZB0kivHqw9/JhVCgwEUHJq+58E=;
+        b=M60UwMklStZuAAqnU6lEeY3M3oY7wF6/SqHGAAQkTEPHHD34N2GZE3Vt4BWOcLW1OY
+         5uQ1M/xAQ7L2IABjn7/JitTpmqMytCIz4c2IGwW2ukvgTVwCdApnNvrDijlSbbZBa9K7
+         88hv/xVLcpzGfABfP8+88CP7dbaVNTdKOOgrelCy8c2ZIBkhiFbhCnPLnU4//2Ve2S80
+         Lp8cFVNjc684bXO4DaQe4r/Bk2Bm1q1K7ORQ2I/i4TZTV1FgIJZw9+iEOME6GSyt3Jb3
+         a1rgYeyAaMK5NTqTbaMORRyovKF0+n8/1Jh7I1bt9Ne5DTMOJSnpTjYnc4Ix8H4g5cdb
+         kFLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713384699; x=1713989499;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vZKIGJkS/DiIjyP+xZB0kivHqw9/JhVCgwEUHJq+58E=;
+        b=hA3klp2QHtiICCZmTkzaPn1ZxUwRiDbzge37jjzXOWlUOQyGaufPJDrpoypMioMFBC
+         Kw7URbv4g7Zb5YlSjzDpxCGB9+TO7iSaViXSBY1afbIhAu1+zXePANzDBFxEJ3SFVfmB
+         xD7pf/iwG1olTs4hSQVZ4QsFcQGTDTzIlwPYUA21Q9HWVhGRzlFQl6G6rMcnr3kz1WYa
+         /2somNUO/HkDSIVcpXmhNp1jizTIZqaUkeA1xw/5oubtlN1yjcGSbpPDqlMRxOEKPwpZ
+         ay8g4jywIyvsA9gDvl9nS/rRJ1GZ8HdOk0EjE8eCq0h290I/IVKvjU565oyl/psGWZCh
+         wnXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXfiyquR78SYhxzCRr8KbIRlAmsNa/0JXiJ3xh14qd3qzBhOQ1fdgXD6K39938QLX4dLQb4rqL+zSLiO6UwxyJaS8WjW0NqPNGzc8n8
+X-Gm-Message-State: AOJu0YyZLvdBRT/Qb+DGy4l69+YchhAuqxY4AthruF9feYirwt+/h02C
+	NVrbqtk4a127SYdXqMBEkazZKJ6rBfMX4nuz/cxOlCDnzDQT5wo=
+X-Google-Smtp-Source: AGHT+IGh0r932xxvbereGODL++VtGHYsFzZ3frQ+BoivFAe5oQIahlNuPTlJX+AJ0x5Fw/RcZSanOg==
+X-Received: by 2002:adf:f041:0:b0:349:92b7:c248 with SMTP id t1-20020adff041000000b0034992b7c248mr289867wro.29.1713384698885;
+        Wed, 17 Apr 2024 13:11:38 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.249.238])
+        by smtp.gmail.com with ESMTPSA id q4-20020adff504000000b0034635bd6ba5sm18179673wro.92.2024.04.17.13.11.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 13:11:38 -0700 (PDT)
+From: Alexey Dobriyan <adobriyan@gmail.com>
+To: akpm@linux-foundation.org
+Cc: adobriyan@gmail.com,
+	yury.norov@gmail.com,
+	linux@rasmusvillemoes.dk,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] cpumask: delete unused reset_cpu_possible_mask()
+Date: Wed, 17 Apr 2024 23:11:23 +0300
+Message-ID: <20240417201123.2961-1-adobriyan@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <00bb2871-8020-4d60-bdb6-d2cebe79d543@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 17, 2024 at 08:51:39PM +0800,
-Binbin Wu <binbin.wu@linux.intel.com> wrote:
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
+ include/linux/cpumask.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-> 
-> 
-> On 2/26/2024 4:26 PM, isaku.yamahata@intel.com wrote:
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > 
-> > Wire up TDX PV port IO hypercall to the KVM backend function.
-> > 
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-> > ---
-> > v18:
-> > - Fix out case to set R10 and R11 correctly when user space handled port
-> >    out.
-> > ---
-> >   arch/x86/kvm/vmx/tdx.c | 67 ++++++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 67 insertions(+)
-> > 
-> > diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> > index a2caf2ae838c..55fc6cc6c816 100644
-> > --- a/arch/x86/kvm/vmx/tdx.c
-> > +++ b/arch/x86/kvm/vmx/tdx.c
-> > @@ -1152,6 +1152,71 @@ static int tdx_emulate_hlt(struct kvm_vcpu *vcpu)
-> >   	return kvm_emulate_halt_noskip(vcpu);
-> >   }
-> > +static int tdx_complete_pio_out(struct kvm_vcpu *vcpu)
-> > +{
-> > +	tdvmcall_set_return_code(vcpu, TDVMCALL_SUCCESS);
-> > +	tdvmcall_set_return_val(vcpu, 0);
-> > +	return 1;
-> > +}
-> > +
-> > +static int tdx_complete_pio_in(struct kvm_vcpu *vcpu)
-> > +{
-> > +	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
-> > +	unsigned long val = 0;
-> > +	int ret;
-> > +
-> > +	WARN_ON_ONCE(vcpu->arch.pio.count != 1);
-> > +
-> > +	ret = ctxt->ops->pio_in_emulated(ctxt, vcpu->arch.pio.size,
-> > +					 vcpu->arch.pio.port, &val, 1);
-> > +	WARN_ON_ONCE(!ret);
-> > +
-> > +	tdvmcall_set_return_code(vcpu, TDVMCALL_SUCCESS);
-> > +	tdvmcall_set_return_val(vcpu, val);
-> > +
-> > +	return 1;
-> > +}
-> > +
-> > +static int tdx_emulate_io(struct kvm_vcpu *vcpu)
-> > +{
-> > +	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
-> > +	unsigned long val = 0;
-> > +	unsigned int port;
-> > +	int size, ret;
-> > +	bool write;
-> > +
-> > +	++vcpu->stat.io_exits;
-> > +
-> > +	size = tdvmcall_a0_read(vcpu);
-> > +	write = tdvmcall_a1_read(vcpu);
-> > +	port = tdvmcall_a2_read(vcpu);
-> > +
-> > +	if (size != 1 && size != 2 && size != 4) {
-> > +		tdvmcall_set_return_code(vcpu, TDVMCALL_INVALID_OPERAND);
-> > +		return 1;
-> > +	}
-> > +
-> > +	if (write) {
-> > +		val = tdvmcall_a3_read(vcpu);
-> > +		ret = ctxt->ops->pio_out_emulated(ctxt, size, port, &val, 1);
-> > +
-> > +		/* No need for a complete_userspace_io callback. */
-> I am confused about the comment.
-> 
-> The code below sets the complete_userspace_io callback for write case,
-> i.e. tdx_complete_pio_out().
-
-You're correct. This comment is stale and should be removed it.
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index 1c29947db848..04536a29f10f 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -1017,11 +1017,6 @@ void init_cpu_present(const struct cpumask *src);
+ void init_cpu_possible(const struct cpumask *src);
+ void init_cpu_online(const struct cpumask *src);
+ 
+-static inline void reset_cpu_possible_mask(void)
+-{
+-	bitmap_zero(cpumask_bits(&__cpu_possible_mask), NR_CPUS);
+-}
+-
+ static inline void
+ set_cpu_possible(unsigned int cpu, bool possible)
+ {
 -- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+2.43.2
+
 
