@@ -1,78 +1,129 @@
-Return-Path: <linux-kernel+bounces-148402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 602748A8202
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:25:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55E3B8A820A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:26:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1579F1F243F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:25:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 865B71C21D5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:26:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBA313C9CD;
-	Wed, 17 Apr 2024 11:24:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875B413C9A1;
+	Wed, 17 Apr 2024 11:26:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ZH3Z8Lor"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y5fIZBeH"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63D2113C90A;
-	Wed, 17 Apr 2024 11:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A4D13C912
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:26:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713353092; cv=none; b=MG6iWbVujujb/7HErHDJGSOHV+zTJiBF3A3jv1ne01DNE7Q9ld/qTkA5GIKVYInPA3Ua2BUiDCqffH52Tfhx+/Eji9xtl1vgBA11+OO/qNWUHNd/iGa8P7Sym/BNaJXtp5ALgqzbFNWBwFhVhYnyKpoa2eyQL+3okQOBR4yqIqU=
+	t=1713353209; cv=none; b=MrO4mEd+j/ROunIoj2kzxu2LmcC+sKEx7elqpMsJxW69KqWfKwpYx2usX+83jM3IhEwSDgKNIFW+S4ZgjUxyFi0lqsi60E4oOGQUbUUEzwFkCqc8M8mOBLO9DodxmQkU/6I7vQRP+m2T4QKTdz/i64xnKpuT08YKVsgNCAT3f4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713353092; c=relaxed/simple;
-	bh=svPI3Zi+32eA6Lf4twQeWFA9ixZsM/ee2dayjbjdZmQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U9PbqCYY7TMBrAJFn6IiYQQ6zzmVbk4BsXUqGMMm4g6puTkK1syteKNAa6V/5M4nqPaULWSN68nrP4zvuJ2Klh/FYApGOtx7JvdEluFpnXGjdNC1QOFGUe66/ZxAZcJfULAe6w4JYofumBob+IQimEYN/UGX2/zVz+sbdETrwKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ZH3Z8Lor; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EF24C072AA;
-	Wed, 17 Apr 2024 11:24:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713353091;
-	bh=svPI3Zi+32eA6Lf4twQeWFA9ixZsM/ee2dayjbjdZmQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZH3Z8LorASOFnoj0mWWm8LSkK27sb3oazyOlfys4Y7nKrPvVKznW4xWmLyv1NxB/T
-	 KCPmZ+qZaLrktUJFCt8aR8v7iU6O2amvQ5W+qcz9DfasKnJvKzwlxRWBcq24j83d7L
-	 bV2pGUMU2FateFo+vNWr9OE/bnrVkMD+9r8XwgBE=
-Date: Wed, 17 Apr 2024 13:24:49 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Parker Newman <parker@finest.io>
-Cc: Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	Parker Newman <pnewman@connecttech.com>
-Subject: Re: [PATCH v3 0/8] serial: exar: add Connect Tech serial cards to
- Exar driver
-Message-ID: <2024041723-abroad-jugular-89db@gregkh>
-References: <cover.1713270624.git.pnewman@connecttech.com>
+	s=arc-20240116; t=1713353209; c=relaxed/simple;
+	bh=9w15mbaH1qCPmMzqW2fuVbi4t+4cdxNW7m9J6W+SAcw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Dxq/l1Sy+OpFKA+OasCN0YX9KQVnucWwq2XqBG97O8rtsd1IJihFtFUEm0pbFLCffadd1v7FMtGU3qdZEur9zCFaWbyR2QhBGkHQzdASOBY4j7qA7IuiC0rN0lzHcA1CVLuKJhJwfIbY1i70AuA3SbVDk0HJ5Fa6gKASWfMRMP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Y5fIZBeH; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so5389811276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:26:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713353207; x=1713958007; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=fEf0tlVvOtKKoShUsakltVb3hD3/VpXcFyQ1gefjJfU=;
+        b=Y5fIZBeH5Vy4N3V6A691s9vvWkxIhtBUw9MmdpaEoVD3T9H1MljZRsfDVdd4zrdwub
+         egO8NOLvTbbn0FedpzowPCK1rMFTJA4IjEygopfIzqnFyhdaeQBAD6XeRTOd+2OZHCiX
+         KSfb7inzPb0p/Jf/F0I4GxCtZmG9z/V9I4IiOt4sopzJu8GGT40diQllvXnHsWG95P9i
+         e/uOaDCNA+Azoik6ysPUxkrtaz29gLO7solHQQLdkpE25+hGGEBS0GQ/xLCogiFiyXlC
+         MDGSUVHCyEXvANBW+LZywlaO3orhHIRWz0/SCCWj7oaru5ZcLNi3um46BuNY5b7kG+ft
+         5T2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713353207; x=1713958007;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fEf0tlVvOtKKoShUsakltVb3hD3/VpXcFyQ1gefjJfU=;
+        b=tque0Qgy1xwrRsPoEDRkcgWGOoiEIjCbuoVDRK0hVM7n+27QD4oI8uWpomOGqio1El
+         60oNHNg6o9mo+l0SqgY2QskLLxrvaZAd+p0PkxbMzPcyCzXwy30g8ToYs84AaEVYPWx7
+         QAlUHeXp0E6nO3XbOVk5L2Ocx6Mt1YXmc4Wqfb8SbNVLViIa8ND9Ei9v/oiAaqu8kxQa
+         hrsfK4hnN52jL0pN8UDY6dmevvA0gzIMd5uAtCU7+9U6o6suLWqUKdu1XEsxpP6+A7d0
+         KsR+oVXUBGKGJQfaL1hgqUi2GpUYzNt0HDIwQJq30FwVCKveVJDELch8qy7mfDijakKg
+         eb0A==
+X-Forwarded-Encrypted: i=1; AJvYcCWJ0Jr8ywgsf0kL8Ton4uyLKgCEh+BzvJvd3aBrVqSijAefOCjlbQ7ksuDUawdGQL646j/tyUsKtGApW5+LfJJdH0Y6WO+YuC/iS5RP
+X-Gm-Message-State: AOJu0YyO4DvbcM+zKC67cHdTkS60sPp/AJ8YeWj1fp35AWKDBeS/WsGN
+	wFMUOQFgpkpiL61kahISkprtdeZUX8PRdrRE4eE9sNbMJNjeszwamqDc7UpPcE+ybw92DTIEhWd
+	AST89Y5Sh2FWMXU0C/0JQgC9Tqt12RURCkHiB2w==
+X-Google-Smtp-Source: AGHT+IEQk/I5LetE/DhGDVVO0twPSlWrg1ZbN08OoWEw3G7KQntEEGuJ8Lq3vNPpkhg2jG26xZma+XZL1vf3+BIUoXY=
+X-Received: by 2002:a25:d354:0:b0:dc7:45f4:44f7 with SMTP id
+ e81-20020a25d354000000b00dc745f444f7mr12803841ybf.14.1713353207586; Wed, 17
+ Apr 2024 04:26:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1713270624.git.pnewman@connecttech.com>
+References: <20240417105605.836705-1-quic_varada@quicinc.com> <20240417105605.836705-3-quic_varada@quicinc.com>
+In-Reply-To: <20240417105605.836705-3-quic_varada@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 17 Apr 2024 14:26:36 +0300
+Message-ID: <CAA8EJpqaXU=H6Nhz2_WTYHS1A0bi1QrMdp7Y+s6HUELioCzbeg@mail.gmail.com>
+Subject: Re: [PATCH v8 2/7] clk: qcom: cbf-msm8996: Specify master and slave id
+To: Varadarajan Narayanan <quic_varada@quicinc.com>
+Cc: andersson@kernel.org, mturquette@baylibre.com, sboyd@kernel.org, 
+	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, 
+	konrad.dybcio@linaro.org, djakov@kernel.org, quic_anusha@quicinc.com, 
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Apr 16, 2024 at 08:55:27AM -0400, Parker Newman wrote:
-> From: Parker Newman <pnewman@connecttech.com>
-> 
-> Hello,
-> These patches add proper support for most of Connect Tech's (CTI) Exar
-> based serial cards. Previously, only a subset of CTI's cards would work
-> with the Exar driver while the rest required the CTI out-of-tree driver.
-> These patches are intended to phase out the out-of-tree driver.
-> 
-> I am new to the mailing lists and contributing to the kernel so please
-> let me know if I have made any mistakes or if you have any feedback.
+On Wed, 17 Apr 2024 at 13:56, Varadarajan Narayanan
+<quic_varada@quicinc.com> wrote:
+>
+> The icc-clk driver has been changed to take master and slave id
+> from the caller instead of auto-generating them. Update
+> clk-cbf-8996 accordingly.
 
-Much better.  I took the 1st patch already in my tree to make it
-hopefully easire for you to rebase and redo the rest.
+This should be squashed into the previous patch. Otherwise the driver
+is broken between two commits.
 
-thanks,
+>
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> ---
+>  drivers/clk/qcom/clk-cbf-8996.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/clk/qcom/clk-cbf-8996.c b/drivers/clk/qcom/clk-cbf-8996.c
+> index fe24b4abeab4..a077d4403967 100644
+> --- a/drivers/clk/qcom/clk-cbf-8996.c
+> +++ b/drivers/clk/qcom/clk-cbf-8996.c
+> @@ -237,7 +237,12 @@ static int qcom_msm8996_cbf_icc_register(struct platform_device *pdev, struct cl
+>         struct device *dev = &pdev->dev;
+>         struct clk *clk = devm_clk_hw_get_clk(dev, cbf_hw, "cbf");
+>         const struct icc_clk_data data[] = {
+> -               { .clk = clk, .name = "cbf", },
+> +               {
+> +                       .clk = clk,
+> +                       .name = "cbf",
+> +                       .master_id = MASTER_CBF_M4M,
+> +                       .slave_id = SLAVE_CBF_M4M,
+> +               },
+>         };
+>         struct icc_provider *provider;
+>
+> --
+> 2.34.1
+>
 
-greg k-h
+
+-- 
+With best wishes
+Dmitry
 
