@@ -1,167 +1,153 @@
-Return-Path: <linux-kernel+bounces-148811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 112C68A87B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:34:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25A998A87B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:34:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83651B26E90
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:34:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48C921C21F20
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:34:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9ABC1482F3;
-	Wed, 17 Apr 2024 15:33:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F087147C9D;
+	Wed, 17 Apr 2024 15:34:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="yh08Z7Ry";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="/OjCaona";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="yh08Z7Ry";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="/OjCaona"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i4T6AISh"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78C09147C6D;
-	Wed, 17 Apr 2024 15:33:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 651C113C3EF;
+	Wed, 17 Apr 2024 15:34:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713368024; cv=none; b=NbiU31+cIHQTso6Y9u1Yp5FxwHlNGudUwUME3LP9WqZPyhYZ5zVA8XrwE3welnWyPM1MeSeCVkp83Xm/wgwpv4SQE4i4wfYQyKQDc3Okm/TkXPZiYVeN0l6Tvra2ihNNaUDAzEig4R2DBNZJYpBdDuq76OL8l08FO5f6dJqj6s8=
+	t=1713368068; cv=none; b=ARFys+a6ITm7aw+zHvcO88YYbb08f5aTUGdKeCPLJxtxGyPkcmIZa+EdWnkQRZYinsYKRO8JJYRq+InxkAqmFoY0VOmOkEOwhY+SJeFGNIQ2Rls1zKLrDEvEviKS+Ai2mzgxuuzdBjMiEVAa70W/sToC2wenLEKW7uEDUv/+1/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713368024; c=relaxed/simple;
-	bh=z4xdnmvSlM4ErphcHTjBQHmq8728znhdZOdtFL1RS9Q=;
-	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=kJuztUVUb1DBlSOGgMVqU9LIDdQOYDtBWH0DbgbssQBLlSLZCsmcqSlxTBFz/Ve0EQVRtbIztG+IaThmKeY2qBk0Li+PmVHh3H1XI3VpvkQpDBE62Xp3KKbIdggkyfCj+9KojQBabGydh0iATZ9MOWqwu7+LjZJpqjHTBDJf1r8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=yh08Z7Ry; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=/OjCaona; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=yh08Z7Ry; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=/OjCaona; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 822CA33E51;
-	Wed, 17 Apr 2024 15:33:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713368015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=VuKnNaKUeQ9SJ3jWfyd0fdlNcPS7skWvdmgj3sD0E3w=;
-	b=yh08Z7RyxeWTfmzuZreHxBUECDczM1rMSJas/xS8LSQa8/hjAsULZYOm0AWBQksb0i2Fvp
-	gRoAhn1MAnCe25Ua1cCLCU/0/h4mV3Aczs0MRMuu0EvTtWJVXpcgZJtIjaBT1hFQljyPa2
-	FNXTK1er79ADShDGZoKtOsKt1WmdtUs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713368015;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=VuKnNaKUeQ9SJ3jWfyd0fdlNcPS7skWvdmgj3sD0E3w=;
-	b=/OjCaona8ocShcErlgs0HFzuIFxMAOlRRtd+kf8/o9Cvmpxg68hyCGFMXe0ijcUVUVbRPX
-	Q7aJkzp3+cVNzxBg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713368015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=VuKnNaKUeQ9SJ3jWfyd0fdlNcPS7skWvdmgj3sD0E3w=;
-	b=yh08Z7RyxeWTfmzuZreHxBUECDczM1rMSJas/xS8LSQa8/hjAsULZYOm0AWBQksb0i2Fvp
-	gRoAhn1MAnCe25Ua1cCLCU/0/h4mV3Aczs0MRMuu0EvTtWJVXpcgZJtIjaBT1hFQljyPa2
-	FNXTK1er79ADShDGZoKtOsKt1WmdtUs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713368015;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=VuKnNaKUeQ9SJ3jWfyd0fdlNcPS7skWvdmgj3sD0E3w=;
-	b=/OjCaona8ocShcErlgs0HFzuIFxMAOlRRtd+kf8/o9Cvmpxg68hyCGFMXe0ijcUVUVbRPX
-	Q7aJkzp3+cVNzxBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BEA871384C;
-	Wed, 17 Apr 2024 15:33:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id TP+8J87rH2b8ZAAAD6G6ig
-	(envelope-from <jdelvare@suse.de>); Wed, 17 Apr 2024 15:33:34 +0000
-Message-ID: <b702b36b90b63b615d41e778570707043ea81551.camel@suse.de>
-Subject: [PATCH] firmware: dmi: Stop decoding on broken entry
-From: Jean Delvare <jdelvare@suse.de>
-To: Michael Schierl <schierlm@gmx.de>
-Cc: linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org, Michael
- Kelley <mhklinux@outlook.com>
-Date: Wed, 17 Apr 2024 17:33:32 +0200
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1713368068; c=relaxed/simple;
+	bh=IaRbObB5dEEIBtmpY4TQrQpfkbKo3yd2zwxXbfaJry0=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=jcS+eTpuaZWeVijKeU8wGzXirr/TzjuVnRf6vuvOTyySPhANT2/7qE9a31rq7CyYoztjjdnMseZOteXJdOG1qYreKfY7aiP+GkMOiscNyQfi7nc/4sIZQY0gdmz8z1SYJ+E23pEMu5YeqVZGk3SpxauCsLDcSvGR5NbgiHuQ+A8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i4T6AISh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCB6DC072AA;
+	Wed, 17 Apr 2024 15:34:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713368068;
+	bh=IaRbObB5dEEIBtmpY4TQrQpfkbKo3yd2zwxXbfaJry0=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=i4T6AIShq8iv6NzCQXuiVcBRjXys+gIu07VpRelIM/4VXfkxa3i1aKygFMcqTfTIP
+	 AxI1eScM8ogH6mCi0qFjCiT8MznN+YC6bE97ooKRydobQsZBEBBPl14dFQ/xJn7HcJ
+	 WhAUpXTxxQ+2Ln9OGR3rqkl/aitwNGoa5G5ULy5RqNdc8NReBC8F7Aw/raXUAR5Vla
+	 sVdUqc4laN664krEG2iJfuh8vTv5eP5X/Cd5kMpYf6dUmdG1Ce3KMwmHj+zgdDoFUO
+	 jLR33YbSwCQZlA1pjaR0uIv/IyOSNecht8uQWZ1RfasrybthQd67T+YCEJKhb1akT9
+	 aqEUnB1f0DATQ==
+Date: Wed, 17 Apr 2024 10:34:26 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.18
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.18 / 50.00];
-	BAYES_HAM(-1.88)[94.33%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmx.de,outlook.com];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[gmx.de];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,outlook.com];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+From: Rob Herring <robh@kernel.org>
+To: Kory Maincent <kory.maincent@bootlin.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, 
+ Dent Project <dentproject@linuxfoundation.org>, 
+ linux-kernel@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, 
+ kernel@pengutronix.de, "Rafael J. Wysocki" <rafael@kernel.org>, 
+ linux-doc@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Russell King <linux@armlinux.org.uk>, Russ Weight <russ.weight@linux.dev>, 
+ Jakub Kicinski <kuba@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>, 
+ Andrew Lunn <andrew@lunn.ch>, Mark Brown <broonie@kernel.org>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Oleksij Rempel <o.rempel@pengutronix.de>, 
+ Frank Rowand <frowand.list@gmail.com>, Paolo Abeni <pabeni@redhat.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Maxime Chevallier <maxime.chevallier@bootlin.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org, 
+ Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <20240417-feature_poe-v9-8-242293fd1900@bootlin.com>
+References: <20240417-feature_poe-v9-0-242293fd1900@bootlin.com>
+ <20240417-feature_poe-v9-8-242293fd1900@bootlin.com>
+Message-Id: <171336806575.2618779.157615998420721814.robh@kernel.org>
+Subject: Re: [PATCH net-next v9 08/14] dt-bindings: net: pse-pd: Add
+ another way of describing several PSE PIs
 
-If a DMI table entry is shorter than 4 bytes, it is invalid. Due to
-how DMI table parsing works, it is impossible to safely recover from
-such an error, so we have to stop decoding the table.
 
-Signed-off-by: Jean Delvare <jdelvare@suse.de>
-Link: https://lore.kernel.org/linux-kernel/Zh2K3-HLXOesT_vZ@liuwe-devbox-debian-v2/T/
----
-Michael, can you please test this patch and confirm that it prevents
-the early oops?
+On Wed, 17 Apr 2024 16:39:56 +0200, Kory Maincent wrote:
+> From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
+> 
+> PSE PI setup may encompass multiple PSE controllers or auxiliary circuits
+> that collectively manage power delivery to one Ethernet port.
+> Such configurations might support a range of PoE standards and require
+> the capability to dynamically configure power delivery based on the
+> operational mode (e.g., PoE2 versus PoE4) or specific requirements of
+> connected devices. In these instances, a dedicated PSE PI node becomes
+> essential for accurately documenting the system architecture. This node
+> would serve to detail the interactions between different PSE controllers,
+> the support for various PoE modes, and any additional logic required to
+> coordinate power delivery across the network infrastructure.
+> 
+> The old usage of "#pse-cells" is unsuficient as it carries only the PSE PI
+> index information.
+> 
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> ---
+> 
+> Changes in v3:
+> - New patch
+> 
+> Changes in v4:
+> - Remove $def
+> - Fix pairset-names item list
+> - Upgrade few properties description
+> - Update the commit message
+> 
+> Changes in v5:
+> - Fix yamllint error.
+> - Replace underscore by dash in properties names.
+> - Add polarity-supported property.
+> 
+> Changes in v6:
+> - Reorder the pairset pinout table documentation to shrink the lines size.
+> - Remove pairset and polarity as required fields.
+> - Add vpwr-supply regulator supply.
+> 
+> Changes in v7:
+> - Fix weird characters issue.
+> - Fix documentation nit.
+> ---
+>  .../bindings/net/pse-pd/pse-controller.yaml        | 101 ++++++++++++++++++++-
+>  1 file changed, 98 insertions(+), 3 deletions(-)
+> 
 
-The root cause of the DMI table corruption still needs to be
-investigated.
+My bot found errors running 'make dt_binding_check' on your patch:
 
- drivers/firmware/dmi_scan.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+yamllint warnings/errors:
 
---- linux-6.8.orig/drivers/firmware/dmi_scan.c
-+++ linux-6.8/drivers/firmware/dmi_scan.c
-@@ -102,6 +102,17 @@ static void dmi_decode_table(u8 *buf,
- 		const struct dmi_header *dm = (const struct dmi_header *)data;
- 
- 		/*
-+		 * If a short entry is found (less than 4 bytes), not only it
-+		 * is invalid, but we cannot reliably locate the next entry.
-+		 */
-+		if (dm->length < sizeof(struct dmi_header)) {
-+			pr_warn(FW_BUG
-+				"Corrupted DMI table (only %d entries processed)\n",
-+				i);
-+			break;
-+		}
-+
-+		/*
- 		 *  We want to know the total length (formatted area and
- 		 *  strings) before decoding to make sure we won't run off the
- 		 *  table in dmi_decode or dmi_string
+dtschema/dtc warnings/errors:
 
--- 
-Jean Delvare
-SUSE L3 Support
+
+doc reference errors (make refcheckdocs):
+Warning: Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml references a file that doesn't exist: Documentation/networking/pse-pd/pse-pi.rst
+Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml: Documentation/networking/pse-pd/pse-pi.rst
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240417-feature_poe-v9-8-242293fd1900@bootlin.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
