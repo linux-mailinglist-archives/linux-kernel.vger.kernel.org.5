@@ -1,147 +1,347 @@
-Return-Path: <linux-kernel+bounces-148411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2F828A8236
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:37:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2726E8A823D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:39:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3FD91C21DB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:37:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2BD9285B00
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:39:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A601A13CF96;
-	Wed, 17 Apr 2024 11:37:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FCF213D26B;
+	Wed, 17 Apr 2024 11:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bJMw/qGp"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="tAKbhqzo"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D75813C9B2;
-	Wed, 17 Apr 2024 11:37:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55A38127B45;
+	Wed, 17 Apr 2024 11:39:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713353837; cv=none; b=eCYoKbx4/9J8JRNvL4fORMlC/kaUom7nxU7M5LQ+c/72S7qAwDbRH48jb+6Z6pwmkfiPxM8NThZ4z2mQ786KC/lDje5vAWcdbBBZx0XU+xyK2NXkzN0B5jTzshAPVOgxAsBYrqHoKirRH4L/LhMEmBDi8fA4v33ABVm6s4JjyhI=
+	t=1713353973; cv=none; b=Omeb6e+LNWkZo1dIMQw7UocE7xiia2qs6ZFKBpsl6yhdS1j1CHFVw6ZII+OJ3j0PWu33bdUDsiN3Foi+jODAon6hWRv7sAnNYY3Q7RRgLzUelaKw6EddawIbadpwX6oPAJPdom4oVVPuv4STdUhZ6JVy4oipnKX6nfBuk9y8JVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713353837; c=relaxed/simple;
-	bh=ni1rHrQkZPj0oa4mBUOmn8s86m7db/sCZzs6v/o4CR8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XkfIxwl9+Pt1c+X27fylONGLeZU01zrNMBx6hlLi8n9gMUYyT0/zrX1cZ3v+zeDDJyWxDBbY5+wuARXgy92uwXcn3JoDrUbWKzhQOfIrIE+4PSoS++Wc9JkhMDKV9KEycfnuG9oDzM7pfUqQrDsohjLQA8lv+ZTxfW2TVkbUalU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=bJMw/qGp; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=O4FJeYjzVSrCJLMWVOfo4rKcH+oK+crdFCS4dm+nSJw=; b=bJMw/qGpR0b9/jwlohMK0wYLf1
-	3Iwlt7Xkt9gigpNoAdTdquU7sEYatU38PE510DDkwfDrHKtGRQbpAidJD8zSXTfq4tTFDwlgDLXVh
-	F4Y3GC71PcDSALfxgIDKtiFbh5WsoIjhmwBOl9qMNila0XmgFv+8lb9bZypVyLO8eapLGebDXE6O7
-	lRkgfqEQYfMeV7FRigv654M98vQQzL6C3V2ehXS4ULWzyg9sYCgt0NgCb1yQC7Pbo5Mf0gKAGJKVP
-	3p54qePNYQE4fziXioJM6YxOb3p9UMIqBk2fXDPPa5uS43dzqlUATOkKTBpTn5qzbw2y3pOKR0JRf
-	5Jpkbk5Q==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rx3b5-00000002pWR-24HE;
-	Wed, 17 Apr 2024 11:37:03 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 2553630047C; Wed, 17 Apr 2024 13:37:03 +0200 (CEST)
-Date: Wed, 17 Apr 2024 13:37:03 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Elizabeth Figura <zfigura@codeweavers.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	wine-devel@winehq.org,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	Wolfram Sang <wsa@kernel.org>,
-	Arkadiusz Hiler <ahiler@codeweavers.com>,
-	Andy Lutomirski <luto@kernel.org>, linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH v4 02/27] ntsync: Introduce NTSYNC_IOC_WAIT_ALL.
-Message-ID: <20240417113703.GL30852@noisy.programming.kicks-ass.net>
-References: <20240416010837.333694-1-zfigura@codeweavers.com>
- <20240416010837.333694-3-zfigura@codeweavers.com>
+	s=arc-20240116; t=1713353973; c=relaxed/simple;
+	bh=axQH7kez0+oeu0awTxr8Rx8biB4sJg/SzK+3sbIPxWU=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=eXdS46z7A93LHC+9KKKVmEGwFwXdxgDHaI0Q2T+JTDSkhZjbaHTlYvP4xDv7CXt77BJkPQxaGJyaXQbhXaZZDKz6SZSLb6p7v+RdeFYMvAeszpPfJ0ExTB8uXNsKsnQQvgHOt/p8AHc2JT0q7cHV8xRBg95xwsuzUeXaFS1EiF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=tAKbhqzo; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43HBdE83084479;
+	Wed, 17 Apr 2024 06:39:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713353954;
+	bh=yorAPT/7ZPOM4HLMErc5kNFsxTJFG2m+xng0w+udA6c=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=tAKbhqzo1Gb8xKsz2P9MJnryiz432buRH5rcx06CdLfPaMwAvsg6rDBfWEqikBaxX
+	 Fit8r7NJ5SLfzrr3lFHqdPsfjU5QJkTArYYCWVlKLSftlLR/HguxH2KOsn4HAH2Lc9
+	 IvPoId6QhwsDbwipCTaAKbdv3j+w7nuziFcEJ/ls=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43HBdESL008889
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 17 Apr 2024 06:39:14 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 17
+ Apr 2024 06:39:14 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 17 Apr 2024 06:39:13 -0500
+Received: from localhost (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43HBdDTN025137;
+	Wed, 17 Apr 2024 06:39:13 -0500
+From: Chintan Vankar <c-vankar@ti.com>
+To: Julien Panis <jpanis@baylibre.com>, Arnd Bergmann <arnd@arndb.de>,
+        "Dan
+ Carpenter" <dan.carpenter@linaro.org>,
+        Chintan Vankar <c-vankar@ti.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Grygorii Strashko
+	<grygorii.strashko@ti.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "Andrew Lunn" <andrew@lunn.ch>, Roger Quadros <rogerq@kernel.org>,
+        Richard
+ Cochran <richardcochran@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, Jakub
+ Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S.
+ Miller" <davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: [PATCH net-next v6 2/2] net: ethernet: ti: am65-cpsw/ethtool: Enable RX HW timestamp only for PTP packets
+Date: Wed, 17 Apr 2024 17:09:04 +0530
+Message-ID: <20240417113904.3804936-3-c-vankar@ti.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240417113904.3804936-1-c-vankar@ti.com>
+References: <20240417113904.3804936-1-c-vankar@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416010837.333694-3-zfigura@codeweavers.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Mon, Apr 15, 2024 at 08:08:12PM -0500, Elizabeth Figura wrote:
-> +	if (atomic_read(&sem->all_hint) > 0) {
-> +		spin_lock(&dev->wait_all_lock);
-> +		spin_lock_nest_lock(&sem->lock, &dev->wait_all_lock);
->  
-> +		prev_count = sem->u.sem.count;
-> +		ret = post_sem_state(sem, args);
-> +		if (!ret) {
-> +			try_wake_all_obj(dev, sem);
-> +			try_wake_any_sem(sem);
-> +		}
->  
-> +		spin_unlock(&sem->lock);
-> +		spin_unlock(&dev->wait_all_lock);
-> +	} else {
-> +		spin_lock(&sem->lock);
-> +
-> +		prev_count = sem->u.sem.count;
-> +		ret = post_sem_state(sem, args);
-> +		if (!ret)
-> +			try_wake_any_sem(sem);
-> +
-> +		spin_unlock(&sem->lock);
-> +	}
->  
->  	if (!ret && put_user(prev_count, user_args))
->  		ret = -EFAULT;
+In the current mechanism of timestamping, am65-cpsw-nuss driver
+enables hardware timestamping for all received packets by setting
+the TSTAMP_EN bit in CPTS_CONTROL register, which directs the CPTS
+module to timestamp all received packets, followed by passing
+timestamp via DMA descriptors. This mechanism causes CPSW Port to
+Lock up.
 
-vs.
+To prevent port lock up, don't enable rx packet timestamping by
+setting TSTAMP_EN bit in CPTS_CONTROL register. The workaround for
+timestamping received packets is to utilize the CPTS Event FIFO
+that records timestamps corresponding to certain events. The CPTS
+module is configured to generate timestamps for Multicast Ethernet,
+UDP/IPv4 and UDP/IPv6 PTP packets.
 
-> +	/* queue ourselves */
-> +
-> +	spin_lock(&dev->wait_all_lock);
-> +
-> +	for (i = 0; i < args.count; i++) {
-> +		struct ntsync_q_entry *entry = &q->entries[i];
-> +		struct ntsync_obj *obj = entry->obj;
-> +
-> +		atomic_inc(&obj->all_hint);
-> +
-> +		/*
-> +		 * obj->all_waiters is protected by dev->wait_all_lock rather
-> +		 * than obj->lock, so there is no need to acquire obj->lock
-> +		 * here.
-> +		 */
-> +		list_add_tail(&entry->node, &obj->all_waiters);
-> +	}
+Update supported hwtstamp_rx_filters values for CPSW's timestamping
+capability.
 
-This looks racy, consider:
+Fixes: b1f66a5bee07 ("net: ethernet: ti: am65-cpsw-nuss: enable packet timestamping support")
 
-	atomic_read(all_hints) /* 0 */
+Signed-off-by: Chintan Vankar <c-vankar@ti.com>
+---
 
-				spin_lock(wait_all_lock)
-				atomic_inc(all_hint)	/* 1 */
-				list_add_tail()
+Link to v5:
+https://lore.kernel.org/r/20240402114405.219100-3-c-vankar@ti.com/
 
-	spin_lock(sem->lock)
-	/* try_wake_all_obj() missing */
+Changes from v5 to v6:
+- No changes in v6.
 
+ drivers/net/ethernet/ti/am65-cpsw-ethtool.c | 13 +++++-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c    | 51 ++++++++++-----------
+ drivers/net/ethernet/ti/am65-cpts.c         | 23 ----------
+ drivers/net/ethernet/ti/am65-cpts.h         |  5 --
+ 4 files changed, 35 insertions(+), 57 deletions(-)
 
-
-
-I've not yet thought about if this is harmful or not, but if not, it
-definitely needs a comment.
-
-Anyway, I need a break, maybe more this evening.
-
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
+index d6ce2c9f0a8d..a1d0935d1ebe 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
+@@ -695,6 +695,17 @@ static int am65_cpsw_get_ethtool_ts_info(struct net_device *ndev,
+ 					 struct ethtool_ts_info *info)
+ {
+ 	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
++	unsigned int ptp_v2_filter;
++
++	ptp_v2_filter = BIT(HWTSTAMP_FILTER_PTP_V2_L4_EVENT)	 |
++			BIT(HWTSTAMP_FILTER_PTP_V2_L4_SYNC)	 |
++			BIT(HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ) |
++			BIT(HWTSTAMP_FILTER_PTP_V2_L2_EVENT)	 |
++			BIT(HWTSTAMP_FILTER_PTP_V2_L2_SYNC)	 |
++			BIT(HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ) |
++			BIT(HWTSTAMP_FILTER_PTP_V2_EVENT)	 |
++			BIT(HWTSTAMP_FILTER_PTP_V2_SYNC)	 |
++			BIT(HWTSTAMP_FILTER_PTP_V2_DELAY_REQ);
+ 
+ 	if (!IS_ENABLED(CONFIG_TI_K3_AM65_CPTS))
+ 		return ethtool_op_get_ts_info(ndev, info);
+@@ -708,7 +719,7 @@ static int am65_cpsw_get_ethtool_ts_info(struct net_device *ndev,
+ 		SOF_TIMESTAMPING_RAW_HARDWARE;
+ 	info->phc_index = am65_cpts_phc_index(common->cpts);
+ 	info->tx_types = BIT(HWTSTAMP_TX_OFF) | BIT(HWTSTAMP_TX_ON);
+-	info->rx_filters = BIT(HWTSTAMP_FILTER_NONE) | BIT(HWTSTAMP_FILTER_ALL);
++	info->rx_filters = BIT(HWTSTAMP_FILTER_NONE) | ptp_v2_filter;
+ 	return 0;
+ }
+ 
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+index bfba883d4fc4..305eda711e0c 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+@@ -103,6 +103,12 @@
+ #define AM65_CPSW_PN_TS_CTL_TX_HOST_TS_EN	BIT(11)
+ #define AM65_CPSW_PN_TS_CTL_MSG_TYPE_EN_SHIFT	16
+ 
++#define AM65_CPSW_PN_TS_CTL_RX_ANX_F_EN		BIT(0)
++#define AM65_CPSW_PN_TS_CTL_RX_VLAN_LT1_EN	BIT(1)
++#define AM65_CPSW_PN_TS_CTL_RX_VLAN_LT2_EN	BIT(2)
++#define AM65_CPSW_PN_TS_CTL_RX_ANX_D_EN		BIT(3)
++#define AM65_CPSW_PN_TS_CTL_RX_ANX_E_EN		BIT(9)
++
+ /* AM65_CPSW_PORTN_REG_TS_SEQ_LTYPE_REG register fields */
+ #define AM65_CPSW_PN_TS_SEQ_ID_OFFSET_SHIFT	16
+ 
+@@ -126,6 +132,11 @@
+ 	 AM65_CPSW_PN_TS_CTL_TX_ANX_E_EN |	\
+ 	 AM65_CPSW_PN_TS_CTL_TX_ANX_F_EN)
+ 
++#define AM65_CPSW_TS_RX_ANX_ALL_EN		\
++	(AM65_CPSW_PN_TS_CTL_RX_ANX_D_EN |	\
++	 AM65_CPSW_PN_TS_CTL_RX_ANX_E_EN |	\
++	 AM65_CPSW_PN_TS_CTL_RX_ANX_F_EN)
++
+ #define AM65_CPSW_ALE_AGEOUT_DEFAULT	30
+ /* Number of TX/RX descriptors */
+ #define AM65_CPSW_MAX_TX_DESC	500
+@@ -1044,18 +1055,6 @@ static int am65_cpsw_run_xdp(struct am65_cpsw_common *common,
+ 	return ret;
+ }
+ 
+-static void am65_cpsw_nuss_rx_ts(struct sk_buff *skb, u32 *psdata)
+-{
+-	struct skb_shared_hwtstamps *ssh;
+-	u64 ns;
+-
+-	ns = ((u64)psdata[1] << 32) | psdata[0];
+-
+-	ssh = skb_hwtstamps(skb);
+-	memset(ssh, 0, sizeof(*ssh));
+-	ssh->hwtstamp = ns_to_ktime(ns);
+-}
+-
+ /* RX psdata[2] word format - checksum information */
+ #define AM65_CPSW_RX_PSD_CSUM_ADD	GENMASK(15, 0)
+ #define AM65_CPSW_RX_PSD_CSUM_ERR	BIT(16)
+@@ -1171,13 +1170,11 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_common *common,
+ 		skb_reserve(skb, headroom);
+ 	}
+ 
+-	/* Pass skb to netstack if no XDP prog or returned XDP_PASS */
+-	if (port->rx_ts_enabled)
+-		am65_cpsw_nuss_rx_ts(skb, psdata);
+-
+ 	ndev_priv = netdev_priv(ndev);
+ 	am65_cpsw_nuss_set_offload_fwd_mark(skb, ndev_priv->offload_fwd_mark);
+ 	skb_put(skb, pkt_len);
++	if (port->rx_ts_enabled)
++		am65_cpts_rx_timestamp(common->cpts, skb);
+ 	skb_mark_for_recycle(skb);
+ 	skb->protocol = eth_type_trans(skb, ndev);
+ 	am65_cpsw_nuss_rx_csum(skb, csum_info);
+@@ -1730,7 +1727,6 @@ static int am65_cpsw_nuss_ndo_slave_set_mac_address(struct net_device *ndev,
+ static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
+ 				       struct ifreq *ifr)
+ {
+-	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
+ 	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+ 	u32 ts_ctrl, seq_id, ts_ctrl_ltype2, ts_vlan_ltype;
+ 	struct hwtstamp_config cfg;
+@@ -1754,11 +1750,6 @@ static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
+ 	case HWTSTAMP_FILTER_NONE:
+ 		port->rx_ts_enabled = false;
+ 		break;
+-	case HWTSTAMP_FILTER_ALL:
+-	case HWTSTAMP_FILTER_SOME:
+-	case HWTSTAMP_FILTER_PTP_V1_L4_EVENT:
+-	case HWTSTAMP_FILTER_PTP_V1_L4_SYNC:
+-	case HWTSTAMP_FILTER_PTP_V1_L4_DELAY_REQ:
+ 	case HWTSTAMP_FILTER_PTP_V2_L4_EVENT:
+ 	case HWTSTAMP_FILTER_PTP_V2_L4_SYNC:
+ 	case HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ:
+@@ -1768,10 +1759,13 @@ static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
+ 	case HWTSTAMP_FILTER_PTP_V2_EVENT:
+ 	case HWTSTAMP_FILTER_PTP_V2_SYNC:
+ 	case HWTSTAMP_FILTER_PTP_V2_DELAY_REQ:
+-	case HWTSTAMP_FILTER_NTP_ALL:
+ 		port->rx_ts_enabled = true;
+-		cfg.rx_filter = HWTSTAMP_FILTER_ALL;
++		cfg.rx_filter = HWTSTAMP_FILTER_PTP_V2_EVENT;
+ 		break;
++	case HWTSTAMP_FILTER_ALL:
++	case HWTSTAMP_FILTER_SOME:
++	case HWTSTAMP_FILTER_NTP_ALL:
++		return -EOPNOTSUPP;
+ 	default:
+ 		return -ERANGE;
+ 	}
+@@ -1801,6 +1795,10 @@ static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
+ 		ts_ctrl |= AM65_CPSW_TS_TX_ANX_ALL_EN |
+ 			   AM65_CPSW_PN_TS_CTL_TX_VLAN_LT1_EN;
+ 
++	if (port->rx_ts_enabled)
++		ts_ctrl |= AM65_CPSW_TS_RX_ANX_ALL_EN |
++			   AM65_CPSW_PN_TS_CTL_RX_VLAN_LT1_EN;
++
+ 	writel(seq_id, port->port_base + AM65_CPSW_PORTN_REG_TS_SEQ_LTYPE_REG);
+ 	writel(ts_vlan_ltype, port->port_base +
+ 	       AM65_CPSW_PORTN_REG_TS_VLAN_LTYPE_REG);
+@@ -1808,9 +1806,6 @@ static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
+ 	       AM65_CPSW_PORTN_REG_TS_CTL_LTYPE2);
+ 	writel(ts_ctrl, port->port_base + AM65_CPSW_PORTN_REG_TS_CTL);
+ 
+-	/* en/dis RX timestamp */
+-	am65_cpts_rx_enable(common->cpts, port->rx_ts_enabled);
+-
+ 	return copy_to_user(ifr->ifr_data, &cfg, sizeof(cfg)) ? -EFAULT : 0;
+ }
+ 
+@@ -1827,7 +1822,7 @@ static int am65_cpsw_nuss_hwtstamp_get(struct net_device *ndev,
+ 	cfg.tx_type = port->tx_ts_enabled ?
+ 		      HWTSTAMP_TX_ON : HWTSTAMP_TX_OFF;
+ 	cfg.rx_filter = port->rx_ts_enabled ?
+-			HWTSTAMP_FILTER_ALL : HWTSTAMP_FILTER_NONE;
++			HWTSTAMP_FILTER_PTP_V2_EVENT : HWTSTAMP_FILTER_NONE;
+ 
+ 	return copy_to_user(ifr->ifr_data, &cfg, sizeof(cfg)) ? -EFAULT : 0;
+ }
+diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
+index 599454c1d19f..68891a227dc8 100644
+--- a/drivers/net/ethernet/ti/am65-cpts.c
++++ b/drivers/net/ethernet/ti/am65-cpts.c
+@@ -866,29 +866,6 @@ static long am65_cpts_ts_work(struct ptp_clock_info *ptp)
+ 	return delay;
+ }
+ 
+-/**
+- * am65_cpts_rx_enable - enable rx timestamping
+- * @cpts: cpts handle
+- * @en: enable
+- *
+- * This functions enables rx packets timestamping. The CPTS can timestamp all
+- * rx packets.
+- */
+-void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en)
+-{
+-	u32 val;
+-
+-	mutex_lock(&cpts->ptp_clk_lock);
+-	val = am65_cpts_read32(cpts, control);
+-	if (en)
+-		val |= AM65_CPTS_CONTROL_TSTAMP_EN;
+-	else
+-		val &= ~AM65_CPTS_CONTROL_TSTAMP_EN;
+-	am65_cpts_write32(cpts, val, control);
+-	mutex_unlock(&cpts->ptp_clk_lock);
+-}
+-EXPORT_SYMBOL_GPL(am65_cpts_rx_enable);
+-
+ static int am65_skb_get_mtype_seqid(struct sk_buff *skb, u32 *mtype_seqid)
+ {
+ 	unsigned int ptp_class = ptp_classify_raw(skb);
+diff --git a/drivers/net/ethernet/ti/am65-cpts.h b/drivers/net/ethernet/ti/am65-cpts.h
+index 90296968a75c..6099d772799d 100644
+--- a/drivers/net/ethernet/ti/am65-cpts.h
++++ b/drivers/net/ethernet/ti/am65-cpts.h
+@@ -25,7 +25,6 @@ int am65_cpts_phc_index(struct am65_cpts *cpts);
+ void am65_cpts_rx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+ void am65_cpts_tx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+ void am65_cpts_prep_tx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+-void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en);
+ u64 am65_cpts_ns_gettime(struct am65_cpts *cpts);
+ int am65_cpts_estf_enable(struct am65_cpts *cpts, int idx,
+ 			  struct am65_cpts_estf_cfg *cfg);
+@@ -64,10 +63,6 @@ static inline void am65_cpts_prep_tx_timestamp(struct am65_cpts *cpts,
+ {
+ }
+ 
+-static inline void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en)
+-{
+-}
+-
+ static inline s64 am65_cpts_ns_gettime(struct am65_cpts *cpts)
+ {
+ 	return 0;
+-- 
+2.34.1
 
 
