@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-147916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24BBA8A7B41
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:13:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F92E8A7B43
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:14:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B60E628291C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 04:13:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEF21B21781
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 04:14:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DBD544C7A;
-	Wed, 17 Apr 2024 04:12:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A732041C78;
+	Wed, 17 Apr 2024 04:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KjVoxK41"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jd/cRcby"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A25A444C71
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:12:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C462B9D3
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:13:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713327177; cv=none; b=L52SUMhMT8/OP0phGdi0ENhryTv6C1bUbn8B07mYbQ2SzCUjAMSpvw4MpQd2rZL06HhXmZBZIzSVR6/4hWukaOlApsU4O4im9bxSix+8oe/K1PRj/vYkJDsT9SQBTE5tqgSpf/5sK4sRDWVI/vwGEqUkk7JTBjuNCJRaC8xIuZ0=
+	t=1713327232; cv=none; b=hD0pI2DdFuC2vglK25ekzciCXs8E8ZMKy4uxSP05PIs+QbQfxUiw7KTf0xckPsRgFtzE+XolLnp97U6kPYb4jNzm//fFMiwGW+50yj+hDyJsOv9bWqMbZ4w0NvrdgpPvgmg9lfPydK1is/jjqvlYdV9QxzsAd6EbIdTbrBBEzYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713327177; c=relaxed/simple;
-	bh=K+zqEUpF/L/an46sf/3Id+nCNOdiTsllKIRWtM44/lo=;
+	s=arc-20240116; t=1713327232; c=relaxed/simple;
+	bh=+uz6IdhV2CEK8YkVp8cqx35Tu53jRsaPN/mqFjAWO8g=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HRGMMwoR5wbDd1HVS1Fz9zewUb77JANah+Kkk+g/aiXw6E4yTw5xNFqU+5kBwaORCEQeaftPWFPTVQqyfGqNzTQjFI19bAOfJpVdNBblzLznet4vCSFPeM0jsvf09qRouvumVLVfhaYMBE4ia4lo1TnYocZSmXR1nMeSzpFCPiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KjVoxK41; arc=none smtp.client-ip=209.85.167.43
+	 To:Cc:Content-Type; b=bdKFMxokP4hwEE3Pt+PtB1vz+bAmFAetGZzdBuwM3mrMFtF0iOO/1kwvaTzaXReQyGYox4ugmexSD8zjlDD3P8d85Qwe7WiL1FzNLSAiCrdJhvqw0I11A7AHWljAS+1gkU4qt6pkvej/KrqNI5mT3XUBfu5PSTMwMhloqq2wORU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jd/cRcby; arc=none smtp.client-ip=209.85.167.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-518b9527c60so4089457e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 21:12:55 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5194a2cf7c2so184931e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 21:13:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713327174; x=1713931974; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713327229; x=1713932029; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cbM+atGM0bP5DsV5av6JoMWaz9VGX/GLnWohTfwxNTg=;
-        b=KjVoxK41loP4tgE0+1pEFAzcsggP3bsfJ9ZHy/n12yE6tDjjTpwtofWhnpj8kjkc84
-         m5GBynOtPt/HTTpzo72DOCI87sNmkuMygLqYw9eYlqXoXYLd9FgeAMpYqi0XOEwAmGP4
-         iYAktCFqwdsWLmSBgmKdPNmIROwAZBkOhWtKLfP9MbdCO8YWwRLYtOUA7/7MulKzt7qA
-         T+R8gdoVYc11Cl/zM8aOhGe6fkYK5y2mYl6P9LfHGn/gVTTEuNA4p5RaZBAVI7DA76Mo
-         Y2dF0iLAa4D5m12WqAPLid+bgM+Rwp93i+vYQpTFCPnuJpwSZfu77+a2XeeVyq3qx4O/
-         GVQw==
+        bh=xEqfKge7MQ1Mw6PledvI7/9N3sbTbHGNwBYkcQt5fec=;
+        b=jd/cRcbycUUd3OIGGgcWrunEefmfpON5fPxilhxfucaHN3SP7GEuIb6sAQGmiyPj3W
+         wzSHFfTgEN4xaDdP51/E+UVoqJx8icJ3O86quhwAM4QL/qlhqBS7PKKA3doTbVp0sv3Z
+         pLpx6FbBN5TBu0z/aJt+5ga1p+ja4vBx9lB2nk5yVvYDTQdef6o3gRcXHheOL8UQBc0u
+         Z5URMZy91p2feElgiSgjU1PEvNjSt+hjiMH9OXmSwTnqYtDfkO3Chbc0D646cDnhrIDf
+         D72lKG0XZbXfg6LyfFkaSC45q5D4vzeMQcW3nrkAYpSNByueBlji/qJZSAndg3arF140
+         om4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713327174; x=1713931974;
+        d=1e100.net; s=20230601; t=1713327229; x=1713932029;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cbM+atGM0bP5DsV5av6JoMWaz9VGX/GLnWohTfwxNTg=;
-        b=eoDK9p/iBvRebqQHS6IXLwce+Di8V/fe9N0N67Esz+iHa22twDJH3fw45dN+SyTghS
-         sU54V8C7QhPTDotP0I6bgTImH3yP1UD4uGXBCSw4kHE0e4uacRdf89ClitGGn21F4GAt
-         ZEhl6NnhkqKFjA/Bl2OODTfpwM75f8mod8D5qq+1hjHbA2MQvTKqRcZNHsQ6MJbM0DhW
-         hAhQvk2z/kZ8H59BEPeqfjtprkQ9zXd3lK5wDgocEdEF4c8mfphqd7j0/CIp6pyL2g+E
-         48nWlYaPmqiUwu/NWb59QW6dcmUZyZNdN3xxtDIxm4e6ozk6rkBmLb3pws1IqsBvBTUy
-         N+wg==
-X-Forwarded-Encrypted: i=1; AJvYcCVEAkAm66msMeQ6L/l5vfyx/+NgXZW8xxWSJ1wzilacbmnFuzcwjm/7m2mH5di9NicJ2sGzGOSo7k1ySeO0oAWG3vfDLmAiUsL9gug5
-X-Gm-Message-State: AOJu0YwdXlfVSs9QvEgzxiMx87PzriJKegp7dSFDtnsC/+23b4mBj6B6
-	VNkY0r6h6e3MyAJJ0kHBNTpYmenOfj/ruSXmIIyOtMObQBlZJGMjmaEASqGecMYhqSIQaFySz8h
-	00ZDUg1Xxc4OgzVP5nD5jlR/0yTA=
-X-Google-Smtp-Source: AGHT+IEXhAei6YA3Yla+z/ZdXWycBTAs8rpQGprqrg7rozCvrqCz3ONmnc3xFi4+3ai+rdgZclOmocY1zlZ0tetOWRM=
-X-Received: by 2002:a05:6512:3109:b0:516:c8e5:db35 with SMTP id
- n9-20020a056512310900b00516c8e5db35mr11927150lfb.18.1713327173383; Tue, 16
- Apr 2024 21:12:53 -0700 (PDT)
+        bh=xEqfKge7MQ1Mw6PledvI7/9N3sbTbHGNwBYkcQt5fec=;
+        b=lxo3Uhdo09E00eJLvvky38CKzb7jecSjg3zro9f5+XXjqHHH210Wo2hjVAOq87KzrQ
+         BQ0oQzyFogGQT0aBBJp+/x2GG+N5yq7lHPkV5BqhwEkgAy91/inJRAYT7A9w7IIIUGoV
+         K1Vl2/gZZR8DjmZ2/rxp9tzqKglaRGO2JQEluttpiEQbF/9f82QIq6DzY78LeEpWaIDI
+         fQP2hnGDx245VJSdywctMtiLkOYmDPMipvnu9o4IlJU4F6JS/+LE8Ri1z+AY9WpYex68
+         YIV5nvwi4wmJaH3ejWJuA9Tp4Awli+bka/z2YEVh/26NGNeCDmT3r9w1sg6C10sWSHX0
+         OQiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX4a/6KmSuX0IgYcF558qmKwdzMyJNHe5vVkBOyIYOh23dQOZU8QOMNqEhXrnQIrmgBTcT3Ci+PcTlroVlTbC9h3nr0E35nvb2ngG7W
+X-Gm-Message-State: AOJu0YyQM3ThZ0PAhTqCnxNfMF0jImYr02d+sZQ2tb2CjOMQn0WXTMge
+	k7G3RMe2tw7cIFEFpf3tsH+YjJtm8MknuJuL5Qd5IUt4Uei8m3CpXzNOOwvbWLZnJiAtNR2W/FA
+	B9bs2T2Bl7rRx5xBJJLPRaI2031Q=
+X-Google-Smtp-Source: AGHT+IFA0QAC0jQwNYVUYeAL9ghcZWctuTIiC8wIocajR135msiyIBXAIbpojWrWryNqi6Z5hHTJ265EnUGHLcyIegk=
+X-Received: by 2002:ac2:4c86:0:b0:518:6ea2:a2a3 with SMTP id
+ d6-20020ac24c86000000b005186ea2a2a3mr9198678lfl.54.1713327229200; Tue, 16 Apr
+ 2024 21:13:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,15 +71,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240416033457.32154-1-ioworker0@gmail.com> <20240416033457.32154-2-ioworker0@gmail.com>
- <a0d9e198-8799-47b9-ac20-8460b984afee@redhat.com>
-In-Reply-To: <a0d9e198-8799-47b9-ac20-8460b984afee@redhat.com>
+ <3c4b1711-5a84-4e7a-b54a-d4955d62ec59@arm.com>
+In-Reply-To: <3c4b1711-5a84-4e7a-b54a-d4955d62ec59@arm.com>
 From: Lance Yang <ioworker0@gmail.com>
-Date: Wed, 17 Apr 2024 12:12:42 +0800
-Message-ID: <CAK1f24mEoC_Pg7-49G=y7dMUaGhzW11_A5sK0EWVhH6K1kjMMA@mail.gmail.com>
+Date: Wed, 17 Apr 2024 12:13:37 +0800
+Message-ID: <CAK1f24n-tZm=fmkmxU3j8FqBsgUfH9ZfzEwVW6xaEjFQ5_mqyw@mail.gmail.com>
 Subject: Re: [PATCH v7 1/3] mm/madvise: introduce clear_young_dirty_ptes()
  batch helper
-To: David Hildenbrand <david@redhat.com>
-Cc: akpm@linux-foundation.org, ryan.roberts@arm.com, 21cnbao@gmail.com, 
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, 21cnbao@gmail.com, 
 	mhocko@suse.com, fengwei.yin@intel.com, zokeefe@google.com, 
 	shy828301@gmail.com, xiehuan09@gmail.com, wangkefeng.wang@huawei.com, 
 	songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org, 
@@ -87,10 +87,10 @@ Cc: akpm@linux-foundation.org, ryan.roberts@arm.com, 21cnbao@gmail.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 11:03=E2=80=AFPM David Hildenbrand <david@redhat.co=
-m> wrote:
+On Wed, Apr 17, 2024 at 12:25=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com=
+> wrote:
 >
-> On 16.04.24 05:34, Lance Yang wrote:
+> On 16/04/2024 04:34, Lance Yang wrote:
 > > This commit introduces clear_young_dirty_ptes() to replace mkold_ptes()=
 .
 > > By doing so, we can use the same function for both use cases
@@ -100,12 +100,22 @@ y
 > >
 > > Suggested-by: Ryan Roberts <ryan.roberts@arm.com>
 > > Signed-off-by: Lance Yang <ioworker0@gmail.com>
+>
+> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+
+Hey Ryan,
+
+Thanks for taking time to review!
+
+Best,
+Lance
+
+>
 > > ---
-> >   include/linux/mm_types.h |  9 +++++
-> >   include/linux/pgtable.h  | 74 ++++++++++++++++++++++++---------------=
--
-> >   mm/madvise.c             |  3 +-
-> >   3 files changed, 55 insertions(+), 31 deletions(-)
+> >  include/linux/mm_types.h |  9 +++++
+> >  include/linux/pgtable.h  | 74 ++++++++++++++++++++++++----------------
+> >  mm/madvise.c             |  3 +-
+> >  3 files changed, 55 insertions(+), 31 deletions(-)
 > >
 > > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
 > > index c432add95913..28822cd65d2a 100644
@@ -113,7 +123,7 @@ y
 > > +++ b/include/linux/mm_types.h
 > > @@ -1367,6 +1367,15 @@ enum fault_flag {
 > >
-> >   typedef unsigned int __bitwise zap_flags_t;
+> >  typedef unsigned int __bitwise zap_flags_t;
 > >
 > > +/* Flags for clear_young_dirty_ptes(). */
 > > +typedef int __bitwise cydp_t;
@@ -124,18 +134,18 @@ y
 > > +/* Clear the dirty bit */
 > > +#define CYDP_CLEAR_DIRTY             ((__force cydp_t)BIT(1))
 > > +
-> >   /*
-> >    * FOLL_PIN and FOLL_LONGTERM may be used in various combinations wit=
-h each
-> >    * other. Here is what they mean, and how to use them:
+> >  /*
+> >   * FOLL_PIN and FOLL_LONGTERM may be used in various combinations with=
+ each
+> >   * other. Here is what they mean, and how to use them:
 > > diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
 > > index e2f45e22a6d1..18019f037bae 100644
 > > --- a/include/linux/pgtable.h
 > > +++ b/include/linux/pgtable.h
 > > @@ -361,36 +361,6 @@ static inline int ptep_test_and_clear_young(struct=
  vm_area_struct *vma,
-> >   }
-> >   #endif
+> >  }
+> >  #endif
 > >
 > > -#ifndef mkold_ptes
 > > -/**
@@ -173,15 +183,15 @@ g addr,
 > > -}
 > > -#endif
 > > -
-> >   #ifndef __HAVE_ARCH_PMDP_TEST_AND_CLEAR_YOUNG
-> >   #if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_ARCH_HAS_N=
-ONLEAF_PMD_YOUNG)
-> >   static inline int pmdp_test_and_clear_young(struct vm_area_struct *vm=
-a,
+> >  #ifndef __HAVE_ARCH_PMDP_TEST_AND_CLEAR_YOUNG
+> >  #if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_ARCH_HAS_NO=
+NLEAF_PMD_YOUNG)
+> >  static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma=
+,
 > > @@ -489,6 +459,50 @@ static inline pte_t ptep_get_and_clear(struct mm_s=
 truct *mm,
-> >   }
-> >   #endif
+> >  }
+> >  #endif
 > >
 > > +#ifndef clear_young_dirty_ptes
 > > +/**
@@ -231,33 +241,26 @@ PMD.
 > > +             addr +=3D PAGE_SIZE;
 > > +     }
 > > +}
->
-
-Hey David,
-
-Thanks for taking time to review!
-
-> The complier *might* generate a bit faster code if you check for
-> CYDP_CLEAR_YOUNG outside of the loop, so you don't have to recheck on
-> each loop iteration.
-
-Nice! I think moving the CYDP_CLEAR_YOUNG check outside of the loop
-could speed up the code. I'll make this change in the next version.
-
->
-> For now, nothing to lose sleep about
->
-> Acked-by: David Hildenbrand <david@redhat.com>
-
-Thanks again for the review!
-
-Best,
-Lance
-
->
-> --
-> Cheers,
->
-> David / dhildenb
+> > +#endif
+> > +
+> >  static inline void ptep_clear(struct mm_struct *mm, unsigned long addr=
+,
+> >                             pte_t *ptep)
+> >  {
+> > diff --git a/mm/madvise.c b/mm/madvise.c
+> > index f59169888b8e..edb592adb749 100644
+> > --- a/mm/madvise.c
+> > +++ b/mm/madvise.c
+> > @@ -507,7 +507,8 @@ static int madvise_cold_or_pageout_pte_range(pmd_t =
+*pmd,
+> >                       continue;
+> >
+> >               if (!pageout && pte_young(ptent)) {
+> > -                     mkold_ptes(vma, addr, pte, nr);
+> > +                     clear_young_dirty_ptes(vma, addr, pte, nr,
+> > +                                            CYDP_CLEAR_YOUNG);
+> >                       tlb_remove_tlb_entries(tlb, pte, nr, addr);
+> >               }
+> >
 >
 
