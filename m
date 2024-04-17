@@ -1,64 +1,54 @@
-Return-Path: <linux-kernel+bounces-148985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F3E18A8A19
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:20:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3BFD8A8A1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:21:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61B461C23887
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:20:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 242D91F250A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:21:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDCDF17167F;
-	Wed, 17 Apr 2024 17:20:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD88F16FF48;
+	Wed, 17 Apr 2024 17:21:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="UBIdhrcf"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WpNWKtuV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41EC016FF48;
-	Wed, 17 Apr 2024 17:20:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF6A916FF52;
+	Wed, 17 Apr 2024 17:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713374442; cv=none; b=RD6Lc7CvY8OdsBxaMxQFJ+6lVjd2YURKZpHF+FtLsYnuL6BMr0wk9oEi5lIV7J4o6U3kmoSzFrnnF5xkg5JJGue/7P4KGUX5+RgtTeerOBHQC3psGJNqZcMHAYVPBba3KGRRI0lvj0EvTquVbughXwUq4QJ8yK1GMfeVwUH+FiA=
+	t=1713374474; cv=none; b=VTnwNKxS0n0vUXbcGkB7W/9pWnMSsixT5svDwKWN1kstLUb1XnQ2KQNLBcEbEuAYP4z9uPwfVwCLXl7/j54c7M16WWEpj58zKvJIeiSEPBrKh8k1UnB1WmJObpnaUKBiPmkgrmtzJyAHa9EQz/AtlacD84S/vLEnyVCyz0zZngs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713374442; c=relaxed/simple;
-	bh=Kv5FPRBx5aI4mDE57tTTrqSLGgwSbiupSBg9tz9cq3k=;
+	s=arc-20240116; t=1713374474; c=relaxed/simple;
+	bh=EgzLCuU8JOpiayA2khQEnnc6hPtWqr4k8f9F4Un16Dg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hOKD5d507/fIekJZmk7dgSicboaJN6s6bnqhXupHgr8o0LFVg3vbExdJug8wiZM87E4XlbzH/FlrxGIkk8H46CeIO3QOjbl5LlfnNPfe/Dq72d9/sZp05Pc9lwVdYHQs4B9rN1GHTuANGhLigR1LBsPOc8lzARJpttzMcQ3E3y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=UBIdhrcf; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id 5E7E81FE67;
-	Wed, 17 Apr 2024 19:20:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1713374435;
-	bh=CcpFXlllLfas3Vp8HTMypgb0mIEXJNssixFuak86tvw=; h=From:To:Subject;
-	b=UBIdhrcfKD/1kNjDhFs790ModI2esqNg9lKcIYrtVdtg0l4RCNWdHOXChg4WYtHsB
-	 iVH5kUoThuwE59U13LFf5kUYHko8RmRQ0zcJYmYx0K2Eu7pOuTAQl97G77BbprjUub
-	 P/H4dOIoiVMF/XwA3X7tkd6MwiYOiZrUdlmeTooLBMKe5H0NwWmzpDcV5yvEnv48lH
-	 /8MGuHe13KCUTcZL78J7vcA0wCJf435bhUf2acDSxKhbYuJz0nEpFYSE57w+ZDxN7F
-	 cfYCoXTsgMWopx6+VRfGnh2yOxes+q8xexhmpzR6oCsJQktnwcej/B05bmkbpQMiP0
-	 CpScNnQO2Gx9w==
-Date: Wed, 17 Apr 2024 19:20:31 +0200
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Francesco Dolcini <francesco@dolcini.it>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/10] arm64: dts: imx8qm-ss-audio: add audio nodes
-Message-ID: <20240417172031.GA4100@francesco-nb>
-References: <20240415-dts_8qm_audio-v1-0-2976c35a0c52@nxp.com>
- <20240415-dts_8qm_audio-v1-2-2976c35a0c52@nxp.com>
- <20240416065026.GA4165@francesco-nb>
- <Zh/yZ2HyF+G8bty7@lizhi-Precision-Tower-5810>
+	 Content-Type:Content-Disposition:In-Reply-To; b=r8Uaxg7BTCHooEwG6fglFC8bV0Ktqev/gsjWMXQGs5AylEygjD1gVZjb9jIIyjcnNoAeGPFTXsYq1IpOpodvmqJl+95LlfkwU0Os9VeG6k2bvt3jqZ708tVbs1bFRYMHKM7U/PMHRZX8V/mXhtrlBpuMz5csNa0OoGSbDTsqjRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WpNWKtuV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5596C072AA;
+	Wed, 17 Apr 2024 17:21:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713374473;
+	bh=EgzLCuU8JOpiayA2khQEnnc6hPtWqr4k8f9F4Un16Dg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WpNWKtuVdwHF8XFhFOhpHUv2ToXW1LSlqoX9UXyvKHG/A+BwVmOB/qd6wAfs7kVrG
+	 6j/aj2NqcnWAryWaGWOwVrQGNvFrAOEX6QALjanyWxUphqMGHVjzsTeNS6yliPMqf1
+	 WGoR68eM5bcZ+lEjvoAd/FIi33lYDvVArh8yivzlwZA43FJ0pJxN4VTji0+MEW1CRr
+	 Pp6YhrEFvkTe9fKyYSQKAbF5qkBulnkaz1oH1aH1Pg+2Oft7tZHkUErmmI6qBI/gXl
+	 vPguQ+DlZd8cFLVGrR7iQ8z0WZuxKkKbhGh9A6RyLaFekBeoL7Gdu1ufuoNp95M3V2
+	 visNhMIQAAYbw==
+Date: Wed, 17 Apr 2024 22:51:09 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Cc: Michal Simek <michal.simek@amd.com>, dmaengine@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: zynqmp_dma: rework tasklet to threaded
+ interrupt handler
+Message-ID: <ZiAFBaZLbQ8yj-dn@matsya>
+References: <20240226-zynqmp-dma-tasklet-irqthread-v1-1-2d154d6238fd@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,47 +57,163 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zh/yZ2HyF+G8bty7@lizhi-Precision-Tower-5810>
+In-Reply-To: <20240226-zynqmp-dma-tasklet-irqthread-v1-1-2d154d6238fd@pengutronix.de>
 
-Hello Frank,
+On 26-02-24, 23:17, Michael Grzeschik wrote:
+> Since the tasklets are being scheduled with low priority the actual work
+> will be delayed for unseen time. Also this is a driver that probably
+> other drivers depend on its work to be done early. So we move the
+> actual work from an tasklet to an threaded interrupt handler and
+> therefor increase the priority for the scheduler.
 
-On Wed, Apr 17, 2024 at 12:01:43PM -0400, Frank Li wrote:
-> On Tue, Apr 16, 2024 at 08:50:26AM +0200, Francesco Dolcini wrote:
-> > On Mon, Apr 15, 2024 at 03:46:38PM -0400, Frank Li wrote:
-> > > Add i.MX8QM audio related nodes and update eDMA[0,1]'s information.
-> > > 
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > >  arch/arm64/boot/dts/freescale/imx8qm-ss-audio.dtsi | 473 +++++++++++++++++++++
-> > >  arch/arm64/boot/dts/freescale/imx8qm.dtsi          |  86 ++++
-> > >  2 files changed, 559 insertions(+)
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8qm-ss-audio.dtsi b/arch/arm64/boot/dts/freescale/imx8qm-ss-audio.dtsi
-> > > new file mode 100644
-> > > index 0000000000000..ed5a1b4af1d76
-> > > --- /dev/null
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8qm-ss-audio.dtsi
+The tasklet have higer priority than threaded handler! So this should
+worsen the performance.
 
-..
+Btw there is work to move away from tasklet by Allen, so this is no
+longer valid now
 
-> > > +/delete-node/ &acm;
-> > > +/delete-node/ &sai4;
-> > > +/delete-node/ &sai5;
-> > > +/delete-node/ &sai4_lpcg;
-> > > +/delete-node/ &sai5_lpcg;
-> > 
-> > Can you explain these delete-node ? This is something that I would
-> > expect when a dtsi is previously included, not in this case.
 > 
-> We want to avoid some property inherent from parent dtsi file because it is
-> big difference with common one.
+> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> ---
+>  drivers/dma/xilinx/zynqmp_dma.c | 36 +++++++++++-------------------------
+>  1 file changed, 11 insertions(+), 25 deletions(-)
 > 
-> This node will be rewrite totally in this files.
+> diff --git a/drivers/dma/xilinx/zynqmp_dma.c b/drivers/dma/xilinx/zynqmp_dma.c
+> index f31631bef961a..09173ef6d24bc 100644
+> --- a/drivers/dma/xilinx/zynqmp_dma.c
+> +++ b/drivers/dma/xilinx/zynqmp_dma.c
+> @@ -204,7 +204,6 @@ struct zynqmp_dma_desc_sw {
+>   * @dev: The dma device
+>   * @irq: Channel IRQ
+>   * @is_dmacoherent: Tells whether dma operations are coherent or not
+> - * @tasklet: Cleanup work after irq
+>   * @idle : Channel status;
+>   * @desc_size: Size of the low level descriptor
+>   * @err: Channel has errors
+> @@ -228,7 +227,6 @@ struct zynqmp_dma_chan {
+>  	struct device *dev;
+>  	int irq;
+>  	bool is_dmacoherent;
+> -	struct tasklet_struct tasklet;
+>  	bool idle;
+>  	size_t desc_size;
+>  	bool err;
+> @@ -724,8 +722,7 @@ static irqreturn_t zynqmp_dma_irq_handler(int irq, void *data)
+>  
+>  	writel(isr, chan->regs + ZYNQMP_DMA_ISR);
+>  	if (status & ZYNQMP_DMA_INT_DONE) {
+> -		tasklet_schedule(&chan->tasklet);
+> -		ret = IRQ_HANDLED;
+> +		ret = IRQ_WAKE_THREAD;
+>  	}
+>  
+>  	if (status & ZYNQMP_DMA_DONE)
+> @@ -733,9 +730,8 @@ static irqreturn_t zynqmp_dma_irq_handler(int irq, void *data)
+>  
+>  	if (status & ZYNQMP_DMA_INT_ERR) {
+>  		chan->err = true;
+> -		tasklet_schedule(&chan->tasklet);
+>  		dev_err(chan->dev, "Channel %p has errors\n", chan);
+> -		ret = IRQ_HANDLED;
+> +		ret = IRQ_WAKE_THREAD;
+>  	}
+>  
+>  	if (status & ZYNQMP_DMA_INT_OVRFL) {
+> @@ -748,19 +744,20 @@ static irqreturn_t zynqmp_dma_irq_handler(int irq, void *data)
+>  }
+>  
+>  /**
+> - * zynqmp_dma_do_tasklet - Schedule completion tasklet
+> + * zynqmp_dma_irq_thread - Interrupt thread function
+>   * @t: Pointer to the ZynqMP DMA channel structure
+>   */
+> -static void zynqmp_dma_do_tasklet(struct tasklet_struct *t)
+> +static irqreturn_t zynqmp_dma_irq_thread(int irq, void *data)
+>  {
+> -	struct zynqmp_dma_chan *chan = from_tasklet(chan, t, tasklet);
+> +	struct zynqmp_dma_chan *chan = (struct zynqmp_dma_chan *)data;
+>  	u32 count;
+>  	unsigned long irqflags;
+>  
+>  	if (chan->err) {
+>  		zynqmp_dma_reset(chan);
+>  		chan->err = false;
+> -		return;
+> +
+> +		return IRQ_HANDLED;
+>  	}
+>  
+>  	spin_lock_irqsave(&chan->lock, irqflags);
+> @@ -778,6 +775,8 @@ static void zynqmp_dma_do_tasklet(struct tasklet_struct *t)
+>  		zynqmp_dma_start_transfer(chan);
+>  		spin_unlock_irqrestore(&chan->lock, irqflags);
+>  	}
+> +
+> +	return IRQ_HANDLED;
+>  }
+>  
+>  /**
+> @@ -796,17 +795,6 @@ static int zynqmp_dma_device_terminate_all(struct dma_chan *dchan)
+>  	return 0;
+>  }
+>  
+> -/**
+> - * zynqmp_dma_synchronize - Synchronizes the termination of a transfers to the current context.
+> - * @dchan: DMA channel pointer
+> - */
+> -static void zynqmp_dma_synchronize(struct dma_chan *dchan)
+> -{
+> -	struct zynqmp_dma_chan *chan = to_chan(dchan);
+> -
+> -	tasklet_kill(&chan->tasklet);
+> -}
+> -
+>  /**
+>   * zynqmp_dma_prep_memcpy - prepare descriptors for memcpy transaction
+>   * @dchan: DMA channel
+> @@ -876,7 +864,6 @@ static void zynqmp_dma_chan_remove(struct zynqmp_dma_chan *chan)
+>  
+>  	if (chan->irq)
+>  		devm_free_irq(chan->zdev->dev, chan->irq, chan);
+> -	tasklet_kill(&chan->tasklet);
+>  	list_del(&chan->common.device_node);
+>  }
+>  
+> @@ -921,7 +908,6 @@ static int zynqmp_dma_chan_probe(struct zynqmp_dma_device *zdev,
+>  
+>  	chan->is_dmacoherent =  of_property_read_bool(node, "dma-coherent");
+>  	zdev->chan = chan;
+> -	tasklet_setup(&chan->tasklet, zynqmp_dma_do_tasklet);
+>  	spin_lock_init(&chan->lock);
+>  	INIT_LIST_HEAD(&chan->active_list);
+>  	INIT_LIST_HEAD(&chan->pending_list);
+> @@ -936,7 +922,8 @@ static int zynqmp_dma_chan_probe(struct zynqmp_dma_device *zdev,
+>  	chan->irq = platform_get_irq(pdev, 0);
+>  	if (chan->irq < 0)
+>  		return -ENXIO;
+> -	err = devm_request_irq(&pdev->dev, chan->irq, zynqmp_dma_irq_handler, 0,
+> +	err = devm_request_threaded_irq(&pdev->dev, chan->irq,
+> +			       zynqmp_dma_irq_handler, zynqmp_dma_irq_thread, 0,
+>  			       "zynqmp-dma", chan);
+>  	if (err)
+>  		return err;
+> @@ -1071,7 +1058,6 @@ static int zynqmp_dma_probe(struct platform_device *pdev)
+>  	p = &zdev->common;
+>  	p->device_prep_dma_memcpy = zynqmp_dma_prep_memcpy;
+>  	p->device_terminate_all = zynqmp_dma_device_terminate_all;
+> -	p->device_synchronize = zynqmp_dma_synchronize;
+>  	p->device_issue_pending = zynqmp_dma_issue_pending;
+>  	p->device_alloc_chan_resources = zynqmp_dma_alloc_chan_resources;
+>  	p->device_free_chan_resources = zynqmp_dma_free_chan_resources;
+> 
+> ---
+> base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
+> change-id: 20240226-zynqmp-dma-tasklet-irqthread-1540cfe2a1c2
+> 
+> Best regards,
+> -- 
+> Michael Grzeschik <m.grzeschik@pengutronix.de>
 
-imx8qm-ss-audio.dtsi does not include any file. From where these
-inherited properties are coming from? Which file is the "parent dtsi" ?
-
-Thanks,
-Francesco
-
+-- 
+~Vinod
 
