@@ -1,180 +1,154 @@
-Return-Path: <linux-kernel+bounces-148290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CEED8A8068
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:08:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E224C8A806B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:08:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C520EB234A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:07:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3AC88B23648
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:08:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C54B413AA2D;
-	Wed, 17 Apr 2024 10:07:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F68B13AA2D;
+	Wed, 17 Apr 2024 10:08:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="cC2jJ09I";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="rnsDuuQH"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ItTOHdYw"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A0C4128807;
-	Wed, 17 Apr 2024 10:07:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CFE4128807
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:08:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713348465; cv=none; b=bbX+SctYYUmEQT4rEwJuvTMZ+W4Y9lBPw03zVXANkh5363egYbzvkGs6nUwKqVHOuBbglm/DIzR+Nkhjy7SUwAAYZFShvxS1AngsbIiPAEURP1ZJBsqLXbcgR3A7m3Spvy26UByGseEPmStJvlniQ1NXCMrNDefxps/hq0yqkAA=
+	t=1713348488; cv=none; b=qeYgo22UWN3FS/QPUrn97NRPtv2b3LKNngn0efFWsXH4u6gaz/XCf9nQRBP5OXQCBza2DKGwg4PIjZ7YBp6aHm9pu53c3O/t6OFFa75oTRqpve/p7gjjFsT3f44utEvzmrwqxcfM1ZGVuYD6LlRmfzjyRvQoEb9fZZSELh7QfPo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713348465; c=relaxed/simple;
-	bh=/hPVDH/l/50vOuhlKj+xEGfXoIYzQz449xMEPLDiU10=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=UbGNKQZ9iYC03mBY41fJisphFe2Qpmcdc5IhJsOMhINoQFBpa+0Hnhyoln/qNydQncy+o0k9+NlqrC99BwZUgYr87XIAd5fPa2NTU63AD3hpfiuVf/x76ZVqPtIGzXfqOTdtkIiGFFUwh4LMJf9t3TDczhoYPk4YpHjcWc1cZDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=cC2jJ09I; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=rnsDuuQH reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+	s=arc-20240116; t=1713348488; c=relaxed/simple;
+	bh=brHN2J0g6h2FWOT2DJL+bvz0WjZxEx35HK2donLvmSU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AIG1O63dFm/nD/rdsZh+xmuBh7lEHC67eNYC4KGKZg1sbXCI7d9j5PJBJAyBDajDsUxZayEx3udvkxYT+8kdGCi1OY8FGaEbWrrwc+2FbAG01uYEABVY/KryPeI1gtaLXCo4zH4K3nsv12j5rj1R430fAHbqxAiP1YTlgFD/Ddo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ItTOHdYw; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-516d0c004b1so7235480e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 03:08:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1713348461; x=1744884461;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=P4jjLHNDzTJwlTjX0l1tjUZ36wXeBEDfuonIOwgdrMk=;
-  b=cC2jJ09IBGpB8/JbqmWlkxvMdqLfKrifVvH82HNOHN0TDdB/ySaILK6G
-   oTB0+NgsdJcGBXNL2GWsG9pzoY82SZUMN355FhqtZw2fRevVOo0l8wovW
-   VZHikQeL3yWbPr9cxhj2dIVQP4PAtJ3gx46qfGuro5/AygzdUoUyoIQ66
-   9RGcLMiqMBLmmyZHhMwAALnC1Y5hsj/meAUU+buqzscWvhLSGLkQLIJLw
-   BL1AYMCr5mgS1yC73+ihhkimGLXTvYPSahWD4rzLs2iaEJU+yFBmWi61W
-   vpyF+cdDqfdE+R/0T2+y/t4uAgH+V+Te08uTjSmjJ2ByKudebA++Bp3Sb
-   A==;
-X-IronPort-AV: E=Sophos;i="6.07,208,1708383600"; 
-   d="scan'208";a="36464413"
-Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 17 Apr 2024 12:07:38 +0200
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id EFB271703EB;
-	Wed, 17 Apr 2024 12:07:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1713348454;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=P4jjLHNDzTJwlTjX0l1tjUZ36wXeBEDfuonIOwgdrMk=;
-	b=rnsDuuQHFmSNSZ0itQmLdJ4PzQNgKcfOmgivwmVBHf5dmbBT4Ru3Czmh46Or+baeXY/QR/
-	mflfyya8wsE5fA8O2BsOZ3sLjul1rMVVc/H8S27iFdsh21i34ppaW/uEJ3FDBGmaEb4HRG
-	bNcwpK0X10bP+APDMir9fzk51a11tCu9NnCmjhN+cFCGz/+PT1zU6qq4B/uQTUZnh8bZwh
-	XNz/mbTCPgtzPwrofAYGXXaHUiV21QXm/TfiRFrJq6qC3E4ZNUU7nCWYO7iYCxkJlBrXq3
-	ukdhTvWQLgoSxlhDhFGlKUk9leCacfvEVrfxZDy0Df55wTKlaGq69Dc1+KZHXg==
-Message-ID: <6f64a875911eff522674e9a22b6dc23ec629db3a.camel@ew.tq-group.com>
-Subject: Re: [PATCH net] net: dsa: mv88e6xx: fix supported_interfaces setup
- in mv88e6250_phylink_get_caps()
-From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
- Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,  Jakub Kicinski
- <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-  linux-kernel@vger.kernel.org, linux@ew.tq-group.com
-Date: Wed, 17 Apr 2024 12:07:32 +0200
-In-Reply-To: <5f09543db3de88e83116c5b2f6e3d9edbfdb4af8.camel@ew.tq-group.com>
-References: <20240416155054.3650354-1-matthias.schiffer@ew.tq-group.com>
-	 <Zh6trxU0hB+yt6rV@shell.armlinux.org.uk>
-	 <5f09543db3de88e83116c5b2f6e3d9edbfdb4af8.camel@ew.tq-group.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=linaro.org; s=google; t=1713348483; x=1713953283; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rew6iLA0plRdxtIqeoXYtK2CEUSuSYY+qCYCtmDSd1o=;
+        b=ItTOHdYw7KVGBu8JyoCVRk0nOG06+jf6GFwUIIGCb7UH/R0LL60+/7JIl0DhDJQKwp
+         55xAPWFsd3wkhkmVfZO8hego//PLU1+xgNdJpwz24aIXE5onwqWTAs4Xu3uWM8XuWIVO
+         GNHrb02VxO8ThtdtRjb6O+qsMNPncqpsBrqkONzAsU1DvCBuVhKLNoEOARd1KiUJ5GSd
+         ks2U0E+payxQnWi9hEsa+mC7Z/NXgobU8vTr+4amZG2UztuN5MhAwWmgu9wjPdj2ZYkI
+         /STMyejLuJuu1bNLYaZuCRmZFKe2zqTeOo/hIeMZlAV2ZFTiGZbShOe7YfnGkncy/Wp1
+         wwtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713348483; x=1713953283;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rew6iLA0plRdxtIqeoXYtK2CEUSuSYY+qCYCtmDSd1o=;
+        b=SwkAchn1tHsHPs4w/6+9ql5ZixzLS/TlOBqUHnstC0jzTrSvuXsWgHnpcXWnrnPE6K
+         qMDPL3/rGI2N555uU9/mhjJpibVEkvJqHER50KPQ3JOuWjBmWYAYmhm0DVtw+qatRBw1
+         Y7+Vju/2O9qNucdwcv+gJ4fauuQZDzxGY1UlmlpQtb0f1t/WAWArqcdY2LhAhVXFYSIV
+         LpWDbSx0iHU/KmnBPRTndcA5egZ0GMvgDxQoXHjGLHX5EXZGZTWigWMOSnSCVznif4cV
+         RjaiKrQEdFe0Ai7uAnMlGxL8nVN5XR/x2+eB1ksGzdR9V/ZlmFzfmFQ+yOmtQCAnTl/t
+         5uhA==
+X-Forwarded-Encrypted: i=1; AJvYcCWDn4SBWqF4Gj9Xu5YypDAlnfRt1a+gYbHlp8nLfeAI4cK3v55B1KX+yXZbCdx2MZoaWZad2BO5VxI/+iB4UfL7qvyMIzDzRL242+nP
+X-Gm-Message-State: AOJu0YxPh7aUlEw3cse9yKqQbge4HAk6v7WzF6a91UEbi4xq+eciCVEZ
+	Ep8wNwKfjhS+HC75oE26C7wLz+EUv7/iaOat16DbCs/X5BQ5jgu10IT+Crt7u28=
+X-Google-Smtp-Source: AGHT+IHpU2FckcUTS4T6HUYuJqnYbBgP+xCaAEopvwDiMHdA/fetkEHgQoPYTTOMp3Se2U1GhQcWFA==
+X-Received: by 2002:a19:ca03:0:b0:519:5c34:9652 with SMTP id a3-20020a19ca03000000b005195c349652mr10971lfg.31.1713348483318;
+        Wed, 17 Apr 2024 03:08:03 -0700 (PDT)
+Received: from localhost (c-9b0ee555.07-21-73746f28.bbcust.telenor.se. [85.229.14.155])
+        by smtp.gmail.com with ESMTPSA id i25-20020a0565123e1900b00518dfedc3ddsm1012464lfv.12.2024.04.17.03.08.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 03:08:02 -0700 (PDT)
+Date: Wed, 17 Apr 2024 12:08:02 +0200
+From: Anders Roxell <anders.roxell@linaro.org>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>, gregkh@linuxfoundation.org,
+	linux-amlogic@lists.infradead.org,
+	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: Re: [PATCH 12/15] tty: serial: switch from circ_buf to kfifo
+Message-ID: <Zh-fgtujwjiSXz7D@monster>
+References: <20240405060826.2521-1-jirislaby@kernel.org>
+ <20240405060826.2521-13-jirislaby@kernel.org>
+ <CGME20240415125847eucas1p2bc180c35f40f9c490c713679871af9ae@eucas1p2.samsung.com>
+ <91ac609b-0fae-4856-a2a6-636908d7ad3c@samsung.com>
+ <d70049d5-d0fe-465f-a558-45b6785f6014@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d70049d5-d0fe-465f-a558-45b6785f6014@kernel.org>
 
-On Wed, 2024-04-17 at 09:13 +0200, Matthias Schiffer wrote:
-> On Tue, 2024-04-16 at 17:56 +0100, Russell King (Oracle) wrote:
-> > On Tue, Apr 16, 2024 at 05:50:54PM +0200, Matthias Schiffer wrote:
-> > > +int mv88e6250_port_get_mode(struct mv88e6xxx_chip *chip, int port,
-> > > +			    phy_interface_t *mode)
-> > > +{
-> > > +	int err;
-> > > +	u16 reg;
-> > > +
-> > > +	if (port < 5) {
-> > > +		*mode =3D PHY_INTERFACE_MODE_INTERNAL;
-> > > +		return 0;
-> > > +	}
-> >=20
-> > Note that if mv88e6xxx_phy_is_internal() returns TRUE for the port,
-> > then this will be handled automatically.
-> >=20
-> > > +
-> > > +	err =3D mv88e6xxx_port_read(chip, port, MV88E6XXX_PORT_STS, &reg);
-> > > +	if (err)
-> > > +		return err;
-> > > +
-> > > +	switch (reg & MV88E6250_PORT_STS_PORTMODE_MASK) {
-> > > +	case MV88E6250_PORT_STS_PORTMODE_MII_10_HALF_PHY:
-> > > +	case MV88E6250_PORT_STS_PORTMODE_MII_100_HALF_PHY:
-> > > +	case MV88E6250_PORT_STS_PORTMODE_MII_10_FULL_PHY:
-> > > +	case MV88E6250_PORT_STS_PORTMODE_MII_100_FULL_PHY:
-> > > +		*mode =3D PHY_INTERFACE_MODE_REVMII;
-> > > +		break;
-> > > +
-> > > +	case MV88E6250_PORT_STS_PORTMODE_MII_HALF:
-> > > +	case MV88E6250_PORT_STS_PORTMODE_MII_FULL:
-> > > +		*mode =3D PHY_INTERFACE_MODE_MII;
-> > > +		break;
-> > > +
-> > > +	case MV88E6250_PORT_STS_PORTMODE_MII_DUAL_100_RMII_FULL_PHY:
-> > > +	case MV88E6250_PORT_STS_PORTMODE_MII_200_RMII_FULL_PHY:
-> > > +	case MV88E6250_PORT_STS_PORTMODE_MII_10_100_RMII_HALF_PHY:
-> > > +	case MV88E6250_PORT_STS_PORTMODE_MII_10_100_RMII_FULL_PHY:
-> > > +		*mode =3D PHY_INTERFACE_MODE_REVRMII;
-> > > +		break;
-> > > +
-> > > +	case MV88E6250_PORT_STS_PORTMODE_MII_DUAL_100_RMII_FULL:
-> > > +	case MV88E6250_PORT_STS_PORTMODE_MII_10_100_RMII_FULL:
-> > > +		*mode =3D PHY_INTERFACE_MODE_RMII;
-> > > +		break;
-> > > +
-> > > +	case MV88E6250_PORT_STS_PORTMODE_MII_100_RGMII:
-> > > +		*mode =3D PHY_INTERFACE_MODE_RGMII;
-> > > +		break;
-> > > +
-> > > +	default:
-> > > +		*mode =3D PHY_INTERFACE_MODE_NA;
-> >=20
-> > What does this mean? I don't allow PHY_INTERFACE_MODE_NA to be set in
-> > the list of supported interfaces because it isn't an interface mode.
-> > If it's invalid, then it's probably best to return an error.
-> >=20
-> > I wonder whether it would just be better to pass the
-> > supported_interfaces bitmap into this function and have it set the
-> > appropriate bit itself, renaming the function to something more
-> > better suited to that purpose.
-> >=20
-> > Thanks.
->=20
-> I'm explicitly checking for PHY_INTERFACE_MODE_NA in the caller to handle=
- the "this interface isn't
-> useable" case. Passing supported_interfaces into the function handling th=
-e port modes is fine with
-> me, too - will send a v2 later.
->=20
-> Best regards,
-> Matthias
+On 2024-04-15 15:28, Jiri Slaby wrote:
+> On 15. 04. 24, 14:58, Marek Szyprowski wrote:
+> > Dear All,
+> > 
+> > On 05.04.2024 08:08, Jiri Slaby (SUSE) wrote:
+> > > Switch from struct circ_buf to proper kfifo. kfifo provides much better
+> > > API, esp. when wrap-around of the buffer needs to be taken into account.
+> > > Look at pl011_dma_tx_refill() or cpm_uart_tx_pump() changes for example.
+> > > 
+> > > Kfifo API can also fill in scatter-gather DMA structures, so it easier
+> > > for that use case too. Look at lpuart_dma_tx() for example. Note that
+> > > not all drivers can be converted to that (like atmel_serial), they
+> > > handle DMA specially.
+> > > 
+> > > Note that usb-serial uses kfifo for TX for ages.
+> > > 
+> > > omap needed a bit more care as it needs to put a char into FIFO to start
+> > > the DMA transfer when OMAP_DMA_TX_KICK is set. In that case, we have to
+> > > do kfifo_dma_out_prepare twice: once to find out the tx_size (to find
+> > > out if it is worths to do DMA at all -- size >= 4), the second time for
+> > > the actual transfer.
+> > > 
+> > > All traces of circ_buf are removed from serial_core.h (and its struct
+> > > uart_state).
+> > > 
+> > > Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> > > ...
+> > 
+> > This patch landed in linux-next as commit 1788cf6a91d9 ("tty: serial:
+> > switch from circ_buf to kfifo"). Unfortunately it breaks UART operation
+> > on thr Amlogic Meson based boards (drivers/tty/serial/meson_uart.c
+> > driver) and Qualcomm RB5 board (drivers/tty/serial/qcom_geni_serial.c).
+> > Once the init process is started, a complete garbage is printed to the
+> > serial console. Here is an example how it looks:
+> 
+> Oh my!
+> 
+> Both drivers move the tail using both kfifo and uart_xmit_advance()
+> interfaces. Bah. Does it help to remove that uart_xmit_advance() for both of
+> them? (TX stats will be broken.)
+> 
+> Users of uart_port_tx() are not affected.
+> 
+> This is my fault when merging uart_xmit_advance() with this series.
+> 
 
-.. and I realize I don't even check for PHY_INTERFACE_MODE_NA in the calle=
-r in the version of the
-patch I submitted. Oh well, time for v2.
+I'm trying to run on two dragonboard devices db410c and db845c and both
+fails to boot see the boot failure from db845c [1], linux-next tag: next-20240415.
+I tried to apply the patch [2] (that you proposed in this thread) ontop of next-20240415. However, that didn't
+help bootlog on db845c [3].
 
-
->=20
->=20
-> >=20
->=20
-
---=20
-TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Germ=
-any
-Amtsgericht M=C3=BCnchen, HRB 105018
-Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan Sch=
-neider
-https://www.tq-group.com/
+Cheers,
+Anders
+[1] https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2f7sLxYtIQXQzsnTzE1Dye2xweg/logs?format=html
+[2] https://lore.kernel.org/lkml/20240416054825.6211-1-jirislaby@kernel.org/raw
+[3] https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/anders/tests/2fDgvWnyEmFm9mqMCxOaruBOfTe/logs?format=html
 
