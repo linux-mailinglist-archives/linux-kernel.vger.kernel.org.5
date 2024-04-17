@@ -1,121 +1,128 @@
-Return-Path: <linux-kernel+bounces-149052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38E6B8A8B0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:29:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 152608A8B30
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:34:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD5001F220E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:29:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3779285FA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:34:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C28417335E;
-	Wed, 17 Apr 2024 18:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D284711725;
+	Wed, 17 Apr 2024 18:34:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KWD0C9J9"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="ipL+I8TV"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29CE217109A;
-	Wed, 17 Apr 2024 18:29:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24DE8F51B;
+	Wed, 17 Apr 2024 18:34:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713378545; cv=none; b=JhAWJBFObvZtwAt1QK4ZSEBBt/0dT0OrDwAC3+1EE5bfTOAiAMwKiIqIsqXk722sUZEGrLjKajP8tgPwfAlzhw/kcL01D/gBcYo+bedehmB+DRSPhAf6TlX6J+p3DBGH0alTfcTeHKll4Tc7dnPqYscpNuhvE39SX/2yHadXXVM=
+	t=1713378848; cv=none; b=eGA/3YkREJaUwh4CogTunBNmMp2WZJKy6zVg0ZUAhEPy7rcBGhu4LHm95Tk0lmcrfmLvVdaZzEEXHxljw0Uy7QysOzqgvkvDXuN3HTrEH64oIMUXDk73tMss0vgYc9wj6/3Rgp8HKCjEpoFZ3bqaJOLxSESyo4M9IHbLpZsB+8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713378545; c=relaxed/simple;
-	bh=7JxodzQRkS4oLXtGyeYNgNUOYAZp5D+/snGgqcQC0YI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jHUZMlWXGfosDAUnAmmFfn1ZvkmnIJrn/Sv0DWvIvqy7AAOlDCc+QESDNoTHAocpdHwHMWNo4W6tA69J1IbxAT1ByAj9W+FDovJhgy7vFAsWXcqLr1b3SlWeL15iTgvykyK7DQlRnzaFoXQur07T0qqRkUKYhAafX5fc/x/SubQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KWD0C9J9; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713378544; x=1744914544;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=7JxodzQRkS4oLXtGyeYNgNUOYAZp5D+/snGgqcQC0YI=;
-  b=KWD0C9J9ZkG1JL45yPDa02z7DRhMK994m0fTOtUEqhdYYt1ypfjC3Y2P
-   PFpchHEJgqZKaSbCwg9rK0+vHWDX8Ouz0aYYLkaEtSz2DcGNemEdDqa/1
-   xeMAqANjjOOtCu3Sb19d2pDI4J+TFA0GDw/Yvn5REPYPE0Lf6e38UsHG5
-   waKdIMhPhLeKMNlwmuHMoyHCOMhrr1ugDzbC73wW8yjYeWh3PHKTfKlCi
-   HmqSeciXvSHfadYla9+x8lk0p3zyVMLnsOXR8zQiP7cx3fA7027AF6KF9
-   yr4EEMaWuJtRhGQeToUOq0vXfcBRHBTW8cv43ruTuen5IRYxrkaAtgTiR
-   g==;
-X-CSE-ConnectionGUID: pYwIUtkyTJyW0SJ1X4JTzg==
-X-CSE-MsgGUID: Z0PfnnTIQ5ynxffg8bLx5g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="19494053"
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="19494053"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 11:29:04 -0700
-X-CSE-ConnectionGUID: d1axhKYFRM+l2l6LO09SLQ==
-X-CSE-MsgGUID: sYo3gvWTTcyX9Sjfi/U3kA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="23306516"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 11:29:03 -0700
-Date: Wed, 17 Apr 2024 11:33:37 -0700
-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev, Thomas Gleixner
- <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
- kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>, Joerg Roedel
- <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov
- <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, Paul Luse
- <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>, Jens
- Axboe <axboe@kernel.dk>, Raj Ashok <ashok.raj@intel.com>, Kevin Tian
- <kevin.tian@intel.com>, maz@kernel.org, Robin Murphy
- <robin.murphy@arm.com>, jim.harris@samsung.com, a.manzanares@samsung.com,
- Bjorn Helgaas <helgaas@kernel.org>, guang.zeng@intel.com,
- robert.hoo.linux@gmail.com, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v2 01/13] x86/irq: Move posted interrupt descriptor out
- of vmx code
-Message-ID: <20240417113337.4a594901@jacob-builder>
-In-Reply-To: <Zh8ZHPUlQk4niS7k@google.com>
-References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
-	<20240405223110.1609888-2-jacob.jun.pan@linux.intel.com>
-	<Zh8ZHPUlQk4niS7k@google.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713378848; c=relaxed/simple;
+	bh=6veavc1e9T/l9NoSbIGFrOaQTgn3qFpNCXEWKSehzVA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Att7oOr2ZPb9EMpoxNkCDhEmw9daRs8IRPSI0Lx6+NaFX/rOwFad09nZa6+3mxwyByjWx/YqbtYctd/ebxOl9S7qOmPvRlj9dT2vW8ArtpD8NAjxzF35sWLz3xvTbX2yEYDQIJprpagEkOF6nCnm9d6yrssOGhoHBZD6UTRtBlU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=ipL+I8TV; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=qyvdskYVnamQI3a/ILIalEumJFvEM9exFz2R/7q+4jE=; b=ipL+I8TVXay+xwWsxLnGcJxNq+
+	3MXPVeffIwUTLH4aFqP2fzWB99kP6oLrc3fydU+rNpr2jleE5dV3VCx+y794YXUXnqUhYl9g208Gh
+	hm5aTjVvDdsaJfvozWQ84C1ALa7MppKCBaGT9jY22rHzGVmw0tSveXsTpH4kuza9SKH0=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rxA6E-00DGzN-GY; Wed, 17 Apr 2024 20:33:38 +0200
+Date: Wed, 17 Apr 2024 20:33:38 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Woojung Huh <woojung.huh@microchip.com>,
+	Arun Ramadoss <arun.ramadoss@microchip.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Russell King <linux@armlinux.org.uk>, kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	UNGLinuxDriver@microchip.com,
+	linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH net-next v1 1/4] net: phy: Add TimeSync delay query
+ support to PHYlib API
+Message-ID: <898f435b-99dd-4636-9a52-558780c1bb06@lunn.ch>
+References: <20240417164316.1755299-1-o.rempel@pengutronix.de>
+ <20240417164316.1755299-2-o.rempel@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417164316.1755299-2-o.rempel@pengutronix.de>
 
-Hi Sean,
-
-On Tue, 16 Apr 2024 17:34:36 -0700, Sean Christopherson <seanjc@google.com>
-wrote:
-
-> "KVM" in the scope would be nice.
-will change to "KVM: VMX:"
-
+On Wed, Apr 17, 2024 at 06:43:13PM +0200, Oleksij Rempel wrote:
+> Add a new phy_get_timesync_data_path_delays() function, to the PHY
+> device API. This function enables querying the ingress and egress
+> TimeSync delays for PHY devices, as specified in IEEE 802.3-2022
+> sections 30.13.1.3 to 30.13.1.6. The function adds the capability to
+> obtain the average delays in nanoseconds, which can be used to
+> compensate for time variations added by the PHY to PTP packets.
 > 
-> On Fri, Apr 05, 2024, Jacob Pan wrote:
-> > To prepare native usage of posted interrupt, move PID declaration out of
-> > VMX code such that they can be shared.
-> > 
-> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > ---
-> >  arch/x86/include/asm/posted_intr.h | 88 ++++++++++++++++++++++++++++
-> >  arch/x86/kvm/vmx/posted_intr.h     | 93 +-----------------------------
-> >  arch/x86/kvm/vmx/vmx.c             |  1 +
-> >  arch/x86/kvm/vmx/vmx.h             |  2 +-
-> >  4 files changed, 91 insertions(+), 93 deletions(-)
-> >  create mode 100644 arch/x86/include/asm/posted_intr.h  
-> 
-> Acked-by: Sean Christopherson <seanjc@google.com>
+> Since most PHYs do not provide register-based delay information, PHY
+> drivers should supply this data, typically dependent on the interface
+> type (MII, RGMII, etc.) and link speed. The MAC driver, or consumer of
+> this API, is expected to invoke this function upon link establishment to
+> accurately compensate for any PHY-induced time discrepancies.
 
+So your intention is that this function is called from within the
+adjust_link callback? Hence there is no locking being performed
+because the lock is already held?
 
-Thanks,
+> +/**
+> + * phy_get_timesync_data_path_delays - get the TimeSync data path ingress/egress
+> + *                                     delays
+> + * @phydev: phy_device struct
+> + * @tx_delay_ns: pointer to the transmit delay in nanoseconds
+> + * @rx_delay_ns: pointer to the receive delay in nanoseconds
+> + *
+> + * This function is used to get the TimeSync data path ingress/egress delays
+> + * as described in IEEE 802.3-2022 sections:
+> + * 30.13.1.3 aTimeSyncDelayTXmax, 30.13.1.4 aTimeSyncDelayTXmin,
+> + * 30.13.1.5 aTimeSyncDelayRXmax and 30.13.1.6 aTimeSyncDelayRXmin.
+> + *
+> + * The delays are returned in nanoseconds and can be used to compensate time
+> + * added by the PHY to the PTP packets.
 
-Jacob
+Please document the context this function should be used in. If users
+use it outside of the adjust_link callback, the locking will be
+wrong....
+
+> + *
+> + * Returns 0 on success, negative value on failure.
+
+I think kdocs now requires a : after Returns ?
+
+> +	/**
+> +	 * @get_timesync_data_path_delays: Get the PHY time sync delay values
+> +	 * @dev: PHY device
+> +	 * @tsd: PHY time sync delay values
+> +	 *
+> +	 * Returns 0 on success, or an error code.
+
+Same here.
+
+     Andrew
 
