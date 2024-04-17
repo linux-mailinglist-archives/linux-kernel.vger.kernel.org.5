@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-148261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B8BC8A7FF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:40:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C9808A7FF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:41:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C7161C21668
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:40:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 537D01F2203C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:41:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0EA13C3FA;
-	Wed, 17 Apr 2024 09:39:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B21113C68F;
+	Wed, 17 Apr 2024 09:39:12 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0863913C3D4
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:39:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DABB313C3FF
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:39:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713346750; cv=none; b=bLhPyHQz4dKCcVB4PxgcLEzIIOeA6imbJRHmYH874wxmpvzm11Ee2OQXDobHJHRMjWlDsIaX70E4Kqc5TLBuEwPJMr6Fx+Iwhu7aU9FfgS6WcFxUQ6NIrkXeKgjJmGzozxSipSic/sSab0U645CjkH4DwoztxszCDna2N4Yab9M=
+	t=1713346752; cv=none; b=Y5UqMilRpob1xrk6HvXjM+OAc7C9LvpTsrHKH5GoDcyF/jK2HPkGfyvOacC60bQ/hO0uk2pMuVXVyagLuwD62KtLg6yovBUfAMlnx0CPpC35/2MLcbhvXYXWcobfRRaawbdjrP48A+2Y6cMbTHo61y5RMwxeWKCU5OrHZjwvlDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713346750; c=relaxed/simple;
-	bh=oXmgWIERdtu2ZOsYZHNdeoQxmqdBja1PnXgu2ziTMEk=;
+	s=arc-20240116; t=1713346752; c=relaxed/simple;
+	bh=zVISUDfH5Und8B2M0/FRkHymAWK9FfVIOHuACS05Y0w=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iQgKblDFhGJz4TizfZ8hdHHQmbaQiGsy0IuyT3H/L0arE35k7LYgnomY9ykQq0wN6ZOYmmkYZcmoM0jg2Re4mAgwhHpOMg1ltI0lc3kKEPPKtNvENM2fXXs3F95r6gvX5sD5Ple6SN0KytdAljWzkK6g6gqxST45KqvORmgh00E=
+	 MIME-Version; b=iKCPXaLFTySGi5FPQ91TMSEw7Ual9ur04VY5+7+UaUKpauy++qmo1zMouDDyK6GgcQIKw5tW+lKBR2TZ5DVilNso9wQtK2IkZG6Q56cexAVdZpVw2SvJhO/kbTuovY/oPOIzXavapLs/sbyhH0Qy/O1YCJdfWkf3qVuABnRgi0g=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 55EA7DA7;
-	Wed, 17 Apr 2024 02:39:36 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D3A21477;
+	Wed, 17 Apr 2024 02:39:38 -0700 (PDT)
 Received: from e125905.cambridge.arm.com (e125905.cambridge.arm.com [10.1.194.73])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A741E3F64C;
-	Wed, 17 Apr 2024 02:39:06 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B5D333F64C;
+	Wed, 17 Apr 2024 02:39:08 -0700 (PDT)
 From: Beata Michalska <beata.michalska@arm.com>
 To: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
@@ -45,9 +45,9 @@ Cc: sudeep.holla@arm.com,
 	yang@os.amperecomputing.com,
 	lihuisong@huawei.com,
 	viresh.kumar@linaro.org
-Subject: [PATCH v5 4/5] arm64: Update AMU-based frequency scale factor on entering idle
-Date: Wed, 17 Apr 2024 10:38:47 +0100
-Message-Id: <20240417093848.1555462-5-beata.michalska@arm.com>
+Subject: [PATCH v5 5/5] cpufreq: Use arch specific feedback for cpuinfo_cur_freq
+Date: Wed, 17 Apr 2024 10:38:48 +0100
+Message-Id: <20240417093848.1555462-6-beata.michalska@arm.com>
 In-Reply-To: <20240417093848.1555462-1-beata.michalska@arm.com>
 References: <20240417093848.1555462-1-beata.michalska@arm.com>
 Precedence: bulk
@@ -58,54 +58,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now that the frequency scale factor has been activated for retrieving
-current frequency on a given CPU, trigger its update upon entering
-idle. This will, to an extent, allow querying last known frequency
-in a non-invasive way. It will also improve the frequency scale factor
-accuracy when a CPU entering idle did not receive a tick for a while.
-As a consequence, for idle cores, the reported frequency will be the
-last one observed before entering the idle state.
+Some architectures provide a way to determine an average frequency over
+a certain period of time based on available performance monitors (AMU on
+ARM or APERF/MPERf on x86). With those at hand, enroll arch_freq_get_on_cpu
+into cpuinfo_cur_freq policy sysfs attribute handler, which is expected to
+represent the current frequency of a given CPU,as obtained by the hardware.
+This is the type of feedback that counters do provide.
 
-Suggested-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
 Signed-off-by: Beata Michalska <beata.michalska@arm.com>
 ---
- arch/arm64/kernel/topology.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ drivers/cpufreq/cpufreq.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-index 475fdbf3032a..3110863ee18c 100644
---- a/arch/arm64/kernel/topology.c
-+++ b/arch/arm64/kernel/topology.c
-@@ -213,6 +213,19 @@ static __always_inline bool amu_fie_cpu_supported(unsigned int cpu)
- 		cpumask_test_cpu(cpu, amu_fie_cpus);
- }
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index f6f8d7f450e7..89118406ec68 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -793,8 +793,10 @@ store_one(scaling_max_freq, max);
+ static ssize_t show_cpuinfo_cur_freq(struct cpufreq_policy *policy,
+ 					char *buf)
+ {
+-	unsigned int cur_freq = __cpufreq_get(policy);
++	unsigned int cur_freq = arch_freq_get_on_cpu(policy->cpu);
  
-+void arch_cpu_idle_enter(void)
-+{
-+	unsigned int cpu = smp_processor_id();
-+
-+	if (!amu_fie_cpu_supported(cpu))
-+		return;
-+
-+	/* Kick in AMU update but only if one has not happened already */
-+	if (housekeeping_cpu(cpu, HK_TYPE_TICK) &&
-+	    time_is_before_jiffies(per_cpu(cpu_amu_samples.last_update, cpu)))
-+		amu_scale_freq_tick();
-+}
-+
- #define AMU_SAMPLE_EXP_MS	20
- 
- unsigned int arch_freq_get_on_cpu(int cpu)
-@@ -239,8 +252,8 @@ unsigned int arch_freq_get_on_cpu(int cpu)
- 	 * this boils down to identifying an active cpu within the same freq
- 	 * domain, if any.
- 	 */
--	if (!housekeeping_cpu(cpu, HK_TYPE_TICK) ||
--	    time_is_before_jiffies(last_update + msecs_to_jiffies(AMU_SAMPLE_EXP_MS))) {
-+	if (!housekeeping_cpu(cpu, HK_TYPE_TICK) || (!idle_cpu(cpu) &&
-+	    time_is_before_jiffies(last_update + msecs_to_jiffies(AMU_SAMPLE_EXP_MS)))) {
- 		struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
- 		int ref_cpu = cpu;
++	if (!cur_freq)
++		cur_freq = __cpufreq_get(policy);
+ 	if (cur_freq)
+ 		return sprintf(buf, "%u\n", cur_freq);
  
 -- 
 2.25.1
