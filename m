@@ -1,77 +1,41 @@
-Return-Path: <linux-kernel+bounces-147824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20F148A7A25
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:25:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA77E8A7A23
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:25:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA5C2283B88
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:25:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDB901C2164F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A441FC8;
-	Wed, 17 Apr 2024 01:25:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A9CXU70o"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 903A11851;
-	Wed, 17 Apr 2024 01:25:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A97FB1851;
+	Wed, 17 Apr 2024 01:24:55 +0000 (UTC)
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id B3CE6184F
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 01:24:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713317126; cv=none; b=Vs5F4nlVZknL0AxNiKFBmYu24CD152M/AIaYXdwFm7L7elMWbEWDj1Xqp2HieitOcAWGAW3mQkakaCwFY2VUSPn9MQbsszKEiAzollY6iTQxWUHEMd85D7PJ7BL7CXe2DGQLUARo2j7DlcuQHjAkQuN8aL/uOWnKgJPFAzqfidg=
+	t=1713317095; cv=none; b=hlhneIPD4qR1XpzzCZYQITOXXB66u6UeoB0hJYtFHDSQSv7Js8wwk41e9xqJWYo2zGdYYC/7zWN6nsLeZooMhDBSGXvmT7YOA9aH7InmlGRU2taVyUlvRqg/hHovztk/pl7QDMI9cHBVUltFD9mynUgFRUgQBC8mG8BZy/70fcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713317126; c=relaxed/simple;
-	bh=SifNgk6MOylzLGjpF5LbD3QpijD39SXzUerpdQvNNWg=;
+	s=arc-20240116; t=1713317095; c=relaxed/simple;
+	bh=QEokpzywCij/rs8KGCbS/96yPJ0h0w2hazVYrHtROdQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nc8+6V6kNfUHHkbBIaw3Uuc3MAv1HpVqvvV97PbtECEEYW4VzBeDnRevPXLebUFPcOnRW15+Wes5ZG2sb+6bbAqnYfDKROLe5TQztXMwcf+HKBlmzM72yd87RA14mLRp0wZv8ZXzHpgQW7i5MMbDf4JvzUauWmsKj7pQz+++49I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A9CXU70o; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713317124; x=1744853124;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SifNgk6MOylzLGjpF5LbD3QpijD39SXzUerpdQvNNWg=;
-  b=A9CXU70ooITcC/8KDa67Ro9marnEAUvMACuddm8akoCisXsdbeM4Rp6T
-   yxh76chY/QXZpLVopZy8gzVcHJNEYn8TJlKfoS+Baz3N9+LOZvlt1F4gH
-   NEl7U0UuMSFl9xjoKuMOGha+zenxRXfFvqQWFghqUwkB18IIxUKo+bEbB
-   bVRZy4NH7lkQb4rFdATtG3//k0JudajK63FhK4qoAif+9ysBPsHHeZUNp
-   FAa4wExLiasQAK6lsaitP3CMNKw7TeVceauOwCGwfvbaD96tz5f6lrtEU
-   wgk0uQno9XXk3Dy/r9pKXXMPDWUHWItFF/I39PAtIMACvPECK/4ificTO
-   A==;
-X-CSE-ConnectionGUID: fA0mu7HMRc+VkSkjAq6e6Q==
-X-CSE-MsgGUID: ZIkZV0uNTi+PJ+rmkGhKQg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8911582"
-X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="8911582"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 18:25:23 -0700
-X-CSE-ConnectionGUID: DQUm0QaISiegqb6Fxi0eqg==
-X-CSE-MsgGUID: OFj1QP6gTmODO7bZAwKFlg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="22855228"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by orviesa006.jf.intel.com with ESMTP; 16 Apr 2024 18:25:21 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rwu33-0005vs-30;
-	Wed, 17 Apr 2024 01:25:17 +0000
-Date: Wed, 17 Apr 2024 09:24:29 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geetha sowjanya <gakula@marvell.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, kuba@kernel.org,
-	davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
-	sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
-	hkelam@marvell.com
-Subject: Re: [net-next PATCH 3/9] octeontx2-pf: Create representor netdev
-Message-ID: <202404170922.RBiIclFT-lkp@intel.com>
-References: <20240416050616.6056-4-gakula@marvell.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZM/9laBLaG2QJbqMxUzkwjO7EXGSyh8tTze3IEkdJRJ2BgdGTYkY4oriik4ikgD8+5tuc4SUN03CilCJJspK34zrcqlbGEdtd6kqtsLdRHsC0lAfj7YEUKrSuPCRIVUyttp2ZCfL1+j7oKJxoW/yPw3O+UrNqqj+v/8/8oiv0eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 182709 invoked by uid 1000); 16 Apr 2024 21:24:48 -0400
+Date: Tue, 16 Apr 2024 21:24:48 -0400
+From: Alan Stern <stern@rowland.harvard.edu>
+To: Norihiko Hama <Norihiko.Hama@alpsalpine.com>
+Cc: mdharm-usb@one-eyed-alien.net, gregkh@linuxfoundation.org,
+  linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+  linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net
+Subject: Re: [PATCH v3] usb-storage: Optimize scan delay more precisely
+Message-ID: <4d94b2a8-dd2a-4bae-9a0c-8125747f404a@rowland.harvard.edu>
+References: <20240416082821.10164-1-Norihiko.Hama@alpsalpine.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,112 +44,230 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240416050616.6056-4-gakula@marvell.com>
+In-Reply-To: <20240416082821.10164-1-Norihiko.Hama@alpsalpine.com>
 
-Hi Geetha,
+On Tue, Apr 16, 2024 at 05:28:21PM +0900, Norihiko Hama wrote:
+> Current storage scan delay is reduced by the following old commit.
+> 
+> a4a47bc03fe5 ("Lower USB storage settling delay to something more reasonable")
+> 
+> It means that delay is at least 'one second', or zero with delay_use=0.
+> 'one second' is still long delay especially for embedded system but
+> when delay_use is set to 0 (no delay), still error observed on some USB drives.
+> 
+> So delay_use should not be set to 0 but 'one second' is quite long.
+> Especially for embedded system, it's important for end user
+> how quickly access to USB drive when it's connected.
+> That's why we have a chance to minimize such a constant long delay.
+> 
+> This patch optimizes scan delay more precisely
+> to minimize delay time but not to have any problems on USB drives
+> by extending module parameter 'delay_use' in milliseconds internally.
+> The parameter 'delay_use' is changed to be parsed as 3 decimal point value
+> if it has digit values with '.'.
+> It makes the range of value to 1 / 1000 in internal 32-bit value
+> but it's still enough to set the delay time.
+> By default, delay time is 'one second' for backward compatibility.
+> 
+> For example, it seems to be good by changing delay_use=0.1,
+> that is 100 millisecond delay without issues for most USB pen drives.
+> 
+> Signed-off-by: Norihiko Hama <Norihiko.Hama@alpsalpine.com>
+> ---
 
-kernel test robot noticed the following build warnings:
+At this location you're supposed to describe how this version of the patch 
+differs from the previous version.
 
-[auto build test WARNING on net-next/main]
+>  .../admin-guide/kernel-parameters.txt         | 10 +++
+>  drivers/usb/storage/usb.c                     | 72 +++++++++++++++++--
+>  2 files changed, 78 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 561d0dd776c7..ae1eb5988706 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -6190,6 +6190,16 @@
+>  	usb-storage.delay_use=
+>  			[UMS] The delay in seconds before a new device is
+>  			scanned for Logical Units (default 1).
+> +			To specify more precise delay, supports 3 decimal point.
+> +			The range of decimal point is in milliseconds,
+> +			hence the minimum value is "0.001".
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Geetha-sowjanya/octeontx2-pf-Refactoring-RVU-driver/20240416-131052
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20240416050616.6056-4-gakula%40marvell.com
-patch subject: [net-next PATCH 3/9] octeontx2-pf: Create representor netdev
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20240417/202404170922.RBiIclFT-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240417/202404170922.RBiIclFT-lkp@intel.com/reproduce)
+The text could be better.  For example:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404170922.RBiIclFT-lkp@intel.com/
+			The delay can have up to 3 decimal places, giving a
+			resolution of one millisecond.
 
-All warnings (new ones prefixed by >>):
+> +			Example:
+> +				delay_use=1
+> +					1 second delay
+> +				delay_use=0.1
+> +					0.1 second delay
+> +				delay_use=2.55
+> +					2.55 second elay
 
->> drivers/net/ethernet/marvell/octeontx2/nic/rep.c:167:7: warning: variable 'err' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-     167 |                 if (register_netdev(ndev)) {
-         |                     ^~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/marvell/octeontx2/nic/rep.c:181:9: note: uninitialized use occurs here
-     181 |         return err;
-         |                ^~~
-   drivers/net/ethernet/marvell/octeontx2/nic/rep.c:167:3: note: remove the 'if' if its condition is always false
-     167 |                 if (register_netdev(ndev)) {
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     168 |                         dev_err(priv->dev, "PFVF reprentator registration failed\n");
-         |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     169 |                         free_netdev(ndev);
-         |                         ~~~~~~~~~~~~~~~~~~
-     170 |                         ndev->netdev_ops = NULL;
-         |                         ~~~~~~~~~~~~~~~~~~~~~~~~
-     171 |                         goto exit;
-         |                         ~~~~~~~~~~
-     172 |                 }
-         |                 ~
-   drivers/net/ethernet/marvell/octeontx2/nic/rep.c:137:17: note: initialize the variable 'err' to silence this warning
-     137 |         int rep_id, err;
-         |                        ^
-         |                         = 0
-   1 warning generated.
+This should show all 3 decimal places:
 
+				delay_use=2.567
+					2.567 second delay
 
-vim +167 drivers/net/ethernet/marvell/octeontx2/nic/rep.c
+>  	usb-storage.quirks=
+>  			[UMS] A list of quirks entries to supplement or
+> diff --git a/drivers/usb/storage/usb.c b/drivers/usb/storage/usb.c
+> index 90aa9c12ffac..d5eb7dd8f3b1 100644
+> --- a/drivers/usb/storage/usb.c
+> +++ b/drivers/usb/storage/usb.c
+> @@ -67,9 +67,73 @@ MODULE_AUTHOR("Matthew Dharm <mdharm-usb@one-eyed-alien.net>");
+>  MODULE_DESCRIPTION("USB Mass Storage driver for Linux");
+>  MODULE_LICENSE("GPL");
+>  
+> -static unsigned int delay_use = 1;
+> -module_param(delay_use, uint, S_IRUGO | S_IWUSR);
+> -MODULE_PARM_DESC(delay_use, "seconds to delay before using a new device");
+> +static unsigned int delay_use = 1 * MSEC_PER_SEC;
+> +
+> +static int delay_use_set(const char *s, const struct kernel_param *kp)
+> +{
+> +	unsigned int delay_ms = 0;
+> +	int frac = 3, ret;
+> +	char *p = skip_spaces(s);
+> +	char buf[16];
+> +
+> +	if (strlen(p) >= sizeof(buf) - frac)
+> +		return -EINVAL;
+> +
+> +	strscpy_pad(buf, p, sizeof(buf));
+> +
+> +	p = strchr(buf, '.');
+> +	if (p) {
+> +		int i = 0;
+> +		char *tmp = p + 1;
+> +
+> +		while (tmp[i] && tmp[i] != '\n')
+> +			*p++ = tmp[i++];
+> +
+> +		if (i == 0 || i > frac)
+> +			return -EINVAL;
+> +		frac -= i;
+> +	} else {
+> +		p = buf + strlen(buf) - 1;
+> +		if (*p != '\n')
+> +			p++;
+> +	}
+> +	while (frac-- > 0)
+> +		*p++ = '0';
+> +	*p = '\0';
+> +
+> +	ret = kstrtouint(buf, 10, &delay_ms);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	*((unsigned int *)kp->arg) = delay_ms;
+> +	return 0;
+> +}
 
-   131	
-   132	int rvu_rep_create(struct otx2_nic *priv)
-   133	{
-   134		int rep_cnt = priv->rep_cnt;
-   135		struct net_device *ndev;
-   136		struct rep_dev *rep;
-   137		int rep_id, err;
-   138		u16 pcifunc;
-   139	
-   140		priv->reps = devm_kcalloc(priv->dev, rep_cnt, sizeof(struct rep_dev), GFP_KERNEL);
-   141		if (!priv->reps)
-   142			return -ENOMEM;
-   143	
-   144		for (rep_id = 0; rep_id < rep_cnt; rep_id++) {
-   145			ndev = alloc_etherdev(sizeof(*rep));
-   146			if (!ndev) {
-   147				dev_err(priv->dev, "PFVF representor:%d creation failed\n", rep_id);
-   148				err = -ENOMEM;
-   149				goto exit;
-   150			}
-   151	
-   152			rep = netdev_priv(ndev);
-   153			priv->reps[rep_id] = rep;
-   154			rep->mdev = priv;
-   155			rep->netdev = ndev;
-   156			rep->rep_id = rep_id;
-   157	
-   158			ndev->min_mtu = OTX2_MIN_MTU;
-   159			ndev->max_mtu = priv->hw.max_mtu;
-   160			pcifunc = priv->rep_pf_map[rep_id];
-   161			rep->pcifunc = pcifunc;
-   162	
-   163			snprintf(ndev->name, sizeof(ndev->name), "r%dp%dv%d", rep_id,
-   164				 rvu_get_pf(pcifunc), (pcifunc & RVU_PFVF_FUNC_MASK));
-   165	
-   166			eth_hw_addr_random(ndev);
- > 167			if (register_netdev(ndev)) {
-   168				dev_err(priv->dev, "PFVF reprentator registration failed\n");
-   169				free_netdev(ndev);
-   170				ndev->netdev_ops = NULL;
-   171				goto exit;
-   172			}
-   173		}
-   174		err = rvu_rep_napi_init(priv);
-   175		if (err)
-   176			goto exit;
-   177	
-   178		return 0;
-   179	exit:
-   180		rvu_rep_free_netdev(priv);
-   181		return err;
-   182	}
-   183	
+As I said before, the parsing code should be in a separate function to make 
+reviewing the code easier.  It also should be written more clearly.  Here's 
+my attempt (not tested at all).  You might prefer to remove some of the 
+comments; I put in a lot of them.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+/**
+ * str_to_fixed_point_uint - parse an unsigned fixed-point decimal integer
+ * @str: String to parse.
+ * @ndecimals: Number of decimal places in the fixed-point value.
+ * @val: Where to store the parsed value.
+ *
+ * Parse an unsigned fixed-point decimal value in @str, containing at
+ * most ndecimal digits to the right of the decimal point.
+ * Stores the parsed value in @val, scaled by 10^(@ndecimal).
+ *
+ * As with kstrtouint(), the string must be NUL-terminated and may
+ * include a single newline before the terminating NUL.  The first
+ * character may be a plus sign but not a minus sign.  The decimal
+ * point and fractional digits are optional.
+ *
+ * Returns 0 on success, a negative error code otherwise.
+ */
+static int str_to_fixed_point_uint(const char *str, int ndecimals,
+		unsigned int *val)
+{
+	int n, n1, n2;
+	const char *p;
+	char *q;
+	char buf[16];
+
+	n = strlen(str);
+	if (n > 0 && str[n - 1] == '\n');
+		--n;
+
+	p = strchr(str, '.');
+	if (p) {
+		n1 = p++ - str;		/* Length of integral part */
+		n2 = n - (n1 + 1);	/* Length of fractional part */
+		if (n2 > ndecimals)
+			return -EINVAL;
+	} else {
+		n1 = n;			/* Length of integral part */
+		n2 = 0;			/* No fractional part */
+	}
+	if (n1 + n2 == 0 || n1 + ndecimals > sizeof(buf) - 1)
+		return -EINVAL;		/* No digits present or too long */
+
+	memcpy(buf, str, n1);		/* Integer part */
+	memcpy(buf + n1, p, n2);	/* Fractional part */
+	for (q = buf + n1 + n2; n2 < ndecimals; ++n2)
+		*q++ = '0';		/* Remaining fractional digits */
+	*q = 0;
+
+	return kstrtouint(buf, 10, val);
+}
+
+> +
+> +static int delay_use_get(char *s, const struct kernel_param *kp)
+> +{
+> +	unsigned int delay_ms = *((unsigned int *)kp->arg);
+> +	unsigned int rem = do_div(delay_ms, MSEC_PER_SEC);
+> +	int len;
+> +	char buf[16];
+> +
+> +	len = scnprintf(buf, sizeof(buf), "%d", delay_ms);
+> +	if (rem) {
+> +		len += scnprintf(buf + len, sizeof(buf) - len, ".%03d", rem);
+> +		while (buf[len - 1] == '0') {
+> +			buf[len - 1] = '\0';
+> +			if (--len <= 1)
+> +				break;
+> +		}
+> +	}
+
+While this could also go in a separate function, it's short enough to keep 
+here.
+
+Alan Stern
+
+> +	return scnprintf(s, PAGE_SIZE, "%s\n", buf);
+> +}
+> +
+> +static const struct kernel_param_ops delay_use_ops = {
+> +	.set = delay_use_set,
+> +	.get = delay_use_get,
+> +};
+> +module_param_cb(delay_use, &delay_use_ops, &delay_use, 0644);
+> +MODULE_PARM_DESC(delay_use, "time to delay before using a new device");
+>  
+>  static char quirks[128];
+>  module_param_string(quirks, quirks, sizeof(quirks), S_IRUGO | S_IWUSR);
+> @@ -1066,7 +1130,7 @@ int usb_stor_probe2(struct us_data *us)
+>  	if (delay_use > 0)
+>  		dev_dbg(dev, "waiting for device to settle before scanning\n");
+>  	queue_delayed_work(system_freezable_wq, &us->scan_dwork,
+> -			delay_use * HZ);
+> +			msecs_to_jiffies(delay_use));
+>  	return 0;
+>  
+>  	/* We come here if there are any problems */
+> -- 
+> 2.17.1
+> 
 
