@@ -1,412 +1,284 @@
-Return-Path: <linux-kernel+bounces-148662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D27DC8A85AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:15:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98F9B8A85BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:16:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14529B241EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:15:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBDA81C2095D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:16:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4DB91411FC;
-	Wed, 17 Apr 2024 14:15:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D491422C1;
+	Wed, 17 Apr 2024 14:16:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D3EMaGUd"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B8LbVcby"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4FE13F444
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:15:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F1011411EE;
+	Wed, 17 Apr 2024 14:16:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713363317; cv=none; b=UlNFRfTU90LMZ2L0AIMcVC2uM3uaes57M3ee9X7PHkEABIkGGXFqMr2ddJuZDpYWvtGKBR9oh6XiO82H5jt91TU6jsGOnJcVMfh0ekkg2y4PShUZbB0pg2Bxg1gjWSu8S+0M8oxf2ekoBwKIbKhJ/b/r3tCW8USEJvUnLBHGMhs=
+	t=1713363361; cv=none; b=eCc2O0iRDefxSb+v4NdBd2pO6SU5/dWtj26lcDpesXdGGxRvmxzhJYWeREOhltjVTzD9A5OzL1tGGJYbIOuopofu4/Q9S/UmJb3ayOkIZSrt0Z9TwpEuRI0BoaVuseWoDtgGmwxAtfjTQmq8TCiIsc8pBYiGW7XI847/1wNNyXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713363317; c=relaxed/simple;
-	bh=ED3NPuf2ZjFnZsmYAh+DaAHMHS+tX0qG/uB2wKwa5eU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FP7b8WdLOQ1MX2nTfQfLnz5aVxM314fX3mOZ0OL8bBw9W7VHsl7UOJyfc7ICoGg5g0c0tr8lBWh8R6UrcCW0INk7fHdllspnGtc4IB9z8uFEWflvshw3v8YlBcHvS3o0H8prS5trRmbC6h7twe7ObWEApbUT+T7EYGYvaDAdTQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D3EMaGUd; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ead4093f85so4751456b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:15:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713363315; x=1713968115; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8zmDsYAtJOCrhdAwJbAGzI50/YgT/UfiWJqJuE4bljE=;
-        b=D3EMaGUd1hygSY4amlRsY3EzBK2rOmOWefd9MJkjJwzD1+5hgAPeA5W/2t16pSShfR
-         FcWqdlFtJMipihBoOvJZEoVgsGuJxALCeOslO7oghJE2Plx104gAP2L6INyfZ13xJOKz
-         P5lvoepFFOOg0Z1vbJwQMlmCWBwI4Q6K0YMsYS6uzBjVmT1/aynZm3TC12wK4YDTjyfv
-         WvqFtVs0iE1pkBEFO8uqzwkoh/RYGFrTsTmrR4TbXEuv8QUmUxX4hE5SkF+wp+jBNYT4
-         RTYjtHaVDyePAuwL3R/+uiuqGYs6rGFmt5eWPa/SiSglSR7ATBslfJMn6giBjTNV6pho
-         /nWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713363315; x=1713968115;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8zmDsYAtJOCrhdAwJbAGzI50/YgT/UfiWJqJuE4bljE=;
-        b=U8GsoXu8eAT6UdMw817yZicltqAWMe2e2Uf3O9h169j8eyScYmBsj2LI2w4kpPCKXp
-         Fz3j/WmoqN//pXY1I5ays/awnLDrQtKfWrhxU4x4mxabSQ6OoWU3PKWvYttdA2ggV/2S
-         o6buncUAxV20jzrwHK+8pMODWn4h2Eqa4TlsumLArlzBdP/nNh9xt4k8gu1pYogrkepR
-         adOvMr89YtmWOx1Q3GPF2DBJl1F19o4DomAdYOYBDbXqGcrLX+fZV8Uyl+n5rPTHPG4b
-         zVdrAvLwpK52sn48nY74jQ/mhqf6dRnBXiBb0Qt/y3WRLwAD1d1FOJ1+cTFu+8BC+BJ7
-         krQA==
-X-Forwarded-Encrypted: i=1; AJvYcCWQwoOLTJdb+EIsAzE6Gomma31I/SE7ik3Uoe4ZcT9DYW6d1t4uuPP+KB2O1h9Cm9Df/QoFzhh743k7lSAZrqF60UCFzzWXC+9tjz4k
-X-Gm-Message-State: AOJu0Yy1ni7fTaFqxv8D+L/BeZ362gagJXpcRpLKtxKF1P6MBR/VoZ+V
-	MSfsHqy0POyOai/U/cv5VIx2BWgnJjsvFBNTLvA0Gixa10wXeZaghTPGS8hz
-X-Google-Smtp-Source: AGHT+IFHnRpIQz0volgPDyOzixsfBZR9W7TzOuIOwAy8+qIhGQ8COOnMGTqpfoWRzRuyD6dpMUBD1w==
-X-Received: by 2002:a05:6a20:3c9e:b0:1a8:2cd1:e437 with SMTP id b30-20020a056a203c9e00b001a82cd1e437mr17085789pzj.11.1713363315179;
-        Wed, 17 Apr 2024 07:15:15 -0700 (PDT)
-Received: from LancedeMBP.lan ([112.10.225.217])
-        by smtp.gmail.com with ESMTPSA id s14-20020a170902a50e00b001ddc83fda95sm11613562plq.186.2024.04.17.07.15.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 07:15:14 -0700 (PDT)
-From: Lance Yang <ioworker0@gmail.com>
-To: akpm@linux-foundation.org
-Cc: ryan.roberts@arm.com,
-	david@redhat.com,
-	21cnbao@gmail.com,
-	mhocko@suse.com,
-	fengwei.yin@intel.com,
-	zokeefe@google.com,
-	shy828301@gmail.com,
-	xiehuan09@gmail.com,
-	wangkefeng.wang@huawei.com,
-	songmuchun@bytedance.com,
-	peterx@redhat.com,
-	minchan@kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Lance Yang <ioworker0@gmail.com>
-Subject: [PATCH v8 3/3] mm/madvise: optimize lazyfreeing with mTHP in madvise_free
-Date: Wed, 17 Apr 2024 22:14:36 +0800
-Message-Id: <20240417141436.77963-4-ioworker0@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20240417141436.77963-1-ioworker0@gmail.com>
-References: <20240417141436.77963-1-ioworker0@gmail.com>
+	s=arc-20240116; t=1713363361; c=relaxed/simple;
+	bh=f39lfsHN5Os0P7FTVoBlrkp1C5yLiIyaNXce6Srsymw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=LQz5XnHTUtuu9JjrIFllfVuTJ97/7dCo1ZiII0wJ46cRfnlVDVurWCkvUMGCJ/aQ2KxRSkZjJ/HBSzm+E/pXdKiCI9ScxtuFSIRW8qygOZyT8t6KM0RvgsTMlPZkoqwaUCBNWwcXcxl2e0B0+I68nbmZY8Pjpf97XmlT/DhPC68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B8LbVcby; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D60B2C116B1;
+	Wed, 17 Apr 2024 14:16:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713363361;
+	bh=f39lfsHN5Os0P7FTVoBlrkp1C5yLiIyaNXce6Srsymw=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=B8LbVcbyQmYQhv/ZuWhvwQ1lAitYwRhlKa/SmQXictKX7bC6JPUgUPOFJZmY0pwps
+	 divUejga0QX9/kzk6Nkl0gJgXfEUGppzx5fArDF8vyys9iS644LxwvZyO2B2EWW+2D
+	 5S0/NnVrt90WT5Sg4Slc3+S/wRLlVu1DJzjHg+1QCgjIZ5jpSZkU22pVH0qzeriEOa
+	 rYkR7xujtCTLNzQEXr4wWZyx9wa8Yy9aOnHhe2LjRPG8qjRPH/Yfg/o/JEbGaIyy64
+	 8xEejozNXhW/tN7z/hg7I7zylSzBfXEhjaMYM7Yk+v9nfCPgR6OrzB9DzkL8EmiKPd
+	 ZrPGcBqNBzwiQ==
+Message-ID: <c3bcefc9-61de-44aa-8412-17ea42e7048c@kernel.org>
+Date: Wed, 17 Apr 2024 16:16:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ASoC: dt-bindings: fsl,ssi: Convert to YAML
+To: Shengjiu Wang <shengjiu.wang@nxp.com>, lgirdwood@gmail.com,
+ broonie@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+ conor+dt@kernel.org, shengjiu.wang@gmail.com, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1713345932-6408-1-git-send-email-shengjiu.wang@nxp.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <1713345932-6408-1-git-send-email-shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-This patch optimizes lazyfreeing with PTE-mapped mTHP[1]
-(Inspired by David Hildenbrand[2]). We aim to avoid unnecessary folio
-splitting if the large folio is fully mapped within the target range.
+On 17/04/2024 11:25, Shengjiu Wang wrote:
+> Convert the fsl,ssi binding to YAML.
+> 
 
-If a large folio is locked or shared, or if we fail to split it, we just
-leave it in place and advance to the next PTE in the range. But note that
-the behavior is changed; previously, any failure of this sort would cause
-the entire operation to give up. As large folios become more common,
-sticking to the old way could result in wasted opportunities.
+..
 
-On an Intel I5 CPU, lazyfreeing a 1GiB VMA backed by PTE-mapped folios of
-the same size results in the following runtimes for madvise(MADV_FREE) in
-seconds (shorter is better):
+> +description:
+> +  Notes on fsl,playback-dma and fsl,capture-dma
+> +  On SOCs that have an SSI, specific DMA channels are hard-wired for playback
+> +  and capture.  On the MPC8610, for example, SSI1 must use DMA channel 0 for
+> +  playback and DMA channel 1 for capture.  SSI2 must use DMA channel 2 for
+> +  playback and DMA channel 3 for capture.  The developer can choose which
+> +  DMA controller to use, but the channels themselves are hard-wired.  The
+> +  purpose of these two properties is to represent this hardware design.
+> +
+> +  The device tree nodes for the DMA channels that are referenced by
+> +  "fsl,playback-dma" and "fsl,capture-dma" must be marked as compatible with
+> +  "fsl,ssi-dma-channel".  The SOC-specific compatible string (e.g.
+> +  "fsl,mpc8610-dma-channel") can remain.  If these nodes are left as
+> +  "fsl,elo-dma-channel" or "fsl,eloplus-dma-channel", then the generic Elo DMA
+> +  drivers (fsldma) will attempt to use them, and it will conflict with the
+> +  sound drivers.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - fsl,imx50-ssi
+> +              - fsl,imx53-ssi
+> +          - enum:
+> +              - fsl,imx51-ssi
+> +          - enum:
+> +              - fsl,imx21-ssi
 
-Folio Size |   Old    |   New    | Change
-------------------------------------------
-      4KiB | 0.590251 | 0.590259 |    0%
-     16KiB | 2.990447 | 0.185655 |  -94%
-     32KiB | 2.547831 | 0.104870 |  -95%
-     64KiB | 2.457796 | 0.052812 |  -97%
-    128KiB | 2.281034 | 0.032777 |  -99%
-    256KiB | 2.230387 | 0.017496 |  -99%
-    512KiB | 2.189106 | 0.010781 |  -99%
-   1024KiB | 2.183949 | 0.007753 |  -99%
-   2048KiB | 0.002799 | 0.002804 |    0%
+That's a mess... you cannot have enums as fallbacks.
 
-[1] https://lkml.kernel.org/r/20231207161211.2374093-5-ryan.roberts@arm.com
-[2] https://lore.kernel.org/linux-mm/20240214204435.167852-1-david@redhat.com
+> +      - items:
+> +          - enum:
+> +              - fsl,imx25-ssi
+> +              - fsl,imx27-ssi
+> +              - fsl,imx35-ssi
+> +              - fsl,imx51-ssi
+> +              - fsl,imx6q-ssi
+> +              - fsl,imx6sl-ssi
+> +              - fsl,imx6sx-ssi
+> +          - enum:
+> +              - fsl,imx21-ssi
+> +              - fsl,imx51-ssi
+> +      - items:
+> +          - const: fsl,mpc8610-ssi
+> +
+> +  cell-index:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1, 2]
+> +    description: The SSI index
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  fsl,fifo-depth:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      The number of elements in the transmit and receive FIFOs.
+> +      This number is the maximum allowed value for SFCSR[TFWM0].
+> +
+> +  clocks:
+> +    items:
+> +      - description: The ipg clock for register access
+> +      - description: clock for SSI master mode
+> +    minItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: ipg
+> +      - const: baud
+> +    minItems: 1
+> +
+> +  dmas:
+> +    oneOf:
+> +      - items:
+> +          - description: DMA controller phandle and request line for RX
+> +          - description: DMA controller phandle and request line for TX
+> +      - items:
+> +          - description: DMA controller phandle and request line for RX0
+> +          - description: DMA controller phandle and request line for TX0
+> +          - description: DMA controller phandle and request line for RX1
+> +          - description: DMA controller phandle and request line for TX1
+> +
+> +  dma-names:
+> +    oneOf:
+> +      - items:
+> +          - const: rx
+> +          - const: tx
+> +      - items:
+> +          - const: rx0
+> +          - const: tx0
+> +          - const: rx1
+> +          - const: tx1
+> +
+> +  codec-handle:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      Phandle to a 'codec' node that defines an audio
+> +      codec connected to this SSI.  This node is typically
+> +      a child of an I2C or other control node.
+> +
+> +  fsl,fiq-stream-filter:
+> +    type: boolean
+> +    description:
+> +      Disabled DMA and use FIQ instead to filter the codec stream.
+> +      This is necessary for some boards where an incompatible codec
+> +      is connected to this SSI, e.g. on pca100 and pcm043.
+> +
+> +  fsl,mode:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    enum: [ ac97-slave, ac97-master, i2s-slave, i2s-master,
+> +            lj-slave, lj-master, rj-slave, rj-master ]
+> +    description: |
+> +      "ac97-slave" - AC97 mode, SSI is clock slave
+> +      "ac97-master" - AC97 mode, SSI is clock master
+> +      "i2s-slave" - I2S mode, SSI is clock slave
+> +      "i2s-master" - I2S mode, SSI is clock master
+> +      "lj-slave" - Left justified mode, SSI is clock slave
+> +      "lj-master" - Left justified mode, SSI is clock master
+> +      "rj-slave" - Right justified mode, SSI is clock slave
+> +      "rj-master" - Right justified mode, SSI is clock master
+> +
+> +  fsl,ssi-asynchronous:
+> +    type: boolean
+> +    description: If specified, the SSI is to be programmed in asynchronous
+> +      mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
+> +      all be connected to valid signals.  In synchronous mode,
+> +      SRCK and SRFS are ignored.  Asynchronous mode allows
+> +      playback and capture to use different sample sizes and
+> +      sample rates.  Some drivers may require that SRCK and STCK
+> +      be connected together, and SRFS and STFS be connected
+> +      together.  This would still allow different sample sizes,
+> +      but not different sample rates.
+> +
+> +  fsl,playback-dma:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: Phandle to a node for the DMA channel to use for
+> +      playback of audio.  This is typically dictated by SOC
+> +      design. Only used on Power Architecture.
+> +
+> +  fsl,capture-dma:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: Phandle to a node for the DMA channel to use for
+> +      capture (recording) of audio.  This is typically dictated
+> +      by SOC design. Only used on Power Architecture.
+> +
+> +  "#sound-dai-cells":
+> +    const: 0
+> +    description: optional, some dts node didn't add it.
 
-Signed-off-by: Lance Yang <ioworker0@gmail.com>
----
- mm/internal.h |  12 ++++-
- mm/madvise.c  | 141 ++++++++++++++++++++++++++++----------------------
- mm/memory.c   |   4 +-
- 3 files changed, 91 insertions(+), 66 deletions(-)
+The question is: is this DAI or not?
 
-diff --git a/mm/internal.h b/mm/internal.h
-index c6483f73ec13..daa59cef85d7 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -134,6 +134,8 @@ static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
-  *		  first one is writable.
-  * @any_young: Optional pointer to indicate whether any entry except the
-  *		  first one is young.
-+ * @any_dirty: Optional pointer to indicate whether any entry except the
-+ *		  first one is dirty.
-  *
-  * Detect a PTE batch: consecutive (present) PTEs that map consecutive
-  * pages of the same large folio.
-@@ -149,18 +151,20 @@ static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
-  */
- static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
- 		pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
--		bool *any_writable, bool *any_young)
-+		bool *any_writable, bool *any_young, bool *any_dirty)
- {
- 	unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
- 	const pte_t *end_ptep = start_ptep + max_nr;
- 	pte_t expected_pte, *ptep;
--	bool writable, young;
-+	bool writable, young, dirty;
- 	int nr;
- 
- 	if (any_writable)
- 		*any_writable = false;
- 	if (any_young)
- 		*any_young = false;
-+	if (any_dirty)
-+		*any_dirty = false;
- 
- 	VM_WARN_ON_FOLIO(!pte_present(pte), folio);
- 	VM_WARN_ON_FOLIO(!folio_test_large(folio) || max_nr < 1, folio);
-@@ -176,6 +180,8 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
- 			writable = !!pte_write(pte);
- 		if (any_young)
- 			young = !!pte_young(pte);
-+		if (any_dirty)
-+			dirty = !!pte_dirty(pte);
- 		pte = __pte_batch_clear_ignored(pte, flags);
- 
- 		if (!pte_same(pte, expected_pte))
-@@ -193,6 +199,8 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
- 			*any_writable |= writable;
- 		if (any_young)
- 			*any_young |= young;
-+		if (any_dirty)
-+			*any_dirty |= dirty;
- 
- 		nr = pte_batch_hint(ptep, pte);
- 		expected_pte = pte_advance_pfn(expected_pte, nr);
-diff --git a/mm/madvise.c b/mm/madvise.c
-index f5e3699e7b54..d6f1889d6308 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -321,6 +321,39 @@ static inline bool can_do_file_pageout(struct vm_area_struct *vma)
- 	       file_permission(vma->vm_file, MAY_WRITE) == 0;
- }
- 
-+static inline int madvise_folio_pte_batch(unsigned long addr, unsigned long end,
-+					  struct folio *folio, pte_t *ptep,
-+					  pte_t pte, bool *any_young,
-+					  bool *any_dirty)
-+{
-+	int max_nr = (end - addr) / PAGE_SIZE;
-+	const fpb_t fpb_flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
-+
-+	return folio_pte_batch(folio, addr, ptep, pte, max_nr, fpb_flags, NULL,
-+			       any_young, any_dirty);
-+}
-+
-+static inline bool madvise_pte_split_folio(struct mm_struct *mm, pmd_t *pmd,
-+					   unsigned long addr,
-+					   struct folio *folio, pte_t **pte,
-+					   spinlock_t **ptl)
-+{
-+	int err;
-+
-+	if (!folio_trylock(folio))
-+		return false;
-+
-+	folio_get(folio);
-+	pte_unmap_unlock(*pte, *ptl);
-+	err = split_folio(folio);
-+	folio_unlock(folio);
-+	folio_put(folio);
-+
-+	*pte = pte_offset_map_lock(mm, pmd, addr, ptl);
-+
-+	return err == 0;
-+}
-+
- static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 				unsigned long addr, unsigned long end,
- 				struct mm_walk *walk)
-@@ -456,41 +489,30 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 		 * next pte in the range.
- 		 */
- 		if (folio_test_large(folio)) {
--			const fpb_t fpb_flags = FPB_IGNORE_DIRTY |
--						FPB_IGNORE_SOFT_DIRTY;
--			int max_nr = (end - addr) / PAGE_SIZE;
- 			bool any_young;
- 
--			nr = folio_pte_batch(folio, addr, pte, ptent, max_nr,
--					     fpb_flags, NULL, &any_young);
--			if (any_young)
--				ptent = pte_mkyoung(ptent);
-+			nr = madvise_folio_pte_batch(addr, end, folio, pte,
-+						     ptent, &any_young, NULL);
- 
- 			if (nr < folio_nr_pages(folio)) {
--				int err;
--
- 				if (folio_likely_mapped_shared(folio))
- 					continue;
- 				if (pageout_anon_only_filter && !folio_test_anon(folio))
- 					continue;
--				if (!folio_trylock(folio))
--					continue;
--				folio_get(folio);
-+
- 				arch_leave_lazy_mmu_mode();
--				pte_unmap_unlock(start_pte, ptl);
--				start_pte = NULL;
--				err = split_folio(folio);
--				folio_unlock(folio);
--				folio_put(folio);
--				start_pte = pte =
--					pte_offset_map_lock(mm, pmd, addr, &ptl);
-+				if (madvise_pte_split_folio(mm, pmd, addr,
-+							    folio, &start_pte, &ptl))
-+					nr = 0;
- 				if (!start_pte)
- 					break;
-+				pte = start_pte;
- 				arch_enter_lazy_mmu_mode();
--				if (!err)
--					nr = 0;
- 				continue;
- 			}
-+
-+			if (any_young)
-+				ptent = pte_mkyoung(ptent);
- 		}
- 
- 		/*
-@@ -688,44 +710,48 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
- 			continue;
- 
- 		/*
--		 * If pmd isn't transhuge but the folio is large and
--		 * is owned by only this process, split it and
--		 * deactivate all pages.
-+		 * If we encounter a large folio, only split it if it is not
-+		 * fully mapped within the range we are operating on. Otherwise
-+		 * leave it as is so that it can be marked as lazyfree. If we
-+		 * fail to split a folio, leave it in place and advance to the
-+		 * next pte in the range.
- 		 */
- 		if (folio_test_large(folio)) {
--			int err;
-+			bool any_young, any_dirty;
- 
--			if (folio_likely_mapped_shared(folio))
--				break;
--			if (!folio_trylock(folio))
--				break;
--			folio_get(folio);
--			arch_leave_lazy_mmu_mode();
--			pte_unmap_unlock(start_pte, ptl);
--			start_pte = NULL;
--			err = split_folio(folio);
--			folio_unlock(folio);
--			folio_put(folio);
--			if (err)
--				break;
--			start_pte = pte =
--				pte_offset_map_lock(mm, pmd, addr, &ptl);
--			if (!start_pte)
--				break;
--			arch_enter_lazy_mmu_mode();
--			pte--;
--			addr -= PAGE_SIZE;
--			continue;
-+			nr = madvise_folio_pte_batch(addr, end, folio, pte,
-+						     ptent, &any_young, &any_dirty);
-+
-+			if (nr < folio_nr_pages(folio)) {
-+				if (folio_likely_mapped_shared(folio))
-+					continue;
-+
-+				arch_leave_lazy_mmu_mode();
-+				if (madvise_pte_split_folio(mm, pmd, addr,
-+							    folio, &start_pte, &ptl))
-+					nr = 0;
-+				if (!start_pte)
-+					break;
-+				pte = start_pte;
-+				arch_enter_lazy_mmu_mode();
-+				continue;
-+			}
-+
-+			if (any_young)
-+				ptent = pte_mkyoung(ptent);
-+			if (any_dirty)
-+				ptent = pte_mkdirty(ptent);
- 		}
- 
- 		if (folio_test_swapcache(folio) || folio_test_dirty(folio)) {
- 			if (!folio_trylock(folio))
- 				continue;
- 			/*
--			 * If folio is shared with others, we mustn't clear
--			 * the folio's dirty flag.
-+			 * If we have a large folio at this point, we know it is
-+			 * fully mapped so if its mapcount is the same as its
-+			 * number of pages, it must be exclusive.
- 			 */
--			if (folio_mapcount(folio) != 1) {
-+			if (folio_mapcount(folio) != folio_nr_pages(folio)) {
- 				folio_unlock(folio);
- 				continue;
- 			}
-@@ -741,19 +767,10 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
- 		}
- 
- 		if (pte_young(ptent) || pte_dirty(ptent)) {
--			/*
--			 * Some of architecture(ex, PPC) don't update TLB
--			 * with set_pte_at and tlb_remove_tlb_entry so for
--			 * the portability, remap the pte with old|clean
--			 * after pte clearing.
--			 */
--			ptent = ptep_get_and_clear_full(mm, addr, pte,
--							tlb->fullmm);
--
--			ptent = pte_mkold(ptent);
--			ptent = pte_mkclean(ptent);
--			set_pte_at(mm, addr, pte, ptent);
--			tlb_remove_tlb_entry(tlb, pte, addr);
-+			clear_young_dirty_ptes(vma, addr, pte, nr,
-+					       CYDP_CLEAR_YOUNG |
-+						       CYDP_CLEAR_DIRTY);
-+			tlb_remove_tlb_entries(tlb, pte, nr, addr);
- 		}
- 		folio_mark_lazyfree(folio);
- 	}
-diff --git a/mm/memory.c b/mm/memory.c
-index 33d87b64d15d..9e07d1b9020c 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -989,7 +989,7 @@ copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
- 			flags |= FPB_IGNORE_SOFT_DIRTY;
- 
- 		nr = folio_pte_batch(folio, addr, src_pte, pte, max_nr, flags,
--				     &any_writable, NULL);
-+				     &any_writable, NULL, NULL);
- 		folio_ref_add(folio, nr);
- 		if (folio_test_anon(folio)) {
- 			if (unlikely(folio_try_dup_anon_rmap_ptes(folio, page,
-@@ -1558,7 +1558,7 @@ static inline int zap_present_ptes(struct mmu_gather *tlb,
- 	 */
- 	if (unlikely(folio_test_large(folio) && max_nr != 1)) {
- 		nr = folio_pte_batch(folio, addr, pte, ptent, max_nr, fpb_flags,
--				     NULL, NULL);
-+				     NULL, NULL, NULL);
- 
- 		zap_present_folio_ptes(tlb, vma, folio, page, pte, ptent, nr,
- 				       addr, details, rss, force_flush,
--- 
-2.33.1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - fsl,fifo-depth
+> +
+> +unevaluatedProperties: false
+
+This must be additionalProperties:false. Use example-schema as
+reference... unless you want to reference dai-common.yaml, but then that
+one is missing.
+
+Best regards,
+Krzysztof
 
 
