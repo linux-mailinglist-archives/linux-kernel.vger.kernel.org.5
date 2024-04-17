@@ -1,376 +1,85 @@
-Return-Path: <linux-kernel+bounces-148907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C9768A88CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:25:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CAE58A88D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:25:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC2001F22510
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:25:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECB072814FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:25:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E14F148FE5;
-	Wed, 17 Apr 2024 16:25:22 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0E68494
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 16:25:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C685014885E;
+	Wed, 17 Apr 2024 16:25:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="jtNNgm+1"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0DA18494;
+	Wed, 17 Apr 2024 16:25:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713371121; cv=none; b=Q++pqqSWDrxfdijXWlUYjYIs/in5U/6lo7R/yqZ8YOiL9pBT57X5NdLihcG8ZNug3tkRvZsiFQJoNDnY21PEykTYVaUu8xwIUjHJ+ZJn2i0UcTOfHSVtrZqjMkkmmJqMPAmYQF/irKpxJE2sX1nL3uygj1pDAu7oybbuNxjRcJs=
+	t=1713371146; cv=none; b=AdfmbonS+yKx3yTwy24Z5r1K0T2gsd+MSMYvtVHoMQ8NMC5XQAlnHkfpRwDW/SI2SFTCzOfFVajUA/aFdgYEiqlXo3mbHqYBLmfoP2nTqRkgY+LiRaHQlgKAQAZoI1ZEDkTIRtYzuQMCvCja3G9drZQxKBiidoeDBDd5yRtKDyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713371121; c=relaxed/simple;
-	bh=Zw4XdXdOkvdTIopF/KKJH6teWqKK2HE22yAKSB/zcE8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HxBftJLdU3JvYKd84Ecbp1t2SrOxMwLhnR3jEc4+tBJ3myAtRgpv7QhvFixz4i3D+V5hTJQAahdOVNcWvZXiUXhPNth3mjV4YYB7/dtACPoTx04GBAsPz9xQVP+XhUoWRiB8aMIGw3RwvYIEe6ilgbixQxNXCFVt3cvvApcrJ0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A7C6339;
-	Wed, 17 Apr 2024 09:25:46 -0700 (PDT)
-Received: from [10.1.37.181] (XHFQ2J9959.cambridge.arm.com [10.1.37.181])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72F1F3F792;
-	Wed, 17 Apr 2024 09:25:16 -0700 (PDT)
-Message-ID: <10c33581-b016-453f-ab7d-84832393466e@arm.com>
-Date: Wed, 17 Apr 2024 17:25:15 +0100
+	s=arc-20240116; t=1713371146; c=relaxed/simple;
+	bh=Cmxd7/+fzAymlG5WKKxHHTnTQ/RwUCLPsgb+KXnXIHc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C9WOX+eYBAgiJJbaTfzJpiW/aHN5hFiD1voMqHzbF8b5FdRV0J/lLy4CP5seuCBV9Y7t6YywxsghWr7kgp4V4K8/kwwC0AOh4u9t62AhUhsI+wmTAIQuAvL6JiFqlkYh/tajf9nJgKkyX9qKPchmvnrG/ODmLO8LFiHfGW/NEmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=jtNNgm+1; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=FNOr1el/BueGEYH9ReRV1YHomFZKKuDkdYF/EDGjHU8=; b=jtNNgm+1Q1LqYI2cxmrIUJ02KX
+	cuKxf9DRcotpjx6YqaIlJ4fymrsB4qadMxEWhsdlLa5G8wGM7Lo8s0h+QJQrTHxBLnkgyTOG84kP6
+	yqK9xBICWXAns7Hn/iDzVqnwkiBeh8mJVxI8F8BKoTFnkakyWLTmzaCPps7K+anem0en+YLJDC+0z
+	lZ8iNCaWkNmfjtSIhxEZqggsTfGqA7wsRa83CJLKl/PVAE9icnZR2IUfXu1drhlmmbx+SNJQnz8uB
+	YuemtwEdPZ++E5FwlwFWpQviq+DfouhD3Fc9RsjsMMkeJXevHfbdaix9sGhm1qmhCPBsvx884HXGh
+	b5UD0HHQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rx868-00000003HUI-12g8;
+	Wed, 17 Apr 2024 16:25:24 +0000
+Date: Wed, 17 Apr 2024 17:25:24 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Kairui Song <kasong@tencent.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	"Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>,
+	Barry Song <v-songbaohua@oppo.com>,
+	Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>,
+	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Steve French <stfrench@microsoft.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Shyam Prasad N <sprasad@microsoft.com>,
+	Bharath SM <bharathsm@microsoft.com>
+Subject: Re: [PATCH 5/8] cifs: drop usage of page_file_offset
+Message-ID: <Zh_39JW9Nfrntzme@casper.infradead.org>
+References: <20240417160842.76665-1-ryncsn@gmail.com>
+ <20240417160842.76665-6-ryncsn@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 3/3] mm/madvise: optimize lazyfreeing with mTHP in
- madvise_free
-Content-Language: en-GB
-To: Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org
-Cc: david@redhat.com, 21cnbao@gmail.com, mhocko@suse.com,
- fengwei.yin@intel.com, zokeefe@google.com, shy828301@gmail.com,
- xiehuan09@gmail.com, wangkefeng.wang@huawei.com, songmuchun@bytedance.com,
- peterx@redhat.com, minchan@kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240417141436.77963-1-ioworker0@gmail.com>
- <20240417141436.77963-4-ioworker0@gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240417141436.77963-4-ioworker0@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417160842.76665-6-ryncsn@gmail.com>
 
-On 17/04/2024 15:14, Lance Yang wrote:
-> This patch optimizes lazyfreeing with PTE-mapped mTHP[1]
-> (Inspired by David Hildenbrand[2]). We aim to avoid unnecessary folio
-> splitting if the large folio is fully mapped within the target range.
-> 
-> If a large folio is locked or shared, or if we fail to split it, we just
-> leave it in place and advance to the next PTE in the range. But note that
-> the behavior is changed; previously, any failure of this sort would cause
-> the entire operation to give up. As large folios become more common,
-> sticking to the old way could result in wasted opportunities.
-> 
-> On an Intel I5 CPU, lazyfreeing a 1GiB VMA backed by PTE-mapped folios of
-> the same size results in the following runtimes for madvise(MADV_FREE) in
-> seconds (shorter is better):
-> 
-> Folio Size |   Old    |   New    | Change
-> ------------------------------------------
->       4KiB | 0.590251 | 0.590259 |    0%
->      16KiB | 2.990447 | 0.185655 |  -94%
->      32KiB | 2.547831 | 0.104870 |  -95%
->      64KiB | 2.457796 | 0.052812 |  -97%
->     128KiB | 2.281034 | 0.032777 |  -99%
->     256KiB | 2.230387 | 0.017496 |  -99%
->     512KiB | 2.189106 | 0.010781 |  -99%
->    1024KiB | 2.183949 | 0.007753 |  -99%
->    2048KiB | 0.002799 | 0.002804 |    0%
-> 
-> [1] https://lkml.kernel.org/r/20231207161211.2374093-5-ryan.roberts@arm.com
-> [2] https://lore.kernel.org/linux-mm/20240214204435.167852-1-david@redhat.com
-> 
-> Signed-off-by: Lance Yang <ioworker0@gmail.com>
-
-LGTM!
-
-Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
-
-> ---
->  mm/internal.h |  12 ++++-
->  mm/madvise.c  | 141 ++++++++++++++++++++++++++++----------------------
->  mm/memory.c   |   4 +-
->  3 files changed, 91 insertions(+), 66 deletions(-)
-> 
-> diff --git a/mm/internal.h b/mm/internal.h
-> index c6483f73ec13..daa59cef85d7 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -134,6 +134,8 @@ static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
->   *		  first one is writable.
->   * @any_young: Optional pointer to indicate whether any entry except the
->   *		  first one is young.
-> + * @any_dirty: Optional pointer to indicate whether any entry except the
-> + *		  first one is dirty.
->   *
->   * Detect a PTE batch: consecutive (present) PTEs that map consecutive
->   * pages of the same large folio.
-> @@ -149,18 +151,20 @@ static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
->   */
->  static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
->  		pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
-> -		bool *any_writable, bool *any_young)
-> +		bool *any_writable, bool *any_young, bool *any_dirty)
+On Thu, Apr 18, 2024 at 12:08:39AM +0800, Kairui Song wrote:
+> +++ b/fs/smb/client/file.c
+> @@ -4749,7 +4749,7 @@ static int cifs_readpage_worker(struct file *file, struct page *page,
+>  static int cifs_read_folio(struct file *file, struct folio *folio)
 >  {
->  	unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
->  	const pte_t *end_ptep = start_ptep + max_nr;
->  	pte_t expected_pte, *ptep;
-> -	bool writable, young;
-> +	bool writable, young, dirty;
->  	int nr;
->  
->  	if (any_writable)
->  		*any_writable = false;
->  	if (any_young)
->  		*any_young = false;
-> +	if (any_dirty)
-> +		*any_dirty = false;
->  
->  	VM_WARN_ON_FOLIO(!pte_present(pte), folio);
->  	VM_WARN_ON_FOLIO(!folio_test_large(folio) || max_nr < 1, folio);
-> @@ -176,6 +180,8 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
->  			writable = !!pte_write(pte);
->  		if (any_young)
->  			young = !!pte_young(pte);
-> +		if (any_dirty)
-> +			dirty = !!pte_dirty(pte);
->  		pte = __pte_batch_clear_ignored(pte, flags);
->  
->  		if (!pte_same(pte, expected_pte))
-> @@ -193,6 +199,8 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
->  			*any_writable |= writable;
->  		if (any_young)
->  			*any_young |= young;
-> +		if (any_dirty)
-> +			*any_dirty |= dirty;
->  
->  		nr = pte_batch_hint(ptep, pte);
->  		expected_pte = pte_advance_pfn(expected_pte, nr);
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index f5e3699e7b54..d6f1889d6308 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -321,6 +321,39 @@ static inline bool can_do_file_pageout(struct vm_area_struct *vma)
->  	       file_permission(vma->vm_file, MAY_WRITE) == 0;
->  }
->  
-> +static inline int madvise_folio_pte_batch(unsigned long addr, unsigned long end,
-> +					  struct folio *folio, pte_t *ptep,
-> +					  pte_t pte, bool *any_young,
-> +					  bool *any_dirty)
-> +{
-> +	int max_nr = (end - addr) / PAGE_SIZE;
-> +	const fpb_t fpb_flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
-> +
-> +	return folio_pte_batch(folio, addr, ptep, pte, max_nr, fpb_flags, NULL,
-> +			       any_young, any_dirty);
-> +}
-> +
-> +static inline bool madvise_pte_split_folio(struct mm_struct *mm, pmd_t *pmd,
-> +					   unsigned long addr,
-> +					   struct folio *folio, pte_t **pte,
-> +					   spinlock_t **ptl)
-> +{
-> +	int err;
-> +
-> +	if (!folio_trylock(folio))
-> +		return false;
-> +
-> +	folio_get(folio);
-> +	pte_unmap_unlock(*pte, *ptl);
-> +	err = split_folio(folio);
-> +	folio_unlock(folio);
-> +	folio_put(folio);
-> +
-> +	*pte = pte_offset_map_lock(mm, pmd, addr, ptl);
-> +
-> +	return err == 0;
-> +}
-> +
->  static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->  				unsigned long addr, unsigned long end,
->  				struct mm_walk *walk)
-> @@ -456,41 +489,30 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->  		 * next pte in the range.
->  		 */
->  		if (folio_test_large(folio)) {
-> -			const fpb_t fpb_flags = FPB_IGNORE_DIRTY |
-> -						FPB_IGNORE_SOFT_DIRTY;
-> -			int max_nr = (end - addr) / PAGE_SIZE;
->  			bool any_young;
->  
-> -			nr = folio_pte_batch(folio, addr, pte, ptent, max_nr,
-> -					     fpb_flags, NULL, &any_young);
-> -			if (any_young)
-> -				ptent = pte_mkyoung(ptent);
-> +			nr = madvise_folio_pte_batch(addr, end, folio, pte,
-> +						     ptent, &any_young, NULL);
->  
->  			if (nr < folio_nr_pages(folio)) {
-> -				int err;
-> -
->  				if (folio_likely_mapped_shared(folio))
->  					continue;
->  				if (pageout_anon_only_filter && !folio_test_anon(folio))
->  					continue;
-> -				if (!folio_trylock(folio))
-> -					continue;
-> -				folio_get(folio);
-> +
->  				arch_leave_lazy_mmu_mode();
-> -				pte_unmap_unlock(start_pte, ptl);
-> -				start_pte = NULL;
-> -				err = split_folio(folio);
-> -				folio_unlock(folio);
-> -				folio_put(folio);
-> -				start_pte = pte =
-> -					pte_offset_map_lock(mm, pmd, addr, &ptl);
-> +				if (madvise_pte_split_folio(mm, pmd, addr,
-> +							    folio, &start_pte, &ptl))
-> +					nr = 0;
->  				if (!start_pte)
->  					break;
-> +				pte = start_pte;
->  				arch_enter_lazy_mmu_mode();
-> -				if (!err)
-> -					nr = 0;
->  				continue;
->  			}
-> +
-> +			if (any_young)
-> +				ptent = pte_mkyoung(ptent);
->  		}
->  
->  		/*
-> @@ -688,44 +710,48 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->  			continue;
->  
->  		/*
-> -		 * If pmd isn't transhuge but the folio is large and
-> -		 * is owned by only this process, split it and
-> -		 * deactivate all pages.
-> +		 * If we encounter a large folio, only split it if it is not
-> +		 * fully mapped within the range we are operating on. Otherwise
-> +		 * leave it as is so that it can be marked as lazyfree. If we
-> +		 * fail to split a folio, leave it in place and advance to the
-> +		 * next pte in the range.
->  		 */
->  		if (folio_test_large(folio)) {
-> -			int err;
-> +			bool any_young, any_dirty;
->  
-> -			if (folio_likely_mapped_shared(folio))
-> -				break;
-> -			if (!folio_trylock(folio))
-> -				break;
-> -			folio_get(folio);
-> -			arch_leave_lazy_mmu_mode();
-> -			pte_unmap_unlock(start_pte, ptl);
-> -			start_pte = NULL;
-> -			err = split_folio(folio);
-> -			folio_unlock(folio);
-> -			folio_put(folio);
-> -			if (err)
-> -				break;
-> -			start_pte = pte =
-> -				pte_offset_map_lock(mm, pmd, addr, &ptl);
-> -			if (!start_pte)
-> -				break;
-> -			arch_enter_lazy_mmu_mode();
-> -			pte--;
-> -			addr -= PAGE_SIZE;
-> -			continue;
-> +			nr = madvise_folio_pte_batch(addr, end, folio, pte,
-> +						     ptent, &any_young, &any_dirty);
-> +
-> +			if (nr < folio_nr_pages(folio)) {
-> +				if (folio_likely_mapped_shared(folio))
-> +					continue;
-> +
-> +				arch_leave_lazy_mmu_mode();
-> +				if (madvise_pte_split_folio(mm, pmd, addr,
-> +							    folio, &start_pte, &ptl))
-> +					nr = 0;
-> +				if (!start_pte)
-> +					break;
-> +				pte = start_pte;
-> +				arch_enter_lazy_mmu_mode();
-> +				continue;
-> +			}
-> +
-> +			if (any_young)
-> +				ptent = pte_mkyoung(ptent);
-> +			if (any_dirty)
-> +				ptent = pte_mkdirty(ptent);
->  		}
->  
->  		if (folio_test_swapcache(folio) || folio_test_dirty(folio)) {
->  			if (!folio_trylock(folio))
->  				continue;
->  			/*
-> -			 * If folio is shared with others, we mustn't clear
-> -			 * the folio's dirty flag.
-> +			 * If we have a large folio at this point, we know it is
-> +			 * fully mapped so if its mapcount is the same as its
-> +			 * number of pages, it must be exclusive.
->  			 */
-> -			if (folio_mapcount(folio) != 1) {
-> +			if (folio_mapcount(folio) != folio_nr_pages(folio)) {
->  				folio_unlock(folio);
->  				continue;
->  			}
-> @@ -741,19 +767,10 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->  		}
->  
->  		if (pte_young(ptent) || pte_dirty(ptent)) {
-> -			/*
-> -			 * Some of architecture(ex, PPC) don't update TLB
-> -			 * with set_pte_at and tlb_remove_tlb_entry so for
-> -			 * the portability, remap the pte with old|clean
-> -			 * after pte clearing.
-> -			 */
-> -			ptent = ptep_get_and_clear_full(mm, addr, pte,
-> -							tlb->fullmm);
-> -
-> -			ptent = pte_mkold(ptent);
-> -			ptent = pte_mkclean(ptent);
-> -			set_pte_at(mm, addr, pte, ptent);
-> -			tlb_remove_tlb_entry(tlb, pte, addr);
-> +			clear_young_dirty_ptes(vma, addr, pte, nr,
-> +					       CYDP_CLEAR_YOUNG |
-> +						       CYDP_CLEAR_DIRTY);
-> +			tlb_remove_tlb_entries(tlb, pte, nr, addr);
->  		}
->  		folio_mark_lazyfree(folio);
->  	}
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 33d87b64d15d..9e07d1b9020c 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -989,7 +989,7 @@ copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
->  			flags |= FPB_IGNORE_SOFT_DIRTY;
->  
->  		nr = folio_pte_batch(folio, addr, src_pte, pte, max_nr, flags,
-> -				     &any_writable, NULL);
-> +				     &any_writable, NULL, NULL);
->  		folio_ref_add(folio, nr);
->  		if (folio_test_anon(folio)) {
->  			if (unlikely(folio_try_dup_anon_rmap_ptes(folio, page,
-> @@ -1558,7 +1558,7 @@ static inline int zap_present_ptes(struct mmu_gather *tlb,
->  	 */
->  	if (unlikely(folio_test_large(folio) && max_nr != 1)) {
->  		nr = folio_pte_batch(folio, addr, pte, ptent, max_nr, fpb_flags,
-> -				     NULL, NULL);
-> +				     NULL, NULL, NULL);
->  
->  		zap_present_folio_ptes(tlb, vma, folio, page, pte, ptent, nr,
->  				       addr, details, rss, force_flush,
+>  	struct page *page = &folio->page;
+> -	loff_t offset = page_file_offset(page);
+> +	loff_t offset = page_offset(page);
 
+	loff_t offset = folio_pos(folio);
 
