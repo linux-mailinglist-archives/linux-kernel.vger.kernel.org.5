@@ -1,178 +1,164 @@
-Return-Path: <linux-kernel+bounces-149017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91E7E8A8A7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:53:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 818328A8A85
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:53:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 480A728682D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:53:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4E6B1C22433
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20D8A172BBA;
-	Wed, 17 Apr 2024 17:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0556172BD0;
+	Wed, 17 Apr 2024 17:53:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="2O8FN2Vw"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2071.outbound.protection.outlook.com [40.107.236.71])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WApZKAf1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A98FC146D59;
-	Wed, 17 Apr 2024 17:53:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.71
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713376394; cv=fail; b=G3489IU+VOcr196DDG5QG2C1SWyrb6K9KAkqkFQYMZ5lPZ/GI8mB5l0cf/E3/alWOOpimboJW33HBudp9m3SFlYBuleTYm1u46nOoUBBpzWDNjKbSJijS+/llDlcHzgcd8NbMPo78+SRhxquZW17GXr1uKa9cnsas4wEqjKle78=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713376394; c=relaxed/simple;
-	bh=E+lyF8yLTBhKhjLkXvlSXV4+okeRYafj7CUdUCHc2eU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=R/+tu6oFJpdTxU9pjSA8eT/dw+i9zB4P4pQdlQ9nuUFBtzYpN1SMQsR8KkcbOnhOtlu/F/nOVhgoDhkAXFE0evA/RJw434U3WCjoRg3fnjPpyX4aBvBVhRn2qlrQM1elljMM7Vx3jZ/AgsJmFwXuzs+3AoJ+jV5U4ZKZW3DkiME=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=2O8FN2Vw; arc=fail smtp.client-ip=40.107.236.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MIzxlGMcpNxjXbaqZ8usqO38ZkM3KEO54rJ5zZ88TqP+NYjNe5nhvAySnhAuwmocaxtU95TPzUaHcL6tz3izj8AM46bOJVRtFkwBB/1/mzoeAsaS/RtAaNxGxqTByrAN+WDZ8U81i6MKMhiJUk1KJwBKBl5tviJ4TkJFF0MJ/55Oua7DjcOXjp7r5h++WmS2RRjITg3vNFWPyvUq9Miu1GFOCM7EKUURgwvpw1H/mEmpeEVvsWEmb4fcE/wb1OI5nc4CaqsBPEaJaxsxxQzXs4b5h5e296ZjbebFC+yEhi1LsbXy5b1ELbavD9hHprnfhAKmGg0OGhR90KsZW+iNFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iu77fXP7A+PsaTLoly9l9VuRpHOnkNGJ1rOcKtmzIUM=;
- b=E9q/RzOSL+YM2OGcf/+tMW0NKEX/qex7c3NJLATi6jAbWmVqkePZWQJynHUafTZN7iURXvkd3itjp10bxxo9ZYgBMGtA2abbds9CLQuICQNUjXJejF4JXxuv/Ppi4q9+uUOB6Cb19m6kWBvf0sNrEvNmbadSuxINHEgn9cZBWl3N4PzTnA9GCEkcULaWz4sIYrI25vkXXA5BbgZurdXXRGiR6eg1Eqa6bqxtkoDmcRyTey7pc1eCqvGOfF0XAOZxAz5TbY9VnBnhIa2MMDWsp8q6l5YSXG3Jp14+BvwhbJMJTKfjW0VQCvUVqKH4YIXlp2CeiDfXrHHA23BBD4cHlA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iu77fXP7A+PsaTLoly9l9VuRpHOnkNGJ1rOcKtmzIUM=;
- b=2O8FN2VwkoH0SbzmdYYbJlpam6eSomzear+nrV2c03ED2WmkG6cDXqXhn8r2aELrTrpVIlp2iGkXNayTSXErK3sRfITGgGGVu2GVEDhdA/cTgGLsXDzCDuwbsq1QIYR4xt7lpEeVps5oRc4FxQE5vSG2q3+rMFV5Ycaz40d4jDk=
-Received: from DM6PR07CA0072.namprd07.prod.outlook.com (2603:10b6:5:74::49) by
- CH3PR12MB8484.namprd12.prod.outlook.com (2603:10b6:610:158::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.50; Wed, 17 Apr 2024 17:53:07 +0000
-Received: from DS2PEPF0000343C.namprd02.prod.outlook.com
- (2603:10b6:5:74:cafe::eb) by DM6PR07CA0072.outlook.office365.com
- (2603:10b6:5:74::49) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.24 via Frontend
- Transport; Wed, 17 Apr 2024 17:53:07 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- DS2PEPF0000343C.mail.protection.outlook.com (10.167.18.39) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.22 via Frontend Transport; Wed, 17 Apr 2024 17:53:07 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 17 Apr
- 2024 12:53:06 -0500
-Received: from [172.19.74.144] (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Wed, 17 Apr 2024 12:53:05 -0500
-Message-ID: <14402251-5731-1e52-e787-734d3eb3c801@amd.com>
-Date: Wed, 17 Apr 2024 10:53:05 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA5AD146D59;
+	Wed, 17 Apr 2024 17:53:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713376407; cv=none; b=RcCaBcG2EjqgUC1DVaesU1Dk/7vqOkVglms1JgM/9SAwCMPgm5kusj4pvu/nsqVFECJbkOjCq9gCqzaqbz5XOrPfN9lGZdRA3K1g/2vx45roAvjG68FNZwYZqHBoBRQzRrCLR43xsrdrDtygbZ6KPvlvjD4Zc143UM+4pDO3eD0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713376407; c=relaxed/simple;
+	bh=QLWfuCo19n+5G8TriwcT49BQW1kf42mY8DE2wIQXSdc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bxsnGodWiYqSVLB4G9Qh7LvlfWVxtz3v5o5n2Bk1jrb4lGdMNsKyL/kXUd0BoifuLSsuzagNEtRdcGCZ3rAX4fuv5HUmBh5qw2tfI8MUxyUWmarcQ1UsMih8TkpWWJAIP6cXMiWLv8j5+x1yVRhbFKrDkM6CcOrXltDiiUFuP9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WApZKAf1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29BA2C072AA;
+	Wed, 17 Apr 2024 17:53:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713376406;
+	bh=QLWfuCo19n+5G8TriwcT49BQW1kf42mY8DE2wIQXSdc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WApZKAf1+rnM9gBKe0B/xfeClV8LsXGKwunncvfSxR0fDWYiFxcPgKYK4CBxoSr+b
+	 8nXQbKv2BiJm0GMgsjVddbtOZT5DjjJQk+5aMRHwMxi+LPXtLePZLoCvBFf4NRDJys
+	 JwR7QtX3SOU1jzLDopc9fDMUUEiT0Y/f2IH7BROmWshh5Z/iLtM4A/0biyZD7QPNg2
+	 gc8uXnb+WytmaAspvIn7QSBu/mUtANqSn8MsnepiosJ0Lb+DFllbeUQR1ZzFoVOK1D
+	 0zZMvM/6MOsLhtlngEe+wDbd8GJnjgcW9+eizHsd8icDgAravQsa7xu2rXBg49HxZt
+	 YywCAU8OSd/Dg==
+Date: Wed, 17 Apr 2024 12:53:24 -0500
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
+	Srikanth Thokala <srikanth.thokala@intel.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Tom Joseph <tjoseph@cadence.com>, Jingoo Han <jingoohan1@gmail.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Hector Martin <marcan@marcan.st>, Will Deacon <will@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Jim Quinlan <jim2101024@gmail.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Jianjun Wang <jianjun.wang@mediatek.com>,
+	Shawn Lin <shawn.lin@rock-chips.com>, asahi@lists.linux.dev,
+	linux-rpi-kernel@lists.infradead.org,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	Magnus Damm <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mark Kettenis <kettenis@openbsd.org>,
+	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	linux-pci@vger.kernel.org,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	linux-renesas-soc@vger.kernel.org, Sven Peter <sven@svenpeter.dev>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	linux-rockchip@lists.infradead.org,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
+	Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+	Michal Simek <michal.simek@amd.com>, Ray Jui <rjui@broadcom.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ryder Lee <ryder.lee@mediatek.com>,
+	Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	devicetree@vger.kernel.org,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	linux-mediatek@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] dt-bindings: PCI: host-bridges: switch from
+ deprecated pci-bus.yaml
+Message-ID: <171337631676.2838286.7798730496718117728.robh@kernel.org>
+References: <20240413151617.35630-1-krzysztof.kozlowski@linaro.org>
+ <20240413151617.35630-3-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH V10 1/1] dmaengine: amd: qdma: Add AMD QDMA driver
-Content-Language: en-US
-To: Vinod Koul <vkoul@kernel.org>
-CC: <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Nishad Saraf
-	<nishads@amd.com>, <nishad.saraf@amd.com>, <sonal.santan@amd.com>,
-	<max.zhen@amd.com>
-References: <1709675352-19564-1-git-send-email-lizhi.hou@amd.com>
- <1709675352-19564-2-git-send-email-lizhi.hou@amd.com>
- <ZhKd7CHXHB7FadY0@matsya> <aa6a63c0-7cce-1f49-4ae5-3e5d93f98fe5@amd.com>
- <ZiAA3C4wXaAHcJ1E@matsya>
-From: Lizhi Hou <lizhi.hou@amd.com>
-In-Reply-To: <ZiAA3C4wXaAHcJ1E@matsya>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Received-SPF: None (SATLEXMB03.amd.com: lizhi.hou@amd.com does not designate
- permitted sender hosts)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF0000343C:EE_|CH3PR12MB8484:EE_
-X-MS-Office365-Filtering-Correlation-Id: 825d2b68-81b3-44e4-35e8-08dc5f073d13
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	rH6cXMXD3JxXTM4t+j1yvADfaCAcGDh+X6QPrYeTcRSc2CrvuCB4LbWJZuF8vF9Q//Hl+THKUSSEsgF8HmyeK5rg4wrTPCAaH4Gq2IBfRa1tFUUsZmW9YO14LipxyF3LgNyoLoukgVBtm3lV6iRz9WERZhopyo2jv/G6BPpB2fnX8JRzL7GulTF5LRr2GokyHnzRB/DNUQVTtmM2vzAWCRwF63AkPxzPlUPieYHwyfCyvEjdXJe3PYxDCmhzfliZ256i9I8tMRtOc3obdW0wB5aGYJeiBJfu7/O7avfY4TAzSvazju2IkXqoFuHucarGAOIgoEh5TVZqY742FAMXEtwxqvPH8Dr6ixkixTbbc2pYqZUmWY2rhnVjzcGGEmt1QZ2r0yh97CWN0p2tRWOmjr/GOsU40InR+ooL1VbmFfVXZjwPsCyAgCJGfHyuvAvjrlkYp8V2gosX4PSfOdu1vSfNzQEWQ6Ghsv92KmxFai/olYORwa6H16HIM+0t0RTqHHlHNy9PqewhI+6GREoTXu6CiRF0QY52H+Nz8wt+w9JJ7JtO8h7E3YfdayDKsVT839vhbmKoztaD6tGNH9s/1AX7Ib7+Gz0CPd3ohvXG1BTKOU7mNnrq/gTS4lj0g8QiA9Zv/aAWnsIIFQf5xb6AuLDCYjUfzSc1sgV4NmSmx0w1M3KIU2IZwX4USOLF/97/b8cXW1xxtRyKOyb+ieKM4A==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(376005)(36860700004)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 17:53:07.2753
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 825d2b68-81b3-44e4-35e8-08dc5f073d13
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS2PEPF0000343C.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8484
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240413151617.35630-3-krzysztof.kozlowski@linaro.org>
 
 
-On 4/17/24 10:03, Vinod Koul wrote:
-> On 08-04-24, 11:06, Lizhi Hou wrote:
->
->>>> +static void *qdma_get_metadata_ptr(struct dma_async_tx_descriptor *tx,
->>>> +				   size_t *payload_len, size_t *max_len)
->>>> +{
->>>> +	struct qdma_mm_vdesc *vdesc;
->>>> +
->>>> +	vdesc = container_of(tx, typeof(*vdesc), vdesc.tx);
->>>> +	if (payload_len)
->>>> +		*payload_len = sizeof(vdesc->dev_addr);
->>>> +	if (max_len)
->>>> +		*max_len = sizeof(vdesc->dev_addr);
->>>> +
->>>> +	return &vdesc->dev_addr;
->>> Can you describe what metadata is being used here for?
->> The metadata is the device address the dma request will transfer
->>
->> data to / from.  Please see the example usage here:
->>
->> https://github.com/houlz0507/XRT-1/blob/qdma_v1_usage/src/runtime_src/core/pcie/driver/linux/xocl/subdev/qdma.c#L311
->>
->> Before dmaengine_submit(), it specifies the device address.
-> Hmmm, why is the vaddr passed like this, why not use slave_config for
-> this
->
-This is because the hardware is capable to process multiple vdesc at one 
-kick off.
+On Sat, 13 Apr 2024 17:16:16 +0200, Krzysztof Kozlowski wrote:
+> dtschema package with core schemas deprecated pci-bus.yaml schema in
+> favor of pci-host-bridge.yaml.  Update all bindings to use the latter
+> one.
+> 
+> The difference between pci-bus.yaml and pci-host-bridge.yaml is only in
+> lack of "reg" property defined by the latter, which should not have any
+> effect here, because all these bindings define the "reg".
+> 
+> The change is therefore quite trivial, however it requires dtschema
+> package v2024.02 or newer.
+> 
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be> # Renesas
+> Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Changes in v3:
+> 1. None
+> 
+> Changes in v2:
+> 1. Add tags.
+> 2. Split mediatek,mt7621-pcie to separate patch as it uses
+>    pci-pci-bridge schema.
+> ---
+>  Documentation/devicetree/bindings/pci/amlogic,axg-pcie.yaml     | 2 +-
+>  Documentation/devicetree/bindings/pci/apple,pcie.yaml           | 2 +-
+>  Documentation/devicetree/bindings/pci/brcm,iproc-pcie.yaml      | 2 +-
+>  Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml        | 2 +-
+>  Documentation/devicetree/bindings/pci/cdns-pcie-host.yaml       | 2 +-
+>  Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml     | 2 +-
+>  Documentation/devicetree/bindings/pci/host-generic-pci.yaml     | 2 +-
+>  Documentation/devicetree/bindings/pci/intel,ixp4xx-pci.yaml     | 2 +-
+>  Documentation/devicetree/bindings/pci/intel,keembay-pcie.yaml   | 2 +-
+>  Documentation/devicetree/bindings/pci/loongson.yaml             | 2 +-
+>  Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml   | 2 +-
+>  Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml  | 2 +-
+>  Documentation/devicetree/bindings/pci/qcom,pcie-common.yaml     | 2 +-
+>  Documentation/devicetree/bindings/pci/qcom,pcie.yaml            | 2 +-
+>  Documentation/devicetree/bindings/pci/rcar-pci-host.yaml        | 2 +-
+>  .../devicetree/bindings/pci/renesas,pci-rcar-gen2.yaml          | 2 +-
+>  Documentation/devicetree/bindings/pci/rockchip,rk3399-pcie.yaml | 2 +-
+>  Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml         | 2 +-
+>  Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml     | 2 +-
+>  Documentation/devicetree/bindings/pci/versatile.yaml            | 2 +-
+>  Documentation/devicetree/bindings/pci/xilinx-versal-cpm.yaml    | 2 +-
+>  Documentation/devicetree/bindings/pci/xlnx,axi-pcie-host.yaml   | 2 +-
+>  Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml        | 2 +-
+>  Documentation/devicetree/bindings/pci/xlnx,xdma-host.yaml       | 2 +-
+>  24 files changed, 24 insertions(+), 24 deletions(-)
+> 
 
-For example, there are two pending vdesc: vd1 and vd2. If there is 
-enough free
-
-space in hardware queue, the vd1 and vd2 can be put in queue, and do one 
-kick off
-
-to transfer both vd1 and vd2.
-
-The destination device address of vd1 and vd2 could be any valid device 
-address.
-
-desc_metadata_ptr seems helpful for the per vdesc destination device 
-address.
-
-
-If using slave_config, it needs to call dmaengine_slave_config() and
-
-dmaengine_prep_slave_sg() with a lock protection. Is this what you would 
-recommend?
-
-
-Thanks,
-
-Lizhi
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
 
 
