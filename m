@@ -1,118 +1,95 @@
-Return-Path: <linux-kernel+bounces-148084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ADF98A7D79
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:55:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99E628A7D7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:56:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 136132869CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:55:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2865EB22988
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:56:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AB246F062;
-	Wed, 17 Apr 2024 07:55:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23DFE6F068;
+	Wed, 17 Apr 2024 07:55:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="3yTtksiP"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="aj6tOUU8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE559335C7;
-	Wed, 17 Apr 2024 07:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 615F533CC2;
+	Wed, 17 Apr 2024 07:55:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713340508; cv=none; b=a/cF9GmSUlZFEof30hlBm3JYMmzJIbQg9rbuu0GCbs88l0BYLHHQy6Eh7MZQlfGmp9jMc53JfhkRw6rwZZhjfHQOwHGWp+aCfG0xSdoFC+yYxJ3E0maT8GGiHsGBU5vL1fXvA44c22SflUb0PhDvjR07Af73uM9RfgVvGP1ii7I=
+	t=1713340553; cv=none; b=anpBRcbqbqvDLcx4p+0E1RCG8FNsRf4BZxZESqfxbWE3y4R3otOZRBAD6xybbEg8m2iB3iSk3SUpw6rzXZd3C5r52ZOkCtTT3/GQHnxptB3G7a+7a+hphlgggy4mzr2/r7IOm3Yv/zwqxR/SdG8GaLK0GCDdZI7mBasAVTcwqgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713340508; c=relaxed/simple;
-	bh=eyDrtd8fUNME9ytWdgxZfVi8GNq/KoV62xE9EnUFfHE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=JTUFbp3rtbl1eG8IQ1Nsv+6Wep/1eiiTqMU1YKU1NTbFgOPrbeAPqqDEjpdFyeZMdT4Mj6r12oSB0oaMO3XO51OFTnUPNAC+kwm4dsL4jkbXsjs5nbnSkEvrVw9v55EFJyPZn3COGGWwjcnFHQDiNTEl28mCWxXJRinmCBh14rw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=3yTtksiP; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713340504;
-	bh=eyDrtd8fUNME9ytWdgxZfVi8GNq/KoV62xE9EnUFfHE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=3yTtksiPCVFoeSAS+27BkLyLucN3NoGrPOyo4ISVg1IdQID/8bNhxbfqx0Y76DQxC
-	 zOyFT+u4zHXHXsMsYGTC7gi4LfLyxIirfsTyO4iRNYUgZOpgJxIJHkHIm7/Nxnj1gR
-	 kaTL/ceRYWj4T/2XbMCEdUM2jRdMk/ryPlvefbjqix96ZHI2PX4Mm2xgKi/d8EsdTD
-	 3YDdrN2zv/PHEOUtr4eA9Z8nOKdagCyhL/OCQD2kgHBPw5UZ5s//T672VUPwtdy4Ot
-	 3W1JKgwBX0ne2uj0e3VMipN7HhNnaDlpkTN5Dq7t+SPyBggeDyiSIRZTnoVE4HEKc1
-	 r4uf+1xqjCH2A==
-Received: from localhost.localdomain (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1EEFE3780629;
-	Wed, 17 Apr 2024 07:55:00 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	kernel@collabora.com,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] selftests: mm: Fix undeclared function error
-Date: Wed, 17 Apr 2024 12:55:30 +0500
-Message-Id: <20240417075530.3807625-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1713340553; c=relaxed/simple;
+	bh=TgbiouoggRub+X4mEPgPNFpZCQsY4sCtPk19K9N4bto=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ONuV+0P4wrD8OQ+68ARHaKooT8cGvDpgRJULdlkhlqplRozwKOYAbYoVTDBg0vuKLQCQNrpb2+VdcHWg5f44jFoZ+PaQpZXxFKv8JPZ7LLpfav4vJ6IfbBO2ehYTnRkAyFvfYAG8QeJ/R/wDdODCTJ5hcM8zZxy1UcPIIyoNNlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=aj6tOUU8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E1ECC072AA;
+	Wed, 17 Apr 2024 07:55:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713340553;
+	bh=TgbiouoggRub+X4mEPgPNFpZCQsY4sCtPk19K9N4bto=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aj6tOUU8dPw3YrHFPsXp6bKHxKwZ573hGO11WNkwVFz+qZjDShzBUEIF97vlmr3AE
+	 CnfEDH8BrEljaPgpYdOKiejozIEGUcT+a3lS4RxeIuE410W+euCq9c8VcFNhcWHLSL
+	 FipEi/4UwZHHKOb17f3VrFnp48z1u2AQmGXe1/cw=
+Date: Wed, 17 Apr 2024 09:55:50 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Thorsten Leemhuis <linux@leemhuis.info>
+Cc: helpdesk@kernel.org,
+	"workflows@vger.kernel.org" <workflows@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Please create the email alias do-not-apply-to-stable@kernel.org
+ -> /dev/null
+Message-ID: <2024041736-earmuff-luster-a9ab@gregkh>
+References: <b452fd54-fdc6-47e4-8c26-6627f6b7eff3@leemhuis.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b452fd54-fdc6-47e4-8c26-6627f6b7eff3@leemhuis.info>
 
-Fix the error reported by clang:
+On Wed, Apr 17, 2024 at 09:48:18AM +0200, Thorsten Leemhuis wrote:
+> Hi kernel.org helpdesk!
+> 
+> Could you please create the email alias
+> do-not-apply-to-stable@kernel.org which redirects all mail to /dev/null,
+> just like stable@kernel.org does?
+> 
+> That's an idea GregKH brought up a few days ago here:
+> https://lore.kernel.org/all/2024041123-earthling-primarily-4656@gregkh/
+> 
+> To quote:
+> 
+> > How about:
+> > 	cc: <do-not-apply-to-stable@kernel.org> # Reason goes here, and must be present
+> > 
+> > and we can make that address be routed to /dev/null just like
+> > <stable@kernel.org> is?
+> 
+> There was some discussion about using something shorter, but in the end
+> there was no strong opposition and the thread ended a a few days ago.
+> 
+> The goal is to have a tag that developers can use in Linux kenrel
+> commits that have a Fixes: tag, but nevertheless should not be
+> backported by the stable-team without explicit request. The thread
+> linked above explains this in more detail. Once the address exists I'll
+> resubmit the patches in question that will document the tag.
+> 
+> Is asking for this here like this the right way? If I need to file a
+> ticket somewhere or some ack from a higher authority, just let me know!
 
-In file included from mdwe_test.c:17:
-/../kselftest_harness.h:1169:2: error: call to undeclared function
-'asprintf'; ISO C99 and later do not support implicit function
-declarations [-Wimplicit-function-declaration]
- 1169 |         asprintf(&test_name, "%s%s%s.%s", f->name,
-      |         ^
-1 warning generated.
+I approve this message :)
 
-The gcc reports it as warning:
+thanks,
 
-In file included from mdwe_test.c:17:
-./kselftest_harness.h: In function ‘__run_test’:
-./kselftest_harness.h:1169:9: warning: implicit declaration of function
-‘asprintf’; did you mean ‘vsprintf’? [-Wimplicit-function-declaration]
- 1169 |         asprintf(&test_name, "%s%s%s.%s", f->name,
-      |         ^~~~~~~~
-      |         vsprintf
-
-Fix this by setting _GNU_SOURCE macro needed to get exposure to the
-asprintf().
-
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
- tools/testing/selftests/mm/mdwe_test.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/testing/selftests/mm/mdwe_test.c b/tools/testing/selftests/mm/mdwe_test.c
-index 200bedcdc32e9..1e01d3ddc11c5 100644
---- a/tools/testing/selftests/mm/mdwe_test.c
-+++ b/tools/testing/selftests/mm/mdwe_test.c
-@@ -7,6 +7,7 @@
- #include <linux/mman.h>
- #include <linux/prctl.h>
- 
-+#define _GNU_SOURCE
- #include <stdio.h>
- #include <stdlib.h>
- #include <sys/auxv.h>
--- 
-2.39.2
-
+greg k-h
 
