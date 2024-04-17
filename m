@@ -1,176 +1,275 @@
-Return-Path: <linux-kernel+bounces-148969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56A828A89D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:06:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AACC8A89D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:06:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78F581C23A40
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:06:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 140471F217BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03270171646;
-	Wed, 17 Apr 2024 17:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BFD3171666;
+	Wed, 17 Apr 2024 17:05:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="cjLhU7tc"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2087.outbound.protection.outlook.com [40.107.223.87])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DTnyJ2/6"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5055516FF52;
-	Wed, 17 Apr 2024 17:05:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.87
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713373512; cv=fail; b=jduI+UOyQVuRTjrr/oqOHrEBQ96zzxifeJ3UNV1cADBq9mggWdQAczGQ/FgCfuvcmofkqrEKfizaQWa77ImK3/2/8sOx5nB/+Tv+RvoK8t+icYwaFNbKnTSpFu7BWl2FoHtajMQ/ZkZHBV7eeyH+LZ/pIyJs6UWQaYVCup01d+8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713373512; c=relaxed/simple;
-	bh=vfw50eBwPhAEiXkT8poLDj4RJZPos9fLTJn1CTeGns8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=LZEocpSpcsrD2f+3xG5OMmDmIhXqbgZzyjhKMZI1a68GJoziy96Jtzzmq5/jCjrSp2oKO0DbCq4TFJURa4JqrDkNC5qMHZ0nx+mtwsQ8se5kRDIeuQwso6cZew5kUjGCk3hoQTCYmyqVxoq9qX+LIuhkYZPEwFWt1Gjl4GnvEHg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=fail (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=fail (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=cjLhU7tc reason="signature verification failed"; arc=fail smtp.client-ip=40.107.223.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a+B39hVuRSMi8zdpT2CqrlDoe/4bTGCSOJIPX/8O7pEXvKrlVqFn+TTygv/zy8YiqSDSJ00sTjndno8Ecf0/SdVDFfOFVPyYf0ryNYmaorXVvWKbSBAIqJEejMVm9m3fFJC/DrcOyZaqTXeNMA+irBBakFXxqLW3OdGWMDWRwOV6f2oj1Bytzo6HD5g9xYdbwcTQf+j3xhlk9i5LZoGg5UBUdlcc03LdoTz3LAUKjXPSJxalSxzCJ605/Hh+JqypuguiD29IU8lKqGcTt7IyGykrm100WMynCOvPajFou5k4WrU6gajO+eea0X7QhUuLaLO+mn+pbg5IkbJeGQ77Sw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ouyjCA0kVZ04iCEEwdn1Y1QGlwZKCwsIZDD+bRKxwyw=;
- b=Np1sdeobxQz5LO27KP80uhvuqR4jui07aLuJ+OwY8KuHERcXW8DOHBPBiVTguc+UUEyMTd1KzEq8DTC/m8yZWpEavjdS5yBc1+Itpv5g3VrOCs29ah8cAH9mwWvWR6Amsmv6HuGX4ujoBLxM3CZ15PDYF4IWlRKw67u58kCqWybfM1gg7A+hzEhbRuheGzQz0JtLuSsPTgEfFkAkIpogxN6EMsQN+kfjeK2E7kHQySNC4EGSSw7o1stAic9+Htr107v4ILSKSSYjdwCX6F6lo+KdIaqcKklY5f2wJnVD7nuJypP1QYceWdgBPwqblLtgO3bJqjtDXdf8ZsRv2ZNlng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ouyjCA0kVZ04iCEEwdn1Y1QGlwZKCwsIZDD+bRKxwyw=;
- b=cjLhU7tcsoQx6EkKE2PZKs8n25uIlUu1OZ/1Od1t2rqZJABBemwgdGwJXY7qxChm7SvZuz5aeWU4syQhHRuIyjH+B6LbRR4JbDNA2CScruoFxRG2pokRaSaQJ6nmr3ehjdwV0s3Rgl3ZAHQ6LX5H+hX9O/VsVGAImkigCPTv6yShBCgvqa+wsPZeZmi7pNTS5pMlOsRpmGZFedNZjdUYgC3QyRc8ve2oaoWnJKubvM10dLxkO9bfKWTw7KLnXAtM1fd9T5AgkVUTGMYyojJy+nNXB0ZsWmmwBOeN9Di/wRsMgh8xdsEG/DbB1QOj+UsZzWTuO7wSqCxyLI0ZAd1acw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CY5PR12MB6179.namprd12.prod.outlook.com (2603:10b6:930:24::22)
- by PH0PR12MB7885.namprd12.prod.outlook.com (2603:10b6:510:28f::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.37; Wed, 17 Apr
- 2024 17:05:06 +0000
-Received: from CY5PR12MB6179.namprd12.prod.outlook.com
- ([fe80::b93d:10a3:632:c543]) by CY5PR12MB6179.namprd12.prod.outlook.com
- ([fe80::b93d:10a3:632:c543%4]) with mapi id 15.20.7452.046; Wed, 17 Apr 2024
- 17:05:06 +0000
-Date: Wed, 17 Apr 2024 20:05:00 +0300
-From: Ido Schimmel <idosch@nvidia.com>
-To: =?iso-8859-1?Q?Asbj=F8rn_Sloth_T=F8nnesen?= <ast@fiberby.net>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Petr Machata <petrm@nvidia.com>
-Subject: Re: [PATCH net-next] mlxsw: spectrum_flower: validate control flags
-Message-ID: <ZiABPNMbOOYGiHCq@shredder>
-References: <20240417135131.99921-1-ast@fiberby.net>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240417135131.99921-1-ast@fiberby.net>
-X-ClientProxiedBy: LO0P265CA0011.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:355::19) To CY5PR12MB6179.namprd12.prod.outlook.com
- (2603:10b6:930:24::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01121411CF
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 17:05:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713373557; cv=none; b=Yw3u5n8uEtIPJkvkST+ZOenHvJcB+HG6xPsJ5ETq+ESB9kHbXxC2rRcb2f/EBqO5ORA+wo6pZM8iHlr+hjG3PG5gSz6vPY2lWyqFHTbCId5BClr9Krbap4ymNkdblU2Rq+UkWUnAAW43vXxM7vK4WEZswyPXtqdM0V6goFEQoQc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713373557; c=relaxed/simple;
+	bh=Ac+/jOoPhZW4eMh9PQibzAsT2JDJYYkdkAzJUsa7Q14=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qvY/WuLBhm3x/v4Wjj+1pb1KYs3AB/uyBdRhOY7mKw6hrBpwAZre4VUHOvOJSydN6gfPHs0DLmp/tqrdJ/JnIqvOthMl/Th1OvuQr1NRNdEvxFOhnn94CmZnAn5ObspsG9TCGI0jr2VuYph9+aP+tBO3MalY1eT8dEtBT9kunQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DTnyJ2/6; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713373554;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=ncf1XoHGI+ylvBcF2Dm0xfBNX/SOu6WyAZGaChqXuW4=;
+	b=DTnyJ2/6HV7egM3cRzSeOE6TPWSbfLhtd8SbMxYxPHciY+Glxd8+4Hm38j9Fln2gajpy/n
+	do8isgnHGIx8ggVjG+Q7TMJEF2ajsj8MxBI4r+MYdH3NRVNYEKtWKnd8P9WNbamT0M+VvD
+	SfHNtPpozvjYF455sjppjqn16mo7Nvs=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-588-a5DaWzbKOAyGT5QIb8LMcQ-1; Wed, 17 Apr 2024 13:05:53 -0400
+X-MC-Unique: a5DaWzbKOAyGT5QIb8LMcQ-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2d883dab079so55311011fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:05:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713373551; x=1713978351;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ncf1XoHGI+ylvBcF2Dm0xfBNX/SOu6WyAZGaChqXuW4=;
+        b=F2jquPZt0cg58nhMQWAOg/fURCsZrhYv5F9+wlozp2buFL20G6vfQhB8aTSJf6uC44
+         Qw+3d4uanTQ5dssOVl6AIzy8/8IeSJb+1xJi0Ngl5fGjWCx+zE/jLoPVSi21tj6zJVoS
+         8ml3j+n6BAVYWcP++UcnnyZuRA8GJujph9p7X2i3H4YJnrZftL9OtD4zeVJjHatoJA8V
+         MmsI5jFUzDlsilZPajRvLP49QMGcEtLrN3hvIOA/melB0bJ1YJU1ltws6CKOkFq3NfGO
+         SsxAkb9y0EkMC5T3KL9JvUirCI2HvTARbXtGRcKljF4nQRL06eby9l4i7Smtt5BQ2JTj
+         uGdg==
+X-Forwarded-Encrypted: i=1; AJvYcCUepLO4LCZIOqlTU1O44PIQQtCkpyPJD8yJFaEdC4DYcq9i8uzfc/mdPJBEE31XdRSyeGpS6AfrB725yLBZ2XqsnMkAhg19GPYUBuIy
+X-Gm-Message-State: AOJu0YwQZ8nWvodu+4dAqphSYWSnGT+Nqq2gAVxbQjTOBy0I8l83YjcT
+	68oRDJbCEiZz1xByngXbTygTmwITRFPgyeHo8qXazD4wfNaUZV6jhtjshIpfyOyST6gzkyQHLlJ
+	HgyPm7Z1oaT4YqO5ZnNHPqf3/EMSf8/9oMvojZax+QxMew1rBLYRbRTFLCBVfuA==
+X-Received: by 2002:a2e:9ed0:0:b0:2d8:a969:5e1 with SMTP id h16-20020a2e9ed0000000b002d8a96905e1mr13673049ljk.10.1713373551649;
+        Wed, 17 Apr 2024 10:05:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGRy9o5eTm24d+hd7S116fYIqHCMb9GGG16z/LgSpk9YhjQpeoo2xCT/6xyuWC6eXEYKWNz7Q==
+X-Received: by 2002:a2e:9ed0:0:b0:2d8:a969:5e1 with SMTP id h16-20020a2e9ed0000000b002d8a96905e1mr13673016ljk.10.1713373551087;
+        Wed, 17 Apr 2024 10:05:51 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c745:2300:653:c844:4858:570f? (p200300cbc74523000653c8444858570f.dip0.t-ipconnect.de. [2003:cb:c745:2300:653:c844:4858:570f])
+        by smtp.gmail.com with ESMTPSA id f6-20020a05600c154600b00418a02674edsm3469787wmg.38.2024.04.17.10.05.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 10:05:50 -0700 (PDT)
+Message-ID: <cd659e3e-dbe4-4168-8162-64bc02f9cba7@redhat.com>
+Date: Wed, 17 Apr 2024 19:05:49 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR12MB6179:EE_|PH0PR12MB7885:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6628a444-253e-4faa-96ed-08dc5f0087a3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	SgcLOdm+7+QGb68UiJ1C6K6WvHyNFg9yzcEz0mRtk6NL6tNWV2HUf84VGno9yWOdMp4bacHYyGUC3J0zll22a4vCwU95d+Dt53Volkx41cCzU4GSucdw6lX+UHfBzv61EmEa51BEJ9GPt6kJOHk9mqEKHPrbGONeUx5RTkbobcMr40Ptm7DIugCHHfV2RU4b9DhzHBf3+eMmL8ZF/0cbSIi+S/uayRS9jtVtE3llwFtHucreZOWbkHig3x98GC+Me4jJAzCV5Mog/OgIfweDOEVzECcVZ/Jmmg7dPsoBZkpsE+ZkpP1vMLdNCcjDMrFhw+D8Ya5145sr+PJ2VN6qw9cHkys/TNn+xmIN9fV8GkUB2oeO9uqAW43OM5H6XLgfFA4JO3klyMSFRv6/+EC3IHBPpXdZBeCaCmzbs/r4k6opM9j2ckrQbjndPrYi/oq+pfOzXoODvqz0+GY+6brXKtuNfAGA0oMGf75fsiU/ixKQXVNaY/qp5JlKmP+zhc+/0vLMmDUgnXnOWF1u4pcXs1WS+sah1K2o/x8W11dhc2H61MEF90PT1VLq+QVuytmOCCM0Nu6EFuvzp4krJlQ/TXJyvuuOlEZL8Ut+xge6ZiEyA3/NIHthQ++ZAwMX5QCRcEDrzIKF1Q5943DQI0w4l2uK5PQwd5OQ9ho7M/rNPTU=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?iso-8859-1?Q?6ZDcvGibTmPJ02jTAdcHBipzPH5Q8FwllN0nqFAgUVciLZyK9S5fngnZtm?=
- =?iso-8859-1?Q?qxEan8BNuV8Fhv7aIrnqmW2gV0Z6JRdLwJoEcZ8E0JsEKshc1tMg38vjNC?=
- =?iso-8859-1?Q?iU+n011l1ozh1VMxeKwIYIXQL+1KgVkwwZKh8x+ePI0KykDxQxYs/88TLu?=
- =?iso-8859-1?Q?jLbxtgv1sK5kaaakd73Ygu+WRcJ2IETrxh0WKNn+MnnVeYiWrA29xhbZYh?=
- =?iso-8859-1?Q?duhoKjsOnzLF9ny93nhHD7ZljoJTgK1W2v40GJxU+ia6MsbvFMITY7iX1t?=
- =?iso-8859-1?Q?6jcA2DqTE3V7gBa/pOllXXZ4ZmLQXSOAawolG0izlZZRz2f10VgGIClzBD?=
- =?iso-8859-1?Q?0v9veXkyRkG/9CNGL0Y8srVzchrVPn5kf1TtYFfOiAW//2fu/g1QESFuET?=
- =?iso-8859-1?Q?i7Q4NiXHEyAvjhyJdugfsOqrRcEkR9F8cTkBILis8RcYPVAyZlqEeusK2m?=
- =?iso-8859-1?Q?jEWVeyn60EV0YRyho/IqU9amHECCdFhTmb+3b8XBoZDDI3f+YkDNGe1gtY?=
- =?iso-8859-1?Q?PF3xfnHtIzlvMhIq15SLTN2MuVPDNuxobWieaohQ893s2Lu5p1+znt1qIg?=
- =?iso-8859-1?Q?F2zQjjHKp1mWKPXogp8cumx+fPGlrHRAYB9wPR6jjuC5MYtZqDY6DA4LLV?=
- =?iso-8859-1?Q?VH5HOoDHOkFSFrXhFkBNU67p6PbNMDvVqtDM2PKcyA95ZHW9zoK6ft92XL?=
- =?iso-8859-1?Q?QXGKZJCXkcleFfa07bN3+xvPriE4Le+wBHbNKmvVeYmbYySOdepp3bbE/N?=
- =?iso-8859-1?Q?HzB+rqzU2bmLJyJuCwV4/Itv3ZR14L6TU2YCO7M+W63ACE9dd/cK7KHrK5?=
- =?iso-8859-1?Q?4IM3fVG76m3DhYIzDYU1TUbMVJZXQZL9GWBKLD9eCiYvGoIflKHJOwCuCp?=
- =?iso-8859-1?Q?olW+uvVWtk5hIM3ce0YXq9nIDlh9Y2NH8pm6eNt6uVRm3O4BUuA0VIlhv/?=
- =?iso-8859-1?Q?QbgJLtfBVkOKrjNviTtP5+uaWZD/l1Y0a0z878qEpTyWLTCZBt3R1FTIo4?=
- =?iso-8859-1?Q?zu2qSq7cg5qNqQ1XR04PLFOvY02LVi5VlMtNBggybrC56H5lGrJx0CKQbB?=
- =?iso-8859-1?Q?50X8MsF5hCVqbvF7plAwRDe/QCmkzpakr3VNHratuft23Nv1Mze6YFPGpT?=
- =?iso-8859-1?Q?1f1wbNunBg/LbIkfkqB3DqysBQEiir8TgnsD7bgZzjUV1ly3td0JRTmmbo?=
- =?iso-8859-1?Q?3zm8kQOkQ2H+RIxckFyMiUxoo/tacrDXZZU6almahZAlJVdlqE6vsbTVhb?=
- =?iso-8859-1?Q?dQc4yiAFQDKvEoUrGwZORrDkTe+0W2MB1d2pQiESspUUbsymlt6j1Id8jl?=
- =?iso-8859-1?Q?a4D81n3lD2H6oKVWW9/acVYyMB7xtiR7Crk1TVs3hQaiCtuPZijFIc+7Gw?=
- =?iso-8859-1?Q?O0Vk19ntCguTzpTgOwuB/M3GRmVakiiNcyTcnnCZlchTK5ZmJH70Sn6sZR?=
- =?iso-8859-1?Q?8Ocs0ArBXXcpCYq97/uRJGPOpjU71qrS2iH8+075HIGla0bkUMDh+18skP?=
- =?iso-8859-1?Q?VPHmW0q5qnTPhszMpU4k9pUSnHVikm0hJysUN6diJu2uiu/jiuQIccV74d?=
- =?iso-8859-1?Q?0mvHW4sFf4pj/RQKdHdqOgkwAxDE8Pwh+amFtNAISgWbDd1dFzogAO9sH4?=
- =?iso-8859-1?Q?jKt7VjXnySYobCaSRTImO7U0LLCxBXT+NF?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6628a444-253e-4faa-96ed-08dc5f0087a3
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6179.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 17:05:06.1176
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: W9gXmp2+bRurQsAbnOg1hrKw3wmrEgQ9sUnIkdhlg0rZJD/Ho3eoq3Z4fdK9OZhPBLhE0fXp3FbpnSwcGr7oNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7885
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 3/3] mm/madvise: optimize lazyfreeing with mTHP in
+ madvise_free
+To: Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org
+Cc: ryan.roberts@arm.com, 21cnbao@gmail.com, mhocko@suse.com,
+ fengwei.yin@intel.com, zokeefe@google.com, shy828301@gmail.com,
+ xiehuan09@gmail.com, wangkefeng.wang@huawei.com, songmuchun@bytedance.com,
+ peterx@redhat.com, minchan@kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240417141436.77963-1-ioworker0@gmail.com>
+ <20240417141436.77963-4-ioworker0@gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240417141436.77963-4-ioworker0@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 17, 2024 at 01:51:20PM +0000, Asbjørn Sloth Tønnesen wrote:
-> This driver currently doesn't support any control flags.
+On 17.04.24 16:14, Lance Yang wrote:
+> This patch optimizes lazyfreeing with PTE-mapped mTHP[1]
+> (Inspired by David Hildenbrand[2]). We aim to avoid unnecessary folio
+> splitting if the large folio is fully mapped within the target range.
 > 
-> Use flow_rule_has_control_flags() to check for control flags,
-> such as can be set through `tc flower ... ip_flags frag`.
+> If a large folio is locked or shared, or if we fail to split it, we just
+> leave it in place and advance to the next PTE in the range. But note that
+> the behavior is changed; previously, any failure of this sort would cause
+> the entire operation to give up. As large folios become more common,
+> sticking to the old way could result in wasted opportunities.
 > 
-> In case any control flags are masked, flow_rule_has_control_flags()
-> sets a NL extended error message, and we return -EOPNOTSUPP.
+> On an Intel I5 CPU, lazyfreeing a 1GiB VMA backed by PTE-mapped folios of
+> the same size results in the following runtimes for madvise(MADV_FREE) in
+> seconds (shorter is better):
 > 
-> Only compile-tested.
+> Folio Size |   Old    |   New    | Change
+> ------------------------------------------
+>        4KiB | 0.590251 | 0.590259 |    0%
+>       16KiB | 2.990447 | 0.185655 |  -94%
+>       32KiB | 2.547831 | 0.104870 |  -95%
+>       64KiB | 2.457796 | 0.052812 |  -97%
+>      128KiB | 2.281034 | 0.032777 |  -99%
+>      256KiB | 2.230387 | 0.017496 |  -99%
+>      512KiB | 2.189106 | 0.010781 |  -99%
+>     1024KiB | 2.183949 | 0.007753 |  -99%
+>     2048KiB | 0.002799 | 0.002804 |    0%
 > 
-> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+> [1] https://lkml.kernel.org/r/20231207161211.2374093-5-ryan.roberts@arm.com
+> [2] https://lore.kernel.org/linux-mm/20240214204435.167852-1-david@redhat.com
+> 
+> Signed-off-by: Lance Yang <ioworker0@gmail.com>
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-Tested-by: Ido Schimmel <idosch@nvidia.com>
+Some of the changes could have been moved into separate patches to ease 
+review ;)
 
-Without patch:
+At least the folio_pte_batch() change and factoring out some stuff from 
+madvise_cold_or_pageout_pte_range(). But see below on the latter.
 
-+ tc qdisc add dev swp1 clsact
-+ tc filter add dev swp1 ingress pref 1 proto ip flower skip_sw ip_flags frag action drop
-+ tc filter add dev swp1 ingress pref 1 proto ip flower skip_sw ip_flags nofrag action drop
-+ tc filter add dev swp1 ingress pref 1 proto ip flower skip_sw ip_flags firstfrag action drop
-+ tc filter add dev swp1 ingress pref 1 proto ip flower skip_sw ip_flags nofirstfrag action drop
+> ---
+>   mm/internal.h |  12 ++++-
+>   mm/madvise.c  | 141 ++++++++++++++++++++++++++++----------------------
+>   mm/memory.c   |   4 +-
+>   3 files changed, 91 insertions(+), 66 deletions(-)
 
-With patch:
+[...]
 
-+ tc qdisc add dev swp1 clsact
-+ tc filter add dev swp1 ingress pref 1 proto ip flower skip_sw ip_flags frag action drop
-Error: mlxsw_spectrum: Unsupported match on control.flags 0x1.
-We have an error talking to the kernel
-+ tc filter add dev swp1 ingress pref 1 proto ip flower skip_sw ip_flags nofrag action drop
-Error: mlxsw_spectrum: Unsupported match on control.flags 0x1.
-We have an error talking to the kernel
-+ tc filter add dev swp1 ingress pref 1 proto ip flower skip_sw ip_flags firstfrag action drop
-Error: mlxsw_spectrum: Unsupported match on control.flags 0x2.
-We have an error talking to the kernel
-+ tc filter add dev swp1 ingress pref 1 proto ip flower skip_sw ip_flags nofirstfrag action drop
-Error: mlxsw_spectrum: Unsupported match on control.flags 0x2.
-We have an error talking to the kernel
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index f5e3699e7b54..d6f1889d6308 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -321,6 +321,39 @@ static inline bool can_do_file_pageout(struct vm_area_struct *vma)
+>   	       file_permission(vma->vm_file, MAY_WRITE) == 0;
+>   }
+>   
+> +static inline int madvise_folio_pte_batch(unsigned long addr, unsigned long end,
+> +					  struct folio *folio, pte_t *ptep,
+> +					  pte_t pte, bool *any_young,
+> +					  bool *any_dirty)
+> +{
+> +	int max_nr = (end - addr) / PAGE_SIZE;
+> +	const fpb_t fpb_flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
 
-Thanks!
+Reverse Christmas tree looks nicer ;)
+
+> +
+> +	return folio_pte_batch(folio, addr, ptep, pte, max_nr, fpb_flags, NULL,
+> +			       any_young, any_dirty);
+> +}
+> +
+> +static inline bool madvise_pte_split_folio(struct mm_struct *mm, pmd_t *pmd,
+> +					   unsigned long addr,
+> +					   struct folio *folio, pte_t **pte,
+> +					   spinlock_t **ptl)
+> +{
+> +	int err;
+> +
+> +	if (!folio_trylock(folio))
+> +		return false;
+> +
+> +	folio_get(folio);
+> +	pte_unmap_unlock(*pte, *ptl);
+> +	err = split_folio(folio);
+> +	folio_unlock(folio);
+> +	folio_put(folio);
+> +
+> +	*pte = pte_offset_map_lock(mm, pmd, addr, ptl);
+
+Staring at this helper again, I am really not sure if we should have it. 
+Calling semantics are "special" and that pte_t **pte is just ... 
+"special" as well ;)
+
+Can we just leave that part as is, in the caller? That would also mean 
+less madvise_cold_or_pageout_pte_range() churn ... which i would welcome 
+as part of this patch.
+
+[...]
+
+> @@ -741,19 +767,10 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+>   		}
+>   
+>   		if (pte_young(ptent) || pte_dirty(ptent)) {
+> -			/*
+> -			 * Some of architecture(ex, PPC) don't update TLB
+> -			 * with set_pte_at and tlb_remove_tlb_entry so for
+> -			 * the portability, remap the pte with old|clean
+> -			 * after pte clearing.
+> -			 */
+> -			ptent = ptep_get_and_clear_full(mm, addr, pte,
+> -							tlb->fullmm);
+> -
+> -			ptent = pte_mkold(ptent);
+> -			ptent = pte_mkclean(ptent);
+> -			set_pte_at(mm, addr, pte, ptent);
+> -			tlb_remove_tlb_entry(tlb, pte, addr);
+> +			clear_young_dirty_ptes(vma, addr, pte, nr,
+> +					       CYDP_CLEAR_YOUNG |
+> +						       CYDP_CLEAR_DIRTY);
+
+That indent looks odd. I suggest simply having a local variable
+
+const cydp_t cydp_flags = CYDP_CLEAR_YOUNG | CYDP_CLEAR_DIRTY;
+
+and then use cydp_flags here that will make this easier to read.
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
