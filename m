@@ -1,135 +1,140 @@
-Return-Path: <linux-kernel+bounces-148007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF6298A7C88
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:49:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38DA18A7C8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:50:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E49C9B21A50
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:48:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEAFC1F21450
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D283A65BA8;
-	Wed, 17 Apr 2024 06:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A56069E0F;
+	Wed, 17 Apr 2024 06:50:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shruggie-ro.20230601.gappssmtp.com header.i=@shruggie-ro.20230601.gappssmtp.com header.b="GFG2I0q7"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=herrie.org header.i=@herrie.org header.b="rkwPnbca"
+Received: from outbound9.mail.transip.nl (outbound9.mail.transip.nl [136.144.136.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC8D394
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 06:48:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBD5F29D06;
+	Wed, 17 Apr 2024 06:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.144.136.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713336532; cv=none; b=JKJ9AsIWK3vltMQaVgQUcCF68JyiMy5JoBHgvk9Qyng5IFEmXYH690HDhKfXYbXfXr0Tr79+7GeIpY5vJspvyKkPqOTRaVVc45bhAzTXetEZABYsnAe0Rxc+AqZG4A+KS/MLf1XmHmGDLdbQ6qhOMM+K8YNdJBEtqKZPQEAI5ZE=
+	t=1713336631; cv=none; b=ELU1HgAFkvKILRcAfVTkE+Twxs759ubFlzDK5Cjt5jIyRD1BZw9A2BOBOkV0jCt5m0NmeUAkneHaWmV0JoO9XeeK+nvcUzNeMI1j8GZqdir0skRYG/+fEUK19hZJ6i1WTgQFj18P8bJ/EePqcTTcxvfNxTR6eGV0JeiWFJ07XgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713336532; c=relaxed/simple;
-	bh=8GdD1N+kL+Txs2fR62xmamHs4atP+AS/1YrbyOjH9XU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Q1c3qZxGu4rCtzLDJa9Fp4B7qM11pLmAoZO7T5hKZpcpXS/M6X8OCMYRT8oKi8M8Y28cld2a6FdddIsLkmbDIZdNvM09U8q2PWg9V7cDyddAtM2TKpZPix0fEF51Ypy9InbcI5Z1VIj5RZlPgEVREZxbeU3qgKlWSoDi2W5tH+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shruggie.ro; spf=pass smtp.mailfrom=shruggie.ro; dkim=pass (2048-bit key) header.d=shruggie-ro.20230601.gappssmtp.com header.i=@shruggie-ro.20230601.gappssmtp.com header.b=GFG2I0q7; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shruggie.ro
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shruggie.ro
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5194cebd6caso227940e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:48:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shruggie-ro.20230601.gappssmtp.com; s=20230601; t=1713336527; x=1713941327; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8GdD1N+kL+Txs2fR62xmamHs4atP+AS/1YrbyOjH9XU=;
-        b=GFG2I0q76lEDzP8gzQO5K3lFcYJpKA4n7HsUPL7fA+NKaax4/BiQLG9lxgNGU8VQj1
-         vGdzrB+PaF1vc356ZyfVsxeiAl3Eah83W2BcHDIRfyLgqkoPLe2dw6jle9ZXwvkTgVIh
-         d3cyTZLAA53xxCaWRLAHhYGuxT8IJuReEaHcJyxLhVapOap5PRZCn6ySixf/02KcIUnn
-         DXdCcMRHPv/eLUTfnN1Ktalpb7+/gLA068Nkqyjc4tNHqFnONsSNC4Oybc6CCstQh6//
-         uZtHnFPPvWu9DHafjHw8vwWpb/FfkdGeN5SBHXYvlQT3FJ+aT1Oya8rNzNUvKmb0TKWc
-         wgQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713336527; x=1713941327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8GdD1N+kL+Txs2fR62xmamHs4atP+AS/1YrbyOjH9XU=;
-        b=RNT3ZfEx6p2N4RwIAQcWkhlJks+nmZUatsZZUz48PVLXHAVGolYUhNOBSrV2yVBsrX
-         9ox+UmoA2ZJtqu4x+bpHxIOAUtIdUr6chJPtN7teG4NaAcx8spR2y0BEKI8mWh1OATrP
-         BrmVyC6mbixEPRauJVuEhAS+i3et1x3oIOFMZSXLKSAfbnBUj2auUWqw5G4L3JtNnMhc
-         A2/Til5vKBGvX3HXiYXHRjBBh7dc3d79HRLcaIUcfmtvfJ3udgUtCV8Vw8qhEjqAXSxm
-         3ev90130SVsONyx4oR+Gq81v+AjVRmj7cGNQltu7iqgsmIUyFak4KocTEkKFORJlSmwc
-         7T5Q==
-X-Gm-Message-State: AOJu0YypzMjCtTXP8+tdQI1PmpUtdxhJhrQrDCQOut5Q7ODdpkKaP+tm
-	h3lUO/cuYwNHt6mFqDPbTJtcsl0nWNyTObnEqiSLGiwF00bm9buSjlxOQSz6lbdrcm2AAz9LTga
-	WG5kL8X+BdhpG28BnfOpemcmKOMFigqgF3rS/6g==
-X-Google-Smtp-Source: AGHT+IELKwZURXxT6BzF+klrUUBwR99xlItfoxcCvrRVeeNi5J6r7J+VMpXsyCHSfWJEcHe5m5fOsWmif33f2yBisH0=
-X-Received: by 2002:ac2:464a:0:b0:518:9950:9079 with SMTP id
- s10-20020ac2464a000000b0051899509079mr8518848lfo.2.1713336527056; Tue, 16 Apr
- 2024 23:48:47 -0700 (PDT)
+	s=arc-20240116; t=1713336631; c=relaxed/simple;
+	bh=3HxzvJ6OuwW8NkKZkqYr3vTgSjlJhi1guy2LIVfXoeY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=u9BXx507s5yIpjQhOP/AHKQs/yr9nAoform7wiRnJUG+kBkY+UPj8nu3WU2xaxvHmtLLzL0LMZ/nYS6HpwJZOo/iEMjyZwiDqCi5rz+a0v+r1Hct9uIOqSJcwhvKc3JSQyI7u+OZFBDZnAflwnhRMmXGxNmF63WSPrsbYIUlRVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=herrie.org; spf=pass smtp.mailfrom=herrie.org; dkim=pass (2048-bit key) header.d=herrie.org header.i=@herrie.org header.b=rkwPnbca; arc=none smtp.client-ip=136.144.136.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=herrie.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=herrie.org
+Received: from submission14.mail.transip.nl (unknown [10.103.8.165])
+	by outbound9.mail.transip.nl (Postfix) with ESMTP id 4VKBPB0Mf8zTPNMs;
+	Wed, 17 Apr 2024 08:50:22 +0200 (CEST)
+Received: from herrie-desktop.. (110-31-146-85.ftth.glasoperator.nl [85.146.31.110])
+	by submission14.mail.transip.nl (Postfix) with ESMTPA id 4VKBP917Nqz2ST2q;
+	Wed, 17 Apr 2024 08:50:21 +0200 (CEST)
+From: Herman van Hazendonk <github.com@herrie.org>
+To: dmitry.baryshkov@linaro.org
+Cc: andersson@kernel.org,
+	benwolsieffer@gmail.com,
+	chris.chapuis@gmail.com,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	github.com@herrie.org,
+	kishon@kernel.org,
+	konrad.dybcio@linaro.org,
+	krzk+dt@kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-phy@lists.infradead.org,
+	me@herrie.org,
+	robh@kernel.org,
+	vkoul@kernel.org
+Subject: Re: [PATCH v2] dt-bindings: phy: qcom,usb-hs-phy: Add compatible
+Date: Wed, 17 Apr 2024 08:50:20 +0200
+Message-Id: <20240417065020.3599755-1-github.com@herrie.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <CAA8EJpo=nd8ywUzz2e42p7WAyuFm439yvNf6H=MD63LCV0xTnw@mail.gmail.com>
+References: <CAA8EJpo=nd8ywUzz2e42p7WAyuFm439yvNf6H=MD63LCV0xTnw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230516122202.954313-1-alex@shruggie.ro> <CAH3L5QoBqSOBHhoxSrYw6U34gqTPEhi_RB_Cve-YmBzYj3LXAQ@mail.gmail.com>
- <CAH3L5QqZ61H9Fk24R4K3vNdpmvBjnxHaxH7CRTT5Fa3tbot_hg@mail.gmail.com> <xhsmho7ajanb5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-In-Reply-To: <xhsmho7ajanb5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-From: Alexandru Ardelean <alex@shruggie.ro>
-Date: Wed, 17 Apr 2024 09:48:36 +0300
-Message-ID: <CAH3L5Qr9Lmju1nXk-+O8d9Hj0r0WyLP-grrbaY6HfQx_Ga_KMw@mail.gmail.com>
-Subject: Re: [PATCH][V2] sched/rt: Print curr when RT throttling activated
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
-	tian.xianting@h3c.com, steffen.aschbacher@stihl.de, 
-	gregkh@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: ClueGetter at submission14.mail.transip.nl
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=transip-a; d=herrie.org; t=1713336621; h=from:subject:to:cc:
+ references:in-reply-to:date:mime-version;
+ bh=yitk1PINuG+ZttWDjmHS+5CUubvYDjED2MOpSUGliao=;
+ b=rkwPnbcaVbl+/j7vxyR4afo2tfgaVt3k5zO2AvGRlhzkPONCWrLPe4gUiCEe32ZY9aDYMJ
+ 4j0VAiiYxB+cC3qUwWhoWx74XbrUYLzwSvo+c3hl4EH5bFalLOyLmcs/mOXXppNsGC7arg
+ Zl5y3oRs2PMbtBYakdaFuKLA3C7x4zDjczQeOKaE9vLMrDPzI4Ms3k6bOYS1UnQniGcImK
+ 6qH+0YGNgclTXewTp52AOSWd3jp+MBltoMoRs4thW7+uVPZ/6gWlG8Ac2SJStO0Pyp2XGT
+ 8LPe2kelD5JtYpH2QsU2YSwqZG7/NGJKQj1EKBsJY1F7PuiuynIgR+wa5RvvSg==
+X-Report-Abuse-To: abuse@transip.nl
 
-On Mon, Apr 8, 2024 at 6:25=E2=80=AFPM Valentin Schneider <vschneid@redhat.=
-com> wrote:
->
-> On 01/04/24 18:47, Alexandru Ardelean wrote:
-> > On Thu, Jul 13, 2023 at 11:07=E2=80=AFPM Alexandru Ardelean <alex@shrug=
-gie.ro> wrote:
-> >>
-> >> On Tue, May 16, 2023 at 3:22=E2=80=AFPM Alexandru Ardelean <alex@shrug=
-gie.ro> wrote:
-> >> >
-> >> > From: Xianting Tian <tian.xianting@h3c.com>
-> >> >
-> >> > We may meet the issue, that one RT thread occupied the cpu by 950ms/=
-1s,
-> >> > The RT thread maybe is a business thread or other unknown thread.
-> >> >
-> >> > Currently, it only outputs the print "sched: RT throttling activated=
-"
-> >> > when RT throttling happen. It is hard to know what is the RT thread,
-> >> > For further analysis, we need add more prints.
-> >> >
-> >> > This patch is to print current RT task when RT throttling activated,
-> >> > It help us to know what is the RT thread in the first time.
-> >> >
-> >>
-> >> Adding Greg on this patch, since it 's been a while.
-> >> And also: ping :)
-> >
-> > Ping on this :)
-> >
->
-> AFAIA this has been proposed a few times in the past, the problem is that
-> printing the current task isn't the right thing to do as it may not be th=
-e
-> one that contributed most of the runtime that lead to throttling.
->
-> See https://lore.kernel.org/lkml/20221209163606.53a2370e@gandalf.local.ho=
-me/
+On Wed, 17 Apr 2024 at 07:52, Herman van Hazendonk
+<github.com@herrie.org> wrote:
+>>
+>> Adds qcom,usb-hs-phy-msm8660 compatible
+>>
+>> Used by HP Touchpad (tenderloin) for example.
+>>
+>> Signed-off-by: Herman van Hazendonk <github.com@herrie.org>
+>> ---
+>>  Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
+>> index f042d6af1594..ccf23170cd17 100644
+>> --- a/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
+>> +++ b/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
+>> @@ -15,6 +15,7 @@ if:
+>>        contains:
+>>          enum:
+>>            - qcom,usb-hs-phy-apq8064
+>> +          - qcom,usb-hs-phy-msm8660
+>>            - qcom,usb-hs-phy-msm8960
+>>  then:
+>>    properties:
+>> @@ -41,6 +42,7 @@ properties:
+>>        - enum:
+>>            - qcom,usb-hs-phy-apq8064
+>>            - qcom,usb-hs-phy-msm8226
+>> +          - qcom,usb-hs-phy-msm8960
 
-Ah.
-Thanks for the input :)
-I'll shut up on this.
+> This should probably be msm8660 rather than 8960
+Hi Dmitry,
 
-Thanks
-Alex
+Thanks for the swift feedback. I'll send a v3.
+I need more coffee before doing this in the morning
 
->
+> Note, nowadays the rule would be to use qcom,msm8660-usb-hs-phy
+> compatible, but I wonder if we should enforce this for such an old
+> platform or whether similarity wins.
+
+>>            - qcom,usb-hs-phy-msm8916
+>>            - qcom,usb-hs-phy-msm8960
+>>            - qcom,usb-hs-phy-msm8974
+>>
+
+I plan to send more patches for the msm8660, so happy to understand what
+is the preferred approach, because it doesn't seem consistent.
+
+These are my first patches, so learning mainly from what I see in commit
+history (which might be outdated)
+It's indeed ancient platform, we just would like to get HP TouchPad
+(tenderloin) running with a mainline kernel, hence these patches.
+
+Best regards,
+Herman
+
+> --
+> With best wishes
+> Dmitry
 
