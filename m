@@ -1,58 +1,63 @@
-Return-Path: <linux-kernel+bounces-149020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CC498A8A8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:55:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F3C08A8A8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:55:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFB371F23C9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:55:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 911001C22AD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:55:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 425E6172BCB;
-	Wed, 17 Apr 2024 17:55:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D03D172BD3;
+	Wed, 17 Apr 2024 17:55:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iZWrEymo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="R7DYTJNd"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C1D3171085;
-	Wed, 17 Apr 2024 17:55:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8FD81487DF;
+	Wed, 17 Apr 2024 17:55:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713376501; cv=none; b=hkzlpJ3imkhYN9Pz6ZOZJFxKMXVCP2IyKtkE+aVXaTF/c+/4mvXuIFLlcBcHC+o5NBrgjEeCipEWHXXfDCeaovCUzeDziZ35wkRinWkYiqVVokG1j5Sk6NsPWVxhzjYZM49gprbcyzLRwbms2lwgamfSL+tKj3mSJrDQR/Wbdi4=
+	t=1713376545; cv=none; b=jd2JyAEP1zKf8RDZ9wMDnTto7yxCkNFKlq7loP0QcTGoiBmA9ncjFzz6HhKChx0nOyro2jczY2M/CcD2MdLb8EzOINhY2+bNTgTsdmP8tBP5afPvY2TH3Th+BPplVuKXkxZvkFqGrOvAMRmRUYAnn62YjCWgpepQP9SuS9oyqP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713376501; c=relaxed/simple;
-	bh=kP4KZgGxptEzt0uGCLTrdIeZdz6Bjv/rNYIUCX6ObTs=;
+	s=arc-20240116; t=1713376545; c=relaxed/simple;
+	bh=iM1cRx/dRlcToMFYIxS0SCJWI9W90EJVDhqZRt7Jh1k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pyo16KySMo8RRbvxa9ESb4jDnBSOdFMzXVh35a3UbDzLDlqyk62DVZUq87dNAXr9JYM3lslp7UWj0VHyHKyqjZp/8UcAmeH2qPQPQRzEFSAREMezsV/xqHbq8IIOfiTjGbIf2cV71FHhCRhtXKWVF2mjFFAKcu7r9VcLJM2W2og=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iZWrEymo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 533A9C072AA;
-	Wed, 17 Apr 2024 17:54:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713376501;
-	bh=kP4KZgGxptEzt0uGCLTrdIeZdz6Bjv/rNYIUCX6ObTs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iZWrEymoameUeWO6ldRkpNsGN/Psgewym91GfiMf1ZdwgC0n8BcXTY0Efh+ckHYUs
-	 80aXSRkEkNljt043JyAFKdio86RckOGSS84s00wB89liOAgfAgty4FmrSMy+bL/81o
-	 JRHlP5BFp64OvwIghEoddAkj6X1CyN4NlwLDyhQxLWuEjK+BDr8lOUasjli3wDkn45
-	 HOGG8pBHOLUs76Crii3Ri8RKVGRVQ4zMmvbgI+U2UgJPEZe1wF/fHE+hJ8UfJ+GJO5
-	 R2dt7B2mdnZtASLHYwwN1aWfdKbfA+ShYX5bcKNhwB0XIDfz8mSzyCPITnDhvHrQOH
-	 B9pLs85VMzMUQ==
-Date: Wed, 17 Apr 2024 19:54:56 +0200
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH] PCI: endpoint: pci-epf-test: Make use of cached
- 'epc_features' in pci_epf_test_core_init()
-Message-ID: <ZiAM8Hp24XF8CyUJ@ryzen>
-References: <20240417-pci-epf-test-fix-v1-1-653c911d1faa@linaro.org>
- <ZiALuYlshLmwLhvu@ryzen>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Net0NebJYH0uhtpMnygkaHiObP4/G143n1bwbuvwowgZgmpNcgwGxOgcb+qrL4onKshgh+J18zcnFubEXQAIdkiZN/PKruxLMjoh8FbIVcq6XhM3vPAudIyyhKhUFZLtzQklF8HRyvPoGufBnE6Rj760UlwwDQvIyhaRh1Yt5Cg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=R7DYTJNd; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=InWcaRy3h3nbfDQgATItK7nUOOUbF1ycPOVv55Cp7bw=; b=R7DYTJNd8n8/ayp8J3r+y+0izk
+	BnBCLmMrEZ8RPWxyf2cv3HpzKGFEBSyu4aIfr4pF9eTeVeO0Oj40XEWmyaXpA0uGTvaf5Fy11+Gjl
+	Hh5+GHXybPSmn1VuiPOa8w5SQEc872Q7YkEShx2CdOa4D71qe5WE6qhinyf3OnyIHfhNJMvelo6gs
+	BIsGCR7u0X64TVweOu0Pr5T6HWYp1SwdYZ4v+B0vsfwJ8k+sRMOxitce4vuq+ncmkcuBG4iNenbEV
+	/5FPlAnOTqxZSxfw9CEkTfVBWbkCNgH55nzZOjFNPsPzhBr5/WnkZMQlH2N3r14Qd4Q/wWl3fdFCw
+	RYv4roNA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rx9VT-0000000Bd3H-1UcW;
+	Wed, 17 Apr 2024 17:55:39 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 079023002E1; Wed, 17 Apr 2024 19:55:39 +0200 (CEST)
+Date: Wed, 17 Apr 2024 19:55:38 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Mikulas Patocka <mpatocka@redhat.com>
+Cc: Mike Snitzer <msnitzer@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+	Damien Le Moal <dlemoal@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
+	Guangwu Zhang <guazhang@redhat.com>, dm-devel@lists.linux.dev,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] completion: move blk_wait_io to
+ kernel/sched/completion.c
+Message-ID: <20240417175538.GP40213@noisy.programming.kicks-ass.net>
+References: <31b118f3-bc8d-b18b-c4b9-e57d74a73f@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,121 +66,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZiALuYlshLmwLhvu@ryzen>
+In-Reply-To: <31b118f3-bc8d-b18b-c4b9-e57d74a73f@redhat.com>
 
-On Wed, Apr 17, 2024 at 07:49:45PM +0200, Niklas Cassel wrote:
-> On Wed, Apr 17, 2024 at 10:47:25PM +0530, Manivannan Sadhasivam wrote:
-> > Instead of getting the epc_features from pci_epc_get_features() API, use
-> > the cached pci_epf_test::epc_features value to avoid the NULL check. Since
-> > the NULL check is already performed in pci_epf_test_bind(), having one more
-> > check in pci_epf_test_core_init() is redundant and it is not possible to
-> > hit the NULL pointer dereference. This also leads to the following smatch
-> > warning:
-> > 
-> > drivers/pci/endpoint/functions/pci-epf-test.c:784 pci_epf_test_core_init()
-> > error: we previously assumed 'epc_features' could be null (see line 747)
-> > 
-> > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > Closes: https://lore.kernel.org/linux-pci/024b5826-7180-4076-ae08-57d2584cca3f@moroto.mountain/
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
-> I think you forgot:
-> Fixes: a01e7214bef9 ("PCI: endpoint: Remove "core_init_notifier" flag")
-> 
-> 
-> > ---
-> >  drivers/pci/endpoint/functions/pci-epf-test.c | 9 ++++-----
-> >  1 file changed, 4 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-> > index 977fb79c1567..0d28f413cb07 100644
-> > --- a/drivers/pci/endpoint/functions/pci-epf-test.c
-> > +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-> > @@ -743,11 +743,10 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
-> >  	bool msi_capable = true;
-> >  	int ret;
-> >  
-> > -	epc_features = pci_epc_get_features(epc, epf->func_no, epf->vfunc_no);
-> > -	if (epc_features) {
-> > -		msix_capable = epc_features->msix_capable;
-> > -		msi_capable = epc_features->msi_capable;
-> > -	}
-> > +	epc_features = epf_test->epc_features;
-> 
-> How about:
-> 
-> index 977fb79c1567..4d6105c07ac0 100644
-> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
-> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-> @@ -735,7 +735,7 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
->  {
->         struct pci_epf_test *epf_test = epf_get_drvdata(epf);
->         struct pci_epf_header *header = epf->header;
-> -       const struct pci_epc_features *epc_features;
-> +       const struct pci_epc_features *epc_features = epf_test->epc_features;
->         struct pci_epc *epc = epf->epc;
->         struct device *dev = &epf->dev;
->         bool linkup_notifier = false;
-> @@ -743,12 +743,6 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
->         bool msi_capable = true;
->         int ret;
+On Wed, Apr 17, 2024 at 07:49:17PM +0200, Mikulas Patocka wrote:
+> Index: linux-2.6/kernel/sched/completion.c
+> ===================================================================
+> --- linux-2.6.orig/kernel/sched/completion.c	2024-04-17 19:41:14.000000000 +0200
+> +++ linux-2.6/kernel/sched/completion.c	2024-04-17 19:41:14.000000000 +0200
+> @@ -290,6 +290,26 @@ wait_for_completion_killable_timeout(str
+>  EXPORT_SYMBOL(wait_for_completion_killable_timeout);
 >  
-> -       epc_features = pci_epc_get_features(epc, epf->func_no, epf->vfunc_no);
-> -       if (epc_features) {
-> -               msix_capable = epc_features->msix_capable;
-> -               msi_capable = epc_features->msi_capable;
-> -       }
-> -
->         if (epf->vfunc_no <= 1) {
->                 ret = pci_epc_write_header(epc, epf->func_no, epf->vfunc_no, header);
->                 if (ret) {
-> @@ -761,6 +755,7 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
->         if (ret)
->                 return ret;
->  
-> +       msi_capable = epc_features->msi_capable;
->         if (msi_capable) {
->                 ret = pci_epc_set_msi(epc, epf->func_no, epf->vfunc_no,
->                                       epf->msi_interrupts);
-> @@ -770,6 +765,7 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
->                 }
->         }
->  
-> +       msix_capable = epc_features->msix_capable;
->         if (msix_capable) {
->                 ret = pci_epc_set_msix(epc, epf->func_no, epf->vfunc_no,
->                                        epf->msix_interrupts,
-> @@ -814,11 +810,9 @@ static int pci_epf_test_alloc_space(struct pci_epf *epf)
->         void *base;
->         enum pci_barno test_reg_bar = epf_test->test_reg_bar;
->         enum pci_barno bar;
-> -       const struct pci_epc_features *epc_features;
-> +       const struct pci_epc_features *epc_features = epf_test->epc_features;
->         size_t test_reg_size;
->  
-> -       epc_features = epf_test->epc_features;
-> -
->         test_reg_bar_size = ALIGN(sizeof(struct pci_epf_test_reg), 128);
->  
->         msix_capable = epc_features->msix_capable;
-> 
-> 
-> Instead?
-> 
-> That way, we assign msi_capable/msix_capable just before the if-statement
-> where it is used. (Which matches how we already assign msix_capable just
-> before the if-statement in pci_epf_test_alloc_space().)
+>  /**
+> + * wait_for_completion_long_io - waits for completion of a task
+> + * @x:  holds the state of this particular completion
+> + *
+> + * This is like wait_for_completion_io, but it doesn't warn if the wait takes
+> + * too long.
+> + */
+> +void wait_for_completion_long_io(struct completion *x)
+> +{
+> +	/* Prevent hang_check timer from firing at us during very long I/O */
+> +	unsigned long timeout = sysctl_hung_task_timeout_secs * HZ / 2;
+> +
+> +	if (timeout)
+> +		while (!wait_for_completion_io_timeout(x, timeout))
+> +			;
+> +	else
+> +		wait_for_completion_io(x);
+> +}
+> +EXPORT_SYMBOL(wait_for_completion_long_io);
 
-..or just kill the local variables:
-bool msi_capable/msix_capable in pci_epf_test_core_init(), and
-bool msix_capable pci_epf_test_alloc_space()
-and just do:
-
-if (epc_features->msix_capable) / if (epc_features->msi_capable)
-
-directly?
-
-
-Kind regards,
-Niklas
+Urgh, why is it a sane thing to circumvent the hang check timer? 
 
