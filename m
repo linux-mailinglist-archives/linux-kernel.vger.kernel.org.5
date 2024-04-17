@@ -1,189 +1,168 @@
-Return-Path: <linux-kernel+bounces-148468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 027918A82FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:18:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D28658A8301
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:18:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54162B230A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:18:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 014E91C2123B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:18:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44ACA13D529;
-	Wed, 17 Apr 2024 12:18:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A7B13CF87;
+	Wed, 17 Apr 2024 12:18:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NRK9Yy4C"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="csh5bW64"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E061113BC21
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 12:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E92E13D24E
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 12:18:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713356298; cv=none; b=a8+X29PSGxOTnAlYTJWqFXdCIbUWPPvEkpCTzYLLUHq9hkDsZteYzQQBqbnqyhwmD00vzg3NXdbdHTYC8iKNOU9j+UflGLnLn1jghic/g5ZWqhzDtBwW/NKRwprTIXeFI47U7znnNgOz6crbF8aKboh0dfeHZlQGWckOD5A/fBg=
+	t=1713356299; cv=none; b=uEKDqo5znpNrC7dVnc02QYuKbxBin5QrJ0xEjTa2dNdfCZSuCSLgYcWwsOnjfMoLDppjxRgRr6/HJr8Uq4NIOAH363mexaszmvyns3h8NRg7Hqt3vqvFPSlxCiU/l4yEo4MX/L0/bZZiNvsGTA5K0Y5t8lPjzTJaUMdEL4UXoVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713356298; c=relaxed/simple;
-	bh=5sPbX2601ThBLr4CINQAAZzaaohjANPkkqRezSuwCDQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rU3VEFKafW/dW3bVA5V/2Zq3FjkhxwZcrituyM5pB87uphD2XsHHns9Det2dr/4KPR5CQIgcOGVRuSl88SLOIx+/mvnCusUl9F1EF0mrOG5kWwSXwuul6u/wNjAEYGI6KL/y3WZsTDR8Q10LF8x6ihrmkH3R58i2+0RAEZLwEFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NRK9Yy4C; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1713356299; c=relaxed/simple;
+	bh=x+uOmS4px3uisw7WCSJE0PyPJcNxBj0VAokAj5V/jd0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cOSB3T0elnzPIXmhuCEFgbYJ4p0L/x2HxAOBT8wqEf7lY+APgJztIzWVC4uX/XwYOudJzfg0UfcbdF2DaefJmxoMLuegF7d8u+S1hDlYKGbyZn6h8Dp9DNnTm4k4mJGJOdt9EAgnoACtP3h0MoleVVN/RdeciFmiF+8OWDGpqLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=csh5bW64; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713356295;
+	s=mimecast20190719; t=1713356296;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z1xeyxCIrXbRqe02PXMvaFPCYUz5h2TFi+FFPVK4xZ0=;
-	b=NRK9Yy4Ci8fwG4QRghd4vcJ3SJgY9ipY264hFZ45HqIkXkOnXnj9OaC6R9XXI/N+sY0pJ+
-	lOAIG25LxbD4DK61vT9A3kTIh6GAEkSc8nKDpVr+RSj068603xJFZKwZqIT9+7srzMrH5t
-	lMH6iegsmZvhTGZLJ70FOAmTa9YlnwQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Mw1O18gbH7ZpAoJygnjuD6cxPj3U80IsZiWOLT2eTIM=;
+	b=csh5bW64IPeH+mQGp5IiDFniLimjDXkRn14efXqFYyXueVUYkVPvaiPnPNSpah6MwsQZjZ
+	PK4oWMsPihDSkrfN7Xo1z1Emt2pLi/DsSpkJ8SJihQVexKDsAzrGZZvrp+4JyTnprfrm7G
+	hH3nxGJgDFO9pV9Rxm0gMN0gB+Fi1s4=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-349-6lHditKaPLSCPvcNYbTqVA-1; Wed, 17 Apr 2024 08:18:14 -0400
-X-MC-Unique: 6lHditKaPLSCPvcNYbTqVA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3479b511725so2405527f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 05:18:14 -0700 (PDT)
+ us-mta-60-wVDUBUY8M7yWmDZoLYJYYw-1; Wed, 17 Apr 2024 08:18:15 -0400
+X-MC-Unique: wVDUBUY8M7yWmDZoLYJYYw-1
+Received: by mail-yb1-f197.google.com with SMTP id 3f1490d57ef6-dd169dd4183so7368141276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 05:18:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713356293; x=1713961093;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z1xeyxCIrXbRqe02PXMvaFPCYUz5h2TFi+FFPVK4xZ0=;
-        b=qxilSUkvoqooUAlufY5kcuPrv+Esf0arMAibwHA1/JIwazuDkn1ye1v8JDKzqrEQ/P
-         k4AC1w34Wk+2C2c7Zb4Yl9rVxzqxtd/24BQQH4o2c5fv0tblARj7PkTYWKcg+xpeSW2B
-         4lNAjRrdCnGkxkoG+GZZeg4Ojdlplk+wYXFCl7Fclclq6WJhbkzy14gJom4TYpttmkPw
-         wHQP7huQ6Qr+dVxJBiZyj9LQRPPROt5F/rmPk7kR3TsVqDo+qm5nxtRw2qbeU4SzSjv+
-         c5OYYIn/6upXszPJ+QqFMjX8ei1zityKKQuTvFjPkj2v7TOHMJMVaC1Ob7PviLcZL3Sn
-         5gjg==
-X-Forwarded-Encrypted: i=1; AJvYcCUN8L/ptc9+A/OqMm02NPUFHfMxA1zJULw+Bl5+Tn9AjQbNa7p7i18iJh+ji7KR93aKHwKXnuwP4rxu7J9tT9knj/1GLLjXeAlxMx2j
-X-Gm-Message-State: AOJu0YzjXb/HYLYsav6CoYUde4X1WRWDJj+RdHPmWULpv95RIpEUHCqp
-	+Z6Ez/HXALgSJfsNtrPcFM21vsQMYq/UkEsuvZYk0wpJb65kdA9vYSpYdqb/hBdZL1/dt9s475M
-	Q2gLj2VBbuXGaYLS3VyzMmzGVQmOI/kW81tWbOnOgkKwaWr7bLkDPA7j12fwakrFBzqqADoKWFO
-	z0w3kYG4r2a/ubPRm74feYlWSi75H6j0caR5jW
-X-Received: by 2002:adf:e691:0:b0:349:c5da:f234 with SMTP id r17-20020adfe691000000b00349c5daf234mr1166775wrm.24.1713356293316;
+        d=1e100.net; s=20230601; t=1713356294; x=1713961094;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Mw1O18gbH7ZpAoJygnjuD6cxPj3U80IsZiWOLT2eTIM=;
+        b=wQdbZV3/U1zAXzle2oby5K9NldmgOoY4u7wTvAXjeDHYMTdI4WUT9kt2LAY9CwHGcB
+         8R1QiIF1t2vp996ZsG+KnYZtMlTY4ewBo2H0GPhBNzZxLtUZiaCHwyiRspNZubJLZqq2
+         QnnIAsHHeVkAnWhX+jJaZahiIQfCUQpImXzXY3ygtdQdigTD8MPpwuZoAV3/W2sACyGs
+         adLmyGl1pRwkLSjMENQYMKAS1p1pSd/s/aP5og9V8SOEqIDwufi2D/dDVThlEaDfMp/E
+         iXzTJJYdaHUYQ6d1sN9FxfwA0ELZN6CKwXuQ9y2uRuIlll/QZDfsC88Pwz/Vpjr5ICDj
+         B1lA==
+X-Gm-Message-State: AOJu0YwUpOrKSFxDUN0aHc43h7iwwrTcS55/fKPL/fp76oGl2aPb30XZ
+	d34DEOszSpF6DwmYAYicHafH3qFc1bKJtJLEqcvOOQ79yqwgzJVP0nI1oLmSYDsBEFJCiFMiCxV
+	3Cj/a+sIGc+3SAXUhGzYBJzctPoG36/mqrmk4g0ZF9W1CfQTXo9kIkNr/Jk9kdrPO2mqTAg==
+X-Received: by 2002:a25:8141:0:b0:dc6:cbb9:e with SMTP id j1-20020a258141000000b00dc6cbb9000emr14945225ybm.41.1713356294157;
+        Wed, 17 Apr 2024 05:18:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHd+ZmfUuFEEA8xWILQJpSD9kj6k2fm0H6n2sACdE/Gv3NryInJq0B2TXKP433mn3U53V+NZQ==
+X-Received: by 2002:a25:8141:0:b0:dc6:cbb9:e with SMTP id j1-20020a258141000000b00dc6cbb9000emr14945199ybm.41.1713356293856;
         Wed, 17 Apr 2024 05:18:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFoOEsCTLjJTS1YCauqCVZzkKnhF2e22OnjEOVValYjW4muCtAADRbQj6C9XeKlg7eP6w5IWqmc1/zwRmMxqnQ=
-X-Received: by 2002:adf:e691:0:b0:349:c5da:f234 with SMTP id
- r17-20020adfe691000000b00349c5daf234mr1166757wrm.24.1713356292989; Wed, 17
- Apr 2024 05:18:12 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c745:2300:653:c844:4858:570f? (p200300cbc74523000653c8444858570f.dip0.t-ipconnect.de. [2003:cb:c745:2300:653:c844:4858:570f])
+        by smtp.gmail.com with ESMTPSA id o15-20020a056902010f00b00dc22f4bf808sm2839357ybh.32.2024.04.17.05.18.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 05:18:13 -0700 (PDT)
+Message-ID: <209b1956-a46f-41aa-bec1-cd65484f36cd@redhat.com>
+Date: Wed, 17 Apr 2024 14:18:10 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1712785629.git.isaku.yamahata@intel.com> <7138a3bc00ea8d3cbe0e59df15f8c22027005b59.1712785629.git.isaku.yamahata@intel.com>
-In-Reply-To: <7138a3bc00ea8d3cbe0e59df15f8c22027005b59.1712785629.git.isaku.yamahata@intel.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Wed, 17 Apr 2024 14:18:01 +0200
-Message-ID: <CABgObfbrntjYobdHxfBGjMhSafW9BWKp-fWpcHW2-Cr3BuqOGQ@mail.gmail.com>
-Subject: Re: [PATCH v2 06/10] KVM: x86: Implement kvm_arch_vcpu_map_memory()
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, isaku.yamahata@gmail.com, 
-	linux-kernel@vger.kernel.org, Sean Christopherson <seanjc@google.com>, 
-	Michael Roth <michael.roth@amd.com>, David Matlack <dmatlack@google.com>, 
-	Federico Parola <federico.parola@polito.it>, Kai Huang <kai.huang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/2] fs/proc/task_mmu: convert smaps_hugetlb_range() to
+ work on folios
+To: Oscar Salvador <osalvador@suse.de>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Muchun Song <muchun.song@linux.dev>
+References: <20240417092313.753919-1-david@redhat.com>
+ <20240417092313.753919-3-david@redhat.com>
+ <Zh-7_0hDIZKWSDNB@localhost.localdomain>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <Zh-7_0hDIZKWSDNB@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 11, 2024 at 12:08=E2=80=AFAM <isaku.yamahata@intel.com> wrote:
->
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> Wire KVM_MAP_MEMORY ioctl to kvm_mmu_map_tdp_page() to populate guest
-> memory.  When KVM_CREATE_VCPU creates vCPU, it initializes the x86
-> KVM MMU part by kvm_mmu_create() and kvm_init_mmu().  vCPU is ready to
-> invoke the KVM page fault handler.
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
-> v2:
-> - Catch up the change of struct kvm_memory_mapping. (Sean)
-> - Removed mapping level check. Push it down into vendor code. (David, Sea=
-n)
-> - Rename goal_level to level. (Sean)
-> - Drop kvm_arch_pre_vcpu_map_memory(), directly call kvm_mmu_reload().
->   (David, Sean)
-> - Fixed the update of mapping.
-> ---
->  arch/x86/kvm/x86.c | 30 ++++++++++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
->
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 2d2619d3eee4..2c765de3531e 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4713,6 +4713,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, l=
-ong ext)
->         case KVM_CAP_VM_DISABLE_NX_HUGE_PAGES:
->         case KVM_CAP_IRQFD_RESAMPLE:
->         case KVM_CAP_MEMORY_FAULT_INFO:
-> +       case KVM_CAP_MAP_MEMORY:
->                 r =3D 1;
->                 break;
->         case KVM_CAP_EXIT_HYPERCALL:
-> @@ -5867,6 +5868,35 @@ static int kvm_vcpu_ioctl_enable_cap(struct kvm_vc=
-pu *vcpu,
->         }
->  }
->
-> +int kvm_arch_vcpu_map_memory(struct kvm_vcpu *vcpu,
-> +                            struct kvm_memory_mapping *mapping)
-> +{
-> +       u64 end, error_code =3D 0;
-> +       u8 level =3D PG_LEVEL_4K;
-> +       int r;
-> +
-> +       /*
-> +        * Shadow paging uses GVA for kvm page fault.  The first implemen=
-tation
-> +        * supports GPA only to avoid confusion.
-> +        */
-> +       if (!tdp_enabled)
-> +               return -EOPNOTSUPP;
-> +
-> +       /* reload is optimized for repeated call. */
-> +       kvm_mmu_reload(vcpu);
-> +
-> +       r =3D kvm_tdp_map_page(vcpu, mapping->base_address, error_code, &=
-level);
-> +       if (r)
-> +               return r;
-> +
-> +       /* mapping->base_address is not necessarily aligned to level-huge=
-page. */
+On 17.04.24 14:09, Oscar Salvador wrote:
+> On Wed, Apr 17, 2024 at 11:23:13AM +0200, David Hildenbrand wrote:
+>> Let's get rid of another page_mapcount() check and simply use
+>> folio_likely_mapped_shared(), which is precise for hugetlb folios.
+>>
+>> While at it, use huge_ptep_get() + pte_page() instead of ptep_get() +
+>> vm_normal_page(), just like we do in pagemap_hugetlb_range().
+> 
+> That is fine because vm_normal_page() tries to be clever about  mappings which
+> hugetlb does not support, right?
 
-        /*
-         * level can be more than the alignment of mapping->base_address if
-         * the mapping can use a huge page.
-         */
+Right, using vm_normal_page() is even completely bogus. Usually (but not 
+always) we have PMDs/PUDs and not PTEs for mapping hugetlb pages -- 
+where vm_normal_folio_pmd() would be the right thing to do.
 
-> +       end =3D (mapping->base_address & KVM_HPAGE_MASK(level)) +
-> +               KVM_HPAGE_SIZE(level);
-> +       mapping->size -=3D end - mapping->base_address;
-> +       mapping->base_address =3D end;
+That's also the reason why hugetlb.c has not a single user of 
+vm_normal_page() and friends ... it doesn't apply to hugetlb, but likely 
+also isn't currently harmful to use it.
 
-Slightly safer in the case where level is more than the alignment of
-mapping->base_address:
+-- 
+Cheers,
 
-        mapped =3D min(mapping->size, end - mapping->base_address);
-        mapping->size -=3D mapped;
-        mapping->base_address +=3D mapped;
-
-Paolo
-
-> +       return r;
-> +}
-> +
->  long kvm_arch_vcpu_ioctl(struct file *filp,
->                          unsigned int ioctl, unsigned long arg)
->  {
-> --
-> 2.43.2
->
+David / dhildenb
 
 
