@@ -1,108 +1,130 @@
-Return-Path: <linux-kernel+bounces-147779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02EBF8A7994
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:04:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04E408A799B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:08:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B44E5282F76
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:04:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F5D21C22318
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:08:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40CCE394;
-	Wed, 17 Apr 2024 00:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7B5B7EC;
+	Wed, 17 Apr 2024 00:08:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="OSCIzlH5"
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="lKtLeQ0M"
+Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16BC529CFB
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:03:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0BF510E9;
+	Wed, 17 Apr 2024 00:08:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713312223; cv=none; b=Qv3L/i3I9ZPvAvPvKIFtiQEuPJXFSqixUfPtviiaswQnuVfMEpK9aBXQbfp63svNhQCqoHsZ2Ht/5AhnabOZnRRgn1xp5Hs61E3nB5yUYMPxZ/E/C8EZrbdE4P/BWVL+Dvsmhsw38o7UjSU+qmlrCXyESlNvmVfs1FVhY9447og=
+	t=1713312488; cv=none; b=qKLK5tXQEqnEAuXvrqIhXq9g3vsmbn3nBGdG+KMpHM1ezqItct9MIPgvAAMpIbWqwm0dLShB1vIet8QVL4FKjwaILK48V3AUlqJkVN9ncqlj4MzvSi9Ef4MBWYQYdKQnas68ni9+Y2/V9jFFqRj0kEcFKkxNB9ps3/UNdA2H8As=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713312223; c=relaxed/simple;
-	bh=sAYUqJIp1cIswCUgE2SHPOCm/Go8GvaZkQnCVt6u2pY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y2uJEOB/Vj6hWhFuZe0ljTEpowo9rQb2wREvG8pC09+6FprnOhqBklXOrbeSPMppqIBfnI4QA+S7GZ7/nNOT3CRYQmFVZChIlzVu+6zejENrHp19z77f2jSs4lUxJBBZpStjp072zuJrZ+PSQljwcqyu3nyJnzxeOhCRzDXm6Uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=OSCIzlH5; arc=none smtp.client-ip=209.85.161.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5acdbfa6e94so133122eaf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:03:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1713312221; x=1713917021; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8nEb596pNHjGRxwi+zHrhblVQCdUyfcBe4WmHdhpM9s=;
-        b=OSCIzlH5T+ape9XZzsDrsG5kxO9pF0qdJIncA2i5gKLUtvIZ7EnJ54BNtZOB8Ldrbu
-         0dKbA58OO7efduI+EvO0kZWeH/+yLG2FgfmY9psc6VsvfNLHvUe9ycz00Ea5/BvZStUA
-         iIOl4ZqPESHb8XiGB96NVahJkpjBSA5yEBf8o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713312221; x=1713917021;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8nEb596pNHjGRxwi+zHrhblVQCdUyfcBe4WmHdhpM9s=;
-        b=IZ4qIJhNFDuE9hs4MKL9BpBzkklhTZ4kGgSQ9W83cm0mbZVw0HTRugfAHYLXyDnPv3
-         eqXemHur+FASUuOZYYRYPIG+OQ1xg2cPN3bZPx7/SYMyRXVsJ4PoLkA8kAG16Vqg1PFV
-         pbcNpA7KBWM4vOA6PTKeTWxTLGrcII51CjPGRnsu2efTIpglnOH7EvZzzNuFRdzCNVZg
-         cy6pJO5xCa08a3MQC1oDmItaRuniKpCGC0/J9oepAlhyC2Pktq7kAAf3V+PU3SDF2Dfz
-         l4PSSaztikqANlGwC1BCcR1A0p/OsbCxcdjY0AoSTsYsbuPV0bWHcMj8f7/ETJsui2xI
-         CIHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXKycDvq+hP8epEcVIwh91x5SJ0twJWHolJvJEHxTrMPWXQySapWpR+x8KyLHhrghlY2lGqbBRM+RjNzUgmn3a5MZ9mB6sHaH/rM0kr
-X-Gm-Message-State: AOJu0Yw8nY+p7X2XUe6lyL6S4BSrJbEpQSxLufXqMzUdV6epd3rL3zk2
-	cZe05/Z5+oKxkw6xkKpak0V17O8SXb6Cm64qbx1ZRdnZllHCDGP9XpZE7FXSGL8=
-X-Google-Smtp-Source: AGHT+IEu81gTDsDdQDj17/Kg32wLhh2UcKNsPnm/8AVDNQyUumTOaGLjpZ6gDN+5E0kgCZng6wAY5g==
-X-Received: by 2002:a05:6820:4187:b0:5ac:6fc1:c2cb with SMTP id fk7-20020a056820418700b005ac6fc1c2cbmr14358895oob.0.1713312221119;
-        Tue, 16 Apr 2024 17:03:41 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id x4-20020a056820104400b005a4dc7abc01sm2796107oot.11.2024.04.16.17.03.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Apr 2024 17:03:40 -0700 (PDT)
-Message-ID: <3c4ab12f-caf5-456f-8a8c-d4211d843f33@linuxfoundation.org>
-Date: Tue, 16 Apr 2024 18:03:39 -0600
+	s=arc-20240116; t=1713312488; c=relaxed/simple;
+	bh=QEbKUHPN28xQg3hvNSYLsfLMm928kGAUtV175U5I5Bg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=K4mOGMyaZ6oqud44EGpW62zn8sR234w5Cn1CVU8yI6vishgiDew75XIUu0spZp9j68yRazWGADSMhF0c/h28AZA0KMs4IVsOQUkcwC8UGbl3g+62w8Lvqlwspit/Bv4LLWHBCW+GZOoCo394Jw+YwCukT2u5sQ9H8EMSLWE1ma8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=lKtLeQ0M; arc=none smtp.client-ip=148.163.135.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
+Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
+	by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43GMA8LX000873;
+	Tue, 16 Apr 2024 20:07:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=DKIM; bh=tdJYlHJm0iil
+	Nkuzycg5ruKr1mm1sq6tC0qj4zXy3U8=; b=lKtLeQ0Mjok9i8mPNM9XLS274hjL
+	qo4Jf+NzeDFP66zCGlzDOUhb+vaS4tR8CC9FwIyIgl3Y2Gfr7Ku9GQ/PPGZb6dlL
+	IJWfe2ZYmtFBnzVT0/DlJtams+XoR8zqm3tW1EXPWKJuD97sTB2iiqj/+jSsA367
+	9R1fN3/yeRrVNSqLaBLh30ndFr6gJTLnGmf62hLcwzJ2I0W1N96XNtt0Lj+5yfYf
+	anNJJ14tx4iLm0ZWsDH5m4Rc0pRR6a7lNdx2GLmotfqcMWD452k5nH4BeYf2UNRc
+	gIDWNUVZ6tRJylmCXOxjQAWMCWTiaLO97+dsA6NGDNy9eFobf+OOC64KgQ==
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+	by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3xhvv99fqn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Apr 2024 20:07:50 -0400 (EDT)
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+	by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 43H07nkM061332
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 16 Apr 2024 20:07:49 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Tue, 16 Apr 2024 20:07:48 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Tue, 16 Apr 2024 20:07:48 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Tue, 16 Apr 2024 20:07:48 -0400
+Received: from JSANBUEN-L01.ad.analog.com (JSANBUEN-L01.ad.analog.com [10.117.220.64])
+	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 43H07T2t022696;
+	Tue, 16 Apr 2024 20:07:32 -0400
+From: Jose Ramon San Buenaventura <jose.sanbuenaventura@analog.com>
+To: <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>
+CC: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+        "Rob
+ Herring" <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        "Conor
+ Dooley" <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Delphine CC
+ Chiu" <Delphine_CC_Chiu@Wiwynn.com>,
+        Jose Ramon San Buenaventura
+	<jose.sanbuenaventura@analog.com>
+Subject: [PATCH 0/2] Add adm1281 support
+Date: Wed, 17 Apr 2024 08:07:20 +0800
+Message-ID: <20240417000722.919-1-jose.sanbuenaventura@analog.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests: Mark ksft_exit_fail_perror() as __noreturn
-To: Nathan Chancellor <nathan@kernel.org>,
- Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: Shuah Khan <shuah@kernel.org>, Nick Desaulniers
- <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>,
- Justin Stitt <justinstitt@google.com>, kernel@collabora.com,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- llvm@lists.linux.dev, Shuah Khan <skhan@linuxfoundation.org>
-References: <20240414062653.666919-1-usama.anjum@collabora.com>
- <20240415154107.GA1538232@dev-arch.thelio-3990X>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240415154107.GA1538232@dev-arch.thelio-3990X>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: 7sk41kH7McFLjaVSan5K9mfnfvPsDT-S
+X-Proofpoint-ORIG-GUID: 7sk41kH7McFLjaVSan5K9mfnfvPsDT-S
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-16_19,2024-04-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 priorityscore=1501 clxscore=1011 spamscore=0
+ mlxlogscore=950 bulkscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
+ adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404160158
 
-On 4/15/24 09:41, Nathan Chancellor wrote:
-> On Sun, Apr 14, 2024 at 11:26:53AM +0500, Muhammad Usama Anjum wrote:
->> Let the compilers (clang) know that this function would just call
->> exit() and would never return. It is needed to avoid false positive
->> static analysis errors. All similar functions calling exit()
->> unconditionally have been marked as __noreturn.
->>
->> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> 
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> 
+The ADM1281 is also a Hot-swap controller designed to be a drop-in
+replacement to the ADM1278. The currently available adm1275 driver supports
+the adm1278 and this patch adds support for the adm1281, specifically
+adding support for STATUS_CML register reads.
+ 
+An existing patch was found that adds support for the adm1281 but has not 
+been followed up since November 22, 2023. This patch aims to serve as a
+follow up or an improvement of the previously submitted patch especially
+since the code was tested on the actual adm1281 evaluation board.
 
-Thank you both. Applied to linux-kselftest next for Linux 6.10-rc1.
+Jose Ramon San Buenaventura (2):
+  dt-bindings: hwmon: adm1275: add adm1281
+  hwmon: pmbus: adm1275: add adm1281 support
 
-thanks,
--- Shuah
+ .../bindings/hwmon/adi,adm1275.yaml           |  4 ++-
+ Documentation/hwmon/adm1275.rst               | 14 +++++++---
+ drivers/hwmon/pmbus/Kconfig                   |  4 +--
+ drivers/hwmon/pmbus/adm1275.c                 | 27 +++++++++++++++++--
+ 4 files changed, 41 insertions(+), 8 deletions(-)
+
+
+base-commit: 96fca68c4fbf77a8185eb10f7557e23352732ea2
+-- 
+2.39.2
 
 
