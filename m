@@ -1,139 +1,145 @@
-Return-Path: <linux-kernel+bounces-148287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 215538A805E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 397C08A8061
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:06:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 444711C2127C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:05:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69F941C20CA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:06:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A42EF13AD14;
-	Wed, 17 Apr 2024 10:05:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD1A13A3F3;
+	Wed, 17 Apr 2024 10:05:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AAzs3ZuR"
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VEQWUe/I"
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B758C13A258;
-	Wed, 17 Apr 2024 10:05:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BBA613AA5C
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713348342; cv=none; b=aKotXkkS9xCcP0POe5Kk0jopAB7BOFPVzZQjBY5ItccajdNy7IPztNuyUrw+3d8oFv4JcGlXSkTzt6NOmq6P9+yMLtVbVzIZZXlO9N9EuEGG5kSFsU0V9bik0qNB8++Zkksa4e1mH7s7eL4PjnzNqLWTNS1pm7Sr1vzzFS5qKtU=
+	t=1713348346; cv=none; b=OX7q1T8Dkgw6Lp6PV9G5+uf8QfJ4FuzgWkkdRxIbcgkHW5BWVwNb850WLoRQQkxQU44dqq0ZsP+yH0i43CPEYm9Two0nsoEgly2hJciLC9/FY7L03InNBggATAsMnby6ECzcMscyAwdnlSfD1bJLfCaOxdsHrBhCeJM+Uva9s/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713348342; c=relaxed/simple;
-	bh=1gRmg87JIr+AbQO3Esc+cHkCY63QUm02iWl6ErooOoI=;
+	s=arc-20240116; t=1713348346; c=relaxed/simple;
+	bh=2J4oEguT5Jp7IrCrer3FeX1tYAAKExuR0SZ9wlgH+eM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F1gfO8ucyMfydlTHUFuf9SDLrFAoOZtjhQTv9e5gmJ0MS085w7yKlIvYGQM0CH3QHioEMnV8t4QcSG0PHBqo5XXIysRhL3KK8ee57DyzH8JykzQcBsQVJWdAXRlcUk7wutKUgbASxupaZd8yiGqEocxZFgAJ5kU99suoVpVtCpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AAzs3ZuR; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d8b887bb0cso4045939a12.2;
-        Wed, 17 Apr 2024 03:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713348340; x=1713953140; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1gRmg87JIr+AbQO3Esc+cHkCY63QUm02iWl6ErooOoI=;
-        b=AAzs3ZuRJX7XDEU/S31apMVw0w4s7Q7KO0FdVCxGcPYSQYxeRSY28pC1eu3Nrio5c1
-         /8hlCKRtkZAgyv8u2ZkQRGfxaZJMq1OWpJiBVcvOqdTd2WBLQIZ2kjfFBum4N2R8Isih
-         f2SkFV+0ugaXXipJ2Nlmu4lZAs98Uu7pgtHxn5StoZ+osrPawfSsDoFTHgEoyq2Tt6Q8
-         NRjLJNg4pvoJ5WApc/OPQ4IAFhbQ7RH2Kz3RT5CY8e2rwsQ/E1wXGXRIyVxPAPyHxqu0
-         xXjLmG+nWpVe8EKo2OzaEGE6HiF4EW+wqWYp7nr6UxxOhqD0p14pNRRYbP31JFxGWdYJ
-         BuPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713348340; x=1713953140;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1gRmg87JIr+AbQO3Esc+cHkCY63QUm02iWl6ErooOoI=;
-        b=iIRsi31AfcqzDKUNNO6o9d3ib8xGzePLs9voX9qMDY78+WB0gtQYpo7kXPOBnw2WTm
-         YzYRwT+Oo0gI3yiO4xGWx6DR+eU0urjiDqvVEdgaDP/jcMcgDaLBdIH6/wDsRP3KCpgl
-         Pz+utAPk2ispxU0TLWkBdG2f4Y4/LM1n+AfVbxPPAGTpgEf9i0JxbOqcd4fZCsMHsSE0
-         pmro/RaRuyLVSEcdLlg9r7LgoRzpd4G5HWENm4VxUvcuRbrI2iiRiJTACsZIVfN12aSC
-         5gZk7AoirKe21tUqOoK9HMtPad2H4a5jwUjYz7cl5xmXvftqdXkjqWsHFMN08st5+AzW
-         qHEA==
-X-Forwarded-Encrypted: i=1; AJvYcCX7IS6j45Gfqpkz+GTYOT1w1GCNrANLl/xhNlogdKJkw3K3EqUqgFKkc2TgQcow4QdjzjHAuB5G3fNaypVxqolnIJrRwppo7MhG2zZs9+/T/Nbl7SXr3Y2gQvvWRjUjEaiFSkIs1YjlyYKaPbKoSs+JVjxeDE6jhEgRQPQzpZbQHKVI10sX1XjmInTqEUNM70jCiOsLvZiLojjq55CPA52TGCgxr5GK93NyY2kPva240GtdGqkSCf2ItMR1qGvwAKhKpy4rGF4SeQ==
-X-Gm-Message-State: AOJu0Yy7solfZwT8Xrej9ZNsZNk0qeXZSEkViORqFlj1vWa7k1MVELAA
-	SlxwR+1FqfC8+ES8QkGdUbyMlj4fEsK0Id+6u0iD26wAp++h3IEJ
-X-Google-Smtp-Source: AGHT+IHoSQwgWNaYYN9PHfJ92Leu3dCSJnPJtoI+4IJ8iitgaNIncK7hpg/lzzZCpwVd83QGt3/Z2Q==
-X-Received: by 2002:a17:90a:108:b0:2aa:7057:437b with SMTP id b8-20020a17090a010800b002aa7057437bmr6040509pjb.16.1713348339921;
-        Wed, 17 Apr 2024 03:05:39 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id t12-20020a17090a5d8c00b002a474e2d7d8sm1019325pji.15.2024.04.17.03.05.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 03:05:38 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 1682E18462BA0; Wed, 17 Apr 2024 17:05:35 +0700 (WIB)
-Date: Wed, 17 Apr 2024 17:05:35 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Randy Dunlap <rdunlap@infradead.org>,
-	Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net,
-	zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
-	tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk, agk@redhat.com,
-	snitzer@kernel.org, eparis@redhat.com, paul@paul-moore.com
-Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
-	linux-security-module@vger.kernel.org, fsverity@lists.linux.dev,
-	linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
-	audit@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [PATCH v17 20/21] Documentation: add ipe documentation
-Message-ID: <Zh-e7945DM6f2u9T@archie.me>
-References: <1712969764-31039-1-git-send-email-wufan@linux.microsoft.com>
- <1712969764-31039-21-git-send-email-wufan@linux.microsoft.com>
- <Zh0Zh3-xraVl85Lm@archie.me>
- <a2266217-c3ad-4bb2-8188-498a2c8ae36c@infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=XK7lmQzgeaDTaxzGnR+1QecbEtM52IkqZmaA9qCp6abAFZ/e883F3p6JktKMJ/4a4mi7+k9WUpwJfN+YQ1LCN27ORv3JEThwr61uSP1hjNDKTeuqMgoLnHce3P+PmULnb5WY0lMwYu8bwtHsgYySFqCzZ/OpDH5J30/KXsPuhH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VEQWUe/I; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 17 Apr 2024 06:05:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713348340;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LxiQp7PwJBkZp7GSN1QH3PHHroZhXEzJ0WM1QJzWHWk=;
+	b=VEQWUe/IhCeMVuzfNoeWo0t3loNIRhf0yoya40gkpgYebza4bn7Mr75WWDqa+1szl9MmyH
+	gmBEmk13flIY98Zd/p4TvFt6offxQkLWv7R07iJk69Z8lbs1DipEqLM5PykWSKC8X46mKU
+	0Y+DOusV/FpljzL9GjpW6imW6K+kZmg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Hongbo Li <lihongbo22@huawei.com>
+Cc: Youling Tang <youling.tang@linux.dev>, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Youling Tang <tangyouling@kylinos.cn>
+Subject: Re: [PATCH] bcachefs: Align the display format of
+ `btrees/inodes/keys`
+Message-ID: <fihmieyqam3ubckmmjlcrsjucahc3yb6m24sjt34cpsw6zii6i@n4atsknjqmkv>
+References: <20240417015448.84294-1-youling.tang@linux.dev>
+ <toosz4pt2la6wf2575vwe6efebcbzsy735cq7exmlqhzrgicrf@s7g3rrbvge2l>
+ <66ecea56-e4d3-4241-a1dc-378d70555321@linux.dev>
+ <fpvnushjgr5txyduvpihevvghv64sdso4p6t3nhhddcjimqh2k@ehzpswsmnxin>
+ <d17de3df-a3f2-4317-92cc-1fd02641328b@huawei.com>
+ <29d5ea19-21b5-4076-9acc-8286a050c33f@huawei.com>
+ <63d9540f-61bc-4eba-819c-c05d2e486bdb@linux.dev>
+ <72e1b795-7219-41dd-83f2-10a3be2680b2@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="0nWDRmFxn5oWDUvp"
-Content-Disposition: inline
-In-Reply-To: <a2266217-c3ad-4bb2-8188-498a2c8ae36c@infradead.org>
-
-
---0nWDRmFxn5oWDUvp
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <72e1b795-7219-41dd-83f2-10a3be2680b2@huawei.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Apr 15, 2024 at 07:56:16AM -0700, Randy Dunlap wrote:
->=20
-> On 4/15/24 5:11 AM, Bagas Sanjaya wrote:
-> > The doc LGTM, thanks!
-> >=20
-> > Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
->=20
-> Hi,
-> Please see netiquette, section "Trim replies".
-> Thanks.
->=20
->=20
-> --=20
-> #Randy
-> https://people.kernel.org/tglx/notes-about-netiquette
-> https://subspace.kernel.org/etiquette.html
+On Wed, Apr 17, 2024 at 05:49:41PM +0800, Hongbo Li wrote:
+> 
+> 
+> On 2024/4/17 13:51, Youling Tang wrote:
+> > Hi, Kent & Hongbo
+> > On 17/04/2024 11:21, Hongbo Li wrote:
+> > > 
+> > > 
+> > > On 2024/4/17 11:16, Hongbo Li wrote:
+> > > > 
+> > > > 
+> > > > On 2024/4/17 10:59, Kent Overstreet wrote:
+> > > > > On Wed, Apr 17, 2024 at 10:50:10AM +0800, Youling Tang wrote:
+> > > > > > Hi, Kent
+> > > > > > On 17/04/2024 10:20, Kent Overstreet wrote:
+> > > > > > > On Wed, Apr 17, 2024 at 09:54:48AM +0800, Youling Tang wrote:
+> > > > > > > > From: Youling Tang <tangyouling@kylinos.cn>
+> > > > > > > > 
+> > > > > > > > Before patch:
+> > > > > > > > ```
+> > > > > > > >    #cat btrees/inodes/keys
+> > > > > > > >    u64s 17 type inode_v3 0:4096:U32_MAX len 0 ver 0: mode=40755
+> > > > > > > >      flags= (16300000)
+> > > > > > > > ```
+> > > > > > > > 
+> > > > > > > > After patch:
+> > > > > > > > ```
+> > > > > > > >    #cat btrees/inodes/keys
+> > > > > > > >    u64s 17 type inode_v3 0:4096:U32_MAX len 0 ver 0:
+> > > > > > > >      mode=40755
+> > > > > > > >      flags= (16300000)
+> > > > The flags also with the space after "=". Is it reseonable?
+> > > Sorry, I misspell. I mean whether it is reasonable.
+> > > > > > > This would print a newline for keys that don't have a value...
+> > > > > > The original intention was to make the display of the
+> > > > > > printed content in
+> > > > > > '__bch2_inode_unpacked_to_text ()' consistent, without
+> > > > > > considering other
+> > > > > > callbacks.
+> > > > > > 
+> > > > > > Or just modify it in the following way?
+> > > > > 
+> > > > > Yeah, that's better
+> > > > > 
+> > > > > Do it off my master branch though, there's some printbuf
+> > > > > imprevements in
+> > > > > there.
+> > > > > 
+> > > > > https://evilpiepirate.org/git/bcachefs.git
+> > I will make the following changes based on the master branch,
+> > 
+> > --- a/fs/bcachefs/inode.c
+> > 
+> > +++ b/fs/bcachefs/inode.c
+> > @@ -534,12 +534,13 @@ int bch2_inode_v3_invalid(struct bch_fs *c, struct
+> > bkey_s_c k,
+> >   static void __bch2_inode_unpacked_to_text(struct printbuf *out,
+> >                                            struct bch_inode_unpacked
+> > *inode)
+> >   {
+> > +       prt_printf(out, "\n");
+> >          printbuf_indent_add(out, 2);
+> >          prt_printf(out, "mode=%o\n", inode->bi_mode);
+> > 
+> >          prt_str(out, "flags=");
+> >          prt_bitflags(out, bch2_inode_flag_strs, inode->bi_flags & ((1U
+> > << 20) - 1));
+> > -       prt_printf(out, " (%x)\n", inode->bi_flags);
+> > +       prt_printf(out, "(%x)\n", inode->bi_flags);
+> I think it's ok. Maybe use prt_newline(out) is better than prt_printf(out,
+> "\n");
 
-Thanks for the tip!
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---0nWDRmFxn5oWDUvp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZh+e6wAKCRD2uYlJVVFO
-o4TXAPwN11FytsnDX/+gFpUvWYFc3CxPaaA7sJCuHF5qVYQtGAEA6GP0hs+AljG4
-tOsfo209C7he+IJJJUnxDpScnZoh/wc=
-=jvcJ
------END PGP SIGNATURE-----
-
---0nWDRmFxn5oWDUvp--
+prt_printf("\n") is the same as prt_newline() now
 
