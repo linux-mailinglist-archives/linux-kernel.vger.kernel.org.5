@@ -1,217 +1,133 @@
-Return-Path: <linux-kernel+bounces-148749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3CE18A86EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:04:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9A858A86F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:05:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98F392846A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:04:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 018BA1C215C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0979146D7F;
-	Wed, 17 Apr 2024 15:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WgPZdzqx"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9072148303;
+	Wed, 17 Apr 2024 15:04:30 +0000 (UTC)
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1E641422A2;
-	Wed, 17 Apr 2024 15:03:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 566F9146A9F;
+	Wed, 17 Apr 2024 15:04:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713366245; cv=none; b=Dqykp0mn6Csfz5esIpQvmb1dkhw4jJV/18E3DNTdBCqOilKr2yNdLuGZN0f/hQLXSR2Z1+xGoT/qE6YWreIkiyuDWECjG3H1FGsuaZPzfcCHs7wureWxrqkliMyO6GqmHfqqAYJf5e2zG+lfDsWQ2Uy0DblsYqFcnmpVKYZeki8=
+	t=1713366270; cv=none; b=J5ownP4LIQZnMcPb+LuscowXKAWG5BQ8gv7Q5EZeWvBu+G8Rt55h2191L785enWtJYNxXmlOxwJwkM8x5/3gI48qUsUtEw5ED6L/Py4UEUfocmXUhTGaRvYOivJmMpflX+0dRrVRlYjSH2zA5tMwMcZ/INaG3RfYIwGxoyCQcPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713366245; c=relaxed/simple;
-	bh=yD/GVU8gzpEmXReGiXnKRSGrjA4ZEXtYPUhvlIkvaH4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FQxHLEKbzeIGkTMsABMov2MERiBcZ9mn/RugB+OHQZnJNfERzvDSjMq9rDRfulAFLuZ1bVoseXV43OYz/37Azw7r5gqSQ2HV2jhRDuHMxBV+Y46zwHTOxZOgl73MjzZ4n+dHbth3BFhXj3364Z3z31eML+dAHeldheikA4YVa+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WgPZdzqx; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713366240; x=1744902240;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=yD/GVU8gzpEmXReGiXnKRSGrjA4ZEXtYPUhvlIkvaH4=;
-  b=WgPZdzqxBmoz6whHY6YGlZULbpCPQ5B0kF8kBACA9V2w9gCO/R+iX/BA
-   NuSfV1eNkDo2AUWF4l8NUjkx/64WCTINCY2njkovjwAOCq2HLYZdMPaqc
-   j0XlK0HGLfpitnGNMtUCd7EMVbRXNhJDGjkzQMigxj62k+Or++J0/+m+0
-   C3TO2BJraJJCtq+c2nKdcjSQy9fjaw8Ee83sIovKqY2fryDG2Dgm2DODT
-   h++S9zK74dyOzsktLlqT2nJO+Uy2+UPRi/FZaC8hRlJbPXu7BvGrioLXa
-   wzr3V8UNjm2Jc0nCWdWtxmS1JMuQUR+5fkd9LQVS43HDA41OQ6UgA6ZGj
-   w==;
-X-CSE-ConnectionGUID: /VqOaUB4TPO+SwWyR+Xrgw==
-X-CSE-MsgGUID: MD5O+mwyStuTSZqYC28tRw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="9033004"
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="9033004"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 08:03:59 -0700
-X-CSE-ConnectionGUID: nNXqD5nJQW+jsjxN5FY3Aw==
-X-CSE-MsgGUID: wuqkGQ1sTy+Ac0+VybYAHA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="22740314"
-Received: from tdx-lm.sh.intel.com ([10.239.53.27])
-  by fmviesa007.fm.intel.com with ESMTP; 17 Apr 2024 08:03:57 -0700
-From: Wei Wang <wei.w.wang@intel.com>
-To: seanjc@google.com,
-	pbonzini@redhat.com
-Cc: kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Wei Wang <wei.w.wang@intel.com>
-Subject: [RFC PATCH v1] KVM: x86: Introduce macros to simplify KVM_X86_OPS static calls
-Date: Wed, 17 Apr 2024 23:03:54 +0800
-Message-Id: <20240417150354.275353-1-wei.w.wang@intel.com>
-X-Mailer: git-send-email 2.27.0
+	s=arc-20240116; t=1713366270; c=relaxed/simple;
+	bh=lXS1zX27CNjD5iT8H4jBr/oAVb3l1Qfc2uEUWSMms9s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tx19HtEIGeeJIreO8UpShAD+V6oBWy2uNZfqc8rARTiD20f37ZeAzqD0WWnqItnXKzgCciK1363uZ3Xlh8kslmYJhl1lbW6ks7lloaVDTI/FarxLG/jHX0wu2ZgQe+vtFKo3kx3iztVnJbGWoWuRVWHX5OW7pbn3ILpb/hKleLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-617ddc988f5so65805937b3.2;
+        Wed, 17 Apr 2024 08:04:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713366264; x=1713971064;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FmPbDx+9Otjmd3Nxkuoo97wZVDF9LaZCMQjGYZNrMXY=;
+        b=WlpS2UQolmk2Vq7ZluEYBbKtsQkic6ST1nqiNdZRJHqYvSwUCK/1tKUl8yy+zlZSDo
+         zKNDVUkRZV9xVY9R0JRxjf7i52inHi8A8kbQfZwZ0+7Si3MBtbxV/9Q4quZsZLy5eQQ/
+         LUKuc5tZ1d8fGICy31ZIoJVekg+PGEQCpFcjKsWQsvRNvr8aSlPNSEYzYdwVcLj9ybLJ
+         omXJro6BhbAnEwpP8kJHf/I65oY9tZ7U2+hCwBLVxC3/HRT87cbegfLlxJHjHetAICKA
+         +ZiOQ00T5ytTZRDNv254ED04YAPE5m+biUWjBu36dVsiFwKSJOlwVCT+9JXJFjj6ykTK
+         8Ffg==
+X-Forwarded-Encrypted: i=1; AJvYcCVpfvdWRHq9I9f0gGY4aQqfjLdkrpTC+mCUuEqW1daGiHDXgfc2QzjiCg2re+I9chm2zOFGuuZTWC/S1LWiLw+zCEKjPoq/enI5SJyMQt3+hIsGklYD9RqdGdYN2LUQjWTUsgkB8Blhjms7paIfzsRYhvmxMmDa9mD482yUbvIjo66oXaLSZNF3gcqnedd9BcrGxKCUzkHWRbTp2OsNGzpUHOt3OdyHS/AP
+X-Gm-Message-State: AOJu0YyqEbwT7h7HhyAeHKzTG5qYDOSg/vD5jy7A6w4uBkSZFuObRntq
+	f7HNpH758zHrmJxKShvcQ1KEPLYAhkjKAUroyQXpWvZTAWqXmZoQ1rlPW9y3aF8=
+X-Google-Smtp-Source: AGHT+IH5oUTL17S7sn7il+nUEmctv4jcj8o4kjQGqiJsMMd3jEcwJ272A6ccO361lI189UOKcArY0g==
+X-Received: by 2002:a0d:cb8f:0:b0:61a:d2a0:5497 with SMTP id n137-20020a0dcb8f000000b0061ad2a05497mr9128715ywd.8.1713366263851;
+        Wed, 17 Apr 2024 08:04:23 -0700 (PDT)
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com. [209.85.128.170])
+        by smtp.gmail.com with ESMTPSA id l36-20020a81ad24000000b0061248f16528sm133442ywh.66.2024.04.17.08.04.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 08:04:23 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-61500da846fso41881367b3.1;
+        Wed, 17 Apr 2024 08:04:23 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXPiUKAcp1ZvDubQAVdOZetCGyEq+CiX6hGXH6irpndBN1tna5pXjDT5xaDXTKa2vvjE1rSEP8DQRCHMA67vv7uo0m9ZjpDT/v5ZX20R/R38a1oTbJen1TljSIpeLglHadGJv4ZARifqj4xuJL94Bbn25QX4J70dOl2qd6ZNPEgDUHtS1lE/510/DynKSo2pMJvitOFO+zTsyk96eQS+UmD67I39+TpU6Ff
+X-Received: by 2002:a81:c10c:0:b0:61a:cc3c:ae69 with SMTP id
+ f12-20020a81c10c000000b0061acc3cae69mr9032606ywi.18.1713366263495; Wed, 17
+ Apr 2024 08:04:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240322144355.878930-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240322144355.878930-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240322144355.878930-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 17 Apr 2024 17:04:11 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWpSUHjLG16xe2A9rg6kBC=yb9=ErvaB1H3qFa11Vtr3A@mail.gmail.com>
+Message-ID: <CAMuHMdWpSUHjLG16xe2A9rg6kBC=yb9=ErvaB1H3qFa11Vtr3A@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] serial: sh-sci: Add support for RZ/V2H(P) SoC
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-serial@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Introduces two new macros, KVM_X86_SC() and KVM_X86_SCC(), to streamline
-the usage of KVM_X86_OPS static calls. The current implementation of these
-calls is verbose and can lead to alignment challenges due to the two pairs
-of parentheses. This makes the code susceptible to exceeding the "80
-columns per single line of code" limit as defined in the coding-style
-document. The two macros are added to improve code readability and
-maintainability, while adhering to the coding style guidelines.
+On Fri, Mar 22, 2024 at 3:45=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
+om> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Add serial support for RZ/V2H(P) SoC with earlycon.
+>
+> The SCIF interface in the Renesas RZ/V2H(P) is similar to that available
+> in the RZ/G2L (R9A07G044) SoC, with the following differences:
+>
+> - RZ/V2H(P) SoC has three additional interrupts: one for Tx end/Rx ready
+>   and two for Rx and Tx buffer full, all of which are edge-triggered.
+> - RZ/V2H(P) supports asynchronous mode, whereas RZ/G2L supports both
+>   synchronous and asynchronous modes.
+> - There are differences in the configuration of certain registers such
+>   as SCSMR, SCFCR, and SCSPTR between the two SoCs.
+>
+> To handle these differences on RZ/V2H(P) SoC SCIx_RZV2H_SCIF_REGTYPE
+> is added.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+> Hi Geert,
+>
+> To keep the changes minimal I've added a new regtype instead of
+> port type.
+>
+> Cheers, Prabhakar
+>
+> v3 - > v4
+> - Added SCIx_RZV2H_SCIF_REGTYPE to handle the differences on the
+>   RZ/V2H(P) SoC
 
-Please note that this RFC only updated a few callsites for demonstration
-purposes. If the approach looks good, all callsites will be updated in
-the next version.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Signed-off-by: Wei Wang <wei.w.wang@intel.com>
----
- arch/x86/include/asm/kvm_host.h |  3 +++
- arch/x86/kvm/lapic.c            | 15 ++++++++-------
- arch/x86/kvm/trace.h            |  3 ++-
- arch/x86/kvm/x86.c              |  8 ++++----
- 4 files changed, 17 insertions(+), 12 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 6efd1497b026..42f6450c10ec 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1856,6 +1856,9 @@ extern struct kvm_x86_ops kvm_x86_ops;
- 	DECLARE_STATIC_CALL(kvm_x86_##func, *(((struct kvm_x86_ops *)0)->func));
- #define KVM_X86_OP_OPTIONAL KVM_X86_OP
- #define KVM_X86_OP_OPTIONAL_RET0 KVM_X86_OP
-+
-+#define KVM_X86_SC(func, ...) static_call(kvm_x86_##func)(__VA_ARGS__)
-+#define KVM_X86_SCC(func, ...) static_call_cond(kvm_x86_##func)(__VA_ARGS__)
- #include <asm/kvm-x86-ops.h>
- 
- int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops);
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index ebf41023be38..e819dbae8d79 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -728,8 +728,8 @@ static inline void apic_clear_irr(int vec, struct kvm_lapic *apic)
- 	if (unlikely(apic->apicv_active)) {
- 		/* need to update RVI */
- 		kvm_lapic_clear_vector(vec, apic->regs + APIC_IRR);
--		static_call_cond(kvm_x86_hwapic_irr_update)(apic->vcpu,
--							    apic_find_highest_irr(apic));
-+		KVM_X86_SCC(hwapic_irr_update,
-+			    apic->vcpu, apic_find_highest_irr(apic));
- 	} else {
- 		apic->irr_pending = false;
- 		kvm_lapic_clear_vector(vec, apic->regs + APIC_IRR);
-@@ -800,7 +800,7 @@ static inline void apic_clear_isr(int vec, struct kvm_lapic *apic)
- 	 * and must be left alone.
- 	 */
- 	if (unlikely(apic->apicv_active))
--		static_call_cond(kvm_x86_hwapic_isr_update)(apic_find_highest_isr(apic));
-+		KVM_X86_SCC(hwapic_isr_update, apic_find_highest_isr(apic));
- 	else {
- 		--apic->isr_count;
- 		BUG_ON(apic->isr_count < 0);
-@@ -2112,7 +2112,7 @@ static bool start_hv_timer(struct kvm_lapic *apic)
- 	if (!ktimer->tscdeadline)
- 		return false;
- 
--	if (static_call(kvm_x86_set_hv_timer)(vcpu, ktimer->tscdeadline, &expired))
-+	if (KVM_X86_SC(set_hv_timer, vcpu, ktimer->tscdeadline, &expired))
- 		return false;
- 
- 	ktimer->hv_timer_in_use = true;
-@@ -3041,9 +3041,10 @@ int kvm_apic_set_state(struct kvm_vcpu *vcpu, struct kvm_lapic_state *s)
- 	kvm_lapic_set_reg(apic, APIC_TMCCT, 0);
- 	kvm_apic_update_apicv(vcpu);
- 	if (apic->apicv_active) {
--		static_call_cond(kvm_x86_apicv_post_state_restore)(vcpu);
--		static_call_cond(kvm_x86_hwapic_irr_update)(vcpu, apic_find_highest_irr(apic));
--		static_call_cond(kvm_x86_hwapic_isr_update)(apic_find_highest_isr(apic));
-+		KVM_X86_SCC(apicv_post_state_restore, vcpu);
-+		KVM_X86_SCC(hwapic_irr_update,
-+			    vcpu, apic_find_highest_irr(apic));
-+		KVM_X86_SCC(hwapic_isr_update, apic_find_highest_isr(apic));
- 	}
- 	kvm_make_request(KVM_REQ_EVENT, vcpu);
- 	if (ioapic_in_kernel(vcpu->kvm))
-diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
-index c6b4b1728006..a51f6c2d43f1 100644
---- a/arch/x86/kvm/trace.h
-+++ b/arch/x86/kvm/trace.h
-@@ -828,7 +828,8 @@ TRACE_EVENT(kvm_emulate_insn,
- 		),
- 
- 	TP_fast_assign(
--		__entry->csbase = static_call(kvm_x86_get_segment_base)(vcpu, VCPU_SREG_CS);
-+		__entry->csbase = KVM_X86_SC(get_segment_base,
-+					     vcpu, VCPU_SREG_CS);
- 		__entry->len = vcpu->arch.emulate_ctxt->fetch.ptr
- 			       - vcpu->arch.emulate_ctxt->fetch.data;
- 		__entry->rip = vcpu->arch.emulate_ctxt->_eip - __entry->len;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index ebcc12d1e1de..146b88ded5d1 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2008,7 +2008,7 @@ static int complete_emulated_rdmsr(struct kvm_vcpu *vcpu)
- 
- static int complete_fast_msr_access(struct kvm_vcpu *vcpu)
- {
--	return static_call(kvm_x86_complete_emulated_msr)(vcpu, vcpu->run->msr.error);
-+	return KVM_X86_SC(complete_emulated_msr, vcpu, vcpu->run->msr.error);
- }
- 
- static int complete_fast_rdmsr(struct kvm_vcpu *vcpu)
-@@ -7452,7 +7452,7 @@ static void kvm_init_msr_lists(void)
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(emulated_msrs_all); i++) {
--		if (!static_call(kvm_x86_has_emulated_msr)(NULL, emulated_msrs_all[i]))
-+		if (!KVM_X86_SC(has_emulated_msr, NULL, emulated_msrs_all[i]))
- 			continue;
- 
- 		emulated_msrs[num_emulated_msrs++] = emulated_msrs_all[i];
-@@ -10703,7 +10703,7 @@ static void vcpu_load_eoi_exitmap(struct kvm_vcpu *vcpu)
- 		bitmap_or((ulong *)eoi_exit_bitmap,
- 			  vcpu->arch.ioapic_handled_vectors,
- 			  to_hv_synic(vcpu)->vec_bitmap, 256);
--		static_call_cond(kvm_x86_load_eoi_exitmap)(vcpu, eoi_exit_bitmap);
-+		KVM_X86_SCC(load_eoi_exitmap, vcpu, eoi_exit_bitmap);
- 		return;
- 	}
- #endif
-@@ -13497,7 +13497,7 @@ void kvm_arch_irq_bypass_del_producer(struct irq_bypass_consumer *cons,
- 	 * when the irq is masked/disabled or the consumer side (KVM
- 	 * int this case doesn't want to receive the interrupts.
- 	*/
--	ret = static_call(kvm_x86_pi_update_irte)(irqfd->kvm, prod->irq, irqfd->gsi, 0);
-+	ret = KVM_X86_SC(pi_update_irte, irqfd->kvm, prod->irq, irqfd->gsi, 0);
- 	if (ret)
- 		printk(KERN_INFO "irq bypass consumer (token %p) unregistration"
- 		       " fails: %d\n", irqfd->consumer.token, ret);
+                        Geert
 
-base-commit: 49ff3b4aec51e3abfc9369997cc603319b02af9a
--- 
-2.27.0
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
