@@ -1,61 +1,55 @@
-Return-Path: <linux-kernel+bounces-147864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF95A8A7AB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 04:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48C758A7AB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 04:46:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E06971C20BB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:46:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A5E81C21052
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:46:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F2B17470;
-	Wed, 17 Apr 2024 02:46:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F23B665;
+	Wed, 17 Apr 2024 02:46:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fpW4vqh0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dmu76OkR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91C64187F;
-	Wed, 17 Apr 2024 02:46:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62EA6566A;
+	Wed, 17 Apr 2024 02:46:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713321963; cv=none; b=g+nKTEsEgFLnrARyEEkV6M2XNt93OXLxCHjdM/bKKU4UN1XxUI5E2PnXr97OgTKsw/0vr4fBGNSWkmAWKfkOfdb5aa5/NtaBPdnIISq1qrUPrAops4883MVnknLvtIIVQ2W4hufjgfF9ksMUYSSh1RPgeEiVc5aZS2teV9GgDcQ=
+	t=1713321970; cv=none; b=VQ+0D7gUETAbaZ+IOxI89YT3K8Q6riocO1XIcMl2KCv9D58Rjn+6fX4I6JBuzEeO5jNNZMBBCJh2ORckEC3LKUwf7QiEDmhBPyFQ7wnDEH7wbppw1FbQz7et3GvVH/OYoaWkOiljfuHnAzF+1blF9dk/qXCZOy9GaJtcUuO99Kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713321963; c=relaxed/simple;
-	bh=oRtdwcXfjYROqHZ+bXnWxLq9Cp1snZlo3O4Podnjrow=;
+	s=arc-20240116; t=1713321970; c=relaxed/simple;
+	bh=0geOxcPu2vFPISpx3mi6jh0swem5/ro/Ekv6ugo9aRU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=RxonZy8AfajPp+H/mtc5Rgr4wpBFYLJGv7Af+8rRhUOjZ3MUaLj0p/wEyBju66ezuSm8Ql3LBLMRKcQWQvuonAeVtW6TBobDp8YVKZDlaqYos9DLdHopB+m9G/6CFsAxKuPBGWshqXCOkORmqUTsJd8AORVuE2JEl4U5lBWS8tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fpW4vqh0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92545C113CE;
-	Wed, 17 Apr 2024 02:46:00 +0000 (UTC)
+	 MIME-Version:Content-Type; b=sGCkWyE7oDkvdrbeXXpQnYOSTVxzK33WdKyDO3aZ0bJR/ZA2RsYJBerj3XllTTE1nhcXn8+yBDttOvcP6H73j9lsldBA9K5fS/U4m5lIO+G8WuGphEFRmoPPtgIaQd11znYU0YI37r7HxjsX9Cg9EKFfalbiQFdeuPPDvXzalic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dmu76OkR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0D56C113CE;
+	Wed, 17 Apr 2024 02:46:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713321963;
-	bh=oRtdwcXfjYROqHZ+bXnWxLq9Cp1snZlo3O4Podnjrow=;
+	s=k20201202; t=1713321970;
+	bh=0geOxcPu2vFPISpx3mi6jh0swem5/ro/Ekv6ugo9aRU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=fpW4vqh0BjpWsLCUBevhTAyL3ZG+QFur7d8HIWX6Yl7PECKnUaJzZcqEd5Ajg8CBU
-	 K7HvNhnlbXjf7UZJtI4CaVPZcDS0xmFpBGVy30SX5YP41IDLBxKGeOOUpg0F0DYFEI
-	 bOKY/MzExNwizaQjM7QQYUETz6XvNP5uEgTME7XokykGI2UWrI5jnRaupWxBct/vYK
-	 MML/15VIOedxSUXFFbbdLapD66lSgkXCrdhZFGEOS7lgI1kTd/afdl1RA6XdAY1J6z
-	 P36J6UIiGar0gzwO1eOYczLSgdXW5A7V4CkC3+Bi978ODdvCJjR4aBYRcmTGwv18z7
-	 7pK1Huo2rX3iw==
+	b=dmu76OkRYjpYSC5mAiu85c+M/QRwYQNK3faYw2clzHuyBncsiwEFGTdCMQLWgAAJ+
+	 EEcf5dFK6ebJegYqmQC8/BapSc7WYi+oJz9RVPQlHtN60vuLOyOdki1h+9JH4i2olS
+	 V2eAw40M/YSLysZDToAmzEff1Ri1TeaSeGwKNVfFcTnZ0/bOY8D7unHX4NGxtjqDAd
+	 Y1neKsvb5y1aJarHfbJ9vElsCMUIdCJjm19iBIDT7+6vw19I6N7FXYj7eXeZyiNsDq
+	 P+f+RtLPESb+MWh3A16vRzLwH/A5k1Mwe8udB+4gpiiOCrIRGD1W0jstedzvRerBhY
+	 Rso0DrxgGQ+Rw==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Shengjiu Wang <shengjiu.wang@nxp.com>, 
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, Frank Li <Frank.Li@nxp.com>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, imx@lists.linux.dev, 
- linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20240416-esai_arm_dts_warning-v2-0-879e59c0c3b8@nxp.com>
-References: <20240416-esai_arm_dts_warning-v2-0-879e59c0c3b8@nxp.com>
-Subject: Re: (subset) [PATCH v2 0/4] arm: dts: nxp: imx6: fix esai related
- dtb_check warning
-Message-Id: <171332196061.1698800.11762670932468430918.b4-ty@kernel.org>
-Date: Wed, 17 Apr 2024 11:46:00 +0900
+To: f.fangjian@huawei.com, Devyn Liu <liudingyuan@huawei.com>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ jonathan.cameron@huawei.com, liuyonglong@huawei.com
+In-Reply-To: <20240416015839.3323398-1-liudingyuan@huawei.com>
+References: <20240416015839.3323398-1-liudingyuan@huawei.com>
+Subject: Re: [PATCH] spi: hisi-kunpeng: Delete the dump interface of data
+ registers in debugfs
+Message-Id: <171332196865.1698999.16559660124050258336.b4-ty@kernel.org>
+Date: Wed, 17 Apr 2024 11:46:08 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,40 +60,22 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
-On Tue, 16 Apr 2024 10:47:46 -0400, Frank Li wrote:
-> two patches update binding doc. two patches fix dts file.
+On Tue, 16 Apr 2024 09:58:39 +0800, Devyn Liu wrote:
+> Due to the reading of FIFO during the dump of data registers in
+> debugfs, if SPI transmission is in progress, it will be affected
+> and may result in transmission failure. Therefore, the dump
+> interface of data registers in debugfs is removed.
 > 
-> dt_binding_check each patch.
 > 
-> git rebase -i aa8a0e0038936 --exec "make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,esai.yaml"
-> Executing: make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,esai.yaml
->   LINT    Documentation/devicetree/bindings
->   DTEX    Documentation/devicetree/bindings/sound/fsl,esai.example.dts
->   CHKDT   Documentation/devicetree/bindings/processed-schema.json
->   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
->   DTC_CHK Documentation/devicetree/bindings/sound/fsl,esai.example.dtb
-> Executing: make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,esai.yaml
->   DTEX    Documentation/devicetree/bindings/sound/fsl,esai.example.dts
->   LINT    Documentation/devicetree/bindings
->   CHKDT   Documentation/devicetree/bindings/processed-schema.json
->   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
->   DTC_CHK Documentation/devicetree/bindings/sound/fsl,esai.example.dtb
-> Executing: make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,esai.yaml
-> Executing: make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,esai.yaml
-> Successfully rebased and updated refs/heads/b4/esai_arm_dts_warning.
-> 
-> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/4] ASoC: dt-bindings: fsl-esai: Remove 'fsl,*' from required list
-      commit: 5894ff6c4707af645f2faa36cf07cc2745e1658f
-[2/4] ASoC: dt-bindings: fsl-esai: Add ref: dai-common.yaml
-      commit: 9aea6d64bb3acbff6b2f33cb5bbff65e824ab9a7
+[1/1] spi: hisi-kunpeng: Delete the dump interface of data registers in debugfs
+      commit: 7430764f5a85d30314aeef2d5438dff1fb0b1d68
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
