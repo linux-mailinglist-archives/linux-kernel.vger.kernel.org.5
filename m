@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-149182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B37E18A8CEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:32:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 771848A8CF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:32:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 765252857B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:32:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33D77286234
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62FF54645B;
-	Wed, 17 Apr 2024 20:32:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B48481BE;
+	Wed, 17 Apr 2024 20:32:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="n2YGThtR"
+	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="bYxcPUO5"
 Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AE5242A81;
-	Wed, 17 Apr 2024 20:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B5E244C8B;
+	Wed, 17 Apr 2024 20:32:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713385921; cv=none; b=DMTyWEVNQF8/f5f452BQPP3pon2ky/cpLnOLnavbGcNfIYmRpzuW0ncHYGhpbZIutLDBybeDkjn3g8UkRwswQEb2C3KXYM1yexECixjTbRuSooZ2j7xHnkQ5yJ7KXZOSjCF5JZwaglaIxmsh4EJ/N0YK5jrQyo8uH4RB8FKFBfg=
+	t=1713385922; cv=none; b=cFWU9ofShr/YETchO+wKmlVdJ/tr7cHY+WEzUeNtCrHdWLNZ92EHIu9p+EMNfDBC25b2IE9p5KnnAOLrMSrOsy1fql1gx/F+lmlGaslHe8h/HFyf/ACpSSEDH5RqoBVEZZ73kKBTe8emHKImGlvvkPVp5pmR5JyB62fz6KDjF9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713385921; c=relaxed/simple;
-	bh=vaOwlWfWNCYXW1bY0aCtIE5T8+KB0DoUNLHtA1QtREM=;
+	s=arc-20240116; t=1713385922; c=relaxed/simple;
+	bh=AGfQ1vH4ziuzqG5ajV83OU6e/9coaYTCg7Z/7ojNInk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TaA5P4xeeZVkM6koQTYeqIBZdjHVesQmleCTS7/j/gqboWxn0SVFr+AjuB4dwePA6jrbWxgMgiAnx5MVEeHK9FZtqYkMW4KxflI+1sYTRS5NcoZ+4IFfuCnJ4g9Qrybbw/kjCr/c5Djb0YAsk4YLIjWyKhioaI0ZJdsQ5gjj/Z8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=n2YGThtR; arc=none smtp.client-ip=74.208.4.197
+	 MIME-Version; b=sogaxjzpf63EA6t1Cq1QcwGQ1GoFyGKyuTGRB8CNC70M7+YGNUBJQp0IUU3EiIUoHo10K9miAoHaIdKmQpUVMtRZ1gtOIzca+tbEUEYL6gZ8BvQZNIeAnm/e0cHKdnmAud1JLuLFB4dQdAtQK22WIWytH+Pk0rIZqVlTsvZ412w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=bYxcPUO5; arc=none smtp.client-ip=74.208.4.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
 	s=s1-ionos; t=1713385915; x=1713990715; i=parker@finest.io;
-	bh=OgdkLE55rcfI4iKjjOB90ezNiSvnD5C9xJWlY5tEYG8=;
+	bh=Z9AbLZEBOkDvrJrfG/E6jqiIitDCq87/g7vX9tqZDiw=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
 	 References:MIME-Version:Content-Transfer-Encoding:cc:
 	 content-transfer-encoding:content-type:date:from:message-id:
 	 mime-version:reply-to:subject:to;
-	b=n2YGThtRzvolVvlSHqhtDIbr4ndivkR6tQ49p0Aw6jCGLr7SgjDJ8SvdnsW/DKDB
-	 w3zhGvfVcZxESmLifGdMps2sF7NQzgFU4Gfj6MAL5U0GfjnPG1Qa2sUJnkAXSoTm8
-	 OAhbug+Tb8dbr2ZI3e69lIdQYh09jZKFCXSXMTIuzeq/rBR85Nox1hAt0EtnkOpqY
-	 UGoapV1l/1oSJ6no0ofElxDhxyWADngSVm0ctXsIA1jibU+yovtpc6sRFSlWtflyg
-	 hGF6UKsSMvkT9VdCDbRKSW6EwI8NtbfCfXlMmyqbN4o6o96vkjg1IyZfYYnyD/vfo
-	 qjUxrYaZOGn6n5zO4A==
+	b=bYxcPUO5Qp4D4rvd8088kE87aI/lPlK76dq9VEFD6NyqQsfOVXRS/gcKFVIvjOFs
+	 T2/pU+iZ5o1zKYqnZqv+RCDj3r/6uGfLewgiDK66+T/H+qqV36Y6p6Yv4YECv7EHF
+	 5l+dtxslN+qPPQH0f6CHm7pE84JjIufZWndQJPmybfe8RqSFhEkXfbPH10bxjZ4nK
+	 XBm6m/fjnOAw6wx+PgENOTmAtmco9jOMF2qBWaRUii5mw8lXoTIFuyJ54jJ3t9wsA
+	 mYB6I2/bpGKAjb8Y5F5AAHcPFIQQ/k3gKcu6Ub9leHgbQRcAaHEChri7z7isTI8Fu
+	 UT8PHUcn4s556ikHxQ==
 X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
 Received: from finest.io ([98.159.241.229]) by mrelay.perfora.net (mreueus004
- [74.208.5.2]) with ESMTPSA (Nemesis) id 1M3U6Q-1rxkAy3htS-000cIY; Wed, 17 Apr
+ [74.208.5.2]) with ESMTPSA (Nemesis) id 1MxE9c-1sumjz0sSu-00xdro; Wed, 17 Apr
  2024 22:31:55 +0200
 From: Parker Newman <parker@finest.io>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -53,9 +53,9 @@ To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-kernel@vger.kernel.org,
 	linux-serial@vger.kernel.org
 Cc: Parker Newman <pnewman@connecttech.com>
-Subject: [PATCH v4 3/7] serial: exar: add optional board_init function
-Date: Wed, 17 Apr 2024 16:31:25 -0400
-Message-ID: <0e72a3154114c733283ff273bc1e31456ee101f4.1713382717.git.pnewman@connecttech.com>
+Subject: [PATCH v4 4/7] serial: exar: moved generic_rs485 further up in 8250_exar.c
+Date: Wed, 17 Apr 2024 16:31:26 -0400
+Message-ID: <a7bf2a42de759908c058246ec15f60bde9a5dc65.1713382717.git.pnewman@connecttech.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <cover.1713382717.git.pnewman@connecttech.com>
 References: <cover.1713382717.git.pnewman@connecttech.com>
@@ -66,82 +66,120 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:iIMK9UjhQLlMwa/AOnMoIDct01FXLpiy27KVmAkNRK+LmCzAnPC
- t+KobOXZIttezz417DQSrVYFS/VmMwxdd7w5OsCgzi8b5C8z+UyVRKJzWLSivOZUmvebN1N
- rY3AynBj8LnKs0iyCSD57ngXnMko1zle9AVgt/86ddGmBsaMerXrQ8eisH8HAm0rg3cvA0C
- WKlp/zjHGcYL1+vcYYy1g==
+X-Provags-ID: V03:K1:+hpOLbZKCVK1NoaArMhv+73t32rBcfbUsYZPyRUPiiIU0hqKy83
+ q076np94c4pmFMV4vh+U7HZ8W1WiNTnQj+F+Z1923DNH4QOtgp29V3WLT0I95rMkHLtfv30
+ 9yr0DkzEJkosiQ8kJU0vUlAGD1xP6IjOHKz0B3RPahuryIxNMRcuyepJqEeUCECGg/xyaiH
+ nmEFvAWCQo7lxDDheAb9w==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:oMV7c3eF+9c=;jyZpVD84WwK6gUFMo7JqnwP6lzG
- QPlRNKOqX1Aflozb8oWDsYsLxTMrkbKf4VX/IG2x2r6MhnZCxX4jF7H1GgiO6q74kIpMzdBGo
- NnlmsRsZUCFftXlfwkIEE22SL6HQY2KX0odTEyLwy+IzdwgbGNXdK2XQHes1l9s6VBIWr7Bd3
- fBmWGy9N/yKiruBVTZxpuDPmVKL4T8XReZDCNOD7vMiu+TLsz7g/0s/EFDgkTUchPbHxTsBsQ
- WxvsvZvujNr+q56zlSAoP9uLbX2MJ8OO2wH7J765dNGq5OOz404G7EmV20O/cMae5o4pLLKnM
- 0FjouOS0/R9qDENNQyKDYmfarnOHHQ3TzvFXEV7eGkRNFi36qlEXlq4Fi+Q+PJ2fv3nfOBh7y
- MBuCfFU/k4Xu7mnzrBkaBKkMYvHiCNmhCMI7zCiwdw583U0GqU2YLavhKaz+ob69lnwTTw1hF
- ONjOO4/0bHWnIK/998P0QeJSruB2vK0I8+YmSigN4QNqe6mWgTa2SoJzcni0htJfp6ViS71zm
- mUE8Vdq1kQYQaKte7DJVzQeHPpWFF3Ak9QdInZhFR4Io2CLmqSGn7Vc6fR/a25adHHyRVVDip
- iqLaG8qVXDoTmyufw4m9sdT4fMW+iDHtvWW+2a72sw7Gn8VW9qBkIN+JO+qbQq0P3nVisnBHG
- sw5CBpj2VvDbRGKumxXyBD7jMqm1pCp1GPlTe9BeXsLE2Zwu1/DmNwEGgPMzU7gjB/8XBYsli
- 9uBRTB20hTqCfq81uOTvatdRiEsBtR4lGzGKUgv92C9zho6+SZpI7M=
+UI-OutboundReport: notjunk:1;M01:P0:Mx0TjLfV/CQ=;vIIrygbyWdnlaJ/s4Jea8H0fTKU
+ D7oKZEIK/ztumR/B/4iuMy7z6AyB3olY8J2SwyAl0vmaB3kWdh7bKbR7V2tcjWzvJyn09VAfQ
+ e794Wl5u6tXEPYjWE9SxbJF/oXRseeFKGSSNIByZtsC4wMJytPrANgIYNOuDDPJPtVrdp1BLv
+ REO7XYvEVgHoIgA+B9SfZjuOScCPSyw6FmiM1C6hFaLPs+idfQpN5JxkmQughzNi5P1J29QIr
+ z+R6N6IrsV4qJushuIx0OO61iIlCuFRwxCh4jiiCMHT9MX+v3CvGewB9x2mWl5QHwVwYkp/26
+ em9EBl//JMs2pBMFzDQCbguVbt8gTsL4zpNZL3JVbrsVvxMDXN+GSu0ujIrFXEz/RVeivYiEc
+ ZsKCaefTFLVS+8QrX0TNTNWP9wNL4v42DTiRy2Ep0+j4GoooxbJJZZ5tGoVY3DQfSAPlRZvxg
+ +RJ8cXG4sB/X8Y+EXFV1K6G2ubn6pfTyKfIyMJfclo3llyN3QOb2+QRATsmB8mrQPszubMRQm
+ mq+r56zqOE02UTC9Vc7Hbj11BN9s4DgKzANW2b1Qcr47fgdStRMlSu/3ZTu02V8M3ZLpLlyeE
+ 2zeflT0ruzarQKCeQ+2Br78GB4mizdAAcjJ1bC0ediK3WsMZetqgNorU5EfokGOKw3iC9YmPL
+ m6ZzR53Lw5K3vYaW93IcrlzWGekYpaJwNSR667CUBGiv/Ta2OkaEx/QXr5isBD0hWK8BQtpkI
+ gr1y39CSlQ3webvt5BQFd3NfpBjef4xImIbu4GtX9l430GnUBY3aYc=
 
 From: Parker Newman <pnewman@connecttech.com>
 
-Add an optional "board_init()" function pointer to struct exar8250_board
-which is called once during probe prior to setting up the ports. It will
-be used in subsequent patches of this series.
+Preparatory patch moving generic_rs485_config and
+generic_rs485_supported higher in the file to allow for CTI setup
+functions to use them.
 
 Signed-off-by: Parker Newman <pnewman@connecttech.com>
 =2D--
 Changes in v3:
- - Renamed board_setup to board_init.
- - Changed pci_err to dev_err_probe
- - Added note above about checkpatch fixes
+ - split into separate preparatory patch
 
-Changes in v4:
- - Removed checkpatch fixes, they will be in their own patch at the end
- - Added pcidev to board_init() args to avoid needing to add to priv
-
- drivers/tty/serial/8250/8250_exar.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250_exar.c | 50 ++++++++++++++---------------
+ 1 file changed, 25 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250=
 /8250_exar.c
-index 72385c7d2eda..f14f73d250bb 100644
+index f14f73d250bb..e68029a59122 100644
 =2D-- a/drivers/tty/serial/8250/8250_exar.c
 +++ b/drivers/tty/serial/8250/8250_exar.c
-@@ -177,12 +177,14 @@ struct exar8250_platform {
-  * struct exar8250_board - board information
-  * @num_ports: number of serial ports
-  * @reg_shift: describes UART register mapping in PCI memory
-- * @setup: quirk run at ->probe() stage
-+ * @board_init: quirk run once at ->probe() stage before setting up ports
-+ * @setup: quirk run at ->probe() stage for each port
-  * @exit: quirk run at ->remove() stage
-  */
- struct exar8250_board {
- 	unsigned int num_ports;
- 	unsigned int reg_shift;
-+	int     (*board_init)(struct exar8250 *priv, struct pci_dev *pcidev);
- 	int	(*setup)(struct exar8250 *, struct pci_dev *,
- 			 struct uart_8250_port *, int);
- 	void	(*exit)(struct pci_dev *pcidev);
-@@ -773,6 +775,15 @@ exar_pci_probe(struct pci_dev *pcidev, const struct p=
-ci_device_id *ent)
- 	if (rc)
- 		return rc;
+@@ -197,6 +197,31 @@ struct exar8250 {
+ 	int			line[];
+ };
 
-+	if (board->board_init) {
-+		rc =3D board->board_init(priv, pcidev);
-+		if (rc) {
-+			dev_err_probe(&pcidev->dev, rc,
-+					"failed to init serial board\n");
-+			return rc;
-+		}
-+	}
++static int generic_rs485_config(struct uart_port *port, struct ktermios *=
+termios,
++				struct serial_rs485 *rs485)
++{
++	bool is_rs485 =3D !!(rs485->flags & SER_RS485_ENABLED);
++	u8 __iomem *p =3D port->membase;
++	u8 value;
 +
- 	for (i =3D 0; i < nr_ports && i < maxnr; i++) {
- 		rc =3D board->setup(priv, pcidev, &uart, i);
- 		if (rc) {
++	value =3D readb(p + UART_EXAR_FCTR);
++	if (is_rs485)
++		value |=3D UART_FCTR_EXAR_485;
++	else
++		value &=3D ~UART_FCTR_EXAR_485;
++
++	writeb(value, p + UART_EXAR_FCTR);
++
++	if (is_rs485)
++		writeb(UART_EXAR_RS485_DLY(4), p + UART_MSR);
++
++	return 0;
++}
++
++static const struct serial_rs485 generic_rs485_supported =3D {
++	.flags =3D SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND,
++};
++
+ static void exar_pm(struct uart_port *port, unsigned int state, unsigned =
+int old)
+ {
+ 	/*
+@@ -459,27 +484,6 @@ static void xr17v35x_unregister_gpio(struct uart_8250=
+_port *port)
+ 	port->port.private_data =3D NULL;
+ }
+
+-static int generic_rs485_config(struct uart_port *port, struct ktermios *=
+termios,
+-				struct serial_rs485 *rs485)
+-{
+-	bool is_rs485 =3D !!(rs485->flags & SER_RS485_ENABLED);
+-	u8 __iomem *p =3D port->membase;
+-	u8 value;
+-
+-	value =3D readb(p + UART_EXAR_FCTR);
+-	if (is_rs485)
+-		value |=3D UART_FCTR_EXAR_485;
+-	else
+-		value &=3D ~UART_FCTR_EXAR_485;
+-
+-	writeb(value, p + UART_EXAR_FCTR);
+-
+-	if (is_rs485)
+-		writeb(UART_EXAR_RS485_DLY(4), p + UART_MSR);
+-
+-	return 0;
+-}
+-
+ static int sealevel_rs485_config(struct uart_port *port, struct ktermios =
+*termios,
+ 				  struct serial_rs485 *rs485)
+ {
+@@ -518,10 +522,6 @@ static int sealevel_rs485_config(struct uart_port *po=
+rt, struct ktermios *termio
+ 	return 0;
+ }
+
+-static const struct serial_rs485 generic_rs485_supported =3D {
+-	.flags =3D SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND,
+-};
+-
+ static const struct exar8250_platform exar8250_default_platform =3D {
+ 	.register_gpio =3D xr17v35x_register_gpio,
+ 	.unregister_gpio =3D xr17v35x_unregister_gpio,
 =2D-
 2.43.2
 
