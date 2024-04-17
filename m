@@ -1,241 +1,142 @@
-Return-Path: <linux-kernel+bounces-149116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149117-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 807BC8A8C06
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:21:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A86C8A8C08
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:21:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A39B11C21A0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:21:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9C80287ED0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:21:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4782F29409;
-	Wed, 17 Apr 2024 19:20:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99FE024B33;
+	Wed, 17 Apr 2024 19:21:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ThUs+zBK"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ryaf6MX2"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F133624B21
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 19:20:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 542571CD38;
+	Wed, 17 Apr 2024 19:21:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713381658; cv=none; b=D0juL/fIcVPuTxTw7BIuINiSpyCCHpSJ4hmgtkaEdwe47vJXrt7bgWH/Juz9QabdUezRWRCnQlB9CsuOnjRvha5KPETTyxGfRN5W3+A21EZHIkCSHwYNingOKvgl2EDXgKvHZ+XIjP2IypiQUNP4s9Pd15pQae8fLUcp+T3U7I0=
+	t=1713381704; cv=none; b=dRssHpZmIeoPiC4BHh7Ny+3StZHXeQsXTq2C6l3U6KK8H6MHv0YVZ50Cucui9YAdGWVOKk/sSJpZznd4vel55MH1a7HXDdqJB+Nx3YMhyvTbVj+kBmr9GhOalpE4WrPBoN/X9GhoJIJlXbxNaMwCi+PviSOkO8bp1EOiXnpLztU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713381658; c=relaxed/simple;
-	bh=Z3bCMaGhwbj6srUu4nYse27BveBCdxJ6ls99+RXNmvI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NcjWPqGbLi88NEe4gZHtBrMenprMBVdffIHDZdJufmEQllRbNm7snUuHaQ1tMXgTtUklw7fSGk8pC+94T4gP9+jqRecXjyDvqTegwjgDxvQU37+UMjK1O58m+sxgNMVfLbOG8W1yfBzUtTpWrBBxc7c8DpFihkpPWHqMkx0C5l8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ThUs+zBK; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6f043f9e6d7so140941b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 12:20:56 -0700 (PDT)
+	s=arc-20240116; t=1713381704; c=relaxed/simple;
+	bh=wVjPG3014MVAYdrd+COut7DaylrR6d606rWJWXDaurs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OsMKYP2dKV7FMlWP4dM5lBiXreO5OnZEtcFgoNndlRBwEKRxgMRioGncWeOySZT0S0YHMRVewl4wCI8QsxBqZDOZcn3+Ihns6gzdKADTndLIZCVff8be7TBuDGzb/lQ7khpAnw5H1TtC8N6sFGhC/ESl1BlZI91yWUQ96jjPyts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ryaf6MX2; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2db101c11feso1016291fa.0;
+        Wed, 17 Apr 2024 12:21:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713381656; x=1713986456; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ORRZpXUfxr9ItRDDr0g7BO8pI4LaWWkmIOzOV1lUjes=;
-        b=ThUs+zBKSaponbb58Dod6Z1IGSmlxw4Jpi+7ppdNpbhVobZZfXcwvIlBUzj+QnxvBG
-         kwj+XCcOvud8clC5wr/3MmbXBZr+l+OHAbupDcSvfkEJ3ynDAl9BUikip+WbrjFVIg7V
-         b774TsOVcobqdEYTexydbT9MDoawO2vPpHum9ZcI7/upqCNARAgNCcqJDVETFl8Kl1nz
-         15ASyQBLSEN7sX9YO8AnGppQZsuK9OdYmanZz3NGTL+0ExqiSVM4GRwduLimHtY1Ev33
-         dqGoKDpvjR6fycJ61phEwiwgfKsw5w4ECcPBz8jOYtj5dpK/yo6cPx8cwSnUIAi2vQKl
-         k4lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713381656; x=1713986456;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1713381701; x=1713986501; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ORRZpXUfxr9ItRDDr0g7BO8pI4LaWWkmIOzOV1lUjes=;
-        b=QY8S+A84QBVbmHV/TZ3r8a/ZN3NoM9USSOjv5Su1AFDlfPdbnaWMe4QFQMM3UzS2jZ
-         Bo1xnhZFS0YRkA+WQzZjU3bNAOCTG3KqEeirlgKp+jGe7zh12gq8Q+o+j4JR7eAP88T8
-         DbJ2mxO1/haR6J+11wHtER0gtRfPVg4Boi1fieAtE5OG9deCZfFBW5uiENvBsw678sj6
-         emHd1RUGMbje+WD34jB9zxHCsWiTEqJvhOD21R03+BQZ40jCjaHDqQX0Yn2oHqtt2lAW
-         cOWD6ZjjoyWUpn5QQdoGL1AKV4/oCt8zMa0bApVO0gURkUNR8gDKeyFJKf5EyLhTyqw+
-         VLZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWIcC2caBB/Tzk7DGeh+mUStkHiQ3NkcVFry5z0wxJumlO/mmq2Wzx/fF/+/VvBh0XumHBfwTf/+XJwJiblYIth3MwCsWUqARUePPdW
-X-Gm-Message-State: AOJu0Yy7W+csS2tkfgEYBmvqGbKxDGKgrBU1x4FAEvf12cSaQwb8NjDo
-	P4z/Z2K0CSTMpCnVnJo16kDsT6J+wxXHMGEYDcxIwE62yrdcsedvTZXtOafsI04=
-X-Google-Smtp-Source: AGHT+IFFegkq8waqKyMERwq6fCuZal4ckYIGZjxrkGrrejjVKhdDcv8GCWbIasobPrTueNDkPh41oA==
-X-Received: by 2002:a05:6a21:27a8:b0:1aa:5f1f:79d1 with SMTP id rn40-20020a056a2127a800b001aa5f1f79d1mr709847pzb.1.1713381656202;
-        Wed, 17 Apr 2024 12:20:56 -0700 (PDT)
-Received: from [10.36.51.174] ([24.75.208.145])
-        by smtp.gmail.com with ESMTPSA id r13-20020aa79ecd000000b006ed045af796sm11536pfq.88.2024.04.17.12.20.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Apr 2024 12:20:55 -0700 (PDT)
-Message-ID: <7eeef2c6-7375-4e41-aad6-ca0a39e95e2e@linaro.org>
-Date: Wed, 17 Apr 2024 21:20:53 +0200
+        bh=cL+IxItw+NlxsTFv09kI71KrI9rXuCjstbHDz2H2mLI=;
+        b=Ryaf6MX2mtjx30OCVVkH2gfynErdhD95uR4i0JP0HwD2LvxcBnMIhzKtDzlZdg0/HB
+         RkXI4hdxosA+0iR0IYmwi9OP5iFXYifn0dODhmWln/ZFnhWNiT0hv7NanpHQe7TURvm4
+         jwG0zZAX79KikogoEjU4E2kyn58ZjVvb7Gc3atndlMNJt46+tFpxOnc8lRiZvGhGofww
+         mjMQAn0jyS9Bhb2T+r2VXeCsXiPgvA8ks19XAn0njZnUeSB/oxVMOKp9UNs9bmRDIlE6
+         iiGvf20GaRRyO9Ijd/AJz/2C+jHzi2zK72jMP1fxgqQMdrdRXbtSxcGjnKCyMeQXR++X
+         TTFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713381701; x=1713986501;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cL+IxItw+NlxsTFv09kI71KrI9rXuCjstbHDz2H2mLI=;
+        b=Eiv6aJ8gg9KvsTlchLthNLhYUe4HNK25ny+/KfPCme0z7Dfxjg5VcTSQhoSF/I/SmG
+         WBVG1WUugKP0IGoqIPy2NxPV6wjHnmiam+mEqchsBceeGPiKTVxweX+V0UHFrj+/lkKW
+         giRvf8f9aZiNuiXdqz4KFDHZ7o5+UhRxUlFj+5WbV2edOnihV1DCyP4wRG7VMqfRHknT
+         BmyJaR9pAVWWVRjrajWfFbNsm3zOZzWa4h1pKOv0zChrh1yxNiXB9qgluhOIa3TumF46
+         DQWS6YaJe8pQiCYztpM8dfB/8lSU++8eMKKuMkBKWKTo5fZaG8KqqY0f9MNz9YF6g3YN
+         9PEg==
+X-Forwarded-Encrypted: i=1; AJvYcCUxAYZ/BqguVNal9fFCc0zRS/iDvuDQSof+78n5J6TZf9Q3O/565NmEbZxrXox1CWhcBDL2Ek646pwBxiHaNrXg45k9RaAJIgmSTBhVPbThQaI=
+X-Gm-Message-State: AOJu0Yw/UcFBw0wYbOkyXg+uUTuCeqR8TP/2Xp6XNelBvuRBgeQLp+D7
+	I2mwwS3FJqs2/OC23T9Nv3isXm76P+5hzNNpnbMd+PwIyHG5JFlGxaN6t61yRrAJD9UAGkBuZZs
+	IKbm7mrrnE99omWbYal+78Q3TNTg=
+X-Google-Smtp-Source: AGHT+IE+dn1+BiC5HRFISePkl+JlKbtUp8WFd3e+zMtV4AQ006m3tGlALuUK/FOuVkyav3qxNtEic0kVPRyneibZka0=
+X-Received: by 2002:a2e:a28c:0:b0:2da:7944:9521 with SMTP id
+ k12-20020a2ea28c000000b002da79449521mr10390lja.25.1713381701276; Wed, 17 Apr
+ 2024 12:21:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 30/31] kvx: Add power controller driver
-To: Yann Sionneau <ysionneau@kalrayinc.com>,
- Yann Sionneau <ysionneau@kalray.eu>, Arnd Bergmann <arnd@arndb.de>,
- Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
- Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Boqun Feng <boqun.feng@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
- Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>,
- Oleg Nesterov <oleg@redhat.com>, Ingo Molnar <mingo@redhat.com>,
- Waiman Long <longman@redhat.com>,
- "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
- Andrew Morton <akpm@linux-foundation.org>, Nick Piggin <npiggin@gmail.com>,
- Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
- Christian Brauner <brauner@kernel.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Jules Maselbas <jmaselbas@kalray.eu>,
- Guillaume Thouvenin <gthouvenin@kalray.eu>,
- Clement Leger <clement@clement-leger.fr>,
- Vincent Chardon <vincent.chardon@elsys-design.com>,
- =?UTF-8?Q?Marc_Poulhi=C3=A8s?= <dkm@kataplop.net>,
- Julian Vetter <jvetter@kalray.eu>, Samuel Jones <sjones@kalray.eu>,
- Ashley Lesdalons <alesdalons@kalray.eu>, Thomas Costis <tcostis@kalray.eu>,
- Marius Gligor <mgligor@kalray.eu>, Jonathan Borne <jborne@kalray.eu>,
- Julien Villette <jvillette@kalray.eu>, Luc Michel <lmichel@kalray.eu>,
- Louis Morhet <lmorhet@kalray.eu>, Julien Hascoet <jhascoet@kalray.eu>,
- Jean-Christophe Pince <jcpince@gmail.com>,
- Guillaume Missonnier <gmissonnier@kalray.eu>, Alex Michon
- <amichon@kalray.eu>, Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <git@xen0n.name>, Shaokun Zhang <zhangshaokun@hisilicon.com>,
- John Garry <john.garry@huawei.com>,
- Guangbin Huang <huangguangbin2@huawei.com>,
- Bharat Bhushan <bbhushan2@marvell.com>, Bibo Mao <maobibo@loongson.cn>,
- Atish Patra <atishp@atishpatra.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>,
- Qi Liu <liuqi115@huawei.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Mark Brown <broonie@kernel.org>,
- Janosch Frank <frankja@linux.ibm.com>, Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Benjamin Mugnier <mugnier.benjamin@gmail.com>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-audit@redhat.com,
- linux-riscv@lists.infradead.org, bpf@vger.kernel.org
-References: <20230120141002.2442-1-ysionneau@kalray.eu>
- <20230120141002.2442-31-ysionneau@kalray.eu>
- <f69adaf2-6582-c134-5671-4d6fd100fcf1@linaro.org>
- <c20b433f-97ef-7faa-5122-9949af41f2fb@kalrayinc.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <c20b433f-97ef-7faa-5122-9949af41f2fb@kalrayinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240414161257.49145-1-ubizjak@gmail.com> <171312759954.10875.1385994404712358986.tip-bot2@tip-bot2>
+ <20240415201119.GBZh2J57f3aouPE_JR@fat_crate.local> <CAFULd4aFSBHNxyVyVt9soPnJXDgiOu6qCCNMLoenFNXtk0W4wA@mail.gmail.com>
+ <20240417184040.GEZiAXqKvw3uRcmTJL@fat_crate.local>
+In-Reply-To: <20240417184040.GEZiAXqKvw3uRcmTJL@fat_crate.local>
+From: Uros Bizjak <ubizjak@gmail.com>
+Date: Wed, 17 Apr 2024 21:21:29 +0200
+Message-ID: <CAFULd4b8kRgy0p3pKwheLRHx7rX+4RuY-45_Zt-CCj5sCpGjCw@mail.gmail.com>
+Subject: Re: [tip: locking/core] locking/atomic/x86: Introduce arch_try_cmpxchg64_local()
+To: Borislav Petkov <bp@alien8.de>
+Cc: linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org, 
+	Ingo Molnar <mingo@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	Waiman Long <longman@redhat.com>, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 15/04/2024 16:08, Yann Sionneau wrote:
-> Hello Krzysztof, Arnd, all,
-> 
-> On 1/22/23 12:54, Krzysztof Kozlowski wrote:
->> On 20/01/2023 15:10, Yann Sionneau wrote:
->>> From: Jules Maselbas <jmaselbas@kalray.eu>
->>>
->>> The Power Controller (pwr-ctrl) control cores reset and wake-up
->>> procedure.
->>> +
->>> +int __init kvx_pwr_ctrl_probe(void)
->>> +{
->>> +	struct device_node *ctrl;
->>> +
->>> +	ctrl = get_pwr_ctrl_node();
->>> +	if (!ctrl) {
->>> +		pr_err("Failed to get power controller node\n");
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	if (!of_device_is_compatible(ctrl, "kalray,kvx-pwr-ctrl")) {
->>> +		pr_err("Failed to get power controller node\n");
->> No. Drivers go to drivers, not to arch directory. This should be a
->> proper driver instead of some fake stub doing its own driver matching.
->> You need to rework this.
-> 
-> I am working on a v3 patchset, therefore I am working on a solution for 
-> this "pwr-ctrl" driver that needs to go somewhere else than arch/kvx/.
-> 
-> The purpose of this "driver" is just to expose a void 
-> kvx_pwr_ctrl_cpu_poweron(unsigned int cpu) function, used by 
-> kernel/smpboot.c function __cpu_up() in order to start secondary CPUs in 
-> SMP config.
+On Wed, Apr 17, 2024 at 8:41=E2=80=AFPM Borislav Petkov <bp@alien8.de> wrot=
+e:
 
-I might be missing here some bigger picture and maybe my original
-comment was no appropriate, but IIUC, you might now create dependencies
-between arch code and drivers. That's also fragile.
+> > If the line count is the problem, I can easily parametrize new and
+> > existing big macro descriptions in a follow-up patch. However, I was
+> > advised to not mix everything together in one patch, but rest assured,
+> > the creation and testing of the follow-up patch would take me less
+> > time than writing the message you are reading.
+>
+> I'm simply making sure we're not going off the rails with
+> micro-optimizing for no apparent reason.
+>
+> Saving a
+>
+>         test   %rax,%rax
+>
+> doesn't need fixing in my book. Because I don't think you'll be able to
+> even measure it.
 
-> 
-> Doing this, on our SoC, requires writing 3 registers in a memory-mapped 
-> device named "power controller".
-> 
-> I made some researches in drivers/ but I am not sure yet what's a good 
-> place that fits what our device is doing (booting secondary CPUs).
-> 
-> * drivers/power/reset seems to be for resetting the entire SoC
-> 
-> * drivers/power/supply seems to be to control power supplies ICs/periph.
-> 
-> * drivers/reset seems to be for device reset
-> 
-> * drivers/pmdomain maybe ?
-> 
-> * drivers/soc ?
-> 
+The above is perhaps a little unfortunate example taken from
 
-Bringup of CPU? Then I would vote for here. You also have existing
-example: r9a06g032-smp.c
+if (cmpxchg64(...))
 
-But anyway the point is to make it clear - either it is a driver or core
-code. Not both. The original code was not looking like any other CPU
-bringup code.
+where the check is against zero. The compiler can optimize the check
+to a TEST insn in this particular case, but otherwise CMP will be
+emitted for different usages. Not a big difference, but a register has
+to be kept live across cmpxchg8b.
 
-Best regards,
-Krzysztof
+> > It brings no future maintenance burden, but it perhaps improves
+> > someone's life a tiny bit.
+>
+> This is where you and I disagree: touching that alternative in
+> __arch_try_cmpxchg64_emu_local() does as we tend to change them from
+> time to time, especially in recent times.
+>
+> And I wouldn't mind touching it but if it is there to save 10 insns on
+> 32-bit - which doesn't matter - then why bother?
+>
+> Or do you have a relevant 32-bit workload which brings any improvement
+> by this change?
 
+There is one important issue. When a register (or two for double-word
+values) has to be kept live for a compare, the register pressure on
+32bit targets around cmpxchg8b goes through the roof, and when using
+the frame pointer (and maybe some fixed register, e.g. PIC), the
+register allocator runs out of available registers. The number of
+spills around cmpxchg8b signals the troubles register allocator goes
+through to "fix" everything, so from the compiler PoV any relief is
+more than welcome here. Even in GCC internal libraries, we have had to
+take a special approach with this insn to avoid internal compiler
+errors. The kernel was quite lucky here ;)
+
+Thanks and best regards,
+Uros.
 
