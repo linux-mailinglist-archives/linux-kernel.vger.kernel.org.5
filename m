@@ -1,80 +1,107 @@
-Return-Path: <linux-kernel+bounces-149258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67C868A8DF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 23:28:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E9C38A8DFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 23:31:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07E5E1F2159D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:28:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 706201C2131E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:31:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A84A8004A;
-	Wed, 17 Apr 2024 21:28:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 315876A8DB;
+	Wed, 17 Apr 2024 21:31:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G9Dy/zGs"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Qc1llDWP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4118F4A;
-	Wed, 17 Apr 2024 21:28:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612EC8F4A
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 21:31:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713389324; cv=none; b=NZV+y7s5Lv1LlAjX1GI/Iw3M+Zf9taMzsbXsv742KnoHznbIlK9iJqvS+/7LSB9n3lBtJ4sqyfHaBbrJ1vc5eXzZPYE3DuaA2////Uresa7WrpXp+UaVKPVp8oZBi1nRdHfBVwlHov0HzJEUYu0xRdQo3aYL7+yXscFi3YONULo=
+	t=1713389474; cv=none; b=lpNnz+BcT9S8258eBo1rjKMT8OBehCinijWy8lh5HS2wGXM3ztMYJFDqgUmwEHMOCfHY6mF8oa6D0F3Cy4DkXsf3fvwVM6ZaAwnoVYXkY7ONugloA4QdF3DOkKof/5S/IUVtFCnZ4z/VaK26NVsN9Sgr1qA0aF+kL+BFuodXEag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713389324; c=relaxed/simple;
-	bh=CcUwRC1ONYjbKMJcsLelzN8dCXZuvmUYbPtOjD1wORI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JzgJN9pM2kWZlusBvSWrZKFyiqe5a/QjLS96raKZtjLgLcw0x8q0xRzy5jRKk97bEBiZpze5ecFII+LDhx3Q5TztnEUBL8yGhJmt+SKM+T+z9RnqJUcaN3uhA3cJs41HfeJJ2xo7sRw+LsN89bGuVqdmGhXrCNgo40vmKFSG1gY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G9Dy/zGs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F626C072AA;
-	Wed, 17 Apr 2024 21:28:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713389324;
-	bh=CcUwRC1ONYjbKMJcsLelzN8dCXZuvmUYbPtOjD1wORI=;
+	s=arc-20240116; t=1713389474; c=relaxed/simple;
+	bh=BUvNBDN8ASj+mIKXlPKJ5UdnbvlyYutLvYoQLGXc4wI=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=Eiv+cUGaHSc1gixF4nIpLuw5CkR5xZyZeNVmA5HFf40IGMEDgi/OxnFyp+DMvKlQUihORK0gMhDxh6eS7aELCTVjrhd4fqWA0wKMSh6Og1vDGk3Ing3IN2nsNu1VLCT9G3BnOTOfVJ+YIvJPH+A3h0F1HfwKPU9jT8oNMvAdjtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Qc1llDWP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB04CC072AA;
+	Wed, 17 Apr 2024 21:31:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1713389474;
+	bh=BUvNBDN8ASj+mIKXlPKJ5UdnbvlyYutLvYoQLGXc4wI=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=G9Dy/zGslStluiYRn7O++1NbHg+TqBYAGJ8DDoKpYpx9roNHiKCyzIyjRw95XNMbY
-	 RWbKkHVzCQm0Ej/XuQdAv0xjmuFcfyCMXng+pZSMyj73Zh7eS7EVH/fnqtM2NmMcYM
-	 TrDLCjn8THg8qjacMX7k3VJhzh59uDT4k86gRmDerfU8oSud49vXrxpR3sRfsw2RCS
-	 YejpqSRKNzOPGKhDcOcVRYQVHsjJyQqpLZdFWh6BudeS3OQSP/drseCPAjQ92k3FFg
-	 lqJ//dng8qosZsI+hKC7bFLAgmuDqgNbHRCUGrWLFHwFLFQiNCDmrWRpfBkSofX9Gy
-	 oayyLMgNCMWtQ==
-Date: Wed, 17 Apr 2024 14:28:43 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: Dmitry Safonov via B4 Relay <devnull+0x7f454c46.gmail.com@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Shuah Khan
- <shuah@kernel.org>, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 0/4] selftests/net/tcp_ao: A bunch of fixes for
- TCP-AO selftests
-Message-ID: <20240417142843.27a221f8@kernel.org>
-In-Reply-To: <20240417134636.102f0120@kernel.org>
-References: <20240413-tcp-ao-selftests-fixes-v1-0-f9c41c96949d@gmail.com>
-	<20240416072809.3ae7c3d3@kernel.org>
-	<CAJwJo6Yw4S1wCcimRVy=P8h0Ez0UDt-yw2jqSY-ph3TKsQVVGA@mail.gmail.com>
-	<20240417134636.102f0120@kernel.org>
+	b=Qc1llDWPkmmexlecR7t7m9hPyzRNjGUKegtPtvV4t9OU3Ki6bf4DrCbOH0jCC/mK+
+	 UQle3IettyM3nCBs/5FdGl2w/O1IoWdHveaggrY8f93h1L0/S8s65M/9EwCnCeXnXI
+	 XrDjuB/yJlPn6jyJDDP/kHDTVxh39Zq94hXfvUsE=
+Date: Wed, 17 Apr 2024 14:31:13 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Oscar Salvador <osalvador@suse.de>
+Cc: Matthew Wilcox <willy@infradead.org>, Vishal Moola
+ <vishal.moola@gmail.com>, syzbot
+ <syzbot+ad1b592fc4483655438b@syzkaller.appspotmail.com>,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, muchun.song@linux.dev,
+ syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [mm?] KASAN: slab-use-after-free Read in
+ __vma_reservation_common
+Message-Id: <20240417143113.23df96102dcdd2b0c3805329@linux-foundation.org>
+In-Reply-To: <Zh4zKy-4Wv5bbR5n@localhost.localdomain>
+References: <000000000000daf1e10615e64dcb@google.com>
+	<000000000000ae5d410615fea3bf@google.com>
+	<Zh2kuFX9BWOGN1Mo@fedora>
+	<Zh2m5_MfZ45Uk-vD@casper.infradead.org>
+	<Zh4zKy-4Wv5bbR5n@localhost.localdomain>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 17 Apr 2024 13:46:36 -0700 Jakub Kicinski wrote:
-> > I can spend some time on them after I verify that my fix for -stable
-> > is actually fixing an issue I think it fixes.
-> > Seems like your automation + my selftests are giving some fruits, hehe.  
+On Tue, 16 Apr 2024 10:13:31 +0200 Oscar Salvador <osalvador@suse.de> wrote:
+
+> On Mon, Apr 15, 2024 at 11:15:03PM +0100, Matthew Wilcox wrote:
+> > On Mon, Apr 15, 2024 at 03:05:44PM -0700, Vishal Moola wrote:
+> > > Commit 9acad7ba3e25 ("hugetlb: use vmf_anon_prepare() instead of
+> > > anon_vma_prepare()") may bailout after allocating a folio if we do not
+> > > hold the mmap lock. When this occurs, vmf_anon_prepare() will release the
+> > > vma lock. Hugetlb then attempts to call restore_reserve_on_error(),
+> > > which depends on the vma lock being held.
+> > > 
+> > > We can move vmf_anon_prepare() prior to the folio allocation in order to
+> > > avoid calling restore_reserve_on_error() without the vma lock.
+> > 
+> > But now you're calling vmf_anon_prepare() in the wrong place -- before
+> > we've determined that we need an anon folio.  So we'll create an
+> > anon_vma even when we don't need one for this vma.
+> > 
+> > This is definitely a pre-existing bug which you've exposed by making it
+> > happen more easily.  Needs a different fix though.
 > 
-> Oh, very interesting, I don't recall these coming up before.
+> I do not think this is a pre-existing bug.
+> Prior to 'commit: 7c43a553792a ("hugetlb: allow faults to be handled under
+> the VMA lock"), we would just bail out if we had FAULT_FLAG_VMA_LOCK.
+> So there was no danger in calling functions that fiddle with vmas like
+> restore_reserve_on_error() does.
+> After that, we allow it but vmf_anon_prepare() releases the lock and returns
+> VM_FAULT_RETRY if we really need to allocate an anon_vma.
+> The problem is that now restore_reserve_on_error() will re-adjust the
+> reservations without the vma lock, completely unsafe.
+> 
+> I think the safest way to tackle this is just as Vishal did, call
+> vmf_anon_prepare() upfront only for non VM_MAYSHARE faults.
 
-Correction, these are old, and if I plug the branch names here:
-https://netdev.bots.linux.dev/contest.html
-there is a whole bunch of tests failing that day.
+Thanks.  I didn't apply anything at this stage, because this patch
+appears to be against linux-next/mm-unstable whereas for a -stable
+backportable thing it would best be against current -linus.
 
-Keep in mind these run pre-commit so not all failures are flakes.
+So can we please sort out a suitable Fixes:, redo the patch against
+current mainline, add the cc:stable and await further input from
+Matthew?
 
