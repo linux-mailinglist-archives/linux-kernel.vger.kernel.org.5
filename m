@@ -1,95 +1,117 @@
-Return-Path: <linux-kernel+bounces-148711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0EDD8A8680
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:47:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 316128A8683
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:48:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1DCA1C20E84
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:47:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD32FB269F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A9B14C587;
-	Wed, 17 Apr 2024 14:43:23 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E280514A4C5
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:43:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C381422CB;
+	Wed, 17 Apr 2024 14:44:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="T/dEk2l8"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88AA13D2B5
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:44:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713365003; cv=none; b=C/8TtCYeYQ2xoLi5QQIRxxyW95vm3G5JE7pwVqiIYI/YtyR5DTEyy7MApiVET2pDmFFryUn7CeZy2/9nCAec9bzLBDPBm8dxjhuVN11l+UseVXS38kYvV/A18Srd00WaT8YMMoctlpbGDdgJtalLURXIoOK9crpjXwHZ6eQB0HQ=
+	t=1713365066; cv=none; b=rUQdrO+9ISzGAogLTs9NSqiUfHKSRbdpp3c7yQrpbTfe6YpNyhEXv+exawXwh21RiZlc2xBvOX5VxOyIxQfcC5SCmQd9gzGrPjU0AUU6WG9kH6jQX629Kd9jQgi4uaqq+FEdgTBVna8dkvUe1FKSjztr+4RBiKAzI0h2YWJzW9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713365003; c=relaxed/simple;
-	bh=bgmmRAgGPHG0jRQKUH4mmqT3ONaK2R/3lJz5tz8Gimk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pJH50o2maIK/PqeOMGr7mWl0W51i+asG1CsPtQxEYfsFd1F5czxlMSwhYgFCjrDVvlZ82SHAITW/ke1SHIvp1viDbMBR2O8QKruCKw1qwKdOui5LhJ+PYgm6YRzq4f14gxbEHVcBFfd88gj0cvMN8hWinMWyw43uS6a1rBSnp8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A80E2F;
-	Wed, 17 Apr 2024 07:43:49 -0700 (PDT)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 00B4D3F738;
-	Wed, 17 Apr 2024 07:43:17 -0700 (PDT)
-Date: Wed, 17 Apr 2024 15:43:15 +0100
-From: Dave Martin <Dave.Martin@arm.com>
-To: "Moger, Babu" <babu.moger@amd.com>
-Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	H Peter Anvin <hpa@zytor.com>, shameerali.kolothum.thodi@huawei.com,
-	D Scott Phillips OS <scott@os.amperecomputing.com>,
-	carl@os.amperecomputing.com, lcherian@marvell.com,
-	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
-	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-	dfustini@baylibre.com, amitsinght@marvell.com,
-	David Hildenbrand <david@redhat.com>,
-	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: Re: [PATCH v1 31/31] x86/resctrl: Move the resctrl filesystem code
- to /fs/resctrl
-Message-ID: <Zh/gA29yEpbinEPh@e133380.arm.com>
-References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-32-james.morse@arm.com>
- <99ac181d-d93c-4b11-84aa-48953d9eb5a3@amd.com>
+	s=arc-20240116; t=1713365066; c=relaxed/simple;
+	bh=DO5hWxuQ0GbzElIwWkxs6zhU7QcjyGG9CNkERGbvers=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=KLffQuHGNHTfZddGfbPmS1C5j56+/YLMXoH0yBSRvVCf+ICrZg4OwYBPIcBCRt2Wh8VbuogXIjwYpUtiGvjcrldy66ugi+bsQ3KEE3dcGznITmencfw48l+H2tfFnu4m3Cyv+Y0NUsmi2YrTd7QYIbWhbEUXP06hxMB14ZM02sI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=T/dEk2l8; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [127.0.0.1] ([76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 43HEhkos4055394
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 17 Apr 2024 07:43:47 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 43HEhkos4055394
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024041401; t=1713365027;
+	bh=1gpCGc5aOm1j6Gk/Ux1ENMnwJdIrAl6jDNkLNuPQ19w=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=T/dEk2l8BqoVwUdckq7jtoOTOiwsv/69ncrAKiYLtqiEIk3Ja+cfysXaTPqCEQfkM
+	 RhlCTvh4TvUOP0M2LCE0QSmP7Le4IxjYXcELPxGcTy6Com/+hFGBbknrD7Pv9cAAgo
+	 4YwnOzuzaPqg57U4XbAqFNuIO/vqlwfj3PHbuoNSELGy/MjIm8Hcc0X9NzQj1tzOgG
+	 HE1oxg4xNNWl9d3EZBFwTHZeP4IooPTUZJYEZQOFkNVlpu8m3MWRjvFdhddKmzNrH3
+	 O/yUBmlCBtcjZZgYVUT6Xeg1WMJxQ1lSPXl/EBF34jjWHm6XJ5THoVmkPP9wuiB6cK
+	 sqCsLqjxKmKfQ==
+Date: Wed, 17 Apr 2024 07:43:40 -0700
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Hou Wenlong <houwenlong.hwl@antgroup.com>, linux-kernel@vger.kernel.org
+CC: Xin Li <xin@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH=5D_x86/fred=3A_Fix_incorrect_e?=
+ =?US-ASCII?Q?rror_code_printout_in_fred=5Fbad=5Ftype=28=29?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <b2a8f0a41449d25240e314a2ddfbf6549511fb04.1713353612.git.houwenlong.hwl@antgroup.com>
+References: <b2a8f0a41449d25240e314a2ddfbf6549511fb04.1713353612.git.houwenlong.hwl@antgroup.com>
+Message-ID: <B04B2A1C-8FB7-4D8F-A67E-1666B6DA4E14@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <99ac181d-d93c-4b11-84aa-48953d9eb5a3@amd.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On April 17, 2024 4:34:25 AM PDT, Hou Wenlong <houwenlong=2Ehwl@antgroup=2E=
+com> wrote:
+>The 'regs->orig_ax' has been invalidated to '-1' in the entry, so in the
+>printout, fred_bad_type() should use the passed parameter 'error_code'=2E
+>
+>Fixes: 14619d912b65 ("x86/fred: FRED entry/exit and dispatch code")
+>Signed-off-by: Hou Wenlong <houwenlong=2Ehwl@antgroup=2Ecom>
+>---
+> arch/x86/entry/entry_fred=2Ec | 8 ++++----
+> 1 file changed, 4 insertions(+), 4 deletions(-)
+>
+>diff --git a/arch/x86/entry/entry_fred=2Ec b/arch/x86/entry/entry_fred=2E=
+c
+>index ac120cbdaaf2=2E=2E099697ba6e58 100644
+>--- a/arch/x86/entry/entry_fred=2Ec
+>+++ b/arch/x86/entry/entry_fred=2Ec
+>@@ -28,9 +28,9 @@ static noinstr void fred_bad_type(struct pt_regs *regs,=
+ unsigned long error_code
+> 	if (regs->fred_cs=2Esl > 0) {
+> 		pr_emerg("PANIC: invalid or fatal FRED event; event type %u "
+> 			 "vector %u error 0x%lx aux 0x%lx at %04x:%016lx\n",
+>-			 regs->fred_ss=2Etype, regs->fred_ss=2Evector, regs->orig_ax,
+>+			 regs->fred_ss=2Etype, regs->fred_ss=2Evector, error_code,
+> 			 fred_event_data(regs), regs->cs, regs->ip);
+>-		die("invalid or fatal FRED event", regs, regs->orig_ax);
+>+		die("invalid or fatal FRED event", regs, error_code);
+> 		panic("invalid or fatal FRED event");
+> 	} else {
+> 		unsigned long flags =3D oops_begin();
+>@@ -38,10 +38,10 @@ static noinstr void fred_bad_type(struct pt_regs *reg=
+s, unsigned long error_code
+>=20
+> 		pr_alert("BUG: invalid or fatal FRED event; event type %u "
+> 			 "vector %u error 0x%lx aux 0x%lx at %04x:%016lx\n",
+>-			 regs->fred_ss=2Etype, regs->fred_ss=2Evector, regs->orig_ax,
+>+			 regs->fred_ss=2Etype, regs->fred_ss=2Evector, error_code,
+> 			 fred_event_data(regs), regs->cs, regs->ip);
+>=20
+>-		if (__die("Invalid or fatal FRED event", regs, regs->orig_ax))
+>+		if (__die("Invalid or fatal FRED event", regs, error_code))
+> 			sig =3D 0;
+>=20
+> 		oops_end(flags, regs, sig);
 
-On Mon, Apr 15, 2024 at 03:44:48PM -0500, Moger, Babu wrote:
-> James/Dave,
-> This is a huge change. Can this be broken into multiple patches?
-> It will be a major task in case we need to bisect to pinpoint any issues
-> later.
-> Thanks
-> Babu
-
-[...]
-
-I guess this might be possible, though when moving groups of static
-functions around that refer to each other it might be more trouble than
-it is worth.
-
-I'll need to discuss with James.
-
-Either way, I think this patch will need to rebuilt when spinning v2 of
-this series.  I've been rebasing it by hand, which is not exactly
-foolproof!
-
-It ought to be possible to break this up into one patch per affected .c
-file at least, if people feel that it is worthwhile.
-
-Cheers
----Dave
+Acked-by: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom>
 
