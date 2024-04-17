@@ -1,295 +1,209 @@
-Return-Path: <linux-kernel+bounces-148704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 587BB8A866F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:46:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D237E8A862D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:40:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 764591C2171F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:46:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A3381F20F7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:40:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75BDC1482F1;
-	Wed, 17 Apr 2024 14:41:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9E581420D1;
+	Wed, 17 Apr 2024 14:40:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RyH6AkJ/"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="NwrMCbNI"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2087.outbound.protection.outlook.com [40.107.8.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B2A4146D6C;
-	Wed, 17 Apr 2024 14:41:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713364915; cv=none; b=UiUkvcQYYRO8SEX3tpXqK3IUT+WI3mbyFeltFAJ2Top5OpZY3cjjJmifJZT6uYLPTmThg5TM7aTwSO2fROAGxLFud1F3ZCMYUXBrK19ij2jXAgV4FN17vYl/yltFGQdt5pqbiGwzS6qhQxPsvV9ADe6V8yt6XLQivlRo+nzarhI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713364915; c=relaxed/simple;
-	bh=jr0C6sNwIGJdObduli6FVCaxDeCtBKhG3NSdzuSaMGY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=S03z1THTxGc7KHo6q6k4KCjWlSaeVjiMSB+l42co+fuENINiD/kUofrf8AcSqeRV2Xfuqp9QW8uAMzWL/2SYfvvyfYSDA052Ox2nlLcMHPAZJDcM2ZdiuBrEyBJc1qzbs49kIYTqJhNFcAP/VLLA0Eei722ciWntpjCZsE+bHHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RyH6AkJ/; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5D2421BF213;
-	Wed, 17 Apr 2024 14:41:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713364911;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/M7MblF5FojAIwCImILZRFXjF6A2YTa3pBx7P1LIj6g=;
-	b=RyH6AkJ/2Qtiquf0ZEdFxUQgSusxPJOPdCH/+wu+G+1LRDINeR2adH5WZy9LJeRQPkKP7L
-	le4lp6P2oC7F6gDKZVidPjLDWQ3y9DwWCZdhmMS7p8SxoLEbjhEYNglqKvAMXM07kh/Rx5
-	6lf85yHkqHO2aF/3ooJB8QwbykHMIGCP60NwMsbYiyOZsEodex2mcQOwZxqAGA4IIqmTt9
-	LfQd1SYq163wV/pVjO7pod6wcTNvAnfj813mo34UYwb495FK8BgBog7NDgJ49XNJ+g9OY/
-	WAp1OwpysCzdVgZc4ssiGQrw1b8bY5LadtxsLkMu22DMHPxHu39MBg1fDRqQvw==
-From: Kory Maincent <kory.maincent@bootlin.com>
-Date: Wed, 17 Apr 2024 16:39:59 +0200
-Subject: [PATCH net-next v9 11/14] dt-bindings: net: pse-pd: Add bindings
- for PD692x0 PSE controller
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F3D1411FF;
+	Wed, 17 Apr 2024 14:40:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.87
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713364813; cv=fail; b=TVcdS+vf9aRjg1NqRrmLHG1cgo43X3vuyJks7cofA5/HqS5V2uI9D3L4jp0cLpvbIQy0wIa9nd+pl4sLQfbDYb+XPOnl/an7SuSiNnk0eoT4460QKDm6cO9nYmUAXA7++B0UW6EvSXdl6N9Jfs87C7sSCsWiIjiBo9Cs89v5qUs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713364813; c=relaxed/simple;
+	bh=zW9ULleo6DXTv8a5ky/KzX1CEhS0eEOfF4+jkCEVguQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=EgPsrqPSf7v0tD0oN2fQEEZgnUiUdyRVYyfGBg3LUGmhPu+W/upFzJmj+XpS4cdSb4rx3Aeq+BRwua6H2EPmT/8Q+0Lyfcb5kzg4b2WtsXyfxsFD/DEnb864iv+l0qwAzMa7d5CPJZwBs0A3oy8f1bR9T7OSqfMD9zUgIgj6Lvw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=NwrMCbNI; arc=fail smtp.client-ip=40.107.8.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=erTPriM6D1FCwLP3JoNllf/MHDNJyRxyqZVbVTqVZyNDcX3QZ+tTiFEKLl/66TorDTS3MK2zQhRlnRGDAzykzJ089xmfUCqsh0rLVq8wC2z3QS65BNT1eMOiuY6CDP4m6kS1ey5ZxntBgc+IrUgkSnGhhNPU5JbIgARizWLRJkW22BIfnBMGdNEaAXgjbhfAzrtXPQaYe004AuKfki+z7GPA8q5BK3D8Y7k5WVAEP59H6DXVOANlchqJbAG/9rEOviD5+U77vsWVHGX8bOKSzLPLCwgtyvnl0clBvus+ES01x1OzmhZNq1YFJ0/8Io30+N9LiVGvzEkOyhb5YQrzRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PRr9riG+SZ2CsG6J8U0wY/bRJHOcE2BBP9oAhitbFXc=;
+ b=Y1EHyk/tlfmswDeTeGNq8NzTHzAqA9mLcnjCYofBu/RzCxwndyW4by9ueWVrswR4J4Wc6FO+919MoA9M8+zwkW7KvKmaA/bivNAHg2X0QpL4twz/4Toyn3hSgc6VcBV2Zjn/VdGO63X0yWB5mOin3HFOQ6lcqeDn8HR4xqXB8jw1iAJwZLOaShAlo9UeM65n4buw0CIapNTfheKtPFsd83ioNmZD6WLSBKznezhbodzC94pz83UqRpZ47QdwrGtdxcIRTJMC2QjRHxqJU/4f9UkrtYdduRT9GbvPq4jEpU0ZKREnhlWyloZ5XOFMJoBhwDpg9E4sf/mUO61p9o/WAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PRr9riG+SZ2CsG6J8U0wY/bRJHOcE2BBP9oAhitbFXc=;
+ b=NwrMCbNIXR9KaD4rNP5L51M9v4fl1rfha6QGBAXpkzlQVZAi0FsGg6fLb1oMNprKUPyC0TWb7sMfPWqxbPy5IEWmy3WYWTPvS4B9G9Qt33wAMWAgrEYW3YSyZ9WL9AsklgnDGLxAyW7st22ODqmVL8NBP83kG+nePpFUWlbPUkU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by VE1PR04MB7374.eurprd04.prod.outlook.com (2603:10a6:800:1ac::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.37; Wed, 17 Apr
+ 2024 14:40:08 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
+ 14:40:08 +0000
+Date: Wed, 17 Apr 2024 10:40:00 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Joy Zou <joy.zou@nxp.com>
+Cc: peng.fan@nxp.com, vkoul@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+	conor+dt@kernel.org, imx@lists.linux.dev, dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dmaengine: fsl-edma: clean up unused
+ "fsl,imx8qm-adma" compatible string
+Message-ID: <Zh/fQFdxHHxC5iXF@lizhi-Precision-Tower-5810>
+References: <20240417032642.3178669-1-joy.zou@nxp.com>
+ <20240417032642.3178669-2-joy.zou@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417032642.3178669-2-joy.zou@nxp.com>
+X-ClientProxiedBy: SJ0PR03CA0037.namprd03.prod.outlook.com
+ (2603:10b6:a03:33e::12) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240417-feature_poe-v9-11-242293fd1900@bootlin.com>
-References: <20240417-feature_poe-v9-0-242293fd1900@bootlin.com>
-In-Reply-To: <20240417-feature_poe-v9-0-242293fd1900@bootlin.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
- Luis Chamberlain <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown <broonie@kernel.org>, 
- Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>, 
- Heiner Kallweit <hkallweit1@gmail.com>, 
- Russell King <linux@armlinux.org.uk>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
- devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>, 
- kernel@pengutronix.de, Maxime Chevallier <maxime.chevallier@bootlin.com>, 
- Kory Maincent <kory.maincent@bootlin.com>
-X-Mailer: b4 0.14-dev
-X-GND-Sasl: kory.maincent@bootlin.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VE1PR04MB7374:EE_
+X-MS-Office365-Filtering-Correlation-Id: aef69817-66f0-4d22-42b8-08dc5eec4771
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	y5t8RBh6118n2y/mqOO50H3fb3zIuj3LCo5h8VSlTBoF84mvCTcI06y2OcJRV8uHB1gD9JmJOkQirOCW7d5RnoK3ZYYR+g7FcLFJ9Qj4EJUrzW53Ivim04HjXXBEeEVrOViiWpPmJqEg/efv6qb9lNYpzEi0k3vx6AKnryq1FjNferImVQwU1zxNKgZS1D64o/77rw/0mHbw9P6pL7jNtCn7aG92Za7eTlpxtiDxTQQ7hFBsTJadfUUKMoggKckbwKdtKG1u+o9pHFH9DksoN6BxEuioos78rQM3I6QwUU2Ml9YS3UvVTb7+c5XoDBA/OPJTy+7sFZTebsxZrLXavCUdR/0pig5axtWDO4zd/mIVoullKTNU3jr3Y4LVr6MMzf2TW+do90/hMOKCfGibQP5ty2IKZrxiGzzAcguSPCCcv7CSlw6tmlrA4r5e188qRYZ3tot/noiDyau/vlJanlG1eofHucJhxDzfS3PevEAf0iraHdvTvjneMleiZp5he/2SnM0oXhfqgV6KsQJJSTVh4Sg/Fe5uclbiejlEBhuRnHtZzCIFb8wpOSVx2OpQbcPmohAK+57ukiWE/hPVD8bfZe4MuJ3D93mfTdHBQr3dasO9oqAqZ6fQImbbXkzNvk79xkiC61EcfP0CmJeuDCJS7mmLzH/fOAL35hucMe0W/EoGe6625fnrSu+e2x30d0Yq1+7yZlGr8D0QDSBPXswdSWZfPIfJ9iUTePra3/A=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(52116005)(1800799015)(366007)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?IcowwsSUcM+VULdgiOobRwaZt/BKbJdkA2N7clUb+rHjNJr/KQb/O9rBj+r6?=
+ =?us-ascii?Q?IJZ03pa38qBPiKcLxhLgwGHEdwUELKXt/96ttqQP9Khu8ZQdnM3kgco3qOhz?=
+ =?us-ascii?Q?InAb7e+lR7MkeBMYxwOrtzCZ7vHNpwkDDOJoBuS+pBZrru30Ya4VDO/TSIBs?=
+ =?us-ascii?Q?Dy9JoRv6CbwxHtGCfin0QxcUZx2FNsW1YpHTPdpRi7s++LiZ554R/kMAwrt3?=
+ =?us-ascii?Q?Jh8kpElqxzIuj9R5D/rZ9rMkj5uz4nQd1MpBMmV5twNFDaakJWtRjnloQ39J?=
+ =?us-ascii?Q?qLuiXZp5CdmrFBWfHfwsqYTgX2YQz7y/6oeZ7wYZMse6VXNxXcSz1rgCjOSi?=
+ =?us-ascii?Q?WwfRyc3dbthK+tAcXE73OQHrcubGIUvi+X0oiuqjoWNKXpTCBu7e689jxge0?=
+ =?us-ascii?Q?nQ4oe9kHbDkcciLmHwvgsUpTZEr5SrAzljZVyYNfOaLsmN+lSWlsAFw/zzne?=
+ =?us-ascii?Q?Kd9Rzp9ida0Y/GixUXPSO5y3vLFiHl/J4645mRahqZbZBqqGgiDxh2veEMMJ?=
+ =?us-ascii?Q?bktzsIHXS21kAJ7qb0ZGwdtJn+f/U8t+zfzFooAalrgvKaAY7ZgWiKiQVCSg?=
+ =?us-ascii?Q?5+1rM3eHbSBv05txSdpWjPgpb/BvZaWSFS25IrR5vCv+v1be+Q3DzYcqmHpH?=
+ =?us-ascii?Q?yMrmAgy6i5fWFZZCAPRIRIAmNh2m/pd6WM+sF/cz/mW5KvoD8CtpOx1ODNV2?=
+ =?us-ascii?Q?zi3+VMbE+MJq/hWaQHtR45I53H5P/ifvrFiAcYaFefGbYV93oLNtDJlFwDsA?=
+ =?us-ascii?Q?QACHIv77kDmKQfTIJ8stuOTIy5hZ4M5Jq6CYcXySDNziqK5qwq2Y7f3GxCjD?=
+ =?us-ascii?Q?+5bQLWXPuTxDCWed5QKU5G5vHUz5DQRKakQRp7+yQ1xli9/vEbW5OygZPZ1e?=
+ =?us-ascii?Q?rTnQfYSs5IolSlRMXbW4yWgASZCJQcCSMUQcOMwvvvO2meSkz/6J3C9MLnnO?=
+ =?us-ascii?Q?UG1gU9TjB6spG1ACEf7ofTB1LJl8G4wivxCVKBNgBt/Pm7PpxG3y3hyodAU6?=
+ =?us-ascii?Q?UfzaEpIawdGoFHxGkBODbAwp+aEfWkMifKSPAxWRiYYTWRGKLaM9+dX4FV8x?=
+ =?us-ascii?Q?ul7omwtIXx2/BWZDsS8rH3rKs1sMW+WwCkhU4ukPbpi4ZQ993B16zxg5uxfy?=
+ =?us-ascii?Q?+3nPfLoq66Flyjpf0JdEKPJ/RL2/9dZeLPRCFBCeF8+QKbINadh9wy+FxG6h?=
+ =?us-ascii?Q?tOhWHf6ILpG/6rgRiKv1n4Os+8jz3EvQasySxqjHwdJ0Q3BYnn3inalTJUDu?=
+ =?us-ascii?Q?tpboWkbscHw51olsUkBnCRLtZQ/T8z0K0c5kkzS8DWQpYIgZucEmAK0RtipG?=
+ =?us-ascii?Q?zW2cATeR7zpJJIiMivyTtZqr1s1YQz+q7ditUbcastIYYYi5bppvZxU6CVVf?=
+ =?us-ascii?Q?Yh1CfVKvbE+7PYnSbjRM8NWSOjwAto21bn1npneTW13mTIaYdFAGrZ1uIno+?=
+ =?us-ascii?Q?YFHcnfzZkazi9mZrWrGnL6XT57XHW5mOnpFzMmh4VzoYpjgsceCMFRUKoeQm?=
+ =?us-ascii?Q?jtjcIdtgXXcNqzqLfSiFpq+nvNCSm2zOa7XNC+ZzKjPGHhUIsxYuLms5LnPW?=
+ =?us-ascii?Q?wCGy/X2Fq0tmsMbgk+t8MP99gm75zHrPgB4ZBnsO?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aef69817-66f0-4d22-42b8-08dc5eec4771
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 14:40:08.5170
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: THCmRw7y9BjabcSxHU/Tbf07CDrxBZikVxTiG9VbrvoFMfos/zWGuDtXKtkQdTrJhEMlMtt9eQp064X4Lvsi1Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7374
 
-From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
+On Wed, Apr 17, 2024 at 11:26:41AM +0800, Joy Zou wrote:
+> The eDMA hardware issue only exist imx8QM A0. A0 never mass production.
+> So remove the workaround safely.
+> 
+> Signed-off-by: Joy Zou <joy.zou@nxp.com>
+> ---
+> Changes for v4:
+> 1.change the subject to keep consistent with the patchset.
+> 
+> Changes for v2:
+> 1. Change the subject.
+> ---
+>  drivers/dma/fsl-edma-common.c | 16 ++++------------
+>  drivers/dma/fsl-edma-main.c   |  8 --------
+>  2 files changed, 4 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/dma/fsl-edma-common.c b/drivers/dma/fsl-edma-common.c
+> index f9144b015439..ed93e01282d5 100644
+> --- a/drivers/dma/fsl-edma-common.c
+> +++ b/drivers/dma/fsl-edma-common.c
+> @@ -75,18 +75,10 @@ static void fsl_edma3_enable_request(struct fsl_edma_chan *fsl_chan)
+>  
+>  	flags = fsl_edma_drvflags(fsl_chan);
+>  	val = edma_readl_chreg(fsl_chan, ch_sbr);
+> -	/* Remote/local swapped wrongly on iMX8 QM Audio edma */
+> -	if (flags & FSL_EDMA_DRV_QUIRK_SWAPPED) {
 
-Add the PD692x0 I2C Power Sourcing Equipment controller device tree
-bindings documentation.
+You forget remove FSL_EDMA_DRV_QUIRK_SWAPPED in fsl-edma-common.h
 
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
----
+Frank
 
-Changes in v2:
-- Enhance ports-matrix description.
-- Replace additionalProperties by unevaluatedProperties.
-- Drop i2c suffix.
-
-Changes in v3:
-- Remove ports-matrix parameter.
-- Add description of all physical ports and managers.
-- Add pse_pis subnode moving to the API of pse-controller binding.
-- Remove the MAINTAINERS section for this driver as I will be maintaining
-  all pse-pd subsystem.
-
-Changes in v5:
-- Remove defs used only once.
-- Replace underscore by dash.
-- Add description.
-
-Changes in v7:
-- Fix nit.
-- Add vpwr-supply property in the example.
-- Remove ports references for the manager node.
----
- .../bindings/net/pse-pd/microchip,pd692x0.yaml     | 169 +++++++++++++++++++++
- 1 file changed, 169 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/net/pse-pd/microchip,pd692x0.yaml b/Documentation/devicetree/bindings/net/pse-pd/microchip,pd692x0.yaml
-new file mode 100644
-index 000000000000..828439398fdf
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/pse-pd/microchip,pd692x0.yaml
-@@ -0,0 +1,169 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/pse-pd/microchip,pd692x0.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Microchip PD692x0 Power Sourcing Equipment controller
-+
-+maintainers:
-+  - Kory Maincent <kory.maincent@bootlin.com>
-+
-+allOf:
-+  - $ref: pse-controller.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - microchip,pd69200
-+      - microchip,pd69210
-+      - microchip,pd69220
-+
-+  reg:
-+    maxItems: 1
-+
-+  managers:
-+    type: object
-+    description:
-+      List of the PD69208T4/PD69204T4/PD69208M PSE managers. Each manager
-+      have 4 or 8 physical ports according to the chip version. No need to
-+      specify the SPI chip select as it is automatically detected by the
-+      PD692x0 PSE controller. The PSE managers have to be described from
-+      the lowest chip select to the greatest one, which is the detection
-+      behavior of the PD692x0 PSE controller. The PD692x0 support up to
-+      12 PSE managers which can expose up to 96 physical ports. All
-+      physical ports available on a manager have to be described in the
-+      incremental order even if they are not used.
-+
-+    properties:
-+      "#address-cells":
-+        const: 1
-+
-+      "#size-cells":
-+        const: 0
-+
-+    required:
-+      - "#address-cells"
-+      - "#size-cells"
-+
-+    patternProperties:
-+      "^manager@0[0-9a-b]$":
-+        type: object
-+        description:
-+          PD69208T4/PD69204T4/PD69208M PSE manager exposing 4 or 8 physical
-+          ports.
-+
-+        properties:
-+          reg:
-+            description:
-+              Incremental index of the PSE manager starting from 0, ranging
-+              from lowest to highest chip select, up to 11.
-+            maxItems: 1
-+
-+          "#address-cells":
-+            const: 1
-+
-+          "#size-cells":
-+            const: 0
-+
-+        patternProperties:
-+          '^port@[0-7]$':
-+            type: object
-+            required:
-+              - reg
-+            additionalProperties: false
-+
-+        required:
-+          - reg
-+          - "#address-cells"
-+          - "#size-cells"
-+
-+required:
-+  - compatible
-+  - reg
-+  - pse-pis
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      ethernet-pse@3c {
-+        compatible = "microchip,pd69200";
-+        reg = <0x3c>;
-+
-+        managers {
-+          #address-cells = <1>;
-+          #size-cells = <0>;
-+
-+          manager@0 {
-+            reg = <0>;
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+
-+            phys0: port@0 {
-+              reg = <0>;
-+            };
-+
-+            phys1: port@1 {
-+              reg = <1>;
-+            };
-+
-+            phys2: port@2 {
-+              reg = <2>;
-+            };
-+
-+            phys3: port@3 {
-+              reg = <3>;
-+            };
-+          };
-+
-+          manager@1 {
-+            reg = <1>;
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+
-+            phys4: port@0 {
-+              reg = <0>;
-+            };
-+
-+            phys5: port@1 {
-+              reg = <1>;
-+            };
-+
-+            phys6: port@2 {
-+              reg = <2>;
-+            };
-+
-+            phys7: port@3 {
-+              reg = <3>;
-+            };
-+          };
-+        };
-+
-+        pse-pis {
-+          #address-cells = <1>;
-+          #size-cells = <0>;
-+
-+          pse_pi0: pse-pi@0 {
-+            reg = <0>;
-+            #pse-cells = <0>;
-+            pairset-names = "alternative-a", "alternative-b";
-+            pairsets = <&phys0>, <&phys1>;
-+            polarity-supported = "MDI", "S";
-+            vpwr-supply = <&vpwr1>;
-+          };
-+          pse_pi1: pse-pi@1 {
-+            reg = <1>;
-+            #pse-cells = <0>;
-+            pairset-names = "alternative-a";
-+            pairsets = <&phys2>;
-+            polarity-supported = "MDI";
-+            vpwr-supply = <&vpwr2>;
-+          };
-+        };
-+      };
-+    };
-
--- 
-2.34.1
-
+> -		if (!fsl_chan->is_rxchan)
+> -			val |= EDMA_V3_CH_SBR_RD;
+> -		else
+> -			val |= EDMA_V3_CH_SBR_WR;
+> -	} else {
+> -		if (fsl_chan->is_rxchan)
+> -			val |= EDMA_V3_CH_SBR_RD;
+> -		else
+> -			val |= EDMA_V3_CH_SBR_WR;
+> -	}
+> +	if (fsl_chan->is_rxchan)
+> +		val |= EDMA_V3_CH_SBR_RD;
+> +	else
+> +		val |= EDMA_V3_CH_SBR_WR;
+>  
+>  	if (fsl_chan->is_remote)
+>  		val &= ~(EDMA_V3_CH_SBR_RD | EDMA_V3_CH_SBR_WR);
+> diff --git a/drivers/dma/fsl-edma-main.c b/drivers/dma/fsl-edma-main.c
+> index 755a3dc3b0a7..b06fa147d6ba 100644
+> --- a/drivers/dma/fsl-edma-main.c
+> +++ b/drivers/dma/fsl-edma-main.c
+> @@ -349,13 +349,6 @@ static struct fsl_edma_drvdata imx8qm_data = {
+>  	.setup_irq = fsl_edma3_irq_init,
+>  };
+>  
+> -static struct fsl_edma_drvdata imx8qm_audio_data = {
+> -	.flags = FSL_EDMA_DRV_QUIRK_SWAPPED | FSL_EDMA_DRV_HAS_PD | FSL_EDMA_DRV_EDMA3,
+> -	.chreg_space_sz = 0x10000,
+> -	.chreg_off = 0x10000,
+> -	.setup_irq = fsl_edma3_irq_init,
+> -};
+> -
+>  static struct fsl_edma_drvdata imx8ulp_data = {
+>  	.flags = FSL_EDMA_DRV_HAS_CHMUX | FSL_EDMA_DRV_HAS_CHCLK | FSL_EDMA_DRV_HAS_DMACLK |
+>  		 FSL_EDMA_DRV_EDMA3,
+> @@ -397,7 +390,6 @@ static const struct of_device_id fsl_edma_dt_ids[] = {
+>  	{ .compatible = "fsl,ls1028a-edma", .data = &ls1028a_data},
+>  	{ .compatible = "fsl,imx7ulp-edma", .data = &imx7ulp_data},
+>  	{ .compatible = "fsl,imx8qm-edma", .data = &imx8qm_data},
+> -	{ .compatible = "fsl,imx8qm-adma", .data = &imx8qm_audio_data},
+>  	{ .compatible = "fsl,imx8ulp-edma", .data = &imx8ulp_data},
+>  	{ .compatible = "fsl,imx93-edma3", .data = &imx93_data3},
+>  	{ .compatible = "fsl,imx93-edma4", .data = &imx93_data4},
+> -- 
+> 2.37.1
+> 
 
