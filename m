@@ -1,120 +1,144 @@
-Return-Path: <linux-kernel+bounces-148024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB8358A7CC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:05:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFE108A7CC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:05:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8C6D2821AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:05:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FA481C20E05
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:05:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03C1C6A330;
-	Wed, 17 Apr 2024 07:05:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29ADB6A356;
+	Wed, 17 Apr 2024 07:05:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="dF+7OSQT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GHPwHfOD"
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 383D46A333;
-	Wed, 17 Apr 2024 07:05:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E406A329
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713337517; cv=none; b=oEOQQoGJ6BAv3IfLMzEuyzohFRnGxgBaBnFvXQw6nPmo/GKPoxZbhlmQPh4Ee3RgpbklydBFPl1D5pgHLRka5Cld9LOEtNanWWe8xdQdV2Ic8V/VZnq4AKxHfk2+RX3SF+MBuR4H4FNTEyQoTCePX2Y3oMy2CJxYgTaWeW0feV0=
+	t=1713337534; cv=none; b=LaN6+MJsQRSaGndfB1e5FpquNRBoOgafKGSGyDY7M74s3cMNdHRVtPFJk1QNySTxAwu/8phWioBTMmrCPlqAfC/5DKilZtH0NjzAQM3xYoJIuq81J0GehXPrqyKPiujgmI2CQrnaDWSMCnnD8ENuAWJL87LtKbYbY4489VrppKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713337517; c=relaxed/simple;
-	bh=LoRwP/hEcMXMPwH3S6gBEGGdVfFRMPJvfpf8Ayzlb9c=;
+	s=arc-20240116; t=1713337534; c=relaxed/simple;
+	bh=bPEa0MkxN7S2larn21dK+8bkmH9iV2RJi0htA1d/rBU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H4qovhoD3vEEwikZg09owSnjeNo4rNfLTjyJasIzCzoGydceBov3lzg+tECq6RaADr8Z7rQutpbPyaqP+T/SefZo9IG3lUOU+C2bYN69zANHrs+EPYhHQcRATuV93mhAqiS3kiV9n3EHkOuklSrUgruYmYoJoy4A/XCV9bMZ18Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=dF+7OSQT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26288C072AA;
-	Wed, 17 Apr 2024 07:05:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713337516;
-	bh=LoRwP/hEcMXMPwH3S6gBEGGdVfFRMPJvfpf8Ayzlb9c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dF+7OSQTs5upJAfE8SIMKVG3CNOVNuv97qRVM64REg3xFdjCUGvVuf1UrbgZjJy5y
-	 TsMHZULLXaw2bBeBKp7IHpHU6YuGbB/AKmC4Dik5MjGh9MyPcifydtsFxiVo+jc1wo
-	 nUJTczy1nxh+spSvDJmjP/mYn3fjrhULn1TdJEqU=
-Date: Wed, 17 Apr 2024 09:05:12 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	Mark Brown <broonie@kernel.org>, stable@vger.kernel.org,
-	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-	allen.lkml@gmail.com, Yihuang Yu <yihyu@redhat.com>,
-	Gavin Shan <gshan@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Shaoqin Huang <shahuang@redhat.com>, Will Deacon <will@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: [PATCH 6.6 000/122] 6.6.28-rc1 review
-Message-ID: <2024041744-pretender-clutter-7d4d@gregkh>
-References: <20240415141953.365222063@linuxfoundation.org>
- <Zh5UJh31PlBkpZWd@finisterre.sirena.org.uk>
- <CA+G9fYu-AjRm-BBA=8fWS8oCbBJ5W443JHPh3uddD7ea7MY-YA@mail.gmail.com>
- <86y19dqw74.wl-maz@kernel.org>
- <Zh61KobDt_y1O46-@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=uuhDQ8Yfbq5yJWXlPya1kCw8RpI8kyrB1zEY2m1sAqjNpSKEjae7V0+GP+jgQvwm+ROSgGDYz5cFrPv1omOHI29huQ9qhqFG1a8OihAtq6PAqlQ0XQVU1jdeiThAJ7nxSzcL8pijRnixcnUW2lprRvh263+iMwayalRem2LCbWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GHPwHfOD; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2aa67da7a1dso1737905a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:05:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713337531; x=1713942331; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nT6tFhvCySxWh9JfwI+ew2P3H0H+myzNUarVTSp+pTw=;
+        b=GHPwHfODLy+t5EHgMZzCnTCW66IoAfDPVnLeKv4Sx5HELRxYyrh7DcV9f5xpcUGI1c
+         TOLV47kOzcPzbAC8VflvLs9KsjVlfEm8nkitQCsHexYbyMz+YcHySrP1u+soRHL7Ql8O
+         juhqN3KlOcBs7Q/4uI/NEsdE/3oekQ0eYQgxEtQpjmM2oQb8+wMJpHH0jwdEaXFhmc/k
+         M8vzsZHFj6FwD6V6yPjo9EjgejN8t0CzYrnt5yFwQe5O2baHcQbIrc9vyGMSzyJ6TgzQ
+         v9yw5JyuUP17Plofd1NiGs85WkAnnJMhjrmkB4aMAuWRfmijnTafyQgemQxmTWWRuswz
+         /JWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713337531; x=1713942331;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nT6tFhvCySxWh9JfwI+ew2P3H0H+myzNUarVTSp+pTw=;
+        b=d3xgqoUWnSe0Z91KU3tKErIpPVsWm7ynzGxeGqMBacynCHFa6AOLpg4yYrou/+rfO4
+         uuWMCsHVE40ko0Qdy6JhyJTLGMERq22bb4A/wdAirDY64A0+No3rMJP5hTe1fROmdNfN
+         nT6NXCZnzy9LIVv4Q5CXW9OETJVDu3qsiwfNmaeGWxzVQ5ZNbrzvx8O21z1i6Vg5jG4C
+         4q7cO5kFLJ9t+IOe216QwHlGSXnqKPJCEMUAEYs1Auagcv8mmzD5oYfo/r1yBGCDM9KB
+         o52n9IM2bw9tm1DssDxJ3jX/RyT2/AAWO7WaFH96EjjToAjhv59F2G/p2qdgzdttAkrD
+         SX/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUjlvGkgXjTOU90m0ibKzEL+3nCeKGas+Rb9LgCufV6JDOXzi+Dc2LzY0/y3ps3IGX9o7+NE4AsWUSf1RZLMoMa1knQ+CtqHYWXxYZV
+X-Gm-Message-State: AOJu0YzRVjFuNs8jRJ7jl4cXKnsBO+pyQ1l6VetUvKQjhrNrKdDhB4dp
+	u5AorqGQW4iJUb0QwIlKtolK+ZYNT0dr2pbptQscgGskL6zJGuAejvewLHwwNQ==
+X-Google-Smtp-Source: AGHT+IGAJTHf5aNDmeLGgicc5pedNPBoDApozmgw0H37DWBqBhEOgFpy2m6jFPd4h60UnfNZs6FWAA==
+X-Received: by 2002:a17:90b:1b4b:b0:2a2:73e9:c3bf with SMTP id nv11-20020a17090b1b4b00b002a273e9c3bfmr14427402pjb.20.1713337530516;
+        Wed, 17 Apr 2024 00:05:30 -0700 (PDT)
+Received: from thinkpad ([120.60.54.9])
+        by smtp.gmail.com with ESMTPSA id in17-20020a17090b439100b002a20c0dcebbsm699083pjb.31.2024.04.17.00.05.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 00:05:30 -0700 (PDT)
+Date: Wed, 17 Apr 2024 12:35:17 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/7] PCI: qcom: Add support for IPQ9574
+Message-ID: <20240417070517.GA3894@thinkpad>
+References: <20240409190833.3485824-1-mr.nuke.me@gmail.com>
+ <20240409190833.3485824-5-mr.nuke.me@gmail.com>
+ <dca1e891-cfde-4e95-864e-419934d385e5@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Zh61KobDt_y1O46-@arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dca1e891-cfde-4e95-864e-419934d385e5@linaro.org>
 
-On Tue, Apr 16, 2024 at 06:28:10PM +0100, Catalin Marinas wrote:
-> On Tue, Apr 16, 2024 at 02:22:07PM +0100, Marc Zyngier wrote:
-> > On Tue, 16 Apr 2024 14:07:30 +0100,
-> > Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > > On Tue, 16 Apr 2024 at 16:04, Mark Brown <broonie@kernel.org> wrote:
-> > > > On Mon, Apr 15, 2024 at 04:19:25PM +0200, Greg Kroah-Hartman wrote:
-> > > > > This is the start of the stable review cycle for the 6.6.28 release.
-> > > > > There are 122 patches in this series, all will be posted as a response
-> > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > let me know.
-> > > >
-> > > > The bisect of the boot issue that's affecting the FVP in v6.6 (only)
-> > > > landed on c9ad150ed8dd988 (arm64: tlb: Fix TLBI RANGE operand),
-> > > > e3ba51ab24fdd in mainline, as being the first bad commit - it's also in
-> > > > the -rc for v6.8 but that seems fine.  I've done no investigation beyond
-> > > > the bisect and looking at the commit log to pull out people to CC and
-> > > > note that the fix was explicitly targeted at v6.6.
-> > > 
-> > > Anders investigated this reported issues and bisected and also found
-> > > the missing commit for stable-rc 6.6 is
-> > > e2768b798a19 ("arm64/mm: Modify range-based tlbi to decrement scale")
+On Wed, Apr 10, 2024 at 01:50:26PM +0200, Konrad Dybcio wrote:
+> 
+> 
+> On 4/9/24 21:08, Alexandru Gagniuc wrote:
+> > Add support for the PCIe on IPQ9574. The main difference from ipq6018
+> > is that the "iface" clock is not necessarry. Add a special case in
+> > qcom_pcie_get_resources_2_9_0() to handle this.
 > > 
-> > Which is definitely *not* stable candidate. We need to understand why
-> > the invalidation goes south when the scale go up instead of down.
+> > Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+> > Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > ---
+> >   drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++----
+> >   1 file changed, 9 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> > index 14772edcf0d3..10560d6d6336 100644
+> > --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> > @@ -1101,15 +1101,19 @@ static int qcom_pcie_get_resources_2_9_0(struct qcom_pcie *pcie)
+> >   	struct qcom_pcie_resources_2_9_0 *res = &pcie->res.v2_9_0;
+> >   	struct dw_pcie *pci = pcie->pci;
+> >   	struct device *dev = pci->dev;
+> > -	int ret;
+> > +	int ret, num_clks = ARRAY_SIZE(res->clks) - 1;
+> > -	res->clks[0].id = "iface";
+> > +	res->clks[0].id = "rchng";
+> >   	res->clks[1].id = "axi_m";
+> >   	res->clks[2].id = "axi_s";
+> >   	res->clks[3].id = "axi_bridge";
+> > -	res->clks[4].id = "rchng";
+> > -	ret = devm_clk_bulk_get(dev, ARRAY_SIZE(res->clks), res->clks);
+> > +	if (!of_device_is_compatible(dev->of_node, "qcom,pcie-ipq9574")) {
+> > +		res->clks[4].id = "iface";
+> > +		num_clks++;
 > 
-> If you backport e3ba51ab24fd ("arm64: tlb: Fix TLBI RANGE operand")
-> which fixes 117940aa6e5f ("KVM: arm64: Define
-> kvm_tlb_flush_vmid_range()") but without the newer e2768b798a19
-> ("arm64/mm: Modify range-based tlbi to decrement scale"), it looks like
-> "scale" in __flush_tlb_range_op() goes out of range to 4. Tested on my
-> CBMC model, not on the actual kernel. It may be worth adding some
-> WARN_ONs in __flush_tlb_range_op() if scale is outside the 0..3 range or
-> num greater than 31.
+> Or use devm_clk_bulk_get_optional and rely on the bindings to sanity-check.
 > 
-> I haven't investigated properly (and I'm off tomorrow, back on Thu) but
-> it's likely the original code was not very friendly to the maximum
-> range, never tested. Anyway, if one figures out why it goes out of
-> range, I think the solution is to also backport e2768b798a19 to stable.
+> Mani, thoughts?
+> 
 
-How about I drop the offending commit from stable and let you all figure
-out what needs to be added before applying anything else :)
+I'd prefer to use devm_clk_bulk_get_all() and just rely on DT schema to do the
+validation. There was a patch hanging in my branch for some time and I sent it
+now: https://lore.kernel.org/linux-pci/20240417-pci-qcom-clk-bulk-v1-1-52ca19b3d6b2@linaro.org/
 
-thanks,
+- Mani
 
-greg k-h
+-- 
+மணிவண்ணன் சதாசிவம்
 
