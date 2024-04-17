@@ -1,145 +1,142 @@
-Return-Path: <linux-kernel+bounces-148097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D2228A7DAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:02:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E80638A7DAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:04:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 271D2B233D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:02:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B8EC1F24089
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:04:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 065787640D;
-	Wed, 17 Apr 2024 08:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B96767C6D5;
+	Wed, 17 Apr 2024 08:03:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="XXai84ep"
-Received: from xry111.site (xry111.site [89.208.246.23])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ULmEmzro"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8266C768EA
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 08:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD267C0B7
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 08:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713340944; cv=none; b=sDixSfiGm70EWMemyVEsJMoQtLkUvSbUf5K/ebATrDxEBLEF5UcMirZCRENJMCjdUvvZPvFLOEf7Vus0w99xTHzt6qTIQtDdXuxaKVTGPp2uBXd0nCzw9oIUptZhOZEyZasyZl9Xi7rSnITIBpHwiWCBkvNr7WE+Hfk2OMF+LQY=
+	t=1713341038; cv=none; b=SXEb5iqjvWoUZ9BMgMcuKLuiVkvWTLqwtHa5BqFFi6pFa4mldgiYRv/cRsWY4BLXX48davNGgLvu0gOP8Y42QmlGjgBmDPr3eLtL4zta/awjGZQvkvOKbsuhfyxZwKdjmVDeTxfhUrkeYnx3WzD3FZlYgR0ZBVYWiG4eZTZ00W8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713340944; c=relaxed/simple;
-	bh=kEOiWKonPM4uH3ufhh6aTojqf5wSc1drns11/mbS0g4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=hk8brhqGgkyhQU7tXpxNFBjehf3UKYiIKkaSIWJfjMfMUFJBiy8lvuVGnjzUklBhR3o5VpzXoCnLtdOOlPxum2kVEEdkmvjFnOcKRgeI4XYi2u6stgDXbkpMRUs5WdnjRcR9gwzuUdDeo8KpFn/qcP6l1eqZWUmUDxQuXjIJ3ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=XXai84ep; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1713340927;
-	bh=kEOiWKonPM4uH3ufhh6aTojqf5wSc1drns11/mbS0g4=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=XXai84ep3T/u9Wyn73oSX0rwD5Pxa2EZ1MDnLOXfIobE9OBoGfFz0ZXSsi5MEUt1E
-	 rw1ecFiehkID4sPKyrQF7OGRThqEZC2Ec5e1Kbw2s47shrDzHwu3pNkkf5EeqfCceN
-	 atmCWezFSOjUiGouN99rVhLSmuAK3RyiMWxhc0ZI=
-Received: from [IPv6:240e:358:118b:fc00:dc73:854d:832e:8] (unknown [IPv6:240e:358:118b:fc00:dc73:854d:832e:8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 73D7E670D4;
-	Wed, 17 Apr 2024 04:02:02 -0400 (EDT)
-Message-ID: <a4c72d6722189c074bd46f01d95c9aaa966a2687.camel@xry111.site>
-Subject: Re: [PATCH v8 2/2] x86/mm: Don't disable PCID if the kernel is
- running on a hypervisor
-From: Xi Ruoyao <xry111@xry111.site>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>, Michael Kelley
-	 <mhklinux@outlook.com>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
- Andy Lutomirski
-	 <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
-	 <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
-	 <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, 
-	linux-kernel@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>
-Date: Wed, 17 Apr 2024 16:01:55 +0800
-In-Reply-To: <Zh8Oli5MIyekLrbu@google.com>
-References: <20240413044129.52812-1-xry111@xry111.site>
-	 <20240413044129.52812-2-xry111@xry111.site> <Zh8Oli5MIyekLrbu@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1713341038; c=relaxed/simple;
+	bh=U25CbIrq2jWLxU2udGIy5RjYN3IOG0T8/1W7bVg5PdQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ITnIGQCp9b2MpjEWkA6VzLMi3BlHf85/mErwqx5z7fCfTiDh0d4ZbTKLahOw5pg0kbe63RhTHq/I8t1YkX28sR7LRP+Pwdrss2qzn8gGkE95hgwkvwlLqghCRWbbCDm8cZ9gMwgqmvkNs/aArXA2FeWlhaDZ43ip63uBC6LKUbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ULmEmzro; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713341033; x=1744877033;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=U25CbIrq2jWLxU2udGIy5RjYN3IOG0T8/1W7bVg5PdQ=;
+  b=ULmEmzroq6HX3YV5hBsTFDsM+NpPM1qFhjkaq7NgdvWOcG+TnVVqzv1e
+   OPsra72Knvp9KL9wdFRbDfMkz2ji5DW+fas5lr7DinoJp0Xbs4Of0KAeZ
+   cSKav7MyEHo3r7gc5SI3DudZ2aCGMv8FCOn5eATfeMPEbeoLyF1m1hEC6
+   q0Otb796rWXhJX5tJK73HEP3RtWXkpZjoIyUoJCsk2+x+Dq+RPBxZAVEu
+   bxP1EIvxMekEnQhtHHqrW8AAcyrLiaXamJZSHt4NUSlozo0MUs/HRW3SM
+   3MmGqilWHGJp1x2qCBeab3/bUqwDE/UID13BmDT6G8a0PKmGTq/hDm1BB
+   g==;
+X-CSE-ConnectionGUID: ZrjSd6QuQ8yNFP97sHny/Q==
+X-CSE-MsgGUID: H8ylmn9jRYOxUrSqXmfErA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="31300743"
+X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
+   d="scan'208";a="31300743"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 01:03:51 -0700
+X-CSE-ConnectionGUID: 5nRE2iQNRemALNiykozjwg==
+X-CSE-MsgGUID: VQmyzcNCShSNIddc8wPEWQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
+   d="scan'208";a="22413256"
+Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
+  by orviesa010.jf.intel.com with ESMTP; 17 Apr 2024 01:03:49 -0700
+Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rx0Gc-0006Hc-03;
+	Wed, 17 Apr 2024 08:03:42 +0000
+Date: Wed, 17 Apr 2024 16:03:29 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jinglin Wen <jinglin.wen@shingroup.cn>, palmer@dabbelt.com
+Cc: oe-kbuild-all@lists.linux.dev, paul.walmsley@sifive.com,
+	aou@eecs.berkeley.edu, gregkh@linuxfoundation.org,
+	atishp@rivosinc.com, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	Jinglin Wen <jinglin.wen@shingroup.cn>
+Subject: Re: [PATCH 2/3] riscv: SBI as the interface for the early console
+Message-ID: <202404171502.Yz861Nvd-lkp@intel.com>
+References: <20240410063432.23058-3-jinglin.wen@shingroup.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410063432.23058-3-jinglin.wen@shingroup.cn>
 
-On Tue, 2024-04-16 at 16:49 -0700, Sean Christopherson wrote:
-> On Sat, Apr 13, 2024, Xi Ruoyao wrote:
-> > The Intel erratum for "incomplete Global INVLPG flushes" says:
-> >=20
-> > =C2=A0=C2=A0=C2=A0 This erratum does not apply in VMX non-root operatio=
-n. It applies
-> > =C2=A0=C2=A0=C2=A0 only when PCIDs are enabled and either in VMX root o=
-peration or
-> > =C2=A0=C2=A0=C2=A0 outside VMX operation.
-> >=20
-> > So if the kernel is running in a hypervisor, we are in VMX non-root
-> > operation and we should be safe to use PCID.
-> >=20
-> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > Cc: Michael Kelley <mhklinux@outlook.com>
-> > Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-> > Cc: Sean Christopherson <seanjc@google.com>
-> > Cc: Andrew Cooper <andrew.cooper3@citrix.com>
-> > Link: https://lore.kernel.org/all/168436059559.404.13934972543631851306=
-tip-bot2@tip-bot2/
-> > Link: https://cdrdv2.intel.com/v1/dl/getContent/740518=C2=A0# RPL042, r=
-ev. 13
-> > Link: https://cdrdv2.intel.com/v1/dl/getContent/682436=C2=A0# ADL063, r=
-ev. 24
-> > Signed-off-by: Xi Ruoyao <xry111@xry111.site>
-> > ---
-> > =C2=A0arch/x86/mm/init.c | 8 ++++++++
-> > =C2=A01 file changed, 8 insertions(+)
-> >=20
-> > diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-> > index c318cdc35467..6010f86c5acd 100644
-> > --- a/arch/x86/mm/init.c
-> > +++ b/arch/x86/mm/init.c
-> > @@ -275,6 +275,14 @@ static void __init probe_page_size_mask(void)
-> > =C2=A0 * microcode is not updated to fix the issue.
-> > =C2=A0 */
-> > =C2=A0static const struct x86_cpu_id invlpg_miss_ids[] =3D {
-> > +	/* Only bare-metal is affected.=C2=A0 PCIDs in guests are OK.=C2=A0 *=
-/
-> > +	{
-> > +	=C2=A0 .vendor	=3D X86_VENDOR_INTEL,
-> > +	=C2=A0 .family	=3D 6,
-> > +	=C2=A0 .model	=3D INTEL_FAM6_ANY,
-> > +	=C2=A0 .feature	=3D X86_FEATURE_HYPERVISOR,
->=20
-> Isn't this inverted?=C2=A0 x86_match_cpu() will return NULL if the CPU do=
-esn't have
-> HYPERVISOR.=C2=A0 We want it to return NULL if the CPU *does* have HYPERV=
-ISOR.
+Hi Jinglin,
 
-Hmm, but it seems not possible to let x86_match_cpu() to always return
-NULL if the CPU does have HYPERVISOR.  If I read x86_match_cpu()
-correctly it cannot do an inverted feature match.  Or am I
-misunderstanding something here?
+kernel test robot noticed the following build errors:
 
-Instead this makes x86_match_cpu() return an entry with driver_data =3D 0
-if the CPU have HYPERVISOR, thus boot_cpu_data.microcode <
-invlpg_miss_match->driver_data will always be false when the CPU have
-HYPERVISOR and PCID won't be disabled.
+[auto build test ERROR on tty/tty-testing]
+[also build test ERROR on tty/tty-next tty/tty-linus linus/master v6.9-rc4 next-20240416]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> > +	=C2=A0 .driver_data	=3D 0,
-> > +	},
-> > =C2=A0	INTEL_MATCH(INTEL_FAM6_ALDERLAKE,	0x2e),
-> > =C2=A0	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L,	0x42c),
-> > =C2=A0	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT,	0x11),
-> > --=20
-> > 2.44.0
-> >=20
+url:    https://github.com/intel-lab-lkp/linux/commits/Jinglin-Wen/riscv-Support-for-early-console/20240410-143840
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
+patch link:    https://lore.kernel.org/r/20240410063432.23058-3-jinglin.wen%40shingroup.cn
+patch subject: [PATCH 2/3] riscv: SBI as the interface for the early console
+config: riscv-randconfig-r071-20240417 (https://download.01.org/0day-ci/archive/20240417/202404171502.Yz861Nvd-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240417/202404171502.Yz861Nvd-lkp@intel.com/reproduce)
 
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404171502.Yz861Nvd-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   riscv64-linux-ld: arch/riscv/kernel/early_console.o: in function `early_console_init':
+>> arch/riscv/kernel/early_console.c:100:(.init.text+0x18): undefined reference to `hvc_sbi_early_init'
+
+
+vim +100 arch/riscv/kernel/early_console.c
+
+f4e6608ec4adae Jinglin Wen 2024-04-10   87  
+f4e6608ec4adae Jinglin Wen 2024-04-10   88  /*
+f4e6608ec4adae Jinglin Wen 2024-04-10   89   * This is called after sbi_init.
+f4e6608ec4adae Jinglin Wen 2024-04-10   90   */
+f4e6608ec4adae Jinglin Wen 2024-04-10   91  void __init early_console_init(void)
+f4e6608ec4adae Jinglin Wen 2024-04-10   92  {
+f4e6608ec4adae Jinglin Wen 2024-04-10   93  	/*
+f4e6608ec4adae Jinglin Wen 2024-04-10   94  	 * Set riscv_early_console_putc.
+f4e6608ec4adae Jinglin Wen 2024-04-10   95  	 * If there are other output interfaces, you can add corresponding code
+f4e6608ec4adae Jinglin Wen 2024-04-10   96  	 * to initialize riscv_early_console_putc.
+f4e6608ec4adae Jinglin Wen 2024-04-10   97  	 */
+f4e6608ec4adae Jinglin Wen 2024-04-10   98  #if defined(CONFIG_RISCV_EARLY_CONSOLE_SBI)
+f4e6608ec4adae Jinglin Wen 2024-04-10   99  	/* using the sbi */
+f4e6608ec4adae Jinglin Wen 2024-04-10 @100  	hvc_sbi_early_init(&riscv_early_console_putc);
+f4e6608ec4adae Jinglin Wen 2024-04-10  101  #else
+f4e6608ec4adae Jinglin Wen 2024-04-10  102  	/* using other */
+f4e6608ec4adae Jinglin Wen 2024-04-10  103  #endif
+f4e6608ec4adae Jinglin Wen 2024-04-10  104  
+f4e6608ec4adae Jinglin Wen 2024-04-10  105  	console_loglevel = CONSOLE_LOGLEVEL_MOTORMOUTH;
+f4e6608ec4adae Jinglin Wen 2024-04-10  106  	register_early_console();
+f4e6608ec4adae Jinglin Wen 2024-04-10  107  }
+f4e6608ec4adae Jinglin Wen 2024-04-10  108  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
