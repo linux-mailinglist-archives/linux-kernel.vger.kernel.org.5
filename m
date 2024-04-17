@@ -1,179 +1,128 @@
-Return-Path: <linux-kernel+bounces-147821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D3198A7A19
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:16:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE0C78A7A1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:22:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9217D1C2165C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:16:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD7E4B22529
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:22:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 630DD1852;
-	Wed, 17 Apr 2024 01:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CFC01FC8;
+	Wed, 17 Apr 2024 01:22:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PFwIw+s+"
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EDuDcOSX"
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D17817EF
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 01:16:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B94AEBB;
+	Wed, 17 Apr 2024 01:22:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713316577; cv=none; b=Z2Mhytq/xIiidl4aCDKctEr9kzaNAvZfs0a1ibUeDvoYBvL7xYEssdYVvZv5VjiCqVrcQMfjQlNp/D5lUSya3dQepgpId1CZ5dnhpaxBN3B2/gtqQ2vb9XDg+S/EU1FozEbIvIIC1lcMCTviGBUcDhWTCpLzCU6v2uyqeJoz8Ls=
+	t=1713316928; cv=none; b=X+jNaBoV90tPSZIwYTvnd5Iszjdr7ArwT1CaSJJVu2RUs/mCXHAQFtf8gZEw7FFFucnQ+vCrKwjBalzml2ssZ6OpNQhAwH5AEXM3jkMkhCbjJCyFz+ax3l2ZT9oQ+jpRH2AtYV6RCt4bQHrD/WWNO3Wp4FK+lIH7B871asIDCSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713316577; c=relaxed/simple;
-	bh=t5RvkN1QNs0xebbpaIFdJi8FJIUawQlql5ntZK+0V8s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RVbSzjll6gCbwhFTeafIFFPcYP39t7PTu28ss3tUJFuH2muBFXV1kml5OEnz1k9t90DK/FdjEYg4cfKfTAhudGwSQ1Tz/vb46s+pg8ZMHXnjQPzxZl5yFCR21x2eonrKk75gezg0ONQ1kEmZIJblK5YaP/V26+fe0nrz5XJAEWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PFwIw+s+; arc=none smtp.client-ip=209.85.217.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1713316928; c=relaxed/simple;
+	bh=DUYFWX4LWKaLj5DBHUFDv8Fo12atozH9lyEhZH1CAuI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nmbPKVjxUT9JMipy9dUHKLycQ5TJ0bAMGnuhg+J9g0Klqryp8af+u3DloQ9KAJv5HhTkUXSJWpjotnBTUj+0t9T4UcPe0TmIAipyncZQncgsHF0ajv5KeU6PMZ622mjia8yCGsFp4RXef+tiG3LEOmLaZlRiNIMBdNTJVMIyeHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EDuDcOSX; arc=none smtp.client-ip=209.85.160.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-479dd0261c8so159594137.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:16:15 -0700 (PDT)
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-2330f85c2ebso3334075fac.1;
+        Tue, 16 Apr 2024 18:22:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713316575; x=1713921375; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mhef9E7wjd2Bx3ipiUQxQimnP4SgvHXdB7wwCVe31Ow=;
-        b=PFwIw+s+zg9vX6C0T6WeJEc+h2grINoyM5okMUfnBZjyCJWnWV/26OqsJsiRqjVhZ7
-         JVJpBxCTRDRwXzomY4QhozdT33FubbG+8J1mxKIrJ8QSHNwvhFd66CEaO79EHdP3gfFl
-         evpdI6+o4wXIKQAhRBGv+0WrerdKnD3fEIYMG9nX+YG8mlCPTCNhs3zdylNLtuAlp5YS
-         uH/cSfDhJ+xewPPNN+aSHym2Y3E4tpsSCXptrMLhqmSOWZQ2qHatoB5l0BIxPxy6/X/E
-         WjcItugOo/FDNkqsiluR8MRnjlYoF2/42tAgvRx/X0RJuLE6CwSi8guyhAzr4RXJjt4L
-         E1jQ==
+        d=gmail.com; s=20230601; t=1713316926; x=1713921726; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LnX24HJPnbW9GAV5sbrmRceYLlMBy8M9WyMVqDoxp/w=;
+        b=EDuDcOSXKdmYeresZNQ1ht08joplx98WZYA+MhCOBa7mieaYlS+8tiwMnBUy04/2rx
+         mOkR8iz8MULqGqavAb+gA1pXAI+uFGJMWTGwvUVio+z2CiwwsF6YXQk+SBXMNCcjwncM
+         2qrGEcG8T608pn86lU+x3RwPvKXO3iWbMhvM+rHRF/iPxa1AylLwnr3qh0CQO44E8HdX
+         reri7yCFi5AiYQVfVB1NdcKH5iWnHdEq6dsyptJznkhRJ64uAhROOKFGm2fsVlZ0LZzr
+         L6HlhhpD6mGAAV6Q/uOKRNqp+gjeYWNPkgh6FvwOpbK5SF81/Y1ies869pFrrJtI2dz5
+         LSrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713316575; x=1713921375;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1713316926; x=1713921726;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mhef9E7wjd2Bx3ipiUQxQimnP4SgvHXdB7wwCVe31Ow=;
-        b=xO2sw/4/1GLkFDU5F0JgYZ1K7IsgQcGCYNxwk8OTywOpQDYOWkxA0QJ2KoukJnp1zu
-         3M3gkMznIZheeqcN0tp6WFpnrZwUxHPCge9j+oMBUOuo8y4IXn97iXChVEusQfv0lpoJ
-         6DtIduzrZmNhz3LduybEOJaCHVTpJ/rliR0FrFGRZT+THpDI/oCL7EyLX65WD9WHCXbd
-         yP11RoPnrXSFTrWmyU2bLFt59077OJnmGYt7fCvnVfZOhTSFnXfR00fCEek8pJl/KIBd
-         GMT0yAjrluVK3R7pTSt1yBfVSgIgfqo3oiCekmf6ACBBcTOPTqdezhIZnatawtVSVevq
-         0hQg==
-X-Forwarded-Encrypted: i=1; AJvYcCUeL/qRnPhROHWUWWvlH79L/K5wUP91A34SgvE1Mv6M9C8yyV9mo/3e4YHqPoPyFVCbYI1/eIWkLLlSmWOjP3JbllP6h1gURbP1FZyh
-X-Gm-Message-State: AOJu0YwDiArsSfHKEsjxdRWfEgQ1H00GzKNfADq7mYvh/1R/eZ+CPzfq
-	BJRnUwy3sKLOlBvzYXucuI/6RdMu/uSaRfoMhsq0jFbtoC8aE3H4xifrui3Hl2iSgfqkIHemeRM
-	5y39eFRkRPavqAPgGabreLfPsT80=
-X-Google-Smtp-Source: AGHT+IFYcXiCzXMJD5RGz8InopSiEjEofiEh111EICYX9z0m6IzjC/8y+caOWZqEF0GgBUf3R/ulhRf0GMAqmdoBya0=
-X-Received: by 2002:a05:6102:3c8e:b0:47a:2f76:5719 with SMTP id
- c14-20020a0561023c8e00b0047a2f765719mr3648453vsv.17.1713316573648; Tue, 16
- Apr 2024 18:16:13 -0700 (PDT)
+        bh=LnX24HJPnbW9GAV5sbrmRceYLlMBy8M9WyMVqDoxp/w=;
+        b=BIVL+q9jCdGWnHljVhUwp87xWbWvsVyN5YE0pxJWcDcpS6VN3DKPNbpT6GgBxsMISU
+         B+VLv1arejyRUV3koa0swnwXKw6dCzyydCyhuRNVNIOYA2BIo5+yVKJfNGUuCskr0unL
+         4oTDZl9mPmi36ctaFsHsO5iDWZun7Ach4u3gxDITRfDA7qHisydAfFJgAFeSNJu9+b17
+         t6kvm53qd7QHfGwbh5y+OxZcOWevoGY2bnPqOjeELzXOE1H4cWtDj7ifmhaC5aM7MuOH
+         YwGsmDAO/xWhVls9O9ZyA3KdkXIzAXIUc4EnB6IYtXtYsibHptLfrj4L3XBX2Z1v76iZ
+         jr6g==
+X-Forwarded-Encrypted: i=1; AJvYcCUIIYcaWlQIxtl+nJF2bMXJbumrhnjbCP8PPml36AT5NDyIDTbmkSOwiLLiGpUWr4PF8dWfaRV81TIF8pQAxuPw9cDc5/9VyaN7czX2F1X35Nb0N01/98DWT6yR4zWtkoL3amTGaFz6ExEQ2itohlpKtk7+HLM3xsgaOS9BxBSCHJKA
+X-Gm-Message-State: AOJu0Yx0fshlTLzyIWndMXKasaXNpytPB63j9VE9bGO6V28dbRyvQTdp
+	0MvwM55oLOiUm7spfRITt23Df1darMoJPuzC0O0l8baI89HjETg4
+X-Google-Smtp-Source: AGHT+IFQN2WvDvVvDfE7SiVQ/ZNnoEulyk0oTfQIzF72qCPjRTZocptPi/+XMX8fSvsGmb3tvGg4Ow==
+X-Received: by 2002:a05:6871:5224:b0:221:a881:df51 with SMTP id ht36-20020a056871522400b00221a881df51mr16998129oac.44.1713316926264;
+        Tue, 16 Apr 2024 18:22:06 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:6f51])
+        by smtp.gmail.com with ESMTPSA id x17-20020a056a00271100b006ed3509ecd0sm9665987pfv.56.2024.04.16.18.22.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 18:22:05 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 16 Apr 2024 15:22:04 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, chenhuacai@kernel.org, josef@toxicpanda.com,
+	jhs@mojatatu.com, svenjoac@gmx.de, raven@themaw.net,
+	pctammela@mojatatu.com, qde@naccy.de, zhaotianrui@loongson.cn,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev, cgroups@vger.kernel.org,
+	yi.zhang@huawei.com, yangerkun@huawei.com,
+	"yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH RFC v2 5/6] blk-throttle: support to destroy throtl_data
+ when blk-throttle is disabled
+Message-ID: <Zh8kPGAu2TG4Su2M@slm.duckdns.org>
+References: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
+ <20240406080059.2248314-6-yukuai1@huaweicloud.com>
+ <Zhl37slglnnTSMO7@slm.duckdns.org>
+ <1bb85208-1224-77dc-f0b2-7b7a228ef70b@huaweicloud.com>
+ <Zh6wx4mXZy_EOViH@slm.duckdns.org>
+ <19086c09-3060-a4ce-4ac6-811a29653979@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409082631.187483-1-21cnbao@gmail.com> <20240409082631.187483-6-21cnbao@gmail.com>
- <87frvk24x8.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87frvk24x8.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Wed, 17 Apr 2024 09:16:01 +0800
-Message-ID: <CAGsJ_4yoz=UH+=Z+ZmRy_9=vu_JWuOXnNO0gFtkBZ-rKJppMPA@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] mm: add per-order mTHP swpin_refault counter
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, 
-	baolin.wang@linux.alibaba.com, chrisl@kernel.org, david@redhat.com, 
-	hanchuanhua@oppo.com, hannes@cmpxchg.org, hughd@google.com, 
-	kasong@tencent.com, ryan.roberts@arm.com, surenb@google.com, 
-	v-songbaohua@oppo.com, willy@infradead.org, xiang@kernel.org, 
-	yosryahmed@google.com, yuzhao@google.com, ziy@nvidia.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <19086c09-3060-a4ce-4ac6-811a29653979@huaweicloud.com>
 
-On Wed, Apr 17, 2024 at 8:47=E2=80=AFAM Huang, Ying <ying.huang@intel.com> =
-wrote:
->
-> Barry Song <21cnbao@gmail.com> writes:
->
-> > From: Barry Song <v-songbaohua@oppo.com>
-> >
-> > Currently, we are handling the scenario where we've hit a
-> > large folio in the swapcache, and the reclaiming process
-> > for this large folio is still ongoing.
-> >
-> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> > ---
-> >  include/linux/huge_mm.h | 1 +
-> >  mm/huge_memory.c        | 2 ++
-> >  mm/memory.c             | 1 +
-> >  3 files changed, 4 insertions(+)
-> >
-> > diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> > index c8256af83e33..b67294d5814f 100644
-> > --- a/include/linux/huge_mm.h
-> > +++ b/include/linux/huge_mm.h
-> > @@ -269,6 +269,7 @@ enum mthp_stat_item {
-> >       MTHP_STAT_ANON_ALLOC_FALLBACK,
-> >       MTHP_STAT_ANON_SWPOUT,
-> >       MTHP_STAT_ANON_SWPOUT_FALLBACK,
-> > +     MTHP_STAT_ANON_SWPIN_REFAULT,
->
-> This is different from the refault concept used in other place in mm
-> subystem.  Please check the following code
->
->         if (shadow)
->                 workingset_refault(folio, shadow);
->
-> in __read_swap_cache_async().
+Hello,
 
-right. it is slightly different as refault can also cover the case folios
-have been entirely released and a new page fault happens soon
-after it.
-Do you have a better name for this?
-MTHP_STAT_ANON_SWPIN_UNDER_RECLAIM
-or
-MTHP_STAT_ANON_SWPIN_RECLAIMING ?
+On Wed, Apr 17, 2024 at 09:13:34AM +0800, Yu Kuai wrote:
+> > Probably a better interface is for unloading to force blk-throtl to be
+> > deactivated rather than asking the user to nuke all configs.
+> 
+> I was thinking that rmmod in this case should return busy, for example,
+> if bfq is currently used for some disk, rmmod bfq will return busy.
+> 
+> Is there any example that unloading will deactivate resources that users
+> are still using?
 
->
-> >       __MTHP_STAT_COUNT
-> >  };
->
-> --
-> Best Regards,
-> Huang, Ying
->
-> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > index d8d2ed80b0bf..fb95345b0bde 100644
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -556,12 +556,14 @@ DEFINE_MTHP_STAT_ATTR(anon_alloc, MTHP_STAT_ANON_=
-ALLOC);
-> >  DEFINE_MTHP_STAT_ATTR(anon_alloc_fallback, MTHP_STAT_ANON_ALLOC_FALLBA=
-CK);
-> >  DEFINE_MTHP_STAT_ATTR(anon_swpout, MTHP_STAT_ANON_SWPOUT);
-> >  DEFINE_MTHP_STAT_ATTR(anon_swpout_fallback, MTHP_STAT_ANON_SWPOUT_FALL=
-BACK);
-> > +DEFINE_MTHP_STAT_ATTR(anon_swpin_refault, MTHP_STAT_ANON_SWPIN_REFAULT=
-);
-> >
-> >  static struct attribute *stats_attrs[] =3D {
-> >       &anon_alloc_attr.attr,
-> >       &anon_alloc_fallback_attr.attr,
-> >       &anon_swpout_attr.attr,
-> >       &anon_swpout_fallback_attr.attr,
-> > +     &anon_swpin_refault_attr.attr,
-> >       NULL,
-> >  };
-> >
-> > diff --git a/mm/memory.c b/mm/memory.c
-> > index 9818dc1893c8..acc023795a4d 100644
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@ -4167,6 +4167,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
-> >               nr_pages =3D nr;
-> >               entry =3D folio->swap;
-> >               page =3D &folio->page;
-> > +             count_mthp_stat(folio_order(folio), MTHP_STAT_ANON_SWPIN_=
-REFAULT);
-> >       }
-> >
-> >  check_pte:
+Hmm... yeah, I'm not sure. Pinning the module while in use is definitely
+more conventional, so let's stick with that. It's usually achieved by
+inc'ing the module's ref on each usage, so here, the module refs would be
+counting the number of active rules, I guess.
+
+I'm not sure about modularization tho mostly because we've historically had
+a lot of lifetime issues around block and blkcg data structures and the
+supposed gain here is rather minimal. We only have a handful of these
+policies and they aren't that big.
+
+If hot path overhead when not being used is concern, lazy init solves most
+of it, no?
+
+Thanks.
+
+-- 
+tejun
 
