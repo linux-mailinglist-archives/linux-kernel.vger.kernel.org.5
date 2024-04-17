@@ -1,99 +1,128 @@
-Return-Path: <linux-kernel+bounces-149277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D81258A8EC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 00:10:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEF588A8ED0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 00:26:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 638BA1F21FCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:10:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A706B28511F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:26:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5293214037F;
-	Wed, 17 Apr 2024 22:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A9E71474CC;
+	Wed, 17 Apr 2024 22:26:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZWHKkFQP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TRvFn44g"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FBC622338;
-	Wed, 17 Apr 2024 22:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA152134B
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 22:26:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713391821; cv=none; b=qXCtQL4QtD8WuxJajQEujTh4orEiD8msvKEZaCo6pW16WESZGh1rr+iDrw2wzuIphyKVEY+FUV4YPMNIVrKGdVZVqf/SJbApPb9hwIoro5SCB/7MNcdFLoowbriMrj12mXzUtOZZ2uTRQlGMnIRXvjCSVyW/nQa1coFzkJeLV0A=
+	t=1713392800; cv=none; b=omj+Lj5cAlVkO9hOqFFdHWJI2oQ+lSnFTNK9cd0N2TqWh+Vm9E3qkeAm/szUWtc2m/s9tcsqdPlsE1juFptLXsIq2xKpY4nKl0SjVqyCm53TOzQUKmV/tMKGxfo44ZXgfWtadkG0bbezwxOhMHJR3D8od93zdh0+aJcLnWD0Pw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713391821; c=relaxed/simple;
-	bh=7Z20tbLxC5O4ltU3plGgmWQIn5Hvd3ptzRJFvtnJm7A=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=WRRDSTizg1VmrrAur746RJSEDkOXc7y+4RGxd5HcxfegBlAdfDomWEA9ct2VkrGMUrZT7p8SQcWWsFY0/Qtcf58F7Gd0K9KxXOVqJHSfEzwp2PjEplsnoqtCPYHTrlzXhEIA2SA1tZ9bWap/vgxu37pVd0SCGeV0okiPYkrkjh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZWHKkFQP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A9EFC072AA;
-	Wed, 17 Apr 2024 22:10:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713391821;
-	bh=7Z20tbLxC5O4ltU3plGgmWQIn5Hvd3ptzRJFvtnJm7A=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=ZWHKkFQPTmNqpUCBVBhdAyFSvX4ytbFsy9UsBDAt+xa5qq6GTH9KATPc1tezaCVMQ
-	 e98oLS8rOZ3L6CPNPHib8za3LukWgNmTDlAv60TTVMx/uQFklhXmij440/UP98+kxQ
-	 0ikGQH1LtCAKhRZqHnqprF2R9KzLNxoTU+lcMXIwaqfS8kpTO44n3qAHVrd1dMe8Ep
-	 GpBcE16GeN7mdtLy3TXA03pM2/SKKKGdIAlQjckfJi4jPYhiK97KEtC3ruum1l5Eh1
-	 YuLafqMistqPiKwIXYSVz383Cp80DZRdM+9GMcj/YBNchHcGRvIPtPvbGjF0GQa1P8
-	 ZNyw21arSuw5Q==
+	s=arc-20240116; t=1713392800; c=relaxed/simple;
+	bh=XmJUdCd/Xl3LfoQUvHoCZ8uS6N6zHJE4OLXgnHRlR/s=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=lGPYBTVn6J7fjUxd/TDbrbb4TsZKyOvKTRebY3lRUaJ+XqluRUmzX4B1F14O0RwONljR7FEyjCw6fnYvHpT7hVfMWmEUfNpVU4yvNVHhBcXAmt1rGF/Jjt4pSVdPZjytmRQyGO63aDSbbCWkIW7+Xn8F2fvHBvH4ss6BcEUIrbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TRvFn44g; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61510f72bb3so3806767b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:26:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713392798; x=1713997598; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BiFELyysG8+48TNhbAr5tpc1m8bNuNEGFuwVu5J7UpA=;
+        b=TRvFn44gPZyrGFTvHYx8L25f69jm3X1FB7kd35jCseL3yKvm6xyUKAO1ROw4FbsfJV
+         a7VZQSSz8M/onglawRnAroFfoFZlyN1EhEaDIm1cKksmhGPDwqtChYSGvWncxDva1awR
+         Lh1GOJbQlt3w6dNNRDFZjoBeWGIUCLzUUg3bUL7X2bUM+hZIsAbGcVYOwdbJUQUnB2Mv
+         HKvhrXheD7KZQ/W1uoMIPTtHexXItTD5FQMagt+J/ZQlvV9YUCgxFNKXvnSAJ2IPtuD1
+         HFrBe/x3wVN2vphfftMr73Bk7drMNXxuGv75rXxNvrFSmlMf/wdj9TZ1t30B+0jQs69c
+         XaLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713392798; x=1713997598;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=BiFELyysG8+48TNhbAr5tpc1m8bNuNEGFuwVu5J7UpA=;
+        b=qnD7u0H41q46ocW3bSWjwxpbtmIYOz7nYKybTMuZpZjz/vAC4Esfj2YPM/vwCeqRsI
+         JIeWDQmTHthK0Z2I9qPCaAm1sTWzUPMx1Xw8jcBw7LOSm8ETu7TMBLF3MSuF5gl4P8M/
+         c4aAwq02B5VRdpweA8I8VRd1eFTkGGFH28a8iwM9cM2irHYlakqPK5KtlWnIZm81C9BI
+         cMVu9/0mFue1HBhIULusIuN2ZAJ/uJiWpkIwLKC/ZurxlrcLosNsM+qJjzsLqAGkSGVw
+         J5kQNwNl8F3+YqLhP7opMgCQ1l+0zy8us5cTbb/CPv4XkJDFewTDxFu8epxNA8rMss/0
+         J8nQ==
+X-Gm-Message-State: AOJu0YyUU+a/Sr5Oq4B3xxpb3qDSwDuYynYmy+TdXkqzp+fgOy6yDzSZ
+	2HSoBy2iW/hKbZmEAhOI5ilXxm7b2iBsLlhwOdXXK8F+80+rFLCvsRvfIXRzxG1l9PDfsmAq13g
+	O0Q==
+X-Google-Smtp-Source: AGHT+IFkllFiRQzAztePeedBStPuMuyosO8Mm41hPtz3vxUqPqhc6YjEe96EAt6RMIol8O9rlxi5RI4mwCw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:ccce:0:b0:61b:1346:3cd5 with SMTP id
+ o197-20020a0dccce000000b0061b13463cd5mr143602ywd.9.1713392798464; Wed, 17 Apr
+ 2024 15:26:38 -0700 (PDT)
+Date: Wed, 17 Apr 2024 15:26:36 -0700
+In-Reply-To: <CABgObfaoVMzEhu6O5HPe=GXH-bCkpTwSy8Ji0a1=je6f3eSqRQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240417153450.3608097-1-pbonzini@redhat.com> <20240417153450.3608097-6-pbonzini@redhat.com>
+ <ZiA-DQi52hroCSZ8@google.com> <CABgObfaoVMzEhu6O5HPe=GXH-bCkpTwSy8Ji0a1=je6f3eSqRQ@mail.gmail.com>
+Message-ID: <ZiBMnHoyMsoRhLAL@google.com>
+Subject: Re: [PATCH 5/7] KVM: x86/mmu: Introduce kvm_tdp_map_page() to
+ populate guest memory
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	isaku.yamahata@intel.com, xiaoyao.li@intel.com, binbin.wu@linux.intel.com, 
+	rick.p.edgecombe@intel.com
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 18 Apr 2024 01:10:17 +0300
-Message-Id: <D0MQPITI39QG.6OBIUUUL3AQA@kernel.org>
-Cc: "Jason Gunthorpe" <jgg@ziepe.ca>, "linux-integrity@vger.kernel.org"
- <linux-integrity@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "patches@lists.linux.dev"
- <patches@lists.linux.dev>
-Subject: Re: [PATCH v3 42/74] x86/cpu/vfm: Update tpm files
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Luck, Tony" <tony.luck@intel.com>, "Peter Huewe" <peterhuewe@gmx.de>
-X-Mailer: aerc 0.17.0
-References: <20240416211941.9369-1-tony.luck@intel.com>
- <20240416212202.9452-1-tony.luck@intel.com>
- <D0MIG62V6JNV.3OZB5M1T63T7@kernel.org>
- <SJ1PR11MB6083CC350A16FED86B109C81FC0F2@SJ1PR11MB6083.namprd11.prod.outlook.com>
-In-Reply-To: <SJ1PR11MB6083CC350A16FED86B109C81FC0F2@SJ1PR11MB6083.namprd11.prod.outlook.com>
 
-On Wed Apr 17, 2024 at 7:38 PM EEST, Luck, Tony wrote:
-> > >  #ifdef CONFIG_X86
-> > > -   return ((boot_cpu_data.x86_model =3D=3D INTEL_FAM6_ATOM_AIRMONT) =
-? 1 : 0);
-> > > +   return ((boot_cpu_data.x86_vfm =3D=3D INTEL_ATOM_AIRMONT) ? 1 : 0=
-);
-> > >  #else
-> > >     return false;
-> > >  #endif
-> >
-> > Thanks!
-> >
-> > Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> >
-> > You want me to pick this?
->
-> This depends on patches 1,2,3 in this series. Boris may be applying those=
- to TIP soon.
->
-> Are you Ok with this patch also going into the TIP tree to keep all the p=
-arts in sync?
->
-> Otherwise it can wait until this moves from TIP to Linus. I'm not in a gr=
-eat rush.
+On Wed, Apr 17, 2024, Paolo Bonzini wrote:
+> On Wed, Apr 17, 2024 at 11:24=E2=80=AFPM Sean Christopherson <seanjc@goog=
+le.com> wrote:
+> > Do we want to restrict this to the TDP MMU?  Not for any particular rea=
+son,
+> > mostly just to keep moving towards officially deprecating/removing TDP
+> > support from the shadow MMU.
+>=20
+> Heh, yet another thing I briefly thought about while reviewing Isaku's
+> work. In the end I decided that, with the implementation being just a
+> regular prefault, there's not much to save from keeping the shadow MMU
+> away from this.
 
-I don't mind Boris applying this. It is very unlikely to cause any
-possible merge issues with other patches.
+Yeah.
 
->
-> -Tony
+> The real ugly part is that if the memslots are zapped the
+> pre-population effect basically goes away (damn
+> kvm_arch_flush_shadow_memslot).=20
 
-BR, Jarkko
+Ah, the eternal thorn in my side.=20
+
+> This is the reason why I initially thought of KVM_CHECK_EXTENSION for the=
+ VM
+> file descriptor, to only allow this for TDX VMs.
+
+I'm fairly certain memslot deletion is mostly a QEMU specific problem.  All=
+egedly
+(I haven't verified), our userspace+firmware doesn't delete any memslots du=
+ring
+boot.
+
+And it might even be solvable for QEMU, at least for some configurations.  =
+E.g.
+during boot, my QEMU+OVMF setup creates and deletes the SMRAM memslot (desp=
+ite my
+KVM build not supporting SMM), and deletes the lower RAM memslot when reloc=
+ating
+BIOS.  The SMRAM is definitely solvable, and the BIOS relocation stuff seem=
+s like
+it's solvable too.
 
