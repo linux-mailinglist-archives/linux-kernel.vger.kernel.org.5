@@ -1,120 +1,110 @@
-Return-Path: <linux-kernel+bounces-148846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FAA18A8809
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:48:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D88E78A8810
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:49:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED6BC28374A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:48:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9845E1F22EAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:49:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D84A147C9F;
-	Wed, 17 Apr 2024 15:48:28 +0000 (UTC)
-Received: from gardel.0pointer.net (gardel.0pointer.net [85.214.157.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A801482F5;
+	Wed, 17 Apr 2024 15:49:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="K/nRFmq3"
+Received: from mout.web.de (mout.web.de [212.227.15.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6BAD38DEC;
-	Wed, 17 Apr 2024 15:48:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.157.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E419A140389;
+	Wed, 17 Apr 2024 15:49:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713368907; cv=none; b=G5XFV0OVeBTtbmxIYpJ6eYOvuABS5Wa+P0RjL6Mpx1aXr9CCPNXCtqbOPD3QoRYQ9BkVsbzsqMyArifiJhjs0w1cMNxu9H5r8iQ4TvzuKfN6a7Sytdx+rTYK1xl2WInwNhKVyh6lo9JWBN/mgxhvlmKN17Y7bxGS2iX6Iu9qWTc=
+	t=1713368968; cv=none; b=TWxwQg6+nWd0js5bWPSXkhBGACzR9iC/wTFkHHVK36Bg6VKUWYPwZXSQfE5HnURrAqB7XZ7lqK2rgBoQ8EkWGyFZuDtIvMH6PzNvxUAFfV4R26Atxmp8lRslbDyl+xyYUnY+jZH3BPMRhK4y1EDly85r71GJlI1KutXmLvjM+0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713368907; c=relaxed/simple;
-	bh=92v5/pg8GFq/gzI9N8CziVTy0FY0vvgtjcbkTtj6bAI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pQedUD9EpPdrpYTqDpFpG7Ct4QzwEF0TsngAbHyadTWx5H6i8zVTL617F8ANG7yR9Vor/jCqeZ+XILkN7OYcRXvzstHACSIOXIcUKluu0KfIxf81GRfNKjP1Yb1E6MdlWLREYPNZy8SNK1ZlP6punQYx73eL+ue7WC2+nXvRakE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0pointer.de; spf=pass smtp.mailfrom=0pointer.de; arc=none smtp.client-ip=85.214.157.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0pointer.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0pointer.de
-Received: from gardel-login.0pointer.net (gardel-mail [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
-	by gardel.0pointer.net (Postfix) with ESMTP id DCB8EE803C0;
-	Wed, 17 Apr 2024 17:48:16 +0200 (CEST)
-Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
-	id 92B311602F7; Wed, 17 Apr 2024 17:48:16 +0200 (CEST)
-Date: Wed, 17 Apr 2024 17:48:16 +0200
-From: Lennart Poettering <mzxreary@0pointer.de>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Keith Busch <kbusch@kernel.org>,
-	Linux regressions mailing list <regressions@lists.linux.dev>,
-	linux-block@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-	Jens Axboe <axboe@kernel.dk>
-Subject: Re: API break, sysfs "capability" file
-Message-ID: <Zh_vQG9EyVt34p16@gardel-login>
-References: <ZhQJf8mzq_wipkBH@gardel-login>
- <54e3c969-3ee8-40d8-91d9-9b9402001d27@leemhuis.info>
- <ZhQ6ZBmThBBy_eEX@kbusch-mbp.dhcp.thefacebook.com>
- <ZhRSVSmNmb_IjCCH@gardel-login>
- <ZhRyhDCT5cZCMqYj@kbusch-mbp.dhcp.thefacebook.com>
- <ZhT5_fZ9SrM0053p@gardel-login>
- <20240409141531.GB21514@lst.de>
- <Zh6J75OrcMY3dAjY@gardel-login>
- <Zh6O5zTBs5JtV4D2@kbusch-mbp>
- <20240417151350.GB2167@lst.de>
+	s=arc-20240116; t=1713368968; c=relaxed/simple;
+	bh=i+P82q/tekMc6tNfNG2RWz3zLZWMY0FAb26UI7miaxA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aOAdgNwjMmk6aAmlL/tLbsh9w/fufDzy027ZgYdpoANgX+Z1uL9w3XQvLXgBnf0Phd0Lth9Hu9XhjPRZP4MkYr3VH5odF5Yen6AqUgT4Utyt6xzn0sjm6y+ZFJMC/1FgZuygAvlrl1Av/zp7s9r5gzvkxKGrfj3MgsVwZqWf19w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=K/nRFmq3; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713368918; x=1713973718; i=markus.elfring@web.de;
+	bh=i+P82q/tekMc6tNfNG2RWz3zLZWMY0FAb26UI7miaxA=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=K/nRFmq3doFBdGMs9j3Yx6hycO2x50V3yW2mJiz01T+NVfq4+8W9AGzaCGYtwRnu
+	 QaAEQpYVXURmxVxfiENn8HrEWa2EamQ7xINx5Fc4FUpoY/jzXFQWYSdTgLmv/Mskj
+	 Ry7Kjh6rYDUyVDpFPpwa9YJe4Bs5tK3XemCcnCI5n6VA5D/NIM7yKGCxpAF9OEI6v
+	 Oq9YWC+U52zGHqi9Sy8xoV0KukYMzyALTEAbZVu+53NJvCmWJJc9ymLVcU3Qh8SWR
+	 xWGfRXI7GILqG+e4a0yDqzpNvojBehBv0D1ieq5CeobzP8KTvkIa6CZhC/r0K5YMl
+	 foY1/0UoQK4Kc66cgA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MOUtm-1s6P2R3sly-00N7pz; Wed, 17
+ Apr 2024 17:48:37 +0200
+Message-ID: <4b9a14d0-b4bd-4b91-8466-5f8849b0c08e@web.de>
+Date: Wed, 17 Apr 2024 17:48:35 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240417151350.GB2167@lst.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [v4 0/3] SCSI: Fix issues between removing device and error
+ handle
+To: Wenchao Hao <haowenchao22@gmail.com>, Julia Lawall
+ <julia.lawall@inria.fr>, linux-scsi@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, "James E. J. Bottomley"
+ <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Wenchao Hao <haowenchao2@huawei.com>, LKML <linux-kernel@vger.kernel.org>
+References: <20240307144311.73735-1-haowenchao2@huawei.com>
+ <99598b98-8550-4dca-beea-4c2d61d46f78@web.de>
+ <b55da065-dbbb-4d8e-8baf-50807b507cc4@gmail.com>
+ <173b55ca-cde-ab3-be92-d9c8b4b6b5c@inria.fr>
+ <799944de-dcee-46a8-b43b-8876177c61a2@gmail.com>
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <799944de-dcee-46a8-b43b-8876177c61a2@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:l8gXR0DDWYxOQAa7TWh9N40VLCl2PgZ0Uyevu68+Kn0pOqf39WJ
+ XZrIhvzeM1qK50ABQkrhIiRxrHsQfobUOOV/CFtjYXtmgH93cyKOTMOVgLpmdn8QLcjFrLh
+ 3PCuv/6tcfIONuzt8nroibmq2jbRXmVuyP3BSNtgwqWEYiY1ica4ZM8QsQInJMQQmdgdW4n
+ FH0MllNrH+6FwBKHEHY7Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:2hyj7KGRkig=;cU+8XFuLsqheAqdENeGUw0MzhTn
+ 7OX3IZnDRImJVWCv+bZhg1EytFTq7vdhuLNnjXCKXDLvKSWskNdKDbCJ6h6OSbOzvKdgYC2EQ
+ aA1OpGdeI9qS6QaNwxPQY3fHIAPRgVVBcXnAsZkasgrjLupY8Bd8fKw+54+fE5jR+Tzv+l2uP
+ JgnQWe84cP4bPMhAmXOQHE4L271wMshE4pQu9INTJKkISI8eQA1naqfa4C3JTTKwDTL14eVql
+ OTJioJi0JArBSmNrHjR65QFNdeexhWBKRmLMjLFpDAW28utEhCC02Xomorjb8wNHUshb7wN6u
+ vZJKc+36RLkn2Ms6RnEqAiIVo9V3CIzmWCe9O1Du4BHUlPAP6Rzkm3W/upKWbTHVVqhWNRBIS
+ yU474PaP++fWUM1NvqZZMZLnHH4dy8BYMHLAdfzfljOsQ+ddHL2OvrnuMzHlw/SmhE6GcG8PE
+ vfaxodxtjjnmQgpS2iXxsDuhb9X1nMTU3bcUe4Hxg7X5MamlmNfpSvu80sOhnlASf4VI8ZXaz
+ utt+oHdO5YkVnMLyFFiAYtR774EUujsY2L6qS3VtCjEPLYxOzP7pWQEejcvkH48nGrHG23Hgs
+ uTp9OBxYigIiU1Z+pLB1JwlnRjvKo44mNfOtGj2Z/2VwYPgWNIRxgysDngGihiXwRUtjTqQ5c
+ u/WkZALwh8Yu57Vnf+dAxtu6pnaeM5+uIwufggBTz8P3t2iRauVzWz0tuMcJVZ3raG2SxTZ0s
+ L5KfV7M/CO++ZO0CTUAH7MzkrZ1IYCL+5q/cJ7ddqRignPjY/7MaWq/6ASmHByTUhpoR1ZoPc
+ GhdzG3vpIydQ66ICoT2Y2AlIVLKc1aqF6r7ZllJw/Bf28=
 
-On Mi, 17.04.24 17:13, Christoph Hellwig (hch@lst.de) wrote:
-
-> On Tue, Apr 16, 2024 at 08:44:55AM -0600, Keith Busch wrote:
-> > The patch that introduced this was submitted not because the API was
-> > stable; it was committed to encourage developers to update it as it
-> > changed because it is *not* stable. That's not the kind of interface you
-> > want exported for users to rely on, but no one should have to search
-> > commit logs to understand why the doc exists, so I think exporting it
-> > was just a mistake on the kernel side. To say this doc is "good"
-> > misunderstands what it was trying to accomplish, and what it ultimately
-> > created instead: technical debt.
+>> Search in process/submitting-patches.rst for Fixes:
 >
-> Yes.  It might be a problem with the documentation generation mess,
-> but something that is generated from a random code comment really
-> can't be an API document.
->
-> Anyway, instead of bickering about this, what does systemd actually
-> want to known?  Because all these flags we talked about did slightly
-> different things all vaguely related to partition scanning.
-> We also have another GD_SUPPRESS_PART_SCAN bit that is used to
-> temporarily suppress partition scanning (and ublk now also abuses
-> it in really whacky way, sigh).  I'm not really sure why userspace
-> would even care about any of this, but I'm open to come up with
-> something sane if we can actually define the semantics.
+> These issues are introduced at first version of git record, which is
+> 1da177e4c3f4 ("Linux-2.6.12-rc2"). I think "Fixes" tag should not added
+> for this commit.
 
-systemd works a lot with partitioned GPT disk images, and many of our
-tools you can point to such images, either by referencing a file or by
-referencing a block device. We generally handle that
-transparently. Typically we then look at the GPT partition table from
-userspace, and then do something with the associated partition block
-devices (i.e. mount them or so). But those will only be synthesized by
-the kernel if we are operating on a block device with partition
-scanning on. Since kernel part scanning is async if a partition block
-device doesn#t exist yet could have two reasons: part scanning is off
-for the device, or the part table is still read and processed by the
-kernel. By being able to read the part scan flag off the block device
-we know which case it is, and can avoid a potential time-out.
+I suggest to take also another look at information in a table
+like =E2=80=9CReleases fixed in v6.8=E2=80=9D from the article =E2=80=9CDe=
+velopment statistics for 6.8=E2=80=9D
+by Jonathan Corbet.
+https://lwn.net/Articles/964106/
 
-If we are operating on a regular file or on a block device with
-partition scanning off, we first have to generate an intermediary
-loopback block device off it, whith scanning on.
-
-Hence it's very useful to be able to determine if we a block device
-already supports partition scans, simply so that we can do all this
-entirely generically: you give us anything and we can handle it.
-
-Block devices with part scanning off are quite common after all,
-i.e. "losetup" creates them by default like that, and partition block
-devices themselves have no part scanning on and so on, hence we have
-to be ablet to operate sanely with them.
-
-Lennart
-
---
-Lennart Poettering, Berlin
+Regards,
+Markus
 
