@@ -1,316 +1,167 @@
-Return-Path: <linux-kernel+bounces-148937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46FBF8A8961
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:53:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D524D8A8963
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:54:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2793284B79
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:53:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BC621F249B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:54:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DFC6148847;
-	Wed, 17 Apr 2024 16:53:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y0M+6ya8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 696F717107A;
+	Wed, 17 Apr 2024 16:54:27 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E83F16FF38
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 16:53:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7841316FF38
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 16:54:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713372825; cv=none; b=CycOUSm2T95l6oFqEYKw8F6qZuCj3M0QvE99ZzH/vzmXGXHEIB1N0jtVcH6x18wqyeUeYwaMrot7T4Lr5t1474LERC3+pgizOx/F5mPyM3fdKfZ68GqsjFKbWBCcXApkJmZe2pp4cUpIQ6hIlPDWkMgOhlluXvsNml/OcV5Mk4g=
+	t=1713372866; cv=none; b=Qpd/xYG7VZRNnyoiVShObjMDfyMVF9/ljo75b/Ev42XxFlJQPYkpNSRSPabu2Yahn9bNzVvXKZhKL0tBl2SJOBpH0SI7PF2DL3kmwaC8rTH1cy2MJ28TGzprN/oxXTd/7T17RRKHLz3q6k1fCWyJ30r/VGXiIFXN9WXeUALHmUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713372825; c=relaxed/simple;
-	bh=bQG1MaJUaFy8g/RwWGQeRbVd3yteYykZFW4in/5zhSQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bw22jPNTsRQvCt/UXZXRVgaxTn9ocmGWKfJd5+e02yFRDmf+24IfsvAO9sa9K3C52Ru30QovR5q7ELAK/WFI7LUw/BPjfk1cYO6rqEKECRylk6Mm8+HR79WdzQuTbdLP/EXeRD2ipzFvl9Ezvvz3sm6y+Ub1UaRiR7qc+AGZPy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y0M+6ya8; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713372822;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=H02MyDugUniOD5Yjk6O9xR+QftxPqn6fGk14KKlCFGA=;
-	b=Y0M+6ya8NsNwWJQXVIoYD5Wh5KGuEo08/2zrIBIbjyImFhlyMFqOfWO0ZrKha7qc/mLdZn
-	tQlyyCG8WbfOqmJ3KTfp2ZQ5YpSbqFN2nSd+ZClZReWtikET2PxzWuoBg5pHP+oEpyDVo5
-	3DYha/Hy3OfepRymawrRF1cs5O9xbVs=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-672-HkWj8JGSNXCkzTLwy-wtBg-1; Wed, 17 Apr 2024 12:53:39 -0400
-X-MC-Unique: HkWj8JGSNXCkzTLwy-wtBg-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-69b27e4ed7aso7606d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:53:39 -0700 (PDT)
+	s=arc-20240116; t=1713372866; c=relaxed/simple;
+	bh=zlO3QyLU6T6kAPgF315577WoowuqF+crHU62sbLQ95M=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=BQV68EfUmaZk/0jea1DCEoH1py8FBpxVXz+Mpg/au4Gtb9VyhvfLdE5H4oFdJvUhkZPuBhgXoIiiCmNcb8JWCIHBo6NaybN7TpSza0AOndvVDkCDz5c6m3+fAqWHgpE4GHnD2S9xpHuUW6roOrl2ajKhP1u4zbV5qE52VAn7zqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cc7a6a043bso787161939f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:54:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713372819; x=1713977619;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H02MyDugUniOD5Yjk6O9xR+QftxPqn6fGk14KKlCFGA=;
-        b=DbT+SeEfkBgdKPLFLT3zHweKtZVExxt+9TB+IJawqndSQxG1nsYuXluV1DafPfXv8K
-         WxpE33wYy4IzianNPB5NFoXvHtmM1TckH+fFyN2HEPCjLtwMwNHu/38L1gowVhHdFeXL
-         WBinUyMV+zpm3aFCoEwcs4lfVR9Z7KoF5EYjFvsZCJMgdy9w1dwtV9VRLbEw9CYfVJfu
-         c5wmVepfA9xKqMiDZ+MmzR34EkEqPXhCVIHwPiuca6Iaiug6kJrrxvwMem12wpDfxMjP
-         +/OMjh73lsz2qkrH4GdKekK+sdnpr6FkKDIjvPEz2X3wsS5eEvV7Z3ZFLMfV0cK/WPc/
-         adfA==
-X-Gm-Message-State: AOJu0Yy72OGKSDGB4KFJGrjx3JszUhShvoXEBz0VEdls4LumQPAVwT9E
-	YOFis/fQwzr2mm7lz87ECK+vSjYC6dc+Xmwb1VPUBEl0rGg3Ky9dHfvwUAbWsMcqOUZfyAlunsM
-	IhbwxW2/5dw91Zl0ZqIYsoiDRSW/yRq1l09mBNaxMwaKTl9avSjPQDKhvWAsAnw==
-X-Received: by 2002:a05:620a:2443:b0:78e:c793:14b2 with SMTP id h3-20020a05620a244300b0078ec79314b2mr19654580qkn.3.1713372818474;
-        Wed, 17 Apr 2024 09:53:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG0ciY3X1h8yZAfYCjUW47evOs8smKQz9wB6AiReJa8oNK5KXTgyDXgta4lHqk6A8oTjCxxRw==
-X-Received: by 2002:a05:620a:2443:b0:78e:c793:14b2 with SMTP id h3-20020a05620a244300b0078ec79314b2mr19654539qkn.3.1713372817539;
-        Wed, 17 Apr 2024 09:53:37 -0700 (PDT)
-Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id bl36-20020a05620a1aa400b0078efd872d3csm886416qkb.14.2024.04.17.09.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 09:53:37 -0700 (PDT)
-Date: Wed, 17 Apr 2024 12:53:35 -0400
-From: Peter Xu <peterx@redhat.com>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	David Hildenbrand <david@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	Axel Rasmussen <axelrasmussen@google.com>
-Subject: Re: [PATCH] mm/page_table_check: Support userfault wr-protect entries
-Message-ID: <Zh_-j56_0RWxd33E@x1n>
-References: <20240415205259.2535077-1-peterx@redhat.com>
- <CA+CK2bCSs8om+7tO_Sq2fAUD+gzD_4unUXMtO9oRUB+=4biv-Q@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1713372864; x=1713977664;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=94AERZMjJPIAPdPJbcKSLmYY89yKeD6SgqSo1jdF7OA=;
+        b=t5xP0aRShPdlQD9ZvPetkEkUGURQ/46Q6aT+uQoVdZ0T/9/zzu6WxsRQLb/SDAnbjT
+         FvFl86hhhWzujCMVI7xIQ3GMMubW5mTCbcNaCBEY95MNW6f/ZAZeJxg7xtryGKxyvS7z
+         Jih2lxzk2JLD+OSDoLFFmE/v4see+2Q9KlfW07ZAfqjohoTtM8mKH5tBhifdNZy1Ac2h
+         3aJlUNjYvgMxB2Lr9+wjJOcaV+4RJTAo4/2HKji78JcwIvbjTArwIqg4sKqLO7gbifpf
+         J74dD7PlheRjakbDU8qBvYFwwPs3cuTPE9GFDKd1sZRG019omiDsaCom5egpQkgUh1Px
+         l/Aw==
+X-Forwarded-Encrypted: i=1; AJvYcCUZFpq2SqjJDZb/4Nc3baqWbQivkZuEVG1NUnOmzrkvrRnvaYBKGoxqMerYCTZsFvq7md/WLn0IQjPeKJNvfkwmQeU+TaM0TtTsd/rC
+X-Gm-Message-State: AOJu0YzkCEc98X5/fOe6OzYkIikUp43LZTndeXTUHi5oqUZwfj+M/oli
+	gIo4hQyjHRCHgdr8yeqfEhRBd2L5CUDXMjJVDQDSy/uv2vApeb83JjeMW/kKVXZNvtTuH99OqYW
+	dbp7ATrjhF91Vu8CY4zANielzYBWeMvKWDVU/ihOsmNUKg7cLBT0127I=
+X-Google-Smtp-Source: AGHT+IFNX1QrBClN+f+KBHQMg3tx/9A1nlzXeU4PiLf7pH9u6E//ldPrxBgPGlqAVdW7tvAnyXmEqGbtDVq6eeqyVtLfl9hRuoeu
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+CK2bCSs8om+7tO_Sq2fAUD+gzD_4unUXMtO9oRUB+=4biv-Q@mail.gmail.com>
+X-Received: by 2002:a05:6638:8917:b0:482:fa6f:78fd with SMTP id
+ jc23-20020a056638891700b00482fa6f78fdmr839217jab.0.1713372864804; Wed, 17 Apr
+ 2024 09:54:24 -0700 (PDT)
+Date: Wed, 17 Apr 2024 09:54:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f987ff06164db4f6@google.com>
+Subject: [syzbot] [gfs2?] INFO: task hung in gfs2_glock_nq
+From: syzbot <syzbot+dbb72d38131e90dc1f66@syzkaller.appspotmail.com>
+To: agruenba@redhat.com, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Apr 16, 2024 at 05:34:50PM -0400, Pasha Tatashin wrote:
-> Hi Peter,
+Hello,
 
-Pasha,
+syzbot found the following issue on:
 
-> 
-> Thanks for this patch, I like this extra checking logic, my comments below:
+HEAD commit:    b5d2afe8745b Merge branches 'for-next/kbuild', 'for-next/m..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=139e600b180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=560f5db1d0b3f6d0
+dashboard link: https://syzkaller.appspot.com/bug?extid=dbb72d38131e90dc1f66
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1745f177180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17509b6d180000
 
-Thanks for taking a look.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/50bff35e1638/disk-b5d2afe8.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4eeaa73e7ed1/vmlinux-b5d2afe8.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8e796b089aa9/Image-b5d2afe8.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/3f56655953c4/mount_0.gz
 
-> 
-> On Mon, Apr 15, 2024 at 4:53 PM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > Allow page_table_check hooks to check over userfaultfd wr-protect criteria
-> > upon pgtable updates.  The rule is no co-existance allowed for any writable
-> > flag against userfault wr-protect flag.
-> >
-> > This should be better than c2da319c2e, where we used to only sanitize such
-> > issues during a pgtable walk, but when hitting such issue we don't have a
-> > good chance to know where does that writable bit came from [1], so that
-> > even the pgtable walk exposes a kernel bug (which is still helpful on
-> > triaging) but not easy to track and debug.
-> >
-> > Now we switch to track the source.  It's much easier too with the recent
-> > introduction of page table check.
-> >
-> > There are some limitations with using the page table check here for
-> > userfaultfd wr-protect purpose:
-> >
-> >   - It is only enabled with explicit enablement of page table check configs
-> >   and/or boot parameters, but should be good enough to track at least
-> >   syzbot issues, as syzbot should enable PAGE_TABLE_CHECK[_ENFORCED] for
-> >   x86 [1].  We used to have DEBUG_VM but it's now off for most distros,
-> >   while distros also normally not enable PAGE_TABLE_CHECK[_ENFORCED], which
-> >   is similar.
-> >
-> >   - It conditionally works with the ptep_modify_prot API.  It will be
-> >   bypassed when e.g. XEN PV is enabled, however still work for most of the
-> >   rest scenarios, which should be the common cases so should be good
-> >   enough.
-> >
-> >   - Hugetlb check is a bit hairy, as the page table check cannot identify
-> >   hugetlb pte or normal pte via trapping at set_pte_at(), because of the
-> >   current design where hugetlb maps every layers to pte_t... For example,
-> >   the default set_huge_pte_at() can invoke set_pte_at() directly and lose
-> >   the hugetlb context, treating it the same as a normal pte_t. So far it's
-> >   fine because we have huge_pte_uffd_wp() always equals to pte_uffd_wp() as
-> >   long as supported (x86 only).  It'll be a bigger problem when we'll
-> >   define _PAGE_UFFD_WP differently at various pgtable levels, because then
-> >   one huge_pte_uffd_wp() per-arch will stop making sense first.. as of now
-> >   we can leave this for later too.
-> >
-> > This patch also removes commit c2da319c2e altogether, as we have something
-> > better now.
-> >
-> > [1] https://lore.kernel.org/all/000000000000dce0530615c89210@google.com/
-> >
-> > Cc: Pasha Tatashin <pasha.tatashin@soleen.com>
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > ---
-> >  arch/x86/include/asm/pgtable.h | 18 +-----------------
-> >  mm/page_table_check.c          | 32 +++++++++++++++++++++++++++++++-
-> 
-> Please add the new logic to: Documentation/mm/page_table_check.rst
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dbb72d38131e90dc1f66@syzkaller.appspotmail.com
 
-Will do.
+INFO: task syz-executor105:6284 blocked for more than 143 seconds.
+      Not tainted 6.9.0-rc3-syzkaller-gb5d2afe8745b #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor105 state:D stack:0     pid:6284  tgid:6284  ppid:6282   flags:0x00000004
+Call trace:
+ __switch_to+0x314/0x560 arch/arm64/kernel/process.c:553
+ context_switch kernel/sched/core.c:5409 [inline]
+ __schedule+0x14bc/0x24ec kernel/sched/core.c:6746
+ __schedule_loop kernel/sched/core.c:6823 [inline]
+ schedule+0xbc/0x238 kernel/sched/core.c:6838
+ bit_wait+0x1c/0xac kernel/sched/wait_bit.c:199
+ __wait_on_bit kernel/sched/wait_bit.c:49 [inline]
+ out_of_line_wait_on_bit+0x208/0x334 kernel/sched/wait_bit.c:64
+ wait_on_bit include/linux/wait_bit.h:76 [inline]
+ gfs2_glock_wait+0xb8/0x298 fs/gfs2/glock.c:1354
+ gfs2_glock_nq+0xcc8/0x169c fs/gfs2/glock.c:1616
+ gfs2_glock_nq_init fs/gfs2/glock.h:238 [inline]
+ __gfs2_lookup+0x124/0x270 fs/gfs2/inode.c:905
+ gfs2_lookup+0x2c/0x3c fs/gfs2/inode.c:930
+ __lookup_slow+0x250/0x374 fs/namei.c:1692
+ lookup_slow+0x60/0x84 fs/namei.c:1709
+ walk_component+0x280/0x36c fs/namei.c:2004
+ lookup_last fs/namei.c:2461 [inline]
+ path_lookupat+0x13c/0x3d0 fs/namei.c:2485
+ filename_lookup+0x1d4/0x4e0 fs/namei.c:2514
+ user_path_at_empty+0x5c/0x84 fs/namei.c:2921
+ user_path_at include/linux/namei.h:57 [inline]
+ ksys_umount fs/namespace.c:1916 [inline]
+ __do_sys_umount fs/namespace.c:1924 [inline]
+ __se_sys_umount fs/namespace.c:1922 [inline]
+ __arm64_sys_umount+0xf8/0x17c fs/namespace.c:1922
+ __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
 
-> 
-> >  2 files changed, 32 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-> > index 273f7557218c..65b8e5bb902c 100644
-> > --- a/arch/x86/include/asm/pgtable.h
-> > +++ b/arch/x86/include/asm/pgtable.h
-> > @@ -388,23 +388,7 @@ static inline pte_t pte_wrprotect(pte_t pte)
-> >  #ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
-> >  static inline int pte_uffd_wp(pte_t pte)
-> >  {
-> > -       bool wp = pte_flags(pte) & _PAGE_UFFD_WP;
-> > -
-> > -#ifdef CONFIG_DEBUG_VM
-> > -       /*
-> > -        * Having write bit for wr-protect-marked present ptes is fatal,
-> > -        * because it means the uffd-wp bit will be ignored and write will
-> > -        * just go through.
-> > -        *
-> > -        * Use any chance of pgtable walking to verify this (e.g., when
-> > -        * page swapped out or being migrated for all purposes). It means
-> > -        * something is already wrong.  Tell the admin even before the
-> > -        * process crashes. We also nail it with wrong pgtable setup.
-> > -        */
-> > -       WARN_ON_ONCE(wp && pte_write(pte));
-> > -#endif
-> > -
-> > -       return wp;
-> > +       return pte_flags(pte) & _PAGE_UFFD_WP;
-> >  }
-> >
-> >  static inline pte_t pte_mkuffd_wp(pte_t pte)
-> > diff --git a/mm/page_table_check.c b/mm/page_table_check.c
-> > index af69c3c8f7c2..d4eb1212f0f5 100644
-> > --- a/mm/page_table_check.c
-> > +++ b/mm/page_table_check.c
-> > @@ -7,6 +7,8 @@
-> >  #include <linux/kstrtox.h>
-> >  #include <linux/mm.h>
-> >  #include <linux/page_table_check.h>
-> > +#include <linux/swap.h>
-> > +#include <linux/swapops.h>
-> >
-> >  #undef pr_fmt
-> >  #define pr_fmt(fmt)    "page_table_check: " fmt
-> > @@ -182,6 +184,23 @@ void __page_table_check_pud_clear(struct mm_struct *mm, pud_t pud)
-> >  }
-> >  EXPORT_SYMBOL(__page_table_check_pud_clear);
-> >
-> > +/* Whether the swap entry cached writable information */
-> > +static inline bool swap_cached_writable(swp_entry_t entry)
-> > +{
-> > +       unsigned type = swp_type(entry);
-> > +
-> > +       return type == SWP_DEVICE_EXCLUSIVE_WRITE ||
-> > +           type == SWP_MIGRATION_WRITE;
-> > +}
-> > +
-> > +static inline void __page_table_check_pte(pte_t pte)
-> 
-> may be something like:
-> page_table_check_new_pte() ? Naming is starting to get confusing. The
-> idea for this function is to check the pte that is about to be set
-> into the page table.
+Showing all locks held in the system:
+1 lock held by khungtaskd/30:
+ #0: ffff80008f057880 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0xc/0x44 include/linux/rcupdate.h:328
+2 locks held by getty/6006:
+ #0: ffff0000ccbde0a0 (&tty->ldisc_sem){++++}-{0:0}, at: ldsem_down_read+0x3c/0x4c drivers/tty/tty_ldsem.c:340
+ #1: ffff800097b9b2f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x41c/0x1228 drivers/tty/n_tty.c:2201
+1 lock held by syz-executor105/6284:
+ #0: ffff0000df4da9a0 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: inode_lock_shared include/linux/fs.h:805 [inline]
+ #0: ffff0000df4da9a0 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: lookup_slow+0x50/0x84 fs/namei.c:1708
 
-But then we keep __page_table_check_ptes_set() as is?
+=============================================
 
-It feels more natural if we keep using those underscores if all the rest
-does so.  The "_new" is also not matching with what you used to have as
-"_set".  If you see that's how I carefully chose the current name, with the
-hope to match everything..
 
-No strong opinions on these, but let me know your final choice of such
-name.  I'm happy to align that to your preference.
 
-> 
-> > +{
-> > +       if (pte_present(pte) && pte_uffd_wp(pte))
-> > +               WARN_ON_ONCE(pte_write(pte));
-> > +       else if (is_swap_pte(pte) && pte_swp_uffd_wp(pte))
-> > +               WARN_ON_ONCE(swap_cached_writable(pte_to_swp_entry(pte)));
-> > +}
-> > +
-> >  void __page_table_check_ptes_set(struct mm_struct *mm, pte_t *ptep, pte_t pte,
-> >                 unsigned int nr)
-> >  {
-> > @@ -190,18 +209,29 @@ void __page_table_check_ptes_set(struct mm_struct *mm, pte_t *ptep, pte_t pte,
-> >         if (&init_mm == mm)
-> >                 return;
-> >
-> > -       for (i = 0; i < nr; i++)
-> > +       for (i = 0; i < nr; i++) {
-> > +               __page_table_check_pte(pte);
-> 
-> This should really be called only once after this loop.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-This is also my intention to keep it in the loop just to make it as generic
-e.g. to have no assumption of "ignoring PFNs", and I didn't worry on perf
-much as we'll read/write these ptes anyway, also because it's only enabled
-for debugging kernels.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-But I made it at least inaccurate by checking pte not *ptep..
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-How about I move it out, rename it to __page_table_check_pte_flags(pte)?
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-> 
-> >                 __page_table_check_pte_clear(mm, ptep_get(ptep + i));
-> > +       }
-> >         if (pte_user_accessible_page(pte))
-> >                 page_table_check_set(pte_pfn(pte), nr, pte_write(pte));
-> >  }
-> >  EXPORT_SYMBOL(__page_table_check_ptes_set);
-> >
-> > +static inline void __page_table_check_pmd(pmd_t pmd)
-> 
-> page_table_check_new_pmd() ?
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-This is the same "careful choice" of mine on that, same reasoning as
-above on the pte helpers. :)
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-But again, let me know your final decision on the namings of both.
-
-Thanks,
-
-> 
-> > +{
-> > +       if (pmd_present(pmd) && pmd_uffd_wp(pmd))
-> > +               WARN_ON_ONCE(pmd_write(pmd));
-> > +       else if (is_swap_pmd(pmd) && pmd_swp_uffd_wp(pmd))
-> > +               WARN_ON_ONCE(swap_cached_writable(pmd_to_swp_entry(pmd)));
-> > +}
-> > +
-> >  void __page_table_check_pmd_set(struct mm_struct *mm, pmd_t *pmdp, pmd_t pmd)
-> >  {
-> >         if (&init_mm == mm)
-> >                 return;
-> >
-> > +       __page_table_check_pmd(pmd);
-> >         __page_table_check_pmd_clear(mm, *pmdp);
-> >         if (pmd_user_accessible_page(pmd)) {
-> >                 page_table_check_set(pmd_pfn(pmd), PMD_SIZE >> PAGE_SHIFT,
-> > --
-> > 2.44.0
-> >
-> 
-> Thanks,
-> Pasha
-> 
-
--- 
-Peter Xu
-
+If you want to undo deduplication, reply with:
+#syz undup
 
