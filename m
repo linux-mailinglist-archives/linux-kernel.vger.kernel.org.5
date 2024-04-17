@@ -1,204 +1,208 @@
-Return-Path: <linux-kernel+bounces-148791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49DEF8A8779
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C257D8A8781
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:25:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C8F01C21B30
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:24:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E57361C21174
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:25:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C6C1474A1;
-	Wed, 17 Apr 2024 15:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE106147C6A;
+	Wed, 17 Apr 2024 15:25:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gds1lFTO"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="D0oT0b38"
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2051.outbound.protection.outlook.com [40.107.14.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF8C146D59
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:24:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713367462; cv=none; b=Umpi5Vy8oDGf0bf2IRIS9VWz6JfmUUwEkFrDRLb9CYhp0BKFGiHVaaHHtacA3muMA4VuZrUhD+KDc1x+k6dtPYTU64ifP6e7uyk6dB8KXbIawC2jQ/xsJgkg9S30qFQbqJUI5EiPj5kffxE1inPuBjWEWUBPZAkRNBuYmg9fXmo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713367462; c=relaxed/simple;
-	bh=wv6TzIexs3gOSYNLydcDjikuOWnq0Lw+6o//JvAaFE8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=nzu3KakB2YD1qKm+JTqlOdBYxP3b2oT1DFEU3dXumXQFgD3e3TOPqf9mI2SEyic6QHspqO1ldFF6VCbDZlqY74HnTRqciEdUuAlN8tynBzg5xHWb0qOkF0VgE8X9JTX7JRp/bMb55TqNmvgRWCvajz/j+6e99D0IqB/hyNNJ7Cs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gds1lFTO; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-516db2214e6so7220071e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 08:24:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713367458; x=1713972258; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z0JTVW4GlCOZN1AlXtV9zVy9VXkvFGVMaMHEsnX5OLE=;
-        b=gds1lFTO9BshLDn6cfYN+xElqE1OeAWhYq7p7AAzMFxtoeD0mKlrnmU4/PJ/xPwMfo
-         X28ND1ADYbH1JNqSq7AlV1jw2ccB3s47+bhKeGjNL6+N3wOS/vdsEOepjaun+MQfM+xf
-         BaIRlHtKHdS8smPCWYH81ng95jgumSWR1Dhu4tV+6NK224tLupuXdCm6izD/ShbyTb5n
-         dCg7joWicGEVO5nmoFdd+OgqYn3XYeD4GrduWD1QAQRQitQ91GHGTleNGDfUwhSgsNA3
-         Fz/uIJl064hBZ8v3r5tQ6upJysTdNQg3w/8h41zb7YluWhjEMCItmf4BwKonrp0fWzJO
-         dKyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713367458; x=1713972258;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z0JTVW4GlCOZN1AlXtV9zVy9VXkvFGVMaMHEsnX5OLE=;
-        b=maCORgectDfIl1gI10h8juxP7H1S37Ll/D5ak0GCH/gTuXtgHTG3SUN2+53aoxR6Qs
-         Pd9UMCSMg2xipLZivU352OXSVRuGCf0SSUDGmqjC685hQIDs+S8eL236k08+IlOqGEoE
-         sU1Nj1URVnWJ6UUvHYv2I7sgpofe8uFUh+wiwpEBbLMpG3/lxXz5xAFX7P2eZkjCFb1z
-         hV1JyL4NFSi1B4pnvCRh+F8rivJtFJNVr2irkEPEMGyeYvtq3uC0V8JRLVk4Eyq6qdUy
-         bmyyBBYXyYFY4CdeNerw0fr7ueh1mF9qxgizAlhzgY9eX6xllGfaUfmSdkN5O0nzwAP8
-         Nrtg==
-X-Forwarded-Encrypted: i=1; AJvYcCUbjikYWzkSXIi5UgCz2OnCmVsrLYSO8/FB5J1OAnyOS62KBy0drNtBRHo1QoycZ90k8Vr3IuSGG4gM2hNlZsMv/IYra9fKgkHd0vk6
-X-Gm-Message-State: AOJu0Ywt0EOmMNhVzkGKgw80aYYib9ik85/8mr4jaFgQM5juzIIqnP/2
-	DUIrW6kTwcNt/VZo3V3mlFQBgr6m1spZIglLnxLDCxkPO66l3WW5twO6nfgHMBE=
-X-Google-Smtp-Source: AGHT+IFgQBi2Xw9wKHUCyJbBXYQp48oCH3X/nexHrDVmbWbgpcrBlr5KOsli0evrQgiutu/jauHOXQ==
-X-Received: by 2002:ac2:4e07:0:b0:518:b865:eab4 with SMTP id e7-20020ac24e07000000b00518b865eab4mr9274971lfr.60.1713367458254;
-        Wed, 17 Apr 2024 08:24:18 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id bl22-20020a170906c25600b00a522bf06d8fsm7739567ejb.14.2024.04.17.08.24.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 08:24:17 -0700 (PDT)
-Date: Wed, 17 Apr 2024 18:24:13 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, Geetha sowjanya <gakula@marvell.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, kuba@kernel.org,
-	davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
-	sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
-	hkelam@marvell.com
-Subject: Re: [net-next PATCH 3/9] octeontx2-pf: Create representor netdev
-Message-ID: <a55c4d98-030c-420e-b29d-3836e1ce0876@moroto.mountain>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA04B13A265;
+	Wed, 17 Apr 2024 15:25:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.14.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713367520; cv=fail; b=j4nIljReLt87gNDgGetqvZuO2Mi/YeiLcj6INkXDROokjoJVPqXOMVQEuvL7fJLBPy/uedv+3TjnFeUu8LrVkZJOOhNEjb1kzAK6ZXef6Qf44NkMQ8w3zMDmmxTVdOarFZW878Up8PK8QFXQo2YtzMQvRp73bGqZRbf8za9gUnc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713367520; c=relaxed/simple;
+	bh=p0tuB29l43UnDFrU7x82XJkVCW1guFDbJyCfkc+L5jc=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=BYA4Vldx0yT0VHVkTYBoUy2aNBXhUuKv2yVekLyAMADh64nYHunNmTHLtuTdkb6E/xBBqiyLVrJMbug4UpIHZGp1l5tJpT243mlaWBMWtSwbxkhNlwoJjrc1JZ6s4TLy14vjfSuMBvcNnJi1gg6GiBR4wW3o9HuIzUZUL4COzrU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=D0oT0b38; arc=fail smtp.client-ip=40.107.14.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GJOOB2T7qSUG22aHJVQ/G4vYrnoijIdqBL1AP/zj34efBlfcapbR6ZKHqRLofxadcYhKcN7thhNxxg0Qv5Y+beQYA1UVevLlVCKQKCY149RaDW/IPQWkb3XamomiMvfO+KL7JBHMRt5JQyT+/qDnxFAuUdkqWb9MWBJLYjW4b8mGhQBsE9iquoIzNhyBe2x5Tkvjb5hJnPG0RSOjK3QjMTYOAzQIP1yT8gCdpJ71NcDcojsEli0fzGiaow8dzun2yfPInBTQ3cCZemHsAByHa4YsrekScoAOvXEgZ8fvGHN0L4zJQ+dzyP1jrs0a7U/kVX6V58ED3wHlNXQEd503Iw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mmManNmiFHxoJNh3InF3oqp5UBNN4qoYJhc8FHHjGNc=;
+ b=hGbVHKR9PSjFL1RKQE9i5RmmpyfQAqfrsKdM8HHudIKOVrSFHJcMFSCATEkRLXHkw4bNehMiX4N6M1kLCGO0qJKGw9cueIN59BwqE/orfOVajReMs8urIpWfxAnyMNCiCzjVEGt1FJOxvAyHtg5BvfZLCwmK8kXoqHhAephk71n3BxkFhAt62v1NdqjeuEonsgmzf3mdegxGGDeMx6Eu6nwnYW9nYgFgnm+pDddiW2haRMB6KX+5I1wfsfjlAEELXlmDDrhfTTSnvOP/6nqHfyejxR8GGMIUDAn3XJd+feBd2ZmNy7UXzbvEuNOLwGP4ms3IIeULBbUXyLGg7WhhDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mmManNmiFHxoJNh3InF3oqp5UBNN4qoYJhc8FHHjGNc=;
+ b=D0oT0b38kHGOIraaiwPz8x1Nu3PDQq6ECRO4ALo5plqZ9ulF/VxnEF4mFPZCHHbdjdC19p4FhwWWjWZa8Ht1Z06oA8lfts+VcDaULAVV7SY1goVZeHoCjFet01ZqXLQ1bBHHihp4Vyr2RCztQwezx2mkNbSSnGQE8kNWg/9+JnE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by GV1PR04MB10108.eurprd04.prod.outlook.com (2603:10a6:150:1a2::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Wed, 17 Apr
+ 2024 15:25:15 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
+ 15:25:15 +0000
+From: Frank Li <Frank.Li@nxp.com>
+To: robh@kernel.org
+Cc: 20240409185416.2224609-1-Frank.Li@nxp.com,
+	Frank.Li@nxp.com,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	dmaengine@vger.kernel.org,
+	imx@lists.linux.dev,
+	krzk@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	linux-kernel@vger.kernel.org,
+	pankaj.gupta@nxp.com,
+	peng.fan@nxp.com,
+	shengjiu.wang@nxp.com,
+	shenwei.wang@nxp.com,
+	vkoul@kernel.org,
+	xu.yang_2@nxp.com
+Subject: [PATCH v5 1/2] dt-bindings: dma: fsl-edma: remove 'clocks' from required
+Date: Wed, 17 Apr 2024 11:24:56 -0400
+Message-Id: <20240417152457.361340-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR03CA0287.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::22) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416050616.6056-4-gakula@marvell.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|GV1PR04MB10108:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1ede08e8-0818-464f-5d2d-08dc5ef294b6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	IWLtOg22N0cdUR7apiujaVdIKJYWaOKCsH0kzpSHPmPnVsOuMdd4P4urM7/MoLe2M+cUws+oGgSEBZpqxEJvbyNm4U1MSyGr4jIjTxstn2d8pRXgojAIzqN97E2maT8YdyYHzzjxjzl2tlX6q5WHjINc+fqrdcaOGkZ2uKlob3Jh63XJ/r76M4bLoxcw0glwQ3dMHn5YhaMaQ2Nik1byKf9ycnOUphu0dBMc2yCf3kpGbMXfeyA0H79kQS7b3z90oZo5/POMcmRG53rxWuYlZoZ5E5qgmNhWb61DBC5+8EpndibncW+Eu4SNOD9ee7eLcP6mP6tjGfYOZ3rciKRvwWxPj7gQQ06tHDlKOTelopwkQ4pTbF206mAqf1TxNMcD9ACRhpjwzMW8+mUbJYJbBsrL/MoZbgHvpS5nMfMEsGHERu8AiDmlIVc570eZsDKwH4yzoVvXOHeksc7mGBstGjH5+Ts2s+iyPFDMoULTVND0CEIy+GiRar6F4SD184blTRS0DNX7oyRKG5lAJPJtViv/XxVpnaBj7hjAJupUWKQoeD43K4qAPzoJbF2GZjFcK+nrBLQaOqeDhWpVbbdMo19AQt1k+RLsQ/I+UzheOJSKmZRaWxIZl4TPzxwhCn621XWGpoU0tD3bKLnYn0+lFc00q++3znl2d+GNKHqQ4mWts58SK7HQJQ2WaVE0tUTDvc5PgXSWnLrbxFlctg7f+w==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005)(52116005)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?74o28CTUD9063mzuXKnhGzex63X6f60UeDoySJ+Wo/6BZ+QvCNT9qa12NWh/?=
+ =?us-ascii?Q?SNQThSJYPWtAkHSte1xy5gVXHk9PW7pLw6R0ZD4jFX82xrrcP9XyiNqm+Qne?=
+ =?us-ascii?Q?zAxWM30vcZUzo0nlEiBJ0e+uuOq3UibaP8Btz5W9L9FZMnzk+QGd6NpUEq90?=
+ =?us-ascii?Q?S3cdjFhl0a5FpAmM20btyDMJ3grjSS2sBzm4RUqOK6aFY+K6+XYuwnU5/nyj?=
+ =?us-ascii?Q?5YRV21LfrIKD9kjnKv15uQJuZZhJNGcT6Kv7HYvkZk1R1dk+ueW7+KuhsAAu?=
+ =?us-ascii?Q?bEIAem1n3QvTjSzl/E/2rTpbllr1LO67CEYgqb/B7hLFhOWo3DO1jGCIrcxJ?=
+ =?us-ascii?Q?EM6JPkh44/wBdXidTVDErfv/btm7p9mGuFx8YGPF3ZG7UQ+XTnPpL9jVZ3ty?=
+ =?us-ascii?Q?de1fhDq1H/vS3dFH64vNCAufFLrcMJCZ5/ySJK+K4/FiQsE/39yTtpiEV5iu?=
+ =?us-ascii?Q?vco+9PWaq0NiQHjXWLAFffRE7Vurp1Q0mkSea5FrWk9aDxxrYGX7ZFZB5848?=
+ =?us-ascii?Q?w06uJ/JIc0+dq4n9GQ9h9bjANs8uqcOdp3UB0ehdfM570RW3kSoRistZiQ3u?=
+ =?us-ascii?Q?vSFZmozx4PuztfYFrIhK/fTsBmZSdlal4C+8QhSGaI1ICRhpFWwCmPeJWW5z?=
+ =?us-ascii?Q?urS9pc5UQtEYuSsdtrdk1HPRpref3ariUIuSJjBYgwidZES/nqlsBFdSKska?=
+ =?us-ascii?Q?E5vzpdGnfFAoN4l1u0mzQ6RmFKQ3sR4mIP9Z8WQVRij3HPgWpxvk1g8anLLI?=
+ =?us-ascii?Q?HCLBZDa2H4UDUT0KV3AyDNJIIZLg2h8UfIS7E8oKkFQK7i16kSi8SsHFpA76?=
+ =?us-ascii?Q?Ej6wx2Ws5vzJO4L7hdgIuYK8MElGaMsTdBVrwgehK/ZQD/NFccsr9HB8soZG?=
+ =?us-ascii?Q?gihwkSypj8QrRxnvTw3ABfEv3u7pK+ICCUefSQYM7taa9Tzt+mQhIXgl/iV3?=
+ =?us-ascii?Q?1NaDw6Gad7kLFtP5367PvGAPRFSHoLIVLLTrMe2/NwS89Tld3xed2cqODk7c?=
+ =?us-ascii?Q?d+3ostV2pq7cEjtPccRQ9oOQdPxdUAyKFuCE6IXwZUCs2m7vhqoTv3f7OW8w?=
+ =?us-ascii?Q?FkV/eEPjmMTMmF3YtdOrdF+j57em6sLdlkSY2KdFfYVSzq9dvOvdyDcyPnQK?=
+ =?us-ascii?Q?Fb9yGe1LiLPTNqMiVXRThJVHqB7PZA4aGLM18ccK7MgKKBKYriF2eUnIkS89?=
+ =?us-ascii?Q?uKpMgc8RFUKVR6DKpwFpDxaw5F5LGE91fYkOm9HaGlMj58tsCX3BMabioEWp?=
+ =?us-ascii?Q?HUK/sVTjhVnJb9/EUVxYJ1v3UnyZ2Q6c0Ze/ZUBy+agFRt/O8olnMU2+fG0a?=
+ =?us-ascii?Q?DT15Fvh/GiQt/rx+I0ZXkoK3Lb64V7JgPy7TxaCJ+v9fhyfsY49+8FDn/4sA?=
+ =?us-ascii?Q?BFSpd+iFQGRgtb3sl6S2DxWcqsTArTQolFz6FQzLA/6fF3K58BXnZDkoGHCC?=
+ =?us-ascii?Q?t/Z16ceCsXJjj/GQYEihYK5YAqB8+11q+OKlv8hmWNpAKC0OMBF+vi8ALnSN?=
+ =?us-ascii?Q?rzRRVD/5R8CGelywEDPmb+WjUmTzHKhac2e04r59i1hncGB6BsPw7iNyR54a?=
+ =?us-ascii?Q?tBb0JGdnvaAWTXkXt8zGpG+nw8MKdTK+GJXS6cXR?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ede08e8-0818-464f-5d2d-08dc5ef294b6
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 15:25:15.1586
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8KLiN4raznWejnHc5hq20qIEM6ZK6qG5Bhl5iK5sqB4aolHw7wqj/cdZp3ZmKrt7o4Wyg3hUNkWLMJklglhDhg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR04MB10108
 
-Hi Geetha,
+fsl,imx8qm-adma and fsl,imx8qm-edma don't require 'clocks'. Remove it from
+required and add 'if' block for other compatible string to keep the same
+restrictions.
 
-kernel test robot noticed the following build warnings:
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Geetha-sowjanya/octeontx2-pf-Refactoring-RVU-driver/20240416-131052
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20240416050616.6056-4-gakula%40marvell.com
-patch subject: [net-next PATCH 3/9] octeontx2-pf: Create representor netdev
-config: alpha-randconfig-r081-20240417 (https://download.01.org/0day-ci/archive/20240417/202404172208.4REfSKKS-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
+Notes:
+    Change from v4 to v5
+      - none
+    
+    Change from v3 to v4
+      - fixed '\t' during fix conflicts.
+    
+    make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,edma.yaml
+      LINT    Documentation/devicetree/bindings
+      DTEX    Documentation/devicetree/bindings/dma/fsl,edma.example.dts
+      CHKDT   Documentation/devicetree/bindings/processed-schema.json
+      SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+      DTC_CHK Documentation/devicetree/bindings/dma/fsl,edma.example.dtb
+    
+    Change from v2 to v3
+      - rebase to dmaengine/next, fixed conflicts
+    Change from v1 to v2
+      - add Krzysztof's ACK.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202404172208.4REfSKKS-lkp@intel.com/
+ .../devicetree/bindings/dma/fsl,edma.yaml       | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-New smatch warnings:
-drivers/net/ethernet/marvell/octeontx2/nic/rep.c:170 rvu_rep_create() error: dereferencing freed memory 'ndev'
-
-vim +/ndev +170 drivers/net/ethernet/marvell/octeontx2/nic/rep.c
-
-f9a5b510759eeb Geetha sowjanya 2024-04-16  131  
-f9a5b510759eeb Geetha sowjanya 2024-04-16  132  int rvu_rep_create(struct otx2_nic *priv)
-f9a5b510759eeb Geetha sowjanya 2024-04-16  133  {
-f9a5b510759eeb Geetha sowjanya 2024-04-16  134  	int rep_cnt = priv->rep_cnt;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  135  	struct net_device *ndev;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  136  	struct rep_dev *rep;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  137  	int rep_id, err;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  138  	u16 pcifunc;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  139  
-f9a5b510759eeb Geetha sowjanya 2024-04-16  140  	priv->reps = devm_kcalloc(priv->dev, rep_cnt, sizeof(struct rep_dev), GFP_KERNEL);
-f9a5b510759eeb Geetha sowjanya 2024-04-16  141  	if (!priv->reps)
-f9a5b510759eeb Geetha sowjanya 2024-04-16  142  		return -ENOMEM;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  143  
-f9a5b510759eeb Geetha sowjanya 2024-04-16  144  	for (rep_id = 0; rep_id < rep_cnt; rep_id++) {
-f9a5b510759eeb Geetha sowjanya 2024-04-16  145  		ndev = alloc_etherdev(sizeof(*rep));
-f9a5b510759eeb Geetha sowjanya 2024-04-16  146  		if (!ndev) {
-f9a5b510759eeb Geetha sowjanya 2024-04-16  147  			dev_err(priv->dev, "PFVF representor:%d creation failed\n", rep_id);
-f9a5b510759eeb Geetha sowjanya 2024-04-16  148  			err = -ENOMEM;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  149  			goto exit;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  150  		}
-f9a5b510759eeb Geetha sowjanya 2024-04-16  151  
-f9a5b510759eeb Geetha sowjanya 2024-04-16  152  		rep = netdev_priv(ndev);
-f9a5b510759eeb Geetha sowjanya 2024-04-16  153  		priv->reps[rep_id] = rep;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  154  		rep->mdev = priv;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  155  		rep->netdev = ndev;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  156  		rep->rep_id = rep_id;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  157  
-f9a5b510759eeb Geetha sowjanya 2024-04-16  158  		ndev->min_mtu = OTX2_MIN_MTU;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  159  		ndev->max_mtu = priv->hw.max_mtu;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  160  		pcifunc = priv->rep_pf_map[rep_id];
-f9a5b510759eeb Geetha sowjanya 2024-04-16  161  		rep->pcifunc = pcifunc;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  162  
-f9a5b510759eeb Geetha sowjanya 2024-04-16  163  		snprintf(ndev->name, sizeof(ndev->name), "r%dp%dv%d", rep_id,
-f9a5b510759eeb Geetha sowjanya 2024-04-16  164  			 rvu_get_pf(pcifunc), (pcifunc & RVU_PFVF_FUNC_MASK));
-f9a5b510759eeb Geetha sowjanya 2024-04-16  165  
-f9a5b510759eeb Geetha sowjanya 2024-04-16  166  		eth_hw_addr_random(ndev);
-f9a5b510759eeb Geetha sowjanya 2024-04-16  167  		if (register_netdev(ndev)) {
-
-err = register_netdev(ndev);
-if (err) {
-
-f9a5b510759eeb Geetha sowjanya 2024-04-16  168  			dev_err(priv->dev, "PFVF reprentator registration failed\n");
-f9a5b510759eeb Geetha sowjanya 2024-04-16  169  			free_netdev(ndev);
-                                                                                    ^^^^
-freed
-
-f9a5b510759eeb Geetha sowjanya 2024-04-16 @170  			ndev->netdev_ops = NULL;
-                                                                        ^^^^^^^^^^^^^^^^^^^^^^^
-Use after free
-
-f9a5b510759eeb Geetha sowjanya 2024-04-16  171  			goto exit;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  172  		}
-f9a5b510759eeb Geetha sowjanya 2024-04-16  173  	}
-f9a5b510759eeb Geetha sowjanya 2024-04-16  174  	err = rvu_rep_napi_init(priv);
-f9a5b510759eeb Geetha sowjanya 2024-04-16  175  	if (err)
-f9a5b510759eeb Geetha sowjanya 2024-04-16  176  		goto exit;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  177  
-f9a5b510759eeb Geetha sowjanya 2024-04-16  178  	return 0;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  179  exit:
-f9a5b510759eeb Geetha sowjanya 2024-04-16  180  	rvu_rep_free_netdev(priv);
-
-rvu_rep_free_netdev() also calls free_netdev() so it's a double free.  I
-would normally write this as:
-
-exit:
-	while (--rep_id >= 0) {
-		unregister_netdev(priv->reps[rep_id]);
-		free_netdev(priv->reps[rep_id]);
-	}
-
-	return err;
-
-When you write it that way then rvu_rep_free_netdev() can be made easier
-as well:
-
-static void rvu_rep_free_netdev(struct otx2_nic *priv)
-{
-	int rep_id;
-
-	for (rep_id = 0; rep_id < priv->rep_cnt; rep_id++) {
-		unregister_netdev(priv->reps[rep_id]);
-		free_netdev(priv->reps[rep_id]);
-	}
-}
-
-There should be no need to call devm_kfree(priv->dev, priv->reps);.
-
-f9a5b510759eeb Geetha sowjanya 2024-04-16 @181  	return err;
-f9a5b510759eeb Geetha sowjanya 2024-04-16  182  }
-
+diff --git a/Documentation/devicetree/bindings/dma/fsl,edma.yaml b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+index 825f4715499e5..fb5fbe4b9f9d4 100644
+--- a/Documentation/devicetree/bindings/dma/fsl,edma.yaml
++++ b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+@@ -82,7 +82,6 @@ required:
+   - compatible
+   - reg
+   - interrupts
+-  - clocks
+   - dma-channels
+ 
+ allOf:
+@@ -187,6 +186,22 @@ allOf:
+         "#dma-cells":
+           const: 3
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - fsl,vf610-edma
++              - fsl,imx7ulp-edma
++              - fsl,imx93-edma3
++              - fsl,imx93-edma4
++              - fsl,imx95-edma5
++              - fsl,imx8ulp-edma
++              - fsl,ls1028a-edma
++    then:
++      required:
++        - clocks
++
+ unevaluatedProperties: false
+ 
+ examples:
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
 
 
