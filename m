@@ -1,112 +1,120 @@
-Return-Path: <linux-kernel+bounces-147978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C950C8A7C18
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:08:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95E5D8A7C1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:13:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83F81283FC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:08:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C76E81C21999
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:13:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F38A4537E5;
-	Wed, 17 Apr 2024 06:08:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E405381E;
+	Wed, 17 Apr 2024 06:13:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="c98bEab0"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="U/OXeJl7"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A18524C3
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 06:08:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8700432182;
+	Wed, 17 Apr 2024 06:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713334110; cv=none; b=fMfj/Uj+7/Y09ZWGrG0UMlQkf8C+wepTHC3pTKO9SKeqRiFolBJ3kXGgW7WFBREpX3i7ClpwiNSO2fsbg6euYopZT6jnmBdr2ElqytPzHCB6OTiU0y0p4VDVIKmTM/F5kOrv5Evf0uflQEh9oqznM1ZJtPLBJ0BgpI3CK9E5XT0=
+	t=1713334386; cv=none; b=DFXH3PIR44FMZi6Z5fa/MnlGTW7EVhASU3e8VkUpMirzdCL4k8QrCNbe8w48jQSyfzyiEObMAJGMKJ2BcReSzx+IUR1WFFzSzTTGBfzjG1iipEc2VhgJ1S9GWyf75vPB+98CJaI/OhDE+AkIXp54H9Px8Z3sdYU+DdQTMDTcxJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713334110; c=relaxed/simple;
-	bh=D4KWua1ZprQ5a8JTxFoqCJy87saSKtB7mYJuy20s9wc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D2jtdgYTN3OtImK1gzjhL7KtyzOjSIkfL5uCPdQ/8gKMmU6hvUCcNaISzjg+V3Ri/zYKx4WRlJcsYHU9clOZovi41VCSI6DD4aoElTn1TWUd8vi9hOAZGGRl4e6GQ5TPjEInGjOKsNuehtb3QuBiXKkxYIbplNHZ2Z3WYJhQWNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=c98bEab0; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=yywq
-	XfOYQbgKrN6Ho2xnGSTgnmWVUAO6JWYJoQlQPTM=; b=c98bEab0NGszyvhoy0v5
-	dfgoq6L07/wVaoJ3n3OVEMMwEvTon51N6pwsiYpU2wLyPp7K9i1JBzx/js+qOYnp
-	HHKkNawcbPVqpjuWhJiOXSJEGk7YOBEz2BoECR+Omkn9e8lkADNzNfsVOiBTO48A
-	cGDVW/UHpL4iu9nJWkYiftNTYJfXc3AdN0RKLLu8/n8aUugw5f3d0mkjSZx1KZ5I
-	YOLr867EEkK45wC324YZiISHPhR1NBx1HGacTPtEiiQU24elYBAdPv60dr5MHomo
-	olRTVKbNoqXxB+EQcTa+3Zvrw7JgEM0N1yukmPvxMMJqT99+BrmDDfoch1TsJsBG
-	Dw==
-Received: (qmail 2622412 invoked from network); 17 Apr 2024 08:08:24 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 17 Apr 2024 08:08:24 +0200
-X-UD-Smtp-Session: l3s3148p1@oTGrrkQWns9ehhrd
-Date: Wed, 17 Apr 2024 08:08:24 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: Wolfram Sang <wsa@kernel.org>, linux-i2c <linux-i2c@vger.kernel.org>, 
-	lkml <linux-kernel@vger.kernel.org>, Lukas Bulwahn <lbulwahn@redhat.com>
-Subject: Re: [GIT PULL] i2c-host-fixes for v6.9-rc4
-Message-ID: <n3guyjqwjqk5doynaxwtmmpsqdh7trkodontshkjewnt4umpu2@3cfh5jnct3qo>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Andi Shyti <andi.shyti@kernel.org>, Wolfram Sang <wsa@kernel.org>, 
-	linux-i2c <linux-i2c@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>, 
-	Lukas Bulwahn <lbulwahn@redhat.com>
-References: <7z65zupqngw4i4mzgablb37osz3gwz6767og5t4b32o4o3joqy@ypkuxdgilibd>
- <p4vwnqfv6x72qypebmbgatof7k4vlilauqxp77vh5tvv547l6j@lpf3ejegkprh>
+	s=arc-20240116; t=1713334386; c=relaxed/simple;
+	bh=7ZgUen8ot11Qz879HUcjaNN0IEVPXOLC3zfr6OtSodc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qU1acFmWG4Q2LjNXfDwbZTnwBuOnMzG4vYqwjoJOXo0i/ke2hLPbESkgxNISzbKyvaJ5wcvBFMLW6fKVnaHSSYjiY+44pVqIQlzVaL4ZQB5J0QXU+7CCiaUum9KLsFFI2iaXoJe67RsJK2YjW3uam9mOLL20Ct3rBjh2J2j7gvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=U/OXeJl7; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7DE592000A;
+	Wed, 17 Apr 2024 06:12:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713334381;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6dGOFNPsAT2bpY0iMzqWzQtr2Je5V47A0xRQXyXChek=;
+	b=U/OXeJl7xv4grdNUAujts4V4Qv/0Yd1oYDnqOoIEqZRNxHQ8szmmKg9wc7usiesylnz+/l
+	2DdOB+MCM+3LiRMgPb3kn4spUT+VEbdmTmTxzYz1Vu2tEMwYwNl1NtdzwZQ35yb49uvmsH
+	nnWJs/bwZm51gm5YE1SYSsPAVPWOsWUCsMgddeIa4SlMXWbPSoDcHVSzTouVXxoycr/PNx
+	7XZjvH7nphEvJbtVHdVTMmH1SYWRM6MkrxOD48d0u1R4jvdQc860aAm+gspLQVwaNGn5Xi
+	wqZ0i9rP4CbDtIAScjFsEMDkgRuLGcjDYM6wne9IX5dK0d1+0Wbv7PRkHjMoSA==
+Date: Wed, 17 Apr 2024 08:12:49 +0200
+From: Kory Maincent <kory.maincent@bootlin.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet
+ <corbet@lwn.net>, Luis Chamberlain <mcgrof@kernel.org>, Russ Weight
+ <russ.weight@linux.dev>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown
+ <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Andrew Lunn
+ <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, devicetree@vger.kernel.org, Dent Project
+ <dentproject@linuxfoundation.org>, kernel@pengutronix.de, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next v8 04/17] ethtool: Expand Ethernet Power
+ Equipment with c33 (PoE) alongside PoDL
+Message-ID: <20240417081249.1e92dab2@kmaincent-XPS-13-7390>
+In-Reply-To: <20240416192037.50aa0136@kernel.org>
+References: <20240414-feature_poe-v8-0-e4bf1e860da5@bootlin.com>
+	<20240414-feature_poe-v8-4-e4bf1e860da5@bootlin.com>
+	<20240416192037.50aa0136@kernel.org>
+Organization: bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="u3kud47yopsbh2mj"
-Content-Disposition: inline
-In-Reply-To: <p4vwnqfv6x72qypebmbgatof7k4vlilauqxp77vh5tvv547l6j@lpf3ejegkprh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
+On Tue, 16 Apr 2024 19:20:37 -0700
+Jakub Kicinski <kuba@kernel.org> wrote:
 
---u3kud47yopsbh2mj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On Sun, 14 Apr 2024 16:21:53 +0200 Kory Maincent wrote:
+> > + * @ETHTOOL_C33_PSE_PW_D_STATUS_DISABLED: "The enumeration
+> > \u201cdisabled\u201d
+> > + *	indicates that the PSE State diagram is in the state DISABLED."
+> > + * @ETHTOOL_C33_PSE_PW_D_STATUS_SEARCHING: "The enumeration
+> > \u201csearching\u201d
+> > + *	indicates the PSE State diagram is in a state other than those
+> > + *	listed."
+> > + * @ETHTOOL_C33_PSE_PW_D_STATUS_DELIVERING: "The enumeration
+> > + *	\u201cdeliveringPower\u201d indicates that the PSE State diagram
+> > is in the
+> > + *	state POWER_ON."
+> > + * @ETHTOOL_C33_PSE_PW_D_STATUS_TEST: "The enumeration \u201ctest\u201d
+> > indicates that
+> > + *	the PSE State diagram is in the state TEST_MODE."
+> > + * @ETHTOOL_C33_PSE_PW_D_STATUS_FAULT: "The enumeration \u201cfault\u2=
+01d
+> > indicates that
+> > + *	the PSE State diagram is in the state TEST_ERROR."
+> > + * @ETHTOOL_C33_PSE_PW_D_STATUS_OTHERFAULT: "The enumeration
+> > \u201cotherFault\u201d =20
+>=20
+> funny characters here: \u201c and \u201d
 
-Hi Andi,
+Arf again, I have learned the hard way of do not copy past some documentati=
+on
+from the standard to Linux.
+Thanks Jakub, for the reviewing and the merge try!
 
-> good you didn't take this as this patch ended up in the wrong
-> branch as it's dependent on
-
-Good that I was on vacation this weekend :)
-
-> Will move it to the right place.
-
-OK, no worries.
-
-All the best,
-
-   Wolfram
-
-
---u3kud47yopsbh2mj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYfZ1gACgkQFA3kzBSg
-KbY0FxAAmx8JjzgVaGG4h8z/t5G5uEI34TiOACyHPZ4+5yIpsHhsgm13nwf7d2mB
-JdjSQOc/yu1lh/S6F5eBOZ/7YIfOgDRh6OoBOc7/advILUaDLRAwuRWpq9NgnxJv
-gnXqXN3a9LOpPjlYnlOfVsQvueNAWNCHqZVN5ehPUS33Cbxai7Ew+CO0Nt3ovdr6
-/DMt+elNfHT5usC8uWBwM5zTGY+iQbopBIFfEAwFr8yx3GgE3ALHViAo271MIrt5
-9+5FGx770ztrg5hkfM4E0khy2ySmhOzbEm35qnonQ9vOjFkeBZv3GRQK7MsWcU/4
-Amknp+whkLxlRqtyCX9alvWgnl9Fz+K/8iFfQTDTBMSOcQPpj1Rbrh/59hH/AE7c
-/EisamteCsbSgkfwSRtHShlh1uOANro2SAWua0Ep+K9Nus4RTV/K6YH/6NjeomNH
-ZgbZzjxQDzyp0aBqqupjaDfCVmnoybZhEzPjkW0xWKdYqQ6QhA0htJlGBXMpuS9O
-btOrQw9Focg9y5AEu/vSvpJt8gvuh9ka+w/TqJb3+6B5gXXMLV4sH6+bPNm1YcK9
-w1gxYoJMM4GC3YldFrQdp/r5x3YrC0ntpw9lOxesszke/6taDdpvVqntaNfI7URW
-f17hmJja0kMrevfloP1ZV3BEaKdyRGXIKxpNLqElS/3zYbO2ZwM=
-=F7yr
------END PGP SIGNATURE-----
-
---u3kud47yopsbh2mj--
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
