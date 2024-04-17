@@ -1,171 +1,177 @@
-Return-Path: <linux-kernel+bounces-148532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8582A8A840A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:16:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E99258A842A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:19:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E9B6285D21
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:16:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F9B0B24F9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:19:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2DBC13C3E0;
-	Wed, 17 Apr 2024 13:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4914F13E043;
+	Wed, 17 Apr 2024 13:19:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tURE3Q0B"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BCyxuG+d"
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C83AF13C684;
-	Wed, 17 Apr 2024 13:16:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF2013E041
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713359797; cv=none; b=YGUneo/tGTNTlbBfW/41OCrOYYLkD+gecxOf19NQEYdKaGrUE4WGOAonBoYzZkv4erXHzLyPEtkY5EucUIpu5Ea8fUiqqPAQaXL7Aadzsj0CPBgPdu4cgxbIQhtNoncqsM/yxGT5RRHh2649T1350ciWgBNDNMxxBk85CNKeSaU=
+	t=1713359963; cv=none; b=d4rLyp4JT2aCirJQnSnlLykZwUm8yeGkk1ZqKPf0wfCarUdiF03ss5ShWvcKCTqHYz1q6ZOascLU5MgLQVIVXrST7EK4Og/CYSVpBm3cYxXc/V1flZHxczWJQ3zTmMD0/YgFaGd8hY1TYaY55XQzAxVb3NDyp+aJEdqlA+xnBKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713359797; c=relaxed/simple;
-	bh=vIF/tuUXPZ1vvCuvAOdp+pF7cW+4Rnwljj95ZI6+nsU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mNGhe7uT7bLOHa6AVu5DzGy3KMMi4U7khjfWewhg99a6xhhnGoAdlXSUhVS1v6IVzoB22sYqv1lwTfYa1hLbkdnluO6EbJJIlWu7VJCZ+a2qyGzSn+CQQVHLTtzwMcVE6LEd1u7eu9o5qB3gaeavZn0nPFb4uy0aNIVh2fBO1gc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tURE3Q0B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1791DC072AA;
-	Wed, 17 Apr 2024 13:16:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713359797;
-	bh=vIF/tuUXPZ1vvCuvAOdp+pF7cW+4Rnwljj95ZI6+nsU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=tURE3Q0BqGDy7tHAmbeBItAdQakC0qmA5hO3u1m4LbRQVy6IWv7hoJLL0a4YWSscT
-	 GNhv3zNn5HxqBFviAcIFm672U7gfvvzUaRUwI9rbttSokxckaa3wbX85Po5iISPYfE
-	 V249m1RKrTOfsmfvMktyNhkEcmUHPAtWcHQ24MrFlrQWm08aTWljXDWvdCx26VroGd
-	 DuWDNkFTWw00N9G752yyKWCPFQfpelq+BUeMmgqGqHPnEmkeTsi9qLKQk3WLccK9HQ
-	 H5RLQ7MV2kHPo4diBHYJzHLY/3HBhQIYTSqpCHMkbUx86cjT1bs716SU5YuFi6F9Gz
-	 fyhJ9DDxzcwRQ==
-Message-ID: <156b27dd-0b3f-43b0-95ec-a69b69673e60@kernel.org>
-Date: Wed, 17 Apr 2024 15:16:36 +0200
+	s=arc-20240116; t=1713359963; c=relaxed/simple;
+	bh=Hm9S9kOueaae4Ku1kG2pXXiHnA+XJpcNftggbxIOTeI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rgUbwP+dNY2nqR353Tu8nbF+rt0amAlrwChi90p+FPAJ8/40E8/fbKhDuLaXK3BP+/qU+uRBNKDPpysrTf0/zADlG+Kzp4Q33LcRSfN9smrN+fzLdEd3oUPdDcSdsY6M7iHqtJwrCbus+MV9ipsfPM8yv1EEvq0BXvodK9dLYs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BCyxuG+d; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2a526803fccso3312465a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 06:19:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713359961; x=1713964761; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IkjQhSA3tM6FeM9oFUUpRmH9XGP0wA/a2+dvEYG/feE=;
+        b=BCyxuG+dtrtD1Mk1FMjHY9JFRuKgbYVl+wIOLjAuEGHpbNKLQXBRHDXEDaXJnJ1fOk
+         jZcQl173oUOYDZjCp8ilOe00VRlyvCDNpo+4gol+1HE7xIYjbsR/CCs9VvvvSw4YyeF1
+         4qD6nQDWDy1ygYaZZceiltbb9AmsuPIDPrek/m3P8Jhv8KOIQ+HJP/tZY1VORdVD3iZO
+         aY0jq6yLJjmGIH0WufI5eY3f6oZeACTBlYhlgj/xgVDcsVrHz8sFB5HyojVM1Q+4YaLh
+         GAfhX+M0KrkjmDYnTuYgmgm3O4OsyOGrZJmGpS31QX0LOQWMcLSNQz28GXy0nGojvYFO
+         h4+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713359961; x=1713964761;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IkjQhSA3tM6FeM9oFUUpRmH9XGP0wA/a2+dvEYG/feE=;
+        b=UcMD/6/l8HJTr5J+bO/4Z891bot9A01cf0umiuiWNVS8CTS8absj5WpJOg1b+0WxPi
+         hguSaRXQIG3bT/FEn+4y/58zSkQRkI+ASf9YkC9uXBXdPPoHjA4M5bWDh4+Jw0/6dmgP
+         jZz9sXs1QFgdevG6XI7961Kve+trM1M34bmAF4ezw0mM7IdbJhI+UdoX8/vLbsMBQerk
+         sc+FMRZ805o7QbhuPPmEX6euqNqHftKWURqHXcVb4GMcT/l2IxNuhjXdUmjQ15L1T1y3
+         F2lMllQmBDjLJxgdlWqgY8Zlt6J/UNZS8qJ4NWIaWkUpYUPkVIApjW6BSGWjlqGbHb5S
+         rm5A==
+X-Forwarded-Encrypted: i=1; AJvYcCUcE7bPeSX6tzAro/0E+JXz1I70f8H60sQBdl/ibMDYIx+4Lq1xtgFTgRnbWfGz7g7R4DUZnlQ3JLjtdichuhOcdbgGNWWPM+ue2nfk
+X-Gm-Message-State: AOJu0Yx/FcV6tYhatWHeWMJ82eRbYPx8q7mmf1uU6zeTvAqldTd6AjRm
+	kO+VHeTPltxrv2vTXJa2Fwk6j90+cBa1wPTEbh1W9PyW/x/x8fhH2w+og8T4
+X-Google-Smtp-Source: AGHT+IEi4sVGnYmz33zeYdTofl7frUX0AP4dAWS97/Q0txIa/JayTocCKiJlUL4Ymglg86dV1aSLfg==
+X-Received: by 2002:a17:90a:ea81:b0:2a4:c2c4:4a84 with SMTP id h1-20020a17090aea8100b002a4c2c44a84mr15445513pjz.43.1713359961383;
+        Wed, 17 Apr 2024 06:19:21 -0700 (PDT)
+Received: from lima-default.. (1-175-176-70.dynamic-ip.hinet.net. [1.175.176.70])
+        by smtp.gmail.com with ESMTPSA id t13-20020a17090ad50d00b002a5dbfca370sm1329513pju.48.2024.04.17.06.19.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 06:19:21 -0700 (PDT)
+From: Chin-Chun Chen <chinchunchen2001@gmail.com>
+To: yury.norov@gmail.com
+Cc: linux@rasmusvillemoes.dk,
+	linux-kernel@vger.kernel.org,
+	Chin-Chun Chen <chinchunchen2001@gmail.com>
+Subject: [PATCH] linux/bitops.h: Refactor function fns to reduce branch usage and eliminate external calls
+Date: Wed, 17 Apr 2024 21:16:56 +0800
+Message-Id: <20240417131655.20629-1-chinchunchen2001@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 4/5] dt-bindings: rng: Add vmgenid support
-To: Babis Chalios <bchalios@amazon.es>, tytso@mit.edu, Jason@zx2c4.com,
- olivia@selenic.com, herbert@gondor.apana.org.au, robh@kernel.org,
- krzk+dt@kernel.org, conor+dt@kernel.org, linux-crypto@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: sudanl@amazon.com, graf@amazon.de, xmarcalx@amazon.co.uk,
- dwmw@amazon.co.uk
-References: <20240417081212.99657-1-bchalios@amazon.es>
- <20240417081212.99657-5-bchalios@amazon.es>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240417081212.99657-5-bchalios@amazon.es>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 17/04/2024 10:12, Babis Chalios wrote:
-> From: Sudan Landge <sudanl@amazon.com>
-> 
-> Virtual Machine Generation ID driver was introduced in commit af6b54e2b5ba
-> ("virt: vmgenid: notify RNG of VM fork and supply generation ID"), as an
-> ACPI only device.
-> 
-> VMGenID specification http://go.microsoft.com/fwlink/?LinkId=260709 defines
-> a mechanism for the BIOS/hypervisors to communicate to the virtual machine
-> that it is executed with a different configuration (e.g. snapshot execution
-> or creation from a template).
-> The guest operating system can use the notification for various purposes
-> such as re-initializing its random number generator etc.
-> 
-> As per the specs, hypervisor should provide a globally unique identified,
-> or GUID via ACPI.
-> 
-> This patch tries to mimic the mechanism to provide the same functionality
-> which is for a hypervisor/BIOS to notify the virtual machine when it is
-> executed with a different configuration.
-> 
-> As part of this support the devicetree bindings requires the hypervisors or
-> BIOS to provide a memory address which holds the GUID and an IRQ which is
-> used to notify when there is a change in the GUID.
-> The memory exposed in the DT should follow the rules defined in the
-> vmgenid spec mentioned above.
-> 
-> *Reason for this change*:
-> Chosing ACPI or devicetree is an intrinsic part of an hypervisor design.
-> Without going into details of why a hypervisor would chose DT over ACPI,
-> we would like to highlight that the hypervisors that have chose devicetree
-> and now want to make use of the vmgenid functionality cannot do so today
-> because vmgenid is an ACPI only device.
-> This forces these hypervisors to change their design which could have
-> undesirable impacts on their use-cases, test-scenarios etc.
-> 
-> The point of vmgenid is to provide a mechanism to discover a GUID when
-> the execution state of a virtual machine changes and the simplest
-> way to do it is pass a memory location and an interrupt via devicetree.
-> It would complicate things unnecessarily if instead of using devicetree,
-> we try to implement a new protocol or modify other protocols to somehow
-> provide the same functionility.
-> 
-> We believe that adding a devicetree binding for vmgenid is a simpler,
-> better alternative to provide the same functionality and will allow
-> such hypervisors as mentioned above to continue using devicetree.
-> 
-> More references to vmgenid specs:
->  - https://www.qemu.org/docs/master/specs/vmgenid.html
->  - https://learn.microsoft.com/en-us/windows/win32/hyperv_v2/virtual-
-> machine-generation-identifier
-> 
-> Signed-off-by: Sudan Landge <sudanl@amazon.com>
+Rewrote the function fns to use macro wrote in linux/include/asm-generic/bitops/const_hweight.h
+Decrease the number of required branches and eliminate the need for external calls.
+The number of branches is now constant, unaffected by input variations.
 
-Missing SoB. Probably everywhere...
+This commit improves code efficiency and clarity.
 
+Signed-off-by: Chin-Chun Chen <chinchunchen2001@gmail.com>
+---
+ include/linux/bitops.h | 54 +++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 48 insertions(+), 6 deletions(-)
 
-
-Best regards,
-Krzysztof
+diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+index 5842d7d03f19..18899f11aaa7 100644
+--- a/include/linux/bitops.h
++++ b/include/linux/bitops.h
+@@ -247,6 +247,13 @@ static inline unsigned long __ffs64(u64 word)
+ 	return __ffs((unsigned long)word);
+ }
+ 
++
++#define __const_hweight2(w)                                                 \
++    ((unsigned int) (!!((word) & (1ULL << 0))) + (!!((word) & (1ULL << 1))))
++
++#define __const_hweight4(w)                                                 \
++    ((unsigned int) (!!((word) & (1ULL << 0))) + (!!((word) & (1ULL << 1))) + \
++                     (!!((word) & (1ULL << 2))) + (!!((word) & (1ULL << 3))))
+ /**
+  * fns - find N'th set bit in a word
+  * @word: The word to search
+@@ -255,13 +262,48 @@ static inline unsigned long __ffs64(u64 word)
+ static inline unsigned long fns(unsigned long word, unsigned int n)
+ {
+ 	unsigned int bit;
+-
+-	while (word) {
+-		bit = __ffs(word);
+-		if (--n == 0)
+-			return bit;
+-		__clear_bit(bit, &word);
++	unsigned int sum = 0;
++#if BITS_PER_LONG == 64
++	bits = __const_hweight32(word & 0xffffffff);
++	if (bits <= n) {
++		n -= bits;
++		word >>= 32;
++		sum += 32;
++ 	}
++#endif
++	bits = __const_hweight16(word & 0xffff);
++        if (bits <= n) {
++                n -= bits;
++                word >>= 16;
++                sum += 16;
++        }
++	bits = __const_hweight8(word & 0xff);
++        if (bits <= n) {
++                n -= bits;
++                word >>= 8;
++                sum += 8;
++        }
++	bits = __const_hweight4(word & 0xf);
++        if (bits <= n) {
++                n -= bits;
++                word >>= 4;
++                sum += 4;
++        }
++	bits = __const_hweight2(word & 0x3);
++        if (bits <= n) {
++                n -= bits;
++                word >>= 2;
++                sum += 2;
++        }
++	bits = (unsigned int) (word & 0x1);
++        if (bits <= n) {
++                n -= bits;
++                word >>= 1;
++                sum += 1;
++        }
++	bits = (unsigned int) (word & 0x1);
++        if (bits <= n) {
++                n -= bits;
++                sum += 1;
++        }
++
++	if (!n)
++		return sum;
++
++ 
++ 	return BITS_PER_LONG;
++ }
+-- 
+2.40.1
 
 
