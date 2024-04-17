@@ -1,177 +1,104 @@
-Return-Path: <linux-kernel+bounces-148655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 731D68A859D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:10:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 018A28A85A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:10:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25F04282262
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:10:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 941DE1F245F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:10:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43EB11420A6;
-	Wed, 17 Apr 2024 14:09:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF43F1411DE;
+	Wed, 17 Apr 2024 14:10:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AraSwQd3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a+bhTTV7"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69CDF13A869;
-	Wed, 17 Apr 2024 14:09:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04D4113F444;
+	Wed, 17 Apr 2024 14:10:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713362992; cv=none; b=fyDgeGzoU6SEp4jcOyvP/YrZZzJno8EGSTCGHrTPMu18qWGzFF/+3mm/6hA9bAR9mHBKJUzFKiwHP6+9EQBdbeSLTwtG3vRE9XlK3jhm7CIwhkuCyV3Grwcx3msCZQzrfItDpLpDKEYX/UVbpaDvBCJaoVRnBzTDX2qEfKiSDiA=
+	t=1713363031; cv=none; b=MPkI+6oGtwyvdKQ6KuJhLBBR7G3NIVdIyUbWKpxFR8MPQ6xWjmSIKkLmafbuGiDXBV3QR2QadmWo5tu3TSOVM2gh+GOtTHqkUUOfZC47ATSvQE37VD2rv/NU3vml8Jb65DrTjs6MZyCuARyG7Z64Y3C1oEc+0TdAcB7nctjixI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713362992; c=relaxed/simple;
-	bh=Ffi4YvLul39xQcUmuQFR79aNhxBEoyGSwfFrwm4Dr+s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IS26iAbVapNALClvWfzm6n/SlW8bqMUWuE7YZYKDRvZ0UzEAFo8RbuyQOrveu8+y3Ymq31Dn1wAmI5Hr2Y/yF5/Qv6bDbZKRIMZC/oSztcfZWW0uFuOfmZ9IlZhWYvJduk5MH/aDbMEIpSuTCo+daRYLNsjB6DH0GnOPV98Y+xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AraSwQd3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C087CC072AA;
-	Wed, 17 Apr 2024 14:09:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713362992;
-	bh=Ffi4YvLul39xQcUmuQFR79aNhxBEoyGSwfFrwm4Dr+s=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=AraSwQd31D+ISuyyjD07QULP8o882r3PE6nVkMLWB0cXVEDnZf5LsyvzV+yB6Pq/5
-	 yzkw+HFYNSRFGAB1k+/Tzq1mn3570HDX07+RW6VfugX+Pgu1z2t8KT/GyTxZHBGloF
-	 TNIHUmZV1pSr1L0y83W/sonYaPe06XjGlEHlHPslwpoXCCjr9xaB9GLEQeTPt8ifzb
-	 oek4gInOA9CpKKBnHceubFpw5kBW97Bel2oHyPOCdm6XgQtF3NNucSKiQLNrgeQ5Jp
-	 Vui7Ud67h6AHo8nMSPz4seTZcnw0X13AWy1tUu/bH6bhFl5XbQks5fPMccIytzuKBE
-	 PNTg/2gcIa0UA==
-Message-ID: <a9f1d643-f171-4b41-88c5-bd9bae0f8200@kernel.org>
-Date: Wed, 17 Apr 2024 16:09:51 +0200
+	s=arc-20240116; t=1713363031; c=relaxed/simple;
+	bh=1ky6nz6zC6wRtX/+5nKMyd9TVrDZLxBTuAdaISU8M8w=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=FK8bhrnCCzrMQbWs1jXcV5IHQBpY51imkHDCUSz3uhSFQTy5IQtQGqfz5wdBH5wwh1Zxyp9BzExNLH+MJ0o+kVLfRKda97KiBQhmc6iq5+zIxecT8fqciuUgIqSh2m76es2fyc5vKtCyM2EMv6NWotWQznTZeYizJ+aO5Ipy9ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a+bhTTV7; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2da888330b1so46298651fa.1;
+        Wed, 17 Apr 2024 07:10:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713363024; x=1713967824; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ALd+u4/BgGL4HYxmgttR60Ac7kHsW9LtST5jypjzros=;
+        b=a+bhTTV7fewph4/ThnUgQHG/U8g0kz1iKdmRB0ebpySfAdrGvReeQRgUNndd1VHnGh
+         Os8Gz3yX87b6Z//9OiEkufhpXfD/e+gnF2oAun7SGCZr4Fi8YV/aLqP+weatVlBpSaje
+         zjCig8BFc3xKmdtCDpJ0rDGOYaho5ystAU3CupWucd7TSz1FWle/yzqg2ISJUu/TFgqA
+         PfN1dJFNzET4PESNbqXmQ32GF7RF6bJrzWcCxkRE0Us0dlG0xwiXcpZnFCQRz/3QLq3d
+         ARymMzbdLnEd7LNjXkjkPqsV5q3xayqk6FWE/X1K2Rvx2yLpgPDQ/NOwIkm8QRDzuWnu
+         8lQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713363024; x=1713967824;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ALd+u4/BgGL4HYxmgttR60Ac7kHsW9LtST5jypjzros=;
+        b=TPjQ+6pQr1u8RECUfllWosdqupncXfg+Exz3NP0QWZidv3FkKpChuQPn4oYmbBYPjz
+         +ubLOPWH0acPmITbSfhv/pfjVtWKdJ+wk6bvhFwL5nw67csmChsL4rcwI7VALyD8Rex2
+         0XmaLxu7ei/PuVpDwGkd+ON/cLB4HYbguyA4P1T+hUOxmM6mVu7qrM6WY4J5VZwGJP0M
+         /dnqWKzVil1CV6g0UPrq5jAP26wjtmH7Ap2e+WRKm3HWKGFzZUrMZf+Tl1y0IFXfTOuJ
+         IC8OOxLPvBG0B3zEjqcyVjESjNh3W1qNAQ1m1QfS2GQ0PsANIkkYq74hmIdG5BNXyYWv
+         reBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVm/teCeYeQXLC6TQ9IrFAhhC1axcZDIJceZpUFv1pRBCPvw1RtsnI5+15t2OZ5pEcsWSDKYIn4jgsHOSCt3+w7Gvv8TiJL
+X-Gm-Message-State: AOJu0YxVZEAYojFuV9s9CukI+ZNX31XODAdDZvWdXTXgxsdoJUXkru16
+	z54JX8A1OMTVuNeY5B/P6C/298IBes/UP7SWb1VtTGwDnWOWQk2N
+X-Google-Smtp-Source: AGHT+IGWMrwifxKeRArQ90jIP/hx+hzmcPLSD2n1QWMvxog39x5nnYUbZUq3vWY9OtO4scJT1Emgzw==
+X-Received: by 2002:a05:651c:10cc:b0:2d8:67a0:61b2 with SMTP id l12-20020a05651c10cc00b002d867a061b2mr10897403ljn.20.1713363023712;
+        Wed, 17 Apr 2024 07:10:23 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
+        by smtp.gmail.com with ESMTPSA id u11-20020a05600c138b00b004187450e4cesm3042475wmf.29.2024.04.17.07.10.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 07:10:23 -0700 (PDT)
+Subject: Re: [PATCH net-next v2] sfc: use flow_rule_is_supp_control_flags()
+To: =?UTF-8?Q?Asbj=c3=b8rn_Sloth_T=c3=b8nnesen?= <ast@fiberby.net>,
+ netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Martin Habets <habetsm.xilinx@gmail.com>,
+ linux-net-drivers@amd.com
+References: <20240417140712.100905-1-ast@fiberby.net>
+From: Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <39bbf689-ca2e-e5f7-f903-db4ef76177fa@gmail.com>
+Date: Wed, 17 Apr 2024 15:10:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 4/5] dt-bindings: rng: Add vmgenid support
-To: Babis Chalios <bchalios@amazon.es>, tytso@mit.edu, Jason@zx2c4.com,
- olivia@selenic.com, herbert@gondor.apana.org.au, robh@kernel.org,
- krzk+dt@kernel.org, conor+dt@kernel.org, linux-crypto@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: sudanl@amazon.com, graf@amazon.de, xmarcalx@amazon.co.uk,
- dwmw@amazon.co.uk, Alexander Graf <graf@amazon.com>
-References: <20240417104046.27253-1-bchalios@amazon.es>
- <20240417104046.27253-5-bchalios@amazon.es>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240417104046.27253-5-bchalios@amazon.es>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20240417140712.100905-1-ast@fiberby.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 
-On 17/04/2024 12:40, Babis Chalios wrote:
-> Virtual Machine Generation ID driver was introduced in commit af6b54e2b5ba
-> ("virt: vmgenid: notify RNG of VM fork and supply generation ID"), as an
-> ACPI only device.
+On 17/04/2024 15:07, Asbjørn Sloth Tønnesen wrote:
+> Change the check for unsupported control flags, to use the new helper
+> flow_rule_is_supp_control_flags().
 > 
-> VMGenID specification http://go.microsoft.com/fwlink/?LinkId=260709 defines
-> a mechanism for the BIOS/hypervisors to communicate to the virtual machine
-> that it is executed with a different configuration (e.g. snapshot execution
-> or creation from a template).
-> The guest operating system can use the notification for various purposes
-> such as re-initializing its random number generator etc.
+> Since the helper was based on sfc, then nothing really changes.
 > 
-> As per the specs, hypervisor should provide a globally unique identified,
-> or GUID via ACPI.
+> Compile-tested, and compiled objects are identical.
 > 
-> This patch tries to mimic the mechanism to provide the same functionality
-> which is for a hypervisor/BIOS to notify the virtual machine when it is
-> executed with a different configuration.
-> 
-> As part of this support the devicetree bindings requires the hypervisors or
-> BIOS to provide a memory address which holds the GUID and an IRQ which is
-> used to notify when there is a change in the GUID.
-> The memory exposed in the DT should follow the rules defined in the
-> vmgenid spec mentioned above.
-> 
-> *Reason for this change*:
-> Chosing ACPI or devicetree is an intrinsic part of an hypervisor design.
-> Without going into details of why a hypervisor would chose DT over ACPI,
-> we would like to highlight that the hypervisors that have chose devicetree
-> and now want to make use of the vmgenid functionality cannot do so today
-> because vmgenid is an ACPI only device.
-> This forces these hypervisors to change their design which could have
-> undesirable impacts on their use-cases, test-scenarios etc.
-> 
-> The point of vmgenid is to provide a mechanism to discover a GUID when
-> the execution state of a virtual machine changes and the simplest
-> way to do it is pass a memory location and an interrupt via devicetree.
-> It would complicate things unnecessarily if instead of using devicetree,
-> we try to implement a new protocol or modify other protocols to somehow
-> provide the same functionility.
-> 
-> We believe that adding a devicetree binding for vmgenid is a simpler,
-> better alternative to provide the same functionality and will allow
-> such hypervisors as mentioned above to continue using devicetree.
-> 
-> More references to vmgenid specs:
->  - https://www.qemu.org/docs/master/specs/vmgenid.html
->  - https://learn.microsoft.com/en-us/windows/win32/hyperv_v2/virtual-
-> machine-generation-identifier
-> 
-> Co-authored-by: Sudan Landge <sudanl@amazon.com>
-> Signed-off-by: Babis Chalios <bchalios@amazon.es>
+> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
 
-What happened here?
-
-NAK
-
-You are no the author of this patch. You changed here nothing and you
-took authorship?
-
-Read carefully submitting patches, this is not acceptable.
-
-
-
-Best regards,
-Krzysztof
-
+Reviewed-by: Edward Cree <ecree.xilinx@gmail.com>
 
