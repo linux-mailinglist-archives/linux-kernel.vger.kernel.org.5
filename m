@@ -1,123 +1,135 @@
-Return-Path: <linux-kernel+bounces-148159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFEDA8A7E7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:40:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63D2F8A7E7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:40:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96A151F2171B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:40:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04F8C1F21D63
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:40:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DDB7EF1B;
-	Wed, 17 Apr 2024 08:40:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C3E127B5F;
+	Wed, 17 Apr 2024 08:40:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="AdlsAK4A"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="XkRqJaSf"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F8E8529D;
-	Wed, 17 Apr 2024 08:40:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0629769E0C;
+	Wed, 17 Apr 2024 08:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713343222; cv=none; b=tyiTDS5sO6q96xCdvwSr5luetJQNxZ9+hzGjsbhZQjYJWdGJM5Kno3BPON4e9oPdnUAwRh5p9+qXPTQGfjASRc/G1XRYAGnzLPYgH5rD0RQ/61OF/4U1qRHpiCNUnhorItAQGZoYds+bccVO0Prsz1moCkKK+vcJwD81jKmONk0=
+	t=1713343233; cv=none; b=hfxqNWRFyH+QcwOa57cPvC3iqsyLt6UGd9WwuTVPNkOp/dGkvJ3fPEqiVTpw9skpIglXkieQp/jSvoLU1Gr6X5RYGVTAh6Pg/UIac0nYz2XLwiQhX9AM1Gp9u1ngRjsB6VzHXf5MjIcIANJhglKvkLnkHNyBYFQKndUnOokrya8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713343222; c=relaxed/simple;
-	bh=zEiPERZJKSDRCkJgHODqJT/l8hNbR0wSJNM5rQn2U9s=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HmrWaa/woSrAimj+cJJYeLMifK21yD/JE018FlvXZ8ER4Tr5gAmnFie7CxctUnRV1936a9hITDQGQpFR/cqIcG6OZYF2b4oj2U9gnXa6jBNsQ2zo2SiXrMqCO3LFXKa/m+yAtG8QChjHDAOSiJ4YdIk/p5TwsGNqAQKyXDq/zwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=AdlsAK4A; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 97559100004;
-	Wed, 17 Apr 2024 11:40:08 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 97559100004
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1713343208;
-	bh=vzd5CRR2cDvfBR88K8Vu/kXje8h9WcD3OB/r8NxbU0A=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-	b=AdlsAK4Awszbn81O4XFpoLY26dLzLtGQfpXe0DiZTXrtT1pF7tYsME626ZVBohY0G
-	 U0LM8iwzaisfPW2dWWQEhQI/RDLP0dQKgfrx/WzCVldyErmpvwn1MfE4AdagB7GcW5
-	 RhYpnMKeYCvfxJYdmX08kO7XY2Kaodg1o3w/vUgbr0N1zcn3u9lDCr9Tzdh5d7G+yq
-	 Ujo2uxes4/VAfYx/lKVXhorm76xRDkply7agqIcbF+Sotde1zv1qC6rmPyBGOMxts/
-	 Tao5pwd/9g/mArcsHLoQl/dkiipqLl2FQ5p5Ltl6b08kgWvCqB/avWZJnUoEs8y8v3
-	 CdG3cIHrBsHKg==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Wed, 17 Apr 2024 11:40:08 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m02.sberdevices.ru
- (172.16.192.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 17 Apr
- 2024 11:40:08 +0300
-Date: Wed, 17 Apr 2024 11:40:07 +0300
-From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-CC: <neil.armstrong@linaro.org>, <jbrunet@baylibre.com>,
-	<mturquette@baylibre.com>, <khilman@baylibre.com>,
-	<martin.blumenstingl@googlemail.com>, <glaroque@baylibre.com>,
-	<rafael@kernel.org>, <rui.zhang@intel.com>, <lukasz.luba@arm.com>,
-	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <kernel@salutedevices.com>, <rockosov@gmail.com>,
-	<linux-amlogic@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 0/2] thermal: amlogic: introduce A1 SoC family Thermal
- Sensor controller
-Message-ID: <20240417084007.uzg2uc7gwb6mi7bi@CAB-WSD-L081021>
-References: <20240328191322.17551-1-ddrokosov@salutedevices.com>
- <38ba3618-2a67-4e21-b08d-7e382411e51a@linaro.org>
+	s=arc-20240116; t=1713343233; c=relaxed/simple;
+	bh=2gUk4M9TngyGQgtsMWTN8/cAxIo9MS7DMSJJ3qECf0I=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=RP8M6WGSmlJgKKEEAbZqB9X0h+qZa0q/3V9fNd3x50VAiYktbGPyVdZ7SrrWo1MHn81+wUdd4bRzFXxjgDOMVzGuY1X9p+qqjYu4RjlMIDVK0gcKxuzBz4m1QExZNacsOuNQY1SyJgXwZd2Nv1jsA0qMKsaH8SpSB2Ca2a3cSYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=XkRqJaSf; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:References:Reply-To:Cc:To:From:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=iihPq/dR7kMxFz857c8og3rkIZKdP6iLGcTAyMbnfpw=;
+	t=1713343232; x=1713775232; b=XkRqJaSfkSLimXHw0ozAgnMAcw1r9n5L5CPj09eTS4EvQf1
+	gMx5SyuatTLHHw1xzXK9V8iyY9bnM9D5d6LeKEPhq+/ZA5z6k6zu0zTai09NWqeA9ck9sDqvjfojx
+	kyR3Hv56Mgkvxj6x66mw9u+ObFONOafPnc078GWDDfPI0lH3OVHyUvNMWB6VFxj93QaTVkWGSK0VQ
+	ihJlexoxBVdLSqvYvUG+Co8IyN4XWsjDbI9T6z6Us3Q9VNZeebws4btNgXz7KSch+DSkle2zbgmHm
+	7VwB3EsxK4jPc1FkPfJPHA4h3wb7tUv6SmNHodPVVJTuC2WYKsdIy3q8fR+szX3g==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rx0qC-0003cF-VV; Wed, 17 Apr 2024 10:40:29 +0200
+Message-ID: <d721ab1a-e1e9-486d-b2d8-34053a8c9d65@leemhuis.info>
+Date: Wed, 17 Apr 2024 10:40:28 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <38ba3618-2a67-4e21-b08d-7e382411e51a@linaro.org>
-User-Agent: NeoMutt/20220415
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184751 [Apr 17 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 17 0.3.17 f2153f38d75b12894d9cf445f96cd15c9ef63a9d, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/16 18:45:00 #24828684
-X-KSMG-AntiVirus-Status: Clean, skipped
+User-Agent: Mozilla Thunderbird
+Subject: Re: [bisected] Kernel v6.9-rc3 fails to boot on a Thinkpad T60 with
+ MITIGATION_RETHUNK=y (regression from v6.8.5)
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+To: Erhard Furtner <erhard_f@mailbox.org>, Klara Modin <klarasmodin@gmail.com>
+Cc: Bagas Sanjaya <bagasdotme@gmail.com>, x86@kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ jpoimboe@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Peter Zijlstra <peterz@infradead.org>, Breno Leitao <leitao@debian.org>,
+ Borislav Petkov <bp@alien8.de>,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+References: <20240413024956.488d474e@yea> <ZhpOIeVq1KQXzjBp@archie.me>
+ <68e3503c-5573-4d82-8fb0-5b955c212d67@leemhuis.info>
+ <20240414083626.GAZhuViviWKudQ5Apm@fat_crate.local>
+ <20240414090810.GBZhuc-lN6tyKbF_-M@fat_crate.local>
+ <edf4fb6f-0f27-44fd-8f2a-ab60a156b20c@leemhuis.info>
+Content-Language: en-US, de-DE
+In-Reply-To: <edf4fb6f-0f27-44fd-8f2a-ab60a156b20c@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1713343232;615a079e;
+X-HE-SMSGID: 1rx0qC-0003cF-VV
 
-Hello Daniel,
 
-Could you please let me know in which repository you have applied this
-change? I am trying to cherry-pick the original applied commit and apply
-it to our internal mainline branch instead of the internal commit.
-However, I am unable to find the applied series in any of the
-repositories on git.kernel.org.
 
-On Thu, Apr 04, 2024 at 02:23:21PM +0200, Daniel Lezcano wrote:
-> On 28/03/2024 20:13, Dmitry Rokosov wrote:
-> > It is primarily based on the G12A thermal controller, with only a slight
-> > variation in the offset value of the efuse parameters. Therefore, this
-> > patch series provides appropriate platform data and dt-bindings to
-> > ensure proper support.
+On 17.04.24 10:38, Linux regression tracking (Thorsten Leemhuis) wrote:
+> On 14.04.24 11:08, Borislav Petkov wrote:
+>> On Sun, Apr 14, 2024 at 10:36:26AM +0200, Borislav Petkov wrote:
+>>>> There was an earlier report about this here:
+>>>> https://lore.kernel.org/all/78e0d19c-b77a-4169-a80f-2eef91f4a1d6@gmail.com/
+>>> Am looking at the whole thing. Stay tuned...
+>>
+>> Something like this, I guess...
+>>
+>> Execution goes off somewhere into the weeds during alternatives patching
+>> of the return thunk while it tries to warn about it in the alternatives
+>> code itself and it all ends up in an endless INT3 exceptions due to our
+>> speculation blockers everywhere...
+>>
+>> I could chase it as to why exactly but the warning is there for all
+>> those mitigations which need a special return thunk and 32-bit doesn't
+>> need them (and at least the AMD untraining sequences are 64-bit only
+>> so...).
 > 
+> Erhard Furtner, did you try if this helps for a kernel with
+> MITIGATION_RETHUNK=y? Klara Modin, or could you give it a try?
 > 
-> Applied, thanks
+> Without a check this is unlikely to be merged and then more people might
+> run into problems like you two did.
 
--- 
-Thank you,
-Dmitry
+Ignore that, I only not noticed the discussion continued in the other
+thread and Klara Modin already provided a tested-by. Sorry for the noise.
+
+Ciao, Thorsten
+
+>> IOW:
+>>
+>> diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+>> index e674ccf720b9..391059b2c6fb 100644
+>> --- a/arch/x86/lib/retpoline.S
+>> +++ b/arch/x86/lib/retpoline.S
+>> @@ -382,8 +382,15 @@ SYM_FUNC_END(call_depth_return_thunk)
+>>  SYM_CODE_START(__x86_return_thunk)
+>>  	UNWIND_HINT_FUNC
+>>  	ANNOTATE_NOENDBR
+>> +#if defined(CONFIG_MITIGATION_UNRET_ENTRY) || \
+>> +    defined(CONFIG_MITIGATION_SRSO) || \
+>> +    defined(CONFIG_MITIGATION_CALL_DEPTH_TRACKING)
+>>  	ALTERNATIVE __stringify(ANNOTATE_UNRET_SAFE; ret), \
+>>  		   "jmp warn_thunk_thunk", X86_FEATURE_ALWAYS
+>> +#else
+>> +	ANNOTATE_UNRET_SAFE
+>> +	ret
+>> +#endif
+>>  	int3
+>>  SYM_CODE_END(__x86_return_thunk)
+>>  EXPORT_SYMBOL(__x86_return_thunk)
+>>
 
