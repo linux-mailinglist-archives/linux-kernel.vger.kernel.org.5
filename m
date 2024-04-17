@@ -1,187 +1,235 @@
-Return-Path: <linux-kernel+bounces-148917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D229B8A88EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91E968A88ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:33:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49F051F23C4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:33:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 098A31F23E0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:33:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D4716FF53;
-	Wed, 17 Apr 2024 16:33:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="rQrw7v4Q"
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B63ED16FF36;
+	Wed, 17 Apr 2024 16:33:12 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA5416FF3D;
-	Wed, 17 Apr 2024 16:33:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2030816FF48;
+	Wed, 17 Apr 2024 16:33:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713371592; cv=none; b=PYLpkCT8954vcAJfTPBdn4pQv1FNmCTObvJWUjNy1OBzCM95IjJSexkISDMkQTjZVEco+paMnZwqVvPvq6PtEaDChJ+hPKCCqgN2JVlozx/daz4op5wJuHVuWTkuJsvZeF3Ok/qqw00cXIlbLtsNg7rxf7u3PBqqyUvfI9JCR3c=
+	t=1713371592; cv=none; b=rVOLfKvuwGKqzD8O8l+HmJxnxNLBHYjGChrM9B4Tzma0J0DQbI0DrGiM4Or8HoQvhCVEIZhLgpvAmIc5EF5WEk7Qoij8bkuUzdkhxYfS/fv5bOcY1eEoiKY6mhcKA3+S8yPQ9UhN1bY9JpeBA4du0B+NhAamiFULZx/maehZDfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713371592; c=relaxed/simple;
-	bh=H16RDcSXiwW3boEkfjBDObKtkSAaLyjSW/xLSJ2yxrg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dMQgqKgBroqCSYQLXG6cflmZe4LCzBWKXkVt84y4Tm1LXCW0hX2lttlbuxS9EEOL4b2T5LUXQTEJZiEV7svj4v6l/qwAzNbiwsZk42k5Qbw5DXTgtsoITaG936LHEnoeemPW1zrFEnaQn1Bn8Rwa4jBZbWNoSG3xX33wWqg3iFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=rQrw7v4Q; arc=none smtp.client-ip=74.208.4.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
-	s=s1-ionos; t=1713371575; x=1713976375; i=parker@finest.io;
-	bh=ppksCirNLcq+JKWP3akPmNVgbZGLQOhKntxR0CMxoqs=;
-	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=rQrw7v4Q4t5q4tKKuBEcxcDn0kHN+kfQxQ5FOaFrNaQmaozn9Gz/o8bStUoK0FrA
-	 k+Gns8ip7itWXIkGJYxOD4FiNn1wjprkpVjx95yEu+a9vpQK9kNjyqlXCt5YADSTC
-	 6OEWqmEEbv6DqOIbW1RY5QeCZt0KcBcoTOtPSdiUKAuO7lJlTEcPSPnZ5n0YEn+vg
-	 f0MwO5b+QjvpTSo+qJftyYxHVPBgYpCkrnp2BGEJ/2iuY1rtK+DyQ1xEgBWwmvCs7
-	 TTEWXDOKElYNz0SsT3e033UJTf8BdLCNZ07NTU+id7lrpAPfjIyh6+7iDEj/4tyZz
-	 X9A5Ep4KNXEQ8Dz/OA==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from SWDEV2.connecttech.local ([98.159.241.229]) by
- mrelay.perfora.net (mreueus003 [74.208.5.2]) with ESMTPSA (Nemesis) id
- 0M4oHb-1sfiyx47OH-00yxsI; Wed, 17 Apr 2024 18:32:55 +0200
-Date: Wed, 17 Apr 2024 12:32:53 -0400
-From: Parker Newman <parker@finest.io>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, Parker Newman <pnewman@connecttech.com>
-Subject: Re: [PATCH v3 8/8] serial: exar: fix: fix crash during shutdown if
- setup fails
-Message-ID: <20240417123253.0f9d4555@SWDEV2.connecttech.local>
-In-Reply-To: <2024041730-abstain-dynamite-054a@gregkh>
-References: <cover.1713270624.git.pnewman@connecttech.com>
-	<1a21fffe403d7181e0404db1ed92140c306f97b7.1713270624.git.pnewman@connecttech.com>
-	<2024041746-galvanize-satchel-09a4@gregkh>
-	<20240417082413.70397ccf@SWDEV2.connecttech.local>
-	<2024041730-abstain-dynamite-054a@gregkh>
-Organization: Connect Tech Inc.
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	bh=UAYwiWBvKmvDhQwtebF4o+eeC7q31S72wjSfxQDovlo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ZBz0cSQmXNHHk/+ctg1K9ptHQ4LKu0GC2WIU6gLzeHifb7fzf1teeYmU0HlvQVAjTjFdBx7EdRt3uHTpv3lxZIjQ0jSzZt5xUqJ2zrZBFTuw5wL/ifoagrJ02ihNgumCgqgVc3skmJSe+FslQqdv6ys5sw/fRgAHIWRQcEJyzz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VKRHB0PHKz6K661;
+	Thu, 18 Apr 2024 00:31:02 +0800 (CST)
+Received: from lhrpeml100002.china.huawei.com (unknown [7.191.160.241])
+	by mail.maildlp.com (Postfix) with ESMTPS id 882D41406AC;
+	Thu, 18 Apr 2024 00:33:02 +0800 (CST)
+Received: from lhrpeml500001.china.huawei.com (7.191.163.213) by
+ lhrpeml100002.china.huawei.com (7.191.160.241) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 17 Apr 2024 17:33:02 +0100
+Received: from lhrpeml500001.china.huawei.com ([7.191.163.213]) by
+ lhrpeml500001.china.huawei.com ([7.191.163.213]) with mapi id 15.01.2507.035;
+ Wed, 17 Apr 2024 17:33:02 +0100
+From: Salil Mehta <salil.mehta@huawei.com>
+To: Jonathan Cameron <jonathan.cameron@huawei.com>, Thomas Gleixner
+	<tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
+	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "kvmarm@lists.linux.dev"
+	<kvmarm@lists.linux.dev>, "x86@kernel.org" <x86@kernel.org>, Russell King
+	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, "Miguel
+ Luis" <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "Dave
+ Hansen" <dave.hansen@linux.intel.com>, Linuxarm <linuxarm@huawei.com>,
+	"justin.he@arm.com" <justin.he@arm.com>, "jianyong.wu@arm.com"
+	<jianyong.wu@arm.com>
+Subject: RE: [PATCH v6 13/16] arm64: arch_register_cpu() variant to check if
+ an ACPI handle is now available.
+Thread-Topic: [PATCH v6 13/16] arm64: arch_register_cpu() variant to check if
+ an ACPI handle is now available.
+Thread-Index: AQHakMrD47/IJzgFn0S+CVdTscwPrLFspk/w
+Date: Wed, 17 Apr 2024 16:33:02 +0000
+Message-ID: <073c665c658e40f080c766803d326b77@huawei.com>
+References: <20240417131909.7925-1-Jonathan.Cameron@huawei.com>
+ <20240417131909.7925-14-Jonathan.Cameron@huawei.com>
+In-Reply-To: <20240417131909.7925-14-Jonathan.Cameron@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5a/Hvcp5OCDn59rw5DyL60VoHZtITCe4NYTNqxVWOjiJ9be6i6K
- WKOzRqy/9bWQQHznZLlao120G5VWUWZxbtLXpkZhePqHyz9gVeRzJ/zGvaurDkYdlYfiHbW
- ZRVSd5UrVOvnoyJ8ryyRP9x2POHcaIgpS5zPiqa9I1AEomZr4RVv0X2xMtf9+BxUh1e1ybO
- o4/rRc/koJZzuliRL1mOA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:NXiMkn8pYOk=;N+ZzIE0jdAiqGZ+cJWp7dZIwUzT
- x2lfqQrxMncWoSozPTvi3TKrG5QIcmnSJT29x4rezzZMzMhYEu5FxNsZdrYT1c0VfZJRRC3DC
- tl1KAP4/iccU/oApSPWJdbM+P5NW5EJgLrv4RIwJJ+bAXN+Sq9HCAW7vczEe5YUGd8XW8e5U6
- eFxMJmMeNp8m8dxlQskZ0IhfnPPk6cT/5N9OBBgA9+il1zUOrbMD8VCbKXPoc8g4pJ25IV4Ao
- 0dXFOSmLSxcYLUZMMTEZSZQAqzj8uFcF6D++EG/DiIG9CkDxGEsb/ISg5HusotnKRr11I1SfP
- CnXQ3n3Yc0t5YzkejxNr+EUAEGGbcgysS5L8Q7wBo4ijLZ+0x8K1etVlKxbvK07Zlv+Nun/FQ
- BrOPgdCmsnYimzjM6CqCT8UMzoub1ZjdiwYQ080lgQ787JzPPdIgFIFkLqSlJBGwZquvtZlGs
- +Yl5GhasV/oL7D/fF3PpC1/800BQvt2bSac5+t/6s9gKVVzyvE74jl1tFPzLLDevPBqbwfF8a
- +PUUKsfiB155D2k1yaGRECyma1H2ijVNN9uPK3xIx3kycXBQHCc/DP6kh2g0+8LD178Y57VwU
- loiWRtOG1dVVjrVnyyk7An9XwaPB1XrXbkevU02CXBxvTkd4qVWNWthy8bbOex9hEJXGPbBVu
- ly5NHbgHkSpO2Es6QKSOFQeniCYnYes+jvpv/kI/RgzoflToi2MYHTZmYJX+RH+5A3g1/Pnmf
- 3shRKjzTN12LYnDNOrntstXWYsw4se+sr7CAS4Ge9q5RS/H6rDdleQ=
 
-On Wed, 17 Apr 2024 15:30:56 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+Hi Jonathan,
 
-> On Wed, Apr 17, 2024 at 08:24:13AM -0400, Parker Newman wrote:
-> > On Wed, 17 Apr 2024 13:19:07 +0200
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> >
-> > > On Tue, Apr 16, 2024 at 08:55:35AM -0400, Parker Newman wrote:
-> > > > From: Parker Newman <pnewman@connecttech.com>
-> > > >
-> > > > If a port fails to register with serial8250_register_8250_port() t=
-he
-> > > > kernel can crash when shutting down or module removal.
-> > > >
-> > > > This is because "priv->line[i]" will be set to a negative error co=
-de
-> > > > and in the exar_pci_remove() function serial8250_unregister_port()=
- is
-> > > > called without checking if the "priv->line[i]" value is valid.
-> > > >
-> > > > Signed-off-by: Parker Newman <pnewman@connecttech.com>
-> > > > ---
-> > > >  drivers/tty/serial/8250/8250_exar.c | 3 ++-
-> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/ser=
-ial/8250/8250_exar.c
-> > > > index 501b9f3e9c89..f5a395ed69d1 100644
-> > > > --- a/drivers/tty/serial/8250/8250_exar.c
-> > > > +++ b/drivers/tty/serial/8250/8250_exar.c
-> > > > @@ -1671,7 +1671,8 @@ static void exar_pci_remove(struct pci_dev *=
-pcidev)
-> > > >  	unsigned int i;
-> > > >
-> > > >  	for (i =3D 0; i < priv->nr; i++)
-> > > > -		serial8250_unregister_port(priv->line[i]);
-> > > > +		if (priv->line[i] >=3D 0)
-> > > > +			serial8250_unregister_port(priv->line[i]);
-> > >
-> > > Is this a bug in the current driver?  If so, can you resend it on it=
-s
-> > > own so we can get it merged now?
-> > >
-> >
-> > Yes it is, I can split this one out and send it on its own.
->
-> Great!  Bonus points if you can find the commit id it fixes and add a
-> "Fixes:" tag to the signed-off-by area.  If not, I can guess :)
->
-> thanks,
->
-> greg k-h
+>  From: Jonathan Cameron <jonathan.cameron@huawei.com>
+>  Sent: Wednesday, April 17, 2024 2:19 PM
+> =20
+>  The ARM64 architecture does not support physical CPU HP today.
+>  To avoid any possibility of a bug against such an architecture if define=
+d in
+>  future, check for the physical CPU HP case (not present) and return an e=
+rror
+>  on any such attempt.
+> =20
+>  On ARM64 virtual CPU Hotplug relies on the status value that can be quer=
+ied
+>  via the AML method _STA for the CPU object.
+> =20
+>  There are two conditions in which the CPU can be registered.
+>  1) ACPI disabled.
+>  2) ACPI enabled and the acpi_handle is available.
+>     _STA evaluates to the CPU is both enabled and present.
+>     (Note that in absence of the _STA method they are always in this
+>      state).
+> =20
+>  If neither of these conditions is met the CPU is not 'yet' ready to be u=
+sed
+>  and -EPROBE_DEFER is returned.
+> =20
+>  Success occurs in the early attempt to register the CPUs if we are booti=
+ng
+>  with DT (no concept yet of vCPU HP) if not it succeeds for already enabl=
+ed
+>  CPUs when the ACPI Processor driver attaches to them.  Finally it may
+>  succeed via the CPU Hotplug code indicating that the CPU is now enabled.
+> =20
+>  For ACPI if CONFIG_ACPI_PROCESSOR the only path to get to
+>  arch_register_cpu() with that handle set is via
+>  acpi_processor_hot_add_init() which is only called from an ACPI bus scan=
+ in
+>  which _STA has already been queried there is no need to repeat it here.
+>  Add a comment to remind us of this in the future.
+> =20
+>  Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
+>  Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>  ---
+>  v6: Add protection again Physical CPU HP to the arch specific code
+>      and don't actually check _STA
+> =20
+>  Tested on arm64 with ACPI + DT build and DT only builds, booting with AC=
+PI
+>  and DT as appropriate.
+>  ---
+>   arch/arm64/kernel/smp.c | 53
+>  +++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 53 insertions(+)
+> =20
+>  diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c index
+>  dc0e0b3ec2d4..ccb6ad347df9 100644
+>  --- a/arch/arm64/kernel/smp.c
+>  +++ b/arch/arm64/kernel/smp.c
+>  @@ -504,6 +504,59 @@ static int __init smp_cpu_setup(int cpu)  static bo=
+ol
+>  bootcpu_valid __initdata;  static unsigned int cpu_count =3D 1;
+> =20
+>  +int arch_register_cpu(int cpu)
+>  +{
+>  +	acpi_handle acpi_handle =3D acpi_get_processor_handle(cpu);
+>  +	struct cpu *c =3D &per_cpu(cpu_devices, cpu);
+>  +
+>  +	if (!acpi_disabled && !acpi_handle &&
+>  +	    IS_ENABLED(CONFIG_ACPI_HOTPLUG_CPU))
+>  +		return -EPROBE_DEFER;
+>  +
+>  +#ifdef CONFIG_ACPI_HOTPLUG_CPU
+>  +	/* For now block anything that looks like physical CPU Hotplug */
+>  +	if (invalid_logical_cpuid(cpu) || !cpu_present(cpu)) {
+>  +		pr_err_once("Changing CPU present bit is not
+>  supported\n");
+>  +		return -ENODEV;
+>  +	}
+>  +#endif
+>  +
+>  +	/*
+>  +	 * Availability of the acpi handle is sufficient to establish
+>  +	 * that _STA has aleady been checked. No need to recheck here.
+>  +	 */
+>  +	c->hotpluggable =3D arch_cpu_is_hotpluggable(cpu);
+>  +
 
-After looking at this again and doing some testing this bug does not actua=
-lly
-happen with the driver in its current state. During my development I had i=
-t
-happen but that would have been due to me messing around.
 
-When "priv->line[i]" < 0 it breaks out of the for loop and priv->nr is set=
- to "i".
-so only the successfully registered ports will be unregistered in exar_pci=
-_remove().
+We would still need 'enabled' bitmask as applications need a way to clearly
+get which processors are enabled and usable in case of ARM64. Otherwise,
+they will end up scanning the entire MAX CPU space to figure out which
+processors have been plugged or unplugged. It is inefficient to bank upon
+errors to detect this and unnecessary to scan again and again.
+          =20
++            set_cpu_enabled(cpu, true);   // will need this change
 
-..
-        for (i =3D 0; i < nr_ports && i < maxnr; i++) {
-                rc =3D board->setup(priv, pcidev, &uart, i);
-                if (rc) {
-                        dev_err(&pcidev->dev, "Failed to setup port %u\n",=
- i);
-                        break;
-                }
 
-                dev_dbg(&pcidev->dev, "Setup PCI port: port %lx, irq %d, t=
-ype %d\n",
-                        uart.port.iobase, uart.port.irq, uart.port.iotype)=
-;
+And its corresponding additions of enabled bitmask along side the present m=
+asks.
 
-                priv->line[i] =3D serial8250_register_8250_port(&uart);
-                if (priv->line[i] < 0) {
-                        dev_err(&pcidev->dev,
-                                "Couldn't register serial port %lx, irq %d=
-, type %d, error %d\n",
-                                uart.port.iobase, uart.port.irq,
-                                uart.port.iotype, priv->line[i]);
-                        break;
-                }
-        }
-        priv->nr =3D i;
-..
+I think we had this discussion in Linaro Open Discussions group few years
+back.
 
-Thanks,
-Parker
 
+>  +	return register_cpu(c, cpu);
+>  +}
+>  +
+>  +#ifdef CONFIG_ACPI_HOTPLUG_CPU
+>  +void arch_unregister_cpu(int cpu)
+>  +{
+>  +	acpi_handle acpi_handle =3D acpi_get_processor_handle(cpu);
+>  +	struct cpu *c =3D &per_cpu(cpu_devices, cpu);
+>  +	acpi_status status;
+>  +	unsigned long long sta;
+>  +
+>  +	if (!acpi_handle) {
+>  +		pr_err_once("Removing a CPU without associated ACPI
+>  handle\n");
+>  +		return;
+>  +	}
+>  +
+>  +	status =3D acpi_evaluate_integer(acpi_handle, "_STA", NULL, &sta);
+>  +	if (ACPI_FAILURE(status))
+>  +		return;
+>  +
+>  +	/* For now do not allow anything that looks like physical CPU HP */
+>  +	if (cpu_present(cpu) && !(sta & ACPI_STA_DEVICE_PRESENT)) {
+>  +		pr_err_once("Changing CPU present bit is not
+>  supported\n");
+>  +		return;
+>  +	}
+>  +
+
+For the same reasons as above:
+
++            set_cpu_enabled(cpu, flase);   // will need this change
+
+
+>  +	unregister_cpu(c);
+>  +}
+>  +#endif /* CONFIG_ACPI_HOTPLUG_CPU */
+>  +
+>   #ifdef CONFIG_ACPI
+>   static struct acpi_madt_generic_interrupt cpu_madt_gicc[NR_CPUS];
+> =20
+>  --
+>  2.39.2
 
 
