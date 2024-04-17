@@ -1,224 +1,116 @@
-Return-Path: <linux-kernel+bounces-148924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E10218A890F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:40:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8848B8A890A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:39:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E2C61F224D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:40:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B98051C22C53
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:39:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE314171092;
-	Wed, 17 Apr 2024 16:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CxqSaL8x"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5721F171060;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66EC5171063;
 	Wed, 17 Apr 2024 16:39:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g/AWQjr4"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 801CA147C8D;
+	Wed, 17 Apr 2024 16:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713371982; cv=none; b=LEQNR/JEQ2cPz8diwyG5qMIqJvA6OVGVFJMWu704rXkt5iQYYt7aErEaKfpilS9EfCOt4KjdcZQjnlLr4oc/4Ot77pPmo8rddIK2zL91y+pySSjzZDkLU/RgwJGLLnQ0KQQvzkwdqI2m7X4NO8y2IQQ5DJaQ9vSpkplbXUYBVog=
+	t=1713371980; cv=none; b=PHdWjka8UTXuu9FQa8GQ01AwXWEX71PHOCmv/jqHLl0fKwvId9DSJ924TPtOzGlfNoqUKSNdn9gUsi8cZZ86ZSIIMmU8WXWVj5NCVwhrfar1D/uYbk7CJIzpChALkeAin9BCZhfboE1CmyHJY7UuWwPMnF4XHBJkuli+jjdEheQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713371982; c=relaxed/simple;
-	bh=nNiDdi5dMzvYy7L4OlCVwamn4t6fg20UJ5DJLQW5mUc=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Al5YSuCEaFw1BG6SQrcY9oHtkFAXLhp0c0y6g4Y2eZiNI/DIe24zoyvNNoImuF7ksfGvBLJw9Y4zYUC2iiPcp8dun5ZtbRzkh/hDQT4y+irru6NUWGioZI3GSLMAiZ2+RQM8LbkOSSvTbao/UEnXHJVAVWHTWzcIyrKrx7hfgcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=CxqSaL8x; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43HG0ngo000483;
-	Wed, 17 Apr 2024 16:39:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=UtmHnbfH1lF7TfGP3VMjz
-	gGrAOLOlqHk80fnpNVynQg=; b=CxqSaL8xuCSFeLDHdesUSwtA9YVBlfyIwGpjI
-	dR2bJRuJmfgVpQ7oZEIc0WGV1x/PypZE6M2CQUjqgV1RbP5XJXbehdhCvdLOrQwT
-	DYtFOTZu5LIrfKffQw/CDh7AN5wrGpmdj4XLIzZrudNEkVUBlo53krc8IKy7opZt
-	RTKEx09I/BeppNpbwRat9t5+ceY25moz81EFcHZNPjdBBij5X+U4MkJN3KF3iVFp
-	byJ0NrSs7C3H2VgnkDyLDJwzfZN2ZR/GJO4TI9aIe0x5Ez2jCW2Vcy5PtECvxuS7
-	/ibKJEu4MBpzVoNbEfA5d1r53uXYucmQPX7LdeDI3bUc/3ZBw==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xj7tr1nf3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 16:39:37 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43HGdaq3031708
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 16:39:36 GMT
-Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Wed, 17 Apr 2024 09:39:31 -0700
-Date: Wed, 17 Apr 2024 22:09:27 +0530
-From: Varadarajan Narayanan <quic_varada@quicinc.com>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: <andersson@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
-        <konrad.dybcio@linaro.org>, <djakov@kernel.org>,
-        <quic_anusha@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v8 6/7] clk: qcom: ipq9574: Use icc-clk for enabling NoC
- related clocks
-Message-ID: <Zh/7PzrIM6hlbSsz@hu-varada-blr.qualcomm.com>
-References: <20240417105605.836705-1-quic_varada@quicinc.com>
- <20240417105605.836705-7-quic_varada@quicinc.com>
- <CAA8EJpruv2dmw61Z4c4C0p5662CKwSqzRBjDQU+_KSMNU=cL5g@mail.gmail.com>
+	s=arc-20240116; t=1713371980; c=relaxed/simple;
+	bh=aWTPDq9p7jQ/4H76/mW9C1YBC1szIVSw3Mc/rYRFAek=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QOsrvk5Ee0KxtzuQxUU7zScMDWsAjWQ5Jl8MWyzVGo396kX/hBa4hkAPJVVHqZ47ygdxxgE8ZywgoBYh8OcINB1jUBNYBayYGtdmWuhyiPHi51e6mAr7S7n2iBWj5JO0LylizyxD5E7XPBMt9uqv35CJm5HNI+Asz+37suxfgcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g/AWQjr4; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5d3907ff128so4575668a12.3;
+        Wed, 17 Apr 2024 09:39:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713371979; x=1713976779; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=I7Zh42cClUUxS34CpnuDLFTWaHNT2a1g8mM8QHZw6C8=;
+        b=g/AWQjr4sjil5Es/t8rl7gS7pSKKLHW/RzJ1zfqyNVKJ/zZkLWCKvdEp0DchKCfJc1
+         4weUsfQ8OfYWlL0C9GNDhrCsSPVnG2BWSoJ4441DXE7dBDRpKy/SObfu/qMbyiI9Cf8P
+         Oe859fgN/FCQ1l7yxYGRyPc2tDt8rQt+PEixRjsKzCZFXX3DE8TJtty4q+8iS/Ac+Ly3
+         M1n3DmlDOUkRMN23vDGKWzftlxV8V52NAFdDm1CxDk5ntUOnxyvdo9UvjnH+x+ugrlYT
+         r+ZAgLNxWksPuwgHp74hrSdEIS4XibmwiZPoXX5x0H+q2do8+LYZoI3l09XJuA+g/WLo
+         sImw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713371979; x=1713976779;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I7Zh42cClUUxS34CpnuDLFTWaHNT2a1g8mM8QHZw6C8=;
+        b=OjnPZ6E+0EUhmbin/Dyg0LfLSc4w9wzjJYI1QZkBmgQjsF1HWvEZCKVGRcF01B/0P6
+         +cOgoDn0UhC1vuF14o7ihxHoF9a0WOqW647tz4af2y2eiZ5FAgsSVkBmdNNka0shTCvU
+         eziadnaxcKBZvI4dmRaIJRjATZ5YuDNrEIM1lkJC6bIJPuLw96CIAVilvPlduxXCJH6W
+         VYjjEdZ9vCH6yxYr5B0LjaSGJU4aLoz1rgFaG1+mYJbiqYC+YHu7QzrVdkr/BsHPd9EA
+         VnQTz9yGZE4cKcdfjuPWFn8pU3oj2nWmYxAG+3BDB9EdcjA2/uICQDkEna25FyN5XtmZ
+         DGGw==
+X-Forwarded-Encrypted: i=1; AJvYcCVUA4LCFF62sI1CtVSUDzB0Rgv5RYLCtScuuE6+D0fNLhOGjuzw+IsuvBhXsVnxMis7mmlej918MoVe8FmoHAALZzVrOEzaawegCxyJRrqZ9kSVOcfniIsKUqCIZbUw1Tc15rcywBqXgNF1nG1zXxpHqPODtQKZYmt6pK+nHtyd31+LacDcPz6mdg==
+X-Gm-Message-State: AOJu0Yz9CUwpStCuhpUXbbckhCK4JRtzMFWPqC6/L0EO3Sj+niTUjcL1
+	Vgz03AcLIgjGGQjvQiDiCPA4C03+98uomjHIdXjsh51REENKrieRIbMrUtJMuBg=
+X-Google-Smtp-Source: AGHT+IFsgpgKF4MpNGRI12HFX8X1jR4fq2uA3v5uQF83Vql6HROO8gtLkEMXQdJU4OMr5Az/Juz0QQ==
+X-Received: by 2002:a17:90a:886:b0:2ab:99d5:ae11 with SMTP id v6-20020a17090a088600b002ab99d5ae11mr658653pjc.20.1713371978710;
+        Wed, 17 Apr 2024 09:39:38 -0700 (PDT)
+Received: from [0.0.0.0] (74.211.104.32.16clouds.com. [74.211.104.32])
+        by smtp.gmail.com with ESMTPSA id t1-20020a17090aae0100b002a2d8d34009sm1577329pjq.27.2024.04.17.09.39.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 09:39:38 -0700 (PDT)
+Message-ID: <1b8f0217-5c4b-4436-88d4-ec3c88ae7179@gmail.com>
+Date: Thu, 18 Apr 2024 00:39:33 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpruv2dmw61Z4c4C0p5662CKwSqzRBjDQU+_KSMNU=cL5g@mail.gmail.com>
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 9Kcr_0C2cNGaxxmn1QV4JSVrr_FK47Iz
-X-Proofpoint-GUID: 9Kcr_0C2cNGaxxmn1QV4JSVrr_FK47Iz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-17_14,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- adultscore=0 suspectscore=0 impostorscore=0 phishscore=0 mlxlogscore=999
- clxscore=1015 priorityscore=1501 lowpriorityscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404170117
+User-Agent: Mozilla Thunderbird
+Subject: Re: [v4 0/3] SCSI: Fix issues between removing device and error
+ handle
+Content-Language: en-US
+To: Markus Elfring <Markus.Elfring@web.de>,
+ Julia Lawall <julia.lawall@inria.fr>, linux-scsi@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, "James E. J. Bottomley"
+ <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Wenchao Hao <haowenchao2@huawei.com>, LKML <linux-kernel@vger.kernel.org>
+References: <20240307144311.73735-1-haowenchao2@huawei.com>
+ <99598b98-8550-4dca-beea-4c2d61d46f78@web.de>
+ <b55da065-dbbb-4d8e-8baf-50807b507cc4@gmail.com>
+ <173b55ca-cde-ab3-be92-d9c8b4b6b5c@inria.fr>
+ <799944de-dcee-46a8-b43b-8876177c61a2@gmail.com>
+ <4b9a14d0-b4bd-4b91-8466-5f8849b0c08e@web.de>
+From: Wenchao Hao <haowenchao22@gmail.com>
+In-Reply-To: <4b9a14d0-b4bd-4b91-8466-5f8849b0c08e@web.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 17, 2024 at 02:30:02PM +0300, Dmitry Baryshkov wrote:
-> On Wed, 17 Apr 2024 at 13:57, Varadarajan Narayanan
-> <quic_varada@quicinc.com> wrote:
-> >
-> > Use the icc-clk framework to enable few clocks to be able to
-> > create paths and use the peripherals connected on those NoCs.
-> >
-> > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> > ---
-> > v8: Bind clock and interconnect using master and slave ids
-> >     Use indices instead of clock pointers
-> > v7: Auto select INTERCONNECT & INTERCONNECT_CLK in COMMON_CLK_QCOM
-> >     to address build break with random config build test, with the
-> >     following combination
-> >
-> >         CONFIG_COMMON_CLK_QCOM=y
-> >                 and
-> >         CONFIG_INTERCONNECT_CLK=m
-> >
-> >     the following error is seen as devm_icc_clk_register is in a
-> >     module and being referenced from vmlinux.
-> >
-> >         powerpc64-linux-ld: drivers/clk/qcom/common.o: in function `qcom_cc_really_probe':
-> >         >> common.c:(.text+0x980): undefined reference to `devm_icc_clk_register'
-> >
-> > v6: Move enum to dt-bindings and share between here and DT
-> >     first_id -> icc_first_node_id
-> > v5: Split from common.c changes into separate patch
-> >     No functional changes
-> > ---
-> >  drivers/clk/qcom/Kconfig       |  2 ++
-> >  drivers/clk/qcom/gcc-ipq9574.c | 31 +++++++++++++++++++++++++++++++
-> >  2 files changed, 33 insertions(+)
-> >
-> > diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-> > index 8ab08e7b5b6c..b65a373f2e6b 100644
-> > --- a/drivers/clk/qcom/Kconfig
-> > +++ b/drivers/clk/qcom/Kconfig
-> > @@ -17,6 +17,8 @@ menuconfig COMMON_CLK_QCOM
-> >         select RATIONAL
-> >         select REGMAP_MMIO
-> >         select RESET_CONTROLLER
-> > +       select INTERCONNECT
-> > +       select INTERCONNECT_CLK
-> >
-> >  if COMMON_CLK_QCOM
-> >
-> > diff --git a/drivers/clk/qcom/gcc-ipq9574.c b/drivers/clk/qcom/gcc-ipq9574.c
-> > index 0a3f846695b8..7983e9ba0f35 100644
-> > --- a/drivers/clk/qcom/gcc-ipq9574.c
-> > +++ b/drivers/clk/qcom/gcc-ipq9574.c
-> > @@ -4,6 +4,7 @@
-> >   */
-> >
-> >  #include <linux/clk-provider.h>
-> > +#include <linux/interconnect-clk.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of.h>
-> > @@ -12,6 +13,7 @@
-> >
-> >  #include <dt-bindings/clock/qcom,ipq9574-gcc.h>
-> >  #include <dt-bindings/reset/qcom,ipq9574-gcc.h>
-> > +#include <dt-bindings/interconnect/qcom,ipq9574.h>
-> >
-> >  #include "clk-alpha-pll.h"
-> >  #include "clk-branch.h"
-> > @@ -4301,6 +4303,32 @@ static const struct qcom_reset_map gcc_ipq9574_resets[] = {
-> >         [GCC_WCSS_Q6_TBU_BCR] = { 0x12054, 0 },
-> >  };
-> >
-> > +#define IPQ_APPS_ID                    9574    /* some unique value */
-> > +
-> > +static struct qcom_icc_hws_data icc_ipq9574_hws[] = {
-> > +       HWS_DATA(ANOC_PCIE0, GCC_ANOC_PCIE0_1LANE_M_CLK),
->
-> Have you seen other parts of the qcom framework using macros to wrap
-> around structure initialisation? I don't think so. Please follow the
-> suit and inline the macro here.
+On 4/17/24 11:48 PM, Markus Elfring wrote:
+>>> Search in process/submitting-patches.rst for Fixes:
+>>
+>> These issues are introduced at first version of git record, which is
+>> 1da177e4c3f4 ("Linux-2.6.12-rc2"). I think "Fixes" tag should not added
+>> for this commit.
+> 
+> I suggest to take also another look at information in a table
+> like “Releases fixed in v6.8” from the article “Development statistics for 6.8”
+> by Jonathan Corbet.
+> https://lwn.net/Articles/964106/
+> 
 
-Ok, will change and post a new version.
+Thank you, I found some Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2") in this article.
+Then I searched in git log and found these "Fixes" tag too. 
 
-Thanks
-Varada
+> Regards,
+> Markus
 
-> > +       HWS_DATA(SNOC_PCIE0, GCC_SNOC_PCIE0_1LANE_S_CLK),
-> > +       HWS_DATA(ANOC_PCIE1, GCC_ANOC_PCIE1_1LANE_M_CLK),
-> > +       HWS_DATA(SNOC_PCIE1, GCC_SNOC_PCIE1_1LANE_S_CLK),
-> > +       HWS_DATA(ANOC_PCIE2, GCC_ANOC_PCIE2_2LANE_M_CLK),
-> > +       HWS_DATA(SNOC_PCIE2, GCC_SNOC_PCIE2_2LANE_S_CLK),
-> > +       HWS_DATA(ANOC_PCIE3, GCC_ANOC_PCIE3_2LANE_M_CLK),
-> > +       HWS_DATA(SNOC_PCIE3, GCC_SNOC_PCIE3_2LANE_S_CLK),
-> > +       HWS_DATA(USB, GCC_SNOC_USB_CLK),
-> > +       HWS_DATA(USB_AXI, GCC_ANOC_USB_AXI_CLK),
-> > +       HWS_DATA(NSSNOC_NSSCC, GCC_NSSNOC_NSSCC_CLK),
-> > +       HWS_DATA(NSSNOC_SNOC_0, GCC_NSSNOC_SNOC_CLK),
-> > +       HWS_DATA(NSSNOC_SNOC_1, GCC_NSSNOC_SNOC_1_CLK),
-> > +       HWS_DATA(NSSNOC_PCNOC_1, GCC_NSSNOC_PCNOC_1_CLK),
-> > +       HWS_DATA(NSSNOC_QOSGEN_REF, GCC_NSSNOC_QOSGEN_REF_CLK),
-> > +       HWS_DATA(NSSNOC_TIMEOUT_REF, GCC_NSSNOC_TIMEOUT_REF_CLK),
-> > +       HWS_DATA(NSSNOC_XO_DCD, GCC_NSSNOC_XO_DCD_CLK),
-> > +       HWS_DATA(NSSNOC_ATB, GCC_NSSNOC_ATB_CLK),
-> > +       HWS_DATA(MEM_NOC_NSSNOC, GCC_MEM_NOC_NSSNOC_CLK),
-> > +       HWS_DATA(NSSNOC_MEMNOC, GCC_NSSNOC_MEMNOC_CLK),
-> > +       HWS_DATA(NSSNOC_MEM_NOC_1, GCC_NSSNOC_MEM_NOC_1_CLK),
-> > +};
-> > +
-> >  static const struct of_device_id gcc_ipq9574_match_table[] = {
-> >         { .compatible = "qcom,ipq9574-gcc" },
-> >         { }
-> > @@ -4323,6 +4351,9 @@ static const struct qcom_cc_desc gcc_ipq9574_desc = {
-> >         .num_resets = ARRAY_SIZE(gcc_ipq9574_resets),
-> >         .clk_hws = gcc_ipq9574_hws,
-> >         .num_clk_hws = ARRAY_SIZE(gcc_ipq9574_hws),
-> > +       .icc_hws = icc_ipq9574_hws,
-> > +       .num_icc_hws = ARRAY_SIZE(icc_ipq9574_hws),
-> > +       .icc_first_node_id = IPQ_APPS_ID,
-> >  };
-> >
-> >  static int gcc_ipq9574_probe(struct platform_device *pdev)
-> > --
-> > 2.34.1
-> >
->
->
-> --
-> With best wishes
-> Dmitry
 
