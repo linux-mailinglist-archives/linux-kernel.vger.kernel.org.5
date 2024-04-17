@@ -1,116 +1,130 @@
-Return-Path: <linux-kernel+bounces-148440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D1128A8297
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:57:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 033FA8A829A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:57:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A404B25764
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:57:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DE501F22768
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:57:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8A2A13CFBA;
-	Wed, 17 Apr 2024 11:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6126913CFBD;
+	Wed, 17 Apr 2024 11:57:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TdQI+8Lv"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="R3A4vAf1"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7C07137766
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31BDC7FBD2;
+	Wed, 17 Apr 2024 11:57:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713355022; cv=none; b=HAu4YN4y9DtiMWCnT/gc/GZmLE4WMLfqOeIxcBLJGFcREB41/Us12QZJrsPWTDHT9dwpNhDzyyDnX8/AoSnMQpMxpOd0AzeAqXuYt44766XHkRyX3ZE4L7HJIkDsPfKRTC3tvtB+d90Yb2Our5YRC161YtQUfSr2Pt/9gI0vpoE=
+	t=1713355036; cv=none; b=WwQTOQBqHs9puR7V34GDU0WErcXnk9RNIYTyepeuvh1LNKJWEAzeLALghIIflDpwnm+Rez+goza77OYb5wVxH+vWSi9A8hK266ABjcXRpQHPqzdHF+BBzonKKtOMv9DDWIgoooC8EZwH+oOXj4td2tkHj1KLBk/eS3xOW0b3Zj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713355022; c=relaxed/simple;
-	bh=rFWYHRR/8wQe0/h8nXEAewAVnKCnbdH3Rt5dV8yzjTw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NX3GLW+nnfx4OHm7Iu/CempjLe9Pz7pT+7qoDockB5hCe44S5EJdrUgjNADKMyPuuYYERQWwfLfWsDoLf0Pekhd4lKS3i8qc0PlTiJg/SxJ4EnwVRLaR6KwcsOy+NIwGdbrti2bdpvyR02GK+nXz68OgGkvntijQE6cY9/KaOkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TdQI+8Lv; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-ddda842c399so5714854276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:57:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713355020; x=1713959820; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7V6DnLCsUFkJaBmXGBgPYovHMmnV4qT3enJ4vhqHZQM=;
-        b=TdQI+8LvzmqPZn1yvqFHpPhC2u92d9udMKJM9NfzRHMAzuTe2zp06QyzB3p4zMhrN6
-         Su1io/EHPQCMCAWqeicjs65L7HFh/Tx42tFPibBJNmNoFoXThVgClvw6y3CUTBa1dl9b
-         PPa/kZKkacwtrVsXSh2t0CroQqeX/L0Dp0+9C4CGpk7NapZOXCS1LVOfx48mm3Xv3ylB
-         ZXv3IFKnlbyMXJOUXH9h7xzoNAbxGlrQusFjbE5kn0Ht4qvkJkhoXQ8EYrMl+Ir9mAsx
-         DCdAcZS447NmJ9J933ex3tLTVRPpWTNEnTVDD7k9oQj56+FkkayAiuf9JEkMAZtqAl4s
-         5CFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713355020; x=1713959820;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7V6DnLCsUFkJaBmXGBgPYovHMmnV4qT3enJ4vhqHZQM=;
-        b=nqzQdKVZly36vYunsHbq9muwRWCKWtVRCpyLCu/ZWmntvw9tulAe/9zoNjtKQgdD12
-         u4nRQLpFfV+QWB6ynMJdbIykm/+DxCmcNqQT8kM5W3h2YCZ9jg+DEGaTEiTTA4FE/2VW
-         6FaHaC3VWn3kkDiEROGkUiyDeqsWFxZMwiVYm4jSDPjOe+TDvQqQp75kctEyP5QjefyQ
-         msSOHFIQWzIe7bzyvy5WVLOdR2D/PafOZKu7ZPYl/LxwNADcVJL1mztur85q0pvvlkRO
-         Jsz1tOVR8q7+kUIZhRX0oMCLzQ+zzCMC6r/2gVF6zZLZ2KBhU/otQ9QSw9Rv0PSd1dfD
-         K68A==
-X-Forwarded-Encrypted: i=1; AJvYcCVWTzJ0M6rrSh/QcnV8+daK0GjMxfTdA8qSz+jk2XDIT+lheN8LWKkgM/u+EL05BWWI7xjRR6L8yy8/CkIVzX+oJI8Kz/PG6LDpGXLT
-X-Gm-Message-State: AOJu0YzW3ofZig4BKp11RtfWhFoac1KwSO75qEHwHvdaVW5EyXy0B9fc
-	c+m9S466d+zuFU8sIS69lKHJcEbdoV8TdrA18FRB43oi2qqYGXhnN0rwTAbiASXe5TfsOeSxzjt
-	vgEAsOrsBMrm6GZdT0ca9YG7T/uyYnA7s6X+d1g==
-X-Google-Smtp-Source: AGHT+IHuJ+P0+tIP8Ja/s31hcE/lLfe8rzFJZRFTNiK24q6dN5Ov40yhIbmq423DTWh9Cjd7EAZUIsIKaKherzh7G/4=
-X-Received: by 2002:a25:4ec2:0:b0:dcc:1449:71ea with SMTP id
- c185-20020a254ec2000000b00dcc144971eamr15228037ybb.50.1713355019639; Wed, 17
- Apr 2024 04:56:59 -0700 (PDT)
+	s=arc-20240116; t=1713355036; c=relaxed/simple;
+	bh=HemC5jj1e7aQcD8qKpIfEBsO/Z/wNcPGtYU3mwsGTSI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=KEF+Fje6CoXK4TpR5lvE2txdL44+O5tpy3RtU+8KHi/sg2pY9E7bMR9Fi8ccPX9dBod2SJ8vN9KtuP8QiXpzuD1wL87tRwb+iFdw42h/JXrMjnJ2eYOXVPrPaUc6vcOiYpDz6nlRGvocMOrDWZ/RkT2B1LkBRlOz9s0R0sSnlAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=R3A4vAf1; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43HBv5lW026341;
+	Wed, 17 Apr 2024 06:57:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713355025;
+	bh=DCMypKZidOB2wAZl80SkaybM9OwuNT+k3d3G7XXO11A=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=R3A4vAf1D5eaPJy72DdQNATMLOPy9iLlkA1hQbp1PCNuLDNaw00i+tHTwZNE+t6Jt
+	 nnOJhrSGKi3PTeMgbOLSoMfWgX4wSnYbs8GnRwLtmcfWJyxjLd0IHWpjuNLIiDU/ik
+	 7a1z1sRO4qbFjONLQmjGiBdrgGSNPvLgbtY0LOW8=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43HBv5SL095613
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 17 Apr 2024 06:57:05 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 17
+ Apr 2024 06:57:05 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 17 Apr 2024 06:57:05 -0500
+Received: from [10.24.69.25] (danish-tpc.dhcp.ti.com [10.24.69.25])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43HBv1pA053558;
+	Wed, 17 Apr 2024 06:57:02 -0500
+Message-ID: <c6288523-84a6-48b0-bf9f-c25721a1519f@ti.com>
+Date: Wed, 17 Apr 2024 17:27:00 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-0-78ae3ee9a697@somainline.org>
- <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-1-78ae3ee9a697@somainline.org>
-In-Reply-To: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-1-78ae3ee9a697@somainline.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 17 Apr 2024 14:56:48 +0300
-Message-ID: <CAA8EJpqJfkRd3hN-QoHaxhP2dUaEOyaqnGzA5MiGk96oTLRO2g@mail.gmail.com>
-Subject: Re: [PATCH 1/7] drm/msm/dsi: Print dual-DSI-adjusted pclk instead of
- original mode pclk
-To: Marijn Suijten <marijn.suijten@somainline.org>
-Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Archit Taneja <architt@codeaurora.org>, Chandan Uddaraju <chandanu@codeaurora.org>, 
-	Vinod Koul <vkoul@kernel.org>, Sravanthi Kollukuduru <skolluku@codeaurora.org>, 
-	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	Jordan Crouse <jordan@cosmicpenguin.net>, Rajesh Yadav <ryadav@codeaurora.org>, 
-	Jeykumar Sankaran <jsanka@codeaurora.org>, ~postmarketos/upstreaming@lists.sr.ht, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Martin Botka <martin.botka@somainline.org>, 
-	Jami Kettunen <jami.kettunen@somainline.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 0/5] Add CPSW2G and CPSW9G nodes for J784S4
+Content-Language: en-US
+To: Chintan Vankar <c-vankar@ti.com>, Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring
+	<robh@kernel.org>, Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra
+	<vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
+CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <s-vadapalli@ti.com>
+References: <20240329053130.2822129-1-c-vankar@ti.com>
+From: MD Danish Anwar <danishanwar@ti.com>
+In-Reply-To: <20240329053130.2822129-1-c-vankar@ti.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Wed, 17 Apr 2024 at 02:57, Marijn Suijten
-<marijn.suijten@somainline.org> wrote:
->
-> When dual-DSI (bonded DSI) was added in commit ed9976a09b48
-> ("drm/msm/dsi: adjust dsi timing for dual dsi mode") some DBG() prints
-> were not updated, leading to print the original mode->clock rather
-> than the adjusted (typically the mode clock divided by two, though more
-> recently also adjusted for DSC compression) msm_host->pixel_clk_rate
-> which is passed to clk_set_rate() just below.  Fix that by printing the
-> actual pixel_clk_rate that is being set.
->
-> Fixes: ed9976a09b48 ("drm/msm/dsi: adjust dsi timing for dual dsi mode")
-> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> ---
->  drivers/gpu/drm/msm/dsi/dsi_host.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+Hi Chintan,
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+On 29/03/24 11:01 am, Chintan Vankar wrote:
+> This series adds device-tree nodes for CPSW2G and CPSW9G instance
+> of the CPSW Ethernet Switch on TI's J784S4 SoC. Additionally,
+> two device-tree overlays are also added:
+> 1. QSGMII mode with the CPSW9G instance via the ENET EXPANSION 1
+>    connector.
+> 2. USXGMII mode with MAC Ports 1 and 2 of the CPSW9G instance via
+>    ENET EXPANSION 1 and 2 connectors, configured in fixed-link
+>    mode of operation at 5Gbps link speed.
+> 
+> Link to v5:
+> https://lore.kernel.org/r/20240314072129.1520475-1-c-vankar@ti.com/
+> 
+> Changes from v5 to v6:
+> - Updated order of properties in Device Nodes based on
+>   https://docs.kernel.org/devicetree/bindings/dts-coding-style.html#order-of-properties-in-device-node
+> 
+> Chintan Vankar (1):
+>   arm64: dts: ti: k3-j784s4-evm: Add alias for MCU CPSW2G
+> 
+> Siddharth Vadapalli (4):
+>   arm64: dts: ti: k3-j784s4-main: Add CPSW2G and CPSW9G nodes
+>   arm64: dts: ti: k3-j784s4-evm: Enable Main CPSW2G node and add aliases
+>     for it
+>   arm64: dts: ti: k3-j784s4: Add overlay to enable QSGMII mode with
+>     CPSW9G
+>   arm64: dts: ti: k3-j784s4: Add overlay for dual port USXGMII mode
+> 
+>  arch/arm64/boot/dts/ti/Makefile               |  11 +-
+>  .../ti/k3-j784s4-evm-quad-port-eth-exp1.dtso  | 147 ++++++++++++++
+>  .../ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso   |  81 ++++++++
+>  arch/arm64/boot/dts/ti/k3-j784s4-evm.dts      |  51 +++++
+>  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi    | 187 ++++++++++++++++++
+>  5 files changed, 476 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm64/boot/dts/ti/k3-j784s4-evm-quad-port-eth-exp1.dtso
+>  create mode 100644 arch/arm64/boot/dts/ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso
+> 
+
+For this series,
+Reviewed-by: MD Danish Anwar <danishanwar@ti.com>
 
 -- 
-With best wishes
-Dmitry
+Thanks and Regards,
+Danish
 
