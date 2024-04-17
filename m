@@ -1,179 +1,94 @@
-Return-Path: <linux-kernel+bounces-149094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C1EE8A8BC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:00:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6E068A8BC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:00:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE428B260A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:00:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92DAB281072
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9479B2C19D;
-	Wed, 17 Apr 2024 18:59:59 +0000 (UTC)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2130.outbound.protection.outlook.com [40.107.243.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45CAC23758;
+	Wed, 17 Apr 2024 18:59:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UZ8pHijh"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E0D21DFF3;
-	Wed, 17 Apr 2024 18:59:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.130
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713380398; cv=fail; b=DnAL94tlN42U6zOeU7WsRYSbP3MY82ZLrE+XwAK97i+O0ZKsS8me8G33em9MXlv6nWUKPXhKuN+VVjR/0BniwxenYEXT6zFANLSkCdTmUiDIKRwUnJKvIsk+NWEXwTN44TD/UARXrjAKGqj3VEqXD1F5W+t73Hsb3qkmPESZuPA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713380398; c=relaxed/simple;
-	bh=6efT8j3Ol15qRg0PJRIGIDgZtNQIeTGQIoOfx5nsxvA=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ijX5fSMSnwC16+4Y73BBnwyYkZp8CtFagfYMy9QNJHJSt/KZ1P07Mkj4vpGAsNsvfrd7VTD1r2Mo79mFKPICF1DZl46MofkN/uqbAleX0xXmT0P4nx6oX17HNsLttUoREqD1mUgi6bqjY+q9g6oYMaKYEn8P5B+svBfniEVvtDQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=talpey.com; spf=pass smtp.mailfrom=talpey.com; arc=fail smtp.client-ip=40.107.243.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=talpey.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=talpey.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kQuF01Hj1riem9C+zCGKA+ALywO5S1gqEbOzag7JmESBlqPQuKlIQczwdQfJcsYnLpHU29nFWGqMpqqegl5s0t9fHyzl6P6fLj8bvl/x6JhM+mv4dDIyxWq4Joew9dhp9FtR3H+hI3aJ3v8y+OX0Vm1EWXmfzro5D+5PS5Bzg1iEAxnWHNnohITUsMsKw1xZHg9lh3EjoNSZxXqz2PprLxDemgbSDgrNkRdYbfnEG4xT1S/TPHdEx7LzTxuIKIMPNhiSZ8j5nqS31D9YLbINpY/9DjuKXdjyHouff45GjAulEkpM5kcLBoHA84WpbgLkD0XfYTds/v/6JQ8ULm9/fQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IpDebR9NtUL5YhX00pDTxW061235RMhGzzgqwL/hkps=;
- b=ZL7kSuF3q5Xsva0Cf/bGu97XoqGVAyFyz+qhnPHjCY562RhEbZlnoFtWka7ReATTOV61+OhYbSpMQ/rLb4ZGZ17xq2QRbyycR2CHKhMIxDlgkhiSZjNXxjihKDaJhwXun5uhhQNg2dy7zB0VXCgMXZ3yjf3SR6SfoVkyYAleryawn32AWkytjjOvqNM2047fIK6Z1TZvEqlfAc1TBdLyULPAPdSobLxUJigoNqEI7/U+iM/GsIxeimAN9UrckRvYvQ1+tSjv0hfE77FY56GRxodKckIPliM44ryP8qio/NWTLEixCXGoFkxlMxyZdZTRHPAw+8IIVKvGjEaBnyYvYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
- dkim=pass header.d=talpey.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=talpey.com;
-Received: from CH0PR01MB7170.prod.exchangelabs.com (2603:10b6:610:f8::12) by
- MW6PR01MB8368.prod.exchangelabs.com (2603:10b6:303:246::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.50; Wed, 17 Apr 2024 18:59:53 +0000
-Received: from CH0PR01MB7170.prod.exchangelabs.com
- ([fe80::260f:c1b2:616a:af0]) by CH0PR01MB7170.prod.exchangelabs.com
- ([fe80::260f:c1b2:616a:af0%6]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
- 18:59:53 +0000
-Message-ID: <e33d0b65-fc0b-49ab-ba48-7a13327d88aa@talpey.com>
-Date: Wed, 17 Apr 2024 14:59:50 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cifs: Fix reacquisition of volume cookie on still-live
- connection
-To: David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.com>
-Cc: Steve French <sfrench@samba.org>, Shyam Prasad N <sprasad@microsoft.com>,
- linux-cifs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <1a94a15e6863d3844f0bcb58b7b1e17a@manguebit.com>
- <14e66691a65e3d05d3d8d50e74dfb366@manguebit.com>
- <3756406.1712244064@warthog.procyon.org.uk>
- <2713340.1713286722@warthog.procyon.org.uk>
- <277920.1713364693@warthog.procyon.org.uk>
-Content-Language: en-US
-From: Tom Talpey <tom@talpey.com>
-In-Reply-To: <277920.1713364693@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0298.namprd13.prod.outlook.com
- (2603:10b6:208:2bc::33) To CH0PR01MB7170.prod.exchangelabs.com
- (2603:10b6:610:f8::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 447EC1D52C
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:59:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713380396; cv=none; b=Tv3e4A8qMoaZ/5JfcnuTA+112laDhts59o+Zw9wS9EbLv5R3jo9Qtkn8dqJszqjR7rlpzlxkMlegUJNSziUJeLWgq8u/Re9xHWiiOSohjPiltEmItX39XszHKwlA7YfDpO97eNHaIE/F3CxSlstmpFT4xUje9rrvNGwcB/2jEC0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713380396; c=relaxed/simple;
+	bh=BA12yhIn/tlwN3KcWEpZllfM7GcJgrUEZA6BLeoXfDc=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=fdb6jQcOxaTROEMgeO7MUDjn6KMGONZNwBDZr2BO/sGv0uWclA7ZIE0unnIoM/1jAXvGL27JqUYvkVdidthLFDxG7qM9zoruN3UpxUgD0BRorIfznzsGToZFk1OYqAWqjRyMa8WRgrLMf71tfAUhNmtunmSXmFjHCW7DaSsPfMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UZ8pHijh; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcc0bcf9256so117549276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:59:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713380394; x=1713985194; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xQae4cfX4NaL9u9eCz9LjDnsnMH5rontKvZj0HGESGE=;
+        b=UZ8pHijhXU2M5DY14KIDtG5azuS7dx2pir3DzjgH5unhra681YLeDNN2BWWXsb0MDO
+         q98wBaE8iSe/WupeeLGpclW4xmPFk+d/jemXAYujISqKzMZORIjPHJlswz3q5HZnigEw
+         kkHOvhREJP5oBeSAMA4K8bRylKCgB+jlrhDri9DKDGqlBydPmjuyAJcUo2Eb1Od7MahQ
+         cjgJzuskOK1SUJNDvuPEqVdLNiepdohow1+w00fARTjaIGKClmoBZP0ORviLJ6wv2i0F
+         IfmlTHPsDj/NdnBzQupJXzJSqyNV7/qVHocejKbMDWMTZMwiNWnvYhWQ+dZJXejDsrzH
+         hKAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713380394; x=1713985194;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xQae4cfX4NaL9u9eCz9LjDnsnMH5rontKvZj0HGESGE=;
+        b=p7I6a3eLJj3qMdzd1oP4oXRYrwIOl39zPWvVjM7QwL0lof7vKdW3j9ZxyCFZ6iYBYO
+         b7PfGoGdnDjJrlkygRPfdHmFSM8+vgkx9275b+AtGOOakKR4uEXc5m+OBAygYJCIyP/J
+         Ir1ZNhMv8bME2v6wNPrlSp9ZwiMdYI+OJo8LLIFTFmG7I8e9edgWsqQhS7Y11/2gjmU6
+         wyqtdvS3mlKdeUwsedBuxKS7W7ikhaSwTDSOkEYNtJGdQV5o/yvXJ9tRBz3/5lNm58TW
+         maVAgCN3E8Oe79U97Pe/FSv2lPQULw5jimKWFIQSRqrxJLZkLkpMT7emUU+VJaheJlYi
+         6oiA==
+X-Forwarded-Encrypted: i=1; AJvYcCVBONh/BulAMVtNVMYrjbXtWofBDvU6Wc8eSnvSxcKucaCzYwCZnBeLzoFjw7YI0W2Rr7EQnc8BB9MpvFmFYzGY4Vdq4jKzDworb55y
+X-Gm-Message-State: AOJu0YxU88g5oe51p0sIUvOnTsPWTtCrJwv0yIAvP3oDTKyo5xR/t8tq
+	hjiW2+0SSju/0wEuX6SDwYCxMBfCGCCeN0ksR6oN4XkPMjZSj04Dk6mBvDQqiYPfX1j1EsdAPwv
+	0Ow==
+X-Google-Smtp-Source: AGHT+IGLW2W1pTs3wPgozteR9glPETjOgHDdfcxzf86ViF2A3bPyNslXaVI1lvNh87ZSztdrKiw/9LObPqo=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:c711:0:b0:dda:d7cf:5c2c with SMTP id
+ w17-20020a25c711000000b00ddad7cf5c2cmr22957ybe.13.1713380394327; Wed, 17 Apr
+ 2024 11:59:54 -0700 (PDT)
+Date: Wed, 17 Apr 2024 11:59:52 -0700
+In-Reply-To: <20240416211941.9369-31-tony.luck@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH0PR01MB7170:EE_|MW6PR01MB8368:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4c8ab250-5da6-4f93-7b28-08dc5f1090b4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	JwoEO7pEKlmxog3CLp+2y4eBvBMz1mOgJ8YC/maCVSO6XkodF/m3SZncwIZF/vc0eScP/U6VBjSg7q0yBGm8ZGG+kE94Q14Pkh9roz14W50xDsfiLhsxqMVM/JE+e79Y246hmtEChwgy5S7VpwICCruqVv/FvMoxXXcXptB6kynYLOP9lich/aNuWVYjminc+co4HnWMTA4IIIRlp+B7WnLX4Ag2CslvnIN+fua5J7GSPo5yvxAIVafPp8qSZw5l3/VyGR6AuxSehZqoNwVRScU9wq2pMi4hWheto5eqk9fTwqp26JtLNK6yTJpJPYO45WdBaZBvAMGbgwncNcZ8eD0bpQmT8CdEUH93KKd78+unvFkZv6fXePFjr3mZKYRCjoUENTFao9eSD3brqbsSOSFiKz7yjAbQUuiNDEqxmhGQcfVTF7zeeeLLgTv6VVeqVrPJqwXj7EhywEWihzpRLMHe/yTBtd1E46MU6z/gNl9COaiSz3ySTc3HnvyT6zuwXeh9K4ZRyLyG/YU73nO5Gt6pqqlJ2YatqhADnJlOvF8pGtY7XoXhqd+7/Z/NaEK0fYMKvzbFDRGPH5zw3kNxU30d/h/FB55oJCtWSSUJzRrZe3jT9FEwqcOz/HLAjQtj+lyWxVdxeycc2bJlWq7Iq0L1YY4SlrzPhkRh0f0CGjg=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7170.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?b2tmR3NrRUJyZ09XR0lwcXpST0pERGU0ZHNZK1VWcnpkNzVoaGdqV0IyNXBq?=
- =?utf-8?B?cXVrTHYvQmdVWWNUNEZoV2Jick95UlZJZDNZaFFkSitWc1VHRjBnVFpBWkt6?=
- =?utf-8?B?d0hOaFJmNC9Eemx6eGgzT1pkUWJiSmIwOG5XUzMwaGpFWFFkUTdEVEF2aktJ?=
- =?utf-8?B?cXdWaWFBTUZObTROWnFvTmZ5UUwwZmxVTWZpYXV2SmhKakE5TitONDVWTEV1?=
- =?utf-8?B?aVkxM3puMFRqdmVWU2d1NmlwWU84Si92UVFEcDByYkNJM1dvMW9uSWltSEVj?=
- =?utf-8?B?VDEyMzc1T21GbFF3eFJVSjJ3OHlrenZmOUFGa2NyS29xaDY5TDZXQTVVbHU0?=
- =?utf-8?B?bFh3TGw3NUJnUzlVb0NpTFhOT29hQkY4VzNnMjVnbFZxQTN4YW82ZTBtcW1n?=
- =?utf-8?B?YkhSSjNIaDhNZm5uN3I0TEh5TjJHVVVONk8yWlV3N3B0NlFkSEs0Ull2WVhq?=
- =?utf-8?B?bCs2aWpTM21aNThZVTFPbEVSWXJQUjVuWlBpVjdCWjI4RzJ0bFpIWjNaN2lU?=
- =?utf-8?B?dGMwMGRrRGlCQXdvOUpNNGxoczZGa29KeG9LUkxKRWdnVFVDWERkNVBic1lK?=
- =?utf-8?B?dm54QWNLQ09MeXNnWldvNzRIeVNmaDY0WlhuNkkrSkZFT0hML3FYVUJaSk0w?=
- =?utf-8?B?bjlGVkxqTDFleWhRYzFPUGhFNFhEL3pCYWdqaHhkL0xMRHpqRDFaa3hkQ1Zr?=
- =?utf-8?B?RG9TdUxzbnJvL2lITUNLeEdjcWtSZ2pkQVlVNnNlclBUL1JkT0MrSlNpdEVW?=
- =?utf-8?B?Y2ZFcnNGVm56TDRsSFFrWGpuUDFkRVp1Y3M0ZGpiNWlPeHJBdUhrNlBuTGRj?=
- =?utf-8?B?clZhYjRxVkczNnc4QWh4YW5OZGVVZXE2WWRrZFhaVnJaWk9oZXRTc3ZMNXZR?=
- =?utf-8?B?eVFOY2xJek1nanBuQXYvby9kemxMckFaSEZXVzdtZkFXTW92ZjAvSXkwSm04?=
- =?utf-8?B?UEI2NWsyWjc0YXkwVVltUk9ueEs3V1dkUytkQzNpcXI3cHczWHRNZTY1Qmtq?=
- =?utf-8?B?OEJKWTNUZHRXbDVvbVFsUHp6ck9semlHQThhVnlDYis5ZTRQemRjUlRHaVlJ?=
- =?utf-8?B?RmU4U0hpenNjbkpWekNXZnFpVUE3dFZSaXVUTVdiV3hPWXRaQkY4RGZCWjNT?=
- =?utf-8?B?c29pdVExdUx4WDRvQ0Fmc1ZLSWQzNU0zVmIrOE4zUTVvcmE3YStiYk1mTGhr?=
- =?utf-8?B?U0JLbERVRXVxejV4TGFtazlDQW0wQkZXRnJ4VHo2RERRUmJza09rOTNBVmtJ?=
- =?utf-8?B?bnNld29oL1FDOXZ4VDIrMzYwYnAvOGpoaW1SNW95YjVpMmNGaGJJTHp3WGFv?=
- =?utf-8?B?RytKK0xOcGdXNlE4VUhXMktvcVlNeG9PUjk0UEJ4bUFUVWkrdDRBYmVaM1NH?=
- =?utf-8?B?STU3c0Evb3RISVN2a0J3eldmWEZkaWZENkZXQjVCa3NlRVJHQjlKRlBRVlFx?=
- =?utf-8?B?STZHV2hBRDd0T0tjWkR0dHY4ZVVNTXozbFRMQmZNRjJMRFJNUzJrM2JvQVJ2?=
- =?utf-8?B?RDc1azZkNmorU1NyQWNmK0RoNWFaaW0vTnhNamM4THFrc0svVGE4Yk1ROCtY?=
- =?utf-8?B?Mi9QRFhRMG1tMkpqbDFWTlF6VEtGN1BETHdFOGtNR3pldzdLMjU3dFNaRFhY?=
- =?utf-8?B?SG1kVFhEWWxYU3NzWHQwWXBHM3pUc3BxNFM5azg0ZHlZZHpOQ211V1VBbXBQ?=
- =?utf-8?B?TnY0anAveEhJVm12bXdoa3RxUzU0Zmw5KzcyREtzdG1yR3p4T3lNM2J3MkJ6?=
- =?utf-8?B?cXhmYXV3ekV0QWVZWjdnZzJSR2xtTDkyVUkrMk95TUdsL29BWHZRbGZ2M3Ay?=
- =?utf-8?B?ZFlzd1ZRdCtZV2N3L0VOa3hLZUQxNy9na2docjhRQTlOU29qOVlxU2M4NHkv?=
- =?utf-8?B?YzBOT2R1MkZrRUcxRjJKdnhkQXZKNlBVL1V0blBYVmZxeDcwbEFsZHJWZnY2?=
- =?utf-8?B?SGFvZm5ZbzRUYXpvL2RhQmU1ckl2YnZDdWhISG5nRjN4d2Z2d0lKNmtsL28r?=
- =?utf-8?B?cVhQMlVRM3N3OGppSERvNDZoajhGcVhtZG04STNkZUJmNjNZbnBRdis5UEp0?=
- =?utf-8?B?ZkpNUzNKUjZVUWExdjVnOFV6azhvTWEzdU1TWDFPK1huWkthejZQbGNZb05Q?=
- =?utf-8?Q?0JuacblR4bqk2RBp3C5uYDAgs?=
-X-OriginatorOrg: talpey.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4c8ab250-5da6-4f93-7b28-08dc5f1090b4
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7170.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 18:59:53.2800
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZYPI4yhb2OplAO/E3r6sNX8IR+9OAaIewlCZjNuj83jsNOJw+MS0B8vLGwZaiBA2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR01MB8368
+Mime-Version: 1.0
+References: <20240416211941.9369-1-tony.luck@intel.com> <20240416211941.9369-31-tony.luck@intel.com>
+Message-ID: <ZiAcKKX_L2MNOF_n@google.com>
+Subject: Re: [PATCH v3 30/74] x86/cpu/vfm: Update arch/x86/kvm/pmu.c
+From: Sean Christopherson <seanjc@google.com>
+To: Tony Luck <tony.luck@intel.com>
+Cc: Borislav Petkov <bp@alien8.de>, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	patches@lists.linux.dev
+Content-Type: text/plain; charset="us-ascii"
 
-On 4/17/2024 10:38 AM, David Howells wrote:
-> Paulo Alcantara <pc@manguebit.com> wrote:
-> 
->> Consider the following example where a tcon is reused from different
->> CIFS superblocks:
->>
->>    mount.cifs //srv/share /mnt/1 -o ${opts} # new super, new tcon
->>    mount.cifs //srv/share/dir /mnt/2 -o ${opts} # new super, reused tcon
->>
->> So, /mnt/1/dir/foo and /mnt/2/foo will lead to different inodes.
->>
->> The two mounts are accessing the same tcon (\\srv\share) but the new
->> superblock was created because the prefix path "\dir" didn't match in
->> cifs_match_super().  Trust me, that's a very common scenario.
-> 
-> Why does it need to lead to a different superblock, assuming ${opts} is the
+For the scope, please use:
 
-The tcon is a property of the SMB3 session, it's not shared nor is
-it necessarily created at mount time.
+   KVM: x86/pmu:
 
-Tom.
+On Tue, Apr 16, 2024, Tony Luck wrote:
+> New CPU #defines encode vendor and family as well as model.
+> 
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
 
-> same in both cases?  Can we not do as NFS does and share the superblock,
-> walking during the mount process through the directory prefix to the root
-> object?
-> 
-> In other words, why does:
-> 
->      mount.cifs //srv/share /mnt/1 -o ${opts}
->      mount.cifs //srv/share/dir /mnt/2 -o ${opts}
-> 
-> give you a different result to:
-> 
->      mount.cifs //srv/share /mnt/1 -o ${opts}
->      mount --bind /mnt/1/dir /mnt/2
-> 
-> David
-> 
-> 
-> 
+Acked-by: Sean Christopherson <seanjc@google.com>
 
