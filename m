@@ -1,167 +1,165 @@
-Return-Path: <linux-kernel+bounces-148268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AB0F8A800F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:45:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6F2A8A8013
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:47:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A6F81F23B4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:45:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E4A5282BD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:47:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8250C13440B;
-	Wed, 17 Apr 2024 09:45:41 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD18413A258;
+	Wed, 17 Apr 2024 09:47:22 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C70F516;
-	Wed, 17 Apr 2024 09:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C898A12D759
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:47:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713347141; cv=none; b=AkQet1goG9s+plP5UCz/AIX+7tk7U+WLvT6YLrOdl846thJVzK65iYKhpkK6h3YFCfjjdpdSfDyt1Bj3r8It7jOH3qrZLZfanV+PCBkj0oIGRw8Hbv50FN09nQ2UYO2stm/shm4fcxg5lyqRrIQy3Ou4uiYSoEQ9T7nuRSIwOpo=
+	t=1713347242; cv=none; b=f1xWsGIK87cPEY8dXT6StvpIgR6rBHM9W9XKx2qOz0eTZR1gdLlfDDuvfLG0ahXazjhL09BiBMTNIVroOdY4WWg1SrYB/gOTPAIivbwVxykXi9A53qWiqV3akDUQ3gLglskwdl7USrPYrwZnrIDMnl7NZRwrJeiG4XTXC/cmotI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713347141; c=relaxed/simple;
-	bh=KoJBnnMfkQDjTHJ4VXbOujuvynCUV4+zBSTfLBsA10E=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=eIKGN3fUrME0g6YYnBiMa6nhnz70xEL68Qd/srauKemeB+MMShZdTgE3WLKidPsNeDD95uCd94WthQVyCDmcFTh3XrIZsHv9xPyUsL7u4ZiZQtiDylbJL9YaeYW4pR/PejSHF9sDLtpjGcJacGCzRY1tis7yUhefpAP77eSiujs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VKGF43Vrnz6F8c6;
-	Wed, 17 Apr 2024 17:43:36 +0800 (CST)
-Received: from lhrpeml100001.china.huawei.com (unknown [7.191.160.183])
-	by mail.maildlp.com (Postfix) with ESMTPS id F2387140B63;
-	Wed, 17 Apr 2024 17:45:35 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (7.191.163.240) by
- lhrpeml100001.china.huawei.com (7.191.160.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 17 Apr 2024 10:45:34 +0100
-Received: from lhrpeml500005.china.huawei.com ([7.191.163.240]) by
- lhrpeml500005.china.huawei.com ([7.191.163.240]) with mapi id 15.01.2507.035;
- Wed, 17 Apr 2024 10:45:34 +0100
-From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To: Jason Gunthorpe <jgg@nvidia.com>, Nicolin Chen <nicolinc@nvidia.com>
-CC: "will@kernel.org" <will@kernel.org>, "robin.murphy@arm.com"
-	<robin.murphy@arm.com>, "joro@8bytes.org" <joro@8bytes.org>,
-	"thierry.reding@gmail.com" <thierry.reding@gmail.com>, "vdumpa@nvidia.com"
-	<vdumpa@nvidia.com>, "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-tegra@vger.kernel.org"
-	<linux-tegra@vger.kernel.org>, Jerry Snitselaar <jsnitsel@redhat.com>
-Subject: RE: [PATCH v5 0/6] Add Tegra241 (Grace) CMDQV Support (part 1/2)
-Thread-Topic: [PATCH v5 0/6] Add Tegra241 (Grace) CMDQV Support (part 1/2)
-Thread-Index: AQHajVTpda5PtrGZ80+YonTPgO6cRrFphU4AgAKXr6CAAB7BMA==
-Date: Wed, 17 Apr 2024 09:45:34 +0000
-Message-ID: <ba3047f946c6475aaf30800f9d3f9afb@huawei.com>
-References: <cover.1712977210.git.nicolinc@nvidia.com>
- <20240415171426.GF3637727@nvidia.com>
- <f92efdb774cc4cd48a59495e7cb69c27@huawei.com>
-In-Reply-To: <f92efdb774cc4cd48a59495e7cb69c27@huawei.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1713347242; c=relaxed/simple;
+	bh=7T0jE4ZevulDuzaXolOY+mL/1dOAqMHAmX9QE/q0xrk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OpYleSeJyWx4zY5ekpDT/eZ3iX42A34ocV6bcTcT5n2gJcEP9H2tq6+KdBZy3ItU9jaOO02vzBrycD9E6XYg3SRImMfMdh4lm6QgLVrSTX28YWUh/uP0D7WJ9PuoEvUXsFAb2D7XrdhM/PjYsTYLWrLpZrhydYv401lIDvrHXmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36849578ac4so54898245ab.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 02:47:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713347240; x=1713952040;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/axdWpjvUcy29WnnMh6W6dLuZZUINorcU0gQ6Y0GJMI=;
+        b=xSkdIe7OTO7cVZv2aTE7eiiLmVuO9Nmuo8qyCgnsp5ezxkWNdU2T9c8kl8/qv7w6Iz
+         po1hPlRh+RryBJMUWMvJ6Nxc+abCyHqRLYsbtFSJ6ejRwb1IoFHiBjkKVQ6kFEcKBRy4
+         sieiT256cBio6l1eKOo+PHiQSAe2JYGahYbgjWZUlkIPZNH86kJ/SfwDxdKdCXD+9/iL
+         ii5YTKNSWbvCjN4gALyzEomLH7VNK32VmXaUMMJM86/mSGWlrGmBxiYasQ7zRFUiwtEb
+         H64hJ0J8gO4eSZ/mg+NCYOLblwmaLZFphQhBtoHat97Z8sLeRwtm8DsJB4WQ2la4GxVd
+         fe6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVEn53yISVDC5BcMLgnRGFhffAgBgBeTBxX/unEnTJFK56ITsuG8NdNEgCDhMnexqjtZO+7sg3bAg/MtJW9MUYriDDVU6j8dcAPGHE2
+X-Gm-Message-State: AOJu0YyzB3gSf+3PASLEzkIVVrpviFzoPAcudPwz9rTgrAIt6NRPusZ+
+	ugWkmEd4GCt6jlHGCAiKxcjP2pfV5DkrfC/8/g6K/Zqiy79urOy9BDm/R4LZFNmU1RshwJqo/hN
+	ci3qWgsNxuxetZtpmguPMof2uWCbS4zWl6XBH/t/sCPn/lwOfX7LRWx4=
+X-Google-Smtp-Source: AGHT+IHBjI22WoUkN+g93OaYFolruxJqbuXLW/vEsANgzn74WeM5aLQzKxRfX9He5/w57A1Yq3XimXwkijYMqDumu+eSMRyXH4xZ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:1d83:b0:36b:2464:bd2c with SMTP id
+ h3-20020a056e021d8300b0036b2464bd2cmr234520ila.2.1713347240062; Wed, 17 Apr
+ 2024 02:47:20 -0700 (PDT)
+Date: Wed, 17 Apr 2024 02:47:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009f0651061647bd5e@google.com>
+Subject: [syzbot] [fs?] WARNING in stashed_dentry_prune (2)
+From: syzbot <syzbot+e25ef173c0758ea764de@syzkaller.appspotmail.com>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompatibil..
+git tree:       bpf
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=130e2add180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=e25ef173c0758ea764de
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12fb63f3180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14e68f6d180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3f355021a085/disk-443574b0.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/44cf4de7472a/vmlinux-443574b0.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a99a36c7ad65/bzImage-443574b0.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e25ef173c0758ea764de@syzkaller.appspotmail.com
+
+RDX: 0000000000000002 RSI: 00007ffd10172950 RDI: 00000000ffffff9c
+RBP: 00007ffd10172950 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000002
+R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5067 at fs/libfs.c:2117 stashed_dentry_prune+0x97/0xa0 fs/libfs.c:2117
+Modules linked in:
+CPU: 0 PID: 5067 Comm: syz-executor252 Not tainted 6.8.0-syzkaller-05236-g443574b03387 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:stashed_dentry_prune+0x97/0xa0 fs/libfs.c:2117
+Code: 00 00 e8 ac c1 e2 ff 31 c9 4c 89 f0 f0 49 0f b1 0f eb 05 e8 7b 77 7f ff 5b 41 5c 41 5e 41 5f c3 cc cc cc cc e8 6a 77 7f ff 90 <0f> 0b 90 eb e9 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc9000394f4c8 EFLAGS: 00010293
+RAX: ffffffff82157906 RBX: ffff888075d4b588 RCX: ffff8880221c1e00
+RDX: 0000000000000000 RSI: 0000000000000010 RDI: ffff888075d4b490
+RBP: 0000000000000001 R08: ffffffff820fa354 R09: 1ffff1100eba96a5
+R10: dffffc0000000000 R11: ffffffff82157870 R12: dffffc0000000000
+R13: dffffc0000000000 R14: ffff888075d4b490 R15: 0000000000000000
+FS:  000055555a374380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7c10b02c00 CR3: 0000000011176000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __dentry_kill+0xa9/0x630 fs/dcache.c:594
+ dput+0x19f/0x2b0 fs/dcache.c:845
+ prepare_anon_dentry fs/libfs.c:2018 [inline]
+ path_from_stashed+0x695/0xb00 fs/libfs.c:2094
+ proc_ns_get_link+0xf9/0x230 fs/proc/namespaces.c:61
+ pick_link+0x631/0xd50
+ step_into+0xca9/0x1080 fs/namei.c:1875
+ open_last_lookups fs/namei.c:3590 [inline]
+ path_openat+0x18b0/0x3240 fs/namei.c:3797
+ do_filp_open+0x235/0x490 fs/namei.c:3827
+ do_sys_openat2+0x13e/0x1d0 fs/open.c:1407
+ do_sys_open fs/open.c:1422 [inline]
+ __do_sys_openat fs/open.c:1438 [inline]
+ __se_sys_openat fs/open.c:1433 [inline]
+ __x64_sys_openat+0x247/0x2a0 fs/open.c:1433
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f7c10aceda1
+Code: 75 57 89 f0 25 00 00 41 00 3d 00 00 41 00 74 49 80 3d ca 92 07 00 00 74 6d 89 da 48 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 93 00 00 00 48 8b 54 24 28 64 48 2b 14 25
+RSP: 002b:00007ffd101728a0 EFLAGS: 00000202 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f7c10aceda1
+RDX: 0000000000000002 RSI: 00007ffd10172950 RDI: 00000000ffffff9c
+RBP: 00007ffd10172950 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000002
+R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> -----Original Message-----
-> From: Shameerali Kolothum Thodi
-> Sent: Wednesday, April 17, 2024 9:01 AM
-> To: 'Jason Gunthorpe' <jgg@nvidia.com>; Nicolin Chen <nicolinc@nvidia.com=
->
-> Cc: will@kernel.org; robin.murphy@arm.com; joro@8bytes.org;
-> thierry.reding@gmail.com; vdumpa@nvidia.com; jonathanh@nvidia.com; linux-
-> kernel@vger.kernel.org; iommu@lists.linux.dev; linux-arm-
-> kernel@lists.infradead.org; linux-tegra@vger.kernel.org; Jerry Snitselaar
-> <jsnitsel@redhat.com>
-> Subject: RE: [PATCH v5 0/6] Add Tegra241 (Grace) CMDQV Support (part 1/2)
->=20
->=20
->=20
-> > -----Original Message-----
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Monday, April 15, 2024 6:14 PM
-> > To: Nicolin Chen <nicolinc@nvidia.com>
-> > Cc: will@kernel.org; robin.murphy@arm.com; joro@8bytes.org;
-> > thierry.reding@gmail.com; vdumpa@nvidia.com; jonathanh@nvidia.com;
-> > linux-kernel@vger.kernel.org; iommu@lists.linux.dev; linux-arm-
-> > kernel@lists.infradead.org; linux-tegra@vger.kernel.org; Jerry Snitsela=
-ar
-> > <jsnitsel@redhat.com>
-> > Subject: Re: [PATCH v5 0/6] Add Tegra241 (Grace) CMDQV Support (part 1/=
-2)
-> >
-> > On Fri, Apr 12, 2024 at 08:43:48PM -0700, Nicolin Chen wrote:
-> >
-> > > The user-space support is to provide uAPIs (via IOMMUFD) for hypervis=
-ors
-> > > in user space to passthrough VCMDQs to VMs, allowing these VMs to
-> > access
-> > > the VCMDQs directly without trappings, i.e. no VM Exits. This gives h=
-uge
-> > > performance improvements: 70% to 90% reductions of TLB invalidation
-> > time
-> > > were measured by various DMA unmap tests running in a guest OS,
-> > compared
-> > > to a nested SMMU CMDQ (with trappings).
-> >
-> > So everyone is on the same page, this is the primary point of this
-> > series. The huge speed up of in-VM performance is necessary for the
-> > workloads this chip is expected to be running. This series is unique
-> > from all the rest because it runs inside a VM, often in the from of a
-> > distro release.
-> >
-> > It doesn't need the other series or it's own part 2 as it entirely
-> > stands alone on bare metal hardware or on top of commercial VM cloud
-> > instances runing who-knows-what in their hypervisors.
-> >
-> > The other parts are substantially about enabling qemu and the open
-> > ecosystem to have fully functional vSMMU3 virtualization.
->=20
-> Hi,
->=20
-> We do have plans to revive the SMMUv3 ECMDQ series posted a while back[0]
-> and looking at this series, I am just wondering whether it makes sense to=
- have
-> a similar one with ECMDQ as well?  I see that the NVIDIA VCMDQ has a spec=
-ial
-> bit
-> to restrict the commands that can be issued from user space. If we end up
-> assigning
-> a ECMDQ to user space, is there any potential risk in doing so?
->=20
-> SMMUV3 spec does say,
-> "Arm expects that the Non-secure Stream table, Command queue, Event queue
-> and
-> PRI queue are controlled by the most privileged Non-secure system softwar=
-e. "
->=20
-> Not clear to me what are the major concerns here and maybe we can come up
-> with
-> something to address that in kernel.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Just to add to that. One idea could be like to have a case where when ECMDQ=
-s are=20
-detected, use that for issuing limited set of cmds(like stage 1 TLBIs) and =
-use the
-normal cmdq for rest. Since we use stage 1 for both host and for Guest nest=
-ed cases
-and TLBIs are the bottlenecks in most cases I think this should give perfor=
-mance
-benefits.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Thanks,
-Shameer
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
