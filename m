@@ -1,130 +1,121 @@
-Return-Path: <linux-kernel+bounces-148095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 911038A7DA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:02:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9B948A7DA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:02:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46A1F1F2335C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:02:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52A111F2371E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:02:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5559C7BAEE;
-	Wed, 17 Apr 2024 08:01:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mzMNYHiF"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F07E971B24;
+	Wed, 17 Apr 2024 08:02:13 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1320E6F068;
-	Wed, 17 Apr 2024 08:01:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C00D76F07B
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 08:02:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713340890; cv=none; b=MG14JFPgRQgoW1/GDeEkxmQrhN9CeOqx+JrEytkGl+DQem98ebJDx3NjbCfnMhufemmsS1rOQ8soRb0USAIY9sWffsx4L8VYECAygZMgROgqs6mYUMluqW3yA3Dzd0eksN8qd4PmDCWaTdz7tFzLSZhEFx+KvlH3dV4fBMozy+M=
+	t=1713340933; cv=none; b=p3Apic5ge0qrOpEm+448BDd+zukyValuBPJhujTpSNcm5PobCkOVzfa9Oub1DUcZTYLFmuGY5sztj3zcv63H9p5Sznl3jHcQLun2mbqZb9Vkiil6Axe6RNjhaFDDEzqk1IRfUF5YzbCUCv90QNNJC3u+SIAe23Ezlaw1/4KqCxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713340890; c=relaxed/simple;
-	bh=+AHxkBxgK0JVVQSGYJS1zewwUaQq0VBfzWVYWCsdqJ0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rTNgYcrgbbxGDYJdhI2j2cy7Z2Jje+n/oWEZ+rQe5hppXZ8cTdvRQqqh+LGsTFPJ5dlRHGWbWfHCmixIREVidxAKfI8GkB0yB4hBYchBbYYlXnOpp0+2KezdmWVQUGuu5O+S1S435AfiiLHVu86CUmLk6mcTrkG01BuoFqFonOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mzMNYHiF; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713340889; x=1744876889;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+AHxkBxgK0JVVQSGYJS1zewwUaQq0VBfzWVYWCsdqJ0=;
-  b=mzMNYHiFIB3UQWJPN3grGTiBRUcZaBshJGEpUNghduJHcpM79o2+8HrO
-   W1Kp8Dw6K756ATSyTEsqweliioO5z8imzs0ZbBu7XPuYwBzHKBkK3M4rQ
-   C70tZXZCSTSQRzi/6r/Z+GCpXxVmJzT/Bf75bQxTv42ZIqKCbVe/CYeJW
-   OJTUfvHkKBWfIxZLLEPt8Oe+ex6/hYkA++t+xFh225+fISJxFJmcOUSEX
-   CDCVvPZOxbjJlOxM3Etyfz8laiNKNZGMttu4hB6HUKR2jOrR7K33X4Mec
-   slsgiQEKZsPA0tVw0IcGbpOGRxFCV5SfyeNXQqwksUTKFeBJN3XEItKf2
-   g==;
-X-CSE-ConnectionGUID: FdCnuTpwQjSxuXsnHN0EQg==
-X-CSE-MsgGUID: pNXAYMt6QLKuwpksWjFJiA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8645469"
-X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
-   d="scan'208";a="8645469"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 01:01:29 -0700
-X-CSE-ConnectionGUID: B+QfucwGScGx7lVtv3A5OA==
-X-CSE-MsgGUID: Fe65QYkKT6Cu91ekTALwTQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
-   d="scan'208";a="22619310"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.94.0.53]) ([10.94.0.53])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 01:01:23 -0700
-Message-ID: <f75809bb-1594-4bcd-9362-5aee8df04375@linux.intel.com>
-Date: Wed, 17 Apr 2024 10:01:21 +0200
+	s=arc-20240116; t=1713340933; c=relaxed/simple;
+	bh=xqgbBAr+qzpE6aT45CzHZDH1fguOizphFrZG7Cgilg0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c5IvNtGP872PGB1uZXM3zR4Cn3s74Y0kdKxko3+eGMbps5S9TvyJe5aNM+GBnzpW5MVlTFN5jvm0hMw1Or60M2DDorQDFDolcl9UeiL2RLGl/65l18pc9wSUDib6T2cxYMOVFeJnDTtpFh2+tsyfq8VAppFKqFlbya7WErL7LYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rx0EY-0001q9-4l; Wed, 17 Apr 2024 10:01:34 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rx0EW-00CkmG-Qv; Wed, 17 Apr 2024 10:01:32 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rx0EW-002e73-2K;
+	Wed, 17 Apr 2024 10:01:32 +0200
+Date: Wed, 17 Apr 2024 10:01:32 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Alexandre Mergnat <amergnat@baylibre.com>
+Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Jitao Shi <jitao.shi@mediatek.com>, CK Hu <ck.hu@mediatek.com>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, dri-devel@lists.freedesktop.org, 
+	linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v2 11/18] dt-bindings: pwm: mediatek,pwm-disp: add
+ power-domains property
+Message-ID: <22yeoik77sdhmg43odjftzjn2douq74zhxwy6qx3hsrvr53r5e@7w3f3zbgxult>
+References: <20231023-display-support-v2-0-33ce8864b227@baylibre.com>
+ <20231023-display-support-v2-11-33ce8864b227@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 71/74] x86/cpu/vfm: Update
- sound/soc/intel/avs/boards/es8336.c
-Content-Language: en-US
-To: Tony Luck <tony.luck@intel.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, patches@lists.linux.dev
-References: <20240416211941.9369-1-tony.luck@intel.com>
- <20240416212257.10009-1-tony.luck@intel.com>
-From: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20240416212257.10009-1-tony.luck@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yebn7lkzwjt2edcd"
+Content-Disposition: inline
+In-Reply-To: <20231023-display-support-v2-11-33ce8864b227@baylibre.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 4/16/2024 11:22 PM, Tony Luck wrote:
-> New CPU #defines encode vendor and family as well as model.
-> 
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> ---
->   sound/soc/intel/avs/boards/es8336.c | 7 ++++---
->   1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/intel/avs/boards/es8336.c b/sound/soc/intel/avs/boards/es8336.c
-> index 5c90a6007577..6c86c581877e 100644
-> --- a/sound/soc/intel/avs/boards/es8336.c
-> +++ b/sound/soc/intel/avs/boards/es8336.c
-> @@ -18,6 +18,7 @@
->   #include <sound/pcm_params.h>
->   #include <sound/soc.h>
->   #include <sound/soc-acpi.h>
-> +#include <asm/cpu_device_id.h>
->   #include <asm/intel-family.h>
->   #include "../utils.h"
->   
-> @@ -153,9 +154,9 @@ static int avs_es8336_hw_params(struct snd_pcm_substream *substream,
->   	int clk_freq;
->   	int ret;
->   
-> -	switch (boot_cpu_data.x86_model) {
-> -	case INTEL_FAM6_KABYLAKE_L:
-> -	case INTEL_FAM6_KABYLAKE:
-> +	switch (boot_cpu_data.x86_vfm) {
-> +	case INTEL_KABYLAKE_L:
-> +	case INTEL_KABYLAKE:
->   		clk_freq = 24000000;
->   		break;
->   	default:
 
-Any chance we could adjust topic to follow subsystem rules?
-Something like:
-ASoC: Intel: avs: boards: Update defines used in es8336
-or something like that?
+--yebn7lkzwjt2edcd
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+On Tue, Apr 16, 2024 at 05:53:12PM +0200, Alexandre Mergnat wrote:
+> According to the Mediatek MT8365 datasheet, the display PWM block has
+> a power domain.
+>=20
+> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
+
+I already pointed that out in reply to the cover letter, so just to make
+it more easily to spot for people considering to apply this patch:
+
+This is already fixed in next.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--yebn7lkzwjt2edcd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYfgdsACgkQj4D7WH0S
+/k6aiQf8DDht8BJdwLA/chC/kqidSgtlv6qxFC1XbFLhIfSvyp8eqaLoaQk+lLDt
+9WdQ2VOkHggnHje1S9Gj34fqnvGuJZcZkOnlXI7z6T19ngA1JzvAiKWtVuZbV6bC
+Co9nKH9suzuEmBXk3SXdR2WILBaYxqP2UxfZ05BW26JCB+5JKxIMUH0c2tBKP5l3
+3LmMOO36eJ95y3iHp8Q8I93qPZDYJhXDkFPehtepPzK30J3XeLct+6tQZUHAzyeP
+BBLmoTFgotLZLsDeBpfMlGlgFKqibDM72G/Fh0vVgR1qCRUKFpiE6/xipzch5F3d
+IbSttwKcXx3F0YSgQjx223hlA4c2yg==
+=1L1v
+-----END PGP SIGNATURE-----
+
+--yebn7lkzwjt2edcd--
 
