@@ -1,108 +1,251 @@
-Return-Path: <linux-kernel+bounces-149042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1DE98A8AED
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:20:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0CC78A8AF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:20:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ECC91C210B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:20:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 681BB28666C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D2217333F;
-	Wed, 17 Apr 2024 18:19:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58B56173343;
+	Wed, 17 Apr 2024 18:20:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="2I8vo6dq"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SO17Gtz4"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05A3C172BA9
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:19:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C337017109A;
+	Wed, 17 Apr 2024 18:20:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713377993; cv=none; b=lq7gacprPz5XKCKniBi/yMtX99yDMBKG40I3e+kpfhJX/jyp6oA7mdFT8HBnSWQ45n8JvlAOZK9pj28A5ObynXbujXqOtFn4GnlNUU/aKS0fuLLa516AaI1kuwpvoT9x8mQAFP+jeU8UV1qPN1FFoqQHhbAsKBwXjQXnNSw+fm8=
+	t=1713378036; cv=none; b=jmL3vHgiQMRUIsVUU6cL4ODR8jDMrr6vtxpQOQlCjaQGtrNvUUMNu56iG7OvNQtXoo6iypkF2lPw8aghGDjzTxgrbKYzd5W4uOAjYTQp9HNCmst4SeNSYsGtSn0rHLcxoQnFESVx+QZ5UeliRCme49cnlNze/4BchNM+CNrZ9Ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713377993; c=relaxed/simple;
-	bh=E5Lt+ffHfRg8xmAsCNmgFbUyro5LbYYD1lfR4zsupLw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ppf4dBS9kYtnjp4Hsjq73PvwwXJV31RcQHc2YBYb5GzVKjIaEWmv6rvaHLCYfEjcz54ik2O9Hc8Aunl1QS1rbDqroHu9VnPAaJBccuaPRp6hSHTu5uaFNBmtP2tk3Pmo+yZuJR4/Wnr4jB2yKJI/HmB5VfFPkUCMdDxbhoKYj5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=2I8vo6dq; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-518a56cdbcfso7339396e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:19:51 -0700 (PDT)
+	s=arc-20240116; t=1713378036; c=relaxed/simple;
+	bh=QTy1uOP4RHZQB2JvlA74CbksC3jZmMiqgqD8WB6bOhs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IOEQWkXk+Evsb5kuKoXC7Pd9JzKj9S4F3e5gy/Y3dlFOni9LzjKzJGs8xbABeuqFQ9AZTZLfIRjwYNYr6KH7kIAzwK4qzvk8S+ne8e5M1AucW3YFFen443FPhAtxcgf8bvVoZT2SosHm+jKBLnH6LriKeub9TJJXney6mrShrOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SO17Gtz4; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-518a56cdc03so5511760e87.1;
+        Wed, 17 Apr 2024 11:20:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1713377990; x=1713982790; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E5Lt+ffHfRg8xmAsCNmgFbUyro5LbYYD1lfR4zsupLw=;
-        b=2I8vo6dqpHYJgCyKvc7dwSSaxfeax4S90sVL9Y+AX2Ah10np9gzQ8HA51ZMGTFiZvB
-         jmi04F0pWpnJEKHDm+X2vRQMMwYTOD83eJhJSF60dJUFwGzFmy6NxuKmWZDrvom2J98F
-         EMJutou7dT/pUkD1KQVNEnx6qVkT1sNKT5lggRRJFzjkD0HpE7ShXVdDHfyrpJwdSSUX
-         kB/HMBOi+YePp9mnPYvFA87sZ0Y9hhYFRzu/lF71osZZ9+HBJHHOAopnnofP0ey/G8M4
-         5OLUmy8D9ckZLReb24ONklv077bTm47WIXCE+MsFCizu6RYYZARHibIcDE5HbyYUHoeD
-         d1Eg==
+        d=gmail.com; s=20230601; t=1713378033; x=1713982833; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=48QPMkUrojznECdYqYE3dhoGPTvtwzBbZbvBIFF59pI=;
+        b=SO17Gtz4HWK34qOVShBrXhKDjQ8KTR1LtGGF8qA3ntwQO2os3JRXvxUfOwEZN1JL5O
+         I6xGXZAweVDXLcUhKrjokCyRNHqR6C1+xenD1mZMSbFOX9H7M49MXpVWr49ZPtqh8XRl
+         0hr4nYSZKKvkJAO6mdvfzdvkJKoaNqjGiJ1NbAqdDfxPeKIbKJqrLDcEfiik7Ejbyfew
+         2SFoy6DQATd+6XTyLv+dgq0Sp+CTCnxfOv9Xxin9gzwL1wAhVgHug2jweLqtn0nIQBsc
+         tO3VhL46zOtX5d+05b0tsSD3M0yugz8lTiaXJU2uOkREtJwFs5uDNVC6a2EfemrNEnjo
+         DklA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713377990; x=1713982790;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E5Lt+ffHfRg8xmAsCNmgFbUyro5LbYYD1lfR4zsupLw=;
-        b=fz+B874iQGhZgx4G+sxxE51JCBB7iXvzoHAE3IYnf6IilySsY3Faxf8BXqFhgI4J9O
-         Cy9QqHafgt4SxKqasJAdf7SnfN7F1DYmVl5uTBu+siBUvpf6BvxJKduprCIahURk0Tl4
-         FpCqk8lv9A+qBZv7nmvXeLV1gG9rBafbO8s4ulSiKRLHdHDUxTkwKBAU8s+JZG2r+ZZw
-         1Rm5Zsi3GhmuQR1hRhLV1hqY0aGO39Y8fNqbuqqDQbLhLTZTIkxlbu6Wakg1rXaN4PY9
-         ftTW1B057Ws2zfUD6fN70/Udow0oTUBIud2BtxvaK4HBY+G72RpLqFLolfZ7o6AoPbRL
-         pIjA==
-X-Forwarded-Encrypted: i=1; AJvYcCWAP/bHxhdxUGPtFwaNoHu8MQpfBtWUpQP3zswoZ6A+7C+pVmVq73pA2Bvl/5ShwHhwoBPdPC7EwwgsEm9I0I4teGTz2mUgWAJyhBrj
-X-Gm-Message-State: AOJu0Yx4+Sxd4yHnJYEpH/DMQkhGv+EQgTQSdl+49FDKtpev2cQxt/ij
-	gZq2s1MmvUao+j4lkrcEbPpUEoqVsawHqJX6ZKrF7JxCzszZThHy6qZLiM1Avah4zBz1e2Y5ga+
-	LHg8Z/+Qhu+RyxUOI03ZDbvFLHk6/DvinhC2sfA==
-X-Google-Smtp-Source: AGHT+IExB+6UnFXh8LvppjsLRD28Zb6Ma6bPnzodalh1mlBjN3At7SXOwFqlauJ21IgBLjClpCHrPxVMBB6VsGrO2nY=
-X-Received: by 2002:a19:9148:0:b0:519:a55:7ee7 with SMTP id
- y8-20020a199148000000b005190a557ee7mr60964lfj.26.1713377990047; Wed, 17 Apr
- 2024 11:19:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713378033; x=1713982833;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=48QPMkUrojznECdYqYE3dhoGPTvtwzBbZbvBIFF59pI=;
+        b=YuxABuJA1rchtAzfUt/FKztpxySJ4Wjmyx5dpJ/ax6SibjgQn5iu+jgFQlB91j11ey
+         icTU58p9YBo4Lsvnzi1m+pKYN4NUPXIbDYSZi/yLWDOxeNTOnZlOAOiTdLbtBYv5g2MA
+         F0y6vfyVBVIpylBgE2YJAP8a9aJGBAo72jfN4uJ3dNBWVWM1AFjFHeS/a5tTXqqI59/F
+         TGKGvLoAbfEeBuWeEaAwZwjUe+wgTEzB4vgpUTaSbzjckOPoUXjYLrUBAR0cAqL83fTl
+         PtGbkA71bHHzNCZfZ0zTWQX63YC4UOkdZD7IXMzvnvpN9jftaH63UItslZS/Zs18/N3m
+         UbtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWdLD6wm1vEfTg6LGKjARFu953hRyN9l+AyPGxjIwlamuXQBUe5osyjQjOSsFZyqKED0jSGEc/NT09WUJEx7BHNtrnGJ5ntUTPgJUCbKhRn16En6faSccmgBeg0iYwgQd3+vD9E5O3u9YMxLzxGHB9iYSEsGT9pUX8ZgZkSGlxIWTVyxFDIDV8o
+X-Gm-Message-State: AOJu0YxBaXqENR2gAt6H+haXKTU5AxI4dPluKONuI/xa9/xR8/XxMb4P
+	MGrUEPe71+zCqR/OEdYRyfH3zjQANUw4JtqmUXmE/W3CtN+j9G8O
+X-Google-Smtp-Source: AGHT+IGJW3vK7CXrR4lO73FgrvK84R77Y6SVOiE+CEZS0nEZE/Y0fOqIn2VWRX08++ENrykqPR5DKg==
+X-Received: by 2002:ac2:57db:0:b0:518:a56d:dc25 with SMTP id k27-20020ac257db000000b00518a56ddc25mr35292lfo.38.1713378032612;
+        Wed, 17 Apr 2024 11:20:32 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:7426:df00::2? (drtxq0yyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:7426:df00::2])
+        by smtp.gmail.com with ESMTPSA id m6-20020ac24ac6000000b00517737b4d5dsm2016940lfp.151.2024.04.17.11.20.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 11:20:32 -0700 (PDT)
+Message-ID: <43af9cc9-1afe-42ae-bf69-b285b52a7882@gmail.com>
+Date: Wed, 17 Apr 2024 21:20:31 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410072102.1200869-1-andy.shevchenko@gmail.com>
- <ZhpC3lLD-BHqJEZz@ishi> <CAMRc=MerqbYue_uubSkr0ta3wr+yQxfFMfk+vAUZa+C2oR+udQ@mail.gmail.com>
- <CAHp75VcofgAQLFVLdsA-A1AkjVzQBJWtam=w00+z9-rueZyv8A@mail.gmail.com>
-In-Reply-To: <CAHp75VcofgAQLFVLdsA-A1AkjVzQBJWtam=w00+z9-rueZyv8A@mail.gmail.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 17 Apr 2024 20:19:38 +0200
-Message-ID: <CAMRc=MejJTnawn1=_x9Va-QJRctjoc3TJanVqQ0uZbpmDzpyjw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpio: sch: Switch to memory mapped IO accessors
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: William Breathitt Gray <wbg@kernel.org>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Andy Shevchenko <andy@kernel.org>, 
-	Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 5/6] watchdog: ROHM BD96801 PMIC WDG driver
+Content-Language: en-US, en-GB
+To: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
+References: <cover.1712920132.git.mazziesaccount@gmail.com>
+ <d52fd63e98635293022e5a607fd763b580e24189.1712920132.git.mazziesaccount@gmail.com>
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <d52fd63e98635293022e5a607fd763b580e24189.1712920132.git.mazziesaccount@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 17, 2024 at 10:05=E2=80=AFAM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Wed, Apr 17, 2024 at 12:17=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.=
-pl> wrote:
-> > On Sat, Apr 13, 2024 at 10:31=E2=80=AFAM William Breathitt Gray <wbg@ke=
-rnel.org> wrote:
->
-> ...
->
-> > I applied it as is, if anyone wants it, this can be sent on top of it.
->
-> Thanks, but I assumed this should go via my tree and as PR to you. At
-> least I have it already in my for-next.
->
+On 4/12/24 14:22, Matti Vaittinen wrote:
+> Introduce driver for WDG block on ROHM BD96801 scalable PMIC.
+> 
+> This driver only supports watchdog with I2C feeding and delayed
+> response detection. Whether the watchdog toggles PRSTB pin or
+> just causes an interrupt can be configured via device-tree.
+> 
+> The BD96801 PMIC HW supports also window watchdog (too early
+> feeding detection) and Q&A mode. These are not supported by
+> this driver.
+> 
+> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+> 
+> ---
+> Revision history:
+> RFCv1 => RFCv2:
+> - remove always running
+> - add IRQ handling
+> - call emergency_restart()
+> - drop MODULE_ALIAS and add MODULE_DEVICE_TABLE
+> ---
+>   drivers/watchdog/Kconfig       |  13 ++
+>   drivers/watchdog/Makefile      |   1 +
+>   drivers/watchdog/bd96801_wdt.c | 389 +++++++++++++++++++++++++++++++++
+>   3 files changed, 403 insertions(+)
+>   create mode 100644 drivers/watchdog/bd96801_wdt.c
+> 
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 6bee137cfbe0..d97e735e1faa 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -181,6 +181,19 @@ config BD957XMUF_WATCHDOG
+>   	  watchdog. Alternatively say M to compile the driver as a module,
+>   	  which will be called bd9576_wdt.
+>   
+> +config BD96801_WATCHDOG
+> +	tristate "ROHM BD96801 PMIC Watchdog"
+> +	depends on MFD_ROHM_BD96801
+> +	select WATCHDOG_CORE
+> +	help
+> +	  Support for the watchdog in the ROHM BD96801 PMIC. Watchdog can be
+> +	  configured to only generate IRQ or to trigger system reset via reset
+> +	  pin.
+> +
+> +	  Say Y here to include support for the ROHM BD96801 watchdog.
+> +	  Alternatively say M to compile the driver as a module,
+> +	  which will be called bd96801_wdt.
+> +
+>   config CROS_EC_WATCHDOG
+>   	tristate "ChromeOS EC-based watchdog"
+>   	select WATCHDOG_CORE
+> diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+> index 3710c218f05e..31bc94436c81 100644
+> --- a/drivers/watchdog/Makefile
+> +++ b/drivers/watchdog/Makefile
+> @@ -217,6 +217,7 @@ obj-$(CONFIG_XEN_WDT) += xen_wdt.o
+>   
+>   # Architecture Independent
+>   obj-$(CONFIG_BD957XMUF_WATCHDOG) += bd9576_wdt.o
+> +obj-$(CONFIG_BD96801_WATCHDOG) += bd96801_wdt.o
+>   obj-$(CONFIG_CROS_EC_WATCHDOG) += cros_ec_wdt.o
+>   obj-$(CONFIG_DA9052_WATCHDOG) += da9052_wdt.o
+>   obj-$(CONFIG_DA9055_WATCHDOG) += da9055_wdt.o
+> diff --git a/drivers/watchdog/bd96801_wdt.c b/drivers/watchdog/bd96801_wdt.c
+> new file mode 100644
+> index 000000000000..08fab9a87aec
+> --- /dev/null
+> +++ b/drivers/watchdog/bd96801_wdt.c
+> @@ -0,0 +1,389 @@
 
-You didn't respond in any way about picking it up. Can you just drop
-it from your branch?
+..
 
-Bart
+> +static int find_closest_fast(int target, int *sel, int *val)
+> +{
+> +	int i;
+> +	int window = FASTNG_MIN;
+> +
+> +	for (i = 0; i < 8 && window < target; i++)
+> +		window <<= 1;
+> +
+> +	*val = window;
+> +	*sel = i;
+> +
+> +	if (i == 8)
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+> +static int find_closest_slow_by_fast(int fast_val, int *target, int *slowsel)
+> +{
+> +	int sel;
+> +	static const int multipliers[] = {2, 4, 8, 16};
+> +
+> +	for (sel = 0; sel < ARRAY_SIZE(multipliers) &&
+> +	     multipliers[sel] * fast_val < *target; sel++)
+> +		;
+> +
+> +	if (sel == ARRAY_SIZE(multipliers))
+> +		return -EINVAL;
+> +
+> +	*slowsel = sel;
+> +	*target = multipliers[sel] * fast_val;
+> +
+> +	return 0;
+> +}
+> +
+> +static int find_closest_slow(int *target, int *slow_sel, int *fast_sel)
+> +{
+> +	static const int multipliers[] = {2, 4, 8, 16};
+> +	int i, j;
+> +	int val = 0;
+> +	int window = FASTNG_MIN;
+> +
+> +	for (i = 0; i < 8; i++) {
+> +		for (j = 0; j < ARRAY_SIZE(multipliers); j++) {
+> +			int slow;
+> +
+> +			slow = window * multipliers[j];
+> +			if (slow >= *target && (!val || slow < val)) {
+> +				val = slow;
+> +				*fast_sel = i;
+> +				*slow_sel = j;
+> +			}
+> +		}
+> +		window <<= 1;
+> +	}
+> +	if (!val)
+> +		return -EINVAL;
+> +
+> +	*target = val;
+> +
+> +	return 0;
+> +}
+
+Thanks to the review comments by George, I took a more careful look on 
+the supported watchdog time-outs. It appears the functions above don't 
+work as intended. I think the logic is flawed, and some of the values 
+correspond to an early design sample.
+
+I will fix (and test) the timeout computations for the next version - 
+but it is likely to take some time since I'd rather sent the v3 without 
+the 'RFC'. Just wanted to warn people that it might be best to postpone 
+proper review to v3.
+
+Sorry...
+
+Yours,
+	-- Matti
+
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
+
 
