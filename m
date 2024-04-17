@@ -1,140 +1,281 @@
-Return-Path: <linux-kernel+bounces-148269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6F2A8A8013
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:47:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 306D98A8015
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:47:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E4A5282BD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:47:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 894CCB21EEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:47:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD18413A258;
-	Wed, 17 Apr 2024 09:47:22 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85FF513AA46;
+	Wed, 17 Apr 2024 09:47:23 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C898A12D759
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D84813328A
 	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713347242; cv=none; b=f1xWsGIK87cPEY8dXT6StvpIgR6rBHM9W9XKx2qOz0eTZR1gdLlfDDuvfLG0ahXazjhL09BiBMTNIVroOdY4WWg1SrYB/gOTPAIivbwVxykXi9A53qWiqV3akDUQ3gLglskwdl7USrPYrwZnrIDMnl7NZRwrJeiG4XTXC/cmotI=
+	t=1713347242; cv=none; b=NEgf05GkuDNRu36sUR7VqcsLohTPmtzD6EVfCnsLClWlobtPJ0/idCYDF8eaXJ9QO3/IKfoaUhN3LgpZASLPoImFc4JFyf3gqAIEi3+f1aD5e7A6GjU/+nTgE449WGEQ27v9nPNXgYtV8Jh3rzimJzL4uBGOTpaEhdwR5AZPWNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713347242; c=relaxed/simple;
-	bh=7T0jE4ZevulDuzaXolOY+mL/1dOAqMHAmX9QE/q0xrk=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OpYleSeJyWx4zY5ekpDT/eZ3iX42A34ocV6bcTcT5n2gJcEP9H2tq6+KdBZy3ItU9jaOO02vzBrycD9E6XYg3SRImMfMdh4lm6QgLVrSTX28YWUh/uP0D7WJ9PuoEvUXsFAb2D7XrdhM/PjYsTYLWrLpZrhydYv401lIDvrHXmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+	bh=H1kSTITm9Nr16eIMTgiZuze+axHDcvVmad0OKfmCM90=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ah9WV2UDavJGqmYrMwRsc4xchmJwpranNe/2To+txlLMU9AGqVWaZgvFlsLk9wvheI3qMILuMlks6psE1ts5D5Fumx3zI9dqEcDKPSk3GrSx1hwIjcbFHOxq6qgGNXJEzSCSpNaYUjPbwKTD3EA8G4tFBG/nC5kPfW9/2RPyFp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36849578ac4so54898245ab.2
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c7e21711d0so442692039f.3
         for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 02:47:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1713347240; x=1713952040;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=/axdWpjvUcy29WnnMh6W6dLuZZUINorcU0gQ6Y0GJMI=;
-        b=xSkdIe7OTO7cVZv2aTE7eiiLmVuO9Nmuo8qyCgnsp5ezxkWNdU2T9c8kl8/qv7w6Iz
-         po1hPlRh+RryBJMUWMvJ6Nxc+abCyHqRLYsbtFSJ6ejRwb1IoFHiBjkKVQ6kFEcKBRy4
-         sieiT256cBio6l1eKOo+PHiQSAe2JYGahYbgjWZUlkIPZNH86kJ/SfwDxdKdCXD+9/iL
-         ii5YTKNSWbvCjN4gALyzEomLH7VNK32VmXaUMMJM86/mSGWlrGmBxiYasQ7zRFUiwtEb
-         H64hJ0J8gO4eSZ/mg+NCYOLblwmaLZFphQhBtoHat97Z8sLeRwtm8DsJB4WQ2la4GxVd
-         fe6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVEn53yISVDC5BcMLgnRGFhffAgBgBeTBxX/unEnTJFK56ITsuG8NdNEgCDhMnexqjtZO+7sg3bAg/MtJW9MUYriDDVU6j8dcAPGHE2
-X-Gm-Message-State: AOJu0YyzB3gSf+3PASLEzkIVVrpviFzoPAcudPwz9rTgrAIt6NRPusZ+
-	ugWkmEd4GCt6jlHGCAiKxcjP2pfV5DkrfC/8/g6K/Zqiy79urOy9BDm/R4LZFNmU1RshwJqo/hN
-	ci3qWgsNxuxetZtpmguPMof2uWCbS4zWl6XBH/t/sCPn/lwOfX7LRWx4=
-X-Google-Smtp-Source: AGHT+IHBjI22WoUkN+g93OaYFolruxJqbuXLW/vEsANgzn74WeM5aLQzKxRfX9He5/w57A1Yq3XimXwkijYMqDumu+eSMRyXH4xZ
+        bh=BiDd+kXH+Cj51BIsV6pHfTEfpKsHr45XJoqpvB13TaE=;
+        b=k9OIVRsUvEWyMrliXjQyykTUvi/hdgtQETvKeFVQorBnAFTdzMm/OA0+h+K3/5ki5m
+         gAOG1OVj1tf3qGaOBI5yH0PnwTDyhE0iK30L1KGXY7MUrqwLyU/fvlpY0hEUO5YW4E17
+         Pxj+HwFrIAN0P2LxIg6qb66kWLNBfs+slvlP2CkNUxP7pzPXIke61Si6nt6m+Hpze8Ud
+         LKUryq38izDslu2wfkCYH9FwbvjMKYpTrLUy5yLPZTTKwkep5eLN1TtRU3MSVoLf3AMc
+         dfe0o176cPWr4s6RWq9cuW1o8zzmv8MUZBbOO/qifsaQ2tUKpguXE3SQGsOim0b8w8kO
+         iUcg==
+X-Forwarded-Encrypted: i=1; AJvYcCWTnMe2+gdyYmF+tSRylQkimgGjbbcmBGuAuUwYZjM4ZkWkwGFnhzJbSOHp/YtlYAWEF5qJ8r0UnUnMLmh8bccJbT8cLro3l21PANOu
+X-Gm-Message-State: AOJu0Ywa+BLM0Bv5UyYUGffcFKVZrfaMZBK05VHZxFd+KWrRLIMwjmgK
+	/yJk0N/bgx3eav6dXRfcctWnqvwzTUV8sslioZZD6R0bQ+s18MZMmsO+qoPSMCJs33Vs4uMioWg
+	MBVmGkUG9eli3tZSldj4Z1A0/8t0t58KnXe0a4py3YyLwDnfU0sYOHBA=
+X-Google-Smtp-Source: AGHT+IFQqTZn2ihU3vI9xi2nIagZdslebwhIF5ml68kmnD4sfN6aAguFLX5w9t/Qi9pFNmR8FImkh9XC+byV+RqOCIa95mlKtzy7
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d83:b0:36b:2464:bd2c with SMTP id
- h3-20020a056e021d8300b0036b2464bd2cmr234520ila.2.1713347240062; Wed, 17 Apr
+X-Received: by 2002:a05:6638:8929:b0:482:c7c8:5019 with SMTP id
+ jc41-20020a056638892900b00482c7c85019mr927316jab.0.1713347240339; Wed, 17 Apr
  2024 02:47:20 -0700 (PDT)
 Date: Wed, 17 Apr 2024 02:47:20 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009f0651061647bd5e@google.com>
-Subject: [syzbot] [fs?] WARNING in stashed_dentry_prune (2)
-From: syzbot <syzbot+e25ef173c0758ea764de@syzkaller.appspotmail.com>
-To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000a33584061647bdef@google.com>
+Subject: [syzbot] [bpf?] [trace?] possible deadlock in __send_signal_locked
+From: syzbot <syzbot+6e3b6eab5bd4ed584a38@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	martin.lau@linux.dev, mathieu.desnoyers@efficios.com, mhiramat@kernel.org, 
+	rostedt@goodmis.org, sdf@google.com, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompatibil..
-git tree:       bpf
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=130e2add180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=e25ef173c0758ea764de
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12fb63f3180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14e68f6d180000
+HEAD commit:    96fca68c4fbf Merge tag 'nfsd-6.9-3' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13967bb3180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=85dbe39cf8e4f599
+dashboard link: https://syzkaller.appspot.com/bug?extid=6e3b6eab5bd4ed584a38
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/3f355021a085/disk-443574b0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/44cf4de7472a/vmlinux-443574b0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a99a36c7ad65/bzImage-443574b0.xz
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-96fca68c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d6d7a71ca443/vmlinux-96fca68c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/accb76ce6c9c/bzImage-96fca68c.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e25ef173c0758ea764de@syzkaller.appspotmail.com
+Reported-by: syzbot+6e3b6eab5bd4ed584a38@syzkaller.appspotmail.com
 
-RDX: 0000000000000002 RSI: 00007ffd10172950 RDI: 00000000ffffff9c
-RBP: 00007ffd10172950 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000002
-R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5067 at fs/libfs.c:2117 stashed_dentry_prune+0x97/0xa0 fs/libfs.c:2117
-Modules linked in:
-CPU: 0 PID: 5067 Comm: syz-executor252 Not tainted 6.8.0-syzkaller-05236-g443574b03387 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:stashed_dentry_prune+0x97/0xa0 fs/libfs.c:2117
-Code: 00 00 e8 ac c1 e2 ff 31 c9 4c 89 f0 f0 49 0f b1 0f eb 05 e8 7b 77 7f ff 5b 41 5c 41 5e 41 5f c3 cc cc cc cc e8 6a 77 7f ff 90 <0f> 0b 90 eb e9 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 0018:ffffc9000394f4c8 EFLAGS: 00010293
-RAX: ffffffff82157906 RBX: ffff888075d4b588 RCX: ffff8880221c1e00
-RDX: 0000000000000000 RSI: 0000000000000010 RDI: ffff888075d4b490
-RBP: 0000000000000001 R08: ffffffff820fa354 R09: 1ffff1100eba96a5
-R10: dffffc0000000000 R11: ffffffff82157870 R12: dffffc0000000000
-R13: dffffc0000000000 R14: ffff888075d4b490 R15: 0000000000000000
-FS:  000055555a374380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f7c10b02c00 CR3: 0000000011176000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+======================================================
+WARNING: possible circular locking dependency detected
+6.9.0-rc4-syzkaller-00031-g96fca68c4fbf #0 Not tainted
+------------------------------------------------------
+syz-executor.0/7699 is trying to acquire lock:
+ffff88806b53d998 (&pool->lock){-.-.}-{2:2}, at: __queue_work+0x23a/0x1020 kernel/workqueue.c:2346
+
+but task is already holding lock:
+ffff888023446620 (&sighand->signalfd_wqh){....}-{2:2}, at: __wake_up_common_lock kernel/sched/wait.c:105 [inline]
+ffff888023446620 (&sighand->signalfd_wqh){....}-{2:2}, at: __wake_up+0x1c/0x60 kernel/sched/wait.c:127
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #3 (&sighand->signalfd_wqh){....}-{2:2}:
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
+       __wake_up_common_lock kernel/sched/wait.c:105 [inline]
+       __wake_up+0x1c/0x60 kernel/sched/wait.c:127
+       signalfd_notify include/linux/signalfd.h:22 [inline]
+       __send_signal_locked+0x951/0x11c0 kernel/signal.c:1168
+       do_notify_parent+0xeb4/0x1040 kernel/signal.c:2143
+       exit_notify kernel/exit.c:754 [inline]
+       do_exit+0x1369/0x2c10 kernel/exit.c:898
+       do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
+       __do_sys_exit_group kernel/exit.c:1038 [inline]
+       __se_sys_exit_group kernel/exit.c:1036 [inline]
+       __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1036
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #2 (&sighand->siglock){-...}-{2:2}:
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
+       __lock_task_sighand+0xc2/0x340 kernel/signal.c:1414
+       lock_task_sighand include/linux/sched/signal.h:746 [inline]
+       do_send_sig_info kernel/signal.c:1300 [inline]
+       group_send_sig_info+0x290/0x300 kernel/signal.c:1453
+       bpf_send_signal_common+0x2e8/0x3a0 kernel/trace/bpf_trace.c:881
+       ____bpf_send_signal_thread kernel/trace/bpf_trace.c:898 [inline]
+       bpf_send_signal_thread+0x16/0x20 kernel/trace/bpf_trace.c:896
+       ___bpf_prog_run+0x3e51/0xabd0 kernel/bpf/core.c:1997
+       __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
+       bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+       __bpf_prog_run include/linux/filter.h:657 [inline]
+       bpf_prog_run include/linux/filter.h:664 [inline]
+       __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+       bpf_trace_run4+0x176/0x460 kernel/trace/bpf_trace.c:2422
+       __bpf_trace_mmap_lock_acquire_returned+0x134/0x180 include/trace/events/mmap_lock.h:52
+       trace_mmap_lock_acquire_returned include/trace/events/mmap_lock.h:52 [inline]
+       __mmap_lock_do_trace_acquire_returned+0x456/0x790 mm/mmap_lock.c:237
+       __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
+       mmap_write_lock include/linux/mmap_lock.h:109 [inline]
+       __do_sys_set_mempolicy_home_node+0x574/0x860 mm/mempolicy.c:1568
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #1 (lock#11){+.+.}-{2:2}:
+       local_lock_acquire include/linux/local_lock_internal.h:29 [inline]
+       __mmap_lock_do_trace_acquire_returned+0x97/0x790 mm/mmap_lock.c:237
+       __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
+       mmap_read_trylock include/linux/mmap_lock.h:166 [inline]
+       stack_map_get_build_id_offset+0x5df/0x7d0 kernel/bpf/stackmap.c:141
+       __bpf_get_stack+0x6bf/0x700 kernel/bpf/stackmap.c:449
+       ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1985 [inline]
+       bpf_get_stack_raw_tp+0x124/0x160 kernel/trace/bpf_trace.c:1975
+       ___bpf_prog_run+0x3e51/0xabd0 kernel/bpf/core.c:1997
+       __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
+       bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+       __bpf_prog_run include/linux/filter.h:657 [inline]
+       bpf_prog_run include/linux/filter.h:664 [inline]
+       __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+       bpf_trace_run3+0x167/0x440 kernel/trace/bpf_trace.c:2421
+       __bpf_trace_workqueue_queue_work+0x101/0x140 include/trace/events/workqueue.h:23
+       trace_workqueue_queue_work include/trace/events/workqueue.h:23 [inline]
+       __queue_work+0x627/0x1020 kernel/workqueue.c:2382
+       queue_work_on+0xf4/0x120 kernel/workqueue.c:2435
+       bpf_prog_load+0x19bb/0x2660 kernel/bpf/syscall.c:2944
+       __sys_bpf+0x9b4/0x4b40 kernel/bpf/syscall.c:5660
+       __do_sys_bpf kernel/bpf/syscall.c:5767 [inline]
+       __se_sys_bpf kernel/bpf/syscall.c:5765 [inline]
+       __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5765
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #0 (&pool->lock){-.-.}-{2:2}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3869 [inline]
+       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+       lock_acquire kernel/locking/lockdep.c:5754 [inline]
+       lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
+       __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+       _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+       __queue_work+0x23a/0x1020 kernel/workqueue.c:2346
+       queue_work_on+0xf4/0x120 kernel/workqueue.c:2435
+       queue_work include/linux/workqueue.h:605 [inline]
+       schedule_work include/linux/workqueue.h:666 [inline]
+       p9_pollwake+0xc1/0x1d0 net/9p/trans_fd.c:538
+       __wake_up_common+0x131/0x1e0 kernel/sched/wait.c:89
+       __wake_up_common_lock kernel/sched/wait.c:106 [inline]
+       __wake_up+0x31/0x60 kernel/sched/wait.c:127
+       signalfd_notify include/linux/signalfd.h:22 [inline]
+       __send_signal_locked+0x951/0x11c0 kernel/signal.c:1168
+       force_sig_info_to_task+0x31d/0x660 kernel/signal.c:1352
+       force_sig_fault_to_task kernel/signal.c:1733 [inline]
+       force_sig_fault+0xc5/0x110 kernel/signal.c:1738
+       __bad_area_nosemaphore+0x30d/0x6b0 arch/x86/mm/fault.c:854
+       bad_area_access_error+0xc1/0x260 arch/x86/mm/fault.c:931
+       do_user_addr_fault+0xa2a/0x1080 arch/x86/mm/fault.c:1396
+       handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+       exc_page_fault+0x5c/0xc0 arch/x86/mm/fault.c:1563
+       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+
+other info that might help us debug this:
+
+Chain exists of:
+  &pool->lock --> &sighand->siglock --> &sighand->signalfd_wqh
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&sighand->signalfd_wqh);
+                               lock(&sighand->siglock);
+                               lock(&sighand->signalfd_wqh);
+  lock(&pool->lock);
+
+ *** DEADLOCK ***
+
+3 locks held by syz-executor.0/7699:
+ #0: ffff8880234465d8 (&sighand->siglock){-...}-{2:2}, at: force_sig_info_to_task+0x7a/0x660 kernel/signal.c:1334
+ #1: ffff888023446620 (&sighand->signalfd_wqh){....}-{2:2}, at: __wake_up_common_lock kernel/sched/wait.c:105 [inline]
+ #1: ffff888023446620 (&sighand->signalfd_wqh){....}-{2:2}, at: __wake_up+0x1c/0x60 kernel/sched/wait.c:127
+ #2: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #2: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+ #2: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: __queue_work+0xf2/0x1020 kernel/workqueue.c:2324
+
+stack backtrace:
+CPU: 2 PID: 7699 Comm: syz-executor.0 Not tainted 6.9.0-rc4-syzkaller-00031-g96fca68c4fbf #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
 Call Trace:
  <TASK>
- __dentry_kill+0xa9/0x630 fs/dcache.c:594
- dput+0x19f/0x2b0 fs/dcache.c:845
- prepare_anon_dentry fs/libfs.c:2018 [inline]
- path_from_stashed+0x695/0xb00 fs/libfs.c:2094
- proc_ns_get_link+0xf9/0x230 fs/proc/namespaces.c:61
- pick_link+0x631/0xd50
- step_into+0xca9/0x1080 fs/namei.c:1875
- open_last_lookups fs/namei.c:3590 [inline]
- path_openat+0x18b0/0x3240 fs/namei.c:3797
- do_filp_open+0x235/0x490 fs/namei.c:3827
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1407
- do_sys_open fs/open.c:1422 [inline]
- __do_sys_openat fs/open.c:1438 [inline]
- __se_sys_openat fs/open.c:1433 [inline]
- __x64_sys_openat+0x247/0x2a0 fs/open.c:1433
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f7c10aceda1
-Code: 75 57 89 f0 25 00 00 41 00 3d 00 00 41 00 74 49 80 3d ca 92 07 00 00 74 6d 89 da 48 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 93 00 00 00 48 8b 54 24 28 64 48 2b 14 25
-RSP: 002b:00007ffd101728a0 EFLAGS: 00000202 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f7c10aceda1
-RDX: 0000000000000002 RSI: 00007ffd10172950 RDI: 00000000ffffff9c
-RBP: 00007ffd10172950 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000002
-R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3869 [inline]
+ __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+ __queue_work+0x23a/0x1020 kernel/workqueue.c:2346
+ queue_work_on+0xf4/0x120 kernel/workqueue.c:2435
+ queue_work include/linux/workqueue.h:605 [inline]
+ schedule_work include/linux/workqueue.h:666 [inline]
+ p9_pollwake+0xc1/0x1d0 net/9p/trans_fd.c:538
+ __wake_up_common+0x131/0x1e0 kernel/sched/wait.c:89
+ __wake_up_common_lock kernel/sched/wait.c:106 [inline]
+ __wake_up+0x31/0x60 kernel/sched/wait.c:127
+ signalfd_notify include/linux/signalfd.h:22 [inline]
+ __send_signal_locked+0x951/0x11c0 kernel/signal.c:1168
+ force_sig_info_to_task+0x31d/0x660 kernel/signal.c:1352
+ force_sig_fault_to_task kernel/signal.c:1733 [inline]
+ force_sig_fault+0xc5/0x110 kernel/signal.c:1738
+ __bad_area_nosemaphore+0x30d/0x6b0 arch/x86/mm/fault.c:854
+ bad_area_access_error+0xc1/0x260 arch/x86/mm/fault.c:931
+ do_user_addr_fault+0xa2a/0x1080 arch/x86/mm/fault.c:1396
+ handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+ exc_page_fault+0x5c/0xc0 arch/x86/mm/fault.c:1563
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+RIP: 0033:0x7f809a860675
+Code: fe 28 6f 06 48 83 fa 40 0f 87 a7 00 00 00 62 e1 fe 28 6f 4c 16 ff 62 e1 fe 28 7f 07 62 e1 fe 28 7f 4c 17 ff c3 8b 0e 8b 34 16 <89> 0f 89 34 17 c3 0f 1f 44 00 00 83 fa 10 73 21 83 fa 08 73 36 48
+RSP: 002b:00007fff068363a8 EFLAGS: 00010202
+RAX: 0000000020000080 RBX: 0000000000000004 RCX: 0000000034747865
+RDX: 0000000000000001 RSI: 0000000000347478 RDI: 0000000020000080
+RBP: 00007f809a9ad980 R08: 00007f809a800000 R09: 0000000000000001
+R10: 0000000000000001 R11: 0000000000000009 R12: 0000000000018980
+R13: 000000000001894e R14: 00007fff06836550 R15: 00007f809a834cb0
  </TASK>
 
 
@@ -148,10 +289,6 @@ https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
 If the report is already addressed, let syzbot know by replying with:
 #syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
 If you want to overwrite report's subsystems, reply with:
 #syz set subsystems: new-subsystem
