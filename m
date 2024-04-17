@@ -1,96 +1,130 @@
-Return-Path: <linux-kernel+bounces-149079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33FD38A8B8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:49:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AA2F8A8B92
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:50:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8F511F2545D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:49:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59E421C238EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:50:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA3518C05;
-	Wed, 17 Apr 2024 18:48:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9621B13AF2;
+	Wed, 17 Apr 2024 18:49:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="enOe844T"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jllUXDVf"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7429B18C1F;
-	Wed, 17 Apr 2024 18:48:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FDCFBE55;
+	Wed, 17 Apr 2024 18:49:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713379735; cv=none; b=XhCyp0SjpzfOIT3cWQVtkZV2sw6WlA5BKeCGGFGP7poQHuE32cvD4oGhVIoE7YoP1D31KSj6IboTQTFC4ftnysKAoIGXBTV5UsdJutRVsSN5CA/BmhWKfmjBgSs3qGMyTv9yuoQorolLkjLEHbRalYl6rMSgO4lLgm7LRpMegC4=
+	t=1713379760; cv=none; b=rcSuUH7yRdDifzX31YVgSHpqGgsfyI5qfVo2VcZmFetGntWd301Rc13q20qOxldoOSj2JXwpCEeZiNpIiXkyelUBGz+nl9tbjPWCeX11O/MMY7wEYUWOgcrdwDWfpV/x1OuUl4Ea++s4q69Tgo75ZS4hzWPY1QZvwVQo4EFCfXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713379735; c=relaxed/simple;
-	bh=G8GIybraBwjNANFsfBZMgV1ID9PPWhVL2d7h1yYhQ/Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q6LlujhGsyaXDZNCzlR8t8CSwldNhIbR+DBspaGS4sRZfAbILAqkp+08AA9eakQ0H9KwPYEExt0GVeXezqRkS5N0lu2CgXUJ1Z5Muwb4xlNvHEY0xpWJ+zkevam91KeK5ocjAhwS4cN3e006+Tax0R7JlAbYjQ9u9MlVzqB1HTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=enOe844T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5CD8C072AA;
-	Wed, 17 Apr 2024 18:48:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713379735;
-	bh=G8GIybraBwjNANFsfBZMgV1ID9PPWhVL2d7h1yYhQ/Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=enOe844TybHefFLgLKohLJ8NrDDYN5akkxh9ac6bh3LAlfCl8o1A3zf/P7CQZ4iCl
-	 Y+uAka/Zvkj6J2S1BCZbYE5BRnC8RkGuLGYaTc/ZtRfRTlOZbzTLFp0k3V02AQ7kTN
-	 UgEZa7ineprrYbfbd877ByxyqDCMvyIoYw1R5cHeCufvSrD0Q6qcyvrYcMsBGJRFvC
-	 n6Fsxj7qxGP3HL30LM8GbtXLKg1fh+e+RcXGdWGeNaTi6BfsLtf3fEUcNQfktXLTI6
-	 8eKrrVscwbZRB3FER5avz6QhsW4Dg2dAXCn6TlApSVOydaG6xCpAXaJ2Pmo2lystO5
-	 G7w5sAHxlww6Q==
-Date: Wed, 17 Apr 2024 13:48:52 -0500
-From: Rob Herring <robh@kernel.org>
-To: Alexandre Mergnat <amergnat@baylibre.com>
-Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	Will Deacon <will@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	CK Hu <ck.hu@mediatek.com>, linux-arm-kernel@lists.infradead.org,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-pwm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-	Jitao Shi <jitao.shi@mediatek.com>, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-	Maxime Ripard <mripard@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 12/18] dt-bindings: pwm: mediatek,pwm-disp: add
- compatible for mt8365 SoC
-Message-ID: <171337963668.3079720.13585358179949689962.robh@kernel.org>
-References: <20231023-display-support-v2-0-33ce8864b227@baylibre.com>
- <20231023-display-support-v2-12-33ce8864b227@baylibre.com>
+	s=arc-20240116; t=1713379760; c=relaxed/simple;
+	bh=5ZzmwJhl3Y2zPSlH75Q7MuUxPX5P1ljTDT9NrR78cbU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=H6cxHMIwvQ7F9HUGg1X0q1jET6MsdZYK2+r6641UKs8TDhjXHEUpadZ7uwe63WJO0M868JXR9zbGgipTK4kkfleuBdGrzirWA+Hv8J/Om3ezBDrxm+kvVire+RxweVxcZaMiiPilWjYWTmxjfFz+J2ZfzEOkcQ0e4dEO/7v6+t8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jllUXDVf; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-518e2283bd3so6399586e87.1;
+        Wed, 17 Apr 2024 11:49:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713379757; x=1713984557; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2IyAFKAJgIfEStrNfT67LkdDfKM3aFOk17Et0vZT8co=;
+        b=jllUXDVfGY8qUWGkv7xDZsyQTx8XCDyvVVVZr3m/8sAlya7qJJbEEpfO9fEKvfr+11
+         5SmRdGLZUqoCqAaORcKJ5P9VV2Bf4JVHRo08JJovQckXAD3qQk4Vz9h6drBlBKCGq6uf
+         bp2J7dKvnQqBlUda/BoQGooV2THy10ygP9rJLye2M6m06Nfo2wswQ1p86H0ZITklTS72
+         w3ayrVq4O+ChZb8fQhkxl+e5CykmJbGv9BppW3D0EBumrY5c5t8rPoUTmIStPfeCdyrm
+         bw5cYDIdpzHJZL5zp9abxPrIZTHrc+BSGoWzgWwPJRW57MRxU7Aa+APjMNe+Uc4Ft47H
+         qfWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713379757; x=1713984557;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2IyAFKAJgIfEStrNfT67LkdDfKM3aFOk17Et0vZT8co=;
+        b=iLwCzKOC3uZG8NsFZs0aX+8o6S/7KANuKN7V8SrRH7D0Z7RK4ivmzSCHgMxFn8LnGs
+         IPvVwtXPKxeKzYDfCqaM/3PxM+zQZ/J88Kk3urlg1FX4uN5q+/75o0TunSKrCrD8PfgQ
+         XOfONHBjC7cHmte+Jtt3JYmeyCOmYFVhRBniLaNovqPpU1fdpt3GZpWFaJ5TRQC54P/D
+         0D3yrJhVBftn1A7JbyLpPldTQxpDQmxfH1DX62zIEwg7p90poU8OEG5LigQO4QsxnoW4
+         csgjvTC6u88AS0AtBxgvZZ36Dp95XlC0JpRc6Pazd5n1zweAY/qyDUkDMHYNqoLHZZtm
+         lFog==
+X-Forwarded-Encrypted: i=1; AJvYcCWTTHGNYv23DqSU7nkt/rMrN//wBW0Wm8//v0V/beK6/oPzUmad97PGTnEXBl00VvmRRt9cjgSDr/PCL5Z3e/GuknOsPSQqwDs3444PiKzmv/HYDxq9NYOy2qy1dxbY1AvfDwFdsBEkC8BhNQPL
+X-Gm-Message-State: AOJu0YzwVfK+7aFxjJEvRacirFqIkJmWEh4SPJIbnlBS7i7R5kZxpVrY
+	ra8h65pVGw2jJg+NHZwtFpHofYkY8ZFecDOmsBE6Iq+XcSPZ+xfS
+X-Google-Smtp-Source: AGHT+IFjeZypMhZ2KjvyQn1kWQYnQi2jRPUMWA27bpYFD9y1prAMm2bW8GiX26hBbx4CbZvI8U6AFQ==
+X-Received: by 2002:a19:434a:0:b0:516:cd71:9bb1 with SMTP id m10-20020a19434a000000b00516cd719bb1mr90038lfj.38.1713379757270;
+        Wed, 17 Apr 2024 11:49:17 -0700 (PDT)
+Received: from localhost ([185.204.1.218])
+        by smtp.gmail.com with ESMTPSA id bi30-20020a0565120e9e00b0051925dd92dbsm631172lfb.214.2024.04.17.11.49.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 11:49:16 -0700 (PDT)
+From: Amer Al Shanawany <amer.shanawany@gmail.com>
+To: Shuah Khan <shuah@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Miklos Szeredi <mszeredi@redhat.com>,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Subject: [PATCH] selftests: filesystems: fix warn_unused_result build warnings
+Date: Wed, 17 Apr 2024 20:49:13 +0200
+Message-Id: <20240417184913.74734-1-amer.shanawany@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231023-display-support-v2-12-33ce8864b227@baylibre.com>
 
+Fix the following warnings by adding return check and error messages.
 
-On Tue, 16 Apr 2024 17:53:13 +0200, Alexandre Mergnat wrote:
-> Add a compatible string for MediaTek Genio 350 MT8365's display PWM
-> block: this is the same as MT8183.
-> 
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> Acked-by: Uwe Kleine-K�nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
-> ---
->  Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+statmount_test.c: In function ‘cleanup_namespace’:
+statmount_test.c:128:9: warning: ignoring return value of ‘fchdir’
+declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  128 |         fchdir(orig_root);
+      |         ^~~~~~~~~~~~~~~~~
+statmount_test.c:129:9: warning: ignoring return value of ‘chroot’
+declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  129 |         chroot(".");
+      |         ^~~~~~~~~~~
 
-Acked-by: Rob Herring (Arm) <robh@kernel.org>
+Signed-off-by: Amer Al Shanawany <amer.shanawany@gmail.com>
+---
+ .../selftests/filesystems/statmount/statmount_test.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/filesystems/statmount/statmount_test.c b/tools/testing/selftests/filesystems/statmount/statmount_test.c
+index e6d7c4f1c85b..e8c019d72cbf 100644
+--- a/tools/testing/selftests/filesystems/statmount/statmount_test.c
++++ b/tools/testing/selftests/filesystems/statmount/statmount_test.c
+@@ -125,8 +125,16 @@ static uint32_t old_root_id, old_parent_id;
+ 
+ static void cleanup_namespace(void)
+ {
+-	fchdir(orig_root);
+-	chroot(".");
++	int ret;
++
++	ret = fchdir(orig_root);
++	if (ret == -1)
++		ksft_perror("fchdir to original root");
++
++	ret = chroot(".");
++	if (ret == -1)
++		ksft_perror("chroot to original root");
++
+ 	umount2(root_mntpoint, MNT_DETACH);
+ 	rmdir(root_mntpoint);
+ }
+-- 
+2.34.1
 
 
