@@ -1,110 +1,141 @@
-Return-Path: <linux-kernel+bounces-149330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D7E68A8FB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F1C98A8FB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:50:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD4932838FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 23:49:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A529283937
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 23:49:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CCCB86642;
-	Wed, 17 Apr 2024 23:49:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DDC081748;
+	Wed, 17 Apr 2024 23:49:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wLiMXiYf"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="iGb1lJap"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFA5986634
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 23:49:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EDE0481BB
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 23:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713397773; cv=none; b=Zlla8a4AJTLriVRFOGnJUhddE9NEcnAD2AXici8DuJu9LF51LRVkEHXnB3dhnR+1+npOe5lQ/yPA4WU46tgBWCJOe0I+LjSr5mAs+vTbjUrxy2TXau4nAIdeyMEMthJ40ZhxUuOIXhwrEwNA+kVdatNkk1Fle2WRJ0nh7bwSbfg=
+	t=1713397793; cv=none; b=ubB9hY/UF7zXLC7LeDQlkHstAf4UVgVe5lRvUVBWQ9VW3RxDWgKgQIkFXyWToPsQsaaqLA1TkYBuM2Md5aw72Z1IBGNcuT/PIO+2WjwvsNrwIHhHOnHDZX/TjR3HBBDdkpmCrOhzwmSiamC06y+TDmOC0zXv7er7VFzGZKKUSSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713397773; c=relaxed/simple;
-	bh=tlqRCKx02DY699x9+WjnG6mz6EwDvyHTPJ2Fyqrda4w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bl0wti2XNja8L8nDUnoyxX8W+4flXyxy5R6unnmX87WEgOAolzUm8AGhGqv6bLnpPUUammhFiSG0B+oo2JclpTLTxsNRqKBO5N/GOq6A9FcaHSiyi1AFhYzRmWAJMiePIiS8BLLZKhQL6Ybe+1EvdfssOHjXRbeGZJfLyfc16d0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wLiMXiYf; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2db13ca0363so4583311fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 16:49:31 -0700 (PDT)
+	s=arc-20240116; t=1713397793; c=relaxed/simple;
+	bh=QOeEbZPIOXSFim7lsiz0WmrK/rdPihErm3BmndcXrBk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=YGr59On+SfwTADxiozmyHLKgjcRAdBWXJg/GfShTDOiasFg9GHdocNKrzwbku75T1yJfJb5P8wjIh+g9MNXzVpa+Gaf1ecnFklvhr1pq/wDqJoZQ6dixjbdA3/M+pdOaR+hSVf607rd1n2ZKNWlN/KAdsLu0m635NjgsAs/hj8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=iGb1lJap; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6eff2be3b33so365927b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 16:49:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713397770; x=1714002570; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IDyTmfUTB48zbrRJ3Ex/J4eaqhXRSOEtnoHY2dxsblE=;
-        b=wLiMXiYf2b7jVK60Y4Xk80xrnrYpwkFRF0QRtTjIJNbCiiCKCis7dGA2A0n8h7nETZ
-         blrDyIZY3JqybtERQzTtW0YSC9c/izXJ5D7rkDOY703lOOTW7Jz9uqnNK7WNRnuLJ5l+
-         GlB4LsRojZIL4jCYaaIUHJxKPBAIJ91maa19rJRqPSl9FI45t3QUxKdJmzhLy2a0eOk0
-         o0uUKEWByurYKGjpO0CsdeDeWOXrmQDSaJh75SeDX6eRFEld18hy3JNyyW/ZWKpurNx/
-         w29kBDCOFmTeDu2VqWVSPbYmx0G7iVWdxR5IM1Hif93/U/tSZkHwVXvFmT2vuEEOYNho
-         L/ZQ==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713397791; x=1714002591; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=l6QPcqewJGS3JFKwt5jL99ECNB022Q5NjXUoC/gxxD4=;
+        b=iGb1lJapRHMiif7NmUJyRG3p2ISOsYT4GV83iRyWbOLbL+pgdsaoisFAc8WbpDTZ/1
+         rqueXvg2O5xa4hmNJssiImNIMIqLRnUFx5dN5mkfRJOXU13Rzy0kXdMgiWFnsXnLZBMY
+         Wi4KbukX6q3OBDOC5M3zcQ1tk3BFmEfVMdGB8Oxt5037FPcCnFkXdtAcaSiAQj7oJ3ei
+         kPdxrmJYX5QRdaNIKR2gEOZEo4EB+zAxAYIa088RsHbexUqSNzVoLFG1zxfWJMBqYBI7
+         CPjbbNeHqFPBOUeRIFZOOvjToMIk9ZvjH1cyU8HQf44Udysd7+ymIWJULzczSxAatqEq
+         RzaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713397770; x=1714002570;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IDyTmfUTB48zbrRJ3Ex/J4eaqhXRSOEtnoHY2dxsblE=;
-        b=qJaQN9x1jocAPA4ti8NPNB0L7NVzyAvo2aYvOyS6jD9FIYUBxSG6JllRRAqkjp2bzp
-         jIA2QSGm/cS01aaQ0ZvQGt6ntNKtzF9JSiF3B8UtllmkeLGMPFI1lXNKLHNfDsBPqOfm
-         G8qsyooy1iQhVcCnpM7AVMKpRmq6XchWJ9xN273fuy698BIwL5E8wJ7TPbt/RXtNgsav
-         7wPpzoHm6F7ZqLcc7+6h31xjfNaDGpIOVdlyfcKXvkbrqVhpSq8VvzmAwM4E5IpqPc2s
-         hAQVjbLD7fjzTZj1obWlJRg4pgh2JhbivyLpGPnK2/TYoTL/5cv7eGdgFjMoHeMHGWmV
-         TO+g==
-X-Forwarded-Encrypted: i=1; AJvYcCU1Amv5I8EAhuJqTddmapOk22/fNX4x8YGWvvYA/oCmvXvrcGSnvWK69dOnOq9zNrQybc5kUBQL0TrCjJVFx6D0BowRKqco8YWlS98a
-X-Gm-Message-State: AOJu0YzwCA6S+1iX6ph9YNlUiwesxe1sNfB9V/6VSly9P6Mslrtc8l/O
-	LkKNyOU9XEOveIo5xdHfX31N1MBeq4N9m7vuILPs+eBIovCUIKgohls8+XrWVsI=
-X-Google-Smtp-Source: AGHT+IH/MUOBgyPCemAoyY2nfZkjc3UXoMr2/x45ATSbPEjenP4BTGIPiOlkgeZVrWhJMW0EEXYW4w==
-X-Received: by 2002:a05:651c:50c:b0:2d4:6893:24e1 with SMTP id o12-20020a05651c050c00b002d4689324e1mr536858ljp.50.1713397770075;
-        Wed, 17 Apr 2024 16:49:30 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
-        by smtp.gmail.com with ESMTPSA id e21-20020a2ea555000000b002d70a040f21sm35241ljn.91.2024.04.17.16.49.29
+        d=1e100.net; s=20230601; t=1713397791; x=1714002591;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=l6QPcqewJGS3JFKwt5jL99ECNB022Q5NjXUoC/gxxD4=;
+        b=OGXnokLvDVV9trtfWSYGk6wjIDiRi2JFRMxL3IZeRpOuuWgbynEL8Rhv/eQuJwEBwM
+         udRFmlbvI0fDSQdytTmLRjOcGjrM/b5z/s92zPecJu1LjACpQVE+6EhHsmTNNSOMcu8x
+         mivgOUFZb+42Y6LqAaboxzh5Op68VeYnV+0w/jKdpqa8IBZdwriz/W03PwLrNXP9LyRV
+         h65MbLNr7ZeUge/DgIakGQFVTDMxV52pA3si4d8CEPVD3b5uesVPzm4FCk8SQpkiJuSH
+         uIlscOVCCjNAV1PfH2Tx6zMzzE/OIuJnNVlISVKkjHwsVAUGZnqPFMct3YhAzpAkynSF
+         jmMw==
+X-Forwarded-Encrypted: i=1; AJvYcCXDf1nMSPYH9nx7g+w+XNTgok+RwIp9zmLrNzQkeGhx5zRjpPDQbr/WwOhUsfGbCOOpLew3YxIEBzHVpsC6UlHUV1D49yj1ftZ5Gtl6
+X-Gm-Message-State: AOJu0YzudV/4ZgAbFNt5O02eDG22Uc/8FVh8bUQH5addZtE9JHJVe2A3
+	H1QcQqo/gHLX1S4m9g+hFqA0foXcg6colFHHo1ywoVlrZX1X5iYMO3uN4lpnhkU=
+X-Google-Smtp-Source: AGHT+IG4XjDqRECtKlDqradeGR//Cr8LDn9qG9X89yeLCIO+tM0IDNTJkjO4vUl8sBNG3QOo/yqRbw==
+X-Received: by 2002:a05:6a00:b8f:b0:6ed:416d:f7c with SMTP id g15-20020a056a000b8f00b006ed416d0f7cmr1479557pfj.6.1713397790689;
+        Wed, 17 Apr 2024 16:49:50 -0700 (PDT)
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id g21-20020a63e615000000b005f75f325db4sm180626pgh.29.2024.04.17.16.49.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 16:49:29 -0700 (PDT)
-Date: Thu, 18 Apr 2024 02:49:28 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, 
-	Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	Neil Armstrong <neil.armstrong@linaro.org>
-Subject: Re: [PATCH v2 7/7] arm64: dts: qcom: sm8550: Wire up GPU speed bin &
- more OPPs
-Message-ID: <hykql6t7xy5uajvnzbslagrki6xvg3mjuba5hpjha36ue5ra76@4s3m2vsbxjav>
-References: <20240404-topic-smem_speedbin-v2-0-c84f820b7e5b@linaro.org>
- <20240404-topic-smem_speedbin-v2-7-c84f820b7e5b@linaro.org>
+        Wed, 17 Apr 2024 16:49:50 -0700 (PDT)
+From: Charlie Jenkins <charlie@rivosinc.com>
+Date: Wed, 17 Apr 2024 16:49:48 -0700
+Subject: [PATCH riscv/for-next] riscv: cacheflush: Fix warning when
+ compiled without CONFIG_SMP
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240404-topic-smem_speedbin-v2-7-c84f820b7e5b@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240417-fix_nosmp_icache-v1-1-921a3c07d4ce@rivosinc.com>
+X-B4-Tracking: v=1; b=H4sIABxgIGYC/x2MwQqDMBAFf0X23GC02kJ/pRSJ64vuoYnsFhHEf
+ zf0ODAzBxlUYPSqDlJsYpJTgeZWES8hzXAyFabWt53vmqeLsg8p23cdhAMvcD7y/REQ4oieSrY
+ qivNfvknFeKtjVpew/+hznhcIWRdpcgAAAA==
+To: Paul Walmsley <paul.walmsley@sifive.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+ Atish Patra <atishp@rivosinc.com>, 
+ Samuel Holland <samuel.holland@sifive.com>, 
+ Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc: Palmer Dabbelt <palmer@rivosinc.com>, linux-riscv@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Charlie Jenkins <charlie@rivosinc.com>, 
+ kernel test robot <lkp@intel.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713397789; l=1366;
+ i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
+ bh=QOeEbZPIOXSFim7lsiz0WmrK/rdPihErm3BmndcXrBk=;
+ b=MD96CDgWAywUmAiDDGjPnD1xMLhEG+ivBh9UezqhJGdfkpsEq6o7FnPPrw3xBGmVDL6+VzUzS
+ ld/hGTyVCvTDoy9EAOBkddn8mzifBpZxFpe4aLic1QyFonX9klAMgYv
+X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
+ pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-On Wed, Apr 17, 2024 at 10:02:59PM +0200, Konrad Dybcio wrote:
-> Add the speedbin masks to ensure only the desired OPPs are available on
-> chips of a given bin.
-> 
-> Using this, add the binned 719 MHz OPP and the non-binned 124.8 MHz.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sm8550.dtsi | 21 ++++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
+GCC tries to compile the static function set_icache_stale_mask() even
+when there are no callers. Guard the function with #ifdef CONFIG_SMP.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+Fixes: 383289e4b071 ("riscv: Include riscv_set_icache_flush_ctx prctl")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202404180621.qG7A9Tk0-lkp@intel.com/
+---
+Since this is just in for-next Palmer do you want to squash this onto the
+commit that introduced this 383289e4b071?
+---
+ arch/riscv/mm/cacheflush.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
+index 3b03534e57b4..3ef666c7dfc7 100644
+--- a/arch/riscv/mm/cacheflush.c
++++ b/arch/riscv/mm/cacheflush.c
+@@ -154,6 +154,7 @@ void __init riscv_init_cbo_blocksizes(void)
+ 		riscv_cboz_block_size = cboz_block_size;
+ }
+ 
++#ifdef CONFIG_SMP
+ static void set_icache_stale_mask(void)
+ {
+ 	cpumask_t *mask;
+@@ -171,6 +172,7 @@ static void set_icache_stale_mask(void)
+ 	cpumask_setall(mask);
+ 	cpumask_assign_cpu(smp_processor_id(), mask, stale_cpu);
+ }
++#endif
+ 
+ /**
+  * riscv_set_icache_flush_ctx() - Enable/disable icache flushing instructions in
+
+---
+base-commit: a76716f0ec75b9e7ac62d30854d690044c857684
+change-id: 20240417-fix_nosmp_icache-0fc36aeafbe5
 -- 
-With best wishes
-Dmitry
+- Charlie
+
 
