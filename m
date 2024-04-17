@@ -1,160 +1,221 @@
-Return-Path: <linux-kernel+bounces-149276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E16AC8A8EBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 00:08:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CBD48A8EC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 00:10:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAEFC1C2100A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:08:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7A501F222F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:10:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33AE713C3EF;
-	Wed, 17 Apr 2024 22:08:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC734148318;
+	Wed, 17 Apr 2024 22:10:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=schierlm@gmx.de header.b="TwPGGHTi"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="LyZlL72C"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE98312E1DE;
-	Wed, 17 Apr 2024 22:08:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A30313777D
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 22:10:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713391708; cv=none; b=N4CeR81hhRx7RLGCQwnahhDMckNRJfwGXRguIld4xvFZlICbQSnmoR5zdXEk7SYKqjTvfZ1aywGLu8z5Weg7ZKZdkONaOOiK97xf8xpFYoJUSP5yPI0xz4LKRKlDksa5zNWd7LGn4lQg01uOwjmbwPZ+NBz4qTqYWaOVkeiAUX0=
+	t=1713391843; cv=none; b=Kkx93aOhAlb21VYAvCPbLdzyaOWZO7xjTxCPWg4gQfYkQhrCvhFIkd4ClZ/8KhGvkrsh4a2IoT14QX6z1U2ToEbAwSx0C5WfDSng5dfQf3GV4kp1jTcnsdShTCDZ96C45pjqiTqirGYWMTVtPMJTEEEMMbU3kqpfPUVeB3K3ARg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713391708; c=relaxed/simple;
-	bh=mEM8gHXG/HxaC8h69ROEnCM+V1EJ1N7csO+Pc0JoaIw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ngUlM8F2wpkohmfK3KJS3Xe8HZGxiSTbBEWWjjtvwkqXux+5Ora5IGSsb/aOEfaNygwJ2Mrq40FRm3X5pUimDyUXIl3RugMbk3Q+32ZnTGHngCRuIBZmXqGbNlBt/LSsVtBUHahLhDBq/6TyCf2goCbw6BdnDwIa+d51dRd4Bn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=schierlm@gmx.de header.b=TwPGGHTi; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1713391701; x=1713996501; i=schierlm@gmx.de;
-	bh=mEM8gHXG/HxaC8h69ROEnCM+V1EJ1N7csO+Pc0JoaIw=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=TwPGGHTiibQIqYRZzgJePwRjI/s0G6R7rt2hfAOJOVhqlQGi9C6tuSYQCjjRHmxk
-	 zXZNuF73Yuq5Duq00sk406HG15LU4aDY29AUXLz8W1iJdRXFUptixqz0qQlxP2ydh
-	 0h/KVKA5Ty57IUCS+0WUySsYZIJocTrFn3o9YRev2x6MNdZiDWpJfDlq8pvwA7vtl
-	 H62U61dgHRirpyMxpWg30UQvIV0jW58eS6sTJQ0EntTWm91KluvuXC94/vZGxyHPB
-	 ZC1YMNyUliCMDs8AKX6Xt5Llh0EwXjEe/ncy6xScnpdIpc47v6/DU+wx4j+KxVZtK
-	 etvQYyZhHirzQcp3fw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.178.56] ([84.145.176.14]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MHoRK-1ruWYt24LW-00EqgY; Thu, 18
- Apr 2024 00:08:21 +0200
-Message-ID: <143afb82-dcc4-4fd3-a851-a03b01532694@gmx.de>
-Date: Thu, 18 Apr 2024 00:08:22 +0200
+	s=arc-20240116; t=1713391843; c=relaxed/simple;
+	bh=qvdEufpLC+fkHlvr1x7Zyw2PCjCYD8dZvdv6VijPd2o=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=iOPoWK468SjVRkfmMAA7U6uHn1SIeMBv90KBXyU0sEy/pM3dSrSVWbZ27uL6kA+3fqgXG2Lvo2u/U8UlzXNPPjqu7EJ5Xlx+jMKUljml80kgXON+w+iOg4lcTRG8+ddLUsgIc3bBemd9m9UeIiVLp0Y63lvnuCmGLJ6pudj6HXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=LyZlL72C; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6f043f9e6d7so260719b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:10:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1713391841; x=1713996641; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wYhm/fOOjEK7jdgzj7y/SioxE02f8LD3ZE3uraqJyMQ=;
+        b=LyZlL72CoKIvP0L5+zoP4RYx7GFEdxg+miLRl6jEJC3FQNTf8pL0iE3eO5KGkvtsZX
+         bgF2fkykfd5ZiysGGHud4SGwL588avbTS2q42N8MOMd0hJCLYK97+8IvlYURIUMIpuaQ
+         gtSgQBG4Xheok1wjtl+GinBZresOMUhvznbbLtDtBf+VKoL0SG5eMab2c6HRwu1EXxYx
+         9OpvoJn9Ps16XyjWh88bZkN5ARoUmOMlx1dJ9L0/GRnFNV8zcmHRSzU//yRsKEAl9Z0k
+         O+7S5jdyePOHrzLXkCDijEqHq5qjFYQd85N0R02icOfuaNe1GjsUdZyDA3a5gVHf4DR3
+         FU8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713391841; x=1713996641;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wYhm/fOOjEK7jdgzj7y/SioxE02f8LD3ZE3uraqJyMQ=;
+        b=VemSJ8RCszgDTdXQegUb/5tzSspauNRNH/Zcgp0wb4dyJm/lVYcuaZAoQIswlnsqi4
+         3rqPx7oXrgEE7GJuAsF2yP/MiYhrurLcNyM+ZYTrL4VR2FeuJ9fLqz+F5CSKUYD/nEPv
+         9DxA63wZra6SXRI+4Bpqf5XbqfOszfLZHAwJdezqKR591yBviw1fYGkwdoBL/rKqLH8n
+         rW0DhZWBVimzhDaM36tUIxBXcTfctyNlBq+RK4VVAtrgh9ldGrk/sXF3yyKRkMLvQ8c8
+         6sdmoaBQbCM7sWD7Y7E71gOi/WhAERhfXgcnhV8KXnApjxa/UrBX9hZpJVOwNofW8/s7
+         8SbA==
+X-Forwarded-Encrypted: i=1; AJvYcCVma1a1qWL2IvUIoD7q2xbverb9eQ9tTOaXrlKIlViEtpmflar5EP16eBh2Ot/FvX4y5zyefd+yijrQweG3Muci5BsJnz28slzsouJO
+X-Gm-Message-State: AOJu0Yz4cVgI1M1f20iYs8Brjtw+6OC/Q7Gg2XUgjOMk+XUoIWBAcXMB
+	C+WhLOOzJhmf0vsJpiUL1mNCa4dWuBFbiLWZh48xhMLzplcgR40xAcWdV6eGSy0=
+X-Google-Smtp-Source: AGHT+IH3MYkMR8IPHkvuF/qL6uC7V9sKI5rYU7z0ZR3m/5HrAQlViqnnmV0nty+c2HEAzwnUFgRgbA==
+X-Received: by 2002:a05:6a21:3483:b0:1aa:9561:1342 with SMTP id yo3-20020a056a21348300b001aa95611342mr457129pzb.35.1713391841276;
+        Wed, 17 Apr 2024 15:10:41 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id h17-20020a62b411000000b006edd05e3751sm159808pfn.176.2024.04.17.15.10.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 17 Apr 2024 15:10:40 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <1F07FFF3-663B-43D4-A9DA-C89856F2962A@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_B97920C0-75B2-43B7-A029-2F2368082F1C";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] firmware: dmi: Stop decoding on broken entry
-Content-Language: de-DE
-To: Jean Delvare <jdelvare@suse.de>
-Cc: linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
- Michael Kelley <mhklinux@outlook.com>
-References: <b702b36b90b63b615d41e778570707043ea81551.camel@suse.de>
-From: Michael Schierl <schierlm@gmx.de>
-Autocrypt: addr=schierlm@gmx.de; keydata=
- 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
- uxTR60TDY/d6Kz8=
-In-Reply-To: <b702b36b90b63b615d41e778570707043ea81551.camel@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:dIKsefGdEySh3Ykba5hNpP8J0uk+A9B0UDyZ93+aL//4edatlHv
- mL1GzioOT3Wbi7U1aYxhk+97wyyOEkT5/tyhhLv0Sos5FGwfUJuqEjc3AXedmmI+b13zjVi
- B8rxVIzwapQDYWNxw/MkEUmuvfaflQ0T1Qk+N+Z0ctHg/vi+afxwcF1V4kKibv0GvOGrR9r
- JwG8UUYJlsYvxN7Owz4aA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:rcZhV4wFv+0=;HnOqxM3K3kp9qAvmz3WXmQ1gyWh
- PLDLt5gH1pFRY6oIWjYMScD2GV7Oq9OJ+pt7Ufeo+IIXpZKkZNMQwuhNMgguVYPNluxaHl80M
- gFnZPE9TgA94MCOlj0U9BTaP/dq6I1O09TfklOHQ37hNvAk9zv/ohkxjcuWdz4WwfQ43p0l1i
- dHAsi67wxdyB0m8Ke3X9MrJUhChCv48l+ujhLdJWkIXHUQfYTu3vOfRHljDY2PFwYbrchOEHB
- CLOSeu6i05SHeWr9fvHmzuTKUiNL/VdSt0ansuSBadfx3a59g/+4QmrVKiBhSGTryAfOMdEg8
- BGUFgWQeHZftMG5z/Bf7keC3bZajYaff/VPhxQHxVMbsY4ymJhjPuPdJGg4CznwbfoPfba8JS
- NQKZQXH3VfOO/t2NfVE4FtBMus6XVgisgxOHisQKFfDoCNchU5z9NUL27PSCus7PfKB5peHm2
- 1o9jgHU686R+dhi4+pUXsMagVdM5pQPCoOYF702nAmA9cYChXtfwUjv2CO9tMlukc4NWY44ju
- kZ/CVl7HjirY7SjCmfmvp1jveU9LTD61T33QcbKjkLJtVlBiNaadD/NaCTV2ht6iDWH6+jvUZ
- 0/VRtw0xQHa4ODFz/iZkutdOJ7Z6UQnYHtqCGUmUYBwkDh9D6iS3DR9o353KE/2FwykDnkQB4
- u51hPZu8pkPTGvw4z/zOqGuHE6A7I/hzE6EjlBVmE6Y9GjtH4IfbwkiXVEwLaSZCIEKI3WQgb
- r0cMz5JiFp/5IdRrmCgRRBQCpsw6N7hU7UtU+tKrMdrlZ07EaHnuAywV7Tg1TkT4OZE549EOG
- 7rVcq2FJXIFfoxeheCuN/sa/ZZ95Hyg8XEkmlYUGuWYUE=
-
-Hello,
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+Date: Wed, 17 Apr 2024 16:09:23 -0600
+In-Reply-To: <20240417003639.13bfd801@namcao>
+Cc: Mike Rapoport <rppt@kernel.org>,
+ Matthew Wilcox <willy@infradead.org>,
+ =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ Christian Brauner <brauner@kernel.org>,
+ Al Viro <viro@zeniv.linux.org.uk>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Jan Kara <jack@suse.cz>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-riscv@lists.infradead.org,
+ Theodore Ts'o <tytso@mit.edu>,
+ Ext4 Developers List <linux-ext4@vger.kernel.org>,
+ Conor Dooley <conor@kernel.org>,
+ Anders Roxell <anders.roxell@linaro.org>,
+ Alexandre Ghiti <alex@ghiti.fr>
+To: Nam Cao <namcao@linutronix.de>
+References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
+ <8734rlo9j7.fsf@all.your.base.are.belong.to.us> <Zh6KNglOu8mpTPHE@kernel.org>
+ <20240416171713.7d76fe7d@namcao> <20240416173030.257f0807@namcao>
+ <87v84h2tee.fsf@all.your.base.are.belong.to.us>
+ <20240416181944.23af44ee@namcao> <Zh6n-nvnQbL-0xss@kernel.org>
+ <Zh6urRin2-wVxNeq@casper.infradead.org> <Zh7Ey507KXIak8NW@kernel.org>
+ <20240417003639.13bfd801@namcao>
+X-Mailer: Apple Mail (2.3273)
 
 
-Am 17.04.2024 um 17:33 schrieb Jean Delvare:
-> If a DMI table entry is shorter than 4 bytes, it is invalid. Due to
-> how DMI table parsing works, it is impossible to safely recover from
-> such an error, so we have to stop decoding the table.
->
-> Signed-off-by: Jean Delvare <jdelvare@suse.de>
-> Link: https://lore.kernel.org/linux-kernel/Zh2K3-HLXOesT_vZ@liuwe-devbox=
--debian-v2/T/
-> ---
-> Michael, can you please test this patch and confirm that it prevents
-> the early oops?
+--Apple-Mail=_B97920C0-75B2-43B7-A029-2F2368082F1C
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
+
+On Apr 16, 2024, at 4:36 PM, Nam Cao <namcao@linutronix.de> wrote:
+> 
+> On 2024-04-16 Mike Rapoport wrote:
+>> On Tue, Apr 16, 2024 at 06:00:29PM +0100, Matthew Wilcox wrote:
+>>> On Tue, Apr 16, 2024 at 07:31:54PM +0300, Mike Rapoport wrote:
+>>>>> -	if (!IS_ENABLED(CONFIG_64BIT)) {
+>>>>> -		max_mapped_addr = __pa(~(ulong)0);
+>>>>> -		if (max_mapped_addr == (phys_ram_end - 1))
+>>>>> -			memblock_set_current_limit(max_mapped_addr - 4096);
+>>>>> -	}
+>>>>> +	memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE);
+>>>> 
+>>>> Ack.
+>>> 
+>>> Can this go to generic code instead of letting architecture maintainers
+>>> fall over it?
+>> 
+>> Yes, it's just have to happen before setup_arch() where most architectures
+>> enable memblock allocations.
+> 
+> This also works, the reported problem disappears.
+> 
+> However, I am confused about one thing: doesn't this make one page of
+> physical memory inaccessible?
+> 
+> Is it better to solve this by setting max_low_pfn instead? Then at
+> least the page is still accessible as high memory.
+
+Is that one page of memory really worthwhile to preserve?  Better to
+have a simple solution that works, maybe even mapping that page
+read-only so that any code which tries to dereference an ERR_PTR
+address immediately gets a fault?
+
+Cheers, Andreas
+
+> 
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index fa34cf55037b..6e3130cae675 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -197,7 +197,6 @@ early_param("mem", early_mem);
+> static void __init setup_bootmem(void)
+> {
+> 	phys_addr_t vmlinux_end = __pa_symbol(&_end);
+> -	phys_addr_t max_mapped_addr;
+> 	phys_addr_t phys_ram_end, vmlinux_start;
+> 
+> 	if (IS_ENABLED(CONFIG_XIP_KERNEL))
+> @@ -235,23 +234,9 @@ static void __init setup_bootmem(void)
+> 	if (IS_ENABLED(CONFIG_64BIT))
+> 		kernel_map.va_pa_offset = PAGE_OFFSET - phys_ram_base;
+> 
+> -	/*
+> -	 * memblock allocator is not aware of the fact that last 4K bytes of
+> -	 * the addressable memory can not be mapped because of IS_ERR_VALUE
+> -	 * macro. Make sure that last 4k bytes are not usable by memblock
+> -	 * if end of dram is equal to maximum addressable memory.  For 64-bit
+> -	 * kernel, this problem can't happen here as the end of the virtual
+> -	 * address space is occupied by the kernel mapping then this check must
+> -	 * be done as soon as the kernel mapping base address is determined.
+> -	 */
+> -	if (!IS_ENABLED(CONFIG_64BIT)) {
+> -		max_mapped_addr = __pa(~(ulong)0);
+> -		if (max_mapped_addr == (phys_ram_end - 1))
+> -			memblock_set_current_limit(max_mapped_addr - 4096);
+> -	}
+> -
+> 	min_low_pfn = PFN_UP(phys_ram_base);
+> -	max_low_pfn = max_pfn = PFN_DOWN(phys_ram_end);
+> +	max_pfn = PFN_DOWN(phys_ram_end);
+> +	max_low_pfn = min(max_pfn, PFN_DOWN(__pa(-PAGE_SIZE)));
+> 	high_memory = (void *)(__va(PFN_PHYS(max_low_pfn)));
+> 
+> 	dma32_phys_limit = min(4UL * SZ_1G, (unsigned long)PFN_PHYS(max_low_pfn));
 
 
-Tested-By: Michael Schierl <schierlm@gmx.de>
+Cheers, Andreas
 
 
-Applied on top of 6.8.4, it prevents the early oops I previously
-observed when booting with 2 vCPUs.
 
 
-Regards,
 
 
-Michael
+--Apple-Mail=_B97920C0-75B2-43B7-A029-2F2368082F1C
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmYgSN0ACgkQcqXauRfM
+H+DTLw/9EwRBw0cRdgYXbwAYsBH4sVkfgtbtkgDwHRrlhS6n2fVLjymfTmEtn++p
+28ksq83sFuQ/G5E6hPw5WOrOygWfww4hjLLM3kGvHf0iiMc7hR4ElbGEMbY8Iyu7
+dA8A0aStRJHcJpYi0aMfUF2SCnCIAp1Q11JFgfw3g2sqNSWMUTw22R57BD6W8GJB
+3zD+y/EhOWzT28zBq8sB55ynr6TVQXf/G/M7Kdr6QQ98oXEDVYLtdT0B0p4JaHXM
+TxQkijrAIJHHZ4oWd2B749JUwoq4zqtCUp9jaJkwfvuL2889TOdxNV4Ae0LHv51t
+k+N5NsQ8WILPQ+sIJezIHxswFkHLiczoVw6W9J/JQOq3PmiF3JeADAsLOgPOA7VH
+8bicPF2GT+yi7amnzN5pdl7oB0rk/qQMlotJjzfCZpx/7hKOjeAA3m4PGLJDNnWV
+XaW47LVUJxk+LKjhTRIWXReNWVfpEMi/YnVyLSVg5CNl7FQPYq6ybhnVbwlOmcUr
+WZCqFJGuomrHtqOUSC/+oW2rREHDhw6s+noEC/g0X8sn5cfMMZognwxvqzgLd7AF
+taLTLPGuzc9PcbBlNRfapmCFUczLvbWY1+SjVh3Im8Yq2yaS95J/1kzSkSodexqh
+9qHDAikxwiGJxK9HeqITFGaXg+Y9mn+frUuzKfFm1w2koGweqaI=
+=VbKS
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_B97920C0-75B2-43B7-A029-2F2368082F1C--
 
