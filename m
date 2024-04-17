@@ -1,195 +1,194 @@
-Return-Path: <linux-kernel+bounces-149173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B86258A8CCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:12:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BD2C8A8CCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:13:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7A441C20DD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:12:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B77AE2809E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:13:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EBB43839D;
-	Wed, 17 Apr 2024 20:11:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VCK+0+hT"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8688F37703;
+	Wed, 17 Apr 2024 20:13:16 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B19922324;
-	Wed, 17 Apr 2024 20:11:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41339EC5
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 20:13:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713384712; cv=none; b=WgG5hc/R2ylEcbTuuSxujfXCXO8uBeMS6zOhEfzMFVIJ7oKNNAYsIZMd00s8XDLF4ghaQfIN+jz+KrhznkUi0KRSSFP6lOLrmy+UHDHHJdaDh2qq5mAUzqmMiYy8mg37KqUJC7G2b0qwpVbGM1LXiW/hclBo+ZJVezdap59GjtI=
+	t=1713384796; cv=none; b=Dn7gedsEoam9neCLv695onC8Q1z5jX7/686DognewVjiO0jng7KKlaoBx8OqZszlfi1U+ZbMTrl5mBxsSCXSOfEzwIeRIQhItzdtxWOlmLxxnUIkiLWeZaMZX/1O56OWQ4MD3lx5+XRF2oF5ywYKJ9LabmjZD+G5Zy8DjjOHtv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713384712; c=relaxed/simple;
-	bh=XD0lQbHLXLAn/+S5GwtU0Lbsu1BpfgFic/mCjoxxyow=;
+	s=arc-20240116; t=1713384796; c=relaxed/simple;
+	bh=apenWwIbFDlnjM9pc1bq24NpEQjHTQNVORIhcS46yek=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PY2l62J0N+z9TZaY80SI4+C40KV6Rmiv2mhGXub5uf56HSNF1UWqMi5q8Xm28mlby7Z39WEXHL9LCuPeDphR81mAC8JCGIE8/Zm4qkSyYb3FTEw2Ym4DbghvNB4Pa5+/KH8K7x32vN2C3TJp7ZEXieqOtGcTDg7zP/+wa1sSrZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VCK+0+hT; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-516d1c8dc79so82036e87.1;
-        Wed, 17 Apr 2024 13:11:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713384709; x=1713989509; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YkXJYCCAFQIB+kTCCd8sU0ZfFeu7ir+DVLkLbSTNUGY=;
-        b=VCK+0+hTk4ttiQy2uXosmIuQli97FvL98EsWs4h/SY30apA76b+in+4DERUK6jRt0A
-         jqFVZ/4X3P0brxpZWRTnGNwUwz1kmlW0JbmRxUzdMgQVNfMql5qSvupBJ37fWCX4F1KD
-         /PPPPkWNGWgEEZ4UbleWCyDOMrK/3tTOvpuQQjvBzhKFbqUeGNXKO73GuHOwc0s6q9ia
-         Q69of+BelUK8r2mwtvxQd40hoPhLIHR8H7GBfikNoDYOGmOj2webpmOkyQiwFv1teGxv
-         wVRvzoUl0/jNwbtiUFoM1tcUM79tgU6F1LBgisJM7J8julYl9RD+r4AGlpyI8xopc3yQ
-         7nLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713384709; x=1713989509;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YkXJYCCAFQIB+kTCCd8sU0ZfFeu7ir+DVLkLbSTNUGY=;
-        b=AIwdpkamBIsJPjEw07XuEegm/NPNa38NlAnV18uEoVsOsEX5E6GXcfVcNR1f+mLmYW
-         AkP4rWnk0/mGDYh0rJo7m/OT+j7iycLLrZ7Go+zCMtAAZ9WQOr/3ZekCLOyTVWRatZmO
-         RF/sKzqIjJ5IqO59GSXdO7mbmfDOYMjuRNYHaCCM4VU4bfIJK232cjxiyacNrBS41+mH
-         zoIKjUXsfh3SRRWQppics4G4EdyqasFPSnaX3Ny/3B86fUra8PCZGVw3bUanFmj4wein
-         5AfQLAEz3Sf6Rvwu1mjGXzRK1EsBhTwmwH5XqGEj6mDM7nWEdvr62roIj/eEdKKiKTxp
-         1RiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWdQZOTb29YtvLVvTIybplabM1ZxlWZJbM86Et94w2tfUYLMl0FMnQpw7YkxnVA6IHzuEdSPrDohxh6doh/8hFJNihkmeVfsD/vVCpxbhZwU/rywm0nb7VB2hD6rrdXlSsQve/a6Bs242P+Bah1ffmEoxYT0xp9F2OmooVR4gQuI9CDEaIq
-X-Gm-Message-State: AOJu0Yzqf3GY6GF+5zCELSO7gryLNiPsvs1urxsZtjcguIo/5j1IKrQ/
-	SGxT+juVFz6Bb1gLcAbvnqobYvbx6EdaktyA7m+gqvZD0XE7hKcwIhSdaGbr
-X-Google-Smtp-Source: AGHT+IEimNL9Jzkg+4WuFGUWNsLVtlVgbYacCQGaS4hEtgXZrKILR+Dv3UKvX+SXrk3ibvZAdcxVBg==
-X-Received: by 2002:ac2:4424:0:b0:518:9952:2740 with SMTP id w4-20020ac24424000000b0051899522740mr173861lfl.41.1713384708981;
-        Wed, 17 Apr 2024 13:11:48 -0700 (PDT)
-Received: from mobilestation.baikal.int (srv1.baikalchip.ru. [87.245.175.227])
-        by smtp.gmail.com with ESMTPSA id bp32-20020a05651215a000b00518f6b9a5d7sm971036lfb.137.2024.04.17.13.11.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 13:11:48 -0700 (PDT)
-Date: Wed, 17 Apr 2024 23:11:46 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org, linux-serial@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] dmaengine: dw: Simplify prepare CTL_LO methods
-Message-ID: <lzcgxh7trwoksd4bx2fsybellbngvpwhgq2a76ou2iufemockp@3dca4bfox2ps>
-References: <20240416162908.24180-1-fancer.lancer@gmail.com>
- <20240416162908.24180-4-fancer.lancer@gmail.com>
- <Zh7LyszPd2sNfWRm@smile.fi.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gaANVdtd/Yf5g9i4mED8hzD0lcyl1w8ZKrg27AVdUAR7JHcGVwmEvII5oTYEK4aOAww24ShvD1H+dtf/hsJll/S2FBYXSCEo/TWrZISaRGkjKTHXlyrEnrMj2FdDyeBX0xytZbt1U11pCiyXai51Ghe83au9eC9U524kdrkY/0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rxBeJ-0002QQ-DG; Wed, 17 Apr 2024 22:12:55 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rxBeG-00Cqux-Hd; Wed, 17 Apr 2024 22:12:52 +0200
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rxBeG-00HZBU-1Q;
+	Wed, 17 Apr 2024 22:12:52 +0200
+Date: Wed, 17 Apr 2024 22:12:52 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Woojung Huh <woojung.huh@microchip.com>,
+	Arun Ramadoss <arun.ramadoss@microchip.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Russell King <linux@armlinux.org.uk>, kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	UNGLinuxDriver@microchip.com,
+	linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH net-next v1 2/4] net: phy: micrel: lan8841: set default
+ PTP latency values
+Message-ID: <ZiAtREiqPuvXkB4S@pengutronix.de>
+References: <20240417164316.1755299-1-o.rempel@pengutronix.de>
+ <20240417164316.1755299-3-o.rempel@pengutronix.de>
+ <c8e3f5d0-832b-4ab1-a65f-52f983ff110a@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Zh7LyszPd2sNfWRm@smile.fi.intel.com>
+In-Reply-To: <c8e3f5d0-832b-4ab1-a65f-52f983ff110a@lunn.ch>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Tue, Apr 16, 2024 at 10:04:42PM +0300, Andy Shevchenko wrote:
-> On Tue, Apr 16, 2024 at 07:28:57PM +0300, Serge Semin wrote:
-> > Currently the CTL LO fields are calculated on the platform-specific basis.
-> > It's implemented by means of the prepare_ctllo() callbacks using the
-> > ternary operator within the local variables init block at the beginning of
-> > the block scope. The functions code currently is relatively hard to
-> > comprehend and isn't that optimal since implies four conditional
-> > statements executed and two additional local variables defined. Let's
-> > simplify the DW AHB DMA prepare_ctllo() method by unrolling the ternary
-> > operators into the normal if-else statement, dropping redundant
-> > master-interface ID variables and initializing the local variables based
-> > on the singly evaluated DMA-transfer direction check. Thus the method will
-> > look much more readable since now the fields content can be easily
-> > inferred right from the if-else branch. Provide the same update in the
-> > Intel DMA32 core driver for sake of the driver code unification.
+On Wed, Apr 17, 2024 at 08:39:54PM +0200, Andrew Lunn wrote:
+> On Wed, Apr 17, 2024 at 06:43:14PM +0200, Oleksij Rempel wrote:
+> > Set default PTP latency values to provide realistic path delay
+> > measurements and reflecting internal PHY latency asymetry.
 > > 
-> > Note besides of the effects described above this update is basically a
-> > preparation before dropping the max burst encoding callback. It will
-> > require calling the burst fields calculation methods right in the
-> > prepare_ctllo() callbacks, which would have made the later function code
-> > even more complex.
-> 
-> Yeah, this is inherited from the original driver where it used to be a macro.
-> 
-> ...
-> 
-> > +	if (dwc->direction == DMA_MEM_TO_DEV) {
-> > +		sms = dwc->dws.m_master;
-> > +		smsize = 0;
-> > +		dms = dwc->dws.p_master;
-> > +		dmsize = sconfig->dst_maxburst;
-> 
+> > This values are based on ptp4l measurements for the path delay against
+> > identical PHY as link partner and latency asymmetry extracted from
+> > documented SOF Latency values of this PHY.
+> > 
+> > Documented SOF Latency values are:
+> > TX 138ns/RX 430ns @ 1000Mbps
+> > TX 140ns/RX 615ns @ 100Mbps (fixed latency mode)
+> > TX 140ns/RX 488-524ns @ 100Mbps (variable latency mode)
+> > TX 654ns/227-2577ns @ 10Mbps
 
-> I would group it differently, i.e.
-> 
-> 		sms = dwc->dws.m_master;
-> 		dms = dwc->dws.p_master;
-> 		smsize = 0;
-> 		dmsize = sconfig->dst_maxburst;
+Here is a typo 2277-2577ns
 
-Could you please clarify, why? From my point of view it was better to
-group the source master ID and the source master burst size inits
-together.
+> Does Half Duplex vs Full Duplex make a difference here?
 
-> 
-> > +	} else if (dwc->direction == DMA_DEV_TO_MEM) {
-> > +		sms = dwc->dws.p_master;
-> > +		smsize = sconfig->src_maxburst;
-> > +		dms = dwc->dws.m_master;
-> > +		dmsize = 0;
-> > +	} else /* DMA_MEM_TO_MEM */ {
-> > +		sms = dwc->dws.m_master;
-> > +		smsize = 0;
-> > +		dms = dwc->dws.m_master;
-> > +		dmsize = 0;
-> > +	}
-> 
-> Ditto for two above cases.
-> 
-> >  static u32 idma32_prepare_ctllo(struct dw_dma_chan *dwc)
-> >  {
-> >  	struct dma_slave_config	*sconfig = &dwc->dma_sconfig;
-> > -	u8 smsize = (dwc->direction == DMA_DEV_TO_MEM) ? sconfig->src_maxburst : 0;
-> > -	u8 dmsize = (dwc->direction == DMA_MEM_TO_DEV) ? sconfig->dst_maxburst : 0;
+Yes, Half Duplex will be even less predictable. It would make no sense to
+use it for the time sync.
 
-> > +	u8 smsize, dmsize;
+> > +static int lan8841_ptp_latency_init(struct phy_device *phydev)
+> > +{
+> > +	int ret;
 > > +
-> > +	if (dwc->direction == DMA_MEM_TO_DEV) {
-> > +		smsize = 0;
-> > +		dmsize = sconfig->dst_maxburst;
-> > +	} else if (dwc->direction == DMA_DEV_TO_MEM) {
-> > +		smsize = sconfig->src_maxburst;
-> > +		dmsize = 0;
-> > +	} else /* DMA_MEM_TO_MEM */ {
-> > +		smsize = 0;
-> > +		dmsize = 0;
-> > +	}
+> > +	ret = phy_write_mmd(phydev, KSZ9131RN_MMD_COMMON_CTRL_REG,
+> > +			    LAN8841_PTP_RX_LATENCY_10M,
+> > +			    LAN8841_PTP_RX_LATENCY_10M_VAL);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = phy_write_mmd(phydev, KSZ9131RN_MMD_COMMON_CTRL_REG,
+> > +			    LAN8841_PTP_TX_LATENCY_10M,
+> > +			    LAN8841_PTP_TX_LATENCY_10M_VAL);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = phy_write_mmd(phydev, KSZ9131RN_MMD_COMMON_CTRL_REG,
+> > +			    LAN8841_PTP_RX_LATENCY_100M,
+> > +			    LAN8841_PTP_RX_LATENCY_100M_VAL);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = phy_write_mmd(phydev, KSZ9131RN_MMD_COMMON_CTRL_REG,
+> > +			    LAN8841_PTP_TX_LATENCY_100M,
+> > +			    LAN8841_PTP_TX_LATENCY_100M_VAL);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = phy_write_mmd(phydev, KSZ9131RN_MMD_COMMON_CTRL_REG,
+> > +			    LAN8841_PTP_RX_LATENCY_1000M,
+> > +			    LAN8841_PTP_RX_LATENCY_1000M_VAL);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	return phy_write_mmd(phydev, KSZ9131RN_MMD_COMMON_CTRL_REG,
+> > +			     LAN8841_PTP_TX_LATENCY_1000M,
+> > +			     LAN8841_PTP_TX_LATENCY_1000M_VAL);
+> > +}
 > 
-> 	u8 smsize = 0, dmsize = 0;
-> 
-> 	if (dwc->direction == DMA_MEM_TO_DEV)
-> 		dmsize = sconfig->dst_maxburst;
-> 	else if (dwc->direction == DMA_DEV_TO_MEM)
-> 		smsize = sconfig->src_maxburst;
-> 
-> ?
-> 
-> Something similar also can be done in the Synopsys case above, no?
+> What affect does this have on systems which have already applied
+> adjustments in user space to correct for this? Will this cause
+> regressions for such systems?
 
-As in case of the patch #1 the if-else statement here was designed
-like that intentionally: to signify that the else clause implies the
-DMA_MEM_TO_MEM transfer. Any other one (like DMA_DEV_TO_DEV) would
-need to have the statement alteration. Moreover even though your
-version looks smaller, but it causes one redundant store operation.
-Do you think it still would be better to use your version despite of
-my reasoning? 
+Yes.
 
--Serge(y)
+> I know Richard has rejected changes like this in the past.
 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+In this case I would need to extend the ethtool interface. The driver
+should provide recommended values and the user space can optionally
+read them and optionally write them to the HW.
+
+Get Recommended TimeSync Data Path Delays
+    Command Name: ETHTOOL_G_TS_DELAYS_RECOMMENDED
+    Description: This command retrieves the recommended TimeSync data path
+    delays for transmit and receive paths, typically based on the interface
+    type and link speed. This values are not stable.
+
+Get Currently Active TimeSync Data Path Delays
+    Command Name: ETHTOOL_G_TS_DELAYS_ACTIVE
+    Description: This command retrieves the currently active TimeSync data path
+    delays that are being applied by the PHY. This is useful for real-time
+    diagnostics and monitoring.
+
+Set Currently Active TimeSync Data Path Delays
+    Command Name: ETHTOOL_S_TS_DELAYS_ACTIVE
+    Description: This command sets the currently active TimeSync data path
+    delays. This would allow the system administrator or the network management
+    system to manually adjust the TimeSync delays to either align them with the
+    recommended values or to tweak them for specific network conditions or
+    compliance requirements.
+
+What do you think about this?
+
+Should the delay value be bound to the link mode or only to the speed?
+
+What if we have multiple components with delays? SoC/MAC specific delays,
+interface converters RGMII to xMII, etc? Should the ethtool interface provide
+summ of all delays in the chain, or we need to have access to each separately?
+
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
