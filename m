@@ -1,134 +1,178 @@
-Return-Path: <linux-kernel+bounces-149206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A4C58A8D2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:44:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA8B08A8D30
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:44:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6379FB23EC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:44:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 581081F226D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:44:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D3D4597B;
-	Wed, 17 Apr 2024 20:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EB1947A7D;
+	Wed, 17 Apr 2024 20:44:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="V0xSyOOE"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wpQ4O3qd";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9gGL2wJf";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wpQ4O3qd";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9gGL2wJf"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FCE71E869;
-	Wed, 17 Apr 2024 20:43:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC2143D966;
+	Wed, 17 Apr 2024 20:44:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713386638; cv=none; b=teZMjJEMtNzjgBgful4youM4QZjANXzguVQE9jOm3PQX5j7PZ4hOjPCV0xAmivEiJnODpHWcUXDBuPCgXWstmsZD4LOGbX2SUs3AQmG+G05AiN3MsP/IQ/IcmUCV11pqMX0xfCVxs5a7xU0tfzlX62ANOQ/faCzLsTxH+IEgQaM=
+	t=1713386688; cv=none; b=u0QEiTcsfoAUiv/pqmtdY5z0otnZXGoBBJPmnb7XDMHwZWh9jc1NrVyj96ZkM8A8DOW0anWzqMybZwFzVFcBFD3bt66awIYREV32JwlM/3gP5Z6z/npp2qi5XDINOm8yKqixIRaal+0lqcSz68/24bIAODNfY0dZcrUqraaMD80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713386638; c=relaxed/simple;
-	bh=RFdfTPrCdo5JYtaH5+c+QBleeNATgkNP4Fi/PekgmDs=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EYwdNA+RPs/9dt3ELbyEUaLzSPn8W3Jdg0G4X8B/DvHpNRVWDs6Ka8i4aW5TLPjDpWFgJO8yfuecL0PVBs8meINCtjR8ETIxAfB9r2bAoIc6UvTaNw9lroushSDXjU+8Yg4qOmu2P4HokJqOLqm4zLzhoKmDLXnNAq1BQaravyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=V0xSyOOE; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43H9RBw8032455;
-	Wed, 17 Apr 2024 20:43:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=bksAM5LfzRPTnZK1CiAZW
-	4aNgo3gG+ERZSqsHHRU/n0=; b=V0xSyOOEQvde8PhCrhO2/bd5wrMVo4CSv0ERX
-	LUdgjM4F6+wyb5xLJYEsFexL8chuXOJqJShJ1Lhf2ykBJC+jViSmFKF1znm+kZbu
-	LhORgBJfCKqd4gsHS29W+rs8voY/9ikruSu7/SUdsOoAB7MZItl0TxFKiPetlWFU
-	QPgAr8PI2ZA5R7pDIsTmESjzONEmK4gSjM/6rBnByegpBes04piMcV13baTSXzIw
-	5oA1/Ug2WmJ1ybSGWWHweodTWdlbRG1Rv/cKgOQEYyFC/lbUJK7j5eTTu4GjYNGP
-	7Djo0v6iDnsO5rU3CpPsbeWSo6Mm9039se8ZVurib24M6CfEg==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xjbt5styg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 20:43:51 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43HKhohQ026373
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 20:43:50 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Wed, 17 Apr 2024 13:43:49 -0700
-Date: Wed, 17 Apr 2024 13:43:48 -0700
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Sibi Sankar <quic_sibis@quicinc.com>
-CC: <sudeep.holla@arm.com>, <cristian.marussi@arm.com>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <jassisinghbrar@gmail.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <dmitry.baryshkov@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_rgottimu@quicinc.com>, <quic_kshivnan@quicinc.com>,
-        <conor+dt@kernel.org>, <quic_gkohli@quicinc.com>,
-        <quic_nkela@quicinc.com>, <quic_psodagud@quicinc.com>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH V3 1/5] dt-bindings: mailbox: qcom: Add CPUCP mailbox
- controller bindings
-Message-ID: <ZiA0hOkpGVlVFp5u@hu-bjorande-lv.qualcomm.com>
-References: <20240417132856.1106250-1-quic_sibis@quicinc.com>
- <20240417132856.1106250-2-quic_sibis@quicinc.com>
+	s=arc-20240116; t=1713386688; c=relaxed/simple;
+	bh=DB9U1UI6R50eyqIz5bih+l8dfU5+Kjtb1/E5iDsSgTw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=llm95zmyBtcunnrYtGiaTY8PJXw3nk9OTl+RpbS+AD20gMHaTFBwOLaaMzoPOMoTyI+SqYWDh3VP2WuiXz5FF+URn19kndaBhQ0zYASFI1KRRVxBQ2YdZWUXO11T6ESbtpCd3NHuE8TMAaKLLpl2yN1IjNFfl+H0Fo9xskk0L/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wpQ4O3qd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9gGL2wJf; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wpQ4O3qd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9gGL2wJf; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from lion.mk-sys.cz (unknown [10.100.225.114])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C739634226;
+	Wed, 17 Apr 2024 20:44:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713386683; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/nVYq95De1VWYnmvf7sSPzt9WZ7Hzjsv8l9u6oT5nDY=;
+	b=wpQ4O3qd8vCmXsLxepf9uovKJT19OG5tB4y+WAhQtOLuE8fS8duTmVJvyyFrtxTBqNoJv/
+	MWGCD5NiJ3hMDXaf+45ukxlJ90DW/OL97GW0XMnV9lGdwmGFye/daouIbw5wtp279nJjCa
+	b8q6Y8K6jwhKzOl752tSuLNSos9jRZ8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713386683;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/nVYq95De1VWYnmvf7sSPzt9WZ7Hzjsv8l9u6oT5nDY=;
+	b=9gGL2wJfB8yuEQ50RDLZQZ62trOJzdsnZM7k8mg9pEgwbwfvIdBaoR+Wpg8VVDZSJ3T4P5
+	Opx5n1Kb+C++BABg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713386683; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/nVYq95De1VWYnmvf7sSPzt9WZ7Hzjsv8l9u6oT5nDY=;
+	b=wpQ4O3qd8vCmXsLxepf9uovKJT19OG5tB4y+WAhQtOLuE8fS8duTmVJvyyFrtxTBqNoJv/
+	MWGCD5NiJ3hMDXaf+45ukxlJ90DW/OL97GW0XMnV9lGdwmGFye/daouIbw5wtp279nJjCa
+	b8q6Y8K6jwhKzOl752tSuLNSos9jRZ8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713386683;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/nVYq95De1VWYnmvf7sSPzt9WZ7Hzjsv8l9u6oT5nDY=;
+	b=9gGL2wJfB8yuEQ50RDLZQZ62trOJzdsnZM7k8mg9pEgwbwfvIdBaoR+Wpg8VVDZSJ3T4P5
+	Opx5n1Kb+C++BABg==
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+	id B387C20136; Wed, 17 Apr 2024 22:44:43 +0200 (CEST)
+Date: Wed, 17 Apr 2024 22:44:43 +0200
+From: Michal Kubecek <mkubecek@suse.cz>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn <andrew@lunn.ch>, 
+	Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>, 
+	linux-arm-kernel@lists.infradead.org, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Herve Codina <herve.codina@bootlin.com>, Florian Fainelli <f.fainelli@gmail.com>, 
+	Heiner Kallweit <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>, 
+	=?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg <jesse.brandeburg@intel.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>, 
+	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>, 
+	=?utf-8?Q?Nicol=C3=B2?= Veronese <nicveronese@gmail.com>, Simon Horman <horms@kernel.org>
+Subject: Re: [PATCH ethtool-next 0/3] ethtool: Introduce PHY listing and
+ targetting
+Message-ID: <qosybvtpp3bslfflbsmox66a5r3zujfvwwu6o7llsqpdsolu35@2iwaf4z4ilcl>
+References: <20240103142950.235888-1-maxime.chevallier@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2vmzhpu6ekfanvdy"
 Content-Disposition: inline
-In-Reply-To: <20240417132856.1106250-2-quic_sibis@quicinc.com>
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: gjCqTYrt6LHKxzh41xzT_8GeSONsXMtQ
-X-Proofpoint-GUID: gjCqTYrt6LHKxzh41xzT_8GeSONsXMtQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-17_18,2024-04-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 adultscore=0 mlxscore=0 phishscore=0
- malwarescore=0 clxscore=1011 bulkscore=0 suspectscore=0 spamscore=0
- mlxlogscore=807 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404170146
+In-Reply-To: <20240103142950.235888-1-maxime.chevallier@bootlin.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.69 / 50.00];
+	SIGNED_PGP(-2.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
+	BAYES_HAM(-1.29)[90.02%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_CC(0.00)[davemloft.net,vger.kernel.org,bootlin.com,lunn.ch,kernel.org,google.com,redhat.com,armlinux.org.uk,lists.infradead.org,csgroup.eu,gmail.com,nxp.com,intel.com,lwn.net,pengutronix.de];
+	RCVD_COUNT_ONE(0.00)[1];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	FROM_EQ_ENVFROM(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	TO_DN_SOME(0.00)[]
+X-Spam-Score: -2.69
+X-Spam-Flag: NO
 
-On Wed, Apr 17, 2024 at 06:58:52PM +0530, Sibi Sankar wrote:
-> Add devicetree binding for CPUSS Control Processor (CPUCP) mailbox
-> controller.
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> ---
-> 
-> v2:
-> * Pickup Rb from Dimitry.
-> 
->  .../bindings/mailbox/qcom,cpucp-mbox.yaml     | 49 +++++++++++++++++++
->  1 file changed, 49 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml b/Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml
-> new file mode 100644
-> index 000000000000..491b0a05e630
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml
-> @@ -0,0 +1,49 @@
-> +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mailbox/qcom,cpucp-mbox.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies, Inc. CPUCP Mailbox Controller
-> +
-> +maintainers:
-> +  - Sibi Sankar <quic_sibis@qti.qualcomm.com>
 
-That doesn't look like the correct domain.
+--2vmzhpu6ekfanvdy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
-Bjorn
+On Wed, Jan 03, 2024 at 03:29:45PM +0100, Maxime Chevallier wrote:
+> Hello everyone,
+>=20
+> This series implements the ethtool part of the multi-PHY support that was
+> recently merged into net-next :
+>=20
+> https://lore.kernel.org/netdev/20231221180047.1924733-1-maxime.chevallier=
+@bootlin.com/
+>=20
+[...]
+> Maxime Chevallier (3):
+>   update UAPI header copies
+>   ethtool: Allow passing a PHY index for phy-targetting commands
+>   ethtool: Introduce a command to list PHYs
+
+As far as I can see, part of the kernel side support has been reverted
+and is going to be reworked but that hasn't happened yet. Unless
+I missed something, patch 2/3 can be already applied. Should I pick it
+now for the 6.9 cycle or would you prefer to resubmit the whole series
+once the kernel side code is complete?
+
+Michal
+
+--2vmzhpu6ekfanvdy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAmYgNLcACgkQ538sG/LR
+dpUiaQf/b7sBQs68Qte0MbJIKu+NiISBrZYhTqZD7NAMuLPO3/9eUZ3DpMP7RRZ4
+88CHYIjh0DhERMHzV4cDwG724JTfuKYO01P373G0jmIC0VOjr2tl1TL0lgImTzY/
+kbRKxj7VLeC+2QyWXv8LrA+PJ4gyd/fp0ljg09/xx1/Fa36Du+IF69JwW0OyHfwF
+LMit7fldOGA3eWwIrLnnHV/zB0+G2Ojxheo/9ZoJOp8kuyjmOAMLCLrCp/IOWwqS
+6IKYSw5uW+hY/QWaw0BNd7AOytwLJg8BHwjJRpzXVFiKCsJ3d1Ydj46A0diCEybt
+I9tXngauT8Z1072wBdJ6GmHgpI4cUg==
+=WLta
+-----END PGP SIGNATURE-----
+
+--2vmzhpu6ekfanvdy--
 
