@@ -1,164 +1,120 @@
-Return-Path: <linux-kernel+bounces-149072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AF828A8B67
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:44:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 344788A8BAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:54:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB499285F0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:44:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 557671C24077
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:54:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02D3A1BC39;
-	Wed, 17 Apr 2024 18:44:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D511DFF0;
+	Wed, 17 Apr 2024 18:54:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lQUQj5zI"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD5E22338;
-	Wed, 17 Apr 2024 18:44:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	dkim=pass (1024-bit key) header.d=zougloub.eu header.i=@zougloub.eu header.b="M4LPK1QD"
+Received: from zougloub.eu (zougloub.eu [69.70.16.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0382171A5;
+	Wed, 17 Apr 2024 18:54:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.70.16.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713379464; cv=none; b=AO1aJUcBi4Pvvfk2fk7yhCyPRJxdwvtV97zDZu39P4glwmUMTCJUJUvTbfBFEk+kfEqdCtHyhUcH6A5+0rLO8+aPIw2sbm5wvJmpe0/3cSiniE73MDZt2mzKW7YeEQXQbtaWZawXDhox4m7iQmWDTLW1UdilqJkju4yoAYuG+HM=
+	t=1713380064; cv=none; b=IBotHv1EqeXYAKdTQgVqhoZL7hrA0R81Q8gUGdXsqy37bFkVvzknQTegzTGF7JdC+5Yc7UIjDeSbjbQMFTsnIr9ISFgRbOmuFvYHTmGgQzXyvsC07gbfmwc9HZT3pgwAPrWCe+fjiOaKniB3aPl9YTaUgAU+psp307EcrLhIO2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713379464; c=relaxed/simple;
-	bh=/MgPf3JdMf3WsCCU3RTyq2hSaaAaGOGjKybT8hE2a0I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sGa0ChI8bzRsPaJJq4UbJeHL01jSrbflGrowoTURe24+EcjYKKtkxIlLyKv3e7URSdnxyKCkgf6p2kArQ2BMibcFYoL318pzsAxEKc8S2BFSEhSSKc1XOSw/rmVeqNyq6yUB75frR9QUqh5Hon3R8yaFCgi2sViVaFOQop3fyGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lQUQj5zI; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713379463; x=1744915463;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/MgPf3JdMf3WsCCU3RTyq2hSaaAaGOGjKybT8hE2a0I=;
-  b=lQUQj5zIIGR6weey/tTW2jLddzXuGwoTJTe+mYjX6rP6idX9WEiy19ps
-   0M0rfhDW91jw8A+lvYVksbUUHD9iqTa9kQH0AyNoXBDYMvXvsD4b1k8NZ
-   IFtgzHyF75cP2merojVuK28RjSGWlbpIpZDmKcUPWxYRxVzRbFMf60gTM
-   raLyiGzqatq/u627rWLyYZxtoel/bgB5lReBOvJhd9elNIcGk+MgZxn10
-   II1mZM4bkA85CrWkPxhWV0Bk378vCwHdoPJlS+EM3hIgTOghuXKzixFC/
-   BFl080/bXyPyT46Cglr5PUrMqzJBOiXA0UNtuf07Pej3E8yFEF+y6uY0Z
-   A==;
-X-CSE-ConnectionGUID: ksZfUWL5SiesRffaqWKNYw==
-X-CSE-MsgGUID: eMc8i/Z/RuibjJQCwTWIIw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="9047005"
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="9047005"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 11:44:22 -0700
-X-CSE-ConnectionGUID: 2uUunGCcR+SpwJWuzhuYtA==
-X-CSE-MsgGUID: dL8AWQALQ66oDjtbRMoRDg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="23309529"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 11:44:21 -0700
-Date: Wed, 17 Apr 2024 11:44:20 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Chao Gao <chao.gao@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org, isaku.yamahata@gmail.com,
-	linux-kernel@vger.kernel.org,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Michael Roth <michael.roth@amd.com>,
-	David Matlack <dmatlack@google.com>,
-	Federico Parola <federico.parola@polito.it>,
-	Kai Huang <kai.huang@intel.com>, isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v2 05/10] KVM: x86/mmu: Introduce kvm_tdp_map_page() to
- populate guest memory
-Message-ID: <20240417184420.GH3039520@ls.amr.corp.intel.com>
-References: <cover.1712785629.git.isaku.yamahata@intel.com>
- <9b866a0ae7147f96571c439e75429a03dcb659b6.1712785629.git.isaku.yamahata@intel.com>
- <Zh90aFh2xr+nEcCQ@chao-email>
+	s=arc-20240116; t=1713380064; c=relaxed/simple;
+	bh=GaLh8Q5WBEyaPy49ACZRYWDRLAqz47vBjUJgPI5NwTU=;
+	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=MkhzNhC0U5VJxujnwxGzF8SgNaEfGNaw82F2KTOoqDZPQ0gEI7CzFV4bPgrPHCLifS3Sqr7PwHhK/qIY7IgBJ8gFJzOS6x0f6fCul2h3hFw0oEd4xxPGieXOsG+i15xFdqmtXlGX/04qI8PFrtFDbUhKeAoOi6erW4OyZ+Ag7zE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zougloub.eu; spf=pass smtp.mailfrom=zougloub.eu; dkim=pass (1024-bit key) header.d=zougloub.eu header.i=@zougloub.eu header.b=M4LPK1QD; arc=none smtp.client-ip=69.70.16.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zougloub.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zougloub.eu
+Received: from pouet.cJ (exmakhina.com [69.70.16.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by zougloub.eu (Postfix) with ESMTPSA id E10AF286E3C6;
+	Wed, 17 Apr 2024 14:46:57 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=zougloub.eu;
+	s=zougloub.eu; t=1713379618;
+	bh=GaLh8Q5WBEyaPy49ACZRYWDRLAqz47vBjUJgPI5NwTU=;
+	h=Subject:From:To:Cc:Date;
+	b=M4LPK1QDaTcAYhDEkl1+npSkTtlz+KGfTriNnqIJ1pjPmuHYpVVsmBhCra/P25BLp
+	 WHwQGev4H+ejcuhDd5cmcbET1tvLHamp4BiUurKVm9ytoZqDT0q4Pann7iE/h/IJPB
+	 TW7t7GqiYvdtywpFci46TnEzf1E97GIWZt93HYwY=
+Message-ID: <a7eb665c74b5efb5140e6979759ed243072cb24a.camel@zougloub.eu>
+Subject: [BUG] e1000e, scheduling while atomic
+From: =?ISO-8859-1?Q?J=E9r=F4me?= Carretero <cJ@zougloub.eu>
+To: Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen
+ <anthony.l.nguyen@intel.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, PaoloAbeni
+ <pabeni@redhat.com>,  Thomas Gleixner <tglx@linutronix.de>, John Stultz
+ <jstultz@google.com>, StephenBoyd <sboyd@kernel.org>
+Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Date: Wed, 17 Apr 2024 14:46:52 -0400
+Autocrypt: addr=cJ@zougloub.eu; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: multipart/signed; micalg="pgp-sha256";
+	protocol="application/pgp-signature"; boundary="=-HdJrXOh6mReobDPrIWlL"
+User-Agent: Evolution 3.50.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Zh90aFh2xr+nEcCQ@chao-email>
-
-On Wed, Apr 17, 2024 at 03:04:08PM +0800,
-Chao Gao <chao.gao@intel.com> wrote:
-
-> On Wed, Apr 10, 2024 at 03:07:31PM -0700, isaku.yamahata@intel.com wrote:
-> >From: Isaku Yamahata <isaku.yamahata@intel.com>
-> >
-> >Introduce a helper function to call the KVM fault handler.  It allows a new
-> >ioctl to invoke the KVM fault handler to populate without seeing RET_PF_*
-> >enums or other KVM MMU internal definitions because RET_PF_* are internal
-> >to x86 KVM MMU.  The implementation is restricted to two-dimensional paging
-> >for simplicity.  The shadow paging uses GVA for faulting instead of L1 GPA.
-> >It makes the API difficult to use.
-> >
-> >Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> >---
-> >v2:
-> >- Make the helper function two-dimensional paging specific. (David)
-> >- Return error when vcpu is in guest mode. (David)
-> >- Rename goal_level to level in kvm_tdp_mmu_map_page(). (Sean)
-> >- Update return code conversion. Don't check pfn.
-> >  RET_PF_EMULATE => EINVAL, RET_PF_CONTINUE => EIO (Sean)
-> >- Add WARN_ON_ONCE on RET_PF_CONTINUE and RET_PF_INVALID. (Sean)
-> >- Drop unnecessary EXPORT_SYMBOL_GPL(). (Sean)
-> >---
-> > arch/x86/kvm/mmu.h     |  3 +++
-> > arch/x86/kvm/mmu/mmu.c | 32 ++++++++++++++++++++++++++++++++
-> > 2 files changed, 35 insertions(+)
-> >
-> >diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> >index e8b620a85627..51ff4f67e115 100644
-> >--- a/arch/x86/kvm/mmu.h
-> >+++ b/arch/x86/kvm/mmu.h
-> >@@ -183,6 +183,9 @@ static inline void kvm_mmu_refresh_passthrough_bits(struct kvm_vcpu *vcpu,
-> > 	__kvm_mmu_refresh_passthrough_bits(vcpu, mmu);
-> > }
-> > 
-> >+int kvm_tdp_map_page(struct kvm_vcpu *vcpu, gpa_t gpa, u64 error_code,
-> >+		     u8 *level);
-> >+
-> > /*
-> >  * Check if a given access (described through the I/D, W/R and U/S bits of a
-> >  * page fault error code pfec) causes a permission fault with the given PTE
-> >diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> >index 91dd4c44b7d8..a34f4af44cbd 100644
-> >--- a/arch/x86/kvm/mmu/mmu.c
-> >+++ b/arch/x86/kvm/mmu/mmu.c
-> >@@ -4687,6 +4687,38 @@ int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
-> > 	return direct_page_fault(vcpu, fault);
-> > }
-> > 
-> >+int kvm_tdp_map_page(struct kvm_vcpu *vcpu, gpa_t gpa, u64 error_code,
-> >+		     u8 *level)
-> >+{
-> >+	int r;
-> >+
-> >+	/* Restrict to TDP page fault. */
-> 
-> need to explain why. (just as you do in the changelog)
-
-Sure.
 
 
-> >+	if (vcpu->arch.mmu->page_fault != kvm_tdp_page_fault)
-> 
-> page fault handlers (i.e., vcpu->arch.mmu->page_fault()) will be called
-> finally. why not let page fault handlers reject the request to get rid of
-> this ad-hoc check? We just need to plumb a flag indicating this is a
-> pre-population request into the handlers. I think this way is clearer.
-> 
-> What do you think?
+--=-HdJrXOh6mReobDPrIWlL
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-__kvm_mmu_do_page_fault() doesn't check if the mmu mode is TDP or not.
-If we don't want to check page_fault handler, the alternative check would
-be if (!vcpu->arch.mmu->direct).  Or we will require the caller to guarantee
-that MMU mode is tdp (direct or tdp_mmu).
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Hi,
+
+
+I opened https://bugzilla.kernel.org/show_bug.cgi?id=3D218740 because I'm
+not quite sure the culprit is e1000e or some timer stuff.
+
+I just verified that this happens on the latest master.
+
+
+Let me know if I can (quickly) help,
+
+
+--=20
+J=C3=A9r=C3=B4me
+
+PS: Sorry if I'm sending this to too many people, I did a
+get_maintainer timer and e1000e code.
+
+--=-HdJrXOh6mReobDPrIWlL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAABCAAtFiEEk5TkdsnFh9XvC+SieNwb2r75s3MFAmYgGRwPHGNqQHpvdWds
+b3ViLmV1AAoJEHjcG9q++bNzGPEP/jmSkbL5VKHv0TF1TCtUlY1nCCqedgceGbC6
+3/lg2s7ZfB3q4PmYn2zJT8CiX5aXr0rNXPPD914Na6IHwCrnPzBj/UqOG2JTFAtd
+PQinKa797fRn9zBo5w4XvVXgoaAueu5x0sIUpqzVlkuVuMdE+u9SIAOvFKCCJUO/
+7bWAzHh8WAHztC78vG0kf8jI7YB9UHyCpztGBGeA1JGZKkPHtAdhdlmoadzIq5WF
+rLUBQ8QxU0MVkVLO8pau4KNrT5sjpteMxZ8pqyfV3hsBlenajPMuBvUfKvwoKoLt
+gaDIn7gZ6ca8sdEJQgEgl5tWo6fZ0Etr3VQFaEOP2WeN+QVo2Qh0wfDi3l0Pdnr9
+1rhQXTGgr+CvD351fGyU5875Tu9MurA7eOcG57/3JgXkiPyJ2sb0mlNsCFARJC1p
+JrNCkmsxKxKNrf1Eu4efvFyRae9te7D/SNtVGzwD8o/HuN3EN7OkzaYQJYjRl95V
+Q4/4koR2GsfWGGpAGJBG36t3ZaGcikGxAs5rI1dZu5FCNnSmty0T/TC+3dcto2hV
+SDj3T+bOv0IYluKqRHsSQ5pONEJuYBooacCqRvJ8jbOVd3XAWYE3y+pnFe68cg6B
+k9rneHPBHO/fJHLSdWC4pe9hRM+SWSjuFsns/EQnAkWy5wQSbmbeshmdLkush2I6
+e4pIKYeV
+=RnpT
+-----END PGP SIGNATURE-----
+
+--=-HdJrXOh6mReobDPrIWlL--
 
