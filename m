@@ -1,116 +1,218 @@
-Return-Path: <linux-kernel+bounces-149212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 667068A8D3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:47:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAC578A8D3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:48:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 232EA285DE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:47:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AF8D1F22C76
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:48:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A76540858;
-	Wed, 17 Apr 2024 20:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2AF7481A8;
+	Wed, 17 Apr 2024 20:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="aQ94PS7H"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ROod1YNp"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2358D2C859
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 20:47:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469C137714;
+	Wed, 17 Apr 2024 20:48:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713386857; cv=none; b=kiqVc2HsFTemPb6GOLk1goXXodFP/wLfkag39wA7ayAU2kdc4CwXBSrgz4y08Q7c+nw/F+ZhzuqE00Vh5TGu5ekhAMKR5ou58bti2GjlN6+v8+GhRTdbIX5WABH4XQneUUH3x+DabZ10KRtQQXS2jAoAnIu2AV5d1pj9qc5Rdao=
+	t=1713386886; cv=none; b=O+FQurfpOV+FswoLtNoAh2Ab0xAblXjgCUwOlZn+aJuglxwc92cQA+a/cdFAV4pYATBlzqSwI/2UyYmDtu5wC1ifO1nnfqlTEhMH4s0+zsPBHkwQREnTnXBrBhbIx8ED62Mcr4voIwViXkMYs5599CRXHf5TXM8Cr1WfruZzIi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713386857; c=relaxed/simple;
-	bh=WDdRomGwYIj9LAM5YN6npSc5eONnLOEwIE5znWDSutU=;
+	s=arc-20240116; t=1713386886; c=relaxed/simple;
+	bh=itT3Xbx1cVEBvsmTptNUis8l1Fg79TZadC4YOyQtcB4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CCx27iWQnWzr7Ulpooh9GTzAdxmp9ZzR9w2gB4STBbXJFC0jRMt9g7B+v5R8X7WyEPr9NNwo1wYh3ELbg3mIjJ3u0wE4AdyP6Q0YAmZRYIWyt9eMHnxFoQlxgXTh8KpVsEOv4sLLHKdizJCOxQqxzgLaKcS9eJzfV5/VriJmHoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=aQ94PS7H; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51967f75763so92345e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:47:35 -0700 (PDT)
+	 To:Cc:Content-Type; b=AHnyJ4zviC3f6K1MTjm0Ok3Mg5hHrNi5aG3Z+Vxi1WfKVPhihVm4YZw7lS33kGDgYiyoMXpqMGMJL25TkGM+MXCrt4v0MfrrcSkQFJ7TOWhYiV21iV1NzML4xnReg+QWkZckUE7EKnqXsXNSE08rvl6Eai6N9T017b790EyzT8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ROod1YNp; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a554afec54eso5565066b.1;
+        Wed, 17 Apr 2024 13:48:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1713386854; x=1713991654; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713386883; x=1713991683; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WDdRomGwYIj9LAM5YN6npSc5eONnLOEwIE5znWDSutU=;
-        b=aQ94PS7Hlq72H2jimONDaLrmFvoGNwMzNezPgigXjoHjEImsMafYALMRuR8GKvQjTk
-         O9f9ErJz0SCUF2kq/rPxXY2K0yAas2vPfEfL0AIZZYI4SurgHKIYO5o/h0SI+fRcrVZ7
-         wZ4JUmsNVKF+LJuQuLsDwbAlu9qity5IHXi+pm7s9dTJp5itrTVQc+lcW66mzfv8ysLd
-         4Y8MygcE48nRaS/oYlg0gEZSqnuz2YTZUK+J3vAjRCK1H44YanpD6Aj/mG+ySblUAFt2
-         4QGQ/q21pmGi/c2OdMy4Ydfa15K9OPobbgcnT0u8KlxocIx9Z18TGpYC6LgSeM7DGdOG
-         LDZA==
+        bh=rkmSOGpuvFSDaqy8aZNbec5Ti86QPJM57/OjON54+0c=;
+        b=ROod1YNpCH3CPOoSN0yOSU4dg4TZyCcT8AdNyHhpZk+njiDZqx/xxED92i8udilhWC
+         K1MtDeP41t2/MXDGNGlBs8P9Dz38uMvTfNFz4UeXSEbK4B3PAvGpMxvD1OyeOtCsWyTM
+         j/od15U1ESbU3PlJJk3MtzQ8r6D4xrXXIURFFWnQpWrWqJUBA+vjIJAp1xb1EfWqLPv9
+         xCTIoZmOLAzoupNSArmfZi0dR3SR7ll8OnkqUzxI+DQeJOTfzUklz3d/JF+Dj+TXSbFP
+         kLm5/cM2CkU5tCil6rMy2CM6p8Q0/BEUHUMq93WSzTV0vnOhH5Io5KuQsjYPjaoMids+
+         tXHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713386854; x=1713991654;
+        d=1e100.net; s=20230601; t=1713386883; x=1713991683;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WDdRomGwYIj9LAM5YN6npSc5eONnLOEwIE5znWDSutU=;
-        b=nl8x8gEAcqtjTG0Hcx1YG9IwOXbw1pO95vTIGxEvEIG5amV+8012cC8MTd2BkNFpYW
-         y5k+cShkYzC6wtJ3+HyGl5Lo87lerPlwqUBR3GvHin0M5fYZA/M5aJuxBtpEhlzoZ1RQ
-         wr82U6GbjY27wUGfdet5GEmnZ+ehO4sTp73Y9VWByOCeXBhqidzRT/Ls+3aKsF4KF4Yq
-         Ej5BDNAzpr9oUQlgqmosIAeFTNQ8+nhBlg170V0v3NDhSqvuLtCNzCnua6WLZGwbCU0d
-         4cUQ8/LparfKaBEm0FMkIr7IesJIhynlyBDelABDDJYbcX/lI/1U+FXcqtYrHYeo+TxD
-         7mhg==
-X-Forwarded-Encrypted: i=1; AJvYcCXnBujhqjxwMLQ3yD7aRKj27bpy0LVER+4l6JnEgbOKIX531sVCaQ2cj82RVcBwES6e1Ro4OjypGLMPoEFS/2lTReQ9nwYpXDyu4alM
-X-Gm-Message-State: AOJu0YxZwDehY1fqzypj1VPOBOcZXJF4kvu3qMOI86S2wSDnaOHrzY0J
-	qELlZ7TscbSHaKknmsRvxHbu1OKNKvZnbULvEMlnqiK5yWVdH/WmogbScpRGHjPE4I6OHzJ0zg7
-	eZrBtbHqZe6PaCMMPHT3hx/74CEOdVpBLt/Nq1Q==
-X-Google-Smtp-Source: AGHT+IF2JtxDcBcGf5KQ7m9jQ2Ck/N7MLJAwJpQMTOQIh1QEQUjpIuMwqAGFdic86q1ciV1N+WqGSAPC6I4bcJOi3qc=
-X-Received: by 2002:a19:4310:0:b0:518:6f95:1a37 with SMTP id
- q16-20020a194310000000b005186f951a37mr239045lfa.33.1713386854355; Wed, 17 Apr
- 2024 13:47:34 -0700 (PDT)
+        bh=rkmSOGpuvFSDaqy8aZNbec5Ti86QPJM57/OjON54+0c=;
+        b=jmgAXuTAtr5v5mgl5+rP3ifcj22vLA8J+ngPJa8UNy+ldsJTLvSf6oC18Ifk0Udn1m
+         bzOHw6qrdz2IUJ2pAi7V9bVXzS6ZMYJBbRDQ77b3XfdEdrDYCkcHUQF4imW/BoJL+BoQ
+         l3KYsawRMhof39Wh4dqsvLXqybzD+ehNvJzZ7WEna8ndZvvhlnlWgnpEhWuJYqpGjKL2
+         gacvEZJMQOxr3codCjvBRlNL3Uck34KstKYkR7QI1JVitliwWL2T4SiQ1a+93QuAkxgY
+         K8H59OxDGrgT1MaHJTX97150PKgPc8Fjr+4Oguow03ywpD6bw3vXZuwihn3nkdKIU42Y
+         HJXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXGrpO84j2hdgYGfVDCP84fToj5n7b+aH7WrEvuFaAEIYRi5gIE7WanRUxOWym+n9oQJ3mPrvDIcC14LJkTTOYwsXxYfLF5UvuZubnjHChmPT4kUdTv4iqlNLJ8A3OIZ45D9U3p
+X-Gm-Message-State: AOJu0YzBXvTlXSh1jQFECnY/4AmEoV3Za7p2vYlemNgHOmrihV/aGAiF
+	C40clPj75PEUREW8OK/g0o9KSOLZo55d8tK1WUd8ZDgwxfSPg0+sahEeVC1lCfr32YNC9gPDlCK
+	f6zo2WT07UVTWZgC+5wUrcELzwCs=
+X-Google-Smtp-Source: AGHT+IFWKy6Z2tnzpTx0I9+3+muzLVTdowcM1WgduksZJ3zssj1ODGEy5yRtQBnaF1uJcqRm741WkmcZxva4alRbh2I=
+X-Received: by 2002:a17:906:ae46:b0:a55:5ddd:ec0f with SMTP id
+ lf6-20020a170906ae4600b00a555dddec0fmr406480ejb.12.1713386883381; Wed, 17 Apr
+ 2024 13:48:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221213208.17914-1-andriy.shevchenko@linux.intel.com>
- <CAMRc=Mfh-ojboNUELXfszKUbZRfeZn9vsN-HMTdMQv6my6ZrdQ@mail.gmail.com> <Zh-oku-XzpcH_8FH@smile.fi.intel.com>
-In-Reply-To: <Zh-oku-XzpcH_8FH@smile.fi.intel.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 17 Apr 2024 22:47:23 +0200
-Message-ID: <CAMRc=MfO_7smzcG2+FM2EHNb1FbqS7PbfJuzBH6gL6KXT2fVUQ@mail.gmail.com>
-Subject: Re: [rfc, PATCH v1 1/1] gpiolib: Get rid of never false
- gpio_is_valid() calls
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
-	Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20240417204012.215030-1-helgaas@kernel.org> <20240417204012.215030-2-helgaas@kernel.org>
+In-Reply-To: <20240417204012.215030-2-helgaas@kernel.org>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Wed, 17 Apr 2024 23:47:27 +0300
+Message-ID: <CAHp75Vd58Z1X05YMa_03eZi48h2kY9q+0v8ymscQ2-HdU33tHw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] x86/pci: Skip early E820 check for ECAM region
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: linux-pci@vger.kernel.org, Mateusz Kaduk <mateusz.kaduk@gmail.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Tj <linux@iam.tj>, 
+	Hans de Goede <hdegoede@redhat.com>, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 17, 2024 at 12:46=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Wed, Apr 17, 2024 at 11:40=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org>=
+ wrote:
 >
-> On Tue, Feb 27, 2024 at 02:06:05PM +0100, Bartosz Golaszewski wrote:
-> > On Wed, Feb 21, 2024 at 10:32=E2=80=AFPM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > In the cases when gpio_is_valid() is called with unsigned parameter
-> > > the result is always true in the GPIO library code, hence the check
-> > > for false won't ever be true. Get rid of such calls.
-> > >
-> > > While at it, move GPIO device base to be unsigned to clearly show
-> > > it won't ever be negative. This requires a new definition for the
-> > > maximum GPIO number in the system.
+> From: Bjorn Helgaas <bhelgaas@google.com>
 >
-> > > ---
-> >
-> > It looks like a risky change that late in the release cycle. I want to
-> > avoid some CI problems at rc6. Please resend it once v6.9-rc1 is
-> > tagged.
+> Arul, Mateusz, Imcarneiro91, and Aman reported a regression caused by
+> 07eab0901ede ("efi/x86: Remove EfiMemoryMappedIO from E820 map").  On the
+> Lenovo Legion 9i laptop, that commit removes the area containing ECAM fro=
+m
+> E820, which means the early E820 validation started failing, which meant =
+we
+> didn't enable ECAM in the "early MCFG" path
 >
-> Not sure why resend, but I missed that somehow. Can you consider applying=
- it?
+> The lack of ECAM caused many ACPI methods to fail, resulting in the
+> embedded controller, PS/2, audio, trackpad, and battery devices not being
+> detected.  The _OSC method also failed, so Linux could not take control o=
+f
+> the PCIe hotplug, PME, and AER features:
 >
+>   # pci_mmcfg_early_init()
+>
+>   PCI: ECAM [mem 0xc0000000-0xce0fffff] (base 0xc0000000) for domain 0000=
+ [bus 00-e0]
+>   PCI: not using ECAM ([mem 0xc0000000-0xce0fffff] not reserved)
+>
+>   ACPI Error: AE_ERROR, Returned by Handler for [PCI_Config] (20230628/ev=
+region-300)
+>   ACPI: Interpreter enabled
+>   ACPI: Ignoring error and continuing table load
+>   ACPI BIOS Error (bug): Could not resolve symbol [\_SB.PC00.RP01._SB.PC0=
+0], AE_NOT_FOUND (20230628/dswload2-162)
+>   ACPI Error: AE_NOT_FOUND, During name lookup/catalog (20230628/psobject=
+-220)
+>   ACPI: Skipping parse of AML opcode: OpcodeName unavailable (0x0010)
+>   ACPI BIOS Error (bug): Could not resolve symbol [\_SB.PC00.RP01._SB.PC0=
+0], AE_NOT_FOUND (20230628/dswload2-162)
+>   ACPI Error: AE_NOT_FOUND, During name lookup/catalog (20230628/psobject=
+-220)
+>   ...
+>   ACPI Error: Aborting method \_SB.PC00._OSC due to previous error (AE_NO=
+T_FOUND) (20230628/psparse-529)
+>   acpi PNP0A08:00: _OSC: platform retains control of PCIe features (AE_NO=
+T_FOUND)
+>
+>   # pci_mmcfg_late_init()
+>
+>   PCI: ECAM [mem 0xc0000000-0xce0fffff] (base 0xc0000000) for domain 0000=
+ [bus 00-e0]
+>   PCI: [Firmware Info]: ECAM [mem 0xc0000000-0xce0fffff] not reserved in =
+ACPI motherboard resources
+>   PCI: ECAM [mem 0xc0000000-0xce0fffff] is EfiMemoryMappedIO; assuming va=
+lid
+>   PCI: ECAM [mem 0xc0000000-0xce0fffff] reserved to work around lack of A=
+CPI motherboard _CRS
+>
+> Per PCI Firmware r3.3, sec 4.1.2, ECAM space must be reserved by a PNP0C0=
+2
+> resource, but it need not be mentioned in E820, so we shouldn't look at
+> E820 to validate the ECAM space described by MCFG.
+>
+> 946f2ee5c731 ("[PATCH] i386/x86-64: Check that MCFG points to an e820
+> reserved area") added a sanity check of E820 to work around buggy MCFG
+> tables, but that over-aggressive validation causes failures like this one=
+.
+>
+> Keep the E820 validation check only for older BIOSes (pre-2016) so the
+> buggy 2006-era machines don't break.  Skip the early E820 check for 2016
+> and newer BIOSes.
 
-Applied, thanks!
+> Fixes: 07eab0901ede ("efi/x86: Remove EfiMemoryMappedIO from E820 map")
+> Reported-by: Mateusz Kaduk <mateusz.kaduk@gmail.com>
 
-Bart
+> Reported-by: Arul <...>
+> Reported-by: Imcarneiro91 <...>
+> Reported-by: Aman <...>
+
+Isn't bugzilla public enough? You may take emails from there, no?
+
+..
+
+> +               /*
+> +                * 946f2ee5c731 ("Check that MCFG points to an e820
+> +                * reserved area") added this E820 check in 2006 to work
+> +                * around BIOS defects.
+> +                *
+> +                * Per PCI Firmware r3.3, sec 4.1.2, ECAM space must be
+> +                * reserved by a PNP0C02 resource, but it need not be
+> +                * mentioned in E820.  Before the ACPI interpreter is
+> +                * available, we can't check for PNP0C02 resources, so
+> +                * there's no reliable way to verify the region in this
+> +                * early check.  Keep it only for the old machines that
+> +                * motivated 946f2ee5c731.
+> +                */
+
+> +               if (dmi_get_bios_year() < 2016 && raw_pci_ops)
+
+I probably missed something, but where does 2016 come from?
+(I've been following the bz discussion)
+
+> +                       return is_mmconf_reserved(e820__mapped_all, cfg, =
+dev,
+> +                                                 "E820 entry");
+> +
+> +               return true;
+> +       }
+
+..
+
+>         if (pci_mmcfg_running_state)
+>                 return true;
+>
+> -       /* Don't try to do this check unless configuration
+> -          type 1 is available. how about type 2 ?*/
+> -       if (raw_pci_ops)
+> -               return is_mmconf_reserved(e820__mapped_all, cfg, dev,
+> -                                         "E820 entry");
+> -
+>         return false;
+
+Not strictly related to this patch, but now it can simply
+
+  return pci_mmcfg_running_state;
+
+
+In any case, LGTM,
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
