@@ -1,110 +1,100 @@
-Return-Path: <linux-kernel+bounces-147987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EB208A7C36
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 25C5C8A7C46
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:26:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 802E11C209E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:17:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 573B91C221AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:26:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6606C64CE8;
-	Wed, 17 Apr 2024 06:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA41457870;
+	Wed, 17 Apr 2024 06:26:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F+xTBtPK"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I2d1MAgi"
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C189E53807;
-	Wed, 17 Apr 2024 06:17:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CE0329D06;
+	Wed, 17 Apr 2024 06:26:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713334625; cv=none; b=MPAYz4/oKypK9fJI2dEC8J2H+r6siTEZFDFm+UzfV1JdwpXH6RXKgoEAfAbSHdvwcNIltPakgq9eRidp1mPEo8LOl0fNe03D50uhlyEkSak0U+Orzfv/p34yFLzmuVxNp74M6kQaMb/tghlr+uPUjySh4wZcKzhwxD31b86czr0=
+	t=1713335178; cv=none; b=i6/ftHx6bceRA9K7BbX5/ry16nrZyBD4rjKIFQ8ghQXf5ITJ1T9RhyiRA/Bgfg8YB+mUo+VeMK8SCnCOxENnTF5hS7cnDUXtzgX7+c8Lt+un1VyIMWVlUzYqc1oJL3HLzrIn1nXR3BYSbHR+tZLKvxI5D0tlo8JDXi+YqSELbdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713334625; c=relaxed/simple;
-	bh=0J1Qe7V2WFO72quDvEDPSDcrlOlYGUy9Qip9dj5vZ0A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MWWKxuSbvqpBdhkILCdabyRHM9Zivr+u62gGr04JMOtyOmPXYVrMC51xtWPGBhOWAKnEElnS58BkcJXQoFWkPbkxWdtkxedCNGe6+BAk0AItVkTZLXnBC80pA5ZbeWTiAc7ES8aBOfNVe0HEfaxQPw5gBskJnNWoXINtQ/tJ2nM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F+xTBtPK; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713334624; x=1744870624;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=0J1Qe7V2WFO72quDvEDPSDcrlOlYGUy9Qip9dj5vZ0A=;
-  b=F+xTBtPKej9gUIWZBq1uDBphLsSGef1Kz8Ks7nLv/McC/GMjNP39CC/s
-   fwTd4QDV52YmwMpT6X4Y47jY9DjbOlMGqspUD94bXo1vlMnlmH2fpdHX2
-   6Ua6Xw2iwxrK9m2UgjIfZZQ25FHnQ+do37Jzt90wBTOUX023y7tokxdgG
-   xHc2ZdnuSMLWzSrFx45xfDGf02qfbKZEXtHgAGEKU2pUQmnE79Op9JbPN
-   LAmXJWNG2ZCpgROwbMz8YH8qWgS8mjZb8SpLZLrwwGwBsDLOrDDqI8wiE
-   57qlJc2sHaeel0KOjfh3PIFBoaFWESW856gkJ90fp8qbQTcvBLJN1xqyV
-   A==;
-X-CSE-ConnectionGUID: 8QkL/u5VQsujHOhCPkUxQQ==
-X-CSE-MsgGUID: kL25jsnhTz25lXWnkzGoCg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="11750832"
-X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
-   d="scan'208";a="11750832"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 23:17:03 -0700
-X-CSE-ConnectionGUID: Sw/+0tTkSwORlNrgJa1Iww==
-X-CSE-MsgGUID: /Xo3zss/RYenwmYmBg/J+g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
-   d="scan'208";a="59932999"
-Received: from unknown (HELO [10.238.13.36]) ([10.238.13.36])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 23:16:59 -0700
-Message-ID: <8d489a08-784b-410d-8714-3c0ffc8dfb39@linux.intel.com>
-Date: Wed, 17 Apr 2024 14:16:57 +0800
+	s=arc-20240116; t=1713335178; c=relaxed/simple;
+	bh=R8Sytcd0zdOKyMmrxcQ5ptLPbB+DTVIfGCrBabF5ANY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sbOEhTyh9UhLeMCi/qKg4uLaxR1H6BMDVGxEggw1JGS8GUCTrCzrB784mL7uZgXE/MJAyCKUDBbMDrLmHkGEOiYmRI0ZHUtbFMpU8dJ/m6T75lIVrz4iFpdPwo6Lof/8uL4TczJAT3NlrhIaSJ8sZgD2miArwxe14pqhsepe1N4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I2d1MAgi; arc=none smtp.client-ip=209.85.166.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7d94fde45deso25240139f.1;
+        Tue, 16 Apr 2024 23:26:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713335175; x=1713939975; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R8Sytcd0zdOKyMmrxcQ5ptLPbB+DTVIfGCrBabF5ANY=;
+        b=I2d1MAgisLhTuWw4urKMuFYOLKtM0QZZHlYO18SPl5xeogKsuZAMY0vGXIoNNLN/5E
+         w2UV+r8Xyka+HQG64JrI9BKSJfQlPz8pfct7VH768PojoaRvCM2JTjtA5g3aix5N5Gmr
+         nvUn93P/cTuNXZglnIFkkntlV6W4Ol85E7N0laJ4b5nXAEBrzZ9VfsnHxFFoeMKktOcr
+         vL506xrQNbQlv2RJzr3dQEEgn5wb/Rw33PxYDpAFlOLlL8lc3Du7GsSDHUy/3OWKifbX
+         SETqDKM4XU+b3tKg1roljht4pCqwekSpuUN603S6OJfeAlmxnoTjuVICHk85+C87BZu/
+         SsYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713335175; x=1713939975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R8Sytcd0zdOKyMmrxcQ5ptLPbB+DTVIfGCrBabF5ANY=;
+        b=tBvlTMo4EpfAz71kICX02Q7SBV80cXy5AwC8vYfT7JS96+XmqsZv29j4pqA9u9OvHT
+         B0ZaVAbMcQifZerB6wW6N3nmPQeipBHdpQ+hz3CZY+QZZrgAxsM/FYXfoLL4k+DxKQPA
+         mnDL0Ccr4/hCWV57y2HHhcx5aKgV6P3+BKDoEvlavXw7D4a3z3Cf/20BEnCgm/3OGCzV
+         QZwoQLi1glOndedKtQVAdREWJI80i+c1c8cpi00zeuXg5lwAELylvhTZhLQFstifXV1/
+         2idU9zfW4jUbIs+a7cxJKGU196wW7flmUreTS61pbS6bBUMpD/BXMJ2ABWU2Mn4DGfPE
+         HrFA==
+X-Forwarded-Encrypted: i=1; AJvYcCVux6PUPTZtO7QpxlCFXzGsmuHHw9OmSDVUahGub0gGtCgN4WVqpjaiIGgUjmYxgv48R6zsjmAVWA1GFWM1tMjGhtlNFgKm+imJmuoM+LCneOy4hMmxsI15P6E6Az8OvzFl
+X-Gm-Message-State: AOJu0YzHhwmMZsX2RkrRYD7f0IZwn1go7oAxEDrreKdbCD3QT49l/9Pd
+	edONEDupXmdZnvBQ0hYs/WSnE0QLc+VrdBTV67hilr+yZTTcoNaaR09+zIJNMc2tq7lZjF/cxMB
+	OpgoqC0OTAOEfMmer7l4iysOb8pE=
+X-Google-Smtp-Source: AGHT+IGwbrnBPuuGW3fDaUnHH3zdP9PR1lsn/gkIcmftimODj6RqHyVul1zeySTkUj80e3azBaobyXEPZDzHh5LifWg=
+X-Received: by 2002:a05:6e02:1748:b0:36a:fba4:ec45 with SMTP id
+ y8-20020a056e02174800b0036afba4ec45mr18817708ill.3.1713335175168; Tue, 16 Apr
+ 2024 23:26:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 105/130] KVM: TDX: handle KVM hypercall with
- TDG.VP.VMCALL
-To: Isaku Yamahata <isaku.yamahata@intel.com>, Chao Gao <chao.gao@intel.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
- isaku.yamahata@linux.intel.com
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <ab54980da397e6e9b7b8d6636dc88c11c303364f.1708933498.git.isaku.yamahata@intel.com>
- <ZgvHXk/jiWzTrcWM@chao-email>
- <20240404012726.GP2444378@ls.amr.corp.intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20240404012726.GP2444378@ls.amr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240414045124.3098560-1-dmitrii.bundin.a@gmail.com>
+ <Zh0ZhEU1xhndl2k8@krava> <CANXV_Xwmf-VH5EfNdv=wcv8J=2W5L5RtOs8n-Uh5jm5a1yiMKw@mail.gmail.com>
+ <Zh4ojsD-aV2vHROI@krava> <ddc0ac5b-9bd4-f31a-a7ec-83f7a10e6ab1@iogearbox.net>
+In-Reply-To: <ddc0ac5b-9bd4-f31a-a7ec-83f7a10e6ab1@iogearbox.net>
+From: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
+Date: Wed, 17 Apr 2024 09:26:03 +0300
+Message-ID: <CANXV_XwGhdV7v05Xjjp-g9yW4E0FjA=84M8jZ6bcf7yuooDkig@mail.gmail.com>
+Subject: Re: [PATCH] bpf: btf: include linux/types.h for u32
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jiri Olsa <olsajiri@gmail.com>, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	haoluo@google.com, sdf@google.com, kpsingh@kernel.org, 
+	john.fastabend@gmail.com, yonghong.song@linux.dev, song@kernel.org, 
+	eddyz87@gmail.com, andrii@kernel.org, ast@kernel.org, martin.lau@linux.dev, 
+	khazhy@chromium.org, vmalik@redhat.com, ndesaulniers@google.com, 
+	ncopa@alpinelinux.org, dxu@dxuuu.xyz
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Apr 16, 2024 at 5:47=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
+> Please add the error description as motivation aka "why" into the commit
+> description, otherwise it's not really obvious looking at it at a later
+> point in time why the include was needed.
 
-
-On 4/4/2024 9:27 AM, Isaku Yamahata wrote:
-> On Tue, Apr 02, 2024 at 04:52:46PM +0800,
-> Chao Gao <chao.gao@intel.com> wrote:
->
->>> +static int tdx_emulate_vmcall(struct kvm_vcpu *vcpu)
->>> +{
->>> +	unsigned long nr, a0, a1, a2, a3, ret;
->>> +
->> do you need to emulate xen/hyper-v hypercalls here?
->
-> No. kvm_emulate_hypercall() handles xen/hyper-v hypercalls,
-> __kvm_emulate_hypercall() doesn't.
-So for TDX, kvm doesn't support xen/hyper-v, right?
-
-Then, should KVM_CAP_XEN_HVM and KVM_CAP_HYPERV be filtered out for TDX?
-
->
->> Nothing tells userspace that xen/hyper-v hypercalls are not supported and
->> so userspace may expose related CPUID leafs to TD guests.
->>
-
+Doesn't the comment /* for u32 */ following the include explain the
+purpose? I thought the include was actually missing since relying on
+indirect declaration of u32 is relatively fragile.
 
