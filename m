@@ -1,109 +1,121 @@
-Return-Path: <linux-kernel+bounces-149055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 269938A8B2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:32:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38E6B8A8B0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:29:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9BFA1F24494
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:32:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD5001F220E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:29:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0409BE55;
-	Wed, 17 Apr 2024 18:32:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C28417335E;
+	Wed, 17 Apr 2024 18:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PL5j5XyX"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KWD0C9J9"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00230849C
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:32:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29CE217109A;
+	Wed, 17 Apr 2024 18:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713378749; cv=none; b=RI0QUbQx8caZIQ8EVZOn0AWDpR/xc2FEjEjHk4Q7zFXDZwCTnMlaiir83FQKEz37D5p0bv3bgVvmDLySgb1ucEB9h+WOGHg63lc/1Pnyq55XIXU1Cs2S+rx9/E2En/yWd0x0yijxxB39VAqo3LziEwsnjCLVWqgrCew4DWLqxmA=
+	t=1713378545; cv=none; b=JhAWJBFObvZtwAt1QK4ZSEBBt/0dT0OrDwAC3+1EE5bfTOAiAMwKiIqIsqXk722sUZEGrLjKajP8tgPwfAlzhw/kcL01D/gBcYo+bedehmB+DRSPhAf6TlX6J+p3DBGH0alTfcTeHKll4Tc7dnPqYscpNuhvE39SX/2yHadXXVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713378749; c=relaxed/simple;
-	bh=36hXQuEvO/yn4vEmJGlAB6y3mAmxuqgfg5ZGP25OSKY=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=eQGJ5UBZczwuXKiP9a7wNF3c+SegNZu21inibsORed5TQk25FoV9rH6HfqZNuod9/i+xK/PUnAMvA+avi+z5qeeLufs8lueFcAVPT3v+y7aJo8WkruL2tGGmcWUpQm92xgfV1Q+ukHT5RdLKBgicpGlUnuNuObfb5+A4ViMQ7eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PL5j5XyX; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbe9e13775aso94406276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:32:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713378747; x=1713983547; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=axvyU+8QUv8kTyKybxhFapUIJ4L0+ijLXSh2frDTobY=;
-        b=PL5j5XyXFKlPqmL+yZIXmnGBiZesm6YGkMItEwjpm2wTgNQgWnuNrsxhDko2QI6CXE
-         9FESNgU9AxsvCvTPEP42UhL599BuI119svdMSS1i2asU3FtFC02Gi7wV/xUgw+nHJRk5
-         dr/UwHA1RINtMgGVNtn6pxQh/Tt4OUhmHDteoBPhbC8gzQcWoavW5i9kSq8oxD4u0dW4
-         1zjWurK2zOPsU4jtTFIIW6mAE3pT1HU4XMhmPPnPClJETseZxUdhOVjUp0tWlB+wlJem
-         0xumU6YO8WgT6t7sIvGsvfOP7Imk+3SDTOHuft57sjjpuzskqBWI9nIB3qqyhdVAO6LF
-         eBQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713378747; x=1713983547;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=axvyU+8QUv8kTyKybxhFapUIJ4L0+ijLXSh2frDTobY=;
-        b=Lugs1i06/y+kLWZpBlG+RSFtuf/BEQ0QiNHVaWxJ0pPkOII2MgYgDBmIv6P8mY370D
-         UNHS4Bs+0T7EXyIBRFNCe+888YNisKB6qolbV/ixQUTEPbCGlPJbOqfulNJ4L59i5Roe
-         LBa//EgVFEWnIfxeZQj0/1MNFnbANs3rUeN4ureBi0T26cVRt4RaTLCHVVkz9kRxqn3p
-         g2PhdWZQbkQXoqQyXNlEmO8jwaOYZLkjRtWay8Vgf660Z1Zarap7qpcbP6g23jRWSyY5
-         cxr0deGbWbtk1/M3CSHBOfA6Wds8jR1+eVDEaUL6fy6gZ2PwWLC7SKqVx+F+KwLU2YxV
-         th6w==
-X-Forwarded-Encrypted: i=1; AJvYcCWSR1TEd2963LEkIfRRRYT2cp7MeXIhZRU+zepdoR5z4YyhSv5ac5Rp8GP9ObbNCWQhm9HqY8eop5rdBmD0VqnNK7jhN2p2iDm+5Re2
-X-Gm-Message-State: AOJu0YwNB9/GdWntQKFOntg4hf2gSNGyQMfzlvUvxiQAzqBbM6xN4oWs
-	Cw3OD0Wt4hb/DfxLLhiIj5Kh8EpUu0srhmeGyzWWQiaxgHgv4/WFYblbABkvQKpQeKhDjZ8qzwl
-	gbscisA==
-X-Google-Smtp-Source: AGHT+IFBWokfc9EOakTcRvWLn9uzuvhdYjyYgTXbyLc60iS9DX7y4vkAhB/A617M4Bu0xdVWZR0/ykNlQIWu
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:21e2:a91b:3cf5:c57b])
- (user=irogers job=sendgmr) by 2002:a05:6902:2b09:b0:de1:2220:862b with SMTP
- id fi9-20020a0569022b0900b00de12220862bmr38875ybb.12.1713378747053; Wed, 17
- Apr 2024 11:32:27 -0700 (PDT)
-Date: Wed, 17 Apr 2024 11:32:19 -0700
-Message-Id: <20240417183219.1208493-1-irogers@google.com>
+	s=arc-20240116; t=1713378545; c=relaxed/simple;
+	bh=7JxodzQRkS4oLXtGyeYNgNUOYAZp5D+/snGgqcQC0YI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jHUZMlWXGfosDAUnAmmFfn1ZvkmnIJrn/Sv0DWvIvqy7AAOlDCc+QESDNoTHAocpdHwHMWNo4W6tA69J1IbxAT1ByAj9W+FDovJhgy7vFAsWXcqLr1b3SlWeL15iTgvykyK7DQlRnzaFoXQur07T0qqRkUKYhAafX5fc/x/SubQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KWD0C9J9; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713378544; x=1744914544;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=7JxodzQRkS4oLXtGyeYNgNUOYAZp5D+/snGgqcQC0YI=;
+  b=KWD0C9J9ZkG1JL45yPDa02z7DRhMK994m0fTOtUEqhdYYt1ypfjC3Y2P
+   PFpchHEJgqZKaSbCwg9rK0+vHWDX8Ouz0aYYLkaEtSz2DcGNemEdDqa/1
+   xeMAqANjjOOtCu3Sb19d2pDI4J+TFA0GDw/Yvn5REPYPE0Lf6e38UsHG5
+   waKdIMhPhLeKMNlwmuHMoyHCOMhrr1ugDzbC73wW8yjYeWh3PHKTfKlCi
+   HmqSeciXvSHfadYla9+x8lk0p3zyVMLnsOXR8zQiP7cx3fA7027AF6KF9
+   yr4EEMaWuJtRhGQeToUOq0vXfcBRHBTW8cv43ruTuen5IRYxrkaAtgTiR
+   g==;
+X-CSE-ConnectionGUID: pYwIUtkyTJyW0SJ1X4JTzg==
+X-CSE-MsgGUID: Z0PfnnTIQ5ynxffg8bLx5g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="19494053"
+X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
+   d="scan'208";a="19494053"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 11:29:04 -0700
+X-CSE-ConnectionGUID: d1axhKYFRM+l2l6LO09SLQ==
+X-CSE-MsgGUID: sYo3gvWTTcyX9Sjfi/U3kA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
+   d="scan'208";a="23306516"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 11:29:03 -0700
+Date: Wed, 17 Apr 2024 11:33:37 -0700
+From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter
+ Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev, Thomas Gleixner
+ <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
+ kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>, Joerg Roedel
+ <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov
+ <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, Paul Luse
+ <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>, Jens
+ Axboe <axboe@kernel.dk>, Raj Ashok <ashok.raj@intel.com>, Kevin Tian
+ <kevin.tian@intel.com>, maz@kernel.org, Robin Murphy
+ <robin.murphy@arm.com>, jim.harris@samsung.com, a.manzanares@samsung.com,
+ Bjorn Helgaas <helgaas@kernel.org>, guang.zeng@intel.com,
+ robert.hoo.linux@gmail.com, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v2 01/13] x86/irq: Move posted interrupt descriptor out
+ of vmx code
+Message-ID: <20240417113337.4a594901@jacob-builder>
+In-Reply-To: <Zh8ZHPUlQk4niS7k@google.com>
+References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
+	<20240405223110.1609888-2-jacob.jun.pan@linux.intel.com>
+	<Zh8ZHPUlQk4niS7k@google.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-Subject: [PATCH v1] perf test: Avoid hard coded metrics in stat std output test
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, Yicong Yang <yangyicong@hisilicon.com>, 
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hard coded metric names fail on ARM testing.
+Hi Sean,
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/shell/stat+std_output.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, 16 Apr 2024 17:34:36 -0700, Sean Christopherson <seanjc@google.com>
+wrote:
 
-diff --git a/tools/perf/tests/shell/stat+std_output.sh b/tools/perf/tests/shell/stat+std_output.sh
-index cbf2894b2c84..845f83213855 100755
---- a/tools/perf/tests/shell/stat+std_output.sh
-+++ b/tools/perf/tests/shell/stat+std_output.sh
-@@ -13,7 +13,7 @@ stat_output=$(mktemp /tmp/__perf_test.stat_output.std.XXXXX)
- 
- event_name=(cpu-clock task-clock context-switches cpu-migrations page-faults stalled-cycles-frontend stalled-cycles-backend cycles instructions branches branch-misses)
- event_metric=("CPUs utilized" "CPUs utilized" "/sec" "/sec" "/sec" "frontend cycles idle" "backend cycles idle" "GHz" "insn per cycle" "/sec" "of all branches")
--skip_metric=("stalled cycles per insn" "tma_" "retiring" "frontend_bound" "bad_speculation" "backend_bound")
-+skip_metric=($(perf list --raw Default 2> /dev/null))
- 
- cleanup() {
-   rm -f "${stat_output}"
--- 
-2.44.0.683.g7961c838ac-goog
+> "KVM" in the scope would be nice.
+will change to "KVM: VMX:"
 
+> 
+> On Fri, Apr 05, 2024, Jacob Pan wrote:
+> > To prepare native usage of posted interrupt, move PID declaration out of
+> > VMX code such that they can be shared.
+> > 
+> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > ---
+> >  arch/x86/include/asm/posted_intr.h | 88 ++++++++++++++++++++++++++++
+> >  arch/x86/kvm/vmx/posted_intr.h     | 93 +-----------------------------
+> >  arch/x86/kvm/vmx/vmx.c             |  1 +
+> >  arch/x86/kvm/vmx/vmx.h             |  2 +-
+> >  4 files changed, 91 insertions(+), 93 deletions(-)
+> >  create mode 100644 arch/x86/include/asm/posted_intr.h  
+> 
+> Acked-by: Sean Christopherson <seanjc@google.com>
+
+
+Thanks,
+
+Jacob
 
