@@ -1,114 +1,91 @@
-Return-Path: <linux-kernel+bounces-147922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93C318A7B54
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:20:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 084738A7BEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:40:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3741528285C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 04:20:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B29E91F22034
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:40:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA99542AB5;
-	Wed, 17 Apr 2024 04:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mTewmbo5"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CC0252F80;
+	Wed, 17 Apr 2024 05:40:11 +0000 (UTC)
+Received: from mail-m6032.netease.com (mail-m6032.netease.com [210.79.60.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B89A41C73;
-	Wed, 17 Apr 2024 04:20:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90803374D1;
+	Wed, 17 Apr 2024 05:39:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.79.60.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713327626; cv=none; b=VDyTLeWIKS0JfdluJ+SQdhW9cd1GgPtUSQx7Yp2pkYGAQRfn38fvkICwN5rTQUfa3Q7qWa/JmrrwnHWeQXUYSEw1skO2r++Cx5Tpdq9gCjc3ly9umKTV7yb777VaL6KQhd4UpQlGHpXKYFQhzRXAQi8HFcXRaaPJ7+wEfAEXMa8=
+	t=1713332410; cv=none; b=VBmu9zkwFkpyhm5B1XBj44SEHnkMgZEfqEufNd4wJr+g8qWqKvoaJe7Bq1FW0PxRKo7TuI0k5IYBVKbNbb0ZFDK59urzCeU18y9x7RzY0CnmM12u+c0gm2ihaJsA0qg0/OM4TDeWXtUWMilhEcK5Ka4V1b+AisVWHdyAJVTC62Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713327626; c=relaxed/simple;
-	bh=eP9CiB0rVmK0Jtt5Y4CBVHAELD9KxtAHPblOt+Tr8S8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GIuAp4+8kn9B0XoKrqNx/4aXQmGsU06GUhBRS6fwmB9XA2GHLxTJrqFLV1qWHdrayXIZI08OaV81+GKVj4a4Lsjv9GBdZNhcDf7Uv8jERSMSOgHkTTRpmo3QnQsATqfaEm6Ewhzd00pr/w4YCORdNVbCgK4sQxah++RWzHFqrU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mTewmbo5; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713327624; x=1744863624;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=eP9CiB0rVmK0Jtt5Y4CBVHAELD9KxtAHPblOt+Tr8S8=;
-  b=mTewmbo5NDOpeHNoiUs4fp7LaXMuZPDrUzPHBirY5ukmE/GvAJUb6TKn
-   wNIa1shrZE0Nnq1u3GBNqtZYlvekc6dq8cyzUm1C1fnYrLVA+t1OgvyDC
-   yJFGDWZ/vUiBHG8Dwx2SICboupJpL7THGl7hSL4abTlLhYV3dIRQ8X/zI
-   d1RHMQmaD+gvmJcqYVikttkLj/0zvfVuol770rqrmIy95Byk8GKNllddR
-   xnwlPCTFA693VeFzMSqG4OqS8Q117XlGszGHuM/42XhWlJAfuu3WfE6VR
-   RbYMkFRyo4H/OfYk/gYwddaESndhdzd+fNXwoiFXCIbzKvPL5yoOfgl2H
-   g==;
-X-CSE-ConnectionGUID: MpWjvdvTS3uaqwxKWSv8Vg==
-X-CSE-MsgGUID: Sm9icaV5R2mPpoBUUGjHSA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8727250"
-X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
-   d="scan'208";a="8727250"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 21:20:24 -0700
-X-CSE-ConnectionGUID: yy0uzlT5T06h2v68mKmbig==
-X-CSE-MsgGUID: 76kdptNeS0ilm+ZYkDwsFQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
-   d="scan'208";a="59912377"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 16 Apr 2024 21:20:22 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rwwmS-00067e-0O;
-	Wed, 17 Apr 2024 04:20:20 +0000
-Date: Wed, 17 Apr 2024 12:19:32 +0800
-From: kernel test robot <lkp@intel.com>
-To: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	s=arc-20240116; t=1713332410; c=relaxed/simple;
+	bh=Ltslny75LkzlJPbQlvxP8LqFwrA/4+HYUrJy8OCDhcM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=q1cFk9pH2v6q8GC5HZgvYMTw4F6xrs8AKGUOJ3z66kldJE0Ew/BECXJ0Ja9X+bRSidS+EW0SJnv4pcw2ooaK4+Ycfgo+3MLHDJyl/Sv0ILZmcTh9oBYJGmOrMzGI/z7XswAs1yMi6CtUTH1lR0qXK4eaSKdTgTqal0M5tDpMvc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn; spf=pass smtp.mailfrom=easystack.cn; arc=none smtp.client-ip=210.79.60.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=easystack.cn
+Received: from localhost.localdomain (unknown [110.185.170.227])
+	by smtp.qiye.163.com (Hmail) with ESMTPA id 79C865601D6;
+	Wed, 17 Apr 2024 12:20:48 +0800 (CST)
+From: "jun.gu" <jun.gu@easystack.cn>
+To: echaudro@redhat.com
+Cc: dev@openvswitch.org,
+	jun.gu@easystack.cn,
 	linux-kernel@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH 4/4] kbuild: use $(src) instead of $(srctree)/$(src) for
- source directory
-Message-ID: <202404171200.q4osYsl7-lkp@intel.com>
-References: <20240416121838.95427-5-masahiroy@kernel.org>
+	netdev@vger.kernel.org
+Subject: [PATCH net-next v3] net: openvswitch: Check vport net device name
+Date: Wed, 17 Apr 2024 12:20:31 +0800
+Message-Id: <20240417042031.157008-1-jun.gu@easystack.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <27644212-924C-4AB2-88F6-D209E2586E82@redhat.com>
+References: <27644212-924C-4AB2-88F6-D209E2586E82@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416121838.95427-5-masahiroy@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVlCH0IZVk0aSkNPQk8dTxlJTlUZERMWGhIXJBQOD1
+	lXWRgSC1lBWUpKS1VKQ05VSkxLVUlJTFlXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQktLWQ
+	Y+
+X-HM-Tid: 0a8eea493018023dkunm79c865601d6
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PyI6Iyo5FTcrQiEWDxcqDwIV
+	FFYKCQFVSlVKTEpISElMTU9CSkpPVTMWGhIXVREOFVUcDjseGggCCA8aGBBVGBVFWVdZEgtZQVlK
+	SktVSkNOVUpMS1VJSUxZV1kIAVlBSkNDQjcG
 
-Hi Masahiro,
+Check vport net device name to ensure the provided name is not one of
+its aliases. This can avoid that ovs userspace create and destroy vport
+repeatedly.
 
-kernel test robot noticed the following build errors:
+Signed-off-by: Jun Gu <jun.gu@easystack.cn>
+---
+ net/openvswitch/vport-netdev.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-[auto build test ERROR on masahiroy-kbuild/for-next]
-[cannot apply to masahiroy-kbuild/fixes wireless-next/main wireless/main linus/master v6.9-rc4 next-20240416]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Masahiro-Yamada/arch-use-obj-instead-of-src-for-preprocessed-linker-scripts/20240416-202308
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git for-next
-patch link:    https://lore.kernel.org/r/20240416121838.95427-5-masahiroy%40kernel.org
-patch subject: [PATCH 4/4] kbuild: use $(src) instead of $(srctree)/$(src) for source directory
-config: arm64-randconfig-004-20240417 (https://download.01.org/0day-ci/archive/20240417/202404171200.q4osYsl7-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 7089c359a3845323f6f30c44a47dd901f2edfe63)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240417/202404171200.q4osYsl7-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404171200.q4osYsl7-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> error: couldn't read rust/doctests_kernel_generated.rs: No such file or directory (os error 2)
-
+diff --git a/net/openvswitch/vport-netdev.c b/net/openvswitch/vport-netdev.c
+index 903537a5da22..7003e76b8172 100644
+--- a/net/openvswitch/vport-netdev.c
++++ b/net/openvswitch/vport-netdev.c
+@@ -78,7 +78,10 @@ struct vport *ovs_netdev_link(struct vport *vport, const char *name)
+ 	int err;
+ 
+ 	vport->dev = dev_get_by_name(ovs_dp_get_net(vport->dp), name);
+-	if (!vport->dev) {
++	/* Ensure that the device exists and that the provided
++	 * name is not one of its aliases.
++	 */
++	if ((!vport->dev) || strcmp(name, ovs_vport_name(vport))) {
+ 		err = -ENODEV;
+ 		goto error_free_vport;
+ 	}
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.25.1
+
 
