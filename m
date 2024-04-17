@@ -1,144 +1,183 @@
-Return-Path: <linux-kernel+bounces-148754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B10548A8701
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:07:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E91488A8700
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:06:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35F01B2604B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:07:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D9D0283AD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:06:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4974C146A6E;
-	Wed, 17 Apr 2024 15:07:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 476E5146A95;
+	Wed, 17 Apr 2024 15:06:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="PK+OC6ZQ"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b="VxzZEGHg"
+Received: from GBR01-LO4-obe.outbound.protection.outlook.com (mail-lo4gbr01on2091.outbound.protection.outlook.com [40.107.122.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AF1313C9A7
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713366420; cv=none; b=oxHo68LlxrVGqESjuAyOV4dH+X/VyhWq9hno3vHKjXbegR3CsGvFmEBWWLYHA1VV+sf90FQLuC+d779iqVSHSqJx/mtFccc/BnyKUUbk5RQH4AykcDxGAMRLIqNkSS72/ECiKJGCQioZTIVh1q49kuqh8VUMpkEe58eBEkcosik=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713366420; c=relaxed/simple;
-	bh=UNPb0zlkcnhUQib87xagHEcOVpvTSkc5NdfcbnpIiM8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ixL9Ac1/2cG4Lc9MqWrErJBX7FAb1OsP970BZK09/YkWzJnyxEYmhOTWfmarhRCnZCXBRm9JKDs1pJIGQzNZgxQ+RvupnmwSN3fkJdZ6gN4SDOcVxhTKCGx+7VWYwysOEDruXf6aGZd/+haMAcNcR2/nsh2BzIxOnw6BmaCSEh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=PK+OC6ZQ; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [192.168.7.187] ([71.202.166.45])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 43HF6X6x4069325
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Wed, 17 Apr 2024 08:06:33 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 43HF6X6x4069325
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024041401; t=1713366394;
-	bh=cycOB8apwOCGz0P/eQl6gDVIreOL8E6POCyJAVWDA2M=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=PK+OC6ZQAW/LLmhCpbeswphwxvOIazSVbLSYpIa3mTvPRZYSEnfeVHcBDbECe1DJ6
-	 1T3kzfZ8pUbdSB001ATu/aZcNIJOMY/u8gto339ZvnUFsPLDXAYIbRiAXi0Jcxxbkl
-	 Wg/J1frV+S7JOIZBx8hSRwgXqHIi2sYK1ERN+aBDGm4xPvL/Ro5aBeo94K5FxlHvFu
-	 +gbZLOW3GD/Og+fowms1ymtOq92S/4VHRXIc55SFM6EOl8ZFUv23C6t8LQhJIS+FxP
-	 HI7E7ZaMOXrtULvO1M/h2oYnIrDyjDUj+Tt+E3aEb8p+UjnS19yVWBFgaahziBgrFJ
-	 2w+Znk7vlDoGw==
-Message-ID: <e8180be8-b108-4047-ab49-2cfc532a2b52@zytor.com>
-Date: Wed, 17 Apr 2024 08:06:31 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8D0141995;
+	Wed, 17 Apr 2024 15:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.122.91
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713366406; cv=fail; b=ESkKkbjeTnF7vPPLpQv7FrDSfbPkERJUj3SlAD5tq5yR3aBSOLRajep9E0NcuRraNjUmUXoQzlgHR4fJVUpWlxBsjr/LgfnS5ZssrYabgEcaogQ1UKCjFrv80ilnzRd9TBhtBuPLbKV3NldVsEXktCSnrFFySpRnVNAijMGUqIs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713366406; c=relaxed/simple;
+	bh=odwy+n4Akagy1pgcxT8BQDWypceEtA4hBZA9vnwZkho=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=CNxIERl7E2w37/Aj3jBm3MfKsOkh3pSJNQFtz312GRpfsjT9LcwQo1twDHhC5kZFXeDZdTIQ8CWRYVVPPMiKtmjeyGyV8DPgHM+5TFu19oEbkwDfvuEqZOgXpOUzOxrGiVZ16SIlmPzl+pvMTF/I130pS9q6lvqsN0NouvKj0DA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=garyguo.net; spf=pass smtp.mailfrom=garyguo.net; dkim=pass (1024-bit key) header.d=garyguo.net header.i=@garyguo.net header.b=VxzZEGHg; arc=fail smtp.client-ip=40.107.122.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=garyguo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=garyguo.net
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OsvcnoFAAEPgZsUEFbeWvSz+7lzVyHxxxiVPSJHpXIkvYi5AwlQGMDowTbJqsKIsQWuNhoVyaEMkW/XWX43igYVvnfm4KhnSCozCUdrFem3SkLfQ7q8K22PacU9CfE/49IBZ1OORA5xrbCAoNLgC/A1Wh2ERsR6ycR50vVR95nmexuDFneP4AeWGksuTWOASpceXLGdDY46EEE5cjPSI8Hh8MLrT8u9VYekjOVMpuk1PljUguoGIbgMUod7FAAnnnpIa+6BkeJ8Pt0TOT5v5IPz2XD/BiZ+WVotSnOQdV3NMdndBMiLhKXFBQAsbvsNKLLJpRlfOCxW4UbEm2mlXLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QK25UUzvQusCoRdtU5HVehq/ur0HDodN10Y0Mmo0bTM=;
+ b=SqTCFBnF2GEyp7tS7Mkar0+N8kbqOrvxJxvvkrqeRzjm/rpzjtv6mzrAJZV3c2Z3PeqQ+OtTknkHRSZjUJ7ANvomc+3sK/ith9PY5QGAOYOLT/dPKfYkHSifuwJXsHsuhZiGWvp7TGSgICvISAlAfS0pkr7P/njhHt7ncKH3plc2nAO9Fe4ZNc/C04UmMJSHAKAfM2lHWKjfR8+T+VdV/EqY4/ST+PD6UeEQYpdcvBDE37VO+1Vdv5J+AjHg+K3MavZvlDDbYcW3kk8ew0JDuljE09GqJSFnLmARvCnYS/fsOJeHf0yBh/XqGAfyO1wH9Ttvly/w+H2jM/jh8uYwIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
+ dkim=pass header.d=garyguo.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QK25UUzvQusCoRdtU5HVehq/ur0HDodN10Y0Mmo0bTM=;
+ b=VxzZEGHgkoHeNP0X6hnhwtYJ/jQ5nYUFY/jAU5DZUDRBYjrJWLN7gUfYhkUYxW2aAchxU8z/O6bZK7KJvIsJMYuRrAW0Tfd8czNnhzKs432FyV2N81AmxQgr6hlReMHPrz9d0JZpynHPdJ3487gHzXqUwlFuRfH6iJZP8LP/OH0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=garyguo.net;
+Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:253::10)
+ by CWXP265MB1992.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:81::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.37; Wed, 17 Apr
+ 2024 15:06:38 +0000
+Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::1818:a2bf:38a7:a1e7]) by LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::1818:a2bf:38a7:a1e7%4]) with mapi id 15.20.7472.037; Wed, 17 Apr 2024
+ 15:06:38 +0000
+Date: Wed, 17 Apr 2024 16:06:36 +0100
+From: Gary Guo <gary@garyguo.net>
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Miguel Ojeda <ojeda@kernel.org>, Alex
+ Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>,
+ =?UTF-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, Andreas Hindborg
+ <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Martin
+ Rodriguez Reboredo <yakoyoku@gmail.com>, rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rust: init: change the generated name of guard
+ variables
+Message-ID: <20240417160636.0e649b68@eugeo>
+In-Reply-To: <ef1400ae-ba9e-4656-98db-a882ac720c1e@proton.me>
+References: <20240403194321.88716-1-benno.lossin@proton.me>
+	<Zg3IHZfYVEOh7nc4@boqun-archlinux>
+	<ef1400ae-ba9e-4656-98db-a882ac720c1e@proton.me>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO0P123CA0010.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:354::19) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:253::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/1] x86/fred: Fix INT80 emulation for FRED
-To: Borislav Petkov <bp@alien8.de>
-Cc: linux-kernel@vger.kernel.org, luto@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com
-References: <20240417063001.3773507-1-xin@zytor.com>
- <20240417093813.GBZh-YhSQCXgy3OxFI@fat_crate.local>
-Content-Language: en-US
-From: Xin Li <xin@zytor.com>
-Autocrypt: addr=xin@zytor.com; keydata=
- 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
- l75w1xInsg==
-In-Reply-To: <20240417093813.GBZh-YhSQCXgy3OxFI@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LO2P265MB5183:EE_|CWXP265MB1992:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3afc39a4-b374-4e57-f9c0-08dc5eeffb51
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	cRYzGJ7r4h5uUHJzGXs/rZJCqQEDYNUurd28iAWLwTTi7pIMqBnU9XOB/m6A4vyBOu/xar9rpuPLval6FrKMqZvJaP/gJWuKDhO/Knd2pg5nKH5F+rbKGIXqYOGJRTiUq6brzBVL03ceAHX+ZdRwQa6QX718y9qZnShn/pwWwgKc48VuagbfR4IxFAisxKMstYKVHWbSIGOarnrbhCppabBSq6TTJok8yLw8qdbOt3ctC2xZi1XGuG5jqvmgFX11GbvshLjkN40byz5BMoqqhVkHmM7Lozn1IUtfXHBiv6s/fCmn6xG0mlbtoGgrRhq2XpozoV7vj+aljJiLycBim5rWYpvaZPhLqFZd3gQfPi2IpE8BD3gpT/g42Yyft+CjCwJlzzzQA0Tmilbja6cGjtZPEW8neMjVDec+GHaV5KyjhrZdi49pOkWn8xthJu0saBZDuc8ApBOkO4FgDmR2hUpvaR8Pe51gxrSmpOm6FBNixnyNgolNqyzViQQfZOholj8fthBaWe9Xmzv/Fb6cU0C6LxW0SbLaBAlM8bXnb5bnchmuW8Pd1HgMaRFbgK0NZntdbZXCImwwQrASnLPftYxnvYbuoKHhwpM1hebWWtOGZY/HWmz0vDhW8UerwM/4CWkaFkrdFr83fi9hVnHNqH+SdYuTjPIJLPUEcvE9OV4=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?QeGGWxZjcqea65UM6rny2FrIwGi2n2IOFW4BGS5BcO2Y94oTKid2IZuj6svx?=
+ =?us-ascii?Q?0miMTfwbDL8WUylgdsXrTFvgSpdb9FLxVZG3oPiUYLImxL2CQYqozEwcg7QZ?=
+ =?us-ascii?Q?AXy1qYh0xfZyoI3t1QqG1awUloVtBgdcoGh9z6KnkspD1ljTdoqi+ym/wLqA?=
+ =?us-ascii?Q?qHF8yQvNoAGRWl8HI7FmNSwCSqvv6YPWAahObnr6swT10FWPsJ1LwwTXVmC3?=
+ =?us-ascii?Q?E5cPlbCPCMxdVHFd700L7bB8j3FS/KVY5ybkoQt6L8iy9tjF9YwM7F2t4XEf?=
+ =?us-ascii?Q?dmRNckqfGIVJSDf4Vu716bFwYo72ezR4xkmw+5X7eB6LuWpIBQcgV5DXMLdR?=
+ =?us-ascii?Q?Wqq9k/OUcCEQcpE0Ml4IkQul6AChFgFDqEG10WpNDq2oyyjUc0gWw6/gMwmx?=
+ =?us-ascii?Q?fMqt4SPZNiHF+8TJkBOiPy8XlxQAPvOKlqB9KJyQxoQ+N5BqPdX9nEfRmMbI?=
+ =?us-ascii?Q?R2hU8wT4hKbYbB55Tb2Y2Pv4xNOcYmail90/MjCjYDXXnksgg9YtxRwuBwue?=
+ =?us-ascii?Q?cZoo58t1hNd0DE66hTlwEOyQTXVDJWsAe4zxBNO6jyWalBt2rtsQ3Aqw7KGX?=
+ =?us-ascii?Q?ArOjgrrsWVkR8mc+fY6mDzLGvGvQpOcNLeTRQGkdH16+0xw7y+zZomUqTPVD?=
+ =?us-ascii?Q?w1nzV8pZgU1uu8EgOjuVilMSwlnVIzyzGR46OAIfIoanlImyHpo5YbTOsR4h?=
+ =?us-ascii?Q?BRv48O0zHoJRpkD7IChrilHxX3EaGtFF/4RYY7t4Dau7W7R2Ym5H/vroODTV?=
+ =?us-ascii?Q?sTUQ7YLS1uNbqKLf+SQMBu7FWdtYYPZyI/LJC03Nmu82Mk22dCPUNQp1AyPi?=
+ =?us-ascii?Q?rullP3XweBlxGRpLVsmVhk85WZMOk8pZatwuFp4th1frFQKB3OS3PqzNK9r8?=
+ =?us-ascii?Q?ImG9uRwqcafO9ps+SLUaM9ehNhZ1SOD9tdbImRgBvHPpr03wicqe/B54egQk?=
+ =?us-ascii?Q?bab+6I1eMApsxFeLW9DpMvhh9AggzBeRySE676Wpdqbc4G7lDdV/viQ4GCt8?=
+ =?us-ascii?Q?bYv584CypPS/mz8Fz56JGoPzFLSBRt2Xq0ZpYqnmUqgZtWYdXXB9oZSOtPfm?=
+ =?us-ascii?Q?zFdMKl15WWfbxRzvzE+bJ2R0xn0xexm0T4Yyor2W/grs6jRhn7S6wN9zOJI8?=
+ =?us-ascii?Q?e+FVJvOpzYCH8l5rmJmRp22mlms4G9e0eNeb+D7KVGe71UlbXsLIh723iFWe?=
+ =?us-ascii?Q?hnrlzA87yEY/MKrncFoew6cNBzt0Lc/TzQUCdhfCm0CNwNuHYyMcOfN22+3b?=
+ =?us-ascii?Q?p1f0c2om55Zl83hblKnjZorX+mApLpAle9/OAklka6n2dpuFe2drPT31sWwW?=
+ =?us-ascii?Q?muDrfi49rFSAcYDCYTYqpQ+qVd8B0qo/E/HKvhBKZ1JJ7QF75Y/CPQpe87rD?=
+ =?us-ascii?Q?3/4YRbHguQtaBKtZ6FpXBoqJT0QfpMriLniQwBj+SLB5IzDC/6/zQNSj80Ge?=
+ =?us-ascii?Q?FjykyaGQ25Ed+jggX/RuPPdHl8X0Kh2ieRqMX8An0yXvco8DWng/DS8F1WWF?=
+ =?us-ascii?Q?N+mPWMIzhMtq779VUbk/FuMnavgopZRlXbAERkANhwObPisAOwJOSOa6UIIJ?=
+ =?us-ascii?Q?25gEzhAgs8Iwq7Q1BSx0QoHa/CHRDYwBU6dQQsCu?=
+X-OriginatorOrg: garyguo.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3afc39a4-b374-4e57-f9c0-08dc5eeffb51
+X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 15:06:38.7837
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MNKY6V3XsPDtZheX48fR/tkJk7rtt/Ayrn54Y3FK9kfUP++Hf1G+gzWgCr+yEEQKtKvhSGteOfewIYB17yEJBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB1992
 
-On 4/17/2024 2:38 AM, Borislav Petkov wrote:
-> On Tue, Apr 16, 2024 at 11:30:01PM -0700, Xin Li (Intel) wrote:
->> 3) The FRED kernel entry handler does *NOT* dispatch INT instructions,
->>     which is of event type EVENT_TYPE_SWINT, so compared with
->>     do_int80_emulation(), there is no need to do any user mode check.
-> 
-> What does that mean?
-> 
-> An event handler doesn't dispatch INT insns?
-> 
-> /me is confused.
-> 
+On Wed, 03 Apr 2024 22:09:49 +0000
+Benno Lossin <benno.lossin@proton.me> wrote:
 
-Maybe better to say?
-
-The FRED kernel entry handler fred_entry_from_kernel() calls 
-fred_bad_type() if an event is of type EVENT_TYPE_SWINT because Kernel 
-does not use INT insns! So if the kernel is handling an INT insn, it can 
-only be from a user level application.
-
-
->> + * A dedicated FRED INT80 handler duplicates quite a bit of the code in
->> + * do_int80_emulation(), but it avoids sprinkling more tests and seems
->> + * more readable. Just remember that we can always unify common stuff
->> + * later if it turns out that it won't diverge anymore, i.e., after the
->> + * FRED code settles.
->> + */
+> On 03.04.24 23:20, Boqun Feng wrote:
+> > On Wed, Apr 03, 2024 at 07:43:37PM +0000, Benno Lossin wrote:  
+> >> The initializers created by the `[try_][pin_]init!` macros utilize the
+> >> guard pattern to drop already initialized fields, when initialization
+> >> fails mid-way. These guards are generated to have the same name as the
+> >> field that they handle. To prevent namespacing issues when the field  
+> > 
+> > Do you have an example of this kind of issues?  
 > 
-> And this is talking about duplication above and that text is duplicated
-> from the commit message. :)
-
-I wanted to keep it as a TODO.  I can remove it in the next iteration.
-
-> 
-> I'll zap it when applying.
-> 
-> Thx.
+> https://lore.kernel.org/rust-for-linux/1e8a2a1f-abbf-44ba-8344-705a9cbb1627@proton.me/
 > 
 
+Here's the simplified example:
+
+```
+macro_rules! f {
+    () => {
+        let a = 1;
+        let _: u32 = a;
+    }
+}
+
+const a: u64 = 1;
+
+fn main() {
+    f!();
+}
+```
+
+The `a` in `f` have a different hygiene so normally it is scoped to the
+macro expansion and wouldn't escape. Interestingly a constant is still
+preferred despite the hygiene so constants escaped into the macro,
+leading to the error.
+
+Would your change regress error message when `pin_init!` is used
+wrongly? Personally I would say this kind of error is niche enough
+(given the casing of constants and variables differ) that we probably
+don't really need to care. So if error message would be affected then
+we'd better off not making the change.
+
+Best,
+Gary
 
