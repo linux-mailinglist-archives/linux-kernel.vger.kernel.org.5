@@ -1,130 +1,128 @@
-Return-Path: <linux-kernel+bounces-148441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 033FA8A829A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:57:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB1558A829F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:58:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DE501F22768
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:57:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27D531C20B2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:58:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6126913CFBD;
-	Wed, 17 Apr 2024 11:57:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 516D113CFB7;
+	Wed, 17 Apr 2024 11:58:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="R3A4vAf1"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MBRwF4Rt"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31BDC7FBD2;
-	Wed, 17 Apr 2024 11:57:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A73E13C8FB
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713355036; cv=none; b=WwQTOQBqHs9puR7V34GDU0WErcXnk9RNIYTyepeuvh1LNKJWEAzeLALghIIflDpwnm+Rez+goza77OYb5wVxH+vWSi9A8hK266ABjcXRpQHPqzdHF+BBzonKKtOMv9DDWIgoooC8EZwH+oOXj4td2tkHj1KLBk/eS3xOW0b3Zj4=
+	t=1713355118; cv=none; b=FnmhCbcruftTFmx8gL0mTej6epay2udHEFQPP7QBb5LU+u+jysIFT9fENMfurl2VHiI5HAsB40C92CWxqNb+2Ip0DJi80sdG4Wg8goFa6N6NSzfRlX/3wEhv1ncDPm8wIaBTKJHcQxuJPUmrGFeZEzgqKZPutRP1kkdhm8xvjXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713355036; c=relaxed/simple;
-	bh=HemC5jj1e7aQcD8qKpIfEBsO/Z/wNcPGtYU3mwsGTSI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=KEF+Fje6CoXK4TpR5lvE2txdL44+O5tpy3RtU+8KHi/sg2pY9E7bMR9Fi8ccPX9dBod2SJ8vN9KtuP8QiXpzuD1wL87tRwb+iFdw42h/JXrMjnJ2eYOXVPrPaUc6vcOiYpDz6nlRGvocMOrDWZ/RkT2B1LkBRlOz9s0R0sSnlAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=R3A4vAf1; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43HBv5lW026341;
-	Wed, 17 Apr 2024 06:57:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713355025;
-	bh=DCMypKZidOB2wAZl80SkaybM9OwuNT+k3d3G7XXO11A=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=R3A4vAf1D5eaPJy72DdQNATMLOPy9iLlkA1hQbp1PCNuLDNaw00i+tHTwZNE+t6Jt
-	 nnOJhrSGKi3PTeMgbOLSoMfWgX4wSnYbs8GnRwLtmcfWJyxjLd0IHWpjuNLIiDU/ik
-	 7a1z1sRO4qbFjONLQmjGiBdrgGSNPvLgbtY0LOW8=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43HBv5SL095613
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 17 Apr 2024 06:57:05 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 17
- Apr 2024 06:57:05 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 17 Apr 2024 06:57:05 -0500
-Received: from [10.24.69.25] (danish-tpc.dhcp.ti.com [10.24.69.25])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43HBv1pA053558;
-	Wed, 17 Apr 2024 06:57:02 -0500
-Message-ID: <c6288523-84a6-48b0-bf9f-c25721a1519f@ti.com>
-Date: Wed, 17 Apr 2024 17:27:00 +0530
+	s=arc-20240116; t=1713355118; c=relaxed/simple;
+	bh=n3E7Lzw4xFNf9xuprek+3okMw/w892dRTyoP/dcO1Ps=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W61rfZ0OCJBjVUFONmBQ2WWH6LTq1cnZCfcEnxKu/dAd4i6JrMubO1FB4iumruq552bnba+1OaqIZQRGt5GbeTypNgkx8y74Fk+uN6iCvcbAZB6g9WkB883/PnVDGg/FDO6l32HCBqKt0mKTTkifXwNRxqGNyGQ9Qk6UvKbYVr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MBRwF4Rt; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-ddaad2aeab1so4778156276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:58:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713355116; x=1713959916; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ox5LPkHgtGr2/XHUCfFXXYvppG+HqbU+7l8WZ9khYtU=;
+        b=MBRwF4Rt43DhVpdTLDXWW6zo7lKA/MV4W28NTk+6IDUp0wuMSeKZdHfYHf99RF3Mzz
+         xUwvHCH7SEf2npZy03ANQ852kEFy/qG21M/3O1tAbWYtX6Yc39jerL9WSEA5G6kBp1Wh
+         CEoIe3JV/dy8csAuCUbx84vkseglGQqNF86CorHcHl8z92SFVvshHt7A0nH6to5N7nPC
+         +7JZ+7vxlGnFXSme2ZP4/eBYWmMh9BMFADaODPbSaYZIGNT42NgbDkGRgENP9Xwm6iK3
+         UHmuKMjDGn+N4V+4HumpvKuym/fLLf5fk7ODQnSABIeZr08PB2z7gqGKjbdNIRj0Wb3u
+         1Q6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713355116; x=1713959916;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ox5LPkHgtGr2/XHUCfFXXYvppG+HqbU+7l8WZ9khYtU=;
+        b=KF8NxQzeB06/OaYS3cnRc1GpZuun58NTX0USX2k2B/PW8T4jmiDHiohJbH8s2Tz7qa
+         NJ2bDfG0CatQTwXb2zIGQQ1wJ2GOI5yCkGNjbsWniqqN9OHzi5TA2jvy6Rofu9RTxQ0j
+         /pOGj0AFVHNgxyaLmwZpzjZQnPm+qs1oDNhC+f3lY8iQtQw4x7IG5eAIFpxMC1S5LdJd
+         oIIBr3CLmbWlC4f8V/Lmbvv/vZv+BLsfzctHQUAHK+OZtCYeSDiZG8W7UkHChOgm5Tbv
+         mOcNmRKZ+M9+nG+tv+o0YPNcwI4PJpmYUwBwEL6ckUEqYkqs3xUeylA1QV7ysJmi5Wfo
+         9iBA==
+X-Forwarded-Encrypted: i=1; AJvYcCV/5RZOJl5+tzdjJbRYUzxsiQBShozNgm213UGZjGreWrhqQBDC1Tq+tW0FwdQ3p+1f0W7gkhxkc/j3zSvuwdz2jS9uLBvCV1sP47uu
+X-Gm-Message-State: AOJu0YxrQgWC0gwbrBlcEzjiWN6YxPGZcOsNqRdM1Hl8arf8Lu0vHDEv
+	71FD8zNVzFxvRbitFcqVDnNbqlhXFd+iO4cltNoDx4t9PgdPV0p4aseBM1I9pkfKuYTbK8mhNt5
+	VSrmvHHZqU4F8TPv1/VipjKD+/24m+1De/DVH3Q==
+X-Google-Smtp-Source: AGHT+IHroa6k1HZ0B1EjkdHyvkWVW2/keRVisrkhSaTkSXI+Xy1B+n4dLICjNC9Mn6XDdWwQWSgpT8LgLcWwaM+pobs=
+X-Received: by 2002:a25:3d05:0:b0:dc6:d093:8622 with SMTP id
+ k5-20020a253d05000000b00dc6d0938622mr15444148yba.15.1713355116056; Wed, 17
+ Apr 2024 04:58:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/5] Add CPSW2G and CPSW9G nodes for J784S4
-Content-Language: en-US
-To: Chintan Vankar <c-vankar@ti.com>, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring
-	<robh@kernel.org>, Tero Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra
-	<vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
-CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <s-vadapalli@ti.com>
-References: <20240329053130.2822129-1-c-vankar@ti.com>
-From: MD Danish Anwar <danishanwar@ti.com>
-In-Reply-To: <20240329053130.2822129-1-c-vankar@ti.com>
+References: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-0-78ae3ee9a697@somainline.org>
+ <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-2-78ae3ee9a697@somainline.org>
+In-Reply-To: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-2-78ae3ee9a697@somainline.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 17 Apr 2024 14:58:25 +0300
+Message-ID: <CAA8EJpq-1QwoM2hEyegpfKnVH+qrswjmTd_hpYs9d9B7gikHjg@mail.gmail.com>
+Subject: Re: [PATCH 2/7] drm/msm/dsi: Pass bonded-DSI hdisplay/2 to DSC timing configuration
+To: Marijn Suijten <marijn.suijten@somainline.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Archit Taneja <architt@codeaurora.org>, Chandan Uddaraju <chandanu@codeaurora.org>, 
+	Vinod Koul <vkoul@kernel.org>, Sravanthi Kollukuduru <skolluku@codeaurora.org>, 
+	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Jordan Crouse <jordan@cosmicpenguin.net>, Rajesh Yadav <ryadav@codeaurora.org>, 
+	Jeykumar Sankaran <jsanka@codeaurora.org>, ~postmarketos/upstreaming@lists.sr.ht, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Martin Botka <martin.botka@somainline.org>, 
+	Jami Kettunen <jami.kettunen@somainline.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Chintan,
+On Wed, 17 Apr 2024 at 02:57, Marijn Suijten
+<marijn.suijten@somainline.org> wrote:
+>
+> When configuring the timing of DSI hosts (interfaces) in
+> dsi_timing_setup() all values written to registers are taking bonded
+> DSI into account by dividing the original mode width by 2 (half the
+> data is sent over each of the two DSI hosts), but the full width
+> instead of the interface width is passed as hdisplay parameter to
+> dsi_update_dsc_timing().
+>
+> Currently only msm_dsc_get_slices_per_intf() is called within
+> dsi_update_dsc_timing() with the `hdisplay` argument which clearly
+> documents that it wants the width of a single interface (which, again,
+> in bonded DSI mode is half the total width of the mode).  Thus pass the
+> bonded-mode-adjusted hdisplay parameter into dsi_update_dsc_timing()
+> otherwise all values written to registers by this function (i.e. the
+> number of slices per interface or packet, and derived from this the EOL
+> byte number) are twice too large.
+>
+> Inversely the panel driver is expected to only set the slice width and
+> number of slices for half the panel, i.e. what will be sent by each
+> host individually, rather than fixing that up like hdisplay here.
+>
+> Fixes: 08802f515c3c ("drm/msm/dsi: Add support for DSC configuration")
+> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+> ---
+>  drivers/gpu/drm/msm/dsi/dsi_host.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-On 29/03/24 11:01 am, Chintan Vankar wrote:
-> This series adds device-tree nodes for CPSW2G and CPSW9G instance
-> of the CPSW Ethernet Switch on TI's J784S4 SoC. Additionally,
-> two device-tree overlays are also added:
-> 1. QSGMII mode with the CPSW9G instance via the ENET EXPANSION 1
->    connector.
-> 2. USXGMII mode with MAC Ports 1 and 2 of the CPSW9G instance via
->    ENET EXPANSION 1 and 2 connectors, configured in fixed-link
->    mode of operation at 5Gbps link speed.
-> 
-> Link to v5:
-> https://lore.kernel.org/r/20240314072129.1520475-1-c-vankar@ti.com/
-> 
-> Changes from v5 to v6:
-> - Updated order of properties in Device Nodes based on
->   https://docs.kernel.org/devicetree/bindings/dts-coding-style.html#order-of-properties-in-device-node
-> 
-> Chintan Vankar (1):
->   arm64: dts: ti: k3-j784s4-evm: Add alias for MCU CPSW2G
-> 
-> Siddharth Vadapalli (4):
->   arm64: dts: ti: k3-j784s4-main: Add CPSW2G and CPSW9G nodes
->   arm64: dts: ti: k3-j784s4-evm: Enable Main CPSW2G node and add aliases
->     for it
->   arm64: dts: ti: k3-j784s4: Add overlay to enable QSGMII mode with
->     CPSW9G
->   arm64: dts: ti: k3-j784s4: Add overlay for dual port USXGMII mode
-> 
->  arch/arm64/boot/dts/ti/Makefile               |  11 +-
->  .../ti/k3-j784s4-evm-quad-port-eth-exp1.dtso  | 147 ++++++++++++++
->  .../ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso   |  81 ++++++++
->  arch/arm64/boot/dts/ti/k3-j784s4-evm.dts      |  51 +++++
->  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi    | 187 ++++++++++++++++++
->  5 files changed, 476 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm64/boot/dts/ti/k3-j784s4-evm-quad-port-eth-exp1.dtso
->  create mode 100644 arch/arm64/boot/dts/ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso
-> 
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-For this series,
-Reviewed-by: MD Danish Anwar <danishanwar@ti.com>
 
 -- 
-Thanks and Regards,
-Danish
+With best wishes
+Dmitry
 
