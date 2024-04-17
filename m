@@ -1,120 +1,182 @@
-Return-Path: <linux-kernel+bounces-148855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0DFD8A882C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:52:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AA4A8A882F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:53:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BF1BB25519
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:52:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83CD61C2117F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:53:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5664F1487DC;
-	Wed, 17 Apr 2024 15:52:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C1D147C73;
+	Wed, 17 Apr 2024 15:52:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="f+UV7Gg3"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ayk+78ij"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F3E1147C7B
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EF13147C7B;
+	Wed, 17 Apr 2024 15:52:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713369142; cv=none; b=rbAdakJQN/xLQ0+nFI22BRmP8wwdBt/4y9Okp0L7etHO9G1FTzcEurDu+obfoAPdwwIZQSnl7XEW31cb8lI9hgJXUzbh44H31clzrT0CtVUCubw/EFaI/4x78C4cZ+wV1hWLm1jGbu8iTzSwQSVka+KtnM5EZktsD4GGH4rm06c=
+	t=1713369155; cv=none; b=t7QH8VH5BQ3bcZffHvISubenOwN+Ta3eDsOMs55z7XPJYUKPK5Wgcj7QmqOGgXZcFQndeEA9xkCTb+4UfViyikC3GXqFtSNZZ1yr9iReCTkxd5OLNYP2jz/0IR2A1Qn8eojtg5+UcY7UwLHKswLsfhqVsTM7ZTAM6b66XUhm7Nw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713369142; c=relaxed/simple;
-	bh=d6wYdf8GBT2sfnqVX9ehWmUTyi1CnG5W0K3/E5HKxbs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gu6eUIz9oR4t35Eh4wrAcbkIjhPxUwa/Bf/yJpb8PgPeGuDR/6wceqyETeWiJudd2HQ/27bgWZ91th9dgJjCWBWaGR91ouecdDMl8EfNk4p+LlSMW9JtlOYr1WjHflwsauQ8WFR0kxm5gTOAG1JVLfHaX01mbwdKif3r7fuBLDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=f+UV7Gg3; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713369140;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=d6wYdf8GBT2sfnqVX9ehWmUTyi1CnG5W0K3/E5HKxbs=;
-	b=f+UV7Gg3/VenUeIISClz47UNNGEKA9wAo9mhSNv5/KAn7YJsl1yKnOdirnIz9ErOVuFien
-	oQVKq43rOmosDib/pqitvZMHnRQHoQjbNoOGnmivro0Zv519WR9yH5KiUXZimMewPXkzAR
-	PkGSN59e/jlXDeZtmScNHBnu5egPWd0=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-297--wW9VX3qNR2PVIs-8QCgVA-1; Wed, 17 Apr 2024 11:52:18 -0400
-X-MC-Unique: -wW9VX3qNR2PVIs-8QCgVA-1
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-2a2c4a28e43so5118490a91.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 08:52:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713369137; x=1713973937;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d6wYdf8GBT2sfnqVX9ehWmUTyi1CnG5W0K3/E5HKxbs=;
-        b=clg8XaZDkh/SG3AtsHv+eUpdq0zixb3Xr2miv73NbxZqWJ4Nh3vFTpLtT1Kx7ZFqrB
-         mYdtd5A3km5vZeN4VMkvb6+Od8qdZhnBHuGlcf5O4askAVXeKPDOYtuyaTS03QnMsx9R
-         JK/xr+/ePP3U3fH7aAPRysEChHmSjFXT/JGXtx8rRjgVqBOSbs1wE0lbq1ZfoxH1cL/Q
-         yKGaiKoYbvXVmwfshF3tiHc7Rm0Ohd3q3QC3BMcH02jLdMLW0RGAoOYF/8wlGORAJeL2
-         7U8fBBbvMmLciWa/Kituow3YJq7O5sBohhx9JTDhzXKN4Fm+Ynj5E6IiYQfJU/aP5xbr
-         a0zA==
-X-Forwarded-Encrypted: i=1; AJvYcCXXVFJe8VGDBa/5crL6vd8hxZ6B6gUnqoVLurr44MeiPtZAthX0ew0sAUZuVe1ODDQiP1JFzfT3BF35MHpamhcsMQOOQPWZRbmh2WeB
-X-Gm-Message-State: AOJu0YxPgaMwEfagyeGrDUEdIz8x+pWJQ3Klz0DIeKDjDx8Hk7bsF4SC
-	6QQ7wbPxXMYXneC5DSC7yHBnmQEGE7etLn7p1fApB3yWnLbpY0vcKPydhcr9VRXgeYfetTFw+V6
-	pe5lo3xXapsBvGEw+hYBt0SrWP5NWbIyJ4NfzH60YikUTJ9uhVhIDY8HO+Qv00a8dlzHxAj372n
-	mXFHj2QAUPStPt2z8dri5FfBAqydcaet2ZZjcf
-X-Received: by 2002:a17:90a:f507:b0:2a2:bc9d:f44f with SMTP id cs7-20020a17090af50700b002a2bc9df44fmr13568204pjb.13.1713369137261;
-        Wed, 17 Apr 2024 08:52:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGrwgkJpJ6yrADjqJeDHRbvSm/QmomCjDCukl/vp4hRX+B1cOq6oqnam+PyQ/LHk6FBukBta+2ZpaJGDJsgFtw=
-X-Received: by 2002:a17:90a:f507:b0:2a2:bc9d:f44f with SMTP id
- cs7-20020a17090af50700b002a2bc9df44fmr13568177pjb.13.1713369136809; Wed, 17
- Apr 2024 08:52:16 -0700 (PDT)
+	s=arc-20240116; t=1713369155; c=relaxed/simple;
+	bh=7wb9H72Aj+y1YrETYNhTzY+E0Bau8VPmpQtR6PztyIk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ghZa1z5KMRWVLEcpAvHysm5nwTBa7TAXBN/LMMGputizSSzc0yaEMOLCwVUjc92rdSPWgtIaCoCqJ9an9NQc60syZTkiL0c9INbfbtalgwcL6sS1zNeNWVmp54IJdEp9GJ1Fm865ahPgFHxDzxldKVnFmsjHRYVymmA94W59hNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ayk+78ij; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8235FC072AA;
+	Wed, 17 Apr 2024 15:52:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713369154;
+	bh=7wb9H72Aj+y1YrETYNhTzY+E0Bau8VPmpQtR6PztyIk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ayk+78ijXrawiR4kAXqOs0GiJcMWt+Zd77nW2/ETTzLnQdZcgqCu2wbwD8OdOq1Pw
+	 MzQoVUr8iIPuM7PU9Ry+4KAjsXsHBTq2EGqdrVPl4yA/4i9mqn1ZE/Y7WfPEa26/SA
+	 AVsw+R/uPyZUYzWXRQ6TGXshL88v1a0JxuqqXQBF5HBmF0WpSJ0J4/TVzBuTBxGA1b
+	 +Vy8g2XS4t9bjQHAEkM8ZobraS3/DQFBZ+WfG8tTyW1Jtja0AGy96Lse+Yy4Vz08m5
+	 QkPfgUL7wqggfDHe+8ZiDlzm+Roxd+Yq4qV/9F52xkUS9R8yhVw+ivlaiC87Z0ZeEo
+	 2lpPGJOg/ABCw==
+Message-ID: <38ed0465-5b29-4e81-8bbf-f5480bc27c7b@kernel.org>
+Date: Wed, 17 Apr 2024 17:52:34 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1d10cd73-2ae7-42d5-a318-2f9facc42bbe@alu.unizg.hr>
- <20240318202124.GCZfiiRGVV0angYI9j@fat_crate.local> <12619bd4-9e9e-4883-8706-55d050a4d11a@alu.unizg.hr>
- <20240326101642.GAZgKgisKXLvggu8Cz@fat_crate.local> <8fc784c2-2aad-4d1d-ba0f-e5ab69d28ec5@alu.unizg.hr>
- <20240328123830.dma3nnmmlb7r52ic@amd.com> <20240402101549.5166-1-bp@kernel.org>
- <20240402133856.dtzinbbudsu7rg7d@amd.com> <20240403121436.GDZg1ILCn0a4Ddif3g@fat_crate.local>
- <Zg1QFlDdRrLRZchi@google.com> <20240404134452.GDZg6u1A-mPTTRqs6d@fat_crate.local>
-In-Reply-To: <20240404134452.GDZg6u1A-mPTTRqs6d@fat_crate.local>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Wed, 17 Apr 2024 17:52:03 +0200
-Message-ID: <CABgObfYkMjbY3_PFKmEJPf4BiNk5ueGWmUowDwax7k+=LTG3Gw@mail.gmail.com>
-Subject: Re: [BUG net-next] arch/x86/kernel/cpu/bugs.c:2935: "Unpatched return
- thunk in use. This should not happen!" [STACKTRACE]
-To: Borislav Petkov <bp@alien8.de>
-Cc: Sean Christopherson <seanjc@google.com>, Michael Roth <michael.roth@amd.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, bp@kernel.org, bgardon@google.com, 
-	dave.hansen@linux.intel.com, dmatlack@google.com, hpa@zytor.com, 
-	kvm@vger.kernel.org, leitao@debian.org, linux-kernel@vger.kernel.org, 
-	maz@kernel.org, mingo@redhat.com, mirsad.todorovac@alu.unizg.hr, 
-	pawan.kumar.gupta@linux.intel.com, peterz@infradead.org, shahuang@redhat.com, 
-	tabba@google.com, tglx@linutronix.de, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/8] ASoC: dt-bindings: wcd937x-sdw: add bindings for
+ wcd937x-sdw
+To: Mohammad Rafi Shaik <quic_mohs@quicinc.com>, Rob Herring <robh@kernel.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-arm-msm@vger.kernel.org, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ quic_rohkumar@quicinc.com, quic_pkumpatl@quicinc.com
+References: <20240416063600.309747-1-quic_mohs@quicinc.com>
+ <20240416063600.309747-4-quic_mohs@quicinc.com>
+ <20240416143237.GA2250258-robh@kernel.org>
+ <13bff1dd-d134-e5ab-6691-b2bcb0a786c8@quicinc.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <13bff1dd-d134-e5ab-6691-b2bcb0a786c8@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 4, 2024 at 3:45=E2=80=AFPM Borislav Petkov <bp@alien8.de> wrote=
-:
->
-> On Wed, Apr 03, 2024 at 05:48:22AM -0700, Sean Christopherson wrote:
-> > I'm guessing a general solution for OBJECT_FILES_NON_STANDARD is needed
->
-> Yeah.
->
-> > but I have a series to drop it for vmenter.S.
-> >
-> > https://lore.kernel.org/all/20240223204233.3337324-9-seanjc@google.com
->
-> Cool, ship it.
+On 17/04/2024 10:17, Mohammad Rafi Shaik wrote:
+> On 4/16/2024 8:02 PM, Rob Herring wrote:
+>> On Tue, Apr 16, 2024 at 12:05:55PM +0530, Mohammad Rafi Shaik wrote:
+>>> From: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
+>>>
+>>> Qualcomm WCD9370/WCD9375 Codec is a standalone Hi-Fi audio codec IC
+>>> connected over SoundWire. This device has two SoundWire devices RX and
+>>> TX respectively.
+>>> This binding is for those slave devices on WCD9370/WCD9375.
+>>>
+>>> Co-developed-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+>>> Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+>>> Signed-off-by: Prasad Kumpatla <quic_pkumpatl@quicinc.com>
+>>> ---
+>>>   .../bindings/sound/qcom,wcd937x-sdw.yaml      | 71 +++++++++++++++++++
+>>>   1 file changed, 71 insertions(+)
+>>>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd937x-sdw.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd937x-sdw.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd937x-sdw.yaml
+>>> new file mode 100644
+>>> index 000000000000..2b7358e266ba
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/sound/qcom,wcd937x-sdw.yaml
+>>> @@ -0,0 +1,71 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/sound/qcom,wcd937x-sdw.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Qualcomm SoundWire Slave devices on WCD9370
+>>> +
+>>> +maintainers:
+>>> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>> +
+>>> +description: |
+>>
+>> Don't need '|' if no formatting.
+>>
+>>> +  Qualcomm WCD9370 Codec is a standalone Hi-Fi audio codec IC.
+>>> +  It has RX and TX Soundwire slave devices. This bindings is for the
+>>> +  slave devices.
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    const: sdw20217010a00
+>>> +
+>>> +  reg:
+>>> +    maxItems: 1
+>>> +
+>>> +  qcom,tx-port-mapping:
+>>> +    description: |
+>>> +      Specifies static port mapping between slave and master tx ports.
+>>> +      In the order of slave port index.
+>>
+>> Are there constraints on the values of the entries?
+> 
+> The port mapping entries are fixed values.
+> There is no constraints.
 
-Applied for 6.9.
+If they are fixed, then for sure you have constraints, because they are
+known. I really do not understand your response.
 
-Paolo
+Best regards,
+Krzysztof
 
 
