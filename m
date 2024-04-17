@@ -1,143 +1,240 @@
-Return-Path: <linux-kernel+bounces-148857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F3C98A8830
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:53:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F8638A8833
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:53:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F0F61C21CAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:53:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D5D6284A52
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:53:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B700A14884F;
-	Wed, 17 Apr 2024 15:52:42 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3070414884B
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:52:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 537EB1487CC;
+	Wed, 17 Apr 2024 15:52:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ciwVHW4n"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8457313F42C
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:52:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713369162; cv=none; b=fiCftHYmLFPvWlW7dkK1WyfP2dG+JAT4ccpT4e09V6ydmqT3qOlSbAg0Wz2da82Q6MZ/0bdamsNDIRguxeI3K/wf1hU0jR6mG41WZH3A6QtYt5oqNsINLT2sjxoNrdaRn2Zh5KMwEhZ4ydUNCUtTbeCzhvxuT51osjt00SVY78c=
+	t=1713369171; cv=none; b=cGXYdDWcFKXyIA9POhab04NWbtPg3C9bmMLI5lu6ph3x196IeC5mhqK4/sdTaz9bl+yp4W2Oge1AQahLpKqVleKeePlWC8AKP07ENv1nXkrfEx4729tMBXZkNvO0pJSmatoZEn8yD7sYv4suHmFnJZ8n1uhrE8LN7etdSDUJ/cE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713369162; c=relaxed/simple;
-	bh=kuX3OcKWgILgSLAxfzh2AQyYp1j6PjeGzoP26JTex64=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OkKNw97dM/9Ngs1zpoNV2Nxe+r1euwGeNndojTwyHkaUmDp+Me458TNxWr49hiYE+bJKfPuQS/3bChokUAUoJUMxTpg9LPbrFm6P95lrnhPDnrpctEGwcPhNCh8mNfhGncJ0/G0StMCPeaowRYM9+L0AKA6mLunSFcTSjzRMvoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4185B339;
-	Wed, 17 Apr 2024 08:53:07 -0700 (PDT)
-Received: from [10.1.37.181] (XHFQ2J9959.cambridge.arm.com [10.1.37.181])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 670BD3F792;
-	Wed, 17 Apr 2024 08:52:38 -0700 (PDT)
-Message-ID: <28b20153-62d8-40f2-9305-60943696d4a1@arm.com>
-Date: Wed, 17 Apr 2024 16:52:36 +0100
+	s=arc-20240116; t=1713369171; c=relaxed/simple;
+	bh=PPbz4GQko4hF53ZUDpAq+ldibdDOErHuto8pYcPk6q4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Ap0LeXU4gAzTvLamMQTxPPVU8QcmTZn4Cr3vzg/DX21OuRz30da2BNygyUJKmMEf9y4ixeeXQMnvPSB+5tIhzwculqzsIsKqpitUuOpmChSJMhGHDpYl6x28Qy2DRz7s5MAXTY2/WBVKxBJCh2F18sudZNoFQRC3cQW/nhOIuTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ciwVHW4n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD53DC072AA;
+	Wed, 17 Apr 2024 15:52:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713369171;
+	bh=PPbz4GQko4hF53ZUDpAq+ldibdDOErHuto8pYcPk6q4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=ciwVHW4n6USeccR2haG+D9uXoealdrd0Z+p3ZSgcrNU41N+kELim1UB/hvy0LvOcz
+	 LeHPNW3ddo4z4H0/t2ZtSd24wleMkGWd7wAujY42CmqIxhNEdZPorzVjueE5CHtTpx
+	 u6nDRs7PIkmzrg4ilIPlsYIOZ/0hP46tVzjVhGnw3BOMD62Tj1+Y2QDMniZpY7mXN5
+	 5jr2vHcCOFF/mMMY+5WMXiltp2w1pPb22BZkUNwerGMrPhPDHAGWvduDGP4f2dJY/O
+	 9dK5gZFCrBUPRtkigrvWm78FqcL2KeVulVIl+PnfOLcnt7uYy+oHH5iK9FZUYvS8Q4
+	 8qSJKPs4YDNbw==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: "Michael Walle" <mwalle@kernel.org>
+Cc: "Pratyush Yadav" <pratyush@kernel.org>,  "Tudor Ambarus"
+ <tudor.ambarus@linaro.org>,  "Miquel Raynal" <miquel.raynal@bootlin.com>,
+  "Richard Weinberger" <richard@nod.at>,  "Vignesh Raghavendra"
+ <vigneshr@ti.com>,  <linux-kernel@vger.kernel.org>,
+  <linux-mtd@lists.infradead.org>
+Subject: Re: [RFC PATCH v1 6/6] mtd: spi-nor: introduce support for
+ displaying deprecation message
+In-Reply-To: <D0MHEH8OOS44.2PPBZ3LFU4QG3@kernel.org> (Michael Walle's message
+	of "Wed, 17 Apr 2024 16:52:42 +0200")
+References: <20240412134405.381832-1-mwalle@kernel.org>
+	<20240412134405.381832-7-mwalle@kernel.org>
+	<mafs0jzkw6oq1.fsf@kernel.org> <D0MHEH8OOS44.2PPBZ3LFU4QG3@kernel.org>
+Date: Wed, 17 Apr 2024 17:52:48 +0200
+Message-ID: <mafs0bk686l67.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: clang: error: unknown argument '-static-libasan'; did you mean
- '-static-libsan'?
-Content-Language: en-GB
-To: Arnd Bergmann <arnd@arndb.de>, kernel test robot <yujie.liu@intel.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev,
- Linux Memory Management List <linux-mm@kvack.org>
-References: <202404141807.LgsqXPY5-lkp@intel.com>
- <31b4e05d-62c6-44cd-8038-7ac8d21320c3@arm.com>
- <a5516289-96b6-41f4-8cbb-6c34c7bf7996@app.fastmail.com>
- <1f384d41-4c65-4efb-a171-26b54dacfb30@arm.com>
- <e95bb670-7c20-496f-80e1-8b1891816764@app.fastmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <e95bb670-7c20-496f-80e1-8b1891816764@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 17/04/2024 16:23, Arnd Bergmann wrote:
-> On Wed, Apr 17, 2024, at 17:11, Ryan Roberts wrote:
->> On 16/04/2024 15:42, Arnd Bergmann wrote:
->>> On Tue, Apr 16, 2024, at 16:33, Ryan Roberts wrote:
->>>
->>> I'm not entirely sure how much of the Kbuild infrastructure we
->>> can rely on here. If the .config file gets included, this should
->>> work:
+On Wed, Apr 17 2024, Michael Walle wrote:
+
+> Hi,
+>
+> On Wed Apr 17, 2024 at 4:36 PM CEST, Pratyush Yadav wrote:
+>> On Fri, Apr 12 2024, Michael Walle wrote:
 >>
->> Thanks for the pointers. Unfortunately neither don't works as we don't have any
->> of the Kbuild infrastructure.
+>> > SPI-NOR will automatically detect the attached flash device most of the
+>> > time. We cannot easily find out if boards are using a given flash.
+>> > Therefore, introduce a (temporary) flag to display a message on boot if
 >>
->> I'm not really sure what to do here. The best I've come up with so far is to
->> just remove asan from these binaries. They are pretty simple selftests. I'm not
->> sure its adding a whole lot of value anyway.
+>> Why temporary? There will always be a need to deprecate one flash or
+>> another. Might as well keep the flag around.
+>
+> Mh, yes I agree. That also means that this flag will not have any
+> users (most) of the time (hopefully ;) ).
+>
+>> Also, this patch/series does not add any users of the deprecated flag.
+>> If you have some flashes in mind, it would be good to add them to the
+>> patch/series.
+>
+> This is just an RFC to see if whether you Tudor agree with me :) But
+> I was about to add it to the evervision/cypress FRAMs.
+>
+>> I like the idea in general. Do you think we should also print a rough
+>> date for the deprecation as well?
+>
+> Might make sense, any suggestions?
+
+How about a simple string to flash_info?
+
+/**
+ * struct flash_info - SPI NOR flash_info entry.
+ * @id:   pointer to struct spi_nor_id or NULL, which means "no ID" (mostly
+ *        older chips).
+ * @name: (obsolete) the name of the flash. Do not set it for new additions.
+ * @size:           the size of the flash in bytes.
+ * @deprecation_date: The date after which the support for this flash will be
+ *                    removed.
+ * [...]
+ */
+struct flash_info {
+	char *name;
+	const struct spi_nor_id *id;
+	char *deprecation_date;
+	[...]
+}
+
+And then in everspin.c for example,
+
+	{
+		.name = "mr25h128",
+		.size = SZ_16K,
+		.sector_size = SZ_16K,
+		.addr_nbytes = 2,
+		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
+		.deprecation_date = "2025-01-01",
+	}, {
+
+And in spi_nor_get_flash_info() (changed some wording of the message):
+
+	info = jinfo ?: info;
+
+	if (info->deprecation_date)
+		pr_warn("Your board or device tree is using a SPI NOR flash (%s) with\n"
+			"deprecated driver support. It can be removed in any kernel\n"
+			"version after %s. If you feel this shouldn't be the case, please contact\n"
+			"us at linux-mtd@lists.infradead.org\n", info->name,
+			info->deprecation_date);
+
+	return info;
+
+This would also remove the need for SPI_NOR_DEPRECATED. But it would
+make the flash_info 4 or 8 bytes larger.
+
+What do you think?
+
+>
+>> > support for a given flash device is scheduled to be removed in the
+>> > future.
+>> >
+>> > Signed-off-by: Michael Walle <mwalle@kernel.org>
+>> > ---
+>> >  drivers/mtd/spi-nor/core.c | 12 ++++++++++++
+>> >  drivers/mtd/spi-nor/core.h |  1 +
+>> >  2 files changed, 13 insertions(+)
+>> >
+>> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> > index 58d310427d35..a294eef2e34a 100644
+>> > --- a/drivers/mtd/spi-nor/core.c
+>> > +++ b/drivers/mtd/spi-nor/core.c
+>> > @@ -3312,6 +3312,7 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
+>> >  						       const char *name)
+>> >  {
+>> >  	const struct flash_info *jinfo = NULL, *info = NULL;
+>> > +	const char *deprecated = NULL;
+>> >  
+>> >  	if (name)
+>> >  		info = spi_nor_match_name(nor, name);
+>> > @@ -3326,6 +3327,17 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
+>> >  			return jinfo;
+>> >  	}
+>> >  
+>> > +	if (info && (info->flags & SPI_NOR_DEPRECATED))
+>> > +		deprecated = info->name;
+>> > +	else if (jinfo && (jinfo->flags & SPI_NOR_DEPRECATED))
+>> > +		deprecated = jinfo->name;
+>> > +
+>> > +	if (deprecated)
+>> > +		pr_warn("Your board or device tree is using a SPI NOR flash (%s) with\n"
+>> > +			"deprecated driver support. It will be removed in future kernel\n"
 >>
->> Does anyone have any advice?
+>> Nit: "removed in a future kernel version"
 >>
-> 
->>> Alternatively, if the cc-option macro is available, you could
->>> try this one
->>>
->>> CFLAGS += $(call cc-option, -static-libasan) $(call cc-option, -static-libsan) 
-> 
-> I had another look at this and found example code in
-> tools/thermal/tmon/Makefile that you should be able to adapt.
-> Apparently the cc-option macro is not provided by default, but
-> there is a copy you can include:
-> 
-> # We need this for the "cc-option" macro.
-> include ../../build/Build.include
-> WARNFLAGS=-Wall -Wshadow -W -Wformat -Wimplicit-function-declaration -Wimplicit-int
-> override CFLAGS+= $(call cc-option,-O3,-O1) ${WARNFLAGS}
-> # Add "-fstack-protector" only if toolchain supports it.
-> override CFLAGS+= $(call cc-option,-fstack-protector-strong)
+>> > +			"version. If you feel this shouldn't be the case, please contact\n"
+>> > +			"us at linux-mtd@lists.infradead.org\n", deprecated);
+>> > +
+>>
+>> Hmm, this isn't so nice. I'd suggest doing something like:
+>>
+>> 	/*
+>>          * If caller has specified name of flash model that can normally be
+>>          * ...
+>>          */
+>> 	info = jinfo ?: info;
+>>
+>> 	if (info->flags & SPI_NOR_DEPRECATED)
+>>         	pr_warn(...);
+>
+> Actually, I had that, *but* I was thinking we might only check the
+> detected flash and not the one specified in the device tree. But
+> thinking about that again, I guess it makes sense because:
+>  - that's the actually used flash driver
+>  - having jinfo != info will print that other warning, thus this
+>    case is hopefully very unlikely.
+>
+>>
+>> 	return info;
+>>
+>> >  	/*
+>> >  	 * If caller has specified name of flash model that can normally be
+>> >  	 * detected using JEDEC, let's verify it.
+>> > diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+>> > index 8552e31b1b07..0317d8e253f4 100644
+>> > --- a/drivers/mtd/spi-nor/core.h
+>> > +++ b/drivers/mtd/spi-nor/core.h
+>> > @@ -524,6 +524,7 @@ struct flash_info {
+>> >  #define SPI_NOR_NO_ERASE		BIT(6)
+>> >  #define SPI_NOR_QUAD_PP			BIT(8)
+>> >  #define SPI_NOR_RWW			BIT(9)
+>> > +#define SPI_NOR_DEPRECATED		BIT(15)
+>>
+>> If you do agree with my suggestion of making it permanent, would it make
+>> more sense to make it BIT(10) instead. Or BIT(9) once you move up the
+>> others because we no longer have BIT(7).
+>
+> Or just BIT(7) and avoid any code churn :)
 
-Ahh thanks! That sorted it:
+Yep, that works.
 
-diff --git a/tools/testing/selftests/fchmodat2/Makefile
-b/tools/testing/selftests/fchmodat2/Makefile
-index 71ec34bf1501..a68bb5a00797 100644
---- a/tools/testing/selftests/fchmodat2/Makefile
-+++ b/tools/testing/selftests/fchmodat2/Makefile
-@@ -1,6 +1,9 @@
- # SPDX-License-Identifier: GPL-2.0-or-later
-+# We need this for the "cc-option" macro.
-+include ../../../build/Build.include
+>
+> -michael
+>
+>>
+>> >  
+>> >  	u8 no_sfdp_flags;
+>> >  #define SPI_NOR_SKIP_SFDP		BIT(0)
+>
 
--CFLAGS += -Wall -O2 -g -fsanitize=address -fsanitize=undefined -static-libasan
-$(KHDR_INCLUDES)
-+CFLAGS += -Wall -O2 -g -fsanitize=address -fsanitize=undefined $(KHDR_INCLUDES)
-+CFLAGS += $(call cc-option, -static-libasan) $(call cc-option, -static-libsan)
- TEST_GEN_PROGS := fchmodat2_test
-
- include ../lib.mk
-diff --git a/tools/testing/selftests/openat2/Makefile
-b/tools/testing/selftests/openat2/Makefile
-index 254d676a2689..02af9b6ca5eb 100644
---- a/tools/testing/selftests/openat2/Makefile
-+++ b/tools/testing/selftests/openat2/Makefile
-@@ -1,8 +1,11 @@
- # SPDX-License-Identifier: GPL-2.0-or-later
-+# We need this for the "cc-option" macro.
-+include ../../../build/Build.include
-
--CFLAGS += -Wall -O2 -g -fsanitize=address -fsanitize=undefined -static-libasan
-+CFLAGS += -Wall -O2 -g -fsanitize=address -fsanitize=undefined
-+CFLAGS += $(call cc-option, -static-libasan) $(call cc-option, -static-libsan)
- TEST_GEN_PROGS := openat2_test resolve_test rename_attack_test
-
- include ../lib.mk
-
--$(TEST_GEN_PROGS): helpers.c helpers.h
-+$(TEST_GEN_PROGS): helpers.c
-
-
-I'll tidy this up and send it out.
-
-Thanks,
-Ryan
-
-
+-- 
+Regards,
+Pratyush Yadav
 
