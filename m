@@ -1,227 +1,187 @@
-Return-Path: <linux-kernel+bounces-148475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD9358A831C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:25:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0DA98A8322
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:26:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0E911C21285
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:25:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5056C1F212B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:26:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC92013D24C;
-	Wed, 17 Apr 2024 12:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4BE13D51E;
+	Wed, 17 Apr 2024 12:26:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h0QedpGj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LNUabtQ+"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD5DD13D295;
-	Wed, 17 Apr 2024 12:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD1E13CF92
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 12:26:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713356700; cv=none; b=SCfJCzFzuiM66Mrmu13bmw/y3pFXf9ES9p+wTmDPYiEm4ZrtsB0mpX04T3jyLKB/ehOoJub36/fT6zJbNdbDqIMdoD1lqaM2XA4q77/EqfY7VCtbJK06TM28820rharnSRAkqRt/qFNlhkQe3jB/aqUEPuLX7yY9siWDxGp4LC0=
+	t=1713356789; cv=none; b=eHgY8V7uf8KveslUgGdWaWZA1UCpdt4Pf3JUvOaeM1/1KVIvHFSBQNDBxtm/q+dMZlzNiNSCXDQ3wtZixMZT6loj2xVs6LD8uQwpyjTqlAMIcpFsmZslu8/9sdjRV+6OFKCzdDIIultw45FfeT72c/wHpFAhML2ReAwG/Pc5k3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713356700; c=relaxed/simple;
-	bh=Q8zT258WQRDiwJmPtFZzZIyJIR1jdZVS+ZzaCdOE9JI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R02+U87ua6PRL8QJiha44WF+C3nC8tl+Y1sxmRyt4c4kwMIxLDZCTWjkMsZ9sxClvSSGCPYes+Q+na5UulaDwGN4J7qJs2DV99TN3Ok0gK7MPPfYrtaJzPnpiahJvg70PliDEajgHACsZOpNSdZp5GumQqm9nBEN7kyEw2leEyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h0QedpGj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C983C072AA;
-	Wed, 17 Apr 2024 12:24:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713356700;
-	bh=Q8zT258WQRDiwJmPtFZzZIyJIR1jdZVS+ZzaCdOE9JI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h0QedpGjj8RNmOqZMuHdkWOw1mh0PWamjez5Zq/LUjHsHnN8lLUFYpt9r7HF6zDyU
-	 U6kdycDZ+zKka5PgDsOIoPodGOy0JIpRNqDQ/nBqtBxcQn0Nd+6LfLMCx9mXpVlSKN
-	 OenkBaLJNzBsHVK+JDiqWNAvKYBLua0mJE2fz8n1LcHErcEkV6hOsQWvw3SivP+nUz
-	 pTt9FJs96J7FswU9Ru6XkyCmJeiBmUURrzlpxGhiPyGHmlPzFCDjHZx+MxMBOXA5eI
-	 q0VzeO8Kg2hh+x4/linpnOCPbOsR9BFrxJ8bfiMjt5NilkOo/TdyHeIuEYoU4hJMzC
-	 76GNDNcExvjpA==
-Date: Wed, 17 Apr 2024 13:24:54 +0100
-From: Lee Jones <lee@kernel.org>
-To: Matti Vaittinen <mazziesaccount@gmail.com>
-Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: Re: [RFC PATCH 3/6] mfd: support ROHM BD96801 PMIC core
-Message-ID: <20240417122454.GY2399047@google.com>
-References: <cover.1712058690.git.mazziesaccount@gmail.com>
- <b86b7a73968810339b6cea7701bc3b6f626b4086.1712058690.git.mazziesaccount@gmail.com>
- <20240411143856.GD2399047@google.com>
- <25c959bc-fb02-42d9-b973-4a74cebd7208@gmail.com>
- <20240412072347.GM2399047@google.com>
- <700b63a1-ce91-4d91-9db7-43c195ba7a6f@gmail.com>
+	s=arc-20240116; t=1713356789; c=relaxed/simple;
+	bh=a1x/JGeunAJ99pD0ETab0nWzZU+s+CSX3gs4v9cifxw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S6WWEjn9UnlzzXuwoT6Du84B6Y14McrKIxljHTr2l24pfyLAhdjHsQs//byMB++xEVk/DjvvoDEF+tBOndiReJilIXoTWd6GNC9WhH7OplbpbZOjavHLzkNX//68EPQM/pvOAajE97BAtka3X5SZ49QR3nNrku50cqhHSKzkc6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LNUabtQ+; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713356787;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QjCmpTxAkwRUAZXHWPGWOp6O5gOmNOMLJtx2EWIqSUo=;
+	b=LNUabtQ+yzbFIo4GmgoZHtHex8dtmNy5RMseIy4HLR5D9C8fwW7uSNQ3yXxjxoTARANlLb
+	oOVX7naeqB2srVf4ojObhhtLus2+rG+SUnYKmd8lVrXslkxz2SoZKY4YT150gq4snYg1LG
+	yhZJnzCnwBzxJJtHep+w+TPNp2GUV4c=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-562-Z3kz8SU8OiWD5071nG-mbQ-1; Wed, 17 Apr 2024 08:26:25 -0400
+X-MC-Unique: Z3kz8SU8OiWD5071nG-mbQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4167351545cso35967585e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 05:26:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713356784; x=1713961584;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QjCmpTxAkwRUAZXHWPGWOp6O5gOmNOMLJtx2EWIqSUo=;
+        b=Z2AUOanYcKYIMDXmI9fF48DgT0MT23TR57JT3DcYMvZ0T6vZEEGMv2nHCvID/byWlb
+         Mw7oc0chfcq1vYooZ+tVW1e25LJw4MiBcyhGbJeuW+oUtyikosC79z3kd13YAxrkj0yf
+         XWeiD3b3lpDP18wPH4CIikik00u3Len5Elotk3AKlj8KTpPO1gW29oglAqYVIMPzmtoS
+         QxdGsHHj75WJW8JKIIgGHsKX4PzI/rn9a9bnYSNqVVbxUW9rrggl0a4fvzmlQ5xDR5uR
+         Gl5NF0Zbdlh1cOoIFqQuedsq4CaSoO/KMmzuV+rMf3JU96VpVhB8XRK6jENlWTd96Wex
+         bUCw==
+X-Forwarded-Encrypted: i=1; AJvYcCU6kwhaGb8KoWWe455PG+KwebxZ0UeHmS9vCi1cyAOFIQqmbF2hLnHGVFeR6ruuuY/ETjjtSX140fbAyyFHfOAh8WAMi5/yuuhvdGKV
+X-Gm-Message-State: AOJu0YyCxakrza29ATtwp2rZuUfj1jT+smfa0DbChzecgnz5tM7gw7X3
+	cEdwKHckN6CP9zlncDa8/JWSpzgmq7uhwgMVwpMgWkljREyx8AxYk3lzt0ufj2Xv5mg4HlNNNz1
+	YYujOX2tESNaeeOp+sSwZQHTRUttYVTht34KWO1HBvG71QMF4IekNDkCrJHu7MjC3dbirD31qff
+	2Wwmw14XvAWvg3TCY2zOad16xCK45T3lJTkEow
+X-Received: by 2002:a5d:584a:0:b0:33e:dbc0:773 with SMTP id i10-20020a5d584a000000b0033edbc00773mr16693837wrf.44.1713356784479;
+        Wed, 17 Apr 2024 05:26:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHSEFGD8TxnC4i4Lh/XbsnoRvMHjunnzitshgwN7+xcyscfHfDeMP7OsrRkW32dxdUewUzdvUHkqWS2saZUY7s=
+X-Received: by 2002:a5d:584a:0:b0:33e:dbc0:773 with SMTP id
+ i10-20020a5d584a000000b0033edbc00773mr16693824wrf.44.1713356784161; Wed, 17
+ Apr 2024 05:26:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <700b63a1-ce91-4d91-9db7-43c195ba7a6f@gmail.com>
+References: <cover.1712785629.git.isaku.yamahata@intel.com> <7194bb75ac25fa98875b7891d7929655ab245205.1712785629.git.isaku.yamahata@intel.com>
+In-Reply-To: <7194bb75ac25fa98875b7891d7929655ab245205.1712785629.git.isaku.yamahata@intel.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Wed, 17 Apr 2024 14:26:12 +0200
+Message-ID: <CABgObfYpjYZ-UY_Dh+-u-r-Gp2nBDiu0o5yScGrraCDj6wYcxw@mail.gmail.com>
+Subject: Re: [PATCH v2 08/10] KVM: x86: Add a hook in kvm_arch_vcpu_map_memory()
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, isaku.yamahata@gmail.com, 
+	linux-kernel@vger.kernel.org, Sean Christopherson <seanjc@google.com>, 
+	Michael Roth <michael.roth@amd.com>, David Matlack <dmatlack@google.com>, 
+	Federico Parola <federico.parola@polito.it>, Kai Huang <kai.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 12 Apr 2024, Matti Vaittinen wrote:
+On Thu, Apr 11, 2024 at 12:08=E2=80=AFAM <isaku.yamahata@intel.com> wrote:
+>
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> Add a hook in kvm_arch_vcpu_map_memory() for KVM_MAP_MEMORY before callin=
+g
+> kvm_mmu_map_page() to adjust the error code for a page fault.  The hook c=
+an
+> hold vendor-specific logic to make those adjustments and enforce the
+> restrictions.  SEV and TDX KVM will use the hook.
+>
+> In the case of SEV and TDX, they need to adjust the KVM page fault error
+> code or refuse the operation due to their restriction.  TDX requires that
+> the guest memory population must be before finalizing the VM.
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+> v2:
+> - Make pre_mmu_map_page() to take error_code.
+> - Drop post_mmu_map_page().
+> - Drop struct kvm_memory_map.source check.
+> ---
+>  arch/x86/include/asm/kvm-x86-ops.h |  1 +
+>  arch/x86/include/asm/kvm_host.h    |  3 +++
+>  arch/x86/kvm/x86.c                 | 28 ++++++++++++++++++++++++++++
+>  3 files changed, 32 insertions(+)
+>
+> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kv=
+m-x86-ops.h
+> index 5187fcf4b610..a5d4f4d5265d 100644
+> --- a/arch/x86/include/asm/kvm-x86-ops.h
+> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> @@ -139,6 +139,7 @@ KVM_X86_OP(vcpu_deliver_sipi_vector)
+>  KVM_X86_OP_OPTIONAL_RET0(vcpu_get_apicv_inhibit_reasons);
+>  KVM_X86_OP_OPTIONAL(get_untagged_addr)
+>  KVM_X86_OP_OPTIONAL(alloc_apic_backing_page)
+> +KVM_X86_OP_OPTIONAL(pre_mmu_map_page);
+>
+>  #undef KVM_X86_OP
+>  #undef KVM_X86_OP_OPTIONAL
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_h=
+ost.h
+> index 3ce244ad44e5..2bf7f97f889b 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1812,6 +1812,9 @@ struct kvm_x86_ops {
+>
+>         gva_t (*get_untagged_addr)(struct kvm_vcpu *vcpu, gva_t gva, unsi=
+gned int flags);
+>         void *(*alloc_apic_backing_page)(struct kvm_vcpu *vcpu);
+> +       int (*pre_mmu_map_page)(struct kvm_vcpu *vcpu,
+> +                               struct kvm_memory_mapping *mapping,
+> +                               u64 *error_code);
+>  };
+>
+>  struct kvm_x86_nested_ops {
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 8ba9c1720ac9..b76d854701d5 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -5868,6 +5868,26 @@ static int kvm_vcpu_ioctl_enable_cap(struct kvm_vc=
+pu *vcpu,
+>         }
+>  }
+>
+> +static int kvm_pre_mmu_map_page(struct kvm_vcpu *vcpu,
+> +                               struct kvm_memory_mapping *mapping,
+> +                               u64 *error_code)
+> +{
+> +       int r =3D 0;
+> +
+> +       if (vcpu->kvm->arch.vm_type =3D=3D KVM_X86_DEFAULT_VM) {
+> +               /* nothing */
+> +       } else if (vcpu->kvm->arch.vm_type =3D=3D KVM_X86_SW_PROTECTED_VM=
+) {
+> +               if (kvm_mem_is_private(vcpu->kvm, gpa_to_gfn(mapping->bas=
+e_address)))
+> +                       *error_code |=3D PFERR_PRIVATE_ACCESS;
 
-> On 4/12/24 10:23, Lee Jones wrote:
-> > On Fri, 12 Apr 2024, Matti Vaittinen wrote:
-> > 
-> > > Hi deee Ho Lee!
-> > > 
-> > > Thanks a ton for taking a look at this :) I already sent the V2 yesterday,
-> > > briefly before receiving your comments. I think all of the comments are
-> > > relevant for the V2 as well, I will fix them for the V3 when I get to that.
-> > > If you find the time to take a look at V2, then the major things are
-> > > addition of a watchdog IRQ + a work-around for the debugFS name collision
-> > > for IRQ domains.
-> > > 
-> > > On 4/11/24 17:38, Lee Jones wrote:
-> > > > On Tue, 02 Apr 2024, Matti Vaittinen wrote:
-> > > > 
-> > > > > The ROHM BD96801 PMIC is highly customizable automotive grade PMIC
-> > > > > which integrates regulator and watchdog funtionalities.
-> > > > > 
-> > > > > Provide IRQ and register accesses for regulator/watchdog drivers.
-> > > > > 
-> > > > > Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
-> > > > > ---
-> > > > >    drivers/mfd/Kconfig              |  13 +
-> > > > >    drivers/mfd/Makefile             |   1 +
-> > > > >    drivers/mfd/rohm-bd96801.c       | 454 +++++++++++++++++++++++++++++++
-> > > > >    include/linux/mfd/rohm-bd96801.h | 212 +++++++++++++++
-> > > > >    include/linux/mfd/rohm-generic.h |   1 +
-> > > > >    5 files changed, 681 insertions(+)
-> > > > >    create mode 100644 drivers/mfd/rohm-bd96801.c
-> > > > >    create mode 100644 include/linux/mfd/rohm-bd96801.h
-> > > > > 
-> > > > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > > > > index 4b023ee229cf..947045eb3a8e 100644
-> > > > > --- a/drivers/mfd/Kconfig
-> > > > > +++ b/drivers/mfd/Kconfig
-> > > > > @@ -2089,6 +2089,19 @@ config MFD_ROHM_BD957XMUF
-> > > > >    	  BD9573MUF Power Management ICs. BD9576 and BD9573 are primarily
-> > > > >    	  designed to be used to power R-Car series processors.
-> > > > > +config MFD_ROHM_BD96801
-> > > > > +	tristate "ROHM BD96801 Power Management IC"
-> > > > > +	depends on I2C=y
-> > > > > +	depends on OF
-> > > > > +	select REGMAP_I2C
-> > > > > +	select REGMAP_IRQ
-> > > > > +	select MFD_CORE
-> > > > > +	help
-> > > > > +	  Select this option to get support for the ROHM BD96801 Power
-> > > > > +	  Management IC. The ROHM BD96801 is a highly scalable power management
-> > > > 
-> > > > Power Management
-> > > 
-> > > Out of the curiosity, why is the "Power Management IC" written with
-> > > capitals, when speaking of a class of devices instead of a model? (I am 100%
-> > > fine with the change, just curious).
-> > 
-> > It's no different to how its expressed in the tristate section above.
-> > 
-> > Power Management IC or PMIC.
-> > 
-> >    "provides power management capabilities" describes its function?
-> > 
-> >    "is a scalable Power Management IC", describes the device?
-> > 
-> > But actually, it just looks odd when both are used in the same section.
-> > 
-> > /me likes uniformity and consistency.
-> 
-> It's okay, thanks for the explanation :)
-> 
-> > > > > +	  IC for industrial and automotive use. The BD96801 can be used as a
-> > > > > +	  master PMIC in a chained PMIC solutions with suitable companion PMICs
-> > > ...
-> > > 
-> > > > > +static int bd96801_i2c_probe(struct i2c_client *i2c)
-> > > > > +{
-> > > > > +	int i, ret, intb_irq, errb_irq, num_regu_irqs, num_intb, num_errb = 0;
-> > > > > +	struct regmap_irq_chip_data *intb_irq_data, *errb_irq_data;
-> > > > > +	struct irq_domain *intb_domain, *errb_domain;
-> > > > > +	const struct fwnode_handle *fwnode;
-> > > > > +	struct resource *regulator_res;
-> > > > > +	struct regmap *regmap;
-> > > > > +
-> > > > > +	fwnode = dev_fwnode(&i2c->dev);
-> > > > > +	if (!fwnode) {
-> > > > > +		dev_err(&i2c->dev, "no fwnode\n");
-> > > > > +		return -EINVAL;
-> > > > 
-> > > > Why not dev_err_probe() here for uniformity?
-> > > 
-> > > I can change it to dev_err_probe() if it's strongly preferred. It just feels
-> > > silly to use dev_err_probe() when the return value is hardcoded.
-> > 
-> > Not at all:
-> > 
-> > git grep dev_err_probe | grep "\-[A-Z]"
-> 
-> Yes, I know people do use the dev_err_probe() with hardcoded errors but it
-> does not make me feel any better about it :)
+This can probably be done for all VM types, not just KVM_X86_SW_PROTECTED_V=
+M.
 
-<look into my swirling eyes> Uniformity within the function!
+For now I am going to squash
 
-> > > Intentionally writing code like
-> > > 
-> > > err = -EINVAL;
-> > > if (err == ...)
-> > > 
-> > > just makes me feel a bit sick.
-> > 
-> > Why would you want to do that?
-> 
-> This is what the dev_err_probe() with a hardcoded err does, right?
-> 
-> int dev_err_probe(const struct device *dev, int err, const char *fmt, ...)
-> {
-> 	...
-> 	if (err != -EPROBE_DEFER) {
-> 		dev_err(dev, "error %pe: %pV", ERR_PTR(err), &vaf);
-> 	} else {
-> 		device_set_deferred_probe_reason(dev, &vaf);
-> 		dev_dbg(dev, "error %pe: %pV", ERR_PTR(err), &vaf);
-> 	}
-> 	...
-> }
+        if (kvm_arch_has_private_mem(vcpu->kvm) &&
+            kvm_mem_is_private(vcpu->kvm, gpa_to_gfn(mapping->base_address)=
+))
+                *error_code |=3D PFERR_GUEST_ENC_MASK;
 
-Attempt to purge this info from you brain!
+in the previous patch. If TDX or SEV need to adjust, they can
+introduce the hook where we know if/how it is used.
 
-> > > > > +	}
-> > > > > +
-> > > > > +	intb_irq = fwnode_irq_get_byname(fwnode, "intb");
-> > > > > +	if (intb_irq < 0)
-> > > > > +		return dev_err_probe(&i2c->dev, intb_irq,
-> > > > > +				     "No INTB IRQ configured\n");
-> > > > 
-> > > > This function would look nicer if you expanded to 100-chars.
-> > > 
-> > > The reason why I still prefer the good old 80-chars for files I work with,
-> > > is that I am often having 3 terminal windows parallel on my laptop screen.
-> > > (Or, when I have my wide mofnitor connected it is 3 editor windows +
-> > > minicom). I need to keep the terminals small enough. Besides... I hate to
-> > > admit this, but the time is finally taking it's toll. My eyes aren't quite
-> > > the same they were 2 years ago...
-> > 
-> > Upgrade your 14" CRT monitor to something more modern. :)
-> 
-> But those things were built to last! And throwing away perfectly working
-> stuff... :)
+Paolo
 
-Can't argue with that!  Maybe put 2 side-by-side or 4 in a matrix!
-
--- 
-Lee Jones [李琼斯]
 
