@@ -1,167 +1,250 @@
-Return-Path: <linux-kernel+bounces-148115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87A288A7DE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:15:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30B408A7DEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:15:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F3A72842FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:15:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52FC21C21A96
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:15:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA82F80614;
-	Wed, 17 Apr 2024 08:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="RkLV/o1P"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC4E7D3F8;
+	Wed, 17 Apr 2024 08:15:40 +0000 (UTC)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D2CA7D07E;
-	Wed, 17 Apr 2024 08:14:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3D547D088;
+	Wed, 17 Apr 2024 08:15:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713341679; cv=none; b=MCPFHP+WahtUAjYdfi7MKsjSxHC7mWQBZqlYOAUPwbPbjEBA4gJPTcoBTnt76z0rTLSyAHUrk/XTHlOEqmC0WeirwoEBnU/UoBDRK9hUgiKxR7w3GRcQT5RURiSkLUZ8BpMcObn1O5XcE7NULCo2sNI7j5M+G1YYlLHTqygu8r4=
+	t=1713341739; cv=none; b=I5iRnp9vFH/EpE5gvKJ+4b53urcJAmgXRzuZvn16lcblT2izRCw2tSYpLSHYhQNQdh+FF2g4Og9AkS4K2K2HAcogA/vpgbpqCYUmJ6N9dDTX+QpvZ+sYaaSSeXbQpDzdMdSZdcmgUC4o0gJf6S7SJvyOSMIAeZJahF7flHQplhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713341679; c=relaxed/simple;
-	bh=nxKyq4H0ET8o57EUkk9BeFnAgDxkoDenfHs8BMo7Gwc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Bycw3nihI86PPAwWsY1JRbW25s828Vhyz40oMtJ3aHEKc8V+dJrnGRL9FEp/4DjDHi5hUGq9dr7G7Yv7C2qe946msh4NvdAOD9KJuwCWEuZCSALckC7mx+84yhnHOVc8oXCOZElhVWBtkT1Lia1HpM2MMyK7kDfRBjPL5dAggPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=RkLV/o1P; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713341669;
-	bh=nxKyq4H0ET8o57EUkk9BeFnAgDxkoDenfHs8BMo7Gwc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=RkLV/o1PU9ese6veoTStGg4K/NZagOdBE6LolLHaXNkrnLu/YEag41lL2b3bdSr37
-	 Wh86fihPy7t3RocZmjM4JxFj080dJXzwuKOKMQohdyQAhfxnNx7wDlHFOT90mlCgqW
-	 /hXnYC462KYH89DE2Tx+Oavowvd7RNcp0LXlcYJ9UyAQeL56BZK4WLW/JI2dkCrdJg
-	 pciBYIEo/3AHBXF17BXKSmnhzALaMatAJ7lNRuXY8NdpevP1Z5dbWGCec4JlO73+L8
-	 sZ1JCNimKuKWPqqGI4H+5aggw8DGG7JRzbtCSuFbTgbiVDeIKbr/vKs3ikzyEXFdf+
-	 3Y0aQxTbbaA8Q==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B6E033780629;
-	Wed, 17 Apr 2024 08:14:28 +0000 (UTC)
-Message-ID: <ecd7c691-db47-42aa-ab19-f554c20774af@collabora.com>
-Date: Wed, 17 Apr 2024 10:14:28 +0200
+	s=arc-20240116; t=1713341739; c=relaxed/simple;
+	bh=dZABI6dQ1NnoPldp7QkmBTIMZLnEPFxbymhBVXPnaQs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tNayvzXG9a+/DxVC+0qkrnq0BHzM3ClQLTZoPrksvFhIAauqS5fi8cEq8BGDyBhM3gtFlU+bzdi6JLqwckXGVURaXFqK5am24bLsq+5mdJkcbs02olxGnGU09AIxVwV2T947oZX1H9Xc2RYfNg125Y2OjagqSvO8bRMLZdPVXio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 33D44201205;
+	Wed, 17 Apr 2024 10:15:36 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1C4B9200459;
+	Wed, 17 Apr 2024 10:15:35 +0200 (CEST)
+Received: from pe-lt8779.in-pnq01.nxp.com (pe-lt8779.in-pnq01.nxp.com [10.17.104.141])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 6C6EE183ACAE;
+	Wed, 17 Apr 2024 16:15:32 +0800 (+08)
+From: Neeraj Sanjay Kale <neeraj.sanjaykale@nxp.com>
+To: marcel@holtmann.org,
+	luiz.dentz@gmail.com
+Cc: linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	amitkumar.karwar@nxp.com,
+	rohit.fule@nxp.com,
+	neeraj.sanjaykale@nxp.com,
+	sherry.sun@nxp.com,
+	ziniu.wang_1@nxp.com,
+	haibo.chen@nxp.com,
+	LnxRevLi@nxp.com,
+	guillaume.legoupil@nxp.com,
+	salim.chebbo@nxp.com
+Subject: [PATCH v3] Bluetooth: btnxpuart: Enable status prints for firmware download
+Date: Wed, 17 Apr 2024 13:45:17 +0530
+Message-Id: <20240417081517.920454-1-neeraj.sanjaykale@nxp.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/8] scsi: ufs: ufs-mediatek: Remove useless
- mediatek,ufs-boost-crypt property
-To: =?UTF-8?B?UGV0ZXIgV2FuZyAo546L5L+h5Y+LKQ==?= <peter.wang@mediatek.com>,
- "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
- "jejb@linux.ibm.com" <jejb@linux.ibm.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "avri.altman@wdc.com" <avri.altman@wdc.com>,
- "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
- "bvanassche@acm.org" <bvanassche@acm.org>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "robh@kernel.org" <robh@kernel.org>,
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
- Chen-Yu Tsai <wenst@chromium.org>, Alexandre Mergnat <amergnat@baylibre.com>
-References: <20240415110012.148871-1-angelogioacchino.delregno@collabora.com>
- <20240415110012.148871-4-angelogioacchino.delregno@collabora.com>
- <c9634a286fbdb4c98a7fe6703a4eb10d66dfcb9e.camel@mediatek.com>
- <4d60e9e4-9eae-4b0a-abb2-b1ad3d278fc9@collabora.com>
- <93db93aa7eb24a255f97a1a1e8e8d936dc908258.camel@mediatek.com>
- <f3920433-b0fa-4a64-9653-e385bf1eb5c7@collabora.com>
- <d11e174d85c7f5a9b4ffe5fb2bb15dfd5823f83e.camel@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <d11e174d85c7f5a9b4ffe5fb2bb15dfd5823f83e.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 
-Il 16/04/24 15:05, Peter Wang (王信友) ha scritto:
-> On Tue, 2024-04-16 at 12:38 +0200, AngeloGioacchino Del Regno wrote:
->> Il 16/04/24 12:31, Peter Wang (王信友) ha scritto:
->>>
->>>> Yes this causes -> less than half of a millisecond <- of
->>>> additional
->>>> boot time
->>>> if the dvfsrc-supply is present but boost-microvolt is not.
->>>>
->>>> I really don't see the problem with that :-)
->>>>
->>>
->>> Adding a little bit of boot time to one smartphone might not be a
->>> problem, but when you consider a billion smartphones each adding a
->>> little bit, the cumulative effect becomes significant. The power
->>> consumption of these accumulated times will continue to increase,
->>> contributing to the Earth's carbon emissions. Moreover, removing
->>> the
->>> master switch for this feature doesn't seem to have any benefits
->>> other
->>> than not having to set it in the DTS. Similarly, the master switch
->>> for
->>> VA09 seems to have more disadvantage.
->>>
->>
->> Sorry, but I still don't see how a few *microseconds* more of boot
->> time can
->> be significant, even related to power consumption during boot.
->>
->> If that was a few milliseconds, then I'd agree with you, but that's
->> not the case.
->>
->> Removing the master switch has a benefit: you *lose* a few
->> microseconds of boot
->> time (so, boots in *few microseconds LESS*) on platforms that would
->> have this set
->> in devicetree, as this property is redundant with the other
->> activation checks
->> for those features.
->>
->> So, there you go: if the majority of MediaTek platforms are already
->> using this
->> crypt boost feature, then this commit reduces carbon emissions, as
->> those would
->> boot in a few less microseconds.
->>
-> 
-> But the majority platfomrs dosen't need this feature.
-> This feature is only for legacy chip which at least 4 years ago.
-> 
+This enables prints for firmware download which can help automation
+tests to verify firmware download functionality.
 
-Upstream supports platforms that do and don't need this feature, and having
-redundant device tree properties performing the same checks is not just
-suboptimal but plain wrong.
+A new flag BTNXPUART_FW_DOWNLOAD_ABORT is added which handles the
+situation where driver is removed while firmware download is in
+progress.
 
-Adding to this, devicetree describes the hardware - and there is no physical
-hardware switch that needs this redundant property, this means that the
-property that is getting removed in this commit (and the va09 one in another
-commit of this series) is a *software switch*, not HW.
+This also adds a check before freeing the rx->skb in flush and close
+functions to handle the kernel crash seen in case of firmware download
+timeout.
 
-Keep in mind, also, that this feature (and again, the va09 one as well) has
-a specific requirement to be supported - and this is what the code does even
-without the software switch to add it.
+Signed-off-by: Neeraj Sanjay Kale <neeraj.sanjaykale@nxp.com>
+Tested-by: Guillaume Legoupil <guillaume.legoupil@nxp.com>
+---
+v2: Handle firmware download abort scenario. (Guillaume Legoupil)
+v3: Minor corrections. Add details to commit message.
+---
+ drivers/bluetooth/btnxpuart.c | 67 +++++++++++++++++++++++------------
+ 1 file changed, 45 insertions(+), 22 deletions(-)
 
-In case there's any need to disallow such feature from a specific SoC, the DT
-bindings can be modified such that a specific compatible string would disallow
-adding the required regulator and/or boost-microvolt properties.
+diff --git a/drivers/bluetooth/btnxpuart.c b/drivers/bluetooth/btnxpuart.c
+index 0b93c2ff29e4..7aed5298ee6f 100644
+--- a/drivers/bluetooth/btnxpuart.c
++++ b/drivers/bluetooth/btnxpuart.c
+@@ -29,6 +29,7 @@
+ #define BTNXPUART_CHECK_BOOT_SIGNATURE	3
+ #define BTNXPUART_SERDEV_OPEN		4
+ #define BTNXPUART_IR_IN_PROGRESS	5
++#define BTNXPUART_FW_DOWNLOAD_ABORT	6
+ 
+ /* NXP HW err codes */
+ #define BTNXPUART_IR_HW_ERR		0xb0
+@@ -159,6 +160,7 @@ struct btnxpuart_dev {
+ 	u8 fw_name[MAX_FW_FILE_NAME_LEN];
+ 	u32 fw_dnld_v1_offset;
+ 	u32 fw_v1_sent_bytes;
++	u32 fw_dnld_v3_offset;
+ 	u32 fw_v3_offset_correction;
+ 	u32 fw_v1_expected_len;
+ 	u32 boot_reg_offset;
+@@ -550,6 +552,7 @@ static int nxp_download_firmware(struct hci_dev *hdev)
+ 	nxpdev->fw_v1_sent_bytes = 0;
+ 	nxpdev->fw_v1_expected_len = HDR_LEN;
+ 	nxpdev->boot_reg_offset = 0;
++	nxpdev->fw_dnld_v3_offset = 0;
+ 	nxpdev->fw_v3_offset_correction = 0;
+ 	nxpdev->baudrate_changed = false;
+ 	nxpdev->timeout_changed = false;
+@@ -564,14 +567,23 @@ static int nxp_download_firmware(struct hci_dev *hdev)
+ 					       !test_bit(BTNXPUART_FW_DOWNLOADING,
+ 							 &nxpdev->tx_state),
+ 					       msecs_to_jiffies(60000));
++
++	release_firmware(nxpdev->fw);
++	memset(nxpdev->fw_name, 0, sizeof(nxpdev->fw_name));
++
+ 	if (err == 0) {
+-		bt_dev_err(hdev, "FW Download Timeout.");
++		bt_dev_err(hdev, "FW Download Timeout. offset: %d",
++				nxpdev->fw_dnld_v1_offset ?
++				nxpdev->fw_dnld_v1_offset :
++				nxpdev->fw_dnld_v3_offset);
+ 		return -ETIMEDOUT;
+ 	}
++	if (test_bit(BTNXPUART_FW_DOWNLOAD_ABORT, &nxpdev->tx_state)) {
++		bt_dev_err(hdev, "FW Download Aborted");
++		return -EINTR;
++	}
+ 
+ 	serdev_device_set_flow_control(nxpdev->serdev, true);
+-	release_firmware(nxpdev->fw);
+-	memset(nxpdev->fw_name, 0, sizeof(nxpdev->fw_name));
+ 
+ 	/* Allow the downloaded FW to initialize */
+ 	msleep(1200);
+@@ -693,7 +705,7 @@ static int nxp_request_firmware(struct hci_dev *hdev, const char *fw_name)
+ 	if (!strlen(nxpdev->fw_name)) {
+ 		snprintf(nxpdev->fw_name, MAX_FW_FILE_NAME_LEN, "%s", fw_name);
+ 
+-		bt_dev_dbg(hdev, "Request Firmware: %s", nxpdev->fw_name);
++		bt_dev_info(hdev, "Request Firmware: %s", nxpdev->fw_name);
+ 		err = request_firmware(&nxpdev->fw, nxpdev->fw_name, &hdev->dev);
+ 		if (err < 0) {
+ 			bt_dev_err(hdev, "Firmware file %s not found", nxpdev->fw_name);
+@@ -781,7 +793,7 @@ static int nxp_recv_fw_req_v1(struct hci_dev *hdev, struct sk_buff *skb)
+ 	}
+ 
+ 	if (!len) {
+-		bt_dev_dbg(hdev, "FW Downloaded Successfully: %zu bytes",
++		bt_dev_info(hdev, "FW Download Complete: %zu bytes",
+ 			   nxpdev->fw->size);
+ 		if (nxp_data->helper_fw_name && !nxpdev->helper_downloaded) {
+ 			nxpdev->helper_downloaded = true;
+@@ -934,7 +946,7 @@ static int nxp_recv_fw_req_v3(struct hci_dev *hdev, struct sk_buff *skb)
+ 	}
+ 
+ 	if (req->len == 0) {
+-		bt_dev_dbg(hdev, "FW Downloaded Successfully: %zu bytes",
++		bt_dev_info(hdev, "FW Download Complete: %zu bytes",
+ 			   nxpdev->fw->size);
+ 		clear_bit(BTNXPUART_FW_DOWNLOADING, &nxpdev->tx_state);
+ 		wake_up_interruptible(&nxpdev->fw_dnld_done_wait_q);
+@@ -954,8 +966,9 @@ static int nxp_recv_fw_req_v3(struct hci_dev *hdev, struct sk_buff *skb)
+ 		goto free_skb;
+ 	}
+ 
+-	serdev_device_write_buf(nxpdev->serdev, nxpdev->fw->data + offset -
+-				nxpdev->fw_v3_offset_correction, len);
++	nxpdev->fw_dnld_v3_offset = offset - nxpdev->fw_v3_offset_correction;
++	serdev_device_write_buf(nxpdev->serdev, nxpdev->fw->data +
++				nxpdev->fw_dnld_v3_offset, len);
+ 
+ free_skb:
+ 	kfree_skb(skb);
+@@ -1037,7 +1050,7 @@ static int nxp_setup(struct hci_dev *hdev)
+ 		if (err < 0)
+ 			return err;
+ 	} else {
+-		bt_dev_dbg(hdev, "FW already running.");
++		bt_dev_info(hdev, "FW already running.");
+ 		clear_bit(BTNXPUART_FW_DOWNLOADING, &nxpdev->tx_state);
+ 	}
+ 
+@@ -1253,8 +1266,10 @@ static int btnxpuart_close(struct hci_dev *hdev)
+ 	ps_wakeup(nxpdev);
+ 	serdev_device_close(nxpdev->serdev);
+ 	skb_queue_purge(&nxpdev->txq);
+-	kfree_skb(nxpdev->rx_skb);
+-	nxpdev->rx_skb = NULL;
++	if (!IS_ERR_OR_NULL(nxpdev->rx_skb)) {
++		kfree_skb(nxpdev->rx_skb);
++		nxpdev->rx_skb = NULL;
++	}
+ 	clear_bit(BTNXPUART_SERDEV_OPEN, &nxpdev->tx_state);
+ 	return 0;
+ }
+@@ -1269,8 +1284,10 @@ static int btnxpuart_flush(struct hci_dev *hdev)
+ 
+ 	cancel_work_sync(&nxpdev->tx_work);
+ 
+-	kfree_skb(nxpdev->rx_skb);
+-	nxpdev->rx_skb = NULL;
++	if (!IS_ERR_OR_NULL(nxpdev->rx_skb)) {
++		kfree_skb(nxpdev->rx_skb);
++		nxpdev->rx_skb = NULL;
++	}
+ 
+ 	return 0;
+ }
+@@ -1385,16 +1402,22 @@ static void nxp_serdev_remove(struct serdev_device *serdev)
+ 	struct btnxpuart_dev *nxpdev = serdev_device_get_drvdata(serdev);
+ 	struct hci_dev *hdev = nxpdev->hdev;
+ 
+-	/* Restore FW baudrate to fw_init_baudrate if changed.
+-	 * This will ensure FW baudrate is in sync with
+-	 * driver baudrate in case this driver is re-inserted.
+-	 */
+-	if (nxpdev->current_baudrate != nxpdev->fw_init_baudrate) {
+-		nxpdev->new_baudrate = nxpdev->fw_init_baudrate;
+-		nxp_set_baudrate_cmd(hdev, NULL);
++	if (is_fw_downloading(nxpdev)) {
++		set_bit(BTNXPUART_FW_DOWNLOAD_ABORT, &nxpdev->tx_state);
++		clear_bit(BTNXPUART_FW_DOWNLOADING, &nxpdev->tx_state);
++		wake_up_interruptible(&nxpdev->check_boot_sign_wait_q);
++		wake_up_interruptible(&nxpdev->fw_dnld_done_wait_q);
++	} else {
++		/* Restore FW baudrate to fw_init_baudrate if changed.
++		 * This will ensure FW baudrate is in sync with
++		 * driver baudrate in case this driver is re-inserted.
++		 */
++		if (nxpdev->current_baudrate != nxpdev->fw_init_baudrate) {
++			nxpdev->new_baudrate = nxpdev->fw_init_baudrate;
++			nxp_set_baudrate_cmd(hdev, NULL);
++		}
++		ps_cancel_timer(nxpdev);
+ 	}
+-
+-	ps_cancel_timer(nxpdev);
+ 	hci_unregister_dev(hdev);
+ 	hci_free_dev(hdev);
+ }
+-- 
+2.34.1
 
-Besides, I want to remind you that there is no reason to drop support, or have
-them unreliably working, or use hacks, for SoCs that are "old" - especially
-when this is a driver that works on both old and new ones.
-
-Regards,
-Angelo
 
