@@ -1,486 +1,249 @@
-Return-Path: <linux-kernel+bounces-148826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC618A87D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:38:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E625F8A87D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:38:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F203D1F26555
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:38:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 149531C21E99
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:38:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B06F148FEE;
-	Wed, 17 Apr 2024 15:35:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38BD71494BF;
+	Wed, 17 Apr 2024 15:36:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="lH/Ib74T"
-Received: from smtpcmd13146.aruba.it (smtpcmd13146.aruba.it [62.149.156.146])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3p6VRU/8"
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8253B1482F2
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:35:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.156.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E5F338DEC
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:36:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713368147; cv=none; b=c/V3vjGOXRyXKmv9wDGKiAsUuPUmZQC5D4SmpZLbvrZA3ZFmXYqEVT69Fi+eg9UjUypLZLBjLXTdHFFbTv9ZZnGBnT4hI6TcoD2l2iCR42vqtTLEGhif9WVgoztzy0KTe7bHhACIL8M6l5YSYXUTJfoa3u6M6n0uR/iLfUiI1Rc=
+	t=1713368173; cv=none; b=BzokjpIAASD93iFtoOzuMk9psayvF2f5PO1Im7LgODMYJJcvhcciGS4IRnj77cYTefs8tPsIu3q2WmLV1hpekmVuugM5P25UMpYgIEwlUqWK3t+YiFwZt1sHH9IqJFzNXM8F79Yu+LQ8pY5cayus5SyRIxuc5Sbfs14eVnQlWQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713368147; c=relaxed/simple;
-	bh=3WdPb55kxtbLuvTnzw39RxHrxBf21qrRKLhUgwhA2oU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HFEadGPqfkL66KWcoWWFbKDWGHUwGzRP93wAWLzojpKYTnKV1vWUwJlDyoM5CBsAEEX/CupTeHLabJsx1kEetxbPILwHFzwRJeGiEZF4aKaQa5fPesPDT9pXBa/uURVUFDwU2iBExtxjalpx6Zlulgha87RCnCZAb6IcxsS+4jU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=lH/Ib74T; arc=none smtp.client-ip=62.149.156.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
-Received: from engicam.com ([77.32.9.15])
-	by Aruba Outgoing Smtp  with ESMTPSA
-	id x7JrrIqgbiznzx7JvrXawt; Wed, 17 Apr 2024 17:35:35 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1713368135; bh=3WdPb55kxtbLuvTnzw39RxHrxBf21qrRKLhUgwhA2oU=;
-	h=From:To:Subject:Date:MIME-Version;
-	b=lH/Ib74TLVixczaKgb4sgz7wzGY5rwfoMmD6ladwDyM7ufxiP3Ttpily63EdmwFX7
-	 2KoLyv9+UHHPYIpCMsHSxK/fI5h6UyoyU4KdGlAZIBgEQu9es91LmXcgpI4XhpEqDS
-	 N3P+wtJWUsavWoe1LOsXeZiOEew8NKalY+4PyM9sKzgm6LlI7Rnf237Vehmjmiv3M2
-	 NimI3gXHpDK5L21mDIF7UulmFbyBTNNJVc1QHSkhKCTBXJRI0L+hv7Wtu0AUWYyG/g
-	 TRhrFmDKu8R+c1PhJdiZJjZ0BVZXW69j+I4LRwQoyswNSbpBILjs6R+kVBy5EC2e0x
-	 X9D/02YXii7nQ==
-From: Fabio Aiuto <fabio.aiuto@engicam.com>
-To: Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Fabio Aiuto <fabio.aiuto@engicam.com>,
-	Matteo Lisi <matteo.lisi@engicam.com>,
-	Mirko Ardinghi <mirko.ardinghi@engicam.com>
-Subject: [PATCH 4/4] arm64: dts: imx93: Add Engicam i.Core MX93 EDIMM 2.0 Starter Kit
-Date: Wed, 17 Apr 2024 17:35:28 +0200
-Message-Id: <20240417153528.7838-5-fabio.aiuto@engicam.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240417153528.7838-1-fabio.aiuto@engicam.com>
-References: <20240417153528.7838-1-fabio.aiuto@engicam.com>
+	s=arc-20240116; t=1713368173; c=relaxed/simple;
+	bh=VIrsNerujZ8+PtTYveVk1Mj9pGEnbz49H9qMK6+Fxpw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=r+FQt7aRdnPHN4QCf+iDKU6fUortkWshR3VmyXo/oPb5GiEj9H0oAZPCNBxbqRb+QPZ+WRmUx1hIEdmJ5wdCtbfRM7WZKuFfGs8N/60QOiKfqzyxfUyIfD7Le1H/HsxRvPmP4twoY6Ff+LpRTVjx5Su8FDd7YzlM0K5iqOCHW3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3p6VRU/8; arc=none smtp.client-ip=209.85.161.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5aa3f0fcd46so3674098eaf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 08:36:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713368170; x=1713972970; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7STbkb0kc4uO9A+FOCYz3iBH+d6D+yCiN6yb3DAcBlQ=;
+        b=3p6VRU/8l5jGbAXpiq+/cmcRQEw9OLMH0AiPdehFBb2bfGPIY7BFpU5crhXaBnPkmB
+         775oABNgKmHx+3oiDc99AZScDcO628KQrMkc7wQYwPPxykY52A3JuyMm5pPJRDvN7Ze0
+         bOORR5I96olz3LGdb+tW3pGor1qSIeIrY+50iNgEQkHYdto5TEgwa0GGOhsWYULD8No/
+         EsEwtU+xqClfrBXPw8xZ9iBy4Psb6ye8XID6P7z7oUhAVnLUVP4RP93tkEHDJPcMW4Pf
+         9OX5kxRi/CX87/+fNzXLMBpCOXM2IHrkG63EjWxh6P7gN+4zTgLcQVn8GdcKyhOhq4Za
+         7BMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713368170; x=1713972970;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7STbkb0kc4uO9A+FOCYz3iBH+d6D+yCiN6yb3DAcBlQ=;
+        b=jv/+A8swL19FEm1y5vY3meL4E83ZCFTE+bN7yvwHj/FES1H2IRU4XL84Cmoawf/gIO
+         uVDq+1ikpftEtQoTyNBUIjPT1K69W8ObMsAI98TigNSf/nGxjw7ZMZwNzDOGH5M6CkfX
+         dGTyp05xyFw2X8NDQlUGecbGmGmhbuJrn9jxpGNUZRgxW7FoTqTwJ1OT31p05L1Nl5bl
+         qqaICzAFJpb1WkRbQocecgHLlk3FJJapJj8IP1Tl/ezAdsXMzo/DdcuHNcuX1z6cqudb
+         JS8lBjM1bOqmUcLwIthsRLWCvR92BvMHtKVJtni7TKtfIW6o1410X+pGXztLpavwK7t4
+         JmLw==
+X-Forwarded-Encrypted: i=1; AJvYcCXwRZA5XxbR8uiRYMR9eiCXEBwq36O1K/OqJDTHLzsvRLeTX+PBSobw9dRzCFWlCdCiTUPfYGc326wepCvdAiEMEKcXSYkopmPnSqSQ
+X-Gm-Message-State: AOJu0YzPunvkNhQmfsJDN43g1pJDVjBa6sO7jC887WYOHiofb+THQ4/P
+	AEQjwCiCJuSyxXOQ3Ef51OOp1SuA9XvHvixFzr36tm6hePrVCbozFN6sRVImZBynegvdscAwjFI
+	PNinmi6kdeXV8/BSWem1gxkeqWbK/slsYNesW
+X-Google-Smtp-Source: AGHT+IEMzi3flnGGABxiUZthG7GHk4bJeCL8d7G0v1u9soflo+40Qg2LO67Au8RewgmGKPOf25nQ1dU2JqYa7YwdIKc=
+X-Received: by 2002:a05:6358:688b:b0:186:2720:2122 with SMTP id
+ z11-20020a056358688b00b0018627202122mr13281274rwh.2.1713368170317; Wed, 17
+ Apr 2024 08:36:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfLSIkSHVmK5WbucNRItkLZTPk0XCz1Y/ut7Uz2onWVlfG1XT0EDbMNhuKCdHP05au5A/xz5cioc1GRkRixcLN6rnb6EewZM/ZbJ6raMaBFAQZbY71luj
- 1XXtSzfNVJtc6JQ/q1cD6pV7wv16iYLvK/tpthq1YAiB5MqtkS5Se+76co0NjtPUVCHg5Sn0sYnvME65fXTwy4zT3x5+mQBFpIasfzpnakKJpvolzFx4D955
- q0BGCLd/TK5oZikyo9H+nF40OVQ1IYKYcOuK9BJzCmp0uZpBto5I7etQZwpHcYkDWE5uMRjJJTYRnAdM+oLkNJAFUQ6uAOYb5RgmStEjAsCyQILYcMHJbjbi
- P7taF2pjsaSt6pHLgQdlVtfQVX0YNPzXkL2LNWjSFZpERgsW6tNYWn0v1l/8pI8YO93aeZXlVYBoNryqaNPzOWO5cTh9XbODoEOxwEBdj87uOUWEmsV/YjHb
- gsIAjZvlffTFrcPvLpBWugbeVv/K5WxT/ARpB+MsFHcfgxUCfPz1YzJdYOD0li+D8OLVvYyua/E65Xsh+/lsAq+O/lttXTPaGXGkKE9CYD9QC+GEzm2vc449
- 2KfsCSHEj34Fhllb0bow53o3DxFTX/Zu8ZYKVg45Jl8WQw==
+References: <20240415-alice-mm-v5-0-6f55e4d8ef51@google.com>
+ <20240415-alice-mm-v5-1-6f55e4d8ef51@google.com> <20240417152802.6b7a7384@eugeo>
+ <CAH5fLgjcO0mrQ=X2QG1qS+sTpWDnBfGxXGWn-3wBQzn3MP8pQQ@mail.gmail.com> <b7305f21-3e0b-4bfe-8902-5fc9367c2291@proton.me>
+In-Reply-To: <b7305f21-3e0b-4bfe-8902-5fc9367c2291@proton.me>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Wed, 17 Apr 2024 17:35:58 +0200
+Message-ID: <CAH5fLgjCbvZxSnjzibiFzyEz1Qjw3bAw=qU4sjrBrgosMBKKnA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/4] rust: uaccess: add userspace pointers
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Gary Guo <gary@garyguo.net>, Miguel Ojeda <ojeda@kernel.org>, 
+	Matthew Wilcox <willy@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Andrew Morton <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-i.Core MX93 is a NXP i.MX93 based SoM by Enigcam which
-needs to be mounted on top of Engicam baseboards.
+On Wed, Apr 17, 2024 at 5:27=E2=80=AFPM Benno Lossin <benno.lossin@proton.m=
+e> wrote:
+>
+> On 17.04.24 16:40, Alice Ryhl wrote:
+> > On Wed, Apr 17, 2024 at 4:28=E2=80=AFPM Gary Guo <gary@garyguo.net> wro=
+te:
+> >>
+> >> On Mon, 15 Apr 2024 07:13:53 +0000
+> >> Alice Ryhl <aliceryhl@google.com> wrote:
+> >>
+> >>> From: Wedson Almeida Filho <wedsonaf@gmail.com>
+> >>>
+> >>> A pointer to an area in userspace memory, which can be either read-on=
+ly
+> >>> or read-write.
+> >>>
+> >>> All methods on this struct are safe: attempting to read or write on b=
+ad
+> >>> addresses (either out of the bound of the slice or unmapped addresses=
+)
+> >>> will return `EFAULT`. Concurrent access, *including data races to/fro=
+m
+> >>> userspace memory*, is permitted, because fundamentally another usersp=
+ace
+> >>> thread/process could always be modifying memory at the same time (in =
+the
+> >>> same way that userspace Rust's `std::io` permits data races with the
+> >>> contents of files on disk). In the presence of a race, the exact byte
+> >>> values read/written are unspecified but the operation is well-defined=
+.
+> >>> Kernelspace code should validate its copy of data after completing a
+> >>> read, and not expect that multiple reads of the same address will ret=
+urn
+> >>> the same value.
+> >>>
+> >>> These APIs are designed to make it difficult to accidentally write
+> >>> TOCTOU bugs. Every time you read from a memory location, the pointer =
+is
+> >>> advanced by the length so that you cannot use that reader to read the
+> >>> same memory location twice. Preventing double-fetches avoids TOCTOU
+> >>> bugs. This is accomplished by taking `self` by value to prevent
+> >>> obtaining multiple readers on a given `UserSlicePtr`, and the readers
+> >>> only permitting forward reads. If double-fetching a memory location i=
+s
+> >>> necessary for some reason, then that is done by creating multiple
+> >>> readers to the same memory location.
+> >>>
+> >>> Constructing a `UserSlicePtr` performs no checks on the provided
+> >>> address and length, it can safely be constructed inside a kernel thre=
+ad
+> >>> with no current userspace process. Reads and writes wrap the kernel A=
+PIs
+> >>> `copy_from_user` and `copy_to_user`, which check the memory map of th=
+e
+> >>> current process and enforce that the address range is within the user
+> >>> range (no additional calls to `access_ok` are needed).
+> >>>
+> >>> This code is based on something that was originally written by Wedson=
+ on
+> >>> the old rust branch. It was modified by Alice by removing the
+> >>> `IoBufferReader` and `IoBufferWriter` traits, and various other chang=
+es.
+> >>>
+> >>> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
+> >>> Co-developed-by: Alice Ryhl <aliceryhl@google.com>
+> >>> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> >>> ---
+> >>>   rust/helpers.c         |  14 +++
+> >>>   rust/kernel/lib.rs     |   1 +
+> >>>   rust/kernel/uaccess.rs | 304 ++++++++++++++++++++++++++++++++++++++=
++++++++++++
+> >>>   3 files changed, 319 insertions(+)
+> >>>
+> >>> diff --git a/rust/kernel/uaccess.rs b/rust/kernel/uaccess.rs
+> >>
+> >>> +/// [`std::io`]: https://doc.rust-lang.org/std/io/index.html
+> >>> +/// [`clone_reader`]: UserSliceReader::clone_reader
+> >>> +pub struct UserSlice {
+> >>> +    ptr: *mut c_void,
+> >>> +    length: usize,
+> >>> +}
+> >>
+> >> How useful is the `c_void` in the struct and new signature? They tend
+> >> to not be very useful in Rust. Given that provenance doesn't matter
+> >> for userspace pointers, could this be `usize` simply?
+> >>
+> >> I think `*mut u8` or `*mut ()` makes more sense than `*mut c_void` for
+> >> Rust code even if we don't want to use `usize`.
+> >
+> > I don't have a strong opinion here. I suppose a usize could make
+> > sense. But I also think c_void is fine, and I lean towards not
+> > changing it. :)
+> >
+> >> Some thinking aloud and brainstorming bits about the API.
+> >>
+> >> I wonder if it make sense to have `User<[u8]>` instead of `UserSlice`?
+> >> The `User` type can be defined like this:
+> >>
+> >> ```rust
+> >> struct User<T: ?Sized> {
+> >>     ptr: *mut T,
+> >> }
+> >> ```
+> >>
+> >> and this allows arbitrary T as long as it's POD. So we could have
+> >> `User<[u8]>`, `User<u32>`, `User<PodStruct>`. I imagine the
+> >> `User<[u8]>` would be the general usage and the latter ones can be
+> >> especially helpful if you are trying to implement ioctl and need to
+> >> copy fixed size data structs from userspace.
+> >
+> > Hmm, we have to be careful here. Generally, when you get a user slice
+> > via an ioctl, you should make sure to use the length you get from
+> > userspace. In binder, it looks like this:
+> >
+> > let user_slice =3D UserSlice::new(arg, _IOC_SIZE(cmd));
+> >
+> > so whichever API we use, we must make sure to get the length as an
+> > argument in bytes. What should we do if the length is not a multiple
+> > of size_of(T)?
+>
+> We could print a warning and then just floor to the next multiple of
+> `size_of::<T>()`. I agree that is not perfect, but if one uses the
+> current API, one also needs to do the length check eventually.
 
-Add support for EDIMM 2.0 Starter Kit hosting
-i.Core MX93.
+Right now, the length check happens when you call `read::<T>` and get
+EFAULT if the size of T is greater than the length of the user slice.
+That works pretty well. And there are real-world use-cases for
+userspace passing in a length longer than what the kernel expects -
+often adding fields to the end of the struct is how the kernel makes
+ioctls extensible. So I don't think printing a warning in that case
+would be good.
 
-Starter Kit main features:
+In Binder, I also have use-cases where I alternate between reading
+bytes and various different structs. Basically, I read two user slices
+in lockstep, where the next value in one userslice determines whether
+I should read some amount of bytes or a specific struct from the other
+user slice. That's much easier with the current API than this
+proposal.
 
-2x LVDS interfaces
-HDMI output
-Audio out
-Mic in
-Micro SD card slot
-USB 3.0 A port
-3x USB 2.0 A port
-Gb Ethernet
-2x CAN bus, 3x UART interfaces
-SIM card slot
-M.2 KEY_B slot
+> > Another issue is that there's no stable way to get the length from a
+> > `*mut [T]` without creating a reference, which is not okay for a user
+> > slice.
+>
+> Seems like `<* const [T]>::len` (feature `slice_ptr_len`) [1] was just
+> stabilized 5 days ago [1].
+>
+> [1]: https://doc.rust-lang.org/std/primitive.pointer.html#method.len-1
+> [2]: https://github.com/rust-lang/rust/pull/123868
 
-Cc: Matteo Lisi <matteo.lisi@engicam.com>
-Cc: Mirko Ardinghi <mirko.ardinghi@engicam.com>
-Signed-off-by: Fabio Aiuto <fabio.aiuto@engicam.com>
----
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../dts/freescale/imx93-icore-mx93-edimm2.dts | 356 ++++++++++++++++++
- 2 files changed, 357 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
+Okay.
 
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 045250d0a040..d26c0a458a44 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -226,6 +226,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8qxp-tqma8xqp-mba8xx.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx93-icore-mx93-edimm2.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-phyboard-segin.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxca.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
-diff --git a/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts b/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-new file mode 100644
-index 000000000000..75cac97d919c
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-@@ -0,0 +1,356 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2022 NXP
-+ * Copyright 2024 Engicam s.r.l.
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/usb/pd.h>
-+#include "imx93-icore-mx93.dtsi"
-+
-+/ {
-+	model = "Engicam i.Core MX93 - EDIMM 2 Starterkit";
-+	compatible = "engicam,icore-mx93-edimm2", "engicam,icore-mx93",
-+		     "fsl,imx93";
-+
-+	aliases {
-+		rtc1= &bbnsm_rtc;
-+	};
-+
-+	bt_reg_on: regulator-btregon {
-+		compatible = "regulator-gpio";
-+		regulator-name = "BT_REG_ON";
-+		pinctrl-names = "default";
-+		regulator-min-microvolt = <100000>;
-+		regulator-max-microvolt = <3300000>;
-+		states = <3300000 0x1>,
-+				 <100000 0x0>;
-+		gpios = <&gpio2 19 GPIO_ACTIVE_HIGH>;
-+		regulator-always-on;
-+	};
-+
-+	chosen {
-+		stdout-path = &lpuart1;
-+	};
-+
-+	reg_1v8_sgtl: reg_1v8_sgtl_regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "1v8_sgtl";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		always-on;
-+	};
-+
-+	reg_3v3_avdd_sgtl: reg_3v3_avdd_regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3v3_avdd_sgtl";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		always-on;
-+	};
-+
-+	reg_3v3_sgtl: reg_3v3_sgtl_regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3v3_sgtl";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		always-on;
-+	};
-+
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		linux,cma {
-+			compatible = "shared-dma-pool";
-+			reusable;
-+			alloc-ranges = <0 0x80000000 0 0x40000000>;
-+			size = <0 0x10000000>;
-+			linux,cma-default;
-+		};
-+
-+		rsc_table: rsc-table@2021f000 {
-+			reg = <0 0x2021f000 0 0x1000>;
-+			no-map;
-+		};
-+
-+		vdevbuffer: vdevbuffer@a4020000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0 0xa4020000 0 0x100000>;
-+			no-map;
-+		};
-+
-+		vdev0vring0: vdev0vring0@a4000000 {
-+			reg = <0 0xa4000000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev0vring1: vdev0vring1@a4008000 {
-+			reg = <0 0xa4008000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev1vring0: vdev1vring0@a4000000 {
-+			reg = <0 0xa4010000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev1vring1: vdev1vring1@a4018000 {
-+			reg = <0 0xa4018000 0 0x8000>;
-+			no-map;
-+		};
-+	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "imx93-sgtl5000";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,bitclock-master = <&dailink_master>;
-+		simple-audio-card,frame-master = <&dailink_master>;
-+		/*simple-audio-card,mclk-fs = <1>;*/
-+		simple-audio-card,cpu {
-+			sound-dai = <&sai3>;
-+		};
-+
-+		dailink_master: simple-audio-card,codec {
-+			sound-dai = <&sgtl5000>;
-+			clocks = <&clk IMX93_CLK_SAI3_IPG>;
-+		};
-+	};
-+
-+	usdhc3_pwrseq: usdhc3_pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+	};
-+
-+	wl_reg_on: regulator-wlregon {
-+		compatible = "regulator-gpio";
-+		pinctrl-names = "default";
-+		regulator-name = "WL_REG_ON";
-+		regulator-min-microvolt = <100000>;
-+		regulator-max-microvolt = <3300000>;
-+		states = <3300000 0x1>,
-+				 <100000 0x0>;
-+		gpios = <&gpio2 22 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		vin-supply = <&bt_reg_on>;
-+	};
-+};
-+
-+&cm33 {
-+	mbox-names = "tx", "rx", "rxdb";
-+	mboxes = <&mu1 0 1>,
-+		 <&mu1 1 1>,
-+		 <&mu1 3 1>;
-+	memory-region = <&vdevbuffer>, <&vdev0vring0>, <&vdev0vring1>,
-+			<&vdev1vring0>, <&vdev1vring1>, <&rsc_table>;
-+	status = "okay";
-+};
-+
-+&flexcan1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexcan1>;
-+	fsl,stop-mode = <&aonmix_ns_gpr 0x10 4>;
-+	status = "okay";
-+};
-+
-+&flexcan2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexcan2>;
-+	fsl,stop-mode = <&aonmix_ns_gpr 0x10 4>;
-+	status = "okay";
-+};
-+
-+&lpi2c1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&pinctrl_lpi2c1>;
-+	pinctrl-1 = <&pinctrl_lpi2c1>;
-+	status = "okay";
-+
-+	pcf8523: rtc@68 {
-+		compatible = "nxp,pcf8523";
-+		reg = <0x68>;
-+	};
-+
-+	sgtl5000: codec@a {
-+		compatible = "fsl,sgtl5000";
-+		status = "okay";
-+		#sound-dai-cells = <0>;
-+		reg = <0x0a>;
-+		clocks = <&clk IMX93_CLK_SAI3_GATE>;
-+		clock-names = "mclk";
-+		assigned-clock-rates = <12000000>, <12000000>;
-+		VDDA-supply = <&reg_3v3_avdd_sgtl>;
-+		VDDIO-supply = <&reg_3v3_sgtl>;
-+		VDDD-supply = <&reg_1v8_sgtl>;
-+	};
-+};
-+
-+&lpuart1 { /* console */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	status = "okay";
-+};
-+
-+&lpuart5 { /* RS485 */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart5>;
-+	status = "okay";
-+};
-+
-+&lpuart8 { /* RS232 */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart8>;
-+	status = "okay";
-+};
-+
-+&micfil {
-+	#sound-dai-cells = <0>;
-+	pinctrl-names = "default";
-+	assigned-clocks = <&clk IMX93_CLK_PDM>;
-+	assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
-+	assigned-clock-rates = <196608000>;
-+	status = "okay";
-+};
-+
-+&mu1 {
-+	status = "okay";
-+};
-+
-+&mu2 {
-+	status = "okay";
-+};
-+
-+&sai1 {
-+	#sound-dai-cells = <0>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_sai1>;
-+	assigned-clocks = <&clk IMX93_CLK_SAI1>;
-+	assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
-+	assigned-clock-rates = <12288000>;
-+	status = "okay";
-+};
-+
-+&sai3 {
-+	pinctrl-names = "default";
-+	#sound-dai-cells = <0>;
-+	pinctrl-0 = <&pinctrl_sai3>;
-+	assigned-clocks = <&clk IMX93_CLK_SAI3>;
-+	assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
-+	assigned-clock-rates = <24576000>;
-+	fsl,sai-mclk-direction-output;
-+	status = "okay";
-+};
-+
-+&usdhc3 { /* WiFi */
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-+	pinctrl-0 = <&pinctrl_usdhc3>, <&pinctrl_laird>;
-+	pinctrl-1 = <&pinctrl_usdhc3>, <&pinctrl_laird>;
-+	pinctrl-2 = <&pinctrl_usdhc3>, <&pinctrl_laird>;
-+	vmmc-supply = <&wl_reg_on>;
-+	bus-width = <4>;
-+	no-1-8-v;
-+	non-removable;
-+	max-frequency = <25000000>;
-+	status = "okay";
-+
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	brcmf: bcrmf@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+	};
-+};
-+
-+&wdog3 {
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+
-+	pinctrl_flexcan1: flexcan1grp {
-+		fsl,pins = <
-+			MX93_PAD_PDM_CLK__CAN1_TX		0x139e
-+			MX93_PAD_PDM_BIT_STREAM0__CAN1_RX	0x139e
-+		>;
-+	};
-+
-+	pinctrl_flexcan2: flexcan2grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO25__CAN2_TX	0x139e
-+			MX93_PAD_GPIO_IO27__CAN2_RX	0x139e
-+		>;
-+	};
-+
-+	pinctrl_laird: lairdgrp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO22__GPIO2_IO22		0x31e // WL_REG_ON
-+			MX93_PAD_GPIO_IO19__GPIO2_IO19		0x31e // BT_REG_ON
-+		>;
-+	};
-+
-+	pinctrl_lpi2c1: lpi2c1grp {
-+		fsl,pins = <
-+			MX93_PAD_I2C1_SCL__LPI2C1_SCL		0x40000b9e
-+			MX93_PAD_I2C1_SDA__LPI2C1_SDA		0x40000b9e
-+		>;
-+	};
-+
-+	pinctrl_sai1: sai1grp {
-+		fsl,pins = <
-+			MX93_PAD_SAI1_TXC__SAI1_TX_BCLK		0x31e
-+			MX93_PAD_SAI1_TXFS__SAI1_TX_SYNC	0x31e
-+			MX93_PAD_SAI1_TXD0__SAI1_TX_DATA00	0x31e
-+			MX93_PAD_SAI1_RXD0__SAI1_RX_DATA00	0x31e
-+		>;
-+	};
-+
-+	pinctrl_sai3: sai3grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO26__SAI3_TX_SYNC	0x31e
-+			MX93_PAD_GPIO_IO16__SAI3_TX_BCLK	0x31e
-+			MX93_PAD_GPIO_IO17__SAI3_MCLK		0x31e
-+			MX93_PAD_GPIO_IO21__SAI3_TX_DATA00	0x31e
-+			MX93_PAD_GPIO_IO20__SAI3_RX_DATA00	0x31e
-+		>;
-+	};
-+
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX93_PAD_UART1_RXD__LPUART1_RX		0x31e
-+			MX93_PAD_UART1_TXD__LPUART1_TX		0x31e
-+		>;
-+	};
-+
-+	pinctrl_uart5: uart5grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO01__LPUART5_RX		0x31e
-+			MX93_PAD_GPIO_IO00__LPUART5_TX		0x31e
-+			MX93_PAD_GPIO_IO02__LPUART5_CTS_B	0x31e
-+			MX93_PAD_GPIO_IO03__LPUART5_RTS_B	0x31e
-+		>;
-+	};
-+
-+	pinctrl_uart8: uart8grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO13__LPUART8_RX		0x31e
-+			MX93_PAD_GPIO_IO12__LPUART8_TX		0x31e
-+		>;
-+	};
-+
-+	pinctrl_usdhc3: usdhc3grp {
-+		fsl,pins = <
-+			MX93_PAD_SD3_CLK__USDHC3_CLK		0x17fe
-+			MX93_PAD_SD3_CMD__USDHC3_CMD		0x13fe
-+			MX93_PAD_SD3_DATA0__USDHC3_DATA0	0x13fe
-+			MX93_PAD_SD3_DATA1__USDHC3_DATA1        0x13fe
-+			MX93_PAD_SD3_DATA2__USDHC3_DATA2        0x13fe
-+			MX93_PAD_SD3_DATA3__USDHC3_DATA3        0x13fe
-+		>;
-+	};
-+};
--- 
-2.34.1
-
+Alice
 
