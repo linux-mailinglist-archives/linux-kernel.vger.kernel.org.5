@@ -1,131 +1,178 @@
-Return-Path: <linux-kernel+bounces-147801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 390DB8A79D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:29:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F2058A79DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:32:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF2D7B21FEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:29:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F324283446
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:32:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A94457F8;
-	Wed, 17 Apr 2024 00:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0041877;
+	Wed, 17 Apr 2024 00:32:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="C2FtbMky"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f3wo3DsG"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7903F37B
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:29:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A6F812;
+	Wed, 17 Apr 2024 00:32:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713313764; cv=none; b=KejTPCZrYq7LfEe/b/cUh2MrjiwLL/KPwnQSIDRGg3CpCjAkUPC+N6ECF8utNq2afFNIohPXMV+PbTXo6/8GVi97+vWHwTmYGi89aaZgodVxMydxc73e7eSLJpFDtiNgYM39F8Sk5CAJ3LNi2PIlvEAEHgAPWR0oLSC8XCVMSTM=
+	t=1713313944; cv=none; b=ugnNOLcfpQLCr9L72eAX8kzBTQqMPpyWN7Dk5d2JhErVVtBspZsN4vQdFt8wEXNlJugcECekf5bjUdSNqcuwInWMJ4XGRkEZDSzwfl6VCQgfiNXyjF2gRxg3NOMIkIL1dBpIBIdrHeI7rhiAU+uEkAyCZ5q0t/KvpKNLIU2wpTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713313764; c=relaxed/simple;
-	bh=Qm53qmVFwN+7mq1oZ8TjY3oDbZk01C2mzZvLY17xPuI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cJf14bKlB32fcLDOfLQ3Lv3fpHV89d4U2c4ymA1O4s/2vz0SB8pqFLecY76HNPRAloZYRyvUf2lRInk6NYlVdX1Ms/8e204S/BKhuCrffo06RJ8sKh3cwMO9FWJTQ+qtyQZUdSdC1vIA8DJ8gTyQQQ2uNR9NeDUesfWUL6PneGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=C2FtbMky; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516d4d80d00so6235175e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:29:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1713313760; x=1713918560; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sWCTeZrfKXEwBXDLcl0+lfpwzj1590+2p/YYNvA5SyQ=;
-        b=C2FtbMkyI/tx66QoJw6d5o5sp48GjXU7/LBC1KSwbfFs3/lOlsCiiF63O1AWNQ4QP+
-         cU2VbUC0G6JYomIm6g+oMzR3xEHlwxFsbdHZf06kBWbdFovKFw6eApNlEPeL3ndG6s99
-         pqFg21rxKGdGjx2foRPih0hgOMmv6rt8cnry0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713313760; x=1713918560;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sWCTeZrfKXEwBXDLcl0+lfpwzj1590+2p/YYNvA5SyQ=;
-        b=KuHZtZBp5QsQc6nDEWup13JzPdsZ0IZnbCTF/JHHWwGUukBgIeWS9L2llmSBdBoOOz
-         Sy6+XqrGAOuu1eXTdU1BkWKuW/GLyLvb4HTfy/qH/WHN/j18Hc9MAoTkhbZeFpEMLG9S
-         h+lSqSFHoG6vurkZS7EEjetyEcHrg1x0eHPHPfbGlEN5UDW1j3feeQvvOZljdBihFS5C
-         Rr58wDeHB10SXAb4vUNo66o+b+jhxl3MZOgaRguc7j2Y00kibqJTZ+dBLRTaWunn39N1
-         qaFV6OAu9Sgv5LGu24fRRcq85t3d1d910Xjvppdm7RQNIS5ap8ZedRra6bCH6G5joO14
-         96+g==
-X-Forwarded-Encrypted: i=1; AJvYcCWRulE/05GIf29Zp5be1nt+n1gbS1Uix1XmRqw4D7EnzmK/bICUTaBAAUwbkJiWKaJi6UtQYlfz2FqZplGzWCRQQYQCk601C+FsWula
-X-Gm-Message-State: AOJu0YxDyq8p3g6CfYyS/tvjw5OK/c6deQnx7atNetgbn5gm6DtZTN2X
-	JpHEHkCVEjHr7HyHbSrumoCszTnE0UUImlmLKYOeap9Wffuzj7gXaHRdv7YGQygn0ITsiYQUX9m
-	k
-X-Google-Smtp-Source: AGHT+IFhOMfiY5IpP3kAo/CTUu1oAgNpLPszB2zPVzcnj707Jox/yX76FgNIYZL8BjrE0l3xWKYXmg==
-X-Received: by 2002:a05:6512:e91:b0:519:264b:695a with SMTP id bi17-20020a0565120e9100b00519264b695amr2941433lfb.22.1713313760342;
-        Tue, 16 Apr 2024 17:29:20 -0700 (PDT)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
-        by smtp.gmail.com with ESMTPSA id cw4-20020a170906c78400b00a4e58c74c9fsm7395118ejb.6.2024.04.16.17.29.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Apr 2024 17:29:19 -0700 (PDT)
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a51969e780eso654628166b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:29:19 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW4oSZYDmKbzET9u3aLJ5qW+hgT+1AagxCCFN8gBdc3zAUuThoKtdpGbR7eoh650uQCLiJlBcHVexUtgDnYF06n5SZV/Ga7Sqb7QfyA
-X-Received: by 2002:a17:907:2da8:b0:a51:895c:6820 with SMTP id
- gt40-20020a1709072da800b00a51895c6820mr10248651ejc.44.1713313759109; Tue, 16
- Apr 2024 17:29:19 -0700 (PDT)
+	s=arc-20240116; t=1713313944; c=relaxed/simple;
+	bh=E78q9qxu6fgEi0Hu9VQBbhkJUlwzErCAfnhnu3DfPDI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UdnS5SgPe1aVhF8AvpyyrscyVlLuCoH66AWy5gvmS9AiwwHVWDhJg5W2kH0JUf4z0yukhUyF6FArsnFBdTB2vehYV7KNY5D3YpfregHp2sPga3V340RZy6d+8eYdbjizB+payxFFJ4StQWsfPAVZX+UQqAsjS6dTOBVpEw9h/0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f3wo3DsG; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713313942; x=1744849942;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=E78q9qxu6fgEi0Hu9VQBbhkJUlwzErCAfnhnu3DfPDI=;
+  b=f3wo3DsGjlVuWO8cALNtKxbpGb4kNXw06aoTrwbFvkcH/1XJfgnbLCs5
+   R9i9g527k6vCzbCGafLcQYzll8RQucjO6YdI2k8dAPcYui7Hv3BeDmfFM
+   0NE/65lr2p2mVwmdlBtDgUs4F9at+Iu4+aXSmoJ9TxsLUVdKOGXVPc67W
+   9fYb3jYk3CIfJ0ydgbJI8RFPh4A6EMxkqMNCUKXzwBdxn2rOlnyWkIrtT
+   4e/vICBrmGVLnN5etVj+W7qbW6pYt210tE/4OpDriXiNJtLP0sjzUjEgT
+   iFfrj5FMg/ac/9mfHavZg03L4UzSNgtpF599d/Wi1mqiTI+tuoO3uDkQA
+   g==;
+X-CSE-ConnectionGUID: F9KqvMBxQfyUSxv3Uo4IGQ==
+X-CSE-MsgGUID: vd3GX53wTSq4q7KYNddJ3g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8667815"
+X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
+   d="scan'208";a="8667815"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 17:32:21 -0700
+X-CSE-ConnectionGUID: WeG2B2aUQ0CPFsmkwxr/JQ==
+X-CSE-MsgGUID: SD+Q6YlrQGuyEHKcbvUixw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
+   d="scan'208";a="23032746"
+Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
+  by orviesa008.jf.intel.com with ESMTP; 16 Apr 2024 17:32:19 -0700
+Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rwtDk-0005tW-1Z;
+	Wed, 17 Apr 2024 00:32:16 +0000
+Date: Wed, 17 Apr 2024 08:31:31 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geetha sowjanya <gakula@marvell.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, kuba@kernel.org, davem@davemloft.net,
+	pabeni@redhat.com, edumazet@google.com, sgoutham@marvell.com,
+	gakula@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
+Subject: Re: [net-next PATCH 3/9] octeontx2-pf: Create representor netdev
+Message-ID: <202404170853.i93jboPB-lkp@intel.com>
+References: <20240416050616.6056-4-gakula@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20220302043451.2441320-1-willy@infradead.org> <202404161413.8B4810C5@keescook>
-In-Reply-To: <202404161413.8B4810C5@keescook>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 16 Apr 2024 17:29:02 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg7+dfpEvDnTnB-eR9QRZ2VySbxOEHbYqL3Ai5wwkon5Q@mail.gmail.com>
-Message-ID: <CAHk-=wg7+dfpEvDnTnB-eR9QRZ2VySbxOEHbYqL3Ai5wwkon5Q@mail.gmail.com>
-Subject: Re: [PATCH 00/19] Enable -Wshadow=local for kernel/sched
-To: Kees Cook <keescook@chromium.org>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416050616.6056-4-gakula@marvell.com>
 
-On Tue, 16 Apr 2024 at 14:15, Kees Cook <keescook@chromium.org> wrote:
->
-> I was looking at -Wshadow=local again, and remembered this series. It
-> sounded like things were close, but a tweak was needed. What would be
-> next to get this working?
+Hi Geetha,
 
-So what is the solution to
+kernel test robot noticed the following build warnings:
 
-    #define MAX(a,b) ({ \
-        typeof(a) __a = (a); \
-        typeof(b) __b = (b); \
-        __a > __b ? __a : __b; \
-    })
+[auto build test WARNING on net-next/main]
 
-    int test(int a, int b, int c)
-    {
-        return MAX(a, MAX(b,c));
-    }
+url:    https://github.com/intel-lab-lkp/linux/commits/Geetha-sowjanya/octeontx2-pf-Refactoring-RVU-driver/20240416-131052
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20240416050616.6056-4-gakula%40marvell.com
+patch subject: [net-next PATCH 3/9] octeontx2-pf: Create representor netdev
+config: loongarch-allmodconfig (https://download.01.org/0day-ci/archive/20240417/202404170853.i93jboPB-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240417/202404170853.i93jboPB-lkp@intel.com/reproduce)
 
-where -Wshadow=all causes insane warnings that are bogus garbage?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404170853.i93jboPB-lkp@intel.com/
 
-Honestly, Willy's patch-series is a hack to avoid this kind of very
-natural nested macro pattern.
+All warnings (new ones prefixed by >>):
 
-But it's a horrible hack, and it does it by making the code actively worse.
+   drivers/net/ethernet/marvell/octeontx2/nic/rep.c: In function 'rvu_rep_create':
+>> drivers/net/ethernet/marvell/octeontx2/nic/rep.c:163:66: warning: '%d' directive output may be truncated writing between 1 and 4 bytes into a region of size between 1 and 11 [-Wformat-truncation=]
+     163 |                 snprintf(ndev->name, sizeof(ndev->name), "r%dp%dv%d", rep_id,
+         |                                                                  ^~
+   drivers/net/ethernet/marvell/octeontx2/nic/rep.c:163:58: note: directive argument in the range [0, 1023]
+     163 |                 snprintf(ndev->name, sizeof(ndev->name), "r%dp%dv%d", rep_id,
+         |                                                          ^~~~~~~~~~~
+   drivers/net/ethernet/marvell/octeontx2/nic/rep.c:163:17: note: 'snprintf' output between 7 and 20 bytes into a destination of size 16
+     163 |                 snprintf(ndev->name, sizeof(ndev->name), "r%dp%dv%d", rep_id,
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     164 |                          rvu_get_pf(pcifunc), (pcifunc & RVU_PFVF_FUNC_MASK));
+         |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Here's the deal: if we can't handle somethng like the above without
-warning, -Wshadow isn't getting enabled.
 
-Because we don't write worse code because of bad warnings.
+vim +163 drivers/net/ethernet/marvell/octeontx2/nic/rep.c
 
-IOW, what is the sane way to just say "this variable can shadow the
-use site, and it's fine"?
+   131	
+   132	int rvu_rep_create(struct otx2_nic *priv)
+   133	{
+   134		int rep_cnt = priv->rep_cnt;
+   135		struct net_device *ndev;
+   136		struct rep_dev *rep;
+   137		int rep_id, err;
+   138		u16 pcifunc;
+   139	
+   140		priv->reps = devm_kcalloc(priv->dev, rep_cnt, sizeof(struct rep_dev), GFP_KERNEL);
+   141		if (!priv->reps)
+   142			return -ENOMEM;
+   143	
+   144		for (rep_id = 0; rep_id < rep_cnt; rep_id++) {
+   145			ndev = alloc_etherdev(sizeof(*rep));
+   146			if (!ndev) {
+   147				dev_err(priv->dev, "PFVF representor:%d creation failed\n", rep_id);
+   148				err = -ENOMEM;
+   149				goto exit;
+   150			}
+   151	
+   152			rep = netdev_priv(ndev);
+   153			priv->reps[rep_id] = rep;
+   154			rep->mdev = priv;
+   155			rep->netdev = ndev;
+   156			rep->rep_id = rep_id;
+   157	
+   158			ndev->min_mtu = OTX2_MIN_MTU;
+   159			ndev->max_mtu = priv->hw.max_mtu;
+   160			pcifunc = priv->rep_pf_map[rep_id];
+   161			rep->pcifunc = pcifunc;
+   162	
+ > 163			snprintf(ndev->name, sizeof(ndev->name), "r%dp%dv%d", rep_id,
+   164				 rvu_get_pf(pcifunc), (pcifunc & RVU_PFVF_FUNC_MASK));
+   165	
+   166			eth_hw_addr_random(ndev);
+   167			if (register_netdev(ndev)) {
+   168				dev_err(priv->dev, "PFVF reprentator registration failed\n");
+   169				free_netdev(ndev);
+   170				ndev->netdev_ops = NULL;
+   171				goto exit;
+   172			}
+   173		}
+   174		err = rvu_rep_napi_init(priv);
+   175		if (err)
+   176			goto exit;
+   177	
+   178		return 0;
+   179	exit:
+   180		rvu_rep_free_netdev(priv);
+   181		return err;
+   182	}
+   183	
 
-Without that kind of out, I don't think -Wshadow=local is workable.
-
-              Linus
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
