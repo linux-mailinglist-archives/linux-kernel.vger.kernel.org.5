@@ -1,93 +1,90 @@
-Return-Path: <linux-kernel+bounces-148223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE99F8A7F85
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:22:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 303458A7F90
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:24:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1D6F1F22891
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:22:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9039EB2231C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:24:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0670128369;
-	Wed, 17 Apr 2024 09:22:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06C81139D0A;
+	Wed, 17 Apr 2024 09:23:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="N/oFTzHF";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="n7wpRnph"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OxSglRSX"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B061F516
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:21:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91F5139562
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:23:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713345720; cv=none; b=BU3HtilwY2PpNNOUb0Xyht9XW7T8q36t+nE9KSICRR/ryzTPnzxQvOc6/48yEu3A1CzJaYBKzRi2UIpMixS4JO1tcy/xDRnxkZi9kmzel4HRaLkF8SfO87GOaiPcAberdK2BFVNyFLXqfuIf45bYv4j99tFjpK9+JEzFLZFIak4=
+	t=1713345819; cv=none; b=FNJmTxQKiuj59GLkNj0prDcTbilriObNONruIyJ1BePgEtJXJWIyY17IqW+QPOR1SrX4wJOdXEnK1DZkMcZXmTbsuj76U7AlQJJmv8/gdR6bYbMtbU8MWq0qSr2qq3TCLUkebzWsa4JyWeAP4hQNR5Ay5MJoc7HjgwbMCkvKXSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713345720; c=relaxed/simple;
-	bh=YQCssONq63bP0qOSXogsdrqWe5WQi1xzVV+1t1nonpE=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:MIME-Version:
-	 Content-Type; b=qnlbTeOL+shGpVH+MSFt71fPAk9kkXveCu4eDPKFMzD/4aiBKcyTqoePMgEXnjkHCqLDZEah9WfaHjsNQDhMaEcKz4zk02ObqBW1zLg59zGf6e44twJCS5N+0KLszXGSpHxUZyXoAnYBcOsEGotkXmHvLZavwo3TCs9mAy8lAEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=N/oFTzHF; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=n7wpRnph; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713345713;
+	s=arc-20240116; t=1713345819; c=relaxed/simple;
+	bh=ifRF7MXrQq10i+uw8Rl4fho6IifyZNHb6ek51KO9eBY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HOnkxpUERzR+qkRZK50Hqhiw904mxGEWPATxikHbiID+STK1NKz2fjJQkJfvNj/uVwbjz1IOSPnZK12W0fv3xcUelZHT63jkRXWezS8Ysj2c0CLeZElK7goM4aHcGUAd+tK3tIQT88eoBHC8ezp2qZFPVpFhSdUVehsukYMrtbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OxSglRSX; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713345817;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to; bh=uelsdtYZLBKL7jGIyaP3EG/BKK0QSDVCAZyC+ZgTgWI=;
-	b=N/oFTzHF4bDb8QRgjaC7Z6Po4wDANptnApdUW0jDwapj4DwVsdil6wL/wbDu9qN139oeWJ
-	m9QDrepaKxAjp89hm6WbRfHfRAyvMJQRnQE+NztkslFjtXq+o53shI9qpLZPeabz6+EQAM
-	cW5ERdPm2fDlJxTjSgpJH1jp63DN9/LkO3PnKHjLStDRjSdk5GZDwxZUv5YiNeeuVx6nU+
-	TfdcdtPuRBEF2KHdmOKHEYgIDDYudqYOej+wXAo4ZXy/cGD3OI4i/9QzxOx3AFzNIslPeM
-	P7LexVPri3b1i1cGiHE3I7OyIhi2uYsqAWsjUV0h85Bx0s3Dpbjd9AlgoWO5ag==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713345713;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to; bh=uelsdtYZLBKL7jGIyaP3EG/BKK0QSDVCAZyC+ZgTgWI=;
-	b=n7wpRnphfQAtG0IBBYh3kxYXjf4HSao3BQ+sNkaQO8ahI2LNp0bALMNVuimOVsF1QHgGQm
-	/cjhI3zKt1xxxwBA==
-To: Oleg Nesterov <oleg@redhat.com>, Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, Frederic Weisbecker
- <frederic@kernel.org>, John Stultz <jstultz@google.com>, Peter Zijlstra
- <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, Stephen Boyd
- <sboyd@kernel.org>, Eric Biederman <ebiederm@xmission.com>
-Subject: Re: [patch V2 07/50] posix-cpu-timers: Split up posix_cpu_timer_get()
-In-Reply-To: <20240416144438.GA17990@redhat.com>
-Date: Wed, 17 Apr 2024 11:21:52 +0200
-Message-ID: <87o7a8wdhr.fsf@somnus>
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=wRALUHhCTPk5aVMKCZs8Z/x2U++tzqWFRV8+xLfn/RM=;
+	b=OxSglRSXKtnfw+sfp+okXw1/StHVHaNZW+7fuGYjAMDZenOXEBA/g44CoDw8i32An1koGq
+	AaYiWmtyBeII9COAcAex6jDImIm/prTHIrVdiaL3ApSbpMyjr5y6o5RKumYc6gn9fS7f1J
+	Zm7+W82fn9iqhlaRniDKjIBfmw2OmCQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-664-q5abbk0-MmOAKfyrO-Ikcg-1; Wed, 17 Apr 2024 05:23:21 -0400
+X-MC-Unique: q5abbk0-MmOAKfyrO-Ikcg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9DF4A830E91;
+	Wed, 17 Apr 2024 09:23:20 +0000 (UTC)
+Received: from t14s.fritz.box (unknown [10.39.193.252])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id C105B2166B31;
+	Wed, 17 Apr 2024 09:23:18 +0000 (UTC)
+From: David Hildenbrand <david@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org,
+	David Hildenbrand <david@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Muchun Song <muchun.song@linux.dev>
+Subject: [PATCH v1 0/2] fs/proc/task_mmu: convert hugetlb functions to work on folis
+Date: Wed, 17 Apr 2024 11:23:11 +0200
+Message-ID: <20240417092313.753919-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-Oleg Nesterov <oleg@redhat.com> writes:
+Let's convert two more functions, getting rid of two more page_mapcount()
+calls.
 
-> On 04/11, Thomas Gleixner wrote:
->>
->> In preparation for addressing issues in the timer_get() and timer_set()
->> functions of posix CPU timers.
->
-> Cough... I must have missed something, but posix_cpu_timer_get()
-> doesn't look right with or without this trivial patch.
->
-> It doesn't initialize itp->it_value if cpu_timer_getexpires() == 0,
-> this means that sys_timer_gettime() will copy the uninitialized
-> cur_setting->it_value on the stack to userspace?
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Muchun Song <muchun.song@linux.dev>
 
-The initialization of itp is already done by the callsites.
-do_timer_settime() in posix-timers.c as well as do_cpu_nanosleep() in
-posix-cpu-timers.c execute a memset before calling
-posix_cpu_timer_get(). So this should be fine - or did I miss something
-here?
+David Hildenbrand (2):
+  fs/proc/task_mmu: convert pagemap_hugetlb_range() to work on folios
+  fs/proc/task_mmu: convert smaps_hugetlb_range() to work on folios
 
-Thanks,
+ fs/proc/task_mmu.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-	Anna-Maria
+-- 
+2.44.0
 
 
