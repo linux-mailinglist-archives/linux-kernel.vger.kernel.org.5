@@ -1,169 +1,102 @@
-Return-Path: <linux-kernel+bounces-147902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A49D78A7B1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B6D88A7B25
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:57:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C63C2831B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:50:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5AF1282A04
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48DB040847;
-	Wed, 17 Apr 2024 03:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EEgAm91v"
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CF854084D;
+	Wed, 17 Apr 2024 03:57:08 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A0228377;
-	Wed, 17 Apr 2024 03:50:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965864685;
+	Wed, 17 Apr 2024 03:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713325807; cv=none; b=uzvYG1vw/wpdstfQYDSVp23n89fdjyVPuZbvsd6uJwZHzWbiVdM5Xem1muZZkSpO/yPFzgJJIfvzmqjQBWr7Ix99gj7pjDWNdC8DngYRM3SnHLPQvuzyni5JxlsD0e33jdGExSVRqCQstRLfXMAnI6Rph1iqyEooqPfj9viz7fs=
+	t=1713326227; cv=none; b=CQJ7KgViRVDyUQ7qIc/O5BZEFwkTzwGvqbc+IIsV6PwNDiJ6wXiZr4yw6UNLwLF9BlDDPP7964vyTHLH5XN+jwFTzE0x8967FjdCV6/W9hfTegXa/qwGn3RLmTcMxi1ulvY7O/tF772Fnf6R86jD329jQPwrAcvJUCiMBSMWdro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713325807; c=relaxed/simple;
-	bh=6aMLs/p7uQeidHu4TOfmlGpoIun981aR05OPBaaX4LA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HuXOtPmkYGjoTmHvXDJf+HrtxOH2sFrh7/hbM99NPEwEKjE9t6p9zzjWjBhgHzywGgkaG5spb2Wx62r+0MeYVpH7/6GSKKBcdXYn/e1FZPvmnOO5BwpDi1a/gmdk8ZkpwgK2FsbsA5as1jgEFtiqfFC15KRAVcY8Gva2ebROZAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EEgAm91v; arc=none smtp.client-ip=209.85.160.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-22efc6b8dc5so3545717fac.0;
-        Tue, 16 Apr 2024 20:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713325805; x=1713930605; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=h00s7gBtw4VPIHusdKddXgmfRbvsvFgdsk1a5bljj/Q=;
-        b=EEgAm91v5Yf3gDpLWOG2589RBk1D0lEc/IoQLqrrerks/uJu/vNVqqeJCqLOTDzhNL
-         0XtnjHxFoST5RkeY1XEF6TyXTTBC3q3Cm84S4AOs/XlBiXunyOlT4Ds61tkZQoZzjOFD
-         zT+vRfyNga67NTs2e7XMzm0HUrkY/N9doYxiZ3WDjOrl+t2BOC7iWB2kdpnO8NqrH3bI
-         CZvsDx3/Tyc6x9B72xKRoropeOCOCOj5VL7Sc0zGHApA0LU14K/2pjrUoYgUgIHarR8E
-         pgS/zHXgLPR7pUQ8XOwPn82sCWZrndtMQL619MsC31OEDkXiJmGg++foX+A7al8mQSSk
-         IM/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713325805; x=1713930605;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h00s7gBtw4VPIHusdKddXgmfRbvsvFgdsk1a5bljj/Q=;
-        b=e2bBIDmDz00pcCC2ukV78XqpuWFSjYa/FRFFMHZxA3UgwdVqt07B3EPEz4MnD0it1A
-         Qe0+7zkHgPtyt0HWIMHdJxeHV8on0m+csKk+XeK4xiPhJErlyNHKihdaA8UpoUmLU6G4
-         wVifnVJvhYjgLrz7PeOozSWRX40yRj9/op5Zk1W8cUiZlz36DfdBNXcPb77FEgtTs56I
-         iNW309tc0VNkwmcxZIGPq5S63UHjEzx/tx9+t4zECf1wnnOHEH4Jor53BkxWC1dnDSAZ
-         4BfPRxJvae7jWxosuiAWOeEVFnlDw0E1JNLm3CoUkj6y4wEon1Mk3v2RdcT8SQ7tHxZM
-         Mb9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXT0DjCdhqfd1Pc7HjUIgizBFb9Fasowvfs88D2H8owFNvdCAmzHjUvtCIAT0MRRExUWsm2MCjKYw4ODATpTs71/NBi78PIuwG6whL5aX0QbOUhT+1utkspMz23oYmjek+WwKJp+8N6MWIA/eiQH/7DSIEJxWVaYoXR4gwYTppXzynBYAo=
-X-Gm-Message-State: AOJu0YxiSQgiJb2qauOdsKgi1Iijduvuuy9+rEEmZ8kQYKVJnVSItd/2
-	EOJJyajpLaz+EJ1/lUD/AhSAQJ28uSWWY4wvNX4dt2FGTD5rSkYK
-X-Google-Smtp-Source: AGHT+IHxsAOWZUIs0ioXX5+gCWVy7v2qTz6kHzGO3H6TXkUS48v46D68Or9D2br3iyA6MGGmEt49ng==
-X-Received: by 2002:a05:6871:b27:b0:22e:a204:9bb5 with SMTP id fq39-20020a0568710b2700b0022ea2049bb5mr17697702oab.53.1713325804987;
-        Tue, 16 Apr 2024 20:50:04 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id j3-20020a635503000000b005e83b64021fsm9577462pgb.25.2024.04.16.20.50.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 20:50:04 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 5E18218491EBE; Wed, 17 Apr 2024 10:49:58 +0700 (WIB)
-Date: Wed, 17 Apr 2024 10:49:57 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, Jonathan Corbet <corbet@lwn.net>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Mao Zhu <zhumao001@208suo.com>, Ran Sun <sunran001@208suo.com>,
-	Xiang wangx <wangxiang@cdjrlc.com>,
-	Shaomin Deng <dengshaomin@cdjrlc.com>,
-	Charles Han <hanchunchao@inspur.com>,
-	Attreyee M <tintinm2017@gmail.com>,
-	Linux Sound System <linux-sound@vger.kernel.org>,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/12] ASoC: doc: dapm: fix typos
-Message-ID: <Zh9G5TX6682WzvbI@archie.me>
-References: <20240416-dapm-docs-v1-0-a818d2819bf6@bootlin.com>
- <20240416-dapm-docs-v1-1-a818d2819bf6@bootlin.com>
+	s=arc-20240116; t=1713326227; c=relaxed/simple;
+	bh=PKWD7vbdejU793x1sasom1PgvsZwR9MEFIfZnc+KRUs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=P6ynLjPL/Eb4ydyJO9zCSYh3aHfAVTGoBPJAvnHptx+FcgWBx5eMsq+6oXLnTO88+t/CdX1Bj8RAfAUkQ9B+AoSNqJsH6x9VI2+pa66G9l3CRKECUIbQ4f3s5r23Xu4W8eS9B0WBJSwDzmmRgnLds227no6ckc3Ml6xkEb2VGWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VK6Y00PtKz4f3nV5;
+	Wed, 17 Apr 2024 11:56:52 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id EE6651A08FC;
+	Wed, 17 Apr 2024 11:57:00 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.67.174.26])
+	by APP1 (Coremail) with SMTP id cCh0CgAn+RGESB9m5cPFKA--.12259S4;
+	Wed, 17 Apr 2024 11:56:53 +0800 (CST)
+From: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
+To: tj@kernel.org,
+	lizefan.x@bytedance.com,
+	hannes@cmpxchg.org
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH -next] cgroup_freezer: update comment for freezer_css_online()
+Date: Wed, 17 Apr 2024 03:50:28 +0000
+Message-Id: <20240417035028.884560-1-xiujianfeng@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="u9U67xacMNIq60tW"
-Content-Disposition: inline
-In-Reply-To: <20240416-dapm-docs-v1-1-a818d2819bf6@bootlin.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAn+RGESB9m5cPFKA--.12259S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7JrykuF1DGFy7ZrWxXFW3trb_yoWDCFcEkw
+	4xXr1jgr4vvr1j9w1Yy3ZYvanYgayxCryIkrs8Kr45Aas0yrn8JanrKryfXr4UXa1vgrn0
+	y34kZrZ3trnFgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbokYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
+	z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
+	AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
+	IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s
+	0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsG
+	vfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: x0lxyxpdqiv03j6k3tpzhluzxrxghudrp/
 
+From: Xiu Jianfeng <xiujianfeng@huawei.com>
 
---u9U67xacMNIq60tW
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The freezer->lock was replaced by freezer_mutex in commit e5ced8ebb10c
+("cgroup_freezer: replace freezer->lock with freezer_mutex"), so the
+comment here is out-of-date, update it.
 
-On Tue, Apr 16, 2024 at 07:56:07AM +0200, Luca Ceresoli wrote:
-> diff --git a/Documentation/sound/soc/dapm.rst b/Documentation/sound/soc/d=
-apm.rst
-> index c3154ce6e1b2..59f65b181828 100644
-> --- a/Documentation/sound/soc/dapm.rst
-> +++ b/Documentation/sound/soc/dapm.rst
-> @@ -50,7 +50,7 @@ Stream domain
->  All DAPM power switching decisions are made automatically by consulting =
-an audio
->  routing map of the whole machine. This map is specific to each machine a=
-nd
->  consists of the interconnections between every audio component (including
-> -internal codec components). All audio components that effect power are c=
-alled
-> +internal codec components). All audio components that affect power are c=
-alled
->  widgets hereafter.
-> =20
-> =20
-> @@ -221,7 +221,7 @@ when the Mic is inserted:-::
->  Codec (BIAS) Domain
->  -------------------
-> =20
-> -The codec bias power domain has no widgets and is handled by the codecs =
-DAPM
-> +The codec bias power domain has no widgets and is handled by the codec D=
-APM
->  event handler. This handler is called when the codec powerstate is chang=
-ed wrt
->  to any stream event or by kernel PM events.
-> =20
-> @@ -236,7 +236,7 @@ a virtual widget - a widget with no control bits e.g.
-> =20
->    SND_SOC_DAPM_MIXER("AC97 Mixer", SND_SOC_NOPM, 0, 0, NULL, 0),
-> =20
-> -This can be used to merge to signal paths together in software.
-> +This can be used to merge two signal paths together in software.
-> =20
->  After all the widgets have been defined, they can then be added to the D=
-APM
->  subsystem individually with a call to snd_soc_dapm_new_control().
->=20
+Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+---
+ kernel/cgroup/legacy_freezer.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-LGTM, thanks!
+diff --git a/kernel/cgroup/legacy_freezer.c b/kernel/cgroup/legacy_freezer.c
+index 66d1708042a7..d598cc6ee92e 100644
+--- a/kernel/cgroup/legacy_freezer.c
++++ b/kernel/cgroup/legacy_freezer.c
+@@ -106,8 +106,7 @@ freezer_css_alloc(struct cgroup_subsys_state *parent_css)
+  * @css: css being created
+  *
+  * We're committing to creation of @css.  Mark it online and inherit
+- * parent's freezing state while holding both parent's and our
+- * freezer->lock.
++ * parent's freezing state while holding cpus read lock and freezer_mutex.
+  */
+ static int freezer_css_online(struct cgroup_subsys_state *css)
+ {
+-- 
+2.34.1
 
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---u9U67xacMNIq60tW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZh9G4QAKCRD2uYlJVVFO
-ozTlAQCqr9wXRi7bjRSuhd7WFGsq8P2WUE1gMgbCEJAHpn+thwEAhQXEwJMw20mt
-QJIMfJ6+KbBYcjUxEm44cboQu34snAw=
-=QOJt
------END PGP SIGNATURE-----
-
---u9U67xacMNIq60tW--
 
