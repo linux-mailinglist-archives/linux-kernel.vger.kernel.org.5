@@ -1,174 +1,156 @@
-Return-Path: <linux-kernel+bounces-147808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27A998A79EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:39:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 066F88A79F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:47:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 490D81C2140C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:39:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 549D4B2182F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41B431851;
-	Wed, 17 Apr 2024 00:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C66517C2;
+	Wed, 17 Apr 2024 00:47:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Za2yJcOg"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jvxxv8E6"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9F077FB
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E45C7EC
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:47:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713314388; cv=none; b=YtBWPt8oKCS0vyV+DK1CKqHoI7QeYCHiioBOpUNplKCI+yvFbyS7hvyFiIjouEoo4hcV9BBNYynvYIIAKl38l3gA40FdGVzfKCiQ8VaTKbGWy0fu2iCD/rUwhOzRAnhvj+FyXJRJSA791zlgSLtQ4mlA+9T0iXcoS61N5GvyeIQ=
+	t=1713314827; cv=none; b=FH8UImXtA4TuVVTZrVRQjUnDa2BcUdZZVQNhvKiA5iNZhpvJOv1lYUDq5obpmWk0mtaNa3N/a452pMYnLuGcTOp6dSdnEdarTADlrrxqzqhG49XWWBBNFtwYuuoXLILaDp82R3aOYqQRVhHOcftKVEoj6fOZcmL9Oa+WYEssWIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713314388; c=relaxed/simple;
-	bh=FbyNbtK36AqmEzY194l7ZNmnDo1F52tA9CX+PzaMTXY=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=EjOSTQRSR0b9cD6/nX2asiB35yvGjuxD6xI4/ox2bEhJb7rc5NrF531KXqD4mRNPdgwDbD4dOG+VFPk5Eryv4Ei6Pdr0e62D/3wdMqXooq+KdF6YzhQc/ZK0ndxPpGYZqpEPhOgRUDFlLrAv7MHWcQWCNz+1USzoBoGUKWiRchk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Za2yJcOg; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcd94cc48a1so8490798276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:39:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713314384; x=1713919184; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vnQ65n10C6Pq0ZkKHds3ZlpX5TuDQlyTU6+t/yldsJg=;
-        b=Za2yJcOgwtPcIdgdC3T3QXK6MZsAJoI/rMRdX3QB04XSkD5JMnOwIa9EDDzHJCJYYP
-         10belE5g6mcN4jI3t0HyvT+x/Q7ImGO2PUWtiDRIOsjiwcP9nowt1M1xoJfrcx24S8wr
-         8W85rk3yUIiN5TjU4myh3oBjU61Q4YvPGBxdYoIYQDovEfpFUN5i3wTsiuFD2Kr15ElO
-         Wvp0ZgR47fHSLNIfGC6mhFJrM6Cbd6q5NmdSFtqTqv2uCVnDckTFFn0hYJn0LjGaMCi9
-         rwKrJ67YApiI3SK6sk5i58pHUIF5oFIk6HS03RhynSH8pDhb/x2CuRgu0SDZIO9uTD/Q
-         Dbgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713314385; x=1713919185;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vnQ65n10C6Pq0ZkKHds3ZlpX5TuDQlyTU6+t/yldsJg=;
-        b=JJrsSg2QdEDMfT0TnghNpf8j1ZLPTbTCaUPkLq7DilAE59DiXeJKR2TMb+uxMnks14
-         7fc7tjD4aheP6Epd3nX9gCd77yI6aVsqwQ0sFC9oapnj+F8jhwj8FKXBfEV0mDEEahka
-         UMhuE0cqwPnyG36fmQWVd7LZyB4d36DAmxCDh3r8QcDxQNH0XigbMMNN/TkzHP3yclNS
-         2bfjPIN7HkB+nVE3RLH6yGTVodhZshZP4CzTMiNAouQTTG8lLxbGRBtcspYQBfBbMAYa
-         pPojV5SqN4IHuqbq9EArLqTBuB+AE0wZ3bDb2hb06yko9SZaSmIEafKDrB9fmr5VVPS7
-         z2gA==
-X-Gm-Message-State: AOJu0Yz1gXaf52tMU3tfGq2mbElfSa/e00+0WMP7h3T9xmyGzNQeWh+M
-	zyYlevJAiYrNe38q5vjBeBFZb4DEC0x6S9dr5EvruU83UptXvz4n9HkRX6EIzG3QavO9HIE+4qQ
-	APg==
-X-Google-Smtp-Source: AGHT+IFwI0Wtw33+GURLOQF//ea8KMM5/5ZtkJss0iAPKibWoLIvmvqUy3HJlRJSnH442r8pov1BHfB/nsA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1081:b0:dc7:8e30:e2e3 with SMTP id
- v1-20020a056902108100b00dc78e30e2e3mr4432687ybu.2.1713314384627; Tue, 16 Apr
- 2024 17:39:44 -0700 (PDT)
-Date: Tue, 16 Apr 2024 17:39:42 -0700
-In-Reply-To: <20240405223110.1609888-4-jacob.jun.pan@linux.intel.com>
+	s=arc-20240116; t=1713314827; c=relaxed/simple;
+	bh=5dvi4VPpgT1ZktQgmIBxXxoJVztUqyGPi0waqwUMCDQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=YVARKXgUxItn6Bgo0Vi8xbyDV1uqUbVAXviZ5MWsWeQoDWpo+AhEe9xkWgeoGsuin8bEk8lYSsU+S7+4zDtSdAGhh0OvI9ClmhGafRUnY8SIzfyLe+UaAm82ErGsW4sGHaURqE77KbekLZeCqdeURDkCt2xbc8lT2Z/mfQaww4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jvxxv8E6; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713314826; x=1744850826;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=5dvi4VPpgT1ZktQgmIBxXxoJVztUqyGPi0waqwUMCDQ=;
+  b=jvxxv8E6fV64VrCdpCSWvKDlC76IrDXVCD8bq/XlRQ8LA7y8HXRbxcId
+   3zRCWoBmLsvL0JiMvtmkkLp9CIvs/XEvnhxrHEYvxpJZHyDZxE7SU8o8+
+   z1TVqtUl1kNnvPbtaxyOk7xalt8xPefCS224r5SEdpd0bbo0EwcPTMmAi
+   sOJxM6KS5wK49Q3EkXQfVypsf90S4wQNgt3j9hl6iasaszpUKjShYZfMe
+   qoCd7b0Ce1tQ1wmUMxx2bADiERokZ1GAg9IheZkhYOY1NapHcyu5Yf1Ls
+   hglcChBQE7cs8Vsh5Vl7UGLOB5iDE4vt/T66c48A3EszQJgbjqko7pZJN
+   g==;
+X-CSE-ConnectionGUID: 5YxCcmU+SAqKSSuk1YXtIA==
+X-CSE-MsgGUID: rJO7cSUTSIKQyOhRqLkyxQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="12573654"
+X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
+   d="scan'208";a="12573654"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 17:47:05 -0700
+X-CSE-ConnectionGUID: XyeW91dxRoKxySgyFn7ZSA==
+X-CSE-MsgGUID: Zt0xu/AiSuCX1oRTrLwgkA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
+   d="scan'208";a="22519708"
+Received: from unknown (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 17:47:00 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Barry Song <21cnbao@gmail.com>
+Cc: akpm@linux-foundation.org,  linux-mm@kvack.org,
+  baolin.wang@linux.alibaba.com,  chrisl@kernel.org,  david@redhat.com,
+  hanchuanhua@oppo.com,  hannes@cmpxchg.org,  hughd@google.com,
+  kasong@tencent.com,  ryan.roberts@arm.com,  surenb@google.com,
+  v-songbaohua@oppo.com,  willy@infradead.org,  xiang@kernel.org,
+  yosryahmed@google.com,  yuzhao@google.com,  ziy@nvidia.com,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/5] mm: add per-order mTHP swpin_refault counter
+In-Reply-To: <20240409082631.187483-6-21cnbao@gmail.com> (Barry Song's message
+	of "Tue, 9 Apr 2024 20:26:31 +1200")
+References: <20240409082631.187483-1-21cnbao@gmail.com>
+	<20240409082631.187483-6-21cnbao@gmail.com>
+Date: Wed, 17 Apr 2024 08:45:07 +0800
+Message-ID: <87frvk24x8.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com> <20240405223110.1609888-4-jacob.jun.pan@linux.intel.com>
-Message-ID: <Zh8aTitLwSYYlZW5@google.com>
-Subject: Re: [PATCH v2 03/13] x86/irq: Remove bitfields in posted interrupt descriptor
-From: Sean Christopherson <seanjc@google.com>
-To: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev, 
-	Thomas Gleixner <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>, kvm@vger.kernel.org, 
-	Dave Hansen <dave.hansen@intel.com>, Joerg Roedel <joro@8bytes.org>, 
-	"H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, 
-	Paul Luse <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Jens Axboe <axboe@kernel.dk>, Raj Ashok <ashok.raj@intel.com>, Kevin Tian <kevin.tian@intel.com>, 
-	maz@kernel.org, Robin Murphy <robin.murphy@arm.com>, jim.harris@samsung.com, 
-	a.manzanares@samsung.com, Bjorn Helgaas <helgaas@kernel.org>, guang.zeng@intel.com, 
-	robert.hoo.linux@gmail.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ascii
 
-"KVM" here would be nice too.
+Barry Song <21cnbao@gmail.com> writes:
 
-On Fri, Apr 05, 2024, Jacob Pan wrote:
-> Mixture of bitfields and types is weird and really not intuitive, remove
-> bitfields and use typed data exclusively.
-> 
-> Link: https://lore.kernel.org/all/20240404101735.402feec8@jacob-builder/T/#mf66e34a82a48f4d8e2926b5581eff59a122de53a
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> 
+> From: Barry Song <v-songbaohua@oppo.com>
+>
+> Currently, we are handling the scenario where we've hit a
+> large folio in the swapcache, and the reclaiming process
+> for this large folio is still ongoing.
+>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 > ---
-> v2:
-> 	- Replace bitfields, no more mix.
-> ---
->  arch/x86/include/asm/posted_intr.h | 10 +---------
->  arch/x86/kvm/vmx/posted_intr.c     |  4 ++--
->  arch/x86/kvm/vmx/vmx.c             |  2 +-
->  3 files changed, 4 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/posted_intr.h b/arch/x86/include/asm/posted_intr.h
-> index acf237b2882e..c682c41d4e44 100644
-> --- a/arch/x86/include/asm/posted_intr.h
-> +++ b/arch/x86/include/asm/posted_intr.h
-> @@ -15,17 +15,9 @@ struct pi_desc {
->  	};
->  	union {
->  		struct {
-> -				/* bit 256 - Outstanding Notification */
-> -			u16	on	: 1,
-> -				/* bit 257 - Suppress Notification */
-> -				sn	: 1,
-> -				/* bit 271:258 - Reserved */
-> -				rsvd_1	: 14;
-> -				/* bit 279:272 - Notification Vector */
-> +			u16	notif_ctrl; /* Suppress and outstanding bits */
->  			u8	nv;
-> -				/* bit 287:280 - Reserved */
->  			u8	rsvd_2;
-> -				/* bit 319:288 - Notification Destination */
->  			u32	ndst;
->  		};
->  		u64 control;
-> diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
-> index af662312fd07..592dbb765675 100644
-> --- a/arch/x86/kvm/vmx/posted_intr.c
-> +++ b/arch/x86/kvm/vmx/posted_intr.c
-> @@ -107,7 +107,7 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
->  		 * handle task migration (@cpu != vcpu->cpu).
->  		 */
->  		new.ndst = dest;
-> -		new.sn = 0;
-> +		new.notif_ctrl &= ~POSTED_INTR_SN;
+>  include/linux/huge_mm.h | 1 +
+>  mm/huge_memory.c        | 2 ++
+>  mm/memory.c             | 1 +
+>  3 files changed, 4 insertions(+)
+>
+> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> index c8256af83e33..b67294d5814f 100644
+> --- a/include/linux/huge_mm.h
+> +++ b/include/linux/huge_mm.h
+> @@ -269,6 +269,7 @@ enum mthp_stat_item {
+>  	MTHP_STAT_ANON_ALLOC_FALLBACK,
+>  	MTHP_STAT_ANON_SWPOUT,
+>  	MTHP_STAT_ANON_SWPOUT_FALLBACK,
+> +	MTHP_STAT_ANON_SWPIN_REFAULT,
 
-At the risk of creating confusing, would it make sense to add double-underscore,
-non-atomic versions of the set/clear helpers for ON and SN?
+This is different from the refault concept used in other place in mm
+subystem.  Please check the following code
 
-I can't tell if that's a net positive versus open coding clear() and set() here
-and below.
+	if (shadow)
+		workingset_refault(folio, shadow);
 
->  		/*
->  		 * Restore the notification vector; in the blocking case, the
-> @@ -157,7 +157,7 @@ static void pi_enable_wakeup_handler(struct kvm_vcpu *vcpu)
->  		      &per_cpu(wakeup_vcpus_on_cpu, vcpu->cpu));
->  	raw_spin_unlock(&per_cpu(wakeup_vcpus_on_cpu_lock, vcpu->cpu));
+in __read_swap_cache_async().
+
+>  	__MTHP_STAT_COUNT
+>  };
+
+--
+Best Regards,
+Huang, Ying
+
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index d8d2ed80b0bf..fb95345b0bde 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -556,12 +556,14 @@ DEFINE_MTHP_STAT_ATTR(anon_alloc, MTHP_STAT_ANON_ALLOC);
+>  DEFINE_MTHP_STAT_ATTR(anon_alloc_fallback, MTHP_STAT_ANON_ALLOC_FALLBACK);
+>  DEFINE_MTHP_STAT_ATTR(anon_swpout, MTHP_STAT_ANON_SWPOUT);
+>  DEFINE_MTHP_STAT_ATTR(anon_swpout_fallback, MTHP_STAT_ANON_SWPOUT_FALLBACK);
+> +DEFINE_MTHP_STAT_ATTR(anon_swpin_refault, MTHP_STAT_ANON_SWPIN_REFAULT);
 >  
-> -	WARN(pi_desc->sn, "PI descriptor SN field set before blocking");
-> +	WARN(pi_desc->notif_ctrl & POSTED_INTR_SN, "PI descriptor SN field set before blocking");
-
-This can use pi_test_sn(), as test_bit() isn't atomic, i.e. doesn't incur a LOCK.
-
+>  static struct attribute *stats_attrs[] = {
+>  	&anon_alloc_attr.attr,
+>  	&anon_alloc_fallback_attr.attr,
+>  	&anon_swpout_attr.attr,
+>  	&anon_swpout_fallback_attr.attr,
+> +	&anon_swpin_refault_attr.attr,
+>  	NULL,
+>  };
 >  
->  	old.control = READ_ONCE(pi_desc->control);
->  	do {
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index d94bb069bac9..50580bbfba5d 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -4843,7 +4843,7 @@ static void __vmx_vcpu_reset(struct kvm_vcpu *vcpu)
->  	 * or POSTED_INTR_WAKEUP_VECTOR.
->  	 */
->  	vmx->pi_desc.nv = POSTED_INTR_VECTOR;
-> -	vmx->pi_desc.sn = 1;
-> +	vmx->pi_desc.notif_ctrl |= POSTED_INTR_SN;
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 9818dc1893c8..acc023795a4d 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4167,6 +4167,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  		nr_pages = nr;
+>  		entry = folio->swap;
+>  		page = &folio->page;
+> +		count_mthp_stat(folio_order(folio), MTHP_STAT_ANON_SWPIN_REFAULT);
+>  	}
+>  
+>  check_pte:
 
