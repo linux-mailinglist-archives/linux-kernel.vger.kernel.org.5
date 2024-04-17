@@ -1,198 +1,383 @@
-Return-Path: <linux-kernel+bounces-148905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C49878A88C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BB9F8A88C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:24:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E3FD1F22BED
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:24:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85AF81F21D43
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:24:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3F6C1494A0;
-	Wed, 17 Apr 2024 16:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22D4148849;
+	Wed, 17 Apr 2024 16:24:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IF6prD7N"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hBrhd4TY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E8E1487D2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8F5146D59;
 	Wed, 17 Apr 2024 16:24:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713371049; cv=fail; b=EubFc/ypxYrXhNzYNlZfgHwA5Eya5AZvdkAdpc0I/iNk6hEZ9jXDP35JQ/RygJOAjjf+6tj4UoRQKpmucfkLHPgGF/eMMMOHv0xtJefdnsKcDyd2UwF8sPcQstdwQYh4QL+NLEHEpdj+o8GcK9hBDMaSNfIiu7ASN/fVjdvdcPA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713371049; c=relaxed/simple;
-	bh=Ovmp7uHPu8fazOeB3Ucr4G6QTIDJ8jkd4J1JXQPsUV8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=TwQ5RvaTXAS4Yu/BWQ4Yb0Uk5BIKs8P4Cm9dTLfLDhIgW78F3isaUwofD/+bjqECKxEMvkMSaKb8+1uxFlxGD8YOas1U/IEc+LFV3498OFOMELS1l4tBeIdBtaTpD8PUIKjjkAgm6+MF9qpZqE/LWqLYg0rz0Zr6+dRISCNX6XE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IF6prD7N; arc=fail smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713371048; x=1744907048;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Ovmp7uHPu8fazOeB3Ucr4G6QTIDJ8jkd4J1JXQPsUV8=;
-  b=IF6prD7NPhCU6xm1xM2OGJYVLvWhm9azVayShP4gDCbnSdk6T3MDutlf
-   btosqCqz8+WE9oYpf0qjj99FUR3Lj8yXW2tVnPbA7jaIWqUmttUtVEtMp
-   Pe1VBoPUcmZx4LLzdozWj4bfqNxUDG4UNTowyp+zGmS/Z2bqUMs5dqRx9
-   fFbRGgiUa6MK+pceKGofqd82Sm3vPvonvEgjVFkwxjqCfrRSV0qxuhl61
-   wm/Olm/QcFx0jnN7k9CTT/xMe57TKLWtSfMB9MhVMfsnr5qL5P6xIrI2U
-   S3boRRWv4g1+CVq8TmK+b1Gxdu6PcZW6cItOz8eOVB+kIAXXZYSl/zTBg
-   Q==;
-X-CSE-ConnectionGUID: nuzojiOJTjWsVRpTjGIoZQ==
-X-CSE-MsgGUID: /pfLvpgyT9CN4Z+cB7jCmw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="19579055"
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="19579055"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 09:24:07 -0700
-X-CSE-ConnectionGUID: 2Yp/Q36uRV2XRUDsOiaklw==
-X-CSE-MsgGUID: A6/9NKlDQYGwKnjBCjUuSg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="27452488"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Apr 2024 09:24:07 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 17 Apr 2024 09:24:05 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 17 Apr 2024 09:24:05 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 17 Apr 2024 09:24:05 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 17 Apr 2024 09:24:05 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PHC+IuiAa7/29j43kst0WrAwy2vXqwJsziL6+Sw7lHsPE2pXFa8AVX+Vlb+zek6xXkRk5GmiTsqGIagPIXjcFSBzoXrUlzeGemOD0Fja8CcpYat9PfiI9nNElO3h94syZJ3FXq6oGyJGXNI12ytHU8cJ2hPPMZAtxQkfqmPxOri5V34jFIQPBFxrYZaEOpYfOvt4Vq93lON6yy/hSTQaEryyzLrbMLhM2dEr8ZXVw6pUGX+S3XuILwYZb39AZGYfWAhCaf9+jrqNsGwm0CdLTzWZzhT+mZHoZpm7dkt/jSmNmdZnX1AqwOu1IqRO40wXtu57NVOpeAf6Zjl6h+I+Zw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ovmp7uHPu8fazOeB3Ucr4G6QTIDJ8jkd4J1JXQPsUV8=;
- b=iY6JD1BOtLeJFN3ySSKh+b8eTKYig6GOc9dp/2SVR+9aTBHCJ4Mk8v4AbPJjhRzT6tT/wqm953sabN1wYM7zJwCd0XU1u51fyx3zItYte3ImdbpivnC+xkd64MovvYdG2qYsuBZIq1cHMRVeVJeMXNWu/O8gyuZ58pOTkX8PYqpCgtIn03+IK2Ci9thFhRfO5XFeshfOimBbBC2gLSvaHPXri1OteO6EWhG22c/vE+QcGafJnFGyhZ1l9eLr4ebJrwSU3FTYDzQJNQo3W/FE0VQ5sjS+5bDj0U3TLx6S/KZlvjPqsWLrRbZ1S45KFWLJe7fKCi9BnIjTvobrcYB8ng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
- by PH8PR11MB6660.namprd11.prod.outlook.com (2603:10b6:510:1c3::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.26; Wed, 17 Apr
- 2024 16:24:03 +0000
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::fca9:7c00:b6d0:1d62]) by SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::fca9:7c00:b6d0:1d62%5]) with mapi id 15.20.7472.027; Wed, 17 Apr 2024
- 16:24:03 +0000
-From: "Luck, Tony" <tony.luck@intel.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-CC: Hans de Goede <hdegoede@redhat.com>, Mauro Carvalho Chehab
-	<mchehab@kernel.org>, Sakari Ailus <sakari.ailus@linux.intel.com>, "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>, "linux-media@vger.kernel.org"
-	<linux-media@vger.kernel.org>, "linux-staging@lists.linux.dev"
-	<linux-staging@lists.linux.dev>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "patches@lists.linux.dev"
-	<patches@lists.linux.dev>
-Subject: RE: [PATCH v3 68/74] x86/cpu/vfm: Update
- drivers/staging/media/atomisp/include/linux/atomisp_platform.h
-Thread-Topic: [PATCH v3 68/74] x86/cpu/vfm: Update
- drivers/staging/media/atomisp/include/linux/atomisp_platform.h
-Thread-Index: AQHakEQ9MBqgf/dBmUOaCObVibeHIrFsHAWAgACIdMA=
-Date: Wed, 17 Apr 2024 16:24:03 +0000
-Message-ID: <SJ1PR11MB608394505D03C51EC2583BFCFC0F2@SJ1PR11MB6083.namprd11.prod.outlook.com>
-References: <20240416211941.9369-1-tony.luck@intel.com>
- <20240416212247.9949-1-tony.luck@intel.com>
- <CAHp75VcQvNqaTj6GTNmhoMbTj-qbn=WX7OSuRwiPaFO5pzPd9g@mail.gmail.com>
-In-Reply-To: <CAHp75VcQvNqaTj6GTNmhoMbTj-qbn=WX7OSuRwiPaFO5pzPd9g@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|PH8PR11MB6660:EE_
-x-ms-office365-filtering-correlation-id: 7527cc18-b55a-4681-1b77-08dc5efacbbc
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3LBgg7vEoeBIBeSyicg0NDi9Gk5pHtI5V6Q1dVVnlR827e76Gjsy3U02h8VmYqZY5bagFPwVm7eaOA8h004tRKlj/aScrzAZuivbj2MTgNXYH5+9Rwx5ypV5yEyRiOe68fqi0KJ/ltOUiNmY3RHTJBYjxH/GS4fFMEl1qkwluoT1L7B/ms1ZTG5vd3G3UdPBtdNasroKepl5bZAijBUoeWXKinQNV1wmZHZE00XzRhRtX/PHceVfX5deiTza2PX5o3MpJPiPRqHrXIRpC8bDRZh4H051xT7Fbn4x5IxC/CfNbeK8eeutJNuPe9914M8vu7aiNdUZG6/BzZezJTa1cJN88nrCrem5fkTh+pukR8q+SJbB825Wn3zUZ3v8UbrLVJvbVCUts7UVA3mUF1BzCB/8Jevq88ohCD//pM0gV6J+OuW6n/+/QYPrSHAzOJPyXMxBWcROK5e3nZ75aQjAxIsPHy2T8C5RngnFkj7BxdgKSZnuTyRfGiJiqbjH0qwW2OmWUGtT7SwlGAjBXYzg0Eig9+6MXiSKhrhE5iv4qdLlGL3QMdfiir9Y/E9ERrq63ZHNOeZYeCAAvAl68FyKOQB3fLmUD2JhhTvMVFz5xIzzK73JpedLiQ8emSN9OJFis5I4Zo+UeApKyZi7iFcAr53VLSu9HMf0BsmZ4U4ji2g=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QlZoR05xeGYrVk5UbVhOeDVLbnVEb2VZWXk0RXBJWVNtLzhjNjhzR2djOUsv?=
- =?utf-8?B?aTEyWCtMYXRvOEE5bXBZNFVZb29YMTlBUVpYUUVKNmJIeHp6QmRZRytlQXp3?=
- =?utf-8?B?cW9TQzA3Q3VMMWFsRVJHMDhmM0JBVTZ1SU5RcEI5U3JTQkpRcDRuaC8vbkdS?=
- =?utf-8?B?c3paZkc3WDRKV2lOdzZma2tQdENrRW9DeElrdnltY3V6cDJIQmVQS1kxVldI?=
- =?utf-8?B?K3M0NUhTSnBNRDM1MnR5QjV6WnViemhleDF3eFhhaUJycXpBblN0SkJzT29a?=
- =?utf-8?B?UE1Yekt2eEE5TjAxNS9Dd2FVNVZISm5YN1RPTkFFU0VJVXdKMlNTN1hHQU5q?=
- =?utf-8?B?STFHQWRTY3BhR09rbG5lQ1pNT3Z6YjJQYlk0eFJtQmYrTUJ1WDgyR0laL3M5?=
- =?utf-8?B?TlZ4QkQyTDk0dTZUcnBheVJwUVhsTkloSHJuN3lWQTQ0R0JnSThiWXBFdzRV?=
- =?utf-8?B?QkIvanQvTERWWEtBTUFnUmd4S2tVZ1NmWVdVdWZWb1JFaGVlQVRuQTRXUHhw?=
- =?utf-8?B?N2U3ZDAvVEFhZWJVYlZ1QXBDTk42OGNTNGZHelMzRDkycUQyRHdOZlROUWpO?=
- =?utf-8?B?NDN0U2JOQUp6anh2Zm1HZXpwVFdXbDNuc3hTZmI1QWFDVENFS00yRGk5eVJm?=
- =?utf-8?B?QjVBcVFQNlVXeWt1aHJHSExlRjM5ODNGWitDV0VoMWdKeVN4dTBYUmJza3FC?=
- =?utf-8?B?WXRHSGRMaWZTbEErNCt3VHdMbEFtODRqRlVSYTdBRGllYXQwWEtsdzJJU254?=
- =?utf-8?B?cmltNnZ3UloxOXZ4bklQN3NwZjNJL0ZQVzA1Nk13aVhvOWVqQjc4UEZCR2RB?=
- =?utf-8?B?Nkh6aExUbFpiMHlMVFMreDdQWkVwQXlpZjJTaVA1YVp5a2dIMFVNR0RCbFdv?=
- =?utf-8?B?NkdIcTRDV01lcHZHcHlBN3o4L1JLNVhSaXJYMzkyNk5nZy9aeWx5ckdJeDZR?=
- =?utf-8?B?cXkwdUFOckNYc2NiVWRDdlRCSCtDSHNMS0VReDNlQ0dudzJYTDdxOWh2YTlh?=
- =?utf-8?B?b2xpUnNaZUgzdU0wa3pnem9ZcDlHKzVCcVpZYW90ZTdBWDZFUFlPL05pS3Vr?=
- =?utf-8?B?c1V5cXF1UkZ5cnQ2RUhqWTl4VEsxaHAzS1IzdFgvWkNkVE45K0pvMDJQUS9m?=
- =?utf-8?B?NVdNYlJTd1F4U3J2Q2wzWExKODdJWVhBZVpETnkvcFlCYlAyOHBZQy9VNldD?=
- =?utf-8?B?VmI4anRDZ25BQVZ4THpHaENLenp5N21XeE9HWDh3bk8vTTV5eC9WM015dzdO?=
- =?utf-8?B?Q0YydlpwZXFYN2VmS1dWNmhQZ2VxMTErM3gxZ1pRNTlSMkdGUkE1bFduWEV4?=
- =?utf-8?B?T2JCOWFBcm5pMmFCWHI4NnhEUlVydVEzUUFqcHFsZDlxektuREdSRUg5amp3?=
- =?utf-8?B?RTlCeU03Um1TOXFzUmFlangrKzFwMEdoVHptL05TdElYd0xySDFjbngzTnYx?=
- =?utf-8?B?MTJETmJVNHhIMDR1Y0F0VmV4aVpIalRKNW5ISTVnRDVwU3o3cVlGeGJqZEtY?=
- =?utf-8?B?NXd6amQ2VjN4UkpIZTU2QzlMSHYyUmQ1anJRbDkxT1hEOHhrVWZnd1hOc2Ir?=
- =?utf-8?B?WldzRjRMWExNZFJVZ01DSU1ZczRlZUxIUzhOdnU5cU9FUStDeHRDcmRYZ3Z0?=
- =?utf-8?B?WnRGMEQ5eTNqQTlha3dHbEkzVlJDKzhOODQzcmdyVXBUYzlvVW9ZcFAwbE1u?=
- =?utf-8?B?UklTamNFWCtjZEllUzJFOTlLOWpSNnh5RUNRL1NreXpsRVBWZFVmZ2RWemlT?=
- =?utf-8?B?RnlZWGJKVmR4dW9wdnF4SjRCS1dqbWNqWWxRc05ZaktaOTNGa0I1ajI2K2d2?=
- =?utf-8?B?bGQyL0lFTHJ1alVVaVh2UnhPUGRwQXBMT3VycFVVMG1ML09POTJJKzkyeHJo?=
- =?utf-8?B?U2Y5MVV4TGVCejlEVEFMYWZ0cCtwYUsrOHpOaXhudDFoVEZPUjVVT3drRFBB?=
- =?utf-8?B?blZxbXNvQ1gwK3Rhd0cxSTRQaG4xUy9YWTdRNnVXa0VpOVNCOFptK053MHFG?=
- =?utf-8?B?djlOWjJPWnJReWZkM3YwRVN5TERvaEM0WmY3V1F0Mkh3VzA1T2xHRUROY0hU?=
- =?utf-8?B?QVE0aUhmWGc5SS9KTWVCOUxUV2N1L3QvY0VmRGFNK2hhdlRDOTV0bWxtb2x3?=
- =?utf-8?Q?TwvX49add9TZ0YZHmKiCoEh/t?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713371047; cv=none; b=qgWJakqePiHHsx+RyFcl56sbzSyFv+eWk9rQcJDPMi1VRjT7kD5a6NM4G9xlw7QwbzaOoMdSPQGx9m02nk50rR094ZOmf3tSy2BxuuLKRZyDUDrm53H0TfAbrs5XdvCtOfmGAZMDzrGEqowJRmY3JWTJdRSu7G0Z75x3e2tJ9jY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713371047; c=relaxed/simple;
+	bh=a2NoKEZW4gOQ7cOKT3KGh/17o8s+HV8uq5uRGWmqubI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=duODRnujqIm1oFUD/fmVuDTzuCu/RpP4NADk8WguQYIFZbQq6Fxg5RuwENA6nop4g26wSgfgPoxC/5yPrPqYPJ6/v/EMZxrFI5FVr0NBBZIgtrIAZTJCLBA/WG/9nli6pGoLWPup2JqgwBJ4HKqC8U9mI6pvk96wIXIXe0wAbqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hBrhd4TY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90F78C072AA;
+	Wed, 17 Apr 2024 16:24:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713371047;
+	bh=a2NoKEZW4gOQ7cOKT3KGh/17o8s+HV8uq5uRGWmqubI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hBrhd4TYmwozuU636PVYsZrbocwfbcJ8Ja39gSRkSbcHLeP3VtB/KHf/u1+xOzC3T
+	 5UGpqqyNyVKyYVEzFAZGHBAHfdcbnhD69rpoZtu93uhlnvp0FSMgnNZjHa4pA8r48h
+	 cE338mrzm+1HBTNdrYnwzgs0uLUv8gGcNG9p00aHlrygriPsb3iOPGdSsf8nCTl/YU
+	 ZrJN6QppJpsW4pOZ9IrwO6PTQG7jpGI0iDf5xlDbrGxHlgVnBuayFcZa3inqT7YO7n
+	 vZIs+H0hB1cZ6HhP44BJKi6bBAZzfIqo1VuxrNYQfSw04j/4Y7N31+UUIlU3u36IQr
+	 qukbhHNEX2a6w==
+Date: Wed, 17 Apr 2024 13:24:04 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: weilin.wang@intel.com, Kan Liang <kan.liang@linux.intel.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Perry Taylor <perry.taylor@intel.com>,
+	Samantha Alt <samantha.alt@intel.com>,
+	Caleb Biggers <caleb.biggers@intel.com>
+Subject: Re: [RFC PATCH v5 02/16] perf stat: Add basic functions for the
+ hardware aware grouping
+Message-ID: <Zh_3pCLXfL-faTpx@x1>
+References: <20240412210756.309828-1-weilin.wang@intel.com>
+ <20240412210756.309828-3-weilin.wang@intel.com>
+ <CAP-5=fUTHPu_vaNyeaq9uDwf7Hq79khFZymFJK2w39k-9RdutQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7527cc18-b55a-4681-1b77-08dc5efacbbc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Apr 2024 16:24:03.2216
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AgcAtu8S3or9XKinjbfR2+d4FicIRlAOT5o/1M/kV8gDcvcvTRCXFjShTW3d6+Dj4Xyzv0bcXVaMoYUSgFnfoA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6660
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fUTHPu_vaNyeaq9uDwf7Hq79khFZymFJK2w39k-9RdutQ@mail.gmail.com>
 
-Pj4gTmV3IENQVSAjZGVmaW5lcyBlbmNvZGUgdmVuZG9yIGFuZCBmYW1pbHkgYXMgd2VsbCBhcyBt
-b2RlbC4NCj4NCj4gVGhhbmtzLCBidXQgSSB3b3VsZCByYXRoZXIgc2VlIHRoaXMgdXNpbmcgdGhl
-IGZvbGxvd2luZw0KPiBodHRwczovL2VsaXhpci5ib290bGluLmNvbS9saW51eC92Ni45LXJjNC9z
-b3VyY2UvaW5jbHVkZS9saW51eC9wbGF0Zm9ybV9kYXRhL3g4Ni9zb2MuaA0KDQpBcmUgeW91IGFz
-a2luZyBmb3IgZHJpdmVycy9zdGFnaW5nL21lZGlhL2F0b21pc3AvaW5jbHVkZS9saW51eC9hdG9t
-aXNwX3BsYXRmb3JtLmgNCnRvIGJlIHJlZmFjdG9yZWQgdG8gdXNlIHRoZSBuZXcgZnVuY3Rpb25z
-L21hY3JvcyBpbiA8bGludXgvcGxhdGZvcm1fZGF0YS94ODYvc29jLmg+Pw0KDQpNYXliZSBmb2xr
-cyB3b3JraW5nIG9uIHRoaXMgc3RhZ2luZyBkcml2ZXIgY2FuIGRvIHRoYXQ/IEkgZG9uJ3QgdGhp
-bmsgSSBoYXZlIHRoZSBkb21haW4NCnNwZWNpZmljIGtub3dsZWRnZSB0byBtYWtlIHRoaXMgdXBk
-YXRlLg0KDQpOb3RlIHRoYXQgcGF0Y2ggNjkgaW4gdGhpcyBzZXJpZXMgZG9lcyB1cGRhdGUgPGxp
-bnV4L3BsYXRmb3JtX2RhdGEveDg2L3NvYy5oPiB0byB1c2UNCnRoZSBuZXcgdmVuZG9yLWZhbWls
-eS1tb2RlbCBzY2hlbWUuDQoNCi1Ub255DQo=
+On Tue, Apr 16, 2024 at 09:56:38PM -0700, Ian Rogers wrote:
+> On Fri, Apr 12, 2024 at 2:08 PM <weilin.wang@intel.com> wrote:
+> >
+> > From: Weilin Wang <weilin.wang@intel.com>
+> >
+> > Add the first set of functions for the hardware aware grouping method. Function
+> > hw_aware_parse_groups() is the entry point of this metric grouping method.  It
+> > does metric grouping on a combined list of events and will create a list of
+> > grouping strings as final results of the grouping method. These grouping strings
+> > will be used in the same manner as existing metric grouping process.
+> >
+> > This method will fall back to normal grouping when hardware aware grouping
+> > return with err so that perf stat still executes and returns with correct
+> > result.
+> >
+> > Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+> 
+> Reviewed-by: Ian Rogers <irogers@google.com>
+
+This one isn't applying:
+
+⬢[acme@toolbox perf-tools-next]$ git log -10 --oneline tools/perf/util/metricgroup.c
+b6226e7e6daa823d (HEAD -> perf-tools-next) perf stat: Add new field in stat_config to enable hardware aware grouping
+4b5ee6db2d3cd624 perf metrics: Remove the "No_group" metric group
+97b6b4ac1c5dd42a perf metrics: Fix segv for metrics with no events
+d4be39cadef0dbba perf metrics: Fix metric matching
+a59fb796a36bb6c2 perf metrics: Compute unmerged uncore metrics individually
+7bbe8f0071dfa23f perf tools: Fix calloc() arguments to address error introduced in gcc-14
+e2b005d6ec0e738d perf metrics: Avoid segv if default metricgroup isn't set
+54409997d4b99ab6 perf metric: "Compat" supports regular expression matching identifiers
+4000519eb0c66594 perf pmu-events: Add extra underscore to function names
+1c0e47956a8e1109 perf metrics: Sort the Default metricgroup
+⬢[acme@toolbox perf-tools-next]$
+
+So just the first patch was applied so far, I'll push what I have to
+tmp.perf-tools-next and then later to perf-tools-next so that this work
+can be continued from there.
+
+- Arnaldo
+ 
+> > ---
+> >  tools/perf/util/metricgroup.c | 217 +++++++++++++++++++++++++++++++++-
+> >  1 file changed, 216 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> > index 11613450725a..8047f03b2b1f 100644
+> > --- a/tools/perf/util/metricgroup.c
+> > +++ b/tools/perf/util/metricgroup.c
+> > @@ -159,6 +159,14 @@ struct metric {
+> >         struct evlist *evlist;
+> >  };
+> >
+> > +/**
+> > + * Each group is one node in the group string list.
+> > + */
+> > +struct metricgroup__group_strs {
+> > +       struct list_head nd;
+> > +       struct strbuf grouping_str;
+> > +};
+> > +
+> >  static void metric__watchdog_constraint_hint(const char *name, bool foot)
+> >  {
+> >         static bool violate_nmi_constraint;
+> > @@ -1432,6 +1440,101 @@ static int build_combined_expr_ctx(const struct list_head *metric_list,
+> >         return ret;
+> >  }
+> >
+> > +/**
+> > + * hw_aware_build_grouping - Build event groupings by reading counter
+> > + * requirement of the events and counter available on the system from
+> > + * pmu-events.
+> > + * @ctx: the event identifiers parsed from metrics.
+> > + * @groupings: header to the list of final event grouping.
+> > + * @modifier: any modifiers added to the events.
+> > + */
+> > +static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_unused,
+> > +                                 struct list_head *groupings __maybe_unused,
+> > +                                 const char *modifier __maybe_unused)
+> > +{
+> > +       int ret = 0;
+> > +
+> > +       pr_debug("This is a placeholder\n");
+> > +       return ret;
+> > +}
+> > +
+> > +static void group_str_free(struct metricgroup__group_strs *g)
+> > +{
+> > +       if (!g)
+> > +               return;
+> > +
+> > +       strbuf_release(&g->grouping_str);
+> > +       free(g);
+> > +}
+> > +
+> > +static void metricgroup__free_grouping_strs(struct list_head
+> > +                                          *grouping_strs)
+> > +{
+> > +       struct metricgroup__group_strs *g, *tmp;
+> > +
+> > +       list_for_each_entry_safe(g, tmp, grouping_strs, nd) {
+> > +               list_del_init(&g->nd);
+> > +               group_str_free(g);
+> > +       }
+> > +}
+> > +
+> > +/**
+> > + * hw_aware_parse_ids - Build the event string for the ids and parse them
+> > + * creating an evlist. The encoded metric_ids are decoded. Events are placed
+> > + * into groups based on event counter requirements and counter availabilities of
+> > + * the system.
+> > + * @metric_no_merge: is metric sharing explicitly disabled.
+> > + * @fake_pmu: used when testing metrics not supported by the current CPU.
+> > + * @ids: the event identifiers parsed from a metric.
+> > + * @modifier: any modifiers added to the events.
+> > + * @out_evlist: the created list of events.
+> > + */
+> > +static int hw_aware_parse_ids(struct perf_pmu *fake_pmu,
+> > +                            struct expr_parse_ctx *ids, const char *modifier,
+> > +                            struct evlist **out_evlist)
+> > +{
+> > +       struct parse_events_error parse_error;
+> > +       struct evlist *parsed_evlist;
+> > +       LIST_HEAD(groupings);
+> > +       struct metricgroup__group_strs *group;
+> > +       int ret;
+> > +
+> > +       *out_evlist = NULL;
+> > +       ret = hw_aware_build_grouping(ids, &groupings, modifier);
+> > +       if (ret) {
+> > +               metricgroup__free_grouping_strs(&groupings);
+> > +               return ret;
+> > +       }
+> > +
+> > +       parsed_evlist = evlist__new();
+> > +       if (!parsed_evlist) {
+> > +               ret = -ENOMEM;
+> > +               goto err_out;
+> > +       }
+> > +       list_for_each_entry(group, &groupings, nd) {
+> > +               struct strbuf *events = &group->grouping_str;
+> > +
+> > +               pr_debug("Parsing metric events '%s'\n", events->buf);
+> > +               parse_events_error__init(&parse_error);
+> > +               ret = __parse_events(parsed_evlist, events->buf, /*pmu_filter=*/NULL,
+> > +                                   &parse_error, fake_pmu, /*warn_if_reordered=*/false);
+> > +               if (ret) {
+> > +                       parse_events_error__print(&parse_error, events->buf);
+> > +                       goto err_out;
+> > +               }
+> > +               ret = decode_all_metric_ids(parsed_evlist, modifier);
+> > +               if (ret)
+> > +                       goto err_out;
+> > +       }
+> > +       *out_evlist = parsed_evlist;
+> > +       parsed_evlist = NULL;
+> > +err_out:
+> > +       parse_events_error__exit(&parse_error);
+> > +       evlist__delete(parsed_evlist);
+> > +       metricgroup__free_grouping_strs(&groupings);
+> > +       return ret;
+> > +}
+> > +
+> >  /**
+> >   * parse_ids - Build the event string for the ids and parse them creating an
+> >   *             evlist. The encoded metric_ids are decoded.
+> > @@ -1520,6 +1623,113 @@ static int parse_ids(bool metric_no_merge, struct perf_pmu *fake_pmu,
+> >         return ret;
+> >  }
+> >
+> > +static int hw_aware_parse_groups(struct evlist *perf_evlist,
+> > +                               const char *pmu, const char *str,
+> > +                               bool metric_no_threshold,
+> > +                               const char *user_requested_cpu_list,
+> > +                               bool system_wide,
+> > +                               struct perf_pmu *fake_pmu,
+> > +                               struct rblist *metric_events_list,
+> > +                               const struct pmu_metrics_table *table)
+> > +{
+> > +       struct evlist *combined_evlist = NULL;
+> > +       LIST_HEAD(metric_list);
+> > +       struct metric *m;
+> > +       int ret;
+> > +       bool metric_no_group = false;
+> > +       bool metric_no_merge = false;
+> > +
+> > +       if (metric_events_list->nr_entries == 0)
+> > +               metricgroup__rblist_init(metric_events_list);
+> > +       ret = metricgroup__add_metric_list(pmu, str, metric_no_group, metric_no_threshold,
+> > +                                          user_requested_cpu_list,
+> > +                                          system_wide, &metric_list, table);
+> > +       if (ret)
+> > +               goto out;
+> > +
+> > +       /* Sort metrics from largest to smallest. */
+> > +       list_sort(NULL, &metric_list, metric_list_cmp);
+> > +
+> > +       if (!metric_no_merge) {
+> > +               struct expr_parse_ctx *combined = NULL;
+> > +
+> > +               ret = build_combined_expr_ctx(&metric_list, &combined);
+> > +
+> > +               if (!ret && combined && hashmap__size(combined->ids)) {
+> > +                       ret = hw_aware_parse_ids(fake_pmu, combined,
+> > +                                               /*modifier=*/NULL,
+> > +                                               &combined_evlist);
+> > +               }
+> > +
+> > +               if (combined)
+> > +                       expr__ctx_free(combined);
+> > +               if (ret)
+> > +                       goto out;
+> > +       }
+> > +
+> > +       list_for_each_entry(m, &metric_list, nd) {
+> > +               struct metric_expr *expr;
+> > +               struct metric_event *me;
+> > +               struct evsel **metric_events;
+> > +
+> > +               ret = setup_metric_events(fake_pmu ? "all" : m->pmu, m->pctx->ids,
+> > +                                        combined_evlist, &metric_events);
+> > +               if (ret) {
+> > +                       pr_debug("Cannot resolve IDs for %s: %s\n",
+> > +                               m->metric_name, m->metric_expr);
+> > +                       goto out;
+> > +               }
+> > +
+> > +               me = metricgroup__lookup(metric_events_list, metric_events[0], true);
+> > +
+> > +               expr = malloc(sizeof(struct metric_expr));
+> > +               if (!expr) {
+> > +                       ret = -ENOMEM;
+> > +                       free(metric_events);
+> > +                       goto out;
+> > +               }
+> > +
+> > +               expr->metric_refs = m->metric_refs;
+> > +               m->metric_refs = NULL;
+> > +               expr->metric_expr = m->metric_expr;
+> > +               if (m->modifier) {
+> > +                       char *tmp;
+> > +
+> > +                       if (asprintf(&tmp, "%s:%s", m->metric_name, m->modifier) < 0)
+> > +                               expr->metric_name = NULL;
+> > +                       else
+> > +                               expr->metric_name = tmp;
+> > +               } else {
+> > +                       expr->metric_name = strdup(m->metric_name);
+> > +               }
+> > +
+> > +               if (!expr->metric_name) {
+> > +                       ret = -ENOMEM;
+> > +                       free(metric_events);
+> > +                       goto out;
+> > +               }
+> > +               expr->metric_threshold = m->metric_threshold;
+> > +               expr->metric_unit = m->metric_unit;
+> > +               expr->metric_events = metric_events;
+> > +               expr->runtime = m->pctx->sctx.runtime;
+> > +               list_add(&expr->nd, &me->head);
+> > +       }
+> > +
+> > +       if (combined_evlist) {
+> > +               evlist__splice_list_tail(perf_evlist, &combined_evlist->core.entries);
+> > +               evlist__delete(combined_evlist);
+> > +       }
+> > +
+> > +       list_for_each_entry(m, &metric_list, nd) {
+> > +               if (m->evlist)
+> > +                       evlist__splice_list_tail(perf_evlist, &m->evlist->core.entries);
+> > +       }
+> > +
+> > +out:
+> > +       metricgroup__free_metrics(&metric_list);
+> > +       return ret;
+> > +}
+> > +
+> >  static int parse_groups(struct evlist *perf_evlist,
+> >                         const char *pmu, const char *str,
+> >                         bool metric_no_group,
+> > @@ -1698,10 +1908,15 @@ int metricgroup__parse_groups(struct evlist *perf_evlist,
+> >         if (!table)
+> >                 return -EINVAL;
+> >         if (hardware_aware_grouping) {
+> > +               int ret;
+> 
+> nit: there should be a '\n' between variables and code,
+> scripts/checkpatch.pl sould catch this.
+> 
+> >                 pr_debug("Use hardware aware grouping instead of traditional metric grouping method\n");
+> > +               ret = hw_aware_parse_groups(perf_evlist, pmu, str,
+> > +                           metric_no_threshold, user_requested_cpu_list, system_wide,
+> > +                           /*fake_pmu=*/NULL, metric_events, table);
+> > +               if (!ret)
+> > +                       return 0;
+> >         }
+> >
+> > -
+> 
+> nit: unneeded whitespace change.
+> 
+> Thanks,
+> Ian
+> 
+> >         return parse_groups(perf_evlist, pmu, str, metric_no_group, metric_no_merge,
+> >                             metric_no_threshold, user_requested_cpu_list, system_wide,
+> >                             /*fake_pmu=*/NULL, metric_events, table);
+> > --
+> > 2.42.0
+> >
 
