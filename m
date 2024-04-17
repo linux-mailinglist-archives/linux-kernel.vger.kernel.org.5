@@ -1,138 +1,178 @@
-Return-Path: <linux-kernel+bounces-149062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2892B8A8B41
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:40:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A39FB8A8B43
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:41:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D91FA287B49
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:40:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C726B21F01
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E07C200BA;
-	Wed, 17 Apr 2024 18:40:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="xA9iEd9u"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 207F711712;
+	Wed, 17 Apr 2024 18:41:14 +0000 (UTC)
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B0F318C1F;
-	Wed, 17 Apr 2024 18:40:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3AC38F4A;
+	Wed, 17 Apr 2024 18:41:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713379210; cv=none; b=p99M5lnOAD+iM+/roTFFxmlpuB4vjWiK2/ch9bXqqwnWZcJkaEYVC9Pif53l3pPQcNXHT5dKPzuaitrc2QerbXdqvJCDiSlMJ1tC/1G1GQaL+e9/VRe6chvC1PClG10leh+RcCNFbFtPXKoYGNMTJ9IOInJNsgPNjm2GLxLBBk4=
+	t=1713379273; cv=none; b=IxrrPE7ZxK64qyL/JQ3wckc3/6rzedwI7sE1l2DNSZPTbhPLGfW1exHCXjYui71GHlpUThZcvmISo58awCW/Opu+M7eUcW3VOkivYyB9z5JZegFDzeJZ0lq1mSTkl+NITf9y0A84S7N/7eRaALo7f3gqEqtDi9kcGAL11yLKCAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713379210; c=relaxed/simple;
-	bh=spypHHCZDVm88N7JJvyzZpQKqPPwL6mqb4fe7v+1d/8=;
+	s=arc-20240116; t=1713379273; c=relaxed/simple;
+	bh=Ru7UYv/AeIgZXVSt5LnPpEnVAeH0fF5Fi5Cs5IYnadY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bgJDcewCO6COoNosfLbKOddm2sk/KohZsj0koeeo5AOsNO+u3i7xOB2FrXwMKa1jFzgmXEgTBgC7JoqDJZcABzA3FBZaYO7iDcB7JSAu0Uq1Gjej8ni8UzPhl/YOMVoaXF2W6M6I12JTX0H+fLK4yN/jNyC2bCykMefrHInuVSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=xA9iEd9u; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=8Chgr1XzB7VSgqVHEHSg5NAelbYbuWSYpJpFWHYQKww=; b=xA9iEd9uSK1xlIdb5ceWhSY5LG
-	6QyuyfGuXcUbPN6jWwUfai1cPpUETVoaxAQSAP4aLzeWyZ+LY+GTA5zHGziz29ZwNcfLOal5gYllU
-	XnXYMEx7kq5w8oDMDrMS9DN2srLrGKB2ToOQQSk23DPI1dD7QCP+DmK/159KopQ/xjE4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rxACI-00DH19-19; Wed, 17 Apr 2024 20:39:54 +0200
-Date: Wed, 17 Apr 2024 20:39:54 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Woojung Huh <woojung.huh@microchip.com>,
-	Arun Ramadoss <arun.ramadoss@microchip.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	UNGLinuxDriver@microchip.com,
-	linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH net-next v1 2/4] net: phy: micrel: lan8841: set default
- PTP latency values
-Message-ID: <c8e3f5d0-832b-4ab1-a65f-52f983ff110a@lunn.ch>
-References: <20240417164316.1755299-1-o.rempel@pengutronix.de>
- <20240417164316.1755299-3-o.rempel@pengutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=IZ2c9K1o6SQsMo/XRM979IRcWFUJQGbxUxN1YbcyQpACCUDmOLjHuK9YqNsJ046mAQhBDA86qYTkBdg+tvXf1ZqxlV5bm1iXGwBk0CyHhMhaIgoh1KjZ2JeFK24GV1YDKQ38fZn4QFP9Qy3Hq5hcLuL0Ggh/28PfOhJ+gyzk4fs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8BCE640E024C;
+	Wed, 17 Apr 2024 18:41:02 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id GR1CM0GmmCcU; Wed, 17 Apr 2024 18:40:56 +0000 (UTC)
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 754F040E0028;
+	Wed, 17 Apr 2024 18:40:48 +0000 (UTC)
+Date: Wed, 17 Apr 2024 20:40:40 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+	Ingo Molnar <mingo@kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Waiman Long <longman@redhat.com>, x86@kernel.org
+Subject: Re: [tip: locking/core] locking/atomic/x86: Introduce
+ arch_try_cmpxchg64_local()
+Message-ID: <20240417184040.GEZiAXqKvw3uRcmTJL@fat_crate.local>
+References: <20240414161257.49145-1-ubizjak@gmail.com>
+ <171312759954.10875.1385994404712358986.tip-bot2@tip-bot2>
+ <20240415201119.GBZh2J57f3aouPE_JR@fat_crate.local>
+ <CAFULd4aFSBHNxyVyVt9soPnJXDgiOu6qCCNMLoenFNXtk0W4wA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240417164316.1755299-3-o.rempel@pengutronix.de>
+In-Reply-To: <CAFULd4aFSBHNxyVyVt9soPnJXDgiOu6qCCNMLoenFNXtk0W4wA@mail.gmail.com>
 
-On Wed, Apr 17, 2024 at 06:43:14PM +0200, Oleksij Rempel wrote:
-> Set default PTP latency values to provide realistic path delay
-> measurements and reflecting internal PHY latency asymetry.
-> 
-> This values are based on ptp4l measurements for the path delay against
-> identical PHY as link partner and latency asymmetry extracted from
-> documented SOF Latency values of this PHY.
-> 
-> Documented SOF Latency values are:
-> TX 138ns/RX 430ns @ 1000Mbps
-> TX 140ns/RX 615ns @ 100Mbps (fixed latency mode)
-> TX 140ns/RX 488-524ns @ 100Mbps (variable latency mode)
-> TX 654ns/227-2577ns @ 10Mbps
+On Wed, Apr 17, 2024 at 06:24:21PM +0200, Uros Bizjak wrote:
+> We are dealing with locking primitives, probably the hottest part of
+> the kernel. For 64-bits, the patch is effectively a couple of lines,
+> reusing and extending existing macros,
 
-Does Half Duplex vs Full Duplex make a difference here?
+Ok.
 
-> +static int lan8841_ptp_latency_init(struct phy_device *phydev)
-> +{
-> +	int ret;
-> +
-> +	ret = phy_write_mmd(phydev, KSZ9131RN_MMD_COMMON_CTRL_REG,
-> +			    LAN8841_PTP_RX_LATENCY_10M,
-> +			    LAN8841_PTP_RX_LATENCY_10M_VAL);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = phy_write_mmd(phydev, KSZ9131RN_MMD_COMMON_CTRL_REG,
-> +			    LAN8841_PTP_TX_LATENCY_10M,
-> +			    LAN8841_PTP_TX_LATENCY_10M_VAL);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = phy_write_mmd(phydev, KSZ9131RN_MMD_COMMON_CTRL_REG,
-> +			    LAN8841_PTP_RX_LATENCY_100M,
-> +			    LAN8841_PTP_RX_LATENCY_100M_VAL);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = phy_write_mmd(phydev, KSZ9131RN_MMD_COMMON_CTRL_REG,
-> +			    LAN8841_PTP_TX_LATENCY_100M,
-> +			    LAN8841_PTP_TX_LATENCY_100M_VAL);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = phy_write_mmd(phydev, KSZ9131RN_MMD_COMMON_CTRL_REG,
-> +			    LAN8841_PTP_RX_LATENCY_1000M,
-> +			    LAN8841_PTP_RX_LATENCY_1000M_VAL);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return phy_write_mmd(phydev, KSZ9131RN_MMD_COMMON_CTRL_REG,
-> +			     LAN8841_PTP_TX_LATENCY_1000M,
-> +			     LAN8841_PTP_TX_LATENCY_1000M_VAL);
-> +}
+> the line count for a modern 32-bit target is also a couple of lines,
+> but there the saved insn count is much higher, around 10 instructions.
 
-What affect does this have on systems which have already applied
-adjustments in user space to correct for this? Will this cause
-regressions for such systems?
+Yah, that __arch_try_cmpxchg64_emu_local() thing with yet another
+alternative in there. So that's not a couple of lines - it is yet
+another cryptic alternative we need to pay attention to.
 
-I know Richard has rejected changes like this in the past.
+> Really? Was this decision reached by the community consensus?
 
-	Andrew
+Nothing official. Unofficially, we don't care.
+
+> The linux kernel has many uses, and using it for servers by a big
+> company, you are the voice of,
+
+No, here I'm wearing my maintainer hat.
+
+> I'm sure that 32-bit is quite relevant for embedded users and more
+
+People keep dangling those "embedded users" each time. Which users are
+those? I haven't seen anyone complaining about 32-bit kernels being
+broken or testing them. Because we keep breaking them and no one
+notices. Maybe that's a sign for how much they're used.
+
+Although, I broke 32-bit recently and people caught it so there are some
+straddlers from time to time. But that's very seldom. And each time we
+tell them to switch to 64-bit.
+
+> than relevant to a student or an enthusiast in some remote part of the
+> world.
+
+Trust me, they have 64-bit CPUs. Most of the 32-bit CPUs they had are
+probably dead already. Like mine.
+
+32-bit only CPUs like P4, for example, should be trashed just because
+they're contributing to global warming. :-P
+
+> As a maintainer, you should also take care of the communities
+> that are somehow neglected, where unilateral decisions like the one
+> above can have unwanted consequences.
+
+We still keep 32-bit kernels alive - no one has dropped them yet - we
+just don't add new features.
+
+> If the line count is the problem, I can easily parametrize new and
+> existing big macro descriptions in a follow-up patch. However, I was
+> advised to not mix everything together in one patch, but rest assured,
+> the creation and testing of the follow-up patch would take me less
+> time than writing the message you are reading.
+
+I'm simply making sure we're not going off the rails with
+micro-optimizing for no apparent reason.
+
+Saving a
+
+	test   %rax,%rax
+
+doesn't need fixing in my book. Because I don't think you'll be able to
+even measure it.
+
+> It brings no future maintenance burden, but it perhaps improves
+> someone's life a tiny bit.
+
+This is where you and I disagree: touching that alternative in
+__arch_try_cmpxchg64_emu_local() does as we tend to change them from
+time to time, especially in recent times.
+
+And I wouldn't mind touching it but if it is there to save 10 insns on
+32-bit - which doesn't matter - then why bother?
+
+Or do you have a relevant 32-bit workload which brings any improvement
+by this change?
+
+> Last, but not least, I'm bringing some ideas from the compiler
+> development community, where the attitude to redundant instructions is
+> totally different. It could take weeks of effort and considerable
+> rewrite of compiler functionality just to remove one instruction ;)
+> Micro-optimizations add up!
+
+I'm sure but they all need to be weighed in. Zapping a TEST REG,REG is
+not worth it. On most machines, that ALU insn executes in 1 cycle.
+
+I wanna say, such "optimizations" should be checked by benchmarks to see
+whether they even give any improvements but we can't check every patch.
+
+IOW, all the patches we're adding should answer the "Is it really worth
+the effort?" question. And don't forget that "it brings no future
+maintenance burden" is wrong. It brings a maintenance burden every time
+we refactor the kernel. And we do that all the time. So the more sites
+you have to touch, the more it adds up.
+
+So even if your patch saves 10 insns but there's not a single workload
+where it matters, then don't bother. There are other, lower hanging
+fruits we need to tackle first.
+
+> Thanks for reading this,
+
+Thanks for taking the time to explain how you're seeing it.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
