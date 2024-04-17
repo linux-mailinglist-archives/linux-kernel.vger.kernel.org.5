@@ -1,257 +1,350 @@
-Return-Path: <linux-kernel+bounces-148073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 606258A7D54
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:43:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C15C08A7D59
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:45:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82C791C20F9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:43:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79B7B283ED2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:45:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B1DC6E61B;
-	Wed, 17 Apr 2024 07:43:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71931B653;
+	Wed, 17 Apr 2024 07:45:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qj1zIwYP"
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="c0yF1oBK"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 499346BFA9
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44F56184D
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:45:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713339828; cv=none; b=UeyATgtBuc3v13xMDTsT2GVzKfB8r4y5WG9CpDUD6vy/7pHXn+Wr/3521ANG9mnwxHyfLBcGiKpfLpYSahd7y/KDUcJ9D+W/DOX9qc0vek9/dRChTWX1KHZ5w1IZIgmT5iGcpJetKrpBEquhK1RcUKiB8Bk6ovRCTeRZ+43rIHc=
+	t=1713339941; cv=none; b=EbEMMB5eMgRlUS6V+TP6Inpa5QzPTr1/3V61fP5OOuNBaUCCcx1Bv9xVApsK/DwcaTfppELlpxsXqq8KI+FPW1vCcPiEXJDopWh02g0GQGuZr/iwS/rOmtD10Mu3OT78kFy1nagMWnd+YbgFqsOauXCPUMNshzQpY39qCL1VtUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713339828; c=relaxed/simple;
-	bh=h8c3gJb9ZG5Vj1Znka0shDUGDwvzYy+8bgKQ4ihTSRU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EJ9EQQVfLHKZdz0L1VCvIkeOnJQEmGIkkd8LE5+v9P7mrfhJzTJbgs8pk1OCJQYcFc/6h96p0nVujcbnUxq6NQW9/lREQ29rQSNFvQASagtIGRiZMBYopezhsFzdhIqezEjpjIdPh65Gykg5mWvEtNFjzv2oF8/n2pjNoqpI9h8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qj1zIwYP; arc=none smtp.client-ip=209.85.222.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-7e3555015a8so1376732241.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:43:47 -0700 (PDT)
+	s=arc-20240116; t=1713339941; c=relaxed/simple;
+	bh=H193LG1OYhGZxbiufps3RKJjYMc9orDOM742EhH0pVk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=heHz/3PeHxY5R7UeyORDWFkR5n3NB3kjU0JZvsyFrwRYeE6JzH21DDNQODCbrR08WG3QqC9cwq9iGebJzaBM+yXTkwZbiQm3V4PVKWgfRDt89/8orwfbuNKN1VZ9nAt7SyIHS1pyc55KgaWj/Kga6+aQh0nSKjibf/UmOTZuJhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=c0yF1oBK; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e3f17c64daso36709175ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:45:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713339826; x=1713944626; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Phf0FF6NStVSDXIMMyMNZP1z+jfYnoekO6QoTXZR0Wg=;
-        b=qj1zIwYPlt6xaJlB7omqQA7a5UnVRF38TI5yMi8HzSkghQ+oBiM6XeEXiN8NZLGHKj
-         e9asYIaSa1LEg4Yixtg0hfH4uimOEtg9JuZxGcf3GyoGcCLeRvmuaeeOT9RfB7h6wHVp
-         pT4cq625a6bhaT0HPMl1gweXvEioe5yO4Ln2VLM6+kVYGoq3vljM51RMjILWA78pKtx7
-         JnV03Q+/AsgO5HCYFNoxqRme5dpq8kkBq8sYDs8mobmc+MPna7897E7rv/cq7egGjpnK
-         sYo/Na973gnsCNwq+gJZBGaXXbnZFuX96Vyg70fBJDG1liawDtmt3cbIAEYQ7hDeD75d
-         KWHw==
+        d=sifive.com; s=google; t=1713339938; x=1713944738; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=St7UoB0o1VZp6BFYuL7tbSNr44kxdvXND12E5lAvbIw=;
+        b=c0yF1oBKTfPVSvXD7LQ9PE9Cv+WZeL4NY5WYKTFBpdABA2Um2xQMZWY3kW4a/rsGVl
+         WpDE9UPlwkWhPplP7t9d/eEGFwIg4IchHB8kFxX9aS0vIi0OEcG7KJWnd8vUQCi3vZ3P
+         mzDZqckvCKrifXDB+wvJPTev5VGCrguv+UJ0yaE3NPFrZkUHLgd1nT+ymTFUP9vaYijk
+         OC1iLMotQQsil4vXSoZVB+i/EFtqBLflGq5cOpMmkQPrL3tAsITIwI2r5iH+99BZLR1B
+         qwGQu3RwHWzLhnBQpyurTSbhnT1eco7maJ1UYTd7QLwib76xXVMIA1yN1L65xAsqoaSF
+         uWuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713339826; x=1713944626;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Phf0FF6NStVSDXIMMyMNZP1z+jfYnoekO6QoTXZR0Wg=;
-        b=LO7MwdRyvxKMpx4sf8iPUcYHnRii8TSkj1nU21lypX6ghbXDOAULxcbMAP96wsZWyH
-         egjq8opJoGn6LLFOWY3mmSz8HWGnX7/gCuEFdopT9qTHu/TE61+xMZmJswZaqAjjBLe5
-         3gemlJNtqZN1Ks/32b3lJVu9zgIulchLWRd2oUyNrm4eK65liRNZ2B6F/RAO5d4ogNvd
-         pfNjmK3RkSw7Q13kSH2wMQcVG/IBwcNWT82sj/+ACc/F90EJIH1L8Keal/IXq8UYALnO
-         P7SElAO+QQDJfBre+6K6bp9NImK012vs9J0mH+YB2iR05aqloxSd4NHchTqnqFQoOh+K
-         rcuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXA56vF/yp0nUTFX+mpoVc9qP6p6WBSesxpZ4uzMMQ60r7qglsN5JAejEkxU8fCmDwpFwkLn1D4KifdDVAV3Iw3KvTzr9LRCsHS9E7P
-X-Gm-Message-State: AOJu0Yzc6lO6xg4tKc8t1iiSLzA7JiBkgjBwgucw8FMPKIGjqRAjfQh1
-	JtsaX3u1PRMWXq99HQ2x1HQYB+2c9RbpdM3OJJ4Lh+EnMWW5vVR57MFi9Q2omgc8b01VlMQyQTw
-	dyjIIe9dVrKMJ75CjKAgEf0S4+Tn5xJjtbrsoew==
-X-Google-Smtp-Source: AGHT+IGKIXyPa/nU2wtBFQ2i7XYjjJSCtGr11a/Jxi4Ce0+hrTHgJNre43i0/FxzDMGJ3Dw/GOVllDLGg6pbXxrS2Ac=
-X-Received: by 2002:a05:6122:1d8c:b0:4da:c699:de98 with SMTP id
- gg12-20020a0561221d8c00b004dac699de98mr12138986vkb.16.1713339826114; Wed, 17
- Apr 2024 00:43:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713339938; x=1713944738;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=St7UoB0o1VZp6BFYuL7tbSNr44kxdvXND12E5lAvbIw=;
+        b=VXCpTkS1JHtfF+zp81MDw2MFLbV2xw2peR9fGhLIqgpNx317AtQ/3NsQ+zHtf9oLHu
+         dXF7lA3G9NLotRaupDVRCW92fBJ5Rq2S0ISwZdgWjtK1oWPzXBcmloegQx7BDDNwnBro
+         nUJoGH8+wUURvkR8lyO8FqaUpgIW1GhFpwIjsM1CeqUxBIb+BmJnR26TJplG7jZnlon/
+         HVB+qZVjdpmZUOnCSHbiIG4kgyFC5YXCV8XDWu+hyTXUu42OLXkLaHAZE6aN5AQsHEYt
+         swR0yYSl5AgKtGU3cq2PaS0hW+ozWAdCnwKqISDSTkO9C9u6T9a5R4KaCDRlhx96YCc+
+         xROQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV/2AYIsPQkFX+EeXUKi/Tz3EYdWs621DtysFo4RzD5t6W/YUjLF/lAM2mvNygBUODNZZB+F7wv4O1QwcLQOSIdLo4j5WZPPmcxh57r
+X-Gm-Message-State: AOJu0YyKVlbmmYr1+Gku8DewjKVug5JVrec4FFRSOGrKMJXnL34FG13f
+	N/WG8ZEOgiFYXocBD8z2gopCzNzPj/7DMsFCqdwNt6FVBfpwNTLpJ4JN+EMJanw=
+X-Google-Smtp-Source: AGHT+IFHSsF9cxqiNY1Nu+bx/qodN9CUjIwlbNj3jKBIDWTLMlrbov3NEnKLK0AuzqvNxhhd9qpAyQ==
+X-Received: by 2002:a17:902:f7c5:b0:1e0:c567:bb42 with SMTP id h5-20020a170902f7c500b001e0c567bb42mr13147740plw.59.1713339938562;
+        Wed, 17 Apr 2024 00:45:38 -0700 (PDT)
+Received: from hsinchu26.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
+        by smtp.gmail.com with ESMTPSA id g21-20020a170902c39500b001e7b7a79340sm3166065plg.267.2024.04.17.00.45.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 00:45:38 -0700 (PDT)
+From: Yong-Xuan Wang <yongxuan.wang@sifive.com>
+To: linux-riscv@lists.infradead.org,
+	kvm-riscv@lists.infradead.org
+Cc: greentime.hu@sifive.com,
+	vincent.chen@sifive.com,
+	Yong-Xuan Wang <yongxuan.wang@sifive.com>,
+	Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] RISCV: KVM: Introduce mp_state_lock to avoid lock inversion in SBI_EXT_HSM_HART_START
+Date: Wed, 17 Apr 2024 15:45:25 +0800
+Message-Id: <20240417074528.16506-2-yongxuan.wang@sifive.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240417074528.16506-1-yongxuan.wang@sifive.com>
+References: <20240417074528.16506-1-yongxuan.wang@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240415141946.165870434@linuxfoundation.org>
-In-Reply-To: <20240415141946.165870434@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 17 Apr 2024 13:13:34 +0530
-Message-ID: <CA+G9fYu=tSQw-bmr8eQvifTKV67H01H63R9qPEkY-RSFOxoTNQ@mail.gmail.com>
-Subject: Re: [PATCH 6.1 00/69] 6.1.87-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
-	broonie@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, 15 Apr 2024 at 20:09, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.1.87 release.
-> There are 69 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 17 Apr 2024 14:19:30 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.1.87-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Documentation/virt/kvm/locking.rst advises that kvm->lock should be
+acquired outside vcpu->mutex and kvm->srcu. However, when KVM/RISC-V
+handling SBI_EXT_HSM_HART_START, the lock ordering is vcpu->mutex,
+kvm->srcu then kvm->lock.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Although the lockdep checking no longer complains about this after commit
+f0f44752f5f6 ("rcu: Annotate SRCU's update-side lockdep dependencies"),
+it's necessary to replace kvm->lock with a new dedicated lock to ensure
+only one hart can execute the SBI_EXT_HSM_HART_START call for the target
+hart simultaneously.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Additionally, this patch also rename "power_off" to "mp_state" with two
+possible values. The vcpu->mp_state_lock also protects the access of
+vcpu->mp_state.
 
-## Build
-* kernel: 6.1.87-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.1.y
-* git commit: 6745a5f2c8063076bb5a9cd18ede5a5559258492
-* git describe: v6.1.86-70-g6745a5f2c806
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.8=
-6-70-g6745a5f2c806
+Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
+---
+ arch/riscv/include/asm/kvm_host.h |  7 ++--
+ arch/riscv/kvm/vcpu.c             | 56 ++++++++++++++++++++++++-------
+ arch/riscv/kvm/vcpu_sbi.c         |  7 ++--
+ arch/riscv/kvm/vcpu_sbi_hsm.c     | 23 ++++++++-----
+ 4 files changed, 68 insertions(+), 25 deletions(-)
 
-## Test Regressions (compared to v6.1.86)
+diff --git a/arch/riscv/include/asm/kvm_host.h b/arch/riscv/include/asm/kvm_host.h
+index 484d04a92fa6..64d35a8c908c 100644
+--- a/arch/riscv/include/asm/kvm_host.h
++++ b/arch/riscv/include/asm/kvm_host.h
+@@ -252,8 +252,9 @@ struct kvm_vcpu_arch {
+ 	/* Cache pages needed to program page tables with spinlock held */
+ 	struct kvm_mmu_memory_cache mmu_page_cache;
+ 
+-	/* VCPU power-off state */
+-	bool power_off;
++	/* VCPU power state */
++	struct kvm_mp_state mp_state;
++	spinlock_t mp_state_lock;
+ 
+ 	/* Don't run the VCPU (blocked) */
+ 	bool pause;
+@@ -375,7 +376,9 @@ void kvm_riscv_vcpu_flush_interrupts(struct kvm_vcpu *vcpu);
+ void kvm_riscv_vcpu_sync_interrupts(struct kvm_vcpu *vcpu);
+ bool kvm_riscv_vcpu_has_interrupts(struct kvm_vcpu *vcpu, u64 mask);
+ void kvm_riscv_vcpu_power_off(struct kvm_vcpu *vcpu);
++void __kvm_riscv_vcpu_power_on(struct kvm_vcpu *vcpu);
+ void kvm_riscv_vcpu_power_on(struct kvm_vcpu *vcpu);
++bool kvm_riscv_vcpu_stopped(struct kvm_vcpu *vcpu);
+ 
+ void kvm_riscv_vcpu_sbi_sta_reset(struct kvm_vcpu *vcpu);
+ void kvm_riscv_vcpu_record_steal_time(struct kvm_vcpu *vcpu);
+diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
+index b5ca9f2e98ac..70937f71c3c4 100644
+--- a/arch/riscv/kvm/vcpu.c
++++ b/arch/riscv/kvm/vcpu.c
+@@ -102,6 +102,8 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+ 	struct kvm_cpu_context *cntx;
+ 	struct kvm_vcpu_csr *reset_csr = &vcpu->arch.guest_reset_csr;
+ 
++	spin_lock_init(&vcpu->arch.mp_state_lock);
++
+ 	/* Mark this VCPU never ran */
+ 	vcpu->arch.ran_atleast_once = false;
+ 	vcpu->arch.mmu_page_cache.gfp_zero = __GFP_ZERO;
+@@ -201,7 +203,7 @@ void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu)
+ int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu)
+ {
+ 	return (kvm_riscv_vcpu_has_interrupts(vcpu, -1UL) &&
+-		!vcpu->arch.power_off && !vcpu->arch.pause);
++		!kvm_riscv_vcpu_stopped(vcpu) && !vcpu->arch.pause);
+ }
+ 
+ int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu)
+@@ -429,26 +431,50 @@ bool kvm_riscv_vcpu_has_interrupts(struct kvm_vcpu *vcpu, u64 mask)
+ 	return kvm_riscv_vcpu_aia_has_interrupts(vcpu, mask);
+ }
+ 
+-void kvm_riscv_vcpu_power_off(struct kvm_vcpu *vcpu)
++static void __kvm_riscv_vcpu_power_off(struct kvm_vcpu *vcpu)
+ {
+-	vcpu->arch.power_off = true;
++	vcpu->arch.mp_state.mp_state = KVM_MP_STATE_STOPPED;
+ 	kvm_make_request(KVM_REQ_SLEEP, vcpu);
+ 	kvm_vcpu_kick(vcpu);
+ }
+ 
+-void kvm_riscv_vcpu_power_on(struct kvm_vcpu *vcpu)
++void kvm_riscv_vcpu_power_off(struct kvm_vcpu *vcpu)
++{
++	spin_lock(&vcpu->arch.mp_state_lock);
++	__kvm_riscv_vcpu_power_off(vcpu);
++	spin_unlock(&vcpu->arch.mp_state_lock);
++}
++
++void __kvm_riscv_vcpu_power_on(struct kvm_vcpu *vcpu)
+ {
+-	vcpu->arch.power_off = false;
++	vcpu->arch.mp_state.mp_state = KVM_MP_STATE_RUNNABLE;
+ 	kvm_vcpu_wake_up(vcpu);
+ }
+ 
++void kvm_riscv_vcpu_power_on(struct kvm_vcpu *vcpu)
++{
++	spin_lock(&vcpu->arch.mp_state_lock);
++	__kvm_riscv_vcpu_power_on(vcpu);
++	spin_unlock(&vcpu->arch.mp_state_lock);
++}
++
++bool kvm_riscv_vcpu_stopped(struct kvm_vcpu *vcpu)
++{
++	bool ret;
++
++	spin_lock(&vcpu->arch.mp_state_lock);
++	ret = vcpu->arch.mp_state.mp_state == KVM_MP_STATE_STOPPED;
++	spin_unlock(&vcpu->arch.mp_state_lock);
++
++	return ret;
++}
++
+ int kvm_arch_vcpu_ioctl_get_mpstate(struct kvm_vcpu *vcpu,
+ 				    struct kvm_mp_state *mp_state)
+ {
+-	if (vcpu->arch.power_off)
+-		mp_state->mp_state = KVM_MP_STATE_STOPPED;
+-	else
+-		mp_state->mp_state = KVM_MP_STATE_RUNNABLE;
++	spin_lock(&vcpu->arch.mp_state_lock);
++	*mp_state = vcpu->arch.mp_state;
++	spin_unlock(&vcpu->arch.mp_state_lock);
+ 
+ 	return 0;
+ }
+@@ -458,17 +484,21 @@ int kvm_arch_vcpu_ioctl_set_mpstate(struct kvm_vcpu *vcpu,
+ {
+ 	int ret = 0;
+ 
++	spin_lock(&vcpu->arch.mp_state_lock);
++
+ 	switch (mp_state->mp_state) {
+ 	case KVM_MP_STATE_RUNNABLE:
+-		vcpu->arch.power_off = false;
++		vcpu->arch.mp_state.mp_state = KVM_MP_STATE_RUNNABLE;
+ 		break;
+ 	case KVM_MP_STATE_STOPPED:
+-		kvm_riscv_vcpu_power_off(vcpu);
++		__kvm_riscv_vcpu_power_off(vcpu);
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+ 	}
+ 
++	spin_unlock(&vcpu->arch.mp_state_lock);
++
+ 	return ret;
+ }
+ 
+@@ -584,11 +614,11 @@ static void kvm_riscv_check_vcpu_requests(struct kvm_vcpu *vcpu)
+ 		if (kvm_check_request(KVM_REQ_SLEEP, vcpu)) {
+ 			kvm_vcpu_srcu_read_unlock(vcpu);
+ 			rcuwait_wait_event(wait,
+-				(!vcpu->arch.power_off) && (!vcpu->arch.pause),
++				(!kvm_riscv_vcpu_stopped(vcpu)) && (!vcpu->arch.pause),
+ 				TASK_INTERRUPTIBLE);
+ 			kvm_vcpu_srcu_read_lock(vcpu);
+ 
+-			if (vcpu->arch.power_off || vcpu->arch.pause) {
++			if (kvm_riscv_vcpu_stopped(vcpu) || vcpu->arch.pause) {
+ 				/*
+ 				 * Awaken to handle a signal, request to
+ 				 * sleep again later.
+diff --git a/arch/riscv/kvm/vcpu_sbi.c b/arch/riscv/kvm/vcpu_sbi.c
+index 72a2ffb8dcd1..1851fc979bd2 100644
+--- a/arch/riscv/kvm/vcpu_sbi.c
++++ b/arch/riscv/kvm/vcpu_sbi.c
+@@ -138,8 +138,11 @@ void kvm_riscv_vcpu_sbi_system_reset(struct kvm_vcpu *vcpu,
+ 	unsigned long i;
+ 	struct kvm_vcpu *tmp;
+ 
+-	kvm_for_each_vcpu(i, tmp, vcpu->kvm)
+-		tmp->arch.power_off = true;
++	kvm_for_each_vcpu(i, tmp, vcpu->kvm) {
++		spin_lock(&vcpu->arch.mp_state_lock);
++		tmp->arch.mp_state.mp_state = KVM_MP_STATE_STOPPED;
++		spin_unlock(&vcpu->arch.mp_state_lock);
++	}
+ 	kvm_make_all_cpus_request(vcpu->kvm, KVM_REQ_SLEEP);
+ 
+ 	memset(&run->system_event, 0, sizeof(run->system_event));
+diff --git a/arch/riscv/kvm/vcpu_sbi_hsm.c b/arch/riscv/kvm/vcpu_sbi_hsm.c
+index 7dca0e9381d9..115a6c6525fd 100644
+--- a/arch/riscv/kvm/vcpu_sbi_hsm.c
++++ b/arch/riscv/kvm/vcpu_sbi_hsm.c
+@@ -18,12 +18,18 @@ static int kvm_sbi_hsm_vcpu_start(struct kvm_vcpu *vcpu)
+ 	struct kvm_cpu_context *cp = &vcpu->arch.guest_context;
+ 	struct kvm_vcpu *target_vcpu;
+ 	unsigned long target_vcpuid = cp->a0;
++	int ret = 0;
+ 
+ 	target_vcpu = kvm_get_vcpu_by_id(vcpu->kvm, target_vcpuid);
+ 	if (!target_vcpu)
+ 		return SBI_ERR_INVALID_PARAM;
+-	if (!target_vcpu->arch.power_off)
+-		return SBI_ERR_ALREADY_AVAILABLE;
++
++	spin_lock(&target_vcpu->arch.mp_state_lock);
++
++	if (target_vcpu->arch.mp_state.mp_state != KVM_MP_STATE_STOPPED) {
++		ret = SBI_ERR_ALREADY_AVAILABLE;
++		goto out;
++	}
+ 
+ 	reset_cntx = &target_vcpu->arch.guest_reset_context;
+ 	/* start address */
+@@ -34,14 +40,18 @@ static int kvm_sbi_hsm_vcpu_start(struct kvm_vcpu *vcpu)
+ 	reset_cntx->a1 = cp->a2;
+ 	kvm_make_request(KVM_REQ_VCPU_RESET, target_vcpu);
+ 
+-	kvm_riscv_vcpu_power_on(target_vcpu);
++	__kvm_riscv_vcpu_power_on(target_vcpu);
++
++out:
++	spin_unlock(&target_vcpu->arch.mp_state_lock);
++
+ 
+ 	return 0;
+ }
+ 
+ static int kvm_sbi_hsm_vcpu_stop(struct kvm_vcpu *vcpu)
+ {
+-	if (vcpu->arch.power_off)
++	if (kvm_riscv_vcpu_stopped(vcpu))
+ 		return SBI_ERR_FAILURE;
+ 
+ 	kvm_riscv_vcpu_power_off(vcpu);
+@@ -58,7 +68,7 @@ static int kvm_sbi_hsm_vcpu_get_status(struct kvm_vcpu *vcpu)
+ 	target_vcpu = kvm_get_vcpu_by_id(vcpu->kvm, target_vcpuid);
+ 	if (!target_vcpu)
+ 		return SBI_ERR_INVALID_PARAM;
+-	if (!target_vcpu->arch.power_off)
++	if (!kvm_riscv_vcpu_stopped(target_vcpu))
+ 		return SBI_HSM_STATE_STARTED;
+ 	else if (vcpu->stat.generic.blocking)
+ 		return SBI_HSM_STATE_SUSPENDED;
+@@ -71,14 +81,11 @@ static int kvm_sbi_ext_hsm_handler(struct kvm_vcpu *vcpu, struct kvm_run *run,
+ {
+ 	int ret = 0;
+ 	struct kvm_cpu_context *cp = &vcpu->arch.guest_context;
+-	struct kvm *kvm = vcpu->kvm;
+ 	unsigned long funcid = cp->a6;
+ 
+ 	switch (funcid) {
+ 	case SBI_EXT_HSM_HART_START:
+-		mutex_lock(&kvm->lock);
+ 		ret = kvm_sbi_hsm_vcpu_start(vcpu);
+-		mutex_unlock(&kvm->lock);
+ 		break;
+ 	case SBI_EXT_HSM_HART_STOP:
+ 		ret = kvm_sbi_hsm_vcpu_stop(vcpu);
+-- 
+2.17.1
 
-## Metric Regressions (compared to v6.1.86)
-
-## Test Fixes (compared to v6.1.86)
-
-## Metric Fixes (compared to v6.1.86)
-
-## Test result summary
-total: 237743, pass: 204447, fail: 4019, skip: 28994, xfail: 283
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 138 total, 138 passed, 0 failed
-* arm64: 41 total, 41 passed, 0 failed
-* i386: 31 total, 31 passed, 0 failed
-* mips: 26 total, 26 passed, 0 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 11 total, 11 passed, 0 failed
-* s390: 15 total, 15 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 7 total, 7 passed, 0 failed
-* x86_64: 37 total, 36 passed, 1 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mm
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-smoketest
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
