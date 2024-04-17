@@ -1,81 +1,66 @@
-Return-Path: <linux-kernel+bounces-148892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D16668A889F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:16:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E3188A88A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:16:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 851F51F26A99
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:16:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0A0EB25568
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:16:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86FF1148834;
-	Wed, 17 Apr 2024 16:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16578148839;
+	Wed, 17 Apr 2024 16:16:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mxulp7+t"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S9ZcRXMk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F85884E14;
-	Wed, 17 Apr 2024 16:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5426F1487E4;
+	Wed, 17 Apr 2024 16:16:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713370589; cv=none; b=qT22NlYHDHp3Lj3lnHkXajKoA4DCCYHY4Fu9R74HwNAVRPyPpCvjaZJKmAVc7xxVLwXhulqwtbdIsIKrzQg/NK2EErYLZPVfCPtvAkqJK1b3blap3OVwncf/GNlGAD9ARdMTzxw5B+2ccsa9+EEPXmJ2KpP/t/6n6wJvzurKKFw=
+	t=1713370608; cv=none; b=gKX2EQZI2sJvf5qBq2Ng4esiKyJM1O06IrNREnZjEHkuWEsbLA6YbhpEvHhCMt/BianeA02jm1z+Wys6PfbbNCMb797B1AGG23WQq1oyO9ssOYBsQsOC0BQ1fQrcjUl8kDvrlXL9LjZw3L3KGcjQzJFRhCMvQVZCvbH4Zyu1ijQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713370589; c=relaxed/simple;
-	bh=Krgol5AK1VFttgbaqcU7tHbCyGc9k/AScToO1HICDbc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZFn8t7Bp7e6b3tFPaI251u37VeR73kvxOCPOYrqHgoOGo1axo6eaFdS+Eyn6QhUkcpu+9h1cQh8KiPEbc2U/HlbJdTqDWKjG3nhl5uvQ03V9I2b+5m+wiTPZ83uA6BA1mzVp/eo+CuLI5Vanr4YDB+aIw2sPetU9aA0Yj56PIQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mxulp7+t; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5176f217b7bso10366170e87.0;
-        Wed, 17 Apr 2024 09:16:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713370586; x=1713975386; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pe+uR9BPb/oqFUBU5dono2lVV+upurW6YfGvFkf6LsY=;
-        b=Mxulp7+t/ArDfdC6wem3JPnAxzZ4QJtXE17ITGarSF7Q5Af5yF2Feso/f/awHqYfog
-         qhC0XFrryUh7h+PWflK6xpCiYqwWD3+L7ka0CploYtWFMVWG2ZK8FCLlJkrY4tzZHzpl
-         0FWClTAzyOWu51cJYVp1orQwbSYfOPiDNsI/MPto3lkUklYv4YoBFK9KsvXuZaTjSVck
-         IqqQlCFIJjsUGVuhfq/+xj+PIUZ9S0FJtrdpXyE9/E5Gn/G92Jd2OFHQ9LK9gLazzJ7s
-         3y8E2zUyXbQOsrLyzuuvX6zHruidZqcsTqndMQ68TPta8eWCstggPZiu/eCiUUsulPS1
-         Cwxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713370586; x=1713975386;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pe+uR9BPb/oqFUBU5dono2lVV+upurW6YfGvFkf6LsY=;
-        b=YQdHQor4fmfqWfCrDW8kSxMJyWJ7sE7lnBj+xdbnN2zxL7dOU6VEZOzBcJBxsVgDaZ
-         pwnibW1QbY53/shGNoN3iGXRkV32ykMOlPkr0NtChyaACsXbxSm/9llZNuT2r6l7Qd/1
-         krMlBK/W9NhG/rxoHyuCLy8zs5ysGYEaktnR8wla5zFKLkSNi3vS1AHGfOp/Tk25Rkc6
-         mxGx62Yz4yPl3+BKqDv3R4GznEd56l6c2vHlQS9m7ZKVLxbAuvnC5ir0mNiF+cX8HguM
-         ndHcLqo9TfbR1PLaCShgROpL4OFchS2dH871/tyxdunUGp0l1BF/WMlXHaRxpYCYuvf3
-         yfLg==
-X-Forwarded-Encrypted: i=1; AJvYcCXjj4e6L7EbwubVX5nJmPXm2jUJIJb3aOCqcLlRrhp3SFqy4bjb6yOOx78L7ezB8CrtAqVdmJ11M8BK5BGFVFQypJNYLd/0/WSaRq/8MorFVDJ/Xb0aqPSo+2JLEVQP/dXzCRtKt8soO+axsCZ1
-X-Gm-Message-State: AOJu0YzHZ/8UyNs6yNPaKiJXLWz1e1tGG1qgXAbGsZ+LJZZDeI2qeHsV
-	IAJCc5kT8EkhoDVOnHOLFshbIHDp/6siN2xObY2IHS7m7CBzAU7FnQING0dZZBM3zQ==
-X-Google-Smtp-Source: AGHT+IEkY7P4AFWYwkYyKLfr8cDK0pP3jwxY/48uBiMdWNhvCs8rvo+P8wHKjnGAFlSJYjn5hRYL6g==
-X-Received: by 2002:ac2:53b3:0:b0:518:c2a5:5a3b with SMTP id j19-20020ac253b3000000b00518c2a55a3bmr8662347lfh.46.1713370586260;
-        Wed, 17 Apr 2024 09:16:26 -0700 (PDT)
-Received: from localhost ([185.204.1.218])
-        by smtp.gmail.com with ESMTPSA id o1-20020a056512052100b00513d1e9ce7esm1983196lfc.90.2024.04.17.09.16.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 09:16:25 -0700 (PDT)
-From: Amer Al Shanawany <amer.shanawany@gmail.com>
-To: Shuah Khan <shuah@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Amer Al Shanawany <amer.shanawany@gmail.com>,
-	Miklos Szeredi <mszeredi@redhat.com>,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Subject: [PATCH] selftests: filesystems: add missing stddef header
-Date: Wed, 17 Apr 2024 18:16:23 +0200
-Message-Id: <20240417161623.37166-1-amer.shanawany@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713370608; c=relaxed/simple;
+	bh=kilas/NCA6Kdhuk9D+qD9nfskcb8RieBMJZ8E34ynxY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=V/kiPkc2DyKMhTbu9jdcfxYEO8v7A7ro+YwwZO7zc9aracV+/6PBs7psaNx3PVf0AezsOUiRmTwllMlBHLaSEvvYyFDlfi8SMgOR7R8d/U4GeUEnJDKXBLPSHX1zWZRTfRNtKyGjackpPhQNVqgC+U0aKdtxfy3/L15M2o3Ezww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S9ZcRXMk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFF4FC072AA;
+	Wed, 17 Apr 2024 16:16:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713370607;
+	bh=kilas/NCA6Kdhuk9D+qD9nfskcb8RieBMJZ8E34ynxY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=S9ZcRXMk8vQMJLSm6szRJ2k8dw3EFMFnx0bzhC/18VdzZEtqeZhI/08DVoOPhStvx
+	 x/G6VZ2nI9FVCGk6E2Ejvkm2RJBrwIAkS6NFwEOKQcLLU2CGdrzXE8gZJeWSGNcyTo
+	 u4A980F6xBA7HFbZ0m+/BtSOcb48hxey8QKP9n9GodCpaJIsu21X6JU41F3NHo9//n
+	 e/dN7Hhad1JltT2lpHx4B+0AeB98BDynlAlwbgxfMBuO0elucPN6siZKv7eEKlaxj2
+	 nmozZs+1Td4LTUabXZkXBnucMF0gOVRHgiWxBbDTbWJ/ShtQHPwv5zH6M07mByrOOQ
+	 FIbX1lkujbNTA==
+Received: from mchehab by mail.kernel.org with local (Exim 4.97.1)
+	(envelope-from <mchehab@kernel.org>)
+	id 1rx7xk-000000001F8-0268;
+	Wed, 17 Apr 2024 17:16:44 +0100
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: linux-sound@vger.kernel.org,
+	Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	"Luke D. Jones" <luke@ljones.dev>,
+	Athaariq Ardhiansyah <foss@athaariq.my.id>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Kailang Yang <kailang@realtek.com>,
+	Matthew Anderson <ruinairas1992@gmail.com>,
+	Shenghao Ding <shenghao-ding@ti.com>,
+	Stefan Binding <sbinding@opensource.cirrus.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: [PATCH] ALSA: hda/realtek: Add quirks for Huawei Matebook D14 NBLB-WAX9N
+Date: Wed, 17 Apr 2024 17:16:33 +0100
+Message-ID: <b92a9e49fb504eec8416bcc6882a52de89450102.1713370457.git.mchehab@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,26 +69,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-fix compiler warning and errors when compiling statmount test.
+The headset mic requires a fixup to be properly detected/used.
 
-Signed-off-by: Amer Al Shanawany <amer.shanawany@gmail.com>
+As a reference, this specific model from 2021 reports
+the following devices:
+	https://alsa-project.org/db/?f=1a5ddeb0b151db8fe051407f5bb1c075b7dd3e4a
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
 ---
- tools/testing/selftests/filesystems/statmount/statmount_test.c | 1 +
+ sound/pci/hda/patch_realtek.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/filesystems/statmount/statmount_test.c b/tools/testing/selftests/filesystems/statmount/statmount_test.c
-index 3eafd7da58e2..e6d7c4f1c85b 100644
---- a/tools/testing/selftests/filesystems/statmount/statmount_test.c
-+++ b/tools/testing/selftests/filesystems/statmount/statmount_test.c
-@@ -3,6 +3,7 @@
- #define _GNU_SOURCE
- 
- #include <assert.h>
-+#include <stddef.h>
- #include <stdint.h>
- #include <sched.h>
- #include <fcntl.h>
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8c2467ed127e..a11d8a954e6c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10215,6 +10215,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1462, 0xb120, "MSI Cubi MS-B120", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1462, 0xb171, "Cubi N 8GL (MS-B171)", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x152d, 0x1082, "Quanta NL3", ALC269_FIXUP_LIFEBOOK),
++	SND_PCI_QUIRK(0x152d, 0x1262, "Huawei NBLB-WAX9N", ALC2XX_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1558, 0x0353, "Clevo V35[05]SN[CDE]Q", ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x1323, "Clevo N130ZU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x1325, "Clevo N15[01][CW]U", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
 -- 
-2.34.1
+2.44.0
 
 
