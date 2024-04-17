@@ -1,152 +1,112 @@
-Return-Path: <linux-kernel+bounces-148017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D6FB8A7CAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:02:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 248508A7CAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:02:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 205AC283664
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:02:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDF761F222AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BEB86A333;
-	Wed, 17 Apr 2024 07:02:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB736A34C;
+	Wed, 17 Apr 2024 07:02:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TZSHvCfO"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="QU4lGByn"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA1076A33B
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF02E6A029;
+	Wed, 17 Apr 2024 07:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713337345; cv=none; b=hA0KFYYlUQW+T+X7VvpC6seTwLP4w46Mq2Awpw5hy2wOK9MI+sz+AEIN3CfoNRxfTlcR68au1LxP2btLv1zTWAjf7KLJy8WoDLOADMZRuvYp49OXfMVYKnv4tKb0+92+Hrq3+w2hRDQ5lJVMfrscdvg175XNtZ+WgaHsla4MAeM=
+	t=1713337361; cv=none; b=AlTNBzbvGius0WLSsAfUrBvdrNzNPURHXZhXkgysoKX9A0KBj+Iny93lmbyZH6ctsXDn1zHKogTAxt0f4omITFuhKd+ayL0zgs0vk2CxDehfHd1MU8ec1FNGK+RRmO1BruqLZuXPEE+7Wqae3+s/MOs4SGwvWQFwA7CZOWftR+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713337345; c=relaxed/simple;
-	bh=ZEDa5YTizJoRKvvXZle+WMCzPDMzbAnkbhmq2IQY7R0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KGjcjVN4T/gf4N6Hw5lyLFOqKHC+jNExqlp1Fwm83+McKZ5Y6veGAUDbAfJwlKBwOr5aMIQFdzudQAsXsejgnHylJzIl72aWb3erhCjS9y0qjzU+XRKrP5Ioh7EFcfMMzEIj1UUcQvZc5ByzB+qCvoknxxOfnyEZcqDaql8xkhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TZSHvCfO; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-617ddc988f5so60545357b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:02:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713337342; x=1713942142; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sGvt/OcevPOUXaTJnaPKCznXL12lo9XavRWzKBHcfZU=;
-        b=TZSHvCfO7fKK0pRSSY3yqOFhqCJUdQguPeDEvISu5T9J3IjCbL6yR6LlMS1+nSxnxE
-         uekvqMnIIkcG2ZBXM286bUe6XFcuGshj70i6AyGHF2d++X9FneHriAnpRMaZmL/aXLCW
-         XQtyCXI5Cle1SnR5R3F9ldI8CtHg1+sEiGkDxRvc6Jubpf3FoELzTf4BcyCPKT26u7Yu
-         JKYUdlXCOGesjAHikSN4bO2WrpcX9nkKJo/VwZ3jwRBhcMYUON6kF4OZA6IddatF6qcd
-         ofvE4KBvq4skg/PImWg7L3QsgaIVINCi5zj0mmr7wlsQl5Pz5l7VjGhtWuQQGQtYoT6O
-         2a1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713337342; x=1713942142;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sGvt/OcevPOUXaTJnaPKCznXL12lo9XavRWzKBHcfZU=;
-        b=Ts+GHB34Gii21N35PnV6xThbsQIFUGq+37Z6hGoa1Tn7KHUrBmB+LtEFp23AokB4Vp
-         xYfgPBjtlg0dgg28xZzgHGD75rwN4F8gG2o63WKcWJMhB0OTJVJ95YAH4cqk1lqBjKc1
-         Tu1J1BOHiOACrJYlLAv9oIKNuKNbSi9nS5yx+OUT65NVyQQ7o7kRmOGVP113zuXB0j7k
-         dmNeIJ5P+79WQvCU1aoSU8sEQDVww5XfTI/PAkxuvBBcDGYRwy5Y6n+WmVhAxoYV6GUX
-         JelWdeEGvJ60Dv2rjKrVUCTfrnZteEGlxK+N3KFQbdPEd0AkOyseKubJOysNd937K285
-         Z2gA==
-X-Forwarded-Encrypted: i=1; AJvYcCVsVznc4ZDPKplEz4t3D+Ms8aD4Zy/N+7JVwxiAMb6e1ArTOJT3E3BW8AyL2wLoFDnTcheD7Sph1w1bdS363H6n0bAkQIqhW6s7+jVL
-X-Gm-Message-State: AOJu0YxbKOaeC0TPQQnw878lyLSL56ME0wZEuVu0jumTkfVB4ROiHw43
-	3UHvP3vuEAqzTWH7ttk+xcn55we5HHPwL5UQahVMNSbg4Glqpiaf5phm2CJuGD/C0aZWttdCRwI
-	0o6GTOey9+J+scxOVdwrk/wL0G23k4Wjdh17jmQ==
-X-Google-Smtp-Source: AGHT+IH9CEuOupRBWZQNFxyza2VtLQoxomckgth+p7ynPNtYc07M5PELX35fU9fO3bLqrnFXrCHVMiYXlfx9K0YMLWY=
-X-Received: by 2002:a25:aa30:0:b0:dd0:c12:411b with SMTP id
- s45-20020a25aa30000000b00dd00c12411bmr14962497ybi.8.1713337341963; Wed, 17
- Apr 2024 00:02:21 -0700 (PDT)
+	s=arc-20240116; t=1713337361; c=relaxed/simple;
+	bh=MmPZqLHT6L7Vgu7zz8S+Lpd/ePgl7MaOqJfEknD5Mg0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BxsAzGhNxMWMQgVGd5U8g71xuqVNhBcYN/YvTBEWGeNNVawCBBRKS2FHersATWVjidfEnYf3+cn3WPmVmoA/KOew4pti75cgJij1Q08k2Iw8NhuXBPp4cXRd1sD60i0D5oia2/bO7PFpP9l7v6QAuNhjwV6TKTsZbxx3J2lGHjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=QU4lGByn; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7D33EE0008;
+	Wed, 17 Apr 2024 07:02:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1713337357;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BHi33ssp9kCXeOvzprYeABBoEMwbdoM+wrd834QLJgg=;
+	b=QU4lGBynmQ5d3Z4ZmTULXjUTDwkmk5natWmgnO1imlQ1bVRPMtlLpNeLVZXZ1IcJRNuztx
+	wePVgJlAYGli9/dzyC6C7oH9C5oBIgwVxNphpIV3REr7jmxMNrhyd0m1FaZOszzItJM1Zq
+	Id1yoHl8PizieY9dSgxsrkgTfu7ZlfB2u6v8Lae+MzF2iVPtsB7WRYYUTJReJjMF5to/uC
+	fAMnT3zgHQAVk82Eg5VB+cR2NJbz5YV6J++Lhd8tYxodZJu/JJqw3EHdHTZt4lfhEyZstN
+	MUJwgKTVvvdmjC658Wzjq6OvSDz555mdVpe2rsDT+mF6n4lWhvXfwUm304Kjvw==
+Message-ID: <48cabb89-e3bb-4f72-b6fc-024b6900149d@arinc9.com>
+Date: Wed, 17 Apr 2024 10:02:30 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAA8EJpo=nd8ywUzz2e42p7WAyuFm439yvNf6H=MD63LCV0xTnw@mail.gmail.com>
- <20240417065020.3599755-1-github.com@herrie.org>
-In-Reply-To: <20240417065020.3599755-1-github.com@herrie.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 17 Apr 2024 10:02:10 +0300
-Message-ID: <CAA8EJpq4mEKi=WW2o-tmkSCoKv01sV5wM-U-KxXXGAcaKSp84g@mail.gmail.com>
-Subject: Re: [PATCH v2] dt-bindings: phy: qcom,usb-hs-phy: Add compatible
-To: Herman van Hazendonk <github.com@herrie.org>
-Cc: andersson@kernel.org, benwolsieffer@gmail.com, chris.chapuis@gmail.com, 
-	conor+dt@kernel.org, devicetree@vger.kernel.org, kishon@kernel.org, 
-	konrad.dybcio@linaro.org, krzk+dt@kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org, me@herrie.org, 
-	robh@kernel.org, vkoul@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 1/2] net: dsa: mt7530-mdio: read PHY address
+ of switch from device tree
+To: Florian Fainelli <f.fainelli@gmail.com>,
+ Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+ Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+ mithat.guner@xeront.com, erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240414-b4-for-netnext-mt7530-phy-addr-from-dt-and-simplify-core-ops-v2-0-1a7649c4d3b6@arinc9.com>
+ <20240414-b4-for-netnext-mt7530-phy-addr-from-dt-and-simplify-core-ops-v2-1-1a7649c4d3b6@arinc9.com>
+ <459b31bd-64b3-4804-bc5a-c8ffd145e055@gmail.com>
+ <7d0ded52-14f0-4f6a-b639-72f537603be8@arinc9.com>
+ <050ef345-9f4c-437c-863b-fdb8e2a47041@gmail.com>
+Content-Language: en-US
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <050ef345-9f4c-437c-863b-fdb8e2a47041@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-On Wed, 17 Apr 2024 at 09:50, Herman van Hazendonk
-<github.com@herrie.org> wrote:
->
-> On Wed, 17 Apr 2024 at 07:52, Herman van Hazendonk
-> <github.com@herrie.org> wrote:
-> >>
-> >> Adds qcom,usb-hs-phy-msm8660 compatible
-> >>
-> >> Used by HP Touchpad (tenderloin) for example.
-> >>
-> >> Signed-off-by: Herman van Hazendonk <github.com@herrie.org>
-> >> ---
-> >>  Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml | 2 ++
-> >>  1 file changed, 2 insertions(+)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
-> >> index f042d6af1594..ccf23170cd17 100644
-> >> --- a/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
-> >> +++ b/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
-> >> @@ -15,6 +15,7 @@ if:
-> >>        contains:
-> >>          enum:
-> >>            - qcom,usb-hs-phy-apq8064
-> >> +          - qcom,usb-hs-phy-msm8660
-> >>            - qcom,usb-hs-phy-msm8960
-> >>  then:
-> >>    properties:
-> >> @@ -41,6 +42,7 @@ properties:
-> >>        - enum:
-> >>            - qcom,usb-hs-phy-apq8064
-> >>            - qcom,usb-hs-phy-msm8226
-> >> +          - qcom,usb-hs-phy-msm8960
->
-> > This should probably be msm8660 rather than 8960
-> Hi Dmitry,
->
-> Thanks for the swift feedback. I'll send a v3.
-> I need more coffee before doing this in the morning
+On 17/04/2024 06:09, Florian Fainelli wrote:
+> 
+> 
+> On 4/16/2024 1:32 AM, Arınç ÜNAL wrote:
+>> On 15/04/2024 18:30, Florian Fainelli wrote:
+>>> I would go a step further and name phy_addr switch_mdio_addr, or something along those lines to clearly denote this is not a per-port PHY address neither a proper PHY device, but we've already had a similar discussion before about spelling this out clearly as a "pseudo PHY"....
+>>
+>> I am fine with calling the switch operating on an MDIO bus a psuedo-PHY.
+>> But I don't believe this grants making up names on our own instead of using
+>> the name described in IEEE Std 802.3-2022. The switch listens on a PHY
+>> address on the MDIO bus. 
+> 
+> The switch listens at a particular address on the MDIO bus, that is the key thing. Whether the addressable device happens to be an Ethernet/SATA/PCIe/USB PHY, an accelerometer, a light switch or an Ethernet switch does not matter as long as it is addressable over clause 22 and/or 45. For all that matters the switch's MDIO interface is not a PHY, otherwise its registers 0-15 would be abiding by the IEEE 802.3-2022 standard, and that is not the case.
 
-Please wait for the feedback from bindings maintainers (this might
-take a couple of days).
+I don't deny anything you've said here. I just don't see how this
+constitutes making up a different name. The field which the address is
+stored is called "PHYAD (PHY Address)". The PHY Address field of the
+management frame structure the switch implements is still Clause 22
+conformant, as far as I understand.
 
-> > Note, nowadays the rule would be to use qcom,msm8660-usb-hs-phy
-> > compatible, but I wonder if we should enforce this for such an old
-> > platform or whether similarity wins.
->
-> >>            - qcom,usb-hs-phy-msm8916
-> >>            - qcom,usb-hs-phy-msm8960
-> >>            - qcom,usb-hs-phy-msm8974
-> >>
->
-> I plan to send more patches for the msm8660, so happy to understand what
-> is the preferred approach, because it doesn't seem consistent.
->
-> These are my first patches, so learning mainly from what I see in commit
-> history (which might be outdated)
-> It's indeed ancient platform, we just would like to get HP TouchPad
-> (tenderloin) running with a mainline kernel, hence these patches.
+> 
+>> The description for the phy_addr member of the
+>> mt753x_info structure clearly explains that so I don't see a reason to
+>> change the variable name.
+> 
+> IMHO it is clearer to use mdiodev->addr through and through, the shorthand is not necessary and does not save that many characters to type in the first place. Saving a mdiodev pointer into mt7530_priv and accessing priv->mdiodev->addr would be 18 characters to type versus 14 with priv->phy_addr.
 
-This sounds really interesting. I recently got apq8060 so I should be
-able to test your patches if the time permits.
+Fine by me, I can do that.
 
--- 
-With best wishes
-Dmitry
+Arınç
 
