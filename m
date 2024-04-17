@@ -1,192 +1,152 @@
-Return-Path: <linux-kernel+bounces-149159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5170F8A8CAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:06:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADEFD8A8C9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:04:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07ED328695A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:06:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6311E1F2136C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:04:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D61176FD3;
-	Wed, 17 Apr 2024 20:03:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBB73487BF;
+	Wed, 17 Apr 2024 20:03:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="se6gY84D"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="P1f3RaYc"
+Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA84517557E
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 20:03:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D24D641C7C;
+	Wed, 17 Apr 2024 20:03:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713384201; cv=none; b=kaXm8wjHYE8GRWfdumDo6Ga+mnuMrtZjhaEwONZgrE+FfZL7iAR40uVZEs+zh4QnuXgvNFzfRfkxZLFJj3YGYd0jRpx4plCAq/eHxjxv5Qu9T2cwGshMcU9Bo0DuCGV5Im/jJjRxb1isq9gWaj1ku5LJWHJeiGFH/4eJDgIQVxU=
+	t=1713384190; cv=none; b=Jsn+b/kuZDMGT1oGoPfbhBl6fu4duMtk4GPmE3TbvTV2p5wjbZ4fndlGTFBzHcJuCQk815QyAOeNKzPq4togTFj+LsYQ1Zzlv3i+HTz3Wsa0l8EfnDBmH7asbtG8g+LNg8LmYTgyYasJRqolY14YdFoRpEHcjE42Oim77U4r2+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713384201; c=relaxed/simple;
-	bh=N9C7J/UXFBbxcLZJ0Wle4it14ExoZJn/aRTDf20iB8I=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Sz8Ieub3WVbnM0z7fjXqxKRjAd/k4VZkTe+um+DpooV6R1lLbEEvFQ+XIeZR4enkVgb/7n8tboBQhuNa1UR16OSju9+PghdM4XGU8JDB4q/F/pcYO7YGmhXUI8h3DuIWj9RSA/x/tIGm5/+WlLmkQ/5jCGg5LZmGyC0DtU1r15E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=se6gY84D; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-518a56cdbcfso72457e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:03:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713384197; x=1713988997; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eYI4k5JR+67InOGrmasq4k+IdEUXSCsAg3S/O+/c6wo=;
-        b=se6gY84DzsqhxWokngzsn+5aByus98CTgUqJWAYkNYBeVtD0pUmD1ZZ5N7/x2m7lW5
-         L19uaKAS7RaCOhx70wdQrWrwWjNhModtzr2bNkpWUKk5eojrNA6QzOpXPs7heuSKe6Es
-         hNe+mN9eJfjYpdXDIO1iiu46sKi5pIXlRg4d54kX4OF8u4YpeQXodatokztwzP1sWoew
-         UOWnPUmUYSkPUbEhsvOhrDf+it4lpH59Fbt3RXJ63dZwwROsn9HUlgUmxJxMXci5jGGQ
-         DiSD2gXHtPhcp8N26lVFBDPhMSmzJKAK0GrLwdrGqd7POaEYZev6GA7/pKU4oXR5PsH6
-         v/kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713384197; x=1713988997;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eYI4k5JR+67InOGrmasq4k+IdEUXSCsAg3S/O+/c6wo=;
-        b=FQLdB3vLMq6zqcg6XHW4vmrTBA28u5AwxIl7X821ZMGGNpPj9M4yY6k7CH023vaoPM
-         j/5AjEXwnWITASn5vaTzjN6ENJBuSBwvrnFIXLiKDQXEuDXadwpQ+V5IDrYQ5c9lkwYv
-         51KWFSqEsTbtQrragp28yn1ql7bHl9rfGGmdtHkERIYb8z09mqZYK/pUquufnAuBSer7
-         /jTltIxdTjxRDaspdM57tD/ZGUl8146M3zrLA/ycRWhGOAdGGTOmuGR2Kv80U3PJTTpC
-         2hMGGFReYXCPe5XaqkDlpazmNG6cyzEV++OecUy6/oZIU9s/DEOw96wND3bLavPl+nQX
-         Uy1A==
-X-Forwarded-Encrypted: i=1; AJvYcCVdeA+uLI+p8qhsHA7HPHz04R+QVlCsY0Syl0w9qQQgBw95AClKWh7edWDXfNRAkniMk51WPlqnDN1NKFivdIG0vFbFd+RT8+8PtMk1
-X-Gm-Message-State: AOJu0Yy4owmoOQ5+htQtU7INZlYN4EAbxHOxizMyHBT3UOIts2BVot1N
-	wTc9+UIKK/UG8CEOCWdZOmRY/QXJyMmq5qiZp2DhcHxeR8P21hA7F3Y4pkM44LlJPQgDp0ypKS1
-	1
-X-Google-Smtp-Source: AGHT+IEveCP0Ef7EGrGrqGh7PzeSM8OltYJtYtq+rF4s+Usgg81dUYwCdW8Fjgw8tn+MFYo18gTAKg==
-X-Received: by 2002:ac2:4852:0:b0:518:bd37:606e with SMTP id 18-20020ac24852000000b00518bd37606emr206953lfy.13.1713384197719;
-        Wed, 17 Apr 2024 13:03:17 -0700 (PDT)
-Received: from [192.168.45.55] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id xa4-20020a170906fd8400b00a5252e69c7dsm5905590ejb.160.2024.04.17.13.03.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 13:03:17 -0700 (PDT)
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Wed, 17 Apr 2024 22:02:59 +0200
-Subject: [PATCH v2 7/7] arm64: dts: qcom: sm8550: Wire up GPU speed bin &
- more OPPs
+	s=arc-20240116; t=1713384190; c=relaxed/simple;
+	bh=1gUuVn+QjUd7F5bm51RwKzR6j6BmbQzEDGn5JENwhyo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=euCeY19nJTf2cp1TmWC2DGO+7rSHMjtn9zp1sPk8eWO5FfYKhaa3saYXfh3M8l2pe3Ssejh+L5lfqPSFk733ic2Vp+CPpcO1Pc4lqV/XhyOSfP0IzFzCOhYE8l/89zT3UsQSQj+27XfkzmwELCHqzA7CczlQzjEyfL/54rlqT/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=P1f3RaYc; arc=none smtp.client-ip=4.36.192.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
+	bh=8xZy/0NtF+dV+KHcJxF6iRNziuvt+mIUzs1R/Wc34/k=; b=P1f3RaYcYjmQe13JJtjSwquN0U
+	U4p4slLzfeBTaq/2KgWu+sL0pIHjRSKxKTGGdt7yYjj9++wr68kfwE5+WrCm7qWqgCWmuh4l4Wlkg
+	ibi9u/l/QNtS9BMqlDHfkItTqOWIqTR1qvYMBvdN9gmTKo4y/K0l4rLpMpZR1lLUT/P/PWvKXiRVY
+	Abq5b+5glRFq0RcQYJTL1QKMSd0EQbu8PHwcFsLhpts2Y0xOfZcicDWeWvmpGdn5MxIyw++A4GZkk
+	/27UKEb1GyF9ARASBfGcnfYPftM4BH+jg5O62lcjreJ/aPYCoYFkwlC7WA0Xg/JY3Ph04Ovzwn3+Y
+	lFXytdEA==;
+Received: from cw137ip160.mn.codeweavers.com ([10.69.137.160] helo=camazotz.localnet)
+	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <zfigura@codeweavers.com>)
+	id 1rxBUn-00HOiY-26;
+	Wed, 17 Apr 2024 15:03:07 -0500
+From: Elizabeth Figura <zfigura@codeweavers.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+ wine-devel@winehq.org,
+ =?ISO-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+ Wolfram Sang <wsa@kernel.org>, Arkadiusz Hiler <ahiler@codeweavers.com>,
+ Andy Lutomirski <luto@kernel.org>, linux-doc@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+ Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+ Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH v4 02/27] ntsync: Introduce NTSYNC_IOC_WAIT_ALL.
+Date: Wed, 17 Apr 2024 15:03:05 -0500
+Message-ID: <3479054.QJadu78ljV@camazotz>
+In-Reply-To: <20240417113703.GL30852@noisy.programming.kicks-ass.net>
+References:
+ <20240416010837.333694-1-zfigura@codeweavers.com>
+ <20240416010837.333694-3-zfigura@codeweavers.com>
+ <20240417113703.GL30852@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240404-topic-smem_speedbin-v2-7-c84f820b7e5b@linaro.org>
-References: <20240404-topic-smem_speedbin-v2-0-c84f820b7e5b@linaro.org>
-In-Reply-To: <20240404-topic-smem_speedbin-v2-0-c84f820b7e5b@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, Rob Clark <robdclark@gmail.com>, 
- Abhinav Kumar <quic_abhinavk@quicinc.com>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>, 
- Marijn Suijten <marijn.suijten@somainline.org>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
- devicetree@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713384181; l=2413;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=N9C7J/UXFBbxcLZJ0Wle4it14ExoZJn/aRTDf20iB8I=;
- b=MHA+uQvVZajZO7HB9yQ9w98lwwxIsrifK11MFrFba+JTdm7p6ywc7iaAOHKu6/NKHBghvMv0k
- DShJ2TmzIFCDxFEiwF2L/6pAbYWdc5a/F5PivT/SpWn3M5H58jc7ga8
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-Add the speedbin masks to ensure only the desired OPPs are available on
-chips of a given bin.
+On Wednesday, 17 April 2024 06:37:03 CDT Peter Zijlstra wrote:
+> On Mon, Apr 15, 2024 at 08:08:12PM -0500, Elizabeth Figura wrote:
+> > +	if (atomic_read(&sem->all_hint) > 0) {
+> > +		spin_lock(&dev->wait_all_lock);
+> > +		spin_lock_nest_lock(&sem->lock, &dev->wait_all_lock);
+> > =20
+> > +		prev_count =3D sem->u.sem.count;
+> > +		ret =3D post_sem_state(sem, args);
+> > +		if (!ret) {
+> > +			try_wake_all_obj(dev, sem);
+> > +			try_wake_any_sem(sem);
+> > +		}
+> > =20
+> > +		spin_unlock(&sem->lock);
+> > +		spin_unlock(&dev->wait_all_lock);
+> > +	} else {
+> > +		spin_lock(&sem->lock);
+> > +
+> > +		prev_count =3D sem->u.sem.count;
+> > +		ret =3D post_sem_state(sem, args);
+> > +		if (!ret)
+> > +			try_wake_any_sem(sem);
+> > +
+> > +		spin_unlock(&sem->lock);
+> > +	}
+> > =20
+> >  	if (!ret && put_user(prev_count, user_args))
+> >  		ret =3D -EFAULT;
+>=20
+> vs.
+>=20
+> > +	/* queue ourselves */
+> > +
+> > +	spin_lock(&dev->wait_all_lock);
+> > +
+> > +	for (i =3D 0; i < args.count; i++) {
+> > +		struct ntsync_q_entry *entry =3D &q->entries[i];
+> > +		struct ntsync_obj *obj =3D entry->obj;
+> > +
+> > +		atomic_inc(&obj->all_hint);
+> > +
+> > +		/*
+> > +		 * obj->all_waiters is protected by dev->wait_all_lock rather
+> > +		 * than obj->lock, so there is no need to acquire obj->lock
+> > +		 * here.
+> > +		 */
+> > +		list_add_tail(&entry->node, &obj->all_waiters);
+> > +	}
+>=20
+> This looks racy, consider:
+>=20
+> 	atomic_read(all_hints) /* 0 */
+>=20
+> 				spin_lock(wait_all_lock)
+> 				atomic_inc(all_hint)	/* 1 */
+> 				list_add_tail()
+>=20
+> 	spin_lock(sem->lock)
+> 	/* try_wake_all_obj() missing */
+>=20
+>=20
+>=20
+>=20
+> I've not yet thought about if this is harmful or not, but if not, it
+> definitely needs a comment.
+>=20
+> Anyway, I need a break, maybe more this evening.
 
-Using this, add the binned 719 MHz OPP and the non-binned 124.8 MHz.
+Ach. I wrote this with the idea that the race isn't meaningful, but
+looking at it again you're right=E2=80=94there is a harmful race here.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8550.dtsi | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+I think it should be fixable by moving the atomic_read inside the lock,
+though.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-index 5cae8d773cec..2f6842f6a5b7 100644
---- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-@@ -2087,48 +2087,67 @@ zap-shader {
- 				memory-region = <&gpu_micro_code_mem>;
- 			};
- 
--			/* Speedbin needs more work on A740+, keep only lower freqs */
- 			gpu_opp_table: opp-table {
- 				compatible = "operating-points-v2";
- 
-+				opp-719000000 {
-+					opp-hz = /bits/ 64 <719000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L2>;
-+					opp-supported-hw = <0x1>;
-+				};
-+
- 				opp-680000000 {
- 					opp-hz = /bits/ 64 <680000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
-+					opp-supported-hw = <0x3>;
- 				};
- 
- 				opp-615000000 {
- 					opp-hz = /bits/ 64 <615000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L0>;
-+					opp-supported-hw = <0x3>;
- 				};
- 
- 				opp-550000000 {
- 					opp-hz = /bits/ 64 <550000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
-+					opp-supported-hw = <0x3>;
- 				};
- 
- 				opp-475000000 {
- 					opp-hz = /bits/ 64 <475000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS_L1>;
-+					opp-supported-hw = <0x3>;
- 				};
- 
- 				opp-401000000 {
- 					opp-hz = /bits/ 64 <401000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
-+					opp-supported-hw = <0x3>;
- 				};
- 
- 				opp-348000000 {
- 					opp-hz = /bits/ 64 <348000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS_D0>;
-+					opp-supported-hw = <0x3>;
- 				};
- 
- 				opp-295000000 {
- 					opp-hz = /bits/ 64 <295000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS_D1>;
-+					opp-supported-hw = <0x3>;
- 				};
- 
- 				opp-220000000 {
- 					opp-hz = /bits/ 64 <220000000>;
- 					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS_D2>;
-+					opp-supported-hw = <0x3>;
-+				};
-+
-+				opp-124800000 {
-+					opp-hz = /bits/ 64 <124800000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS_D2>;
-+					opp-supported-hw = <0x3>;
- 				};
- 			};
- 		};
-
--- 
-2.44.0
 
 
