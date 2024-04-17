@@ -1,91 +1,90 @@
-Return-Path: <linux-kernel+bounces-148038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE53A8A7CE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:15:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAD628A7CEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:17:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 759A7282890
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:15:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D49161C20E6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:17:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1504F6EB65;
-	Wed, 17 Apr 2024 07:14:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BCCF6A8BE;
+	Wed, 17 Apr 2024 07:17:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rTIfmRVv"
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Aqf9HC2m"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5056A34C
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF1940850;
+	Wed, 17 Apr 2024 07:17:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713338057; cv=none; b=uWvbLF3cQNkFhfx/MZn0GGyRu26U7TZXcG7ukDmLMx8NHV45xzPkbaLYQt9tCcngpg/Np/Z6ENy0Q5Gms5UN3Y93P/dANcQoPBFrhNnUwPt4Hqlq67mhqf+WSSmNR2bqP+UFrog6K1fDPIje5sT9TTJGd1UGBqa7x6xtkRoYmMY=
+	t=1713338250; cv=none; b=pqb9XcZ6qbfXu9AfpMxsTToEWpY6zQQD8COOeGm3htBQcg8Qzpv6CeWx0sB/5izBBTSaHhCYtHF3hKl3ebryYkEdcp/W/ZteOV3Ftuu4UaRRsF4YwF5xN1+2lF1PLfrJlXlsBCEJAbR2GCoIrAp+a5Mk9GdIDEdIlLjdh5nDvHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713338057; c=relaxed/simple;
-	bh=Wg9bp/1KONUVlzT3UD7ChlmkEWpfB86YN/zEsuRAT8I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MVJ1ravXNzxGW0ar/5Ulh4/eJRiXGDviYkFDZcZXVb9aGtc4Ut6ZCbafR3gOYkrbApsh/P5cwBbj/I8G2M+GsGRCa1yoTFqthbxWdYxsMtpDEM1xpRoG5IKM3pZiPVTUVOkePeoJNoSFJZT5zKPFZfQ6CnGS9UsYSNIxNTvCIis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rTIfmRVv; arc=none smtp.client-ip=209.85.210.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6eb86aeeb2cso1496844a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:14:15 -0700 (PDT)
+	s=arc-20240116; t=1713338250; c=relaxed/simple;
+	bh=V4lv9QAgXIfIVyOy2mUKTwIbsLP0WTd3oSTm2v768c8=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=spQwzA9ARbWHRv0DrOHr5goeB6ZaYKZkLVD68fs2EoIZRCkZ5cvYqievCxvV77108qZ5sjqKX+Y/DTHDW59e9ClqvvLkjE2Ky/xADSAimquR2npSTn6ErnzKKXWNPaBqc0gLb2PE6xM0QKvjU5HSpKIKuqKxDWuDFQJ1K17h0lc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Aqf9HC2m; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-343c891bca5so3446771f8f.2;
+        Wed, 17 Apr 2024 00:17:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713338055; x=1713942855; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713338247; x=1713943047; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=rds/vSPkCgLztEVJcMBchz0yVanaqr2q9MoqHxNAgzI=;
-        b=rTIfmRVvzw7GHb80iifWSxFmg8JI2hSbMRbCejEm1be2oBphm1D/H+hLGi5Giardbh
-         PlVKu4XnCvTrJ/OYV1r4w179767uIzYG+2hUkum6PaO4MZXWt0elVHc5cBPHWpPEfIlN
-         PVfW3N0KMZp/+VTi2Uhw/jzQ3HhGnuM7Yi6aMUnHqYa5KCiSK/kGFAx/Ebk+9G9ZSsOT
-         ptKhmtZRvkpb4qCbNnK6pmToGBvvk+aZUr/fNvgOJhOcIHirNHYS7kAhirJmNvb3h95M
-         6BSNVaOT2DqfatW7rvJnvOBkZ7OofT+oi46l7zcO6fuZcJ7Vni1C3/t+yOQhFeGvi8fn
-         MkZQ==
+        bh=Ggl42zVrBdWXeGc93czmjM6s9Fyw3wz00pYFrGL6UPE=;
+        b=Aqf9HC2m0QbWvP+LlOe5uFt9QpzLEOnj6VwtDzdHwhYwtIzAghr+VnYmYhfLsJcAX+
+         YTDavQHvc/ej6y485ylaA5Q8SdIEYQg92/g1JeT3X+ks6Kkk3L0lI268qs4gASKxRBGx
+         aaWtxUth4nrfWA6QIMLadLzE6xC08FlQ+JBXCSh91LhTYxBTZYxdVj0yQIX5ZygkKxlf
+         175Q5FI+IaUHaoo16aGMuFLIc5FZcTSZamJ/Lz910322FuUHjRHRNPYIKAVy2OTiQYVI
+         U+yp+JQ5yaurNxSn+quqahEkbK8/tKM8A/axrJ6aEphrddqmjGulRIsPgOvtL9imYjS8
+         7RbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713338055; x=1713942855;
+        d=1e100.net; s=20230601; t=1713338247; x=1713943047;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+         :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rds/vSPkCgLztEVJcMBchz0yVanaqr2q9MoqHxNAgzI=;
-        b=INegnvUW4ZmxNUbaRaeW6JTOuA3OHIUQeVMoJu6x66fTJGDZM+qutzXIwdCoXiuUbg
-         0YXjykPqsHgbrUz9OvuXZlkoxGHhLLhwxTFWRaGubYIafms59YCCsmCgXxExYEaWsxnf
-         UYiNkTRskxIxzzrOZxK603c6N+18jQvd/230xoV5yT3MgkH+Dba8uA+pDKDXld1JUODq
-         WkHMmRmpTllUJNmehRgEU4QCjZmMPg2AQqgmozOoLbdaN1Rayg2vjCoyotmmudhLhCCN
-         MvnN6vMfAkj8G5KFYoz/DNAZjpzh5yWEhWdx3nJqP2XnwkklGW6fcmd9PnupWno+8pSV
-         kt4A==
-X-Forwarded-Encrypted: i=1; AJvYcCVqvIisx2F9H0b/yzh2EE9wBKQGcVfce0DUd0orJoER8qUdTgEgLX5mtIrgvYp93QAxEyXOaVGnDHBkEQNt4in1SuRspGTQG0agHO+i
-X-Gm-Message-State: AOJu0YytYqHkY+rWXkv8n3loCVKfthd7al9AuTDShBMc2c8FV0pcumj0
-	Gso8Z49gQPYz8aDb3/HQk+PG26fUhjtEDYT5VrG0W8VNbMXKQgKjDp49z58qdw==
-X-Google-Smtp-Source: AGHT+IHaHrm2pb+wT7KKfQkSKKuzy7HKCVhCIyuFy2rzef2uOrb0UaXT1cyILAlN1opmVB/oaR6cAg==
-X-Received: by 2002:a05:6870:70a1:b0:22f:70da:1f26 with SMTP id v33-20020a05687070a100b0022f70da1f26mr19032069oae.27.1713338054787;
-        Wed, 17 Apr 2024 00:14:14 -0700 (PDT)
-Received: from thinkpad ([120.60.54.9])
-        by smtp.gmail.com with ESMTPSA id z3-20020aa78883000000b006e5571be110sm9998837pfe.214.2024.04.17.00.14.08
+        bh=Ggl42zVrBdWXeGc93czmjM6s9Fyw3wz00pYFrGL6UPE=;
+        b=DAIbSdSqlPY/ByOnV+Odo0sg5oho51nK/syF8ljh/YkYRgdsV0c+IICRXluktw5Gss
+         smd6fkcWHz5odP2wAi4h/uzdzi44yubaJxRYjGgUo5OuB1FAgdxp/F7LSbEzNM7BmYW7
+         DNRHOHIcaOgDe4Bqyhrnqa/kKNpvv6CBIhrTOIDMFfzb+3yknv9QsWgmYdzxK8SjBqez
+         ZdJD00JsXPiMq0mNj/886j6iwMYcN3YKI06rPUxo11wM2OhHwcy0VGB2WdTz7vGuhlOy
+         6XdVC2oKYeeyqSu+7KkFIAwD33VGxtEhb1+iFGVQOJUDiJx20eYrDOCX2c0z4VfALiXk
+         tQ+w==
+X-Forwarded-Encrypted: i=1; AJvYcCX54X2FPrzqW+aVGTurHqxyQZeGPy6BPV8r8F5a/+ZYwmgsn+8eGI0LELm0PYid39Sn+aZA9c8ZJo47IsSauRqQXJbTV68YOeY7389x9x0Y5gVFMmbe3Pil8qpMj6Dj/dAf
+X-Gm-Message-State: AOJu0Yz77h55dbhiAoyd3bGNFHmYlJzi53rp8yDQt4N6HtfeOrNcudup
+	6YMQc5H/r5kPzuDWrjt1R3PYH6mBrNUABnvKaOHJn4564EsYVdts
+X-Google-Smtp-Source: AGHT+IF3Ak86VL7pFvOSdAF9WJs3e6X5MmjIWzPfbrgMWdYNRNryLXnnA4PhqFNEyfTJVPyB95zKbA==
+X-Received: by 2002:adf:e2cb:0:b0:346:5c1b:39c with SMTP id d11-20020adfe2cb000000b003465c1b039cmr12300405wrj.41.1713338246957;
+        Wed, 17 Apr 2024 00:17:26 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id b10-20020a056000054a00b00341b7d5054bsm16891820wrf.72.2024.04.17.00.17.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 00:14:14 -0700 (PDT)
-Date: Wed, 17 Apr 2024 12:44:06 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Alexandru Gagniuc <mr.nuke.me@gmail.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-clk@vger.kernel.org
-Subject: Re: [PATCH v3 4/7] PCI: qcom: Add support for IPQ9574
-Message-ID: <20240417071406.GC3894@thinkpad>
-References: <20240415182052.374494-1-mr.nuke.me@gmail.com>
- <20240415182052.374494-5-mr.nuke.me@gmail.com>
+        Wed, 17 Apr 2024 00:17:26 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 17 Apr 2024 09:17:24 +0200
+To: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <olsajiri@gmail.com>,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	haoluo@google.com, sdf@google.com, kpsingh@kernel.org,
+	john.fastabend@gmail.com, yonghong.song@linux.dev, song@kernel.org,
+	eddyz87@gmail.com, andrii@kernel.org, ast@kernel.org,
+	martin.lau@linux.dev, khazhy@chromium.org, vmalik@redhat.com,
+	ndesaulniers@google.com, ncopa@alpinelinux.org, dxu@dxuuu.xyz
+Subject: Re: [PATCH] bpf: btf: include linux/types.h for u32
+Message-ID: <Zh93hKfHgsw5wQAw@krava>
+References: <20240414045124.3098560-1-dmitrii.bundin.a@gmail.com>
+ <Zh0ZhEU1xhndl2k8@krava>
+ <CANXV_Xwmf-VH5EfNdv=wcv8J=2W5L5RtOs8n-Uh5jm5a1yiMKw@mail.gmail.com>
+ <Zh4ojsD-aV2vHROI@krava>
+ <ddc0ac5b-9bd4-f31a-a7ec-83f7a10e6ab1@iogearbox.net>
+ <CANXV_XwGhdV7v05Xjjp-g9yW4E0FjA=84M8jZ6bcf7yuooDkig@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,64 +94,39 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240415182052.374494-5-mr.nuke.me@gmail.com>
+In-Reply-To: <CANXV_XwGhdV7v05Xjjp-g9yW4E0FjA=84M8jZ6bcf7yuooDkig@mail.gmail.com>
 
-On Mon, Apr 15, 2024 at 01:20:49PM -0500, Alexandru Gagniuc wrote:
-> Add support for the PCIe on IPQ9574. The main difference from ipq6018
-> is that the "iface" clock is not necessarry. Add a special case in
-> qcom_pcie_get_resources_2_9_0() to handle this.
+On Wed, Apr 17, 2024 at 09:26:03AM +0300, Dmitrii Bundin wrote:
+> On Tue, Apr 16, 2024 at 5:47 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > Please add the error description as motivation aka "why" into the commit
+> > description, otherwise it's not really obvious looking at it at a later
+> > point in time why the include was needed.
 > 
+> Doesn't the comment /* for u32 */ following the include explain the
+> purpose? I thought the include was actually missing since relying on
+> indirect declaration of u32 is relatively fragile.
 
-Could you add more information about the PCIe controller used in this SoC? Like
-controller version, supported data rate, PCIe generation etc...
+I think you can add similar descirption as for the already merged tool
+change in bpf/master, and also include the Fixes/stable tags
 
-- Mani
+commit 62248b22d01e96a4d669cde0d7005bd51ebf9e76
+Author: Natanael Copa <ncopa@alpinelinux.org>
+Date:   Thu Mar 28 11:59:13 2024 +0100
 
-> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 14772edcf0d3..10560d6d6336 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -1101,15 +1101,19 @@ static int qcom_pcie_get_resources_2_9_0(struct qcom_pcie *pcie)
->  	struct qcom_pcie_resources_2_9_0 *res = &pcie->res.v2_9_0;
->  	struct dw_pcie *pci = pcie->pci;
->  	struct device *dev = pci->dev;
-> -	int ret;
-> +	int ret, num_clks = ARRAY_SIZE(res->clks) - 1;
->  
-> -	res->clks[0].id = "iface";
-> +	res->clks[0].id = "rchng";
->  	res->clks[1].id = "axi_m";
->  	res->clks[2].id = "axi_s";
->  	res->clks[3].id = "axi_bridge";
-> -	res->clks[4].id = "rchng";
->  
-> -	ret = devm_clk_bulk_get(dev, ARRAY_SIZE(res->clks), res->clks);
-> +	if (!of_device_is_compatible(dev->of_node, "qcom,pcie-ipq9574")) {
-> +		res->clks[4].id = "iface";
-> +		num_clks++;
-> +	}
-> +
-> +	ret = devm_clk_bulk_get(dev, num_clks, res->clks);
->  	if (ret < 0)
->  		return ret;
->  
-> @@ -1664,6 +1668,7 @@ static const struct of_device_id qcom_pcie_match[] = {
->  	{ .compatible = "qcom,pcie-ipq8064-v2", .data = &cfg_2_1_0 },
->  	{ .compatible = "qcom,pcie-ipq8074", .data = &cfg_2_3_3 },
->  	{ .compatible = "qcom,pcie-ipq8074-gen3", .data = &cfg_2_9_0 },
-> +	{ .compatible = "qcom,pcie-ipq9574", .data = &cfg_2_9_0 },
->  	{ .compatible = "qcom,pcie-msm8996", .data = &cfg_2_3_2 },
->  	{ .compatible = "qcom,pcie-qcs404", .data = &cfg_2_4_0 },
->  	{ .compatible = "qcom,pcie-sa8540p", .data = &cfg_sc8280xp },
-> -- 
-> 2.40.1
-> 
+    tools/resolve_btfids: fix build with musl libc
+    
+    Include the header that defines u32.
+    This fixes build of 6.6.23 and 6.1.83 kernels for Alpine Linux, which
+    uses musl libc. I assume that GNU libc indirecly pulls in linux/types.h.
+    
+    Fixes: 9707ac4fe2f5 ("tools/resolve_btfids: Refactor set sorting with types from btf_ids.h")
+    Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218647
+    Cc: stable@vger.kernel.org
+    Signed-off-by: Natanael Copa <ncopa@alpinelinux.org>
+    Tested-by: Greg Thelen <gthelen@google.com>
+    Link: https://lore.kernel.org/r/20240328110103.28734-1-ncopa@alpinelinux.org
+    Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
--- 
-மணிவண்ணன் சதாசிவம்
+
+jirka
 
