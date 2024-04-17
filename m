@@ -1,110 +1,140 @@
-Return-Path: <linux-kernel+bounces-148412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7429B8A8239
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:39:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55E9F8A81FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:23:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A50851C22DAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:39:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86A091C226FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:23:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E1DD13CA9E;
-	Wed, 17 Apr 2024 11:39:04 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A76D13C9A1;
+	Wed, 17 Apr 2024 11:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k0xCc+NJ"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB25184E15
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:39:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD6413C80E
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713353943; cv=none; b=rgetBex5UAlyDLSO9OhQpIzZY9Pz4yrO1oAO4/g5EZOARAT7SIiLxKXMexO2kxUEm0LBeJ7X6x7KUf2pALeOa+k7tvf/DoNvOi+7G7pv/cEzPY7x1gJgJm6s1P+Fr453SEYfHKOyvp/OUKfEE9rw1Ykew0jrhp9G1xc2eYOF8kA=
+	t=1713353005; cv=none; b=Aea96Nv16md6z3H1lsrtMu2krWTesXRzWkSJpV/TiLDoZS86cyG6iACG66YFxJJgMgm/S/AjfbNzjZVQb0z2m2oJSmB8bcmfxhESg0c4nJBoDisoz6X0hi5SBFWrnG5FkaINi3/n0XSfQ8LeGH8XHDUN8HV+c+19Xp3j/GReC8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713353943; c=relaxed/simple;
-	bh=h5EC7q98U2GwMcxqPEpZHXfJRLGRetzbo7g0quOIuHo=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=suC0+tEwKQjZw2c/Q6DYpuShCHpXVP6Iq7VXyrNSV4nyN9JZFEkrkZ1oFncXWBu12/BeHD5kbGVvdvW2tj3dxlsaGeKf1dIzy2t7UuL0M+16NTaG5Mq41h0ahD/yH2iiYIlYTAP0j37XgjX9TFlP9WIVSX2gDiMOALk2m9ucNLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VKJN80vj2z1xtxF;
-	Wed, 17 Apr 2024 19:19:52 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 727FE1A016F;
-	Wed, 17 Apr 2024 19:22:15 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 17 Apr 2024 19:22:14 +0800
-Subject: Re: [PATCH V3] ubifs: correct UBIFS_DFS_DIR_LEN macro definition and
- improve code clarity
-To: ZhaoLong Wang <wangzhaolong1@huawei.com>, <richard@nod.at>,
-	<miquel.raynal@bootlin.com>, <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>
-References: <20240417092727.3803910-1-wangzhaolong1@huawei.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <e4bd7fcd-f740-b2f1-ad20-63860db9fa38@huawei.com>
-Date: Wed, 17 Apr 2024 19:22:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1713353005; c=relaxed/simple;
+	bh=KPx2ZsqWpzZLK3m3WMgWg1Tq0M4fucX/fotRCnYiRgQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DFLLIpxjDGkCgzPOct5JBgV746lqxCdKdUwznbWhmj+LjBEPawQJ/7asMNyKkeQtsTP5n9fexe4wxh2cIAIDTmScr8AWP/Y4tNkuLEGDmdi/hHQZZuxw6QrqVMGBXq6wbTTUu2i111upwM6UtqB58QjIaTbs9BiZOWULV5xDnrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k0xCc+NJ; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4187981999fso17862555e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:23:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713353002; x=1713957802; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9WUQ8LhAsMpwwq/+rPAvVmYYIR8bLgyILBO1ofwpQzI=;
+        b=k0xCc+NJ66obQpGJSfZLqkLOnH0FHj7kHKofkTpOcYnbVjmvTfjbcbYWW0GOpuWIus
+         qyr/RTzx+zCcEZQLTUspSA52NoRfHvo9X/Izx8ViYJREeFK8UpUhEFoxkQKfXel457kD
+         o/Qb0wqrBFLX3IBNLCQAIW4RNAlQO8gZlUPyFEOSGwbFsTUlpqmNQy2ieIJFPvKZS3i+
+         fBUmjLqQZhtfLzObu0u6Ha8yAj+EXoCh7qIWU2geVoyYp6esV9k486OoTXNv+oExJgjJ
+         T3q2LTE7DadQZGxZywQlK3uHgfxlyKyEzx2cblouRJNMhtQlH+CkW4ewMHhKjbMRLlj+
+         KLlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713353002; x=1713957802;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9WUQ8LhAsMpwwq/+rPAvVmYYIR8bLgyILBO1ofwpQzI=;
+        b=oS3VpOU5Vf8TDyb3bNOaAGQrX4Ua98F/6xGPNi6zRdLVNzsqsk8fX4o9bZhl0QGu9h
+         9MpgxwCb03nFtlh4N2IAA5cbT0BHwmNrvQLH7Z1YfhJ/BzpGqCMTUqINE6JWw7qtRGhq
+         9SJe/LAR3ePxbDo4AUlA63SJic0kDyTlQCAhyhwQA99Nxe67kQcDBUZ6ti/Fzxhs/5mI
+         UScukGDqSZt2lnwP5tV0GhACOGoYnAZ52PbQxtXyh+DepHOAraQ9lCVV4jU8sRBDsORx
+         +E88ZeQUGyri5XrR96tFydePRG9rlI/xtQHQmN00ipon5hkkitlVRr8iEeNI9+ayRE20
+         264g==
+X-Forwarded-Encrypted: i=1; AJvYcCU4h6gDCghokZo08JEAVRw08y7Sf0IUjl7SuG7WuCxNViHXXTpkGqyVfmujLAYEygRlYNuX6ABv9d83lw+C0h/7TvGf6TrB4oOSul7O
+X-Gm-Message-State: AOJu0YwB2oaKIl37DXhS5RxQE6DlJZP9v9nj/hke2lVHkXdGgdmT6hjz
+	6+U0l2V7Ubu2KGTcFOLDufpRK9THfZnmOkhfUMY+KBl7XBwkMjRU
+X-Google-Smtp-Source: AGHT+IHbYjlDV0+YJR4OeiatmxSq2gp292lirHdqgY6S0B8P486DYzv2fUV1C8ws1WtegEN2YLdlEQ==
+X-Received: by 2002:a05:600c:46d0:b0:418:676d:2a51 with SMTP id q16-20020a05600c46d000b00418676d2a51mr5249443wmo.15.1713353001837;
+        Wed, 17 Apr 2024 04:23:21 -0700 (PDT)
+Received: from gmail.com (1F2EF007.nat.pool.telekom.hu. [31.46.240.7])
+        by smtp.gmail.com with ESMTPSA id cg17-20020a5d5cd1000000b0033e7a102cfesm14397193wrb.64.2024.04.17.04.23.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 04:23:20 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Wed, 17 Apr 2024 13:23:18 +0200
+From: Ingo Molnar <mingo@kernel.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/19] Enable -Wshadow=local for kernel/sched
+Message-ID: <Zh+xJpjaHjF2qvmV@gmail.com>
+References: <20220302043451.2441320-1-willy@infradead.org>
+ <202404161413.8B4810C5@keescook>
+ <CAHk-=wg7+dfpEvDnTnB-eR9QRZ2VySbxOEHbYqL3Ai5wwkon5Q@mail.gmail.com>
+ <Zh8dTOZ_YxeGhp-L@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240417092727.3803910-1-wangzhaolong1@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zh8dTOZ_YxeGhp-L@casper.infradead.org>
 
-ÔÚ 2024/4/17 17:27, ZhaoLong Wang Ð´µÀ:
-> The UBIFS_DFS_DIR_LEN macro, which defines the maximum length of the UBIFS
-> debugfs directory name, has an incorrect formula and misleading comments.
-> The current formula is (3 + 1 + 2*2 + 1), which assumes that both UBI device
-> number and volume ID are limited to 2 characters. However, UBI device number
-> ranges from 0 to 37 (2 characters), and volume ID ranges from 0 to 127 (up
 
-UBI device number ranges from 0~31? UBI_MAX_DEVICES(32)
-> to 3 characters).
-> 
-> Although the current code works due to the cancellation of mathematical
-> errors (9 + 1 = 10, which matches the correct UBIFS_DFS_DIR_LEN value), it
-> can lead to confusion and potential issues in the future.
-> 
-> This patch aims to improve the code clarity and maintainability by making
-> the following changes:
-> 
-> 1. Corrects the UBIFS_DFS_DIR_LEN macro definition to (3 + 1 + 2 + 3 + 1),
->     accommodating the maximum lengths of both UBI device number and volume ID,
->     plus the separators and null terminator.
-> 2. Updates the snprintf calls to use UBIFS_DFS_DIR_LEN instead of
->     UBIFS_DFS_DIR_LEN + 1, removing the unnecessary +1.
-> 3. Modifies the error checks to compare against UBIFS_DFS_DIR_LEN using >=
->     instead of >, aligning with the corrected macro definition.
-> 4. Removes the redundant +1 in the dfs_dir_name array definitions in ubi.h
->     and debug.h.
-> 5. Removes the duplicated UBIFS_DFS_DIR_LEN and UBIFS_DFS_DIR_NAME macro
->     definitions in ubifs.h, as they are already defined in debug.h.
-> 
-> While these changes do not affect the runtime behavior, they make the code
-> more readable, maintainable, and less prone to future errors.
-> 
-> Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
-> ---
+* Matthew Wilcox <willy@infradead.org> wrote:
 
-Please add change log v2->v3 next time.
->   drivers/mtd/ubi/debug.c | 4 ++--
->   drivers/mtd/ubi/ubi.h   | 2 +-
->   fs/ubifs/debug.c        | 4 ++--
->   fs/ubifs/debug.h        | 7 ++++---
->   fs/ubifs/sysfs.c        | 6 +++---
->   fs/ubifs/ubifs.h        | 7 -------
->   6 files changed, 12 insertions(+), 18 deletions(-)
+> On Tue, Apr 16, 2024 at 05:29:02PM -0700, Linus Torvalds wrote:
+> > On Tue, 16 Apr 2024 at 14:15, Kees Cook <keescook@chromium.org> wrote:
+> > >
+> > > I was looking at -Wshadow=local again, and remembered this series. It
+> > > sounded like things were close, but a tweak was needed. What would be
+> > > next to get this working?
+> > 
+> > So what is the solution to
+> > 
+> >     #define MAX(a,b) ({ \
+> >         typeof(a) __a = (a); \
+> >         typeof(b) __b = (b); \
+> >         __a > __b ? __a : __b; \
+> >     })
+> 
+> #define __MAX(a, __a, b, __b) ({	\
+> 	typeof(a) __a = (a);		\
+> 	typeof(b) __b = (b);		\
+> 	__a > __b ? __a : __b;		\
+> })
+> 
+> #define MAX(a, b)	__MAX(a, UNIQUE_ID(a), b, UNIQUE_ID(b))
+> 
+> At least, I think that was the plan.  This was two years ago and I've
+> mostly forgotten.
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+I think as long as we can keep any additional complexity inside macros it 
+would be acceptable, at least from the scheduler's POV. A UNIQUE_ID() layer 
+of indirection for names doesn't sound look a too high price.
+
+I had good reasults with -Wshadow in user-space projects: once the false 
+positives got ironed out, the vast percentage of new warnings was for 
+genuinely problematic new code. But they rarely used block-nested macros 
+like the kernel does.
+
+Thanks,
+
+	Ingo
 
