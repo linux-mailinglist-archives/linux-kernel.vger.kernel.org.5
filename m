@@ -1,293 +1,160 @@
-Return-Path: <linux-kernel+bounces-149275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A34F8A8EB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 00:05:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E16AC8A8EBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 00:08:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 990B11F227C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:05:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAEFC1C2100A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:08:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD23E13C3EF;
-	Wed, 17 Apr 2024 22:05:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33AE713C3EF;
+	Wed, 17 Apr 2024 22:08:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1UYVIt7K"
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=schierlm@gmx.de header.b="TwPGGHTi"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A3B4C62E
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 22:05:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE98312E1DE;
+	Wed, 17 Apr 2024 22:08:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713391540; cv=none; b=ZThuwr6b/cqijhcKGkBEMA7jeL/Xopx1WcI8sd+QnPKHS5FtSJwV89GyTdI0fLdadSlhVJZhZzOXUkjFAEJwEogWOV5AP41bxiFB0j/gy0NKqNoLm40x/VELKKzAK7pl6kYCqmeFdTdY27nONfYVUqmu8P8xWyw/mvJvkEGKCXY=
+	t=1713391708; cv=none; b=N4CeR81hhRx7RLGCQwnahhDMckNRJfwGXRguIld4xvFZlICbQSnmoR5zdXEk7SYKqjTvfZ1aywGLu8z5Weg7ZKZdkONaOOiK97xf8xpFYoJUSP5yPI0xz4LKRKlDksa5zNWd7LGn4lQg01uOwjmbwPZ+NBz4qTqYWaOVkeiAUX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713391540; c=relaxed/simple;
-	bh=erqmtlpijRRSqOo+MRwOcq5rPRXpS5P7NhauhD3F73c=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=ZVjPBM4EjWuYXAl8Tj18+EgIpgbv/ylEUrgUwh4mGhelbhBiBm+aD/xai220fDJJOir7YvClJmhSt14YYUUhVbiQbLFV2wKMSWPASZg/jiKzNHrGUEKN2UiEbVnCoY+7PBt77hfJ/UAxBBy8Ip/4+IPXAln1p82sXb2CzmFdqFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--cmllamas.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1UYVIt7K; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--cmllamas.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2a48ed89c7eso296266a91.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:05:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713391539; x=1713996339; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6sQAd7m1bsb6+Pms8yhE5r0z3pGxSqo7PimBQcO9YDQ=;
-        b=1UYVIt7KoymJSfl5jWOS05O0EQZBUyAjBa3kKLs4aA0cFrCftpJzUisg4/ItWBF26c
-         CDUOoU6SNvKiNr3hoEEjNtaMiER9SVosITe4dzIICvHWMQS1ZXu4S1R/WigVvi4ni1kc
-         MblRqEnSmejvoDl/PcPGNI99+VkX6eCgalYQhqaex05ytkbSFvodJ+LmEh0feU3APiag
-         HRzAaHJw83Mi6ZfivVoq4cT+k8uq//ed49PnSCIdogAx2CdkcrxRE8Ibm4tyUC6tNd8r
-         e/3EkXGBRIuknO1TzT9mC8YYhvDWO4uqlIx4Cf78+B8NYuCfQpB0WIQtHSzv01IY++tn
-         Buzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713391539; x=1713996339;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6sQAd7m1bsb6+Pms8yhE5r0z3pGxSqo7PimBQcO9YDQ=;
-        b=jNpLmMYLXEiUZXI+tcnNrUtLuHgxOQIn+zMFsd0PrXfmlerP/DeB3Rfm1bpkOviNWE
-         g+i8hjEG/LH44Rm01aAcSyBlTC70MGVnfX0r866MR5z+gEmqwSWNMLWbAzGGOBAuoV2l
-         v37/McVMxr7Ew2Fvpjz+6/+XuwowtdAPbGQ0zSFaxGgtrPWn7bIvXsaRSINKwM5RUFN+
-         5yWzQN2IwPjzess51LKQmPMCiT15nOj2jKq1C+2as14I9SrmllFeFOHUs+0+7wgn/60E
-         dwRM8fA2RKvILhynaIYIckqCik9ZtG7ek6AuBgp2Bh+a9pUY0LX/ogQPTblho73yPYUr
-         HgUw==
-X-Gm-Message-State: AOJu0Yw9RDNEFg4z5FVldHcmhFwpG49z/QygnPkNTKmqH5VDTWLy14M1
-	gER2KBIGWmYxqXG6OgKq8+q5g8+9nKdEV1BHl5O0c50Z9HmXWIscxIRVkytVh3Tq+3cTxTDtGhL
-	6J6mCNeVmQA==
-X-Google-Smtp-Source: AGHT+IGovgi8/xH9OY96galhVVKt2bjrErfL7IPTXr63Z3HFufHi99S0SH/qaFy+Ux5/+5S4orwg+2OVHKBWug==
-X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
- (user=cmllamas job=sendgmr) by 2002:a17:90b:4a03:b0:2a2:544:71e4 with SMTP id
- kk3-20020a17090b4a0300b002a2054471e4mr11998pjb.4.1713391538604; Wed, 17 Apr
- 2024 15:05:38 -0700 (PDT)
-Date: Wed, 17 Apr 2024 22:05:33 +0000
+	s=arc-20240116; t=1713391708; c=relaxed/simple;
+	bh=mEM8gHXG/HxaC8h69ROEnCM+V1EJ1N7csO+Pc0JoaIw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ngUlM8F2wpkohmfK3KJS3Xe8HZGxiSTbBEWWjjtvwkqXux+5Ora5IGSsb/aOEfaNygwJ2Mrq40FRm3X5pUimDyUXIl3RugMbk3Q+32ZnTGHngCRuIBZmXqGbNlBt/LSsVtBUHahLhDBq/6TyCf2goCbw6BdnDwIa+d51dRd4Bn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=schierlm@gmx.de header.b=TwPGGHTi; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1713391701; x=1713996501; i=schierlm@gmx.de;
+	bh=mEM8gHXG/HxaC8h69ROEnCM+V1EJ1N7csO+Pc0JoaIw=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=TwPGGHTiibQIqYRZzgJePwRjI/s0G6R7rt2hfAOJOVhqlQGi9C6tuSYQCjjRHmxk
+	 zXZNuF73Yuq5Duq00sk406HG15LU4aDY29AUXLz8W1iJdRXFUptixqz0qQlxP2ydh
+	 0h/KVKA5Ty57IUCS+0WUySsYZIJocTrFn3o9YRev2x6MNdZiDWpJfDlq8pvwA7vtl
+	 H62U61dgHRirpyMxpWg30UQvIV0jW58eS6sTJQ0EntTWm91KluvuXC94/vZGxyHPB
+	 ZC1YMNyUliCMDs8AKX6Xt5Llh0EwXjEe/ncy6xScnpdIpc47v6/DU+wx4j+KxVZtK
+	 etvQYyZhHirzQcp3fw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.178.56] ([84.145.176.14]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MHoRK-1ruWYt24LW-00EqgY; Thu, 18
+ Apr 2024 00:08:21 +0200
+Message-ID: <143afb82-dcc4-4fd3-a851-a03b01532694@gmx.de>
+Date: Thu, 18 Apr 2024 00:08:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-Message-ID: <20240417220534.1370087-1-cmllamas@google.com>
-Subject: [PATCH v4 RESEND] lockdep: fix deadlock issue between lockdep and rcu
-From: Carlos Llamas <cmllamas@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	Bart Van Assche <bvanassche@acm.org>
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com, 
-	Zhiguo Niu <zhiguo.niu@unisoc.com>, stable@vger.kernel.org, 
-	Carlos Llamas <cmllamas@google.com>, Xuewen Yan <xuewen.yan@unisoc.com>, 
-	Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] firmware: dmi: Stop decoding on broken entry
+Content-Language: de-DE
+To: Jean Delvare <jdelvare@suse.de>
+Cc: linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Michael Kelley <mhklinux@outlook.com>
+References: <b702b36b90b63b615d41e778570707043ea81551.camel@suse.de>
+From: Michael Schierl <schierlm@gmx.de>
+Autocrypt: addr=schierlm@gmx.de; keydata=
+ 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
+ uxTR60TDY/d6Kz8=
+In-Reply-To: <b702b36b90b63b615d41e778570707043ea81551.camel@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:dIKsefGdEySh3Ykba5hNpP8J0uk+A9B0UDyZ93+aL//4edatlHv
+ mL1GzioOT3Wbi7U1aYxhk+97wyyOEkT5/tyhhLv0Sos5FGwfUJuqEjc3AXedmmI+b13zjVi
+ B8rxVIzwapQDYWNxw/MkEUmuvfaflQ0T1Qk+N+Z0ctHg/vi+afxwcF1V4kKibv0GvOGrR9r
+ JwG8UUYJlsYvxN7Owz4aA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:rcZhV4wFv+0=;HnOqxM3K3kp9qAvmz3WXmQ1gyWh
+ PLDLt5gH1pFRY6oIWjYMScD2GV7Oq9OJ+pt7Ufeo+IIXpZKkZNMQwuhNMgguVYPNluxaHl80M
+ gFnZPE9TgA94MCOlj0U9BTaP/dq6I1O09TfklOHQ37hNvAk9zv/ohkxjcuWdz4WwfQ43p0l1i
+ dHAsi67wxdyB0m8Ke3X9MrJUhChCv48l+ujhLdJWkIXHUQfYTu3vOfRHljDY2PFwYbrchOEHB
+ CLOSeu6i05SHeWr9fvHmzuTKUiNL/VdSt0ansuSBadfx3a59g/+4QmrVKiBhSGTryAfOMdEg8
+ BGUFgWQeHZftMG5z/Bf7keC3bZajYaff/VPhxQHxVMbsY4ymJhjPuPdJGg4CznwbfoPfba8JS
+ NQKZQXH3VfOO/t2NfVE4FtBMus6XVgisgxOHisQKFfDoCNchU5z9NUL27PSCus7PfKB5peHm2
+ 1o9jgHU686R+dhi4+pUXsMagVdM5pQPCoOYF702nAmA9cYChXtfwUjv2CO9tMlukc4NWY44ju
+ kZ/CVl7HjirY7SjCmfmvp1jveU9LTD61T33QcbKjkLJtVlBiNaadD/NaCTV2ht6iDWH6+jvUZ
+ 0/VRtw0xQHa4ODFz/iZkutdOJ7Z6UQnYHtqCGUmUYBwkDh9D6iS3DR9o353KE/2FwykDnkQB4
+ u51hPZu8pkPTGvw4z/zOqGuHE6A7I/hzE6EjlBVmE6Y9GjtH4IfbwkiXVEwLaSZCIEKI3WQgb
+ r0cMz5JiFp/5IdRrmCgRRBQCpsw6N7hU7UtU+tKrMdrlZ07EaHnuAywV7Tg1TkT4OZE549EOG
+ 7rVcq2FJXIFfoxeheCuN/sa/ZZ95Hyg8XEkmlYUGuWYUE=
 
-From: Zhiguo Niu <zhiguo.niu@unisoc.com>
+Hello,
 
-There is a deadlock scenario between lockdep and rcu when
-rcu nocb feature is enabled, just as following call stack:
 
-     rcuop/x
--000|queued_spin_lock_slowpath(lock = 0xFFFFFF817F2A8A80, val = ?)
--001|queued_spin_lock(inline) // try to hold nocb_gp_lock
--001|do_raw_spin_lock(lock = 0xFFFFFF817F2A8A80)
--002|__raw_spin_lock_irqsave(inline)
--002|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F2A8A80)
--003|wake_nocb_gp_defer(inline)
--003|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F30B680)
--004|__call_rcu_common(inline)
--004|call_rcu(head = 0xFFFFFFC082EECC28, func = ?)
--005|call_rcu_zapped(inline)
--005|free_zapped_rcu(ch = ?)// hold graph lock
--006|rcu_do_batch(rdp = 0xFFFFFF817F245680)
--007|nocb_cb_wait(inline)
--007|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F245680)
--008|kthread(_create = 0xFFFFFF80803122C0)
--009|ret_from_fork(asm)
+Am 17.04.2024 um 17:33 schrieb Jean Delvare:
+> If a DMI table entry is shorter than 4 bytes, it is invalid. Due to
+> how DMI table parsing works, it is impossible to safely recover from
+> such an error, so we have to stop decoding the table.
+>
+> Signed-off-by: Jean Delvare <jdelvare@suse.de>
+> Link: https://lore.kernel.org/linux-kernel/Zh2K3-HLXOesT_vZ@liuwe-devbox=
+-debian-v2/T/
+> ---
+> Michael, can you please test this patch and confirm that it prevents
+> the early oops?
 
-     rcuop/y
--000|queued_spin_lock_slowpath(lock = 0xFFFFFFC08291BBC8, val = 0)
--001|queued_spin_lock()
--001|lockdep_lock()
--001|graph_lock() // try to hold graph lock
--002|lookup_chain_cache_add()
--002|validate_chain()
--003|lock_acquire
--004|_raw_spin_lock_irqsave(lock = 0xFFFFFF817F211D80)
--005|lock_timer_base(inline)
--006|mod_timer(inline)
--006|wake_nocb_gp_defer(inline)// hold nocb_gp_lock
--006|__call_rcu_nocb_wake(rdp = 0xFFFFFF817F2A8680)
--007|__call_rcu_common(inline)
--007|call_rcu(head = 0xFFFFFFC0822E0B58, func = ?)
--008|call_rcu_hurry(inline)
--008|rcu_sync_call(inline)
--008|rcu_sync_func(rhp = 0xFFFFFFC0822E0B58)
--009|rcu_do_batch(rdp = 0xFFFFFF817F266680)
--010|nocb_cb_wait(inline)
--010|rcu_nocb_cb_kthread(arg = 0xFFFFFF817F266680)
--011|kthread(_create = 0xFFFFFF8080363740)
--012|ret_from_fork(asm)
 
-rcuop/x and rcuop/y are rcu nocb threads with the same nocb gp thread.
-This patch release the graph lock before lockdep call_rcu.
+Tested-By: Michael Schierl <schierlm@gmx.de>
 
-Fixes: a0b0fd53e1e6 ("locking/lockdep: Free lock classes that are no longer in use")
-Cc:  <stable@vger.kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Carlos Llamas <cmllamas@google.com>
-Cc: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-Reviewed-by: Waiman Long <longman@redhat.com>
-Reviewed-by: Carlos Llamas <cmllamas@google.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
----
- kernel/locking/lockdep.c | 48 ++++++++++++++++++++++++++--------------
- 1 file changed, 32 insertions(+), 16 deletions(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 151bd3de5936..3468d8230e5f 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -6184,25 +6184,27 @@ static struct pending_free *get_pending_free(void)
- static void free_zapped_rcu(struct rcu_head *cb);
- 
- /*
-- * Schedule an RCU callback if no RCU callback is pending. Must be called with
-- * the graph lock held.
-- */
--static void call_rcu_zapped(struct pending_free *pf)
-+* See if we need to queue an RCU callback, must called with
-+* the lockdep lock held, returns false if either we don't have
-+* any pending free or the callback is already scheduled.
-+* Otherwise, a call_rcu() must follow this function call.
-+*/
-+static bool prepare_call_rcu_zapped(struct pending_free *pf)
- {
- 	WARN_ON_ONCE(inside_selftest());
- 
- 	if (list_empty(&pf->zapped))
--		return;
-+		return false;
- 
- 	if (delayed_free.scheduled)
--		return;
-+		return false;
- 
- 	delayed_free.scheduled = true;
- 
- 	WARN_ON_ONCE(delayed_free.pf + delayed_free.index != pf);
- 	delayed_free.index ^= 1;
- 
--	call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
-+	return true;
- }
- 
- /* The caller must hold the graph lock. May be called from RCU context. */
-@@ -6228,6 +6230,7 @@ static void free_zapped_rcu(struct rcu_head *ch)
- {
- 	struct pending_free *pf;
- 	unsigned long flags;
-+	bool need_callback;
- 
- 	if (WARN_ON_ONCE(ch != &delayed_free.rcu_head))
- 		return;
-@@ -6239,14 +6242,18 @@ static void free_zapped_rcu(struct rcu_head *ch)
- 	pf = delayed_free.pf + (delayed_free.index ^ 1);
- 	__free_zapped_classes(pf);
- 	delayed_free.scheduled = false;
-+	need_callback =
-+		prepare_call_rcu_zapped(delayed_free.pf + delayed_free.index);
-+	lockdep_unlock();
-+	raw_local_irq_restore(flags);
- 
- 	/*
--	 * If there's anything on the open list, close and start a new callback.
--	 */
--	call_rcu_zapped(delayed_free.pf + delayed_free.index);
-+	* If there's pending free and its callback has not been scheduled,
-+	* queue an RCU callback.
-+	*/
-+	if (need_callback)
-+		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
- 
--	lockdep_unlock();
--	raw_local_irq_restore(flags);
- }
- 
- /*
-@@ -6286,6 +6293,7 @@ static void lockdep_free_key_range_reg(void *start, unsigned long size)
- {
- 	struct pending_free *pf;
- 	unsigned long flags;
-+	bool need_callback;
- 
- 	init_data_structures_once();
- 
-@@ -6293,10 +6301,11 @@ static void lockdep_free_key_range_reg(void *start, unsigned long size)
- 	lockdep_lock();
- 	pf = get_pending_free();
- 	__lockdep_free_key_range(pf, start, size);
--	call_rcu_zapped(pf);
-+	need_callback = prepare_call_rcu_zapped(pf);
- 	lockdep_unlock();
- 	raw_local_irq_restore(flags);
--
-+	if (need_callback)
-+		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
- 	/*
- 	 * Wait for any possible iterators from look_up_lock_class() to pass
- 	 * before continuing to free the memory they refer to.
-@@ -6390,6 +6399,7 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
- 	struct pending_free *pf;
- 	unsigned long flags;
- 	int locked;
-+	bool need_callback = false;
- 
- 	raw_local_irq_save(flags);
- 	locked = graph_lock();
-@@ -6398,11 +6408,13 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
- 
- 	pf = get_pending_free();
- 	__lockdep_reset_lock(pf, lock);
--	call_rcu_zapped(pf);
-+	need_callback = prepare_call_rcu_zapped(pf);
- 
- 	graph_unlock();
- out_irq:
- 	raw_local_irq_restore(flags);
-+	if (need_callback)
-+		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
- }
- 
- /*
-@@ -6446,6 +6458,7 @@ void lockdep_unregister_key(struct lock_class_key *key)
- 	struct pending_free *pf;
- 	unsigned long flags;
- 	bool found = false;
-+	bool need_callback = false;
- 
- 	might_sleep();
- 
-@@ -6466,11 +6479,14 @@ void lockdep_unregister_key(struct lock_class_key *key)
- 	if (found) {
- 		pf = get_pending_free();
- 		__lockdep_free_key_range(pf, key, 1);
--		call_rcu_zapped(pf);
-+		need_callback = prepare_call_rcu_zapped(pf);
- 	}
- 	lockdep_unlock();
- 	raw_local_irq_restore(flags);
- 
-+	if (need_callback)
-+		call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
-+
- 	/* Wait until is_dynamic_key() has finished accessing k->hash_entry. */
- 	synchronize_rcu();
- }
--- 
-2.44.0.683.g7961c838ac-goog
+Applied on top of 6.8.4, it prevents the early oops I previously
+observed when booting with 2 vCPUs.
 
+
+Regards,
+
+
+Michael
 
