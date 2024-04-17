@@ -1,196 +1,198 @@
-Return-Path: <linux-kernel+bounces-147832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8367A8A7A3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:47:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 693C38A7A3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:48:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D106CB21E7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:47:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AFF71C20F2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:48:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7768469D;
-	Wed, 17 Apr 2024 01:47:03 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FB111C02;
+	Wed, 17 Apr 2024 01:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MrwyCY2+"
+Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com [209.85.222.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9659F1860;
-	Wed, 17 Apr 2024 01:47:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F9E1860
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 01:48:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713318423; cv=none; b=GLe1ei6NfoGzkRp608lQmCZDVkMDhOX0vPDdr9Du34PtwR60xD70mUd3QZ2DMOlEQkejcu17nvKURWhGWQ3fb6CeW9waboS9e2agFO8zyyYJEAJNjWzsjCo9epC/i2qtpplKDJlBRTkM+tZ+zRMfG9bGBOHbQiKBUPLHzDLMQO4=
+	t=1713318530; cv=none; b=KcQoYCVLAgvruGdh4bYoIjfTTr/yTihiTNJJ2BnWD8UGCz8UMQpslc8O9zdAqogqM7xkNioq7AJ5U7/BfeWwhcfIbamiwS7NMZx5DePhevmVSyJxNZSK20+rOpnwbllMl+d0M3S8Lha38VQaC/uyUo/oedNwQV3jr3jgVcuD8U4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713318423; c=relaxed/simple;
-	bh=bXZ0Rp0h17UB1hcmbq235by/qZ83UmcjE47df4yAB+Q=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=AIOJpLoQy6OZFDt7AsL9VF/78V9pQVLMNnVJ/7OROwCYXagrvH8gQqZDN4IDjwPpx1znky9e0WHGZuBiyT5/Hl3kR4Eu3AHoxGowlKog+jzsBRdFi1wWxkQjic0F3Tz9cT8v5IcW/uZ/aaMU50nfL1sGmuzRWkTgaePtuZbMg00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VK3bg5jhxz2CclN;
-	Wed, 17 Apr 2024 09:43:59 +0800 (CST)
-Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8B6611A016C;
-	Wed, 17 Apr 2024 09:46:57 +0800 (CST)
-Received: from canpemm500004.china.huawei.com (7.192.104.92) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 17 Apr 2024 09:46:57 +0800
-Received: from [10.174.179.14] (10.174.179.14) by
- canpemm500004.china.huawei.com (7.192.104.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 17 Apr 2024 09:46:56 +0800
-Subject: Re: [PATCH] scsi: libsas: Fix exp-attached end device cannot be
- scanned in again after probe failed
-To: Xingui Yang <yangxingui@huawei.com>, <john.g.garry@oracle.com>,
-	<jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-	<damien.lemoal@opensource.wdc.com>
-CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
-	<chenxiang66@hisilicon.com>, <kangfenglong@huawei.com>
-References: <20240416030727.17074-1-yangxingui@huawei.com>
-From: Jason Yan <yanaijie@huawei.com>
-Message-ID: <e33272f8-1ff5-561f-60a3-b4d24fe27c6b@huawei.com>
-Date: Wed, 17 Apr 2024 09:46:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1713318530; c=relaxed/simple;
+	bh=0ZffSvpRUYRcf27sb1xqpEwkJD3YlrttFbqK5v1rQBg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WeXyFD4vqrepjoIIrHRfagI9yvzkrRq5Y7AtRB9DnkTNhTwo7T5Fqlle1paRM1HqYy9nkIYQO1R9YulKZIig4q5H6bSZno5YTLdwYDZ6t+BaNOiIjy0S864a6loQBq4eNFgkzjdadoWgiByq1PYkoTy7jfFnAen3VBWuuQj/4tQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MrwyCY2+; arc=none smtp.client-ip=209.85.222.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f42.google.com with SMTP id a1e0cc1a2514c-7eb7f34f36dso444475241.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:48:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713318528; x=1713923328; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7SrHxFpWuBTItyVrePiXT24pFyRWs6NH9bSHsOAYtzE=;
+        b=MrwyCY2+K8SNB0WCzz4/8e6pA6Vozd7aaTiApiNf0/wTdDetT4LuJXzHg0+goq2fhx
+         bDGumFzlEVns8ZJfotpW4veGZQdW84wZJrpNEg5t1GJzN/3LbTnAlHaX1ZdMI15xsieZ
+         Xf5SZArP7aFSoXAA43ta6NaGvocE58klL9ObIE/+hz5jXPAFXQ1L/RaOcXdZ3pvBDbNg
+         jSDfWOXUgT0uyMl67XhAplxfMCs6PB+TmHSyz37qhx/9LBoHL9ZPJnlfINiDvoszg0b1
+         5ro8p8Z7O/2McZLxv+qylvv0/OTNzHaw83WfoYBBMvNkUtVM0cgRapYp2ygzGOF60Cda
+         Xd2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713318528; x=1713923328;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7SrHxFpWuBTItyVrePiXT24pFyRWs6NH9bSHsOAYtzE=;
+        b=Za3kZkqCDe+67hIrYno4gnjLQ2VJ3OAfjmGjlwDWETzGLFxAvExFETK7pbWt4KJSTT
+         irziIn/OmUL9X0cuI/iRikdCqilYXKUEVKuocb82QRsZ3kiBYfz0j3l9yarvjDdiYWMC
+         k5rW1SV4sxDcqXRYJi1pegi1Q6iXihAH8/eFkXyWx2PL5Q7psnrdv++N3BbNoszCxpQI
+         ZpxEr9EfCt17I98V77z9FW1kCKcZGBFLN5UYVz+IkYiXDi1Xp2LzWGiMTHIUfwoIB93/
+         xz8FyzjMgMOK1E5cPtFJQQb9NZl2yi8Tu4FuN6dBGncgBvOinJEySGxJs3mZeOSi0RKg
+         92yQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWodsSXu901qXC4VuF+HCFXafV76/BSbbXQJFH/MM4BzJtv2j/sl1k2SwFAqDmJizWkSUQww/xR0Trde+qjIK4NfX8xAN2vtHctWZqK
+X-Gm-Message-State: AOJu0YzdklHihd9SgnYZiWr5cwekxhiwjsAJQRr7nFeOG6Mf97PEZyay
+	q0T1HxhsF2a5vF5K/2YuLVXi/8TNAIUMCcLTN1KqX8/CL7zR1Mo/aII0ai2evwPlLcC6aD92HaW
+	Y/BYg/wlaTMfrGT0yAobSb9Ng+94=
+X-Google-Smtp-Source: AGHT+IF9lpDTjWQIcigPB+h4sbtTvxRRF8oiDCuU6wuf/PRbZk+mTw2Vqu1AkZMGTqLugUpj6sHE/ok2j7k6siFqACI=
+X-Received: by 2002:a05:6102:e0b:b0:47a:516d:69df with SMTP id
+ o11-20020a0561020e0b00b0047a516d69dfmr10048709vst.6.1713318527827; Tue, 16
+ Apr 2024 18:48:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240416030727.17074-1-yangxingui@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500004.china.huawei.com (7.192.104.92)
+References: <20240409082631.187483-1-21cnbao@gmail.com> <20240409082631.187483-6-21cnbao@gmail.com>
+ <87frvk24x8.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAGsJ_4yoz=UH+=Z+ZmRy_9=vu_JWuOXnNO0gFtkBZ-rKJppMPA@mail.gmail.com>
+ <87bk6822gh.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87bk6822gh.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Wed, 17 Apr 2024 13:48:36 +1200
+Message-ID: <CAGsJ_4wOtkGhJL-daZfYyPacqypKHjK16_AqC+Y-1KrwXMNmHA@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] mm: add per-order mTHP swpin_refault counter
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org, 
+	baolin.wang@linux.alibaba.com, chrisl@kernel.org, david@redhat.com, 
+	hanchuanhua@oppo.com, hannes@cmpxchg.org, hughd@google.com, 
+	kasong@tencent.com, ryan.roberts@arm.com, surenb@google.com, 
+	v-songbaohua@oppo.com, willy@infradead.org, xiang@kernel.org, 
+	yosryahmed@google.com, yuzhao@google.com, ziy@nvidia.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Xingui,
+On Wed, Apr 17, 2024 at 1:40=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
+wrote:
+>
+> Barry Song <21cnbao@gmail.com> writes:
+>
+> > On Wed, Apr 17, 2024 at 8:47=E2=80=AFAM Huang, Ying <ying.huang@intel.c=
+om> wrote:
+> >>
+> >> Barry Song <21cnbao@gmail.com> writes:
+> >>
+> >> > From: Barry Song <v-songbaohua@oppo.com>
+> >> >
+> >> > Currently, we are handling the scenario where we've hit a
+> >> > large folio in the swapcache, and the reclaiming process
+> >> > for this large folio is still ongoing.
+> >> >
+> >> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> >> > ---
+> >> >  include/linux/huge_mm.h | 1 +
+> >> >  mm/huge_memory.c        | 2 ++
+> >> >  mm/memory.c             | 1 +
+> >> >  3 files changed, 4 insertions(+)
+> >> >
+> >> > diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> >> > index c8256af83e33..b67294d5814f 100644
+> >> > --- a/include/linux/huge_mm.h
+> >> > +++ b/include/linux/huge_mm.h
+> >> > @@ -269,6 +269,7 @@ enum mthp_stat_item {
+> >> >       MTHP_STAT_ANON_ALLOC_FALLBACK,
+> >> >       MTHP_STAT_ANON_SWPOUT,
+> >> >       MTHP_STAT_ANON_SWPOUT_FALLBACK,
+> >> > +     MTHP_STAT_ANON_SWPIN_REFAULT,
+> >>
+> >> This is different from the refault concept used in other place in mm
+> >> subystem.  Please check the following code
+> >>
+> >>         if (shadow)
+> >>                 workingset_refault(folio, shadow);
+> >>
+> >> in __read_swap_cache_async().
+> >
+> > right. it is slightly different as refault can also cover the case foli=
+os
+> > have been entirely released and a new page fault happens soon
+> > after it.
+> > Do you have a better name for this?
+> > MTHP_STAT_ANON_SWPIN_UNDER_RECLAIM
+> > or
+> > MTHP_STAT_ANON_SWPIN_RECLAIMING ?
+>
+> TBH, I don't think we need this counter.  It's important for you during
+> implementation.  But I don't think it's important for end users.
 
-On 2024/4/16 11:07, Xingui Yang wrote:
-> We found that it is judged as broadcast flutter and exits directly when the
-> exp-attached end device reconnects after the end device probe failed.
+Okay. If we can't find a shared interest between the
+implementer and user, I'm perfectly fine with keeping it
+local only for debugging purposes.
 
-Can you please describe how to reproduce this issue in detail?
-
-Thanks,
-Jason
-
-> 
-> [78779.654026] sas: broadcast received: 0
-> [78779.654037] sas: REVALIDATING DOMAIN on port 0, pid:10
-> [78779.654680] sas: ex 500e004aaaaaaa1f phy05 change count has changed
-> [78779.662977] sas: ex 500e004aaaaaaa1f phy05 originated BROADCAST(CHANGE)
-> [78779.662986] sas: ex 500e004aaaaaaa1f phy05 new device attached
-> [78779.663079] sas: ex 500e004aaaaaaa1f phy05:U:8 attached: 500e004aaaaaaa05 (stp)
-> [78779.693542] hisi_sas_v3_hw 0000:b4:02.0: dev[16:5] found
-> [78779.701155] sas: done REVALIDATING DOMAIN on port 0, pid:10, res 0x0
-> [78779.707864] sas: Enter sas_scsi_recover_host busy: 0 failed: 0
-> ...
-> [78835.161307] sas: --- Exit sas_scsi_recover_host: busy: 0 failed: 0 tries: 1
-> [78835.171344] sas: sas_probe_sata: for exp-attached device 500e004aaaaaaa05 returned -19
-> [78835.180879] hisi_sas_v3_hw 0000:b4:02.0: dev[16:5] is gone
-> [78835.187487] sas: broadcast received: 0
-> [78835.187504] sas: REVALIDATING DOMAIN on port 0, pid:10
-> [78835.188263] sas: ex 500e004aaaaaaa1f phy05 change count has changed
-> [78835.195870] sas: ex 500e004aaaaaaa1f phy05 originated BROADCAST(CHANGE)
-> [78835.195875] sas: ex 500e004aaaaaaa1f rediscovering phy05
-> [78835.196022] sas: ex 500e004aaaaaaa1f phy05:U:A attached: 500e004aaaaaaa05 (stp)
-> [78835.196026] sas: ex 500e004aaaaaaa1f phy05 broadcast flutter
-> [78835.197615] sas: done REVALIDATING DOMAIN on port 0, pid:10, res 0x0
-> 
-> The cause of the problem is that the related ex_phy information was not
-> cleared after the end device probe failed. In order to solve the above
-> problem, a function sas_ex_unregister_end_dev() is defined to clear the
-> ex_phy information and unregister the end device when the exp-attached end
-> device probe failed.
-> 
-> As the sata device is an asynchronous probe, the sata device may probe
-> failed after done REVALIDATING DOMAIN. Then after the port is added to the
-> sas_port_del_list, the port will not be deleted until the end of the next
-> REVALIDATING DOMAIN and sas_destruct_ports() is called. A warning about
-> creating a duplicate port will occur in the new REVALIDATING DOMAIN when
-> the end device reconnects. Therefore, the previous destroy_list and
-> sas_port_del_list should be handled before REVALIDATING DOMAIN.
-> 
-> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
-> ---
->   drivers/scsi/libsas/sas_discover.c |  2 ++
->   drivers/scsi/libsas/sas_expander.c | 16 ++++++++++++++++
->   drivers/scsi/libsas/sas_internal.h |  6 +++++-
->   3 files changed, 23 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/libsas/sas_discover.c b/drivers/scsi/libsas/sas_discover.c
-> index 8fb7c41c0962..aae90153f4c6 100644
-> --- a/drivers/scsi/libsas/sas_discover.c
-> +++ b/drivers/scsi/libsas/sas_discover.c
-> @@ -517,6 +517,8 @@ static void sas_revalidate_domain(struct work_struct *work)
->   	struct sas_ha_struct *ha = port->ha;
->   	struct domain_device *ddev = port->port_dev;
->   
-> +	sas_destruct_devices(port);
-> +	sas_destruct_ports(port);
->   	/* prevent revalidation from finding sata links in recovery */
->   	mutex_lock(&ha->disco_mutex);
->   	if (test_bit(SAS_HA_ATA_EH_ACTIVE, &ha->state)) {
-> diff --git a/drivers/scsi/libsas/sas_expander.c b/drivers/scsi/libsas/sas_expander.c
-> index f6e6db8b8aba..6ae1f4aaaf61 100644
-> --- a/drivers/scsi/libsas/sas_expander.c
-> +++ b/drivers/scsi/libsas/sas_expander.c
-> @@ -1856,6 +1856,22 @@ static void sas_unregister_devs_sas_addr(struct domain_device *parent,
->   	}
->   }
->   
-> +void sas_ex_unregister_end_dev(struct domain_device *dev)
-> +{
-> +	struct domain_device *parent = dev->parent;
-> +	struct expander_device *parent_ex = &parent->ex_dev;
-> +	int i;
-> +
-> +	for (i = 0; i < parent_ex->num_phys; i++) {
-> +		struct ex_phy *phy = &parent_ex->ex_phy[i];
-> +
-> +		if (sas_phy_match_dev_addr(dev, phy)) {
-> +			sas_unregister_devs_sas_addr(parent, i, true);
-> +			break;
-> +		}
-> +	}
-
-Did you mean this end device is a wide-port end device ? How could this 
-happen?
-
-> +}
-> +
->   static int sas_discover_bfs_by_root_level(struct domain_device *root,
->   					  const int level)
->   {
-> diff --git a/drivers/scsi/libsas/sas_internal.h b/drivers/scsi/libsas/sas_internal.h
-> index 3804aef165ad..434f928c2ed8 100644
-> --- a/drivers/scsi/libsas/sas_internal.h
-> +++ b/drivers/scsi/libsas/sas_internal.h
-> @@ -50,6 +50,7 @@ void sas_discover_event(struct asd_sas_port *port, enum discover_event ev);
->   
->   void sas_init_dev(struct domain_device *dev);
->   void sas_unregister_dev(struct asd_sas_port *port, struct domain_device *dev);
-> +void sas_ex_unregister_end_dev(struct domain_device *dev);
->   
->   void sas_scsi_recover_host(struct Scsi_Host *shost);
->   
-> @@ -145,7 +146,10 @@ static inline void sas_fail_probe(struct domain_device *dev, const char *func, i
->   		func, dev->parent ? "exp-attached" :
->   		"direct-attached",
->   		SAS_ADDR(dev->sas_addr), err);
-> -	sas_unregister_dev(dev->port, dev);
-> +	if (dev->parent && !dev_is_expander(dev->dev_type))
-> +		sas_ex_unregister_end_dev(dev);
-> +	else
-> +		sas_unregister_dev(dev->port, dev);
->   }
->   
->   static inline void sas_fill_in_rphy(struct domain_device *dev,
-> 
+>
+> --
+> Best Regards,
+> Huang, Ying
+>
+> >>
+> >> >       __MTHP_STAT_COUNT
+> >> >  };
+> >>
+> >> --
+> >> Best Regards,
+> >> Huang, Ying
+> >>
+> >> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> >> > index d8d2ed80b0bf..fb95345b0bde 100644
+> >> > --- a/mm/huge_memory.c
+> >> > +++ b/mm/huge_memory.c
+> >> > @@ -556,12 +556,14 @@ DEFINE_MTHP_STAT_ATTR(anon_alloc, MTHP_STAT_AN=
+ON_ALLOC);
+> >> >  DEFINE_MTHP_STAT_ATTR(anon_alloc_fallback, MTHP_STAT_ANON_ALLOC_FAL=
+LBACK);
+> >> >  DEFINE_MTHP_STAT_ATTR(anon_swpout, MTHP_STAT_ANON_SWPOUT);
+> >> >  DEFINE_MTHP_STAT_ATTR(anon_swpout_fallback, MTHP_STAT_ANON_SWPOUT_F=
+ALLBACK);
+> >> > +DEFINE_MTHP_STAT_ATTR(anon_swpin_refault, MTHP_STAT_ANON_SWPIN_REFA=
+ULT);
+> >> >
+> >> >  static struct attribute *stats_attrs[] =3D {
+> >> >       &anon_alloc_attr.attr,
+> >> >       &anon_alloc_fallback_attr.attr,
+> >> >       &anon_swpout_attr.attr,
+> >> >       &anon_swpout_fallback_attr.attr,
+> >> > +     &anon_swpin_refault_attr.attr,
+> >> >       NULL,
+> >> >  };
+> >> >
+> >> > diff --git a/mm/memory.c b/mm/memory.c
+> >> > index 9818dc1893c8..acc023795a4d 100644
+> >> > --- a/mm/memory.c
+> >> > +++ b/mm/memory.c
+> >> > @@ -4167,6 +4167,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+> >> >               nr_pages =3D nr;
+> >> >               entry =3D folio->swap;
+> >> >               page =3D &folio->page;
+> >> > +             count_mthp_stat(folio_order(folio), MTHP_STAT_ANON_SWP=
+IN_REFAULT);
+> >> >       }
+> >> >
+> >> >  check_pte:
 
