@@ -1,207 +1,194 @@
-Return-Path: <linux-kernel+bounces-148687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0A4E8A862E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:40:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F12428A8642
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:42:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38EC91F211C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:40:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7F7B283BC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:42:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43AA21422B5;
-	Wed, 17 Apr 2024 14:40:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aHZGXw63"
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com [209.85.217.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CA81411DF
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:40:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED38142E89;
+	Wed, 17 Apr 2024 14:41:05 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0320A14036F
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:41:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713364822; cv=none; b=NEy5JN3GyNC3hHIAzzrR5ICgqBzyFCE5EWGuk57pbK3/exbSF0hwo1qwdZwziCKJXrpNGuaS8pTzHCOHZVuG7VKnAeWbYZ7a15hGWMFOzToCHf4eqlO8PmMkF10giZc0ogR1yBoD/PBS2dvUdubH47gVn1pOTr38e/2tkcC1zyY=
+	t=1713364865; cv=none; b=f7uUCc2iZGoSCmFAzdOWAbjgvWoKS/8Nc11yZcdZNveFigoCIgulM/J7PUTyV+D9ukru/j40wue91PLrXjXlQjvcREwrSJ2dUMSvRZ3XnX2z3YNj8Qxynhw3TvEWHIS83PC7LwaW0YfXqZDxMwFKMDB3NhN/vFUPy2LLzXFdxqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713364822; c=relaxed/simple;
-	bh=CG7A0XS5Xdpm61BM+Mu/W9XBB/wYmjyn3UwZ2G16VmI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dodomxhYV306ur0oPeJ69/GX7l90r4Fqq4ePdPMiRAL7R3xnvWCyzLiieVjVzqeRHfvp1aoeN7Ejl8LFSoIMM0gBDs59N9Wf6b4LNAjqZaDuXNC7kt55BjsJPHj7A9BqFBf8sxyhiCk/dvH721rcJk5UhB/7Lu7dxr+6TKp7E/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aHZGXw63; arc=none smtp.client-ip=209.85.217.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f42.google.com with SMTP id ada2fe7eead31-47b99c0cce3so531796137.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:40:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713364819; x=1713969619; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9STrnlwuu+n4JzHQ1nF68oOe1/KL3VmX4gpavyNIyiA=;
-        b=aHZGXw638ZeW9a/y7K3QuwK5Q5gkaSAnb+mqwZ8H1Z6ZLwXzHGQYUFsksagZt903FA
-         UA/KIqjG9+MZqzvSwZOK/1blT2kS8sNmPK5Dp6920edLid4KNdEylWt8rgVBte44U/bz
-         QgQK82WB87LkQHk4mU7cBH+ShVRH0AXQV1u1BFLH/sSjR+mXnJOtYhbgGHtC2qJBjFVI
-         1G5cjKYiouzotV7gONGaIiMRfPlQvv6vQAEcu1A0m0WON5yfxy5AF2MwKnHRn3US9Ays
-         AA4nApWCdVOcumPJKgLVnMDqWBlbY89DsltEkp3N40z7BGa3LOYVKWwaewLWGNn5aPKt
-         FVpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713364819; x=1713969619;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9STrnlwuu+n4JzHQ1nF68oOe1/KL3VmX4gpavyNIyiA=;
-        b=kNSNc+1hZpCmr0QFSQChrQEzCy3ND21uBGkZHsmG8F3iCDwIZMJ+Y/X0GbQJOmiAFX
-         P1xdZYICR1L97hN7pIpc8eTsMesiM6IUBnhgxsh7lePga+W+w8J6F1RP/bEY7FHoSKRb
-         Awy6lY/ULoLSUgzK8i+wNc4P0o4/UInABsutrRmO6xTMVMsT9FoAUubqja54tWVMSDws
-         odbpZzxZ7M8RqGpOjRe09ZfMRX4giQ5Z31ZQQpAIxjUKyFXDLUl8x5o5rVEtgj1ig9Rw
-         LaDiPiDy3HyQYo6q51hUALx8hdvhaCxCgHi73aRdgWaUeetNskEn3/+kZqDU02rInwdc
-         6CRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3bFDhHoStyAPfcNlE9f1p1qmdAaK9ahu9MzmSJcVH7WrHA4EM4/I8zyJ7KS363mWjF4CcwNZEO8hmgnCVDsnfRs9ZbQAjuSgYGgip
-X-Gm-Message-State: AOJu0Yy29W9xBSO/DkL1UOg2FreDE9miINn6UEGGWNjJXjdSKsKOQEcm
-	Ky+rkcea5i1HWVCUxhwjepjzJ5b8XQqgtU1HjoTFoE9v4YY/7mu1qIAaUXhrLk+R9LRsRSjMMo4
-	54Uqy3zi0Jn7EIJT3PA8HFKRBFNmCShapMii1
-X-Google-Smtp-Source: AGHT+IEAhdkE9/+u7jKI1qVzSkpiUAFnT/Mz0cfCADATqN+blmQ68F1aCON7VI4CU5CS05totk8sdgrrvWMi3cB58MI=
-X-Received: by 2002:a05:6122:882:b0:4c8:90e5:6792 with SMTP id
- 2-20020a056122088200b004c890e56792mr16551902vkf.7.1713364818511; Wed, 17 Apr
- 2024 07:40:18 -0700 (PDT)
+	s=arc-20240116; t=1713364865; c=relaxed/simple;
+	bh=RlK8KnFv0HJvipPZrhYVHlntbmocvkASMg4RsjBr9gs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ohkGWj5d/i01Z9IzWaGmGBZoJeA+HJJ/byGGu6tzM7BK+WFfgcC5jBNBJ8A1Fw1W+mm1PPkJHyQRmIuacbe+zHMsSMDoA1ALKP7nv25v72qXiLMcGyGFvlwN1v9Op1nVM7sYMtVDw1Gs1BrCfs71Jc/0a/9MdQicTQ4PrRLUYPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1282F339;
+	Wed, 17 Apr 2024 07:41:30 -0700 (PDT)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5A883F738;
+	Wed, 17 Apr 2024 07:40:58 -0700 (PDT)
+Date: Wed, 17 Apr 2024 15:40:53 +0100
+From: Dave Martin <Dave.Martin@arm.com>
+To: "Moger, Babu" <babu.moger@amd.com>
+Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+	Reinette Chatre <reinette.chatre@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	H Peter Anvin <hpa@zytor.com>, shameerali.kolothum.thodi@huawei.com,
+	D Scott Phillips OS <scott@os.amperecomputing.com>,
+	carl@os.amperecomputing.com, lcherian@marvell.com,
+	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+	dfustini@baylibre.com, amitsinght@marvell.com,
+	David Hildenbrand <david@redhat.com>,
+	Rex Nie <rex.nie@jaguarmicro.com>
+Subject: Re: [PATCH v1 02/31] x86/resctrl: Add a helper to avoid reaching
+ into the arch code resource list
+Message-ID: <Zh/fdSnrfbC+CVbS@e133380.arm.com>
+References: <20240321165106.31602-1-james.morse@arm.com>
+ <20240321165106.31602-3-james.morse@arm.com>
+ <0790c576-944a-45f8-bc43-01eb0a8f67a9@amd.com>
+ <Zh6kDStUw8AThV4s@e133380.arm.com>
+ <f4265c87-4f57-46fe-bb1d-b4d1ce3df06f@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415-alice-mm-v5-0-6f55e4d8ef51@google.com>
- <20240415-alice-mm-v5-1-6f55e4d8ef51@google.com> <20240417152802.6b7a7384@eugeo>
-In-Reply-To: <20240417152802.6b7a7384@eugeo>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Wed, 17 Apr 2024 16:40:07 +0200
-Message-ID: <CAH5fLgjcO0mrQ=X2QG1qS+sTpWDnBfGxXGWn-3wBQzn3MP8pQQ@mail.gmail.com>
-Subject: Re: [PATCH v5 1/4] rust: uaccess: add userspace pointers
-To: Gary Guo <gary@garyguo.net>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, 
-	Kees Cook <keescook@chromium.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f4265c87-4f57-46fe-bb1d-b4d1ce3df06f@amd.com>
 
-On Wed, Apr 17, 2024 at 4:28=E2=80=AFPM Gary Guo <gary@garyguo.net> wrote:
->
-> On Mon, 15 Apr 2024 07:13:53 +0000
-> Alice Ryhl <aliceryhl@google.com> wrote:
->
-> > From: Wedson Almeida Filho <wedsonaf@gmail.com>
-> >
-> > A pointer to an area in userspace memory, which can be either read-only
-> > or read-write.
-> >
-> > All methods on this struct are safe: attempting to read or write on bad
-> > addresses (either out of the bound of the slice or unmapped addresses)
-> > will return `EFAULT`. Concurrent access, *including data races to/from
-> > userspace memory*, is permitted, because fundamentally another userspac=
-e
-> > thread/process could always be modifying memory at the same time (in th=
-e
-> > same way that userspace Rust's `std::io` permits data races with the
-> > contents of files on disk). In the presence of a race, the exact byte
-> > values read/written are unspecified but the operation is well-defined.
-> > Kernelspace code should validate its copy of data after completing a
-> > read, and not expect that multiple reads of the same address will retur=
-n
-> > the same value.
-> >
-> > These APIs are designed to make it difficult to accidentally write
-> > TOCTOU bugs. Every time you read from a memory location, the pointer is
-> > advanced by the length so that you cannot use that reader to read the
-> > same memory location twice. Preventing double-fetches avoids TOCTOU
-> > bugs. This is accomplished by taking `self` by value to prevent
-> > obtaining multiple readers on a given `UserSlicePtr`, and the readers
-> > only permitting forward reads. If double-fetching a memory location is
-> > necessary for some reason, then that is done by creating multiple
-> > readers to the same memory location.
-> >
-> > Constructing a `UserSlicePtr` performs no checks on the provided
-> > address and length, it can safely be constructed inside a kernel thread
-> > with no current userspace process. Reads and writes wrap the kernel API=
-s
-> > `copy_from_user` and `copy_to_user`, which check the memory map of the
-> > current process and enforce that the address range is within the user
-> > range (no additional calls to `access_ok` are needed).
-> >
-> > This code is based on something that was originally written by Wedson o=
-n
-> > the old rust branch. It was modified by Alice by removing the
-> > `IoBufferReader` and `IoBufferWriter` traits, and various other changes=
-.
-> >
-> > Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
-> > Co-developed-by: Alice Ryhl <aliceryhl@google.com>
-> > Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> > ---
-> >  rust/helpers.c         |  14 +++
-> >  rust/kernel/lib.rs     |   1 +
-> >  rust/kernel/uaccess.rs | 304 +++++++++++++++++++++++++++++++++++++++++=
-++++++++
-> >  3 files changed, 319 insertions(+)
-> >
-> > diff --git a/rust/kernel/uaccess.rs b/rust/kernel/uaccess.rs
->
-> > +/// [`std::io`]: https://doc.rust-lang.org/std/io/index.html
-> > +/// [`clone_reader`]: UserSliceReader::clone_reader
-> > +pub struct UserSlice {
-> > +    ptr: *mut c_void,
-> > +    length: usize,
-> > +}
->
-> How useful is the `c_void` in the struct and new signature? They tend
-> to not be very useful in Rust. Given that provenance doesn't matter
-> for userspace pointers, could this be `usize` simply?
->
-> I think `*mut u8` or `*mut ()` makes more sense than `*mut c_void` for
-> Rust code even if we don't want to use `usize`.
+On Tue, Apr 16, 2024 at 03:44:29PM -0500, Moger, Babu wrote:
+> Hi Dave,
+> 
+> On 4/16/24 11:15, Dave Martin wrote:
+> > On Mon, Apr 15, 2024 at 03:28:18PM -0500, Moger, Babu wrote:
+> >> Hi James/Dave,
+> >>
+> >> On 3/21/24 11:50, James Morse wrote:
+> >>> Resctrl occasionally wants to know something about a specific resource,
+> >>> in these cases it reaches into the arch code's rdt_resources_all[]
+> >>> array.
+> >>>
+> >>> Once the filesystem parts of resctrl are moved to /fs/, this means it
+> >>> will need visibility of the architecture specific struct
+> >>> resctrl_hw_resource definition, and the array of all resources.
+> >>> All architectures would also need a r_resctrl member in this struct.
+> >>>
+> >>> Instead, abstract this via a helper to allow architectures to do
+> >>> different things here. Move the level enum to the resctrl header and
+> >>> add a helper to retrieve the struct rdt_resource by 'rid'.
+> >>>
+> >>> resctrl_arch_get_resource() should not return NULL for any value in
+> >>> the enum, it may instead return a dummy resource that is
+> >>> !alloc_enabled && !mon_enabled.
+> >>
+> >> Nit.
+> >> You may want to drop the second half of the statement. We don't have a
+> >> dummy resource.
+> > 
+> > I guess not, but MPAM will, although I haven't fully understood the
+> > logic.  See:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/tree/drivers/platform/mpam/mpam_resctrl.c?h=mpam/snapshot/v6.7-rc2
+> > 
+> > (Search for "dummy".)
+> > 
+> > 
+> > In any case, the statement above is part of the definition of the new
+> > interface: the resctrl core code is going to explicitly need to cope
+> > with a dummy resource being returned, and the arch code is required
+> > to return a pointer to something and not NULL.
+> > 
+> > So I would say that it is appropriate (or, at the very least, harmless)
+> > to keep that statement here?
+> 
+> Ok. fine.
+> > 
+> >>
+> >>>
+> >>> Signed-off-by: James Morse <james.morse@arm.com>
+> >>> ---
+> >>>  arch/x86/kernel/cpu/resctrl/core.c        | 10 +++++++++-
+> >>>  arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  2 +-
+> >>>  arch/x86/kernel/cpu/resctrl/internal.h    | 10 ----------
+> >>>  arch/x86/kernel/cpu/resctrl/monitor.c     |  8 ++++----
+> >>>  arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 15 +++++++--------
+> >>>  include/linux/resctrl.h                   | 17 +++++++++++++++++
+> >>>  6 files changed, 38 insertions(+), 24 deletions(-)
+> >>>
+> > 
+> > [...]
+> > 
+> >>> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> >>> index 1767c1affa60..45372b6a6215 100644
+> >>> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> >>> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> > 
+> > [...]
+> > 
+> >>> @@ -2625,10 +2625,10 @@ static void schemata_list_destroy(void)
+> >>>  
+> >>>  static int rdt_get_tree(struct fs_context *fc)
+> >>>  {
+> >>> +	struct rdt_resource *l3 = resctrl_arch_get_resource(RDT_RESOURCE_L3);
+> >>
+> >> Its is probably best to keep the resource name as r here to be consistent
+> >> with other changes.
+> >>
+> >>>  	struct rdt_fs_context *ctx = rdt_fc2context(fc);
+> >>>  	unsigned long flags = RFTYPE_CTRL_BASE;
+> >>>  	struct rdt_domain *dom;
+> >>> -	struct rdt_resource *r;
+> >>>  	int ret;
+> >>>  
+> >>>  	cpus_read_lock();
+> >>> @@ -2701,8 +2701,7 @@ static int rdt_get_tree(struct fs_context *fc)
+> >>>  		resctrl_mounted = true;
+> >>>  
+> >>>  	if (is_mbm_enabled()) {
+> >>> -		r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
+> >>> -		list_for_each_entry(dom, &r->domains, list)
+> >>> +		list_for_each_entry(dom, &l3->domains, list)
+> >>>  			mbm_setup_overflow_handler(dom, MBM_OVERFLOW_INTERVAL,
+> >>>  						   RESCTRL_PICK_ANY_CPU);
+> >>>  	}
+> >>> @@ -3878,7 +3877,7 @@ static int rdtgroup_show_options(struct seq_file *seq, struct kernfs_root *kf)
+> > 
+> > [...]
+> > 
+> >> Thanks
+> >> Babu Moger
+> > 
+> > [...]
+> > 
+> > Yes, this does look a bit odd.
+> > 
+> > This looks like a no-op change to me -- I think that
+> > resctrl_arch_get_resource() is supposed to be without side-effects,
+> > so I would have expected this to be a one-line change at the assignment
+> > to r, with no particular need for renaming r.
+> > 
+> > Does that make sense to you, or is there some complexity I'm not
+> > noticing here?
+> 
+> No other complexity..  Just keep the variable name as r.
+> 
+> struct rdt_resource *r = resctrl_arch_get_resource(RDT_RESOURCE_L3);
 
-I don't have a strong opinion here. I suppose a usize could make
-sense. But I also think c_void is fine, and I lean towards not
-changing it. :)
+Ack; I went for the minimum-diffstat option in the end, so kept the
+declaration and initialiser separate.  If you have a strong view on that
+though, please shout.
 
-> Some thinking aloud and brainstorming bits about the API.
->
-> I wonder if it make sense to have `User<[u8]>` instead of `UserSlice`?
-> The `User` type can be defined like this:
->
-> ```rust
-> struct User<T: ?Sized> {
->    ptr: *mut T,
-> }
-> ```
->
-> and this allows arbitrary T as long as it's POD. So we could have
-> `User<[u8]>`, `User<u32>`, `User<PodStruct>`. I imagine the
-> `User<[u8]>` would be the general usage and the latter ones can be
-> especially helpful if you are trying to implement ioctl and need to
-> copy fixed size data structs from userspace.
-
-Hmm, we have to be careful here. Generally, when you get a user slice
-via an ioctl, you should make sure to use the length you get from
-userspace. In binder, it looks like this:
-
-let user_slice =3D UserSlice::new(arg, _IOC_SIZE(cmd));
-
-so whichever API we use, we must make sure to get the length as an
-argument in bytes. What should we do if the length is not a multiple
-of size_of(T)?
-
-Another issue is that there's no stable way to get the length from a
-`*mut [T]` without creating a reference, which is not okay for a user
-slice.
-
-Alice
+Cheers
+---Dave
 
