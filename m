@@ -1,99 +1,92 @@
-Return-Path: <linux-kernel+bounces-148495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45D218A8378
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C3B6E8A8384
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:54:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00CB9285A4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:52:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D5E3285A03
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:54:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EB0713D614;
-	Wed, 17 Apr 2024 12:52:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="LL4sX48I"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D7413CFA6;
-	Wed, 17 Apr 2024 12:52:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC4313CFA6;
+	Wed, 17 Apr 2024 12:54:07 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 310223D72
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 12:54:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713358364; cv=none; b=dBFrqrMYaWhXXedPpLQwVdtx4zcMOiw4yJs1eYCYwZ5lqobnpN/QJfm+gcAGPoLT0wlAc5vXuOB4z7sLjL6ROjs8U7bSyA8cMUUU7PEzDDhd1cSJsXXutQnQ5ItFzadB0Ps+2SNYxJQbsF+CtYQA30rPV/9Z5AUEcrVwTPummOU=
+	t=1713358447; cv=none; b=smwT+dvyHXVLj71TkTbyAT38HisridM3iyR/nqNYj7Ne+2yZFQjyxUnSNh5PxDkW2ei2WT6Oat1mhqI3p6O8l9zU1kbf1tjpcQnBfpcAONzHn/J7l//W0IcVjoZo6NsFiRt58jsnQ2kTCzGB1GvmY0acRgIsLbyNOeL+kblLjdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713358364; c=relaxed/simple;
-	bh=Nz7+wYG+jYURh6hk+/XPOhpQekQnu4bBKnC3lYMnnNw=;
+	s=arc-20240116; t=1713358447; c=relaxed/simple;
+	bh=PSbnTBzkSI/lvkvZJNydmcYbPtxI8Y9zOOsrqxQR7SI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zt+5lewVL19hVK9Uz6C6bPlpRDjCvVMd98iSTl6OLlKQznZsQixiIAmjEgN4dXxyj8O/f16XGZpxrLZqWsQhXfSmPMDNpyYl9ksRzthpjo79nTUPq/D9xdpYALUhXN1RFNyfnWAvpXV+5H33lWZFTzonZV1Eo/30vE0++x9gjsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=LL4sX48I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42C35C072AA;
-	Wed, 17 Apr 2024 12:52:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713358364;
-	bh=Nz7+wYG+jYURh6hk+/XPOhpQekQnu4bBKnC3lYMnnNw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LL4sX48I2AcFYvoOzgdkVQ2KOWwGJvgIduohvJuHTpik7Rb3BNvzTiAElJnw5qweR
-	 VaD46O8B+utNW4nODcU0idnjzMxxiJ2Qx6dVApQnJCqHtkJ6WsPe6bPDcfnRVO32AR
-	 TwsEv4KNu5ddYCUq59WNQBE/fDL1Pb/o3VMGwcJY=
-Date: Wed, 17 Apr 2024 08:52:40 -0400
-From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To: Thorsten Leemhuis <linux@leemhuis.info>
-Cc: helpdesk@kernel.org, Greg KH <gregkh@linuxfoundation.org>, 
-	"workflows@vger.kernel.org" <workflows@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Please create the email alias do-not-apply-to-stable@kernel.org
- -> /dev/null
-Message-ID: <20240417-lively-zebu-of-tact-efc8f3@lemur>
-References: <b452fd54-fdc6-47e4-8c26-6627f6b7eff3@leemhuis.info>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hJ0s4cqfuE2cwFO+leSmv1S1EV/kE03xqphmnjxh2iQbLeJ7Q6RudYu26uUpYzPZbAoEeu4nmC5hK7lnVZZLwsIGe9MUTGxL3GLOHCtAHQmaiOsBLrOUptBkeUPjCGBzZtTPgiPZWr0Da29Cf/8ifsZjvJdArPEihPPtJIUcqME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F651339;
+	Wed, 17 Apr 2024 05:54:32 -0700 (PDT)
+Received: from pluto (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0A473F738;
+	Wed, 17 Apr 2024 05:54:02 -0700 (PDT)
+Date: Wed, 17 Apr 2024 13:54:00 +0100
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	james.quinlan@broadcom.com, f.fainelli@gmail.com,
+	vincent.guittot@linaro.org, peng.fan@oss.nxp.com,
+	michal.simek@amd.com, quic_sibis@quicinc.com,
+	konrad.dybcio@linaro.org, souvik.chakravarty@arm.com
+Subject: Re: [PATCH v2 2/2] firmware: arm_scmi: Add dedicated vendor
+ protocols submenu
+Message-ID: <Zh_GaLMJdf7wv2sp@pluto>
+References: <20240408093052.3801576-1-cristian.marussi@arm.com>
+ <20240408093052.3801576-3-cristian.marussi@arm.com>
+ <20240417120945.jjcpfwknj5urb6bk@bogus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b452fd54-fdc6-47e4-8c26-6627f6b7eff3@leemhuis.info>
+In-Reply-To: <20240417120945.jjcpfwknj5urb6bk@bogus>
 
-On Wed, Apr 17, 2024 at 09:48:18AM +0200, Thorsten Leemhuis wrote:
-> Hi kernel.org helpdesk!
+On Wed, Apr 17, 2024 at 01:09:45PM +0100, Sudeep Holla wrote:
+> On Mon, Apr 08, 2024 at 10:30:52AM +0100, Cristian Marussi wrote:
+> > Add a dedicated Kconfig submenu and directory where to collect SCMI vendor
+> > protocols implementations.
+> >
 > 
-> Could you please create the email alias
-> do-not-apply-to-stable@kernel.org which redirects all mail to /dev/null,
-> just like stable@kernel.org does?
+> This looks fine. But I would wait until the first vendor protocol is
+> ready to be merged to merge this as baseline. Hope that's OK.
 > 
-> That's an idea GregKH brought up a few days ago here:
-> https://lore.kernel.org/all/2024041123-earthling-primarily-4656@gregkh/
-> 
-> To quote:
-> 
-> > How about:
-> > 	cc: <do-not-apply-to-stable@kernel.org> # Reason goes here, and must be present
-> > 
-> > and we can make that address be routed to /dev/null just like
-> > <stable@kernel.org> is?
 
-That would make it into actual commits and probably irk maintainers and 
-Linus, no? I also don't really love the idea of overloading email 
-addresses with additional semantics. Using Cc: stable kinda makes sense, 
-even if it's not a real email address (but it could become at some 
-point), but this feels different.
+Absolutely, I think some vendor protocols currently on the list (beside
+their ready-to-merge status) will rebase on this once this is in -next.
 
-In general, I feel this information belongs in the patch basement (the 
-place where change-id, base-commit, etc goes). E.g.:
+What remain to discuss really, it is, as I mentioned offline, if we want
+to also group the vendor protocols headers (the one containing the
+public protocol ops) somewhere...I think now they are just placed on top
+level include/ named like
 
-    stable-autosel: ignore
-    [This fix requires a feature that is only present in mainline]
+ /vendor1_scmi_something.h
+ /scmi_vendor2_something_else.h
 
-This allows passing along structured information that can be parsed by 
-automated tooling without putting it into the commit.
+.or (as I now remembered you mentioned offline) just leave as it is for
+now and then post a patch on top to shuffle around the headers into some
+common include/scmi/ top dir...not sure anyway if it worth...maybe some
+header name convention is fine (but I ignore if there are rules about
+polluting more or less the top level /include/ dir :D)
 
-> There was some discussion about using something shorter, but in the end
-> there was no strong opposition and the thread ended a a few days ago.
+I assume also that this mechanism is fine for vendors at this point, since
+all the feedback we've got from  them till now was on specific (and very
+much welcome) code-reviewed stuff...
 
-I feel this is a significant change to the workflow, so I would like the 
-workflows list to have another go at this topic. :)
-
--K
+Thanks,
+Cristian
 
