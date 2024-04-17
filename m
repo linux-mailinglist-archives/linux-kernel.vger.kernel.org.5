@@ -1,196 +1,140 @@
-Return-Path: <linux-kernel+bounces-148912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C1978A88DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:29:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 414208A88E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:30:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D4A61C2271F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:29:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 645B61C2287C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:29:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD3B9148FF2;
-	Wed, 17 Apr 2024 16:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E11714D28C;
+	Wed, 17 Apr 2024 16:29:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Md57YA7r";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="czsw24hF"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="JYdk5L67"
+Received: from mail.mainlining.org (mainlining.org [94.241.141.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24CDE147C7B;
-	Wed, 17 Apr 2024 16:29:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713371373; cv=fail; b=CZBMBcg7PRVZ+teyMrko6/KsDaMcFglSzrdyqVDhGbAYhlvZIY8ahPBGbxSPsCl3dRZrZdtvTqHUMGyZ73G8/Jc8azuSHErGWVcVqAgVV3z1VUH7hTZU3PxjlPtPjohVrRisQh0JTpuaFL+JQCTXEGgKXZHR8RBXXXPZ4vHhOQA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713371373; c=relaxed/simple;
-	bh=4ayvM8+eNXbODP7SZdb1xU5l1lGrK+iRRysB5V8yR9s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=OYePqo37PwXo7HvjXuoxcCm5qwJNKxzjDzUw49++OAxaujOyW0EwijCESI/kANFAOKg+3UVo1Cx4jeoK0S+K2v2CJihdIqWHISSrWRuOT3sEMxFEEc391Osz3LuqAL9P18AwG/ym2Hh6zRhqem5hjUOVZ2DTEbZfzqKgZwhSedQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Md57YA7r; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=czsw24hF; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43HFO3Wc005253;
-	Wed, 17 Apr 2024 16:29:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-11-20;
- bh=Qw9HKtA6lyB5qAynSsxHQMHsPcC6JEl+dRpclskUZtA=;
- b=Md57YA7rDW+KOdKjzXRol42seWzTDkHo1yu/KMXWb3L/2GysPQ+p1OR7azAzV9mloTQh
- 8om5bAbuGBY/JDQy3W6epbz4wBtpPidx4VxGJ9JNnEuPSgK5hVANI1trBqXLM9XRmbMl
- zxDJu5pC/3Yz3wu9fB29go/PJoRvN2A85BzBRwGXPPNoNOQl5HEMYO9BD/2VSXglcKKS
- q/ktxJgfLvi8Nq0Ut36Gdrk0Uhm9Vu3IEuKZzzEAiRS5hPkGzXVlxD5NMRti8OHOrNPT
- 7mpebfewfdDsYKi1n2/EdPHTGPCOloW469OdHLt0vGbZXclr3gazSzC8IyJ2DRVAlujr Ng== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfhnuge1m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 17 Apr 2024 16:29:09 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43HFUg0o004428;
-	Wed, 17 Apr 2024 16:28:59 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xfggfbxg5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 17 Apr 2024 16:28:59 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=odFE0UhxV1pXuRrqhEgwJUi4WT/++L9ethNSEvjW3zOd3zYJzg4STf4+p8qXzccis9OKSkpwq8IfkxIAYh2ZRRUbDHVmdf570+HAjXhJj7xfwrfazvvWnxn9BUB60CfRVcCl9LoF4kN2tPNuhpY3nYXjjv6Zl1WLeru8wtMaPxl8Hv4IXn9XoQFAocwNNeVCCZFb3FTiLiq+kzq0JuuD/o30vXV5bivCezphAngIJCVL/+qkv6Vegc/yeq8qyt4Ap3BdC2uPPlaCdix6TeNWmG52XW3hjTrNI6itY0NvDp19V9ZXlttrytxiGbTgyrOzFG3IAPFyHoJBz3Ji4c1dlw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Qw9HKtA6lyB5qAynSsxHQMHsPcC6JEl+dRpclskUZtA=;
- b=BS3yVhkOKErEOdmrsSLWk5QK+MmiqtJFWxwfZeva6HvstMpcdJtYtPBAwsl/cWeajA/4tIIISF4HTj+TLftVmbdQ4ugEiCfj/39m1X6og49386jy4fTijehSHGtMtxcxd9T4WBDKocvN683NTuBmSybHK79BB+20TqMRKewl1DvG+QZgwYCKuiz/YgPsPUD9iA7Cn9QSQEM4zKWy4ToI+DRTKV68R1+blEW4PmKFUzdGTrfNOhxmCv1vtUPq8YK9bk/pmbX5znc66tl0hVvnwfxWC0OIiTyYqvCnNz6gejdwhEpqkFzZojkCU2V1wot7K9XOmn737c4D7fcghXPQKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qw9HKtA6lyB5qAynSsxHQMHsPcC6JEl+dRpclskUZtA=;
- b=czsw24hFrvIF5EDZt2oqOqfi+IDrm+6YlIukaRf48UfghKxazPv9Q1tHnYNskDOitOj1Cq7L6zx/H3X0ouzNn59nzgV8REbIzAkc0z5ac1jGzUrJKFGRPXbB6CuIqH2GrNT7YAYSgmekX672Fi8ZC/xX7OQkX59RwMYGkpPM8Js=
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
- by PH7PR10MB6084.namprd10.prod.outlook.com (2603:10b6:510:1f8::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Wed, 17 Apr
- 2024 16:28:58 +0000
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::743a:3154:40da:cf90]) by BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::743a:3154:40da:cf90%4]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
- 16:28:57 +0000
-Date: Wed, 17 Apr 2024 12:28:54 -0400
-From: Chuck Lever <chuck.lever@oracle.com>
-To: Li kunyu <kunyu@nfschina.com>
-Cc: jlayton@kernel.org, neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
-        tom@talpey.com, trond.myklebust@hammerspace.com, anna@kernel.org,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lockd: host: =?utf-8?Q?Remove_?=
- =?utf-8?Q?unnecessary_statements=EF=BC=87host_=3D_NULL=3B=EF=BC=87?=
-Message-ID: <Zh/4xozLPreN7ELW@tissot.1015granger.net>
-References: <20240417082807.14178-1-kunyu@nfschina.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240417082807.14178-1-kunyu@nfschina.com>
-X-ClientProxiedBy: CH5PR04CA0007.namprd04.prod.outlook.com
- (2603:10b6:610:1f4::7) To BN0PR10MB5128.namprd10.prod.outlook.com
- (2603:10b6:408:117::24)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 535EC147C7B;
+	Wed, 17 Apr 2024 16:29:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.241.141.152
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713371380; cv=none; b=qUk4PJqaQDfp59PA9rRz+/1yk2vh5yr2rm9puTwwVcZ0+Df36pMTbKgda4CsHJ0IY4Sd3kkMK+xxAIR+8Wd/D1cfExncgFU9Tjpj/z7rgNCsigrJXX8txOESLMwHFBCuFj/E/tk+CKUsAtdgGRtwuUH+ryl/09hrUoGx0Z0iusE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713371380; c=relaxed/simple;
+	bh=0zI/r5Ik3YIYBBvZMU3MnWLBc5VIg6oUdDjl7nfLlvs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=TOiIHue4Dpt/7icFTG3dAxitEKsXbA1nqSN1si4L9NfNr5kmzDLT653MPM6sboTLuJqNn0KAtLR7rFYjdVRFFBv7j9VeUX7bsY2FAvNIVqTXcwRRueM/f1QF14dPisECMF+Jr0O7NGaBQmWxoYt3bip7TG+AE+QLCL66mC33x2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=JYdk5L67; arc=none smtp.client-ip=94.241.141.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mainlining.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
+Received: from david-ryuzu.localdomain (ipbcc3a836.dynamic.kabel-deutschland.de [188.195.168.54])
+	by mail.mainlining.org (Postfix) with ESMTPSA id 9AF8FE21F6;
+	Wed, 17 Apr 2024 16:29:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mainlining.org;
+	s=psm; t=1713371376;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=xPYGDPhJh1vELUn0B/FqjrjcJ+/sPNoVRwyANQEYHdk=;
+	b=JYdk5L67+vmCuNRp9tymIHeHUuU2TQbSDa1VyEhxVeUsB3WCzT0r2YRvj7sc/Vdz3726UR
+	WiqEK82StMRBA1N/Hdt2+9GOqPHXoFyJbQxrwiAW43jI5b5OKfgXM3DNSFfUMoNaiM2g5B
+	Tf4eBtfkdFXAjbdiYQiYrlOqs+Q2LPq6QdOxFwXSb8vH6I3VJSsVGgpomCt/n4IhAWKWfk
+	QXk3DudT2K8sx4a71ikeej6OiNGUNuk1FHA8ieTI4W3Z9FtLK6T7l/tF9KkaHA19faBt5L
+	SgNOi32aKtOcVY4RISa+7wg4duVxtlGL+tOF2Jk0Yrj5frwcc6wwBhmq3byzsg==
+From: David Wronek <david@mainlining.org>
+Subject: [PATCH v4 0/2] Add driver for Raydium RM69380-based DSI panels
+Date: Wed, 17 Apr 2024 18:29:32 +0200
+Message-Id: <20240417-raydium-rm69380-driver-v4-0-e9c2337d0049@mainlining.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|PH7PR10MB6084:EE_
-X-MS-Office365-Filtering-Correlation-Id: b3ce4c11-42f2-4c45-5a93-08dc5efb7af0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	uShayjaRLjnJYQM2nzY4vffnvHKhTzttHft09oyoSNvXkqxsMO/aSE+DPEL4VZ5xDs4xIgbXXzEvxzrkfb9xC4tdnj1OtIz5Iqv7eNFlbHq/aEtGu4zN6rBFdp62eIsuM2/liPNmnweFfu0zUVJJdCQw0aGJCAJUwy2Wf9UGLsqyBMfTxpySEob3pcILvI3OBrCUHT2+vGXJMmNtvwPO4UPT2//h9RF2zQTzA+IOEDn4RdZHhpq9elEkXFh5HegXvqvudlR3Pl1gdOJLHcWsjLLHwDa+zmSJ/tB78DpPxvYd3b1CsehSZAFvVYW4//taxoAC/7LR03OweVYOuH9LHdljY1vHVPIdr5ydRyUxEHb6sMePis3yJyuOBB9nc3c8mbt1AqCPKgp2n/c7fKmdvjFyZ+/0yPVJ1yh0rcbfUBBPis7iR+vqC5dC1yZjvT5MLvwz12nXjYKcxI3RakfU1Qa1bqI5T8s7tVLQrQqOKyyEfgrIFz924n/b3GciZ8cubSxmsRU5Tlru4GrWKrMUp4PAtrP5x7JBcA3UoI2UrY26mbk3NlwF+DTT9RQSN0x5tK0AfP7HxSZdPrCeJWFMUPlaqNUx/mR7+JcE4aNM8twfTdXcAbAZCIFZZFyQ0b0bnDmDQf3R0QYB3ReS8bCB3oi2u34ZUj6TgZ8q4HlZzxY=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?Ih/ftXuc3xHsGrtIKZmvLYglJgTawOBgPaMR7jwgDHRyYOETIm/M1NKBT/mQ?=
- =?us-ascii?Q?C8LCPQmXEZEw4RvZyl8sGrdDI9lVMrPQFHYsUywSUeKo8eiqdxQfbwbcH7yA?=
- =?us-ascii?Q?mk/7Wno7Aq/dEDkKaOO2lM8rkv8jjf1/BybQJY5I8P+ukYad4EPhilVUSreY?=
- =?us-ascii?Q?+fuAFuA4zysecxgHqEWhuUwBJhL0cluNiSjd6hySZOHhFZlgWmC6TasxAWbd?=
- =?us-ascii?Q?/T2YjazapH7PnErpHmhNpAxLdpG3rmeS7pyqlGnzQED5mit0nTA6OMOknQmB?=
- =?us-ascii?Q?6bP9FIgk5qtj2FvvY2sykU5iYPhe55A19vaMABoUCloorucrq2LfV+Vl9Gcb?=
- =?us-ascii?Q?3974URPYrP+jVjEKuzejvp3hD3ZiSXa2PFwjvU1RrZBeBzl6IxtsLbPFuApI?=
- =?us-ascii?Q?bA8DeHK9aopMhNCJaQwe9H1Ljkx31lGkHGYQpewHdHZZjUpFVl1ODisHe8oN?=
- =?us-ascii?Q?tzBHnlf94YtfERVQckyaNP9kL2k8ZBmqNZL00ja206EIJq1DgUeDKdbvbTTu?=
- =?us-ascii?Q?UPFyRF+h8cLRN386aJg1C+hxkOysm6hoHZZbQ0gK9lTmm5PtZN2eDDZyWJls?=
- =?us-ascii?Q?OSSYF9wy7rVkb5XbtFIHHasHKpC68VCOzhqavt5NtfP4MP/5ZMWGWzvDimJF?=
- =?us-ascii?Q?YkrglmpKm+KvtY7P2J013MpQtp0xy+MtqJQIQXGQmwNvP3xjnXrqTO4FOQsj?=
- =?us-ascii?Q?mkeBYHtHbxvpSc6orRo4y/XqG4LEGkeyh+kzepXbF02SpqHNvUGdvqRIWpND?=
- =?us-ascii?Q?aZ/c95y/Tv4te0n+xnfHEAPr1AOYPGEXbjviJEotdkEs6DNmuM66h94LaaA3?=
- =?us-ascii?Q?8s212Czp7slvVI+DWQ84JIHfNO6M+c/3TWHxusS4nsRytkIm++i8J7HgLnKu?=
- =?us-ascii?Q?t4NeLPNbQy3lPtbVpXiv1eeH1iXO+bfQEe3OKXD0aLGHbrbL0qT82TrID5cn?=
- =?us-ascii?Q?d1XJtsV538sO+/J8fP2pSniWfHK4y9nWkymWFS8TWnvwC+AIyfGqkOVdMGWi?=
- =?us-ascii?Q?3HYGzs0aYYFBxaApcLY0Z7u4RU2NJZRUqT4oOMN9tRQjzF5hdFP+YhpZGmr6?=
- =?us-ascii?Q?Bgyvh2aK3gpADQw7S+NXVGNK/i/o/aWAlDQ02l+7uv9JC2eZfn3Zngkw1vhj?=
- =?us-ascii?Q?ANF/oDFSx3htK/Q8Pgo+9lb8S7VOqTdrPkQj877Zt1NVKjgzO94Xciayr4vz?=
- =?us-ascii?Q?sTmzkgkgo4LwD5UVC+n4rkoSA5EPDBlWDaEdDmPDRQ81PBavNSwnGz7X7R4n?=
- =?us-ascii?Q?K1L1Zg6sM2Fgh61J8WgODUS7m+4qnkP17C2SxCa3P4o7GQIoaLmq7QKzK8Pt?=
- =?us-ascii?Q?d6qPByxo6ljDQwGnFtNZqXJA7VTb89GS86Lr07jOO1nEFGLLxwxkTHyxops3?=
- =?us-ascii?Q?kdelfB67Kx+VTvwkEbWnMO+FmXXFalmHNjYy5gbdqYQGz+poQmKUoOCsrAja?=
- =?us-ascii?Q?bLVIjLDeMxrOBiP9L5JXc77g72buSnPvaaauSEOkHY/oGFrYSxMrVvDBZDG9?=
- =?us-ascii?Q?6AKMgZsu2Jd9PYGdKgJG0QPXz9FuymswBEbg8AuGeyT8vwTE1iqCEtnjTUNu?=
- =?us-ascii?Q?dc11Gu6U9sd/shp62wJCyhakl1UFshgYHrEJ1c1J+VjTWv2+hZFguTDCMHQj?=
- =?us-ascii?Q?Lg=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	IFM+1YdhgIj62dHGz9RGl5oFsKGI8diJVfyHlCWXwScfLKMR8nvPShpPkayp/kh5obErzYBYFDfey+egtbcVT8Mjevgp1zgs9cDn72SbXjyNAURig5y0GRnJ3UM19QA1ApE8b5/RugInCc97iqd+y+rvh20kZIXr/207wYKxz4mG/awHIYglWx5gv5I6ScLht7Hmn7TW5s1hJiKpCSYiF5xHXXCslyK8IaLBkSrvDHJmj9IUow8r8WZGZiRWQbvjqLVhu7OXhYT2Hrxe4ABpNX/fjnr6IZ9mAogOCKdBHIErwUHZ65hcJpG4hAa33wx1SfhqgMglrI2HimgNoAhDIPhGkFgMDgdMT1POv9Fv0gfbqJtqtixOBU6lIZZxv/jjiL5KbRmf12JtSUtzQIwFyOcoUKG3oARsFJuKJs/qOBLvEP+6ZnagD1ytdzQNeccL7JO5dlHnrKpehHGa17Y9ONNKGj32rTK1wHqyiffNrEgGBz+uNtb4bvAC+i7k6y1ybj/SrarQbAEOcTsUBxguwcBmX6MqBPqyrMNYl87bFCLXR317lSxgkP9w9atyCYRqrqRwFkdAyfS23KzVbOfvrWlOfTr+KGPLFGLy2vmKPIU=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b3ce4c11-42f2-4c45-5a93-08dc5efb7af0
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 16:28:57.3763
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lZEyYzmP7R8/gYtIIzeS9h4QtLfmp0F2DvBT5lGYnSrMsRoCuJ/ma4ZNjQ44jpdwz4EPOQp+eFV4vUz8WxgjcQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6084
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-17_14,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
- mlxlogscore=999 suspectscore=0 bulkscore=0 spamscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404170115
-X-Proofpoint-GUID: beqoRiv5IGDVoAffT8u-_TBspYEbp6P9
-X-Proofpoint-ORIG-GUID: beqoRiv5IGDVoAffT8u-_TBspYEbp6P9
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOz4H2YC/4XNTQrCMBCG4atI1kaS6TT+rLyHuEjbSR2wqUw1W
+ KR3N3UlqLh8P5hnHmogYRrUbvFQQokH7mMOXC5UffKxJc1NbgUG0KBFLX5s+NZp6dy22BjdCCc
+ SjesAULkAGEjl44tQ4PsLPhxzn3i49jK+/iQ7r3/JZLXRJW1c5QG3pir3ned45sixXfXSqtlN8
+ G6VPy2YLUCwDp0tjPtqFe+W+2kV2cqQMb7GmsrwYU3T9ASYTJCqWQEAAA==
+To: Neil Armstrong <neil.armstrong@linaro.org>, 
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+ Daniel Vetter <daniel@ffwll.ch>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Marijn Suijten <marijn.suijten@somainline.org>, 
+ Konrad Dybcio <konradybcio@kernel.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
+ phone-devel@vger.kernel.org, David Wronek <david@mainlining.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713371375; l=2367;
+ i=david@mainlining.org; s=20240121; h=from:subject:message-id;
+ bh=0zI/r5Ik3YIYBBvZMU3MnWLBc5VIg6oUdDjl7nfLlvs=;
+ b=jvWf+sJ9X3xbT7K3CtxDZbHfGyPwlgrQtPx133MCZQbu8ADxc+8/axyDnPVtJDfpRuuDbC0D9
+ x4vzaUnzzulD5lDvRs+Thrre+IPAxo+r0rWR5D64pBJ3kcf6GlpvljW
+X-Developer-Key: i=david@mainlining.org; a=ed25519;
+ pk=PJIYyFK3VrK6x+9W6ih8IGSJ5dxRXHiYay+gG1qQzqs=
 
-On Wed, Apr 17, 2024 at 04:28:07PM +0800, Li kunyu wrote:
-> In 'nlm_alloc_host', the host has already been assigned a value of NULL
-> when defined, so 'host=NULL;' Can be deleted.
-> 
-> Signed-off-by: Li kunyu <kunyu@nfschina.com>
-> ---
->  fs/lockd/host.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/fs/lockd/host.c b/fs/lockd/host.c
-> index 127a728fcbc81..c115168017845 100644
-> --- a/fs/lockd/host.c
-> +++ b/fs/lockd/host.c
-> @@ -117,7 +117,6 @@ static struct nlm_host *nlm_alloc_host(struct nlm_lookup_host_info *ni,
->  	if (nsm != NULL)
->  		refcount_inc(&nsm->sm_count);
->  	else {
-> -		host = NULL;
->  		nsm = nsm_get_handle(ni->net, ni->sap, ni->salen,
->  					ni->hostname, ni->hostname_len);
->  		if (unlikely(nsm == NULL)) {
-> -- 
-> 2.18.2
-> 
+This patch adds support the 2560x1600@90Hz dual DSI command mode panel by
+EDO in combination with a Raydium RM69380 driver IC.
 
-Thanks for the clean up! Applied to nfsd-next (for v6.10).
+This driver IC can be found in the following devices:
+ * Lenovo Xiaoxin Pad Pro 2021 (TB-J716F) with EDO panel
+ * Lenovo Tab P11 Pro (TB-J706F) with EDO panel
+ * Robo & Kala 2-in-1 Laptop with Sharp panel
 
+Signed-off-by: David Wronek <david@mainlining.org>
+---
+Changes in v4:
+- Fix up Kconfig
+- Switch to devm_mipi_dsi_attach to benefit from automatic detaching
+- Initialize panel at a lower brightness
+- Dropped debug logs
+- Signify second DSI interface in mipi_dsi_device_info as "RM69380 DSI1"
+- Changed 'addtionalProperties' to 'unevaluatedProperties' in dt-binding
+- Dropped 'ports' in dt-binding
+- Link to v3: https://lore.kernel.org/r/20240416-raydium-rm69380-driver-v3-0-21600ac4ce5f@mainlining.org
+
+Changes in v3:
+- Removed unneeded curly brackets from some if statments
+- Fix error handling code in probe function
+- Include video/mipi_display.h and make use of MIPI command definitions
+- Removed DRM_MODE_TYPE_PREFERRED
+- Dropped 'prepared' bool entirely
+- Register second DSI host using mipi_dsi_device_register_full()
+- Link to v2: https://lore.kernel.org/r/20240415-raydium-rm69380-driver-v2-0-524216461306@mainlining.org
+
+Changes in v2:
+- Fixed typo in Kconfig
+- Removed ctx->prepared = true; in prepare function
+- Switched to drm_connector_helper_get_modes_fixed in get_modes function
+- Changed dev_notice() to dev_dbg()
+- Add description for compatible and reset-gpio in the dt-binding
+- Always require 'ports' node in the dt-binding regardless of compatible
+- Link to v1: https://lore.kernel.org/r/20240414-raydium-rm69380-driver-v1-0-5e86ba2490b5@mainlining.org
+
+---
+David Wronek (2):
+      dt-bindings: display: panel: Add Raydium RM69380
+      drm/panel: Add driver for EDO RM69380 OLED panel
+
+ .../bindings/display/panel/raydium,rm69380.yaml    |  89 ++++++
+ drivers/gpu/drm/panel/Kconfig                      |  12 +
+ drivers/gpu/drm/panel/Makefile                     |   1 +
+ drivers/gpu/drm/panel/panel-raydium-rm69380.c      | 344 +++++++++++++++++++++
+ 4 files changed, 446 insertions(+)
+---
+base-commit: 4eab358930711bbeb85bf5ee267d0d42d3394c2c
+change-id: 20240414-raydium-rm69380-driver-47f22b6f24fe
+
+Best regards,
 -- 
-Chuck Lever
+David Wronek <david@mainlining.org>
+
 
