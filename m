@@ -1,168 +1,208 @@
-Return-Path: <linux-kernel+bounces-147992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58A138A7C53
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:29:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E1168A7C56
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:30:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC5A0B22DEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:29:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C19F1C2242A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:30:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6189453807;
-	Wed, 17 Apr 2024 06:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE762746B;
+	Wed, 17 Apr 2024 06:30:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pLSBFvGa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="BBlwiVnj"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97783537E5
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 06:29:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373F23032A
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 06:30:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713335385; cv=none; b=W/630jJxvwLD1DMs8Oe411u6om57Ye45ojWxqKGutHn2i8oe00h+qEWX/FezI/aipKRGXvzBkhJpPateji7749mPZTUShMloltFeywq05eRKfbiy2tuDgvW7odRYlgbmQhubkJi0DH7gjT7Y5qZYBa4gRBEgJxszQKHvmDu27rU=
+	t=1713335437; cv=none; b=fmWPLeNDXB4zgT61IYoH7vFJozWBa9GZ4dlYYEor3eztEPel3YwHAozGHVZKjK/uzu0xMB9NmqJdR1Mt0A3d2j8C31suHw7ofzDLX1DW3o59I/E/GxzxyOYV1A1+sK+02j/Y378+8T6uynnfKWbst8EtGIQzC1K1VzMyIQg8RkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713335385; c=relaxed/simple;
-	bh=ebqb33hqc4F6zSwsMRpxS2CZvXYy0dorhRZVr5ux1J0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KHLDsIJQAvJk47GlRd6KTYE6UWxjx6In0sCtHd7sy5BllXGJ0Z21Wl37qtQU0kAODq3gWXP3QvijYT38epaEyEcYv8VLcPhmFMVIY5TFKjXvxLkud+zhqogEkAkqub+yAHhVwQInrXPjmp8VPzeiXzZY4DlcNJ3DtR5oomk9MHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pLSBFvGa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F851C072AA;
-	Wed, 17 Apr 2024 06:29:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713335385;
-	bh=ebqb33hqc4F6zSwsMRpxS2CZvXYy0dorhRZVr5ux1J0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pLSBFvGaiGz3+TWitmIbeOotiIZFwPFcEsEMvvoRQxg9tQq93gL6LB33aKtgx5uqA
-	 E+YKHlcLCcVKmZGYL/dm2YLz1fZlagEBkF7w2e+XXIRQ4zbQnma5ZpNOu7fTHkQcGL
-	 Z54r1Mpu5YA1R/ijSt7qRHBk61oX4l6Vphn7bj/CMQClj8nxmTbf2cuICRUjly6XyU
-	 NzwC0fPyTvAG+a13UZNQd58qG493svJDgZb27vycwQibzEvbE+JpaBNS1OA1jqGNfu
-	 OekZH2l8SKMvWrRnk63KBlmD1t64gyq5XhNWal6GcUJqTVcG6SnFXgTJ/eUkmwPbHG
-	 BCWJrYX6r6feQ==
-Date: Wed, 17 Apr 2024 02:29:37 -0400
-From: Guo Ren <guoren@kernel.org>
-To: Yangyu Chen <cyy@cyyself.name>
-Cc: dqfext@gmail.com, ajones@ventanamicro.com, anup@brainfault.org,
-	aou@eecs.berkeley.edu, atishp@atishpatra.org,
-	conor.dooley@microchip.com, heiko@sntech.de,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, mark.rutland@arm.com,
-	palmer@dabbelt.com, paul.walmsley@sifive.com, will@kernel.org
-Subject: Re: [PATCH] perf: RISC-V: fix IRQ detection on T-Head C908
-Message-ID: <Zh9sUUUT09LZb0MO@gmail.com>
-References: <20240311063018.1886757-1-dqfext@gmail.com>
- <tencent_29B81A312921AB8D9D7C3C8292DAAB8EF608@qq.com>
+	s=arc-20240116; t=1713335437; c=relaxed/simple;
+	bh=l57S2k3a5cClPY53nArBf5nXDY9ccwkPA9ayWeYIee8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Tvadu7w5njWZhB/sC82vIFftvhXxFJKeG6u5YE7HBo2FACNFZ3DVJb14bwU3nCrW9liVSrx6FyNfwq6FWuOZdMuIzYXt3ti2yZFv5avMgS7nHnt3isFolDQ21dwRp4jFiln+mLevNRutC6P2A0tDoLFq2ilKLjT0dajbGXdMvns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=BBlwiVnj; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from terminus.zytor.com (terminus.zytor.com [IPv6:2607:7c80:54:3:0:0:0:136])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 43H6U1Zq3773528
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Tue, 16 Apr 2024 23:30:05 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 43H6U1Zq3773528
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024041401; t=1713335405;
+	bh=Zd/sWirjrmKezpysIIxkVCSK4urm0r21DAh1st/8xeU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BBlwiVnjlrN5ItmaQwpVVBH5rZ3Ze8emFROoXGYe1AhtMSs7i8affBcNlqECVlbnZ
+	 Dtlr5E1UyYWZsvC12HFldFxvyLgXSPU6oWYA730aFmBDxKhakvuHZZRldX9zqSc9HA
+	 uEHA62DP+rgLV968zCvOp+EfWdHV5pDaXsoc0ewHFg7mrFJTUV5l5BLlhzi/c3J+KG
+	 DOZ8g/WZuFoqNAyCa018JjVdWiGF9p/6Hqe5TUNqVkv1YAa855pbpjEXBl6YWaVRzT
+	 sHLPEMA8j05xDOblyqsToRyfb6Kc7kJ7w34dwLOopqg/WOiDLAr6VHyjx6BXidG+V6
+	 wASQ7mnFyh2hg==
+From: "Xin Li (Intel)" <xin@zytor.com>
+To: linux-kernel@vger.kernel.org
+Cc: luto@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com
+Subject: [PATCH v3 1/1] x86/fred: Fix INT80 emulation for FRED
+Date: Tue, 16 Apr 2024 23:30:01 -0700
+Message-ID: <20240417063001.3773507-1-xin@zytor.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_29B81A312921AB8D9D7C3C8292DAAB8EF608@qq.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 12, 2024 at 02:09:32PM +0800, Yangyu Chen wrote:
-> On 2024/3/11 14:30, Qingfang Deng wrote:
-> > T-Head C908 has the same IRQ num and CSR as previous C9xx cores, but
-> > reports non-zero marchid and mimpid. Remove the ID checks.
-> > 
-> > Fixes: 65e9fb081877 ("drivers/perf: riscv_pmu_sbi: add support for PMU variant on T-Head C9xx cores")
-> > Signed-off-by: Qingfang Deng<dqfext@gmail.com>
-> > ---
-> >   arch/riscv/errata/thead/errata.c | 4 ----
-> >   drivers/perf/riscv_pmu_sbi.c     | 4 +---
-> >   2 files changed, 1 insertion(+), 7 deletions(-)
-> > 
-> > diff --git a/arch/riscv/errata/thead/errata.c b/arch/riscv/errata/thead/errata.c
-> > index b1c410bbc1ae..49ccad5b21bb 100644
-> > --- a/arch/riscv/errata/thead/errata.c
-> > +++ b/arch/riscv/errata/thead/errata.c
-> > @@ -125,10 +125,6 @@ static bool errata_probe_pmu(unsigned int stage,
-> >   	if (!IS_ENABLED(CONFIG_ERRATA_THEAD_PMU))
-> >   		return false;
-> >   
-> > -	/* target-c9xx cores report arch_id and impid as 0 */
-> > -	if (arch_id != 0 || impid != 0)
-> > -		return false;
-> > -
-> >   	if (stage == RISCV_ALTERNATIVES_EARLY_BOOT)
-> >   		return false;
-> >   
-> > diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
-> > index 452aab49db1e..87b83184383a 100644
-> > --- a/drivers/perf/riscv_pmu_sbi.c
-> > +++ b/drivers/perf/riscv_pmu_sbi.c
-> > @@ -811,9 +811,7 @@ static int pmu_sbi_setup_irqs(struct riscv_pmu *pmu, struct platform_device *pde
-> >   		riscv_pmu_irq_num = RV_IRQ_PMU;
-> >   		riscv_pmu_use_irq = true;
-> >   	} else if (IS_ENABLED(CONFIG_ERRATA_THEAD_PMU) &&
-> > -		   riscv_cached_mvendorid(0) == THEAD_VENDOR_ID &&
-> > -		   riscv_cached_marchid(0) == 0 &&
-> > -		   riscv_cached_mimpid(0) == 0) {
-> > +		   riscv_cached_mvendorid(0) == THEAD_VENDOR_ID) {
-> >   		riscv_pmu_irq_num = THEAD_C9XX_RV_IRQ_PMU;
-> >   		riscv_pmu_use_irq = true;
-> >   	}
-> > -- 2.34.1
-> 
-> Tested-by: Yangyu Chen <cyy@cyyself.name>
-> 
-> With this patch and T-Head C908 PMU being probed by OpenSBI, I can now use
-> the perf record to profile RVV 1.0 software on Canaan Kendryte K230. This
-> will speed up many RVV 1.0 software developments now and even for better
-> performance.
-> 
-> However, as Inochi said, the newer version, C908 may support Sccofpmf. We
-> should ask Guo Ren to clarify this so we can have the cleanest way to
-> probe what to use between THEAD_PMU and Sscofpmu.
-> 
-> I added CC to Guo Ren. Please clarify about this.
+Add a FRED-specific INT80 handler fred_int80_emulation():
 
-diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
-index c6ef09c4548c..ee6fa5b65b53 100644
---- a/drivers/perf/riscv_pmu_sbi.c
-+++ b/drivers/perf/riscv_pmu_sbi.c
-@@ -812,8 +812,10 @@ static int pmu_sbi_setup_irqs(struct riscv_pmu
-*pmu, struct platform_device *pde
-                riscv_pmu_use_irq = true;
-        } else if (IS_ENABLED(CONFIG_ERRATA_THEAD_PMU) &&
-                   riscv_cached_mvendorid(0) == THEAD_VENDOR_ID &&
--                  riscv_cached_marchid(0) == 0 &&
--                  riscv_cached_mimpid(0) == 0) {
-+                  (riscv_cached_marchid(0) == 0 ||
-+                   riscv_cached_marchid(0) == 0x8000000009140d00) &&
-+                  (riscv_cached_mimpid(0) == 0 ||
-+                   riscv_cached_mimpid(0) == 0x50000)) {
-                riscv_pmu_irq_num = THEAD_C9XX_RV_IRQ_PMU;
-                riscv_pmu_use_irq = true;
-        }
+1) As INT instructions and hardware interrupts are separate event
+   types, FRED does not preclude the use of vector 0x80 for external
+   interrupts. As a result the FRED setup code does *NOT* reserve
+   vector 0x80 and calling int80_is_external() is not merely
+   suboptimal but actively incorrect: it could cause a system call
+   to be incorrectly ignored.
 
-Only k230's c908 has the problem, not all XuanTie Processors. We just
-need to pick it out. Could the above satisfy you?
+2) fred_int80_emulation(), only called for handling vector 0x80 of
+   event type EVENT_TYPE_SWINT, will NEVER be called to handle any
+   external interrupt (event type EVENT_TYPE_EXTINT).
 
-> 
-> Some off-topic things:
-> 
-> I need this feature recently since I am implementing a pure RVV chacha20
-> algorithm. I have already sent PR to openssl to speed up the crypto
-> performance on RVV without Zvkb support and maybe ported to kernel crypto
-> sometimes. To speed up TLS or other applications for many chips that may
-> come this year with RVV 1.0 but without Zvkb.
-> 
-> Link: https://github.com/openssl/openssl/pull/24069
-> 
-> However, the performance evaluation on K230 is not well compared to pure C
-> implementation. I will need this PMU driver to do some profiling.
-> 
-> Thanks,
-> Yangyu Chen
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
+3) The FRED kernel entry handler does *NOT* dispatch INT instructions,
+   which is of event type EVENT_TYPE_SWINT, so compared with
+   do_int80_emulation(), there is no need to do any user mode check.
+
+4) int80_emulation() does a CLEAR_BRANCH_HISTORY, which is likely
+   overkill for new x86 CPU implementations that support FRED.
+
+5) int $0x80 is the FAST path for 32-bit system calls under FRED.
+
+A dedicated FRED INT80 handler duplicates quite a bit of the code in
+do_int80_emulation(), but it avoids sprinkling more tests and seems
+more readable. Just remember that we can always unify common stuff
+later if it turns out that it won't diverge anymore, i.e., after the
+FRED code settles.
+
+Fixes: 55617fb991df ("x86/entry: Do not allow external 0x80 interrupts")
+
+Suggested-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+Signed-off-by: Xin Li (Intel) <xin@zytor.com>
+---
+
+Changes since v2:
+* Add comments explaining the reasons why a FRED-specific INT80 handler
+  is required to the head comment of fred_int80_emulation(), not just
+  the change log (H. Peter Anvin).
+* Incorporate extra clarifications from H. Peter Anvin.
+* Fix a few typos and wordings (H. Peter Anvin).
+* Add a maintainer tip to the change log and head comment: unify common
+  stuff later, i.e., after the code settles (Borislav Petkov).
+
+Change since v1:
+* Prefer a FRED-specific INT80 handler instead of sprinkling more tests
+  around (Borislav Petkov).
+---
+ arch/x86/entry/common.c     | 64 +++++++++++++++++++++++++++++++++++++
+ arch/x86/entry/entry_fred.c |  2 +-
+ 2 files changed, 65 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index 6de50b80702e..213d9b33a63c 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -255,6 +255,70 @@ __visible noinstr void do_int80_emulation(struct pt_regs *regs)
+ 	instrumentation_end();
+ 	syscall_exit_to_user_mode(regs);
+ }
++
++#ifdef CONFIG_X86_FRED
++/*
++ * A FRED-specific INT80 handler fred_int80_emulation() is required:
++ *
++ * 1) As INT instructions and hardware interrupts are separate event
++ *    types, FRED does not preclude the use of vector 0x80 for external
++ *    interrupts. As a result the FRED setup code does *NOT* reserve
++ *    vector 0x80 and calling int80_is_external() is not merely
++ *    suboptimal but actively incorrect: it could cause a system call
++ *    to be incorrectly ignored.
++ *
++ * 2) fred_int80_emulation(), only called for handling vector 0x80 of
++ *    event type EVENT_TYPE_SWINT, will NEVER be called to handle any
++ *    external interrupt (event type EVENT_TYPE_EXTINT).
++ *
++ * 3) The FRED kernel entry handler does *NOT* dispatch INT instructions,
++ *    which is of event type EVENT_TYPE_SWINT, so compared with
++ *    do_int80_emulation(), there is no need to do any user mode check.
++ *
++ * 4) int80_emulation() does a CLEAR_BRANCH_HISTORY, which is likely
++ *    overkill for new x86 CPU implementations that support FRED.
++ *
++ * 5) int $0x80 is the FAST path for 32-bit system calls under FRED.
++ *
++ * A dedicated FRED INT80 handler duplicates quite a bit of the code in
++ * do_int80_emulation(), but it avoids sprinkling more tests and seems
++ * more readable. Just remember that we can always unify common stuff
++ * later if it turns out that it won't diverge anymore, i.e., after the
++ * FRED code settles.
++ */
++DEFINE_FREDENTRY_RAW(int80_emulation)
++{
++	int nr;
++
++	enter_from_user_mode(regs);
++
++	instrumentation_begin();
++	add_random_kstack_offset();
++
++	/*
++	 * FRED pushed 0 into regs::orig_ax and regs::ax contains the
++	 * syscall number.
++	 *
++	 * User tracing code (ptrace or signal handlers) might assume
++	 * that the regs::orig_ax contains a 32-bit number on invoking
++	 * a 32-bit syscall.
++	 *
++	 * Establish the syscall convention by saving the 32bit truncated
++	 * syscall number in regs::orig_ax and by invalidating regs::ax.
++	 */
++	regs->orig_ax = regs->ax & GENMASK(31, 0);
++	regs->ax = -ENOSYS;
++
++	nr = syscall_32_enter(regs);
++
++	local_irq_enable();
++	nr = syscall_enter_from_user_mode_work(regs, nr);
++	do_syscall_32_irqs_on(regs, nr);
++
++	instrumentation_end();
++	syscall_exit_to_user_mode(regs);
++}
++#endif
+ #else /* CONFIG_IA32_EMULATION */
+ 
+ /* Handles int $0x80 on a 32bit kernel */
+diff --git a/arch/x86/entry/entry_fred.c b/arch/x86/entry/entry_fred.c
+index ac120cbdaaf2..9fa18b8c7f26 100644
+--- a/arch/x86/entry/entry_fred.c
++++ b/arch/x86/entry/entry_fred.c
+@@ -66,7 +66,7 @@ static noinstr void fred_intx(struct pt_regs *regs)
+ 	/* INT80 */
+ 	case IA32_SYSCALL_VECTOR:
+ 		if (ia32_enabled())
+-			return int80_emulation(regs);
++			return fred_int80_emulation(regs);
+ 		fallthrough;
+ #endif
+ 
+
+base-commit: 367dc2b68007e8ca00a0d8dc9afb69bff5451ae7
+-- 
+2.44.0
+
 
