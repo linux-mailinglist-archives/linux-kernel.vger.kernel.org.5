@@ -1,95 +1,149 @@
-Return-Path: <linux-kernel+bounces-148315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FC688A80D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:23:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23C678A80D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:23:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1B6E1F2120D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:23:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54F0D1C2109F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:23:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9DD713C8FD;
-	Wed, 17 Apr 2024 10:21:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D78EB13C9BD;
+	Wed, 17 Apr 2024 10:21:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="FZf2J5j2"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="d+OxPeNv";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qYsTlNEr";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="d+OxPeNv";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qYsTlNEr"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8C6D13BC1A;
-	Wed, 17 Apr 2024 10:21:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E7613BC3E;
+	Wed, 17 Apr 2024 10:21:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713349274; cv=none; b=ok7AOwzCia4EevWwpenaZLwOQ5gPb85bsFr8O2bhZcD0C0JNS9u5Fjw5/DtuXZs/rWxbTFS0mxR8nrdvurkDNEe7ChmSkr1gJdjjJGtbLmrYSeWuDCiINkHBGtcGev+thSiLjeRUicBfNVlg7ShoSppes1yKUN7MlF8nslwBRt4=
+	t=1713349285; cv=none; b=BMf+KEP1xl+90ii2/vwslnHiAoRWbie+GXIxyyxOnWvRRpzoppfyNrP+O+WOGaUsIP8MoFhRYAlMh2KTgY89XalfM7aKhXCoNosDz+zj3N7othASEXZHZJJ1evP23hbwWJf8OLwj3zV01Syavfh2m3/qYG+JtHt9iZuEzTHk7tY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713349274; c=relaxed/simple;
-	bh=joxtA6/0uRZPXJAeMzV2wF8DPGHHcwx6t1T7AHClb7k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KkMfBGkwjLJ/s9DOcU3iw6FnmaaMhpynqbkIEwHb6VfaAQonMmfU6ykn/GBfXNKxzEj3eX8LLFqdOdGVjheOWm8MQIzKdsIUikMGkUi93aWfrHHbd2zgJfXC1k6ghSuJZSauY9cYKGh5tedbK3rZck34va0Uf8kVQufXDwAZmvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=FZf2J5j2; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713349271;
-	bh=joxtA6/0uRZPXJAeMzV2wF8DPGHHcwx6t1T7AHClb7k=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=FZf2J5j2qPVponPppon3nSlh8EUciQ+SLJONQKf/unyHzoBfaCeaClDlXrUkNh7+z
-	 uWkWjMhrU1qgsg0u/9+OHuGb2CG58/eM/XqgX2yJmejqH6JS5GvXO9VRj2sqjCGBg0
-	 OEgiVJVNX9WG0dEi9OmMI7c3tJR9RXOejvdDrf3ViaaukvZjHdQ4oVqn53mFFmsewr
-	 5nb/dgokG/iefGwpxwooNqHhBMzXQhyQY3OYLIFbnFZXUFpxmEjT9ks6nkDDfmKvG9
-	 YxZ3mKEVZpk4huDFE81C5e7/H5F2Qm7OuRfB8G0pxwVAC75jEPcfiuqGV0oGddBAZ4
-	 +FGBSrcjmFRmQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	s=arc-20240116; t=1713349285; c=relaxed/simple;
+	bh=MIuiJiecMNYop1J5gyfn17kW3mM6Q47w9aU6e2zL69Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aokYbtTEF6H+ng8W05nr/sdlM1qA1QUQfLh4Er/yf8wOZXwAEw7XXroTXaUgaIvClbhbuLjYmXwAgtLshoHlebWudRblf/e/w0n+wAPf1k4T95eO3PrNqw0lj5n5ypVJrYb98oby76+xKrn/FOBpFJKx0AQv79kAYgPVivZlK4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=d+OxPeNv; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=qYsTlNEr; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=d+OxPeNv; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=qYsTlNEr; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id DF67637820F1;
-	Wed, 17 Apr 2024 10:21:09 +0000 (UTC)
-Message-ID: <5aaa5f0b-4c0c-4e7f-ae73-d0c735343f37@collabora.com>
-Date: Wed, 17 Apr 2024 12:21:09 +0200
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A62ED33AE8;
+	Wed, 17 Apr 2024 10:21:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713349275; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fh/JsAx365b5+9LhCKoSfw3empGDkEaoXILqTfsoTCk=;
+	b=d+OxPeNvL9YZMckUpJ0g7mpky2kuucuY0AHSf+tnU7LMVcSFi3BNZYTuRv5xAE8Y3S0DPZ
+	/B9XizzXL43tJPuukB/oJdSIdC1GRmUA43BPEtIuMrddLMIIgY0SqDMnPU4EjqSJPZjjo7
+	Xo4Ghgcls8EmtbRCoE0BsTMce50IQco=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713349275;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fh/JsAx365b5+9LhCKoSfw3empGDkEaoXILqTfsoTCk=;
+	b=qYsTlNEr0szT8LVQsX4hafElClV5lnrbsMjMbFD7CsWOZ6ZmYNhkp1jGoNA1St2DEoueVm
+	JOdgAIM37OF31WBQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713349275; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fh/JsAx365b5+9LhCKoSfw3empGDkEaoXILqTfsoTCk=;
+	b=d+OxPeNvL9YZMckUpJ0g7mpky2kuucuY0AHSf+tnU7LMVcSFi3BNZYTuRv5xAE8Y3S0DPZ
+	/B9XizzXL43tJPuukB/oJdSIdC1GRmUA43BPEtIuMrddLMIIgY0SqDMnPU4EjqSJPZjjo7
+	Xo4Ghgcls8EmtbRCoE0BsTMce50IQco=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713349275;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fh/JsAx365b5+9LhCKoSfw3empGDkEaoXILqTfsoTCk=;
+	b=qYsTlNEr0szT8LVQsX4hafElClV5lnrbsMjMbFD7CsWOZ6ZmYNhkp1jGoNA1St2DEoueVm
+	JOdgAIM37OF31WBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C569B1384C;
+	Wed, 17 Apr 2024 10:21:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id kadzKJqiH2bVawAAD6G6ig
+	(envelope-from <osalvador@suse.de>); Wed, 17 Apr 2024 10:21:14 +0000
+Date: Wed, 17 Apr 2024 12:21:12 +0200
+From: Oscar Salvador <osalvador@suse.de>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Muchun Song <muchun.song@linux.dev>
+Subject: Re: [PATCH v1 1/2] fs/proc/task_mmu: convert pagemap_hugetlb_range()
+ to work on folios
+Message-ID: <Zh-imMfMzCEgD1Ao@localhost.localdomain>
+References: <20240417092313.753919-1-david@redhat.com>
+ <20240417092313.753919-2-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 05/18] dt-bindings: display: mediatek: dsi: add
- compatible for MT8365 SoC
-To: Alexandre Mergnat <amergnat@baylibre.com>,
- Chun-Kuang Hu <chunkuang.hu@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Jitao Shi <jitao.shi@mediatek.com>,
- CK Hu <ck.hu@mediatek.com>, =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?=
- <u.kleine-koenig@pengutronix.de>, Michael Turquette
- <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org,
- linux-clk@vger.kernel.org
-References: <20231023-display-support-v2-0-33ce8864b227@baylibre.com>
- <20231023-display-support-v2-5-33ce8864b227@baylibre.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20231023-display-support-v2-5-33ce8864b227@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417092313.753919-2-david@redhat.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:email]
+X-Spam-Score: -4.30
+X-Spam-Flag: NO
 
-Il 16/04/24 17:53, Alexandre Mergnat ha scritto:
-> Document the Display Serial Interface on MT8365, which is compatible
-> with that of the MT8183.
+On Wed, Apr 17, 2024 at 11:23:12AM +0200, David Hildenbrand wrote:
+> Let's get rid of another page_mapcount() check and simply use
+> folio_likely_mapped_shared(), which is precise for hugetlb folios.
 > 
-> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
+> While at it, also check for PMD table sharing, like we do in
+> smaps_hugetlb_range().
+> 
+> No functional change intended, except that we would now detect hugetlb
+> folios shared via PMD table sharing correctly.
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
+ 
+
+-- 
+Oscar Salvador
+SUSE Labs
 
