@@ -1,100 +1,115 @@
-Return-Path: <linux-kernel+bounces-149021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F3C08A8A8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:55:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1C6A8A8AAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:58:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 911001C22AD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:55:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B5621F251EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:58:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D03D172BD3;
-	Wed, 17 Apr 2024 17:55:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B3C2172BD7;
+	Wed, 17 Apr 2024 17:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="R7DYTJNd"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hTDGtFsi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8FD81487DF;
-	Wed, 17 Apr 2024 17:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B132A172BC9
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 17:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713376545; cv=none; b=jd2JyAEP1zKf8RDZ9wMDnTto7yxCkNFKlq7loP0QcTGoiBmA9ncjFzz6HhKChx0nOyro2jczY2M/CcD2MdLb8EzOINhY2+bNTgTsdmP8tBP5afPvY2TH3Th+BPplVuKXkxZvkFqGrOvAMRmRUYAnn62YjCWgpepQP9SuS9oyqP0=
+	t=1713376646; cv=none; b=TiSsphPhu0jim7Ndr7fChUMOmorDj7Etd9kTHpzNAEry6fxSiJDgNL9sgA99QnJ4Nd6E7M6rz7Nr+f1V5hMJDIhA3KG4Mg0OE8D0iCKU88xKLkqpfWpHGVT7AeljgBQXKH9E8CEbnzO503/uGxKGMV6fhGk8JczMOoOKCGvrMHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713376545; c=relaxed/simple;
-	bh=iM1cRx/dRlcToMFYIxS0SCJWI9W90EJVDhqZRt7Jh1k=;
+	s=arc-20240116; t=1713376646; c=relaxed/simple;
+	bh=3d2ZLhWss3WpYFskVn7ql2myJj3BXlWA7VJpaBADf8c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Net0NebJYH0uhtpMnygkaHiObP4/G143n1bwbuvwowgZgmpNcgwGxOgcb+qrL4onKshgh+J18zcnFubEXQAIdkiZN/PKruxLMjoh8FbIVcq6XhM3vPAudIyyhKhUFZLtzQklF8HRyvPoGufBnE6Rj760UlwwDQvIyhaRh1Yt5Cg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=R7DYTJNd; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=InWcaRy3h3nbfDQgATItK7nUOOUbF1ycPOVv55Cp7bw=; b=R7DYTJNd8n8/ayp8J3r+y+0izk
-	BnBCLmMrEZ8RPWxyf2cv3HpzKGFEBSyu4aIfr4pF9eTeVeO0Oj40XEWmyaXpA0uGTvaf5Fy11+Gjl
-	Hh5+GHXybPSmn1VuiPOa8w5SQEc872Q7YkEShx2CdOa4D71qe5WE6qhinyf3OnyIHfhNJMvelo6gs
-	BIsGCR7u0X64TVweOu0Pr5T6HWYp1SwdYZ4v+B0vsfwJ8k+sRMOxitce4vuq+ncmkcuBG4iNenbEV
-	/5FPlAnOTqxZSxfw9CEkTfVBWbkCNgH55nzZOjFNPsPzhBr5/WnkZMQlH2N3r14Qd4Q/wWl3fdFCw
-	RYv4roNA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rx9VT-0000000Bd3H-1UcW;
-	Wed, 17 Apr 2024 17:55:39 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 079023002E1; Wed, 17 Apr 2024 19:55:39 +0200 (CEST)
-Date: Wed, 17 Apr 2024 19:55:38 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Mikulas Patocka <mpatocka@redhat.com>
-Cc: Mike Snitzer <msnitzer@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-	Damien Le Moal <dlemoal@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
-	Guangwu Zhang <guazhang@redhat.com>, dm-devel@lists.linux.dev,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] completion: move blk_wait_io to
- kernel/sched/completion.c
-Message-ID: <20240417175538.GP40213@noisy.programming.kicks-ass.net>
-References: <31b118f3-bc8d-b18b-c4b9-e57d74a73f@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YTApusvXQBMvw5o0gKhvU+BRsGA0u2G9ayF6HquvkpCXIUyDjojFJJawQRgBo6aRumzlFzyJZPLoYw9uzs61YY3TvWCAfz575Y6i3xbFwsZYLIBjsU+LdkuSrLE/RSLrSjeOLZv4gRqqgIumGf8ZRh1dle40CN+3rIfZVuTUQs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hTDGtFsi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8293DC072AA;
+	Wed, 17 Apr 2024 17:57:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713376646;
+	bh=3d2ZLhWss3WpYFskVn7ql2myJj3BXlWA7VJpaBADf8c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hTDGtFsixswGNPPrmpqYl6s6CRY8pUO6WGUadHaGKJrRjlLd8Iz+KXWlowUQG99nX
+	 LWB07IiKpAWm25E9qp+0DZGXHXDCiaNKn9DP2an2pz3bguUFK0BeXbo0x4tIQZU6ut
+	 IgDJNPKPyuhP4/JbxCnnQhwQAkVYwwJrP/malXaDIC0Rbg0xsxEZEvNLPh+kGsgtno
+	 dwVcy6+o7oL1K/pcBgzK8eOTcYphYJPjuqcjPOzUquPGq2J5UJY24n0+/OES9D944S
+	 XpGwVMaLb123iTHENsZ5qzMFqht6/ToLU5xP3Y8elj8dY1TYG5ZQqCSManZYmyNuPo
+	 xL2hUuJFPbvQA==
+Date: Wed, 17 Apr 2024 10:57:23 -0700
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc: Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Alexandre Chartre <alexandre.chartre@oracle.com>,
+	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Nikolay Borisov <nik.borisov@suse.com>,
+	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>,
+	Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v3] x86/bugs: Only harden syscalls when needed
+Message-ID: <20240417175723.r4si62d6oqirqadb@treble>
+References: <eda0ec65f4612cc66875aaf76e738643f41fbc01.1713296762.git.jpoimboe@kernel.org>
+ <dad3a832-b3d0-4c72-a9f1-1ec4e6bc6bba@citrix.com>
+ <20240417164514.66hgypzxgqxt3ssk@desk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <31b118f3-bc8d-b18b-c4b9-e57d74a73f@redhat.com>
+In-Reply-To: <20240417164514.66hgypzxgqxt3ssk@desk>
 
-On Wed, Apr 17, 2024 at 07:49:17PM +0200, Mikulas Patocka wrote:
-> Index: linux-2.6/kernel/sched/completion.c
-> ===================================================================
-> --- linux-2.6.orig/kernel/sched/completion.c	2024-04-17 19:41:14.000000000 +0200
-> +++ linux-2.6/kernel/sched/completion.c	2024-04-17 19:41:14.000000000 +0200
-> @@ -290,6 +290,26 @@ wait_for_completion_killable_timeout(str
->  EXPORT_SYMBOL(wait_for_completion_killable_timeout);
->  
->  /**
-> + * wait_for_completion_long_io - waits for completion of a task
-> + * @x:  holds the state of this particular completion
-> + *
-> + * This is like wait_for_completion_io, but it doesn't warn if the wait takes
-> + * too long.
-> + */
-> +void wait_for_completion_long_io(struct completion *x)
-> +{
-> +	/* Prevent hang_check timer from firing at us during very long I/O */
-> +	unsigned long timeout = sysctl_hung_task_timeout_secs * HZ / 2;
-> +
-> +	if (timeout)
-> +		while (!wait_for_completion_io_timeout(x, timeout))
-> +			;
-> +	else
-> +		wait_for_completion_io(x);
-> +}
-> +EXPORT_SYMBOL(wait_for_completion_long_io);
+On Wed, Apr 17, 2024 at 09:45:14AM -0700, Pawan Gupta wrote:
+> On Wed, Apr 17, 2024 at 04:14:26PM +0100, Andrew Cooper wrote:
+> > On 17/04/2024 12:02 am, Josh Poimboeuf wrote:
+> > > diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+> > > index ca295b0c1eee..dcb97cc2758f 100644
+> > > --- a/arch/x86/kernel/cpu/bugs.c
+> > > +++ b/arch/x86/kernel/cpu/bugs.c
+> > > @@ -1678,6 +1687,21 @@ static void __init spectre_v2_select_mitigation(void)
+> > >  	enum spectre_v2_mitigation_cmd cmd = spectre_v2_parse_cmdline();
+> > >  	enum spectre_v2_mitigation mode = SPECTRE_V2_NONE;
+> > >  
+> > > +	/*
+> > > +	 * X86_FEATURE_INDIRECT_SAFE indicates whether indirect calls can be
+> > > +	 * considered safe.  That means either:
+> > > +	 *
+> > > +	 *   - the CPU isn't vulnerable to Spectre v2 or its variants;
+> > > +	 *
+> > > +	 *   - a hardware mitigation is in place (e.g., IBRS, BHI_DIS_S); or
+> > > +	 *
+> > > +	 *   - the user turned off mitigations altogether.
+> > > +	 *
+> > > +	 * Assume innocence until proven guilty: set the cap bit now, then
+> > > +	 * clear it later if/when needed.
+> > > +	 */
+> > > +	setup_force_cpu_cap(X86_FEATURE_INDIRECT_SAFE);
+> > 
+> > Following on from the (re)discovery that X86_FEATURE_RETPOLINE is a poor
+> > name given what it *actually* does, can I recommend s/SAFE/OK/ here?
+> 
+> Or simply X86_FEATURE_USE_INDIRECT_BRANCH.
+> 
+> > This flag really is "do I want indirect branches or not", which - as
+> > noted here - is more than just a judgement of whether indirect branches
+> > are "safe".
 
-Urgh, why is it a sane thing to circumvent the hang check timer? 
+X86_FEATURE_USE_INDIRECT_BRANCH sounds good.  It's a bit long but does
+describe it better.
+
+-- 
+Josh
 
