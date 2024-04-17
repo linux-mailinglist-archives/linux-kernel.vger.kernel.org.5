@@ -1,187 +1,111 @@
-Return-Path: <linux-kernel+bounces-148739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1272B8A86CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:55:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B1888A86D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:58:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDFE22888C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:55:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36685283376
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:58:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A931E13F44A;
-	Wed, 17 Apr 2024 14:54:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WIPv4Bys";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Lmq+Imed";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WIPv4Bys";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Lmq+Imed"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70669146A70;
+	Wed, 17 Apr 2024 14:58:12 +0000 (UTC)
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D5B38DD3;
-	Wed, 17 Apr 2024 14:54:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B178140E3D
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713365696; cv=none; b=taalmFUiWrs3uCvCwvBbvnTL6IXvgFV7EOWhTwkwOe8mJ8Z4RcpzLy5Narn3Lu+JSAqP9DhDuk8NiL2BrBIYQGmpjnPq/P1imMixW0VLQdo7fjzL+l2W5q6EBM+9XjKH+m5DmFucjpEZ5uvZK0N+ic2rbwxzqLXw1543Ga1HXIk=
+	t=1713365892; cv=none; b=aymR3+ItFnLYuhNmaBvJIzjheapJc+42qXfsKJC8e8HgqiFU6piftmw8QNVkNppCYXv4yGXIi4IFBr5uvO20uZGh/7OEcQM1Lt8oH+q6V5wEASeHZcMHZ7BxbJ6A8eTrps748bZ0nzsrqDBCCE5HqzDr4tHBtWr9jVgyfRQf9PE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713365696; c=relaxed/simple;
-	bh=j/kkXCLbaet7tQenZZV3BauQw9//W4LV4+M6WNx0+QE=;
+	s=arc-20240116; t=1713365892; c=relaxed/simple;
+	bh=2xyj0NTxTG4WCIsfGF2Dj9gu+EMZjKYzqcfchrNiejM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rcz8eMkPyDY0nlPvZljw21PeK18oBObtSA/7wERSkJ1etFZdO4reUyQycqT01WLpPbxMka12+EcAMioamOcQuy7oTw5PsORZTYwPm+hhf1fnFxnPcXpxvjOjBdQ8WXUuk6g3JSvmbdK1VCMVIWQchFAUxc01URI7PKi08tfvjQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WIPv4Bys; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Lmq+Imed; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WIPv4Bys; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Lmq+Imed; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tz5o/BN+OgTRBL1UI7KPTmr9Cvmjgd80gxKdDwKIX+TZHg2RldRe+IuqKK+FpiuKTfXrkyKLjekWtsODT1AvR1kvGCmlgOmeDKdFVyFIWlaJgvl2MkbRz2amJnvia3bcwflCEjEkPdf/bZR3Mb+mofLzlL93IuwOYrMNHx/HvzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C152A40E0187;
+	Wed, 17 Apr 2024 14:58:07 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 4DOFZVzoP8VO; Wed, 17 Apr 2024 14:58:03 +0000 (UTC)
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id F39C820AB1;
-	Wed, 17 Apr 2024 14:54:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713365687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vgoG+0xCL/8Y6q4Ug28gi7RT5OUpQ9e3zhnkL2fsCAI=;
-	b=WIPv4Byskan7NgsSrXhdP/jtNGrXCWeJ7c/v1HcDwsHpjWUJuJ9glc5yF6iPgB7Oz3tz4D
-	fB1UVS7yTNKabxvzvhclLZARUIXTuLmPmO55Yyq7uco4x3jGpJfgqG1d7OQxmPcUYwqfOo
-	DAqbYLSHJj1U2YYaKXmygv2D8UitTGs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713365687;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vgoG+0xCL/8Y6q4Ug28gi7RT5OUpQ9e3zhnkL2fsCAI=;
-	b=Lmq+ImedM/LooXtq0zteHXx7bs80Dis4dglHoOHZJ44bjwsuazpH06T84eOK/VD5QxWaUs
-	i3F3e/IrtihUfoCQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713365687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vgoG+0xCL/8Y6q4Ug28gi7RT5OUpQ9e3zhnkL2fsCAI=;
-	b=WIPv4Byskan7NgsSrXhdP/jtNGrXCWeJ7c/v1HcDwsHpjWUJuJ9glc5yF6iPgB7Oz3tz4D
-	fB1UVS7yTNKabxvzvhclLZARUIXTuLmPmO55Yyq7uco4x3jGpJfgqG1d7OQxmPcUYwqfOo
-	DAqbYLSHJj1U2YYaKXmygv2D8UitTGs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713365687;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vgoG+0xCL/8Y6q4Ug28gi7RT5OUpQ9e3zhnkL2fsCAI=;
-	b=Lmq+ImedM/LooXtq0zteHXx7bs80Dis4dglHoOHZJ44bjwsuazpH06T84eOK/VD5QxWaUs
-	i3F3e/IrtihUfoCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E9C811384C;
-	Wed, 17 Apr 2024 14:54:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id VIsOObbiH2afVgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 17 Apr 2024 14:54:46 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 9C030A082E; Wed, 17 Apr 2024 16:54:46 +0200 (CEST)
-Date: Wed, 17 Apr 2024 16:54:46 +0200
-From: Jan Kara <jack@suse.cz>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jan Kara <jack@suse.cz>, cve@kernel.org, linux-kernel@vger.kernel.org,
-	linux-cve-announce@vger.kernel.org
-Subject: Re: CVE-2024-26774: ext4: avoid dividing by 0 in
- mb_update_avg_fragment_size() when block bitmap corrupt
-Message-ID: <20240417145446.uh2rqcbxlebnkbfm@quack3>
-References: <2024040308-CVE-2024-26774-52d9@gregkh>
- <20240417114324.c77wuw5hvjbm6ok5@quack3>
- <2024041711-chapter-uninstall-b1d3@gregkh>
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D3E9440E0028;
+	Wed, 17 Apr 2024 14:57:43 +0000 (UTC)
+Date: Wed, 17 Apr 2024 16:57:38 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Alexandre Chartre <alexandre.chartre@oracle.com>,
+	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Nikolay Borisov <nik.borisov@suse.com>,
+	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>,
+	Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v3] x86/bugs: Only harden syscalls when needed
+Message-ID: <20240417145738.GDZh_jYguUrkT9QlXp@fat_crate.local>
+References: <eda0ec65f4612cc66875aaf76e738643f41fbc01.1713296762.git.jpoimboe@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2024041711-chapter-uninstall-b1d3@gregkh>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.978];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
-X-Spam-Score: -3.80
-X-Spam-Flag: NO
+In-Reply-To: <eda0ec65f4612cc66875aaf76e738643f41fbc01.1713296762.git.jpoimboe@kernel.org>
 
-On Wed 17-04-24 15:30:03, Greg Kroah-Hartman wrote:
-> On Wed, Apr 17, 2024 at 01:43:24PM +0200, Jan Kara wrote:
-> > Hello!
-> > 
-> > On Wed 03-04-24 19:31:41, Greg Kroah-Hartman wrote:
-> > > Description
-> > > ===========
-> > > 
-> > > In the Linux kernel, the following vulnerability has been resolved:
-> > > 
-> > > ext4: avoid dividing by 0 in mb_update_avg_fragment_size() when block bitmap corrupt
-> > > 
-> > > Determine if bb_fragments is 0 instead of determining bb_free to eliminate
-> > > the risk of dividing by zero when the block bitmap is corrupted.
-> > > 
-> > > The Linux kernel CVE team has assigned CVE-2024-26774 to this issue.
-> > 
-> > I'd like to understand what is the imagined security threat fixed by this
-> > patch (as multiple patches of similar nature got assigned a CVE). The patch
-> > fixes a bug that if a corrupted filesystem is read-write mounted, we can do
-> > division-by-zero. Now if you can make the system mount a corrupted
-> > filesystem, you can do many interesting things to the system other than
-> > create a division by zero... So what is the presumed threat model here?
+On Tue, Apr 16, 2024 at 04:02:21PM -0700, Josh Poimboeuf wrote:
+> Syscall hardening (i.e., converting the syscall indirect branch to a
+> series of direct branches) may cause performance regressions in certain
+> scenarios.  Only use the syscall hardening when indirect branches are
+> considered unsafe.
 > 
-> Exactly what you said, "if you mount a corrupted file system, you will
-> get a divide by zero fault."
+> Fixes: 1e3ad78334a6 ("x86/syscall: Don't force use of indirect calls for system calls")
+> Reviewed-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+> ---
+> v3:
+> - fix X86_FEATURE_INDIRECT_SAFE value
 > 
-> Many systems auto-mount any filesystem plugged into it.  If yours do
-> not, then yours does not need to worry about this type of CVE.
+>  arch/x86/entry/common.c            | 15 ++++++++++++---
+>  arch/x86/entry/syscall_32.c        | 11 +----------
+>  arch/x86/entry/syscall_64.c        |  6 ------
+>  arch/x86/entry/syscall_x32.c       |  7 ++++++-
+>  arch/x86/include/asm/cpufeatures.h |  1 +
+>  arch/x86/include/asm/syscall.h     |  8 +++++++-
+>  arch/x86/kernel/cpu/bugs.c         | 31 +++++++++++++++++++++++++++++-
+>  7 files changed, 57 insertions(+), 22 deletions(-)
 
-OK, understood. But let me state that with the current state of affairs in
-the filesystem land, it will not take a determined attacker long to get
-arbitrary code execution out of "maliciously corrupted fs mounted". The
-code of most filesystems has simply never been written with the assumption
-that it can be presented with malicious data and we have hundreds of
-thousands lines of code like that. We have fixed the most glaring problems
-but by far not all (partly because of performance and maintenance costs,
-partly because they are baked into on-disk formats).
+I poked at this a bit and can't find anything that I can complain about
+so
 
-So if we should honestly state the situation (and filesystem folks are
-trying to get this message across for a few years already), we should issue
-a CVE for "mounting untrusted fs image can crash your kernel or install
-rootkit to your system". And yes, I know most distros will happily mount
-whatever is plugged into the USB port because that is what users expect and
-it is convenient. So if anybody wants a practical solution to this security
-problem, I'd suggest working on FUSE drivers for filesystems you care about
-and make distros use that when mounting removable media... That is actually
-pretty secure and robust solution if you don't care about performance
-*that* much.
+Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
 
-								Honza
+I'll pick it up into urgent if no one complains soon.
+
+Thx.
 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
