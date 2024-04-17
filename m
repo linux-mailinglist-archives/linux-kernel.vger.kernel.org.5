@@ -1,328 +1,509 @@
-Return-Path: <linux-kernel+bounces-149057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D494D8A8B33
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:35:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FDBD8A8B35
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:38:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02DFB1C23D51
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:35:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAA5D2863D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:38:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4797F51B;
-	Wed, 17 Apr 2024 18:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BF47F9C1;
+	Wed, 17 Apr 2024 18:37:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YRuOqbkh"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="bgxyIcjx"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DAEF8820
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:35:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.12
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713378914; cv=fail; b=QyNhWm7PU7wvtwiamN9r+7IcOVj1gOWGZWfpMq5TB6Ij/gXfInuaQxK6F+tXx9y3nyb4QCkbzCO3hcR5IgNrCnbQj0/pal0bEOV/33Fs7PqdMa/2sYi26Y5bp/EpoQcfGUfR1Ulkp/gGCe1n6OP3JgYayyhS2M+CPYIZMq2niLA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713378914; c=relaxed/simple;
-	bh=YCCOyNDI4hRlhNs/ae4465aX3mfJFtNgRDFQEuKGhlY=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=lleZdXX1+y/wr20r6hGpmGhcBnbQR+WSiyuzM4RKrvBjYZRu56WZXckz4MwaSIA+VyJ827NLF54f3F3tANreXBuVPUbobkMabWf8hbH/2gugC9siqSV8Igy/QLc0z9SCCBg6bsAap4qvEmpj5moawr2PZLixEBoGUXoMKF4y4R8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YRuOqbkh; arc=fail smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713378913; x=1744914913;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=YCCOyNDI4hRlhNs/ae4465aX3mfJFtNgRDFQEuKGhlY=;
-  b=YRuOqbkhZs/tBBURHdCJ/pYQF2aSIuAz5OXD6Zcl2xlqLgUI946bqmXg
-   s+NAT9r8RLjzUkyFxkz0acWs9FDs7QfpYa74vhpszgodHmwKLhUyyRrSF
-   pKB3sdcsiIjlHJst7VtW3qq2ESX3PBKmV0MPd9/yzRo2A3Kvtld6MolFH
-   FusR8Bffh3cqkZOU7NuJ2FHvxFXiwAPk8tUD67gqJ2fbiiELpeuiBnOWq
-   HuA/5MVdVEjuZMahjDSkRYmah3E4tPjzl05ABj5brxPnhJ08REbG+2O4J
-   4iglnsVeD1M/lbW9omg9l3OhWHQSxEvjHqVQeF71nnZ1fQJTur/ER9rxT
-   Q==;
-X-CSE-ConnectionGUID: 4j3AKyN0Q1a4Pl6ChKdSiQ==
-X-CSE-MsgGUID: /9b8onkJSZ+TndBw0YrXMQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="12670005"
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="12670005"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 11:35:12 -0700
-X-CSE-ConnectionGUID: dvRUK3z3TWmlDHWH+G5GBQ==
-X-CSE-MsgGUID: C6ErGnYwTrWC4ZVhpR6evg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="22788816"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Apr 2024 11:35:11 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 17 Apr 2024 11:35:10 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 17 Apr 2024 11:35:10 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.171)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 17 Apr 2024 11:35:10 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R8EPWBG1GWdkfUDiED11MAurZdM8ZyR8mHWTTlFc6fXf/ctTzrpbAPijs6h9NNKrdh00QrSQPG0a8u8/PYDyvRuSZcH0fbZ2R6kVoAzdJS6QNBCfGmYHrAi5TwKQXNBbwTpqdfC3jkk2WGKvQ0KwcmnQabv3/Z8WAWmlVpzqPhS/kQ9P96RYXDNtjb+6XtCGyTEMeq/NB+WyTcv7ztwWLtisc96KqM4orUguImpPGWJafww0Hy1NF3rNfLIOIxnXoWYmeymGyEczN9UXSewXYNw7Neg0xOxd/J/7bpLwccmV/4Et6hiBFEcaEMEBmUD9Eru9oa6miObSBp4NVEhCfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6iwSi9+tN82oLXl35HVmDdqS0Ben2LMeiasRBnjvFBM=;
- b=MRGjZCFiEy+JchZMWyv+rWJnSgZCz5gtgIYQsXRE+qcaXOZm4RbBYsA0fC0XZOPjz3mCByw0yFX1PISNVjz8e18IeXtOG1tXPacxzZA/Ylic3UZwxBpGectEKWpKWlvBnpPqc5B/Y0qL/DG//2qgDvZ4T5iecpLRigZy/mcY+SuzClM7aP4sPBcJXyssvu44HYqceyqfIE04X+1urml/xEmt/M1UYGUIvpPca/ehqP/rUWyNSP1ildI+8r4N8dUEVsyMKZCHI4x8j0xG7YZ7zcYUmvGPHMa8CTr8jrpcdmS5L9G+EN27td1/gRUXJIJzkOx2oINM/J7zuvYaQP6pFA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6020.namprd11.prod.outlook.com (2603:10b6:8:61::19) by
- PH7PR11MB7480.namprd11.prod.outlook.com (2603:10b6:510:268::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7472.26; Wed, 17 Apr 2024 18:35:07 +0000
-Received: from DM4PR11MB6020.namprd11.prod.outlook.com
- ([fe80::5c31:7f0b:58b:a13f]) by DM4PR11MB6020.namprd11.prod.outlook.com
- ([fe80::5c31:7f0b:58b:a13f%4]) with mapi id 15.20.7472.025; Wed, 17 Apr 2024
- 18:35:07 +0000
-Date: Thu, 18 Apr 2024 02:34:53 +0800
-From: Chen Yu <yu.c.chen@intel.com>
-To: Peter Zijlstra <peterz@infradead.org>
-CC: Abel Wu <wuyun.abel@bytedance.com>, Ingo Molnar <mingo@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>, Juri Lelli
-	<juri.lelli@redhat.com>, Tim Chen <tim.c.chen@intel.com>, Tiwei Bie
-	<tiwei.btw@antgroup.com>, Honglei Wang <wanghonglei@didichuxing.com>, "Aaron
- Lu" <aaron.lu@intel.com>, Chen Yu <yu.chen.surf@gmail.com>, Yujie Liu
-	<yujie.liu@intel.com>, <linux-kernel@vger.kernel.org>, kernel test robot
-	<oliver.sang@intel.com>
-Subject: Re: [RFC PATCH] sched/eevdf: Return leftmost entity in pick_eevdf()
- if no eligible entity is found
-Message-ID: <ZiAWTU5xb/JMn/Hs@chenyu5-mobl2>
-References: <20240226082349.302363-1-yu.c.chen@intel.com>
- <758ebf4e-ee84-414b-99ec-182537bcc168@bytedance.com>
- <20240408115833.GF21904@noisy.programming.kicks-ass.net>
- <ZhPtCyRmPxa0DpMe@chenyu5-mobl2>
- <20240409092104.GA2665@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240409092104.GA2665@noisy.programming.kicks-ass.net>
-X-ClientProxiedBy: SG2PR01CA0158.apcprd01.prod.exchangelabs.com
- (2603:1096:4:28::14) To DM4PR11MB6020.namprd11.prod.outlook.com
- (2603:10b6:8:61::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA17EEAD8
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:37:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713379074; cv=none; b=a7qMBLvlBJ8hYZWZp6gTNra3+/JaqE1t68J+c7W6ZlwoUKUjcJQG/VeJ7bWyvTUMIJnsWuFytTQEZMoOYNw/2ZHrNWkXddZc0yISay5ivasyAyTmdCnTQiIFvGgqQgVzsgHix++6cvHHPBaUBmkT+oqlyjsU6wAJCvERN2nMBfA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713379074; c=relaxed/simple;
+	bh=KEEdr0yfdKxlyJb8CipmfiokfEuWsEbwYFagxZpjgHk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Is5YzdFLVqSJRr4hPWGbhv/aIdIQxyqTeEOKmbqwEC0xOGioCJsfwFfFKU1+YHLWUfhDvFEm6N2JyqxgLj3aF7p/gB9uOwyHZQAIaagXAWKhy0mGzCOjbEIkwviZT6kboxLlzV5B/qlOK+D2tT6Ab9R0sMw0NRwPwWubrGp+tXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=bgxyIcjx; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ecf05fd12fso91363b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:37:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1713379072; x=1713983872; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZpkRLMrvN7NfaF4a+EjL0Q0a8vg1rF4/rK04Ctr+BpU=;
+        b=bgxyIcjx50HAzN+FhbkOcfKOBHgSMIQYi/FjTcrpW1Z57dPZJtSlQSYbWyxTsM+52e
+         fSVjPcoz3+m+o4B0/Q3nzu0KwRirQ6g1jjUQLXjteonwGPU/a3K3wGMkwu7nKRshqS2i
+         au4gAwEJQudRGQzjy7ut0hnwZKFqiqN644Zmc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713379072; x=1713983872;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZpkRLMrvN7NfaF4a+EjL0Q0a8vg1rF4/rK04Ctr+BpU=;
+        b=UkgefbphJriBeCWjIpnki620hIqMNf6U2eoc76IsR9ktJtliUQqTYpN+o0lpNeObPI
+         LlxLSxFLou0Mu/Thus0Ja2LKrdr/W/TXqATTe43UD6jyQivp/bpFBlA16DBi8WD/h5l0
+         YG3VAPJ+6NcCXnXXs4zjJeglx7Ri2R8LCgaN1ItnBQQGAwC9ZpS8hN9qKMFdL8zssNvh
+         vBw5A2JrbuRHmdbMdG+xWVjMSjOTJCbp+MF+aATEhHjqrNoVryCcil7edwnDOoglm0Bp
+         /diOm9Tjt6akUbYZtPv2HwKFIvZcTRwfnM2sxBabQhkoEbxvN6MQhS95tuaEXLPDwXzs
+         HesA==
+X-Forwarded-Encrypted: i=1; AJvYcCUDWuB/ILmetM0EF4t3sOnwzbIvnb0O2F/aybs/7xY0pb/8XxkcNLp3Al8XhoeNi9hCwIwW9H+inguPf9AC6SVVf98LT4nyuDm30sO+
+X-Gm-Message-State: AOJu0YwFtFgAKVYlhfCHfbwH7w7OXPMIpX0LUpX6O+U4EqlqtDkqWStm
+	Oz2jWSqBs0iFKBvG6NT6wIsz+Z3TcDxETaQGl8x1hC7ySBORH4wQyK78rR8dvH2KXMynZkWY02s
+	=
+X-Google-Smtp-Source: AGHT+IHMO1L3IENPn4qcMKhvkQWPCfZJprixYVgARL4ubREN/I94ORxsAWrIfo4ZSQ6MoWkAS+OaVg==
+X-Received: by 2002:a05:6a00:21d4:b0:6ec:e785:98b9 with SMTP id t20-20020a056a0021d400b006ece78598b9mr443532pfj.27.1713379071785;
+        Wed, 17 Apr 2024 11:37:51 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id j7-20020aa783c7000000b006f0830a298dsm270796pfn.156.2024.04.17.11.37.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 11:37:51 -0700 (PDT)
+Message-ID: <2c71072b-e611-4a7c-a53f-a33fec959ee7@broadcom.com>
+Date: Wed, 17 Apr 2024 11:37:35 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6020:EE_|PH7PR11MB7480:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0fe472d4-1312-414a-515f-08dc5f0d1b38
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sFvYvahc8fXbCwenKD34jgLHTFqefFG0IEdJy3lbzSWcVgwTm83gaZp3dH7xtuwpsqVRG7O89rxnd3bnn3cHHbFy0qV8Ehny4JF02VovLuow8wAtKhdeBQ55Pl12qJ0Z/ufdk6GulPoOsEZX/nr30MDKNnabV0mkSS2jYWHIaiKjwltNSjnsc+v84SKx+bg8Ue+IEe+s0Pj8WXMC7ZFSv+nmOYoOBCQi662KjI9V90KLQvxiDsqkbfa6N802rF0RYd9j1UzlYZnG45GhDPamAKelFi2b8hb6vyfy2Xsmos9tBQFI5zjwqdY3yqKK1O31sfY7fxcJC1YAci6JmKhCfrbAAeUzS1piaetWfDF30tnOnpTypa/Jmg9uToaq9nFiLjQwEs4R1WkSfM7IPHYvJrmUjfW3TlfpWF0APGWdkKyGQMW02V+lt1tWcQwitmGg1aA+AQNuSShSAvOllU4bkxh4SVG8AJqrx3x045xfkVh8AAaTNCSmsyEF3+Wizwerem4KL8VtWDkAvYyakT88EnBft66CbpFeNIehZGfShWiRTx1HTUQezJoIQwxi7WTsqB2ydCQoirqpk4a2lj59Hoxhgl1I8z97VxyZDy2OoZeWpNUA0U7NJU+TQbX3B4miZxrIV8ql7cUemt8QakzoJFLvO4RQv0aqwK9zaFnd0FI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6020.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4gOTWPCOAfuv0Kt7+8t1KJIq8zVHL5pQVPur9EbeB30aiexVAI9jEhWYnfIP?=
- =?us-ascii?Q?SlXCEjAWfqODXo5IA2VU2M0aj7DduFMJIqKreqM/CuTQe/AVxPKQo41mDd3T?=
- =?us-ascii?Q?fLugRX5i2SEOEBsxcXVuB3TRkG8+5Eo+QnrgHsRcBzcLA2nH27IhvzNVmQTp?=
- =?us-ascii?Q?hzyZeOqm+cpwM7/xduQzfnt1rfISOlZEZUxslfEqG7o9wcee408lz94Hb+UX?=
- =?us-ascii?Q?v20duCWRlpxFMUYdSxql/xGTHAz/083vJWHSSGAXcDJqISm8qsLcDf+ULcpz?=
- =?us-ascii?Q?ze/gXgO9fxtOnhpTOq2TtsEikKA4INOOpVCP3bf/PEXvCsM+41sdYgDp6yp5?=
- =?us-ascii?Q?HONzebUnlRBK/4orH4/FlfoT+cj9FhftCxnFG6CUf6zRTFifd5RnS74iy9y8?=
- =?us-ascii?Q?5Dsi/NMV5oN6ZKWE35EAYT76OnTcANQNm9La8NdPU0VtwCin3RM4+krVoN8Z?=
- =?us-ascii?Q?VCpry1hXuQSWubMQgU1nO2EjKwDhbIdIDrfoiQmEFfFTqRfBXwjmVGlWcWVA?=
- =?us-ascii?Q?Ykm0BcLVwNKhRo5en/uwxcb/RzTH03xdElmRwLtLZJ7/HzI1IPpYli85mrPg?=
- =?us-ascii?Q?ytwM5zkT2Mb32kl4VYqewRj7pgJ+nqLQV9kFI6xfroLkx7xhS/LYdxLhl16K?=
- =?us-ascii?Q?wdCiT7LKovwoXmtT+vn8KKXcHyA/sSlDjxOTldrSQ5wAJxfRn5WOM5XskXyD?=
- =?us-ascii?Q?pZHdDlUTLcFbtY+0VsmFtk8iscKz1bOa5kvk73vk1CFtUNY8ri558dOc37Em?=
- =?us-ascii?Q?rmFUq3dHsWRo83JkO4gOLa96V+XsLkoxsFVpYPlGy10bh6UK7klsgzqh8NoS?=
- =?us-ascii?Q?KQDqHu8a7UxOdpE0N4sBeuk37mXel4rT0NBWqs9EPndjwcoJguhAbwyNBwIx?=
- =?us-ascii?Q?KMq8019j2SsSCtvoX4UrXKRaQRwBcVxhO46D7CkkijY4OEtgzBlY6AHwxKHn?=
- =?us-ascii?Q?hAH6KdA/tWblZmG8TQJ5k5pAkF0/9m08RCq7Qu0DJbBhrp/OR8MXHPjYkQeR?=
- =?us-ascii?Q?7J1ePP+yKn+yBDDmkpfmaYtpomacjQwdBbIB6a/t+OpWbSOTK4ExmD1WtC6Y?=
- =?us-ascii?Q?RdWNesn2279ouIoqds+gDx3U/mX6htvbRQpZrgxitVe3ujCLRo/xmKKmb6U0?=
- =?us-ascii?Q?mu8mIYR7Y91IDOg18UEA5wzRiUTql86hXEHFNvymJbaieKupHxeOGLcI0LSz?=
- =?us-ascii?Q?c+qPr1TEmebeHOdLdLp7pldKniQGPqujHP161cU4zNbsP+I2c3PNzdDjfMDf?=
- =?us-ascii?Q?No2nJIEPbHXd+q9kClsmfisBSV1QJEpQS1ck+7XkmOO3Y4qdpIbBda88BKYE?=
- =?us-ascii?Q?mcMSgHt8SwR91rkGw0ONkKMpA6qpfiX+zlDrCksLlEB8xk7JGgqwF+NxOcy9?=
- =?us-ascii?Q?0mt5D9p+ICyPgkm/KQF1vXFaWNpLowWaUldxa9EWPuQlgVY4RoIRYg21WO7a?=
- =?us-ascii?Q?wUomwu3GUMIRpGCvkwamBuItF9G5xL9n0KQABxXewSB2c7wPqPje44oezz4u?=
- =?us-ascii?Q?GaUzM7uv82d8jnpzUKENh+1Vj/lmExyC2GI+YYhHUW5TTP3MbLE9ZWMda+/j?=
- =?us-ascii?Q?Id/AQdvbbUlIs2a2jn0zY2Xm0tQiB5CqOZkNgF6D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0fe472d4-1312-414a-515f-08dc5f0d1b38
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6020.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 18:35:07.8559
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UjAA0Lgr+ndWvKn36bdnbHC4FgzG71lHCAb7JMtV21C6YZws+6AihfVey3kFHdZwdtBhTHQNSjjv4jnP92lKJA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7480
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: Issue with "kbuild: create a list of all built DTB files"
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <ea330927-2a8d-4026-a6f1-d418a916d19c@broadcom.com>
+ <CAK7LNAQJcFifScm_N40B+uHXB7o=EYyERQVRQ4=f2f0JTEM3+g@mail.gmail.com>
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
+ M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
+ JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
+ PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
+ KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
+ AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
+ IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
+ ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
+ bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
+ Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
+ tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
+ TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
+ zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
+ WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
+ IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
+ U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
+ 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
+ pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
+ MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
+ IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
+ gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
+ obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
+ N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
+ CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
+ C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
+ wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
+ EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
+ fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
+ MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
+ 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
+ 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
+In-Reply-To: <CAK7LNAQJcFifScm_N40B+uHXB7o=EYyERQVRQ4=f2f0JTEM3+g@mail.gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000fb75c906164f266e"
 
-On 2024-04-09 at 11:21:04 +0200, Peter Zijlstra wrote:
-> On Mon, Apr 08, 2024 at 09:11:39PM +0800, Chen Yu wrote:
-> > On 2024-04-08 at 13:58:33 +0200, Peter Zijlstra wrote:
-> > > On Thu, Feb 29, 2024 at 05:00:18PM +0800, Abel Wu wrote:
-> > > 
-> > > > > According to the log, vruntime is 18435852013561943404, the
-> > > > > cfs_rq->min_vruntime is 763383370431, the load is 629 + 2048 = 2677,
-> > > > > thus:
-> > > > > s64 delta = (s64)(18435852013561943404 - 763383370431) = -10892823530978643
-> > > > >      delta * 2677 = 7733399554989275921
-> > > > > that is to say, the multiply result overflow the s64, which turns the
-> > > > > negative value into a positive value, thus eligible check fails.
-> > > > 
-> > > > Indeed.
-> > > 
-> > > From the data presented it looks like min_vruntime is wrong and needs
-> > > update. If you can readily reproduce this, dump the vruntime of all
-> > > tasks on the runqueue and see if min_vruntime is indeed correct.
-> > >
-> > 
-> > This was the dump of all the entities on the tree, from left to right,
+--000000000000fb75c906164f266e
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+On 4/17/24 07:31, Masahiro Yamada wrote:
+> On Wed, Apr 17, 2024 at 2:22 AM Florian Fainelli
+> <florian.fainelli@broadcom.com> wrote:
+>>
+>> Hi Masahiro,
+>>
+>> Sorry about the late report, commit
+>> 24507871c3c6ae4f6b460b016da7ff434cd34149 ("kbuild: create a list of all
+>> built DTB files") is breaking the build when we are doing a rsync of the
+>> Linux sources into a build directory, which is how buildroot works when
+>> doing a source directory override.
+>>
+>> This does not happen when doing a build from the git directory
+>> containing the sources, and I cannot find a missing $(obj) reference, so
+>> I am left wondering what I am missing here. The build error looks like this:
+>>
+>> cat: arch/arm64/boot/dts/actions/dtbs-list: No such file or directory
+>> host-make[3]: *** [scripts/Makefile.build:423:
+>> arch/arm64/boot/dts/dtbs-list] Error 1
+>> host-make[3]: *** Deleting file 'arch/arm64/boot/dts/dtbs-list'
+>> host-make[2]: *** [Makefile:1394: dtbs] Error 2
+>> host-make[2]: *** Waiting for unfinished jobs....
+>>
+>> running with verbose, we can see the rule not generating an empty file
+>> at all:
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=scripts/dtc
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=scripts
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts need-dtbslist=1
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=scripts/genksyms \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/actions \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/allwinner \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/altera \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/amazon \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/tools kapi
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/amd \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/amlogic \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/apm \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/apple \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/arm \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/bitmain \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/broadcom \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/cavium \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/exynos \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/freescale \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/hisilicon \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/intel \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/lg \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> # GEN     arch/arm64/include/generated/asm/cpucap-defs.h
+>>     mkdir -p arch/arm64/include/generated/asm/; awk -f
+>> arch/arm64/tools/gen-cpucaps.awk arch/arm64/tools/cpucaps >
+>> arch/arm64/include/generated/asm/cpucap-defs.h
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/marvell \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/mediatek \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> # GEN     arch/arm64/include/generated/asm/sysreg-defs.h
+>>     mkdir -p arch/arm64/include/generated/asm/; awk -f
+>> arch/arm64/tools/gen-sysreg.awk arch/arm64/tools/sysreg >
+>> arch/arm64/include/generated/asm/sysreg-defs.h
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/microchip \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/broadcom/bcmbca \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/nuvoton \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/broadcom/northstar2 \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/exynos/google \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/nvidia \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/broadcom/stingray \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/qcom \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/realtek \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/renesas \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/rockchip \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/socionext \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/sprd \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/st \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/synaptics \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/tesla \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/ti \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/toshiba \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> /home/fainelli/work/buildroot/output/arm64/host/bin/host-make -f
+>> ./scripts/Makefile.build obj=arch/arm64/boot/dts/xilinx \
+>> need-builtin= \
+>> need-modorder= \
+>>
+>> # cmd_gen_order arch/arm64/boot/dts/dtbs-list
+>>     {   cat arch/arm64/boot/dts/actions/dtbs-list;   cat
+>> arch/arm64/boot/dts/allwinner/dtbs-list;   cat
+>> arch/arm64/boot/dts/altera/dtbs-list;   cat
+>> arch/arm64/boot/dts/amazon/dtbs-list;   cat
+>> arch/arm64/boot/dts/amd/dtbs-list;   cat
+>> arch/arm64/boot/dts/amlogic/dtbs-list;   cat
+>> arch/arm64/boot/dts/apm/dtbs-list;   cat
+>> arch/arm64/boot/dts/apple/dtbs-list;   cat
+>> arch/arm64/boot/dts/arm/dtbs-list;   cat
+>> arch/arm64/boot/dts/bitmain/dtbs-list;   cat
+>> arch/arm64/boot/dts/broadcom/dtbs-list;   cat
+>> arch/arm64/boot/dts/cavium/dtbs-list;   cat
+>> arch/arm64/boot/dts/exynos/dtbs-list;   cat
+>> arch/arm64/boot/dts/freescale/dtbs-list;   cat
+>> arch/arm64/boot/dts/hisilicon/dtbs-list;   cat
+>> arch/arm64/boot/dts/intel/dtbs-list;   cat
+>> arch/arm64/boot/dts/lg/dtbs-list;   cat
+>> arch/arm64/boot/dts/marvell/dtbs-list;   cat
+>> arch/arm64/boot/dts/mediatek/dtbs-list;   cat
+>> arch/arm64/boot/dts/microchip/dtbs-list;   cat
+>> arch/arm64/boot/dts/nuvoton/dtbs-list;   cat
+>> arch/arm64/boot/dts/nvidia/dtbs-list;   cat
+>> arch/arm64/boot/dts/qcom/dtbs-list;   cat
+>> arch/arm64/boot/dts/realtek/dtbs-list;   cat
+>> arch/arm64/boot/dts/renesas/dtbs-list;   cat
+>> arch/arm64/boot/dts/rockchip/dtbs-list;   cat
+>> arch/arm64/boot/dts/socionext/dtbs-list;   cat
+>> arch/arm64/boot/dts/sprd/dtbs-list;   cat
+>> arch/arm64/boot/dts/st/dtbs-list;   cat
+>> arch/arm64/boot/dts/synaptics/dtbs-list;   cat
+>> arch/arm64/boot/dts/tesla/dtbs-list;   cat
+>> arch/arm64/boot/dts/ti/dtbs-list;   cat
+>> arch/arm64/boot/dts/toshiba/dtbs-list;   cat
+>> arch/arm64/boot/dts/xilinx/dtbs-list; :; } > arch/arm64/boot/dts/dtbs-list
+>> cat: arch/arm64/boot/dts/actions/dtbs-list: No such file or directory
+>> host-make[3]: *** [scripts/Makefile.build:423:
+>> arch/arm64/boot/dts/dtbs-list] Error 1
+>> host-make[3]: *** Deleting file 'arch/arm64/boot/dts/dtbs-list'
+>> host-make[2]: *** [Makefile:1394: dtbs] Error 2
+>> host-make[2]: *** Waiting for unfinished jobs....
+>> make[1]: *** [package/pkg-generic.mk:293:
+>> /home/fainelli/work/buildroot/output/arm64/build/linux-custom/.stamp_built]
+>> Error 2
+>> make: *** [Makefile:27: _all] Error 2
+>>
+>> Buildroot builds its own GNU Make version 4.4.1.
+>>
+>> Any clues what might be going on? My defconfig is such that only
+>> CONFIG_ARCH_BRCMSTB is enabled, and there are essentially no .dtbs file
+>> that will be generated.
 > 
-> Oh, my bad, I thought it was the pick path.
 > 
-> > and also from top down in middle order traverse, when this issue happens:
-> > 
-> > [  514.461242][ T8390] cfs_rq avg_vruntime:386638640128 avg_load:2048 cfs_rq->min_vruntime:763383370431
-> > [  514.535935][ T8390] current on_rq se 0xc5851400, deadline:18435852013562231446
-> > 			min_vruntime:18437121115753667698 vruntime:18435852013561943404, load:629
-> > 
-> > 
-> > [  514.536772][ T8390] Traverse rb-tree from left to right
-> > [  514.537138][ T8390]  se 0xec1234e0 deadline:763384870431 min_vruntime:763383370431 vruntime:763383370431 non-eligible  <-- leftmost se
-> > [  514.537835][ T8390]  se 0xec4fcf20 deadline:763762447228 min_vruntime:763760947228 vruntime:763760947228 non-eligible
-> > 
-> > [  514.538539][ T8390] Traverse rb-tree from topdown
-> > [  514.538877][ T8390]  middle se 0xec1234e0 deadline:763384870431 min_vruntime:763383370431 vruntime:763383370431 non-eligible   <-- root se
-> > [  514.539605][ T8390]  middle se 0xec4fcf20 deadline:763762447228 min_vruntime:763760947228 vruntime:763760947228 non-eligible
-> > 
-> > The tree looks like:
-> > 
-> >           se (0xec1234e0)
-> >                   |
-> >                   |
-> >                   ----> se (0xec4fcf20)
-> > 
-> > 
-> > The root se 0xec1234e0 is also the leftmost se, its min_vruntime and
-> > vruntime are both 763383370431, which is aligned with
-> > cfs_rq->min_vruntime. It seems that the cfs_rq's min_vruntime gets
-> > updated correctly, because it is monotonic increasing.
 > 
-> Right.
-> 
-> > My guess is that, for some reason, one newly forked se in a newly
-> > created task group, in the rb-tree has not been picked for a long
-> > time(maybe not eligible). Its vruntime stopped at the negative
-> > value(near (unsigned long)(-(1LL << 20)) for a long time, its vruntime
-> > is long behind the cfs_rq->vruntime, thus the overflow happens.
-> 
-> I'll have to do the math again, but that's something in the order of not
-> picking a task in about a day, that would be 'bad' :-)
-> 
-> Is there any sane way to reproduce this, and how often does it happen?
+> How to reproduce this in buildroot?
 
-After adding some ftrace in place_entity() and pick_eevdf(), with the
-help from Yujie in lkp, the issue was reproduced today. The reason why se's vruntime
-is very small seems to be related to task group's reweight_entity():
+It is a bit involved since it would require having some intermediate 
+builds and as I was crafting an environment for you to take a look, it 
+stopped being reproducible...  I will let you know if this resurfaces again.
 
-vlag = (s64)(avruntime - se->vruntime);                             
-vlag = div_s64(vlag * old_weight, weight);
-se->vruntime = avruntime - vlag;
-
-The vlag above is not limited by neither 2*se->slice nor TICK_NSEC,
-if the new weight is very small, which is very likely, then the vlag
-could be very large, results in a very small vruntime.
-
-
-The followings are the details why I think above could bring problems:
-
-Here is the debug log printed by place_entity():
-
-
-[  397.597268]cfs_rq:0xe75f7100
-              cfs_rq.avg_vruntime:-1111846207333767
-              cfs_rq.min_vruntime:810640668779
-              avg_vruntime():686982466017
-              curr(0xc59f4f20 rb_producer weight:15 vruntime:1447773196654 sum_exec_ns:187707021870 ctx(0 73)
-              leftmost(0xeacb6e00 vruntime:332464705486 sum_exec_ns:78776125437 load:677)
-..
-
-[  397.877251]cfs_rq:0xe75f7100
-              cfs_rq.avg_vruntime:-759390883821798
-              cfs_rq.min_vruntime:810640668779
-              avg_vruntime(): 689577229374
-              curr(0xc59f4f20 rb_producer weight:15 vruntime:1453640907998 sum_ns:187792974673 ctx(0 73)
-              leftmost(0xeacb6e00 vruntime:-59752941080010 sum_ns:78776125437 load:4)
-
-
-The leftmost se is a task group, its vruntime reduces from 332464705486 to
--59752941080010, because its load reduced from 677 to 4 due to update_cfs_group()
-on the tree entities.
-
-Back to reweight_entity():
-vlag = avruntime - se->vruntime = 689577229374 - 332464705486 = 357112523888;
-vlag = vlag * old_weight / weight = 357112523888 * 677 / 4 = 60441294668044;                      
-se->vruntime = avruntime - vlag = -59751717438670;
-
-the new se vruntime -59751717438670 is close to what we printed -59752941080010,
-consider that the avg_vruntime() vary.
-
-Then later this leftmost se has changed its load back and forth, and when the load is 2,
-the vuntime has reached a dangerous threshold to trigger the s64 overflow in
-eligible check:
-
-[  398.011991]cfs_rq:0xe75f7100
-              cfs_rq.avg_vruntime:-11875977385353427
-              cfs_rq.min_vruntime:810640668779
-              cfs_rq.avg_load:96985
-              leftmost(0xeacb6e00 vruntime:18446623907344963655 load:2)
-
-vruntime_eligible()
-{
-
-   key = se.vruntime - cfs_rq.min_vruntime = -120977005256740;
-   key * avg_load overflow s64...
-}
-
-As a result the leftmost one can not be picked, and NULL is returned.
-
-One workaround patch I'm thinking of, if this analysis is in the
-right direction, maybe I can have a test later:
-
-thanks,
-Chenyu
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6e0968fb9ba8..7ab26cdc3487 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3965,8 +3965,13 @@ static void reweight_eevdf(struct cfs_rq *cfs_rq, struct sched_entity *se,
- 	 *	   = V  - vl'
- 	 */
- 	if (avruntime != se->vruntime) {
-+		s64 limit;
-+
- 		vlag = (s64)(avruntime - se->vruntime);
- 		vlag = div_s64(vlag * old_weight, weight);
-+		/* TBD: using old weight or new weight? */
-+		limit = calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se);
-+		vlag = clamp(lag, -limit, limit);
- 		se->vruntime = avruntime - vlag;
- 	}
- 
+Thanks!
 -- 
-2.25.1
+Florian
 
 
+--000000000000fb75c906164f266e
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIEPhz3VzICpdaGWJ
+fsI6se04Ya2nayZmIhUsLzpYAYNXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTI0MDQxNzE4Mzc1MlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQD5SBHg+1yX63UYPisk895dKtQ1tPY6q+As
+VKglDb6dVAmfMsdEfmhjXLX2aOdEGZ5w+NO/VP9xvopwazOUNlY/iiqKvajkmSAPaLagGA6PCUUU
+IwMwUCq2fmUnvFPXWoZ4ohdHHV6+sbjs/WEBZ/5SOxNLxHfcUdBJkrXosSPfQYgaB8eA8o78m78c
+OEx8VGdfzh/aM461D6mBaYIX9nb3vSvbV3v7fWpGOEIiE4g1bqNY7eEDJ5gV9A4InDPSRyuX0JvT
+hpfw4dBIJJ2CB/MnYWBQhxm6cXfOJhgrhlRHUtuPULfbKmjHlthC8ALMlZ7zOb/OaxiAh/Ff+FO+
+nEMA
+--000000000000fb75c906164f266e--
 
