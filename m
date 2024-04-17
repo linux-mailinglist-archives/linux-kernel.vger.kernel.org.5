@@ -1,127 +1,123 @@
-Return-Path: <linux-kernel+bounces-148978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44F338A8A04
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:12:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CB6A8A8A06
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:13:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3697284B2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:12:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 329A51F2458F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:13:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7307517166F;
-	Wed, 17 Apr 2024 17:12:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C675171670;
+	Wed, 17 Apr 2024 17:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TlaO4mSr"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XubTWGUF"
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57145171099;
-	Wed, 17 Apr 2024 17:12:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9751C14199C;
+	Wed, 17 Apr 2024 17:13:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713373952; cv=none; b=JHI9W5ufy2Zx/2aQiszDzub4JSV84tJO3eKVab63CZvl+7quvMqD7rMocsbucUhlTVNYlOGHh6TKeHjiBN4j/8fyT8O3pVExZzgQw6E9TJnw+eEcJLriYzHvIs/HhMsSwF1i3wuHBBxYJtVIxgLSWDZKpF2wQHZiuBRdNnnoGPE=
+	t=1713374020; cv=none; b=DYCsdSoS+4eHB/3FAHUJa4+kDzmpbdjo7iHpS93uU5k/VIxnFW6pxixrEsMQp07WiiwXepv83chvCAiw7iv+ufX5Amu3FsjYdVYVq8lXRlnKftLk4UcKUz0WGK6bvB0V9CpDxQKnzYSp7bOSQ2v5JCMNBf4X3LSi3QPCYOmWsKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713373952; c=relaxed/simple;
-	bh=6Rgdty3l2h9c4NV+OETwu3ybe5GZRw0d788qons41U0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jL9BXHyez0Zmi6Bo0B6G2LgA0ULk3AtRDofWinowd0CUcJ2YaayZLaD4kqLmZnfOWQBd71Lg5ywt+tCZR2teKOqv34j0gx/EOAmXTHmaOPWpXaz6AWgVbPMSNHu39YNJYLZNQRZmPvhSUSSqVrXEY6T3nn150mjW6VOkXkEANiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TlaO4mSr; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713373951; x=1744909951;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6Rgdty3l2h9c4NV+OETwu3ybe5GZRw0d788qons41U0=;
-  b=TlaO4mSrMsSpqx2LSfchIgCNY87rKkOrdzOqh0dEHRNWXxAVyfq3C0v7
-   UuLCu2UvCl/Ahc6fH/Jq3E+pIitEMd4mqSZc6FqvDxkxFZ1Hx4vbC5eUQ
-   5bmELjti78TjCi2xm+8USGJg19nC5X6igZ7QxwOCRzA8qsaZJhlzz59K4
-   4/qB+tjAYyjqpTiSUnmngz7ojehw03KPjrWf8PsiwKBDPDXRzJle0mh8U
-   lot4kmP+KEyLiLRRewe9ZqWmxRr3IefftwG2B0rOLGgNcSlh/EelfuTO5
-   scXO4UH3P+AdA9zm8RLuUUVw/S+Jei2hYpJterl+hR7PED7vjVwsVvn5w
-   Q==;
-X-CSE-ConnectionGUID: jEVoOGWxRbmJGQHdYPmN7A==
-X-CSE-MsgGUID: Fzfy4OuPQPu1tw847rQQKg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="20305107"
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="20305107"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 10:12:29 -0700
-X-CSE-ConnectionGUID: gfIcyiGjRz+xk6kJyUi7fA==
-X-CSE-MsgGUID: ZmKqP9Z4QTSfSz59x3IAHA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="27481311"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 10:12:26 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rx8pb-000000006lA-43Kd;
-	Wed, 17 Apr 2024 20:12:23 +0300
-Date: Wed, 17 Apr 2024 20:12:23 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Zeng Heng <zengheng4@huawei.com>, linus.walleij@linaro.org,
-	linux-kernel@vger.kernel.org, xiexiuqi@huawei.com,
-	linux-gpio@vger.kernel.org, weiyongjun1@huawei.com,
-	liwei391@huawei.com
-Subject: Re: [PATCH] pinctrl: devicetree: fix refcount leak in
- pinctrl_dt_to_map()
-Message-ID: <ZiAC9zzSWume8063@smile.fi.intel.com>
-References: <20240415105328.3651441-1-zengheng4@huawei.com>
- <Zh_rM04PspfXxlv_@smile.fi.intel.com>
- <d80e09d8-5f35-4865-9fe8-195b86527972@moroto.mountain>
+	s=arc-20240116; t=1713374020; c=relaxed/simple;
+	bh=7qhKToHeqr72R+UX6oz1defReAsUlZPMCU2ywC1yEqo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GWeogqjNX3iUdcSOBxz8N3M28RKMZSSud78mLzoUkXUU3ONfcvlBCHUVF3kGtdH0rKYVGgcBxrPO02NwgcHgzKOPxj77XwLl4BY5gmsa+1rwYzrroF+QCslW8uo+hdjUNZ4BgkS12hT3wBrVMGJRuJReZHdFj/mV2tNvo0g8jrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XubTWGUF; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-434d0a63151so32615571cf.3;
+        Wed, 17 Apr 2024 10:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713374017; x=1713978817; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SoMVffGlPrm+MFyOIcZFIoKUdPgF6ZH9Z9crMv5R1AM=;
+        b=XubTWGUFoD+XlhZjxXtTij69YW9AKAqdKnxMbuvvy3clb1sfcRX2o0IKpVG1WBcG/e
+         +HuVw7nGHREv4ACC3bHryEPjSfgmN92QZmRJfzSBPEB29ljXBrbT4Qm99BW697/IL5Dg
+         qLhjiH1BaT0308aKypQv23oM9rJ9jYM0lPFefzasqbp9hPXUW6XYJR9w9RO0rHswDGlW
+         8b2QlLHcoUKweWqEFYBYPC6pOdocf6krhQBOwf8U5PSCggB8EBj5qFhVWcJStO4/Cl2J
+         TQXNT3OrlMShn/Rxu+tQeoDbitAU6rNvdz8mjmtGJcbyOUPo2xKZ2WEAt+kDbfbjhqWo
+         LOlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713374017; x=1713978817;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SoMVffGlPrm+MFyOIcZFIoKUdPgF6ZH9Z9crMv5R1AM=;
+        b=uJu5C7X3M9GVZMG6UCjf9SbP6CCNzv2/gcwHujXKhiA1rJPvwjh/DCFLeS9iT8zkAy
+         XiH2U2wCIXqNxPsMig6cYIpXyzrzwQpwzgKSAcOf7y3zwh0LrPn1PHkVfvQgx5tphz5L
+         FssV7QvvrGNpaouvtP75+lMSgT0//JA0eX2k1UhZ1yfo+Kddt18CRLOqE3mF03Ryr99N
+         7UNKP39KNj29MhKK+X979ia7CV/xdCeNve0TQM0WhMJuyKyKBS0ELNhzfUG/cctpGCQ9
+         pRc+yEKCJK0th8EZQK0WTFwCM5fnu5Gjuohf+RZUcKs2YaUBReC3gnLaJ9ByvalG09h4
+         OJEw==
+X-Forwarded-Encrypted: i=1; AJvYcCWViLUX+bU+Nlem12rs5EV+EQMQ0lvS8bFr/yYLOUbH2DWAZcrCMStNFSpflfXDzD52JZn8lhiIonXpTGpu/faeQkaGBAHnTAm9pAc/4YukXQmXuL+FfYQpiJIJ6WsKvli2gKiO+Fqx
+X-Gm-Message-State: AOJu0YzL5cXF27VBaQ31MNeM//Dj1O1dpJJKLA4V+ddOeiB65jMhvPjm
+	SO6LiOQrwyaRRlXb6xhuuhLa1t1pys7ZoqQFmqmbNOxgVxWVY28g/TOKLA==
+X-Google-Smtp-Source: AGHT+IEwvVAGeqDMetg/k7oP2EviQw8jDsoog+bYAOSxCSgeSpqFDWkHLG1bzCZ2SMykTxtnEg2QVA==
+X-Received: by 2002:ac8:7f88:0:b0:436:8bfd:138d with SMTP id z8-20020ac87f88000000b004368bfd138dmr99961qtj.11.1713374017308;
+        Wed, 17 Apr 2024 10:13:37 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id e15-20020ac8490f000000b00434d86fb403sm8247196qtq.86.2024.04.17.10.13.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 10:13:33 -0700 (PDT)
+Message-ID: <b83b1f5b-a989-40b1-8874-85f75f17b4dc@gmail.com>
+Date: Wed, 17 Apr 2024 10:13:27 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d80e09d8-5f35-4865-9fe8-195b86527972@moroto.mountain>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: Please create the email alias do-not-apply-to-stable@kernel.org
+ -> /dev/null
+To: Willy Tarreau <w@1wt.eu>, Greg KH <gregkh@linuxfoundation.org>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Thorsten Leemhuis <linux@leemhuis.info>, helpdesk@kernel.org,
+ "workflows@vger.kernel.org" <workflows@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <b452fd54-fdc6-47e4-8c26-6627f6b7eff3@leemhuis.info>
+ <20240417090918.77360289@sal.lan> <2024041715-calorie-late-c4de@gregkh>
+ <Zh+M+NWKbpQeT/Z6@1wt.eu>
+Content-Language: en-US
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <Zh+M+NWKbpQeT/Z6@1wt.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 17, 2024 at 06:38:46PM +0300, Dan Carpenter wrote:
-> On Wed, Apr 17, 2024 at 06:30:59PM +0300, Andy Shevchenko wrote:
-> > On Mon, Apr 15, 2024 at 06:53:28PM +0800, Zeng Heng wrote:
-
-..
-
-> > >  	for (state = 0; ; state++) {
-> > >  		/* Retrieve the pinctrl-* property */
-> > >  		propname = kasprintf(GFP_KERNEL, "pinctrl-%d", state);
-> > > -		if (!propname)
-> > > -			return -ENOMEM;
-> > > +		if (!propname) {
-> > > +			ret = -ENOMEM;
-> > > +			goto err;
-> > > +		}
-> > >  		prop = of_find_property(np, propname, &size);
-> > >  		kfree(propname);
-> > >  		if (!prop) {
-> > >  			if (state == 0) {
-> > > -				of_node_put(np);
-> > > -				return -ENODEV;
-> > > +				ret = -ENODEV;
-> > > +				goto err;
-> > 
-> > Has it been tested? How on earth is this a correct change?
-> > 
-> > We iterate over state numbers until we have properties available. This chunk is
-> > _successful_ exit path, we may not free parsed maps! Am I wrong?
+On 4/17/24 01:48, Willy Tarreau wrote:
+> On Wed, Apr 17, 2024 at 10:16:26AM +0200, Greg KH wrote:
+>>> at the scripts used by stable developers - and maybe at the ML server - to
+>>> catch different variations won't hurt, as it sounds likely that people will
+>>> end messing up with a big name like "do-not-apply-to-stable", typing
+>>> instead things like:
+>>>
+>>> 	do_not_apply_to_stable
+>>> 	dont-apply-to-stable
+>>>
+>>> and other variants.
+>>
+>> I want this very explicit that someone does not want this applied, and
+>> that it has a reason to do so.  And if getting the email right to do so
+>> is the issue with that, that's fine.  This is a very rare case that
+>> almost no one should normally hit.
 > 
-> In this path state == 0 so we haven't had a successful iteration yet.
+> For using a comparable approach in haproxy on a daily basis, I do see
+> the value in this. We just mark a lot of fixes "no backport needed" or
+> "no backport needed unless blablabla" for everything that is only
+> relevant to the dev tree, and that's a huge time saver for those working
+> on the backports later.
+> 
+> Maybe "not-for-stable" would be both shorter and easier to remember BTW ?
 
-Ah, indeed, this is not a status. Okay, makes sense, but calling that free
-function for the purpose of the putting of_node seems an overkill...
-
+Yes, "not-for-stable" looks like a good name to me.
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Florian
 
 
