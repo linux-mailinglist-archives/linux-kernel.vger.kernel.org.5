@@ -1,144 +1,104 @@
-Return-Path: <linux-kernel+bounces-148746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42E3C8A86E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:03:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 989BB8A86E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:03:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 677CF1F22521
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:03:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D8051F2244A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17C2A1465AF;
-	Wed, 17 Apr 2024 15:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 475FB146A7E;
+	Wed, 17 Apr 2024 15:03:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d+5/cF3y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oDUVvfqD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E515137C33
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86BEB141995;
+	Wed, 17 Apr 2024 15:03:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713366181; cv=none; b=phIgLfDnnNFZssNxqAdlx6EguUTv9u3y0Xo1CxvRXOx9ft31i0l3ItVHQ3Gd1MpIg6V5gq3UtZiU9bzUJ+sb3IMTxJDeKxec+4dMubb9DlWE9hpkOidu8aqgiKrrGIGYs8LYrIp0h1Y6uUX8d2n1DqW24aEFW0MYDD0kdw728Pw=
+	t=1713366213; cv=none; b=DtfUyN4fpanY/5NS/NE3MS3kqW9QRlStUmJjb+ohr729uWoYNeKfRR7lyHjuiYfBFPex68csSbbaYivatXJioGpl2EXA+hcSyYAtYq2zjyiFtzOwjZvnjfajk8Tkb9gsT9sIbulZVvDi+ZSLZev0R6vGlgqfL/ZShiMPtZfSoLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713366181; c=relaxed/simple;
-	bh=/Bqkb7GldAoAOYMnYPa55hOe2NOFX26LJMHeeNgsJmE=;
-	h=Content-Type:Date:Message-Id:Subject:Cc:From:To:References:
-	 In-Reply-To; b=b27MQpI0cWfGF1YZLzH4CU11Uusv59nxXyc5EU1DX+jNwbPfoJe1Y8PnGHSS7Sw4TTw054X0G7X78u9PgXnkrBIA+dHRryJIqYCTPms7sLfN+XIkMsIfEFGMQzff3Hk/I05avQnJfiXIeSqaVyQPYCy2xerCIAtMnAngHeAjn9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d+5/cF3y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80107C3277B;
-	Wed, 17 Apr 2024 15:03:00 +0000 (UTC)
+	s=arc-20240116; t=1713366213; c=relaxed/simple;
+	bh=V2N7AMDuz9jYWqc6c9z+U9bVhSANzB8iVmzvJstXz54=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ncv9aexvRvYNcOv6ltR7xgiSAgX0R/bOPH3bzqFEeaaiqZwwrZ8Nvo/889OUcPcupJDLLBssuNJFRtDDfUNzgUralKmXjSAsR7quj5iQx4nzCAiq0lzw1xtDnSMaL0T+BM2rlOk2bbmjdnD8RTwICdvRJgFxEKzMibiemiT55V0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oDUVvfqD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF288C072AA;
+	Wed, 17 Apr 2024 15:03:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713366180;
-	bh=/Bqkb7GldAoAOYMnYPa55hOe2NOFX26LJMHeeNgsJmE=;
-	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
-	b=d+5/cF3yTQM4BYfA1SZFN7z0BhLJy35wEBz6cksna76/+Tpu+erwS4gPs5AVAzEzl
-	 d2aAS+rpfMDyQZJFltNtyE6TxxWrWdGiWM+OdAyxsSyvTdq3Cniz0dIUP5Iet+3YYC
-	 b+o/T0llDh3XLt6JdKtEks1iV9pAHzI3y3x3O9c8xVi0VedrDF0vblw97S4NUxgUgR
-	 u6hhvpUBakvI5tFZLcb8SB+h74KLC3PkPYayuymtFMNoTJ41uD2R15Ss6RXK3DYgyK
-	 4YrcWEOTdRu7J/DdUIo6yxJglZ7yj2tne99ZREI2nj+Vn+575fkMjhBobKXFoaGWij
-	 wTd3C2LLfWgmA==
-Content-Type: multipart/signed;
- boundary=c423f377f76eebb1c0e9a87ea3b3550e31e5e58260f6d25ee91339b00ae2;
- micalg=pgp-sha384; protocol="application/pgp-signature"
-Date: Wed, 17 Apr 2024 17:02:57 +0200
-Message-Id: <D0MHMBLVCCZ2.23XGMIORQYGDR@kernel.org>
-Subject: Re: [PATCH v1 0/6] mtd: spi-nor: spring cleaning
-Cc: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Pratyush Yadav"
- <pratyush@kernel.org>, "Miquel Raynal" <miquel.raynal@bootlin.com>,
- "Richard Weinberger" <richard@nod.at>, "Vignesh Raghavendra"
- <vigneshr@ti.com>
-X-Mailer: aerc 0.16.0
-References: <20240412134405.381832-1-mwalle@kernel.org>
- <f07afa83-1c37-49da-923f-2ea9550e7163@linaro.org>
-In-Reply-To: <f07afa83-1c37-49da-923f-2ea9550e7163@linaro.org>
+	s=k20201202; t=1713366213;
+	bh=V2N7AMDuz9jYWqc6c9z+U9bVhSANzB8iVmzvJstXz54=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oDUVvfqDXkPFZHs5kX/STB9snvKkCQHuYgtX9Rq67q1sPgoY+IwTmpP3Aw7mYM63F
+	 wucJybP+iLeqZZ46M1z4wB+WE/HMrsLAcmipEY9QQfGq3IYX4rQP8BRLMXjsiiHbm6
+	 As/WgUi+j4LNNHu2tRyS3/XXuK7E6lLwmc7YSKScgof6ArrM8Ek3E3+saxUSygp9PA
+	 AEyGWNy42dXB7jaLhn0wb3Qtt2ipz0uGEQAHT4Dqf8IaZri3bx1ByWDD2IeNfeObdp
+	 moTWjTBvcfvTTIWjHN3wVTrjWL7xHMmynPdnOfPiXBKQvt/G9wQUTDJGov8f3ydGke
+	 7uz+ttz8/U07g==
+Date: Wed, 17 Apr 2024 16:03:28 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	Jianfeng Liu <liujianfeng1994@gmail.com>, conor+dt@kernel.org,
+	robh@kernel.org, krzk+dt@kernel.org, sfr@canb.auug.org.au,
+	weizhao.ouyang@arm.com
+Subject: Re: [PATCH v4 1/3] dt-bindings: vendor-prefixes: add ArmSoM
+Message-ID: <20240417-carefully-unknowing-418254f3e951@spud>
+References: <20240416034626.317823-1-liujianfeng1994@gmail.com>
+ <20240416034626.317823-2-liujianfeng1994@gmail.com>
+ <13494460.uLZWGnKmhe@diego>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="g9rem694lJ5oQ4tu"
+Content-Disposition: inline
+In-Reply-To: <13494460.uLZWGnKmhe@diego>
 
---c423f377f76eebb1c0e9a87ea3b3550e31e5e58260f6d25ee91339b00ae2
-Mime-Version: 1.0
+
+--g9rem694lJ5oQ4tu
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
 
-Hi,
-
-On Tue Apr 16, 2024 at 6:57 AM CEST, Tudor Ambarus wrote:
-> On 4/12/24 14:43, Michael Walle wrote:
-> > It's time for some spring cleaning. Remove the oddball xilinx
-> > flashes with non-power-of-2 page sizes.
-> > Remove the .setup() callback, only the default callback is ever
-> > used and it is unlikely there is need for a custom setup.
+On Wed, Apr 17, 2024 at 10:21:17AM +0200, Heiko St=FCbner wrote:
+> Am Dienstag, 16. April 2024, 05:46:24 CEST schrieb Jianfeng Liu:
+> > Add vendor prefix for ArmSoM (https://www.armsom.org)
 > >=20
-> > Finally, the last patch is a proposal how to deprecate flashes,
-> > which are just detected by their id. We cannot really find out if
-> > there are boards out there which are using a particular flash. Thus,
-> > as a first step, we can print a warning during kernel startup. As a
-> > second step we might introduce a kernel config option to actually
-> > disable the flashes which has the deprecated flag.
->
->
-> How many FRAMs/MRAMs are in SPI NOR? Can you list them please? I don't
-> remember anyone bringing topics about everspin and the cypress thingy
-> was a mistake. I'd like to get an idea whether it's fine to remove the
-> FRAM/MRAM from SPI NOR without doing these preparation steps and waiting
-> for another year.
+> > Signed-off-by: Jianfeng Liu <liujianfeng1994@gmail.com>
+>=20
+> [PATCH v3 1/3] dt-bindings: vendor-prefixes: add ArmSoM
+> yesterday got a
+>=20
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>=20
+> in
+> https://lore.kernel.org/r/20240416-choosing-boney-33cf206d0f38@spud
 
-As far as I can tell it is just
-  drivers/mtd/spi-nor/evervision.c:
-   - mr25h128
-   - mr25h256
-   - mr25h10
-   - mr25h40
-and
-  drivers/mtd/spi-nor/spansion.c
-   - cy15x104q
+Too many versions in a short space of time, guess I picked not the most
+recent to respond to as it arrived in the <24h period that it usually
+takes me to clear a patch from my queue.
 
-Please keep in mind that the evervision also have dt bindings and
-spi aliases. So we'd also have to deprecate these ones. Not sure
-they can easily be moved over to another driver, esp. because the
-kernel interface is different (mtd partitions vs nvmem/eeprom sysfs
-file).
-
-There are three in-tree kernel boards using the mr25h frams:
-arch/arm/boot/dts/nxp/imx/imx6dl-eckelmann-ci4x10.dts
-No clue about that one.
-
-arch/arm/boot/dts/nxp/mxs/imx28-sps1.dts
-I've contacted Marek who introduced support for this board and he
-said it can likely be removed altogether.
-
-arch/arm/boot/dts/marvell/armada-xp-linksys-mamba.dts
-This seem to be openwrt driven (?)
-
-I was thinking about sending patches to migrate them over to the
-at25 driver. But again, that also means they'll loose mtd
-partitions. Not sure, that fram is used on these boards anyway.
-
-In any case I'd like to start with deprecating the FRAMs in
-spi-nor and the DT bindings.
-
-Also, the cy15x104g is rather new...
-
--michael
-
---c423f377f76eebb1c0e9a87ea3b3550e31e5e58260f6d25ee91339b00ae2
+--g9rem694lJ5oQ4tu
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZh/koRIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/hppgF/eysfe0XwOiW1dI8MpG8NU6Y7AGPTH1od
-7JCUF8xW6WoUkGyZNfy9WwDoa1PhjO5rAYDyPS9TGbQ2HIvGO8GclixI+fqq9b04
-UT2uLi0rfeoBXHUDGibDVLs5k7qonhxjeIc=
-=3qxk
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh/kwAAKCRB4tDGHoIJi
+0uHBAQCilZ3Gz5HIzFcim0yBLi4A8H51cTC9y0FJsztZxMzcFAD+NnNntnnK2Pny
+VoYLwSxda8vNGpxqNVEhSU2O0ISRlQk=
+=fxib
 -----END PGP SIGNATURE-----
 
---c423f377f76eebb1c0e9a87ea3b3550e31e5e58260f6d25ee91339b00ae2--
+--g9rem694lJ5oQ4tu--
 
