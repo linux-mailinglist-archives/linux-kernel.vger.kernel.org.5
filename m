@@ -1,164 +1,93 @@
-Return-Path: <linux-kernel+bounces-148669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10E7C8A85DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:21:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDBCE8A85E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:24:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA2481F2135D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:21:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A90142834B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:24:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 155671420C6;
-	Wed, 17 Apr 2024 14:21:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="hYD8FKz5"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F72614039D;
-	Wed, 17 Apr 2024 14:21:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4499F1411FF;
+	Wed, 17 Apr 2024 14:23:55 +0000 (UTC)
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id CAAA352F86
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:23:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713363668; cv=none; b=Rg8LXrt7JlRVeJqm984B3IBMVCkfuabTDRPastEl6LLl4I3wX+NqQnxqq8mUDKdALEttk//ou3wTEbP8Ghol2ASXmQ9IX4/wOb+sxx8psfH+fJ0Qmt0OiaMwxwCxnZMcNDf+bPy/S9Ov79IGEArEK9SsIfTqWsx8qlsrmQw6rfc=
+	t=1713363834; cv=none; b=KiJskKQtsru4U+jZBKHGYHfSM7h3PDXXKys2mxWI3WJEXdimmiDyrKoU4M+cidgBPVX3FukfCZGRFr9tFGwT6VRnNuThFJiWl5dmGNv8YgvukP2hN4bzugbvKchdTXlxPJ88L7BFul6eeOWi/2YsV5poOJyPlhrBy6IsAMwUmr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713363668; c=relaxed/simple;
-	bh=yOxyY+z0luA2MN0HnxsPSXAtBt77yQT+AbxHCJCneA8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=YAnJdQaB75LvoAoosd5sJ4xHtHKYLZG8Q4BqrwbUtyqgHt+6OXydis9hqCQ/ZueItoo5v1hUe68+DrkE5YNnxgFo61nTlx7gHBLQ3glnVjkxFbpW2yclkiGdsZxD3QgNbiVkQ13zy2wnXemLKUpIe8ThXNCtHl/+iixMIYPtzKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=hYD8FKz5; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id C52FB20FD4C4;
-	Wed, 17 Apr 2024 07:21:06 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C52FB20FD4C4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1713363666;
-	bh=hK1BMIWP2TovnG573MEOflwiY7usqGsIMsWM2neQ+/4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hYD8FKz5mbsDju2nVlKAokKtf/O8eGtVUfUq+qXui3qNiifyQUHqa7OnqjqduTWPi
-	 7P4xQv5bvbKQOQrJsCyI/9Ond/emR9KnKOklzNKl110+BgQckQSNSCrrYqG5SLO/yf
-	 iutr6Y1STYb/Ugrb+w9rtowALWgrWnGwLYFilrsA=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	sharmaajay@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next 2/2] RDMA/mana_ib: Implement get_dma_mr
-Date: Wed, 17 Apr 2024 07:20:59 -0700
-Message-Id: <1713363659-30156-3-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1713363659-30156-1-git-send-email-kotaranov@linux.microsoft.com>
-References: <1713363659-30156-1-git-send-email-kotaranov@linux.microsoft.com>
+	s=arc-20240116; t=1713363834; c=relaxed/simple;
+	bh=cxUQhRnqHadkF6BkpNtuin2PtIpnIK0xeBndPTSzJT4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SBthdGfjaz3g9iEaor5pzwyTstuV5qqaRSZ+BLtS4YN+vNf1Xz7ASsOA0oe1B1/7VCLSjlue+0LGvKxt+oMCamSekUJE+HerRYspfo3+Kw6OqO/Ku9gUzRRDM9HbmzNZvqJfBBvdnzwqB3wBgxMmsYs3+PM3Hxp6gvfSzpGfEa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 201056 invoked by uid 1000); 17 Apr 2024 10:23:51 -0400
+Date: Wed, 17 Apr 2024 10:23:51 -0400
+From: Alan Stern <stern@rowland.harvard.edu>
+To: Sam Sun <samsun1006219@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+  Greg KH <gregkh@linuxfoundation.org>, swboyd@chromium.org,
+  ricardo@marliere.net, hkallweit1@gmail.com, heikki.krogerus@linux.intel.com,
+  mathias.nyman@linux.intel.com, royluo@google.com,
+  syzkaller-bugs@googlegroups.com, xrivendell7@gmail.com
+Subject: Re: [Linux kernel bug] general protection fault in disable_store
+Message-ID: <de997acf-300a-4592-87c5-024171d19c29@rowland.harvard.edu>
+References: <92fe8e95-bc01-4d7d-9678-8cfc55cc4a7b@rowland.harvard.edu>
+ <CAEkJfYORHKO16xT3DCS04JFzkquz6oZ5CdC2USJ5-c0WihAMXg@mail.gmail.com>
+ <45e246ab-01e8-40b7-8ede-b47957df0d7b@rowland.harvard.edu>
+ <CAEkJfYMjO+vMBGPcaLa51gjeKxFAJBrSa0t_iJUtauQD3DaK8w@mail.gmail.com>
+ <69a6f4c9-6470-40d1-99f1-aaf532497d02@rowland.harvard.edu>
+ <CAEkJfYNJyyGhR9AAWc0V7o8i6pmS+OB=KSbh6XqVWAAGetS9hA@mail.gmail.com>
+ <5704ac63-5e5b-416c-a2a1-57528e76a02f@rowland.harvard.edu>
+ <CAEkJfYMSwuikpBJudOaFYrxgf9e=_O4nig6sTPLLAtpdEKQuyQ@mail.gmail.com>
+ <5f3526a6-6ede-4181-a4ff-076e022cfb49@rowland.harvard.edu>
+ <CAEkJfYMPQJn+kYzxFwwix3fwKeu3aAdYKgp+Ksvq=o4CoTXEWQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEkJfYMPQJn+kYzxFwwix3fwKeu3aAdYKgp+Ksvq=o4CoTXEWQ@mail.gmail.com>
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+On Wed, Apr 17, 2024 at 03:39:02PM +0800, Sam Sun wrote:
+> On Wed, Apr 17, 2024 at 12:35 AM Alan Stern <stern@rowland.harvard.edu> wrote:
+> > It turns out that patch is no good.  The reason is mentioned in the
+> > changelog for commit 543d7784b07f ("USB: fix race between hub_disconnect
+> > and recursively_mark_NOTATTACHED"); it says that the port devices have to
+> > be removed _after_ maxchild has been set to 0.
+> >
+> 
+> I checked the commit you mentioned. Maybe your first fix is all we
+> need to fix the problem? At least no race would occur for
+> hdev->maxchild and usb_set_intfdata().
 
-Implement allocation of DMA-mapped memory regions.
+No, the first patch won't help, even though it passed your testing.  The 
+race it eliminates is a harmless one -- or at least, it's harmless in 
+this context.  If usb_hub_to_struct_hub() sees bad values for 
+hdev->maxchild or usb_get_intfdata(), it will simply return NULL.  But 
+this can happen even with the first patch applied, if the user tries to 
+access disable_store() during the brief time between when hdev->maxchild 
+is set to 0 and when the port devices are removed.
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
- drivers/infiniband/hw/mana/device.c |  1 +
- drivers/infiniband/hw/mana/mr.c     | 36 +++++++++++++++++++++++++++++
- include/net/mana/gdma.h             |  5 ++++
- 3 files changed, 42 insertions(+)
+The true fix is simply to check whether the return value from 
+usb_hub_to_struct_hub() is NULL, which is what this patch does.
 
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index 6fa902ee80a6..043cef09f1c2 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -29,6 +29,7 @@ static const struct ib_device_ops mana_ib_dev_ops = {
- 	.destroy_rwq_ind_table = mana_ib_destroy_rwq_ind_table,
- 	.destroy_wq = mana_ib_destroy_wq,
- 	.disassociate_ucontext = mana_ib_disassociate_ucontext,
-+	.get_dma_mr = mana_ib_get_dma_mr,
- 	.get_port_immutable = mana_ib_get_port_immutable,
- 	.mmap = mana_ib_mmap,
- 	.modify_qp = mana_ib_modify_qp,
-diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
-index 4f13423ecdbd..7c9394926a18 100644
---- a/drivers/infiniband/hw/mana/mr.c
-+++ b/drivers/infiniband/hw/mana/mr.c
-@@ -8,6 +8,8 @@
- #define VALID_MR_FLAGS                                                         \
- 	(IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_WRITE | IB_ACCESS_REMOTE_READ)
- 
-+#define VALID_DMA_MR_FLAGS IB_ACCESS_LOCAL_WRITE
-+
- static enum gdma_mr_access_flags
- mana_ib_verbs_to_gdma_access_flags(int access_flags)
- {
-@@ -39,6 +41,8 @@ static int mana_ib_gd_create_mr(struct mana_ib_dev *dev, struct mana_ib_mr *mr,
- 	req.mr_type = mr_params->mr_type;
- 
- 	switch (mr_params->mr_type) {
-+	case GDMA_MR_TYPE_GPA:
-+		break;
- 	case GDMA_MR_TYPE_GVA:
- 		req.gva.dma_region_handle = mr_params->gva.dma_region_handle;
- 		req.gva.virtual_address = mr_params->gva.virtual_address;
-@@ -168,6 +172,38 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
- 	return ERR_PTR(err);
- }
- 
-+struct ib_mr *mana_ib_get_dma_mr(struct ib_pd *ibpd, int access_flags)
-+{
-+	struct mana_ib_pd *pd = container_of(ibpd, struct mana_ib_pd, ibpd);
-+	struct gdma_create_mr_params mr_params = {};
-+	struct ib_device *ibdev = ibpd->device;
-+	struct mana_ib_dev *dev;
-+	struct mana_ib_mr *mr;
-+	int err;
-+
-+	dev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+
-+	if (access_flags & ~VALID_DMA_MR_FLAGS)
-+		return ERR_PTR(-EINVAL);
-+
-+	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
-+	if (!mr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	mr_params.pd_handle = pd->pd_handle;
-+	mr_params.mr_type = GDMA_MR_TYPE_GPA;
-+
-+	err = mana_ib_gd_create_mr(dev, mr, &mr_params);
-+	if (err)
-+		goto err_free;
-+
-+	return &mr->ibmr;
-+
-+err_free:
-+	kfree(mr);
-+	return ERR_PTR(err);
-+}
-+
- int mana_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- {
- 	struct mana_ib_mr *mr = container_of(ibmr, struct mana_ib_mr, ibmr);
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 8d796a30ddde..dc19b5cb33a6 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -788,6 +788,11 @@ struct gdma_destory_pd_resp {
- };/* HW DATA */
- 
- enum gdma_mr_type {
-+	/*
-+	 * Guest Physical Address - MRs of this type allow access
-+	 * to any DMA-mapped memory using bus-logical address
-+	 */
-+	GDMA_MR_TYPE_GPA = 1,
- 	/* Guest Virtual Address - MRs of this type allow access
- 	 * to memory mapped by PTEs associated with this MR using a virtual
- 	 * address that is set up in the MST
--- 
-2.43.0
+> I applied this patch and it also can fix the warning. I am not sure
+> which one is better.
 
+I'm quite sure that this one is better.  I will submit it shortly, with 
+your Tested-by:.
+
+Thanks a lot; the work you have done on this has been a big help.
+
+Alan Stern
 
