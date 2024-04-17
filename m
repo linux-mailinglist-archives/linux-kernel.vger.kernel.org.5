@@ -1,162 +1,289 @@
-Return-Path: <linux-kernel+bounces-149118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DA238A8C0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:26:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 910A48A8C14
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:27:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62EE21C21A8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:26:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD9F5B2201A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:27:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CFBB28E0F;
-	Wed, 17 Apr 2024 19:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90C7D25632;
+	Wed, 17 Apr 2024 19:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yD4vJBB+"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UTz/98JQ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9236E25605
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 19:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3965824B34
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 19:26:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713381984; cv=none; b=IrgNdz6RP8DmMtFdRfV5G4PGFXmIFNYFOev2b8OrW+WfeWCG0jULuzgayZu023rt7bsPLIMM6nEqphboxRPEzmH2zhWM3NV0ZkRHsNvrzLiJJhOo8VBAaqtJ7WD9h5ZtERbogi42GrELP+cfByz8BG890GjRuoD11ydHqcL68Ho=
+	t=1713382015; cv=none; b=SzMKphRXZ5b72SZkfiVa7PEjIAPwgfXiN2mBqWMw3PgngV1/TpSEo0weZ6eXT/oyUcs5Wfp1ClifT+7ocQI0ST/BvkmJFIZaSieslgJEB01WLXVUTPSn3ypbZEhWfAp4a9ygFgHqPJFQr1GO7Z/Qo94Yblr4oBvaR3hUlwy34bE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713381984; c=relaxed/simple;
-	bh=0TzEJdZ2NxceRDINkoJ2/uX5f1Kn/odwnxX/NF4rU1c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IP4J3GhnA1+iCPAmZKjeeQT5xEVdXKSd3t6oFaEVm2pQ1r7csBZPSM7PuG0GTwyHjOktGGpDFbZAStABEVzca6LIJ5MTywAQHPk/dKzz0d6k+P13hR0CbQy1mCfI4evvIH7nRTwtsd62ZdZ9Qa47QVedsGYPwp6I7VOm7Xy8S7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yD4vJBB+; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6edb76d83d0so150725b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 12:26:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713381983; x=1713986783; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=zojspO2lZSHjCc9gZRhsdBn+ZERiEMTcnc15s2GdMOA=;
-        b=yD4vJBB+RDSm+vP7Xcio76vgU8mp9HbIPq/3yAfd9OeUZUuhf2tRJc+sXIwYvhyIWW
-         OWofKlxD3rxJIzhQP+7Mjf2jFCaDzeJtlJKriy+UPeX+8gsRwFtU2TTQefSXhH8qsjaP
-         nF50eZgqaaTw97hMMW1O0MqmfIMO3RICSmmL9osOrIDUDony7gxbmRXmgHlbZE1AOEsx
-         BObfSOypM55WFn2YQrSxCRxoRXWK6xKcS+SfVPtQicJYv8A3azIsBcVw/IRQM/KM2vLg
-         H+q2B336mHjA/PqMaOUy0nk8kCpZKcZrXycBZToOkxAUePhkJQF8ZNTjLrViLtG5wnM2
-         EAMQ==
+	s=arc-20240116; t=1713382015; c=relaxed/simple;
+	bh=Q5GqEMAnWtgXoPYRq6Bg4wUmdm4KD8bF3uxwjrIn0jA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ha3J7DiLei1LCQkRMJkC2AQs8KyBAAaM9Y906NxAj4gIlQPOVybbelvXVCenysLegq1oand7yKemBji/tVAOAgwKTv/mIgl/RBkX9oCODRnmD0NnEHfdAWNkDYfub+x6kXle6mxXII5688ZlNL3aFgMuQHZvHpgPxVTcQ6kE2qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UTz/98JQ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713382009;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Ian3ROIXX/Wi51a3xW5sv9PCZzatN1IXxVDjvA9s1M0=;
+	b=UTz/98JQxCUOPxg++QwVeaOFIJNsa6thcZ0Yxx5CE9WcRI5APZXJaqO961lDv93ILHwoKF
+	Brue3T1APTZg8QI+ObUQbgbX1/ejpM+U69XawcB9NtR3hHVyg4kJ1vDtV+aCfPowYTaCJK
+	R2tmG65+Po1nI+lF9VOVIo4DPG+O9j8=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-542-SA992IC8MPqCLDiSahBGjg-1; Wed, 17 Apr 2024 15:26:47 -0400
+X-MC-Unique: SA992IC8MPqCLDiSahBGjg-1
+Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-5aa68b37021so28326eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 12:26:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713381983; x=1713986783;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zojspO2lZSHjCc9gZRhsdBn+ZERiEMTcnc15s2GdMOA=;
-        b=mA8SEaVJqKK1ioMrQW0QCSqV2k5kEV5VZH89/+RnA5WEQOtVsy+4MuJPH3vT9zrTtM
-         WRb+8z8myM7KSv4YScjBTpBkCrSEjgrT+U8ER39E24N9P2yydqiL+fp8S1emkzXaUGoV
-         uP5dNNTQYxZBBOHfqyohQA3b1G3u+4N76yrTPikTfO0qqFenU36v7unB7/lFK5w7q//3
-         R+Mj5ff8HJaTwTNBTDlo6REM+0pxnJjDvp/HT63TUVBmRF25+OQC6rDDnIYHWnaF2VLg
-         Fbm1YGBLtX7J7Avrs8agj1HuHgVjWX3ng4EPtR3VuBTuLc9ufaL0K6s2qh4Aqhh8e7rc
-         o7Tw==
-X-Forwarded-Encrypted: i=1; AJvYcCVm+RnyFZhs2IS54ubQr2vBxKI3cv2pTYQweO+/XwfhLsJwvCrzAZg5fUvuPAtZ6Z846Sf3AErZnRjmGT+eOMUZFMqHqV4251SVyC7c
-X-Gm-Message-State: AOJu0YzR1D6fxTvjr7cCrKBOp6GuGuU6SlwPZf1mOb7IJqCl2cKy1z2q
-	mCCvCmQ3MkV9HBRgLkLnk7pbR+ppDT8XkD8Gk8UfR5+EJb3JWZHHq6CjzhPBNMk=
-X-Google-Smtp-Source: AGHT+IFqjtYlJ5fnyTEkurB6bDl0zodumgYQZIjV7B18xMiiBUVgBKV6f7SrhsQDaPlULoBKMYcOxg==
-X-Received: by 2002:a05:6a00:1146:b0:6ed:4a97:5dec with SMTP id b6-20020a056a00114600b006ed4a975decmr690567pfm.20.1713381982800;
-        Wed, 17 Apr 2024 12:26:22 -0700 (PDT)
-Received: from [10.36.51.174] ([24.75.208.145])
-        by smtp.gmail.com with ESMTPSA id i20-20020a632214000000b005cd835182c5sm10754476pgi.79.2024.04.17.12.26.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Apr 2024 12:26:22 -0700 (PDT)
-Message-ID: <951b34d6-f465-42f7-b39d-eedd649f3c5b@linaro.org>
-Date: Wed, 17 Apr 2024 21:26:20 +0200
+        d=1e100.net; s=20230601; t=1713382006; x=1713986806;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ian3ROIXX/Wi51a3xW5sv9PCZzatN1IXxVDjvA9s1M0=;
+        b=CYY4hFfmgyHTTmospNuo5+ZYRjeHBC74pg/TWYmm6+2YhZOpxftNVYSDz8APqglBNN
+         dnlIoNv+SgyGEnQSoAN3LhlLN3Yjt7P9hfZUDd616fiMN4CvGdDJlbGmDEff73nOyLW/
+         aa1zp9hfFC4jmO+scFrEau+rFip0KpmlqyPig+25w9wzN2zEvF/W2Tqa0gD6brSZaUGl
+         QqGsv/j9FLZODI8xPBnAGoIYDiSs8hbkX/xyuMBKzbhp69erfo3iAvgVk/t8Je9nzC9Z
+         +Ulu7y+wMK3c3POaXRGJNLF4OS9Cn0p1ikli14qG4uCAf5bIcrkDEG2XFSWOCgPch3mZ
+         1Vlw==
+X-Gm-Message-State: AOJu0Yxv/1O7V9CSPnXO5lJfbT9tO9s3NRxqGWShEfyIQAyltSjEp2cQ
+	7TM8ekUItjmy4DTZzO8p7dVf4Jet3Olx3rYV1EIcOygLYwkasXuWmG7QtvOAUPtR7xT3WOWLiRa
+	u4dMOUXX5tawNBwB5k6WMrpC7zLjR5zezZXQ0th3Vdyi0oXjO8UnNbBprgGUIUwWbahT5LRs5BE
+	7VGO+SyaToMuYrOyicYJ7rlDd/LKl4SeDfE/vIyiZ2XUk=
+X-Received: by 2002:a05:6359:4589:b0:186:54b2:4141 with SMTP id no9-20020a056359458900b0018654b24141mr367576rwb.1.1713382005476;
+        Wed, 17 Apr 2024 12:26:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHnVmD3TlN/+ZoWfExYdyVW0wph5CE17OJJDEMLdhCW9wdwYKiYfienQBNmah1jUXCkrGsFhw==
+X-Received: by 2002:a05:6359:4589:b0:186:54b2:4141 with SMTP id no9-20020a056359458900b0018654b24141mr367537rwb.1.1713382004772;
+        Wed, 17 Apr 2024 12:26:44 -0700 (PDT)
+Received: from x1n.redhat.com (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id kd9-20020a056214400900b0069b42d51d3bsm8465915qvb.103.2024.04.17.12.26.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 12:26:44 -0700 (PDT)
+From: Peter Xu <peterx@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	peterx@redhat.com,
+	Pasha Tatashin <pasha.tatashin@soleen.com>
+Subject: [PATCH v3] mm/page_table_check: Support userfault wr-protect entries
+Date: Wed, 17 Apr 2024 15:26:43 -0400
+Message-ID: <20240417192643.2671335-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 6/8] dt-bindings: clock: qcom: add bindings for gpucc
- on SM4450
-To: Ajit Pandey <quic_ajipan@quicinc.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
- Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Taniya Das <quic_tdas@quicinc.com>, Jagadeesh Kona <quic_jkona@quicinc.com>,
- Imran Shaik <quic_imrashai@quicinc.com>,
- Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
-References: <20240416182005.75422-1-quic_ajipan@quicinc.com>
- <20240416182005.75422-7-quic_ajipan@quicinc.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240416182005.75422-7-quic_ajipan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 16/04/2024 20:20, Ajit Pandey wrote:
-> Add device tree bindings for the graphics clock controller on
-> Qualcomm SM4450 platform.
-> 
-> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
-> ---
->  .../bindings/clock/qcom,sm8450-gpucc.yaml     |  2 +
->  include/dt-bindings/clock/qcom,sm4450-gpucc.h | 62 +++++++++++++++++++
+Allow page_table_check hooks to check over userfaultfd wr-protect criteria
+upon pgtable updates.  The rule is no co-existance allowed for any writable
+flag against userfault wr-protect flag.
 
-I wrote you even instruction what to do with the tag and it was still
-ignored. Do you read the replies?
+This should be better than c2da319c2e, where we used to only sanitize such
+issues during a pgtable walk, but when hitting such issue we don't have a
+good chance to know where does that writable bit came from [1], so that
+even the pgtable walk exposes a kernel bug (which is still helpful on
+triaging) but not easy to track and debug.
 
-I give up on this, good luck.
+Now we switch to track the source.  It's much easier too with the recent
+introduction of page table check.
 
-Best regards,
-Krzysztof
+There are some limitations with using the page table check here for
+userfaultfd wr-protect purpose:
+
+  - It is only enabled with explicit enablement of page table check configs
+  and/or boot parameters, but should be good enough to track at least
+  syzbot issues, as syzbot should enable PAGE_TABLE_CHECK[_ENFORCED] for
+  x86 [1].  We used to have DEBUG_VM but it's now off for most distros,
+  while distros also normally not enable PAGE_TABLE_CHECK[_ENFORCED], which
+  is similar.
+
+  - It conditionally works with the ptep_modify_prot API.  It will be
+  bypassed when e.g. XEN PV is enabled, however still work for most of the
+  rest scenarios, which should be the common cases so should be good
+  enough.
+
+  - Hugetlb check is a bit hairy, as the page table check cannot identify
+  hugetlb pte or normal pte via trapping at set_pte_at(), because of the
+  current design where hugetlb maps every layers to pte_t... For example,
+  the default set_huge_pte_at() can invoke set_pte_at() directly and lose
+  the hugetlb context, treating it the same as a normal pte_t. So far it's
+  fine because we have huge_pte_uffd_wp() always equals to pte_uffd_wp() as
+  long as supported (x86 only).  It'll be a bigger problem when we'll
+  define _PAGE_UFFD_WP differently at various pgtable levels, because then
+  one huge_pte_uffd_wp() per-arch will stop making sense first.. as of now
+  we can leave this for later too.
+
+This patch also removes commit c2da319c2e altogether, as we have something
+better now.
+
+[1] https://lore.kernel.org/all/000000000000dce0530615c89210@google.com/
+
+Cc: Pasha Tatashin <pasha.tatashin@soleen.com>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+v2:
+- Rename __page_table_check_pxx() to page_table_check_pxx_flags(),
+  meanwhile move the pte check out of the loop [Pasha]
+- Fix build issues reported from the bot, also added SWP_DEVICE_WRITE which
+  was overlooked before
+v3:
+- Add missing doc update [Pasha]
+---
+ Documentation/mm/page_table_check.rst |  9 ++++++-
+ arch/x86/include/asm/pgtable.h        | 18 +------------
+ mm/page_table_check.c                 | 39 +++++++++++++++++++++++++++
+ 3 files changed, 48 insertions(+), 18 deletions(-)
+
+diff --git a/Documentation/mm/page_table_check.rst b/Documentation/mm/page_table_check.rst
+index c12838ce6b8d..5bd1d987d76d 100644
+--- a/Documentation/mm/page_table_check.rst
++++ b/Documentation/mm/page_table_check.rst
+@@ -14,7 +14,7 @@ Page table check performs extra verifications at the time when new pages become
+ accessible from the userspace by getting their page table entries (PTEs PMDs
+ etc.) added into the table.
+ 
+-In case of detected corruption, the kernel is crashed. There is a small
++In case of most detected corruption, the kernel is crashed. There is a small
+ performance and memory overhead associated with the page table check. Therefore,
+ it is disabled by default, but can be optionally enabled on systems where the
+ extra hardening outweighs the performance costs. Also, because page table check
+@@ -22,6 +22,13 @@ is synchronous, it can help with debugging double map memory corruption issues,
+ by crashing kernel at the time wrong mapping occurs instead of later which is
+ often the case with memory corruptions bugs.
+ 
++It can also be used to do page table entry checks over various flags, dump
++warnings when illegal combinations of entry flags are detected.  Currently,
++userfaultfd is the only user of such to sanity check wr-protect bit against
++any writable flags.  Illegal flag combinations will not directly cause data
++corruption in this case immediately, but that will cause read-only data to
++be writable, causing data corrupt when the page content is later modified.
++
+ Double mapping detection logic
+ ==============================
+ 
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 273f7557218c..65b8e5bb902c 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -388,23 +388,7 @@ static inline pte_t pte_wrprotect(pte_t pte)
+ #ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
+ static inline int pte_uffd_wp(pte_t pte)
+ {
+-	bool wp = pte_flags(pte) & _PAGE_UFFD_WP;
+-
+-#ifdef CONFIG_DEBUG_VM
+-	/*
+-	 * Having write bit for wr-protect-marked present ptes is fatal,
+-	 * because it means the uffd-wp bit will be ignored and write will
+-	 * just go through.
+-	 *
+-	 * Use any chance of pgtable walking to verify this (e.g., when
+-	 * page swapped out or being migrated for all purposes). It means
+-	 * something is already wrong.  Tell the admin even before the
+-	 * process crashes. We also nail it with wrong pgtable setup.
+-	 */
+-	WARN_ON_ONCE(wp && pte_write(pte));
+-#endif
+-
+-	return wp;
++	return pte_flags(pte) & _PAGE_UFFD_WP;
+ }
+ 
+ static inline pte_t pte_mkuffd_wp(pte_t pte)
+diff --git a/mm/page_table_check.c b/mm/page_table_check.c
+index af69c3c8f7c2..388bcf60d8b5 100644
+--- a/mm/page_table_check.c
++++ b/mm/page_table_check.c
+@@ -7,6 +7,8 @@
+ #include <linux/kstrtox.h>
+ #include <linux/mm.h>
+ #include <linux/page_table_check.h>
++#include <linux/swap.h>
++#include <linux/swapops.h>
+ 
+ #undef pr_fmt
+ #define pr_fmt(fmt)	"page_table_check: " fmt
+@@ -182,6 +184,31 @@ void __page_table_check_pud_clear(struct mm_struct *mm, pud_t pud)
+ }
+ EXPORT_SYMBOL(__page_table_check_pud_clear);
+ 
++/* Whether the swap entry cached writable information */
++static inline bool swap_cached_writable(swp_entry_t entry)
++{
++	unsigned type = swp_type(entry);
++
++#ifdef CONFIG_DEVICE_PRIVATE
++	if (type == SWP_DEVICE_EXCLUSIVE_WRITE || type == SWP_DEVICE_WRITE)
++		return true;
++#endif
++#ifdef CONFIG_MIGRATION
++	if (type == SWP_MIGRATION_WRITE)
++		return true;
++#endif
++
++	return false;
++}
++
++static inline void page_table_check_pte_flags(pte_t pte)
++{
++	if (pte_present(pte) && pte_uffd_wp(pte))
++		WARN_ON_ONCE(pte_write(pte));
++	else if (is_swap_pte(pte) && pte_swp_uffd_wp(pte))
++		WARN_ON_ONCE(swap_cached_writable(pte_to_swp_entry(pte)));
++}
++
+ void __page_table_check_ptes_set(struct mm_struct *mm, pte_t *ptep, pte_t pte,
+ 		unsigned int nr)
+ {
+@@ -190,6 +217,8 @@ void __page_table_check_ptes_set(struct mm_struct *mm, pte_t *ptep, pte_t pte,
+ 	if (&init_mm == mm)
+ 		return;
+ 
++	page_table_check_pte_flags(pte);
++
+ 	for (i = 0; i < nr; i++)
+ 		__page_table_check_pte_clear(mm, ptep_get(ptep + i));
+ 	if (pte_user_accessible_page(pte))
+@@ -197,11 +226,21 @@ void __page_table_check_ptes_set(struct mm_struct *mm, pte_t *ptep, pte_t pte,
+ }
+ EXPORT_SYMBOL(__page_table_check_ptes_set);
+ 
++static inline void page_table_check_pmd_flags(pmd_t pmd)
++{
++	if (pmd_present(pmd) && pmd_uffd_wp(pmd))
++		WARN_ON_ONCE(pmd_write(pmd));
++	else if (is_swap_pmd(pmd) && pmd_swp_uffd_wp(pmd))
++		WARN_ON_ONCE(swap_cached_writable(pmd_to_swp_entry(pmd)));
++}
++
+ void __page_table_check_pmd_set(struct mm_struct *mm, pmd_t *pmdp, pmd_t pmd)
+ {
+ 	if (&init_mm == mm)
+ 		return;
+ 
++	page_table_check_pmd_flags(pmd);
++
+ 	__page_table_check_pmd_clear(mm, *pmdp);
+ 	if (pmd_user_accessible_page(pmd)) {
+ 		page_table_check_set(pmd_pfn(pmd), PMD_SIZE >> PAGE_SHIFT,
+-- 
+2.44.0
 
 
