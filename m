@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-148556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E668E8A845E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:24:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4774B8A8465
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:25:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DDE9B24A4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:24:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA92A1F23AAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:25:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A26FD140E3D;
-	Wed, 17 Apr 2024 13:23:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C06613E035;
+	Wed, 17 Apr 2024 13:23:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eP4UM0+N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nEB6FuFL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0B614038A;
-	Wed, 17 Apr 2024 13:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9219613F00C;
+	Wed, 17 Apr 2024 13:23:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713360200; cv=none; b=A/ye9vFume7j5Mjls9sNcEr35MqNZKVo2TYXXvKzG5N+4LkXO3oatKDSwpdMxHRrDu/1GZHjRYWNroznK5eB8jzWz+cvg5pMTP8/Zy7tISmawEtGIg+iCC3IfOsXOs/SY/zdAA/S5vHdWr5s+DZKR6hVGYf756A14WEUTccFe/0=
+	t=1713360238; cv=none; b=hhQT7q4Y9Gt7FLL2cqRCgCHD2/3Qw4TlFANDPt/wa7VQB87BoaLEa4k9eAz8SJoRgvgJcx63EtDfV5s7+UBrrUbOyd7R2Kf8HUQokE8AphPQf77eznyaf17knoh3fW6VsNheURRo3UFwf92xI8d7s4eKq2UEgC+1eesamLPsymM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713360200; c=relaxed/simple;
-	bh=tcnQKu88XTy8wDaU4LOAQDFClMImiR13+BGl1UeDOcw=;
+	s=arc-20240116; t=1713360238; c=relaxed/simple;
+	bh=JSCkvU4mUWsadZRODNiRRuHtCgBOJJNgWumAcR1e2Qo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Qo1+TeH7iwU1nIYTwTGCbmLZ2F/2qtiPgmWEwlY0oKxuHBm/xNxb9wSgzjSsZiZGwnyaszGaV4paP229z47XxWn2vLVAWT5mGE+/ESfxGdHEME0dPeO6EZpOBjqScuFQs+QV2jc+2IYhWMsE6hww8VmybLcvwxScfnsDNUx2vJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eP4UM0+N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 230D8C4AF0D;
-	Wed, 17 Apr 2024 13:23:20 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=uJ0y3cX2RkPluYbeDvqqNEywq+WFJ9hPqDLzHg0BI/h235RaBxggf9JplVtY72Y6gyOO+AyhzQGWpM08H/tBo21HR03Z1VcqGYbH6dvHNoH8MXTnLTyj3mTmt3hSsgyoamPBloDpciUvzPJo3M+UKAXpjHkLWlBgvbGv+sX2p9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nEB6FuFL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D83CFC072AA;
+	Wed, 17 Apr 2024 13:23:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713360200;
-	bh=tcnQKu88XTy8wDaU4LOAQDFClMImiR13+BGl1UeDOcw=;
+	s=k20201202; t=1713360238;
+	bh=JSCkvU4mUWsadZRODNiRRuHtCgBOJJNgWumAcR1e2Qo=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=eP4UM0+NtCz0XOTbVtZ9hq4GdFytAqHlxVyBQGYbKRgFkjK/pn+0tVmHifavrNm95
-	 zOClKjmZkDB9T2wTq540cBavx9obd5Z6JpoO104EMkKZwlG/5sDK9v89YOUUDVXmnn
-	 z8xiP70oY0hPB9GtGuRfETx435RMpKcfyOz/qxi4cif5JBJvF51Hm2SGJACyetP5/A
-	 X42B53ZE2/BVc3pbKtJEhhIxhpqoGEQ9fXJBeHQPKVL50H7e7AT2uOJ5DP4IrzIGU1
-	 qc8BsVB+XhJ5Wn3Us2BhIDColZMm+oM9oCGHw018ffHOJ/xyt3ssDZOBCFFvMmWaz0
-	 TH8p9747PcjcA==
-Message-ID: <48b2e0fd-4d7f-4bb6-aadd-804847e3250c@kernel.org>
-Date: Wed, 17 Apr 2024 15:23:19 +0200
+	b=nEB6FuFLc3EhGLKatBirbpvmAA9YKNV5eG7c8EDn1Z0S8rQoObzxrhyjgeszo3i26
+	 CUjq/iQVDgM55Kw8I9XokUt+HocJIpngD97esfUkP++3N8cmNGpeybrwTSPfdErovs
+	 ElLZ29dyEBy7sQrtCFg2n3FIj8sthvwb7xar4puCmUwb/yKbxqEO0qTtSYsiFiK68B
+	 Avs34Oi9JymMcL9Eb9QQmIumA8lF7/3La7WkR19Cj98YDTxQf4n+48wneZfpqJmuap
+	 F2w5E//3hwxTV2GkQ2OrZO/QafkREqOPgY5gZ25Tr5LUyZ6OE33UC2HJ+kd6IekmOW
+	 bFaSY2BEMqV7g==
+Message-ID: <b215bc1e-a7d3-477a-899d-59c3c313c74a@kernel.org>
+Date: Wed, 17 Apr 2024 15:23:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,8 +50,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 3/4] ARM: dts: BCM5301X: Add DT for ASUS RT-AC3200
-To: Florian Fainelli <florian.fainelli@broadcom.com>,
- =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+To: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
  Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
  Conor Dooley <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>,
  Hauke Mehrtens <hauke@hauke-m.de>, Rafal Milecki <zajec5@gmail.com>,
@@ -67,6 +67,7 @@ References: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com
  <07c9c5f5-c4b9-44d6-b909-5aa306f56898@kernel.org>
  <00ba4593-d720-419a-a97d-37c402c91e44@arinc9.com>
  <7b465ddb-2b18-4e7f-8b03-d4e51006e1cb@broadcom.com>
+ <29f098cb-db41-4d4f-9033-a88d70ebdd0f@arinc9.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -112,59 +113,51 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <7b465ddb-2b18-4e7f-8b03-d4e51006e1cb@broadcom.com>
+In-Reply-To: <29f098cb-db41-4d4f-9033-a88d70ebdd0f@arinc9.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 17/04/2024 05:15, Florian Fainelli wrote:
-> 
-> 
-> On 4/15/2024 2:10 AM, Arınç ÜNAL wrote:
->> On 15.04.2024 10:57, Krzysztof Kozlowski wrote:
->>> On 14/04/2024 22:21, Arınç ÜNAL wrote:
->>>> NVRAM is described as both flash device partition and memory mapped 
->>>> NVMEM.
->>>> This platform stores NVRAM on flash but makes it also memory accessible.
+On 17/04/2024 10:24, Arınç ÜNAL wrote:
+> On 17/04/2024 06:15, Florian Fainelli wrote:
+>>
+>>
+>> On 4/15/2024 2:10 AM, Arınç ÜNAL wrote:
+>>> On 15.04.2024 10:57, Krzysztof Kozlowski wrote:
+>>>> On 14/04/2024 22:21, Arınç ÜNAL wrote:
+>>>>> NVRAM is described as both flash device partition and memory mapped NVMEM.
+>>>>> This platform stores NVRAM on flash but makes it also memory accessible.
+>>>>>
+>>>>> As device partitions are described in board DTS, the nvram node must also
 >>>>
->>>> As device partitions are described in board DTS, the nvram node must 
->>>> also
+>>>> Sorry, but we do not talk about partitions. Partitions are indeed board
+>>>> property. But the piece of hardware, so NVMEM, is provided by SoC.
+>>>>
+>>>>> be defined there as its address and size will be different by board. It has
+>>>>> been widely described on at least bcm4709 and bcm47094 SoC board DTS files
+>>>>> here.
+>>>>
+>>>> These not proper arguments. What you are saying here is that SoC does no
+>>>> have nvram at address 0x1c08000. Instead you are saying there some sort
+>>>> of bus going out of SoC to the board and on the board physically there
+>>>> is some NVRAM sort of memory attached to this bus.
 >>>
->>> Sorry, but we do not talk about partitions. Partitions are indeed board
->>> property. But the piece of hardware, so NVMEM, is provided by SoC.
+>>> Yes that is the case. NVRAM is stored on a partition on the flash. On the
+>>> Broadcom NorthStar platform, the NAND flash base is 0x1c000000, the NOR
+>>> flash base is 0x1e000000.
 >>>
->>>> be defined there as its address and size will be different by board. 
->>>> It has
->>>> been widely described on at least bcm4709 and bcm47094 SoC board DTS 
->>>> files
->>>> here.
->>>
->>> These not proper arguments. What you are saying here is that SoC does no
->>> have nvram at address 0x1c08000. Instead you are saying there some sort
->>> of bus going out of SoC to the board and on the board physically there
->>> is some NVRAM sort of memory attached to this bus.
+>>> For the board in this patch, the flash is a NAND flash. The NVRAM partition
+>>> starts at address 0x00080000. Therefore, the NVRAM component's address is
+>>> 0x1c080000.
 >>
->> Yes that is the case. NVRAM is stored on a partition on the flash. On the
->> Broadcom NorthStar platform, the NAND flash base is 0x1c000000, the NOR
->> flash base is 0x1e000000.
+>> Because the flash is memory mapped into the CPU's address space, a separate node was defined since it is not part of the "soc" node which describes the bridge that connects all of the peripherals.
 >>
->> For the board in this patch, the flash is a NAND flash. The NVRAM partition
->> starts at address 0x00080000. Therefore, the NVRAM component's address is
->> 0x1c080000.
+>> Whether we should create an additional bus node which describes the bridge being used to access the flash devices using the MMIO windows is debatable. Rafal, what do you think?
 > 
-> Because the flash is memory mapped into the CPU's address space, a 
-> separate node was defined since it is not part of the "soc" node which 
-> describes the bridge that connects all of the peripherals.
-> 
-> Whether we should create an additional bus node which describes the 
-> bridge being used to access the flash devices using the MMIO windows is 
-> debatable. Rafal, what do you think?
+> Will this block this patch series? If not, I'd like to submit the next
+> version with Krzysztof's comments on earlycon and stdout-path addressed.
 
-Sorry guys, I don't get. I don't know the addresses neither the names
-like Broadcom Northstar, so this does not clarify me at all.
-
-Please answer the simple questions:
-1. Is NAND flash part of SoC?
-2. If not, is NAND flash provided by Broadcom or anyone else?
+Why are you so impatient? The review process takes time and your
+reluctance to take responsibility for issues here are no helping.
 
 Best regards,
 Krzysztof
