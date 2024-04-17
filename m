@@ -1,93 +1,142 @@
-Return-Path: <linux-kernel+bounces-148671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDBCE8A85E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:24:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 449E58A85ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:27:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A90142834B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:24:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFCDD1F21A9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:27:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4499F1411FF;
-	Wed, 17 Apr 2024 14:23:55 +0000 (UTC)
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id CAAA352F86
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:23:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A1BD141995;
+	Wed, 17 Apr 2024 14:27:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XCQvZbM4"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27117140397;
+	Wed, 17 Apr 2024 14:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713363834; cv=none; b=KiJskKQtsru4U+jZBKHGYHfSM7h3PDXXKys2mxWI3WJEXdimmiDyrKoU4M+cidgBPVX3FukfCZGRFr9tFGwT6VRnNuThFJiWl5dmGNv8YgvukP2hN4bzugbvKchdTXlxPJ88L7BFul6eeOWi/2YsV5poOJyPlhrBy6IsAMwUmr0=
+	t=1713364049; cv=none; b=fPVfzLUyIICJC2WLNwsRQaGbFnjDDQxwpw3oSIILQPngbTeue28Ks0d6P+gw4kL9qotPRL/vfaJpGc1urikuIjSyREdP0zjB/1FTssfCEsqZFzwjHLFRvWyC8eFfl3RAnbu2hwQuOKaeJI+ZwJMplV6MuuEqt39DAfCG5Xw+Le8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713363834; c=relaxed/simple;
-	bh=cxUQhRnqHadkF6BkpNtuin2PtIpnIK0xeBndPTSzJT4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SBthdGfjaz3g9iEaor5pzwyTstuV5qqaRSZ+BLtS4YN+vNf1Xz7ASsOA0oe1B1/7VCLSjlue+0LGvKxt+oMCamSekUJE+HerRYspfo3+Kw6OqO/Ku9gUzRRDM9HbmzNZvqJfBBvdnzwqB3wBgxMmsYs3+PM3Hxp6gvfSzpGfEa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
-Received: (qmail 201056 invoked by uid 1000); 17 Apr 2024 10:23:51 -0400
-Date: Wed, 17 Apr 2024 10:23:51 -0400
-From: Alan Stern <stern@rowland.harvard.edu>
-To: Sam Sun <samsun1006219@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-  Greg KH <gregkh@linuxfoundation.org>, swboyd@chromium.org,
-  ricardo@marliere.net, hkallweit1@gmail.com, heikki.krogerus@linux.intel.com,
-  mathias.nyman@linux.intel.com, royluo@google.com,
-  syzkaller-bugs@googlegroups.com, xrivendell7@gmail.com
-Subject: Re: [Linux kernel bug] general protection fault in disable_store
-Message-ID: <de997acf-300a-4592-87c5-024171d19c29@rowland.harvard.edu>
-References: <92fe8e95-bc01-4d7d-9678-8cfc55cc4a7b@rowland.harvard.edu>
- <CAEkJfYORHKO16xT3DCS04JFzkquz6oZ5CdC2USJ5-c0WihAMXg@mail.gmail.com>
- <45e246ab-01e8-40b7-8ede-b47957df0d7b@rowland.harvard.edu>
- <CAEkJfYMjO+vMBGPcaLa51gjeKxFAJBrSa0t_iJUtauQD3DaK8w@mail.gmail.com>
- <69a6f4c9-6470-40d1-99f1-aaf532497d02@rowland.harvard.edu>
- <CAEkJfYNJyyGhR9AAWc0V7o8i6pmS+OB=KSbh6XqVWAAGetS9hA@mail.gmail.com>
- <5704ac63-5e5b-416c-a2a1-57528e76a02f@rowland.harvard.edu>
- <CAEkJfYMSwuikpBJudOaFYrxgf9e=_O4nig6sTPLLAtpdEKQuyQ@mail.gmail.com>
- <5f3526a6-6ede-4181-a4ff-076e022cfb49@rowland.harvard.edu>
- <CAEkJfYMPQJn+kYzxFwwix3fwKeu3aAdYKgp+Ksvq=o4CoTXEWQ@mail.gmail.com>
+	s=arc-20240116; t=1713364049; c=relaxed/simple;
+	bh=K+f/3Fw0l/IbMbZkGP+l5j+8E9MRO2mxZSVM7HRjjgU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Tho4BYbHbMpkme1FZrnPq35Y75vHQBMoD1jYLIape1Uq02nIaxJ8caBbOiKUxk1BtKCKYR4hHlhvR9IZWAdtvO4TPUnP6pnEVBbXRf7IrrEt4zTeYEJQS/lMCmfPFUMYz9kMD9yeuNwe9QzsxQnRNmme0K2iX++2yfnatAuuny0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=XCQvZbM4; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4F879C0011;
+	Wed, 17 Apr 2024 14:27:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713364044;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+gblB2roJbwC6k0Ap41QA3FYglfv4FFJz0F7EnAebFE=;
+	b=XCQvZbM4nqNpj6mMFURbYjC7Sp/+tvMg/HEtaMxlh0cCcgU3JtIHPxNUETADzJzzbISEUG
+	CwbRAHSEthGj0nEzp1Ab6SSx0aRONpZkAf6zrALy0SOA/d35LpzEiU55ZtmAsbfGCJu3AS
+	8x33SC7ycOCYTD9XSUvlGipx1+lFMbdavNFj2hp57pzYBUsdeRuwkZe+jkGOKCuukXpBlb
+	WMOt/ByIdnwRdgLm71mwRbFK2v4NDejcZh9Gh7rqQfro20z8PhhEHNHiaisDcLLCPF9u6l
+	+iSysDrG9ODCQSLJCVUgpJ8qZ/flJ93DOGL0YStli+0eiXVTEFJBZp39bnBOjA==
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: davem@davemloft.net
+Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	thomas.petazzoni@bootlin.com,
+	Andrew Lunn <andrew@lunn.ch>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Russell King <linux@armlinux.org.uk>,
+	linux-arm-kernel@lists.infradead.org,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	=?UTF-8?q?K=C3=B6ry=20Maincent?= <kory.maincent@bootlin.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	=?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>,
+	Simon Horman <horms@kernel.org>,
+	mwojtas@chromium.org,
+	Nathan Chancellor <nathan@kernel.org>,
+	Antoine Tenart <atenart@kernel.org>
+Subject: [PATCH net-next] net: phy: link_topology: Don't stub-away the topology creation
+Date: Wed, 17 Apr 2024 16:27:05 +0200
+Message-ID: <20240417142707.2082523-1-maxime.chevallier@bootlin.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEkJfYMPQJn+kYzxFwwix3fwKeu3aAdYKgp+Ksvq=o4CoTXEWQ@mail.gmail.com>
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-On Wed, Apr 17, 2024 at 03:39:02PM +0800, Sam Sun wrote:
-> On Wed, Apr 17, 2024 at 12:35 AM Alan Stern <stern@rowland.harvard.edu> wrote:
-> > It turns out that patch is no good.  The reason is mentioned in the
-> > changelog for commit 543d7784b07f ("USB: fix race between hub_disconnect
-> > and recursively_mark_NOTATTACHED"); it says that the port devices have to
-> > be removed _after_ maxchild has been set to 0.
-> >
-> 
-> I checked the commit you mentioned. Maybe your first fix is all we
-> need to fix the problem? At least no race would occur for
-> hdev->maxchild and usb_set_intfdata().
+Some of the phy_link_topology operations are protected by IS_REACHABLE,
+which can lead to scenarios where the consumer, built as modules, sees the topology
+unstubbed, whereas the initialization didn't occur.
 
-No, the first patch won't help, even though it passed your testing.  The 
-race it eliminates is a harmless one -- or at least, it's harmless in 
-this context.  If usb_hub_to_struct_hub() sees bad values for 
-hdev->maxchild or usb_get_intfdata(), it will simply return NULL.  But 
-this can happen even with the first patch applied, if the user tries to 
-access disable_store() during the brief time between when hdev->maxchild 
-is set to 0 and when the port devices are removed.
+Don't stub away the creation of the topology, it has no dependency on
+any other parts like phylib, so we can make it always available.
 
-The true fix is simply to check whether the return value from 
-usb_hub_to_struct_hub() is NULL, which is what this patch does.
+Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Closes: https://lore.kernel.org/netdev/2e11b89d-100f-49e7-9c9a-834cc0b82f97@gmail.com/
+Closes: https://lore.kernel.org/netdev/20240409201553.GA4124869@dev-arch.thelio-3990X/
+---
+Hi Nathan, Heiner,
 
-> I applied this patch and it also can fix the warning. I am not sure
-> which one is better.
+I'm currently at EOSS, so I'm sending this patch without having been
+able to properly test it (build-tested only), but as this addresses an
+issue for people using -next, I'm sending this anyway, sorry about that.
 
-I'm quite sure that this one is better.  I will submit it shortly, with 
-your Tested-by:.
+Hopefully it can address the issue for now, I haven't given-up on your
+idea to introduce a config option Heiner :)
 
-Thanks a lot; the work you have done on this has been a big help.
+Thanks,
 
-Alan Stern
+Maxime
+
+ include/linux/phy_link_topology_core.h | 15 ---------------
+ 1 file changed, 15 deletions(-)
+
+diff --git a/include/linux/phy_link_topology_core.h b/include/linux/phy_link_topology_core.h
+index 0a6479055745..61e2592f24ac 100644
+--- a/include/linux/phy_link_topology_core.h
++++ b/include/linux/phy_link_topology_core.h
+@@ -4,22 +4,7 @@
+ 
+ struct phy_link_topology;
+ 
+-#if IS_REACHABLE(CONFIG_PHYLIB)
+-
+ struct phy_link_topology *phy_link_topo_create(struct net_device *dev);
+ void phy_link_topo_destroy(struct phy_link_topology *topo);
+ 
+-#else
+-
+-static inline struct phy_link_topology *phy_link_topo_create(struct net_device *dev)
+-{
+-	return NULL;
+-}
+-
+-static inline void phy_link_topo_destroy(struct phy_link_topology *topo)
+-{
+-}
+-
+-#endif
+-
+ #endif /* __PHY_LINK_TOPOLOGY_CORE_H */
+-- 
+2.44.0
+
 
