@@ -1,119 +1,153 @@
-Return-Path: <linux-kernel+bounces-148587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B41608A84C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC00E8A84CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:34:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69D641F237CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:33:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 725061F213E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C94C813F432;
-	Wed, 17 Apr 2024 13:33:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2EBF13F440;
+	Wed, 17 Apr 2024 13:34:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="f8WHvl68"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GKpS8zwe"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1233813173A;
-	Wed, 17 Apr 2024 13:33:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8D7A13F00F
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713360782; cv=none; b=df2f+C/SA6jczvugJbLXYwndyM6U2IcpyXlr2r5ozP/zslAtWMQptpJSqaFSAdO5xJWRSrHDUIBfWAk5cfX2pInFHQ1OPFgAZGMUgZH5D48XIuWb9t6T5IIx7p509sUwpjAaQVX2wL3+XvpMaWMuGKlN/kyQPtHzs6id0RpEObA=
+	t=1713360879; cv=none; b=HolQHbEZXoFXEqbD/373p//jDFBnZAlRwd/9ltQHTBL1yjOJBzHkmre8yBQJDMAgsjDmLQSYelGvXgSO9JjI1L3POo7PHX/RNiMJF5fb+lsSDvyWtK2nPQuGXRLkSHRm8ftWH08TkTnqfd33Q67CSUugoyuc4/4ybKfYtieqBEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713360782; c=relaxed/simple;
-	bh=0FAQr3+1ZyvZLqysSDdApJFQe0+RgfkEZ/Lh4fI1GnE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QgQNwJsgL+40lY9H1X+lG0w/zDw0XBDnDDDit+D3M55eiv/ei38gsNlCukfx9H4Q1aUTav+E1F4Xr15sd3Rjy8PlBnuqztnqjATxjLJRtl5rZgoYqx7qKfPFNOPn4wr8wjl46OvagZ9mGSDQcxC5H9YecgKyjejoFVE78SNrcWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=f8WHvl68; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24E66C072AA;
-	Wed, 17 Apr 2024 13:33:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713360781;
-	bh=0FAQr3+1ZyvZLqysSDdApJFQe0+RgfkEZ/Lh4fI1GnE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=f8WHvl68uFX4nxlyi0wiRaglG8F8qQhn71IzAOpEEnlmDOTsivZmG9z89kl2BHYaj
-	 JxFdfrFmaYBTalfPEaGu6CiC+JYRcAgubU4ByKQdSdTmM+QPGH2xtk/iwQpE7UQrcH
-	 xl6UpOD24d87Pc2xxrsvl23yhIcmyT+Dn7B8z2/0=
-Date: Wed, 17 Apr 2024 15:32:58 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Parker Newman <parker@finest.io>
-Cc: Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	Parker Newman <pnewman@connecttech.com>
-Subject: Re: [PATCH v3 7/8] serial: exar: add CTI specific setup code
-Message-ID: <2024041700-engraved-bootie-aca5@gregkh>
-References: <cover.1713270624.git.pnewman@connecttech.com>
- <354ff4aa9d8bdea1a21c503e685e81ac3df48eb8.1713270624.git.pnewman@connecttech.com>
- <2024041726-fall-debunk-6cc5@gregkh>
- <20240417091735.17686470@SWDEV2.connecttech.local>
+	s=arc-20240116; t=1713360879; c=relaxed/simple;
+	bh=alH/EZJM1d1TCFDY15jFAXlKwQO39PxcOVlCV8uY/dY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jRh5Yrx52AQLcQEXO6onRTdnhS5UtWht8sH8gBhJvM4+yJIMwJemtfsonBZJEQjB2rb4sWGfiwMNtxsOILEdZ2eo85WqkoO8cFpxFoZbYumxzSA0HnBpqhHhC0gGPu8djveQOkrPMBnAnmRv7r9Yd50Vo6PtNDCfyAm/7TZfzMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GKpS8zwe; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e5c7d087e1so38089895ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 06:34:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713360878; x=1713965678; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=qQpk6M7q24ajxJBZjKob9s9mchMKviv3ZIY6EByy4P0=;
+        b=GKpS8zweXq8tlhYKHP7xb7KrjsVHQbVYHaPd0AQRby8ZW3EXsep7JSSegFR6O1xSg/
+         baqp8/6SFZCubZr1pNl4XKxcEC26Lcb5f/Wwiuk0hCmY0yWBiPxPxxaK7FRdwT9CL3nV
+         YUsZg/A9nRcilxuRwFSRTWCu5dO3IpOQJc39bSj4bS3X6cR/tS+1FuUtIF2REsCWA5eM
+         B7oiFlen0jVQ60dChR3HqYe7vKkgutSPSqcgKSzCBBceoQsvnfGfe8/khVXo67vyPWd6
+         C0JCi5EOlI62oTJaJUhzJAOVIOi8YEn0qrHFqOz1bYJz8wuDxvdSMq1oloGnEhvC2mPe
+         3MVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713360878; x=1713965678;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qQpk6M7q24ajxJBZjKob9s9mchMKviv3ZIY6EByy4P0=;
+        b=fJ45sgvXunZg4/hDGby+8m6/6JvuQNn8SX7UcTjqddKr6UUxyb1oJfE3JqoLpDpAjt
+         9MB8JJI5PyviQUupbDURKaE6r/CZjqnMcu43nnH7NzFvmd7FPDlXJxrIk+RYCSuLxor7
+         f8DlthW9ke7HnzHtD3Jbt61Cb4S8ebu8JgoIgoRxMFFTk+KtOniUnTkY5+VdZR4YVD0C
+         Bw3SYfNF2kEiy5QlZp5Hy2nFrDU6K5DfbvIFqlH6yGxZZm1BWhOx1I+dEFXE6+cFfaGW
+         J50lE1OjJvU/OqFu9eTD0ZX+iWMlT+j1I8PVLHyejt76RLG6fYccqt4SoJCA6FZgHrfA
+         WsXA==
+X-Forwarded-Encrypted: i=1; AJvYcCUbVf3ohmIWmpwqOpZTT+ME6nnfai2X4Pdbm65j7FCC5UKl448IOakLhJmqke0C+GEb0dK/EI+Y2ilW2bwQbqIe5NbZ2cJuPDTpuNC4
+X-Gm-Message-State: AOJu0YxGQLK5sMoX+bPo1VBvThO7wL/qfT6MqBxhDplmQ+0pwoU4XsvZ
+	gVXTKFdiN2YGyp0UAzR4PknRjUXyuVdBb/sp0yEHHxDeJvKix4oZHfD4svWV4Lw=
+X-Google-Smtp-Source: AGHT+IHNFNE8rpBby9S+K49GhqlBngJX8LZuUeYNpl230n9/7QUVMXSQQnsuylZ2sfm7+Zh0iPKPGQ==
+X-Received: by 2002:a17:903:22c4:b0:1e0:b9d0:f6b with SMTP id y4-20020a17090322c400b001e0b9d00f6bmr15384739plg.68.1713360877982;
+        Wed, 17 Apr 2024 06:34:37 -0700 (PDT)
+Received: from [172.20.9.36] ([209.37.221.130])
+        by smtp.gmail.com with ESMTPSA id d14-20020a170902aa8e00b001e5e6877494sm8408204plr.238.2024.04.17.06.34.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 06:34:37 -0700 (PDT)
+Message-ID: <27686f2a-a517-4923-ba6d-58233cf149af@linaro.org>
+Date: Wed, 17 Apr 2024 15:34:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240417091735.17686470@SWDEV2.connecttech.local>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] dt-bindings: PCI: altera: Convert to YAML
+To: matthew.gerlach@linux.intel.com
+Cc: bhelgaas@google.com, lpieralisi@kernel.org, kw@linux.com,
+ robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240413172641.436341-1-matthew.gerlach@linux.intel.com>
+ <c21f6d49-bd70-465e-a446-fb70838bab48@linaro.org>
+ <alpine.DEB.2.22.394.2404160720360.424541@sj-4150-psse-sw-opae-dev2>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <alpine.DEB.2.22.394.2404160720360.424541@sj-4150-psse-sw-opae-dev2>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 17, 2024 at 09:17:35AM -0400, Parker Newman wrote:
-> On Wed, 17 Apr 2024 13:24:20 +0200
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On 16/04/2024 16:32, matthew.gerlach@linux.intel.com wrote:
+>>
+>> Why Hip is the first? Old binding suggested it to be the last entry. It
+>> would also make binding easier, as you describe reg and reg-names in
+>> top-level and just limit them with min/maxItems.
+>>
+>> Does anything depend on different order (Hip as first)?
 > 
-> > On Tue, Apr 16, 2024 at 08:55:34AM -0400, Parker Newman wrote:
-> > >  struct exar8250 {
-> > >  	unsigned int		nr;
-> > > +	unsigned int		osc_freq;
-> > > +	struct pci_dev		*pcidev;
-> > > +	struct device		*dev;
-> >
-> > Why do you need both a pci_dev and a device?  Aren't they the same thing
-> > here?
-> >
-> 
-> I added dev to make the prints cleaner. I personally prefer:
-> 
-> 	dev_err(priv->dev, ...);
-> to
-> 	dev_err(&priv->pcidev->dev, ...);
-> 
-> or to adding a:
-> 	struct device *dev = &priv->pcidev->dev;
-> 
-> to every function just for printing.
-> 
-> However, I do understand your point. I can drop dev if you prefer.
+> I don't think the order really matters. So Hip could go last, and it makes 
 
-Pick one and stick with it, no need for both.  I too like your first
-option, and if you never need the pci device pointer, just stick with
-"struct dev".  Note, properly reference count it in case you think it
-could go away from underneath you (some paths it could, so be careful.)
+The order matters, it is the ABI.
 
-> > > +static int cti_tristate_disable(struct exar8250 *priv, unsigned int port_num)
-> > > +{
-> > > +	return _cti_set_tristate(priv, port_num, false);
-> > > +}
-> >
-> > Do you ever call _cti_set_tristate() with "true"?
-> >
-> 
-> Currently no. However, re-enabling tristate via a custom ioctl was a feature in
-> our old out-of-tree driver (which was created prior to linux RS485 support).
-> 
-> I am not sure how it would be activated now, but I left enabling tristate as an
-> option in to make it easier down the line when we need it.
-> 
-> I can add a note to the patch or remove it if you would prefer.
+Best regards,
+Krzysztof
 
-Just remove it for now, no need to ever add code you "might need in the
-future", just add that then, when you need it.  Code for what you need
-to do now, that makes things simpler and removes extra stuff that you
-would have to force others to review :)
-
-thanks,
-
-greg k-h
 
