@@ -1,352 +1,167 @@
-Return-Path: <linux-kernel+bounces-148321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 100BF8A80EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:28:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4839A8A80F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:29:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 923661F21BDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:28:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AA001C210F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:29:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 556F113C3EB;
-	Wed, 17 Apr 2024 10:28:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AABB13BC1B;
+	Wed, 17 Apr 2024 10:28:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="aDwYNLm4"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XvtIceW5"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7EE213C3D3;
-	Wed, 17 Apr 2024 10:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC3412CD91
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713349682; cv=none; b=ZUHZt+RcXEdtqwyzabTQTzTdnTRyrwE3D/af+PFOyBJUZLXmiuI3sav/16UrukbYgjXDT6Bg7x1sHuT37H3xSe1f94Hzyj9VfRWNSJ9JUOhORt6lVqbU12/CJT3Gvoi+ABSxjTK7fHsk3X1P9NNIWHRWEuSp4UziExbNA0pr7CQ=
+	t=1713349732; cv=none; b=kQeq4cijLqA9lIZZkPDH+wDR3GlaOEwiJ+TnWP5igk2sL6a9XxsWizHwaAR666mzgXtfrnhEePDqNW/Het7QRT2Vc4viKLBG3VYIS+IgFwbzd52pb2qAMsSKBn4DDMxhQr5toZ06pyPXL4oNUleLCjc9/OMDCi30LW6Gl4jbM4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713349682; c=relaxed/simple;
-	bh=2SVLOxF1LIFW8IU+UiQ7K2P1NHBlwj/W6OfBiv0gOr4=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=BmNdxSNaKjMrWzRk/4ayA1PsfxdHdFPAnz/T0AHcxaxmBW9QBCU24azpKY/vGcr1MR4Tmus85U//NZrYWAp7NSFhhKNJnYBhBdCabd5iJL5PK6IUMXf7LOpa29b1P2HtyB8hbifasvJ56OaDMHccdLW0GL8yD6OIuz7fO0VqjfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=aDwYNLm4; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713349679;
-	bh=2SVLOxF1LIFW8IU+UiQ7K2P1NHBlwj/W6OfBiv0gOr4=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-	b=aDwYNLm4GpaVas8y1JxE813xF5hvJPUXYik0xtOCY1BNDNqzE3iTahTaivSHQj7l6
-	 MXbis/vxnwKNQGh0KQLKsagi3TjhE4JJ9Es1XfP3msHY0waB9Xuy6CjCNxaM/egkl2
-	 2O0N2+cDm8wYhxh0jTEhFcPFOD2NmnK1tiw6T4jzfgBdSzNSE3bl8CDMz4noQxmtSt
-	 nU1HN29DcvKuBkI6/TUXfx+a2EaeVJIBwGUGJyTePjst1qmBNmIA19w8TKUS48H6t3
-	 yxdSdM8Tv4UYOMQm/3uDZfPxCIe9S76dl7wvEdk5i9FD3bhmCP0VAKASQVwbcYuqJ5
-	 yb7qpzIBF+VcA==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8B20237820F9;
-	Wed, 17 Apr 2024 10:27:57 +0000 (UTC)
-Message-ID: <ee8d0a32-b4fb-4fc4-83b2-300f7453d95f@collabora.com>
-Date: Wed, 17 Apr 2024 12:27:57 +0200
+	s=arc-20240116; t=1713349732; c=relaxed/simple;
+	bh=w9/j/Je+o73zYIJxkI4ihGGFo9ICotiVF5tQW2c+m+Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rTB0dL8Yy+DD5fP4Cj+DQFKwrzsRGhPi5ABBnnXDiIhXMrGJKYCqevjJSQzEkUad/Bww9lCGIXlgEqRfEOHeESgH4hofLonuPhM4TgI6AztRFtnqJwfEbpQYWJnhKYLL41HyMnbm976Rjlm9VXP8tIR/T+wc0jYjrDVUmVqHwIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XvtIceW5; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713349730;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O85bb4GMOKWlSLPww3MfE2bfVcvNnZa2l+DfV3fmaMQ=;
+	b=XvtIceW5MDN6miq6TFePW75qwYPdMhUILhK5MUGqFdFPH8irdijgHrEk6nLtEJC/Cz7vAS
+	Vhgew8Pos10dYNy3X8e8Rd7jJvuSEv1ssQ+BBDWaI8h/Ahow8jPm3+Q1PiYoyFAPYC2PJA
+	s/iNlPhUxfZ/EfhwKKRkDVhyOSmcVew=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-372-WjCGFWYDNautd4ZFFrW29g-1; Wed, 17 Apr 2024 06:28:48 -0400
+X-MC-Unique: WjCGFWYDNautd4ZFFrW29g-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-519296de7cfso1371554e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 03:28:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713349727; x=1713954527;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O85bb4GMOKWlSLPww3MfE2bfVcvNnZa2l+DfV3fmaMQ=;
+        b=vHIkh75a416jeslJGW3HZqfTiEioH+ZdAuSNmPWKXJtjhFBbaJtEv6jMe7GTEV6+Qw
+         ptwr7ezbLKVxFJweXQVJqICmpaeKc60y/g60DPqnShV6VZr1O7vGWFYTMNUuxjCNlQVu
+         NjFpNcXwrzawbo7rkMwJOHRXlxHdChHLjy5AakAcz/AOrkfZ9zkjJur50K5x7BL7vDs3
+         DdjcDIrc6SqA5PugJaFOMWiBNu0K5pKXA+9USPgvYDuI7D0hkTCeKyCaZwmUFTPryS/Y
+         /pDGm6nZ8u5HsFznMs9NuXwsiGP3rLD1iXKcOnqRAJKqHppBrdxht9D0WXb775XCXirR
+         n5Jw==
+X-Forwarded-Encrypted: i=1; AJvYcCXHPYr5+zadGMG2O7hgbKUQs27bYmOWewKahPvjoBy84da29rrL7iJhrHSHwpIY3ysHyZ5q7iedPnLYWP3OncU79boId8/64LqbtFPu
+X-Gm-Message-State: AOJu0YyJglhZZBTRTEDSVa2g5RUInLKzrTTQackdGRWol3/m5lLN5ulk
+	CwvWJ3Xggfj1CrD+PHnSydKqqAL4jxCukNIL+BmhWIpdzPjErjr4TckWuTcCIn72LIU82ERoUa2
+	1usPfqyeuxQnsT7BD0/HuEwNGhHnSBTIBVN3t6EQJ8wXq6lb5vRcmAlQBa2ux1OgRMPvWOpEhCA
+	ItnkZsoHGg20ecOEaw2xNRgTjKCGhZCbrhbwNS
+X-Received: by 2002:a05:6512:ad5:b0:515:ab7f:b13e with SMTP id n21-20020a0565120ad500b00515ab7fb13emr15605110lfu.33.1713349727155;
+        Wed, 17 Apr 2024 03:28:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG2PEEkflUhPutOPlvakp0mNMrz5x9jX77kM+J7Wf/TGaRQaWFZLDemYgspwVl/1Bu5SKeZowYgQMhGHAMyeu8=
+X-Received: by 2002:a05:6512:ad5:b0:515:ab7f:b13e with SMTP id
+ n21-20020a0565120ad500b00515ab7fb13emr15605089lfu.33.1713349726809; Wed, 17
+ Apr 2024 03:28:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v2 18/18] arm64: dts: mediatek: add display support for
- mt8365-evk
-To: Alexandre Mergnat <amergnat@baylibre.com>,
- Chun-Kuang Hu <chunkuang.hu@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Jitao Shi <jitao.shi@mediatek.com>,
- CK Hu <ck.hu@mediatek.com>, =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?=
- <u.kleine-koenig@pengutronix.de>, Michael Turquette
- <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org,
- linux-clk@vger.kernel.org
-References: <20231023-display-support-v2-0-33ce8864b227@baylibre.com>
- <20231023-display-support-v2-18-33ce8864b227@baylibre.com>
-Content-Language: en-US
-In-Reply-To: <20231023-display-support-v2-18-33ce8864b227@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <cover.1712785629.git.isaku.yamahata@intel.com>
+ <2f1de1b7b6512280fae4ac05e77ced80a585971b.1712785629.git.isaku.yamahata@intel.com>
+ <116179545fafbf39ed01e1f0f5ac76e0467fc09a.camel@intel.com>
+ <Zh2ZTt4tXXg0f0d9@google.com> <CABgObfZq9dzvq3tsPMM3D+Zn-c77QrVd2Z1gW5ZKfb5fPu_8WA@mail.gmail.com>
+ <Zh8DHbb8FzoVErgX@google.com>
+In-Reply-To: <Zh8DHbb8FzoVErgX@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Wed, 17 Apr 2024 12:28:34 +0200
+Message-ID: <CABgObfbPXSFnupedTw56CXSOe74W_Z=dT+RJoPVebMtQ8HfojQ@mail.gmail.com>
+Subject: Re: [PATCH v2 07/10] KVM: x86: Always populate L1 GPA for KVM_MAP_MEMORY
+To: Sean Christopherson <seanjc@google.com>
+Cc: Rick P Edgecombe <rick.p.edgecombe@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	Isaku Yamahata <isaku.yamahata@intel.com>, Kai Huang <kai.huang@intel.com>, 
+	"federico.parola@polito.it" <federico.parola@polito.it>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, "dmatlack@google.com" <dmatlack@google.com>, 
+	"michael.roth@amd.com" <michael.roth@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Il 16/04/24 17:53, Alexandre Mergnat ha scritto:
-> MIPI DSI:
-> - Add "vsys_lcm_reg" regulator support and setup the "mt6357_vsim1_reg",
-> to power the pannel plugged to the DSI connector.
-> - Setup the Display Parallel Interface.
->    - Add the startek kd070fhfid015 pannel support.
-> 
-> HDMI:
-> - Add HDMI connector support.
-> - Add the "ite,it66121" HDMI bridge support, driven by I2C1.
-> - Setup the Display Parallel Interface.
-> 
-> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
-> ---
->   arch/arm64/boot/dts/mediatek/mt8365-evk.dts | 182 ++++++++++++++++++++++++++++
->   1 file changed, 182 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8365-evk.dts b/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
-> index 50cbaefa1a99..4afdcbefc481 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
-> +++ b/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
-> @@ -26,6 +26,18 @@ chosen {
->   		stdout-path = "serial0:921600n8";
->   	};
->   
-> +	connector {
-> +		compatible = "hdmi-connector";
-> +		label = "hdmi";
-> +		type = "d";
-> +
-> +		port {
-> +			hdmi_connector_in: endpoint {
-> +				remote-endpoint = <&hdmi_connector_out>;
-> +			};
-> +		};
-> +	};
-> +
->   	firmware {
->   		optee {
->   			compatible = "linaro,optee-tz";
-> @@ -86,6 +98,56 @@ optee_reserved: optee@43200000 {
->   			reg = <0 0x43200000 0 0x00c00000>;
->   		};
->   	};
-> +
-> +	vsys_lcm_reg: regulator-vsys-lcm {
-> +		compatible = "regulator-fixed";
-> +		enable-active-high;
-> +		gpio = <&pio 129 GPIO_ACTIVE_HIGH>;
-> +		regulator-max-microvolt = <5000000>;
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-name = "vsys_lcm";
-> +	};
-> +};
-> +
-> +&dpi0 {
-> +	pinctrl-0 = <&dpi_default_pins>;
-> +	pinctrl-1 = <&dpi_idle_pins>;
-> +	pinctrl-names = "default", "sleep";
-> +	status = "okay";
-> +
-> +	port {
-> +		dpi_out: endpoint {
-> +			remote-endpoint = <&it66121_in>;
-> +		};
-> +	};
-> +};
-> +
-> +&dsi0 {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	status = "okay";
-> +
-> +	panel@0 {
-> +		compatible = "startek,kd070fhfid015";
-> +		status = "okay";
+On Wed, Apr 17, 2024 at 1:00=E2=80=AFAM Sean Christopherson <seanjc@google.=
+com> wrote:
+> > > > Hmm... For the non-TDX use cases this is just an optimization, righ=
+t? For TDX
+> > > > there shouldn't be an issue. If so, maybe this last one is not so h=
+orrible.
+> >
+> > It doesn't even have to be ABI that it gives an error. As you say,
+> > this ioctl can just be advisory only for !confidential machines. Even
+> > if it were implemented, the shadow MMU can drop roots at any moment
+>
+> Sure, but there's a difference between KVM _potentially_ dropping roots a=
+nd
+> guaranteed failure because userspace is trying to do something that's uns=
+upported.
+> But I think this is a non-issue, because it should really just be as simp=
+le as:
+>
+>         if (!mmu->pre_map_memory)
+>                 return -EOPNOTSUPP;
+>
+> Hmm, or probably this to avoid adding an MMU hook for a single MMU flavor=
+:
+>
+>         if (!tdp_mmu_enabled || !mmu->root_role.direct)
+>                 return -EOPNOTSUPP;
+>
+> > and/or kill the mapping via the shrinker.
+>
+> Ugh, we really need to kill that code.
 
-status is always okay, unless it's disabled.
+Ok, so let's add a KVM_CHECK_EXTENSION so that people can check if
+it's supported.
 
-> +		reg = <0>;
-> +		enable-gpios = <&pio 67 GPIO_ACTIVE_HIGH>;
-> +		reset-gpios = <&pio 20 GPIO_ACTIVE_HIGH>;
-> +		iovcc-supply = <&mt6357_vsim1_reg>;
-> +		power-supply = <&vsys_lcm_reg>;
-> +
-> +		port {
-> +			panel_in: endpoint {
-> +				remote-endpoint = <&dsi_out>;
-> +			};
-> +		};
-> +	};
-> +
-> +	port {
-> +		dsi_out: endpoint {
-> +			remote-endpoint = <&panel_in>;
-> +		};
-> +	};
->   };
->   
->   &cpu0 {
-> @@ -138,6 +200,50 @@ &i2c0 {
->   	status = "okay";
->   };
->   
-> +&i2c1 {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	clock-div = <2>;
-> +	clock-frequency = <100000>;
-> +	pinctrl-0 = <&i2c1_pins>;
-> +	pinctrl-names = "default";
-> +	status = "okay";
-> +
-> +	it66121hdmitx: it66121hdmitx@4c {
+> > That said, I can't fully shake the feeling that this ioctl should be
+> > an error for !TDX and that TDX_INIT_MEM_REGION wasn't that bad. The
+> > implementation was ugly but the API was fine.
+>
+> Hmm, but IMO the implementation was ugly in no small part because of the =
+contraints
+> put on KVM by the API.  Mapping S-EPT *and* doing TDH.MEM.PAGE.ADD in the=
+ same
+> ioctl() forced KVM to operate on vcpu0, and necessitated shoving temporar=
+y data
+> into a per-VM structure in order to get the source contents into TDH.MEM.=
+PAGE.ADD.
 
-Can we please get an actually readable name for this node?
+That's because it was trying to do two things with a single loop. It's
+not needed - and in fact KVM_CAP_MEMORY_MAPPING forces userspace to do
+it in two passes.
 
-Just a suggestion (you're free to rename however you want)
+> And stating the obvious, TDX_INIT_MEM_REGION also doesn't allow pre-mappi=
+ng memory,
+> which is generally useful, and can be especially beneficial for confident=
+ial VMs
+> (and TDX in particular) due to the added cost of a page fault VM-Exit.
+>
+> I'm not dead set on this generic ioctl(), but unless it ends up being a t=
+rain wreck
+> for userspace, I think it will allow for cleaner and more reusable code i=
+n KVM.
 
-	it66121_hdmi: hdmi@4c {
+Yes, this ioctl() can stay. Forcing it before adding memory to TDX is
+ugly, but it's not a blocker. I'll look at it closely and see how far
+it is from being committable to kvm-coco-queue.
 
-> +		#sound-dai-cells = <0>;
-> +		compatible = "ite,it66121";
-> +		interrupt-parent = <&pio>;
-> +		interrupts = <68 IRQ_TYPE_LEVEL_LOW>;
-> +		pinctrl-0 = <&ite_pins>;
-> +		pinctrl-names = "default";
-> +		reg = <0x4c>;
-> +		reset-gpios = <&pio 69 GPIO_ACTIVE_LOW>;
-> +		vcn18-supply = <&mt6357_vsim2_reg>;
-> +		vcn33-supply = <&mt6357_vibr_reg>;
-> +		vrf12-supply = <&mt6357_vrf12_reg>;
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			port@0 {
-> +				reg = <0>;
-> +				it66121_in: endpoint {
-> +					bus-width = <12>;
-> +					remote-endpoint = <&dpi_out>;
-> +				};
-> +			};
-> +
-> +			port@1 {
-> +				reg = <1>;
-> +				hdmi_connector_out: endpoint {
-> +					remote-endpoint = <&hdmi_connector_in>;
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
->   &mmc0 {
->   	assigned-clock-parents = <&topckgen CLK_TOP_MSDCPLL>;
->   	assigned-clocks = <&topckgen CLK_TOP_MSDC50_0_SEL>;
-> @@ -180,7 +286,55 @@ &mt6357_pmic {
->   	#interrupt-cells = <2>;
->   };
->   
-> +&mt6357_vsim1_reg {
-> +	regulator-min-microvolt = <1800000>;
-> +	regulator-max-microvolt = <1800000>;
-> +};
-> +
->   &pio {
-> +	dpi_default_pins: dpi-default-pins {
-> +		pins {
-> +			pinmux = <MT8365_PIN_0_GPIO0__FUNC_DPI_D0>,
-> +				 <MT8365_PIN_1_GPIO1__FUNC_DPI_D1>,
-> +				 <MT8365_PIN_2_GPIO2__FUNC_DPI_D2>,
-> +				 <MT8365_PIN_3_GPIO3__FUNC_DPI_D3>,
-> +				 <MT8365_PIN_4_GPIO4__FUNC_DPI_D4>,
-> +				 <MT8365_PIN_5_GPIO5__FUNC_DPI_D5>,
-> +				 <MT8365_PIN_6_GPIO6__FUNC_DPI_D6>,
-> +				 <MT8365_PIN_7_GPIO7__FUNC_DPI_D7>,
-> +				 <MT8365_PIN_8_GPIO8__FUNC_DPI_D8>,
-> +				 <MT8365_PIN_9_GPIO9__FUNC_DPI_D9>,
-> +				 <MT8365_PIN_10_GPIO10__FUNC_DPI_D10>,
-> +				 <MT8365_PIN_11_GPIO11__FUNC_DPI_D11>,
-> +				 <MT8365_PIN_12_GPIO12__FUNC_DPI_DE>,
-> +				 <MT8365_PIN_13_GPIO13__FUNC_DPI_VSYNC>,
-> +				 <MT8365_PIN_14_GPIO14__FUNC_DPI_CK>,
-> +				 <MT8365_PIN_15_GPIO15__FUNC_DPI_HSYNC>;
-> +			drive-strength = <MTK_DRIVE_4mA>;
-
-drive-strength = <4> is just fine....! :-)
-
-> +		};
-> +	};
-> +
-> +	dpi_idle_pins: dpi-idle-pins {
-> +		pins {
-> +			pinmux = <MT8365_PIN_0_GPIO0__FUNC_GPIO0>,
-> +				 <MT8365_PIN_1_GPIO1__FUNC_GPIO1>,
-> +				 <MT8365_PIN_2_GPIO2__FUNC_GPIO2>,
-> +				 <MT8365_PIN_3_GPIO3__FUNC_GPIO3>,
-> +				 <MT8365_PIN_4_GPIO4__FUNC_GPIO4>,
-> +				 <MT8365_PIN_5_GPIO5__FUNC_GPIO5>,
-> +				 <MT8365_PIN_6_GPIO6__FUNC_GPIO6>,
-> +				 <MT8365_PIN_7_GPIO7__FUNC_GPIO7>,
-> +				 <MT8365_PIN_8_GPIO8__FUNC_GPIO8>,
-> +				 <MT8365_PIN_9_GPIO9__FUNC_GPIO9>,
-> +				 <MT8365_PIN_10_GPIO10__FUNC_GPIO10>,
-> +				 <MT8365_PIN_11_GPIO11__FUNC_GPIO11>,
-> +				 <MT8365_PIN_12_GPIO12__FUNC_GPIO12>,
-> +				 <MT8365_PIN_13_GPIO13__FUNC_GPIO13>,
-> +				 <MT8365_PIN_14_GPIO14__FUNC_GPIO14>,
-> +				 <MT8365_PIN_15_GPIO15__FUNC_GPIO15>;
-> +		};
-> +	};
-> +
->   	ethernet_pins: ethernet-pins {
->   		phy_reset_pins {
->   			pinmux = <MT8365_PIN_133_TDM_TX_DATA1__FUNC_GPIO133>;
-> @@ -222,6 +376,34 @@ pins {
->   		};
->   	};
->   
-> +	i2c1_pins: i2c1-pins {
-> +		pins {
-> +			pinmux = <MT8365_PIN_59_SDA1__FUNC_SDA1_0>,
-> +				 <MT8365_PIN_60_SCL1__FUNC_SCL1_0>;
-> +			bias-pull-up;
-> +		};
-> +	};
-> +
-> +	ite_pins: ite-pins {
-> +
-
-extra blank line, please remove.
-
-> +		irq_ite_pins {
-
-Did you run dtbs_check?!? :-)
-
-Cheers,
-Angelo
-
-> +			pinmux = <MT8365_PIN_68_CMDAT0__FUNC_GPIO68>;
-> +			input-enable;
-> +			bias-pull-up;
-> +		};
-> +
-> +		pwr_pins {
-> +			pinmux = <MT8365_PIN_70_CMDAT2__FUNC_GPIO70>,
-> +				 <MT8365_PIN_71_CMDAT3__FUNC_GPIO71>;
-> +			output-high;
-> +		};
-> +
-> +		rst_ite_pins {
-> +			pinmux = <MT8365_PIN_69_CMDAT1__FUNC_GPIO69>;
-> +			output-high;
-> +		};
-> +	};
-> +
->   	mmc0_default_pins: mmc0-default-pins {
->   		clk-pins {
->   			pinmux = <MT8365_PIN_99_MSDC0_CLK__FUNC_MSDC0_CLK>;
-> 
-
-
+Paolo
 
 
