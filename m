@@ -1,68 +1,62 @@
-Return-Path: <linux-kernel+bounces-148013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F38B48A7C99
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:53:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D4BF8A7CA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:02:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DAE91F21B53
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:53:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B38351C21046
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:02:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C6E6A356;
-	Wed, 17 Apr 2024 06:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C2286A335;
+	Wed, 17 Apr 2024 07:02:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="KobxSWXE"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	dkim=pass (2048-bit key) header.d=herrie.org header.i=@herrie.org header.b="ZPvF+/BI"
+Received: from outbound8.mail.transip.nl (outbound8.mail.transip.nl [136.144.136.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B24657DE;
-	Wed, 17 Apr 2024 06:53:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EDF5524BC;
+	Wed, 17 Apr 2024 07:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.144.136.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713336812; cv=none; b=giQEcOLaFI/CKXvaI34x7ezJw35HbTv1GLfxAatHLg/l+MsbiFHf4bFPWQJ76doQlrrPHH3Ig7QV3l3gAUOZrtpJkBX0PonrGqLfTha64x0lEJFF9CBcreSKhS0MmYaXcreFdeBkohuO4B3kCL8RUJgN3+iWb9B4QHXoEosvnYQ=
+	t=1713337341; cv=none; b=RtwWAMOrZmy7foAhs3fFSVNUOvfwilrhVmb0tqnEs43zDOns/VV1QUUSmZHovi5QG+1xbkiGm3YYSk3GUaYiIz5mcUgW5JqQ5SWjvyFQ9DykKYrfZCWXfKPAMgTa3lp7lyMiEq7gIj8XoWx/cTcho8NovZEntIPlFFkB22C7yWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713336812; c=relaxed/simple;
-	bh=6ii3AfRuA3sPBb951dxEXqbfa4ijMl3yiXbKuoGNAsw=;
+	s=arc-20240116; t=1713337341; c=relaxed/simple;
+	bh=oyTv7o1eonYTsAfT4cfj7AhE76HukCBjbWZvcV2c8dw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=R55iR02ZdK3Zz1LkDlvPLlVK8EtuEf7yA4Gxp7idlfVbmX3i6M57tbHuUhgvRK8HqfG16cQcxMm9kV2PwiUMWQnbNaOF7kpxHZct/89/cJxgEpS2UWC7xGmB5tghAkgcB7cnpyYIGEq1/4Av0blcAyGxZtZf5g12Ehxr4iTZxmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=KobxSWXE; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B3039240008;
-	Wed, 17 Apr 2024 06:53:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713336803;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/b/Bao1n++Z1U5an6jjhD+dXCmOsGr+liOlM7nOxZvM=;
-	b=KobxSWXEW6BiPs+AYecBL9IdtQJL8BhOcLZAYA+zlTOlDBkErRWan0EAHw5n2vLWvTFZSC
-	QTWMGSCAH8Jq6tNsRss/Au19gEeDJ69/QxnLj1P2opvUpK88aHT4ZRIpU0q6pdzDf6Nfdp
-	t9ryniF5JK8Xb7BsdVKg+noEAnVb1MjCByLmcY4p3u3OLIdThH5RQmHbHbGIalYTqYXzZQ
-	dr62GOd3LOzu/853nw5422qaQr0LMi/oVbGaUoX59Id1knA1T+bp02R3akYMT1XIIw2RKX
-	zOUu42gWcTI2c2Tajik951NU/GsMT8gLgTiD4mtmqygCtyDsr4dgsqZFOZAszA==
-From: michael.opdenacker@bootlin.com
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	 MIME-Version; b=e2lH7OKxHxP3Hihi1rGbMoEw45MpvOaOcWedyOzRqoh2RD9ODPUHwK1L9TJuMeiR2mRDWYn201fLBbJpUO19kaAdiQMDFcgqwfFINEYY++nBP995lCb5jaFCP4qrmJr+s74OliaNk70ROV73cy4LvG8gXXSDTSa1FNinGbQu/N8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=herrie.org; spf=pass smtp.mailfrom=herrie.org; dkim=pass (2048-bit key) header.d=herrie.org header.i=@herrie.org header.b=ZPvF+/BI; arc=none smtp.client-ip=136.144.136.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=herrie.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=herrie.org
+Received: from submission4.mail.transip.nl (unknown [10.103.8.155])
+	by outbound8.mail.transip.nl (Postfix) with ESMTP id 4VKBVX4TpjzY75qH;
+	Wed, 17 Apr 2024 08:55:00 +0200 (CEST)
+Received: from herrie-desktop.. (110-31-146-85.ftth.glasoperator.nl [85.146.31.110])
+	by submission4.mail.transip.nl (Postfix) with ESMTPA id 4VKBVW5l7qznTZy;
+	Wed, 17 Apr 2024 08:54:59 +0200 (CEST)
+From: Herman van Hazendonk <github.com@herrie.org>
+To: github.com@herrie.org
+Cc: benwolsieffer@gmail.com,
+	chris.chapuis@gmail.com,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Chen Wang <unicorn_wang@outlook.com>,
-	Inochi Amaoto <inochiama@outlook.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Cc: Michael Opdenacker <michael.opdenacker@bootlin.com>,
+	linux-arm-msm@vger.kernel.org,
+	linux-phy@lists.infradead.org,
 	devicetree@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/2] riscv: dts: sophgo: add initial Milk-V Duo S board support
-Date: Wed, 17 Apr 2024 08:53:11 +0200
-Message-Id: <20240417065311.3881023-3-michael.opdenacker@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240417065311.3881023-1-michael.opdenacker@bootlin.com>
-References: <20240417065311.3881023-1-michael.opdenacker@bootlin.com>
+Subject: [PATCH v3] dt-bindings: phy: qcom,usb-hs-phy: Add compatible
+Date: Wed, 17 Apr 2024 08:54:54 +0200
+Message-Id: <20240417065454.3599824-1-github.com@herrie.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240417065020.3599755-1-github.com@herrie.org>
+References: <20240417065020.3599755-1-github.com@herrie.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,74 +64,45 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: michael.opdenacker@bootlin.com
+X-Scanned-By: ClueGetter at submission4.mail.transip.nl
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=transip-a; d=herrie.org; t=1713336900; h=from:subject:to:cc:
+ references:in-reply-to:date:mime-version;
+ bh=D6JFtwlOS+AWIs+Hh5HvpbMUdPE/n8YDLeJQmQvnz18=;
+ b=ZPvF+/BIPf/+uVoF/uO9Aw8JuwmI4AgXWBQGcK8Se6yLI1h7Rxof7+zTHSJcKP+Tla5crz
+ HUAimAbPFQ34MASE9P8Es2h7qZoH7g2XhB31t837Hu+/4H++isT/dBh4VMvUI0bAYz4+BO
+ gNsab8paxHjf+LWEFheDknSLmp+Ko8M3KYjiVhdhPmiamBQ/85DhIvHmM/98ZPOjMdAy9/
+ LfMnnWCEYz2EskriHJUkJFbOzA8HjTJvhF4LjWv5elED7Qe474A829cDRBYlWUqbcWqBKO
+ yHatklDkMyWU/WQm2tdstnF5JgcNM5i5IJ9AX7hkU1WNBfotYwWefQnO+MNJZQ==
+X-Report-Abuse-To: abuse@transip.nl
 
-From: Michael Opdenacker <michael.opdenacker@bootlin.com>
+Adds qcom,usb-hs-phy-msm8660 compatible
 
-This adds initial support for the Milk-V Duo S board
-(https://milkv.io/duo-s), enabling the serial port,
-making it possible to boot Linux to the command line.
+Used by HP Touchpad (tenderloin) for example.
 
-Link: https://lore.kernel.org/linux-riscv/171266958507.1032617.9460749136730849811.robh@kernel.org/T/#t
-
-Signed-off-by: Michael Opdenacker <michael.opdenacker@bootlin.com>
+Signed-off-by: Herman van Hazendonk <github.com@herrie.org>
 ---
- arch/riscv/boot/dts/sophgo/Makefile           |  1 +
- .../boot/dts/sophgo/sg2000-milkv-duos.dts     | 34 +++++++++++++++++++
- 2 files changed, 35 insertions(+)
- create mode 100644 arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts
+ Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/riscv/boot/dts/sophgo/Makefile b/arch/riscv/boot/dts/sophgo/Makefile
-index 57ad82a61ea6..e008acb5240f 100644
---- a/arch/riscv/boot/dts/sophgo/Makefile
-+++ b/arch/riscv/boot/dts/sophgo/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
- dtb-$(CONFIG_ARCH_SOPHGO) += cv1800b-milkv-duo.dtb
- dtb-$(CONFIG_ARCH_SOPHGO) += cv1812h-huashan-pi.dtb
-+dtb-$(CONFIG_ARCH_SOPHGO) += sg2000-milkv-duos.dtb
- dtb-$(CONFIG_ARCH_SOPHGO) += sg2042-milkv-pioneer.dtb
-diff --git a/arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts b/arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts
-new file mode 100644
-index 000000000000..c1ecf97d5e93
---- /dev/null
-+++ b/arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (C) 2024 Michael Opdenacker <michael.opdenacker@bootlin.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include "cv1812h.dtsi"
-+
-+/ {
-+	model = "Milk-V Duo S";
-+	compatible = "milkv,duos", "sophgo,cv1812h";
-+
-+	aliases {
-+		serial0 = &uart0;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x80000000 0x20000000>;
-+	};
-+};
-+
-+&osc {
-+	clock-frequency = <25000000>;
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
--- 
-2.34.1
-
+diff --git a/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
+index f042d6af1594..e03b516c698c 100644
+--- a/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
++++ b/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
+@@ -15,6 +15,7 @@ if:
+       contains:
+         enum:
+           - qcom,usb-hs-phy-apq8064
++          - qcom,usb-hs-phy-msm8660
+           - qcom,usb-hs-phy-msm8960
+ then:
+   properties:
+@@ -41,6 +42,7 @@ properties:
+       - enum:
+           - qcom,usb-hs-phy-apq8064
+           - qcom,usb-hs-phy-msm8226
++          - qcom,usb-hs-phy-msm8660
+           - qcom,usb-hs-phy-msm8916
+           - qcom,usb-hs-phy-msm8960
+           - qcom,usb-hs-phy-msm8974
 
