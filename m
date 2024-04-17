@@ -1,83 +1,81 @@
-Return-Path: <linux-kernel+bounces-148171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E2C28A7EA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:48:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 748C38A7EA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:49:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0BB51F223B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:48:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDF571F2228A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:49:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795BD12837C;
-	Wed, 17 Apr 2024 08:48:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F2AC128372;
+	Wed, 17 Apr 2024 08:49:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="eL0mnwE/"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2070.outbound.protection.outlook.com [40.107.244.70])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="S1P/1I75"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2083.outbound.protection.outlook.com [40.107.244.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E756A338
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 08:48:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66EA92744B
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 08:49:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.83
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713343713; cv=fail; b=hsg+z6VFMGzf90tdJnDFXJrhvDL7R0gk4zANpLCmQj5SHMBO7jSLagy8NWOmuThLXICXBFZ8339DTKAWMLm46HvrT8t61pd6/ueZ/SfPShR2Vc8MiZ6E8c/5+5b4l+VyGZQCkIV2iAvRC9rQiaoO/X7EnU2jGIJ3tB3CPJJumHk=
+	t=1713343743; cv=fail; b=dje/+z2EJgVD98wobuT7fNLEPldZcUNH0ZzQYCYgSAZCyxiDg2fLmijeQoMUbl1UjuT/S40abGPMHtu8/AGNNZkZhCpqqMbeR7Fk8W3LOdYdPCJVL/Y6lspB1dpxicBR95wBCrxq4a9d63qE2YkrPGcwrZ2shaZI9U4ws+6yDew=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713343713; c=relaxed/simple;
-	bh=WgaQSERREQrOU0xx7pMUXrj2EEKUtOZ1qLbF577tnC4=;
+	s=arc-20240116; t=1713343743; c=relaxed/simple;
+	bh=vWURJ4Op2c0DaxitUAQJ1m02w4Na03PYa9l8peyl6cQ=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=upcaCuNubrk0WFnT4y1QtF/fJ1Y7MIfqTwf83WmUjybwwkkqh64+nOAdq4I+jlpl9aL8jEOGWCg/LpDlUClsHppn28Ny9gbH0svVa806ucUxVXZBuE62c+iILGIddHTxJAPTqdExzO8TKdpPd4kXc+HVsJGnBZ+2hvXAgyJFpZA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=eL0mnwE/; arc=fail smtp.client-ip=40.107.244.70
+	 Content-Type:MIME-Version; b=hiT8V7s0pcTurdgm5X4VatQaGU/9f+pl3zqmyLb2zLW5JweLMU8b1H6dnplwG/zUkXjNtNxx+29ld9ub56tNjlIaKdrIrqqt/uqDtTq1hU/c5+1Qd4lt7y/oEicz7hEUZX16rSnVoiIA2Z/ePIlXq3fzyyu1qgR3Lm6rSjCL/8M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=S1P/1I75; arc=fail smtp.client-ip=40.107.244.83
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bq9DtK+e2kzzkQxbkVAJGLkZg0/l/36xN09/q3ta06dK/yx8zKoHhr3Hz6Z+Ru7bd2cgHwOwmW+DP7YidTsNS5DWDKYOT1219i5Ovv37aBRrit92/b8bmUtbnZrwIz+Pp8eWnRlyK3c05TK4AnasYU4jckyjSVcFv/KwOAGHTxAZRFF9SFjITVV3TNdnuZ/b2paHtcSn+j6qqeyTzUmDCFhQO3b/JzK2O/kZG4RJTchClUvr2k8YEKcU7/2fonc2jebS+nbxIqDFmLGXRK1uaFFN/wofa8u3GSeUxPQx+U5ll0crjd3Gk5ong8O+ReRbVvz5nS9S6lnQ+ZasgqugPQ==
+ b=lB1r5hbouUslEOj26Hgfdq4h442eEjED4HWxNeeSgsipp7uWtJg0ARhyXRs8qe+FPQJs/LbrWFAyxc3wYEQ5ovnvhNUQWn4bgs39eJrwdEcjg8k3AY3E6xikZP/NGPBXkaWCD29hNGdpbCGsDvjwNsm9knlz0wOxCmCsNEY7TKtuzax28qme5C7em/+T7gQCqMeOJMvqTjPoZTb0NbRhLxGnFh3h0kaWlDYjdjvuACvLGEbcPSOzAUWgF36ehDcTx0Rct0R38rSPHo6ZtUTJc/kwd5xzRqnJUKrY7kLsjYucpeMWvZxyi6MpMX3Zsb+6gateyQ2Zn8CYbfu4/FLXcw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Z06tkYs5f7NG+q9i5cG0KsRBRO3X5PQVLub9VTnsZnU=;
- b=a+OhIqn5PPglF9aFw64rIk9fJQKWkIzQEtEVQaPnEc78WoC4X1U6RvnOqUodg0rUXpfXxeW6U7Cfp6dhTvfpB9m38vHVSED1FIb+vo876O07I3mlvIMOZsgIDS7hkYmSIF8J5R5TzBnW5HWKW7+cHz6cUGcAPqxMbl+PFJqOaSs5M1Q4Wb6dr5bRonDTB02yZ+uELj4q5MF7GfNsljxnL/5gU9C4J6ueeM70Ne04GMHlAgGEZC/HkKY6I9X3abD6394t14W7qy95VOs1ClRoafRsjartEfNRx+mEFZ/T7KP8t6MKFNiIG7wyP2bZ9IU+BFDYngxMYcU5ixwJpHGyig==
+ bh=cgGtYAuUKYk+7RKFj8VAL6p8YH1ugxOttZ8HEWZkDEA=;
+ b=egU16XZmAWqRySEZc+Z/jfnha6CBOlJnyx0RZ+/1r+QkKl35iRLSnys3f2nM5OLIE7nVezdNBhi52pGRAVbuHkMWcC0h4PE3BGg4XeAa9Ldnrlpi4qlIKn6CZOTWfis4AdOSOWNbBiFWHicnamwfCN7cJvmpYFJhVwI+ZGw2KEc6SUGcwqnyGMmmR/+riKFPZr67Mj+etk95vL7aK0JU5TVfCP8cbLLCCZ0yZWWzlNu69OCl6MuWCzay+xl68NpMSSRynbUp6pVJr4VuzbRUoV9akj0QgeHx1GYdBKyGIB1ndBpY/3oCmMIEv5UZcCcthFv4ncNDa2N6zeM/MNwgtA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z06tkYs5f7NG+q9i5cG0KsRBRO3X5PQVLub9VTnsZnU=;
- b=eL0mnwE/seZLvNgzGQ9DJ+xFJWD0ayasgp3iMgR2mOPYlnbKsUQlBmyRTcJ3alN8NQsn/s1zYEQ65rvYfxfn4agfgaPVJMOtq5X7QLkpr1wEZ+VJgG9FAVe567Mr+wIDUJkkdmnNSAJu/6icNP6hFHkv/dc0V5scdfU6CxkL9pI=
+ bh=cgGtYAuUKYk+7RKFj8VAL6p8YH1ugxOttZ8HEWZkDEA=;
+ b=S1P/1I75/ngX9pEjrOZp9BOIQ49mVRguUmy5qH4gjf5pGXm0WVkr8Z1RCTVJQCI+BaMnzd4VjoqFyyhFK+QrubJgoQm6FK36AHRlBd6mtlh+fzUyY3jtuegHM19KhBDJtiVZHzkeDfDSOpgZtseFQ325fWW/36kt0ODjFhysv7Q=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS7PR12MB6048.namprd12.prod.outlook.com (2603:10b6:8:9f::5) by
- DS0PR12MB8269.namprd12.prod.outlook.com (2603:10b6:8:fd::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.50; Wed, 17 Apr 2024 08:48:29 +0000
-Received: from DS7PR12MB6048.namprd12.prod.outlook.com
- ([fe80::af7d:5f4f:2139:ebd1]) by DS7PR12MB6048.namprd12.prod.outlook.com
- ([fe80::af7d:5f4f:2139:ebd1%4]) with mapi id 15.20.7472.037; Wed, 17 Apr 2024
- 08:48:29 +0000
-Message-ID: <0afc5f25-eeea-4e41-8d5b-38513917d6d8@amd.com>
-Date: Wed, 17 Apr 2024 14:18:18 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: Kernel 6.7 regression doesn't boot if using AMD eGPU
-To: Jason Gunthorpe <jgg@ziepe.ca>, Robin Murphy <robin.murphy@arm.com>
-Cc: Vasant Hegde <vasant.hegde@amd.com>, Eric Wagner <ewagner12@gmail.com>,
- Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
- Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
- iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <CAHudX3zLH6CsRmLE-yb+gRjhh-v4bU5_1jW_xCcxOo_oUUZKYg@mail.gmail.com>
- <20240415163056.GP223006@ziepe.ca>
- <CAHudX3zhagFWBv4isZzAtC8dA7EAAtY6Yk7fkJ31hf0D9zrNqw@mail.gmail.com>
- <65d4d7e0-4d90-48d7-8e4a-d16800df148a@arm.com>
- <20240416003903.GR223006@ziepe.ca>
- <47d4bfd6-1d76-4bb8-a33c-c9c99b86656b@arm.com>
- <20240416114955.GT223006@ziepe.ca>
+Received: from MW2PR12MB2379.namprd12.prod.outlook.com (2603:10b6:907:9::24)
+ by SA1PR12MB7152.namprd12.prod.outlook.com (2603:10b6:806:2b2::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Wed, 17 Apr
+ 2024 08:48:58 +0000
+Received: from MW2PR12MB2379.namprd12.prod.outlook.com
+ ([fe80::494b:99e2:884a:dca1]) by MW2PR12MB2379.namprd12.prod.outlook.com
+ ([fe80::494b:99e2:884a:dca1%3]) with mapi id 15.20.7472.037; Wed, 17 Apr 2024
+ 08:48:57 +0000
+Message-ID: <7592f555-21f8-284a-dbc7-0a6ab4d42c0d@amd.com>
+Date: Wed, 17 Apr 2024 14:18:46 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v4 0/8] sched: Implement shared runqueue in fair.c
 Content-Language: en-US
-From: Vasant Hegde <vashegde@amd.com>
-In-Reply-To: <20240416114955.GT223006@ziepe.ca>
+To: David Vernet <void@manifault.com>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+ bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+ vschneid@redhat.com, youssefesmat@google.com, joelaf@google.com,
+ roman.gushchin@linux.dev, yu.c.chen@intel.com, gautham.shenoy@amd.com,
+ aboorvad@linux.vnet.ibm.com, wuyun.abel@bytedance.com, tj@kernel.org,
+ kernel-team@meta.com, linux-kernel@vger.kernel.org
+References: <20231212003141.216236-1-void@manifault.com>
+From: K Prateek Nayak <kprateek.nayak@amd.com>
+In-Reply-To: <20231212003141.216236-1-void@manifault.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BMXPR01CA0095.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:54::35) To DS7PR12MB6048.namprd12.prod.outlook.com
- (2603:10b6:8:9f::5)
+X-ClientProxiedBy: PN0PR01CA0052.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:49::21) To MW2PR12MB2379.namprd12.prod.outlook.com
+ (2603:10b6:907:9::24)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,153 +83,239 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6048:EE_|DS0PR12MB8269:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7b182651-1c59-4fd2-2f5b-08dc5ebb2786
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2379:EE_|SA1PR12MB7152:EE_
+X-MS-Office365-Filtering-Correlation-Id: 65e7997d-e31c-4405-993f-08dc5ebb37e8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	amcXkmiHhnZ6Ce0g0+HzlSzsPBKNh5KqBTsQGqhBwUqZ/w+hRDqwLezEpSbEDCMdYdMBth6ieL2LgAJ4T9Xk6D7iIdLIOgtItdO8qDfA5l1SfKv/oOaChCJO6fNw+Mo8EdhA6FEk977nJFct2mRloIKu/85z4U8iwOUQdfKqO9Bkzo+5zVNxhPIIlKyAZotxHsb5hDyZ+H4jxVc5D4FggRjU3Xrvq5AUFqT2CpoPX8Y6AeiJvX7vcptq/q99SngEcjPUYHxWlHdYE9epfSFH1kOWCfVBtiN6lzk9EwgWiuUHE6Yo4mL4r9nt+o/eq1U0GyYPOXPrALWWF4BKU+B8eKbRIWR/iLfpCM24e5wCBaHNaecVQjrtnZaCuCBL6a1E9K6Xe/sIQijNbCrbHVqI8Ds77UicFhulI+UgYn/6RpjXQjXUQCwc23jGkX3yNzbzEViV72QXIpH3RY2FcCEarCC5D5awWb1nh79do3y9dQtmk2VUu4PLi1INqMLsCbgeNfmpoKEPk2L0xbif7rA8tHAGVp5k91FhgNlyu/nmk29HjgXM8LpERXVTY9kpa8QB3DfNlpdsvbImEYksvklGnU/7171u4LcbBaz3Veq8ToTfc7Z/BNmA6TPebcm20S4sY2H/nIZDc6C/o5Nx479571m7M6878On98RLQtyRIPt0=
+	gXblzDW4Q0Rb6/ffbrE4uJfQ8PkvRvYhbw5J1VhJmYP5FMRlhvYAX1CXrC0xNHUgUJ3Nz0mATIppnOixPAzk4WLcM+xlhRHkRbI9K0tm3N3xxPLCUWcGVsdb26jZAzWa/sDrC8OxqcCvh13WuChReucSg0q3HuJaAW2KgHW4aziNZO6tFnI+jRRFo71qSE6XdfhfO4+msKvgcHJeGWypD21e1aOPtHJgoiBYxG0NzTQyDgrK474OtShNmjDQksX3rb3Tda3xjob7mIQgT6jqB9VCdDAoSyOKPHUUVOUSFt91/EhH3AAX8KZDH4FhnSAC+VGFIhH4yFJ93LcIKCNmxmCO0VAZplN0zMiOYgWR5LmGKLXlJtCcqRUDC1UgBMQpQWtikxx0/KBgYCmQeUdtq4VIsupTYEyhoJ7N8ik+2M4Y2vshExBeG4kRcM8OLf/zMdJcDL+Xvg1paIoiubeXaD5qgF/hq10uTaRktIpI38LHcQUCHIy3YgLcfJrgwhSDQ9cf4T0WRX9iAGQ8OjrhI71nIpasd7pSHYrRRz7td5pDSSzhk8jn8OqaMNqzswWkBjGxdW5kcgwgeDv9VgJqlY4pt1Qb1UJgc/1oyg63UW6kBo++SGCG2xeYzaZgR8dUnN6G90ApfWF4uoQeoNmyiIdN81jxQg9PAPC/DS8geVE=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6048.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB2379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?QmUxSE56LzJtVHZzS3prMEN1cXBhY1RGZGs0VlZnV0grYVZ4TExzUmVrc3BH?=
- =?utf-8?B?S2ZBSHJtQ3M3aWFPR2VsZHNjd25TNkI5SmJEcnU0VXh4bjd1OTJXNGM3bnYx?=
- =?utf-8?B?SU1YSHdsZU10aStheG5vWTBabE1pS0hTOWRNcTZPU0ltcFRxWDd1NFJGNm5P?=
- =?utf-8?B?eVlEN2ZDR1pHY1NEVFM5LzQ2ajY0cU5qalhKalc1TnJTQkZyS0EydzA4Mmh4?=
- =?utf-8?B?MkVlaHUrc0c1aGdmQ3ZZNzYwUUJLS3FKOWpSVUFRNGxzUG5mQm9UcE53aU80?=
- =?utf-8?B?RDVYb3dwcUI4blFacGdXTUtJUFAvNS83VjBNN2V3aUl2V3JxZy8vemxXQ0Ro?=
- =?utf-8?B?SzgxL0Y1SDdheTlKN3pPdUVNb2luTnNiLzZHV0J0WUpMWVpCUGVpOUdWcEFu?=
- =?utf-8?B?eGxZVlVxc0tBTVRFSmhRdjFVVk4zRTA5TkRUa21nTEFONUpKMDZ5S1RsNnAy?=
- =?utf-8?B?bGFoSnNkci9acTJuT0FIT1RlUCs1NnFLN1ZsNFUxMFpZZGRrU3didTNLNnJi?=
- =?utf-8?B?aGlqd3dDOVAyeThPZkhPS3J3SlJvd1FWUFNmUHdMK1doOVM5ci80S3g2YUF4?=
- =?utf-8?B?K05GOXpNdVNMUCtCS3dYYmJQUjhPcHhVUWJTZTR0bGhlZnQ0eUNsVDZGZElI?=
- =?utf-8?B?Ni90bU9Fb0h4KzVGbStnZlViM3piTmlsNCtqTlJNMzZ4Rk9mLzc1dHhJaitQ?=
- =?utf-8?B?REs3eXg2UFF5RHZEOGhwMTdWTVFNK0VrZzRVUTQySVB4ZXRoRVFrK1ZwM2Nz?=
- =?utf-8?B?Ny80R05lR0NrNmlnYldqRWlkQ25yaFF0QjNuM3Vsb1NVR3lvNzc0R1IxZXVM?=
- =?utf-8?B?NStNOWdUSzZJSnI4S3ltZ25uT0RZeE4vbzhSd04yWEhjZjIxaU1pN0hRbmF1?=
- =?utf-8?B?cUhTTzZueloxV1VhNjhNcGo5UTEvZjVpMG1MUXEySnc5QWpENWpnN2pZcGtZ?=
- =?utf-8?B?YTZJaHNrMHFHV1daWWxyUVMzNGtZamcrSnlnNzkxYnNnTytGV2F0T2l0MllC?=
- =?utf-8?B?NjR5K0JycUpCUTIzMDB1OUdra2g0SW1zaTdMRHNCaHY2TktOQXVtOGd0Z0RM?=
- =?utf-8?B?QkpKbG1FU2NVdCtUOFNuWkVUeDlDRTNZZ0lGa1VTWGxaU0JEUG9iQzVacUEr?=
- =?utf-8?B?NVQ3YVRMZEdrNlE5YnlXM0pVb0s2MlJlK2lNQ3FHM3QvWEpsQkl3SDAxOWNL?=
- =?utf-8?B?T2JSS045QVRKb0JNU0hrMko1TFpCeHlHb3h1dXZnQ2J1WkRkTlM0MktWby9G?=
- =?utf-8?B?eWxWWFdlUTRiZWNDbmhvbFptSHU4MEY2Uk4xT3ZNWGZNanorTUlnSzFla3hl?=
- =?utf-8?B?SWlNR2g5VFh2cERpUlVTam14aEo0c29ieFJwTjZZZlNOeDRCdjc5MkhHYitU?=
- =?utf-8?B?YjRwekYveVdtWHBQckpBSHJBc2JlVGdKQVFaTENJVTVTMGdXSzFheXRZQmY2?=
- =?utf-8?B?allVWjUrOGpHdzJSTnZYMVZsUEhROHpkMEsxN0ZrRGNVem5RL3NaaFpJQTZD?=
- =?utf-8?B?QUNuVVlTaFJHby9iTWh4cUc5aUV2M0VvYXRyKzBtOFZZZUIzc3Q5WjRrVTAy?=
- =?utf-8?B?WmNRL3VxTkRQbTZJNlR5WDRCTVdIWGp2RGNCN01IWkh4YjRvZWxSMnZhOUhR?=
- =?utf-8?B?amVad3FaRGw3bUpVR1F3ZjdPV3RaVkFmOCs3emthbW42U280SnFmTExTcHR2?=
- =?utf-8?B?QmVwMERzNnN5TlpGNi9LcU5TbEI0VzE0ZkcybktMNGN6TUZydWl2QnczMUxa?=
- =?utf-8?B?WDRzaEd6YThLV25mdzUzaXk5T0JxU2pVdUl0ZnUrTmU5OXh0S0pueTdneC9Y?=
- =?utf-8?B?RElIL0tlSC9mbnRVaTM3Snp1Z2QrMUNEZExTblVqbWtHbVNrMUJJVXYxb2pL?=
- =?utf-8?B?VjBTUkZ1MWVHUlZ2Y0tqaUptYXlPVTZ6b1hZbUpiSERTR2orWkpkZ1Z2Vnds?=
- =?utf-8?B?azVLYU05eGZLUWJMY1R5MGV5dEM3R1gvOSt3cks0ZkNERDk2eTkxb25sV1VZ?=
- =?utf-8?B?QzBkVnhSYnFoSHF4VnNzK3p6aC9ZSy9jYlRGWXhVVzdoRGJaVVJVU0doNkVr?=
- =?utf-8?B?QTRqVG9ha0Q4OS8yWnUzRUhBbW5rbWUrNDFjZDZlMWVQcFNGUll1Z2QzNFEv?=
- =?utf-8?Q?uhfFPmE2Tp2CQeQhID/O1gksm?=
+	=?utf-8?B?TGhUK0NybDA2L0RQT0IwQkVHS2JIOVN3TXlYdHkrVEN4Y3BvMG1tUndWKzRz?=
+ =?utf-8?B?NHEvYXM3dWFUUlRhdU5wcUVBbitrbDFFTkF3Qjd0MUhrMzNFYjNWdlgyNFhZ?=
+ =?utf-8?B?bFlIVVpQQStjNXNuV2hpdWd0WU56cCtsb2Q0K1JYbURKcDNYSEtpamlzd2Zi?=
+ =?utf-8?B?MkJWTjJqNFRwOWY3M2ZoNjcyQmFiUGY0dXhQSkZLZi9BWFFZamFydktGUVVW?=
+ =?utf-8?B?d2ZsWjFXUHk0UXhuYVV3WWJ6VHFIMU9DVzZmUUs5TTIwOUhFODBKOGczRk95?=
+ =?utf-8?B?Vk1hZiticy9ObUphWlpMWDZhbzFPL0VuMno3OW82Nis1RWxOeFY5aG9sODFH?=
+ =?utf-8?B?SnhmY3h6WDhMdEkyS2kyL0VxbFBPTXVyaGhUM3hMSWZybjNPR1krWnRUM2k1?=
+ =?utf-8?B?SGc3NmlkSzBuT2kxbkpad3pCR09CSU5rWm96Y3JrVUswMzdnUi9HUHhCdHBS?=
+ =?utf-8?B?NG8rK01mWlVmREZSMGJxWUJNcHVVK0FpNDMxUXdrSk9NTTJSKzBYcmlpcWVP?=
+ =?utf-8?B?TStYcUhLYlRMOTdkOVRNVFJQV3dMUE5oSzBLU2poOVlhYUNtakkvWnJHUWE3?=
+ =?utf-8?B?TEkvSnBGWHF1Y0JXRFRTcnJNK3RJUEtWeG1HT1hJSW5YalorWCtzOVFJbitZ?=
+ =?utf-8?B?TS9MbDNxUFVjSW56S0xvVGkxUGVJUVlyREd5VTFJNHFoN0pwajVLTkxObzBq?=
+ =?utf-8?B?YTQ4NUoyK3d6RlJ2TExGK3pwdUppOHArT1diK1Bjc09BaXdyT1pPaGllaVlF?=
+ =?utf-8?B?YTY2citHYm16RmlSTlRXc05uYUNTV2poOW02dEdHeXdVc1k2VmJqLy9jVEsy?=
+ =?utf-8?B?TVZIQ2cvNnFhT0RqTDlZV2Q4Rmlma215c3NFNkdXeWFQWUFvN2t6bnNUWVF5?=
+ =?utf-8?B?ODByaUVXR2ZybUJCR3g1L2p3eTliV0FMNER4MGJLQ1ZPcDRaTEpqSjhxTlZq?=
+ =?utf-8?B?VWFHbExkaW9vaVo1TlpUZ0plT2NNMHFMZUg1c3ZXVDVvS0k5ZnFHSDIrSC9T?=
+ =?utf-8?B?WlkxNUsva1JTVS9XWWlBOG02MXc5TjRQaW0wWjh1VjEzNTg1ekd3eEo1ZURG?=
+ =?utf-8?B?TTl1OFJjQ0ZRSkUyWnd0RGtWblo5OVViN1lIM2ZjaEorVVcwZUJ0d3FtYnQx?=
+ =?utf-8?B?YzZGTU5FUzBzR0x5NGdIb3lsRU8vSGUwOTNEM25KdFR3WFhHMDVPZUJLVHhW?=
+ =?utf-8?B?Q21IUm5Ld1NUZjQ2MUU2MzgzQmJuSmMzZjA1a2VwT2FxTFRLQ2o5WGNpY1Fq?=
+ =?utf-8?B?eHJzYlZGUGtpNk1ia2hNci9pVThFK1l5Yk5jWHh5SE1DT0hieTE0eW9MTWpv?=
+ =?utf-8?B?dVNOdVRydTZFUXlDcUNUZ3JTWkY4VXdBcUZ0OXhKVGtYdGlGQjdZRmpNbEg3?=
+ =?utf-8?B?bmkzalBWc0w0M2VzSTNqcWlUbU85M3lXRTBWRXpSczRNeXpnOUZBaGxyR3BR?=
+ =?utf-8?B?REZpL2tFSFk3Y2MvSUN5ekl0dm5EOWpVbmR1dWlqQ2pza0dkdWNWRjhGOG4w?=
+ =?utf-8?B?SUF2dzJPL1ZnOG1mcGZ3eDlObXo1NENsUzFOeGtlSzZZSytBdnBZcWNyOU5a?=
+ =?utf-8?B?clNhQ0p5NStBVnRCL1J0TlVlMS9yOEJxSGt2QUVWV3oyelVXQXU5a21nY3Vo?=
+ =?utf-8?B?RGN4ZVdmYXRNOGtrVC92VUY5bzJ4UWVtM2lrNy9oeTZNVnRTU3pDNFU1Y0k3?=
+ =?utf-8?B?aFJnd2J3OGtGRjRMV3RqMndJMmp3OXU5N1U2Mll3N0VLT1BxT1J2bTlBV1VY?=
+ =?utf-8?B?NCtmRmRtdFd4VTVyMmNpd2FBRnRjVGFMY2RVL1p6Q3BUcVpJMTNZMFA4K3l3?=
+ =?utf-8?B?aFJTM003YXYvNklORCtLVEQxYmVnU3dWRmJWU0hCanptYlhzTGdlbjI5cGMr?=
+ =?utf-8?B?Z0hkdUZrdlQ4Y24wclpuVE9xTE1GOHFpTG1DTjVwWXdpOU9PRXV2VXBjVDk3?=
+ =?utf-8?B?a3gxbEcvRnVzL0tLZHNmRmkrMjcwRUtoaStvR0JmWXFvMGdqVEJKRW9tb054?=
+ =?utf-8?B?SDhLWjc5RTk5TDNlSzU0NzZGYWVGaFNrNkFDOVRWVkRkemNlNmtha3hMR2lw?=
+ =?utf-8?B?ODFIL2JHTEhEblpaeVdCZ0RSOGh0a093V2t4Q3V5RVZVdVJJNUx0WFpiamd2?=
+ =?utf-8?Q?x0zDRlyvw6dmAGkAGyRHBFBdP?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b182651-1c59-4fd2-2f5b-08dc5ebb2786
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6048.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 65e7997d-e31c-4405-993f-08dc5ebb37e8
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB2379.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 08:48:29.8659
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 08:48:57.2818
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KDMAsEi1YCwul8zsPeKhA16AWisc1hMeep7oauYX6tnCrhYyszcT5+JUrXKk/JGAx68Uo6EKeAH32q3DueqeMA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8269
+X-MS-Exchange-CrossTenant-UserPrincipalName: VwHqIelHM+6vdjvDHe6bnDs/TtaSHMu6wgB9F22K7BLMgf7gX0zIQlxXIfr71pikFfg3ytNtyQinc1PZF/PKQg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7152
 
-Hi,
+Hello David,
 
-
-On 4/16/2024 5:19 PM, Jason Gunthorpe wrote:
-> On Tue, Apr 16, 2024 at 12:25:52PM +0100, Robin Murphy wrote:
->> On 2024-04-16 1:39 am, Jason Gunthorpe wrote:
->>> On Mon, Apr 15, 2024 at 10:44:34PM +0100, Robin Murphy wrote:
->>>> On 2024-04-15 7:57 pm, Eric Wagner wrote:
->>>>> Apologies if I made a mistake in the first bisect, I'm new to kernel
->>>>> debugging.
->>>>>
->>>>> I tested cedc811c76778bdef91d405717acee0de54d8db5 (x86/amd) and
->>>>> 3613047280ec42a4e1350fdc1a6dd161ff4008cc (core) directly and both were good.
->>>>> Then I ran git bisect again with e8cca466a84a75f8ff2a7a31173c99ee6d1c59d2
->>>>> as the bad and 6e6c6d6bc6c96c2477ddfea24a121eb5ee12b7a3 as the good and the
->>>>> bisect log is attached. It ended up at the same commit as before.
->>>>>
->>>>> I've also attached a picture of the boot screen that occurs when it hangs.
->>>>> 0000:05:00.0 is the PCIe bus address of the RX 580 eGPU that's causing the
->>>>> problem.
->>>>
->>>> Looks like 59ddce4418da483 probably broke things most - prior to that, the
->>>> fact that it's behind a Thunderbolt port would have always taken precedence
->>>> and forced IOMMU_DOMAIN_DMA regardless of what the driver may have wanted to
->>>> saywhereas now we ask the driver first, then complain that it conflicts
->>>> with the untrusted status and ultimately don't configure the IOMMU
->>>> at all.
->>>
->>> Yes, if the driver wants to force a domain type it should be
->>> forced. Driver knows best. Eg AMD forces IDENTITY when the HW/driver
->>> is incapable of supporting otherwise.
->>
->> No, in the case of AMD it only forces identity if it thinks the device might
->> want to use PASIDs (because of the architectural limitation that the RID
->> always operates in GPA space so can't have its own independent translation).
+On 12/12/2023 6:01 AM, David Vernet wrote:
+> This is v4 of the shared runqueue patchset. This patch set is based off
+> of commit 418146e39891 ("freezer,sched: Clean saved_state when restoring
+> it during thaw") on the sched/core branch of tip.git.
 > 
-> AMD forces this because it doesn't yet have a way to automatically
-> choose it's v1/v2 page table format during alloc domain. It is just a
-> SW bug.
+> In prior versions of this patch set, I was observing consistent and
+> statistically significant wins for several benchmarks when this feature
+> was enabled, such as kernel compile and hackbench. After rebasing onto
+> the latest sched/core on tip.git, I'm no longer observing these wins,
+> and in fact observe some performance loss with SHARED_RUNQ on hackbench.
+> I ended up bisecting this to when EEVDF was merged.
+> 
+> As I mentioned in [0], our plan for now is to take a step back and
+> re-evaluate how we want to proceed with this patch set. That said, I did
+> want to send this out in the interim in case it could be of interest to
+> anyone else who would like to continue to experiment with it.
 
-Yes. This will be fixed.
+I was doing a bunch of testing prior to OSPM in case folks wanted to
+discuss the results. Leaving the results of SHARED_RUNQ runs from a
+recent-ish tip below.
+
+tl;dr
+
+- I haven't dug deeper into the regressions but the most prominent one
+  seems to be hackbench with lower number of groups but the picture
+  flips with higher number of groups.
+
+Other benchmarks behave more or less similar to the tip. I'll leave the
+full results below: 
+
+o System Details
+
+- 3rd Generation EPYC System
+- 2 x 64C/128T
+- NPS1 mode
+
+o Kernels
+
+tip:			tip:sched/core at commit 8cec3dd9e593
+			("sched/core: Simplify code by removing
+			 duplicate #ifdefs")
+
+shared_runq:		tip + this series
+
+o Results
+
+==================================================================
+Test          : hackbench
+Units         : Normalized time in seconds
+Interpretation: Lower is better
+Statistic     : AMean
+==================================================================
+Case:           tip[pct imp](CV)    shared_runq[pct imp](CV)
+ 1-groups     1.00 [ -0.00]( 1.80)     4.49 [-349.19](92.14)
+ 2-groups     1.00 [ -0.00]( 1.76)     1.02 [ -2.17](19.20)
+ 4-groups     1.00 [ -0.00]( 1.82)     0.86 [ 13.53]( 1.37)
+ 8-groups     1.00 [ -0.00]( 1.40)     0.91 [  8.73]( 2.39)
+16-groups     1.00 [ -0.00]( 3.38)     0.91 [  9.47]( 2.39)
+
+
+==================================================================
+Test          : tbench
+Units         : Normalized throughput
+Interpretation: Higher is better
+Statistic     : AMean
+==================================================================
+Clients:           tip[pct imp](CV)    shared_runq[pct imp](CV)
+    1     1.00 [  0.00]( 0.44)     1.00 [ -0.39]( 0.53)
+    2     1.00 [  0.00]( 0.39)     1.00 [ -0.16]( 0.57)
+    4     1.00 [  0.00]( 0.40)     1.00 [ -0.07]( 0.69)
+    8     1.00 [  0.00]( 0.16)     0.99 [ -0.67]( 0.45)
+   16     1.00 [  0.00]( 3.00)     1.03 [  2.86]( 1.23)
+   32     1.00 [  0.00]( 0.84)     1.00 [ -0.32]( 1.46)
+   64     1.00 [  0.00]( 1.66)     0.98 [ -1.60]( 0.79)
+  128     1.00 [  0.00]( 1.04)     1.01 [  0.57]( 0.59)
+  256     1.00 [  0.00]( 0.26)     0.98 [ -1.91]( 2.48)
+  512     1.00 [  0.00]( 0.15)     1.00 [  0.22]( 0.16)
+ 1024     1.00 [  0.00]( 0.20)     1.00 [ -0.37]( 0.02)
+
+
+==================================================================
+Test          : stream-10
+Units         : Normalized Bandwidth, MB/s
+Interpretation: Higher is better
+Statistic     : HMean
+==================================================================
+Test:           tip[pct imp](CV)    shared_runq[pct imp](CV)
+ Copy     1.00 [  0.00]( 6.19)     1.10 [  9.51]( 4.30)
+Scale     1.00 [  0.00]( 6.47)     1.03 [  2.90]( 2.82)
+  Add     1.00 [  0.00]( 6.50)     1.04 [  3.82]( 3.10)
+Triad     1.00 [  0.00]( 5.70)     1.01 [  1.49]( 4.30)
+
+
+==================================================================
+Test          : stream-100
+Units         : Normalized Bandwidth, MB/s
+Interpretation: Higher is better
+Statistic     : HMean
+==================================================================
+Test:           tip[pct imp](CV)    shared_runq[pct imp](CV)
+ Copy     1.00 [  0.00]( 3.22)     1.04 [  3.67]( 2.41)
+Scale     1.00 [  0.00]( 6.17)     1.03 [  2.75]( 1.63)
+  Add     1.00 [  0.00]( 5.12)     1.02 [  2.42]( 2.10)
+Triad     1.00 [  0.00]( 2.29)     1.01 [  1.11]( 1.59)
+
+
+==================================================================
+Test          : netperf
+Units         : Normalized Througput
+Interpretation: Higher is better
+Statistic     : AMean
+==================================================================
+Clients:           tip[pct imp](CV)    shared_runq[pct imp](CV)
+ 1-clients     1.00 [  0.00]( 0.17)     0.99 [ -0.65]( 0.40)
+ 2-clients     1.00 [  0.00]( 0.49)     1.00 [ -0.17]( 0.27)
+ 4-clients     1.00 [  0.00]( 0.65)     1.00 [  0.09]( 0.69)
+ 8-clients     1.00 [  0.00]( 0.56)     1.00 [ -0.05]( 0.61)
+16-clients     1.00 [  0.00]( 0.78)     1.00 [ -0.23]( 0.58)
+32-clients     1.00 [  0.00]( 0.62)     0.98 [ -2.22]( 0.76)
+64-clients     1.00 [  0.00]( 1.41)     0.96 [ -3.75]( 1.19)
+128-clients    1.00 [  0.00]( 0.83)     0.98 [ -2.29]( 0.97)
+256-clients    1.00 [  0.00]( 4.60)     0.96 [ -4.18]( 3.02)
+512-clients    1.00 [  0.00](54.18)     0.99 [ -1.36](52.79)
+
+
+==================================================================
+Test          : schbench
+Units         : Normalized 99th percentile latency in us
+Interpretation: Lower is better
+Statistic     : Median
+==================================================================
+#workers:           tip[pct imp](CV)    shared_runq[pct imp](CV)
+  1     1.00 [ -0.00](34.63)     1.40 [-40.00]( 2.38)
+  2     1.00 [ -0.00]( 2.70)     1.08 [ -8.11]( 7.53)
+  4     1.00 [ -0.00]( 4.70)     0.93 [  6.67]( 7.16)
+  8     1.00 [ -0.00]( 5.09)     0.92 [  7.55](10.20)
+ 16     1.00 [ -0.00]( 5.08)     0.97 [  3.39]( 2.00)
+ 32     1.00 [ -0.00]( 2.91)     1.03 [ -3.33]( 2.22)
+ 64     1.00 [ -0.00]( 2.73)     0.99 [  1.04]( 3.43)
+128     1.00 [ -0.00]( 7.89)     0.99 [  0.69]( 9.65)
+256     1.00 [ -0.00](28.55)     0.92 [  7.94](19.85)
+512     1.00 [ -0.00]( 2.11)     1.13 [-12.69]( 6.41)
+
+
+==================================================================
+Test          : DeathStarBench
+Units         : Normalized throughput
+Interpretation: Higher is better
+Statistic     : Mean
+==================================================================
+Pinning      scaling     tip            shared_runq (pct imp)
+ 1CCD           1       1.00            1.01 (%diff: 1.45%)
+ 2CCD           2       1.00            1.01 (%diff: 1.71%)
+ 4CCD           4       1.00            1.01 (%diff: 1.66%)
+ 8CCD           8       1.00            1.00 (%diff: 0.63%)
+
+--
 
 > 
-> The CC/SNP limitation is also a SW bug but is more fatal as it can't
-> even attach a v1 page table in this mode.
+> [0]: https://lore.kernel.org/all/20231204193001.GA53255@maniforge/
+> 
+> v1 (RFC): https://lore.kernel.org/lkml/20230613052004.2836135-1-void@manifault.com/
+> v2: https://lore.kernel.org/lkml/20230710200342.358255-1-void@manifault.com/
+> v3: https://lore.kernel.org/all/20230809221218.163894-1-void@manifault.com/
+> 
+> [..snip..]
+> 
 
-Memory Encryption needs Encryption bit support. So we enforce Paging mode (Both
-AMD v1 and v2 page table format works fine).
+I'll take a deeper look at the regressions soon. I'll update the thread
+if I find anything interesting in the meantime.
 
-SNP is hardware limitation. When SNP is enabled then IOMMU must be configured
-with v1 page table. It won't support Identity mapping.
-
-> 
->> Either way, though, there's really little sense to that argument - if
->> enforcing strict translation *might* compromise the device's functionality,
->> we should instead go out of our way to ensure it's definitely as broken as
->> possible? I fail to see how that can be justified as useful or desirable
->> behaviour.
-> 
-> For SNP cases the attach of a DMA domain will fail, so yes, moving the
-> failure earlier and giving a clear message is desirable.
-
-Its handled during initialization itself (iommu_snp_enable()). If IOMMU is not
-configured with V1 page table we don't enable SNP.
-
--Vasant
-
-
-> 
->> "Failing" iommu_probe_device is merely how we tell ourselves that we're not
->> interested in a device, and consequently tell the rest of the kernel it
->> doesn't have an IOMMU (via device_iommu_mapped() returning false). 
-> 
-> Probing failing with ENODEV means the device has no iommu and the rest
-> of the code should assume DMA direct will work.
-> 
-> Probing failing with any other error code means the device has an
-> iommu and it couldn't be setup. DMA direct probably won't work today.
-> 
-> If you want all failure codes to mean the device is safe for DMA
-> direct then we need to try and attach the IDENTITY domain on various
-> probe failure paths too.
-> 
->> I think I've now satisfied myself that a simple fix for the core code is
->> appropriate and will write that up now; one other thing I couldn't
->> quite
-> 
-> It really doesn't match the design here.
-> 
-> Jason
+--
+Thanks and Regards,
+Prateek
 
