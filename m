@@ -1,31 +1,31 @@
-Return-Path: <linux-kernel+bounces-148060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA7E28A7D26
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EFCB18A7D27
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:35:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDE281C20E00
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:35:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E7541C210D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:35:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2015D7441F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C459E80638;
 	Wed, 17 Apr 2024 07:34:29 +0000 (UTC)
 Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CDAD7B3C1
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DCBA7BB14
 	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:34:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713339267; cv=none; b=q+9OtdFE8wyepEnkunIrmQyveHhO8YruGIQtYhUdq1YszwvanP/M+G8tMLHy8t5ruh1+JHt2EiM5ZIKJouF2EYG/Ao2tmy00UL1KwrdyQ9GLyN4IzRsMm4AuUefXw9VuMiy3TLg8JzP4bnHBYQaI0U1NZ0hBg6uonSYkWrnJ2Ac=
+	t=1713339268; cv=none; b=Vka0Fbq24t1mVkIKNlA8NAM0onlMMFAuGWO1IJfKX/rvhzF4zynYRBcgkPoJMTYE4wF5s5CQ62ZstoHogY9rebLBehk0z7Fu5lwmHNzCGFiAPpRb8VLxfC860zvrV9/vR0Uoyd0ewxZ9yWOuHNZbBzRqX2jCyh3e4yMrFMmurP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713339267; c=relaxed/simple;
-	bh=Kbkgd8H70pfYdspSdFN3QXQdKpQDFz84yPpR6OVboYw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=JygE4hi4HUe1C6HhNXLmoFz1uDxxCRgi2HRuisHlGvMB9OTtglsBv0W6xBoUF/CKTAZ9Ha6O7GNDBT+jbduP3I/kH+jysblQddZjTb7phpXF9WggUJ8l1DJUFwclkR7YWGiRCTDK7RUEJkwDUbpnBKplB5XIhGAagZM6OkZJWKQ=
+	s=arc-20240116; t=1713339268; c=relaxed/simple;
+	bh=eFi5Wu0m28oGDzaL0rBLfxlUVSsbx0DZkuIuKdmE0jY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=rrRyPvynWnQ6lbji0de6bfOAG8flIXNSnrgLZf17Y0/z09ZxhPFmLNZUKtWkblCERTk8e0TplbKgnb8fg55OzLIjdHcy10Us2IDrz7icKSl0kCLEpdtMdcDR+2LGF05q4PRn+b1anxQr1QChuAD1da6SMM3azf6SFNzlWHcAmH0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d6dff70000001748-b1-661f77e2c364
+X-AuditID: a67dfc5b-d6dff70000001748-b7-661f77e24a4a
 From: Byungchul Park <byungchul@sk.com>
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org
@@ -44,36 +44,36 @@ Cc: kernel_team@skhynix.com,
 	bp@alien8.de,
 	dave.hansen@linux.intel.com,
 	rjgolo@gmail.com
-Subject: [PATCH v9 7/8] mm: add folio_put_mgen() to deliver migrc's generation number to pcp or buddy
-Date: Wed, 17 Apr 2024 16:18:46 +0900
-Message-Id: <20240417071847.29584-8-byungchul@sk.com>
+Subject: [PATCH v9 8/8] mm: defer tlb flush until the source folios at migration actually get used
+Date: Wed, 17 Apr 2024 16:18:47 +0900
+Message-Id: <20240417071847.29584-9-byungchul@sk.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240417071847.29584-1-byungchul@sk.com>
 References: <20240417071847.29584-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBLMWRmVeSWpSXmKPExsXC9ZZnoe6jcvk0gxkf1C3mrF/DZvF5wz82
-	ixcb2hktvq7/xWzx9FMfi8XlXXPYLO6t+c9qcX7XWlaLHUv3MVlcOrCAyeJ47wEmi/n3PrNZ
-	bN40ldni+JSpjBa/fwAVn5w1mcVBwON7ax+Lx85Zd9k9Fmwq9di8Qstj8Z6XTB6bVnWyeWz6
-	NInd4925c+weJ2b8ZvGYdzLQ4/2+q2weW3/ZeTROvcbm8XmTXABfFJdNSmpOZllqkb5dAlfG
-	mc3djAUbFjBWXP7/mK2BcUUjYxcjJ4eEgInE5Ac/WGDsu8+PMIHYbALqEjdu/GQGsUUEzCQO
-	tv5hB7GZBe4ySRzoZwOxhQVSJQ5e3gEWZxFQlXg5fStYnFfAVKJr5gkmiJnyEqs3HACbwwk0
-	Z3PzGrAaIaCa7yc+AtlcQDWf2SRmr5wL1SApcXDFDZYJjLwLGBlWMQpl5pXlJmbmmOhlVOZl
-	Vugl5+duYgSG/7LaP9E7GD9dCD7EKMDBqMTDaxAllybEmlhWXJl7iFGCg1lJhLdFWDZNiDcl
-	sbIqtSg/vqg0J7X4EKM0B4uSOK/Rt/IUIYH0xJLU7NTUgtQimCwTB6dUA2PMyvntHbr1N2Ub
-	UlYckI8skrr9pWdeJL/QjBnsz6Yq2N+3Fhf8raihlXjvz+7l0tdLLhcvPd6e0ntqieEUt/Cw
-	qMIOneYn97VlvA87fp/8v8zzjyfjhPM753ayyByKPqPY0NnqfZLLQpGnSafgxiSTH1FOYh/T
-	Q2KmTf3rtl0pZMnldZsjviixFGckGmoxFxUnAgAy+kDEewIAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPLMWRmVeSWpSXmKPExsXC5WfdrPuoXD7NYN1DGYs569ewWXze8I/N
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGLMWRmVeSWpSXmKPExsXC9ZZnke6jcvk0gxuNehZz1q9hs/i84R+b
+	xYsN7YwWX9f/YrZ4+qmPxeLyrjlsFvfW/Ge1OL9rLavFjqX7mCwuHVjAZHG89wCTxfx7n9ks
+	Nm+aymxxfMpURovfP4CKT86azOIg4PG9tY/FY+esu+weCzaVemxeoeWxeM9LJo9NqzrZPDZ9
+	msTu8e7cOXaPEzN+s3jMOxno8X7fVTaPrb/sPBqnXmPz+LxJLoAvissmJTUnsyy1SN8ugStj
+	/baD7AWLtzJWnL5+iqmBsa+XsYuRk0NCwESi8+UqIJsDzL71rRwkzCagLnHjxk9mEFtEwEzi
+	YOsfdhCbWeAuk8SBfjYQW1ggSeLhtAusIDaLgKrEkZttTCA2r4CpxJy+TUwQ4+UlVm84ADaH
+	E2jO5uY1YL1CQDXfT3xkg6j5zibxYroIhC0pcXDFDZYJjLwLGBlWMQpl5pXlJmbmmOhlVOZl
+	Vugl5+duYgSG/rLaP9E7GD9dCD7EKMDBqMTDaxAllybEmlhWXJl7iFGCg1lJhLdFWDZNiDcl
+	sbIqtSg/vqg0J7X4EKM0B4uSOK/Rt/IUIYH0xJLU7NTUgtQimCwTB6dUA6Nn08adCg9FPZWm
+	5zI78glp13VceXrU0+hjQH50nhLHXaOKfGWePIup9dfmSVtyTknOCFteLv30sRcD9/SMouDs
+	Gfm7rtS8q/j2a5XIu5hXZ2cf8HRt2j1vUf5x81azNsMLJeEmCj/yL+lcEHSodDY7+eTQwV6n
+	f+fOF19OORJ93dlF76+JsRJLcUaioRZzUXEiAMlpBip5AgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHLMWRmVeSWpSXmKPExsXC5WfdrPuoXD7N4MgkBYs569ewWXze8I/N
 	4sWGdkaLr+t/MVs8/dTHYnF47klWi8u75rBZ3Fvzn9Xi/K61rBY7lu5jsrh0YAGTxfHeA0wW
 	8+99ZrPYvGkqs8XxKVMZLX7/ACo+OWsyi4Ogx/fWPhaPnbPusnss2FTqsXmFlsfiPS+ZPDat
 	6mTz2PRpErvHu3Pn2D1OzPjN4jHvZKDH+31X2TwWv/jA5LH1l51H49RrbB6fN8kF8Edx2aSk
-	5mSWpRbp2yVwZZzZ3M1YsGEBY8Xl/4/ZGhhXNDJ2MXJySAiYSNx9foQJxGYTUJe4ceMnM4gt
-	ImAmcbD1DzuIzSxwl0niQD8biC0skCpx8PIOsDiLgKrEy+lbweK8AqYSXTNPMEHMlJdYveEA
-	2BxOoDmbm9eA1QgB1Xw/8ZFtAiPXAkaGVYwimXlluYmZOaZ6xdkZlXmZFXrJ+bmbGIHBvKz2
-	z8QdjF8uux9iFOBgVOLhNYiSSxNiTSwrrsw9xCjBwawkwtsiLJsmxJuSWFmVWpQfX1Sak1p8
-	iFGag0VJnNcrPDVBSCA9sSQ1OzW1ILUIJsvEwSnVwNg3Q8WyRv3wgStWqjsPVP5dzmu9cm/W
-	eWHJ79ViE9tN/mS1FhoIhWz74mXV/vVkn6Pq94RuRzbfV91hJ051fjzqtyvJIlBmbXBpoGPU
-	Rc77cXn/Z0x9acn1II87genAmu9JlgfWPvjOE/Iu/uE+//2z36t8SGG+aZiVvHXGg9/Hvvz7
-	WXiwpVqJpTgj0VCLuag4EQCfLBuuYgIAAA==
+	5mSWpRbp2yVwZazfdpC9YPFWxorT108xNTD29TJ2MXJwSAiYSNz6Vt7FyMnBJqAucePGT2YQ
+	W0TATOJg6x92EJtZ4C6TxIF+NhBbWCBJ4uG0C6wgNouAqsSRm21MIDavgKnEnL5NYLaEgLzE
+	6g0HwOZwAs3Z3LwGrFcIqOb7iY9sExi5FjAyrGIUycwry03MzDHVK87OqMzLrNBLzs/dxAgM
+	5WW1fybuYPxy2f0QowAHoxIPr0GUXJoQa2JZcWXuIUYJDmYlEd4WYdk0Id6UxMqq1KL8+KLS
+	nNTiQ4zSHCxK4rxe4akJQgLpiSWp2ampBalFMFkmDk6pBsbrkwWZNR97HDBLl6stNNpmtlr7
+	/pqzXU2CN75fUJqzoqzqp3y5lXyepbalVPFP7rowg90+32smWm837LlyLTCw7//t9bPa+2yM
+	nHbO+ff5zaqnEm9VLA50acRMeHWmMjn2ha1YaquS9vq2PWbLv/xzPrViS1Xjzo0/1vGxls0o
+	fpf9/Pr72DwlluKMREMt5qLiRADnf6nVYQIAAA==
 X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -81,605 +81,761 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-Introduced a new API, folio_put_mgen(), to deliver migrc's generation
-number to pcp or buddy that will be used by migrc mechanism to track
-need of tlb flush for each page residing in pcp or buddy.
+This is implementation of MIGRC mechanism that stands for 'Migration
+Read Copy'.  We always face the migration overhead at either promotion
+or demotion, while working with tiered memory e.g. CXL memory and found
+out tlb shootdown is one that is needed to get rid of if possible.
 
-migrc makes decision whether tlb flush is needed or not, based on a
-generation number stored in the interesting page and the global
-generation number, for that tlb flush required has been completed.
+Fortunately, tlb flush can be defered as long as it guarantees to be
+performed before the source folios at migration actually become used, of
+course, only if the target PTE entries have read-only permission,
+precisely, don't have write permission.  Otherwise, no doubt the sytem
+might get messed up.
 
-For now, the delivery works only for the following call path but not for
-e.g. free_the_page(), __free_pages_ok() and free_unref_page_list() that
-are not for releasing source folios during migration:
+To achieve that:
 
-   folio_put_mgen()
-      __folio_put_mgen()
-	__folio_put_small()
-	   free_unref_page()
-	      free_unref_page_commit()
-	      free_one_page()
-	         __free_one_page()
+   1. For the folios that map only to non-writable tlb entries, prevent
+      tlb flush during migration but perform it just before the source
+      folios actually become used out of buddy or pcp.
 
-The generation number should be handed over properly when pages travel
-between pcp and buddy, and must do necessary things on exit from pcp or
-buddy.
+   2. When any non-writable tlb entry changes to writable e.g. through
+      fault handler, give up migrc mechanism and perform tlb flush
+      required right away.
 
-It's worth noting that this patch doesn't include actual body for tlb
-flush on the exit, which will be filled by the main patch of migrc
-mechanism.
+No matter what type of workload is used for performance evaluation, the
+result would be positive thanks to the unconditional reduction of tlb
+flushes, tlb misses and interrupts.  For the test, I picked up XSBench
+that is widely used for performance analysis on high performance
+computing architectures - https://github.com/ANL-CESAR/XSBench.
+
+The result would depend on memory latency and how often reclaim runs,
+which implies tlb miss overhead and how many times migration happens.
+The slower the memory is and the more reclaim runs, the better migrc
+works so as to obtain the better result.  In my system, the result
+shows:
+
+   1. itlb flushes are reduced over 90%.
+   2. itlb misses are reduced over 30%.
+   3. All the other tlb numbers also get enhanced.
+   4. tlb shootdown interrupts are reduced over 90%.
+   5. The test program runtime is reduced over 5%.
+
+The test envitonment:
+
+   Architecture - x86_64
+   QEMU - kvm enabled, host cpu
+   Numa - 2 nodes (16 CPUs 1GB, no CPUs 99GB)
+   Linux Kernel - v6.9-rc4, numa balancing tiering on, demotion enabled
+
+< measurement: raw data - tlb and interrupt numbers >
+
+   $ perf stat -a \
+           -e itlb.itlb_flush \
+           -e tlb_flush.dtlb_thread \
+           -e tlb_flush.stlb_any \
+           -e dtlb-load-misses \
+           -e dtlb-store-misses \
+           -e itlb-load-misses \
+	   XSBench -t 16 -p 50000000
+
+   $ grep "TLB shootdowns" /proc/interrupts
+
+   BEFORE
+   ------
+   40417078	itlb.itlb_flush
+   234852566	tlb_flush.dtlb_thread
+   153192357	tlb_flush.stlb_any
+   119001107892	dTLB-load-misses
+   307921167	dTLB-store-misses
+   1355272118	iTLB-load-misses
+
+   TLB: 1364803    1303670    1333921    1349607
+        1356934    1354216    1332972    1342842
+	1350265    1316443    1355928    1360793
+	1298239    1326358    1343006    1340971
+	TLB shootdowns
+
+   AFTER
+   -----
+   3316495	itlb.itlb_flush
+   138912511	tlb_flush.dtlb_thread
+   115199341	tlb_flush.stlb_any
+   117610390021 dTLB-load-misses
+   198042233	dTLB-store-misses
+   840066984	iTLB-load-misses
+
+   TLB: 117257     119219     117178     115737
+        117967     118948     117508     116079
+	116962     117266     117320     117215
+	105808     103934     115672     117610
+	TLB shootdowns
+
+< measurement: user experience - runtime >
+
+   $ time XSBench -t 16 -p 50000000
+
+   BEFORE
+   ------
+   Threads:     16
+   Runtime:     968.783 seconds
+   Lookups:     1,700,000,000
+   Lookups/s:   1,754,778
+
+   15208.91s user 141.44s system 1564% cpu 16:20.98 total
+
+   AFTER
+   -----
+   Threads:     16
+   Runtime:     913.210 seconds
+   Lookups:     1,700,000,000
+   Lookups/s:   1,861,565
+
+   14351.69s user 138.23s system 1565% cpu 15:25.47 total
 
 Signed-off-by: Byungchul Park <byungchul@sk.com>
 ---
- include/linux/mm.h    |  22 ++++++++
- include/linux/sched.h |   1 +
- mm/compaction.c       |  10 ++++
- mm/internal.h         |  41 ++++++++++++++-
- mm/page_alloc.c       | 114 +++++++++++++++++++++++++++++++++++-------
- mm/page_reporting.c   |  10 ++++
- mm/swap.c             |  19 +++++--
- 7 files changed, 195 insertions(+), 22 deletions(-)
+ include/linux/sched.h |   8 +
+ mm/internal.h         |  46 +++++-
+ mm/memory.c           |   8 +
+ mm/migrate.c          | 359 ++++++++++++++++++++++++++++++++++++++++--
+ mm/rmap.c             |  12 +-
+ 5 files changed, 414 insertions(+), 19 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 7b0ee64225de..f99072ca5bbc 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1307,6 +1307,7 @@ static inline struct folio *virt_to_folio(const void *x)
- }
- 
- void __folio_put(struct folio *folio);
-+void __folio_put_mgen(struct folio *folio, unsigned short int mgen);
- 
- void put_pages_list(struct list_head *pages);
- 
-@@ -1506,6 +1507,27 @@ static inline void folio_put(struct folio *folio)
- 		__folio_put(folio);
- }
- 
-+/**
-+ * folio_put_mgen - Decrement the last reference count on a folio.
-+ * @folio: The folio.
-+ * @mgen: The migrc generation # of TLB flush that the folio requires.
-+ *
-+ * The folio's reference count should be one since the only user, folio
-+ * migration code, calls folio_put_mgen() only when the folio has no
-+ * reference else.  The memory will be released back to the page
-+ * allocator and may be used by another allocation immediately.  Do not
-+ * access the memory or the struct folio after calling folio_put_mgen().
-+ *
-+ * Context: May be called in process or interrupt context, but not in NMI
-+ * context.  May be called while holding a spinlock.
-+ */
-+static inline void folio_put_mgen(struct folio *folio, unsigned short int mgen)
-+{
-+	if (WARN_ON(!folio_put_testzero(folio)))
-+		return;
-+	__folio_put_mgen(folio, mgen);
-+}
-+
- /**
-  * folio_put_refs - Reduce the reference count on a folio.
-  * @folio: The folio.
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 823d83b24364..74f8d106be79 100644
+index 74f8d106be79..7fba33c1faec 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
-@@ -1335,6 +1335,7 @@ struct task_struct {
- 
- 	struct tlbflush_unmap_batch	tlb_ubc;
+@@ -1337,6 +1337,14 @@ struct task_struct {
  	struct tlbflush_unmap_batch	tlb_ubc_ro;
-+	unsigned short int		mgen;
- 
- 	/* Cache last used pipe for splice(): */
- 	struct pipe_inode_info		*splice_pipe;
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 807b58e6eb68..b095b159bc6b 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -701,6 +701,11 @@ static unsigned long isolate_freepages_block(struct compact_control *cc,
- 	if (locked)
- 		spin_unlock_irqrestore(&cc->zone->lock, flags);
- 
-+	/*
-+	 * Check and flush before using the isolated pages.
-+	 */
-+	check_flush_task_mgen();
-+
- 	/*
- 	 * Be careful to not go outside of the pageblock.
- 	 */
-@@ -1673,6 +1678,11 @@ static void fast_isolate_freepages(struct compact_control *cc)
- 
- 		spin_unlock_irqrestore(&cc->zone->lock, flags);
- 
-+		/*
-+		 * Check and flush before using the isolated pages.
-+		 */
-+		check_flush_task_mgen();
-+
- 		/* Skip fast search if enough freepages isolated */
- 		if (cc->nr_freepages >= cc->nr_migratepages)
- 			break;
-diff --git a/mm/internal.h b/mm/internal.h
-index e3a8b77b58ca..f381af27e6d1 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -544,7 +544,7 @@ extern bool free_pages_prepare(struct page *page, unsigned int order);
- 
- extern int user_min_free_kbytes;
- 
--void free_unref_page(struct page *page, unsigned int order);
-+void free_unref_page(struct page *page, unsigned int order, unsigned short int mgen);
- void free_unref_folios(struct folio_batch *fbatch);
- 
- extern void zone_pcp_reset(struct zone *zone);
-@@ -1379,4 +1379,43 @@ static inline void shrinker_debugfs_remove(struct dentry *debugfs_entry,
- void workingset_update_node(struct xa_node *node);
- extern struct list_lru shadow_nodes;
+ 	unsigned short int		mgen;
  
 +#if defined(CONFIG_MIGRATION) && defined(CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH)
-+static inline unsigned short int mgen_latest(unsigned short int a, unsigned short int b)
-+{
-+	if (!a || !b)
-+		return a + b;
-+
 +	/*
-+	 * The mgen is wrapped around so let's use this trick.
++	 * whether all the mappings of a folio during unmap are read-only
++	 * so that migrc can work on the folio
 +	 */
-+	if ((short int)(a - b) < 0)
-+		return b;
-+	else
-+		return a;
-+}
-+
-+static inline void update_task_mgen(unsigned short int mgen)
-+{
-+	current->mgen = mgen_latest(current->mgen, mgen);
-+}
-+
-+static inline unsigned int hand_over_task_mgen(void)
-+{
-+	return xchg(&current->mgen, 0);
-+}
-+
-+static inline void check_flush_task_mgen(void)
-+{
-+	/*
-+	 * XXX: migrc mechanism will handle this. For now, do nothing
-+	 * but reset current's mgen to finalize this turn.
-+	 */
-+	current->mgen = 0;
-+}
-+#else /* CONFIG_MIGRATION && CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
-+static inline unsigned short int mgen_latest(unsigned short int a, unsigned short int b) { return 0; }
-+static inline void update_task_mgen(unsigned short int mgen) {}
-+static inline unsigned int hand_over_task_mgen(void) { return 0; }
-+static inline void check_flush_task_mgen(void) {}
++	bool				can_migrc;
 +#endif
- #endif	/* __MM_INTERNAL_H */
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 555f6d2e33ea..aefa3cde62d2 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -561,7 +561,7 @@ static inline bool pcp_allowed_order(unsigned int order)
- static inline void free_the_page(struct page *page, unsigned int order)
- {
- 	if (pcp_allowed_order(order))		/* Via pcp? */
--		free_unref_page(page, order);
-+		free_unref_page(page, order, 0);
- 	else
- 		__free_pages_ok(page, order, FPI_NONE);
- }
-@@ -703,6 +703,7 @@ static inline void del_page_from_free_list(struct page *page, struct zone *zone,
- 	if (page_reported(page))
- 		__ClearPageReported(page);
++
+ 	/* Cache last used pipe for splice(): */
+ 	struct pipe_inode_info		*splice_pipe;
  
-+	update_task_mgen(page_buddy_mgen(page));
- 	list_del(&page->buddy_list);
- 	__ClearPageBuddy(page);
- 	set_page_private(page, 0);
-@@ -768,7 +769,7 @@ buddy_merge_likely(unsigned long pfn, unsigned long buddy_pfn,
- static inline void __free_one_page(struct page *page,
- 		unsigned long pfn,
- 		struct zone *zone, unsigned int order,
--		int migratetype, fpi_t fpi_flags)
-+		int migratetype, fpi_t fpi_flags, unsigned short int mgen)
+diff --git a/mm/internal.h b/mm/internal.h
+index f381af27e6d1..cfdfa5908f72 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -1380,6 +1380,39 @@ void workingset_update_node(struct xa_node *node);
+ extern struct list_lru shadow_nodes;
+ 
+ #if defined(CONFIG_MIGRATION) && defined(CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH)
++void check_migrc_flush(unsigned short int mgen);
++void migrc_flush(void);
++void rmap_flush_start(void);
++void rmap_flush_end(struct tlbflush_unmap_batch *batch);
++
++/*
++ * Reset the indicator indicating there are no writable mappings at the
++ * beginning of every rmap traverse for unmap.  migrc can work only when
++ * all the mappings are read-only.
++ */
++static inline void can_migrc_init(void)
++{
++	current->can_migrc = true;
++}
++
++/*
++ * Mark the folio is not applicable to migrc once it found a writble or
++ * dirty pte during rmap traverse for unmap.
++ */
++static inline void can_migrc_fail(void)
++{
++	current->can_migrc = false;
++}
++
++/*
++ * Check if all the mappings are read-only and read-only mappings even
++ * exist.
++ */
++static inline bool can_migrc_test(void)
++{
++	return current->can_migrc && current->tlb_ubc_ro.flush_required;
++}
++
+ static inline unsigned short int mgen_latest(unsigned short int a, unsigned short int b)
  {
- 	struct capture_control *capc = task_capc(zone);
- 	unsigned long buddy_pfn = 0;
-@@ -786,8 +787,17 @@ static inline void __free_one_page(struct page *page,
- 	VM_BUG_ON_PAGE(pfn & ((1 << order) - 1), page);
- 	VM_BUG_ON_PAGE(bad_range(zone, page), page);
+ 	if (!a || !b)
+@@ -1406,13 +1439,16 @@ static inline unsigned int hand_over_task_mgen(void)
+ 
+ static inline void check_flush_task_mgen(void)
+ {
+-	/*
+-	 * XXX: migrc mechanism will handle this. For now, do nothing
+-	 * but reset current's mgen to finalize this turn.
+-	 */
+-	current->mgen = 0;
++	check_migrc_flush(xchg(&current->mgen, 0));
+ }
+ #else /* CONFIG_MIGRATION && CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
++static inline void check_migrc_flush(unsigned short int mgen) {}
++static inline void migrc_flush(void) {}
++static inline void rmap_flush_start(void) {}
++static inline void rmap_flush_end(struct tlbflush_unmap_batch *batch) {}
++static inline void can_migrc_init(void) {}
++static inline void can_migrc_fail(void) {}
++static inline bool can_migrc_test(void) { return false; }
+ static inline unsigned short int mgen_latest(unsigned short int a, unsigned short int b) { return 0; }
+ static inline void update_task_mgen(unsigned short int mgen) {}
+ static inline unsigned int hand_over_task_mgen(void) { return 0; }
+diff --git a/mm/memory.c b/mm/memory.c
+index d2155ced45f8..fc4d09fdfef8 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3611,6 +3611,14 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
+ 	if (vmf->page)
+ 		folio = page_folio(vmf->page);
  
 +	/*
-+	 * Ensure private is zero before using it inside buddy.
++	 * The folio may or may not be one that is under migrc's control
++	 * and about to change its permission from read-only to writable.
++	 * Conservatively give up deferring tlb flush just in case.
 +	 */
-+	set_page_private(page, 0);
- 	while (order < MAX_PAGE_ORDER) {
- 		if (compaction_capture(capc, page, order, migratetype)) {
-+			/*
-+			 * Capturer will check_flush_task_mgen() through
-+			 * prep_new_page().
-+			 */
-+			update_task_mgen(mgen);
- 			__mod_zone_freepage_state(zone, -(1 << order),
- 								migratetype);
- 			return;
-@@ -819,6 +829,11 @@ static inline void __free_one_page(struct page *page,
- 		if (page_is_guard(buddy))
- 			clear_page_guard(zone, buddy, order, migratetype);
- 		else
-+			/*
-+			 * del_page_from_free_list() updates current's
-+			 * mgen that pairs with hand_over_task_mgen() below
-+			 * in this funtion.
-+			 */
- 			del_page_from_free_list(buddy, zone, order);
- 		combined_pfn = buddy_pfn & pfn;
- 		page = page + (combined_pfn - pfn);
-@@ -827,7 +842,8 @@ static inline void __free_one_page(struct page *page,
++	if (folio)
++		migrc_flush();
++
+ 	/*
+ 	 * Shared mapping: we are guaranteed to have VM_WRITE and
+ 	 * FAULT_FLAG_WRITE set at this point.
+diff --git a/mm/migrate.c b/mm/migrate.c
+index fed3a65e9bbe..7e16cb608ac5 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -57,6 +57,279 @@
+ 
+ #include "internal.h"
+ 
++#ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
++static struct tlbflush_unmap_batch migrc_ubc;
++static DEFINE_SPINLOCK(migrc_lock);
++
++/*
++ * Don't be zero to distinguish from invalid mgen, 0.
++ */
++static unsigned short int mgen_next(unsigned short int a)
++{
++	return a + 1 ?: a + 2;
++}
++
++static bool mgen_before(unsigned short int a, unsigned short int b)
++{
++	return (short int)(a - b) < 0;
++}
++
++static void init_tlb_ubc(struct tlbflush_unmap_batch *ubc)
++{
++	arch_tlbbatch_clear(&ubc->arch);
++	ubc->flush_required = false;
++	ubc->writable = false;
++}
++
++/*
++ * Need to synchronize between tlb flush and managing pending CPUs in
++ * migrc_ubc.  Take a look at the following scenario, where CPU0 is in
++ * try_to_unmap_flush() and CPU1 is in migrate_pages_batch():
++ *
++ *	CPU0			CPU1
++ *	----			----
++ *	tlb flush
++ *				unmap folios (needing tlb flush)
++ *				add pending CPUs to migrc_ubc
++ *				<-- not performed tlb flush needed by
++ *				    the unmap above yet but the request
++ *				    will be cleared by CPU0 shortly. bug!
++ *	clear the CPUs from migrc_ubc
++ *
++ * The pending CPUs added in CPU1 should not be cleared from migrc_ubc
++ * in CPU0 because the tlb flush for migrc_ubc added in CPU1 has not
++ * been performed this turn.  To avoid this, using 'on_flushing'
++ * variable, prevent adding pending CPUs to migrc_ubc and give up migrc
++ * mechanism if someone is in the middle of tlb flush, like:
++ *
++ *	CPU0			CPU1
++ *	----			----
++ *	on_flushing++
++ *	tlb flush
++ *				unmap folios (needing tlb flush)
++ *				if on_flushing == 0:
++ *				   add pending CPUs to migrc_ubc
++ *				else: <-- hit
++ *				   give up migrc mechanism
++ *	clear the CPUs from migrc_ubc
++ *	on_flushing--
++ *
++ * Only the following case would be allowed for migrc mechanism to work:
++ *
++ *	CPU0			CPU1
++ *	----			----
++ *				unmap folios (needing tlb flush)
++ *				if on_flushing == 0: <-- hit
++ *				   add pending CPUs to migrc_ubc
++ *				else:
++ *				   give up migrc mechanism
++ *	on_flushing++
++ *	tlb flush
++ *	clear the CPUs from migrc_ubc
++ *	on_flushing--
++ */
++static int on_flushing;
++
++/*
++ * When more than one thread enter check_migrc_flush() at the same
++ * time, each should wait for the request on progress to be done to
++ * avoid the following scenario, where the both CPUs are in
++ * check_migrc_flush():
++ *
++ *	CPU0			CPU1
++ *	----			----
++ *	if !migrc_ubc.flush_required:
++ *	   return
++ *	migrc_ubc.flush_required = false
++ *				if !migrc_ubc.flush_requied: <-- hit
++ *				   return <-- not performed tlb flush
++ *				              needed yet but return. bug!
++ *				migrc_ubc.flush_required = false
++ *				try_to_unmap_flush()
++ *				finalize
++ *	try_to_unmap_flush() <-- performs tlb flush needed
++ *	finalize
++ *
++ * So it should be handled:
++ *
++ *	CPU0			CPU1
++ *	----			----
++ *	atomically execute {
++ *	   if migrc_on_flushing:
++ *	      wait for the completion
++ *	      return
++ *	   if !migrc_ubc.flush_required:
++ *	      return
++ *	   migrc_ubc.flush_required = false
++ *	   migrc_on_flushing = true
++ *	}
++ *				atomically execute {
++ *				   if migrc_on_flushing: <-- hit
++ *				      wait for the completion
++ *				      return <-- tlb flush needed is done
++ *				   if !migrc_ubc.flush_requied:
++ *				      return
++ *				   migrc_ubc.flush_required = false
++ *				   migrc_on_flushing = true
++ *				}
++ *
++ *				try_to_unmap_flush()
++ *				migrc_on_flushing = false
++ *				finalize
++ *	try_to_unmap_flush() <-- performs tlb flush needed
++ *	migrc_on_flushing = false
++ *	finalize
++ */
++static bool migrc_on_flushing;
++
++/*
++ * Generation number for the current request of deferred tlb flush.
++ */
++static unsigned short int migrc_gen;
++
++/*
++ * Generation number for the next request.
++ */
++static unsigned short int migrc_gen_next = 1;
++
++/*
++ * Generation number for the latest request handled.
++ */
++static unsigned short int migrc_gen_done;
++
++static unsigned short int migrc_add_pending_ubc(struct tlbflush_unmap_batch *ubc)
++{
++	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
++	unsigned long flags;
++	unsigned short int mgen;
++
++	spin_lock_irqsave(&migrc_lock, flags);
++	if (on_flushing || migrc_on_flushing) {
++		spin_unlock_irqrestore(&migrc_lock, flags);
++
++		/*
++		 * Give up migrc mechanism.  Just let tlb flush needed
++		 * handled by try_to_unmap_flush() at the caller side.
++		 */
++		fold_ubc(tlb_ubc, ubc);
++		return 0;
++	}
++	fold_ubc(&migrc_ubc, ubc);
++	mgen = migrc_gen = migrc_gen_next;
++	spin_unlock_irqrestore(&migrc_lock, flags);
++
++	return mgen;
++}
++
++void rmap_flush_start(void)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&migrc_lock, flags);
++	on_flushing++;
++	spin_unlock_irqrestore(&migrc_lock, flags);
++}
++
++void rmap_flush_end(struct tlbflush_unmap_batch *batch)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&migrc_lock, flags);
++	if (arch_tlbbatch_done(&migrc_ubc.arch, &batch->arch)) {
++		migrc_ubc.flush_required = false;
++		migrc_ubc.writable = false;
++	}
++	on_flushing--;
++	spin_unlock_irqrestore(&migrc_lock, flags);
++}
++
++/*
++ * Even if multiple contexts are requesting tlb flush at the same time,
++ * it must guarantee to have completed tlb flush requested on return.
++ */
++void check_migrc_flush(unsigned short int mgen)
++{
++	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
++	unsigned long flags;
++
++	/*
++	 * Nothing has been requested.  We are done.
++	 */
++	if (!mgen)
++		return;
++retry:
++	/*
++	 * We can see a larger value than or equal to migrc_gen_done,
++	 * which means the tlb flush we need has been done.
++	 */
++	if (!mgen_before(READ_ONCE(migrc_gen_done), mgen))
++		return;
++
++	spin_lock_irqsave(&migrc_lock, flags);
++
++	/*
++	 * With migrc_lock held, we might read migrc_gen_done updated.
++	 */
++	if (mgen_next(migrc_gen_done) != mgen) {
++		spin_unlock_irqrestore(&migrc_lock, flags);
++		return;
++	}
++
++	/*
++	 * Others are already working for us.
++	 */
++	if (migrc_on_flushing) {
++		spin_unlock_irqrestore(&migrc_lock, flags);
++		goto retry;
++	}
++
++	if (!migrc_ubc.flush_required) {
++		spin_unlock_irqrestore(&migrc_lock, flags);
++		return;
++	}
++
++	fold_ubc(tlb_ubc, &migrc_ubc);
++	migrc_gen_next = mgen_next(migrc_gen);
++	migrc_on_flushing = true;
++	spin_unlock_irqrestore(&migrc_lock, flags);
++
++	try_to_unmap_flush();
++
++	spin_lock_irqsave(&migrc_lock, flags);
++	migrc_on_flushing = false;
++
++	/*
++	 * migrc_gen_done can be read by another with migrc_lock not
++	 * held so use WRITE_ONCE() to prevent tearing.
++	 */
++	WRITE_ONCE(migrc_gen_done, mgen);
++	spin_unlock_irqrestore(&migrc_lock, flags);
++}
++
++void migrc_flush(void)
++{
++	unsigned long flags;
++	unsigned short int mgen;
++
++	/*
++	 * Obtain the latest mgen number.
++	 */
++	spin_lock_irqsave(&migrc_lock, flags);
++	mgen = migrc_gen;
++	spin_unlock_irqrestore(&migrc_lock, flags);
++
++	check_migrc_flush(mgen);
++}
++#else /* CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
++static void init_tlb_ubc(struct tlbflush_unmap_batch *ubc)
++{
++}
++static unsigned int migrc_add_pending_ubc(struct tlbflush_unmap_batch *ubc)
++{
++	return 0;
++}
++#endif
++
+ bool isolate_movable_page(struct page *page, isolate_mode_t mode)
+ {
+ 	struct folio *folio = folio_get_nontail_page(page);
+@@ -1090,7 +1363,8 @@ static void migrate_folio_undo_dst(struct folio *dst, bool locked,
+ 
+ /* Cleanup src folio upon migration success */
+ static void migrate_folio_done(struct folio *src,
+-			       enum migrate_reason reason)
++			       enum migrate_reason reason,
++			       unsigned short int mgen)
+ {
+ 	/*
+ 	 * Compaction can migrate also non-LRU pages which are
+@@ -1101,8 +1375,15 @@ static void migrate_folio_done(struct folio *src,
+ 		mod_node_page_state(folio_pgdat(src), NR_ISOLATED_ANON +
+ 				    folio_is_file_lru(src), -folio_nr_pages(src));
+ 
+-	if (reason != MR_MEMORY_FAILURE)
+-		/* We release the page in page_handle_poison. */
++	/* We release the page in page_handle_poison. */
++	if (reason == MR_MEMORY_FAILURE) {
++		check_migrc_flush(mgen);
++		return;
++	}
++
++	if (mgen)
++		folio_put_mgen(src, mgen);
++	else
+ 		folio_put(src);
+ }
+ 
+@@ -1126,7 +1407,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+ 		folio_clear_unevictable(src);
+ 		/* free_pages_prepare() will clear PG_isolated. */
+ 		list_del(&src->lru);
+-		migrate_folio_done(src, reason);
++		migrate_folio_done(src, reason, 0);
+ 		return MIGRATEPAGE_SUCCESS;
  	}
  
- done_merging:
--	set_buddy_order_mgen(page, order, 0);
-+	mgen = mgen_latest(mgen, hand_over_task_mgen());
-+	set_buddy_order_mgen(page, order, mgen);
+@@ -1272,7 +1553,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
+ 			      struct folio *src, struct folio *dst,
+ 			      enum migrate_mode mode, enum migrate_reason reason,
+-			      struct list_head *ret)
++			      struct list_head *ret, unsigned short int mgen)
+ {
+ 	int rc;
+ 	int old_page_state = 0;
+@@ -1322,11 +1603,12 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
+ 	 * and will be freed.
+ 	 */
+ 	list_del(&src->lru);
++
+ 	/* Drop an anon_vma reference if we took one */
+ 	if (anon_vma)
+ 		put_anon_vma(anon_vma);
+ 	folio_unlock(src);
+-	migrate_folio_done(src, reason);
++	migrate_folio_done(src, reason, mgen);
  
- 	if (fpi_flags & FPI_TO_TAIL)
- 		to_tail = true;
-@@ -869,6 +885,7 @@ int split_free_page(struct page *free_page,
- 	int free_page_order;
- 	int mt;
- 	int ret = 0;
+ 	return rc;
+ out:
+@@ -1616,7 +1898,7 @@ static void migrate_folios_move(struct list_head *src_folios,
+ 		struct list_head *ret_folios,
+ 		struct migrate_pages_stats *stats,
+ 		int *retry, int *thp_retry, int *nr_failed,
+-		int *nr_retry_pages)
++		int *nr_retry_pages, unsigned short int mgen)
+ {
+ 	struct folio *folio, *folio2, *dst, *dst2;
+ 	bool is_thp;
+@@ -1633,7 +1915,7 @@ static void migrate_folios_move(struct list_head *src_folios,
+ 
+ 		rc = migrate_folio_move(put_new_folio, private,
+ 				folio, dst, mode,
+-				reason, ret_folios);
++				reason, ret_folios, mgen);
+ 		/*
+ 		 * The rules are:
+ 		 *	Success: folio will be freed
+@@ -1706,24 +1988,36 @@ static int migrate_pages_batch(struct list_head *from,
+ 	int pass = 0;
+ 	bool is_thp = false;
+ 	bool is_large = false;
++	bool is_zone_device = false;
+ 	struct folio *folio, *folio2, *dst = NULL;
+ 	int rc, rc_saved = 0, nr_pages;
+ 	LIST_HEAD(unmap_folios);
+ 	LIST_HEAD(dst_folios);
++	LIST_HEAD(unmap_folios_migrc);
++	LIST_HEAD(dst_folios_migrc);
+ 	bool nosplit = (reason == MR_NUMA_MISPLACED);
++	struct tlbflush_unmap_batch pending_ubc;
++	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
++	struct tlbflush_unmap_batch *tlb_ubc_ro = &current->tlb_ubc_ro;
 +	unsigned short int mgen;
  
- 	if (split_pfn_offset == 0)
- 		return ret;
-@@ -884,7 +901,13 @@ int split_free_page(struct page *free_page,
- 	if (likely(!is_migrate_isolate(mt)))
- 		__mod_zone_freepage_state(zone, -(1UL << order), mt);
+ 	VM_WARN_ON_ONCE(mode != MIGRATE_ASYNC &&
+ 			!list_empty(from) && !list_is_singular(from));
  
-+	/*
-+	 * del_page_from_free_list() updates current's mgen that pairs
-+	 * with the following hand_over_task_mgen().
-+	 */
- 	del_page_from_free_list(free_page, zone, order);
-+	mgen = hand_over_task_mgen();
++	init_tlb_ubc(&pending_ubc);
 +
- 	for (pfn = free_page_pfn;
- 	     pfn < free_page_pfn + (1UL << order);) {
- 		int mt = get_pfnblock_migratetype(pfn_to_page(pfn), pfn);
-@@ -893,7 +916,7 @@ int split_free_page(struct page *free_page,
- 					pfn ? __ffs(pfn) : order,
- 					__fls(split_pfn_offset));
- 		__free_one_page(pfn_to_page(pfn), pfn, zone, free_page_order,
--				mt, FPI_NONE);
-+				mt, FPI_NONE, mgen);
- 		pfn += 1UL << free_page_order;
- 		split_pfn_offset -= (1UL << free_page_order);
- 		/* we have done the first part, now switch to second part */
-@@ -1094,6 +1117,11 @@ __always_inline bool free_pages_prepare(struct page *page,
+ 	for (pass = 0; pass < nr_pass && retry; pass++) {
+ 		retry = 0;
+ 		thp_retry = 0;
+ 		nr_retry_pages = 0;
  
- 	VM_BUG_ON_PAGE(PageTail(page), page);
- 
-+	/*
-+	 * Ensure private is zero before using it inside pcp.
-+	 */
-+	set_page_private(page, 0);
+ 		list_for_each_entry_safe(folio, folio2, from, lru) {
++			bool can_migrc;
 +
- 	trace_mm_page_free(page, order);
- 	kmsan_free_page(page, order);
+ 			is_large = folio_test_large(folio);
+ 			is_thp = is_large && folio_test_pmd_mappable(folio);
+ 			nr_pages = folio_nr_pages(folio);
++			is_zone_device = folio_is_zone_device(folio);
  
-@@ -1224,10 +1252,16 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 		nr_pages = 1 << order;
- 		do {
- 			int mt;
-+			unsigned short int mgen;
+ 			cond_resched();
  
- 			page = list_last_entry(list, struct page, pcp_list);
- 			mt = get_pcppage_migratetype(page);
- 
-+			/*
-+			 * pcp uses private to store mgen.
-+			 */
-+			mgen = page_private(page);
-+
- 			/* must delete to avoid corrupting pcp list */
- 			list_del(&page->pcp_list);
- 			count -= nr_pages;
-@@ -1239,7 +1273,7 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 			if (unlikely(isolated_pageblocks))
- 				mt = get_pageblock_migratetype(page);
- 
--			__free_one_page(page, page_to_pfn(page), zone, order, mt, FPI_NONE);
-+			__free_one_page(page, page_to_pfn(page), zone, order, mt, FPI_NONE, mgen);
- 			trace_mm_page_pcpu_drain(page, order, mt);
- 		} while (count > 0 && !list_empty(list));
- 	}
-@@ -1250,7 +1284,8 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- static void free_one_page(struct zone *zone,
- 				struct page *page, unsigned long pfn,
- 				unsigned int order,
--				int migratetype, fpi_t fpi_flags)
-+				int migratetype, fpi_t fpi_flags,
-+				unsigned short int mgen)
- {
- 	unsigned long flags;
- 
-@@ -1259,7 +1294,7 @@ static void free_one_page(struct zone *zone,
- 		is_migrate_isolate(migratetype))) {
- 		migratetype = get_pfnblock_migratetype(page, pfn);
- 	}
--	__free_one_page(page, pfn, zone, order, migratetype, fpi_flags);
-+	__free_one_page(page, pfn, zone, order, migratetype, fpi_flags, mgen);
- 	spin_unlock_irqrestore(&zone->lock, flags);
- }
- 
-@@ -1280,7 +1315,7 @@ static void __free_pages_ok(struct page *page, unsigned int order,
- 	 */
- 	migratetype = get_pfnblock_migratetype(page, pfn);
- 
--	free_one_page(zone, page, pfn, order, migratetype, fpi_flags);
-+	free_one_page(zone, page, pfn, order, migratetype, fpi_flags, 0);
- 
- 	__count_vm_events(PGFREE, 1 << order);
- }
-@@ -1541,6 +1576,10 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
- static void prep_new_page(struct page *page, unsigned int order, gfp_t gfp_flags,
- 							unsigned int alloc_flags)
- {
-+	/*
-+	 * Check and flush before using the pages.
-+	 */
-+	check_flush_task_mgen();
- 	post_alloc_hook(page, order, gfp_flags);
- 
- 	if (order && (gfp_flags & __GFP_COMP))
-@@ -1576,6 +1615,10 @@ struct page *__rmqueue_smallest(struct zone *zone, unsigned int order,
- 		page = get_page_from_free_area(area, migratetype);
- 		if (!page)
- 			continue;
-+		/*
-+		 * del_page_from_free_list() updates current's mgen that
-+		 * pairs with check_flush_task_mgen() in prep_new_page().
-+		 */
- 		del_page_from_free_list(page, zone, current_order);
- 		expand(zone, page, order, current_order, migratetype);
- 		set_pcppage_migratetype(page, migratetype);
-@@ -2430,7 +2473,7 @@ static int nr_pcp_high(struct per_cpu_pages *pcp, struct zone *zone,
- 
- static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
- 				   struct page *page, int migratetype,
--				   unsigned int order)
-+				   unsigned int order, unsigned short int mgen)
- {
- 	int high, batch;
- 	int pindex;
-@@ -2444,6 +2487,11 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
- 	pcp->alloc_factor >>= 1;
- 	__count_vm_events(PGFREE, 1 << order);
- 	pindex = order_to_pindex(migratetype, order);
-+
-+	/*
-+	 * pcp uses private to store mgen.
-+	 */
-+	set_page_private(page, mgen);
- 	list_add(&page->pcp_list, &pcp->lists[pindex]);
- 	pcp->count += 1 << order;
- 
-@@ -2479,7 +2527,8 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
- /*
-  * Free a pcp page
-  */
--void free_unref_page(struct page *page, unsigned int order)
-+void free_unref_page(struct page *page, unsigned int order,
-+		     unsigned short int mgen)
- {
- 	unsigned long __maybe_unused UP_flags;
- 	struct per_cpu_pages *pcp;
-@@ -2500,7 +2549,7 @@ void free_unref_page(struct page *page, unsigned int order)
- 	migratetype = pcpmigratetype = get_pcppage_migratetype(page);
- 	if (unlikely(migratetype >= MIGRATE_PCPTYPES)) {
- 		if (unlikely(is_migrate_isolate(migratetype))) {
--			free_one_page(page_zone(page), page, pfn, order, migratetype, FPI_NONE);
-+			free_one_page(page_zone(page), page, pfn, order, migratetype, FPI_NONE, mgen);
- 			return;
- 		}
- 		pcpmigratetype = MIGRATE_MOVABLE;
-@@ -2510,10 +2559,10 @@ void free_unref_page(struct page *page, unsigned int order)
- 	pcp_trylock_prepare(UP_flags);
- 	pcp = pcp_spin_trylock(zone->per_cpu_pageset);
- 	if (pcp) {
--		free_unref_page_commit(zone, pcp, page, pcpmigratetype, order);
-+		free_unref_page_commit(zone, pcp, page, pcpmigratetype, order, mgen);
- 		pcp_spin_unlock(pcp);
- 	} else {
--		free_one_page(zone, page, pfn, order, migratetype, FPI_NONE);
-+		free_one_page(zone, page, pfn, order, migratetype, FPI_NONE, mgen);
- 	}
- 	pcp_trylock_finish(UP_flags);
- }
-@@ -2547,7 +2596,7 @@ void free_unref_folios(struct folio_batch *folios)
- 		if (!pcp_allowed_order(order) ||
- 		    is_migrate_isolate(migratetype)) {
- 			free_one_page(folio_zone(folio), &folio->page, pfn,
--					order, migratetype, FPI_NONE);
-+					order, migratetype, FPI_NONE, 0);
- 			continue;
- 		}
- 		folio->private = (void *)(unsigned long)order;
-@@ -2582,7 +2631,7 @@ void free_unref_folios(struct folio_batch *folios)
- 				pcp_trylock_finish(UP_flags);
- 				free_one_page(zone, &folio->page,
- 						folio_pfn(folio), order,
--						migratetype, FPI_NONE);
-+						migratetype, FPI_NONE, 0);
- 				locked_zone = NULL;
+@@ -1750,9 +2044,25 @@ static int migrate_pages_batch(struct list_head *from,
  				continue;
  			}
-@@ -2598,7 +2647,7 @@ void free_unref_folios(struct folio_batch *folios)
  
- 		trace_mm_page_free_batched(&folio->page);
- 		free_unref_page_commit(zone, pcp, &folio->page, migratetype,
--				order);
-+				order, 0);
- 	}
- 
- 	if (pcp) {
-@@ -2650,6 +2699,11 @@ int __isolate_free_page(struct page *page, unsigned int order)
- 		__mod_zone_freepage_state(zone, -(1UL << order), mt);
- 	}
- 
-+	/*
-+	 * del_page_from_free_list() updates current's mgen. The user of
-+	 * the isolated page should check_flush_task_mgen() before using
-+	 * it.
-+	 */
- 	del_page_from_free_list(page, zone, order);
- 
- 	/*
-@@ -2691,7 +2745,7 @@ void __putback_isolated_page(struct page *page, unsigned int order, int mt)
- 
- 	/* Return isolated page to tail of freelist. */
- 	__free_one_page(page, page_to_pfn(page), zone, order, mt,
--			FPI_SKIP_REPORT_NOTIFY | FPI_TO_TAIL);
-+			FPI_SKIP_REPORT_NOTIFY | FPI_TO_TAIL, 0);
- }
- 
- /*
-@@ -2836,6 +2890,11 @@ struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
- 		}
- 
- 		page = list_first_entry(list, struct page, pcp_list);
++			can_migrc_init();
+ 			rc = migrate_folio_unmap(get_new_folio, put_new_folio,
+ 					private, folio, &dst, mode, reason,
+ 					ret_folios);
++			can_migrc = can_migrc_test();
 +
-+		/*
-+		 * Pairs with check_flush_task_mgen() in prep_new_page().
-+		 */
-+		update_task_mgen(page_private(page));
- 		list_del(&page->pcp_list);
- 		pcp->count -= 1 << order;
- 	} while (check_new_pages(page, order));
-@@ -6659,10 +6718,19 @@ void __offline_isolated_pages(unsigned long start_pfn, unsigned long end_pfn)
- 		BUG_ON(page_count(page));
- 		BUG_ON(!PageBuddy(page));
- 		order = buddy_order(page);
-+		/*
-+		 * del_page_from_free_list() updates current's mgen that
-+		 * pairs with check_flush_task_mgen() below in this function.
-+		 */
- 		del_page_from_free_list(page, zone, order);
- 		pfn += (1 << order);
- 	}
- 	spin_unlock_irqrestore(&zone->lock, flags);
-+
-+	/*
-+	 * Check and flush before using it.
-+	 */
-+	check_flush_task_mgen();
- }
- #endif
- 
-@@ -6738,6 +6806,11 @@ bool take_page_off_buddy(struct page *page)
- 			int migratetype = get_pfnblock_migratetype(page_head,
- 								   pfn_head);
- 
 +			/*
-+			 * del_page_from_free_list() updates current's
-+			 * mgen that pairs with check_flush_task_mgen() below
-+			 * in this function.
++			 * XXX: No way to handle zone device folio after
++			 * freeing.  Remove the following constraint
++			 * once migrc can handle it.
 +			 */
- 			del_page_from_free_list(page_head, zone, page_order);
- 			break_down_buddy_pages(zone, page_head, page, 0,
- 						page_order, migratetype);
-@@ -6751,6 +6824,11 @@ bool take_page_off_buddy(struct page *page)
- 			break;
- 	}
- 	spin_unlock_irqrestore(&zone->lock, flags);
++			can_migrc = can_migrc && likely(!is_zone_device);
 +
-+	/*
-+	 * Check and flush before using it.
-+	 */
-+	check_flush_task_mgen();
- 	return ret;
- }
- 
-@@ -6768,7 +6846,7 @@ bool put_page_back_buddy(struct page *page)
- 	spin_lock_irqsave(&zone->lock, flags);
- 	if (put_page_testzero(page)) {
- 		ClearPageHWPoisonTakenOff(page);
--		__free_one_page(page, pfn, zone, 0, migratetype, FPI_NONE);
-+		__free_one_page(page, pfn, zone, 0, migratetype, FPI_NONE, 0);
- 		if (TestClearPageHWPoison(page)) {
- 			ret = true;
++			/*
++			 * XXX: Remove the following constraint once
++			 * migrc handles large folio.
++			 */
++			can_migrc = can_migrc && likely(!is_large);
++
+ 			/*
+ 			 * The rules are:
+ 			 *	Success: folio will be freed
+@@ -1798,7 +2108,8 @@ static int migrate_pages_batch(struct list_head *from,
+ 				/* nr_failed isn't updated for not used */
+ 				stats->nr_thp_failed += thp_retry;
+ 				rc_saved = rc;
+-				if (list_empty(&unmap_folios))
++				if (list_empty(&unmap_folios) &&
++				    list_empty(&unmap_folios_migrc))
+ 					goto out;
+ 				else
+ 					goto move;
+@@ -1812,8 +2123,19 @@ static int migrate_pages_batch(struct list_head *from,
+ 				stats->nr_thp_succeeded += is_thp;
+ 				break;
+ 			case MIGRATEPAGE_UNMAP:
+-				list_move_tail(&folio->lru, &unmap_folios);
+-				list_add_tail(&dst->lru, &dst_folios);
++				if (can_migrc) {
++					list_move_tail(&folio->lru, &unmap_folios_migrc);
++					list_add_tail(&dst->lru, &dst_folios_migrc);
++
++					/*
++					 * Gather ro batch data to add
++					 * to migrc_ubc after unmap.
++					 */
++					fold_ubc(&pending_ubc, tlb_ubc_ro);
++				} else {
++					list_move_tail(&folio->lru, &unmap_folios);
++					list_add_tail(&dst->lru, &dst_folios);
++				}
+ 				break;
+ 			default:
+ 				/*
+@@ -1827,12 +2149,19 @@ static int migrate_pages_batch(struct list_head *from,
+ 				stats->nr_failed_pages += nr_pages;
+ 				break;
+ 			}
++			/*
++			 * Done with the current folio.  Fold the ro
++			 * batch data gathered to the normal batch.
++			 */
++			fold_ubc(tlb_ubc, tlb_ubc_ro);
  		}
-diff --git a/mm/page_reporting.c b/mm/page_reporting.c
-index e4c428e61d8c..95b771ae4653 100644
---- a/mm/page_reporting.c
-+++ b/mm/page_reporting.c
-@@ -221,6 +221,11 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
- 		/* release lock before waiting on report processing */
- 		spin_unlock_irq(&zone->lock);
+ 	}
+ 	nr_failed += retry;
+ 	stats->nr_thp_failed += thp_retry;
+ 	stats->nr_failed_pages += nr_retry_pages;
+ move:
++	/* Should be before try_to_unmap_flush() */
++	mgen = migrc_add_pending_ubc(&pending_ubc);
+ 	/* Flush TLBs for all unmapped folios */
+ 	try_to_unmap_flush();
  
+@@ -1846,7 +2175,11 @@ static int migrate_pages_batch(struct list_head *from,
+ 		migrate_folios_move(&unmap_folios, &dst_folios,
+ 				put_new_folio, private, mode, reason,
+ 				ret_folios, stats, &retry, &thp_retry,
+-				&nr_failed, &nr_retry_pages);
++				&nr_failed, &nr_retry_pages, 0);
++		migrate_folios_move(&unmap_folios_migrc, &dst_folios_migrc,
++				put_new_folio, private, mode, reason,
++				ret_folios, stats, &retry, &thp_retry,
++				&nr_failed, &nr_retry_pages, mgen);
+ 	}
+ 	nr_failed += retry;
+ 	stats->nr_thp_failed += thp_retry;
+@@ -1857,6 +2190,8 @@ static int migrate_pages_batch(struct list_head *from,
+ 	/* Cleanup remaining folios */
+ 	migrate_folios_undo(&unmap_folios, &dst_folios,
+ 			put_new_folio, private, ret_folios);
++	migrate_folios_undo(&unmap_folios_migrc, &dst_folios_migrc,
++			put_new_folio, private, ret_folios);
+ 
+ 	return rc;
+ }
+diff --git a/mm/rmap.c b/mm/rmap.c
+index d8671d0dc416..9c369aefd636 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -672,7 +672,9 @@ void try_to_unmap_flush(void)
+ 	if (!tlb_ubc->flush_required)
+ 		return;
+ 
++	rmap_flush_start();
+ 	arch_tlbbatch_flush(&tlb_ubc->arch);
++	rmap_flush_end(tlb_ubc);
+ 	arch_tlbbatch_clear(&tlb_ubc->arch);
+ 	tlb_ubc->flush_required = false;
+ 	tlb_ubc->writable = false;
+@@ -707,9 +709,15 @@ static void set_tlb_ubc_flush_pending(struct mm_struct *mm, pte_t pteval,
+ 	if (!pte_accessible(mm, pteval))
+ 		return;
+ 
+-	if (pte_write(pteval) || writable)
++	if (pte_write(pteval) || writable) {
+ 		tlb_ubc = &current->tlb_ubc;
+-	else
++
 +		/*
-+		 * Check and flush before using the isolated pages.
++		 * migrc cannot work with the folio once it found a
++		 * writable or dirty mapping on it.
 +		 */
-+		check_flush_task_mgen();
-+
- 		/* begin processing pages in local list */
- 		err = prdev->report(prdev, sgl, PAGE_REPORTING_CAPACITY);
++		can_migrc_fail();
++	} else
+ 		tlb_ubc = &current->tlb_ubc_ro;
  
-@@ -253,6 +258,11 @@ page_reporting_cycle(struct page_reporting_dev_info *prdev, struct zone *zone,
- 
- 	spin_unlock_irq(&zone->lock);
- 
-+	/*
-+	 * Check and flush before using the isolated pages.
-+	 */
-+	check_flush_task_mgen();
-+
- 	return err;
- }
- 
-diff --git a/mm/swap.c b/mm/swap.c
-index 500a09a48dfd..1c4ebe0febc6 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -112,11 +112,24 @@ static void page_cache_release(struct folio *folio)
- 		unlock_page_lruvec_irqrestore(lruvec, flags);
- }
- 
--static void __folio_put_small(struct folio *folio)
-+static void __folio_put_small(struct folio *folio, unsigned short int mgen)
- {
- 	page_cache_release(folio);
- 	mem_cgroup_uncharge(folio);
--	free_unref_page(&folio->page, 0);
-+	free_unref_page(&folio->page, 0, mgen);
-+}
-+
-+void __folio_put_mgen(struct folio *folio, unsigned short int mgen)
-+{
-+	if (unlikely(folio_is_zone_device(folio)))
-+		WARN_ON(1);
-+	else if (unlikely(folio_test_large(folio)))
-+		WARN_ON(1);
-+	/*
-+	 * For now, migrc supports this case only.
-+	 */
-+	else
-+		__folio_put_small(folio, mgen);
- }
- 
- static void __folio_put_large(struct folio *folio)
-@@ -139,7 +152,7 @@ void __folio_put(struct folio *folio)
- 	else if (unlikely(folio_test_large(folio)))
- 		__folio_put_large(folio);
- 	else
--		__folio_put_small(folio);
-+		__folio_put_small(folio, 0);
- }
- EXPORT_SYMBOL(__folio_put);
- 
+ 	arch_tlbbatch_add_pending(&tlb_ubc->arch, mm, uaddr);
 -- 
 2.17.1
 
