@@ -1,191 +1,104 @@
-Return-Path: <linux-kernel+bounces-148636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FFCF8A8561
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:57:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDE238A8556
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:53:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C26B31C20E07
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:57:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AE8D1F25230
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:53:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C6BE140E40;
-	Wed, 17 Apr 2024 13:57:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 635891411E8;
+	Wed, 17 Apr 2024 13:52:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d2zDDx9r"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="MyxQToss"
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 640CE139F
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:57:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609DC14039D;
+	Wed, 17 Apr 2024 13:52:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713362233; cv=none; b=SBLhMyCn2QkeHaewz2u3TBrWvQAzQDSJgw/vJBH51CavcabUGWVup5LNryCXh6jOfQzQP2lullKfdLR3NOERQ+kp9+jpoJQTGhfsaAY9nx4N8O3qQESzf1cIUPzFdWztlblOuIHFhvaB0IOnA27RFQdPuz7I6IaJGLnG4nss1B4=
+	t=1713361967; cv=none; b=R1uQVmM4VxNgctfDU5sAe0zD8jz1pwx1nJZg8rlbFCXYVNVCkAyomao/nzH2DoKvT9rtQiHhDq51D/+UwFtA2zm4wLAg0+Bm1VwqNz64wHwvr+NRuJkraWuNICKKDSUCmqaoe6TFbTMPfpdBnh+n5cQArZumLbBQ4ZpRDhxWzDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713362233; c=relaxed/simple;
-	bh=XLvYLU4eF/dPhXr9R4HaBFMJ+6xEWfr8YB2tRLmE8JU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cnyQLQgNxTi9u/NZ0+R0VgXfUR/Mwipv8YEcwfvuM3lRPuUtHR7KYElFayAqNd6WCYjH36zUwenat+OpD3s9/4b8KDZsVlP4ceBgDJi8I92xP26h8E1Sruas2mJE/kMzqA2iUVUV5qXyhRgJd69DFIUJy4/RVSrplh/xASY/Qa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d2zDDx9r; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e651a9f3ffso21031785ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 06:57:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713362231; x=1713967031; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NoWPGw5XhVyWYSlc/o5noqumx8xqX3eLJxgrmq9khU4=;
-        b=d2zDDx9rDVjNqHSwVDjgCqod/0Tusgf+4cfVEwEWsmtFDZvM9b+hPD5Y6PBkOAdw5U
-         e61s7rYm916Q0DUqQcER0Dyv1D3wGpOj27Fj7j4Z0l31fTI+itUiRZULVSk/xQEAYNhF
-         2EsH+zouX4ukA0RFpA5odVLxvYYtP7WZZ/ldTRx6U5U0rNZnQFpS4kKAwD1nONAfrlyI
-         UbyPxbFuQeux5nVgw2gyoGQyO0GJO019Uxylj2OKlPGd5yB9n6Jm1KzF1uf489OKeJek
-         Fo4lCl7m9PNT6WnuzBd+miUS6rH5MSXkgfvJUaZnQJGEbu4TEe4GnTDjKpaGd8WnU7e4
-         Vtvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713362231; x=1713967031;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NoWPGw5XhVyWYSlc/o5noqumx8xqX3eLJxgrmq9khU4=;
-        b=JkzBqkk/nRAixE0xbf+LeisjogwTbXIsm7rabitFSsrJRuL7NRiazTJy0UcDteYpkt
-         3v26BcC4Gfg6aVTbJGtFz7lfw4tHxO2sqCw48B+wsVPFMlTOYMNQE8rce62cXtcfhem5
-         3xssreJLu+PS8nhQnbqedv35lE9y8iUoMpphzUag4WZB1i/Y6XUnRgAO8yxc6UARhaAA
-         HB9mQaicgnuMj1sN4R8SpSNwgiERHdkSJrGiLWW1vOMQrIybWYCc+Zh3iZLj7LMB/Mg2
-         i9b44/qPawnXXjnNd5wxhaSrHBjQL+2SBSwIcM82665yigNcR2UUATI0RoXeMZqFSsDq
-         UeWA==
-X-Forwarded-Encrypted: i=1; AJvYcCXrL7c0fV/IJdAhnIvSenym3jaieWi6RI6XLPBL/QswDRbUfbWW8HnDpeL/xXuyF81QmfzZM8JnlzDv2HEmkRm4JvwTnG/t12xJG9KL
-X-Gm-Message-State: AOJu0YyMYvXl5QWJrzlYhcIdLLhzanWzemyVdrxamqqsIFWD/s4+Cvpm
-	XSlnxwypMuz0s8zbBIeR9wL27ytnxXWBDZ1GM3XkS82G2I1TFQ9Q
-X-Google-Smtp-Source: AGHT+IG7HeoSlD6WjfLHgM947oAumt6yz9jgDNwugrmLPHmmflMNTCRcFoC2QKrXSPvFCaMZhJKrlg==
-X-Received: by 2002:a17:902:c951:b0:1dd:6ce3:7442 with SMTP id i17-20020a170902c95100b001dd6ce37442mr15422757pla.39.1713362231529;
-        Wed, 17 Apr 2024 06:57:11 -0700 (PDT)
-Received: from lima-default.. (1-175-176-70.dynamic-ip.hinet.net. [1.175.176.70])
-        by smtp.gmail.com with ESMTPSA id jz5-20020a170903430500b001e41f1dda43sm11623485plb.75.2024.04.17.06.57.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 06:57:11 -0700 (PDT)
-From: Chin-Chun Chen <chinchunchen2001@gmail.com>
-To: yury.norov@gmail.com
-Cc: linux@rasmusvillemoes.dk,
+	s=arc-20240116; t=1713361967; c=relaxed/simple;
+	bh=dvs8rmkpjRbTlCQkdBXUSnIfhTY7ofWCgT1rCrbizXU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mDW7MN60CetZVDl5AgRJ6gq6kkyTSXCTqij7X6cQJG9CjOpM/qLAkTEJFT2FWDr33bKHPpmWNyQWstuJjn0bIZM0wXVHkZp93GWzISYiNnXJRBzqzAYYM3qBeKDhGWBBBtvS0WP+kW0D6ZGn4VzqSVo+UH8Zg9o+nOAM+iJgCD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=MyxQToss; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id DCAFA600A7;
+	Wed, 17 Apr 2024 13:52:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1713361963;
+	bh=dvs8rmkpjRbTlCQkdBXUSnIfhTY7ofWCgT1rCrbizXU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=MyxQTossvwiZE6WUOuoKK5bTFXhKpKpktRXUUPeOLoblR/6RPr8n/UFQBZUgkuorZ
+	 sh8wBhW9kAt+tQdz2YVOCiQjKnEYncE1SMzmvl1UOxwOBrKj8sKBi3AUqDbnAF0/2r
+	 Gko18E0QzVPb4XKQ7CLJ9JHO+6sx2NnADzg2gjw3202Q4unjlv4BwmLGL9oz/qq9X9
+	 NNGfiaC2MrZC7vS6Lr+Wj2mbcXvcDL6Ms5IsHoKoxJkFm5iRxYWga6hrtPMeHF9mx0
+	 8rN6dZRDi2ach9xAjFsPSL5GdcmCKR4RGj6A1YpOGB5akL3+B+Npf5sdmHyXGE1xEY
+	 ypmuBQKAfdosw==
+Received: by x201s (Postfix, from userid 1000)
+	id 816AA203AC4; Wed, 17 Apr 2024 13:51:15 +0000 (UTC)
+From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
+To: netdev@vger.kernel.org
+Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
 	linux-kernel@vger.kernel.org,
-	Chin-Chun Chen <chinchunchen2001@gmail.com>
-Subject: [PATCH v2] linux/bitops.h: Refactor function fns to reduce branch usage and eliminate external calls
-Date: Wed, 17 Apr 2024 21:51:07 +0800
-Message-Id: <20240417135106.21640-1-chinchunchen2001@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240417132252.20773-1-chinchunchen2001@gmail.com>
-References: <20240417132252.20773-1-chinchunchen2001@gmail.com>
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>
+Subject: [PATCH net-next] net/mlx5e: flower: check for unsupported control flags
+Date: Wed, 17 Apr 2024 13:51:09 +0000
+Message-ID: <20240417135110.99900-1-ast@fiberby.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Rewrote the function fns to use macro wrote in linux/include/asm-generic/bitops/const_hweight.h.
-Decrease the number of required branches and eliminate the need for external calls.
-The number of branches is now constant, unaffected by input variations.
+Use flow_rule_is_supp_control_flags() to reject filters with
+unsupported control flags.
 
-This commit improves code efficiency and clarity.
+In case any unsupported control flags are masked,
+flow_rule_is_supp_control_flags() sets a NL extended
+error message, and we return -EOPNOTSUPP.
 
-Signed-off-by: Chin-Chun Chen <chinchunchen2001@gmail.com>
+Only compile-tested.
+
+Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
 ---
-Changes since v1:
- * wrong patch send in v1
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
- include/linux/bitops.h | 62 +++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 55 insertions(+), 7 deletions(-)
-
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 2ba557e067fe..55d81755e56f 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -247,6 +247,13 @@ static inline unsigned long __ffs64(u64 word)
- 	return __ffs((unsigned long)word);
- }
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+index aeb32cb27182..5019280cfcdd 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -2819,6 +2819,11 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
+ 			else
+ 				*match_level = MLX5_MATCH_L3;
+ 		}
++
++		if (!flow_rule_is_supp_control_flags(FLOW_DIS_IS_FRAGMENT |
++						     FLOW_DIS_FIRST_FRAG,
++						     match.mask->flags, extack))
++			return -EOPNOTSUPP;
+ 	}
  
-+
-+#define __const_hweight2(w)                                                 \
-+    ((unsigned int) (!!((word) & (1ULL << 0))) + (!!((word) & (1ULL << 1))))
-+
-+#define __const_hweight4(w)                                                 \
-+    ((unsigned int) (!!((word) & (1ULL << 0))) + (!!((word) & (1ULL << 1))) + \
-+                     (!!((word) & (1ULL << 2))) + (!!((word) & (1ULL << 3))))
- /**
-  * fns - find N'th set bit in a word
-  * @word: The word to search
-@@ -254,14 +261,55 @@ static inline unsigned long __ffs64(u64 word)
-  */
- static inline unsigned long fns(unsigned long word, unsigned int n)
- {
--	unsigned int bit;
--
--	while (word) {
--		bit = __ffs(word);
--		if (n-- == 0)
--			return bit;
--		__clear_bit(bit, &word);
--       }
--
--       return BITS_PER_LONG;
-+	unsigned int bits;
-+	unsigned int sum = 0;
-+#if BITS_PER_LONG == 64
-+	bits = __const_hweight32(word & 0xffffffff);
-+	if (bits <= n) {
-+		n -= bits;
-+		word >>= 32;
-+		sum += 32;
-+ 	}
-+#endif
-+	bits = __const_hweight16(word & 0xffff);
-+       if (bits <= n) {
-+               n -= bits;
-+               word >>= 16;
-+               sum += 16;
-+       }
-+	bits = __const_hweight8(word & 0xff);
-+       if (bits <= n) {
-+               n -= bits;
-+               word >>= 8;
-+               sum += 8;
-+       }
-+	bits = __const_hweight4(word & 0xf);
-+       if (bits <= n) {
-+               n -= bits;
-+               word >>= 4;
-+               sum += 4;
-+       }
-+	bits = __const_hweight2(word & 0x3);
-+       if (bits <= n) {
-+               n -= bits;
-+               word >>= 2;
-+               sum += 2;
-+       }
-+	bits = (unsigned int) (word & 0x1);
-+       if (bits <= n) {
-+               n -= bits;
-+               word >>= 1;
-+               sum += 1;
-+       }
-+	bits = (unsigned int) (word & 0x1);
-+       if (bits <= n) {
-+               n -= bits;
-+               sum += 1;
-+       }
-+
-+	if (!n)
-+		return sum;
-+
-+ 
-+ 	return BITS_PER_LONG;
- }
-
-base-commit: 8f2c057754b25075aa3da132cd4fd4478cdab854
+ 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_BASIC)) {
 -- 
-2.40.1
+2.43.0
 
 
