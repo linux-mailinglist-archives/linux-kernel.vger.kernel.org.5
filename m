@@ -1,94 +1,65 @@
-Return-Path: <linux-kernel+bounces-147942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C6D58A7BAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:04:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE9508A7BAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:07:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E63A1C21A4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:04:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68190282D08
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:07:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B8D5026D;
-	Wed, 17 Apr 2024 05:04:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GLYKTe3T"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D81150A7A;
+	Wed, 17 Apr 2024 05:07:26 +0000 (UTC)
+Received: from mail.valinux.co.jp (mail.valinux.co.jp [210.128.90.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495A43BBF7
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 05:04:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E9713BBF7
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 05:07:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.128.90.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713330276; cv=none; b=RI1Oc+0lcD6BIUgJGg0t4QMGlj0ZliW8hlzrIpkjX+Mh222lG7ATu6D77jOadjDhdusyXBfUO3nqIto7dDWu0cAO0DMrkAGnPD4ke6qADRXUgy0QAD6KLsebY1IE86L87QC4UY70KvxLE918i055RKI+rfloVaXwPOBqJdzu11U=
+	t=1713330445; cv=none; b=Zsj0PqjB+IymIKl6t/iFlxRUcJxWw/8SpDYDCF4ULCwUetqDxmtiYY/T+plS60rVTDwysQGWpnXgFaQ+whC0x6dqkx/711a/Di5iILGuGDHKgKHKG0kyUkEV31eYZslJibmZ8u/whLpgLCp06EFu7kMJG5uuVSB8Rcs1PlJHTn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713330276; c=relaxed/simple;
-	bh=hXqatsTQLikf22gB6SIFnLqMwWsJGTXm5crtOsPvGJM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Otd+XVLTv2FMexJGxDA5vPQMK9nL4HWFKPBvIpmymRH/E4hCWO64Csi/v/Oc7JlO5Y6xei9kG2DeJVev/X04speV/2w+TkAN2U2C38naQ/3evOQ98VLlwPYW+AM8rGKWU5NMyJy5wHadMF6/dZVz+SY41LHOo8OSlXH0VZyvEt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GLYKTe3T; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ece8991654so4648095b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 22:04:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713330274; x=1713935074; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A8cE2GY5Lwaxvgym50OvlfdzVbTihI4gujlM0wTOT/s=;
-        b=GLYKTe3T2xk7LhK7capBGLb7whQghKgquHsTX5ePGUQBhogfOgGnRaEePPRlcKcH/O
-         6OnOYGSGz9rnvIoFFj5lzrSohRajgxFF4q4Zf1SG7XJ332CdXbQdreRUNJ7Gd3hIQHGD
-         mrjMFCJUSMvGcPM7GSM/O2Y8+JDTRSwlMRezvlw0/BZ/I+bHp4oVJajXkg+bQM5zMyAy
-         dgom/wrTO1ukNwqT8PTTMGi5Ilx4ZmoAEva1vM8epiZvU5rLvyG90IIKS7iK2NWn8pkB
-         zTHLTwE+ig3Yw09FFHIIE6DfCo3euWH6U0Z9GduUGVmIas6D8/ZQAwkrdGHvGq4B+k65
-         5VVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713330274; x=1713935074;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A8cE2GY5Lwaxvgym50OvlfdzVbTihI4gujlM0wTOT/s=;
-        b=Vm90lAbuTjvxFaRCprtXG1JfEodc5PLjLjVyQK/BqJg9p+MIyieYiYC2ahbPQyJ8Tu
-         Iezzn97K6qQSAPAftxqUyjT+JEeoI5Swls5B6JCVAPS2HEwK2lAg2xB9XcjMG7mQegRb
-         Yff+LguVTryn8Err90jKFqMko4auz9V6inLKq/ll2UPJiCwTzbEv3yuGfypwj/ewwhlN
-         Vrgwxxl64HonuwJQgVW/UUsLhIZ1najQxjlnbejcTHk+3w4x3YrdzoSsXGvw6ic0XYub
-         cCtMsR98HYDvAu3oFx9LCMJXPvDfoDTi0GvHmiiP5d5iJFkAWYN8DrjmzuPI6F0fd4Oy
-         /tJA==
-X-Forwarded-Encrypted: i=1; AJvYcCWDI9CP+dA9JqL5C8t+nkc3vdDaOZJBRNSd7zWMHGP/4iTt0/sqJ637DeHmiQZHLM2OfXIShUe7Rj9wOV4/nu0U+9zU7nfvjwbVClUu
-X-Gm-Message-State: AOJu0YyGiGmNaT7GNkBi4o3+r5JCzOrL48djESJxogTRy1+Fol/Wvs2+
-	KRqSIzSKuH1O9YvsOo2MBQdDR5e0HcxTeUfcx0y/B7gyo8ceoPKm
-X-Google-Smtp-Source: AGHT+IEblF7vy2XSGTFmF24m/8tK5t0Ox3i9yE6fmQYAZ7wmKEsaYpKSL1iBeaHI10GdgAecyBosVQ==
-X-Received: by 2002:a05:6a20:c101:b0:1a7:3d2a:7383 with SMTP id bh1-20020a056a20c10100b001a73d2a7383mr15516623pzb.18.1713330274448;
-        Tue, 16 Apr 2024 22:04:34 -0700 (PDT)
-Received: from LancedeMBP.lan ([112.10.225.217])
-        by smtp.gmail.com with ESMTPSA id hg19-20020a17090b301300b0029c472ec962sm484417pjb.47.2024.04.16.22.04.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 22:04:34 -0700 (PDT)
-From: Lance Yang <ioworker0@gmail.com>
-To: ioworker0@gmail.com
-Cc: 21cnbao@gmail.com,
+	s=arc-20240116; t=1713330445; c=relaxed/simple;
+	bh=u8g8jf8vEHRXJCv4Eu0yvYfyUal6Ykec8xCukP0lgQM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Rz6/YbknZUJE8t4L8ZBxz4jMS6p4lZHxDZmLEdZZDqSUskVEYe1R/EEPBnml9GM7BbjydHqQDDYwTcrhVUq5aZ1jVQ+Zu1K6oUQYTYc9aJQU4al1EZlY2G6Q89sFAK88pNRth9nUGYoYycWw+3d5bUJ27enzruKBMyhhjqhO3zc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valinux.co.jp; spf=pass smtp.mailfrom=valinux.co.jp; arc=none smtp.client-ip=210.128.90.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valinux.co.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valinux.co.jp
+Received: from localhost (localhost [127.0.0.1])
+	by mail.valinux.co.jp (Postfix) with ESMTP id F2C4CA98A0;
+	Wed, 17 Apr 2024 14:07:18 +0900 (JST)
+X-Virus-Scanned: Debian amavisd-new at valinux.co.jp
+Received: from mail.valinux.co.jp ([127.0.0.1])
+	by localhost (mail.valinux.co.jp [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id GzZjxqzI91Bn; Wed, 17 Apr 2024 14:07:18 +0900 (JST)
+Received: from localhost.localdomain (vagw.valinux.co.jp [210.128.90.14])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mail.valinux.co.jp (Postfix) with ESMTPSA id C95859F6AC;
+	Wed, 17 Apr 2024 14:07:18 +0900 (JST)
+From: takakura@valinux.co.jp
+To: paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	apatel@ventanamicro.com,
+	bmeng.cn@gmail.com,
+	atishp@rivosinc.com,
+	daniel.thompson@linaro.org,
+	arnd@arndb.de,
+	sfr@canb.auug.org.au,
 	akpm@linux-foundation.org,
-	david@redhat.com,
-	fengwei.yin@intel.com,
+	conor.dooley@microchip.com,
+	samuel.holland@sifive.com
+Cc: taka@valinux.co.jp,
+	linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	mhocko@suse.com,
-	minchan@kernel.org,
-	peterx@redhat.com,
-	ryan.roberts@arm.com,
-	shy828301@gmail.com,
-	songmuchun@bytedance.com,
-	wangkefeng.wang@huawei.com,
-	xiehuan09@gmail.com,
-	zokeefe@google.com
-Subject: Re: [PATCH v7 1/3] mm/madvise: introduce clear_young_dirty_ptes() batch helper
-Date: Wed, 17 Apr 2024 13:04:26 +0800
-Message-Id: <20240417050426.66194-1-ioworker0@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <CAK1f24mEoC_Pg7-49G=y7dMUaGhzW11_A5sK0EWVhH6K1kjMMA@mail.gmail.com>
-References: <CAK1f24mEoC_Pg7-49G=y7dMUaGhzW11_A5sK0EWVhH6K1kjMMA@mail.gmail.com>
+	Ryo Takakura <takakura@valinux.co.jp>
+Subject: [PATCH] RISC-V: Enable IPI CPU Backtrace
+Date: Wed, 17 Apr 2024 14:07:11 +0900
+Message-Id: <20240417050711.41930-1-takakura@valinux.co.jp>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,42 +68,127 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hey David, Ryan,
+From: Ryo Takakura <takakura@valinux.co.jp>
 
-How about this change?
+Add CPU backtrace feature using IPI on riscv.
+Currently, riscv doesn't yet support the feature while other
+architectures do. As IPI multiplexing allows to handle 
+multiple IPIs, I think this feature can also be enabled 
+on riscv by adding IPI.
 
-static inline void clear_young_dirty_ptes(struct vm_area_struct *vma,
-					  unsigned long addr, pte_t *ptep,
-					  unsigned int nr, cydp_t flags)
-{
-	if (flags == CYDP_CLEAR_YOUNG) {
-		for (;;) {
-			ptep_test_and_clear_young(vma, addr, ptep);
-			if (--nr == 0)
-				break;
-			ptep++;
-			addr += PAGE_SIZE;
-		}
-		return;
-	}
+This patch defines arch_trigger_all_cpu_backtrace() which triggers
+the IPI for CPU backtrace.
+It will be triggered in the events of oops/panic when options
+(oops_all_cpu_backtrace/panic_print) are set accordingly.
 
-	pte_t pte;
+Below is the case of oops with the oops_all_cpu_backtrace 
+enabled.
 
-	for (;;) {
-		pte = ptep_get_and_clear(vma->vm_mm, addr, ptep);
+$ sysctl kernel.oops_all_cpu_backtrace=1
 
-		if (flags & CYDP_CLEAR_YOUNG)
-			pte = pte_mkold(pte);
-		if (flags & CYDP_CLEAR_DIRTY)
-			pte = pte_mkclean(pte);
+triggering oops shows:
+[  435.716754] NMI backtrace for cpu 3
+[  435.716893] CPU: 3 PID: 621 Comm: in:imklog Tainted: G           OE      6.9.0-rc4 #1
+[  435.717086] Hardware name: riscv-virtio,qemu (DT)
+[  435.717182] epc : fallback_scalar_usercopy+0x8/0xdc
+[  435.717300]  ra : _copy_to_user+0x32/0x58
+[  435.717391] epc : ffffffff80c33d88 ra : ffffffff80598e3c sp : ff20000000e83b50
+[  435.717544]  gp : ffffffff82066bf0 tp : ff60000091fd7000 t0 : 3363303866660000
+[  435.717711]  t1 : 000000000000005b t2 : 3363303866666666 s0 : ff20000000e83b60
+[  435.717874]  s1 : 00000000000001af a0 : 00007ff74d3df74f a1 : ff60000082cdc800
+[  435.718040]  a2 : 000000000000003c a3 : 0000000000000000 a4 : 0000000000000000
+[  435.718196]  a5 : 00ffffffffffffc4 a6 : 0000000000000000 a7 : 0000000000000010
+[  435.718333]  s2 : ff60000082cdc800 s3 : ffffffff82066910 s4 : 0000000000001df1
+[  435.718475]  s5 : ffffffff8206a5b8 s6 : 00007ff74d3df74f s7 : ffffffff8206a5b0
+[  435.718616]  s8 : ff60000082cdc800 s9 : ffffffff81e26208 s10: 000000000000003c
+[  435.718760]  s11: ffffffff8206a5ad t3 : ff60000082cdc812 t4 : ff60000082cdc812
+[  435.718909]  t5 : ff60000082cdc818 t6 : 0000000000040000
+[  435.719019] status: 0000000000040120 badaddr: 0000000000000000 cause: 8000000000000001
+[  435.719191] [<ffffffff80c33d88>] fallback_scalar_usercopy+0x8/0xdc
+[  435.719330] [<ffffffff80094eee>] syslog_print+0x1f4/0x2b2
+[  435.719446] [<ffffffff80095e10>] do_syslog.part.0+0xb0/0x326
+[  435.719594] [<ffffffff8009692e>] do_syslog+0x66/0x88
+[  435.719816] [<ffffffff803a1a80>] kmsg_read+0x44/0x5c
+[  435.720017] [<ffffffff8038ea92>] proc_reg_read+0x7a/0xa8
+[  435.720251] [<ffffffff802fae20>] vfs_read+0x94/0x264
+[  435.720478] [<ffffffff802fb906>] ksys_read+0x64/0xe4
+[  435.720709] [<ffffffff802fb9a6>] __riscv_sys_read+0x20/0x2c
+[  435.720880] [<ffffffff80c43ea2>] do_trap_ecall_u+0x60/0x1d4
+[  435.721236] [<ffffffff80c4f74c>] ret_from_exception+0x0/0x64
 
-		if (--nr == 0)
-			break;
-		ptep++;
-		addr += PAGE_SIZE;
-	}
-}
+Signed-off-by: Ryo Takakura <takakura@valinux.co.jp>
+---
+ arch/riscv/include/asm/irq.h |  3 +++
+ arch/riscv/kernel/smp.c      | 16 ++++++++++++++++
+ 2 files changed, 19 insertions(+)
 
-Thanks,
-Lance
+diff --git a/arch/riscv/include/asm/irq.h b/arch/riscv/include/asm/irq.h
+index 8e10a94430a2..ed8f76879270 100644
+--- a/arch/riscv/include/asm/irq.h
++++ b/arch/riscv/include/asm/irq.h
+@@ -12,6 +12,9 @@
+ 
+ #include <asm-generic/irq.h>
+ 
++void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu);
++#define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
++
+ void riscv_set_intc_hwnode_fn(struct fwnode_handle *(*fn)(void));
+ 
+ struct fwnode_handle *riscv_get_intc_hwnode(void);
+diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
+index 45dd4035416e..6e297b9eb641 100644
+--- a/arch/riscv/kernel/smp.c
++++ b/arch/riscv/kernel/smp.c
+@@ -21,6 +21,7 @@
+ #include <linux/delay.h>
+ #include <linux/irq.h>
+ #include <linux/irq_work.h>
++#include <linux/nmi.h>
+ 
+ #include <asm/tlbflush.h>
+ #include <asm/cacheflush.h>
+@@ -33,6 +34,7 @@ enum ipi_message_type {
+ 	IPI_CPU_CRASH_STOP,
+ 	IPI_IRQ_WORK,
+ 	IPI_TIMER,
++	IPI_CPU_BACKTRACE,
+ 	IPI_MAX
+ };
+ 
+@@ -136,6 +138,9 @@ static irqreturn_t handle_IPI(int irq, void *data)
+ 		tick_receive_broadcast();
+ 		break;
+ #endif
++	case IPI_CPU_BACKTRACE:
++		nmi_cpu_backtrace(get_irq_regs());
++		break;
+ 	default:
+ 		pr_warn("CPU%d: unhandled IPI%d\n", smp_processor_id(), ipi);
+ 		break;
+@@ -212,6 +217,7 @@ static const char * const ipi_names[] = {
+ 	[IPI_CPU_CRASH_STOP]	= "CPU stop (for crash dump) interrupts",
+ 	[IPI_IRQ_WORK]		= "IRQ work interrupts",
+ 	[IPI_TIMER]		= "Timer broadcast interrupts",
++	[IPI_CPU_BACKTRACE]     = "CPU backtrace interrupts",
+ };
+ 
+ void show_ipi_stats(struct seq_file *p, int prec)
+@@ -332,3 +338,13 @@ void arch_smp_send_reschedule(int cpu)
+ 	send_ipi_single(cpu, IPI_RESCHEDULE);
+ }
+ EXPORT_SYMBOL_GPL(arch_smp_send_reschedule);
++
++static void riscv_backtrace_ipi(cpumask_t *mask)
++{
++	send_ipi_mask(mask, IPI_CPU_BACKTRACE);
++}
++
++void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu)
++{
++	nmi_trigger_cpumask_backtrace(mask, exclude_cpu, riscv_backtrace_ipi);
++}
+-- 
+2.34.1
+
 
