@@ -1,153 +1,109 @@
-Return-Path: <linux-kernel+bounces-148485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EEDB8A8348
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:42:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 839F08A834C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:42:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF2931F22858
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:42:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DAC9B22E26
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:42:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D60985C7A;
-	Wed, 17 Apr 2024 12:42:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B71B13D61A;
+	Wed, 17 Apr 2024 12:42:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tORP0eiw"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="aOUSpA2i"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A96945A0E4
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 12:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563D913D2BA;
+	Wed, 17 Apr 2024 12:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713357740; cv=none; b=Rs4EVZoM0Ov5vMz0/gwc/0laME7GLCES1LiNxCe/QZrXZh4NvhWUX+kR8jvjN3BEQRskv73CBCkX58DZN19EnATRasByGTLYHSRfO1OK46tb9CyAFx9qA6dDmTL+rvMiDsqpC9VQXn/Bk6m+MmzgVkJXRtyTe0IyXSoB51uLO3k=
+	t=1713357742; cv=none; b=adqMK6VPd+JpDbtJvzcjxJe65yXuhbPGjWA6W0FErMTc+9N9WlAfcUKXcb8/BgESplBtq/GhFFdgZ1d6GzESyg4s4LZgiY/cRGFJgZupLrZTzRduG9uh6FzVCnsdKfFhjxhyl8PAi0fc7uyyYlelhYXMm6vtSBcwd24OtKiRUhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713357740; c=relaxed/simple;
-	bh=AwKyjiWJRzagWC2MbqX3hFlf49pQyQ5paXVC/+7FW6w=;
+	s=arc-20240116; t=1713357742; c=relaxed/simple;
+	bh=iElS8fLYtQfkeJ74Kw3ZZys+/3ME/EXDLVa34ENKV2w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dAFbShLwf7QYYdwv7hbM+MJN2BbJkOVQ4FBLDv1khG1IhtvO1WUoTN6NqfCmSwaCA+tNXyb8JweazOIJUDYf6e86wwjUJJV8woTP/ZBszHv50SU4/4r82dBF6GETgsT56Wz9aMbeFOCebt662ZDzklZnjaBrLxho9i5LL7gKIas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tORP0eiw; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56c5d05128dso6088100a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 05:42:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713357736; x=1713962536; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hGxJr1eT1juIaCt0B8kVSHBgvMQ9mE5owuvsY4aMzkc=;
-        b=tORP0eiwqw+a1r6TOse4RmmZ/RQ4NSz2P6C0H73xLpyIuqI8C4jppxyWdmFBB7L2sZ
-         yhzgWAChJ29NdffoMaORYRKud2OHlWSPwv/4GoZ/IGgac1FfSzbT84UK4+7YEdMkQ4cR
-         yZfKTCXCOZMAJB9gSulLQNDpTpYlRp4h5yhJSsksUn47qvC3c7F94rkEWibkNECp5SWD
-         RboL9a4MJFOKfNjxv5liqS7gkuwHdaA0l3S/NKj8Y+NJ+BHm1mc97TspML3RivLRhn1p
-         F1hU0f1261tHfSuhVZEnoN/NqsZVuNt0ldTvoz2pnPtSndCxMJvEixdESpfsM5DG90qD
-         rH/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713357736; x=1713962536;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hGxJr1eT1juIaCt0B8kVSHBgvMQ9mE5owuvsY4aMzkc=;
-        b=qlM7hvmP2xbTNtSmi4EdNjVthdVWh5z97Dyhqn6RfLiMxHD8MV9XhmygJFDsrkLjnm
-         FIgjZXIkvBE61CXl2AUIFGBOe1dKH7Q77h1Lva7ZB41vgMadAnULLBUcghn2tGHLnJTs
-         Bhhv2oFqbn2C4B4BG4yiAiZo2Vl6nV01ochMTz5BHI2lmRFFJ4BjIAWLKATQvmvgSZEL
-         Q5yG0CrZWEQnWbKQSw9595SfU7N1VVyfJQFcDdEZlxGyJ+ykuSAqZYSyuuKzJSPA348X
-         RQbLghE2iyVu9rnCvUd4w+BD46cdQFFvYE2Y0SUhS3kl9Cr0+fD3T8JsZNBGL4wZYUdw
-         X6cg==
-X-Forwarded-Encrypted: i=1; AJvYcCXVb07EXm7vATYHkEYZGNvOwcxy9665hLEDVr7Kp6I/52zDw/Qt5itAN1pw+A2fv+WbzYmcYcgPpn1fbXHfrvoOZnfju5MfBpmlfR/W
-X-Gm-Message-State: AOJu0YzRRSiau2i7DpCdHPDeYtxKxiKVW8TxqHvRGP3WZUMuyOB/PeGT
-	Y2LB3KonCPTO9oo5oc5u0P7vsH/ZyaTzqFdPiPDC3rl6OPEWqts+V+6VNMPjF+w=
-X-Google-Smtp-Source: AGHT+IE7pfXIfIVm1oVxaQaBU9J4TOarr6VsYEeyJ2uNUE4J8Yrala0tsc/J6hnG5NT5hKmDzgbjdQ==
-X-Received: by 2002:a50:d75b:0:b0:56e:2ab1:c803 with SMTP id i27-20020a50d75b000000b0056e2ab1c803mr11948542edj.0.1713357735666;
-        Wed, 17 Apr 2024 05:42:15 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id en8-20020a056402528800b0056e2432d10bsm7248586edb.70.2024.04.17.05.42.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 05:42:15 -0700 (PDT)
-Date: Wed, 17 Apr 2024 15:42:11 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Peng Fan <peng.fan@nxp.com>
-Cc: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Dhruva Gole <d-gole@ti.com>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-Subject: Re: [PATCH v10 0/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Message-ID: <2c608b57-fe0b-40dd-a1f8-8f0808605ae3@moroto.mountain>
-References: <20240415-pinctrl-scmi-v10-0-59c6e7a586ee@nxp.com>
- <6c652af8-151e-4d8b-9587-8eae1254a4fe@moroto.mountain>
- <DU0PR04MB941737BD9ACF18526D8A50C7880F2@DU0PR04MB9417.eurprd04.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BSWIofdunBgHBoXSQAvLtELnY17zGbrSQHsjd763Q1iSRf1gdKzFfeyGcsEEE6lwpnsUNjgdLOHJHcMZy5tMH5torJv86O9PFVNbzlf8wvHndmVpBkrlhY3/he44NIepBxMPELO0B7Y+o8EkWNXYvlP3NTbyLUDVgZh6y4cHwUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=aOUSpA2i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B7F2C072AA;
+	Wed, 17 Apr 2024 12:42:20 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="aOUSpA2i"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1713357739;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nhGk4qQoX6Vgfs3FX2NokLuDYqMjjQUysDddQh+F5Ec=;
+	b=aOUSpA2iqqAFoAaoF1qsBUUCw8TiJlDAqdWwniW4Z1WMUCMmLjMzLESJjhk5KT+IBBZ30q
+	Pk/saUu2ma4Gh+N5QHJN5NT95kdi+MbojjsJFloP8IZ+rOd0SY8PgCNHUeIwfGg8pIY9Is
+	1uaYzzO+TYwQRjOXmuiwVEczgRzYreE=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 91e10a78 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Wed, 17 Apr 2024 12:42:16 +0000 (UTC)
+Date: Wed, 17 Apr 2024 14:42:14 +0200
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Babis Chalios <bchalios@amazon.es>
+Cc: Alexander Graf <graf@amazon.de>, tytso@mit.edu, olivia@selenic.com,
+	herbert@gondor.apana.org.au, robh@kernel.org, krzk+dt@kernel.org,
+	conor+dt@kernel.org, linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	sudanl@amazon.com, xmarcalx@amazon.co.uk, dwmw@amazon.co.uk
+Subject: Re: [PATCH v5 1/5] virt: vmgenid: rearrange code to make review
+ easier
+Message-ID: <Zh_Dpi630-LXJkJm@zx2c4.com>
+References: <20240417081212.99657-1-bchalios@amazon.es>
+ <20240417081212.99657-2-bchalios@amazon.es>
+ <10d41e7e-87b1-4036-a740-da36270a4325@amazon.de>
+ <2838b126-ad87-4642-9223-e24f3fdb2c63@amazon.es>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <DU0PR04MB941737BD9ACF18526D8A50C7880F2@DU0PR04MB9417.eurprd04.prod.outlook.com>
+In-Reply-To: <2838b126-ad87-4642-9223-e24f3fdb2c63@amazon.es>
 
-On Wed, Apr 17, 2024 at 12:15:57PM +0000, Peng Fan wrote:
-> Hi Dan,
+On Wed, Apr 17, 2024 at 11:05:27AM +0200, Babis Chalios wrote:
 > 
-> > Subject: Re: [PATCH v10 0/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
-> > protocol basic support
-> >
-> > I'm trying to re-base AKASHI Takahiro's gpio driver on top of your scmi pinctrl
-> > driver.
-> > https://lore.ke/
-> > rnel.org%2Fall%2F20231005025843.508689-1-
-> > takahiro.akashi%40linaro.org%2F&data=05%7C02%7Cpeng.fan%40nxp.com%
-> > 7C342dd6eb0463456d0d6608dc5e41de1c%7C686ea1d3bc2b4c6fa92cd99c5
-> > c301635%7C0%7C0%7C638488884186606528%7CUnknown%7CTWFpbGZs
-> > b3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn
-> > 0%3D%7C0%7C%7C%7C&sdata=DMJZ2uwuJigkEnEcY7JdBw6DMPjHxcUvvh7
-> > 2fsaep50%3D&reserved=0
-> > I need to do something like this below to save the gpio information.
-> >
-> > So now, great, I have the information but I'm not sure how to export it from
-> > the scmi pinctrl driver to the gpio driver...  (This is a probably a stupid
-> > question but I am real newbie with regards to gpio).
-> >
-> > The other thing is that the SCMI spec says:
-> >
-> >     4.11.2.7
-> >     PINCTRL_SETTINGS_GET
-> >
-> >     This command can be used by an agent to get the pin or group
-> >     configuration, and the function selected to be enabled. It can also
-> >     be used to read the value of a pin when it is set to GPIO mode.
-> >
-> > What does that mean?  Is that right, or is it something left over from a
-> > previous revision of the spec.
-> >
-> > regards,
-> > dan carpenter
-> >
-> > diff --git a/drivers/firmware/arm_scmi/pinctrl.c
-> > b/drivers/firmware/arm_scmi/pinctrl.c
 > 
-> Just a short question, you will make this a standalone
-> patch part of your gpio pinctrl patchset, right?
+> On 17/4/24 10:35, Alexander Graf wrote:
+> >
+> > On 17.04.24 10:12, Babis Chalios wrote:
+> >> From: Sudan Landge <sudanl@amazon.com>
+> >>
+> >> Rearrage the functions of vmgenid to make the next commit,
+> >> which re-implements vmgenid as a platform driver, easier to review.
+> >>
+> >> Signed-off-by: Sudan Landge <sudanl@amazon.com>
+> >
+> >
+> > You can't sign off on behalf of someone else. The SoB here needs to be 
+> > yours. If you are taking over this code from Sudan, I'd suggest to 
+> > take over full ownership of it and put your own name as author and SoB 
+> > in all patches.
+> >
 > 
-> Or you wanna include this change in my v11 patch?
+> I thought about it and it seemed weird to me that I take over SoB and 
+> authorship since I only touched one line in one of
+> the patches, but I will be taking over the patches, so I can do that if 
+> that's the way we things are done.
 > 
-> I hope v11 + imx oem patches could land in 6.10,
-> so I would not expect big changes to v11.
+> Does it make sense to at least add "Co-authored-by Sudan Landge 
+> <sudanl@amazon.com>" here?
 
-Yeah.  Let's get your patches merged.  I don't think there is anything
-in mine which conflict with yours.  It's just addon.
+Wait, what? No. If you didn't write these patches, you're not the
+author. Sudan is the author. However, if they passed through you, it's
+fine to add your S-o-b. You can even mention the trivial change you made
+between Sudan's S-o-b and your own.
 
-regards,
-dan carpenter
+Anyway, if there doesn't wind up being a need for another patchset, I
+can fix this up upon committing to the tree.
 
+Jason
 
