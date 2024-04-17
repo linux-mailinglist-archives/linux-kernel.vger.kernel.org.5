@@ -1,62 +1,65 @@
-Return-Path: <linux-kernel+bounces-147944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFD638A7BB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:08:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0F118A7BB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:08:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E88141C21AC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:08:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7323A283822
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8012451C3F;
-	Wed, 17 Apr 2024 05:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F2F851004;
+	Wed, 17 Apr 2024 05:08:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="EztkbxgS"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="fCjhDUeX"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 385CE5026C;
-	Wed, 17 Apr 2024 05:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D678C50264;
+	Wed, 17 Apr 2024 05:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713330493; cv=none; b=WBBqCTdZkWbTo389k9Rb05yQBNI+mMMo1lDaoqsqqdN7BgJUpUvhLeR138Qgb/5NdyB7455zxIAxjCVpYHAoYJybonkunJDbFoefGbW8BUuXfEX/iD472MraNjlbOLPi0OykTHI95CbcFsAjLwUi2bd7fKASm3SvvgR9FPkEyyY=
+	t=1713330516; cv=none; b=HTjXy+xGWVBQD0DFFAthybg2THEmAnm8SEkqotyLzyLZtvgYcGg2GiXaaRucuFr8S8EboRg5xGM0FLuy9Gd0hQEM0mC/HyDsdWKQLW+onOJzxVWOR8emfjw+dO0RTgLzH/YOlg04Odn637iEK0EYn4NSNM73jT+3Ma9MeoixL0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713330493; c=relaxed/simple;
-	bh=kHmXZoiGMAvdYufv0YTELtxGjCF+e/+A8xmBw5gbZsQ=;
+	s=arc-20240116; t=1713330516; c=relaxed/simple;
+	bh=kivKBm+AJbJeHjI252CbHSM6JyqAqX6T/vNgHy/wBXI=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JROIekoq4c5vkaiI3mRz7xK91OhZ8SAG9S6FSBY/mdFghgX1vBYVJU8U22m1yh5EbhbuGYXcbTwniSVC106e3fj/jGTIQv+wm2CRtBCLZqu/lOXzH9d1UinE5Y9REjB/ZKCxyFoltR1zKybnkwFtEbl1rpcnO3j9Ma0sDN4GLMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=EztkbxgS; arc=none smtp.client-ip=217.70.183.194
+	 MIME-Version:Content-Type; b=DZ9BSKn3dgyyAwWb20rFOVWMweodBbN4ka/keROBXtXdFmwtI1d0ZvLmlwitzUisa/vItxNXGpuS5yBO4JvNvhVAJf3bUcj/tcH8T9wO/vnC7EW6UakStINCzZVS1bTKSuRDUrMJKBHk5BhLIOdv3A+73MHLUzhzbywMDHTkxIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=fCjhDUeX; arc=none smtp.client-ip=217.70.183.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7985B40002;
-	Wed, 17 Apr 2024 05:08:06 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 91BC81C0004;
+	Wed, 17 Apr 2024 05:08:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713330489;
+	t=1713330506;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4vsf7Ed6K1xX6J4cMkcuaz5lBJkIE+gM/MY02kRlH1M=;
-	b=EztkbxgSMdkNMAXVew+t2yLjWBqdVHks4MDvS3ZgoVdi7U2dH0PECOpRpOSEZJbo/I31de
-	c8uuQHoj9Blo580/Pn28ESV9cS7d9Sk00o7hJdX5J8hQAKzFJGbOmeAZIG9UsOPiI7fSLK
-	x/MPHU4QX4h9HxeVcnvrRiE5IRevQBJl/+lHhnlUVqvNQPFEu4wCEjERh4I6znjNP9GWwd
-	l13VnOSG0+vXjkMqNhb5qSaMyhXZKAn02uAUUYHGed0qdy3Ti1OsfOnnMFF4s8gpO+jJ7B
-	DMwQq41nKVnj4WwyuRq+25dDHF81odLfAHhpwGUPTVhIfcT/68a1LLzO2C+E/g==
-Date: Wed, 17 Apr 2024 07:07:59 +0200
+	bh=sLz4QLC5Swmd9g2vMTOYCJ6WGpq8oN/I1V5mjTJgaRE=;
+	b=fCjhDUeXCuiFF6jO+IBaK8FrhfdDUCFIk3oI00WsvCHTe8VNh/LdS5f5FbNV+BT74Y3Nzt
+	DwlsyUcyscUmsWioL+/6PfsOX5lqVgmj89SELxfaTCtyYTMGzq1ySOkH1KzlhknmqazZtZ
+	EEth4Klh+jWUO/gKf6LDgNgXbfpqbJM0CyKnpSof1+NSq0Vl+6zsZdnOPn1H9RJObtoExg
+	FL51YtsP4ljc8IfgkA/TDZ31TFiC9NI+3LBe8HGPtOPCOLTVntoYIBgjpFwUuQ2rHZ6tgG
+	ayq3zYiWice6FYUpNyny/q2LBhz7JljjKlB+SLrrgCTKeJPN3AN1E8tDiqKftA==
+Date: Wed, 17 Apr 2024 07:08:19 +0200
 From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Bagas Sanjaya <bagasdotme@gmail.com>
 Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jonathan
- Corbet <corbet@lwn.net>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Corbet <corbet@lwn.net>, Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  linux-sound@vger.kernel.org, linux-doc@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/12] ASoC: doc: dapm: various improvements
-Message-ID: <20240417070759.600a1730@booty>
-In-Reply-To: <20240416212349079fdffc@mail.local>
+Subject: Re: [PATCH 10/12] ASoC: doc: dapm: improve section "Codec/DSP
+ Widget Interconnections"
+Message-ID: <20240417070819.7dce3e37@booty>
+In-Reply-To: <Zh9RCMdihgSyZqTw@archie.me>
 References: <20240416-dapm-docs-v1-0-a818d2819bf6@bootlin.com>
-	<20240416212349079fdffc@mail.local>
+	<20240416-dapm-docs-v1-10-a818d2819bf6@bootlin.com>
+	<Zh9RCMdihgSyZqTw@archie.me>
 Organization: Bootlin
 X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
@@ -69,32 +72,34 @@ Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 X-GND-Sasl: luca.ceresoli@bootlin.com
 
-Hi Alex,
+Hello Bagas,
 
-thanks for the review!
+thanks for reviewing!
 
-On Tue, 16 Apr 2024 23:23:49 +0200
-Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
+On Wed, 17 Apr 2024 11:33:12 +0700
+Bagas Sanjaya <bagasdotme@gmail.com> wrote:
 
-> On 16/04/2024 07:56:06+0200, Luca Ceresoli wrote:
-> > This series applies various improvements to the DAPM documentation: a
-> > rewrite of a few sections for clarity, style improvements and typo fixes.
-> > 
-> > Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>  
+> On Tue, Apr 16, 2024 at 07:56:16AM +0200, Luca Ceresoli wrote:
+> > -Each input in this example has a kcontrol associated with it (defined in example
+> > -above) and is connected to the output mixer via its kcontrol name. We can now
+> > -connect the destination widget (wrt audio signal) with its source widgets.
+> > -::
+> > +Each input in this example has a kcontrol associated with it (defined in
+> > +the example above) and is connected to the output mixer via its kcontrol
+> > +name. We can now connect the destination widget (wrt audio signal) with its
+> > +source widgets.  ::
+> > <snipped>...
+> > -Interconnections are created with a call to:
+> > -::
+> > +Interconnections are created with a call to::
+> >    
 > 
-> Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> 
-> > ---
-> > Luca Ceresoli (12):
-> >       ASoC: doc: dapm: fix typos
-> >       ASoC: doc: dapm: fix struct name
-> >       ASoC: doc: dapm: minor rewording  
-> 
-> I'm wondering whether you could improve this patch by not rewrapping the
-> whole paragraph.
+> Not strictly related to this patch, but for consistency, I'd like
+> to write remaining literal block markers at the end of previous
+> paragraph:
 
-Sure. I'm waiting a few more days for any additional comments and then
-send a v2 with this change.
+Makes sense, sure. I can add a patch doing this in v2, or send a
+separate patch after this series.
 
 Luca
 
