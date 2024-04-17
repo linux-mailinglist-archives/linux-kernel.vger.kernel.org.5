@@ -1,71 +1,74 @@
-Return-Path: <linux-kernel+bounces-148137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDAD08A7E2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:25:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 676498A7E33
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:26:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AAE01C21C22
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:25:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 881741C203B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:26:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA5E7F483;
-	Wed, 17 Apr 2024 08:25:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82B487E588;
+	Wed, 17 Apr 2024 08:26:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZmvVruk5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pZxOw0F9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1526F08B;
-	Wed, 17 Apr 2024 08:25:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A62A7EF0F;
+	Wed, 17 Apr 2024 08:26:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713342349; cv=none; b=sloSYWusIVoOnkuADBfuPvCv0/j9k3wAPCoPfJQGJh7pD2w/qjHdENwRKLfXEjts8bRNYwjeI474zAWT4yLy+oZ68n+LgWRrhFQiq5ifXkPhAbp3pXk1VcheAnAadIcR46YFDebaPzFJ37X8ipt/Js3b43/G6BiIZ82auqMBnts=
+	t=1713342379; cv=none; b=b9OkV2jMohO3G6ecg6kLZcCIDfd8cWzwkbj19H6HIQ2hFjm0sua08uG4ZYi/4wgjMGUxpZr2Z0oPIHQVLFq+AnqTvv4B4KiLbqUX9dfnfIOli+JbZdXm87ujve1vK8p+dHv0NbLYeBJyogiRnpGu3DMfRShsVJ/j7BIq+pItD2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713342349; c=relaxed/simple;
-	bh=ni2dZHo4oHABNTjcemnlwpO/U8ITGYPkSL4a1KmIldw=;
+	s=arc-20240116; t=1713342379; c=relaxed/simple;
+	bh=F+55rTidfxMpJlnh4dRbVr8SWqmLzp+FoCh+4rte+4E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MiobAgaxYZxQeLHVwmDSOwo5vu+yTvLIbcSlQ4NdT8I6U/zoGQxbM+CAPdybERRFG2UTSQZHg4V59LBBaB6k2qDMPPwfFHXMOMQsUt6HfqvpzWOaEXk1bnZyCC5dEillZWCSuGrDGP9k8t7kzYedQ3wstyd+S0fMgs3INPlKgNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZmvVruk5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEBDFC072AA;
-	Wed, 17 Apr 2024 08:25:48 +0000 (UTC)
+	 To:Cc:Content-Type; b=J5poyGc5xmeqccQKnylYw2hzHkKeUMMdCBdjV2mgmdn9jZ08cQxLkEiyy0b2akgp1pN2tVo0iqYPLEO2NKBWXoOHEDd1RiEoc4MJHfXCwq4VGRPLuYeBa12xs/kf9HnpfOqxAHHe8SSBt38hUnwLe4aN86cEeDZGGbpguN60WOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pZxOw0F9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E178C072AA;
+	Wed, 17 Apr 2024 08:26:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713342349;
-	bh=ni2dZHo4oHABNTjcemnlwpO/U8ITGYPkSL4a1KmIldw=;
+	s=k20201202; t=1713342379;
+	bh=F+55rTidfxMpJlnh4dRbVr8SWqmLzp+FoCh+4rte+4E=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ZmvVruk5NcE5LQL2s04sJ1tFRrbCEX+KNFmHiWJqOkKfRsNS8D/gutOoD4YkHqcd/
-	 5GBV9RNQZxB1fn3W6z6qWzg4SgZp90euUl3gCyMPOKc36ZCuZovMhS87Wh0gvTo/D2
-	 dKQF6gWGst4hRXDZUHCreODw/bictrJXgXU06kfZR3UgcKWtYMUcMQDZ4QK7kiSoHS
-	 f32shrYLfgBw1ffQaOIjXVyldEEf+yoUtag/0Qf7zoG6VNIxXmTiT6469At5DJyeXO
-	 5wZrIxxjwHjrwpJL8BoHbH/L5GWb9Pcq74FDMUfTx6i9nwCpHrt5Z2ieHooS/qo6bL
-	 utxUM8E5MX4Lg==
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6ea0a6856d7so1656853a34.1;
-        Wed, 17 Apr 2024 01:25:48 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU+Ji/TMk7PZXexCwo/XkNd0FOv7gxpna7Bjw8Bplbvpnu+0aTEUGc53EOGIlads5hPFPpkrl+P2aIDcyA9XrMnJ6/HKKjLMCg6/g==
-X-Gm-Message-State: AOJu0YwDhlXmz4FJMHhaQyFY8N8XtQk9kKwgp5FCRKG0c2R8qazjndwz
-	e0WnLz/7rg53Lkl95PV0J2myi4Lu/k3unNIZdBx2sfInT5SjmGe3CfSZRWQshEfVQdtdM72OX9F
-	vS5iDc2IC0Q4rk0K5diws9Dk8kUw=
-X-Google-Smtp-Source: AGHT+IGTo7T4sQQ+b5Vfo2JDa0ZQEGNY6l5zAskf0HCPhag3E8pX5fEKHsYuwBiLCqqgNk2eRHFEfgJsP40ZwK7eJOA=
-X-Received: by 2002:a4a:e9f0:0:b0:5aa:6a31:4f53 with SMTP id
- w16-20020a4ae9f0000000b005aa6a314f53mr13556244ooc.0.1713342348323; Wed, 17
- Apr 2024 01:25:48 -0700 (PDT)
+	b=pZxOw0F9Z/UFOywwzsgCv2AEQiz/JG9YLjRQmhM2alTpRc3YXd7ftLKfI7OHuT6gZ
+	 EHPnxk9IGbWgikeweSDid3WByETfTE2YPSXybLIKNml1cyS7VA3qcVXDJgja3faRwb
+	 ghLTgL5BmnXgVRXv2WRCrAzwYNg63GQCDj9sssTlruLT9vhpdrIPntL2VEQydZkBWC
+	 joycDJMpKhpPzOQFR8R/3YDXJCIa8yi3NmhFbX++mMGDuyvVgLDoULQoBzI4/31tyg
+	 5ksOOZt2EtrcGAKAsK0wyLNm6Curx6E2rjMSJz8A4eTa1rW45GfWArgx/T2CQkpwK1
+	 rrq0RLUIu7o7A==
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5acdbfa7a45so266477eaf.2;
+        Wed, 17 Apr 2024 01:26:19 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUtSqHISx7MkPhIN6EHE8v3AgFbrk+BiFVf4o5RB8FRmG90yHWBwEN6cQ8GiO32nIDGm0oIrgXIdEshfyw84YS9YOjcrNUh6F3f1Q==
+X-Gm-Message-State: AOJu0YzpNRZMw7i+CZwTt8qDJ+9Tf+6Fr7KLuMbrtYswZN8deODwriYw
+	PVnwsMjYRoW4mcL0/ML6GMTeE1b3sFTuWo1nJcSUwkm6FnSVXlySEwwrrYtm73aY+AqLxML7ZgU
+	5+i+3+WDDygAgiMKiB6xpVf94Zh4=
+X-Google-Smtp-Source: AGHT+IGEahwDm1uzbNdSdWAFcMKikrGld/DOz6HotTHQBOOVZweQDP0Y8baQQ5DQVQ5kuPPheaN7cdrl3zv+9GA4odM=
+X-Received: by 2002:a05:6820:4008:b0:5aa:6b2e:36f0 with SMTP id
+ fh8-20020a056820400800b005aa6b2e36f0mr18086148oob.0.1713342378562; Wed, 17
+ Apr 2024 01:26:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416211941.9369-1-tony.luck@intel.com> <20240416212156.9413-1-tony.luck@intel.com>
-In-Reply-To: <20240416212156.9413-1-tony.luck@intel.com>
+References: <20240416211941.9369-1-tony.luck@intel.com> <20240416212201.9433-1-tony.luck@intel.com>
+In-Reply-To: <20240416212201.9433-1-tony.luck@intel.com>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 17 Apr 2024 10:25:36 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0inW4d3pk5=PmpCk8OZ4+dM_b6o7n-uRVKL19ib1nSQKQ@mail.gmail.com>
-Message-ID: <CAJZ5v0inW4d3pk5=PmpCk8OZ4+dM_b6o7n-uRVKL19ib1nSQKQ@mail.gmail.com>
-Subject: Re: [PATCH v3 40/74] x86/cpu/vfm: Update drivers/acpi/acpi_lpss.c
+Date: Wed, 17 Apr 2024 10:26:06 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0givBRP9Dj0pEJpB==TpeCyq_pE__2Jt3YvWUbcvWWweA@mail.gmail.com>
+Message-ID: <CAJZ5v0givBRP9Dj0pEJpB==TpeCyq_pE__2Jt3YvWUbcvWWweA@mail.gmail.com>
+Subject: Re: [PATCH v3 41/74] x86/cpu/vfm: Update drivers/acpi/x86/utils.c
 To: Tony Luck <tony.luck@intel.com>
 Cc: linux-kernel@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, patches@lists.linux.dev
+	Len Brown <lenb@kernel.org>, Hans de Goede <hdegoede@redhat.com>, Raag Jadav <raag.jadav@intel.com>, 
+	Mika Westerberg <mika.westerberg@linux.intel.com>, Marius Hoch <mail@mariushoch.de>, 
+	Michal Wilczynski <michal.wilczynski@intel.com>, linux-acpi@vger.kernel.org, 
+	patches@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -79,25 +82,138 @@ ote:
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
 > ---
->  drivers/acpi/acpi_lpss.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/acpi/x86/utils.c | 42 ++++++++++++++++++++--------------------
+>  1 file changed, 21 insertions(+), 21 deletions(-)
 >
-> diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
-> index 04e273167e92..e7b57dcce146 100644
-> --- a/drivers/acpi/acpi_lpss.c
-> +++ b/drivers/acpi/acpi_lpss.c
-> @@ -337,8 +337,8 @@ static const struct lpss_device_desc bsw_spi_dev_desc=
- =3D {
+> diff --git a/drivers/acpi/x86/utils.c b/drivers/acpi/x86/utils.c
+> index 90c3d2eab9e9..2d8203f7bd98 100644
+> --- a/drivers/acpi/x86/utils.c
+> +++ b/drivers/acpi/x86/utils.c
+> @@ -45,37 +45,37 @@ struct override_status_id {
+>         unsigned long long status;
 >  };
 >
->  static const struct x86_cpu_id lpss_cpu_ids[] =3D {
-> -       X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT,     NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(ATOM_AIRMONT,        NULL),
-> +       X86_MATCH_VFM(INTEL_ATOM_SILVERMONT,    NULL),
-> +       X86_MATCH_VFM(INTEL_ATOM_AIRMONT,       NULL),
->         {}
->  };
+> -#define ENTRY(status, hid, uid, path, cpu_model, dmi...) {             \
+> +#define ENTRY(status, hid, uid, path, cpu_vfm, dmi...) {               \
+>         { { hid, }, {} },                                               \
+> -       { X86_MATCH_INTEL_FAM6_MODEL(cpu_model, NULL), {} },            \
+> +       { X86_MATCH_VFM(cpu_vfm, NULL), {} },                           \
+>         { { .matches =3D dmi }, {} },                                    =
+ \
+>         uid,                                                            \
+>         path,                                                           \
+>         status,                                                         \
+>  }
 >
+> -#define PRESENT_ENTRY_HID(hid, uid, cpu_model, dmi...) \
+> -       ENTRY(ACPI_STA_DEFAULT, hid, uid, NULL, cpu_model, dmi)
+> +#define PRESENT_ENTRY_HID(hid, uid, cpu_vfm, dmi...) \
+> +       ENTRY(ACPI_STA_DEFAULT, hid, uid, NULL, cpu_vfm, dmi)
+>
+> -#define NOT_PRESENT_ENTRY_HID(hid, uid, cpu_model, dmi...) \
+> -       ENTRY(0, hid, uid, NULL, cpu_model, dmi)
+> +#define NOT_PRESENT_ENTRY_HID(hid, uid, cpu_vfm, dmi...) \
+> +       ENTRY(0, hid, uid, NULL, cpu_vfm, dmi)
+>
+> -#define PRESENT_ENTRY_PATH(path, cpu_model, dmi...) \
+> -       ENTRY(ACPI_STA_DEFAULT, "", NULL, path, cpu_model, dmi)
+> +#define PRESENT_ENTRY_PATH(path, cpu_vfm, dmi...) \
+> +       ENTRY(ACPI_STA_DEFAULT, "", NULL, path, cpu_vfm, dmi)
+>
+> -#define NOT_PRESENT_ENTRY_PATH(path, cpu_model, dmi...) \
+> -       ENTRY(0, "", NULL, path, cpu_model, dmi)
+> +#define NOT_PRESENT_ENTRY_PATH(path, cpu_vfm, dmi...) \
+> +       ENTRY(0, "", NULL, path, cpu_vfm, dmi)
+>
+>  static const struct override_status_id override_status_ids[] =3D {
+>         /*
+>          * Bay / Cherry Trail PWM directly poked by GPU driver in win10,
+>          * but Linux uses a separate PWM driver, harmless if not used.
+>          */
+> -       PRESENT_ENTRY_HID("80860F09", "1", ATOM_SILVERMONT, {}),
+> -       PRESENT_ENTRY_HID("80862288", "1", ATOM_AIRMONT, {}),
+> +       PRESENT_ENTRY_HID("80860F09", "1", INTEL_ATOM_SILVERMONT, {}),
+> +       PRESENT_ENTRY_HID("80862288", "1", INTEL_ATOM_AIRMONT, {}),
+>
+>         /* The Xiaomi Mi Pad 2 uses PWM2 for touchkeys backlight control =
+*/
+> -       PRESENT_ENTRY_HID("80862289", "2", ATOM_AIRMONT, {
+> +       PRESENT_ENTRY_HID("80862289", "2", INTEL_ATOM_AIRMONT, {
+>                 DMI_MATCH(DMI_SYS_VENDOR, "Xiaomi Inc"),
+>                 DMI_MATCH(DMI_PRODUCT_NAME, "Mipad2"),
+>               }),
+> @@ -84,18 +84,18 @@ static const struct override_status_id override_statu=
+s_ids[] =3D {
+>          * The INT0002 device is necessary to clear wakeup interrupt sour=
+ces
+>          * on Cherry Trail devices, without it we get nobody cared IRQ ms=
+gs.
+>          */
+> -       PRESENT_ENTRY_HID("INT0002", "1", ATOM_AIRMONT, {}),
+> +       PRESENT_ENTRY_HID("INT0002", "1", INTEL_ATOM_AIRMONT, {}),
+>         /*
+>          * On the Dell Venue 11 Pro 7130 and 7139, the DSDT hides
+>          * the touchscreen ACPI device until a certain time
+>          * after _SB.PCI0.GFX0.LCD.LCD1._ON gets called has passed
+>          * *and* _STA has been called at least 3 times since.
+>          */
+> -       PRESENT_ENTRY_HID("SYNA7500", "1", HASWELL_L, {
+> +       PRESENT_ENTRY_HID("SYNA7500", "1", INTEL_HASWELL_L, {
+>                 DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+>                 DMI_MATCH(DMI_PRODUCT_NAME, "Venue 11 Pro 7130"),
+>               }),
+> -       PRESENT_ENTRY_HID("SYNA7500", "1", HASWELL_L, {
+> +       PRESENT_ENTRY_HID("SYNA7500", "1", INTEL_HASWELL_L, {
+>                 DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+>                 DMI_MATCH(DMI_PRODUCT_NAME, "Venue 11 Pro 7139"),
+>               }),
+> @@ -112,19 +112,19 @@ static const struct override_status_id override_sta=
+tus_ids[] =3D {
+>          * was copy-pasted from the GPD win, so it has a disabled KIOX000=
+A
+>          * node which we should not enable, thus we also check the BIOS d=
+ate.
+>          */
+> -       PRESENT_ENTRY_HID("KIOX000A", "1", ATOM_AIRMONT, {
+> +       PRESENT_ENTRY_HID("KIOX000A", "1", INTEL_ATOM_AIRMONT, {
+>                 DMI_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
+>                 DMI_MATCH(DMI_BOARD_NAME, "Default string"),
+>                 DMI_MATCH(DMI_PRODUCT_NAME, "Default string"),
+>                 DMI_MATCH(DMI_BIOS_DATE, "02/21/2017")
+>               }),
+> -       PRESENT_ENTRY_HID("KIOX000A", "1", ATOM_AIRMONT, {
+> +       PRESENT_ENTRY_HID("KIOX000A", "1", INTEL_ATOM_AIRMONT, {
+>                 DMI_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
+>                 DMI_MATCH(DMI_BOARD_NAME, "Default string"),
+>                 DMI_MATCH(DMI_PRODUCT_NAME, "Default string"),
+>                 DMI_MATCH(DMI_BIOS_DATE, "03/20/2017")
+>               }),
+> -       PRESENT_ENTRY_HID("KIOX000A", "1", ATOM_AIRMONT, {
+> +       PRESENT_ENTRY_HID("KIOX000A", "1", INTEL_ATOM_AIRMONT, {
+>                 DMI_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
+>                 DMI_MATCH(DMI_BOARD_NAME, "Default string"),
+>                 DMI_MATCH(DMI_PRODUCT_NAME, "Default string"),
+> @@ -137,7 +137,7 @@ static const struct override_status_id override_statu=
+s_ids[] =3D {
+>          * method sets a GPIO causing the PCI wifi card to turn off.
+>          * See above remark about uniqueness of the DMI match.
+>          */
+> -       NOT_PRESENT_ENTRY_PATH("\\_SB_.PCI0.SDHB.BRC1", ATOM_AIRMONT, {
+> +       NOT_PRESENT_ENTRY_PATH("\\_SB_.PCI0.SDHB.BRC1", INTEL_ATOM_AIRMON=
+T, {
+>                 DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
+>                 DMI_EXACT_MATCH(DMI_BOARD_NAME, "Default string"),
+>                 DMI_EXACT_MATCH(DMI_BOARD_SERIAL, "Default string"),
+> @@ -149,7 +149,7 @@ static const struct override_status_id override_statu=
+s_ids[] =3D {
+>          * as both ACCL0001 and MAGN0001. As we can only ever register an
+>          * i2c client for one of them, ignore MAGN0001.
+>          */
+> -       NOT_PRESENT_ENTRY_HID("MAGN0001", "1", ATOM_SILVERMONT, {
+> +       NOT_PRESENT_ENTRY_HID("MAGN0001", "1", INTEL_ATOM_SILVERMONT, {
+>                 DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+>                 DMI_MATCH(DMI_PRODUCT_FAMILY, "YOGATablet2"),
+>               }),
 > --
 > 2.44.0
 >
