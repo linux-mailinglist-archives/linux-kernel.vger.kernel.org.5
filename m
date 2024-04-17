@@ -1,162 +1,243 @@
-Return-Path: <linux-kernel+bounces-148219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 068528A7F77
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:17:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 164988A7F7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:21:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 570E9B21E66
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:17:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F41E1F21C0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0058A1327E5;
-	Wed, 17 Apr 2024 09:15:25 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6F612E1F0;
+	Wed, 17 Apr 2024 09:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b="M1vousz1"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2051.outbound.protection.outlook.com [40.107.6.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C83D0127B45
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:15:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713345324; cv=none; b=fjAkhaRfuNEEjg628q7SwgejjVArrbjlq+pDxFB6NiZq8zAxJNG8B3kU5X13DJpNnEnL0IMFCYVEunb6ruZXnOE24lSzs1a5YRMrr6wpgHUkZbTP1gfE66l+iA7RVyO14sVo5KIIifIWVPzWNg/Gupq6NYWtvUGIhouUjdJLFO4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713345324; c=relaxed/simple;
-	bh=tNUgxFQw6eMCYlR6Ekzg2/SYAJVF+N2IQw803Gb6PyA=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=urX6pfksGs6CcVd1rz+cbvgu8zMEWDO/Q720hZojmwHK49m5QVPD8YQNyZH7iZaCGkj9UU/ut0/R98QpEe2y4mDMszTahQSAnmRJbVlIbSnOEBhdApletVWaEuWKDuJG469r0bEKRFLxK4zXTezqChBmmWXRa1owiS7E5nys+uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d9d0936d6aso161736139f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 02:15:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713345322; x=1713950122;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lMHDWXruCDKqdIqw0iUevbAqhPVYOFER4yVLIRlEfe8=;
-        b=YttptvlNfxMqFNOSzU4sqHN1QdlAtC/yjdL1e/eRzwjeh/ZyhwhBYtciCw4zesGeIV
-         Y7+7uolqlVveBL2bcOh+gtMZYKqt3Y3Xg8KD5R2tbZaQOaj9VMMO2mnDM4ndNXH+e3Nh
-         Fbte+etnfr5rJhk+STsnf9lyWl5tQFy3pFUriDbSQOp3VI+c+L8B51eMnVnE89tqedX3
-         hp86ebTFKfJwAIyRN61Kf269G6yTXkm03QhJKzWJ43A2SxEY+hsEVZgR3p9LozfXFXn3
-         K7HFZqQVLdlJ6iMPb1/Ab+qejvANwmoKejXyMqEdCIbF1B3+51ZAER4kR3Hvyp6r//xk
-         agOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXbP36+f5jxvx+1TqpYHRmV2f6c3XpN3zo/zHyzN+PA9azIkqSiqwqdo3dY1xZvWSZqkqfuqNy/KJs0GAfaZaZiFgjLrn9KIs+6UnkB
-X-Gm-Message-State: AOJu0Yyn6XTAfWLLNvrcD2kG6nhjG4Z7R3wyvKuxV0CO/uOEkK6KSQZi
-	j3blEMqVbfIy3OzaUN3xUtZ/0IPr7zWIj/6+PIgX5aRADVeGU7uHUi2RqQ+yPBJPm6mulvkwibd
-	Wy+/st8fEOh6nu2OTTHGHVv/pf965eLPvvQU01xJnAure+Xtz2s1ywlE=
-X-Google-Smtp-Source: AGHT+IG783qjym/uoLFNulcfb2mQcdjbO/UaIe+3eiYM1979Fo/fvMutrN4Uj6cPOPD5D1cYFW8foWxF+deScaJxkQXdYhR5sdyo
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1E0BF516;
+	Wed, 17 Apr 2024 09:20:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713345655; cv=fail; b=Yju1sff1DH1NmJzYokIyLIjgT/egfUejeG0mU5RrJXXoaKNTQZ5zh5FrEdesU5I66rOiUUejfoUp7hkFkXnGRBgeSv4zhB9XnqQ2u7FYdhvdo+pojb6dK2Es5H+MObRF5OEhdsrWePm3rZgCXJAAB3r85NQ0bnONHWLtVEfIHMQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713345655; c=relaxed/simple;
+	bh=ElATqZDPowvgy7c597Lh45WiO3HcsXLmpKd+ea2jLDM=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=u94dgUuPB7Cgz2WHzc4WYV5Ro8gv0DWRxZdOJJxuvLvZJ0eRPoGDXPqWUctmN/AfzzRil3oFVGlHkr0v6vUsNGNH265CrXV0j15yoepm5WZ/ZrhWmDSjvljPYH5ddT7/ffGW1QR7x0FWiDFfH2jjPdnc87fVDknsLdcBAJYcM70=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com; spf=pass smtp.mailfrom=axis.com; dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b=M1vousz1; arc=fail smtp.client-ip=40.107.6.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=axis.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JqgOzUSZ+Ossvn/Wx3fR8LTQvLYWdvrA9wNFgYj3catM2aLQSfqrnWZWviRUva7/esizIfxT1JnRztLpzmTSKPpaJizwv4nXBL09cAHfclxKt1sJm+UA1+k2HDlMAMWah3S191QP0h8SF9dtQSlSQQGJIGVAuDt967cv7B13eA0Cikvs+URpVtIzp7LYkvlctsyVQR4cJc+3ftJ2DGoOOkBcGNq1zQb/xd2ExzRSYdx8tOz6b73N155IMOkebvck6KnbHBFBdF2L5ldB7XnyQB7cLwlsj++ryenN5pWf/imIyTG5Q2xixEMxxQXcAtoPLwadPX0lxcySWtksthl6cw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+vmUM6lZ3c2Q5r69CJdvRPEwRq4Pz8R+cauHkxOSVWg=;
+ b=TTD41jCQDWrhrI9PZj7PhpL4IT/KvhNe2zTH+LBE/er5IYinDR528ZB9JerCSSt3gepQ6GmM+6/hRVZKIU/vg4NG6rJF6K3kyI0mpsaUj0yglOg1KRL9//vNRWQyxxT2qYUUmGPR+fJTiYItsPVCNb6wC8Ox8qC+6wG5JpLNVeqlT0jt6ikt5d1nUVf/J5aFaFTUoBXLKfujLrAHOFn8Xb12/4l8Kq7G/n17KUZWfilt2IjPvbtgG4Q+NC9MBr/asS6ecXk0CDQpoVRvNIZczFLeSsm6jSXckLU7YkjK44puKAMtS6t2jsQPV7ciUmNXmt4fRNwSfZKXO1ESXugxPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axis.com; dmarc=pass action=none header.from=axis.com;
+ dkim=pass header.d=axis.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+vmUM6lZ3c2Q5r69CJdvRPEwRq4Pz8R+cauHkxOSVWg=;
+ b=M1vousz17086YAVgBbQVdkmJf4ldt6M1apfoVWz4TMKTLN03klFuh3lsEtcKt14o0xc2hHF65DBvpVy10HSmdnJhbPvVWeoT3XbIacRASYNIoi+dvFrEoxcPV7XSxi6OBsCn34Q+BGZUmqCTGR6Fb3JDDTt9amZkmI3T3gxv48w=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=axis.com;
+Received: from GV1PR02MB10909.eurprd02.prod.outlook.com (2603:10a6:150:16c::9)
+ by AS2PR02MB10082.eurprd02.prod.outlook.com (2603:10a6:20b:646::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Wed, 17 Apr
+ 2024 09:20:49 +0000
+Received: from GV1PR02MB10909.eurprd02.prod.outlook.com
+ ([fe80::42d7:280:d9dc:e5be]) by GV1PR02MB10909.eurprd02.prod.outlook.com
+ ([fe80::42d7:280:d9dc:e5be%4]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
+ 09:20:49 +0000
+Message-ID: <c12cf6a4-fd03-4049-8302-d798887d7cee@axis.com>
+Date: Wed, 17 Apr 2024 11:20:48 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ata: Add sdev attribute to lower link speed in runtime
+To: Damien Le Moal <dlemoal@kernel.org>,
+ Gustav Ekelund <gustav.ekelund@axis.com>, cassel@kernel.org, hare@suse.de,
+ martin.petersen@oracle.com
+Cc: linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@axis.com
+References: <20240412134838.788502-1-gustav.ekelund@axis.com>
+ <4e5c88f1-1b24-4f6d-8c11-d7029329ba7a@kernel.org>
+ <7e6eb387-5a0e-460c-af08-eff070fa35ca@axis.com>
+ <898497f0-d279-4d01-be8d-aad4048df95d@kernel.org>
+Content-Language: en-US
+From: Gustav Ekelund <gustaek@axis.com>
+In-Reply-To: <898497f0-d279-4d01-be8d-aad4048df95d@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MM0P280CA0049.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:190:b::10) To GV1PR02MB10909.eurprd02.prod.outlook.com
+ (2603:10a6:150:16c::9)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8929:b0:482:c7c8:5019 with SMTP id
- jc41-20020a056638892900b00482c7c85019mr918925jab.0.1713345322069; Wed, 17 Apr
- 2024 02:15:22 -0700 (PDT)
-Date: Wed, 17 Apr 2024 02:15:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004cc3030616474b1e@google.com>
-Subject: [syzbot] [bpf?] [net?] WARNING in __xdp_reg_mem_model
-From: syzbot <syzbot+f534bd500d914e34b59e@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	hawk@kernel.org, john.fastabend@gmail.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV1PR02MB10909:EE_|AS2PR02MB10082:EE_
+X-MS-Office365-Filtering-Correlation-Id: ad2c2b70-e437-469c-503c-08dc5ebfabe1
+X-LD-Processed: 78703d3c-b907-432f-b066-88f7af9ca3af,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	8Vi6wSigOPENJ9rzt/61BfyC4hyV+nliy4IMxQIxHfkIu1FKcbXAeDrEXoe1zhzQ5U5uJ6G1HpzONPiU09hF88+eOGDMqE84vqWGiDjZT9x3qtfkjDSv2xuEL71he/Y9ruOajo8GBm4Tl0iSdMAO8TTCTERzbpRe5HRPbis8AYUuCz4RjQokZrqGHTLmbBreXso/vTLtndcF1eiUpDuC1vvHeVtBlapx68RDQGzlzX91aVgIktq+nG2oYk6fzXFLT9GVl54knQU4HJqoZxv2cYkXqlR55EVAlN8k8wl2TYCpZydSzPxHxJKxR7QZ9GX5s0dHg9ln/SnoQu6gDnODLPWWQBQxqF1oxTV4L/xg7qUs8xtWdGz2JmNX7uvxRGz1Mdx2GEBI7bl3ROf9KnuCkpHq1IQbUwgftk5/2SDYM7zRYtuggmmfpV7QpTxl1UEaSe2zp8Kx1B7rp0E311NGoc67WVqjRZT+rORfUiPTIzgXgdMoZlo86J5y1ICMyx87AZby3jBHvXFNDDv/LhBr6m/9Uas16lD+4Wrgsl/DPlb3bFaSLoLYrFR5HNWEP0ATJTzrxutb2h8eOOfbubx3YUYzq7e/OP8yaOhdsAlrW329wpcxHfdt02YVLOQ9vKBAYcC57HysaFvQH6tF9kxPmecouXanLrJi2qQ9FfKBv7k=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV1PR02MB10909.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?aGpjaVJlOXBPUXBCYkR6b0Y2REpYbERkMGJMM2FhS2ZGS0hHbG1mRHJCbEV5?=
+ =?utf-8?B?azBSL2ZpQXY1b0EydG1ZTmxKaW9aYmorN01QMERxTEwwMlFMY3FpSGtBc1Ur?=
+ =?utf-8?B?bER2RHZ1S3JFZGVpZUVxSDFqT29iUnRORGNBYlFEaXJBYUVlcDkwaUw3T2cx?=
+ =?utf-8?B?Ly82ZmR1VDg0WUM0T0dhdUVRa1hvQyt4RU5PQVUvU1NybG81K0NyK0I2Nms3?=
+ =?utf-8?B?Z2s2YXdkdDExNCsrWEtKRFF6ZnRKQW43Sm45T1pwT1JINFBkYmxKaXRwZXRr?=
+ =?utf-8?B?SGZnNFRQSGNYVjJDM09TS3Y2cjdwS3F4dTFZLzJUOTlpRkgxZHgrOHBiRkF4?=
+ =?utf-8?B?dEdiTUtJakViTUliMnY5aVF4RmNiTUhqbzJqLzFvdzZSUEsxVU5hTXlxaExv?=
+ =?utf-8?B?Y003UjBJQnp4M3dYNkdKOStnTjUxbWt2SnEyM29sRC9PT0pUNDFGelNjWWtK?=
+ =?utf-8?B?cndpV0RJemhobktvTThsUnVFUjRDeDdtbDZNMENyckMzcTNvWUJObm1kZ3Rs?=
+ =?utf-8?B?NkZqMDhtQmZIK3pLVnVNUk12dUJ5WUVzYTB0cTlJakJpSG5aQXRKSmdEckw2?=
+ =?utf-8?B?U1oyS3pFZ0Zoc1k1U0ptT1QzUk9CWmlTbU5BcGRqUVMySlh3SzlrOU9zdllL?=
+ =?utf-8?B?ZURyUEYvaGFLQkFhaGErQ3hIdHJzOVBVbjM5RUJXWjI1YW5sNUNLTnpJMUR4?=
+ =?utf-8?B?eHVKd2YzRkk3UWZjSGFDKzVEei8rc0V0Z1M5amYzelByZkp2andwYmNBTGdQ?=
+ =?utf-8?B?N1FTN1dyR2lLRFJoWW9TSFhPQTFTeFpYSFA0R282bnl6VFpQaXUxL2wwSEJO?=
+ =?utf-8?B?c1BqNGVuZTFabW1rb2tIUFRvcjQrTTNwWiszWW1hbnpVVXE4ckdOZjhkV1Nq?=
+ =?utf-8?B?c05WTmdickFVaFhmRXBmR0x1d1dRTVZ5OHRkeUFMeitCa2pseS96MmtRMU05?=
+ =?utf-8?B?Q25jZHR5Nmk4bXVJRFV4bXNSc1pLUEFRRFkxcEszZVdwZlMrYmVmamNVK0g2?=
+ =?utf-8?B?NWcrMHRMWFB2L2lrbkRtZmFYdEw3bjlmVzZZV0VKNGU0Q2RrTE9zbFRaK0k0?=
+ =?utf-8?B?ZW51WkdCaGJzVkNPSEtVN2lKeFdZWWNUYzdrQTBTbTlTUFpWbXFjZnFNRWxP?=
+ =?utf-8?B?UDIwdVFvWUxpQ1N6SUNtMmdkeVp6OUFyNTd5L1BTYktQV0RQamdteXRMU1lN?=
+ =?utf-8?B?NmhKclUzRGtrcFQwRVVUUjRybUsrQzZidmNqcG1VNWt6cHNuZ25XODQ0YVo5?=
+ =?utf-8?B?QTJmenk3V3dCTGZ3UzNNR21hUHdqZjlZUFhHOXZBTndGUi9zajA5WVd0Zlkw?=
+ =?utf-8?B?TnpRZzZmNU1QNDh0WGROKzB4RjJqZ0FzRk1OQWpmUmJCQ1ViKytjajFVZVZR?=
+ =?utf-8?B?bVA3K2c1K2Rvcis2c1MzWk51K0EvL0FsK3k5SGE2RVdoQ243U0dBTzF5bW9i?=
+ =?utf-8?B?cXRGMFpDeStwRlVXdDVuSlFJMHNvQ1pqcG1WTHhOdEwxQUc5RS9QeUZMWGla?=
+ =?utf-8?B?VnFWd29hRUhNOHVTaXlRbWtXdkgvQTBnL2hiY2lCL2pYMHdQZlhZT2ZGM05v?=
+ =?utf-8?B?WjBBZUwxRWQ4TVZXUmxSVisvbjN5Vms1b3V6c2tYcUhZMnBXQm5nWGZ1MkpV?=
+ =?utf-8?B?dFc3WWRlbVlkM0tORWpYZk95bTRDRWMvTjBUUExhQXdWaUZDbm5INThheWxz?=
+ =?utf-8?B?empQdlAyNHFNZXNURFN6bVJFcnNrb0g5QjgyR3BWSUNaNDlKRUpqNzYxVExB?=
+ =?utf-8?B?bTR1aGd2dm1FVitna3dPWUdvTE0vZGlIdkN2WndSQ3pqcWRWVWl4ZSsvRXhI?=
+ =?utf-8?B?Qk5hWSt1bGZLNXA0MVZjbDMzYXBwaFZJcTYzUFB2WnlJREVvMEE1YWMzdEZk?=
+ =?utf-8?B?amp1cW55MER4NFY2Qndlam1ab09OZHFhVWJYSDFXVWlOSTJVRFY0UFp1enhq?=
+ =?utf-8?B?NTQ4dnYxOHkwOGppbnFmdXRmODA3VWJtSkRkUVRXNjlEMUJicjlYelIvM3Bv?=
+ =?utf-8?B?UWxSY2dFS3lRa0g0ZGJ4QXdZTjhlZHlNRFdsTEN4NHBnT2l2RGFWT2s1MXEv?=
+ =?utf-8?B?VmFRSEp2VFhIVkkzRE9ZNzRQdllGU2ZsR2FOS2N2T0k1bGR2b2ZqaWJIS2lI?=
+ =?utf-8?Q?2wQM=3D?=
+X-OriginatorOrg: axis.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad2c2b70-e437-469c-503c-08dc5ebfabe1
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR02MB10909.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 09:20:49.6815
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s35NC+j0HTPJdgrq7AvOyeouxLZXG7tfVDQ6J/0QbvXgxQWzw5qJ5ZvehD+chgVV9kywo9K/tDwjLe7ZIK1uug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR02MB10082
 
-Hello,
+On 4/17/24 00:59, Damien Le Moal wrote:
+> On 2024/04/16 0:49, Gustav Ekelund wrote:
+>> On 4/13/24 02:29, Damien Le Moal wrote:
+>>> On 4/12/24 22:48, Gustav Ekelund wrote:
+>>>> Expose a new sysfs attribute to userspace that gives root the ability to
+>>>> lower the link speed in a scsi_device at runtime. The handle enables
+>>>> programs to, based on external circumstances that may be unbeknownst to
+>>>> the kernel, determine if a link should slow down to perhaps achieve a
+>>>> stabler signal. External circumstances could include the mission time
+>>>> of the connected hardware or observations to temperature trends.
+>>>
+>>> may, perhaps, could... This does not sound very deterministic. Do you have an
+>>> actual practical use case where this patch is useful and solve a real problem ?
+>>>
+>>> Strictly speaking, if you are seeing link stability issues due to temperature or
+>>> other environmental factors (humidity, altitude), then either you are operating
+>>> your hardware (board and/or HDD) outside of their environmental specifications,
+>>> or you have some serious hardware issues (which can be a simple as a bad SATA
+>>> cable or an inappropriate power supply). In both cases, I do not think that this
+>>> patch will be of any help.
+>>>
+>>> Furthermore, libata already lowers a link speed automatically at runtime if it
+>>> sees too many NCQ errors. Isn't that enough ? And we also have the horkage flags
+>>> to force a maximum link speed for a device/adapter, which can also be specified
+>>> as a libata module argument (libata.force).
+>>>
+>>>> Writing 1 to /sys/block/*/device/down_link_spd signals the kernel to
+>>>> first lower the link speed one step with sata_down_spd_limit and then
+>>>> finish off with sata_link_hardreset.
+>>>
+>>> We already have "/sys/class/ata_link/*/hw_sata_spd_limit", which is read-only
+>>> for now. So if you can really justify this manual link speed tuning for an
+>>> actual use case (not a hypothetical one), then the way to go would be to make
+>>> that attribute RW and implement its store() method to lower the link speed at
+>>> runtime.
+>>>
+>>> And by the way, looking at what that attribute says, I always get:
+>>> <unknown>
+>>>
+>>> So it looks like there is an issue with it that went unnoticed (because no one
+>>> is using it...). This needs some fixing.
+>>>
+>> Hello Damien and Niklas,
+>>
+>> Thank you for the feedback.
+>>
+>> I have a hotplug system, where the links behave differently depending
+>> on the disk model connected. For some models the kernel emits a lot of
+>> bus errors, but mostly not enough errors for it to automatically lower
+>> the link speed, except during high workloads. I have not observed any
+>> data-loss regarding the errors, but the excessive logging becomes a problem.
+> 
+> Hot-plugging should not be an issue in itself. When hot-plugged, the port
+> scanning process should detect the maximum link speed supported by your device
+> and use that speed for probing the device itself (IDENTIFY etc). If you see bus
+> errors, then you are either having hardware issues (e.g. a bad cable or power
+> supply) or some issues with your AHCI controller that may need patching.
+> 
+> Can you send examples of the errors you are seeing ? That needs to be
+> investigated first before going the (drastic) route of allowing to manually
+> lower link speed at run-time.
+> 
+>>
+>> So I want to adapt the link, depending on the connected model, in a
+>> running system because I know that some particular models in this case
+>> will operate better in SATA2 in this system.
+>>
+>> Can I use the libata.force module to make changes to a particular link
+>> in runtime?
+> 
+> Nope, libata.force is a module parameter so you can specify it as a kernel boot
+> parameter, or if you compile libata as a module when loading (modprobe) libata.
+> At run time, you need to rmmod+modprobe again libata, and so the ahci driver as
+> well (because of dependencies).
+> 
+> As I mentioned, if a run-time knob really is necessary (it should not be), using
+> the ata_link hw_sata_spd_limit would be a better approach. But again, that
+> really should not be necessary at all.
+> 
+>>
+>> Best regards
+>> Gustav
+>>
+> 
+Hi Damien,
 
-syzbot found the following issue on:
+Unfortunately doing this selectively per link from user space seems to
+be my only way forward for this particular hardware issue. I understand
+if you deem this to be too specific to fit into the upstream kernel.
 
-HEAD commit:    f99c5f563c17 Merge tag 'nf-24-03-21' of git://git.kernel.o..
-git tree:       net
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1502f36d180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=f534bd500d914e34b59e
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ac600b180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1144b797180000
+I will investigate if running libata as a module might be a way around
+this peculiar problem. If I need to refine my first approach, I will
+attempt to modify the hw_sata_spd_limit to be rw.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/65d3f3eb786e/disk-f99c5f56.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/799cf7f28ff8/vmlinux-f99c5f56.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ab26c60c3845/bzImage-f99c5f56.xz
+Thank you Damien and Niklas.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f534bd500d914e34b59e@syzkaller.appspotmail.com
-
-RDX: 0000000000000050 RSI: 0000000020000000 RDI: 000000000000000a
-RBP: 00007ffebb32f750 R08: 00007ffebb32f4e7 R09: 00007f2c42da0038
-R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffebb32f9b8 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5065 at net/core/xdp.c:299 __xdp_reg_mem_model+0x2d9/0x650 net/core/xdp.c:299
-Modules linked in:
-CPU: 0 PID: 5065 Comm: syz-executor883 Not tainted 6.8.0-syzkaller-05271-gf99c5f563c17 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:__xdp_reg_mem_model+0x2d9/0x650 net/core/xdp.c:299
-Code: 89 c5 85 c0 79 62 e8 c6 b4 3e f8 eb a5 e8 bf b4 3e f8 4c 89 ff e8 97 a9 96 f8 4d 63 fd 48 c7 c7 80 27 39 8f e8 a8 36 23 02 90 <0f> 0b 90 e9 f8 01 00 00 e8 9a b4 3e f8 48 8d 7c 24 60 48 89 f8 48
-RSP: 0018:ffffc90003d0f640 EFLAGS: 00010246
-RAX: 1158ab1705932a00 RBX: dffffc0000000000 RCX: ffffffff8b7974ad
-RDX: 0000000000000001 RSI: 0000000000000008 RDI: ffffc90003d0f5c0
-RBP: ffffc90003d0f710 R08: ffffc90003d0f5c7 R09: 1ffff920007a1eb8
-R10: dffffc0000000000 R11: fffff520007a1eb9 R12: 0000000000000002
-R13: ffff88802ead6000 R14: 1ffff920007a1ed0 R15: fffffffffffffff4
-FS:  0000555581756480(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000066c7e0 CR3: 0000000020174000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- xdp_reg_mem_model+0x22/0x40 net/core/xdp.c:344
- xdp_test_run_setup net/bpf/test_run.c:188 [inline]
- bpf_test_run_xdp_live+0x365/0x1e90 net/bpf/test_run.c:377
- bpf_prog_test_run_xdp+0x813/0x11b0 net/bpf/test_run.c:1267
- bpf_prog_test_run+0x33a/0x3b0 kernel/bpf/syscall.c:4240
- __sys_bpf+0x48d/0x810 kernel/bpf/syscall.c:5649
- __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f2c42ddb279
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffebb32f748 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f2c42ddb279
-RDX: 0000000000000050 RSI: 0000000020000000 RDI: 000000000000000a
-RBP: 00007ffebb32f750 R08: 00007ffebb32f4e7 R09: 00007f2c42da0038
-R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffebb32f9b8 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Best regards
+Gustav
 
