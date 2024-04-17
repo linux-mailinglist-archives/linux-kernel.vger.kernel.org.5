@@ -1,102 +1,108 @@
-Return-Path: <linux-kernel+bounces-149041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F2ED8A8AE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:14:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1DE98A8AED
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:20:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1E091F23C8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:14:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ECC91C210B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:20:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1801173340;
-	Wed, 17 Apr 2024 18:14:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D2217333F;
+	Wed, 17 Apr 2024 18:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="E5HHOV49"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="2I8vo6dq"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A90D2172BD0
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:14:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05A3C172BA9
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:19:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713377669; cv=none; b=EgFfnp1sQ87AA/f5f8hbO+Eqxbn6ZZ6z9nE0Gt8G1e1d1Ub5JDibEsa/QbMCBhdS59h+cVQTuXJGUv/d6vdqO9xJB+L++g4rIZWdPlBMCzwP9FF8MNaM+RgbSIJ/unnZSY4ZLgPBpSZG0ygFCQVUdHO4EWVe6rDPUmBaqAGKBCs=
+	t=1713377993; cv=none; b=lq7gacprPz5XKCKniBi/yMtX99yDMBKG40I3e+kpfhJX/jyp6oA7mdFT8HBnSWQ45n8JvlAOZK9pj28A5ObynXbujXqOtFn4GnlNUU/aKS0fuLLa516AaI1kuwpvoT9x8mQAFP+jeU8UV1qPN1FFoqQHhbAsKBwXjQXnNSw+fm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713377669; c=relaxed/simple;
-	bh=44mvEL9LmE3z4Q74332QHQlaOANjzoJbXCWYBUPZs9Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gDdYJjsQpByDb2EwXYE1/+SPjPlaNycesas3Vtpp27EhDoR3dyMBYMlGy7uxT8G9Sr9gLYZyn+tJBnliK81Gx3eSOVAQXjFlsMFCH2bBsYbc/3WYD4ItZYBSE6MJB2QAn3Ag9NrFSk/id74XXWfcV/zYRszicJrq0H/XwfqOYHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=E5HHOV49; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a526d0b2349so479159066b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:14:27 -0700 (PDT)
+	s=arc-20240116; t=1713377993; c=relaxed/simple;
+	bh=E5Lt+ffHfRg8xmAsCNmgFbUyro5LbYYD1lfR4zsupLw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ppf4dBS9kYtnjp4Hsjq73PvwwXJV31RcQHc2YBYb5GzVKjIaEWmv6rvaHLCYfEjcz54ik2O9Hc8Aunl1QS1rbDqroHu9VnPAaJBccuaPRp6hSHTu5uaFNBmtP2tk3Pmo+yZuJR4/Wnr4jB2yKJI/HmB5VfFPkUCMdDxbhoKYj5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=2I8vo6dq; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-518a56cdbcfso7339396e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:19:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713377666; x=1713982466; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2cWMdZoF58FwMMwIJ1ibz0W/2NPseMAHWyOcDWcJE1U=;
-        b=E5HHOV49VwYqXyQPdya6211rwb2iYnz6OgWHDHYELMMdBi0evDTLkZuekzJ3CvCdlq
-         3dqJTc8GLvvKGT+e37bDT5xfwp/mQiA4uBNDsPR3Njr8YB14/e2jCKL3acBsPi9WFqVQ
-         sWeLs89FdGO8JdyBJkHbc5Bu17B7krgy+DeW16AU9lrDJK3jecJcbVdszecCzf9z+RLf
-         ievKjt2t3At+yoPiZtFHKq+ECq6hui7h9slWlTZTz0jx1uvr+qF9/z7TdiI2xstEhkOr
-         W3/SzjZ2nDbfAvxg9C6WRMUlolsrJ4CrqEZhXcQOajDFv2EpfLwTmxZ0VYEsUs6ctMse
-         tr/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713377666; x=1713982466;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1713377990; x=1713982790; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2cWMdZoF58FwMMwIJ1ibz0W/2NPseMAHWyOcDWcJE1U=;
-        b=HYjTOg7IyezYT3egP9Hwo28/AtOX9mHJe2ZjKZN0xsV6hfs0J6+MueekeQyWriHCbF
-         fWt8UEe5VEVXLkkjXsnUqun8RAOEYwocNq+YEZqsv70byW8kPR9AJfYXMNWDCyxW4uz2
-         o0hNV855F28cwZHaDDELFbYxO27n86o1PPBDVx/Oolf8gd5Xqgl4RcVYyeTdMoPdHb68
-         lbyhGTMjmea0MxD6zky35y1LFE74KOZ9rW+wk6LS497Uh2UOCpWk5ycQ+SPJrg4PmhRZ
-         NrCH8wEoi3DocuDvoXV5ivgQ/3d0Q9AjGofINA/DBJLjAzVSHvnA2LuwRCk2mFiY8SEl
-         d/wQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU7l4jo9iGJrlJjtEEh7dPxzBfnHv8g2xYZCuMNbukEqXBeQctbqD8QZv0imbYced30t3mSGfdhyCYglIhU0Y0L5Ld4tDZj1eN8UQQD
-X-Gm-Message-State: AOJu0YypvYjvEZpPrG/sf8DsN4xuISsM2IadJpRQRYghy5Djm8BjSdhG
-	E3aOFZ6uFApg5twM778qFe8hoPlnRRfiZY9OkjRz5MoK0LyUrZ4WtX7BDilAoOA=
-X-Google-Smtp-Source: AGHT+IFGHPodqd7/R0bXRRNmZ3p2XslIJpfPdkWTwgoxyQDqaldBLvcx7T7XbIu44Zm87knE3cgIgw==
-X-Received: by 2002:a17:906:b89a:b0:a53:4cae:e40 with SMTP id hb26-20020a170906b89a00b00a534cae0e40mr183732ejb.25.1713377665887;
-        Wed, 17 Apr 2024 11:14:25 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id s13-20020a170906354d00b00a5556cd0fd5sm1073935eja.183.2024.04.17.11.14.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 11:14:25 -0700 (PDT)
-Date: Wed, 17 Apr 2024 21:14:21 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Akhil R <akhilrajeev@nvidia.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	linux-crypto@vger.kernel.org, linux-tegra@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] crypto: tegra - Fix some error codes
-Message-ID: <395f8641-0053-4a63-a33e-02e4f1ca79cb@moroto.mountain>
-References: <ec425896-49eb-4099-9898-ac9509f6ab8f@moroto.mountain>
+        bh=E5Lt+ffHfRg8xmAsCNmgFbUyro5LbYYD1lfR4zsupLw=;
+        b=2I8vo6dqpHYJgCyKvc7dwSSaxfeax4S90sVL9Y+AX2Ah10np9gzQ8HA51ZMGTFiZvB
+         jmi04F0pWpnJEKHDm+X2vRQMMwYTOD83eJhJSF60dJUFwGzFmy6NxuKmWZDrvom2J98F
+         EMJutou7dT/pUkD1KQVNEnx6qVkT1sNKT5lggRRJFzjkD0HpE7ShXVdDHfyrpJwdSSUX
+         kB/HMBOi+YePp9mnPYvFA87sZ0Y9hhYFRzu/lF71osZZ9+HBJHHOAopnnofP0ey/G8M4
+         5OLUmy8D9ckZLReb24ONklv077bTm47WIXCE+MsFCizu6RYYZARHibIcDE5HbyYUHoeD
+         d1Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713377990; x=1713982790;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E5Lt+ffHfRg8xmAsCNmgFbUyro5LbYYD1lfR4zsupLw=;
+        b=fz+B874iQGhZgx4G+sxxE51JCBB7iXvzoHAE3IYnf6IilySsY3Faxf8BXqFhgI4J9O
+         Cy9QqHafgt4SxKqasJAdf7SnfN7F1DYmVl5uTBu+siBUvpf6BvxJKduprCIahURk0Tl4
+         FpCqk8lv9A+qBZv7nmvXeLV1gG9rBafbO8s4ulSiKRLHdHDUxTkwKBAU8s+JZG2r+ZZw
+         1Rm5Zsi3GhmuQR1hRhLV1hqY0aGO39Y8fNqbuqqDQbLhLTZTIkxlbu6Wakg1rXaN4PY9
+         ftTW1B057Ws2zfUD6fN70/Udow0oTUBIud2BtxvaK4HBY+G72RpLqFLolfZ7o6AoPbRL
+         pIjA==
+X-Forwarded-Encrypted: i=1; AJvYcCWAP/bHxhdxUGPtFwaNoHu8MQpfBtWUpQP3zswoZ6A+7C+pVmVq73pA2Bvl/5ShwHhwoBPdPC7EwwgsEm9I0I4teGTz2mUgWAJyhBrj
+X-Gm-Message-State: AOJu0Yx4+Sxd4yHnJYEpH/DMQkhGv+EQgTQSdl+49FDKtpev2cQxt/ij
+	gZq2s1MmvUao+j4lkrcEbPpUEoqVsawHqJX6ZKrF7JxCzszZThHy6qZLiM1Avah4zBz1e2Y5ga+
+	LHg8Z/+Qhu+RyxUOI03ZDbvFLHk6/DvinhC2sfA==
+X-Google-Smtp-Source: AGHT+IExB+6UnFXh8LvppjsLRD28Zb6Ma6bPnzodalh1mlBjN3At7SXOwFqlauJ21IgBLjClpCHrPxVMBB6VsGrO2nY=
+X-Received: by 2002:a19:9148:0:b0:519:a55:7ee7 with SMTP id
+ y8-20020a199148000000b005190a557ee7mr60964lfj.26.1713377990047; Wed, 17 Apr
+ 2024 11:19:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ec425896-49eb-4099-9898-ac9509f6ab8f@moroto.mountain>
+References: <20240410072102.1200869-1-andy.shevchenko@gmail.com>
+ <ZhpC3lLD-BHqJEZz@ishi> <CAMRc=MerqbYue_uubSkr0ta3wr+yQxfFMfk+vAUZa+C2oR+udQ@mail.gmail.com>
+ <CAHp75VcofgAQLFVLdsA-A1AkjVzQBJWtam=w00+z9-rueZyv8A@mail.gmail.com>
+In-Reply-To: <CAHp75VcofgAQLFVLdsA-A1AkjVzQBJWtam=w00+z9-rueZyv8A@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 17 Apr 2024 20:19:38 +0200
+Message-ID: <CAMRc=MejJTnawn1=_x9Va-QJRctjoc3TJanVqQ0uZbpmDzpyjw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] gpio: sch: Switch to memory mapped IO accessors
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: William Breathitt Gray <wbg@kernel.org>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Andy Shevchenko <andy@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 17, 2024 at 09:12:32PM +0300, Dan Carpenter wrote:
-> Return negative -ENOMEM, instead of positive ENOMEM.
-> 
-> Fixes: 0880bb3b00c8 ("crypto: tegra - Add Tegra Security Engine driver")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
+On Wed, Apr 17, 2024 at 10:05=E2=80=AFAM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Wed, Apr 17, 2024 at 12:17=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.=
+pl> wrote:
+> > On Sat, Apr 13, 2024 at 10:31=E2=80=AFAM William Breathitt Gray <wbg@ke=
+rnel.org> wrote:
+>
+> ...
+>
+> > I applied it as is, if anyone wants it, this can be sent on top of it.
+>
+> Thanks, but I assumed this should go via my tree and as PR to you. At
+> least I have it already in my for-next.
+>
 
-I didn't mean to put 1/2 in the subject...  Sorry about that.
+You didn't respond in any way about picking it up. Can you just drop
+it from your branch?
 
-regards,
-dan carpenter
-
+Bart
 
