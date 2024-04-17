@@ -1,167 +1,132 @@
-Return-Path: <linux-kernel+bounces-148123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4296A8A7E09
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:19:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7E218A7E06
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:19:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE5FC284A19
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:19:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C58DB24C30
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:19:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 301D07F479;
-	Wed, 17 Apr 2024 08:19:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 909237E0FB;
+	Wed, 17 Apr 2024 08:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y1RmVZYp"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bUVAjLy3"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7EC37D3F0
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 08:19:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E927D3E4;
+	Wed, 17 Apr 2024 08:19:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713341952; cv=none; b=LjfBir4vRV4k9sxwq/yav/lgjLVnDLuV5+61Cq3E0OG0eXSJ6AuNH5V57ho8Y6f04M/THlfqeWFd9MqF9np2HZZDn8w6EM8h+zqZKIMYe2uqPQIoCN6TzK3LepFLCfA2d9sJdJ7nvxv3qx1qqhWHsz04+Ufgde1TCx9SP3gOUbE=
+	t=1713341950; cv=none; b=V5Kx8Gglp3J6y3m/z0HdtFASb0cZPjE+URmZtMQ1LvtMiYvaKSfPV8F1l7LMgcBOWtE9IsgY6X6Y13JKLrztN57NZHOP9KWG+SPYiBxr0axe7RxOsyerSJrpyY7ptx3vF26j1khyLv4DA7YsPSKiXfPmi4DqiEEsbAMnnre0dBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713341952; c=relaxed/simple;
-	bh=lDaoE5I35Sw8X4gTfjGCdgl4sZqMgly1ov1PL+Jq3Vg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iTgWUyP/1Ca9u6NJQoGSqNiHLyy2nEGIMkO89UXw15j8OrgcQatIkiNqMpxwDuiXB9/+EdQ0y6SFtk5ttNi8DOj1yjNFAmYMDbuGvCZnPLvGfPCqA6eivid3+r+yT2bImTazyErYA+mThyjYh0dYlsUaumIhS3imC5clFi5vcQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=y1RmVZYp; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6150670d372so48026507b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 01:19:10 -0700 (PDT)
+	s=arc-20240116; t=1713341950; c=relaxed/simple;
+	bh=vQ0bSBSXVcW7woDznB4l2mZtCtQ6d2dmKIq6OArUyRQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AcY0QiAievZcd3h9BMMHy5gu3ZMWQIVwR6G/rMZzhISypZFVxrH7G5Xg8VcUuywsQhjQhbdqAOandvo1YKI+F6XGLmAhzgI5aJ+1uX07nEnP7dWv/1KVFuvhsdItnilILL6nbbRXeiTJbbmOPX+LZi3ehoTbbBXMV2yXIUjJjHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bUVAjLy3; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-518c9ff3e29so3962449e87.0;
+        Wed, 17 Apr 2024 01:19:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713341950; x=1713946750; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3LRcCO7G0BAlsPsSHwaDpD7NJg45TvAyn9+yoAIm8Y8=;
-        b=y1RmVZYpbukWu0GnYfSD9kz0+CsF1ty3mbs6pqJJpqMqFuQVySjdt9bHm4323SwDm/
-         uR9NNaLFWYxNuVP+jtgeXt0RR0TIsZIWXPHiTRFilNIcNLtepzFjp1aogA0ifXjwRRtP
-         6j7PCEnJ7r8tFzRB1h9jbAHCXieJhzfSEvucOOceRGnP9MXcPnP2X6Wbdt710VD4uO7q
-         7i3lWEUoSNh197YHlzBAfqR8op1ndiUn9a1eiiJzWBX3jebkkWZo35Z0DpzJEywNXueJ
-         RDTK0JzWAPZD8SBMW5lU+qsx+Ar3cpvCvL+wF2G/W+asVraJhcH/hdiNJKPqN4jDDlGt
-         Q0Gg==
+        d=gmail.com; s=20230601; t=1713341947; x=1713946747; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3WVqvTWkSJuMK42oCBd4QTeLpoVUswiSt5bNCxSQhCk=;
+        b=bUVAjLy32mUGt//z1Tk46VDz+ZN2Yuvc+bHMeeVtOHuyEBOwT2Y8TBFF/WRz6ueCHR
+         pjJ/AbXKq2FBuE7JEr7UYMUw0GpcjRv2Gt+PXq2IuUZjWJv13suPvldwGTpgLE96STSz
+         jkue8eH/ifoA1mEloAL9zE7vx0jCIDGYHk77ZZ4q/BkDumXN15SiMQ3uYMf3J7yIIWvB
+         RW/3nYU5w9+YI3kNaSualwwbLVaPqweUdVTWd9py9iXqd2rScZS7TKe98CUOSyxy8Fiy
+         bUn7FG3nw6mOiE80SzeDHKfXtYv80cHB7uwp19Mda+MmXy/jSHNReSoN+zkrkLvPR6Jg
+         vCQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713341950; x=1713946750;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3LRcCO7G0BAlsPsSHwaDpD7NJg45TvAyn9+yoAIm8Y8=;
-        b=fivNIvsT/Wnr08O0msMzAHPMWNhzew6wDYjqwOien4WP3aCtdSfTr/ok9gp1o+TnSd
-         3RThxK5tygewBgRuAtBhSo372x1zSTOJfjlULLlbQSVx3ysFOp1zEYBGs7AtyTfHS4CD
-         S+Hr70bXZwYEVwPA2tDIxCPB6MQKeJNnUwP1fDXAjuTc7hF5l669h4BqIGaaApeuTJIv
-         KC79tVX/iGIWL35es5FrtQUkqIYRoIZKPu5Q/TQrSQ18Ay3ydbQtP4RsMYC9JTF6cgEm
-         BJYcg4BDJc5AT+mDGWIHZMmfxzeu7EVFmmhWXzsJ7f1V4sQR841uPuVaB7GoIDb+LBn5
-         HdNA==
-X-Forwarded-Encrypted: i=1; AJvYcCXhlJUyFXxF7xHk+GewfIQORDTEHubwoAK6A2TcrS8hZ741S7+IfZZeD+7P6Hg7QBhVH73QxWvw8KZpdIlYqx+tZBbSKdzgFG7gfKVg
-X-Gm-Message-State: AOJu0YyVjStego/1/elWiZwoiTno6agEqvtApzEAWRFgGVMWwthatuHT
-	hB7pJS7SEMbr8aS9spZYHkuSte+oXDk73XiC3zAhEbb0Fk6hxBKSXaZJZPuVt6Z2Agd6sruNV4C
-	1AO9wSxtcHsauh7xW6KEub9Xj1U91RtW5mx6xcg==
-X-Google-Smtp-Source: AGHT+IE2lKg2BSkdW3aFZxTMV4gr/x3dbq3U7YbGvWBPNOlVvmP5HPCh/lfty+hy19RjhqRJv46ueaHdDZUJSm/+bS0=
-X-Received: by 2002:a81:430f:0:b0:615:1e99:bd6e with SMTP id
- q15-20020a81430f000000b006151e99bd6emr14355086ywa.35.1713341949713; Wed, 17
- Apr 2024 01:19:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713341947; x=1713946747;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3WVqvTWkSJuMK42oCBd4QTeLpoVUswiSt5bNCxSQhCk=;
+        b=ByKaG5cRV0KEuOca7gIRiD+nMXrnmXu+R1w1aSbi7a0lgbJJZ2rcqyhqVhTUfBiP+7
+         KrgW7LBB1PFot+VjgSwpr1qD/leyVdzXjWUhfqRk2GE8qDDIJrRZomRKsT2+QA5xDIh5
+         4jgp+xevJC9cKVmbYKf8t/A4Y//RgXovrDHz9OLSEQaEMdSgrrcKi8/r9eX9NP/kGLQD
+         d6rAMLwTTmJn0/GsSTLJbKCjyVKCNCH6hPgIxbfEE+Vc8zLkRqnf6T8d5AtMuAYLu4Bo
+         8gMkBk1c67E1J3aY/5Hao3SW1IFoY6FjWtSE3CbcfbHbZCKOQ+WRyoq9U4V6wtceHSt9
+         GBsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWc/hLOsnm3L8SaSr704x4BdY26H+mDQk+MqDRTHn5iaFg6IkvvHcSViMYQ7qsU1Ry1Ooa2ANXWLTMsylHAnQR8e87I5BmBO8doskfajLOFIF54D49EsnjVxs3J+S16S/1ybQSOKbfqVm/H9oPvo1AxWBsjnoAgRqT6bVx5IAdmCN/j1A==
+X-Gm-Message-State: AOJu0YyvsY2iZoRFpd4XDi6MbJVPO6gwp5SJS8NJJ166++NmLwaOent3
+	dSax1kQl4Xgq5P3Wom3lyXK1ITkR1yWzq37OYa7Il9POiMNcXrKP
+X-Google-Smtp-Source: AGHT+IEZH+ylq78IQkJNfP5FDxkXscm3aRgH3ubDyx46wNRqQbkl2T+2tyX+4h0ejdbXrQysINo+Vg==
+X-Received: by 2002:ac2:5106:0:b0:518:8c8c:db33 with SMTP id q6-20020ac25106000000b005188c8cdb33mr8624693lfb.7.1713341946952;
+        Wed, 17 Apr 2024 01:19:06 -0700 (PDT)
+Received: from [10.10.12.27] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
+        by smtp.gmail.com with ESMTPSA id p27-20020ac246db000000b00518948d6910sm1446525lfo.205.2024.04.17.01.19.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 01:19:06 -0700 (PDT)
+Message-ID: <04f71d99-aad2-4e56-8f92-89469c159b48@gmail.com>
+Date: Wed, 17 Apr 2024 10:19:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-0-78ae3ee9a697@somainline.org>
- <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-6-78ae3ee9a697@somainline.org>
-In-Reply-To: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-6-78ae3ee9a697@somainline.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 17 Apr 2024 11:18:58 +0300
-Message-ID: <CAA8EJpry5Gct7Q2sAwFBVYV163X9BOcuKu9So47FEJaeXcdSaQ@mail.gmail.com>
-Subject: Re: [PATCH 6/7] drm/msm/dsi: Set PHY usescase before registering DSI host
-To: Marijn Suijten <marijn.suijten@somainline.org>
-Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Archit Taneja <architt@codeaurora.org>, Chandan Uddaraju <chandanu@codeaurora.org>, 
-	Vinod Koul <vkoul@kernel.org>, Sravanthi Kollukuduru <skolluku@codeaurora.org>, 
-	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	Jordan Crouse <jordan@cosmicpenguin.net>, Rajesh Yadav <ryadav@codeaurora.org>, 
-	Jeykumar Sankaran <jsanka@codeaurora.org>, ~postmarketos/upstreaming@lists.sr.ht, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Martin Botka <martin.botka@somainline.org>, 
-	Jami Kettunen <jami.kettunen@somainline.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/9] dt-bindings: rtc: google,goldfish-rtc: move to
+ trivial-rtc
+To: kernel test robot <lkp@intel.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Vladimir Zapolskiy <vz@mleia.com>, Joel Stanley <joel@jms.id.au>,
+ Andrew Jeffery <andrew@codeconstruct.com.au>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-rtc@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+ linux-stm32@st-md-mailman.stormreply.com
+References: <20240408-rtc_dtschema-v1-2-c447542fc362@gmail.com>
+ <202404170656.LoL9eBYs-lkp@intel.com>
+Content-Language: en-US, de-AT
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <202404170656.LoL9eBYs-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, 17 Apr 2024 at 02:57, Marijn Suijten
-<marijn.suijten@somainline.org> wrote:
->
-> Ordering issues here cause an uninitalized (default STANDALONE)
-> usecase to be programmed (which appears to be a MUX) in some cases
-> when msm_dsi_host_register() is called, leading to the slave PLL in
-> bonded-DSI mode to source from a clock parent (dsi1vco) that is off.
->
-> This should seemingly not be a problem as the actual dispcc clocks from
-> DSI1 that are muxed in the clock tree of DSI0 are way further down, this
-> bit still seems to have an effect on them somehow and causes the right
-> side of the panel controlled by DSI1 to not function.
->
-> In an ideal world this code is refactored to no longer have such
-> error-prone calls "across subsystems", and instead model the "PLL src"
-> register field as a regular mux so that changing the clock parents
-> programmatically or in DTS via `assigned-clock-parents` has the
-> desired effect.
-> But for the avid reader, the clocks that we *are* muxing into DSI0's
-> tree are way further down, so if this bit turns out to be a simple mux
-> between dsiXvco and out_div, that shouldn't have any effect as this
-> whole tree is off anyway.
->
-> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> ---
->  drivers/gpu/drm/msm/dsi/dsi_manager.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_manager.c b/drivers/gpu/drm/msm/dsi/dsi_manager.c
-> index af2a287cb3bd..17f43b3c0494 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_manager.c
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_manager.c
-> @@ -85,6 +85,17 @@ static int dsi_mgr_setup_components(int id)
->                                                         msm_dsi : other_dsi;
->                 struct msm_dsi *slave_link_dsi = IS_MASTER_DSI_LINK(id) ?
->                                                         other_dsi : msm_dsi;
-> +
-> +               /* PLL0 is to drive both 2 DSI link clocks in bonded DSI mode.
-> +                *
-> +                * Set the usecase before calling msm_dsi_host_register() to prevent it from
-> +                * enabling and configuring the usecase (which is just a mux bit) first.
-> +                */
-> +               msm_dsi_phy_set_usecase(clk_master_dsi->phy,
-> +                                       MSM_DSI_PHY_MASTER);
-> +               msm_dsi_phy_set_usecase(clk_slave_dsi->phy,
-> +                                       MSM_DSI_PHY_SLAVE);
-> +
->                 /* Register slave host first, so that slave DSI device
->                  * has a chance to probe, and do not block the master
->                  * DSI device's probe.
-> @@ -100,10 +111,6 @@ static int dsi_mgr_setup_components(int id)
->                         return ret;
->
->                 /* PLL0 is to drive both 2 DSI link clocks in bonded DSI mode. */
-> -               msm_dsi_phy_set_usecase(clk_master_dsi->phy,
-> -                                       MSM_DSI_PHY_MASTER);
-> -               msm_dsi_phy_set_usecase(clk_slave_dsi->phy,
-> -                                       MSM_DSI_PHY_SLAVE);
->                 msm_dsi_host_set_phy_mode(msm_dsi->host, msm_dsi->phy);
->                 msm_dsi_host_set_phy_mode(other_dsi->host, other_dsi->phy);
+On 4/17/24 00:45, kernel test robot wrote:
+> Hi Javier,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on fec50db7033ea478773b159e0e2efb135270e3b7]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Javier-Carrasco/dt-bindings-rtc-orion-rtc-move-to-trivial-rtc/20240408-235612
+> base:   fec50db7033ea478773b159e0e2efb135270e3b7
+> patch link:    https://lore.kernel.org/r/20240408-rtc_dtschema-v1-2-c447542fc362%40gmail.com
+> patch subject: [PATCH 2/9] dt-bindings: rtc: google,goldfish-rtc: move to trivial-rtc
+> reproduce: (https://download.01.org/0day-ci/archive/20240417/202404170656.LoL9eBYs-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202404170656.LoL9eBYs-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    Warning: Documentation/devicetree/bindings/power/wakeup-source.txt references a file that doesn't exist: Documentation/devicetree/bindings/input/qcom,pm8xxx-keypad.txt
+>    Warning: Documentation/devicetree/bindings/regulator/siliconmitus,sm5703-regulator.yaml references a file that doesn't exist: Documentation/devicetree/bindings/mfd/siliconmitus,sm5703.yaml
+>    Warning: Documentation/devicetree/bindings/sound/fsl-asoc-card.txt references a file that doesn't exist: Documentation/devicetree/bindings/sound/fsl,asrc.txt
+>    Warning: Documentation/gpu/amdgpu/display/display-contributing.rst references a file that doesn't exist: Documentation/GPU/amdgpu/display/mpo-overview.rst
+>>> Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/rtc/google,goldfish-rtc.txt
+>    Using alabaster theme
+> 
 
-Please move msm_dsi_host_set_phy_mode() calls too. Also please update
-the non-bonded case.
+This issue has already been addressed in v2, which was sent a week ago.
 
->         }
->
-> --
-> 2.44.0
->
-
-
--- 
-With best wishes
-Dmitry
+Best regards,
+Javier Carrasco
 
