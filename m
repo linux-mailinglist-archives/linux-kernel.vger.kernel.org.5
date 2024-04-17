@@ -1,62 +1,52 @@
-Return-Path: <linux-kernel+bounces-148016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D4BF8A7CA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ED518A7CDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:14:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B38351C21046
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:02:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FC791C20E7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:14:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C2286A335;
-	Wed, 17 Apr 2024 07:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=herrie.org header.i=@herrie.org header.b="ZPvF+/BI"
-Received: from outbound8.mail.transip.nl (outbound8.mail.transip.nl [136.144.136.8])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8257D6F07B;
+	Wed, 17 Apr 2024 07:14:03 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EDF5524BC;
-	Wed, 17 Apr 2024 07:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.144.136.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D5A06BB2F
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713337341; cv=none; b=RtwWAMOrZmy7foAhs3fFSVNUOvfwilrhVmb0tqnEs43zDOns/VV1QUUSmZHovi5QG+1xbkiGm3YYSk3GUaYiIz5mcUgW5JqQ5SWjvyFQ9DykKYrfZCWXfKPAMgTa3lp7lyMiEq7gIj8XoWx/cTcho8NovZEntIPlFFkB22C7yWY=
+	t=1713338043; cv=none; b=OklLPVwGw5BlTFMR2U0KlJDR+9ONLPEReErDycu8xGJvX4nr2i/Gg42kxjItlawhis5Kc1KJYuqdcTr9eB1TMm43TPsuUq2hTPlbj+b0utlhb2gOjFm63IIjmWJlKbj12yNC/Jgr0KOUtSk4KHaaDCDrHtDpvbfXZbA/lZe8FeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713337341; c=relaxed/simple;
-	bh=oyTv7o1eonYTsAfT4cfj7AhE76HukCBjbWZvcV2c8dw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=e2lH7OKxHxP3Hihi1rGbMoEw45MpvOaOcWedyOzRqoh2RD9ODPUHwK1L9TJuMeiR2mRDWYn201fLBbJpUO19kaAdiQMDFcgqwfFINEYY++nBP995lCb5jaFCP4qrmJr+s74OliaNk70ROV73cy4LvG8gXXSDTSa1FNinGbQu/N8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=herrie.org; spf=pass smtp.mailfrom=herrie.org; dkim=pass (2048-bit key) header.d=herrie.org header.i=@herrie.org header.b=ZPvF+/BI; arc=none smtp.client-ip=136.144.136.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=herrie.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=herrie.org
-Received: from submission4.mail.transip.nl (unknown [10.103.8.155])
-	by outbound8.mail.transip.nl (Postfix) with ESMTP id 4VKBVX4TpjzY75qH;
-	Wed, 17 Apr 2024 08:55:00 +0200 (CEST)
-Received: from herrie-desktop.. (110-31-146-85.ftth.glasoperator.nl [85.146.31.110])
-	by submission4.mail.transip.nl (Postfix) with ESMTPA id 4VKBVW5l7qznTZy;
-	Wed, 17 Apr 2024 08:54:59 +0200 (CEST)
-From: Herman van Hazendonk <github.com@herrie.org>
-To: github.com@herrie.org
-Cc: benwolsieffer@gmail.com,
-	chris.chapuis@gmail.com,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-msm@vger.kernel.org,
-	linux-phy@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] dt-bindings: phy: qcom,usb-hs-phy: Add compatible
-Date: Wed, 17 Apr 2024 08:54:54 +0200
-Message-Id: <20240417065454.3599824-1-github.com@herrie.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240417065020.3599755-1-github.com@herrie.org>
-References: <20240417065020.3599755-1-github.com@herrie.org>
+	s=arc-20240116; t=1713338043; c=relaxed/simple;
+	bh=jEtvm58hsfe68giclCwNX670PHyRm5fl9eO0Wssg0qw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Zh2+rxo8v+NQzMrADXVRdWe0xCRKUv+Pzevkco8sBMnxeKpvSrBaEY467Ku2HePJnuacWX4eCj8b5ss7NInsSxJ6p40kcpFnc0CN2q9ESgaYONJryzg1afPw6d8QYUvQvfZ+58DL+KvKW30+FZx/hJHzfpR9sHhtfR9FZY3DD/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VKBT51YpFz1HCMD;
+	Wed, 17 Apr 2024 14:53:45 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id BDA291400D9;
+	Wed, 17 Apr 2024 14:54:38 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
+ (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 17 Apr
+ 2024 14:54:38 +0800
+From: Baokun Li <libaokun1@huawei.com>
+To: <linux-erofs@lists.ozlabs.org>
+CC: <xiang@kernel.org>, <chao@kernel.org>, <huyue2@coolpad.com>,
+	<jefflexu@linux.alibaba.com>, <viro@zeniv.linux.org.uk>,
+	<brauner@kernel.org>, <linux-kernel@vger.kernel.org>, <yangerkun@huawei.com>,
+	<houtao1@huawei.com>, <libaokun1@huawei.com>
+Subject: [PATCH v2] erofs: reliably distinguish block based and fscache mode
+Date: Wed, 17 Apr 2024 14:55:13 +0800
+Message-ID: <20240417065513.3409744-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,45 +54,153 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: ClueGetter at submission4.mail.transip.nl
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=transip-a; d=herrie.org; t=1713336900; h=from:subject:to:cc:
- references:in-reply-to:date:mime-version;
- bh=D6JFtwlOS+AWIs+Hh5HvpbMUdPE/n8YDLeJQmQvnz18=;
- b=ZPvF+/BIPf/+uVoF/uO9Aw8JuwmI4AgXWBQGcK8Se6yLI1h7Rxof7+zTHSJcKP+Tla5crz
- HUAimAbPFQ34MASE9P8Es2h7qZoH7g2XhB31t837Hu+/4H++isT/dBh4VMvUI0bAYz4+BO
- gNsab8paxHjf+LWEFheDknSLmp+Ko8M3KYjiVhdhPmiamBQ/85DhIvHmM/98ZPOjMdAy9/
- LfMnnWCEYz2EskriHJUkJFbOzA8HjTJvhF4LjWv5elED7Qe474A829cDRBYlWUqbcWqBKO
- yHatklDkMyWU/WQm2tdstnF5JgcNM5i5IJ9AX7hkU1WNBfotYwWefQnO+MNJZQ==
-X-Report-Abuse-To: abuse@transip.nl
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-Adds qcom,usb-hs-phy-msm8660 compatible
+When erofs_kill_sb() is called in block dev based mode, s_bdev may not have
+been initialised yet, and if CONFIG_EROFS_FS_ONDEMAND is enabled, it will
+be mistaken for fscache mode, and then attempt to free an anon_dev that has
+never been allocated, triggering the following warning:
 
-Used by HP Touchpad (tenderloin) for example.
+============================================
+ida_free called for id=0 which is not allocated.
+WARNING: CPU: 14 PID: 926 at lib/idr.c:525 ida_free+0x134/0x140
+Modules linked in:
+CPU: 14 PID: 926 Comm: mount Not tainted 6.9.0-rc3-dirty #630
+RIP: 0010:ida_free+0x134/0x140
+Call Trace:
+ <TASK>
+ erofs_kill_sb+0x81/0x90
+ deactivate_locked_super+0x35/0x80
+ get_tree_bdev+0x136/0x1e0
+ vfs_get_tree+0x2c/0xf0
+ do_new_mount+0x190/0x2f0
+ [...]
+============================================
 
-Signed-off-by: Herman van Hazendonk <github.com@herrie.org>
+Instead of allocating the erofs_sb_info in fill_super() allocate it
+during erofs_get_tree() and ensure that erofs can always have the info
+available during erofs_kill_sb().
+
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+Changes since v1:
+  Allocate and initialise fc->s_fs_info in erofs_fc_get_tree() instead of
+  modifying fc->sb_flags.
 
-diff --git a/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
-index f042d6af1594..e03b516c698c 100644
---- a/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
-+++ b/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
-@@ -15,6 +15,7 @@ if:
-       contains:
-         enum:
-           - qcom,usb-hs-phy-apq8064
-+          - qcom,usb-hs-phy-msm8660
-           - qcom,usb-hs-phy-msm8960
- then:
-   properties:
-@@ -41,6 +42,7 @@ properties:
-       - enum:
-           - qcom,usb-hs-phy-apq8064
-           - qcom,usb-hs-phy-msm8226
-+          - qcom,usb-hs-phy-msm8660
-           - qcom,usb-hs-phy-msm8916
-           - qcom,usb-hs-phy-msm8960
-           - qcom,usb-hs-phy-msm8974
+V1: https://lore.kernel.org/r/20240415121746.1207242-1-libaokun1@huawei.com/
+
+ fs/erofs/super.c | 51 ++++++++++++++++++++++++++----------------------
+ 1 file changed, 28 insertions(+), 23 deletions(-)
+
+diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+index b21bd8f78dc1..4104280be2ea 100644
+--- a/fs/erofs/super.c
++++ b/fs/erofs/super.c
+@@ -581,8 +581,7 @@ static const struct export_operations erofs_export_ops = {
+ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
+ {
+ 	struct inode *inode;
+-	struct erofs_sb_info *sbi;
+-	struct erofs_fs_context *ctx = fc->fs_private;
++	struct erofs_sb_info *sbi = EROFS_SB(sb);
+ 	int err;
+ 
+ 	sb->s_magic = EROFS_SUPER_MAGIC;
+@@ -590,19 +589,6 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	sb->s_maxbytes = MAX_LFS_FILESIZE;
+ 	sb->s_op = &erofs_sops;
+ 
+-	sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
+-	if (!sbi)
+-		return -ENOMEM;
+-
+-	sb->s_fs_info = sbi;
+-	sbi->opt = ctx->opt;
+-	sbi->devs = ctx->devs;
+-	ctx->devs = NULL;
+-	sbi->fsid = ctx->fsid;
+-	ctx->fsid = NULL;
+-	sbi->domain_id = ctx->domain_id;
+-	ctx->domain_id = NULL;
+-
+ 	sbi->blkszbits = PAGE_SHIFT;
+ 	if (erofs_is_fscache_mode(sb)) {
+ 		sb->s_blocksize = PAGE_SIZE;
+@@ -704,11 +690,32 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	return 0;
+ }
+ 
+-static int erofs_fc_get_tree(struct fs_context *fc)
++static void erofs_ctx_to_info(struct fs_context *fc)
+ {
+ 	struct erofs_fs_context *ctx = fc->fs_private;
++	struct erofs_sb_info *sbi = fc->s_fs_info;
++
++	sbi->opt = ctx->opt;
++	sbi->devs = ctx->devs;
++	ctx->devs = NULL;
++	sbi->fsid = ctx->fsid;
++	ctx->fsid = NULL;
++	sbi->domain_id = ctx->domain_id;
++	ctx->domain_id = NULL;
++}
+ 
+-	if (IS_ENABLED(CONFIG_EROFS_FS_ONDEMAND) && ctx->fsid)
++static int erofs_fc_get_tree(struct fs_context *fc)
++{
++	struct erofs_sb_info *sbi;
++
++	sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
++	if (!sbi)
++		return -ENOMEM;
++
++	fc->s_fs_info = sbi;
++	erofs_ctx_to_info(fc);
++
++	if (IS_ENABLED(CONFIG_EROFS_FS_ONDEMAND) && sbi->fsid)
+ 		return get_tree_nodev(fc, erofs_fc_fill_super);
+ 
+ 	return get_tree_bdev(fc, erofs_fc_fill_super);
+@@ -767,6 +774,7 @@ static void erofs_fc_free(struct fs_context *fc)
+ 	kfree(ctx->fsid);
+ 	kfree(ctx->domain_id);
+ 	kfree(ctx);
++	kfree(fc->s_fs_info);
+ }
+ 
+ static const struct fs_context_operations erofs_context_ops = {
+@@ -783,6 +791,7 @@ static int erofs_init_fs_context(struct fs_context *fc)
+ 	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+ 		return -ENOMEM;
++
+ 	ctx->devs = kzalloc(sizeof(struct erofs_dev_context), GFP_KERNEL);
+ 	if (!ctx->devs) {
+ 		kfree(ctx);
+@@ -799,17 +808,13 @@ static int erofs_init_fs_context(struct fs_context *fc)
+ 
+ static void erofs_kill_sb(struct super_block *sb)
+ {
+-	struct erofs_sb_info *sbi;
++	struct erofs_sb_info *sbi = EROFS_SB(sb);
+ 
+-	if (erofs_is_fscache_mode(sb))
++	if (IS_ENABLED(CONFIG_EROFS_FS_ONDEMAND) && sbi->fsid)
+ 		kill_anon_super(sb);
+ 	else
+ 		kill_block_super(sb);
+ 
+-	sbi = EROFS_SB(sb);
+-	if (!sbi)
+-		return;
+-
+ 	erofs_free_dev_context(sbi->devs);
+ 	fs_put_dax(sbi->dax_dev, NULL);
+ 	erofs_fscache_unregister_fs(sb);
+-- 
+2.31.1
+
 
