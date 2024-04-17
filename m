@@ -1,129 +1,134 @@
-Return-Path: <linux-kernel+bounces-148454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 055018A82CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:08:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 212B38A82C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:07:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0E041F219B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:08:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92D6BB21977
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:07:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09CFD13D2BF;
-	Wed, 17 Apr 2024 12:07:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9B9F13D282;
+	Wed, 17 Apr 2024 12:07:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="k+c6TrXT";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PskRulJQ"
-Received: from fout8-smtp.messagingengine.com (fout8-smtp.messagingengine.com [103.168.172.151])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Nk6j0Q5B";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BmBP6X8b"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B1113D279;
-	Wed, 17 Apr 2024 12:07:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C392913CF87;
+	Wed, 17 Apr 2024 12:07:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713355668; cv=none; b=DTIzVNg0rLcJPDGoadF4xmmljJS7dBy7qADyfs3RAecfFCc5WM0V6aRSsdCtVuB9asN8SJXt4aKYegqVg7qKCbDKvirFFFZCVhflwsyVKEGZ2LGHKHoJRJ6iVdXFseaHAjg2iXkqOb+mCmQ/KiwkLySC0RnL8xhGJ5av5CN7u8U=
+	t=1713355645; cv=none; b=Dnf6FFT5tEUweKelYhYysRVcOrWNoh8/pC3IOJw3iUR7DXi4S2gSnrITUkvCczU5beRs7tu0Nb4ZIFcJ6l8qqBjZ4MIHKfUHPPRlRf4DUU0jGBGgd9VopEcjM46HBgeQUKFozH9iPqsKYY+CgD5+M7H02xRQpTuXWyJu+iAkPN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713355668; c=relaxed/simple;
-	bh=ePiA4ddQh/R2An+M1WNyiwY8cnfIfyGkHQWLq8GAgQE=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=EPxOx4jDLSHzdt6nLr8LzG7GgTksJ58DdQBR2PcxP9+M0O60hRqSvM+42KrhQUjsdbqfx9X5eBeluvej/cRzNmDnkDSazKVwz/CJJb4fXuO7Ckf5Dh6nk6h0Mg3Z4WqqKaI8+Aoo5Ok0pwcUqTeADS3ZrijheNenUYwfUoZRCuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=k+c6TrXT; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PskRulJQ; arc=none smtp.client-ip=103.168.172.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id E831D13800DA;
-	Wed, 17 Apr 2024 08:07:41 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 17 Apr 2024 08:07:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1713355661; x=1713442061; bh=JRwjaLl0ym
-	PdY2EgpKl1AbwXbEtgcsWk+ZdHAqGgzzA=; b=k+c6TrXTt5DHwehRTMmiSrDI8X
-	l2e0ys2mZWau27bGYpDETExVxOKyRry6wX4aYJMZuXz/rDiALPj6s770Pr+m86RX
-	Tk4euw3T5Ytz/mgrWfj9+YCzDhuPANYtli39Spr7MZkNhr+pKrU/jdSku9pb3+zP
-	jM7iqZmNRLOq2j+Fs7xh8wpbgqAtxVsvXQ+RJ17kLqz3pFBExGYARGDpcy11UIzb
-	B9jesANBpTBKjPj+ehy+LVKQILkfrY+6EAde3F78QJuO92n0URjrJMC36ZvYSuw0
-	wxNZKs7wO4viH52Uof3J9i69NFGXTL8jOM2RN+p32OrBJjjapaiWQYAvdI0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1713355661; x=1713442061; bh=JRwjaLl0ymPdY2EgpKl1AbwXbEtg
-	csWk+ZdHAqGgzzA=; b=PskRulJQuqnv1ZOaZ50DEIAA3VW4QVBBupAQcPlTv1IK
-	dtEyQz9vBKl3/cnuZRphIQ1Ko88EM7KrplI+YwutgaaSIUq0w3BmQ0V6TufjEyP2
-	yTltxlsJapXhVkedfxfyGEL0meg4CCLTca8uCiOnkeNrWsAozWbI03ErYj839KTU
-	7wrUsQkd0dnBWfXGeL006fV/8YBv9DEaiOzpBKs+xjoZsDlkazxB9OT+4E9DCq3S
-	Z0QmGG0b1DQIfkl6aQQD6M9hV+PR7TQKwLgHcdvevbcs8bQ8aTCi91Wto7ULXNLC
-	aY44keeltld1H76RHlpp0RDISov29a2XxU+sxAxONg==
-X-ME-Sender: <xms:jbsfZht3D6K4z8QUB_gpc0081jG8mXbjM2wxuhL6ay0L_xLcjQsBqQ>
-    <xme:jbsfZqcUcmTDrDyv2PjpKywqMyZD8QMW4Bo2U6WIB_VblLYvDAu33DmGDRto4uPdA
-    i_V3CJA19Qq__lhYIY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejkedggeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
-    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:jbsfZkwtdRa082bkNjb2lvv2HcsAlt__dmZvMbAP-SSYpwpEfMVoxQ>
-    <xmx:jbsfZoP9icWCo2EnVuIn5n1fSCHZ1vsYQ9NtAh-R-FFFUQTLwu8suA>
-    <xmx:jbsfZh9njKASvlFGKFHyLftms-gaKJ07O5IieLpg2qCUWGBc0QNg1Q>
-    <xmx:jbsfZoVe6PONKKNFIlqeQoLgVLq4doPUraiRPj4rdjhTGjji32QnaQ>
-    <xmx:jbsfZogZw4hA1EhiSt-0ZqWxnSZqbuj3bTO9NsJsmCHYbblYG_WtVpF5>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 5986EB6008D; Wed, 17 Apr 2024 08:07:41 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
+	s=arc-20240116; t=1713355645; c=relaxed/simple;
+	bh=Mld444p9FhL8wMvlmYVWtS5/xKW9ha596WOP9W2tO7c=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=ZVnEUHRjjuQtmc2l4CgNB2Q0+T+FquoWLswgZARmQ7YfTTw66mxROEKQ7kiUg5MNspWMXoeV1ie5ONOozOdOA7y3XLT7BAzHT5m8z4vNzi9iff6+4SU/rVy7RmtefQS6gVuEEr9XcsRcrJUxLzP2xg01GC+Jc0PwwXPVmg8zOAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Nk6j0Q5B; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BmBP6X8b; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 17 Apr 2024 12:07:20 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713355641;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7wsRe5sh182mnCSY3/Up7nwKIXbPH8RlWxpeXyYrMLc=;
+	b=Nk6j0Q5B9DPR3WIJsJx2mihYF1Ux+v0Dq3E8XRlXQp7cpj56LIcwzq+n6EQYmw6rgwl+i5
+	n9fynegF9nZpYiaR5uV86aUpMxbBrUlXYRN9A66tc8o/28omxsjVVanLnV2iR3pmqJmu7X
+	lEQSLUzS8NhxFu3XPZur4FBL/x/VZB/m6QMiVPHvaenYrmnqdqEyG6kIZw1OvBhLJOCRKR
+	49pvAUfN32/sdk+HuZXylFguaZWruvQl7za80TZpB7CsUg1rSNKvQhHGEbEqz1FwD+amtx
+	OB80XMtCYi31yYblT3zSN4325i2C7UQt4X4oEryh4uxCPKXbMwqwa2kIcwgMsA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713355641;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7wsRe5sh182mnCSY3/Up7nwKIXbPH8RlWxpeXyYrMLc=;
+	b=BmBP6X8b5yBK9himN7tQWEBkFKpuJ3TotSpujCgvKQX/Tm+bTEQKcLPDhxi5G+1p/B5Bol
+	Q5FCQqsvCTmKyKAQ==
+From: "tip-bot2 for Alexander Gordeev" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] s390/irq,nmi: Include <asm/vtime.h> header directly
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>, Ingo Molnar <mingo@kernel.org>,
+ Heiko Carstens <hca@linux.ibm.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: =?utf-8?q?=3C3fb696637c0eb7e9d6ffd6cbf9e647d7c5986b3d=2E17127?=
+ =?utf-8?q?60275=2Egit=2Eagordeev=40linux=2Eibm=2Ecom=3E?=
+References: =?utf-8?q?=3C3fb696637c0eb7e9d6ffd6cbf9e647d7c5986b3d=2E171276?=
+ =?utf-8?q?0275=2Egit=2Eagordeev=40linux=2Eibm=2Ecom=3E?=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <d752e7c9-7793-4b50-bc2a-344b63ffa6cb@app.fastmail.com>
-In-Reply-To: <8663692f-528f-4d68-8c35-136e5f1244dc@intel.com>
-References: <20240417084400.3034104-1-arnd@kernel.org>
- <8663692f-528f-4d68-8c35-136e5f1244dc@intel.com>
-Date: Wed, 17 Apr 2024 14:07:19 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Alexander Lobakin" <aleksander.lobakin@intel.com>,
- "Arnd Bergmann" <arnd@kernel.org>
-Cc: "Jakub Kicinski" <kuba@kernel.org>,
- "David S . Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Paolo Abeni" <pabeni@redhat.com>,
- "Siddharth Vadapalli" <s-vadapalli@ti.com>,
- "Ravi Gunasekaran" <r-gunasekaran@ti.com>,
- "Roger Quadros" <rogerq@kernel.org>, "MD Danish Anwar" <danishanwar@ti.com>,
- "Vignesh Raghavendra" <vigneshr@ti.com>, "Diogo Ivo" <diogo.ivo@siemens.com>,
- "Tanmay Patil" <t-patil@ti.com>, "Simon Horman" <horms@kernel.org>,
- "Ratheesh Kannoth" <rkannoth@marvell.com>,
- "Grygorii Strashko" <grygorii.strashko@ti.com>,
- Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
- Linux-OMAP <linux-omap@vger.kernel.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH 1/2] [v2] net: ethernet: ti-cpsw: fix linking built-in code to
- modules
-Content-Type: text/plain
+Message-ID: <171335564052.10875.11708694357063387016.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 17, 2024, at 13:49, Alexander Lobakin wrote:
-> From: Arnd Bergmann <arnd@kernel.org>
-> Date: Wed, 17 Apr 2024 10:43:01 +0200
->
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> There are six variants of the cpsw driver, sharing various parts of
->> the code: davinci-emac, cpsw, cpsw-switchdev, netcp, netcp_ethss and
->> am65-cpsw-nuss.
->
-> https://lore.kernel.org/all/20221119225650.1044591-10-alobakin@pm.me
+The following commit has been merged into the sched/core branch of tip:
 
-I also sent a version of this patch before, but there were conflicting
-changes in the past. The version I sent should apply to the
-current code.
+Commit-ID:     036cbbafbd1eb2a7437912c2fe5fdefc9d52c309
+Gitweb:        https://git.kernel.org/tip/036cbbafbd1eb2a7437912c2fe5fdefc9d52c309
+Author:        Alexander Gordeev <agordeev@linux.ibm.com>
+AuthorDate:    Wed, 10 Apr 2024 17:09:47 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 17 Apr 2024 13:37:22 +02:00
 
-    Arnd
+s390/irq,nmi: Include <asm/vtime.h> header directly
+
+update_timer_sys() and update_timer_mcck() are inlines used for
+CPU time accounting from the interrupt and machine-check handlers.
+These routines are specific to s390 architecture, but included
+via <linux/vtime.h> header implicitly. Avoid the extra loop and
+include <asm/vtime.h> header directly.
+
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
+Link: https://lore.kernel.org/r/3fb696637c0eb7e9d6ffd6cbf9e647d7c5986b3d.1712760275.git.agordeev@linux.ibm.com
+---
+ arch/s390/kernel/irq.c | 1 +
+ arch/s390/kernel/nmi.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/s390/kernel/irq.c b/arch/s390/kernel/irq.c
+index 6f71b0c..259496f 100644
+--- a/arch/s390/kernel/irq.c
++++ b/arch/s390/kernel/irq.c
+@@ -29,6 +29,7 @@
+ #include <asm/hw_irq.h>
+ #include <asm/stacktrace.h>
+ #include <asm/softirq_stack.h>
++#include <asm/vtime.h>
+ #include "entry.h"
+ 
+ DEFINE_PER_CPU_SHARED_ALIGNED(struct irq_stat, irq_stat);
+diff --git a/arch/s390/kernel/nmi.c b/arch/s390/kernel/nmi.c
+index c77382a..230d010 100644
+--- a/arch/s390/kernel/nmi.c
++++ b/arch/s390/kernel/nmi.c
+@@ -31,6 +31,7 @@
+ #include <asm/crw.h>
+ #include <asm/asm-offsets.h>
+ #include <asm/pai.h>
++#include <asm/vtime.h>
+ 
+ struct mcck_struct {
+ 	unsigned int kill_task : 1;
 
