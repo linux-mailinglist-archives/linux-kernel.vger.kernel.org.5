@@ -1,165 +1,204 @@
-Return-Path: <linux-kernel+bounces-148418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A83D8A8248
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:43:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2F7C8A8249
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:43:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8950286CFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:43:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EED6A1C22E22
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:43:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B442E13CF88;
-	Wed, 17 Apr 2024 11:43:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A4813CABA;
+	Wed, 17 Apr 2024 11:43:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Co17iC6C"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="z9ho0rhk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4y3dr6v+";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="z9ho0rhk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4y3dr6v+"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256935680
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:43:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA525680;
+	Wed, 17 Apr 2024 11:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713354185; cv=none; b=oBjO3/lscq02GMbkn2GJP29lEiofuFr6TYQcbXi7JxEXW+bkQ1Go1bEVQ+J9OI25YW0EREqQYOKEl57ghSC2pCwLFFu6+iSrkLsN/fU2OfsQ4meYXzxe4iCLtvleJk/Cc4d4PmqhTElvLUPBlVRXJiwyd8jELCInGCK/gTOh+h4=
+	t=1713354213; cv=none; b=E/fBbF5UHbaZ5xAZjWvMIobrK9W2C8DxniCSZ8WDLwZJs5H0qgZB34R7/EsFsMNGXhCTpmUNaPfmsyX1hnclkgdn+R5HJBp7V7uHZUQuAnLqhY/w6FzvnR4Ine2ymgBdCA3ZS/eJjUYBLiShg263aZBwTEaSUWPb0ahJT6JnIdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713354185; c=relaxed/simple;
-	bh=2j74h0iIytH6PRZNFrTHCHmNEPwJygBB1ndVw5tJ/MQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=etak4/Q8qJY/Wi0R3dF0/aeZRrDnObAJ9XhkcTF+M5X5B3PvBapEQwUUUbNhuWh0a5v5ZQJ2NS3ccjpNr5wBP+UuyRBepSl8cN2rr1Yg649k0rHmKB8WPE55TyOE4xK3KeFd9vrv1Y+42uX8lUBw35seSnFCHPQeKD+G0yXfMX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Co17iC6C; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d715638540so65246791fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:43:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713354180; x=1713958980; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PKy5Kxap6cM6mtyJpA2QMaShqvinZmDMbb6nqhab/os=;
-        b=Co17iC6Czo0ZCZF8gIxSGkwXc15HM7JLzXExfHOqvOCpwAjGJKkv1h7ebNrzNLkZ2d
-         nqq37E3N1t2rOaPQDMRqeFhuadRMBnknN3AaHCyyNm/YDZTVZQB5NNRlWDIrPsZUTVdI
-         ZSvk0ut8za/y3bUVZLd8mwsdcnDHFfsdsyp8LIRCJtbFc1fe2dYK7SMt8rSH+HeXwcta
-         QeeZh15UqXNwlY/E4M9pXwyLXrT32w2iyskgZd3wJBLmlM/apaYjDY/wdQrh3MFce3c8
-         mzTH/RobFsMXUuIbj3Y6USPynzYvcHLmrnKhgNeQDFzr6HlOsjk3330gHu6wwrOWJowi
-         3M0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713354180; x=1713958980;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PKy5Kxap6cM6mtyJpA2QMaShqvinZmDMbb6nqhab/os=;
-        b=Wtl9ivVcbfBSurpGczK5eFcGi6uC0ED2QL0m7QKL+/tdWSzI7id4PBoHwk62AtR6ia
-         6WYh1UC5prnC6DMcz7HedSbnAXSPpU0DZpW4vREB74APpaNrxOdZqFmUrF8oS/AIDtWZ
-         OB9nzd/J3AGafTdEg8IWrjDl2378OLsRkRdX4oafqjEfCRJCj3D6Twyfe4lqduTAi5q9
-         uFZx54B/jbHJbkU2HQcrAN8yc4PnoYt5YcMflb1Ov2MDEVKBsd3fPTO9JouHFKTWt8IG
-         kjkU9q84qc3aB8IUFYb+88Z6EB6LrkSHKZ8t3wS+DIXBvrOr2WgM93VSo8GpDAAEZ3w1
-         WePg==
-X-Forwarded-Encrypted: i=1; AJvYcCU4z+4B6c1vECDpeOPRv5at8wUAYZY0wqdDKZpKoK2I3JNSFcDCbdmstuFQpXAX509W92NeJlU8XlaiD02T0pm4Q3PxEZJ8Blvhhhy0
-X-Gm-Message-State: AOJu0YwpP7x8FDs704hr9kNjwDXXUtaQxAMm/jw4tMYyy1nHY1gPpjQU
-	I2c0Y1V4tyY0eq9lkQZN7EjtGRYbh/BwMgRFy34/s4hUaCcy/wB++5m0MkJI4PeaWrmcDawFRXB
-	b
-X-Google-Smtp-Source: AGHT+IEhy7phkNh8GPAYWeNKIjEQ2zGqofF6B3DRQvcLUKP1Pajvk5PVp8xJ6WRzpZYatNNIwww+sg==
-X-Received: by 2002:a2e:998a:0:b0:2d7:61ac:b392 with SMTP id w10-20020a2e998a000000b002d761acb392mr10489311lji.29.1713354180124;
-        Wed, 17 Apr 2024 04:43:00 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id g3-20020a05600c310300b00417bab31bd2sm2619839wmo.26.2024.04.17.04.42.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Apr 2024 04:42:59 -0700 (PDT)
-Message-ID: <3b245ae8-31ee-4576-a123-0dc3aba4ce10@linaro.org>
-Date: Wed, 17 Apr 2024 12:42:58 +0100
+	s=arc-20240116; t=1713354213; c=relaxed/simple;
+	bh=PEB6drbglnsklaB5W7IH+U0FJxOt4QfpV8UOKufOExE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HtL/YNIAMlU/8iGCyp3NJ5SjjJIa7WGSwk8Sll1bfq2FgzgjO5M6GPExKFajWAdCZ5ynQyU4T9HAEyLNZ74uyPHcf2gOudCZiEf6Tnr18dlMpUcvOq1CT68t8dbDwFTVNECHn00V06GYbfkeVb6Y4cUKmZeh7qQHF7EaG/7TFUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=z9ho0rhk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4y3dr6v+; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=z9ho0rhk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4y3dr6v+; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 62BE9220A0;
+	Wed, 17 Apr 2024 11:43:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713354209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cIJq+mR3OBQMgwXQfkk/bTf76VYvfmQoEauVaCY2b5Q=;
+	b=z9ho0rhkskAoivStTmL+lyrss34CV0V51qAEdrDt27NqiYyW4Qsn1EgjaCNNjOw5c7Zh2F
+	R65Kv/JznvsnQZsZ0D5ebO/01j+A5yUyobEg/ooCpcwdJUwBvf9ItUcDmieHjQPIarImaG
+	49oT7538JIXZGG+SHURDv/pxmgIWxKU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713354209;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cIJq+mR3OBQMgwXQfkk/bTf76VYvfmQoEauVaCY2b5Q=;
+	b=4y3dr6v+2bm2pcd/V4d6hYFlYI6utZV0wXXVqV/3nY1pBrAusPvYQbo7ZlTFikA1i+KO/g
+	twOrCqT39IiZTeDw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=z9ho0rhk;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4y3dr6v+
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713354209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cIJq+mR3OBQMgwXQfkk/bTf76VYvfmQoEauVaCY2b5Q=;
+	b=z9ho0rhkskAoivStTmL+lyrss34CV0V51qAEdrDt27NqiYyW4Qsn1EgjaCNNjOw5c7Zh2F
+	R65Kv/JznvsnQZsZ0D5ebO/01j+A5yUyobEg/ooCpcwdJUwBvf9ItUcDmieHjQPIarImaG
+	49oT7538JIXZGG+SHURDv/pxmgIWxKU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713354209;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cIJq+mR3OBQMgwXQfkk/bTf76VYvfmQoEauVaCY2b5Q=;
+	b=4y3dr6v+2bm2pcd/V4d6hYFlYI6utZV0wXXVqV/3nY1pBrAusPvYQbo7ZlTFikA1i+KO/g
+	twOrCqT39IiZTeDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4F8A013957;
+	Wed, 17 Apr 2024 11:43:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id +UFqE+G1H2bqDAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 17 Apr 2024 11:43:29 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 01876A082E; Wed, 17 Apr 2024 13:43:24 +0200 (CEST)
+Date: Wed, 17 Apr 2024 13:43:24 +0200
+From: Jan Kara <jack@suse.cz>
+To: cve@kernel.org, linux-kernel@vger.kernel.org
+Cc: linux-cve-announce@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: CVE-2024-26774: ext4: avoid dividing by 0 in
+ mb_update_avg_fragment_size() when block bitmap corrupt
+Message-ID: <20240417114324.c77wuw5hvjbm6ok5@quack3>
+References: <2024040308-CVE-2024-26774-52d9@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] soundwire: qcom: disable stop clock on 1.3.0 and
- below
-To: Anton Bambura <jenneron@postmarketos.org>, Andy Gross
- <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-References: <20240413064225.39643-1-jenneron@postmarketos.org>
- <20240413064225.39643-2-jenneron@postmarketos.org>
-Content-Language: en-US
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20240413064225.39643-2-jenneron@postmarketos.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024040308-CVE-2024-26774-52d9@gregkh>
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 62BE9220A0
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
 
+Hello!
 
-
-On 13/04/2024 07:42, Anton Bambura wrote:
-> This patch returns back the behavior of disabling stop clock on soundwire
-> 1.3.0 and below which seems to have been altered by accident which
-> results in broken audio on sdm845 + wcd9340. For example, on AYN Odin and
-> Lenovo Yoga C630 devices.
+On Wed 03-04-24 19:31:41, Greg Kroah-Hartman wrote:
+> Description
+> ===========
 > 
-> Fixes: 4830bfa2c812 ("soundwire: qcom: set clk stop need reset flag at runtime")
-> Signed-off-by: Anton Bambura <jenneron@postmarketos.org>
-> ---
->   drivers/soundwire/qcom.c | 3 +++
->   1 file changed, 3 insertions(+)
+> In the Linux kernel, the following vulnerability has been resolved:
 > 
-> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-> index a1e2d6c98186..bc03484a28e8 100644
-> --- a/drivers/soundwire/qcom.c
-> +++ b/drivers/soundwire/qcom.c
-> @@ -628,6 +628,9 @@ static int qcom_swrm_enumerate(struct sdw_bus *bus)
->   			}
->   		}
->   
-> +		if (ctrl->version <= SWRM_VERSION_1_3_0)
-> +			ctrl->clock_stop_not_supported = true;
-> +
+> ext4: avoid dividing by 0 in mb_update_avg_fragment_size() when block bitmap corrupt
+> 
+> Determine if bb_fragments is 0 instead of determining bb_free to eliminate
+> the risk of dividing by zero when the block bitmap is corrupted.
+> 
+> The Linux kernel CVE team has assigned CVE-2024-26774 to this issue.
 
-This is not the right fix, this can be determined from codec 
-clk_stop_mode1 flag.
+I'd like to understand what is the imagined security threat fixed by this
+patch (as multiple patches of similar nature got assigned a CVE). The patch
+fixes a bug that if a corrupted filesystem is read-write mounted, we can do
+division-by-zero. Now if you can make the system mount a corrupted
+filesystem, you can do many interesting things to the system other than
+create a division by zero... So what is the presumed threat model here?
 
-can you try this patch:
+								Honza
 
------------------------------>cut<-----------------------------
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Wed, 17 Apr 2024 12:38:49 +0100
-Subject: [PATCH] ASoC: codecs: wsa881x: set clk_stop_mode1 flag
-
-WSA881x codecs do not retain the state while clock is stopped, so mark
-this with clk_stop_mode1 flag.
-
-Fixes: a0aab9e1404a ("ASoC: codecs: add wsa881x amplifier support")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
-  sound/soc/codecs/wsa881x.c | 1 +
-  1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
-index 3c025dabaf7a..1253695bebd8 100644
---- a/sound/soc/codecs/wsa881x.c
-+++ b/sound/soc/codecs/wsa881x.c
-@@ -1155,6 +1155,7 @@ static int wsa881x_probe(struct sdw_slave *pdev,
-  	pdev->prop.sink_ports = GENMASK(WSA881X_MAX_SWR_PORTS, 0);
-  	pdev->prop.sink_dpn_prop = wsa_sink_dpn_prop;
-  	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
-+	pdev->prop.clk_stop_mode1 = true;
-  	gpiod_direction_output(wsa881x->sd_n, !wsa881x->sd_n_val);
-
-  	wsa881x->regmap = devm_regmap_init_sdw(pdev, &wsa881x_regmap_config);
+> Affected and fixed versions
+> ===========================
+> 
+> 	Fixed in 5.15.150 with commit 687061cfaa2a
+> 	Fixed in 6.1.80 with commit 8b40eb2e716b
+> 	Fixed in 6.6.19 with commit f32d2a745b02
+> 	Fixed in 6.7.7 with commit 8cf9cc602cfb
+> 	Fixed in 6.8 with commit 993bf0f4c393
+> 
+> Please see https://www.kernel.org for a full list of currently supported
+> kernel versions by the kernel community.
+> 
+> Unaffected versions might change over time as fixes are backported to
+> older supported kernel versions.  The official CVE entry at
+> 	https://cve.org/CVERecord/?id=CVE-2024-26774
+> will be updated if fixes are backported, please check that for the most
+> up to date information about this issue.
+> 
+> 
+> Affected files
+> ==============
+> 
+> The file(s) affected by this issue are:
+> 	fs/ext4/mballoc.c
+> 
+> 
+> Mitigation
+> ==========
+> 
+> The Linux kernel CVE team recommends that you update to the latest
+> stable kernel version for this, and many other bugfixes.  Individual
+> changes are never tested alone, but rather are part of a larger kernel
+> release.  Cherry-picking individual commits is not recommended or
+> supported by the Linux kernel community at all.  If however, updating to
+> the latest release is impossible, the individual changes to resolve this
+> issue can be found at these commits:
+> 	https://git.kernel.org/stable/c/687061cfaa2ac3095170e136dd9c29a4974f41d4
+> 	https://git.kernel.org/stable/c/8b40eb2e716b503f7a4e1090815a17b1341b2150
+> 	https://git.kernel.org/stable/c/f32d2a745b02123258026e105a008f474f896d6a
+> 	https://git.kernel.org/stable/c/8cf9cc602cfb40085967c0d140e32691c8b71cf3
+> 	https://git.kernel.org/stable/c/993bf0f4c393b3667830918f9247438a8f6fdb5b
 -- 
-2.21.0
------------------------------>cut<-----------------------------
-
-
-thanks,
-Srini
-
->   		if (!found) {
->   			qcom_swrm_set_slave_dev_num(bus, NULL, i);
->   			sdw_slave_add(bus, &id, NULL);
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
