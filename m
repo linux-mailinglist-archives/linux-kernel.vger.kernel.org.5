@@ -1,99 +1,246 @@
-Return-Path: <linux-kernel+bounces-148886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3219E8A8892
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:13:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8FD98A8894
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:13:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB6641F257D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:13:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FA20286704
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:13:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF80014883C;
-	Wed, 17 Apr 2024 16:11:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CADF315B999;
+	Wed, 17 Apr 2024 16:11:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="iGAJwGsx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="G6+lPSUl"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3361487ED;
-	Wed, 17 Apr 2024 16:11:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F224148FF9
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 16:11:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713370284; cv=none; b=cE/YlJtlB7YfSpCOu/2J2ob+eZMbWOOYIBI3aAFlCsdtiYQCVqjMovswv68Hq6d9RXgCMpwDBImJFzj8AIYJv4rA9lLpN9d9ax1aqFtkqaS+QydoZXCE30GHhZ9oWx0Qxb69t0G3TYKPcU7JjQKj4rN3mTdBs5uzkIFr7qJko34=
+	t=1713370292; cv=none; b=aV7A9J7bK7TDmVwFoh4xxwpyiwpUITOAVrhnXEgaRVKSTjGS6RMXLlC5TTOAhuWAheM9TR9eMLe3y7FzD9NpuaFyBu9gLdapCpr3FjNdLgjb56lvGjd2QrhoHrG2Tg0dOrEbwWUq7pBA5+20TRF5KPjo6EJTaFd1KC89FD/0ip0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713370284; c=relaxed/simple;
-	bh=Vd9MoZGmUJSmWJhjZuysNOPtSny1sF4YJqKBYM/g7G4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WqwIlTUD76zbrXl3Nca8YpxijMVHlNBgH4ZRlmH8NxUs6Fo6WOdVgjqKtkb8XhDzH2noqjkN2tp0LEMH3SCzT6169d1qZloQoFRiQTn2pq1rSSbPDQ64eEhth/U818haB79AMPh4EKsNgErYqvTF54/r3V1Hf+DpB+0huPmkF9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=iGAJwGsx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84F8CC32783;
-	Wed, 17 Apr 2024 16:11:23 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="iGAJwGsx"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1713370279;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vd9MoZGmUJSmWJhjZuysNOPtSny1sF4YJqKBYM/g7G4=;
-	b=iGAJwGsxu04qMExnTCA3JQ+6qGD6hJ9R9PIoxkW7LDfeJjUHd8bl9Vb0t0YL2CX1esUNH6
-	Q9s+L/xcwbGjeOklnxrEPJadgtbqAxD+ExlSY5ZuE8ItKhcSKjs8HSvo0xeoakglSB79AC
-	iCHfpgGNpnXUVjPUYpqRfpXQuACBgCM=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 88535516 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Wed, 17 Apr 2024 16:11:18 +0000 (UTC)
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-de45e5c3c68so134981276.0;
-        Wed, 17 Apr 2024 09:11:18 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWjjlyYGyGlcoALrqz1RIDwjEe8xnNSdACSULwJG8vQ2vYnstTYtc2mcC274SEYDyYc0F4RnpIDbhilvl0KDtRe9KYr77n5naFlXHoZt/DBEo1kZHaJqAIf5rxrTPCeNje2BT2hSxLOVczfwTimgwp6DabMqTk3CW5pN4H1l9gYL19ct6Am7w==
-X-Gm-Message-State: AOJu0YwFPM94nRvziEFd7djeXTJg+FM2PvbzaDO8yvHUpk7r5JFtX7ch
-	WXFqU60IpWBqe5C2rlsRr9CUjMPgUjguLgfHyu+4kqMBM+Vb4zSapGt1lV3U0CbC9lEv9LWZ9RD
-	wYblurmtJ+RcIK2SwOSNcEZ95qo4=
-X-Google-Smtp-Source: AGHT+IHnVFaaolAttobN05sEUDEOZ5q4IsHxKmNOdMXi38+CnOrD9A/ODY6svaDJFy1CiSQ4ILjWqKrNFfsRMS/5hTQ=
-X-Received: by 2002:a25:ac1f:0:b0:de1:286c:23b1 with SMTP id
- w31-20020a25ac1f000000b00de1286c23b1mr16773107ybi.7.1713370277505; Wed, 17
- Apr 2024 09:11:17 -0700 (PDT)
+	s=arc-20240116; t=1713370292; c=relaxed/simple;
+	bh=Xv58JPBMkvjqeTUuWpAmGROcJfdavCAx5eUeGZ+QKbs=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=OEE3z9yddCqDDAU0JVW3SeBiv7gVTsaOrtsUvbZL0uCayWdzTW59yzeSWMHbjDQqIpgZ5qZD0/Snp+Qzsrm+yZ4EwcB9ay2oeYhslmtHdnGPJY64KUVTOMfBXu8JrEssX0SaD3VatfeeWRhcWKJHqwllBHsQkq48S+6DNdQgJV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=G6+lPSUl; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6188040f3d2so104432097b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:11:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713370290; x=1713975090; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6K92tAN08KHDtbc83C/Gfrb2VXY13bOFkYmFFlvk/bM=;
+        b=G6+lPSUl0S9c7EatAnRCShOiab1KZyn4G/1xJF+e3+rHSOvoErmQWRZzI0VD6i1ydr
+         WpoL/8ctCbjr47xY1z+QnArVSkNe/GMHBm44xqxsMdvHx0dkSgcjapyyYFhh+KI6DQBb
+         e6RdwhS+DBa66HYNlm0gOrPhWte14pZ0H4SD4LuuAD3DQ8pN1HQsdt+e9t6YZhZI+HB4
+         OWoFIg0y16KU9BE7tEwr0PKGk++8VknDGz1nDFCG75ijBCrTzhZrixloN8tMq+6PWILX
+         H7iNywKGW37QsO4bO++j92pheRrd4i2rgGBb9bKLiQkiWTWaIbbEYIZ5kJ1BvoUPDOHS
+         NjAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713370290; x=1713975090;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6K92tAN08KHDtbc83C/Gfrb2VXY13bOFkYmFFlvk/bM=;
+        b=u1xjXEdlNLZLa29pYAg19PVDAtvgFb0tIwoXz8octCsIJSJonwZuGyDJsVfoK/4aTS
+         87/Mo5uxnKsLqthYWePX6MH8/n9AwfME72JBuCCQwtugdcaocr04tpVVlaMCUhN+BqvN
+         H66pYAdMBTJbMlOTlAKIJQVVMYFdXJVrJ1uGLQIfx1RJYi3HOewj1WuF/MMwFMjqg4Pc
+         r02XtG/OPdS5B3x7egNPHch7EqDp1fFQA+XePDmBFpU1YUUAIbPAXnfs96UvHioHjgHu
+         lRyKaSq3IBl85ouCWT/5jKcR+BHlwdYdm9wkwNCCUvloY1CBK8padTnj28sTSgraQ/um
+         rq7g==
+X-Forwarded-Encrypted: i=1; AJvYcCXJMDfhtCkJcqUtahRX5SzY4slp2b3/Qiwv3UEgESTtJDbE21q+gkE2Amez8t70+PBzlDFf4fr9nlWastPOmOp5ekSJuo1h9M8ks0yq
+X-Gm-Message-State: AOJu0YwM8mzinRPsy8oDwmKSab1/of0lqViwOg5/8PwcATNjyKGeO8sW
+	GOnFgpfwZjrzdQlG1aXaKvFgAnJsa/vc45YY5XPFnPje3WRQVNqgH6mp4LBbeNDhcRK0v6tPLWU
+	IwQ==
+X-Google-Smtp-Source: AGHT+IHHi4gPgfR9HpFmvtb4m3ZR/Jd0g2m2zqQWUWOwbR8uDRfBGUR7GOF/YtaHwXsoAud3JyBTo7Ik95k=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:528b:0:b0:61a:d437:fab with SMTP id
+ g133-20020a81528b000000b0061ad4370fabmr652276ywb.0.1713370289823; Wed, 17 Apr
+ 2024 09:11:29 -0700 (PDT)
+Date: Wed, 17 Apr 2024 09:11:28 -0700
+In-Reply-To: <adb07a02b3923eeb49f425d38509b340f4837e17.camel@cyberus-technology.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240417104046.27253-1-bchalios@amazon.es> <20240417104046.27253-6-bchalios@amazon.es>
- <CAHmME9qHY_1JGDMyvEGB7XDu2DKaYQcPE3UfSfb4aVZkgC8Q=g@mail.gmail.com> <1fe62eb1-8ad5-4ced-9349-258cee9de663@kernel.org>
-In-Reply-To: <1fe62eb1-8ad5-4ced-9349-258cee9de663@kernel.org>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date: Wed, 17 Apr 2024 18:11:05 +0200
-X-Gmail-Original-Message-ID: <CAHmME9rtwMEBL-F5mQLuQREr=TqpuYChYn1rxpfGYqX11x-Efg@mail.gmail.com>
-Message-ID: <CAHmME9rtwMEBL-F5mQLuQREr=TqpuYChYn1rxpfGYqX11x-Efg@mail.gmail.com>
-Subject: Re: [PATCH v6 5/5] virt: vmgenid: add support for devicetree bindings
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: sudanl@amazon.com, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, tytso@mit.edu, 
-	olivia@selenic.com, herbert@gondor.apana.org.au, robh@kernel.org, 
-	krzk+dt@kernel.org, conor+dt@kernel.org, linux-crypto@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, graf@amazon.de, 
-	xmarcalx@amazon.co.uk, dwmw@amazon.co.uk, Alexander Graf <graf@amazon.com>, 
-	Babis Chalios <bchalios@amazon.es>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <20240416123558.212040-1-julian.stecklina@cyberus-technology.de>
+ <Zh6MmgOqvFPuWzD9@google.com> <ecb314c53c76bc6d2233a8b4d783a15297198ef8.camel@cyberus-technology.de>
+ <Zh6WlOB8CS-By3DQ@google.com> <c2ca06e2d8d7ef66800f012953b8ea4be0147c92.camel@cyberus-technology.de>
+ <Zh6-e9hy7U6DD2QM@google.com> <adb07a02b3923eeb49f425d38509b340f4837e17.camel@cyberus-technology.de>
+Message-ID: <Zh_0sJPPoHKce5Ky@google.com>
+Subject: Re: [PATCH 1/2] KVM: nVMX: fix CR4_READ_SHADOW when L0 updates CR4
+ during a signal
+From: Sean Christopherson <seanjc@google.com>
+To: Thomas Prescher <thomas.prescher@cyberus-technology.de>
+Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>, "x86@kernel.org" <x86@kernel.org>, 
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "hpa@zytor.com" <hpa@zytor.com>, 
+	Julian Stecklina <julian.stecklina@cyberus-technology.de>, 
+	"tglx@linutronix.de" <tglx@linutronix.de>, "bp@alien8.de" <bp@alien8.de>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"mingo@redhat.com" <mingo@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Krzysztof,
+On Wed, Apr 17, 2024, Thomas Prescher wrote:
+> On Tue, 2024-04-16 at 11:07 -0700, Sean Christopherson wrote:
+> > Hur dur, I forgot that KVM provides a "guest_mode" stat.=C2=A0 Userspac=
+e can do
+> > KVM_GET_STATS_FD on the vCPU FD to get a file handle to the binary stat=
+s,
+> > and then you wouldn't need to call back into KVM just to query guest_mo=
+de.
+> >=20
+> > Ah, and I also forgot that we have kvm_run.flags, so adding
+> > KVM_RUN_X86_GUEST_MODE would also be trivial (I almost suggested it
+> > earlier, but didn't want to add a new field to kvm_run without a very g=
+ood
+> > reason).
+>=20
+> Thanks for the pointers. This is really helpful.
+>=20
+> I tried the "guest_mode" stat as you suggested and it solves the
+> immediate issue we have with VirtualBox/KVM.
 
-On Wed, Apr 17, 2024 at 6:02=E2=80=AFPM Krzysztof Kozlowski <krzk@kernel.or=
-g> wrote:
-> Usually we do not recommend hiding code behind !CONFIG_OF because this
-> limits possible usage on ACPI systems via PRP0001. Not sure if it is
-> applicable here, because there is already ACPI matching.
->
-> I would suggest choose whatever makes code simpler... Or just mark some
-> pieces with __maybe_unused if they are really not used? That would avoid
-> ifdeffery.
+Note,=20
 
-Interesting about PRP0001. Alright. It looks like I can't quite do
-without ifdefs because the code dereferences ->handle in a acpi_device
-struct, but I can minimize it all to just a single ifdef.
+> What I don't understand is that we do not get the effective CR4 value
+> of the L2 guest in kvm_run.s.regs.sregs.cr4.
 
-Jason
+Because what you're asking for is *not* the effective CR4 value of L2.
+
+E.g. if L1 is using legacy shadowing paging to run L2, L1 is likely going t=
+o run
+L2 with GUEST_CR0.PG=3D1, GUEST_CR4.PAE=3D1, and GUEST_CR4.PSE=3D0 (though =
+PSE is largely
+irrelevant), i.e. will either use PAE paging or 64-bit paging to shadow L2.
+
+But L2 itself could be unpaged (CR0.PG=3D0, CR4.PAE=3Dx, CR4.PSE=3Dx), usin=
+g 32-bit
+paging (CR0.PG=3D1, CR4.PAE=3D0, CR4.PSE=3D0), or using 32-bit paging with =
+4MiB hugepages
+(CR0.PG=3D1, CR4.PAE=3D0, CR4.PSE=3D1).  In all of those cases, the effecti=
+ve CR0 and CR4
+values consumed by hardware are CR0.PG=3D1, CR4.PAE=3D1, and CR4.PSE.
+
+Or to convolute things even further, if L0 is running L1 with shadowing pag=
+ing,
+and L1 is running L2 with shadow paging but doing something weird and using=
+ PSE
+paging, then it would be possible to end up with:
+
+  vmcs12->guest_cr4:
+     .pae =3D 0
+     .pse =3D 1
+
+  vmcs12->cr4_read_shadow:
+     .pae =3D 0
+     .pse =3D 0
+
+  vmcs02->guest_cr4:
+     .pae =3D 1
+     .pse =3D 0
+
+> Instead, userland sees the contents of Vmcs::GUEST_CR4.=C2=A0Shouldn't th=
+is be the
+> combination of GUEST_CR4, GUEST_CR4_MASK and CR4_READ_SHADOW, i.e. what L=
+2
+> actually sees as CR4 value?
+
+Because KVM_{G,S}ET_SREGS (and all other uAPIs in that vein) are defined to=
+ operate
+on actual vCPU state, and having them do something different if the vCPU is=
+ in guest
+mode would confusing/odd, and nonsensical to differences between VMX and SV=
+M.
+
+SVM doesn't have per-bit CR0/CR4 controls, i.e. CR4 loads and stores need t=
+o be
+intercepted, and so having KVM_{G,S}ET_SREGS operate on CR4_READ_SHADOW for=
+ VMX
+would yield different ABI for VMX versus SVM.
+
+Note, what L2 *sees* is not a combination of the above; what L2 sees is pur=
+ely
+CR4_READ_SHADOW.  The other fields are consulted only if L2 attempts to loa=
+d CR4.
+
+> If this is expected, can you please explain the reasoning behind this
+> interface decision? For me, it does not make sense that writing back
+> the same value we receive at exit time causes a change in what L2 sees
+> for CR4.
+
+I doubt there was ever a concious decision, rather it never came up and thu=
+s the
+code is the result of doing nothing when nested VMX support was added.
+
+That said, KVM's behavior is probably the least awful choice.  The changelo=
+g of
+the proposed patch is wrong when it says:
+
+  If the signal is meant to be delivered to the L0 VMM, and L0 updates CR4 =
+for L1
+
+because the update isn't for L1, it's for the active vCPU state, which is L=
+2.
+
+At first glance, skipping the vmcs02.CR4_READ_SHADOW seems to make sense, b=
+ut it
+would create a bizarre inconsistency as KVM_SET_SREGS would effectively ove=
+rride
+vmcs12->guest_cr4, but not vmcs12->cr4_read_shadow.  KVM doesn't know the i=
+ntent
+of userspace, i.e. KVM can't know if userspace wants to change just the eff=
+ective
+value for CR4, or if userspace wants to change the effective *and* observab=
+le
+value for CR4.
+
+In your case, where writing CR4 is spurious, preserving the read shadow wor=
+ks,
+but if there were some use case where userspace actually wanted to change L=
+2's
+CR4, leaving the read shadow set to vmcs12 would be wrong.
+
+The whole situation is rather nonsensical, because if userspace actually di=
+d change
+CR4, the changes would be lost on the next nested VM-Exit =3D> VM-Entry.  T=
+hat could
+be solved by writing to vmcs12, but that creates a headache of its own beca=
+use then
+userspace changes to L2 become visible to L1, without userspace explicitly =
+requesting
+that.
+
+Unfortunately, simply disallowing state save/restore when L2 is active does=
+n't
+work either, because userspace needs to be able to save/restore state that =
+_isn't_
+context switched by hardware, i.e. isn't in the VMCS or VMCB.
+
+In short, yes, it's goofy and annoying, but there's no great solution and t=
+he
+issue really does need to be solved/avoided in userspace
+
+> Another question is: when we want to save the VM state during a
+> savevm/loadvm cycle, we kick all vCPUs via a singal and save their
+> state. If any vCPU runs in L2 at the time of the exit, we somehow need
+> to let it continue to run until we get an exit with the L1 state. Is
+> there a mechanism to help us here?=20
+
+Hmm, no?  What is it you're trying to do, i.e. why are you doing save/load?=
+  If
+you really want to save/load _all_ state, the right thing to do is to also =
+save
+and load nested state.
+
 
