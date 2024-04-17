@@ -1,144 +1,119 @@
-Return-Path: <linux-kernel+bounces-148025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFE108A7CC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:05:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 420D98A7CC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:06:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FA481C20E05
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:05:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 730181C20E03
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29ADB6A356;
-	Wed, 17 Apr 2024 07:05:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C66536D1CC;
+	Wed, 17 Apr 2024 07:05:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GHPwHfOD"
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="C+7inE7F"
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E406A329
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:05:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 814016A8BA
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713337534; cv=none; b=LaN6+MJsQRSaGndfB1e5FpquNRBoOgafKGSGyDY7M74s3cMNdHRVtPFJk1QNySTxAwu/8phWioBTMmrCPlqAfC/5DKilZtH0NjzAQM3xYoJIuq81J0GehXPrqyKPiujgmI2CQrnaDWSMCnnD8ENuAWJL87LtKbYbY4489VrppKw=
+	t=1713337538; cv=none; b=NqrfQnGhyAOL5QwuCr115yqbNnDoQOR7Q+TX8kPMa8WKSHs0VaAt4a81FncCi8pNHaSi8KN9tP7WzL6qt3gaFQb1iCWcRbRfZJ6BO6fX7wWL/j17PPeNn/7umSuad35kNitmbN0ArIiRoQyzt6wQ6ITHGjBqtpwa82DcbZrj0Vc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713337534; c=relaxed/simple;
-	bh=bPEa0MkxN7S2larn21dK+8bkmH9iV2RJi0htA1d/rBU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uuhDQ8Yfbq5yJWXlPya1kCw8RpI8kyrB1zEY2m1sAqjNpSKEjae7V0+GP+jgQvwm+ROSgGDYz5cFrPv1omOHI29huQ9qhqFG1a8OihAtq6PAqlQ0XQVU1jdeiThAJ7nxSzcL8pijRnixcnUW2lprRvh263+iMwayalRem2LCbWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GHPwHfOD; arc=none smtp.client-ip=209.85.216.47
+	s=arc-20240116; t=1713337538; c=relaxed/simple;
+	bh=mcsr3csBU7bHGMkIHe2AoCdtg1CXoDmljtGVCug6ERg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XzneiPtRhfkQWzzhjdWK74r7SMdNIW2TktmtDyqxynCqAas0zO00nqEn/il/z6vkcHQNQLq6UxzeAP8IQzJbs2a4jTfNLcAlIwQwrz/1/9yFKKLaPt+S7PryOKh/wp8gYUkZI5vzDBfrk67/nuJkjGwmsjSIxPeXqW1yPOQimFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=C+7inE7F; arc=none smtp.client-ip=209.85.219.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2aa67da7a1dso1737905a91.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:05:31 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dbed0710c74so4526573276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:05:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713337531; x=1713942331; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=nT6tFhvCySxWh9JfwI+ew2P3H0H+myzNUarVTSp+pTw=;
-        b=GHPwHfODLy+t5EHgMZzCnTCW66IoAfDPVnLeKv4Sx5HELRxYyrh7DcV9f5xpcUGI1c
-         TOLV47kOzcPzbAC8VflvLs9KsjVlfEm8nkitQCsHexYbyMz+YcHySrP1u+soRHL7Ql8O
-         juhqN3KlOcBs7Q/4uI/NEsdE/3oekQ0eYQgxEtQpjmM2oQb8+wMJpHH0jwdEaXFhmc/k
-         M8vzsZHFj6FwD6V6yPjo9EjgejN8t0CzYrnt5yFwQe5O2baHcQbIrc9vyGMSzyJ6TgzQ
-         v9yw5JyuUP17Plofd1NiGs85WkAnnJMhjrmkB4aMAuWRfmijnTafyQgemQxmTWWRuswz
-         /JWQ==
+        d=linaro.org; s=google; t=1713337534; x=1713942334; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EkjVwN4rKPhkulRFdv6fIescIc1N6dkILoDWgTfK/5I=;
+        b=C+7inE7FU7EoI73NvofWvGDcZi+oip2wk6yr/RLGNTRsq0EQyxLpC4wL4g+HbXJf/W
+         Ovv3SHrT4u3AHL/zuxVwZdj+XKVRRJ05TTy7A9j97gXYH6BG+ujNOOKk6vpvT2hxl12f
+         ZD66/9udqmuxyP9c752avMGq1N2oc3kwOpYQStgiEvhcUMQsnqydSbsAYaikBwvO0aJ4
+         +N59Kg2J7Ect3+tH1kr0z+atLSSi1xzKvf4JNvG2avL1YnJED+gjvSXIwW9YhppBgHX1
+         lC1Q+eR7tYq9AK6iAr0++bNj3NsaiY0kmrnMAa2G1q604AyoHotA2mlbDumO0NALYY4E
+         fwYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713337531; x=1713942331;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nT6tFhvCySxWh9JfwI+ew2P3H0H+myzNUarVTSp+pTw=;
-        b=d3xgqoUWnSe0Z91KU3tKErIpPVsWm7ynzGxeGqMBacynCHFa6AOLpg4yYrou/+rfO4
-         uuWMCsHVE40ko0Qdy6JhyJTLGMERq22bb4A/wdAirDY64A0+No3rMJP5hTe1fROmdNfN
-         nT6NXCZnzy9LIVv4Q5CXW9OETJVDu3qsiwfNmaeGWxzVQ5ZNbrzvx8O21z1i6Vg5jG4C
-         4q7cO5kFLJ9t+IOe216QwHlGSXnqKPJCEMUAEYs1Auagcv8mmzD5oYfo/r1yBGCDM9KB
-         o52n9IM2bw9tm1DssDxJ3jX/RyT2/AAWO7WaFH96EjjToAjhv59F2G/p2qdgzdttAkrD
-         SX/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUjlvGkgXjTOU90m0ibKzEL+3nCeKGas+Rb9LgCufV6JDOXzi+Dc2LzY0/y3ps3IGX9o7+NE4AsWUSf1RZLMoMa1knQ+CtqHYWXxYZV
-X-Gm-Message-State: AOJu0YzRVjFuNs8jRJ7jl4cXKnsBO+pyQ1l6VetUvKQjhrNrKdDhB4dp
-	u5AorqGQW4iJUb0QwIlKtolK+ZYNT0dr2pbptQscgGskL6zJGuAejvewLHwwNQ==
-X-Google-Smtp-Source: AGHT+IGAJTHf5aNDmeLGgicc5pedNPBoDApozmgw0H37DWBqBhEOgFpy2m6jFPd4h60UnfNZs6FWAA==
-X-Received: by 2002:a17:90b:1b4b:b0:2a2:73e9:c3bf with SMTP id nv11-20020a17090b1b4b00b002a273e9c3bfmr14427402pjb.20.1713337530516;
-        Wed, 17 Apr 2024 00:05:30 -0700 (PDT)
-Received: from thinkpad ([120.60.54.9])
-        by smtp.gmail.com with ESMTPSA id in17-20020a17090b439100b002a20c0dcebbsm699083pjb.31.2024.04.17.00.05.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 00:05:30 -0700 (PDT)
-Date: Wed, 17 Apr 2024 12:35:17 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Alexandru Gagniuc <mr.nuke.me@gmail.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/7] PCI: qcom: Add support for IPQ9574
-Message-ID: <20240417070517.GA3894@thinkpad>
-References: <20240409190833.3485824-1-mr.nuke.me@gmail.com>
- <20240409190833.3485824-5-mr.nuke.me@gmail.com>
- <dca1e891-cfde-4e95-864e-419934d385e5@linaro.org>
+        d=1e100.net; s=20230601; t=1713337534; x=1713942334;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EkjVwN4rKPhkulRFdv6fIescIc1N6dkILoDWgTfK/5I=;
+        b=vkWyxTu7vuWE+WP3uCuEYUtgXZCLwlO/YIrPY70Iv4qSIosDZ8T3N6R4CyyAByFFIj
+         BMLblDs7v4/kxe11aw0lXL07oF47N/OoQTHj6sqLBKKMUeGtlEweB/WWKsi3uX+ANWxN
+         Yb+OBQQkEJQnPsnto3QWQHWhqbG88w+l0K3H3ebU2eOvDcq7w2vnzRnPD6psUs+wrs8V
+         TIV0k89mQkhuGmbO2mF4kuzMxShOduk85ap/pIzI42uZ4E5linX/7qLnfWpy6E/Jcdor
+         qjlXX2GPzBpz5yzt/IouF7eSwgk3jqcVzt8StMb9aYoY909a+7RZSOc4rqLx1l0mFiNg
+         l/Qw==
+X-Forwarded-Encrypted: i=1; AJvYcCUVbG4/mewy1Jvuex04HREpJwufz+85dgR+ypEWWRIEnRll7VdAU6FWrBgkUwufBE8pnIDSeVRU2/vRQyQbE08sP3hgQ4YSOOQjt8oE
+X-Gm-Message-State: AOJu0YyVwwpYkjVfjymdOyXjpDrYh5q71iHwSFonZsC9Df4CZC7hCEkk
+	QxsAmIzKCnZlTBqdzKrh9vAtzlZChEchASiFrVN1GL4wgD0Ai1mv1pCqHEPG1dLkBiMHc78WYuQ
+	ms5k0IR/SFfLIaP5kcFmpZJjLtEDEIH0EmR161g==
+X-Google-Smtp-Source: AGHT+IHd4i1ahSg32Wqz83l6dw/WilhOpfq2RFb1LUbBXluSLvsl6Ej9Qz8ZGcvBj9jzJA20eZYuz5z2/kQs2d89rq0=
+X-Received: by 2002:a25:fe05:0:b0:dcc:b719:4e4f with SMTP id
+ k5-20020a25fe05000000b00dccb7194e4fmr14247637ybe.53.1713337534608; Wed, 17
+ Apr 2024 00:05:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dca1e891-cfde-4e95-864e-419934d385e5@linaro.org>
+References: <20240415141743.1983350-1-github.com@herrie.org>
+In-Reply-To: <20240415141743.1983350-1-github.com@herrie.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 17 Apr 2024 10:05:23 +0300
+Message-ID: <CAA8EJpo+xarzGbfy42U1NOBG+ieQXwHu85fdgLccK4-_6+bNzw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] pinctrl: qcom-ssbi: add support for PM8901
+To: Herman van Hazendonk <github.com@herrie.org>
+Cc: andersson@kernel.org, benwolsieffer@gmail.com, chris.chapuis@gmail.com, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Apr 10, 2024 at 01:50:26PM +0200, Konrad Dybcio wrote:
-> 
-> 
-> On 4/9/24 21:08, Alexandru Gagniuc wrote:
-> > Add support for the PCIe on IPQ9574. The main difference from ipq6018
-> > is that the "iface" clock is not necessarry. Add a special case in
-> > qcom_pcie_get_resources_2_9_0() to handle this.
-> > 
-> > Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
-> > Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > ---
-> >   drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++----
-> >   1 file changed, 9 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> > index 14772edcf0d3..10560d6d6336 100644
-> > --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> > @@ -1101,15 +1101,19 @@ static int qcom_pcie_get_resources_2_9_0(struct qcom_pcie *pcie)
-> >   	struct qcom_pcie_resources_2_9_0 *res = &pcie->res.v2_9_0;
-> >   	struct dw_pcie *pci = pcie->pci;
-> >   	struct device *dev = pci->dev;
-> > -	int ret;
-> > +	int ret, num_clks = ARRAY_SIZE(res->clks) - 1;
-> > -	res->clks[0].id = "iface";
-> > +	res->clks[0].id = "rchng";
-> >   	res->clks[1].id = "axi_m";
-> >   	res->clks[2].id = "axi_s";
-> >   	res->clks[3].id = "axi_bridge";
-> > -	res->clks[4].id = "rchng";
-> > -	ret = devm_clk_bulk_get(dev, ARRAY_SIZE(res->clks), res->clks);
-> > +	if (!of_device_is_compatible(dev->of_node, "qcom,pcie-ipq9574")) {
-> > +		res->clks[4].id = "iface";
-> > +		num_clks++;
-> 
-> Or use devm_clk_bulk_get_optional and rely on the bindings to sanity-check.
-> 
-> Mani, thoughts?
-> 
+On Mon, 15 Apr 2024 at 17:28, Herman van Hazendonk
+<github.com@herrie.org> wrote:
+>
+> The PM8901 is used alongside the APQ8060/MSM8660 on the APQ8060 Dragonboard
+> and HP TouchPad. It works the same as all others, so just add the
+> compatible string for this variant.
+>
+> Signed-off-by: Herman van Hazendonk <github.com@herrie.org>
+> ---
+>  Documentation/devicetree/bindings/pinctrl/qcom,pmic-mpp.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 
-I'd prefer to use devm_clk_bulk_get_all() and just rely on DT schema to do the
-validation. There was a patch hanging in my branch for some time and I sent it
-now: https://lore.kernel.org/linux-pci/20240417-pci-qcom-clk-bulk-v1-1-52ca19b3d6b2@linaro.org/
+Subject should be "dt-bindings: pinctrl: qcom,pmic-mpp: ..... "
 
-- Mani
+>
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-mpp.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-mpp.yaml
+> index fe717d8d4798..43146709e204 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-mpp.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-mpp.yaml
+> @@ -35,6 +35,7 @@ properties:
+>                - qcom,pm8038-mpp
+>                - qcom,pm8058-mpp
+>                - qcom,pm8821-mpp
+> +              - qcom,pm8901-mpp
+>                - qcom,pm8917-mpp
+>                - qcom,pm8921-mpp
+>            - const: qcom,ssbi-mpp
+>
+
 
 -- 
-மணிவண்ணன் சதாசிவம்
+With best wishes
+Dmitry
 
