@@ -1,53 +1,73 @@
-Return-Path: <linux-kernel+bounces-148742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 576728A86D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ACFB8A86D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:00:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5F901F2249B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:00:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFE8A1F22365
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7106146A73;
-	Wed, 17 Apr 2024 15:00:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E46F0146A91;
+	Wed, 17 Apr 2024 15:00:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="QvijAM6O"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jvVOWshW"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C04013D53B
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:59:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D3C713D53B;
+	Wed, 17 Apr 2024 15:00:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713366000; cv=none; b=cYvDet+00TXA/ANJLOwTW7mdoHWYEBOKHTEqWu4X30WS2eVOFgapvaJsWfm9mSO44bFj2zQxPEkh1wkT37aVuHnzKdqLdMk2XDwAhPX5M0iivAdlOP2WWHob8LnqrUesNt+F+VR5zxkEGlJpdGiJhVLv5LgHxEznmyS8+ZcJwlg=
+	t=1713366041; cv=none; b=Uj4SdeTOXqG7BBLcoDXVNETvbUqoWfurl4zLenF6i/5tw/hBWs9Q0YZ+4aDiODU2ZqzAZMkc8jv4xq5GqJ9lKiSzQhrmTdpDgS9qvzfy4DYLxGbBLqR7aoEoeSNzwX1Cjhg6Av26/BbHu+bBQ7dhq76NyRO4UB31HLnL99V5SIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713366000; c=relaxed/simple;
-	bh=ZgrrbaCSJMRtonK7p9OX8MB48F0JI8/7kBVr9BuIrG4=;
+	s=arc-20240116; t=1713366041; c=relaxed/simple;
+	bh=Pv78IXl2bm3ydbqouKwtK2I52ubPtfTaX+pdXQRsF2I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rTSMW+9dIot6RqNWonV9FkfDLERBq5ipw4Hb2FoYcspbNJx7QYJ868uKt3UdMikrGzrBD72dhgczO89mJiCZR87NFkd3ar2rl/RkCRg6qwdzh6UBsPfCPAqtEay7ugfMEet7nzkGFCXvGn4YWNjLdIGoP8AJUFpFborS1Rq/nv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=QvijAM6O; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [IPV6:2601:646:8002:4640:7285:c2ff:fefb:fd4] ([IPv6:2601:646:8002:4640:7285:c2ff:fefb:fd4])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 43HExUMB4064032
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Wed, 17 Apr 2024 07:59:30 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 43HExUMB4064032
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024041401; t=1713365971;
-	bh=VSJmFsr3EBbN1183B4LxpqSIbjOkuFTUUCyoRaRiqHQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=QvijAM6OkDa1B0fd+ovvzDYTcAl/YS0j9Ff9btBrPwoVn3+WSbXqS/PxFEPYQFif7
-	 aeLNzePK6ihThdXJgiUGry6PNUqx7oTBRp3auf/sG05wAq6BZs7up8bILrmXNBMfen
-	 hk7F4Jk4duyFZDvTS36yQJL97ELhSIk/gJtkoDzn23Q4drJdcRiTMJzs0kxd2/1Ohm
-	 ye7cPqm0Ulc0B/EYpBY9RNcJ8V2jhqgi4dR4SwSP1gp23+eghIh7LgVlrUlpf3y0lP
-	 gbCeZsDwF/i+TIJMC93Qilq2pLHcBnIkAmp7cZ6dApNOY4pLvJUf3Aq7foLeA6iGxl
-	 8fQRJ3oyDf0zA==
-Message-ID: <5dd74948-a951-4a7a-84ac-7e75cc26bb46@zytor.com>
-Date: Wed, 17 Apr 2024 07:59:25 -0700
+	 In-Reply-To:Content-Type; b=fQUroZ1/EFvjyIzKKFMjwrDZ3n0hjJEeX+VkBVe/gYlYJqUvrgqPQidDEkXXiUoBRncZ8DC7c2scfWNPJn6/2SHyPuISONrcJ4ohSF11Pnxe24AlEYdFbSeHzUemTXk+Cdgm4FlIKBFerbBXsjTTEjYjjYAa6P3ousJ8ycKHuTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jvVOWshW; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e2b1cd446fso44828725ad.3;
+        Wed, 17 Apr 2024 08:00:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713366039; x=1713970839; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZYi5omCU0CqbGR+gKfb5Qb9cGGSWmx8tQH128JVUBmA=;
+        b=jvVOWshWlbsGrggBWmKvUPD8frLvuEmNHeTDaiKoWKd7+usuS6zQfRLjI9+t28fViy
+         Lfzz8hOrbIqyD2A7snhXumyqU9SOrfZlYjuCgzF9+CmFwQSOp/aDg/RPp21tgZGLadeV
+         2zA2THH6YEWYw/6L8GgQni5NeOu/ZEJ+auJ06euck9LpP6NfI8C2kh8f+4npLxd0H6Z5
+         b3g0JLD8KT1EWtRkBbIPr07MIftCyKV1mjnW6MkWHV3wu6I1hYTDxIXq6DvqMpJRJ5+m
+         Xii08P0vVO8U2q/mzWjAp+BKfHxMDDGXC2xNffB4tTTuygPjPUVB2MlCG1pFX4aHguBy
+         f9+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713366039; x=1713970839;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZYi5omCU0CqbGR+gKfb5Qb9cGGSWmx8tQH128JVUBmA=;
+        b=AIqhYYweW57ymh+y11encHL777HdhC/xzNleaxQHja+c0h1xV4BWrAJHbKaddZLLP4
+         QrFYfl1rZu2ETqKIHA09xhHGhDpNIUgL1J8TneFUa99itjz5WeryE/1jANPUhJxcnDmx
+         DnMdajrczURtDkNb4rcC9GfKq1cVFGyI/Xw29gQa5LkwqT+td5HloWNUGMKZxa7hpGxO
+         mf7gzuma3gdDbPCvj3MAcojpzW9jvuo59fr+jqxeo+5nykq84VXzE8hs83I98Uu6nugf
+         32KaNnBNKHqZ9LVI9YqmnIFKoklYLaWxemXRjf1TVqpOloy2PNPBJNucRYFruVjdAudG
+         S9cw==
+X-Forwarded-Encrypted: i=1; AJvYcCUJ8YF67Ckm4R8jAiixhk5uBIaaphZ73J8aaiTjbH4HbYe3KfIpWTLU2iWb6MfG91ZJwfXqUmnUu/tADSSEr+m0qrrFUNMNdNK7pet36gXlotVS7CHNL806enzkDTivIOZlsShVUUL4+SdLQA==
+X-Gm-Message-State: AOJu0YyKGjcowx+YzcXjBlL5ow0Y6AY7+Dx+dbdzNyNJqWuQtkEZypnb
+	22JlmLVk1pkZVM3Evx0zd132Z1RkvNdykr0QZeZEu0SR82F3Qr54
+X-Google-Smtp-Source: AGHT+IGKHGoqJBTGlLXEa5s5LD5WPlcrDRocTZk6DX3GRddccj1QsCqehTaCMIFCAYMU5ZRao9KTmw==
+X-Received: by 2002:a17:902:ecc6:b0:1e2:be4b:dd9f with SMTP id a6-20020a170902ecc600b001e2be4bdd9fmr19454003plh.15.1713366039214;
+        Wed, 17 Apr 2024 08:00:39 -0700 (PDT)
+Received: from [0.0.0.0] (74.211.104.32.16clouds.com. [74.211.104.32])
+        by smtp.gmail.com with ESMTPSA id p16-20020a170902e75000b001e223b9eb25sm11666844plf.153.2024.04.17.08.00.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 08:00:38 -0700 (PDT)
+Message-ID: <b55da065-dbbb-4d8e-8baf-50807b507cc4@gmail.com>
+Date: Wed, 17 Apr 2024 23:00:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,89 +75,37 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/1] x86/fred: Fix INT80 emulation for FRED
+Subject: Re: [PATCH v4 0/3] SCSI: Fix issues between removing device and error
+ handle
 Content-Language: en-US
-To: Borislav Petkov <bp@alien8.de>, "Xin Li (Intel)" <xin@zytor.com>
-Cc: linux-kernel@vger.kernel.org, luto@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org
-References: <20240417063001.3773507-1-xin@zytor.com>
- <20240417093813.GBZh-YhSQCXgy3OxFI@fat_crate.local>
-From: "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <20240417093813.GBZh-YhSQCXgy3OxFI@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Markus Elfring <Markus.Elfring@web.de>,
+ Wenchao Hao <haowenchao2@huawei.com>, linux-scsi@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, "James E. J. Bottomley"
+ <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20240307144311.73735-1-haowenchao2@huawei.com>
+ <99598b98-8550-4dca-beea-4c2d61d46f78@web.de>
+From: Wenchao Hao <haowenchao22@gmail.com>
+In-Reply-To: <99598b98-8550-4dca-beea-4c2d61d46f78@web.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 4/17/24 02:38, Borislav Petkov wrote:
-> On Tue, Apr 16, 2024 at 11:30:01PM -0700, Xin Li (Intel) wrote:
->> 3) The FRED kernel entry handler does *NOT* dispatch INT instructions,
->>     which is of event type EVENT_TYPE_SWINT, so compared with
->>     do_int80_emulation(), there is no need to do any user mode check.
+On 4/15/24 11:07 PM, Markus Elfring wrote:
+> …
+>> These issues are triggered because devices in removing would be skipped
+>> when calling shost_for_each_device().
+> …
 > 
-> What does that mean?
-> 
-> An event handler doesn't dispatch INT insns?
-> 
-> /me is confused.
-
-FRED has separate entry flows depending on if the event came from user 
-space or kernel space:
-
-asm_fred_entrypoint_user -> fred_entry_from_user
-
-asm_fred_entrypoint_kernel -> fred_entry_from_kernel
-
-fred_entry_from_kernel does not invoke fred_intx() if the event type is 
-EVENT_TYPE_SWINT, instead it falls through to fred_bad_type(). Perhaps 
-fred_intx() should be renamed fred_intx_user() for additional clarity.
-
-(It might also we worth noting in that function that the reason int 
-$0x03 and int $0x04 are dispatched as INT3 and INTO is to be fully user 
-space compatible with legacy IDT, which behaves similarly.)
-
-Thus, the int $0x80 code is simply not reachable from kernel space; if 
-kernel code were to invoke int $0x80 or any other INT instruction it 
-will error out before getting to this code.
-
->> +#ifdef CONFIG_X86_FRED
->> +/*
->> + * A FRED-specific INT80 handler fred_int80_emulation() is required:
->> + *
->> + * 1) As INT instructions and hardware interrupts are separate event
->> + *    types, FRED does not preclude the use of vector 0x80 for external
->> + *    interrupts. As a result the FRED setup code does *NOT* reserve
->> + *    vector 0x80 and calling int80_is_external() is not merely
->> + *    suboptimal but actively incorrect: it could cause a system call
->> + *    to be incorrectly ignored.
->> + *
->> + * 2) fred_int80_emulation(), only called for handling vector 0x80 of
->> + *    event type EVENT_TYPE_SWINT, will NEVER be called to handle any
->> + *    external interrupt (event type EVENT_TYPE_EXTINT).
->> + *
->> + * 3) The FRED kernel entry handler does *NOT* dispatch INT instructions,
->> + *    which is of event type EVENT_TYPE_SWINT, so compared with
->> + *    do_int80_emulation(), there is no need to do any user mode check.
->> + *
->> + * 4) int80_emulation() does a CLEAR_BRANCH_HISTORY, which is likely
->> + *    overkill for new x86 CPU implementations that support FRED.
->> + *
->> + * 5) int $0x80 is the FAST path for 32-bit system calls under FRED.
->> + *
->> + * A dedicated FRED INT80 handler duplicates quite a bit of the code in
->> + * do_int80_emulation(), but it avoids sprinkling more tests and seems
->> + * more readable. Just remember that we can always unify common stuff
->> + * later if it turns out that it won't diverge anymore, i.e., after the
->> + * FRED code settles.
->> + */
-> 
-> And this is talking about duplication above and that text is duplicated
-> from the commit message. :)
-> 
-> I'll zap it when applying.
+> How do you think about to add the tag “Fixes” to any of your patches?
 > 
 
-I suggested putting it into a comment for future reference. Obviously no 
-need to duplicate it in the commit message :)
+Thanks for your suggestion, but I don't know how to add this tag. Could you
+please tell me how to do? 
 
-	-hpa
+I just added "fix" in my cover letter and some patch's subject.
+
+> Regards,
+> Markus
+> 
 
 
