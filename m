@@ -1,241 +1,237 @@
-Return-Path: <linux-kernel+bounces-148363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A8F28A8181
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:59:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 702298A8185
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:02:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B74C281B88
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:59:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EA281C218CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:02:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BCA313C667;
-	Wed, 17 Apr 2024 10:58:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C293D13C81C;
+	Wed, 17 Apr 2024 11:02:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fWfIklpk"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="A9w10OeQ"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5D636A339;
-	Wed, 17 Apr 2024 10:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 497036A02E
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713351518; cv=none; b=XkVlRAnKONR7gOdRA1aaTZ8THf6kiYvUq6d6gh5jz3jMNvKkwnEc0On+JJnwcp5PRY7xMrcXaRRQkwetbq5ktI6WDZ76OhftS5Mv1jlm+E2AF2RibClt50LyQl0aN2GoZ7fgGOa+Z+0bx3pbamZFaOPPpZSm8RFIi/9UOFILRAE=
+	t=1713351760; cv=none; b=leZXUQO2U7x0Tix+tQK0Y7IRsM57Llo7MZsRW/eVnwdbCFMaIhvPYCBtQ0bAadrmaPh7GRi/rPuEEARsb+jGnW21VLP+QwfdVrp4ksPQQSaFnM3sdHqnGoKKM0SEw87p/JPZP9VqKAynmI6k1O4Cnrl8QmhDfqRMzge0DMRyRgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713351518; c=relaxed/simple;
-	bh=SNVazwiMQ5C8eyrrteSEPc4mZUs9cG4xmzqvfMFTSpE=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jsIEgbLt+HQ1gpTVTy+M1gLgsA/iPnI2MEIrwyKFNlgiiLfX3+P8W4ZwI4bbLV0pjgg5gzsex+bLrCAyXYjpOGu0sexPI2vWFo7aOG5FZb4ewANmNdNvxKzMqooTmoeUaBREcgLX+cjj7Dw8Ga7A4evV6KIWwsmufbjvYSNwDRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fWfIklpk; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43H4uIWR006244;
-	Wed, 17 Apr 2024 10:58:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=0FA6D6EwooxpxC4s55Atr
-	J31my9cp0N6vLFBY6dE2mw=; b=fWfIklpkhWMkrw8FwPEfr3Aq7LQ1FRWiJdBEC
-	IHA4NDM6EGxzicEB9UPu4N0/rwqqq/VfCSnnPeXOlUWW1LY0qVmLaykNqZwhmXOX
-	UDwcSQ44BryjRwnrikRumhwFl61mpgKKVU1+81m9pGE0VBTuJepTyZcqD9Xzj3cO
-	/cfHon/ZQblXQMocTSqmcHM5gzyax5wgeSl2C3XRJaN1sUajaO9l+S3qb/zRsoB9
-	uzQQlcIOEFZ3ZhH0qgW5iKng1HXppkZaRTFZ16nqZUOQSbsoSOfIe3oAqyGQc0ie
-	PLXu6yMawGq2wjplDVekQYTL5BjQQilv2ntkr7lqBva+5MWXQ==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xj7tr0rfr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 10:58:32 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43HAwVQS019648
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 10:58:31 GMT
-Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Wed, 17 Apr 2024 03:58:26 -0700
-Date: Wed, 17 Apr 2024 16:28:22 +0530
-From: Varadarajan Narayanan <quic_varada@quicinc.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-CC: Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh@kernel.org>,
-        <krzk+dt@kernel.org>, <conor+dt@kernel.org>, <djakov@kernel.org>,
-        <dmitry.baryshkov@linaro.org>, <quic_anusha@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v7 1/5] dt-bindings: interconnect: Add Qualcomm IPQ9574
- support
-Message-ID: <Zh+rThVyLZr0wovp@hu-varada-blr.qualcomm.com>
-References: <Zg5q6mnWtK6hmPBT@hu-varada-blr.qualcomm.com>
- <ZhTxFVDH0xTSkw7r@hu-varada-blr.qualcomm.com>
- <1ec401be-11cb-416a-9eae-d72ea8acf06f@kernel.org>
- <ZhUghsa5Do5m7wrX@hu-varada-blr.qualcomm.com>
- <a0173a13-5f20-4e24-8417-afce5fdbda0e@kernel.org>
- <ZhZjuCkJrtPbwtS/@hu-varada-blr.qualcomm.com>
- <70d0afa7-4990-4180-8dfa-cdf267e4c7a2@kernel.org>
- <f1b0d280-6986-4055-a611-2caceb15867d@linaro.org>
- <82e5503c-0710-4b17-af79-8dece4794ec8@kernel.org>
- <Zhj/v+AfzHlUCwRg@hu-varada-blr.qualcomm.com>
+	s=arc-20240116; t=1713351760; c=relaxed/simple;
+	bh=Bxcf5DrN5rW7x4ED4yBNra/B/MhC1bA9RU+os6Ht7vo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b8/p9boT8K1C3vXXvVn/Y5jEay175ejW7O/7DK5XkS3nIRIw090+qsok+PCyK+ANc6k66voGpboz23TGscPaOs9DcRf2+t1/rMAguy5AYwmNUFgunArvWo2D9xajIeF5vEc26w5d72wbIBh596vRAqr0R732sR2lIg/cMoJeDIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=A9w10OeQ; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-343d1003106so3843260f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1713351756; x=1713956556; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kKc6zNttBr/4gkhSe3lbFoZGXxpmXb1Bln3h/MbJvp0=;
+        b=A9w10OeQ9a1RlgFadcK/v9iId8Fj7cuTMjQ7xOrGaIhJ7XpJjuThzvMI1jp6h9R/nj
+         tYw2oqzCw6r0+G2rx9BxnNhSfTJX+9vlokH0bizQh/b1x8xVuqWwDKGVfLlN29KemtBx
+         710/th2uPr7xs//CpjTfTw44/G7X7G2w2cD/CpTQ7vPFOcf2b0p5/MiiR8uXOQ819I0g
+         g7iGNhxQvHqk0K6pbl2YNAEOyQxCBcU45Jm9xlhMIo6k2cgMhyLWc5/4KQ5BJ/b/1VR4
+         izkNjo7fmg0qhecuXthwEZ1I9vgh7tTYx4BGoxApHXschGp4xm4H/2yakgMvjRHF0cjX
+         uSZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713351756; x=1713956556;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kKc6zNttBr/4gkhSe3lbFoZGXxpmXb1Bln3h/MbJvp0=;
+        b=cmUv3hkpvxz/6CM/Vc3qzSQBiP6PzllzZId0L5ADcMDnH+LuMejl9tOtyvYH3FgygW
+         0RdUrgoXwazNzDf44kfowsLrynrpLF63qwXKr1Qqxf/Hqv6+fwnNrk5HAW12yIRguGMV
+         aMfIM3XTJyWiPk4ivZvxcdPC80JVySLShmNkaKdPZ77z3IHJ9dJ7UR0hnWwzPYGDkJnK
+         TXISbYLahEGUQltkaHV4Lji2hjallhQIhxUKFm8BuMISgcDRKfbsYBvfisOjGRZIab29
+         vHC10uAocU2LEgZ18HaZblfYuHcQrzM77PHljGw3b/ctgu5Ou8AaWHtJr0bZ3rx5atV1
+         8Ngw==
+X-Forwarded-Encrypted: i=1; AJvYcCVJ8ijx3+mtnpdfTpEuWpi2OLtzQaOxFhOcZ2Dn2xahlSZ0KOBVniTKBzEBhQsKl0VzhZIqBNMoCnr7AMwELtEtQgaAl9TsNB96G6nC
+X-Gm-Message-State: AOJu0Yw9a74RxLEIwvLa+/fbncvSw3a0AEJaEFzaX188Ef3ZEVTYx9um
+	PtdVrhb3yrk9eYH1hSV2GmUttLZaP4L1ys+ynCchyJP6LiHxSz2ya2EwoukYUcw=
+X-Google-Smtp-Source: AGHT+IFyMA0kN9GGJ6VUtcqnVuJ0jXnyjxEhl78mmYee4XcueTZ7ZSiVIMxipJfDmWIavDcPvy9oKA==
+X-Received: by 2002:adf:fed1:0:b0:345:be70:191c with SMTP id q17-20020adffed1000000b00345be70191cmr11949917wrs.37.1713351756526;
+        Wed, 17 Apr 2024 04:02:36 -0700 (PDT)
+Received: from [192.168.0.20] (nborisov.ddns.nbis.net. [109.121.142.9])
+        by smtp.gmail.com with ESMTPSA id dl5-20020a0560000b8500b00345fb949c28sm17218768wrb.100.2024.04.17.04.02.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 04:02:36 -0700 (PDT)
+Message-ID: <d0979bd9-fd12-4672-b451-23f23fc2353c@suse.com>
+Date: Wed, 17 Apr 2024 14:02:33 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <Zhj/v+AfzHlUCwRg@hu-varada-blr.qualcomm.com>
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Z1drpk5lpOkUn-HsXe6z5rTxwDPrASnp
-X-Proofpoint-GUID: Z1drpk5lpOkUn-HsXe6z5rTxwDPrASnp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-17_08,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- adultscore=0 suspectscore=0 impostorscore=0 phishscore=0 mlxlogscore=999
- clxscore=1015 priorityscore=1501 lowpriorityscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404170075
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] x86/fred: Fix INT80 emulation for FRED
+To: "Xin Li (Intel)" <xin@zytor.com>, linux-kernel@vger.kernel.org
+Cc: luto@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com
+References: <20240417063001.3773507-1-xin@zytor.com>
+From: Nikolay Borisov <nik.borisov@suse.com>
+Content-Language: en-US
+In-Reply-To: <20240417063001.3773507-1-xin@zytor.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 12, 2024 at 03:02:47PM +0530, Varadarajan Narayanan wrote:
-> On Wed, Apr 10, 2024 at 02:01:00PM +0200, Krzysztof Kozlowski wrote:
-> > On 10/04/2024 13:48, Konrad Dybcio wrote:
-> > >
-> > >
-> > > On 4/10/24 13:15, Krzysztof Kozlowski wrote:
-> > >> On 10/04/2024 12:02, Varadarajan Narayanan wrote:
-> > >>>> Okay, so what happens if icc-clk way of generating them changes a bit?
-> > >>>> It can change, why not, driver implementation is not an ABI.
-> > >>>>
-> > >>>>>
-> > >>>>> 	2. These auto-generated id-numbers have to be correctly
-> > >>>>> 	   tied to the DT nodes. Else, the relevant clocks may
-> > >>>>> 	   not get enabled.
-> > >>>>
-> > >>>> Sorry, I don't get, how auto generated ID number is tied to DT node.
-> > >>>> What DT node?
-> > >>>
-> > >>> I meant the following usage for the 'interconnects' entry of the
-> > >>> consumer peripheral's node.
-> > >>>
-> > >>> 	interconnects = <&gcc MASTER_ANOC_PCIE0 &gcc SLAVE_ANOC_PCIE0>,
-> > >>> 			      ^^^^^^^^^^^^^^^^^      ^^^^^^^^^^^^^^^^
-> > >>> 			<&gcc MASTER_SNOC_PCIE0 &gcc SLAVE_SNOC_PCIE0>;
-> > >>> 			      ^^^^^^^^^^^^^^^^^      ^^^^^^^^^^^^^^^^
-> > >>>
-> > >>>>> Since ICC-CLK creates two ids per clock entry (one MASTER_xxx and
-> > >>>>> one SLAVE_xxx), using those MASTER/SLAVE_xxx macros as indices in
-> > >>>>> the below array would create holes.
-> > >>>>>
-> > >>>>> 	static int icc_ipq9574_hws[] = {
-> > >>>>> 		[MASTER_ANOC_PCIE0] = GCC_ANOC_PCIE0_1LANE_M_CLK,
-> > >>>>> 		[MASTER_SNOC_PCIE0] = GCC_SNOC_PCIE0_1LANE_S_CLK,
-> > >>>>> 		[MASTER_ANOC_PCIE1] = GCC_ANOC_PCIE1_1LANE_M_CLK,
-> > >>>>> 		[MASTER_SNOC_PCIE1] = GCC_SNOC_PCIE1_1LANE_S_CLK,
-> > >>>>> 		. . .
-> > >>>>> 	};
-> > >>>>>
-> > >>>>> Other Qualcomm drivers don't have this issue and they can
-> > >>>>> directly use the MASTER/SLAVE_xxx macros.
-> > >>>>
-> > >>>> I understand, thanks, yet your last patch keeps adding fake IDs, means
-> > >>>> IDs which are not part of ABI.
-> > >>>>
-> > >>>>>
-> > >>>>> As the MASTER_xxx macros cannot be used, have to define a new set
-> > >>>>> of macros that can be used for indices in the above array. This
-> > >>>>> is the reason for the ICC_BINDING_NAME macros.
-> > >>>>
-> > >>>> Then maybe fix the driver, instead of adding something which is not an
-> > >>>> ABI to bindings and completely skipping the actual ABI.
-> > >>>
-> > >>> Will remove the ICC_xxx defines from the header. And in the
-> > >>> driver will change the declaration as follows. Will that be
-> > >>> acceptable?
-> > >>>
-> > >>> 	static int icc_ipq9574_hws[] = {
-> > >>> 		[MASTER_ANOC_PCIE0 / 2] = GCC_ANOC_PCIE0_1LANE_M_CLK,
-> > >>
-> > >> What is the binding in such case? What exactly do you bind between
-> > >> driver and DTS?
-> > >
-> > > I think what Krzysztof is trying to say here is "the icc-clk API is tragic"
-> > > and the best solution would be to make it such that the interconnect indices
-> > > are set explicitly, instead of (master, slave), (master, slave) etc.
-> > >
-> > > Does that sound good, Krzysztof?
-> >
-> > Yes, I think earlier I expressed that icc-clk might needs fixes.
->
-> Ok
->
-> > The indices you define in the binding must be used by DTS and by the driver.
->
-> There are 3 drivers in play here.
-> 	1. The icc-clk driver
-> 	2. The gcc (i.e. the interconnect driver)
-> 	3. The consumer peripheral's driver
->
-> By 'driver' I assume, you mean the icc-clk driver.
->
-> > Directly, otherwise it is error-prone and not really an ABI...
->
-> To address this, will modify the icc-clk driver as follows.
->
-> 	==========================================
-> 	diff --git a/include/linux/interconnect-clk.h b/include/linux/interconnect-clk.h
-> 	index 5c611a8b0892..9bcee3e9c56c 100644
-> 	--- a/include/linux/interconnect-clk.h
-> 	+++ b/include/linux/interconnect-clk.h
-> 	@@ -11,6 +11,8 @@ struct device;
-> 	 struct icc_clk_data {
-> 		struct clk *clk;
-> 		const char *name;
-> 	+	unsigned int master_id;
-> 	+	unsigned int slave_id;
-> 	 };
->
->
-> 	diff --git a/drivers/interconnect/icc-clk.c b/drivers/interconnect/icc-clk.c
-> 	index bce946592c98..f788db15cd76 100644
-> 	--- a/drivers/interconnect/icc-clk.c
-> 	+++ b/drivers/interconnect/icc-clk.c
-> 	@@ -108,7 +108,7 @@ struct icc_provider *icc_clk_register(struct device *dev,
-> 		for (i = 0, j = 0; i < num_clocks; i++) {
-> 			qp->clocks[i].clk = data[i].clk;
->
-> 	-		node = icc_node_create(first_id + j);
-> 	+		node = icc_node_create(first_id + data[i].master_id);
-> 			if (IS_ERR(node)) {
-> 				ret = PTR_ERR(node);
-> 				goto err;
-> 	@@ -118,10 +118,10 @@ struct icc_provider *icc_clk_register(struct device *dev,
-> 			node->data = &qp->clocks[i];
-> 			icc_node_add(node, provider);
-> 			/* link to the next node, slave */
-> 	-		icc_link_create(node, first_id + j + 1);
-> 	+		icc_link_create(node, first_id + data[i].slave_id);
-> 			onecell->nodes[j++] = node;
->
-> 	-		node = icc_node_create(first_id + j);
-> 	+		node = icc_node_create(first_id + data[i].slave_id);
-> 			if (IS_ERR(node)) {
-> 				ret = PTR_ERR(node);
-> 				goto err;
-> 	==========================================
->
-> And update the inputs going from gcc-ipq9574.c accordingly
-> to use the MASTER_xxx and SLAVE_xxx defines. Will this be ok?
->
-> Konrad & Krzysztof kindly let me know.
 
-Have addressed these and other comments and posted v8.
-Please review.
 
-Thanks
-Varada
+On 17.04.24 г. 9:30 ч., Xin Li (Intel) wrote:
+> Add a FRED-specific INT80 handler fred_int80_emulation():
+> 
+> 1) As INT instructions and hardware interrupts are separate event
+>     types, FRED does not preclude the use of vector 0x80 for external
+>     interrupts. As a result the FRED setup code does *NOT* reserve
+>     vector 0x80 and calling int80_is_external() is not merely
+>     suboptimal but actively incorrect: it could cause a system call
+>     to be incorrectly ignored.
+> 
+> 2) fred_int80_emulation(), only called for handling vector 0x80 of
+>     event type EVENT_TYPE_SWINT, will NEVER be called to handle any
+>     external interrupt (event type EVENT_TYPE_EXTINT).
+> 
+> 3) The FRED kernel entry handler does *NOT* dispatch INT instructions,
+>     which is of event type EVENT_TYPE_SWINT, so compared with
+>     do_int80_emulation(), there is no need to do any user mode check.
+> 
+> 4) int80_emulation() does a CLEAR_BRANCH_HISTORY, which is likely >     overkill for new x86 CPU implementations that support FRED.
+
+Well, that's a bit of an overstatement/speculation, because 
+clear_branch_history will only be effective if the machine is 
+susceptible to the given bug and there isn't a better options (i.e using 
+a hardware bit controlling the respective aspect of the CPU).
+> 
+> 5) int $0x80 is the FAST path for 32-bit system calls under FRED.
+> 
+> A dedicated FRED INT80 handler duplicates quite a bit of the code in
+> do_int80_emulation(), but it avoids sprinkling more tests and seems
+> more readable. Just remember that we can always unify common stuff
+> later if it turns out that it won't diverge anymore, i.e., after the
+> FRED code settles.
+> 
+> Fixes: 55617fb991df ("x86/entry: Do not allow external 0x80 interrupts")
+> 
+> Suggested-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+> Signed-off-by: Xin Li (Intel) <xin@zytor.com>
+> ---
+> 
+> Changes since v2:
+> * Add comments explaining the reasons why a FRED-specific INT80 handler
+>    is required to the head comment of fred_int80_emulation(), not just
+>    the change log (H. Peter Anvin).
+> * Incorporate extra clarifications from H. Peter Anvin.
+> * Fix a few typos and wordings (H. Peter Anvin).
+> * Add a maintainer tip to the change log and head comment: unify common
+>    stuff later, i.e., after the code settles (Borislav Petkov).
+> 
+> Change since v1:
+> * Prefer a FRED-specific INT80 handler instead of sprinkling more tests
+>    around (Borislav Petkov).
+> ---
+>   arch/x86/entry/common.c     | 64 +++++++++++++++++++++++++++++++++++++
+>   arch/x86/entry/entry_fred.c |  2 +-
+>   2 files changed, 65 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+> index 6de50b80702e..213d9b33a63c 100644
+> --- a/arch/x86/entry/common.c
+> +++ b/arch/x86/entry/common.c
+> @@ -255,6 +255,70 @@ __visible noinstr void do_int80_emulation(struct pt_regs *regs)
+>   	instrumentation_end();
+>   	syscall_exit_to_user_mode(regs);
+>   }
+> +
+> +#ifdef CONFIG_X86_FRED
+> +/*
+> + * A FRED-specific INT80 handler fred_int80_emulation() is required:
+> + *
+> + * 1) As INT instructions and hardware interrupts are separate event
+> + *    types, FRED does not preclude the use of vector 0x80 for external
+> + *    interrupts. As a result the FRED setup code does *NOT* reserve
+> + *    vector 0x80 and calling int80_is_external() is not merely
+> + *    suboptimal but actively incorrect: it could cause a system call
+> + *    to be incorrectly ignored.
+> + *
+> + * 2) fred_int80_emulation(), only called for handling vector 0x80 of
+> + *    event type EVENT_TYPE_SWINT, will NEVER be called to handle any
+> + *    external interrupt (event type EVENT_TYPE_EXTINT).
+> + *
+> + * 3) The FRED kernel entry handler does *NOT* dispatch INT instructions,
+> + *    which is of event type EVENT_TYPE_SWINT, so compared with
+> + *    do_int80_emulation(), there is no need to do any user mode check.
+> + *
+> + * 4) int80_emulation() does a CLEAR_BRANCH_HISTORY, which is likely
+> + *    overkill for new x86 CPU implementations that support FRED.
+> + *
+> + * 5) int $0x80 is the FAST path for 32-bit system calls under FRED.
+> + *
+> + * A dedicated FRED INT80 handler duplicates quite a bit of the code in
+> + * do_int80_emulation(), but it avoids sprinkling more tests and seems
+> + * more readable. Just remember that we can always unify common stuff
+> + * later if it turns out that it won't diverge anymore, i.e., after the
+> + * FRED code settles.
+> + */
+> +DEFINE_FREDENTRY_RAW(int80_emulation)
+> +{
+> +	int nr;
+> +
+> +	enter_from_user_mode(regs);
+> +
+> +	instrumentation_begin();
+> +	add_random_kstack_offset();
+> +
+> +	/*
+> +	 * FRED pushed 0 into regs::orig_ax and regs::ax contains the
+> +	 * syscall number.
+> +	 *
+> +	 * User tracing code (ptrace or signal handlers) might assume
+> +	 * that the regs::orig_ax contains a 32-bit number on invoking
+> +	 * a 32-bit syscall.
+> +	 *
+> +	 * Establish the syscall convention by saving the 32bit truncated
+> +	 * syscall number in regs::orig_ax and by invalidating regs::ax.
+> +	 */
+> +	regs->orig_ax = regs->ax & GENMASK(31, 0);
+> +	regs->ax = -ENOSYS;
+> +
+> +	nr = syscall_32_enter(regs);
+> +
+> +	local_irq_enable();
+> +	nr = syscall_enter_from_user_mode_work(regs, nr);
+> +	do_syscall_32_irqs_on(regs, nr);
+> +
+> +	instrumentation_end();
+> +	syscall_exit_to_user_mode(regs);
+> +}
+> +#endif
+>   #else /* CONFIG_IA32_EMULATION */
+>   
+>   /* Handles int $0x80 on a 32bit kernel */
+> diff --git a/arch/x86/entry/entry_fred.c b/arch/x86/entry/entry_fred.c
+> index ac120cbdaaf2..9fa18b8c7f26 100644
+> --- a/arch/x86/entry/entry_fred.c
+> +++ b/arch/x86/entry/entry_fred.c
+> @@ -66,7 +66,7 @@ static noinstr void fred_intx(struct pt_regs *regs)
+>   	/* INT80 */
+>   	case IA32_SYSCALL_VECTOR:
+>   		if (ia32_enabled())
+> -			return int80_emulation(regs);
+> +			return fred_int80_emulation(regs);
+>   		fallthrough;
+>   #endif
+>   
+> 
+> base-commit: 367dc2b68007e8ca00a0d8dc9afb69bff5451ae7
 
