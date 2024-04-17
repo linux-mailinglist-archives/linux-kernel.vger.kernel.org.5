@@ -1,152 +1,107 @@
-Return-Path: <linux-kernel+bounces-148331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 293688A8108
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:35:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 304DA8A810F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:36:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCF411F21F59
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:35:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF87D281D90
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:36:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A6213C667;
-	Wed, 17 Apr 2024 10:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E62D713C68E;
+	Wed, 17 Apr 2024 10:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ltts.com header.i=@ltts.com header.b="BI6QR0uj";
-	dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b="g1xXHKQ1"
-Received: from c180-18.smtp-out.ap-south-1.amazonses.com (c180-18.smtp-out.ap-south-1.amazonses.com [76.223.180.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eRL0KbW8"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB81D80BE0;
-	Wed, 17 Apr 2024 10:35:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=76.223.180.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C5213C3CD
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:36:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713350144; cv=none; b=V9QFYReWWASkz44IZLISJyujeWZ2uw6KCZ5vk+mr5qdxRDjJsdT0eCnTMSYVv9ZDXmjCBFOd+W6BU/TXhqVyt4VB70Gp7dGZkzvXwyh9rCiUR4QAghh1gt4VakRTPctqJjQ+YkIh+7ePlBqbRfEowyHXqmvfWvuxdPECIpbXdew=
+	t=1713350190; cv=none; b=HHjvqgy8lgxvU7ARYl3CO6huDzzEczCwmnZiC5Y/aTjIQaxoSllR/7KMSslERcLEZEbnf6/8qsEK5UlHlDphvLmJEMbuvOViuX3660tlH5qtelC9Z837VIz/tn8sJv0nAh4/vs7a0CghyeFLy6+QDi8JOvPxrk9829/I6uuwNto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713350144; c=relaxed/simple;
-	bh=MPA/yCGAeV9r3zQj7UZwA1/FORgOEaCJc7t+9vex2kY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cKubOoKu27fKs5r5z03jfRGBP6x+spsiHd4SzcxEoTT1GijJMePXEQXzswTOTHhxTGGZy3K/gZp7MvuovFNTSfLtuItVL7tTTOzch8Lyzq6TTY4QEVr3YdMptMiIWwLPviFAjKSaPYE9drjaiXKFAZ6w4051YZBVTHlnBL5KiqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com; spf=pass smtp.mailfrom=ap-south-1.amazonses.com; dkim=pass (2048-bit key) header.d=ltts.com header.i=@ltts.com header.b=BI6QR0uj; dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b=g1xXHKQ1; arc=none smtp.client-ip=76.223.180.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ap-south-1.amazonses.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-	s=i3fe3efcd4pbz7ipgssfqjhzqx347xbc; d=ltts.com; t=1713350138;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding;
-	bh=MPA/yCGAeV9r3zQj7UZwA1/FORgOEaCJc7t+9vex2kY=;
-	b=BI6QR0ujVVqAvr+8gEtHK+VZQxEiwpZB74n8cBP7ctcA8BW/qjQxmFEuFKEH2x3Q
-	I0Nt1zPwyyxknt8rCtMnELyTNbWvtoDI9TGqVNoYcvgRR8S/eChyZ+yeflBIPdsade/
-	+XZJAUTgskd3kabFLEuqqoy7kbmFr+pkrYzCIJzm6cyAy/gEv9A/ZeGIDVIVG0sycEn
-	rWE7QzD5gNFGkHEfrq4xdOV6kozY7wJreDAAJX4TXnKVCe/8RBLhIfv9XPDY6yr4GjB
-	0ytMfU6zRWPTvCTCrJPNiNQEDMg//qeIvx2yWOBWar/+cmVl7PScsiAw2BXicHr8NR3
-	WneEsE9eaA==
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-	s=rlntogby6xsxlfnvyxwnvvhttakdsqto; d=amazonses.com; t=1713350138;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding:Feedback-ID;
-	bh=MPA/yCGAeV9r3zQj7UZwA1/FORgOEaCJc7t+9vex2kY=;
-	b=g1xXHKQ1vAtrtjihxlrA6d7AQPBE/IEEz3uez8vIIqiX+lONosMproEb/sYQTj4J
-	g4A54PqyPxUEfMc4SXTht8W/+SDxg336Ys0boWR2kfpQIEfZ8qIknizraNbgthTKdvA
-	6SmKiOSgqM4mAFy0BNVh3+wDWRnCwCU7CRJMQXS0=
-From: Bhargav Raviprakash <bhargav.r@ltts.com>
-To: lee@kernel.org
-Cc: arnd@arndb.de, bhargav.r@ltts.com, broonie@kernel.org, 
-	conor+dt@kernel.org, devicetree@vger.kernel.org, eblanc@baylibre.com, 
-	gregkh@linuxfoundation.org, jpanis@baylibre.com, kristo@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com, 
-	linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	m.nirmaladevi@ltts.com, nm@ti.com, robh+dt@kernel.org, 
-	vigneshr@ti.com
-Subject: Re: [PATCH v6 03/11] mfd: tps6594: add regmap config in match data
-Date: Wed, 17 Apr 2024 10:35:38 +0000
-Message-ID: <0109018eeba05ad9-f837b6c7-70cf-4a2a-9aeb-3ef245e18862-000000@ap-south-1.amazonses.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240411170344.GK2399047@google.com>
-References: <20240411170344.GK2399047@google.com>
+	s=arc-20240116; t=1713350190; c=relaxed/simple;
+	bh=l3AYSJ/+mdg3v48SneVucrIzOcn2/tdaJ1WQ9uXh3tk=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=Wos8O+8k1Y/ILNBzRq7oGqVK+uSrMSw3CKJkp7C1si8dp57h91+TLc9nvNsFkmJCLb5Y1UxWD7J2jK1rFalo5SpDOG7CrFSNVRJtmc7L5HMGuaFqt+pVHbzs46tNIEbQia94AXTdLji0XYo0Wm8EpDCjOPrW5KyE5O3Qt9Ow9lA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eRL0KbW8; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713350188;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oIJdAoOJD1/uhXCiQOPpdfvotOmhyFiedfiW/yeHsWQ=;
+	b=eRL0KbW89Ztk9vb0p5alR/Zgg6mdJS2P2Bf2TTQPMlDXnJ4ZwjHWEFUJXJRqiUFinByxyf
+	dWENAj0IErApDeVAuGodmiFHfh0JWfE/0picOnQtJSxOLEsM1aofeR9G9vu10HxGfq/n3g
+	iFXgzjU7WVeLUSojUlmElDgrjyNsiUI=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-361-tzkEwGWLMWac2hfcSazMmA-1; Wed,
+ 17 Apr 2024 06:36:24 -0400
+X-MC-Unique: tzkEwGWLMWac2hfcSazMmA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 65AB738041CC;
+	Wed, 17 Apr 2024 10:36:23 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.200])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 2FDF82026962;
+	Wed, 17 Apr 2024 10:36:20 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <87d451ff8cd030a380b522b4dfc56ca42c9de444.camel@kernel.org>
+References: <87d451ff8cd030a380b522b4dfc56ca42c9de444.camel@kernel.org> <20240328163424.2781320-1-dhowells@redhat.com> <20240328163424.2781320-25-dhowells@redhat.com>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: dhowells@redhat.com, Christian Brauner <christian@brauner.io>,
+    Gao Xiang <hsiangkao@linux.alibaba.com>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Matthew Wilcox <willy@infradead.org>,
+    Steve French <smfrench@gmail.com>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Ilya Dryomov <idryomov@gmail.com>, netfs@lists.linux.dev,
+    linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+    linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+    ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
+    linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org, Latchesar Ionkov <lucho@ionkov.net>,
+    Christian Schoenebeck <linux_oss@crudebyte.com>
+Subject: Re: [PATCH 24/26] netfs: Remove the old writeback code
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Feedback-ID: 1.ap-south-1./RC/PI2M8xOxQmTMPi0M1Q8h2FX69egpT62QKSaMPIA=:AmazonSES
-X-SES-Outgoing: 2024.04.17-76.223.180.18
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <98240.1713350175.1@warthog.procyon.org.uk>
+Date: Wed, 17 Apr 2024 11:36:15 +0100
+Message-ID: <98241.1713350175@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-Hello,
+Jeff Layton <jlayton@kernel.org> wrote:
 
-On Tue, 16 Apr 2024 13:25:04 +0100, Lee Jones wrote:
+> #23 and #24 should probably be merged. I don't see any reason to do the
+> two-step of ifdef'ing out the code and then removing it. Just go for it
+> at this point in the series.
 
-> > Hello,
-> > 
-> > On Wed, 14 Feb 2024 10:10:17 -0800, Lee Jones wrote:
-> > > On Mon, 08 Apr 2024, Bhargav Raviprakash wrote:
-> > > 
-> > > > Introduces a new struct tps6594_match_data. This struct holds fields for
-> > > > chip id and regmap config. Using this struct in of_device_id data field.
-> > > > This helps in adding support for TPS65224 PMIC.
-> > > > 
-> > > > Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
-> > > > Acked-by: Julien Panis <jpanis@baylibre.com>
-> > > > ---
-> > > >  drivers/mfd/tps6594-i2c.c   | 24 ++++++++++++++++--------
-> > > >  drivers/mfd/tps6594-spi.c   | 24 ++++++++++++++++--------
-> > > >  include/linux/mfd/tps6594.h | 11 +++++++++++
-> > > >  3 files changed, 43 insertions(+), 16 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/mfd/tps6594-i2c.c b/drivers/mfd/tps6594-i2c.c
-> > > > index c125b474b..9e2ed48b7 100644
-> > > > --- a/drivers/mfd/tps6594-i2c.c
-> > > > +++ b/drivers/mfd/tps6594-i2c.c
-> > > > @@ -192,10 +192,16 @@ static const struct regmap_config tps6594_i2c_regmap_config = {
-> > > >  	.write = tps6594_i2c_write,
-> > > >  };
-> > > >  
-> > > > +static const struct tps6594_match_data match_data[] = {
-> > > > +	[TPS6594] = {TPS6594, &tps6594_i2c_regmap_config},
-> > > > +	[TPS6593] = {TPS6593, &tps6594_i2c_regmap_config},
-> > > > +	[LP8764] = {LP8764, &tps6594_i2c_regmap_config},
-> > > 
-> > > Nit: There should be spaces after the '{' and before the '}'.
-> > > 
-> > 
-> > Sure! will fix it in the next version.
-> > 
-> > > > +};
-> > > > +
-> > > >  static const struct of_device_id tps6594_i2c_of_match_table[] = {
-> > > > -	{ .compatible = "ti,tps6594-q1", .data = (void *)TPS6594, },
-> > > > -	{ .compatible = "ti,tps6593-q1", .data = (void *)TPS6593, },
-> > > > -	{ .compatible = "ti,lp8764-q1",  .data = (void *)LP8764,  },
-> > > > +	{ .compatible = "ti,tps6594-q1", .data = &match_data[TPS6594], },
-> > > > +	{ .compatible = "ti,tps6593-q1", .data = &match_data[TPS6593], },
-> > > > +	{ .compatible = "ti,lp8764-q1",  .data = &match_data[LP8764], },
-> > > 
-> > > Not keen on this.  Why do you pass the regmap data through here and
-> > > leave everything else to be matched on device ID?  It would be better to
-> > > keep passing the device ID through and match everything off of that.
-> > > 
-> > > 
-> > > -- 
-> > > Lee Jones [李琼斯]
-> > 
-> > Thanks for the feedback!
-> > 
-> > These changes were made because of the following message:
-> > https://lore.kernel.org/all/7hcysy6ho6.fsf@baylibre.com/
-> > 
-> > Please let us know which one to follow.
-> 
-> Right, except this doesn't eliminate "any \"if (chip_id)\" checking".
-> Instead you have a hodge-podge of passing a little bit of (Regmap) data
-> via match and the rest via "if (chip_id)".  So either pass all platform
-> type data via .data or just the chip ID.  My suggestion 99% of the time
-> is the latter.
+I would prefer to keep the ~500 line patch that's rearranging the plumbing
+separate from the ~1200 line patch that just deletes a load of lines to make
+the cutover patch easier to review.  I guess that comes down to a matter of
+preference.
 
-Got it. Thanks! Will revert back to .data having chip_id.
+David
 
-Regards,
-Bhargav
 
