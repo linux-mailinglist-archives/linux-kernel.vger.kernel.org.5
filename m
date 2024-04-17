@@ -1,135 +1,282 @@
-Return-Path: <linux-kernel+bounces-148990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B0788A8A28
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:27:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1B128A8A2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:28:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BF561C222C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:27:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3FE4B24F47
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:28:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B5A917167F;
-	Wed, 17 Apr 2024 17:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A866171E50;
+	Wed, 17 Apr 2024 17:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JmFzZbJk"
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q8J8Oi/J"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 676E4171673;
-	Wed, 17 Apr 2024 17:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1CE316FF52;
+	Wed, 17 Apr 2024 17:28:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713374837; cv=none; b=lZr6HNoOhsWm/oyK+4tDmH2BPGWYOz/J2YaxpxdTPmSwHglewd3iCCyTWHbOl35NWoWYZ+kzHX9sCTWxNVRA+3B4A1JLBxQeK9DdfpBlnnkivoO1GjMmmX1aLnFGYfK7JSgw0LnM2yC6rdjNKaMOO3yvMBQQkss0XxheFzCWT1Y=
+	t=1713374894; cv=none; b=o3f9m1ffl8gCMWmk+towI83xRoEBdQQKWIQArW0HsscNp1w2vhDhXo6IrjY4n6ocW09O0frS3taE4RPZ7A7lmgNtIc6vPAIUmrEJFN6Use1MnIZvYrR9Qn3tFn/2ZtuSMk0EEhdWa4Cfmx7T2Yo8Xndg3HGBTGTqx+k2aN0ETgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713374837; c=relaxed/simple;
-	bh=LH0E3f14sFod+vFzZXCOs/IXORwqoeiG9y513UfProA=;
+	s=arc-20240116; t=1713374894; c=relaxed/simple;
+	bh=oPZxgfSsc9EeEBm+XEY2LfevwwdvWe2DRuzWIBF6D/4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gj4grDn4fa96vaNBDVOzdg2a6suZsnWA+DFIhaw9Fe/xTAoVn47A7IVKV0V4QxSIlW3YMpdUrxNiPL6YUHYi63NJ5nYI6UfYnwLDl4NKWohWfwwfvaxbscO+On2elKKYfnz800yz9Y54bTeYuiPySB12+bL9IOmt/KninhWn3Eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JmFzZbJk; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6150670d372so53482077b3.1;
-        Wed, 17 Apr 2024 10:27:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713374835; x=1713979635; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=H1FLmdDfTUyGnOxaA/bUaKhz9a7gwzyhRJlNB5u2xbs=;
-        b=JmFzZbJkjbA/MaeSUo7H/uF9Re1ettKdLBbG/D+KEHSV8heQSzwfO5lyGCawgGmxUd
-         uAQn+Xjs1LKZFBCvAohd5DfavDDFGaw98UOqznqrbBK26ntXcCqHspKf8du0VAQtGPxj
-         yPdoutAH3kaGTs7TJY8jz3VN5yRFe+ojelSqLSc6xUd1qdWKjEdCN6NB66oBKbnoNtmt
-         r1xoAlU+Ec4wJqAyGW14+pd1oXjMWaoHlcuTW0QzEj8ZoytvHdNAsmY5mrXDrXg8G5WR
-         sMC1bp2ahueb4zo7u+uPAz/T0NvjdaZejzEUXup9n9S/wGRQvcgszyAGyQwdvOJZXWqD
-         NKZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713374835; x=1713979635;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H1FLmdDfTUyGnOxaA/bUaKhz9a7gwzyhRJlNB5u2xbs=;
-        b=ViW8CXMMuYzKvTMpy5VQFFtNxO+uv9uxfcbL+fzHQLRFfYifEZfLmQC2CYxuVJjsVk
-         DoDF1tpMaQL+aK314cx+qE4WLgUSeO2dofs1j0gnulWl8BcIz1JuNZigza1p1cv+J8XF
-         yDS3Jv56puinABznsqhry0KngQ140Y1k5IuAEPhf/ydTDcyXiPkJZ3/5zhwNSmzri0WT
-         BcbRt+kaptvHhUpaxC8j033MK1IYH+U457UtevwCrZevdvk0BhxavcCjccmuaimr5U9j
-         jjYpEJiWYZq03EUDjtrqcc9ouUCTZTcqgvelaRWR86c9N9K1kP9TwbzKWCfr78rMsjtG
-         2Hlw==
-X-Forwarded-Encrypted: i=1; AJvYcCX7Jt3ObzhgQVEkgGvSt+Fys1x717oEsd27WzhZP5WQIU9dx9E8vH4s4N4FpCPgAPZkj6hfZ95VWcZvdQj+9+ykyyb+sTlljSv4Ig==
-X-Gm-Message-State: AOJu0YzDaKVkpGI2Aw3qTJNISlvBXRNlYoYtSV2cY0srL83k4hTKKwnR
-	Wk7qlVzuJ+ZEFmoKan4HIaq/peqDCRUbUjPuEkpkPJWsaQEzM3Ww
-X-Google-Smtp-Source: AGHT+IHrgo/4WOLhe519ATtEJSHUOL3hyJCh7y166B/d1PG7w93DabYySgJ2SkIflN7ls6t/cZU4Xw==
-X-Received: by 2002:a05:690c:6f05:b0:61b:11d5:a675 with SMTP id jd5-20020a05690c6f0500b0061b11d5a675mr2147492ywb.32.1713374835278;
-        Wed, 17 Apr 2024 10:27:15 -0700 (PDT)
-Received: from localhost ([2601:344:8301:57f0:7ca6:7207:b6c4:2389])
-        by smtp.gmail.com with ESMTPSA id t1-20020a81e441000000b00610eaf46c6dsm3028484ywl.117.2024.04.17.10.27.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 10:27:14 -0700 (PDT)
-Date: Wed, 17 Apr 2024 10:27:13 -0700
-From: Yury Norov <yury.norov@gmail.com>
-To: Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>
-Cc: linux-kernel@vger.kernel.org,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org
-Subject: Re: [PATCH] MIPS: SGI-IP30: Use bitmap API when iterating over bitmap
-Message-ID: <ZiAGcb3eY/Nqamb9@yury-ThinkPad>
-References: <20240417071830.47703-1-philmd@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=F+sGHkyx5ezi8V8zkCACu1n5wqyIKXtyjnGwtH8kUZMgq6fmOYcajfwSqA4ZEMfBTZ2CO+mvDyaIhiDKCM2nk8P8QZerhkbEuTfujllFIA8JF6Hqbw+nOCCJri/ydg5P7xG8hexi4S25Q/PKhrFBtAu0P5YbAXGv+2Lo6YYHQmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q8J8Oi/J; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713374893; x=1744910893;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=oPZxgfSsc9EeEBm+XEY2LfevwwdvWe2DRuzWIBF6D/4=;
+  b=Q8J8Oi/JHRZaV0QUZkeJ+05jpijUVgafaCl9Sz4QIvLmKyOg+spKVHVU
+   rojWaWvqvxN3X+270cEFNgEv7L8HVjFrQhQhu8V3O4inu/XVyFvtQTPPz
+   VyWbWf8GLSmMVWOBdRgmt8AkRViC+KY8RZ701X5At62Ct8O2vL9nO5nnG
+   mqzco1s905UAae/9Yx+OBsMgDeNPPARWUmGkNg7Vkjhshi8zZhS4neSK8
+   PTc//kJuEFBAfncXU2K/IuJ4ccQYezU7olmOOXVoxZtilzvz5uoawCKij
+   /8LjE9gCKUyMfFkUhKu7bFOAlEJTba0A8j+x8fiYu339pdcHCbvy4/Ynj
+   Q==;
+X-CSE-ConnectionGUID: a/pIwFouRnaUwOU3N9zbng==
+X-CSE-MsgGUID: FFUlY6zdQZeawYQcvGOjpg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="20031496"
+X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
+   d="scan'208";a="20031496"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 10:28:12 -0700
+X-CSE-ConnectionGUID: 7/REKtTHTn6s6/OznTIrdg==
+X-CSE-MsgGUID: RtWcpmSuSxWhnv+3UDAuKA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
+   d="scan'208";a="27329719"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 10:28:09 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rx94p-000000006zn-0RXK;
+	Wed, 17 Apr 2024 20:28:07 +0300
+Date: Wed, 17 Apr 2024 20:28:06 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [PATCH 2/4] dmaengine: dw: Add memory bus width verification
+Message-ID: <ZiAGpsldQMB-dKkn@smile.fi.intel.com>
+References: <20240416162908.24180-1-fancer.lancer@gmail.com>
+ <20240416162908.24180-3-fancer.lancer@gmail.com>
+ <Zh7Hpuo-TzSmlz69@smile.fi.intel.com>
+ <lzipslbrr4fkpqc3plfllltls2sy2mrlentp7clpjoppvgscoi@zlmysqym2kyb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240417071830.47703-1-philmd@linaro.org>
+In-Reply-To: <lzipslbrr4fkpqc3plfllltls2sy2mrlentp7clpjoppvgscoi@zlmysqym2kyb>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Apr 17, 2024 at 09:18:29AM +0200, Philippe Mathieu-Daudé wrote:
-> Do not open-code bitmap_set(). Besides, <linux/bitmap.h> API
-> allows architecture specific optimizations, so prefer it.
+On Wed, Apr 17, 2024 at 08:13:59PM +0300, Serge Semin wrote:
+> On Tue, Apr 16, 2024 at 09:47:02PM +0300, Andy Shevchenko wrote:
+> > On Tue, Apr 16, 2024 at 07:28:56PM +0300, Serge Semin wrote:
+> > > Currently in case of the DEV_TO_MEM or MEM_TO_DEV DMA transfers the memory
+> > > data width (single transfer width) is determined based on the buffer
+> > > length, buffer base address or DMA master-channel max address width
+> > > capability. It isn't enough in case of the channel disabling prior the
+> > > block transfer is finished. Here is what DW AHB DMA IP-core databook says
+> > > regarding the port suspension (DMA-transfer pause) implementation in the
+> > > controller:
+> > > 
+> > > "When CTLx.SRC_TR_WIDTH < CTLx.DST_TR_WIDTH and the CFGx.CH_SUSP bit is
+> > > high, the CFGx.FIFO_EMPTY is asserted once the contents of the FIFO do not
+> > > permit a single word of CTLx.DST_TR_WIDTH to be formed. However, there may
+> > > still be data in the channel FIFO, but not enough to form a single
+> > > transfer of CTLx.DST_TR_WIDTH. In this scenario, once the channel is
+> > > disabled, the remaining data in the channel FIFO is not transferred to the
+> > > destination peripheral."
+> > > 
+> > > So in case if the port gets to be suspended and then disabled it's
+> > > possible to have the data silently discarded even though the controller
+> > > reported that FIFO is empty and the CTLx.BLOCK_TS indicated the dropped
+> > > data already received from the source device. This looks as if the data
+> > > somehow got lost on a way from the peripheral device to memory and causes
+> > > problems for instance in the DW APB UART driver, which pauses and disables
+> > > the DMA-transfer as soon as the recv data timeout happens. Here is the way
+> > > it looks:
+> > > 
+> > >  Memory <------- DMA FIFO <------ UART FIFO <---------------- UART
+> > >   DST_TR_WIDTH -+--------|       |         |
+> > >                 |        |       |         |                No more data
+> > >    Current lvl -+--------|       |---------+- DMA-burst lvl
+> > >                 |        |       |---------+- Leftover data
+> > >                 |        |       |---------+- SRC_TR_WIDTH
+> > >                -+--------+-------+---------+
+> > > 
+> > > In the example above: no more data is getting received over the UART port
+> > > and BLOCK_TS is not even close to be fully received; some data is left in
+> > > the UART FIFO, but not enough to perform a bursted DMA-xfer to the DMA
+> > > FIFO; some data is left in the DMA FIFO, but not enough to be passed
+> > > further to the system memory in a single transfer. In this situation the
+> > > 8250 UART driver catches the recv timeout interrupt, pauses the
+> > > DMA-transfer and terminates it completely, after which the IRQ handler
+> > > manually fetches the leftover data from the UART FIFO into the
+> > > recv-buffer. But since the DMA-channel has been disabled with the data
+> > > left in the DMA FIFO, that data will be just discarded and the recv-buffer
+> > > will have a gap of the "current lvl" size in the recv-buffer at the tail
+> > > of the lately received data portion. So the data will be lost just due to
+> > > the misconfigured DMA transfer.
+> > > 
+> > > Note this is only relevant for the case of the transfer suspension and
+> > > _disabling_. No problem will happen if the transfer will be re-enabled
+> > > afterwards or the block transfer is fully completed. In the later case the
+> > > "FIFO flush mode" will be executed at the transfer final stage in order to
+> > > push out the data left in the DMA FIFO.
+> > > 
+> > > In order to fix the denoted problem the DW AHB DMA-engine driver needs to
+> > > make sure that the _bursted_ source transfer width is greater or equal to
+> > > the single destination transfer (note the HW databook describes more
+> > > strict constraint than actually required). Since the peripheral-device
+> > > side is prescribed by the client driver logic, the memory-side can be only
+> > > used for that. The solution can be easily implemented for the DEV_TO_MEM
+> > > transfers just by adjusting the memory-channel address width. Sadly it's
+> > > not that easy for the MEM_TO_DEV transfers since the mem-to-dma burst size
+> > > is normally dynamically determined by the controller. So the only thing
+> > > that can be done is to make sure that memory-side address width can be
+> > > greater than the peripheral device address width.
+
+..
+
+> > > +static int dwc_verify_m_buswidth(struct dma_chan *chan)
+> > > +{
+> > > +	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
+> > > +	struct dw_dma *dw = to_dw_dma(chan->device);
+> > > +	u32 reg_width, reg_burst, mem_width;
+> > > +
+> > > +	mem_width = dw->pdata->data_width[dwc->dws.m_master];
+> > > +
+> > > +	/* Make sure src and dst word widths are coherent */
+> > > +	if (dwc->dma_sconfig.direction == DMA_MEM_TO_DEV) {
+> > > +		reg_width = dwc->dma_sconfig.dst_addr_width;
+> > > +		if (mem_width < reg_width)
+> > > +			return -EINVAL;
+> > > +
+> > > +		dwc->dma_sconfig.src_addr_width = mem_width;
+> > > +	} else if (dwc->dma_sconfig.direction == DMA_DEV_TO_MEM) {
+> > > +		reg_width = dwc->dma_sconfig.src_addr_width;
+> > > +		reg_burst = rounddown_pow_of_two(dwc->dma_sconfig.src_maxburst);
+> > > +
+> > > +		dwc->dma_sconfig.dst_addr_width = min(mem_width, reg_width * reg_burst);
+> > 
 > 
-> Use the HEART_NUM_IRQS definition to express the end of the
-> HEART bitmap.
+> > I understand the desire to go this way, but wouldn't be better to have
+> > a symmetrical check and return an error?
 > 
-> Inspired-by: Yury Norov <yury.norov@gmail.com>
-> Signed-off-by: Philippe Mathieu-Daudé <philmd@linaro.org>
-> ---
->  arch/mips/sgi-ip30/ip30-irq.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+> Sadly the situation isn't symmetrical.
 > 
-> diff --git a/arch/mips/sgi-ip30/ip30-irq.c b/arch/mips/sgi-ip30/ip30-irq.c
-> index 423c32cb66ed..bdafff076191 100644
-> --- a/arch/mips/sgi-ip30/ip30-irq.c
-> +++ b/arch/mips/sgi-ip30/ip30-irq.c
-> @@ -264,7 +264,6 @@ void __init arch_init_irq(void)
->  	struct irq_domain *domain;
->  	struct fwnode_handle *fn;
->  	unsigned long *mask;
-> -	int i;
->  
->  	mips_cpu_irq_init();
->  
-> @@ -300,8 +299,7 @@ void __init arch_init_irq(void)
->  	set_bit(HEART_L3_INT_TIMER, heart_irq_map);
->  
->  	/* Reserve the error interrupts (#51 to #63). */
-> -	for (i = HEART_L4_INT_XWID_ERR_9; i <= HEART_L4_INT_HEART_EXCP; i++)
-> -		set_bit(i, heart_irq_map);
-> +	bitmap_set(heart_irq_map, HEART_L4_INT_XWID_ERR_9, HEART_NUM_IRQS);
+> The main idea of the solution proposed in this patch is to make sure
+> that the DMA transactions would fill in the DMA FIFO in a way so in
+> case of the suspension all the data would be delivered to the
+> destination with nothing left in the DMA FIFO and the CFGx.FIFO_EMPTY
+> flag would mean the real FIFO emptiness. It can be reached only if
+> (CTLx.SRC_TR_WIDTH * CTLx.SRC_MSIZE) >= CTLx.DST_TR_WIDTH
+> (calculated in the real values of course). But CTLx.SRC_MSIZE is only
+> relevant for the flow-control/non-memory peripherals. Thus the
 
-This function has a signature
-        bitmap_set(map, start, length)
+Oh, if it involves flow control, shouldn't you check for that as well?
+We have a (PPC? IIRC) hardware with this IP that can have peripheral
+as flow control.
 
-So this should be a:
-        bitmap_set(heart_irq_map, HEART_L4_INT_XWID_ERR_9,
-                   HEART_NUM_IRQS - HEART_L4_INT_XWID_ERR_9 + 1)
+> conditions under which the problem can be avoided are:
+> 
+> DMA_MEM_TO_DEV: CTLx.SRC_TR_WIDTH >= CTLx.DST_TR_WIDTH
+> DMA_DEV_TO_MEM: CTLx.SRC_TR_WIDTH * CTLx.SRC_MSIZE >= CTLx.DST_TR_WIDTH
+> 
+> In both cases the non-memory peripheral side parameters (DEV-side)
+> can't be changed because they are selected by the client drivers based
+> on their specific logic (Device FIFO depth, watermarks, CSR widths,
+> etc). But we can vary the memory-side transfer width as long as it's
+> within the permitted limits.
+> 
+> In case of the DMA_MEM_TO_DEV transfers we can change the
+> CTLx.SRC_TR_WIDTH because it represents the memory side transfer
+> width. But if the maximum memory transfer width is smaller than the
+> specified destination register width, there is nothing we can do. Thus
+> returning the EINVAL error. Note this is mainly a hypothetical
+> situation since normally the max width of the memory master xfers is
+> greater than the peripheral master xfer max width (in my case it's 128
+> and 32 bits respectively).
+> 
+> In case of the DMA_DEV_TO_MEM transfers we can change the CTLx.DST_TR_WIDTH
+> parameter because it's the memory side. Thus if the maximum
+> memory transfer width is smaller than the bursted source transfer,
+> then we can stick to the maximum memory transfer width. But if it's
+> greater than the bursted source transfer, we can freely reduce it
+> so to support the safe suspension+disable DMA-usage pattern.
+> 
+> > 
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > 
+> 
+> > IIRC MEM side of the DMA channel will ignore those in HW, so basically you are
+> > (re-)using them purely for the __ffs() corrections.
+> 
+> No. DMAC ignores the _burst length_ parameters CTLx.SRC_MSIZE and
+> CTLx.DEST_MSIZE for the memory side (also see my comment above):
+> 
+> "The CTLx.SRC_MSIZE and CTLx.DEST_MSIZE are properties valid only for
+> peripherals with a handshaking interface; they cannot be used for
+> defining the burst length for memory peripherals.
+> 
+> When the peripherals are memory, the DW_ahb_dmac is always the flow
+> controller and uses DMA transfers to move blocks; thus the
+> CTLx.SRC_MSIZE and CTLx.DEST_MSIZE values are not used for memory
+> peripherals. The SRC_MSIZE/DEST_MSIZE limitations are used to
+> accommodate devices that have limited resources, such as a FIFO.
+> Memory does not normally have limitations similar to the FIFOs."
+> 
+> In my case the problem is in the CTLx.SRC_TR_WIDTH and
+> CTLx.DST_TR_WIDTH values misconfiguration. Here is the crucial comment
+> in the HW-manual about that (cited in the commit messages):
+> 
+> "When CTLx.SRC_TR_WIDTH < CTLx.DST_TR_WIDTH and the CFGx.CH_SUSP bit is
+> high, the CFGx.FIFO_EMPTY is asserted once the contents of the FIFO do not
+> permit a single word of CTLx.DST_TR_WIDTH to be formed. However, there may
+> still be data in the channel FIFO, but not enough to form a single
+> transfer of CTLx.DST_TR_WIDTH. In this scenario, once the channel is
+> disabled, the remaining data in the channel FIFO is not transferred to the
+> destination peripheral."
+> 
+> See Chapter 7.7 "Disabling a Channel Prior to Transfer Completion" of
+> the DW DMAC HW manual for more details.
 
-Also on the above group of set_bit(). It should be 2 bitmap_set()
-calls to me. HEART_L0_INT [0, 2] is the first one, and HEART_L2_INT
-to HEART_L4_INT [46, 63] is the other. Isn't?
+Got it. Maybe a little summary in the code to explain all this magic?
 
-Thanks,
-Yury
+..
+
+> > >  	dwc->dma_sconfig.src_maxburst =
+> > > -		clamp(dwc->dma_sconfig.src_maxburst, 0U, dwc->max_burst);
+> > > +		clamp(dwc->dma_sconfig.src_maxburst, 1U, dwc->max_burst);
+> > >  	dwc->dma_sconfig.dst_maxburst =
+> > > -		clamp(dwc->dma_sconfig.dst_maxburst, 0U, dwc->max_burst);
+> > > +		clamp(dwc->dma_sconfig.dst_maxburst, 1U, dwc->max_burst);
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
