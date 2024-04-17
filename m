@@ -1,111 +1,122 @@
-Return-Path: <linux-kernel+bounces-148698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1FE58A8659
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:44:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B4F98A866A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:45:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 579AFB25DC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:44:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC9471C216D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 809C4145B20;
-	Wed, 17 Apr 2024 14:41:33 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941E6145356
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BF4D146D56;
+	Wed, 17 Apr 2024 14:41:52 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE7C21428E2;
+	Wed, 17 Apr 2024 14:41:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713364893; cv=none; b=qFVV+RNkdgkFkndk2gVxOdzr0+fZBP/OFaNqzaWQkYlrUyL+CYVQmi06TAuwP2vkKL1DKaUfF5fRoSZfoqhsFFEFOxDYVbdhkhjUxIuzZQDCqUFRcT+p2xgIP3kT/0PFFDWy44ZY/i4lXUU9fmIfZqccMneI3QssUNDbbbmVL3c=
+	t=1713364911; cv=none; b=JAjpmj7RZDI5erGzd7bmi3JPgXtTvcKOaV2riLzpK94kioJrND7A+xqB27cIGgzc4em80T7rEhKb0uQc2UdCI3dH2lUjlSI5zGLMarexQSBh87GI0RI52t0Yxz4Nltfv2xAgITD0K5TDl/xS+fZp044XGcZ0BCnK0I9YBijLaGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713364893; c=relaxed/simple;
-	bh=QmHmQjhS4ZracszR7nZ2gUEAQ/yZV8486QKbSkbjcs0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LfowdyW8bBCxsVPOhHZce5BFkMMFSeWfCZg8B1Jj01xGJrNhkTlejolz4NyKBxQRZOnF52W//qODFhVpn6boRKpwlhsNU0Ic1CQD6rbEZMkKWtSvKPeWrzao2IeN2JtfPh9DMs9LO0H31DvUF4mLnUN8VyMzjoKOK9oh/4d/VWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA3AD339;
-	Wed, 17 Apr 2024 07:41:58 -0700 (PDT)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 947DF3F738;
-	Wed, 17 Apr 2024 07:41:27 -0700 (PDT)
-Date: Wed, 17 Apr 2024 15:41:24 +0100
-From: Dave Martin <Dave.Martin@arm.com>
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
-	shameerali.kolothum.thodi@huawei.com,
-	D Scott Phillips OS <scott@os.amperecomputing.com>,
-	carl@os.amperecomputing.com, lcherian@marvell.com,
-	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
-	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-	dfustini@baylibre.com, amitsinght@marvell.com,
-	David Hildenbrand <david@redhat.com>,
-	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: Re: [PATCH v1 12/31] x86/resctrl: Move max_{name,data}_width into
- resctrl code
-Message-ID: <Zh/flJb3obutHTbD@e133380.arm.com>
-References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-13-james.morse@arm.com>
- <fc4ee516-54b7-47cb-b881-00ce10d311a9@intel.com>
- <ZhfwjBJPeTvO04BL@e133380.arm.com>
- <d269b5d2-bd6d-44b2-8d99-0e0a2790bf50@intel.com>
+	s=arc-20240116; t=1713364911; c=relaxed/simple;
+	bh=2bBUJpkv4u0ce+Rp18oWAx6MoLI8B1peg59e65KozMI=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PSI3feGv2Uzm7JE2+YHO+EiquldKyfO/6WLV4nt+0VdqDf4scTsm7Y+Lr4RfjYbkhTflr1Ika/scSTN7djaFO8G3q/flELTfnaXJHjhHLhJ+06lRAFg2W+gXJz/q3RhiT39TlMqE1VGewgpUpFR6FEAXJImVqBWqH+7sP/8T6o8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VKNlG239gz6D8ym;
+	Wed, 17 Apr 2024 22:36:42 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 09442140B38;
+	Wed, 17 Apr 2024 22:41:40 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 17 Apr
+ 2024 15:41:39 +0100
+Date: Wed, 17 Apr 2024 15:41:38 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
+	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, "Rafael J . Wysocki" <rafael@kernel.org>, Miguel Luis
+	<miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <linuxarm@huawei.com>, <justin.he@arm.com>,
+	<jianyong.wu@arm.com>
+Subject: Re: [PATCH v6 02/16] cpu: Do not warn on arch_register_cpu()
+ returning -EPROBE_DEFER
+Message-ID: <20240417154138.0000511b@Huawei.com>
+In-Reply-To: <Zh/WPYMJYepLbST/@shell.armlinux.org.uk>
+References: <20240417131909.7925-1-Jonathan.Cameron@huawei.com>
+	<20240417131909.7925-3-Jonathan.Cameron@huawei.com>
+	<Zh/WPYMJYepLbST/@shell.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d269b5d2-bd6d-44b2-8d99-0e0a2790bf50@intel.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hi Reinette,
+On Wed, 17 Apr 2024 15:01:33 +0100
+"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
 
-On Thu, Apr 11, 2024 at 10:38:20AM -0700, Reinette Chatre wrote:
-> Hi Dave,
+> On Wed, Apr 17, 2024 at 02:18:55PM +0100, Jonathan Cameron wrote:
+> > For arm64 the CPU registration cannot complete until the ACPI
+> > interpreter us up and running so in those cases the arch specific
+> > arch_register_cpu() will return -EPROBE_DEFER at this stage and the
+> > registration will be attempted later.
+> > 
+> > Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
+> > Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > 
+> > ---
+> > v6: tags
+> > ---
+> >  drivers/base/cpu.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+> > index 56fba44ba391..b9d0d14e5960 100644
+> > --- a/drivers/base/cpu.c
+> > +++ b/drivers/base/cpu.c
+> > @@ -558,7 +558,7 @@ static void __init cpu_dev_register_generic(void)
+> >  
+> >  	for_each_present_cpu(i) {
+> >  		ret = arch_register_cpu(i);
+> > -		if (ret)
+> > +		if (ret != -EPROBE_DEFER)
+> >  			pr_warn("register_cpu %d failed (%d)\n", i, ret);  
 > 
-> On 4/11/2024 7:15 AM, Dave Martin wrote:
-> > On Mon, Apr 08, 2024 at 08:19:15PM -0700, Reinette Chatre wrote:
-> >> Hi James,
-> >>
-> >> On 3/21/2024 9:50 AM, James Morse wrote:
-> >>> @@ -2595,6 +2601,12 @@ static int schemata_list_add(struct rdt_resource *r, enum resctrl_conf_type type
-> >>>  	if (cl > max_name_width)
-> >>>  		max_name_width = cl;
-> >>>  
-> >>> +	/*
-> >>> +	 * Choose a width for the resource data based on the resource that has
-> >>> +	 * widest name and cbm.
-> >>
-> >> Please check series to ensure upper case is used for acronyms.
-> > 
-> > [...]
-> > 
-> >> Reinette
-> > 
-> > This patch is just moving existing code around AFAICT.  See:
-> > commit de016df88f23 ("x86/intel_rdt: Update schemata read to show data in tabular format")
-> > 
-> > Since no new usage of any term is being introduced here, can it be
-> > left as-is?
-> > 
-> > There seem to be other uses of "cbm" with this sense in the resctrl
-> > code already.
+> This looks very broken to me.
 > 
-> I am not asking to change all existing usages of these terms but in
-> any new changes, please use upper case for acronyms.
+> 		if (ret && ret != -EPROBE_DEFER)
+> 
+> surely, because we don't want to print a warning if arch_register_cpu()
+> was successful?
 
-While there is a general argument to be made here, it sounds from this
-like you are not requesting a change to this patch; can you confirm?
+Gah.  Excellent point.
 
-Cheers
----Dave
+thanks,
+
+Jonathan
+
+> 
+
 
