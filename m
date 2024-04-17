@@ -1,68 +1,87 @@
-Return-Path: <linux-kernel+bounces-148868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0E2D8A8855
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 822988A8853
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:59:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A47E31F21A7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:59:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37C941F21502
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:59:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D4014882C;
-	Wed, 17 Apr 2024 15:59:20 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6471487E2;
+	Wed, 17 Apr 2024 15:59:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rL+H5lBs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EEDB14830C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9261487C6;
 	Wed, 17 Apr 2024 15:59:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713369560; cv=none; b=BKgbpkgOL8HxXcVRTxHyi9Kl5EMJlZfLAE/eVcWzSRxLgpVJ4GLVXjcq0yk0dU37yO2yAcFmseuew+g9Qe2Mx+i+r96OBIbIKH4L+8TY/gmQoozC5yC6u4oVNcRDtF++oZUjkllZ/5ESbcILfwQ2XsjSu64kyqYm6bDXrDU72eE=
+	t=1713369559; cv=none; b=ch5DLE2d4LYU8Uo2O4ofBIMxX8JqAQfhqMMd/TUzEFs/348JHRMNsLkEd4K1x2BrLdYItlu7R08ZSHxhRd4+y5nBIIrWrzOSev5teb6cVGk4vtdgZMw1zzW3X/ENXjFKmFcI1GGpVKIS2ZcYsMpjt/VBZgw7NrruqFN4WomUSvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713369560; c=relaxed/simple;
-	bh=g8B/qc2nj/2LNEeHjA90kGiWc8nVUDO/Ixkq3MFkruQ=;
+	s=arc-20240116; t=1713369559; c=relaxed/simple;
+	bh=UZiJOhiexQp0bZizQPTKAWHNiRbtg+8aXN8vVVHAyTk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fL+H5eC6j9DGVfxAQ0gWSyqhsYE5/gJLIe4U4Euox/EMTSpVCrHjXFPQ4g5sy4nNgFVcS2i0DKu5nOq8mZgcKb/dPBJXI5HZHtHJ8EZF0s6/utfHNh+W4ugev95CYPb0A+TuJHbx8W9CaujaEKiF4IDoHQtJMZEQo4Z7pwmHe4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 12D6068CFE; Wed, 17 Apr 2024 17:59:14 +0200 (CEST)
-Date: Wed, 17 Apr 2024 17:59:13 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Lennart Poettering <mzxreary@0pointer.de>
-Cc: Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
-	Linux regressions mailing list <regressions@lists.linux.dev>,
-	linux-block@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-	Jens Axboe <axboe@kernel.dk>
-Subject: Re: API break, sysfs "capability" file
-Message-ID: <20240417155913.GA6447@lst.de>
-References: <54e3c969-3ee8-40d8-91d9-9b9402001d27@leemhuis.info> <ZhQ6ZBmThBBy_eEX@kbusch-mbp.dhcp.thefacebook.com> <ZhRSVSmNmb_IjCCH@gardel-login> <ZhRyhDCT5cZCMqYj@kbusch-mbp.dhcp.thefacebook.com> <ZhT5_fZ9SrM0053p@gardel-login> <20240409141531.GB21514@lst.de> <Zh6J75OrcMY3dAjY@gardel-login> <Zh6O5zTBs5JtV4D2@kbusch-mbp> <20240417151350.GB2167@lst.de> <Zh_vQG9EyVt34p16@gardel-login>
+	 Content-Type:Content-Disposition:In-Reply-To; b=owUPk2HXdRKuJ3xBvJBb0QEnCRtStKJqK6u5lWju0MRQfi7OXiErPtGJtc8xkRll5xYQS9hTNLknwiMlrh9dzUz1oy0psZPiXFwZirQ2ZpThh42QqZ4HBliLiKwCeSgdptcQPopJhh26N+C0kwMc3hpJwKhJYVAk1Wb394S6MME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rL+H5lBs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65873C2BD11;
+	Wed, 17 Apr 2024 15:59:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713369558;
+	bh=UZiJOhiexQp0bZizQPTKAWHNiRbtg+8aXN8vVVHAyTk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rL+H5lBs4TZGMqDH1ZjnQFpDjbQUWqKY3vSv9FtLbLusG/j0bPhVUj750XeNpd4KC
+	 /xtzekKpiwXBiRb410H0JcwFWxS4AuzSgclt8RgBSk8N5lS1jJnFM95PjnSGygz7PG
+	 SYJdvG07hcqHo3aQj008Jv/klLYQauj19mV1sSEvvpjYL5bg8Z3x4Xw0mIYX4H6Z69
+	 cfvEq184UwO48YATqgmpbx8xT5kyWqtPxtvCOayF0HfI3dNDMq/0hkx/tQvjg+/Lvq
+	 9NAkKr++ZQ6cAUML0ZIe8Ofct1rBrWrHeBGGQ3CKDzPuc2TvgBz9BaUUe1YTPFFuqa
+	 2iVpA7ckmrCdQ==
+Date: Wed, 17 Apr 2024 12:59:15 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: cp0613@linux.alibaba.com, palmer@dabbelt.com, paul.walmsley@sifive.com,
+	aou@eecs.berkeley.edu, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH] tools/perf: Fix compiling with libelf on rv32
+Message-ID: <Zh_x0_VSO72xyaer@x1>
+References: <20240415095532.4930-1-cp0613@linux.alibaba.com>
+ <CAP-5=fWZSPTtk+UjssH4Mhw11CAP0-jZcZAbCesdqrVCnZbu2Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Zh_vQG9EyVt34p16@gardel-login>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fWZSPTtk+UjssH4Mhw11CAP0-jZcZAbCesdqrVCnZbu2Q@mail.gmail.com>
 
-On Wed, Apr 17, 2024 at 05:48:16PM +0200, Lennart Poettering wrote:
-> Block devices with part scanning off are quite common after all,
-> i.e. "losetup" creates them by default like that, and partition block
-> devices themselves have no part scanning on and so on, hence we have
-> to be ablet to operate sanely with them.
+On Tue, Apr 16, 2024 at 08:04:55AM -0700, Ian Rogers wrote:
+> On Mon, Apr 15, 2024 at 2:57 AM <cp0613@linux.alibaba.com> wrote:
+> >
+> > From: Chen Pei <cp0613@linux.alibaba.com>
+> >
+> > When cross-compiling perf with libelf, the following error occurred:
+> >
+> >         In file included from tests/genelf.c:14:
+> >         tests/../util/genelf.h:50:2: error: #error "unsupported architecture"
+> >         50 | #error "unsupported architecture"
+> >                 |  ^~~~~
+> >         tests/../util/genelf.h:59:5: warning: "GEN_ELF_CLASS" is not defined, evaluates to 0 [-Wundef]
+> >         59 | #if GEN_ELF_CLASS == ELFCLASS64
+> >
+> > Fix this by adding GEN-ELF-ARCH and GEN-ELF-CLASS definitions for rv32.
+> >
+> > Signed-off-by: Chen Pei <cp0613@linux.alibaba.com>
+> 
+> Reviewed-by: Ian Rogers <irogers@google.com>
 
-Maybe and ioctl to turn on partition scanning if it is currently disabled
-or return an error otherwise would be the better thing?  It would
-do the right thing for the most common loop case, and with a bit more
-work could do the right thing for those that more or less disable it
-graciously (ubiblock, drbd, zram) and would just fail for those who are
-so grotty old code and slow devices that we never want to do a partition
-scan (basically old floppy drivers and the Nintendo N64 cartridge driver)
+Thanks, applied to perf-tools-next,
 
+- Arnaldo
 
