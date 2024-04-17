@@ -1,157 +1,94 @@
-Return-Path: <linux-kernel+bounces-149073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 663128A8B75
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:47:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7E388A8B7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:48:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 232F7287934
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:47:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EF221F25056
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:48:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95E418C05;
-	Wed, 17 Apr 2024 18:47:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 853EC18026;
+	Wed, 17 Apr 2024 18:47:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T1H2Irfs"
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VUBYNmDO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF3038F54;
-	Wed, 17 Apr 2024 18:47:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6258F54;
+	Wed, 17 Apr 2024 18:47:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713379653; cv=none; b=P+wEzGhIni5A+0tueHfReUfix5EZsZzD2blwfZoLkqmGcuQaxgMK0xKx1tjW1TTO9Gmz2ZLRTQyoLHvQJhlUnUNOJ5qq5LApeEAesjAPJTvUqVIClM+CpTACoBjp8vIcWOmSrvR8qR6K42+xKux4/8/c+IvfTSo/b0zP6++Ozfg=
+	t=1713379660; cv=none; b=FIeckSvR1J/a15Fx9+YmiJugZt4UlW9bzfOWFL7UF22OF/ldbL1zfki+NJZ/3yTjuILQUfb/Y8EfEk4PamsfxtNb07if4WxUOIuyaWwBF8Vw91yEu4B8ZoTexXf2MVI3bH6NQJzKsLYoqA8XVZw4qj/OVGtFgyoUYh0pXYeFsmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713379653; c=relaxed/simple;
-	bh=reaA9tTGizBB+NIGcV7bHJimHioTexx+778BpTdQZKo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o23aTfSVMtMK3rpUyT9NdXRiFzX7OpXwG/IPAxXfl8H4WiGQnlQnQelAoo1CBK/nXjOPLVx5IjSEpPh2LtFozRjcfc7fwM4rf4H069w1+6cOrZZNaXcMDyt0fPK8IE4t9svxLNmrC7L9hs1MQkBkEVfoNMDnBhqTNI+mOb3ecec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T1H2Irfs; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2a502547460so82360a91.2;
-        Wed, 17 Apr 2024 11:47:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713379651; x=1713984451; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=joQ3ZujEDtWSfIGMDqZdTFSuY2rGH2GzdHPLy/M5o+s=;
-        b=T1H2IrfsKiIik5ca+DWvhhWoMPIGpPMnWBqGSGa51zAGLJHo/iOCZ7NT0kLcyOXioe
-         p6iisI8rM2lbPMblZDgvjGazvYdwj+gTFkKkoGBaTex1QtVJZgoHxX2LoxxjbGUERnnU
-         npttL0ks6gAJz3A+IiOq88Gpb5emDXUNDdWT55xLhIBKXPuAQoLNqZTrc5UqQGrj/cvF
-         y+UPtYV0hYfEBXVIpaoAMVnf8neErsJzuYvnqBL9RiY0v5Zp/67/UBnpfcW9W4qnGxJo
-         lbyERhL/UobnOxIVivCOBBjqjSJgU6y4/iiEHLZIgAK+OGvI4In9PBzgaZQg4jLSDyk0
-         QeVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713379651; x=1713984451;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=joQ3ZujEDtWSfIGMDqZdTFSuY2rGH2GzdHPLy/M5o+s=;
-        b=roTv+pTxqkWKumNkQtAQ8FXt3EauUmjj2/ZAMV7WZDN7t6TP7Iv5MK+iouWeEAzix5
-         dc8+w0Xaw+bYMIOdslNh90ykrbuaIVgbKDstfzNcdUlc5RptIJB8DBXN27eaERkaMBC+
-         B7itIAaIp7L6JXY+jnQDms1bRf3q2bKj1YhyaccafYdsbTLUqxaJwRutabRuH15u1zAU
-         THEK+9f0Gz2kHRAXWiWTZdyPg1kfNdVIwpCTzj85m0Eb7N/yIAOHzRpJv58tmWPA34Ph
-         qCN6u09eONcFy6yDIPptlmT3vMaeTGOK3+gK798HkWooRbxOGBwafuRMymB754n73d+s
-         G+Uw==
-X-Forwarded-Encrypted: i=1; AJvYcCUQdWQlfXdUbIbleTfc/xq8zTr4Xwx+ejuDJW1GwGXnDSuV20docWGiWdy5fLEKYhR9LlH/J2rMYBeSuvmy6pficCV2TofKIcBPmnVThDHwdR4j+pa4UPj5UYP/t3DNXkm3N5SCh6Qt6lah8xKlY8S/O0jY5Ik7jssuNX524uoEckhlc4Wm
-X-Gm-Message-State: AOJu0YzLnEFht26C7JwSijZRyNZlvVXyThaHooLt1f4ByU2x6R1/dGgE
-	TC8425oLQltInSxqFfetFYfWprmmPGSLpE6xQdg4Lpx0LTnM2Kex8yrHgqiTxE6ETIX0AFoJtCT
-	5zk+mxHPHJolddVYVNEKxBw+dGMI=
-X-Google-Smtp-Source: AGHT+IGWSVVsPzFy94bdg08jfpPcRPLvbi4UatPxHfAaLeLZEpgp5BZ3BMi8BjGDNfJ4LsFSvF6kSGdG+NDOO8i9Ooo=
-X-Received: by 2002:a17:90b:1d8b:b0:2a2:ab2c:da40 with SMTP id
- pf11-20020a17090b1d8b00b002a2ab2cda40mr247731pjb.33.1713379651051; Wed, 17
- Apr 2024 11:47:31 -0700 (PDT)
+	s=arc-20240116; t=1713379660; c=relaxed/simple;
+	bh=ObeGcJLBE+oOTwuDf0gmIllSwIgs3VjK5sPj+MWo/6s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uCaamc8w1kof+l//SbFwdbVVWDnFsaI0O/FKoD0OoVzHZCX2gakOwW0IVAcriiRG6qk45WpEQWhWuOZl32YDkUCskB0iAEeFjAXTIEdlu/uRrS1ExhnwH6Xfw+zsziZ4q8jmehyV+yGBAJoPKZtXtxlVIyZyZx61Znd38NEkvYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VUBYNmDO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D785C072AA;
+	Wed, 17 Apr 2024 18:47:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713379660;
+	bh=ObeGcJLBE+oOTwuDf0gmIllSwIgs3VjK5sPj+MWo/6s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VUBYNmDOHVR9aG0bfxb7PRFesARBFNmYyCFy6pzgSrZmAe8ueprUBCzTbebIkbgOn
+	 mrlxOz7gxyv33lCKgKUily2GNr+ayCg9q1G2naEi7uUdMFGomXBybbbwrmlfTwTnfy
+	 59ubGQwCR1H2T1jvDX5qLMz5WdHMJV+MvzkfvMvJ5iOqqZyBd6EYmmIrfQeHPzlEKt
+	 8xe01Wx3LSBqBQTgwzPhBBcfz6gEmnIRBZ5+oHdxJHkFXN4nphc4uY//7qzCPRff1w
+	 kLTGjA7AQgtwV7ZVGyk2nsL03LXEVYKRh1VsD6nx8FjvMWtgt28ah72li8BFZiECEO
+	 eMmyLxrwAXrmw==
+Date: Wed, 17 Apr 2024 13:47:38 -0500
+From: Rob Herring <robh@kernel.org>
+To: Alexandre Mergnat <amergnat@baylibre.com>
+Cc: Will Deacon <will@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+	devicetree@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	linux-pwm@vger.kernel.org,
+	Michael Turquette <mturquette@baylibre.com>,
+	Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	CK Hu <ck.hu@mediatek.com>, Maxime Ripard <mripard@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-mediatek@lists.infradead.org, dri-devel@lists.freedesktop.org,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-kernel@vger.kernel.org,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Jitao Shi <jitao.shi@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>, linux-clk@vger.kernel.org,
+	Daniel Vetter <daniel@ffwll.ch>, Stephen Boyd <sboyd@kernel.org>,
+	David Airlie <airlied@gmail.com>
+Subject: Re: [PATCH v2 08/18] dt-bindings: display: mediatek: gamma: add
+ compatible for MT8365 SoC
+Message-ID: <171337953454.3077398.11466593614240146510.robh@kernel.org>
+References: <20231023-display-support-v2-0-33ce8864b227@baylibre.com>
+ <20231023-display-support-v2-8-33ce8864b227@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240413-tcp-ao-selftests-fixes-v1-0-f9c41c96949d@gmail.com> <20240416072809.3ae7c3d3@kernel.org>
-In-Reply-To: <20240416072809.3ae7c3d3@kernel.org>
-From: Dmitry Safonov <0x7f454c46@gmail.com>
-Date: Wed, 17 Apr 2024 19:47:18 +0100
-Message-ID: <CAJwJo6Yw4S1wCcimRVy=P8h0Ez0UDt-yw2jqSY-ph3TKsQVVGA@mail.gmail.com>
-Subject: Re: [PATCH net 0/4] selftests/net/tcp_ao: A bunch of fixes for TCP-AO selftests
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Dmitry Safonov via B4 Relay <devnull+0x7f454c46.gmail.com@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231023-display-support-v2-8-33ce8864b227@baylibre.com>
 
-On Tue, 16 Apr 2024 at 15:28, Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Sat, 13 Apr 2024 02:42:51 +0100 Dmitry Safonov via B4 Relay wrote:
-> > Started as addressing the flakiness issues in rst_ipv*, that affect
-> > netdev dashboard.
->
-> Thank you! :)
 
-Jakub, you are very welcome :)
-I'll keep an eye on the dashboard, but I very much encourage you to
-ping me in case of any other issues with tcp_ao selftests.
+On Tue, 16 Apr 2024 17:53:09 +0200, Alexandre Mergnat wrote:
+> Document the display Gamma on MT8365, which is compatible
+> with that of the MT8183.
+> 
+> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
+> ---
+>  Documentation/devicetree/bindings/display/mediatek/mediatek,gamma.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-I currently have v2 for tcp-ao tracepoints, but delaying it as working
-on a reproducer/selftest for an issue I think I have a patch for.
+Acked-by: Rob Herring (Arm) <robh@kernel.org>
 
-BTW, do you know if those were addressed or anyone is looking into
-them? (from other tcp-ao hits, that seem not anyhow related to tcp-ao
-itself):
-
-1. [ 240.001391][ T833] Possible interrupt unsafe locking scenario:
-[  240.001391][  T833]
-[  240.001635][  T833]        CPU0                    CPU1
-[  240.001797][  T833]        ----                    ----
-[  240.001958][  T833]   lock(&p->alloc_lock);
-[  240.002083][  T833]                                local_irq_disable();
-[  240.002284][  T833]                                lock(&ndev->lock);
-[  240.002490][  T833]                                lock(&p->alloc_lock);
-[  240.002709][  T833]   <Interrupt>
-[  240.002819][  T833]     lock(&ndev->lock);
-[  240.002937][  T833]
-[  240.002937][  T833]  *** DEADLOCK ***
-
-https://netdev-3.bots.linux.dev/vmksft-tcp-ao-dbg/results/537021/14-self-connect-ipv6/stderr
-
-2. [  251.411647][   T71] WARNING: SOFTIRQ-safe -> SOFTIRQ-unsafe lock
-order detected
-[  251.411986][   T71] 6.9.0-rc1-virtme #1 Not tainted
-[  251.412214][   T71] -----------------------------------------------------
-[  251.412533][   T71] kworker/u16:1/71 [HC0[0]:SC0[2]:HE1:SE0] is
-trying to acquire:
-[  251.412837][   T71] ffff888005182c28 (&p->alloc_lock){+.+.}-{2:2},
-at: __get_task_comm+0x27/0x70
-[  251.413214][   T71]
-[  251.413214][   T71] and this task is already holding:
-[  251.413527][   T71] ffff88802f83efd8 (&ul->lock){+.-.}-{2:2}, at:
-rt6_uncached_list_flush_dev+0x138/0x840
-[  251.413887][   T71] which would create a new lock dependency:
-[  251.414153][   T71]  (&ul->lock){+.-.}-{2:2} -> (&p->alloc_lock){+.+.}-{2:2}
-[  251.414464][   T71]
-[  251.414464][   T71] but this new dependency connects a SOFTIRQ-irq-safe lock:
-[  251.414808][   T71]  (&ul->lock){+.-.}-{2:2}
-
-https://netdev-3.bots.linux.dev/vmksft-tcp-ao-dbg/results/537201/17-icmps-discard-ipv4/stderr
-
-3. [ 264.280734][ C3] Possible unsafe locking scenario:
-[  264.280734][    C3]
-[  264.280968][    C3]        CPU0                    CPU1
-[  264.281117][    C3]        ----                    ----
-[  264.281263][    C3]   lock((&tw->tw_timer));
-[  264.281427][    C3]
-lock(&hashinfo->ehash_locks[i]);
-[  264.281647][    C3]                                lock((&tw->tw_timer));
-[  264.281834][    C3]   lock(&hashinfo->ehash_locks[i]);
-
-https://netdev-3.bots.linux.dev/vmksft-tcp-ao-dbg/results/547461/19-self-connect-ipv4/stderr
-
-I can spend some time on them after I verify that my fix for -stable
-is actually fixing an issue I think it fixes.
-Seems like your automation + my selftests are giving some fruits, hehe.
-
-Thanks,
-             Dmitry
 
