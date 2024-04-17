@@ -1,157 +1,172 @@
-Return-Path: <linux-kernel+bounces-148554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41C538A8457
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:23:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E668E8A845E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:24:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F085E285E25
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:23:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DDE9B24A4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:24:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9511A13F00A;
-	Wed, 17 Apr 2024 13:23:12 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A26FD140E3D;
+	Wed, 17 Apr 2024 13:23:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eP4UM0+N"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F6513DDD5;
-	Wed, 17 Apr 2024 13:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0B614038A;
+	Wed, 17 Apr 2024 13:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713360192; cv=none; b=LGA9CK2MV+isr6R4jgG7iI02eL7htf/v/nuyzHhNy4KBHce6gyZifCv43gGrFa0XFpJ3P+YcX2BMRXRC8jKdz9karSxwqyUipZ/bCQpGfzl2mj0wuY+GRxMxRoqZ531G8X0J/WdSj8HfrM+y3f5D8JHt8uLw8ez9BFIQslMQGFw=
+	t=1713360200; cv=none; b=A/ye9vFume7j5Mjls9sNcEr35MqNZKVo2TYXXvKzG5N+4LkXO3oatKDSwpdMxHRrDu/1GZHjRYWNroznK5eB8jzWz+cvg5pMTP8/Zy7tISmawEtGIg+iCC3IfOsXOs/SY/zdAA/S5vHdWr5s+DZKR6hVGYf756A14WEUTccFe/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713360192; c=relaxed/simple;
-	bh=sQKHQVTz6617ttADufmp9ihU+WIIB9FwOAsc0+Q5irs=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=jcealKP4kvbvONDtGDrf6k5ZXDKJ3UENAA0IHrcLZiEvPFWHOBgEi0lO3Xsvm61ZAxkYWX7IaHOKxSYbinZK0vhz/Lfx8TOVkXUbs5CkpfRl6rzcSLz1iGN6OwYciFp5Kb/BulCGf955CxQU+3eNNfid9wOle/JIv+prilJJiT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VKM3b4PB2zNrxM;
-	Wed, 17 Apr 2024 21:20:43 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 794CF18007F;
-	Wed, 17 Apr 2024 21:23:07 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 17 Apr
- 2024 21:23:07 +0800
-Subject: Re: [PATCH net-next v2 10/15] mm: page_frag: reuse existing bit field
- of 'va' for pagecnt_bias
-To: Alexander H Duyck <alexander.duyck@gmail.com>, <davem@davemloft.net>,
-	<kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Andrew Morton
-	<akpm@linux-foundation.org>, <linux-mm@kvack.org>
-References: <20240415131941.51153-1-linyunsheng@huawei.com>
- <20240415131941.51153-11-linyunsheng@huawei.com>
- <68d1c7d3dfcd780fa3bed0bb71e41d7fb0a8c15d.camel@gmail.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <292c98e5-e58e-3474-f214-44fe6a83e6c5@huawei.com>
-Date: Wed, 17 Apr 2024 21:23:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	s=arc-20240116; t=1713360200; c=relaxed/simple;
+	bh=tcnQKu88XTy8wDaU4LOAQDFClMImiR13+BGl1UeDOcw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Qo1+TeH7iwU1nIYTwTGCbmLZ2F/2qtiPgmWEwlY0oKxuHBm/xNxb9wSgzjSsZiZGwnyaszGaV4paP229z47XxWn2vLVAWT5mGE+/ESfxGdHEME0dPeO6EZpOBjqScuFQs+QV2jc+2IYhWMsE6hww8VmybLcvwxScfnsDNUx2vJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eP4UM0+N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 230D8C4AF0D;
+	Wed, 17 Apr 2024 13:23:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713360200;
+	bh=tcnQKu88XTy8wDaU4LOAQDFClMImiR13+BGl1UeDOcw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=eP4UM0+NtCz0XOTbVtZ9hq4GdFytAqHlxVyBQGYbKRgFkjK/pn+0tVmHifavrNm95
+	 zOClKjmZkDB9T2wTq540cBavx9obd5Z6JpoO104EMkKZwlG/5sDK9v89YOUUDVXmnn
+	 z8xiP70oY0hPB9GtGuRfETx435RMpKcfyOz/qxi4cif5JBJvF51Hm2SGJACyetP5/A
+	 X42B53ZE2/BVc3pbKtJEhhIxhpqoGEQ9fXJBeHQPKVL50H7e7AT2uOJ5DP4IrzIGU1
+	 qc8BsVB+XhJ5Wn3Us2BhIDColZMm+oM9oCGHw018ffHOJ/xyt3ssDZOBCFFvMmWaz0
+	 TH8p9747PcjcA==
+Message-ID: <48b2e0fd-4d7f-4bb6-aadd-804847e3250c@kernel.org>
+Date: Wed, 17 Apr 2024 15:23:19 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <68d1c7d3dfcd780fa3bed0bb71e41d7fb0a8c15d.camel@gmail.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4] ARM: dts: BCM5301X: Add DT for ASUS RT-AC3200
+To: Florian Fainelli <florian.fainelli@broadcom.com>,
+ =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>, Rafal Milecki <zajec5@gmail.com>,
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+Cc: Tom Brautaset <tbrautaset@gmail.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
+ <20240414-for-soc-asus-rt-ac3200-ac5300-v1-3-118c90bae6e5@arinc9.com>
+ <a88385a4-afad-4bd8-afc1-37e185e781f4@kernel.org>
+ <85261d11-d6cb-4718-88d9-95a7efe5c0ab@arinc9.com>
+ <e6cfe735-0a46-4c07-90ee-4ae25c921b03@kernel.org>
+ <335cdd4b-7309-4633-9b4f-6487c72c395c@arinc9.com>
+ <07c9c5f5-c4b9-44d6-b909-5aa306f56898@kernel.org>
+ <00ba4593-d720-419a-a97d-37c402c91e44@arinc9.com>
+ <7b465ddb-2b18-4e7f-8b03-d4e51006e1cb@broadcom.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <7b465ddb-2b18-4e7f-8b03-d4e51006e1cb@broadcom.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2024/4/17 0:33, Alexander H Duyck wrote:
-> On Mon, 2024-04-15 at 21:19 +0800, Yunsheng Lin wrote:
->> As alignment of 'va' is always aligned with the order of the
->> page allocated, we can reuse the LSB bits for the pagecount
->> bias, and remove the orginal space needed by 'pagecnt_bias'.
->> Also limit the 'fragsz' to be at least the size of
->> 'usigned int' to match the limited pagecnt_bias.
+On 17/04/2024 05:15, Florian Fainelli wrote:
+> 
+> 
+> On 4/15/2024 2:10 AM, Arınç ÜNAL wrote:
+>> On 15.04.2024 10:57, Krzysztof Kozlowski wrote:
+>>> On 14/04/2024 22:21, Arınç ÜNAL wrote:
+>>>> NVRAM is described as both flash device partition and memory mapped 
+>>>> NVMEM.
+>>>> This platform stores NVRAM on flash but makes it also memory accessible.
+>>>>
+>>>> As device partitions are described in board DTS, the nvram node must 
+>>>> also
+>>>
+>>> Sorry, but we do not talk about partitions. Partitions are indeed board
+>>> property. But the piece of hardware, so NVMEM, is provided by SoC.
+>>>
+>>>> be defined there as its address and size will be different by board. 
+>>>> It has
+>>>> been widely described on at least bcm4709 and bcm47094 SoC board DTS 
+>>>> files
+>>>> here.
+>>>
+>>> These not proper arguments. What you are saying here is that SoC does no
+>>> have nvram at address 0x1c08000. Instead you are saying there some sort
+>>> of bus going out of SoC to the board and on the board physically there
+>>> is some NVRAM sort of memory attached to this bus.
 >>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> 
-> What is the point of this? You are trading off space for size on a data
-> structure that is only something like 24B in size and only allocated a
-> few times.
-
-As we are going to replace page_frag with page_frag_cache in patch 13,
-it is not going to only be allocated a few times as mentioned.
-
-> 
->> ---
->>  include/linux/page_frag_cache.h | 20 +++++++----
->>  mm/page_frag_cache.c            | 63 +++++++++++++++++++--------------
->>  2 files changed, 50 insertions(+), 33 deletions(-)
+>> Yes that is the case. NVRAM is stored on a partition on the flash. On the
+>> Broadcom NorthStar platform, the NAND flash base is 0x1c000000, the NOR
+>> flash base is 0x1e000000.
 >>
->> diff --git a/include/linux/page_frag_cache.h b/include/linux/page_frag_cache.h
->> index 40a7d6da9ef0..a97a1ac017d6 100644
->> --- a/include/linux/page_frag_cache.h
->> +++ b/include/linux/page_frag_cache.h
->> @@ -9,7 +9,18 @@
->>  #define PAGE_FRAG_CACHE_MAX_ORDER	get_order(PAGE_FRAG_CACHE_MAX_SIZE)
->>  
->>  struct page_frag_cache {
->> -	void *va;
->> +	union {
->> +		void *va;
->> +		/* we maintain a pagecount bias, so that we dont dirty cache
->> +		 * line containing page->_refcount every time we allocate a
->> +		 * fragment. As 'va' is always aligned with the order of the
->> +		 * page allocated, we can reuse the LSB bits for the pagecount
->> +		 * bias, and its bit width happens to be indicated by the
->> +		 * 'size_mask' below.
->> +		 */
->> +		unsigned long pagecnt_bias;
->> +
->> +	};
+>> For the board in this patch, the flash is a NAND flash. The NVRAM partition
+>> starts at address 0x00080000. Therefore, the NVRAM component's address is
+>> 0x1c080000.
 > 
-> Both va and pagecnt_bias are frequently accessed items. If pagecnt_bias
-> somehow ends up exceeding the alignment of the page we run the risk of
-> corrupting data or creating an page fault.
+> Because the flash is memory mapped into the CPU's address space, a 
+> separate node was defined since it is not part of the "soc" node which 
+> describes the bridge that connects all of the peripherals.
 > 
-> In my opinion this is not worth the risk especially since with the
-> previous change your new change results in 0 size savings on 64b
-> systems as the structure will be aligned to the size of the pointer.
+> Whether we should create an additional bus node which describes the 
+> bridge being used to access the flash devices using the MMIO windows is 
+> debatable. Rafal, what do you think?
 
-But aren't we going to avoid a register usage and loading if reusing
-the lower bits of 'va' for the 64b systems? And added benefit is the
-memory saving for 32b systems as mentioned in previous patch.
+Sorry guys, I don't get. I don't know the addresses neither the names
+like Broadcom Northstar, so this does not clarify me at all.
 
-> 
->>  #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
->>  	__u16 offset;
->>  	__u16 size_mask:15;
->> @@ -18,10 +29,6 @@ struct page_frag_cache {
->>  	__u32 offset:31;
->>  	__u32 pfmemalloc:1;
->>  #endif
->> -	/* we maintain a pagecount bias, so that we dont dirty cache line
->> -	 * containing page->_refcount every time we allocate a fragment.
->> -	 */
->> -	unsigned int		pagecnt_bias;
->>  };
->>  
->>  static inline void page_frag_cache_init(struct page_frag_cache *nc)
->> @@ -56,7 +63,8 @@ static inline void *page_frag_alloc_va_align(struct page_frag_cache *nc,
->>  					     gfp_t gfp_mask,
->>  					     unsigned int align)
->>  {
->> -	WARN_ON_ONCE(!is_power_of_2(align) || align >= PAGE_SIZE);
->> +	WARN_ON_ONCE(!is_power_of_2(align) || align >= PAGE_SIZE ||
->> +		     fragsz < sizeof(unsigned int));
-> 
-> What is the reason for this change? Seems like it is to account for an
-> issue somewhere.
+Please answer the simple questions:
+1. Is NAND flash part of SoC?
+2. If not, is NAND flash provided by Broadcom or anyone else?
 
-If the fragsz is one, we might not have enough pagecnt_bias for it,
-as we are using the lower bits of 'va' now.
+Best regards,
+Krzysztof
 
-> 
->>  
->>  	return __page_frag_alloc_va_align(nc, fragsz, gfp_mask, align);
 
