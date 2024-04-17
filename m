@@ -1,110 +1,193 @@
-Return-Path: <linux-kernel+bounces-148210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 429B38A7F59
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:13:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA9E18A7F61
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:15:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC3C52832B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:13:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B54DC1C20B12
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:15:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1B612DD8C;
-	Wed, 17 Apr 2024 09:13:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B14BC130484;
+	Wed, 17 Apr 2024 09:14:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b="eeJ+Rzqv"
-Received: from smtp-fw-33001.amazon.com (smtp-fw-33001.amazon.com [207.171.190.10])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Pv5vHMeE"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BC2757898;
-	Wed, 17 Apr 2024 09:13:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.190.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C9357898;
+	Wed, 17 Apr 2024 09:14:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713345182; cv=none; b=k7D1QUJQGtnmHBXBNoH8Tn+NSfEt0bzCGMIfMQ6inmaxc2dhuwDceMTYd0z+N6aPR7scdegWRaE0EQr8hf/G8n94qkxi8L7hhQgklwIIXk/K1LQlVQgljV4bWD+NDwTjby12TJs6faFSdOAUETvCjMVCjFaGv6LmZFkVynL5WOU=
+	t=1713345290; cv=none; b=iivsm/xf7vh8O7ChxAKhV+5olD3BOf5K+PGtSWZLDQ02zDUVucVkJkYk+Iega9G6BeC9PtFNQmNg9vLAhFk8KP0pRYkGT00gNQkH5r9vwg2sRCvQLzN9F9CoSuk8ygP49cqbBfprTSgowytXx0PbDDC6UIjeTFK3fHjzljVh+qM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713345182; c=relaxed/simple;
-	bh=9ZnFyt9EnaFn4kkSCLK7jpsiIIqRXRrmN39V9djcWKY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=DKBzxXMiEziowyITcsljcvjngzPNf6bEzWxgH7xm8qFv0WtYPweo0nd0I77nfK+NXGgQHS7zOgr1jdWXJkYSP4tYP5B6nNZvqEh/n2oyy3EHgmAA6BhU+5md0gEnTY/SUX2BTvB76XDiHvxDohr6z8IMdVII3TkI41R8Y2cBO6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b=eeJ+Rzqv; arc=none smtp.client-ip=207.171.190.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1713345181; x=1744881181;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=9ZnFyt9EnaFn4kkSCLK7jpsiIIqRXRrmN39V9djcWKY=;
-  b=eeJ+RzqvQzt9P4nHC81stHiXqi/tht/MWRnSUKjSZvaT0G5zRcSaXANR
-   BG1Bi5BdPPlkf2ZB3fBp2vrGV20/C35qd8IX0Iu27jEo+T7OLKE71TW7y
-   l/dATiGPugEYT5WkXxX1MeZthVWR1iqgJbJFdJY5qmJw4+qWXIY237zsk
-   w=;
-X-IronPort-AV: E=Sophos;i="6.07,208,1708387200"; 
-   d="scan'208";a="339290797"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-33001.sea14.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 09:12:52 +0000
-Received: from EX19MTAUWB001.ant.amazon.com [10.0.21.151:24771]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.59.40:2525] with esmtp (Farcaster)
- id ca7a4c02-a734-4bba-bd1a-9e90b51c919c; Wed, 17 Apr 2024 09:12:50 +0000 (UTC)
-X-Farcaster-Flow-ID: ca7a4c02-a734-4bba-bd1a-9e90b51c919c
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Wed, 17 Apr 2024 09:12:50 +0000
-Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
- (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Wed, 17 Apr
- 2024 09:12:47 +0000
-Message-ID: <5351cd46-7228-48d8-b1a2-8ab91dce24f7@amazon.de>
-Date: Wed, 17 Apr 2024 11:12:45 +0200
+	s=arc-20240116; t=1713345290; c=relaxed/simple;
+	bh=eqBJott6hPgctc1oZBVbJh/Mq8Jhu8Pex58Mgk17ASY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KBhBgDvd3zUTtOxwoZU7yQ7K1SOjQEOVpYNVXxvMMhxnZvnnhxb8OSJF3/ksX6lPK9QIKYMI/L6awAzEPI3Fn/qo6W1v4gC1B68a2cacKyBL8Ishn/V1PEt/CKoOKpyBrD/5S20GibH6gBWbmUxaDSXuNpsnIHUUawGPk2ZCzf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Pv5vHMeE; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713345286;
+	bh=eqBJott6hPgctc1oZBVbJh/Mq8Jhu8Pex58Mgk17ASY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Pv5vHMeEtF9qv4COQBqeTEHG7nzSOEmsFrN8yhdEkSNClUZeVTvJCrfEBxLR4mgDx
+	 7popDit7WVv5CadsNqBX9QTvfn6KrHY2sToFp3IIZhV7V2jNTpOip1s6kooUcXGvNa
+	 wubLvSr4oZ8RPdWjOuoyfSdSDqRKu3Lu3GS5405ScSEniqTq+MSlOCw8LCrmmz6axR
+	 gl7P5UixbVUKyPa9hBGPosNvy9zDCa6DqQl2kyNOIv8gl+JdaA+okq5dQkGfNbHgBd
+	 l8C1ZoeMfoqJIfwDdBqaUmGPsrasplkp2lcWPKPCqP8sLs8n7buleQSCfG0RhkiUPQ
+	 hCXupJnl9DwJw==
+Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0E94037813C4;
+	Wed, 17 Apr 2024 09:14:45 +0000 (UTC)
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+To: djakov@kernel.org
+Cc: robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	keescook@chromium.org,
+	gustavoars@kernel.org,
+	henryc.chen@mediatek.com,
+	linux-pm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	kernel@collabora.com,
+	wenst@chromium.org,
+	amergnat@baylibre.com
+Subject: [PATCH v2 0/7] MediaTek DVFSRC Bus Bandwidth and Regulator knobs
+Date: Wed, 17 Apr 2024 11:14:35 +0200
+Message-ID: <20240417091442.170505-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/5] virt: vmgenid: rearrange code to make review
- easier
-Content-Language: en-US
-To: Babis Chalios <bchalios@amazon.es>, <tytso@mit.edu>, <Jason@zx2c4.com>,
-	<olivia@selenic.com>, <herbert@gondor.apana.org.au>, <robh@kernel.org>,
-	<krzk+dt@kernel.org>, <conor+dt@kernel.org>, <linux-crypto@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <sudanl@amazon.com>, <xmarcalx@amazon.co.uk>, <dwmw@amazon.co.uk>
-References: <20240417081212.99657-1-bchalios@amazon.es>
- <20240417081212.99657-2-bchalios@amazon.es>
- <10d41e7e-87b1-4036-a740-da36270a4325@amazon.de>
- <2838b126-ad87-4642-9223-e24f3fdb2c63@amazon.es>
-From: Alexander Graf <graf@amazon.de>
-In-Reply-To: <2838b126-ad87-4642-9223-e24f3fdb2c63@amazon.es>
-X-ClientProxiedBy: EX19D046UWA003.ant.amazon.com (10.13.139.18) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 
-Ck9uIDE3LjA0LjI0IDExOjA1LCBCYWJpcyBDaGFsaW9zIHdyb3RlOgo+Cj4KPiBPbiAxNy80LzI0
-IDEwOjM1LCBBbGV4YW5kZXIgR3JhZiB3cm90ZToKPj4KPj4gT24gMTcuMDQuMjQgMTA6MTIsIEJh
-YmlzIENoYWxpb3Mgd3JvdGU6Cj4+PiBGcm9tOiBTdWRhbiBMYW5kZ2UgPHN1ZGFubEBhbWF6b24u
-Y29tPgo+Pj4KPj4+IFJlYXJyYWdlIHRoZSBmdW5jdGlvbnMgb2Ygdm1nZW5pZCB0byBtYWtlIHRo
-ZSBuZXh0IGNvbW1pdCwKPj4+IHdoaWNoIHJlLWltcGxlbWVudHMgdm1nZW5pZCBhcyBhIHBsYXRm
-b3JtIGRyaXZlciwgZWFzaWVyIHRvIHJldmlldy4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBTdWRh
-biBMYW5kZ2UgPHN1ZGFubEBhbWF6b24uY29tPgo+Pgo+Pgo+PiBZb3UgY2FuJ3Qgc2lnbiBvZmYg
-b24gYmVoYWxmIG9mIHNvbWVvbmUgZWxzZS4gVGhlIFNvQiBoZXJlIG5lZWRzIHRvIAo+PiBiZSB5
-b3Vycy4gSWYgeW91IGFyZSB0YWtpbmcgb3ZlciB0aGlzIGNvZGUgZnJvbSBTdWRhbiwgSSdkIHN1
-Z2dlc3QgdG8gCj4+IHRha2Ugb3ZlciBmdWxsIG93bmVyc2hpcCBvZiBpdCBhbmQgcHV0IHlvdXIg
-b3duIG5hbWUgYXMgYXV0aG9yIGFuZCAKPj4gU29CIGluIGFsbCBwYXRjaGVzLgo+Pgo+Cj4gSSB0
-aG91Z2h0IGFib3V0IGl0IGFuZCBpdCBzZWVtZWQgd2VpcmQgdG8gbWUgdGhhdCBJIHRha2Ugb3Zl
-ciBTb0IgYW5kIAo+IGF1dGhvcnNoaXAgc2luY2UgSSBvbmx5IHRvdWNoZWQgb25lIGxpbmUgaW4g
-b25lIG9mCj4gdGhlIHBhdGNoZXMsIGJ1dCBJIHdpbGwgYmUgdGFraW5nIG92ZXIgdGhlIHBhdGNo
-ZXMsIHNvIEkgY2FuIGRvIHRoYXQgCj4gaWYgdGhhdCdzIHRoZSB3YXkgd2UgdGhpbmdzIGFyZSBk
-b25lLgo+Cj4gRG9lcyBpdCBtYWtlIHNlbnNlIHRvIGF0IGxlYXN0IGFkZCAiQ28tYXV0aG9yZWQt
-YnkgU3VkYW4gTGFuZGdlIAo+IDxzdWRhbmxAYW1hem9uLmNvbT4iIGhlcmU/CgoKWW91IGNhbiBj
-ZXJ0YWlubHkgZG8gdGhhdCwgeWVzLgoKCkFsZXgKCgoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2Vu
-dGVyIEdlcm1hbnkgR21iSApLcmF1c2Vuc3RyLiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1
-ZWhydW5nOiBDaHJpc3RpYW4gU2NobGFlZ2VyLCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBh
-bSBBbXRzZ2VyaWNodCBDaGFybG90dGVuYnVyZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVy
-bGluClVzdC1JRDogREUgMjg5IDIzNyA4NzkKCgo=
+Changes in v2:
+ - Fixed issues with regulator binding about useless quotes and
+   wrong binding path (oops)
+ - Removed useless 'items' from DVFSRC main binding
+ - Allowed address/size cells to DVFSRC main binding to resolve
+   validation issues on the regulator and interconnect bindings
+ - Changed dvfsrc node name to `system-controller`, as the DVFSRC
+   is actually able to control multiple system components.
+ - Added a commit to remove mtk-dvfs-regulator.c before adding the
+   new, refactored regulator driver
+
+
+This series adds support for the MediaTek Dynamic Voltage and Frequency
+Scaling Resource Controller (DVFSRC), found on many MediaTek SoCs.
+
+This hardware collects requests from both software and the various remote
+processors embededd into the SoC, and decides about a minimum operating
+voltage and a minimum DRAM frequency to fulfill those requests, in an
+effort to provide the best achievable performance per watt.
+
+Such hardware IP is capable of transparently performing direct register
+R/W on all of the DVFSRC-controlled regulators and SoC bandwidth knobs.
+
+Summarizing how the DVFSRC works for Interconnect:
+
+             ICC provider         ICC Nodes
+                              ----          ----
+             _________       |CPU |   |--- |VPU |
+    _____   |         |-----  ----    |     ----
+   |     |->|  DRAM   |       ----    |     ----
+   |DRAM |->|scheduler|----- |GPU |   |--- |DISP|
+   |     |->|  (EMI)  |       ----    |     ----
+   |_____|->|_________|---.   -----   |     ----
+               /|\         `-|MMSYS|--|--- |VDEC|
+                |             -----   |     ----
+                |                     |     ----
+                | change DRAM freq    |--- |VENC|
+             --------                 |     ----
+    SMC --> | DVFSRC |                |     ----
+             --------                 |--- |IMG |
+                                      |     ----
+                                      |     ----
+                                      |--- |CAM |
+                                            ----
+
+..and for regulators, it's simply...
+   SMC -> DVFSRC -> Regulator voltage decider -> (vreg) Registers R/W
+
+Please note that this series is based on an old (abandoned) series from
+MediaTek [1], and reuses some parts of the code found in that.
+
+Besides, included in this series, there's also a refactoring of the
+mtk-dvfsrc-regulator driver, which never got compiled at all, and would
+not build anyway because of missing headers and typos: that commit did
+not get any Fixes tag because, well, backporting makes no sense at all
+as the DVFSRC support - which is critical for that driver to work - is
+introduced with *this series*! :-)
+
+P.S.: The DVFSRC regulator is a requirement for the MediaTek UFSHCI
+      controller's crypto boost feature, which is already upstream but
+      lacking the actual regulator to work....... :-)
+
+[1]: https://lore.kernel.org/all/20210812085846.2628-1-dawei.chien@mediatek.com/
+
+Cheers!
+AngeloGioacchino Del Regno (7):
+  dt-bindings: regulator: Add bindings for MediaTek DVFSRC Regulators
+  dt-bindings: interconnect: Add MediaTek EMI Interconnect bindings
+  dt-bindings: soc: mediatek: Add DVFSRC bindings for MT8183 and MT8195
+  soc: mediatek: Add MediaTek DVFS Resource Collector (DVFSRC) driver
+  regulator: Remove mtk-dvfsrc-regulator.c
+  regulator: Add refactored mtk-dvfsrc-regulator driver
+  interconnect: mediatek: Add MediaTek MT8183/8195 EMI Interconnect
+    driver
+
+ .../interconnect/mediatek,mt8183-emi.yaml     |  76 +++
+ .../mediatek,mt6873-dvfsrc-regulator.yaml     |  71 +++
+ .../soc/mediatek/mediatek,mt8183-dvfsrc.yaml  |  94 +++
+ drivers/interconnect/Kconfig                  |   1 +
+ drivers/interconnect/Makefile                 |   1 +
+ drivers/interconnect/mediatek/Kconfig         |  32 +
+ drivers/interconnect/mediatek/Makefile        |   5 +
+ drivers/interconnect/mediatek/icc-emi.c       | 153 +++++
+ drivers/interconnect/mediatek/icc-emi.h       |  40 ++
+ drivers/interconnect/mediatek/mt8183.c        | 143 +++++
+ drivers/interconnect/mediatek/mt8195.c        | 339 +++++++++++
+ drivers/regulator/mtk-dvfsrc-regulator.c      | 242 ++++----
+ drivers/soc/mediatek/Kconfig                  |  11 +
+ drivers/soc/mediatek/Makefile                 |   1 +
+ drivers/soc/mediatek/mtk-dvfsrc.c             | 551 ++++++++++++++++++
+ .../interconnect/mediatek,mt8183.h            |  23 +
+ .../interconnect/mediatek,mt8195.h            |  44 ++
+ include/linux/soc/mediatek/dvfsrc.h           |  36 ++
+ include/linux/soc/mediatek/mtk_sip_svc.h      |   3 +
+ 19 files changed, 1736 insertions(+), 130 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/interconnect/mediatek,mt8183-emi.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mediatek,mt8183-dvfsrc.yaml
+ create mode 100644 drivers/interconnect/mediatek/Kconfig
+ create mode 100644 drivers/interconnect/mediatek/Makefile
+ create mode 100644 drivers/interconnect/mediatek/icc-emi.c
+ create mode 100644 drivers/interconnect/mediatek/icc-emi.h
+ create mode 100644 drivers/interconnect/mediatek/mt8183.c
+ create mode 100644 drivers/interconnect/mediatek/mt8195.c
+ create mode 100644 drivers/soc/mediatek/mtk-dvfsrc.c
+ create mode 100644 include/dt-bindings/interconnect/mediatek,mt8183.h
+ create mode 100644 include/dt-bindings/interconnect/mediatek,mt8195.h
+ create mode 100644 include/linux/soc/mediatek/dvfsrc.h
+
+-- 
+2.44.0
 
 
