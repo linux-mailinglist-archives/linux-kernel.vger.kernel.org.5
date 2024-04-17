@@ -1,135 +1,213 @@
-Return-Path: <linux-kernel+bounces-147982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E9638A7C22
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:13:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 511C38A7C2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:17:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5765B2189F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:13:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08F6A282C55
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:17:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 915E956464;
-	Wed, 17 Apr 2024 06:13:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF845A0FB;
+	Wed, 17 Apr 2024 06:16:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t7Uh4jyw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QkA4LyQV"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFACE535C1;
-	Wed, 17 Apr 2024 06:13:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F13C05B1E1;
+	Wed, 17 Apr 2024 06:16:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713334411; cv=none; b=BdDTtBxTd1nAJTcbtNuxTIlSDNKgAuxRG3zDx6kF+MT9h2wyRJTHmfQzurd4XJvbcxgjc91qYOfYCSXJZCQZWKRhdsO4X8t9FcuiOu0JZGWrW6N38OVTOWEYAitSaWvohqkSAj1TwyU/JwWjtiaL2jifBlqxzoiP/5K6kQoEXrA=
+	t=1713334607; cv=none; b=HcQCBOcxrIchM1sjCVHrKB+A3QfAeb945vBOk41X8tPAufmHb+4QE2KvMWbTVZAOiw9zyNNFlXZfl4ACAoP62m+xRxE26HntjktY/gRA5A8GNaBMLEZeEpJuOqkMl6XbcQMiyH3dFcQfNliJBlQ2KlId/dftYtauElOMyLfzT4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713334411; c=relaxed/simple;
-	bh=bNB/eXY6+dVydFykPDb6ff7M3Qgc4QuYt3c4o86sTV4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pkuMIA98mDjjJ4cXgBJ4DMMvQ/lfErZ82nAYndEmt6Ieb2v0ycWAo7ajuhXIG3gDDtmyjtgRPB8xT0pcECswhH+uSKlO0DRZwKv397bwQsNF8QfOro0D8Lf1UknozDLXBguWWA2l0QboXtyIHFyIXYkmVdEVl+XPtpaJ+2rThr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t7Uh4jyw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26F70C072AA;
-	Wed, 17 Apr 2024 06:13:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713334411;
-	bh=bNB/eXY6+dVydFykPDb6ff7M3Qgc4QuYt3c4o86sTV4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=t7Uh4jywnTRLlqySQBcH71lozr0vn69p7OB6uqY8Lm959SIjLjUxiQx3HanfAuLjf
-	 m3j5LKAnHYbpokiMZfyzDk8krqmwEfqM4aCPZEuMgx6KPrBxhnX8N1qAUsRESu6gDo
-	 LCG8H3oxaU/MsZtycSk8a2AvmglPOXdlQVBb63ZoXtqnwqMrZSDaoVvv8XWoz+vrx6
-	 /iNuFG7LqHcRr0Cvj9K0Br+W14I7Pio/p27ibfSaUSNBOqpgyrq4DYKkBQsZmQfNbf
-	 5U4rKFfk+0eK0QmhzpqetlB9nv6L1Qrh0oVq+TEO+0KSDgLzi8DKabGR+1WzIzlXz6
-	 m6rCvpGGhOMrQ==
-Date: Tue, 16 Apr 2024 23:13:29 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: "Mothershead, Hailey" <hailmo@amazon.com>
-Cc: "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] crypto: aead, cipher - zeroize key buffer after
- use
-Message-ID: <20240417061329.GA47903@quark.localdomain>
-References: <20240415221915.20701-1-hailmo@amazon.com>
- <20240415224942.GC5206@sol.localdomain>
- <45EEAC43-DC21-4B79-BE9A-9876A8C59269@amazon.com>
+	s=arc-20240116; t=1713334607; c=relaxed/simple;
+	bh=Zup4kVprGE6/Db88WKTYbbdgKIeTY5tkXinpBoc56No=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OqZpqKOgBfMlaQNgrF6fC/z6CbTzOYUOHuAeFkgO1hJ79NhkR6pO+GznQYoXhanTgZ+DlbhU75T4CIZSvNCA5OkM8fFnsoa8rHepqOL6lkSQpM5+RH8VlzSTdumM5Az0eQG6Hp3a3BDB3OozqfwYvaFdNL0yroQvAT1CjaXvv2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QkA4LyQV; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713334605; x=1744870605;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Zup4kVprGE6/Db88WKTYbbdgKIeTY5tkXinpBoc56No=;
+  b=QkA4LyQV0XjQMO4ITrMrDfVVJorTFO9gaRxh04s6uL569b+CDJOZZuN9
+   cQzO9qah+IoAML51pCKjE41NwOfCDjGu84M+GlCQnMbVdf/4lfN1c3gd1
+   wWWke1b6R8OZ22qJNOVgcElV1BQK4IeEenKLXvKZ95+LU2Y+03tZXhBNO
+   hn/lhzvi5JQ4Y0tDBBRIPveeLGAdf20mmWfoacu0r0kFkThkLJ7mTquyr
+   GLuVvBj9gchfNTkmjfVkGaAKehVkRyG8GK5tq+8oCPiID/4tDXJ/gTAJf
+   x6fL9FleF+vAs1zvdTaQYe1ytmIUndm79nw8S33gk5awNT2Fz5+YrTRCq
+   Q==;
+X-CSE-ConnectionGUID: nAogyA+RQMy9b97/msdyfw==
+X-CSE-MsgGUID: E5Qh5T5USS2HYYaRjyIU3g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="11750755"
+X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
+   d="scan'208";a="11750755"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 23:16:44 -0700
+X-CSE-ConnectionGUID: NsDJERb6RGuQWGQC9axYPw==
+X-CSE-MsgGUID: EEds5zuzTOCMVFxKwv0MeQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
+   d="scan'208";a="23108988"
+Received: from unknown (HELO SPR-S2600BT.bj.intel.com) ([10.240.192.124])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 23:16:35 -0700
+From: Zhenzhong Duan <zhenzhong.duan@intel.com>
+To: linux-pci@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-acpi@vger.kernel.org
+Cc: rafael@kernel.org,
+	lenb@kernel.org,
+	james.morse@arm.com,
+	tony.luck@intel.com,
+	bp@alien8.de,
+	dave@stgolabs.net,
+	jonathan.cameron@huawei.com,
+	dave.jiang@intel.com,
+	alison.schofield@intel.com,
+	vishal.l.verma@intel.com,
+	ira.weiny@intel.com,
+	bhelgaas@google.com,
+	helgaas@kernel.org,
+	mahesh@linux.ibm.com,
+	oohall@gmail.com,
+	linmiaohe@huawei.com,
+	shiju.jose@huawei.com,
+	adam.c.preble@intel.com,
+	leoyang.li@nxp.com,
+	lukas@wunner.de,
+	Smita.KoralahalliChannabasappa@amd.com,
+	rrichter@amd.com,
+	linux-cxl@vger.kernel.org,
+	linux-edac@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	erwin.tsaur@intel.com,
+	sathyanarayanan.kuppuswamy@intel.com,
+	dan.j.williams@intel.com,
+	feiting.wanyan@intel.com,
+	yudong.wang@intel.com,
+	chao.p.peng@intel.com,
+	qingshun.wang@linux.intel.com,
+	Zhenzhong Duan <zhenzhong.duan@intel.com>
+Subject: [PATCH v3 0/3] PCI/AER: Handle Advisory Non-Fatal error
+Date: Wed, 17 Apr 2024 14:14:04 +0800
+Message-Id: <20240417061407.1491361-1-zhenzhong.duan@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <45EEAC43-DC21-4B79-BE9A-9876A8C59269@amazon.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 16, 2024 at 07:14:28PM +0000, Mothershead, Hailey wrote:
-> > On 4/15/24, 3:50 PM, "Eric Biggers" <ebiggers@kernel.org <mailto:ebiggers@kernel.org>> wrote:
-> >
-> > On Mon, Apr 15, 2024 at 10:19:15PM +0000, Hailey Mothershead wrote:
-> > > I.G 9.7.B for FIPS 140-3 specifies that variables temporarily holding
-> > > cryptographic information should be zeroized once they are no longer
-> > > needed. Accomplish this by using kfree_sensitive for buffers that
-> > > previously held the private key.
-> > >
-> > > Signed-off-by: Hailey Mothershead <hailmo@amazon.com <mailto:hailmo@amazon.com>>
-> > > ---
-> > > crypto/aead.c | 3 +--
-> > > crypto/cipher.c | 3 +--
-> > > 2 files changed, 2 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/crypto/aead.c b/crypto/aead.c
-> > > index 16991095270d..c4ece86c45bc 100644
-> > > --- a/crypto/aead.c
-> > > +++ b/crypto/aead.c
-> > > @@ -35,8 +35,7 @@ static int setkey_unaligned(struct crypto_aead *tfm, const u8 *key,
-> > > alignbuffer = (u8 *)ALIGN((unsigned long)buffer, alignmask + 1);
-> > > memcpy(alignbuffer, key, keylen);
-> > > ret = crypto_aead_alg(tfm)->setkey(tfm, alignbuffer, keylen);
-> > > - memset(alignbuffer, 0, keylen);
-> > > - kfree(buffer);
-> > > + kfree_sensitive(buffer);
-> > > return ret;
-> > > }
-> > >
-> > > diff --git a/crypto/cipher.c b/crypto/cipher.c
-> > > index b47141ed4a9f..395f0c2fbb9f 100644
-> > > --- a/crypto/cipher.c
-> > > +++ b/crypto/cipher.c
-> > > @@ -34,8 +34,7 @@ static int setkey_unaligned(struct crypto_cipher *tfm, const u8 *key,
-> > > alignbuffer = (u8 *)ALIGN((unsigned long)buffer, alignmask + 1);
-> > > memcpy(alignbuffer, key, keylen);
-> > > ret = cia->cia_setkey(crypto_cipher_tfm(tfm), alignbuffer, keylen);
-> > > - memset(alignbuffer, 0, keylen);
-> > > - kfree(buffer);
-> > > + kfree_sensitive(buffer);
-> > > return ret;
-> >
-> >
-> > Well, the memset()s that you're removing already did the zeroization. This
-> > patch seems worthwhile as a code simplification, but please don't characterize
-> > it as a bug fix, because it's not.
-> >
-> >
-> > - Eric
-> 
-> kfree_sensitive uses memzero_explicit() instead of the memset()s used
-> above. The memzero_explicit header states -
-> 
-> * Note: usually using memset() is just fine (!), but in cases
-> * where clearing out _local_ data at the end of a scope is
-> * necessary, memzero_explicit() should be used instead in
-> * order to prevent the compiler from optimising away zeroing.
-> 
-> It accomplishes this by calling memset() and then adding a barrier. Since
-> FIPS requires this data be zeroed out, and the current memset() and
-> kfree() don't guarantee this, I do not think the commit message is
-> misleading. I can clarify the message with the above information if that
-> is preferred.
-> 
+Hi,
 
-It's heap data, not local data.  So no, memzero_explicit() isn't actually needed
-here.  It would convey the intent better, but it's not actually needed.
+This is a relay work of Qingshun's v2 [1], but changed to focus on ANFE
+processing as subject suggests and drops trace-event for now. I think it's
+a bit heavy to do extra IOes to get PCIe registers only for trace purpose
+and not see it a community request for now.
 
-- Eric
+According to PCIe Base Specification Revision 6.1, Sections 6.2.3.2.4 and
+6.2.4.3, certain uncorrectable errors will signal ERR_COR instead of
+ERR_NONFATAL, logged as Advisory Non-Fatal Error(ANFE), and set bits in
+both Correctable Error(CE) Status register and Uncorrectable Error(UE)
+Status register. Currently, when handling AER events the kernel will only
+look at CE status or UE status, but never both. In the ANFE case, bits set
+in the UE status register will not be reported and cleared until the next
+FE/NFE arrives.
+
+For instance, previously, when the kernel receives an ANFE with Poisoned
+TLP in OS native AER mode, only the status of CE will be reported and
+cleared:
+
+  AER: Correctable error message received from 0000:b7:02.0
+  PCIe Bus Error: severity=Correctable, type=Transaction Layer, (Receiver ID)
+    device [8086:0db0] error status/mask=00002000/00000000
+     [13] NonFatalErr
+
+If the kernel receives a Malformed TLP after that, two UEs will be
+reported, which is unexpected. The Malformed TLP Header is lost since
+the previous ANFE gated the TLP header logs:
+
+  PCIe Bus Error: severity="Uncorrectable (Fatal), type=Transaction Layer, (Receiver ID)
+    device [8086:0db0] error status/mask=00041000/00180020
+     [12] TLP                    (First)
+     [18] MalfTLP
+
+To handle this case properly, calculate potential ANFE related status bits
+and save in aer_err_info. Use this information to determine the status bits
+that need to be cleared.
+
+Now, for the previous scenario, both CE status and related UE status will
+be reported and cleared after ANFE:
+
+  AER: Correctable error message received from 0000:b7:02.0
+  PCIe Bus Error: severity=Correctable, type=Transaction Layer, (Receiver ID)
+    device [8086:0db0] error status/mask=00002000/00000000
+     [13] NonFatalErr
+    Uncorrectable errors that may cause Advisory Non-Fatal:
+     [18] TLP
+
+Note:
+checkpatch.pl will produce following warnings on PATCH2/3:
+
+WARNING: 'UE' may be misspelled - perhaps 'USE'?
+#22:
+uncorrectable error(UE) status should be cleared. However, there is no
+
+..similar warnings omitted...
+
+This is a false-positive, so not fixed.
+
+WARNING: Prefer a maximum 75 chars per line (possible unwrapped commit description?)
+#10:
+  PCIe Bus Error: severity=Correctable, type=Transaction Layer, (Receiver ID)
+
+..similar warnings omitted...
+
+For readability reasons, these warnings are not fixed.
+
+
+
+[1] https://lore.kernel.org/linux-pci/20240125062802.50819-1-qingshun.wang@linux.intel.com
+
+Thanks
+Qingshun, Zhenzhong
+
+Changelog:
+v3:
+  - Split ANFE print and processing to two patches (Bjorn)
+  - Simplify ANFE handling, drop trace event
+  - Polish comments and patch description
+  - Add Tested-by
+
+v2:
+  - Reference to the latest PCIe Specification in both commit messages
+    and comments, as suggested by Bjorn Helgaas.
+  - Describe the reason for storing additional information in
+    aer_err_info in the commit message of PATCH 1, as suggested by Bjorn
+    Helgaas.
+  - Add more details of behavior changes in the commit message of PATCH
+    2, as suggested by Bjorn Helgaas.
+
+v1: https://lore.kernel.org/linux-pci/20240111073227.31488-1-qingshun.wang@linux.intel.com/
+
+
+Zhenzhong Duan (3):
+  PCI/AER: Store UNCOR_STATUS bits that might be ANFE in aer_err_info
+  PCI/AER: Print UNCOR_STATUS bits that might be ANFE
+  PCI/AER: Clear UNCOR_STATUS bits that might be ANFE
+
+ drivers/pci/pci.h      |  1 +
+ drivers/pci/pcie/aer.c | 67 +++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 67 insertions(+), 1 deletion(-)
+
+-- 
+2.34.1
+
 
