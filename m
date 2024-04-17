@@ -1,110 +1,108 @@
-Return-Path: <linux-kernel+bounces-148840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9C448A87F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:42:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D8E98A87F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:42:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0555B21BED
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:42:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EB1E1C21A14
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:42:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA26C147C9D;
-	Wed, 17 Apr 2024 15:42:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553A613C668;
+	Wed, 17 Apr 2024 15:42:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WZ0JJtC2"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B7Ggu7IW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20E91411CF
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:42:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D7F71474AF;
+	Wed, 17 Apr 2024 15:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713368533; cv=none; b=FgEQo+ZZh+rchTIzdZkkU6A6saL681Qdu1BmCUz7b8/LujJJ1yVwxN5pifU62KI7WfzAUylfoT6YNj0ceeZH6mXANxc4aTldXsbcoMSr/YEYzqBiWCO1sTBp9561218pp45x8tVsoBsx8Dogunt7dZDCqukZTcgljt8n1D7qL6I=
+	t=1713368519; cv=none; b=AaM7FXu6iUSg+VP0CScDluSuurUyHjEOsGNDk6DR9Ru0jERTATnS5DcrfzG1PQcnzN2QyYSB7SeSdkKIVTz0xx5+9hxfL+6mUIHeu+moX1JLc+Ed/+UxJsrwtIu3IO2nPInP+O/I1OE1JWiy8ywZWqoR/Mij+Irl6PYfaJh/C0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713368533; c=relaxed/simple;
-	bh=7gVkTYWNNgR6Ee0qa0UmIW+l7/HdkMilyXO4kdChYvw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jORn3VydLgF6jA/rVI/yIZAK8MjqW23IhMYp/n3H259l8JBf/5fmA4vb4zcyEfW7CreXWBva8cDGxWyjKA4FEAxjDt4fnOjUvptkViQ+dO7y1u2GxHEBDn45NfJGa7jWuMOnW4y4uYTf2+V+mwtM6XiZdsbF2pOr0mtxEfj6nHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WZ0JJtC2; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713368530;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dzERyazOZhZDFp//yk13CO/EeXSCUMQ4vzlhZ6tsJ4s=;
-	b=WZ0JJtC2UgMV8K0Jqiqb0DOi3ikMRg0E9mxrN5LKh4CnfBdSOUkisFgUc2bg3XIqwgy0Mu
-	pEnBBOf6zN3oQ9qVlhG+qIl9zLiiiOoU4HwUXClogw1eaA1IqVZw1dEiTNw/WAME92wjl/
-	Nv8O/8dVI/Vwk4zAMP0iT6xqDcA2P78=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-250-tdWWWZMAOg-zqL0m4MHnCg-1; Wed, 17 Apr 2024 11:42:09 -0400
-X-MC-Unique: tdWWWZMAOg-zqL0m4MHnCg-1
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5ce67a3f275so4113887a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 08:42:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713368528; x=1713973328;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dzERyazOZhZDFp//yk13CO/EeXSCUMQ4vzlhZ6tsJ4s=;
-        b=dGOdZ7pHwyNiCOAzZvwKXbX6woTUfKwkGtcuLWLJEZ/aYHN+UZOlWalmp9pHS/S0gU
-         leK6lCjn1k2KCr+Sb1JHxBdZJd/4JeYybNmRqTrT+/9u41Fr9QQczbTq6zcGVAJJ8WcI
-         LKIkFnS3Yp0+5lqWfMz/R4qjWzDXpnuzkLBPNtqgZjS9lKvg91MwgtLByHB+BlrNJ6jx
-         ZOoHT+/jgDIbpkNOsPTL56Rb8HdLS9UixLDK720ILS3wfs08eHjuDpJCUK5TwwpS8GtP
-         38DYaxp5Szt9F6nCb+eUc+nTppYReBUWs/7/W6fuQGAfG7e4PFOWfQfrb5SryLQTDyRs
-         WEtA==
-X-Forwarded-Encrypted: i=1; AJvYcCWxGSJ+KHzemz2i1+s0MSHe5DX7eM/5ewX67RCUSsGf8mWfPGS0KUKXP58YS7jQZLCs6sECzBKD4xIVL8qf0ltJb5lVH4CCO9/3uxlC
-X-Gm-Message-State: AOJu0YwIzcXVles1rKyPjyo5DW5bxOFNQQR4Ie2iRBU8WJrTIO854vEs
-	4jAOe54jWPHlLxbwbIe5HChxXaxnU76fJ/7fP330Xu58EfiyaoSTrHB+6NTFcZpORVXRZdmKT7P
-	9XKDpj8+CbGvNIX37u5grWnYmEA64wmZRhtmeJzA63gb/rcHMaZs5yFwjFxJXiquEdddmafHnZo
-	3gOx5cNW/3Zr2c49or9SoO/iZMjoarmjGTtcE1
-X-Received: by 2002:a05:6a21:8802:b0:1a7:4a6f:ec4b with SMTP id ta2-20020a056a21880200b001a74a6fec4bmr17428750pzc.35.1713368528175;
-        Wed, 17 Apr 2024 08:42:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGA7qaavrOyPAmWc+BQO+KFe4vxronaHCXQ8eu3uFOXgOr20CvQtR70dFyBzIAxlmu+kRXqTad/LyK2LFTXMi8=
-X-Received: by 2002:a05:6a21:8802:b0:1a7:4a6f:ec4b with SMTP id
- ta2-20020a056a21880200b001a74a6fec4bmr17428721pzc.35.1713368527850; Wed, 17
- Apr 2024 08:42:07 -0700 (PDT)
+	s=arc-20240116; t=1713368519; c=relaxed/simple;
+	bh=X8tyzIwBha9q3PVkl2DqYe/3JNv+4UmdMfGkcEkyilM=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=BQVsGlq60mdXjz7/wa1kroVdjl+Vu6PtyG7DYMAIH7JwMAhe+lN5jIbtpASuRjlS/OHDS89u8YDtMHwDwhDDNHtEGJOK8UJGFvXRsBNTrXYg+Bt9GlvcF1chow5jnc052UyouoeoHIKpOUq2R02eE1pYan16CGPDF4wJ96WE3eM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B7Ggu7IW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E96E7C072AA;
+	Wed, 17 Apr 2024 15:41:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713368519;
+	bh=X8tyzIwBha9q3PVkl2DqYe/3JNv+4UmdMfGkcEkyilM=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=B7Ggu7IWGOdXdvw6cVHhVTgYIqAcF3+TAvaiJNvkcPQyE5T3T1uNmpds/OjXZ8zlq
+	 MjPPeSwgCG45H5zf72wpwXn1d7cnZtDpIJEOm0BToSvyDGgUl8hPvSrL/baY6FRP8n
+	 8BNPjzCCNhisp+Q48STLYE5h9L0pEQlRauDnYsTKKW80MeYfdFVL86LFgc07/NXBdv
+	 4lJ0LEJILNpJm0pcQbsCYGRlNjWVfT4ZoBbOP1NDqt+SOJFtp6TorI12ufwcwq2FrI
+	 kCywSO0JSs+s7QFI+FPWmInZpKy0gEsD4nfaFzC3a3g42HLozi3c0XwMrbT+tMd4P8
+	 zOqn57k8DrNgg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <cover.1712785629.git.isaku.yamahata@intel.com>
- <ddf1d98420f562707b11e12c416cce8fdb986bb1.1712785629.git.isaku.yamahata@intel.com>
- <621c260399a05338ba6d034e275e19714ad3665c.camel@intel.com> <20240416235230.GB3039520@ls.amr.corp.intel.com>
-In-Reply-To: <20240416235230.GB3039520@ls.amr.corp.intel.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Wed, 17 Apr 2024 17:41:55 +0200
-Message-ID: <CABgObfb0AFfnLnEz3wervoHLE8em_nDbGEFzSH8F5WZObyWk0g@mail.gmail.com>
-Subject: Re: [PATCH v2 03/10] KVM: x86/mmu: Extract __kvm_mmu_do_page_fault()
-To: Isaku Yamahata <isaku.yamahata@intel.com>
-Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"seanjc@google.com" <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>, 
-	"federico.parola@polito.it" <federico.parola@polito.it>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, "dmatlack@google.com" <dmatlack@google.com>, 
-	"michael.roth@amd.com" <michael.roth@amd.com>, isaku.yamahata@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 17 Apr 2024 18:41:56 +0300
+Message-Id: <D0MIG62V6JNV.3OZB5M1T63T7@kernel.org>
+Cc: "Jason Gunthorpe" <jgg@ziepe.ca>, <linux-integrity@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <patches@lists.linux.dev>
+Subject: Re: [PATCH v3 42/74] x86/cpu/vfm: Update tpm files
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Tony Luck" <tony.luck@intel.com>, "Peter Huewe" <peterhuewe@gmx.de>
+X-Mailer: aerc 0.17.0
+References: <20240416211941.9369-1-tony.luck@intel.com>
+ <20240416212202.9452-1-tony.luck@intel.com>
+In-Reply-To: <20240416212202.9452-1-tony.luck@intel.com>
 
-On Wed, Apr 17, 2024 at 1:52=E2=80=AFAM Isaku Yamahata <isaku.yamahata@inte=
-l.com> wrote:
-> As Chao pointed out, this patch is unnecessary.  I'll use
-> kvm_mmu_do_page_fault() directly with updating vcpu->stat.
+On Wed Apr 17, 2024 at 12:22 AM EEST, Tony Luck wrote:
+> New CPU #defines encode vendor and family as well as model.
+>
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  drivers/char/tpm/tpm.h          | 1 +
+>  drivers/char/tpm/tpm_tis_core.h | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
+> index 61445f1dc46d..895f2dba266c 100644
+> --- a/drivers/char/tpm/tpm.h
+> +++ b/drivers/char/tpm/tpm.h
+> @@ -28,6 +28,7 @@
+>  #include <linux/tpm_eventlog.h>
+> =20
+>  #ifdef CONFIG_X86
+> +#include <asm/cpu_device_id.h>
+>  #include <asm/intel-family.h>
+>  #endif
+> =20
+> diff --git a/drivers/char/tpm/tpm_tis_core.h b/drivers/char/tpm/tpm_tis_c=
+ore.h
+> index 13e99cf65efe..c940fd18988e 100644
+> --- a/drivers/char/tpm/tpm_tis_core.h
+> +++ b/drivers/char/tpm/tpm_tis_core.h
+> @@ -210,7 +210,7 @@ static inline int tpm_tis_verify_crc(struct tpm_tis_d=
+ata *data, size_t len,
+>  static inline bool is_bsw(void)
+>  {
+>  #ifdef CONFIG_X86
+> -	return ((boot_cpu_data.x86_model =3D=3D INTEL_FAM6_ATOM_AIRMONT) ? 1 : =
+0);
+> +	return ((boot_cpu_data.x86_vfm =3D=3D INTEL_ATOM_AIRMONT) ? 1 : 0);
+>  #else
+>  	return false;
+>  #endif
 
-Actually I prefer to have this patch.
+Thanks!
 
-pf_* stats do not make sense for pre-population, and updating them
-confuses things because pre-population (outside TDX) has the purpose
-of avoiding page faults.
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Paolo
+You want me to pick this?
 
+BR, Jarkko
 
