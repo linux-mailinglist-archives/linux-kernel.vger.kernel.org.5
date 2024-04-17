@@ -1,66 +1,130 @@
-Return-Path: <linux-kernel+bounces-148384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DF088A81D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:14:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B236E8A81D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:14:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EABFB25C53
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:14:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 768D5283528
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:14:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A14E613C8FB;
-	Wed, 17 Apr 2024 11:14:27 +0000 (UTC)
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3906313C68A;
-	Wed, 17 Apr 2024 11:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7BB213C905;
+	Wed, 17 Apr 2024 11:14:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XCU3DgYz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1982313C80B;
+	Wed, 17 Apr 2024 11:14:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713352467; cv=none; b=Xl9KMYjqiWXVtFeIhBARzIra9E0ufqyXUrco+iiJN+cE7yfymRW2BLmUK7lsZMsVkf96k7seVIQirZwB1ui92SwQv/k8flYk8vzuTZgns7AkVssyvtzw59sco1qR/ZE6lZ/KLiXJYtxdnUqdHRLxGcO2QXHmuRYjh6ah/IDmC5E=
+	t=1713352478; cv=none; b=A8ATGn/0PwOirnVPnpVrOvebEL/RyH8PV93QS77KzsRTVO8FO6YJglXmBF8BAAPylT9pUZ8S5WWytQFRKU6nrDODJqKrRYcxh67zF94FBSid5F/+XIm5CJA16rfdfjJInmrk5pUkXrC2+fKodgXuTVoQpvnAGSCydDXZJYgHpFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713352467; c=relaxed/simple;
-	bh=Gl1vItHn+rNA+MEGIq5JA3lS5NZmhUbWAoI2YhYHJTE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VsM5I4ZHhNsK1v42NDj0YK1MqvzDTydIGtOglBEmVZuDPvZ2PAl4oA5SHmvORK2XjSOeuYeWBK/7h6Ig6pt7+M5zqwq1PFBEXaWr52lTMPQAtGxO7hHXF6jce9laWPRtMI3ViiR/o3B/+f+qs0M+2JRGwJ+wPy1MCfEmnGl1lDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rx3En-0003qh-00; Wed, 17 Apr 2024 13:14:01 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id D8324C0168; Wed, 17 Apr 2024 13:13:48 +0200 (CEST)
-Date: Wed, 17 Apr 2024 13:13:48 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-	Yury Norov <yury.norov@gmail.com>
-Subject: Re: [PATCH] MIPS: SGI-IP30: Use bitmap API when iterating over bitmap
-Message-ID: <Zh+u7JM358bCntr7@alpha.franken.de>
-References: <20240417071830.47703-1-philmd@linaro.org>
+	s=arc-20240116; t=1713352478; c=relaxed/simple;
+	bh=fT3fYl303jdSQU2wOrHLkWojdTgxis/f2aI/wa4Ne4g=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Yz3UoC80Bw5qMHRu+JWvXwTQD/k/uVBuoOhDU2HY3GWT7f0OX/p7B6Q1NlrQcKI51+f99Oscd/Fc0pyMPdBaQlreBzohKwolXk1B2UkI64lznXJ6VkiyldnGiPzsA+qR2m6TiTbj0M7majsa9Q5gDJTSaaZPJ36/X0ZausrVdAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XCU3DgYz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F3E7C072AA;
+	Wed, 17 Apr 2024 11:14:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713352477;
+	bh=fT3fYl303jdSQU2wOrHLkWojdTgxis/f2aI/wa4Ne4g=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=XCU3DgYz/jX4ZV3jTocjUICRtT+4xfLATcreV0egGqAKhNZntfx1IXnmTwizis7H7
+	 tpaS81VdSiIpWH1LFk99/V7gM71s72GVdw0V97nCbTVVQVQF3HXVv28LP24XmFnKq/
+	 0RlMTm6E2z/BmCY0xWdoaIFX4e0FHTpOBoccScNv+MEkt/ODZhFm0rsrg1TO7WjOJ5
+	 JJXCKUA8xKszpH4gvheweCAoSly6jDjuyxFCpy7Sn0kJyKUI2zKIgD3odIe3yBS+c4
+	 FEoJlxs/sh2hbLaFUKmkSAIe1crrFKxoD+pTUMTNCotjbKYzdqsHUUnAYqv1MHzepF
+	 BZxI5Z1xVlNUA==
+Date: Wed, 17 Apr 2024 06:14:35 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Frank Li <Frank.Li@nxp.com>, Bjorn Helgaas <bhelgaas@google.com>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 4/5] PCI: Add PCIE_MSG_CODE_PME_TURN_OFF message macro
+Message-ID: <20240417111435.GA187921@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240417071830.47703-1-philmd@linaro.org>
+In-Reply-To: <20240417075655.GF3894@thinkpad>
 
-On Wed, Apr 17, 2024 at 09:18:29AM +0200, Philippe Mathieu-Daud� wrote:
-> Do not open-code bitmap_set(). Besides, <linux/bitmap.h> API
-> allows architecture specific optimizations, so prefer it.
+On Wed, Apr 17, 2024 at 01:26:55PM +0530, Manivannan Sadhasivam wrote:
+> On Tue, Apr 16, 2024 at 12:02:42PM -0500, Bjorn Helgaas wrote:
+> > On Mon, Apr 15, 2024 at 03:33:28PM -0400, Frank Li wrote:
+> > > Add PCIE_MSG_CODE_PME_TURN_OFF macros to enable a PCIe host driver to send
+> > > PME_Turn_Off messages.
+> > > 
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > ---
+> > >  drivers/pci/pci.h | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> > > index 19b4227a8a7e8..1f6d54a5a7cfc 100644
+> > > --- a/drivers/pci/pci.h
+> > > +++ b/drivers/pci/pci.h
+> > > @@ -30,6 +30,8 @@
+> > >  #define PCIE_MSG_TYPE_R_LOCAL	4
+> > >  #define PCIE_MSG_TYPE_R_GATHER	5
+> > >  
+> > > +#define PCIE_MSG_CODE_PME_TURN_OFF	0x19
+> > 
+> > This is defined in PCIe r6.0, sec 2.2.8.2, so move this below the INTx
+> > #defines so they're all in the order of the spec sections and add the
 > 
-> Use the HEART_NUM_IRQS definition to express the end of the
-> HEART bitmap.
+> I think it was me who suggested moving this up to keep it sorted in ascending
+> order :/
 
-please use HEART_L4_INT_HEART_EXCP + 1, like what the code did before.
+OK, the order you suggested is fine.
 
-Thomas.
+> > spec citation to follow the same style as the surrounding #defines,
+> > i.e.,
+> > 
+> >   /* Power Management Messages; PCIe r6.0, sec 2.2.8.2 */
+> >   #define PCIE_MSG_CODE_PME_TURN_OFF   0x19
+> > 
+> > While you're at it, tweak the [1/5] comments to be:
+> > 
+> >   /* Message Routing (r[2:0]); PCIe r6.0, sec 2.2.8 */
+> >   /* INTx Mechanism Messages; PCIe r6.0, sec 2.2.8.1 */
+> > 
+> > since the "Message Routing See: PCIe ..." comments are run together
+> > and need some punctuation between the text and the citation.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+But please do add and tweak the comments.
+
+> > With these,
+> > 
+> > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+Still fine to add this :)
+
+> > >  /* INTx Mechanism Messages See: PCIe r6.0, sec 2.2.8.1 */
+> > >  #define PCIE_MSG_CODE_ASSERT_INTA	0x20
+> > >  #define PCIE_MSG_CODE_ASSERT_INTB	0x21
+> > > 
+> > > -- 
+> > > 2.34.1
+> > > 
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
 
