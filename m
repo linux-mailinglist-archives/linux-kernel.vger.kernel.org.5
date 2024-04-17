@@ -1,238 +1,264 @@
-Return-Path: <linux-kernel+bounces-147936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DAED8A7B98
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BE1928A7B9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:56:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F0B11C2178B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 04:54:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E17E41C218AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 04:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09ADA3DB89;
-	Wed, 17 Apr 2024 04:54:15 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8A75249FF;
-	Wed, 17 Apr 2024 04:54:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD944084D;
+	Wed, 17 Apr 2024 04:56:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NkYMqRX4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8201623D2;
+	Wed, 17 Apr 2024 04:56:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713329654; cv=none; b=k2pihs2cNFBvpxis9Xs3GXeISl9Athf0buoF8maGWL8yaJIlsxVPBANfKz3/nFUlbVxmzK/DG4Sfpsy4KtD0FenOuNG0JsYTkFr/ZrnTaG5cIEsfBF/vYRNFbRSlsuCJhWECK6N10gtkU/jgCwXS0NImFMrFBpMcynTwLOOm6Zo=
+	t=1713329795; cv=none; b=TJPWAJ93ZKWRABuhlIZu5crPA5Oz74A8taVM9V7T9xB+Kad4lwaxdYleiIYk4x33m/OZ/c4uVs3H4/9LJknCd77jiZNHUr1SSGbUG6VK+1QrOoCecIffvjcWX52dllMR6SKOrzlb+2oVD2Y1vodNazlwY3qS4E+Eqfvum1nWKlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713329654; c=relaxed/simple;
-	bh=JI37h1l7RHQE/Ptwu/oRf7eLUHTa3FG+1z1JEcX3tmY=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=BUERd1P4O4yWqHZ4CDS/nVu+ynG+FZCLfa316GUS3/biO9ma8vb1H1cNYtJ9ZUtdGP1n8jZgdZQC79LS4aKeeZhKPjnYQNXoI//0ynlwRHnTSRbgiRRiAFKMxMa2x+ebmbovxaEe0eQkYsyApx2ksdffvhtTL1OVzK2XXjrpxE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BDC86339;
-	Tue, 16 Apr 2024 21:54:37 -0700 (PDT)
-Received: from [10.162.43.16] (e116581.arm.com [10.162.43.16])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8FDB33F738;
-	Tue, 16 Apr 2024 21:54:05 -0700 (PDT)
-Message-ID: <815f887c-3625-4715-806a-d5533373b20a@arm.com>
-Date: Wed, 17 Apr 2024 10:23:58 +0530
+	s=arc-20240116; t=1713329795; c=relaxed/simple;
+	bh=BuZ8P8XoiIAM75OqFsQnPajzoPmLzP8HTuZmoXwmL78=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fq1CJ5pvaY9o42YSGyWJ6f09wFAuhhxXBxNF6Vq2pvW/z3vgJxy4PzFoQQLkE83/QO0bCUdMAReNTXjYkcARvM24qv2FhwO9OtlnpWSTr0+lNmhYu8YQKUe46LtbLBPsgQ5/nhf+vV5qhtkjjZ4DExkDuMVHH/yaj79CvG795sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NkYMqRX4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB4E5C072AA;
+	Wed, 17 Apr 2024 04:56:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713329794;
+	bh=BuZ8P8XoiIAM75OqFsQnPajzoPmLzP8HTuZmoXwmL78=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NkYMqRX4lxFl4iWw0gcq2nChoo1XR/daM/2LKLMu4C1jUMDgQo8tyhr2G7YUjhKdS
+	 pLuanq23TlmLnRE6dzcC/2cCNh14Yqo7L88QkiEX1F9hv8l1pwStoZ+rouh/CzhNtI
+	 NNON0hzCsUKBJj9TI0Dk6NIKjn7PwvJU47ZEomLcLk+T5rJZqeK2QlZPGOo1IsNYoF
+	 oXqKT6dxgjhtUGLq8ChmriPA53H09h3zXaNuQx30NVQu1Tn3D3o2yWH5IR6AmQyLhE
+	 r6sb0+maeAgcgaWLW4w1wRMOEQsutwcvfjlnAa2eit0pUXHGrrLXdl9l4jy0eKigSK
+	 EzeMlT+16fzwA==
+Date: Wed, 17 Apr 2024 07:55:23 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Vincent Donnefort <vdonnefort@google.com>, mhiramat@kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	mathieu.desnoyers@efficios.com, kernel-team@android.com,
+	rdunlap@infradead.org, linux-mm@kvack.org
+Subject: Re: [PATCH v20 0/5] Introducing trace buffer mapping by user-space
+Message-ID: <Zh9WO1p7fzGHvKv5@kernel.org>
+References: <20240406173649.3210836-1-vdonnefort@google.com>
+ <20240410135612.5dc362e3@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] selftests/arm: Add mm test
-From: Dev Jain <dev.jain@arm.com>
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>, shuah@kernel.org,
- linux-arm-kernel@lists.infradead.org
-Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- Anshuman.Khandual@arm.com, suzuki.poulose@arm.com, ryan.roberts@arm.com,
- rob.herring@arm.com, Catalin.Marinas@arm.com, broonie@kernel.org,
- will@kernel.org, mark.rutland@arm.com
-References: <20240405084410.256788-1-dev.jain@arm.com>
- <20240405084410.256788-2-dev.jain@arm.com>
- <ac9b16a7-f294-44d4-8243-488db97a009e@collabora.com>
- <2dfae66f-1e34-40e5-a6a1-344ff4422028@arm.com>
-Content-Language: en-US
-In-Reply-To: <2dfae66f-1e34-40e5-a6a1-344ff4422028@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410135612.5dc362e3@gandalf.local.home>
 
+(added linux-mm)
 
-On 4/10/24 09:45, Dev Jain wrote:
->
-> On 4/7/24 02:53, Muhammad Usama Anjum wrote:
->> On 4/5/24 1:44 PM, Dev Jain wrote:
->>> This patch tests the 4GB VA restriction for 32-bit processes; it is 
->>> required
->>> to test the compat layer, whether the kernel knows that it is 
->>> running a 32-bit
->>> process or not. Chunks are allocated until the VA gets exhausted; 
->>> mmap must
->>> fail beyond 4GB. This is asserted against the VA mappings found
->>> in /proc/self/maps.
->>>
->>> Signed-off-by: Dev Jain <dev.jain@arm.com>
->>> ---
->>>   tools/testing/selftests/arm/mm/compat_va.c | 94 
->>> ++++++++++++++++++++++
->>>   1 file changed, 94 insertions(+)
->>>   create mode 100644 tools/testing/selftests/arm/mm/compat_va.c
->>>
->>> diff --git a/tools/testing/selftests/arm/mm/compat_va.c 
->>> b/tools/testing/selftests/arm/mm/compat_va.c
->>> new file mode 100644
->>> index 000000000000..3a78f240bc87
->>> --- /dev/null
->>> +++ b/tools/testing/selftests/arm/mm/compat_va.c
->>> @@ -0,0 +1,94 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/*
->>> + * Copyright (C) 2024 ARM Limited
->>> + *
->>> + * Author : Dev Jain <dev.jain@arm.com>
->>> + *
->>> + * Tests 4GB VA restriction for 32 bit process
->>> + */
->>> +
->>> +#define _GNU_SOURCE
->>> +#include <stdio.h>
->>> +#include <stdlib.h>
->>> +#include <unistd.h>
->>> +#include <sys/mman.h>
->>> +
->>> +#include <linux/sizes.h>
->>> +#include <kselftest.h>
->>> +
->>> +#define MAP_CHUNK_SIZE    SZ_1M
->>> +#define NR_CHUNKS_4G    (SZ_1G / MAP_CHUNK_SIZE) * 4    /* prevent 
->>> overflow */
->>> +
->>> +static int validate_address_hint(void)
->>> +{
->>> +    char *ptr;
->>> +
->>> +    ptr = mmap((void *) (1UL << 29), MAP_CHUNK_SIZE, PROT_READ |
->>> +           PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
->>> +
->>> +    if (ptr == MAP_FAILED)
->>> +        return 0;
->>> +
->>> +    return 1;
->> Usually we return negative value instead of positive one which indicates
->> error situation.
->>
->>> +}
->>> +
->>> +int main(int argc, char *argv[])
->>> +{
->>> +    char *ptr[NR_CHUNKS_4G + 3];
->>> +    char line[1000];
->>> +    const char *file_name;
->>> +    int chunks;
->>> +    FILE *file;
->>> +    int i;
->>> +
->>> +    ksft_print_header();
->>> +    ksft_set_plan(1);
->> There are multiple test cases. Instead of saying there is only 1 test.
->> There should be multiple ksft_test_result{_pass,_fail} statements for 
->> each
->> sub-tests.
->
->
-> My initial idea was to treat this as a single logical test, as I
->
-> am asserting the restriction on the number of chunks against
->
-> the VMAs. I guess your approach is cleaner; thanks.
+On Wed, Apr 10, 2024 at 01:56:12PM -0400, Steven Rostedt wrote:
+> 
+> Hi Andrew, et.al.
+> 
+> Linus said it's a hard requirement that this code gets an Acked-by (or
+> Reviewed-by) from the memory sub-maintainers before he will accept it.
+> He was upset that we faulted in pages one at a time instead of mapping it
+> in one go:
+> 
+>   https://lore.kernel.org/all/CAHk-=wh5wWeib7+kVHpBVtUn7kx7GGadWqb5mW5FYTdewEfL=w@mail.gmail.com/
+> 
+> Could you take a look at patches 1-3 to make sure they look sane from a
+> memory management point of view?
+> 
+> I really want this applied in the next merge window.
+> 
+> Thanks!
+> 
+> -- Steve
+> 
+> 
+> On Sat,  6 Apr 2024 18:36:44 +0100
+> Vincent Donnefort <vdonnefort@google.com> wrote:
+> 
+> > The tracing ring-buffers can be stored on disk or sent to network
+> > without any copy via splice. However the later doesn't allow real time
+> > processing of the traces. A solution is to give userspace direct access
+> > to the ring-buffer pages via a mapping. An application can now become a
+> > consumer of the ring-buffer, in a similar fashion to what trace_pipe
+> > offers.
+> > 
+> > Support for this new feature can already be found in libtracefs from
+> > version 1.8, when built with EXTRA_CFLAGS=-DFORCE_MMAP_ENABLE.
+> > 
+> > Vincent
+> > 
+> > v19 -> v20:
+> >   * Fix typos in documentation.
+> >   * Remove useless mmap open and fault callbacks.
+> >   * add mm.h include for vm_insert_pages
+> > 
+> > v18 -> v19:
+> >   * Use VM_PFNMAP and vm_insert_pages
+> >   * Allocate ring-buffer subbufs with __GFP_COMP
+> >   * Pad the meta-page with the zero-page to align on the subbuf_order
+> >   * Extend the ring-buffer test with mmap() dedicated suite
+> > 
+> > v17 -> v18:
+> >   * Fix lockdep_assert_held
+> >   * Fix spin_lock_init typo
+> >   * Fix CONFIG_TRACER_MAX_TRACE typo
+> > 
+> > v16 -> v17:
+> >   * Documentation and comments improvements.
+> >   * Create get/put_snapshot_map() for clearer code.
+> >   * Replace kzalloc with kcalloc.
+> >   * Fix -ENOMEM handling in rb_alloc_meta_page().
+> >   * Move flush(cpu_buffer->reader_page) behind the reader lock.
+> >   * Move all inc/dec of cpu_buffer->mapped behind reader lock and buffer
+> >     mutex. (removes READ_ONCE/WRITE_ONCE accesses).
+> > 
+> > v15 -> v16:
+> >   * Add comment for the dcache flush.
+> >   * Remove now unnecessary WRITE_ONCE for the meta-page.
+> > 
+> > v14 -> v15:
+> >   * Add meta-page and reader-page flush. Intends to fix the mapping
+> >     for VIVT and aliasing-VIPT data caches.
+> >   * -EPERM on VM_EXEC.
+> >   * Fix build warning !CONFIG_TRACER_MAX_TRACE.
+> > 
+> > v13 -> v14:
+> >   * All cpu_buffer->mapped readers use READ_ONCE (except for swap_cpu)
+> >   * on unmap, sync meta-page teardown with the reader_lock instead of
+> >     the synchronize_rcu.
+> >   * Add a dedicated spinlock for trace_array ->snapshot and ->mapped.
+> >     (intends to fix a lockdep issue)
+> >   * Add kerneldoc for flags and Reserved fields.
+> >   * Add kselftest for snapshot/map mutual exclusion.
+> > 
+> > v12 -> v13:
+> >   * Swap subbufs_{touched,lost} for Reserved fields.
+> >   * Add a flag field in the meta-page.
+> >   * Fix CONFIG_TRACER_MAX_TRACE.
+> >   * Rebase on top of trace/urgent.
+> >   * Add a comment for try_unregister_trigger()
+> > 
+> > v11 -> v12:
+> >   * Fix code sample mmap bug.
+> >   * Add logging in sample code.
+> >   * Reset tracer in selftest.
+> >   * Add a refcount for the snapshot users.
+> >   * Prevent mapping when there are snapshot users and vice versa.
+> >   * Refine the meta-page.
+> >   * Fix types in the meta-page.
+> >   * Collect Reviewed-by.
+> > 
+> > v10 -> v11:
+> >   * Add Documentation and code sample.
+> >   * Add a selftest.
+> >   * Move all the update to the meta-page into a single
+> >     rb_update_meta_page().
+> >   * rb_update_meta_page() is now called from
+> >     ring_buffer_map_get_reader() to fix NOBLOCK callers.
+> >   * kerneldoc for struct trace_meta_page.
+> >   * Add a patch to zero all the ring-buffer allocations.
+> > 
+> > v9 -> v10:
+> >   * Refactor rb_update_meta_page()
+> >   * In-loop declaration for foreach_subbuf_page()
+> >   * Check for cpu_buffer->mapped overflow
+> > 
+> > v8 -> v9:
+> >   * Fix the unlock path in ring_buffer_map()
+> >   * Fix cpu_buffer cast with rb_work_rq->is_cpu_buffer
+> >   * Rebase on linux-trace/for-next (3cb3091138ca0921c4569bcf7ffa062519639b6a)
+> > 
+> > v7 -> v8:
+> >   * Drop the subbufs renaming into bpages
+> >   * Use subbuf as a name when relevant
+> > 
+> > v6 -> v7:
+> >   * Rebase onto lore.kernel.org/lkml/20231215175502.106587604@goodmis.org/
+> >   * Support for subbufs
+> >   * Rename subbufs into bpages
+> > 
+> > v5 -> v6:
+> >   * Rebase on next-20230802.
+> >   * (unsigned long) -> (void *) cast for virt_to_page().
+> >   * Add a wait for the GET_READER_PAGE ioctl.
+> >   * Move writer fields update (overrun/pages_lost/entries/pages_touched)
+> >     in the irq_work.
+> >   * Rearrange id in struct buffer_page.
+> >   * Rearrange the meta-page.
+> >   * ring_buffer_meta_page -> trace_buffer_meta_page.
+> >   * Add meta_struct_len into the meta-page.
+> > 
+> > v4 -> v5:
+> >   * Trivial rebase onto 6.5-rc3 (previously 6.4-rc3)
+> > 
+> > v3 -> v4:
+> >   * Add to the meta-page:
+> >        - pages_lost / pages_read (allow to compute how full is the
+> > 	 ring-buffer)
+> >        - read (allow to compute how many entries can be read)
+> >        - A reader_page struct.
+> >   * Rename ring_buffer_meta_header -> ring_buffer_meta
+> >   * Rename ring_buffer_get_reader_page -> ring_buffer_map_get_reader_page
+> >   * Properly consume events on ring_buffer_map_get_reader_page() with
+> >     rb_advance_reader().
+> > 
+> > v2 -> v3:
+> >   * Remove data page list (for non-consuming read)
+> >     ** Implies removing order > 0 meta-page
+> >   * Add a new meta page field ->read
+> >   * Rename ring_buffer_meta_page_header into ring_buffer_meta_header
+> > 
+> > v1 -> v2:
+> >   * Hide data_pages from the userspace struct
+> >   * Fix META_PAGE_MAX_PAGES
+> >   * Support for order > 0 meta-page
+> >   * Add missing page->mapping.
+> > 
+> > Vincent Donnefort (5):
+> >   ring-buffer: allocate sub-buffers with __GFP_COMP
+> >   ring-buffer: Introducing ring-buffer mapping functions
+> >   tracing: Allow user-space mapping of the ring-buffer
+> >   Documentation: tracing: Add ring-buffer mapping
+> >   ring-buffer/selftest: Add ring-buffer mapping test
+> > 
+> >  Documentation/trace/index.rst                 |   1 +
+> >  Documentation/trace/ring-buffer-map.rst       | 106 +++++
+> >  include/linux/ring_buffer.h                   |   6 +
+> >  include/uapi/linux/trace_mmap.h               |  48 +++
+> >  kernel/trace/ring_buffer.c                    | 403 +++++++++++++++++-
+> >  kernel/trace/trace.c                          | 113 ++++-
+> >  kernel/trace/trace.h                          |   1 +
+> >  tools/testing/selftests/ring-buffer/Makefile  |   8 +
+> >  tools/testing/selftests/ring-buffer/config    |   2 +
+> >  .../testing/selftests/ring-buffer/map_test.c  | 302 +++++++++++++
+> >  10 files changed, 979 insertions(+), 11 deletions(-)
+> >  create mode 100644 Documentation/trace/ring-buffer-map.rst
+> >  create mode 100644 include/uapi/linux/trace_mmap.h
+> >  create mode 100644 tools/testing/selftests/ring-buffer/Makefile
+> >  create mode 100644 tools/testing/selftests/ring-buffer/config
+> >  create mode 100644 tools/testing/selftests/ring-buffer/map_test.c
+> > 
+> > 
+> > base-commit: 7604256cecef34a82333d9f78262d3180f4eb525
+> 
 
-
-Thinking again, using a lot of return statements is in fact making the 
-code easier
-
-to follow. If I just set a variable ret = 0/1 and use it to pass or 
-fail, I'll have to
-
-unnecessarily use a lot of if/else statements. Take a look at the 
-examples below.
-
->
->>
->>> +
->>> +    /* try allocation beyond 4 GB */
->>> +    for (i = 0; i < NR_CHUNKS_4G + 3; ++i) {
->>> +        ptr[i] = mmap(NULL, MAP_CHUNK_SIZE, PROT_READ | PROT_WRITE,
->>> +                  MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
->>> +
->>> +        if (ptr[i] == MAP_FAILED) {
->>> +            if (validate_address_hint())
->>> +                ksft_exit_fail_msg("VA exhaustion failed\n");
->>> +            break;
-
-
-I will have to set ret value here, forcing two statements inside the if 
-block.
-
->>> +        }
->>> +    }
->>> +
->>> +    chunks = i;
->>> +    if (chunks >= NR_CHUNKS_4G) {
->>> +        ksft_test_result_fail("mmapped chunks beyond 4GB\n");
->>> +        ksft_finished();
->>> +    }
->>> +
->>> +    /* parse /proc/self/maps, confirm 32 bit VA mappings */
->>> +    file_name = "/proc/self/maps";
->>> +    file = fopen(file_name, "r");
->>> +    if (file == NULL)
->>> +        ksft_exit_fail_msg("/proc/self/maps cannot be opened\n");
->>> +
-
-
-I will have to set ret here, and enclose the below while statement inside
-
-an else block. In short, saving the value of ret will require if/else blocks
-
-if I were to use it in the end in ksft_test_result(). When I use ksft_exit
-
-statements, it is clear that a problem was spotted here, and there is
-
-no need to study the remaining code.
-
->>> +    while (fgets(line, sizeof(line), file)) {
->>> +        const char *whitespace_loc, *hyphen_loc;
->>> +
->>> +        hyphen_loc = strchr(line, '-');
->>> +        whitespace_loc = strchr(line, ' ');
->>> +
->>> +        if (!(hyphen_loc && whitespace_loc)) {
->>> +            ksft_test_result_skip("Unexpected format");
->>> +            ksft_finished();
->> I'm unable to follow as there are too many return statements. If you 
->> divide
->> the test into multiple sub-tests, you can skip/pass/fail each 
->> sub-test easily.
->>
->>> +        }
->>> +
->>> +        if ((hyphen_loc - line > 8) ||
->>> +            (whitespace_loc - hyphen_loc) > 9) {
->>> +            ksft_test_result_fail("Memory map more than 32 bits\n");
->>> +            ksft_finished();
->>> +        }
->>> +    }
->>> +
->>> +    for (int i = 0; i < chunks; ++i)
->>> +        munmap(ptr[i], MAP_CHUNK_SIZE);
->>> +
->>> +    ksft_test_result_pass("Test\n");
->>> +    ksft_finished();
->>> +}
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+-- 
+Sincerely yours,
+Mike.
 
