@@ -1,235 +1,484 @@
-Return-Path: <linux-kernel+bounces-149230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 539338A8D63
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:58:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AFDF8A8D66
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:58:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 841D11C212DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:58:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C74071F2162F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594AF482E9;
-	Wed, 17 Apr 2024 20:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D469F48CCD;
+	Wed, 17 Apr 2024 20:58:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="zgWBFdbE"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2053.outbound.protection.outlook.com [40.107.220.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oPv/QCAt"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2A645957;
-	Wed, 17 Apr 2024 20:57:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713387470; cv=fail; b=bBbifYSf1PrVL7/2tatCWhuW36WT4QagYAzu3ztqq4ci+SXb+gQTR+AN7tO5SUitTgm1kY5Nncic9hbVrDFc5/LyFJ9pQ4UBXVQpCYKDH2Ax67u74qd3D692KPMKLUVW9tNEwPZ7bwqhMuevjclDxqeQhpzoSJtNgRIeDE/lGWE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713387470; c=relaxed/simple;
-	bh=4u5hn2Hh/87JQ7UPtjEmuh6lj8l9zAnHa0b3wr8ltHo=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DyeTDlph2g9QpWLA6zgHIJkQC/SCB9fhY9Vl9t+x/JFM3cloajPiQj7aPPxrZivs+jDaUYt2LnOkJ4mYr1GVKh7Zt1FgEvKkH+VeWi9HEfZRoDM0XFjHL/LLn6kykyHc+oWPoKuLjCiF03r0O3Res2+6ZEq7VUqGT7z591U41KQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=zgWBFdbE; arc=fail smtp.client-ip=40.107.220.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I8dv82kSCk21qZKiuMhTBbwFiaDycANa/hONJZBAVnpKQGxXNabYZzbiLxfCjSUnF0Q11cdPO2xlPSb5R+2XsH4GGlbkoefvhlxDtAH18b68yw5Lo9j/GDkCHW5U7A5OEriL4toce78mgT5UHo9EuKHda3W1Z16E/I7z6tX0F3m6NQ20vvJ9UZSxlEZeRSgPFm32zdkl0NlllS2fgrbwMK5oxWPmCb1eEwnCnfE3xBI+BKpsCK3V0GEWL0b3OR1gA/cbj/XuUYbRCfBvBNqcog5S0wvIfROJSWcnMEnz1NJ6xoIgw3Fjbe4sNX8lVfp+Oq3vmTUCMAnAujXh59+mUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZAHI1MdqIYTTn8gAftj1rCysaOC6m3lFRtlh7aH/OcU=;
- b=a+EuRZ1Mt9rF2bviFIFzgUglHfPXy1sK7EXQKfmpTM7dvf8HoXIWeZYg/sRNTC7tGSF4rjsxFZmxjdEmty+VvZBFe7/j1AjXbqcenrD/zgY6G+cjXRUj5+6d7pW3td5sadr4wHNyI+D9kp//r5DnwHrhiudmOJz/6++OF9URUDluQXlqzE6t2RcBlVhsayBM+vnlpmPf66d/42msAgYv+XLpDBeDiDhAZbUSjhTAGN2k5jQ4jXJ7+tW7eI8KOPBWp7E/0kAJr5UYeDR2/x36aoWtdc7aJu7s5YPFist8mPGoxsVUoJgzFw7xy4sR/58yyPcJBfoDB+6oghLAGXg+hA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZAHI1MdqIYTTn8gAftj1rCysaOC6m3lFRtlh7aH/OcU=;
- b=zgWBFdbE0DJXtalccsxSvcBttSQWr3qd0W0OxnVQss7VZDTzIdOzqTFWL3O6nFAzjvkLajKPFFpnY4zQcyl5JobnZQea7J9B9EkiaTZP4EMyo0Bwayo8oDfFNCMDBiqVjL29EJVs29dfYsX1xnWNpwdJUt3LBzQVbXhkFQdcrJU=
-Received: from BN9PR03CA0322.namprd03.prod.outlook.com (2603:10b6:408:112::27)
- by IA1PR12MB7637.namprd12.prod.outlook.com (2603:10b6:208:427::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 17 Apr
- 2024 20:57:41 +0000
-Received: from BN2PEPF000044AA.namprd04.prod.outlook.com
- (2603:10b6:408:112:cafe::4e) by BN9PR03CA0322.outlook.office365.com
- (2603:10b6:408:112::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.20 via Frontend
- Transport; Wed, 17 Apr 2024 20:57:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN2PEPF000044AA.mail.protection.outlook.com (10.167.243.105) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.22 via Frontend Transport; Wed, 17 Apr 2024 20:57:41 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 17 Apr
- 2024 15:57:41 -0500
-Date: Wed, 17 Apr 2024 15:57:25 -0500
-From: Michael Roth <michael.roth@amd.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-CC: <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
-	<ardb@kernel.org>, <seanjc@google.com>, <vkuznets@redhat.com>,
-	<jmattson@google.com>, <luto@kernel.org>, <dave.hansen@linux.intel.com>,
-	<slp@redhat.com>, <pgonda@google.com>, <peterz@infradead.org>,
-	<srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
-	<dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>, <vbabka@suse.cz>,
-	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>
-Subject: Re: [PATCH v12 18/29] KVM: SEV: Use a VMSA physical address variable
- for populating VMCB
-Message-ID: <20240417205725.yougm6og3cuea2hu@amd.com>
-References: <20240329225835.400662-1-michael.roth@amd.com>
- <20240329225835.400662-19-michael.roth@amd.com>
- <67685ec7-ca61-43f1-8ecd-120ec137e93a@redhat.com>
- <CABgObfZNVR-VKst8dDFZ4gs_zSWE8NE2gj5-Y4TNh0AnBfti7w@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC72481A6
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 20:58:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713387490; cv=none; b=suCZAyXadkanIuyw4hKkkuVXJ9/VM9wl2uq/EDjCvVAYKSCFnFoMa4PPurqteHde5g7eHCJTf5UBcibQ1Y26ahAVytNQHLqVeBMZc7BxQM/lTUQ5w9Y1lKnx5GgtYaj0JZeoruftMsQ4e7NiswTOB9AVSJfXw4F+zIEvYb9GtSc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713387490; c=relaxed/simple;
+	bh=xIgWSxLBbguyRcb0zKhiKbT1dbRUzTnSdHRJoAVzhVs=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=JZ4N9kBva1ejDTKqp8PYpP/g3xp6RVD1lWRduK2B+YqgffeCrNgKzEVjwou4mv5hRK/6D4KJSQsncedY1l1n2x56USHObD5g53boR26OigYAtKSNtXcTxGJDyjOxssPDVntboNdeHshVqDQAYaRkIs7qtvTDXiF1y09NvF03nx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ziweixiao.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oPv/QCAt; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ziweixiao.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5dcab65d604so84244a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:58:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713387488; x=1713992288; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gEAhZlLshKO/PptO5/jBMX3CmASJWwGmWZLqDVkQJdg=;
+        b=oPv/QCAt7jeDx1/ioFRHHO54nDTGyof164WTemqVO0gCBwxFgr1Erv13IS2kyO1WpH
+         bcHWfG+lZoxeKSdcA123EizSHzyZMqe6DxsbLn5IqQgB3PEFRBYKfVFtO7YUYUmhrSa2
+         0UEi8mN26QMwNbZxQAo161C2nrUpAid2NOrQ7XuemDae+ul87ML9XVYHAT6TtnFk04nx
+         OfxneeT7mGistIyJEB4hYivgRp6v5UL3WdSi1jGDZGg0K6jcScJbs3I29oSpJFxWtyT8
+         dwrIzf1Z/hD/F1mCy00BOLsk37MaC/6wVfm9AjXxaO4fwJc5HsCgs1lnz3tEVR0KuAYN
+         VA9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713387488; x=1713992288;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gEAhZlLshKO/PptO5/jBMX3CmASJWwGmWZLqDVkQJdg=;
+        b=TL6C3z4ocSv3d5nwzXQo7lki0IHuopWKQ3F/A/mmxsGnqVAx8U+o5IbSvMB4zU8RkQ
+         R78GvN6xoziwQWWsatpEW/FPU7m7DCMQqwPkFRkFd00yOTj1vtiWKxs9+1gyxcKZNRZk
+         Cs6p1eZUel6Fkf4XjPwLh9DRD4lLdrPVh1R4RReTpAoOzaJSzo+lnqE0qQfL+mH/ReRm
+         9Npo3/X4yEvnz+CeTnm3C6nxWq6UL/JZLNthZJtYrzaN75ljf2t6VAzdkvLZZ/RVvSVF
+         iEWVZ22tGb2MBTzsA+rSd79Ik83UaODSkT+yttJmIeQ33rXUJ93vIDt+m6XnJ+RCWZRK
+         H6sw==
+X-Forwarded-Encrypted: i=1; AJvYcCXixLqAQQNGHDTAn/ttmZ4u82SOn8fb6h+5q3Z7F+XG75bRI2CKyZrJJvsr+DJCjLydtQeYveaW5StitUApwJEPd3uMd+VCn9KXD+6p
+X-Gm-Message-State: AOJu0YzEsM0S+I1VVA8rfKiLoJtFlEXFKGAFo1gmtLo8pc/aEuS6/iiP
+	Pae4AWf/tTbv1xZxkaSkaQgkMhTkwtOx/4BGC6y8yH9u8cgnm9bCWDgyVnyBnvqRTan/E+dlLne
+	CGE7UVeuGdV3qWg==
+X-Google-Smtp-Source: AGHT+IEgXH3RvQT2/Y9Asb+xVSS6BM3mP3BTVVzG4B+WcQtNy06SR1k9LfX02V/9rhbYZjdmkEXlX+wNmitsBw8=
+X-Received: from ziwei-gti.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:9b0])
+ (user=ziweixiao job=sendgmr) by 2002:a63:2d7:0:b0:5f0:6959:8a46 with SMTP id
+ 206-20020a6302d7000000b005f069598a46mr1723pgc.9.1713387487983; Wed, 17 Apr
+ 2024 13:58:07 -0700 (PDT)
+Date: Wed, 17 Apr 2024 20:57:57 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABgObfZNVR-VKst8dDFZ4gs_zSWE8NE2gj5-Y4TNh0AnBfti7w@mail.gmail.com>
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN2PEPF000044AA:EE_|IA1PR12MB7637:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7f78c637-caa7-4eee-2cd3-08dc5f2105da
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	H/ArEvv3lMhSwBveKfeWg81I2KSLtJMLAxMLZrk7gCoSKk7WEt73DJQhF1nc2VKew1I/fJ8Z/jBzrITn6Gr0mm7EdinY64Fe8XoJD4QvDbOCTeLa8YRVhzKuvCaE81JSYevoBb6S58Mv1zniRKMelAHzNVZ5ZXo6ydWKV0Jkh9Hz3JnHW6+t0bTU4dNDVvUgUq2EQcGJUTpe/dPMMyjmt7YGSgsdIQ+Bho8CX8ZtOtlyZnv9G9tUg5vF06KTYHXfN032wPL21/rfb8GofyUCkODPudiZum8pPXiZSQU/dNhiDErsAzPN0VTtwHBN32IWrddwCTG0lPV2Vx3a6x0jY0/YBVolytMKOCE3gd+QJsknxJNhK1rNRZzYhTEoWdZZqyzeHvHLKwNyom3iSfmSmh3KDBOPmU+tD0iq8qJKLc5RlMA74idTjZtfgpUm2FknfFknVxiy6HUnhvn2BKWckPpT/htwdmJNRLHLueW9ZMsrvnMLwT0iHE6qRt0NusgkZvsegWWE4l9++39whBWlTNqAyPyQA0RrjXfm4Ieos77aZs+VaoSBYJrNfGP4oihtlCcxmArAy0c1WVfSbv4mPUuvHKL8jGXCiI+tMkKH9OVb9ie762v8RpnZXHVSzso5t3VI6DuMhFSifFAsPfAOY46SX8JuuxhmNYtqFODRnYqD58/34CgG5kOU7u3jH9plASuNiLznfoNCziSpW6LYDA==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(376005)(7416005)(82310400014)(1800799015);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 20:57:41.5730
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f78c637-caa7-4eee-2cd3-08dc5f2105da
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN2PEPF000044AA.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7637
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+Message-ID: <20240417205757.778551-1-ziweixiao@google.com>
+Subject: [PATCH net-next] gve: Remove qpl_cfg struct since qpl_ids map with
+ queues respectively
+From: Ziwei Xiao <ziweixiao@google.com>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, jeroendb@google.com, pkaligineedi@google.com, 
+	shailend@google.com, willemb@google.com, hramamurthy@google.com, 
+	rushilg@google.com, jfraker@google.com, junfeng.guo@intel.com, 
+	Julia.Lawall@inria.fr, horms@kernel.org, linux-kernel@vger.kernel.org, 
+	Ziwei Xiao <ziweixiao@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Apr 16, 2024 at 01:53:24PM +0200, Paolo Bonzini wrote:
-> On Sat, Mar 30, 2024 at 10:01 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
-> >
-> > On 3/29/24 23:58, Michael Roth wrote:
-> > > From: Tom Lendacky<thomas.lendacky@amd.com>
-> > >
-> > > In preparation to support SEV-SNP AP Creation, use a variable that holds
-> > > the VMSA physical address rather than converting the virtual address.
-> > > This will allow SEV-SNP AP Creation to set the new physical address that
-> > > will be used should the vCPU reset path be taken.
-> > >
-> > > Signed-off-by: Tom Lendacky<thomas.lendacky@amd.com>
-> > > Signed-off-by: Ashish Kalra<ashish.kalra@amd.com>
-> > > Signed-off-by: Michael Roth<michael.roth@amd.com>
-> > > ---
-> >
-> > I'll get back to this one after Easter, but it looks like Sean had some
-> > objections at https://lore.kernel.org/lkml/ZeCqnq7dLcJI41O9@google.com/.
-> 
-> So IIUC the gist of the solution here would be to replace
-> 
->    /* Use the new VMSA */
->    svm->sev_es.vmsa_pa = pfn_to_hpa(pfn);
->    svm->vmcb->control.vmsa_pa = svm->sev_es.vmsa_pa;
-> 
-> with something like
-> 
->    /* Use the new VMSA */
->    __free_page(virt_to_page(svm->sev_es.vmsa));
+The qpl_cfg struct was used to make sure that no two different queues
+are using QPL with the same qpl_id. We can remove that qpl_cfg struct
+since now the qpl_ids map with the queues respectively as follows:
+For tx queues: qpl_id = tx_qid
+For rx queues: qpl_id = max_tx_queues + rx_qid
 
-One downside to free'ing VMSA at this point is there are a number of
-additional cleanup routines like wbinvd_on_all_cpus() and in sev_free_vcpu()
-which will need to be called before we are able to safely free the page back
-to the system.
+And when XDP is used, it will need the user to reduce the tx queues to
+be at most half of the max_tx_queues. Then it will use the same number
+of tx queues starting from the end of existing tx queues for XDP. So the
+XDP queues will not exceed the max_tx_queues range and will not overlap
+with the rx queues, where the qpl_ids will not have overlapping too.
 
-It would be simple to wrap all that up in an sev_free_vmsa() helper and
-also call it here rather than defer it, but from a performance
-perspective it would be nice to defer it to shutdown path.
+Considering of that, we remove the qpl_cfg struct to get the qpl_id
+directly based on the queue id. Unless we are erroneously allocating a
+rx/tx queue that has already been allocated, we would never allocate
+the qpl with the same qpl_id twice. In that case, it should fail much
+earlier than the QPL assignment.
 
+Suggested-by: Praveen Kaligineedi <pkaligineedi@google.com>
+Signed-off-by: Ziwei Xiao <ziweixiao@google.com>
+Reviewed-by: Harshitha Ramamurthy <hramamurthy@google.com>
+Reviewed-by: Shailend Chand <shailend@google.com>
+---
+ drivers/net/ethernet/google/gve/gve.h         | 39 +------------------
+ drivers/net/ethernet/google/gve/gve_ethtool.c |  9 -----
+ drivers/net/ethernet/google/gve/gve_main.c    | 38 +-----------------
+ drivers/net/ethernet/google/gve/gve_rx.c      | 12 ++----
+ drivers/net/ethernet/google/gve/gve_rx_dqo.c  | 12 +++---
+ drivers/net/ethernet/google/gve/gve_tx.c      | 12 ++----
+ drivers/net/ethernet/google/gve/gve_tx_dqo.c  | 11 ++----
+ 7 files changed, 20 insertions(+), 113 deletions(-)
 
->    svm->sev_es.vmsa = pfn_to_kaddr(pfn);
->    svm->vmcb->control.vmsa_pa = __pa(svm->sev_es.vmsa);
+diff --git a/drivers/net/ethernet/google/gve/gve.h b/drivers/net/ethernet/google/gve/gve.h
+index e97633b68e25..53b5244dc7bc 100644
+--- a/drivers/net/ethernet/google/gve/gve.h
++++ b/drivers/net/ethernet/google/gve/gve.h
+@@ -639,7 +639,6 @@ struct gve_ptype_lut {
+ 
+ /* Parameters for allocating queue page lists */
+ struct gve_qpls_alloc_cfg {
+-	struct gve_qpl_config *qpl_cfg;
+ 	struct gve_queue_config *tx_cfg;
+ 	struct gve_queue_config *rx_cfg;
+ 
+@@ -655,9 +654,8 @@ struct gve_qpls_alloc_cfg {
+ struct gve_tx_alloc_rings_cfg {
+ 	struct gve_queue_config *qcfg;
+ 
+-	/* qpls and qpl_cfg must already be allocated */
++	/* qpls must already be allocated */
+ 	struct gve_queue_page_list *qpls;
+-	struct gve_qpl_config *qpl_cfg;
+ 
+ 	u16 ring_size;
+ 	u16 start_idx;
+@@ -674,9 +672,8 @@ struct gve_rx_alloc_rings_cfg {
+ 	struct gve_queue_config *qcfg;
+ 	struct gve_queue_config *qcfg_tx;
+ 
+-	/* qpls and qpl_cfg must already be allocated */
++	/* qpls must already be allocated */
+ 	struct gve_queue_page_list *qpls;
+-	struct gve_qpl_config *qpl_cfg;
+ 
+ 	u16 ring_size;
+ 	u16 packet_buffer_size;
+@@ -732,7 +729,6 @@ struct gve_priv {
+ 	u16 num_xdp_queues;
+ 	struct gve_queue_config tx_cfg;
+ 	struct gve_queue_config rx_cfg;
+-	struct gve_qpl_config qpl_cfg; /* map used QPL ids */
+ 	u32 num_ntfy_blks; /* spilt between TX and RX so must be even */
+ 
+ 	struct gve_registers __iomem *reg_bar0; /* see gve_register.h */
+@@ -1053,37 +1049,6 @@ static inline u32 gve_get_rx_pages_per_qpl_dqo(u32 rx_desc_cnt)
+ 	return 2 * rx_desc_cnt;
+ }
+ 
+-/* Returns a pointer to the next available tx qpl in the list of qpls */
+-static inline
+-struct gve_queue_page_list *gve_assign_tx_qpl(struct gve_tx_alloc_rings_cfg *cfg,
+-					      int tx_qid)
+-{
+-	/* QPL already in use */
+-	if (test_bit(tx_qid, cfg->qpl_cfg->qpl_id_map))
+-		return NULL;
+-	set_bit(tx_qid, cfg->qpl_cfg->qpl_id_map);
+-	return &cfg->qpls[tx_qid];
+-}
+-
+-/* Returns a pointer to the next available rx qpl in the list of qpls */
+-static inline
+-struct gve_queue_page_list *gve_assign_rx_qpl(struct gve_rx_alloc_rings_cfg *cfg,
+-					      int rx_qid)
+-{
+-	int id = gve_get_rx_qpl_id(cfg->qcfg_tx, rx_qid);
+-	/* QPL already in use */
+-	if (test_bit(id, cfg->qpl_cfg->qpl_id_map))
+-		return NULL;
+-	set_bit(id, cfg->qpl_cfg->qpl_id_map);
+-	return &cfg->qpls[id];
+-}
+-
+-/* Unassigns the qpl with the given id */
+-static inline void gve_unassign_qpl(struct gve_qpl_config *qpl_cfg, int id)
+-{
+-	clear_bit(id, qpl_cfg->qpl_id_map);
+-}
+-
+ /* Returns the correct dma direction for tx and rx qpls */
+ static inline enum dma_data_direction gve_qpl_dma_dir(struct gve_priv *priv,
+ 						      int id)
+diff --git a/drivers/net/ethernet/google/gve/gve_ethtool.c b/drivers/net/ethernet/google/gve/gve_ethtool.c
+index 299206d15c73..bd7632eed776 100644
+--- a/drivers/net/ethernet/google/gve/gve_ethtool.c
++++ b/drivers/net/ethernet/google/gve/gve_ethtool.c
+@@ -510,7 +510,6 @@ static int gve_adjust_ring_sizes(struct gve_priv *priv,
+ 	struct gve_tx_alloc_rings_cfg tx_alloc_cfg = {0};
+ 	struct gve_rx_alloc_rings_cfg rx_alloc_cfg = {0};
+ 	struct gve_qpls_alloc_cfg qpls_alloc_cfg = {0};
+-	struct gve_qpl_config new_qpl_cfg;
+ 	int err;
+ 
+ 	/* get current queue configuration */
+@@ -521,14 +520,6 @@ static int gve_adjust_ring_sizes(struct gve_priv *priv,
+ 	tx_alloc_cfg.ring_size = new_tx_desc_cnt;
+ 	rx_alloc_cfg.ring_size = new_rx_desc_cnt;
+ 
+-	/* qpl_cfg is not read-only, it contains a map that gets updated as
+-	 * rings are allocated, which is why we cannot use the yet unreleased
+-	 * one in priv.
+-	 */
+-	qpls_alloc_cfg.qpl_cfg = &new_qpl_cfg;
+-	tx_alloc_cfg.qpl_cfg = &new_qpl_cfg;
+-	rx_alloc_cfg.qpl_cfg = &new_qpl_cfg;
+-
+ 	if (netif_running(priv->dev)) {
+ 		err = gve_adjust_config(priv, &qpls_alloc_cfg,
+ 					&tx_alloc_cfg, &rx_alloc_cfg);
+diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
+index a515e5af843c..61039e3dd2bb 100644
+--- a/drivers/net/ethernet/google/gve/gve_main.c
++++ b/drivers/net/ethernet/google/gve/gve_main.c
+@@ -829,7 +829,6 @@ static void gve_tx_get_curr_alloc_cfg(struct gve_priv *priv,
+ 	cfg->qcfg = &priv->tx_cfg;
+ 	cfg->raw_addressing = !gve_is_qpl(priv);
+ 	cfg->qpls = priv->qpls;
+-	cfg->qpl_cfg = &priv->qpl_cfg;
+ 	cfg->ring_size = priv->tx_desc_cnt;
+ 	cfg->start_idx = 0;
+ 	cfg->num_rings = gve_num_tx_queues(priv);
+@@ -1119,22 +1118,13 @@ static int gve_alloc_qpls(struct gve_priv *priv, struct gve_qpls_alloc_cfg *cfg,
+ 	if (!qpls)
+ 		return -ENOMEM;
+ 
+-	cfg->qpl_cfg->qpl_map_size = BITS_TO_LONGS(max_queues) *
+-		sizeof(unsigned long) * BITS_PER_BYTE;
+-	cfg->qpl_cfg->qpl_id_map = kvcalloc(BITS_TO_LONGS(max_queues),
+-					    sizeof(unsigned long), GFP_KERNEL);
+-	if (!cfg->qpl_cfg->qpl_id_map) {
+-		err = -ENOMEM;
+-		goto free_qpl_array;
+-	}
+-
+ 	/* Allocate TX QPLs */
+ 	page_count = priv->tx_pages_per_qpl;
+ 	tx_num_qpls = gve_num_tx_qpls(cfg->tx_cfg, cfg->num_xdp_queues,
+ 				      gve_is_qpl(priv));
+ 	err = gve_alloc_n_qpls(priv, qpls, page_count, 0, tx_num_qpls);
+ 	if (err)
+-		goto free_qpl_map;
++		goto free_qpl_array;
+ 
+ 	/* Allocate RX QPLs */
+ 	rx_start_id = gve_rx_start_qpl_id(cfg->tx_cfg);
+@@ -1157,9 +1147,6 @@ static int gve_alloc_qpls(struct gve_priv *priv, struct gve_qpls_alloc_cfg *cfg,
+ 
+ free_tx_qpls:
+ 	gve_free_n_qpls(priv, qpls, 0, tx_num_qpls);
+-free_qpl_map:
+-	kvfree(cfg->qpl_cfg->qpl_id_map);
+-	cfg->qpl_cfg->qpl_id_map = NULL;
+ free_qpl_array:
+ 	kvfree(qpls);
+ 	return err;
+@@ -1175,9 +1162,6 @@ static void gve_free_qpls(struct gve_priv *priv,
+ 	if (!qpls)
+ 		return;
+ 
+-	kvfree(cfg->qpl_cfg->qpl_id_map);
+-	cfg->qpl_cfg->qpl_id_map = NULL;
+-
+ 	for (i = 0; i < max_queues; i++)
+ 		gve_free_queue_page_list(priv, &qpls[i], i);
+ 
+@@ -1292,7 +1276,6 @@ static void gve_qpls_get_curr_alloc_cfg(struct gve_priv *priv,
+ 	  cfg->raw_addressing = !gve_is_qpl(priv);
+ 	  cfg->is_gqi = gve_is_gqi(priv);
+ 	  cfg->num_xdp_queues = priv->num_xdp_queues;
+-	  cfg->qpl_cfg = &priv->qpl_cfg;
+ 	  cfg->tx_cfg = &priv->tx_cfg;
+ 	  cfg->rx_cfg = &priv->rx_cfg;
+ 	  cfg->qpls = priv->qpls;
+@@ -1306,7 +1289,6 @@ static void gve_rx_get_curr_alloc_cfg(struct gve_priv *priv,
+ 	cfg->raw_addressing = !gve_is_qpl(priv);
+ 	cfg->enable_header_split = priv->header_split_enabled;
+ 	cfg->qpls = priv->qpls;
+-	cfg->qpl_cfg = &priv->qpl_cfg;
+ 	cfg->ring_size = priv->rx_desc_cnt;
+ 	cfg->packet_buffer_size = gve_is_gqi(priv) ?
+ 				  GVE_DEFAULT_RX_BUFFER_SIZE :
+@@ -1419,7 +1401,6 @@ static int gve_queues_start(struct gve_priv *priv,
+ 	priv->rx = rx_alloc_cfg->rx;
+ 
+ 	/* Record new configs into priv */
+-	priv->qpl_cfg = *qpls_alloc_cfg->qpl_cfg;
+ 	priv->tx_cfg = *tx_alloc_cfg->qcfg;
+ 	priv->rx_cfg = *rx_alloc_cfg->qcfg;
+ 	priv->tx_desc_cnt = tx_alloc_cfg->ring_size;
+@@ -1916,20 +1897,11 @@ int gve_adjust_queues(struct gve_priv *priv,
+ 	struct gve_tx_alloc_rings_cfg tx_alloc_cfg = {0};
+ 	struct gve_rx_alloc_rings_cfg rx_alloc_cfg = {0};
+ 	struct gve_qpls_alloc_cfg qpls_alloc_cfg = {0};
+-	struct gve_qpl_config new_qpl_cfg;
+ 	int err;
+ 
+ 	gve_get_curr_alloc_cfgs(priv, &qpls_alloc_cfg,
+ 				&tx_alloc_cfg, &rx_alloc_cfg);
+ 
+-	/* qpl_cfg is not read-only, it contains a map that gets updated as
+-	 * rings are allocated, which is why we cannot use the yet unreleased
+-	 * one in priv.
+-	 */
+-	qpls_alloc_cfg.qpl_cfg = &new_qpl_cfg;
+-	tx_alloc_cfg.qpl_cfg = &new_qpl_cfg;
+-	rx_alloc_cfg.qpl_cfg = &new_qpl_cfg;
+-
+ 	/* Relay the new config from ethtool */
+ 	qpls_alloc_cfg.tx_cfg = &new_tx_config;
+ 	tx_alloc_cfg.qcfg = &new_tx_config;
+@@ -2121,18 +2093,10 @@ static int gve_set_features(struct net_device *netdev,
+ 	struct gve_rx_alloc_rings_cfg rx_alloc_cfg = {0};
+ 	struct gve_qpls_alloc_cfg qpls_alloc_cfg = {0};
+ 	struct gve_priv *priv = netdev_priv(netdev);
+-	struct gve_qpl_config new_qpl_cfg;
+ 	int err;
+ 
+ 	gve_get_curr_alloc_cfgs(priv, &qpls_alloc_cfg,
+ 				&tx_alloc_cfg, &rx_alloc_cfg);
+-	/* qpl_cfg is not read-only, it contains a map that gets updated as
+-	 * rings are allocated, which is why we cannot use the yet unreleased
+-	 * one in priv.
+-	 */
+-	qpls_alloc_cfg.qpl_cfg = &new_qpl_cfg;
+-	tx_alloc_cfg.qpl_cfg = &new_qpl_cfg;
+-	rx_alloc_cfg.qpl_cfg = &new_qpl_cfg;
+ 
+ 	if ((netdev->features & NETIF_F_LRO) != (features & NETIF_F_LRO)) {
+ 		netdev->features ^= NETIF_F_LRO;
+diff --git a/drivers/net/ethernet/google/gve/gve_rx.c b/drivers/net/ethernet/google/gve/gve_rx.c
+index cd727e55ae0f..9b56e89c4f43 100644
+--- a/drivers/net/ethernet/google/gve/gve_rx.c
++++ b/drivers/net/ethernet/google/gve/gve_rx.c
+@@ -38,7 +38,6 @@ static void gve_rx_unfill_pages(struct gve_priv *priv,
+ 		for (i = 0; i < slots; i++)
+ 			page_ref_sub(rx->data.page_info[i].page,
+ 				     rx->data.page_info[i].pagecnt_bias - 1);
+-		gve_unassign_qpl(cfg->qpl_cfg, rx->data.qpl->id);
+ 		rx->data.qpl = NULL;
+ 
+ 		for (i = 0; i < rx->qpl_copy_pool_mask + 1; i++) {
+@@ -145,13 +144,11 @@ static int gve_rx_prefill_pages(struct gve_rx_ring *rx,
+ 		return -ENOMEM;
+ 
+ 	if (!rx->data.raw_addressing) {
+-		rx->data.qpl = gve_assign_rx_qpl(cfg, rx->q_num);
+-		if (!rx->data.qpl) {
+-			kvfree(rx->data.page_info);
+-			rx->data.page_info = NULL;
+-			return -ENOMEM;
+-		}
++		u32 qpl_id = gve_get_rx_qpl_id(cfg->qcfg_tx, rx->q_num);
++
++		rx->data.qpl = &cfg->qpls[qpl_id];
+ 	}
++
+ 	for (i = 0; i < slots; i++) {
+ 		if (!rx->data.raw_addressing) {
+ 			struct page *page = rx->data.qpl->pages[i];
+@@ -204,7 +201,6 @@ static int gve_rx_prefill_pages(struct gve_rx_ring *rx,
+ 		page_ref_sub(rx->data.page_info[i].page,
+ 			     rx->data.page_info[i].pagecnt_bias - 1);
+ 
+-	gve_unassign_qpl(cfg->qpl_cfg, rx->data.qpl->id);
+ 	rx->data.qpl = NULL;
+ 
+ 	return err;
+diff --git a/drivers/net/ethernet/google/gve/gve_rx_dqo.c b/drivers/net/ethernet/google/gve/gve_rx_dqo.c
+index 15108407b54f..53fd2d87233f 100644
+--- a/drivers/net/ethernet/google/gve/gve_rx_dqo.c
++++ b/drivers/net/ethernet/google/gve/gve_rx_dqo.c
+@@ -247,10 +247,8 @@ static void gve_rx_free_ring_dqo(struct gve_priv *priv, struct gve_rx_ring *rx,
+ 		if (bs->page_info.page)
+ 			gve_free_page_dqo(priv, bs, !rx->dqo.qpl);
+ 	}
+-	if (rx->dqo.qpl) {
+-		gve_unassign_qpl(cfg->qpl_cfg, rx->dqo.qpl->id);
+-		rx->dqo.qpl = NULL;
+-	}
++
++	rx->dqo.qpl = NULL;
+ 
+ 	if (rx->dqo.bufq.desc_ring) {
+ 		size = sizeof(rx->dqo.bufq.desc_ring[0]) * buffer_queue_slots;
+@@ -359,9 +357,9 @@ static int gve_rx_alloc_ring_dqo(struct gve_priv *priv,
+ 		goto err;
+ 
+ 	if (!cfg->raw_addressing) {
+-		rx->dqo.qpl = gve_assign_rx_qpl(cfg, rx->q_num);
+-		if (!rx->dqo.qpl)
+-			goto err;
++		u32 qpl_id = gve_get_rx_qpl_id(cfg->qcfg_tx, rx->q_num);
++
++		rx->dqo.qpl = &cfg->qpls[qpl_id];
+ 		rx->dqo.next_qpl_page_idx = 0;
+ 	}
+ 
+diff --git a/drivers/net/ethernet/google/gve/gve_tx.c b/drivers/net/ethernet/google/gve/gve_tx.c
+index 4b9853adc113..f805700d67e7 100644
+--- a/drivers/net/ethernet/google/gve/gve_tx.c
++++ b/drivers/net/ethernet/google/gve/gve_tx.c
+@@ -225,7 +225,6 @@ static void gve_tx_free_ring_gqi(struct gve_priv *priv, struct gve_tx_ring *tx,
+ 
+ 	if (!tx->raw_addressing) {
+ 		gve_tx_fifo_release(priv, &tx->tx_fifo);
+-		gve_unassign_qpl(cfg->qpl_cfg, tx->tx_fifo.qpl->id);
+ 		tx->tx_fifo.qpl = NULL;
+ 	}
+ 
+@@ -280,12 +279,12 @@ static int gve_tx_alloc_ring_gqi(struct gve_priv *priv,
+ 	tx->raw_addressing = cfg->raw_addressing;
+ 	tx->dev = hdev;
+ 	if (!tx->raw_addressing) {
+-		tx->tx_fifo.qpl = gve_assign_tx_qpl(cfg, idx);
+-		if (!tx->tx_fifo.qpl)
+-			goto abort_with_desc;
++		u32 qpl_id = gve_tx_qpl_id(priv, tx->q_num);
++
++		tx->tx_fifo.qpl = &cfg->qpls[qpl_id];
+ 		/* map Tx FIFO */
+ 		if (gve_tx_fifo_init(priv, &tx->tx_fifo))
+-			goto abort_with_qpl;
++			goto abort_with_desc;
+ 	}
+ 
+ 	tx->q_resources =
+@@ -301,9 +300,6 @@ static int gve_tx_alloc_ring_gqi(struct gve_priv *priv,
+ abort_with_fifo:
+ 	if (!tx->raw_addressing)
+ 		gve_tx_fifo_release(priv, &tx->tx_fifo);
+-abort_with_qpl:
+-	if (!tx->raw_addressing)
+-		gve_unassign_qpl(cfg->qpl_cfg, tx->tx_fifo.qpl->id);
+ abort_with_desc:
+ 	dma_free_coherent(hdev, bytes, tx->desc, tx->bus);
+ 	tx->desc = NULL;
+diff --git a/drivers/net/ethernet/google/gve/gve_tx_dqo.c b/drivers/net/ethernet/google/gve/gve_tx_dqo.c
+index 70f29b90a982..3d825e406c4b 100644
+--- a/drivers/net/ethernet/google/gve/gve_tx_dqo.c
++++ b/drivers/net/ethernet/google/gve/gve_tx_dqo.c
+@@ -236,10 +236,7 @@ static void gve_tx_free_ring_dqo(struct gve_priv *priv, struct gve_tx_ring *tx,
+ 	kvfree(tx->dqo.tx_qpl_buf_next);
+ 	tx->dqo.tx_qpl_buf_next = NULL;
+ 
+-	if (tx->dqo.qpl) {
+-		gve_unassign_qpl(cfg->qpl_cfg, tx->dqo.qpl->id);
+-		tx->dqo.qpl = NULL;
+-	}
++	tx->dqo.qpl = NULL;
+ 
+ 	netif_dbg(priv, drv, priv->dev, "freed tx queue %d\n", idx);
+ }
+@@ -352,9 +349,9 @@ static int gve_tx_alloc_ring_dqo(struct gve_priv *priv,
+ 		goto err;
+ 
+ 	if (!cfg->raw_addressing) {
+-		tx->dqo.qpl = gve_assign_tx_qpl(cfg, idx);
+-		if (!tx->dqo.qpl)
+-			goto err;
++		u32 qpl_id = gve_tx_qpl_id(priv, tx->q_num);
++
++		tx->dqo.qpl = &cfg->qpls[qpl_id];
+ 
+ 		if (gve_tx_qpl_buf_init(tx))
+ 			goto err;
+-- 
+2.44.0.769.g3c40516874-goog
 
-It turns out sev_es_init_vmcb() always ends up setting control.vmsa_pa
-again using the new vmsa stored in sev_es.vmsa before the AP re-enters the
-guest:
-
-  svm->vmcb->control.vmsa_pa = __pa(svm->sev_es.vmsa);
-
-If we modify that code to instead do:
-
-  if (!svm->sev_es.snp_has_guest_vmsa)
-    svm->vmcb->control.vmsa_pa = __pa(svm->sev_es.vmsa);
-      
-Then it will instead continue to use the control.vmsa_pa set here in
-__sev_snp_update_protected_guest_state(), in which case svm->sev_es.vmsa
-will only ever be used to store the initial VMSA that was allocated by KVM.
-Given that...
-
-> 
-> and wrap the __free_page() in sev_free_vcpu() with "if
-> (!svm->sev_es.snp_ap_create)".
-
-If we take the deferred approach above, then no checks are needed here
-and the KVM-allocated VMSA is cleaned up the same way it is handled for
-SEV-ES. SNP never needs to piggy-back off of sev_es.vmsa to pass around
-VMSAs that reside in guest memory.
-
-I can still rework things to free KVM-allocated VMSA immediately here if
-you prefer but for now I have things implemented as above to keep
-SEV-ES/SNP handling similar and avoid performance penalty during guest
-boot. I've pushed the revised AP creation patch here for reference:
-
-  https://github.com/mdroth/linux/commit/5a7e76231a7629ba62f8b0bba8039d93d3595ecb
-
-Thanks for the suggestions, this all looks a good bit cleaner either way.
-
--Mike
-
-> 
-> This should remove the need for svm->sev_es.vmsa_pa. It is always
-> equal to svm->vmcb->control.vmsa_pa anyway.
-> 
-> Also, it's possible to remove
-> 
->    /*
->     * gmem pages aren't currently migratable, but if this ever
->     * changes then care should be taken to ensure
->     * svm->sev_es.vmsa_pa is pinned through some other means.
->     */
->    kvm_release_pfn_clean(pfn);
-> 
-> if sev_free_vcpu() does
-> 
->    if (svm->sev_es.snp_ap_create) {
->      __free_page(virt_to_page(svm->sev_es.vmsa));
->    } else {
->      put_page(virt_to_page(svm->sev_es.vmsa));
->    }
-> 
-> and while at it, please reverse the polarity of snp_ap_create and
-> rename it to snp_ap_created.
-> 
-> Paolo
-> 
 
