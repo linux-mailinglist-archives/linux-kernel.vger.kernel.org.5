@@ -1,134 +1,108 @@
-Return-Path: <linux-kernel+bounces-147784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D49CB8A79A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:09:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02EBF8A7994
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:04:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 119F31C22348
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:09:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B44E5282F76
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:04:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D541C3E;
-	Wed, 17 Apr 2024 00:08:34 +0000 (UTC)
-Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [5.144.164.167])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40CCE394;
+	Wed, 17 Apr 2024 00:03:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="OSCIzlH5"
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744D917F7
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:08:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.167
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16BC529CFB
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:03:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713312514; cv=none; b=buGHoBIzKvnmAe4Rc5OVd7b1O3WJ+SeOt4HQuT8Ro0A0OZsB0XTqXlaskr2fF4Al5dD6ut4HALtNU1igG1QmJb5MNJQ0TkRjRKRLCHwWsYDL6C8p3Q+/hNoTC/emHjc5kofixR2bUAX0zWsBX6Ee6EoBcbsa9GkLVqnBL+eJ4fQ=
+	t=1713312223; cv=none; b=Qv3L/i3I9ZPvAvPvKIFtiQEuPJXFSqixUfPtviiaswQnuVfMEpK9aBXQbfp63svNhQCqoHsZ2Ht/5AhnabOZnRRgn1xp5Hs61E3nB5yUYMPxZ/E/C8EZrbdE4P/BWVL+Dvsmhsw38o7UjSU+qmlrCXyESlNvmVfs1FVhY9447og=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713312514; c=relaxed/simple;
-	bh=yLdn0fJr0B1Y4lEC7tQYmAV4Y01+r9iOQvrUcRadDc4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=RbmBF2u3fUNVOSZDTNTCQGDooQcVuoU6EuRIHcnRx+CRH3ZnA1IDVlhNYmo5vWbJpqgcxc5MZHai9290mNBmCG1YaQwPCDHZzDl7Q/9enXTpMxeQqkGyKgigiZzH/nXqBB3jdnpoxsJeg33/lCETWXGF+n4Kk5cfQGefQ3Pyjrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
-Received: from Marijn-Arch-PC.localdomain (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by m-r2.th.seeweb.it (Postfix) with ESMTPSA id E36273F040;
-	Wed, 17 Apr 2024 01:57:49 +0200 (CEST)
-From: Marijn Suijten <marijn.suijten@somainline.org>
-Date: Wed, 17 Apr 2024 01:57:46 +0200
-Subject: [PATCH 6/7] drm/msm/dsi: Set PHY usescase before registering DSI
- host
+	s=arc-20240116; t=1713312223; c=relaxed/simple;
+	bh=sAYUqJIp1cIswCUgE2SHPOCm/Go8GvaZkQnCVt6u2pY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Y2uJEOB/Vj6hWhFuZe0ljTEpowo9rQb2wREvG8pC09+6FprnOhqBklXOrbeSPMppqIBfnI4QA+S7GZ7/nNOT3CRYQmFVZChIlzVu+6zejENrHp19z77f2jSs4lUxJBBZpStjp072zuJrZ+PSQljwcqyu3nyJnzxeOhCRzDXm6Uk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=OSCIzlH5; arc=none smtp.client-ip=209.85.161.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5acdbfa6e94so133122eaf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:03:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1713312221; x=1713917021; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8nEb596pNHjGRxwi+zHrhblVQCdUyfcBe4WmHdhpM9s=;
+        b=OSCIzlH5T+ape9XZzsDrsG5kxO9pF0qdJIncA2i5gKLUtvIZ7EnJ54BNtZOB8Ldrbu
+         0dKbA58OO7efduI+EvO0kZWeH/+yLG2FgfmY9psc6VsvfNLHvUe9ycz00Ea5/BvZStUA
+         iIOl4ZqPESHb8XiGB96NVahJkpjBSA5yEBf8o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713312221; x=1713917021;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8nEb596pNHjGRxwi+zHrhblVQCdUyfcBe4WmHdhpM9s=;
+        b=IZ4qIJhNFDuE9hs4MKL9BpBzkklhTZ4kGgSQ9W83cm0mbZVw0HTRugfAHYLXyDnPv3
+         eqXemHur+FASUuOZYYRYPIG+OQ1xg2cPN3bZPx7/SYMyRXVsJ4PoLkA8kAG16Vqg1PFV
+         pbcNpA7KBWM4vOA6PTKeTWxTLGrcII51CjPGRnsu2efTIpglnOH7EvZzzNuFRdzCNVZg
+         cy6pJO5xCa08a3MQC1oDmItaRuniKpCGC0/J9oepAlhyC2Pktq7kAAf3V+PU3SDF2Dfz
+         l4PSSaztikqANlGwC1BCcR1A0p/OsbCxcdjY0AoSTsYsbuPV0bWHcMj8f7/ETJsui2xI
+         CIHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXKycDvq+hP8epEcVIwh91x5SJ0twJWHolJvJEHxTrMPWXQySapWpR+x8KyLHhrghlY2lGqbBRM+RjNzUgmn3a5MZ9mB6sHaH/rM0kr
+X-Gm-Message-State: AOJu0Yw8nY+p7X2XUe6lyL6S4BSrJbEpQSxLufXqMzUdV6epd3rL3zk2
+	cZe05/Z5+oKxkw6xkKpak0V17O8SXb6Cm64qbx1ZRdnZllHCDGP9XpZE7FXSGL8=
+X-Google-Smtp-Source: AGHT+IEu81gTDsDdQDj17/Kg32wLhh2UcKNsPnm/8AVDNQyUumTOaGLjpZ6gDN+5E0kgCZng6wAY5g==
+X-Received: by 2002:a05:6820:4187:b0:5ac:6fc1:c2cb with SMTP id fk7-20020a056820418700b005ac6fc1c2cbmr14358895oob.0.1713312221119;
+        Tue, 16 Apr 2024 17:03:41 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id x4-20020a056820104400b005a4dc7abc01sm2796107oot.11.2024.04.16.17.03.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Apr 2024 17:03:40 -0700 (PDT)
+Message-ID: <3c4ab12f-caf5-456f-8a8c-d4211d843f33@linuxfoundation.org>
+Date: Tue, 16 Apr 2024 18:03:39 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests: Mark ksft_exit_fail_perror() as __noreturn
+To: Nathan Chancellor <nathan@kernel.org>,
+ Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Shuah Khan <shuah@kernel.org>, Nick Desaulniers
+ <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>,
+ Justin Stitt <justinstitt@google.com>, kernel@collabora.com,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ llvm@lists.linux.dev, Shuah Khan <skhan@linuxfoundation.org>
+References: <20240414062653.666919-1-usama.anjum@collabora.com>
+ <20240415154107.GA1538232@dev-arch.thelio-3990X>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240415154107.GA1538232@dev-arch.thelio-3990X>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-6-78ae3ee9a697@somainline.org>
-References: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-0-78ae3ee9a697@somainline.org>
-In-Reply-To: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-0-78ae3ee9a697@somainline.org>
-To: Rob Clark <robdclark@gmail.com>, 
- Abhinav Kumar <quic_abhinavk@quicinc.com>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Archit Taneja <architt@codeaurora.org>, 
- Chandan Uddaraju <chandanu@codeaurora.org>, Vinod Koul <vkoul@kernel.org>, 
- Sravanthi Kollukuduru <skolluku@codeaurora.org>
-Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- Jordan Crouse <jordan@cosmicpenguin.net>, 
- Rajesh Yadav <ryadav@codeaurora.org>, 
- Jeykumar Sankaran <jsanka@codeaurora.org>, 
- ~postmarketos/upstreaming@lists.sr.ht, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Martin Botka <martin.botka@somainline.org>, 
- Jami Kettunen <jami.kettunen@somainline.org>, 
- Marijn Suijten <marijn.suijten@somainline.org>
-X-Mailer: b4 0.13.0
 
-Ordering issues here cause an uninitalized (default STANDALONE)
-usecase to be programmed (which appears to be a MUX) in some cases
-when msm_dsi_host_register() is called, leading to the slave PLL in
-bonded-DSI mode to source from a clock parent (dsi1vco) that is off.
+On 4/15/24 09:41, Nathan Chancellor wrote:
+> On Sun, Apr 14, 2024 at 11:26:53AM +0500, Muhammad Usama Anjum wrote:
+>> Let the compilers (clang) know that this function would just call
+>> exit() and would never return. It is needed to avoid false positive
+>> static analysis errors. All similar functions calling exit()
+>> unconditionally have been marked as __noreturn.
+>>
+>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> 
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> 
 
-This should seemingly not be a problem as the actual dispcc clocks from
-DSI1 that are muxed in the clock tree of DSI0 are way further down, this
-bit still seems to have an effect on them somehow and causes the right
-side of the panel controlled by DSI1 to not function.
+Thank you both. Applied to linux-kselftest next for Linux 6.10-rc1.
 
-In an ideal world this code is refactored to no longer have such
-error-prone calls "across subsystems", and instead model the "PLL src"
-register field as a regular mux so that changing the clock parents
-programmatically or in DTS via `assigned-clock-parents` has the
-desired effect.
-But for the avid reader, the clocks that we *are* muxing into DSI0's
-tree are way further down, so if this bit turns out to be a simple mux
-between dsiXvco and out_div, that shouldn't have any effect as this
-whole tree is off anyway.
-
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
----
- drivers/gpu/drm/msm/dsi/dsi_manager.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/dsi/dsi_manager.c b/drivers/gpu/drm/msm/dsi/dsi_manager.c
-index af2a287cb3bd..17f43b3c0494 100644
---- a/drivers/gpu/drm/msm/dsi/dsi_manager.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi_manager.c
-@@ -85,6 +85,17 @@ static int dsi_mgr_setup_components(int id)
- 							msm_dsi : other_dsi;
- 		struct msm_dsi *slave_link_dsi = IS_MASTER_DSI_LINK(id) ?
- 							other_dsi : msm_dsi;
-+
-+		/* PLL0 is to drive both 2 DSI link clocks in bonded DSI mode.
-+		 *
-+		 * Set the usecase before calling msm_dsi_host_register() to prevent it from
-+		 * enabling and configuring the usecase (which is just a mux bit) first.
-+		 */
-+		msm_dsi_phy_set_usecase(clk_master_dsi->phy,
-+					MSM_DSI_PHY_MASTER);
-+		msm_dsi_phy_set_usecase(clk_slave_dsi->phy,
-+					MSM_DSI_PHY_SLAVE);
-+
- 		/* Register slave host first, so that slave DSI device
- 		 * has a chance to probe, and do not block the master
- 		 * DSI device's probe.
-@@ -100,10 +111,6 @@ static int dsi_mgr_setup_components(int id)
- 			return ret;
- 
- 		/* PLL0 is to drive both 2 DSI link clocks in bonded DSI mode. */
--		msm_dsi_phy_set_usecase(clk_master_dsi->phy,
--					MSM_DSI_PHY_MASTER);
--		msm_dsi_phy_set_usecase(clk_slave_dsi->phy,
--					MSM_DSI_PHY_SLAVE);
- 		msm_dsi_host_set_phy_mode(msm_dsi->host, msm_dsi->phy);
- 		msm_dsi_host_set_phy_mode(other_dsi->host, other_dsi->phy);
- 	}
-
--- 
-2.44.0
+thanks,
+-- Shuah
 
 
