@@ -1,322 +1,365 @@
-Return-Path: <linux-kernel+bounces-148323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87B3C8A80F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:30:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46E2E8A8103
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:33:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 388B1282070
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:30:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69AF21C21099
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98EF013C3D5;
-	Wed, 17 Apr 2024 10:30:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="A6OzMDZU"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39ED11181;
-	Wed, 17 Apr 2024 10:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2FDF13BC00;
+	Wed, 17 Apr 2024 10:33:49 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C18407F48E
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:33:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713349822; cv=none; b=OqP6s60XYj6X17LMqdMsD2o3bMtO9iwgMqO9Y+oC+xZcBY5iwYqVRH/8vD1dzzzBoI5ohVUVD0liS3v2clTVrfb7RcEMAgCxchAoqFFrgPgBxWSthuZAq4IWln4HNRdUVn9v4K7v0+Tgucx2Ehe3j7U0PgESLr5xYZMFlbpA/pk=
+	t=1713350029; cv=none; b=NvSW8ChsaFCL7iYG+lgupma3GPebtuq1hO4xxgfJwssxyKy3F5dMw7BdlvGn70utAYlGd25CEFLBq8lWNwx52HgEEz6s7NK0G5MV6UC1j9Xj/PoAfnPY/0xJZkVuxRYLBYp2+KXK9nRWEXcXsYwJ0tHRMePclZCjHOZcOFZ0etc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713349822; c=relaxed/simple;
-	bh=+gBG99f0GmjeWR4WBbEAkDNYZuCzgUsWIIYF0c+Dnhw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pUCC/O5072qVsQlzYYcGWq8Yrg/No3jS8cdtOyMGx0slLTj+K9hptlkpqt+RLdaRoiX24xOYLdOoaZY0bzLeV5V1dgNjnlXbcsCTWysg/Ufqi1iEFZerlUdZ7SAdBR1CgUMCf+WmkGqy8eN08hq9f2PYRwiT6s02n8PN4++d2Aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=A6OzMDZU; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9002516F9;
-	Wed, 17 Apr 2024 12:29:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1713349771;
-	bh=+gBG99f0GmjeWR4WBbEAkDNYZuCzgUsWIIYF0c+Dnhw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=A6OzMDZU51R6f6/0Ix/dluKPIax+YWhsP89GqNlQt0I6FFR14+FgiUIEIbV5QHuH2
-	 mhHMsSmBAFzxHu0Bzzyb9hUGoK7zG5q01wRj63ky5o5KCd8TbrsU1j6S+p4ZtcMkf5
-	 b6dzWsnGZ9PRXlAaR4iqG0J4ZwNacJh27aNG4sz4=
-Message-ID: <bdff1794-f3eb-4845-a73a-0b76d2759eec@ideasonboard.com>
-Date: Wed, 17 Apr 2024 13:30:14 +0300
+	s=arc-20240116; t=1713350029; c=relaxed/simple;
+	bh=sE/5/WYPjjopKdjOVMlzdZkdkwQC9YQaHaLyURvpa6Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O+mSuVOOQ995Zj2JM4O4rRWuh6LZeHfKDNgIVUGTZw09B5Hc2i4mRTVdkv1xjALjJK5IRhVuPq86XRKFXr5zFc7Zirw9q12Pd/O0suI0stVwhHQ0tLYEpj2MCpjQ9Y+BNkz5lTMNxIWvgf+sK/ZHY2+pM6wERbv/Wx7PcYhRDzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d85ff70000001748-49-661fa5817b7a
+Date: Wed, 17 Apr 2024 19:33:32 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc: kernel_team@skhynix.com, akpm@linux-foundation.org,
+	ying.huang@intel.com, vernhao@tencent.com,
+	mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
+	david@redhat.com, peterz@infradead.org, luto@kernel.org,
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, rjgolo@gmail.com
+Subject: Re: [PATCH v9 0/8] Reduce tlb and interrupt numbers over 90% by
+ improving folio migration
+Message-ID: <20240417103332.GA8460@system.software.com>
+References: <20240417071847.29584-1-byungchul@sk.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/7] drm: xlnx: zynqmp_dpsub: Set input live format
-To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-Cc: dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-media@vger.kernel.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Michal Simek <michal.simek@amd.com>, Andrzej Hajda
- <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>,
- Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
- Jernej Skrabec <jernej.skrabec@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20240416-dp-live-fmt-v4-0-c7f379b7168e@amd.com>
- <20240416-dp-live-fmt-v4-6-c7f379b7168e@amd.com>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Content-Language: en-US
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240416-dp-live-fmt-v4-6-c7f379b7168e@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417071847.29584-1-byungchul@sk.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNIsWRmVeSWpSXmKPExsXC9ZZnoW7jUvk0gzfXLSzmrF/DZvF5wz82
+	ixcb2hktvq7/xWzx9FMfi8XlXXPYLO6t+c9qcX7XWlaLHUv3MVlcOrCAyeJ47wEmi/n3PrNZ
+	bN40ldni+JSpjBa/fwAVn5w1mcVBwON7ax+Lx85Zd9k9Fmwq9di8Qstj8Z6XTB6bVnWyeWz6
+	NInd4925c+weJ2b8ZvGYdzLQ4/2+q2weW3/ZeTROvcbm8XmTXABfFJdNSmpOZllqkb5dAlfG
+	6R0fmAp+xFRs3hLdwPjNuYuRk0NCwERi854PLF2MHGB2015OkDCLgKrE9bf3mEFsNgF1iRs3
+	foLZIkAl2zufMnUxcnEwC5xmkjiz5Tk7SEJYIEXiUtMtFhCbV8BcYumGbawgtpCAqcT3Ex/Z
+	IOKCEidnPgGrYRbQkrjx7yUTyF5mAWmJ5f84QMKcAmYSm5vXgJWLCihLHNh2HGyXhMAqdomT
+	m7awQNwsKXFwxQ2WCYwCs5CMnYVk7CyEsQsYmVcxCmXmleUmZuaY6GVU5mVW6CXn525iBEbh
+	sto/0TsYP10IPsQowMGoxMNrECWXJsSaWFZcmXuIUYKDWUmEt0VYNk2INyWxsiq1KD++qDQn
+	tfgQozQHi5I4r9G38hQhgfTEktTs1NSC1CKYLBMHp1QDo7j9EbGs/y2Lv2iYnP2i9f30g3Wm
+	4Wvb5ouyW3KaXPmsL++7h+t5z94OJe0KlYtzs7dpbmlwEtnbf3BZzxybKwJynff3msxg9dC9
+	qHNj8qIP+ozfNNLeGvuYGVR8cdyTsy+p1rQ+7YOkuMWJ13/u3Y+4s2X9k4K3xuIqt5UfzrIx
+	2/h5VdCp2UosxRmJhlrMRcWJAP1RvDG+AgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsXC5WfdrNu4VD7NYNYGTYs569ewWXze8I/N
+	4sWGdkaLr+t/MVs8/dTHYnF47klWi8u75rBZ3Fvzn9Xi/K61rBY7lu5jsrh0YAGTxfHeA0wW
+	8+99ZrPYvGkqs8XxKVMZLX7/ACo+OWsyi4Ogx/fWPhaPnbPusnss2FTqsXmFlsfiPS+ZPDat
+	6mTz2PRpErvHu3Pn2D1OzPjN4jHvZKDH+31X2TwWv/jA5LH1l51H49RrbB6fN8kF8Edx2aSk
+	5mSWpRbp2yVwZZze8YGp4EdMxeYt0Q2M35y7GDk4JARMJJr2cnYxcnKwCKhKXH97jxnEZhNQ
+	l7hx4yeYLQJUsr3zKVMXIxcHs8BpJokzW56zgySEBVIkLjXdYgGxeQXMJZZu2MYKYgsJmEp8
+	P/GRDSIuKHFy5hOwGmYBLYkb/14ygexlFpCWWP6PAyTMKWAmsbl5DVi5qICyxIFtx5kmMPLO
+	QtI9C0n3LITuBYzMqxhFMvPKchMzc0z1irMzKvMyK/SS83M3MQJjalntn4k7GL9cdj/EKMDB
+	qMTDaxAllybEmlhWXJl7iFGCg1lJhLdFWDZNiDclsbIqtSg/vqg0J7X4EKM0B4uSOK9XeGqC
+	kEB6YklqdmpqQWoRTJaJg1OqgXFaMK/Ckk7rQv6n6zc+WX5egk9POkRo9aSfIu2NE/Z5rZnY
+	sis2YqkNX2W6HefSte1CCb9OxjQJb5N9nVNk+KltsnjqB/69btfEi2/dNVKc8eNGrYh76Frf
+	Zyuud/B/Y19TEWTu8Gsrg9E7mc9BXSFK7XN5TfdXsM+wk/p5fJGl6x7R6OS9zEosxRmJhlrM
+	RcWJAJcUnZqlAgAA
+X-CFilter-Loop: Reflected
 
-On 16/04/2024 23:31, Anatoliy Klymenko wrote:
-> Program live video input format according to selected media bus format.
+On Wed, Apr 17, 2024 at 04:18:39PM +0900, Byungchul Park wrote:
+> Hi everyone,
 > 
-> In the bridge mode of operation, DPSUB is connected to FPGA CRTC which
-> almost certainly supports a single media bus format as its output. Expect
-> this to be delivered via the new bridge atomic state. Program DPSUB
-> registers accordingly.
+> While I'm working with a tiered memory system e.g. CXL memory, I have
+> been facing migration overhead esp. tlb shootdown on promotion or
+> demotion between different tiers.  Yeah..  most tlb shootdowns on
+> migration through hinting fault can be avoided thanks to Huang Ying's
+> work, commit 4d4b6d66db ("mm,unmap: avoid flushing tlb in batch if PTE
+> is inaccessible").  See the following link for more information:
 > 
-> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+> https://lore.kernel.org/lkml/20231115025755.GA29979@system.software.com/
+> 
+> However, it's only for ones using hinting fault.  I thought it'd be much
+> better if we have a general mechanism to reduce all tlb numbers that we
+> can ultimately apply to any type of migration.
+> 
+> I'm suggesting a mechanism called MIGRC that stands for 'Migration Read
+> Copy', to reduce tlb numbers by deferring tlb flush until the source
+> folios at migration actually become used, of course, only if the target
+> PTE don't have write permission.
+
+I stably obtain the performance improvement over 5% in end user's point
+of view, which I think is not negligible. Thoughts?
+
+	Byungchul
+
+> To achieve that:
+> 
+>    1. For the folios that map only to non-writable tlb entries, prevent
+>       tlb flush during migration but perform it just before the source
+>       folios actually become used out of buddy or pcp.
+> 
+>    2. When any non-writable tlb entry changes to writable e.g. through
+>       fault handler, give up migrc mechanism and perform tlb flush
+>       required right away.
+> 
+> No matter what type of workload is used for performance evaluation, the
+> result would be positive thanks to the unconditional reduction of tlb
+> flushes, tlb misses and interrupts.  For the test, I picked up XSBench
+> that is widely used for performance analysis on high performance
+> computing architectures - https://github.com/ANL-CESAR/XSBench.
+> 
+> The result would depend on memory latency and how often reclaim runs,
+> which implies tlb miss overhead and how many times migration happens.
+> The slower the memory is and the more reclaim runs, the better migrc
+> works so as to obtain the better result.  In my system, the result
+> shows:
+> 
+>    1. itlb flushes are reduced over 90%.
+>    2. itlb misses are reduced over 30%.
+>    3. All the other tlb numbers also get enhanced.
+>    4. tlb shootdown interrupts are reduced over 90%.
+>    5. The test program runtime is reduced over 5%.
+> 
+> The test envitonment:
+> 
+>    Architecture - x86_64
+>    QEMU - kvm enabled, host cpu
+>    Numa - 2 nodes (16 CPUs 1GB, no CPUs 99GB)
+>    Linux Kernel - v6.9-rc4, numa balancing tiering on, demotion enabled
+> 
+> < measurement: raw data - tlb and interrupt numbers >
+> 
+>    $ perf stat -a \
+>            -e itlb.itlb_flush \
+>            -e tlb_flush.dtlb_thread \
+>            -e tlb_flush.stlb_any \
+>            -e dtlb-load-misses \
+>            -e dtlb-store-misses \
+>            -e itlb-load-misses \
+>            XSBench -t 16 -p 50000000
+> 
+>    $ grep "TLB shootdowns" /proc/interrupts
+> 
+>    BEFORE
+>    ------
+>    40417078     itlb.itlb_flush
+>    234852566    tlb_flush.dtlb_thread
+>    153192357    tlb_flush.stlb_any
+>    119001107892 dTLB-load-misses
+>    307921167    dTLB-store-misses
+>    1355272118   iTLB-load-misses
+> 
+>    TLB: 1364803    1303670    1333921    1349607
+>         1356934    1354216    1332972    1342842
+>         1350265    1316443    1355928    1360793
+>         1298239    1326358    1343006    1340971
+>         TLB shootdowns
+> 
+>    AFTER
+>    -----
+>    3316495      itlb.itlb_flush
+>    138912511    tlb_flush.dtlb_thread
+>    115199341    tlb_flush.stlb_any
+>    117610390021 dTLB-load-misses
+>    198042233    dTLB-store-misses
+>    840066984    iTLB-load-misses
+> 
+>    TLB: 117257     119219     117178     115737
+>         117967     118948     117508     116079
+>         116962     117266     117320     117215
+>         105808     103934     115672     117610
+>         TLB shootdowns
+> 
+> < measurement: user experience - runtime >
+> 
+>    $ time XSBench -t 16 -p 50000000
+> 
+>    BEFORE
+>    ------
+>    Threads:     16
+>    Runtime:     968.783 seconds
+>    Lookups:     1,700,000,000
+>    Lookups/s:   1,754,778
+> 
+>    15208.91s user 141.44s system 1564% cpu 16:20.98 total
+> 
+>    AFTER
+>    -----
+>    Threads:     16
+>    Runtime:     913.210 seconds
+>    Lookups:     1,700,000,000
+>    Lookups/s:   1,861,565
+> 
+>    14351.69s user 138.23s system 1565% cpu 15:25.47 total
+> 
 > ---
->   drivers/gpu/drm/xlnx/zynqmp_disp.c | 92 ++++++++++++++++++++++++++++++++------
->   drivers/gpu/drm/xlnx/zynqmp_disp.h |  2 +
->   drivers/gpu/drm/xlnx/zynqmp_dp.c   | 13 ++++--
->   3 files changed, 90 insertions(+), 17 deletions(-)
 > 
-
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-
-  Tomi
-
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> index 8cdd74a9b772..13157da0089e 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> @@ -436,19 +436,29 @@ static void zynqmp_disp_avbuf_set_format(struct zynqmp_disp *disp,
->   					 const struct zynqmp_disp_format *fmt)
->   {
->   	unsigned int i;
-> -	u32 val;
-> +	u32 val, reg;
->   
-> -	val = zynqmp_disp_avbuf_read(disp, ZYNQMP_DISP_AV_BUF_FMT);
-> -	val &= zynqmp_disp_layer_is_video(layer)
-> -	    ? ~ZYNQMP_DISP_AV_BUF_FMT_NL_VID_MASK
-> -	    : ~ZYNQMP_DISP_AV_BUF_FMT_NL_GFX_MASK;
-> -	val |= fmt->buf_fmt;
-> -	zynqmp_disp_avbuf_write(disp, ZYNQMP_DISP_AV_BUF_FMT, val);
-> +	layer->disp_fmt = fmt;
-> +	if (layer->mode == ZYNQMP_DPSUB_LAYER_NONLIVE) {
-> +		reg = ZYNQMP_DISP_AV_BUF_FMT;
-> +		val = zynqmp_disp_avbuf_read(disp, ZYNQMP_DISP_AV_BUF_FMT);
-> +		val &= zynqmp_disp_layer_is_video(layer)
-> +		    ? ~ZYNQMP_DISP_AV_BUF_FMT_NL_VID_MASK
-> +		    : ~ZYNQMP_DISP_AV_BUF_FMT_NL_GFX_MASK;
-> +		val |= fmt->buf_fmt;
-> +		zynqmp_disp_avbuf_write(disp, reg, val);
-> +	} else {
-> +		reg = zynqmp_disp_layer_is_video(layer)
-> +		    ? ZYNQMP_DISP_AV_BUF_LIVE_VID_CONFIG
-> +		    : ZYNQMP_DISP_AV_BUF_LIVE_GFX_CONFIG;
-> +		val = fmt->buf_fmt;
-> +		zynqmp_disp_avbuf_write(disp, reg, val);
-> +	}
->   
->   	for (i = 0; i < ZYNQMP_DISP_AV_BUF_NUM_SF; i++) {
-> -		unsigned int reg = zynqmp_disp_layer_is_video(layer)
-> -				 ? ZYNQMP_DISP_AV_BUF_VID_COMP_SF(i)
-> -				 : ZYNQMP_DISP_AV_BUF_GFX_COMP_SF(i);
-> +		reg = zynqmp_disp_layer_is_video(layer)
-> +		    ? ZYNQMP_DISP_AV_BUF_VID_COMP_SF(i)
-> +		    : ZYNQMP_DISP_AV_BUF_GFX_COMP_SF(i);
->   
->   		zynqmp_disp_avbuf_write(disp, reg, fmt->sf[i]);
->   	}
-> @@ -926,6 +936,31 @@ zynqmp_disp_layer_find_format(struct zynqmp_disp_layer *layer,
->   	return NULL;
->   }
->   
-> +/**
-> + * zynqmp_disp_layer_find_live_format - Find format information for given
-> + * media bus format
-> + * @layer: The layer
-> + * @drm_fmt: Media bus format to search
-> + *
-> + * Search display subsystem format information corresponding to the given media
-> + * bus format @media_bus_format for the @layer, and return a pointer to the
-> + * format descriptor.
-> + *
-> + * Return: A pointer to the format descriptor if found, NULL otherwise
-> + */
-> +static const struct zynqmp_disp_format *
-> +zynqmp_disp_layer_find_live_format(struct zynqmp_disp_layer *layer,
-> +				   u32 media_bus_format)
-> +{
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < layer->info->num_formats; i++)
-> +		if (layer->info->formats[i].bus_fmt == media_bus_format)
-> +			return &layer->info->formats[i];
-> +
-> +	return NULL;
-> +}
-> +
->   /**
->    * zynqmp_disp_layer_drm_formats - Return the DRM formats supported by the layer
->    * @layer: The layer
-> @@ -1040,6 +1075,9 @@ void zynqmp_disp_layer_disable(struct zynqmp_disp_layer *layer)
->    * @layer: The layer
->    * @info: The format info
->    *
-> + * NOTE: Use zynqmp_disp_layer_set_live_format() to set media bus format for
-> + * live video layers.
-> + *
->    * Set the format for @layer to @info. The layer must be disabled.
->    */
->   void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
-> @@ -1047,14 +1085,16 @@ void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
->   {
->   	unsigned int i;
->   
-> +	if (WARN_ON(layer->mode != ZYNQMP_DPSUB_LAYER_NONLIVE))
-> +		return;
-> +
->   	layer->disp_fmt = zynqmp_disp_layer_find_format(layer, info->format);
-> +	if (WARN_ON(!layer->disp_fmt))
-> +		return;
->   	layer->drm_fmt = info;
->   
->   	zynqmp_disp_avbuf_set_format(layer->disp, layer, layer->disp_fmt);
->   
-> -	if (layer->mode == ZYNQMP_DPSUB_LAYER_LIVE)
-> -		return;
-> -
->   	/*
->   	 * Set pconfig for each DMA channel to indicate they're part of a
->   	 * video group.
-> @@ -1074,6 +1114,32 @@ void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
->   	}
->   }
->   
-> +/**
-> + * zynqmp_disp_layer_set_live_format - Set the live video layer format
-> + * @layer: The layer
-> + * @info: The format info
-> + *
-> + * NOTE: This function should not be used to set format for non-live video
-> + * layer. Use zynqmp_disp_layer_set_format() instead.
-> + *
-> + * Set the display format for the live @layer. The layer must be disabled.
-> + */
-> +void zynqmp_disp_layer_set_live_format(struct zynqmp_disp_layer *layer,
-> +				       u32 media_bus_format)
-> +{
-> +	if (WARN_ON(layer->mode != ZYNQMP_DPSUB_LAYER_LIVE))
-> +		return;
-> +
-> +	layer->disp_fmt = zynqmp_disp_layer_find_live_format(layer,
-> +							     media_bus_format);
-> +	if (WARN_ON(!layer->disp_fmt))
-> +		return;
-> +
-> +	zynqmp_disp_avbuf_set_format(layer->disp, layer, layer->disp_fmt);
-> +
-> +	layer->drm_fmt = drm_format_info(layer->disp_fmt->drm_fmt);
-> +}
-> +
->   /**
->    * zynqmp_disp_layer_update - Update the layer framebuffer
->    * @layer: The layer
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.h b/drivers/gpu/drm/xlnx/zynqmp_disp.h
-> index efd1c52c2916..fa545533c9d1 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.h
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.h
-> @@ -58,6 +58,8 @@ void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer);
->   void zynqmp_disp_layer_disable(struct zynqmp_disp_layer *layer);
->   void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
->   				  const struct drm_format_info *info);
-> +void zynqmp_disp_layer_set_live_format(struct zynqmp_disp_layer *layer,
-> +				       u32 media_bus_format);
->   int zynqmp_disp_layer_update(struct zynqmp_disp_layer *layer,
->   			     struct drm_plane_state *state);
->   
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> index faaeea526970..a7fa5e2abb9b 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> @@ -1299,15 +1299,20 @@ static void zynqmp_dp_disp_enable(struct zynqmp_dp *dp,
->   				  struct drm_bridge_state *old_bridge_state)
->   {
->   	struct zynqmp_disp_layer *layer;
-> -	const struct drm_format_info *info;
-> +	struct drm_bridge_state *bridge_state;
-> +	u32 bus_fmt;
->   
->   	layer = zynqmp_dp_disp_connected_live_layer(dp);
->   	if (!layer)
->   		return;
->   
-> -	/* TODO: Make the format configurable. */
-> -	info = drm_format_info(DRM_FORMAT_YUV422);
-> -	zynqmp_disp_layer_set_format(layer, info);
-> +	bridge_state = drm_atomic_get_new_bridge_state(old_bridge_state->base.state,
-> +						       old_bridge_state->bridge);
-> +	if (WARN_ON(!bridge_state))
-> +		return;
-> +
-> +	bus_fmt = bridge_state->input_bus_cfg.format;
-> +	zynqmp_disp_layer_set_live_format(layer, bus_fmt);
->   	zynqmp_disp_layer_enable(layer);
->   
->   	if (layer == dp->dpsub->layers[ZYNQMP_DPSUB_LAYER_GFX])
+> Changes from v8:
+> 	1. Rebase on the latest, v6.9-rc4.
+> 	2. Supplement comments and commit message.
+> 	3. Change the candidate to apply migrc mechnism:
 > 
-
+> 	   BEFORE - The source folios at demotion and promotion.
+> 	   AFTER  - The souce folios at any type of migration.
+> 
+> 	4. Change how migrc mechanism works:
+> 
+> 	   BEFORE - Reduce tlb flushes by deferring folio_free() for
+> 	            source folios during demotion and promotion.
+> 	   AFTER  - Reduce tlb flushes by deferring tlb flush until they
+> 	            actually become used, out of pcp or buddy. The
+> 		    current version of migrc does *not* defer calling
+> 	            folio_free() but let it go as it is as the same as
+> 		    vanilla kernel, with the folios marked kind of 'need
+> 		    to tlb flush'. And then handle the flush when the
+> 		    page exits from pcp or buddy so as to prevent
+> 		    changing vm stats e.g. free pages.
+> 
+> Changes from v7:
+> 	1. Rewrite cover letter to explain what 'migrc' mechasism is.
+> 	   (feedbacked by Andrew Morton)
+> 	2. Supplement the commit message of a patch 'mm: Add APIs to
+> 	   free a folio directly to the buddy bypassing pcp'.
+> 	   (feedbacked by Andrew Morton)
+> 
+> Changes from v6:
+> 	1. Fix build errors in case of
+> 	   CONFIG_ARCH_WANT_BATCHED_UNMAP_tlb_FLUSH disabled by moving
+> 	   migrc_flush_{start,end}() calls from arch code to
+> 	   try_to_unmap_flush() in mm/rmap.c.
+> 
+> Changes from v5:
+> 	1. Fix build errors in case of CONFIG_MIGRATION disabled or
+> 	   CONFIG_HWPOISON_INJECT moduled. (feedbacked by kernel test
+> 	   bot and Raymond Jay Golo)
+> 	2. Organize migrc code with two kconfigs, CONFIG_MIGRATION and
+> 	   CONFIG_ARCH_WANT_BATCHED_UNMAP_tlb_FLUSH.
+> 
+> Changes from v4:
+> 
+> 	1. Rebase on v6.7.
+> 	2. Fix build errors in arm64 that is doing nothing for tlb flush
+> 	   but has CONFIG_ARCH_WANT_BATCHED_UNMAP_tlb_FLUSH. (reported
+> 	   by kernel test robot)
+> 	3. Don't use any page flag. So the system would give up migrc
+> 	   mechanism more often but it's okay. The final improvement is
+> 	   good enough.
+> 	4. Instead, optimize full tlb flush(arch_tlbbatch_flush()) by
+> 	   avoiding redundant CPUs from tlb flush.
+> 
+> Changes from v3:
+> 
+> 	1. Don't use the kconfig, CONFIG_MIGRC, and remove sysctl knob,
+> 	   migrc_enable. (feedbacked by Nadav)
+> 	2. Remove the optimization skipping CPUs that have already
+> 	   performed tlb flushes needed by any reason when performing
+> 	   tlb flushes by migrc because I can't tell the performance
+> 	   difference between w/ the optimization and w/o that.
+> 	   (feedbacked by Nadav)
+> 	3. Minimize arch-specific code. While at it, move all the migrc
+>            declarations and inline functions from include/linux/mm.h to
+>            mm/internal.h (feedbacked by Dave Hansen, Nadav)
+> 	4. Separate a part making migrc paused when the system is in
+> 	   high memory pressure to another patch. (feedbacked by Nadav)
+> 	5. Rename:
+> 	      a. arch_tlbbatch_clean() to arch_tlbbatch_clear(),
+> 	      b. tlb_ubc_nowr to tlb_ubc_ro,
+> 	      c. migrc_try_flush_free_folios() to migrc_flush_free_folios(),
+> 	      d. migrc_stop to migrc_pause.
+> 	   (feedbacked by Nadav)
+> 	6. Use ->lru list_head instead of introducing a new llist_head.
+> 	   (feedbacked by Nadav)
+> 	7. Use non-atomic operations of page-flag when it's safe.
+> 	   (feedbacked by Nadav)
+> 	8. Use stack instead of keeping a pointer of 'struct migrc_req'
+> 	   in struct task, which is for manipulating it locally.
+> 	   (feedbacked by Nadav)
+> 	9. Replace a lot of simple functions to inline functions placed
+> 	   in a header, mm/internal.h. (feedbacked by Nadav)
+> 	10. Add additional sufficient comments. (feedbacked by Nadav)
+> 	11. Remove a lot of wrapper functions. (feedbacked by Nadav)
+> 
+> Changes from RFC v2:
+> 
+> 	1. Remove additional occupation in struct page. To do that,
+> 	   unioned with lru field for migrc's list and added a page
+> 	   flag. I know page flag is a thing that we don't like to add
+> 	   but no choice because migrc should distinguish folios under
+> 	   migrc's control from others. Instead, I force migrc to be
+> 	   used only on 64 bit system to mitigate you guys from getting
+> 	   angry.
+> 	2. Remove meaningless internal object allocator that I
+> 	   introduced to minimize impact onto the system. However, a ton
+> 	   of tests showed there was no difference.
+> 	3. Stop migrc from working when the system is in high memory
+> 	   pressure like about to perform direct reclaim. At the
+> 	   condition where the swap mechanism is heavily used, I found
+> 	   the system suffered from regression without this control.
+> 	4. Exclude folios that pte_dirty() == true from migrc's interest
+> 	   so that migrc can work simpler.
+> 	5. Combine several patches that work tightly coupled to one.
+> 	6. Add sufficient comments for better review.
+> 	7. Manage migrc's request in per-node manner (from globally).
+> 	8. Add tlb miss improvement in commit message.
+> 	9. Test with more CPUs(4 -> 16) to see bigger improvement.
+> 
+> Changes from RFC:
+> 
+> 	1. Fix a bug triggered when a destination folio at the previous
+> 	   migration becomes a source folio at the next migration,
+> 	   before the folio gets handled properly so that the folio can
+> 	   play with another migration. There was inconsistency in the
+> 	   folio's state. Fixed it.
+> 	2. Split the patch set into more pieces so that the folks can
+> 	   review better. (Feedbacked by Nadav Amit)
+> 	3. Fix a wrong usage of barrier e.g. smp_mb__after_atomic().
+> 	   (Feedbacked by Nadav Amit)
+> 	4. Tried to add sufficient comments to explain the patch set
+> 	   better. (Feedbacked by Nadav Amit)
+> 
+> Byungchul Park (8):
+>   x86/tlb: add APIs manipulating tlb batch's arch data
+>   arm64: tlbflush: add APIs manipulating tlb batch's arch data
+>   mm/rmap: recognize read-only tlb entries during batched tlb flush
+>   x86/tlb, mm/rmap: separate arch_tlbbatch_clear() out of
+>     arch_tlbbatch_flush()
+>   mm: separate move/undo parts from migrate_pages_batch()
+>   mm: buddy: make room for a new variable, mgen, in struct page
+>   mm: add folio_put_mgen() to deliver migrc's generation number to pcp
+>     or buddy
+>   mm: defer tlb flush until the source folios at migration actually get
+>     used
+> 
+>  arch/arm64/include/asm/tlbflush.h |  18 ++
+>  arch/x86/include/asm/tlbflush.h   |  18 ++
+>  arch/x86/mm/tlb.c                 |   2 -
+>  include/linux/mm.h                |  22 ++
+>  include/linux/mm_types.h          |  39 ++-
+>  include/linux/sched.h             |  10 +
+>  mm/compaction.c                   |  10 +
+>  mm/internal.h                     |  85 +++++-
+>  mm/memory.c                       |   8 +
+>  mm/migrate.c                      | 487 ++++++++++++++++++++++++++----
+>  mm/page_alloc.c                   | 125 ++++++--
+>  mm/page_reporting.c               |  10 +
+>  mm/rmap.c                         |  40 ++-
+>  mm/swap.c                         |  19 +-
+>  14 files changed, 795 insertions(+), 98 deletions(-)
+> 
+> 
+> base-commit: 0bbac3facb5d6cc0171c45c9873a2dc96bea9680
+> -- 
+> 2.17.1
 
