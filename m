@@ -1,115 +1,126 @@
-Return-Path: <linux-kernel+bounces-149088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95C128A8BAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AFC528A8BAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:55:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50B9E286285
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:54:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B234286B68
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:55:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73FA4200BA;
-	Wed, 17 Apr 2024 18:54:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39141DA58;
+	Wed, 17 Apr 2024 18:55:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IQ+lCLWe"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PMwTOF8q"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 562CA1BF53;
-	Wed, 17 Apr 2024 18:54:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752018F4A
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:55:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713380075; cv=none; b=oVw+zWT8WZsGWF4D4N0WtmdrJfv9UWZgN1s6oVgEQoj0/FrTQIyfxbM7JiuaKOVKaQZ4PdGW/jMzt8MUsaeh7WR2URzrEmnp8iEV8n72FGBJI67ksM6RW0KI/ndNeb/TCIZ0vUCZp6AVWpD8knf/5+2bghhk3KMKN6PyRXivBFs=
+	t=1713380148; cv=none; b=GZei4PwppFn9CB2hGEP7A/DRu4xNyR63K1V8KsF91O4datQGDnkHfdoWuA2YRUkklUb++Tv2ADj6WLq7PGxCi8ud42CZZrr6wgOAe1/1VPlYVv8Kfoi/9Cxgaer33yuG+oIETkD8HHUr83n7UMWu2g7khMy9uNFZF6ysihJLmQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713380075; c=relaxed/simple;
-	bh=hyCQyZHf2ncj/nXm1VIUe6nfA7at8m+jSmVswf1Wnnc=;
+	s=arc-20240116; t=1713380148; c=relaxed/simple;
+	bh=CFp8dAgu4+wIOX4KaLhGVXgN2difv8X0VLpbaavssLw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Te3w6j4KwKSFIyQgchhhFHKi7vKVtKS0/7IAZpp0kyn9SevL+HHHFAyhXQ7N2CsS42TI/azF+f0/f7WRKqtLrIQIl6VPP3sx3fmykbHPXGZAksEIYwwoeb8g725CSTE7heQ7C9eMD3JF3qAE67FjnyHZsqOrPKFE0kpLw0mUKS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IQ+lCLWe; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713380074; x=1744916074;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hyCQyZHf2ncj/nXm1VIUe6nfA7at8m+jSmVswf1Wnnc=;
-  b=IQ+lCLWervtdqjtpe7jjl3H1R/H5KCO2y8b8UEJQGHeZxCAda5G/dSY/
-   JXG/M9GMA29CxzYYHADASFyKQFpedY1i0RM+Q6cUc1OoBIz3TvF+NW/JR
-   WW21asAuwNaRpRyPKXTPG2xLjaQ0RA8ZwLHu0Dw+Nv5ylV5I+xaOdFd/G
-   7kaJGFA9fdooh+Az9K1gmPksu157Jip8m9IN1kfYGiagI2phjVzv6UxnL
-   ILGHuecXlsX2cFlCeDfydNkghvm7Gsof8WnvsF7XS9cKCTOQ4v4VY+Y0M
-   segmovyGeSXeyYm14dkWQyw1QVsApxCuat7gPzGZWfPwr22NcAt3H4FW5
-   w==;
-X-CSE-ConnectionGUID: jiVHNqO2Q4CiwlJHlhB/Qw==
-X-CSE-MsgGUID: j5sM6DohQGCcEVvzZuqtVw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="9441220"
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="9441220"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 11:54:34 -0700
-X-CSE-ConnectionGUID: PsnZ84biQUCxtewMM+gp4g==
-X-CSE-MsgGUID: IIUXUP1qTau8TFgvTNTJ+Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="22729937"
-Received: from wangc3-mobl.amr.corp.intel.com (HELO desk) ([10.209.4.219])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 11:54:33 -0700
-Date: Wed, 17 Apr 2024 11:54:27 -0700
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
-	Dave Hansen <dave.hansen@linux.intel.com>, kvm@vger.kernel.org,
-	kernel test robot <oliver.sang@intel.com>
-Subject: Re: [linus:master] [x86/bugs] 6613d82e61:
- general_protection_fault:#[##]
-Message-ID: <20240417185427.4msriy5rrt5gej2x@desk>
-References: <202403281553.79f5a16f-lkp@intel.com>
- <20240328211742.bh2y3zsscranycds@desk>
- <8c77ccfd-d561-45a1-8ed5-6b75212c7a58@leemhuis.info>
+	 Content-Type:Content-Disposition:In-Reply-To; b=KBAlknq1oK6QSL90ZF07lxyL6+YGWl1UspUPossY25VXoQirpRTfcD4VMGUZUo/fbMR9iOf90f2V4y9AuWP5x/l5ZF0tmPZEnMAFEznsoyBMSr9qsYSS5+1nZYgursbIhO3XgJwlhiPYRYMzVgn+o44gbIbxQSiziFoDHJCTI58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PMwTOF8q; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713380144;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a5FP4ZMXWvD56jod+P4Mz3epLSftJiyYtHPql+dMS5U=;
+	b=PMwTOF8q9vc2bHG/YltKdI90fGQ8w2XJBEj3yusffin04cL2znfNxo+Ja0Vic6LVjXnxnU
+	r0PKSlq+4p7V6OhO1hI1Je3ySM8wbvKXpPyJQMTk5CjFkM2plm7KscVif9QLWD6TSx6k2g
+	bwAE83pMtce712Ivx9gZ9OdIuK/JxWA=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-400-Ppt8eqgbN1eBOWe2o9bO0Q-1; Wed, 17 Apr 2024 14:55:42 -0400
+X-MC-Unique: Ppt8eqgbN1eBOWe2o9bO0Q-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-69f8db36e8aso299986d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:55:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713380142; x=1713984942;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a5FP4ZMXWvD56jod+P4Mz3epLSftJiyYtHPql+dMS5U=;
+        b=SvUCexhq8OGoSCkzXhJ9OK1TQxR4ASlY22lVsFLoBp4YXTTO7k3jUbrIuJUJknnafd
+         fMcsLb0vzWUR2YmwQvkUV0OAth+F+PEVIpwsqSa5i6YRsoE8vaBwapxMVxfKfil6E0mW
+         ZnUMq0cH3Nvj2EFbUjwy5t/k5uK88O9P3V0OQf7xBmDcPo1IQmA1arhJ5B2GphNGU1I4
+         1s5oFCaSsgxpizAUNXrGfT0lqhz2otPqRrQPdmL+g/JqDS0vbMGQBLYJxT+Y5KUCQ3oV
+         ue0mcbRa+ddXIZdA1G8n8YgxyCXTxfaPPaEp9AX30gQHvJvNg2Z9sD5XTQhRiGwYmqGq
+         Xxlg==
+X-Gm-Message-State: AOJu0YwBlo9fp3swmO/aU/Dxr9oYwlDH2E1MVkymKY7EjSF/Ina5L3gr
+	VZJrbVkZIdn1/Y5p40VRg0unOm7t76tRMkpJ0MK3WvOhiaNbuja/rOCoNARLFzSmtkNPGwBTVgN
+	6baM/MyoxJK6YkD0gS2wIgE1PXB9zE//myqFFrOfOsG3jSNkh1b917HKuXrHUNw==
+X-Received: by 2002:a05:6214:23ce:b0:69b:1c5c:28fb with SMTP id hr14-20020a05621423ce00b0069b1c5c28fbmr322382qvb.0.1713380142326;
+        Wed, 17 Apr 2024 11:55:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEslpFqTi2iY9urJ7zoJJWAHsKS7CknlIlU3ST+wwwb0jPwoRa2iWZHfO/IbOU5UzodzG7AsQ==
+X-Received: by 2002:a05:6214:23ce:b0:69b:1c5c:28fb with SMTP id hr14-20020a05621423ce00b0069b1c5c28fbmr322363qvb.0.1713380141796;
+        Wed, 17 Apr 2024 11:55:41 -0700 (PDT)
+Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id ej6-20020ad45a46000000b00696b1050be8sm8585776qvb.133.2024.04.17.11.55.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 11:55:41 -0700 (PDT)
+Date: Wed, 17 Apr 2024 14:55:39 -0400
+From: Peter Xu <peterx@redhat.com>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	David Hildenbrand <david@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Axel Rasmussen <axelrasmussen@google.com>
+Subject: Re: [PATCH] mm/page_table_check: Support userfault wr-protect entries
+Message-ID: <ZiAbK63JshbyW48z@x1n>
+References: <20240415205259.2535077-1-peterx@redhat.com>
+ <CA+CK2bCSs8om+7tO_Sq2fAUD+gzD_4unUXMtO9oRUB+=4biv-Q@mail.gmail.com>
+ <Zh_-j56_0RWxd33E@x1n>
+ <CA+CK2bACyxNgFACfSu=3ro-nn-+PXCMf6Mug5G0G1oWpWabq4Q@mail.gmail.com>
+ <CA+CK2bCr0eb+tc-Hp8Gqjsor4C9vpcGB2y1zhPORTAX=phhzig@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8c77ccfd-d561-45a1-8ed5-6b75212c7a58@leemhuis.info>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+CK2bCr0eb+tc-Hp8Gqjsor4C9vpcGB2y1zhPORTAX=phhzig@mail.gmail.com>
 
-On Sun, Apr 14, 2024 at 08:41:52AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
-> Hi, Thorsten here, the Linux kernel's regression tracker.
+On Wed, Apr 17, 2024 at 02:51:48PM -0400, Pasha Tatashin wrote:
+> This breaks linux-next build:
 > 
-> On 28.03.24 22:17, Pawan Gupta wrote:
-> > On Thu, Mar 28, 2024 at 03:36:28PM +0800, kernel test robot wrote:
-> >> compiler: clang-17
-> >> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-> >>
-> >> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> >> the same patch/commit), kindly add following tags
-> >> | Reported-by: kernel test robot <oliver.sang@intel.com>
-> >> | Closes: https://lore.kernel.org/oe-lkp/202403281553.79f5a16f-lkp@intel.com
+> mm/page_table_check.c: In function ‘swap_cached_writable’:
+> mm/page_table_check.c:192:24: error: ‘SWP_DEVICE_EXCLUSIVE_WRITE’
+> undeclared (first use in this function)
+>   192 |         return type == SWP_DEVICE_EXCLUSIVE_WRITE ||
+>       |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> mm/page_table_check.c:192:24: note: each undeclared identifier is
+> reported only once for each function it appears in
+> mm/page_table_check.c:194:1: error: control reaches end of non-void
+> function [-Werror=return-type]
+>   194 | }
 > 
-> TWIMC, a user report general protection faults with dosemu that were
-> bisected to a 6.6.y backport of the commit that causes the problem
-> discussed in this thread (6613d82e617dd7 ("x86/bugs: Use ALTERNATIVE()
-> instead of mds_user_clear static key")).
-> 
-> User compiles using gcc, so it might be a different problem. Happens
-> with 6.8.y as well.
-> 
-> The problem occurs with x86-32 kernels, but strangely only on some of
-> the x86-32 systems the reporter has (e.g. on some everything works
-> fine). Makes me wonder if the commit exposed an older problem that only
-> happens on some machines.
-> 
-> For details see https://bugzilla.kernel.org/show_bug.cgi?id=218707
-> Could not CC the reporter here due to the bugzilla privacy policy; if
-> you want to get in contact, please use bugzilla.
+> Looks like there is a dependence on CONFIG_DEVICE_PRIVATE.
 
-Sorry for the late response, I was off work. I will look into this and
-get back. I might need help reproducing this issue, but let me first see
-if I can reproduce with the info in the bugzilla.
+Right, same to SWP_MIGRATION_WRITE.
+
+I've already sent a v2 with everything fixed, please have a look.  I also
+added one more device private entry type that I overlooked.
+
+Thanks,
+
+-- 
+Peter Xu
+
 
