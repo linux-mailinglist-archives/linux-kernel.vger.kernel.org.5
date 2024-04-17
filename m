@@ -1,133 +1,120 @@
-Return-Path: <linux-kernel+bounces-148133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 411268A7E23
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:23:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A07C28A7E25
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:24:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B87E7B24098
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:23:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56C351F21BA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:24:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43FB47F470;
-	Wed, 17 Apr 2024 08:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F517EF1B;
+	Wed, 17 Apr 2024 08:24:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kxmhXOcf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="dlprTLWJ"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8746E7D08F;
-	Wed, 17 Apr 2024 08:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56E3A5D8F6;
+	Wed, 17 Apr 2024 08:24:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713342222; cv=none; b=JSsQOFb3C463TFUv0YCNvwx6GzQi26FHjH+0vpIrfjtaLhjsawy28I/Qq6jX9GXJrcy27qFm7HAG1lH82qRkD9mVAZx2bkZaCfANZZysAbUDxcVRUMcebK+OX2qOmJhU4vZloFBLEdkMG06Xi2YJHHYAIk+ij/gN5bDoQJ6xO1k=
+	t=1713342257; cv=none; b=CIpgM48ueXl7NE9TyydCKTxz4PgIl9YLha2B7eiujthqGWvqNu2+h9f8uR62d/q0dkcnIrjqW4Uh4O5s8uU6b7I3tXKA6zUSgbDFb8v9ib6CuiWYoNWa8zP0lB2wAJPgf0qYjIAf6m3gex/ogm3MkW/z2IQt4O5DeNaXt7Wdin8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713342222; c=relaxed/simple;
-	bh=PzPHik40qRXIBSVgn8cohGP5vcPZ5pS+tPSMejQQd/U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oiuNgs8moXzZAwaPBK1Ps25qAG1nsw5KZD4RFnduy0vd++gRMPTMhtzR0HSId02TQH9NeMyuF/f4M46BvX8ibUUliMt4ce6MWGs/YRPWvns0rdcOunnzbL1vwdNHuDbFVXX5kW6bQ7qZZywdOtgQszbQcY7ZNVtzujsBpe7zaf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kxmhXOcf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CF89C32783;
-	Wed, 17 Apr 2024 08:23:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713342222;
-	bh=PzPHik40qRXIBSVgn8cohGP5vcPZ5pS+tPSMejQQd/U=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=kxmhXOcfK1s70GAFXkusWRsmemGoM96wlbixK7Nr2awefw+Pyu2hZ0k5PnSDAMp9G
-	 mQCDsPWQAvCDF7Y2zDq9oQvr1IfNdX741Wmy8XYNufSoFvnqh/NuEpRIBS8o9DD/vP
-	 22Hye1mBtRaYlVLNaG/Tx5jnYCo0NDk6skoroeXV9L04JhWJCyeS8jKxqyW/DmXb+r
-	 zg4hVXRxT994iuvf6FsTrXCCsKwRmpymy2o+iwKADqQcXiGdoSGntzAAj0BnRmxnQe
-	 Ih+p8D9/seWRrV4mIz3r0fLQzKd6CZgwYwB1kBc1i4PNcUTobDZLvlNcKOCGmqhXxO
-	 toQxkmD7t0dMQ==
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5acdbfa6e94so219403eaf.2;
-        Wed, 17 Apr 2024 01:23:42 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVxwc5eFIzRmn/WReR00j66b/AXXt/E+lOAQ5gWW9Ki3Ter2BNEhkuVtN8RQzg3bkd+gZMmjSwY5INKXHEq/ZKQ/gwmC2vAG2w=
-X-Gm-Message-State: AOJu0YwE5zravoQKvjSkNeb6IOwSeztCIpDuDgtzqMESjAIHmyzTg804
-	vggM929IrP9e4S9aga/TK2Jm7ame6QA5U60PF3TjdiXbDcTVeGr9ZxmmE4BZQF4MaYsO1sYf+3J
-	oBBULpmQCmKXE3Ys4BIW30Rgd4Cw=
-X-Google-Smtp-Source: AGHT+IH1XjxoGzsvqQtx3bEx7chObybM4zt/f7CX8mNjAGCQHR4R08+7Ry9J3HF1+jeyaNqa+ZQZALpDbfudkTJVwz8=
-X-Received: by 2002:a05:6820:4187:b0:5ac:6fc1:c2cb with SMTP id
- fk7-20020a056820418700b005ac6fc1c2cbmr15325939oob.0.1713342221549; Wed, 17
- Apr 2024 01:23:41 -0700 (PDT)
+	s=arc-20240116; t=1713342257; c=relaxed/simple;
+	bh=UnJDeGW6hTOWzM5xTq9iID1BjEcevOyGCrGHXGGwe+c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Twx1wq540uT9a2MR/CKnQL1KG5KdIJWek5jxf3KyNP67l+qY5Ac/TAwVJRRARomSpfPT/eb0qwcuIFXZg41277ZVj+fjMT286Inph3hKfsPlXzPllqpxWoq4jJi1w298NLt8O2GuAR5/z5qpveGi1AeFTw+VJw92I07djqBFZ+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=dlprTLWJ; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 70A831BF20C;
+	Wed, 17 Apr 2024 08:24:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1713342251;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eNl2kpmyXA4EHz7sEmeC1SnU4Qf3LOV2W8Qe8fDoaho=;
+	b=dlprTLWJZaB2rIyPzBM8ThbSYbelvbq/IxjTNJ7L+SPus8J681T/AATFX5fEGJ0nZlYiKu
+	DCDAJecOWm5735clknwrECBHmbnsrtvhA85W4/eKi7hFufQHcVtHao+XPVuauI/tF8T2dZ
+	qXFgtbJ9aH5q1IHc7RFkZiBTjmPD0MfeaHBEraCbd5hmCOBMh469nKcoMKMhG/5fWzTMq3
+	XYLf9fkW6kkUW9bk/3cYcM/eaDF7yoH/+G18OkFAaIKl0MNXU42IGswTB+xarf99oJnTFk
+	QUC3qaqO6aKgcgBoQ+7TZXuE1XhiLaRZXrFJYqhwXmUGTOuSxIRK6E0UmRJhvw==
+Message-ID: <29f098cb-db41-4d4f-9033-a88d70ebdd0f@arinc9.com>
+Date: Wed, 17 Apr 2024 11:24:06 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416211941.9369-1-tony.luck@intel.com> <20240416212253.9989-1-tony.luck@intel.com>
-In-Reply-To: <20240416212253.9989-1-tony.luck@intel.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 17 Apr 2024 10:23:28 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0jmrWw-imb1Vr18LqmkdPVxquJPn0dH3N486-mUikPagg@mail.gmail.com>
-Message-ID: <CAJZ5v0jmrWw-imb1Vr18LqmkdPVxquJPn0dH3N486-mUikPagg@mail.gmail.com>
-Subject: Re: [PATCH v3 70/74] x86/cpu/vfm: Update drivers/thermal/intel/intel_tcc_cooling.c
-To: Tony Luck <tony.luck@intel.com>
-Cc: linux-kernel@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
-	Lukasz Luba <lukasz.luba@arm.com>, Hans de Goede <hdegoede@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, linux-pm@vger.kernel.org, patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4] ARM: dts: BCM5301X: Add DT for ASUS RT-AC3200
+To: Florian Fainelli <florian.fainelli@broadcom.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>, Rafal Milecki <zajec5@gmail.com>,
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+Cc: Tom Brautaset <tbrautaset@gmail.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
+ <20240414-for-soc-asus-rt-ac3200-ac5300-v1-3-118c90bae6e5@arinc9.com>
+ <a88385a4-afad-4bd8-afc1-37e185e781f4@kernel.org>
+ <85261d11-d6cb-4718-88d9-95a7efe5c0ab@arinc9.com>
+ <e6cfe735-0a46-4c07-90ee-4ae25c921b03@kernel.org>
+ <335cdd4b-7309-4633-9b4f-6487c72c395c@arinc9.com>
+ <07c9c5f5-c4b9-44d6-b909-5aa306f56898@kernel.org>
+ <00ba4593-d720-419a-a97d-37c402c91e44@arinc9.com>
+ <7b465ddb-2b18-4e7f-8b03-d4e51006e1cb@broadcom.com>
+Content-Language: en-US
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <7b465ddb-2b18-4e7f-8b03-d4e51006e1cb@broadcom.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-On Tue, Apr 16, 2024 at 11:22=E2=80=AFPM Tony Luck <tony.luck@intel.com> wr=
-ote:
->
-> New CPU #defines encode vendor and family as well as model.
->
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
+On 17/04/2024 06:15, Florian Fainelli wrote:
+> 
+> 
+> On 4/15/2024 2:10 AM, Arınç ÜNAL wrote:
+>> On 15.04.2024 10:57, Krzysztof Kozlowski wrote:
+>>> On 14/04/2024 22:21, Arınç ÜNAL wrote:
+>>>> NVRAM is described as both flash device partition and memory mapped NVMEM.
+>>>> This platform stores NVRAM on flash but makes it also memory accessible.
+>>>>
+>>>> As device partitions are described in board DTS, the nvram node must also
+>>>
+>>> Sorry, but we do not talk about partitions. Partitions are indeed board
+>>> property. But the piece of hardware, so NVMEM, is provided by SoC.
+>>>
+>>>> be defined there as its address and size will be different by board. It has
+>>>> been widely described on at least bcm4709 and bcm47094 SoC board DTS files
+>>>> here.
+>>>
+>>> These not proper arguments. What you are saying here is that SoC does no
+>>> have nvram at address 0x1c08000. Instead you are saying there some sort
+>>> of bus going out of SoC to the board and on the board physically there
+>>> is some NVRAM sort of memory attached to this bus.
+>>
+>> Yes that is the case. NVRAM is stored on a partition on the flash. On the
+>> Broadcom NorthStar platform, the NAND flash base is 0x1c000000, the NOR
+>> flash base is 0x1e000000.
+>>
+>> For the board in this patch, the flash is a NAND flash. The NVRAM partition
+>> starts at address 0x00080000. Therefore, the NVRAM component's address is
+>> 0x1c080000.
+> 
+> Because the flash is memory mapped into the CPU's address space, a separate node was defined since it is not part of the "soc" node which describes the bridge that connects all of the peripherals.
+> 
+> Whether we should create an additional bus node which describes the bridge being used to access the flash devices using the MMIO windows is debatable. Rafal, what do you think?
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Will this block this patch series? If not, I'd like to submit the next
+version with Krzysztof's comments on earlycon and stdout-path addressed.
 
-> ---
->  drivers/thermal/intel/intel_tcc_cooling.c | 30 +++++++++++------------
->  1 file changed, 15 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/thermal/intel/intel_tcc_cooling.c b/drivers/thermal/=
-intel/intel_tcc_cooling.c
-> index 6c392147e6d1..63696e7d7b3c 100644
-> --- a/drivers/thermal/intel/intel_tcc_cooling.c
-> +++ b/drivers/thermal/intel/intel_tcc_cooling.c
-> @@ -49,21 +49,21 @@ static const struct thermal_cooling_device_ops tcc_co=
-oling_ops =3D {
->  };
->
->  static const struct x86_cpu_id tcc_ids[] __initconst =3D {
-> -       X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE, NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_L, NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE, NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE_L, NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(ICELAKE, NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L, NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE, NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE_L, NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE, NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE, NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L, NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(ATOM_GRACEMONT, NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(RAPTORLAKE, NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(RAPTORLAKE_P, NULL),
-> -       X86_MATCH_INTEL_FAM6_MODEL(RAPTORLAKE_S, NULL),
-> +       X86_MATCH_VFM(INTEL_SKYLAKE, NULL),
-> +       X86_MATCH_VFM(INTEL_SKYLAKE_L, NULL),
-> +       X86_MATCH_VFM(INTEL_KABYLAKE, NULL),
-> +       X86_MATCH_VFM(INTEL_KABYLAKE_L, NULL),
-> +       X86_MATCH_VFM(INTEL_ICELAKE, NULL),
-> +       X86_MATCH_VFM(INTEL_ICELAKE_L, NULL),
-> +       X86_MATCH_VFM(INTEL_TIGERLAKE, NULL),
-> +       X86_MATCH_VFM(INTEL_TIGERLAKE_L, NULL),
-> +       X86_MATCH_VFM(INTEL_COMETLAKE, NULL),
-> +       X86_MATCH_VFM(INTEL_ALDERLAKE, NULL),
-> +       X86_MATCH_VFM(INTEL_ALDERLAKE_L, NULL),
-> +       X86_MATCH_VFM(INTEL_ATOM_GRACEMONT, NULL),
-> +       X86_MATCH_VFM(INTEL_RAPTORLAKE, NULL),
-> +       X86_MATCH_VFM(INTEL_RAPTORLAKE_P, NULL),
-> +       X86_MATCH_VFM(INTEL_RAPTORLAKE_S, NULL),
->         {}
->  };
->
-> --
-> 2.44.0
->
+Arınç
 
