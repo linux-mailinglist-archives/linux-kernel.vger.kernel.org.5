@@ -1,115 +1,158 @@
-Return-Path: <linux-kernel+bounces-148999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6016C8A8A4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE118A8A4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:36:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15A701F21DB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:35:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 733BE1F214BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 561DB172BA9;
-	Wed, 17 Apr 2024 17:34:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34077172BAC;
+	Wed, 17 Apr 2024 17:35:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YRiKEA7F"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="NsJKJOXw"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 919C117278D;
-	Wed, 17 Apr 2024 17:34:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1AB3172777
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 17:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713375288; cv=none; b=XTLC/d9hS4Otsr3mEW/Zkpbzuf/qSphXhh7PSYvWFdi3Csg84r7VIkoe2484pyjWPdBXkg6YWS9qdTOTdhm3NfUMcVDhTd+ekdf4F8c/lrWNGqwIR8bdaIrKhHYV61hHZVy0Gs5cdTdP8WW1/RSXCbh0H/ZYZxwDBaQQWdfCS6o=
+	t=1713375352; cv=none; b=pLByVhOuP6OV07nHXl4SQHcmVJb71eyo6jvgtlbnjYe+k6CtpPVvGO0GrRZws3Rg+F28n4AdhXDmNzH7hGBXJ0X0nxJ5Qnj577nhasazSJzqfweb+9biRZxPzKzCDzOC8VCTDB6jtLCYnrohyChJ9LhnB7rhAp1bdGhzxCBl2Cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713375288; c=relaxed/simple;
-	bh=0mamoAWMRqdNOuzh3qJgUZiw7KIeI9yNypr5Bt7zRJw=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=O4vcYJWqf4a5bnGquheC3HcOrY4QfdONLUpefK01PBb7qa+qOL6z/KG1H6GWs10F6vZqRnIHsp066EeENF5f/XhlZXUgwUCR1UgCR+ipfhlQ/i3PqJJ8w91tfqOWB5yL9mrcps2qKTn8eP/2kcmUA4Z2Ii0J/p/+L1l64qwMxSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YRiKEA7F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 323A5C072AA;
-	Wed, 17 Apr 2024 17:34:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713375288;
-	bh=0mamoAWMRqdNOuzh3qJgUZiw7KIeI9yNypr5Bt7zRJw=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=YRiKEA7FxGNzBKrpLe07tbJCxjnSb+L7rxhU7fequhEwf/+DHaD7nIzEfURunA6i2
-	 Vt/scLW+dd9kC3iEhJn0TsfXX+b4gzGT+d1yQnJwjX56EJymhlxnZmD3o9ycS9Pjhk
-	 fuE4IYK3AbPL9g7aNSQ3oCzIWWg9L7sBIe7GxZsmd3j5N9fQQE7MLA0vwjVfgv7MWb
-	 J0K1Lo7uV+mOIIRMSjqj+b8Di77Hu/tUbkVcP5G9F/MhLVazKQFq6Se7uzDyLIlfdX
-	 SIz3b/Rspm3QNFoo8uDT+6gNSEEgQlAnZrO+59kHFbQLEocmQx9iDhQn2YeezAZeqE
-	 JNzDg5TU17KxA==
-Date: Wed, 17 Apr 2024 12:34:47 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1713375352; c=relaxed/simple;
+	bh=EUEq5eCikvb1PA+1pE5jT5oLwrFNWhGgWfY9hb71rBI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hiZb5p0wTP8RsigVyezS03qNjfGeGJ2q8VrcVudaATC3tO+8a0FK5apl+oTFUJjzv2QemYV21b6sCaIANpf9176+a9HgAhgl50ZrdOpuzBGGZnOeTLlU7AySjWTYUFCMI9B2EeMiQuxQVED2NsXme1M7Nmsq0QtwdJJBn/Xw7mU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=NsJKJOXw; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6ed3cafd766so48089b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:35:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1713375349; x=1713980149; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pBJiH4urg4DBG6eZbcNPwgnZOdXfIaMFo9RuiRFHB0E=;
+        b=NsJKJOXwccHJwQ85rjFYE5qWw9ab4sPiSFGsQinb/nv07xhBj94Ty+ttoygJ0Ayekz
+         IIgZxNprKvMkfksYKhW89s9hAPPiknzK/5deAJu7lU0fzVuUuzZEBlx/o2LjL3ZEwbWS
+         JOzOo19mCKfQko9dmQUoQpDC+YeeC3P/p0bH4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713375349; x=1713980149;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pBJiH4urg4DBG6eZbcNPwgnZOdXfIaMFo9RuiRFHB0E=;
+        b=vIfAD6fyPTeS1Y1ykAKrAqVXlHjDv01Uw/JdXVQdyCBr7ACLWVQ71hNkbPyssXYuFf
+         nraTOtDN5uwLxnAoPLvFfNlU0em+81iHW5hiITsXceg6eimmHUbCVnjXW61RLsbWQ0pt
+         MEplG9oZd7NWOrVm/jIr2anP0dwLLpWJIk1wprO/BF4sN5H9G4x9AAM8u80FqBb1V+jQ
+         GwUw+SESKdlI1lC0lBp/aeTh86m7spQv/URblvMVHm8F8Xd+/1zA+xrUZ8ZWLgAF+gb4
+         4GJLxV6RdN0PApDE6EgG3VoInhmvgyIY81k3i7Y1M/oqtgwMjtXTbrZV5u/uSeYeAhHF
+         GL/g==
+X-Forwarded-Encrypted: i=1; AJvYcCW27UufYszATATl+3JwJmVtZTLvInhrP7B0RaqyvuverGR+3EtFQZdol3gt1eWJ8TriAb8Evf3aVuamZB9Xt1AL5yl0V+sLS7tB2z33
+X-Gm-Message-State: AOJu0Yw1FhORLRn+StSy/rq9rnybSWA9mgvs/X74aw2u+wKbUsdkB3sp
+	epWGic8Z6Ytw1GRBboi3Q4fHadDXZuvjvB6OIMgwRgER4uC1iiINk12hsSriUA==
+X-Google-Smtp-Source: AGHT+IGRhXAn8BnFec3OXIieh95t6IYTWzPHJKZQXAIRwjXtFeTGFo/I0JMHxUAOWhgdyp8JVnjm6A==
+X-Received: by 2002:a05:6a00:22c4:b0:6ec:ec8f:d588 with SMTP id f4-20020a056a0022c400b006ecec8fd588mr281477pfj.16.1713375349095;
+        Wed, 17 Apr 2024 10:35:49 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id gx15-20020a056a001e0f00b006e71aec34a8sm10927754pfb.167.2024.04.17.10.35.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 10:35:48 -0700 (PDT)
+Date: Wed, 17 Apr 2024 10:35:47 -0700
+From: Kees Cook <keescook@chromium.org>
+To: "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc: Charles Bertsch <cbertsch@cox.net>,
+	Justin Stitt <justinstitt@google.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Andy Shevchenko <andy@kernel.org>,
+	Sathya Prakash <sathya.prakash@broadcom.com>,
+	Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+	Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	Kashyap Desai <kashyap.desai@broadcom.com>,
+	Sumit Saxena <sumit.saxena@broadcom.com>,
+	Nilesh Javali <njavali@marvell.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Himanshu Madhani <himanshu.madhani@oracle.com>,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+	mpi3mr-linuxdrv.pdl@broadcom.com,
+	GR-QLogic-Storage-Upstream@marvell.com
+Subject: Re: [PATCH 0/5] scsi: Avoid possible run-time warning with long
+ manufacturer strings
+Message-ID: <202404171035.BDFF28D@keescook>
+References: <20240410021833.work.750-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: David Wronek <david@mainlining.org>
-Cc: Maxime Ripard <mripard@kernel.org>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, devicetree@vger.kernel.org, 
- Marijn Suijten <marijn.suijten@somainline.org>, 
- Sam Ravnborg <sam@ravnborg.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Konrad Dybcio <konradybcio@kernel.org>, linux-kernel@vger.kernel.org, 
- phone-devel@vger.kernel.org, Jessica Zhang <quic_jesszhan@quicinc.com>, 
- ~postmarketos/upstreaming@lists.sr.ht, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, dri-devel@lists.freedesktop.org, 
- Conor Dooley <conor+dt@kernel.org>, Daniel Vetter <daniel@ffwll.ch>
-In-Reply-To: <20240417-raydium-rm69380-driver-v4-1-e9c2337d0049@mainlining.org>
-References: <20240417-raydium-rm69380-driver-v4-0-e9c2337d0049@mainlining.org>
- <20240417-raydium-rm69380-driver-v4-1-e9c2337d0049@mainlining.org>
-Message-Id: <171337528609.2818677.10969972561314017105.robh@kernel.org>
-Subject: Re: [PATCH v4 1/2] dt-bindings: display: panel: Add Raydium
- RM69380
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410021833.work.750-kees@kernel.org>
 
-
-On Wed, 17 Apr 2024 18:29:33 +0200, David Wronek wrote:
-> Raydium RM69380 is a display driver IC used to drive OLED DSI panels.
-> Add a dt-binding for it.
+On Tue, Apr 09, 2024 at 07:31:49PM -0700, Kees Cook wrote:
+> Hi,
 > 
-> Signed-off-by: David Wronek <david@mainlining.org>
-> ---
-> Note:
-> Depends on commit 48a516363e29 ("dt-bindings: display: panel: add common dual-link schema")
-> ---
->  .../bindings/display/panel/raydium,rm69380.yaml    | 89 ++++++++++++++++++++++
->  1 file changed, 89 insertions(+)
+> Another code pattern using the gloriously ambiguous strncpy() function was
+> turning maybe not-NUL-terminated character arrays into NUL-terminated
+> strings. In these cases, when strncpy() is replaced with strscpy()
+> it creates a situation where if the non-terminated string takes up the
+> entire character array (i.e. it is not terminated) run-time warnings
+> from CONFIG_FORTIFY_SOURCE will trip, since strscpy() was expecting to
+> find a NUL-terminated source but checking for the NUL would walk off
+> the end of the source buffer.
+> 
+> In doing an instrumented build of the kernel to find these cases, it
+> seems it was almost entirely a code pattern used in the SCSI subsystem,
+> so the creation of the new helper, memtostr(), can land via the SCSI
+> tree. And, as it turns out, inappropriate conversions have been happening
+> for several years now, some of which even moved through strlcpy() first
+> (and were never noticed either).
+> 
+> This series fixes all 4 of the instances I could find in the SCSI
+> subsystem.
+
+Friendly ping. Can the SCSI tree pick this up, or should I take it
+through the hardening tree?
+
+Thanks!
+
+-Kees
+
+> 
+> Thanks,
+> 
+> -Kees
+> 
+> Kees Cook (5):
+>   string.h: Introduce memtostr() and memtostr_pad()
+>   scsi: mptfusion: Avoid possible run-time warning with long
+>     manufacturer strings
+>   scsi: mpt3sas: Avoid possible run-time warning with long manufacturer
+>     strings
+>   scsi: mpi3mr: Avoid possible run-time warning with long manufacturer
+>     strings
+>   scsi: qla2xxx: Avoid possible run-time warning with long model_num
+> 
+>  drivers/message/fusion/mptsas.c          | 14 +++----
+>  drivers/scsi/mpi3mr/mpi3mr_transport.c   | 14 +++----
+>  drivers/scsi/mpt3sas/mpt3sas_base.c      |  2 +-
+>  drivers/scsi/mpt3sas/mpt3sas_transport.c | 14 +++----
+>  drivers/scsi/qla2xxx/qla_mr.c            |  6 +--
+>  include/linux/string.h                   | 49 ++++++++++++++++++++++++
+>  lib/strscpy_kunit.c                      | 26 +++++++++++++
+>  7 files changed, 93 insertions(+), 32 deletions(-)
+> 
+> -- 
+> 2.34.1
 > 
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/panel/raydium,rm69380.yaml:
-Error in referenced schema matching $id: http://devicetree.org/schemas/display/panel/panel-common-dual.yaml
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/panel/raydium,rm69380.example.dtb: panel@0: False schema does not allow {'compatible': ['lenovo,j716f-edo-rm69380', 'raydium,rm69380'], 'reg': [[0]], 'avdd-supply': [[4294967295]], 'vddio-supply': [[4294967295]], 'reset-gpios': [[4294967295, 75, 1]], 'ports': {'#address-cells': [[1]], '#size-cells': [[0]], 'port@0': {'reg': [[0]], 'endpoint': {'remote-endpoint': [[4294967295]]}}, 'port@1': {'reg': [[1]], 'endpoint': {'remote-endpoint': [[4294967295]]}}}, '$nodename': ['panel@0']}
-	from schema $id: http://devicetree.org/schemas/display/panel/raydium,rm69380.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/panel/raydium,rm69380.example.dtb: panel@0: Unevaluated properties are not allowed ('ports' was unexpected)
-	from schema $id: http://devicetree.org/schemas/display/panel/raydium,rm69380.yaml#
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240417-raydium-rm69380-driver-v4-1-e9c2337d0049@mainlining.org
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+-- 
+Kees Cook
 
