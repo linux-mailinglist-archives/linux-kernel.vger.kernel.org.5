@@ -1,148 +1,91 @@
-Return-Path: <linux-kernel+bounces-148081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FC4E8A7D72
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:53:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 496E88A7D74
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:54:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8F011F22127
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:53:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9E5D286409
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:54:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EC4274402;
-	Wed, 17 Apr 2024 07:53:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 461676F071;
+	Wed, 17 Apr 2024 07:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="in2TKG1Q"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="ra+VbcNo"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6CF66E61E;
-	Wed, 17 Apr 2024 07:53:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81CBEE572;
+	Wed, 17 Apr 2024 07:53:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713340409; cv=none; b=BUobtl+jIqB3N4ghcKXPNw6fSS6Czb5+JptP7PeBp+tJbw/ikHKOLDtgfQVoJZagfNQVXPK6pbOVWfMGoyPKeyMRa9FldtW9ddPK8DFeGv4vb9sQHxRD6kQfGJxliWyI+z/A3Eu8lP48NsFZouHKgty8ss8OeOlYcrkYvkj7w4Y=
+	t=1713340423; cv=none; b=VQy2LmMTEyNLB5cSvS/41NEOKiRJ6i7U49QqkB5FJZBzwFn6pnbnxxiWGCQQbJ0pP3vKG5PtuAqPxKXuJCVMK9sz3dw/VloHmumaBm1vp5lMgqPxs5tnTQF4EVnKU4zLtnPP0CsNbKrTGbecpDksjrhKyyrvLkW4AXjRR7LNucM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713340409; c=relaxed/simple;
-	bh=Mb2a7596Lmd6anWCFMHZ+kYccUmgTpwKjnEeL5+XNOQ=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=jms4mf8n9GScZ96m5WBP0KBrpi8qsUXb6O2FvxJc6WcofANs0cNm7Ckqzwx+N0v9qaTkBcPe3+P/+Ab6aqI4ljid6kdNe6b8o4ZO/kdv9EEcDI0yDIgp7lLJ989/TUoH4kfPJd/rEltEBn8M+ZzUTASvpC0n0N9Zzw9+sT+iZJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=in2TKG1Q; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2BA64E0004;
-	Wed, 17 Apr 2024 07:53:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713340405;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1/f2fgDpr3YH/Sb3o75KFxeysANmwnrDztJzWkxW1KI=;
-	b=in2TKG1QGupbNAYcOgKkb0N+dVS1KjzghCUGoMBe/aO0EnXrHvmHWh7B4fgRNMDorqxFxk
-	Vuehzy3mwP2JIu5l0/DQ/WKBZfYpRZOx0XlqZ3B8KbIhltcld9wUuIsulVWvTVWiN24eY1
-	mfPUHr8xDB9sSUC6vVHNZLQzFMpXdjiz6Ujf6rhHILx2mJDDlA+9NsLIjSID/W+j12L43J
-	EmmVr+jH3vl643xlJo/0mKxo0gSrnePqWBG00NOY447pgnnknE0J7w+W8r1pwapgNpvK6S
-	IU1JqiqWAMdbTSh6T9vkRiJYUb2FweW+P7Vs/Kqvy6f1vMJsYJH8GfgFhhdIcg==
+	s=arc-20240116; t=1713340423; c=relaxed/simple;
+	bh=zxQwkjqyRweBxgoFE3rDOnnMsDuJWVTiZBoGw+2McUo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MWUMSf6JJjy1txVwS+5OK8nAtVFdT9zS7LofxZMpedbEDoaTFYxj7VYCHirTOMi0EnqAD7Y+A4LnO/nbdpbqMYuVKUDWwXrmXaLPPYvwzpl7WlYJ/kCOJ1aOk1WEHIHoPYgFMr+hwel7MpfyObiHM5TRgDZiljgVkFAthHf0Ols=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=ra+VbcNo; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 9FDA61F9D0;
+	Wed, 17 Apr 2024 09:53:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1713340417;
+	bh=T8LyzfeyBql0P3ceDzj4gRJtW4wteayDdb4INRsfL5w=; h=From:To:Subject;
+	b=ra+VbcNotEwkaIbxhfvzpphxJY5o1PImKIUApw6uLozpWT/bv+BTjumdRwqQmCK2G
+	 K8utf4L31w+7Vs0cO2dZod4j/yuSdi0WOPF1Bjv2c+vxaiGg8qxIjboDO3lXl1qOWe
+	 FlpPLYyNn/97JvzaxjT94gB8rS1kvsYGB7G7kdo6cwjOlRRrF6kfjF188KPvqenMJo
+	 mHWPYAaEIAXV5oXwQYRpFRCHZCB4eAnbxd3pARO2UFlIrbdHJHL0REy7HzgTGCpxX7
+	 5WwZWPzmkwO2FHtev8P/V0inPqHVl3TrCxq5XuOCmG6BNiItdMvdgTjCiRqdPond6u
+	 yF5E5xhwvWC/w==
+Date: Wed, 17 Apr 2024 09:53:32 +0200
+From: Francesco Dolcini <francesco@dolcini.it>
+To: nm@ti.com, Stefan Eichenberger <eichest@gmail.com>
+Cc: vigneshr@ti.com, kristo@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, francesco.dolcini@toradex.com,
+	Stefan Eichenberger <stefan.eichenberger@toradex.com>
+Subject: Re: [PATCH v1 0/2] arm64: dts: ti: k3-am62-verdin: add sleep-moci
+ support
+Message-ID: <20240417075332.GA7036@francesco-nb>
+References: <20240301084901.16656-1-eichest@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 17 Apr 2024 09:53:23 +0200
-Message-Id: <D0M8HFHFPO6M.KXQCAE8TZNIH@bootlin.com>
-Subject: Re: [PATCH 08/11] MIPS: mobileye: eyeq5: add OLB syscon node
-Cc: <linux-mips@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
- <linux-gpio@vger.kernel.org>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Gregory CLEMENT"
- <gregory.clement@bootlin.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Rob Herring"
- <robh@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Michael Turquette" <mturquette@baylibre.com>, "Stephen Boyd"
- <sboyd@kernel.org>, "Philipp Zabel" <p.zabel@pengutronix.de>, "Linus
- Walleij" <linus.walleij@linaro.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: aerc 0.15.2
-References: <20240410-mbly-olb-v1-0-335e496d7be3@bootlin.com>
- <20240410-mbly-olb-v1-8-335e496d7be3@bootlin.com>
- <faa0769f-bd5e-4c6b-9f61-1a369830ad28@linaro.org>
- <D0HD94HI3W7W.3KLAW6WFIN6ZE@bootlin.com>
- <6e3b02d9-9a1e-4fc0-9459-9c9c0d37aa92@linaro.org>
-In-Reply-To: <6e3b02d9-9a1e-4fc0-9459-9c9c0d37aa92@linaro.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240301084901.16656-1-eichest@gmail.com>
 
-Hello,
+Hello Nishanth,
 
-On Thu Apr 11, 2024 at 5:07 PM CEST, Krzysztof Kozlowski wrote:
-> On 11/04/2024 16:34, Th=C3=A9o Lebrun wrote:
-> > Hello,
-> >=20
-> > On Thu Apr 11, 2024 at 8:15 AM CEST, Krzysztof Kozlowski wrote:
-> >> On 10/04/2024 19:12, Th=C3=A9o Lebrun wrote:
-> >>> The OLB ("Other Logic Block") is a syscon region hosting clock, reset
-> >>> and pin controllers. It contains registers such as I2C speed mode tha=
-t
-> >>> need to be accessible by other nodes.
-> >>>
-> >>> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> >>> ---
-> >>>  arch/mips/boot/dts/mobileye/eyeq5.dtsi | 8 ++++++++
-> >>>  1 file changed, 8 insertions(+)
-> >>>
-> >>> diff --git a/arch/mips/boot/dts/mobileye/eyeq5.dtsi b/arch/mips/boot/=
-dts/mobileye/eyeq5.dtsi
-> >>> index 6cc5980e2fa1..e82d2a57f6da 100644
-> >>> --- a/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-> >>> +++ b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-> >>> @@ -100,6 +100,14 @@ uart2: serial@a00000 {
-> >>>  			clock-names =3D "uartclk", "apb_pclk";
-> >>>  		};
-> >>> =20
-> >>> +		olb: system-controller@e00000 {
-> >>> +			compatible =3D "mobileye,eyeq5-olb", "syscon", "simple-mfd";
-> >>> +			reg =3D <0 0xe00000 0x0 0x400>;
-> >>> +			ranges =3D <0x0 0x0 0xe00000 0x400>;
-> >>> +			#address-cells =3D <1>;
-> >>> +			#size-cells =3D <1>;
-> >>
-> >> Do not add incomplete node. ranges, address/size-cells are incorrect i=
-n
-> >> this context and you will have warnings.
-> >>
-> >> Add complete node, so these properties make sense.
-> >=20
-> > I'll squash all four commits into one. For reference, commits are:
-> >=20
-> >  - MIPS: mobileye: eyeq5: add OLB syscon node
-> >  - MIPS: mobileye: eyeq5: use OLB clocks controller node
-> >  - MIPS: mobileye: eyeq5: add OLB reset controller node
-> >  - MIPS: mobileye: eyeq5: add pinctrl node & pinmux function nodes
-> >=20
-> > This means two things: (1) it won't be partially applicable and (2) it
->
-> Why?
->
-> > will make one big commit adding pins and editing clocks.
->
-> It never was partially applicable. Causing warnings does not make things
-> partially applicable. If node is too big, although I personally do not
-> agree, it's quite moderate size chunk, then sure, split pinctrl groups
-> or pinctrl node to additional patch.
+On Fri, Mar 01, 2024 at 09:48:59AM +0100, Stefan Eichenberger wrote:
+> From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+> 
+> This patch series adds support for sleep-moci to the Verdin AM62 in
+> combination with the Dahlia carrier board. sleep-moci is a GPIO that
+> allows the system on module to turn off regulators that are not needed
+> in suspend mode on the carrier board.
+> 
+> Commit ba9d3cd71f15 ("dt-bindings: usb: microchip,usb5744: Remove
+> peer-hub as requirement") from linux-next is needed to make DTB_CHECK
+> pass without peer-hub set for the hub on the usb1 interface.
+> 
+> Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
 
-Thanks for feedback; it'll become a single patch as it is fine with you.
+Is this series on your queue? Any concern? I noticed you applied more
+recent patches but not this one, therefore asking.
 
-Regards,
+(I know you are travelling, I just want to be sure this is not getting
+ lost)
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Francesco
 
 
