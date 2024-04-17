@@ -1,63 +1,64 @@
-Return-Path: <linux-kernel+bounces-148367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A46F8A818F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFB5B8A818B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:03:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1999B1F22A08
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:04:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EF8B1F22114
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF3313CAAE;
-	Wed, 17 Apr 2024 11:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8BF813C8E5;
+	Wed, 17 Apr 2024 11:03:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jvkAJeqs"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F520NppO"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A3913C818;
-	Wed, 17 Apr 2024 11:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08D7613C80B;
+	Wed, 17 Apr 2024 11:03:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713351827; cv=none; b=EvDFf32k5sRdV8DnVZAhv6qkYEEH9nkXwxZ3UCpyiumNeKKARFsX64fesM1YgzkT7aLiYbSfAISuQZEv8rC9RX6+/YvDVLquAVJyPXJdNTwyX+6BS12VEr7sQxWPI8NfVB7pgh7xiiOYO432/evNG5HdTkgeznJpy9moxrrCoaA=
+	t=1713351826; cv=none; b=Qrb+8cgSnuny1PdC6vOWQuhGGl4GFh97OXJXf5eXX1RoQWRDSM9oY3zHejtnXxczHtySGyu1lf9ed3E5ucCmo4S1z1l9ruATPQARcXizpaPqEFejT8T8N2tsXKvxauQ04T8/OyBdg4Mv3Dj8VEBRMaL3KZIZ/bd5eO0AHIMblj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713351827; c=relaxed/simple;
-	bh=Un/v+3ceg/m/J3d1mkGogWHxRRHXdsqzlAA5EocCvbI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=egHnFDagNeO2HEcyK+4TSgPHUREp/0ExGVpvXwjpf9tMkhtRbS+g5EDg2sNa5oo+NmsBo5VyHKsfK7+oaPUC5dw7DBG9Xj4DNGL2WO/FxSy8dQX5QGapmnIhCmETQml3hOwdiKEaeDMCK355PtCMmrn89yDRH4pCc9vJw6TWxdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jvkAJeqs; arc=none smtp.client-ip=192.198.163.19
+	s=arc-20240116; t=1713351826; c=relaxed/simple;
+	bh=Vq5PKqs9ah/OwO8gQhBqXkVQsO/11Ccf4mxzPDr98VU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=bprhYRgO4bxoZlISeSfIFB9e1oSp9bR2ZvOzdGlXrGtQMdbH1Jmpvv7VGH1lsrUtTtUHJsrfIp+ZMv0HTStYjyGZJJHbJdf5uLOqMeovKXFvHauvL5kywtzt8qCcEJPjVl2bi4NyusQb7nIC67QhsAuB6arr6dj5zfjvJYMLdUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F520NppO; arc=none smtp.client-ip=192.198.163.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713351827; x=1744887827;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Un/v+3ceg/m/J3d1mkGogWHxRRHXdsqzlAA5EocCvbI=;
-  b=jvkAJeqsC4CrIcqQt7QVSgOBEQObMz8Q+Y4cBig8dosMXsnFUUblgYnp
-   kq3m5AOfWHf4XPc4UlQtzhAq4U24THuFZ2Kv17Hz/GhNixJOULl8Zbvnl
-   EdvNRmOn6MgdEGTNFA69eNCKlffXqbeKGe52R9AuZx+TgwPO/WWw0rsjF
-   RhgIpyLx4u3+ZfOJm33riReBoLDJ5NoVVH9Y2KsaUMRPWr1g9GMkQTcIe
-   JvBgpZPQRCghsvInceW4YfeU15Zpam5NxOcj0zk44EPJzrklY3cp9aF3c
-   hfQkuHbFUXPOah2IrKffdTWcNaCj3Be77pN0S8iM3vMR+/6JUKs5ini05
-   Q==;
-X-CSE-ConnectionGUID: L53KU+OpTvek7FMy1i7qsA==
-X-CSE-MsgGUID: 9Xoy4kRDQRGWScKOdLAnyg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8698131"
+  t=1713351824; x=1744887824;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Vq5PKqs9ah/OwO8gQhBqXkVQsO/11Ccf4mxzPDr98VU=;
+  b=F520NppOW02iE8jTGCSSM7FshVaCZKTIBQDpFXgV3ES+xclShaS7JrvV
+   mYMirhbpI0lDAd+bCSAsSy2FmZHsBgBnvQYDNNl+6Uk/N5TQtjlQb2g5K
+   +uRwqegcBmiWqMTUcD0X7e3et7UR9bm+c5VpCtMc9KkzWUucvW6DdUqKZ
+   42zhh3zVxKRkrsKI8AqBCpUxQ7TFYU9Fokc7FMK6L3TzV6lms6/1PHkep
+   Qr7XDtpL4gSGEH6dZc1QX5vA7ga9UYUP47heGAfMQ/nIY9R1Zj67fUOL6
+   VcfEmJ/3X+UvqWALwv0tj90uqfnMAEy8HlJsL7STYsXw1UV3jn0nzkREr
+   g==;
+X-CSE-ConnectionGUID: 2Ud1LrFXRr+iu+uUPXPR2w==
+X-CSE-MsgGUID: VIyvxnj9ReKG/HfWYQXFXg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8698114"
 X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="8698131"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+   d="scan'208";a="8698114"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
   by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 04:03:40 -0700
-X-CSE-ConnectionGUID: br7yEYewTtyT0LTP/jlsCg==
-X-CSE-MsgGUID: mz2pYH88SXqfV3KHc5Crag==
+X-CSE-ConnectionGUID: 3Ibp+FXhRzya5MRcf5MVig==
+X-CSE-MsgGUID: zvXo1qisReSOzfHnmLrEpw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="22653273"
+   d="scan'208";a="27380694"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa006.fm.intel.com with ESMTP; 17 Apr 2024 04:03:37 -0700
+  by orviesa004.jf.intel.com with ESMTP; 17 Apr 2024 04:03:37 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 4771C491; Wed, 17 Apr 2024 14:03:36 +0300 (EEST)
+	id 5678021A; Wed, 17 Apr 2024 14:03:36 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -67,12 +68,13 @@ To: Mark Brown <broonie@kernel.org>,
 Cc: Daniel Mack <daniel@zonque.org>,
 	Haojian Zhuang <haojian.zhuang@gmail.com>,
 	Robert Jarzmik <robert.jarzmik@free.fr>,
-	Russell King <linux@armlinux.org.uk>,
-	Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v3 0/9] spi: pxa2xx: Drop linux/spi/pxa2xx_spi.h
-Date: Wed, 17 Apr 2024 13:54:27 +0300
-Message-ID: <20240417110334.2671228-1-andriy.shevchenko@linux.intel.com>
+	Russell King <linux@armlinux.org.uk>
+Subject: [PATCH v3 1/9] spi: pxa2xx: Allow number of chip select pins to be read from property
+Date: Wed, 17 Apr 2024 13:54:28 +0300
+Message-ID: <20240417110334.2671228-2-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
+In-Reply-To: <20240417110334.2671228-1-andriy.shevchenko@linux.intel.com>
+References: <20240417110334.2671228-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,57 +83,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As Arnd suggested we may drop linux/spi/pxa2xx_spi.h as most of
-its content is being used solely internally to SPI subsystem
-(PXA2xx drivers). Hence this refactoring series with the additional
-win of getting rid of legacy documentation.
+In some cases the number of the chip select pins might come from
+the device property. Allow driver to use it.
 
-Note, that we have the only user of a single plain integer field
-in the entire kernel for that. Switching to software nodes does not
-diminish any of type checking as we only pass an integer.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/spi/spi-pxa2xx.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-On top of that it includes the previously sent "spi: pxa2xx: Cleanup
-(part 2)" series that makes effort to clean up even more things.
-
-Changelog v3:
-- added new patches that were previously sent separately
-  (20240403171550.1074644-1-andriy.shevchenko@linux.intel.com)
-- extended cover letter a bit to explain that the replacement is
-  not worse than the current approach
-- v2: 20240327193138.2385910-1-andriy.shevchenko@linux.intel.com
-
-Changelog v2:
-- dropped applied patches
-- added patch to amend dependencies (Mark)
-- amended the second patch accordingly (Mark)
-- elaborated purpose of the patch 6 in the commit message (Mark)
-- v1: 20240326181027.1418989-1-andriy.shevchenko@linux.intel.com
-
-Cc: Arnd Bergmann <arnd@arndb.de>
-
-Andy Shevchenko (9):
-  spi: pxa2xx: Allow number of chip select pins to be read from property
-  spi: pxa2xx: Provide num-cs for Sharp PDAs via device properties
-  spi: pxa2xx: Move contents of linux/spi/pxa2xx_spi.h to a local one
-  spi: pxa2xx: Remove outdated documentation
-  spi: pxa2xx: Don't use "proxy" headers
-  spi: pxa2xx: Drop struct pxa2xx_spi_chip
-  spi: pxa2xx: Remove DMA parameters from struct chip_data
-  spi: pxa2xx: Remove timeout field from struct chip_data
-  spi: pxa2xx: Don't provide struct chip_data for others
-
- Documentation/spi/pxa2xx.rst   | 208 ---------------------------------
- arch/arm/mach-pxa/spitz.c      |  25 ++--
- drivers/spi/Kconfig            |   3 +-
- drivers/spi/spi-pxa2xx-dma.c   |  38 ++----
- drivers/spi/spi-pxa2xx-pci.c   |  10 +-
- drivers/spi/spi-pxa2xx.c       |  94 +++++----------
- drivers/spi/spi-pxa2xx.h       |  42 +++----
- include/linux/spi/pxa2xx_spi.h |  48 --------
- 8 files changed, 87 insertions(+), 381 deletions(-)
- delete mode 100644 Documentation/spi/pxa2xx.rst
- delete mode 100644 include/linux/spi/pxa2xx_spi.h
-
+diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
+index 2f60b2fde8d5..ab6fd55237cd 100644
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -1357,6 +1357,7 @@ pxa2xx_spi_init_pdata(struct platform_device *pdev)
+ 	struct ssp_device *ssp = NULL;
+ 	const void *match;
+ 	bool is_lpss_priv;
++	u32 num_cs = 1;
+ 	int status;
+ 
+ 	is_lpss_priv = platform_get_resource_byname(pdev, IORESOURCE_MEM, "lpss_priv");
+@@ -1395,8 +1396,11 @@ pxa2xx_spi_init_pdata(struct platform_device *pdev)
+ 		pdata->dma_filter = pxa2xx_spi_idma_filter;
+ 	}
+ 
++	/* Read number of chip select pins, if provided */
++	device_property_read_u32(dev, "num-cs", &num_cs);
++
++	pdata->num_chipselect = num_cs;
+ 	pdata->is_target = device_property_read_bool(dev, "spi-slave");
+-	pdata->num_chipselect = 1;
+ 	pdata->enable_dma = true;
+ 	pdata->dma_burst_size = 1;
+ 
 -- 
 2.43.0.rc1.1336.g36b5255a03ac
 
