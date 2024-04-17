@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-148719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7B358A8695
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:50:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99C498A8699
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:50:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8C551C20A7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:50:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A2431F211C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:50:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96302146D4B;
-	Wed, 17 Apr 2024 14:46:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A9431448CB;
+	Wed, 17 Apr 2024 14:46:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SbUSBk6Q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eNiKY2ln"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEEBC1448CB;
-	Wed, 17 Apr 2024 14:46:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53AA4146D78;
+	Wed, 17 Apr 2024 14:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713365161; cv=none; b=Wvds1jz7CqBpwjw2zfVoCXpt3kplwCTwoy1GfOMm73pvM5nOKTd4RlCD+mNo5smsxYTnq6KqEX2TSzphFYNnWqpT3D8ZSrQ7PyHvkeoPEncT1oxfLMTV92FDa4sw0bx27FtpmkhGM4uVOTi7QKeBaqqJDRcKNF9C8tAQPxuQz9w=
+	t=1713365164; cv=none; b=CA2Dt/qkS6SU/MkAfMp57rYXXOqLDxwxsp1JkobRfwEaVAJGOqtcvfPD4qZjK7y93q7/vC6TK/Ndm3bjtlj1CkrKnEnQcZGFNG6PBbpH+WKBkMfXH3LWpqtXl8Bu6mgFc8/cUKgOwc+7+aG0JfBPm6I8O1fcTW1u9jmE2PCuWtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713365161; c=relaxed/simple;
-	bh=ZQvye4lH9STIxQEy+fEJCBvieMZben0M75cWxAuq1j4=;
+	s=arc-20240116; t=1713365164; c=relaxed/simple;
+	bh=prPpqIgiR4oXSxGZdm2JqXUifFqx02INBPy2HFhAkmQ=;
 	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=OFiAAnkTxkuF/wAPDyEr407UvE3sJu0vF+9uzDZPzHFBK/xyLdyEu/SNAw3kvd82/iam+gx7RRnIvh3p4ErcyFqKF8OrLY4VEQ1hjbnn0puRYmqaMXo0KvJVQuujv3Y+VgjB4waz0kq8oek6NDeOCToRV4gfeY7C+tbRSWEmNek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SbUSBk6Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AA90C2BD11;
-	Wed, 17 Apr 2024 14:46:01 +0000 (UTC)
+	 Message-Id:Subject; b=SYWvI/PLpFP5q8mUERkYJBm+uhj0Q1N9Wq/F0hItaVZRYndR4gAA4aicb2/drJt0/X3HmxgotaegaqOdT2Qm0dtaYwutCs9JQWtKFTWe0FQQaOnXZK11akr+NNfrEuXGCLinUgps/U4426/rjfKBjHWW0kNJlAx27wYSN2+4qSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eNiKY2ln; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F455C072AA;
+	Wed, 17 Apr 2024 14:46:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713365161;
-	bh=ZQvye4lH9STIxQEy+fEJCBvieMZben0M75cWxAuq1j4=;
+	s=k20201202; t=1713365163;
+	bh=prPpqIgiR4oXSxGZdm2JqXUifFqx02INBPy2HFhAkmQ=;
 	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=SbUSBk6QbYGJuhVO8IOS8J++ios5qIsqlUVbf/3SCArnZ0ChScc3bpnDB6mtXgFxy
-	 UMuKBrwMRnP9yI57eQKCftRjolZEEaTzUBB9+WLyJ6joVX5tYyLJLNpdvwcuAanh5+
-	 yPt4/H6JceEFkIjBeiKQGtw+1h7gk7ntSCgGIed87Sku3OGCceRVK13JENAS7VbAiv
-	 rjEKiqzbfZZ8z8gJMsVuhj777DCWeMlw1nkuy1lxNkfJt1ewky7Bj4GgsxpKpR+qxd
-	 ilAEQTDfa864m4M/ViKaeG9msS6+8vPBgu8cePwDm/nhyqvijYIPsrW+Y5rB7SCqGf
-	 QkPwF3n0tLPIA==
-Date: Wed, 17 Apr 2024 09:46:00 -0500
+	b=eNiKY2lnozJF11dncEK2YbaJceSMgiwx58CzqwYYQEB5wKVOJZmLgtgTQqOqm8j8j
+	 F9tQ9uB9D8bFmgcCHTKgp6fkrJdhNhBrdNkmkYe8bV5NPzotpwPvjDeVhDeURVWgIc
+	 DgNqBDo1j+7HH4+/KXpdKBrvCm0b0DkpomHDCvsKe382SCerBfbUKy1KiuLqC8SE5v
+	 06YBGe8EikMoM5t2caquC6eV1rT/XaeQmYaRtmmERF5+w4JlKLmQDYsgbx5DXXbPdF
+	 CnM7JPxLhD0RaBu4JbIsGzFrZ38N7KViL0Mtba9puEh8hxaM0p62uki5t94C1lEOL8
+	 nBZBFIh8FIYkw==
+Date: Wed, 17 Apr 2024 09:46:02 -0500
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -51,33 +51,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
 To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: henryc.chen@mediatek.com, wenst@chromium.org, keescook@chromium.org, 
- gustavoars@kernel.org, linux-mediatek@lists.infradead.org, 
- amergnat@baylibre.com, broonie@kernel.org, devicetree@vger.kernel.org, 
- krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org, 
- conor+dt@kernel.org, matthias.bgg@gmail.com, djakov@kernel.org, 
- linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, 
- kernel@collabora.com
-In-Reply-To: <20240417091442.170505-2-angelogioacchino.delregno@collabora.com>
+Cc: broonie@kernel.org, henryc.chen@mediatek.com, 
+ linux-kernel@vger.kernel.org, keescook@chromium.org, djakov@kernel.org, 
+ amergnat@baylibre.com, krzysztof.kozlowski+dt@linaro.org, 
+ matthias.bgg@gmail.com, linux-pm@vger.kernel.org, lgirdwood@gmail.com, 
+ devicetree@vger.kernel.org, gustavoars@kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+ kernel@collabora.com, conor+dt@kernel.org, wenst@chromium.org
+In-Reply-To: <20240417091442.170505-3-angelogioacchino.delregno@collabora.com>
 References: <20240417091442.170505-1-angelogioacchino.delregno@collabora.com>
- <20240417091442.170505-2-angelogioacchino.delregno@collabora.com>
-Message-Id: <171336511790.2347768.12360106374334104584.robh@kernel.org>
-Subject: Re: [PATCH v2 1/7] dt-bindings: regulator: Add bindings for
- MediaTek DVFSRC Regulators
+ <20240417091442.170505-3-angelogioacchino.delregno@collabora.com>
+Message-Id: <171336511841.2347811.4883072068871368220.robh@kernel.org>
+Subject: Re: [PATCH v2 2/7] dt-bindings: interconnect: Add MediaTek EMI
+ Interconnect bindings
 
 
-On Wed, 17 Apr 2024 11:14:36 +0200, AngeloGioacchino Del Regno wrote:
-> The Dynamic Voltage and Frequency Scaling Resource Collector Regulators
-> are controlled with votes to the DVFSRC hardware.
+On Wed, 17 Apr 2024 11:14:37 +0200, AngeloGioacchino Del Regno wrote:
+> Add bindings for the MediaTek External Memory Interface Interconnect,
+> which providers support system bandwidth requirements through Dynamic
+> Voltage Frequency Scaling Resource Collector (DVFSRC) hardware.
 > 
-> This adds support for the regulators found in MT6873, MT8183, MT8192
-> and MT8195 SoCs.
+> This adds bindings for MediaTek MT8183 and MT8195 SoCs.
 > 
 > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 > ---
->  .../mediatek,mt6873-dvfsrc-regulator.yaml     | 71 +++++++++++++++++++
->  1 file changed, 71 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml
+>  .../interconnect/mediatek,mt8183-emi.yaml     | 76 +++++++++++++++++++
+>  .../interconnect/mediatek,mt8183.h            | 23 ++++++
+>  .../interconnect/mediatek,mt8195.h            | 44 +++++++++++
+>  3 files changed, 143 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interconnect/mediatek,mt8183-emi.yaml
+>  create mode 100644 include/dt-bindings/interconnect/mediatek,mt8183.h
+>  create mode 100644 include/dt-bindings/interconnect/mediatek,mt8195.h
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
@@ -85,11 +89,11 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.example.dtb: /example-0/soc/system-controller@10012000: failed to match any schema with compatible: ['mediatek,mt8195-dvfsrc']
+Documentation/devicetree/bindings/interconnect/mediatek,mt8183-emi.example.dtb: /example-0/soc/system-controller@10012000: failed to match any schema with compatible: ['mediatek,mt8195-dvfsrc']
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240417091442.170505-2-angelogioacchino.delregno@collabora.com
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240417091442.170505-3-angelogioacchino.delregno@collabora.com
 
 The base for the series is generally the latest rc1. A different dependency
 should be noted in *this* patch.
