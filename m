@@ -1,98 +1,128 @@
-Return-Path: <linux-kernel+bounces-147890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CCCD8A7B00
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:18:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8865D8A7B0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:22:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD7341C22A33
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:18:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C154B212E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF97E57B;
-	Wed, 17 Apr 2024 03:18:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kqLw8Z27"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD0AE8BFA;
+	Wed, 17 Apr 2024 03:21:59 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33FE38F66;
-	Wed, 17 Apr 2024 03:18:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4A579C8;
+	Wed, 17 Apr 2024 03:21:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713323919; cv=none; b=r8P+NA+6b8X4cbz9aChuMuW0ud/kEy5GdR+U/OAH7OMIfTnYJa4dTGJlX/QLAfYDRgG9qTSIKUn2yQvrN0vllYL029R4GPLFoKY7GQYOW6NVEi/2xBl4zJTek85K72VwvbjHl09h/MakS44FvByNTx1opSwYnzYjyVtgw7NuhKE=
+	t=1713324119; cv=none; b=R6UjjzsWbFyd4IDpO7SBm7F/LdLrN+eiKeEXFrvpg3+BeF3/MJ5XFVDBv6EGV1oBgbeVltPgDtKtLgS2DtxidTXVsMVfuD1Dl/WICb3GKv6VK8YgbteK5GsCqvoRNyGb1L6JNQNYHV0a0a66ojnNaPrdPditnrRtm8WKs5aaTDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713323919; c=relaxed/simple;
-	bh=QROgXz5UDuoxzxyfomvlU9PtVelcpq1hfiHqc4D5Rl0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SpdWEdy9ipzN4E7UtHI1h33Wvdi8EBXuwybgHqsPtWpDaIKgscWbktvhjKKn5l3zRLyfcUJQk5mllzWJvmrAc6WQgqoKGmHpe8Jvd7LQ7glZG+zsnJTYBKlZQkNH+aE46enytHiug3iOiGcjtR4PlMjWf/TT1cFnyEFIdX/BnM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kqLw8Z27; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8643C113CE;
-	Wed, 17 Apr 2024 03:18:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713323918;
-	bh=QROgXz5UDuoxzxyfomvlU9PtVelcpq1hfiHqc4D5Rl0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=kqLw8Z27o9tczw3gVr+DQw78bY/vuXNieAm6RyqMBwaTqF/7X62dbj+UjOxE3ttnL
-	 2ZHQRFwFQ527o1zHAoWGxPRsSChSta5s3Qdo8utMdB0p8CyQwhT8DI8Kd7jhYvuiG7
-	 33RNm5tlzJ02TMnUvv20OfOTueGMJK1t/sON/wuc5oqLkuzcny3J/WV6W4QMOb8rMo
-	 cM6UPl1gX0DIebasc6xLyZzMu+E5mqXOzHmwGQCtfDXO/i/uHJ0HVlY00nqjPICMG1
-	 JcBGCdqzs/ZVRCDuJKxwrLWIJsYfpOFoN/8QpAdGI35eTR2Dpr6eF/R4ItNr8donPs
-	 ySgxiuYSJOLuw==
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a51969e780eso665324566b.3;
-        Tue, 16 Apr 2024 20:18:38 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVtwSKA1LqTH1kIyO1kT10hx7beoh69PHL/+hqOaMycKUMFc2NqRZgXPSuwrHT16h1dJ0hHl1FGzrcNyRvoQ4WO0RAkIf/zXaFTorSnl4labBY3NbUAhgqePdazYLMme69hwztGX8wIAoH7KOPX/SVJJdRpMxsbBIxQX5i0tA==
-X-Gm-Message-State: AOJu0YywLV5fM28Sg3p7iuY2FRA/nO4KIjRr6HjSDBRsAwkefuKRk+iw
-	F2AmAdCi7rKvsvLvt0e4ahT/IpfudHbpvDfTLsK9SFliGEwQ4H5A5B9icAqXYTbWztxMFwj+TUl
-	KE+eN6JF9trt/6v+eMV/DQoqQjK8=
-X-Google-Smtp-Source: AGHT+IGAV0JKt0Q8Wt6Fx+5t3raYHvV2CbyQ2onGWJZvBZMtZILfGwV4qyHAs5ucw4zU1joYNfqugznQTR7cPZhmh20=
-X-Received: by 2002:a17:907:1c0d:b0:a4e:7a36:4c38 with SMTP id
- nc13-20020a1709071c0d00b00a4e7a364c38mr13676826ejc.20.1713323917285; Tue, 16
- Apr 2024 20:18:37 -0700 (PDT)
+	s=arc-20240116; t=1713324119; c=relaxed/simple;
+	bh=fLdlGO7j7XhUstcblOGfcv3EBSqQgQaMsoq7a/ba3Wo=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=SR0INQd0OtpeLDX8BMh6bbPABCNkoOOLrV7MinhGenyJbyGMLXXVVh+Aj5o51iAnj46PHkisHWSktZrLFV7Qw7Kw9FA5DUiTM02xnXp4IStyeU53ypvKua4mYR4nakWWElrOwtEUQ3YBkGrwYv+xfUrC4hp+ZKqQSJgXhfF0LAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VK5jF0Rtpz2Ccht;
+	Wed, 17 Apr 2024 11:18:57 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id DA4A61A0172;
+	Wed, 17 Apr 2024 11:21:54 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 17 Apr 2024 11:21:54 +0800
+Message-ID: <29d5ea19-21b5-4076-9acc-8286a050c33f@huawei.com>
+Date: Wed, 17 Apr 2024 11:21:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416144926.599101-1-david@redhat.com> <CANiq72kACt+FfeYXJxfQpmGH=uPqkDA0oprfnebw52VSKyn7kQ@mail.gmail.com>
-In-Reply-To: <CANiq72kACt+FfeYXJxfQpmGH=uPqkDA0oprfnebw52VSKyn7kQ@mail.gmail.com>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Wed, 17 Apr 2024 11:18:27 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5mt0GaaZ3s44CYb4aKqYeDYm+Q16hY__FdQ6xYJh+bgg@mail.gmail.com>
-Message-ID: <CAAhV-H5mt0GaaZ3s44CYb4aKqYeDYm+Q16hY__FdQ6xYJh+bgg@mail.gmail.com>
-Subject: Re: [PATCH v1] LoongArch/tlb: fix "error: parameter 'ptep' set but
- not used" due to __tlb_remove_tlb_entry()
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
-	linux-arch@vger.kernel.org, loongarch@lists.linux.dev, llvm@lists.linux.dev, 
-	Arnd Bergmann <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>, 
-	WANG Xuerui <kernel@xen0n.name>, Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: Align the display format of
+ `btrees/inodes/keys`
+Content-Language: en-US
+From: Hongbo Li <lihongbo22@huawei.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>, Youling Tang
+	<youling.tang@linux.dev>
+CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Youling
+ Tang <tangyouling@kylinos.cn>
+References: <20240417015448.84294-1-youling.tang@linux.dev>
+ <toosz4pt2la6wf2575vwe6efebcbzsy735cq7exmlqhzrgicrf@s7g3rrbvge2l>
+ <66ecea56-e4d3-4241-a1dc-378d70555321@linux.dev>
+ <fpvnushjgr5txyduvpihevvghv64sdso4p6t3nhhddcjimqh2k@ehzpswsmnxin>
+ <d17de3df-a3f2-4317-92cc-1fd02641328b@huawei.com>
+In-Reply-To: <d17de3df-a3f2-4317-92cc-1fd02641328b@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-Queued for loongarch-fixes, thanks.
 
-Huacai
 
-On Wed, Apr 17, 2024 at 3:25=E2=80=AFAM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> On Tue, Apr 16, 2024 at 4:49=E2=80=AFPM David Hildenbrand <david@redhat.c=
-om> wrote:
-> >
-> > With LLVM=3D1 and W=3D1 we get:
->
-> Hmm... I didn't need W=3D1 to trigger it (LLVM 18.1.2).
->
-> > Reported-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
->
-> Thanks, looks good to me -- built-tested:
->
-> Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
-> Tested-by: Miguel Ojeda <ojeda@kernel.org>
->
-> Cheers,
-> Miguel
+On 2024/4/17 11:16, Hongbo Li wrote:
+> 
+> 
+> On 2024/4/17 10:59, Kent Overstreet wrote:
+>> On Wed, Apr 17, 2024 at 10:50:10AM +0800, Youling Tang wrote:
+>>> Hi, Kent
+>>> On 17/04/2024 10:20, Kent Overstreet wrote:
+>>>> On Wed, Apr 17, 2024 at 09:54:48AM +0800, Youling Tang wrote:
+>>>>> From: Youling Tang <tangyouling@kylinos.cn>
+>>>>>
+>>>>> Before patch:
+>>>>> ```
+>>>>>    #cat btrees/inodes/keys
+>>>>>    u64s 17 type inode_v3 0:4096:U32_MAX len 0 ver 0:   mode=40755
+>>>>>      flags= (16300000)
+>>>>> ```
+>>>>>
+>>>>> After patch:
+>>>>> ```
+>>>>>    #cat btrees/inodes/keys
+>>>>>    u64s 17 type inode_v3 0:4096:U32_MAX len 0 ver 0:
+>>>>>      mode=40755
+>>>>>      flags= (16300000)
+> The flags also with the space after "=". Is it reseonable?
+Sorry, I misspell. I mean whether it is reasonable.
+>>>> This would print a newline for keys that don't have a value...
+>>> The original intention was to make the display of the printed content in
+>>> '__bch2_inode_unpacked_to_text ()' consistent, without considering other
+>>> callbacks.
+>>>
+>>> Or just modify it in the following way?
+>>
+>> Yeah, that's better
+>>
+>> Do it off my master branch though, there's some printbuf imprevements in
+>> there.
+>>
+>> https://evilpiepirate.org/git/bcachefs.git
+>>
+>>> --- a/fs/bcachefs/inode.c
+>>> +++ b/fs/bcachefs/inode.c
+>>> @@ -534,6 +534,8 @@ int bch2_inode_v3_invalid(struct bch_fs *c, struct
+>>> bkey_s_c k,
+>>>   static void __bch2_inode_unpacked_to_text(struct printbuf *out,
+>>> struct bch_inode_unpacked *inode)
+>>>   {
+>>> +       prt_newline(out);
+>>> +
+>>>          printbuf_indent_add(out, 2);
+>>>          prt_printf(out, "mode=%o", inode->bi_mode);
+>>>          prt_newline(out);
+>>>
+>>>
+>>> Thanks,
+>>> Youling.
+>>
+> 
 
