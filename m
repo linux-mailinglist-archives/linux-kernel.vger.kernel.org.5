@@ -1,185 +1,263 @@
-Return-Path: <linux-kernel+bounces-147915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0557C8A7B40
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:12:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24BBA8A7B41
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:13:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E8E11F21FB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 04:12:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B60E628291C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 04:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D669B41C9D;
-	Wed, 17 Apr 2024 04:12:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DBD544C7A;
+	Wed, 17 Apr 2024 04:12:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gB+jkm2K"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KjVoxK41"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB1F63A;
-	Wed, 17 Apr 2024 04:12:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A25A444C71
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:12:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713327150; cv=none; b=qw+gdgtfQLRxTyguRvrBuWjqe6TloZ+O+YnTOqWUnmdtfPsP2aTcNpfpyM3Tyv654DP0cixQH6qJYre9gzor/Syu9H6mYiaddGr42nVzI1snAfRt7JDqpzyQ+fc/rYUS9aU/DXvhUWZsqxJV5z0RlNdpzV89eO5cKwIubaxsYP0=
+	t=1713327177; cv=none; b=L52SUMhMT8/OP0phGdi0ENhryTv6C1bUbn8B07mYbQ2SzCUjAMSpvw4MpQd2rZL06HhXmZBZIzSVR6/4hWukaOlApsU4O4im9bxSix+8oe/K1PRj/vYkJDsT9SQBTE5tqgSpf/5sK4sRDWVI/vwGEqUkk7JTBjuNCJRaC8xIuZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713327150; c=relaxed/simple;
-	bh=NRngM+Q3roJ2Mxn9lpnA319f1CtQxNU1XyTjo+i/N3c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iuIrN+nuTDZZ1S0dEJb/0i2FEI65viv7zlewdfOTyFPvtE/TTlCtlDH5X78RxczdJLd+pnMZfK3nDFxWWv7G9mfY/VxoKc8H9u6KXo0p4oP7imiDXUt1JmDivp5dq76JUySZucGmNPgnUQpPCltQ+DoxlauwGO0MqyQIW48uLDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gB+jkm2K; arc=none smtp.client-ip=209.85.214.175
+	s=arc-20240116; t=1713327177; c=relaxed/simple;
+	bh=K+zqEUpF/L/an46sf/3Id+nCNOdiTsllKIRWtM44/lo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HRGMMwoR5wbDd1HVS1Fz9zewUb77JANah+Kkk+g/aiXw6E4yTw5xNFqU+5kBwaORCEQeaftPWFPTVQqyfGqNzTQjFI19bAOfJpVdNBblzLznet4vCSFPeM0jsvf09qRouvumVLVfhaYMBE4ia4lo1TnYocZSmXR1nMeSzpFCPiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KjVoxK41; arc=none smtp.client-ip=209.85.167.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e2c725e234so3206825ad.1;
-        Tue, 16 Apr 2024 21:12:28 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-518b9527c60so4089457e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 21:12:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713327148; x=1713931948; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RhIYiXJVlB/Y7GnKLczcpNtj9joWX+r+4DAHAsHa+IE=;
-        b=gB+jkm2KoxVWWNadv8J3nniYIjVCVpcZTq927tU6CjDhLcstvvTD5AdnwPv8CF8fJb
-         CO8OL2qNusbMdhWeolp3MgXbT3vzQFYe2aXpt86fHN9iy5cuZiULsWglMm30Tul3U2GC
-         52gyMWrbrsYxbw7j6jcbzxXbnuGWevhCWCk1VbA+yJg4WnbxVJmlm8rIud9WlcPH4yog
-         qY5auwkUPRIZ14+9gngbXxM3vg2nUDOZCui9XrUaEC4IfCOpa3x6S2JjLAG5avwSH0dR
-         kK6W3z1wBssZ/gGJegBIVz/PLALgeFvl5TY9iPhM829SI0+/cVV4bOUzkjJDlzTUL+pi
-         q/VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713327148; x=1713931948;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1713327174; x=1713931974; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RhIYiXJVlB/Y7GnKLczcpNtj9joWX+r+4DAHAsHa+IE=;
-        b=cQf4o5GZqsNyLHQNoc2jHUsmS/9Doh4n9uqssHRQnJwBl+MFaaimhaLRkI3Tw6fBQT
-         ZKMmU/UIMMng7LxE+Yq1Ij3jgv7JeiS43mJdMAr4FT4YmagVpwXqbsdqUqJ9np8qOMsc
-         dndjr/Kd5Q2fJPEVZhHiYxxWqqGN9HTE2pp9IyIj0AysN+Jp7u9+TCu7KvVJObJBbvG8
-         uYOes/N/e1rogp/uiIVfF/udElI5vVSUJRwYHFjYQbhQ2Einek7OAjT9Jempd4IgSnYX
-         DzFi0ciTnDhyxnEXVlNe4gxqWlvVXz12nLVZnA/LJQ0qY4ncNWyqndmu/2XwQzeacucS
-         Im7g==
-X-Forwarded-Encrypted: i=1; AJvYcCVMpnvRV6zTSMNLx6XxoI8qSITAlBB5aRfru/sU1JaNHSUWwNk8P1ajx3lkeOEGz0TZOEp4SpyGciK0OEKpHbsmD0sVAXjG86z8k9/8KEGHLRkUVrEjPo89zEQpxsa6QZgsFojDRvjcBiRtw7Yge6UZ4YboubKL/Y41ooANsHTBBvWwV+Q=
-X-Gm-Message-State: AOJu0YzdzxJ79L3yjmr6egjVPtjRqOpxRKOreZSs7NvfcF0esJK1tg5t
-	vlcEioicdjnB1r4en/40/9LR7t4VYEpmCS1vAjEl5iF16aHFvD3y
-X-Google-Smtp-Source: AGHT+IH3VXuHxDsrpxsJ7sWHqqjcTS0Q0pPVzw2bwoKl+q7mPpPwjHg36Ib9b5hA2BPfPv3v4cTWng==
-X-Received: by 2002:a17:902:f684:b0:1e4:4679:ec9a with SMTP id l4-20020a170902f68400b001e44679ec9amr6837302plg.13.1713327147847;
-        Tue, 16 Apr 2024 21:12:27 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id b6-20020a170902d50600b001e4e8278847sm10605223plg.56.2024.04.16.21.12.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 21:12:27 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 38F2C1860FA40; Wed, 17 Apr 2024 11:12:24 +0700 (WIB)
-Date: Wed, 17 Apr 2024 11:12:24 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, Jonathan Corbet <corbet@lwn.net>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Mao Zhu <zhumao001@208suo.com>, Ran Sun <sunran001@208suo.com>,
-	Xiang wangx <wangxiang@cdjrlc.com>,
-	Shaomin Deng <dengshaomin@cdjrlc.com>,
-	Charles Han <hanchunchao@inspur.com>,
-	Attreyee M <tintinm2017@gmail.com>,
-	Linux Sound System <linux-sound@vger.kernel.org>,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 08/12] ASoC: doc: dapm: describe how widgets and routes
- are registered
-Message-ID: <Zh9MKK20Sf9Hu8AU@archie.me>
-References: <20240416-dapm-docs-v1-0-a818d2819bf6@bootlin.com>
- <20240416-dapm-docs-v1-8-a818d2819bf6@bootlin.com>
+        bh=cbM+atGM0bP5DsV5av6JoMWaz9VGX/GLnWohTfwxNTg=;
+        b=KjVoxK41loP4tgE0+1pEFAzcsggP3bsfJ9ZHy/n12yE6tDjjTpwtofWhnpj8kjkc84
+         m5GBynOtPt/HTTpzo72DOCI87sNmkuMygLqYw9eYlqXoXYLd9FgeAMpYqi0XOEwAmGP4
+         iYAktCFqwdsWLmSBgmKdPNmIROwAZBkOhWtKLfP9MbdCO8YWwRLYtOUA7/7MulKzt7qA
+         T+R8gdoVYc11Cl/zM8aOhGe6fkYK5y2mYl6P9LfHGn/gVTTEuNA4p5RaZBAVI7DA76Mo
+         Y2dF0iLAa4D5m12WqAPLid+bgM+Rwp93i+vYQpTFCPnuJpwSZfu77+a2XeeVyq3qx4O/
+         GVQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713327174; x=1713931974;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cbM+atGM0bP5DsV5av6JoMWaz9VGX/GLnWohTfwxNTg=;
+        b=eoDK9p/iBvRebqQHS6IXLwce+Di8V/fe9N0N67Esz+iHa22twDJH3fw45dN+SyTghS
+         sU54V8C7QhPTDotP0I6bgTImH3yP1UD4uGXBCSw4kHE0e4uacRdf89ClitGGn21F4GAt
+         ZEhl6NnhkqKFjA/Bl2OODTfpwM75f8mod8D5qq+1hjHbA2MQvTKqRcZNHsQ6MJbM0DhW
+         hAhQvk2z/kZ8H59BEPeqfjtprkQ9zXd3lK5wDgocEdEF4c8mfphqd7j0/CIp6pyL2g+E
+         48nWlYaPmqiUwu/NWb59QW6dcmUZyZNdN3xxtDIxm4e6ozk6rkBmLb3pws1IqsBvBTUy
+         N+wg==
+X-Forwarded-Encrypted: i=1; AJvYcCVEAkAm66msMeQ6L/l5vfyx/+NgXZW8xxWSJ1wzilacbmnFuzcwjm/7m2mH5di9NicJ2sGzGOSo7k1ySeO0oAWG3vfDLmAiUsL9gug5
+X-Gm-Message-State: AOJu0YwdXlfVSs9QvEgzxiMx87PzriJKegp7dSFDtnsC/+23b4mBj6B6
+	VNkY0r6h6e3MyAJJ0kHBNTpYmenOfj/ruSXmIIyOtMObQBlZJGMjmaEASqGecMYhqSIQaFySz8h
+	00ZDUg1Xxc4OgzVP5nD5jlR/0yTA=
+X-Google-Smtp-Source: AGHT+IEXhAei6YA3Yla+z/ZdXWycBTAs8rpQGprqrg7rozCvrqCz3ONmnc3xFi4+3ai+rdgZclOmocY1zlZ0tetOWRM=
+X-Received: by 2002:a05:6512:3109:b0:516:c8e5:db35 with SMTP id
+ n9-20020a056512310900b00516c8e5db35mr11927150lfb.18.1713327173383; Tue, 16
+ Apr 2024 21:12:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="awLH51WHILFbIBpJ"
-Content-Disposition: inline
-In-Reply-To: <20240416-dapm-docs-v1-8-a818d2819bf6@bootlin.com>
-
-
---awLH51WHILFbIBpJ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20240416033457.32154-1-ioworker0@gmail.com> <20240416033457.32154-2-ioworker0@gmail.com>
+ <a0d9e198-8799-47b9-ac20-8460b984afee@redhat.com>
+In-Reply-To: <a0d9e198-8799-47b9-ac20-8460b984afee@redhat.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Wed, 17 Apr 2024 12:12:42 +0800
+Message-ID: <CAK1f24mEoC_Pg7-49G=y7dMUaGhzW11_A5sK0EWVhH6K1kjMMA@mail.gmail.com>
+Subject: Re: [PATCH v7 1/3] mm/madvise: introduce clear_young_dirty_ptes()
+ batch helper
+To: David Hildenbrand <david@redhat.com>
+Cc: akpm@linux-foundation.org, ryan.roberts@arm.com, 21cnbao@gmail.com, 
+	mhocko@suse.com, fengwei.yin@intel.com, zokeefe@google.com, 
+	shy828301@gmail.com, xiehuan09@gmail.com, wangkefeng.wang@huawei.com, 
+	songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 07:56:14AM +0200, Luca Ceresoli wrote:
-> diff --git a/Documentation/sound/soc/dapm.rst b/Documentation/sound/soc/d=
-apm.rst
-> index 3a2fde1d31bf..3aca913c99fc 100644
-> --- a/Documentation/sound/soc/dapm.rst
-> +++ b/Documentation/sound/soc/dapm.rst
-> @@ -251,8 +251,42 @@ a virtual widget - a widget with no control bits e.g.
-> =20
->  This can be used to merge two signal paths together in software.
-> =20
-> -After all the widgets have been defined, they can then be added to the D=
-APM
-> -subsystem individually with a call to snd_soc_dapm_new_control().
-> +Registering DAPM controls
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> +
-> +In many cases the DAPM widgets implemented statically in a ``static const
-> +struct snd_soc_dapm_widget`` array and the routes connecting them in a
-> +``static const struct snd_soc_dapm_route`` array in a codec driver, and
-> +simply declared via the ``dapm_widgets`` and ``num_dapm_widgets`` fields=
- of
-> +the ``struct snd_soc_component_driver`` so the driver registration will
-> +take care of populating them::
-> +
-> +  static const struct snd_soc_dapm_widget wm2000_dapm_widgets[] =3D {
-> +  	SND_SOC_DAPM_OUTPUT("SPKN"),
-> +  	SND_SOC_DAPM_OUTPUT("SPKP"),
-> +  	...
-> +  };
-> +
-> +  /* Target, Path, Source */
-> +  static const struct snd_soc_dapm_route wm2000_audio_map[] =3D {
-> +  	{ "SPKN", NULL, "ANC Engine" },
-> +  	{ "SPKP", NULL, "ANC Engine" },
-> +	...
-> +  };
-> +
-> +  static const struct snd_soc_component_driver soc_component_dev_wm2000 =
-=3D {
-> +	...
-> +  	.dapm_widgets		=3D wm2000_dapm_widgets,
-> +  	.num_dapm_widgets	=3D ARRAY_SIZE(wm2000_dapm_widgets),
-> +	...
-> +  };
-> +
-> +In more complex cases the list of DAPM widgets and/or routes can be only
-> +known at build time. This happens for example when a driver supports
-> +different models having a different set of features. In those cases
-> +separate widgets and routes arrays implementing the case-specific featur=
-es
-> +can be registered programmatically by calling snd_soc_dapm_new_controls()
-> +and snd_soc_dapm_add_routes().
-> =20
-> =20
->  Codec/DSP Widget Interconnections
->=20
+On Tue, Apr 16, 2024 at 11:03=E2=80=AFPM David Hildenbrand <david@redhat.co=
+m> wrote:
+>
+> On 16.04.24 05:34, Lance Yang wrote:
+> > This commit introduces clear_young_dirty_ptes() to replace mkold_ptes()=
+.
+> > By doing so, we can use the same function for both use cases
+> > (madvise_pageout and madvise_free), and it also provides the flexibilit=
+y
+> > to only clear the dirty flag in the future if needed.
+> >
+> > Suggested-by: Ryan Roberts <ryan.roberts@arm.com>
+> > Signed-off-by: Lance Yang <ioworker0@gmail.com>
+> > ---
+> >   include/linux/mm_types.h |  9 +++++
+> >   include/linux/pgtable.h  | 74 ++++++++++++++++++++++++---------------=
+-
+> >   mm/madvise.c             |  3 +-
+> >   3 files changed, 55 insertions(+), 31 deletions(-)
+> >
+> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> > index c432add95913..28822cd65d2a 100644
+> > --- a/include/linux/mm_types.h
+> > +++ b/include/linux/mm_types.h
+> > @@ -1367,6 +1367,15 @@ enum fault_flag {
+> >
+> >   typedef unsigned int __bitwise zap_flags_t;
+> >
+> > +/* Flags for clear_young_dirty_ptes(). */
+> > +typedef int __bitwise cydp_t;
+> > +
+> > +/* Clear the access bit */
+> > +#define CYDP_CLEAR_YOUNG             ((__force cydp_t)BIT(0))
+> > +
+> > +/* Clear the dirty bit */
+> > +#define CYDP_CLEAR_DIRTY             ((__force cydp_t)BIT(1))
+> > +
+> >   /*
+> >    * FOLL_PIN and FOLL_LONGTERM may be used in various combinations wit=
+h each
+> >    * other. Here is what they mean, and how to use them:
+> > diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> > index e2f45e22a6d1..18019f037bae 100644
+> > --- a/include/linux/pgtable.h
+> > +++ b/include/linux/pgtable.h
+> > @@ -361,36 +361,6 @@ static inline int ptep_test_and_clear_young(struct=
+ vm_area_struct *vma,
+> >   }
+> >   #endif
+> >
+> > -#ifndef mkold_ptes
+> > -/**
+> > - * mkold_ptes - Mark PTEs that map consecutive pages of the same folio=
+ as old.
+> > - * @vma: VMA the pages are mapped into.
+> > - * @addr: Address the first page is mapped at.
+> > - * @ptep: Page table pointer for the first entry.
+> > - * @nr: Number of entries to mark old.
+> > - *
+> > - * May be overridden by the architecture; otherwise, implemented as a =
+simple
+> > - * loop over ptep_test_and_clear_young().
+> > - *
+> > - * Note that PTE bits in the PTE range besides the PFN can differ. For=
+ example,
+> > - * some PTEs might be write-protected.
+> > - *
+> > - * Context: The caller holds the page table lock.  The PTEs map consec=
+utive
+> > - * pages that belong to the same folio.  The PTEs are all in the same =
+PMD.
+> > - */
+> > -static inline void mkold_ptes(struct vm_area_struct *vma, unsigned lon=
+g addr,
+> > -             pte_t *ptep, unsigned int nr)
+> > -{
+> > -     for (;;) {
+> > -             ptep_test_and_clear_young(vma, addr, ptep);
+> > -             if (--nr =3D=3D 0)
+> > -                     break;
+> > -             ptep++;
+> > -             addr +=3D PAGE_SIZE;
+> > -     }
+> > -}
+> > -#endif
+> > -
+> >   #ifndef __HAVE_ARCH_PMDP_TEST_AND_CLEAR_YOUNG
+> >   #if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_ARCH_HAS_N=
+ONLEAF_PMD_YOUNG)
+> >   static inline int pmdp_test_and_clear_young(struct vm_area_struct *vm=
+a,
+> > @@ -489,6 +459,50 @@ static inline pte_t ptep_get_and_clear(struct mm_s=
+truct *mm,
+> >   }
+> >   #endif
+> >
+> > +#ifndef clear_young_dirty_ptes
+> > +/**
+> > + * clear_young_dirty_ptes - Mark PTEs that map consecutive pages of th=
+e
+> > + *           same folio as old/clean.
+> > + * @mm: Address space the pages are mapped into.
+> > + * @addr: Address the first page is mapped at.
+> > + * @ptep: Page table pointer for the first entry.
+> > + * @nr: Number of entries to mark old/clean.
+> > + * @flags: Flags to modify the PTE batch semantics.
+> > + *
+> > + * May be overridden by the architecture; otherwise, implemented by
+> > + * get_and_clear/modify/set for each pte in the range.
+> > + *
+> > + * Note that PTE bits in the PTE range besides the PFN can differ. For=
+ example,
+> > + * some PTEs might be write-protected.
+> > + *
+> > + * Context: The caller holds the page table lock.  The PTEs map consec=
+utive
+> > + * pages that belong to the same folio.  The PTEs are all in the same =
+PMD.
+> > + */
+> > +static inline void clear_young_dirty_ptes(struct vm_area_struct *vma,
+> > +                                       unsigned long addr, pte_t *ptep=
+,
+> > +                                       unsigned int nr, cydp_t flags)
+> > +{
+> > +     pte_t pte;
+> > +
+> > +     for (;;) {
+> > +             if (flags =3D=3D CYDP_CLEAR_YOUNG)
+> > +                     ptep_test_and_clear_young(vma, addr, ptep);
+> > +             else {
+> > +                     pte =3D ptep_get_and_clear(vma->vm_mm, addr, ptep=
+);
+> > +                     if (flags & CYDP_CLEAR_YOUNG)
+> > +                             pte =3D pte_mkold(pte);
+> > +                     if (flags & CYDP_CLEAR_DIRTY)
+> > +                             pte =3D pte_mkclean(pte);
+> > +                     set_pte_at(vma->vm_mm, addr, ptep, pte);
+> > +             }
+> > +             if (--nr =3D=3D 0)
+> > +                     break;
+> > +             ptep++;
+> > +             addr +=3D PAGE_SIZE;
+> > +     }
+> > +}
+>
 
-LGTM, thanks!
+Hey David,
 
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Thanks for taking time to review!
 
---=20
-An old man doll... just what I always wanted! - Clara
+> The complier *might* generate a bit faster code if you check for
+> CYDP_CLEAR_YOUNG outside of the loop, so you don't have to recheck on
+> each loop iteration.
 
---awLH51WHILFbIBpJ
-Content-Type: application/pgp-signature; name="signature.asc"
+Nice! I think moving the CYDP_CLEAR_YOUNG check outside of the loop
+could speed up the code. I'll make this change in the next version.
 
------BEGIN PGP SIGNATURE-----
+>
+> For now, nothing to lose sleep about
+>
+> Acked-by: David Hildenbrand <david@redhat.com>
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZh9MJwAKCRD2uYlJVVFO
-o33kAP41KG431lltgPQpDCbTxsQtcEoh+C2ynC6FPJvYCr6JcwD+LATHVFcQsdB8
-7DX108eTl0+2iV0olAuT870LaKZGEQ8=
-=ryaT
------END PGP SIGNATURE-----
+Thanks again for the review!
 
---awLH51WHILFbIBpJ--
+Best,
+Lance
+
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
