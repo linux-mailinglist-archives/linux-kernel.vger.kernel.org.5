@@ -1,203 +1,105 @@
-Return-Path: <linux-kernel+bounces-148733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9E8A8A86BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:53:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C57208A86C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:53:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B21528735B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:53:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DEF1B28709
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:53:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E407F1422CA;
-	Wed, 17 Apr 2024 14:52:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 771A1142659;
+	Wed, 17 Apr 2024 14:52:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oqea5TbB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hM0+/LvZ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 296031411CA
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:52:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A6781428F2
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:52:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713365566; cv=none; b=g1zEZquf/2eJeW8GwMvfS4VkkmfPwd9PH0nU7d/5I09QRDwFskCIbv/9jjVxWycTOlWGDuhRF2TZWw16HsBkBd2bAj8wrGNy5vTeqw6GjtAMrlhDM8wZiI+Er69UPrQkTPWbUYj8rv49gugFa1fp04O9z2rlH3oNqJKVqCJor3I=
+	t=1713365578; cv=none; b=asDzV+IXc4FJjLRc8LY8EKBwdXegcf0FKJ18keKdEB6Gt3srrcBEDXQba6YX4Fp2shjOJ5iwTTothkgbt8ORUpvr2x6C6oRohzt5GrkQqNh9aq8edkAP75TX8MPxIaqy34x6YbjDmmRoC/3HlsyiiiMunm9DyY5cjUQZWiOzRP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713365566; c=relaxed/simple;
-	bh=1HgaS+nDZFRHl/RIdVOdvy6E21/5+MqUrX5IPEQaVJ8=;
-	h=Content-Type:Date:Message-Id:From:To:Subject:Cc:References:
-	 In-Reply-To; b=lHp9iiJQvYkurr/sDNtLHbxl50zj/Nes/1T9D4XxoBfRD0LJli3ISdLz6V+g5r6mvoyJwtgAkogkWwvWuR85Gn/EDbxtnEMXrRY4Fjv/5Pila0AoPgZYkGGG16EyjI/bIeefwC91LLsqu6LjMazX2GJi5ifnLLsZ81hzvCGujvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oqea5TbB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9F89C072AA;
-	Wed, 17 Apr 2024 14:52:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713365566;
-	bh=1HgaS+nDZFRHl/RIdVOdvy6E21/5+MqUrX5IPEQaVJ8=;
-	h=Date:From:To:Subject:Cc:References:In-Reply-To:From;
-	b=oqea5TbBb5nNM25HaRBloDKRmLJmRPyMGQpkY01KHNsWgfF09RTGH0uApUt07Yd7y
-	 Ksh5u1LKo085w9zJVJI376QMlCzKFTe2ua2fdMzKfpeUSQVO/bbtZ3G8xiZGRRzR8h
-	 K3V3CuosWh4bTPKNYP9BTr/IkA2peCvrX2aBcPJmzUYvHMa++X1F2cRS1BD/p2v121
-	 mAK0OO07GNlT1nNkrxVyTDZcHwGk+Tc+Jj6tivM6gGEMhmmI+1rBq5ljXPRqhHPDJP
-	 yPJb4gWmObyYHB1g8SAElyW9JlyXcj7vWSTNrP/eVf6rbCOsK/jVI0xX4X0yM3kJOd
-	 pBA4WWkVa5Ruw==
-Content-Type: multipart/signed;
- boundary=708fc41844f140b3d840031632678d0e44008df68536d14dad2e9ff8531b;
- micalg=pgp-sha384; protocol="application/pgp-signature"
-Date: Wed, 17 Apr 2024 16:52:42 +0200
-Message-Id: <D0MHEH8OOS44.2PPBZ3LFU4QG3@kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Pratyush Yadav" <pratyush@kernel.org>
-Subject: Re: [RFC PATCH v1 6/6] mtd: spi-nor: introduce support for
- displaying deprecation message
-Cc: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Miquel Raynal"
- <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>
-X-Mailer: aerc 0.16.0
-References: <20240412134405.381832-1-mwalle@kernel.org>
- <20240412134405.381832-7-mwalle@kernel.org> <mafs0jzkw6oq1.fsf@kernel.org>
-In-Reply-To: <mafs0jzkw6oq1.fsf@kernel.org>
+	s=arc-20240116; t=1713365578; c=relaxed/simple;
+	bh=o/WZVlqzqs+cchBVEDszJLyTbJFnJswqUxOSpCM7tSg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=FO7KAWxQIuapLCZqV53vZvz1O2ljLM/DyIlMDZM/dukqL406+yV7Xd0fB7QAmSV/o2E+l9FMBWQgenp+yXK9B+f0B5KG+EWhMU3VG2nQtZoTkDlhW1UzNg/nnMyVqtGiDStoW8rPikhdo348g46haaRjpiVgNPWviLCuwyTWPiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hM0+/LvZ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713365576;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=o/WZVlqzqs+cchBVEDszJLyTbJFnJswqUxOSpCM7tSg=;
+	b=hM0+/LvZzJjq1qMtt3DzQke8uQjO9Yuts5S3k41vjkvWW9ZDlR0glkD9I3Kw7E8eK74DyA
+	3u6NToyL5Fr1Bke8VRJYFr8Ib87GBhhxjBuS5PkBb22yR+Z/UxknzV6o74IBIndDeLpy0T
+	qwZ4D6fwZZ04Q0z7OqyhfA4UqXMQ12E=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-590-hPO2HUuBOLC0GHQtplWUQA-1; Wed, 17 Apr 2024 10:52:50 -0400
+X-MC-Unique: hPO2HUuBOLC0GHQtplWUQA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4B051104B502;
+	Wed, 17 Apr 2024 14:52:50 +0000 (UTC)
+Received: from RHTRH0061144 (dhcp-17-72.bos.redhat.com [10.18.17.72])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id CEC881121306;
+	Wed, 17 Apr 2024 14:52:49 +0000 (UTC)
+From: Aaron Conole <aconole@redhat.com>
+To: Adrian Moreno <amorenoz@redhat.com>
+Cc: netdev@vger.kernel.org,  linux-kernel@vger.kernel.org (open list),
+  Paolo Abeni <pabeni@redhat.com>,  Eric Dumazet <edumazet@google.com>,
+  dev@openvswitch.org (open list:OPENVSWITCH),
+  linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
+  Pravin B Shelar <pshelar@ovn.org>,  "David S. Miller"
+ <davem@davemloft.net>,  Shuah Khan <shuah@kernel.org>,  Jakub Kicinski
+ <kuba@kernel.org>
+Subject: Re: [PATCH net-next] selftests: openvswitch: Fix escape chars in
+ regexp.
+In-Reply-To: <20240416090913.2028475-1-amorenoz@redhat.com> (Adrian Moreno's
+	message of "Tue, 16 Apr 2024 11:09:13 +0200")
+References: <20240416090913.2028475-1-amorenoz@redhat.com>
+Date: Wed, 17 Apr 2024 10:52:49 -0400
+Message-ID: <f7t7cgwavni.fsf@redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
---708fc41844f140b3d840031632678d0e44008df68536d14dad2e9ff8531b
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Adrian Moreno <amorenoz@redhat.com> writes:
 
-Hi,
-
-On Wed Apr 17, 2024 at 4:36 PM CEST, Pratyush Yadav wrote:
-> On Fri, Apr 12 2024, Michael Walle wrote:
+> Character sequences starting with `\` are interpreted by python as
+> escaped Unicode characters. However, they have other meaning in
+> regular expressions (e.g: "\d").
 >
-> > SPI-NOR will automatically detect the attached flash device most of the
-> > time. We cannot easily find out if boards are using a given flash.
-> > Therefore, introduce a (temporary) flag to display a message on boot if
+> It seems Python >= 3.12 starts emitting a SyntaxWarning when these
+> escaped sequences are not recognized as valid Unicode characters.
 >
-> Why temporary? There will always be a need to deprecate one flash or
-> another. Might as well keep the flag around.
-
-Mh, yes I agree. That also means that this flag will not have any
-users (most) of the time (hopefully ;) ).
-
-> Also, this patch/series does not add any users of the deprecated flag.
-> If you have some flashes in mind, it would be good to add them to the
-> patch/series.
-
-This is just an RFC to see if whether you Tudor agree with me :) But
-I was about to add it to the evervision/cypress FRAMs.
-
-> I like the idea in general. Do you think we should also print a rough
-> date for the deprecation as well?
-
-Might make sense, any suggestions?
-
-> > support for a given flash device is scheduled to be removed in the
-> > future.
-> >
-> > Signed-off-by: Michael Walle <mwalle@kernel.org>
-> > ---
-> >  drivers/mtd/spi-nor/core.c | 12 ++++++++++++
-> >  drivers/mtd/spi-nor/core.h |  1 +
-> >  2 files changed, 13 insertions(+)
-> >
-> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> > index 58d310427d35..a294eef2e34a 100644
-> > --- a/drivers/mtd/spi-nor/core.c
-> > +++ b/drivers/mtd/spi-nor/core.c
-> > @@ -3312,6 +3312,7 @@ static const struct flash_info *spi_nor_get_flash=
-_info(struct spi_nor *nor,
-> >  						       const char *name)
-> >  {
-> >  	const struct flash_info *jinfo =3D NULL, *info =3D NULL;
-> > +	const char *deprecated =3D NULL;
-> > =20
-> >  	if (name)
-> >  		info =3D spi_nor_match_name(nor, name);
-> > @@ -3326,6 +3327,17 @@ static const struct flash_info *spi_nor_get_flas=
-h_info(struct spi_nor *nor,
-> >  			return jinfo;
-> >  	}
-> > =20
-> > +	if (info && (info->flags & SPI_NOR_DEPRECATED))
-> > +		deprecated =3D info->name;
-> > +	else if (jinfo && (jinfo->flags & SPI_NOR_DEPRECATED))
-> > +		deprecated =3D jinfo->name;
-> > +
-> > +	if (deprecated)
-> > +		pr_warn("Your board or device tree is using a SPI NOR flash (%s) wit=
-h\n"
-> > +			"deprecated driver support. It will be removed in future kernel\n"
+> An example of these warnings:
 >
-> Nit: "removed in a future kernel version"
+> tools/testing/selftests/net/openvswitch/ovs-dpctl.py:505:
+> SyntaxWarning: invalid escape sequence '\d'
 >
-> > +			"version. If you feel this shouldn't be the case, please contact\n"
-> > +			"us at linux-mtd@lists.infradead.org\n", deprecated);
-> > +
+> Fix all the warnings by flagging literals as raw strings.
 >
-> Hmm, this isn't so nice. I'd suggest doing something like:
->
-> 	/*
->          * If caller has specified name of flash model that can normally =
-be
->          * ...
->          */
-> 	info =3D jinfo ?: info;
->
-> 	if (info->flags & SPI_NOR_DEPRECATED)
->         	pr_warn(...);
+> Signed-off-by: Adrian Moreno <amorenoz@redhat.com>
+> ---
 
-Actually, I had that, *but* I was thinking we might only check the
-detected flash and not the one specified in the device tree. But
-thinking about that again, I guess it makes sense because:
- - that's the actually used flash driver
- - having jinfo !=3D info will print that other warning, thus this
-   case is hopefully very unlikely.
+Thanks, Adrian.
 
->
-> 	return info;
->
-> >  	/*
-> >  	 * If caller has specified name of flash model that can normally be
-> >  	 * detected using JEDEC, let's verify it.
-> > diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> > index 8552e31b1b07..0317d8e253f4 100644
-> > --- a/drivers/mtd/spi-nor/core.h
-> > +++ b/drivers/mtd/spi-nor/core.h
-> > @@ -524,6 +524,7 @@ struct flash_info {
-> >  #define SPI_NOR_NO_ERASE		BIT(6)
-> >  #define SPI_NOR_QUAD_PP			BIT(8)
-> >  #define SPI_NOR_RWW			BIT(9)
-> > +#define SPI_NOR_DEPRECATED		BIT(15)
->
-> If you do agree with my suggestion of making it permanent, would it make
-> more sense to make it BIT(10) instead. Or BIT(9) once you move up the
-> others because we no longer have BIT(7).
+Reviewed-by: Aaron Conole <aconole@redhat.com>
 
-Or just BIT(7) and avoid any code churn :)
-
--michael
-
->
-> > =20
-> >  	u8 no_sfdp_flags;
-> >  #define SPI_NOR_SKIP_SFDP		BIT(0)
-
-
---708fc41844f140b3d840031632678d0e44008df68536d14dad2e9ff8531b
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZh/iOhIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/jTJwF+MfXaY0rJxf8esRAeR/YyzqP24TH0YPAh
-rK75nCQk3ECO68GvG9Pk9Cj8/1uETtabAX97iBpwzQ1wB70yIGZin+I20ATWcX1W
-hLecMdn8ML3b9cyRUNpKYaAxe2fUQLjZPZA=
-=237x
------END PGP SIGNATURE-----
-
---708fc41844f140b3d840031632678d0e44008df68536d14dad2e9ff8531b--
 
