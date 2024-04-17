@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-148972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FBB48A89E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:08:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFE9C8A89E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:08:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72B0B1C2399D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:08:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 966541F25241
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:08:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E781171658;
-	Wed, 17 Apr 2024 17:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07232171667;
+	Wed, 17 Apr 2024 17:08:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VEs78cch"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rVyt/9cf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B59016D334;
-	Wed, 17 Apr 2024 17:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A8D917109F;
+	Wed, 17 Apr 2024 17:08:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713373681; cv=none; b=PgDM5EvlLY9bhV9OhH/5511VT1Xk7NQK5mRyEBTDfkEZy9lylCZHaP2yPpBgjbL25dziA6gq/jO0Cqbeu1Co0fOxOJusmK1TGE10F3uHmc4QkN+KapHvb353SncicLa7uDRbhZuira5VDdIgigeu3xjwbrV9RtCRZ11bNc4XBpk=
+	t=1713373696; cv=none; b=UhGbguuG5azAvBS3I96SaOniOD9INNkfQstMTEBw+I8lEhCF2Y5affD59XJiNEhip20WLJXOwo4wxAecctM4obUWxfff4vLgM0aKebPp3bKO/pD9rsHt0gutQC6rSaZ9Ihjcjsm0ce2baFM9p+xiEoTp1L7lUAheZsU+/3l/5cA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713373681; c=relaxed/simple;
-	bh=l0D0/o7/s/Po5ES8lkHnlE9aPXsOe0MgVgSqW/Sn+Rg=;
+	s=arc-20240116; t=1713373696; c=relaxed/simple;
+	bh=15kb27xxKi0D7C0ue7fKx48hQzIEbZroItX6Rl89xHk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sYAjG1KAYj5xUrwlDvuWiSjew2Ag2mIevw9wh05RmaxeTNyggf6SRMCH1nN4tkHZfEbdfln51CH0HaKQRcYNYpmgbqTbni0pAEC4llkYtvw7fx+lSUi0WpUGyQhkNhjW5C2rPck5Z2RY4dFWSSwIVOLUOZQnn2/4nH/Y/kHMcO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VEs78cch; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6486C072AA;
-	Wed, 17 Apr 2024 17:08:00 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=GOJ2PvNUs0tuiP5p3HR+lDjNBrgWNsbHZWNlw8BYyH7WC30VqZcMkm9AcoVFYZkprJbzYhSgVZt5+RediiDRzmD9HCENa/7k5NS74+0v0RUrLzr6wtjCj1vb/+rz9fGB3iYOAVOnzM9NP9zVN0asRizSsyUnxSWF2UPs3O6ddbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rVyt/9cf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B985C072AA;
+	Wed, 17 Apr 2024 17:08:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713373680;
-	bh=l0D0/o7/s/Po5ES8lkHnlE9aPXsOe0MgVgSqW/Sn+Rg=;
+	s=k20201202; t=1713373695;
+	bh=15kb27xxKi0D7C0ue7fKx48hQzIEbZroItX6Rl89xHk=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=VEs78cch2DaYSVPw1hwTL3PpAdVRBfoRkqJvktR/0e32wpoEKrc0riLQubvf6eQJH
-	 8paJZj80JY/sDKEqwbSwo0XB12JvS+bcf+9OA3kxffaVQ5ye+8b4C7rWp2NgKwVQGB
-	 ReL5oT/4O8hGgA9IesHjwlXRHCv2VhE9Kqy83vhSdVcyjZUVZGH9MGfpmWv+fR7aXq
-	 vSAVlTfSz3p3lKYDv0izxuQxJ7YEe7MSqWKRjH4bke+hg+mbgm9AcFx649b+rSix1y
-	 dRoKTMel/uJHJfqgVPViTwaG2WYrgpFO/CHAOIkCvdd2VqMACkun9BEySPu0A8cYYF
-	 hfaj5t3TCK8HQ==
-Message-ID: <41a1ca01-384a-40ca-a5f6-6205bb43825b@kernel.org>
-Date: Wed, 17 Apr 2024 19:08:00 +0200
+	b=rVyt/9cf2TTOh3LoN0u5AGEu404A4aI7X1kPk0TDcpEKvkI8dxsq3TiIHHJyCVCqu
+	 8M3SYUDdeR96uUBY3EBvEuc5+NR7ytsDuU0uoSEVPvS+gB6ySIU0nmyY0mg7toNglH
+	 R8ct81rt2YaFITqwSxZ3sARnm/Cs1J0QcqIriOVhobxHmL0RqC1srb23NtFwCK49Zc
+	 w5w8CvmMKOg2QMRdGqOg7/Oqy/kKU620Sfl5A75wFLyqb84IOVJAU4+i5iNCXExFHU
+	 iRZm5gZc6jiKNwyp+1vfg/beA/Sr4sEoS0o6zCUUjiwZ7bTVtd4KcBaeKERvI5R/Uh
+	 fUuOeQ/fM7JPg==
+Message-ID: <6279a152-e648-4556-ae97-22f8be73143e@kernel.org>
+Date: Wed, 17 Apr 2024 19:08:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,8 +49,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] arm64: dts: imx93: Add Engicam i.Core MX93 EDIMM 2.0
- Starter Kit
+Subject: Re: [PATCH 1/4] dt-bindings: arm: fsl: add Engicam i.Core MX93 EDIMM
+ 2.0 Starter Kit
 To: Fabio Aiuto <fabio.aiuto@engicam.com>, Shawn Guo <shawnguo@kernel.org>,
  Sascha Hauer <s.hauer@pengutronix.de>, Rob Herring <robh@kernel.org>,
  Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
@@ -60,7 +60,7 @@ Cc: devicetree@vger.kernel.org, imx@lists.linux.dev,
  Matteo Lisi <matteo.lisi@engicam.com>,
  Mirko Ardinghi <mirko.ardinghi@engicam.com>
 References: <20240417153528.7838-1-fabio.aiuto@engicam.com>
- <20240417153528.7838-5-fabio.aiuto@engicam.com>
+ <20240417153528.7838-2-fabio.aiuto@engicam.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -106,109 +106,18 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240417153528.7838-5-fabio.aiuto@engicam.com>
+In-Reply-To: <20240417153528.7838-2-fabio.aiuto@engicam.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 17/04/2024 17:35, Fabio Aiuto wrote:
-> i.Core MX93 is a NXP i.MX93 based SoM by Enigcam which
-> needs to be mounted on top of Engicam baseboards.
+> i.Core MX93 is a NXP i.MX93 based EDIMM SoM by Engicam.
 > 
-> Add support for EDIMM 2.0 Starter Kit hosting
-> i.Core MX93.
+> EDIMM 2.0 Starter Kit is an EDIMM 2.0 Form Factor Capacitive
+> Evaluation Board by Engicam.
 > 
-> Starter Kit main features:
-> 
-> 2x LVDS interfaces
-> HDMI output
-> Audio out
-> Mic in
-> Micro SD card slot
-> USB 3.0 A port
-> 3x USB 2.0 A port
-> Gb Ethernet
-> 2x CAN bus, 3x UART interfaces
-> SIM card slot
-> M.2 KEY_B slot
-> 
-> Cc: Matteo Lisi <matteo.lisi@engicam.com>
-> Cc: Mirko Ardinghi <mirko.ardinghi@engicam.com>
-> Signed-off-by: Fabio Aiuto <fabio.aiuto@engicam.com>
-> ---
->  arch/arm64/boot/dts/freescale/Makefile        |   1 +
->  .../dts/freescale/imx93-icore-mx93-edimm2.dts | 356 ++++++++++++++++++
->  2 files changed, 357 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> index 045250d0a040..d26c0a458a44 100644
-> --- a/arch/arm64/boot/dts/freescale/Makefile
-> +++ b/arch/arm64/boot/dts/freescale/Makefile
-> @@ -226,6 +226,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8qxp-tqma8xqp-mba8xx.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb
-> +dtb-$(CONFIG_ARCH_MXC) += imx93-icore-mx93-edimm2.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx93-phyboard-segin.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxca.dtb
->  dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
-> diff --git a/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts b/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-> new file mode 100644
-> index 000000000000..75cac97d919c
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-> @@ -0,0 +1,356 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright 2022 NXP
-> + * Copyright 2024 Engicam s.r.l.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include <dt-bindings/usb/pd.h>
-> +#include "imx93-icore-mx93.dtsi"
-> +
-> +/ {
-> +	model = "Engicam i.Core MX93 - EDIMM 2 Starterkit";
-> +	compatible = "engicam,icore-mx93-edimm2", "engicam,icore-mx93",
-> +		     "fsl,imx93";
-> +
-> +	aliases {
-> +		rtc1= &bbnsm_rtc;
 
-Missing pace before =
-
-> +	};
-> +
-> +	bt_reg_on: regulator-btregon {
-> +		compatible = "regulator-gpio";
-> +		regulator-name = "BT_REG_ON";
-> +		pinctrl-names = "default";
-> +		regulator-min-microvolt = <100000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		states = <3300000 0x1>,
-> +				 <100000 0x0>;
-
-Misaligned indentation
-
-> +		gpios = <&gpio2 19 GPIO_ACTIVE_HIGH>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = &lpuart1;
-> +	};
-> +
-> +	reg_1v8_sgtl: reg_1v8_sgtl_regulator {
-
-Do not use underscores in node names. I am pretty sure you got this
-comment before.
-
-Also, you have confusing naming scheme - sometimes prefix reg, sometimes
-regulator. Keep nodes ordered.
-
-
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 Best regards,
 Krzysztof
