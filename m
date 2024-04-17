@@ -1,107 +1,140 @@
-Return-Path: <linux-kernel+bounces-148332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 304DA8A810F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:36:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 276A18A8112
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:37:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF87D281D90
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:36:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB5101F21CCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:36:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E62D713C68E;
-	Wed, 17 Apr 2024 10:36:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eRL0KbW8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C5213C3CD
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:36:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E1F13C67F;
+	Wed, 17 Apr 2024 10:36:39 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D639A13C3EA
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:36:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713350190; cv=none; b=HHjvqgy8lgxvU7ARYl3CO6huDzzEczCwmnZiC5Y/aTjIQaxoSllR/7KMSslERcLEZEbnf6/8qsEK5UlHlDphvLmJEMbuvOViuX3660tlH5qtelC9Z837VIz/tn8sJv0nAh4/vs7a0CghyeFLy6+QDi8JOvPxrk9829/I6uuwNto=
+	t=1713350199; cv=none; b=Z85BFfZy7WrKU8oLcHEuMYpLzB4TIltG6fAgCOQscrseLqBD48i1j1PI2In+g0mTSTh3zB0OVsslbOvPUQ7IOz9P0OjDA8vncF7HeKEI1r2F8ca5R5YdaeS3HrqWBJNnwDoWhSyBHmkjqO1xzgEYKNTPqERFKt6SrI7x2qDukeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713350190; c=relaxed/simple;
-	bh=l3AYSJ/+mdg3v48SneVucrIzOcn2/tdaJ1WQ9uXh3tk=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=Wos8O+8k1Y/ILNBzRq7oGqVK+uSrMSw3CKJkp7C1si8dp57h91+TLc9nvNsFkmJCLb5Y1UxWD7J2jK1rFalo5SpDOG7CrFSNVRJtmc7L5HMGuaFqt+pVHbzs46tNIEbQia94AXTdLji0XYo0Wm8EpDCjOPrW5KyE5O3Qt9Ow9lA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eRL0KbW8; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713350188;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oIJdAoOJD1/uhXCiQOPpdfvotOmhyFiedfiW/yeHsWQ=;
-	b=eRL0KbW89Ztk9vb0p5alR/Zgg6mdJS2P2Bf2TTQPMlDXnJ4ZwjHWEFUJXJRqiUFinByxyf
-	dWENAj0IErApDeVAuGodmiFHfh0JWfE/0picOnQtJSxOLEsM1aofeR9G9vu10HxGfq/n3g
-	iFXgzjU7WVeLUSojUlmElDgrjyNsiUI=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-361-tzkEwGWLMWac2hfcSazMmA-1; Wed,
- 17 Apr 2024 06:36:24 -0400
-X-MC-Unique: tzkEwGWLMWac2hfcSazMmA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 65AB738041CC;
-	Wed, 17 Apr 2024 10:36:23 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.200])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 2FDF82026962;
-	Wed, 17 Apr 2024 10:36:20 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <87d451ff8cd030a380b522b4dfc56ca42c9de444.camel@kernel.org>
-References: <87d451ff8cd030a380b522b4dfc56ca42c9de444.camel@kernel.org> <20240328163424.2781320-1-dhowells@redhat.com> <20240328163424.2781320-25-dhowells@redhat.com>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: dhowells@redhat.com, Christian Brauner <christian@brauner.io>,
-    Gao Xiang <hsiangkao@linux.alibaba.com>,
-    Dominique Martinet <asmadeus@codewreck.org>,
-    Matthew Wilcox <willy@infradead.org>,
-    Steve French <smfrench@gmail.com>,
-    Marc Dionne <marc.dionne@auristor.com>,
-    Paulo Alcantara <pc@manguebit.com>,
-    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-    Eric Van Hensbergen <ericvh@kernel.org>,
-    Ilya Dryomov <idryomov@gmail.com>, netfs@lists.linux.dev,
-    linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-    linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-    ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
-    linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-    linux-mm@kvack.org, netdev@vger.kernel.org,
-    linux-kernel@vger.kernel.org, Latchesar Ionkov <lucho@ionkov.net>,
-    Christian Schoenebeck <linux_oss@crudebyte.com>
-Subject: Re: [PATCH 24/26] netfs: Remove the old writeback code
+	s=arc-20240116; t=1713350199; c=relaxed/simple;
+	bh=wK3zkKd+UDmBzbfDsMuwS6Y4b8KUIj/36OIFXRYFiWM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Qif0lPZ/C6PxupChEHRSeplFjaVS8BUn//rFoBexuvFxFpnM4JhKmeOf/l7Eoz3N8qvHJRF6SjTQgsCg8tgRMzWVA6OM87mapWCokMJHwcubph/mtjMAxzCLFlIPRNrF9Xa38qTDZJt6IBuAvzgg9geRDCmMwtEtbx3d7aOfQ08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 215CC339;
+	Wed, 17 Apr 2024 03:37:05 -0700 (PDT)
+Received: from [10.57.19.189] (unknown [10.57.19.189])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D766C3F64C;
+	Wed, 17 Apr 2024 03:36:35 -0700 (PDT)
+Message-ID: <bb417978-06b4-4b2c-bcf6-a39601b079be@arm.com>
+Date: Wed, 17 Apr 2024 11:36:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <98240.1713350175.1@warthog.procyon.org.uk>
-Date: Wed, 17 Apr 2024 11:36:15 +0100
-Message-ID: <98241.1713350175@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+User-Agent: Mozilla Thunderbird
+Subject: Re: Kernel 6.7 regression doesn't boot if using AMD eGPU
+To: Vasant Hegde <vashegde@amd.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Eric Wagner <ewagner12@gmail.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>,
+ Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <CAHudX3zLH6CsRmLE-yb+gRjhh-v4bU5_1jW_xCcxOo_oUUZKYg@mail.gmail.com>
+ <20240415163056.GP223006@ziepe.ca>
+ <CAHudX3zhagFWBv4isZzAtC8dA7EAAtY6Yk7fkJ31hf0D9zrNqw@mail.gmail.com>
+ <65d4d7e0-4d90-48d7-8e4a-d16800df148a@arm.com>
+ <20240416003903.GR223006@ziepe.ca>
+ <47d4bfd6-1d76-4bb8-a33c-c9c99b86656b@arm.com>
+ <4ec76a54-cb83-40b1-a156-a6da3453da5c@amd.com>
+From: Robin Murphy <robin.murphy@arm.com>
+Content-Language: en-GB
+In-Reply-To: <4ec76a54-cb83-40b1-a156-a6da3453da5c@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Jeff Layton <jlayton@kernel.org> wrote:
+On 2024-04-16 1:44 pm, Vasant Hegde wrote:
+> Robin,
+> 
+> On 4/16/2024 4:55 PM, Robin Murphy wrote:
+>> On 2024-04-16 1:39 am, Jason Gunthorpe wrote:
+>>> On Mon, Apr 15, 2024 at 10:44:34PM +0100, Robin Murphy wrote:
+>>>> On 2024-04-15 7:57 pm, Eric Wagner wrote:
+>>>>> Apologies if I made a mistake in the first bisect, I'm new to kernel
+>>>>> debugging.
+>>>>>
+>>>>> I tested cedc811c76778bdef91d405717acee0de54d8db5 (x86/amd) and
+>>>>> 3613047280ec42a4e1350fdc1a6dd161ff4008cc (core) directly and both 
+>>>>> were good.
+>>>>> Then I ran git bisect again with 
+>>>>> e8cca466a84a75f8ff2a7a31173c99ee6d1c59d2
+>>>>> as the bad and 6e6c6d6bc6c96c2477ddfea24a121eb5ee12b7a3 as the good 
+>>>>> and the
+>>>>> bisect log is attached. It ended up at the same commit as before.
+>>>>>
+>>>>> I've also attached a picture of the boot screen that occurs when it 
+>>>>> hangs.
+>>>>> 0000:05:00.0 is the PCIe bus address of the RX 580 eGPU that's 
+>>>>> causing the
+>>>>> problem.
+> 
+> .../...
+> 
+>>
+>> "Failing" iommu_probe_device is merely how we tell ourselves that 
+>> we're not interested in a device, and consequently tell the rest of 
+>> the kernel it doesn't have an IOMMU (via device_iommu_mapped() 
+>> returning false). This is normal and expected for devices which 
+>> legitimately have no IOMMU in the first place; conversely we don't do 
+>> a great deal for unexpected failures since those typically represent 
+>> system-fatal conditions whatever we might try to do. We've never had 
+>> much of a notion of expected failures when an IOMMU *is* present, but 
+>> even then, denying any trace of the IOMMU and removing ourselves from 
+>> the picture is clearly not the ideal way to approach that. We're 
+>> running off a bus notifier (or even later), so ultimately our return 
+>> value is meaningless; at that point the device already exists and has 
+>> been added to its bus, we can't undo that.
+>>
+>> However it looks to be even more fun if failure occurs in *deferred* 
+>> default domain creation via bus_iommu_probe(), since then we give up 
+>> and dismiss the entire IOMMU. Except the x86 drivers ignore the return 
+>> from iommu_device_register(), so further hilarity ensues...
+>>
+>> I think I've now satisfied myself that a simple fix for the core code 
+>> is appropriate and will write that up now; one other thing I couldn't 
+>> quite figure out is whether the AMD driver somehow prevents PASIDs 
+>> being used while the group is attached to a non-identity (and 
+>> non-nested) domain - that's probably one for Vasant to confirm.
+> 
+> AMD driver supports PASID with below domain type :
+>    - Identity domain
+>    - DMA translation mode (DMA and DMA_FQ) with AMD v2 page table 
+> (amd_iommu=pgtbl_v2).
+> 
+> 
+> Currently amd_iommu_def_domain_type() tries to put PASID capable devices 
+> in identity domain mode. This is something to fix. Its in my TODO list. 
+> I will try to get into it soon.
+> 
+> Hope this clarifies.
 
-> #23 and #24 should probably be merged. I don't see any reason to do the
-> two-step of ifdef'ing out the code and then removing it. Just go for it
-> at this point in the series.
+Ooh, I see you now have GIoV to allow that similarly to how SMMUv3 does 
+it - that wasn't in the older version of the spec that I've previously 
+been referring to :)
 
-I would prefer to keep the ~500 line patch that's rearranging the plumbing
-separate from the ~1200 line patch that just deletes a load of lines to make
-the cutover patch easier to review.  I guess that comes down to a matter of
-preference.
+Can you confirm there's no hardware actually been made to the older 
+spec, supporting v2 and PASIDs but *not* having GIoV? Otherwise, I think 
+you'll still have the problem that if you use the GPA-SPA translation in 
+the DTE to implement IOMMU_DOMAIN_DMA for the RID, it makes all the 
+PASID GVA-GPA mappings useless for host SVA.
 
-David
-
+Cheers,
+Robin.
 
