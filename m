@@ -1,106 +1,110 @@
-Return-Path: <linux-kernel+bounces-147983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 526898A7C28
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EB208A7C36
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:17:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62B041C219F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:15:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 802E11C209E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:17:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D21155E44;
-	Wed, 17 Apr 2024 06:14:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6606C64CE8;
+	Wed, 17 Apr 2024 06:17:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="o0vJFIB9"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F+xTBtPK"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D1F184D;
-	Wed, 17 Apr 2024 06:14:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C189E53807;
+	Wed, 17 Apr 2024 06:17:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713334498; cv=none; b=l4yiYDi7C+K0/sNKb7VP+ZfsbHBww4ABTOJ73mL07vK5ngk5nyubX0Q38Ocfmt26lMHiarpxzQaoX1Gs494OyvPjvGPclZABU1wAjqi77+FwwlmLcbMqcbMJC9N/b2xIAMKb/cPIguQItMx/ClvJ5gR0Gu6iYH3i2BYKWGeLTak=
+	t=1713334625; cv=none; b=MPAYz4/oKypK9fJI2dEC8J2H+r6siTEZFDFm+UzfV1JdwpXH6RXKgoEAfAbSHdvwcNIltPakgq9eRidp1mPEo8LOl0fNe03D50uhlyEkSak0U+Orzfv/p34yFLzmuVxNp74M6kQaMb/tghlr+uPUjySh4wZcKzhwxD31b86czr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713334498; c=relaxed/simple;
-	bh=6OCRfMWE1Nl1glL6JHGetGOp1oOm4UmouTp4ctm6Ohs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bMda3uhHG/kGcJrQgEm2ur0qDIyp+q9gdHQg+tCLSmmOG/wDEqf9Sd3k4z3m/VYclUUnmW+M+q9ikSUQOJ4WLQY5G3MGuwkdujjV1wNph102y1KSAi0mf1on9bIr0PHMgmQFZrmMRUI5YvVivgQZEDwJFhyHQBvN+Md1TTdARDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=o0vJFIB9; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 25FAB1BF203;
-	Wed, 17 Apr 2024 06:14:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713334494;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zExFMDHxfXPeW+ilYZceHxAY8OTO9Z8sxt8dwhaGhUs=;
-	b=o0vJFIB9IpqBkYfqT711EFYlGPpY7zc8iqeBbo7HWthTkRRu7+428Psex93iwDUr4tcarP
-	57G59lHiH6Jywws3w/0ECVc5c5D0LrU3ApKd3I0m69mYaDdzsJBAe66wNOQBybNWMAv9QP
-	PEqvrTcjSAT2S0hN1Emj6o7MbFmaJwEE08s/y0nfmj90MHmLDJmV/LLXYvbY5/0er3p6OO
-	FCAyaYcxa6fjqdInrNiEIn3czQuno4yWq+8zwi6Ut7MBKALh2XR54wqYeN0corNCe8cANe
-	Wm7bVYKqTl/XfFrm60EiLwygqICx+R4cA+RQVqvDvc2b8V3qQZCVzx+8P5vqGg==
-Date: Wed, 17 Apr 2024 08:14:43 +0200
-From: Kory Maincent <kory.maincent@bootlin.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet
- <corbet@lwn.net>, Luis Chamberlain <mcgrof@kernel.org>, Russ Weight
- <russ.weight@linux.dev>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown
- <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Andrew Lunn
- <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
- <linux@armlinux.org.uk>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, devicetree@vger.kernel.org, Dent Project
- <dentproject@linuxfoundation.org>, kernel@pengutronix.de, Maxime Chevallier
- <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v8 06/17] net: ethtool: pse-pd: Expand pse
- commands with the PSE PoE interface
-Message-ID: <20240417081443.4bcfc452@kmaincent-XPS-13-7390>
-In-Reply-To: <20240416192302.72b37f09@kernel.org>
-References: <20240414-feature_poe-v8-0-e4bf1e860da5@bootlin.com>
-	<20240414-feature_poe-v8-6-e4bf1e860da5@bootlin.com>
-	<20240416192302.72b37f09@kernel.org>
-Organization: bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713334625; c=relaxed/simple;
+	bh=0J1Qe7V2WFO72quDvEDPSDcrlOlYGUy9Qip9dj5vZ0A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MWWKxuSbvqpBdhkILCdabyRHM9Zivr+u62gGr04JMOtyOmPXYVrMC51xtWPGBhOWAKnEElnS58BkcJXQoFWkPbkxWdtkxedCNGe6+BAk0AItVkTZLXnBC80pA5ZbeWTiAc7ES8aBOfNVe0HEfaxQPw5gBskJnNWoXINtQ/tJ2nM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F+xTBtPK; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713334624; x=1744870624;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=0J1Qe7V2WFO72quDvEDPSDcrlOlYGUy9Qip9dj5vZ0A=;
+  b=F+xTBtPKej9gUIWZBq1uDBphLsSGef1Kz8Ks7nLv/McC/GMjNP39CC/s
+   fwTd4QDV52YmwMpT6X4Y47jY9DjbOlMGqspUD94bXo1vlMnlmH2fpdHX2
+   6Ua6Xw2iwxrK9m2UgjIfZZQ25FHnQ+do37Jzt90wBTOUX023y7tokxdgG
+   xHc2ZdnuSMLWzSrFx45xfDGf02qfbKZEXtHgAGEKU2pUQmnE79Op9JbPN
+   LAmXJWNG2ZCpgROwbMz8YH8qWgS8mjZb8SpLZLrwwGwBsDLOrDDqI8wiE
+   57qlJc2sHaeel0KOjfh3PIFBoaFWESW856gkJ90fp8qbQTcvBLJN1xqyV
+   A==;
+X-CSE-ConnectionGUID: 8QkL/u5VQsujHOhCPkUxQQ==
+X-CSE-MsgGUID: kL25jsnhTz25lXWnkzGoCg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="11750832"
+X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
+   d="scan'208";a="11750832"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 23:17:03 -0700
+X-CSE-ConnectionGUID: Sw/+0tTkSwORlNrgJa1Iww==
+X-CSE-MsgGUID: /Xo3zss/RYenwmYmBg/J+g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
+   d="scan'208";a="59932999"
+Received: from unknown (HELO [10.238.13.36]) ([10.238.13.36])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 23:16:59 -0700
+Message-ID: <8d489a08-784b-410d-8714-3c0ffc8dfb39@linux.intel.com>
+Date: Wed, 17 Apr 2024 14:16:57 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 105/130] KVM: TDX: handle KVM hypercall with
+ TDG.VP.VMCALL
+To: Isaku Yamahata <isaku.yamahata@intel.com>, Chao Gao <chao.gao@intel.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+ isaku.yamahata@linux.intel.com
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <ab54980da397e6e9b7b8d6636dc88c11c303364f.1708933498.git.isaku.yamahata@intel.com>
+ <ZgvHXk/jiWzTrcWM@chao-email>
+ <20240404012726.GP2444378@ls.amr.corp.intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20240404012726.GP2444378@ls.amr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 16 Apr 2024 19:23:02 -0700
-Jakub Kicinski <kuba@kernel.org> wrote:
 
-> On Sun, 14 Apr 2024 16:21:55 +0200 Kory Maincent wrote:
-> > +	    !(pse_has_podl(phydev->psec))) {
-> > +		NL_SET_ERR_MSG_ATTR(info->extack,
-> > +				    tb[ETHTOOL_A_PODL_PSE_ADMIN_CONTROL],
-> > +				    "setting PoDL PSE admin control not
-> > supported");
-> > +		return -EOPNOTSUPP;
-> > +	}
-> > +	if (tb[ETHTOOL_A_C33_PSE_ADMIN_CONTROL] &&
-> > +	    !(pse_has_c33(phydev->psec))) { =20
->=20
-> nit: unnecessary parenthesis around the function call
 
-Right, thanks for spotting it!
+On 4/4/2024 9:27 AM, Isaku Yamahata wrote:
+> On Tue, Apr 02, 2024 at 04:52:46PM +0800,
+> Chao Gao <chao.gao@intel.com> wrote:
+>
+>>> +static int tdx_emulate_vmcall(struct kvm_vcpu *vcpu)
+>>> +{
+>>> +	unsigned long nr, a0, a1, a2, a3, ret;
+>>> +
+>> do you need to emulate xen/hyper-v hypercalls here?
+>
+> No. kvm_emulate_hypercall() handles xen/hyper-v hypercalls,
+> __kvm_emulate_hypercall() doesn't.
+So for TDX, kvm doesn't support xen/hyper-v, right?
 
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Then, should KVM_CAP_XEN_HVM and KVM_CAP_HYPERV be filtered out for TDX?
+
+>
+>> Nothing tells userspace that xen/hyper-v hypercalls are not supported and
+>> so userspace may expose related CPUID leafs to TD guests.
+>>
+
 
