@@ -1,140 +1,155 @@
-Return-Path: <linux-kernel+bounces-148381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5A418A81C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:12:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97BEA8A81C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:12:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D700A1C22438
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:12:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DDAD285C53
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F5813C8FB;
-	Wed, 17 Apr 2024 11:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E47B13C905;
+	Wed, 17 Apr 2024 11:12:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mf5vo22U"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="tZ6r5h47"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2098.outbound.protection.outlook.com [40.92.22.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E7813C80B;
-	Wed, 17 Apr 2024 11:12:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713352369; cv=none; b=DSHxx2+Azolzh2TUSDJ8IwHPCDguE3A471LC3btp0H06ShnjFdudrxDNVvMAstgj7tNOfGIYc6E27opwt+Ibaspv4yRygpKfXnKvhKC4yA5RzO8QTRCu5N2qD37zWF/ZHTyOxgb/b1rU37X31VzMFbc4HQu7KQULQjvNdx6F5As=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713352369; c=relaxed/simple;
-	bh=w7BHAEPiiQBc4yWKlXf5U4hFIr0GRkCDbTurNwZBGIk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uzahjZD5D6hA89A5CkgoCoaFyaJ0kWOUrAwEKdFQfAFTUsYO5K6IK0pBspq3+JlUS05RPnNdOZw2eYn1Shn6z9K133+I6I94MDX7RXoMiJJT9EgI1nQuohUB6gZDySoESzR5DVy7z5sE8rF9i3m8Ku5LxHz8M7w7verEG8skNNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mf5vo22U; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e83a2a4f2cso1456795ad.1;
-        Wed, 17 Apr 2024 04:12:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713352367; x=1713957167; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=znDMqSNrCUVVeJoSgBWusZB6f7cZkebLOeep7UaYw2I=;
-        b=mf5vo22UZMzJ5IaOYqrPYnABt5A2F08KexElEYkKcXrjz5PMU/3Hg0/SrRtRcFKp+P
-         TOPu7cQPIRWZTPNLxGyRHpqwOzp0X+OBFzS7vrOEPfaPPFowvd3On4Ww7xUsuXiqIJG8
-         bk3Bn07vJyTlDo/2vidmMw3F8Cai/FySQvLhlWgPOZR4/A5nELXkLu+An8Pg3J3sxJae
-         SPFtOApmyFo5oGYNYfVvVXk43xh8IvEwc1FYHXqJs4/GnQCT6UEpgMmHEFaFcJY2VeMe
-         KxPwMlVxuQ771Eh6CYx8PdfMwx0rZoffQYSsc/EzyX25v86wNSUltqdItkloqSmYeBEB
-         eg9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713352367; x=1713957167;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=znDMqSNrCUVVeJoSgBWusZB6f7cZkebLOeep7UaYw2I=;
-        b=tk5AZTaASsu+GTN6mry2btbvIIJJuSpynvlywSYQ11zP4gLXRDQMXMJvBfXgMBz7Et
-         Y7ri/EOD4bEsKjdPfIdXv3FDeefFTd5SbrYxO0gojpjhpGit4jjf0rPg/a/yYqDcqyJD
-         X+1DxuhfdfZnbN3CkospsQj7p8VyRXqKh/v9WZoSynmCN35UCgLeWWRRuO9nd0e4s6JD
-         A7mqCSNre66bQI1Gu+48hE24jrB74kpznVX19SGxpOg+9jIZN3uD+otIwoqE+p8g0G5K
-         r9nTKLJw4tjv5/hZYf0gx0Zoa88l8bn53TUt2uq25TcTCH6EUYZgICNpsEfgfLVpR6Qu
-         XMlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVjfd3hgCyeP7ebMfJyWH7LEK8HL1I+fH/xL9Tqm4nG8btPkD1kwL411WYOJCPyxP7afeaxxg/f2Bi8OYYKYDl6NAIaehWXunRSFTj0pXt/NClEueBw9WRCFr40u6C7UD5HCGKzG1TMUVM77F68vQh4iH0kuvShkbnyYvvL8sZckEjf32eq
-X-Gm-Message-State: AOJu0YyllOlFfeMUmJcAw4sVEW6u9x8+3cbGdUXakq2zxqojFQ4O3OJ/
-	U6D8eednlh/5XTz2iea3JiAtdLabm/VHHl82xDwArUU39hOZ2ZjA
-X-Google-Smtp-Source: AGHT+IE+7jE5rMkww8GfZhXX3Gzr8kiwnkpgZAPJUZevYXgXkmWFi8vPndhOEbfcR3EN8xOak2wB8A==
-X-Received: by 2002:a17:902:d512:b0:1e4:3dd0:8ce0 with SMTP id b18-20020a170902d51200b001e43dd08ce0mr17745005plg.20.1713352366808;
-        Wed, 17 Apr 2024 04:12:46 -0700 (PDT)
-Received: from joaog-nb.corp.toradex.com ([201.82.41.210])
-        by smtp.gmail.com with ESMTPSA id ju14-20020a170903428e00b001e2bb03893dsm11302713plb.198.2024.04.17.04.12.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 04:12:46 -0700 (PDT)
-From: Joao Paulo Goncalves <jpaulo.silvagoncalves@gmail.com>
-To: eichest@gmail.com
-Cc: alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev,
-	conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	dmitry.torokhov@gmail.com,
-	krzysztof.kozlowski+dt@linaro.org,
-	linus.walleij@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	nick@shmanahar.org,
-	nicolas.ferre@microchip.com,
-	robh@kernel.org,
-	Joao Paulo Goncalves <joao.goncalves@toradex.com>
-Subject: RE: [PATCH v4 0/4] Add a property to turn off the max touch controller if not used 
-Date: Wed, 17 Apr 2024 08:12:30 -0300
-Message-Id: <20240417111230.785623-1-jpaulo.silvagoncalves@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240417090527.15357-1-eichest@gmail.com>
-References: <20240417090527.15357-1-eichest@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E615B13C80E;
+	Wed, 17 Apr 2024 11:12:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.22.98
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713352343; cv=fail; b=cDik5uYHaX1D4DzrE7Pw9kCmmZmyBZ1tv67u265xvd5XVZBGqkKa6jWxWEjpZN/5pv1d9C8xx05RbHmv79x9KlBxlGpQu2xVUtg6PkfuSMectBroTcVsfaQHeCOptgVsEOzxpcivEGEHPEWwHW+szTIir3KtMjewJdg3Igj4s1A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713352343; c=relaxed/simple;
+	bh=pfta4osw1X1IgEP629tYYOhPC+QnqXjbmgjGVV9aW8I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=ux59p1Tf/WpgH4mycXIGz7+yiu+pmdzRfCoC4svyFQUo5eBW4zAUsh+ikmPIYAqPV/66U5lmJ8gfxWaHhzGhoeqQ+0hU1f8lQPP7DmfsuVobFZDOld983/G96qqhYUMzLY9bU7Y2BYaX37RY80Hc2suo+ST90QzVtq38U8p/FZs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=tZ6r5h47; arc=fail smtp.client-ip=40.92.22.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fhM65pNmtZYoj/uKIgFuPvhYML/TIT7hubs82WKxKNdT7890z9pd7n2k+eG8kkA+21zsJYqon3MfJnMfBhaenH+8jZvo2ayy8bz2ihgddmedfmwIED3f5WrvKeNGejldbqNHa3Irj7lidPrrreNk7zC072UP7DYEnpacpaTSxmWIlUYBkqvFgUTWg9tem0nkSEi7L/19p7SyA6vEozpJ/jQIPEd9JKPCsy3mM5mHmhu1O1ud/UAvf6j7hvwuguKDT5BrxBFS83ty/LT1I8oma2my4aEX8ReOMVZ4zvyFWlSjNjggv4rm/3e3JRKSMRr/0H96ZUxFPviWYjxBy6yT8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GGU83zTtgGjBeJ6YbnyK+0PaFi3OE2n+ZYPsRVMOfbg=;
+ b=kqGHJ2jGxnAHSZHdq3jR2G+zTMiVdGIdiDE41uZdA3AU1TnNlLaw6XxGED34LTdlcO252BEkWkodSw8tY4KivwHjnSxcrmvU9LJagJcBAFahmDqF4qrW7+lswaePGJjjlw1CH92gu4EPfvEJBf/kciRFBC1vxvzWIxtTdgTVgX8n6558v8WwUOYO0p8pbWiXPhETAOa9V+Nf+gL+UgdemRAcRqOaiWgG7P5LSc/VddZQh0W4gbSOVGLdPRm3faJP789uVJ9mE/XicXSiPLbAVVpU+mMZPou1WnKr+EbRRNyaDrcNbPkY5SCazvytYl5vPHVM2hOcZ0v5ZEp9rl5YGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GGU83zTtgGjBeJ6YbnyK+0PaFi3OE2n+ZYPsRVMOfbg=;
+ b=tZ6r5h47LP7wCn4RxtNYjQEE0amvqvbN9BZ1HTa22MchQuyDE2MRVrtcj6+PDqlnRu/1U9et+SbPnYbjMV0SMIQJ4qSyvJ3493tAxTFY6pc7r1Vc6IBaaonyIkDo+VHUr7h5UQ92s+Mfue9C1R4Sm2cMqsB1xRT8vwiP6KDWvYdgQzbGK1aM49wIxZTToK2/gfhZadjiK859vO7xqQLmJxfRManq72R+Ry1vhwe4GchF1HNALsYZ4mHS9UPJ4OVAuY8u2ZwH/igrihzW/E673uDM4vYnChY3g3KuczeTq9VsE1dZRfPi+1iAoHnMbDjlpkx9T4LF0BMHTw/iD/R+wQ==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by PH8PR20MB5266.namprd20.prod.outlook.com (2603:10b6:510:1c9::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.43; Wed, 17 Apr
+ 2024 11:12:19 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
+ 11:12:19 +0000
+Date: Wed, 17 Apr 2024 19:12:42 +0800
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Arnd Bergmann <arnd@kernel.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Chen Wang <unicorn_wang@outlook.com>, Inochi Amaoto <inochiama@outlook.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-clk@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: sophgo: avoid open-coded 64-bit division
+Message-ID:
+ <IA1PR20MB4953FA5F47CDD0BFF0E64557BB0F2@IA1PR20MB4953.namprd20.prod.outlook.com>
+References: <20240415134532.3467817-1-arnd@kernel.org>
+ <IA1PR20MB49532CE01992005D3DA0FD17BB092@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <IA1PR20MB49532CE01992005D3DA0FD17BB092@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-TMN: [yXKWCcZ1EAqkot+Jss7Fce59DXgq3SWYNHI3Ri8wT4w=]
+X-ClientProxiedBy: PS2PR04CA0017.apcprd04.prod.outlook.com
+ (2603:1096:300:55::29) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID:
+ <zwbkhbsrxkecinkc5pp27dvpbvdz24xbnnoltnpxcdfy4wbh2x@u5jepeapq3bl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|PH8PR20MB5266:EE_
+X-MS-Office365-Filtering-Correlation-Id: c6be3b4d-25b8-4bec-86e8-08dc5ecf3f40
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	bpFl4aHMndQIZaUcAYQ2w85MUMbvS1n/u+noRpIF/AeHDaVb6UOOZQj8pt4OCYQTDlckViabhxLXh7lPpjIoQLRtjzCkkJiNgGIppiUJZj3txXNTBuuzTDyu+e7aKzUTidw7AiCFGa632kYJYyChf/85OHaNc8KRZmk0W08VYRDXrsq3YaVNKdF5yhRJWksJmfbEAM0CYOcR/ZX4UHUjgpE2skA1IfRjcQUpgHqMPzQXHEi4kJmlcsagwbPa5DJz1CqKa3a3W+TPCPHlDcHMWjrG0eqe+AKxX2em6E9DKNlCbjoLoxeAoZg+cXSpR0WEnI8MtWA6/vSRzidTEfOd6u4NwVJI+TFLOQzKiCnqm5Ap0/RDJNY5TuKQkdOfFqeFneaQEERCY1uzaY2/gP1bmPNKkvdXAmBqpbBshrxLHO1WZ/UjRKLylpAOkX7DzmlDX79EsLsa08W173bo2p4xBew47FeeuA38rHzt+R7bypB/tKF5gpcbRnswA4K84bPB7yQM7dRZnm7pomMsr77pgeaZjX6xif8KUGFE/U//juXXWYrngt4fuIzhBaFdkFHjMg1gDnaHjZ77mt8FW9PYAYLr7aMcUO/Pe8RXjb6Mgi5UxqydRGYoJP2nvPeQS39AaIsJk4RnlK1KCCX0nyMgMi+96xlTnbYm0NDNcZNT463Hc5WK0yrt0S9F7jQFCFXJrMvtFrW+n8av/63iH61kPsvtsTT5POyNYKBsiQIzjmKwiK9RGVWNeUU8QZdBPKa/
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?y8abW5JFN5K8BsUZDbpyHZs33YFf23FpLH7eqHjYGcmt+7VmWR6sTxQOaWM8?=
+ =?us-ascii?Q?2Ui35jbwxqPAoYmDHKkEQM0csNC+di6nwCEuGg7AgX2+sEKW4YL4wFL6nbss?=
+ =?us-ascii?Q?IlDDqBEQZNSsb9ixaGDP1kzGuyN+V8V/4iKtReftX/VweLRG06GzrkbwnMh2?=
+ =?us-ascii?Q?dHTSYuC3OwPm4HFLpk9y8+v0fjo1p/Ojuv8MsvhZnEY0h6jlNk39dtqzzd9t?=
+ =?us-ascii?Q?FaeMaLfd4Kii1MTrjyuU9l0I6JuGRGvoMV7JM8ezB1Eke+RKHJ/1pqvAiGFO?=
+ =?us-ascii?Q?4EeS8H1xydSkSQ92YgD2ktm1JmXapzP6X96x7lItUI0qqZEHwGff86/1Pel4?=
+ =?us-ascii?Q?I9I9RRIBs7Krqdk3gnwt7Mm8qCioiJJJ3NLXBawTmHcvqSgrxhQjFHYG+WBM?=
+ =?us-ascii?Q?h+dLi8h4MBCEAQqxVIE5+z/zm2fRKcwKlMXHRJfdLCDXEX4Egig55y/kyc7B?=
+ =?us-ascii?Q?G3ZC8H+oYeGQYKffXUaQbGdtOIj6JXT2+C+fMD4cwcbw8+YC+oNQn7IlKwMB?=
+ =?us-ascii?Q?Sn7RdSGtDrjQZ1puyGHNfSyRmrWaSFNj/ZZrOkgj+Yv3VCz/mVAM5X+es8EV?=
+ =?us-ascii?Q?1QIobwibia/QTl5GuiS4nDHJzq04qmJ3RtfvQ3GUtbTNHLBI3yZl4Uo0rT9t?=
+ =?us-ascii?Q?Wjwg6xbb48y1yhisWx/geGakosMdVmLS1EqGwcLh+C3Qq/3UhBZrNSdRUFT4?=
+ =?us-ascii?Q?w5HU7Q01B3d7g0Qc/Ta3Os5BPqzTTbFhFK5zxOmpAcysHqXtpasXljKR9moQ?=
+ =?us-ascii?Q?a+Fhl89R/m8SewtXaBKhEz1WdprUFuiykyvK3s10tKHtdVYXvm/kN4AeJTzz?=
+ =?us-ascii?Q?MbnqdqknzwGbBCF8Fu/PnqUglv9Xwripc7h/VpMson/3hUEJDV0+B2bsumME?=
+ =?us-ascii?Q?EZqddYLt+Cx2fwU49BDyd56YnqIHQ6ALzcoawhbbv0jjR82z+UKFHOLEMW92?=
+ =?us-ascii?Q?ekN/4N+KHEbjUljrmvKlpBfyN3d7Qotb4QxTVaL3fIOW9/uvvxcSeWgb0eKP?=
+ =?us-ascii?Q?j1aMOVF8yDx9aviv5DzbYDKfctEmiDIREZ7lKt0uO1k21iAfKtVouhv1lxmH?=
+ =?us-ascii?Q?Y3L+sA0dk8OAwtQMUz8wn+XDjwj8ZKUJRCSvc+RlGvc0zTlb0BV8Szb/4TEC?=
+ =?us-ascii?Q?glqzJraCVotm6aJBXsgAvzlfI1SY2Nda4JkGi20vr+WgMcg7/30LYRQQnwS5?=
+ =?us-ascii?Q?2jteM+ZNSyq0l2GBTCNSvXd/UBN/ZKZ3TvXdMEbexJK6B7NvQ4SgrzeRE56u?=
+ =?us-ascii?Q?xElKlGJVYpRg1QukiK17?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c6be3b4d-25b8-4bec-86e8-08dc5ecf3f40
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 11:12:19.3810
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR20MB5266
 
-> Our hardware has a shared regulator that powers various peripherals such
-> as the display, touch, USB hub, etc. Since the Maxtouch controller
-> doesn't currently allow it to be turned off, this regulator has to stay
-> on when not used. This increases the overall power consumption. In order
-> to turn off the controller when the system does not use it, this series
-> adds a device tree property to the maxtouch driver that allows the
-> controller to be turned off completely and ensurs that it can resume
-> from the power off state.
->
-> Changes since v3:
-> - Move the power on part to mxt_start and the power off part to
->   mxt_stop. This allows to turn the touch controller off even when not
->   in use and not only when being suspended (Dmitry)
->
-> Changes since v2:
-> - Add Reviewed-by tags from Linus and Krzysztof to the dt-bindings patch
->
-> Changes since v1:
-> - Rename the property and change the description (Krzysztof, Linus,
-> Dmitry, Conor)
->
-> Stefan Eichenberger (4):
->   Input: atmel_mxt_ts - add power off and power on functions
->   Input: atmel_mxt_ts - move calls to register the input device to
->     separate function
->   dt-bindings: input: atmel,maxtouch: add poweroff-sleep property
->   Input: atmel_mxt_ts - add support for poweroff-sleep
->
->  .../bindings/input/atmel,maxtouch.yaml        |   6 +
->  drivers/input/touchscreen/atmel_mxt_ts.c      | 162 +++++++++++++-----
->  2 files changed, 124 insertions(+), 44 deletions(-)
->
-> --
-> 2.40.1
->
+On Tue, Apr 16, 2024 at 06:30:42AM GMT, Inochi Amaoto wrote:
+> On Mon, Apr 15, 2024 at 03:45:20PM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > On 32-bit architectures, the 64-bit division leads to a link failure:
+> > 
+> > arm-linux-gnueabi-ld: drivers/clk/sophgo/clk-cv18xx-pll.o: in function `fpll_calc_rate':
+> > clk-cv18xx-pll.c:(.text.fpll_calc_rate+0x26): undefined reference to `__aeabi_uldivmod'
+> > 
+> > This one is not called in a fast path, and there is already another div_u64()
+> > variant used in the same function, so convert it to div64_u64_rem().
+> > 
+> > Fixes: 80fd61ec4612 ("clk: sophgo: Add clock support for CV1800 SoC")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> There is already a fix patch:
+> https://lore.kernel.org/all/IA1PR20MB4953CB4FCCDE82AB25F6880EBB0B2@IA1PR20MB4953.namprd20.prod.outlook.com/
 
-Reviewed-by: Joao Paulo Goncalves <joao.goncalves@toradex.com>
+Hi Arnd,
 
-Regards,
-Joao Paulo
+I have looked your patch again and think your patch is better
+than mine. So I decided to drop my patch and favor yours.
 
+LGTM. And there are some necessary tags.
+
+Reviewed-by: Inochi Amaoto <inochiama@outlook.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202404122344.d5pb2N1I-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202404140310.QEjZKtTN-lkp@intel.com/
 
