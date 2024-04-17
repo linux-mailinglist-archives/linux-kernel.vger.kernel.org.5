@@ -1,262 +1,221 @@
-Return-Path: <linux-kernel+bounces-148265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F6A68A8005
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:43:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BE738A800B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:44:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 321EC1C21DB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:43:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84126B22B49
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:44:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B3CC1327F0;
-	Wed, 17 Apr 2024 09:42:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B3C137C33;
+	Wed, 17 Apr 2024 09:43:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BUoFuiSF"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="T0WUYhTn"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646FEF516;
-	Wed, 17 Apr 2024 09:42:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 205D5F516
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:43:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713346975; cv=none; b=md5yQy4WPiR7KIqpDQfHF6VZnFA/ZfmSRQV5JzovJpxWPZc+gp9QGrYdnbJL19iYV4BvItgp7ha1bmuWNW+TtH/B2gcdIhLk68tubiZ4o9nkYDNBx+330oNbpWa1Fiusffhux76zFPj/WfsI+c3jXaO1/V4Ji6+KkCgt3XLV2bE=
+	t=1713347027; cv=none; b=q+CbBu8ok6gSIH99FAU5akfugYbUlvK8eraX7ozCYBbLNp4rl9IbPnk9vQWCNBhMuP8fudj2C7zc/5hZYn7nsXps/zURzCG60sjprYGzhc/IZdhxuzG6s6CBtmg5I8o40SqVSAWJinSh/D0i4yw2lFJnS3ySa7xSHBPVr/alWJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713346975; c=relaxed/simple;
-	bh=VbYJ4kEHAj9Rmh1z0P+Ie72tg4lO+L1d5IkKtKg9t0o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=C9pDybEx/vSCIto0Qy2469tzyu+J23U0VwmI7xlY2eE6yu3PWbWNL36/ujwcXoo+OoCu6jPRLgWDZ682teDd9JKNNMQPa/Hx7VL7s/mg/7RnLUPz9ClwH+Xj8D3R88y/Hgz9VH9zWC7okX55OiAURzK69fn/6d/DvZ9RHx4myzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=BUoFuiSF; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43H8Gtd0015591;
-	Wed, 17 Apr 2024 09:42:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=nPrkdTRcH2FKiX4DtNfZTegoE6WoIshS52dgky2QtCM=; b=BU
-	oFuiSFCDx3l842lN/F1u/hFf/KWWx5VF3flwUYftNlQGJSXCLpyqODmp7C/RmQWp
-	WKkySnLulJwz4q7CM1hXSy/l5ztkNmFDIuNyyLSghKqKFgIuwXV2oPGUbjI953jE
-	y9OSh2vD+FaJ9d4l3ua4RF+41zPk+/DQqhXIaTEalwgfdUzj27rhOrcmhGu08833
-	sC7PY9/a9K6WUM897gdnK//Xdm6h23RfPprzKHSUGoD9aMi8zEM4R924Gbdpaa89
-	kXSAIm+7kdC5z17FyPPy2s6neXMOItpbzKfyFaXcTPJhMOCYMRKl0u59qW/kXlig
-	eavWaS6M73ZlCSiQApmg==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xjarpg69b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 09:42:47 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43H9gk0E004109
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 09:42:46 GMT
-Received: from [10.216.60.103] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 17 Apr
- 2024 02:42:41 -0700
-Message-ID: <720e1ee0-79b0-4d30-b1b8-a90676057161@quicinc.com>
-Date: Wed, 17 Apr 2024 15:12:38 +0530
+	s=arc-20240116; t=1713347027; c=relaxed/simple;
+	bh=w3o8leo25QcjK4qrTJgMN1jmfr4020YxZP94VRDPevM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=tlS9rYr3VDv5156W4rIq/tocFsJDZu/f7A7kgMg9vFX97L0ax99Dm+xDCHm5myLI6+yK3zdu4PaRMKm2bWTqqNyK/NFirpjEvB/kf8dePBswE+xKCiHKH0FJaQ8lhUnAdIEpDPR1jStpdSVF608aOgWt6WB5czgq+lzfuyL9qNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=T0WUYhTn; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-418c979ddd2so1200765e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 02:43:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1713347023; x=1713951823; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:user-agent:organization
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Jv9SOJzPOWywE+aYo4Ww07EOr0/J/ij1YiDDdM753ws=;
+        b=T0WUYhTn0Weo0areXpaKFVgx0y3hYRbR/1YYyHRv5GWcyfBJ7x0xW7XSaxuEellq08
+         Y7OAvHs0Lth5IYSiW0JAgqN5LvmErWKKa73NVytD4RYRrBloXtjwOPLZ+y5CyyVR9S9R
+         5Px9sNyVH+ff1PpbDEY8Lst1YX4hUUATFCxoyJ4C12PwqBntMAzKmjAw18HixHBWqVLr
+         C7wfPs0zquJ2qIYjGNtAG+mxTHzQe0zjvIqZ8LQVaGhHwOjUj53xxGsLeSSYOqLoFoHz
+         Ki9se3ymEG+i5cpB4/BGQxKlUTHaZRZVMzYUCRgrpyCVGir0ZVypMJMUrJPqSZsS+Lrs
+         1rvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713347023; x=1713951823;
+        h=content-transfer-encoding:mime-version:user-agent:organization
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jv9SOJzPOWywE+aYo4Ww07EOr0/J/ij1YiDDdM753ws=;
+        b=YFup/fc6Shx32an4d+0ugIS68E0Uc9f3Z/YFALYYw+xEplkQ2wCoTkROdvFNAtN8Gb
+         Kh4kLFzy3Lf7TnFPpD1zsnbz5qVunD5jonyFx191l30lY3SdSds4vEuBMV1n2qwk9qNj
+         cayThZhJOUiNeG+rN3W/LpQNys6uoM7XtJG6hbMuqUxjH2QEPZlarCQivRE/FqjZG7HG
+         TQH37hRZgXZslBuPX1Q3Ocw8wm7sXai5ogw2DbdBUeTanun5yZRMOXv6Q2YDcIJ8WEuE
+         ZCj6xdq0uTW75z8gbsaRc1w/C1de+J08BWXmE7U1cKPpWlz584/Kl0fJqeLOBDl3cDfr
+         xGeA==
+X-Forwarded-Encrypted: i=1; AJvYcCWq0tysayB0Ya1cl+sFBKU/O8jw+ZV7pRoufR4blKxDPLjg4zJw5jIe26aboI9Zvr4bABNFwph4kEUeSTWI3AHgPDCTc1gSWqg5DxBe
+X-Gm-Message-State: AOJu0YzDl9X/Lj5nuZxSbXdgQ4dDx0+qD3kkwcwrXgCSb2DUdK8XR0fu
+	wOvNMbcwhOHaJLv3C09+vO8h14h8fKe7ILx/fDGU2s9YgOUkeGYy1ax+spxIWsA=
+X-Google-Smtp-Source: AGHT+IGWdC8Yq351EgLwbOBCAxedraqh33vc8Xw4UxUKZzE4tZxJVPzxIa6Ne56u8vHzyAmwcvOP4A==
+X-Received: by 2002:a7b:ce16:0:b0:415:6daf:c626 with SMTP id m22-20020a7bce16000000b004156dafc626mr14209969wmc.21.1713347023377;
+        Wed, 17 Apr 2024 02:43:43 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:1d:5380:6cdc:9dff:7d8c:ff76? ([2a01:e0a:1d:5380:6cdc:9dff:7d8c:ff76])
+        by smtp.gmail.com with ESMTPSA id h21-20020a05600c351500b0041825f17a71sm2076571wmq.30.2024.04.17.02.43.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 02:43:42 -0700 (PDT)
+Message-ID: <dade3cd83d4957d4407470f0ea494777406b44bd.camel@suse.com>
+Subject: Re: Early kernel panic in dmi_decode when running 32-bit kernel on
+ Hyper-V on Windows 11
+From: Jean DELVARE <jdelvare@suse.com>
+To: Michael Kelley <mhklinux@outlook.com>, Michael Schierl
+ <schierlm@gmx.de>,  "K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang
+ <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
+ <decui@microsoft.com>
+Cc: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org"
+	 <linux-kernel@vger.kernel.org>
+Date: Wed, 17 Apr 2024 11:43:40 +0200
+In-Reply-To: <SN6PR02MB4157CFEA1F504635E4B8B471D4082@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <2db080ae-5e59-46e8-ac4e-13cdf26067cc@gmx.de>
+	 <SN6PR02MB41578C71EB900E5725231462D4092@SN6PR02MB4157.namprd02.prod.outlook.com>
+	 <e416f2a0-6162-481e-9194-11101fa1224c@gmx.de>
+	 <SN6PR02MB41573B2FED887B1E3DCADB55D4092@SN6PR02MB4157.namprd02.prod.outlook.com>
+	 <71af4abb-cffd-449e-b397-bd3134d98fb3@gmx.de>
+	 <SN6PR02MB4157CFEA1F504635E4B8B471D4082@SN6PR02MB4157.namprd02.prod.outlook.com>
+Organization: SUSE Linux
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 RESEND] slimbus: stream: Add null pointer check for
- client functions
-Content-Language: en-US
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
-CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <quic_msavaliy@quicinc.com>, <quic_vtanuku@quicinc.com>,
-        <quic_anupkulk@quicinc.com>, <quic_cchiluve@quicinc.com>
-References: <20240327083214.29443-1-quic_vdadhani@quicinc.com>
- <ZhgIHHP1FUeCr+vx@hu-bjorande-lv.qualcomm.com>
-From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-In-Reply-To: <ZhgIHHP1FUeCr+vx@hu-bjorande-lv.qualcomm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: a-Ht6a8lg7W_lO9ZJvW6GY13FBFlUnVe
-X-Proofpoint-ORIG-GUID: a-Ht6a8lg7W_lO9ZJvW6GY13FBFlUnVe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-17_08,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- malwarescore=0 mlxlogscore=999 phishscore=0 adultscore=0 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 spamscore=0 mlxscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2404170066
+
+Hi Michael and Michael,
+
+Thanks to both of you for all the data and early analysis.
+
+On Tue, 2024-04-16 at 23:20 +0000, Michael Kelley wrote:
+> Thanks for the information.  I now have a repro of "dmidecode"
+> in user space complaining about a zero length entry, when running
+> in a Gen 1 VM with a 64-bit Linux guest.  Looking at
+> /sys/firmware/dmi/tables/DMI, that section of the DMI blob definitely
+> seems messed up.  The handle is 0x0005, which is the next handle in
+> sequence, but the length and type of the entry are zero.  This is a bit
+> different from the type 10 entry that you saw the 32-bit kernel
+> choking on, and I don't have an explanation for that.  After this
+> bogus entry, there are a few bytes I don't recognize, then about
+> 100 bytes of zeros, which also seems weird.
+
+Don't let the type 10 distract you. It is entirely possible that the
+byte corresponding to type == 10 is already part of the corrupted
+memory area. Can you check if the DMI table generated by Hyper-V is
+supposed to contain type 10 records at all?
+
+This smells like the DMI table has been overwritten by "something".
+Either it happened even before boot, that is, the DMI table generated
+by the VM itself is corrupted in the first place, or the DMI table was
+originally good but other kernel code wrote some data at the same
+memory location (I've seen this once in the past, although that was on
+bare metal). That would possibly still be the result of bad information
+provided by the VM (for example 2 "hardware" features being told to use
+overlapping memory ranges).
+
+You should also check the memory map (as displayed early at boot, so
+near the top of dmesg) and verify that the DMI table is located in a
+"reserved" memory area, so that area can't be used for memory
+allocation. Example on my laptop :
+
+# dmidecode 3.4
+Getting SMBIOS data from sysfs.
+SMBIOS 3.1.1 present.
+Table at 0xBA135000.
+
+So the table starts at physical address 0xba135000, which is in the
+following memory map segment:
+
+reserve setup_data: [mem 0x00000000b87b0000-0x00000000bb77dfff] reserved
+
+This memory area is marked as "reserved" so all is well. In my case,
+the table is 2256 bytes in size (not always displayed by dmidecode by
+default, but you can check the size of file
+/sys/firmware/dmi/tables/DMI), so the last byte of the table is at
+0xba135000 + 0x8d0 - 1 = 0xba1358cf, which is still within the reserved
+range.
+
+If the whole DMI table is NOT located in a "reserved" memory area then
+it can get corrupted by any memory allocation.
+
+If the whole DMI table IS located in a "reserved" memory area, it can
+still get corrupted, but only by code which itself operates on data
+located in a reserved memory area.
+
+> But at this point, it's good that I have a repro. It has been a while since
+> I've built and run a 32-bit kernel, but I think I can get that set up with
+> the ability to get output during early boot. I'll do some further
+> debugging with dmidecode and with the 32-bit kernel to figure out
+> what's going on.  There are several mysteries here:  1) Is Hyper-V
+> really building a bad DMI blob, or is something else trashing it?
+
+This is a good question, my guess is that the table gets corrupted
+afterwards, but better not assume and actually check what the table
+looks like at generation time, from the host's perspective.
+
+> 2) Why does a 64-bit kernel succeed on the putative bad DMI blob,
+> while a 32-bit kernel fails?
+
+Both DMI tables are corrupted, but are they corrupted in the exact same
+way?
+
+>   3) Is dmidecode seeing something different from the Linux kernel?
+
+The DMI table is remapped early at boot time and the result is then
+read from dmidecode through /sys/firmware/dmi/tables/DMI. To be honest,
+I'm not sure if this "remapping" is a one-time copy or if future
+corruption would be reflected to the file. In any case, dmidecode can't
+possibly see a less corrupted version of the table. The different
+outcome is because dmidecode is more robust to invalid input than the
+in-kernel parser.
+
+Note that you can force dmidcode to read the table directly from memory
+by using the --no-sysfs option.
 
 
+> Give me a few days to sort all this out.  And if Linux can be made
+> more robust in the face of a bad DMI table entry, I'll submit a
+> Linux kernel patch for that.
 
-On 4/11/2024 9:26 PM, Bjorn Andersson wrote:
-> On Wed, Mar 27, 2024 at 02:02:14PM +0530, Viken Dadhaniya wrote:
->> There is a possible scenario where client driver is calling
-> 
-> How can we asses the validity or the risk of this problem?
-> How would I know if this matches e.g. a bug report reported by a user?
-> 
-> Describe the problem such that the reviewer can asses the validity and
-> severity of your bug fixes.
+I agree that the in-kernel DMI table parser should not choke on bad
+data. dmidecode has an explicit check on "short entries":
 
-Ok. Updated commit log in v2
+		/*
+		 * If a short entry is found (less than 4 bytes), not only it
+		 * is invalid, but we cannot reliably locate the next entry.
+		 * Better stop at this point, and let the user know his/her
+		 * table is broken.
+		 */
+		if (h.length < 4)
+		{
+			if (!(opt.flags & FLAG_QUIET))
+			{
+				fprintf(stderr,
+					"Invalid entry length (%u). DMI table "
+					"is broken! Stop.\n\n",
+					(unsigned int)h.length);
+				opt.flags |= FLAG_QUIET;
+			}
+			break;
+		}
 
-> 
->> slimbus stream APIs in incorrect sequence and it might lead to
->> invalid null access of the stream pointer in slimbus
->> enable/disable/prepare/unprepare/free function.
->>
->> Fix this by checking validity of the stream before accessing in
->> all function API’s exposed to client.
->>
-> 
-> You use the work "fix" a few time, are you fixing an actual bug? Are you
-> just guarding the driver from incorrect usage?
-> 
-> If it's a fix, then add Fixes and Cc: stable here.
+We need to add something similar to the kernel DMI table parser,
+presumably in dmi_scan.c:dmi_decode_table().
 
-Let me correct myself there. Not a fix but consider an improvement where 
-preventing a crash due to client following the incorrect sequence.
-
-> 
->> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
->> ---
->>   drivers/slimbus/stream.c | 37 +++++++++++++++++++++++++++++++++----
->>   1 file changed, 33 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/slimbus/stream.c b/drivers/slimbus/stream.c
->> index 1d6b38657917..c5a436fd0952 100644
->> --- a/drivers/slimbus/stream.c
->> +++ b/drivers/slimbus/stream.c
->> @@ -202,10 +202,16 @@ static int slim_get_prate_code(int rate)
->>   int slim_stream_prepare(struct slim_stream_runtime *rt,
->>   			struct slim_stream_config *cfg)
->>   {
->> -	struct slim_controller *ctrl = rt->dev->ctrl;
->> +	struct slim_controller *ctrl;
->>   	struct slim_port *port;
->>   	int num_ports, i, port_id, prrate;
->>   
->> +	if (!rt || !cfg) {
->> +		pr_err("%s: Stream or cfg is NULL, Check from client side\n", __func__);
-> 
-> Use dev_err() and write your error messages such that they make sense
-> without the use of __func__.
-
-For error scenario, we don't have valid dev to be used in dev_err argument.
-this log will help for debug. Please let us know any concern with pr_err
-
-> 
->> +		return -EINVAL;
-> 
-> Is this expected to happen during normal operation, or is this a sign of
-> a bug?
-> 
-
-It's a scenario where client doesn't follow the proper sequence and 
-slimbus driver can crash if not checked against NULL.
-
-> 
-> Neither of the two callers of this function checks the return value, so
-> is this really going to result in a good system state?
-> 
-
-we expect client to check return value of framework APIs.
-
-> 
-> It would make sense to require the client to pass valid rt and cfg
-> pointers, and if you have an issue in the client driver in which we
-> might end up with invalid points, then those drivers should be fixed -
-> rather than relying on chance and swipe it under the rug here.
-> 
-> Regards,
-> Bjorn
-> 
-
-Agree. it is sequence mismatch from client driver, and they should take 
-care. it is leading to NULL pointer access in slimbus APIs, so prevent 
-crash by adding check.
-
->> +	}
->> +
->> +	ctrl = rt->dev->ctrl;
->>   	if (rt->ports) {
->>   		dev_err(&rt->dev->dev, "Stream already Prepared\n");
->>   		return -EINVAL;
->> @@ -358,9 +364,15 @@ int slim_stream_enable(struct slim_stream_runtime *stream)
->>   {
->>   	DEFINE_SLIM_BCAST_TXN(txn, SLIM_MSG_MC_BEGIN_RECONFIGURATION,
->>   				3, SLIM_LA_MANAGER, NULL);
->> -	struct slim_controller *ctrl = stream->dev->ctrl;
->> +	struct slim_controller *ctrl;
->>   	int ret, i;
->>   
->> +	if (!stream) {
->> +		pr_err("%s: Stream is NULL, Check from client side\n", __func__);
->> +		return -EINVAL;
->> +	}
->> +
->> +	ctrl = stream->dev->ctrl;
->>   	if (ctrl->enable_stream) {
->>   		ret = ctrl->enable_stream(stream);
->>   		if (ret)
->> @@ -411,12 +423,18 @@ int slim_stream_disable(struct slim_stream_runtime *stream)
->>   {
->>   	DEFINE_SLIM_BCAST_TXN(txn, SLIM_MSG_MC_BEGIN_RECONFIGURATION,
->>   				3, SLIM_LA_MANAGER, NULL);
->> -	struct slim_controller *ctrl = stream->dev->ctrl;
->> +	struct slim_controller *ctrl;
->>   	int ret, i;
->>   
->> +	if (!stream) {
->> +		pr_err("%s: Stream is NULL, Check from client side\n", __func__);
->> +		return -EINVAL;
->> +	}
->> +
->>   	if (!stream->ports || !stream->num_ports)
->>   		return -EINVAL;
->>   
->> +	ctrl = stream->dev->ctrl;
->>   	if (ctrl->disable_stream)
->>   		ctrl->disable_stream(stream);
->>   
->> @@ -448,6 +466,11 @@ int slim_stream_unprepare(struct slim_stream_runtime *stream)
->>   {
->>   	int i;
->>   
->> +	if (!stream) {
->> +		pr_err("%s: Stream is NULL, Check from client side\n", __func__);
->> +		return -EINVAL;
->> +	}
->> +
->>   	if (!stream->ports || !stream->num_ports)
->>   		return -EINVAL;
->>   
->> @@ -476,8 +499,14 @@ EXPORT_SYMBOL_GPL(slim_stream_unprepare);
->>    */
->>   int slim_stream_free(struct slim_stream_runtime *stream)
->>   {
->> -	struct slim_device *sdev = stream->dev;
->> +	struct slim_device *sdev;
->> +
->> +	if (!stream) {
->> +		pr_err("%s: Stream is NULL, Check from client side\n", __func__);
->> +		return -EINVAL;
->> +	}
->>   
->> +	sdev = stream->dev;
->>   	spin_lock(&sdev->stream_list_lock);
->>   	list_del(&stream->node);
->>   	spin_unlock(&sdev->stream_list_lock);
->> -- 
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
->> of Code Aurora Forum, hosted by The Linux Foundation
->>
+-- 
+Jean Delvare
+SUSE L3 Support
 
