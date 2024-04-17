@@ -1,121 +1,238 @@
-Return-Path: <linux-kernel+bounces-148319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDA2E8A80E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:27:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F5ED8A80E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:28:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 135D91C20C25
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:27:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 160B61F219D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:28:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E3EC13BAE4;
-	Wed, 17 Apr 2024 10:27:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA7C113BC06;
+	Wed, 17 Apr 2024 10:27:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DEFiqQxJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tPS1FpQi"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6612C13B280;
-	Wed, 17 Apr 2024 10:27:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E72F6A008;
+	Wed, 17 Apr 2024 10:27:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713349654; cv=none; b=E92uw+nj2Req4Q2Z8GClqKo4t++7slS1cu8EuZNQXhGZYFG5HoJjsfSBkYXZajyVDsdEi/hZdI6/wfWQqIM6La672V1FbMx1RoPPdfq15Gv0mYcab9lk4xL2ypm4xmT5geKwiNjYV4M9/NPxehWPkqLAovTD1rKSE+bfmrjBePw=
+	t=1713349677; cv=none; b=oKUdOXFCbk8rbXB97Snn9JskDlMI+EGgbxdMA70TsllDJ92KI9HFlW3ZFXhfzFsEXlPE8DfqS3MRVqtA7kst0PoeGShGwkeq+w+ZnqTSMsLcqJMXxYeV1pYS3HqCzY+7cj+Gpf5Vg+CPXA8/nRUlQqXvei24Jtmc6c750FWz5h8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713349654; c=relaxed/simple;
-	bh=Kn55+1luOn7/FcJIZC3jmFgE9ttr5he8xI+XlEEncLQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oMzLjF6hPq4/fzQrju7tHcYqmykNmWOyq0THK2kBgoDDOZFVwR14KPpktAmtY1ne5qDoI4PMQcjhSzw1gAHubRazUN2VelUUixe5SjK6p/zgS2KXM72WtB+aIpHE4WP7/uioXEXEsIpxrmE0Lwa6A2e20rAWUH+ePxOuKNt5JvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DEFiqQxJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 700D2C072AA;
-	Wed, 17 Apr 2024 10:27:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713349653;
-	bh=Kn55+1luOn7/FcJIZC3jmFgE9ttr5he8xI+XlEEncLQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DEFiqQxJikBmYetX669hS5i6+49i3etN/k12je52FNMd3AEbvv6F/WNPUq4XpQdoH
-	 Pey9pRqtiFJ6ZxfPQ423YXzhUgKPNN3izpgUPmfhSH392RRB8V2FKSTFmIHWgO2YDI
-	 Sq617YCRsZmA0CIAvVcsIiUoP5kU0WivRAEhT+ltkgYR1Yee6GjwffBnzUIarIYMIK
-	 E6qzV1Hnmi+O1f/Kfgb/q5y9fprLgHc72diHQ5D2U0BubxRr+HHAGUqHFRkVP4etDR
-	 26iQbeBlx0rNDDsiSS9E06RKRgp8VGfBsjSIy0CC0K2Pul/0wqDpMY2iFVuSYryWRk
-	 Peq5m7BlJk+Uw==
-Date: Wed, 17 Apr 2024 12:27:30 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Alexander Gordeev <agordeev@linux.ibm.com>,
-	Ingo Molnar <mingo@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-	linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-arch@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH v2 RESEND 0/5] sched/vtime: vtime.h headers cleanup
-Message-ID: <Zh-kEvJbNR2krwmx@localhost.localdomain>
-References: <cover.1712760275.git.agordeev@linux.ibm.com>
+	s=arc-20240116; t=1713349677; c=relaxed/simple;
+	bh=igKb1+9ORijlEOAngHwdjRu6XCuUhCp5tx6ifK5ZhJ8=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=pUqiURkSaAwEhqhcDCzsCp+Ogh3y4wmwsco+C+13zFoCydgkHtxlDEhwBT1Y+pnqDnC8XZKeL9aWLED+qginM+DSq3Go8Tb4iQL/aNauxB8ZNXEsjkCYPCWrAKLntEfI+Kk7YDMIXn97+82u/ikCpClret8Kt1f4t8mm2vnOHTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=tPS1FpQi; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713349674;
+	bh=igKb1+9ORijlEOAngHwdjRu6XCuUhCp5tx6ifK5ZhJ8=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+	b=tPS1FpQidS4mEjupwQSkrvh2Y6jR4RzXxnuepn5ZYhPUzrkfgh745SW8jSLZOpipc
+	 LE9QeKfi+Lo9+GTROFU3kPxkj8Zfwb88avWezJd53YL2GPyhLZuj2DdxtA81SNb6Tc
+	 EZqBPLN3V7uORWjUGhaMUBunnYpjHTiggdyNwGASrDPosz/oI/gKB9pVXbglAbrhJ6
+	 YGLkBRi49WHgYgbImowDqeO2rQnCHgFLIAz1hm+JDX4S5ldmA62HUxSaYQOQJl3ARX
+	 vooHjnOmZjlJ8wD0ViSg+FvddinMn3KMKxHLPASKMxD8SLIY/5/knuxXtSA2U5pTYC
+	 Jb1WTtJWHNJpw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D7E9D37820F1;
+	Wed, 17 Apr 2024 10:27:52 +0000 (UTC)
+Message-ID: <37ffdb00-8d7a-4305-8814-6794c755c190@collabora.com>
+Date: Wed, 17 Apr 2024 12:27:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1712760275.git.agordeev@linux.ibm.com>
+User-Agent: Mozilla Thunderbird
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v2 17/18] arm64: dts: mediatek: add display blocks support
+ for the MT8365 SoC
+To: Alexandre Mergnat <amergnat@baylibre.com>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>, Jitao Shi <jitao.shi@mediatek.com>,
+ CK Hu <ck.hu@mediatek.com>, =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?=
+ <u.kleine-koenig@pengutronix.de>, Michael Turquette
+ <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Cc: dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org,
+ linux-clk@vger.kernel.org
+References: <20231023-display-support-v2-0-33ce8864b227@baylibre.com>
+ <20231023-display-support-v2-17-33ce8864b227@baylibre.com>
+Content-Language: en-US
+In-Reply-To: <20231023-display-support-v2-17-33ce8864b227@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Le Wed, Apr 10, 2024 at 05:09:43PM +0200, Alexander Gordeev a écrit :
-> Hi All,
+Il 16/04/24 17:53, Alexandre Mergnat ha scritto:
+> - Add aliases for each display components to help display drivers.
+> - Add the Display Pulse Width Modulation (DISP_PWM) to provide PWM signals
+>    for the LED driver of mobile LCM.
+> - Add the MIPI Display Serial Interface (DSI) PHY support. (up to 4-lane
+>    output)
+> - Add the display mutex support.
+> - Add the following display component support:
+>    - OVL0 (Overlay)
+>    - RDMA0 (Data Path Read DMA)
+>    - Color0
+>    - CCorr0 (Color Correction)
+>    - AAL0 (Adaptive Ambient Light)
+>    - GAMMA0
+>    - Dither0
+>    - DSI0 (Display Serial Interface)
+>    - RDMA1 (Data Path Read DMA)
+>    - DPI0 (Display Parallel Interface)
 > 
-> There are no changes since the last post, just a re-send.
+> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
+> ---
+>   arch/arm64/boot/dts/mediatek/mt8365.dtsi | 146 +++++++++++++++++++++++++++++++
+>   1 file changed, 146 insertions(+)
 > 
-> v2:
-> - patch 4: commit message reworded (Heiko)
-> - patch 5: vtime.h is removed from Kbuild scripts (PowerPC only) (Heiko)
-> 
-> v1:
-> Please find a small cleanup to vtime_task_switch() wiring.
-> I split it into smaller patches to allow separate PowerPC
-> vs s390 reviews. Otherwise patches 2+3 and 4+5 could have
-> been merged.
-> 
-> I tested it on s390 and compile-tested it on 32- and 64-bit
-> PowerPC and few other major architectures only, but it is
-> only of concern for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE-capable
-> ones (AFAICT).
-> 
-> Thanks!
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8365.dtsi b/arch/arm64/boot/dts/mediatek/mt8365.dtsi
+> index 24581f7410aa..a95f90da4491 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8365.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8365.dtsi
+> @@ -8,6 +8,7 @@
+>   #include <dt-bindings/clock/mediatek,mt8365-clk.h>
+>   #include <dt-bindings/interrupt-controller/arm-gic.h>
+>   #include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/memory/mediatek,mt8365-larb-port.h>
+>   #include <dt-bindings/phy/phy.h>
+>   #include <dt-bindings/power/mediatek,mt8365-power.h>
+>   
+> @@ -17,6 +18,19 @@ / {
+>   	#address-cells = <2>;
+>   	#size-cells = <2>;
+>   
+> +	aliases {
+> +		aal0 = &aal0;
+> +		ccorr0 = &ccorr0;
+> +		color0 = &color0;
+> +		dither0 = &dither0;
+> +		dpi0 = &dpi0;
+> +		dsi0 = &dsi0;
+> +		gamma0 = &gamma0;
+> +		ovl0 = &ovl0;
+> +		rdma0 = &rdma0;
+> +		rdma1 = &rdma1;
+> +	};
+> +
+>   	cpus {
+>   		#address-cells = <1>;
+>   		#size-cells = <0>;
+> @@ -607,6 +621,17 @@ spi: spi@1100a000 {
+>   			status = "disabled";
+>   		};
+>   
+> +		disp_pwm: pwm@1100e000 {
+> +			compatible = "mediatek,mt8365-disp-pwm",
+> +				     "mediatek,mt8183-disp-pwm";
 
-It probably makes sense to apply the whole series to the scheduler tree.
-Does any powerpc or s390 maintainer oppose to that?
+Fits in a single line
 
-Thanks.
+> +			reg = <0 0x1100e000 0 0x1000>;
+> +			clock-names = "main", "mm";
+> +			clocks = <&topckgen CLK_TOP_DISP_PWM_SEL>,
+> +				 <&infracfg CLK_IFR_DISP_PWM>;
 
-> 
-> 
-> Alexander Gordeev (5):
->   sched/vtime: remove confusing arch_vtime_task_switch() declaration
->   sched/vtime: get rid of generic vtime_task_switch() implementation
->   s390/vtime: remove unused __ARCH_HAS_VTIME_TASK_SWITCH leftover
->   s390/irq,nmi: include <asm/vtime.h> header directly
->   sched/vtime: do not include <asm/vtime.h> header
-> 
->  arch/powerpc/include/asm/Kbuild    |  1 -
->  arch/powerpc/include/asm/cputime.h | 13 -------------
->  arch/powerpc/kernel/time.c         | 22 ++++++++++++++++++++++
->  arch/s390/include/asm/vtime.h      |  2 --
->  arch/s390/kernel/irq.c             |  1 +
->  arch/s390/kernel/nmi.c             |  1 +
->  include/asm-generic/vtime.h        |  1 -
->  include/linux/vtime.h              |  5 -----
->  kernel/sched/cputime.c             | 13 -------------
->  9 files changed, 24 insertions(+), 35 deletions(-)
->  delete mode 100644 include/asm-generic/vtime.h
-> 
-> -- 
-> 2.40.1
-> 
+same
+
+> +			power-domains = <&spm MT8365_POWER_DOMAIN_MM>;
+> +			#pwm-cells = <2>;
+> +		};
+> +
+>   		i2c3: i2c@1100f000 {
+>   			compatible = "mediatek,mt8365-i2c", "mediatek,mt8168-i2c";
+>   			reg = <0 0x1100f000 0 0xa0>, <0 0x11000200 0 0x80>;
+> @@ -703,6 +728,15 @@ ethernet: ethernet@112a0000 {
+>   			status = "disabled";
+>   		};
+>   
+> +		mipi_tx0: dsi-phy@11c00000 {
+> +			compatible = "mediatek,mt8365-mipi-tx", "mediatek,mt8183-mipi-tx";
+> +			reg = <0 0x11c00000 0 0x800>;
+> +			clock-output-names = "mipi_tx0_pll";
+> +			clocks = <&clk26m>;
+> +			#clock-cells = <0>;
+> +			#phy-cells = <0>;
+> +		};
+> +
+>   		u3phy: t-phy@11cc0000 {
+>   			compatible = "mediatek,mt8365-tphy", "mediatek,generic-tphy-v2";
+>   			#address-cells = <1>;
+> @@ -732,6 +766,13 @@ mmsys: syscon@14000000 {
+>   			#clock-cells = <1>;
+>   		};
+>   
+> +		mutex: mutex@14001000 {
+> +			compatible =  "mediatek,mt8365-disp-mutex";
+> +			reg = <0 0x14001000 0 0x1000>;
+> +			interrupts = <GIC_SPI 154 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&spm MT8365_POWER_DOMAIN_MM>;
+> +		};
+> +
+>   		smi_common: smi@14002000 {
+>   			compatible = "mediatek,mt8365-smi-common";
+>   			reg = <0 0x14002000 0 0x1000>;
+> @@ -755,6 +796,111 @@ larb0: larb@14003000 {
+>   			mediatek,larb-id = <0>;
+>   		};
+>   
+> +		ovl0: ovl@1400b000 {
+> +			compatible = "mediatek,mt8365-disp-ovl",
+> +				     "mediatek,mt8192-disp-ovl";
+
+single line
+
+> +			reg = <0 0x1400b000 0 0x1000>;
+> +			clocks = <&mmsys CLK_MM_MM_DISP_OVL0>;
+> +			interrupts = <GIC_SPI 161 IRQ_TYPE_LEVEL_LOW>;
+> +			iommus = <&iommu M4U_PORT_DISP_OVL0>;
+> +			power-domains = <&spm MT8365_POWER_DOMAIN_MM>;
+> +		};
+> +
+> +		rdma0: rdma@1400d000 {
+> +			compatible = "mediatek,mt8365-disp-rdma",
+> +				     "mediatek,mt8183-disp-rdma";
+
+ditto
+
+> +			reg = <0 0x1400d000 0 0x1000>;
+> +			clocks = <&mmsys CLK_MM_MM_DISP_RDMA0>;
+> +			interrupts = <GIC_SPI 162 IRQ_TYPE_LEVEL_LOW>;
+> +			iommus = <&iommu M4U_PORT_DISP_RDMA0>;
+> +			mediatek,rdma-fifo-size = <5120>;
+> +			power-domains = <&spm MT8365_POWER_DOMAIN_MM>;
+> +		};
+> +
+> +		color0: color@1400f000 {
+> +			compatible = "mediatek,mt8365-disp-color",
+> +				     "mediatek,mt8173-disp-color";
+
+..and all the others too (maybe not all, it's fine until 100 cols anyway)
+
+
+Cheers,
+Angelo
+
 
