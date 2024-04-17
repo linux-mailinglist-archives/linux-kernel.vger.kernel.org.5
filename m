@@ -1,183 +1,209 @@
-Return-Path: <linux-kernel+bounces-148051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C670E8A7D13
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:31:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 365E98A7D21
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:34:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B6461F214AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:31:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5994C1C21096
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EB976BB21;
-	Wed, 17 Apr 2024 07:31:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD4874267;
+	Wed, 17 Apr 2024 07:34:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="D+QQ3u3C"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JA/R5b9D"
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4341E6A8A4
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:31:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 956DE6CDA1
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:34:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713339107; cv=none; b=WNZL8NjMF7skloEmfpDJIf2Vo8C0oJZ1Jr80iNlFioXT3JvdkhjihZeucyCM/DihBTG5S2MQsk3eQAC6E2RzgZtcE72rPVbtBe+0feiK0VRQjN8aEC6tSz9GRG37M5qU50dU044WjuwW1OKoaX5MmYpXUabQnicrTeCsvyGKS7I=
+	t=1713339263; cv=none; b=DqaCM4paq6tvmYSrCSZtfqgc+fHnR8C0vhxhzsYdziU/DVGklGI0TxtkVGlJq04ipy5JCwiibIR6RxbHTyutA+fBARd2e0/Bv0gmGqLKUVSMJzhGzeak9imWk9pecRy6xLQ23wzLARhTavePX70vSekBOgf3NmlCPgEB/0mski4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713339107; c=relaxed/simple;
-	bh=egKjOTjN1NuR2HibTR7hhA+DkHBoexwK+DJA/m/a18Q=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=KryrQozTV3nUX8k8YVWxl3EjvbSOu+w2b/MJUn5GXzPXgikg5nJt4NCMk1+I/OUhhILR+r8SeEYHSoth3YJT3DVSH7n93tpofcfT/qVWXnG16bKGii6P95aJ/KzLIL0QToQlWht31aXeQTpgqNKdOD85avg4l07ooUrlmaRuCoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=D+QQ3u3C; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5708d8a773aso87144a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:31:43 -0700 (PDT)
+	s=arc-20240116; t=1713339263; c=relaxed/simple;
+	bh=fgddyO9hlvexv3nlt/MmFf5mf73RtUyfjBgF9PLA0kg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rmvuQ5x/KeALOcZ4lTXeLBbns6HoXbkeu1UsZGQaalHaBf/SqJ+W5XcZ1BExCkzZV8t37q1p4Shq0xXVaHM4epG7XG6VkumeMFJuJ0z7mmLLwBQaMSirlG4zKw78nHuM3Clo6F+Po7zz9j3mvc7E05lBngz4SpLYaKSwlbBTHCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JA/R5b9D; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2ab1ddfded1so418052a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:34:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713339102; x=1713943902; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uHpdxbgBqbjjLw3ojUZ8P8pYWYlVPMw1tpCYeedIry4=;
-        b=D+QQ3u3CLjmqiKmXi4TMUrl3EqZ5zZU8HbTiuXpLnf2G/q5appFlbd3e84L6AKFlkH
-         qg2kTXhfHkyd2QgpZ5Deqv7up9vMn1rZhrtupFnVn2kxPFe4XluQi/GFipdT4Ks0p+Qz
-         +UUIGLILWtFg/Tl9UbGiaXgPDBxkfxUcFOK4+MelNOPvYX+LXuq9mOK/i1yNkr1gNj9B
-         32G8tR3lF9gdAYbEOgrkxQic81/hfS+rcOwFNcgbfGC2DyayfiPYM4OnuOB8CFXqEvxg
-         QyvL1veqKPr8YPo66kZ8I6c4uczRYUcLYAGH6rWejDWK8qtmcXHzKPx6E5eJDy5lxHYr
-         9SQA==
+        d=linaro.org; s=google; t=1713339260; x=1713944060; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=0K72Tz2ZkclPVJuZv0gvxvgq7QFl2/X172+ji7HZ4mc=;
+        b=JA/R5b9DKPHtNh7eCmyBdgs/Cd1Z5NmKNPCI8QBvuLiXAMm+bIhnxqEN/X76248HE+
+         FpsgCz+eQNHIV48SxxcsKRdaMlxrW5dyAuv9o2j0Swa7R+D+WXhzqa8ccM+jSy9MQLUI
+         JtEcDtzLCx9xbwdBZMAmn/N9g2ynSj/SMo22CoF2l7cfzYBwvTpNwJS5HOaj1Pgy2W6P
+         p9pJj1quHVlFxo0d5/OJwMfLc5JVNPEreVZsHp5tjcbvTm5/0sMohBMY9KVtXiPTZ/CV
+         Zj5FS1BgGyK/f3TE/3gpOKbPrRGQOXpyDiYBiqfUIBVx1tEhb1jQ9qwNTY3QmiGfk9/W
+         gVJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713339102; x=1713943902;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uHpdxbgBqbjjLw3ojUZ8P8pYWYlVPMw1tpCYeedIry4=;
-        b=wtNy/s+4eQrSixJvTMpuZSy3LxUFf/m1deuuq5SlwlDjVLdhSyhFhKRI5PFvlOLy/V
-         KtZsZzi9ts756Po6cTeSyi5ct2T+HylvRDO66XE2FVzzK9E209Ji4vpd9aTs6N6HCGKi
-         eRaXDmPqXHIxH5MyDSycwd275GT6Do2GNkvU3sh3nLjaFg8pdEDq0zY6H3GpSxSlj4Jv
-         s/WPj7a/McSp9A50+KqFBChdwg9GRDhUw7Qd0m1jd94i7e+ktNhYwqZ8+L/ET+YQ2zbv
-         MFQvwF8phtlJ90AWDob2ktV1oNsnWuycW1cZAi0YkK6oJoddLldunoPDayYg6HR8THfq
-         howw==
-X-Forwarded-Encrypted: i=1; AJvYcCUd3DvHUJFLlpONKvKYPHONMheG7h2AQOTfaMiUWyWrnr5PmrELAlqfusnZHibn22Iz9AutxRypaAevnDdLViWbaD5lU1sSkKroDn1+
-X-Gm-Message-State: AOJu0YwlV3g/OLHqa33f57JadKwI/vZHVKiXEd+DTytNy2RDkyOd5LXY
-	Pzp/0Y9gxqnW8ZBljJkQUuDjcpxy33AfDCw4JMBpPlo8bWebiBOolOQ5G/jgyrk=
-X-Google-Smtp-Source: AGHT+IFvAhadrzFCRrSpUW8E3Bm/aiI3YT8XkF3xXVc+nLVwbcIdXh+dGQ+6hpVt0PkC67qGE3VWPg==
-X-Received: by 2002:a17:906:3756:b0:a55:3240:ba3b with SMTP id e22-20020a170906375600b00a553240ba3bmr3748747ejc.8.1713339102044;
-        Wed, 17 Apr 2024 00:31:42 -0700 (PDT)
-Received: from [127.0.1.1] ([93.5.22.158])
-        by smtp.googlemail.com with ESMTPSA id en5-20020a17090728c500b00a51b8e8c8besm7811373ejc.86.2024.04.17.00.31.41
+        d=1e100.net; s=20230601; t=1713339260; x=1713944060;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0K72Tz2ZkclPVJuZv0gvxvgq7QFl2/X172+ji7HZ4mc=;
+        b=kaocn3KFRPT3uqZe3MwW990LeGm7eP5po7/wXl+nTEvds02HPhTA0Gk0mXcP5D862o
+         CX23+kKWXzHt3iVRMxBJnFNQJgMDR4NbqgTPw5vQobD2npV7H7Ju4PRMUXogN2xwLWgh
+         HXInQx8dzHhquiqbipwCEed5u463obHN+/G9HXrxDpe7oW5wMWZSXvzQOXy/1Mb2InVK
+         TkR4yXCN72SED4CpVJvyCQV2hwE2/fV7L5q4HBitDVCFO9gVb96LvS0QOe6m7szyIMU4
+         4EIFqF+qRE581+/RFXvSiqxv+ZTxqQXQn7MIAYmc8ChowJ+QEcoYnZNOBaSyNGNvl0tJ
+         WJAA==
+X-Forwarded-Encrypted: i=1; AJvYcCWrVab7YnICyoCtBbh3WGV6HKxBWkkF9TgC5DnPYo3nfXeQue0PMuXpQ6muY9NKr6dDBxyPqNS+YqS++mGw16trCrpIPSsvaudHrTCa
+X-Gm-Message-State: AOJu0YwEbv0G7nTDJhoHHalB7LxqbbAYISrkVsBtMW+WHPzxiHJUDkQo
+	yhobe3o5NNazoLtCaOQDtVwZf0sbfbQxpU5H7SKUCcC1pvUNBM9VSA1e2gqhPQ==
+X-Google-Smtp-Source: AGHT+IGIAgoL/zhZk3pa0SMj5BgxpoFiLpBLAx6xC/5k4oCxlIq9Bo6Xf+jtd58QVgNCbJOeHuSBkQ==
+X-Received: by 2002:a17:90b:3c3:b0:2a6:db3:1aa5 with SMTP id go3-20020a17090b03c300b002a60db31aa5mr15282164pjb.18.1713339259756;
+        Wed, 17 Apr 2024 00:34:19 -0700 (PDT)
+Received: from thinkpad ([120.60.54.9])
+        by smtp.gmail.com with ESMTPSA id e3-20020a17090a728300b002a2b28de64esm742387pjg.14.2024.04.17.00.34.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 00:31:41 -0700 (PDT)
-From: Alexandre Mergnat <amergnat@baylibre.com>
-Date: Wed, 17 Apr 2024 09:31:41 +0200
-Subject: [PATCH v6] arm64: defconfig: enable STARTEK KD070FHFID015 panel
+        Wed, 17 Apr 2024 00:34:19 -0700 (PDT)
+Date: Wed, 17 Apr 2024 13:04:12 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-clk@vger.kernel.org
+Subject: Re: [PATCH v3 7/7] arm64: dts: qcom: ipq9574: add PCIe2 nodes
+Message-ID: <20240417073412.GD3894@thinkpad>
+References: <20240415182052.374494-1-mr.nuke.me@gmail.com>
+ <20240415182052.374494-8-mr.nuke.me@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230711-startek_display-v6-1-9443e0c826fd@baylibre.com>
-X-B4-Tracking: v=1; b=H4sIANx6H2YC/4XNTW7DIBQE4KtErEvEjwGTVe5RRRUPHjWqY0fgW
- rEi370ky8iVlzPSfPMgBXPCQk6HB8k4p5LGoQb9cSC+c8M30hRqJoIJyQzntEwuT/jzFVK59W6
- hVrVBaBU1OEfqClxBCtkNvqu74bfva3nLGNP9dfN5qblLZRrz8nqd+bP9/2DmlFGupeUGMMhWn
- cEtfYKMRz9eyZObxQ4hKtEa8AYCeo12g5A7hKxE8G1jUINUFjaIZodoKhGBByUhBox6g1A7hKK
- cGi+YBaWZj+GNWNf1D32nWxrSAQAA
-To: Catalin Marinas <catalin.marinas@arm.com>, 
- Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Alexandre Mergnat <amergnat@baylibre.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2943; i=amergnat@baylibre.com;
- h=from:subject:message-id; bh=egKjOTjN1NuR2HibTR7hhA+DkHBoexwK+DJA/m/a18Q=;
- b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBmH3rdjzZZ4sen02dFcQJ/1ZIBh++tmRptfxge5qOI
- 9FSMOGuJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZh963QAKCRArRkmdfjHURfDTD/
- 9S9uQ+WvVwGRqCy3m3DuKrAU32rZZzeV7Ky9vnpm5YIr64BjjJ7GxUmRyCN6oNUXW+B5KYtVvEw7tq
- SJGk2bW+zKUQfH9B46CHn62r/G6HK36pnvTywVNIE3DOzdwRsMqY+8dgrCJ5xyOCtNnd4BXX9Y6bQV
- 1yUBmf14L05qD3qcdgtb0mB4ouJ9R+K5DKsI4Vu9JsCl1ykqwfwK+WFBJjtnoyqySahrdDC/QFAZB6
- 24+xOpxlqwmMDyyapoD7LRZj52m5BRlmcg/mHRzWLRidU1gIgdbXOQy8G48sWZoIRXU18GoH+Tzi63
- XUFm3+mlEMrKSkgziw5RgQ+KY8NRHCyQ8a5ChjMZsnFb+0jYyQ4Ruq0NDUaMh2Hl3KGR6c4mG4XnMj
- RkoGlPnZd7F31J0UKJ1lmhWQ0qWOjrK55o+vYkeIbRAiOtqiMWYIS5DGskSa8PvbprJC9HeiwSvYjU
- IPG5H+8AHos2mfAFYGsOv24c3UKafAFq+M2PBbVECNSfIQ2NIiVoYB9lKi7eN2XcsESmivdvTvHWh8
- d+yDoSJx2L13EFgBco9iRmzdVWXdqSapQKXciTSYdK6APK8pSHuniZVLsfdplhBJw+M8IXrLxVznbf
- BaVIH6qfhqG0LPj90Pb6Cr+YeIY5DjfgEEpqYMBEVkh6vVsKZzXWzbLCf0Jw==
-X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
- fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240415182052.374494-8-mr.nuke.me@gmail.com>
 
-Build Startek KD070FHFID015 panel driver. This MIPI-DSI display
-can be used for the mt8365-evk board for example.
+On Mon, Apr 15, 2024 at 01:20:52PM -0500, Alexandru Gagniuc wrote:
+> On ipq9574, there are 4 PCIe controllers. Describe the pcie2 node, and
+> its PHY in devicetree.
+> 
+> Only pcie2 is described, because only hardware using that controller
+> was available for testing.
+> 
 
-Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
----
-Add the support of the Startek KD070FHFID015 panel.
-It's a 7-inch TFT LCD display with a resolution of 1024 x 600 pixels.
+You should describe all the instances in DT. Since the unused ones will be
+'disabled', it won't affect anyone.
 
-I use this display plugged to my mt8365-evk board.
+> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+> ---
+>  arch/arm64/boot/dts/qcom/ipq9574.dtsi | 93 ++++++++++++++++++++++++++-
+>  1 file changed, 92 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> index 7f2e5cbf3bbb..f075e2715300 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> @@ -300,7 +300,7 @@ gcc: clock-controller@1800000 {
+>  				 <0>,
+>  				 <0>,
+>  				 <0>,
+> -				 <0>,
+> +				 <&pcie2_phy>,
+>  				 <0>,
+>  				 <0>;
+>  			#clock-cells = <1>;
+> @@ -745,6 +745,97 @@ frame@b128000 {
+>  				status = "disabled";
+>  			};
+>  		};
+> +
+> +		pcie2_phy: phy@8c000 {
+> +			compatible = "qcom,ipq9574-qmp-gen3x2-pcie-phy";
+> +			reg = <0x0008c000 0x14f4>;
+> +
+> +			clocks = <&gcc GCC_PCIE2_AUX_CLK>,
+> +				 <&gcc GCC_PCIE2_AHB_CLK>,
+> +				 <&gcc GCC_PCIE2_PIPE_CLK>,
+> +				 <&gcc GCC_ANOC_PCIE2_2LANE_M_CLK>,
+> +				 <&gcc GCC_SNOC_PCIE2_2LANE_S_CLK>;
+> +			clock-names = "aux",
+> +				      "cfg_ahb",
+> +				      "pipe",
+> +				      "anoc",
+> +				      "snoc";
+> +
+> +			clock-output-names = "pcie_phy2_pipe_clk";
+> +			#clock-cells = <0>;
+> +			#phy-cells = <0>;
+> +
+> +			resets = <&gcc GCC_PCIE2_PHY_BCR>,
+> +				 <&gcc GCC_PCIE2PHY_PHY_BCR>;
+> +			reset-names = "phy",
+> +				      "common";
+> +			status = "disabled";
+> +		};
+> +
+> +		pcie2: pcie@20000000 {
+> +			compatible = "qcom,pcie-ipq9574";
+> +			reg = <0x20000000 0xf1d>,
+> +			      <0x20000f20 0xa8>,
+> +			      <0x20001000 0x1000>,
+> +			      <0x00088000 0x4000>,
+> +			      <0x20100000 0x1000>;
+> +			reg-names = "dbi", "elbi", "atu", "parf", "config";
+> +
+> +			ranges = <0x81000000 0x0 0x20200000 0x20200000 0x0 0x00100000>,	/* I/O */
 
-This serie come from a bigger one [1]. Then I addressed the previous
-comments for the related commits here.
+Please use below range:
 
-[1]: https://lore.kernel.org/all/20230220-display-v1-0-45cbc68e188b@baylibre.com/
----
-Changes in v6:
-- Rebase to 6.9-rc4
-- Link to v5: https://lore.kernel.org/r/20230711-startek_display-v5-1-7c209b560cfd@baylibre.com
+<0x01000000 0x0 0x00000000 0x20200000 0x0 0x00100000>
+<0x02000000 0x0 0x20300000 0x20300000 0x0 0x07d00000>
 
-Changes in v5:
-- Rebase to 6.6-rc2
-- Remove merged patches: dt-bindings and driver.
-- Link to v4: https://lore.kernel.org/r/20230711-startek_display-v4-0-fb1d53bfdef6@baylibre.com
+> +				 <0x82000000 0x0 0x20300000 0x20300000 0x0 0x07d00000>;	/* MEM */
+> +
+> +			device_type = "pci";
+> +			linux,pci-domain = <3>;
+> +			bus-range = <0x00 0xff>;
+> +			num-lanes = <2>;
+> +			max-link-speed = <3>;
+> +			#address-cells = <3>;
+> +			#size-cells = <2>;
+> +
+> +			phys = <&pcie2_phy>;
+> +			phy-names = "pciephy";
+> +
+> +			interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names = "msi";
+> +
+> +			#interrupt-cells = <1>;
+> +			interrupt-map-mask = <0 0 0 0x7>;
+> +			interrupt-map = <0 0 0 1 &intc 0 0 164
+> +					 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
+> +					<0 0 0 2 &intc 0 0 165
+> +					 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
+> +					<0 0 0 3 &intc 0 0 186
+> +					 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
+> +					<0 0 0 4 &intc 0 0 187
+> +					 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
 
-Changes in v4:
-- Remove useless function: stk_panel_shutdown.
-- Align parenthesis for readability.
-- Link to v3: https://lore.kernel.org/r/20230711-startek_display-v3-0-dc847e6b359b@baylibre.com
+Use a single line for each INTX entry even if it exceeds 80 column width.
 
-Changes in v3:
-- Remove spurious line.
-- Remove useless ops (enable and disable).
-- Remove brightness value init because it is set right after
-  using mipi_dsi_dcs_get_display_brightness(...).
-- Link to v2: https://lore.kernel.org/r/20230711-startek_display-v2-0-87bc7bdec6e9@baylibre.com
+- Mani
 
-Changes in v2:
-- Replace "dcdc-gpio" by "enable-gpio" because this pin enable the
-  Power IC supply. Also, this property come from panel-common.
-- Remove height-mm and width-mm since they are useless here.
-- Re-order elements in the stk_panel structure for readability.
-- Link to v1: https://lore.kernel.org/r/20230711-startek_display-v1-0-163917bed385@baylibre.com
-
-Changes in v1:
-- Fix typos in the driver.
-- Merge 2 regulators in one bulk variable in the driver.
-- Remove backlight enable/disable from the driver because it's already
-  managed by the backlight core.
-- Move hardcoded values from function to the generic structure in the
-  driver.
-- Remove unnecessary function (stk_panel_del).
-- Replace some functions by macro to increase the readability.
-- Link to parent serie: [1]
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 2c30d617e180..fce98a150014 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -868,6 +868,7 @@ CONFIG_DRM_PANEL_ILITEK_ILI9882T=m
- CONFIG_DRM_PANEL_MANTIX_MLAF057WE51=m
- CONFIG_DRM_PANEL_RAYDIUM_RM67191=m
- CONFIG_DRM_PANEL_SITRONIX_ST7703=m
-+CONFIG_DRM_PANEL_STARTEK_KD070FHFID015=m
- CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
- CONFIG_DRM_PANEL_VISIONOX_VTDR6130=m
- CONFIG_DRM_FSL_LDB=m
-
----
-base-commit: 0bbac3facb5d6cc0171c45c9873a2dc96bea9680
-change-id: 20230711-startek_display-958d265f6baa
-
-Best regards,
 -- 
-Alexandre Mergnat <amergnat@baylibre.com>
-
+மணிவண்ணன் சதாசிவம்
 
