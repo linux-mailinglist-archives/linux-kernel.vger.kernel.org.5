@@ -1,208 +1,184 @@
-Return-Path: <linux-kernel+bounces-149022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29BCA8A8A90
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:57:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E4EF8A8ABB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:02:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CB851C23AAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:57:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F1331C23027
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E14172BD4;
-	Wed, 17 Apr 2024 17:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF235172BCD;
+	Wed, 17 Apr 2024 18:02:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BE44GfYu"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="uCj8vNCk"
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8E1D172BAF;
-	Wed, 17 Apr 2024 17:56:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65CF2171668
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:01:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713376622; cv=none; b=VczcUEr1cVz3iwdulL69qtlc9iQ4NIQ1yqQ99dctI29AXpD5MkaEQfkyjyzczZwPwp11Ngl5HT31YT/8/i2cgyCNz3occGnstrHfpfDLS//WxPYmd9yErpo2Jlkzmh7hzapaGsjNGi7xAzff85h3piI9kyj5mtjFHOMM8hqXS3o=
+	t=1713376920; cv=none; b=FcpqmT2/FAxWh1ePNs2//+ncQURZmWALOuG9XharXADGQk/L5eYsFaA8izrWeSs2fF0TfllALHQyXd4oKnlR97GLFHwifebC72rX0Di85cFB6TrjZA+VAfEsHHIS6bzNfl8sxY6KTR35aAaSYQI+bVCUllPeeES5fnY+ap7gZjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713376622; c=relaxed/simple;
-	bh=WXUa5tohdk1r7nUGvbGwoYha5kf7ooi8ivIRxl3Pxi8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=i85F7JjVHrV+ChECSqNzTGjYmnW7R1ar/MIxcvKq6M21LZ9tU7iIwze5OD6HC5mrmYC1qgdJxiQtjdUrYMHpzGzNLOwTzlJSUr1uhnREXufV4YwpuKirY+tsxgG2JdSCo5PhE4l4Zn/rzmBrUNL3uIS6+eA+hGvYWuriA3Mmv0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BE44GfYu; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713376620; x=1744912620;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=WXUa5tohdk1r7nUGvbGwoYha5kf7ooi8ivIRxl3Pxi8=;
-  b=BE44GfYuxg96ZGQ+K9PZwaER5FjVxPh7HNiEnoazRdYbdDYbLla0IuWz
-   71NXZyBpfdYwKXPZeqwu/CC1F/HUShXkAH/lrnZWbX7qiIxNLcnoDXBaV
-   oQo0RLjnDXG8jDpAmUjkWsV0sI5/928WTy6DUuYTsCzG/o3JD3SQ4WAll
-   kMYlgtVzsyiPBBjryMTP8w8l98+n6FnW1Kt8A801Tic2fI+XZMqGRCejo
-   gKcyNDQpvJukiugGFJeIUKZVd63Ov/7A8dXZH6+OtgaAZd25+T2Srp4eL
-   z8WKT8SxgeLovBbsYEIWWQjp4fUg0cI/YCT5nUQzPBSLGPQ/zddyAXPtK
-   w==;
-X-CSE-ConnectionGUID: 2qOdjRRuRDOHFWeUgyFxGg==
-X-CSE-MsgGUID: qFuYM3OJTCy44Wamwjtggg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8761728"
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="8761728"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 10:56:59 -0700
-X-CSE-ConnectionGUID: kfPlYqsPQTm4xccB4wiK4w==
-X-CSE-MsgGUID: VaHKegyoRWW3og1F8h5p6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="23294846"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 10:56:58 -0700
-Date: Wed, 17 Apr 2024 11:01:31 -0700
-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev, Thomas Gleixner
- <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
- kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>, Joerg Roedel
- <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov
- <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, Paul Luse
- <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>, Jens
- Axboe <axboe@kernel.dk>, Raj Ashok <ashok.raj@intel.com>, Kevin Tian
- <kevin.tian@intel.com>, maz@kernel.org, Robin Murphy
- <robin.murphy@arm.com>, jim.harris@samsung.com, a.manzanares@samsung.com,
- Bjorn Helgaas <helgaas@kernel.org>, guang.zeng@intel.com,
- robert.hoo.linux@gmail.com, jacob.jun.pan@linux.intel.com,
- oliver.sang@intel.com
-Subject: Re: [PATCH v2 03/13] x86/irq: Remove bitfields in posted interrupt
- descriptor
-Message-ID: <20240417110131.4aaf1d66@jacob-builder>
-In-Reply-To: <Zh8aTitLwSYYlZW5@google.com>
-References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
-	<20240405223110.1609888-4-jacob.jun.pan@linux.intel.com>
-	<Zh8aTitLwSYYlZW5@google.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713376920; c=relaxed/simple;
+	bh=HiW94CFUU7BsecIQJppbBV5q2YYYI0NIca7K9uJp2wo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EaQhl9Crk270F4hu0K9xWuo/Om30puV4nbaTx7irC4VToU5vCOAPekQvummkhn8JbYGRGSuaufYxt+Mhb06DGV2ngL2bPI/ZqgyCWQMFt6m5LMW59D47iykgjyuDcp/fCbs9100lUdzZM2LhWBWsSv+4sr/JIFkx3krzSEwM37k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=uCj8vNCk; arc=none smtp.client-ip=209.85.160.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-436ffc2798fso7436141cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:01:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1713376918; x=1713981718; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=yTZjWUYxj2wH2IhOsrS74DQHrPvPTmRBeeG4eS3BQm0=;
+        b=uCj8vNCkeTRwwfhBZ4I7+UcQVitM54AscsaAiqfTV2yhuXqARa1xslySt/6DqI/5+g
+         H7Lm19n5qxW684ASRPmUqO0Gux7XuATbZpEvZjbmEKcIGeO4M+8ZFQaU34nhwEY87RqI
+         cw+64XM5c3LLijrdFlm/TNNd55yV1Q3MwQwDs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713376918; x=1713981718;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yTZjWUYxj2wH2IhOsrS74DQHrPvPTmRBeeG4eS3BQm0=;
+        b=OTSq7L8cRMttaJhKD5sd8g+T8wJoh2TQozsRctBL1XiM/M0MnP8W28m078DM56k//5
+         rEVqBQCC1kIB8ucHqkrdj71v8wx5AQu+QN1YHNxd0V4wPBm5BsPPr8Ic0yihhgBdFoTx
+         RhE5Wfdh6AXPrRnpsWq3DDu0ftamFXcx2zrmgmy1KmjuU6rInm4x/ovZ8QtAOcPoswbX
+         dRFd5/hsy3XdopxjzW3qzBx6n4cLbUsiEt4nfrsn6YNcxPwiM+ZpxE3efJpC9e759VMb
+         DsUvsGzYuSqwx6W2xDG3QdXXoEGJjZsJ//4sUVAJp6joc8QtwTEn1J8Ht+4bHnBWBFQZ
+         8jNw==
+X-Forwarded-Encrypted: i=1; AJvYcCVQf3dvr8GRxFJ6TSX5uKDc4hD4ttAX4Tt7ZC0Tg+IdQraJNK90JMPaUeIWIo0n7WRTD/bcxNyaANqO/6JfhIQgPG/mVUGXRmak6vuX
+X-Gm-Message-State: AOJu0YwrUk1N4UHF4OnIQPPeftjvuUYnobXX0Z0S0KMdtb0ijZDzE6z7
+	P6v8qG9oI0L0NWOd8MRHuR8HbNLRziz4lTfaTVa5P2IZYZUO5i7ze4wKJWiz5C8=
+X-Google-Smtp-Source: AGHT+IEm2OG90KUDHxury7s6a4ajVbDyuEzeh44moBmhFRNj4sp5OpYPvyTBqabmW98tw0L1PrP6KQ==
+X-Received: by 2002:a05:622a:210:b0:436:b948:7e6f with SMTP id b16-20020a05622a021000b00436b9487e6fmr223301qtx.17.1713376918303;
+        Wed, 17 Apr 2024 11:01:58 -0700 (PDT)
+Received: from [10.80.67.140] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
+        by smtp.gmail.com with ESMTPSA id f26-20020ac8465a000000b00434a352e239sm8334102qto.43.2024.04.17.11.01.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 11:01:57 -0700 (PDT)
+Message-ID: <2a490bb4-fd00-46e7-b7c3-bb8ef962d8b9@citrix.com>
+Date: Wed, 17 Apr 2024 19:01:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] x86/bugs: Only harden syscalls when needed
+To: Josh Poimboeuf <jpoimboe@kernel.org>,
+ Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Alexandre Chartre <alexandre.chartre@oracle.com>,
+ Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Sean Christopherson <seanjc@google.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ Nikolay Borisov <nik.borisov@suse.com>, KP Singh <kpsingh@kernel.org>,
+ Waiman Long <longman@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Ingo Molnar <mingo@kernel.org>
+References: <eda0ec65f4612cc66875aaf76e738643f41fbc01.1713296762.git.jpoimboe@kernel.org>
+ <dad3a832-b3d0-4c72-a9f1-1ec4e6bc6bba@citrix.com>
+ <20240417164514.66hgypzxgqxt3ssk@desk>
+ <20240417175723.r4si62d6oqirqadb@treble>
+Content-Language: en-GB
+From: Andrew Cooper <andrew.cooper3@citrix.com>
+Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
+ xsFNBFLhNn8BEADVhE+Hb8i0GV6mihnnr/uiQQdPF8kUoFzCOPXkf7jQ5sLYeJa0cQi6Penp
+ VtiFYznTairnVsN5J+ujSTIb+OlMSJUWV4opS7WVNnxHbFTPYZVQ3erv7NKc2iVizCRZ2Kxn
+ srM1oPXWRic8BIAdYOKOloF2300SL/bIpeD+x7h3w9B/qez7nOin5NzkxgFoaUeIal12pXSR
+ Q354FKFoy6Vh96gc4VRqte3jw8mPuJQpfws+Pb+swvSf/i1q1+1I4jsRQQh2m6OTADHIqg2E
+ ofTYAEh7R5HfPx0EXoEDMdRjOeKn8+vvkAwhviWXTHlG3R1QkbE5M/oywnZ83udJmi+lxjJ5
+ YhQ5IzomvJ16H0Bq+TLyVLO/VRksp1VR9HxCzItLNCS8PdpYYz5TC204ViycobYU65WMpzWe
+ LFAGn8jSS25XIpqv0Y9k87dLbctKKA14Ifw2kq5OIVu2FuX+3i446JOa2vpCI9GcjCzi3oHV
+ e00bzYiHMIl0FICrNJU0Kjho8pdo0m2uxkn6SYEpogAy9pnatUlO+erL4LqFUO7GXSdBRbw5
+ gNt25XTLdSFuZtMxkY3tq8MFss5QnjhehCVPEpE6y9ZjI4XB8ad1G4oBHVGK5LMsvg22PfMJ
+ ISWFSHoF/B5+lHkCKWkFxZ0gZn33ju5n6/FOdEx4B8cMJt+cWwARAQABzSlBbmRyZXcgQ29v
+ cGVyIDxhbmRyZXcuY29vcGVyM0BjaXRyaXguY29tPsLBegQTAQgAJAIbAwULCQgHAwUVCgkI
+ CwUWAgMBAAIeAQIXgAUCWKD95wIZAQAKCRBlw/kGpdefoHbdD/9AIoR3k6fKl+RFiFpyAhvO
+ 59ttDFI7nIAnlYngev2XUR3acFElJATHSDO0ju+hqWqAb8kVijXLops0gOfqt3VPZq9cuHlh
+ IMDquatGLzAadfFx2eQYIYT+FYuMoPZy/aTUazmJIDVxP7L383grjIkn+7tAv+qeDfE+txL4
+ SAm1UHNvmdfgL2/lcmL3xRh7sub3nJilM93RWX1Pe5LBSDXO45uzCGEdst6uSlzYR/MEr+5Z
+ JQQ32JV64zwvf/aKaagSQSQMYNX9JFgfZ3TKWC1KJQbX5ssoX/5hNLqxMcZV3TN7kU8I3kjK
+ mPec9+1nECOjjJSO/h4P0sBZyIUGfguwzhEeGf4sMCuSEM4xjCnwiBwftR17sr0spYcOpqET
+ ZGcAmyYcNjy6CYadNCnfR40vhhWuCfNCBzWnUW0lFoo12wb0YnzoOLjvfD6OL3JjIUJNOmJy
+ RCsJ5IA/Iz33RhSVRmROu+TztwuThClw63g7+hoyewv7BemKyuU6FTVhjjW+XUWmS/FzknSi
+ dAG+insr0746cTPpSkGl3KAXeWDGJzve7/SBBfyznWCMGaf8E2P1oOdIZRxHgWj0zNr1+ooF
+ /PzgLPiCI4OMUttTlEKChgbUTQ+5o0P080JojqfXwbPAyumbaYcQNiH1/xYbJdOFSiBv9rpt
+ TQTBLzDKXok86M7BTQRS4TZ/ARAAkgqudHsp+hd82UVkvgnlqZjzz2vyrYfz7bkPtXaGb9H4
+ Rfo7mQsEQavEBdWWjbga6eMnDqtu+FC+qeTGYebToxEyp2lKDSoAsvt8w82tIlP/EbmRbDVn
+ 7bhjBlfRcFjVYw8uVDPptT0TV47vpoCVkTwcyb6OltJrvg/QzV9f07DJswuda1JH3/qvYu0p
+ vjPnYvCq4NsqY2XSdAJ02HrdYPFtNyPEntu1n1KK+gJrstjtw7KsZ4ygXYrsm/oCBiVW/OgU
+ g/XIlGErkrxe4vQvJyVwg6YH653YTX5hLLUEL1NS4TCo47RP+wi6y+TnuAL36UtK/uFyEuPy
+ wwrDVcC4cIFhYSfsO0BumEI65yu7a8aHbGfq2lW251UcoU48Z27ZUUZd2Dr6O/n8poQHbaTd
+ 6bJJSjzGGHZVbRP9UQ3lkmkmc0+XCHmj5WhwNNYjgbbmML7y0fsJT5RgvefAIFfHBg7fTY/i
+ kBEimoUsTEQz+N4hbKwo1hULfVxDJStE4sbPhjbsPCrlXf6W9CxSyQ0qmZ2bXsLQYRj2xqd1
+ bpA+1o1j2N4/au1R/uSiUFjewJdT/LX1EklKDcQwpk06Af/N7VZtSfEJeRV04unbsKVXWZAk
+ uAJyDDKN99ziC0Wz5kcPyVD1HNf8bgaqGDzrv3TfYjwqayRFcMf7xJaL9xXedMcAEQEAAcLB
+ XwQYAQgACQUCUuE2fwIbDAAKCRBlw/kGpdefoG4XEACD1Qf/er8EA7g23HMxYWd3FXHThrVQ
+ HgiGdk5Yh632vjOm9L4sd/GCEACVQKjsu98e8o3ysitFlznEns5EAAXEbITrgKWXDDUWGYxd
+ pnjj2u+GkVdsOAGk0kxczX6s+VRBhpbBI2PWnOsRJgU2n10PZ3mZD4Xu9kU2IXYmuW+e5KCA
+ vTArRUdCrAtIa1k01sPipPPw6dfxx2e5asy21YOytzxuWFfJTGnVxZZSCyLUO83sh6OZhJkk
+ b9rxL9wPmpN/t2IPaEKoAc0FTQZS36wAMOXkBh24PQ9gaLJvfPKpNzGD8XWR5HHF0NLIJhgg
+ 4ZlEXQ2fVp3XrtocHqhu4UZR4koCijgB8sB7Tb0GCpwK+C4UePdFLfhKyRdSXuvY3AHJd4CP
+ 4JzW0Bzq/WXY3XMOzUTYApGQpnUpdOmuQSfpV9MQO+/jo7r6yPbxT7CwRS5dcQPzUiuHLK9i
+ nvjREdh84qycnx0/6dDroYhp0DFv4udxuAvt1h4wGwTPRQZerSm4xaYegEFusyhbZrI0U9tJ
+ B8WrhBLXDiYlyJT6zOV2yZFuW47VrLsjYnHwn27hmxTC/7tvG3euCklmkn9Sl9IAKFu29RSo
+ d5bD8kMSCYsTqtTfT6W4A3qHGvIDta3ptLYpIAOD2sY3GYq2nf3Bbzx81wZK14JdDDHUX2Rs
+ 6+ahAA==
+In-Reply-To: <20240417175723.r4si62d6oqirqadb@treble>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Sean,
+On 17/04/2024 6:57 pm, Josh Poimboeuf wrote:
+> On Wed, Apr 17, 2024 at 09:45:14AM -0700, Pawan Gupta wrote:
+>> On Wed, Apr 17, 2024 at 04:14:26PM +0100, Andrew Cooper wrote:
+>>> On 17/04/2024 12:02 am, Josh Poimboeuf wrote:
+>>>> diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+>>>> index ca295b0c1eee..dcb97cc2758f 100644
+>>>> --- a/arch/x86/kernel/cpu/bugs.c
+>>>> +++ b/arch/x86/kernel/cpu/bugs.c
+>>>> @@ -1678,6 +1687,21 @@ static void __init spectre_v2_select_mitigation(void)
+>>>>  	enum spectre_v2_mitigation_cmd cmd = spectre_v2_parse_cmdline();
+>>>>  	enum spectre_v2_mitigation mode = SPECTRE_V2_NONE;
+>>>>  
+>>>> +	/*
+>>>> +	 * X86_FEATURE_INDIRECT_SAFE indicates whether indirect calls can be
+>>>> +	 * considered safe.  That means either:
+>>>> +	 *
+>>>> +	 *   - the CPU isn't vulnerable to Spectre v2 or its variants;
+>>>> +	 *
+>>>> +	 *   - a hardware mitigation is in place (e.g., IBRS, BHI_DIS_S); or
+>>>> +	 *
+>>>> +	 *   - the user turned off mitigations altogether.
+>>>> +	 *
+>>>> +	 * Assume innocence until proven guilty: set the cap bit now, then
+>>>> +	 * clear it later if/when needed.
+>>>> +	 */
+>>>> +	setup_force_cpu_cap(X86_FEATURE_INDIRECT_SAFE);
+>>> Following on from the (re)discovery that X86_FEATURE_RETPOLINE is a poor
+>>> name given what it *actually* does, can I recommend s/SAFE/OK/ here?
+>> Or simply X86_FEATURE_USE_INDIRECT_BRANCH.
+>>
+>>> This flag really is "do I want indirect branches or not", which - as
+>>> noted here - is more than just a judgement of whether indirect branches
+>>> are "safe".
+> X86_FEATURE_USE_INDIRECT_BRANCH sounds good.  It's a bit long but does
+> describe it better.
 
-On Tue, 16 Apr 2024 17:39:42 -0700, Sean Christopherson <seanjc@google.com>
-wrote:
+Works for me.  Definitely an improvement over SAFE.
 
-> "KVM" here would be nice too.
-> 
-> On Fri, Apr 05, 2024, Jacob Pan wrote:
-> > Mixture of bitfields and types is weird and really not intuitive, remove
-> > bitfields and use typed data exclusively.
-> > 
-> > Link:
-> > https://lore.kernel.org/all/20240404101735.402feec8@jacob-builder/T/#mf66e34a82a48f4d8e2926b5581eff59a122de53a
-> > Suggested-by: Sean Christopherson <seanjc@google.com> Suggested-by:
-> > Thomas Gleixner <tglx@linutronix.de> Signed-off-by: Jacob Pan
-> > <jacob.jun.pan@linux.intel.com>
-> > 
-> > ---
-> > v2:
-> > 	- Replace bitfields, no more mix.
-> > ---
-> >  arch/x86/include/asm/posted_intr.h | 10 +---------
-> >  arch/x86/kvm/vmx/posted_intr.c     |  4 ++--
-> >  arch/x86/kvm/vmx/vmx.c             |  2 +-
-> >  3 files changed, 4 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/asm/posted_intr.h
-> > b/arch/x86/include/asm/posted_intr.h index acf237b2882e..c682c41d4e44
-> > 100644 --- a/arch/x86/include/asm/posted_intr.h
-> > +++ b/arch/x86/include/asm/posted_intr.h
-> > @@ -15,17 +15,9 @@ struct pi_desc {
-> >  	};
-> >  	union {
-> >  		struct {
-> > -				/* bit 256 - Outstanding Notification
-> > */
-> > -			u16	on	: 1,
-> > -				/* bit 257 - Suppress Notification */
-> > -				sn	: 1,
-> > -				/* bit 271:258 - Reserved */
-> > -				rsvd_1	: 14;
-> > -				/* bit 279:272 - Notification Vector */
-> > +			u16	notif_ctrl; /* Suppress and
-> > outstanding bits */ u8	nv;
-> > -				/* bit 287:280 - Reserved */
-> >  			u8	rsvd_2;
-> > -				/* bit 319:288 - Notification
-> > Destination */ u32	ndst;
-> >  		};
-> >  		u64 control;
-> > diff --git a/arch/x86/kvm/vmx/posted_intr.c
-> > b/arch/x86/kvm/vmx/posted_intr.c index af662312fd07..592dbb765675 100644
-> > --- a/arch/x86/kvm/vmx/posted_intr.c
-> > +++ b/arch/x86/kvm/vmx/posted_intr.c
-> > @@ -107,7 +107,7 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int
-> > cpu)
-> >  		 * handle task migration (@cpu != vcpu->cpu).
-> >  		 */
-> >  		new.ndst = dest;
-> > -		new.sn = 0;
-> > +		new.notif_ctrl &= ~POSTED_INTR_SN;  
-> 
-> At the risk of creating confusing, would it make sense to add
-> double-underscore, non-atomic versions of the set/clear helpers for ON
-> and SN?
-> 
-> I can't tell if that's a net positive versus open coding clear() and
-> set() here and below.
-IMHO, we can add non-atomic helpers when we have more than one user for
-each operation.
-
-I do have a stupid bug here, it should be:
--               new.notif_ctrl &= ~POSTED_INTR_SN;
-+               new.notif_ctrl &= ~BIT(POSTED_INTR_SN);
-Same as below.
-
-Thanks to Oliver(LKP kvm self test). I didn't catch that in my VFIO device
-assignment test.
-
-> 
-> >  		/*
-> >  		 * Restore the notification vector; in the blocking
-> > case, the @@ -157,7 +157,7 @@ static void
-> > pi_enable_wakeup_handler(struct kvm_vcpu *vcpu)
-> > &per_cpu(wakeup_vcpus_on_cpu, vcpu->cpu));
-> > raw_spin_unlock(&per_cpu(wakeup_vcpus_on_cpu_lock, vcpu->cpu)); 
-> > -	WARN(pi_desc->sn, "PI descriptor SN field set before
-> > blocking");
-> > +	WARN(pi_desc->notif_ctrl & POSTED_INTR_SN, "PI descriptor SN
-> > field set before blocking");  
-> 
-> This can use pi_test_sn(), as test_bit() isn't atomic, i.e. doesn't incur
-> a LOCK.
-make sense. will do.
-
-> >  
-> >  	old.control = READ_ONCE(pi_desc->control);
-> >  	do {
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index d94bb069bac9..50580bbfba5d 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -4843,7 +4843,7 @@ static void __vmx_vcpu_reset(struct kvm_vcpu
-> > *vcpu)
-> >  	 * or POSTED_INTR_WAKEUP_VECTOR.
-> >  	 */
-> >  	vmx->pi_desc.nv = POSTED_INTR_VECTOR;
-> > -	vmx->pi_desc.sn = 1;
-> > +	vmx->pi_desc.notif_ctrl |= POSTED_INTR_SN;  
-
-
-Thanks,
-
-Jacob
+~Andrew
 
