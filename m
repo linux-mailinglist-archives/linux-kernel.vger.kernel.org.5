@@ -1,186 +1,187 @@
-Return-Path: <linux-kernel+bounces-148738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92AB28A86C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:54:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1272B8A86CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:55:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45ADB28854D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:54:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDFE22888C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:55:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3D4B5A106;
-	Wed, 17 Apr 2024 14:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A931E13F44A;
+	Wed, 17 Apr 2024 14:54:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="teAqBz+T";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="h/n96XbW"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WIPv4Bys";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Lmq+Imed";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WIPv4Bys";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Lmq+Imed"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C41638DD3
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D5B38DD3;
+	Wed, 17 Apr 2024 14:54:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713365689; cv=none; b=ROQ3VCK+lhxSRNHXpsC+rvV2Qte/8H0RQMTSbmiqnDkQpYhJUG9lfgnazbPup+VI+R7F0bf8GQPBCWxJSoXa69ZkUxQHezk1Z4C9/hp+sJLT+jZof0Ls6xRxsDb/4eFDGk1XI16YzyVoNV9EsQ7sJ0ViSJ8skaPrPK3ixJCuF9c=
+	t=1713365696; cv=none; b=taalmFUiWrs3uCvCwvBbvnTL6IXvgFV7EOWhTwkwOe8mJ8Z4RcpzLy5Narn3Lu+JSAqP9DhDuk8NiL2BrBIYQGmpjnPq/P1imMixW0VLQdo7fjzL+l2W5q6EBM+9XjKH+m5DmFucjpEZ5uvZK0N+ic2rbwxzqLXw1543Ga1HXIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713365689; c=relaxed/simple;
-	bh=0MiiK6F8wzc4SITPbvD/aZwYJFfrRWk+B2juinweY+g=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=DyBfjvyQCh6NbXs1htygpjAPJeLFB8Glhpo8ZNsb4DIKlSECae3YshOf5MLx0WdLBHh7P9nwVSxb58cfqEADpugWVMfHYrMT39W7fEJXe8WEeH0V9t77JIoH/DCghDW76Y4YQod1/IPGAhR3lxDgr7XKdGzNLc+jmoF31awpQfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=teAqBz+T; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=h/n96XbW; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713365685;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1713365696; c=relaxed/simple;
+	bh=j/kkXCLbaet7tQenZZV3BauQw9//W4LV4+M6WNx0+QE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rcz8eMkPyDY0nlPvZljw21PeK18oBObtSA/7wERSkJ1etFZdO4reUyQycqT01WLpPbxMka12+EcAMioamOcQuy7oTw5PsORZTYwPm+hhf1fnFxnPcXpxvjOjBdQ8WXUuk6g3JSvmbdK1VCMVIWQchFAUxc01URI7PKi08tfvjQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WIPv4Bys; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Lmq+Imed; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WIPv4Bys; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Lmq+Imed; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id F39C820AB1;
+	Wed, 17 Apr 2024 14:54:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713365687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lUivZh613trnPQowXjJAMGHNy6dBQGV9ltkb6mTz4dQ=;
-	b=teAqBz+TaY6PlPSNgnTvzoclCTkYgf6aVrrOYTuRWuTeN4lxyGGDmqeiVnlQ27e07aLUyI
-	s4kTU7f3xrvIvu0y+XUwFuKOaeDZ6kI/PSw6kfsDFuiCvEmUXfJN7MTRDAAqFLn7VLFC44
-	PrroA/fc30ev2gEIdr3hyidGBcwACvQGUAy0UUFqsB0/oBIMww6/BnNolmTBj7ljpu0h3u
-	5vnR2lP07h5UpSFkVSo6VHDFPSSkFHruqKHqTZacMrg+682Q4n8aexyZLXSREXO8YDsy1f
-	aQXrvtMNirtNk1JWO1sRJ4qAKzj19KJx/Jqlrfgzi7Qt8KxPnf8gy1gYk2IRig==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713365685;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	bh=vgoG+0xCL/8Y6q4Ug28gi7RT5OUpQ9e3zhnkL2fsCAI=;
+	b=WIPv4Byskan7NgsSrXhdP/jtNGrXCWeJ7c/v1HcDwsHpjWUJuJ9glc5yF6iPgB7Oz3tz4D
+	fB1UVS7yTNKabxvzvhclLZARUIXTuLmPmO55Yyq7uco4x3jGpJfgqG1d7OQxmPcUYwqfOo
+	DAqbYLSHJj1U2YYaKXmygv2D8UitTGs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713365687;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lUivZh613trnPQowXjJAMGHNy6dBQGV9ltkb6mTz4dQ=;
-	b=h/n96XbWZ69uTVNvxzAIpmTZXOQBYDxVcu+UviUl32nqKI+3BydpB3VuADcwXNrBeHvvHf
-	+CmwXPaISGXR62CA==
-To: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, Steven Rostedt
- <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>,
- linux-kernel@vger.kernel.org, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH printk v4 06/27] printk: nbcon: Add callbacks to
- synchronize with driver
-In-Reply-To: <Zh_IrB4MyHwU8OJE@pathway.suse.cz>
-References: <20240402221129.2613843-1-john.ogness@linutronix.de>
- <20240402221129.2613843-7-john.ogness@linutronix.de>
- <ZhUIatzxietD4F-m@localhost.localdomain>
- <87y19djqr0.fsf@jogness.linutronix.de> <Zh_IrB4MyHwU8OJE@pathway.suse.cz>
-Date: Wed, 17 Apr 2024 17:00:42 +0206
-Message-ID: <87bk68niod.fsf@jogness.linutronix.de>
+	bh=vgoG+0xCL/8Y6q4Ug28gi7RT5OUpQ9e3zhnkL2fsCAI=;
+	b=Lmq+ImedM/LooXtq0zteHXx7bs80Dis4dglHoOHZJ44bjwsuazpH06T84eOK/VD5QxWaUs
+	i3F3e/IrtihUfoCQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713365687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vgoG+0xCL/8Y6q4Ug28gi7RT5OUpQ9e3zhnkL2fsCAI=;
+	b=WIPv4Byskan7NgsSrXhdP/jtNGrXCWeJ7c/v1HcDwsHpjWUJuJ9glc5yF6iPgB7Oz3tz4D
+	fB1UVS7yTNKabxvzvhclLZARUIXTuLmPmO55Yyq7uco4x3jGpJfgqG1d7OQxmPcUYwqfOo
+	DAqbYLSHJj1U2YYaKXmygv2D8UitTGs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713365687;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vgoG+0xCL/8Y6q4Ug28gi7RT5OUpQ9e3zhnkL2fsCAI=;
+	b=Lmq+ImedM/LooXtq0zteHXx7bs80Dis4dglHoOHZJ44bjwsuazpH06T84eOK/VD5QxWaUs
+	i3F3e/IrtihUfoCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E9C811384C;
+	Wed, 17 Apr 2024 14:54:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id VIsOObbiH2afVgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 17 Apr 2024 14:54:46 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 9C030A082E; Wed, 17 Apr 2024 16:54:46 +0200 (CEST)
+Date: Wed, 17 Apr 2024 16:54:46 +0200
+From: Jan Kara <jack@suse.cz>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jan Kara <jack@suse.cz>, cve@kernel.org, linux-kernel@vger.kernel.org,
+	linux-cve-announce@vger.kernel.org
+Subject: Re: CVE-2024-26774: ext4: avoid dividing by 0 in
+ mb_update_avg_fragment_size() when block bitmap corrupt
+Message-ID: <20240417145446.uh2rqcbxlebnkbfm@quack3>
+References: <2024040308-CVE-2024-26774-52d9@gregkh>
+ <20240417114324.c77wuw5hvjbm6ok5@quack3>
+ <2024041711-chapter-uninstall-b1d3@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024041711-chapter-uninstall-b1d3@gregkh>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.978];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-Spam-Score: -3.80
+X-Spam-Flag: NO
 
-On 2024-04-17, Petr Mladek <pmladek@suse.com> wrote:
->> We want to avoid using nbcon console ownership contention whenever
->> possible. In fact, there should _never_ be nbcon console owership
->> contention except for in emergency or panic situations.
->>
->> In the normal case, printk will use the driver-specific locking for
->> synchronization. Previously this was achieved by implementing the
->> lock/unlock within the write() callback. But with nbcon consoles that
->> is not possible because the nbcon ownership must be taken outside of
->> the write callback:
->> 
->> con->device_lock()
->> nbcon_acquire()
->> con->write_atomic() or con->write_thread()
->> nbcon_release()
->> con->device_unlock()
->
-> This sounds like a strong requirement. So there should be a strong
-> reason
+On Wed 17-04-24 15:30:03, Greg Kroah-Hartman wrote:
+> On Wed, Apr 17, 2024 at 01:43:24PM +0200, Jan Kara wrote:
+> > Hello!
+> > 
+> > On Wed 03-04-24 19:31:41, Greg Kroah-Hartman wrote:
+> > > Description
+> > > ===========
+> > > 
+> > > In the Linux kernel, the following vulnerability has been resolved:
+> > > 
+> > > ext4: avoid dividing by 0 in mb_update_avg_fragment_size() when block bitmap corrupt
+> > > 
+> > > Determine if bb_fragments is 0 instead of determining bb_free to eliminate
+> > > the risk of dividing by zero when the block bitmap is corrupted.
+> > > 
+> > > The Linux kernel CVE team has assigned CVE-2024-26774 to this issue.
+> > 
+> > I'd like to understand what is the imagined security threat fixed by this
+> > patch (as multiple patches of similar nature got assigned a CVE). The patch
+> > fixes a bug that if a corrupted filesystem is read-write mounted, we can do
+> > division-by-zero. Now if you can make the system mount a corrupted
+> > filesystem, you can do many interesting things to the system other than
+> > create a division by zero... So what is the presumed threat model here?
+> 
+> Exactly what you said, "if you mount a corrupted file system, you will
+> get a divide by zero fault."
+> 
+> Many systems auto-mount any filesystem plugged into it.  If yours do
+> not, then yours does not need to worry about this type of CVE.
 
-There is: PREEMPT_RT
+OK, understood. But let me state that with the current state of affairs in
+the filesystem land, it will not take a determined attacker long to get
+arbitrary code execution out of "maliciously corrupted fs mounted". The
+code of most filesystems has simply never been written with the assumption
+that it can be presented with malicious data and we have hundreds of
+thousands lines of code like that. We have fixed the most glaring problems
+but by far not all (partly because of performance and maintenance costs,
+partly because they are baked into on-disk formats).
 
-> when nbcon_acquire() is safe enough in emergency context
-> then it should be safe enough in the normal context either.
-> Otherwise, we would have a problem.
+So if we should honestly state the situation (and filesystem folks are
+trying to get this message across for a few years already), we should issue
+a CVE for "mounting untrusted fs image can crash your kernel or install
+rootkit to your system". And yes, I know most distros will happily mount
+whatever is plugged into the USB port because that is what users expect and
+it is convenient. So if anybody wants a practical solution to this security
+problem, I'd suggest working on FUSE drivers for filesystems you care about
+and make distros use that when mounting removable media... That is actually
+pretty secure and robust solution if you don't care about performance
+*that* much.
 
-Of course. That is not the issue.
+								Honza
 
-> My understanding is that we want to take con->device_lock()
-> in the normal context from two reasons:
->
->   1. This is historical, king of speculation, and probably
->      not the real reason.
-
-Correct. Not a reason.
-
->   2. The con->device() defines the context in which nbcon_acquire()
->      will be taken and con->write_atomic() called to make it
->      safe against other operations with the device driver.
->
->      For example, con->device() from uart serial consoles would
->      disable interrupts to prevent deadlocks with the serial
->      port IRQ handlers.
->
->      Some other drivers might just need to disable preemption.
->      And some (future) drivers might even allow to keep
->      the preemption enabled.
-
-(Side note: In PREEMPT_RT, all drivers keep preemption enabled.)
-
-This 2nd reason is almost correct.
-
-Drivers are implemented using their own locking mechanisms. For UART it
-will be spinlocks. For VT it will be mutexes. Whatever these mechanisms
-are, that is what printk also wants to use. And since (for the normal
-case) printk will always print console messages from task context,
-drivers are free to use whatever locking mechanism fits them best. By
-using the locking choice of the driver, printk will always do the right
-thing and the author of that driver will always be in control of the
-context.
-
-Unfortunately printk also needs to deal with the non-normal case
-(emergencies, panic, shutdown) when no printing threads are
-available. For this (and only for this case) the nbcon console ownership
-was introduced. It functions as a special[*] inner lock. This inner lock
-will never be contended in the normal case. It exists only so that the
-non-normal case can takeover the console for printing.
-
-[*] Special = NMI-safe with priority and handover/takeover semantics.
-
-Generally speaking, driver authors should not be concerned about this
-special inner lock. It should be hidden (such as in the port lock
-wrapper).
-
-The special lock is interesting _only_ for drivers implementing
-write_atomic(). And even then, it is only interesting for the
-write_thread() and write_atomic() callback implementations. These
-require some special handling to make sure they will print sane output
-during handover/takeovers. But no other functions need to be concerned
-about it.
-
-
-> I still have to shake my head around this. But I would first like
-> to know whether:
->
->    + You agree that nbcon_try_acquire() always have to be called with
->      preemption disabled.
-
-No, it must not. PREEMPT_RT requires preemption enabled. That has always
-been the core of this whole rework.
-
->    + What do you think about explicitly disabling preemption
->      in nbcon_try_acquire().
-
-We cannot do it.
-
->    + If it is acceptable for the big picture. It should be fine for
->      serial consoles. But I think that graphics consoles wanted to
->      be preemptive when called in the printk kthread.
-
-In PREEMPT_RT, all are preemptive.
-
-> I am sure that it will be possible to make nbcon_try_acquire()
-> preemption-safe but it will need some more magic.
-
-I am still investigating why you think it is not safe (as an inner lock
-for the normal case). Note that for emergency and panic situations,
-preemption _is_ disabled.
-
-John
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
