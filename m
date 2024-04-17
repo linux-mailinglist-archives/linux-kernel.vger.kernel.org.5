@@ -1,103 +1,152 @@
-Return-Path: <linux-kernel+bounces-148345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 687FC8A8139
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:42:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 293688A8108
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:35:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24E9A281616
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:42:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCF411F21F59
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02BDC13C689;
-	Wed, 17 Apr 2024 10:42:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A6213C667;
+	Wed, 17 Apr 2024 10:35:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="iSrq7iBg"
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ltts.com header.i=@ltts.com header.b="BI6QR0uj";
+	dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b="g1xXHKQ1"
+Received: from c180-18.smtp-out.ap-south-1.amazonses.com (c180-18.smtp-out.ap-south-1.amazonses.com [76.223.180.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5126F13C67C;
-	Wed, 17 Apr 2024 10:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB81D80BE0;
+	Wed, 17 Apr 2024 10:35:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=76.223.180.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713350570; cv=none; b=gDq8cWbDxPUZ6C6Qf+TnEKZz9+MKyPZE2MWqN/MFCU04XP4rcSGVnT0A1E4yetG1KkeKl9hPwvnerjParjTF2tCcQYI9zXhZ8Dfb4yjYR7GHW81ILb5h3aw84dEBf9TsK4OBuqKwSaQ5fe7/SLnkWnNffOlACPqJeMd/3LVGW90=
+	t=1713350144; cv=none; b=V9QFYReWWASkz44IZLISJyujeWZ2uw6KCZ5vk+mr5qdxRDjJsdT0eCnTMSYVv9ZDXmjCBFOd+W6BU/TXhqVyt4VB70Gp7dGZkzvXwyh9rCiUR4QAghh1gt4VakRTPctqJjQ+YkIh+7ePlBqbRfEowyHXqmvfWvuxdPECIpbXdew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713350570; c=relaxed/simple;
-	bh=IrBuKUIq8kqO1Ly/fgTiZaO7HGYVB5Ybpch6CI1Yp4o=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WSY6vhF3erzijcOd6sN7FnjF9um1YJta0dhE+gM6XFn1816xnt5hmUGPdhRZXQqzGrdl2oOCBVxtMx8nsHpHzl/R1hAmLujedPOKzTBcT7l/CJPjMeIChlf+whz3Z/CpP7U8PCauG2JdFKHqpniNON8ldoOyyvOCabDI34gEW2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=iSrq7iBg; arc=none smtp.client-ip=157.90.84.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from wse.fritz.box (p5de45f24.dip0.t-ipconnect.de [93.228.95.36])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPA id 73FE02FC005F;
-	Wed, 17 Apr 2024 12:35:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1713350118;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=wCA6Haldgtd/UpE1DE6VbdPB++vH0tcbzN1r/TmSyfU=;
-	b=iSrq7iBgz0uRl3OBas4+UCDM6oF1yo4Dn0PqQP7HT9+HGvA0qDEE5ZmMbfUiW0G4scRYqg
-	h3FfGQpK3ZVBAFe74sYoOZ3xvulllVHKiXfY0Z17nQB1Qif8tt23BjJJ3QLtqlltWtmXse
-	9G7i/55mYsEevcb14znKrl5kPB2EwcA=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-From: Werner Sembach <wse@tuxedocomputers.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>
-Cc: Christoffer Sandberg <cs@tuxedo.de>,
-	Werner Sembach <wse@tuxedocomputers.com>,
-	linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ACPI: resource: Do IRQ override on TongFang GXxHRXx and GMxHGxx
-Date: Wed, 17 Apr 2024 12:35:09 +0200
-Message-Id: <20240417103509.28657-1-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713350144; c=relaxed/simple;
+	bh=MPA/yCGAeV9r3zQj7UZwA1/FORgOEaCJc7t+9vex2kY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cKubOoKu27fKs5r5z03jfRGBP6x+spsiHd4SzcxEoTT1GijJMePXEQXzswTOTHhxTGGZy3K/gZp7MvuovFNTSfLtuItVL7tTTOzch8Lyzq6TTY4QEVr3YdMptMiIWwLPviFAjKSaPYE9drjaiXKFAZ6w4051YZBVTHlnBL5KiqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com; spf=pass smtp.mailfrom=ap-south-1.amazonses.com; dkim=pass (2048-bit key) header.d=ltts.com header.i=@ltts.com header.b=BI6QR0uj; dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b=g1xXHKQ1; arc=none smtp.client-ip=76.223.180.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ap-south-1.amazonses.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=i3fe3efcd4pbz7ipgssfqjhzqx347xbc; d=ltts.com; t=1713350138;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding;
+	bh=MPA/yCGAeV9r3zQj7UZwA1/FORgOEaCJc7t+9vex2kY=;
+	b=BI6QR0ujVVqAvr+8gEtHK+VZQxEiwpZB74n8cBP7ctcA8BW/qjQxmFEuFKEH2x3Q
+	I0Nt1zPwyyxknt8rCtMnELyTNbWvtoDI9TGqVNoYcvgRR8S/eChyZ+yeflBIPdsade/
+	+XZJAUTgskd3kabFLEuqqoy7kbmFr+pkrYzCIJzm6cyAy/gEv9A/ZeGIDVIVG0sycEn
+	rWE7QzD5gNFGkHEfrq4xdOV6kozY7wJreDAAJX4TXnKVCe/8RBLhIfv9XPDY6yr4GjB
+	0ytMfU6zRWPTvCTCrJPNiNQEDMg//qeIvx2yWOBWar/+cmVl7PScsiAw2BXicHr8NR3
+	WneEsE9eaA==
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=rlntogby6xsxlfnvyxwnvvhttakdsqto; d=amazonses.com; t=1713350138;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding:Feedback-ID;
+	bh=MPA/yCGAeV9r3zQj7UZwA1/FORgOEaCJc7t+9vex2kY=;
+	b=g1xXHKQ1vAtrtjihxlrA6d7AQPBE/IEEz3uez8vIIqiX+lONosMproEb/sYQTj4J
+	g4A54PqyPxUEfMc4SXTht8W/+SDxg336Ys0boWR2kfpQIEfZ8qIknizraNbgthTKdvA
+	6SmKiOSgqM4mAFy0BNVh3+wDWRnCwCU7CRJMQXS0=
+From: Bhargav Raviprakash <bhargav.r@ltts.com>
+To: lee@kernel.org
+Cc: arnd@arndb.de, bhargav.r@ltts.com, broonie@kernel.org, 
+	conor+dt@kernel.org, devicetree@vger.kernel.org, eblanc@baylibre.com, 
+	gregkh@linuxfoundation.org, jpanis@baylibre.com, kristo@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com, 
+	linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org, 
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	m.nirmaladevi@ltts.com, nm@ti.com, robh+dt@kernel.org, 
+	vigneshr@ti.com
+Subject: Re: [PATCH v6 03/11] mfd: tps6594: add regmap config in match data
+Date: Wed, 17 Apr 2024 10:35:38 +0000
+Message-ID: <0109018eeba05ad9-f837b6c7-70cf-4a2a-9aeb-3ef245e18862-000000@ap-south-1.amazonses.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240411170344.GK2399047@google.com>
+References: <20240411170344.GK2399047@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Feedback-ID: 1.ap-south-1./RC/PI2M8xOxQmTMPi0M1Q8h2FX69egpT62QKSaMPIA=:AmazonSES
+X-SES-Outgoing: 2024.04.17-76.223.180.18
 
-From: Christoffer Sandberg <cs@tuxedo.de>
+Hello,
 
-Listed devices needs the override for keyboard to work.
+On Tue, 16 Apr 2024 13:25:04 +0100, Lee Jones wrote:
 
-Signed-off-by: Christoffer Sandberg <cs@tuxedo.de>
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-Cc: stable@vger.kernel.org
----
- drivers/acpi/resource.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+> > Hello,
+> > 
+> > On Wed, 14 Feb 2024 10:10:17 -0800, Lee Jones wrote:
+> > > On Mon, 08 Apr 2024, Bhargav Raviprakash wrote:
+> > > 
+> > > > Introduces a new struct tps6594_match_data. This struct holds fields for
+> > > > chip id and regmap config. Using this struct in of_device_id data field.
+> > > > This helps in adding support for TPS65224 PMIC.
+> > > > 
+> > > > Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
+> > > > Acked-by: Julien Panis <jpanis@baylibre.com>
+> > > > ---
+> > > >  drivers/mfd/tps6594-i2c.c   | 24 ++++++++++++++++--------
+> > > >  drivers/mfd/tps6594-spi.c   | 24 ++++++++++++++++--------
+> > > >  include/linux/mfd/tps6594.h | 11 +++++++++++
+> > > >  3 files changed, 43 insertions(+), 16 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/mfd/tps6594-i2c.c b/drivers/mfd/tps6594-i2c.c
+> > > > index c125b474b..9e2ed48b7 100644
+> > > > --- a/drivers/mfd/tps6594-i2c.c
+> > > > +++ b/drivers/mfd/tps6594-i2c.c
+> > > > @@ -192,10 +192,16 @@ static const struct regmap_config tps6594_i2c_regmap_config = {
+> > > >  	.write = tps6594_i2c_write,
+> > > >  };
+> > > >  
+> > > > +static const struct tps6594_match_data match_data[] = {
+> > > > +	[TPS6594] = {TPS6594, &tps6594_i2c_regmap_config},
+> > > > +	[TPS6593] = {TPS6593, &tps6594_i2c_regmap_config},
+> > > > +	[LP8764] = {LP8764, &tps6594_i2c_regmap_config},
+> > > 
+> > > Nit: There should be spaces after the '{' and before the '}'.
+> > > 
+> > 
+> > Sure! will fix it in the next version.
+> > 
+> > > > +};
+> > > > +
+> > > >  static const struct of_device_id tps6594_i2c_of_match_table[] = {
+> > > > -	{ .compatible = "ti,tps6594-q1", .data = (void *)TPS6594, },
+> > > > -	{ .compatible = "ti,tps6593-q1", .data = (void *)TPS6593, },
+> > > > -	{ .compatible = "ti,lp8764-q1",  .data = (void *)LP8764,  },
+> > > > +	{ .compatible = "ti,tps6594-q1", .data = &match_data[TPS6594], },
+> > > > +	{ .compatible = "ti,tps6593-q1", .data = &match_data[TPS6593], },
+> > > > +	{ .compatible = "ti,lp8764-q1",  .data = &match_data[LP8764], },
+> > > 
+> > > Not keen on this.  Why do you pass the regmap data through here and
+> > > leave everything else to be matched on device ID?  It would be better to
+> > > keep passing the device ID through and match everything off of that.
+> > > 
+> > > 
+> > > -- 
+> > > Lee Jones [李琼斯]
+> > 
+> > Thanks for the feedback!
+> > 
+> > These changes were made because of the following message:
+> > https://lore.kernel.org/all/7hcysy6ho6.fsf@baylibre.com/
+> > 
+> > Please let us know which one to follow.
+> 
+> Right, except this doesn't eliminate "any \"if (chip_id)\" checking".
+> Instead you have a hodge-podge of passing a little bit of (Regmap) data
+> via match and the rest via "if (chip_id)".  So either pass all platform
+> type data via .data or just the chip ID.  My suggestion 99% of the time
+> is the latter.
 
-diff --git a/drivers/acpi/resource.c b/drivers/acpi/resource.c
-index 59423fe9d0f29..deeb4e182687a 100644
---- a/drivers/acpi/resource.c
-+++ b/drivers/acpi/resource.c
-@@ -558,6 +558,18 @@ static const struct dmi_system_id irq1_edge_low_force_override[] = {
- 			DMI_MATCH(DMI_BOARD_NAME, "GM6XGxX"),
- 		},
- 	},
-+	{
-+		.ident = "TongFang GXxHRXx/TUXEDO InfinityBook Pro Gen9 AMD",
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_SKU, "GXxHRXx"),
-+		},
-+	},
-+	{
-+		.ident = "TongFang GMxHGxx/TUXEDO Stellaris Slim Gen1 AMD",
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_SKU, "GMxHGxx"),
-+		},
-+	},
- 	{
- 		/* MAINGEAR Vector Pro 2 15 */
- 		.matches = {
--- 
-2.34.1
+Got it. Thanks! Will revert back to .data having chip_id.
 
+Regards,
+Bhargav
 
