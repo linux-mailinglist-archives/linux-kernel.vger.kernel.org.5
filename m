@@ -1,104 +1,201 @@
-Return-Path: <linux-kernel+bounces-148633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDE238A8556
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:53:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D1A48A8568
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:58:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AE8D1F25230
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:53:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0694AB2548B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 635891411E8;
-	Wed, 17 Apr 2024 13:52:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F5D1411CB;
+	Wed, 17 Apr 2024 13:57:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="MyxQToss"
-Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WELsYkuE"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609DC14039D;
-	Wed, 17 Apr 2024 13:52:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B21813F443;
+	Wed, 17 Apr 2024 13:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713361967; cv=none; b=R1uQVmM4VxNgctfDU5sAe0zD8jz1pwx1nJZg8rlbFCXYVNVCkAyomao/nzH2DoKvT9rtQiHhDq51D/+UwFtA2zm4wLAg0+Bm1VwqNz64wHwvr+NRuJkraWuNICKKDSUCmqaoe6TFbTMPfpdBnh+n5cQArZumLbBQ4ZpRDhxWzDs=
+	t=1713362267; cv=none; b=VFcXMrZRTu+ss9FqHuqgLP9TRessLXBvXn4N8HsTlQ6CFsLe1vpM7FWAruJi5MRtg4Kt0HtSe4UAoXJWgXHZ2u17j0U0I70SRrrkcciZUW4dhCCAiyRcitoAwRNOqVCAx4Zbp+VEGnvLvsYEcyoyB+s9lKQTEXXQX6yX4TgXIw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713361967; c=relaxed/simple;
-	bh=dvs8rmkpjRbTlCQkdBXUSnIfhTY7ofWCgT1rCrbizXU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mDW7MN60CetZVDl5AgRJ6gq6kkyTSXCTqij7X6cQJG9CjOpM/qLAkTEJFT2FWDr33bKHPpmWNyQWstuJjn0bIZM0wXVHkZp93GWzISYiNnXJRBzqzAYYM3qBeKDhGWBBBtvS0WP+kW0D6ZGn4VzqSVo+UH8Zg9o+nOAM+iJgCD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=MyxQToss; arc=none smtp.client-ip=193.104.135.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
-Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
-	by mail1.fiberby.net (Postfix) with ESMTPSA id DCAFA600A7;
-	Wed, 17 Apr 2024 13:52:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
-	s=202008; t=1713361963;
-	bh=dvs8rmkpjRbTlCQkdBXUSnIfhTY7ofWCgT1rCrbizXU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=MyxQTossvwiZE6WUOuoKK5bTFXhKpKpktRXUUPeOLoblR/6RPr8n/UFQBZUgkuorZ
-	 sh8wBhW9kAt+tQdz2YVOCiQjKnEYncE1SMzmvl1UOxwOBrKj8sKBi3AUqDbnAF0/2r
-	 Gko18E0QzVPb4XKQ7CLJ9JHO+6sx2NnADzg2gjw3202Q4unjlv4BwmLGL9oz/qq9X9
-	 NNGfiaC2MrZC7vS6Lr+Wj2mbcXvcDL6Ms5IsHoKoxJkFm5iRxYWga6hrtPMeHF9mx0
-	 8rN6dZRDi2ach9xAjFsPSL5GdcmCKR4RGj6A1YpOGB5akL3+B+Npf5sdmHyXGE1xEY
-	 ypmuBQKAfdosw==
-Received: by x201s (Postfix, from userid 1000)
-	id 816AA203AC4; Wed, 17 Apr 2024 13:51:15 +0000 (UTC)
-From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
-To: netdev@vger.kernel.org
-Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
+	s=arc-20240116; t=1713362267; c=relaxed/simple;
+	bh=tAuTme6GkvilwxtiDUHh+kXeYKrHGiZ7i8iQOkzrPBg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=InFuWzyg+czyAZ/0dBOlT38rBmczfvtJwLm9QSUvzUaaEZG9lJBkUpQRPp5O6nQjlfvJEu3lJ+L/yhuAwdTCRo8pExZQob1SSNvdqI632MKTZacGrBPDEU5Hz1hQCNXX4ecAviwJ8InfehZ/RisYbbhMYHLcQyBU/hAzsMVnMZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WELsYkuE; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d8863d8a6eso72972451fa.3;
+        Wed, 17 Apr 2024 06:57:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713362264; x=1713967064; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4CPt5wsPPyfiuSaFsXxCJvkSsW2VMZQ8yMjMPQ4gYeA=;
+        b=WELsYkuE8+DsMAIZkP1dXlRBmiYEGRDFXl3KCwgDOAwnMYMcHwUBVwPXoBXBTuE2qw
+         iQ7B8wBV3u3XfE0VFoeq2LB0yF+C7DEIy1Yk/saRHhehyEfp2+EC3H08VaHX+Mi5gBxw
+         c/do0vM3MI/LhVJ2YWZMPsqWJ/F4EOHfBCJMTUFB1dpCPWWDCMcXc/rZJtu5Unzl88Ka
+         yLphbsBFMBWbjnHcvHTCDUbkZMQDskZkPN/mGKHvSoRCZrQuXAqKFKrtpulV6avd1Ezq
+         kolHQoLnMF4FPJ5v/T8eDof6MyjTGrZ0qEiyEfDieMJ+km1rusl3HBe5HhuVH3XamcYG
+         OD2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713362264; x=1713967064;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4CPt5wsPPyfiuSaFsXxCJvkSsW2VMZQ8yMjMPQ4gYeA=;
+        b=Zhy2bXn34M1xgkC5eirBWXkLl8nuzcV+OGWfdAB7fCVVVZZljf0pG/dxiEwf6zIBVO
+         UNG15qgjb3Wf9Y5+IIigS/OAUE3JKwXhIVQa6JywMqa8EFdJf1adi197Kz9rV4RXI49z
+         REV5c/+q64iAYzBOxjcalrYT4gQSk4o94Qc7I0XaBl3atpBeONeYYWVInXTwZpcZ5IDB
+         +k64hwEg8tOV1do3seTfwo1/qXaE87U5zdIj3gL2Bjq51Z7yrtwFxOVTb2DzYcEBQuCN
+         zsWgE+Q0sAIuc0ycna+7ZT0eNfp1GpYofU6zbWLHbDHbnN5XA5o1Abczmxn6Zu4TvAqN
+         hlJg==
+X-Forwarded-Encrypted: i=1; AJvYcCXcHVPaZ2uCQnOg9PccnBS953PrNcwuWITbnqfWaFkbNjbvcsJe5AM5g/XV0wRJlZKH0yT3p/56Kvfja9As9HIPz1E8MsSz1bPV9Ht/L11BQVEpyZ/e8cgiENeoDqLLMtq6a1NCqIFPRYs9oVE2aL/TgV1MqZPwSxCFMEcJg1F8qPfwXyxQ6g==
+X-Gm-Message-State: AOJu0Yzsk0lQ7rTh086OrssEc4I7ShBApEaF8jW4wxn8w2DQeSBsehVp
+	7x2YTNXB/MmzNrrVEavg4tXmpCHNEwcsRwFeQQRdvqIlGZuy7S4A
+X-Google-Smtp-Source: AGHT+IHxA3at9V3J8oOOjFoQI8Hxcudvb/valQNqHmVnxagYSsadcG/jKBH3OuVO++fYzASwT0Gzcg==
+X-Received: by 2002:a2e:a695:0:b0:2da:38e:f73d with SMTP id q21-20020a2ea695000000b002da038ef73dmr11056940lje.51.1713362264074;
+        Wed, 17 Apr 2024 06:57:44 -0700 (PDT)
+Received: from pratik-IdeaPad.lan (customer-145-40-29-195.stosn.net. [145.40.29.195])
+        by smtp.googlemail.com with ESMTPSA id e9-20020a2e8189000000b002d7095bf808sm1864467ljg.128.2024.04.17.06.57.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 06:57:43 -0700 (PDT)
+From: Pratik Farkase <pratikfarkase94@gmail.com>
+X-Google-Original-From: Pratik Farkase <pratik.farkase@wsisweden.com>
+To: 
+Cc: Pratik Farkase <pratik.farkase@wsisweden.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>,
+	Scott Branden <sbranden@broadcom.com>,
+	Pratik Farkase <pratikfarkase94@gmail.com>,
+	Stefan Wahren <wahrenst@gmx.net>,
 	linux-kernel@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>
-Subject: [PATCH net-next] net/mlx5e: flower: check for unsupported control flags
-Date: Wed, 17 Apr 2024 13:51:09 +0000
-Message-ID: <20240417135110.99900-1-ast@fiberby.net>
-X-Mailer: git-send-email 2.43.0
+	linux-serial@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2] dt-bindings: serial: brcm,bcm2835-aux-uart: convert to dtschema
+Date: Wed, 17 Apr 2024 15:51:10 +0200
+Message-Id: <20240417135111.20375-1-pratik.farkase@wsisweden.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Use flow_rule_is_supp_control_flags() to reject filters with
-unsupported control flags.
+Convert the Broadcom BCM2835 Auxiliary UART to newer DT schema.
+Created DT schema based on the .txt file which had
+`compatible`, `reg` `clocks` and `interrupts` as the
+required properties. This binding is used by Broadcom BCM2835
+SOC used in some Raspberry PI boards.
+Changes from original file:
+Implemented complete example which the original txt binding lacked.
 
-In case any unsupported control flags are masked,
-flow_rule_is_supp_control_flags() sets a NL extended
-error message, and we return -EOPNOTSUPP.
-
-Only compile-tested.
-
-Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+Signed-off-by: Pratik Farkase <pratik.farkase@wsisweden.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Changes in v2
+- Updated Maintainers list according to feedback
+- Fixed typo `Auxiliar` to `Auxiliary`
+---
+---
+ .../bindings/serial/brcm,bcm2835-aux-uart.txt | 18 -------
+ .../serial/brcm,bcm2835-aux-uart.yaml         | 48 +++++++++++++++++++
+ 2 files changed, 48 insertions(+), 18 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.txt
+ create mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.yaml
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-index aeb32cb27182..5019280cfcdd 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -2819,6 +2819,11 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
- 			else
- 				*match_level = MLX5_MATCH_L3;
- 		}
+diff --git a/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.txt b/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.txt
+deleted file mode 100644
+index b5cc6297cd1b..000000000000
+--- a/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.txt
++++ /dev/null
+@@ -1,18 +0,0 @@
+-* BCM2835 AUXILIAR UART
+-
+-Required properties:
+-
+-- compatible: "brcm,bcm2835-aux-uart"
+-- reg: The base address of the UART register bank.
+-- interrupts: A single interrupt specifier.
+-- clocks: Clock driving the hardware; used to figure out the baud rate
+-  divisor.
+-
+-Example:
+-
+-	uart1: serial@7e215040 {
+-		compatible = "brcm,bcm2835-aux-uart";
+-		reg = <0x7e215040 0x40>;
+-		interrupts = <1 29>;
+-		clocks = <&aux BCM2835_AUX_CLOCK_UART>;
+-	};
+diff --git a/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.yaml b/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.yaml
+new file mode 100644
+index 000000000000..5d4d37371d6b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.yaml
+@@ -0,0 +1,48 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/serial/brcm,bcm2835-aux-uart.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+		if (!flow_rule_is_supp_control_flags(FLOW_DIS_IS_FRAGMENT |
-+						     FLOW_DIS_FIRST_FRAG,
-+						     match.mask->flags, extack))
-+			return -EOPNOTSUPP;
- 	}
- 
- 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_BASIC)) {
++title: BCM2835 AUXILIARY UART
++
++maintainers:
++  - Pratik Farkase <pratikfarkase94@gmail.com>
++  - Florian Fainelli <florian.fainelli@broadcom.com>
++  - Stefan Wahren <wahrenst@gmx.net>
++
++allOf:
++  - $ref: serial.yaml
++
++properties:
++  compatible:
++    const: brcm,bcm2835-aux-uart
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/bcm2835.h>
++    #include <dt-bindings/clock/bcm2835-aux.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    uart1: serial@7e215040 {
++        compatible = "brcm,bcm2835-aux-uart";
++        reg = <0x7e215040 0x40>;
++        interrupts = <1 29>;
++        clocks = <&aux BCM2835_AUX_CLOCK_UART>;
++    };
 -- 
-2.43.0
+2.34.1
 
 
