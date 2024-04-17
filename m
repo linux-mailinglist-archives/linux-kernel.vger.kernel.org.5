@@ -1,168 +1,113 @@
-Return-Path: <linux-kernel+bounces-147804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1147C8A79E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:33:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F94A8A79E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:34:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69DA2B22020
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:33:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0B82282A9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:34:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9167D17F6;
-	Wed, 17 Apr 2024 00:33:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C44E17C2;
+	Wed, 17 Apr 2024 00:33:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b0NdeUQc"
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rMckk3EH"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ED29EA4
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:33:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D207FB
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:33:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713314013; cv=none; b=M2oaEMBdANsfw8hjl4Zj9UcIvh9MIPYS4dfrV+it0Ou8lXZWAA9CB2jzlZUpnWAaghKjI10/0zsGWOJYb9zP05m+S+PxEdxDJw0fwIOkKMY/z8soaxle540tSyy1441fdd9XcnENm8FhKY522tgtonkJ7O+JRsliIYr+u2WB6ho=
+	t=1713314035; cv=none; b=WaiCgoZbl5vNGf2dJ3jbLmskNE5pH3bRJqDlfzYs2DqrOWCw04y/GhAUzL+8y5sOeGY/J3puFCXTUUvId1EfzqoO8FauVzUs8wjYzroFzlTS7LE/5KMbl5QSmCGLSXwVUMAv9WCbFFsEUEz+kQEUjIYAOxvjV8COJcAF7uYM5+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713314013; c=relaxed/simple;
-	bh=lFprVeAVy9ebZ7jvi/XVAorRedWrrB8pQ/HYuQAsD5k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KoqkxyOn2y8aJbEBHxaYvyGiIMPYSd4MSp39YmfpJ5Xfe6BtrgxQ32NF626zNBiAQvzarIJ1FWsfZI9Jn/+abc9WjijMsSgDp/lfOsnw+vRuJPuhJA/986guo0CpKwEtYRnEMJyxhrmk7tOJRalHTPvJn/gAhogZ1vZxS8ejQrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b0NdeUQc; arc=none smtp.client-ip=209.85.219.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6a0406438b5so3698526d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:33:32 -0700 (PDT)
+	s=arc-20240116; t=1713314035; c=relaxed/simple;
+	bh=O5JndRQ/MudVsyg2eTBSjmyvq/vvAcGXbLRnx4IsGNI=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=h9Zy+/f3N0d5AC3UGMUWhjwlnkI84pFdroZsKS2A2ydGcNMNKztJES95Ops3e3xjBVS1V86WZN9s2BN0/YmrTPAEMRhajel/UEzstgGg7Ph2pF4MMsVLgtkda/NVYLz6+6yIGrdqpCIm66fiToNV8qLaAT/Fro9lYi68PfVbva8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rMckk3EH; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61ab7fc5651so47065977b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:33:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713314011; x=1713918811; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4nv1DibbGbw9tL8nQwAudZcQ7QqLjWRcbPgyIWw0A8Y=;
-        b=b0NdeUQcCXYIHXJPW2pdxzfD5VGrZQbeSOq/ngzr7MNwN9dTcC7FnbebYe9tT6HHWj
-         qq6omUCvO7rxhpnzHD32X115JmNBNydtiXimwXqtil8mlBLfC2XGGCLZ/9o1Cvdk0zIv
-         7DwTr3KUEwdCSi3ixbyQe3etV/vwXP+5XC5clcSArwHSrn+mTuT9mcwSV+rzsdPGyKu5
-         rCkK/5xo/A+toU+bcUJW0/3s2wiIQDJ0JKIrzoEabCktWoVhzctC3OWFgifmLtG4YXUH
-         PBiCG6OT7BWrCS1ZzKiccypaurlFrnGbKwyBfJGm9ZTesAo58Nu06RHPYKZe7iO94f8p
-         IVOg==
+        d=google.com; s=20230601; t=1713314033; x=1713918833; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JBoignij4b6pxPqMg3EJqNELA9RvRPHOElI8T13Mar4=;
+        b=rMckk3EHCjBa6M/8O5rba444TTtI+9d3NVH66np0JAZWqtO0lW9n+1cqUGfp6KI55n
+         E9+oYQ5KNLnOf8B+4zHDHA7UPcQQPi5Er1OdFRv8WWsIY+vnLkUNJg04SE87VTUSkxVk
+         DW7jjp4guuFQ3jtc2GA4YcaIs8LZiOIL4ATIu7VN+ZA8XSX5eEU52bUk5exQTmJ5lm0b
+         XQ64oqNkms1BvdGh7pPQi5EyF2VMsbqZwNrwP2Jw/0S0iUGD6T5S3v4vwZQeDa7H58fl
+         i+j3sV9WfUbcZuEcu6Zq4Y6idzRONT+lQNMtJGzklitUE+W4IGC5LtwsVFNNjvNvpGO0
+         RNqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713314011; x=1713918811;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4nv1DibbGbw9tL8nQwAudZcQ7QqLjWRcbPgyIWw0A8Y=;
-        b=gZBtw76ffiK9brOa99FfICIyOOmxnoCdLV8Walyfp5RL2i69PUakMvyqRya1GTt35C
-         fVNYFebfv64GYI3KC4l7AqoKHJkbKyJbIlrBYGROKbu+C9GYHYrZGn9C6UjM4VAmUKeE
-         M66ale4jDZsZmPNQn3JDm7BJWg95731Mzlvl0WJiRf7EPGOiaYPXcyD0qAJwpl3L6dDZ
-         ODePx3nvQYIHg8X8+xfyLcs7vSs/m+/1kip+0tQjzDVDh0AfVs2Fg+lQdeY99NkkVdtZ
-         j0QOPQVCBA3QbNzfjucjO6TmddIH87JF7Vm0PDsuGahb3KSqVYOxyV1pDyIi7x6Ia35e
-         fgiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVmpMzy/7k2lTKHonmykT32UzabGLbsVm268+Gs2FldNDWN2Ul9A+QIx/w6inWxA6TRXJxlyNUVbu5m31CaJcAtUZlqpXgDHaMsHNu7
-X-Gm-Message-State: AOJu0YxzXQrVrmWzvKS3/YUSTZ4ZbpcfHxtQuWkM9MVpvwE2lVnkWrK9
-	C9lc4cb+rxZmGnmz757C9snaZrLAQYwWKK7KSMqPGp1rP1Bxy+kbSJTxvOWZgIUfCLqRPkrHkBL
-	PjGJFuPQLoxzuI3+dDFvlgsPQ4Tk=
-X-Google-Smtp-Source: AGHT+IGNL91X03ok22JkcxrwPpreqi/i1SKH6E6oe/s2P/UMXmNWCE83bM19h3Cutu07tq41Fj1xIf/BtycLIUmL1xw=
-X-Received: by 2002:a05:6214:564f:b0:69b:16bb:d66a with SMTP id
- mh15-20020a056214564f00b0069b16bbd66amr14628001qvb.47.1713314011404; Tue, 16
- Apr 2024 17:33:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713314033; x=1713918833;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JBoignij4b6pxPqMg3EJqNELA9RvRPHOElI8T13Mar4=;
+        b=EL1FNKHa2J1HNa7PzB/YN0pCrcYdy93b098l8VglYsoUfuKQ1L8y7WuR3H+3jo7jnF
+         8cqnLLeLf6JRSQFW/UVb9lIpwjC0S201qVmxfSnwAicDTEEUgp8qMd1UQVasFHr3LbwG
+         ENigAWrv2G+HAdpY1dEoj+rsRZVTN2xDaY0iWSJWLlKRWI5vdTQb57tMKzNlkruM1XmM
+         gl9f7o8EkSsM5ATabs/A5RWYrFI0Vmw44QM9hZA+gpkkfnURNkVa8bzM5bc0i/cToggZ
+         3vH6sGw2rFJR9x9LGvaT2lUtgcwQ5JhenPivBPZWToA/jwPM4x0bLF+QDpApvYSVxO0z
+         ET6A==
+X-Forwarded-Encrypted: i=1; AJvYcCWEy9wtQs8n3r4gzcBlFACYBNCKhN41KUyw9Y0vVFIYaTmphzPhuNUV0SHXbP/4tamykkEKLQohP6L8iro7iRRv5RAAWX7+q/VKfcO3
+X-Gm-Message-State: AOJu0YxrwE2NNxHmjw4Pt64ESoNaI4ePA37EyI5efPpeJjXM1uDTGfw3
+	h0/5wVqasfHeCXo77egc0K5lsPJV/+YxCXwKLTW/I57MHNeQop5uHZwSkR/ckSFV9jHQK7k5LaE
+	Cbw==
+X-Google-Smtp-Source: AGHT+IEepxxAu7uVkUy2oePDFVu/E0erqVdTli0BxZ9jZgQ7uqWWzQPDFwEbjQEjPC6oB2DuwPWxKEWxeLQ=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:93dc:2d0d:fde6:7002])
+ (user=surenb job=sendgmr) by 2002:a81:f10d:0:b0:61a:c438:69e7 with SMTP id
+ h13-20020a81f10d000000b0061ac43869e7mr1961083ywm.2.1713314032827; Tue, 16 Apr
+ 2024 17:33:52 -0700 (PDT)
+Date: Tue, 16 Apr 2024 17:33:49 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <3iccc6vjl5gminut3lvpl4va2lbnsgku5ei2d7ylftoofy3n2v@gcfdvtsq6dx2>
-In-Reply-To: <3iccc6vjl5gminut3lvpl4va2lbnsgku5ei2d7ylftoofy3n2v@gcfdvtsq6dx2>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 16 Apr 2024 17:33:20 -0700
-Message-ID: <CAKEwX=PRK+J92T-nFA2tm3G4PMUnTYet7wtvfnP7Mqi2Q3mTrQ@mail.gmail.com>
-Subject: Re: [REGRESSION] Null pointer dereference while shrinking zswap
-To: Christian Heusel <christian@heusel.eu>
-Cc: Seth Jennings <sjenning@redhat.com>, Dan Streetman <ddstreet@ieee.org>, 
-	Vitaly Wool <vitaly.wool@konsulko.com>, Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, David Runge <dave@sleepmap.de>, 
-	"Richard W.M. Jones" <rjones@redhat.com>, Mark W <instruform@gmail.com>, regressions@lists.linux.dev
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
+Message-ID: <20240417003349.2520094-1-surenb@google.com>
+Subject: [PATCH 1/1] lib: fix alloc_tag_init() to prevent passing NULL to PTR_ERR()
+From: Suren Baghdasaryan <surenb@google.com>
+To: akpm@linux-foundation.org
+Cc: kent.overstreet@linux.dev, dan.carpenter@linaro.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Suren Baghdasaryan <surenb@google.com>, 
+	kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 5:19=E2=80=AFAM Christian Heusel <christian@heusel.=
-eu> wrote:
->
-> Hello everyone,
->
-> while rebuilding a few packages in Arch Linux we have recently come
-> across a regression in the linux kernel which was made visible by a test
-> failure in libguestfs[0], where the booted kernel showed a Call Trace
-> like the following one:
->
-> [  218.738568] CPU: 0 PID: 167 Comm: guestfsd Not tainted 6.7.0-rc4-1-mai=
-nline-00158-gb5ba474f3f51 #1 bf39861cf50acae7a79c534e25532f28afe4e593^M
-> [  218.739007] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS A=
-rch Linux 1.16.3-1-1 04/01/2014^M
-> [  218.739787] RIP: 0010:memcg_page_state+0x9/0x30^M
-> [  218.740299] Code: 0d b8 ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 9=
-0 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 0f 1f 00 0f 1f 44 00 00 <=
-48> 8b 87 00 06 00 00 48 63 f6 31 d2 48 8b 04 f0 48 85 c0 48 0f 48^M
-> [  218.740727] RSP: 0018:ffffb5fa808dfc10 EFLAGS: 00000202^M
-> [  218.740862] RAX: 0000000000000000 RBX: ffffb5fa808dfce0 RCX: 000000000=
-0000002^M
-> [  218.741016] RDX: 0000000000000001 RSI: 0000000000000033 RDI: 000000000=
-0000000^M
-> [  218.741168] RBP: 0000000000000000 R08: ffff976681ff8000 R09: 000000000=
-0000000^M
-> [  218.741322] R10: 0000000000000001 R11: ffff9766833f9d00 R12: ffff9766f=
-fffe780^M
-> [  218.742167] R13: 0000000000000000 R14: ffff976680cc1800 R15: ffff97668=
-2204d80^M
-> [  218.742376] FS:  00007f1479d9f540(0000) GS:ffff9766fbc00000(0000) knlG=
-S:0000000000000000^M
-> [  218.742569] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
-> [  218.743256] CR2: 0000000000000600 CR3: 0000000103606000 CR4: 000000000=
-0750ef0^M
-> [  218.743494] PKRU: 55555554^M
-> [  218.743593] Call Trace:^M
-> [  218.743733]  <TASK>^M
-> [  218.743847]  ? __die+0x23/0x70^M
-> [  218.743957]  ? page_fault_oops+0x171/0x4e0^M
-> [  218.744056]  ? free_unref_page+0xf6/0x180^M
-> [  218.744458]  ? exc_page_fault+0x7f/0x180^M
-> [  218.744551]  ? asm_exc_page_fault+0x26/0x30^M
-> [  218.744684]  ? memcg_page_state+0x9/0x30^M
-> [  218.744779]  zswap_shrinker_count+0x9d/0x110^M
-> [  218.744896]  do_shrink_slab+0x3a/0x360^M
-> [  218.744990]  shrink_slab+0xc7/0x3c0^M
-> [  218.745609]  drop_slab+0x85/0x140^M
-> [  218.745691]  drop_caches_sysctl_handler+0x7e/0xd0^M
-> [  218.745799]  proc_sys_call_handler+0x1c0/0x2e0^M
-> [  218.745912]  vfs_write+0x23d/0x400^M
-> [  218.745998]  ksys_write+0x6f/0xf0^M
-> [  218.746080]  do_syscall_64+0x64/0xe0^M
-> [  218.746169]  ? exit_to_user_mode_prepare+0x132/0x1f0^M
-> [  218.746873]  entry_SYSCALL_64_after_hwframe+0x6e/0x76^M
->
-> The regression is present in the mainline kernel and also was
-> independently reported to the redhat bugtracker[1].
->
-> I have bisected (see log[2]) the regression between v6.9-rc4 and v6.6
-> and have landed on the following results (removed unrelated test commit)
-> as remainders since some of the commits were not buildable for me:
-> - 7108cc3f765c ("mm: memcg: add per-memcg zswap writeback stat")
-> - a65b0e7607cc ("zswap: make shrinking memcg-aware")
-> - b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure")
->
-> I have decided on good/bad commits with the relevant libguestfs tests,
-> but I think the reproducer in the redhat bugzilla is simpler (although I
-> only became aware of it during the bisection and therefore didn't test
-> it myself):
->
->   LIBGUESTFS_MEMSIZE=3D4096 LIBGUESTFS_DEBUG=3D1 LIBGUESTFS_TRACE=3D1 mak=
-e -C /build/libguestfs/src/libguestfs-1.52.0/tests -k check TESTS=3Dc-api/t=
-ests
->
+codetag_register_type() never returns NULL, yet IS_ERR_OR_NULL() is used
+to check its return value. This leads to a warning about possibility of
+passing NULL to PTR_ERR(). Fix that by using IS_ERR() to exclude NULL.
 
-I have a suspect for the bug:
-https://lore.kernel.org/all/CAKEwX=3DMWPUf1NMGdn+1AkRdOUf25ifAbPyoP9zppPTx3=
-U3Tv2Q@mail.gmail.com/
+Fixes: 6e8a230a6b1a ("lib: add allocation tagging support for memory allocation profiling")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/r/202404051340.7Wo7oiJ5-lkp@intel.com/
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+---
+ lib/alloc_tag.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Feel free to fact check me, but let me see if I can reproduce this bug
-on my own setting based on this analysis and send a fix accordingly :)
+diff --git a/lib/alloc_tag.c b/lib/alloc_tag.c
+index b37e3430ed92..26af9982ddc4 100644
+--- a/lib/alloc_tag.c
++++ b/lib/alloc_tag.c
+@@ -233,7 +233,7 @@ static int __init alloc_tag_init(void)
+ 	};
+ 
+ 	alloc_tag_cttype = codetag_register_type(&desc);
+-	if (IS_ERR_OR_NULL(alloc_tag_cttype))
++	if (IS_ERR(alloc_tag_cttype))
+ 		return PTR_ERR(alloc_tag_cttype);
+ 
+ 	if (!mem_profiling_support)
+
+base-commit: 6723e3b1a668df6b8f305dea8fb62789155d965f
+-- 
+2.44.0.769.g3c40516874-goog
+
 
