@@ -1,142 +1,326 @@
-Return-Path: <linux-kernel+bounces-148519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CA458A83E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:12:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 751228A83EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:12:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD57AB24BE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:12:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFBB7B24E89
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3239013D8AE;
-	Wed, 17 Apr 2024 13:12:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D1E013E41D;
+	Wed, 17 Apr 2024 13:12:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SXBIrMMC"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fYCRva+T"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FAAF2770B;
-	Wed, 17 Apr 2024 13:12:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A6F13D892;
+	Wed, 17 Apr 2024 13:12:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713359523; cv=none; b=SKiAjHg63Bq1Rts8SLDVnJCVLGENj403leqW1bswptuLoTXyGFHTG955JQXX8eN5MEyCsuQzwZQtz26Fb0SyNSsCT8soASsQcOqbpR7nb3+cq0XeqdE4Gsr9Uu2XSyb7H08kcww8hmmdbIufpKg8GhOpic5DWeOVrh4gluFXxYI=
+	t=1713359524; cv=none; b=U352MPOl+W4ZfMB8Cp+QYrlovbLMW8uW8XduA+lvCw6kRvlJnVgvwvo5iHalTnpEeYcDy61tP5H86YMDNdZS7Ybe7qG5LicCl5Pu6bMUf3XSbByRppuPnfq69ghHqsEa5FRapJ/MF5pAefIbAQYTEmDypBmbBSWwIPh9sJEtGe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713359523; c=relaxed/simple;
-	bh=19fci4LLyfvbsiSMg+CCqqk9ZM2XGVW9YX76UIsPwO8=;
+	s=arc-20240116; t=1713359524; c=relaxed/simple;
+	bh=GyaPboPEL2rOAOK0TAO7wW1CTxmk8Gw7xhEdNBWguKg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X+3S7CumTHEDy/+swoec5jk/p7gV+qS3rLrakMpFERFM1YJKvawLvzkZgacuqKVjduS5KssvxGUfPd9fDU39LG2xij6GQU+5M9lGT6kGx/GSjYh8C6bHWUmwUxthf3pXrxwJil4+U0xwp6O4mgyqPT6eKvvj0Jiv6Bb5QRPG5+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SXBIrMMC; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d718ee7344so56132791fa.2;
-        Wed, 17 Apr 2024 06:12:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713359519; x=1713964319; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xvq5XhFeUgxKjTzR6bSBfVpoXUJWQ7jeCb714ZUuuUI=;
-        b=SXBIrMMCZHO/bt/n/qrtFdMS25rl+QyJeqEtEsSIfiYu64z82lNWjBA46TkojdsQlD
-         TuKZQfk6F1RtB6LhslsSYgSIWc3A2Za32DrwhkUFa6h7tLW5tGGfJJ7QHSs6IsLY/u9f
-         GRGO7D+mzaFvAG4Fy70UKeNaSt4R0Kgk5oIAMTW2hnxuZSAEkvQxIKAT26UZCg6lYvnY
-         MnMbx5RbXCMJ09ks3yhN8a1P8loEldKvpedXPSF/64GLQ1n5PsuQ4KX69F5XxIczIYF1
-         NVq/gJXNw/vRyZUOOmDRR+SxWL+zC7NYmrN5a8EZl6eMr3GH6jw4V/xSMc+iOSv9yzcm
-         HGHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713359519; x=1713964319;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xvq5XhFeUgxKjTzR6bSBfVpoXUJWQ7jeCb714ZUuuUI=;
-        b=SMtPKdFfSjjxr49AUI0Y56INqBp/dy158mtezTTb+PscnS/gUxt3tNp0fF7s4fw+HU
-         Nfc5YH1z2EyOkDWb2P60kwCHAaylTQSBOv8U+Q0+RTAIdO7/yJytBa2p/DkwLo0h8J3R
-         8yXbpAd269xBQHuGLjJ1/QJG2KBZOpmGphfGAOnNfhIVipDas1UgLll32Wgi9I9sJY8b
-         TSCkp+x5qFNjf47cY9cibHdVep8iTdfOg7U7TyYq7p7VBuT4c/VL78z4Z7sQFs7GvCva
-         xq+NPUKlTChVQEtdxSllMc0RIPJKEqeOACEWT91ZDKddsIAur0Tc3P4AJp3Ls9t+Sf34
-         0L2w==
-X-Forwarded-Encrypted: i=1; AJvYcCWoQ/MScLI6luyuDf0FVI7ACv0dWbYdJbW1uo1RSsT4ITG7y7auZqCFxHlFbEayMWa9bGcKGYgws4h8eu1+tZxJRW2uZLEQ7roNthBRIQaRbNMc4ztqx60rRqnr+W1UXcedLcfpJaHuTPcPBq9IKHXnzhcZx9X1Np76Jp0P5ncmC11i7pPd01aJc53uDNQeB1FJppzuIeuE69D6uA5zopts32FS
-X-Gm-Message-State: AOJu0YzPYtbwuaKa+LjBO4CFDXESozXGfbHjNy29r5IKP3mBPx0Pflah
-	OP3D39EVsbJzNtzQ8izPPPr/1k5w9oLNvMZKDw9niG/Sf40auVKB
-X-Google-Smtp-Source: AGHT+IHdGh0cJoN5BQEheZbFU09X48BOOMw+EqWuSPIB0M7jeLokHHm06r2P5q8vQRJCzBR50C7lPg==
-X-Received: by 2002:a2e:9657:0:b0:2db:4f3f:55a7 with SMTP id z23-20020a2e9657000000b002db4f3f55a7mr655852ljh.45.1713359519045;
-        Wed, 17 Apr 2024 06:11:59 -0700 (PDT)
-Received: from mobilestation.baikal.int (srv1.baikalchip.ru. [87.245.175.227])
-        by smtp.gmail.com with ESMTPSA id u22-20020a2e8456000000b002da25e60918sm1389162ljh.18.2024.04.17.06.11.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 06:11:58 -0700 (PDT)
-Date: Wed, 17 Apr 2024 16:11:56 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Romain Gantois <romain.gantois@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Russell King <linux@armlinux.org.uk>, 
-	=?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>, 
-	Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v3 2/5] net: stmmac: introduce pcs_init/pcs_exit
- stmmac operations
-Message-ID: <abgmcmebzv5323wmumurygggeho2mbyf2l24fe42c6zvvueutc@w7zpxqndlqox>
-References: <20240415-rzn1-gmac1-v3-0-ab12f2c4401d@bootlin.com>
- <20240415-rzn1-gmac1-v3-2-ab12f2c4401d@bootlin.com>
- <42chuecdt7dpgm6fcrtt2crifvv5hflmtnmdrw5fvk3r7pwjgu@hlcv56dbeosf>
- <77722ced-4956-0e70-9492-c7b2e8557253@bootlin.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=k1Tkq3YlQC8UpU/nhxmbKrm7VPn/ZN/g8rX0DedMgHm+lQtTfMBaTmb0E8IAqWpC/CUZl3ffkkOpCgokeXM/eT5tYGhWqDdepREJfbKxWFKPYjaHb30XLQ9t3zwoB9xdSnSOsRvC9wZLLr0R9fhMCEUM+XR+/WvkytkaRhqb8lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fYCRva+T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2987CC072AA;
+	Wed, 17 Apr 2024 13:11:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713359523;
+	bh=GyaPboPEL2rOAOK0TAO7wW1CTxmk8Gw7xhEdNBWguKg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fYCRva+TEbeI8lHSL5KgZTLK304JVk22e0gyDw72neADh2DRRscI5GqNNsL0r9sc/
+	 PQybGvggeulo+MscxzZtzNb00VcaYdYAWR7V1+FpwAHuGrWidwHe5mLMRkMUiKY5EM
+	 dD1qEKrr8gPWg50sSXSQ7NHJU0p9Q8h4jqMOLQh7z5WMgHqZmcRU24Aph39VkiIuky
+	 AcxN6m8Jk9TCbZxp1pG7Ftp1Fa8duJyBWB1zPGDvPMzJkT8QawezIfiNlzrlSeyD+r
+	 LqyY5FmjEp2cH1muibEPw5FgNlj9FTKmlIiwBJ8sgY8spYFfkXUWfaYebL2wYN92kQ
+	 tuMGVHv4toyEQ==
+Date: Wed, 17 Apr 2024 14:11:58 +0100
+From: Conor Dooley <conor@kernel.org>
+To: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Deepak Gupta <debug@rivosinc.com>, Jonathan Corbet <corbet@lwn.net>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>,
+	Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 07/10] riscv: add ISA extension parsing for Zcmop
+Message-ID: <20240417-smelting-rascal-d19dec72e0a5@spud>
+References: <20240410-jawless-cavalry-a3eaf9c562a4@spud>
+ <20240410-judgingly-appease-5df493852b70@spud>
+ <ZhcTiakvfbjb2hon@debug.ba.rivosinc.com>
+ <1287e6e9-cb8e-4a78-9195-ce29f1c4bace@rivosinc.com>
+ <20240411-superglue-errant-b32e5118695f@wendy>
+ <c86f9fa8-e273-4509-83fa-f21d3265d5c9@rivosinc.com>
+ <20240411-backwater-opal-00c9aed2231e@wendy>
+ <5eda3278-24bc-4c17-a741-523ad5ff79f7@rivosinc.com>
+ <20240416-gave-apron-3234098ce416@spud>
+ <1eab3b4f-0d46-4df5-b574-6a5f796d3bcf@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="HIRb2NogcVEwLV+i"
 Content-Disposition: inline
-In-Reply-To: <77722ced-4956-0e70-9492-c7b2e8557253@bootlin.com>
+In-Reply-To: <1eab3b4f-0d46-4df5-b574-6a5f796d3bcf@rivosinc.com>
 
-On Wed, Apr 17, 2024 at 11:30:09AM +0200, Romain Gantois wrote:
-> Hi Serge,
-> 
-> On Tue, 16 Apr 2024, Serge Semin wrote:
-> 
-> > I am currently working on my Memory-mapped DW XPCS patchset cooking:
-> > https://lore.kernel.org/netdev/20231205103559.9605-1-fancer.lancer@gmail.com/
-> > The changes in this series seems to intersect to what is/will be
-> > introduced in my patchset. In particular as before I am going to
-> > use the "pcs-handle" property for getting the XPCS node. If so what
-> > about collecting PCS-related things in a single place. Like this:
-> > 
-> > int stmmac_xpcs_setup(struct net_device *ndev)
-> > {
-> > 	...
-> > 
-> > 	if (priv->plat->pcs_init) {
-> > 		return priv->plat->pcs_init(priv); /* Romain' part */
-> >	} else if (fwnode_property_present(priv->plat->port_node, "pcs-handle")) {
-> > 		/* My DW XPCS part */
-> > 	} else if (priv->plat->mdio_bus_data && priv->plat->mdio_bus_data->has_xpcs) {
-> > 		/* Currently implemented procedure */
-> > 	}
-> > 
-> > 	...
-> > }
-> 
-> That seems like a good idea to me, although those setup functions would have to 
-> be renamed to stmmac_pcs_setup/exit.
 
-Why not, seeing they will be responsible for any PCS attached to the
-MAC.
+--HIRb2NogcVEwLV+i
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--Serge(y)
+On Tue, Apr 16, 2024 at 05:23:51PM +0200, Cl=E9ment L=E9ger wrote:
+>=20
+>=20
+> On 16/04/2024 16:54, Conor Dooley wrote:
+> > On Mon, Apr 15, 2024 at 11:10:24AM +0200, Cl=E9ment L=E9ger wrote:
+> >>
+> >>
+> >> On 11/04/2024 13:53, Conor Dooley wrote:
+> >>> On Thu, Apr 11, 2024 at 11:08:21AM +0200, Cl=E9ment L=E9ger wrote:
+> >>>>>> If we consider to have potentially broken isa string (ie extensions
+> >>>>>> dependencies not correctly handled), then we'll need some way to
+> >>>>>> validate this within the kernel.
+> >>>>>
+> >>>>> No, the DT passed to the kernel should be correct and we by and lar=
+ge we
+> >>>>> should not have to do validation of it. What I meant above was writ=
+ing
+> >>>>> the binding so that something invalid will not pass dtbs_check.
+> >>>>
+> >>>> Acked, I was mainly answering Deepak question about dependencies wrt=
+ to
+> >>>> using __RISCV_ISA_EXT_SUPERSET() which does not seems to be relevant
+> >>>> since we expect a correct isa string to be passed.
+> >>>
+> >>> Ahh, okay.
+> >>>
+> >>>> But as you stated, DT
+> >>>> validation clearly make sense. I think a lot of extensions strings w=
+ould
+> >>>> benefit such support (All the Zv* depends on V, etc).
+> >>>
+> >>> I think it is actually as simple something like this, which makes it
+> >>> invalid to have "d" without "f":
+> >>>
+> >>> | diff --git a/Documentation/devicetree/bindings/riscv/extensions.yam=
+l b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> >>> | index 468c646247aa..594828700cbe 100644
+> >>> | --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
+> >>> | +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> >>> | @@ -484,5 +484,20 @@ properties:
+> >>> |              Registers in the AX45MP datasheet.
+> >>> |              https://www.andestech.com/wp-content/uploads/AX45MP-1C=
+-Rev.-5.0.0-Datasheet.pdf
+> >>> | =20
+> >>> | +allOf:
+> >>> | +  - if:
+> >>> | +      properties:
+> >>> | +        riscv,isa-extensions:
+> >>> | +          contains:
+> >>> | +            const: "d"
+> >>> | +          not:
+> >>> | +            contains:
+> >>> | +              const: "f"
+> >>> | +    then:
+> >>> | +      properties:
+> >>> | +        riscv,isa-extensions:
+> >>> | +          false
+> >>> | +
+> >>> | +
+> >>> |  additionalProperties: true
+> >>> |  ...
+> >>>
+> >>> If you do have d without f, the checker will say:
+> >>> cpu@2: riscv,isa-extensions: False schema does not allow ['i', 'm', '=
+a', 'd', 'c']
+> >>>
+> >>> At least that's readable, even though not clear about what to do. I w=
+ish
+> >>
+> >> That looks really readable indeed but the messages that result from
+> >> errors are not so informative.
+> >>
+> >> It tried playing with various constructs and found this one to yield a
+> >> comprehensive message:
+> >>
+> >> +allOf:
+> >> +  - if:
+> >> +      properties:
+> >> +        riscv,isa-extensions:
+> >> +          contains:
+> >> +            const: zcf
+> >> +          not:
+> >> +            contains:
+> >> +              const: zca
+> >> +    then:
+> >> +      properties:
+> >> +        riscv,isa-extensions:
+> >> +          items:
+> >> +            anyOf:
+> >> +              - const: zca
+> >>
+> >> arch/riscv/boot/dts/allwinner/sun20i-d1-dongshan-nezha-stu.dtb: cpu@0:
+> >> riscv,isa-extensions:10: 'anyOf' conditional failed, one must be fixed:
+> >>         'zca' was expected
+> >>         from schema $id: http://devicetree.org/schemas/riscv/extension=
+s.yaml
+> >>
+> >> Even though dt-bindings-check passed, not sure if this is totally a
+> >> valid construct though...
+> >=20
+> > I asked Rob about this yesterday, he suggested adding:
+> > riscv,isa-extensions:
+> >   if:
+> >     contains:
+> >       const: zcf
+> >   then:
+> >     contains:
+> >       const: zca
+>=20
+> That is way more readable and concise !
+>=20
+> > to the existing property, not in an allOf. I think that is by far the
+> > most readable version in terms of what goes into the binding. The output
+> > would look like:
+> > cpu@0: riscv,isa-extensions: ['i', 'm', 'a', 'd', 'c'] does not contain=
+ items matching the given schema
+> > (for d requiring f cos I am lazy)
+>=20
+> Than fine by me. The error is at least a bit more understandable than
+> the one with the false schema ;)
+>=20
+> >=20
+> > Also, his comment about your one that gives the nice message was that it
+> > would wrong as the anyOf was pointless and it says all items must be
+> > "zca".
+>=20
+> That's what I understood also.
+>=20
+> > I didn't try it, but I have a feeling your nice output will be
+> > rather less nice if several different deps are unmet - but hey, probably
+> > will still be better than having an undocumented extension!
+> >=20
+>=20
+> If you are ok with that, let's go with Rob suggestion. I'll resubmit a
+> V2 with validation for these extensions and probably a followup for the
+> other ones lacking dependency checking.
 
-> 
-> Thanks,
-> 
-> -- 
-> Romain Gantois, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+Also, Rob made some modifications to dt-schema yesterday, so now the
+report about an undocumented extension looks like:
+cpu@1: riscv,isa-extensions:3: '0' is not one of ['i', 'm', 'a', 'f', 'd', =
+'q', 'c', 'v', 'h', 'smaia', 'smstateen', 'ssaia', 'sscofpmf', 'sstc', 'svi=
+nval', 'svnapot', 'svpbmt', 'zacas', 'zba', 'zbb', 'zbc', 'zbkb', 'zbkc', '=
+zbkx', 'zbs', 'zfa', 'zfh', 'zfhmin', 'zk', 'zkn', 'zknd', 'zkne', 'zknh', =
+'zkr', 'zks', 'zksed', 'zksh', 'zkt', 'zicbom', 'zicbop', 'zicboz', 'zicntr=
+', 'zicond', 'zicsr', 'zifencei', 'zihintpause', 'zihintntl', 'zihpm', 'zts=
+o', 'zvbb', 'zvbc', 'zvfh', 'zvfhmin', 'zvkb', 'zvkg', 'zvkn', 'zvknc', 'zv=
+kned', 'zvkng', 'zvknha', 'zvknhb', 'zvks', 'zvksc', 'zvksed', 'zvksh', 'zv=
+ksg', 'zvkt', 'xandespmu']
+instead of
+cpu@0: riscv,isa-extensions:4: 'anyOf' conditional failed, one must be fixe=
+d:
+	'i' was expected
+	'm' was expected
+	'a' was expected
+	'f' was expected
+	'd' was expected
+	'q' was expected
+	'c' was expected
+	'v' was expected
+	'h' was expected
+	'smaia' was expected
+	'smstateen' was expected
+	'ssaia' was expected
+	'sscofpmf' was expected
+	'sstc' was expected
+	'svinval' was expected
+	'svnapot' was expected
+	'svpbmt' was expected
+	'zacas' was expected
+	'zba' was expected
+	'zbb' was expected
+	'zbc' was expected
+	'zbkb' was expected
+	'zbkc' was expected
+	'zbkx' was expected
+	'zbs' was expected
+	'zfa' was expected
+	'zfh' was expected
+	'zfhmin' was expected
+	'zk' was expected
+	'zkn' was expected
+	'zknd' was expected
+	'zkne' was expected
+	'zknh' was expected
+	'zkr' was expected
+	'zks' was expected
+	'zksed' was expected
+	'zksh' was expected
+	'zkt' was expected
+	'zicbom' was expected
+	'zicbop' was expected
+	'zicboz' was expected
+	'zicntr' was expected
+	'zicond' was expected
+	'zicsr' was expected
+	'zifencei' was expected
+	'zihintpause' was expected
+	'zihintntl' was expected
+	'zihpm' was expected
+	'ztso' was expected
+	'zvbb' was expected
+	'zvbc' was expected
+	'zvfh' was expected
+	'zvfhmin' was expected
+	'zvkb' was expected
+	'zvkg' was expected
+	'zvkn' was expected
+	'zvknc' was expected
+	'zvkned' was expected
+	'zvkng' was expected
+	'zvknha' was expected
+	'zvknhb' was expected
+	'zvks' was expected
+	'zvksc' was expected
+	'zvksed' was expected
+	'zvksh' was expected
+	'zvksg' was expected
+	'zvkt' was expected
+	'xandespmu' was expected
+	from schema $id: http://devicetree.org/schemas/riscv/cpus.yaml#
+
+Which is really great from a readability pov. Not only is it compressed
+to a single line, it actually points out which extension is the
+offender.
+
+Thanks,
+Conor.
+
+--HIRb2NogcVEwLV+i
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh/KnQAKCRB4tDGHoIJi
+0rS2AP4tYLrh/eXDFYhHN6RFYGaDkHa5QoOTDGCuiOux9TzJugEA6lkqPZDvjYPG
+J84YQJbfPA3XcZTUTJSFs3XuDrr2Vgg=
+=knP8
+-----END PGP SIGNATURE-----
+
+--HIRb2NogcVEwLV+i--
 
