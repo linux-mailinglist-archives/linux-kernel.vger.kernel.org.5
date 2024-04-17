@@ -1,542 +1,145 @@
-Return-Path: <linux-kernel+bounces-147816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4EBB8A7A04
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:05:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB8408A7A09
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:07:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2AFE1C22565
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:05:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79D081F22912
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:07:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B87101878;
-	Wed, 17 Apr 2024 01:05:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B9D184F;
+	Wed, 17 Apr 2024 01:07:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hrE7BysZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YaP22WSH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28ECB184F
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 01:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E596FA8;
+	Wed, 17 Apr 2024 01:07:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713315915; cv=none; b=I54Rfx8SMLSsAV+wYtFRP01+THffcNDb4cYZu8L1worPhJSm28InYEXmNqW093hmyAU1FHRB3NuAV4CLgBqwgecnChDNuPDL56xgd7GgDj3pKonHQH+nXMD6tXP4EPXFRduU5swhGiJewgSAEfljtQQRCRmY5XnU0wArCGi6Ixo=
+	t=1713316067; cv=none; b=msznVla24ZHC/C2xRTEscY0e2m15WKiwU+15b8awnksEu91lFi7eh5wTjNB8HkBjIX/Zn/HfaYMAAVqmlPOEG4jOHBbsygcEP0lHYlCawZEyPcV9qrs1urnWUIAZv2r38QbXVWSr4SDRc5aNPBAw5NSxHnxiGCAGbZNEiXDq+js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713315915; c=relaxed/simple;
-	bh=ku/cT5RiyuBXELsg5XoRB8hnC0UHhbuMHMTP+M1u05M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XjNHCPCBsrxpSxqq/ZBxVIrIefqYlOq1dUC/vchvHbVu36FttL95KIUsqrFCjJZq+Qqied+AR2+2FMG3ueutb490KUZOt5i0EYcTvrjHKB+FVkM/3uk02ZIKdwv4TauXWkc9lf7q2DqRZdCGmx6xT72bMwZHPg2kzsolyr9rmfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hrE7BysZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98D1EC113CE;
-	Wed, 17 Apr 2024 01:05:13 +0000 (UTC)
+	s=arc-20240116; t=1713316067; c=relaxed/simple;
+	bh=PqaHR/bHt9hKVQUfh175qxpXqBSt6Cu+r6+m3wImr+0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Ybh3zGJHLZ4jI5TWdf9hXuXyotos5BYHTEq9X9M+o342G+FBJwsv28bLG0BlyYBdtOGAb+Jk4uBn/NiJR/DQq6IycynabU2APKEftWHvqDZNYslsIXMo3tDVkkLN60uJwS1eqoYfy886Xwl68/U/0jk9lLzQ8hrU59jySNYHiL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YaP22WSH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EB06C113CE;
+	Wed, 17 Apr 2024 01:07:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713315914;
-	bh=ku/cT5RiyuBXELsg5XoRB8hnC0UHhbuMHMTP+M1u05M=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=hrE7BysZE8SxxVLEGUjboyF9MiNS2uI3dfcHI2xyDj7B5acaKQreVe4Galyx4fqoR
-	 uhz8He/DrGZduVBnhYNZQBbs+y6LHYXJv4DH7Z3gaXUHswUmtXzpO8NMeXIu/KD74S
-	 rxFDUqjGV3b0d8+q83QPwzr5Gwq/E5aUE9MO5vhGX7fqBH5A7NKHOQT6By88juA7Mm
-	 lj/2RZovOeCjEfJCsWKct5xm96JqB2mjKpMV5zAwkpf/zzsc0TBmgQP4N9bK1GXmZY
-	 /1Eyyg0WkU5oxVcyb42yaxG4ksWHzHcq+yoozxRurZuyWRG5K7d+2aJc+te60eSZSc
-	 UGIaEg1MzyAiQ==
-Message-ID: <daa4c39e-12b0-4a4e-a5c5-21ecbf43b9fc@kernel.org>
-Date: Wed, 17 Apr 2024 09:05:11 +0800
+	s=k20201202; t=1713316066;
+	bh=PqaHR/bHt9hKVQUfh175qxpXqBSt6Cu+r6+m3wImr+0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=YaP22WSH2mFF16qmU38TX/WfL40595sQMUWuh4SjGjdDwDI9syN8U72AZSWGZX9sj
+	 CPRQghPIneIqYVv4x6Cb84PJfP0o0hrudvZ7rmfgkgUHVcVor0qjheufH31W8vEX8K
+	 30oyOFpWVMcggnnPvtaNlk5azFoz8wIJnpcqGp1Lm0+MUIdnX8JSO1IALZ2RwarEJ9
+	 w4Fpv6IO/u+XyNqVZqXowT2Y5Cgb7aY9jTNFz21NHsktiWUboix2pM241AcvC3YYVm
+	 Sn6Ax1nBXGXg0J+6EgTk2MxlZjteCZUEyNFTF8lG1rgSMp/nLCfTpQC1N5y64X3fXd
+	 uoWm9iilI0Eug==
+From: Mark Brown <broonie@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: wenst@chromium.org, lgirdwood@gmail.com, robh@kernel.org, 
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+ matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com, 
+ trevor.wu@mediatek.com, maso.huang@mediatek.com, 
+ xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de, 
+ kuninori.morimoto.gx@renesas.com, shraash@google.com, amergnat@baylibre.com, 
+ nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de, 
+ dianders@chromium.org, frank.li@vivo.com, allen-kh.cheng@mediatek.com, 
+ eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev, 
+ jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com, alpernebiyasak@gmail.com, 
+ ckeepax@opensource.cirrus.com, zhourui@huaqin.corp-partner.google.com, 
+ nfraprado@collabora.com, alsa-devel@alsa-project.org, 
+ shane.chien@mediatek.com, linux-sound@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+ kernel@collabora.com
+In-Reply-To: <20240416071410.75620-1-angelogioacchino.delregno@collabora.com>
+References: <20240416071410.75620-1-angelogioacchino.delregno@collabora.com>
+Subject: Re: (subset) [PATCH v5 00/18] ASoC: Cleanup MediaTek soundcard
+ machine drivers
+Message-Id: <171331605897.1695927.18052173831276369230.b4-ty@kernel.org>
+Date: Wed, 17 Apr 2024 10:07:38 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH v3] f2fs: zone: don't block IO if there is
- remained open zone
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-References: <20240407135848.3638669-1-chao@kernel.org>
- <Zhmje71C7FOTIfom@google.com>
- <2ca3cb91-1db5-4a9b-9dd0-8caad2d09f31@kernel.org>
- <Zhvz-_pqlCEZrUHB@google.com>
- <2dee7da9-e65d-47c0-a7f5-2e952e4aa784@kernel.org>
- <36c2974c-8a4a-4da0-b497-aef4c9647f94@kernel.org>
- <ca038b66-7dc0-4315-807d-bd1dc9cc281b@kernel.org>
- <Zh6srBQx6era9vA7@google.com>
-Content-Language: en-US
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <Zh6srBQx6era9vA7@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-On 2024/4/17 0:51, Jaegeuk Kim wrote:
-> On 04/16, Chao Yu wrote:
->> On 2024/4/15 22:01, Chao Yu wrote:
->>> On 2024/4/15 11:26, Chao Yu wrote:
->>>> On 2024/4/14 23:19, Jaegeuk Kim wrote:
->>>>> It seems this caused kernel hang. Chao, have you tested this patch enough?
->>>>
->>>> Jaegeuk,
->>>>
->>>> Oh, I've checked this patch w/ fsstress before submitting it, but missed
->>>> the SPO testcase... do you encounter kernel hang w/ SPO testcase?
->>>
->>> I did see any hang issue w/ por_fsstress testcase, which testcase do you use?
->>
->> Sorry, I mean I haven't reproduced it yet...
+On Tue, 16 Apr 2024 09:13:52 +0200, AngeloGioacchino Del Regno wrote:
+> Changes in v5:
+>  - Cleaned up MT8186 soundcard migration commit which erroneously
+>    had leftovers from development
+>  - Changed the mtk_pcm_constraints_data structure to hold pointers
+>    to snd_pcm_hw_constraint_list, as to really reuse the const data
+>  - Tested again on all of the listed MTK platforms.
 > 
-> I'd prefer to check this patch later. Have you tested on Zoned device with
-> nullblk?
+> [...]
 
-Yes, I enabled blkzoned feature w/ nullblk device, and set
-/sys/kernel/config/nullb/nullb0/zone_max_open to six, so that it can
-emulate ZUFS' configuration.
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[01/18] ASoC: mediatek: Add common machine soundcard driver probe mechanism
+        commit: bce93a162505f0bc0499888ace2f66bd56fb94b3
+[02/18] ASoC: mediatek: common: Constify struct mtk_sof_priv
+        commit: f8782f776db33066a9b1cd14d319142c4175561f
+[03/18] ASoC: mediatek: mt8188: Migrate to mtk_soundcard_common_probe
+        commit: aad45b8aa973a863dee2f256cea8c527acaaf56e
+[04/18] ASoC: mediatek: mt8195: Migrate to mtk_soundcard_common_probe
+        commit: 6718e1ed93cc28f0faefe21b7d21679ff0b04020
+[05/18] ASoC: mediatek: mt8192: Migrate to mtk_soundcard_common_probe
+        commit: 2d72cbb56327205ae04a9376c5b78a35b6347294
+[06/18] ASoC: mediatek: mt8186: Migrate to mtk_soundcard_common_probe
+        commit: 44a53c8ec9cad02ce7dfd55094e8d7aeb48eb73c
+[07/18] ASoC: mediatek: Add common snd_soc_ops .startup() callback
+        commit: fe071237dee6d617e5cb0eb4856b23576a877479
+[08/18] ASoC: mediatek: mt8195: Migrate to the common mtk_soundcard_startup
+        commit: 386fe4ceaf196360ef96cbd68d045ed2730251a7
+[09/18] ASoC: mediatek: mt8192: Migrate to the common mtk_soundcard_startup
+        commit: 94142cc1ffd959aa8e83857515a75779e8ba8064
+[10/18] ASoC: mediatek: mt8186-rt1019: Migrate to the common mtk_soundcard_startup
+        commit: f103ce4ff6932b6991e1922d1a39c29971ab2938
+[11/18] ASoC: mediatek: Add common mtk_afe_component_probe callback
+        commit: 9d9b182876a249b393158e9f43c255aeee4ef898
+[12/18] ASoC: mediatek: Use common mtk_afe_pcm_platform with common probe cb
+        commit: 1d2a6b3b5189b6c3e51f29e050aa9b2337b774e8
+[13/18] ASoC: mediatek: mt8186: Unify mt8186-mt6366 machine drivers
+        commit: 6ed619b348bf0a490e70dea7a330cf44dc81c16d
+[14/18] ASoC: dt-bindings: mt8195: Document audio-routing and dai-link subnode
+        commit: dc7a31300a8f28af282974512c2d403ada0658b5
+[15/18] ASoC: dt-bindings: mt8192: Document audio-routing and dai-link subnode
+        commit: 5a50483c47b8cf3066eb151fa21e195f3dfab5a8
+[16/18] ASoC: dt-bindings: mt8186: Document audio-routing and dai-link subnode
+        commit: 787f190cd1cd3123555e33a3400f3e919ec94a81
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
+Mark
 
-> 
->>
->> Thanks,
->>
->>>
->>> Thanks,
->>>
->>>>
->>>> Anyway, let me test it more.
->>>>
->>>> Thanks,
->>>>
->>>>>
->>>>> On 04/13, Chao Yu wrote:
->>>>>> On 2024/4/13 5:11, Jaegeuk Kim wrote:
->>>>>>> On 04/07, Chao Yu wrote:
->>>>>>>> max open zone may be larger than log header number of f2fs, for
->>>>>>>> such case, it doesn't need to wait last IO in previous zone, let's
->>>>>>>> introduce available_open_zone semaphore, and reduce it once we
->>>>>>>> submit first write IO in a zone, and increase it after completion
->>>>>>>> of last IO in the zone.
->>>>>>>>
->>>>>>>> Cc: Daeho Jeong <daeho43@gmail.com>
->>>>>>>> Signed-off-by: Chao Yu <chao@kernel.org>
->>>>>>>> ---
->>>>>>>> v3:
->>>>>>>> - avoid race condition in between __submit_merged_bio()
->>>>>>>> and __allocate_new_segment().
->>>>>>>>     fs/f2fs/data.c    | 105 ++++++++++++++++++++++++++++++----------------
->>>>>>>>     fs/f2fs/f2fs.h    |  34 ++++++++++++---
->>>>>>>>     fs/f2fs/iostat.c  |   7 ++++
->>>>>>>>     fs/f2fs/iostat.h  |   2 +
->>>>>>>>     fs/f2fs/segment.c |  43 ++++++++++++++++---
->>>>>>>>     fs/f2fs/segment.h |  12 +++++-
->>>>>>>>     fs/f2fs/super.c   |   2 +
->>>>>>>>     7 files changed, 156 insertions(+), 49 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->>>>>>>> index 0d88649c60a5..18a4ac0a06bc 100644
->>>>>>>> --- a/fs/f2fs/data.c
->>>>>>>> +++ b/fs/f2fs/data.c
->>>>>>>> @@ -373,11 +373,10 @@ static void f2fs_write_end_io(struct bio *bio)
->>>>>>>>     #ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>>     static void f2fs_zone_write_end_io(struct bio *bio)
->>>>>>>>     {
->>>>>>>> -    struct f2fs_bio_info *io = (struct f2fs_bio_info *)bio->bi_private;
->>>>>>>> +    struct f2fs_sb_info *sbi = iostat_get_bio_private(bio);
->>>>>>>> -    bio->bi_private = io->bi_private;
->>>>>>>> -    complete(&io->zone_wait);
->>>>>>>>         f2fs_write_end_io(bio);
->>>>>>>> +    up(&sbi->available_open_zones);
->>>>>>>>     }
->>>>>>>>     #endif
->>>>>>>> @@ -531,6 +530,24 @@ static void __submit_merged_bio(struct f2fs_bio_info *io)
->>>>>>>>         if (!io->bio)
->>>>>>>>             return;
->>>>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>> +    if (io->open_zone) {
->>>>>>>> +        /*
->>>>>>>> +         * if there is no open zone, it will wait for last IO in
->>>>>>>> +         * previous zone before submitting new IO.
->>>>>>>> +         */
->>>>>>>> +        down(&fio->sbi->available_open_zones);
->>>>>>>> +        io->open_zone = false;
->>>>>>>> +        io->zone_openned = true;
->>>>>>>> +    }
->>>>>>>> +
->>>>>>>> +    if (io->close_zone) {
->>>>>>>> +        io->bio->bi_end_io = f2fs_zone_write_end_io;
->>>>>>>> +        io->zone_openned = false;
->>>>>>>> +        io->close_zone = false;
->>>>>>>> +    }
->>>>>>>> +#endif
->>>>>>>> +
->>>>>>>>         if (is_read_io(fio->op)) {
->>>>>>>>             trace_f2fs_prepare_read_bio(io->sbi->sb, fio->type, io->bio);
->>>>>>>>             f2fs_submit_read_bio(io->sbi, io->bio, fio->type);
->>>>>>>> @@ -601,9 +618,9 @@ int f2fs_init_write_merge_io(struct f2fs_sb_info *sbi)
->>>>>>>>                 INIT_LIST_HEAD(&sbi->write_io[i][j].bio_list);
->>>>>>>>                 init_f2fs_rwsem(&sbi->write_io[i][j].bio_list_lock);
->>>>>>>>     #ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>> -            init_completion(&sbi->write_io[i][j].zone_wait);
->>>>>>>> -            sbi->write_io[i][j].zone_pending_bio = NULL;
->>>>>>>> -            sbi->write_io[i][j].bi_private = NULL;
->>>>>>>> +            sbi->write_io[i][j].open_zone = false;
->>>>>>>> +            sbi->write_io[i][j].zone_openned = false;
->>>>>>>> +            sbi->write_io[i][j].close_zone = false;
->>>>>>>>     #endif
->>>>>>>>             }
->>>>>>>>         }
->>>>>>>> @@ -634,6 +651,31 @@ static void __f2fs_submit_merged_write(struct f2fs_sb_info *sbi,
->>>>>>>>         f2fs_up_write(&io->io_rwsem);
->>>>>>>>     }
->>>>>>>> +void f2fs_blkzoned_submit_merged_write(struct f2fs_sb_info *sbi, int type)
->>>>>>>> +{
->>>>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>> +    struct f2fs_bio_info *io;
->>>>>>>> +
->>>>>>>> +    if (!f2fs_sb_has_blkzoned(sbi))
->>>>>>>> +        return;
->>>>>>>> +
->>>>>>>> +    io = sbi->write_io[PAGE_TYPE(type)] + type_to_temp(type);
->>>>>>>> +
->>>>>>>> +    f2fs_down_write(&io->io_rwsem);
->>>>>>>> +    if (io->zone_openned) {
->>>>>>>> +        if (io->bio) {
->>>>>>>> +            io->close_zone = true;
->>>>>>>> +            __submit_merged_bio(io);
->>>>>>>> +        } else if (io->zone_openned) {
->>>>>>>> +            up(&sbi->available_open_zones);
->>>>>>>> +            io->zone_openned = false;
->>>>>>>> +        }
->>>>>>>> +    }
->>>>>>>> +    f2fs_up_write(&io->io_rwsem);
->>>>>>>> +#endif
->>>>>>>> +
->>>>>>>> +}
->>>>>>>> +
->>>>>>>>     static void __submit_merged_write_cond(struct f2fs_sb_info *sbi,
->>>>>>>>                     struct inode *inode, struct page *page,
->>>>>>>>                     nid_t ino, enum page_type type, bool force)
->>>>>>>> @@ -918,22 +960,16 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
->>>>>>>>     }
->>>>>>>>     #ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>> -static bool is_end_zone_blkaddr(struct f2fs_sb_info *sbi, block_t blkaddr)
->>>>>>>> +static bool is_blkaddr_zone_boundary(struct f2fs_sb_info *sbi,
->>>>>>>> +                    block_t blkaddr, bool start)
->>>>>>>>     {
->>>>>>>> -    int devi = 0;
->>>>>>>> +    if (!f2fs_blkaddr_in_seqzone(sbi, blkaddr))
->>>>>>>> +        return false;
->>>>>>>> +
->>>>>>>> +    if (start)
->>>>>>>> +        return (blkaddr % sbi->blocks_per_blkz) == 0;
->>>>>>>> +    return (blkaddr % sbi->blocks_per_blkz == sbi->blocks_per_blkz - 1);
->>>>>>>> -    if (f2fs_is_multi_device(sbi)) {
->>>>>>>> -        devi = f2fs_target_device_index(sbi, blkaddr);
->>>>>>>> -        if (blkaddr < FDEV(devi).start_blk ||
->>>>>>>> -            blkaddr > FDEV(devi).end_blk) {
->>>>>>>> -            f2fs_err(sbi, "Invalid block %x", blkaddr);
->>>>>>>> -            return false;
->>>>>>>> -        }
->>>>>>>> -        blkaddr -= FDEV(devi).start_blk;
->>>>>>>> -    }
->>>>>>>> -    return bdev_is_zoned(FDEV(devi).bdev) &&
->>>>>>>> -        f2fs_blkz_is_seq(sbi, devi, blkaddr) &&
->>>>>>>> -        (blkaddr % sbi->blocks_per_blkz == sbi->blocks_per_blkz - 1);
->>>>>>>>     }
->>>>>>>>     #endif
->>>>>>>> @@ -944,20 +980,14 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>>>>>>>         struct f2fs_bio_info *io = sbi->write_io[btype] + fio->temp;
->>>>>>>>         struct page *bio_page;
->>>>>>>>         enum count_type type;
->>>>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>> +    bool blkzoned = f2fs_sb_has_blkzoned(sbi) && btype < META;
->>>>>>>> +#endif
->>>>>>>>         f2fs_bug_on(sbi, is_read_io(fio->op));
->>>>>>>>         f2fs_down_write(&io->io_rwsem);
->>>>>>>>     next:
->>>>>>>> -#ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>> -    if (f2fs_sb_has_blkzoned(sbi) && btype < META && io->zone_pending_bio) {
->>>>>>>> -        wait_for_completion_io(&io->zone_wait);
->>>>>>>> -        bio_put(io->zone_pending_bio);
->>>>>>>> -        io->zone_pending_bio = NULL;
->>>>>>>> -        io->bi_private = NULL;
->>>>>>>> -    }
->>>>>>>> -#endif
->>>>>>>> -
->>>>>>>>         if (fio->in_list) {
->>>>>>>>             spin_lock(&io->io_lock);
->>>>>>>>             if (list_empty(&io->io_list)) {
->>>>>>>> @@ -985,6 +1015,11 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>>>>>>>         type = WB_DATA_TYPE(bio_page, fio->compressed_page);
->>>>>>>>         inc_page_count(sbi, type);
->>>>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>> +    if (blkzoned && is_blkaddr_zone_boundary(sbi, fio->new_blkaddr, true))
->>>>>>>> +        io->open_zone = true;
->>>>>>>> +#endif
->>>>>>>> +
->>>>>>>>         if (io->bio &&
->>>>>>>>             (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
->>>>>>>>                       fio->new_blkaddr) ||
->>>>>>>> @@ -1010,15 +1045,11 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>>>>>>>         io->last_block_in_bio = fio->new_blkaddr;
->>>>>>>>         trace_f2fs_submit_page_write(fio->page, fio);
->>>>>>>> +
->>>>>>>>     #ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>> -    if (f2fs_sb_has_blkzoned(sbi) && btype < META &&
->>>>>>>> -            is_end_zone_blkaddr(sbi, fio->new_blkaddr)) {
->>>>>>>> -        bio_get(io->bio);
->>>>>>>> -        reinit_completion(&io->zone_wait);
->>>>>>>> -        io->bi_private = io->bio->bi_private;
->>>>>>>> -        io->bio->bi_private = io;
->>>>>>>> -        io->bio->bi_end_io = f2fs_zone_write_end_io;
->>>>>>>> -        io->zone_pending_bio = io->bio;
->>>>>>>> +    if (blkzoned &&
->>>>>>>> +        is_blkaddr_zone_boundary(sbi, fio->new_blkaddr, false)) {
->>>>>>>> +        io->close_zone = true;
->>>>>>>>             __submit_merged_bio(io);
->>>>>>>>         }
->>>>>>>>     #endif
->>>>>>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->>>>>>>> index 694f8a52cb84..8a26530cf4fb 100644
->>>>>>>> --- a/fs/f2fs/f2fs.h
->>>>>>>> +++ b/fs/f2fs/f2fs.h
->>>>>>>> @@ -1234,16 +1234,16 @@ struct f2fs_bio_info {
->>>>>>>>         struct bio *bio;        /* bios to merge */
->>>>>>>>         sector_t last_block_in_bio;    /* last block number */
->>>>>>>>         struct f2fs_io_info fio;    /* store buffered io info. */
->>>>>>>> -#ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>> -    struct completion zone_wait;    /* condition value for the previous open zone to close */
->>>>>>>> -    struct bio *zone_pending_bio;    /* pending bio for the previous zone */
->>>>>>>> -    void *bi_private;        /* previous bi_private for pending bio */
->>>>>>>> -#endif
->>>>>>>>         struct f2fs_rwsem io_rwsem;    /* blocking op for bio */
->>>>>>>>         spinlock_t io_lock;        /* serialize DATA/NODE IOs */
->>>>>>>>         struct list_head io_list;    /* track fios */
->>>>>>>>         struct list_head bio_list;    /* bio entry list head */
->>>>>>>>         struct f2fs_rwsem bio_list_lock;    /* lock to protect bio entry list */
->>>>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>> +    bool open_zone;            /* open a zone */
->>>>>>>> +    bool zone_openned;        /* zone has been openned */
->>>>>>>> +    bool close_zone;        /* close a zone */
->>>>>>>> +#endif
->>>>>>>>     };
->>>>>>>>     #define FDEV(i)                (sbi->devs[i])
->>>>>>>> @@ -1560,6 +1560,7 @@ struct f2fs_sb_info {
->>>>>>>>     #ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>>         unsigned int blocks_per_blkz;        /* F2FS blocks per zone */
->>>>>>>>         unsigned int max_open_zones;        /* max open zone resources of the zoned device */
->>>>>>>> +    struct semaphore available_open_zones;    /* available open zones */
->>>>>>>>     #endif
->>>>>>>>         /* for node-related operations */
->>>>>>>> @@ -3822,6 +3823,7 @@ void f2fs_destroy_bio_entry_cache(void);
->>>>>>>>     void f2fs_submit_read_bio(struct f2fs_sb_info *sbi, struct bio *bio,
->>>>>>>>                   enum page_type type);
->>>>>>>>     int f2fs_init_write_merge_io(struct f2fs_sb_info *sbi);
->>>>>>>> +void f2fs_blkzoned_submit_merged_write(struct f2fs_sb_info *sbi, int type);
->>>>>>>>     void f2fs_submit_merged_write(struct f2fs_sb_info *sbi, enum page_type type);
->>>>>>>>     void f2fs_submit_merged_write_cond(struct f2fs_sb_info *sbi,
->>>>>>>>                     struct inode *inode, struct page *page,
->>>>>>>> @@ -4469,6 +4471,28 @@ static inline bool f2fs_blkz_is_seq(struct f2fs_sb_info *sbi, int devi,
->>>>>>>>         return test_bit(zno, FDEV(devi).blkz_seq);
->>>>>>>>     }
->>>>>>>> +
->>>>>>>> +static inline bool f2fs_blkaddr_in_seqzone(struct f2fs_sb_info *sbi,
->>>>>>>> +                            block_t blkaddr)
->>>>>>>> +{
->>>>>>>> +    int devi = 0;
->>>>>>>> +
->>>>>>>> +    if (f2fs_is_multi_device(sbi)) {
->>>>>>>> +        devi = f2fs_target_device_index(sbi, blkaddr);
->>>>>>>> +        if (blkaddr < FDEV(devi).start_blk ||
->>>>>>>> +            blkaddr > FDEV(devi).end_blk) {
->>>>>>>> +            f2fs_err(sbi, "Invalid block %x", blkaddr);
->>>>>>>> +            return false;
->>>>>>>> +        }
->>>>>>>> +        blkaddr -= FDEV(devi).start_blk;
->>>>>>>> +    }
->>>>>>>> +
->>>>>>>> +    if (!bdev_is_zoned(FDEV(devi).bdev) ||
->>>>>>>> +        !f2fs_blkz_is_seq(sbi, devi, blkaddr))
->>>>>>>> +        return false;
->>>>>>>> +
->>>>>>>> +    return true;
->>>>>>>
->>>>>>> Applied as below.
->>>>>>>
->>>>>>> @@ -4485,11 +4485,8 @@ static inline bool f2fs_blkaddr_in_seqzone(struct f2fs_sb_info *sbi,
->>>>>>>                    blkaddr -= FDEV(devi).start_blk;
->>>>>>>            }
->>>>>>>
->>>>>>> -       if (!bdev_is_zoned(FDEV(devi).bdev) ||
->>>>>>> -               !f2fs_blkz_is_seq(sbi, devi, blkaddr))
->>>>>>> -               return false;
->>>>>>> -
->>>>>>> -       return true;
->>>>>>> +       return bdev_is_zoned(FDEV(devi).bdev) &&
->>>>>>> +               f2fs_blkz_is_seq(sbi, devi, blkaddr);
->>>>>>
->>>>>> Looks good, thank you for cleanup.
->>>>>>
->>>>>> Thanks,
->>>>>>
->>>>>>>     }
->>>>>>>     #endif
->>>>>>>
->>>>>>>> +}
->>>>>>>>     #endif
->>>>>>>>     static inline int f2fs_bdev_index(struct f2fs_sb_info *sbi,
->>>>>>>> diff --git a/fs/f2fs/iostat.c b/fs/f2fs/iostat.c
->>>>>>>> index f8703038e1d8..a8626e297876 100644
->>>>>>>> --- a/fs/f2fs/iostat.c
->>>>>>>> +++ b/fs/f2fs/iostat.c
->>>>>>>> @@ -237,6 +237,13 @@ static inline void __update_iostat_latency(struct bio_iostat_ctx *iostat_ctx,
->>>>>>>>         spin_unlock_irqrestore(&sbi->iostat_lat_lock, flags);
->>>>>>>>     }
->>>>>>>> +void *iostat_get_bio_private(struct bio *bio)
->>>>>>>> +{
->>>>>>>> +    struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
->>>>>>>> +
->>>>>>>> +    return iostat_ctx->sbi;
->>>>>>>> +}
->>>>>>>> +
->>>>>>>>     void iostat_update_and_unbind_ctx(struct bio *bio)
->>>>>>>>     {
->>>>>>>>         struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
->>>>>>>> diff --git a/fs/f2fs/iostat.h b/fs/f2fs/iostat.h
->>>>>>>> index eb99d05cf272..9006c3d41590 100644
->>>>>>>> --- a/fs/f2fs/iostat.h
->>>>>>>> +++ b/fs/f2fs/iostat.h
->>>>>>>> @@ -58,6 +58,7 @@ static inline struct bio_post_read_ctx *get_post_read_ctx(struct bio *bio)
->>>>>>>>         return iostat_ctx->post_read_ctx;
->>>>>>>>     }
->>>>>>>> +extern void *iostat_get_bio_private(struct bio *bio);
->>>>>>>>     extern void iostat_update_and_unbind_ctx(struct bio *bio);
->>>>>>>>     extern void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
->>>>>>>>             struct bio *bio, struct bio_post_read_ctx *ctx);
->>>>>>>> @@ -68,6 +69,7 @@ extern void f2fs_destroy_iostat(struct f2fs_sb_info *sbi);
->>>>>>>>     #else
->>>>>>>>     static inline void f2fs_update_iostat(struct f2fs_sb_info *sbi, struct inode *inode,
->>>>>>>>             enum iostat_type type, unsigned long long io_bytes) {}
->>>>>>>> +static inline void *iostat_get_bio_private(struct bio *bio) { return bio->bi_private; }
->>>>>>>>     static inline void iostat_update_and_unbind_ctx(struct bio *bio) {}
->>>>>>>>     static inline void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
->>>>>>>>             struct bio *bio, struct bio_post_read_ctx *ctx) {}
->>>>>>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->>>>>>>> index 4fd76e867e0a..4a3cf2888faf 100644
->>>>>>>> --- a/fs/f2fs/segment.c
->>>>>>>> +++ b/fs/f2fs/segment.c
->>>>>>>> @@ -3140,6 +3140,9 @@ static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
->>>>>>>>             return err;
->>>>>>>>         stat_inc_seg_type(sbi, curseg);
->>>>>>>>         locate_dirty_segment(sbi, old_segno);
->>>>>>>> +
->>>>>>>> +    f2fs_blkzoned_submit_merged_write(sbi, type);
->>>>>>>> +
->>>>>>>>         return 0;
->>>>>>>>     }
->>>>>>>> @@ -3461,12 +3464,7 @@ static int __get_segment_type(struct f2fs_io_info *fio)
->>>>>>>>             f2fs_bug_on(fio->sbi, true);
->>>>>>>>         }
->>>>>>>> -    if (IS_HOT(type))
->>>>>>>> -        fio->temp = HOT;
->>>>>>>> -    else if (IS_WARM(type))
->>>>>>>> -        fio->temp = WARM;
->>>>>>>> -    else
->>>>>>>> -        fio->temp = COLD;
->>>>>>>> +    fio->temp = type_to_temp(type);
->>>>>>>>         return type;
->>>>>>>>     }
->>>>>>>> @@ -4132,6 +4130,27 @@ static int restore_curseg_summaries(struct f2fs_sb_info *sbi)
->>>>>>>>             return -EINVAL;
->>>>>>>>         }
->>>>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>> +    if (f2fs_sb_has_blkzoned(sbi)) {
->>>>>>>> +        for (type = 0; type < NR_PERSISTENT_LOG; type++) {
->>>>>>>> +            struct curseg_info *curseg = CURSEG_I(sbi, type);
->>>>>>>> +            enum page_type ptype;
->>>>>>>> +            enum temp_type temp;
->>>>>>>> +
->>>>>>>> +            if (!(curseg->next_blkoff % sbi->blocks_per_blkz))
->>>>>>>> +                continue;
->>>>>>>> +
->>>>>>>> +            if (!f2fs_blkaddr_in_seqzone(sbi,
->>>>>>>> +                    START_BLOCK(sbi, curseg->segno)))
->>>>>>>> +                continue;
->>>>>>>> +
->>>>>>>> +            ptype = PAGE_TYPE(type);
->>>>>>>> +            temp = type_to_temp(type);
->>>>>>>> +            down(&sbi->available_open_zones);
->>>>>>>> +            sbi->write_io[ptype][temp].zone_openned = true;
->>>>>>>> +        }
->>>>>>>> +    }
->>>>>>>> +#endif
->>>>>>>>         return 0;
->>>>>>>>     }
->>>>>>>> @@ -5451,6 +5470,18 @@ static void destroy_curseg(struct f2fs_sb_info *sbi)
->>>>>>>>         for (i = 0; i < NR_CURSEG_TYPE; i++) {
->>>>>>>>             kfree(array[i].sum_blk);
->>>>>>>>             kfree(array[i].journal);
->>>>>>>> +
->>>>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>> +        if (f2fs_sb_has_blkzoned(sbi)) {
->>>>>>>> +            enum page_type ptype = PAGE_TYPE(i);
->>>>>>>> +            enum temp_type temp = type_to_temp(i);
->>>>>>>> +
->>>>>>>> +            if (sbi->write_io[ptype][temp].zone_openned) {
->>>>>>>> +                up(&sbi->available_open_zones);
->>>>>>>> +                sbi->write_io[ptype][temp].zone_openned = false;
->>>>>>>> +            }
->>>>>>>> +        }
->>>>>>>> +#endif
->>>>>>>>         }
->>>>>>>>         kfree(array);
->>>>>>>>     }
->>>>>>>> diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
->>>>>>>> index e1c0f418aa11..855978ca869f 100644
->>>>>>>> --- a/fs/f2fs/segment.h
->>>>>>>> +++ b/fs/f2fs/segment.h
->>>>>>>> @@ -24,7 +24,8 @@
->>>>>>>>     #define IS_DATASEG(t)    ((t) <= CURSEG_COLD_DATA)
->>>>>>>>     #define IS_NODESEG(t)    ((t) >= CURSEG_HOT_NODE && (t) <= CURSEG_COLD_NODE)
->>>>>>>> -#define SE_PAGETYPE(se)    ((IS_NODESEG((se)->type) ? NODE : DATA))
->>>>>>>> +#define PAGE_TYPE(t)    (IS_NODESEG(t) ? NODE : DATA)
->>>>>>>> +#define SE_PAGETYPE(se)    (PAGE_TYPE((se)->type))
->>>>>>>>     static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
->>>>>>>>                             unsigned short seg_type)
->>>>>>>> @@ -965,3 +966,12 @@ static inline unsigned int first_zoned_segno(struct f2fs_sb_info *sbi)
->>>>>>>>                 return GET_SEGNO(sbi, FDEV(devi).start_blk);
->>>>>>>>         return 0;
->>>>>>>>     }
->>>>>>>> +
->>>>>>>> +static inline enum temp_type type_to_temp(int type)
->>>>>>>> +{
->>>>>>>> +    if (IS_HOT(type))
->>>>>>>> +        return HOT;
->>>>>>>> +    else if (IS_WARM(type))
->>>>>>>> +        return WARM;
->>>>>>>> +    return COLD;
->>>>>>>> +}
->>>>>>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->>>>>>>> index fdf358c7f808..954baa6c100d 100644
->>>>>>>> --- a/fs/f2fs/super.c
->>>>>>>> +++ b/fs/f2fs/super.c
->>>>>>>> @@ -3893,6 +3893,8 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
->>>>>>>>                     sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
->>>>>>>>                 return -EINVAL;
->>>>>>>>             }
->>>>>>>> +
->>>>>>>> +        sema_init(&sbi->available_open_zones, sbi->max_open_zones);
->>>>>>>>         }
->>>>>>>>         zone_sectors = bdev_zone_sectors(bdev);
->>>>>>>> -- 
->>>>>>>> 2.40.1
->>>>
->>>>
->>>> _______________________________________________
->>>> Linux-f2fs-devel mailing list
->>>> Linux-f2fs-devel@lists.sourceforge.net
->>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
->>>
->>>
->>> _______________________________________________
->>> Linux-f2fs-devel mailing list
->>> Linux-f2fs-devel@lists.sourceforge.net
->>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
 
