@@ -1,84 +1,106 @@
-Return-Path: <linux-kernel+bounces-148666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45CE88A85D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:19:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF6A48A85D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:19:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF7111F21BBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:19:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0B681C20A39
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:19:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C06141411E8;
-	Wed, 17 Apr 2024 14:18:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74C851411ED;
+	Wed, 17 Apr 2024 14:19:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fUGdD89K"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LpEsc9fS"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1318B13F42E
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:18:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E66140397;
+	Wed, 17 Apr 2024 14:19:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713363538; cv=none; b=VG4drJWUzDahb+PaGUwkJFymdwcz7XnQR4w7mD3FoukkFYp3ZU7Gykq1bQAqANweEOSNmVlINsqVrYWhsG0I1WjYzFbVuTmYLUk7415WL7sx4fEcLL2YwTDbGeMi54eut5JTY3yVBmkDwTRvWj2NYDJXuVAj82+1Ea1ix60KEDw=
+	t=1713363559; cv=none; b=ILRQShyWo82EiDSAVcrJffF7MfrcG0nIEhv7/kpoAHPZov7q4jukxu5DW4Y/WnjCoFA1IOPRJweer38/530riJuorB06F2uqVKtBmogaPOWOoegqLpDHHXtDGL3RlsJTt/cEmj5EyLziIArXUBHOLBwjdcOPshzbu3rMrJmhkiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713363538; c=relaxed/simple;
-	bh=MZQGj06BJDdrslsKZJAiXK55Co8ES6uGoSaBdr5+6bI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=NU/7Jve5gjDoopVIWoNv5/0H7pMsAVkTa7k78mMLVbXKUVfDVnB/BUGrfIY6HJK7mbZFCyUN8nu4Y6xmqnFpf2/4zXw5a8reNSKUppXM8S/vt8mICst73TPGkBlo9vXQAa/6h46nTaMfwI6+8KcT1xzOU+18uPNTkud3aN4TySk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fUGdD89K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 671E1C072AA;
-	Wed, 17 Apr 2024 14:18:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713363537;
-	bh=MZQGj06BJDdrslsKZJAiXK55Co8ES6uGoSaBdr5+6bI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=fUGdD89Km7HiRVPvV9ilyfxfT8MehO5cgauI6yIvifsb9UztQiV8UtJ02vrG/pf1U
-	 HLmT27aX6TVjTtmQ7AoppChmzdNpXqM32hsyuVe2bGt/LdeZkx8D36VOIMPQNpcasg
-	 LjN7njybBqoCwTeuatDo/aDuh1HteTmV4u/64a2LjWiRjU3L85AsERHFWsLVgFujUB
-	 ibSmUTAZ7b88htsH6jY7ogxq4wFK8RmBFIM4G0rU833BLHTjmPK46AaZgBETKGfFJY
-	 /bCDVk5Mp2uZ2BNBfZGsOBQ8j9SuxoB2byM9LYsISds8dhqVG9qxlqrgCM2CvPEv6c
-	 aFVPfjj202BAA==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Michael Walle <mwalle@kernel.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
- <pratyush@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
-  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  linux-kernel@vger.kernel.org,
-  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v1 5/6] mtd: spi-nor: simplify spi_nor_get_flash_info()
-In-Reply-To: <20240412134405.381832-6-mwalle@kernel.org> (Michael Walle's
-	message of "Fri, 12 Apr 2024 15:44:04 +0200")
-References: <20240412134405.381832-1-mwalle@kernel.org>
-	<20240412134405.381832-6-mwalle@kernel.org>
-Date: Wed, 17 Apr 2024 16:18:55 +0200
-Message-ID: <mafs0o7a86pio.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1713363559; c=relaxed/simple;
+	bh=xR2IotytVan8z9tF1Lsa0SbjGM6BnWbxCxo46sFxDTo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Y2LPCH96Tnzf2LpnBL60aeXn+e6+T7cfendivahMBJahKRp+8THbnAfjqwqXZkvrS9iI4gJ9M1rJ68e4zUA5fqkb9qfCeg8C3wyz9SjDtNQnUQnmyEntlb8hxRUHmZbEt5LGZaDrD+qOqm+GNMz0d3KXwlKkFcJfY0NqUhLqaHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LpEsc9fS; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713363559; x=1744899559;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=xR2IotytVan8z9tF1Lsa0SbjGM6BnWbxCxo46sFxDTo=;
+  b=LpEsc9fS8WS0WFf5Gdo7PuIez9DVYFqjFCoCrsRCA8kyJOcJ7gcb7D1f
+   AKIxlzosLgMz9gLJm0Yb46YOfytWEKyA0bNgo6T61DqGgaLnwAJ3OqEkt
+   DytUMwPuPeSSagcTzIbs8kI8xt2jOnr684C34XOMlg4zErN4fVULJ0I1K
+   cbsJ6rwDLhWKU4S1zTFLiqprf5IY/KBx2F0RIExj0RSz0PhxaLjtflxlE
+   /vHQxgdVGPiqYRkTi+TZi+ag/93XjrU2uszgFTXVjrg4VfPslAReIaKtK
+   5iS8sX7tYThICHnzRSjfzsXpXZkAZcg0+GKEjZ311ywwjxjRToGw62qef
+   A==;
+X-CSE-ConnectionGUID: WSdatNZuRjau5S4Lb1fRPQ==
+X-CSE-MsgGUID: tudj9praQJ2GWq6Fg8aV2A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="12637232"
+X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
+   d="scan'208";a="12637232"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 07:19:18 -0700
+X-CSE-ConnectionGUID: ydDNBc6bSOWKYVn/1aWD2A==
+X-CSE-MsgGUID: AhufXyhTSYu7rvHwXOZjcA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
+   d="scan'208";a="22720787"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa007.fm.intel.com with ESMTP; 17 Apr 2024 07:19:16 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 00D94169; Wed, 17 Apr 2024 17:19:14 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH v1 1/1] gpiolib: swnode: Remove wrong header inclusion
+Date: Wed, 17 Apr 2024 17:19:13 +0300
+Message-ID: <20240417141914.2905621-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Hi,
+The flags in the software node properties are supposed to be
+the GPIO lookup flags, which are provided by gpio/machine.h,
+as the software nodes are the kernel internal thing and doesn't
+need to rely to any of ABIs.
 
-On Fri, Apr 12 2024, Michael Walle wrote:
+Fixes: e7f9ff5dc90c ("gpiolib: add support for software nodes")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/linux/gpio/property.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-> Rework spi_nor_get_flash_info() to make it look more straight forward
-> and esp. don't return early. The latter is a preparation to check for
-> deprecated flashes.
-
-Looks much nicer now! Though I did spend around 15 minutes wondering if
-it can be made even simpler, but I can't come up with anything better.
-
-Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
-
-[...]
-
+diff --git a/include/linux/gpio/property.h b/include/linux/gpio/property.h
+index 6c75c8bd44a0..1a14e239221f 100644
+--- a/include/linux/gpio/property.h
++++ b/include/linux/gpio/property.h
+@@ -2,7 +2,6 @@
+ #ifndef __LINUX_GPIO_PROPERTY_H
+ #define __LINUX_GPIO_PROPERTY_H
+ 
+-#include <dt-bindings/gpio/gpio.h> /* for GPIO_* flags */
+ #include <linux/property.h>
+ 
+ #define PROPERTY_ENTRY_GPIO(_name_, _chip_node_, _idx_, _flags_) \
 -- 
-Regards,
-Pratyush Yadav
+2.43.0.rc1.1336.g36b5255a03ac
+
 
