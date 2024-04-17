@@ -1,94 +1,150 @@
-Return-Path: <linux-kernel+bounces-148392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 302238A81E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:19:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D7298A81E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:19:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B15E3B26553
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:19:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BC931F215BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 967F013C8FE;
-	Wed, 17 Apr 2024 11:19:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17F4113C834;
+	Wed, 17 Apr 2024 11:19:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ZoVBz0gF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="z7z34YSP"
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D892B13C68E;
-	Wed, 17 Apr 2024 11:19:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A4113C8F0
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:19:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713352749; cv=none; b=sJmZbWRYT24KslvtJLSAYiGAI7QQSveCIWKpBn6TYdOPpQdYjclNthmJcRlRwoKlEIBhWXRI9dYs1wWapPM55bA4rjWBY8gqs+40CS1cZamloGBhA8K8+CMOerV371vju5kp/212Oxqm6NC4z2km8Idfx3mDMFLfEOJNPcWm8YQ=
+	t=1713352770; cv=none; b=r7FDiaxG6R0iVWPPw+8LRlZHEH+VMtNq4lAV2l8/cWsLONJIQphgKejQTP2ChH0jWBagJD7+iTUD1PwaykDq6tleQaa5FvFfo3QFM2dV1zg8l7TcNl5Bgw5tjhig9FyVrHQnm0qF15LWjge3q8m+bxnxPjZCI3dOvLtUh9Qph6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713352749; c=relaxed/simple;
-	bh=OUmscy4N4P8Jk2gTRlKg8QoiDcFeKHpdLLSRDJuAFUs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HoQ0Zkvm5NXRc1pGvlh4lx+ubKLccZF5pgtJcVNtrcNWbTZBsqJ3WI1PEKHZq9IPcenLThPqkqwsXWbN4GjBm8DLt2QEGImBVQZPVwzTgNOCLtkCHQlxMoJo5NFaejlgLtWo/GEeQPa7dk0cANz4EMAQspjJosaq4RKCktjnjFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ZoVBz0gF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A0BBC072AA;
-	Wed, 17 Apr 2024 11:19:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713352749;
-	bh=OUmscy4N4P8Jk2gTRlKg8QoiDcFeKHpdLLSRDJuAFUs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZoVBz0gFmumlP0r3VGjZnjMIWstMpSiEMcc5ylLCjx0s2EH0pz29JXox1qJPClen3
-	 EeXnXZORb8fBYU7G0hcyEPRLh8TOCYW89wXPqclKJIFzZX1NacnWnWq9P6GBDteWU/
-	 zlQjL0n86lGFd/vXCGv3zXIVScFoASpavFGigGX0=
-Date: Wed, 17 Apr 2024 13:19:07 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Parker Newman <parker@finest.io>
-Cc: Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	Parker Newman <pnewman@connecttech.com>
-Subject: Re: [PATCH v3 8/8] serial: exar: fix: fix crash during shutdown if
- setup fails
-Message-ID: <2024041746-galvanize-satchel-09a4@gregkh>
-References: <cover.1713270624.git.pnewman@connecttech.com>
- <1a21fffe403d7181e0404db1ed92140c306f97b7.1713270624.git.pnewman@connecttech.com>
+	s=arc-20240116; t=1713352770; c=relaxed/simple;
+	bh=nShAutHtuE37PrbMJ/3jcXGQkinGfTAuQNwXS5UlpzU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lKrgtrE5zXc/0Mhd3pw2pz/PU2CRv0WW9C/b07rR02PA2POWnCY8GgEisY0viw0G/WRX9WcZZ+mYpzCGRq6ZCZCQG1/LFIzU2sNQ919Gdr9vpnq9AP7MsxwHDWknMMzIQAqRhuqPxNGhXGprvO25LehSemwu/RsDuV1X45dYd8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=z7z34YSP; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6a04bb4f6d5so881736d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:19:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713352768; x=1713957568; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=nShAutHtuE37PrbMJ/3jcXGQkinGfTAuQNwXS5UlpzU=;
+        b=z7z34YSPrpD8V4XxSZ9O5iyVYGJUJk5H9tHkF0p8lvxJeYg71VCT+P6bzC2gFmanp/
+         JPgQU/PVdT08T9sYB6jp7COJfoc09m+kMkNW6UNBpkZULb8tx/9tH6AKSeqxgpL7wBWL
+         cbDv8smolzN03+eJjepy3cub3MF2kop+HVCg2ogkiHknovUkCphMLbcsZxEgO+nYyBYa
+         T6Hb0uKE1B5Lu23GRoWXo/ldJ60jkYVildqHWvOOqiyS5/P+PCuDWrkEDrUODGBugaiG
+         ujX2auSNmgTag7MGR1BnY2Wsz06mX1JB1PiX3i4ZyK8ylxtenjmR8uyOnXYz6zNMlH0h
+         XgJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713352768; x=1713957568;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nShAutHtuE37PrbMJ/3jcXGQkinGfTAuQNwXS5UlpzU=;
+        b=TBDHKd2+Cc2zDLm91Yz2I6d+kJZJI/QZRecUWsxaENDIRnIARnokF2WTXBkZY02oTz
+         hxHn2H6FniIRl7n7l87Bn7h9Tb5Cxfggag7nEaefmedTwDLzW/XIW9jw+y8ycmESuVhX
+         Lbd8YlwujwVTw7byEJt/fyrfPD9Ry+nKE5mCC85dkbX7tC1owxRySPU5uKy9Bx692lM1
+         aidzHixQMYqj3j59hQTysb2Y0RGihZ+KIyvY0qDsCb2wY/IWX4CHx4E9XhLc3xaqa3KG
+         zc2wJTu0SJ9XFnCqoNNKO7lmlvFoW1/L+GSKlx0iEP33fVPrPF70v9ozGVvJM7F2kVfG
+         MwEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXmntaFNzZKNHP/VjGv6Jr3SWnSUVb6UxstMO4/TGqZzALZzd0g2p5TXggryKcQOqbBkOG7kXEqCcrNWOSg6RODOQqlrKoMYCPs/wP3
+X-Gm-Message-State: AOJu0YwwQOrW7kUygdWfkHIXRd9HK/LJ6QNViGTEmirQCFtNPUdLfUS/
+	IF/3349BQ24CKRcEsF/YrPXessxTOULPpMQOW9m7fgMWtle5pC/mBQgI9YoC81K9cZ2h4BeNmFQ
+	fPmEv+8oUw9Y+0/M5Ahe5LpfxtE5MzkyvAJCkQQ==
+X-Google-Smtp-Source: AGHT+IFR6bhoypxiwiBMPF6IZr+uTIkVIpmOnJDANxKEhpPmGSVL/We4VkZgS73RHfl6aXFF1JnugYKsEXaCY4mMUq8=
+X-Received: by 2002:ad4:4514:0:b0:6a0:4d4c:2ee3 with SMTP id
+ k20-20020ad44514000000b006a04d4c2ee3mr269913qvu.30.1713352767703; Wed, 17 Apr
+ 2024 04:19:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1a21fffe403d7181e0404db1ed92140c306f97b7.1713270624.git.pnewman@connecttech.com>
+References: <20240405060826.2521-1-jirislaby@kernel.org> <20240405060826.2521-13-jirislaby@kernel.org>
+ <CGME20240415125847eucas1p2bc180c35f40f9c490c713679871af9ae@eucas1p2.samsung.com>
+ <91ac609b-0fae-4856-a2a6-636908d7ad3c@samsung.com> <d70049d5-d0fe-465f-a558-45b6785f6014@kernel.org>
+ <Zh-fgtujwjiSXz7D@monster> <c091da0b-a150-428a-bf96-75f9f3eab2e2@samsung.com>
+In-Reply-To: <c091da0b-a150-428a-bf96-75f9f3eab2e2@samsung.com>
+From: Anders Roxell <anders.roxell@linaro.org>
+Date: Wed, 17 Apr 2024 13:19:16 +0200
+Message-ID: <CADYN=9LCJS0SW4PuF+e356HUxhzJYi093K6U+BdErPohq4RDWQ@mail.gmail.com>
+Subject: Re: [PATCH 12/15] tty: serial: switch from circ_buf to kfifo
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Jiri Slaby <jirislaby@kernel.org>, gregkh@linuxfoundation.org, 
+	linux-amlogic@lists.infradead.org, 
+	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>, linux-serial@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, 
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Apr 16, 2024 at 08:55:35AM -0400, Parker Newman wrote:
-> From: Parker Newman <pnewman@connecttech.com>
-> 
-> If a port fails to register with serial8250_register_8250_port() the
-> kernel can crash when shutting down or module removal.
-> 
-> This is because "priv->line[i]" will be set to a negative error code
-> and in the exar_pci_remove() function serial8250_unregister_port() is
-> called without checking if the "priv->line[i]" value is valid.
-> 
-> Signed-off-by: Parker Newman <pnewman@connecttech.com>
-> ---
->  drivers/tty/serial/8250/8250_exar.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
-> index 501b9f3e9c89..f5a395ed69d1 100644
-> --- a/drivers/tty/serial/8250/8250_exar.c
-> +++ b/drivers/tty/serial/8250/8250_exar.c
-> @@ -1671,7 +1671,8 @@ static void exar_pci_remove(struct pci_dev *pcidev)
->  	unsigned int i;
-> 
->  	for (i = 0; i < priv->nr; i++)
-> -		serial8250_unregister_port(priv->line[i]);
-> +		if (priv->line[i] >= 0)
-> +			serial8250_unregister_port(priv->line[i]);
+On Wed, 17 Apr 2024 at 12:20, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
+>
+> On 17.04.2024 12:08, Anders Roxell wrote:
+> > On 2024-04-15 15:28, Jiri Slaby wrote:
+> >> On 15. 04. 24, 14:58, Marek Szyprowski wrote:
+> >>> On 05.04.2024 08:08, Jiri Slaby (SUSE) wrote:
+> >>>> Switch from struct circ_buf to proper kfifo. kfifo provides much better
+> >>>> API, esp. when wrap-around of the buffer needs to be taken into account.
+> >>>> Look at pl011_dma_tx_refill() or cpm_uart_tx_pump() changes for example.
+> >>>>
+> >>>> Kfifo API can also fill in scatter-gather DMA structures, so it easier
+> >>>> for that use case too. Look at lpuart_dma_tx() for example. Note that
+> >>>> not all drivers can be converted to that (like atmel_serial), they
+> >>>> handle DMA specially.
+> >>>>
+> >>>> Note that usb-serial uses kfifo for TX for ages.
+> >>>>
+> >>>> omap needed a bit more care as it needs to put a char into FIFO to start
+> >>>> the DMA transfer when OMAP_DMA_TX_KICK is set. In that case, we have to
+> >>>> do kfifo_dma_out_prepare twice: once to find out the tx_size (to find
+> >>>> out if it is worths to do DMA at all -- size >= 4), the second time for
+> >>>> the actual transfer.
+> >>>>
+> >>>> All traces of circ_buf are removed from serial_core.h (and its struct
+> >>>> uart_state).
+> >>>>
+> >>>> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> >>>> ...
+> >>> This patch landed in linux-next as commit 1788cf6a91d9 ("tty: serial:
+> >>> switch from circ_buf to kfifo"). Unfortunately it breaks UART operation
+> >>> on thr Amlogic Meson based boards (drivers/tty/serial/meson_uart.c
+> >>> driver) and Qualcomm RB5 board (drivers/tty/serial/qcom_geni_serial.c).
+> >>> Once the init process is started, a complete garbage is printed to the
+> >>> serial console. Here is an example how it looks:
+> >> Oh my!
+> >>
+> >> Both drivers move the tail using both kfifo and uart_xmit_advance()
+> >> interfaces. Bah. Does it help to remove that uart_xmit_advance() for both of
+> >> them? (TX stats will be broken.)
+> >>
+> >> Users of uart_port_tx() are not affected.
+> >>
+> >> This is my fault when merging uart_xmit_advance() with this series.
+> >>
+> > I'm trying to run on two dragonboard devices db410c and db845c and both
+> > fails to boot see the boot failure from db845c [1], linux-next tag: next-20240415.
+> > I tried to apply the patch [2] (that you proposed in this thread) ontop of next-20240415. However, that didn't
+> > help bootlog on db845c [3].
+>
+> This is a different issue, which I've reported 2 days ago. See the
+> following thread:
+>
+> https://lore.kernel.org/all/d3eb9f21-f3e1-43ec-bf41-984c6aa5cfc8@samsung.com/
 
-Is this a bug in the current driver?  If so, can you resend it on its
-own so we can get it merged now?
+Oh ok, I did the bisection on db845v, and that led me to this
+patch 1788cf6a91d9 ("tty: serial: switch from circ_buf to kfifo")
 
-thanks,
-
-greg k-h
+Cheers,
+Anders
 
