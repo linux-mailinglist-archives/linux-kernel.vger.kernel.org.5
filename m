@@ -1,179 +1,209 @@
-Return-Path: <linux-kernel+bounces-148773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20CE38A8731
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:14:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 671B98A872B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:14:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5273C1C20E6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:14:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCBDFB227D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:14:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3946C1487DB;
-	Wed, 17 Apr 2024 15:14:00 +0000 (UTC)
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C91EE146A9C;
+	Wed, 17 Apr 2024 15:13:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X3NMUASU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 741A2146D5E;
-	Wed, 17 Apr 2024 15:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.241.18.167
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108B677F2C;
+	Wed, 17 Apr 2024 15:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713366839; cv=none; b=RCkt7url/1F6NTS6ZpoOJPEh+jTJc3HwBmmKCl0mf44Hd82fQ9GMTbGJQ2wuouv1ybKkJiY5EO4k2q8ry0askvtt1gZMmuFCpLj+mZl6vimEsvgbuErrVvPMSkols+KyRPvHJ9zBVkhu1HiaVa3HeM6SWQWDBVsRok4hSetYhKw=
+	t=1713366834; cv=none; b=lug0ddEqZRVuO2YpGqfV1sLSf4uzy+/vYhX32kbyzolTnfSCSWYWECan8F6HTjtPq36LAyrYuhWPnfSMZvXtOM7GegBgBTFad+eAxc5KX6Lb2uURI4zRO2slIjpU+6en2TnNY/QbOwc0BLJUz7hauxy+u3wxwsPEPpf4piLsXiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713366839; c=relaxed/simple;
-	bh=ReJbikJ2kepuUijelUZQhkZwPh2q88Pj0bpQ80tCjGE=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZTpXsLN9TLz37Q+nspuwaXbvX3xIRAbGqJrBeh6hvF5vkGgEfsGhdnBf2dpyZXX/Q5PUwxCn1MchkdgTtvELmmYd3IayOYOCpQjdsT145DtWSNvMRUyA/RYhNUfMNGQq5jMPDTVBxv8XIdQMQizgZN1prwxP4/hsxvCuXg6qHGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com; spf=pass smtp.mailfrom=de.adit-jv.com; arc=none smtp.client-ip=93.241.18.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=de.adit-jv.com
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-	by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 68F0D5203A7;
-	Wed, 17 Apr 2024 17:13:47 +0200 (CEST)
-Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
- (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.37; Wed, 17 Apr
- 2024 17:13:47 +0200
-Date: Wed, 17 Apr 2024 17:13:42 +0200
-From: Hardik Gajjar <hgajjar@de.adit-jv.com>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-CC: Ferry Toth <fntoth@gmail.com>, Hardik Gajjar <hgajjar@de.adit-jv.com>,
-	<gregkh@linuxfoundation.org>, <s.hauer@pengutronix.de>,
-	<jonathanh@nvidia.com>, <linux-usb@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <quic_linyyuan@quicinc.com>,
-	<paul@crapouillou.net>, <quic_eserrao@quicinc.com>, <erosca@de.adit-jv.com>
-Subject: Re: [PATCH v4] usb: gadget: u_ether: Replace netif_stop_queue with
- netif_device_detach
-Message-ID: <20240417151342.GA56989@vmlxhi-118.adit-jv.com>
-References: <20240115132720.GA98840@vmlxhi-118.adit-jv.com>
- <f25283fc-4550-4725-960b-2ea783fd62e1@gmail.com>
- <aeee83d8-dee3-42ed-b705-988b17800721@gmail.com>
- <20240405113855.GA121923@vmlxhi-118.adit-jv.com>
- <321e908e-0d10-4e36-8dc4-6997c73fe2eb@gmail.com>
- <ZhbOZsp-XHemVhQz@smile.fi.intel.com>
- <20240411142637.GA110162@vmlxhi-118.adit-jv.com>
- <ZhgSPCq6sVejRjbj@smile.fi.intel.com>
- <be8904bd-71ea-4ae1-b0bc-9170461fd0d9@gmail.com>
- <Zh6BsK8F3gCzGJfE@smile.fi.intel.com>
+	s=arc-20240116; t=1713366834; c=relaxed/simple;
+	bh=fRPy8y4qzbD9Mmh2qPQtrKeM0H1837mzc+8u0A035W0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UWPXhYYrTEWKfzrJddqTR5mj/5cmNk+d/LfyFTkTCgo5CtHTqfUb1F4ti+GNrzEuYEiJN0gXFiA0odV1I1gqFjRzzi4aFhVCAkK3P3fbvCl0IKD43uWSNwITFjinQM/XKQrHYqCC8BOtYPTHiplT7M8tlZaCgG91ccmBvm+8/H8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X3NMUASU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AAEEC072AA;
+	Wed, 17 Apr 2024 15:13:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713366833;
+	bh=fRPy8y4qzbD9Mmh2qPQtrKeM0H1837mzc+8u0A035W0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=X3NMUASUhnLFj2lxBLrGv+jOAKwBQuAApQT9he0HJ7qeuJim3N6jH5C1OoEHvV33S
+	 yfCum/TEdcTRpBmgX0jr+7iS7kQm3GkIjN1eLsfTYg63ITfyURbQEZUEswPe5CIUXx
+	 HXUVs2IxY/iDXAXWRt3QISHO5ew/Z+TZpX9zPGziMYnNPUMGVgabBnO90JefpdYC3k
+	 O4K+JO2ZdpSgcVz5tEJ+C5AA+Dgwbm8qk77h5rBB1cnMsWu5446DHqYFO1ED337JbE
+	 AseCD8rEaDDhtm+sR0JgnHLYio+TK7Yb5VV480uGVFE4KYc5SxGcF7qddlsi6haD36
+	 ENvYurIhQbejw==
+Date: Wed, 17 Apr 2024 16:13:49 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Kousik Sanagavarapu <five231003@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+	linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: dt-bindings: armada-3700: convert to dtschema
+Message-ID: <20240417-clobber-brought-49867bc036bd@spud>
+References: <20240417052729.6612-1-five231003@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5aitrf2yQi0+M2T6"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zh6BsK8F3gCzGJfE@smile.fi.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
-
-On Tue, Apr 16, 2024 at 04:48:32PM +0300, Andy Shevchenko wrote:
-> On Thu, Apr 11, 2024 at 10:52:36PM +0200, Ferry Toth wrote:
-> > Op 11-04-2024 om 18:39 schreef Andy Shevchenko:
-> > > On Thu, Apr 11, 2024 at 04:26:37PM +0200, Hardik Gajjar wrote:
-> > > > On Wed, Apr 10, 2024 at 08:37:42PM +0300, Andy Shevchenko wrote:
-> > > > > On Sun, Apr 07, 2024 at 10:51:51PM +0200, Ferry Toth wrote:
-> > > > > > Op 05-04-2024 om 13:38 schreef Hardik Gajjar:
-> 
-> ...
-> 
-> > > > > > Exactly. And this didn't happen before the 2 patches.
-> > > > > > 
-> > > > > > To be precise: /sys/class/net/usb0 is not removed and it is a link, the link
-> > > > > > target /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/net/usb0 no
-> > > > > > longer exists
-> > > > So, it means that the /sys/class/net/usb0 is present, but the symlink is
-> > > > broken. In that case, the dwc3 driver should recreate the device, and the
-> > > > symlink should become active again
-> > 
-> > Yes, on first enabling gadget (when device mode is activated):
-> > 
-> > root@yuna:~# ls /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
-> > driver  net  power  sound  subsystem  suspended  uevent
-> > 
-> > Then switching to host mode:
-> > 
-> > root@yuna:~# ls /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
-> > ls: cannot access
-> > '/sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/': No such file
-> > or directory
-> > 
-> > Then back to device mode:
-> > 
-> > root@yuna:~# ls /sys/devices/pci0000:00/0000:00:11.0/dwc3.0.auto/gadget.0/
-> > driver  power  sound  subsystem  suspended  uevent
-> > 
-> > net is missing. But, network functions:
-> > 
-> > root@yuna:~# ping 10.42.0.1
-> > PING 10.42.0.1 (10.42.0.1): 56 data bytes
-> > 
-> > Mass storage device is created and removed each time as expected.
-> 
-> So, what's the conclusion? Shall we move towards revert of those two changes?
+In-Reply-To: <20240417052729.6612-1-five231003@gmail.com>
 
 
-As promised, I have the tested the this patch with the dwc3 gadget. I could not reproduce
-the issue. 
+--5aitrf2yQi0+M2T6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I can see the usb0 exist all the time and accessible regardless of the role switching of the USB mode (peripheral <-> host)
+On Wed, Apr 17, 2024 at 10:57:06AM +0530, Kousik Sanagavarapu wrote:
+> Convert txt binding of marvell armada 3700 SoC spi controller to dtschema
+> to allow for validation.
+>=20
+> Signed-off-by: Kousik Sanagavarapu <five231003@gmail.com>
+> ---
+>  .../bindings/spi/marvell,armada-3700-spi.yaml | 55 +++++++++++++++++++
+>  .../bindings/spi/spi-armada-3700.txt          | 25 ---------
+>  2 files changed, 55 insertions(+), 25 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/spi/marvell,armada-=
+3700-spi.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/spi/spi-armada-3700=
+=2Etxt
+>=20
+> diff --git a/Documentation/devicetree/bindings/spi/marvell,armada-3700-sp=
+i.yaml b/Documentation/devicetree/bindings/spi/marvell,armada-3700-spi.yaml
+> new file mode 100644
+> index 000000000000..61caa1d86188
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/marvell,armada-3700-spi.yaml
+> @@ -0,0 +1,55 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/marvell,armada-3700-spi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Marvell Armada 3700 SPI Controller
+> +
+> +description:
+> +  The SPI controller on Marvell Armada 3700 SoC.
+> +
+> +maintainers:
+> +  - Kousik Sanagavarapu <five231003@gmail.com>
+> +
+> +allOf:
+> +  - $ref: spi-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: marvell,armada-3700-spi
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  num-cs:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    spi0: spi@10600 {
 
-Following are the logs:
-//Host to device
+Iff there's a resubmission, drop the lavel here since it has no users.
 
-console:/sys/bus/platform/devices/a800000.ssusb # echo "peripheral" > mode
-console:/sys/bus/platform/devices/a800000.ssusb # ls a800000.dwc3/gadget/net/
-usb0
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-//device to host
-console:/sys/bus/platform/devices/a800000.ssusb # echo "host" > mode
-console:/sys/bus/platform/devices/a800000.ssusb # ls a800000.dwc3/gadget/net/
-usb0
-s a800000.dwc3/gadget/net/usb0                                                <
-addr_assign_type    duplex             phys_port_name
-addr_len            flags              phys_switch_id
-address             gro_flush_timeout  power
-broadcast           ifalias            proto_down
-carrier             ifindex            queues
-carrier_changes     iflink             speed
-carrier_down_count  link_mode          statistics
-carrier_up_count    mtu                subsystem
-dev_id              name_assign_type   tx_queue_len
-dev_port            netdev_group       type
-device              operstate          uevent
-dormant             phys_port_id       waiting_for_supplier
-console:/sys/bus/platform/devices/a800000.ssusb # ifconfig -a usb0
-usb0      Link encap:Ethernet  HWaddr 3a:8b:63:97:1a:9a
-          BROADCAST MULTICAST  MTU:1500  Metric:1
-          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:1000
-          RX bytes:0 TX bytes:0
+Cheers,
+Conor.
 
-console:/sys/bus/platform/devices/a800000.ssusb #
+> +        compatible =3D "marvell,armada-3700-spi";
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +        reg =3D <0x10600 0x5d>;
+> +        clocks =3D <&nb_perih_clk 7>;
+> +        interrupts =3D <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
+> +        num-cs =3D <4>;
+> +    };
+> +...
+> diff --git a/Documentation/devicetree/bindings/spi/spi-armada-3700.txt b/=
+Documentation/devicetree/bindings/spi/spi-armada-3700.txt
+> deleted file mode 100644
+> index 1564aa8c02cd..000000000000
+> --- a/Documentation/devicetree/bindings/spi/spi-armada-3700.txt
+> +++ /dev/null
+> @@ -1,25 +0,0 @@
+> -* Marvell Armada 3700 SPI Controller
+> -
+> -Required Properties:
+> -
+> -- compatible: should be "marvell,armada-3700-spi"
+> -- reg: physical base address of the controller and length of memory mapp=
+ed
+> -       region.
+> -- interrupts: The interrupt number. The interrupt specifier format depen=
+ds on
+> -	      the interrupt controller and of its driver.
+> -- clocks: Must contain the clock source, usually from the North Bridge c=
+locks.
+> -- num-cs: The number of chip selects that is supported by this SPI Contr=
+oller
+> -- #address-cells: should be 1.
+> -- #size-cells: should be 0.
+> -
+> -Example:
+> -
+> -	spi0: spi@10600 {
+> -		compatible =3D "marvell,armada-3700-spi";
+> -		#address-cells =3D <1>;
+> -		#size-cells =3D <0>;
+> -		reg =3D <0x10600 0x5d>;
+> -		clocks =3D <&nb_perih_clk 7>;
+> -		interrupts =3D <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
+> -		num-cs =3D <4>;
+> -	};
+> --=20
+> 2.44.0.548.g91ec36f2cc
+>=20
 
-I strongly advise against reverting the patch solely based on the observed issue of removing the /sys/class/net/usb0 directory while the usb0 interface remains available. 
-Instead, I recommend enabling FTRACE to trace the functions involved and identify which faulty call is responsible for removing usb0.
+--5aitrf2yQi0+M2T6
+Content-Type: application/pgp-signature; name="signature.asc"
 
-According to current kernel architecture of u_ether driver, only gether_cleanup should remove the usb0 interface along with its kobject and sysfs interface.
-I suggest sharing the analysis here to understand why this practice is not followed in your use case or driver ?
+-----BEGIN PGP SIGNATURE-----
 
-I am curious why the driver was developed without adhering to the kernel's gadget architecture.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh/nLQAKCRB4tDGHoIJi
+0tlyAQDpsyVWmyM4Dt5IeYSWwJGK8qdqH4aGjcGIURgulDbCEAEAjpR4t5busdcv
+AtxDqeCCr1uTeKmWdl/dMaPaaWfXxg8=
+=huAB
+-----END PGP SIGNATURE-----
 
-> 
-> > > > I have the dwc3 IP base usb controller, Let me check with this patch and
-> > > > share result here.  May be we need some fix in dwc3
-> > Would have been nice if someone could test on other controller as well. But
-> > another instance of dwc3 is also very welcome.
-> > > It's quite possible, please test on your side.
-> > > We are happy to test any fixes if you come up with.
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+--5aitrf2yQi0+M2T6--
 
