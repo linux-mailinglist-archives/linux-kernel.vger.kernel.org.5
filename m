@@ -1,201 +1,220 @@
-Return-Path: <linux-kernel+bounces-149140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15BCF8A8C61
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:58:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D262F8A8C64
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:01:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 265E0B23C86
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:57:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84D30285440
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:01:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE98383BF;
-	Wed, 17 Apr 2024 19:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34A6638382;
+	Wed, 17 Apr 2024 20:01:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="E9j+V+AF"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2074.outbound.protection.outlook.com [40.107.237.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cEPzllLk"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 092A336AEC
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 19:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.74
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713383865; cv=fail; b=cox0ie5UWs66GW5S7qXRs0frOv1eyaLI+Wy/auye6YeKyeVupzvn9fSg6lUAuir0VYg+B94GfnQSx+ZJHVz9ijeczn71AiX+KCTNY0M0tbg1D8AiYsupbzZQdxVd9H6kspC46EvYfU5T84jNkyv/ehSHF27g61cftD39ROxzoSo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713383865; c=relaxed/simple;
-	bh=idRU6s8tUa8pTSu82xoE8o42WVFRZZRpRD0iY+NOHyo=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=MEy/YEXGaJjcocrMcjcLoMhzhUQYX0Xm9PpWQtr+q1bxx0Py5FzKFaBi3wHTom3qOnt/9YBA9amMYYzXeXgXj+F3KcsC9JqAfTWmeekXsP5OgSBUOOkVlk7XEZS+6eVkA2BkCrgXlVgMA7p2poZyGVuHAbzDFFjuBhXBv3qCv3Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=E9j+V+AF; arc=fail smtp.client-ip=40.107.237.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DtBnQ/dqA8RG4CZjINC5j5zTElodNW/4qCUkpblIKoXCYUAa6gj6Zutj97BWmJaz1jGiSoE3VQrFhs4FC2mdPas3bTK4EpGIVe12AsBymf5IeF/EyK68VOW2L6lp7HZpDUi+vVfnNzpAaf1yzgdxDRPeBBwoz7w1rEuc87oqqW/wF8CUhc0j1PrI1ZDdK4ddueEE4M5dqjLq2APdAx+a04V4IZOgO1FDFviLg3HYroC2/4N7fKbOJ0Y1Zara7BdQFwGLNjrlBU3TvkNZr3Cb4S6trjSv0cg4eY4WM+a1TgEkOVMYeQCnpmj55XiuFWx6HUmEJTIn74h1z7sjPy0o0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fTVX1oUTU/SkIQxPAf7CFfIFLxq8P3X2F0E9hwntjRQ=;
- b=kPD/IYbLfbJzcybCJlC7FNTvGsUrxTTkqknERwO1YVFfkbbaixourtaqQenOOAyNzcpMaPj2lrH74W6nNBNnHeHz+m83GCF9C+jLjWo48wDI778YVkcJyx1iXA5CNBnoLn8qo1puaLBm72ya+VUU6TAva7/fGxrWDwq9gf/F0r9yIE0mcXFPSOOwBI/edy+FbVcwyqotYN0XGYPGAJ9Bv2Bai6xlj6yiK66ayD3wLKwRfqxw+k9agkXib2YDNyMA/jwwtACpXMBgRdxYQ6ji1ZZwORDzpT8OyGcHHTLZ8bW8qJQH18SXeVN5OnvsLZpfMYSPwQ6lkvrQCwp7WOHdaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fTVX1oUTU/SkIQxPAf7CFfIFLxq8P3X2F0E9hwntjRQ=;
- b=E9j+V+AFI8TzPuDqWwsIUt9t58NYRrcYsSYoEuP0MmL5zFSQsfcpvChO80JNfIhGkEfmhFqZN7wcCoMmWROgbHZlVX+rhSVlUmdMwC7z4REqlSdiwQ0tafIBP8cjN628+pXhV/feK1RV6Z5XRCYitYHyL0t3iMZ3SD8oxr3pehw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
- by PH7PR12MB7820.namprd12.prod.outlook.com (2603:10b6:510:268::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Wed, 17 Apr
- 2024 19:57:40 +0000
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::1c2f:5c82:2d9c:6062]) by CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::1c2f:5c82:2d9c:6062%5]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
- 19:57:40 +0000
-Message-ID: <a0630ca1-edda-45d3-a69b-17335afb964a@amd.com>
-Date: Wed, 17 Apr 2024 15:57:28 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/4] drm/amd/display: Remove unnecessary
- SIGNAL_TYPE_HDMI_TYPE_A check
-To: Andri Yngvason <andri@yngvason.is>, Leo Li <sunpeng.li@amd.com>,
- Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>,
- Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
- Simon Ser <contact@emersion.fr>, Werner Sembach <wse@tuxedocomputers.com>
-References: <20240115160554.720247-1-andri@yngvason.is>
- <20240115160554.720247-2-andri@yngvason.is>
-Content-Language: en-US
-From: Harry Wentland <harry.wentland@amd.com>
-In-Reply-To: <20240115160554.720247-2-andri@yngvason.is>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YT4PR01CA0452.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:10d::18) To CO6PR12MB5427.namprd12.prod.outlook.com
- (2603:10b6:5:358::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C49F2E64C
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 20:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713384084; cv=none; b=Zzif72IYpq/HDkEB63EWXoADu/tWAn/VAijeWV/bAvSdvVKeP5MqiWKvXSrmYbM/u968J88cQWiVORIHzA4JvMDnvkOeXvO04X8kffhUwhzei2NLtPWU+G/wBSo3e6I5cXihHq6P1UOEXp0Tg33LQqc6m3W4vbwM+DNqAVdeR7A=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713384084; c=relaxed/simple;
+	bh=/39vaYwH6c7D7U1qbeYjMZX94n9RUUOZ4f2TEoJ2CdI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=dCIujEeuotGoQzaSPsabdtEMaw37lubw+goGyXiFWwkz2ay/BIiGgemZZGD8S8lZnBrw/+2zm7Rc/zs9pBUWCfejC33bLsTa04APRidydF8jQd4HwH0yPAVb4x0wQilCfukH39+y6ggg1K4NL0xeZPn4cZ90tIyY+KGQ5WrMfBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cEPzllLk; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a526d381d2fso219269766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:01:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713384081; x=1713988881; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mETcPG/0eQHUUp+Hu5ATZjovZfnlIP1p939gJWBqEiw=;
+        b=cEPzllLk3XIks7EdMd/csJQrXBTUHtoQd+m3oM/CYj9jy+L2XNCQn1lueumIK644NL
+         L7wrgc+6YxJOTipE5WHFo2GV9cg/hmKlWCojLu+t9en+m8r3Rk4Zo7VdilNY9w/jOgH6
+         rZMkA9BwcVDYoq/BbZg8tMMQF5TqpdD5ATU6zv2ycrBoe1T+Q2AedhSgBamSD8piKly6
+         +fBpyz+tVnyN0EvF4eH8QILzsFiwV/VZTAtgAhwQv82Ghff/3EBg2E1xzRyvDXcUoj29
+         gfyhaYv19Q4qfAUzgfZ+1Fze7/IlzencqrIbSdax+3o+h8EgOgVuUt+CxRFW4VwLk58R
+         3vvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713384081; x=1713988881;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mETcPG/0eQHUUp+Hu5ATZjovZfnlIP1p939gJWBqEiw=;
+        b=WKXy42/5vYgMi3ScpHFCpDBfrpfQcT5PcnCnip4n2mxgOIApqI8/0aQvsUcip76AFe
+         q0sq/MufWL/6mDxCcczDqNNkGZXpM1pBe13pf8o578NM/5gmob3apTfd4D1Y2773Qzfv
+         kVWuAi2WmqXMZh6rjvkb3hFdEIik1GsijDww3MX/Ss11Gwia7NGonXGugV23GpZhSrXt
+         D+k7fHWaJL7gZZ0d5A9J8bf96W/WSyz739wKzQoIePJUV135P+cKdSjhFLgy1s1anFdk
+         75dVvXaUS4wRmAgXsET1I3uzUwGlFlc2jMnpVfSi+D3Fm8t5nlPvvrqeuwnq1WbxVF8Y
+         eegA==
+X-Forwarded-Encrypted: i=1; AJvYcCXbm/jD0emyZ7nNsnG+vG+AONBTpI5YflvqSYlsFfEArfKhVeY6J9JysZk9oCJYKOD2QKWZEuNJJRWFP5Kz/fpYapSLAuaFHpA3uIsl
+X-Gm-Message-State: AOJu0YwFTjoE3VCo5ZnHeMmoOfyDepljABZxntlqfRZbXXFWxjPUS1ZJ
+	xQoh/F0JwD4Gu5+q3a4vEuXnr2i65a0dYzgB07L9lcREYq53BWtbPkzdunIEBVo=
+X-Google-Smtp-Source: AGHT+IF9Wmh+7ejD/UAY2mFCTzIVUie+eVGe4rIzky1QrvxATELJQL/cGxzZCmHlaaiUR/qNIfpGZg==
+X-Received: by 2002:a17:906:c9c8:b0:a55:690b:b696 with SMTP id hk8-20020a170906c9c800b00a55690bb696mr130195ejb.9.1713384080443;
+        Wed, 17 Apr 2024 13:01:20 -0700 (PDT)
+Received: from [127.0.1.1] ([79.114.172.194])
+        by smtp.gmail.com with ESMTPSA id gs6-20020a170906f18600b00a555ef55ab5sm939981ejb.218.2024.04.17.13.01.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 13:01:19 -0700 (PDT)
+From: Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH v10 0/7] spmi: pmic-arb: Add support for multiple buses
+Date: Wed, 17 Apr 2024 23:00:52 +0300
+Message-Id: <20240417-spmi-multi-master-support-v10-0-5bc6d322e266@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|PH7PR12MB7820:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0db495a2-c87e-4788-a090-08dc5f18a060
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	5JReknz6Y/HyqUT+Z8rqs3QK9mbujLxtxVDY6BnrYVtGD6nvkug5EAwYR3/mrgpcqND+/sOa9qG84dSl2gqyi8kRkAflFPCdVVLzy8i2XCXFVqGzH5Xql6h3TpiBuPXdtG1jHoiAC/fByi5zufUq2BFTRGhTtHSzIYJO3HignOcY6xYGg6oFvsZtM4lwD77IHDi5JhGjIKi5lZGqzFLV9VIh8MF/Q/X5EFguCToRr7cwEjlSwCED5ZgwSnq3NPqIhu3139RScDKP/K73eiKk5XeHZCYdZNGnrxk8R/bMbHPBQs14Fy+jRPxoiY5q68JQpCBLq8tgJf5b5VDAXKhSWH61rGSR1MVgCnvpCFCOpY4RRtFgQZgkbmyPsdxERY2GrjDau5raLcGmhLO5T4pcAvv+P3Fgid8JpMR3RUnoa/x4n7wCDyyj+l8yps/pWNggSrX5pa5IeLlTSA62eWi/jGRdXvstDrqfA+598cc6cneMtecLi6YOjjaHGZ1gsirwCwtfJ/eiW06igK21iIq+EyoNCrlz0ShFnssdv3HlHpufydjZG/3g3USiDcetjjf/WWvfE3qPkxTnDu8VVQDHNnXTjNMXQCVQsKWLt1J46tJNbK+x6wB50q6VUrb+NMIQTsEE7oKCuf43fKwM1RwNT9Dr5MfqVqXffCA2o5IhtLf2HJ1TMgxoXbsCxNecfaCo1brLoPXHoJwvIcV/Zus6hQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007)(921011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZjE5bXR1U1I1WlVra3J1YTY3RkZ5WFp3NHRCdHoySkM2K091SXJGelBqOFBE?=
- =?utf-8?B?cnRMaW5TUEdwRElYaWFRZkZzbFlwa0d1dXh2RTRNR2VuUmlvQzNFYTZoYWo4?=
- =?utf-8?B?ZWM0T2Z3L2FaSCtVQlh2WjVEWU4vRFdlL254THZ3cWEvYTBVUW5NVHF6WnBP?=
- =?utf-8?B?KzdGRktGZFB0V1pTcnVwWEZuVXdTMUtjam1vcGgybEFodXA1b0hMcXEzMFZD?=
- =?utf-8?B?TWU2N2ZnL3NNNUN2TmNiMDJwVnhtVWYzK2J1WFZIZmVTM1J0cWlhSUplOUpT?=
- =?utf-8?B?ZFM1Zk1YbFdQM1RlWjljeWtsUFdHcjFSRm9UY0VNalZvdzRVOHUxaVFONWtk?=
- =?utf-8?B?bDcvMVc5Rzg5U05aRXhXYnBnckdRTzBkN25uMzJIUXhkMWhOVWJ2TmVBaUNk?=
- =?utf-8?B?M1ZmakFvY3hWQmVRN2JtbDVWYTdqOUNRb3BGL0xITWxnWmJ0M1I1ZUMyWXl5?=
- =?utf-8?B?NmNiSVFSUGJpbzd0S1R3RDU5V25iak1TRVlGNTBjS3JmcFZrcUwreTRuTnc5?=
- =?utf-8?B?c3o3VllqV0IyVjFWQlBMRGxtSUFwSlRmWnBaendzWUVNWnRLdXZlczQxVnBU?=
- =?utf-8?B?ZHZodUtLSUVFbDA4R0dncENEUy94Slo1ejFPOGQyU2V2eS81UmtPRDZqcHlV?=
- =?utf-8?B?YnZTSDFoZTFpUUozWXBtejJ0R3VPZU9DV1ZmbGkrbTFCUCs3UVg3ZXFBbXZH?=
- =?utf-8?B?REZSbEo5aFpXTnRhSlN3UzBxMlJmSDFwbXU5M3VtSXpaclMxai9waXEyTmNV?=
- =?utf-8?B?di9WcnBvaGRKRWNKSDRMZlNFNVlCK3EyQUNNMWo4NDdLcjFic2l6SVRoTkll?=
- =?utf-8?B?bWsvMVZ1ZTJ4WG53SWZldklWanQ1TFEzcEEzWkZ2OHNxNy8zY0tIZDJUd3k1?=
- =?utf-8?B?SUo0YnBESlVUMGtoYTVKdDZlRG1VTkQvQ2xKeHY1b2dUNEg2aW9mS2lCc1FG?=
- =?utf-8?B?OFZpTTM4S0I0Y2NndTY5THdaYnEwQ3k2RkgrbHkxTSt1WjM1cnY1R0VzTmFN?=
- =?utf-8?B?b1RRZXlHNXZhQjJnZ3g4YUFpcXljNmhEdGRpclhxNHFQRHJqTHZ5bjBIeWI1?=
- =?utf-8?B?cmlBSHVmY3NIZUduNDdCb053bmdHYjI0TkhuemVEc01uN3ZxbkdMMmpjYU8v?=
- =?utf-8?B?TzdUZTZBUWVFN3pmM0d1WklIY2NxTXczMkU0S1JrZlZLdUR6WDdkZUFPdUpD?=
- =?utf-8?B?a3h5clpYMVRrNmRnYm13MS9jRDRWV0t6NFNzMURoczRpKzlsdzRiZ3B0d3dI?=
- =?utf-8?B?RXVJNzJ0MEdyUTZYczdUZUdLSE11cENvZ21qOC9xYzlGcFRpZ0Y5Sm0zRjU3?=
- =?utf-8?B?NnVmNVoxb3VwMXVJdTgvUDMvWmMyMmFROUluS1RCN1JIeVJ5YXRpMnlPd3kz?=
- =?utf-8?B?NlFQdkNPdVNsWkNaODVpY082cWxwbjAydGRTTnFJcjhpSmdJVzNvRittNmRP?=
- =?utf-8?B?Y0JQdmVGVEtSaUN1QWM0TEFCZUV4U2xkODZUT0lUUDh3d0k2NXVFY05kWDh2?=
- =?utf-8?B?TTh5YTJjNFNkamRMWC9Vc3dYUm50bGhFakN3WjVDQkJOckdEK3ludmQzZysw?=
- =?utf-8?B?WE40SzZpTGJCSnFVdHoyTmhSS1B3UGFpamZtV0VBODFrY1QxMHB2N3QrYlpx?=
- =?utf-8?B?eXdEN3lDdDlUUiszQ0FBRE9uN2lDZlowWUo2MzlxZUVJWGdFMGxTWFIzOWl4?=
- =?utf-8?B?eWVjd24zS0NDNjBWUUVFRGEzVXNrTThJeWFzRGdYWTkra3lNdDNsMkg3VDN5?=
- =?utf-8?B?VkJhZGNESDEwbTlQN0NUbFdBa3RhMUNTT1h2ckJFUkluZUlEaVBScHVEMFJs?=
- =?utf-8?B?eER0RUo2cDhodnpkYUxxT0x2enBUUUlySFU5MEg1aExoR0hNdHVZbjllZ3dP?=
- =?utf-8?B?dXBzVG96MjQ2VG1kQUw4U2dZVTluKzhaT0E4eWk5YXRBU0xOL3MxeGVKcDhR?=
- =?utf-8?B?SFpLdkd3QWFQdnNOSndlcGVDeGYxSEdkMmxyalBhUHYydlVibVEveGNTd0Jq?=
- =?utf-8?B?Tmd6cUd0RzdmMisveTdka2tQYWF5anJnSmRZRzViTWQvZTJKbjhvQ1g5alZO?=
- =?utf-8?B?WlRqLzUxS1owaTZtUmRBSWxURVdOcFk3UzhFeDhqblFtRWVvYThRQ3QwZE82?=
- =?utf-8?Q?K7aElovMzpQj/kMRoRjUKTfih?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0db495a2-c87e-4788-a090-08dc5f18a060
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 19:57:40.5013
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oGnWL3JQ5JcEGUu6njjziQ485Dwb+3DaB/uD2Sofz5XRkNBSDDpoY0SrIqOv+0XyEW9jcXw5Siu1uJNaXzzQEA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7820
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHQqIGYC/43SwWrDMAwA0F8pOc9Dku3Y7mn/MXawHbs1tE2w0
+ 7BR+u9ze2lGwOwikEBPQujWlZBTKN1+d+tyWFJJ46UmCG+7zh/t5RBYGmqhIyABBIqV6ZzY+Xq
+ aa7RlDpmV6zSNeWaak1UgnFLGdbV/yiGm7yf++VXzYyrzmH+esxZ8VP+jLsiA+SBV5IBexeHjl
+ C42j+9jPnQPdqEVhbxFEUPmuEMgTr2BfkPxNSVaFK9bgbMBQgQRbdxQYkURtChRqcFr5F4r7az
+ eUHJNYYuSleIkpbcCuQW3ofo1RS2qr5TzXARrZI+D3VDqRXEyLUpVSjkDpEmQ6P2G0i+q7tWi9
+ PMZ+kgDCgtyeyuzppp/ZSoVLUr0yA1G/oe63++/IuR3FhwDAAA=
+To: Stephen Boyd <sboyd@kernel.org>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+ Johan Hovold <johan@kernel.org>, David Collins <quic_collinsd@quicinc.com>, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org, 
+ devicetree@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4975; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=/39vaYwH6c7D7U1qbeYjMZX94n9RUUOZ4f2TEoJ2CdI=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBmICp3qYoyP08TixYiL5Stz6cy5MqL8iInUv6n9
+ QINj7CRQwqJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZiAqdwAKCRAbX0TJAJUV
+ VkD5D/9FFrSAxuVX/hX3nme1VUm/HaTI/UCVGqgqPMxqn/UtLZnJZAxCKmAXsJPHy5QN8h3O/AH
+ V/byADRaqLhEeG+KhK936mlLyO9UFeY9LUxKV9m9kRzr6/Fb1J4dRpkRaqtsSjkwwkAmBG2q1Jz
+ /JiE0DgN2gQhDGlwkegec6nM4t/8LTt3cxoopXTIDm9OjYEEs4oJoaMP/FO6/LlUxKomRV6ZD0I
+ UO1Sp0wIHl637ZUJ0EN+ycLR/5chAvpiRAYtu1oWqEHedpa/vrU1aCz+vay0DUjbC1Svzb/ZGW9
+ pkfQ9eras9BTWeQy07rb+9nwL550vduT68VR4V2A+TNR9F/VitLknskF7wQvx44AgEeO9vBocAp
+ KjF1P4NQQOwqmuMF5EWeBrwOCm09bBfE2HFRt1uD9V1iBWSZJr/YZGr0J2mFSNO725duJXbi6o/
+ NWPJSl/l+TCQkab4McrMboFvPbVytGy4R3B4YjJ1XrekiYM5/eGnjdi02Ig7Lg+zjIRsJD+mlwm
+ F8ZjqUTv+Z8BY/JL44RgGT1lIxyTaPL4s1XH6VmcJoS74rn9TUlXcP/vK4y0RS9VXvabEDMf2Bx
+ /sp0IwUM6wrApmVbcdxzyqkpB09kEX6CFjH0fzg6CeKEfnJP5c6n+mnOTQxSL7B6TWi6GLKhSwL
+ 0EHcGHdaKvNdLzQ==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
+This patchset prepares for and adds support for 2 buses, which is supported
+in HW starting with version 7. Until now, none of the currently
+supported platforms in upstream have used the second bus. The X1E80100
+platform, on the other hand, needs the second bus for the USB2.0 to work
+as there are 3 SMB2360 PMICs which provide eUSB2 repeaters and they are
+all found on the second bus.
 
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Changes in v10:
+- Updated the commit for the x1e80100 dedicated schema file to explain
+  why the this platform specific compatible was used.
+- Link to v9: https://lore.kernel.org/r/20240407-spmi-multi-master-support-v9-0-fa151c1391f3@linaro.org
 
-On 2024-01-15 11:05, Andri Yngvason wrote:
-> From: Werner Sembach <wse@tuxedocomputers.com>
-> 
-> Remove unnecessary SIGNAL_TYPE_HDMI_TYPE_A check that was performed in the
-> drm_mode_is_420_only() case, but not in the drm_mode_is_420_also() &&
-> force_yuv420_output case.
-> 
-> Without further knowledge if YCbCr 4:2:0 is supported outside of HDMI,
-> there is no reason to use RGB when the display
-> reports drm_mode_is_420_only() even on a non HDMI connection.
-> 
-> This patch also moves both checks in the same if-case. This  eliminates an
-> extra else-if-case.
-> 
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> Signed-off-by: Andri Yngvason <andri@yngvason.is>
-> Tested-by: Andri Yngvason <andri@yngvason.is>
-> ---
->  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> index f6575d7dee971..cc4d1f7f97b98 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@ -5575,11 +5575,7 @@ static void fill_stream_properties_from_drm_display_mode(
->  	timing_out->v_border_bottom = 0;
->  	/* TODO: un-hardcode */
->  	if (drm_mode_is_420_only(info, mode_in)
-> -			&& stream->signal == SIGNAL_TYPE_HDMI_TYPE_A)
-> -		timing_out->pixel_encoding = PIXEL_ENCODING_YCBCR420;
-> -	else if (drm_mode_is_420_also(info, mode_in)
-> -			&& aconnector
-> -			&& aconnector->force_yuv420_output)
-> +			|| (drm_mode_is_420_also(info, mode_in) && aconnector->force_yuv420_output))
+Changes in v9:
+- Use the proper number of buses on deregister, like David suggested
+- Moved the lock from the arbiter to the bus, like David suggested
+- Fixed type in schema file, pointed out by David
+- Added Neil's R-b tag to patches #3, #6 and #7
+- Link to v8: https://lore.kernel.org/r/20240402-spmi-multi-master-support-v8-0-ce6f2d14a058@linaro.org
 
-We need to keep the && aconnector NULL check here, otherwise
-writeback connectors will blow up.
+Changes in v8:
+- Added Neil's R-b tag to the 3rd patch
+- Fixed compile warnings already existent by adding another patch
+- Fixed compile warning about get_core_resources, reported by Neil
+- Dropped and moved the spurious core removal changes, as suggested by Neil
+- Link to v7: https://lore.kernel.org/r/20240329-spmi-multi-master-support-v7-0-7b902824246c@linaro.org
 
-Harry
+Changes in v7:
+- This time really collected Krzysztof's R-b tags
+- Added Neil's R-b tag to the 4th patch
+- Split the multi bus patch into two separate patches, one for adding
+  the bus object and one for the secondary bus, as per Neil's suggestion
+- Fixed regression for single bus platforms triggered by casting to
+  pmic_arb instead of bus in pmic_arb_non_data_cmd_v1
+- Fixed bus object allocation by using ctrl drvdata instead
+- Prefixed the spmi node property in x1e80100 schema with '^'
+- Fixed struct and function documentation warnings reported by Neil
 
->  		timing_out->pixel_encoding = PIXEL_ENCODING_YCBCR420;
->  	else if ((connector->display_info.color_formats & DRM_COLOR_FORMAT_YCBCR444)
->  			&& stream->signal == SIGNAL_TYPE_HDMI_TYPE_A)
+Changes in v6 (resend):
+- Collected Krzysztof's R-b tags
+- Link to v6: https://lore.kernel.org/r/20240222-spmi-multi-master-support-v6-0-bc34ea9561da@linaro.org
+
+Changes in v6:
+- Changed the compatible to platform specific (X1E80100) along with the
+  schema. Fixed the spmi buses unit addresses and added the empty ranges
+  property. Added missing properties to the spmi buses and the
+  "unevaluatedProperties: false".
+- Deprecated the "qcom,bus-id" in the legacy schema.
+- Changed the driver to check for legacy compatible first
+- Link to v5: https://lore.kernel.org/r/20240221-spmi-multi-master-support-v5-0-3255ca413a0b@linaro.org
+
+Changes in v5:
+- Dropped the RFC as there aren't any concerns about the approach anymore
+- Dropped the unused dev and res variables from pmic_arb_get_obsrvr_chnls_v2
+- Link to v4: https://lore.kernel.org/r/20240220-spmi-multi-master-support-v4-0-dc813c878ba8@linaro.org
+
+Changes in v4:
+- Fixed comment above pmic_arb_init_apid_v7 by dropping the extra "bus" word
+- Swicthed to devm_platform_ioremap_resource_byname for obsrvr and chnls.
+  The core remains with platform_get_resource_byname as we need the core size.
+- Dropped comment from probe related to the need of platform_get_resource_byname
+  as it not true anymore.
+- Dropped the qcom,bus-id optional property.
+- Link to v3: https://lore.kernel.org/r/20240214-spmi-multi-master-support-v3-0-0bae0ef04faf@linaro.org
+
+Changes in v3:
+- Split the change into 3 separate patches. First 2 patches are moving
+  apid init and core resources into version specific ops. Third one is
+  adding the support for 2 buses and dedicated compatible.
+- Added separate bindings patch
+- Link to v2: https://lore.kernel.org/r/20240213-spmi-multi-master-support-v2-1-b3b102326906@linaro.org
+
+Changes in v2:
+- Reworked it so that it registers a spmi controller for each bus
+  rather than relying on the generic framework to pass on the bus
+  (master) id.
+- Link to v1: https://lore.kernel.org/r/20240207-spmi-multi-master-support-v1-0-ce57f301c7fd@linaro.org
+
+---
+Abel Vesa (7):
+      dt-bindings: spmi: Add X1E80100 SPMI PMIC ARB schema
+      dt-bindings: spmi: Deprecate qcom,bus-id
+      spmi: pmic-arb: Fix some compile warnings about members not being described
+      spmi: pmic-arb: Make the APID init a version operation
+      spmi: pmic-arb: Make core resources acquiring a version operation
+      spmi: pmic-arb: Register controller for bus instead of arbiter
+      spmi: pmic-arb: Add multi bus support
+
+ .../bindings/spmi/qcom,spmi-pmic-arb.yaml          |   1 +
+ .../bindings/spmi/qcom,x1e80100-spmi-pmic-arb.yaml | 136 +++
+ drivers/spmi/spmi-pmic-arb.c                       | 964 +++++++++++++--------
+ 3 files changed, 728 insertions(+), 373 deletions(-)
+---
+base-commit: 4eab358930711bbeb85bf5ee267d0d42d3394c2c
+change-id: 20240207-spmi-multi-master-support-832a704b779b
+
+Best regards,
+-- 
+Abel Vesa <abel.vesa@linaro.org>
 
 
