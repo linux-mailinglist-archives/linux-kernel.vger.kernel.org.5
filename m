@@ -1,250 +1,139 @@
-Return-Path: <linux-kernel+bounces-148378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB44E8A81BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:11:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 215538A805E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:05:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60DD62856B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:11:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 444711C2127C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:05:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCB2913C903;
-	Wed, 17 Apr 2024 11:11:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A42EF13AD14;
+	Wed, 17 Apr 2024 10:05:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="h2LdnW3o"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AAzs3ZuR"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B99B13BC1B;
-	Wed, 17 Apr 2024 11:11:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B758C13A258;
+	Wed, 17 Apr 2024 10:05:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713352273; cv=none; b=YBxn3KtND4qUlrizGjEs6dbkmYOGuuo18cB2muu+ntFfxUtLI8Dr/tzpUvzUNdsP6fCwzXGUBWH9eR+gQGvCiII6EYBbRMmyBH73pLXQoRsIbZORFWyUwGNY//a7YPzWEpQV3L2uZ1bMr+Fiks6YH33kSkaNKn6aC9/4xtO5R80=
+	t=1713348342; cv=none; b=aKotXkkS9xCcP0POe5Kk0jopAB7BOFPVzZQjBY5ItccajdNy7IPztNuyUrw+3d8oFv4JcGlXSkTzt6NOmq6P9+yMLtVbVzIZZXlO9N9EuEGG5kSFsU0V9bik0qNB8++Zkksa4e1mH7s7eL4PjnzNqLWTNS1pm7Sr1vzzFS5qKtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713352273; c=relaxed/simple;
-	bh=9Kuul0Us5T+DsH8WBIvY0W68/yCJswNN/bgL0D8F6/A=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=Q13joI9t0cBOITz7UP1nIBViFTYkYh8aH+UCDz+XoeJmTgGLWImtINdNGwu/9EwuH1OrSb7clP3TscfhL+A/n+DijO4bE+2tiqr94IwSOxTEKk5DpXqCiKXKOjyq76aXceWkE40K9qpELmDOzfPBULYzFyu9VX3jSWJyfUPWbJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=h2LdnW3o; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240417111106euoutp0241e6dab5e1af4767ae19a9df21bd0d06~HDM7xY4u01112511125euoutp021;
-	Wed, 17 Apr 2024 11:11:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240417111106euoutp0241e6dab5e1af4767ae19a9df21bd0d06~HDM7xY4u01112511125euoutp021
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1713352266;
-	bh=OY+E3AP4o+cMwdsRSlfCthUAuVMUvOkgraCoEy1EQcs=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=h2LdnW3oQlEqsYLbJsjvMNJan0Xxl2M9JUFeftc+dZY2ha4AfwdS6IZKD9SJJjT1e
-	 pmt5hhXhVz6EkU01r55GA1DVcoZC/ScZ78Q9i+3+g9IXtQcsLPfDbahW8RRhlqd/9A
-	 To5nCwmOXhOmebgmRDbUM4DfB+uzcGOtkgdnE7/g=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240417111106eucas1p1eaa943e8073a58cb94d54d7f42a86df6~HDM7mGwPe2053320533eucas1p1B;
-	Wed, 17 Apr 2024 11:11:06 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges2new.samsung.com (EUCPMTA) with SMTP id 1E.E2.09875.94EAF166; Wed, 17
-	Apr 2024 12:11:05 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240417111105eucas1p19e8fbbbe60d347e12d0f6d767198e338~HDM7FrwvZ2052520525eucas1p1D;
-	Wed, 17 Apr 2024 11:11:05 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240417111105eusmtrp2e7d69c7090f22d9fcf00febc06c7bddb~HDM7E_AQx0473304733eusmtrp2Z;
-	Wed, 17 Apr 2024 11:11:05 +0000 (GMT)
-X-AuditID: cbfec7f4-11bff70000002693-fc-661fae49bb20
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id 91.5F.08810.94EAF166; Wed, 17
-	Apr 2024 12:11:05 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240417111105eusmtip2d9a2a1c25a17928cf241e21e4357f84d~HDM62RzBf1251912519eusmtip2k;
-	Wed, 17 Apr 2024 11:11:05 +0000 (GMT)
-Received: from localhost (106.110.32.44) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Wed, 17 Apr 2024 12:10:54 +0100
-Date: Wed, 17 Apr 2024 11:44:33 +0200
-From: Joel Granados <j.granados@samsung.com>
-To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-CC: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, "Eric W.
- Biederman" <ebiederm@xmission.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
-	Kuniyuki Iwashima <kuniyu@amazon.com>, <stable@vger.kernel.org>
-Subject: Re: [PATCH v3] fs/proc/proc_sysctl.c: always initialize i_uid/i_gid
-Message-ID: <20240417094433.ahfnijzz2svjhrvt@joelS2.panther.com>
+	s=arc-20240116; t=1713348342; c=relaxed/simple;
+	bh=1gRmg87JIr+AbQO3Esc+cHkCY63QUm02iWl6ErooOoI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F1gfO8ucyMfydlTHUFuf9SDLrFAoOZtjhQTv9e5gmJ0MS085w7yKlIvYGQM0CH3QHioEMnV8t4QcSG0PHBqo5XXIysRhL3KK8ee57DyzH8JykzQcBsQVJWdAXRlcUk7wutKUgbASxupaZd8yiGqEocxZFgAJ5kU99suoVpVtCpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AAzs3ZuR; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d8b887bb0cso4045939a12.2;
+        Wed, 17 Apr 2024 03:05:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713348340; x=1713953140; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1gRmg87JIr+AbQO3Esc+cHkCY63QUm02iWl6ErooOoI=;
+        b=AAzs3ZuRJX7XDEU/S31apMVw0w4s7Q7KO0FdVCxGcPYSQYxeRSY28pC1eu3Nrio5c1
+         /8hlCKRtkZAgyv8u2ZkQRGfxaZJMq1OWpJiBVcvOqdTd2WBLQIZ2kjfFBum4N2R8Isih
+         f2SkFV+0ugaXXipJ2Nlmu4lZAs98Uu7pgtHxn5StoZ+osrPawfSsDoFTHgEoyq2Tt6Q8
+         NRjLJNg4pvoJ5WApc/OPQ4IAFhbQ7RH2Kz3RT5CY8e2rwsQ/E1wXGXRIyVxPAPyHxqu0
+         xXjLmG+nWpVe8EKo2OzaEGE6HiF4EW+wqWYp7nr6UxxOhqD0p14pNRRYbP31JFxGWdYJ
+         BuPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713348340; x=1713953140;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1gRmg87JIr+AbQO3Esc+cHkCY63QUm02iWl6ErooOoI=;
+        b=iIRsi31AfcqzDKUNNO6o9d3ib8xGzePLs9voX9qMDY78+WB0gtQYpo7kXPOBnw2WTm
+         YzYRwT+Oo0gI3yiO4xGWx6DR+eU0urjiDqvVEdgaDP/jcMcgDaLBdIH6/wDsRP3KCpgl
+         Pz+utAPk2ispxU0TLWkBdG2f4Y4/LM1n+AfVbxPPAGTpgEf9i0JxbOqcd4fZCsMHsSE0
+         pmro/RaRuyLVSEcdLlg9r7LgoRzpd4G5HWENm4VxUvcuRbrI2iiRiJTACsZIVfN12aSC
+         5gZk7AoirKe21tUqOoK9HMtPad2H4a5jwUjYz7cl5xmXvftqdXkjqWsHFMN08st5+AzW
+         qHEA==
+X-Forwarded-Encrypted: i=1; AJvYcCX7IS6j45Gfqpkz+GTYOT1w1GCNrANLl/xhNlogdKJkw3K3EqUqgFKkc2TgQcow4QdjzjHAuB5G3fNaypVxqolnIJrRwppo7MhG2zZs9+/T/Nbl7SXr3Y2gQvvWRjUjEaiFSkIs1YjlyYKaPbKoSs+JVjxeDE6jhEgRQPQzpZbQHKVI10sX1XjmInTqEUNM70jCiOsLvZiLojjq55CPA52TGCgxr5GK93NyY2kPva240GtdGqkSCf2ItMR1qGvwAKhKpy4rGF4SeQ==
+X-Gm-Message-State: AOJu0Yy7solfZwT8Xrej9ZNsZNk0qeXZSEkViORqFlj1vWa7k1MVELAA
+	SlxwR+1FqfC8+ES8QkGdUbyMlj4fEsK0Id+6u0iD26wAp++h3IEJ
+X-Google-Smtp-Source: AGHT+IHoSQwgWNaYYN9PHfJ92Leu3dCSJnPJtoI+4IJ8iitgaNIncK7hpg/lzzZCpwVd83QGt3/Z2Q==
+X-Received: by 2002:a17:90a:108:b0:2aa:7057:437b with SMTP id b8-20020a17090a010800b002aa7057437bmr6040509pjb.16.1713348339921;
+        Wed, 17 Apr 2024 03:05:39 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id t12-20020a17090a5d8c00b002a474e2d7d8sm1019325pji.15.2024.04.17.03.05.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 03:05:38 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 1682E18462BA0; Wed, 17 Apr 2024 17:05:35 +0700 (WIB)
+Date: Wed, 17 Apr 2024 17:05:35 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Randy Dunlap <rdunlap@infradead.org>,
+	Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net,
+	zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
+	tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk, agk@redhat.com,
+	snitzer@kernel.org, eparis@redhat.com, paul@paul-moore.com
+Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org, fsverity@lists.linux.dev,
+	linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+	audit@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Deven Bowers <deven.desai@linux.microsoft.com>
+Subject: Re: [PATCH v17 20/21] Documentation: add ipe documentation
+Message-ID: <Zh-e7945DM6f2u9T@archie.me>
+References: <1712969764-31039-1-git-send-email-wufan@linux.microsoft.com>
+ <1712969764-31039-21-git-send-email-wufan@linux.microsoft.com>
+ <Zh0Zh3-xraVl85Lm@archie.me>
+ <a2266217-c3ad-4bb2-8188-498a2c8ae36c@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="yvgo774vb4mne4gd"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="0nWDRmFxn5oWDUvp"
 Content-Disposition: inline
-In-Reply-To: <20240402-sysctl-net-ownership-v3-1-366b1a76d48a@weissschuh.net>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOKsWRmVeSWpSXmKPExsWy7djP87qe6+TTDHZ1G1vMOd/CYnF40QtG
-	i//bWtgtnh57xG5xYVsfq8WynrVsFpd3zWGz+P3jGZPFjQlPGS2OLRCz+Hb6DaPFgo2PGB14
-	PFZc6GL12LLyJpPHzll32T0WbCr12LSqk83j/b6rbB6fN8l59HcfY/eYcqidJYAzissmJTUn
-	syy1SN8ugSvj+abXzAUT5Spenv3O0sD4SbKLkYNDQsBE4vRbgS5GLg4hgRWMEmvWTGKBcL4w
-	Ssy694QVwvnMKLHs8HG2LkZOsI7uZy+ZIRLLGSWOTJrLBlfV8/ECE4SzmVHi4czJrCAtLAKq
-	En93nWEHsdkEdCTOv7nDDGKLCNhIrPz2GSzOLDCdWeLLRC0QW1jAR6Jr2zYmEJtXwEFizeIv
-	LBC2oMTJmU9YQA5nFqiQOH/XGsKUllj+jwOkglPAV+LQlknsEIcqSnxdfI8Fwq6VOLXlFthp
-	EgK3OCWeH1rJCJFwkTh2sBfqM2GJV8e3QDXLSPzfOR+qYTKjxP5/H9ghnNXAsGj8ygRRZS3R
-	cuUJVIejRNeyBcyQUOWTuPFWEOIvPolJ26ZDhXklOtqEIKrVJFbfe8MygVF5FpLPZiF8Ngvh
-	s1lgc/QkbkydwoYhrC2xbOFrZgjbVmLduvcsCxjZVzGKp5YW56anFhvlpZbrFSfmFpfmpesl
-	5+duYgSmx9P/jn/Zwbj81Ue9Q4xMHIyHGFWAmh9tWH2BUYolLz8vVUmEt0VYNk2INyWxsiq1
-	KD++qDQntfgQozQHi5I4r2qKfKqQQHpiSWp2ampBahFMlomDU6qBSXjTvJMzbi6bc1yltben
-	bMYUgctHNl43bbvzVnBNwXnTbNE6h0luN5mi1jvsVq/fniDd+nLNJeXZDJW2W9K1NmtrH3t6
-	UeNc3U492dmXp3Dnxrm1HJx49kag0vua+Q7H7HiPea87+jH4FmdE84WLD8xsPDZV88x3uWQg
-	wBLmccv3zS+ptTuE/phMd7i3ufjlIn6O2ytmqBssOdDMIMJ59Me286nie/Vm/rU3eL7h5swP
-	swqKeTMbN3y/Vx395urD9cFX/kuozn20ZIGjcMVS/bbb1UKHK7OrkroSz9bKTN7klhJov8hy
-	4l9Tq1V/Dbkv75/b3X5bPFor1ap9v2KVo/OEBQZ5on6rLzzk0XzPWqjEUpyRaKjFXFScCAAt
-	WmLjCgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprGKsWRmVeSWpSXmKPExsVy+t/xe7qe6+TTDHa+EbaYc76FxeLwoheM
-	Fv+3tbBbPD32iN3iwrY+VotlPWvZLC7vmsNm8fvHMyaLGxOeMlocWyBm8e30G0aLBRsfMTrw
-	eKy40MXqsWXlTSaPnbPusnss2FTqsWlVJ5vH+31X2Tw+b5Lz6O8+xu4x5VA7SwBnlJ5NUX5p
-	SapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1NSmpOZllqkb5dgl7Gm5fn2Ar65So2
-	rTzM2MD4QbKLkZNDQsBEovvZS+YuRi4OIYGljBKtrR9YIBIyEhu/XGWFsIUl/lzrYoMo+sgo
-	sWZlFxOEs5lRYsbvOWwgVSwCqhJ/d51hB7HZBHQkzr+5wwxiiwjYSKz89hksziwwnVniy0Qt
-	EFtYwEeia9s2JhCbV8BBYs3iLywQQxcwSjzecJ4dIiEocXLmExaI5jKJ+WcuMnYxcgDZ0hLL
-	/3GAhDkFfCUObZnEDnGposTXxfegPqiV+Pz3GeMERuFZSCbNQjJpFsIkiLCOxM6td9gwhLUl
-	li18zQxh20qsW/eeZQEj+ypGkdTS4tz03GJDveLE3OLSvHS95PzcTYzARLHt2M/NOxjnvfqo
-	d4iRiYPxEKMKUOejDasvMEqx5OXnpSqJ8LYIy6YJ8aYkVlalFuXHF5XmpBYfYjQFhuJEZinR
-	5HxgCssriTc0MzA1NDGzNDC1NDNWEuf1LOhIFBJITyxJzU5NLUgtgulj4uCUamAq1QpqniJv
-	rbNOsilgrW/FnRi7FysvRF7s5XThijM1tar/crN68Zr5n9obQ1P37HGYwr3MoOSsnl++ZdaR
-	LPNvvaXcfZ9udl27dVn5qUmbONta8TVFz50+aNXPVxVT3uPyqMppTeIz00uTkg9fm7TVZWZ2
-	3+FnVpzx0Umi4hO0ex4/N5r/wfqJ5TX/nhPfjnzeL7D7THDzP9GbL4MUdJ7N36S+8fbCjh7t
-	21w7fgVx59xu+TR19tcpDCVTj1tUz/DzPRr5VZTd+HDYTfcixTN725aypm390yq/uW6+8cYt
-	mgkXz8Rbnn4yLzOvuzRsZeJj2bftH68tdTn0aee/MLGqaYy3edqql83qiAiZIeqnxFKckWio
-	xVxUnAgAg0XQpakDAAA=
-X-CMS-MailID: 20240417111105eucas1p19e8fbbbe60d347e12d0f6d767198e338
-X-Msg-Generator: CA
-X-RootMTR: 20240402211043eucas1p173a936d187ae9bcf5be3729e69739e38
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240402211043eucas1p173a936d187ae9bcf5be3729e69739e38
-References: <CGME20240402211043eucas1p173a936d187ae9bcf5be3729e69739e38@eucas1p1.samsung.com>
-	<20240402-sysctl-net-ownership-v3-1-366b1a76d48a@weissschuh.net>
+In-Reply-To: <a2266217-c3ad-4bb2-8188-498a2c8ae36c@infradead.org>
 
---yvgo774vb4mne4gd
-Content-Type: text/plain; charset="iso-8859-1"
+
+--0nWDRmFxn5oWDUvp
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 02, 2024 at 11:10:34PM +0200, Thomas Wei=DFschuh wrote:
-> Commit 5ec27ec735ba ("fs/proc/proc_sysctl.c: fix the default values of i_=
-uid/i_gid on /proc/sys inodes.")
-> added defaults for i_uid/i_gid when set_ownership() is not implemented.
-> It missed to also adjust net_ctl_set_ownership() to use the same default
-> values in case the computation of a better value fails.
+On Mon, Apr 15, 2024 at 07:56:16AM -0700, Randy Dunlap wrote:
 >=20
-> Instead always initialize i_uid/i_gid inside the sysfs core so
-> set_ownership() can safely skip setting them.
-
-Added this to sysctl-testing with minor changes in the commit message:
-
-"""
-sysctl: always initialize i_uid/i_gid
-
-Always initialize i_uid/i_gid inside the sysfs core so set_ownership()
-can safely skip setting them.
-
-Commit 5ec27ec735ba ("fs/proc/proc_sysctl.c: fix the default values of
-i_uid/i_gid on /proc/sys inodes.") added defaults for i_uid/i_gid when
-set_ownership() was not implemented. It also missed adjusting
-net_ctl_set_ownership() to use the same default values in case the
-computation of a better value failed.
-
-Fixes: 5ec27ec735ba ("fs/proc/proc_sysctl.c: fix the default values of i_ui=
-d/i_gid on /proc/sys inodes.")
-Cc: stable@vger.kernel.org
-Signed-off-by: Thomas Wei=DFschuh <linux@weissschuh.net>
-Signed-off-by: Joel Granados <j.granados@samsung.com>
-"""
-
-Will let it simmer in testing for now.
-
-Best
-
+> On 4/15/24 5:11 AM, Bagas Sanjaya wrote:
+> > The doc LGTM, thanks!
+> >=20
+> > Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 >=20
-> Fixes: 5ec27ec735ba ("fs/proc/proc_sysctl.c: fix the default values of i_=
-uid/i_gid on /proc/sys inodes.")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Thomas Wei=DFschuh <linux@weissschuh.net>
-> ---
-> Changes in v3:
-> - Rebase onto v6.9-rc1
-> - Reword commit message and mention correct fixed commit
-> - Link to v2: https://lore.kernel.org/r/20240322-sysctl-net-ownership-v2-=
-1-a8b4a3306542@weissschuh.net
+> Hi,
+> Please see netiquette, section "Trim replies".
+> Thanks.
 >=20
-> Changes in v2:
-> - Move the fallback logic to the sysctl core
-> - Link to v1: https://lore.kernel.org/r/20240315-sysctl-net-ownership-v1-=
-1-2b465555a292@weissschuh.net
-> ---
->  fs/proc/proc_sysctl.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
 >=20
-> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> index 37cde0efee57..9e34ab9c21e4 100644
-> --- a/fs/proc/proc_sysctl.c
-> +++ b/fs/proc/proc_sysctl.c
-> @@ -479,12 +479,10 @@ static struct inode *proc_sys_make_inode(struct sup=
-er_block *sb,
->  			make_empty_dir_inode(inode);
->  	}
-> =20
-> +	inode->i_uid =3D GLOBAL_ROOT_UID;
-> +	inode->i_gid =3D GLOBAL_ROOT_GID;
->  	if (root->set_ownership)
->  		root->set_ownership(head, table, &inode->i_uid, &inode->i_gid);
-> -	else {
-> -		inode->i_uid =3D GLOBAL_ROOT_UID;
-> -		inode->i_gid =3D GLOBAL_ROOT_GID;
-> -	}
-> =20
->  	return inode;
->  }
->=20
-> ---
-> base-commit: 4cece764965020c22cff7665b18a012006359095
-> change-id: 20240315-sysctl-net-ownership-bc4e17eaeea6
->=20
-> Best regards,
 > --=20
-> Thomas Wei=DFschuh <linux@weissschuh.net>
->=20
+> #Randy
+> https://people.kernel.org/tglx/notes-about-netiquette
+> https://subspace.kernel.org/etiquette.html
+
+Thanks for the tip!
 
 --=20
+An old man doll... just what I always wanted! - Clara
 
-Joel Granados
-
---yvgo774vb4mne4gd
+--0nWDRmFxn5oWDUvp
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmYfmgAACgkQupfNUreW
-QU9U/Av9HKXJffWcIsZrwOT7yI37cd8cc4W1cjH3yBMzvQ9RWE6365mNygSJp0hs
-eGO+pFN+UtxaJmkPKG8MPVuggE+fmrvU++Ld4s/W9H55mNRALAu7q/KPPSgNXcb6
-wjfhKLcCteSVTMW/jU8LWWevH/35Y6Uf1eVWoNbzuQbxKsDTy52JzmRzSo2AC/8R
-1L10XsolcGe90NlnRlM7BHYvh02ZPrgjjZBCzYcxy8XhjqNZZsrRRmWLTwnGb80+
-gPjx6gRO3QYnQu0+jmfvu8C85dJKG9hV0oR9xSV0tqVITre0dpsjhgYKWz/mGIUN
-m/oOSDIiJhYFzUcSxcv4B/sNEnxltWMrgNYv7+lpUTekxFRKxlO7vwHVp/2SVJFO
-NoGTC//FKOPASWRRzKpCdlulMDEndfHgsYHksFxQs/90sBfGhCYGKDjZ1sCQ5Xoc
-ytuR3cgJd/01e9R235dLfq5+JXN0ORzJefcwS88B7365Yah0PY6IxR81kMhM/gCL
-niVLSZ0W
-=WR4U
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZh+e6wAKCRD2uYlJVVFO
+o4TXAPwN11FytsnDX/+gFpUvWYFc3CxPaaA7sJCuHF5qVYQtGAEA6GP0hs+AljG4
+tOsfo209C7he+IJJJUnxDpScnZoh/wc=
+=jvcJ
 -----END PGP SIGNATURE-----
 
---yvgo774vb4mne4gd--
+--0nWDRmFxn5oWDUvp--
 
