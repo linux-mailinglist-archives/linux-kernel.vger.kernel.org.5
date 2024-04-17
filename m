@@ -1,331 +1,111 @@
-Return-Path: <linux-kernel+bounces-148681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148682-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7C798A861C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:38:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF8868A8620
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:38:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F5591F21114
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:38:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CCEE1C210BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:38:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8841213F44A;
-	Wed, 17 Apr 2024 14:38:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1783013D24A;
+	Wed, 17 Apr 2024 14:38:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Y/tq+W/E"
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2048.outbound.protection.outlook.com [40.107.15.48])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ceoNagQB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AC0822334;
-	Wed, 17 Apr 2024 14:38:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.15.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713364698; cv=fail; b=GNOD88RPhR5SazdOZgTGQ1gd+CgZLzGfl0S8Vwkt3ZtTP8wxtZ45r27QhIWZARs2r+zVYaGsyWWawuXhMWuAD3cCMiDEjrMejv97bxqLJdOjAhOOJNELkEXySwTwUIYPgPoT/5Wr7VksTrJ88SWYmFGWdsybQ7MDBEjlYTtFFZk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713364698; c=relaxed/simple;
-	bh=KgRTQn5pqYFk7XlNkk6DA9ZdGyi7fybVuPF1xp1bwfc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=EqZXw4dwrfoV+j5jntDYQy/5ipmvYla/QAjnHIffQHZhPfhlPjiv0Ij8tphPkGahKcfMorxuv93DT8L5ymhh3JzW7gMHCPzIJ31H3ZHn2ynmI9+CCAz8cjYKgZNhmRaPV5isiKZHVQc/JLiZVDgQ5ZY0AjQ9C7SXbVVK/02hBhc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=Y/tq+W/E; arc=fail smtp.client-ip=40.107.15.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dxi4U7rGFSp8IkPmyTF1d/7OiKa3bT5Ks7GSyMsjrlH9T+U+h5g2VqhQ/Nn7CeP6rFCfcPOjW7INnmsaUrUO6ssteqyM+ri00r+y+IK/HCUyDDXIIkRytcYTa7ezJqFBveJyuqljInsT0qVWvf5ZaBZ4CcKEPGmkuY24AGYLrmvgwC0Hr5uFhk4vC+uaXKJRd+fkOnVa9ernwRziMuAj5UfVImO94QrvUqKtjiLM9oNqpRe6TGbptAJRplIzTRcYJ6t0wpoBgrD4/GRZMMkJ/cXHyphzcRJtV3utYfvWzGukCOwC/RNmR4iScsRbZdcTQyFwJvNk1X8FHO66xtL/8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dMUkDroFmc3r8Q6xtq99hvmNzl26f/UFYdt9K2AjsJw=;
- b=XbuUG0DAPBQfQpWo1laVXtrV/B57EsJEY4LfSrBJs7uHjGQ/WS6+bs7RT1JQsLr0PH6pD7RbGTKz2ZU1GF/2GY86iuo9K8Jqb4YbEf6nCarOZy3YOhcS+PXaBWNGmkgOdfJeDHNn/hpwUram9CtyJkEcoznJIWhh4/nHC1iD5vXyBJ3y/0P+taaH6BiR/lScdpET7TYb3A7wH8dAHr4e5tpxwiuAAUDlsPfmZ5oBsGqiwuvGXA1ss5C9dzbq9wkc1rdotGMl4Z+xKKDCZLgbaQtMPkwIFhwv5sH6btSqdkTRNmTF6gVBNv0TwXPBrJWE5o8EyWLLwZ2ZV+tWIlR4kg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dMUkDroFmc3r8Q6xtq99hvmNzl26f/UFYdt9K2AjsJw=;
- b=Y/tq+W/Ee2SNBxLczpL9jdWzNXOF2Vio2G/wWbf6RMcA39Bivd1HPjg0NYMV2ibC7d32gRErzbKNbdtN+Hnq8UHwFN2f107iXlWsb/tnaEUEIXDQp1DUwKbuNSdobtQpSeXoUC8Yzrqzc0OwKXP7I5BvxhnkfyeTjCczkmC1vEk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by VE1PR04MB7357.eurprd04.prod.outlook.com (2603:10a6:800:1ae::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.49; Wed, 17 Apr
- 2024 14:38:14 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
- 14:38:13 +0000
-Date: Wed, 17 Apr 2024 10:38:04 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 5/5] PCI: dwc: Add generic MSG TLP support for sending
- PME_Turn_Off when system suspend
-Message-ID: <Zh/ezLdct9sisvhc@lizhi-Precision-Tower-5810>
-References: <20240415-pme_msg-v6-0-56dad968ad3a@nxp.com>
- <20240415-pme_msg-v6-5-56dad968ad3a@nxp.com>
- <20240417101944.GG3894@thinkpad>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240417101944.GG3894@thinkpad>
-X-ClientProxiedBy: SJ0PR03CA0007.namprd03.prod.outlook.com
- (2603:10b6:a03:33a::12) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 015D51420C6
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:38:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713364705; cv=none; b=l1JmYuVtouI55O6CSNYWYjLObi7YLhYGPnBpM51uAcThbIf/4zOb0URR0pZ28ymFArFDv0un/evs4n1zHSmKGnKr85wBGLSR1Tb8h43hRiWcEpl0nD7sKuWrnX85Bhx5Nurz5WEpAb2ZhL9XiVn4cmhiTT8Qb2JWUu4r9Zfn+SQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713364705; c=relaxed/simple;
+	bh=KoYtxC55Ohj6Lf9NvLZyrFVpFV90+1Yse/ygPWxNqOY=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=BESL2SFd/KQEFbs6vfsNOe6YGn9Qdfes2lVV3iGw7jRq1D79zn/iIHpX7Nt1swQ4Q6QFjGS9YrKUW2HcZg4kUbixDVO7PvSswpI0nlrbkO9ewR+1HA3so6xrR8XP6D0Gi2OLNyl/yMq2bLmJi3WQ4HwZEJuEr+w+oxyErbrtwCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ceoNagQB; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713364702;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zDU7e9X4ZusOLu7T2w8qLW/ur2IZiAOdvpcSe/vwEi0=;
+	b=ceoNagQBsDOwex4u56ysNMjjueFGwhigpWw/3EIALxg4Fyan0rvE3n89SKuyh4RIexjw3m
+	eIcR7x/+qRUKKCGkcqDduXJ1WjkzOwK95EG/q2OF4fpGNpGjkG/ge8V24JNKkwyriBVD5T
+	8Mh7phYkKAiADQVhwl6Skix3fEAo9XQ=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-665-UL2Iqt2XMpycvVM7LVyaIA-1; Wed,
+ 17 Apr 2024 10:38:19 -0400
+X-MC-Unique: UL2Iqt2XMpycvVM7LVyaIA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3E2EC3C025A1;
+	Wed, 17 Apr 2024 14:38:19 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.200])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 5EC07492BD4;
+	Wed, 17 Apr 2024 14:38:18 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <1a94a15e6863d3844f0bcb58b7b1e17a@manguebit.com>
+References: <1a94a15e6863d3844f0bcb58b7b1e17a@manguebit.com> <14e66691a65e3d05d3d8d50e74dfb366@manguebit.com> <3756406.1712244064@warthog.procyon.org.uk> <2713340.1713286722@warthog.procyon.org.uk>
+To: Paulo Alcantara <pc@manguebit.com>
+Cc: dhowells@redhat.com, Steve French <sfrench@samba.org>,
+    Shyam Prasad N <sprasad@microsoft.com>, linux-cifs@vger.kernel.org,
+    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cifs: Fix reacquisition of volume cookie on still-live connection
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VE1PR04MB7357:EE_
-X-MS-Office365-Filtering-Correlation-Id: 94341345-7ede-422c-073b-08dc5eec02fb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	R4nsbT43VyoMYeWxU6TNSko04bB+fh7McrO+lSWas4nXiS5r8B1O3h2p2TQxQcc22dxMGjIRcEI+qWOtmI7eDb5XL+D1P17YOE8v9FNcul+pTCRGpSVsaC2olqnlbOFOY/NH0vYQ9LUDwD2S1WTCWXJEkcCcmgxydWrjHqoy27yDJdOj4qubibIsBlZLRYoz1SuxW55kfoi6t0s9wRwhQg2X+InikPq9jozfEfvTJbkydYSQl4FHZjsV8E8BI/f9+Fj1CGISVfX6LimEvSG3ZJU2SLKg4i3DVgeoBlOOD/VVW/5WVa9cNbzjWeHp7AXZF0+tmV0gn2nDyvfLvDpivUfuTryUJEnCLdidPV3kZ+J3miYkC/TwCzuzSwb8Stb6jYBYbpNyPVaaDN+g6p331i8o2Rlbmd91C/oY9JncOZguDy04Q/DTZ5SrDPwpeY7nHHn1ShaRcEIi9aflt38go/bn8MR1ByMv1/mdWpX+y8YkITSNmxJUFg5t+ghlNKpk51ejjzgigR55Plea3i0y3YlSDBuhQ9dou627jL7yp0+CCS07SuYc5+zOvEpqYv+1AiB25uqz7MJ/30cW8JR+4SD9FBZRHTK2zV/9y+vMmfPJn+wREVeN9p7lbkG4kewlF98wnbODoSmELC1sT1Z3bkJIm2CBFDbe2+o1PaAFzWxFl30oeSzy5KEcFBViP5as3iwIqI3KcXAYFzveNwYZ1bKbuUqbogF4ExLbzlV1MnI=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(7416005)(366007)(376005)(1800799015)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Y1FOdWg5cTM1NXk5S1cycG5HY3BjSFhhR1U0WisxRXpUc1FRYmtMbzBicFUv?=
- =?utf-8?B?Q0xTeVJudS82WktKSVlZVlZLS2RIK0cxZHliRFQ4UjdYTlpTTGpQYWo4VHdi?=
- =?utf-8?B?MEVMZzFMc1AvV2tJRkxwV205TVJtME43T3Iyclk4aXhzWHdPVTI2dWlDZ002?=
- =?utf-8?B?UEw3aTJodEtwUmtGQkRZQzBWck9aZHVheTZ5dFljL2RrVGhpYjFKQVZvTDQ3?=
- =?utf-8?B?b1VUdGZtdGdNeHZqZi9XaWpZQ1NtWjNSQXhLcnFNelVTSXcwRWQrSSs0ZStM?=
- =?utf-8?B?Wkh1WC9yY1c2eE01ZWw1RlBsMnZaRkxLMjJOeG5VNThaT084UXlFVFVZRHV5?=
- =?utf-8?B?eldLMTExV2VsY3FXNHFtR3hKc2pJUFVUTkpuQzJmRHhEbFRDblNCZzl1Z25m?=
- =?utf-8?B?bHNTRXlCY1pZa2ZaS3N0SHJBa3I0ZUFlRXlaWHBFWUswLzB0QUpNM3J0Y0kr?=
- =?utf-8?B?UUc3TGlZWEVibFovK3lDbjNRZUZTcEJLWXp4OVNNcWpmZmtaRXplTnU2Q1Zp?=
- =?utf-8?B?WWRieDltUUNybjc4ZXJLNFUrUGZmRjZ5eU1NWlRnMnp5c1FTQ09GRGpValRa?=
- =?utf-8?B?ZHo3Z05PNGVyT1kyL1NPeHN0cjA4MzBwZmk5Q1JnTXJ5S3YzM2NGM0QxdXJF?=
- =?utf-8?B?QWNRVGw0L2xYblpFMGIxRUpDWWdkRDdFREtsMGhuTEthZ1NSbzBvei9iQUtM?=
- =?utf-8?B?akhtZURDNWNOcTcvL2V3WWJQQ0RKVW5zdi90bm9aZ2NDYVUxMG1GblFiRVBM?=
- =?utf-8?B?WThSOEdrRm1ZS3VqTlZERTJVakZyYmtHUW16cWdmemhyeWJqdS9KSTNhQXpk?=
- =?utf-8?B?NVNjcC9MYVR3MFpGM0hEazVJdHlhSy91VHQvbVVaVlZEQU85aGMvNm5YR2lG?=
- =?utf-8?B?RCtRM1lublBNeitCMG1UM25rRlhpc2NHdUpBTFIxRHZTVi9aRWh3UHNYTHlG?=
- =?utf-8?B?amJrWTlwMDVmMFF6V0JqQ29mcVBhWkJrQXpkWWc5bXExelB2aXNEUzNkU0JZ?=
- =?utf-8?B?VStGWkQxeTBrMzhCNGlxUDFQMml3Y2JveUJxTDNCbmR5eTAwY0xjRk95TVhK?=
- =?utf-8?B?OFhwZ29RaG5YNWkzTWx3OXhRMnp1YTZzQmxmcVdZamozMms2dnFzZ0JSMmwx?=
- =?utf-8?B?Rks4MTdsWUhJMGtrMTR5LzU3QUw5aGFJZVFiTkErUnBFUEJxcjN5WkZkWjlZ?=
- =?utf-8?B?RDZkMGZZdUVObkNndExIU1hGUkVneUhYcnlURXhweE96SllKOGtEcVdRcTd6?=
- =?utf-8?B?TkMwL0JrY24yQlZGdTVEOHYxTXljMjhOeXpMMmQzSWRBcHA3cUh3WHh6WE11?=
- =?utf-8?B?ditKUkVzdnVPMWRJWWd5TExkc0dvMVVNQTFab29qQWFGajhveVlWNXIzcmZS?=
- =?utf-8?B?Qi9kZm5Cei9nNkkraTZlOGRRU0UxMjltZWdJTmFsYnVUbE9pOEdqcEZDOW12?=
- =?utf-8?B?NFBuMktxbm1SNXg1OG9tdGx2Y3RUYXptSnZrSDg5eTlTV0lNdHJlaGNaQVRw?=
- =?utf-8?B?WDVCUlpxUk9qaHptdVFBSWV0TmpJTHJrcUpYTWlsUHZTa3MrcTI5bUhVa043?=
- =?utf-8?B?bWd6VnpRWFNSQ0ppT1h3eUxrZHplMmFLbzFaVkRlNTkrWDQxRERMdHJCNm00?=
- =?utf-8?B?YnUzWmhhcGxqaGdCQkRUY3FLZXRaOVhEVjVMNW9NR1lSRkd6TXhyTVpOMDhy?=
- =?utf-8?B?aGtTL3hOMHloVWZsSHVsVkZWUTBCSmY1K2QvUGhCUDVNVHYyaXl5OEZvZThS?=
- =?utf-8?B?T1dVTEtOVFBXaFNVNVBBY1l5M1ZjUjMwSXFaRVRJck1CWXRkNmcrRVRYVVpQ?=
- =?utf-8?B?bnhvWlEweGZoRzJwQmU0b01GaXFBcEwraXFtYWdqZThXSFh4TDNwNHN3eFR2?=
- =?utf-8?B?REQvUjBDMG5KRXFBb1FMWjRmeVo5aWNGUDlacnRpYVhwc0c5djduQU52YTgy?=
- =?utf-8?B?Umh0cnR5SnZCbmVnYS80cm5ONnMycFprdjFIT0lkWER1VGUyVFBYZ2dUSzMx?=
- =?utf-8?B?TVUxUFYyZDJrWHNCbkVaaStqRnc4Q0lxaVphNktRdk85S2NScXdiOWtzaDRL?=
- =?utf-8?B?QnNEWlhRaFN1OWZBRWRUQy9FZDFTbUYzUkp0ZnFHVTltYnMvQ3MyRmNaNWFS?=
- =?utf-8?Q?o1WhX84egBogHY5ly5tac5HR0?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94341345-7ede-422c-073b-08dc5eec02fb
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 14:38:13.8395
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: u9MxmxG3bUt73Hhs3RkvG1+H2UH31T4w6X01appcXWuqxXEgC+DvPdm68Mx3k+0LL56X47mtywz9X3UHwfIQ0w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7357
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <277919.1713364693.1@warthog.procyon.org.uk>
+Date: Wed, 17 Apr 2024 15:38:13 +0100
+Message-ID: <277920.1713364693@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On Wed, Apr 17, 2024 at 03:49:44PM +0530, Manivannan Sadhasivam wrote:
-> On Mon, Apr 15, 2024 at 03:33:29PM -0400, Frank Li wrote:
-> > Instead of relying on the vendor specific implementations to send the
-> > PME_Turn_Off message, let's introduce a generic way of sending the message
-> > using the MSG TLP.
-> > 
-> > This is achieved by reserving a region for MSG TLP of size
-> > 'pci->region_align', at the end of the first IORESOURCE_MEM window of the
-> > host bridge. And then sending the PME_Turn_Off message during system
-> > suspend with the help of iATU.
-> > 
-> > The reserve space at end is a little bit better than alloc_resource()
-> > because the below reasons.
-> > - alloc_resource() will allocate space at begin of IORESOURCE_MEM window.
-> > There will be a hole when first Endpoint Device (EP) try to alloc a bigger
-> > space then 'region_align' size.
-> > - Keep EP device's IORESOURCE_MEM space unchange with/without this patch.
-> > 
-> 
-> I'd rewrite the above sentence as:
-> 
-> 'The reason for reserving the MSG TLP region at the end of the
-> IORESOURCE_MEM is to avoid generating holes in between. Because, when the region
-> is allocated using allocate_resource(), memory will be allocated from the start
-> of the window. Later, if memory gets allocated for an endpoint of size bigger
-> than 'region_align', there will be a hole between MSG TLP region and endpoint
-> memory.'
-> 
-> > It should be noted that this generic implementation is optional for the
-> > glue drivers and can be overridden by a custom 'pme_turn_off' callback.
-> > 
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-designware-host.c | 94 ++++++++++++++++++++++-
-> >  drivers/pci/controller/dwc/pcie-designware.h      |  3 +
-> >  2 files changed, 93 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> > index 3a9cb4be22ab2..5001cdf220123 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> > @@ -398,6 +398,31 @@ static int dw_pcie_msi_host_init(struct dw_pcie_rp *pp)
-> >  	return 0;
-> >  }
-> >  
-> > +static void dw_pcie_host_request_msg_tlp_res(struct dw_pcie_rp *pp)
-> > +{
-> > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> > +	struct resource_entry *win;
-> > +	struct resource *res;
-> > +
-> > +	win = resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
-> > +	if (win) {
-> > +		res = devm_kzalloc(pci->dev, sizeof(*res), GFP_KERNEL);
-> > +		if (!res)
-> > +			return;
-> > +
-> > +		/* Reserve last region_align block as message TLP space */
-> 
-> 		/*
-> 		 * Allocate MSG TLP region of size 'region_align' at the end of
-> 		 * the host bridge window.
-> 		 */
-> 
-> > +		res->start = win->res->end - pci->region_align + 1;
-> > +		res->end = win->res->end;
-> > +		res->name = "msg";
-> > +		res->flags = win->res->flags | IORESOURCE_BUSY;
-> > +
-> > +		if (!devm_request_resource(pci->dev, win->res, res))
-> > +			pp->msg_res = res;
-> > +		else
-> > +			devm_kfree(pci->dev, res);
-> 
-> You are explicitly freeing 'msg_res' everywhere. So either drop devm_ or rely
-> on devm to free the memory.
-> 
-> > +	}
-> > +}
-> > +
-> >  int dw_pcie_host_init(struct dw_pcie_rp *pp)
-> >  {
-> >  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> > @@ -484,6 +509,16 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
-> >  
-> >  	dw_pcie_iatu_detect(pci);
-> >  
-> > +	/*
-> > +	 * Allocate the resource for MSG TLP before programming the iATU outbound window in
-> > +	 * dw_pcie_setup_rc(). Since the allocation depends on the value of 'region_align', this has
-> > +	 * to be done after dw_pcie_iatu_detect().
-> 
-> Please wrap the comments to 80 columns.
+Paulo Alcantara <pc@manguebit.com> wrote:
 
-New code style is 100 columns. does comments still stick to 80 columns?
+> Consider the following example where a tcon is reused from different
+> CIFS superblocks:
+> 
+>   mount.cifs //srv/share /mnt/1 -o ${opts} # new super, new tcon
+>   mount.cifs //srv/share/dir /mnt/2 -o ${opts} # new super, reused tcon
+> 
+> So, /mnt/1/dir/foo and /mnt/2/foo will lead to different inodes.
+> 
+> The two mounts are accessing the same tcon (\\srv\share) but the new
+> superblock was created because the prefix path "\dir" didn't match in
+> cifs_match_super().  Trust me, that's a very common scenario.
 
-> 
-> > +	 *
-> > +	 * Glue driver need set use_atu_msg before dw_pcie_host_init() if want MSG TLP feature.
-> 
-> How about,
-> 
-> 	 * Glue drivers need to set 'use_atu_msg' before dw_pcie_host_init() to
-> 	 * make use of the generic MSG TLP implementation.
-> 
-> > +	 */
-> > +	if (pp->use_atu_msg)
-> > +		dw_pcie_host_request_msg_tlp_res(pp);
-> > +
-> >  	ret = dw_pcie_edma_detect(pci);
-> >  	if (ret)
-> >  		goto err_free_msi;
-> > @@ -541,6 +576,11 @@ void dw_pcie_host_deinit(struct dw_pcie_rp *pp)
-> >  
-> >  	dw_pcie_edma_remove(pci);
-> >  
-> > +	if (pp->msg_res) {
-> > +		release_resource(pp->msg_res);
-> > +		devm_kfree(pci->dev, pp->msg_res);
-> > +	}
-> > +
-> >  	if (pp->has_msi_ctrl)
-> >  		dw_pcie_free_msi(pp);
-> >  
-> > @@ -702,6 +742,10 @@ static int dw_pcie_iatu_setup(struct dw_pcie_rp *pp)
-> >  		atu.pci_addr = entry->res->start - entry->offset;
-> >  		atu.size = resource_size(entry->res);
-> >  
-> > +		/* MSG TLB window resource reserve at one of end of IORESOURCE_MEM resource */
-> 
-> How about,
-> 
-> 		/* Adjust iATU size if MSG TLP region was allocated before */
-> 		if (pp->msg_res && pp->msg_res->parent == entry->res)
-> 			atu.size = resource_size(entry->res) -
-> 					resource_size(pp->msg_res);
-> 		else
-> 			atu.size = resource_size(entry->res);
-> 
-> > +		if (pp->msg_res && pp->msg_res->parent == entry->res)
-> > +			atu.size -= resource_size(pp->msg_res);
-> > +
-> >  		ret = dw_pcie_prog_outbound_atu(pci, &atu);
-> >  		if (ret) {
-> >  			dev_err(pci->dev, "Failed to set MEM range %pr\n",
-> > @@ -733,6 +777,8 @@ static int dw_pcie_iatu_setup(struct dw_pcie_rp *pp)
-> >  		dev_warn(pci->dev, "Ranges exceed outbound iATU size (%d)\n",
-> >  			 pci->num_ob_windows);
-> >  
-> > +	pp->msg_atu_index = i;
-> > +
-> >  	i = 0;
-> >  	resource_list_for_each_entry(entry, &pp->bridge->dma_ranges) {
-> >  		if (resource_type(entry->res) != IORESOURCE_MEM)
-> > @@ -838,11 +884,48 @@ int dw_pcie_setup_rc(struct dw_pcie_rp *pp)
-> >  }
-> >  EXPORT_SYMBOL_GPL(dw_pcie_setup_rc);
-> >  
-> > +/* Using message outbound ATU to send out PME_Turn_Off message for dwc PCIe controller */
-> 
-> No need of this comment.
-> 
-> > +static int dw_pcie_pme_turn_off(struct dw_pcie *pci)
-> > +{
-> > +	struct dw_pcie_ob_atu_cfg atu = { 0 };
-> > +	void __iomem *mem;
-> > +	int ret;
-> > +
-> > +	if (pci->num_ob_windows <= pci->pp.msg_atu_index)
-> > +		return -EINVAL;
-> 
-> 		return -ENOSPC;
-> 
-> > +
-> > +	if (!pci->pp.msg_res)
-> > +		return -EINVAL;
-> 
-> 		return -ENOSPC;
-> - Mani
-> 
-> -- 
-> மணிவண்ணன் சதாசிவம்
+Why does it need to lead to a different superblock, assuming ${opts} is the
+same in both cases?  Can we not do as NFS does and share the superblock,
+walking during the mount process through the directory prefix to the root
+object?
+
+In other words, why does:
+
+    mount.cifs //srv/share /mnt/1 -o ${opts}
+    mount.cifs //srv/share/dir /mnt/2 -o ${opts}
+
+give you a different result to:
+
+    mount.cifs //srv/share /mnt/1 -o ${opts}
+    mount --bind /mnt/1/dir /mnt/2
+
+David
+
 
