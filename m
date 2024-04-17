@@ -1,101 +1,234 @@
-Return-Path: <linux-kernel+bounces-148404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E63B8A8210
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 228B98A821B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:29:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B03101F23125
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:27:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C5E91F22E75
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:29:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6872313C67D;
-	Wed, 17 Apr 2024 11:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 900F313CAB7;
+	Wed, 17 Apr 2024 11:29:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OdGvaeIP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dXTpDZQ9"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E6CC13C8EE;
-	Wed, 17 Apr 2024 11:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DBD13C80D
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:29:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713353231; cv=none; b=AGrbDgn4oH1pW4ekQfj3uBPDDzBhcL/GMr6XPrN+7Q2KMVfG5LehYtohN0WXK0FqifwR0uIMNvnIqdZU4A0+GZcLqmBTqMuE21bLTwskQ0pn5GjM2itlg/BLuhfz8spjIJnQCY3Yn+QgNbzSar8qU4k+f7CgcXcVpdOntgSeYrY=
+	t=1713353357; cv=none; b=S2ZBxNPaw2yr1eckAcPEfj7Pdxw/otOJq4bTr3WhQZYIXVabwVd+Wd1xnzIsXwj1LM+x30VpwRzY0fBgjiY5qRrwq0/sJQdJ+Bql7TRSAUkDv4GPJtvTph1XETXjYRRsHguEExFG5fslaxMx+L0NlDTa/mOgtaVg0+uTYFiaDa4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713353231; c=relaxed/simple;
-	bh=z8FhVtgetX6LUdFuYuwud6VwQ1GU1TH7FJteCQo1HBY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LrkJvss+Wa6t06zvBnRgGycFogVuSgbomWni8FDPvNHs/tKZ77ZV+PiAzn/Jd48tvxKAmvO3nNalCgZsI+eHjv/xftkBggDrP96JbbHErXcvjzk3MITUN5dku2DhI4PDbQi0aNvyx74Lifc2eFgbT3VR62yj4JnBA9fL8KJy4Y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OdGvaeIP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF582C072AA;
-	Wed, 17 Apr 2024 11:27:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713353231;
-	bh=z8FhVtgetX6LUdFuYuwud6VwQ1GU1TH7FJteCQo1HBY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OdGvaeIPo+rdvJuwCI/5ibLrCzCKrqHk/PUjNtwX3H7VRIKV72/AGcHywfiKAXbrq
-	 PCs3rlias7N0Qv+ltsfCgCvyqnvLHQifekEx3gvysBlc1Loi540AkvHCsABnJhRtax
-	 VdnRPK5Ww3/8Alj/EQn1bF3fDaKLIHkf4xSNB2smo8cluF+jeCskZkZqDnlPQ71F3s
-	 Z4I9DfICZiNSspeCbO1rXIta5/2E6z0k/KkGXpV5IjeoSGdH+AfKE2h8O0pYpf5+KZ
-	 yPHBwtLMoQmNoqDfZD8pqDF6c0Gg3oo63FmPqxqawxvttRk5tA27p9pWubtmXItbRZ
-	 fCcFASMUtTdWw==
-From: Christian Brauner <brauner@kernel.org>
-To: David Howells <dhowells@redhat.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Jeff Layton <jlayton@kernel.org>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	netfs@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org,
-	v9fs@lists.linux.dev,
-	linux-afs@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] netfs: Fix writethrough-mode error handling
-Date: Wed, 17 Apr 2024 13:26:51 +0200
-Message-ID: <20240417-filmabend-matten-50d0cba545f5@brauner>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <6736.1713343639@warthog.procyon.org.uk>
-References: <6736.1713343639@warthog.procyon.org.uk>
+	s=arc-20240116; t=1713353357; c=relaxed/simple;
+	bh=eDSAI4jwFqizU3Xa4ItQgLLzrB+FlbMoo2xHRcsaXVY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MEa98l5qQGc4mYRslrcufIYXS3IVh0l9CLjniEjyq2D1GVEN7HCLyok4MYC6+9p9xBrGh0vUcIMD5POtDcjkNidIgspbXzEVxQNuorIYD1gZjOZNWjg8g6t4NMxaOsUg5/KO+pcDrLa9mPq+Y81kFU+WZwVB/on/lr86qyfD/Co=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dXTpDZQ9; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so591356276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:29:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713353355; x=1713958155; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0Fta0Dyi3G93YWIko/JSRJw+1bKCGXLJxuwb9oPH+wY=;
+        b=dXTpDZQ9wamko8baHayIv5SSofBhh14IXZEo7pIKyd4FlIEANA8g5iC7JlbBSrWN7r
+         435DfGc8TkcEBFX6odk99lwgaSGC5jb+/4iOupxOl2kWykWvKz+q+YQ0BsjZ4ZmPtGuA
+         9ip5HUUBLaLP3WMTbhEJQU7foEFI67gwl27HPfUOo+ZKckkAmAwOYe/Ec05ZSxMCtQwa
+         uI97cJegXZ18pkyOlmvaVOFVANoXOrB81o6cQ4WDOwYU7plKoht8NU5qtafxHDvlbeRm
+         80Uyp0pfD3xxgL0zcoh8FlwrDacuaYLRmB+y7/GLM1qGK9euiQCJICAYtHrd9HyoE0G5
+         ygwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713353355; x=1713958155;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0Fta0Dyi3G93YWIko/JSRJw+1bKCGXLJxuwb9oPH+wY=;
+        b=me8aGEK95N7qpUjj2pklE0jilINggWikg2vy8L0AtSGr1UVrI8j1CsKxm0nug07uh3
+         jBnD+dRoAZ3ou1EFJ33Y79SufE1iG8CR9CRCHYUeJ64Cstkht454KVf8mCA4dJPyPNWd
+         z91orEZNj1pM2vNbq70EQDWY5l/0BWym6Iewa3DXjmJicJXdXGrazGOvM9OoTdW2OOd6
+         pzvyjJajzSJLxrIeKALXRoAayslpkdwYRsPLuEBGCN0YcZaj2JL+sCPuurJIF1G3Xidk
+         rOCmiTKNAt8P/oYsQfZkRdPYDLWwuyggOZC4tOVjd7tYsfKzlNyXnOFi3D+jtnSVTj/G
+         yHHA==
+X-Forwarded-Encrypted: i=1; AJvYcCU9KARfasdkDbYgDaFp63ekYSzhTi8cVRyGOm8De9WkdUh5K7rQBsiYk4BO+hrTeRu92CnYUu+UVne/bbmc3yLMg05LdO6PwHysbCo6
+X-Gm-Message-State: AOJu0YwiO5IH2axqtAWjEcqYr3ZSw1WcwJiTFIejqap+W+MeXmof2MKx
+	xcYAXBGCofRW3deKiJ6OOA/Iq3DWQBjp+BPLFyj1XiE79Gqji46yluqzKmaVA0nDQzxhZlhwFn0
+	HDdifDAG4HbnsxMYu9Gi7k148QeVPj0lViJiq7w==
+X-Google-Smtp-Source: AGHT+IH1jnG6dEhiSTWawlONVFFSu65Dx/6vIYJTIg2Fbd5IgoTIEEgrWgmEH4F5+Ukf79rDog1BaJ6QCXnoiA+r6Ic=
+X-Received: by 2002:a25:10d7:0:b0:dcd:9a9b:8d7e with SMTP id
+ 206-20020a2510d7000000b00dcd9a9b8d7emr4734393ybq.9.1713353354668; Wed, 17 Apr
+ 2024 04:29:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1079; i=brauner@kernel.org; h=from:subject:message-id; bh=z8FhVtgetX6LUdFuYuwud6VwQ1GU1TH7FJteCQo1HBY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTJb/y38f3Nj+ytmktdNJX35xzYeHLFLj62taGfHqWFc cWdK2X26ChlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZjIZD1GhrO7umZK1fRuTcre Gnf7sN++9HVBSTU28vlsM33lDx1NK2f4w2tsOXNLqn/d5k8n766TifzjeCtQQSS8xcbPrY+r7/Z WTgA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+References: <20240417105605.836705-1-quic_varada@quicinc.com> <20240417105605.836705-6-quic_varada@quicinc.com>
+In-Reply-To: <20240417105605.836705-6-quic_varada@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 17 Apr 2024 14:29:03 +0300
+Message-ID: <CAA8EJpq75LhY3BD4JEqAOVAt1SxTvSOsdJTTb2bZD9rj15FmGA@mail.gmail.com>
+Subject: Re: [PATCH v8 5/7] clk: qcom: common: Add interconnect clocks support
+To: Varadarajan Narayanan <quic_varada@quicinc.com>
+Cc: andersson@kernel.org, mturquette@baylibre.com, sboyd@kernel.org, 
+	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, 
+	konrad.dybcio@linaro.org, djakov@kernel.org, quic_anusha@quicinc.com, 
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 17 Apr 2024 09:47:19 +0100, David Howells wrote:
-> Fix the error return in netfs_perform_write() acting in writethrough-mode
-> to return any cached error in the case that netfs_end_writethrough()
-> returns 0.
-> 
-> This can affect the use of O_SYNC/O_DSYNC/RWF_SYNC/RWF_DSYNC in 9p and afs.
-> 
-> 
-> [...]
+On Wed, 17 Apr 2024 at 13:57, Varadarajan Narayanan
+<quic_varada@quicinc.com> wrote:
+>
+> Unlike MSM platforms that manage NoC related clocks and scaling
+> from RPM, IPQ SoCs dont involve RPM in managing NoC related
+> clocks and there is no NoC scaling.
+>
+> However, there is a requirement to enable some NoC interface
+> clocks for accessing the peripheral controllers present on
+> these NoCs. Though exposing these as normal clocks would work,
+> having a minimalistic interconnect driver to handle these clocks
+> would make it consistent with other Qualcomm platforms resulting
+> in common code paths. This is similar to msm8996-cbf's usage of
+> icc-clk framework.
+>
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> ---
+> v8: Explicitly set master and slave ids
+> v7: Restore clk_get
+> v6: first_id -> icc_first_node_id
+>     Remove clock get so that the peripheral that uses the clock
+>     can do the clock get
+> v5: Split changes in common.c to separate patch
+>     Fix error handling
+>     Use devm_icc_clk_register instead of icc_clk_register
+> v4: Use clk_hw instead of indices
+>     Do icc register in qcom_cc_probe() call stream
+>     Add icc clock info to qcom_cc_desc structure
+> v3: Use indexed identifiers here to avoid confusion
+>     Fix error messages and move to common.c
+> v2: Move DTS to separate patch
+>     Update commit log
+>     Auto select CONFIG_INTERCONNECT & CONFIG_INTERCONNECT_CLK to fix build error
+> ---
+>  drivers/clk/qcom/common.c | 35 ++++++++++++++++++++++++++++++++++-
+>  drivers/clk/qcom/common.h | 16 ++++++++++++++++
+>  2 files changed, 50 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/clk/qcom/common.c b/drivers/clk/qcom/common.c
+> index 75f09e6e057e..a6410b1828ca 100644
+> --- a/drivers/clk/qcom/common.c
+> +++ b/drivers/clk/qcom/common.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/regmap.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/clk-provider.h>
+> +#include <linux/interconnect-clk.h>
+>  #include <linux/reset-controller.h>
+>  #include <linux/of.h>
+>
+> @@ -234,6 +235,38 @@ static struct clk_hw *qcom_cc_clk_hw_get(struct of_phandle_args *clkspec,
+>         return cc->rclks[idx] ? &cc->rclks[idx]->hw : NULL;
+>  }
+>
+> +static int qcom_cc_icc_register(struct device *dev,
+> +                               const struct qcom_cc_desc *desc)
+> +{
+> +       struct icc_clk_data *icd;
+> +       struct clk_hw *hws;
+> +       int i;
+> +
+> +       if (!IS_ENABLED(CONFIG_INTERCONNECT_CLK))
+> +               return 0;
+> +
+> +       if (!desc->icc_hws)
+> +               return 0;
+> +
+> +       icd = devm_kcalloc(dev, desc->num_icc_hws, sizeof(*icd), GFP_KERNEL);
+> +       if (!icd)
+> +               return -ENOMEM;
+> +
+> +       for (i = 0; i < desc->num_icc_hws; i++) {
+> +               icd[i].master_id = desc->icc_hws[i].master_id;
+> +               icd[i].slave_id = desc->icc_hws[i].slave_id;
+> +               hws = &desc->clks[desc->icc_hws[i].clk_id]->hw;
 
-Applied to the vfs.fixes branch of the vfs/vfs.git tree.
-Patches in the vfs.fixes branch should appear in linux-next soon.
+I think I keep on repeating this again and again. Instead of passing
+indices please pass clk_hw pointers.
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+> +               icd[i].clk = devm_clk_hw_get_clk(dev, hws, "icc");
+> +               if (!icd[i].clk)
+> +                       return dev_err_probe(dev, -ENOENT,
+> +                                            "(%d) clock entry is null\n", i);
+> +               icd[i].name = clk_hw_get_name(hws);
+> +       }
+> +
+> +       return devm_icc_clk_register(dev, desc->icc_first_node_id,
+> +                                                    desc->num_icc_hws, icd);
+> +}
+> +
+>  int qcom_cc_really_probe(struct platform_device *pdev,
+>                          const struct qcom_cc_desc *desc, struct regmap *regmap)
+>  {
+> @@ -303,7 +336,7 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+>         if (ret)
+>                 return ret;
+>
+> -       return 0;
+> +       return qcom_cc_icc_register(dev, desc);
+>  }
+>  EXPORT_SYMBOL_GPL(qcom_cc_really_probe);
+>
+> diff --git a/drivers/clk/qcom/common.h b/drivers/clk/qcom/common.h
+> index 9c8f7b798d9f..f6b25df1ca17 100644
+> --- a/drivers/clk/qcom/common.h
+> +++ b/drivers/clk/qcom/common.h
+> @@ -19,6 +19,19 @@ struct clk_hw;
+>  #define PLL_VOTE_FSM_ENA       BIT(20)
+>  #define PLL_VOTE_FSM_RESET     BIT(21)
+>
+> +struct qcom_icc_hws_data {
+> +       int master_id;
+> +       int slave_id;
+> +       int clk_id;
+> +};
+> +
+> +#define HWS_DATA(_b, _c)               \
+> +{                                      \
+> +       .master_id = MASTER_##_b,       \
+> +       .slave_id = SLAVE_##_b,         \
+> +       .clk_id = _c,                   \
+> +}
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+This shouldn't be a part of this commit. It is not used in it.
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+> +
+>  struct qcom_cc_desc {
+>         const struct regmap_config *config;
+>         struct clk_regmap **clks;
+> @@ -29,6 +42,9 @@ struct qcom_cc_desc {
+>         size_t num_gdscs;
+>         struct clk_hw **clk_hws;
+>         size_t num_clk_hws;
+> +       struct qcom_icc_hws_data *icc_hws;
+> +       size_t num_icc_hws;
+> +       unsigned int icc_first_node_id;
+>  };
+>
+>  /**
+> --
+> 2.34.1
+>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.fixes
 
-[1/1] netfs: Fix writethrough-mode error handling
-      https://git.kernel.org/vfs/vfs/c/c70fd201bd29
+-- 
+With best wishes
+Dmitry
 
