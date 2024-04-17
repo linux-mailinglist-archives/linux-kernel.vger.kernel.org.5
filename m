@@ -1,139 +1,209 @@
-Return-Path: <linux-kernel+bounces-149193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A45088A8D05
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:34:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AC7C8A8D09
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:35:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52A911F226EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:34:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B07D1C21BBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 146A944C8D;
-	Wed, 17 Apr 2024 20:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A4D740847;
+	Wed, 17 Apr 2024 20:35:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UdCu2ba6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XVesQ+Zh"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A8C1E48B;
-	Wed, 17 Apr 2024 20:34:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E7B22324;
+	Wed, 17 Apr 2024 20:35:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713386075; cv=none; b=ivOnWBSiaQIEmhIed6A9yT3sHMpFFD8OHCsBVmw57Ml7+V40XcXiv+8nma94BJ5LZ5Ppqti8wcJZCKf4aw74N/DJtVPdhHk9NWpSyZtuLQPRJ0EKk3utz9I4whcIb2o0y6AfCcVYd3eScAJsRe+kPaFe2gddAvq+6rHrgW30BPY=
+	t=1713386145; cv=none; b=Vxz+b73Zhnhdii2WxJmaRFWjzjsPRzviLP6+V0A+jCX7W1lBUQCuhYTnaRmCz6rY9n3HdI9gyqW/P0BL8eyAVQtLoEcwNtL9byV9UuCoLkrD8cyEnffqNdl/FMHbzuUVumx/SRPQj4nXskPMCMkvVTlbi3kDLUs3KPa2nlBOJY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713386075; c=relaxed/simple;
-	bh=EtXU9c2X1rus7AR+E4QdwNGG0e/acH591nahmvg0zE4=;
+	s=arc-20240116; t=1713386145; c=relaxed/simple;
+	bh=I6EJ1mP91iVz//8c5ia8HdkNztwtT3dmN/fNeMRppuQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cQ0qmJlORzksu2SLIenqxmFxkUJDZ8zNwMydfFs3ZTzbfPa/Mb3BHat/GquZLF89pAZD5V6qy0E9t+zBo+uZsyZiShSBEabEquKebflfw/eQRYjY4pOaF3heATGSPI2TZDLsQRtS/OK71DaajpuW2ZJgA0mObTyDHMkPlmRKto0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UdCu2ba6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A5F7C072AA;
-	Wed, 17 Apr 2024 20:34:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713386074;
-	bh=EtXU9c2X1rus7AR+E4QdwNGG0e/acH591nahmvg0zE4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UdCu2ba6hcAPeyyocbmuIrgN5vfGx7tuIbgJfByfWkWqHYsEwRAIdQ6ytJq6qoujB
-	 bsbrHf2dKw7omIuXKr+I2wZYriYo0KCsj6bDBPo9czZMETYAxI0IMoiR1rM5F+PXNj
-	 CmY5wXIT5HnK0/PfHPLzkr0mx1qD5reZ0JPAiYjzHigqYf05CiIIkw3K+36Gzrmzo2
-	 kcI6tEMbG0iGw7aJPAmP4hANxV/JlUCIlvcu/XOST3DWZ0UCRvrSTq7Vw2Xmz6G6QZ
-	 OO6q+2/jDKduzXDMsXDZ5Wr8dvI6SHg3+chjSY+nu6MLu09Gh0BRoEqBa/ItI7f1ur
-	 88qMoDIwMeMtA==
-Date: Wed, 17 Apr 2024 21:34:30 +0100
-From: Simon Horman <horms@kernel.org>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: Markus Elfring <Markus.Elfring@web.de>,
-	Justin Chen <justin.chen@broadcom.com>,
-	bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net] net: bcmasp: fix memory leak when bringing down if
-Message-ID: <20240417203430.GB3935777@kernel.org>
-References: <20240412181631.3488324-1-justin.chen@broadcom.com>
- <6881c322-8fbb-422f-bdbb-392a83d0b326@web.de>
- <9afad2b3-38a5-470d-a66f-10aa2cba3bab@broadcom.com>
- <8ae97386-876f-45cf-9e82-af082d8ea338@web.de>
- <20240417161933.GA2320920@kernel.org>
- <3a5cb80e-7169-4e82-b10c-843ff1eb0fd3@broadcom.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QBgnekPicobWahSMr11geql/xWKQWrzYl3P5LXwsPJ9pvR/RzFaYrzdgN6TI53sRdgS0U5ua3DiDOxHnxE1Ew8mJ+ewq0uUrX/FdGRcUqSkr9YSYtL/CG0JNIw9/MBz4jzKiQcivSeYk6x4EbFaZllxMpOSERmonsiF4yVVVVvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XVesQ+Zh; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516d4d80d00so115906e87.0;
+        Wed, 17 Apr 2024 13:35:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713386142; x=1713990942; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=R38L2lZrS+14WeM7ceh5Hp6+XyP4h36lYdwyJTOLv3o=;
+        b=XVesQ+Zhs/VE2C1W/74tIZerg5ra8xzGQlkZZUZt9vFyGHpz2IjUfU7ys5suniB99a
+         T/X+jX3t2dpduabwYEAgQxDRR56cNFcNs2Bzn9twcSxmOyduLcnNH76VGfXPv38+yssv
+         b6/W2ZMWu5e5OMyWzqeqfYiPP124Bw8lwPMb382kBoJe2t2fLNafD0sWG2KNb+O80+t3
+         JzoAWrHXjpwpyjxlz5fPQouBp07bI44oAMMerW7i6wSFMp6OwP1SGDfN0+EFGg5Cxp2j
+         tLBqDYOrjal32/l/OorWoDt5RTsi/TRTGELpXEYEZd2QInsjqfjujxvC1RLBBl7QC6rE
+         DB0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713386142; x=1713990942;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R38L2lZrS+14WeM7ceh5Hp6+XyP4h36lYdwyJTOLv3o=;
+        b=CTVtrCFj+H3O9Hgu4n/nXQEeMu9eAnuKrvWVHwMZpXsu2jCjSadcHVz8hmWPtV+F4q
+         uRgDmoVi2UvMRY7jeDmLsK9950Bvtq5Rr1wYB65DSXe7wG4k8rsqcKq/dtRivDxX64ga
+         W2PIYbdz3yPCYEVxXCBsquRT1iG8ZMm3w91/ul0WOBNP47iTQp0vAzksR1vsoU4QwF00
+         I4bedHUBCJ3Dm8z1U0gKSL0tyAgBRj2MtyKElrOJSX7BvviRCCCcQDrZ11QL7IYZbIpN
+         CxHoe36bLsShuxJHqJQUqzyiBiUvgIn0NrPOJGFRooDtrk+O0X554OiV39IgwD3PjRq5
+         IbmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXtdEg9drOqnKQ4QKIFkB5TXu1F6pJDqrbX9do2HR5sp+Wy7mvhIbDhW4eqW3egZLux0DQG6YLVieoGkUx1lWRVdF10ZqjW/VRhIhVFh4OWWJpZW25/mXCNKRY/6PsfWW7AybaXZzz3l0jUK5tnbXhCe5LZYeccXll7lDePIgZXlO0TmobA
+X-Gm-Message-State: AOJu0YzraD+PLP1py/m0Y+T6NENP5sH3iIat9duB9/iibsAWR6oBc/Je
+	nd76XPNMd+2GBRBICB0vU3b5bD1IjaqHBXwECuWQk/1DQi5sJV0Y9BzFd/jX
+X-Google-Smtp-Source: AGHT+IFzQCpXyGVXKC8TGbH66IqAoulsoDP52wOdk6FAg211hiRNAveryXSiQmrNmpifkseQiOOn9A==
+X-Received: by 2002:ac2:456c:0:b0:515:d038:5548 with SMTP id k12-20020ac2456c000000b00515d0385548mr224508lfm.31.1713386141501;
+        Wed, 17 Apr 2024 13:35:41 -0700 (PDT)
+Received: from mobilestation.baikal.int (srv1.baikalchip.ru. [87.245.175.227])
+        by smtp.gmail.com with ESMTPSA id q13-20020ac2514d000000b00515d1dfab34sm2056041lfd.81.2024.04.17.13.35.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 13:35:41 -0700 (PDT)
+Date: Wed, 17 Apr 2024 23:35:39 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org, linux-serial@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] dmaengine: dw: Simplify max-burst calculation
+ procedure
+Message-ID: <tez5uqt4lg2qf5nooxuqo2rqhkqzzzbpeysdcbljokznbztkhj@j5t7cy4gd4pd>
+References: <20240416162908.24180-1-fancer.lancer@gmail.com>
+ <20240416162908.24180-5-fancer.lancer@gmail.com>
+ <Zh7NfmffgSBSjVWv@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3a5cb80e-7169-4e82-b10c-843ff1eb0fd3@broadcom.com>
+In-Reply-To: <Zh7NfmffgSBSjVWv@smile.fi.intel.com>
 
-On Wed, Apr 17, 2024 at 09:52:47AM -0700, Florian Fainelli wrote:
-> On 4/17/24 09:19, Simon Horman wrote:
-> > On Mon, Apr 15, 2024 at 09:46:44PM +0200, Markus Elfring wrote:
-> > > > > > When bringing down the TX rings we flush the rings but forget to
-> > > > > > reclaimed the flushed packets. This lead to a memory leak since we
-> > > > > > do not free the dma mapped buffers. …
-> > > > > 
-> > > > > I find this change description improvable.
-> > > > > 
-> > > > > * How do you think about to avoid typos?
-> > > > > 
-> > > > > * Would another imperative wording be more desirable?
-> > > > 
-> > > > The change description makes sense to me. Can you be a bit more specific as to what isn't clear here?
-> > > 
-> > > Spelling suggestions:
-> > > + … forget to reclaim …
-> > > + … This leads to …
+On Tue, Apr 16, 2024 at 10:11:58PM +0300, Andy Shevchenko wrote:
+> On Tue, Apr 16, 2024 at 07:28:58PM +0300, Serge Semin wrote:
+> > In order to have a more coherent DW AHB DMA slave configuration method
+> > let's simplify the source and destination channel max-burst calculation
+> > procedure:
 > > 
-> > Markus, let's cut to the chase.
-> > 
-> > What portion of your responses of this thread were produced
-> > by an LLM or similar technology?
-> > 
-> > The suggestions in your second email are correct.
-> > But, ironically, your first response appears to be grammatically incorrect.
-> > 
-> > Specifically:
-> > 
-> > * What does "improvable" mean in this context?
+> > 1. Create the max-burst verification method as it has been just done for
+> > the memory and peripheral address widths. Thus the DWC DMA slave config
 > 
-> I read it as "improbable", but this patch came out of an actual bug report
-> we had internally and code inspection revealed the leaks being plugged by
-> this patch.
-> 
-> > * "How do you think about to avoid typos?"
-> >    is, in my opinion, grammatically incorrect.
-> >    And, FWIW, I see no typos.
-> 
-> There was one, "This lead to a memory leak" -> "This leads to a memory leak"
-> 
-> > * "Would another imperative wording be more desirable?"
-> >    is, in my opinion, also grammatically incorrect.
-> > 
-> > And yet your comment is ostensibly about grammar.
-> > I'm sorry, but this strikes me as absurd.
-> 
-> Yeah, I share that too, if you are to nitpick on every single word someone
-> wrote in a commit message, your responses better be squeaky clean such that
-> Shakespeare himself would be proud of you.
-> 
-> There is a track record of what people might consider bike shedding, others
-> might consider useless, and others might find uber pedantic comments from
-> Markus done under his other email address: elfring@users.sourceforge.net.
-> 
-> Me personally, I read his comments and apply my own judgement as to whether
-> they justify spinning a new patch just to address the feedback given. He has
-> not landed on my ignore filter, but of course that can change at a moments
-> notice.
 
-Thanks Florian,
+> dwc_config() method
+> 
+> ?
 
-On reflection, my previous email was inappropriate.
-I do have reservations about the review provided by Markus,
-but should not reacted as I did. I apologise to every for that.
+Right. I'll just directly refer to the dwc_config() method here.
 
+> 
+> > method will turn to a set of the verification methods execution.
+> > 
+> > 2. Since both the generic DW AHB DMA and Intel DMA32 engines support the
+> 
+
+> "i" in iDMA 32-bit stands for "integrated", so 'Intel iDMA 32-bit'
+
+Ok. Thanks for clarification.
+
+> 
+> > power-of-2 bursts only, then the specified by the client driver max-burst
+> > values can be converted to being power-of-2 right in the max-burst
+> > verification method.
+> > 
+> > 3. Since max-burst encoded value is required on the CTL_LO fields
+> > calculation stage, the encode_maxburst() callback can be easily dropped
+> > from the dw_dma structure meanwhile the encoding procedure will be
+> > executed right in the CTL_LO register value calculation.
+> > 
+> > Thus the update will provide the next positive effects: the internal
+> > DMA-slave config structure will contain only the real DMA-transfer config
+> > value, which will be encoded to the DMA-controller register fields only
+> > when it's required on the buffer mapping; the redundant encode_maxburst()
+> > callback will be dropped simplifying the internal HW-abstraction API;
+> > DWC-config method will look more readable executing the verification
+> 
+
+> dwc_config() method
+> 
+> ?
+
+Ok.
+
+> 
+> > functions one-by-one.
+> 
+> ...
+> 
+> > +static void dwc_verify_maxburst(struct dma_chan *chan)
+> 
+
+> It's inconsistent to the rest of _verify methods. It doesn't verify as it
+> doesn't return anything. Make it int or rename the function.
+
+Making it int won't make much sense since currently the method doesn't
+imply returning an error status. IMO using "verify" was ok, but since
+you don't see it suitable please suggest a better alternative. mend,
+fix, align?
+
+> 
+> > +{
+> > +	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
+> > +
+> > +	dwc->dma_sconfig.src_maxburst =
+> > +		clamp(dwc->dma_sconfig.src_maxburst, 1U, dwc->max_burst);
+> > +	dwc->dma_sconfig.dst_maxburst =
+> > +		clamp(dwc->dma_sconfig.dst_maxburst, 1U, dwc->max_burst);
+> > +
+> > +	dwc->dma_sconfig.src_maxburst =
+> > +		rounddown_pow_of_two(dwc->dma_sconfig.src_maxburst);
+> > +	dwc->dma_sconfig.dst_maxburst =
+> > +		rounddown_pow_of_two(dwc->dma_sconfig.dst_maxburst);
+> > +}
+> 
+> ...
+> 
+> >  static int dwc_verify_p_buswidth(struct dma_chan *chan)
+> > -		reg_burst = rounddown_pow_of_two(dwc->dma_sconfig.src_maxburst);
+> > +		reg_burst = dwc->dma_sconfig.src_maxburst;
+> 
+
+> Seems you have a dependency, need a comment below that maxburst has to be
+> "verified" [whatever] first.
+
+Ok.
+
+> 
+> ...
+> 
+> > +static inline u8 dw_dma_encode_maxburst(u32 maxburst)
+> > +{
+> > +	/*
+> > +	 * Fix burst size according to dw_dmac. We need to convert them as:
+> > +	 * 1 -> 0, 4 -> 1, 8 -> 2, 16 -> 3.
+> > +	 */
+> > +	return maxburst > 1 ? fls(maxburst) - 2 : 0;
+> > +}
+> 
+
+> Split these moves to another preparatory patch.
+
+Ok.
+
+-Serge(y)
+
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
 
