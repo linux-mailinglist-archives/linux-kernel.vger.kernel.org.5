@@ -1,65 +1,62 @@
-Return-Path: <linux-kernel+bounces-148690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CDF28A863C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:41:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1FE58A8659
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:44:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE9DA1C21344
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:41:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 579AFB25DC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E5121428F2;
-	Wed, 17 Apr 2024 14:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LzRBw2TK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CCF61419A2;
-	Wed, 17 Apr 2024 14:40:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 809C4145B20;
+	Wed, 17 Apr 2024 14:41:33 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941E6145356
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713364858; cv=none; b=Pke4Tt5HnBrGOUnCTstWxRPpsh3/Si2SiHaR0xdEQ2zxx0Zpph5RubjORReHy5CcHCQ+Chsy1qV1/J0EuFsflIp1M9lZcnpxzzgg2tQku4b8OQt1ug4/cJEyv1q7GQZMbQBtkgn47wWL0GptEusHYh9lgTEzc6tR3tYolpQY/SU=
+	t=1713364893; cv=none; b=qFVV+RNkdgkFkndk2gVxOdzr0+fZBP/OFaNqzaWQkYlrUyL+CYVQmi06TAuwP2vkKL1DKaUfF5fRoSZfoqhsFFEFOxDYVbdhkhjUxIuzZQDCqUFRcT+p2xgIP3kT/0PFFDWy44ZY/i4lXUU9fmIfZqccMneI3QssUNDbbbmVL3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713364858; c=relaxed/simple;
-	bh=cA9scemWzsFPzGRaNP28UzTwSugriMk3blVS/UdZG5I=;
+	s=arc-20240116; t=1713364893; c=relaxed/simple;
+	bh=QmHmQjhS4ZracszR7nZ2gUEAQ/yZV8486QKbSkbjcs0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AmjI0fnVlplqc8ZmTAePsXjtvwaJ3DxxHpdd+xGyvIwYJSmYXa9PyAw0pAk+zpUjdt8Up3lHoJOi5PPsxGv1YkZsFjvMOQxIWhfn6qc1o91aaJJfK0GpkkvYCzf5gSgKFpwflenQl2SHFTP4/IdpEDN8R8iJ7eTOxF7VcW8xKGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LzRBw2TK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA5F6C072AA;
-	Wed, 17 Apr 2024 14:40:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713364858;
-	bh=cA9scemWzsFPzGRaNP28UzTwSugriMk3blVS/UdZG5I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LzRBw2TKlNf290/RbUJs5YW4I8FKBGmlxBfHu94FlQsrTRnCtbIQBYX6daCmCUTYF
-	 yp688MjUGxUF4Si6PNGxbw80Z28XuRCrG9hxHjicTVTui70H8X5pVofBDvmnetTGY8
-	 2GCc4NlMw+cG+CKNkcJkoDJQbuayL8jjIJsaNsBnsbZjezXGAMjVLKQrGBDHYaAVXW
-	 dN6Z1rv9GyNx0kCqgyyU+iideLd9fm9xzpoi+9IynigDdBjQvynIRhueNUnYU0lGns
-	 cdwAMIHvk0vhDjuwIQ2wuPy/c22Vz+T6UfPMNuqDQdtOQdCUOcIIqdOddeyBsjJE0O
-	 i9rAFiploTiQw==
-Date: Wed, 17 Apr 2024 09:40:55 -0500
-From: Rob Herring <robh@kernel.org>
-To: David Wronek <david@mainlining.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sam Ravnborg <sam@ravnborg.org>, Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	Konrad Dybcio <konradybcio@kernel.org>,
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-	phone-devel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: display: panel: Add Raydium RM69380
-Message-ID: <20240417144055.GA2335446-robh@kernel.org>
-References: <20240416-raydium-rm69380-driver-v3-0-21600ac4ce5f@mainlining.org>
- <20240416-raydium-rm69380-driver-v3-1-21600ac4ce5f@mainlining.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LfowdyW8bBCxsVPOhHZce5BFkMMFSeWfCZg8B1Jj01xGJrNhkTlejolz4NyKBxQRZOnF52W//qODFhVpn6boRKpwlhsNU0Ic1CQD6rbEZMkKWtSvKPeWrzao2IeN2JtfPh9DMs9LO0H31DvUF4mLnUN8VyMzjoKOK9oh/4d/VWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA3AD339;
+	Wed, 17 Apr 2024 07:41:58 -0700 (PDT)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 947DF3F738;
+	Wed, 17 Apr 2024 07:41:27 -0700 (PDT)
+Date: Wed, 17 Apr 2024 15:41:24 +0100
+From: Dave Martin <Dave.Martin@arm.com>
+To: Reinette Chatre <reinette.chatre@intel.com>
+Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
+	shameerali.kolothum.thodi@huawei.com,
+	D Scott Phillips OS <scott@os.amperecomputing.com>,
+	carl@os.amperecomputing.com, lcherian@marvell.com,
+	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+	dfustini@baylibre.com, amitsinght@marvell.com,
+	David Hildenbrand <david@redhat.com>,
+	Rex Nie <rex.nie@jaguarmicro.com>
+Subject: Re: [PATCH v1 12/31] x86/resctrl: Move max_{name,data}_width into
+ resctrl code
+Message-ID: <Zh/flJb3obutHTbD@e133380.arm.com>
+References: <20240321165106.31602-1-james.morse@arm.com>
+ <20240321165106.31602-13-james.morse@arm.com>
+ <fc4ee516-54b7-47cb-b881-00ce10d311a9@intel.com>
+ <ZhfwjBJPeTvO04BL@e133380.arm.com>
+ <d269b5d2-bd6d-44b2-8d99-0e0a2790bf50@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,87 +65,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240416-raydium-rm69380-driver-v3-1-21600ac4ce5f@mainlining.org>
+In-Reply-To: <d269b5d2-bd6d-44b2-8d99-0e0a2790bf50@intel.com>
 
-On Tue, Apr 16, 2024 at 08:30:48PM +0200, David Wronek wrote:
-> Raydium RM69380 is a display driver IC used to drive OLED DSI panels.
-> Add a dt-binding for it.
+Hi Reinette,
+
+On Thu, Apr 11, 2024 at 10:38:20AM -0700, Reinette Chatre wrote:
+> Hi Dave,
 > 
-> Signed-off-by: David Wronek <david@mainlining.org>
-> ---
-> Note:
-> Depends on commit 48a516363e29 ("dt-bindings: display: panel: add common dual-link schema")
-> ---
->  .../bindings/display/panel/raydium,rm69380.yaml    | 91 ++++++++++++++++++++++
->  1 file changed, 91 insertions(+)
+> On 4/11/2024 7:15 AM, Dave Martin wrote:
+> > On Mon, Apr 08, 2024 at 08:19:15PM -0700, Reinette Chatre wrote:
+> >> Hi James,
+> >>
+> >> On 3/21/2024 9:50 AM, James Morse wrote:
+> >>> @@ -2595,6 +2601,12 @@ static int schemata_list_add(struct rdt_resource *r, enum resctrl_conf_type type
+> >>>  	if (cl > max_name_width)
+> >>>  		max_name_width = cl;
+> >>>  
+> >>> +	/*
+> >>> +	 * Choose a width for the resource data based on the resource that has
+> >>> +	 * widest name and cbm.
+> >>
+> >> Please check series to ensure upper case is used for acronyms.
+> > 
+> > [...]
+> > 
+> >> Reinette
+> > 
+> > This patch is just moving existing code around AFAICT.  See:
+> > commit de016df88f23 ("x86/intel_rdt: Update schemata read to show data in tabular format")
+> > 
+> > Since no new usage of any term is being introduced here, can it be
+> > left as-is?
+> > 
+> > There seem to be other uses of "cbm" with this sense in the resctrl
+> > code already.
 > 
-> diff --git a/Documentation/devicetree/bindings/display/panel/raydium,rm69380.yaml b/Documentation/devicetree/bindings/display/panel/raydium,rm69380.yaml
-> new file mode 100644
-> index 000000000000..0ac7d033cbe0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/panel/raydium,rm69380.yaml
-> @@ -0,0 +1,91 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/panel/raydium,rm69380.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Raydium RM6380-based DSI display panels
+> I am not asking to change all existing usages of these terms but in
+> any new changes, please use upper case for acronyms.
 
-RM69380-based
+While there is a general argument to be made here, it sounds from this
+like you are not requesting a change to this patch; can you confirm?
 
-> +
-> +maintainers:
-> +  - David Wronek <david@mainlining.org>
-> +
-> +description:
-> +  The Raydium RM69380 is a generic DSI panel IC used to control
-> +  OLED panels.
-> +
-> +allOf:
-> +  - $ref: panel-common-dual.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - lenovo,j716f-edo-rm69380
-> +      - const: raydium,rm69380
-> +    description: This indicates the panel manufacturer of the panel
-> +      that is in turn using the RM69380 panel driver. The compatible
-> +      string determines how the RM69380 panel driver shall be configured
-> +      to work with the indicated panel. The raydium,rm69380 compatible shall
-> +      always be provided as a fallback.
-> +
-> +  avdd-supply:
-> +    description: Analog voltage rail
-> +
-> +  vddio-supply:
-> +    description: I/O voltage rail
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +    description: phandle of gpio for reset line - This should be active low
-> +
-> +  ports: true
-> +  reg: true
-
-Drop these and change 'addtionalProperties' to 'unevaluatedProperties'. 
-Other properties in panel-common.yaml should be allowed. width-mm and 
-height-mm for example.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - avdd-supply
-> +  - vddio-supply
-> +  - reset-gpios
-
-> +  - ports
-
-Already required in panel-common-dual.yaml.
-
-Rob
+Cheers
+---Dave
 
