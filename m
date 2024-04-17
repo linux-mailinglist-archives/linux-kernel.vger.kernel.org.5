@@ -1,208 +1,165 @@
-Return-Path: <linux-kernel+bounces-149240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F176A8A8D89
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 23:12:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A898F8A8D8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 23:14:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69A901F22037
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:12:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35CF32825E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:14:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81948495CB;
-	Wed, 17 Apr 2024 21:12:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A320E4CB36;
+	Wed, 17 Apr 2024 21:14:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lb32onrf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UdFb+zMy"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB28B18C19
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 21:12:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2A637163
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 21:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713388323; cv=none; b=FBfAkW6orgC52UGG0exG43XQQv92HQIWC2zEPIaYGqc4IQZZDEq/54UR6OkE5Ax0LUxj0tpAuwQ1j/55VXlrL+4AZJmpQCxbRVsNlxTVHAAjMnfc8lQ+7yp4/Jsd+rGKSo+RR5zy+a7WL61wbAC/+sTZwDTFXUJLRLy0Xllw+v4=
+	t=1713388441; cv=none; b=jpcMz5RYolQKUpBszBjlWrAhyR2kLyYkOeWRtPJxVf/I3guOSlot35Zgm7++nccF1QNH6xQIPBWYRXjMe7RQgv1+V14AGjWqmFxLgC1vSFgcAeMBwHXsK1AqdngjflIEMuYUmTkZ6bS1dqiIN+TnpFk6hOrLfa3tasqoT7QgyA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713388323; c=relaxed/simple;
-	bh=QarXj+s/wPiCd324CLbe5/b03kj2VCCAjbBMQT6SOZc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eZDh8TRVMavlDQ0zBxvqbS8uaEXwDIxZYjBxdbhfhgj9p9XU6+KHvlP8iBoO3htALbN/PtcOQLK+R5EwUeyX0EMsy3h/cX7H930oviGbG1L72tXEZa4KT2m17zbAoigyGe4C57L86Te866ZXmYtVoRih9P2qTt0sUh8vaidUVY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lb32onrf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41A0DC072AA;
-	Wed, 17 Apr 2024 21:12:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713388323;
-	bh=QarXj+s/wPiCd324CLbe5/b03kj2VCCAjbBMQT6SOZc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=lb32onrf4lOWuPDyDlZMiePYzDKx+PU7/6WoDuB3z3gHKmZ+7Ne+rL6T5GjDDq+Bo
-	 8XbYS3ExHuGsBM1AVsf8ubHtzaznUHkJBNu+BkViUDBPsOUNMthMf89x1ozzt1dEZw
-	 +oYh+61mwxbaLCA+Xmq/KDd2FScFpsvBG/vHmhfpslFPnsKU9Mp3tILMJddxQ21PVw
-	 nfydajmXUaKJXAc3TJ3gEMTSXV38N7JJtKH5D8nQA//22fiIpvyZ06+LMbuRmvja2N
-	 Fgr+Cdta1EXskNh2Wf3oEROGvfRwAVSa0vMQDWotXfrY6YsipVgfsLV+uBYqovMuGN
-	 V5NUgBqJNoH2w==
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH] f2fs: assign the write hint per stream by default
-Date: Wed, 17 Apr 2024 21:12:01 +0000
-Message-ID: <20240417211201.3919770-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
+	s=arc-20240116; t=1713388441; c=relaxed/simple;
+	bh=XA6YYQNkYOQfc0ccxU6fvBGiv4lH8yOBrPdb7vPQJoE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FEq11CFyiXAEOOul5M4vcgDmdDNHWKMsRk9QNpU+Nhn1/I1L02xixJviA67BY3AmetEK6veI3FWv8bWsCcmpgy5OUpGu4ikfPM/+V8sDApIDFuDCXjKgJ+OQLdW9MFBBqEH9oFb6GxWxcgDLnHA7vhMpWwayKKcT9OCgZdtBIRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UdFb+zMy; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713388439;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=G2C9akPJAJwJZjxxljCty6JRoxRpyti3F4JswiGBS/o=;
+	b=UdFb+zMyc3Vo+Z9ZbQsboxHXbmeLq0Yhp+R6de0N4iM+GA8jcXhg3OEYXnIUWvSL3jn0yt
+	HQEI9UjP/gSPeGlTImMz9GGojjIkF90ummTidKsj4xsx/ENwDEbUle4hPfaTTXiN4z05/N
+	nXEcRWHnfXYbXZtGzGVWZO1UhryrO00=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-440-2J8yU0OTMjeDKoya6gSvEQ-1; Wed, 17 Apr 2024 17:13:57 -0400
+X-MC-Unique: 2J8yU0OTMjeDKoya6gSvEQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-343c8e87a74so108272f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:13:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713388436; x=1713993236;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G2C9akPJAJwJZjxxljCty6JRoxRpyti3F4JswiGBS/o=;
+        b=hfh2KX132F588Hg8J6XAcjmMWx5RPGnDT9xuNLRWTE1lZ0RsbfnzdRZhkAbpRaqA5E
+         TkT3p0l+Unc7AGQnuHJMupWk1kUCoWIBdAigHWAE3GetfdLJ1+zuKjgBNyOcL3iIcyJm
+         aIRE6SKIjpGhdY6DGxA1/1Yh7rW7sH6ufhsKA8dn4zwJG4vbKtN7EDj4Zh8ybp3h7mnn
+         EHikFejYB2HQZOX205+ZU8PvAqXAuuRZcMw/H9P3EMZgdQ+dfJdOpUJJe2loSx1xzeze
+         ZzY+F+8UHIqFFq5+Gc0lKn0q3KECIJwlBPxTzDGjv6A7qNcxtlj3GnZVdPgi+CmcOERH
+         SJng==
+X-Forwarded-Encrypted: i=1; AJvYcCWDlr9IuFPG+XfKaE59d9dKKnb+ClcgdTbFr5pysCk7cG0m+RYYdDulH1I94aNFiYowYrzMoyRDHZjGGYaAhy/6yAQRUCYx4/iEtE4Y
+X-Gm-Message-State: AOJu0YyRfq+iKE0aofdA0n3YwbEjkyehlLNTCrnI3QFjgHsGdVhZRqLs
+	DjblFigywIXFmV0XBDMC0sAZ6UC0szRoq4bhTz0fHomPpv2ifiOa9HLeOPnguSDJy2S4+J2ErWp
+	mzxdA/ZGITT320eOVuTugYytZ24ssio+vteVWCN1+uKmrpRu5SVGM9xFThQxqrDI0YtadRMiNHx
+	CSVZ2elw9PPaMZK9+YekFsNFQe0ULPaMNSIjtc
+X-Received: by 2002:a05:6000:1289:b0:343:ba58:97c2 with SMTP id f9-20020a056000128900b00343ba5897c2mr407284wrx.2.1713388436479;
+        Wed, 17 Apr 2024 14:13:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEGRugtsyJBzGMIe/V5ASLaTzpSHHpUaE76zkcW3p6ReO5WyJinae3xB1F2OEby8SIAw5N/b+PLo013PGBiEFA=
+X-Received: by 2002:a05:6000:1289:b0:343:ba58:97c2 with SMTP id
+ f9-20020a056000128900b00343ba5897c2mr407264wrx.2.1713388436104; Wed, 17 Apr
+ 2024 14:13:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240417153450.3608097-1-pbonzini@redhat.com> <20240417153450.3608097-3-pbonzini@redhat.com>
+ <20240417193625.GJ3039520@ls.amr.corp.intel.com> <ZiA6H9-0fknDPdFp@google.com>
+In-Reply-To: <ZiA6H9-0fknDPdFp@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Wed, 17 Apr 2024 23:13:34 +0200
+Message-ID: <CABgObfYvfxkkcXNUpe1oCcc1mtUwv+henfm5ghHM2pG1aFNtiQ@mail.gmail.com>
+Subject: Re: [PATCH 2/7] KVM: Add KVM_MAP_MEMORY vcpu ioctl to pre-populate
+ guest memory
+To: Sean Christopherson <seanjc@google.com>
+Cc: Isaku Yamahata <isaku.yamahata@intel.com>, linux-kernel@vger.kernel.org, 
+	kvm@vger.kernel.org, xiaoyao.li@intel.com, binbin.wu@linux.intel.com, 
+	rick.p.edgecombe@intel.com, isaku.yamahata@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This reverts commit 930e2607638d ("f2fs: remove obsolete whint_mode"), as we
-decide to pass write hints to the disk.
+On Wed, Apr 17, 2024 at 11:07=E2=80=AFPM Sean Christopherson <seanjc@google=
+com> wrote:
+>
+> On Wed, Apr 17, 2024, Isaku Yamahata wrote:
+> > > +   vcpu_load(vcpu);
+> > > +   idx =3D srcu_read_lock(&vcpu->kvm->srcu);
+> > > +
+> > > +   r =3D 0;
+> > > +   full_size =3D mapping->size;
+> > > +   while (mapping->size) {
+>
+> Maybe pre-check !mapping->size?  E.g. there's no reason to load the vCPU =
+and
+> acquire SRCU just to do nothing.  Then this can be a do-while loop and do=
+esn't
+> need to explicitly initialize 'r'.
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- Documentation/filesystems/f2fs.rst | 29 +++++++++++++++
- fs/f2fs/data.c                     |  2 +
- fs/f2fs/f2fs.h                     |  2 +
- fs/f2fs/segment.c                  | 59 ++++++++++++++++++++++++++++++
- 4 files changed, 92 insertions(+)
+It's unlikely to make any difference but okay---easy enough.
 
-diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-index efc3493fd6f8..68a0885fb5e6 100644
---- a/Documentation/filesystems/f2fs.rst
-+++ b/Documentation/filesystems/f2fs.rst
-@@ -774,6 +774,35 @@ In order to identify whether the data in the victim segment are valid or not,
- F2FS manages a bitmap. Each bit represents the validity of a block, and the
- bitmap is composed of a bit stream covering whole blocks in main area.
- 
-+Write-hint Policy
-+-----------------
-+
-+F2FS sets the whint all the time with the below policy.
-+
-+===================== ======================== ===================
-+User                  F2FS                     Block
-+===================== ======================== ===================
-+N/A                   META                     WRITE_LIFE_NONE|REQ_META
-+N/A                   HOT_NODE                 WRITE_LIFE_NONE
-+N/A                   WARM_NODE                WRITE_LIFE_MEDIUM
-+N/A                   COLD_NODE                WRITE_LIFE_LONG
-+ioctl(COLD)           COLD_DATA                WRITE_LIFE_EXTREME
-+extension list        "                        "
-+
-+-- buffered io
-+N/A                   COLD_DATA                WRITE_LIFE_EXTREME
-+N/A                   HOT_DATA                 WRITE_LIFE_SHORT
-+N/A                   WARM_DATA                WRITE_LIFE_NOT_SET
-+
-+-- direct io
-+WRITE_LIFE_EXTREME    COLD_DATA                WRITE_LIFE_EXTREME
-+WRITE_LIFE_SHORT      HOT_DATA                 WRITE_LIFE_SHORT
-+WRITE_LIFE_NOT_SET    WARM_DATA                WRITE_LIFE_NOT_SET
-+WRITE_LIFE_NONE       "                        WRITE_LIFE_NONE
-+WRITE_LIFE_MEDIUM     "                        WRITE_LIFE_MEDIUM
-+WRITE_LIFE_LONG       "                        WRITE_LIFE_LONG
-+===================== ======================== ===================
-+
- Fallocate(2) Policy
- -------------------
- 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 5d641fac02ba..ed7d08785fcf 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -465,6 +465,8 @@ static struct bio *__bio_alloc(struct f2fs_io_info *fio, int npages)
- 	} else {
- 		bio->bi_end_io = f2fs_write_end_io;
- 		bio->bi_private = sbi;
-+		bio->bi_write_hint = f2fs_io_type_to_rw_hint(sbi,
-+						fio->type, fio->temp);
- 	}
- 	iostat_alloc_and_bind_ctx(sbi, bio, NULL);
- 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index dd530dc70005..b3b878acc86b 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3745,6 +3745,8 @@ void f2fs_destroy_segment_manager(struct f2fs_sb_info *sbi);
- int __init f2fs_create_segment_manager_caches(void);
- void f2fs_destroy_segment_manager_caches(void);
- int f2fs_rw_hint_to_seg_type(enum rw_hint hint);
-+enum rw_hint f2fs_io_type_to_rw_hint(struct f2fs_sb_info *sbi,
-+			enum page_type type, enum temp_type temp);
- unsigned int f2fs_usable_segs_in_sec(struct f2fs_sb_info *sbi,
- 			unsigned int segno);
- unsigned int f2fs_usable_blks_in_seg(struct f2fs_sb_info *sbi,
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index f0da516ba8dc..daa94669f7ee 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -3364,6 +3364,65 @@ int f2fs_rw_hint_to_seg_type(enum rw_hint hint)
- 	}
- }
- 
-+/*
-+ * This returns write hints for each segment type. This hints will be
-+ * passed down to block layer as below by default.
-+ *
-+ * User                  F2FS                     Block
-+ * ----                  ----                     -----
-+ *                       META                     WRITE_LIFE_NONE|REQ_META
-+ *                       HOT_NODE                 WRITE_LIFE_NONE
-+ *                       WARM_NODE                WRITE_LIFE_MEDIUM
-+ *                       COLD_NODE                WRITE_LIFE_LONG
-+ * ioctl(COLD)           COLD_DATA                WRITE_LIFE_EXTREME
-+ * extension list        "                        "
-+ *
-+ * -- buffered io
-+ *                       COLD_DATA                WRITE_LIFE_EXTREME
-+ *                       HOT_DATA                 WRITE_LIFE_SHORT
-+ *                       WARM_DATA                WRITE_LIFE_NOT_SET
-+ *
-+ * -- direct io
-+ * WRITE_LIFE_EXTREME    COLD_DATA                WRITE_LIFE_EXTREME
-+ * WRITE_LIFE_SHORT      HOT_DATA                 WRITE_LIFE_SHORT
-+ * WRITE_LIFE_NOT_SET    WARM_DATA                WRITE_LIFE_NOT_SET
-+ * WRITE_LIFE_NONE       "                        WRITE_LIFE_NONE
-+ * WRITE_LIFE_MEDIUM     "                        WRITE_LIFE_MEDIUM
-+ * WRITE_LIFE_LONG       "                        WRITE_LIFE_LONG
-+ */
-+enum rw_hint f2fs_io_type_to_rw_hint(struct f2fs_sb_info *sbi,
-+				enum page_type type, enum temp_type temp)
-+{
-+	switch (type) {
-+	case DATA:
-+		switch (temp) {
-+		case WARM:
-+			return WRITE_LIFE_NOT_SET;
-+		case HOT:
-+			return WRITE_LIFE_SHORT;
-+		case COLD:
-+			return WRITE_LIFE_EXTREME;
-+		default:
-+			return WRITE_LIFE_NONE;
-+		}
-+	case NODE:
-+		switch (temp) {
-+		case WARM:
-+			return WRITE_LIFE_MEDIUM;
-+		case HOT:
-+			return WRITE_LIFE_NONE;
-+		case COLD:
-+			return WRITE_LIFE_LONG;
-+		default:
-+			return WRITE_LIFE_NONE;
-+		}
-+	case META:
-+		return WRITE_LIFE_NONE;
-+	default:
-+		return WRITE_LIFE_NONE;
-+	}
-+}
-+
- static int __get_segment_type_2(struct f2fs_io_info *fio)
- {
- 	if (fio->type == DATA)
--- 
-2.44.0.683.g7961c838ac-goog
+> > > +           if (signal_pending(current)) {
+> > > +                   r =3D -EINTR;
+> > > +                   break;
+> > > +           }
+> > > +
+> > > +           r =3D kvm_arch_vcpu_map_memory(vcpu, mapping);
+>
+> Requiring arch code to address @mapping is cumbersone.  If the arch call =
+returns
+> a long, then can't we do?
+>
+>                 if (r < 0)
+>                         break;
+>
+>                 mapping->size -=3D r;
+>                 mapping->gpa +=3D r;
+
+Ok, I thought the same for the return value. I didn't expand the
+arguments to arch code in case in the future we have flags or other
+expansions of the struct.
+
+> > > +           if (r)
+> > > +                   break;
+> > > +
+> > > +           cond_resched();
+> > > +   }
+> > > +
+> > > +   srcu_read_unlock(&vcpu->kvm->srcu, idx);
+> > > +   vcpu_put(vcpu);
+> > > +
+> > > +   /* Return success if at least one page was mapped successfully.  =
+*/
+> > > +   return full_size =3D=3D mapping->size ? r : 0;
+>
+> I just saw Paolo's update that this is intentional, but this strikes me a=
+s odd,
+> as it requires userspace to redo the ioctl() to figure out why the last o=
+ne failed.
+
+Yeah, the same is true of read() but I don't think it's a problem. If
+we get an EINTR, then (unlike KVM_RUN which can change the signal
+mask) the signal will be delivered right after the ioctl() returns and
+you can just proceed. For EAGAIN you can just proceed in general.
+
+And of course, if RET_PF_RETRY is handled in the kernel then EAGAIN
+goes away and the only cause of premature exit can be EINTR.
+
+Paolo
+
+> Not a sticking point, just odd to my eyes.
+>
 
 
