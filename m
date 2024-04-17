@@ -1,94 +1,126 @@
-Return-Path: <linux-kernel+bounces-148910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02D178A88D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:27:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B36278A88D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:28:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84E35B22286
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:27:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A72081C21F0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:28:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81734148FE8;
-	Wed, 17 Apr 2024 16:27:02 +0000 (UTC)
-Received: from gardel.0pointer.net (gardel.0pointer.net [85.214.157.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B379A148FEA;
+	Wed, 17 Apr 2024 16:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qsDQIDHE"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED29C1411E5;
-	Wed, 17 Apr 2024 16:26:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.157.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2AC21482E5
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 16:28:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713371222; cv=none; b=aFDKshMZouvXJa7aMbdG1y8dwyyYu7IVEpJYcbz8zFIEflWkaOZxCYs0HZjpFeRk7Bjy/pp9EfGWXqh0bU9iElUxkiJ97YckAINjGcQmcz7XJuOu2hTB/tMxpJXzIC7MsYOixQ0Hyg0Lc1yMbresGiqHQdnw9KkA0m1IyyJkq4o=
+	t=1713371322; cv=none; b=X52q4F7FBfGL3SeHlRux/nx0VCVTwAg8Ls/CZWy6pNpIPdUVjw/1i81DpvfB6EvUrAAyRfcbYyyHAzqr0wjyqV7R3ehXEddRq1BQ+eKZzltZ5p9jA+CPVVmWUjZX2WwcMY1brcRc0v6ankfYH90Qt3FP8wa++Oa5Zarhym5soEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713371222; c=relaxed/simple;
-	bh=Kfk/+PMXTSlj8X88Ks9ci1e34mQJ52fS/4pU0B16Qjo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BN0r4foFkYFD44lTu0vhWyA4brhMUXjjXABxJTPQDGCYIbefSPcOkNsTMvqYvoXhetoV0nSpWWT6x8Z1KqqL1eSH1qtSUi9/9uYzKka5iLXLb25uBtvjvpKCLY7MDwgdmKRslfKp9k68e6dn00RmRfBII3hxYmWLOY9215TkYdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0pointer.de; spf=pass smtp.mailfrom=0pointer.de; arc=none smtp.client-ip=85.214.157.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0pointer.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0pointer.de
-Received: from gardel-login.0pointer.net (gardel-mail [85.214.157.71])
-	by gardel.0pointer.net (Postfix) with ESMTP id CB2E6E803A9;
-	Wed, 17 Apr 2024 18:26:57 +0200 (CEST)
-Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
-	id 51EDF1602F7; Wed, 17 Apr 2024 18:26:57 +0200 (CEST)
-Date: Wed, 17 Apr 2024 18:26:57 +0200
-From: Lennart Poettering <mzxreary@0pointer.de>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Keith Busch <kbusch@kernel.org>,
-	Linux regressions mailing list <regressions@lists.linux.dev>,
-	linux-block@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-	Jens Axboe <axboe@kernel.dk>
-Subject: Re: API break, sysfs "capability" file
-Message-ID: <Zh_4UbT0m12EAFc3@gardel-login>
-References: <ZhRyhDCT5cZCMqYj@kbusch-mbp.dhcp.thefacebook.com>
- <ZhT5_fZ9SrM0053p@gardel-login>
- <20240409141531.GB21514@lst.de>
- <Zh6J75OrcMY3dAjY@gardel-login>
- <Zh6O5zTBs5JtV4D2@kbusch-mbp>
- <20240417151350.GB2167@lst.de>
- <Zh_vQG9EyVt34p16@gardel-login>
- <20240417155913.GA6447@lst.de>
- <Zh_0bfqBsJFyJKgT@gardel-login>
- <20240417162257.GA8098@lst.de>
+	s=arc-20240116; t=1713371322; c=relaxed/simple;
+	bh=X/2wyR5QFnKJv9CHWGLy/KeIik7k8S1sCmLQsbcRwn0=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=aiwJNQk4sKk0ORrlQotn5YaSxzLF2SFoIp6UI5g33y5V8EzPHyOE2L5EFnm2Eot+9nI53+czRHN8EjQdlRJmojD82Ux2Zq61PKt4NC6lComg6co9l1vBTRZQMyUElaRjvoh+jv7NCG0FQ+mKBaIvHB275HGJtCGnOQC+vbHeiiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qsDQIDHE; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf618042daso8752795276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:28:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713371320; x=1713976120; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s3lSOPR1lJsJJv/WhiimhduGO7QJh32oOx8WBkgJ9ow=;
+        b=qsDQIDHE+fdDEzpFvD+G9S/DgtZ/Xx0BE12q62Y8IIh9DJ5SGs9TV446UvEUigUJl6
+         MLi4ebF5UXUpF/RkBmOe3KijaJ1sz7Gs9V1GJ8mUlqSgldlte3PliQwfiqDEy9yqRlY5
+         0iXXhgmuRR50YSGD8sdxyiQhFKXog9qiK0OkUCK8CKc4KsWVkJZ7IYoe4Z9fyf+iGYL+
+         keVH5YQ+vwsExrY/dyHEAFMiDJ2uROvTaVdSGEBCd5oqLbMzk3zKC8jnut2sGqcZB1Iu
+         HtDizPw5Kg7XeFZyFvtyKNCww5PKG9UAV3+lJj8OBcLdrx6V/gQaGiSalaDutkhYcU8O
+         NIWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713371320; x=1713976120;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=s3lSOPR1lJsJJv/WhiimhduGO7QJh32oOx8WBkgJ9ow=;
+        b=JapaLKo0GlZoeZgDQOsO27gYtIF0H3TtMutX/BRbMyud+NIMP85nKGiRss/TTbZQSZ
+         sKVyGON2AuCOJyrAYlG54XGHFiX9aV9IxCkftmDcxUj5iFjwSLFRJVcfS06jSoEl10M8
+         RSoAHn5unGtno0FIthWIsQmIHbEzIq0ou5e66D5U8T4ZhT3nvFhmH0Oj2PzmyoVaBQw7
+         Ktd6AxrdcwA3p7gVVb3DZlHYVOVrljj8gadABGNanNa3IhlL6batPKWgb5sXXtC+2pfL
+         pfo+lQzxOGOpNpIaB6lxYs7YAzDC5h+2sGe/xkyMNLI7qzqkkf8Kwqeq1ENrB2H1eIy3
+         YcHw==
+X-Forwarded-Encrypted: i=1; AJvYcCXHF/7hs1U7xoGBNDy+DrsRWzhiZrB3m/Km5uXRiGFFEFdPF5y5bdGQXaHRRHQl41tWGCa4v98j7r61e5d9Bcir5CKm8FhKuCPt69+r
+X-Gm-Message-State: AOJu0YzOrz0FutuawVu7gwuPxdpJ/p1S83pbpSJ7X5hXKAQhoglCCjlC
+	Vb7v9aIB9sjfiazRzCSFPv4VD9sHLFpno93JOTB9qLPHvZ3i83x52yfoE3R+EcxvJH6HtlTKx5O
+	g/g==
+X-Google-Smtp-Source: AGHT+IFEPyww4qTNqCfQgyiXR0C7OpclMKKGFrgTa/+wBHlpnkWfaJEwKO+yVT5t5Zack6qO6n1xwvGwFcw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a5b:9cf:0:b0:dc7:4af0:8c6c with SMTP id
+ y15-20020a5b09cf000000b00dc74af08c6cmr1692451ybq.6.1713371319876; Wed, 17 Apr
+ 2024 09:28:39 -0700 (PDT)
+Date: Wed, 17 Apr 2024 09:28:38 -0700
+In-Reply-To: <Zh_0sJPPoHKce5Ky@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240417162257.GA8098@lst.de>
+Mime-Version: 1.0
+References: <20240416123558.212040-1-julian.stecklina@cyberus-technology.de>
+ <Zh6MmgOqvFPuWzD9@google.com> <ecb314c53c76bc6d2233a8b4d783a15297198ef8.camel@cyberus-technology.de>
+ <Zh6WlOB8CS-By3DQ@google.com> <c2ca06e2d8d7ef66800f012953b8ea4be0147c92.camel@cyberus-technology.de>
+ <Zh6-e9hy7U6DD2QM@google.com> <adb07a02b3923eeb49f425d38509b340f4837e17.camel@cyberus-technology.de>
+ <Zh_0sJPPoHKce5Ky@google.com>
+Message-ID: <Zh_4tsd5rAo4G1Lv@google.com>
+Subject: Re: [PATCH 1/2] KVM: nVMX: fix CR4_READ_SHADOW when L0 updates CR4
+ during a signal
+From: Sean Christopherson <seanjc@google.com>
+To: Thomas Prescher <thomas.prescher@cyberus-technology.de>
+Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>, "x86@kernel.org" <x86@kernel.org>, 
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "hpa@zytor.com" <hpa@zytor.com>, 
+	Julian Stecklina <julian.stecklina@cyberus-technology.de>, 
+	"tglx@linutronix.de" <tglx@linutronix.de>, "bp@alien8.de" <bp@alien8.de>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"mingo@redhat.com" <mingo@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-eOn Mi, 17.04.24 18:22, Christoph Hellwig (hch@lst.de) wrote:
+On Wed, Apr 17, 2024, Sean Christopherson wrote:
+> On Wed, Apr 17, 2024, Thomas Prescher wrote:
+> > On Tue, 2024-04-16 at 11:07 -0700, Sean Christopherson wrote:
+> > > Hur dur, I forgot that KVM provides a "guest_mode" stat.=C2=A0 Usersp=
+ace can do
+> > > KVM_GET_STATS_FD on the vCPU FD to get a file handle to the binary st=
+ats,
+> > > and then you wouldn't need to call back into KVM just to query guest_=
+mode.
+> > >=20
+> > > Ah, and I also forgot that we have kvm_run.flags, so adding
+> > > KVM_RUN_X86_GUEST_MODE would also be trivial (I almost suggested it
+> > > earlier, but didn't want to add a new field to kvm_run without a very=
+ good
+> > > reason).
+> >=20
+> > Thanks for the pointers. This is really helpful.
+> >=20
+> > I tried the "guest_mode" stat as you suggested and it solves the
+> > immediate issue we have with VirtualBox/KVM.
+>=20
+> Note,=20
 
-> On Wed, Apr 17, 2024 at 06:10:21PM +0200, Lennart Poettering wrote:
-> > Well, there are plenty of other block devices with part scanning off,
-> > such as DM, including dm-crypt, dm-integrity and so on. And that's
-> > certainly stuff we want to cover for this.
->
-> But there is no good reason to prohibit scanning for them.  We can't
-> scan by default as that would probably break a few expectations in
-> userspace, but we can trivially allow manual scanning.
+Gah, got distracted.  I was going to say that we should add KVM_RUN_X86_GUE=
+ST_MODE,
+because stats aren't guaranteed ABI[*], i.e. relying on guest_mode could pr=
+ove
+problematic in the long run (though that's unlikely).
 
-Hmm, so you want to generically allow toggling the flag from
-userspace? I mean that'd be fine with me, but it would feel a bit
-weird if you let's say have a partition block device, where you'd
-toggle this, and then you have two levels of part scanning, and then
-you toggle it on one of the part block devices there and so on, and so
-on. Could that work at all with the major/minor allocation stuff?
-
-But let's say you add such a user-controlled thing, if you'd add that
-I figure you really also need a way to query the current state, right?
-which is basically what I originally was looking for...
-
-i.e. it would be really weird if we could set the flag, but not query
-it in the first place.
-
-Lennart
-
---
-Lennart Poettering, Berlin
+[*] https://lore.kernel.org/all/CABgObfZ4kqaXLaOAOj4aGB5GAe9GxOmJmOP+7kdke6=
+OqA35HzA@mail.gmail.com
 
