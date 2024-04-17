@@ -1,154 +1,125 @@
-Return-Path: <linux-kernel+bounces-148291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E224C8A806B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:08:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 393088A806E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:11:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3AC88B23648
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:08:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E84DD2831DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:11:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F68B13AA2D;
-	Wed, 17 Apr 2024 10:08:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C99313AD11;
+	Wed, 17 Apr 2024 10:11:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ItTOHdYw"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oQA29wj8";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="6ELvIzSX"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CFE4128807
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:08:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB431327E0
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:11:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713348488; cv=none; b=qeYgo22UWN3FS/QPUrn97NRPtv2b3LKNngn0efFWsXH4u6gaz/XCf9nQRBP5OXQCBza2DKGwg4PIjZ7YBp6aHm9pu53c3O/t6OFFa75oTRqpve/p7gjjFsT3f44utEvzmrwqxcfM1ZGVuYD6LlRmfzjyRvQoEb9fZZSELh7QfPo=
+	t=1713348691; cv=none; b=OxOMOejeXSJjguem2Cqj2NszMdrUtyMCGeshd9Kc0xrU9yOpPK0WhxWCZ5THMWDKT7aUnP/RAK67kyn8ncp22CF28Ejn4isJrZjcgQKEOXe+2PXoION3fCs27F05ZmG8bjl9aVqOO3sPK9uFEnNh5qmtbjjiTWlo6Ku1EH/hp7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713348488; c=relaxed/simple;
-	bh=brHN2J0g6h2FWOT2DJL+bvz0WjZxEx35HK2donLvmSU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AIG1O63dFm/nD/rdsZh+xmuBh7lEHC67eNYC4KGKZg1sbXCI7d9j5PJBJAyBDajDsUxZayEx3udvkxYT+8kdGCi1OY8FGaEbWrrwc+2FbAG01uYEABVY/KryPeI1gtaLXCo4zH4K3nsv12j5rj1R430fAHbqxAiP1YTlgFD/Ddo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ItTOHdYw; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-516d0c004b1so7235480e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 03:08:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713348483; x=1713953283; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rew6iLA0plRdxtIqeoXYtK2CEUSuSYY+qCYCtmDSd1o=;
-        b=ItTOHdYw7KVGBu8JyoCVRk0nOG06+jf6GFwUIIGCb7UH/R0LL60+/7JIl0DhDJQKwp
-         55xAPWFsd3wkhkmVfZO8hego//PLU1+xgNdJpwz24aIXE5onwqWTAs4Xu3uWM8XuWIVO
-         GNHrb02VxO8ThtdtRjb6O+qsMNPncqpsBrqkONzAsU1DvCBuVhKLNoEOARd1KiUJ5GSd
-         ks2U0E+payxQnWi9hEsa+mC7Z/NXgobU8vTr+4amZG2UztuN5MhAwWmgu9wjPdj2ZYkI
-         /STMyejLuJuu1bNLYaZuCRmZFKe2zqTeOo/hIeMZlAV2ZFTiGZbShOe7YfnGkncy/Wp1
-         wwtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713348483; x=1713953283;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rew6iLA0plRdxtIqeoXYtK2CEUSuSYY+qCYCtmDSd1o=;
-        b=SwkAchn1tHsHPs4w/6+9ql5ZixzLS/TlOBqUHnstC0jzTrSvuXsWgHnpcXWnrnPE6K
-         qMDPL3/rGI2N555uU9/mhjJpibVEkvJqHER50KPQ3JOuWjBmWYAYmhm0DVtw+qatRBw1
-         Y7+Vju/2O9qNucdwcv+gJ4fauuQZDzxGY1UlmlpQtb0f1t/WAWArqcdY2LhAhVXFYSIV
-         LpWDbSx0iHU/KmnBPRTndcA5egZ0GMvgDxQoXHjGLHX5EXZGZTWigWMOSnSCVznif4cV
-         RjaiKrQEdFe0Ai7uAnMlGxL8nVN5XR/x2+eB1ksGzdR9V/ZlmFzfmFQ+yOmtQCAnTl/t
-         5uhA==
-X-Forwarded-Encrypted: i=1; AJvYcCWDn4SBWqF4Gj9Xu5YypDAlnfRt1a+gYbHlp8nLfeAI4cK3v55B1KX+yXZbCdx2MZoaWZad2BO5VxI/+iB4UfL7qvyMIzDzRL242+nP
-X-Gm-Message-State: AOJu0YxPh7aUlEw3cse9yKqQbge4HAk6v7WzF6a91UEbi4xq+eciCVEZ
-	Ep8wNwKfjhS+HC75oE26C7wLz+EUv7/iaOat16DbCs/X5BQ5jgu10IT+Crt7u28=
-X-Google-Smtp-Source: AGHT+IHpU2FckcUTS4T6HUYuJqnYbBgP+xCaAEopvwDiMHdA/fetkEHgQoPYTTOMp3Se2U1GhQcWFA==
-X-Received: by 2002:a19:ca03:0:b0:519:5c34:9652 with SMTP id a3-20020a19ca03000000b005195c349652mr10971lfg.31.1713348483318;
-        Wed, 17 Apr 2024 03:08:03 -0700 (PDT)
-Received: from localhost (c-9b0ee555.07-21-73746f28.bbcust.telenor.se. [85.229.14.155])
-        by smtp.gmail.com with ESMTPSA id i25-20020a0565123e1900b00518dfedc3ddsm1012464lfv.12.2024.04.17.03.08.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 03:08:02 -0700 (PDT)
-Date: Wed, 17 Apr 2024 12:08:02 +0200
-From: Anders Roxell <anders.roxell@linaro.org>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>, gregkh@linuxfoundation.org,
-	linux-amlogic@lists.infradead.org,
-	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: Re: [PATCH 12/15] tty: serial: switch from circ_buf to kfifo
-Message-ID: <Zh-fgtujwjiSXz7D@monster>
-References: <20240405060826.2521-1-jirislaby@kernel.org>
- <20240405060826.2521-13-jirislaby@kernel.org>
- <CGME20240415125847eucas1p2bc180c35f40f9c490c713679871af9ae@eucas1p2.samsung.com>
- <91ac609b-0fae-4856-a2a6-636908d7ad3c@samsung.com>
- <d70049d5-d0fe-465f-a558-45b6785f6014@kernel.org>
+	s=arc-20240116; t=1713348691; c=relaxed/simple;
+	bh=KSWYUci3DoV7DaS5qMVVGhRJ/5tUi9813wRP0Nrkbno=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=rThQbE4m3VDGIEz9FRyXg4MLNEXvSQGHN9HmDMVLcqbjq2GdOOvkqH227s8tlnCPskkM8rt2E0ufGOnKfgU+9w/2+TWTMDxIvVjYLi7NNlacmPk2J1iJD9PJkczHtThIWLxSgORVLNmIUerKA3jc3mSMj7HvB9UooGtOlzWORLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oQA29wj8; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=6ELvIzSX; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713348688;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PHGrCYyIXJXPc0UebXQRWLCm9Bbzq/e0Q6atneHTgEc=;
+	b=oQA29wj8SGodx3GSqF8saTFiv4dvOfpwN8oNZ54G3Q/t44U52TPAWO/Vl8CagJUS15W6Fl
+	B9pmGftfxDT3VSCnA8BxSnV/ZdbxO6fATzg/5HDExBnkl9U/Wf6Y36FKMZYFDEeW3ncBib
+	pDFfZGGKpAQU37gCQA4pEpR7eQdl5ukQQQm5oMQ3nwjE6dxF5w2c4SOWK/APCtgCeZCtJu
+	kP9QvuOtPN1HJ0WoMG1hHiuf6DAKPwhyqBK0x32FaVX6mz0zVLP3Z0KdijnzWnVJ9o5OES
+	6N0BTQdCp+xrk9UJHNSUZIhmvzgqisJgisTPtYlIHXECWNDSQm4reZlAfsZqXQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713348688;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PHGrCYyIXJXPc0UebXQRWLCm9Bbzq/e0Q6atneHTgEc=;
+	b=6ELvIzSXUnMuE3hRvx/mB0YbHZ7x+OxUNWQRGKFNv0L+3bI7aqE6CjkZg6AA/L9lHcmSJF
+	HfoVg+xA8NFrFhCg==
+To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>, John Stultz
+ <jstultz@google.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar
+ <mingo@kernel.org>, Stephen Boyd <sboyd@kernel.org>, Eric Biederman
+ <ebiederm@xmission.com>, Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [patch V2 21/50] posix-cpu-timers: Make k_itimer::it_active
+ consistent
+In-Reply-To: <20240410165552.256162566@linutronix.de>
+References: <20240410164558.316665885@linutronix.de>
+ <20240410165552.256162566@linutronix.de>
+Date: Wed, 17 Apr 2024 12:11:27 +0200
+Message-ID: <87le5cwb74.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d70049d5-d0fe-465f-a558-45b6785f6014@kernel.org>
+Content-Type: text/plain
 
-On 2024-04-15 15:28, Jiri Slaby wrote:
-> On 15. 04. 24, 14:58, Marek Szyprowski wrote:
-> > Dear All,
-> > 
-> > On 05.04.2024 08:08, Jiri Slaby (SUSE) wrote:
-> > > Switch from struct circ_buf to proper kfifo. kfifo provides much better
-> > > API, esp. when wrap-around of the buffer needs to be taken into account.
-> > > Look at pl011_dma_tx_refill() or cpm_uart_tx_pump() changes for example.
-> > > 
-> > > Kfifo API can also fill in scatter-gather DMA structures, so it easier
-> > > for that use case too. Look at lpuart_dma_tx() for example. Note that
-> > > not all drivers can be converted to that (like atmel_serial), they
-> > > handle DMA specially.
-> > > 
-> > > Note that usb-serial uses kfifo for TX for ages.
-> > > 
-> > > omap needed a bit more care as it needs to put a char into FIFO to start
-> > > the DMA transfer when OMAP_DMA_TX_KICK is set. In that case, we have to
-> > > do kfifo_dma_out_prepare twice: once to find out the tx_size (to find
-> > > out if it is worths to do DMA at all -- size >= 4), the second time for
-> > > the actual transfer.
-> > > 
-> > > All traces of circ_buf are removed from serial_core.h (and its struct
-> > > uart_state).
-> > > 
-> > > Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-> > > ...
-> > 
-> > This patch landed in linux-next as commit 1788cf6a91d9 ("tty: serial:
-> > switch from circ_buf to kfifo"). Unfortunately it breaks UART operation
-> > on thr Amlogic Meson based boards (drivers/tty/serial/meson_uart.c
-> > driver) and Qualcomm RB5 board (drivers/tty/serial/qcom_geni_serial.c).
-> > Once the init process is started, a complete garbage is printed to the
-> > serial console. Here is an example how it looks:
-> 
-> Oh my!
-> 
-> Both drivers move the tail using both kfifo and uart_xmit_advance()
-> interfaces. Bah. Does it help to remove that uart_xmit_advance() for both of
-> them? (TX stats will be broken.)
-> 
-> Users of uart_port_tx() are not affected.
-> 
-> This is my fault when merging uart_xmit_advance() with this series.
-> 
+Thomas Gleixner <tglx@linutronix.de> writes:
 
-I'm trying to run on two dragonboard devices db410c and db845c and both
-fails to boot see the boot failure from db845c [1], linux-next tag: next-20240415.
-I tried to apply the patch [2] (that you proposed in this thread) ontop of next-20240415. However, that didn't
-help bootlog on db845c [3].
+> Posix CPU timers are not updating k_itimer::it_active which makes it
+> impossible to base decisions in the common posix timer code on it.
+>
+> Update it when queueing or dequeueing posix CPU timers.
+>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+> V2: Move the clearing to cpu_timer_fire() - Frederic
+> ---
+>  kernel/time/posix-cpu-timers.c |    4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> --- a/kernel/time/posix-cpu-timers.c
+> +++ b/kernel/time/posix-cpu-timers.c
+> @@ -453,6 +453,7 @@ static void disarm_timer(struct k_itimer
+>  	struct cpu_timer *ctmr = &timer->it.cpu;
+>  	struct posix_cputimer_base *base;
+>  
+> +	timer->it_active = 0;
+>  	if (!cpu_timer_dequeue(ctmr))
+>  		return;
+>  
+> @@ -559,6 +560,7 @@ static void arm_timer(struct k_itimer *t
+>  	struct cpu_timer *ctmr = &timer->it.cpu;
+>  	u64 newexp = cpu_timer_getexpires(ctmr);
+>  
+> +	timer->it_active = 1;
+>  	if (!cpu_timer_enqueue(&base->tqhead, ctmr))
+>  		return;
+>  
+> @@ -584,6 +586,7 @@ static void cpu_timer_fire(struct k_itim
+>  {
+>  	struct cpu_timer *ctmr = &timer->it.cpu;
+>  
+> +	timer->it_active = 0;
+>  	if (unlikely(timer->sigq == NULL)) {
+>  		/*
+>  		 * This a special case for clock_nanosleep,
+> @@ -668,6 +671,7 @@ static int posix_cpu_timer_set(struct k_
+>  		ret = TIMER_RETRY;
+>  	} else {
+>  		cpu_timer_dequeue(ctmr);
+> +		timer->it_active = 0;
 
-Cheers,
-Anders
-[1] https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2f7sLxYtIQXQzsnTzE1Dye2xweg/logs?format=html
-[2] https://lore.kernel.org/lkml/20240416054825.6211-1-jirislaby@kernel.org/raw
-[3] https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/anders/tests/2fDgvWnyEmFm9mqMCxOaruBOfTe/logs?format=html
+NIT: you could change the order of the above two commands, then it is in
+the same order as the others.
+
+with or without changing the NIT:
+Reviewed-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 
