@@ -1,144 +1,129 @@
-Return-Path: <linux-kernel+bounces-148450-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B9B38A82C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:07:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 055018A82CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:08:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 391101C20AC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:07:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0E041F219B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:08:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86FF13D285;
-	Wed, 17 Apr 2024 12:07:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09CFD13D2BF;
+	Wed, 17 Apr 2024 12:07:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hQF3Xqos";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oyDLGoHA"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="k+c6TrXT";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PskRulJQ"
+Received: from fout8-smtp.messagingengine.com (fout8-smtp.messagingengine.com [103.168.172.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C397413CF94;
-	Wed, 17 Apr 2024 12:07:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B1113D279;
+	Wed, 17 Apr 2024 12:07:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713355645; cv=none; b=VS7kt9pQDUsE5UTJOnoCSNOBdSr16EOu5/agbE3mCEZ3KYWiLUS3PVcz50z++GfAgA1CHj2Z/Glt5n5T9z74I8+TRl6uGM8sX50mhN038TrxUf2SSJqkf6KXclosME+LTNl/9hHMMvZfD/Jz0TAwKmQ32eYxL8aVZb81fRarJik=
+	t=1713355668; cv=none; b=DTIzVNg0rLcJPDGoadF4xmmljJS7dBy7qADyfs3RAecfFCc5WM0V6aRSsdCtVuB9asN8SJXt4aKYegqVg7qKCbDKvirFFFZCVhflwsyVKEGZ2LGHKHoJRJ6iVdXFseaHAjg2iXkqOb+mCmQ/KiwkLySC0RnL8xhGJ5av5CN7u8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713355645; c=relaxed/simple;
-	bh=24wbGBocfEvHtoYwR/79AhSigJ2aupjGUEw2K9rqts8=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=oSd3+xkiAckOM8ciR02wv7elDkXVfrTFH+INsZDuyCwJMGEYoEsXEp717KEjFBR5gOw7xU6KHs/xlznouPUn3ApqaT8FBVph3I4qxSzu5a8NLuGpxUc3rvmpC+rCnlCRgtBAcPujHvZDsbG5EprLfxexMsOmVS2OOEghjLhmHf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hQF3Xqos; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oyDLGoHA; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 17 Apr 2024 12:07:19 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713355640;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sAW4fQqopXztQJ2YMRJYU7sRqbHQFRiwyCjuZskkHkM=;
-	b=hQF3XqosQUlCSNJv1P16Df4CSOTluWIxAzniyP6kngsx47MpKELHMFL8dQnnr/dh0VdkKK
-	nbU9D/IWdVNfehDK3K5pWV7jPTrNdgXN4cyZdmPbTyl496KQKaAjwMaUni06vmIzEada6G
-	5KbTQIOA6qIc7EoYcB++bOPXL/eu7nVQgrUaXseQyuXSvtgzludSXhCY0cI/xDBSxSmYq1
-	bv+sH/JNas2zfxRAtlsvECBkOO6lM9r7Yaj5geEICh87HRIpybCx13PBZHPJOhW0NlG4HR
-	AIcvPMzlOIRaxM+RfVnMTPyqOJezlJsD549J65iBs3tpUXD1IKNTWOwLL+9tlA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713355640;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sAW4fQqopXztQJ2YMRJYU7sRqbHQFRiwyCjuZskkHkM=;
-	b=oyDLGoHAg2oY8liXX3VWcqb2jLP7J0PPMa/Wjj3AS2v+RI2fXurr6Cta+gMwcYlenpMpsM
-	fjohz9RKXwPieXAg==
-From: "tip-bot2 for Alexander Gordeev" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/vtime: Do not include <asm/vtime.h> header
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>, Ingo Molnar <mingo@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Nicholas Piggin <npiggin@gmail.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3Cf7cd245668b9ae61a55184871aec494ec9199c4a=2E17127?=
- =?utf-8?q?60275=2Egit=2Eagordeev=40linux=2Eibm=2Ecom=3E?=
-References: =?utf-8?q?=3Cf7cd245668b9ae61a55184871aec494ec9199c4a=2E171276?=
- =?utf-8?q?0275=2Egit=2Eagordeev=40linux=2Eibm=2Ecom=3E?=
+	s=arc-20240116; t=1713355668; c=relaxed/simple;
+	bh=ePiA4ddQh/R2An+M1WNyiwY8cnfIfyGkHQWLq8GAgQE=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=EPxOx4jDLSHzdt6nLr8LzG7GgTksJ58DdQBR2PcxP9+M0O60hRqSvM+42KrhQUjsdbqfx9X5eBeluvej/cRzNmDnkDSazKVwz/CJJb4fXuO7Ckf5Dh6nk6h0Mg3Z4WqqKaI8+Aoo5Ok0pwcUqTeADS3ZrijheNenUYwfUoZRCuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=k+c6TrXT; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PskRulJQ; arc=none smtp.client-ip=103.168.172.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id E831D13800DA;
+	Wed, 17 Apr 2024 08:07:41 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 17 Apr 2024 08:07:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1713355661; x=1713442061; bh=JRwjaLl0ym
+	PdY2EgpKl1AbwXbEtgcsWk+ZdHAqGgzzA=; b=k+c6TrXTt5DHwehRTMmiSrDI8X
+	l2e0ys2mZWau27bGYpDETExVxOKyRry6wX4aYJMZuXz/rDiALPj6s770Pr+m86RX
+	Tk4euw3T5Ytz/mgrWfj9+YCzDhuPANYtli39Spr7MZkNhr+pKrU/jdSku9pb3+zP
+	jM7iqZmNRLOq2j+Fs7xh8wpbgqAtxVsvXQ+RJ17kLqz3pFBExGYARGDpcy11UIzb
+	B9jesANBpTBKjPj+ehy+LVKQILkfrY+6EAde3F78QJuO92n0URjrJMC36ZvYSuw0
+	wxNZKs7wO4viH52Uof3J9i69NFGXTL8jOM2RN+p32OrBJjjapaiWQYAvdI0Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1713355661; x=1713442061; bh=JRwjaLl0ymPdY2EgpKl1AbwXbEtg
+	csWk+ZdHAqGgzzA=; b=PskRulJQuqnv1ZOaZ50DEIAA3VW4QVBBupAQcPlTv1IK
+	dtEyQz9vBKl3/cnuZRphIQ1Ko88EM7KrplI+YwutgaaSIUq0w3BmQ0V6TufjEyP2
+	yTltxlsJapXhVkedfxfyGEL0meg4CCLTca8uCiOnkeNrWsAozWbI03ErYj839KTU
+	7wrUsQkd0dnBWfXGeL006fV/8YBv9DEaiOzpBKs+xjoZsDlkazxB9OT+4E9DCq3S
+	Z0QmGG0b1DQIfkl6aQQD6M9hV+PR7TQKwLgHcdvevbcs8bQ8aTCi91Wto7ULXNLC
+	aY44keeltld1H76RHlpp0RDISov29a2XxU+sxAxONg==
+X-ME-Sender: <xms:jbsfZht3D6K4z8QUB_gpc0081jG8mXbjM2wxuhL6ay0L_xLcjQsBqQ>
+    <xme:jbsfZqcUcmTDrDyv2PjpKywqMyZD8QMW4Bo2U6WIB_VblLYvDAu33DmGDRto4uPdA
+    i_V3CJA19Qq__lhYIY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejkedggeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
+    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:jbsfZkwtdRa082bkNjb2lvv2HcsAlt__dmZvMbAP-SSYpwpEfMVoxQ>
+    <xmx:jbsfZoP9icWCo2EnVuIn5n1fSCHZ1vsYQ9NtAh-R-FFFUQTLwu8suA>
+    <xmx:jbsfZh9njKASvlFGKFHyLftms-gaKJ07O5IieLpg2qCUWGBc0QNg1Q>
+    <xmx:jbsfZoVe6PONKKNFIlqeQoLgVLq4doPUraiRPj4rdjhTGjji32QnaQ>
+    <xmx:jbsfZogZw4hA1EhiSt-0ZqWxnSZqbuj3bTO9NsJsmCHYbblYG_WtVpF5>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 5986EB6008D; Wed, 17 Apr 2024 08:07:41 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171335563971.10875.13309363611097274996.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Message-Id: <d752e7c9-7793-4b50-bc2a-344b63ffa6cb@app.fastmail.com>
+In-Reply-To: <8663692f-528f-4d68-8c35-136e5f1244dc@intel.com>
+References: <20240417084400.3034104-1-arnd@kernel.org>
+ <8663692f-528f-4d68-8c35-136e5f1244dc@intel.com>
+Date: Wed, 17 Apr 2024 14:07:19 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Alexander Lobakin" <aleksander.lobakin@intel.com>,
+ "Arnd Bergmann" <arnd@kernel.org>
+Cc: "Jakub Kicinski" <kuba@kernel.org>,
+ "David S . Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, "Paolo Abeni" <pabeni@redhat.com>,
+ "Siddharth Vadapalli" <s-vadapalli@ti.com>,
+ "Ravi Gunasekaran" <r-gunasekaran@ti.com>,
+ "Roger Quadros" <rogerq@kernel.org>, "MD Danish Anwar" <danishanwar@ti.com>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, "Diogo Ivo" <diogo.ivo@siemens.com>,
+ "Tanmay Patil" <t-patil@ti.com>, "Simon Horman" <horms@kernel.org>,
+ "Ratheesh Kannoth" <rkannoth@marvell.com>,
+ "Grygorii Strashko" <grygorii.strashko@ti.com>,
+ Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+ Linux-OMAP <linux-omap@vger.kernel.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH 1/2] [v2] net: ethernet: ti-cpsw: fix linking built-in code to
+ modules
+Content-Type: text/plain
 
-The following commit has been merged into the sched/core branch of tip:
+On Wed, Apr 17, 2024, at 13:49, Alexander Lobakin wrote:
+> From: Arnd Bergmann <arnd@kernel.org>
+> Date: Wed, 17 Apr 2024 10:43:01 +0200
+>
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> There are six variants of the cpsw driver, sharing various parts of
+>> the code: davinci-emac, cpsw, cpsw-switchdev, netcp, netcp_ethss and
+>> am65-cpsw-nuss.
+>
+> https://lore.kernel.org/all/20221119225650.1044591-10-alobakin@pm.me
 
-Commit-ID:     08a36a48544d73bf153960245aec6c5fa23960de
-Gitweb:        https://git.kernel.org/tip/08a36a48544d73bf153960245aec6c5fa23960de
-Author:        Alexander Gordeev <agordeev@linux.ibm.com>
-AuthorDate:    Wed, 10 Apr 2024 17:09:48 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 17 Apr 2024 13:37:23 +02:00
+I also sent a version of this patch before, but there were conflicting
+changes in the past. The version I sent should apply to the
+current code.
 
-sched/vtime: Do not include <asm/vtime.h> header
-
-There is no architecture-specific code or data left
-that generic <linux/vtime.h> needs to know about.
-Thus, avoid the inclusion of <asm/vtime.h> header.
-
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Acked-by: Nicholas Piggin <npiggin@gmail.com>
-Link: https://lore.kernel.org/r/f7cd245668b9ae61a55184871aec494ec9199c4a.1712760275.git.agordeev@linux.ibm.com
----
- arch/powerpc/include/asm/Kbuild | 1 -
- include/asm-generic/vtime.h     | 1 -
- include/linux/vtime.h           | 4 ----
- 3 files changed, 6 deletions(-)
- delete mode 100644 include/asm-generic/vtime.h
-
-diff --git a/arch/powerpc/include/asm/Kbuild b/arch/powerpc/include/asm/Kbuild
-index 61a8d55..e5fdc33 100644
---- a/arch/powerpc/include/asm/Kbuild
-+++ b/arch/powerpc/include/asm/Kbuild
-@@ -6,5 +6,4 @@ generic-y += agp.h
- generic-y += kvm_types.h
- generic-y += mcs_spinlock.h
- generic-y += qrwlock.h
--generic-y += vtime.h
- generic-y += early_ioremap.h
-diff --git a/include/asm-generic/vtime.h b/include/asm-generic/vtime.h
-deleted file mode 100644
-index b1a4967..0000000
---- a/include/asm-generic/vtime.h
-+++ /dev/null
-@@ -1 +0,0 @@
--/* no content, but patch(1) dislikes empty files */
-diff --git a/include/linux/vtime.h b/include/linux/vtime.h
-index 593466c..29dd5b9 100644
---- a/include/linux/vtime.h
-+++ b/include/linux/vtime.h
-@@ -5,10 +5,6 @@
- #include <linux/context_tracking_state.h>
- #include <linux/sched.h>
- 
--#ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
--#include <asm/vtime.h>
--#endif
--
- /*
-  * Common vtime APIs
-  */
+    Arnd
 
