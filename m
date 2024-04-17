@@ -1,260 +1,165 @@
-Return-Path: <linux-kernel+bounces-148417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 087138A8244
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:42:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A83D8A8248
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:43:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAA99283C6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:42:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8950286CFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:43:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3B3F13CF87;
-	Wed, 17 Apr 2024 11:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B442E13CF88;
+	Wed, 17 Apr 2024 11:43:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lQRAY4qT"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Co17iC6C"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE54D127B45
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713354149; cv=fail; b=WFZheqD4KLDXRL0fzxxczBHgxKAIibGkREg09gBvetsdQ5b5/FdjATwhCD7dbT25D5INP3OGEO0Oxn/8wR8XOkpeDx6DRn1hLWBMpG/7pFmEG61RRk0erOhA+e69jzLpGFdy/cVi8wD1nSGf8vMvdMkCFG0VQuNQFn773LYdQhs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713354149; c=relaxed/simple;
-	bh=/6u30+r4HyWTAqbxy8qd6liyRAYdYk+oIU9oItECcbE=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=YwnJZTyIpDinrrbGLvspU7wv++pPJp+/RAR1sc2ZvcqTZ8OAgf8Q0SJIwlgVxYQ0IXPj0Zvwq6DN2cvY76Ja/8iOYfy4JQVQNTRdRpOC2NTZwwIomMMolA64lR2dhuG1OMK3GqBx39ByRCk7sR3U+6yESHYm7eaOoQ3c4ZQMR2o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lQRAY4qT; arc=fail smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713354148; x=1744890148;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=/6u30+r4HyWTAqbxy8qd6liyRAYdYk+oIU9oItECcbE=;
-  b=lQRAY4qT4cHG4iv5IrJmm5w2bjKVnvy0QqhnFMmBDm4fuYEtjQpmTJbJ
-   ET53R7ramArk+1Uc6tL0MQ3JUvVQqcm7fktg4LpgDltkHdZpdZ6LDNWOq
-   oa4Sd2mJMBt1XqUVTkNbBt49IO9No+6nwHaYDfMQLC3dOROgGT5Du33kW
-   /L29SwCGIhwOzKirt6g7lIA5bd/gKoGLEQ1RShZeoALKkD4Bk8INdDiwy
-   GNRQ/MdGsHOWS6ogKxjdAQS98N525wTiE9Bxv56S8MMTP3gd5DabS8ygd
-   dTt2krAWU1gyl7vWLQUAa3OQekAXrrhKWN2Uxl+BLz+Z0RQZZhJmaBzRC
-   A==;
-X-CSE-ConnectionGUID: iIzKa2C0SUOORdFZK7BSpA==
-X-CSE-MsgGUID: LKKjDdFgT/yIjHz2ey3cGw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="12625086"
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="12625086"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 04:42:28 -0700
-X-CSE-ConnectionGUID: ed20tlWkSC++blMn2AeVpg==
-X-CSE-MsgGUID: vRIOPudCT/yTXX+WGvs5cA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="27382753"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Apr 2024 04:42:28 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 17 Apr 2024 04:42:26 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 17 Apr 2024 04:42:26 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 17 Apr 2024 04:42:26 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.172)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 17 Apr 2024 04:42:26 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a2sebsc4SIxJ0ukxMbJVx1iEe7xmjiET9cQVCsMIRNm64NXgAuD0ezmdRylq0d0I6wtD1uw66kjDLF0ya8Qb4PLm+OQhlDi+MSYPtyMA/5q0LM1EoIfNjWpZ1YxVd2+C19E+70AbWMLtSA0C60QgKDbCExTSBneEWozUzaBdpc0VKNMwGfFIpe7Lg4poTGy+czAZk7HbyWfmTFDGhj4YDzFnsWvZ8kVgCA/n7UsTwZnxzt1779onYqTVcYSrQ8V3yBnX+Ntai9kHKIXRZbypDk4qKq0qYZC3cvqzoxXH8p33wd0ApM0XkdTKlHozFf37tBPa7aEkOclY4UbJTvRzwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0Qoj272mVuVUU8ywY76KO/Wt2XEqCeWEjLpkk1RkfKg=;
- b=PlY6JvamnVnTqfB8Oyscz9DIRM5/w7eWcFmm4Bw/MXjUOKSndN+laj6TVYJ/pgJ6Z80M2UQUgbMnvjg9UMHoIDt0Nbv0etZVloQtc8QsBF3zcoLv/0yEanYHXDXVgw2PkqYhwhL3uNbF67uQdx3Y3laoKAAlRHj4RpUqZRG0G/APmfCBIUIm7sSTGX7bR6Cmy9kyMjzlTajqot9IEU+isO5L59qKwRSiIuAaAHc+xoa2nf/b/tZTVZmJiXQESEFfIbSWB2nezdUOZMxsCv+Y36HUE7m017+BvE1N8a3PaaVrj6DBC/8pYTkaN/x5YEmgNnWcDadWPfI3kN7zgxkaOg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- IA1PR11MB8175.namprd11.prod.outlook.com (2603:10b6:208:44f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.31; Wed, 17 Apr
- 2024 11:42:19 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::9c8d:938f:e1f4:ef4a]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::9c8d:938f:e1f4:ef4a%2]) with mapi id 15.20.7472.025; Wed, 17 Apr 2024
- 11:42:19 +0000
-Date: Wed, 17 Apr 2024 13:42:13 +0200
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Larysa Zaremba <larysa.zaremba@intel.com>
-CC: Tony Nguyen <anthony.l.nguyen@intel.com>,
-	<intel-wired-lan@lists.osuosl.org>, <linux-kernel@vger.kernel.org>,
-	<alan.brady@intel.com>, <jesse.brandeburg@intel.com>, Emil Tantilov
-	<emil.s.tantilov@intel.com>, "David S. Miller" <davem@davemloft.net>, "Eric
- Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Lukasz Czapnik <lukasz.czapnik@intel.com>, "Michal
- Swiatkowski" <michal.swiatkowski@linux.intel.com>
-Subject: Re: [PATCH iwl-net] ice: Interpret .set_channels() input differently
-Message-ID: <Zh+1laRuDhNf21Lm@boxer>
-References: <20240416125856.1263314-1-larysa.zaremba@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240416125856.1263314-1-larysa.zaremba@intel.com>
-X-ClientProxiedBy: MI1P293CA0028.ITAP293.PROD.OUTLOOK.COM
- (2603:10a6:290:3::20) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256935680
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:43:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713354185; cv=none; b=oBjO3/lscq02GMbkn2GJP29lEiofuFr6TYQcbXi7JxEXW+bkQ1Go1bEVQ+J9OI25YW0EREqQYOKEl57ghSC2pCwLFFu6+iSrkLsN/fU2OfsQ4meYXzxe4iCLtvleJk/Cc4d4PmqhTElvLUPBlVRXJiwyd8jELCInGCK/gTOh+h4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713354185; c=relaxed/simple;
+	bh=2j74h0iIytH6PRZNFrTHCHmNEPwJygBB1ndVw5tJ/MQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=etak4/Q8qJY/Wi0R3dF0/aeZRrDnObAJ9XhkcTF+M5X5B3PvBapEQwUUUbNhuWh0a5v5ZQJ2NS3ccjpNr5wBP+UuyRBepSl8cN2rr1Yg649k0rHmKB8WPE55TyOE4xK3KeFd9vrv1Y+42uX8lUBw35seSnFCHPQeKD+G0yXfMX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Co17iC6C; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d715638540so65246791fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:43:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713354180; x=1713958980; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PKy5Kxap6cM6mtyJpA2QMaShqvinZmDMbb6nqhab/os=;
+        b=Co17iC6Czo0ZCZF8gIxSGkwXc15HM7JLzXExfHOqvOCpwAjGJKkv1h7ebNrzNLkZ2d
+         nqq37E3N1t2rOaPQDMRqeFhuadRMBnknN3AaHCyyNm/YDZTVZQB5NNRlWDIrPsZUTVdI
+         ZSvk0ut8za/y3bUVZLd8mwsdcnDHFfsdsyp8LIRCJtbFc1fe2dYK7SMt8rSH+HeXwcta
+         QeeZh15UqXNwlY/E4M9pXwyLXrT32w2iyskgZd3wJBLmlM/apaYjDY/wdQrh3MFce3c8
+         mzTH/RobFsMXUuIbj3Y6USPynzYvcHLmrnKhgNeQDFzr6HlOsjk3330gHu6wwrOWJowi
+         3M0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713354180; x=1713958980;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PKy5Kxap6cM6mtyJpA2QMaShqvinZmDMbb6nqhab/os=;
+        b=Wtl9ivVcbfBSurpGczK5eFcGi6uC0ED2QL0m7QKL+/tdWSzI7id4PBoHwk62AtR6ia
+         6WYh1UC5prnC6DMcz7HedSbnAXSPpU0DZpW4vREB74APpaNrxOdZqFmUrF8oS/AIDtWZ
+         OB9nzd/J3AGafTdEg8IWrjDl2378OLsRkRdX4oafqjEfCRJCj3D6Twyfe4lqduTAi5q9
+         uFZx54B/jbHJbkU2HQcrAN8yc4PnoYt5YcMflb1Ov2MDEVKBsd3fPTO9JouHFKTWt8IG
+         kjkU9q84qc3aB8IUFYb+88Z6EB6LrkSHKZ8t3wS+DIXBvrOr2WgM93VSo8GpDAAEZ3w1
+         WePg==
+X-Forwarded-Encrypted: i=1; AJvYcCU4z+4B6c1vECDpeOPRv5at8wUAYZY0wqdDKZpKoK2I3JNSFcDCbdmstuFQpXAX509W92NeJlU8XlaiD02T0pm4Q3PxEZJ8Blvhhhy0
+X-Gm-Message-State: AOJu0YwpP7x8FDs704hr9kNjwDXXUtaQxAMm/jw4tMYyy1nHY1gPpjQU
+	I2c0Y1V4tyY0eq9lkQZN7EjtGRYbh/BwMgRFy34/s4hUaCcy/wB++5m0MkJI4PeaWrmcDawFRXB
+	b
+X-Google-Smtp-Source: AGHT+IEhy7phkNh8GPAYWeNKIjEQ2zGqofF6B3DRQvcLUKP1Pajvk5PVp8xJ6WRzpZYatNNIwww+sg==
+X-Received: by 2002:a2e:998a:0:b0:2d7:61ac:b392 with SMTP id w10-20020a2e998a000000b002d761acb392mr10489311lji.29.1713354180124;
+        Wed, 17 Apr 2024 04:43:00 -0700 (PDT)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id g3-20020a05600c310300b00417bab31bd2sm2619839wmo.26.2024.04.17.04.42.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 04:42:59 -0700 (PDT)
+Message-ID: <3b245ae8-31ee-4576-a123-0dc3aba4ce10@linaro.org>
+Date: Wed, 17 Apr 2024 12:42:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|IA1PR11MB8175:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4ae75f91-ea30-4113-d883-08dc5ed37002
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6w7HsjLUd8rYw8cakvdtPWOq0lIPKKloiYIS27/PyxB/alVUb16b6T9Vm0c71a6R5g713joQ2UAqgo8aiFFldDAsAG64Q/lNgC4vwUUaYTRGNfO98vVSSjQ6iFaIPoX3Kc2kApIUBJ0+iYVY8PJj61UngwZH05LeqN6WWCdnVUGLGw0YzZQ8S55lowhYi8VFSaTzaewyRj8nsCsuK/VPe6Pf09wQ2QHPRgC6/UwVjhnxMiPE36F4UMqOgz1heWmwEgRNzQVv5WY+AuBf6OthHobwpQVIFg6FVmCXcVXQ3uEfyP+821FOukhNDkuWy6TfILr6RdFP5Ss8rlakt75lu5XJesPqUQqLUYauv8HQi2xEvKVypMzyj44op8jspQN06AEMGpBaS1+AJ1RFTLWjekS5mydykGLYGEnz/Lhmzh5EUuxDGS/ldMc2I2pBhzQqMFg3gm93XmeT+zrQkgxKyQXZkfjq6fWr6hFZ/+KVNce10Vh6uWu/ldVG2SaFtRV8cEcjdmVIPhzY8i/xkdgGFyZsoOpsvr5oIigDV37kLG2W0UU8Bi9sG83nS4B11KrDtGHD8EfU07A38pAK8pEoJS46ZFCcweKRIqOYC16wHKY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LRmpf/K8Tw+3+kKaImiKvv+SRRBYCIOmsNt6uQ6jA2kzM2mMFvr0tlvMSmAn?=
- =?us-ascii?Q?JcwqxsOdxC7QuA6Q0n4cPTYuURWeRFVDQLP9wQ8dxD310qd2TrlKC1p57rA6?=
- =?us-ascii?Q?CZkpGWUppujV1KZBwpvPXi8Ht+kBuUsFWrIsSb8Kw4bpONg5cHqxV23qQOCX?=
- =?us-ascii?Q?4HmoZQX7lxCcyYjhfzPgMsTNMHzzHr4nOQ6QfP1shluhdH1qzVcF/rFrzfb/?=
- =?us-ascii?Q?nSl94HQVw0qJLLfhqLrkPRuysZh84wG/4Ex8P0C4crjfcAMi2m64jOnTkIVY?=
- =?us-ascii?Q?jlZqSrLk0HWLRs3D+6h+/r3Aei5ZsWe5VcMtgro56phZ1GRD4/mVwpt+3UL2?=
- =?us-ascii?Q?O66g8YxuhOpjpg2gkVVzcEEpNtbwZtGKSHC82T2Alhzq3e0dZTXm0Cqkw7x8?=
- =?us-ascii?Q?MztR5fb4WF4lao+Y6hRDQM+Xtshlr+j/piDsIltOr/bHZQMFDMJQNVAkz/49?=
- =?us-ascii?Q?x1+87OuzNj79m9puYIBq+TYPvcPWAY0RuZe7AkQR07OgmK/w6mSHdCYUzmFj?=
- =?us-ascii?Q?Rr1BeiIMnOyOPgC0/P1XAJK/xSQd4Bow1tlus3WPg8tdxZuO50ln77oQwrn2?=
- =?us-ascii?Q?ogg6yHGcU2246wFUQ9ngynplqSZvugtSzRaS2I2vf4G+/eUQ3sd/pXiogUW2?=
- =?us-ascii?Q?rbSeN9vT4j8u2h4tAyNPmleH0UBWqMMHQrn1NEtvSIHwUz3deMnIPvk2hQxt?=
- =?us-ascii?Q?0cXLG4f21soePt8NGrgmSuR75RNnNeUVQU7WOSe35RFZUpv82s4yczERKVwO?=
- =?us-ascii?Q?oSybWXlUeFW5rs0J5XJSmiBNkjVt+R7S30BKj7IJ5nIED95nsJEzeZdZWA4R?=
- =?us-ascii?Q?WekXBqf5ZzgmbGdTAH5yegZYaTDXJbV4shj+3ALvaeRQ/QvmDuMgZhdENZ4u?=
- =?us-ascii?Q?IZt6ZhzooDyrH67Ts2okBRwW63er+xC3annmpC9GOd0XCUYeuJycD4xswQIG?=
- =?us-ascii?Q?TdyJu9iRsegYherTLWNj6utZOXya/hND6nwDBDwCLauxiBKyc+sdIlCdAJkh?=
- =?us-ascii?Q?XBo8UsH+VQYyrfoLwNLbr4jySdmmxjlHhlcIMB2k+iV1peXII2TC89CUYBSa?=
- =?us-ascii?Q?8SVn5nelI2yQuDhEaxZ1nZzgsz989N5aCEvoLpAYzzhjT09mEBydF9b1E92l?=
- =?us-ascii?Q?yJ36FsdBTeKXZ0EHT74JHqacxP1XtMdqTMcA8UYwKLk+tH9h0U/HWNZCN29G?=
- =?us-ascii?Q?77SwxN+3ogrcGUPVxKxsf4G+zberEUb78hza19id5S9Ius/UZI3vDAd0Qj8d?=
- =?us-ascii?Q?oE3xLUq78FiMU/dv94z2UYPZAo5twXoxFk5qk85mzLjdUZ6aIxAGqsobbG5m?=
- =?us-ascii?Q?LV2D1I2CAFDsJS1YwTSio0DFnW4IVPa0fHg90+7G0bi+XMK41gm+MSGk1/gc?=
- =?us-ascii?Q?MrjvUNSRCMRZlnXZS04Qazs9/LhiIPbtI0lKV4c/JnJ3s+V+UcCjc2LcZ0Sx?=
- =?us-ascii?Q?QzRRhJRkzywzO6LYVPZ+PWGkDcQIMCXsecWmqupnXDBvkg6fdih8RsIvsSoy?=
- =?us-ascii?Q?xBsWQD2HNf//dM2QY4JfoXsiTu7SFw0vfoGIkkDA/s2fE3IIQERuuCRoWtl5?=
- =?us-ascii?Q?amW4/DBcnqcB0GL/QOYoJxb0blIFkbF4JMqtfMpNtHvBW/sY99H/FljnPKQy?=
- =?us-ascii?Q?cQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ae75f91-ea30-4113-d883-08dc5ed37002
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 11:42:19.1424
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nzRvtO2qnhWl9JIrJkiP8oqV6g00kFcZupFkV8ZU8CLvegfbNmIxUJLG96pCVbaYo07QHltI6fZUkNHiKSNbZf7Cfgtj8EoHDER6x/BZqwM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB8175
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] soundwire: qcom: disable stop clock on 1.3.0 and
+ below
+To: Anton Bambura <jenneron@postmarketos.org>, Andy Gross
+ <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>
+Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+References: <20240413064225.39643-1-jenneron@postmarketos.org>
+ <20240413064225.39643-2-jenneron@postmarketos.org>
+Content-Language: en-US
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20240413064225.39643-2-jenneron@postmarketos.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 16, 2024 at 02:58:54PM +0200, Larysa Zaremba wrote:
-> A bug occurs because a safety check guarding AF_XDP-related queues in
-> ethnl_set_channels(), does not trigger. This happens, because kernel and
-> ice driver interpret the ethtool command differently.
-> 
-> How the bug occurs:
-> 1. ethtool -l <IFNAME> -> combined: 40
-> 2. Attach AF_XDP to queue 30
-> 3. ethtool -L <IFNAME> rx 15 tx 15
->    combined number is not specified, so command becomes {rx_count = 15,
->    tx_count = 15, combined_count = 40}.
-> 4. ethnl_set_channels checks, if there are any AF_XDP of queues from the
->    new (combined_count + rx_count) to the old one, so from 55 to 40, check
->    does not trigger.
-> 5. ice interprets `rx 15 tx 15` as 15 combined channels and deletes the
->    queue that AF_XDP is attached to.
-> 
-> Interpret the command in a way that is more consistent with ethtool
-> manual [0] (--show-channels and --set-channels).
-> 
-> Considering that in the ice driver only the difference between RX and TX
-> queues forms dedicated channels, change the correct way to set number of
-> channels to:
-> 
-> ethtool -L <IFNAME> combined 10 /* For symmetric queues */
-> ethtool -L <IFNAME> combined 8 tx 2 rx 0 /* For asymmetric queues */
 
-Makes sense for usage above:
-Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-Nonetheless I still think core should not allow user to shoot himself to
-foot, but let's keep it as a separate thing.
-
-Thanks!
-
+On 13/04/2024 07:42, Anton Bambura wrote:
+> This patch returns back the behavior of disabling stop clock on soundwire
+> 1.3.0 and below which seems to have been altered by accident which
+> results in broken audio on sdm845 + wcd9340. For example, on AYN Odin and
+> Lenovo Yoga C630 devices.
 > 
-> [0] https://man7.org/linux/man-pages/man8/ethtool.8.html
-> 
-> Fixes: 87324e747fde ("ice: Implement ethtool ops for channels")
-> Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+> Fixes: 4830bfa2c812 ("soundwire: qcom: set clk stop need reset flag at runtime")
+> Signed-off-by: Anton Bambura <jenneron@postmarketos.org>
 > ---
->  drivers/net/ethernet/intel/ice/ice_ethtool.c | 22 ++++++--------------
->  1 file changed, 6 insertions(+), 16 deletions(-)
+>   drivers/soundwire/qcom.c | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c b/drivers/net/ethernet/intel/ice/ice_ethtool.c
-> index 78b833b3e1d7..d91f41f61bce 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
-> @@ -3593,7 +3593,6 @@ static int ice_set_channels(struct net_device *dev, struct ethtool_channels *ch)
->  	struct ice_pf *pf = vsi->back;
->  	int new_rx = 0, new_tx = 0;
->  	bool locked = false;
-> -	u32 curr_combined;
->  	int ret = 0;
->  
->  	/* do not support changing channels in Safe Mode */
-> @@ -3615,22 +3614,13 @@ static int ice_set_channels(struct net_device *dev, struct ethtool_channels *ch)
->  		return -EOPNOTSUPP;
->  	}
->  
-> -	curr_combined = ice_get_combined_cnt(vsi);
-> +	if (!ch->combined_count) {
-> +		netdev_err(dev, "Please specify at least 1 combined channel\n");
-> +		return -EINVAL;
-> +	}
->  
-> -	/* these checks are for cases where user didn't specify a particular
-> -	 * value on cmd line but we get non-zero value anyway via
-> -	 * get_channels(); look at ethtool.c in ethtool repository (the user
-> -	 * space part), particularly, do_schannels() routine
-> -	 */
-> -	if (ch->rx_count == vsi->num_rxq - curr_combined)
-> -		ch->rx_count = 0;
-> -	if (ch->tx_count == vsi->num_txq - curr_combined)
-> -		ch->tx_count = 0;
-> -	if (ch->combined_count == curr_combined)
-> -		ch->combined_count = 0;
-> -
-> -	if (!(ch->combined_count || (ch->rx_count && ch->tx_count))) {
-> -		netdev_err(dev, "Please specify at least 1 Rx and 1 Tx channel\n");
-> +	if (ch->rx_count && ch->tx_count) {
-> +		netdev_err(dev, "Dedicated RX or TX channels cannot be used simultaneously\n");
->  		return -EINVAL;
->  	}
->  
-> -- 
-> 2.43.0
-> 
+> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+> index a1e2d6c98186..bc03484a28e8 100644
+> --- a/drivers/soundwire/qcom.c
+> +++ b/drivers/soundwire/qcom.c
+> @@ -628,6 +628,9 @@ static int qcom_swrm_enumerate(struct sdw_bus *bus)
+>   			}
+>   		}
+>   
+> +		if (ctrl->version <= SWRM_VERSION_1_3_0)
+> +			ctrl->clock_stop_not_supported = true;
+> +
+
+This is not the right fix, this can be determined from codec 
+clk_stop_mode1 flag.
+
+can you try this patch:
+
+----------------------------->cut<-----------------------------
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Wed, 17 Apr 2024 12:38:49 +0100
+Subject: [PATCH] ASoC: codecs: wsa881x: set clk_stop_mode1 flag
+
+WSA881x codecs do not retain the state while clock is stopped, so mark
+this with clk_stop_mode1 flag.
+
+Fixes: a0aab9e1404a ("ASoC: codecs: add wsa881x amplifier support")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+  sound/soc/codecs/wsa881x.c | 1 +
+  1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
+index 3c025dabaf7a..1253695bebd8 100644
+--- a/sound/soc/codecs/wsa881x.c
++++ b/sound/soc/codecs/wsa881x.c
+@@ -1155,6 +1155,7 @@ static int wsa881x_probe(struct sdw_slave *pdev,
+  	pdev->prop.sink_ports = GENMASK(WSA881X_MAX_SWR_PORTS, 0);
+  	pdev->prop.sink_dpn_prop = wsa_sink_dpn_prop;
+  	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
++	pdev->prop.clk_stop_mode1 = true;
+  	gpiod_direction_output(wsa881x->sd_n, !wsa881x->sd_n_val);
+
+  	wsa881x->regmap = devm_regmap_init_sdw(pdev, &wsa881x_regmap_config);
+-- 
+2.21.0
+----------------------------->cut<-----------------------------
+
+
+thanks,
+Srini
+
+>   		if (!found) {
+>   			qcom_swrm_set_slave_dev_num(bus, NULL, i);
+>   			sdw_slave_add(bus, &id, NULL);
 
