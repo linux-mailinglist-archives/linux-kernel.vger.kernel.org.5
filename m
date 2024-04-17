@@ -1,842 +1,341 @@
-Return-Path: <linux-kernel+bounces-148061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFCB18A7D27
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1F4B8A7CF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:20:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E7541C210D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:35:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCE771C20F5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C459E80638;
-	Wed, 17 Apr 2024 07:34:29 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DCBA7BB14
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:34:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713339268; cv=none; b=Vka0Fbq24t1mVkIKNlA8NAM0onlMMFAuGWO1IJfKX/rvhzF4zynYRBcgkPoJMTYE4wF5s5CQ62ZstoHogY9rebLBehk0z7Fu5lwmHNzCGFiAPpRb8VLxfC860zvrV9/vR0Uoyd0ewxZ9yWOuHNZbBzRqX2jCyh3e4yMrFMmurP8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713339268; c=relaxed/simple;
-	bh=eFi5Wu0m28oGDzaL0rBLfxlUVSsbx0DZkuIuKdmE0jY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=rrRyPvynWnQ6lbji0de6bfOAG8flIXNSnrgLZf17Y0/z09ZxhPFmLNZUKtWkblCERTk8e0TplbKgnb8fg55OzLIjdHcy10Us2IDrz7icKSl0kCLEpdtMdcDR+2LGF05q4PRn+b1anxQr1QChuAD1da6SMM3azf6SFNzlWHcAmH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d6dff70000001748-b7-661f77e24a4a
-From: Byungchul Park <byungchul@sk.com>
-To: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Cc: kernel_team@skhynix.com,
-	akpm@linux-foundation.org,
-	ying.huang@intel.com,
-	vernhao@tencent.com,
-	mgorman@techsingularity.net,
-	hughd@google.com,
-	willy@infradead.org,
-	david@redhat.com,
-	peterz@infradead.org,
-	luto@kernel.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	rjgolo@gmail.com
-Subject: [PATCH v9 8/8] mm: defer tlb flush until the source folios at migration actually get used
-Date: Wed, 17 Apr 2024 16:18:47 +0900
-Message-Id: <20240417071847.29584-9-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240417071847.29584-1-byungchul@sk.com>
-References: <20240417071847.29584-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGLMWRmVeSWpSXmKPExsXC9ZZnke6jcvk0gxuNehZz1q9hs/i84R+b
-	xYsN7YwWX9f/YrZ4+qmPxeLyrjlsFvfW/Ge1OL9rLavFjqX7mCwuHVjAZHG89wCTxfx7n9ks
-	Nm+aymxxfMpURovfP4CKT86azOIg4PG9tY/FY+esu+weCzaVemxeoeWxeM9LJo9NqzrZPDZ9
-	msTu8e7cOXaPEzN+s3jMOxno8X7fVTaPrb/sPBqnXmPz+LxJLoAvissmJTUnsyy1SN8ugStj
-	/baD7AWLtzJWnL5+iqmBsa+XsYuRk0NCwESi8+UqIJsDzL71rRwkzCagLnHjxk9mEFtEwEzi
-	YOsfdhCbWeAuk8SBfjYQW1ggSeLhtAusIDaLgKrEkZttTCA2r4CpxJy+TUwQ4+UlVm84ADaH
-	E2jO5uY1YL1CQDXfT3xkg6j5zibxYroIhC0pcXDFDZYJjLwLGBlWMQpl5pXlJmbmmOhlVOZl
-	Vugl5+duYgSG/rLaP9E7GD9dCD7EKMDBqMTDaxAllybEmlhWXJl7iFGCg1lJhLdFWDZNiDcl
-	sbIqtSg/vqg0J7X4EKM0B4uSOK/Rt/IUIYH0xJLU7NTUgtQimCwTB6dUA6Nn08adCg9FPZWm
-	5zI78glp13VceXrU0+hjQH50nhLHXaOKfGWePIup9dfmSVtyTknOCFteLv30sRcD9/SMouDs
-	Gfm7rtS8q/j2a5XIu5hXZ2cf8HRt2j1vUf5x81azNsMLJeEmCj/yL+lcEHSodDY7+eTQwV6n
-	f+fOF19OORJ93dlF76+JsRJLcUaioRZzUXEiAMlpBip5AgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHLMWRmVeSWpSXmKPExsXC5WfdrPuoXD7N4MgkBYs569ewWXze8I/N
-	4sWGdkaLr+t/MVs8/dTHYnF47klWi8u75rBZ3Fvzn9Xi/K61rBY7lu5jsrh0YAGTxfHeA0wW
-	8+99ZrPYvGkqs8XxKVMZLX7/ACo+OWsyi4Ogx/fWPhaPnbPusnss2FTqsXmFlsfiPS+ZPDat
-	6mTz2PRpErvHu3Pn2D1OzPjN4jHvZKDH+31X2TwWv/jA5LH1l51H49RrbB6fN8kF8Edx2aSk
-	5mSWpRbp2yVwZazfdpC9YPFWxorT108xNTD29TJ2MXJwSAiYSNz6Vt7FyMnBJqAucePGT2YQ
-	W0TATOJg6x92EJtZ4C6TxIF+NhBbWCBJ4uG0C6wgNouAqsSRm21MIDavgKnEnL5NYLaEgLzE
-	6g0HwOZwAs3Z3LwGrFcIqOb7iY9sExi5FjAyrGIUycwry03MzDHVK87OqMzLrNBLzs/dxAgM
-	5WW1fybuYPxy2f0QowAHoxIPr0GUXJoQa2JZcWXuIUYJDmYlEd4WYdk0Id6UxMqq1KL8+KLS
-	nNTiQ4zSHCxK4rxe4akJQgLpiSWp2ampBalFMFkmDk6pBsbrkwWZNR97HDBLl6stNNpmtlr7
-	/pqzXU2CN75fUJqzoqzqp3y5lXyepbalVPFP7rowg90+32smWm837LlyLTCw7//t9bPa+2yM
-	nHbO+ff5zaqnEm9VLA50acRMeHWmMjn2ha1YaquS9vq2PWbLv/xzPrViS1Xjzo0/1vGxls0o
-	fpf9/Pr72DwlluKMREMt5qLiRADnf6nVYQIAAA==
-X-CFilter-Loop: Reflected
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FBC66BFA9;
+	Wed, 17 Apr 2024 07:20:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="kUvcruNy";
+	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="eA3D2ff+"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 648E540850;
+	Wed, 17 Apr 2024 07:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=210.61.82.184
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713338406; cv=fail; b=FXEio5pIc+nKWDZu7gj7Pkmp6mIa3bv2Q69ZaFgPK6nARqimeIhRWEC3FppGJDvSuhzYhyg/M6GDyiPXn0H2l/9sbcj8rnem2dG7szKU7PHCSGK81eLSNTePYJeH+KxYuB4GmbNEyUg/bi5IJohjVQH0G2K4RbrCq9SdugCOqxU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713338406; c=relaxed/simple;
+	bh=x5dwxgzNVeY9tdzP9dvhRu3eMxbj+wSoH50mO//uchE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=B1/DaOrOs0+B85eggB2pIjl/t0jnRnjZGx31M2FkvJqdEJd9UI30YiUgA3N9C7IOZcBry60RXvPcmpbqML7QsS4SOLi/Lh85+oKbajOxUApIp5PvfSkoq+X9g9fAZHlHNsJPgojuJDBZJcGxCcfkhO8+gSpcEZdbKeFjinFsz7Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=kUvcruNy; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=eA3D2ff+; arc=fail smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: e596fe12fc8a11ee935d6952f98a51a9-20240417
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=x5dwxgzNVeY9tdzP9dvhRu3eMxbj+wSoH50mO//uchE=;
+	b=kUvcruNyfYO7KYYDn4IenWPPiz4DTc6XYQKspT0uUWmI1s9nkOv+Ztxm8j2lyeWt36VoCcS5fXAFEEUuH34xwBh9N10hKTUtMHG6Fklp+m8hQTgG9HGJXT7wdP8WdrbhI2vSNx1v7W7fofadGmjFsTUfJ7CqoWdHqCh4zfBADSU=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.38,REQID:93f59cb0-465d-493b-baf5-d38ad79e3cc6,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:82c5f88,CLOUDID:38384786-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
+	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR
+X-UUID: e596fe12fc8a11ee935d6952f98a51a9-20240417
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+	(envelope-from <lena.wang@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1312547943; Wed, 17 Apr 2024 15:19:58 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 17 Apr 2024 15:19:57 +0800
+Received: from HK3PR03CU002.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 17 Apr 2024 15:19:56 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SEZtT+xBu/JH5k5jhnAIe0vm71uTRIe1/Jr6a3qWwz+Nm3xJ3jwnnr1EwFlbcy8NbKtKnu9ieSM+xF3sz/c3fJtFPHbkcasDsN31Cp/v1bniPzOZPCipqNvPNkTrtzsyYw4Ni4/oJOO6tFBEe4ETQD9IHPfd7bMSmF8SoUjn7bwpMRUBre+BGiBq56Gd7AXDhykC3SV5uKOeJECGHQXuGPOOR5i+SsGPGvza68ovNeC6T/eOKj80fgEg99F8cCqp96/fAm73QlcE9BbYxkT/D7LXNKPU9BcsLTPm5NYmcvfpu0F19t8HrlKUvinGFuCouv/lD0A0vr5tVMH8j/cLLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=x5dwxgzNVeY9tdzP9dvhRu3eMxbj+wSoH50mO//uchE=;
+ b=V6jS/7/V6sddEew5f/e9d4wRpXgXs++A7L/5yBC35D7RkTzO0vNWXzqA7tboM5jD1VjEvfO+kbo5Ll+RRL+nfKoHnkH1Ww0e0WO3WN/5U3nRsjhIhEC5CjAp668fa4AxjL8gMnTGA3SnqWEV7JxzNaiGUnbtaZt4rebDnISvI80RR+2QJWcMZSFNx8RoS0vdMPHxWyr9PNTo24I1xgOb3a+cwQCCsZhfPD6qcesoMta2rIiuuTgQ+ciupQjU08CHfiLLQxwqIyGr8ufze3sHHPh93HRv84ahQ8xEuOfpja5dJWH9T1lvzkXMtaVT3T0pZQ/4v/qC3fEfVQ0gflTQ8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x5dwxgzNVeY9tdzP9dvhRu3eMxbj+wSoH50mO//uchE=;
+ b=eA3D2ff+XWqYbJT84uZzsfbkO0dwI2BkMLvo/pXsQyhNUgvjFdEC5ePHRxx6MhaGAJwwyf0aSRiHOxaVR0pjvdZUrzvSCvVHiFAv2KY3766l1MPJ4WO2rOjfICV0esyBNA0qRLPRb2DiNIp9nLXqsu86LGhLWoaddtETIE5nZdk=
+Received: from SEZPR03MB6466.apcprd03.prod.outlook.com (2603:1096:101:4a::8)
+ by SEZPR03MB6593.apcprd03.prod.outlook.com (2603:1096:101:75::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Wed, 17 Apr
+ 2024 07:19:53 +0000
+Received: from SEZPR03MB6466.apcprd03.prod.outlook.com
+ ([fe80::3b7d:ad2c:b2cf:def7]) by SEZPR03MB6466.apcprd03.prod.outlook.com
+ ([fe80::3b7d:ad2c:b2cf:def7%6]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
+ 07:19:52 +0000
+From: =?utf-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>
+To: "maze@google.com" <maze@google.com>, "willemdebruijn.kernel@gmail.com"
+	<willemdebruijn.kernel@gmail.com>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "steffen.klassert@secunet.com"
+	<steffen.klassert@secunet.com>, "kuba@kernel.org" <kuba@kernel.org>,
+	=?utf-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?=
+	<Shiming.Cheng@mediatek.com>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"edumazet@google.com" <edumazet@google.com>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+	"davem@davemloft.net" <davem@davemloft.net>
+Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without
+ fraglist
+Thread-Topic: [PATCH net] udp: fix segmentation crash for GRO packet without
+ fraglist
+Thread-Index: AQHaj0XOIxnbbRpuOEqwUbC2K0Us3rFpz0sAgABZ6oCAAArbAIAA8PYAgAAJ3wCAAAGxgIAAWJUAgACHpIA=
+Date: Wed, 17 Apr 2024 07:19:52 +0000
+Message-ID: <77068ef60212e71b270281b2ccd86c8c28ee6be3.camel@mediatek.com>
+References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
+	 <661d93b4e3ec3_3010129482@willemb.c.googlers.com.notmuch>
+	 <65e3e88a53d466cf5bad04e5c7bc3f1648b82fd7.camel@mediatek.com>
+	 <CANP3RGdkxT4TjeSvv1ftXOdFQd5Z4qLK1DbzwATq_t_Dk+V8ig@mail.gmail.com>
+	 <661eb25eeb09e_6672129490@willemb.c.googlers.com.notmuch>
+	 <CANP3RGdrRDERiPFVQ1nZYVtopErjqOQ72qQ_+ijGQiL7bTtcLQ@mail.gmail.com>
+	 <CANP3RGd+Zd-bx6S-NzeGch_crRK2w0-u6xwSVn71M581uCp9cQ@mail.gmail.com>
+	 <661f066060ab4_7a39f2945d@willemb.c.googlers.com.notmuch>
+In-Reply-To: <661f066060ab4_7a39f2945d@willemb.c.googlers.com.notmuch>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SEZPR03MB6466:EE_|SEZPR03MB6593:EE_
+x-ms-office365-filtering-correlation-id: 0240a797-d15f-4b7b-d35d-08dc5eaec675
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: =?utf-8?B?QkFrUmg4N2tYcDVBbmlqbmxqajRHTE16OG9FUXRDb2hCbDhpeGlpbXRNaGda?=
+ =?utf-8?B?YVl0WmFGSk5DYVFya2hYRDdadk5KUHQ4SXY4UUxmVk5xNU85L0ZndFAyM2NL?=
+ =?utf-8?B?OEkvMW1JaFNNQ3E4cTAzQmVCMTJmdmVMcituYzBvVE44d2VBc21uckUxSlRx?=
+ =?utf-8?B?dWJxOENzc3lTWEF0VFhnL3FlQ1NsWU8wcTViTTk5bVYwZy96VzV5VzFTVEoy?=
+ =?utf-8?B?NHBQTVQ5UnlQVVhyMmc5QmVONGdNZVZmQlRKNjBwSGpiMUR5Q0tkdUxWS0NY?=
+ =?utf-8?B?dEZ1ZWtPaVB6dFFieDNmRWhyZVZEOGh2ODAvbTk0ZXRvUzBZREttNGRGZXdQ?=
+ =?utf-8?B?VEtOQkpYUlF6TEppZ3pvMSs3RWJZQWZrOHB0MDBnemZaM2lYYmJpTkZ2MnBl?=
+ =?utf-8?B?cUpuTENrTzVuemY0NksrZ3pNaWdUV2VUUTA3aVdrOEozdFlMSG5UdXQvVUQy?=
+ =?utf-8?B?QXRWcE9oeWJmSEp0dzBCQW93Y1Y1Sk8xc3pWYUpzZSt4aXRSYXZWbElEcHNu?=
+ =?utf-8?B?VUcybzl1eS9rVmFnY3hHNnh5eHdpTWFmdWFTMDJmZVdBT3VCSVRDZmx2RTBw?=
+ =?utf-8?B?Sk9wR21NdTJSSTBIdlZ2Sjl2QXRtL2ZIQXhxYTRFQzF4Yy9XNGVPRlpWNjdB?=
+ =?utf-8?B?TkdhSVgvclpDbjNNME5ZUWVGYVd2UkdhTE1tVUF2VEJqVmpTdkZEUUk3Z05N?=
+ =?utf-8?B?d2NXR0ladm5EN24zdHVQakJ1d0VsYnF4Y1lmUnBZdXhtOGp5MjNvY2NUQzNZ?=
+ =?utf-8?B?VzRBSkoxbVJkVGNUdSszaXcxc29vVWtHd01jaWJVdmdYM2sveXdiU0orV3pY?=
+ =?utf-8?B?WXNxZ3FHYU9acDkwT254Sm82TEw4VlgzZmJTdElsY2hHNUp0SDZlbzRtYW02?=
+ =?utf-8?B?UUF4aDF4eENEeTRRNW9CY25mVzIxYmtZTXdQU01wMEdZc1Y1ZjRXY1JsRzBJ?=
+ =?utf-8?B?amZvMTFmZ0pPOEl6MkRWeWg5Q093SzU1d1BaOW9ORjlKQW9pTzZTbktBbHVY?=
+ =?utf-8?B?bHhGQjhOK1VMazdVUHEwVFk0WDg5ekszUzJjd3RraFFOZDRoN1lWL0ErWW9w?=
+ =?utf-8?B?ZUt4bHBIRjhMcFQ5QzNxTEZzQlN6OG9MeGRoaytvRDVkODJMVk02Vy93Z0Mr?=
+ =?utf-8?B?a2hxTnphUEhzSkpjK0h1OFNiTEhnUGJHM1BXV2xUOVJ4VHdyUkpLWlpZMFBH?=
+ =?utf-8?B?cStWLzlpcDQ2RUVhblBOc1hMbXFBMWI3dEhVRUtJY0dkRDB5clFoVkRnV1ho?=
+ =?utf-8?B?ZGtXdnNaWlZCNG5wVTJkOWxsUng0RzhNMmlMV3BOaEVPTEhkaEhpU0tvb2Y4?=
+ =?utf-8?B?R0xjaHRTUlVDZDZPbENYNzVjTmpNbndhd2FKNWx2VXdveDI5RUljWVJIdnlh?=
+ =?utf-8?B?anRuOHVlUVdXeTEveVlLTUd2dUtvaitVKzB4RmFQWmdodXdBMXZxeEZlVmFU?=
+ =?utf-8?B?R0pJY0JxRHVaZnlSTEhPSWYvSk5Xb3pxaEduMzVFZnlSMEdXZWhFYjBQM2k0?=
+ =?utf-8?B?M0svcFV5MVFaSVQ5R0ZjeTh6dDNFQjlaUUhOdWpNZy9BemphaVh0OFkzSnZY?=
+ =?utf-8?B?b1A4NFpMU3VZdHBSRjBKa3ppYjA1THNMT25ybHFrS0s5NytJVjIrS1N6L2xR?=
+ =?utf-8?B?Q1RZQ1haUnpIKzg1c3lHRk8rbHZEOXBydk1xM0VRRnVkWTBiSmVLMzJtM3Ur?=
+ =?utf-8?B?TXp2WHJyYzJ0cTAzUnQwMGE4Tnp0ZS9TU0t1V1J0bjRWZ0FseU9pOHdFVDg0?=
+ =?utf-8?B?UklibnZRalBRZS9nYUZieHh2S2ZaMVRYdU40WFdobnp0eTFtVzN5Smk2M2FN?=
+ =?utf-8?B?U3g4TU93eGJZSHZqWE44QT09?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR03MB6466.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(7416005)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YWUrd1dqcDJkVkV4ak50MGNNbEpRclVodTFZSFlnQS9zWllGaUd6UDZ2bmw0?=
+ =?utf-8?B?UHpjSHc4Um9mNkJHWGxIalA4d1pxRWMrL1BEenJOeEprQnNNei9SSUxXWGxM?=
+ =?utf-8?B?OUcvcytSY1RQZVlNQkYrN2w3aVYzZldMamczZVJXYzRMODNkWTNvMGxPY1dY?=
+ =?utf-8?B?UmtDb3lvTTVUOGxaSGdjTHdJRUVqYUxnTlNRUmNIbXVEZUNWOGgwcy9nYTI5?=
+ =?utf-8?B?YnNoTGtBczM0RXFXM2U3akkwdmFLV3BpRE1ON21WUFlwdVR0ekxpdGQ4KzF0?=
+ =?utf-8?B?QS9VSXY1SEgzVEI2S05ZbXRUUGdlYmU1TEt0VUdZMmM0MkdqQ2pnYk0wemtD?=
+ =?utf-8?B?UDZGQkRPWER4SEhSeGcyeGpmYjA0WmFBNVVWSWxxV3Y2T3FKZEo3cW5kNHpk?=
+ =?utf-8?B?dkZRZU00UDFRckZJd1ZOdEY4YTZzekxMeXQvb3BXdUp5Mk5ZRXl0YmUvbGxH?=
+ =?utf-8?B?ZWVGSTQyaXM5YzRYS3R5Y3o1YWNMamc3OUlVZXlQYkJVcjV2YmZ1dXhWNmor?=
+ =?utf-8?B?VGJqd0g2UHBLbDNub0JjZ0E5MFJGZ0tFZVJaUWZxcnR0Uk9iY2t0cHVsanBr?=
+ =?utf-8?B?aTFvUTMzOUtHQTZEQkFHMVdFUktwTE80Vmt2S2dxL3k5SnA2UVdYdkNqYlp1?=
+ =?utf-8?B?b2pwL0ZrRkxPTGVBRTNZOVpLR3JQbStSSWVrV3FURy8xdTNZR091a2FvdUlo?=
+ =?utf-8?B?Tjd3QSt4SW5mM0ZOL3g4Zmh3V1BvdG80bFl2b3NGUjNIcit0VlNHRzF3WXdH?=
+ =?utf-8?B?bW8wbmwxc0pzZ2s0K2dzZU1ONVpkRDhFZWZnRGV3Sm9uTytackdkYm9ZTldn?=
+ =?utf-8?B?SlZqa0NOLytxOHJxN25zTFBLMTVocGlIQ1BTTWxuT1lJNzJOQUpiOGtqd0xk?=
+ =?utf-8?B?djByMm1IOElWQWdWaUM5bTc4MGI2NTA0a2svVytzY1VhNFZoZnIyQjA0MS96?=
+ =?utf-8?B?ZFA5Wk5rblBEVitGZDdNVVRMdEJsc2UvNmtaK1JLci9QUjkvMk9oMDFDZ2Qy?=
+ =?utf-8?B?WmdFZGxpWGF5b2Z0UktONEFZSFFoVmRqRk5DWERhU21odkxQbThFaG1hSUkw?=
+ =?utf-8?B?eCsxaG9pMzdQUkh0MWJ5dDJ2NmplRFZ2dkdWUjBiTFhrZzR2cXZKUzdlRHI3?=
+ =?utf-8?B?SWo0NnJwaXp3enlmK3NsKzIxQThJK0FDOGwzVHFEYm5QTVlud1RWYnlmbDh1?=
+ =?utf-8?B?clU1azR3WFFBaXlZQXdsOGZLZ0RpUWk0QUFuYzhJdjhvdmFRaXhMMi9wd1Ni?=
+ =?utf-8?B?amY0aFFxb3hOYm01aHFNN1VuUjFtVmx3OWFjZGltQUpWeDRpUE1mWis3N0hK?=
+ =?utf-8?B?S2pzcCttU2ZSajJrMFk1YlRKMzZLWDdITWMzbGxlWVQwdisxUm85MlprV3Z3?=
+ =?utf-8?B?aXVuWWk0ME1qS2RMWkRhQWx6bCt6N1V5TFpCbHdmbEd0Q2FNN00xTlZtSG9N?=
+ =?utf-8?B?d2l4bHdOTmlsbGNCMG5ibGVPcjhEMjhqWm4yZ09hUnFmZkFRTWRLRXNnNlBL?=
+ =?utf-8?B?WmloSDVhWE1QN2Y5V3ZEUXBxN1NDQytBMUIvTnRCRTM3K0V5N1d1UTNzTHJW?=
+ =?utf-8?B?bUI5S3dyYUF5c0x2UVFPYUhDSE5yb1VzQXlrQkI4bFhNWC9TU0lsZmgwRyt3?=
+ =?utf-8?B?Vm1Wc0psQlh6Nm9EYm5sR3d1ekZBcVJNSkJtU1RrcHBBc1RBSU45VG1lbWpC?=
+ =?utf-8?B?YkN1bjUzYUhMdVVGUEZBem1PV2J5d01rdHMxcDBaWjU5K2tDbitGVkhlVWg1?=
+ =?utf-8?B?ODExbllRVEk0MTdsWVhPVFpieTR0ZkdVMitMeTR4RDhjMUVheGNRbTA0dUtW?=
+ =?utf-8?B?ZmVuZDlyM2VJNXM1SzgvNGhIYmEwdlQwSmRrbjY5WWVZMXBSZ3lPK3NVNHZ2?=
+ =?utf-8?B?ditWS3RMZzQxcmdxNk1aU1owRnhOdzdlVE9aNGRCTmlsbVY2bk0rSnNDU2Za?=
+ =?utf-8?B?VEJHaWw1QzBwNVF0aG9JVjVqRmJWdEY1TWxWNlRtVitpWUJPb0R3VGtFd255?=
+ =?utf-8?B?M2d6SzFUWFdKaWdDOFpzMC9wTm9aSzFQQUlXMnMxU2FlMEdwcnJ0amVFYjI0?=
+ =?utf-8?B?YVdqUFdtRTd6WUtBSGZuZllTdzYrNGVNbzRZRGNZbW42NmJKTjRMVDFjWi9M?=
+ =?utf-8?B?aEZETFpXZ0lxeXpSd2tKazJicEJGL1luZlNWYVdlU0tMUGZlUVdobWpuMzFQ?=
+ =?utf-8?B?U3c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FCED7AF798D50B4CB8079F721A18A43A@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR03MB6466.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0240a797-d15f-4b7b-d35d-08dc5eaec675
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Apr 2024 07:19:52.6365
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AkvC001Ik1Rzy1gygIqqgOqUSm7DVN7i1AlvCCfptsQ/zJ3uNzya9x8Ju4XoMruJWBhRfRd2tlyeCGuQ+k22XA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB6593
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--38.161400-8.000000
+X-TMASE-MatchedRID: oll/cJ/dUC4OwH4pD14DsPHkpkyUphL9meN8m2FdGic3xO2R3boBWFbu
+	qIY+/skQkABPgKBt/0qTnaHZlUXDwbUReAJKY7+FmlaAItiONP0oUVkB7ifJnslgi/vLS272Cx5
+	3vGB6GzSUvT09fsi7Foq9eBAnO/kIE6V/2dtg4KaVSBCoZUyqbNMNeBxSUI2jBwaftSlNt0H5pP
+	85qu4YUe9F5QmIvVCnMTJV8WHPInC7JfBr9Xl5CjPDkSOzeDWWTJDl9FKHbrkxiSY0g7v6FtISY
+	zBUt2RalGZHwSvXb0sXJ4haGfPhxzZfE5oMQs9Ix7fVVD7rJEYhHWssEmb8zlwpnAAvAwazPm4X
+	xTeJls9ndCUvzOytwEI5FCc85WEfNKAolv8loSyLzZSKyQypzJCgGv5IWd4kCqIJhrrDy29RWYI
+	8YuMtSkDst89QIXsr363fb6EBgcn1xX9eJNrFWfv+//lqU1h6QQoq/f63NfsNht78/JfyBODDOX
+	/LKm2mAGjUK0D2mjBDDDL9x3SmGAl2fBUMKi6YF6z9HGHKwNuANGXBz7BHp3YB8PMAOxC82eiq5
+	HAdjcFpFYZVoIlzc5XX+I+PsjLToRIL3xWcnX5sIyeExXlNbgXXmzqmsIi7lQ9XSACU14reTUcy
+	dIM+R0eecoNEFPrpkhY7J/3t/UkPv5/+N9RjEnGBmLio+mJg0nXvwjW2mSWp5SELNf25Esoq2HB
+	wZupz4vM1YF6AJbY9l7H+TFQgdbew1twePJJB3QfwsVk0UbslCGssfkpInQ==
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--38.161400-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP:
+	25DC0DB0386A6C6ACF02773CBE9AB4AF3933968E337E0C4FC629D27E1033D2932000:8
 
-This is implementation of MIGRC mechanism that stands for 'Migration
-Read Copy'.  We always face the migration overhead at either promotion
-or demotion, while working with tiered memory e.g. CXL memory and found
-out tlb shootdown is one that is needed to get rid of if possible.
-
-Fortunately, tlb flush can be defered as long as it guarantees to be
-performed before the source folios at migration actually become used, of
-course, only if the target PTE entries have read-only permission,
-precisely, don't have write permission.  Otherwise, no doubt the sytem
-might get messed up.
-
-To achieve that:
-
-   1. For the folios that map only to non-writable tlb entries, prevent
-      tlb flush during migration but perform it just before the source
-      folios actually become used out of buddy or pcp.
-
-   2. When any non-writable tlb entry changes to writable e.g. through
-      fault handler, give up migrc mechanism and perform tlb flush
-      required right away.
-
-No matter what type of workload is used for performance evaluation, the
-result would be positive thanks to the unconditional reduction of tlb
-flushes, tlb misses and interrupts.  For the test, I picked up XSBench
-that is widely used for performance analysis on high performance
-computing architectures - https://github.com/ANL-CESAR/XSBench.
-
-The result would depend on memory latency and how often reclaim runs,
-which implies tlb miss overhead and how many times migration happens.
-The slower the memory is and the more reclaim runs, the better migrc
-works so as to obtain the better result.  In my system, the result
-shows:
-
-   1. itlb flushes are reduced over 90%.
-   2. itlb misses are reduced over 30%.
-   3. All the other tlb numbers also get enhanced.
-   4. tlb shootdown interrupts are reduced over 90%.
-   5. The test program runtime is reduced over 5%.
-
-The test envitonment:
-
-   Architecture - x86_64
-   QEMU - kvm enabled, host cpu
-   Numa - 2 nodes (16 CPUs 1GB, no CPUs 99GB)
-   Linux Kernel - v6.9-rc4, numa balancing tiering on, demotion enabled
-
-< measurement: raw data - tlb and interrupt numbers >
-
-   $ perf stat -a \
-           -e itlb.itlb_flush \
-           -e tlb_flush.dtlb_thread \
-           -e tlb_flush.stlb_any \
-           -e dtlb-load-misses \
-           -e dtlb-store-misses \
-           -e itlb-load-misses \
-	   XSBench -t 16 -p 50000000
-
-   $ grep "TLB shootdowns" /proc/interrupts
-
-   BEFORE
-   ------
-   40417078	itlb.itlb_flush
-   234852566	tlb_flush.dtlb_thread
-   153192357	tlb_flush.stlb_any
-   119001107892	dTLB-load-misses
-   307921167	dTLB-store-misses
-   1355272118	iTLB-load-misses
-
-   TLB: 1364803    1303670    1333921    1349607
-        1356934    1354216    1332972    1342842
-	1350265    1316443    1355928    1360793
-	1298239    1326358    1343006    1340971
-	TLB shootdowns
-
-   AFTER
-   -----
-   3316495	itlb.itlb_flush
-   138912511	tlb_flush.dtlb_thread
-   115199341	tlb_flush.stlb_any
-   117610390021 dTLB-load-misses
-   198042233	dTLB-store-misses
-   840066984	iTLB-load-misses
-
-   TLB: 117257     119219     117178     115737
-        117967     118948     117508     116079
-	116962     117266     117320     117215
-	105808     103934     115672     117610
-	TLB shootdowns
-
-< measurement: user experience - runtime >
-
-   $ time XSBench -t 16 -p 50000000
-
-   BEFORE
-   ------
-   Threads:     16
-   Runtime:     968.783 seconds
-   Lookups:     1,700,000,000
-   Lookups/s:   1,754,778
-
-   15208.91s user 141.44s system 1564% cpu 16:20.98 total
-
-   AFTER
-   -----
-   Threads:     16
-   Runtime:     913.210 seconds
-   Lookups:     1,700,000,000
-   Lookups/s:   1,861,565
-
-   14351.69s user 138.23s system 1565% cpu 15:25.47 total
-
-Signed-off-by: Byungchul Park <byungchul@sk.com>
----
- include/linux/sched.h |   8 +
- mm/internal.h         |  46 +++++-
- mm/memory.c           |   8 +
- mm/migrate.c          | 359 ++++++++++++++++++++++++++++++++++++++++--
- mm/rmap.c             |  12 +-
- 5 files changed, 414 insertions(+), 19 deletions(-)
-
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 74f8d106be79..7fba33c1faec 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1337,6 +1337,14 @@ struct task_struct {
- 	struct tlbflush_unmap_batch	tlb_ubc_ro;
- 	unsigned short int		mgen;
- 
-+#if defined(CONFIG_MIGRATION) && defined(CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH)
-+	/*
-+	 * whether all the mappings of a folio during unmap are read-only
-+	 * so that migrc can work on the folio
-+	 */
-+	bool				can_migrc;
-+#endif
-+
- 	/* Cache last used pipe for splice(): */
- 	struct pipe_inode_info		*splice_pipe;
- 
-diff --git a/mm/internal.h b/mm/internal.h
-index f381af27e6d1..cfdfa5908f72 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -1380,6 +1380,39 @@ void workingset_update_node(struct xa_node *node);
- extern struct list_lru shadow_nodes;
- 
- #if defined(CONFIG_MIGRATION) && defined(CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH)
-+void check_migrc_flush(unsigned short int mgen);
-+void migrc_flush(void);
-+void rmap_flush_start(void);
-+void rmap_flush_end(struct tlbflush_unmap_batch *batch);
-+
-+/*
-+ * Reset the indicator indicating there are no writable mappings at the
-+ * beginning of every rmap traverse for unmap.  migrc can work only when
-+ * all the mappings are read-only.
-+ */
-+static inline void can_migrc_init(void)
-+{
-+	current->can_migrc = true;
-+}
-+
-+/*
-+ * Mark the folio is not applicable to migrc once it found a writble or
-+ * dirty pte during rmap traverse for unmap.
-+ */
-+static inline void can_migrc_fail(void)
-+{
-+	current->can_migrc = false;
-+}
-+
-+/*
-+ * Check if all the mappings are read-only and read-only mappings even
-+ * exist.
-+ */
-+static inline bool can_migrc_test(void)
-+{
-+	return current->can_migrc && current->tlb_ubc_ro.flush_required;
-+}
-+
- static inline unsigned short int mgen_latest(unsigned short int a, unsigned short int b)
- {
- 	if (!a || !b)
-@@ -1406,13 +1439,16 @@ static inline unsigned int hand_over_task_mgen(void)
- 
- static inline void check_flush_task_mgen(void)
- {
--	/*
--	 * XXX: migrc mechanism will handle this. For now, do nothing
--	 * but reset current's mgen to finalize this turn.
--	 */
--	current->mgen = 0;
-+	check_migrc_flush(xchg(&current->mgen, 0));
- }
- #else /* CONFIG_MIGRATION && CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
-+static inline void check_migrc_flush(unsigned short int mgen) {}
-+static inline void migrc_flush(void) {}
-+static inline void rmap_flush_start(void) {}
-+static inline void rmap_flush_end(struct tlbflush_unmap_batch *batch) {}
-+static inline void can_migrc_init(void) {}
-+static inline void can_migrc_fail(void) {}
-+static inline bool can_migrc_test(void) { return false; }
- static inline unsigned short int mgen_latest(unsigned short int a, unsigned short int b) { return 0; }
- static inline void update_task_mgen(unsigned short int mgen) {}
- static inline unsigned int hand_over_task_mgen(void) { return 0; }
-diff --git a/mm/memory.c b/mm/memory.c
-index d2155ced45f8..fc4d09fdfef8 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3611,6 +3611,14 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
- 	if (vmf->page)
- 		folio = page_folio(vmf->page);
- 
-+	/*
-+	 * The folio may or may not be one that is under migrc's control
-+	 * and about to change its permission from read-only to writable.
-+	 * Conservatively give up deferring tlb flush just in case.
-+	 */
-+	if (folio)
-+		migrc_flush();
-+
- 	/*
- 	 * Shared mapping: we are guaranteed to have VM_WRITE and
- 	 * FAULT_FLAG_WRITE set at this point.
-diff --git a/mm/migrate.c b/mm/migrate.c
-index fed3a65e9bbe..7e16cb608ac5 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -57,6 +57,279 @@
- 
- #include "internal.h"
- 
-+#ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
-+static struct tlbflush_unmap_batch migrc_ubc;
-+static DEFINE_SPINLOCK(migrc_lock);
-+
-+/*
-+ * Don't be zero to distinguish from invalid mgen, 0.
-+ */
-+static unsigned short int mgen_next(unsigned short int a)
-+{
-+	return a + 1 ?: a + 2;
-+}
-+
-+static bool mgen_before(unsigned short int a, unsigned short int b)
-+{
-+	return (short int)(a - b) < 0;
-+}
-+
-+static void init_tlb_ubc(struct tlbflush_unmap_batch *ubc)
-+{
-+	arch_tlbbatch_clear(&ubc->arch);
-+	ubc->flush_required = false;
-+	ubc->writable = false;
-+}
-+
-+/*
-+ * Need to synchronize between tlb flush and managing pending CPUs in
-+ * migrc_ubc.  Take a look at the following scenario, where CPU0 is in
-+ * try_to_unmap_flush() and CPU1 is in migrate_pages_batch():
-+ *
-+ *	CPU0			CPU1
-+ *	----			----
-+ *	tlb flush
-+ *				unmap folios (needing tlb flush)
-+ *				add pending CPUs to migrc_ubc
-+ *				<-- not performed tlb flush needed by
-+ *				    the unmap above yet but the request
-+ *				    will be cleared by CPU0 shortly. bug!
-+ *	clear the CPUs from migrc_ubc
-+ *
-+ * The pending CPUs added in CPU1 should not be cleared from migrc_ubc
-+ * in CPU0 because the tlb flush for migrc_ubc added in CPU1 has not
-+ * been performed this turn.  To avoid this, using 'on_flushing'
-+ * variable, prevent adding pending CPUs to migrc_ubc and give up migrc
-+ * mechanism if someone is in the middle of tlb flush, like:
-+ *
-+ *	CPU0			CPU1
-+ *	----			----
-+ *	on_flushing++
-+ *	tlb flush
-+ *				unmap folios (needing tlb flush)
-+ *				if on_flushing == 0:
-+ *				   add pending CPUs to migrc_ubc
-+ *				else: <-- hit
-+ *				   give up migrc mechanism
-+ *	clear the CPUs from migrc_ubc
-+ *	on_flushing--
-+ *
-+ * Only the following case would be allowed for migrc mechanism to work:
-+ *
-+ *	CPU0			CPU1
-+ *	----			----
-+ *				unmap folios (needing tlb flush)
-+ *				if on_flushing == 0: <-- hit
-+ *				   add pending CPUs to migrc_ubc
-+ *				else:
-+ *				   give up migrc mechanism
-+ *	on_flushing++
-+ *	tlb flush
-+ *	clear the CPUs from migrc_ubc
-+ *	on_flushing--
-+ */
-+static int on_flushing;
-+
-+/*
-+ * When more than one thread enter check_migrc_flush() at the same
-+ * time, each should wait for the request on progress to be done to
-+ * avoid the following scenario, where the both CPUs are in
-+ * check_migrc_flush():
-+ *
-+ *	CPU0			CPU1
-+ *	----			----
-+ *	if !migrc_ubc.flush_required:
-+ *	   return
-+ *	migrc_ubc.flush_required = false
-+ *				if !migrc_ubc.flush_requied: <-- hit
-+ *				   return <-- not performed tlb flush
-+ *				              needed yet but return. bug!
-+ *				migrc_ubc.flush_required = false
-+ *				try_to_unmap_flush()
-+ *				finalize
-+ *	try_to_unmap_flush() <-- performs tlb flush needed
-+ *	finalize
-+ *
-+ * So it should be handled:
-+ *
-+ *	CPU0			CPU1
-+ *	----			----
-+ *	atomically execute {
-+ *	   if migrc_on_flushing:
-+ *	      wait for the completion
-+ *	      return
-+ *	   if !migrc_ubc.flush_required:
-+ *	      return
-+ *	   migrc_ubc.flush_required = false
-+ *	   migrc_on_flushing = true
-+ *	}
-+ *				atomically execute {
-+ *				   if migrc_on_flushing: <-- hit
-+ *				      wait for the completion
-+ *				      return <-- tlb flush needed is done
-+ *				   if !migrc_ubc.flush_requied:
-+ *				      return
-+ *				   migrc_ubc.flush_required = false
-+ *				   migrc_on_flushing = true
-+ *				}
-+ *
-+ *				try_to_unmap_flush()
-+ *				migrc_on_flushing = false
-+ *				finalize
-+ *	try_to_unmap_flush() <-- performs tlb flush needed
-+ *	migrc_on_flushing = false
-+ *	finalize
-+ */
-+static bool migrc_on_flushing;
-+
-+/*
-+ * Generation number for the current request of deferred tlb flush.
-+ */
-+static unsigned short int migrc_gen;
-+
-+/*
-+ * Generation number for the next request.
-+ */
-+static unsigned short int migrc_gen_next = 1;
-+
-+/*
-+ * Generation number for the latest request handled.
-+ */
-+static unsigned short int migrc_gen_done;
-+
-+static unsigned short int migrc_add_pending_ubc(struct tlbflush_unmap_batch *ubc)
-+{
-+	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
-+	unsigned long flags;
-+	unsigned short int mgen;
-+
-+	spin_lock_irqsave(&migrc_lock, flags);
-+	if (on_flushing || migrc_on_flushing) {
-+		spin_unlock_irqrestore(&migrc_lock, flags);
-+
-+		/*
-+		 * Give up migrc mechanism.  Just let tlb flush needed
-+		 * handled by try_to_unmap_flush() at the caller side.
-+		 */
-+		fold_ubc(tlb_ubc, ubc);
-+		return 0;
-+	}
-+	fold_ubc(&migrc_ubc, ubc);
-+	mgen = migrc_gen = migrc_gen_next;
-+	spin_unlock_irqrestore(&migrc_lock, flags);
-+
-+	return mgen;
-+}
-+
-+void rmap_flush_start(void)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&migrc_lock, flags);
-+	on_flushing++;
-+	spin_unlock_irqrestore(&migrc_lock, flags);
-+}
-+
-+void rmap_flush_end(struct tlbflush_unmap_batch *batch)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&migrc_lock, flags);
-+	if (arch_tlbbatch_done(&migrc_ubc.arch, &batch->arch)) {
-+		migrc_ubc.flush_required = false;
-+		migrc_ubc.writable = false;
-+	}
-+	on_flushing--;
-+	spin_unlock_irqrestore(&migrc_lock, flags);
-+}
-+
-+/*
-+ * Even if multiple contexts are requesting tlb flush at the same time,
-+ * it must guarantee to have completed tlb flush requested on return.
-+ */
-+void check_migrc_flush(unsigned short int mgen)
-+{
-+	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
-+	unsigned long flags;
-+
-+	/*
-+	 * Nothing has been requested.  We are done.
-+	 */
-+	if (!mgen)
-+		return;
-+retry:
-+	/*
-+	 * We can see a larger value than or equal to migrc_gen_done,
-+	 * which means the tlb flush we need has been done.
-+	 */
-+	if (!mgen_before(READ_ONCE(migrc_gen_done), mgen))
-+		return;
-+
-+	spin_lock_irqsave(&migrc_lock, flags);
-+
-+	/*
-+	 * With migrc_lock held, we might read migrc_gen_done updated.
-+	 */
-+	if (mgen_next(migrc_gen_done) != mgen) {
-+		spin_unlock_irqrestore(&migrc_lock, flags);
-+		return;
-+	}
-+
-+	/*
-+	 * Others are already working for us.
-+	 */
-+	if (migrc_on_flushing) {
-+		spin_unlock_irqrestore(&migrc_lock, flags);
-+		goto retry;
-+	}
-+
-+	if (!migrc_ubc.flush_required) {
-+		spin_unlock_irqrestore(&migrc_lock, flags);
-+		return;
-+	}
-+
-+	fold_ubc(tlb_ubc, &migrc_ubc);
-+	migrc_gen_next = mgen_next(migrc_gen);
-+	migrc_on_flushing = true;
-+	spin_unlock_irqrestore(&migrc_lock, flags);
-+
-+	try_to_unmap_flush();
-+
-+	spin_lock_irqsave(&migrc_lock, flags);
-+	migrc_on_flushing = false;
-+
-+	/*
-+	 * migrc_gen_done can be read by another with migrc_lock not
-+	 * held so use WRITE_ONCE() to prevent tearing.
-+	 */
-+	WRITE_ONCE(migrc_gen_done, mgen);
-+	spin_unlock_irqrestore(&migrc_lock, flags);
-+}
-+
-+void migrc_flush(void)
-+{
-+	unsigned long flags;
-+	unsigned short int mgen;
-+
-+	/*
-+	 * Obtain the latest mgen number.
-+	 */
-+	spin_lock_irqsave(&migrc_lock, flags);
-+	mgen = migrc_gen;
-+	spin_unlock_irqrestore(&migrc_lock, flags);
-+
-+	check_migrc_flush(mgen);
-+}
-+#else /* CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
-+static void init_tlb_ubc(struct tlbflush_unmap_batch *ubc)
-+{
-+}
-+static unsigned int migrc_add_pending_ubc(struct tlbflush_unmap_batch *ubc)
-+{
-+	return 0;
-+}
-+#endif
-+
- bool isolate_movable_page(struct page *page, isolate_mode_t mode)
- {
- 	struct folio *folio = folio_get_nontail_page(page);
-@@ -1090,7 +1363,8 @@ static void migrate_folio_undo_dst(struct folio *dst, bool locked,
- 
- /* Cleanup src folio upon migration success */
- static void migrate_folio_done(struct folio *src,
--			       enum migrate_reason reason)
-+			       enum migrate_reason reason,
-+			       unsigned short int mgen)
- {
- 	/*
- 	 * Compaction can migrate also non-LRU pages which are
-@@ -1101,8 +1375,15 @@ static void migrate_folio_done(struct folio *src,
- 		mod_node_page_state(folio_pgdat(src), NR_ISOLATED_ANON +
- 				    folio_is_file_lru(src), -folio_nr_pages(src));
- 
--	if (reason != MR_MEMORY_FAILURE)
--		/* We release the page in page_handle_poison. */
-+	/* We release the page in page_handle_poison. */
-+	if (reason == MR_MEMORY_FAILURE) {
-+		check_migrc_flush(mgen);
-+		return;
-+	}
-+
-+	if (mgen)
-+		folio_put_mgen(src, mgen);
-+	else
- 		folio_put(src);
- }
- 
-@@ -1126,7 +1407,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
- 		folio_clear_unevictable(src);
- 		/* free_pages_prepare() will clear PG_isolated. */
- 		list_del(&src->lru);
--		migrate_folio_done(src, reason);
-+		migrate_folio_done(src, reason, 0);
- 		return MIGRATEPAGE_SUCCESS;
- 	}
- 
-@@ -1272,7 +1553,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
- static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
- 			      struct folio *src, struct folio *dst,
- 			      enum migrate_mode mode, enum migrate_reason reason,
--			      struct list_head *ret)
-+			      struct list_head *ret, unsigned short int mgen)
- {
- 	int rc;
- 	int old_page_state = 0;
-@@ -1322,11 +1603,12 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
- 	 * and will be freed.
- 	 */
- 	list_del(&src->lru);
-+
- 	/* Drop an anon_vma reference if we took one */
- 	if (anon_vma)
- 		put_anon_vma(anon_vma);
- 	folio_unlock(src);
--	migrate_folio_done(src, reason);
-+	migrate_folio_done(src, reason, mgen);
- 
- 	return rc;
- out:
-@@ -1616,7 +1898,7 @@ static void migrate_folios_move(struct list_head *src_folios,
- 		struct list_head *ret_folios,
- 		struct migrate_pages_stats *stats,
- 		int *retry, int *thp_retry, int *nr_failed,
--		int *nr_retry_pages)
-+		int *nr_retry_pages, unsigned short int mgen)
- {
- 	struct folio *folio, *folio2, *dst, *dst2;
- 	bool is_thp;
-@@ -1633,7 +1915,7 @@ static void migrate_folios_move(struct list_head *src_folios,
- 
- 		rc = migrate_folio_move(put_new_folio, private,
- 				folio, dst, mode,
--				reason, ret_folios);
-+				reason, ret_folios, mgen);
- 		/*
- 		 * The rules are:
- 		 *	Success: folio will be freed
-@@ -1706,24 +1988,36 @@ static int migrate_pages_batch(struct list_head *from,
- 	int pass = 0;
- 	bool is_thp = false;
- 	bool is_large = false;
-+	bool is_zone_device = false;
- 	struct folio *folio, *folio2, *dst = NULL;
- 	int rc, rc_saved = 0, nr_pages;
- 	LIST_HEAD(unmap_folios);
- 	LIST_HEAD(dst_folios);
-+	LIST_HEAD(unmap_folios_migrc);
-+	LIST_HEAD(dst_folios_migrc);
- 	bool nosplit = (reason == MR_NUMA_MISPLACED);
-+	struct tlbflush_unmap_batch pending_ubc;
-+	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
-+	struct tlbflush_unmap_batch *tlb_ubc_ro = &current->tlb_ubc_ro;
-+	unsigned short int mgen;
- 
- 	VM_WARN_ON_ONCE(mode != MIGRATE_ASYNC &&
- 			!list_empty(from) && !list_is_singular(from));
- 
-+	init_tlb_ubc(&pending_ubc);
-+
- 	for (pass = 0; pass < nr_pass && retry; pass++) {
- 		retry = 0;
- 		thp_retry = 0;
- 		nr_retry_pages = 0;
- 
- 		list_for_each_entry_safe(folio, folio2, from, lru) {
-+			bool can_migrc;
-+
- 			is_large = folio_test_large(folio);
- 			is_thp = is_large && folio_test_pmd_mappable(folio);
- 			nr_pages = folio_nr_pages(folio);
-+			is_zone_device = folio_is_zone_device(folio);
- 
- 			cond_resched();
- 
-@@ -1750,9 +2044,25 @@ static int migrate_pages_batch(struct list_head *from,
- 				continue;
- 			}
- 
-+			can_migrc_init();
- 			rc = migrate_folio_unmap(get_new_folio, put_new_folio,
- 					private, folio, &dst, mode, reason,
- 					ret_folios);
-+			can_migrc = can_migrc_test();
-+
-+			/*
-+			 * XXX: No way to handle zone device folio after
-+			 * freeing.  Remove the following constraint
-+			 * once migrc can handle it.
-+			 */
-+			can_migrc = can_migrc && likely(!is_zone_device);
-+
-+			/*
-+			 * XXX: Remove the following constraint once
-+			 * migrc handles large folio.
-+			 */
-+			can_migrc = can_migrc && likely(!is_large);
-+
- 			/*
- 			 * The rules are:
- 			 *	Success: folio will be freed
-@@ -1798,7 +2108,8 @@ static int migrate_pages_batch(struct list_head *from,
- 				/* nr_failed isn't updated for not used */
- 				stats->nr_thp_failed += thp_retry;
- 				rc_saved = rc;
--				if (list_empty(&unmap_folios))
-+				if (list_empty(&unmap_folios) &&
-+				    list_empty(&unmap_folios_migrc))
- 					goto out;
- 				else
- 					goto move;
-@@ -1812,8 +2123,19 @@ static int migrate_pages_batch(struct list_head *from,
- 				stats->nr_thp_succeeded += is_thp;
- 				break;
- 			case MIGRATEPAGE_UNMAP:
--				list_move_tail(&folio->lru, &unmap_folios);
--				list_add_tail(&dst->lru, &dst_folios);
-+				if (can_migrc) {
-+					list_move_tail(&folio->lru, &unmap_folios_migrc);
-+					list_add_tail(&dst->lru, &dst_folios_migrc);
-+
-+					/*
-+					 * Gather ro batch data to add
-+					 * to migrc_ubc after unmap.
-+					 */
-+					fold_ubc(&pending_ubc, tlb_ubc_ro);
-+				} else {
-+					list_move_tail(&folio->lru, &unmap_folios);
-+					list_add_tail(&dst->lru, &dst_folios);
-+				}
- 				break;
- 			default:
- 				/*
-@@ -1827,12 +2149,19 @@ static int migrate_pages_batch(struct list_head *from,
- 				stats->nr_failed_pages += nr_pages;
- 				break;
- 			}
-+			/*
-+			 * Done with the current folio.  Fold the ro
-+			 * batch data gathered to the normal batch.
-+			 */
-+			fold_ubc(tlb_ubc, tlb_ubc_ro);
- 		}
- 	}
- 	nr_failed += retry;
- 	stats->nr_thp_failed += thp_retry;
- 	stats->nr_failed_pages += nr_retry_pages;
- move:
-+	/* Should be before try_to_unmap_flush() */
-+	mgen = migrc_add_pending_ubc(&pending_ubc);
- 	/* Flush TLBs for all unmapped folios */
- 	try_to_unmap_flush();
- 
-@@ -1846,7 +2175,11 @@ static int migrate_pages_batch(struct list_head *from,
- 		migrate_folios_move(&unmap_folios, &dst_folios,
- 				put_new_folio, private, mode, reason,
- 				ret_folios, stats, &retry, &thp_retry,
--				&nr_failed, &nr_retry_pages);
-+				&nr_failed, &nr_retry_pages, 0);
-+		migrate_folios_move(&unmap_folios_migrc, &dst_folios_migrc,
-+				put_new_folio, private, mode, reason,
-+				ret_folios, stats, &retry, &thp_retry,
-+				&nr_failed, &nr_retry_pages, mgen);
- 	}
- 	nr_failed += retry;
- 	stats->nr_thp_failed += thp_retry;
-@@ -1857,6 +2190,8 @@ static int migrate_pages_batch(struct list_head *from,
- 	/* Cleanup remaining folios */
- 	migrate_folios_undo(&unmap_folios, &dst_folios,
- 			put_new_folio, private, ret_folios);
-+	migrate_folios_undo(&unmap_folios_migrc, &dst_folios_migrc,
-+			put_new_folio, private, ret_folios);
- 
- 	return rc;
- }
-diff --git a/mm/rmap.c b/mm/rmap.c
-index d8671d0dc416..9c369aefd636 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -672,7 +672,9 @@ void try_to_unmap_flush(void)
- 	if (!tlb_ubc->flush_required)
- 		return;
- 
-+	rmap_flush_start();
- 	arch_tlbbatch_flush(&tlb_ubc->arch);
-+	rmap_flush_end(tlb_ubc);
- 	arch_tlbbatch_clear(&tlb_ubc->arch);
- 	tlb_ubc->flush_required = false;
- 	tlb_ubc->writable = false;
-@@ -707,9 +709,15 @@ static void set_tlb_ubc_flush_pending(struct mm_struct *mm, pte_t pteval,
- 	if (!pte_accessible(mm, pteval))
- 		return;
- 
--	if (pte_write(pteval) || writable)
-+	if (pte_write(pteval) || writable) {
- 		tlb_ubc = &current->tlb_ubc;
--	else
-+
-+		/*
-+		 * migrc cannot work with the folio once it found a
-+		 * writable or dirty mapping on it.
-+		 */
-+		can_migrc_fail();
-+	} else
- 		tlb_ubc = &current->tlb_ubc_ro;
- 
- 	arch_tlbbatch_add_pending(&tlb_ubc->arch, mm, uaddr);
--- 
-2.17.1
-
+T24gVHVlLCAyMDI0LTA0LTE2IGF0IDE5OjE0IC0wNDAwLCBXaWxsZW0gZGUgQnJ1aWpuIHdyb3Rl
+Og0KPiAgCSANCj4gRXh0ZXJuYWwgZW1haWwgOiBQbGVhc2UgZG8gbm90IGNsaWNrIGxpbmtzIG9y
+IG9wZW4gYXR0YWNobWVudHMgdW50aWwNCj4geW91IGhhdmUgdmVyaWZpZWQgdGhlIHNlbmRlciBv
+ciB0aGUgY29udGVudC4NCj4gID4gPiA+ID4gUGVyc29uYWxseSwgSSB0aGluayBicGZfc2tiX3B1
+bGxfZGF0YSgpIHNob3VsZCBoYXZlDQo+IGF1dG9tYXRpY2FsbHkNCj4gPiA+ID4gPiAoaWUuIGlu
+IGtlcm5lbCBjb2RlKSByZWR1Y2VkIGhvdyBtdWNoIGl0IHB1bGxzIHNvIHRoYXQgaXQNCj4gd291
+bGQgcHVsbA0KPiA+ID4gPiA+IGhlYWRlcnMgb25seSwNCj4gPiA+ID4NCj4gPiA+ID4gVGhhdCB3
+b3VsZCBiZSBhIGhlbHBlciB0aGF0IHBhcnNlcyBoZWFkZXJzIHRvIGRpc2NvdmVyIGhlYWRlcg0K
+PiBsZW5ndGguDQo+ID4gPg0KPiA+ID4gRG9lcyBpdCBhY3R1YWxseSBuZWVkIHRvPyAgUHJlc3Vt
+YWJseSB0aGUgYnBmIHB1bGwgZnVuY3Rpb24gY291bGQNCj4gPiA+IG5vdGljZSB0aGF0IGl0IGlz
+DQo+ID4gPiBhIHBhY2tldCBmbGFnZ2VkIGFzIGJlaW5nIG9mIHR5cGUgWCAoVURQIEdTTyBGUkFH
+TElTVCkgYW5kIHJlZHVjZQ0KPiB0aGUgcHVsbA0KPiA+ID4gYWNjb3JkaW5nbHkgc28gdGhhdCBp
+dCBkb2Vzbid0IHB1bGwgYW55dGhpbmcgZnJvbSB0aGUgbm9uLWxpbmVhcg0KPiA+ID4gZnJhZ2xp
+c3QgcG9ydGlvbj8/Pw0KPiA+ID4NCj4gPiA+IEkga25vdyBvbmx5IHRoZSBnZW5lcmljIG92ZXJ2
+aWV3IG9mIHdoYXQgdWRwIGdzbyBpcywgbm90IGFueQ0KPiBkZXRhaWxzLCBzbyBJIGFtDQo+ID4g
+PiBhc3N1bWluZyBoZXJlIHRoYXQgdGhlcmUncyBzb21lIHNvcnQgb2YgZ3VhcmFudGVlIHRvIGhv
+dyB0aGVzZQ0KPiBwYWNrZXRzDQo+ID4gPiBhcmUgc3RydWN0dXJlZC4uLiAgQnV0IEkgaW1hZ2lu
+ZSB0aGVyZSBtdXN0IGJlIG9yIHdlIHdvdWxkbid0IGJlDQo+IGhpdHRpbmcgdGhlc2UNCj4gPiA+
+IGlzc3VlcyBkZWVwZXIgaW4gdGhlIHN0YWNrPw0KPiA+IA0KPiA+IFBlcmhhcHMgZm9yIGEgcGFj
+a2V0IG9mIHRoaXMgdHlwZSB3ZSdyZSBhbHJlYWR5IGd1YXJhbnRlZWQgdGhlDQo+IGhlYWRlcnMN
+Cj4gPiBhcmUgaW4gdGhlIGxpbmVhciBwb3J0aW9uLA0KPiA+IGFuZCB0aGUgcHVsbCBzaG91bGQg
+c2ltcGx5IGJlIGlnbm9yZWQ/DQo+ID4gDQo+ID4gPg0KPiA+ID4gPiBQYXJzaW5nIGlzIGJldHRl
+ciBsZWZ0IHRvIHRoZSBCUEYgcHJvZ3JhbS4NCj4gDQo+IEkgZG8gcHJlZmVyIGFkZGluZyBzYW5p
+dHkgY2hlY2tzIHRvIHRoZSBCUEYgaGVscGVycywgb3ZlciBoYXZpbmcgdG8NCj4gYWRkIHRoZW4g
+aW4gdGhlIG5ldCBob3QgcGF0aCBvbmx5IHRvIHByb3RlY3QgYWdhaW5zdCBkYW5nZXJvdXMgQlBG
+DQo+IHByb2dyYW1zLg0KPiANCklzIGl0IE9LIHRvIGlnbm9yZSBvciBkZWNyZWFzZSBwdWxsIGxl
+bmd0aCBmb3IgdWRwIGdybyBmcmFnbGlzdCBwYWNrZXQ/DQpJdCBjb3VsZCBzYXZlIHRoZSBub3Jt
+YWwgcGFja2V0IGFuZCBzZW50IHRvIHVzZXIgY29ycmVjdGx5Lg0KDQpJbiBjb21tb24vbmV0L2Nv
+cmUvZmlsdGVyLmMNCnN0YXRpYyBpbmxpbmUgaW50IF9fYnBmX3RyeV9tYWtlX3dyaXRhYmxlKHN0
+cnVjdCBza19idWZmICpza2IsDQogICAgICAgICAgICAgIHVuc2lnbmVkIGludCB3cml0ZV9sZW4p
+DQp7IA0KKwlpZiAoc2tiX2lzX2dzbyhza2IpICYmIChza2Jfc2hpbmZvKHNrYiktPmdzb190eXBl
+ICYNCisJCShTS0JfR1NPX1VEUCAgfFNLQl9HU09fVURQX0w0KSkgew0KKwkJcmV0dXJuIDA7DQoN
+CisJICAgICBvciBpZiAod3JpdGVfbGVuID4gc2tiX2hlYWRsZW4oc2tiKSkNCisJCQl3cml0ZV9s
+ZW4gPSBza2JfaGVhZGxlbihza2IpOw0KKwl9DQoJcmV0dXJuIHNrYl9lbnN1cmVfd3JpdGFibGUo
+c2tiLCB3cml0ZV9sZW4pOw0KfQ0KIA0KDQo+IEluIHRoaXMgY2FzZSwgaXQgd291bGQgYmUgZGV0
+ZWN0aW5nIHRoaXMgR1NPIHR5cGUgYW5kIGZhaWxpbmcgdGhlDQo+IG9wZXJhdGlvbiBpZiBleGNl
+ZWRpbmcgc2tiX2hlYWRsZW4oKS4NCj4gPiA+ID4NCj4gPiA+ID4gPiBhbmQgbm90IHBhY2tldCBj
+b250ZW50Lg0KPiA+ID4gPiA+IChUaGlzIGlzIGFzc3VtaW5nIHRoZSByZXN0IG9mIHRoZSBjb2Rl
+IGlzbid0IHJlYWR5IHRvIGRlYWwNCj4gd2l0aCBhIGxvbmdlciBwdWxsLA0KPiA+ID4gPiA+IHdo
+aWNoIEkgdGhpbmsgaXMgdGhlIGNhc2UgYXRtLiAgUHVsbGluZyB0b28gbXVjaCwgYW5kIHRoZW4N
+Cj4gY3Jhc2hpbmcgb3IgZm9yY2luZw0KPiA+ID4gPiA+IHRoZSBzdGFjayB0byBkcm9wIHBhY2tl
+dHMgYmVjYXVzZSBvZiB0aGVtIGJlaW5nIG1hbGZvcm1lZA0KPiBzZWVtcyB3cm9uZy4uLikNCj4g
+PiA+ID4gPg0KPiA+ID4gPiA+IEluIGdlbmVyYWwgaXQgd291bGQgYmUgbmljZSBpZiB0aGVyZSB3
+YXMgYSB3YXkgdG8ganVzdCBzYXkNCj4gcHVsbCBhbGwgaGVhZGVycy4uLg0KPiA+ID4gPiA+IChv
+ciBwb3NzaWJseSBhbGwgTDIvTDMvTDQgaGVhZGVycykNCj4gPiA+ID4gPiBZb3UgaW4gZ2VuZXJh
+bCBuZWVkIHRvIHB1bGwgc3R1ZmYgKmJlZm9yZSogeW91J3ZlIGV2ZW4gbG9va2VkDQo+IGF0IHRo
+ZSBwYWNrZXQsDQo+ID4gPiA+ID4gc28gdGhhdCB5b3UgY2FuIGxvb2sgYXQgdGhlIHBhY2tldCwN
+Cj4gPiA+ID4gPiBzbyBpdCdzIHJlbGF0aXZlbHkgaGFyZC9hbm5veWluZyB0byBwdWxsIHRoZSBj
+b3JyZWN0IGxlbmd0aA0KPiBmcm9tIGJwZg0KPiA+ID4gPiA+IGNvZGUgaXRzZWxmLg0KPiA+ID4g
+PiA+DQo+ID4gPiA+ID4gPiA+ID4gQlBGIG5lZWRzIHRvIG1vZGlmeSBhIHByb3BlciBsZW5ndGgg
+dG8gZG8gcHVsbCBkYXRhLg0KPiBIb3dldmVyIGtlcm5lbA0KPiA+ID4gPiA+ID4gPiA+IHNob3Vs
+ZCBhbHNvIGltcHJvdmUgdGhlIGZsb3cgdG8gYXZvaWQgY3Jhc2ggZnJvbSBhIGJwZg0KPiBmdW5j
+dGlvbg0KPiA+ID4gPiA+ID4gPiBjYWxsLg0KPiA+ID4gPiA+ID4gPiA+IEFzIHRoZXJlIGlzIG5v
+IHNwbGl0IGZsb3cgYW5kIGFwcCBtYXkgbm90IGRlY29kZSB0aGUNCj4gbWVyZ2VkIFVEUA0KPiA+
+ID4gPiA+ID4gPiBwYWNrZXQsDQo+ID4gPiA+ID4gPiA+ID4gd2Ugc2hvdWxkIGRyb3AgdGhlIHBh
+Y2tldCB3aXRob3V0IGZyYWdsaXN0IGluDQo+IHNrYl9zZWdtZW50X2xpc3QNCj4gPiA+ID4gPiA+
+ID4gaGVyZS4NCj4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiA+IEZpeGVzOiAzYTEyOTZh
+MzhkMGMgKCJuZXQ6IFN1cHBvcnQgR1JPL0dTTyBmcmFnbGlzdA0KPiBjaGFpbmluZy4iKQ0KPiA+
+ID4gPiA+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IFNoaW1pbmcgQ2hlbmcgPA0KPiBzaGltaW5nLmNo
+ZW5nQG1lZGlhdGVrLmNvbT4NCj4gPiA+ID4gPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBMZW5hIFdh
+bmcgPGxlbmEud2FuZ0BtZWRpYXRlay5jb20+DQo+ID4gPiA+ID4gPiA+ID4gLS0tDQo+ID4gPiA+
+ID4gPiA+ID4gIG5ldC9jb3JlL3NrYnVmZi5jIHwgMyArKysNCj4gPiA+ID4gPiA+ID4gPiAgMSBm
+aWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKQ0KPiA+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4g
+PiA+ID4gZGlmZiAtLWdpdCBhL25ldC9jb3JlL3NrYnVmZi5jIGIvbmV0L2NvcmUvc2tidWZmLmMN
+Cj4gPiA+ID4gPiA+ID4gPiBpbmRleCBiOTkxMjc3MTJlNjcuLmY2OGYyNjc5YjA4NiAxMDA2NDQN
+Cj4gPiA+ID4gPiA+ID4gPiAtLS0gYS9uZXQvY29yZS9za2J1ZmYuYw0KPiA+ID4gPiA+ID4gPiA+
+ICsrKyBiL25ldC9jb3JlL3NrYnVmZi5jDQo+ID4gPiA+ID4gPiA+ID4gQEAgLTQ1MDQsNiArNDUw
+NCw5IEBAIHN0cnVjdCBza19idWZmDQo+ICpza2Jfc2VnbWVudF9saXN0KHN0cnVjdA0KPiA+ID4g
+PiA+ID4gPiBza19idWZmICpza2IsDQo+ID4gPiA+ID4gPiA+ID4gIGlmIChlcnIpDQo+ID4gPiA+
+ID4gPiA+ID4gIGdvdG8gZXJyX2xpbmVhcml6ZTsNCj4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+
+ID4gPiA+ICtpZiAoIWxpc3Rfc2tiKQ0KPiA+ID4gPiA+ID4gPiA+ICtnb3RvIGVycl9saW5lYXJp
+emU7DQo+ID4gPiA+ID4gPiA+ID4gKw0KPiA+ID4gPg0KPiA+ID4gPiBUaGlzIHdvdWxkIGNhdGNo
+IHRoZSBjYXNlIHdoZXJlIHRoZSBlbnRpcmUgZGF0YSBmcmFnX2xpc3QgaXMNCj4gPiA+ID4gbGlu
+ZWFyaXplZCwgYnV0IG5vdCBhIHBza2JfbWF5X3B1bGwgdGhhdCBvbmx5IHB1bGxzIGluIHBhcnQg
+b2YNCj4gdGhlDQo+ID4gPiA+IGxpc3QuDQo+ID4gPiA+DQo+ID4gPiA+IEV2ZW4gd2l0aCBCUEYg
+YmVpbmcgcHJpdmlsZWdlZCwgdGhlIGtlcm5lbCBzaG91bGQgbm90IGNyYXNoIGlmDQo+IEJQRg0K
+PiA+ID4gPiBwdWxscyBhIEZSQUdMSVNUIEdTTyBza2IuDQo+ID4gPiA+DQo+ID4gPiA+IEJ1dCB0
+aGUgY2hlY2sgbmVlZHMgdG8gYmUgcmVmaW5lZCBhIGJpdC4gRm9yIGEgVURQIEdTTyBwYWNrZXQs
+DQo+IEkNCj4gPiA+ID4gdGhpbmsgZ3NvX3NpemUgaXMgc3RpbGwgdmFsaWQsIHNvIGlmIHRoZSBo
+ZWFkX3NrYiBsZW5ndGggZG9lcw0KPiBub3QNCj4gPiA+ID4gbWF0Y2ggZ3NvX3NpemUsIGl0IGhh
+cyBiZWVuIG1lc3NlZCB3aXRoIGFuZCBzaG91bGQgYmUgZHJvcHBlZC4NCj4gPiA+ID4NCklzIGl0
+IE9LIGFzIGJlbG93PyBJcyBpdCBPSyB0byBhZGQgbG9nIHRvIHJlY29yZCB0aGUgZXJyb3IgZm9y
+IGVhc3kNCmNoZWNraW5nIGlzc3VlLg0KDQpJbiBuZXQvY29yZS9za2J1ZmYuYyBza2Jfc2VnbWVu
+dF9saXN0DQordW5zaWduZWQgaW50IG1zcyA9IHNrYl9zaGluZm8oaGVhZF9za2IpLT5nc29fc2l6
+ZTsNCitib29sIGVycl9sZW4gPSBmYWxzZTsNCg0KK2lmICggbXNzICE9IEdTT19CWV9GUkFHUyAm
+JiBtc3MgIT0gc2tiX2hlYWRsZW4oaGVhZF9za2IpKSB7DQorCXByX2Vycigic2tiIGlzIGRyb3Bw
+ZWQgZHVlIHRvIG1lc3NlZCBkYXRhLiBnc28gc2l6ZTolZCwNCisJCWhkcmxlbjolZCIsIG1zcywg
+c2tiX2hlYWRsZW4oaGVhZF9za2IpDQorCWlmICghbGlzdF9za2IpDQorCQlnb3RvIGVycl9saW5l
+YXJpemU7DQorCWVsc2UNCisJCWVycl9sZW4gPSB0cnVlOw0KK30NCg0KLi4uDQoraWYgKGVycl9s
+ZW4pIHsNCisJZ290byBlcnJfbGluZWFyaXplOw0KK30NCg0Kc2tiX2dldChza2IpOw0KLi4uDQoN
+Cj4gPiA+ID4gRm9yIGEgR1NPX0JZX0ZSQUdTIHNrYiwgdGhlcmUgaXMgbm8gc2luZ2xlIGdzb19z
+aXplLCBhbmQgdGhpcw0KPiBwdWxsDQo+ID4gPiA+IG1heSBiZSBlbnRpcmVseSB1bmRldGVjdGFi
+bGUgYXMgbG9uZyBhcyBmcmFnX2xpc3QgIT0gTlVMTD8NCj4gPiA+ID4NCj4gPiA+ID4NCkluIGZ1
+bmN0aW9uIHNrYl9zZWdtZW50X2xpc3QoKSwgaXQganVzdCBoYW5kbGUgdWRwIGZyYWdsaXN0IGdy
+byBwYWNrZXQuDQpucl9mcmFncyB3aWxsIGJlIDAgaGVyZS4gDQoNCkl0IHJlY29yZHMgYSBTS0Jf
+R1NPX0RPREdZIGluIGdzb190eXBlIHdoZW4gZG9pbmcgcGFydGlhbGx5IGVhdGVuIGZvcg0KZnJh
+Z2xpc3QgaW4gX19wc2tiX3B1bGxfdGFpbCBhbmQgaW4gc2tiX3NlZ21lbnQoKSBpdCB3aWxsIGNo
+ZWNrIGFuZA0KZGlzYWJsZSBORVRJRl9GX1NHLiANCnNrYl9zZWdtZW50IGNvdWxkIHNlZ21lbnQg
+ZGF0YSBhcyBnc29fc2l6ZSBldmVuIGlmIGl0IGlzIHB1bGxlZCBpbnRvDQpoZWFyZGVyIHNrYi4g
+SSBhbSBub3Qgc3VyZSBpZiBpdCBjYW4gZGVjb2RlIHdoZW4gZnJhZ19saXN0IGlzIE5VTEwgb3IN
+CnBhcnRpYWxseSBlYXRlbiBhcyBubyBCUEYgcHVsbHMgaWxsZWdhbCBsZW5ndGggZm9yIHRjcCBw
+YWNrZXQuIE91cg0KcGxhdGZyb20gZG9lc24ndCBtZWV0IGlzc3VlcyBpbiBza2Jfc2VnbWVudCBm
+b3IgdGNwIHBhY2tldCB0aWxsIG5vdy4NCg0KPiA+ID4gPiA+ID4gPiA+ICBza2Jfc2hpbmZvKHNr
+YiktPmZyYWdfbGlzdCA9IE5VTEw7DQo+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+IEluIGFi
+c2Vuc2Ugb2YgcGx1Z2dpbmcgdGhlIGlzc3VlIGluIEJQRiwgZHJvcHBpbmcgaGVyZSBpcw0KPiB0
+aGUgYmVzdA0KPiA+ID4gPiA+ID4gPiB3ZSBjYW4gZG8gaW5kZWVkLCBJIHRoaW5rLg0KPiA+IA0K
+PiA+IC0tDQo+ID4gTWFjaWVqIMW7ZW5jenlrb3dza2ksIEtlcm5lbCBOZXR3b3JraW5nIERldmVs
+b3BlciBAIEdvb2dsZQ0KPiANCj4gDQo=
 
