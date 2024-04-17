@@ -1,121 +1,122 @@
-Return-Path: <linux-kernel+bounces-148500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 342618A838F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:58:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF6218A8396
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:59:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD5BE1F21FAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:58:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74DE228506B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055BB13DB8A;
-	Wed, 17 Apr 2024 12:58:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QmHNYmls"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEFC513D53D;
+	Wed, 17 Apr 2024 12:59:27 +0000 (UTC)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47D213D61A
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 12:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98B742D60C;
+	Wed, 17 Apr 2024 12:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713358705; cv=none; b=c07sKH6+1okktJJn7+2Ml+JvnfbT0lbx5At2AQI2Agqz+7brV/LgK2TUQ0KDhdsL1R8EbnJjAGJgTdXsS6VrPEqmGVpExukuTwS3DaheJveiOuYqG/QggG3Av+v1HJ0DLIi4ajxCtYCjyzn/AdYwY9mhKdLsZuKT5f8teeeWop4=
+	t=1713358767; cv=none; b=m0417BN+GwcZbxNDjmzVk0VRev4fu6//gxY5Kmnn/83qwanBkb4kY0qu8Cku/nVfGIeDsuoW6U7IOia+r55iBuO5wVzLhZAon7dnLG+mqlvQ/nkPhsJI3Xot6fRKgoE7AXw3HxUpctrToR/1X9p5gl1cHwUxnv1X0GG7y1ak/0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713358705; c=relaxed/simple;
-	bh=odBinATsxiv0QntS3vmmZ+hwTGfp9CbUJ8OWIdv7zD0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B+JHPSFE5TbbDpodUJ/gsNze8QOMjc+d1ZctnH7LML5VTnOQXDnSVsK//vwqxrWLyaMRBnHm06jRTNoKOnDpT5lq3UosAf0l4qsVl1hzcMPl2aEN7kncFnuhAYclUst7v3YD3JY0OhBuhiP7P0ASm7lukquZSLEzaDkQEIEt5ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QmHNYmls; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713358701;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5Yf7QCrWbLl6GzRDJkeqCAapOLNVCTZM435GPN2S7N8=;
-	b=QmHNYmlsggF5Uarc9u60cPLmnJomNdZf6tDWk6SZFLvh1mWC1gFyjx6KxnevL0ljVcNdcs
-	8Gj0QocAcjd85gqlPwHNKhCAL56rwZRM2GDg9GZkIEiqhN59jAopP045+EZSyI9h9ATsV9
-	5iTf5cb6w0vAAFAjIGwEPghDRVQTyoc=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-209-POlBnhoTNX2Q7VfonUD8lQ-1; Wed, 17 Apr 2024 08:58:19 -0400
-X-MC-Unique: POlBnhoTNX2Q7VfonUD8lQ-1
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-2a4fc4cf54dso5667285a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 05:58:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713358698; x=1713963498;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5Yf7QCrWbLl6GzRDJkeqCAapOLNVCTZM435GPN2S7N8=;
-        b=VM4nKOZm7Sv2ddxD30EygkL4qW4yWjU++2nqts2ZYSPPMtvIPMaL+gISyOGdITz+Vl
-         85riLGsPIQ8iuCWNc/+wqkkuoQZzdoU+Bs5DwxcoaRJPgbz8+Y9wXVc3hpZPPRRNSfnc
-         cs2LnpraWdbF6qZAN7dzsO9uAAxdK5bNgju6TS5houU2H+1omfIkgckL9CHkXKF4Tfo0
-         AiMnaaWCF87xJqAIMNB8gvqJIuxeHH955Rq1ywKNAROQm7AVxYAOtWNNdMN47YD4ZhIX
-         jqI/f72CObwmugkRkUkYVTRsBV2K2E2NzPBubdrexMlvWLUrGiSrf+DqvTn55LXQas9R
-         iMzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW5XUl+HfOF0j/LRIyz4vJGJd4B8rwnoWAZheRh0wuLT1kLdtF4Hi6tcOXCyg1Q7Qv2Ne9Oi3C3glM5zoEUJ1k6DK9hue2j7nOlZNZ3
-X-Gm-Message-State: AOJu0YzKbL0xTOtMLO8XBABxCtm5KJy/oSascYd3/TBt4rzeJmUijwn8
-	jYzY/P3ibU0dtitMVB6fqlty5BFvEy/16ofQtBwOuPwiylI2FHCcrGAyN7H/f0CFZjuNQjcSJBa
-	tDvfE9uMJtbVVz/n9Xuk1g6yK6FGlYoqe7cSN7srk/BoQmEOuqfHMLql1AHQZrdCsr2C2773vkR
-	6B+dZ3rXz/MGA/uo3HN4/GAO8OPoS6IKYowFQe
-X-Received: by 2002:a17:90b:3c3:b0:2a6:db3:1aa5 with SMTP id go3-20020a17090b03c300b002a60db31aa5mr16000807pjb.18.1713358698441;
-        Wed, 17 Apr 2024 05:58:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHeusKXHozTa59pxGQzEfxCvxThXecAwYhUkuqOmc1hiPkPd4IGoLD9R12W5ib2l84GuAmF5uPenTcpb+y/FQ4=
-X-Received: by 2002:a17:90b:3c3:b0:2a6:db3:1aa5 with SMTP id
- go3-20020a17090b03c300b002a60db31aa5mr16000792pjb.18.1713358698142; Wed, 17
- Apr 2024 05:58:18 -0700 (PDT)
+	s=arc-20240116; t=1713358767; c=relaxed/simple;
+	bh=HFvWvay/5DDWO9T/F/109Vc0YMZS09zONeLb7BQUvMU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WFF9C4b35655I7HjP5++VTf0TT6GTCYlY/nbbvfSY4hf9m5pKoGueMMj8nm4P/bRs5PGgj2Y8WddQG5Ng/2AINItIqcElAIoSZyRoQwy/T4QkfIRt4XCUehUb78l7fsBKnOxz1PTYDq+fxEBbiY9zZeVvzlvbQr53RWmnBG7T70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 4EE061C0080; Wed, 17 Apr 2024 14:59:17 +0200 (CEST)
+Date: Wed, 17 Apr 2024 14:59:16 +0200
+From: Pavel Machek <pavel@denx.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
+	alex.williamson@redhat.com, seanjc@google.com, jpoimboe@redhat.com,
+	michael.roth@amd.com, dsterba@suse.com, aric.cyr@amd.com
+Subject: Re: [PATCH 5.10 000/294] 5.10.215-rc1 review
+Message-ID: <Zh/HpAGFqa7YAFuM@duo.ucw.cz>
+References: <20240411095435.633465671@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223204233.3337324-1-seanjc@google.com> <171270505394.1590014.8020716629474398619.b4-ty@google.com>
-In-Reply-To: <171270505394.1590014.8020716629474398619.b4-ty@google.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Wed, 17 Apr 2024 14:58:04 +0200
-Message-ID: <CABgObfYHbsb9hySxXbwCTP_mhuKUVdRDFs71XotEB5FAaPeEpQ@mail.gmail.com>
-Subject: Re: [PATCH 0/8] KVM: SVM: Clean up VMRUN=>#VMEXIT assembly
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Tom Lendacky <thomas.lendacky@amd.com>, Michael Roth <michael.roth@amd.com>, 
-	Alexey Kardashevskiy <aik@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="WebcVGuD/i7sDG85"
+Content-Disposition: inline
+In-Reply-To: <20240411095435.633465671@linuxfoundation.org>
+
+
+--WebcVGuD/i7sDG85
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 10, 2024 at 2:23=E2=80=AFAM Sean Christopherson <seanjc@google.=
-com> wrote:
-> Applied to kvm-x86 svm, thanks!
->
-> [1/8] KVM: SVM: Create a stack frame in __svm_vcpu_run() for unwinding
->       https://github.com/kvm-x86/linux/commit/19597a71a0c8
-> [2/8] KVM: SVM: Wrap __svm_sev_es_vcpu_run() with #ifdef CONFIG_KVM_AMD_S=
-EV
->       https://github.com/kvm-x86/linux/commit/7774c8f32e99
-> [3/8] KVM: SVM: Drop 32-bit "support" from __svm_sev_es_vcpu_run()
->       https://github.com/kvm-x86/linux/commit/331282fdb15e
-> [4/8] KVM: SVM: Clobber RAX instead of RBX when discarding spec_ctrl_inte=
-rcepted
->       https://github.com/kvm-x86/linux/commit/87e8e360a05f
-> [5/8] KVM: SVM: Save/restore non-volatile GPRs in SEV-ES VMRUN via host s=
-ave area
->       https://github.com/kvm-x86/linux/commit/c92be2fd8edf
-> [6/8] KVM: SVM: Save/restore args across SEV-ES VMRUN via host save area
->       https://github.com/kvm-x86/linux/commit/adac42bf42c1
-> [7/8] KVM: SVM: Create a stack frame in __svm_sev_es_vcpu_run()
->       https://github.com/kvm-x86/linux/commit/4367a75887ec
-> [8/8] KVM: x86: Stop compiling vmenter.S with OBJECT_FILES_NON_STANDARD
->       https://github.com/kvm-x86/linux/commit/27ca867042af
+Hi!
 
-Do we perhaps want this in 6.9 because of the issues that was reported
-with objtool?
+> This is the start of the stable review cycle for the 5.10.215 release.
+> There are 294 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-Paolo
+> Alex Williamson <alex.williamson@redhat.com>
+>     vfio/pci: Create persistent INTx handler
 
+This introduces memory leak in vfio_intx_enable() -- name is not freed
+in case vdev->ctx =3D kzalloc() fails, for example.
+
+> Sean Christopherson <seanjc@google.com>
+>     x86/cpufeatures: Add CPUID_LNX_5 to track recently added Linux-define=
+d word
+
+AFAICT this is not needed in 5.10.
+
+> Josh Poimboeuf <jpoimboe@redhat.com>
+>     objtool: Add asm version of STACK_FRAME_NON_STANDARD
+
+Asm version of this macro is not used in 5.10.
+
+> Michael Roth <michael.roth@amd.com>
+>     x86/head/64: Re-enable stack protection
+
+This is preparation for preparation for SEV-SNP CPUID patches, I don't
+believe we plan that for 6.1.
+
+> David Sterba <dsterba@suse.com>
+>     btrfs: handle chunk tree lookup error in btrfs_relocate_sys_chunks()
+
+(This applies to 4.19, too). mutex_unlock() is needed before "goto
+error" here.
+
+> Aric Cyr <aric.cyr@amd.com>
+>     drm/amd/display: Fix nanosec stat overflow
+
+(This applies to 4.19, too). This is wrong. It updates prototypes but
+not actual functions.
+
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--WebcVGuD/i7sDG85
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZh/HpAAKCRAw5/Bqldv6
+8jQNAKCgA7GiY1skcB6NPefx12bHsL8tcgCePTp6JbCq8u+7xNLXCnN/mluCLio=
+=GdgS
+-----END PGP SIGNATURE-----
+
+--WebcVGuD/i7sDG85--
 
