@@ -1,123 +1,277 @@
-Return-Path: <linux-kernel+bounces-148979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CB6A8A8A06
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:13:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8BD98A8A0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:14:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 329A51F2458F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:13:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 603AB1F25342
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C675171670;
-	Wed, 17 Apr 2024 17:13:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D25171669;
+	Wed, 17 Apr 2024 17:14:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XubTWGUF"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WhYLUlDN"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9751C14199C;
-	Wed, 17 Apr 2024 17:13:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0127214199C;
+	Wed, 17 Apr 2024 17:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713374020; cv=none; b=DYCsdSoS+4eHB/3FAHUJa4+kDzmpbdjo7iHpS93uU5k/VIxnFW6pxixrEsMQp07WiiwXepv83chvCAiw7iv+ufX5Amu3FsjYdVYVq8lXRlnKftLk4UcKUz0WGK6bvB0V9CpDxQKnzYSp7bOSQ2v5JCMNBf4X3LSi3QPCYOmWsKE=
+	t=1713374045; cv=none; b=KocJIUaP7sbBB94aCOHLtjd9b2ugACMRLxrxfZKuAS8dAFivDGPq0v96QpQuKMicJZ+2TtfhybGCzDs65y7zDqI7xYq7ciUJ1YckpPFxjUAKtMeeQPwzCeJedYpdQp6YxHUFv+Z8/UawV6xMk4hkhzGhei7XZycZxVCSmpnfLEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713374020; c=relaxed/simple;
-	bh=7qhKToHeqr72R+UX6oz1defReAsUlZPMCU2ywC1yEqo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GWeogqjNX3iUdcSOBxz8N3M28RKMZSSud78mLzoUkXUU3ONfcvlBCHUVF3kGtdH0rKYVGgcBxrPO02NwgcHgzKOPxj77XwLl4BY5gmsa+1rwYzrroF+QCslW8uo+hdjUNZ4BgkS12hT3wBrVMGJRuJReZHdFj/mV2tNvo0g8jrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XubTWGUF; arc=none smtp.client-ip=209.85.160.169
+	s=arc-20240116; t=1713374045; c=relaxed/simple;
+	bh=lj8aJUMl44Y4DxflO3LqH+eNRX9TRbSUMZYJVsKLiY0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BlyBMCXqI7r4mJO1tCuBtxXRIzrrxQB1lsUR/o3j505ftBZseEdJgDpl3WCjR9R6f+LuWeObtrU92K/bMtGZxXlvHnn6yfa9MvQMkaWxam0kK2EcggzTUkvTHASt7gAFuI4gUR/1o0cp/S+h2stCOBrKYqbIgM/EY9JhjYUBKoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WhYLUlDN; arc=none smtp.client-ip=209.85.167.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-434d0a63151so32615571cf.3;
-        Wed, 17 Apr 2024 10:13:38 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-518f8a69f82so4004157e87.2;
+        Wed, 17 Apr 2024 10:14:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713374017; x=1713978817; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SoMVffGlPrm+MFyOIcZFIoKUdPgF6ZH9Z9crMv5R1AM=;
-        b=XubTWGUFoD+XlhZjxXtTij69YW9AKAqdKnxMbuvvy3clb1sfcRX2o0IKpVG1WBcG/e
-         +HuVw7nGHREv4ACC3bHryEPjSfgmN92QZmRJfzSBPEB29ljXBrbT4Qm99BW697/IL5Dg
-         qLhjiH1BaT0308aKypQv23oM9rJ9jYM0lPFefzasqbp9hPXUW6XYJR9w9RO0rHswDGlW
-         8b2QlLHcoUKweWqEFYBYPC6pOdocf6krhQBOwf8U5PSCggB8EBj5qFhVWcJStO4/Cl2J
-         TQXNT3OrlMShn/Rxu+tQeoDbitAU6rNvdz8mjmtGJcbyOUPo2xKZ2WEAt+kDbfbjhqWo
-         LOlQ==
+        d=gmail.com; s=20230601; t=1713374042; x=1713978842; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=b1WlPy7Sg/AbF3lG9IuHJ6Ld8oFGaFqFMXHnnnRw8iY=;
+        b=WhYLUlDNmg0Gy24mY+BdQ5ly1WLwqnWUuIeWK3ls/lUIQMp6yt6/IBX2fHTONVh+3U
+         TvmdjwaQlFSyOFIOByPjazWOIWcR3QcdBAncxF+QMpQRdaxE00xtYMelpoEs58G2aJMg
+         +a4s1ck6oVcDNTXgKKlPQkpIGLOOZ9mUXqybXI2cRdW0vvCLTBv3U7z4oXh30AVkq6vv
+         LdXNZ71+Wca3/b2+rojo92fMqtfunEGq7GDHRx9+fQV1tTF87KiTanDe6XUvVuwT8aGI
+         7HlCDdBfX6Euahbqa4Zp+0Ile5m5Ru18H0PAkXZK93gEJbjBBDcSNPUtftz5AS3GQKNQ
+         USnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713374017; x=1713978817;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SoMVffGlPrm+MFyOIcZFIoKUdPgF6ZH9Z9crMv5R1AM=;
-        b=uJu5C7X3M9GVZMG6UCjf9SbP6CCNzv2/gcwHujXKhiA1rJPvwjh/DCFLeS9iT8zkAy
-         XiH2U2wCIXqNxPsMig6cYIpXyzrzwQpwzgKSAcOf7y3zwh0LrPn1PHkVfvQgx5tphz5L
-         FssV7QvvrGNpaouvtP75+lMSgT0//JA0eX2k1UhZ1yfo+Kddt18CRLOqE3mF03Ryr99N
-         7UNKP39KNj29MhKK+X979ia7CV/xdCeNve0TQM0WhMJuyKyKBS0ELNhzfUG/cctpGCQ9
-         pRc+yEKCJK0th8EZQK0WTFwCM5fnu5Gjuohf+RZUcKs2YaUBReC3gnLaJ9ByvalG09h4
-         OJEw==
-X-Forwarded-Encrypted: i=1; AJvYcCWViLUX+bU+Nlem12rs5EV+EQMQ0lvS8bFr/yYLOUbH2DWAZcrCMStNFSpflfXDzD52JZn8lhiIonXpTGpu/faeQkaGBAHnTAm9pAc/4YukXQmXuL+FfYQpiJIJ6WsKvli2gKiO+Fqx
-X-Gm-Message-State: AOJu0YzL5cXF27VBaQ31MNeM//Dj1O1dpJJKLA4V+ddOeiB65jMhvPjm
-	SO6LiOQrwyaRRlXb6xhuuhLa1t1pys7ZoqQFmqmbNOxgVxWVY28g/TOKLA==
-X-Google-Smtp-Source: AGHT+IEwvVAGeqDMetg/k7oP2EviQw8jDsoog+bYAOSxCSgeSpqFDWkHLG1bzCZ2SMykTxtnEg2QVA==
-X-Received: by 2002:ac8:7f88:0:b0:436:8bfd:138d with SMTP id z8-20020ac87f88000000b004368bfd138dmr99961qtj.11.1713374017308;
-        Wed, 17 Apr 2024 10:13:37 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id e15-20020ac8490f000000b00434d86fb403sm8247196qtq.86.2024.04.17.10.13.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Apr 2024 10:13:33 -0700 (PDT)
-Message-ID: <b83b1f5b-a989-40b1-8874-85f75f17b4dc@gmail.com>
-Date: Wed, 17 Apr 2024 10:13:27 -0700
+        d=1e100.net; s=20230601; t=1713374042; x=1713978842;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b1WlPy7Sg/AbF3lG9IuHJ6Ld8oFGaFqFMXHnnnRw8iY=;
+        b=Qn6LWCTjX5WihT8n7Bc1X7gUOsVraOeAeMOy02okmO6mPgdu5Pm6VWIVeEaQhljJtb
+         zalJwZjppy2s53IS/CXMbGu87tjzZZUf5UNoENxLuSzXRiupDt3Xnyso7GTkwPk/wxlM
+         XupSj0I/ryFzR3U2eZ2cQ87wcg+DKjN7eJ26/+BswQI32lejIugpbEW+3c+/mrR13dGj
+         7eUP80boKOALS9YzgbsVZcebodInTjhW9F6gQyzjHBVI0CF93d2GS4bl/OI3BZqazU48
+         lrvI21rO/7IIVSnxCN2QuaEGy8kLHWtmFg7rLjutCdowazWS80k2AQyw8tM0zw5O6QxL
+         ZZgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXcR7nsa29sO+llogQHgUoi2ifIjUmu7WP8mHvYqwjU0bAx5aKR0QzOK70kedtLYbVRPon2Z6mRT+muhm9NjP5c7F1D1Vzfw6EzQeXffBC7aKdYbVE3Tiboj8OqaVgWk6RzAghOGjf6z8z/aKc/0W7iJg03PIOxQe/gUIDM8cxzNRNIqdU9
+X-Gm-Message-State: AOJu0Yyfigh2bBUqh6t2rYIm7Zt5uWsFNp8ze40qJrqlbXTAjOsHkTsR
+	Ql0oMun+MOCmFEU5kTart4J/faQtpV80xZkgSZ4ZyN2UtiMoEk1ctqjniw==
+X-Google-Smtp-Source: AGHT+IGcIV12jfWYrHmoGAn10S6hsqSnQ+zpqC4kPUQUcwpfqg33BTEVy4vyYHhM1HSjj7OlnYv7/A==
+X-Received: by 2002:ac2:46e6:0:b0:518:c2fb:a365 with SMTP id q6-20020ac246e6000000b00518c2fba365mr8484901lfo.31.1713374041742;
+        Wed, 17 Apr 2024 10:14:01 -0700 (PDT)
+Received: from mobilestation.baikal.int (srv1.baikalchip.ru. [87.245.175.227])
+        by smtp.gmail.com with ESMTPSA id z18-20020a19f712000000b00518e3a194e9sm1078669lfe.304.2024.04.17.10.14.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 10:14:01 -0700 (PDT)
+Date: Wed, 17 Apr 2024 20:13:59 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org, linux-serial@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [PATCH 2/4] dmaengine: dw: Add memory bus width verification
+Message-ID: <lzipslbrr4fkpqc3plfllltls2sy2mrlentp7clpjoppvgscoi@zlmysqym2kyb>
+References: <20240416162908.24180-1-fancer.lancer@gmail.com>
+ <20240416162908.24180-3-fancer.lancer@gmail.com>
+ <Zh7Hpuo-TzSmlz69@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Please create the email alias do-not-apply-to-stable@kernel.org
- -> /dev/null
-To: Willy Tarreau <w@1wt.eu>, Greg KH <gregkh@linuxfoundation.org>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
- Thorsten Leemhuis <linux@leemhuis.info>, helpdesk@kernel.org,
- "workflows@vger.kernel.org" <workflows@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-References: <b452fd54-fdc6-47e4-8c26-6627f6b7eff3@leemhuis.info>
- <20240417090918.77360289@sal.lan> <2024041715-calorie-late-c4de@gregkh>
- <Zh+M+NWKbpQeT/Z6@1wt.eu>
-Content-Language: en-US
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <Zh+M+NWKbpQeT/Z6@1wt.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zh7Hpuo-TzSmlz69@smile.fi.intel.com>
 
-On 4/17/24 01:48, Willy Tarreau wrote:
-> On Wed, Apr 17, 2024 at 10:16:26AM +0200, Greg KH wrote:
->>> at the scripts used by stable developers - and maybe at the ML server - to
->>> catch different variations won't hurt, as it sounds likely that people will
->>> end messing up with a big name like "do-not-apply-to-stable", typing
->>> instead things like:
->>>
->>> 	do_not_apply_to_stable
->>> 	dont-apply-to-stable
->>>
->>> and other variants.
->>
->> I want this very explicit that someone does not want this applied, and
->> that it has a reason to do so.  And if getting the email right to do so
->> is the issue with that, that's fine.  This is a very rare case that
->> almost no one should normally hit.
+On Tue, Apr 16, 2024 at 09:47:02PM +0300, Andy Shevchenko wrote:
+> On Tue, Apr 16, 2024 at 07:28:56PM +0300, Serge Semin wrote:
+> > Currently in case of the DEV_TO_MEM or MEM_TO_DEV DMA transfers the memory
+> > data width (single transfer width) is determined based on the buffer
+> > length, buffer base address or DMA master-channel max address width
+> > capability. It isn't enough in case of the channel disabling prior the
+> > block transfer is finished. Here is what DW AHB DMA IP-core databook says
+> > regarding the port suspension (DMA-transfer pause) implementation in the
+> > controller:
+> > 
+> > "When CTLx.SRC_TR_WIDTH < CTLx.DST_TR_WIDTH and the CFGx.CH_SUSP bit is
+> > high, the CFGx.FIFO_EMPTY is asserted once the contents of the FIFO do not
+> > permit a single word of CTLx.DST_TR_WIDTH to be formed. However, there may
+> > still be data in the channel FIFO, but not enough to form a single
+> > transfer of CTLx.DST_TR_WIDTH. In this scenario, once the channel is
+> > disabled, the remaining data in the channel FIFO is not transferred to the
+> > destination peripheral."
+> > 
+> > So in case if the port gets to be suspended and then disabled it's
+> > possible to have the data silently discarded even though the controller
+> > reported that FIFO is empty and the CTLx.BLOCK_TS indicated the dropped
+> > data already received from the source device. This looks as if the data
+> > somehow got lost on a way from the peripheral device to memory and causes
+> > problems for instance in the DW APB UART driver, which pauses and disables
+> > the DMA-transfer as soon as the recv data timeout happens. Here is the way
+> > it looks:
+> > 
+> >  Memory <------- DMA FIFO <------ UART FIFO <---------------- UART
+> >   DST_TR_WIDTH -+--------|       |         |
+> >                 |        |       |         |                No more data
+> >    Current lvl -+--------|       |---------+- DMA-burst lvl
+> >                 |        |       |---------+- Leftover data
+> >                 |        |       |---------+- SRC_TR_WIDTH
+> >                -+--------+-------+---------+
+> > 
+> > In the example above: no more data is getting received over the UART port
+> > and BLOCK_TS is not even close to be fully received; some data is left in
+> > the UART FIFO, but not enough to perform a bursted DMA-xfer to the DMA
+> > FIFO; some data is left in the DMA FIFO, but not enough to be passed
+> > further to the system memory in a single transfer. In this situation the
+> > 8250 UART driver catches the recv timeout interrupt, pauses the
+> > DMA-transfer and terminates it completely, after which the IRQ handler
+> > manually fetches the leftover data from the UART FIFO into the
+> > recv-buffer. But since the DMA-channel has been disabled with the data
+> > left in the DMA FIFO, that data will be just discarded and the recv-buffer
+> > will have a gap of the "current lvl" size in the recv-buffer at the tail
+> > of the lately received data portion. So the data will be lost just due to
+> > the misconfigured DMA transfer.
+> > 
+> > Note this is only relevant for the case of the transfer suspension and
+> > _disabling_. No problem will happen if the transfer will be re-enabled
+> > afterwards or the block transfer is fully completed. In the later case the
+> > "FIFO flush mode" will be executed at the transfer final stage in order to
+> > push out the data left in the DMA FIFO.
+> > 
+> > In order to fix the denoted problem the DW AHB DMA-engine driver needs to
+> > make sure that the _bursted_ source transfer width is greater or equal to
+> > the single destination transfer (note the HW databook describes more
+> > strict constraint than actually required). Since the peripheral-device
+> > side is prescribed by the client driver logic, the memory-side can be only
+> > used for that. The solution can be easily implemented for the DEV_TO_MEM
+> > transfers just by adjusting the memory-channel address width. Sadly it's
+> > not that easy for the MEM_TO_DEV transfers since the mem-to-dma burst size
+> > is normally dynamically determined by the controller. So the only thing
+> > that can be done is to make sure that memory-side address width can be
+> > greater than the peripheral device address width.
 > 
-> For using a comparable approach in haproxy on a daily basis, I do see
-> the value in this. We just mark a lot of fixes "no backport needed" or
-> "no backport needed unless blablabla" for everything that is only
-> relevant to the dev tree, and that's a huge time saver for those working
-> on the backports later.
+> ...
 > 
-> Maybe "not-for-stable" would be both shorter and easier to remember BTW ?
+> > +static int dwc_verify_m_buswidth(struct dma_chan *chan)
+> > +{
+> > +	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
+> > +	struct dw_dma *dw = to_dw_dma(chan->device);
+> > +	u32 reg_width, reg_burst, mem_width;
+> > +
+> > +	mem_width = dw->pdata->data_width[dwc->dws.m_master];
+> > +
+> > +	/* Make sure src and dst word widths are coherent */
+> > +	if (dwc->dma_sconfig.direction == DMA_MEM_TO_DEV) {
+> > +		reg_width = dwc->dma_sconfig.dst_addr_width;
+> > +		if (mem_width < reg_width)
+> > +			return -EINVAL;
+> > +
+> > +		dwc->dma_sconfig.src_addr_width = mem_width;
+> > +	} else if (dwc->dma_sconfig.direction == DMA_DEV_TO_MEM) {
+> > +		reg_width = dwc->dma_sconfig.src_addr_width;
+> > +		reg_burst = rounddown_pow_of_two(dwc->dma_sconfig.src_maxburst);
+> > +
+> > +		dwc->dma_sconfig.dst_addr_width = min(mem_width, reg_width * reg_burst);
+> 
 
-Yes, "not-for-stable" looks like a good name to me.
--- 
-Florian
+> I understand the desire to go this way, but wouldn't be better to have
+> a symmetrical check and return an error?
 
+Sadly the situation isn't symmetrical.
+
+The main idea of the solution proposed in this patch is to make sure
+that the DMA transactions would fill in the DMA FIFO in a way so in
+case of the suspension all the data would be delivered to the
+destination with nothing left in the DMA FIFO and the CFGx.FIFO_EMPTY
+flag would mean the real FIFO emptiness. It can be reached only if
+(CTLx.SRC_TR_WIDTH * CTLx.SRC_MSIZE) >= CTLx.DST_TR_WIDTH
+(calculated in the real values of course). But CTLx.SRC_MSIZE is only
+relevant for the flow-control/non-memory peripherals. Thus the
+conditions under which the problem can be avoided are:
+
+DMA_MEM_TO_DEV: CTLx.SRC_TR_WIDTH >= CTLx.DST_TR_WIDTH
+DMA_DEV_TO_MEM: CTLx.SRC_TR_WIDTH * CTLx.SRC_MSIZE >= CTLx.DST_TR_WIDTH
+
+In both cases the non-memory peripheral side parameters (DEV-side)
+can't be changed because they are selected by the client drivers based
+on their specific logic (Device FIFO depth, watermarks, CSR widths,
+etc). But we can vary the memory-side transfer width as long as it's
+within the permitted limits.
+
+In case of the DMA_MEM_TO_DEV transfers we can change the
+CTLx.SRC_TR_WIDTH because it represents the memory side transfer
+width. But if the maximum memory transfer width is smaller than the
+specified destination register width, there is nothing we can do. Thus
+returning the EINVAL error. Note this is mainly a hypothetical
+situation since normally the max width of the memory master xfers is
+greater than the peripheral master xfer max width (in my case it's 128
+and 32 bits respectively).
+
+In case of the DMA_DEV_TO_MEM transfers we can change the CTLx.DST_TR_WIDTH
+parameter because it's the memory side. Thus if the maximum
+memory transfer width is smaller than the bursted source transfer,
+then we can stick to the maximum memory transfer width. But if it's
+greater than the bursted source transfer, we can freely reduce it
+so to support the safe suspension+disable DMA-usage pattern.
+
+> 
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> 
+
+> IIRC MEM side of the DMA channel will ignore those in HW, so basically you are
+> (re-)using them purely for the __ffs() corrections.
+
+No. DMAC ignores the _burst length_ parameters CTLx.SRC_MSIZE and
+CTLx.DEST_MSIZE for the memory side (also see my comment above):
+
+"The CTLx.SRC_MSIZE and CTLx.DEST_MSIZE are properties valid only for
+peripherals with a handshaking interface; they cannot be used for
+defining the burst length for memory peripherals.
+
+When the peripherals are memory, the DW_ahb_dmac is always the flow
+controller and uses DMA transfers to move blocks; thus the
+CTLx.SRC_MSIZE and CTLx.DEST_MSIZE values are not used for memory
+peripherals. The SRC_MSIZE/DEST_MSIZE limitations are used to
+accommodate devices that have limited resources, such as a FIFO.
+Memory does not normally have limitations similar to the FIFOs."
+
+In my case the problem is in the CTLx.SRC_TR_WIDTH and
+CTLx.DST_TR_WIDTH values misconfiguration. Here is the crucial comment
+in the HW-manual about that (cited in the commit messages):
+
+"When CTLx.SRC_TR_WIDTH < CTLx.DST_TR_WIDTH and the CFGx.CH_SUSP bit is
+high, the CFGx.FIFO_EMPTY is asserted once the contents of the FIFO do not
+permit a single word of CTLx.DST_TR_WIDTH to be formed. However, there may
+still be data in the channel FIFO, but not enough to form a single
+transfer of CTLx.DST_TR_WIDTH. In this scenario, once the channel is
+disabled, the remaining data in the channel FIFO is not transferred to the
+destination peripheral."
+
+See Chapter 7.7 "Disabling a Channel Prior to Transfer Completion" of
+the DW DMAC HW manual for more details.
+
+-Serge(y)
+
+> 
+> ...
+> 
+> >  	dwc->dma_sconfig.src_maxburst =
+> > -		clamp(dwc->dma_sconfig.src_maxburst, 0U, dwc->max_burst);
+> > +		clamp(dwc->dma_sconfig.src_maxburst, 1U, dwc->max_burst);
+> >  	dwc->dma_sconfig.dst_maxburst =
+> > -		clamp(dwc->dma_sconfig.dst_maxburst, 0U, dwc->max_burst);
+> > +		clamp(dwc->dma_sconfig.dst_maxburst, 1U, dwc->max_burst);
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
 
