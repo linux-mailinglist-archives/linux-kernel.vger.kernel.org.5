@@ -1,208 +1,126 @@
-Return-Path: <linux-kernel+bounces-148834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C012C8A87E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:40:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 578928A87EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:41:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78F99288295
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:40:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88DC01C21BEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:41:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86EA514883C;
-	Wed, 17 Apr 2024 15:38:50 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF48148FFE;
+	Wed, 17 Apr 2024 15:38:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HT7MuNfq"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D13DD1487F1;
-	Wed, 17 Apr 2024 15:38:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F4621487F3
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:38:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713368329; cv=none; b=UwGM78zlH1SFT0qa/RkCosQinq/sg2+bUsLzNJu2G/pGW93bb4hXIkAn3QihgsD6ppU6WEeVp7m0coVHBWHBPZG13f5Jl7Mwz8c/mt9Vkzj2P0jwlcBF2mAJPyjZlDxgSExhMZCSNNhuLpLpvToAuMxTV4J9ddSTP0rR2t5uKQA=
+	t=1713368335; cv=none; b=SRKr+OGyae9wep01qIbQRQ3FqaZP/r8roL4+vfoHYHCT9U1j1ClPfjNdF3KnufKTHbQqbIY6NU0pxvq4kwwjoKSpEQ1X9rMrXb7flEz2rvVcwJl9S7QCfChyfIIqIRixuJ8OFftSbL4naRXizkeItH6PyR7dZ9IahnGwUKoJcLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713368329; c=relaxed/simple;
-	bh=GEwKcew9dkrK7al83zqmzbXTl8DFGOiIto9YUHLUKgI=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AENnMVv308UNu3yM9loaH62fdAS9vBwj0Nb6Rujzxr+QEZdJ1vWkWBdqGoLQxWTCv4xFFJLg6LF6kuiHXuAl0PH9ATok8lCfZMQHaGHedqhrsizK6+4NJKKZyYP2FW+iWN2LasFH9QE9aPxRNFJtPo3GIdxSeYsDvc412AqA/XA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VKQ4W5nkBz6F951;
-	Wed, 17 Apr 2024 23:36:43 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 35D8B140B38;
-	Wed, 17 Apr 2024 23:38:44 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 17 Apr
- 2024 16:38:43 +0100
-Date: Wed, 17 Apr 2024 16:38:42 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Salil Mehta <salil.mehta@huawei.com>
-CC: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
-	<peterz@infradead.org>, "linux-pm@vger.kernel.org"
-	<linux-pm@vger.kernel.org>, "loongarch@lists.linux.dev"
-	<loongarch@lists.linux.dev>, "linux-acpi@vger.kernel.org"
-	<linux-acpi@vger.kernel.org>, "linux-arch@vger.kernel.org"
-	<linux-arch@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "kvmarm@lists.linux.dev"
-	<kvmarm@lists.linux.dev>, "x86@kernel.org" <x86@kernel.org>, Russell King
-	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, "Miguel
- Luis" <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, Catalin Marinas
-	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Ingo Molnar
-	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, Linuxarm <linuxarm@huawei.com>,
-	"justin.he@arm.com" <justin.he@arm.com>, "jianyong.wu@arm.com"
-	<jianyong.wu@arm.com>
-Subject: Re: [PATCH v6 06/16] ACPI: processor: Register deferred CPUs from
- acpi_processor_get_info()
-Message-ID: <20240417163842.0000415e@Huawei.com>
-In-Reply-To: <22ace9b108ee488eb017f5b3e8facb8d@huawei.com>
-References: <20240417131909.7925-1-Jonathan.Cameron@huawei.com>
-	<20240417131909.7925-7-Jonathan.Cameron@huawei.com>
-	<22ace9b108ee488eb017f5b3e8facb8d@huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1713368335; c=relaxed/simple;
+	bh=m7Jg/vL/xKOfRHStwyCzgv3f4ySN7DR3F489MW4STus=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B20UnYNe93J6++T+P/C+m4QM9Wz3vXkP66r+jECkaWeAjZGqX3Hxiee2Ae3tk5tYex9sk2xWnI3Nu3stP6beMo+EhPxJE2GGSFqCdlqtp2wNsmGXsGH770rnwuMF8AWr49BKrsk28I97Zco7phFp3eCokxTMAP4YA2do2fuMCh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HT7MuNfq; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-57013379e17so4297744a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 08:38:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713368331; x=1713973131; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=g2pX2HX1tz4L2xSO2Zk+2hCUXSnn6DNlfR6Exc5bCT0=;
+        b=HT7MuNfq4lG20KJ0mD0MJJdqhtp6n2dz+Gr4e+WR8/aYSlJ5u7u9M8vGJp7doMdJWK
+         1fbbkmuYsZFr1+T+TbXB0EsPYIP7I9bhSo1w77zYBJ4UCdx4OdeO0cD2RIHD5siKyRlp
+         ubLuhU9tp+pT451CTb65nmo74orPc+yQKV6NO2CZKUINCUD7SBViJurqwAPuv5tvniO/
+         vl9LFlJEotivVta4EL+O3lDojiUY/3RblKA2fjCwf0M9rjNQa8OibBPmud5JrjCZjW+F
+         3AomIEzrDkV1fKJnMuVlyXYnWSJMrqZMu5zO89jdBhDCBKzM1yrw2fH5B8dfYSqROVUg
+         PsoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713368331; x=1713973131;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g2pX2HX1tz4L2xSO2Zk+2hCUXSnn6DNlfR6Exc5bCT0=;
+        b=DXELDw4thFZauQXNq9QrJlDqiF0Yqw0xVMmXTKJXMfuYLg25OtfnaLmNMl/VeapCaZ
+         CgnLmYuazgnChNLwiXlE9pKitMM6k3c6frN3F1Eu6reENxxAHp/ATukRsP5ClBBTynvh
+         YoH9q1xwsF8Ii9b0uaO5Q8vRnaQARZX1iaOzF/64eecdxPTRY07v0ozKUfhDlEyfROpR
+         NBdjbdgrBPMhIuXWlLilQj+X69YRWz5VVTHvnvJWiUrL6jF06bWDFl0YnRUIyGXbY5yG
+         Xczl8jH0E1UeerrHQyZHScBN5/sZz4BcvnsVgmdRRnej2yEHAaEIHySBUAPynmKyA3Lz
+         b8aQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVoyppWJAPNX88jkL9/JX0S4ZZ/JiTdPF0h8JssHUxFJgbUIwZ8TT7eCYfJhWqJuoZWklkcbrLRYwjpdCYx60StwMuj7CzANfPAesog
+X-Gm-Message-State: AOJu0YyM+o0uzELOUaRBgQLOFd/QcvyttEgV14E4RskvyAdgw6Fg4+It
+	LSqYXkEzwNbT2ZMnsDL/tBHyaqHLPZzxda0mk2eY96y+K0vLnxZLj/6tO1KjX/g=
+X-Google-Smtp-Source: AGHT+IGlfGw+4FpskCxgZJHJHpEBj4/cFequxAP7fu3wNXs185hTt2/Ula2a2m4jtIdBx0Xh5KXoOw==
+X-Received: by 2002:a50:cd5d:0:b0:56e:2abd:d00f with SMTP id d29-20020a50cd5d000000b0056e2abdd00fmr12943233edj.18.1713368331309;
+        Wed, 17 Apr 2024 08:38:51 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id ev27-20020a056402541b00b0056b8dcdaca5sm7427656edb.73.2024.04.17.08.38.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 08:38:50 -0700 (PDT)
+Date: Wed, 17 Apr 2024 18:38:46 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: Zeng Heng <zengheng4@huawei.com>, linus.walleij@linaro.org,
+	linux-kernel@vger.kernel.org, xiexiuqi@huawei.com,
+	linux-gpio@vger.kernel.org, weiyongjun1@huawei.com,
+	liwei391@huawei.com
+Subject: Re: [PATCH] pinctrl: devicetree: fix refcount leak in
+ pinctrl_dt_to_map()
+Message-ID: <d80e09d8-5f35-4865-9fe8-195b86527972@moroto.mountain>
+References: <20240415105328.3651441-1-zengheng4@huawei.com>
+ <Zh_rM04PspfXxlv_@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zh_rM04PspfXxlv_@smile.fi.intel.com>
 
-On Wed, 17 Apr 2024 16:03:51 +0100
-Salil Mehta <salil.mehta@huawei.com> wrote:
-
-> >  From: Jonathan Cameron <jonathan.cameron@huawei.com>
-> >  Sent: Wednesday, April 17, 2024 2:19 PM
-> >  
-> >  From: James Morse <james.morse@arm.com>
-> >  
-> >  The arm64 specific arch_register_cpu() call may defer CPU registration until
-> >  the ACPI interpreter is available and the _STA method can be evaluated.
-> >  
-> >  If this occurs, then a second attempt is made in acpi_processor_get_info().
-> >  Note that the arm64 specific call has not yet been added so for now this will
-> >  be called for the original hotplug case.
-> >  
-> >  For architectures that do not defer until the ACPI Processor driver loads
-> >  (e.g. x86), for initially present CPUs there will already be a CPU device. If
-> >  present do not try to register again.
-> >  
-> >  Systems can still be booted with 'acpi=off', or not include an ACPI
-> >  description at all as in these cases arch_register_cpu() will not have
-> >  deferred registration when first called.
-> >  
-> >  This moves the CPU register logic back to a subsys_initcall(), while the
-> >  memory nodes will have been registered earlier.
-> >  Note this is where the call was prior to the cleanup series so there should be
-> >  no side effects of moving it back again for this specific case.
-> >  
-> >  [PATCH 00/21] Initial cleanups for vCPU HP.
-> >  https://lore.kernel.org/all/ZVyz%2FVe5pPu8AWoA@shell.armlinux.org.uk/
-> >  
-> >  e.g. 5b95f94c3b9f ("x86/topology: Switch over to GENERIC_CPU_DEVICES")
-> >  
-> >  Signed-off-by: James Morse <james.morse@arm.com>
-> >  Reviewed-by: Gavin Shan <gshan@redhat.com>
-> >  Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> >  Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> >  Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> >  Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> >  Co-developed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> >  Signed-off-by: Joanthan Cameron <Jonathan.Cameron@huawei.com>
-> >  ---
-> >  v6: Squash the two paths for conventional CPU Hotplug and arm64
-> >      vCPU HP.
-> >  v5: Update commit message to make it clear this is moving the
-> >      init back to where it was until very recently.
-> >  
-> >      No longer change the condition in the earlier registration point
-> >      as that will be handled by the arm64 registration routine
-> >      deferring until called again here.
-> >  ---
-> >   drivers/acpi/acpi_processor.c | 12 +++++++++++-
-> >   1 file changed, 11 insertions(+), 1 deletion(-)
-> >  
-> >  diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> >  index 7ecb13775d7f..0cac77961020 100644
-> >  --- a/drivers/acpi/acpi_processor.c
-> >  +++ b/drivers/acpi/acpi_processor.c
-> >  @@ -356,8 +356,18 @@ static int acpi_processor_get_info(struct
-> >  acpi_device *device)
-> >   	 *
-> >   	 *  NOTE: Even if the processor has a cpuid, it may not be present
-> >   	 *  because cpuid <-> apicid mapping is persistent now.
-> >  +	 *
-> >  +	 *  Note this allows 3 flows, it is up to the arch_register_cpu()
-> >  +	 *  call to reject any that are not supported on a given architecture.
-> >  +	 *  A) CPU becomes present.
-> >  +	 *  B) Previously invalid logical CPU ID (Same as becoming present)
-> >  +	 *  C) CPU already present and now being enabled (and wasn't
-> >  registered
-> >  +	 *     early on an arch that doesn't defer to here)
-> >   	 */
-> >  -	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
-> >  +	if ((!invalid_logical_cpuid(pr->id) && cpu_present(pr->id) &&
-> >  +	     !get_cpu_device(pr->id)) ||
-> >  +	    invalid_logical_cpuid(pr->id) ||
-> >  +	    !cpu_present(pr->id)) {  
+On Wed, Apr 17, 2024 at 06:30:59PM +0300, Andy Shevchenko wrote:
+> On Mon, Apr 15, 2024 at 06:53:28PM +0800, Zeng Heng wrote:
+> > If we fail to allocate propname buffer, we need to drop the reference
+> > count we just took. Because the pinctrl_dt_free_maps() includes the
+> > droping operation, here we call it directly.
 > 
+> ...
 > 
-Hi Salil,
-
-Thanks for quick review!
-
-> Logic is clear but it is ugly. We should turn them into macro or inline.
-
-You've found the 'ugly' in this approach vs keeping them separate.
-
-For this version I wanted to keep it clear that indeed this condition
-is a complex mess of different things (and to let people compare
-it easily with the two paths in v5 to convinced themselves this
-is the same) 
-
-It's also a little tricky to do, so will need some thought.
-
-I don't think a simple acpi_cpu_is_hotplug() condition is useful
-as it just moves the complexity away from where a reader is looking
-and it would only be used in this one case.
-
-It doesn't separate well into finer grained subconditions because
-(C) is a messy case of the vCPU HP case and a not done
-something else earlier.  The disadvantage of only deferring for
-arm64 and not other architectures.
-
-The best I can quickly come up with is something like this:
-#define acpi_cpu_not_present(cpu) \
-	(invalid_logical_cpuid(cpu) || !cpu_present(cpu))
-#define acpi_cpu_not_enabled(cpu) \
-	(!invalid_logical_cpuid(cpu) || cpu_present(cpu))
-
-	if ((apci_cpu_not_enabled(pr->id) && !get_cpu_device(pr->id) ||
-	    acpi_cpu_not_present(pr->id))
-
-Which would still need the same amount of documentation. The
-code still isn't enough for me to immediately be able to see
-what is going on.
-
-So maybe worth it... I'm not sure.  Rafael, you get to keep this
-fun, what would you prefer?
-
-Jonathan
-
-
+> >  	for (state = 0; ; state++) {
+> >  		/* Retrieve the pinctrl-* property */
+> >  		propname = kasprintf(GFP_KERNEL, "pinctrl-%d", state);
+> > -		if (!propname)
+> > -			return -ENOMEM;
+> > +		if (!propname) {
+> > +			ret = -ENOMEM;
+> > +			goto err;
+> > +		}
+> >  		prop = of_find_property(np, propname, &size);
+> >  		kfree(propname);
+> >  		if (!prop) {
+> >  			if (state == 0) {
+> > -				of_node_put(np);
+> > -				return -ENODEV;
+> > +				ret = -ENODEV;
+> > +				goto err;
 > 
+> Has it been tested? How on earth is this a correct change?
 > 
-> Thanks
-> Salil.
+> We iterate over state numbers until we have properties available. This chunk is
+> _successful_ exit path, we may not free parsed maps! Am I wrong?
+
+In this path state == 0 so we haven't had a successful iteration yet.
+
+regards,
+dan carpenter
 
 
