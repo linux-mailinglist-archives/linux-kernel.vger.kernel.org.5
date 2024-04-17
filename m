@@ -1,153 +1,110 @@
-Return-Path: <linux-kernel+bounces-147969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DEC48A7BF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:52:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C36F8A7BF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:56:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98FDD1C21400
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:52:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63F4B281AA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8776F53389;
-	Wed, 17 Apr 2024 05:51:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D635338F;
+	Wed, 17 Apr 2024 05:55:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Geqoz+z6"
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bPH4Drlv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 624C652F6A
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 05:51:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFCB952F6A;
+	Wed, 17 Apr 2024 05:55:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713333116; cv=none; b=dyv2jYhUkT2VUHg1SEbsYO77V9j7KfGsa7mRIOCd4ykamVdZvHOstUPnK4sIAtjwbQuSHRK6HCkr9zRrVL4P5wIF7NNDxU84NIef/gAC+FRNb99WNCMbhky3fHzuq1mns4r8GDim6F8zQxJSB+awTWmUthQd97AxuaggfQDQ+kk=
+	t=1713333354; cv=none; b=FoDRzudjilDA2xKGWFfYfa/APTo7LYwzTiO79P+SJn9h4aQYIhiiik+LhR7LZse5Libc+7PLXoss2hu/ufyBG7gBGuFC8dHF4cvo9GzecAwImloOWhTrw9rymdgfgul00pryoUL6TcPsI2UstR3+r62z/9P96tyYZIiGit3o3fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713333116; c=relaxed/simple;
-	bh=w7HryCv2MkFLy3CMuRvGthJHQXfYUYmVwkRRMXWvh3w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WhBLcIlgdQm1/ffGMWHLUjgwrZx8AQlOD1LfF55o9wgs38NrI0pMBjHdrAPSsTYotBbFSGob3yKjVmeH1v/rhrKr3xyV3AeTEbOqYXMVMzSe9LG8nXPVmgIcqC201wnr7P+HA0rQeIMwP0gieBz6ypazElMIR0rF+VC/4OPW/Vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Geqoz+z6; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <63d9540f-61bc-4eba-819c-c05d2e486bdb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713333111;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J2Dby/WRTliM9FBH5twXlHiebzbOlY7PIwOVs26Z0d0=;
-	b=Geqoz+z6jqUXVuY2jrltHv4ffLMCgMmQ5/OMLSqlm9R29FRjsuVrVOk8debuq6epazkYIF
-	kNWWCF2RSkhdmQjMptPX4z8XOuIRuHQaKCGs1mZYANfT6ZE6A32ckgCjrlxdnVNWieugbm
-	GyMhxz+TukJmLpRd4GGzCu6ZXDVY2ug=
-Date: Wed, 17 Apr 2024 13:51:21 +0800
+	s=arc-20240116; t=1713333354; c=relaxed/simple;
+	bh=O9FmMFUzDkQ7nDs/vZHy+9Q1QnSIFEtJv05CC2EKQho=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NkNXqZeiurwNDWIVY6KPqkqi5gTG6fH0zY0HgJJpP468uPx5QZC5Od/6j7t7uA+41PUtyG1/UNtu4k/EmG+pOBkRlFqTXIBCUJcQMh2RzMhkjHLlimp/Z6ceLQHKcPP7YdNT8t043nM4G69hnlBOqyyy8oKm+VfVW2ZV9Kh/bz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bPH4Drlv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AED07C072AA;
+	Wed, 17 Apr 2024 05:55:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713333353;
+	bh=O9FmMFUzDkQ7nDs/vZHy+9Q1QnSIFEtJv05CC2EKQho=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bPH4DrlvslPNp+oELqW1c6KOj4BdlN908yjOXXy3O2woVIYezrjAdETI+jSlN7zbI
+	 9AhsYYBEWWEZsNp8/YDr6UbjkDpPuDgOkq0pcXlgTtxcZmToWLt9fObgazLXt86arS
+	 B93gTUirCfd5lHLYVMcziUzaIcr6KX5yz+YBVB0wRk0obVw2VOd6ZaMh5e8z12i2Jr
+	 RaaqN1vS0VOm4rHMD+oVvZtOUWCsRB4OqExrgg01aOjUXHYHTkj3d/5s8gbpmwzTfK
+	 1iO3uDagRMgIXRvu3ba2grpPM5Z58rCFjFVYRH3j+VwgT+WwzJGkVy6m22N1wGjtzf
+	 4N2vdLu1l+ySg==
+Date: Wed, 17 Apr 2024 08:54:43 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Wei Yang <richard.weiyang@gmail.com>
+Cc: skseofh@gmail.com, robh@kernel.org, saravanak@google.com,
+	akpm@linux-foundation.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Daero Lee <daero_le.lee@samsung.com>
+Subject: Re: [PATCH] memblock: add no-map alloc functions
+Message-ID: <Zh9kI81ctisgukT8@kernel.org>
+References: <20240415142448.333271-1-skseofh@gmail.com>
+ <Zh1HP8IWWjexAUKN@kernel.org>
+ <20240417023147.ybefdy6fn5drvq5w@master>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bcachefs: Align the display format of
- `btrees/inodes/keys`
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Hongbo Li <lihongbo22@huawei.com>, linux-bcachefs@vger.kernel.org,
- linux-kernel@vger.kernel.org, Youling Tang <tangyouling@kylinos.cn>
-References: <20240417015448.84294-1-youling.tang@linux.dev>
- <toosz4pt2la6wf2575vwe6efebcbzsy735cq7exmlqhzrgicrf@s7g3rrbvge2l>
- <66ecea56-e4d3-4241-a1dc-378d70555321@linux.dev>
- <fpvnushjgr5txyduvpihevvghv64sdso4p6t3nhhddcjimqh2k@ehzpswsmnxin>
- <d17de3df-a3f2-4317-92cc-1fd02641328b@huawei.com>
- <29d5ea19-21b5-4076-9acc-8286a050c33f@huawei.com>
-Content-Language: en-US, en-AU
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Youling Tang <youling.tang@linux.dev>
-In-Reply-To: <29d5ea19-21b5-4076-9acc-8286a050c33f@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417023147.ybefdy6fn5drvq5w@master>
 
-Hi, Kent & Hongbo
-On 17/04/2024 11:21, Hongbo Li wrote:
->
->
-> On 2024/4/17 11:16, Hongbo Li wrote:
->>
->>
->> On 2024/4/17 10:59, Kent Overstreet wrote:
->>> On Wed, Apr 17, 2024 at 10:50:10AM +0800, Youling Tang wrote:
->>>> Hi, Kent
->>>> On 17/04/2024 10:20, Kent Overstreet wrote:
->>>>> On Wed, Apr 17, 2024 at 09:54:48AM +0800, Youling Tang wrote:
->>>>>> From: Youling Tang <tangyouling@kylinos.cn>
->>>>>>
->>>>>> Before patch:
->>>>>> ```
->>>>>>    #cat btrees/inodes/keys
->>>>>>    u64s 17 type inode_v3 0:4096:U32_MAX len 0 ver 0: mode=40755
->>>>>>      flags= (16300000)
->>>>>> ```
->>>>>>
->>>>>> After patch:
->>>>>> ```
->>>>>>    #cat btrees/inodes/keys
->>>>>>    u64s 17 type inode_v3 0:4096:U32_MAX len 0 ver 0:
->>>>>>      mode=40755
->>>>>>      flags= (16300000)
->> The flags also with the space after "=". Is it reseonable?
-> Sorry, I misspell. I mean whether it is reasonable.
->>>>> This would print a newline for keys that don't have a value...
->>>> The original intention was to make the display of the printed 
->>>> content in
->>>> '__bch2_inode_unpacked_to_text ()' consistent, without considering 
->>>> other
->>>> callbacks.
->>>>
->>>> Or just modify it in the following way?
->>>
->>> Yeah, that's better
->>>
->>> Do it off my master branch though, there's some printbuf 
->>> imprevements in
->>> there.
->>>
->>> https://evilpiepirate.org/git/bcachefs.git
-I will make the following changes based on the master branch,
+On Wed, Apr 17, 2024 at 02:31:47AM +0000, Wei Yang wrote:
+> On Mon, Apr 15, 2024 at 06:26:55PM +0300, Mike Rapoport wrote:
+> [...]
+> >> +	
+> >
+> >This changes behaviour of internal function, what effect will it have on
+> >the users?
+> >
+> >>  	if (!base)
+> >>  		return -ENOMEM;
+> >>  
+> >>  	*res_base = base;
+> >>  	if (nomap) {
+> >>  		err = memblock_mark_nomap(base, size);
+> 
+> Mike
+> 
+> One question may not directly relevant to this thread.
+> 
+> NOMAP doesn't apply to all arch? I took a look into the direct mapping
+> function on x86, memory_map_top_down(). It seems iterate all available pfn
+> instead of skipping NOMAP range. 
 
---- a/fs/bcachefs/inode.c
+Right, x86 does not use NOMAP.
+NOMAP was introduced to ensure that device/firmware memory on arm64 does
+not have an alias mapping in the direct map because MMU does not allow
+alias mapping with different caching modes.
+ 
+> >> -		if (err)
+> >> -			memblock_phys_free(base, size);
+> >>  	}
+> >>  
+> >>  	kmemleak_ignore_phys(base);
+> >
+> >-- 
+> >Sincerely yours,
+> >Mike.
+> 
+> -- 
+> Wei Yang
+> Help you, Help me
 
-+++ b/fs/bcachefs/inode.c
-@@ -534,12 +534,13 @@ int bch2_inode_v3_invalid(struct bch_fs *c, struct 
-bkey_s_c k,
-  static void __bch2_inode_unpacked_to_text(struct printbuf *out,
-                                           struct bch_inode_unpacked *inode)
-  {
-+       prt_printf(out, "\n");
-         printbuf_indent_add(out, 2);
-         prt_printf(out, "mode=%o\n", inode->bi_mode);
-
-         prt_str(out, "flags=");
-         prt_bitflags(out, bch2_inode_flag_strs, inode->bi_flags & ((1U 
-<< 20) - 1));
--       prt_printf(out, " (%x)\n", inode->bi_flags);
-+       prt_printf(out, "(%x)\n", inode->bi_flags);
->>>
->>>> --- a/fs/bcachefs/inode.c
->>>> +++ b/fs/bcachefs/inode.c
->>>> @@ -534,6 +534,8 @@ int bch2_inode_v3_invalid(struct bch_fs *c, struct
->>>> bkey_s_c k,
->>>>   static void __bch2_inode_unpacked_to_text(struct printbuf *out,
->>>> struct bch_inode_unpacked *inode)
->>>>   {
->>>> +       prt_newline(out);
->>>> +
->>>>          printbuf_indent_add(out, 2);
->>>>          prt_printf(out, "mode=%o", inode->bi_mode);
->>>>          prt_newline(out);
->>>>
->>>>
->>>> Thanks,
->>>> Youling.
->>>
->>
+-- 
+Sincerely yours,
+Mike.
 
