@@ -1,166 +1,194 @@
-Return-Path: <linux-kernel+bounces-148311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE88B8A80C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:22:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66E2B8A80CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:23:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D48AB23551
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:22:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8D571F21215
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:23:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6EE13C668;
-	Wed, 17 Apr 2024 10:20:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5078B13C8E5;
+	Wed, 17 Apr 2024 10:20:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nr3mPg5X"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="mkJh3BtI"
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91F9F13B295
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:20:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3FAD13C3E4
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:20:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713349213; cv=none; b=tnp71dW0+VSexk0K1oykuwHofzk/mdhblY1gnRaoRalVBshQxylTmJEGF0bsAuyp8BmkoMvFwmQpqoEC7VYsPknnsrslohrDRL/M+5iIQwE8wXHJBcPN8O3gaROWEHl4nJjJn8aLBPcQG1bYSOPYC9jP/Fu9z02FHN96F/gyl4k=
+	t=1713349236; cv=none; b=kYTgm1N4+oWvUlKPexXLD6UwqGnrrNeKJkB0ajwrHFh3LnR6n4OmU4IyzI2tgr4iGbpPwQpbZKad/qlHlbvIxaWUQeSvq+ctfc9t4EPlzLtCl7p1P7a6+tJgu4hOe84t4dDCUCcfdb60TG6erd2vlGOrt5+RFvEO7w61myHcyLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713349213; c=relaxed/simple;
-	bh=dDjG6YB8WcpgRH4sCEbHA+wVKctkcmxmzME/qEIroiY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hw58oN0E/m2p3UFUBy+3FpDrM2shoR5fU7wEk/qF7NG+6V4rF5tKyjJ6eT6r43YxEsZVgYoqikPLO7adNVUGtgsYSnNKB/867JuQnrAnXAF2VEgLWiBB1oWavCHUF6By+mNj5Q+b7a16LX/AJg5QDh3FTeiKLBxsKi+zFT+aejo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nr3mPg5X; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-516d1c8dc79so6948669e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 03:20:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713349209; x=1713954009; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zrs6iAAO4SVBswghNTTZW+QUAJVqns3ugAjr/mrsbC8=;
-        b=nr3mPg5X1MMEh9dvZRrrD1XDqRHCySxUpmuQTN3fFndrRQCnyXfz3ZyYGqVAnXF9Fn
-         OEuRGI8Q54G8G5mwBHtnI/4tsgcE9soWdXpMSNdIMyvI5GOFOqpsRJf4vF6Xeur4zYG7
-         7O9RApRL+d2lGKrCdmn5ngkFdsQrGkunxFTBkNV/Dw2zhbnKj1i9G5jXPQz+n78Ni8F5
-         QKJ8pcwE0NJTYMHJbF5gkggJb+Cl0YXvaflwV9+69in7MkCYxsG6DWx0sA8WYMqrpCT+
-         yLcXXUg2s3INznva5yqq1t0Tyfdghx+S5nml6EsNL5KkyozkxBPsd8Hy/KEJtN8jCxxB
-         blmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713349209; x=1713954009;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zrs6iAAO4SVBswghNTTZW+QUAJVqns3ugAjr/mrsbC8=;
-        b=whSdNXZmtatcASn1Md+Tt38wdS+TzSbs3ookPgUYIBbAj7N/LdBnqzuYJDVxa0pY8Z
-         eoCqNcDLwZeLVKCruusPDPgjWQwdEFD7a1OxtHi65t4SIdRGenwBfAQw1JUINtAusdjJ
-         DwzMfO97az+xe13oUr+1gveh/nb/K4y2H81OJEWijErrBQYJpczDkP6GazpRn1YwDVuM
-         0xjsVil4/e9+J8nDTR8wx5fUdmzh5bUPxo4PtgRtSJuJ9I50063TWCjB5FxAqFe8mnFD
-         S21fLkmLJPb7AMtCUjNJdZVEEHQCYO61jqIJZvAYQq8KWHe6JxlAZY7MiBRvWqXWfK1f
-         1FXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUd+oCIQc5z2kxLbnnuv64pVqB/GM7jP9NjAhp2Ljxf87ykkDLNIW8Tf2QdKEL7miKG+F37/4uW/b1iUVTh66/rpGlAwfcGw4XXDDS7
-X-Gm-Message-State: AOJu0YxCB3347xDrrd/g22hV4Xsxdd6DkyOtXRB/Nq4aI5D5dljQTJ0L
-	pdcVRx/iL409+pXK3u2/sYQob4mz29JCsu7Tbj3xlp9Qgz2jIojEs5Xn4xS4KKw=
-X-Google-Smtp-Source: AGHT+IEOahWQed32kV3EmBcZ13tNLL9ukzZ1h1XrxShRCPrrH1eKgqV1FmVUa9zexHbub5gfEuA/6g==
-X-Received: by 2002:a05:6512:a88:b0:515:a8e0:bf3c with SMTP id m8-20020a0565120a8800b00515a8e0bf3cmr14614083lfu.32.1713349209568;
-        Wed, 17 Apr 2024 03:20:09 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
-        by smtp.gmail.com with ESMTPSA id w12-20020ac2598c000000b00516c403d243sm1901592lfn.60.2024.04.17.03.20.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 03:20:09 -0700 (PDT)
-Date: Wed, 17 Apr 2024 13:20:07 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Herman van Hazendonk <github.com@herrie.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH] component: Support masters with no subcomponents
-Message-ID: <h47tqpveo7iitrz2luqifb7fidrhfv4o4rsivvb7bacbhj4qcg@xmamgxyfk3qr>
-References: <20240417-component-dummy-v1-1-b0854665c760@herrie.org>
+	s=arc-20240116; t=1713349236; c=relaxed/simple;
+	bh=Hqfqwezo4j40e/O6q9Y5jOHPHshmKCtSIPdpxWSc8go=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
+	 Content-Type:References; b=kD5ACvzplSkLKsh/2MlzLrHwqnkzLQOxcUlTWD2NY5u6EHYmcbEeLjiGWYkMoPgn9Atj4WFKKJUXibOGYusesTWRLcFC7HTukjVUxafolcTig+ULWDjXqDEb7GafbWK+zbnE9MV8m2o+wg8D3wvRW8Mw8HAzYU0HW9vFMzk5VUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=mkJh3BtI; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240417102031euoutp02b611b56fd282afb6b35723ab65168020~HCgx5OOP71892718927euoutp02v
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:20:31 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240417102031euoutp02b611b56fd282afb6b35723ab65168020~HCgx5OOP71892718927euoutp02v
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1713349231;
+	bh=dFt6dfcqV3zT2/ZiPZ6VfWUb9Ittzgqcfr2mHlwzjko=;
+	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+	b=mkJh3BtIzO80Gg+ySnEXp6oFTse34sqblkl0o4Ue5vGXUqRxc0+v5gcoYkATjhzn6
+	 f6c1HGwzkv8ogHl1K6tt3qzJSoBEp5bZMwXosy6Njj8ewelg155GGIBUg+BoN23jTr
+	 pluVfCm7C5G9aCZXjpFUqCTJWeGLvXaXGuRBGTbY=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240417102031eucas1p1a388b363c581a557fe3c4ca64f141a92~HCgxlaONv1596815968eucas1p1Z;
+	Wed, 17 Apr 2024 10:20:31 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+	eusmges2new.samsung.com (EUCPMTA) with SMTP id AA.39.09875.F62AF166; Wed, 17
+	Apr 2024 11:20:31 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240417102031eucas1p221e613c1c12e7f71449935a2090cd72e~HCgxLJvvj1176911769eucas1p27;
+	Wed, 17 Apr 2024 10:20:31 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240417102031eusmtrp1f8fa65831e1464c22b1362499d7a4fdd~HCgxJ80f-2417024170eusmtrp1B;
+	Wed, 17 Apr 2024 10:20:31 +0000 (GMT)
+X-AuditID: cbfec7f4-11bff70000002693-21-661fa26f07c1
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id 21.B5.09010.E62AF166; Wed, 17
+	Apr 2024 11:20:30 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240417102030eusmtip21c4b82205fab31cb65d46fa91d3a4030~HCgwZ4A6z1594315943eusmtip2g;
+	Wed, 17 Apr 2024 10:20:30 +0000 (GMT)
+Message-ID: <c091da0b-a150-428a-bf96-75f9f3eab2e2@samsung.com>
+Date: Wed, 17 Apr 2024 12:20:29 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240417-component-dummy-v1-1-b0854665c760@herrie.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 12/15] tty: serial: switch from circ_buf to kfifo
+To: Anders Roxell <anders.roxell@linaro.org>, Jiri Slaby
+	<jirislaby@kernel.org>
+Cc: gregkh@linuxfoundation.org, linux-amlogic@lists.infradead.org,
+	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org, Bjorn Andersson
+	<andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Neil
+	Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
+	<martin.blumenstingl@googlemail.com>
+Content-Language: en-US
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <Zh-fgtujwjiSXz7D@monster>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCKsWRmVeSWpSXmKPExsWy7djPc7r5i+TTDK5eVbC4NeU3k8W2DhuL
+	5sXr2SzePDrCbPFurozFz/YtTBYdk7ezWCyYzW0xcf9ZdovLu+awWZxZ3MtucWzRSRaL9ztv
+	MTrwery/0cru8XTCZHaPTas62TzuXNvD5rF/7hp2j81L6j0+b5ILYI/isklJzcksSy3St0vg
+	ythw9hFLwWyRioldn9kaGA8JdDFyckgImEgsP3iNsYuRi0NIYAWjxNztx1ggnC+MEu8vdbND
+	OJ8ZJd5c388E0/JidR8bRGI5o8TlUxOgnI+MEjufPger4hWwk+g9O5MNxGYRUJVY2LKNGSIu
+	KHFy5hMWEFtUQF7i/q0Z7CC2sICrxKU3b8HqRQQCJbZc3wE2lFngLLPEriV3wYqYBcQlbj2Z
+	D7aATcBQouttF1gDp4C6xMkTi5kgauQltr+dwwzSLCEwmVPi6PdNLBB3u0isXnsZ6gdhiVfH
+	t7BD2DISpyf3sEA0tDNKLPh9nwnCmcAo0fD8FiNElbXEnXO/gNZxAK3QlFi/Sx8i7Chx82c/
+	K0hYQoBP4sZbQYgj+CQmbZvODBHmlehoE4KoVpOYdXwd3NqDFy4xT2BUmoUULrOQvDkLyTuz
+	EPYuYGRZxSieWlqcm55abJSXWq5XnJhbXJqXrpecn7uJEZjQTv87/mUH4/JXH/UOMTJxMB5i
+	lOBgVhLhbRGWTRPiTUmsrEotyo8vKs1JLT7EKM3BoiTOq5oinyokkJ5YkpqdmlqQWgSTZeLg
+	lGpg6tDesLvT3ks6+6orkza/cK6vZ1+izPTLM6N7WXImpzwQbrBYLxe24q7A028LDnBx//Z4
+	84TDfOZZK/7XEiaJE3asOZnJ9Kn9Y/PdPylyS5mD+vi2b0zks9E+0+ArXFb9z+TQu/kPDK69
+	vqO24ple3pZ3zRHaR8rPPC3ocPN/6v2zsnRCddfZ2yFC9jdaruZKXV+oVjjXI6DL7ALD1Hjj
+	zrY128RrasNYpzc9C71y9PYU+VUGn3pfWh5lfPZejsdRTW/uqsnMnjJfkt4GHrpee19/xYWG
+	av5Ivy5pWeGm3F+PWXOO9P62X6L/NdDD2vaZtmz1t1TmCf8N3i27X2Vywshh54Tc4x3bXTV1
+	PecpsRRnJBpqMRcVJwIAoUmG79cDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrGIsWRmVeSWpSXmKPExsVy+t/xe7p5i+TTDN4/sbK4NeU3k8W2DhuL
+	5sXr2SzePDrCbPFurozFz/YtTBYdk7ezWCyYzW0xcf9ZdovLu+awWZxZ3MtucWzRSRaL9ztv
+	MTrwery/0cru8XTCZHaPTas62TzuXNvD5rF/7hp2j81L6j0+b5ILYI/SsynKLy1JVcjILy6x
+	VYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQy9hw9hFLwWyRioldn9kaGA8J
+	dDFyckgImEi8WN3H1sXIxSEksJRR4s6yVlaIhIzEyWkNULawxJ9rXVBF7xklHu08DZbgFbCT
+	6D07kw3EZhFQlVjYso0ZIi4ocXLmExYQW1RAXuL+rRnsILawgKvEpTdvwepFBAIlrt5Zwg4y
+	lFngPLPEhOZ9rBAbDjBJ3F23DqyDWUBc4taT+UwgNpuAoUTX2y6wbk4BdYmTJxYzQdSYSXRt
+	7WKEsOUltr+dwzyBUWgWkkNmIRk1C0nLLCQtCxhZVjGKpJYW56bnFhvpFSfmFpfmpesl5+du
+	YgRG8LZjP7fsYFz56qPeIUYmDsZDjBIczEoivC3CsmlCvCmJlVWpRfnxRaU5qcWHGE2BoTGR
+	WUo0OR+YQvJK4g3NDEwNTcwsDUwtzYyVxHk9CzoShQTSE0tSs1NTC1KLYPqYODilGphWKz++
+	WxdkKsZh9Pla9pEchZcXTbnfBoj/8Nsod1jt2F1XsSdTT5Xvr9ix1+lCjXCwweLDuVtszzxc
+	vVbdt3Lu66Ml5lptj3ImRO1YN3nKNUvpA9knP08PkZRItDt24a1PJ+eV82avT062+enwIVaL
+	JdxFh2caixWbhf7bTQ7752TLmSsFy2n2n3EV3X/MVmbLM8vKvs/mU4sWnYs8KHjI7RO/YeNs
+	Me19ixenvH/yvkrh8EZ192WCusFM9zaWf0vIkZhqJP6iz+fE0/QYPvGN9vHczwQz9sTP31As
+	+HLrmuv8M9pssu8fqwuxvx/G57jOP3uay+pojmlPFr1p7rn/cX/PvswDQWutlQL3XlJQYinO
+	SDTUYi4qTgQAEwnrVGkDAAA=
+X-CMS-MailID: 20240417102031eucas1p221e613c1c12e7f71449935a2090cd72e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20240415125847eucas1p2bc180c35f40f9c490c713679871af9ae
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240415125847eucas1p2bc180c35f40f9c490c713679871af9ae
+References: <20240405060826.2521-1-jirislaby@kernel.org>
+	<20240405060826.2521-13-jirislaby@kernel.org>
+	<CGME20240415125847eucas1p2bc180c35f40f9c490c713679871af9ae@eucas1p2.samsung.com>
+	<91ac609b-0fae-4856-a2a6-636908d7ad3c@samsung.com>
+	<d70049d5-d0fe-465f-a558-45b6785f6014@kernel.org> <Zh-fgtujwjiSXz7D@monster>
 
-On Wed, Apr 17, 2024 at 11:12:09AM +0200, Herman van Hazendonk wrote:
-> This happens in the MSM DRM driver when it is used
-> without any subcomponents, which is a special corner
-> case.
-> 
-> If the MDP4 is used with nothing but the LVDS display,
-> we get this problem that no components are found since
-> the LVDS is part of the MDP4 itself.
-> 
-> We cannot use a NULL match, so create a dummy match
-> with no components for this case so the driver will
-> still probe nicely without adding a secondary
-> complicated probe() path to the MSM DRM driver.
-> 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Herman van Hazendonk <github.com@herrie.org>
-> ---
-> This happens in the MSM DRM driver when it is used
-> without any subcomponents, which is a special corner
-> case.
-> 
-> If the MDP4 is used with nothing but the LVDS display,
-> we get this problem that no components are found since
-> the LVDS is part of the MDP4 itself.
-> 
-> We cannot use a NULL match, so create a dummy match
-> with no components for this case so the driver will
-> still probe nicely without adding a secondary
-> complicated probe() path to the MSM DRM driver.
-> ---
->  drivers/base/component.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/base/component.c b/drivers/base/component.c
-> index 741497324d78..bb79e7a77bb0 100644
-> --- a/drivers/base/component.c
-> +++ b/drivers/base/component.c
-> @@ -497,6 +497,10 @@ static void free_aggregate_device(struct aggregate_device *adev)
->  	kfree(adev);
->  }
->  
-> +static struct component_match dummy_match = {
-> +	.num = 0,
-> +};
+On 17.04.2024 12:08, Anders Roxell wrote:
+> On 2024-04-15 15:28, Jiri Slaby wrote:
+>> On 15. 04. 24, 14:58, Marek Szyprowski wrote:
+>>> On 05.04.2024 08:08, Jiri Slaby (SUSE) wrote:
+>>>> Switch from struct circ_buf to proper kfifo. kfifo provides much better
+>>>> API, esp. when wrap-around of the buffer needs to be taken into account.
+>>>> Look at pl011_dma_tx_refill() or cpm_uart_tx_pump() changes for example.
+>>>>
+>>>> Kfifo API can also fill in scatter-gather DMA structures, so it easier
+>>>> for that use case too. Look at lpuart_dma_tx() for example. Note that
+>>>> not all drivers can be converted to that (like atmel_serial), they
+>>>> handle DMA specially.
+>>>>
+>>>> Note that usb-serial uses kfifo for TX for ages.
+>>>>
+>>>> omap needed a bit more care as it needs to put a char into FIFO to start
+>>>> the DMA transfer when OMAP_DMA_TX_KICK is set. In that case, we have to
+>>>> do kfifo_dma_out_prepare twice: once to find out the tx_size (to find
+>>>> out if it is worths to do DMA at all -- size >= 4), the second time for
+>>>> the actual transfer.
+>>>>
+>>>> All traces of circ_buf are removed from serial_core.h (and its struct
+>>>> uart_state).
+>>>>
+>>>> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+>>>> ...
+>>> This patch landed in linux-next as commit 1788cf6a91d9 ("tty: serial:
+>>> switch from circ_buf to kfifo"). Unfortunately it breaks UART operation
+>>> on thr Amlogic Meson based boards (drivers/tty/serial/meson_uart.c
+>>> driver) and Qualcomm RB5 board (drivers/tty/serial/qcom_geni_serial.c).
+>>> Once the init process is started, a complete garbage is printed to the
+>>> serial console. Here is an example how it looks:
+>> Oh my!
+>>
+>> Both drivers move the tail using both kfifo and uart_xmit_advance()
+>> interfaces. Bah. Does it help to remove that uart_xmit_advance() for both of
+>> them? (TX stats will be broken.)
+>>
+>> Users of uart_port_tx() are not affected.
+>>
+>> This is my fault when merging uart_xmit_advance() with this series.
+>>
+> I'm trying to run on two dragonboard devices db410c and db845c and both
+> fails to boot see the boot failure from db845c [1], linux-next tag: next-20240415.
+> I tried to apply the patch [2] (that you proposed in this thread) ontop of next-20240415. However, that didn't
+> help bootlog on db845c [3].
 
-I think it's better to handle this in the MDP4 driver code.
+This is a different issue, which I've reported 2 days ago. See the 
+following thread:
 
-Also note that LVDS / LCDC support should be fixed anyway. The DT needs
-to pass LCDC clock (which it doesn't). apq8064 uses DSI2 clock after
-reparenting it onto the LVDS clock generated by MDP4. Previous
-generations should have a separate LCDC clock coming from MMCC.
+https://lore.kernel.org/all/d3eb9f21-f3e1-43ec-bf41-984c6aa5cfc8@samsung.com/
 
-> +
->  /**
->   * component_master_add_with_match - register an aggregate driver
->   * @parent: parent device of the aggregate driver
-> @@ -516,6 +520,9 @@ int component_master_add_with_match(struct device *parent,
->  	struct aggregate_device *adev;
->  	int ret;
->  
-> +	if (!match)
-> +		match = &dummy_match;
-> +
->  	/* Reallocate the match array for its true size */
->  	ret = component_match_realloc(match, match->num);
->  	if (ret)
-> 
-> ---
-> base-commit: 96fca68c4fbf77a8185eb10f7557e23352732ea2
-> change-id: 20240417-component-dummy-a9aae5ac7234
-> 
-> Best regards,
-> -- 
-> Herman van Hazendonk <github.com@herrie.org>
-> 
 
+Best regards
 -- 
-With best wishes
-Dmitry
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
 
