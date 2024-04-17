@@ -1,454 +1,326 @@
-Return-Path: <linux-kernel+bounces-147976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF8628A7C10
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 564A08A7C19
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:08:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48AF41F2269B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:06:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1A4C1F21BE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:08:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAD8453805;
-	Wed, 17 Apr 2024 06:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE6C6537EC;
+	Wed, 17 Apr 2024 06:08:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="cOc8ddW/"
-Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="aA4DwBbq"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2074.outbound.protection.outlook.com [40.107.244.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC82850A6D;
-	Wed, 17 Apr 2024 06:05:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713333960; cv=none; b=IBB4lYiZvT27mBi4FqP2ORuiKZco3iTj+rxTlaCKkCy4H51fPdpsBKZeQhK3pbkN5VBvC3ZKu0omw7bDuvz+Q5UplPWczcc5HVUxa4nDaiP/NLJp+1Ik2ypqx80PvhOrkaAfrXMyVh2CRNoS4paAwhX5GrJDc5ThcWJs6fflFP8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713333960; c=relaxed/simple;
-	bh=nF28r5dIb9I7hljBTQwM6VpAqhvmMaHYLgGiR80GtLk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MZCrJK2T02e/1oy+GLLt8Pf+OLBc0Tnh8ZPzqL1iTr0I2HNC4tctvtfPnJz6FfUdQCoIOHwv7U9VBbnrgpvru1Ou/5JVwrGxppA1mq79O4JoSV40WadH7MRag1nJV2FOiyrFEWCNOQdpN4/Azu/Ygl+S7iGl+2ziUkgHzaihJig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=cOc8ddW/; arc=none smtp.client-ip=4.36.192.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
-	bh=Ml0LgKKueaz/4+UjnF/Zo272NErj5BHcgX9G/wPWQY4=; b=cOc8ddW/d0PsSLzzeMh1D1skyP
-	Q7peel8UtXNpd74DCnPGzzWsSsgC6SgnCCkoH5oT6RMJ2T1SmFyLAfQhzUd4W0sOiMM8FAX6xgduV
-	vnyLwVM0jr0vWAg3jtvotYXMYnRSpAeLlgxxD/3MQgSxmkMgkFjJJ2qe0451KIb3K244nNOxq634Z
-	IxJN6noeza/OeSfMdCEO+ot66H0jGwuFY+CZngCS0RBTTypwImWNJNYByeOggLKjvtOtMaKDniIBJ
-	2xnxYdM1VZ3NNHHlqY1s6be3saDB6P30S3IA0rqc+zonPeolc/Ha4pM5TPoUBTtug1daDhWnIV2y5
-	+lpSbX3w==;
-Received: from [10.69.139.14] (helo=terabithia.localnet)
-	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <zfigura@codeweavers.com>)
-	id 1rwyQX-00GjjY-09;
-	Wed, 17 Apr 2024 01:05:49 -0500
-From: Elizabeth Figura <zfigura@codeweavers.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
- linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
- wine-devel@winehq.org,
- =?ISO-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
- Wolfram Sang <wsa@kernel.org>, Arkadiusz Hiler <ahiler@codeweavers.com>,
- Andy Lutomirski <luto@kernel.org>, linux-doc@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
- Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH v4 00/30] NT synchronization primitive driver
-Date: Wed, 17 Apr 2024 01:05:47 -0500
-Message-ID: <1856855.atdPhlSkOF@terabithia>
-In-Reply-To: <20240417052218.GI30852@noisy.programming.kicks-ass.net>
-References:
- <20240416010837.333694-1-zfigura@codeweavers.com>
- <2602449.Lt9SDvczpP@terabithia>
- <20240417052218.GI30852@noisy.programming.kicks-ass.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B365524D4
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 06:08:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.74
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713334118; cv=fail; b=l1jwXAbHmEP1l5vAOpUybHnbXBBGw58NXJYzfqniBh6vEQclmmLQHqnvWy2yXZ9BZYCjFQBDyETwUeMnFTeIhhIZqggxuaIgH9zYfEmQ9rwuYqVpFNijzLQoQCW9N/LJx6EotHXZ1hiphq3kutF/HpMAg6+JijxKV64Q3QevGnc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713334118; c=relaxed/simple;
+	bh=X+Pg2+gd+okkOt/VHEgiITV/qFIPsYa4ZnwQIhFW05s=;
+	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=UOWLjb0keIR3JPtaewp+OusBqROYBLApZZ+f4kuBUHno3gxVps9gKOF59NlqPkWNnw7DdRsSM3Fxg5YC2Fw0Q7T4DXf5VxCzrdjGtFHTRVptumAB9ibjSDxv1zUDYwzva9tH2mOP9iaBpzUb3AX8jTiMTCUk44Fh90mxZaU7fkc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=aA4DwBbq; arc=fail smtp.client-ip=40.107.244.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lVOSn3v7P63T7RxUVRvjtn7+8j0hndDcZtquv3CRTxL8p5vyDA9a92Kn/wR72lDGqCBem+ci4TrfmTVGu2WlUwCzAM5skyHgBFRbedCSVrYRRjX45o1WtJvFs0Jyvq7reM6+eEbnNM+E1GXx/DQi3yqUJa6HgSfNrwDpsByIIbm5swhy9+K0IZh1dO1vzLlozmTmWhp4dQ+bp3qkVF1W27aIoe/HaIjJhvwAR38W8NjqBoWli/6sH4DX4aYTPzvVUOb9BMZYPj7iX0XLf6/5w2kcmbpDFLlJWY4pevmv3TGnvpJJINoeUaG3Pnuzirhve9azm/uA3CUlWFBY+bmanQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=d/6hAubT9yOm1ml7FjLbrEQ0kz9bbGN2y72q8rwZ4nI=;
+ b=bkfK7jNq7ElBY3EXV6afE2uxBAHK8HrwuVBFqhMPebWwbNSLsOs3N/mxM8zEMP7zBQzIXu/A43Px+hx2CHlgOFsoV1s+SubUbiE7Y5jO4No8epPvTLm1+csgR3e1jFth0v4RpGgjWxt6ljg+DUf0BhnYyUA+xF5fBL6q/GDMwfAPqCfuDu5N1se+HpbhmQquHeLoOnKcSgEbN48ogG3U5n1ODv0DE2xdoeSEpeChxXzepb+WsSCuZJYhfheEC+7KR+Z6icTmHxoB+Vwcf1BDHo0JS3cz1RQp2S3Fa57EQVmfLQ94cokOYcVJTnzoJTmc5pBILD5YyWKxPwrkTXbYjg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d/6hAubT9yOm1ml7FjLbrEQ0kz9bbGN2y72q8rwZ4nI=;
+ b=aA4DwBbqCVltE6FIr0Ed9t6veREP0RBBUJzleWPU815zb01Ew6zen+jKJkn8+34+zOLSJCJBdoqRpQNIrwlpWZW8tiujYHQkhe8Sp5wDHpixNytX0dF30iTC1Q8Ru5ahdBI4QteM/NjaV3ENztexaPn6LfFEwKfx9ZfaLYb5m9g=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW2PR12MB2379.namprd12.prod.outlook.com (2603:10b6:907:9::24)
+ by SJ0PR12MB6989.namprd12.prod.outlook.com (2603:10b6:a03:448::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Wed, 17 Apr
+ 2024 06:08:33 +0000
+Received: from MW2PR12MB2379.namprd12.prod.outlook.com
+ ([fe80::494b:99e2:884a:dca1]) by MW2PR12MB2379.namprd12.prod.outlook.com
+ ([fe80::494b:99e2:884a:dca1%3]) with mapi id 15.20.7472.037; Wed, 17 Apr 2024
+ 06:08:32 +0000
+Message-ID: <79abd35f-1e15-3585-c5dd-1f2841896f4f@amd.com>
+Date: Wed, 17 Apr 2024 11:38:20 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [RFC PATCH 1/1] sched/eevdf: Skip eligibility check for current
+ entity during wakeup preemption
+Content-Language: en-US
+From: K Prateek Nayak <kprateek.nayak@amd.com>
+To: Youssef Esmat <youssefesmat@chromium.org>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ linux-kernel@vger.kernel.org, Tobias Huschle <huschle@linux.ibm.com>,
+ Luis Machado <luis.machado@arm.com>, Chen Yu <yu.c.chen@intel.com>,
+ Abel Wu <wuyun.abel@bytedance.com>, Tianchen Ding
+ <dtcccc@linux.alibaba.com>, Xuewen Yan <xuewen.yan94@gmail.com>,
+ "Gautham R. Shenoy" <gautham.shenoy@amd.com>
+References: <20240325060226.1540-1-kprateek.nayak@amd.com>
+ <20240325060226.1540-2-kprateek.nayak@amd.com>
+ <CA+q576OCK24VSp+s4OLD2ogO48i95y39_JO=zV=TwHSEg3_b1w@mail.gmail.com>
+ <f59c92ff-259b-5b89-9af5-fcaefccd4b23@amd.com>
+In-Reply-To: <f59c92ff-259b-5b89-9af5-fcaefccd4b23@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN0PR01CA0047.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:49::11) To MW2PR12MB2379.namprd12.prod.outlook.com
+ (2603:10b6:907:9::24)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2379:EE_|SJ0PR12MB6989:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6842ba69-bdfb-4c91-fa4c-08dc5ea4cecd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	JUv+nnOnnPfE/F+4ydekgbK0B0CZgKrU6Sg3L+lIW1QyJlGA77W+5qyv7+TJRmlf7N9JgMN1LdQwFy4Sunq9E5p897v9DeIqaRxyaNzW25PPa08IJ2i4qKZT+G04x0Y8tC19Klfr21DTsHgcQOJ/5Ls5xQRcIU/ny2MQw60ACxakTlm0mz+kRDEJc1aSnChsmw+5LKxBg0zRaCQlzOGlWTm73nCYPI6wKCZkTEZOuWwdw6DMQWHPtx+Jc/xPG+vulXxQIH6ALqwr8PuW1mOg8nT+TmSUHbY8LQO9se6rBE4waUqZidH93CfxqeT+FwjzTyA2I1mmt0nN7nJDTSwzVVA8cqBMnuPLfEDNjklWgN7Zo6x0ixZo22VIVldJe6h4gLmw2ExuMPmXSXcKIqVpdW7boaj80FdaAhIVftwMggBdFeFsec1MGlX5j2ifCaE2/s8KfKfvIGg0gKru0x9zQcukiFt1L7IAdxq2gvavB41n38D1Fwlm+v7tC3vsa7fR4I7D65zvBx7y7yMxcoI1Z9kM1pXPQlFu17vsSGEV3QrbCQCZX+ZzaINOME1f79f6XHdW2l5i1ELrX3x0Wv0UA8OuXYFYVM6gCurrU3dCGdzTphvqibFoYB+7CJr6RDFcQaF0QQRNfsN2rzp+E4ibT+Y95QaJMTN5BtUXHlAWdsg=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB2379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?eENYNTlNaFVmOE85VUZiQTlkY0FGQkJ2c0JUN3E0TGlkYUpTc2lOMm14aDdX?=
+ =?utf-8?B?RlpCY0h4bE1jQU9lZDlhaitiejEvTThYaml2ZFlWTHpQWm5xWXp2NHVCK3o5?=
+ =?utf-8?B?ZnNQc0Q3RVVmcG1rZG92M1dGVDlOOWlCT1gyZldBV0kyYlV1bEdQL1JZM3l3?=
+ =?utf-8?B?di9XdHdMd1dJTWN6K1pndnZUdmRydnBCZ0l6Rmd3aXBNZzlXcEtrRlhiaXZJ?=
+ =?utf-8?B?NUlZUDJVcmhOazY3Q1FvTSsxY2NvSHp5ZUF1SGdjTkZMcnE2M2o2NjVtaWNG?=
+ =?utf-8?B?OGVsWmt0STJiUGNzR1JCQUdmU2xLazlOdXhBSGVKcm5oUFY1SmJFNGlWRmpw?=
+ =?utf-8?B?ditWOWdRcWY2UWYrd3A4TksrMFlFWi9lMHg0Q096cmVDSWt4WFFaTDdlNEpk?=
+ =?utf-8?B?bjA1RFlWTVBSbnQrUVM2UVNhL2p5eDJjdFAvM1h3U3ozbWp6NEhLOTRIMTNo?=
+ =?utf-8?B?ZWVHUWpwdjQ2TzAxVTFKc3BoYk5pUzdROUt3eFhOZ1ZKVUNPRUlmVmwwVVBE?=
+ =?utf-8?B?UG4vbHFmdUlkd0VRWUt2a3lOU2RnTUpFQzhnVHdXazdwQklqYXpITFNDdGhv?=
+ =?utf-8?B?Tk1KQWhnTDdvaVBuZ0U0cDJEdXJGNVBlMmlhVDF1SEdqb3p3SDl2SFlBQm9y?=
+ =?utf-8?B?Ym8wTndicjFnUlM1b1phUVVvSkhBM0YwOEQvdFk3bm1oSVBYQ2JEOFRUUFNL?=
+ =?utf-8?B?N0tYeWRPaDhEWUNEYldsaVpOOXEzT0hJcXZPYml2QitGM1g5cXBLRVI1YVdP?=
+ =?utf-8?B?bGI2TlF5S09ULyswZkFwMXY3Z1ZiN3I5YmpaN3lETElIUTFRNUtYMDFEdUlY?=
+ =?utf-8?B?SmQvc2R5dzN1RTRSNjV2OHpKY3A3ejJGQkY0MXZLbnlZcHh3Rlh1bVZKdjZy?=
+ =?utf-8?B?Skt3Q0FZaXVxb2h6bXlFYnVGbHNyQTl4YVk2Mnc3em1qR1hWRlJKamVYbG9m?=
+ =?utf-8?B?NThoTVlZTXg3cmNDYXNvUForVDh6RGk1Y3J0VTBIY0dwSEdGeUhraE5qeE5u?=
+ =?utf-8?B?d1hHOHdoTUdkcUllNUg0VDROemNldUVnSUduN2FxRnN4SCtjUXN4aXpuamZr?=
+ =?utf-8?B?VmNCc0Z3d3B4bmd6ZkRCNzZPMUIzM0h2V1dNZjU1MFg0Nk9qUjliSkVuV1BB?=
+ =?utf-8?B?eXdLeDBHQzMzbS80NHU3aEZnSEhOVUk2RFIrK2NDUC9NT2J0UDBuL0tDcTdJ?=
+ =?utf-8?B?MGo5MWlhRHFDcWMyR0xnTkZJRHkwNXpOZyttU1V3MlpoR1MwZy9xUXhsMXFV?=
+ =?utf-8?B?bHVvK1BWUmtncTJJV1FQK2g2WkNpODJ0a2pkWFJjaGtRcEhZdFp0UHpMNG5Y?=
+ =?utf-8?B?aGVqd0FyZHZZeDNZTU1la2NNbzV4WDZyVmpLYjBNSjFFajQvSGlmQlB5Zmlw?=
+ =?utf-8?B?UFBLSHp1TEEwZnhRenkvUVAyTUx0Q1A1dmxQYjdhbjBQaVhXSzFRK0ozQjhG?=
+ =?utf-8?B?NFlBUWJaakdRQkdPRU43Q2RPK2x2MW5EWjViSW8xcFY0SVI0TDVXeGVwSW5U?=
+ =?utf-8?B?QmtSeTY5SjlKRFlzaVZIaE9qRjBZTFZJalc5RHFiR0ZSZ2x4TE81TGlzMEVD?=
+ =?utf-8?B?NGEzaFY4SElRclRnNjMycWo5Tnc1NmZpeFZGYlZrSFJNSDhuYTViUlNZQW41?=
+ =?utf-8?B?K2FMME93Zkx2TDg4dTl4alU1cDRVL0xzUUZpbWV3MG1TQ2FpQ1I5SmZ6aE1r?=
+ =?utf-8?B?RWNFSWM2M1ltOGJYVHdrZ3VQZDk5MnZkeFE1WVhJTnZoYU00ZVlXMjF0OG83?=
+ =?utf-8?B?WWp5NjdNZUNwQ294UDJQeWNBelpiemNrZVdrUFduLzR0MzVwaU1hZWhKVGZq?=
+ =?utf-8?B?YVZHSWhVNUxqSVo3STVGQUl3L1ZpWko3d09memtueC90Z3JkRUFaSWIvSENW?=
+ =?utf-8?B?SHN2N1BOTGxTRE1qU0FiQzUxUXpCckdEbXFpbk44dVZPbjdremgyaFJ0NHdv?=
+ =?utf-8?B?amNYY3JpbktoQkIydzV5MlVZSHhudEFhdGhyOWhwWFZ6dG9UQ3dmUVI1NXgv?=
+ =?utf-8?B?TFZOVEp0dDVNc1FidVlVZ0tmSWdzK2RRMWdadm1rVEJFUmp4UmUrUWcvajFU?=
+ =?utf-8?B?dVA1d0dwc1Rtb3FDNjJmMzhtb2NySitoVXh2MlNjNzdqWjM2NGorZzk4Vi9B?=
+ =?utf-8?Q?opYQ4upLO22ENHnCbM5E/me1v?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6842ba69-bdfb-4c91-fa4c-08dc5ea4cecd
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB2379.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 06:08:32.1099
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0ovSgm1kqjymEKRos7IsyjtYcQd34XcRf13kK0h4OWh9P1T10893mCtfBGs98gg48NfnJu2boI/QpMnJxrrgJQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6989
 
-On Wednesday, 17 April 2024 00:22:18 CDT Peter Zijlstra wrote:
-> On Tue, Apr 16, 2024 at 04:18:19PM -0500, Elizabeth Figura wrote:
-> > Let me know if that's good enough or if I should try to render it into
-> > plain text somehow.
+Hello Youssef,
+
+On 3/26/2024 8:36 AM, K Prateek Nayak wrote:
+>> [..snip..]
+>>
+>> Thanks for sharing this Prateek.
+>> We actually noticed we could also gain performance by disabling
+>> eligibility checks (but disable it on all paths).
+>> The following are a few threads we had on the topic:
+>>
+>> Discussion around eligibility:
+>> https://lore.kernel.org/lkml/CA+q576MS0-MV1Oy-eecvmYpvNT3tqxD8syzrpxQ-Zk310hvRbw@mail.gmail.com/
+>> Some of our results:
+>> https://lore.kernel.org/lkml/CA+q576Mov1jpdfZhPBoy_hiVh3xSWuJjXdP3nS4zfpqfOXtq7Q@mail.gmail.com/
+>> Sched feature to disable eligibility:
+>> https://lore.kernel.org/lkml/20231013030213.2472697-1-youssefesmat@chromium.org/
+>>
 > 
-> Plain text is much preferred. I'm more of a text editor kinda guy --
-> being a programmer and all that.
-
-I can certainly sympathize with that ;-)
-
-Here's a (slightly ad-hoc) simplification of the patch into text form inlined 
-into this message; hopefully it's readable enough.
-
-
-===================================
-NT synchronization primitive driver
-===================================
-
-This page documents the user-space API for the ntsync driver.
-
-ntsync is a support driver for emulation of NT synchronization
-primitives by user-space NT emulators. It exists because implementation
-in user-space, using existing tools, cannot match Windows performance
-while offering accurate semantics. It is implemented entirely in
-software, and does not drive any hardware device.
-
-This interface is meant as a compatibility tool only, and should not
-be used for general synchronization. Instead use generic, versatile
-interfaces such as futex(2) and poll(2).
-
-Synchronization primitives
-==========================
-
-The ntsync driver exposes three types of synchronization primitives:
-semaphores, mutexes, and events.
-
-A semaphore holds a single volatile 32-bit counter, and a static 32-bit
-integer denoting the maximum value. It is considered signaled when the
-counter is nonzero. The counter is decremented by one when a wait is
-satisfied. Both the initial and maximum count are established when the
-semaphore is created.
-
-A mutex holds a volatile 32-bit recursion count, and a volatile 32-bit
-identifier denoting its owner. A mutex is considered signaled when its
-owner is zero (indicating that it is not owned). The recursion count is
-incremented when a wait is satisfied, and ownership is set to the given
-identifier.
-
-A mutex also holds an internal flag denoting whether its previous owner
-has died; such a mutex is said to be abandoned. Owner death is not
-tracked automatically based on thread death, but rather must be
-communicated using NTSYNC_IOC_MUTEX_KILL. An abandoned mutex is
-inherently considered unowned.
-
-Except for the "unowned" semantics of zero, the actual value of the
-owner identifier is not interpreted by the ntsync driver at all. The
-intended use is to store a thread identifier; however, the ntsync
-driver does not actually validate that a calling thread provides
-consistent or unique identifiers.
-
-An event holds a volatile boolean state denoting whether it is signaled
-or not. There are two types of events, auto-reset and manual-reset. An
-auto-reset event is designaled when a wait is satisfied; a manual-reset
-event is not. The event type is specified when the event is created.
-
-Unless specified otherwise, all operations on an object are atomic and
-totally ordered with respect to other operations on the same object.
-
-Objects are represented by files. When all file descriptors to an
-object are closed, that object is deleted.
-
-Char device
-===========
-
-The ntsync driver creates a single char device /dev/ntsync. Each file
-description opened on the device represents a unique instance intended
-to back an individual NT virtual machine. Objects created by one ntsync
-instance may only be used with other objects created by the same
-instance.
-
-ioctl reference
-===============
-
-All operations on the device are done through ioctls. There are four
-structures used in ioctl calls::
-
-   struct ntsync_sem_args {
-       __u32 sem;
-       __u32 count;
-       __u32 max;
-   };
-
-   struct ntsync_mutex_args {
-       __u32 mutex;
-       __u32 owner;
-       __u32 count;
-   };
-
-   struct ntsync_event_args {
-       __u32 event;
-       __u32 signaled;
-       __u32 manual;
-   };
-
-   struct ntsync_wait_args {
-       __u64 timeout;
-       __u64 objs;
-       __u32 count;
-       __u32 owner;
-       __u32 index;
-       __u32 alert;
-       __u32 flags;
-       __u32 pad;
-   };
-
-Depending on the ioctl, members of the structure may be used as input,
-output, or not at all. All ioctls return 0 on success.
-
-The ioctls on the device file are as follows:
-
-. NTSYNC_IOC_CREATE_SEM
-
-  Create a semaphore object. Takes a pointer to struct ntsync_sem_args,
-  which is used as follows:
-
-     * sem:   On output, contains a file descriptor to the created semaphore.
-     * count: Initial count of the semaphore.
-     * max:   Maximum count of the semaphore.
-
-  Fails with EINVAL if `count` is greater than `max`.
-
-. NTSYNC_IOC_CREATE_MUTEX
-
-  Create a mutex object. Takes a pointer to struct ntsync_mutex_args,
-  which is used as follows:
-
-     * mutex: On output, contains a file descriptor to the created mutex.
-     * count: Initial recursion count of the mutex.
-     * owner: Initial owner of the mutex.
-
-  If ``owner`` is nonzero and ``count`` is zero, or if ``owner`` is zero
-  and ``count`` is nonzero, the function fails with EINVAL.
-
-. NTSYNC_IOC_CREATE_EVENT
-
-  Create an event object. Takes a pointer to struct ntsync_event_args,
-  which is used as follows:
-
-     * event:    On output, contains a file descriptor to the created event.
-     * signaled: If nonzero, the event is initially signaled, otherwise
-                 nonsignaled.
-     * manual:   If nonzero, the event is a manual-reset event, otherwise
-                 auto-reset.
-
-The ioctls on the individual objects are as follows:
-
-. NTSYNC_IOC_SEM_POST
-
-  Post to a semaphore object. Takes a pointer to a 32-bit integer,
-  which on input holds the count to be added to the semaphore, and on
-  output contains its previous count.
-
-  If adding to the semaphore's current count would raise the latter
-  past the semaphore's maximum count, the ioctl fails with
-  EOVERFLOW and the semaphore is not affected. If raising the
-  semaphore's count causes it to become signaled, eligible threads
-  waiting on this semaphore will be woken and the semaphore's count
-  decremented appropriately.
-
-. NTSYNC_IOC_MUTEX_UNLOCK
-
-  Release a mutex object. Takes a pointer to struct ntsync_mutex_args,
-  which is used as follows:
-
-     * mutex: Ignored.
-     * owner: Specifies the owner trying to release this mutex.
-     * count: On output, contains the previous recursion count.
-
-  If ``owner`` is zero, the ioctl fails with EINVAL. If ``owner``
-  is not the current owner of the mutex, the ioctl fails with
-  EPERM.
-
-  The mutex's count will be decremented by one. If decrementing the
-  mutex's count causes it to become zero, the mutex is marked as
-  unowned and signaled, and eligible threads waiting on it will be
-  woken as appropriate.
-
-. NTSYNC_IOC_SET_EVENT
-
-  Signal an event object. Takes a pointer to a 32-bit integer, which on
-  output contains the previous state of the event.
-
-  Eligible threads will be woken, and auto-reset events will be
-  designaled appropriately.
-
-. NTSYNC_IOC_RESET_EVENT
-
-  Designal an event object. Takes a pointer to a 32-bit integer, which
-  on output contains the previous state of the event.
-
-. NTSYNC_IOC_PULSE_EVENT
-
-  Wake threads waiting on an event object while leaving it in an
-  unsignaled state. Takes a pointer to a 32-bit integer, which on
-  output contains the previous state of the event.
-
-  A pulse operation can be thought of as a set followed by a reset,
-  performed as a single atomic operation. If two threads are waiting on
-  an auto-reset event which is pulsed, only one will be woken. If two
-  threads are waiting a manual-reset event which is pulsed, both will
-  be woken. However, in both cases, the event will be unsignaled
-  afterwards, and a simultaneous read operation will always report the
-  event as unsignaled.
-
-. NTSYNC_IOC_READ_SEM
-
-  Read the current state of a semaphore object. Takes a pointer to
-  struct ntsync_sem_args, which is used as follows:
-
-     * sem:   Ignored.
-     * count: On output, contains the current count of the semaphore.
-     * max:   On output, contains the maximum count of the semaphore.
-
-. NTSYNC_IOC_READ_MUTEX
-
-  Read the current state of a mutex object. Takes a pointer to struct
-  ntsync_mutex_args, which is used as follows:
-
-     * mutex: Ignored.
-     * owner: On output, contains the current owner of the mutex, or zero
-              if the mutex is not currently owned.
-     * count: On output, contains the current recursion count of the mutex.
-
-  If the mutex is marked as abandoned, the function fails with
-  EOWNERDEAD. In this case, ``count`` and ``owner`` are set to zero.
-
-. NTSYNC_IOC_READ_EVENT
-
-  Read the current state of an event object. Takes a pointer to struct
-  ntsync_event_args, which is used as follows:
-
-     * event:    Ignored.
-     * signaled: On output, contains the current state of the event.
-     * manual:   On output, contains 1 if the event is a manual-reset event,
-                 and 0 otherwise.
-
-. NTSYNC_IOC_KILL_OWNER
-
-  Mark a mutex as unowned and abandoned if it is owned by the given
-  owner. Takes an input-only pointer to a 32-bit integer denoting the
-  owner. If the owner is zero, the ioctl fails with EINVAL. If the
-  owner does not own the mutex, the function fails with EPERM.
-
-  Eligible threads waiting on the mutex will be woken as appropriate
-  (and such waits will fail with EOWNERDEAD, as described below).
-
-. NTSYNC_IOC_WAIT_ANY
-
-  Poll on any of a list of objects, atomically acquiring at most one.
-  Takes a pointer to struct ntsync_wait_args, which is used as follows:
-
-     * timeout: Absolute timeout in nanoseconds. If NTSYNC_WAIT_REALTIME
-                is set, the timeout is measured against the REALTIME
-                clock; otherwise it is measured against the MONOTONIC
-                clock. If the timeout is equal to or earlier than the
-                current time, the function returns immediately without
-                sleeping. If ``timeout`` is U64_MAX, the function will
-                sleep until an object is signaled, and will not fail
-                with ETIMEDOUT.
-
-     * objs:    Pointer to an array of ``count`` file descriptors
-                (specified as an integer so that the structure has the
-                same size regardless of architecture). If any object is
-                invalid, the function fails with EINVAL.
-
-     * count:   Number of objects specified in the ``objs`` array. If
-                greater than NTSYNC_MAX_WAIT_COUNT, the function fails
-                with EINVAL.
-
-     * owner:   Mutex owner identifier. If any object in ``objs`` is a
-                mutex, the ioctl will attempt to acquire that mutex on
-                behalf of ``owner``. If ``owner`` is zero, the ioctl
-                fails with EINVAL.
-
-     * index:   On success, contains the index (into ``objs``) of the
-                object which was signaled. If ``alert`` was signaled
-                instead, this contains ``count``.
-
-     * alert:   Optional event object file descriptor. If nonzero, this
-                specifies an "alert" event object which, if signaled,
-                will terminate the wait. If nonzero, the identifier must
-                point to a valid event.
-
-     * flags:   Zero or more flags. Currently the only flag is
-                NTSYNC_WAIT_REALTIME, which causes the timeout to be
-                measured against the REALTIME clock instead of
-                MONOTONIC.
-
-     * pad:     Unused, must be set to zero.
-
-  This function attempts to acquire one of the given objects. If unable
-  to do so, it sleeps until an object becomes signaled, subsequently
-  acquiring it, or the timeout expires. In the latter case the ioctl
-  fails with ETIMEDOUT. The function only acquires one object, even if
-  multiple objects are signaled.
-
-  A semaphore is considered to be signaled if its count is nonzero, and
-  is acquired by decrementing its count by one. A mutex is considered
-  to be signaled if it is unowned or if its owner matches the ``owner``
-  argument, and is acquired by incrementing its recursion count by one
-  and setting its owner to the ``owner`` argument. An auto-reset event
-  is acquired by designaling it; a manual-reset event is not affected
-  by acquisition.
-
-  Acquisition is atomic and totally ordered with respect to other
-  operations on the same object. If two wait operations (with different
-  ``owner`` identifiers) are queued on the same mutex, only one is
-  signaled. If two wait operations are queued on the same semaphore,
-  and a value of one is posted to it, only one is signaled. The order
-  in which threads are signaled is not specified.
-
-  If an abandoned mutex is acquired, the ioctl fails with
-  EOWNERDEAD. Although this is a failure return, the function may
-  otherwise be considered successful. The mutex is marked as owned by
-  the given owner (with a recursion count of 1) and as no longer
-  abandoned, and ``index`` is still set to the index of the mutex.
-
-  The ``alert`` argument is an "extra" event which can terminate the
-  wait, independently of all other objects. If members of ``objs`` and
-  ``alert`` are both simultaneously signaled, a member of ``objs`` will
-  always be given priority and acquired first.
-
-  It is valid to pass the same object more than once, including by
-  passing the same event in the ``objs`` array and in ``alert``. If a
-  wakeup occurs due to that object being signaled, ``index`` is set to
-  the lowest index corresponding to that object.
-
-  The function may fail with EINTR if a signal is received.
-
-. NTSYNC_IOC_WAIT_ALL
-
-  Poll on a list of objects, atomically acquiring all of them. Takes a
-  pointer to struct ntsync_wait_args, which is used identically to
-  NTSYNC_IOC_WAIT_ANY, except that ``index`` is always filled with zero
-  on success if not woken via alert.
-
-  This function attempts to simultaneously acquire all of the given
-  objects. If unable to do so, it sleeps until all objects become
-  simultaneously signaled, subsequently acquiring them, or the timeout
-  expires. In the latter case the ioctl fails with ETIMEDOUT and no
-  objects are modified.
-
-  Objects may become signaled and subsequently designaled (through
-  acquisition by other threads) while this thread is sleeping. Only
-  once all objects are simultaneously signaled does the ioctl acquire
-  them and return. The entire acquisition is atomic and totally ordered
-  with respect to other operations on any of the given objects.
-
-  If an abandoned mutex is acquired, the ioctl fails with
-  EOWNERDEAD. Similarly to NTSYNC_IOC_WAIT_ANY, all objects are
-  nevertheless marked as acquired. Note that if multiple mutex objects
-  are specified, there is no way to know which were marked as
-  abandoned.
-
-  As with "any" waits, the ``alert`` argument is an "extra" event which
-  can terminate the wait. Critically, however, an "all" wait will
-  succeed if all members in ``objs`` are signaled, *or* if ``alert`` is
-  signaled. In the latter case ``index`` will be set to ``count``. As
-  with "any" waits, if both conditions are filled, the former takes
-  priority, and objects in ``objs`` will be acquired.
-
-  Unlike NTSYNC_IOC_WAIT_ANY, it is not valid to pass the same
-  object more than once, nor is it valid to pass the same object in
-  ``objs`` and in ``alert``. If this is attempted, the function fails
-  with EINVAL.
-
-
+> Thank you for pointing me to the discussions. I'll give this a spin on
+> my machine and report back what I see. Hope some of it will help during
+> the OSPM discussion :)
+
+Sorry about the delay but on a positive note, I do not see any
+concerning regressions after dropping the eligibility criteria. I'll
+leave the full results from my testing below.
+	
+o System Details
+
+- 3rd Generation EPYC System
+- 2 x 64C/128T
+- NPS1 mode
+
+o Kernels
+
+tip:			tip:sched/core at commit 4475cd8bfd9b
+			("sched/balancing: Simplify the sg_status
+			bitmask and use separate ->overloaded and
+			->overutilized flags")
+
+eie: 			(everyone is eligible)
+			tip + vruntime_eligible() and entity_eligible()
+			always returns true.
+
+o Results
+
+==================================================================
+Test          : hackbench
+Units         : Normalized time in seconds
+Interpretation: Lower is better
+Statistic     : AMean
+==================================================================
+Case:           tip[pct imp](CV)         eie[pct imp](CV)
+ 1-groups     1.00 [ -0.00]( 1.94)     0.95 [  5.11]( 2.56)
+ 2-groups     1.00 [ -0.00]( 2.41)     0.97 [  2.80]( 1.52)
+ 4-groups     1.00 [ -0.00]( 1.16)     0.95 [  5.01]( 1.04)
+ 8-groups     1.00 [ -0.00]( 1.72)     0.96 [  4.37]( 1.01)
+16-groups     1.00 [ -0.00]( 2.16)     0.94 [  5.88]( 2.30)
+
+
+==================================================================
+Test          : tbench
+Units         : Normalized throughput
+Interpretation: Higher is better
+Statistic     : AMean
+==================================================================
+Clients:    tip[pct imp](CV)         eie[pct imp](CV)
+    1     1.00 [  0.00]( 0.69)     1.00 [  0.05]( 0.61)
+    2     1.00 [  0.00]( 0.25)     1.00 [  0.06]( 0.51)
+    4     1.00 [  0.00]( 1.04)     0.98 [ -1.69]( 1.21)
+    8     1.00 [  0.00]( 0.72)     1.00 [ -0.13]( 0.56)
+   16     1.00 [  0.00]( 2.40)     1.00 [  0.43]( 0.63)
+   32     1.00 [  0.00]( 0.62)     0.98 [ -1.80]( 2.18)
+   64     1.00 [  0.00]( 1.19)     0.98 [ -2.13]( 1.26)
+  128     1.00 [  0.00]( 0.91)     1.00 [  0.37]( 0.50)
+  256     1.00 [  0.00]( 0.52)     1.00 [ -0.11]( 0.21)
+  512     1.00 [  0.00]( 0.36)     1.02 [  1.54]( 0.58)
+ 1024     1.00 [  0.00]( 0.26)     1.01 [  1.21]( 0.41)
+
+
+==================================================================
+Test          : stream-10
+Units         : Normalized Bandwidth, MB/s
+Interpretation: Higher is better
+Statistic     : HMean
+==================================================================
+Test:       tip[pct imp](CV)         eie[pct imp](CV)
+ Copy     1.00 [  0.00]( 5.01)     1.01 [  1.27]( 4.63)
+Scale     1.00 [  0.00]( 6.93)     1.03 [  2.66]( 5.20)
+  Add     1.00 [  0.00]( 5.94)     1.03 [  3.41]( 4.99)
+Triad     1.00 [  0.00]( 6.40)     0.95 [ -4.69]( 8.29)
+
+
+==================================================================
+Test          : stream-100
+Units         : Normalized Bandwidth, MB/s
+Interpretation: Higher is better
+Statistic     : HMean
+==================================================================
+Test:       tip[pct imp](CV)         eie[pct imp](CV)
+ Copy     1.00 [  0.00]( 2.84)     1.00 [ -0.37]( 2.44)
+Scale     1.00 [  0.00]( 5.26)     1.00 [  0.21]( 3.88)
+  Add     1.00 [  0.00]( 4.98)     1.00 [  0.11]( 1.15)
+Triad     1.00 [  0.00]( 1.60)     0.96 [ -3.72]( 5.26)
+
+
+==================================================================
+Test          : netperf
+Units         : Normalized Througput
+Interpretation: Higher is better
+Statistic     : AMean
+==================================================================
+Clients:         tip[pct imp](CV)         eie[pct imp](CV)
+ 1-clients     1.00 [  0.00]( 0.90)     1.00 [ -0.09]( 0.16)
+ 2-clients     1.00 [  0.00]( 0.77)     0.99 [ -0.89]( 0.97)
+ 4-clients     1.00 [  0.00]( 0.63)     0.99 [ -1.03]( 1.53)
+ 8-clients     1.00 [  0.00]( 0.52)     0.99 [ -0.86]( 1.66)
+16-clients     1.00 [  0.00]( 0.43)     0.99 [ -0.91]( 0.79)
+32-clients     1.00 [  0.00]( 0.88)     0.98 [ -2.37]( 1.42)
+64-clients     1.00 [  0.00]( 1.63)     0.96 [ -4.07]( 0.91)	*
+128-clients    1.00 [  0.00]( 0.94)     1.00 [ -0.30]( 0.94)
+256-clients    1.00 [  0.00]( 5.08)     0.95 [ -4.95]( 3.36)
+512-clients    1.00 [  0.00](51.89)     0.99 [ -0.93](51.00)
+
+* This seems to be the only point of regression with low CV. I'll
+  rerun this and report back if I see a consistent dip but for the
+  time being I'm not worried.
+
+
+==================================================================
+Test          : schbench
+Units         : Normalized 99th percentile latency in us
+Interpretation: Lower is better
+Statistic     : Median
+==================================================================
+#workers: tip[pct imp](CV)         eie[pct imp](CV)
+  1     1.00 [ -0.00](30.01)     0.97 [  3.12](14.32)
+  2     1.00 [ -0.00](26.14)     1.23 [-22.58](13.48)
+  4     1.00 [ -0.00](13.22)     1.00 [ -0.00]( 6.04)
+  8     1.00 [ -0.00]( 6.23)     1.00 [ -0.00](13.09)
+ 16     1.00 [ -0.00]( 3.49)     1.02 [ -1.69]( 3.43)
+ 32     1.00 [ -0.00]( 2.20)     0.98 [  2.13]( 2.47)
+ 64     1.00 [ -0.00]( 7.17)     0.88 [ 12.50]( 3.18)
+128     1.00 [ -0.00]( 2.79)     1.02 [ -2.46]( 8.29)
+256     1.00 [ -0.00](13.02)     1.01 [ -1.34](37.58)
+512     1.00 [ -0.00]( 4.27)     0.79 [ 21.49]( 2.41)
+
+
+==================================================================
+Test          : DeathStarBench
+Units         : Normalized throughput
+Interpretation: Higher is better
+Statistic     : Mean
+==================================================================
+Pinning      scaling     tip                eie (pct imp)
+ 1CCD           1       1.00            1.15 (%diff: 15.68%)
+ 2CCD           2       1.00            0.99 (%diff: -1.12%)
+ 4CCD           4       1.00            1.11 (%diff: 11.65%)
+ 8CCD           8       1.00            1.05 (%diff:  4.98%)
+
+--
+
+> 
+> [..snip..]
+>  
+
+I'll try to get data from more workloads, will update the thread with
+when it arrives.
+
+--
+Thanks and Regards,
+Prateek
 
