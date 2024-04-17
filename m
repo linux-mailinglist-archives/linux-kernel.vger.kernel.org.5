@@ -1,117 +1,180 @@
-Return-Path: <linux-kernel+bounces-148725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E1488A86A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:51:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E275D8A86AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:51:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 132AAB27E2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:51:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C406DB27DB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E0B1422A2;
-	Wed, 17 Apr 2024 14:49:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3093D143C41;
+	Wed, 17 Apr 2024 14:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mO/dmyZl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S0TE9tNy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4D16CDB7;
-	Wed, 17 Apr 2024 14:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5966C1411DB;
+	Wed, 17 Apr 2024 14:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713365387; cv=none; b=UqONvl2avZHywsnRpQH4/06d5I1S9ntePs5eIrRkFHEIFLQXteOjKdXQYXEdaPRcxvMLJohJ0xkXfi1tCEEsQsc3oiwPxWAgjljFGuYpUUFSQshwMBUg6pNt/ywtzaYmas+tX7KnyFY+RrkdOzvvzrbsgmlz4y/tmycgCkPBBz0=
+	t=1713365431; cv=none; b=PmZPPlZXynEAKggAjouHzX14Pdyy4w0WC0oOv0skEX3CEuXwRxaoiys2sHGc13uFK4UABAWFFnGtatfozAKoI9q7Kf9DOXJtHtGtZ9+4ljUfCc0tIirCgpyHX3W9rit+NajDFEWA9tt/CuM7Vp5L4qXWCYZGGvIxIpqm1XHPSWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713365387; c=relaxed/simple;
-	bh=R0aOa5afohn6PF2KyxeEWUALvw+VN/NOVHLEmXjYd7c=;
+	s=arc-20240116; t=1713365431; c=relaxed/simple;
+	bh=FykH/T46P+7wCQWaQbgZ5I3yQADVR9jYDVfl8lpXZM8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JvOmAAoUGvhm3+fTb+y2LCE2b184E8GVq49RRpUuaj69o7k2kYmt3GkPga5pHdJxXW6dUTx6WENQ0wjxxGoEhJ9BOIuKM05tEOXOCG391jmausW9BrYglqdkRi0PueIZBlwaj+auLFL22+vCD1AvAiIKw7gYFpn52TyYauGhBZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mO/dmyZl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C8C6C072AA;
-	Wed, 17 Apr 2024 14:49:45 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=NfnvJLmgJ1D/1SovZLX32Y3CPm69iGic+Z7cBFHhyi4/8tOyAU2DyteJ3FI8Vw+yrVnCiKF7cMx+QFzQ8R4vkWD7fj7120JFDJ4T/E1dA3O7qc8JS5mn7kcUMi+8NNmVGG3T15RTYbkRYi6mJ82UozaqpgHpe5/tlXORW17xut8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S0TE9tNy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE0ADC072AA;
+	Wed, 17 Apr 2024 14:50:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713365387;
-	bh=R0aOa5afohn6PF2KyxeEWUALvw+VN/NOVHLEmXjYd7c=;
+	s=k20201202; t=1713365431;
+	bh=FykH/T46P+7wCQWaQbgZ5I3yQADVR9jYDVfl8lpXZM8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mO/dmyZlngK558z58lqzuTXZG64y9BMcfZ/nKbNC/qQWJYvZtTocZeDAw2vNExDZV
-	 opIUtKY5xG/XGbSG68CNNhvZQ00jqwrcyQTzDXkXr4Yydj2iyKS2diVWa2l2SZPItA
-	 rP4Ct3+bDBgUHqduBUbD6ZDM6tZ+EsTz/GA7fn5wMBt+Gk1kHhc07XgsxKZRlmZ7zY
-	 AR/CsRgZREQOYAMydC8hgsk/943wFVp+TO/mjOqXcaD0rhn5ADs0/C17xjmocSF4KH
-	 HgmeYmqIWbE98ooTs9Bq13bRLVXtzFUQkZ4fztwAI6sPu5igUbPuN9bNbdR46m4kIZ
-	 10WpHcMJSovMg==
-Date: Wed, 17 Apr 2024 15:49:43 +0100
-From: Lee Jones <lee@kernel.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
-	linux-leds@vger.kernel.org, linux-pwm@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [regression] stm32mp1xx based targets stopped entering suspend
- if pwm-leds exist
-Message-ID: <20240417144943.GA2399047@google.com>
-References: <5da6cf8a-4250-42f6-8b39-13bff7fcdd9c@leemhuis.info>
- <2vbwacjy25z5vekylle3ehwi3be4urm6bssrbg6bxobtdlekt4@mazicwtgf4qb>
- <256e3d3c-d43f-4bd6-9a7b-50fc870e75e4@leemhuis.info>
- <20240416121519.GS2399047@google.com>
- <dqibafuvizvltkblfizxvgrl3744lpxbwgdjid5ekxsju7gmxm@fys22ievmgz5>
+	b=S0TE9tNy0I6n0GmJCfpRHv5LLvD0sH8KvnXmmKZyKXPN+5gEXa1Q4AzpPYORPb1xh
+	 6FZSy9x854VCtsJj3uGAdR0tZAl4NgVGuKIpFvzOv7wQ/K1slgqe+H/pZwCHuXNc+I
+	 OdqHsqKaB1sZzrNKlgxgQSHT6SVN4ew8Xt1FvR89JkG94e9Y5WUwwr6m3CcTva7TVU
+	 axGqATm2OFiDzneSdmBmoG6CAyUFtgtaE6OtFXe+jyNkvltWV5OGGXBYFS1/HqHN+1
+	 VATui1UTMFtHkyEBpfjqFA3OoMm0FuBmS5Qtw6Vov597ADDOjsY7mHjcUEne6ZAG6x
+	 lLhgT/5aLIfzg==
+Date: Wed, 17 Apr 2024 15:50:24 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 13/17] riscv: vector: Support xtheadvector save/restore
+Message-ID: <20240417-semisweet-willed-1ce1098d8c41@spud>
+References: <20240415-dev-charlie-support_thead_vector_6_9-v2-0-c7d68c603268@rivosinc.com>
+ <20240415-dev-charlie-support_thead_vector_6_9-v2-13-c7d68c603268@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="TWtuz8+j2Sj8ixHN"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dqibafuvizvltkblfizxvgrl3744lpxbwgdjid5ekxsju7gmxm@fys22ievmgz5>
+In-Reply-To: <20240415-dev-charlie-support_thead_vector_6_9-v2-13-c7d68c603268@rivosinc.com>
 
-On Tue, 16 Apr 2024, Uwe Kleine-König wrote:
 
-> Hey Lee,
-> 
-> On Tue, Apr 16, 2024 at 01:15:19PM +0100, Lee Jones wrote:
-> > On Tue, 16 Apr 2024, Linux regression tracking (Thorsten Leemhuis) wrote:
-> > 
-> > > On 06.03.24 09:18, Uwe Kleine-König wrote:
-> > > > On Wed, Mar 06, 2024 at 08:05:15AM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
-> > > > > [...]
-> > > 
-> > > Jakob confirmed it helped in the bugzilla ticket. But the patch since
-> > > then didn't make any progress afaics -- or did it and I just missed it
-> > > in my search?
-> > 
-> > [...] 
-> > 
-> > > > ---->8----
-> > > > From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> > > > Subject: [PATCH] leds: pwm: Disable PWM when going to suspend
-> > > > 
-> > > > On stm32mp1xx based machines (and others) a PWM consumer has to disable
-> > > > the PWM because an enabled PWM refuses to suspend. So check the
-> > > > LED_SUSPENDED flag and depending on that set the .enabled property.
-> > > > 
-> > > > Link: https://bugzilla.kernel.org/show_bug.cgi?id=218559
-> > > > Fixes: 76fe464c8e64 ("leds: pwm: Don't disable the PWM when the LED should be off")
-> > > > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> > > > ---
-> > > > [...]
-> > > > ---->8----
-> > 
-> > Did you submit this?  I don't see it in LORE or in my inbox.
-> 
-> Yeah sure, apply it using:
-> 
-> 	curl -s https://lore.kernel.org/all/2vbwacjy25z5vekylle3ehwi3be4urm6bssrbg6bxobtdlekt4@mazicwtgf4qb/raw | git am --scissors -s
+--TWtuz8+j2Sj8ixHN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Nice try!
+On Mon, Apr 15, 2024 at 09:12:10PM -0700, Charlie Jenkins wrote:
 
-> :-)
-> 
-> If you don't consider that suitable, I can create a patch that is easier
-> to pick up.
+> diff --git a/arch/riscv/kernel/vector.c b/arch/riscv/kernel/vector.c
+> index 6727d1d3b8f2..f42eaa8178e9 100644
+> --- a/arch/riscv/kernel/vector.c
+> +++ b/arch/riscv/kernel/vector.c
+> @@ -33,10 +33,24 @@ int riscv_v_setup_vsize(void)
+>  {
+>  	unsigned long this_vsize;
+> =20
+> -	/* There are 32 vector registers with vlenb length. */
+> -	riscv_v_enable();
+> -	this_vsize =3D csr_read(CSR_VLENB) * 32;
+> -	riscv_v_disable();
+> +	/*
+> +	 * This is called before alternatives have been patched so can't use
+> +	 * riscv_has_vendor_extension_unlikely
 
-Yes, please submit it properly.
+() after that function name please.
 
--- 
-Lee Jones [李琼斯]
+> +	 */
+> +	if (has_xtheadvector_no_alternatives()) {
+> +		/*
+> +		 * Although xtheadvector states that th.vlenb exists and
+> +		 * overlaps with the vector 1.0 vlenb, an illegal instruction is
+> +		 * raised if read. These systems all currently have a fixed
+> +		 * vector length of 128, so hardcode that value.
+
+I had this written before the meeting, so pasting it anyway:
+-- >8 --
+=46rom 5ed25d0f841e755b8dd4f1f6a3ea824601758d8e Mon Sep 17 00:00:00 2001
+=46rom: Conor Dooley <conor.dooley@microchip.com>
+Date: Wed, 17 Apr 2024 14:39:36 +0100
+Subject: [PATCH] dt-bindings: riscv: cpus: add a vlen register length prope=
+rty
+
+Add a property analogous to the vlenb CSR so that software can detect
+the vector length of each CPU prior to it being brought online.
+Currently software has to assume that the vector length read from the
+boot CPU applies to all possible CPUs. On T-Head CPUs implementing
+pre-ratification vector, reading the th.vlenb CSR may produce an illegal
+instruction trap, so this property is required on such systems.
+
+Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+---
+We could actually enforce the latter since we know the compatibles of
+the relevant CPUs and can tell if xtheadvector is present.
+---
+ Documentation/devicetree/bindings/riscv/cpus.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentat=
+ion/devicetree/bindings/riscv/cpus.yaml
+index d067f2a468ee..2a6449a0f1d7 100644
+--- a/Documentation/devicetree/bindings/riscv/cpus.yaml
++++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+@@ -95,6 +95,12 @@ properties:
+     description:
+       The blocksize in bytes for the Zicboz cache operations.
+=20
++  riscv,vlenb:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      VLEN/8, the vector register length in bytes. This property is requir=
+ed in
++      systems where the vector register length is not identical on all har=
+ts.
++
+   # RISC-V has multiple properties for cache op block sizes as the sizes
+   # differ between individual CBO extensions
+   cache-op-block-size: false
+--=20
+2.43.0
+
+
+
+> +		 */
+> +		this_vsize =3D 128;
+> +	} else {
+> +		/* There are 32 vector registers with vlenb length. */
+> +		riscv_v_enable();
+> +		this_vsize =3D csr_read(CSR_VLENB) * 32;
+> +		riscv_v_disable();
+> +	}
+
+--TWtuz8+j2Sj8ixHN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh/hsAAKCRB4tDGHoIJi
+0uymAQC52tKEjWhnlrK5EZxs57FTgtZequO5iT1oxcXhr1buWwD/eH4/QhI+A7+a
+rSSXaCKwy6W28YxEUDpHe9r7Re8SMgs=
+=l2tD
+-----END PGP SIGNATURE-----
+
+--TWtuz8+j2Sj8ixHN--
 
