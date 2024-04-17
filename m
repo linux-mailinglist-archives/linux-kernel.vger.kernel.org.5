@@ -1,157 +1,131 @@
-Return-Path: <linux-kernel+bounces-147800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D4868A79D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:25:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 390DB8A79D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:29:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D2E91F21DEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:25:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF2D7B21FEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D8DF1860;
-	Wed, 17 Apr 2024 00:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A94457F8;
+	Wed, 17 Apr 2024 00:29:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="cM+T9akk"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="C2FtbMky"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14E57801
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:25:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7903F37B
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:29:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713313511; cv=none; b=khDhdQQ0mqlsasJarQwU9dQ8mWc80vGpKtpYFcGkoHdVhDpUjpWIAZKmUMufxYhXFIY5TohqFPlUXL7qkc5v4z7cv96VF9P6Ih8j8YXYbwG9R6h7Jwdtl/GYTIi8BTg4vsKiVFnQsJpmuONWPxXiHfYy8tX5MxdqY+yFhZf1TeA=
+	t=1713313764; cv=none; b=KejTPCZrYq7LfEe/b/cUh2MrjiwLL/KPwnQSIDRGg3CpCjAkUPC+N6ECF8utNq2afFNIohPXMV+PbTXo6/8GVi97+vWHwTmYGi89aaZgodVxMydxc73e7eSLJpFDtiNgYM39F8Sk5CAJ3LNi2PIlvEAEHgAPWR0oLSC8XCVMSTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713313511; c=relaxed/simple;
-	bh=Rh0Xk5SOWgUhEYkDCx1Ih3fJwkSpqZ2vOp0lA0MHWwE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=jdsVdnRhsY0zdldcFmfYblDIvIkML2S7yD1GldYjlQtTmsmOLBPPOY3aLEVDL0UhjwocDrTubZgQy10SCdNOnyfJq22IXg3PkC3VLZe/rBueEnVGPa9wPsTVrQo6XdyPnIAD51x64S6a8JR5HNcWPuquZcv7xt5I0BP6LS+Hg3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=cM+T9akk; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ecf406551aso4101906b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:25:08 -0700 (PDT)
+	s=arc-20240116; t=1713313764; c=relaxed/simple;
+	bh=Qm53qmVFwN+7mq1oZ8TjY3oDbZk01C2mzZvLY17xPuI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cJf14bKlB32fcLDOfLQ3Lv3fpHV89d4U2c4ymA1O4s/2vz0SB8pqFLecY76HNPRAloZYRyvUf2lRInk6NYlVdX1Ms/8e204S/BKhuCrffo06RJ8sKh3cwMO9FWJTQ+qtyQZUdSdC1vIA8DJ8gTyQQQ2uNR9NeDUesfWUL6PneGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=C2FtbMky; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516d4d80d00so6235175e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:29:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713313508; x=1713918308; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yUu9r75IkkkPMJX8JtgPk9s/mlLbxcj8MCkbLeGGpmg=;
-        b=cM+T9akkTLdGr6P4CwMEaI3wC+DwudHkkTorB3cYyEiDSFhKdzlvEssT0MKCFKICwP
-         9x9zDEvZI3Ev6H7LuMrjUWy1hDPvy23g5At85VPXB0POcWsIcEFI8tryJk9XBmPj79+M
-         XeasO3QSNwGz6YJ8F1Dgso6oNugWGBJcSmEWbgt4cX/GaakCDiGQBkmtMe12QifUo+9h
-         JKCQxEIVZ4KHlfktVHpNx/i8etcZQfrkCbhhaFZEfdGJf218/usTZ1p+oxtupw9dUvpv
-         fs3GO4JdnRxSTXnL/aK+0b/6IyQowCMTlHTPp9wyOOsU+GAu+lGR2fCml5IAnCy9yIpx
-         VXVA==
+        d=linux-foundation.org; s=google; t=1713313760; x=1713918560; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sWCTeZrfKXEwBXDLcl0+lfpwzj1590+2p/YYNvA5SyQ=;
+        b=C2FtbMkyI/tx66QoJw6d5o5sp48GjXU7/LBC1KSwbfFs3/lOlsCiiF63O1AWNQ4QP+
+         cU2VbUC0G6JYomIm6g+oMzR3xEHlwxFsbdHZf06kBWbdFovKFw6eApNlEPeL3ndG6s99
+         pqFg21rxKGdGjx2foRPih0hgOMmv6rt8cnry0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713313508; x=1713918308;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yUu9r75IkkkPMJX8JtgPk9s/mlLbxcj8MCkbLeGGpmg=;
-        b=OgY8dklXBR4YBmA2ypje8FY+pnomttvuoizR2k+E3iMu1FSwvnTRledFX9LZo0jGSB
-         l/JDHzYSxUEfxU14ppX84wlf/TQ5M//xON9RpIii0mJtPbr9tAp42kvB7xxVLa5o+jXw
-         qeaatvwM3wmPhUr1l1XhzPUm39lQJKBwtsvRRvW2lsD/7bcf5e4Hp8FTSAikjp2RgMOb
-         JcJA0od+KXePKxuWtEvMKRacL4tu5VKcav27cQCJ3kD5d0LseTP3vEy7OQpll3k8FH29
-         gNSwpWqPeF4L7diSZIBBWlYBzYaPxCllQbA9zFrWKTVfJmbG/tUQaFU9OtZVKPhFHc4Y
-         Ahyg==
-X-Forwarded-Encrypted: i=1; AJvYcCVIr38UD/wsCtLBEGBIs8M0cxA6RI1g/5SNqA5TUJUnaH/Vr4mmji806Z6+o9ShjdW+v82poySHnBVxOVOk0xujYhEC4nMVVSlJeyXz
-X-Gm-Message-State: AOJu0YxexlN+0JCJ1UMdpDkCpJehFhZMfThEykqb39YEJu09+0EieZcj
-	44k3VLl+rcrtnVkLX7WkaYa+Wsvj9AMnqykbw0Ju1qwK++2X2PTQk65K4+8FwNM=
-X-Google-Smtp-Source: AGHT+IEjAhZVEZYdLBhENvub7H3p131EKgJJzeOWPQQXzU8sWnGpkTKyBYXR/NYgQcPVm7q8baUaNA==
-X-Received: by 2002:a05:6a20:d492:b0:1a9:cd84:2f31 with SMTP id im18-20020a056a20d49200b001a9cd842f31mr13414753pzb.58.1713313508368;
-        Tue, 16 Apr 2024 17:25:08 -0700 (PDT)
-Received: from [172.16.0.69] (c-67-188-2-18.hsd1.ca.comcast.net. [67.188.2.18])
-        by smtp.gmail.com with ESMTPSA id f12-20020a170902684c00b001e3d2314f3csm10574125pln.141.2024.04.16.17.25.07
+        d=1e100.net; s=20230601; t=1713313760; x=1713918560;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sWCTeZrfKXEwBXDLcl0+lfpwzj1590+2p/YYNvA5SyQ=;
+        b=KuHZtZBp5QsQc6nDEWup13JzPdsZ0IZnbCTF/JHHWwGUukBgIeWS9L2llmSBdBoOOz
+         Sy6+XqrGAOuu1eXTdU1BkWKuW/GLyLvb4HTfy/qH/WHN/j18Hc9MAoTkhbZeFpEMLG9S
+         h+lSqSFHoG6vurkZS7EEjetyEcHrg1x0eHPHPfbGlEN5UDW1j3feeQvvOZljdBihFS5C
+         Rr58wDeHB10SXAb4vUNo66o+b+jhxl3MZOgaRguc7j2Y00kibqJTZ+dBLRTaWunn39N1
+         qaFV6OAu9Sgv5LGu24fRRcq85t3d1d910Xjvppdm7RQNIS5ap8ZedRra6bCH6G5joO14
+         96+g==
+X-Forwarded-Encrypted: i=1; AJvYcCWRulE/05GIf29Zp5be1nt+n1gbS1Uix1XmRqw4D7EnzmK/bICUTaBAAUwbkJiWKaJi6UtQYlfz2FqZplGzWCRQQYQCk601C+FsWula
+X-Gm-Message-State: AOJu0YxDyq8p3g6CfYyS/tvjw5OK/c6deQnx7atNetgbn5gm6DtZTN2X
+	JpHEHkCVEjHr7HyHbSrumoCszTnE0UUImlmLKYOeap9Wffuzj7gXaHRdv7YGQygn0ITsiYQUX9m
+	k
+X-Google-Smtp-Source: AGHT+IFhOMfiY5IpP3kAo/CTUu1oAgNpLPszB2zPVzcnj707Jox/yX76FgNIYZL8BjrE0l3xWKYXmg==
+X-Received: by 2002:a05:6512:e91:b0:519:264b:695a with SMTP id bi17-20020a0565120e9100b00519264b695amr2941433lfb.22.1713313760342;
+        Tue, 16 Apr 2024 17:29:20 -0700 (PDT)
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
+        by smtp.gmail.com with ESMTPSA id cw4-20020a170906c78400b00a4e58c74c9fsm7395118ejb.6.2024.04.16.17.29.19
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Apr 2024 17:25:08 -0700 (PDT)
-Message-ID: <aceaaeba-61cb-44fa-8639-e30a86ef8cd8@rivosinc.com>
-Date: Tue, 16 Apr 2024 17:25:06 -0700
+        Tue, 16 Apr 2024 17:29:19 -0700 (PDT)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a51969e780eso654628166b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:29:19 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCW4oSZYDmKbzET9u3aLJ5qW+hgT+1AagxCCFN8gBdc3zAUuThoKtdpGbR7eoh650uQCLiJlBcHVexUtgDnYF06n5SZV/Ga7Sqb7QfyA
+X-Received: by 2002:a17:907:2da8:b0:a51:895c:6820 with SMTP id
+ gt40-20020a1709072da800b00a51895c6820mr10248651ejc.44.1713313759109; Tue, 16
+ Apr 2024 17:29:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] perf kvm: Add kvm stat support on riscv
-Content-Language: en-US
-To: Shenlin Liang <liangshenlin@eswincomputing.com>, anup@brainfault.org,
- atishp@atishpatra.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
- aou@eecs.berkeley.edu, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
- namhyung@kernel.org, mark.rutland@arm.com,
- alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com,
- adrian.hunter@intel.com, linux-perf-users@vger.kernel.org
-References: <20240415031131.23443-1-liangshenlin@eswincomputing.com>
-From: Atish Patra <atishp@rivosinc.com>
-In-Reply-To: <20240415031131.23443-1-liangshenlin@eswincomputing.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20220302043451.2441320-1-willy@infradead.org> <202404161413.8B4810C5@keescook>
+In-Reply-To: <202404161413.8B4810C5@keescook>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 16 Apr 2024 17:29:02 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg7+dfpEvDnTnB-eR9QRZ2VySbxOEHbYqL3Ai5wwkon5Q@mail.gmail.com>
+Message-ID: <CAHk-=wg7+dfpEvDnTnB-eR9QRZ2VySbxOEHbYqL3Ai5wwkon5Q@mail.gmail.com>
+Subject: Re: [PATCH 00/19] Enable -Wshadow=local for kernel/sched
+To: Kees Cook <keescook@chromium.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 4/14/24 20:11, Shenlin Liang wrote:
-> Changes from v1->v2:
-> - Rebased on Linux 6.9-rc3.
-> 
-> 'perf kvm stat report/record' generates a statistical analysis of KVM
-> events and can be used to analyze guest exit reasons. This patch tries
-> to add stat support on riscv.
-> 
-> Map the return value of trace_kvm_exit() to the specific cause of the
-> exception, and export it to userspace.
-> 
-> It records on two available KVM tracepoints for riscv: "kvm:kvm_entry"
-> and "kvm:kvm_exit", and reports statistical data which includes events
-> handles time, samples, and so on.
-> 
-> Simple tests go below:
-> 
-> # ./perf kvm record -e "kvm:kvm_entry" -e "kvm:kvm_exit"
-> Lowering default frequency rate from 4000 to 2500.
-> Please consider tweaking /proc/sys/kernel/perf_event_max_sample_rate.
-> [ perf record: Woken up 18 times to write data ]
-> [ perf record: Captured and wrote 5.433 MB perf.data.guest (62519 samples)
-> 
+On Tue, 16 Apr 2024 at 14:15, Kees Cook <keescook@chromium.org> wrote:
+>
+> I was looking at -Wshadow=local again, and remembered this series. It
+> sounded like things were close, but a tweak was needed. What would be
+> next to get this working?
 
-I want to test these patches but couldn't build a perf for RISC-V with 
-libtraceevent enabled. It fails with pkg-config dependencies when I 
-tried to build it (both via buildroot and directly from kernel source).
+So what is the solution to
 
-> # ./perf kvm report
-> 31K kvm:kvm_entry
-> 31K kvm:kvm_exit
-> 
-> # ./perf kvm stat record -a
-> [ perf record: Woken up 3 times to write data ]
-> [ perf record: Captured and wrote 8.502 MB perf.data.guest (99338 samples) ]
-> 
-> # ./perf kvm stat report --event=vmexit
-> Event name                Samples   Sample%    Time (ns)     Time%   Max Time (ns)   Min Time (ns)  Mean Time (ns)
-> STORE_GUEST_PAGE_FAULT     26968     54.00%    2003031800    40.00%     3361400         27600          74274
-> LOAD_GUEST_PAGE_FAULT      17645     35.00%    1153338100    23.00%     2513400         30800          65363
-> VIRTUAL_INST_FAULT         1247      2.00%     340820800     6.00%      1190800         43300          273312
-> INST_GUEST_PAGE_FAULT      1128      2.00%     340645800     6.00%      2123200         30200          301990
-> SUPERVISOR_SYSCALL         1019      2.00%     245989900     4.00%      1851500         29300          241403
-> LOAD_ACCESS                986       1.00%     671556200     13.00%     4180200         100700         681091
-> INST_ACCESS                655       1.00%     170054800     3.00%      1808300         54600          259625
-> HYPERVISOR_SYSCALL         21        0.00%     4276400       0.00%      716500          116000         203638
-> 
-> Shenlin Liang (2):
->    RISCV: KVM: add tracepoints for entry and exit events
->    perf kvm/riscv: Port perf kvm stat to RISC-V
-> 
->   arch/riscv/kvm/trace.h                        | 67 ++++++++++++++++
->   arch/riscv/kvm/vcpu.c                         |  7 ++
->   tools/perf/arch/riscv/Makefile                |  1 +
->   tools/perf/arch/riscv/util/Build              |  1 +
->   tools/perf/arch/riscv/util/kvm-stat.c         | 78 +++++++++++++++++++
->   .../arch/riscv/util/riscv_exception_types.h   | 41 ++++++++++
->   6 files changed, 195 insertions(+)
->   create mode 100644 arch/riscv/kvm/trace.h
->   create mode 100644 tools/perf/arch/riscv/util/kvm-stat.c
->   create mode 100644 tools/perf/arch/riscv/util/riscv_exception_types.h
-> 
+    #define MAX(a,b) ({ \
+        typeof(a) __a = (a); \
+        typeof(b) __b = (b); \
+        __a > __b ? __a : __b; \
+    })
 
+    int test(int a, int b, int c)
+    {
+        return MAX(a, MAX(b,c));
+    }
+
+where -Wshadow=all causes insane warnings that are bogus garbage?
+
+Honestly, Willy's patch-series is a hack to avoid this kind of very
+natural nested macro pattern.
+
+But it's a horrible hack, and it does it by making the code actively worse.
+
+Here's the deal: if we can't handle somethng like the above without
+warning, -Wshadow isn't getting enabled.
+
+Because we don't write worse code because of bad warnings.
+
+IOW, what is the sane way to just say "this variable can shadow the
+use site, and it's fine"?
+
+Without that kind of out, I don't think -Wshadow=local is workable.
+
+              Linus
 
