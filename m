@@ -1,223 +1,124 @@
-Return-Path: <linux-kernel+bounces-148109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E9D98A7DD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:13:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D9E58A7DD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:14:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B8C828211F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:13:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09475B2394E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:13:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E926C7D3F1;
-	Wed, 17 Apr 2024 08:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC1DB80BF8;
+	Wed, 17 Apr 2024 08:13:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="U9cQ+UQ3"
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W6JgFA7d"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45E2A7D08D;
-	Wed, 17 Apr 2024 08:13:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FFB46A02E;
+	Wed, 17 Apr 2024 08:13:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713341603; cv=none; b=bVeYO+mjvUOBW/fdNfLu6TWZjHpxETvHBQj7uePC6DfgHJPmfltv1QeV/8ucDOytEwEE3ImxlREgvEoThA8+MlikORU6RZru9jf0GDCIynuEHWwhyJwgvasV9oLiSaDXtuF19mp9DVa+tQf3ssAox7QlTcJlUjajCkwHiYLWcJo=
+	t=1713341610; cv=none; b=nLyGyEcBeejDwAA9JnrfUdtxwYMBwH6Tlico642CGjxqNPMxFWI40VHZ6Q/6pvBJActlohk5XP8wipwPDB/APjKQewMlkLo9AbMyvmhCrcBCq/xc+zMxdwy60rHE9gUAVAXijPs7dCBo6U1sNAwXv3cf8tVPQcgS0WjaNUhk7Jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713341603; c=relaxed/simple;
-	bh=i+9ibrN7xQYF7jszyyKajXwvT9v6vT1EHAkllbhGHok=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ABqeKWIXW3or6FDM5KLWRgxvNWMuoIOKH3AjIaLe1pN37fnJw4McWLPQ/tQZWWHvQQV0Wumfe5hIgHKXVpVh8QVAB0LkpxUiPV+3L96ByV55B/mAMiBXcA5ZIU5bQSqWuInl1DF2yqhI11HePSSBn5KuHkcItVh0Czrhx7H60Jg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=U9cQ+UQ3; arc=none smtp.client-ip=85.214.62.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: lukma@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id 22A4688414;
-	Wed, 17 Apr 2024 10:13:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1713341599;
-	bh=EBRwVJBVGCvWEFjCFr9Su6sxchjpnOMHNir9g/hPkxg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=U9cQ+UQ34JjNLbJ5fP0O4qG7KxmT2+b6pRK7XyzsmfczUbKLPGiJvxofs6tVMCPek
-	 TQArD17gTgQ7yFkXGeigRXN+RBT+BdF5gxxCZdgcgjLPKOm6PIirn6lgVNzzH+Rgme
-	 P1Mw9Fimp9c5MPYdTCyuCLlYzVesUHwqzRxa4IenJc5UAZvgURRmhhvdblhTNBvaT9
-	 M2GcDvJR2q0RMl9tRG2vnpIZcKjEWxRDTYep8z2tldqBX1bFdSobsPZmOGCoV/Mx+8
-	 Jdv25h9lz+9kHsj/HMUTWA9SPPQu2bCF9Ud9yLP4PSQv83KLjOdnb+2jipktfK74xx
-	 /DrHTClWDHZVw==
-Date: Wed, 17 Apr 2024 10:13:11 +0200
-From: Lukasz Majewski <lukma@denx.de>
-To: Casper Andersson <casper.casan@gmail.com>
-Cc: netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>, Eric Dumazet
- <edumazet@google.com>, Vladimir Oltean <olteanv@gmail.com>, "David S.
- Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Oleksij
- Rempel <o.rempel@pengutronix.de>, Tristram.Ha@microchip.com, Sebastian
- Andrzej Siewior <bigeasy@linutronix.de>, Paolo Abeni <pabeni@redhat.com>,
- Ravi Gunasekaran <r-gunasekaran@ti.com>, Simon Horman <horms@kernel.org>,
- Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Murali Karicheri
- <m-karicheri2@ti.com>, Jiri Pirko <jiri@resnulli.us>, Dan Carpenter
- <dan.carpenter@linaro.org>, Ziyang Xuan <william.xuanziyang@huawei.com>,
- Shigeru Yoshida <syoshida@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] net: hsr: Provide RedBox support (HSR-SAN)
-Message-ID: <20240417101311.72228af0@wsk>
-In-Reply-To: <86v84yfhn9.fsf@gmail.com>
-References: <20240402085850.229058-1-lukma@denx.de>
-	<86v84yfhn9.fsf@gmail.com>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713341610; c=relaxed/simple;
+	bh=Fx5PXmOnt+cu8UKI/4+7CAwyifLLmMRP4sxlDsBLIqg=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=at2xlLvD0BCCd+dt2x0OPeleO4bzXd5c6kmxHaYLmwsnews6M4X5ZQZso1+wb2eBLVQbu9mcge/QiEVTwgXVqPBwUvK5E/UbrF++UAVU5nsX7sk0LUtTCcMEHok8Ri9WMLFqe4P7fLkSYw6OpVzxAR9+c10FG/JD49ZY8DfHXSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W6JgFA7d; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713341608; x=1744877608;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=Fx5PXmOnt+cu8UKI/4+7CAwyifLLmMRP4sxlDsBLIqg=;
+  b=W6JgFA7drF0o6KTbkn2f3q8ilIHT3v/MK8ckABXMniBsVUYVO4n3F/0O
+   5sqjJee8PWiqzw+9QVwpT0nW/yCNau0YROe0N+jsWdpSgaJDarEmm9UhW
+   ujTjn6DpunL+g21kB4QUyKTOwVtdxrT4bCrddAL2pS3WmD82yB4DlInBD
+   hmdNXcduqGElOhF1FXQGVbAU8SW/GPJaAA3pApX6hYN77uBgaEO1o42pO
+   0q5/Nk+6Fsu3cjuqGaqBvBE60QGl+7AQhDMPiR2c/anHt4Q4G84cO5WYd
+   pEvVV98/bKROfLZaFhnCJoIhujC5cGGoIDRwQAmHmmBpnzYvU1EhFRAwR
+   w==;
+X-CSE-ConnectionGUID: LkPksYK3SDuravLB6emjNw==
+X-CSE-MsgGUID: S+BcJxjCTyqHbQ1rbKdVOg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8679119"
+X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
+   d="scan'208";a="8679119"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 01:13:27 -0700
+X-CSE-ConnectionGUID: 4i3Fn0c/QZGSzXPKPX/6Uw==
+X-CSE-MsgGUID: K1VgBYjtTfGYPpnA1JUHjg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
+   d="scan'208";a="22616220"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.35])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 01:13:25 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 17 Apr 2024 11:13:21 +0300 (EEST)
+To: Michael Pratt <mcpratt@pm.me>
+cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+    LKML <linux-kernel@vger.kernel.org>, 
+    linux-serial <linux-serial@vger.kernel.org>, 
+    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+    Jiri Slaby <jirislaby@kernel.org>, 
+    Wander Lairson Costa <wander@redhat.com>, 
+    Vamshi Gajjela <vamshigajjela@google.com>
+Subject: Re: [PATCH v2 3/3] serial: 8250: Set fifo timeout using
+ uart_fifo_timeout()
+In-Reply-To: <CmMdmgjPFh8R-rH0-mjU0QdQcqhRwVr9bmApDJ7BV_9DjRBL35K_Qfjs7oIPVwGFv5mdT476a8tPtkgnWqY2lRBEfGvfhjk0yW9ueI4bcf8=@pm.me>
+Message-ID: <7e66eafe-902c-38ab-b624-d9386c1bcd22@linux.intel.com>
+References: <20240416182741.22514-1-mcpratt@pm.me> <20240416182741.22514-4-mcpratt@pm.me> <Zh7KIz1AGyyS3zLT@smile.fi.intel.com> <CmMdmgjPFh8R-rH0-mjU0QdQcqhRwVr9bmApDJ7BV_9DjRBL35K_Qfjs7oIPVwGFv5mdT476a8tPtkgnWqY2lRBEfGvfhjk0yW9ueI4bcf8=@pm.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ehB5eGyndMJSU/tCS.JccLQ";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-
---Sig_/ehB5eGyndMJSU/tCS.JccLQ
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi Casper,
+On Tue, 16 Apr 2024, Michael Pratt wrote:
+> On Tuesday, April 16th, 2024 at 14:57, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> 
+> > > unsigned int status, tmout = 10000;
+> > > 
+> > > - /* Wait up to 10ms for the character(s) to be sent. /
+> > > + / Wait for a time relative to buffer size and baud */
+> > > + if (up->fifo_enable && up->port.timeout)
+> > > + tmout = jiffies_to_usecs(up->port.timeout);
+> > 
+> > 
+> > Why do we still use that default? Can't we calculate timeout even for\
+> > FIFO-less / FIFO-disabled devices?
 
-> Hi,
->=20
-> Out of curiosity, are you planning to implement the remaining RedBox
-> modes too (PRP-SAN, HSR-HSR, HSR-PRP)?
->=20
+Yes we definitely should be able to. Unfortunately these patches just keep 
+coming back not in the form that follows the review feedback, but they 
+come up their own way of doing things which is way worse and ignores the 
+given feedback.
 
-Currently I'm assigned to implement HSR-SAN.
+> Maybe it's possible that there is some kind of rare case where the LSR register
+> is not working or not configured properly for a device in which support
+> is being worked on...without a timeout, that would result in an infinite loop.
 
-> On 2024-04-02 10:58 +0200, Lukasz Majewski wrote:
-> > Changes for v3:
-> >
-> > - Modify frame passed Port C (Interlink) to have RedBox's source
-> > address (SA) This fixes issue with connecting L2 switch to
-> > Interlink Port as switches drop frames with SA other than one
-> > registered in their (internal) routing tables. =20
->=20
-> > +	/* When HSR node is used as RedBox - the frame received
-> > from HSR ring
-> > +	 * requires source MAC address (SA) replacement to one
-> > which can be
-> > +	 * recognized by SAN devices (otherwise, frames are
-> > dropped by switch)
-> > +	 */
-> > +	if (port->type =3D=3D HSR_PT_INTERLINK)
-> > +		ether_addr_copy(eth_hdr(skb)->h_source,
-> > +				port->hsr->macaddress_redbox); =20
->=20
-> I'm not really understanding the reason for this change. Can you
-> explain it in more detail?
+"without a timeout" is not what Andy said. He said you should always have 
+a timeout, regardless of there being FIFO or not. And that timeout should 
+be derived in the same manner from baudrate and FIFO size (to address the
+cases w/o FIFO, the fifosize should be lower bounded to 1 while 
+calculating the FIFO timeout).
 
-According to the HSR standard [1] the RedBox device shall work as a
-"proxy" [*] between HSR network and SAN (i.e. "normal" ethernet)
-devices.
+> AFAIK, when everything is working properly, there is no such thing as needing
+> a timeout for a uart device without fifo, as every single byte written would trigger
+> an interrupt anyway.
 
-This particular snippet handles the situation when frame from HSR node
-is supposed to be sent to SAN network. In that case the SA of HSR
-(SA_A) is replaced with SA of RedBox (SA_RB) as the MAC address of
-RedBox is known and used by SAN devices.
+While I agree the general principle, that this is backup that should not 
+even be needed, the statement is partly incorrect. We don't get interrupts 
+during console write because they're disabled. But LSR should still change 
+and allow progress without the backup timeout.
 
+-- 
+ i.
 
-Node A  hsr1  |=3D=3D=3D=3D=3D=3D| hsr1 Node Redbox |   |
-(SA_A) [**]   |	     |           eth3   |---| ethX SAN
-	      |      |        	 (SA_RB)|   |  (e.g switch)
-
-
-(the =3D=3D=3D=3D=3D=3D represents duplicate link - like lan1,lan2)
-
-If the SA_A would be passed to SAN (e.g. switch) the switch could get
-confused as also RedBox MAC address would be used. Hence, all the
-frames going out from "Node Redbox" have SA set to SA_RB.
-
-According to [1] - RedBox shall have the MAC address.
-This is similar to problem from [2].
-
-> The standard does not say to modify the
-> SA. However, it also does not say to *not* modify it in HSR-SAN mode
-> like it does in other places. In HSR-HSR and HSR-PRP mode modifying
-> SA breaks the duplicate discard.
-
-IMHO, the HSR-SAN shall be regarded as a "proxy" [*] between two types
-(and not fully compatible) networks.
-
-> So keeping the same behavior for all
-> modes would be ideal.
->=20
-> I imagine any HW offloaded solutions will not modify the SA, so if
-> possible the SW should also behave as such.
-
-The HW offloading in most cases works with HSR-HSR setup (i.e. it
-duplicates frames automatically or discards them when recived - like
-ksz9477).
-
-I think that RedBox HW offloading would be difficult to achieve to
-comply with standard. One "rough" idea would be to configure
-aforementioned ksz9477 to pass all frames in its HW between.
-
-
-
->=20
-> BR,
-> Casper
-
-Notes:
-
-[*] - However there is no specific "guidelines" on how the "proxy"
-shall be implemented.
-
-[**] - With current approach - the SAN MAC addresses are added to
-"node table" of Node A. For Node RedBox those are stored in a separate
-ProxyNodeTable. I'm not sure if this is the best possible approach
-[***], as ideally only MAC addresses of HSR "network" nodes shall be
-visible.
-
-[***] - I think that this "improvement" could be addressed when HSR
-support is added to Linux as it is the pre-requisite to add support for
-it to iproute2. Afterwards, the code can be further refined (as it
-would be added to net-next anyway).
-
-[****] - As I'm now "on the topic" - I can share full setup for busybox to =
-run
-tests included to v5 of this patch set.
-
-
-Links:
-
-[1] - IEC 62439-3:2021
-
-[2] -
-https://elixir.bootlin.com/linux/latest/source/net/hsr/hsr_framereg.c#L397
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/ehB5eGyndMJSU/tCS.JccLQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmYfhJcACgkQAR8vZIA0
-zr2n0Af/YMTGB4xu7QXPD1weAXmR0tgdhdYYtwdh3U5rz9H5k5RLkwtFDyX63elc
-0Bb2JGLzYpdJHt9c5OhQ6jxyLdJUOE4WfdJ237OMd3tUKQqU0oOPM2yK6h6N1r7g
-2dgauxn1DuFI1UV2zHHH/n8H3Xb+efsK2vaOTtxWUsCwoXjnmcU0yo8qMtu/UXC1
-aug03+4EBfqKkgdbTmcH8TlRt7uOHkd4ehdgU1w0LuGChj+Zl/YkM3SPsnQt1vL8
-bAy/aIgMhIKWCOBsdXizz4be32uFVhjvizYfwlgcXr04P/O5H3F+MVTU3TpimVMA
-LbdDk7JDSp4++jJS5eEdR/Dju6c/Cg==
-=YZMw
------END PGP SIGNATURE-----
-
---Sig_/ehB5eGyndMJSU/tCS.JccLQ--
 
