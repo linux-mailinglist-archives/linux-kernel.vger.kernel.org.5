@@ -1,177 +1,203 @@
-Return-Path: <linux-kernel+bounces-148732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74DBA8A86BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:53:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9E8A8A86BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:53:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A61481C219E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:53:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B21528735B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:53:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51DD9142E66;
-	Wed, 17 Apr 2024 14:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E407F1422CA;
+	Wed, 17 Apr 2024 14:52:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g49HwvnD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oqea5TbB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81DD1142625;
-	Wed, 17 Apr 2024 14:52:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 296031411CA
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:52:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713365560; cv=none; b=A+sNBkm8SIz/VwfST1Qru6urcelCsY2Jozb5tiMEk5gMxR6/ibHzwq1O2Ge8Mcuw0qJp5g0oBeIQKllFz5xB3H8K5tp3qCtunsHqgAluR8Yn/+JnG9JipGUcptjvcQrH7Ubff9UjkBDkUVRizYuLY+sXmJcVG9UI5rFVCekEI+0=
+	t=1713365566; cv=none; b=g1zEZquf/2eJeW8GwMvfS4VkkmfPwd9PH0nU7d/5I09QRDwFskCIbv/9jjVxWycTOlWGDuhRF2TZWw16HsBkBd2bAj8wrGNy5vTeqw6GjtAMrlhDM8wZiI+Er69UPrQkTPWbUYj8rv49gugFa1fp04O9z2rlH3oNqJKVqCJor3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713365560; c=relaxed/simple;
-	bh=N/Kc5Ck+n/MV7oq1Wn9zhitTGVylQb+Utd6qvo1Q1h8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oeJJjiu2T++q0xVKdS5IOPco3aHHFMr7ypLuYkdbLuxKFv4GslTPYH+odX+THV09p5UBBc7PSY2+ejg//PrUbScV4t51G1xBhEYYa8GdUhKf+fv6EiOKUF/HxJsID/7FKc+M8LRZrDjxbs/HHjbOE1cml3I2UDn0vDkD8kL2RWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g49HwvnD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 263C9C072AA;
-	Wed, 17 Apr 2024 14:52:40 +0000 (UTC)
+	s=arc-20240116; t=1713365566; c=relaxed/simple;
+	bh=1HgaS+nDZFRHl/RIdVOdvy6E21/5+MqUrX5IPEQaVJ8=;
+	h=Content-Type:Date:Message-Id:From:To:Subject:Cc:References:
+	 In-Reply-To; b=lHp9iiJQvYkurr/sDNtLHbxl50zj/Nes/1T9D4XxoBfRD0LJli3ISdLz6V+g5r6mvoyJwtgAkogkWwvWuR85Gn/EDbxtnEMXrRY4Fjv/5Pila0AoPgZYkGGG16EyjI/bIeefwC91LLsqu6LjMazX2GJi5ifnLLsZ81hzvCGujvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oqea5TbB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9F89C072AA;
+	Wed, 17 Apr 2024 14:52:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713365560;
-	bh=N/Kc5Ck+n/MV7oq1Wn9zhitTGVylQb+Utd6qvo1Q1h8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=g49HwvnDCP5I3WlHXrUM9ilJmC/qjtLqO8tAWQY/bZuYUZ94xZPW9ZfDZpfbeWuMc
-	 v5jixX2SwPc4JgOXF43vI8bkftCCt+Rjr5GuKq4hzSasSgfY2RLx/y+7yWD4xR6arl
-	 ELlsthg5adF+JAciW1xRuF2DThehy6OYCIPkWuoJvkAZZlzFOByp7/PoISevfQBpWi
-	 9ikMpLYwWiyaNPVFBjCvuDMMqWhOJW1WnF7xjcVg06G+s4ZLlxzp6on607hp9j6RAo
-	 IpRweKiynWVjHsJ75Cye0CVyC/VJaZOwXO5jwi77a76C4WU7aK1OT1gEwmtG0qwZim
-	 5kcb95YqrbUhw==
-Date: Wed, 17 Apr 2024 09:52:38 -0500
-From: Rob Herring <robh@kernel.org>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: djakov@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, matthias.bgg@gmail.com, lgirdwood@gmail.com,
-	broonie@kernel.org, keescook@chromium.org, gustavoars@kernel.org,
-	henryc.chen@mediatek.com, linux-pm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, kernel@collabora.com,
-	wenst@chromium.org, amergnat@baylibre.com
-Subject: Re: [PATCH v2 1/7] dt-bindings: regulator: Add bindings for MediaTek
- DVFSRC Regulators
-Message-ID: <20240417145238.GA2348962-robh@kernel.org>
-References: <20240417091442.170505-1-angelogioacchino.delregno@collabora.com>
- <20240417091442.170505-2-angelogioacchino.delregno@collabora.com>
+	s=k20201202; t=1713365566;
+	bh=1HgaS+nDZFRHl/RIdVOdvy6E21/5+MqUrX5IPEQaVJ8=;
+	h=Date:From:To:Subject:Cc:References:In-Reply-To:From;
+	b=oqea5TbBb5nNM25HaRBloDKRmLJmRPyMGQpkY01KHNsWgfF09RTGH0uApUt07Yd7y
+	 Ksh5u1LKo085w9zJVJI376QMlCzKFTe2ua2fdMzKfpeUSQVO/bbtZ3G8xiZGRRzR8h
+	 K3V3CuosWh4bTPKNYP9BTr/IkA2peCvrX2aBcPJmzUYvHMa++X1F2cRS1BD/p2v121
+	 mAK0OO07GNlT1nNkrxVyTDZcHwGk+Tc+Jj6tivM6gGEMhmmI+1rBq5ljXPRqhHPDJP
+	 yPJb4gWmObyYHB1g8SAElyW9JlyXcj7vWSTNrP/eVf6rbCOsK/jVI0xX4X0yM3kJOd
+	 pBA4WWkVa5Ruw==
+Content-Type: multipart/signed;
+ boundary=708fc41844f140b3d840031632678d0e44008df68536d14dad2e9ff8531b;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+Date: Wed, 17 Apr 2024 16:52:42 +0200
+Message-Id: <D0MHEH8OOS44.2PPBZ3LFU4QG3@kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Pratyush Yadav" <pratyush@kernel.org>
+Subject: Re: [RFC PATCH v1 6/6] mtd: spi-nor: introduce support for
+ displaying deprecation message
+Cc: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>
+X-Mailer: aerc 0.16.0
+References: <20240412134405.381832-1-mwalle@kernel.org>
+ <20240412134405.381832-7-mwalle@kernel.org> <mafs0jzkw6oq1.fsf@kernel.org>
+In-Reply-To: <mafs0jzkw6oq1.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240417091442.170505-2-angelogioacchino.delregno@collabora.com>
 
-On Wed, Apr 17, 2024 at 11:14:36AM +0200, AngeloGioacchino Del Regno wrote:
-> The Dynamic Voltage and Frequency Scaling Resource Collector Regulators
-> are controlled with votes to the DVFSRC hardware.
-> 
-> This adds support for the regulators found in MT6873, MT8183, MT8192
-> and MT8195 SoCs.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
->  .../mediatek,mt6873-dvfsrc-regulator.yaml     | 71 +++++++++++++++++++
->  1 file changed, 71 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml b/Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml
-> new file mode 100644
-> index 000000000000..446f1dab4d2e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml
-> @@ -0,0 +1,71 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/regulator/mediatek,mt6873-dvfsrc-regulator.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MediaTek DVFSRC-controlled Regulators
-> +
-> +description:
-> +  The Dynamic Voltage and Frequency Scaling Resource Collector Regulators
-> +  are controlled with votes to the DVFSRC hardware.
-> +
-> +maintainers:
-> +  - AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - mediatek,mt6873-dvfsrc-regulator
-> +      - mediatek,mt8183-dvfsrc-regulator
-> +      - mediatek,mt8192-dvfsrc-regulator
-> +      - mediatek,mt8195-dvfsrc-regulator
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  dvfsrc-vcore:
-> +    description: DVFSRC-controlled SoC Vcore regulator
-> +    $ref: regulator.yaml#
+--708fc41844f140b3d840031632678d0e44008df68536d14dad2e9ff8531b
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-       unevaluatedProperties: false
+Hi,
 
-> +
-> +  dvfsrc-vscp:
-> +    description: DVFSRC-controlled System Control Processor regulator
-> +    $ref: regulator.yaml#
+On Wed Apr 17, 2024 at 4:36 PM CEST, Pratyush Yadav wrote:
+> On Fri, Apr 12 2024, Michael Walle wrote:
+>
+> > SPI-NOR will automatically detect the attached flash device most of the
+> > time. We cannot easily find out if boards are using a given flash.
+> > Therefore, introduce a (temporary) flag to display a message on boot if
+>
+> Why temporary? There will always be a need to deprecate one flash or
+> another. Might as well keep the flag around.
 
-ditto
+Mh, yes I agree. That also means that this flag will not have any
+users (most) of the time (hopefully ;) ).
 
-> +
-> +required:
-> +  - compatible
+> Also, this patch/series does not add any users of the deprecated flag.
+> If you have some flashes in mind, it would be good to add them to the
+> patch/series.
 
-'reg' is never optional. And how is no regulators at all valid?
+This is just an RFC to see if whether you Tudor agree with me :) But
+I was about to add it to the evervision/cypress FRAMs.
 
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
+> I like the idea in general. Do you think we should also print a rough
+> date for the deprecation as well?
 
-Drop the example here. Just one complete example in the MFD doc.
+Might make sense, any suggestions?
 
-> +    soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        system-controller@10012000 {
-> +            compatible = "mediatek,mt8195-dvfsrc";
-> +            reg = <0 0x10012000 0 0x1000>;
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            regulators@0 {
-> +                compatible = "mediatek,mt8195-dvfsrc-regulator";
-> +                reg = <0>;
+> > support for a given flash device is scheduled to be removed in the
+> > future.
+> >
+> > Signed-off-by: Michael Walle <mwalle@kernel.org>
+> > ---
+> >  drivers/mtd/spi-nor/core.c | 12 ++++++++++++
+> >  drivers/mtd/spi-nor/core.h |  1 +
+> >  2 files changed, 13 insertions(+)
+> >
+> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> > index 58d310427d35..a294eef2e34a 100644
+> > --- a/drivers/mtd/spi-nor/core.c
+> > +++ b/drivers/mtd/spi-nor/core.c
+> > @@ -3312,6 +3312,7 @@ static const struct flash_info *spi_nor_get_flash=
+_info(struct spi_nor *nor,
+> >  						       const char *name)
+> >  {
+> >  	const struct flash_info *jinfo =3D NULL, *info =3D NULL;
+> > +	const char *deprecated =3D NULL;
+> > =20
+> >  	if (name)
+> >  		info =3D spi_nor_match_name(nor, name);
+> > @@ -3326,6 +3327,17 @@ static const struct flash_info *spi_nor_get_flas=
+h_info(struct spi_nor *nor,
+> >  			return jinfo;
+> >  	}
+> > =20
+> > +	if (info && (info->flags & SPI_NOR_DEPRECATED))
+> > +		deprecated =3D info->name;
+> > +	else if (jinfo && (jinfo->flags & SPI_NOR_DEPRECATED))
+> > +		deprecated =3D jinfo->name;
+> > +
+> > +	if (deprecated)
+> > +		pr_warn("Your board or device tree is using a SPI NOR flash (%s) wit=
+h\n"
+> > +			"deprecated driver support. It will be removed in future kernel\n"
+>
+> Nit: "removed in a future kernel version"
+>
+> > +			"version. If you feel this shouldn't be the case, please contact\n"
+> > +			"us at linux-mtd@lists.infradead.org\n", deprecated);
+> > +
+>
+> Hmm, this isn't so nice. I'd suggest doing something like:
+>
+> 	/*
+>          * If caller has specified name of flash model that can normally =
+be
+>          * ...
+>          */
+> 	info =3D jinfo ?: info;
+>
+> 	if (info->flags & SPI_NOR_DEPRECATED)
+>         	pr_warn(...);
 
-What does 'reg' value represent here? 0 and 1 seem pretty much made up.
+Actually, I had that, *but* I was thinking we might only check the
+detected flash and not the one specified in the device tree. But
+thinking about that again, I guess it makes sense because:
+ - that's the actually used flash driver
+ - having jinfo !=3D info will print that other warning, thus this
+   case is hopefully very unlikely.
 
-> +
-> +                dvfsrc_vcore: dvfsrc-vcore {
-> +                        regulator-name = "dvfsrc-vcore";
-> +                        regulator-min-microvolt = <550000>;
-> +                        regulator-max-microvolt = <750000>;
-> +                        regulator-always-on;
-> +                };
-> +
-> +                dvfsrc_vscp: dvfsrc-vscp {
-> +                        regulator-name = "dvfsrc-vscp";
-> +                        regulator-min-microvolt = <550000>;
-> +                        regulator-max-microvolt = <750000>;
-> +                        regulator-always-on;
-> +                };
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.44.0
-> 
+>
+> 	return info;
+>
+> >  	/*
+> >  	 * If caller has specified name of flash model that can normally be
+> >  	 * detected using JEDEC, let's verify it.
+> > diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> > index 8552e31b1b07..0317d8e253f4 100644
+> > --- a/drivers/mtd/spi-nor/core.h
+> > +++ b/drivers/mtd/spi-nor/core.h
+> > @@ -524,6 +524,7 @@ struct flash_info {
+> >  #define SPI_NOR_NO_ERASE		BIT(6)
+> >  #define SPI_NOR_QUAD_PP			BIT(8)
+> >  #define SPI_NOR_RWW			BIT(9)
+> > +#define SPI_NOR_DEPRECATED		BIT(15)
+>
+> If you do agree with my suggestion of making it permanent, would it make
+> more sense to make it BIT(10) instead. Or BIT(9) once you move up the
+> others because we no longer have BIT(7).
+
+Or just BIT(7) and avoid any code churn :)
+
+-michael
+
+>
+> > =20
+> >  	u8 no_sfdp_flags;
+> >  #define SPI_NOR_SKIP_SFDP		BIT(0)
+
+
+--708fc41844f140b3d840031632678d0e44008df68536d14dad2e9ff8531b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZh/iOhIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/jTJwF+MfXaY0rJxf8esRAeR/YyzqP24TH0YPAh
+rK75nCQk3ECO68GvG9Pk9Cj8/1uETtabAX97iBpwzQ1wB70yIGZin+I20ATWcX1W
+hLecMdn8ML3b9cyRUNpKYaAxe2fUQLjZPZA=
+=237x
+-----END PGP SIGNATURE-----
+
+--708fc41844f140b3d840031632678d0e44008df68536d14dad2e9ff8531b--
 
