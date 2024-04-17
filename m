@@ -1,267 +1,131 @@
-Return-Path: <linux-kernel+bounces-147971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B0268A7BFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:57:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 990C38A7BFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:57:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6300281DC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:57:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B21B91C2123B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:57:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF2D535A9;
-	Wed, 17 Apr 2024 05:57:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BCB0535C8;
+	Wed, 17 Apr 2024 05:57:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="F5YpazE7"
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oyQdX9OS"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ECC35339F
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 05:57:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22395537E5
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 05:57:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713333423; cv=none; b=FcIMSEHW2Jzvig7YMwSOyxpK9XpGjhpfTMWtsYsE3AhAYMw1Kvl/DFKUetXjECfRwSXKyUzRiaX2OTI8nVWhO2VJtQxXYIm6Cde6ZqOAI4yvqKXi4wdTtxaYOLhK6HPvbjAV0RK5Cq/jt1I5zEujz3wDtILNjg6q+sElQzZVg5A=
+	t=1713333460; cv=none; b=OVNkdRld2gGPAjlrEXPNtvxv3O64RAHNzjlrphRpjSXDj7ZZz1i0vXp8amoluAJaKVVp4MJaJ4dAEZyEEMyniMZPyPKYhVorlKp11a+fuIsyWKvLiAnuqPKyjB9/8bhPP0iBEhmytHgvV3mN1CKh+ysFT+LgRkeOPlUDGcDptd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713333423; c=relaxed/simple;
-	bh=lm54SJ/O7IYMxp/QB0zKZ2/bJKy0bBQjO5RzxEeUHe8=;
+	s=arc-20240116; t=1713333460; c=relaxed/simple;
+	bh=+37MR6MdJMZsDizwLtZ66hNEIJ8H6WWiH+pKyVxVm+M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rgDAyjGqc0UBrnzps5gcUZfbx0FghDSyq/UZUwri9tZy1Sx9TFyGwD/rsKpWgDgb5aFEio7hrdjz5FEZFHYN1H6DmHKgVWLBbSXKawpULdWADC8hWqBUSUxArjeXBjTEFwS/96TC/8j0tnE/ngSjlWAzvAdqoAIRTRL+CXvwLiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=F5YpazE7; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-434b5abbb0dso182921cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 22:57:01 -0700 (PDT)
+	 To:Cc:Content-Type; b=JDIZ7kmxg34TItP3VdkPjxuNEj4hSV5ckyvfwd4AdXvLHxlcb0OZVMJ0I3eut5CJNdviVMEwfgTz60GabXJtImPIpchAe0zF3UDd/Sd4vh9+94fX8wT7oZ+purWt4mLCNEEQoHuz0lT2wCnJZvSbyEkKz+6dQXkczICE3T6kgWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oyQdX9OS; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dd02fb9a31cso4555876276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 22:57:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713333421; x=1713938221; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=idWSq/0o9oIFgx3nMvgu9dbZngn+bQQVL+s5Mq9Jbbo=;
-        b=F5YpazE7itnfPCHEYsy/JG3HyYBbJr7vBPL1BV7LAhORcFQUXXIM3Gj4jol0fCjU7t
-         Ug8xnIHFV3lSTDYPBWQSiIQYpO0ZHIXDt/R7+kBiWCULk0hv+pSIvj2DNst2rohc3V9h
-         wdOSgm8zpFP/00wm1K/W3GjbsInpZRucffDbblFY3Xs7p+1XiJlOiAKO4x1m8cHPXr1y
-         O6O609UhWggvcMi/Yaz0lewq/K7Kc5UyP/HOxaYDtab8+3awoLgzvEBOk5n4z9iZ1MMu
-         pwkiUxWEbIRy/lzag2IbdQxJFz5umBqzPYiORderizv1e0qtlN6GAIhkv7KwuwcuUEkd
-         n7ug==
+        d=linaro.org; s=google; t=1713333457; x=1713938257; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rNcOWvfk3UIO9gpF1vedzWy9UX8ITuyEtwuAcYcPDTE=;
+        b=oyQdX9OS3XwnqqvnV9Yo5QzeRKhxYMDPUxT8GAWmyl7Vow1SDMP3lKiOKPzpQmx7C+
+         Ehkv+9pV8OUT82mLXxi2+8j/v4BwYw8NSv1zpMjzJiZkKhIf0vIRrtxPfouMvB3otU/D
+         9ZgZiVh/yNkx6H4q5x3Ve8M/G8H48/lWzEIzWIg28P5H5dlyKmqOKsL5gKsQstQ3mF9z
+         HjKa7XNBr9DpEtUfUazLaIJ+LMhSrDO0MO8GDeHZ4Wx2yTNXQ4VCvPJ0nbTs6a9MnvYG
+         J3ITMn8MWPj/vaLGVmfpmnv9fSOGCBqOAaf3NsuH8T0+zRyo4BWKcLF1I0MEjIsTTRfc
+         gg/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713333421; x=1713938221;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=idWSq/0o9oIFgx3nMvgu9dbZngn+bQQVL+s5Mq9Jbbo=;
-        b=UVEoX4eXDBdlsyVcpmcGBfcb63X+YdcDK3ej+xi/rTbWJJ8AX42jEn7DMkP8FjQOxE
-         xvZrFq1fYVUBOY1jm8y77QvWe3oBX3fHXZQ/aOFu07nUSE7lAnFqwQlfYdEVl8+FZh/i
-         wiFwKNrS1x02FSpD7GA4u1kNMJRJp1KRvYNVUHJs0JW2hU/BukHcJVIC31FeIBcM+1hN
-         LeIvW6B8cRLlW8GF4dhkyFIEe+Lfsk8MHUtmh0E/bWXreQRuvZdYa3xBovsCe/6Wzq6S
-         RELvs41LrJurPZP7qAMrn966pQybVkOAFu+zrEfUhqenYiQ95S5+/S5X84AO+K0YVrVH
-         oY1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVfFo61WwmahFNIdXR/e23D0krTm4yI7pz/HhFZ+ph6CwadF822iBw099sbs2Qg+lGQa2DHmpeUF6UL23lfO8lC4MGOzwLSepc95Ag8
-X-Gm-Message-State: AOJu0YyYywqqW5AeL7Tbn9VyJyX6kVH/gzvOVDsVEkruBk30LVqAsBs+
-	sHgBgHo1rOC/3EKRUTw1r3ByD5C/j5DTKiRUjY3leixPh4CY0dDSNC+rSIPh6z2kr3WCevlaKd0
-	2XVPfakUM/AR6jE2OQwmRFjcsAW8kJLiBB2eq
-X-Google-Smtp-Source: AGHT+IFIcZG/e2Y0dUnbYeOk4YZExQx85btZ2aS9xsScxkv0eFijeaSC4OKQGoXtPncNvu8Pbp1WHlWznhTlm09gGos=
-X-Received: by 2002:a05:622a:118c:b0:434:3f4c:6f33 with SMTP id
- m12-20020a05622a118c00b004343f4c6f33mr211141qtk.16.1713333420800; Tue, 16 Apr
- 2024 22:57:00 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713333457; x=1713938257;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rNcOWvfk3UIO9gpF1vedzWy9UX8ITuyEtwuAcYcPDTE=;
+        b=rnUppEqjwElkc1ZZunTgL9bPiR400f3qoPkeB2lnCLgy9vD+Yha8NKZRV2XC3z0zMS
+         vott36APPyGPmFE3WSFEKvD3dFowjWRyvAguaYLO1ra10YvydrlT020fsEKBGqvSW2t8
+         ui1FZv5Kyqs+j3t+FaN32w5XNMkWlLsAGP7oP5BGZaCklLNq1BVSrrKZUF+x7l1Bwgkp
+         fI7IRm/vWnHVHU3sfEgV5M0Sy6kLzAG+nITHyg/U/xaQ6d1Ym5prbXE0ejKwlSpYJlHu
+         fnOliQAMg/TsjeQ873ZPDA0kqwMCIXRZRdPOmHFt83OeCFgxoTdFMiPPBzf2zSZjRfFb
+         zEZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVnjBGQvwgpuHuriQ9wQt/oJOpJmYJsvG2E/hn7d6e6dVp4WH9EUeF55DlmKHQvoZJ+xVooxnCSTpAqMVZuuzl1I6JjChz/tSap6L5a
+X-Gm-Message-State: AOJu0YyPCE9TYLhpD9fsjE0qygxXLqdtHB3EUCeXqWNuE6ASQ5bM0QjK
+	wfnTRsnE+SPJQ5dyK2o/PpQQW9fHJAtD244jqLH0ztr/CC4prVRpkstXUTTwtTXlKM9WSlyRcuO
+	MdberZqBFxTJqlORk2acGBBrAl36FQJbrTC2vrw==
+X-Google-Smtp-Source: AGHT+IFvUyY4VR6NF7RdZCvXFlEENeC2C1SHZuye8tqXC6fIwkIUmwR3VOt9Upi8bmgYZVnv+2wX6k4TBDNDViUqr10=
+X-Received: by 2002:a25:81ce:0:b0:dcc:245b:690e with SMTP id
+ n14-20020a2581ce000000b00dcc245b690emr8017444ybm.40.1713333457167; Tue, 16
+ Apr 2024 22:57:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412210756.309828-1-weilin.wang@intel.com> <20240412210756.309828-9-weilin.wang@intel.com>
-In-Reply-To: <20240412210756.309828-9-weilin.wang@intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 16 Apr 2024 22:56:46 -0700
-Message-ID: <CAP-5=fUKsLjPi3Q4ObkdtciuoiNh++REzXkM97mgi-4+XrUQVw@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 08/16] perf stat: Add build string function and
- topdown events handling in hardware-grouping
-To: weilin.wang@intel.com
-Cc: Kan Liang <kan.liang@linux.intel.com>, Namhyung Kim <namhyung@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Perry Taylor <perry.taylor@intel.com>, 
-	Samantha Alt <samantha.alt@intel.com>, Caleb Biggers <caleb.biggers@intel.com>
+References: <20240415115603.1523974-1-github.com@herrie.org> <20240417045207.3594931-1-github.com@herrie.org>
+In-Reply-To: <20240417045207.3594931-1-github.com@herrie.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 17 Apr 2024 08:57:26 +0300
+Message-ID: <CAA8EJpo=nd8ywUzz2e42p7WAyuFm439yvNf6H=MD63LCV0xTnw@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: phy: qcom,usb-hs-phy: Add compatible
+To: Herman van Hazendonk <github.com@herrie.org>
+Cc: andersson@kernel.org, benwolsieffer@gmail.com, chris.chapuis@gmail.com, 
+	conor+dt@kernel.org, devicetree@vger.kernel.org, kishon@kernel.org, 
+	konrad.dybcio@linaro.org, krzk+dt@kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org, me@herrie.org, 
+	robh@kernel.org, vkoul@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 12, 2024 at 2:08=E2=80=AFPM <weilin.wang@intel.com> wrote:
+On Wed, 17 Apr 2024 at 07:52, Herman van Hazendonk
+<github.com@herrie.org> wrote:
 >
-> From: Weilin Wang <weilin.wang@intel.com>
+> Adds qcom,usb-hs-phy-msm8660 compatible
 >
-> Add the function to generate final grouping strings. This function is
-> very similar to the existing metricgroup__build_event_string() function.
-> The difference is that the input data includes a list of grouping lists.
+> Used by HP Touchpad (tenderloin) for example.
 >
-> Reviewed-by: Ian Rogers <irogers@google.com>
-> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+> Signed-off-by: Herman van Hazendonk <github.com@herrie.org>
 > ---
->  tools/perf/util/metricgroup.c | 97 +++++++++++++++++++++++++++++++++--
->  1 file changed, 93 insertions(+), 4 deletions(-)
+>  Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 >
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.=
-c
-> index 88c86664c90c..04d988ace734 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -2018,6 +2018,96 @@ static int assign_event_grouping(struct metricgrou=
-p__event_info *e,
->         return ret;
->  }
->
-> +static int hw_aware_metricgroup__build_event_string(struct list_head *gr=
-oup_strs,
-> +                                          const char *modifier,
-> +                                          struct list_head *groups)
-> +{
-> +       struct metricgroup__pmu_group_list *p;
-> +       struct metricgroup__group *g;
-> +       struct metricgroup__group_events *ge;
-> +       bool no_group =3D true;
-> +       int ret =3D 0;
-> +
-> +#define RETURN_IF_NON_ZERO(x) do { if (x) return x; } while (0)
-> +
-> +       list_for_each_entry(p, groups, nd) {
-> +               list_for_each_entry(g, &p->group_head, nd) {
-> +                       struct strbuf *events;
-> +                       struct metricgroup__group_strs *new_group_str =3D
-> +                               malloc(sizeof(struct metricgroup__group_s=
-trs));
-> +
-> +                       if (!new_group_str)
-> +                               return -ENOMEM;
-> +                       strbuf_init(&new_group_str->grouping_str, 0);
-> +                       events =3D &new_group_str->grouping_str;
-> +                       ret =3D strbuf_addch(events, '{');
-> +                       RETURN_IF_NON_ZERO(ret);
-> +                       no_group =3D true;
-> +                       list_for_each_entry(ge, &g->event_head, nd) {
-> +                               const char *sep, *rsep, *id =3D ge->event=
-_name;
-> +
-> +                               pr_debug("found event %s\n", id);
-> +
-> +                               /* Separate events with commas and open t=
-he group if necessary. */
-> +                               if (!no_group) {
-> +                                       ret =3D strbuf_addch(events, ',')=
-;
-> +                                       RETURN_IF_NON_ZERO(ret);
-> +                               }
-> +                               /*
-> +                                * Encode the ID as an event string. Add =
-a qualifier for
-> +                                * metric_id that is the original name ex=
-cept with characters
-> +                                * that parse-events can't parse replaced=
- For example,
-> +                                * 'msr@tsc@' gets added as msr/tsc,metri=
-c-id=3Dmsr!3tsc!3/
-> +                                */
-> +                               sep =3D strchr(id, '@');
-> +                               if (sep) {
-> +                                       ret =3D strbuf_add(events, id, se=
-p - id);
-> +                                       RETURN_IF_NON_ZERO(ret);
-> +                                       ret =3D strbuf_addch(events, '/')=
-;
-> +                                       RETURN_IF_NON_ZERO(ret);
-> +                                       rsep =3D strrchr(sep, '@');
-> +                                       ret =3D strbuf_add(events, sep + =
-1, rsep - sep - 1);
-> +                                       RETURN_IF_NON_ZERO(ret);
-> +                                       ret =3D strbuf_addstr(events, ",m=
-etric-id=3D");
-> +                                       RETURN_IF_NON_ZERO(ret);
-> +                                       sep =3D rsep;
-> +                               } else {
-> +                                       sep =3D strchr(id, ':');
-> +                                       if (sep) {
-> +                                               ret =3D strbuf_add(events=
-, id, sep - id);
-> +                                               RETURN_IF_NON_ZERO(ret);
-> +                                       } else {
-> +                                               ret =3D strbuf_addstr(eve=
-nts, id);
-> +                                               RETURN_IF_NON_ZERO(ret);
-> +                                       }
-> +                                       ret =3D strbuf_addstr(events, "/m=
-etric-id=3D");
-> +                                       RETURN_IF_NON_ZERO(ret);
-> +                               }
-> +                               ret =3D encode_metric_id(events, id);
-> +                               RETURN_IF_NON_ZERO(ret);
-> +                               ret =3D strbuf_addstr(events, "/");
-> +                               RETURN_IF_NON_ZERO(ret);
-> +
-> +                               if (sep) {
-> +                                       ret =3D strbuf_addstr(events, sep=
- + 1);
-> +                                       RETURN_IF_NON_ZERO(ret);
-> +                               }
-> +                               if (modifier) {
-> +                                       ret =3D strbuf_addstr(events, mod=
-ifier);
-> +                                       RETURN_IF_NON_ZERO(ret);
-> +                               }
-> +                               no_group =3D false;
-> +                       }
-> +                       ret =3D strbuf_addf(events, "}");
-> +                       RETURN_IF_NON_ZERO(ret);
-> +                       pr_debug("events-buf: %s\n", events->buf);
-> +                       list_add_tail(&new_group_str->nd, group_strs);
-> +               }
-> +       }
-> +       return ret;
-> +#undef RETURN_IF_NON_ZERO
-> +}
-> +
->  /**
->   * create_grouping - Create a list of groups and place all the events of
->   * event_info_list into these groups.
-> @@ -2029,8 +2119,8 @@ static int assign_event_grouping(struct metricgroup=
-__event_info *e,
->   */
->  static int create_grouping(struct list_head *pmu_info_list,
->                           struct list_head *event_info_list,
-> -                         struct list_head *groupings __maybe_unused,
-> -                         const char *modifier __maybe_unused)
-> +                         struct list_head *groupings,
-> +                         const char *modifier)
->  {
->         int ret =3D 0;
->         struct metricgroup__event_info *e;
-> @@ -2046,6 +2136,7 @@ static int create_grouping(struct list_head *pmu_in=
-fo_list,
->                 if (ret)
->                         goto out;
->         }
-> +       ret =3D hw_aware_metricgroup__build_event_string(groupings, modif=
-ier, &groups);
->  out:
->         metricgroup__free_group_list(&groups);
->         return ret;
-> @@ -2075,8 +2166,6 @@ static int hw_aware_build_grouping(struct expr_pars=
-e_ctx *ctx __maybe_unused,
->         hashmap__for_each_entry(ctx->ids, cur, bkt) {
->                 const char *id =3D cur->pkey;
->
-> -               pr_debug("found event %s\n", id);
-> -
+> diff --git a/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
+> index f042d6af1594..ccf23170cd17 100644
+> --- a/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
+> @@ -15,6 +15,7 @@ if:
+>        contains:
+>          enum:
+>            - qcom,usb-hs-phy-apq8064
+> +          - qcom,usb-hs-phy-msm8660
+>            - qcom,usb-hs-phy-msm8960
+>  then:
+>    properties:
+> @@ -41,6 +42,7 @@ properties:
+>        - enum:
+>            - qcom,usb-hs-phy-apq8064
+>            - qcom,usb-hs-phy-msm8226
+> +          - qcom,usb-hs-phy-msm8960
 
-Looks like these 2 lines got removed by accident.
+This should probably be msm8660 rather than 8960
 
-Thanks,
-Ian
+Note, nowadays the rule would be to use qcom,msm8660-usb-hs-phy
+compatible, but I wonder if we should enforce this for such an old
+platform or whether similarity wins.
 
->                 ret =3D get_metricgroup_events(id, etable, &event_info_li=
-st);
->                 if (ret)
->                         goto err_out;
-> --
-> 2.42.0
+>            - qcom,usb-hs-phy-msm8916
+>            - qcom,usb-hs-phy-msm8960
+>            - qcom,usb-hs-phy-msm8974
 >
+
+
+-- 
+With best wishes
+Dmitry
 
