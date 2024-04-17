@@ -1,272 +1,123 @@
-Return-Path: <linux-kernel+bounces-149211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4648E8A8D39
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:46:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C6D68A8D38
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:46:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F220028610E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:46:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D8D61C21D78
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1EC4A9B0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A7E4482E1;
 	Wed, 17 Apr 2024 20:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jOK8wYPY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RkJ1tHT2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FDC044C88;
-	Wed, 17 Apr 2024 20:46:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4339F79D8;
+	Wed, 17 Apr 2024 20:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713386798; cv=none; b=e3Rm32ORJXOEZTh6j4RAbW9OMS6TWhWG6UIaRH0ArY7eS00R66+KXolB+1um1DJuo79BOuvvs4YCjYd8RAoP+nyDdPuhzFfSwyKvyQ24dhLEpz8wE+cONeN0g0Cp3EIZwPYejt0XDyZChYBdeTLwFQdQuK64kK3DwYYDbzQX3Nw=
+	t=1713386798; cv=none; b=KwNoiLReZRou3Hw0FMXGQBcRfmX9LYF8varODuW806oZt4Bp3GjW0YrFSB9Rit1FDmNNCOYMGb1Q9z79iiVK81bQH9BLs9V4jyfbOxucu4HJkYQ9MR5l0iZdvJdFdI9TlppYj4TKFuKrDj823nmMTlE3FAv6jNxsbRj7+2sAHug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713386798; c=relaxed/simple;
-	bh=DO0RTfJabstAj2jFmpQS5vTVnCMTALJQquy8NMA9ptg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ubipoVRRxlq6FHzCxC+WK/4r1FJ0t4EPJnyOJ04H3r29uIxg72jXjtpKrKdfb19LPM0EjOzVT5lgT1ycmqNfRKiXUSF7+wi36DlDItphx/+XhwplTBINOmSnaWVeAvzSJ4BaAn9pASzt7K5Q5xy07erQ+E3I6k3Rsk7iKNC4dgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jOK8wYPY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4AAEC072AA;
-	Wed, 17 Apr 2024 20:46:36 +0000 (UTC)
+	bh=vpW2uBcFnTTkU4Vdy3ReQVcKp2u1xZV+wBorG7RxKjk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=neTCyl00IJdlz1MUNgXpsKMFOTcTKnJ9Y0ziFqNAiffFGvNYhi+HMo2HuYeld1zfbzxijgkKQxfvhVryvrb9YmZBqUwNidysmcF9j6M2zi14ru/JuZHit0F9RPKau7qzoECaH4m/FJ//2gnqpHS9VYVxgqOAwIeatRDaeRN9mZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RkJ1tHT2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6943BC116B1;
+	Wed, 17 Apr 2024 20:46:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713386798;
-	bh=DO0RTfJabstAj2jFmpQS5vTVnCMTALJQquy8NMA9ptg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jOK8wYPYzw6C/bYboYuiZ3ZIAVJGJX3akF+Xtf9TuX+RbFFmbbKpLBV9P/dQteEwc
-	 VXaGfqjZVUHILPcZflGZZt5/bIuC7mTOubDYtMbLfYnk2P0tPuQPH3OIwj0YJO2Ttb
-	 H7OhxmVmGPwGMdYuk/jPrvD6cyib4AVlPJONUW/ZObP72Waaf4l0oo1+TJNjBc4d2g
-	 SuDEo9CSU2ZirR1n/rqeSxkeHVJGkLvPcFdE5PLYsw7zbL14tGWLrZPWIHh+1VAUvw
-	 hdxCMuw5IzQdzTGTOmlCeTxLzoiex4au2P5LfZAhCUCwyVN/DjdWcxgSXlJ+BJpfq4
-	 nIyUc9n088i5w==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>,
-	Linux trace kernel <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Francis Laniel <flaniel@linux.microsoft.com>
-Subject: [PATCH for-next v2] tracing/kprobes: Add symbol counting check when module loads
-Date: Thu, 18 Apr 2024 05:46:34 +0900
-Message-Id: <171338679446.616570.14456856697191949345.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-User-Agent: StGit/0.19
+	s=k20201202; t=1713386797;
+	bh=vpW2uBcFnTTkU4Vdy3ReQVcKp2u1xZV+wBorG7RxKjk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=RkJ1tHT27y+k0lu2QQRUrGTpEPA5UU3iWd9URd2ZdTybNiuCSoZJcWvzIScLEJTo3
+	 j2PHHyRu4FLB7fZoCfA2IziVIfmuO8kBmqRWrcMfkjT0kR6w4Wo1zZ42afTut8q4NE
+	 H4KxdWsQUxkRcixhNeIf0xLD2kViqQ3efDUTiKxw+v8SifzNUCBsDSOYfRgAEHSXDF
+	 xsECzz55hNl+R/no/eoZhtY9gEai/b9oJ7oFZQ2khaHbGdCNs8B+/tHeQaYr2Widzb
+	 D8yF16M1VOyUYZa0O/DnxSIKz43pjAF944uhasya9+85A4NRFg8oRuuMKg4J1UFUo5
+	 NTNgavSRXsFZg==
+Date: Wed, 17 Apr 2024 13:46:36 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: Dmitry Safonov via B4 Relay <devnull+0x7f454c46.gmail.com@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Shuah Khan
+ <shuah@kernel.org>, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net 0/4] selftests/net/tcp_ao: A bunch of fixes for
+ TCP-AO selftests
+Message-ID: <20240417134636.102f0120@kernel.org>
+In-Reply-To: <CAJwJo6Yw4S1wCcimRVy=P8h0Ez0UDt-yw2jqSY-ph3TKsQVVGA@mail.gmail.com>
+References: <20240413-tcp-ao-selftests-fixes-v1-0-f9c41c96949d@gmail.com>
+	<20240416072809.3ae7c3d3@kernel.org>
+	<CAJwJo6Yw4S1wCcimRVy=P8h0Ez0UDt-yw2jqSY-ph3TKsQVVGA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Wed, 17 Apr 2024 19:47:18 +0100 Dmitry Safonov wrote:
+> 1. [ 240.001391][ T833] Possible interrupt unsafe locking scenario:
+> [  240.001391][  T833]
+> [  240.001635][  T833]        CPU0                    CPU1
+> [  240.001797][  T833]        ----                    ----
+> [  240.001958][  T833]   lock(&p->alloc_lock);
+> [  240.002083][  T833]                                local_irq_disable();
+> [  240.002284][  T833]                                lock(&ndev->lock);
+> [  240.002490][  T833]                                lock(&p->alloc_lock);
+> [  240.002709][  T833]   <Interrupt>
+> [  240.002819][  T833]     lock(&ndev->lock);
+> [  240.002937][  T833]
+> [  240.002937][  T833]  *** DEADLOCK ***
+> 
+> https://netdev-3.bots.linux.dev/vmksft-tcp-ao-dbg/results/537021/14-self-connect-ipv6/stderr
+> 
+> 2. [  251.411647][   T71] WARNING: SOFTIRQ-safe -> SOFTIRQ-unsafe lock
+> order detected
+> [  251.411986][   T71] 6.9.0-rc1-virtme #1 Not tainted
+> [  251.412214][   T71] -----------------------------------------------------
+> [  251.412533][   T71] kworker/u16:1/71 [HC0[0]:SC0[2]:HE1:SE0] is
+> trying to acquire:
+> [  251.412837][   T71] ffff888005182c28 (&p->alloc_lock){+.+.}-{2:2},
+> at: __get_task_comm+0x27/0x70
+> [  251.413214][   T71]
+> [  251.413214][   T71] and this task is already holding:
+> [  251.413527][   T71] ffff88802f83efd8 (&ul->lock){+.-.}-{2:2}, at:
+> rt6_uncached_list_flush_dev+0x138/0x840
+> [  251.413887][   T71] which would create a new lock dependency:
+> [  251.414153][   T71]  (&ul->lock){+.-.}-{2:2} -> (&p->alloc_lock){+.+.}-{2:2}
+> [  251.414464][   T71]
+> [  251.414464][   T71] but this new dependency connects a SOFTIRQ-irq-safe lock:
+> [  251.414808][   T71]  (&ul->lock){+.-.}-{2:2}
+> 
+> https://netdev-3.bots.linux.dev/vmksft-tcp-ao-dbg/results/537201/17-icmps-discard-ipv4/stderr
+> 
+> 3. [ 264.280734][ C3] Possible unsafe locking scenario:
+> [  264.280734][    C3]
+> [  264.280968][    C3]        CPU0                    CPU1
+> [  264.281117][    C3]        ----                    ----
+> [  264.281263][    C3]   lock((&tw->tw_timer));
+> [  264.281427][    C3]
+> lock(&hashinfo->ehash_locks[i]);
+> [  264.281647][    C3]                                lock((&tw->tw_timer));
+> [  264.281834][    C3]   lock(&hashinfo->ehash_locks[i]);
+> 
+> https://netdev-3.bots.linux.dev/vmksft-tcp-ao-dbg/results/547461/19-self-connect-ipv4/stderr
+> 
+> I can spend some time on them after I verify that my fix for -stable
+> is actually fixing an issue I think it fixes.
+> Seems like your automation + my selftests are giving some fruits, hehe.
 
-Currently, kprobe event checks whether the target symbol name is unique
-or not, so that it does not put a probe on an unexpected place. But this
-skips the check if the target is on a module because the module may not
-be loaded.
+Oh, very interesting, I don't recall these coming up before.
 
-To fix this issue, this patch checks the number of probe target symbols
-in a target module when the module is loaded. If the probe is not on the
-unique name symbols in the module, it will be rejected at that point.
-
-Note that the symbol which has a unique name in the target module,
-it will be accepted even if there are same-name symbols in the
-kernel or other modules,
-
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v3:
-  - Update the patch description.
- Updated from last October post, which was dropped by test failure:
-    https://lore.kernel.org/linux-trace-kernel/169854904604.132316.12500381416261460174.stgit@devnote2/
- Changes in v2:
-  - Fix to skip checking uniqueness if the target module is not loaded.
-  - Fix register_module_trace_kprobe() to pass correct symbol name.
-  - Fix to call __register_trace_kprobe() from module callback.
----
- kernel/trace/trace_kprobe.c |  125 ++++++++++++++++++++++++++++---------------
- 1 file changed, 81 insertions(+), 44 deletions(-)
-
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index c68d4e830fbe..0113afe2662d 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -670,6 +670,21 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
- 	return ret;
- }
- 
-+static int validate_module_probe_symbol(const char *modname, const char *symbol);
-+
-+static int register_module_trace_kprobe(struct module *mod, struct trace_kprobe *tk)
-+{
-+	const char *p;
-+	int ret = 0;
-+
-+	p = strchr(trace_kprobe_symbol(tk), ':');
-+	if (p)
-+		ret = validate_module_probe_symbol(module_name(mod), p + 1);
-+	if (!ret)
-+		ret = __register_trace_kprobe(tk);
-+	return ret;
-+}
-+
- /* Module notifier call back, checking event on the module */
- static int trace_kprobe_module_callback(struct notifier_block *nb,
- 				       unsigned long val, void *data)
-@@ -688,7 +703,7 @@ static int trace_kprobe_module_callback(struct notifier_block *nb,
- 		if (trace_kprobe_within_module(tk, mod)) {
- 			/* Don't need to check busy - this should have gone. */
- 			__unregister_trace_kprobe(tk);
--			ret = __register_trace_kprobe(tk);
-+			ret = register_module_trace_kprobe(mod, tk);
- 			if (ret)
- 				pr_warn("Failed to re-register probe %s on %s: %d\n",
- 					trace_probe_name(&tk->tp),
-@@ -729,17 +744,68 @@ static int count_mod_symbols(void *data, const char *name, unsigned long unused)
- 	return 0;
- }
- 
--static unsigned int number_of_same_symbols(char *func_name)
-+static unsigned int number_of_same_symbols(const char *mod, const char *func_name)
- {
- 	struct sym_count_ctx ctx = { .count = 0, .name = func_name };
- 
--	kallsyms_on_each_match_symbol(count_symbols, func_name, &ctx.count);
-+	if (!mod)
-+		kallsyms_on_each_match_symbol(count_symbols, func_name, &ctx.count);
- 
--	module_kallsyms_on_each_symbol(NULL, count_mod_symbols, &ctx);
-+	module_kallsyms_on_each_symbol(mod, count_mod_symbols, &ctx);
- 
- 	return ctx.count;
- }
- 
-+static int validate_module_probe_symbol(const char *modname, const char *symbol)
-+{
-+	unsigned int count = number_of_same_symbols(modname, symbol);
-+
-+	if (count > 1) {
-+		/*
-+		 * Users should use ADDR to remove the ambiguity of
-+		 * using KSYM only.
-+		 */
-+		return -EADDRNOTAVAIL;
-+	} else if (count == 0) {
-+		/*
-+		 * We can return ENOENT earlier than when register the
-+		 * kprobe.
-+		 */
-+		return -ENOENT;
-+	}
-+	return 0;
-+}
-+
-+static int validate_probe_symbol(char *symbol)
-+{
-+	struct module *mod = NULL;
-+	char *modname = NULL, *p;
-+	int ret = 0;
-+
-+	p = strchr(symbol, ':');
-+	if (p) {
-+		modname = symbol;
-+		symbol = p + 1;
-+		*p = '\0';
-+		/* Return 0 (defer) if the module does not exist yet. */
-+		rcu_read_lock_sched();
-+		mod = find_module(modname);
-+		if (mod && !try_module_get(mod))
-+			mod = NULL;
-+		rcu_read_unlock_sched();
-+		if (!mod)
-+			goto out;
-+	}
-+
-+	ret = validate_module_probe_symbol(modname, symbol);
-+out:
-+	if (p)
-+		*p = ':';
-+	if (mod)
-+		module_put(mod);
-+	return ret;
-+}
-+
- static int trace_kprobe_entry_handler(struct kretprobe_instance *ri,
- 				      struct pt_regs *regs);
- 
-@@ -863,6 +929,14 @@ static int __trace_kprobe_create(int argc, const char *argv[])
- 			trace_probe_log_err(0, BAD_PROBE_ADDR);
- 			goto parse_error;
- 		}
-+		ret = validate_probe_symbol(symbol);
-+		if (ret) {
-+			if (ret == -EADDRNOTAVAIL)
-+				trace_probe_log_err(0, NON_UNIQ_SYMBOL);
-+			else
-+				trace_probe_log_err(0, BAD_PROBE_ADDR);
-+			goto parse_error;
-+		}
- 		if (is_return)
- 			ctx.flags |= TPARG_FL_RETURN;
- 		ret = kprobe_on_func_entry(NULL, symbol, offset);
-@@ -875,31 +949,6 @@ static int __trace_kprobe_create(int argc, const char *argv[])
- 		}
- 	}
- 
--	if (symbol && !strchr(symbol, ':')) {
--		unsigned int count;
--
--		count = number_of_same_symbols(symbol);
--		if (count > 1) {
--			/*
--			 * Users should use ADDR to remove the ambiguity of
--			 * using KSYM only.
--			 */
--			trace_probe_log_err(0, NON_UNIQ_SYMBOL);
--			ret = -EADDRNOTAVAIL;
--
--			goto error;
--		} else if (count == 0) {
--			/*
--			 * We can return ENOENT earlier than when register the
--			 * kprobe.
--			 */
--			trace_probe_log_err(0, BAD_PROBE_ADDR);
--			ret = -ENOENT;
--
--			goto error;
--		}
--	}
--
- 	trace_probe_log_set_index(0);
- 	if (event) {
- 		ret = traceprobe_parse_event_name(&event, &group, gbuf,
-@@ -1817,21 +1866,9 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
- 	char *event;
- 
- 	if (func) {
--		unsigned int count;
--
--		count = number_of_same_symbols(func);
--		if (count > 1)
--			/*
--			 * Users should use addr to remove the ambiguity of
--			 * using func only.
--			 */
--			return ERR_PTR(-EADDRNOTAVAIL);
--		else if (count == 0)
--			/*
--			 * We can return ENOENT earlier than when register the
--			 * kprobe.
--			 */
--			return ERR_PTR(-ENOENT);
-+		ret = validate_probe_symbol(func);
-+		if (ret)
-+			return ERR_PTR(ret);
- 	}
- 
- 	/*
-
+We try to extract crashes but apparently we're missing lockdep splats.
+I'll try to improve the extraction logic...
 
