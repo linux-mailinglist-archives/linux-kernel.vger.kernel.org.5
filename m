@@ -1,105 +1,99 @@
-Return-Path: <linux-kernel+bounces-148734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C57208A86C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:53:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAB358A86C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:53:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DEF1B28709
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:53:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4775B287A26
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:53:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 771A1142659;
-	Wed, 17 Apr 2024 14:52:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hM0+/LvZ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C805F1422A4;
+	Wed, 17 Apr 2024 14:53:41 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A6781428F2
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:52:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A6213D24A;
+	Wed, 17 Apr 2024 14:53:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713365578; cv=none; b=asDzV+IXc4FJjLRc8LY8EKBwdXegcf0FKJ18keKdEB6Gt3srrcBEDXQba6YX4Fp2shjOJ5iwTTothkgbt8ORUpvr2x6C6oRohzt5GrkQqNh9aq8edkAP75TX8MPxIaqy34x6YbjDmmRoC/3HlsyiiiMunm9DyY5cjUQZWiOzRP0=
+	t=1713365621; cv=none; b=QAjHrf0E92E4OdyElWZJB6/0mPrx9kLAVoqzWzmDs4UStmMJ69R5QEDDlfiM8o7hU0zJlp39Rg8gLeQtdLL537Vv46Yz+jyfldwFImfGnAOEmGfqLfc5dZ4azJZ/SUxCQXAGepON8p+lC86RXHfYuyb6QHWhyUwBGRp12PHZc94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713365578; c=relaxed/simple;
-	bh=o/WZVlqzqs+cchBVEDszJLyTbJFnJswqUxOSpCM7tSg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FO7KAWxQIuapLCZqV53vZvz1O2ljLM/DyIlMDZM/dukqL406+yV7Xd0fB7QAmSV/o2E+l9FMBWQgenp+yXK9B+f0B5KG+EWhMU3VG2nQtZoTkDlhW1UzNg/nnMyVqtGiDStoW8rPikhdo348g46haaRjpiVgNPWviLCuwyTWPiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hM0+/LvZ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713365576;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=o/WZVlqzqs+cchBVEDszJLyTbJFnJswqUxOSpCM7tSg=;
-	b=hM0+/LvZzJjq1qMtt3DzQke8uQjO9Yuts5S3k41vjkvWW9ZDlR0glkD9I3Kw7E8eK74DyA
-	3u6NToyL5Fr1Bke8VRJYFr8Ib87GBhhxjBuS5PkBb22yR+Z/UxknzV6o74IBIndDeLpy0T
-	qwZ4D6fwZZ04Q0z7OqyhfA4UqXMQ12E=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-590-hPO2HUuBOLC0GHQtplWUQA-1; Wed, 17 Apr 2024 10:52:50 -0400
-X-MC-Unique: hPO2HUuBOLC0GHQtplWUQA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4B051104B502;
-	Wed, 17 Apr 2024 14:52:50 +0000 (UTC)
-Received: from RHTRH0061144 (dhcp-17-72.bos.redhat.com [10.18.17.72])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id CEC881121306;
-	Wed, 17 Apr 2024 14:52:49 +0000 (UTC)
-From: Aaron Conole <aconole@redhat.com>
-To: Adrian Moreno <amorenoz@redhat.com>
-Cc: netdev@vger.kernel.org,  linux-kernel@vger.kernel.org (open list),
-  Paolo Abeni <pabeni@redhat.com>,  Eric Dumazet <edumazet@google.com>,
-  dev@openvswitch.org (open list:OPENVSWITCH),
-  linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
-  Pravin B Shelar <pshelar@ovn.org>,  "David S. Miller"
- <davem@davemloft.net>,  Shuah Khan <shuah@kernel.org>,  Jakub Kicinski
- <kuba@kernel.org>
-Subject: Re: [PATCH net-next] selftests: openvswitch: Fix escape chars in
- regexp.
-In-Reply-To: <20240416090913.2028475-1-amorenoz@redhat.com> (Adrian Moreno's
-	message of "Tue, 16 Apr 2024 11:09:13 +0200")
-References: <20240416090913.2028475-1-amorenoz@redhat.com>
-Date: Wed, 17 Apr 2024 10:52:49 -0400
-Message-ID: <f7t7cgwavni.fsf@redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1713365621; c=relaxed/simple;
+	bh=7SNM5GZDurYtgpeoMmLJ7ejYSH9vVUcjJXUXLjZHY2Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Na6PsR0+NwxR7ELRENmXpGQmjmfgSEI0CkMDZdKhwznVoye4nbDrIUvMMSDJ+9b1ynK3vhSr6X3+wN2EU5soyiSQiLnm44wCCTERgSA39jfn8ufKQ6boBm31HJeUz0+sGbGyPNqXJkIOo4J8RC2ttL7RpTw+LXDUT4M5r/VyavY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
+X-CSE-ConnectionGUID: m2xIabjvQF6NmsjFNfdfOg==
+X-CSE-MsgGUID: VjD7vwsaSI247dvAEhSW/g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8726606"
+X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
+   d="scan'208";a="8726606"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 07:53:39 -0700
+X-CSE-ConnectionGUID: 469OcrOyTH6csSgCd+yI2g==
+X-CSE-MsgGUID: kZUYMOd7Sv2S4PIWg6/a3w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
+   d="scan'208";a="22730571"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 07:53:37 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy@kernel.org>)
+	id 1rx6fH-000000004QL-18Os;
+	Wed, 17 Apr 2024 17:53:35 +0300
+Date: Wed, 17 Apr 2024 17:53:34 +0300
+From: Andy Shevchenko <andy@kernel.org>
+To: Ivan Orlov <ivan.orlov0322@gmail.com>
+Cc: keescook@chromium.org, akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	skhan@linuxfoundation.org
+Subject: Re: [PATCH] string: Implement KUnit test for str*cmp functions
+Message-ID: <Zh_ibi_Y6xogktg-@smile.fi.intel.com>
+References: <20240417135415.614284-1-ivan.orlov0322@gmail.com>
+ <Zh_cgnMOFHuP-lKu@smile.fi.intel.com>
+ <10085ec8-0109-444c-bce4-d0b0ef1a4164@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10085ec8-0109-444c-bce4-d0b0ef1a4164@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Adrian Moreno <amorenoz@redhat.com> writes:
+On Wed, Apr 17, 2024 at 03:46:44PM +0100, Ivan Orlov wrote:
+> On 4/17/24 15:28, Andy Shevchenko wrote:
+> > On Wed, Apr 17, 2024 at 02:54:15PM +0100, Ivan Orlov wrote:
 
-> Character sequences starting with `\` are interpreted by python as
-> escaped Unicode characters. However, they have other meaning in
-> regular expressions (e.g: "\d").
->
-> It seems Python >= 3.12 starts emitting a SyntaxWarning when these
-> escaped sequences are not recognized as valid Unicode characters.
->
-> An example of these warnings:
->
-> tools/testing/selftests/net/openvswitch/ovs-dpctl.py:505:
-> SyntaxWarning: invalid escape sequence '\d'
->
-> Fix all the warnings by flagging literals as raw strings.
->
-> Signed-off-by: Adrian Moreno <amorenoz@redhat.com>
-> ---
+..
 
-Thanks, Adrian.
+> > >   lib/strcmp_kunit.c | 170 +++++++++++++++++++++++++++++++++++++++++++++
+> > 
+> > Why is not part of the existing string_kunit.c?
+> 
+> There are already 2 other KUnit tests in `lib/` covering different groups of
+> string functions separately (lib/strscpy_kunit.c, lib/strcat_kunit.c), so
+> this patch just follows this pattern. I believe it makes sense: the tests
+> are separated to cover one specific group of string functions with a similar
+> purpose
 
-Reviewed-by: Aaron Conole <aconole@redhat.com>
+We have handful of the string functions, are you going to have a file per
+function? Isn't it way too many?
+
+P.S>
+Having those does not prove it's a correct approach. I would rather expect
+somebody to incorporate those into string_kunit.c.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
