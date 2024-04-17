@@ -1,148 +1,120 @@
-Return-Path: <linux-kernel+bounces-149184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D4678A8CF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:32:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A46DF8A8D00
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:34:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE06B2863AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:32:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10D53B24C6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95F06482E1;
-	Wed, 17 Apr 2024 20:32:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CBCB47F7D;
+	Wed, 17 Apr 2024 20:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="spwjUayj"
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jd5lCre+"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 680E844C9E;
-	Wed, 17 Apr 2024 20:32:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3544B1E48B;
+	Wed, 17 Apr 2024 20:32:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713385922; cv=none; b=Twq9c2jfmG8OaC7Mhwg6Scor6p59vrDZzOWMRV6DbFyFq2Pqa02hzhl7Y1jH0vH1aAaovP8/HJhPpsT5OT+ORPdRHg3yztO3QwlXj7PLN9ue5c2WktxC9P73Gnw9eWwhTzT22oqNH6QckRRWIl5YY38wrd824qqn4aI7ZZsAOmc=
+	t=1713385947; cv=none; b=qfIrHDV0SUzdN1Qrac3H60BjkWlujkEDTuRSxR1LnET3uGHqoiTwi3Yz+bDmEW28xMoXGp3/xEtcDnHJ43kVrtHMYwso/ECP9PHhQ9xPqLdWEk7fBQtGStz65Y3/xxR+ZCodbfd7pfDYXmM87vbvXttAJGAgau0MCcE29cN50xg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713385922; c=relaxed/simple;
-	bh=cQOIUn28R7ZCsWq0fLJEMttNYm5HrXEpOQPtfYumEqg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N2XcUwAQMywMXvTTW03w3TWvRRmkHtURq4EssyNJy1vrzwG3znSpA0+Vla+z5IYL7NoBOvdMidfinpEoUXjAoMQ2dnjY7SndPTn6dNnQG0mnE94lsQkNXvicJ03nuV8Dp0v7MgWKEgD2ZCtQ9BWyBcY38T0TmbLaqdl2fipHSK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=spwjUayj; arc=none smtp.client-ip=74.208.4.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
-	s=s1-ionos; t=1713385916; x=1713990716; i=parker@finest.io;
-	bh=3mlaqrL+/WwAOWO2/+h06ofeEnSKj96AzK/VqPbMGLo=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=spwjUayjd2TABBZIxW+c819UGgqmEfjETKw/uSEEkEYV7zDpioAr6cacZ7x1wNgC
-	 C9XzN9Z2jiG4dDdpwVKDNpeyJHhouf1Ha/TIN9scW0gXte2eYl5zvn7y3CqTIlyjG
-	 dXScDqMaYlBxrUsMUAf6QoRB5jQ6qS5Y7XtYPBXkPlZpXyjnDGI9jlgJUPPbEnRgH
-	 NoQuXCUSpE3ETcIyz1sPGMdXFLSzZMgQiHthY4THbLTKCwUBLAYUEC0UGK7t6LyBP
-	 I1VyYYmT76lRJD8Ih2WB7EUrcHXbFxL6RXyS0uifcsrbQlnukT7TOj8sS973i9bb2
-	 YeXe5tofDWwQrGAhKA==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from finest.io ([98.159.241.229]) by mrelay.perfora.net (mreueus004
- [74.208.5.2]) with ESMTPSA (Nemesis) id 1M5fxm-1s4KoQ0XN4-007Bs6; Wed, 17 Apr
- 2024 22:31:56 +0200
-From: Parker Newman <parker@finest.io>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Cc: Parker Newman <pnewman@connecttech.com>
-Subject: [PATCH v4 7/7] serial: exar: fix checkpach warnings
-Date: Wed, 17 Apr 2024 16:31:29 -0400
-Message-ID: <f7fa6c16cb5f2c8c1c7cb7d29f80bc7be53f91ab.1713382717.git.pnewman@connecttech.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <cover.1713382717.git.pnewman@connecttech.com>
-References: <cover.1713382717.git.pnewman@connecttech.com>
+	s=arc-20240116; t=1713385947; c=relaxed/simple;
+	bh=Bp7/jJqYjF0Ufn+wONJ27PQy6j++8W3yduqSFKReMUU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FtU5Z/q59q9SJMTd4qawT1hHOg149sJ42hmBFIpPuL0XVHW/7hxo9kAY1bpdx5BB4cWCikw58UUlwZtClos4VBsPIWpGtfV4chYO9LGsDB5STNkKuh9Wc7L4i7R/sCvvk9i+nS6ElPSAY0jWrwrCYg3diXUS8XFDXvmaXrHpdV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jd5lCre+; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-418d1edcd4cso1276625e9.1;
+        Wed, 17 Apr 2024 13:32:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713385944; x=1713990744; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3lo45R9LbyC8+5GXWJMBZAtN3X7dVs96M7iPR9wUUDU=;
+        b=Jd5lCre++/rYWjiYoMcL6GmgPwTOZdiD53WDRwO0z4AQZwlRFLkqnVzsg6GZSpQg6b
+         dInsjq0Iz0AzWxj0wcGeoQVLbc3YCTKHnDyUquzkHg9at/m8pDwNeLQ1MQQ6Xxbvkll+
+         RTbacRcdDxXIgxKTVF6FAHrjmoQJXkSC0KJKyirph74u2KoArJQpRuQgWBi/0PZ6HE2Q
+         yATYOGW2GOApaw6dkebN7xJURnC+abkdi3mdQIi5fuGju36cmUNOOGMaq6so3+gs5cKX
+         OW1u9LhIXBrCbFk3OKINDX9fl9noXfciqQ8lV68UMDPHuufB7t2A/7QDwSEtBsrZefoW
+         2feg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713385944; x=1713990744;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3lo45R9LbyC8+5GXWJMBZAtN3X7dVs96M7iPR9wUUDU=;
+        b=bY3ZRr9xQOz0FTgxrPr2xLatabhP3fLS9gAm3h0Hsc75DMqr5Jrzcp4GtqflKo4G23
+         kga93SWXBlIEdigGs/Zl1YN/krI+5DxIZZfBxkcP0ntvm+8k86+jQpkE2QI0K6iS2bW0
+         LxYU7futVV06bgGrsrB0QlOLYBjboQlNDbIazbEM04RJHYalYuOI40J3araapTLxki0B
+         7sG15xTStWEV/wingPthNDpg7ewjNURrwjoKbY52XocAhL/sWlWts5W49TQ8wuE16JKc
+         PjWCfNRLZUZITUvTz4NdA8Gxaq+1davbuX3myVr2pvlWE/JDDTnAxDYfc1Ln4V5007P+
+         sCMg==
+X-Forwarded-Encrypted: i=1; AJvYcCUj62/esPPYh+TQR0nnVAQHop5376yfHrCoEOaWsOU6jULGhuX27blLSAI1yavOAy3PqLv63fVGOAVArdXGPYq+qR6WwdPJ+4GSWl1r8AdLoROOgVCiGBOZ38T6nN5Ql8aGEi9gT/A6zQ6y1zHs8vSRdcM4h52Ve4d3QbvriO1iUNOlog==
+X-Gm-Message-State: AOJu0YzGj3AwPDAPts67f5DSkCBAMegfgVC+LOocZxS5YCG1VUeFSDhU
+	1BXtqDvIgG5rRl7Ph/as5ECAjNG9XkP2UWsvS4qoeaQHv3PQcLu+
+X-Google-Smtp-Source: AGHT+IEraNpT/6Vq6fA9vsxYdOXx0g1Se19Swwcf429ga+GBrjJSwS7ijIkP2LbUsDhoqDXbbwUDOA==
+X-Received: by 2002:a05:600c:1ca9:b0:418:93f4:b4ef with SMTP id k41-20020a05600c1ca900b0041893f4b4efmr601343wms.0.1713385944301;
+        Wed, 17 Apr 2024 13:32:24 -0700 (PDT)
+Received: from debian ([93.184.186.109])
+        by smtp.gmail.com with ESMTPSA id s6-20020a05600c45c600b00418244d459esm222251wmo.4.2024.04.17.13.32.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 13:32:23 -0700 (PDT)
+Date: Wed, 17 Apr 2024 22:32:21 +0200
+From: Dimitri Fedrau <dima.fedrau@gmail.com>
+To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-pwm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] pwm: mc33xs2410: add support for direct inputs
+Message-ID: <20240417203221.GB148552@debian>
+References: <20240301111124.29283-1-dima.fedrau@gmail.com>
+ <20240301111124.29283-4-dima.fedrau@gmail.com>
+ <dwd6idyv2dvfih57sdfnr6cxztrx6gv3pwuy6rdopjw2lv2z6y@in2sn56t3x5k>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:rmQ6lvyO9pcnLqF+oMyPzW9wbsk5Q3xtHL1O3lWF5U+UZndGBr3
- 7w9Xot12CLhbAYxoy0wJ+Ne6eXqebMrO+jM+iUWIoRXgT5uZpLyv+8gz40NbbvnPxTA4o4R
- iAqJsu1PjiH5yUqRYdZ9oM2TwN8cTOWaFAImOlDFmSCTQgBxqNDzKEeW/kEf+iG4PEeUPnE
- xQadyyuJUeFPXt8jd+Sjw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:tecjjXD4p7U=;yGo4BdNr+vZQPdaOqVSoWRi35md
- X1J2LPXuMabQkd2cG6i0FxPUdqdkCx+bWHs5QkCszvuMIIsNzNRw0DHvrF8HqoLFAR7iTtD3g
- h5BqWJzac+KPcQFmU9yPpKpQqaN4XUlIVFrv3Qi5RnQ7H2D/Q6iprDoAFS8wr8xowj+V0mOjV
- fSy01PPWZILRWfvhJug/6Au+Cy7+2sBK7VjOxokGzTi+PNUF/iVaEkj2rpCrQ95d3u16fW0nb
- Kg8ah1un8PTwPmngIuQbjl6S72OjqlDmyMEf2TdQ0DqNB5cI08oTQXI9XJAuCVSDK82r7mB0d
- 2WPUJ+efgMZekBupb4mUoMn4hZ/KAhFvXmTsjH2ebWZsslV4cEc5JjYKncItpAzZDd2AEfISa
- esuRreZv4eOQ+yeu8yuMh9YGJx2tm3U8t+jwMhz6L3pDZW5mPdoeo6S5UpMxWJxQ4YQV85nYM
- ZsmWSm5zSRa/oaJUFOepNmnSRbWVNe9Dy+57DrFPl7hRumyRguf1Psw78M6Gcw6iQeb/Pj8dK
- fcl2o6iJr3/Qm7h6bUYojCJtyMsLZC1B0MTM5mYB/u8wZKGxOwvx3JBFU7vrkcOf9V60E/2sw
- SWeGbchB8FM5cSJg0eRlguqkJLkb74m0fD+rwm7qQPJrCHFPW/c0gJLoVDV7XxbekoPIzGTLd
- uzNtH6QNlv98lTxvBNUGtYAB33RV3Qhybx2kViTeyyxe7iNNGVTo6FK6M7FFwzc/XMNylcTI3
- 7U46a8Fxpeu9L76BidXoBMwsjWkq3EUQDQCyjmrwOTa5psM/VRuiJc=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dwd6idyv2dvfih57sdfnr6cxztrx6gv3pwuy6rdopjw2lv2z6y@in2sn56t3x5k>
 
-From: Parker Newman <pnewman@connecttech.com>
+Am Tue, Mar 19, 2024 at 05:38:52PM +0100 schrieb Uwe Kleine-König:
+> Hello Dimitri,
+>
+Hi Uwe,
 
--Fix several "missing identifier name" warnings from checkpatch in
-struct exar8250_platform and struct exar8250_board.
-Example:
+> On Fri, Mar 01, 2024 at 12:11:24PM +0100, Dimitri Fedrau wrote:
+> > Add support for direct inputs, which are used to directly turn-on or
+> > turn-off the outputs. Direct inputs have the advantage over the SPI
+> > controlled outputs that they aren't limited to the frequency steps.
+> > Frequency resolution depends on the input signal, range is still
+> > from 0.5Hz to 2.048kHz.
+> 
+> I didn't make a big effort, but I fail to understand the concept here.
+> I'll delay giving more feedback till the next review round for this
+> driver. Maybe then the description is easier to grasp.
+>
+I will drop it for now and come back later with a separate patch. I
+think this would make it easier for now.
 
-WARNING: function definition argument <arg> should also have an
-identifier name
+> Best regards
+> Uwe
+> 
+> -- 
+> Pengutronix e.K.                           | Uwe Kleine-König            |
+> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-- Fix space before tab warning from checkpatch:
-WARNING: please, no space before tabs
-+ * 0^I^I2 ^IMode bit 0$
-
-Signed-off-by: Parker Newman <pnewman@connecttech.com>
-=2D--
-Changes in v4:
-- Moved to separate patch
-
- drivers/tty/serial/8250/8250_exar.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250=
-/8250_exar.c
-index 6985aabe13cc..5e42558cbb01 100644
-=2D-- a/drivers/tty/serial/8250/8250_exar.c
-+++ b/drivers/tty/serial/8250/8250_exar.c
-@@ -147,7 +147,7 @@
-  *
-  * MPIO		Port	Function
-  * ----		----	--------
-- * 0		2 	Mode bit 0
-+ * 0		2	Mode bit 0
-  * 1		2	Mode bit 1
-  * 2		2	Terminate bus
-  * 3		-	<reserved>
-@@ -229,8 +229,8 @@ struct exar8250_platform {
- 	int (*rs485_config)(struct uart_port *port, struct ktermios *termios,
- 			    struct serial_rs485 *rs485);
- 	const struct serial_rs485 *rs485_supported;
--	int (*register_gpio)(struct pci_dev *, struct uart_8250_port *);
--	void (*unregister_gpio)(struct uart_8250_port *);
-+	int (*register_gpio)(struct pci_dev *pcidev, struct uart_8250_port *port=
-);
-+	void (*unregister_gpio)(struct uart_8250_port *port);
- };
-
- /**
-@@ -245,8 +245,8 @@ struct exar8250_board {
- 	unsigned int num_ports;
- 	unsigned int reg_shift;
- 	int     (*board_init)(struct exar8250 *priv, struct pci_dev *pcidev);
--	int	(*setup)(struct exar8250 *, struct pci_dev *,
--			 struct uart_8250_port *, int);
-+	int	(*setup)(struct exar8250 *priv, struct pci_dev *pcidev,
-+			 struct uart_8250_port *port, int idx);
- 	void	(*exit)(struct pci_dev *pcidev);
- };
-
-=2D-
-2.43.2
-
+Best regards
+Dimitri
 
