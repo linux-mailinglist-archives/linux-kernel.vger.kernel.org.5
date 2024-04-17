@@ -1,745 +1,206 @@
-Return-Path: <linux-kernel+bounces-149053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DE5E8A8B18
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DD77C8A8B1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:30:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90FA51C23C97
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:29:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1ABB61C23C5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:30:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4201173340;
-	Wed, 17 Apr 2024 18:29:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24A88174ED7;
+	Wed, 17 Apr 2024 18:30:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=biamp.com header.i=@biamp.com header.b="AGN+KtKr";
-	dkim=pass (2048-bit key) header.d=biamp.com header.i=@biamp.com header.b="qK3HKk6M"
-Received: from mx0a-0068d901.pphosted.com (mx0a-0068d901.pphosted.com [205.220.168.35])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="TPAZq2rK"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2074.outbound.protection.outlook.com [40.107.22.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD4C312C819;
-	Wed, 17 Apr 2024 18:29:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.168.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94BD0172BAF;
+	Wed, 17 Apr 2024 18:30:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.74
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713378574; cv=fail; b=fIOUjIXQsIVS5MykkN4q7BJGasjstKc/U8C2p8qTN0L3iS5LW5Y2ioVAp0O6wvcj98VvOur/bFtJF+1o2yHCA/lOKPQ3mFAdSEGuHLmLl/GTl3fGwuNgrgeyad43y55qG32bMLhs/2U0en+4OoC3ecxoxXfLA8vGtO1tkEmIAoE=
+	t=1713378604; cv=fail; b=fvEjXONN/ohjxZUfG+rStMAx0EYeYHSjQdnZ75bOQ0MF1c6LimXZFA0oUcHRUzDL5DXvnTEuEru8jY3Lk5DQxrvKBxFP/YwStx0SS8tMKte9bTvC6XRX0DCnR3peNE5F2WR4yJafLyK8ClOFBwFi1D23f5QgEq5BepM3r+VogLE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713378574; c=relaxed/simple;
-	bh=R0wGpWUBhKJX27ws/BcNgHLoO9piZfsvZJgdA6qTf5U=;
-	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Uwy0fIlkcpNKYkcP/h2rQVWfV42yp0SDt9FmZbK02X5AM7ltEJPLKkf4jtgnFs/oyywUPTqctofXYOXbMjFdeTzgGX5U9AVGqMkJy5aE1GBojXKKsVTC4hC90mxM9pvkk9rh5ST87DXDZYzu9IcVg4uOasz71P3xgz8PeKd9HRU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=biamp.com; spf=pass smtp.mailfrom=biamp.com; dkim=pass (2048-bit key) header.d=biamp.com header.i=@biamp.com header.b=AGN+KtKr; dkim=pass (2048-bit key) header.d=biamp.com header.i=@biamp.com header.b=qK3HKk6M; arc=fail smtp.client-ip=205.220.168.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=biamp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=biamp.com
-Received: from pps.filterd (m0278264.ppops.net [127.0.0.1])
-	by mx0b-0068d901.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43HCpRFu027792;
-	Wed, 17 Apr 2024 11:29:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=biamp.com; h=
-	from:to:cc:subject:date:message-id:content-type
-	:content-transfer-encoding:mime-version; s=proofpoint; bh=pzTQl1
-	4QYSh0GNCELAT69hG20wHARcccBMELq/P/mTw=; b=AGN+KtKr/OqtdZ1+lSHtHg
-	bXhScxWXPaxVTtBEE3gtWLXltWMMsgGqsfIj8HZixJov8NWSbTh+uW4f7EaW43qw
-	vkeE8k2d8uqNqMb6uQTSW+CWoyisJb5o2dYgMHrZk7oVBtHz79sxFc4EMaLSfJzr
-	/WqKFdksedS0GaWPp18IbEYWs3ZfUhr81VBrI9Cq/RdMpavTxWUxOArAaJSQfC/5
-	e4Yy4mMxQ2KCkW/I35GZdRTTobQayJ/fr1BnhFEZNKg5T4bp3X1qb47XCPQSzYDc
-	9/ggNfmo4dQP94GzrBtu0fc4xanWWJE7NNdT0iNFdZjcG5AOWKzYJrBfmFD7hSIg
-	==
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-	by mx0b-0068d901.pphosted.com (PPS) with ESMTPS id 3xg09r2q06-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 11:29:31 -0700 (PDT)
+	s=arc-20240116; t=1713378604; c=relaxed/simple;
+	bh=yr8/Gp0njRnE8SOcVkB4zXQLJq1KjKF5ZJozxR5l6NM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=GfwcWWCBCXZ4qJzlvvpA/E09G2IzainEOMdVol1axKfKDPz2plgb9fqGRcaSYNruQAX8+EwJG35NSteVFG4Tiav3N7ejhUv6M/ShKBsRzZ7V1AU8OK3WtrtaZNlG2lHq6olEmMRlrb8r5ydR1cnCzh+C9EE2mrM2e8cmXnrx1Fo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=TPAZq2rK; arc=fail smtp.client-ip=40.107.22.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nBw9Q1W3kaRHkB2NsIXPEGj1G65h4tOTjBF++hdIgRBBLOdGf6UIYFiP7cxssPh1DM81M0sdej5S2Qvudmc9BRWma9iUxuAMDeoz5mfiEektnQ9dT4q9ILv4ZPlepcy6LBrCBWgoNxmm6ekfvsXO08OtTb7C6MD1LlU93rRgNjzcettIFEqsMFRtSnSTdep3DzzhIY/VKmwGhYNH7hgG+Gbwkn3WtdycI012Bh87eGp/I9fR5KQ/JhrdXjIR5Q0fLS+oAjtuaamdUSilcj1f2ZUPrsOM/wwxAKyKvMLESsj1RSFtvDD8wuhCNwZF5EcYDi3Cd4vxx1mA0xrZJGoWnw==
+ b=Rx4E4XA1kXnAwfeOgFC6pB5AI5n7LrTOkCb5fmZGapwf/oZm8IxSURGrxzFFNhkHFWwk8UtmTv7pYLSAUMbNIjAo6bIs2Jbn+3nBzxoxla1P7e9VUpwNQXmBFKpNSMqiehoeWLeGLcTyQDpL+267Ms4msorjR6mZpQGMI3RDhqwyBLI9p1DbMrBQrfieBtrsPvoLiH3P/ghOp+afMp9MN4yGnnQpEPI8zwok19qx37maR18huNK8KVxo2RgHjvuKHm5bWeBLxzu8zp7+ixKPC8Wm6BeRdvqOzw2Jlux3fgN3nBAE0VRNvwM8c0vto6b2ZKGMkAdeF2PuWfF11LU6Lg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pzTQl14QYSh0GNCELAT69hG20wHARcccBMELq/P/mTw=;
- b=kPS401gUxurxgQAxdurtR21UxIu6PWIaxwOYj1R/+URiWgmWlQQB1j1YHQjXqk4rP/DCHu9RSgN86TjwkHEM2nTmYy4Wbg5f7aTjj4gEecblpKLBkhXBDgQAbnA66lR84ylwhli/aWm298ddK3i9DRMUpIWfOYfJAyf52Fg75wk/c6lk0j2MTcQzQZ6DvS/GwMkogcy06Be+804roCQlye5NR0Jc11yL2C3zrYSuAG/86w00zcDMb+JB/Znl2KrE1zMTvUk11QSLFyt4UKxy5RSK9TNaDaU1+h4u1Jm2dEQBK6Iws/5vBwIDX0qTvXsXPjg/vvDaBkdRLGNzlhNAGQ==
+ bh=qn7uyOLXa8StyIXtCreJ7MdU3q/BiZbhXJyGFGzYdXc=;
+ b=eup7dP6ezQrbEEw+Z7vuUwPqWBob8jaBnXdhjQhr0PUqlCiGQ1JUOHqhLoiBk1xdij2+k8IcE9sDe7ddcV9FwEja+coOMIY1i2ItT6FWdsMtBLrHkGa1ScgjRXQDy8ZocLc9+pM9xAOL1KwvOdCH9JHh30yiqlpefkb+MwU2CiY8GYUGXYRfilaOB+lV7iuQfoKiyr+Lxlv8VjFKnbo+5FRGSA5wpxTp+VTi2cNb53nJ/UYn+htp7rqU9abL8+cGFIQwgXnCOAFAJx0xCJFwYl3ttKnrc9CCKSP2Fb7xM1129deQVKpfEhGTKExdXb90fQwJbfOgGBQypVmoR4QY2g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=biamp.com; dmarc=pass action=none header.from=biamp.com;
- dkim=pass header.d=biamp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=biamp.com;
- s=selector2;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pzTQl14QYSh0GNCELAT69hG20wHARcccBMELq/P/mTw=;
- b=qK3HKk6M+1TSNBkm/m5jylLfQm43YB+JIXtHK5FEm+b23a7xoYXOJzXmzi3biTw6rN2x/r/AjafQmN89LVryS5Wzc/VNoeCU1x2kMC0yFwp2mFIU1vGWfNQto7s2g0PFnxsDXVmbGFFXoZtm2iQWgbAN+sp+G+U1uO6ghOIUwA5YaE3vVJQQvuuXrHsmRa3UKivGukjzIXYz+pA0kJuHu66I/gGjOJH8hxIINKIilac6TmaSWqKqQr5D87fCAK+EnhqTak9lep/FqEOGJuhAWT7dV6OAjco64IYWFnPnAHR3SOJU8XicTZdHdpdLoQEN/r67hFdzX1MDq8dfrkrGUA==
-Received: from CO1PR17MB5419.namprd17.prod.outlook.com (2603:10b6:303:ec::17)
- by IA1PR17MB6122.namprd17.prod.outlook.com (2603:10b6:208:3a9::8) with
+ bh=qn7uyOLXa8StyIXtCreJ7MdU3q/BiZbhXJyGFGzYdXc=;
+ b=TPAZq2rK0rJ9do3s+h+9+iO9v3T7yT+Gyy+xLjtHRPwJXxAJC/gt1krVV2FrnqdQf4cSPbPl3YtJo7SlyMxL7/DodNW2wv5ulUC2q4ZohCP3tqnfp10gFvz3rWVcYYeBdAO0HekV/1/VSRBFQPpPEvlJYwPMDrJMDkqdcS4Aj0c=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AM7PR04MB6805.eurprd04.prod.outlook.com (2603:10a6:20b:dc::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Wed, 17 Apr
- 2024 18:29:27 +0000
-Received: from CO1PR17MB5419.namprd17.prod.outlook.com
- ([fe80::f48:ee61:a81b:d555]) by CO1PR17MB5419.namprd17.prod.outlook.com
- ([fe80::f48:ee61:a81b:d555%4]) with mapi id 15.20.7472.037; Wed, 17 Apr 2024
- 18:29:27 +0000
-From: Chris Wulff <Chris.Wulff@biamp.com>
-To: "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        David Sands
-	<David.Sands@biamp.com>
-Subject: [PATCH v2 1/1] USB: gadget: f_hid: Add GET_REPORT via userspace IOCTL
-Thread-Topic: [PATCH v2 1/1] USB: gadget: f_hid: Add GET_REPORT via userspace
- IOCTL
-Thread-Index: AQHakPTUsPpYPjVyF0mGYUmSCVPaPQ==
-Date: Wed, 17 Apr 2024 18:29:27 +0000
-Message-ID: 
- <CO1PR17MB541952864266039BAA7BBBD3E10F2@CO1PR17MB5419.namprd17.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CO1PR17MB5419:EE_|IA1PR17MB6122:EE_
-x-ms-office365-filtering-correlation-id: e4ec93c1-8421-49f2-bb25-08dc5f0c50b1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- P0jLJrssVoCNuo3TXdWIAZCpwrTvrJJBuLcn1gZbOg/Z5Pd4x9899wchfZIsE5t5XB0qZz2pSrerxIFJDvxpUDMAgAqV/VW8glJ6u1uIRw+87vRVsEuCpUlTrQPciT5l0PvqA8QE+vslCIaxgEzY+DLnj4sclzeM7UjOisON6S9F0i4puM6g/8LFRi+WwqXH5ugCam/LGAY0ohbEsns+DmCNZa+/9v3AFy7JN42Lwa8VJGOwLxcmMIZY/iL6Oi/2Iq+O4zisw94rmvGXByjCj2CYVE6dK6LU2MbbgGOLQ0ui31eVTrWkQ1t8eNpktqSVtPJVfT+CeRXFYrd/qpjQ2LPPZTyuS8REGRLySAiV0UE/YelIWdHMzsuypvwDtDcHm4NxZFowH2Xz9oJ9TeYVAHQqI0BiIRYXmLttRRwRcq06WD7RA6a15TO3Td0SJE+7WHXTo43lKPrpyA/RqvguuoP5FTQURBak/XXvlgHlCHRzLntQtsGdE5beKLOO9LZT7B7JCb7SjObCsaCL31Y8kypB0uEKSRkFd9lgSe+quwXI0YOZAazDsYQ9IOtWt2PPBk7WJtMes22aAZVRK5cc9BTqEoa2MWlo0Y4zEakDDoVjfKxrMB6Vn8LFA9Q9M0d4Wgj/uloI7PRLJuc9SUl3U8NYNelvzjF0Z2h2KE37jGE=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR17MB5419.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?iso-8859-1?Q?Pd6PFGgHwXm6fxmvLDsIkA7G21D0jmHDPh8ruuDaR+yTlaCt9FavIyViA8?=
- =?iso-8859-1?Q?F5DwYxoi/EsjHa+/DSJOND/xwSE4KXz65hZmaos7q7eM3poGvek74JjgOb?=
- =?iso-8859-1?Q?7eo1F3NA5/uN91Ls/aRo4mtJ34O/3DjZRrjg7WAgqnwq/lYoKuIN4LBlgL?=
- =?iso-8859-1?Q?v6Fk4R/IWsCx0QhbNXOxKkMpGw2vx5wIk+N9y3q/B/coKaiO76rHcO2XE/?=
- =?iso-8859-1?Q?ep9mxMvDKhC6kggr5epItFKO7C4e2callSitQUvJRPGYKheSPs7dgnoBm2?=
- =?iso-8859-1?Q?I4++DYlwCAFlzzARI6xdbpdh5Y/WtS/XTfi3lgWL+6F18V/8FtHbjDAHjE?=
- =?iso-8859-1?Q?oAKHjRq9c7uuuGxFZAadikk9lJES41rle/RIIHYvVNvbapVqMwRDqXNpx7?=
- =?iso-8859-1?Q?oimaaS/wPTJuPjbNwNUND1DEa52tXlhbLkZbukf2VoetWKbn0TRHV6fBdB?=
- =?iso-8859-1?Q?Zx9Jkfuar1pAYD1F6+ijbFRqsUHkR5eELBF/yfTw/Bmtva3Juu46FTerGz?=
- =?iso-8859-1?Q?MpRdlk/WIcr62G1VcY6sVouYz/7jdwKBPmzH16WGaFIMsXSaC4wbRq0hZA?=
- =?iso-8859-1?Q?9851nfVcpgCSYTbSHJXkUDV2iPLUgsFc+OJjSQ7CdRX6Up5v45F6engEu3?=
- =?iso-8859-1?Q?EucezvYe8NbsQnEdzPSJKWz1+2/9WE3ylhTXxvpS5R449234JpfJWeWdeE?=
- =?iso-8859-1?Q?i1fooAVdm9X/w2H+5tw4vddL3blhBZ6Ur9bs6I1e9GGCyGzFIjPiqETOna?=
- =?iso-8859-1?Q?DYvHsgxsvzkqKWshruz6vngrcaWwgI5PwgSEymRFE8I1yRXABxrJ/uMZla?=
- =?iso-8859-1?Q?Sqgcv72kuayCv4Ab6Xh3YDgWL7bSg4xfQaQ+djTvdQuybqoT09oQdqM5nU?=
- =?iso-8859-1?Q?ATTUT/oUkPMstcZW6eR2rBXanwJokKSxxfI6sJiP64RhOo9yipqaz2AYVG?=
- =?iso-8859-1?Q?qIbV1WgXkhBBypkzdwBCykJ3acZ5BXoRyFEKTR/xVegj5X1wlRcwPkXB81?=
- =?iso-8859-1?Q?2/hKxCjGvk3Vjc+NoEZbkoH+Cn+rIy8UiDZSz7Zjvtf/3LYjTb4pfw0E/5?=
- =?iso-8859-1?Q?asPkeOwpT6oqZD4CFvekosRLfhxqJz2d4ebG8S7aZYu/Tr5FblqnBthm39?=
- =?iso-8859-1?Q?MNAVFrRrvjGrJ+tfkUcRDwLzCADWu99VuE5qOO7mgHob32LHeeB1238BUq?=
- =?iso-8859-1?Q?nd2+rLiZCmHH1MkWMRkiCYYVgQD/vyx5ACl/aBkPRT/fcCNRw9Qumr3qbn?=
- =?iso-8859-1?Q?zAJEaaUNA6YYHqbJpIgvdBb+oyK+y72+u9vPy25FfkzIBzXnVshq+m2pNI?=
- =?iso-8859-1?Q?XTL01zcgeoTKhaR/ptQEBIBRQdUQgrgKxrwawKFfmg3VZ0KzDTnttdquXQ?=
- =?iso-8859-1?Q?P5BlVFYtnhLHvCV7uFXKw3FHB1qQet4A5Hbijy3gLhRfPpuiRBjoZSe8Wq?=
- =?iso-8859-1?Q?8B5SiViqwLSZFQTRfLlFILKdZr4bj4/ON8w5Fe2HxFfjupjjyNXyXj/EhM?=
- =?iso-8859-1?Q?/q6bbK6eK73GEhTRpqfKC6xfK16+ryuOLc8oW1v3mLLV9n2lAeW0qxp4To?=
- =?iso-8859-1?Q?0uHmoK5QRGs17JE3t0myn0CIeSS9LfV8BVcfwpfT94iaCr2NxkohEYjXhe?=
- =?iso-8859-1?Q?ro5ZX/0Yq+LM3NsOltRKRYPaynQG5hWp4X?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ 2024 18:29:58 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
+ 18:29:57 +0000
+Date: Wed, 17 Apr 2024 14:29:50 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Francesco Dolcini <francesco@dolcini.it>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/10] arm64: dts: imx8qm-ss-audio: add audio nodes
+Message-ID: <ZiAVHosJAtrK6LRf@lizhi-Precision-Tower-5810>
+References: <20240415-dts_8qm_audio-v1-0-2976c35a0c52@nxp.com>
+ <20240415-dts_8qm_audio-v1-2-2976c35a0c52@nxp.com>
+ <20240416065026.GA4165@francesco-nb>
+ <Zh/yZ2HyF+G8bty7@lizhi-Precision-Tower-5810>
+ <20240417172031.GA4100@francesco-nb>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417172031.GA4100@francesco-nb>
+X-ClientProxiedBy: BYAPR06CA0034.namprd06.prod.outlook.com
+ (2603:10b6:a03:d4::47) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: biamp.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AM7PR04MB6805:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8a5a5328-e7a5-4c5c-b985-08dc5f0c6287
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	W697/apJ/hiiQtE80yn0Wn51b+dAPkutcw8++9vcTRMMEfhaDNiI7X+hs9BCNejJfdzwkB23MWKyitDTxmootSM4oTmh3uLdZ3Zv2IJmVlxYukJ8Ga70+4GHsqL0GVD9N7hKvuT1tZA12I2T8BI8bkJ5hvXPfeF4y4mMqm2eZTyY1KAc7wHym2+zAOELm3jgaD+2ZWlgGkc9YfPx/BUOjI/OHBB46ep3tK8Gy3jzRgIoYVMZ8bDSzC4rc76mLqhzrTiPtNzMioiF0VRjmAPrPPeMo4AguU8oYvgjicqcFLZRoPZb4mZ57UvDbSB4pOgbuJGDSkt+Je6KHOXQ6+2QCw1a0FPKNcBhv9R9r/TgW4Cuutgq5EHmJUI3frp/2wKnH+4YeeD/E1uRtDllxuih8sFAb43BDhp4oV8tK3f9H7rxPXdfGNE/Los7rusF/vUA4UrIq2Y5hFl4MIma/jOnLqTHIgMTYmjVluOGaQov7kzbg8FdbhApqv/nDKEKEf4D3piJiGx33ze2myhYYbYOzwqDptNVh9TBI0/TJ/bLb68HeDt6Qdd4z1inh3T94xwll4+2DDFDCS/gw67kxypuq2vaH8A2OfYfWlDsn3qatwKVMZMxYRw2rcyOWXvL/1puUUvUMiDwu6EwE5VQ/CyYV1ql78QtZusHS8/n0GaWR7tbUC1vnLI1l/8YOZmixBpatvTFMZhN9f9KVYjlPE2MAg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(52116005)(7416005)(376005)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?xFmQvex55OiUdnpgmI6nUCJdb+dzgY6g1U75JC4ny0xUH5bJECwEDFZfTpGX?=
+ =?us-ascii?Q?cXfpe0prLPiExYpIGvh8mle5IjkP1icZlwHYnfUu+srh527zDmw8u+6VnHHJ?=
+ =?us-ascii?Q?srUkT+WxxmtyItlTzxbPZj/0oosboXEqOOpzoetMa2cPwIfvTnLUNE8pEaiI?=
+ =?us-ascii?Q?DQkv1F0dvP6JSZwtWYo7mtNPzzhdoTfKRj7tMvsOpAwPN3UJrIl3fFuVMSJN?=
+ =?us-ascii?Q?VkjxjJjlt1Pae8YGx46pLXgav6RaOuSu38cmKUkll/MlfjUNDGJadYBlLIK/?=
+ =?us-ascii?Q?MzvZzGi2Zw945GGuTL7U9IkqdBJx0qg5aiFev5+pnC7Qg++kevJbZN/Hxhxu?=
+ =?us-ascii?Q?3LSWjIWZH4EuCLRpiKrkfttw+z+1VKKpUozM1Wo3DDuKowaF1Hz3PYbTFBYi?=
+ =?us-ascii?Q?4ncS2Esubjee/TYQbiTBLMcht2SSwi0CmhrpT/hbg4ZRf7IolsY4wcB0GwEC?=
+ =?us-ascii?Q?yNBzeckb7V32MHezKQwsKeBaA/0BS8bzAUPCHqU66BQ15m8QQlR40RUE/WZK?=
+ =?us-ascii?Q?NZilvxC9sbJ4puM0CEJgzrMzz8n7RvVwabuja/r5WRcmVj8ojFczPZB2Q/vj?=
+ =?us-ascii?Q?T/85BdOSOge5kaJouOTuHln8Uiura94bq7I2moZgAoWiAVgyA3cU6wEk42So?=
+ =?us-ascii?Q?1/jZewCPdcQGWoDI+8RR4LCxj3GGlwns85bw7GG/ENT37GnTFsnQjnLNO/nN?=
+ =?us-ascii?Q?suTUddcsxX19r4rWTCl+AMVgfYdprjPJWOZ6xMKB4POIX9Ctqt5i/bJiDLzw?=
+ =?us-ascii?Q?dPepDJcDhB7VbwsONWCb7/+JgNNjxqITeanljnJ3G8ZJHvhwcq6v6Vfyj1Ox?=
+ =?us-ascii?Q?cTIyqEMw6qwfx8kDbYXtI+KaWfzOdJ45pjNsKuXW7owWUQzSY0G1ZPlwgXRm?=
+ =?us-ascii?Q?ScrQkQcLo9gyWiO/pd2z/OIApSK2ARNcS2ovK3VKY5Fo4Fomjt0+fPKKwxgr?=
+ =?us-ascii?Q?XoraObxQUJMdD+Pvdhs1ePOYCszvQwMnNETOHDf3AlBiWIlKh+EYKbu+ckYz?=
+ =?us-ascii?Q?5sOTUnOk07o5UNSjegKa7kVUnQ8MGF0MLeoNq2j52B3g6/IDZ+NULs8RTKHh?=
+ =?us-ascii?Q?sO5ZSMFgfy3aEZtfQu+ITf8U2Oda3n5aXG+BTyzYDkevheaW26Y+7JjDO0Ck?=
+ =?us-ascii?Q?Zl2dylfyefgpp0ogzdtJA3FM9B+dD60McGPloChzk40phQy+zISrT+lpRAuZ?=
+ =?us-ascii?Q?dnvFJIatBuUJWISiX3Cs+Ic2VfjWqU/s6GEtoNBAPwy29+8EUHxFtUhsNCds?=
+ =?us-ascii?Q?GY4gx6KKSkEPSOW5VeLz4UOYEKU5sVy/z2MiUMW1vp93/dUJUfBEI3fwglmb?=
+ =?us-ascii?Q?Bg6/N5WVPrLOBIjPWjYKgVyokTPrLNySupAr+GY08APhTl94mP8Jvv+QSvuC?=
+ =?us-ascii?Q?58QOzJNTWw/SMCxBWTJgwacm4gGh+A+jcGSLaL9FYjystDHQtwGQ4uEQFnMW?=
+ =?us-ascii?Q?ObLlgnNGZzMtEEiTfs8iiUBVqp8f1hEHOSc/RwriytG04+B5S3NXuZcU1iPO?=
+ =?us-ascii?Q?fynnebVmRY/RmslmN+BFydqdNqcPqV/e9W9eUULrSh8St5gjApohoKMwmJuE?=
+ =?us-ascii?Q?a0INvOLEeVQrAiHGXG/2XLA4FBIuPwMdMM7VJwKB?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8a5a5328-e7a5-4c5c-b985-08dc5f0c6287
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR17MB5419.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4ec93c1-8421-49f2-bb25-08dc5f0c50b1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Apr 2024 18:29:27.7689
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 18:29:57.9399
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 341ac572-066c-46f6-bf06-b2d0c7ddf1be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Xp35m8BqlQ+O0/aoPdYI6v1uInubyfihENGx8UxfKL0TSsRDYiEeMRPxMaqVW1C5JMw2JO/sVKxN9G/oV4Le+w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR17MB6122
-X-Proofpoint-ORIG-GUID: UpIMqUpwiu9Uq68IepcNqO6Y-I_8z1Z6
-X-Proofpoint-GUID: UpIMqUpwiu9Uq68IepcNqO6Y-I_8z1Z6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: T4oBnx7xc47IFp0oen0T1Xb8l/0qBXXlK0Pq97S465vkLErHlKM+U8ek5LUZz7irNzSV4vTZnqpwR/Ix91FtFA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6805
 
-While supporting GET_REPORT is a mandatory request per the HID=0A=
-specification the current implementation of the GET_REPORT request responds=
-=0A=
-to the USB Host with an empty reply of the request length. However, some=0A=
-USB Hosts will request the contents of feature reports via the GET_REPORT=
-=0A=
-request. In addition, some proprietary HID 'protocols' will expect=0A=
-different data, for the same report ID, to be to become available in the=0A=
-feature report by sending a preceding SET_REPORT to the USB Device that=0A=
-defines what data is to be presented when that feature report is=0A=
-subsequently retrieved via GET_REPORT (with a very fast < 5ms turn around=
-=0A=
-between the SET_REPORT and the GET_REPORT).=0A=
-=0A=
-There are two other patch sets already submitted for adding GET_REPORT=0A=
-support. The first [1] allows for pre-priming a list of reports via IOCTLs=
-=0A=
-which then allows the USB Host to perform the request, with no further=0A=
-userspace interaction possible during the GET_REPORT request. And another=
-=0A=
-[2] which allows for a single report to be setup by userspace via IOCTL,=0A=
-which will be fetched and returned by the kernel for subsequent GET_REPORT=
-=0A=
-requests by the USB Host, also with no further userspace interaction=0A=
-possible.=0A=
-=0A=
-This patch, while loosely based on both the patch sets, differs by allowing=
-=0A=
-the option for userspace to respond to each GET_REPORT request by setting=
-=0A=
-up a poll to notify userspace that a new GET_REPORT request has arrived. To=
-=0A=
-support this, two extra IOCTLs are supplied. The first of which is used to=
-=0A=
-retrieve the report ID of the GET_REPORT request (in the case of having=0A=
-non-zero report IDs in the HID descriptor). The second IOCTL allows for=0A=
-storing report responses in a list for responding to requests.=0A=
-=0A=
-The report responses are stored in a list (it will be either added if it=0A=
-does not exist or updated if it exists already). A flag (userspace_req) can=
-=0A=
-be set to whether subsequent requests notify userspace or not.=0A=
-=0A=
-Basic operation when a GET_REPORT request arrives from USB Host:=0A=
-=0A=
-- If the report ID exists in the list and it is set for immediate return=0A=
-  (i.e. userspace_req =3D=3D false) then response is sent immediately,=0A=
-userspace is not notified=0A=
-=0A=
-- The report ID does not exist, or exists but is set to notify userspace=0A=
-  (i.e. userspace_req =3D=3D true) then notify userspace via poll:=0A=
-=0A=
-	- If userspace responds, and either adds or update the response in=0A=
-	  the list and respond to the host with the contents=0A=
-=0A=
-	- If userspace does not respond within the fixed timeout (2500ms)=0A=
-	  but the report has been set prevously, then send 'old' report=0A=
-	  contents=0A=
-=0A=
-	- If userspace does not respond within the fixed timeout (2500ms)=0A=
-	  and the report does not exist in the list then send an empty=0A=
-	  report=0A=
-=0A=
-Note that userspace could 'prime' the report list at any other time.=0A=
-=0A=
-While this patch allows for flexibility in how the system responds to=0A=
-requests, and therefore the HID 'protocols' that could be supported, a=0A=
-drawback is the time it takes to service the requests and therefore the=0A=
-maximum throughput that would be achievable. The USB HID Specification=0A=
-v1.11 itself states that GET_REPORT is not intended for periodic data=0A=
-polling, so this limitation is not severe.=0A=
-=0A=
-Testing on an iMX8M Nano Ultra Lite with a heavy multi-core CPU loading=0A=
-showed that userspace can typically respond to the GET_REPORT request=0A=
-within 1200ms - which is well within the 5000ms most operating systems seem=
-=0A=
-to allow, and within the 2500ms set by this patch.=0A=
-=0A=
-[1] https://marc.info/?t=3D165968296600006 [2]=0A=
-https://marc.info/?t=3D165879768900004=0A=
-=0A=
-Signed-off-by: David Sands <david.sands@biamp.com>=0A=
-Signed-off-by: Chris Wulff <chris.wulff@biamp.com>=0A=
----=0A=
- drivers/usb/gadget/function/f_hid.c | 270 +++++++++++++++++++++++++++-=0A=
- include/uapi/linux/usb/g_hid.h      |  40 +++++=0A=
- include/uapi/linux/usb/gadgetfs.h   |   2 +-=0A=
- 3 files changed, 304 insertions(+), 8 deletions(-)=0A=
- create mode 100644 include/uapi/linux/usb/g_hid.h=0A=
-=0A=
-diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/funct=
-ion/f_hid.c=0A=
-index 3c8a9dd585c0..605cbd37537b 100644=0A=
---- a/drivers/usb/gadget/function/f_hid.c=0A=
-+++ b/drivers/usb/gadget/function/f_hid.c=0A=
-@@ -15,13 +15,21 @@=0A=
- #include <linux/uaccess.h>=0A=
- #include <linux/wait.h>=0A=
- #include <linux/sched.h>=0A=
-+#include <linux/workqueue.h>=0A=
- #include <linux/usb/g_hid.h>=0A=
-+#include <uapi/linux/usb/g_hid.h>=0A=
- =0A=
- #include "u_f.h"=0A=
- #include "u_hid.h"=0A=
- =0A=
- #define HIDG_MINORS	4=0A=
- =0A=
-+/*=0A=
-+ * Most operating systems seem to allow for 5000ms timeout, we will allow=
-=0A=
-+ * userspace half that time to respond before we return an empty report.=
-=0A=
-+ */=0A=
-+#define GET_REPORT_TIMEOUT_MS 2500=0A=
-+=0A=
- static int major, minors;=0A=
- =0A=
- static const struct class hidg_class =3D {=0A=
-@@ -31,6 +39,11 @@ static const struct class hidg_class =3D {=0A=
- static DEFINE_IDA(hidg_ida);=0A=
- static DEFINE_MUTEX(hidg_ida_lock); /* protects access to hidg_ida */=0A=
- =0A=
-+struct report_entry {=0A=
-+	struct usb_hidg_report report_data;=0A=
-+	struct list_head node;=0A=
-+};=0A=
-+=0A=
- /*------------------------------------------------------------------------=
--*/=0A=
- /*                            HID gadget struct                           =
- */=0A=
- =0A=
-@@ -75,6 +88,19 @@ struct f_hidg {=0A=
- 	wait_queue_head_t		write_queue;=0A=
- 	struct usb_request		*req;=0A=
- =0A=
-+	/* get report */=0A=
-+	struct usb_request		*get_req;=0A=
-+	struct usb_hidg_report		get_report;=0A=
-+	bool				get_report_returned;=0A=
-+	int				get_report_req_report_id;=0A=
-+	int				get_report_req_report_length;=0A=
-+	spinlock_t			get_report_spinlock;=0A=
-+	wait_queue_head_t		get_queue;    /* Waiting for userspace response */=0A=
-+	wait_queue_head_t		get_id_queue; /* Get ID came in */=0A=
-+	struct work_struct		work;=0A=
-+	struct workqueue_struct		*workqueue;=0A=
-+	struct list_head		report_list;=0A=
-+=0A=
- 	struct device			dev;=0A=
- 	struct cdev			cdev;=0A=
- 	struct usb_function		func;=0A=
-@@ -524,6 +550,171 @@ static ssize_t f_hidg_write(struct file *file, const =
-char __user *buffer,=0A=
- 	return status;=0A=
- }=0A=
- =0A=
-+static struct report_entry *f_hidg_search_for_report(struct f_hidg *hidg, =
-u8 report_id)=0A=
-+{=0A=
-+	struct list_head	*ptr;=0A=
-+	struct report_entry	*entry;=0A=
-+=0A=
-+	list_for_each(ptr, &hidg->report_list) {=0A=
-+		entry =3D list_entry(ptr, struct report_entry, node);=0A=
-+		if (entry->report_data.report_id =3D=3D report_id)=0A=
-+			return entry;=0A=
-+	}=0A=
-+=0A=
-+	return NULL;=0A=
-+}=0A=
-+=0A=
-+void get_report_workqueue_handler(struct work_struct *work)=0A=
-+{=0A=
-+	struct f_hidg *hidg =3D container_of(work, struct f_hidg, work);=0A=
-+	struct usb_composite_dev *cdev =3D hidg->func.config->cdev;=0A=
-+	struct usb_request		*req;=0A=
-+	struct report_entry *ptr;=0A=
-+	unsigned long	flags;=0A=
-+=0A=
-+	int status =3D 0;=0A=
-+=0A=
-+	spin_lock_irqsave(&hidg->get_report_spinlock, flags);=0A=
-+	req =3D hidg->get_req;=0A=
-+	if (!req) {=0A=
-+		spin_unlock_irqrestore(&hidg->get_report_spinlock, flags);=0A=
-+		return;=0A=
-+	}=0A=
-+=0A=
-+	req->zero =3D 0;=0A=
-+	req->length =3D min_t(unsigned, min_t(unsigned, hidg->get_report_req_repo=
-rt_length, hidg->report_length), MAX_REPORT_LENGTH);=0A=
-+=0A=
-+	/* Check if there is a response available for immediate response */=0A=
-+	ptr =3D f_hidg_search_for_report(hidg, hidg->get_report_req_report_id);=
-=0A=
-+	if (ptr && !ptr->report_data.userspace_req) {=0A=
-+		/* Report exists in list and it is to be used for immediate response */=
-=0A=
-+		req->buf =3D ptr->report_data.data;=0A=
-+		status =3D usb_ep_queue(cdev->gadget->ep0, req, GFP_ATOMIC);=0A=
-+		hidg->get_report_returned =3D true;=0A=
-+		spin_unlock_irqrestore(&hidg->get_report_spinlock, flags);=0A=
-+	} else {=0A=
-+		/*=0A=
-+		 * Report does not exist in list or should not be immediately sent=0A=
-+		 * i.e. give userspace time to respond=0A=
-+		 */=0A=
-+		hidg->get_report_returned =3D false;=0A=
-+		spin_unlock_irqrestore(&hidg->get_report_spinlock, flags);=0A=
-+		wake_up(&hidg->get_id_queue);=0A=
-+#define GET_REPORT_COND (!hidg->get_report_returned)=0A=
-+		/* Wait until userspace has responded or timeout */=0A=
-+		status =3D wait_event_interruptible_timeout(hidg->get_queue, !GET_REPORT=
-_COND,=0A=
-+					msecs_to_jiffies(GET_REPORT_TIMEOUT_MS));=0A=
-+		spin_lock_irqsave(&hidg->get_report_spinlock, flags);=0A=
-+		req =3D hidg->get_req;=0A=
-+		if (!req) {=0A=
-+			spin_unlock_irqrestore(&hidg->get_report_spinlock, flags);=0A=
-+			return;=0A=
-+		}=0A=
-+		if (status =3D=3D 0 && !hidg->get_report_returned) {=0A=
-+			/* GET_REPORT request was not serviced by userspace within timeout peri=
-od */=0A=
-+			VDBG(cdev, "get_report : userspace timeout.\n");=0A=
-+			hidg->get_report_returned =3D true;=0A=
-+		}=0A=
-+=0A=
-+		/* Search again for report ID in list and respond to GET_REPORT request =
-*/=0A=
-+		ptr =3D f_hidg_search_for_report(hidg, hidg->get_report_req_report_id);=
-=0A=
-+		if (ptr) {=0A=
-+			/*=0A=
-+			 * Either get an updated response just serviced by userspace=0A=
-+			 * or send the latest response in the list=0A=
-+			 */=0A=
-+			req->buf =3D ptr->report_data.data;=0A=
-+		} else {=0A=
-+			/* If there are no prevoiusly sent reports send empty report */=0A=
-+			req->buf =3D hidg->get_report.data;=0A=
-+			memset(req->buf, 0x0, req->length);=0A=
-+		}=0A=
-+=0A=
-+		status =3D usb_ep_queue(cdev->gadget->ep0, req, GFP_ATOMIC);=0A=
-+		spin_unlock_irqrestore(&hidg->get_report_spinlock, flags);=0A=
-+	}=0A=
-+=0A=
-+	if (status < 0)=0A=
-+		VDBG(cdev, "usb_ep_queue error on ep0 responding to GET_REPORT\n");=0A=
-+}=0A=
-+=0A=
-+static int f_hidg_get_report_id(struct file *file, __u8 __user *buffer)=0A=
-+{=0A=
-+	struct f_hidg			*hidg =3D file->private_data;=0A=
-+	int ret =3D 0;=0A=
-+=0A=
-+	ret =3D put_user(hidg->get_report_req_report_id, buffer);=0A=
-+=0A=
-+	return ret;=0A=
-+}=0A=
-+=0A=
-+static int f_hidg_get_report(struct file *file, struct usb_hidg_report __u=
-ser *buffer)=0A=
-+{=0A=
-+	struct f_hidg			*hidg =3D file->private_data;=0A=
-+	struct usb_composite_dev	*cdev =3D hidg->func.config->cdev;=0A=
-+	unsigned long	flags;=0A=
-+	struct report_entry *entry;=0A=
-+	struct report_entry *ptr;=0A=
-+	__u8 report_id;=0A=
-+=0A=
-+	entry =3D kmalloc(sizeof(*entry), GFP_KERNEL);=0A=
-+	if (!entry)=0A=
-+		return -ENOMEM;=0A=
-+=0A=
-+	if (copy_from_user(&entry->report_data, buffer,=0A=
-+				sizeof(struct usb_hidg_report))) {=0A=
-+		ERROR(cdev, "copy_from_user error\n");=0A=
-+		kfree(entry);=0A=
-+		return -EINVAL;=0A=
-+	}=0A=
-+=0A=
-+	report_id =3D entry->report_data.report_id;=0A=
-+=0A=
-+	spin_lock_irqsave(&hidg->get_report_spinlock, flags);=0A=
-+	ptr =3D f_hidg_search_for_report(hidg, report_id);=0A=
-+=0A=
-+	if (ptr) {=0A=
-+		/* Report already exists in list - update it */=0A=
-+		if (copy_from_user(&ptr->report_data, buffer,=0A=
-+				sizeof(struct usb_hidg_report))) {=0A=
-+			ERROR(cdev, "copy_from_user error\n");=0A=
-+			kfree(entry);=0A=
-+			return -EINVAL;=0A=
-+		}=0A=
-+		kfree(entry);=0A=
-+	} else {=0A=
-+		/* Report does not exist in list - add it */=0A=
-+		list_add_tail(&entry->node, &hidg->report_list);=0A=
-+	}=0A=
-+=0A=
-+	/* If there is no response pending then do nothing further */=0A=
-+	if (hidg->get_report_returned) {=0A=
-+		spin_unlock_irqrestore(&hidg->get_report_spinlock, flags);=0A=
-+		return 0;=0A=
-+	}=0A=
-+=0A=
-+	/* If this userspace response serves the current pending report */=0A=
-+	if (hidg->get_report_req_report_id =3D=3D report_id) {=0A=
-+		hidg->get_report_returned =3D true;=0A=
-+		wake_up(&hidg->get_queue);=0A=
-+	}=0A=
-+=0A=
-+	spin_unlock_irqrestore(&hidg->get_report_spinlock, flags);=0A=
-+	return 0;=0A=
-+}=0A=
-+=0A=
-+static long f_hidg_ioctl(struct file *file, unsigned int code, unsigned lo=
-ng arg)=0A=
-+{=0A=
-+	switch (code) {=0A=
-+	case GADGET_HID_READ_GET_REPORT_ID:=0A=
-+		return f_hidg_get_report_id(file, (__u8 __user *)arg);=0A=
-+	case GADGET_HID_WRITE_GET_REPORT:=0A=
-+		return f_hidg_get_report(file, (struct usb_hidg_report __user *)arg);=0A=
-+	default:=0A=
-+		return -ENOTTY;=0A=
-+	}=0A=
-+}=0A=
-+=0A=
- static __poll_t f_hidg_poll(struct file *file, poll_table *wait)=0A=
- {=0A=
- 	struct f_hidg	*hidg  =3D file->private_data;=0A=
-@@ -531,6 +722,8 @@ static __poll_t f_hidg_poll(struct file *file, poll_tab=
-le *wait)=0A=
- =0A=
- 	poll_wait(file, &hidg->read_queue, wait);=0A=
- 	poll_wait(file, &hidg->write_queue, wait);=0A=
-+	poll_wait(file, &hidg->get_queue, wait);=0A=
-+	poll_wait(file, &hidg->get_id_queue, wait);=0A=
- =0A=
- 	if (WRITE_COND)=0A=
- 		ret |=3D EPOLLOUT | EPOLLWRNORM;=0A=
-@@ -543,12 +736,16 @@ static __poll_t f_hidg_poll(struct file *file, poll_t=
-able *wait)=0A=
- 			ret |=3D EPOLLIN | EPOLLRDNORM;=0A=
- 	}=0A=
- =0A=
-+	if (GET_REPORT_COND)=0A=
-+		ret |=3D EPOLLPRI;=0A=
-+=0A=
- 	return ret;=0A=
- }=0A=
- =0A=
- #undef WRITE_COND=0A=
- #undef READ_COND_SSREPORT=0A=
- #undef READ_COND_INTOUT=0A=
-+#undef GET_REPORT_COND=0A=
- =0A=
- static int f_hidg_release(struct inode *inode, struct file *fd)=0A=
- {=0A=
-@@ -641,6 +838,10 @@ static void hidg_ssreport_complete(struct usb_ep *ep, =
-struct usb_request *req)=0A=
- 	wake_up(&hidg->read_queue);=0A=
- }=0A=
- =0A=
-+static void hidg_get_report_complete(struct usb_ep *ep, struct usb_request=
- *req)=0A=
-+{=0A=
-+}=0A=
-+=0A=
- static int hidg_setup(struct usb_function *f,=0A=
- 		const struct usb_ctrlrequest *ctrl)=0A=
- {=0A=
-@@ -649,6 +850,7 @@ static int hidg_setup(struct usb_function *f,=0A=
- 	struct usb_request		*req  =3D cdev->req;=0A=
- 	int status =3D 0;=0A=
- 	__u16 value, length;=0A=
-+	unsigned long	flags;=0A=
- =0A=
- 	value	=3D __le16_to_cpu(ctrl->wValue);=0A=
- 	length	=3D __le16_to_cpu(ctrl->wLength);=0A=
-@@ -660,14 +862,20 @@ static int hidg_setup(struct usb_function *f,=0A=
- 	switch ((ctrl->bRequestType << 8) | ctrl->bRequest) {=0A=
- 	case ((USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8=0A=
- 		  | HID_REQ_GET_REPORT):=0A=
--		VDBG(cdev, "get_report\n");=0A=
-+		VDBG(cdev, "get_report | wLength=3D%d\n", ctrl->wLength);=0A=
- =0A=
--		/* send an empty report */=0A=
--		length =3D min_t(unsigned, length, hidg->report_length);=0A=
--		memset(req->buf, 0x0, length);=0A=
-+		/*=0A=
-+		 * Update GET_REPORT ID so that an ioctl can be used to determine what=
-=0A=
-+		 * GET_REPORT the request was actually for.=0A=
-+		 */=0A=
-+		spin_lock_irqsave(&hidg->get_report_spinlock, flags);=0A=
-+		hidg->get_report_req_report_id =3D value & 0xff;=0A=
-+		hidg->get_report_req_report_length =3D length;=0A=
-+		spin_unlock_irqrestore(&hidg->get_report_spinlock, flags);=0A=
- =0A=
--		goto respond;=0A=
--		break;=0A=
-+		queue_work(hidg->workqueue, &hidg->work);=0A=
-+=0A=
-+		return status;=0A=
- =0A=
- 	case ((USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8=0A=
- 		  | HID_REQ_GET_PROTOCOL):=0A=
-@@ -793,6 +1001,14 @@ static void hidg_disable(struct usb_function *f)=0A=
- 		spin_unlock_irqrestore(&hidg->read_spinlock, flags);=0A=
- 	}=0A=
- =0A=
-+	spin_lock_irqsave(&hidg->get_report_spinlock, flags);=0A=
-+	if (!hidg->get_report_returned) {=0A=
-+		usb_ep_free_request(f->config->cdev->gadget->ep0, hidg->get_req);=0A=
-+		hidg->get_req =3D NULL;=0A=
-+		hidg->get_report_returned =3D true;=0A=
-+	}=0A=
-+	spin_unlock_irqrestore(&hidg->get_report_spinlock, flags);=0A=
-+=0A=
- 	spin_lock_irqsave(&hidg->write_spinlock, flags);=0A=
- 	if (!hidg->write_pending) {=0A=
- 		free_ep_req(hidg->in_ep, hidg->req);=0A=
-@@ -902,6 +1118,14 @@ static int hidg_set_alt(struct usb_function *f, unsig=
-ned intf, unsigned alt)=0A=
- 	return status;=0A=
- }=0A=
- =0A=
-+#ifdef CONFIG_COMPAT=0A=
-+static long f_hidg_compat_ioctl(struct file *file, unsigned code,=0A=
-+		unsigned long value)=0A=
-+{=0A=
-+	return f_hidg_ioctl(file, code, value);=0A=
-+}=0A=
-+#endif=0A=
-+=0A=
- static const struct file_operations f_hidg_fops =3D {=0A=
- 	.owner		=3D THIS_MODULE,=0A=
- 	.open		=3D f_hidg_open,=0A=
-@@ -909,6 +1133,10 @@ static const struct file_operations f_hidg_fops =3D {=
-=0A=
- 	.write		=3D f_hidg_write,=0A=
- 	.read		=3D f_hidg_read,=0A=
- 	.poll		=3D f_hidg_poll,=0A=
-+	.unlocked_ioctl	=3D f_hidg_ioctl,=0A=
-+#ifdef CONFIG_COMPAT=0A=
-+	.compat_ioctl =3D f_hidg_compat_ioctl,=0A=
-+#endif=0A=
- 	.llseek		=3D noop_llseek,=0A=
- };=0A=
- =0A=
-@@ -919,6 +1147,15 @@ static int hidg_bind(struct usb_configuration *c, str=
-uct usb_function *f)=0A=
- 	struct usb_string	*us;=0A=
- 	int			status;=0A=
- =0A=
-+	hidg->get_req =3D usb_ep_alloc_request(c->cdev->gadget->ep0, GFP_ATOMIC);=
-=0A=
-+	if (!hidg->get_req)=0A=
-+		return -ENOMEM;=0A=
-+=0A=
-+	hidg->get_req->zero =3D 0;=0A=
-+	hidg->get_req->complete =3D hidg_get_report_complete;=0A=
-+	hidg->get_req->context =3D hidg;=0A=
-+	hidg->get_report_returned =3D true;=0A=
-+=0A=
- 	/* maybe allocate device-global string IDs, and patch descriptors */=0A=
- 	us =3D usb_gstrings_attach(c->cdev, ct_func_strings,=0A=
- 				 ARRAY_SIZE(ct_func_string_defs));=0A=
-@@ -1004,9 +1241,24 @@ static int hidg_bind(struct usb_configuration *c, st=
-ruct usb_function *f)=0A=
- 	hidg->write_pending =3D 1;=0A=
- 	hidg->req =3D NULL;=0A=
- 	spin_lock_init(&hidg->read_spinlock);=0A=
-+	spin_lock_init(&hidg->get_report_spinlock);=0A=
- 	init_waitqueue_head(&hidg->write_queue);=0A=
- 	init_waitqueue_head(&hidg->read_queue);=0A=
-+	init_waitqueue_head(&hidg->get_queue);=0A=
-+	init_waitqueue_head(&hidg->get_id_queue);=0A=
- 	INIT_LIST_HEAD(&hidg->completed_out_req);=0A=
-+	INIT_LIST_HEAD(&hidg->report_list);=0A=
-+=0A=
-+	INIT_WORK(&hidg->work, get_report_workqueue_handler);=0A=
-+	hidg->workqueue =3D alloc_workqueue("report_work",=0A=
-+					  WQ_FREEZABLE |=0A=
-+					  WQ_MEM_RECLAIM,=0A=
-+					  1);=0A=
-+=0A=
-+	if (!hidg->workqueue) {=0A=
-+		status =3D -ENOMEM;=0A=
-+		goto fail;=0A=
-+	}=0A=
- =0A=
- 	/* create char device */=0A=
- 	cdev_init(&hidg->cdev, &f_hidg_fops);=0A=
-@@ -1016,12 +1268,16 @@ static int hidg_bind(struct usb_configuration *c, s=
-truct usb_function *f)=0A=
- =0A=
- 	return 0;=0A=
- fail_free_descs:=0A=
-+	destroy_workqueue(hidg->workqueue);=0A=
- 	usb_free_all_descriptors(f);=0A=
- fail:=0A=
- 	ERROR(f->config->cdev, "hidg_bind FAILED\n");=0A=
- 	if (hidg->req !=3D NULL)=0A=
- 		free_ep_req(hidg->in_ep, hidg->req);=0A=
- =0A=
-+	usb_ep_free_request(c->cdev->gadget->ep0, hidg->get_req);=0A=
-+	hidg->get_req =3D NULL;=0A=
-+=0A=
- 	return status;=0A=
- }=0A=
- =0A=
-@@ -1256,7 +1512,7 @@ static void hidg_unbind(struct usb_configuration *c, =
-struct usb_function *f)=0A=
- 	struct f_hidg *hidg =3D func_to_hidg(f);=0A=
- =0A=
- 	cdev_device_del(&hidg->cdev, &hidg->dev);=0A=
--=0A=
-+	destroy_workqueue(hidg->workqueue);=0A=
- 	usb_free_all_descriptors(f);=0A=
- }=0A=
- =0A=
-diff --git a/include/uapi/linux/usb/g_hid.h b/include/uapi/linux/usb/g_hid.=
-h=0A=
-new file mode 100644=0A=
-index 000000000000..b965092db476=0A=
---- /dev/null=0A=
-+++ b/include/uapi/linux/usb/g_hid.h=0A=
-@@ -0,0 +1,40 @@=0A=
-+/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */=0A=
-+=0A=
-+#ifndef __UAPI_LINUX_USB_G_HID_H=0A=
-+#define __UAPI_LINUX_USB_G_HID_H=0A=
-+=0A=
-+#include <linux/types.h>=0A=
-+=0A=
-+/* Maximum HID report length for High-Speed USB (i.e. USB 2.0) */=0A=
-+#define MAX_REPORT_LENGTH 64=0A=
-+=0A=
-+/**=0A=
-+ * struct usb_hidg_report - response to GET_REPORT=0A=
-+ * @report_id: report ID that this is a response for=0A=
-+ * @userspace_req:=0A=
-+ *    !0 this report is used for any pending GET_REPORT request=0A=
-+ *       but wait on userspace to issue a new report on future requests=0A=
-+ *    0  this report is to be used for any future GET_REPORT requests=0A=
-+ * @length: length of the report response=0A=
-+ * @data: report response=0A=
-+ * @padding: padding for 32/64 bit compatibility=0A=
-+ *=0A=
-+ * Structure used by GADGET_HID_WRITE_GET_REPORT ioctl on /dev/hidg*.=0A=
-+ */=0A=
-+struct usb_hidg_report {=0A=
-+	__u8 report_id;=0A=
-+	__u8 userspace_req;=0A=
-+	__u16 length;=0A=
-+	__u8 data[MAX_REPORT_LENGTH];=0A=
-+	__u8 padding[4];=0A=
-+};=0A=
-+=0A=
-+/* The 'g' code is used by gadgetfs and hid gadget ioctl requests.=0A=
-+ * Don't add any colliding codes to either driver, and keep=0A=
-+ * them in unique ranges.=0A=
-+ */=0A=
-+=0A=
-+#define GADGET_HID_READ_GET_REPORT_ID   _IOR('g', 0x41, __u8)=0A=
-+#define GADGET_HID_WRITE_GET_REPORT     _IOW('g', 0x42, struct usb_hidg_re=
-port)=0A=
-+=0A=
-+#endif /* __UAPI_LINUX_USB_G_HID_H */=0A=
-diff --git a/include/uapi/linux/usb/gadgetfs.h b/include/uapi/linux/usb/gad=
-getfs.h=0A=
-index 835473910a49..9754822b2a40 100644=0A=
---- a/include/uapi/linux/usb/gadgetfs.h=0A=
-+++ b/include/uapi/linux/usb/gadgetfs.h=0A=
-@@ -62,7 +62,7 @@ struct usb_gadgetfs_event {=0A=
- };=0A=
- =0A=
- =0A=
--/* The 'g' code is also used by printer gadget ioctl requests.=0A=
-+/* The 'g' code is also used by printer and hid gadget ioctl requests.=0A=
-  * Don't add any colliding codes to either driver, and keep=0A=
-  * them in unique ranges (size 0x20 for now).=0A=
-  */=0A=
--- =0A=
-2.34.1=0A=
+On Wed, Apr 17, 2024 at 07:20:31PM +0200, Francesco Dolcini wrote:
+> Hello Frank,
+> 
+> On Wed, Apr 17, 2024 at 12:01:43PM -0400, Frank Li wrote:
+> > On Tue, Apr 16, 2024 at 08:50:26AM +0200, Francesco Dolcini wrote:
+> > > On Mon, Apr 15, 2024 at 03:46:38PM -0400, Frank Li wrote:
+> > > > Add i.MX8QM audio related nodes and update eDMA[0,1]'s information.
+> > > > 
+> > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > ---
+> > > >  arch/arm64/boot/dts/freescale/imx8qm-ss-audio.dtsi | 473 +++++++++++++++++++++
+> > > >  arch/arm64/boot/dts/freescale/imx8qm.dtsi          |  86 ++++
+> > > >  2 files changed, 559 insertions(+)
+> > > > 
+> > > > diff --git a/arch/arm64/boot/dts/freescale/imx8qm-ss-audio.dtsi b/arch/arm64/boot/dts/freescale/imx8qm-ss-audio.dtsi
+> > > > new file mode 100644
+> > > > index 0000000000000..ed5a1b4af1d76
+> > > > --- /dev/null
+> > > > +++ b/arch/arm64/boot/dts/freescale/imx8qm-ss-audio.dtsi
+> 
+> ...
+> 
+> > > > +/delete-node/ &acm;
+> > > > +/delete-node/ &sai4;
+> > > > +/delete-node/ &sai5;
+> > > > +/delete-node/ &sai4_lpcg;
+> > > > +/delete-node/ &sai5_lpcg;
+> > > 
+> > > Can you explain these delete-node ? This is something that I would
+> > > expect when a dtsi is previously included, not in this case.
+> > 
+> > We want to avoid some property inherent from parent dtsi file because it is
+> > big difference with common one.
+> > 
+> > This node will be rewrite totally in this files.
+> 
+> imx8qm-ss-audio.dtsi does not include any file. From where these
+> inherited properties are coming from? Which file is the "parent dtsi" ?
+
+imx8qm-ss-audio.dtsi are not supposed to be included directly. imx8qm.dtsi
+is supposed to be included by other board dts file.
+
+in imx8qm.dtsi
+
+ 	/* sorted in register address */
++	#include "imx8-ss-audio.dtsi"
+ 	#include "imx8-ss-vpu.dtsi"
+ 	#include "imx8-ss-img.dtsi"
+ 	#include "imx8-ss-dma.dtsi"
+@@ -473,3 +558,4 @@ drc_crit0: trip1 {
+ #include "imx8qm-ss-dma.dtsi"
+ #include "imx8qm-ss-conn.dtsi"
+ #include "imx8qm-ss-lsio.dtsi"
++#include "imx8qm-ss-audio.dtsi"
+
+"imx8qm-ss-audio" will overwrite some common audio node in
+"imx8-ss-audio.dtsi"
+
+acm, and sai4/5 are defined in imx8-ss-audio.dtsi for common part for all
+imx8qm\imx8qxp\imx8dxl.
+
+Frank
+
+> 
+> Thanks,
+> Francesco
+> 
 
