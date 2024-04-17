@@ -1,156 +1,198 @@
-Return-Path: <linux-kernel+bounces-147809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 066F88A79F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:47:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2133B8A79F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:51:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 549D4B2182F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:47:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57A2BB2132D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:51:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C66517C2;
-	Wed, 17 Apr 2024 00:47:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C248517C2;
+	Wed, 17 Apr 2024 00:50:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jvxxv8E6"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="JdRuxUQK"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E45C7EC
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:47:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD9CF64C
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:50:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713314827; cv=none; b=FH8UImXtA4TuVVTZrVRQjUnDa2BcUdZZVQNhvKiA5iNZhpvJOv1lYUDq5obpmWk0mtaNa3N/a452pMYnLuGcTOp6dSdnEdarTADlrrxqzqhG49XWWBBNFtwYuuoXLILaDp82R3aOYqQRVhHOcftKVEoj6fOZcmL9Oa+WYEssWIs=
+	t=1713315057; cv=none; b=MPlDKqTsMUXJxGr+VluCmkM+8sqSlayq7Q6vlYb50NWMbyUwhFacK8a0DvC5s1O24ktd7pWspsNi62EFp29gaGa4IVtQjJ9CvsHqUxJL7tx/I7RekpBflci0UFJCmoB7kfazKxT5bEpqJvq4HTjXwjdzUz2q8HszuBxWhR+WZXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713314827; c=relaxed/simple;
-	bh=5dvi4VPpgT1ZktQgmIBxXxoJVztUqyGPi0waqwUMCDQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=YVARKXgUxItn6Bgo0Vi8xbyDV1uqUbVAXviZ5MWsWeQoDWpo+AhEe9xkWgeoGsuin8bEk8lYSsU+S7+4zDtSdAGhh0OvI9ClmhGafRUnY8SIzfyLe+UaAm82ErGsW4sGHaURqE77KbekLZeCqdeURDkCt2xbc8lT2Z/mfQaww4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jvxxv8E6; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713314826; x=1744850826;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=5dvi4VPpgT1ZktQgmIBxXxoJVztUqyGPi0waqwUMCDQ=;
-  b=jvxxv8E6fV64VrCdpCSWvKDlC76IrDXVCD8bq/XlRQ8LA7y8HXRbxcId
-   3zRCWoBmLsvL0JiMvtmkkLp9CIvs/XEvnhxrHEYvxpJZHyDZxE7SU8o8+
-   z1TVqtUl1kNnvPbtaxyOk7xalt8xPefCS224r5SEdpd0bbo0EwcPTMmAi
-   sOJxM6KS5wK49Q3EkXQfVypsf90S4wQNgt3j9hl6iasaszpUKjShYZfMe
-   qoCd7b0Ce1tQ1wmUMxx2bADiERokZ1GAg9IheZkhYOY1NapHcyu5Yf1Ls
-   hglcChBQE7cs8Vsh5Vl7UGLOB5iDE4vt/T66c48A3EszQJgbjqko7pZJN
-   g==;
-X-CSE-ConnectionGUID: 5YxCcmU+SAqKSSuk1YXtIA==
-X-CSE-MsgGUID: rJO7cSUTSIKQyOhRqLkyxQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="12573654"
-X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="12573654"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 17:47:05 -0700
-X-CSE-ConnectionGUID: XyeW91dxRoKxySgyFn7ZSA==
-X-CSE-MsgGUID: Zt0xu/AiSuCX1oRTrLwgkA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="22519708"
-Received: from unknown (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 17:47:00 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org,  linux-mm@kvack.org,
-  baolin.wang@linux.alibaba.com,  chrisl@kernel.org,  david@redhat.com,
-  hanchuanhua@oppo.com,  hannes@cmpxchg.org,  hughd@google.com,
-  kasong@tencent.com,  ryan.roberts@arm.com,  surenb@google.com,
-  v-songbaohua@oppo.com,  willy@infradead.org,  xiang@kernel.org,
-  yosryahmed@google.com,  yuzhao@google.com,  ziy@nvidia.com,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] mm: add per-order mTHP swpin_refault counter
-In-Reply-To: <20240409082631.187483-6-21cnbao@gmail.com> (Barry Song's message
-	of "Tue, 9 Apr 2024 20:26:31 +1200")
-References: <20240409082631.187483-1-21cnbao@gmail.com>
-	<20240409082631.187483-6-21cnbao@gmail.com>
-Date: Wed, 17 Apr 2024 08:45:07 +0800
-Message-ID: <87frvk24x8.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1713315057; c=relaxed/simple;
+	bh=tEt2neeMhkJXYowSS4zB7i8JdZKZdQzPkmTlL+k4K3I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=R1JUoBtZ6eFSpxsD/7k6RQkq70dnRVs5Qi2tSmq+HSCVHBQKK3UPWJPsxtJDqunlHncpoCeRA1CKdn3slEahgF13IbpAEQ2Y5X5y8wr5mqJoBdkYCpf0s5SQuoDytCzNVaS6Kfuwrcznj2CZA6UiQvGvKydg5URk4dmLH6QHA/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=JdRuxUQK; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56fffb1d14bso464524a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:50:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1713315054; x=1713919854; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PjW0bA9YFlwaYeRZXTpCY+jNWdxFSQw1M095VHBp3hc=;
+        b=JdRuxUQKHYThPXpqdyp50bU1bQYwsfDOVQioFlI3EbNKCsmyeATqa9O+tJpGeQl37g
+         ODNimBiNKOlRvk/D26tYyyEZpsz7X0ummDq8fjKwtWdPeW40FcNF9l7wtnnSwXgxO8UV
+         +duEUF4NYrXjtpczIPdq7IlHbX9wjUYrPXvrY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713315054; x=1713919854;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PjW0bA9YFlwaYeRZXTpCY+jNWdxFSQw1M095VHBp3hc=;
+        b=C3PH7qc9sabVjpDd+4Zwv5i9W3PBYw5hZLQpO58dyeijYg39yM2cq5+BI1bcYIfA2B
+         JcUv/lW7gffePcW3soEMOooPzvYAxZ2X2AMnpsAuRQWNm50HgjyV+6SC6bkotnvgoEK0
+         M1XSgHt5nJfkSkbACZBzFDV8RhHpkopNGOXhVdPsIsWNKP+5sHxVEtN6owAeGiZ5srrr
+         aYITYQVopDgA0YEGURFmO+S4mA9Zhfum52zfwDBlQAEQZEMazExLJLNhKBLkW8Y9dV/I
+         WjXIW6zfefuIQF073BWZP/0B0y/pGzQRvL3JXTkkHH/KxI3o+fbU48WPdfpI5wnMg/2p
+         ihlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVAoFSBY2CX+2/VNCGgbbN7SSMNmTRk7E6pUSU1DMQZMnzAa0HRvqOqtVop8Ivt4Ry0Q0/9DjWb+f1duiwhHbRBo/6ejkDQ2QEpBV8y
+X-Gm-Message-State: AOJu0Yz+KrrfUEEn80EJ8soB/OHTcT1JtrHhzT+daAC0x7O//nIh/3QW
+	niXD0VaoczDqy9WrxEU2WWAKaUh8UsYn5tcNsrP+WeyBIj15+JlvAt7XjAxysO+gdalfFcR2x74
+	IuLg=
+X-Google-Smtp-Source: AGHT+IFnvsbt5KgBk65y/jAvklBb5Pqh4bzhmulLw3gfYan13slJYdTOM83HX1MPlpLmgPrzwahyWQ==
+X-Received: by 2002:a05:6402:f0c:b0:570:17a:b1f6 with SMTP id i12-20020a0564020f0c00b00570017ab1f6mr4031043eda.6.1713315053904;
+        Tue, 16 Apr 2024 17:50:53 -0700 (PDT)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id t6-20020a056402020600b0057030326144sm2577140edv.47.2024.04.16.17.50.53
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Apr 2024 17:50:53 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a526d381d2fso53879366b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:50:53 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWy39YZpXtgxSRFwoH1AWD1hw4bchHl2C0daxwqTAYL7NzW7UkLZlCjjbku5a+6AKmjLyw38ttuGI8Pc2MAvVBgKzfJVolLC68BE3L3
+X-Received: by 2002:a17:907:97d1:b0:a52:2a65:cf2 with SMTP id
+ js17-20020a17090797d100b00a522a650cf2mr4838164ejc.13.1713315052778; Tue, 16
+ Apr 2024 17:50:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <20220302043451.2441320-1-willy@infradead.org> <202404161413.8B4810C5@keescook>
+ <CAHk-=wg7+dfpEvDnTnB-eR9QRZ2VySbxOEHbYqL3Ai5wwkon5Q@mail.gmail.com>
+In-Reply-To: <CAHk-=wg7+dfpEvDnTnB-eR9QRZ2VySbxOEHbYqL3Ai5wwkon5Q@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 16 Apr 2024 17:50:36 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wizMKBPZeOy7UiQjNR5Jm103WNzL4sHq4FpZihk7yBsfQ@mail.gmail.com>
+Message-ID: <CAHk-=wizMKBPZeOy7UiQjNR5Jm103WNzL4sHq4FpZihk7yBsfQ@mail.gmail.com>
+Subject: Re: [PATCH 00/19] Enable -Wshadow=local for kernel/sched
+To: Kees Cook <keescook@chromium.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Barry Song <21cnbao@gmail.com> writes:
-
-> From: Barry Song <v-songbaohua@oppo.com>
+On Tue, 16 Apr 2024 at 17:29, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> Currently, we are handling the scenario where we've hit a
-> large folio in the swapcache, and the reclaiming process
-> for this large folio is still ongoing.
+> So what is the solution to
 >
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> ---
->  include/linux/huge_mm.h | 1 +
->  mm/huge_memory.c        | 2 ++
->  mm/memory.c             | 1 +
->  3 files changed, 4 insertions(+)
->
-> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> index c8256af83e33..b67294d5814f 100644
-> --- a/include/linux/huge_mm.h
-> +++ b/include/linux/huge_mm.h
-> @@ -269,6 +269,7 @@ enum mthp_stat_item {
->  	MTHP_STAT_ANON_ALLOC_FALLBACK,
->  	MTHP_STAT_ANON_SWPOUT,
->  	MTHP_STAT_ANON_SWPOUT_FALLBACK,
-> +	MTHP_STAT_ANON_SWPIN_REFAULT,
+>     #define MAX(a,b) ({ \
 
-This is different from the refault concept used in other place in mm
-subystem.  Please check the following code
+Side note: do not focus on the macro name. I'm not interested in "the
+solution is MAX3()" kinds of answers.
 
-	if (shadow)
-		workingset_refault(folio, shadow);
+And the macro doesn't have to be physically nested like that.
 
-in __read_swap_cache_async().
+The macro could be a list traversal thing.  Appended is an example
+list traversal macro that is type-safe and simple to use, and would
+absolutely improve on our current "list_for_each_entry()" in many
+ways.
 
->  	__MTHP_STAT_COUNT
->  };
+Imagine now traversing a list within an entry that happens while
+traversing an outer one. Which is not at all an odd thing, IOW, you'd
+have
 
---
-Best Regards,
-Huang, Ying
+        traverse(bus_list, bus) {
+                traverse(&bus->devices, device) {
+                        .. do something with the device ..
+                }
+        }
 
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index d8d2ed80b0bf..fb95345b0bde 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -556,12 +556,14 @@ DEFINE_MTHP_STAT_ATTR(anon_alloc, MTHP_STAT_ANON_ALLOC);
->  DEFINE_MTHP_STAT_ATTR(anon_alloc_fallback, MTHP_STAT_ANON_ALLOC_FALLBACK);
->  DEFINE_MTHP_STAT_ATTR(anon_swpout, MTHP_STAT_ANON_SWPOUT);
->  DEFINE_MTHP_STAT_ATTR(anon_swpout_fallback, MTHP_STAT_ANON_SWPOUT_FALLBACK);
-> +DEFINE_MTHP_STAT_ATTR(anon_swpin_refault, MTHP_STAT_ANON_SWPIN_REFAULT);
->  
->  static struct attribute *stats_attrs[] = {
->  	&anon_alloc_attr.attr,
->  	&anon_alloc_fallback_attr.attr,
->  	&anon_swpout_attr.attr,
->  	&anon_swpout_fallback_attr.attr,
-> +	&anon_swpin_refault_attr.attr,
->  	NULL,
->  };
->  
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 9818dc1893c8..acc023795a4d 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -4167,6 +4167,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->  		nr_pages = nr;
->  		entry = folio->swap;
->  		page = &folio->page;
-> +		count_mthp_stat(folio_order(folio), MTHP_STAT_ANON_SWPIN_REFAULT);
->  	}
->  
->  check_pte:
+this kind of macro use that has internal variables that will
+inevitably shadow each other when used in some kind of nested model is
+pretty fundamental.
+
+So no. The answer is *NOT* some kind of "don't do that then".
+
+             Linus
+
+PS. The list trraversal thing below worked at some point. It's an old
+snippet of mine, it might not work any more. It depends on the kernel
+'list_head' definitions, it's not a standalone example.
+
+---
+
+    #define list_traversal_head(type, name, member) union {     \
+        struct list_head name;                          \
+        struct type *name##_traversal_type;             \
+        struct type##_##name##_##member##_traversal_struct
+*name##_traversal_info; \
+    }
+
+    #define list_traversal_node(name) union {           \
+        struct list_head name;                          \
+        int name##_traversal_node;                      \
+    }
+
+    #define DEFINE_TRAVERSAL(from, name, to, member)            \
+    struct to##_##name##_##member##_traversal_struct {          \
+        char dummy[offsetof(struct to, member##_traversal_node)]; \
+        struct list_head node;                          \
+    }
+
+    #define __traverse_type(head, ext) typeof(head##ext)
+    #define traverse_type(head, ext) __traverse_type(head, ext)
+
+    #define traverse_offset(head) \
+        offsetof(traverse_type(*head,_traversal_info), node)
+
+    #define traverse_is_head(head,  raw) \
+        ((void *)(raw) == (void *)(head))
+
+    /*
+     * Very annoying. We want 'node' to be of the right type, and __raw to be
+     * the underlying "struct list_head". But while we can declare multiple
+     * variables in a for-loop in C99, we can't declare multiple _types_.
+     *
+     * So __raw has the wrong type, making everything pointlessly uglier.
+     */
+    #define traverse(head, node) \
+        for (typeof(*head##_traversal_type) __raw = (void
+*)(head)->next, node; \
+                node = (void *)__raw + traverse_offset(*head),
+!traverse_is_head(head, __raw); \
+                __raw = (void *) ((struct list_head *)__raw)->next)
+
+    struct first_struct {
+        int offset[6];
+        list_traversal_head(second_struct, head, entry);
+    };
+
+    struct second_struct {
+        int hash;
+        int offset[17];
+        list_traversal_node(entry);
+    };
+
+    DEFINE_TRAVERSAL(first_struct, head, second_struct, entry);
+
+    struct second_struct *find(struct first_struct *p)
+    {
+        traverse(&p->head, node) {
+                if (node->hash == 1234)
+                        return node;
+        }
+        return NULL;
+    }
 
