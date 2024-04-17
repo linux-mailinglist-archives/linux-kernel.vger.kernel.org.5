@@ -1,110 +1,81 @@
-Return-Path: <linux-kernel+bounces-149216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 239858A8D45
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:51:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CC6C8A8D53
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:53:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C85991F22E9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:51:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD9B7286F0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 931CF481A8;
-	Wed, 17 Apr 2024 20:51:19 +0000 (UTC)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E16A481B5;
+	Wed, 17 Apr 2024 20:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="f4Xj0CYI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 776293D967
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 20:51:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9165125DB;
+	Wed, 17 Apr 2024 20:53:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713387079; cv=none; b=qCY5xepV90EoVuF72U9yUywNHGpdUV0gzNR9ZX1yekGB+1MD2mbF66C5PfYJFYwkcJv1F3MFk4CoRvrltmE7tAyukfoeZj0XHKFpGaD9b9TgA4QVURq+Xao5UK4+k2+Axh1UaBLpeDrSnFAD7/vo+SaN1UbXXnJLSRq66IzFK10=
+	t=1713387183; cv=none; b=QtEmQLk61Kz3vLT1xWHxCTb/DDYUOczE/zOa5dXXCIDNJNAwN33KlnHDUMJn0yb0i26288fBA/zC0AfneMD+Wf20xcZyPKcM6Nn26dbaDkjG+ePHYusn0o0U5LUYwlhQ+K2Qm/qT6nPAh4GkLJrLVI+ATRSuuy5bR8yB4+GnY78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713387079; c=relaxed/simple;
-	bh=25na2u5dqSMwdfKH+InG17crUdYa9TxiMOwoUCyo2Zg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l+r/5A/QRmU5C4i9R+Qp1lWsxRONPHo7hDmpJyv/v7OmVReFALLTfuy0dIVAQAX2zKPOKOjpdGqpJ8Q+6XB7T/S8/egcHgfaSne/aXowf1UADh8Nb4SFuvRl3EsMYBfgmK3x03WJM86M5xs+PKqsAImMdowbMNYYjHhOGfi2aHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E478040E0177;
-	Wed, 17 Apr 2024 20:51:14 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id WjHW1JqznPJz; Wed, 17 Apr 2024 20:51:09 +0000 (UTC)
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 21AF640E00B2;
-	Wed, 17 Apr 2024 20:50:54 +0000 (UTC)
-Date: Wed, 17 Apr 2024 22:50:48 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
-	linux-coco@lists.linux.dev, svsm-devel@coconut-svsm.dev,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Ashish Kalra <ashish.kalra@amd.com>
-Subject: Re: [PATCH v3 02/14] x86/sev: Make the VMPL0 checking function more
- generic
-Message-ID: <20240417205048.GHZiA2KGbFFTQFyTAM@fat_crate.local>
-References: <cover.1711405593.git.thomas.lendacky@amd.com>
- <1b0d8ec8e671ad957a2ad888725ce24edeedf74a.1711405593.git.thomas.lendacky@amd.com>
- <20240417114658.GHZh-2sk47TZgCp4Mb@fat_crate.local>
- <505dcf34-93ff-643c-b149-8ef9ce90c023@amd.com>
+	s=arc-20240116; t=1713387183; c=relaxed/simple;
+	bh=Cj/QfjL61EBDCyKPar9P9bXh+y6kXA1dZvl1Mau+d8g=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=YEXJiywXrq8VnfWrrgnz6yGZzPKovN9vM4UJD660qdc1sYSYJp6/+/APbzBUdcbgQM3Ao52CPipE1XAVqYE7F7wowFBPyU3Kv056hDtSaWfvW5Ls3v5/0h7RuhH8vPYd1FUg+WVSa9SnOYfsNoj+Pz4Yq2uweLL1WKTe1nHUFK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=f4Xj0CYI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AA5BC072AA;
+	Wed, 17 Apr 2024 20:53:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1713387183;
+	bh=Cj/QfjL61EBDCyKPar9P9bXh+y6kXA1dZvl1Mau+d8g=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=f4Xj0CYIX51NTtIn+FYtxdR5IJSNeNDoU/IxuNSmA5c9Kbsa9KlfN7Qtz7dk+8S55
+	 nvc7Ub4+SMJJjDUrMXtHUd2y8s8471H6PvtMU3zacauC4FUGALpJHL8TUSyycRsLCK
+	 HC1PWQvEVS45kEQGO+7mI6Bx2mu9F6BICDYlC+hQ=
+Date: Wed, 17 Apr 2024 13:53:02 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Qiang Zhang <qiang4.zhang@intel.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the mm-hotfixes tree
+Message-Id: <20240417135302.2f5c6a9ab9eb2ef58e1bdc7b@linux-foundation.org>
+In-Reply-To: <20240417152904.17fa874d@canb.auug.org.au>
+References: <20240416173525.13bfd8dc@canb.auug.org.au>
+	<20240416115114.8f1673a2490d31f77d276a41@linux-foundation.org>
+	<20240417152904.17fa874d@canb.auug.org.au>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <505dcf34-93ff-643c-b149-8ef9ce90c023@amd.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 17, 2024 at 03:35:53PM -0500, Tom Lendacky wrote:
-> Well, it doesn't really modify any permissions that matter. It tries to
-> change the permission of a lesser privileged VMPL level.
+On Wed, 17 Apr 2024 15:29:04 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-Potato potato. :-P
+> >   * This clears all data structures of parsed bootconfig on memory.
+> >   * If you need to reuse xbc_init() with new boot config, you can
+> > _
+> > 
+> 
+> OK, so the above two warnings went away, but now I get
+> 
+> lib/bootconfig.c:909: warning: expecting prototype for _xbc_exit(). Prototype was for xbc_exit() instead
+> 
+> Commit
+> 
+>   aaeda6237dec ("bootconfig: use memblock_free_late to free xbc memory to buddy")
+> 
+> that was in the mm tree yesterday is not there now.
 
-> Since the kernel only runs at a single VMPL it would never be
-> effected. The operation performed here is to update VMPL1 permission
-> levels (which can only be done successfully at VMPL0) and return the
-> result of the operation.  A success implies running at VMPL0 and
-> failure implies not running at VMPL0.
-
-Yap.
-
-The point is, it is calling RMPADJUST. And it does modify RMP
-permissions of a guest page.
-
-Thus, if you prefer, you can go all out and call the helper
-
-	rmp_adjust_permissions(unsigned int tgt_vmpl, void *pa)
-
-and make it generic from the get-go.
-
-And then have the macro wrap around it in order to explain that
-particular use with the macro name.
-
-If it is still not clear what I mean, lemme know and I'll do a diff
-ontop.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+oop, sorry, fat-fingered that one.  Thanks, I brought back
+bootconfig-use-memblock_free_late-to-free-xbc-memory-to-buddy.patch.
 
