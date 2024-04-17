@@ -1,121 +1,139 @@
-Return-Path: <linux-kernel+bounces-148396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4161A8A81F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:21:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 109EB8A81F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:21:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6A3D2827D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:21:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C04F1282732
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:21:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD42813C9AA;
-	Wed, 17 Apr 2024 11:20:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA77113C9A7;
+	Wed, 17 Apr 2024 11:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RUZdX5Hx"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="AJlFcAV6"
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4AB13C832;
-	Wed, 17 Apr 2024 11:20:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7C613C688
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713352854; cv=none; b=ZiA4RROgPXAaE6cSCNGC0iL7HJ+ZeQaJqOVNyg4rZUJa4OY7lb7OUR5xzf8B0417+sqXfXg5OW4nxnqDE/9dTsuNcOyCnCc+Zr089SiwqZhkkx/ICrijLA+XovI7bwvhJBKDAH0/gEvMUrJph7eHpO8jDuVhZHJ9wXlEV5uq87s=
+	t=1713352875; cv=none; b=onparPtDc93y8mmSM/ajrHLewxoaCwEtkd9hDkuCxpsRd1dZMmFQVnkUKJcYyk6Pa7PBo3tlUcfkgFMigoh2Sy1UgkWOX6mskIlz/vIfsbLQbT3DmIHOOKIOS4DJO9EzkkXm9vnPILMTmj8cIrvWWRgD+5CRLtF5ML13imDeC50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713352854; c=relaxed/simple;
-	bh=Rq3gwc3GhQoOVdIkD+E2nDoNRsGfnXD8UQcYyZRBeno=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Y/871eAAVRCOngcqOJve1X91vBa7optgQYWzEFXSV9JTSRDLXMjqFvS4hIGqLZDsK4hCFLLQz2MstrZFQurx8dUAUl7y7lF8ARAdyMmK4tsbe+/3pGspmrL8TGiB8ecgpukPYyRGfZTrDwSaiG7LzQFTPxYKyufisPXeioBqrCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RUZdX5Hx; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-349c5732fd1so369053f8f.3;
-        Wed, 17 Apr 2024 04:20:52 -0700 (PDT)
+	s=arc-20240116; t=1713352875; c=relaxed/simple;
+	bh=r38whn7e6hZpUydVgOSRQQREjjfoslT3sTH/8PXQhQI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=d2X8aUGLXSRDWaId/4OdBpQ3bUWuhac2n88vTp3Tr4fZL5InvPPNzYx2EhUOdvLYz8UTBPUUY5asDvTwET/K3kWStSVxr/NxxxojPkQx3YckgqLZ+ItVS8LK4YDTDHvUrxIWAwDwfj2X0EI6gU7tlo3YROszMEXs21SghbJsebo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=AJlFcAV6; arc=none smtp.client-ip=209.85.166.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-36b2ecd7b76so2152905ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:21:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713352851; x=1713957651; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=K0HtLEl+svfltZjXnicchhY/2KiEAj25KRuBPUpt5y4=;
-        b=RUZdX5HxpG751V+43C4ivDnSnEJ/QYYJNWmIM6h/QpBbH0lqCg6wLaaNjxZYutT2tR
-         wWc6NJiOyn1LX5XxBxGRfgRprqW9HiCH+h4gRduHaf9skVcVtXc/X3rF1Yn6quFpOvrw
-         r18uc6ZW9GDDbMmWA+oMpX8zKqL1z2p8KyDyW+SP4wq8LXHEeDRn6RpVe9gdx9Dbe3St
-         aRtNEgCkpYbPF2/5vWClP+Af5hcpYefsF5BMsHvdZIxPsVj1pSPKDtFz+9B28kT6pJYI
-         oHN3mQ4fgzUKfrt8ziYa78k+Tohq2e+wLi0CLN5jjBNPen1+7qLHoxaWTIGdGKalDMlJ
-         +fmg==
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1713352873; x=1713957673; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wo3tJl+r0Q5L6IhFgltTmeaHNPh96s/DvAlUqUboY2I=;
+        b=AJlFcAV6+pWrRTVk1omi09HMlK2HJrT6eCpEW49MvliBx4VIGy0QHdLobPbxQ6foSg
+         0xq1kMQx2gopYjKAIrMa97AkOS4xTiph08y5AMgpB0m8oNdSC6wU2uC7WnQ/lq/zhMAo
+         JpsfQDxxWFZQp+PoLLxHwQGmBwVmztwWc6sSAIkYJHtdiBDAkcJVjis0CCXm4L5WKVDE
+         8ZXxsC/2VgzpZyj0fTMhSUtT7pvrIJOG9wGGNbLbQQYbYC0xez/hCWQFYfCo0WmLRwSx
+         dkh8nOE16Nl6QKPcX862bh3v9VdgbKXVayptJlxn7NxGSm1jrxB3Cx8OO6RJKvYYnsPI
+         Rzfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713352851; x=1713957651;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=K0HtLEl+svfltZjXnicchhY/2KiEAj25KRuBPUpt5y4=;
-        b=CN2pWsQSfwhqd8aNNL/v8ncz2S8kNLTQ1IZttmFGiuG8CKwmz0PeiHTpPm2DiDaqgm
-         we1230+FxGNKveYv4820NbvxP7oUO+4sQ5MLS9N7a7QSN8uNUbQEBhVjLAjvx4tlLSms
-         wR3EBGJm2zEXPrtJMnmrSvwyy+rBmmIk/DT8df83P4IGH7U/hh5RKUs/nsPjngdbTEvM
-         iw84lvdW1koi5Ex3GB2djOC2srYcizDGiKP3AdaK5UqER8wddq9CyBjQVzt8C+ImEeo7
-         KdxuYkZjTgXAIKiFCeJ4nusZlZqPwPfrF3JzkMsoKWnhi5hgKDyi1v3ZI2QQi+nvfD9u
-         FalA==
-X-Forwarded-Encrypted: i=1; AJvYcCW/5AGkDjhzzyww3/wtCrLnmLCrrSA/OS0Q+0YjQlIH9Onq3YVPKQkKIxBkhXMXU2KMY/9Y0RCNjMAJluFVEfhbQM4HYJxrufOowICCsmBCt7TrZKGVBCpRZiB8B41xfdoOvHwpU2p9/w==
-X-Gm-Message-State: AOJu0YzyAX7ixu00vk2t9JPjld9s48omcLtj7TP74pzao0dsWjLQLPOD
-	xV6cQgHs0eBOMr4DFUmdkUmzX7xID5M+0qBEnfeGsLkOuWFnBU0yGtmlXI+l
-X-Google-Smtp-Source: AGHT+IFx3TGm17jFArQN3cZD10pBddDq6RwvKkHMTLewGmYFVsrglztmCcq+WIj2Mtsi4qv31jIqMA==
-X-Received: by 2002:a05:6000:1b06:b0:348:104c:c105 with SMTP id f6-20020a0560001b0600b00348104cc105mr5487835wrz.46.1713352850611;
-        Wed, 17 Apr 2024 04:20:50 -0700 (PDT)
-Received: from prasmi.home ([2a00:23c8:2500:a01:2595:4364:d152:dff3])
-        by smtp.gmail.com with ESMTPSA id e15-20020adfef0f000000b00349bf6bf2c8sm1325737wro.28.2024.04.17.04.20.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 04:20:50 -0700 (PDT)
-From: Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Cc: linux-renesas-soc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Prabhakar <prabhakar.csengg@gmail.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH] arm64: dts: renesas: rzg3s-smarc-som: Enable eMMC by default
-Date: Wed, 17 Apr 2024 12:20:03 +0100
-Message-Id: <20240417112003.428348-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1713352873; x=1713957673;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wo3tJl+r0Q5L6IhFgltTmeaHNPh96s/DvAlUqUboY2I=;
+        b=lfJAiEmSagu8mxQ/A+UPMJQ+c6BrrXKMv7bO6F3eyaVojAzG3l/BdpRN+THLWHz6w0
+         RPfRtWZcghX73KqLdYNrore7uZHd5fhSuL0rNnpRP7VYbs6KImzhi8M/eyNnRV+OTPc1
+         RvtMkuAbD63FhDHTruc98CeSA3vSiQpXv2g2mBuwouDm8gAvHRyXGFqdcbu2nfeJvwcY
+         VGr61TtNqG2h4HeypYteDvlf1Uo+3a6yzlMAocFRB3eWyo/qHXXtQ8CWQ8gsnlk+uqjX
+         I4w7cd+Owk4zPaS6G6qDE5AfjgOGF/aCRzSEVX4SCVdFhYuNpeggX7hXJ83wZYOGtuP1
+         udSg==
+X-Forwarded-Encrypted: i=1; AJvYcCVy3mrISfDGtVpU4wuQeDWkeAgRywpLFhaHzmgv6XYbnFgIAQK08RkP6q8bAEYzR+wB0sJzyzN5RJ5aWrFiSHDAxMW1tPsxUSLZjvkR
+X-Gm-Message-State: AOJu0YzhgQr5bgvsDw3cCJAoe16ckKtTje9XCyMMXY4AQKTtAgWbwPVN
+	XI9iPj4XPC7vJYInQmAf0Nid0fSdeoTqlPRHdF7hcguULknKSSk0FwNTL6ppcBzTEdKUXbdlr49
+	e9vC7GB/2WhOQ5r3LSimZmuqYcsoY4zvi5rnVHg==
+X-Google-Smtp-Source: AGHT+IEyzUb/wahpxoydcXV5uCW+8dGCT+DB9VmB7o8yYrbEp55n9+Dn3vQjI636gqBgd40XA+7xmozcCLMqNTBQ1xY=
+X-Received: by 2002:a92:c269:0:b0:368:920b:e211 with SMTP id
+ h9-20020a92c269000000b00368920be211mr3668709ild.5.1713352872486; Wed, 17 Apr
+ 2024 04:21:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240416085454.3547175-1-dawei.li@shingroup.cn> <20240416085454.3547175-7-dawei.li@shingroup.cn>
+In-Reply-To: <20240416085454.3547175-7-dawei.li@shingroup.cn>
+From: Anup Patel <anup@brainfault.org>
+Date: Wed, 17 Apr 2024 16:51:00 +0530
+Message-ID: <CAAhSdy13UZ_iXp6_Q2RV1qHgbYc7S6VzENmz=vTezmc34uEwNg@mail.gmail.com>
+Subject: Re: [PATCH v2 6/7] irqchip/sifive-plic: Avoid explicit cpumask
+ allocation on stack
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: tglx@linutronix.de, yury.norov@gmail.com, rafael@kernel.org, 
+	akpm@linux-foundation.org, maz@kernel.org, florian.fainelli@broadcom.com, 
+	chenhuacai@kernel.org, jiaxun.yang@flygoat.com, palmer@dabbelt.com, 
+	samuel.holland@sifive.com, linux@rasmusvillemoes.dk, 
+	daniel.lezcano@linaro.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Tue, Apr 16, 2024 at 2:26=E2=80=AFPM Dawei Li <dawei.li@shingroup.cn> wr=
+ote:
+>
+> In general it's preferable to avoid placing cpumasks on the stack, as
+> for large values of NR_CPUS these can consume significant amounts of
+> stack space and make stack overflows more likely.
+>
+> Use cpumask_first_and_and() to avoid the need for a temporary cpumask on
+> the stack.
+>
+> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
 
-Enable eMMC by default on the RZ/G3S SMARC platform, as previously done
-on RZ/G2L boards and other Renesas platforms.
+LGTM.
 
-The SW_CONFIG2 setting selects between the uSD0 card and eMMC. By setting
-SW_CONFIG2 to SW_OFF, we select eMMC by default.
+Reviewed-by: Anup Patel <anup@brainfault.org>
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Regards,
+Anup
 
-diff --git a/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi b/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
-index 1f87150a2e0a..8a3d302f1535 100644
---- a/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
-+++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
-@@ -25,7 +25,7 @@
-  *	SW_OFF - SD2 is connected to SoC
-  *	SW_ON  - SCIF1, SSI0, IRQ0, IRQ1 connected to SoC
-  */
--#define SW_CONFIG2	SW_ON
-+#define SW_CONFIG2	SW_OFF
- #define SW_CONFIG3	SW_ON
- 
- / {
--- 
-2.34.1
-
+> ---
+>  drivers/irqchip/irq-sifive-plic.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifi=
+ve-plic.c
+> index f3d4cb9e34f7..8fb183ced1e7 100644
+> --- a/drivers/irqchip/irq-sifive-plic.c
+> +++ b/drivers/irqchip/irq-sifive-plic.c
+> @@ -164,15 +164,12 @@ static int plic_set_affinity(struct irq_data *d,
+>                              const struct cpumask *mask_val, bool force)
+>  {
+>         unsigned int cpu;
+> -       struct cpumask amask;
+>         struct plic_priv *priv =3D irq_data_get_irq_chip_data(d);
+>
+> -       cpumask_and(&amask, &priv->lmask, mask_val);
+> -
+>         if (force)
+> -               cpu =3D cpumask_first(&amask);
+> +               cpu =3D cpumask_first_and(&priv->lmask, mask_val);
+>         else
+> -               cpu =3D cpumask_any_and(&amask, cpu_online_mask);
+> +               cpu =3D cpumask_first_and_and(&priv->lmask, mask_val, cpu=
+_online_mask);
+>
+>         if (cpu >=3D nr_cpu_ids)
+>                 return -EINVAL;
+> --
+> 2.27.0
+>
 
