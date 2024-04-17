@@ -1,57 +1,45 @@
-Return-Path: <linux-kernel+bounces-148865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69C418A884E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:58:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0E2D8A8855
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:59:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE534B230A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:58:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A47E31F21A7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7521E1411CF;
-	Wed, 17 Apr 2024 15:57:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Bei+cCWt"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D4014882C;
+	Wed, 17 Apr 2024 15:59:20 +0000 (UTC)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7102B1411E1;
-	Wed, 17 Apr 2024 15:57:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EEDB14830C;
+	Wed, 17 Apr 2024 15:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713369475; cv=none; b=W2VP6HbSqZjhgv8W4kDkkoLJbGzSgSudtvCa+38f1nfSX8cJs2lNdvIEF8exZLP5y6ii8CYH33NqpAZKJWsN416vK5Mb+Ace/lQuO7umG/O0HozG6bvAyqhXpfiIru8Bbap2vM+BAFQZ2ssnP+5n+ponxayfQ9LQAZWkBm7CRrs=
+	t=1713369560; cv=none; b=BKgbpkgOL8HxXcVRTxHyi9Kl5EMJlZfLAE/eVcWzSRxLgpVJ4GLVXjcq0yk0dU37yO2yAcFmseuew+g9Qe2Mx+i+r96OBIbIKH4L+8TY/gmQoozC5yC6u4oVNcRDtF++oZUjkllZ/5ESbcILfwQ2XsjSu64kyqYm6bDXrDU72eE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713369475; c=relaxed/simple;
-	bh=iyWbuLV+ho0SRatBTDdzTrGgJq3bLhduWHOCB8UXtc4=;
+	s=arc-20240116; t=1713369560; c=relaxed/simple;
+	bh=g8B/qc2nj/2LNEeHjA90kGiWc8nVUDO/Ixkq3MFkruQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UW3xT6TSz1AHclrN7OUzSFO0pePwY42zKj6XqycAufG2vQlwvRHEWHPdLRLWWRUgaZcoFbgL8XC6HX0Js450UJrab8Grd928xadLZxhuBm6eEo9hrvryOafCDnm3+snClyLHXljiFd2oaPVCW6p4VDF5uGMwt4AVB17A7SvXet0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Bei+cCWt; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=OrYqHHCJmsfwLvtcjsbBGBbCcnn2zNEluTAlWEbA2ws=; b=Bei+cCWtLsY/R4xBRWf8mro0Xx
-	OwVrmN8THw1NXozFNIeWrJI4HNi71u0LJrEdJVDm9PegXrYq5JPJVNjJNjWfOBYFA6NAJOhNrtH1g
-	RTb1GbGx455ruLkPboNuEPPf4cjjQ6sPdm+bYCbD2zyclNjOhp4RkYy16iWuOUtosmTYxCTfufP6J
-	830Hxgz//O7h4LrrZEY+TptuhHyNL5+O0wkhR0gzhHi10mIxkdbOwrRMkJ6I4A/LX1Qflo1ub2qDi
-	32He7FqvsB7Gq/rMyoEsxw4k6kcfOsL2v7vA+Uvl8CsZZ4D6XWmBGSzDhZvTM/pdko9BrxjRxTxQt
-	k/RP5i4g==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rx7fT-00000003EiY-3iWr;
-	Wed, 17 Apr 2024 15:57:51 +0000
-Date: Wed, 17 Apr 2024 16:57:51 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the mm tree
-Message-ID: <Zh_xf5h1RYQwe0sw@casper.infradead.org>
-References: <20240417151811.4484b368@canb.auug.org.au>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fL+H5eC6j9DGVfxAQ0gWSyqhsYE5/gJLIe4U4Euox/EMTSpVCrHjXFPQ4g5sy4nNgFVcS2i0DKu5nOq8mZgcKb/dPBJXI5HZHtHJ8EZF0s6/utfHNh+W4ugev95CYPb0A+TuJHbx8W9CaujaEKiF4IDoHQtJMZEQo4Z7pwmHe4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 12D6068CFE; Wed, 17 Apr 2024 17:59:14 +0200 (CEST)
+Date: Wed, 17 Apr 2024 17:59:13 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Lennart Poettering <mzxreary@0pointer.de>
+Cc: Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
+	Linux regressions mailing list <regressions@lists.linux.dev>,
+	linux-block@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+	Jens Axboe <axboe@kernel.dk>
+Subject: Re: API break, sysfs "capability" file
+Message-ID: <20240417155913.GA6447@lst.de>
+References: <54e3c969-3ee8-40d8-91d9-9b9402001d27@leemhuis.info> <ZhQ6ZBmThBBy_eEX@kbusch-mbp.dhcp.thefacebook.com> <ZhRSVSmNmb_IjCCH@gardel-login> <ZhRyhDCT5cZCMqYj@kbusch-mbp.dhcp.thefacebook.com> <ZhT5_fZ9SrM0053p@gardel-login> <20240409141531.GB21514@lst.de> <Zh6J75OrcMY3dAjY@gardel-login> <Zh6O5zTBs5JtV4D2@kbusch-mbp> <20240417151350.GB2167@lst.de> <Zh_vQG9EyVt34p16@gardel-login>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,25 +48,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240417151811.4484b368@canb.auug.org.au>
+In-Reply-To: <Zh_vQG9EyVt34p16@gardel-login>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Wed, Apr 17, 2024 at 03:18:11PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the mm tree, today's linux-next build (htmldocs) produced
-> this warning:
-> 
-> Documentation/filesystems/index.rst:50: WARNING: toctree contains reference to nonexisting document 'filesystems/buffer'
-> 
-> Introduced by commit
-> 
->   4b61a0e73910 ("doc: split buffer.rst out of api-summary.rst")
-> 
-> from the mm-unstable branch of the mm tree.
+On Wed, Apr 17, 2024 at 05:48:16PM +0200, Lennart Poettering wrote:
+> Block devices with part scanning off are quite common after all,
+> i.e. "losetup" creates them by default like that, and partition block
+> devices themselves have no part scanning on and so on, hence we have
+> to be ablet to operate sanely with them.
 
-Yeah, some halfwit forgot to run 'git add' before 'git commit -a'.
-Randy reported it last night, and I sent a replacement patch, but
-I guess it was after hours for Andrew.  Sorry about that.
-
+Maybe and ioctl to turn on partition scanning if it is currently disabled
+or return an error otherwise would be the better thing?  It would
+do the right thing for the most common loop case, and with a bit more
+work could do the right thing for those that more or less disable it
+graciously (ubiblock, drbd, zram) and would just fail for those who are
+so grotty old code and slow devices that we never want to do a partition
+scan (basically old floppy drivers and the Nintendo N64 cartridge driver)
 
 
