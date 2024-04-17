@@ -1,71 +1,59 @@
-Return-Path: <linux-kernel+bounces-149032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81A0F8A8AC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:07:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BC6E8A8ACE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:08:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 991A31C230AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:07:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C58421F2196F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:08:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E6A7173325;
-	Wed, 17 Apr 2024 18:07:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DDFD173332;
+	Wed, 17 Apr 2024 18:08:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GbJEYXxa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="L8iZ/xHi"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699B318C19;
-	Wed, 17 Apr 2024 18:07:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63B11172BBA;
+	Wed, 17 Apr 2024 18:08:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713377246; cv=none; b=LnzOPOWL9dqv+IzkNFF2geiCdFb4eDMBrAOh8Zfs6plecbJwe2U1bDj0plpfovqvrOrbwQarpe76gUFd1Q2uCq2QHg44hW9y73PbS/qMH7f3Oe5+9X5R9O5XqC+CNjHTP74Ro5idQCQz7EhbC+c2GbvFcrW+3KFGO2MR8ZDy77A=
+	t=1713377317; cv=none; b=oRNpSICrtxZkqxsSus7MdE5f3h68wxR3K+joLUxKsl3rolVxMBbZWM9IuDHspAFEAuF3/MWbywKKsY/dFG5qV2+PrJdj6LSWLe++5TZXk8pxPN++g8uW2/KGmU8js0eUtlv0nzb5CqNknCQrf40u5QBK5NEHrAM2WM7YDa5Z0fY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713377246; c=relaxed/simple;
-	bh=TOQT+ROLVGODSZZzDLrHzeqr30Nr45aSCcdnwYTfuis=;
+	s=arc-20240116; t=1713377317; c=relaxed/simple;
+	bh=yScqRp0Jg2+VouccAT2Uycta3VO03GkGoJ4Bu4O9Mj0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PeqNPZnPSAh+oAQ/RnlSUV8XQzA9WsJMLwUCC9PQPhPOkhkgkV31KM+DivHg+XDp1vKkbFhwQ8y3v9Gs/QXzTTxX+zCdftvLdwMTV82RvilnZIJ6tALhAGhU9zE4dpsdl5YMy4cURQXyJei8YCghoJoEwq4DSwFsXHPe1V+TQSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GbJEYXxa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E391EC072AA;
-	Wed, 17 Apr 2024 18:07:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713377244;
-	bh=TOQT+ROLVGODSZZzDLrHzeqr30Nr45aSCcdnwYTfuis=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GbJEYXxaVWv2RmvjdIC015OQ+Tiz7UNUBsJ9fcR+MgxN7rX+cVopikvhM5L+lIl4v
-	 aZnRDFniuJB6eJdEIgmF6cgMP2bbeLEA4yFeRsk8NWKhB1nn7rnZxT4kY+AhY5oLCA
-	 Ezgg/r54tYzKk9p/ikaizbVHkaBzpIH7rJJ/yRBM3sKYQ0q0IUEFChWdhlqbp+38Wl
-	 VVV29KlNRDflMk8FNtO/dP8BY6P/oVpxREKkid+Ph7zK1injZTfUzGXPyZD6zTZ3NV
-	 xnYjb94kJqK++VJF0hdba/OPb28FZtRyGO5TWQcLqfOSBOZ0x3xQ+78/8vgYTvWxYF
-	 +9fUCqWj4iaEQ==
-Date: Wed, 17 Apr 2024 11:07:21 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc: davem@davemloft.net, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-	Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	=?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	=?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>,
-	Simon Horman <horms@kernel.org>, mwojtas@chromium.org,
-	Antoine Tenart <atenart@kernel.org>
-Subject: Re: [PATCH net-next] net: phy: link_topology: Don't stub-away the
- topology creation
-Message-ID: <20240417180721.GA3212605@dev-arch.thelio-3990X>
-References: <20240417142707.2082523-1-maxime.chevallier@bootlin.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BpczYNrbJTl4xBavgt9bAUQMDvmk/CR6VB5eXvWknCZ+aF7D6jV2r+ogUZwRUoEaTIQN9SmGHJX3mdFR2HTWYVp/Xu2hVnjxCZJs99sDOAiBM7bAh5KQug4/7Dub8Fv+ijxWa2JY+GoBigpHRwcZfw4vWSz0bftOP9vDqb9jHf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=L8iZ/xHi; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4793CE0003;
+	Wed, 17 Apr 2024 18:08:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713377307;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zYtwhfXVLaMvnCqB5/9WQLxlola4N7x55igQ2xpirys=;
+	b=L8iZ/xHiqXbrS0rt1SLs+GnYBh9FQO1sk3Ozm/KX8WEp20h9jl86Obe6kfW/QQ2ggZ4vud
+	oTS9gFDRPg53gYCgUYiKACit6tcxV+IYwCl1wWpTNeFXW4p/RyoKAo0eY7dD4DAKB3+Yng
+	PEiulenBD+o1VWy+qxesEr3FYRiOOpe1ZQ/lq22OIPCj/GPEmARFc5BbwHAGIcb4pMUhfN
+	/kRJqioj8ySTutMfW1xUxZez3A0S8d7lOLnHsc35R8CKHeH+IucfOmvCYazkbuBlx5ag8m
+	zXWel3C7U1vQgoOgeMwBckWHoAK7mb5Lb+41ljZsX75M+HvRyChgt0au87y2FA==
+Date: Wed, 17 Apr 2024 20:08:23 +0200
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Alessandro Zummo <a.zummo@towertech.it>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Waqar Hameed <waqar.hameed@axis.com>
+Cc: kernel@axis.com, linux-kernel@vger.kernel.org,
+	linux-rtc@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] Add a driver for Epson RX8111 RTC
+Message-ID: <171337729016.24784.6697230911963690244.b4-ty@bootlin.com>
+References: <cover.1700491765.git.waqar.hameed@axis.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,75 +62,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240417142707.2082523-1-maxime.chevallier@bootlin.com>
+In-Reply-To: <cover.1700491765.git.waqar.hameed@axis.com>
+X-Spam-Flag: yes
+X-Spam-Level: **************************
+X-GND-Spam-Score: 400
+X-GND-Status: SPAM
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-Hi Maxime,
+On Mon, 20 Nov 2023 15:49:25 +0100, Waqar Hameed wrote:
+> In this patch series we add a basic driver for Epson RX8111 RTC with
+> support for only reading/writing the time and the `ioctl`s `RTC_VL_READ`
+> and `RTC_VL_CLR`.
+> 
+> Datasheet: https://support.epson.biz/td/api/doc_check.php?dl=app_RX8111CE&lang=en
+> 
+> Changes in v3:
+> * Remove macro define `RX8111_DRV_NAME` for the driver name.
+> * Remove macro function `RX8111_TIME_BUF_IDX` and instead use the
+>   offsets as indices directly.
+> * Remove `rx8111_setup()` that disabled extended functionality and
+>   interrupts.
+> * Remove comments explaining register value conversions in
+>   `rx8111_read/set_time()`.
+> * Check/clear register flag XST (oscillation stoppage) in
+>   `rx8111_read/set_time()`.
+> * Change `vlval` to `unsigned int` in `rx8111_ioctl()`.
+> * Remove `case RTC_VL_CLR` in `rx8111_ioctl()`.
+> * Convert all `dev_err()` to `dev_dbg()`.
+> * Convert all `dev_err_probe()` to `dev_dbg()` in probe.
+> * Return without printing from `devm_rtc_register_device()` in probe.
+> 
+> [...]
 
-On Wed, Apr 17, 2024 at 04:27:05PM +0200, Maxime Chevallier wrote:
-> Some of the phy_link_topology operations are protected by IS_REACHABLE,
-> which can lead to scenarios where the consumer, built as modules, sees the topology
-> unstubbed, whereas the initialization didn't occur.
-> 
-> Don't stub away the creation of the topology, it has no dependency on
-> any other parts like phylib, so we can make it always available.
-> 
-> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-> Closes: https://lore.kernel.org/netdev/2e11b89d-100f-49e7-9c9a-834cc0b82f97@gmail.com/
-> Closes: https://lore.kernel.org/netdev/20240409201553.GA4124869@dev-arch.thelio-3990X/
-> ---
-> Hi Nathan, Heiner,
-> 
-> I'm currently at EOSS, so I'm sending this patch without having been
-> able to properly test it (build-tested only), but as this addresses an
-> issue for people using -next, I'm sending this anyway, sorry about that.
+Applied, thanks!
 
-No worries, thanks for continuing to take a look. Unfortunately, this
-patch fails to build during the linking stage for me with my
-configuration:
+[1/2] dt-bindings: rtc: Add Epson RX8111
+      https://git.kernel.org/abelloni/c/c6a2fb6d14bf
+[2/2] rtc: Add driver for Epson RX8111
+      https://git.kernel.org/abelloni/c/f8c81d15f4bb
 
-x86_64-linux-ld: vmlinux.o: in function `free_netdev':
-net/core/dev.c:11060:(.text+0xb14030): undefined reference to `phy_link_topo_destroy'
-x86_64-linux-ld: vmlinux.o: in function `alloc_netdev_mqs':
-net/core/dev.c:10966:(.text+0xb142d6): undefined reference to `phy_link_topo_create'
+Best regards,
 
-> Hopefully it can address the issue for now, I haven't given-up on your
-> idea to introduce a config option Heiner :)
-> 
-> Thanks,
-> 
-> Maxime
-> 
->  include/linux/phy_link_topology_core.h | 15 ---------------
->  1 file changed, 15 deletions(-)
-> 
-> diff --git a/include/linux/phy_link_topology_core.h b/include/linux/phy_link_topology_core.h
-> index 0a6479055745..61e2592f24ac 100644
-> --- a/include/linux/phy_link_topology_core.h
-> +++ b/include/linux/phy_link_topology_core.h
-> @@ -4,22 +4,7 @@
->  
->  struct phy_link_topology;
->  
-> -#if IS_REACHABLE(CONFIG_PHYLIB)
-> -
->  struct phy_link_topology *phy_link_topo_create(struct net_device *dev);
->  void phy_link_topo_destroy(struct phy_link_topology *topo);
->  
-> -#else
-> -
-> -static inline struct phy_link_topology *phy_link_topo_create(struct net_device *dev)
-> -{
-> -	return NULL;
-> -}
-> -
-> -static inline void phy_link_topo_destroy(struct phy_link_topology *topo)
-> -{
-> -}
-> -
-> -#endif
-> -
->  #endif /* __PHY_LINK_TOPOLOGY_CORE_H */
-> -- 
-> 2.44.0
-> 
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
