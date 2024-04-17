@@ -1,270 +1,197 @@
-Return-Path: <linux-kernel+bounces-148582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 601628A84BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EC268A84A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:30:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC8B61F23708
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:32:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7B851F22512
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50586142911;
-	Wed, 17 Apr 2024 13:30:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92BA513F428;
+	Wed, 17 Apr 2024 13:29:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Q00dyHIf"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qBeEsJnv"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13C1113F443;
-	Wed, 17 Apr 2024 13:29:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C9F913EFF4
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713360600; cv=none; b=Slnnr12lctKR0wMwbagLvsL3qqbwsMWXDVowbz8Vu0D4a+sKMIySiXtyL6mJcb0fUAldPs6QfwZy+jOCMi3s4vFxDtzTsWF8mOtVFgnQkpXPO0xL8SI39FXCKLF5wEiMT5ygRFtVDbQsBZT2KiTu2gYJrYBxBJ3LgY6mCcnQefA=
+	t=1713360572; cv=none; b=VRXQMbEYsugZfcrVie8W1uaTNbGkZGMEVrh2Jyyw3v676gMxZpYu0k5uGmGzwQNmuE4pdGPLfpsEGiVaBFdIfyb0TOl5aWKyJBdwIc6Glxwphw6zIrZHsnV7+aBCPj5ileljoqr4e4E5oCUIi9MuxZnb1DsEA5QBNxe4oPsUCDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713360600; c=relaxed/simple;
-	bh=vxRFz7wfrZBNGmjw2CSdCD+fROMTFjSPtNmdQgbOcjg=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KTZXNi1t4DZSUamXfl7kVmUbwXccAJ6R+olPgvrvvxmIcWiq4MfEsg3+9/PGLww7Z84OE1rlpAHK7hoCozTek9hnyw6cw5pZZg+upMdi1qGKIQBLw4zQ40zWm6ctsbfgweDjJGMj6xQuQJTagEiN0aHSzkNwP0cT9L184SSqsco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Q00dyHIf; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43H8MS3V018641;
-	Wed, 17 Apr 2024 13:29:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=NXSg0v0D8r4kCHR2hwTQDZZjqCujZtmCiDi/VwCG3gI=; b=Q0
-	0dyHIfCgWPJ4vNxeHi1NA1iJLR+cjuBQXaS5c3BOhKAyR0eJPEyZbeBVQsl+kcXX
-	pXyDcEfZFn4mc+r7+LWFvYPBYhGP0qPgXk/qQItQkpngmjHIxSVcqku9OQ9lQ0E2
-	U/0FryVOY1IonaUZmHmFk43ML/cc+7FCiSY+tHCpTstUsGwf5zF0Mhbh4haliR2g
-	RNDARLb8Y+uMkm8enO6EtEGE3Lad3SRTqZRAT4myCOBmJAnK4toSMA71+1D4xXzM
-	Rr9wwxrZwnpFWbbbZDNDYDeFo2FHZrr57zhqlOIa43mNI+LtvS45O5eI+ULRPEJj
-	obktqo60k7kdYX9fIt+Q==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xjauprnu3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 13:29:51 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43HDToL6020059
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 13:29:50 GMT
-Received: from hu-sibis-blr.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Wed, 17 Apr 2024 06:29:45 -0700
-From: Sibi Sankar <quic_sibis@quicinc.com>
-To: <sudeep.holla@arm.com>, <cristian.marussi@arm.com>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <jassisinghbrar@gmail.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <dmitry.baryshkov@linaro.org>
-CC: <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <quic_rgottimu@quicinc.com>,
-        <quic_kshivnan@quicinc.com>, <quic_sibis@quicinc.com>,
-        <conor+dt@kernel.org>, <quic_gkohli@quicinc.com>,
-        <quic_nkela@quicinc.com>, <quic_psodagud@quicinc.com>
-Subject: [PATCH V3 5/5] arm64: dts: qcom: x1e80100: Enable cpufreq
-Date: Wed, 17 Apr 2024 18:58:56 +0530
-Message-ID: <20240417132856.1106250-6-quic_sibis@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240417132856.1106250-1-quic_sibis@quicinc.com>
-References: <20240417132856.1106250-1-quic_sibis@quicinc.com>
+	s=arc-20240116; t=1713360572; c=relaxed/simple;
+	bh=TeiTLJN/5okNpELe3ZA4zy7aqgMGfMFAywMokEL2gE0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lR1P+cbU/DJoG0goLtAUVxVfnQ3rmjRWWVinmMgZR1kQrj8SkAeIwyWyGphsFaHMiumSja7oztvpN/kA5cAoDsF+TjKdB0E4VfVT0L/Dqn6oYL1xR7SEeiDi5wIuaoVT2b7o1MrsDV0R4x2QP6x5FQKo9On2K+MHi3eteV3wSWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qBeEsJnv; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6eff9dc1821so2954385b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 06:29:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713360569; x=1713965369; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=U9yUjGy+KC3uZnAtPNkhuEl1+cCKcH9uusVMRUEMaAc=;
+        b=qBeEsJnvJxT3NtRa0AFvYJ25CjQnkTbG2cSrO7i/eZ6gKhqL5O75Xs+4nEcaNtc5jq
+         rQ+cKR441g8vZo4QBK+o3sG6+jenqQNBfQioH6zB9Bpc+YBPPt778oSgEKbly7XfZ23B
+         htrRLeUlUOi2iHrY2OitTROaopRrMGb/4sY5toMw3vkVYlNo+OP08ZdwiDbgyPBqUcD3
+         j4q4mY8caAa9LWfhruY5HMP+NPWmQ//+p2lMGgUYEoVize2LkvhwpnHBEWSdvex/Bxif
+         17zyi/WYrKQiWB4Tmh60oeBwxQsGK39VjZg5bSWDn4/w4cxA/YIHHMpccJb/ghcsPH1M
+         /xSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713360569; x=1713965369;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U9yUjGy+KC3uZnAtPNkhuEl1+cCKcH9uusVMRUEMaAc=;
+        b=kfeNA+61TqMQYG2UWWlcVHnlwehDr7kHyh37JBa0JZo2tolEr26yP0ojcQOnaKEcRy
+         5AJfzQ19H9w10lqw/nZG/R50S5uwnzkQbFgz4aS0H/bDT5NI+4wald2+GD8+uNRchT3n
+         I+l1ZSoBfmbO6ugBHiDZ6p6mFX3+ksRz+d0TA2n2tF7uWlIIwyfIThn2wWr+xbpP1Xy7
+         AMQ6+6ROrvTIAdcTr3Sq66P4I+aBQqRqgJPt1p8axdv1xAJvkafF2gCMKNJyV+EB3eO8
+         qSjlp4Tcg58G3EXdJoEYPbFwo5JWcf8w5g7cCOwpIaR8GkzpxzZvKKidkk2SYbWeeXtO
+         HeiA==
+X-Gm-Message-State: AOJu0YwAfpWdQ4p2fenpZ0aW+TD7Wsn+Noz63e73Uuesec4GwZTpiRcG
+	hT5caRT6kpllbkPv4Z74sjBRqKkgkboFuE1V7pQSYIop1ryfpvruN88daWOQgBQ=
+X-Google-Smtp-Source: AGHT+IE6xQl1EcEphFdHM0huRf7JkAbzMW3ss8W6b4OgepYU2e+X7pEgHJyT8hN5oSrVdMtbpms3UA==
+X-Received: by 2002:a05:6a20:3cab:b0:1a9:97fb:40cc with SMTP id b43-20020a056a203cab00b001a997fb40ccmr16554938pzj.2.1713360569312;
+        Wed, 17 Apr 2024 06:29:29 -0700 (PDT)
+Received: from [172.20.9.36] ([209.37.221.130])
+        by smtp.gmail.com with ESMTPSA id i16-20020a17090332d000b001e2a43bafbasm11530447plr.216.2024.04.17.06.29.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 06:29:29 -0700 (PDT)
+Message-ID: <4e762eb1-864e-4bb5-ab5d-debeac19c8fa@linaro.org>
+Date: Wed, 17 Apr 2024 15:29:26 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: LzxiClJtJvjj2sEzTLuKWkyHZQI9jsFa
-X-Proofpoint-ORIG-GUID: LzxiClJtJvjj2sEzTLuKWkyHZQI9jsFa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-17_10,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- suspectscore=0 priorityscore=1501 adultscore=0 malwarescore=0 phishscore=0
- spamscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
- mlxlogscore=948 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404170093
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/19] amba: store owner from modules with
+ amba_driver_register()
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+ Russell King <linux@armlinux.org.uk>, Mike Leach <mike.leach@linaro.org>,
+ James Clark <james.clark@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Andi Shyti
+ <andi.shyti@kernel.org>, Olivia Mackall <olivia@selenic.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Vinod Koul <vkoul@kernel.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Michal Simek <michal.simek@amd.com>, Eric Auger <eric.auger@redhat.com>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org,
+ linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-input@vger.kernel.org, kvm@vger.kernel.org
+References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
+ <171182151736.34189.6433134738765363803.b4-ty@linaro.org>
+ <cfa5aa01-44ef-4eb1-9ca6-541ed5908db4@linaro.org>
+ <8a8a8e8b-8256-4d33-a39b-9e3cbc4ccff2@arm.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <8a8a8e8b-8256-4d33-a39b-9e3cbc4ccff2@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Enable cpufreq on X1E80100 SoCs through the SCMI perf protocol node.
+On 16/04/2024 12:41, Suzuki K Poulose wrote:
+> + Greg
+> 
+> 
+> Hi Krzysztof,
+> 
+> On 30/03/2024 18:00, Krzysztof Kozlowski wrote:
+>> On 30/03/2024 18:58, Krzysztof Kozlowski wrote:
+>>>
+>>> On Tue, 26 Mar 2024 21:23:30 +0100, Krzysztof Kozlowski wrote:
+>>>> Merging
+>>>> =======
+>>>> All further patches depend on the first amba patch, therefore please ack
+>>>> and this should go via one tree.
+>>>>
+>>>> Description
+>>>> ===========
+>>>> Modules registering driver with amba_driver_register() often forget to
+>>>> set .owner field.
+>>>>
+>>>> [...]
+>>>
+>>> Applied, thanks!
+>>>
+>>> [01/19] amba: store owner from modules with amba_driver_register()
+>>>          (no commit info)
+>>
+>> Patchset applied here:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-dt.git/log/?h=for-v6.10/module-owner-amba
+> 
+> How do you plan to push this ? Given this affects most of the drivers/, 
+> do you plan to send this to Greg ? We have changes in the coresight
+> tree that would conflict with this "tag" ( I haven't merged them yet, 
+> but is in my local queue). I want to make sure we can avoid the
+> conflicts. I am happy to merge this to my local tree and base the
+> changes on this, if this is going in for v6.10 and all are in agreement.
 
-Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
----
+I pushed it to arm-linux patches but it hasn't been picked up.
 
-v2:
-* Use power-domain instead of clocks. [Sudeep/Ulf]
+I propose you take entire set then.
 
-
- arch/arm64/boot/dts/qcom/x1e80100.dtsi | 63 ++++++++++++++++----------
- 1 file changed, 39 insertions(+), 24 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-index f40e95d49370..42bbe58dfbf9 100644
---- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-+++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-@@ -69,8 +69,8 @@ CPU0: cpu@0 {
- 			reg = <0x0 0x0>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_0>;
--			power-domains = <&CPU_PD0>;
--			power-domain-names = "psci";
-+			power-domains = <&CPU_PD0>, <&scmi_dvfs 0>;
-+			power-domain-names = "psci", "perf";
- 			cpu-idle-states = <&CLUSTER_C4>;
- 
- 			L2_0: l2-cache {
-@@ -86,8 +86,8 @@ CPU1: cpu@100 {
- 			reg = <0x0 0x100>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_0>;
--			power-domains = <&CPU_PD1>;
--			power-domain-names = "psci";
-+			power-domains = <&CPU_PD1>, <&scmi_dvfs 0>;
-+			power-domain-names = "psci", "perf";
- 			cpu-idle-states = <&CLUSTER_C4>;
- 		};
- 
-@@ -97,8 +97,8 @@ CPU2: cpu@200 {
- 			reg = <0x0 0x200>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_0>;
--			power-domains = <&CPU_PD2>;
--			power-domain-names = "psci";
-+			power-domains = <&CPU_PD2>, <&scmi_dvfs 0>;
-+			power-domain-names = "psci", "perf";
- 			cpu-idle-states = <&CLUSTER_C4>;
- 		};
- 
-@@ -108,8 +108,8 @@ CPU3: cpu@300 {
- 			reg = <0x0 0x300>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_0>;
--			power-domains = <&CPU_PD3>;
--			power-domain-names = "psci";
-+			power-domains = <&CPU_PD3>, <&scmi_dvfs 0>;
-+			power-domain-names = "psci", "perf";
- 			cpu-idle-states = <&CLUSTER_C4>;
- 		};
- 
-@@ -119,8 +119,8 @@ CPU4: cpu@10000 {
- 			reg = <0x0 0x10000>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_1>;
--			power-domains = <&CPU_PD4>;
--			power-domain-names = "psci";
-+			power-domains = <&CPU_PD4>, <&scmi_dvfs 1>;
-+			power-domain-names = "psci", "perf";
- 			cpu-idle-states = <&CLUSTER_C4>;
- 
- 			L2_1: l2-cache {
-@@ -136,8 +136,8 @@ CPU5: cpu@10100 {
- 			reg = <0x0 0x10100>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_1>;
--			power-domains = <&CPU_PD5>;
--			power-domain-names = "psci";
-+			power-domains = <&CPU_PD5>, <&scmi_dvfs 1>;
-+			power-domain-names = "psci", "perf";
- 			cpu-idle-states = <&CLUSTER_C4>;
- 		};
- 
-@@ -147,8 +147,8 @@ CPU6: cpu@10200 {
- 			reg = <0x0 0x10200>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_1>;
--			power-domains = <&CPU_PD6>;
--			power-domain-names = "psci";
-+			power-domains = <&CPU_PD6>, <&scmi_dvfs 1>;
-+			power-domain-names = "psci", "perf";
- 			cpu-idle-states = <&CLUSTER_C4>;
- 		};
- 
-@@ -158,8 +158,8 @@ CPU7: cpu@10300 {
- 			reg = <0x0 0x10300>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_1>;
--			power-domains = <&CPU_PD7>;
--			power-domain-names = "psci";
-+			power-domains = <&CPU_PD7>, <&scmi_dvfs 1>;
-+			power-domain-names = "psci", "perf";
- 			cpu-idle-states = <&CLUSTER_C4>;
- 		};
- 
-@@ -169,8 +169,8 @@ CPU8: cpu@20000 {
- 			reg = <0x0 0x20000>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_2>;
--			power-domains = <&CPU_PD8>;
--			power-domain-names = "psci";
-+			power-domains = <&CPU_PD8>, <&scmi_dvfs 2>;
-+			power-domain-names = "psci", "perf";
- 			cpu-idle-states = <&CLUSTER_C4>;
- 
- 			L2_2: l2-cache {
-@@ -186,8 +186,8 @@ CPU9: cpu@20100 {
- 			reg = <0x0 0x20100>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_2>;
--			power-domains = <&CPU_PD9>;
--			power-domain-names = "psci";
-+			power-domains = <&CPU_PD9>, <&scmi_dvfs 2>;
-+			power-domain-names = "psci", "perf";
- 			cpu-idle-states = <&CLUSTER_C4>;
- 		};
- 
-@@ -197,8 +197,8 @@ CPU10: cpu@20200 {
- 			reg = <0x0 0x20200>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_2>;
--			power-domains = <&CPU_PD10>;
--			power-domain-names = "psci";
-+			power-domains = <&CPU_PD10>, <&scmi_dvfs 2>;
-+			power-domain-names = "psci", "perf";
- 			cpu-idle-states = <&CLUSTER_C4>;
- 		};
- 
-@@ -208,8 +208,8 @@ CPU11: cpu@20300 {
- 			reg = <0x0 0x20300>;
- 			enable-method = "psci";
- 			next-level-cache = <&L2_2>;
--			power-domains = <&CPU_PD11>;
--			power-domain-names = "psci";
-+			power-domains = <&CPU_PD11>, <&scmi_dvfs 2>;
-+			power-domain-names = "psci", "perf";
- 			cpu-idle-states = <&CLUSTER_C4>;
- 		};
- 
-@@ -309,6 +309,21 @@ scm: scm {
- 			interconnects = <&aggre2_noc MASTER_CRYPTO QCOM_ICC_TAG_ALWAYS
- 					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>;
- 		};
-+
-+		scmi {
-+			compatible = "arm,scmi";
-+			mboxes = <&cpucp_mbox 0>, <&cpucp_mbox 2>;
-+			mbox-names = "tx", "rx";
-+			shmem = <&cpu_scp_lpri0>, <&cpu_scp_lpri1>;
-+
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			scmi_dvfs: protocol@13 {
-+				reg = <0x13>;
-+				#power-domain-cells = <1>;
-+			};
-+		};
- 	};
- 
- 	clk_virt: interconnect-0 {
--- 
-2.34.1
+Best regards,
+Krzysztof
 
 
