@@ -1,182 +1,430 @@
-Return-Path: <linux-kernel+bounces-147995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BF358A7C5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:35:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49A4E8A7C61
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:35:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1CC71F2371C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:35:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC99D1F23D1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CB5965BA0;
-	Wed, 17 Apr 2024 06:35:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1225A4CB;
+	Wed, 17 Apr 2024 06:35:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AZFo5gro"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HtxxG/xO"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28253657B0;
-	Wed, 17 Apr 2024 06:35:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D4396A029
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 06:35:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713335704; cv=none; b=p7YI4tdxXT2YnrcJiiMd5MLiWoqaPXV2I9VNNOcEzlQqBRa7GDFzXanISlGQu63akknQRYuUGfPVDkeIEVLGe+l+HL2/eZJKDke0kuRmrSO2ZGi3GFnZS2V2b3JesdhzYli5p8A1FfeTk9+wk39Mp9Gss6X7k0O4m6tWYEwypNs=
+	t=1713335710; cv=none; b=LgR8lI8rMVTYb4PyU3lER35hixhREjVK/gVQsg+/EIXxNU5r0hrOKXDPhyYfIv77/CBPBCHytjqLtT9coXELs2X3vrDAgn1R1GwPT/e8+h4wij5Lk0erxvBxoYvWucNLlWMhY+AsreetHkhKj7bJHDS+oVdhSlSFZKcZLXJSelU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713335704; c=relaxed/simple;
-	bh=EKdKhbBfwCgxWOd/SIJMcmDwql5vodTnlVj842FGldY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aas78w/oaHBOv3IiYBX2iOyYOWIwis4mBhFg2R2SJWwQFR4QR0/EBTykqTB/JCqNmuSaoiOwGj1NSiB8cEQLNA1dZPtCKQuqokPuD+5cwQMfh0R7zHDT/V7YbpMJv7uQ6Z6YtU2ZjGqJRcDDe4ACPGixmg+DWAmVXkKXUWP2qjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AZFo5gro; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a5200202c1bso685779366b.0;
-        Tue, 16 Apr 2024 23:35:02 -0700 (PDT)
+	s=arc-20240116; t=1713335710; c=relaxed/simple;
+	bh=FDaRJJ33qv1xm+S09c0gl/k9+JnmbBPj6CI6UdpRDVI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UpH9Rno9WeCDtPpn06FgT0RhVSQArVwLnSottueE2bFEmCYM3SzNR1m8sw191WAPw30JCfi4pW3NXI2io4b6WkL6GbTbLKGoOy1AA8XAliEdITNAf/xz0T8y1bKu+FfA4sWF8WTbBJ8w9V2lJqor4oyi7+LLf33rAA4hsgQ3jmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HtxxG/xO; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d8743ecebdso52180061fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:35:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713335701; x=1713940501; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p74U05au3463azxpQVZWhtcaru2hq/shbVKOKWYd3z8=;
-        b=AZFo5groRzmbWo988PR1q3jOg88wM0t8YYVS9m1W76ZqJkpNP7ZgZBoR54Z2eSfVqc
-         wAov/C8l53An6AskjOWrYTIN0tye5g/Cv2q+1BMujRu0D8097gybqKZmddbaiNWwj+pU
-         2dX267BTmCwZzQwL3mZK+8c+uo0v5oOPHXcRA2i2bxPbnO9B3XJJD9bClUTCvlFl7Gke
-         JpbHKgsExSUakqw+nqRmeEQo4ZL+/z3wX6x2z+GFM5dTsNVPzAoMhuWS/0csygoakBOK
-         80w3PO+THpdD9oxEfJ8+x17t8wzHo+Pa60OW6UkmCe50r0REJIK1Ppr46WTNSvXvJqeh
-         M0nQ==
+        d=linaro.org; s=google; t=1713335706; x=1713940506; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Xb24KjnVD8H3G5GkJAAV0E3O47INRr7NamuW4Oc84A=;
+        b=HtxxG/xOUdrNf+8oixJGB57m26rN5vdRmMVs+rEsVsVJmpDy0Ku8BR22b5GT5wjwkO
+         ePPXhTGChPlmEotEVSgfX+3WPQgUI9tk2UfRlRTfPZKG816DHDw/brbxhXh5T4+QgLob
+         OKvUG9098TfU3bUzgVKyqix8We3UZycUmy1JPH9hrsSJq82FCZTzzRzRUFix5IlkvqXj
+         xXk+kugYyssPD78YW0O+nEEVQ0o893gXhkZjq+LGyxZHrF/V63uLeTwxf5a/xgKRZs15
+         K9VRL8651mKn25IMQnb5ZC2YYK2UAa1Yn4GpgoPwStyAcWBqTLa3Jnzfn8YkrxNtgWaz
+         UtRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713335701; x=1713940501;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p74U05au3463azxpQVZWhtcaru2hq/shbVKOKWYd3z8=;
-        b=kmmNTdhJSVGmL5OrQLjTQ5wJH0u6Aim97J+63yRzcF6/zOzqzPrqjKo5JhTIIjhgek
-         si5M32ZOD24eDCkfxUie2AuEZ6mdMCkhdxkqQkkauYd/VRxruFL31/a0eYY+4n/xjUvN
-         Bz3a1UrydIcAz7eZo5cM963AJUArdpuPkc/NOkk3HvwcHAn6Vw9uy66NdFcxoLkCJI3A
-         yhkjtcMEPTT3PPn45kU+/rgTBYhwivaiSgDHEbe/KYxwOpR/oD55aV42efjTj2w96yIv
-         d2+btEoqtaZUiO0rM4F3ASRIPVa0H7bREQfSGWpb98eL2A1TukCs661fT9PkrLCNLn35
-         nE7g==
-X-Forwarded-Encrypted: i=1; AJvYcCUH7JgsHwJ2vknnIbU+tX479uUyRUjoJ3zRhDtipaq30VBlmpn/DFoFw5ki0xjzq4rk1T9ZQPX02lwa50rSccBUI/XFCjI1
-X-Gm-Message-State: AOJu0Yz3kXtdD3PObAYBzKvrdYrTWU3UOvFcIHnorJpNwIbd8z4WeVTB
-	bhGeelpRaFZVhQkkEKYjqMrqXK1U3W3nXGCySXVdH7gUNSDcH+I7h04Hdbm238JDwA/1yLslWrl
-	0KvJd3pvB1ZfSXEekeyZ7wFGEyCU=
-X-Google-Smtp-Source: AGHT+IGzuG1KQGSuS4q/NVj+STQwFYpIbPNlWccBlyh+4xa+BXzCo7x0l35MjmdifbiwW+oyAqvwqNDvlZGIuYewRI0=
-X-Received: by 2002:a17:906:f90f:b0:a52:225b:602a with SMTP id
- lc15-20020a170906f90f00b00a52225b602amr12120585ejb.7.1713335701239; Tue, 16
- Apr 2024 23:35:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713335706; x=1713940506;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2Xb24KjnVD8H3G5GkJAAV0E3O47INRr7NamuW4Oc84A=;
+        b=QaCBXfqn7WhYeO3hPubv9P8Jf5d/go9s7zdLQjaFOU060xkLdUNcIHoc3DpEwa7geZ
+         +vGYft06N31eYI7xgBDO8Ad117HIhDEU2E3m33950x2JxZ5KZa4KHh1rPxgy/+Yt19LC
+         emkQ5O6E/ErTLCXtPbsin75RHNX8MJJPQrGDD77zVbyhpgwxq9QEa+0h1GV3wSzuFehd
+         xgKKdg6gYJLBrrl7wP9hZ6G8xCSNbximxX7qt0piyUWHFl87CFm2pOLHe+jPqMFmsWab
+         uWs4/vXzTFJ2uhIpt384quuPwjDUZVRhb130w3+rPS6IyqSNyzwZNan36zU+EGjOTQWE
+         REjw==
+X-Forwarded-Encrypted: i=1; AJvYcCXX7vJK2fAcBPrhlYqgTVqXd0WN2xhxlzN5XFo79JkNGeGY83oNkC+BSWeyKBi3tgYB560HaYSQgD78r1+amIyzEJofstKpd7vcvPOL
+X-Gm-Message-State: AOJu0YzYeJwgHlACqsih+2clQ8vKfeyVaTUhWSOHZwcCQRkJrDcXnOWH
+	Ba5+rYKdts/fBk7Sa2BKT7GnmSeMh9LBYOFCNZkOQDcYZwzkyfHBuJTR0/xmsMI=
+X-Google-Smtp-Source: AGHT+IH65Sawq2nFbVz2eJjUlQ0Y/zsiekJC7R9FVP82pwC7pqNX9qf+KBXaMzJCakWnL8hpm23f9Q==
+X-Received: by 2002:a2e:6e12:0:b0:2d8:3eaf:86d2 with SMTP id j18-20020a2e6e12000000b002d83eaf86d2mr9582302ljc.47.1713335706222;
+        Tue, 16 Apr 2024 23:35:06 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
+        by smtp.gmail.com with ESMTPSA id s21-20020a2e83d5000000b002daedd9c696sm336801ljh.53.2024.04.16.23.35.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 23:35:05 -0700 (PDT)
+Date: Wed, 17 Apr 2024 09:35:04 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Dharma Balasubiramani <dharma.b@microchip.com>
+Cc: andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org, 
+	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se, jernej.skrabec@gmail.com, 
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com, 
+	daniel@ffwll.ch, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, linux@armlinux.org.uk, Nicolas.Ferre@microchip.com, 
+	alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev, Manikandan.M@microchip.com, 
+	arnd@arndb.de, geert+renesas@glider.be, Jason@zx2c4.com, mpe@ellerman.id.au, 
+	gerg@linux-m68k.org, rdunlap@infradead.org, vbabka@suse.cz, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v6 2/4] drm/bridge: add lvds controller support for sam9x7
+Message-ID: <xbefyxiyiwckjsi5wyqaf5thqgpyyizy7sjojed4yc7bvm46l3@omffdudkxyhl>
+References: <20240417024137.144727-1-dharma.b@microchip.com>
+ <20240417024137.144727-3-dharma.b@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEkJfYOnsLLiCrtgOpq2Upr+_W0dViYVHU8YdjJOi-mxD8H9oQ@mail.gmail.com>
- <20240416142428.GO2320920@kernel.org>
-In-Reply-To: <20240416142428.GO2320920@kernel.org>
-From: Sam Sun <samsun1006219@gmail.com>
-Date: Wed, 17 Apr 2024 14:34:49 +0800
-Message-ID: <CAEkJfYPR-jeZoVz63b2UmvjgBOen7DDy8yyrojLckD9OT2XaiQ@mail.gmail.com>
-Subject: Re: [PATCH net v3] drivers/net/bonding: Fix out-of-bounds read in bond_option_arp_ip_targets_set()
-To: Simon Horman <horms@kernel.org>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, j.vosburgh@gmail.com, 
-	Hangbin Liu <liuhangbin@gmail.com>, Eric Dumazet <edumazet@google.com>, pabeni@redhat.com, 
-	kuba@kernel.org, andy@greyhouse.net, davem@davemloft.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417024137.144727-3-dharma.b@microchip.com>
 
-On Tue, Apr 16, 2024 at 10:24=E2=80=AFPM Simon Horman <horms@kernel.org> wr=
-ote:
->
-> On Tue, Apr 16, 2024 at 08:09:44PM +0800, Sam Sun wrote:
-> > In function bond_option_arp_ip_targets_set(), if newval->string is an
-> > empty string, newval->string+1 will point to the byte after the
-> > string, causing an out-of-bound read.
-> >
-> > BUG: KASAN: slab-out-of-bounds in strlen+0x7d/0xa0 lib/string.c:418
-> > Read of size 1 at addr ffff8881119c4781 by task syz-executor665/8107
-> > CPU: 1 PID: 8107 Comm: syz-executor665 Not tainted 6.7.0-rc7 #1
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04=
-/01/2014
-> > Call Trace:
-> >  <TASK>
-> >  __dump_stack lib/dump_stack.c:88 [inline]
-> >  dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
-> >  print_address_description mm/kasan/report.c:364 [inline]
-> >  print_report+0xc1/0x5e0 mm/kasan/report.c:475
-> >  kasan_report+0xbe/0xf0 mm/kasan/report.c:588
-> >  strlen+0x7d/0xa0 lib/string.c:418
-> >  __fortify_strlen include/linux/fortify-string.h:210 [inline]
-> >  in4_pton+0xa3/0x3f0 net/core/utils.c:130
-> >  bond_option_arp_ip_targets_set+0xc2/0x910
-> > drivers/net/bonding/bond_options.c:1201
-> >  __bond_opt_set+0x2a4/0x1030 drivers/net/bonding/bond_options.c:767
-> >  __bond_opt_set_notify+0x48/0x150 drivers/net/bonding/bond_options.c:79=
-2
-> >  bond_opt_tryset_rtnl+0xda/0x160 drivers/net/bonding/bond_options.c:817
-> >  bonding_sysfs_store_option+0xa1/0x120 drivers/net/bonding/bond_sysfs.c=
-:156
-> >  dev_attr_store+0x54/0x80 drivers/base/core.c:2366
-> >  sysfs_kf_write+0x114/0x170 fs/sysfs/file.c:136
-> >  kernfs_fop_write_iter+0x337/0x500 fs/kernfs/file.c:334
-> >  call_write_iter include/linux/fs.h:2020 [inline]
-> >  new_sync_write fs/read_write.c:491 [inline]
-> >  vfs_write+0x96a/0xd80 fs/read_write.c:584
-> >  ksys_write+0x122/0x250 fs/read_write.c:637
-> >  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> >  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
-> >  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> > ---[ end trace ]---
-> >
-> > Fix it by adding a check of string length before using it.
-> >
-> > v2
-> > According to Jay and Hangbin's opinion, remove target address in
-> > netdev_err message since target is not initialized in error path and
-> > will not provide useful information.
-> >
-> > v3
-> > According to Hangbin's opinion, change Fixes tag from 4fb0ef585eb2
-> > ("bonding: convert arp_ip_target to use the new option API") to
-> > f9de11a16594 ("bonding: add ip checks when store ip target").
-> >
-> > Fixes: f9de11a16594 ("bonding: add ip checks when store ip target")
-> > Signed-off-by: Yue Sun <samsun1006219@gmail.com>
-> > ---
->
-> Hi Sam Sun,
->
-> Some comments about the formatting of this submission:
->
-> * The list of chances, (v2, v3, ...) should be below rather than
->   above the scissors ("---"), so it is not included when the patch
->   is applied.
->
-> * Looking at git history, the patch prefix should probably be "bonding:"
->
->         Subject: [PATCH net v3] bonding: ...
->
-> * The diff seems to be a bit mangled, f.e. tabs seem to
->   have been translated into spaces. So it does not apply.
->   Which breaks automated testing. And for this reason
->   I am asking you to repost this patch.
->
->   git send-email, and b4, are two tools that can typically be used
->   to send patches in a way that this doesn't occur.
->
+On Wed, Apr 17, 2024 at 08:11:35AM +0530, Dharma Balasubiramani wrote:
+> Add a new LVDS controller driver for sam9x7 which does the following:
+> - Prepares and enables the LVDS Peripheral clock
+> - Defines its connector type as DRM_MODE_CONNECTOR_LVDS and adds itself
+> to the global bridge list.
+> - Identifies its output endpoint as panel and adds it to the encoder
+> display pipeline
+> - Enables the LVDS serializer
+> 
+> Signed-off-by: Manikandan Muralidharan <manikandan.m@microchip.com>
+> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
 > ---
-> pw-bot: changes-requested
+> Changelog
+> v5 -> v6
+> - No Changes.
+> v4 -> v5
+> - Drop the unused variable 'format'.
+> - Use DRM wrapper for dev_err() to maintain uniformity.
+> - return -ENODEV instead of -EINVAL to maintain consistency with other DRM
+>   bridge drivers.
+> v3 -> v4
+> - No changes.
+> v2 ->v3
+> - Correct Typo error "serializer".
+> - Consolidate get() and prepare() functions and use devm_clk_get_prepared().
+> - Remove unused variable 'ret' in probe().
+> - Use devm_pm_runtime_enable() and drop the mchp_lvds_remove().
+> v1 -> v2
+> - Drop 'res' variable and combine two lines into one.
+> - Handle deferred probe properly, use dev_err_probe().
+> - Don't print anything on deferred probe. Dropped print.
+> - Remove the MODULE_ALIAS and add MODULE_DEVICE_TABLE().
+> - symbol 'mchp_lvds_driver' was not declared. It should be static.
+> ---
+>  drivers/gpu/drm/bridge/Kconfig          |   7 +
+>  drivers/gpu/drm/bridge/Makefile         |   1 +
+>  drivers/gpu/drm/bridge/microchip-lvds.c | 228 ++++++++++++++++++++++++
+>  3 files changed, 236 insertions(+)
+>  create mode 100644 drivers/gpu/drm/bridge/microchip-lvds.c
+> 
+> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+> index efd996f6c138..889098e2d65f 100644
+> --- a/drivers/gpu/drm/bridge/Kconfig
+> +++ b/drivers/gpu/drm/bridge/Kconfig
+> @@ -190,6 +190,13 @@ config DRM_MEGACHIPS_STDPXXXX_GE_B850V3_FW
+>  	  to DP++. This is used with the i.MX6 imx-ldb
+>  	  driver. You are likely to say N here.
+>  
+> +config DRM_MICROCHIP_LVDS_SERIALIZER
+> +	tristate "Microchip LVDS serializer support"
+> +	depends on OF
+> +	depends on DRM_ATMEL_HLCDC
+> +	help
+> +	  Support for Microchip's LVDS serializer.
+> +
+>  config DRM_NWL_MIPI_DSI
+>  	tristate "Northwest Logic MIPI DSI Host controller"
+>  	depends on DRM
+> diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
+> index 017b5832733b..7df87b582dca 100644
+> --- a/drivers/gpu/drm/bridge/Makefile
+> +++ b/drivers/gpu/drm/bridge/Makefile
+> @@ -13,6 +13,7 @@ obj-$(CONFIG_DRM_LONTIUM_LT9611) += lontium-lt9611.o
+>  obj-$(CONFIG_DRM_LONTIUM_LT9611UXC) += lontium-lt9611uxc.o
+>  obj-$(CONFIG_DRM_LVDS_CODEC) += lvds-codec.o
+>  obj-$(CONFIG_DRM_MEGACHIPS_STDPXXXX_GE_B850V3_FW) += megachips-stdpxxxx-ge-b850v3-fw.o
+> +obj-$(CONFIG_DRM_MICROCHIP_LVDS_SERIALIZER) += microchip-lvds.o
+>  obj-$(CONFIG_DRM_NXP_PTN3460) += nxp-ptn3460.o
+>  obj-$(CONFIG_DRM_PARADE_PS8622) += parade-ps8622.o
+>  obj-$(CONFIG_DRM_PARADE_PS8640) += parade-ps8640.o
+> diff --git a/drivers/gpu/drm/bridge/microchip-lvds.c b/drivers/gpu/drm/bridge/microchip-lvds.c
+> new file mode 100644
+> index 000000000000..149704f498a6
+> --- /dev/null
+> +++ b/drivers/gpu/drm/bridge/microchip-lvds.c
+> @@ -0,0 +1,228 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
+> + *
+> + * Author: Manikandan Muralidharan <manikandan.m@microchip.com>
+> + * Author: Dharma Balasubiramani <dharma.b@microchip.com>
+> + *
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/component.h>
+> +#include <linux/delay.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/of_graph.h>
+> +#include <linux/pinctrl/devinfo.h>
+> +#include <linux/phy/phy.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/regmap.h>
+> +#include <linux/reset.h>
+> +
+> +#include <drm/drm_atomic_helper.h>
+> +#include <drm/drm_bridge.h>
+> +#include <drm/drm_of.h>
+> +#include <drm/drm_panel.h>
+> +#include <drm/drm_print.h>
+> +#include <drm/drm_probe_helper.h>
+> +#include <drm/drm_simple_kms_helper.h>
+> +
+> +#define LVDS_POLL_TIMEOUT_MS 1000
+> +
+> +/* LVDSC register offsets */
+> +#define LVDSC_CR	0x00
+> +#define LVDSC_CFGR	0x04
+> +#define LVDSC_SR	0x0C
+> +#define LVDSC_WPMR	0xE4
+> +
+> +/* Bitfields in LVDSC_CR (Control Register) */
+> +#define LVDSC_CR_SER_EN	BIT(0)
+> +
+> +/* Bitfields in LVDSC_CFGR (Configuration Register) */
+> +#define LVDSC_CFGR_PIXSIZE_24BITS	0
+> +#define LVDSC_CFGR_DEN_POL_HIGH		0
+> +#define LVDSC_CFGR_DC_UNBALANCED	0
+> +#define LVDSC_CFGR_MAPPING_JEIDA	BIT(6)
+> +
+> +/*Bitfields in LVDSC_SR */
+> +#define LVDSC_SR_CS	BIT(0)
+> +
+> +/* Bitfields in LVDSC_WPMR (Write Protection Mode Register) */
+> +#define LVDSC_WPMR_WPKEY_MASK	GENMASK(31, 8)
+> +#define LVDSC_WPMR_WPKEY_PSSWD	0x4C5644
+> +
+> +struct mchp_lvds {
+> +	struct device *dev;
+> +	void __iomem *regs;
+> +	struct clk *pclk;
+> +	struct drm_panel *panel;
+> +	struct drm_bridge bridge;
+> +	struct drm_bridge *panel_bridge;
+> +};
+> +
+> +static inline struct mchp_lvds *bridge_to_lvds(struct drm_bridge *bridge)
+> +{
+> +	return container_of(bridge, struct mchp_lvds, bridge);
+> +}
+> +
+> +static inline u32 lvds_readl(struct mchp_lvds *lvds, u32 offset)
+> +{
+> +	return readl_relaxed(lvds->regs + offset);
+> +}
+> +
+> +static inline void lvds_writel(struct mchp_lvds *lvds, u32 offset, u32 val)
+> +{
+> +	writel_relaxed(val, lvds->regs + offset);
+> +}
+> +
+> +static void lvds_serialiser_on(struct mchp_lvds *lvds)
+> +{
+> +	unsigned long timeout = jiffies + msecs_to_jiffies(LVDS_POLL_TIMEOUT_MS);
+> +
+> +	/* The LVDSC registers can only be written if WPEN is cleared */
+> +	lvds_writel(lvds, LVDSC_WPMR, (LVDSC_WPMR_WPKEY_PSSWD &
+> +				LVDSC_WPMR_WPKEY_MASK));
+> +
+> +	/* Wait for the status of configuration registers to be changed */
+> +	while (lvds_readl(lvds, LVDSC_SR) & LVDSC_SR_CS) {
+> +		if (time_after(jiffies, timeout)) {
+> +			DRM_DEV_ERROR(lvds->dev, "%s: timeout error\n",
+> +				      __func__);
+> +			return;
+> +		}
+> +		usleep_range(1000, 2000);
+> +	}
+> +
+> +	/* Configure the LVDSC */
+> +	lvds_writel(lvds, LVDSC_CFGR, (LVDSC_CFGR_MAPPING_JEIDA |
+> +				LVDSC_CFGR_DC_UNBALANCED |
+> +				LVDSC_CFGR_DEN_POL_HIGH |
+> +				LVDSC_CFGR_PIXSIZE_24BITS));
+> +
+> +	/* Enable the LVDS serializer */
+> +	lvds_writel(lvds, LVDSC_CR, LVDSC_CR_SER_EN);
+> +}
+> +
+> +static int mchp_lvds_attach(struct drm_bridge *bridge,
+> +			    enum drm_bridge_attach_flags flags)
+> +{
+> +	struct mchp_lvds *lvds = bridge_to_lvds(bridge);
+> +
+> +	bridge->encoder->encoder_type = DRM_MODE_ENCODER_LVDS;
 
-I sincerely apologize for not using git send-email. I tried to set up
-the environment but it did not work. For some reason, I needed to use
-a proxy to connect with my gmail account, but the proxy service
-provider banned using their proxy to send email through smtp. Maybe I
-need to rent a VPS and set up a working environment there, but it
-would take time and I don't know for sure whether the VPS provider
-would allow me to send email through smtp either.
+Why do you need to touch encoder_type here? It's not your bridge's
+responsibility.
 
-Could you or anyone please help me submit this patch? Sorry for
-causing this trouble.
+> +
+> +	return drm_bridge_attach(bridge->encoder, lvds->panel_bridge,
+> +				 bridge, flags);
+> +}
+> +
+> +static void mchp_lvds_enable(struct drm_bridge *bridge)
+> +{
+> +	struct mchp_lvds *lvds = bridge_to_lvds(bridge);
+> +	int ret;
+> +
+> +	ret = clk_enable(lvds->pclk);
+> +	if (ret < 0) {
+> +		DRM_DEV_ERROR(lvds->dev, "failed to enable lvds pclk %d\n", ret);
+> +		return;
+> +	}
+> +
+> +	ret = pm_runtime_get_sync(lvds->dev);
+> +	if (ret < 0) {
+> +		DRM_DEV_ERROR(lvds->dev, "failed to get pm runtime: %d\n", ret);
+> +		clk_disable(lvds->pclk);
 
-Best Regards,
-Yue
+This can result in unbalanced clk_disable(), if pm_runtime_get_sync()
+fails. This function calls clk_disable(), but the framework has no way
+to know that .enable() was not successful and calls .disable(), which
+also calls clk_disable().
+
+Please consider turning pclk into pm_clk so that its state is managed
+automatically (or at least moving clk_enable/disable into pm_ops).
+
+> +		return;
+> +	}
+> +
+> +	lvds_serialiser_on(lvds);
+> +}
+> +
+> +static void mchp_lvds_disable(struct drm_bridge *bridge)
+> +{
+> +	struct mchp_lvds *lvds = bridge_to_lvds(bridge);
+> +
+> +	pm_runtime_put(lvds->dev);
+> +	clk_disable(lvds->pclk);
+> +}
+> +
+> +static const struct drm_bridge_funcs mchp_lvds_bridge_funcs = {
+> +	.attach = mchp_lvds_attach,
+> +	.enable = mchp_lvds_enable,
+> +	.disable = mchp_lvds_disable,
+> +};
+> +
+> +static int mchp_lvds_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct mchp_lvds *lvds;
+> +	struct device_node *port;
+> +
+> +	if (!dev->of_node)
+> +		return -ENODEV;
+> +
+> +	lvds = devm_kzalloc(&pdev->dev, sizeof(*lvds), GFP_KERNEL);
+> +	if (!lvds)
+> +		return -ENOMEM;
+> +
+> +	lvds->dev = dev;
+> +
+> +	lvds->regs = devm_ioremap_resource(lvds->dev,
+> +			platform_get_resource(pdev, IORESOURCE_MEM, 0));
+> +	if (IS_ERR(lvds->regs))
+> +		return PTR_ERR(lvds->regs);
+> +
+> +	lvds->pclk = devm_clk_get_prepared(lvds->dev, "pclk");
+
+Why do you need _prepared version?
+
+> +	if (IS_ERR(lvds->pclk))
+> +		return dev_err_probe(lvds->dev, PTR_ERR(lvds->pclk),
+> +				"could not get pclk_lvds prepared\n");
+> +
+> +	port = of_graph_get_remote_node(dev->of_node, 1, 0);
+> +	if (!port) {
+> +		DRM_DEV_ERROR(dev,
+> +			      "can't find port point, please init lvds panel port!\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	lvds->panel = of_drm_find_panel(port);
+> +	of_node_put(port);
+> +
+> +	if (IS_ERR(lvds->panel))
+> +		return -EPROBE_DEFER;
+> +
+> +	lvds->panel_bridge = devm_drm_panel_bridge_add(dev, lvds->panel);
+
+Please use instead:
+
+devm_drm_of_get_bridge(dev, dev->of_node, 1, 0);
+
+> +
+> +	if (IS_ERR(lvds->panel_bridge))
+> +		return PTR_ERR(lvds->panel_bridge);
+> +
+> +	lvds->bridge.of_node = dev->of_node;
+> +	lvds->bridge.type = DRM_MODE_CONNECTOR_LVDS;
+> +	lvds->bridge.funcs = &mchp_lvds_bridge_funcs;
+> +
+> +	dev_set_drvdata(dev, lvds);
+> +	devm_pm_runtime_enable(dev);
+
+Error check is missing.
+
+> +
+> +	drm_bridge_add(&lvds->bridge);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id mchp_lvds_dt_ids[] = {
+> +	{
+> +		.compatible = "microchip,sam9x75-lvds",
+> +	},
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, mchp_lvds_dt_ids);
+> +
+> +static struct platform_driver mchp_lvds_driver = {
+> +	.probe = mchp_lvds_probe,
+> +	.driver = {
+> +		   .name = "microchip-lvds",
+> +		   .of_match_table = mchp_lvds_dt_ids,
+> +	},
+> +};
+> +module_platform_driver(mchp_lvds_driver);
+> +
+> +MODULE_AUTHOR("Manikandan Muralidharan <manikandan.m@microchip.com>");
+> +MODULE_AUTHOR("Dharma Balasubiramani <dharma.b@microchip.com>");
+> +MODULE_DESCRIPTION("Low Voltage Differential Signaling Controller Driver");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.25.1
+> 
+
+-- 
+With best wishes
+Dmitry
 
