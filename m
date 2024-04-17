@@ -1,425 +1,227 @@
-Return-Path: <linux-kernel+bounces-148593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76E668A84DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:38:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DA088A84DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:38:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFCD0B2576B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:38:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3202B2823B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:38:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C40F13F44A;
-	Wed, 17 Apr 2024 13:37:59 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4AA313D89F;
-	Wed, 17 Apr 2024 13:37:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8812140384;
+	Wed, 17 Apr 2024 13:38:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ouS5hiro"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB61F13F01A
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713361078; cv=none; b=chEd9zJrR+iVPIpperifyMeJWpyhZo0tcLt+LKH8ClR2Ft365nN9cZgO3xlIWMmG/r8nCWwvd2NUT+4dAdEKKCMYmoJej4HIIlsQqEYDpBFYwE77pqAFi5mchw7z/Xi9vuJcXI1jbbyZEyFcRI6ykVf4OhENPuZNUVOk2CDACo0=
+	t=1713361084; cv=none; b=a03AcpgIqVpEjUDOyA+DD8W3DsEdeM55h7YIIrP4bw34yZM3Wo0Jx6nLrsqCTkuk8VBpYqvYG8YCS5H2XjNHXX2K5aV70+msbH4cm7OqMCuf2e10063AN9FxFFEtQhKp0U0p4C7kpvFHVZWmTipr1DsPZ1DYXLhlrDGZAcOSUQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713361078; c=relaxed/simple;
-	bh=39AHeotFYiV7LmIyRhGYC2ER5DUVYKUxHjeYw5rCVhs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TlEVtGXhw996GGBiwvlX9vI/tida1TLxhMM7FBxNA0T/3KD1EemI3vyb0BVaFFaPZJeWLoABqN0nLwwnQ2UmzhhrxxxwQnr1S8BTjIcR4g7UtqxG2LQ28wZr+Z1nAiHHUKAhZO+n4dDEsNIIZaIOaYmnl8ynTH57PP1Jn67l3Yw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF822339;
-	Wed, 17 Apr 2024 06:38:22 -0700 (PDT)
-Received: from [10.1.39.28] (FVFF763DQ05P.cambridge.arm.com [10.1.39.28])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CCDD3F738;
-	Wed, 17 Apr 2024 06:37:52 -0700 (PDT)
-Message-ID: <eadfc969-cd41-4dbc-85ff-8d6f8e318837@arm.com>
-Date: Wed, 17 Apr 2024 14:37:51 +0100
+	s=arc-20240116; t=1713361084; c=relaxed/simple;
+	bh=SrAwHiw5DS+3uTSjKRZI5h+3ICzAKM4DzCwh7BbwxAM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=KDJWg2im+PHicId/z6dca37bDAwV+LuR+Bk1ekaBMohwzCZxflwV/yfOQXq1syFJj/CzNZ3UIpicdWU3m8bFHIYs9bMWjasYSDCHsqZ3mrFmZeMw4ACNdNlvQJPuFG7bqj7frD9ruPHE2gmZR6Hh6CqF45zquhYBatYAVxDCNto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ouS5hiro; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56e6a1edecfso8945189a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 06:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713361081; x=1713965881; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8/KcmpYcei3Au2kK2wtQQuvWtpfCCMou6DWdFUvWLAs=;
+        b=ouS5hiro/cWi0hG34ogY8GhoCee2yv3BsnNhum7rxFQ1YZ12w3/XswkUmUQzi7b0Ju
+         UDcC96pZL4Z+QBxgemtDCfA6x5MfdmOGHVGhhQ9YqzFynF6xQrzVkZGl/RvN04vH1HCH
+         gbk6sdRylFDrL/66/6H9S3c/GlgwHVBCNY/EXyACwJq25LVzXW9mYddG9c3u6+iuTvXI
+         E7kzj7AP4kCREHNBlwISUeSnK+VMPfiJ/ZQNpYcuvP23VRwwQ7x7KnFGEeDTRUiHhS2I
+         nUJzHSIQlec8+tK5l3mVgiUXv6dlShEHqi8tBRK9s3wcKgEidzx8P+eMf0NHLcLrrsbD
+         Ghjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713361081; x=1713965881;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8/KcmpYcei3Au2kK2wtQQuvWtpfCCMou6DWdFUvWLAs=;
+        b=aEOsm2Cph8c7WrkYFNGkYM/gq1LuA9VudtsWwryOIYd+tM07EsTyZVfg6Ht4J0cf4Q
+         vdTR53aYHi001OddVO91vm3IDDn27a5vhLeQ/6dEJYSoSy2Jr+SwLc++g87uHNIsqgIE
+         vlDt8vFSaOrCFXofdaasFVsj7+qYrLOUEnPjKHT+IqwjHTtVrM1g1+fEfsljdFT3uuF7
+         +qfy4f3aflYHtsfuPaLxFendmi9De1A1CqYL3zSM5XKZ/ggaO7jV17kZNHuaOVcmdSc5
+         mnsycjGv3DSazNJNPthtgfyHucI/umaPDYNmp0e+rzxa9t99/QkH0y7xP7KzAQl67Qcj
+         zp5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUxInsn/8vX6NC+gpMM0Ih5aSiWfNoF3aj0O8cJoewFsWdyII0KcgXRzsdEJLEstcW9c85dDoycwHJJ4mPp8BxLf+w+FI8bNyC/yxF8
+X-Gm-Message-State: AOJu0YyKa1CpGMoA/nTO3WxsTROZgoEmTnoGLhqtiyaRpPpiq4T5p1x1
+	e0V9NljPFtJWzOQ/OcBT1TvKhtjph0u+FOkwivAwpaIPK9Wp1hJwudHEH/gQKnk=
+X-Google-Smtp-Source: AGHT+IH8LxCS7KS5d8H7g/NIwyGENvuKbbtlWI07tDHjS6X1fV1ErfXpF9XVc1J7DgEdG+8mWfhWYA==
+X-Received: by 2002:a17:906:dc8f:b0:a51:af7d:4652 with SMTP id cs15-20020a170906dc8f00b00a51af7d4652mr15531363ejc.32.1713361080838;
+        Wed, 17 Apr 2024 06:38:00 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id y9-20020a170906470900b00a51a74409dcsm8216147ejq.221.2024.04.17.06.37.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 06:38:00 -0700 (PDT)
+Date: Wed, 17 Apr 2024 16:37:56 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev, Geetha sowjanya <gakula@marvell.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, kuba@kernel.org,
+	davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
+	sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+	hkelam@marvell.com
+Subject: Re: [net-next PATCH 2/9] octeontx2-pf: RVU representor driver
+Message-ID: <546b7783-78ec-4fec-b338-f1980a5871d0@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 13/43] arm64: RME: RTT handling
-Content-Language: en-GB
-To: Steven Price <steven.price@arm.com>, kvm@vger.kernel.org,
- kvmarm@lists.linux.dev
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
- Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
- Oliver Upton <oliver.upton@linux.dev>, Zenghui Yu <yuzenghui@huawei.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Joey Gouly <joey.gouly@arm.com>, Alexandru Elisei
- <alexandru.elisei@arm.com>, Christoffer Dall <christoffer.dall@arm.com>,
- Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
- Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
-References: <20240412084056.1733704-1-steven.price@arm.com>
- <20240412084309.1733783-1-steven.price@arm.com>
- <20240412084309.1733783-14-steven.price@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20240412084309.1733783-14-steven.price@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416050616.6056-3-gakula@marvell.com>
 
-Hi Steven
+Hi Geetha,
 
-minort nit, Subject: arm64: RME: RTT tear down
+kernel test robot noticed the following build warnings:
 
-This patch is all about tearing the RTTs, so may be the subject could
-be adjusted accordingly.
+url:    https://github.com/intel-lab-lkp/linux/commits/Geetha-sowjanya/octeontx2-pf-Refactoring-RVU-driver/20240416-131052
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20240416050616.6056-3-gakula%40marvell.com
+patch subject: [net-next PATCH 2/9] octeontx2-pf: RVU representor driver
+config: alpha-randconfig-r081-20240417 (https://download.01.org/0day-ci/archive/20240417/202404172056.MpOMwcGB-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
 
-On 12/04/2024 09:42, Steven Price wrote:
-> The RMM owns the stage 2 page tables for a realm, and KVM must request
-> that the RMM creates/destroys entries as necessary. The physical pages
-> to store the page tables are delegated to the realm as required, and can
-> be undelegated when no longer used.
-> 
-> Creating new RTTs is the easy part, tearing down is a little more
-> tricky. The result of realm_rtt_destroy() can be used to effectively
-> walk the tree and destroy the entries (undelegating pages that were
-> given to the realm).
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202404172056.MpOMwcGB-lkp@intel.com/
 
-The patch looks functionally correct to me. Some minor style related
-comments below.
+New smatch warnings:
+drivers/net/ethernet/marvell/octeontx2/nic/rep.c:95 rvu_get_rep_cnt() warn: passing zero to 'PTR_ERR'
+drivers/net/ethernet/marvell/octeontx2/nic/rep.c:140 rvu_rep_probe() warn: missing unwind goto?
 
-> Signed-off-by: Steven Price <steven.price@arm.com>
+vim +/PTR_ERR +95 drivers/net/ethernet/marvell/octeontx2/nic/rep.c
 
-> ---
->   arch/arm64/include/asm/kvm_rme.h |  19 ++++
->   arch/arm64/kvm/mmu.c             |   6 +-
->   arch/arm64/kvm/rme.c             | 171 +++++++++++++++++++++++++++++++
->   3 files changed, 193 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_rme.h b/arch/arm64/include/asm/kvm_rme.h
-> index fba85e9ce3ae..4ab5cb5e91b3 100644
-> --- a/arch/arm64/include/asm/kvm_rme.h
-> +++ b/arch/arm64/include/asm/kvm_rme.h
-> @@ -76,5 +76,24 @@ u32 kvm_realm_ipa_limit(void);
->   int kvm_realm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap);
->   int kvm_init_realm_vm(struct kvm *kvm);
->   void kvm_destroy_realm(struct kvm *kvm);
-> +void kvm_realm_destroy_rtts(struct kvm *kvm, u32 ia_bits);
-> +
-> +#define RME_RTT_BLOCK_LEVEL	2
-> +#define RME_RTT_MAX_LEVEL	3
-> +
-> +#define RME_PAGE_SHIFT		12
-> +#define RME_PAGE_SIZE		BIT(RME_PAGE_SHIFT)
-> +/* See ARM64_HW_PGTABLE_LEVEL_SHIFT() */
-> +#define RME_RTT_LEVEL_SHIFT(l)	\
-> +	((RME_PAGE_SHIFT - 3) * (4 - (l)) + 3)
-> +#define RME_L2_BLOCK_SIZE	BIT(RME_RTT_LEVEL_SHIFT(2))
-> +
-> +static inline unsigned long rme_rtt_level_mapsize(int level)
-> +{
-> +	if (WARN_ON(level > RME_RTT_MAX_LEVEL))
-> +		return RME_PAGE_SIZE;
-> +
-> +	return (1UL << RME_RTT_LEVEL_SHIFT(level));
-> +}
-> 
+1e15129a77b419 Geetha sowjanya 2024-04-16   76  static int rvu_get_rep_cnt(struct otx2_nic *priv)
+1e15129a77b419 Geetha sowjanya 2024-04-16   77  {
+1e15129a77b419 Geetha sowjanya 2024-04-16   78  	struct get_rep_cnt_rsp *rsp;
+1e15129a77b419 Geetha sowjanya 2024-04-16   79  	struct mbox_msghdr *msghdr;
+1e15129a77b419 Geetha sowjanya 2024-04-16   80  	struct msg_req *req;
+1e15129a77b419 Geetha sowjanya 2024-04-16   81  	int err, rep;
+1e15129a77b419 Geetha sowjanya 2024-04-16   82  
+1e15129a77b419 Geetha sowjanya 2024-04-16   83  	mutex_lock(&priv->mbox.lock);
+1e15129a77b419 Geetha sowjanya 2024-04-16   84  	req = otx2_mbox_alloc_msg_get_rep_cnt(&priv->mbox);
+1e15129a77b419 Geetha sowjanya 2024-04-16   85  	if (!req) {
+1e15129a77b419 Geetha sowjanya 2024-04-16   86  		mutex_unlock(&priv->mbox.lock);
+1e15129a77b419 Geetha sowjanya 2024-04-16   87  		return -ENOMEM;
+1e15129a77b419 Geetha sowjanya 2024-04-16   88  	}
+1e15129a77b419 Geetha sowjanya 2024-04-16   89  	err = otx2_sync_mbox_msg(&priv->mbox);
+1e15129a77b419 Geetha sowjanya 2024-04-16   90  	if (err)
+1e15129a77b419 Geetha sowjanya 2024-04-16   91  		goto exit;
+1e15129a77b419 Geetha sowjanya 2024-04-16   92  
+1e15129a77b419 Geetha sowjanya 2024-04-16   93  	msghdr = otx2_mbox_get_rsp(&priv->mbox.mbox, 0, &req->hdr);
+1e15129a77b419 Geetha sowjanya 2024-04-16   94  	if (IS_ERR(msghdr)) {
+1e15129a77b419 Geetha sowjanya 2024-04-16  @95  		err = PTR_ERR(rsp);
+                                                                              ^^^
+s/rsp/msghdr/
 
-super minor nit: We only support 4K for now, so may be could reuse
-the ARM64 generic macro helpers. I am fine either way.
+1e15129a77b419 Geetha sowjanya 2024-04-16   96  		goto exit;
+1e15129a77b419 Geetha sowjanya 2024-04-16   97  	}
+1e15129a77b419 Geetha sowjanya 2024-04-16   98  
+1e15129a77b419 Geetha sowjanya 2024-04-16   99  	rsp = (struct get_rep_cnt_rsp *)msghdr;
+1e15129a77b419 Geetha sowjanya 2024-04-16  100  	priv->hw.tx_queues = rsp->rep_cnt;
+1e15129a77b419 Geetha sowjanya 2024-04-16  101  	priv->hw.rx_queues = rsp->rep_cnt;
+1e15129a77b419 Geetha sowjanya 2024-04-16  102  	priv->rep_cnt = rsp->rep_cnt;
+1e15129a77b419 Geetha sowjanya 2024-04-16  103  	for (rep = 0; rep < priv->rep_cnt; rep++)
+1e15129a77b419 Geetha sowjanya 2024-04-16  104  		priv->rep_pf_map[rep] = rsp->rep_pf_map[rep];
+1e15129a77b419 Geetha sowjanya 2024-04-16  105  
+1e15129a77b419 Geetha sowjanya 2024-04-16  106  exit:
+1e15129a77b419 Geetha sowjanya 2024-04-16  107  	mutex_unlock(&priv->mbox.lock);
+1e15129a77b419 Geetha sowjanya 2024-04-16  108  	return err;
+1e15129a77b419 Geetha sowjanya 2024-04-16  109  }
+1e15129a77b419 Geetha sowjanya 2024-04-16  110  
+1e15129a77b419 Geetha sowjanya 2024-04-16  111  static int rvu_rep_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+1e15129a77b419 Geetha sowjanya 2024-04-16  112  {
+1e15129a77b419 Geetha sowjanya 2024-04-16  113  	struct device *dev = &pdev->dev;
+1e15129a77b419 Geetha sowjanya 2024-04-16  114  	struct otx2_nic *priv;
+1e15129a77b419 Geetha sowjanya 2024-04-16  115  	struct otx2_hw *hw;
+1e15129a77b419 Geetha sowjanya 2024-04-16  116  	int err;
+1e15129a77b419 Geetha sowjanya 2024-04-16  117  
+1e15129a77b419 Geetha sowjanya 2024-04-16  118  	err = pcim_enable_device(pdev);
+1e15129a77b419 Geetha sowjanya 2024-04-16  119  	if (err) {
+1e15129a77b419 Geetha sowjanya 2024-04-16  120  		dev_err(dev, "Failed to enable PCI device\n");
+1e15129a77b419 Geetha sowjanya 2024-04-16  121  		return err;
+1e15129a77b419 Geetha sowjanya 2024-04-16  122  	}
+1e15129a77b419 Geetha sowjanya 2024-04-16  123  
+1e15129a77b419 Geetha sowjanya 2024-04-16  124  	err = pci_request_regions(pdev, DRV_NAME);
+1e15129a77b419 Geetha sowjanya 2024-04-16  125  	if (err) {
+1e15129a77b419 Geetha sowjanya 2024-04-16  126  		dev_err(dev, "PCI request regions failed 0x%x\n", err);
+1e15129a77b419 Geetha sowjanya 2024-04-16  127  		return err;
+1e15129a77b419 Geetha sowjanya 2024-04-16  128  	}
+1e15129a77b419 Geetha sowjanya 2024-04-16  129  
+1e15129a77b419 Geetha sowjanya 2024-04-16  130  	err = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(48));
+1e15129a77b419 Geetha sowjanya 2024-04-16  131  	if (err) {
+1e15129a77b419 Geetha sowjanya 2024-04-16  132  		dev_err(dev, "DMA mask config failed, abort\n");
+1e15129a77b419 Geetha sowjanya 2024-04-16  133  		goto err_release_regions;
+1e15129a77b419 Geetha sowjanya 2024-04-16  134  	}
+1e15129a77b419 Geetha sowjanya 2024-04-16  135  
+1e15129a77b419 Geetha sowjanya 2024-04-16  136  	pci_set_master(pdev);
+1e15129a77b419 Geetha sowjanya 2024-04-16  137  
+1e15129a77b419 Geetha sowjanya 2024-04-16  138  	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+1e15129a77b419 Geetha sowjanya 2024-04-16  139  	if (!priv)
+1e15129a77b419 Geetha sowjanya 2024-04-16 @140  		return -ENOMEM;
 
+goto err_release_regions.
 
->   #endif
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index af4564f3add5..46f0c4e80ace 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -1012,17 +1012,17 @@ void stage2_unmap_vm(struct kvm *kvm)
->   void kvm_free_stage2_pgd(struct kvm_s2_mmu *mmu)
->   {
->   	struct kvm *kvm = kvm_s2_mmu_to_kvm(mmu);
-> -	struct kvm_pgtable *pgt = NULL;
-> +	struct kvm_pgtable *pgt;
->   
->   	write_lock(&kvm->mmu_lock);
-> +	pgt = mmu->pgt;
->   	if (kvm_is_realm(kvm) &&
->   	    (kvm_realm_state(kvm) != REALM_STATE_DEAD &&
->   	     kvm_realm_state(kvm) != REALM_STATE_NONE)) {
-> -		/* TODO: teardown rtts */
->   		write_unlock(&kvm->mmu_lock);
-> +		kvm_realm_destroy_rtts(kvm, pgt->ia_bits);
->   		return;
->   	}
-> -	pgt = mmu->pgt;
->   	if (pgt) {
->   		mmu->pgd_phys = 0;
->   		mmu->pgt = NULL;
-> diff --git a/arch/arm64/kvm/rme.c b/arch/arm64/kvm/rme.c
-> index 9652ec6ab2fd..09b59bcad8b6 100644
-> --- a/arch/arm64/kvm/rme.c
-> +++ b/arch/arm64/kvm/rme.c
-> @@ -47,6 +47,53 @@ static int rmi_check_version(void)
->   	return 0;
->   }
->   
-> +static phys_addr_t __alloc_delegated_page(struct realm *realm,
-> +					  struct kvm_mmu_memory_cache *mc,
-> +					  gfp_t flags)
+1e15129a77b419 Geetha sowjanya 2024-04-16  141  	pci_set_drvdata(pdev, priv);
+1e15129a77b419 Geetha sowjanya 2024-04-16  142  	priv->pdev = pdev;
+1e15129a77b419 Geetha sowjanya 2024-04-16  143  	priv->dev = dev;
+1e15129a77b419 Geetha sowjanya 2024-04-16  144  	priv->flags |= OTX2_FLAG_INTF_DOWN;
+1e15129a77b419 Geetha sowjanya 2024-04-16  145  	priv->flags |= OTX2_FLAG_REP_MODE_ENABLED;
+1e15129a77b419 Geetha sowjanya 2024-04-16  146  
+1e15129a77b419 Geetha sowjanya 2024-04-16  147  	hw = &priv->hw;
+1e15129a77b419 Geetha sowjanya 2024-04-16  148  	hw->pdev = pdev;
+1e15129a77b419 Geetha sowjanya 2024-04-16  149  	hw->max_queues = OTX2_MAX_CQ_CNT;
+1e15129a77b419 Geetha sowjanya 2024-04-16  150  	hw->rbuf_len = OTX2_DEFAULT_RBUF_LEN;
+1e15129a77b419 Geetha sowjanya 2024-04-16  151  	hw->xqe_size = 128;
+1e15129a77b419 Geetha sowjanya 2024-04-16  152  
+1e15129a77b419 Geetha sowjanya 2024-04-16  153  	err = otx2_init_rsrc(pdev, priv);
+1e15129a77b419 Geetha sowjanya 2024-04-16  154  	if (err)
+1e15129a77b419 Geetha sowjanya 2024-04-16  155  		goto err_release_regions;
+1e15129a77b419 Geetha sowjanya 2024-04-16  156  
+1e15129a77b419 Geetha sowjanya 2024-04-16  157  	err = rvu_get_rep_cnt(priv);
+1e15129a77b419 Geetha sowjanya 2024-04-16  158  	if (err)
+1e15129a77b419 Geetha sowjanya 2024-04-16  159  		goto err_detach_rsrc;
+1e15129a77b419 Geetha sowjanya 2024-04-16  160  
+1e15129a77b419 Geetha sowjanya 2024-04-16  161  	err = rvu_rep_rsrc_init(priv);
+1e15129a77b419 Geetha sowjanya 2024-04-16  162  	if (err)
+1e15129a77b419 Geetha sowjanya 2024-04-16  163  		goto err_detach_rsrc;
+1e15129a77b419 Geetha sowjanya 2024-04-16  164  
+1e15129a77b419 Geetha sowjanya 2024-04-16  165  	return 0;
+1e15129a77b419 Geetha sowjanya 2024-04-16  166  
+1e15129a77b419 Geetha sowjanya 2024-04-16  167  err_detach_rsrc:
+1e15129a77b419 Geetha sowjanya 2024-04-16  168  	if (priv->hw.lmt_info)
+1e15129a77b419 Geetha sowjanya 2024-04-16  169  		free_percpu(priv->hw.lmt_info);
+1e15129a77b419 Geetha sowjanya 2024-04-16  170  	if (test_bit(CN10K_LMTST, &priv->hw.cap_flag))
+1e15129a77b419 Geetha sowjanya 2024-04-16  171  		qmem_free(priv->dev, priv->dync_lmt);
+1e15129a77b419 Geetha sowjanya 2024-04-16  172  	otx2_detach_resources(&priv->mbox);
+1e15129a77b419 Geetha sowjanya 2024-04-16  173  	otx2_disable_mbox_intr(priv);
+1e15129a77b419 Geetha sowjanya 2024-04-16  174  	otx2_pfaf_mbox_destroy(priv);
+1e15129a77b419 Geetha sowjanya 2024-04-16  175  	pci_free_irq_vectors(pdev);
+1e15129a77b419 Geetha sowjanya 2024-04-16  176  err_release_regions:
+1e15129a77b419 Geetha sowjanya 2024-04-16  177  	pci_set_drvdata(pdev, NULL);
+1e15129a77b419 Geetha sowjanya 2024-04-16  178  	pci_release_regions(pdev);
+1e15129a77b419 Geetha sowjanya 2024-04-16  179  	return err;
+1e15129a77b419 Geetha sowjanya 2024-04-16  180  }
 
-minor nit: Do we need "__" here ? The counter part is plain 
-free_delegated_page without the "__". We could drop the prefix
-
-Or we could split the function as:
-
-alloc_delegated_page()
-{
-   if (spare_page_available)
-	return spare_page;
-   return __alloc_delegated_page(); /* Alloc and delegate a page */
-}
-
-
-> +{
-> +	phys_addr_t phys = PHYS_ADDR_MAX;
-> +	void *virt;
-> +
-> +	if (realm->spare_page != PHYS_ADDR_MAX) {
-> +		swap(realm->spare_page, phys);
-> +		goto out;
-> +	}
-> +
-> +	if (mc)
-> +		virt = kvm_mmu_memory_cache_alloc(mc);
-> +	else
-> +		virt = (void *)__get_free_page(flags);
-> +
-> +	if (!virt)
-> +		goto out;
-> +
-> +	phys = virt_to_phys(virt);
-> +
-> +	if (rmi_granule_delegate(phys)) {
-> +		free_page((unsigned long)virt);
-> +
-> +		phys = PHYS_ADDR_MAX;
-> +	}
-> +
-> +out:
-> +	return phys;
-> +}
-> +
-> +static void free_delegated_page(struct realm *realm, phys_addr_t phys)
-> +{
-> +	if (realm->spare_page == PHYS_ADDR_MAX) {
-> +		realm->spare_page = phys;
-> +		return;
-> +	}
-> +
-> +	if (WARN_ON(rmi_granule_undelegate(phys))) {
-> +		/* Undelegate failed: leak the page */
-> +		return;
-> +	}
-> +
-> +	free_page((unsigned long)phys_to_virt(phys));
-> +}
-> +
->   u32 kvm_realm_ipa_limit(void)
->   {
->   	return u64_get_bits(rmm_feat_reg0, RMI_FEATURE_REGISTER_0_S2SZ);
-> @@ -124,6 +171,130 @@ static int realm_create_rd(struct kvm *kvm)
->   	return r;
->   }
->   
-> +static int realm_rtt_destroy(struct realm *realm, unsigned long addr,
-> +			     int level, phys_addr_t *rtt_granule,
-> +			     unsigned long *next_addr)
-> +{
-> +	unsigned long out_rtt;
-> +	unsigned long out_top;
-> +	int ret;
-> +
-> +	ret = rmi_rtt_destroy(virt_to_phys(realm->rd), addr, level,
-> +			      &out_rtt, &out_top);
-> +
-> +	if (rtt_granule)
-> +		*rtt_granule = out_rtt;
-> +	if (next_addr)
-> +		*next_addr = out_top;
-
-minor nit: As mentioned in the previous patch, we could move this check 
-to the rmi_rtt_destroy().
-
-> +
-> +	return ret;
-> +}
-> +
-> +static int realm_tear_down_rtt_level(struct realm *realm, int level,
-> +				     unsigned long start, unsigned long end)
-> +{
-> +	ssize_t map_size;
-> +	unsigned long addr, next_addr;
-> +
-> +	if (WARN_ON(level > RME_RTT_MAX_LEVEL))
-> +		return -EINVAL;
-> +
-> +	map_size = rme_rtt_level_mapsize(level - 1);
-> +
-> +	for (addr = start; addr < end; addr = next_addr) {
-> +		phys_addr_t rtt_granule;
-> +		int ret;
-> +		unsigned long align_addr = ALIGN(addr, map_size);
-> +
-> +		next_addr = ALIGN(addr + 1, map_size);
-> +
-> +		if (next_addr <= end && align_addr == addr) {
-> +			ret = realm_rtt_destroy(realm, addr, level,
-> +						&rtt_granule, &next_addr);
-> +		} else {
-> +			/* Recurse a level deeper */
-> +			ret = realm_tear_down_rtt_level(realm,
-> +							level + 1,
-> +							addr,
-> +							min(next_addr, end));
-> +			if (ret)
-> +				return ret;
-> +			continue;
-> +		}
-
-I think it would be better readable if we did something like :
-
-		/*
-		 * The target range is smaller than what this level
-		 * covers. Go deeper.
-		 */
-		if (next_addr > end || align_addr != addr) {
-			ret = realm_tear_down_rtt_level(realm,
-							level + 1, addr,
-							min(next_addr, end));
-			if (ret)
-				return ret;
-			continue;
-		}
-
-		ret = realm_rtt_destroy(realm, addr, level,
-					&rtt_granule, &next_addr);
-		
-> +
-> +		switch (RMI_RETURN_STATUS(ret)) {
-> +		case RMI_SUCCESS:
-> +			if (!WARN_ON(rmi_granule_undelegate(rtt_granule)))
-> +				free_page((unsigned long)phys_to_virt(rtt_granule));
-> +			break;
-> +		case RMI_ERROR_RTT:
-> +			if (next_addr > addr) {
-> +				/* unassigned or destroyed */
-
-minor nit:
-				/* RTT doesn't exist, skip */
-
-> +				break;
-> +			}
-
-> +			if (WARN_ON(RMI_RETURN_INDEX(ret) != level))
-> +				return -EBUSY;
-
-In practise, we only call this for the full IPA range and we wouldn't go 
-deeper, if the top level entry was missing. So, there is no reason why
-the RMM didn't walk to the requested level. May be we could add a 
-comment here :
-			/*
-			 * We tear down the RTT range for the full IPA
-			 * space, after everything is unmapped. Also we
-			 * descend down only if we cannot tear down a
-			 * top level RTT. Thus RMM must be able to walk
-			 * to the requested level. e.g., a block mapping
-			 * exists at L1 or L2.
-			 */
-
-> +			if (WARN_ON(level == RME_RTT_MAX_LEVEL)) {
-> +				// Live entry
-> +				return -EBUSY;
-
-
-The first part of the comment above applies to this. So may be it is
-good to have it.
-
-
-> +			}
-
-> +			/* Recurse a level deeper */
-
-minor nit:
-			/*
-			 * The table has active entries in it, recurse
-			 * deeper and tear down the RTTs.
-			 */
-
-> +			next_addr = ALIGN(addr + 1, map_size);
-> +			ret = realm_tear_down_rtt_level(realm,
-> +							level + 1,
-> +							addr,
-> +							next_addr);
-> +			if (ret)
-> +				return ret;
-> +			/* Try again at this level */
-
-			/*
-			 * Now that the children RTTs are destroyed,
-			 * retry at this level.
-			 */
-> +			next_addr = addr;
-> +			break;
-> +		default:
-> +			WARN_ON(1);
-> +			return -ENXIO;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int realm_tear_down_rtt_range(struct realm *realm,
-> +				     unsigned long start, unsigned long end)
-> +{
-> +	return realm_tear_down_rtt_level(realm, get_start_level(realm) + 1,
-> +					 start, end);
-> +}
-> +
-> +static void ensure_spare_page(struct realm *realm)
-> +{
-> +	phys_addr_t tmp_rtt;
-> +
-> +	/*
-> +	 * Make sure we have a spare delegated page for tearing down the
-> +	 * block mappings. We do this by allocating then freeing a page.
-> +	 * We must use Atomic allocations as we are called with kvm->mmu_lock
-> +	 * held.
-> +	 */
-> +	tmp_rtt = __alloc_delegated_page(realm, NULL, GFP_ATOMIC);
-> +
-> +	/*
-> +	 * If the allocation failed, continue as we may not have a block level
-> +	 * mapping so it may not be fatal, otherwise free it to assign it
-> +	 * to the spare page.
-> +	 */
-> +	if (tmp_rtt != PHYS_ADDR_MAX)
-> +		free_delegated_page(realm, tmp_rtt);
-> +}
-> +
-> +void kvm_realm_destroy_rtts(struct kvm *kvm, u32 ia_bits)
-> +{
-> +	struct realm *realm = &kvm->arch.realm;
-> +
-> +	ensure_spare_page(realm);
-> +
-> +	WARN_ON(realm_tear_down_rtt_range(realm, 0, (1UL << ia_bits)));
-> +}
-
-minor nit: We don't seem to be using the "spare_page" yet in this patch. 
-May be a good idea to move all the related changes 
-(alloc_delegated_page() / free_delegated_page, ensure_spare_page() etc)
-to the patch where it may be better suited ?
-
-Suzuki
-
-> +
->   /* Protects access to rme_vmid_bitmap */
->   static DEFINE_SPINLOCK(rme_vmid_lock);
->   static unsigned long *rme_vmid_bitmap;
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
