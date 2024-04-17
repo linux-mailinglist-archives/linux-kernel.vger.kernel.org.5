@@ -1,150 +1,154 @@
-Return-Path: <linux-kernel+bounces-147909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C468A7B2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:58:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 740F48A7B2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:59:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 618931F2274E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:58:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9747F1C214B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:59:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35A042AA3;
-	Wed, 17 Apr 2024 03:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 928434084E;
+	Wed, 17 Apr 2024 03:59:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mFuXJ3t0"
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jK1HmUma"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE3641C84;
-	Wed, 17 Apr 2024 03:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 434C31E888;
+	Wed, 17 Apr 2024 03:59:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713326284; cv=none; b=kz7U1faXP4Xi/HuNEnH0UokqQXF+GXtedtLWj8Drry75DnGWVVPw5C07kdLmXG1BQIssMoA7EuXrsgnsWBRZ0ZYsRYuMUbDfyuGHmr7pA02ixBDk3QMqJ9x+OR7RmVUpGK26iB1mEeMmUvHsjNpP03yH1opf2pAMugav4GpbWqg=
+	t=1713326387; cv=none; b=L469d6wXZaMAswN4YAiO7xE4KtxPfdURsETG1FNPJ3RxY+O8QV9x+/JvM6GqeR75OKJ4ofiRwiNqmiL26fJPSM2aZ3EErjRa3OQGO2IUUz4ojyVI/8f1+ZJK9VEFN6DmT4a8xm3ScZZUaGRxYTqCEOw6OR4GnZmy8ZSTG+9DC9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713326284; c=relaxed/simple;
-	bh=GoechTeI6B6mo03khhktxhAOBoCfmytSAdtSOLbtG6Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BZW+k31abcpuET147sQ3tF1AEcgxT/EAYuHnOmmMJF61Q1AGeB8zCoySachw067ojXTYTx1Gxmi+4SaHmUky60jkeosDykf2XhM3TI/q6wXVwc9X15x143e31uA1iTroFk6xWk1q4bnTXs8ozrvP1ZQj98Go/q8phNfjPLCY3k4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mFuXJ3t0; arc=none smtp.client-ip=209.85.167.176
+	s=arc-20240116; t=1713326387; c=relaxed/simple;
+	bh=L4PLcjAiH2fQqPBh+3bDVWjszJ8IoLxh4ltZFgI7w8w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ft+COn0eDgWkzASJpOhyMoLg33VFgCZFtoRpQ2km95VCKWndqtod/k0cCZy6N3xG6vhOvPlPGbRxykTE1cMafKYm0FmToK7gQYdughqaFlNrVyyQDe1eUC34dEvVIyFiMuCrJ21Oc8Q9KKVLWxhPJnVTpwrkQpjYRJFDs927X9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jK1HmUma; arc=none smtp.client-ip=209.85.167.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3c70e46f3caso1669731b6e.2;
-        Tue, 16 Apr 2024 20:58:02 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-518a3e0d2e4so352862e87.0;
+        Tue, 16 Apr 2024 20:59:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713326282; x=1713931082; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4qqoukD3m0QOcyeDrVAzP9C83Joa5EY2Nsjf6Mik9r4=;
-        b=mFuXJ3t0jdKjV5/qyc5dpS7+dSVBFaaz9NnZXLCAQ2gkxt0jt+GnIBxJHd3YFHvQph
-         IjH226fSZj/0ePrnECTeTQ4BTJF8hWNWB1mxFGZ8Fb7vx6/Re2YU6NjifZgjG4f3uSI9
-         +LOMqrAoWomDZaqPqgxvbkW1sQRo9CpSz3NmzN+xvvqCJIv6hiic/tCXC0myWd3IS9IO
-         EwAvGPT6n4NoWlFG9iLIPBjCnICa6IVswl7q5w5VLw4/IWCNhBoJQ8GNO6z6xYk4yilj
-         BUrJlevYHoVvoH7oloxvQYQsDuMUh4UtljCNszto8/EnAC4UllVZ/BdETXvmy9wKeDkR
-         Gd9Q==
+        d=gmail.com; s=20230601; t=1713326384; x=1713931184; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XbsQ4Tu1m1w7HPSGaOV59vQbfIj8SB/VQJFRuERsF48=;
+        b=jK1HmUmaJkcJgDP4bsP2bWxxm8hvp1cZnoa3U88d/1kXCboW9rn8FysSw+78V4wSre
+         ukuG6u8iwA+vl04Jn5NKw18jrQh7qBAN7Vq+Qk+9yY1K47kcac/GHTBiF8H7ndGKQAs8
+         4/sLQtliPpOh81K7uGyRpktqlpM+2s8ZK4+jDHzBpvjHIOxdL5IA2nnrVy84QFO2H0iL
+         ii1n7uePCm9dhjWw+5v+LCc4sqK+b46jYXQXGj7l1f+DeGCI+YjRU6aMcIJywygeZg1u
+         iL7l7XbgW0I0PQJENdH7yePAq0FvDx+Sq5/QhUKSL3pINS2hIKeSCqbEHO/t32lDgnoW
+         0kbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713326282; x=1713931082;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4qqoukD3m0QOcyeDrVAzP9C83Joa5EY2Nsjf6Mik9r4=;
-        b=ACtVPpxKtSjq1DIz7LYXquHVrrKwdzY0PmIG+kJeS/Kq3Gndcwuo16JYkCO1UCWPYe
-         nQdQ2XSCaeeb5iOGC+VueR5oH474PbKYw7an3DXMBDS5BmjkAzRYtMn1BcLswmgs77cn
-         yhhgFZmqHp1egp5OJyarjp8WfIY/j7TR6+KNsdwEh1VghXE3x0L6xJrSPoxAgFEnkGR6
-         Fte3mSsPlIJK6uUOf2IKUXzxkxaF7reGA/o82Qxj2qwGviQECuo1GS8lkv+gCMOpN0rg
-         NXsaQY710CZuanGbZ8YvxUbq2pBc75W31pO5gE09eTz8ef9S+AGLKUAame8OPeAFe5TZ
-         tsnw==
-X-Forwarded-Encrypted: i=1; AJvYcCUf0xJ5KqUEdLpzafXwuZpM/lCmt75VZnJuD9vKpx30dsiWVME1j3cDg9OKEQJFlzlPtpRzb4XORdfsDBRLWFbA5a5IYG/XeN7beWR2CUeUZ/+Tyk2aIs/wBWO3DqhT8o0Fd+TEE3MAfTahBg3ub+bRaUzJxPBhO3IBfPvAhUfwNeEWgPM=
-X-Gm-Message-State: AOJu0YyuNXilvjI6nD1mydIjLQGKaM95T9+bwIYeis8RhECrlbPU6GHu
-	X/pF7UB9WfNOTKWMYqh5iJa8HqUgxjgrXY2RRBMoOG2/HyUXLvLhhyOtWg==
-X-Google-Smtp-Source: AGHT+IH/41R3rH1IYgWVS5Un57utk0weadfE5ztf+rvrQdajfYfXVhxYj2Hco6Q0+WpoE4GgavD8RQ==
-X-Received: by 2002:aca:2b09:0:b0:3c5:efa3:95a2 with SMTP id i9-20020aca2b09000000b003c5efa395a2mr16179884oik.9.1713326281933;
-        Tue, 16 Apr 2024 20:58:01 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id lr48-20020a056a0073b000b006e724ccdc3esm9773111pfb.55.2024.04.16.20.58.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 20:58:01 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id DDC6818491EBE; Wed, 17 Apr 2024 10:57:57 +0700 (WIB)
-Date: Wed, 17 Apr 2024 10:57:57 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, Jonathan Corbet <corbet@lwn.net>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Mao Zhu <zhumao001@208suo.com>, Ran Sun <sunran001@208suo.com>,
-	Xiang wangx <wangxiang@cdjrlc.com>,
-	Shaomin Deng <dengshaomin@cdjrlc.com>,
-	Charles Han <hanchunchao@inspur.com>,
-	Attreyee M <tintinm2017@gmail.com>,
-	Linux Sound System <linux-sound@vger.kernel.org>,
-	Linux Documentation <linux-doc@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 05/12] ASoC: doc: dapm: clarify it's an internal API
-Message-ID: <Zh9IxVrflLAs_oX7@archie.me>
-References: <20240416-dapm-docs-v1-0-a818d2819bf6@bootlin.com>
- <20240416-dapm-docs-v1-5-a818d2819bf6@bootlin.com>
+        d=1e100.net; s=20230601; t=1713326384; x=1713931184;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XbsQ4Tu1m1w7HPSGaOV59vQbfIj8SB/VQJFRuERsF48=;
+        b=nqXJJYokFFWuQXzn3wgFCv7CmJtOwzIXcXceih7kPYqh8zSrk97x5SCGa6GkORF57/
+         yt8U1qzMo7iH5OyBmS11wIWkosTiSNvsO1Bvh4O4Evj3UNJWFKhnLe+HjMeb1WWqOnIz
+         IhYxZTHifOcm59975hxteHpvLmUHdlhRG/16BXBlWSKY09sNfYiXJYdAjgjyrwA3txPm
+         egrwPgr+Q5PCb2EMzQuEt5+6Hwfg6cXRKNG0TDlEtEoqFFPhuvEd8Cx1A1b5l2VNngX5
+         BYD+IKjPI/rOWItWo2scGVfT3bALeZ+f5XNVAzD7qU9SbyVjpL9DPl4nmYGUAti2bpEA
+         8l1w==
+X-Forwarded-Encrypted: i=1; AJvYcCU3vl4k9eW41+CdTuP1BasCT+TBQwz3mIX8cWKKke9ZrOqGN0IJLP8fBBgzZQUtBfwON7dhrI0T+7RBa9dT3C1o7258Oo0TuYRReAql6nYfPQEpB7oAyxeqGk57Kaq7YvXCuXDwksOqmSoKkwNtn3o=
+X-Gm-Message-State: AOJu0YyJQeCKFoyvI8rDdUPUC5ZtRdcHSphzwICTAoB3aPHGQH1LhPT6
+	fI/LdOO8MfdDpp9wo7DrAO4ZuAKpOdOTs3LAGjZKy+4DclfxGuRq
+X-Google-Smtp-Source: AGHT+IGJbqPeA0nzEzMxCKCTupCUv7UpWbKMysKwjI//QWk683T2vAiGZLfusv4y0ebLSjhUchGNNw==
+X-Received: by 2002:ac2:4e42:0:b0:516:d713:382e with SMTP id f2-20020ac24e42000000b00516d713382emr1267054lfr.12.1713326383909;
+        Tue, 16 Apr 2024 20:59:43 -0700 (PDT)
+Received: from ?IPV6:2001:678:a5c:1204:59b2:75a3:6a31:61d8? (soda.int.kasm.eu. [2001:678:a5c:1204:59b2:75a3:6a31:61d8])
+        by smtp.gmail.com with ESMTPSA id t13-20020a2e9c4d000000b002da968f03f9sm590524ljj.89.2024.04.16.20.59.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Apr 2024 20:59:43 -0700 (PDT)
+Message-ID: <1075d36b-be92-415e-9c93-a9141a09802f@gmail.com>
+Date: Wed, 17 Apr 2024 05:59:42 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vVBnyCNi3H5acAas"
-Content-Disposition: inline
-In-Reply-To: <20240416-dapm-docs-v1-5-a818d2819bf6@bootlin.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -v2] x86/retpoline: Ensure default return thunk isn't used
+ at runtime
+To: Borislav Petkov <bp@alien8.de>
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>, "Kaplan, David"
+ <David.Kaplan@amd.com>, Ingo Molnar <mingo@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-tip-commits@vger.kernel.org" <linux-tip-commits@vger.kernel.org>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+ "x86@kernel.org" <x86@kernel.org>, David Howells <dhowells@redhat.com>
+References: <20231024201913.GHZTgmwf6QMkX8BGbo@fat_crate.local>
+ <20240103184656.GEZZWroPmHLJuP6y5H@fat_crate.local>
+ <20240104131210.GDZZauqoeKoZGpYwDd@fat_crate.local>
+ <20240104132446.GEZZaxnrIgIyat0pqf@fat_crate.local>
+ <20240104132623.GFZZax/wyf5Y3rMX5G@fat_crate.local>
+ <20240207175010.nrr34b2pp3ewe3ga@treble>
+ <20240207185328.GEZcPRqPsNInRXyNMj@fat_crate.local>
+ <20240207194919.qw4jk2ykadjn5d4e@treble>
+ <20240212104348.GCZcn2ZPr445KUyQ7k@fat_crate.local>
+ <78e0d19c-b77a-4169-a80f-2eef91f4a1d6@gmail.com>
+ <20240416092720.GCZh5EeB3bPWVDBMoV@fat_crate.local>
+Content-Language: en-US, sv-SE
+From: Klara Modin <klarasmodin@gmail.com>
+In-Reply-To: <20240416092720.GCZh5EeB3bPWVDBMoV@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 2024-04-16 11:27, Borislav Petkov wrote:
+> On Wed, Apr 03, 2024 at 07:10:17PM +0200, Klara Modin wrote:
+>> With this patch/commit, one of my machines (older P4 Xeon, 32-bit only)
+>> hangs on boot with CONFIG_RETHUNK=y / CONFIG_MITIGATION_RETHUNK=y.
+> 
+> Ok, this should fix it:
+> 
+> ---
+> From: "Borislav Petkov (AMD)" <bp@alien8.de>
+> Date: Mon, 15 Apr 2024 18:15:43 +0200
+> Subject: [PATCH] x86/retpolines: Enable the default thunk warning only on relevant configs
+> 
+> The using-default-thunk warning check makes sense only with
+> configurations which actually enable the special return thunks.
+> 
+> Otherwise, it fires on unrelated 32-bit configs on which the special
+> return thunks won't even work (they're 64-bit only) and, what is more,
+> those configs even go off into the weeds when booting in the
+> alternatives patching code, leading to a dead machine.
+> 
+> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+> Link: https://lore.kernel.org/r/78e0d19c-b77a-4169-a80f-2eef91f4a1d6@gmail.com
+> Link: https://lore.kernel.org/r/20240413024956.488d474e@yea
+> ---
+>   arch/x86/lib/retpoline.S | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
+> diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+> index e674ccf720b9..391059b2c6fb 100644
+> --- a/arch/x86/lib/retpoline.S
+> +++ b/arch/x86/lib/retpoline.S
+> @@ -382,8 +382,15 @@ SYM_FUNC_END(call_depth_return_thunk)
+>   SYM_CODE_START(__x86_return_thunk)
+>   	UNWIND_HINT_FUNC
+>   	ANNOTATE_NOENDBR
+> +#if defined(CONFIG_MITIGATION_UNRET_ENTRY) || \
+> +    defined(CONFIG_MITIGATION_SRSO) || \
+> +    defined(CONFIG_MITIGATION_CALL_DEPTH_TRACKING)
+>   	ALTERNATIVE __stringify(ANNOTATE_UNRET_SAFE; ret), \
+>   		   "jmp warn_thunk_thunk", X86_FEATURE_ALWAYS
+> +#else
+> +	ANNOTATE_UNRET_SAFE
+> +	ret
+> +#endif
+>   	int3
+>   SYM_CODE_END(__x86_return_thunk)
+>   EXPORT_SYMBOL(__x86_return_thunk)
 
---vVBnyCNi3H5acAas
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Apr 16, 2024 at 07:56:11AM +0200, Luca Ceresoli wrote:
-> diff --git a/Documentation/sound/soc/dapm.rst b/Documentation/sound/soc/d=
-apm.rst
-> index e3b399201622..4200bcf18fcd 100644
-> --- a/Documentation/sound/soc/dapm.rst
-> +++ b/Documentation/sound/soc/dapm.rst
-> @@ -11,9 +11,10 @@ all times. It is independent of other kernel power man=
-agement frameworks
->  and, as such, can easily co-exist with them.
-> =20
->  DAPM is also completely transparent to all user space applications as
-> -all power switching is done within the ASoC core. No code changes or
-> -recompiling are required for user space applications. DAPM makes power
-> -switching decisions based upon any audio stream (capture/playback)
-> +all power switching is done internally to the ASoC core. For this reason
-> +DAPM does not expose a kernel API to user space and no code changes or
-> +recompiling are required for user space applications to use it. DAPM mak=
-es
-> +power switching decisions based upon any audio stream (capture/playback)
->  activity and audio mixer settings within the device.
-> =20
->  DAPM spans the whole machine. It covers power control within the entire
->=20
-
-LGTM, thanks!
-
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---vVBnyCNi3H5acAas
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZh9IxQAKCRD2uYlJVVFO
-o+5IAP4rA4Ku5NgOW6jciewhqxIw21d8ESHLjD7kgCiZM96AYQEApReHmrEKFQL2
-mQraPFRlLv1stXRKeHkQAFJGIEkNrgk=
-=T07/
------END PGP SIGNATURE-----
-
---vVBnyCNi3H5acAas--
+Thanks,
+Tested-by: Klara Modin <klarasmodin@gmail.com>
 
