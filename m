@@ -1,118 +1,176 @@
-Return-Path: <linux-kernel+bounces-148784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5644C8A8762
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C4D58A876A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:22:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C0421F225E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:21:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C8431F23391
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CEFD146D6D;
-	Wed, 17 Apr 2024 15:20:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 257861474DB;
+	Wed, 17 Apr 2024 15:21:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="hmZWA4cy"
-Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QD9/fE6s"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D905D146D54
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:20:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DCF81422B6;
+	Wed, 17 Apr 2024 15:21:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713367253; cv=none; b=tsjY66qnb8vJZc4ZqHgOpSK9pQ1otOdiQLJ6j6d9x+1cMDhlzY6VVC0Ezzg5f9+g8DyymPucPHviFRE2JN0M+A05czzvxcZ1MPGQNv+GcKsiHPViIiBmwK9E7/IxhcRSAGc6QJmPHDA6GkggJUcRH1OllIesGN6jYMlnml+XWCw=
+	t=1713367315; cv=none; b=rDSjacCj/O1ZSsKXikKIaZonfK2Tvw1PhRChcGc5fn8vA8ZrgbRiEw6SKZwU+UX1fDOXHtIoJfaXjz88u4yXLslYZjXD4gQhoy/ajYTguSQ8lYD+QijBXUkIpfL2cTeJp39C29I7dkfF93j0TZGVqHWK0GN3hVEToOPvYy1b2OM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713367253; c=relaxed/simple;
-	bh=UPBih86VwhYA999zRYFTWuXSTMQT7D7fNy+bP56pCiA=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Z6iT/uNkCmpwdsc3fXci49SHeYBOoCKOaQWXb6o4AQ2RFZo7/E7wS8s+v+W2qDaw6SN853gaeCsNuDgO9aRXc4t5530fgVZ7V7W0SNq48rH7C2rmJ+tjl2IdHHf1TmcshHC78z/TmjdVj9Xwwk2GyBCz26nIYELZnq6hknOuwls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=hmZWA4cy; arc=none smtp.client-ip=185.70.40.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1713367248; x=1713626448;
-	bh=YWyxuaF5Ni3EMSqmk2O91LAhe4Gw3wdUrmkeI2YFMFo=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=hmZWA4cy+e2OIIPIyuSEmU3oRMgzgatK5jfeklNaNCTWZ4Cuh2lDy2gxdszV2K+hQ
-	 gCCil2rQq9I6zl/M/J6NRT8GcUd+IZS0bIAgVCKnYUD5O0UHMpkYVIcZULKJc5e9Oq
-	 LkylIL2rKrnN6sLH9q6DW42YajeJU62UBzfUyt/VGgFktfGVcPipH3ASrFQfHrt52a
-	 KjUR/o9Y01NDsYemSrBdpiRmESEKiTNDcDXhR4J0wS6VcBmtgNBhcjgb0VaIVhopg3
-	 SoUwNym0BkUtmIWxhjwKm2TdOTB4mafz2MYC5NVAUsP/eVTvQA6O2IzrdD85FdsExt
-	 lkzUynDPJc1Zw==
-Date: Wed, 17 Apr 2024 15:20:37 +0000
-To: Gary Guo <gary@garyguo.net>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Boqun Feng <boqun.feng@gmail.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rust: init: change the generated name of guard variables
-Message-ID: <bb23edeb-7a0b-4bb7-8df7-92b2c9701ec6@proton.me>
-In-Reply-To: <20240417160636.0e649b68@eugeo>
-References: <20240403194321.88716-1-benno.lossin@proton.me> <Zg3IHZfYVEOh7nc4@boqun-archlinux> <ef1400ae-ba9e-4656-98db-a882ac720c1e@proton.me> <20240417160636.0e649b68@eugeo>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1713367315; c=relaxed/simple;
+	bh=eaGY130EEfNXK73Gt7yZNiqyMJf/fKU75Cs6qodOdYs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oY9r+siyoUP4GX2TDo24lolzCeE+wFsU+UJqKXj/VxIXVjtsXTWI3ueyQok0Kib3c4sXfc/hQb2cVcuXx5h5cpJWZxJTWE6wvhcoqUkM7EUrK6FT9LHrpm1WFZowMA1IhkaPCRiAWXjq4txzg6o1Hf1e0WPQYdWTlI0VDnsVRM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QD9/fE6s; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e51398cc4eso53103975ad.2;
+        Wed, 17 Apr 2024 08:21:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713367313; x=1713972113; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UHqy/YNAwuIo5hSIvZMWYfCNqZ6Gl94Xq9snb/hWpDM=;
+        b=QD9/fE6sP5J+G9qgZ5cyd4tWtiAESl6R9XLjO6yyCqvmJ9jTyo91Qi34QUE3X0I7EH
+         DBCgOu4hfNsY2umLtXlXVTUQwbVbMbBlFiSRFPVMRAsUs3UND//f3KrDjBm+bQWPFGEE
+         yBv21jo0yfo4XRP4K6rTnZB5HRjAYBk3DDCQgjdOmcEO2NLU8X6NINleyT4/3NGvLi81
+         xvqA2XfTYDCQIySqijC6haJNNc5JBSqwKSaZG/8mMwgq92jGk2r5V6h7RXMc85ttjmUe
+         qOwoYZtWowQEYjRUgKRMcMfkpHEUNuj931Wn9h2T5ARDVLZ4A4Fsu5tthpqqdulPvmwd
+         ppHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713367313; x=1713972113;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UHqy/YNAwuIo5hSIvZMWYfCNqZ6Gl94Xq9snb/hWpDM=;
+        b=rV6PMdUhJw4rRmNvWtYDU1ilE95mFe+KAVOCut0s0HQIowDFp9NBgyDPDwSsmvTcDi
+         3jVB42tWXDLxiwbkKDNnVGlV9+QkZdw9Oz1E7Oo6QvdJKoG9Y9nFpWRnpzZIYwWzU/SZ
+         FmDSqe0tSAf1Ryqg3h09xptoA5NmP3+IcW/WELpY+sIrElzm/KVPmvqplzJ8f1EdrkTh
+         PqixwwN0WJlllO9k2NmjPLqkGHusuIf6+vE9EP52PoApJ6p7iKaRxaZjmo2x7qsvcIK9
+         R0JaIg+/4Evv06y8Vl6nH8XOPtnzGGxVSlJAkdfyWi+cSWRZCaNFhA9aOCEgGncibX2W
+         hTvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUoOwYUvS0ZELB+A+fVNGJ9vzjuYG+/5gUlxketnpoRJRrspV3WHUGI2xlabEwgIA9OycanvGAX38zmV073DwU0l2TpMbURjWawQs0Mo489EnHvDynN91yFJcGzXkhBmeTSZE4P1x5kzdZg8ASaTXlh0fW1pyWnv67VBj8Px6Xi
+X-Gm-Message-State: AOJu0YzHHcp027/PXqRv2MMGfIxo6Oh2EIMIW9axV13u6sK2dx28y4LC
+	RzzUKf5OnPo1V7uTX3j3Cwv5S2+6KBiBbqoAIlT0yOKbbnut/n0mtaCDvRqIpdZsb7xjt7IMAwi
+	Ll+HPpS4UEx8oTbHGsb8UCOaMB4E=
+X-Google-Smtp-Source: AGHT+IFH0RxVWSWvxx7Od2F5Bjl9fNOEbOopFEH/T64IAZv/Jx37DVoXUhgbLBomLUTUmvQhXUEHJDp07NpWEJm0XTw=
+X-Received: by 2002:a17:90a:f309:b0:2a4:ac8a:ca05 with SMTP id
+ ca9-20020a17090af30900b002a4ac8aca05mr18818244pjb.34.1713367313228; Wed, 17
+ Apr 2024 08:21:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20240329133458.323041-2-valla.francesco@gmail.com>
+ <20240329133458.323041-3-valla.francesco@gmail.com> <CAMZ6RqKLaYb+8EaeoFMHofcaBT5G2-qdqSb4do73xrgMvWMZaA@mail.gmail.com>
+ <9f5ad308-f2a0-47be-85f3-d152bc98099a@hartkopp.net> <CAMZ6RqKGKcYd4hAM8AVV72t78H-Kt92NXowx6Q+YCw=AuSxKuw@mail.gmail.com>
+ <64586257-3cf6-4c10-a30b-200b1ecc5e80@hartkopp.net> <Zh6qiDwbEnaJtTvl@fedora> <d4a55991-0ccc-4e8f-8acb-56077600c9e0@hartkopp.net>
+In-Reply-To: <d4a55991-0ccc-4e8f-8acb-56077600c9e0@hartkopp.net>
+From: Vincent Mailhol <vincent.mailhol@gmail.com>
+Date: Thu, 18 Apr 2024 00:21:40 +0900
+Message-ID: <CAMZ6RqJUHJdq30CrAzT26_RqpDOH_iMP8A6SKSAYrWBe-T+Oww@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] Documentation: networking: document ISO 15765-2:2016
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Francesco Valla <valla.francesco@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, 
+	linux-can@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Simon Horman <horms@kernel.org>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>, fabio@redaril.me
+Content-Type: text/plain; charset="UTF-8"
 
-On 17.04.24 17:06, Gary Guo wrote:
-> On Wed, 03 Apr 2024 22:09:49 +0000
-> Benno Lossin <benno.lossin@proton.me> wrote:
->=20
->> On 03.04.24 23:20, Boqun Feng wrote:
->>> On Wed, Apr 03, 2024 at 07:43:37PM +0000, Benno Lossin wrote:
->>>> The initializers created by the `[try_][pin_]init!` macros utilize the
->>>> guard pattern to drop already initialized fields, when initialization
->>>> fails mid-way. These guards are generated to have the same name as the
->>>> field that they handle. To prevent namespacing issues when the field
->>>
->>> Do you have an example of this kind of issues?
->>
->> https://lore.kernel.org/rust-for-linux/1e8a2a1f-abbf-44ba-8344-705a9cbb1=
-627@proton.me/
->>
->=20
-> Here's the simplified example:
->=20
-> ```
-> macro_rules! f {
->      () =3D> {
->          let a =3D 1;
->          let _: u32 =3D a;
->      }
-> }
->=20
-> const a: u64 =3D 1;
->=20
-> fn main() {
->      f!();
-> }
-> ```
->=20
-> The `a` in `f` have a different hygiene so normally it is scoped to the
-> macro expansion and wouldn't escape. Interestingly a constant is still
-> preferred despite the hygiene so constants escaped into the macro,
-> leading to the error.
->=20
-> Would your change regress error message when `pin_init!` is used
-> wrongly? Personally I would say this kind of error is niche enough
-> (given the casing of constants and variables differ) that we probably
-> don't really need to care. So if error message would be affected then
-> we'd better off not making the change.
+On Wed. 17 Apr. 2024 at 02:19, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+> Hi Francesco and Vincent,
+>
+> On 16.04.24 18:42, Francesco Valla wrote:
+> > On Sun, Apr 14, 2024 at 10:21:33PM +0200, Oliver Hartkopp wrote:
+> >> On 14.04.24 06:03, Vincent Mailhol wrote:
+>
+> >>> Regardless, here is a verbatim extract from the Foreworld section of
+> >>> ISO 15765-2:2024
+> >>>
+> >>>     This fourth edition cancels and replaces the third edition (ISO
+> >>>     15765-2:2016), which has been technically revised.
+> >>>
+> >>>     The main changes are as follows:
+> >>>
+> >>>       - restructured the document to achieve compatibility with OSI
+> >>>         7-layers model;
+> >>>
+> >>>       - introduced T_Data abstract service primitive interface to
+> >>>         achieve compatibility with ISO 14229-2;
+> >>>
+> >>>       - moved all transport layer protocol-related information to Clause 9;
+> >>>
+> >>>       - clarification and editorial corrections
+> >>>
+> >>
+> >> Yes, I've checked the release notes on the ISO website too.
+> >> This really looks like editorial stuff that has nothing to do with the data
+> >> protocol and its segmentation.
+> >>
+> >
+> > The :2016 suffix is cited both here and inside the Kconfig. We can:
+> > - keep the :2016 here and then update both the documentation and the
+> >    Kconfig once the standard has been checked
+> > - move to :2024 both here and inside the Kconfig
+> > - drop the :2016 from everywhere (leaving only ISO 15765) and move to
+> >    ISO 15765:2024 only inside the "Specifications used" paragraph
+> >
+> > What do you think? Shall the modifications to the Kconfig be done as part of
+> > this series?
 
-For all the tested error messages (see [1]) there is absolutely no
-difference in the diagnostic.
+If we bump the version to :2024, then I suggest to:
 
-[1]: https://github.com/Rust-for-Linux/pinned-init/tree/main/tests/ui/compi=
-le-fail
+  - add a first patch in this series to update Kconfig.
+  - add your documentation as a second patch directly with the :2024 version.
 
---=20
-Cheers,
-Benno
+Generally speaking, when a feature requires any kind of clean-up, I
+think it is better to do that clean-up first, prior to introducing the
+feature.
 
+I am also supportive of your idea to drop the year suffix in most
+places and only keep it once.
+
+> So here is my completely new view on this version topic ... ;-D
+>
+> I would vote for ISO 15765-2:2016 in all places.
+>
+> The ISO 15765-2:2016 is the first ISO 15765-2 standard which supports
+> CAN FD and ISO 15765-2:2024 does not bring any functional change neither
+> to the standard nor to the implementation in the Linux kernel.
+>
+> For that reason ISO 15765-2:2016 is still correct and relevant (due to
+> the CAN FD support) and does not confuse the users whether the 2024
+> version has some completely new feature or is potentially incompatible
+> to the 2016 version.
+
+ISO publications are backward compatible (if you dig enough, you may
+find exceptions, but it is *extremely* uncommon that a newer revision
+would break the specification from a prior publication). Without prior
+knowledge, if I see ISO 15765-2:2024, I would know that it is the
+latest and that I can thus expect support for both ISO 15765-2:2016
+and ISO 15765-2:2024. If I see ISO 15765-2:2016, I may think that the
+newer ISO 15765-2:2024 is not supported.
+
+I can also use ISO 11898-1 as an example. Our documentation says that
+we support ISO 11898-1:2015. The previous version: ISO 11898-1:2003 is
+not mentioned a single time in the full kernel tree. Yet, I do not
+think that any one was ever confused that the kernel may not be
+compatible with ISO 11898-1:2003.
+
+If you really think that there is a risk of confusion, then maybe just
+adding a sentence to say that we support ISO 15765-2:2024 and all
+previous versions would be enough?
+
+But overall, I do not see the benefit to keep the older version.
+
+> Best regards,
+> Oliver
 
