@@ -1,121 +1,206 @@
-Return-Path: <linux-kernel+bounces-149039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A533E8A8ADF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:12:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74A7C8A8ADB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:12:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4675E1F235AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:12:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 988251C23021
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55DE5172BC4;
-	Wed, 17 Apr 2024 18:12:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FC5D173335;
+	Wed, 17 Apr 2024 18:12:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S9W+R3jO"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="W67BD2Oq"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04olkn2101.outbound.protection.outlook.com [40.92.45.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E3B9172BD5
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:12:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713377560; cv=none; b=S8DVfhufhJGdtsIlFevCt9bqMf4C91TZfnUxqGaDRJwbp18JErZmb0kkVX8og033MwMThyYT6/xJE+Yk3LGxWzzH/5VO7k1slhpfg5lCp4RogwULtqEfAMFeYd/UlXQ3scb+KgVFm+1BsAe6MN0shZh9PtCP5XJat8ftxJ4kbI0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713377560; c=relaxed/simple;
-	bh=qiutvoq8Ltxn394+I+p61Cd7EDaVCd1CAoVuzEOOhRA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=nZ5GcT9Tbc2q3IHZyjR+/3XAosaYeEv0qW9Dzxji0T/Dh8XSbsMv19itVkc+XqUPRUWx/Z6tiokit0cndhHPG8J7kyIuY6SSiP3c6o1QmH91AZI/FFGghQ7ubymAke5++scCqswB19Q62nf1ayJ30m44H2VAHNCeHvd91IvAZXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S9W+R3jO; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a526d381d2fso201892466b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:12:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713377557; x=1713982357; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+mCCarDxXlgu4hyBynvT4TbhwQR+Bl+Atlkmkkj0byY=;
-        b=S9W+R3jOYSxYY2TTLBmfuuGaRbNB6lhAl5k7z3L0JpAsJ910zAG2EsQ8Y4nCNaDkwK
-         6bdS21SQm5xcpf+IZffAMMudEetDDTsrt4/KHcUXFgEzl+q/aEAQBbt3ajrPP0BtqVuo
-         Tt0Sp1xzh4EblTLKTcBonJ9oxSUlSJ4sDbxPyMvBWnzEpPhCe9mTz3UuxirtG397HI5V
-         kUZ8GpjfsUVNLfiEi+0hExNQzXHhQTiHoAIJjt4OLpzq+zBq75QJp4mNy8XxV2oioh/Z
-         Er8VUbilwU66RfVREzXEYvBKu6Nnt3UGWUnEouAgHEO3rKztn3ieXOk8wLAwQ5awgnhb
-         uc0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713377557; x=1713982357;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+mCCarDxXlgu4hyBynvT4TbhwQR+Bl+Atlkmkkj0byY=;
-        b=QwA5+LS4GQkYhSF3Tzv6gu6B2RxFzkDPAsWRFsIBUlc9bMcgjQpO9hH6TJnL0+Dpz7
-         XW77Ahi3yE0qVClgfJzoKaFb9ROKQdTUaSp+n+Uy1oPadzGAFBoXG3ud1oPX9Xev3qCM
-         K0Ly+y67Fh6PQr/8XKSb9RbKZ0Oj1F+TQ6mavd5DOUPfCjfbOmyH9FMN5qkU2nFErKG4
-         ffWcHyaFiwB2+v7ryIWB7Yzkm7T61JfsHXkLh4SU0sybLx+KXY5X2hAjAUtNYnVFmMeX
-         ra9DJR2xPSQL9hx1DbMhpVVW7ZuYdllLxt6dSl+b7dR7e14MDZfE+iQ7LIMr9K56F2OX
-         IV1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUcuWWvZTbnwYx04Xkmt/PLdbdoa59igKtt+t3RwCfKLN30FDKgqW76VMrq9rqGalbk6ch+7AAopygahW5EnUtQn9eb1KL2xPIkbTFr
-X-Gm-Message-State: AOJu0YyUfEV/xSqw71gSifq5/+Z4zXp6J0xQQVz+AAduVvp8DiGvhZ+H
-	fl0WYhYfEsic5pYN/KLVgilMuiz2hhSs+WarwV+S5kOkuESjPmusJnglbaIAK14=
-X-Google-Smtp-Source: AGHT+IHv0jRbjLrIABccBN72sxjNaWnPPUoHMRHdg7slFRmzcEJuQtNDuZyQ2IRZDV36Re1YyRPGJQ==
-X-Received: by 2002:a17:906:e0d:b0:a52:30d4:20e6 with SMTP id l13-20020a1709060e0d00b00a5230d420e6mr131587eji.10.1713377557101;
-        Wed, 17 Apr 2024 11:12:37 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id 11-20020a170906310b00b00a51dcdca6cfsm8413553ejx.71.2024.04.17.11.12.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 11:12:36 -0700 (PDT)
-Date: Wed, 17 Apr 2024 21:12:32 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Akhil R <akhilrajeev@nvidia.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	linux-crypto@vger.kernel.org, linux-tegra@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH 1/2] crypto: tegra - Fix some error codes
-Message-ID: <ec425896-49eb-4099-9898-ac9509f6ab8f@moroto.mountain>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C85F146D7F;
+	Wed, 17 Apr 2024 18:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.45.101
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713377559; cv=fail; b=lkSVQOs/0u0lFiyanizCcGDJTGs813g9n+QrB2A7p7F1Q2s7KwG1dE1krBqpj4dPjMbUebs/0DB6+PcgBlTHKHWVu/inOBj6hKVBKoeX6rRs3a4ZVrHWPjzHQdAm4qCKpWHazkhSbhAYYSK44s8AddTD4CLXozA4C5l7mlbIZ8g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713377559; c=relaxed/simple;
+	bh=YjcqZRTMrNnBShhi5D7Zg3XRsxGfrkmGllxnr9+cfi0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Yfe/RqrCCz8PLkQpZBSwzxDh97vzrCSz37fqBctygHlKbge3gKjhG6z1391EqsofxmhMUZx/prfbZhAnS00v0KL0T/2FnIpEkY4j0BS6Vzs0L8bWipaOeqkUXKRb6vgZeAs8EgF8+rTGl1B/LHxZ86ilQLqzP5HEIBjQNc3Gg38=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=W67BD2Oq; arc=fail smtp.client-ip=40.92.45.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dj5QuQAeNYqe3F/vq6TXv4bFhoVYi+Q/Co8HvqTF+seo4rN4pXItyQZ9dH5Tmzg9qyg01EuaKVKxE2LoYvbccfWeiFjnkN/rWmnpADxGWTDaizksI+NHBwfUuoznud5PD/jMECq8IoJzrid6g0m3hy99pTxrF4b70mLH4QHec/VWOy3N0/tqWE74KJy91hNa+VojJaPe6MCEqdOPMMnmPuifzytz4y03QSB4vW9BkGO9udhbVp+o/+EWrBAo/e/PKn5gMk10JYo90GnlC1mQoM8qSlS+UV9jd4kWLeYBUHBwN+dKHPrZ3EgcpC6uFufzFX887vgzz6uf/YXVr8KqCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=X3Xzfo5q4IUz2fMt2MFMu721g7PRW2AjLOvvKlSmqmA=;
+ b=O2i3YyziexqCXnJ/6p45oLT/l0dMVplHMYp7YDtMAQZ+2FtR1rdVUt89aTWCPl4sKptQH+Xe3BGUkRSAFvsObB/VIz1XHH3/ZxhQeqDu1o4T0MmPmHw+tfYUNgSBcuK5nbNWKN/7SsnWBpfx8CVjV7LKDP/Fea66qj9WIwljRYWBeBJ2HuST5zPfpCqhuWLjBMikbuuc/torfsKPKTX1locPyYCoCDcyHMxYFGJvV1/sFEwPbirPb/5Htfo8YSxh+f2YZqdiPO7oiw2AzMbtvBC0KTOmriWwOKDxpmQe3txCc1Hn5CZLSGa7AmB/rdMjliG+IXs6srG0QWKUrTdtGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X3Xzfo5q4IUz2fMt2MFMu721g7PRW2AjLOvvKlSmqmA=;
+ b=W67BD2OqqephrnvSuhvsU7LDLmzW0KVY2FOSnDS4Lz6QTGR2peboLXbOG53bkUh97ynNpQGNkxS+QY1qAbHBdwhtOuvVzWGpWxg+MCSFCTHf+Hq4pWe8U9YN3TVe+FNuMbhmTzlQgfPLTSJ0LJZDnsB1CGKA/DfxJ/IPlWnqkIdUnE3Q5B/nkXFnd0voLQ+3i1ncV9Y1Rd7aqVEYx3MwTa/8BRYOjURvmCTYXCzDb6AZyV1rwHzKIF4chwda4m6OyXT3rR+Q7QC9JbSqu5dhPPVWbB8aycYuP2I0wix8bRHaQSmx8Z0FR+icuheMRw0koOqzbX0kTBhriPhVt88zdw==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by DM4PR02MB8981.namprd02.prod.outlook.com (2603:10b6:8:bd::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.37; Wed, 17 Apr
+ 2024 18:12:35 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::1276:e87b:ae1:a596]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::1276:e87b:ae1:a596%5]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
+ 18:12:35 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Jean Delvare <jdelvare@suse.de>, Michael Schierl <schierlm@gmx.de>
+CC: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] firmware: dmi: Stop decoding on broken entry
+Thread-Topic: [PATCH] firmware: dmi: Stop decoding on broken entry
+Thread-Index: AQHakNyeQHU2XdbvxkyqvOE9tFpqPLFsmKbAgAAgboCAAAm3QA==
+Date: Wed, 17 Apr 2024 18:12:34 +0000
+Message-ID:
+ <SN6PR02MB415762984B4CA784CA3B82D3D40F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <b702b36b90b63b615d41e778570707043ea81551.camel@suse.de>
+	 <SN6PR02MB415755044A025D66B4BC8955D40F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <a5cc2ca32f52f3dfce90e0a7e33656e3ee3a1a2e.camel@suse.de>
+In-Reply-To: <a5cc2ca32f52f3dfce90e0a7e33656e3ee3a1a2e.camel@suse.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [xrG6iqW1VMdTbgaIoEpcywMeiA/1P8CJ]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|DM4PR02MB8981:EE_
+x-ms-office365-filtering-correlation-id: b2282fb0-6f73-4b13-6d15-08dc5f09f50b
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ U1ytlud5Y5MRUsTLUSMguLViV2fJ2VJSC9X3IJvqcQwFtnmxmzP+64b9c5mXWj+Kztz+THjBj7W7Ml5epc/kZwFIyua/LAUBDKaxg4WYTSIJH347iLcVbWWhhEwC+reiCFqD8b0Phoghg61d+DW7oa3x3rw8IEzN2hqALGMD1RBCPPtgXAUrcUn02/d7xcke9IJhQJuuy3Anm5w63K6r839Y20asl5xw3fq1tvqV0cUUYvwPR8tfcVmopEwcypRTQb54mdrurZGvt2xuq+Nf28IYYbGgA9dIEkTB+jeAvNYYcpnp8UpBYINA2ADG7oyeZseJzDN3pGNYaTOMNzNSzfKAoK/zXzgqC5A5mVC7kkxTbwd3HfFWKdcnRpbcyOPPzS4L59xplDK9PNjVPW9W6i8eaHAR+nqLm49D0XoMejciKysBowVJT9nmBegu+J87mRNb1YqqBGG8zOSGy6PGEY/KRDw91cKGJFAZU5bhoGrN7a6BhvpMvPD0oy4KrNQAy3y35A/8Sr6K5D5wgJ40FZyZabsX5YAOdxrPOVREmiuiqKiQB3QAF0YzWp+w/0QMaQdSY7HxD8mKEBzw2swv6FjriHGy04hA/XRHnm1GI1xLMVTkw3cbGIyjnaA5N+qTu9QG8v+1nVeK+LMrUYJWWiv/DM6ihoOQK4xjHJVYMYo=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?wE+0XhXD8hIc1z/h3sBBjzi2ixqK1L1GflyfOtUH817SrUsq9I2SE0QrWx?=
+ =?iso-8859-1?Q?NsRQ0Tie90reVPTogELPLNQYVYQ8lJnwDGfkfA+hEB1q8RGIC1whUOVz7k?=
+ =?iso-8859-1?Q?3mdB5nWJhUCRbGhphD06UtzDn/vEVboiRqIAXQUSIBPFBSr7p4wW92uLoV?=
+ =?iso-8859-1?Q?ivjVB7D1dwkKcEr1SUc6jmqY83WKqVVmDqaKgVWmnqJBQ4pnAkPugyKNn7?=
+ =?iso-8859-1?Q?9XdnKpwFRNslZhTsywkicgLQ6KNyaWj7vmmfE8/f2ZeBIvUP5IiNVmOtP+?=
+ =?iso-8859-1?Q?qT1f98CIeNLxFqLRsgZiGYtNM+OL+gZa5YXu6aauu2JnVpCgE64rh/ftKM?=
+ =?iso-8859-1?Q?SRLQ9ZO8kmPooZ6ydCy4LFE3swES/3I0efHVgTmuXQw6mRysIQkWW8ttle?=
+ =?iso-8859-1?Q?ytFQzwT5rjEbEkvSUZ93CPErdUTerylPJ/4WBIvK7O6z0aiRZagvhVnJIB?=
+ =?iso-8859-1?Q?4EF2wHlBamd2UOt9nSe4ljeUoe7WI2lgpvfr+PBK7Nyc8rQiI649kJHi57?=
+ =?iso-8859-1?Q?/Hx/e6pfqMhwHNRBuXKZ0faI79pzBBZ0Ksj/xvu+FhyKUDhQDOy881THa9?=
+ =?iso-8859-1?Q?LxPNje9EsftKIDuaVe+W/FFfhhnASwu02L9KeO+cLfjZettuHZ/ngKyBL2?=
+ =?iso-8859-1?Q?0s9xalkJxJuqvWxnndesZkKguxnm3bBgURREe3gYcOfIjkyEyC3uQAPtze?=
+ =?iso-8859-1?Q?2OqdpYRkfhMrkY8zUvO4MuWUJCOeBDZsmYlaYywisf4DYcQuGnEPkQmqcx?=
+ =?iso-8859-1?Q?z8CWqEyQGl2oap5YSuzUR4Q56Oai7Qg8Aeqkrb8kd074/p0tteqmuJiai4?=
+ =?iso-8859-1?Q?Jmj5ZXnIqFCpsagZ5AxsF9JsWaIQ/rvhO4mDqhhbemsNJ0jMD+g460mtAT?=
+ =?iso-8859-1?Q?td51angddBEqBwwMLkFK/wjwqGj9A9W2kDrS+h1kwRksh1htB+fkm6o9HO?=
+ =?iso-8859-1?Q?We38MuguilSoHn1MlhQCE6oNVps3fcRWgrzqGIdQU+atTfIBM8w9rXkPJ4?=
+ =?iso-8859-1?Q?JGV8IgqoHlewu+HAaI6N0Fo2c89ZYvg/4/3QmKbgax2t4nrbqJJ1XCR+Tw?=
+ =?iso-8859-1?Q?WfBc9hugeC2YHjZm8LdSRA4tDnHNRssjAjmCxry0OQUYZMErczu7tEY2O/?=
+ =?iso-8859-1?Q?yYVjlXavBPYDN8hXaZC1jWhMdnA9fVs8wU+5dbh0nYuLgS6qhhJkKDVGqh?=
+ =?iso-8859-1?Q?+6V6EBGSa4k39/Tfr9WHGYS2wjgf7Ffn0XvztQv51Ay42OcKPGl4AT4Apx?=
+ =?iso-8859-1?Q?yj9DL0g84uuJrx9+Tkaw=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2282fb0-6f73-4b13-6d15-08dc5f09f50b
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Apr 2024 18:12:34.9655
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR02MB8981
 
-Return negative -ENOMEM, instead of positive ENOMEM.
+From: Jean Delvare <jdelvare@suse.de> Sent: Wednesday, April 17, 2024 10:34=
+ AM
+>=20
+> Hi Michael,
+>=20
+> On Wed, 2024-04-17 at 15:43 +0000, Michael Kelley wrote:
+> > From: Jean Delvare <jdelvare@suse.de> Sent: Wednesday, April 17, 2024 8=
+:34 AM
+> > >
+> > > If a DMI table entry is shorter than 4 bytes, it is invalid. Due to
+> > > how DMI table parsing works, it is impossible to safely recover from
+> > > such an error, so we have to stop decoding the table.
+> > >
+> > > Signed-off-by: Jean Delvare <jdelvare@suse.de>
+> > > Link: https://lore.kernel.org/linux-kernel/Zh2K3-HLXOesT_vZ@liuwe-dev=
+box-debian-v2/T/
+> > > ---
+> > > Michael, can you please test this patch and confirm that it prevents
+> > > the early oops?
+> > >
+> > > The root cause of the DMI table corruption still needs to be
+> > > investigated.
+> > >
+> > > =A0drivers/firmware/dmi_scan.c |=A0=A0 11 +++++++++++
+> > > =A01 file changed, 11 insertions(+)
+> > >
+> > > --- linux-6.8.orig/drivers/firmware/dmi_scan.c
+> > > +++ linux-6.8/drivers/firmware/dmi_scan.c
+> > > @@ -102,6 +102,17 @@ static void dmi_decode_table(u8 *buf,
+> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0const struct dmi_head=
+er *dm =3D (const struct dmi_header *)data;
+> > >
+> > > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0/*
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 * If a short entry is =
+found (less than 4 bytes), not only it
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 * is invalid, but we c=
+annot reliably locate the next entry.
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 */
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0if (dm->length < sizeof=
+(struct dmi_header)) {
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0pr_warn(FW_BUG
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0"Corrupted DMI table (only %d entries processed)=
+\n",
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0i);
+> >
+> > It would be useful to also output the three header fields: type, handle=
+, and length,
+>=20
+> I object. The most likely cause for the length being wrong is memory
+> corruption. We have no idea what caused it, nor what kind of data was
+> written over the DMI table, so leaking the information to user-space
+> doesn't sound like a good idea, even if it's only 4 bytes.
+>=20
+> Furthermore, the data in question is essentially useless anyway. It is
+> likely to lead the person investigating the bug into the wrong
+> direction by interpreting essentially random data as type, handle and
+> length.
+>=20
+> > and perhaps also the offset of the header in the DMI blob (i.e., "data =
+- buf").
+>=20
+> I could do that, as it isn't leaking any information, and this could be
+> used to compute the memory address at which the corruption was
+> detected, which is probably more useful than the number of the
+> corrupted entry. Thanks for the suggestion.
+>=20
+> > When looking at the error reported by user space dmidecode, the first t=
+hing
+> > I did was add those fields to the error message.
+>=20
+> And this did not give you any further insight, did it?
 
-Fixes: 0880bb3b00c8 ("crypto: tegra - Add Tegra Security Engine driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/crypto/tegra/tegra-se-aes.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Agreed.  The offset was probably more useful than the fields from the
+header. With the offset, "hexdump /sys/firmware/dmi/tables/DMI"
+shows what the bad data looks like.  So if you want to do only the offset,
+I'm OK with that.
 
-diff --git a/drivers/crypto/tegra/tegra-se-aes.c b/drivers/crypto/tegra/tegra-se-aes.c
-index adc6cdab389e..ae7a0f8435fc 100644
---- a/drivers/crypto/tegra/tegra-se-aes.c
-+++ b/drivers/crypto/tegra/tegra-se-aes.c
-@@ -1156,7 +1156,7 @@ static int tegra_ccm_do_one_req(struct crypto_engine *engine, void *areq)
- 	rctx->outbuf.buf = dma_alloc_coherent(ctx->se->dev, SE_AES_BUFLEN,
- 					      &rctx->outbuf.addr, GFP_KERNEL);
- 	if (!rctx->outbuf.buf) {
--		ret = ENOMEM;
-+		ret = -ENOMEM;
- 		goto outbuf_err;
- 	}
- 
-@@ -1226,7 +1226,7 @@ static int tegra_gcm_do_one_req(struct crypto_engine *engine, void *areq)
- 	rctx->outbuf.buf = dma_alloc_coherent(ctx->se->dev, SE_AES_BUFLEN,
- 					      &rctx->outbuf.addr, GFP_KERNEL);
- 	if (!rctx->outbuf.buf) {
--		ret = ENOMEM;
-+		ret = -ENOMEM;
- 		goto outbuf_err;
- 	}
- 
--- 
-2.43.0
-
+Michael
 
