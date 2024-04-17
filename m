@@ -1,133 +1,100 @@
-Return-Path: <linux-kernel+bounces-149302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDCDB8A8F1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:07:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A99BB8A8F1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:07:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B6EA1C2169A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 23:07:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB5FB1C2160E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 23:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 401528563B;
-	Wed, 17 Apr 2024 23:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B018612E;
+	Wed, 17 Apr 2024 23:07:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dFo5v/8m"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oKUwQxhI"
 Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA3DFC1F
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 23:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E14CF85297
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 23:07:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713395226; cv=none; b=Qqpms4FFn8Q3pRz/40XOV0RVQ3FO8uiROVXGe2tIvDJsn6ZAN36pX9i9jjaVWYC81PkEq3GiKHz61IqXVGY4ZmjCz2GmZFuqjPUn2CJysD9b1YJHEzEkeLzELwBKI9uKuSi5kK+unvPXMN9VemDDOj7BntvORnD0tjkNWqeA4BM=
+	t=1713395228; cv=none; b=NbTbrMN+0l4wTYLJp+oyuWMXyCKFEgMF6nWA6tmfGz7fB88DWHQQCeLwTmJxBvUbh9FsTRx/wo+S7qBb/d7dWLhnV5Ks/j/cpjqjpZt+qfnvsM2UJ07bQuQ5n69q7QzymTZlRjy4SaYEsnf2mH6jNSHFF7TiYxZR84ocy6PEs5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713395226; c=relaxed/simple;
-	bh=HOqShe5yeUWnPhZuqFM8RSUH+/kbodWzz7HN7N/L39s=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=q0swAGaxCXX0Xx2jIrVNXVVNGqa1Lw420ZiH26RyNr+oH3kl9ipgkfzbe4u+54O/NFbOg677Qgo44y9rEAoRWuXtmM3SegpL59jHdQVeJ7J7pg1f1R6qM8w4RY/ATAZvkUzs3ecI7r1fxkB1vYRNUzNTzfhnzX0LXkNyhgxq85Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--dtokazaki.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dFo5v/8m; arc=none smtp.client-ip=209.85.219.201
+	s=arc-20240116; t=1713395228; c=relaxed/simple;
+	bh=MAU3e14GXOgI1OPIqUqVpij8Of5M2Ew8TOD3t2RDN9I=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=sxwBd2KbZ4ToBuybPf5qkT9uDzhOGIuMyQ5leMBONFvM7DZHsIRFon7Ycwuz6r8Up5IO1Udfb40HW8Kp4uU24QE6I4f+dOiIZ558+aB9oaZfamCapReRsDvcjmovVtJ48EI6kMazmVSgBz6D0FkdkLMzLSPpAilNWz7ei5STDRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oKUwQxhI; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--dtokazaki.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dced704f17cso597029276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 16:07:03 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-de465caa098so203266276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 16:07:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713395223; x=1714000023; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ESREvptBFDtywOEXVmXxmfhUoPX5JiubFR54p3zkXt8=;
-        b=dFo5v/8mnwluqRKc11dgyzr00/r5T10/jqnYUjRHZQiRYIw5o/3LcMRNDBLcih5Z4v
-         9vPRogsNA/G9VdalfkAm6tICr0JFhIQ0KpUOHq4O9IHHUy2npj0A5ofVjB4vU9TZvDSW
-         M/Sxr8Fu+D9TALp3h3sAFoGjTkGh8yy3PCCXw6SbYs+3RID64OY6832czwKskAImmPY5
-         sJfX3zRL1Bdx5kLXycbi1o5B1G4HNaSU1VygOJ9qrfvm3K3ljIzvxjeFVm8IizuyeHI6
-         xNyTx8Q7UeFzBHp4jLvBSRvIqWILV/VkcVP8IZ0jM0xDpR1P7ud1Uo8+ZcAfj2+Grswf
-         FYRQ==
+        d=google.com; s=20230601; t=1713395226; x=1714000026; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UvdJd071q5jVlxwi+Q4Kny8l+l/3LzCxPLWdR3GCjKo=;
+        b=oKUwQxhId+CvF6vweJ9F4Qt3Tbc+3w/QaqS5BVymtn5msE5S9tzPnS2Wzm7pdlZ5uV
+         HChXIsmkeGJlaZ5FBHTKL7vKJbG5Es3w1Twfy1Dz4fVcjePIXsr9EK06KvXyn1KI8vLo
+         egLdISZiEA2qr1NuTDkI4/yGcZI0mIma8fWN8qAGs5dBm+HTt8/MyQtu9MGLmMwy2faR
+         KXdXaajXZdoj4aNzzyTmgEYY/sBzq5oelS08UJ4q75CE18xVAOjNAa2FR/4kVIYc38Vq
+         mELfwtlOL12oERQZEwaCe99o/+CP392tc6FYp76Gdp/IdiCPHmhHwjRpqnhD/X34oQ0I
+         drDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713395223; x=1714000023;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ESREvptBFDtywOEXVmXxmfhUoPX5JiubFR54p3zkXt8=;
-        b=d1M/QuWabxYmjKYSn76lph4D6cXJkEGRqkBLySGV47p+D/sznsA/kAQ/Z8RjH2xcnP
-         nto72znxXyun9oy1PMGz2ltD494lVjW3AhHGuszEOQxxXvFn5feuvx4rV0x7zfI9wrCo
-         DlL6zL09RsH9SqbG9G+s4vWbXJJ1zmr3XA7JC5tg0k7pBlu7BFh1FKfNBeN8UPm3UZ1v
-         5bcDtWz9rhw2Sla86F7/7RwdwzSZjNcf+Cob55IeMoLn25C1pZ2vnL8kmqx5r05Aq/or
-         AkRH8Oc0bHXZ1wrgaaMuykS+xWZjTBxTMRoEtG6O1tIs4D6FtLy/OqQfYZaB5Bd7X4Rm
-         qj/w==
-X-Forwarded-Encrypted: i=1; AJvYcCV+lOI6fhevYk3Kol9IjCHHmuwW6adDti5xeF2DZLql7C1R0Z8UoCpVUxlMU95jZ4vEUIpx42R3izbsKyO65VR1E/UyH4xBsnqcyJ6H
-X-Gm-Message-State: AOJu0YySAMNf7d8MCeKBlsKBfaA3Mm++kcoweEmGrsAVYGI3am8b/a1O
-	PXDoX78n0gXulYumYKATdPCaUBO2u1Sf3trwOMeBVV/k4TLVuY3Lhz3nIG3DFH4Cu661MUe8luZ
-	MN/OzyYxaYfF17g==
-X-Google-Smtp-Source: AGHT+IGGsP/v0b31hwVFbOVuj7xjAQQur1JVUVq8/Z6h8KToJPaV1mBk8qXmfn6bjBb9KyeSVufWf3nDl3XHdLE=
-X-Received: from dtokazaki-pixel.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1a03])
- (user=dtokazaki job=sendgmr) by 2002:a05:6902:1005:b0:dc2:5456:d9ac with SMTP
- id w5-20020a056902100500b00dc25456d9acmr106101ybt.5.1713395223203; Wed, 17
- Apr 2024 16:07:03 -0700 (PDT)
-Date: Wed, 17 Apr 2024 23:06:36 +0000
+        d=1e100.net; s=20230601; t=1713395226; x=1714000026;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UvdJd071q5jVlxwi+Q4Kny8l+l/3LzCxPLWdR3GCjKo=;
+        b=dVWe+d9MDu1XWu6b6Uujhe0Uhk/LDQehlK8kWNNiozBPrY6TCTcHYfakRI2kAPdPWM
+         TpKCneBFaoAdblAOAAElrrYNPgBc7cVcLe2Y7iPDBo2uRvzmT+O4cXwvfQBA/oYrRRsw
+         nC8s1TJfr7gI0yDTcvWDzRXyMWivjeZ33UDzxxIjGYIpoXqqaX11Ze02j39R7WNqdksV
+         7YJASS3tfRzxZMGCDPxItE1vq7/D+wRNNVmNpJ6w650eB0aLoQ23vLRgFwu0EqnJsb0+
+         +Pug5YahphAyUK8ElyrOlKrV2lraYaYZ/bOAxbIZanJe4TGcKJ/cePPYmC2seCMrBtKx
+         O6Qw==
+X-Gm-Message-State: AOJu0YyvQSeHx+zPL4rFxDusr4qjQQdS36Ofobk5kV/diysoIuA6jTMh
+	HENbhDvZe2DhPaoP8FBVhiM2Llotgb9Veh7YGk0gMv4boqvuqqYtHfT9LTjmKyR2OWC2BJMMRJg
+	oiA==
+X-Google-Smtp-Source: AGHT+IG7dMVVcXlV2OF4ZNDypN7hQwGCXSUdtD9kzUtaTBpSxmDIxyz/p+PxTyTnJEeAdPSutPkt5noRRqI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:c711:0:b0:dda:d7cf:5c2c with SMTP id
+ w17-20020a25c711000000b00ddad7cf5c2cmr83545ybe.13.1713395225910; Wed, 17 Apr
+ 2024 16:07:05 -0700 (PDT)
+Date: Wed, 17 Apr 2024 16:07:04 -0700
+In-Reply-To: <20240416201935.3525739-10-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-Message-ID: <20240417230637.2592473-1-dtokazaki@google.com>
-Subject: [PATCH v1] at24: fix memory corruption race condition
-From: Daniel Okazaki <dtokazaki@google.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Arnd Bergmann <arnd@arndb.de>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Daniel Okazaki <dtokazaki@google.com>, kernel-team@android.com, 
-	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+References: <20240416201935.3525739-1-pbonzini@redhat.com> <20240416201935.3525739-10-pbonzini@redhat.com>
+Message-ID: <ZiBWGHvCGz9ukGnu@google.com>
+Subject: Re: [PATCH v2 09/10] KVM: x86/mmu: Use PFERR_GUEST_ENC_MASK to
+ indicate fault is private
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	isaku.yamahata@intel.com, xiaoyao.li@intel.com, binbin.wu@linux.intel.com, 
+	chao.gao@intel.com
+Content-Type: text/plain; charset="us-ascii"
 
-If the eeprom is not accessible, an nvmem device will be registered, the
-read will fail, and the device will be torn down. If another driver
-accesses the nvmem device after the teardown, it will reference
-invalid memory.
+On Tue, Apr 16, 2024, Paolo Bonzini wrote:
+> SEV-SNP defines PFERR_GUEST_ENC_MASK (bit 34) in page-fault error bits to
+> represent the guest page is encrypted.  Use the bit to designate that the
+> page fault is private and that it requires looking up memory attributes.
+> 
+> The vendor kvm page fault handler should set PFERR_GUEST_ENC_MASK bit based
+> on their fault information.  It may or may not use the hardware value
+> directly or parse the hardware value to set the bit.
+> 
+> Based on a patch by Isaku Yamahata.
+> 
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
-Move the failure point before registering the nvmem device.
-
-Signed-off-by: Daniel Okazaki <dtokazaki@google.com>
----
- drivers/misc/eeprom/at24.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-index 572333ead5fb..4bd4f32bcdab 100644
---- a/drivers/misc/eeprom/at24.c
-+++ b/drivers/misc/eeprom/at24.c
-@@ -758,15 +758,6 @@ static int at24_probe(struct i2c_client *client)
- 	}
- 	pm_runtime_enable(dev);
- 
--	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
--	if (IS_ERR(at24->nvmem)) {
--		pm_runtime_disable(dev);
--		if (!pm_runtime_status_suspended(dev))
--			regulator_disable(at24->vcc_reg);
--		return dev_err_probe(dev, PTR_ERR(at24->nvmem),
--				     "failed to register nvmem\n");
--	}
--
- 	/*
- 	 * Perform a one-byte test read to verify that the chip is functional,
- 	 * unless powering on the device is to be avoided during probe (i.e.
-@@ -782,6 +773,15 @@ static int at24_probe(struct i2c_client *client)
- 		}
- 	}
- 
-+	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
-+	if (IS_ERR(at24->nvmem)) {
-+		pm_runtime_disable(dev);
-+		if (!pm_runtime_status_suspended(dev))
-+			regulator_disable(at24->vcc_reg);
-+		return dev_err_probe(dev, PTR_ERR(at24->nvmem),
-+				     "failed to register nvmem\n");
-+	}
-+
- 	/* If this a SPD EEPROM, probe for DDR3 thermal sensor */
- 	if (cdata == &at24_data_spd)
- 		at24_probe_temp_sensor(client);
--- 
-2.44.0.683.g7961c838ac-goog
-
+I would also prefer this one be dropped in favor of PFERR_PRIVATE_ACCESS.  Ah,
+I assume that's your plan, as you have d8783aeebd40 ("[TO SQUASH] KVM: x86/mmu:
+Use synthetic page fault error code to indicate private faults") in kvm-coco-queue.
 
