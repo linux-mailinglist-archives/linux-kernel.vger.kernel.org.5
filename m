@@ -1,177 +1,117 @@
-Return-Path: <linux-kernel+bounces-149036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD7228A8AD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:09:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED71D8A8AD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:10:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21806B2540D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:09:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CD711F2297B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:10:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C560E17333E;
-	Wed, 17 Apr 2024 18:09:30 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C55317333A;
+	Wed, 17 Apr 2024 18:10:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WoCRHWTG"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A69AE18C19
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C92B172BD5
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713377370; cv=none; b=p+0hSnZqRLw9B5CVPdohpW+Z+S5hC9bas4dQRmPCde5Ed+8yVYfLtjcqVxf/0NaRc35P5Lnag/4YVdW8viOXaQFRyH0UUfHE9KBUliCj8bq4DmcMTnnZX+OviyOAcCyM5c0IJzxHldqikLLN+cS802oaCL27bLZy6Dx0m417IYo=
+	t=1713377448; cv=none; b=sCJ034tX47y+LybFnpSKJjlqQO6NrcJLglRhvcAy21RpeZUFeW43THoRhCEcN7OU1rFpGDfjI/Q8N2xS2yNkDqo1AsmZiuZ1EM9i3bpM548rZcnxPRTQ2PYmuVGoWFLy9XSAdtgvPshJovjiBh3zyBs1ndnfv2JkFulxEv68YPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713377370; c=relaxed/simple;
-	bh=uJZvxmFKtLbzPHlrk0I977kVT1m7O4GOnTK9btIiG0o=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=im6ChH9nECiWeSgiUebwCFOlLya59x0tDTml+7Im5eRIJlkCcr9eRPpMdPaLnsCBee0YWw27PjDG4sS/vzlbo0uQN6L9O4kzxHrM3PnlD7x8YyMF5MSgcMhX4QniQTVlZ7sOwJWWsuDFkQTZiIzVxEQHDah9jEJS+k+2sTxkCi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d6a4133641so668867839f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:09:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713377368; x=1713982168;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+	s=arc-20240116; t=1713377448; c=relaxed/simple;
+	bh=xT2ERLXiq2DKe/pTxO73Li/ifSNoQuLAqDfZEO5enOs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=n1vhA7V3SYAMvoiMQSMtazp8w6iiRJZErkFdSMcjj/N0OZde39fxBz2G4l/Mhvzzi33sY6zgXNkTUYmEs+mTC2A2tNFyXGowzEnzU/VBirOsNYOKcs/e/2QuIWmOUd5H3ydEUUH8fWV1QtL3r0dYzUAWvrfiTY6HAQllj0gM9yY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WoCRHWTG; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a51a7dc45easo664855766b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:10:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713377445; x=1713982245; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bgoOlL2fESOvBxvRK7t4PjZmp7cUv/sb40qUsKsVrjs=;
-        b=dc8YT8YnMdRWv0lGHqNS9PABxiuTzYlkgX3wNfJjyAPT6joMjE0DyVWcK1T4SA5pW2
-         R2gwXnQUbsPhTa7xSP8uK31QABV7ObqJcM+pumGPb4E86J6cLN+OnwYqa2co2ESBRxp+
-         xrb7+3cc75a8XQyXpNQQy4rW2Ws41mvjiAvGuyVYyg2BoX6PxPExl3DU/v5qNUz+hDoq
-         jQvpW/9Wo6lV3rV2et1kLGZCh+3viFrS38Ki3sUNeKdEI97sO4sAzIs7V9e0LDyM0Pt5
-         0GusvXUK1UrCcH30M0NFYblSN8ELA9yBwANFn2itOiHnYBQczfbeqBptdFIJhffzcZwr
-         m9Rg==
-X-Forwarded-Encrypted: i=1; AJvYcCUICDSpJwhH2m5aPzoXuf8OxGp7C+n4ApC7XtpwLvRQW32IljNznPlSI+TlBJ+fgG1Ubp7qMOQScLfu3LrS+WbSLvz2TGr69zp/2wGT
-X-Gm-Message-State: AOJu0YykpMFcI8F+wuHV01oejedszyNV8R6pGxkg4fPwWUMXKfjNrJd9
-	fafhlrZx501ATRLh5daoh9GIHoA6c9NMbhCNSMfboeuLQfJcmfODGkC8aAbRzV5lyyHAZOI/vqW
-	xWiv7JavTHQvzuFRREpeoD7ht3l0DifnfvNu/Mhq+OiSrvPu+FVmnUFM=
-X-Google-Smtp-Source: AGHT+IFJ0rbZ1nZ8kzNKwTqY8QhyPCOoX/AZHwAz/dcDC4F0HtQtGuzwLK00qAhr+xFduzLQTrRaD8T6w5qZKmBF8UPXmP7pQkFo
+        bh=8GmA4aba1jpIYiloRxV+ylWHh6VXG3/mxuzWiUhtbGk=;
+        b=WoCRHWTGIobjowMNqo0OsXqr/hazzxGWoy8nm5NBAZOTg5ZgplwjS3Tp32cn7QwOKw
+         qZQKUaUNG+yVtwicYeAmKsC5UrAp1898ps9NLGdP8PMmrPOAvZc55ZqnMi+WykHALXG/
+         /laZSla62Gc8CKbTFN57GxnkEplYVjp/7OE/fhQIbMGivfHZWQmqHqxx6DWWI+s8BeQb
+         UJTEiRYewTpMfKMvp08Vpz4SZl8rzefCxf0T7ptO66FzHyXHqzPJg7vTyIEm1cTJucnq
+         K8pcnyeStL9TVGwiRB6dUac+h/8D51wYVav/7HnBZZsi+J8At0M6exqKZLk5ZYUUhr43
+         BgZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713377445; x=1713982245;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8GmA4aba1jpIYiloRxV+ylWHh6VXG3/mxuzWiUhtbGk=;
+        b=wuVihS+jgVHmV84C0HPPqafAMpB2/isBq1OoLNFbwt75uJ/2gfs4ZlQXMIvud6iT0D
+         2wb/5TtLamoarv/aoppbFvQiMSP7aM0zrg13OPYqnA5JYkBPxcZWsVkIRvx5dduDfefk
+         ADNJ228JRuL50vQqd1lLIKY49WXYrIzxgMxodgmaxBfBrWFm6++0h6rQajQPZ7hwONjg
+         9tDFZ0EScHdolMAIP+st4JHmAh096Y90j82LDfFGydMVb++ZU5H4M5a51e2LCAjyrA13
+         q2wF9t1tTxj9v9RQpdqVDz7tkBWqOR40jlMfsCtgBJ48tGl33IqwgF8+IZtOLou8/Eqp
+         g0Hw==
+X-Forwarded-Encrypted: i=1; AJvYcCWhmRJ3LgE9x/ey/O5OxCk5IrXo/4vaSHOpg9hCBOcH/46LaPCDZaHjcdcXWGTYfq07k4i+gI6zwYyP8NDoLAN5fBSAuWPc3OBhkCy/
+X-Gm-Message-State: AOJu0YwgMRbubZNwZD79I1Dw5C5dftrnpWkgHnz7tE+jEkRU2t8ceXmS
+	778HWCS30XzoFDR6METJboqeCnHrWFXhDf6ncyqW4hx1CO9U5OOMEgb/HyriZmM=
+X-Google-Smtp-Source: AGHT+IHOfctM5ARKZ57bhI9WDUzfMCwg0qnXp/32GMJKfD2iVfzFP+9ShBiH0UrnBKpfdiTlPOvgpQ==
+X-Received: by 2002:a17:906:19d3:b0:a46:cef3:4aba with SMTP id h19-20020a17090619d300b00a46cef34abamr206887ejd.75.1713377445507;
+        Wed, 17 Apr 2024 11:10:45 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id p11-20020a1709060dcb00b00a553de860c6sm2587149eji.133.2024.04.17.11.10.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 11:10:44 -0700 (PDT)
+Date: Wed, 17 Apr 2024 21:10:40 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH] ext4: fix potential unnitialized variable
+Message-ID: <363a4673-0fb8-4adf-b4fb-90a499077276@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:13cf:b0:476:d09e:478 with SMTP id
- i15-20020a05663813cf00b00476d09e0478mr902386jaj.5.1713377367961; Wed, 17 Apr
- 2024 11:09:27 -0700 (PDT)
-Date: Wed, 17 Apr 2024 11:09:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006249a406164ec138@google.com>
-Subject: [syzbot] [fs?] WARNING: ODEBUG bug in bdev_super_lock (2)
-From: syzbot <syzbot+3acccbed6f1454bf337c@syzkaller.appspotmail.com>
-To: brauner@kernel.org, jack@suse.cz, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-Hello,
+Smatch complains "err" can be uninitialized in the caller.
 
-syzbot found the following issue on:
+    fs/ext4/indirect.c:349 ext4_alloc_branch()
+    error: uninitialized symbol 'err'.
 
-HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10572a93180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
-dashboard link: https://syzkaller.appspot.com/bug?extid=3acccbed6f1454bf337c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=151a9857180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1184b7db180000
+Set the error to zero on the success path.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/72ab73815344/disk-fe46a7dd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/2d6d6b0d7071/vmlinux-fe46a7dd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/48e275e5478b/bzImage-fe46a7dd.xz
-
-The issue was bisected to:
-
-commit f3a608827d1f8de0dd12813e8d9c6803fe64e119
-Author: Christian Brauner <brauner@kernel.org>
-Date:   Thu Feb 8 17:47:35 2024 +0000
-
-    bdev: open block device as files
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12a83eaf180000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11a83eaf180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16a83eaf180000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3acccbed6f1454bf337c@syzkaller.appspotmail.com
-Fixes: f3a608827d1f ("bdev: open block device as files")
-
-------------[ cut here ]------------
-ODEBUG: activate active (active state 1) object: ffff88807c80a880 object type: rcu_head hint: 0x0
-WARNING: CPU: 0 PID: 7353 at lib/debugobjects.c:517 debug_print_object+0x17a/0x1f0 lib/debugobjects.c:514
-Modules linked in:
-CPU: 0 PID: 7353 Comm: syz-executor265 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:debug_print_object+0x17a/0x1f0 lib/debugobjects.c:514
-Code: e8 ab 36 50 fd 4c 8b 0b 48 c7 c7 c0 08 fe 8b 48 8b 74 24 08 48 89 ea 44 89 e1 4d 89 f8 ff 34 24 e8 cb 09 b3 fc 48 83 c4 08 90 <0f> 0b 90 90 ff 05 4c 82 e1 0a 48 83 c4 10 5b 41 5c 41 5d 41 5e 41
-RSP: 0018:ffffc90009877938 EFLAGS: 00010282
-RAX: 82e222ecc4018000 RBX: ffffffff8babd760 RCX: ffff88807cf28000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffffff8bfe0a40 R08: ffffffff8157cb22 R09: 1ffff9200130eec4
-R10: dffffc0000000000 R11: fffff5200130eec5 R12: 0000000000000001
-R13: ffffffff8bfe0958 R14: dffffc0000000000 R15: ffff88807c80a880
-FS:  00007f71121a16c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f71121a1d58 CR3: 0000000015ac6000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- debug_object_activate+0x357/0x510 lib/debugobjects.c:732
- debug_rcu_head_queue kernel/rcu/rcu.h:227 [inline]
- __call_rcu_common kernel/rcu/tree.c:2719 [inline]
- call_rcu+0x97/0xa70 kernel/rcu/tree.c:2838
- put_super fs/super.c:424 [inline]
- bdev_super_lock+0x1ea/0x360 fs/super.c:1384
- fs_bdev_mark_dead+0x1e/0xe0 fs/super.c:1401
- bdev_mark_dead+0x89/0x1b0 block/bdev.c:1109
- disk_force_media_change+0x145/0x1c0 block/disk-events.c:298
- nbd_clear_sock_ioctl drivers/block/nbd.c:1477 [inline]
- __nbd_ioctl drivers/block/nbd.c:1504 [inline]
- nbd_ioctl+0x47d/0xf40 drivers/block/nbd.c:1564
- blkdev_ioctl+0x5e5/0x740 block/ioctl.c:640
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:904 [inline]
- __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:890
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f711220b419
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f71121a1168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f71122923d8 RCX: 00007f711220b419
-RDX: 0000000000000003 RSI: 000000000000ab04 RDI: 0000000000000004
-RBP: 00007f71122923d0 R08: 00007ffc232c4387 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f71122923dc
-R13: 000000000000006e R14: 00007ffc232c42a0 R15: 00007ffc232c4388
- </TASK>
-
-
+Fixes: 8016e29f4362 ("ext4: fast commit recovery path")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+This is a static checker fix and I don't know this code very well...
+Please review it extra carefully.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+ fs/ext4/mballoc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 12b3f196010b..714f83632e3f 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -6113,6 +6113,7 @@ ext4_mb_new_blocks_simple(struct ext4_allocation_request *ar, int *errp)
+ 	ext4_mb_mark_bb(sb, block, 1, true);
+ 	ar->len = 1;
+ 
++	*errp = 0;
+ 	return block;
+ }
+ 
+-- 
+2.43.0
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
