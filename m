@@ -1,273 +1,139 @@
-Return-Path: <linux-kernel+bounces-149224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 765498A8D54
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 56B3F8A8D55
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:56:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D9D2282135
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:54:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0247C282296
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:56:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C3C47F7D;
-	Wed, 17 Apr 2024 20:54:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097C8481B5;
+	Wed, 17 Apr 2024 20:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L3YQHP70"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mNLozQIM"
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC1579D8
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 20:54:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019293D966
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 20:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713387257; cv=none; b=iNgZdab6XK5ECM7azZkUxGUOoKaC4C77HC+lJfmFZRdSifRQW2U05I75bcUr+sCZ6n0r/IUm3ZXZodMxgKIZU8LPirG75hHlNsrQNxnIW2HFBEoel+uh7UwBAoq/YNXGkkoCLCOTne9dE4eouHeccpiETmxq9YeDnbCNbhEYh6s=
+	t=1713387402; cv=none; b=ajXEhdvK4QWdBa0AW+Sv28Kl5FsxOyJsTj4jEUfCi+JF4VFDeaa3rfwucdoVVlmMPSVeuYAfhROiiaLLLC0Lw6I4rAXRCiPJ8old4duQAqrUUU7o3Uo+c8Vv0V72XsFcEcuf1aumHUEJ01dLPNgvV/u7x86iVVmRU3mO11bSDoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713387257; c=relaxed/simple;
-	bh=5trknKPDwgM3ZHXvlVM7xQdThaVM8cOkkHsieY9CaRE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FdWu7s1KC0LukfJqmyrRKDyPqMWjr6BJF7sMkV27AtA3Zzz7PvTdlYzsJSpIlLSYNes7oOv98A607ttT6UQMdzh1M1sA96shP4i+WfHpQSJoTqEzrhjf4rBJMzt232+f0HvVQlr9iHFITzci4XBIXJ+uNc5VGd7dUDcB1+RPynw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=L3YQHP70; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713387254;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WxVps9eo7fKiokjE5p2dXVAq1Ns0BOvxX7WHeY7GD0Y=;
-	b=L3YQHP70fJLc3cT4lx5kbqMANuXFOrH+/6261MFrX+0Z6BX3ssSY0aBgONi5DqJOScPX/M
-	BDaFVq6x5G0H4beqB4/Wvit8v06FXy9x7Jl2T4TWaNSgO6iV7gChMVgBKLnAebR/1/JOeR
-	EFKizWVCBNGu+ef7sBC0wLfyvjYQACY=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-395-WktgbEZVOkmrKkbqcTIV6w-1; Wed, 17 Apr 2024 16:54:13 -0400
-X-MC-Unique: WktgbEZVOkmrKkbqcTIV6w-1
-Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-5aa35f3393bso43409eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:54:13 -0700 (PDT)
+	s=arc-20240116; t=1713387402; c=relaxed/simple;
+	bh=CT9my/HzssE0lehUkChpdYWFXTCeHXjsrz6seMzdin0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JUtajj+Rjw3BKUqcGiEjxiF7ZPa4AQeteCtwVh0dh6jsL64o+nxY4r8ivtU+45d2gfpWH9pjkCXX0tAyNew6KdVLzL7EMrH+mi77yKdpUfwY139iy3/RtHn3rOyxuvrmcerUrUI4Gh+hiKyJa22BopDnwVRX/u+R8n221nlhcVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mNLozQIM; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-36b34effb04so7225ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:56:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713387400; x=1713992200; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lxKPyLxO6iDeNFnO987EiXxyZaGk4JOWQZWYPIVwBKQ=;
+        b=mNLozQIMLoNhitOcSMkiQtizbJpjlPMUqJEPgSUlne8X4jZXYa6xLmTcEJY36fFpZu
+         ynY5Mvs+l/NFIo0oLbjt7SATLHnS2TII9BtDWq0gRzhe7NTkVnTJwSTuvmE9izFKx5MN
+         hX5wAyXY/LBCPqYt1GWPS8NekqfCjwo+t5sS5EVLAXFXlrCFVLJrmnL/oiSTwuGkiBVt
+         6CvS6nekL+TcQEFN8NafyX8MeYWvSOdUUskYCo319bnVkLy6/YYJ72N2DgXeoxJyhmZk
+         cqsntd7CTZHQ6VXNNqCUtaGd/01LwRIOjtZDD+q1j72uXluz7tv5PzCs0VPD6BbhCPcn
+         gobw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713387253; x=1713992053;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WxVps9eo7fKiokjE5p2dXVAq1Ns0BOvxX7WHeY7GD0Y=;
-        b=jW3jy9u3DUq6Nvbx3n736Jh0onIv0J4b+1z65/lk8+PkrxKtM5+sM7PvHsPuKImBsu
-         j0IrL/OCJ3UC6y+gCDnfvnIAxlaIf13TTypsJegosaQ78AQTC8XgI66otCGmrB3eK2Hl
-         iAWyPC64Ma7gLnTYJCm7Ky7ioCkXBp8K86q7opl1F5D5AEfUC4pvgLki1wv2kvCsZnmK
-         yjVKIm/TpvxIwDJHQLmOCvbb4zriE882xbezHovF2IxMI/OH+4z22Er0JvrrGLeEF/wz
-         d/HDhJ6Ml90cMs/uBlPNrl2tyjli2TgBLH+5oCe1z1GMV+b7lQP5528lggKGG5h1p6PO
-         EbSQ==
-X-Gm-Message-State: AOJu0YxtHo59JX56B9t1D8Sq79pCQJq/HO9HqHTQEy7knx9HpTX881HL
-	rGc8egHq3Rjh/WxX80dfrvTHr6amur+b+XcWQeiN8SjgjH6+y8Qa/YN+YtQnru2pQ6o+qR6lIlx
-	P3SSG8LcOSIq6J3pfIq3lgfc1ltn5mPRaXw3upFoiZtwu1q8nWJ7vObupnrW5pQ==
-X-Received: by 2002:a4a:b605:0:b0:5aa:6a31:4f53 with SMTP id z5-20020a4ab605000000b005aa6a314f53mr967207oon.0.1713387252722;
-        Wed, 17 Apr 2024 13:54:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEWGUZrTe7cf5mjN8f+tB8tf5bzpBYCB+ahmV2tQBDGKxmqdwX9Gk5b28HM+irN2ttqKfx4nQ==
-X-Received: by 2002:a4a:b605:0:b0:5aa:6a31:4f53 with SMTP id z5-20020a4ab605000000b005aa6a314f53mr967186oon.0.1713387252290;
-        Wed, 17 Apr 2024 13:54:12 -0700 (PDT)
-Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id e15-20020ac8490f000000b00434d86fb403sm8417343qtq.86.2024.04.17.13.54.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 13:54:11 -0700 (PDT)
-Date: Wed, 17 Apr 2024 16:54:09 -0400
-From: Peter Xu <peterx@redhat.com>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	Axel Rasmussen <axelrasmussen@google.com>
-Subject: Re: [PATCH v3] mm/page_table_check: Support userfault wr-protect
- entries
-Message-ID: <ZiA28R09uaJRKH7z@x1n>
-References: <20240417192643.2671335-1-peterx@redhat.com>
- <CA+CK2bALaCPW-=vRxY=7por9qEi4Ap7arOkYgAzee6_mzTyizQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1713387400; x=1713992200;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lxKPyLxO6iDeNFnO987EiXxyZaGk4JOWQZWYPIVwBKQ=;
+        b=J6/fo2qCX1orTmpzuLAlbfJUYsgNjw/z+tACz9c7UtZ/t6sfx9sIZsBuFOePQcTAJU
+         QPPwJArZ7i38KECFkbPJ49aHsfhBGLjBYjvi13jo4pnagOHG+DHrSPFIrEcWYQVopNX/
+         LO0UT0YEpdHkhKsXQYgUe1rNlRoYvH6PGrjANeCc8nAkpTO8GAGEFh35YeFWYmbPPxCx
+         ZSGPa4l+xJBbqlnOm/3blxdmh79d41byGqFWWpNgg91/GajQKr0V/r7N3B3CyO5wwGfy
+         OnOAP49vwJTzIZBjJ2m4QY0HEFHAwz0F0OYr+KgsGuqSVO+6KzeB+fxstRqhc7PbEHIi
+         uTNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW/x59wvnWdhGnoZYvv+CX7LZ9scQjKNVF8YH+TVbzU5zN/LPs+Sc/w4eI3/P6itn7kDdO7nMJPQr37ZgZKcALceRBvv9tmkbTTo0c7
+X-Gm-Message-State: AOJu0Yx6MzW87CoViW/ioQBEB3R5RtRDU2wNZu6pYYHDDYi59jtXZ83s
+	OtGdWdivUo/GuEejkb8jskSKyIdGO8dkfby1gPkT5LSe+gconrnMnsRTBXtymqvElnqYOA803FI
+	sluzbC7n3z4AV+8+W++NMODAUwJeHOmmkxIg8
+X-Google-Smtp-Source: AGHT+IFYQhHTJx7En6LnumfpaPQCQNaZFz4u96vFF1dDOGT+OGz0D9SNbQOCMWXBD9ATyWu2sDS9n3JUb5lo4C3a7U4=
+X-Received: by 2002:a92:506:0:b0:36b:3b26:3627 with SMTP id
+ q6-20020a920506000000b0036b3b263627mr13791ile.13.1713387400028; Wed, 17 Apr
+ 2024 13:56:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+CK2bALaCPW-=vRxY=7por9qEi4Ap7arOkYgAzee6_mzTyizQ@mail.gmail.com>
+References: <cover.1711674410.git.babu.moger@amd.com> <f7dac996d87b4144e4c786178a7fd3d218eaebe8.1711674410.git.babu.moger@amd.com>
+ <CALPaoCihU+mat2A-wNtTm=qbpya8ZqhDURsfZfjuHitch0WrLA@mail.gmail.com> <9d59d38b-af1a-46d8-81c4-b426d47d4ed6@amd.com>
+In-Reply-To: <9d59d38b-af1a-46d8-81c4-b426d47d4ed6@amd.com>
+From: Peter Newman <peternewman@google.com>
+Date: Wed, 17 Apr 2024 13:56:28 -0700
+Message-ID: <CALPaoCgFEybS5MhsPx4EaJmsfBe8Es_6QwWBXpoctdaNf0NcMQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 17/17] x86/resctrl: Introduce interface to modify
+ assignment states of the groups
+To: babu.moger@amd.com
+Cc: corbet@lwn.net, fenghua.yu@intel.com, reinette.chatre@intel.com, 
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	paulmck@kernel.org, rdunlap@infradead.org, tj@kernel.org, 
+	peterz@infradead.org, yanjiewtw@gmail.com, kim.phillips@amd.com, 
+	lukas.bulwahn@gmail.com, seanjc@google.com, jmattson@google.com, 
+	leitao@debian.org, jpoimboe@kernel.org, rick.p.edgecombe@intel.com, 
+	kirill.shutemov@linux.intel.com, jithu.joseph@intel.com, kai.huang@intel.com, 
+	kan.liang@linux.intel.com, daniel.sneddon@linux.intel.com, 
+	pbonzini@redhat.com, sandipan.das@amd.com, ilpo.jarvinen@linux.intel.com, 
+	maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, eranian@google.com, james.morse@arm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 17, 2024 at 03:44:29PM -0400, Pasha Tatashin wrote:
-> On Wed, Apr 17, 2024 at 3:26 PM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > Allow page_table_check hooks to check over userfaultfd wr-protect criteria
-> > upon pgtable updates.  The rule is no co-existance allowed for any writable
-> > flag against userfault wr-protect flag.
-> >
-> > This should be better than c2da319c2e, where we used to only sanitize such
-> > issues during a pgtable walk, but when hitting such issue we don't have a
-> > good chance to know where does that writable bit came from [1], so that
-> > even the pgtable walk exposes a kernel bug (which is still helpful on
-> > triaging) but not easy to track and debug.
-> >
-> > Now we switch to track the source.  It's much easier too with the recent
-> > introduction of page table check.
-> >
-> > There are some limitations with using the page table check here for
-> > userfaultfd wr-protect purpose:
-> >
-> >   - It is only enabled with explicit enablement of page table check configs
-> >   and/or boot parameters, but should be good enough to track at least
-> >   syzbot issues, as syzbot should enable PAGE_TABLE_CHECK[_ENFORCED] for
-> >   x86 [1].  We used to have DEBUG_VM but it's now off for most distros,
-> >   while distros also normally not enable PAGE_TABLE_CHECK[_ENFORCED], which
-> >   is similar.
-> >
-> >   - It conditionally works with the ptep_modify_prot API.  It will be
-> >   bypassed when e.g. XEN PV is enabled, however still work for most of the
-> >   rest scenarios, which should be the common cases so should be good
-> >   enough.
-> >
-> >   - Hugetlb check is a bit hairy, as the page table check cannot identify
-> >   hugetlb pte or normal pte via trapping at set_pte_at(), because of the
-> >   current design where hugetlb maps every layers to pte_t... For example,
-> >   the default set_huge_pte_at() can invoke set_pte_at() directly and lose
-> >   the hugetlb context, treating it the same as a normal pte_t. So far it's
-> >   fine because we have huge_pte_uffd_wp() always equals to pte_uffd_wp() as
-> >   long as supported (x86 only).  It'll be a bigger problem when we'll
-> >   define _PAGE_UFFD_WP differently at various pgtable levels, because then
-> >   one huge_pte_uffd_wp() per-arch will stop making sense first.. as of now
-> >   we can leave this for later too.
-> >
-> > This patch also removes commit c2da319c2e altogether, as we have something
-> > better now.
-> >
-> > [1] https://lore.kernel.org/all/000000000000dce0530615c89210@google.com/
-> >
-> > Cc: Pasha Tatashin <pasha.tatashin@soleen.com>
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > ---
-> > v2:
-> > - Rename __page_table_check_pxx() to page_table_check_pxx_flags(),
-> >   meanwhile move the pte check out of the loop [Pasha]
-> > - Fix build issues reported from the bot, also added SWP_DEVICE_WRITE which
-> >   was overlooked before
-> > v3:
-> > - Add missing doc update [Pasha]
-> > ---
-> >  Documentation/mm/page_table_check.rst |  9 ++++++-
-> >  arch/x86/include/asm/pgtable.h        | 18 +------------
-> >  mm/page_table_check.c                 | 39 +++++++++++++++++++++++++++
-> >  3 files changed, 48 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/Documentation/mm/page_table_check.rst b/Documentation/mm/page_table_check.rst
-> > index c12838ce6b8d..5bd1d987d76d 100644
-> > --- a/Documentation/mm/page_table_check.rst
-> > +++ b/Documentation/mm/page_table_check.rst
-> > @@ -14,7 +14,7 @@ Page table check performs extra verifications at the time when new pages become
-> >  accessible from the userspace by getting their page table entries (PTEs PMDs
-> >  etc.) added into the table.
-> >
-> > -In case of detected corruption, the kernel is crashed. There is a small
-> > +In case of most detected corruption, the kernel is crashed. There is a small
-> >  performance and memory overhead associated with the page table check. Therefore,
-> >  it is disabled by default, but can be optionally enabled on systems where the
-> >  extra hardening outweighs the performance costs. Also, because page table check
-> > @@ -22,6 +22,13 @@ is synchronous, it can help with debugging double map memory corruption issues,
-> >  by crashing kernel at the time wrong mapping occurs instead of later which is
-> >  often the case with memory corruptions bugs.
-> >
-> > +It can also be used to do page table entry checks over various flags, dump
-> > +warnings when illegal combinations of entry flags are detected.  Currently,
-> > +userfaultfd is the only user of such to sanity check wr-protect bit against
-> > +any writable flags.  Illegal flag combinations will not directly cause data
-> > +corruption in this case immediately, but that will cause read-only data to
-> > +be writable, causing data corrupt when the page content is later modified.
-> 
-> I would replace: "causing data corrupt ..." to "leading to corruption ..."
+Hi Babu,
 
-OK.
-
-> 
-> > +
-> >  Double mapping detection logic
-> >  ==============================
+On Wed, Apr 17, 2024 at 12:39=E2=80=AFPM Moger, Babu <babu.moger@amd.com> w=
+rote:
+> On 4/17/24 12:45, Peter Newman wrote:
+> > On Thu, Mar 28, 2024 at 6:10=E2=80=AFPM Babu Moger <babu.moger@amd.com>=
+ wrote:
+> >> diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x=
+86/resctrl.rst
+> >> index 2d96565501ab..64ec70637c66 100644
+> >> --- a/Documentation/arch/x86/resctrl.rst
+> >> +++ b/Documentation/arch/x86/resctrl.rst
+> >> @@ -328,6 +328,77 @@ with the following files:
+> >>          None of events are assigned on this mon group. This is a chil=
+d
+> >>          monitor group of the non default control mon group.
+> >>
+> >> +       Assignment state can be updated by writing to this interface.
+> >> +
+> >> +       NOTE: Assignment on one domain applied on all the domains. Use=
+r can
+> >> +       pass one valid domain and assignment will be updated on all th=
+e
+> >> +       available domains.
 > >
-> > diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-> > index 273f7557218c..65b8e5bb902c 100644
-> > --- a/arch/x86/include/asm/pgtable.h
-> > +++ b/arch/x86/include/asm/pgtable.h
-> > @@ -388,23 +388,7 @@ static inline pte_t pte_wrprotect(pte_t pte)
-> >  #ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
-> >  static inline int pte_uffd_wp(pte_t pte)
-> >  {
-> > -       bool wp = pte_flags(pte) & _PAGE_UFFD_WP;
-> > -
-> > -#ifdef CONFIG_DEBUG_VM
-> > -       /*
-> > -        * Having write bit for wr-protect-marked present ptes is fatal,
-> > -        * because it means the uffd-wp bit will be ignored and write will
-> > -        * just go through.
-> > -        *
-> > -        * Use any chance of pgtable walking to verify this (e.g., when
-> > -        * page swapped out or being migrated for all purposes). It means
-> > -        * something is already wrong.  Tell the admin even before the
-> > -        * process crashes. We also nail it with wrong pgtable setup.
-> > -        */
-> > -       WARN_ON_ONCE(wp && pte_write(pte));
-> > -#endif
-> > -
-> > -       return wp;
-> > +       return pte_flags(pte) & _PAGE_UFFD_WP;
-> >  }
-> >
-> >  static inline pte_t pte_mkuffd_wp(pte_t pte)
-> > diff --git a/mm/page_table_check.c b/mm/page_table_check.c
-> > index af69c3c8f7c2..388bcf60d8b5 100644
-> > --- a/mm/page_table_check.c
-> > +++ b/mm/page_table_check.c
-> > @@ -7,6 +7,8 @@
-> >  #include <linux/kstrtox.h>
-> >  #include <linux/mm.h>
-> >  #include <linux/page_table_check.h>
-> > +#include <linux/swap.h>
-> > +#include <linux/swapops.h>
-> >
-> >  #undef pr_fmt
-> >  #define pr_fmt(fmt)    "page_table_check: " fmt
-> > @@ -182,6 +184,31 @@ void __page_table_check_pud_clear(struct mm_struct *mm, pud_t pud)
-> >  }
-> >  EXPORT_SYMBOL(__page_table_check_pud_clear);
-> >
-> > +/* Whether the swap entry cached writable information */
-> > +static inline bool swap_cached_writable(swp_entry_t entry)
-> > +{
-> > +       unsigned type = swp_type(entry);
-> > +
-> > +#ifdef CONFIG_DEVICE_PRIVATE
-> > +       if (type == SWP_DEVICE_EXCLUSIVE_WRITE || type == SWP_DEVICE_WRITE)
-> > +               return true;
-> > +#endif
-> > +#ifdef CONFIG_MIGRATION
-> > +       if (type == SWP_MIGRATION_WRITE)
-> > +               return true;
-> > +#endif
-> > +
-> > +       return false;
-> > +}
-> 
-> This should be re-written like this:
-> 
-> static inline bool swap_cached_writable(swp_entry_t entry)
-> {
->         return is_writable_device_exclusive_entry(entry) ||
->                 is_writable_device_private_entry(entry) ||
->                 is_writable_migration_entry(entry);
-> }
-> 
-> Otherwise the patch looks good.
+> > How would different assignments to different domains work? If the
+> > allocations are global, then the allocated monitor ID is available to
+> > all domains whether they use it or not.
+>
+> That is correct.
+> [A] Hardware counters(max 2 per group) are allocated at the group level.
+> So, those counters are available to all the domains on that group. I will
+> maintain a bitmap at the domain level. The bitmap will be set on the
+> domains where assignment is applied and IPIs are sent. IPIs will not be
+> sent to other domains.
 
-Oops, yes definitely..  I'll prepare one more.
+Unless the monitor allocation is scoped at the domain level, I don't
+see much point in implementing the per-domain parsing today, as the
+only benefit is avoiding IPIs to domains whose counters you don't plan
+to read.
 
--- 
-Peter Xu
-
+-Peter
 
