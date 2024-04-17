@@ -1,200 +1,159 @@
-Return-Path: <linux-kernel+bounces-147925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D76BA8A7B63
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:33:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 846B38A7B69
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:35:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 066981C2177B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 04:33:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 399601F23231
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 04:35:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B9A249FF;
-	Wed, 17 Apr 2024 04:33:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895A533981;
+	Wed, 17 Apr 2024 04:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mNxW7Rp9"
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SxUKjA1U"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5F1A63AE;
-	Wed, 17 Apr 2024 04:33:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A30E1170F
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713328400; cv=none; b=qqZ72fsufZkOLZ/aM27eQMQBTR8DYopVPpJnu75lOVPKs2mXUPRQ5zS9TpxkTVXQu5evxjMtEFUsZqRUDOl28bWA57Q08XMlLynw0K0SpIf/R+SGnfCKZ68bKQTJuFOBUUAY6GeuYSrDjWLv+i8Rc5mujS2HHkWi+lbnuqZU9X0=
+	t=1713328547; cv=none; b=kBAuZEwW0+KjMYQTBtEZ0cW8dCaVH3A6Ew62N2Amv/I+TAkiXbgDHe+SyMNSuWYJ+mlVrRHHThzG0LCqDLQaGwte36dna1a+NeGuWF18BpdBcXzggo7UZL/YlL/L9aaffa7fWq9A81cbvYFBCV9O2TM3J7XXlrK7w8AblSLTSiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713328400; c=relaxed/simple;
-	bh=mpLVDTpLKi8XhShf+G/CR25JR+GxJ8I+joDMKVFHlz4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FjRpFWKXCsFr//dCCVNw6/F8HPExl4paR5GqMztizLpbnqEne7suv99uqyCcYeqoTVU72ugM5DZpOvTKzyJVH1cCXmi2WhNWUUAPdVcbl9nArp3eHJsQRUJBBf4SqL2U10MH/ItsjfddmbZM7xoDzzx0IVUjx1baIox38knf+RM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mNxW7Rp9; arc=none smtp.client-ip=209.85.167.175
+	s=arc-20240116; t=1713328547; c=relaxed/simple;
+	bh=8MopPJ/CLQ4+ifSq7fqDQSrhRMa5pHLe+RsfTUWDVPI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LeeCHD+IFnyEhujjalC/AvBY0DyY4+L/MV/gmcR4rghkdbx+WRHdFmYHUbREau3kDxR1TQXZThUlM4cyp+kozWF2I9e7APUZ5wH4BF879Vh/Bmx6E3VeI+AF1v5Ib6nZ+2NV8SbiYj+mB62U2xFcF2IIrPe3iIGYjkWxOt6H6Hw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SxUKjA1U; arc=none smtp.client-ip=209.85.208.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3c6f6c5bc37so2393446b6e.1;
-        Tue, 16 Apr 2024 21:33:18 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5701de9e971so3743184a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 21:35:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713328397; x=1713933197; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dANZrBMiijKB2V95Yw9K7Z4407mntfdnL1YgZToKFjc=;
-        b=mNxW7Rp9uk61YilBWoW86OmLMDMntg4o93rZ9lWK0q+Oq2Baafe82afVUgibOKRte3
-         2xr26DhDhAwd6B907As4CLbGzm5JFFriTF3XM6q/WAG4v8j+bo4gE7eOJ+IXCBTLVbCY
-         m0n/igGPM7ozDeiNHF3s2984eJuWQPN6T3If7h/GMV6AtVYousP7DgtavwmZu1JX/4SW
-         lSIqwO50ictYmgGJBqJH2xESViOvhcDVEpn+7VkfaFgzwVPpNRDpzfco5JGpH1hIM2S1
-         2r6iw/Eagvt79AAXe+HWm1qhW+JXVwM+t/0NSWD0Bl7wXZnl2OhEG4brtxi9DFs2Hcj6
-         pfdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713328397; x=1713933197;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1713328544; x=1713933344; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dANZrBMiijKB2V95Yw9K7Z4407mntfdnL1YgZToKFjc=;
-        b=vubPxXzylaINz8UVOKfZ5tqquxWYAWYzLQKDtwqRn7gTGp9zbF9gq2gvN16lzz1Uh1
-         PkP8d8zYQLqCtMDwEAr40rrtgB/vLwYT5ySNKUjjhjMV8eAW15PGkfi0r1l4MQBoh4zM
-         XSajWV0tUiWCc/Hzdu+WaJdLEv0piRJDo5yQW4vKWWz9Egt8+gk+duSRXwak3ZhI5afN
-         mfg1iXXtXWlmuZGs6wHljrPeh+/+ymjkfuwSmM5udIzkEWFRrlr0iWP+EYmpV/7yxwMV
-         vdpvVO6C4FH3ERlUyLZog0JzCTSsvhCJaYy/1iaelRrn077+TLOncTXoceefsj2mfEx6
-         iK4A==
-X-Forwarded-Encrypted: i=1; AJvYcCXEoHguWmAZME63FiEofZOna+Wvxxz6vnb8CA5Co1a3DIFGjnQsZ3HVtPRkgWCnmw3bdzjI7B6Gq3VELV8vsGD4Qhk2jSAUJGP6Lr6Xm8oBMUz9J23xVAev2oHwHX6hS0WMlq2PviHzmSqL5RGgohyzBVD3UHONEg8w4QygpHKlUg4PtU8=
-X-Gm-Message-State: AOJu0Yw+wuy/lfneODUiJRUtEH7lpjQb5dGwAEfxSqR1AVrFN8CWlmrZ
-	d7MBN2gcZgAXmQIAAeEnpkEqouk6vWj+Hmam5HwaFAzI8d2/HMP7
-X-Google-Smtp-Source: AGHT+IFDGMEcFzil5Q4JYz4MGQ3VGv+hJJvcufyp+5Lti0PISMPOCGd6Dz5mz+jD4Ao5+wMnPx36xA==
-X-Received: by 2002:a05:6808:315:b0:3c6:f7bd:9825 with SMTP id i21-20020a056808031500b003c6f7bd9825mr15472406oie.22.1713328397578;
-        Tue, 16 Apr 2024 21:33:17 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id lc11-20020a056a004f4b00b006e6529c7d75sm9865203pfb.3.2024.04.16.21.33.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 21:33:17 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 503BE184797FA; Wed, 17 Apr 2024 11:33:13 +0700 (WIB)
-Date: Wed, 17 Apr 2024 11:33:12 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>, Jonathan Corbet <corbet@lwn.net>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	linux-sound@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/12] ASoC: doc: dapm: improve section "Codec/DSP Widget
- Interconnections"
-Message-ID: <Zh9RCMdihgSyZqTw@archie.me>
-References: <20240416-dapm-docs-v1-0-a818d2819bf6@bootlin.com>
- <20240416-dapm-docs-v1-10-a818d2819bf6@bootlin.com>
+        bh=2WPlG9eiYEfwesF2hPVZ1q/BGXJT99jp6URTsnvCkUg=;
+        b=SxUKjA1UoR67Rw5XsMmMr499SsfYiy5Ew/yATi0vRrLHwoM8/u/G5UIq5TABmweiuw
+         ZnfslenHhDfjjTrCEUQSX6Nf9BmW5mixdS4AUsJiR2FNXHExPkkYw32MuPVtdKe0Dcll
+         TFg12CTlEJe+Dq93ASxRvCcPBz/IC1Ryzd0KIHDDbjo7bYiO6AwJZaRbBh5Uul3t1Dwc
+         PBZNHSGnBjTOyhqO0hFIM3xywa/2AMqOrrHj3YWFe00NKIsPch59AlEsGyrZ3T5HIzYv
+         VNtUmdBfN4RMJs4AW4VBAZomDhl/7XNuuGpbdo6yYhJI0Kh9nbERq7iRYnd3zuG9w7Jw
+         KmVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713328544; x=1713933344;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2WPlG9eiYEfwesF2hPVZ1q/BGXJT99jp6URTsnvCkUg=;
+        b=NZ850UhXtxwq55n+oeVZR/oqVWnB5RggnGugYnrv7Mydct+cs2aF0BoYXPxOFA8gaf
+         KCkWpPK1zhUFNooFWmh9qXHrJEMhTA/AWMlAWABnGvbnzrw90SMu9L4QFolbuyPQejfD
+         hvoTQ2xUoGnq6G03L8hsXC1SI+bHCb1GEHQroODUG1xmZvTKNVth8j2VTUwZHMa0TYrO
+         xz/IErncRvN4le+pQGjcP3d3hh103GQtJl+7lbs4q9mA3/MkxrKLW1oClSqNf1Spab2x
+         tF9LK04vEF71ypunHSSiVOw8vCHp5ivFkIdQWxwKd9VuLV/NVP9AkdJLTPkb+8hfl3Yd
+         mcDw==
+X-Forwarded-Encrypted: i=1; AJvYcCUTPRMfA+dIMQo4Vt5BDExXQr0XzJVh7bnHad7g3EqHLBPZqWCh0+YNbis0x9arSsh5TeBvw7gnd1uDT1scnkC7vyZe8mDt4qFuIuYs
+X-Gm-Message-State: AOJu0YzE3mVU7JI4eCTTEWhczq4vo7GNBBabI06/q5EvlEyxVh14P2Kv
+	BtG4oUfoVOwkHQ7iz9vHY69yP5HV3Vu06AABW0elM4S4KrS6SyRjmPhdWe//6m5gdX/FRSk7SaT
+	FbkO/x0KsYeCWPY85LiH6nKtw0hE=
+X-Google-Smtp-Source: AGHT+IGgXcMhJrXthZF6eoYhPniPoKU3Zw19yX2pWOyOem/YYivdlYkAaLkEWW9KRkMlzl0Dy0jiltdpUeHmo/YysSE=
+X-Received: by 2002:a50:d68a:0:b0:570:4b51:edc6 with SMTP id
+ r10-20020a50d68a000000b005704b51edc6mr1743101edi.28.1713328544377; Tue, 16
+ Apr 2024 21:35:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ljvRn32hn8AsjPHI"
-Content-Disposition: inline
-In-Reply-To: <20240416-dapm-docs-v1-10-a818d2819bf6@bootlin.com>
-
-
---ljvRn32hn8AsjPHI
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20240416033457.32154-1-ioworker0@gmail.com> <20240416033457.32154-4-ioworker0@gmail.com>
+ <d833efd7-28fd-42f0-83cd-e29f0f343909@arm.com> <3a0d1d1c-97f4-4c9d-bc25-9de3f3659b67@redhat.com>
+In-Reply-To: <3a0d1d1c-97f4-4c9d-bc25-9de3f3659b67@redhat.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Wed, 17 Apr 2024 12:35:33 +0800
+Message-ID: <CAK1f24nxfaRBaD+88shL75wOCQG8LbUu1QDWKGWitUuZ+epTDQ@mail.gmail.com>
+Subject: Re: [PATCH v7 3/3] mm/madvise: optimize lazyfreeing with mTHP in madvise_free
+To: David Hildenbrand <david@redhat.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org, 21cnbao@gmail.com, 
+	mhocko@suse.com, fengwei.yin@intel.com, zokeefe@google.com, 
+	shy828301@gmail.com, xiehuan09@gmail.com, wangkefeng.wang@huawei.com, 
+	songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 07:56:16AM +0200, Luca Ceresoli wrote:
-> -Each input in this example has a kcontrol associated with it (defined in=
- example
-> -above) and is connected to the output mixer via its kcontrol name. We ca=
-n now
-> -connect the destination widget (wrt audio signal) with its source widget=
-s.
-> -::
-> +Each input in this example has a kcontrol associated with it (defined in
-> +the example above) and is connected to the output mixer via its kcontrol
-> +name. We can now connect the destination widget (wrt audio signal) with =
-its
-> +source widgets.  ::
-> <snipped>...
-> -Interconnections are created with a call to:
-> -::
-> +Interconnections are created with a call to::
-> =20
+Hey Ryan, David,
 
-Not strictly related to this patch, but for consistency, I'd like
-to write remaining literal block markers at the end of previous
-paragraph:
+Thanks for taking time to review!
 
----- >8 ----
-diff --git a/Documentation/sound/soc/dapm.rst b/Documentation/sound/soc/dap=
-m.rst
-index f76fc97dd16219..e4c44d08c8380b 100644
---- a/Documentation/sound/soc/dapm.rst
-+++ b/Documentation/sound/soc/dapm.rst
-@@ -180,15 +180,13 @@ Path Domain Widgets
- -------------------
-=20
- Path domain widgets have a ability to control or affect the audio signal or
--audio paths within the audio subsystem. They have the following form:
--::
-+audio paths within the audio subsystem. They have the following form::
-=20
-   SND_SOC_DAPM_PGA(name, reg, shift, invert, controls, num_controls)
-=20
- Any widget kcontrols can be set using the controls and num_controls member=
-s.
-=20
--e.g. Mixer widget (the kcontrols are declared first)
--::
-+e.g. Mixer widget (the kcontrols are declared first)::
-=20
-   /* Output Mixer */
-   static const snd_kcontrol_new_t wm8731_output_mixer_controls[] =3D {
-@@ -244,8 +242,7 @@ Virtual Widgets
-=20
- Sometimes widgets exist in the codec or machine audio graph that don't hav=
-e any
- corresponding soft power control. In this case it is necessary to create
--a virtual widget - a widget with no control bits e.g.
--::
-+a virtual widget - a widget with no control bits e.g::
-=20
-   SND_SOC_DAPM_MIXER("AC97 Mixer", SND_SOC_NOPM, 0, 0, NULL, 0),
-=20
-@@ -316,7 +313,7 @@ For example the WM8731 output mixer (wm8731.c) has 3 in=
-puts (sources):
- Each input in this example has a kcontrol associated with it (defined in
- the example above) and is connected to the output mixer via its kcontrol
- name. We can now connect the destination widget (wrt audio signal) with its
--source widgets.  ::
-+source widgets::
-=20
- 	/* output mixer */
- 	{"Output Mixer", "Line Bypass Switch", "Line Input"},
-@@ -347,8 +344,7 @@ Machine Widget Interconnections
- Machine widget interconnections are created in the same way as codec ones =
-and
- directly connect the codec pins to machine level widgets.
-=20
--e.g. connects the speaker out codec pins to the internal speaker.
--::
-+e.g. connects the speaker out codec pins to the internal speaker::
-=20
- 	/* ext speaker connected to codec pins LOUT2, ROUT2  */
- 	{"Ext Spk", NULL , "ROUT2"},
+On Wed, Apr 17, 2024 at 12:52=E2=80=AFAM David Hildenbrand <david@redhat.co=
+m> wrote:
+>
+> >> +                    nr =3D madvise_folio_pte_batch(addr, end, folio, =
+pte,
+> >> +                                                 ptent, &any_young, &=
+any_dirty);
+> >> +
+> >> +                    if (nr < folio_nr_pages(folio)) {
+> >> +                            if (folio_likely_mapped_shared(folio))
+> >> +                                    continue;
+> >> +
+> >> +                            arch_leave_lazy_mmu_mode();
+> >> +                            if (madvise_pte_split_folio(mm, pmd, addr=
+,
+> >> +                                                        folio, &start=
+_pte, &ptl))
+> >> +                                    nr =3D 0;
+> >> +                            if (!start_pte)
+> >> +                                    break;
+> >> +                            pte =3D start_pte;
+> >> +                            arch_enter_lazy_mmu_mode();
+> >> +                            continue;
+> >> +                    }
+> >> +
+> >> +                    if (any_young)
+> >> +                            ptent =3D pte_mkyoung(ptent);
+> >> +                    if (any_dirty)
+> >> +                            ptent =3D pte_mkdirty(ptent);
+> >>              }
+> >>
+> >> +            if (folio_mapcount(folio) !=3D folio_nr_pages(folio))
+> >> +                    continue;
+> >
+> > Why is this here? I thought we had previously concluded to only do this=
+ test
+> > inside the below if statement (where you have it duplicated).
 
-Thanks.
+My bad for this mistake - sorry!
 
---=20
-An old man doll... just what I always wanted! - Clara
+>
+> I stumbled over these same while reviewing. It's not exactly duplicate,
+> because it's unreliable without the folio lock. It looks more like an
+> best-effort early check.
+>
+> But then, we also add it to cases where we previously wouldn't check the
+> mapcount at all: when the folio was added to the swapcache or is already
+> dirty.
+>
+> In that case, we would even see a change for order-0 folios with that
+> new check.
 
---ljvRn32hn8AsjPHI
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks for pointing that out! I'll remove this check here in the next versi=
+on.
 
------BEGIN PGP SIGNATURE-----
+I overlooked that this is a new check for order-0 folios :(
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZh9RCAAKCRD2uYlJVVFO
-o6WpAQDqeQVtGKQFGdD1X92culQ6ywquZCZjyL1KTr2mheywigEA8mh479ZKhKPs
-GpSKPy9F/aEyiG2pG89/J2bGkXHVtwY=
-=i9o4
------END PGP SIGNATURE-----
+Thanks,
+Lance
 
---ljvRn32hn8AsjPHI--
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
