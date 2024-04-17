@@ -1,116 +1,109 @@
-Return-Path: <linux-kernel+bounces-148281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AC208A8032
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:56:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27FE28A803C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:00:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B58222842B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:56:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BAFDB2122F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66DFA13A259;
-	Wed, 17 Apr 2024 09:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fVpm9K00"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0F112DD94;
-	Wed, 17 Apr 2024 09:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0396613AA2D;
+	Wed, 17 Apr 2024 10:00:00 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF7D413280F
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:59:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713347788; cv=none; b=AWcBrLxhlA4/etj4NAaJuWbsoP8nvzwicFjhwDxXdaPeeVdBLH4+XMQge+VyfvPwaf+N3e7G8omUNbcNXg3feCGHoWnp6MzMYzuUWfi9V8X0QkpENhq31kDsBAyoqWttJwGLCGvvJOsuZUNKssHsUAx6eLzjPi0yhw7RYBaceJE=
+	t=1713347999; cv=none; b=hIeWLUlkGijafApOdR2B8/tQm049X3/xrKevqkJLkmeajReqSgae0RnQvMHzpvvFb3edlfxKnb1QpyeC1ai4UgqlmefUsSHiSp4dC5pzcZ5zkSStolW5PpAggg7cIven1JWoMJXjg+jQgcLWF9sjJMBRiZtdyLoiocXimDHjo+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713347788; c=relaxed/simple;
-	bh=zZ7v7PQp0DDEHhoo/bYInJ8iPIZtAFy1cxCwkUCT9gU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V2rWEh0hfu1Ek3i1yIaCtISFXbSbFs5l77XSCxP5OKj4t3So/URAFMIu1kOW1TCKCE+tjohs+fSAflwHhqST3u48bP8vy5l5VoE/806BXa8GXSoGcLkDm9Zdlu4AadHdbJsqYBxUOK5zAyC585Pz70RVNHABZms6O4p9aoAcgBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fVpm9K00; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 603B1C072AA;
-	Wed, 17 Apr 2024 09:56:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713347788;
-	bh=zZ7v7PQp0DDEHhoo/bYInJ8iPIZtAFy1cxCwkUCT9gU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fVpm9K00ZdOv8mpz9I/gPJjSj4ALSYKsJ2JHp7KFwbtTU8SOxycZhvYqXCUt9u8L/
-	 1+gURGur7NOqehJoZfKnYmeCxhI1JNZ1tqTamFpjrPVPIZMYJm2Y04Bdn9XuVsH24I
-	 C6AbRRvfOpNOe/vCPTaR6U0OzO5aM8JADqEwsdBkbJzEGk60xb4LjaikdFc5R6OC8J
-	 WvNLkF3bPCrfggPF49hTZDmNWXgYMhhoQ1/kd1bJ6F71M6hOy8t4HbprmWLSHlBw+P
-	 00VCnT8v/pWZ0wZ9ZOMfl1WVhl7mBxjwW3r/D4Aw00EjTpyMkFVDhhHmHTPb+PgXS2
-	 hJledh2aYAfTw==
-Date: Wed, 17 Apr 2024 11:56:23 +0200
-From: Niklas Cassel <cassel@kernel.org>
-To: Damien Le Moal <dlemoal@kernel.org>
-Cc: Gustav Ekelund <gustaek@axis.com>,
-	Gustav Ekelund <gustav.ekelund@axis.com>, hare@suse.de,
-	martin.petersen@oracle.com, linux-ide@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel@axis.com
-Subject: Re: [PATCH] ata: Add sdev attribute to lower link speed in runtime
-Message-ID: <Zh-cx_KGK_M_qUGq@ryzen>
-References: <20240412134838.788502-1-gustav.ekelund@axis.com>
- <4e5c88f1-1b24-4f6d-8c11-d7029329ba7a@kernel.org>
- <7e6eb387-5a0e-460c-af08-eff070fa35ca@axis.com>
- <898497f0-d279-4d01-be8d-aad4048df95d@kernel.org>
+	s=arc-20240116; t=1713347999; c=relaxed/simple;
+	bh=mHgaZJegfQ+stN8+YXhVA3PdfM0vALppszIpJsvRwX4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CovPjiEzP+5IgzwdI2IN8+hOdY1HhD/JVyejKgSP6nVg+6m7njMXZiJ1TbHwTeCvqtGoZzeiPz8bVuL1X1duCP3PHe0gDtoJ8TKZR/8TlOquOobpsJnYtMgBuNIGffys22v0UftxxrvE2HdQswpx7/AvBmMQ4xr6lZXWmxl8MBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8BxGLqanR9mGbgoAA--.11036S3;
+	Wed, 17 Apr 2024 17:59:54 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxKBKYnR9muOR9AA--.32535S2;
+	Wed, 17 Apr 2024 17:59:52 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: Huacai Chen <chenhuacai@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Marc Zyngier <maz@kernel.org>
+Cc: loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	loongson-kernel@lists.loongnix.cn
+Subject: [PATCH v4 0/3] Give chance to build under !CONFIG_SMP for LoongArch
+Date: Wed, 17 Apr 2024 17:59:48 +0800
+Message-ID: <20240417095951.2635-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <898497f0-d279-4d01-be8d-aad4048df95d@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8CxKBKYnR9muOR9AA--.32535S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7AFy3AF4DZrWkury8tw45twc_yoW8Gry8pF
+	W09r4DJF48Gr93Aayak348uF98trnxGry2gay7C34UAF1DXayjgr1vvF9rXF1jq3yfWr40
+	qFs3G34avFyUA3XCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUBFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r126r13M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVWxJr0_GcWln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q
+	6rW5McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+	vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+	Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jr6p9UUUUU=
 
-On Wed, Apr 17, 2024 at 08:59:27AM +1000, Damien Le Moal wrote:
-> 
-> Can you send examples of the errors you are seeing ? That needs to be
-> investigated first before going the (drastic) route of allowing to manually
-> lower link speed at run-time.
+The changes of irqchip have been merged into the irq/core branch of tip.
 
-Gustav, is it possible for you to share the error messages that you are
-seeing? Preferably a whole kernel boot.
+https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=42a7d887664b
+https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=a64003da0ef8
 
-Since you are talking hot plug, there is a bunch of libata hot-plug related
-in v6.9.x (which turns off LPM if your external port is hotplug capable).
+This version is only related with arch/loongarch and based on 6.9-rc4,
+drop the patch "LoongArch: Move CONFIG_HAVE_SETUP_PER_CPU_AREA related
+code to smp.c" to use the generic setup_per_cpu_areas() if CONFIG_NUMA
+is not set.
 
-So it would be interesting to see if you still get these errors on v6.9-rc4
-(we will see if you have LPM enabled), and if so, what errors you are seeing.
+The first 2 patches with detailed commit message are preparations for
+patch #3.
 
-You could also try booting with: libata.force=nolpm on the kernel command line.
-(This will explicitly set lpm-policy to MAX_POWER, which is different from
-lpm-policy=0 (which is the default) - which means keep firmware settings.)
+Tested with the following configs:
+(1) CONFIG_NUMA=n, CONFIG_SMP=n
+(2) CONFIG_NUMA=n, CONFIG_SMP=y
+(3) CONFIG_NUMA=y, CONFIG_SMP=n (not allowed due to NUMA select SMP)
+(4) CONFIG_NUMA=y, CONFIG_SMP=y
 
+Tiezhu Yang (3):
+  LoongArch: Modify acpi_parse_processor() for non-SMP
+  LoongArch: Modify ACPI S3 state function for non-SMP
+  LoongArch: Give chance to build under !CONFIG_SMP
 
-Kind regards,
-Niklas
+ arch/loongarch/Kconfig                | 2 +-
+ arch/loongarch/include/asm/acpi.h     | 1 +
+ arch/loongarch/include/asm/smp.h      | 5 +++++
+ arch/loongarch/kernel/acpi.c          | 9 ++++++++-
+ arch/loongarch/kernel/irq.c           | 2 ++
+ arch/loongarch/kernel/machine_kexec.c | 2 +-
+ arch/loongarch/power/suspend.c        | 4 +++-
+ 7 files changed, 21 insertions(+), 4 deletions(-)
 
-> 
-> > 
-> > So I want to adapt the link, depending on the connected model, in a
-> > running system because I know that some particular models in this case
-> > will operate better in SATA2 in this system.
-> > 
-> > Can I use the libata.force module to make changes to a particular link
-> > in runtime?
-> 
-> Nope, libata.force is a module parameter so you can specify it as a kernel boot
-> parameter, or if you compile libata as a module when loading (modprobe) libata.
-> At run time, you need to rmmod+modprobe again libata, and so the ahci driver as
-> well (because of dependencies).
-> 
-> As I mentioned, if a run-time knob really is necessary (it should not be), using
-> the ata_link hw_sata_spd_limit would be a better approach. But again, that
-> really should not be necessary at all.
-> 
-> > 
-> > Best regards
-> > Gustav
-> > 
-> 
-> -- 
-> Damien Le Moal
-> Western Digital Research
-> 
+-- 
+2.42.0
+
 
