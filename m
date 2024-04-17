@@ -1,187 +1,262 @@
-Return-Path: <linux-kernel+bounces-149010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 058D58A8A6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:50:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D38F8A8A70
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:50:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36F631C2229E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:50:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F371F1C2213D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82A3172BC6;
-	Wed, 17 Apr 2024 17:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A9D1171669;
+	Wed, 17 Apr 2024 17:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KLtzx3DR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="iHX5F0qJ"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0C1A171678;
-	Wed, 17 Apr 2024 17:49:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9902D17279F
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 17:50:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713376191; cv=none; b=NpL9CatRJQ+iFg72MQdzV9xQtop/NCF1n0JCrtwlVQVQa7sXd6e5XYwxTsFpZnmI8ScmAw02/3LAv23vYrItB+aW5V4aDlRs62Hzavh/+NrQSTK+Kb0cUrTNO1j0zzLboFBtzG4UTW/kbBagOJd1O8xW+GuxX5tMymmAJ6QnW7Y=
+	t=1713376219; cv=none; b=PPZTjJXe15Egz0O3t3rqKXyLN4/JcUE2omh38kxwSS8vNRoqNS9yEGZj3vZ/KsMD7/cZHvyDVsDQQN0I+lL897o2k6csO67E41vtMr+5YnpkHMwJuULbcBtQBaefnQq5v9YHMBsyVyNU0JwBr1gbVE3OkRYB9R0xGAR/03uDIsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713376191; c=relaxed/simple;
-	bh=kKmiZAPl+q6hmp8UYUp88qDELSBUZ6KaZWZd1XSAtdk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u6WMIROxnkbe1oYDhhb2BWqdZ8xwoIN5ebeMtC2uAsb8xSRcWDXjptHD2wMA6DtKLEaNa5RkEaXxOSxn/t8XdjQVJvTd6ElnZRSJuZAAkB8s1X4V4cO99T8uJlKZ2qUT+ZuHlwTIgVv+FGT6kqBxR0Ex/8JHzuLjdADdhWSCdNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KLtzx3DR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACCABC072AA;
-	Wed, 17 Apr 2024 17:49:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713376190;
-	bh=kKmiZAPl+q6hmp8UYUp88qDELSBUZ6KaZWZd1XSAtdk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KLtzx3DRHZYf8q/L8qvoWsIV1j+mXQKUIxe3GMLZ42asCImYAwJZS/fjodoBAuPdp
-	 177Dv3Hy1M3KfWejLCuesWtBigYezXbqgMed3O0h9yaNWeoc0/yre4hzW/jF7I3R5w
-	 qCN0MUJmbhjf7O0DfU8Hx6MEfq1QzOTQWciowY1T1x6fEsfEcofdcp0sG2NX+lz4JQ
-	 VSYK6SquDVGk4ErhYIhI17i5fkVcdALqBaDquXWhcuo9FSP10dxu7Fd2D8eHu/MMrv
-	 gWR3zXZbH1NzX+Xlyhi7snGKiTBKjX0C03MIRE2JAJNBDScBAn9/JUosuRxZ4T10/D
-	 VcjsO5Xw/vqtg==
-Date: Wed, 17 Apr 2024 19:49:45 +0200
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH] PCI: endpoint: pci-epf-test: Make use of cached
- 'epc_features' in pci_epf_test_core_init()
-Message-ID: <ZiALuYlshLmwLhvu@ryzen>
-References: <20240417-pci-epf-test-fix-v1-1-653c911d1faa@linaro.org>
+	s=arc-20240116; t=1713376219; c=relaxed/simple;
+	bh=TGlLwowjXDrIpCxfDA2k8cIwpHvG3Np9SkRO7vgOCGA=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=nCmm0468odErLvwcVnZTYmDcvYzB/FVhrpieQ467BsYumBSEaX/XvCfV4F6p0UKfNP41/0rnjSKer0sGFsDoX0vvH0CrVvss8BHlLQsBDBO8JQlG1bqPsriPyzP1ThcWbWjvL2z8CkxdpAV7/VelUqAywXg030/B6cuFCMl5W68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=iHX5F0qJ; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4347e55066cso25319361cf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:50:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1713376216; x=1713981016; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:references:cc:to:subject:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Gr3jWtBB/wx5kqdCE7PrYGsWdy8aF+RSesvP+gsCMAk=;
+        b=iHX5F0qJ5kOIU2nIA1LXPbOFVjgIqqW25igKZg+so/tl+7Uv0bTvcZZUGuCfLybXHP
+         Oge2XIftdkd6+FsRwGhWX6U6jjy8+kPq7xXZwM7MX7+5IOvwEDULoIw/NzwlyJB9ZHKC
+         6hvuF/AfmrtM5THFG6Sn6z1xQ93Wre9Kp5k7I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713376216; x=1713981016;
+        h=in-reply-to:autocrypt:references:cc:to:subject:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Gr3jWtBB/wx5kqdCE7PrYGsWdy8aF+RSesvP+gsCMAk=;
+        b=up3zQAH13W3ZjdvNmOWNsXGLjArhA+YdJy6FqVtCzTatp/qUAeJdgC9bbmuAFaJe4Y
+         7u66huCMNwp8HXNedXov/0b1u1DsF7DSh8y5IwbKBADvKBUfxJLT8Lkza6mlkB/QJ3P1
+         SBJQ1fnIBHrRgcy+E0CoPd2tG438rgqOMBriVKHL0vmqqTbVDr+uxm3+NotEsVOnyCMO
+         vRElxsH53o/yxOWZFLRRQBB93VbPxVpXLwBLycMMINyQgcRFbPfWUHEBg18FZc7vjERa
+         /0IhD3AgpaClEIBo4xjn5k8KDDYRzqT3nphN4CHUILfDFm/Any25qvmQxTuVyzQ3xBOg
+         hmOw==
+X-Forwarded-Encrypted: i=1; AJvYcCXH2soj27sJZ9hRs3cjOyASY3ia0TmZ4MaymViH8REW9GpxbAobMORoJdP1+XTPyBf9FqKeOuXk42uVuYtPvl7ZFGNr6kfrcSFj78Wn
+X-Gm-Message-State: AOJu0Ywcr1cZZ9VZ3POv0N+l04PE7r03mHOJsc/8mQklhCkY0YR0GczL
+	fRkL+gYL4xfBoKh9Fq3Tlk6ETDd/dnRTpAxAw66asSJjn9AXjrQTgldvG9NZXg==
+X-Google-Smtp-Source: AGHT+IG2m6chLy1gmFSjN+juMHJ1CD5Y9kQn3g+j1bP0tVitWnvqFGEjVF3hbZD+roin10wgev4Ixw==
+X-Received: by 2002:a05:622a:199b:b0:436:a38b:707a with SMTP id u27-20020a05622a199b00b00436a38b707amr225520qtc.26.1713376216389;
+        Wed, 17 Apr 2024 10:50:16 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g8-20020ac84808000000b004378ec294f9sm102019qtq.72.2024.04.17.10.50.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 10:50:15 -0700 (PDT)
+Message-ID: <48f366f5-4a17-474c-a8e3-6d79c9092d62@broadcom.com>
+Date: Wed, 17 Apr 2024 10:50:07 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240417-pci-epf-test-fix-v1-1-653c911d1faa@linaro.org>
+User-Agent: Mozilla Thunderbird
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+Subject: Re: [PATCH v2 0/4] Implement vendor resets for PSCI SYSTEM_RESET2
+To: Sudeep Holla <sudeep.holla@arm.com>,
+ Elliot Berman <quic_eberman@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Sebastian Reichel
+ <sre@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Andy Yan <andy.yan@rock-chips.com>, Lorenzo Pieralisi
+ <lpieralisi@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+ Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
+ Melody Olvera <quic_molvera@quicinc.com>,
+ Shivendra Pratap <quic_spratap@quicinc.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20240414-arm-psci-system_reset2-vendor-reboots-v2-0-da9a055a648f@quicinc.com>
+ <Zh5GWqt2oCNHdF_h@bogus>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
+ M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
+ JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
+ PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
+ KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
+ AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
+ IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
+ ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
+ bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
+ Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
+ tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
+ TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
+ zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
+ WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
+ IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
+ U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
+ 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
+ pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
+ MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
+ IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
+ gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
+ obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
+ N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
+ CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
+ C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
+ wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
+ EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
+ fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
+ MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
+ 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
+ 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
+In-Reply-To: <Zh5GWqt2oCNHdF_h@bogus>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000c4c5b106164e7c4a"
 
-On Wed, Apr 17, 2024 at 10:47:25PM +0530, Manivannan Sadhasivam wrote:
-> Instead of getting the epc_features from pci_epc_get_features() API, use
-> the cached pci_epf_test::epc_features value to avoid the NULL check. Since
-> the NULL check is already performed in pci_epf_test_bind(), having one more
-> check in pci_epf_test_core_init() is redundant and it is not possible to
-> hit the NULL pointer dereference. This also leads to the following smatch
-> warning:
+--000000000000c4c5b106164e7c4a
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+On 4/16/24 02:35, Sudeep Holla wrote:
+> On Sun, Apr 14, 2024 at 12:30:23PM -0700, Elliot Berman wrote:
+>> The PSCI SYSTEM_RESET2 call allows vendor firmware to define additional
+>> reset types which could be mapped to the reboot argument.
+>>
+>> Setting up reboot on Qualcomm devices can be inconsistent from chipset
+>> to chipset.
 > 
-> drivers/pci/endpoint/functions/pci-epf-test.c:784 pci_epf_test_core_init()
-> error: we previously assumed 'epc_features' could be null (see line 747)
+> That doesn't sound good. Do you mean PSCI SYSTEM_RESET doesn't work as
+> expected ? Does it mean it is not conformant to the specification ?
 > 
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Closes: https://lore.kernel.org/linux-pci/024b5826-7180-4076-ae08-57d2584cca3f@moroto.mountain/
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-I think you forgot:
-Fixes: a01e7214bef9 ("PCI: endpoint: Remove "core_init_notifier" flag")
-
-
-> ---
->  drivers/pci/endpoint/functions/pci-epf-test.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+>> Generally, there is a PMIC register that gets written to
+>> decide the reboot type. There is also sometimes a cookie that can be
+>> written to indicate that the bootloader should behave differently than a
+>> regular boot. These knobs evolve over product generations and require
+>> more drivers. Qualcomm firmwares are beginning to expose vendor
+>> SYSTEM_RESET2 types to simplify driver requirements from Linux.
+>>
 > 
-> diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-> index 977fb79c1567..0d28f413cb07 100644
-> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
-> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-> @@ -743,11 +743,10 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
->  	bool msi_capable = true;
->  	int ret;
->  
-> -	epc_features = pci_epc_get_features(epc, epf->func_no, epf->vfunc_no);
-> -	if (epc_features) {
-> -		msix_capable = epc_features->msix_capable;
-> -		msi_capable = epc_features->msi_capable;
-> -	}
-> +	epc_features = epf_test->epc_features;
-
-How about:
-
-index 977fb79c1567..4d6105c07ac0 100644
---- a/drivers/pci/endpoint/functions/pci-epf-test.c
-+++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-@@ -735,7 +735,7 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
- {
-        struct pci_epf_test *epf_test = epf_get_drvdata(epf);
-        struct pci_epf_header *header = epf->header;
--       const struct pci_epc_features *epc_features;
-+       const struct pci_epc_features *epc_features = epf_test->epc_features;
-        struct pci_epc *epc = epf->epc;
-        struct device *dev = &epf->dev;
-        bool linkup_notifier = false;
-@@ -743,12 +743,6 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
-        bool msi_capable = true;
-        int ret;
- 
--       epc_features = pci_epc_get_features(epc, epf->func_no, epf->vfunc_no);
--       if (epc_features) {
--               msix_capable = epc_features->msix_capable;
--               msi_capable = epc_features->msi_capable;
--       }
--
-        if (epf->vfunc_no <= 1) {
-                ret = pci_epc_write_header(epc, epf->func_no, epf->vfunc_no, header);
-                if (ret) {
-@@ -761,6 +755,7 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
-        if (ret)
-                return ret;
- 
-+       msi_capable = epc_features->msi_capable;
-        if (msi_capable) {
-                ret = pci_epc_set_msi(epc, epf->func_no, epf->vfunc_no,
-                                      epf->msi_interrupts);
-@@ -770,6 +765,7 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
-                }
-        }
- 
-+       msix_capable = epc_features->msix_capable;
-        if (msix_capable) {
-                ret = pci_epc_set_msix(epc, epf->func_no, epf->vfunc_no,
-                                       epf->msix_interrupts,
-@@ -814,11 +810,9 @@ static int pci_epf_test_alloc_space(struct pci_epf *epf)
-        void *base;
-        enum pci_barno test_reg_bar = epf_test->test_reg_bar;
-        enum pci_barno bar;
--       const struct pci_epc_features *epc_features;
-+       const struct pci_epc_features *epc_features = epf_test->epc_features;
-        size_t test_reg_size;
- 
--       epc_features = epf_test->epc_features;
--
-        test_reg_bar_size = ALIGN(sizeof(struct pci_epf_test_reg), 128);
- 
-        msix_capable = epc_features->msix_capable;
-
-
-Instead?
-
-That way, we assign msi_capable/msix_capable just before the if-statement
-where it is used. (Which matches how we already assign msix_capable just
-before the if-statement in pci_epf_test_alloc_space().)
-
-
-Kind regards,
-Niklas
-
-
-> +
-> +	msix_capable = epc_features->msix_capable;
-> +	msi_capable = epc_features->msi_capable;
->  
->  	if (epf->vfunc_no <= 1) {
->  		ret = pci_epc_write_header(epc, epf->func_no, epf->vfunc_no, header);
+> Why can't this be fully userspace driven ? What is the need to keep the
+> cookie in the DT ?
 > 
-> ---
-> base-commit: 6e47dcb2ca223211c43c37497836cd9666c70674
-> change-id: 20240417-pci-epf-test-fix-2209ae22be80
 > 
-> Best regards,
-> -- 
-> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> 
+
+Using the second example in the Device Tree:
+
+mode-bootloader = <1 2>;
+
+are you suggesting that within psci_vendor_sys_reset2() we would look at 
+the data argument and assume that we have something like this in memory:
+
+const char *cmd = data;
+
+cmd[] = "bootloader 2"
+
+where "bootloader" is the reboot command, and "2" is the cookie? From an 
+util-linux, busybox, toybox, etc. we would have to concatenate those 
+arguments with a space, but I suppose that would be doable.
+
+For the use cases that I am after we did not have a need for the cookie, 
+so I admit I did not think too much about it.
+-- 
+Florian
+
+
+--000000000000c4c5b106164e7c4a
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGziEFeDeLJysivf
+NcKPsu4a0RIBQoPBOhZTDofHkfvaMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTI0MDQxNzE3NTAxNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBy3FU6/cUhyKWMgSaaiebw7SGlYKwiFvUK
+aqWXWUCu7ctsE/R/fgfdUZEelIjI8Z0MJEqQnkeb5q7UEdP+fLDBxNRM9fn4aKOoUBM8cjKpZIMO
+o6t1A99fnIMoSxz21+oa4FzTCeUX+/upcKxh1m5WPgJYLqaImtxsbaCA2hBGgwGkTrK6dEQNX6Qk
+xyOsn/8W+/WCjDlAUSykEzey36FTEPVzPCXN4GgAxmBk6AzIMJOucqxbcBYm+MzJOTpeXkahTKd/
+T4+IcG0acuyneBJ3PVhy4qmfxzdMDnldeEE52U4OO/2HLhtOlSTombxFDqlCj82HVK+pa2+td5JV
+oyWb
+--000000000000c4c5b106164e7c4a--
 
