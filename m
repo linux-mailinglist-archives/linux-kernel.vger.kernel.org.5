@@ -1,207 +1,168 @@
-Return-Path: <linux-kernel+bounces-149124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90CFE8A8C2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:34:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2930C8A8C2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:35:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4782A28276C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:34:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD4451F228A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 227372C861;
-	Wed, 17 Apr 2024 19:34:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1CD42E62B;
+	Wed, 17 Apr 2024 19:35:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OGz1CYIV"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hb+8+TXV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB081E895
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 19:34:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261D51BF53;
+	Wed, 17 Apr 2024 19:35:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713382461; cv=none; b=U/TCUKqNI+EPDxqTXaTHo7ZHAzyNnEodtNP5kL545V2hffjm9y2rrreYJgn6d9GI/nTx0EPmRbyhJkc2lFYRLv88FDh8EnDH4EF5BTGg81l3TkfQBsPNHbe9kssssLRVFzUIAYpALaPMfQX6UqbNa4CCR9IEIKXF1hFxgSWeDk8=
+	t=1713382541; cv=none; b=ABepTx2xIv7redKzvNoonhYQ539mcK519YGuWClOoKiUZ5WygTSfd+mMp/MS4jGehQ+YCrA0rZL8Ae+JnKbnpwS63tlzAvJpY+PPpMGlFPPYsv4O+qg3XD8RldRpfeFZ07/j1mqBGjhi6OzgtX8vFfgTMoXsK+0wTiQworGpjsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713382461; c=relaxed/simple;
-	bh=0LwcQE74ewyrLEKr9qBB4PpxyrOcuzBZ+DsOu847dE0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iWALEma10ONM+eWmn8TKRBOb1efgAlDw2yfGt0ifcrkCkmz0PhGWWqAi3VVdxI6yFtyFLvDik0PGRm4qQuYyCGltSABDfEHfUlmhjOe0ql92mCF5e7ls870D6vAJNs+NmKt/uSq40RMx/9XHQ0ReUjDMG5fHabUhnwM/73o3hR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OGz1CYIV; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56e2e851794so146a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 12:34:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713382457; x=1713987257; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fyl6TqOQKc7y6AuWZSULZsHIQoiSS+3/2ZOsE3/WMtU=;
-        b=OGz1CYIVBJ7Yid+XCiNzg/JS7CkywMy/vUxd27Uma5XD8ocezRYNhVWnLbbRclhQld
-         kcV56jEIPe0jeUGyK9HO3p/dUqzTt00MrAMF98oidr3M0HSO2HGhsstXN6CAdaXtQzGQ
-         SJSVJQMtG0wwWo5NtYnn+8IfwsIBI5mPmh3AydE7WpAB4Nila3KSELEX37E41C6yRpzC
-         Cmss9vcSJRJ27OQ4EUng/UbpU5wp0M1vxdFnk3iWQgxTKQA1vGFdnNBChuilNt38vwLM
-         lc5ff8bxkEjeS/mZRyJwpRzkYfQJ/c0FiWT3xZggyGqwcmBC7PuFnBAfkUyeGggjZiVX
-         +n5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713382457; x=1713987257;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fyl6TqOQKc7y6AuWZSULZsHIQoiSS+3/2ZOsE3/WMtU=;
-        b=DQeGKJytyiE+YxWPZk/ZiBQZGmkCpcwQax3TdfcJRjb1k6xosOZ+ItycPYdig/gVMG
-         MRScRmRwX1ED6qTO2z+vCPp/uDommOxDrkst0xX9B4ZdswaLmmy4fPhodpppsfHqrbO3
-         Szn8xNC48NlolpKC0IRGQ5TaaBdug9ETQPoEiEvCgzncK8LR2fgWUk7bZAI+/vzghU6S
-         RrbpVqpGHQxHzaPIKFupQtJCUOzSr7alqGEjRbJimS6VCPzCmMe1WdeNxmXdkj4EltXB
-         PgqJD78n/2y8n8lhthijcierm5kb8aQPBuOuHlEYOTBAZtvi+pyUEN9OmRw/qnP9ldf9
-         5q5g==
-X-Forwarded-Encrypted: i=1; AJvYcCUNWOToZgPn9IhMAj3kgrE8mijNoaUtXDao0UO9knXG8fw0xhdMG/9+S5wP4jHmaFXDCwXjVA0JemgSQmeCoZei6q3Drf4Ut/OPqxIu
-X-Gm-Message-State: AOJu0YxhgoK6gdPmMEKevqEJbW+qr4ENOw43aQz8kFvInB4qUHPC8Li1
-	HhFtmo0hscs1fqiItTUvxfoK43nKVr/ZhnUzHkTU0kf/u6K57gaBynBXuStxM7+4s3FC48cSByd
-	Xiy20XMItSO3CBl7Q04z0b68Dg47T4I1D2+S/
-X-Google-Smtp-Source: AGHT+IF3BxF61WJZfffzn5eL5CSWhQKAZF34LWBLquyLGLML0FvYcr/UD2V+jp/gbT9bVgfJHdkvmNN7KBf/Xf/oMBk=
-X-Received: by 2002:a05:6402:12d2:b0:571:b3fa:bf81 with SMTP id
- k18-20020a05640212d200b00571b3fabf81mr29493edx.2.1713382456805; Wed, 17 Apr
- 2024 12:34:16 -0700 (PDT)
+	s=arc-20240116; t=1713382541; c=relaxed/simple;
+	bh=D7V7cK/8mNacv3vFISbQfmWRwzEyZTIcIMLY5u7r1pA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q7ZrOJ6UczIPILyWIG0sO5NWh/KYtOuzKCYvI9cW3yHOasj1DGHu+SB+Ro9pTmUPs9xESoJgVh7U4mL0ArtVHoRvopV7Bjy3c6uOare/B76J7GTCV/ACtCSSuP6uD3Oj0YfFScDYjSUzNSCkT0dYDaGAdaw88lYnAVhdz5PoAkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hb+8+TXV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3909CC072AA;
+	Wed, 17 Apr 2024 19:35:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713382540;
+	bh=D7V7cK/8mNacv3vFISbQfmWRwzEyZTIcIMLY5u7r1pA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hb+8+TXVdmYjhheg9GEtOlw+rpmMP0ryAmTR3HCIbTH3jWoQmDTy6dI0KIzG5O6z4
+	 RoXopQ9dEv7BCk9+6snZO118PbwU8tPqVRWRXdE2+J4iCXcvysOcBu1jdgJBONZ0HZ
+	 grOlXjP6FnouSABVzLIq83/U/jFXay0lcKNNKLd9CxHvA4GNvNfFVBsMDeIa8QK9yq
+	 SdJX1AIklVERA6yFqxMhRf91wZJoxR0/V+Ybmkc3M1Q96cansBf9aQ+vWqpb4w0WCe
+	 uftHf9VatHr1/2PjLjo7eYVe9nYjSsgzYZd7crt0+dFDxVUm2gntDjtBwBCfof006e
+	 a/7poxFCaJYnA==
+Date: Wed, 17 Apr 2024 22:34:28 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Nam Cao <namcao@linutronix.de>
+Cc: Matthew Wilcox <willy@infradead.org>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Andreas Dilger <adilger@dilger.ca>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>,
+	Ext4 Developers List <linux-ext4@vger.kernel.org>,
+	Conor Dooley <conor@kernel.org>,
+	Anders Roxell <anders.roxell@linaro.org>,
+	Alexandre Ghiti <alex@ghiti.fr>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+Message-ID: <ZiAkRMUfiPDUGPdL@kernel.org>
+References: <8734rlo9j7.fsf@all.your.base.are.belong.to.us>
+ <Zh6KNglOu8mpTPHE@kernel.org>
+ <20240416171713.7d76fe7d@namcao>
+ <20240416173030.257f0807@namcao>
+ <87v84h2tee.fsf@all.your.base.are.belong.to.us>
+ <20240416181944.23af44ee@namcao>
+ <Zh6n-nvnQbL-0xss@kernel.org>
+ <Zh6urRin2-wVxNeq@casper.infradead.org>
+ <Zh7Ey507KXIak8NW@kernel.org>
+ <20240417003639.13bfd801@namcao>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240118181954.1415197-1-zokeefe@google.com> <20240417111001.fa2eg5gp6t2wiwco@quack3>
-In-Reply-To: <20240417111001.fa2eg5gp6t2wiwco@quack3>
-From: "Zach O'Keefe" <zokeefe@google.com>
-Date: Wed, 17 Apr 2024 12:33:39 -0700
-Message-ID: <CAAa6QmSOum_0ZhyUq1ppguLp0jpEs0u1U843GkF==xMwaMGV4A@mail.gmail.com>
-Subject: Re: [PATCH] mm/writeback: fix possible divide-by-zero in
- wb_dirty_limits(), again
-To: Jan Kara <jack@suse.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Maxim Patlasov <MPatlasov@parallels.com>, 
-	stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417003639.13bfd801@namcao>
 
-On Wed, Apr 17, 2024 at 4:10=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
->
-> On Thu 18-01-24 10:19:53, Zach O'Keefe wrote:
-> > (struct dirty_throttle_control *)->thresh is an unsigned long, but is
-> > passed as the u32 divisor argument to div_u64().  On architectures wher=
-e
-> > unsigned long is 64 bytes, the argument will be implicitly truncated.
-> >
-> > Use div64_u64() instead of div_u64() so that the value used in the "is
-> > this a safe division" check is the same as the divisor.
-> >
-> > Also, remove redundant cast of the numerator to u64, as that should
-> > happen implicitly.
-> >
-> > This would be difficult to exploit in memcg domain, given the
-> > ratio-based arithmetic domain_drity_limits() uses, but is much easier i=
-n
-> > global writeback domain with a BDI_CAP_STRICTLIMIT-backing device, usin=
-g
-> > e.g. vm.dirty_bytes=3D(1<<32)*PAGE_SIZE so that dtc->thresh =3D=3D (1<<=
-32)
-> >
-> > Fixes: f6789593d5ce ("mm/page-writeback.c: fix divide by zero in bdi_di=
-rty_limits()")
-> > Cc: Maxim Patlasov <MPatlasov@parallels.com>
-> > Cc: <stable@vger.kernel.org>
-> > Signed-off-by: Zach O'Keefe <zokeefe@google.com>
->
-> I've come across this change today and it is broken in several ways:
+On Wed, Apr 17, 2024 at 12:36:39AM +0200, Nam Cao wrote:
+> On 2024-04-16 Mike Rapoport wrote:
+> > On Tue, Apr 16, 2024 at 06:00:29PM +0100, Matthew Wilcox wrote:
+> > > On Tue, Apr 16, 2024 at 07:31:54PM +0300, Mike Rapoport wrote:
+> > > > > -	if (!IS_ENABLED(CONFIG_64BIT)) {
+> > > > > -		max_mapped_addr = __pa(~(ulong)0);
+> > > > > -		if (max_mapped_addr == (phys_ram_end - 1))
+> > > > > -			memblock_set_current_limit(max_mapped_addr - 4096);
+> > > > > -	}
+> > > > > +	memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE);
+> > > > 
+> > > > Ack.
+> > > 
+> > > Can this go to generic code instead of letting architecture maintainers
+> > > fall over it?
+> > 
+> > Yes, it's just have to happen before setup_arch() where most architectures
+> > enable memblock allocations.
+> 
+> This also works, the reported problem disappears.
+> 
+> However, I am confused about one thing: doesn't this make one page of
+> physical memory inaccessible?
+> 
+> Is it better to solve this by setting max_low_pfn instead? Then at
+> least the page is still accessible as high memory.
 
-Thanks for picking up on this, Jan.
+It could be if riscv had support for HIGHMEM.
+ 
+> Best regards,
+> Nam
+> 
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index fa34cf55037b..6e3130cae675 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -197,7 +197,6 @@ early_param("mem", early_mem);
+>  static void __init setup_bootmem(void)
+>  {
+>  	phys_addr_t vmlinux_end = __pa_symbol(&_end);
+> -	phys_addr_t max_mapped_addr;
+>  	phys_addr_t phys_ram_end, vmlinux_start;
+>  
+>  	if (IS_ENABLED(CONFIG_XIP_KERNEL))
+> @@ -235,23 +234,9 @@ static void __init setup_bootmem(void)
+>  	if (IS_ENABLED(CONFIG_64BIT))
+>  		kernel_map.va_pa_offset = PAGE_OFFSET - phys_ram_base;
+>  
+> -	/*
+> -	 * memblock allocator is not aware of the fact that last 4K bytes of
+> -	 * the addressable memory can not be mapped because of IS_ERR_VALUE
+> -	 * macro. Make sure that last 4k bytes are not usable by memblock
+> -	 * if end of dram is equal to maximum addressable memory.  For 64-bit
+> -	 * kernel, this problem can't happen here as the end of the virtual
+> -	 * address space is occupied by the kernel mapping then this check must
+> -	 * be done as soon as the kernel mapping base address is determined.
+> -	 */
+> -	if (!IS_ENABLED(CONFIG_64BIT)) {
+> -		max_mapped_addr = __pa(~(ulong)0);
+> -		if (max_mapped_addr == (phys_ram_end - 1))
+> -			memblock_set_current_limit(max_mapped_addr - 4096);
 
-> > diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> > index cd4e4ae77c40a..02147b61712bc 100644
-> > --- a/mm/page-writeback.c
-> > +++ b/mm/page-writeback.c
-> > @@ -1638,7 +1638,7 @@ static inline void wb_dirty_limits(struct dirty_t=
-hrottle_control *dtc)
-> >        */
-> >       dtc->wb_thresh =3D __wb_calc_thresh(dtc);
-> >       dtc->wb_bg_thresh =3D dtc->thresh ?
-> > -             div_u64((u64)dtc->wb_thresh * dtc->bg_thresh, dtc->thresh=
-) : 0;
-> > +             div64_u64(dtc->wb_thresh * dtc->bg_thresh, dtc->thresh) :=
- 0;
->
-> Firstly, the removed (u64) cast from the multiplication will introduce a
-> multiplication overflow on 32-bit archs if wb_thresh * bg_thresh >=3D 1<<=
-32
-> (which is actually common - the default settings with 4GB of RAM will
-> trigger this). [..]
+To be precisely strict about the conflict between mapping a page at
+0xfffff000 and IS_ERR_VALUE, memblock should not allocate the that page, so
+memblock_set_current_limit() should remain. It does not need all the
+surrounding if, though just setting the limit for -PAGE_SIZE should do.
 
-True, and embarrassing given I was looking at this code with a 32-bit
-focus. Well spotted.
+Although I suspect that this call to memblock_set_current_limit() is what
+caused the splat in ext4. Without that limit enforcement, the last page
+would be the first one memblock allocates and it most likely would have
+ended in the kernel page tables and would never be checked for IS_ERR. With
+the limit set that page made it to the buddy and got allocated by the code
+that actually does IS_ERR checks.
 
-> [..] Secondly, the div64_u64() is unnecessarily expensive on
-> 32-bit archs. We have div64_ul() in case we want to be safe & cheap.
+> -	}
+> -
+>  	min_low_pfn = PFN_UP(phys_ram_base);
+> -	max_low_pfn = max_pfn = PFN_DOWN(phys_ram_end);
+> +	max_pfn = PFN_DOWN(phys_ram_end);
+> +	max_low_pfn = min(max_pfn, PFN_DOWN(__pa(-PAGE_SIZE)));
+>  	high_memory = (void *)(__va(PFN_PHYS(max_low_pfn)));
+>  
+>  	dma32_phys_limit = min(4UL * SZ_1G, (unsigned long)PFN_PHYS(max_low_pfn));
 
-A last-minute change vs just casting the initial "dtc->thresh ?"
-check. It did look expensive, but figured its existence implied it
-should be used. I must have missed div64_ul().
-
-> Thirdly, if thresholds are larger than 1<<32 pages, then dirty balancing =
-is
-> going to blow up in many other spectacular ways - consider only the
-> multiplication on this line - it will not necessarily fit into u64 anymor=
-e.
-> The whole dirty limiting code is interspersed with assumptions that limit=
-s
-> are actually within u32 and we do our calculations in unsigned longs to
-> avoid worrying about overflows (with occasional typing to u64 to make it
-> more interesting because people expected those entities to overflow 32 bi=
-ts
-> even on 32-bit archs). Which is lame I agree but so far people don't seem
-> to be setting limits to 16TB or more. And I'm not really worried about
-> security here since this is global-root-only tunable and that has much
-> better ways to DoS the system.
->
-> So overall I'm all for cleaning up this code but in a sensible way please=
-.
-> E.g. for these overflow issues at least do it one function at a time so
-> that we can sensibly review it.
->
-> Andrew, can you please revert this patch until we have a better fix? So f=
-ar
-> it does more harm than good... Thanks!
-
-Shall we just roll-forward with a suitable fix? I think all the
-original code actually "needed" was to cast the ternary predicate,
-like:
-
----8<---
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index fba324e1a010..ca1bfc0c9bdd 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -1637,8 +1637,8 @@ static inline void wb_dirty_limits(struct
-dirty_throttle_control *dtc)
-         *   at some rate <=3D (write_bw / 2) for bringing down wb_dirty.
-         */
-        dtc->wb_thresh =3D __wb_calc_thresh(dtc);
--       dtc->wb_bg_thresh =3D dtc->thresh ?
--               div64_u64(dtc->wb_thresh * dtc->bg_thresh, dtc->thresh) : 0=
-;
-+       dtc->wb_bg_thresh =3D (u32)dtc->thresh ?
-+               div_u64((u64)dtc->wb_thresh * dtc->bg_thresh, dtc->thresh) =
-: 0;
-
-        /*
-         * In order to avoid the stacked BDI deadlock we need
----8<---
-
-Thanks, and apologize for the inconvenience
-
-Zach
-
->                                                                 Honza
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+-- 
+Sincerely yours,
+Mike.
 
