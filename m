@@ -1,153 +1,192 @@
-Return-Path: <linux-kernel+bounces-148812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25A998A87B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE3F98A87BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:35:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48C921C21F20
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:34:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DC771C21F47
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:35:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F087147C9D;
-	Wed, 17 Apr 2024 15:34:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4F91487CE;
+	Wed, 17 Apr 2024 15:34:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i4T6AISh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="L7WN8uZC"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 651C113C3EF;
-	Wed, 17 Apr 2024 15:34:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E3EE13C3EF
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:34:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713368068; cv=none; b=ARFys+a6ITm7aw+zHvcO88YYbb08f5aTUGdKeCPLJxtxGyPkcmIZa+EdWnkQRZYinsYKRO8JJYRq+InxkAqmFoY0VOmOkEOwhY+SJeFGNIQ2Rls1zKLrDEvEviKS+Ai2mzgxuuzdBjMiEVAa70W/sToC2wenLEKW7uEDUv/+1/M=
+	t=1713368097; cv=none; b=Ev9j2M6EvuCp7dgjFFYcDWS7ZaVFImbZ3SwpyTrEGOY9/rVrLSXq6Efc2iDt8B4L47xmNPn1VRUAbn5fPcmj5RXh9/GFweGPnw8B+drnHWZKuk2k6Vlj0zDoi2EeoUqxsnr76O5LaisLJpEDAsdpaXz707lu6G3lVS/xbHTDCM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713368068; c=relaxed/simple;
-	bh=IaRbObB5dEEIBtmpY4TQrQpfkbKo3yd2zwxXbfaJry0=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=jcS+eTpuaZWeVijKeU8wGzXirr/TzjuVnRf6vuvOTyySPhANT2/7qE9a31rq7CyYoztjjdnMseZOteXJdOG1qYreKfY7aiP+GkMOiscNyQfi7nc/4sIZQY0gdmz8z1SYJ+E23pEMu5YeqVZGk3SpxauCsLDcSvGR5NbgiHuQ+A8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i4T6AISh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCB6DC072AA;
-	Wed, 17 Apr 2024 15:34:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713368068;
-	bh=IaRbObB5dEEIBtmpY4TQrQpfkbKo3yd2zwxXbfaJry0=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=i4T6AIShq8iv6NzCQXuiVcBRjXys+gIu07VpRelIM/4VXfkxa3i1aKygFMcqTfTIP
-	 AxI1eScM8ogH6mCi0qFjCiT8MznN+YC6bE97ooKRydobQsZBEBBPl14dFQ/xJn7HcJ
-	 WhAUpXTxxQ+2Ln9OGR3rqkl/aitwNGoa5G5ULy5RqNdc8NReBC8F7Aw/raXUAR5Vla
-	 sVdUqc4laN664krEG2iJfuh8vTv5eP5X/Cd5kMpYf6dUmdG1Ce3KMwmHj+zgdDoFUO
-	 jLR33YbSwCQZlA1pjaR0uIv/IyOSNecht8uQWZ1RfasrybthQd67T+YCEJKhb1akT9
-	 aqEUnB1f0DATQ==
-Date: Wed, 17 Apr 2024 10:34:26 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1713368097; c=relaxed/simple;
+	bh=2vOagO6jE6DjFNxsKLI07Zz2kYkLwAdFXJ85u5L5jAA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=P1rlp2WzIn4j/fdUSq/99lHd0P09XgMMI2rElyPABbWNYe0UytUfZDjBpPLpLH/1rtwS8+VCLyk/dwSpbHnzhVpmNQa1We1ZXO44vJDSbTmhYjnZA/o8o2xCds9Wa7KtQbIG/xgw4XeXh236ddmn66Pb/xoeios6eoCI8k5RJX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=L7WN8uZC; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [192.168.7.187] ([71.202.166.45])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 43HFYUrF4085034
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 17 Apr 2024 08:34:30 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 43HFYUrF4085034
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024041401; t=1713368071;
+	bh=CbbSoysc8+kTfQsSO7LDFZAr17fUxi8U9MPc4mSBtDY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=L7WN8uZChGnO3ZUaSpEquwJTpQZxvHyfEIKSNgGsG2XTF/RENU2ULfdYg7F7NbW2h
+	 e54BbaLZie4OR/uKdZHrWxHgVriB6XR9u7zsPcrfRpQRwWOEU0ul/RcypDSNuFXqOd
+	 VcJTcLhk7y5g9nKvnXd4oRjM3ObbOsKRD/q/vBpcW+uP3QiQEb2tB4n5HqlT8Kf6Wl
+	 zlW/GnuCuV29RGWqqdoM4dywZpXSZiAXvisgHObJ2LZyT4qcAZRgAIg2vUrlP/XCjY
+	 tyQdQvDtzNSEIdOHyw/91Vi2AX6YJ829s/6PJvX/7iMYMJyJpeMeuW5SOf1utF49qj
+	 HZD2e+INDrHjQ==
+Message-ID: <1eaf08d5-2dd9-4517-b340-47cc7aa4cf05@zytor.com>
+Date: Wed, 17 Apr 2024 08:34:28 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Kory Maincent <kory.maincent@bootlin.com>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, 
- Dent Project <dentproject@linuxfoundation.org>, 
- linux-kernel@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, 
- kernel@pengutronix.de, "Rafael J. Wysocki" <rafael@kernel.org>, 
- linux-doc@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Russell King <linux@armlinux.org.uk>, Russ Weight <russ.weight@linux.dev>, 
- Jakub Kicinski <kuba@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>, 
- Andrew Lunn <andrew@lunn.ch>, Mark Brown <broonie@kernel.org>, 
- Eric Dumazet <edumazet@google.com>, 
- Oleksij Rempel <o.rempel@pengutronix.de>, 
- Frank Rowand <frowand.list@gmail.com>, Paolo Abeni <pabeni@redhat.com>, 
- "David S. Miller" <davem@davemloft.net>, 
- Maxime Chevallier <maxime.chevallier@bootlin.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org, 
- Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20240417-feature_poe-v9-8-242293fd1900@bootlin.com>
-References: <20240417-feature_poe-v9-0-242293fd1900@bootlin.com>
- <20240417-feature_poe-v9-8-242293fd1900@bootlin.com>
-Message-Id: <171336806575.2618779.157615998420721814.robh@kernel.org>
-Subject: Re: [PATCH net-next v9 08/14] dt-bindings: net: pse-pd: Add
- another way of describing several PSE PIs
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] x86/fred: Fix INT80 emulation for FRED
+To: "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>
+Cc: linux-kernel@vger.kernel.org, luto@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org
+References: <20240417063001.3773507-1-xin@zytor.com>
+ <20240417093813.GBZh-YhSQCXgy3OxFI@fat_crate.local>
+ <5dd74948-a951-4a7a-84ac-7e75cc26bb46@zytor.com>
+Content-Language: en-US
+From: Xin Li <xin@zytor.com>
+Autocrypt: addr=xin@zytor.com; keydata=
+ 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
+ l75w1xInsg==
+In-Reply-To: <5dd74948-a951-4a7a-84ac-7e75cc26bb46@zytor.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-
-On Wed, 17 Apr 2024 16:39:56 +0200, Kory Maincent wrote:
-> From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
+On 4/17/2024 7:59 AM, H. Peter Anvin wrote:
+> On 4/17/24 02:38, Borislav Petkov wrote:
+>> On Tue, Apr 16, 2024 at 11:30:01PM -0700, Xin Li (Intel) wrote:
+>>> 3) The FRED kernel entry handler does *NOT* dispatch INT instructions,
+>>>     which is of event type EVENT_TYPE_SWINT, so compared with
+>>>     do_int80_emulation(), there is no need to do any user mode check.
+>>
+>> What does that mean?
+>>
+>> An event handler doesn't dispatch INT insns?
+>>
+>> /me is confused.
 > 
-> PSE PI setup may encompass multiple PSE controllers or auxiliary circuits
-> that collectively manage power delivery to one Ethernet port.
-> Such configurations might support a range of PoE standards and require
-> the capability to dynamically configure power delivery based on the
-> operational mode (e.g., PoE2 versus PoE4) or specific requirements of
-> connected devices. In these instances, a dedicated PSE PI node becomes
-> essential for accurately documenting the system architecture. This node
-> would serve to detail the interactions between different PSE controllers,
-> the support for various PoE modes, and any additional logic required to
-> coordinate power delivery across the network infrastructure.
+> FRED has separate entry flows depending on if the event came from user 
+> space or kernel space:
 > 
-> The old usage of "#pse-cells" is unsuficient as it carries only the PSE PI
-> index information.
+> asm_fred_entrypoint_user -> fred_entry_from_user
 > 
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-> ---
+> asm_fred_entrypoint_kernel -> fred_entry_from_kernel
 > 
-> Changes in v3:
-> - New patch
+> fred_entry_from_kernel does not invoke fred_intx() if the event type is 
+> EVENT_TYPE_SWINT, instead it falls through to fred_bad_type(). Perhaps 
+> fred_intx() should be renamed fred_intx_user() for additional clarity.
+
+This is a good idea, and again naming is so important.
+
 > 
-> Changes in v4:
-> - Remove $def
-> - Fix pairset-names item list
-> - Upgrade few properties description
-> - Update the commit message
+> (It might also we worth noting in that function that the reason int 
+> $0x03 and int $0x04 are dispatched as INT3 and INTO is to be fully user 
+> space compatible with legacy IDT, which behaves similarly.)
+
+Yeah, this is subtle, and we'd better make it explicit with comments.
+
+FRED distinguishes int $0x03/$0x04 from INT3/INTO with event type 
+EVENT_TYPE_SWINT and EVENT_TYPE_SWEXC, and the Linux kernel itself can 
+still use INT3/INTO, however int $0x03/$0x04 is NOT allowed from kernel 
+context.
+
 > 
-> Changes in v5:
-> - Fix yamllint error.
-> - Replace underscore by dash in properties names.
-> - Add polarity-supported property.
+> Thus, the int $0x80 code is simply not reachable from kernel space; if 
+> kernel code were to invoke int $0x80 or any other INT instruction it 
+> will error out before getting to this code.
 > 
-> Changes in v6:
-> - Reorder the pairset pinout table documentation to shrink the lines size.
-> - Remove pairset and polarity as required fields.
-> - Add vpwr-supply regulator supply.
+>>> +#ifdef CONFIG_X86_FRED
+>>> +/*
+>>> + * A FRED-specific INT80 handler fred_int80_emulation() is required:
+>>> + *
+>>> + * 1) As INT instructions and hardware interrupts are separate event
+>>> + *    types, FRED does not preclude the use of vector 0x80 for external
+>>> + *    interrupts. As a result the FRED setup code does *NOT* reserve
+>>> + *    vector 0x80 and calling int80_is_external() is not merely
+>>> + *    suboptimal but actively incorrect: it could cause a system call
+>>> + *    to be incorrectly ignored.
+>>> + *
+>>> + * 2) fred_int80_emulation(), only called for handling vector 0x80 of
+>>> + *    event type EVENT_TYPE_SWINT, will NEVER be called to handle any
+>>> + *    external interrupt (event type EVENT_TYPE_EXTINT).
+>>> + *
+>>> + * 3) The FRED kernel entry handler does *NOT* dispatch INT 
+>>> instructions,
+>>> + *    which is of event type EVENT_TYPE_SWINT, so compared with
+>>> + *    do_int80_emulation(), there is no need to do any user mode check.
+>>> + *
+>>> + * 4) int80_emulation() does a CLEAR_BRANCH_HISTORY, which is likely
+>>> + *    overkill for new x86 CPU implementations that support FRED.
+>>> + *
+>>> + * 5) int $0x80 is the FAST path for 32-bit system calls under FRED.
+>>> + *
+>>> + * A dedicated FRED INT80 handler duplicates quite a bit of the code in
+>>> + * do_int80_emulation(), but it avoids sprinkling more tests and seems
+>>> + * more readable. Just remember that we can always unify common stuff
+>>> + * later if it turns out that it won't diverge anymore, i.e., after the
+>>> + * FRED code settles.
+>>> + */
+>>
+>> And this is talking about duplication above and that text is duplicated
+>> from the commit message. :)
+>>
+>> I'll zap it when applying.
+>>
 > 
-> Changes in v7:
-> - Fix weird characters issue.
-> - Fix documentation nit.
-> ---
->  .../bindings/net/pse-pd/pse-controller.yaml        | 101 ++++++++++++++++++++-
->  1 file changed, 98 insertions(+), 3 deletions(-)
+> I suggested putting it into a comment for future reference. Obviously no 
+> need to duplicate it in the commit message :)
 > 
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-
-
-doc reference errors (make refcheckdocs):
-Warning: Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml references a file that doesn't exist: Documentation/networking/pse-pd/pse-pi.rst
-Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml: Documentation/networking/pse-pd/pse-pi.rst
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240417-feature_poe-v9-8-242293fd1900@bootlin.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+yes!
 
 
