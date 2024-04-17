@@ -1,329 +1,127 @@
-Return-Path: <linux-kernel+bounces-148028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A88DB8A7CD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:07:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C75C28A7CD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:10:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35E5D1F21C6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:07:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85567282575
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:10:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3806A33B;
-	Wed, 17 Apr 2024 07:07:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C78AF6A346;
+	Wed, 17 Apr 2024 07:10:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="aN4QeJ/V"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FP9x86cC"
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0300851004;
-	Wed, 17 Apr 2024 07:07:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1CE16A337
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:10:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713337637; cv=none; b=opiaXrAThxT9zgJEg5FClD6RUvRg3sl5QvFO/1MKSAO/6iirdLL7o/pamvATvYbO+uqRCdfLhyoHpOsmAgzXrS0qTsyKETE15iu4uDS0R4L2qaT0AY+sBtgYEDQP9RDci8nJPXCGMtrhz6RU49LIv/f9kYKqVnxGL12mh83lUNc=
+	t=1713337819; cv=none; b=q+PmflyFrbGGf1gHyF8xUHlcRsceqzSEtZdk7ZYTWrFpZdnCPS1OWE7wI0KuuWreeB8RRXAONiHGOxe+PXwb/SuTwS27OtyDTHn1t2zTE4k3NQnEQhHm4Ejka+feV63XyzQkiRbksTdJaBGGGEz7GYXASRtLnHwuu3qh9thL+j0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713337637; c=relaxed/simple;
-	bh=mH1Op3mNuCa9nI4NldsC+UBBMwUWlrZl8DwT/K1vkac=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H+ZI6gQDx1EL+vHHok4vgW207g8tzoYMS6K0zLyP/DByN3OxgkGnby0gytM8+504FlY++lW1ZwdaAJDrI78k/FFbrW0SsAPpAcd3sM6FjmgdyiMP0N4VNbnYTAffyGpBVOi3DMFCxgCbsMNrx93cnPTlkofOrli2UMA9EtEh4Y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=aN4QeJ/V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AC31C072AA;
-	Wed, 17 Apr 2024 07:07:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713337636;
-	bh=mH1Op3mNuCa9nI4NldsC+UBBMwUWlrZl8DwT/K1vkac=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aN4QeJ/V0+eD/+MifPfYMhJ+1zhx+Uowm9hvTUc/eXfW3SztydKBvFTRshnoFmQpl
-	 WAFNITwr9Vz68Onkkrz2QpYOI9FlcbgfwEtk9La1bghA7hghu+ZJp8CLMAn5LeiTOw
-	 rjeq3xK5qMwN4CtKNSAEhqorx2osAORynYLLY9Z8=
-Date: Wed, 17 Apr 2024 09:07:11 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: A <ashokemailat@yahoo.com>
-Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-	outreachy@lists.linux.dev
-Subject: Re: [PATCH] staging: fbtft Removed redundant parentheses
-Message-ID: <2024041724-barricade-hardly-c554@gregkh>
-References: <cc9b9357d30c4abac7301767ff01fe7947f811c4.camel.ref@yahoo.com>
- <cc9b9357d30c4abac7301767ff01fe7947f811c4.camel@yahoo.com>
+	s=arc-20240116; t=1713337819; c=relaxed/simple;
+	bh=+Y0iqR7HFf4hB2KOGcDJrRl/HNxYW1gDznkvy2V9TSI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eDA94gty9oxGjNlBkLD7aC7hgUR53gZSnqL4yEyJecN9thXdl9hQCHTGg8hDnnfnV0FfM4z0cQrmWP6dat5wswABj2DNgZDZ+bKJCBRacHAPy3MPM+ZI3IfzL4g+QwBBl6KFEZ5DH32Sw4EBc6h5COg5dPibIyrCpB/1jVuJ4Eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FP9x86cC; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6181237230dso60724237b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:10:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713337817; x=1713942617; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9J09KpeDgDjyH9FWWr8U1Cn4ABTaxhVMMwzeJXwwtEs=;
+        b=FP9x86cCJbBYDScAbGunz5/WrSUbJZZZ627tDCZmWM9kGB4hloXOLBcxHVFLddJbr3
+         ECf+Cnv/1sjuLVqaciywrrKBP3crl8rGu4+NDqKWeovHSOLvz8TrLkUPl9v6ZoHZC++3
+         PUNF8UV+cmrm03moMw+2nAdhZUNksTDVTaCeQQzWs2BE0vCN56LWIW1bA49cTTNsLuop
+         UvUft8VwRZru6fU5DQEmZFymbA34g1Hl6ZCu4fJCTXkfwCoy2QHvksV72emZY8WkFUdv
+         zcicTSn6OVRoQVMT7vy0O+ro2irDpS1EtmUWhB+pxaRwvz1tElpV87Zy465RgdywqdMK
+         2iYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713337817; x=1713942617;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9J09KpeDgDjyH9FWWr8U1Cn4ABTaxhVMMwzeJXwwtEs=;
+        b=mHFiBV3/G1Rf/gO57LOV+441cItipxVuBq7V1zXG/t2gP1N5xQH0XaIYGxIf+4U9PT
+         sQTuvlKD0ZYFeo8wqcycQjvf8B5N0Zov0iK6Q8EfxdVDVtVu/wF19rWW3BE6NFSR4SO5
+         Gak1jiu3CQVPpwt4UGO2dynlmxHpZdXSxZlFUksAg44YJFhgeyIdquLztNFCFgcUS6ay
+         GoXRQ/syWnahhwAOw+RfxtCpnYuhd8I2pCyZij64pOjPt66LeBrlf3W7KNDb7gdbb++o
+         mkBaTGQH3r13KwKq2BHaKHoGuW4rUHPuOCOe8JoU/lxZuFvQHsmBjr8BH8Gihu6Jb/t0
+         W48g==
+X-Forwarded-Encrypted: i=1; AJvYcCUZLNXEEYaJx6+TVGLzc9XolXjgfyWCtTP6yvhPojbtvv8v3jmlKDGkhxMQhnj/fhMWHbViQo5mzv7drNG3Cge5XjdJevmA8dDPGmKV
+X-Gm-Message-State: AOJu0YwViK/gbdK3X3FW3K7wbPZ9DDS5GLxEJmLGO3QJuYPQPEnp4+11
+	UcsfEm1ZuSql1NqmxAjTRbc/fRdmZAHHNI5HUHUA1B1BXTEQ79a/2adHMdRuqT0bI/g6D1SvZ9A
+	74rEqgDrIHvN5UWqBviec9srh04aM8x4BcBQ/WQ==
+X-Google-Smtp-Source: AGHT+IEZv5YSqx+LImrF2h7ffWPm89GX1T6+xT+mi9Bj8gAZG/QNBtQXHiaYMKy5GPgTNcymEmNVCDMVhh0WM5BEwQo=
+X-Received: by 2002:a25:ae1f:0:b0:dcc:57ff:fb70 with SMTP id
+ a31-20020a25ae1f000000b00dcc57fffb70mr14735096ybj.60.1713337816685; Wed, 17
+ Apr 2024 00:10:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cc9b9357d30c4abac7301767ff01fe7947f811c4.camel@yahoo.com>
+References: <20240415123941.1527938-1-github.com@herrie.org> <1158f240-ea6b-4ac7-9697-a30d27311c50@linaro.org>
+In-Reply-To: <1158f240-ea6b-4ac7-9697-a30d27311c50@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 17 Apr 2024 10:10:05 +0300
+Message-ID: <CAA8EJpoAawTDCED3A4mNj0FkyQddxvaiUeY8R4KXmPQncufUOQ@mail.gmail.com>
+Subject: Re: [PATCH] mfd: pm8xxx: add support for PM8901
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Herman van Hazendonk <github.com@herrie.org>, andersson@kernel.org, benwolsieffer@gmail.com, 
+	chris.chapuis@gmail.com, Lee Jones <lee@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Apr 16, 2024 at 01:14:52PM -0700, A wrote:
-> >From 6dbcb120581fc7cb45812193227b0a197abd8ba4 Mon Sep 17 00:00:00 2001
-> From: Ashok Kumar <ashokemailat@yahoo.com>
-> Date: Tue, 16 Apr 2024 09:19:32 -0700
-> Subject: [PATCH] [PATCH] staging: fbtft Removed redundant parentheses on
->  logical expr
-> 
-> Adhere to Linux Kernel coding style removed redundant parentheses,
-> multiple blank lines and indentation alignment.
-> 
-> Reported by checkpatch.pl
-> 
-> ------
-> fb_ili9320.c
-> 
-> +       if ((devcode != 0x0000) && (devcode != 0x9320))
-> 
-> ------
-> fb_ra8875.c
-> 
-> CHECK: Unnecessary parentheses around 'par->info->var.xres == 320'
-> +      if ((par->info->var.xres == 320) && (par->info->var.yres ==
-> 240)) {
-> 
-> ------
-> fb_ssd1325.c
-> 
-> CHECK: Please don't use multiple blank lines
-> ------
-> 
-> fb_tinylcd.c    - indentation adjustment
-> 
-> -----
-> fbtft-bus.c
-> 
-> CHECK: Unnecessary parentheses around 'par->spi->bits_per_word == 8'
-> 
-> ------
-> fbtft-core.c
-> 
-> CHECK: Please don't use multiple blank lines
-> 
-> CHECK: Unnecessary parentheses around '!txbuflen'
-> 
-> CHECK: Please don't use multiple blank lines
-> ------
-> 
-> Signed-off-by: Ashok Kumar <ashokemailat@yahoo.com>
-> ---
->  drivers/staging/fbtft/fb_ili9320.c | 2 +-
->  drivers/staging/fbtft/fb_ra8875.c  | 8 ++++----
->  drivers/staging/fbtft/fb_ssd1325.c | 2 --
->  drivers/staging/fbtft/fb_tinylcd.c | 2 +-
->  drivers/staging/fbtft/fbtft-bus.c  | 6 +++---
->  drivers/staging/fbtft/fbtft-core.c | 7 +------
->  6 files changed, 10 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/staging/fbtft/fb_ili9320.c
-> b/drivers/staging/fbtft/fb_ili9320.c
-> index 0be7c2d51548..409b54cc562e 100644
-> --- a/drivers/staging/fbtft/fb_ili9320.c
-> +++ b/drivers/staging/fbtft/fb_ili9320.c
-> @@ -37,7 +37,7 @@ static int init_display(struct fbtft_par *par)
->  	devcode = read_devicecode(par);
->  	fbtft_par_dbg(DEBUG_INIT_DISPLAY, par, "Device code:
-> 0x%04X\n",
->  		      devcode);
-> -	if ((devcode != 0x0000) && (devcode != 0x9320))
-> +	if (devcode != 0x0000 && devcode != 0x9320)
->  		dev_warn(par->info->device,
->  			 "Unrecognized Device code: 0x%04X (expected
-> 0x9320)\n",
->  			devcode);
-> diff --git a/drivers/staging/fbtft/fb_ra8875.c
-> b/drivers/staging/fbtft/fb_ra8875.c
-> index 398bdbf53c9a..4b79fb48c5f0 100644
-> --- a/drivers/staging/fbtft/fb_ra8875.c
-> +++ b/drivers/staging/fbtft/fb_ra8875.c
-> @@ -50,7 +50,7 @@ static int init_display(struct fbtft_par *par)
->  
->  	par->fbtftops.reset(par);
->  
-> -	if ((par->info->var.xres == 320) && (par->info->var.yres ==
-> 240)) {
-> +	if (par->info->var.xres == 320 && par->info->var.yres == 240)
-> {
->  		/* PLL clock frequency */
->  		write_reg(par, 0x88, 0x0A);
->  		write_reg(par, 0x89, 0x02);
-> @@ -74,8 +74,8 @@ static int init_display(struct fbtft_par *par)
->  		write_reg(par, 0x1D, 0x0E);
->  		write_reg(par, 0x1E, 0x00);
->  		write_reg(par, 0x1F, 0x02);
-> -	} else if ((par->info->var.xres == 480) &&
-> -		   (par->info->var.yres == 272)) {
-> +	} else if (par->info->var.xres == 480 &&
-> +		   par->info->var.yres == 272) {
->  		/* PLL clock frequency  */
->  		write_reg(par, 0x88, 0x0A);
->  		write_reg(par, 0x89, 0x02);
-> @@ -111,7 +111,7 @@ static int init_display(struct fbtft_par *par)
->  		write_reg(par, 0x04, 0x01);
->  		mdelay(1);
->  		/* horizontal settings */
-> -		write_reg(par, 0x14, 0x4F);
-> +write_reg(par, 0x14, 0x4F);
->  		write_reg(par, 0x15, 0x05);
->  		write_reg(par, 0x16, 0x0F);
->  		write_reg(par, 0x17, 0x01);
-> diff --git a/drivers/staging/fbtft/fb_ssd1325.c
-> b/drivers/staging/fbtft/fb_ssd1325.c
-> index 796a2ac3e194..69aa808c7e23 100644
-> --- a/drivers/staging/fbtft/fb_ssd1325.c
-> +++ b/drivers/staging/fbtft/fb_ssd1325.c
-> @@ -109,8 +109,6 @@ static int set_gamma(struct fbtft_par *par, u32
-> *curves)
->  {
->  	int i;
->  
-> -	fbtft_par_dbg(DEBUG_INIT_DISPLAY, par, "%s()\n", __func__);
-> -
->  	for (i = 0; i < GAMMA_LEN; i++) {
->  		if (i > 0 && curves[i] < 1) {
->  			dev_err(par->info->device,
-> diff --git a/drivers/staging/fbtft/fb_tinylcd.c
-> b/drivers/staging/fbtft/fb_tinylcd.c
-> index 9469248f2c50..60cda57bcb33 100644
-> --- a/drivers/staging/fbtft/fb_tinylcd.c
-> +++ b/drivers/staging/fbtft/fb_tinylcd.c
-> @@ -38,7 +38,7 @@ static int init_display(struct fbtft_par *par)
->  	write_reg(par, 0xE5, 0x00);
->  	write_reg(par, 0xF0, 0x36, 0xA5, 0x53);
->  	write_reg(par, 0xE0, 0x00, 0x35, 0x33, 0x00, 0x00, 0x00,
-> -		       0x00, 0x35, 0x33, 0x00, 0x00, 0x00);
-> +		  0x00, 0x35, 0x33, 0x00, 0x00, 0x00);
->  	write_reg(par, MIPI_DCS_SET_PIXEL_FORMAT, 0x55);
->  	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
->  	udelay(250);
-> diff --git a/drivers/staging/fbtft/fbtft-bus.c
-> b/drivers/staging/fbtft/fbtft-bus.c
-> index 3d422bc11641..02d7dbd38678 100644
-> --- a/drivers/staging/fbtft/fbtft-bus.c
-> +++ b/drivers/staging/fbtft/fbtft-bus.c
-> @@ -62,9 +62,9 @@
-> out:									      \
->  }                                                                    
-> \
->  EXPORT_SYMBOL(func);
->  
-> -define_fbtft_write_reg(fbtft_write_reg8_bus8, u8, u8, )
-> +define_fbtft_write_reg(fbtft_write_reg8_bus8, u8, u8,)
->  define_fbtft_write_reg(fbtft_write_reg16_bus8, __be16, u16,
-> cpu_to_be16)
-> -define_fbtft_write_reg(fbtft_write_reg16_bus16, u16, u16, )
-> +define_fbtft_write_reg(fbtft_write_reg16_bus16, u16, u16,)
->  
->  void fbtft_write_reg8_bus9(struct fbtft_par *par, int len, ...)
->  {
-> @@ -85,7 +85,7 @@ void fbtft_write_reg8_bus9(struct fbtft_par *par, int
-> len, ...)
->  	if (len <= 0)
->  		return;
->  
-> -	if (par->spi && (par->spi->bits_per_word == 8)) {
-> +	if (par->spi && par->spi->bits_per_word == 8) {
->  		/* we're emulating 9-bit, pad start of buffer with no-
-> ops
->  		 * (assuming here that zero is a no-op)
->  		 */
-> diff --git a/drivers/staging/fbtft/fbtft-core.c
-> b/drivers/staging/fbtft/fbtft-core.c
-> index 38845f23023f..98ffca49df81 100644
-> --- a/drivers/staging/fbtft/fbtft-core.c
-> +++ b/drivers/staging/fbtft/fbtft-core.c
-> @@ -216,8 +216,6 @@ static void fbtft_reset(struct fbtft_par *par)
->  	if (!par->gpio.reset)
->  		return;
->  
-> -	fbtft_par_dbg(DEBUG_RESET, par, "%s()\n", __func__);
-> -
->  	gpiod_set_value_cansleep(par->gpio.reset, 1);
->  	usleep_range(20, 40);
->  	gpiod_set_value_cansleep(par->gpio.reset, 0);
-> @@ -667,7 +665,7 @@ struct fb_info *fbtft_framebuffer_alloc(struct
-> fbtft_display *display,
->  		txbuflen = 0;
->  
->  #ifdef __LITTLE_ENDIAN
-> -	if ((!txbuflen) && (bpp > 8))
-> +	if (!txbuflen && bpp > 8)
->  		txbuflen = PAGE_SIZE; /* need buffer for byteswapping
-> */
->  #endif
->  
-> @@ -1053,8 +1051,6 @@ static int fbtft_verify_gpios(struct fbtft_par
-> *par)
->  	struct fbtft_platform_data *pdata = par->pdata;
->  	int i;
->  
-> -	fbtft_par_dbg(DEBUG_VERIFY_GPIOS, par, "%s()\n", __func__);
-> -
->  	if (pdata->display.buswidth != 9 &&  par->startbyte == 0 &&
->  	    !par->gpio.dc) {
->  		dev_err(par->info->device,
-> @@ -1159,7 +1155,6 @@ int fbtft_probe_common(struct fbtft_display
-> *display,
->  		dev = &pdev->dev;
->  
->  	if (unlikely(display->debug & DEBUG_DRIVER_INIT_FUNCTIONS))
-> -		dev_info(dev, "%s()\n", __func__);
->  
->  	pdata = dev->platform_data;
->  	if (!pdata) {
-> -- 
-> 2.34.1
-> 
-> 
+On Mon, 15 Apr 2024 at 22:31, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>
+>
+>
+> On 4/15/24 14:39, Herman van Hazendonk wrote:
+> > Add support for the pm8901 PMIC used by msm8660.
+> >
+> > Signed-off-by: Herman van Hazendonk <github.com@herrie.org>
+> > ---
+> >   drivers/mfd/qcom-pm8xxx.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/mfd/qcom-pm8xxx.c b/drivers/mfd/qcom-pm8xxx.c
+> > index 8b6285f687da..9cca14d54d8d 100644
+> > --- a/drivers/mfd/qcom-pm8xxx.c
+> > +++ b/drivers/mfd/qcom-pm8xxx.c
+> > @@ -501,6 +501,7 @@ static const struct pm_irq_data pm8821_data = {
+> >   static const struct of_device_id pm8xxx_id_table[] = {
+> >       { .compatible = "qcom,pm8058", .data = &pm8xxx_data},
+> >       { .compatible = "qcom,pm8821", .data = &pm8821_data},
+> > +     { .compatible = "qcom,pm8901", .data = &pm8xxx_data},
+> >       { .compatible = "qcom,pm8921", .data = &pm8xxx_data},
+>
+> Please refrain from adding this new compatible, instead add a new,
+> generic one and modify the dt-bindings such that we go like:
+>
+> compatible = "qcom,pm8901", "qcom,pm8xxx-ssbi-pmic"
 
-Hi,
+I'd suggest against this. These PMICs were similar by nature, but not
+fully compatible. Also we should not be using wildcards in compatible
+strings.
+I think the proposed string is fine.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Herman, I see that these patches are not properly threaded. Please
+consider using the 'b4' tool for preparing and sending patches.
+See https://b4.docs.kernel.org/en/latest/contributor/prep.html and
+https://b4.docs.kernel.org/en/latest/contributor/send.html
 
-You are receiving this message because of the following common error(s)
-as indicated below:
 
-- Your patch contains warnings and/or errors noticed by the
-  scripts/checkpatch.pl tool.
-
-- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
-  and can not be applied.  Please read the file,
-  Documentation/process/email-clients.rst in order to fix this.
-
-- Your patch was attached, please place it inline so that it can be
-  applied directly from the email message itself.
-
-- Your patch did many different things all at once, making it difficult
-  to review.  All Linux kernel patches need to only do one thing at a
-  time.  If you need to do multiple things (such as clean up all coding
-  style issues in a file/driver), do it in a sequence of patches, each
-  one doing only one thing.  This will make it easier to review the
-  patches to ensure that they are correct, and to help alleviate any
-  merge issues that larger patches can cause.
-
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/process/submitting-patches.rst for what is needed in
-  order to properly describe the change.
-
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/process/submitting-patches.rst for what a proper
-  Subject: line should look like.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+-- 
+With best wishes
+Dmitry
 
