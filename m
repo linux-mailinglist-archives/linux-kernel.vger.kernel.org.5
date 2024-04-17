@@ -1,116 +1,210 @@
-Return-Path: <linux-kernel+bounces-148923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8848B8A890A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:39:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DFA38A8914
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:43:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B98051C22C53
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:39:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A0172846A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:43:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66EC5171063;
-	Wed, 17 Apr 2024 16:39:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9636B16FF54;
+	Wed, 17 Apr 2024 16:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g/AWQjr4"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lc7mAjfI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 801CA147C8D;
-	Wed, 17 Apr 2024 16:39:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE8AC12C819;
+	Wed, 17 Apr 2024 16:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713371980; cv=none; b=PHdWjka8UTXuu9FQa8GQ01AwXWEX71PHOCmv/jqHLl0fKwvId9DSJ924TPtOzGlfNoqUKSNdn9gUsi8cZZ86ZSIIMmU8WXWVj5NCVwhrfar1D/uYbk7CJIzpChALkeAin9BCZhfboE1CmyHJY7UuWwPMnF4XHBJkuli+jjdEheQ=
+	t=1713372185; cv=none; b=Qnx1IIx0a+/V6zMRV2jBxFsZaflVaLA9uCh5UfA0i3AHVcbGztX5mIe3fGNnIjSkPQjI4uXLDW7yTkopZCH7VQL9FMifg5nAX1sNUnC6rfvk3ILRtjpBnc/XYVoqpeNB3uzIKqQhbFkTJWm0WI0hu2TL4Z9xAUMizGngjjVcsiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713371980; c=relaxed/simple;
-	bh=aWTPDq9p7jQ/4H76/mW9C1YBC1szIVSw3Mc/rYRFAek=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QOsrvk5Ee0KxtzuQxUU7zScMDWsAjWQ5Jl8MWyzVGo396kX/hBa4hkAPJVVHqZ47ygdxxgE8ZywgoBYh8OcINB1jUBNYBayYGtdmWuhyiPHi51e6mAr7S7n2iBWj5JO0LylizyxD5E7XPBMt9uqv35CJm5HNI+Asz+37suxfgcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g/AWQjr4; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5d3907ff128so4575668a12.3;
-        Wed, 17 Apr 2024 09:39:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713371979; x=1713976779; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=I7Zh42cClUUxS34CpnuDLFTWaHNT2a1g8mM8QHZw6C8=;
-        b=g/AWQjr4sjil5Es/t8rl7gS7pSKKLHW/RzJ1zfqyNVKJ/zZkLWCKvdEp0DchKCfJc1
-         4weUsfQ8OfYWlL0C9GNDhrCsSPVnG2BWSoJ4441DXE7dBDRpKy/SObfu/qMbyiI9Cf8P
-         Oe859fgN/FCQ1l7yxYGRyPc2tDt8rQt+PEixRjsKzCZFXX3DE8TJtty4q+8iS/Ac+Ly3
-         M1n3DmlDOUkRMN23vDGKWzftlxV8V52NAFdDm1CxDk5ntUOnxyvdo9UvjnH+x+ugrlYT
-         r+ZAgLNxWksPuwgHp74hrSdEIS4XibmwiZPoXX5x0H+q2do8+LYZoI3l09XJuA+g/WLo
-         sImw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713371979; x=1713976779;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I7Zh42cClUUxS34CpnuDLFTWaHNT2a1g8mM8QHZw6C8=;
-        b=OjnPZ6E+0EUhmbin/Dyg0LfLSc4w9wzjJYI1QZkBmgQjsF1HWvEZCKVGRcF01B/0P6
-         +cOgoDn0UhC1vuF14o7ihxHoF9a0WOqW647tz4af2y2eiZ5FAgsSVkBmdNNka0shTCvU
-         eziadnaxcKBZvI4dmRaIJRjATZ5YuDNrEIM1lkJC6bIJPuLw96CIAVilvPlduxXCJH6W
-         VYjjEdZ9vCH6yxYr5B0LjaSGJU4aLoz1rgFaG1+mYJbiqYC+YHu7QzrVdkr/BsHPd9EA
-         VnQTz9yGZE4cKcdfjuPWFn8pU3oj2nWmYxAG+3BDB9EdcjA2/uICQDkEna25FyN5XtmZ
-         DGGw==
-X-Forwarded-Encrypted: i=1; AJvYcCVUA4LCFF62sI1CtVSUDzB0Rgv5RYLCtScuuE6+D0fNLhOGjuzw+IsuvBhXsVnxMis7mmlej918MoVe8FmoHAALZzVrOEzaawegCxyJRrqZ9kSVOcfniIsKUqCIZbUw1Tc15rcywBqXgNF1nG1zXxpHqPODtQKZYmt6pK+nHtyd31+LacDcPz6mdg==
-X-Gm-Message-State: AOJu0Yz9CUwpStCuhpUXbbckhCK4JRtzMFWPqC6/L0EO3Sj+niTUjcL1
-	Vgz03AcLIgjGGQjvQiDiCPA4C03+98uomjHIdXjsh51REENKrieRIbMrUtJMuBg=
-X-Google-Smtp-Source: AGHT+IFsgpgKF4MpNGRI12HFX8X1jR4fq2uA3v5uQF83Vql6HROO8gtLkEMXQdJU4OMr5Az/Juz0QQ==
-X-Received: by 2002:a17:90a:886:b0:2ab:99d5:ae11 with SMTP id v6-20020a17090a088600b002ab99d5ae11mr658653pjc.20.1713371978710;
-        Wed, 17 Apr 2024 09:39:38 -0700 (PDT)
-Received: from [0.0.0.0] (74.211.104.32.16clouds.com. [74.211.104.32])
-        by smtp.gmail.com with ESMTPSA id t1-20020a17090aae0100b002a2d8d34009sm1577329pjq.27.2024.04.17.09.39.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Apr 2024 09:39:38 -0700 (PDT)
-Message-ID: <1b8f0217-5c4b-4436-88d4-ec3c88ae7179@gmail.com>
-Date: Thu, 18 Apr 2024 00:39:33 +0800
+	s=arc-20240116; t=1713372185; c=relaxed/simple;
+	bh=udOQU6qULd9iH68Y7LxBN420UgVde/T/XE/CJPLv1aE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rGOxuprlCdmzVxrFuCGPA2HFBYly1T2sBjrwjfdrd8KHxgOdPf4I4Bay2TIl2EhUVVGkyryRkfffND0R6+7D5PP2WJOkStR0OiHSFVNoIjSjeVajl5Ko4rqt4WHz1HMNKA0JXpFqQUfYv/EVuDgwHdJOLDurbU7L+VAhU0lHUyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lc7mAjfI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 091BCC072AA;
+	Wed, 17 Apr 2024 16:43:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713372185;
+	bh=udOQU6qULd9iH68Y7LxBN420UgVde/T/XE/CJPLv1aE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lc7mAjfIMDNv6CRsI5j5NBcr+0DZz21dcQyxwYhTczkvcuKa9DqunhzQ8XZ/GhvIU
+	 ZnZ6Id7Q19m77VrqvhVDWiXVSiuyGnVg89XSSwpWU3bbBbj5Mx+MqrQiJrqKkw037y
+	 gRG6X6LvwSmwHOx5yZuaW9B+dA/NtXu1JzzLxxlasJJeBr0M1C5Z8OfTbDIeHCal70
+	 V98PTyFthagHW7JcAMimSAM57HDJ9RnbO7rPqFtC7R6AjHDBvtwNlyep6Hs5I/n7I5
+	 ch93ZCjgt/cKJEAkpD694TT29ujs7pkdMWybh2N7n8Ckop0FOoOFUXJxjkJw2o7Q+9
+	 cna49ChWcBxlQ==
+Date: Wed, 17 Apr 2024 18:43:02 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Haifeng Xu <haifeng.xu@shopee.com>
+Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+	adrian.hunter@intel.com, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf/core: Fix missing wakeup when waiting for context
+ reference
+Message-ID: <Zh_8FpT10qoE-x1u@localhost.localdomain>
+References: <20240410035506.599192-1-haifeng.xu@shopee.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [v4 0/3] SCSI: Fix issues between removing device and error
- handle
-Content-Language: en-US
-To: Markus Elfring <Markus.Elfring@web.de>,
- Julia Lawall <julia.lawall@inria.fr>, linux-scsi@vger.kernel.org,
- kernel-janitors@vger.kernel.org, "James E. J. Bottomley"
- <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Wenchao Hao <haowenchao2@huawei.com>, LKML <linux-kernel@vger.kernel.org>
-References: <20240307144311.73735-1-haowenchao2@huawei.com>
- <99598b98-8550-4dca-beea-4c2d61d46f78@web.de>
- <b55da065-dbbb-4d8e-8baf-50807b507cc4@gmail.com>
- <173b55ca-cde-ab3-be92-d9c8b4b6b5c@inria.fr>
- <799944de-dcee-46a8-b43b-8876177c61a2@gmail.com>
- <4b9a14d0-b4bd-4b91-8466-5f8849b0c08e@web.de>
-From: Wenchao Hao <haowenchao22@gmail.com>
-In-Reply-To: <4b9a14d0-b4bd-4b91-8466-5f8849b0c08e@web.de>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240410035506.599192-1-haifeng.xu@shopee.com>
 
-On 4/17/24 11:48 PM, Markus Elfring wrote:
->>> Search in process/submitting-patches.rst for Fixes:
->>
->> These issues are introduced at first version of git record, which is
->> 1da177e4c3f4 ("Linux-2.6.12-rc2"). I think "Fixes" tag should not added
->> for this commit.
+Le Wed, Apr 10, 2024 at 03:55:06AM +0000, Haifeng Xu a �crit :
+> In our production environment, we found many hung tasks which are
+> blocked for more than 18 hours. Their call traces are like this:
 > 
-> I suggest to take also another look at information in a table
-> like “Releases fixed in v6.8” from the article “Development statistics for 6.8”
-> by Jonathan Corbet.
-> https://lwn.net/Articles/964106/
+> [346278.191038] __schedule+0x2d8/0x890
+> [346278.191046] schedule+0x4e/0xb0
+> [346278.191049] perf_event_free_task+0x220/0x270
+> [346278.191056] ? init_wait_var_entry+0x50/0x50
+> [346278.191060] copy_process+0x663/0x18d0
+> [346278.191068] kernel_clone+0x9d/0x3d0
+> [346278.191072] __do_sys_clone+0x5d/0x80
+> [346278.191076] __x64_sys_clone+0x25/0x30
+> [346278.191079] do_syscall_64+0x5c/0xc0
+> [346278.191083] ? syscall_exit_to_user_mode+0x27/0x50
+> [346278.191086] ? do_syscall_64+0x69/0xc0
+> [346278.191088] ? irqentry_exit_to_user_mode+0x9/0x20
+> [346278.191092] ? irqentry_exit+0x19/0x30
+> [346278.191095] ? exc_page_fault+0x89/0x160
+> [346278.191097] ? asm_exc_page_fault+0x8/0x30
+> [346278.191102] entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
+> The task was waiting for the refcount become to 1, but from the vmcore,
+> we found the refcount has already been 1. It seems that the task didn't
+> get woken up by perf_event_release_kernel() and got stuck forever. The
+> below scenario may cause the problem.
+> 
+> Thread A					Thread B
+> ...						...
+> perf_event_free_task				perf_event_release_kernel
+> 						   ...
+> 						   acquire event->child_mutex
+> 						   ...
+> 						   get_ctx
+>    ...						   release event->child_mutex
+>    acquire ctx->mutex
+>    ...
+>    perf_free_event (acquire/release event->child_mutex)
+>    ...
+>    release ctx->mutex
+>    wait_var_event
+> 						   acquire ctx->mutex
+> 						   acquire event->mutex
+> 						   # move existing events to free_list
+> 						   release event->child_mutex
+> 						   release ctx->mutex
+> 						   put_ctx
+> ...						...
+> 
+> In this case, all events of the ctx have been freed, so we couldn't
+> find the ctx in free_list and Thread A will miss the wakeup. It's thus
+> necessary to add a wakeup after dropping the reference.
+> 
+> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
+> ---
+>  kernel/events/core.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 4f0c45ab8d7d..01dfe715f09e 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -5340,6 +5340,8 @@ int perf_event_release_kernel(struct perf_event *event)
+>  again:
+>  	mutex_lock(&event->child_mutex);
+>  	list_for_each_entry(child, &event->child_list, child_list) {
+> +		void *var;
+> +		bool freed = false;
+>  
+>  		/*
+>  		 * Cannot change, child events are not migrated, see the
+> @@ -5380,11 +5382,25 @@ int perf_event_release_kernel(struct perf_event *event)
+>  			 * this can't be the last reference.
+>  			 */
+>  			put_event(event);
+> +		} else {
+> +			freed = true;
+> +			var = &ctx->refcount;
+>  		}
+>  
+>  		mutex_unlock(&event->child_mutex);
+>  		mutex_unlock(&ctx->mutex);
+>  		put_ctx(ctx);
+> +
+> +		if (freed) {
+> +			/*
+> +			 * perf_event_free_task() delete all events of the ctx and
+> +			 * there is no event of the ctx in free_list. It may step
+> +			 * into wait_var_event() before decrement the refcount. So
+> +			 * we should add a wakeup here.
+> +			 */
+> +			smp_mb(); /* pairs with wait_var_event() */
+> +			wake_up_var(var);
+> +		}
+>  		goto again;
 
-Thank you, I found some Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2") in this article.
-Then I searched in git log and found these "Fixes" tag too. 
+Good catch!
 
-> Regards,
-> Markus
+How about the following slightly simplified version?
 
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 724e6d7e128f..4082d0161b2b 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -5365,6 +5365,7 @@ int perf_event_release_kernel(struct perf_event *event)
+ again:
+ 	mutex_lock(&event->child_mutex);
+ 	list_for_each_entry(child, &event->child_list, child_list) {
++		void *var = NULL;
+ 
+ 		/*
+ 		 * Cannot change, child events are not migrated, see the
+@@ -5405,11 +5406,23 @@ int perf_event_release_kernel(struct perf_event *event)
+ 			 * this can't be the last reference.
+ 			 */
+ 			put_event(event);
++		} else {
++			var = &ctx->refcount;
+ 		}
+ 
+ 		mutex_unlock(&event->child_mutex);
+ 		mutex_unlock(&ctx->mutex);
+ 		put_ctx(ctx);
++
++		if (var) {
++			/*
++			 * If perf_event_free_task() has deleted all events from the
++			 * ctx while the child_mutex got released above, make sure to
++			 * notify about the preceding put_ctx().
++			 */
++			smp_mb(); /* pairs with wait_var_event() */
++			wake_up_var(var);
++		}
+ 		goto again;
+ 	}
+ 	mutex_unlock(&event->child_mutex);
+
+
+
+>  	}
+>  	mutex_unlock(&event->child_mutex);
+> -- 
+> 2.25.1
+> 
+> 
 
