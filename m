@@ -1,157 +1,144 @@
-Return-Path: <linux-kernel+bounces-148752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D26478A86FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:06:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B10548A8701
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:07:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85CB11F225D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:06:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35F01B2604B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:07:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B9D146A80;
-	Wed, 17 Apr 2024 15:06:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4974C146A6E;
+	Wed, 17 Apr 2024 15:07:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WWbx16Co"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="PK+OC6ZQ"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A6713C3EF;
-	Wed, 17 Apr 2024 15:06:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AF1313C9A7
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713366394; cv=none; b=dGzWG4Kdb9w0yks/zgk0EY/1ZUTmrxCAfW9U5SZIgWfdSsrNklavvglFLJrDpdd9DseUeOab6FWwfXsvdI4VuRXzPetd/4b1FZlLo+Oa7fw+9yb0mq8TtlHJxJM+0dD/uWg8jhENUcqqWDLGOulvWKQnSZiiZF7TIiufvvbF0Fw=
+	t=1713366420; cv=none; b=oxHo68LlxrVGqESjuAyOV4dH+X/VyhWq9hno3vHKjXbegR3CsGvFmEBWWLYHA1VV+sf90FQLuC+d779iqVSHSqJx/mtFccc/BnyKUUbk5RQH4AykcDxGAMRLIqNkSS72/ECiKJGCQioZTIVh1q49kuqh8VUMpkEe58eBEkcosik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713366394; c=relaxed/simple;
-	bh=csO/QBIY5zA9U55g4bmdwzHQOXGd09d6ZZbozBhSl4k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VF0E8Yb7d6NxZUic0q0Qj6GWPFezWUS8XsYx/wEjVAxu3wmYEeSZ+2by1Uhc89NdETYy9lgKmLsUCwjgxSkDQ14iTPwceTQwc82RjkOMiY0MkOWSB8xcbsB65JPUpZ7ZEhW8Rf9DCnIzV7DOZJqXJbtVGCEikLLNp2WtBsW251w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WWbx16Co; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67620C072AA;
-	Wed, 17 Apr 2024 15:06:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713366393;
-	bh=csO/QBIY5zA9U55g4bmdwzHQOXGd09d6ZZbozBhSl4k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WWbx16CozNaA6xrWLXzFjR3qfMbBP2psA8necDIweTlfJOzHkeCWSIs0UfQstgqxm
-	 D6B572ou01naWEDwbo/TJYW8VJxw53oDsAyBv9/DptJ42ri4yEhUBEwvStUXt7B+Tu
-	 01QoTScXr7YvGckqHEYzfm5QjLeY3eVV/KA6Ozp1spGnZvUWWoscoNYb8L1BRbWVVJ
-	 cHgsrGg7ei51FkYVIoToGWyBGkyTEyy/aeMEgffHXaaEnpYkjBlF6sUd+D+8IJVd4L
-	 +sx92YX9tvwz4ucnxrqCRjUm86f0rEmA7+WYBNH/YS+yAW07xfeHxJqgpO6h6GUO6i
-	 YTgnKq+fwcOcA==
-Date: Wed, 17 Apr 2024 16:06:29 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Inochi Amaoto <inochiama@outlook.com>
-Cc: michael.opdenacker@bootlin.com, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Chen Wang <unicorn_wang@outlook.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] riscv: dts: sophgo: add initial Milk-V Duo S
- board support
-Message-ID: <20240417-guts-overture-b04cd1b8565a@spud>
-References: <20240417065311.3881023-1-michael.opdenacker@bootlin.com>
- <20240417065311.3881023-3-michael.opdenacker@bootlin.com>
- <IA1PR20MB49539A380E44459ACE19DEB6BB0F2@IA1PR20MB4953.namprd20.prod.outlook.com>
+	s=arc-20240116; t=1713366420; c=relaxed/simple;
+	bh=UNPb0zlkcnhUQib87xagHEcOVpvTSkc5NdfcbnpIiM8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ixL9Ac1/2cG4Lc9MqWrErJBX7FAb1OsP970BZK09/YkWzJnyxEYmhOTWfmarhRCnZCXBRm9JKDs1pJIGQzNZgxQ+RvupnmwSN3fkJdZ6gN4SDOcVxhTKCGx+7VWYwysOEDruXf6aGZd/+haMAcNcR2/nsh2BzIxOnw6BmaCSEh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=PK+OC6ZQ; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [192.168.7.187] ([71.202.166.45])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 43HF6X6x4069325
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 17 Apr 2024 08:06:33 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 43HF6X6x4069325
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024041401; t=1713366394;
+	bh=cycOB8apwOCGz0P/eQl6gDVIreOL8E6POCyJAVWDA2M=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=PK+OC6ZQAW/LLmhCpbeswphwxvOIazSVbLSYpIa3mTvPRZYSEnfeVHcBDbECe1DJ6
+	 1T3kzfZ8pUbdSB001ATu/aZcNIJOMY/u8gto339ZvnUFsPLDXAYIbRiAXi0Jcxxbkl
+	 Wg/J1frV+S7JOIZBx8hSRwgXqHIi2sYK1ERN+aBDGm4xPvL/Ro5aBeo94K5FxlHvFu
+	 +gbZLOW3GD/Og+fowms1ymtOq92S/4VHRXIc55SFM6EOl8ZFUv23C6t8LQhJIS+FxP
+	 HI7E7ZaMOXrtULvO1M/h2oYnIrDyjDUj+Tt+E3aEb8p+UjnS19yVWBFgaahziBgrFJ
+	 2w+Znk7vlDoGw==
+Message-ID: <e8180be8-b108-4047-ab49-2cfc532a2b52@zytor.com>
+Date: Wed, 17 Apr 2024 08:06:31 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lXrJLg2sMSILQKj3"
-Content-Disposition: inline
-In-Reply-To: <IA1PR20MB49539A380E44459ACE19DEB6BB0F2@IA1PR20MB4953.namprd20.prod.outlook.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] x86/fred: Fix INT80 emulation for FRED
+To: Borislav Petkov <bp@alien8.de>
+Cc: linux-kernel@vger.kernel.org, luto@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com
+References: <20240417063001.3773507-1-xin@zytor.com>
+ <20240417093813.GBZh-YhSQCXgy3OxFI@fat_crate.local>
+Content-Language: en-US
+From: Xin Li <xin@zytor.com>
+Autocrypt: addr=xin@zytor.com; keydata=
+ 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
+ l75w1xInsg==
+In-Reply-To: <20240417093813.GBZh-YhSQCXgy3OxFI@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+On 4/17/2024 2:38 AM, Borislav Petkov wrote:
+> On Tue, Apr 16, 2024 at 11:30:01PM -0700, Xin Li (Intel) wrote:
+>> 3) The FRED kernel entry handler does *NOT* dispatch INT instructions,
+>>     which is of event type EVENT_TYPE_SWINT, so compared with
+>>     do_int80_emulation(), there is no need to do any user mode check.
+> 
+> What does that mean?
+> 
+> An event handler doesn't dispatch INT insns?
+> 
+> /me is confused.
+> 
+
+Maybe better to say?
+
+The FRED kernel entry handler fred_entry_from_kernel() calls 
+fred_bad_type() if an event is of type EVENT_TYPE_SWINT because Kernel 
+does not use INT insns! So if the kernel is handling an INT insn, it can 
+only be from a user level application.
 
 
---lXrJLg2sMSILQKj3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>> + * A dedicated FRED INT80 handler duplicates quite a bit of the code in
+>> + * do_int80_emulation(), but it avoids sprinkling more tests and seems
+>> + * more readable. Just remember that we can always unify common stuff
+>> + * later if it turns out that it won't diverge anymore, i.e., after the
+>> + * FRED code settles.
+>> + */
+> 
+> And this is talking about duplication above and that text is duplicated
+> from the commit message. :)
 
-On Wed, Apr 17, 2024 at 05:34:44PM +0800, Inochi Amaoto wrote:
-> On Wed, Apr 17, 2024 at 08:53:11AM GMT, michael.opdenacker@bootlin.com wr=
-ote:
-> > From: Michael Opdenacker <michael.opdenacker@bootlin.com>
-> >=20
-> > This adds initial support for the Milk-V Duo S board
-> > (https://milkv.io/duo-s), enabling the serial port,
-> > making it possible to boot Linux to the command line.
-> >=20
-> > Link: https://lore.kernel.org/linux-riscv/171266958507.1032617.94607491=
-36730849811.robh@kernel.org/T/#t
-> >=20
-> > Signed-off-by: Michael Opdenacker <michael.opdenacker@bootlin.com>
-> > ---
-> >  arch/riscv/boot/dts/sophgo/Makefile           |  1 +
-> >  .../boot/dts/sophgo/sg2000-milkv-duos.dts     | 34 +++++++++++++++++++
-> >  2 files changed, 35 insertions(+)
-> >  create mode 100644 arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts
-> >=20
-> > diff --git a/arch/riscv/boot/dts/sophgo/Makefile b/arch/riscv/boot/dts/=
-sophgo/Makefile
-> > index 57ad82a61ea6..e008acb5240f 100644
-> > --- a/arch/riscv/boot/dts/sophgo/Makefile
-> > +++ b/arch/riscv/boot/dts/sophgo/Makefile
-> > @@ -1,4 +1,5 @@
-> >  # SPDX-License-Identifier: GPL-2.0
-> >  dtb-$(CONFIG_ARCH_SOPHGO) +=3D cv1800b-milkv-duo.dtb
-> >  dtb-$(CONFIG_ARCH_SOPHGO) +=3D cv1812h-huashan-pi.dtb
-> > +dtb-$(CONFIG_ARCH_SOPHGO) +=3D sg2000-milkv-duos.dtb
-> >  dtb-$(CONFIG_ARCH_SOPHGO) +=3D sg2042-milkv-pioneer.dtb
-> > diff --git a/arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts b/arch/ri=
-scv/boot/dts/sophgo/sg2000-milkv-duos.dts
-> > new file mode 100644
-> > index 000000000000..c1ecf97d5e93
-> > --- /dev/null
-> > +++ b/arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts
-> > @@ -0,0 +1,34 @@
-> > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> > +/*
-> > + * Copyright (C) 2024 Michael Opdenacker <michael.opdenacker@bootlin.c=
-om>
-> > + */
-> > +
-> > +/dts-v1/;
-> > +
-> > +#include "cv1812h.dtsi"
-> > +
-> > +/ {
-> > +	model =3D "Milk-V Duo S";
-> > +	compatible =3D "milkv,duos", "sophgo,cv1812h";
-> > +
-> > +	aliases {
-> > +		serial0 =3D &uart0;
-> > +	};
-> > +
-> > +	chosen {
-> > +		stdout-path =3D "serial0:115200n8";
-> > +	};
-> > +
-> > +	memory@80000000 {
-> > +		device_type =3D "memory";
-> > +		reg =3D <0x80000000 0x20000000>;
-> > +	};
->=20
-> Add a cpu specific file, and move this to it.
+I wanted to keep it as a TODO.  I can remove it in the next iteration.
 
-I take it that the memory is integrated into the package then?
+> 
+> I'll zap it when applying.
+> 
+> Thx.
+> 
 
---lXrJLg2sMSILQKj3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh/ldQAKCRB4tDGHoIJi
-0iovAQCARQaWa7RNYeDT5gcMiHGFrrlUp4jfG1PWfDEvDUPcHQEA0kweLkHMyqlV
-Z8fNVOz8ExbRPorZsQGP0jhPfhdVRwg=
-=xsp0
------END PGP SIGNATURE-----
-
---lXrJLg2sMSILQKj3--
 
