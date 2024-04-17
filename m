@@ -1,122 +1,191 @@
-Return-Path: <linux-kernel+bounces-148836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E20208A87ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:41:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9BA48A87F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:41:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FFF21C220E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:41:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 753E1288BAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:41:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC8BB150995;
-	Wed, 17 Apr 2024 15:39:09 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8B415B98B;
+	Wed, 17 Apr 2024 15:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="hmincq7d"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E662B1494AE
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 15:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D7133E493;
+	Wed, 17 Apr 2024 15:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713368349; cv=none; b=uQ1IKvbvNxeAgB0LOkkQ9l5Sf1fmYe07j3vvR4Dhjd7t62IRVCvuZoKohfS4UPtfdo5yo11NktP79IhYK6NFTYtN3gQ/XoJ1c2pV1z3iB6txfxrO5AbPaSn5ihJLxq0U6zFp87Cr+na0Mtj+77WcSu2uZt5KuMtFHunTmahBwGo=
+	t=1713368357; cv=none; b=uAx7pV4bhAgy31QacDohxkRuJx0i9zqcXZl5RGkwwJDWnhVZLt/0mLtGIVax16Q+DR/PQvQ3dsyAaIyxgoi8MmCkAXzv4vu7MU/FSwavFwWPhITsWFsSkV4ac9ymCQyFpvmyWsb0Si3wtouvoRkKrHr/etWV311fnAoo9EX8PB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713368349; c=relaxed/simple;
-	bh=qyfmY3tuy2fDo/5DK9wtBA0/okqOTXICerBpuVZMPmM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AT7BlWB+9TW3Vrt45BNJkivwKWc/hfTDorWfxs7yW2pnsQ3PIch1vB/URBUCX32y+bnvM5ZzeR86P9VWcOhEmGAQwge+7iFnYSRgqAuzdroZDmMAAonpc+bhDXMIxTyp8McP85DtGSdaP2j+/CU+zpqDm7E4qmExWOGMrIYxQgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rx7NB-00075N-33; Wed, 17 Apr 2024 17:38:57 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rx7NA-00CokT-Gw; Wed, 17 Apr 2024 17:38:56 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rx7NA-002v0k-1O;
-	Wed, 17 Apr 2024 17:38:56 +0200
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Lee Jones <lee@kernel.org>
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
-	linux-leds@vger.kernel.org,
-	linux-pwm@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	kernel@pengutronix.de
-Subject: [PATCH] leds: pwm: Disable PWM when going to suspend
-Date: Wed, 17 Apr 2024 17:38:47 +0200
-Message-ID: <20240417153846.271751-2-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240417144943.GA2399047@google.com>
-References: <20240417144943.GA2399047@google.com>
+	s=arc-20240116; t=1713368357; c=relaxed/simple;
+	bh=I5hIRtUrBrDsG+h5jPN51ir1mk5P5T2b5m9gyZaZzmg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MMNqa6JFSSl2MEQwnJH2dDlBZtPoJ/qBRjg6VnmdGmp7fLWwNjUSHdNOJu1SM0rZrdrMf9hiHu+Mk3tc9ZZ5wWMIiHHjZzB13B+Ff+WTGPwgMroist8ymXFjIUI/vjL9r7Grk5u6sPFek0kCfL144QqgH6Dp7BlY+Y1TH4vIGe4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=hmincq7d; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713368354;
+	bh=I5hIRtUrBrDsG+h5jPN51ir1mk5P5T2b5m9gyZaZzmg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=hmincq7dtHvoqMye61mzj+V5WEVKSIUpZh581SxDvrE5HZRosL7ef6VdLEsNenLC9
+	 +c5680W/rLZjaqGTsrV3q0KvkAsPTpL4UHiJaAhki7uJJBA0wH2TPNOjeEaL2D93Ja
+	 zittO0N3e/ytrc6hf1BfFV8NyA56jm+kxAaRojPcJTLR5a8vqmybHMNdF8IByHpvXm
+	 FOyh1UvJ9OaISUFUur90F8Hx/uBl26jqPYUVjRFvzScQP0uZ5O62La2wLjY/JuONJn
+	 NZK6I2z5GK/VI39wAq7gSjCFblL1jYv0TW8AGzy5isdvuK4dLLsOkuAnDIUmBHreTM
+	 MMpMHxJ0sfhNg==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 76BB83780629;
+	Wed, 17 Apr 2024 15:39:13 +0000 (UTC)
+Message-ID: <b728478d-d9c9-4256-aeab-a234316d81cc@collabora.com>
+Date: Wed, 17 Apr 2024 17:39:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1658; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=qyfmY3tuy2fDo/5DK9wtBA0/okqOTXICerBpuVZMPmM=; b=owGbwMvMwMXY3/A7olbonx/jabUkhjT5t2x2gSvWxT6OUPWVELcyTMg/+5I1mz9ks+LOhwayE TXf2Ys6GY1ZGBi5GGTFFFnsG9dkWlXJRXau/XcZZhArE8gUBi5OAZjIui3s/2yeL68wc2r//tA0 21x3348vmWnzdy88wOpqPynQkV2ouU/x6ZYlDDV5Nhvlv19JF/h6LP3EmpzzQofyTqz9KqCQ4up RfunmknwxjbKzHPYB5dcDoi6vtGDUrz0fk1ZscFt8UpXtu19lHCtaolnsrZadZ3OdfERtdUJ8qI t5h2fq7PIcw6N8z+YHX+r7eHE7d+2u21YNC9+xT0nOOfJAe+UpKZsDh4rLr3xiY77tE3ZIpLwoa WOc34fLgbknVduDNs5ZtG5W4Olzkxbu2TLpafuOulj5L4vWK/BOrtSJ/rsylLGjZELpgnWJDTrs odZdlfblbfxRZkcVw9QeOkSZi2V5TzzQrlluNOlC7pEAAA==
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/7] dt-bindings: regulator: Add bindings for MediaTek
+ DVFSRC Regulators
+To: Rob Herring <robh@kernel.org>
+Cc: djakov@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, matthias.bgg@gmail.com, lgirdwood@gmail.com,
+ broonie@kernel.org, keescook@chromium.org, gustavoars@kernel.org,
+ henryc.chen@mediatek.com, linux-pm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ kernel@collabora.com, wenst@chromium.org, amergnat@baylibre.com
+References: <20240417091442.170505-1-angelogioacchino.delregno@collabora.com>
+ <20240417091442.170505-2-angelogioacchino.delregno@collabora.com>
+ <20240417145238.GA2348962-robh@kernel.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20240417145238.GA2348962-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On stm32mp1xx based machines (and others) a PWM consumer has to disable
-the PWM because an enabled PWM refuses to suspend. So check the
-LED_SUSPENDED flag and depending on that set the .enabled property.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=218559
-Fixes: 76fe464c8e64 ("leds: pwm: Don't disable the PWM when the LED should be off")
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-Hello,
-
-On Wed, Apr 17, 2024 at 03:49:43PM +0100, Lee Jones wrote:
-> On Tue, 16 Apr 2024, Uwe Kleine-König wrote:
-> > If you don't consider that suitable, I can create a patch that is easier
-> > to pick up.
+Il 17/04/24 16:52, Rob Herring ha scritto:
+> On Wed, Apr 17, 2024 at 11:14:36AM +0200, AngeloGioacchino Del Regno wrote:
+>> The Dynamic Voltage and Frequency Scaling Resource Collector Regulators
+>> are controlled with votes to the DVFSRC hardware.
+>>
+>> This adds support for the regulators found in MT6873, MT8183, MT8192
+>> and MT8195 SoCs.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> ---
+>>   .../mediatek,mt6873-dvfsrc-regulator.yaml     | 71 +++++++++++++++++++
+>>   1 file changed, 71 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml b/Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml
+>> new file mode 100644
+>> index 000000000000..446f1dab4d2e
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml
+>> @@ -0,0 +1,71 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/regulator/mediatek,mt6873-dvfsrc-regulator.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: MediaTek DVFSRC-controlled Regulators
+>> +
+>> +description:
+>> +  The Dynamic Voltage and Frequency Scaling Resource Collector Regulators
+>> +  are controlled with votes to the DVFSRC hardware.
+>> +
+>> +maintainers:
+>> +  - AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - mediatek,mt6873-dvfsrc-regulator
+>> +      - mediatek,mt8183-dvfsrc-regulator
+>> +      - mediatek,mt8192-dvfsrc-regulator
+>> +      - mediatek,mt8195-dvfsrc-regulator
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  dvfsrc-vcore:
+>> +    description: DVFSRC-controlled SoC Vcore regulator
+>> +    $ref: regulator.yaml#
 > 
-> Yes, please submit it properly.
+>         unevaluatedProperties: false
+> 
 
-Here it comes.
+Will do!
 
-Best regards
-Uwe
+>> +
+>> +  dvfsrc-vscp:
+>> +    description: DVFSRC-controlled System Control Processor regulator
+>> +    $ref: regulator.yaml#
+> 
+> ditto
+> 
+>> +
+>> +required:
+>> +  - compatible
+> 
+> 'reg' is never optional. And how is no regulators at all valid?
+> 
 
- drivers/leds/leds-pwm.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+The two nodes that I'm adding with this series don't need reg, but others
+that are not present in this do... but anyway, let's postpone that problem
+for the future me, or the future-anyone-else implementing the rest, I will
+remove the 'reg' property as it is indeed not needed for this node.
 
-diff --git a/drivers/leds/leds-pwm.c b/drivers/leds/leds-pwm.c
-index 4e3936a39d0e..e1b414b40353 100644
---- a/drivers/leds/leds-pwm.c
-+++ b/drivers/leds/leds-pwm.c
-@@ -53,7 +53,13 @@ static int led_pwm_set(struct led_classdev *led_cdev,
- 		duty = led_dat->pwmstate.period - duty;
- 
- 	led_dat->pwmstate.duty_cycle = duty;
--	led_dat->pwmstate.enabled = true;
-+	/*
-+	 * Disabling a PWM doesn't guarantee that it emits the inactive level.
-+	 * So keep it on. Only for suspending the PWM should be disabled because
-+	 * otherwise it refuses to suspend. The possible downside is that the
-+	 * LED might stay (or even go) on.
-+	 */
-+	led_dat->pwmstate.enabled = !(led_cdev->flags & LED_SUSPENDED);
- 	return pwm_apply_might_sleep(led_dat->pwm, &led_dat->pwmstate);
- }
- 
+And yeah it's invalid to add that node without any regulator. Will check the
+other regulator bindings on how they're doing it.
 
-base-commit: 4eab358930711bbeb85bf5ee267d0d42d3394c2c
--- 
-2.43.0
+
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+> 
+> Drop the example here. Just one complete example in the MFD doc.
+> 
+
+Oki, dropping in v3! That also resolves the circular dependency thing, so
+that's even better.
+
+>> +    soc {
+>> +        #address-cells = <2>;
+>> +        #size-cells = <2>;
+>> +
+>> +        system-controller@10012000 {
+>> +            compatible = "mediatek,mt8195-dvfsrc";
+>> +            reg = <0 0x10012000 0 0x1000>;
+>> +            #address-cells = <1>;
+>> +            #size-cells = <0>;
+>> +
+>> +            regulators@0 {
+>> +                compatible = "mediatek,mt8195-dvfsrc-regulator";
+>> +                reg = <0>;
+> 
+> What does 'reg' value represent here? 0 and 1 seem pretty much made up.
+> 
+
+Gets removed in v3, tomorrow.
+
+Cheers,
+Angelo
+
 
 
