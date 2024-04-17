@@ -1,123 +1,116 @@
-Return-Path: <linux-kernel+bounces-149210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C6D68A8D38
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:46:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 667068A8D3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:47:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D8D61C21D78
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:46:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 232EA285DE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:47:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A7E4482E1;
-	Wed, 17 Apr 2024 20:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A76540858;
+	Wed, 17 Apr 2024 20:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RkJ1tHT2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="aQ94PS7H"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4339F79D8;
-	Wed, 17 Apr 2024 20:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2358D2C859
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 20:47:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713386798; cv=none; b=KwNoiLReZRou3Hw0FMXGQBcRfmX9LYF8varODuW806oZt4Bp3GjW0YrFSB9Rit1FDmNNCOYMGb1Q9z79iiVK81bQH9BLs9V4jyfbOxucu4HJkYQ9MR5l0iZdvJdFdI9TlppYj4TKFuKrDj823nmMTlE3FAv6jNxsbRj7+2sAHug=
+	t=1713386857; cv=none; b=kiqVc2HsFTemPb6GOLk1goXXodFP/wLfkag39wA7ayAU2kdc4CwXBSrgz4y08Q7c+nw/F+ZhzuqE00Vh5TGu5ekhAMKR5ou58bti2GjlN6+v8+GhRTdbIX5WABH4XQneUUH3x+DabZ10KRtQQXS2jAoAnIu2AV5d1pj9qc5Rdao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713386798; c=relaxed/simple;
-	bh=vpW2uBcFnTTkU4Vdy3ReQVcKp2u1xZV+wBorG7RxKjk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=neTCyl00IJdlz1MUNgXpsKMFOTcTKnJ9Y0ziFqNAiffFGvNYhi+HMo2HuYeld1zfbzxijgkKQxfvhVryvrb9YmZBqUwNidysmcF9j6M2zi14ru/JuZHit0F9RPKau7qzoECaH4m/FJ//2gnqpHS9VYVxgqOAwIeatRDaeRN9mZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RkJ1tHT2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6943BC116B1;
-	Wed, 17 Apr 2024 20:46:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713386797;
-	bh=vpW2uBcFnTTkU4Vdy3ReQVcKp2u1xZV+wBorG7RxKjk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=RkJ1tHT27y+k0lu2QQRUrGTpEPA5UU3iWd9URd2ZdTybNiuCSoZJcWvzIScLEJTo3
-	 j2PHHyRu4FLB7fZoCfA2IziVIfmuO8kBmqRWrcMfkjT0kR6w4Wo1zZ42afTut8q4NE
-	 H4KxdWsQUxkRcixhNeIf0xLD2kViqQ3efDUTiKxw+v8SifzNUCBsDSOYfRgAEHSXDF
-	 xsECzz55hNl+R/no/eoZhtY9gEai/b9oJ7oFZQ2khaHbGdCNs8B+/tHeQaYr2Widzb
-	 D8yF16M1VOyUYZa0O/DnxSIKz43pjAF944uhasya9+85A4NRFg8oRuuMKg4J1UFUo5
-	 NTNgavSRXsFZg==
-Date: Wed, 17 Apr 2024 13:46:36 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: Dmitry Safonov via B4 Relay <devnull+0x7f454c46.gmail.com@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Shuah Khan
- <shuah@kernel.org>, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 0/4] selftests/net/tcp_ao: A bunch of fixes for
- TCP-AO selftests
-Message-ID: <20240417134636.102f0120@kernel.org>
-In-Reply-To: <CAJwJo6Yw4S1wCcimRVy=P8h0Ez0UDt-yw2jqSY-ph3TKsQVVGA@mail.gmail.com>
-References: <20240413-tcp-ao-selftests-fixes-v1-0-f9c41c96949d@gmail.com>
-	<20240416072809.3ae7c3d3@kernel.org>
-	<CAJwJo6Yw4S1wCcimRVy=P8h0Ez0UDt-yw2jqSY-ph3TKsQVVGA@mail.gmail.com>
+	s=arc-20240116; t=1713386857; c=relaxed/simple;
+	bh=WDdRomGwYIj9LAM5YN6npSc5eONnLOEwIE5znWDSutU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CCx27iWQnWzr7Ulpooh9GTzAdxmp9ZzR9w2gB4STBbXJFC0jRMt9g7B+v5R8X7WyEPr9NNwo1wYh3ELbg3mIjJ3u0wE4AdyP6Q0YAmZRYIWyt9eMHnxFoQlxgXTh8KpVsEOv4sLLHKdizJCOxQqxzgLaKcS9eJzfV5/VriJmHoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=aQ94PS7H; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51967f75763so92345e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:47:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1713386854; x=1713991654; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WDdRomGwYIj9LAM5YN6npSc5eONnLOEwIE5znWDSutU=;
+        b=aQ94PS7Hlq72H2jimONDaLrmFvoGNwMzNezPgigXjoHjEImsMafYALMRuR8GKvQjTk
+         O9f9ErJz0SCUF2kq/rPxXY2K0yAas2vPfEfL0AIZZYI4SurgHKIYO5o/h0SI+fRcrVZ7
+         wZ4JUmsNVKF+LJuQuLsDwbAlu9qity5IHXi+pm7s9dTJp5itrTVQc+lcW66mzfv8ysLd
+         4Y8MygcE48nRaS/oYlg0gEZSqnuz2YTZUK+J3vAjRCK1H44YanpD6Aj/mG+ySblUAFt2
+         4QGQ/q21pmGi/c2OdMy4Ydfa15K9OPobbgcnT0u8KlxocIx9Z18TGpYC6LgSeM7DGdOG
+         LDZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713386854; x=1713991654;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WDdRomGwYIj9LAM5YN6npSc5eONnLOEwIE5znWDSutU=;
+        b=nl8x8gEAcqtjTG0Hcx1YG9IwOXbw1pO95vTIGxEvEIG5amV+8012cC8MTd2BkNFpYW
+         y5k+cShkYzC6wtJ3+HyGl5Lo87lerPlwqUBR3GvHin0M5fYZA/M5aJuxBtpEhlzoZ1RQ
+         wr82U6GbjY27wUGfdet5GEmnZ+ehO4sTp73Y9VWByOCeXBhqidzRT/Ls+3aKsF4KF4Yq
+         Ej5BDNAzpr9oUQlgqmosIAeFTNQ8+nhBlg170V0v3NDhSqvuLtCNzCnua6WLZGwbCU0d
+         4cUQ8/LparfKaBEm0FMkIr7IesJIhynlyBDelABDDJYbcX/lI/1U+FXcqtYrHYeo+TxD
+         7mhg==
+X-Forwarded-Encrypted: i=1; AJvYcCXnBujhqjxwMLQ3yD7aRKj27bpy0LVER+4l6JnEgbOKIX531sVCaQ2cj82RVcBwES6e1Ro4OjypGLMPoEFS/2lTReQ9nwYpXDyu4alM
+X-Gm-Message-State: AOJu0YxZwDehY1fqzypj1VPOBOcZXJF4kvu3qMOI86S2wSDnaOHrzY0J
+	qELlZ7TscbSHaKknmsRvxHbu1OKNKvZnbULvEMlnqiK5yWVdH/WmogbScpRGHjPE4I6OHzJ0zg7
+	eZrBtbHqZe6PaCMMPHT3hx/74CEOdVpBLt/Nq1Q==
+X-Google-Smtp-Source: AGHT+IF2JtxDcBcGf5KQ7m9jQ2Ck/N7MLJAwJpQMTOQIh1QEQUjpIuMwqAGFdic86q1ciV1N+WqGSAPC6I4bcJOi3qc=
+X-Received: by 2002:a19:4310:0:b0:518:6f95:1a37 with SMTP id
+ q16-20020a194310000000b005186f951a37mr239045lfa.33.1713386854355; Wed, 17 Apr
+ 2024 13:47:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240221213208.17914-1-andriy.shevchenko@linux.intel.com>
+ <CAMRc=Mfh-ojboNUELXfszKUbZRfeZn9vsN-HMTdMQv6my6ZrdQ@mail.gmail.com> <Zh-oku-XzpcH_8FH@smile.fi.intel.com>
+In-Reply-To: <Zh-oku-XzpcH_8FH@smile.fi.intel.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 17 Apr 2024 22:47:23 +0200
+Message-ID: <CAMRc=MfO_7smzcG2+FM2EHNb1FbqS7PbfJuzBH6gL6KXT2fVUQ@mail.gmail.com>
+Subject: Re: [rfc, PATCH v1 1/1] gpiolib: Get rid of never false
+ gpio_is_valid() calls
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 17 Apr 2024 19:47:18 +0100 Dmitry Safonov wrote:
-> 1. [ 240.001391][ T833] Possible interrupt unsafe locking scenario:
-> [  240.001391][  T833]
-> [  240.001635][  T833]        CPU0                    CPU1
-> [  240.001797][  T833]        ----                    ----
-> [  240.001958][  T833]   lock(&p->alloc_lock);
-> [  240.002083][  T833]                                local_irq_disable();
-> [  240.002284][  T833]                                lock(&ndev->lock);
-> [  240.002490][  T833]                                lock(&p->alloc_lock);
-> [  240.002709][  T833]   <Interrupt>
-> [  240.002819][  T833]     lock(&ndev->lock);
-> [  240.002937][  T833]
-> [  240.002937][  T833]  *** DEADLOCK ***
-> 
-> https://netdev-3.bots.linux.dev/vmksft-tcp-ao-dbg/results/537021/14-self-connect-ipv6/stderr
-> 
-> 2. [  251.411647][   T71] WARNING: SOFTIRQ-safe -> SOFTIRQ-unsafe lock
-> order detected
-> [  251.411986][   T71] 6.9.0-rc1-virtme #1 Not tainted
-> [  251.412214][   T71] -----------------------------------------------------
-> [  251.412533][   T71] kworker/u16:1/71 [HC0[0]:SC0[2]:HE1:SE0] is
-> trying to acquire:
-> [  251.412837][   T71] ffff888005182c28 (&p->alloc_lock){+.+.}-{2:2},
-> at: __get_task_comm+0x27/0x70
-> [  251.413214][   T71]
-> [  251.413214][   T71] and this task is already holding:
-> [  251.413527][   T71] ffff88802f83efd8 (&ul->lock){+.-.}-{2:2}, at:
-> rt6_uncached_list_flush_dev+0x138/0x840
-> [  251.413887][   T71] which would create a new lock dependency:
-> [  251.414153][   T71]  (&ul->lock){+.-.}-{2:2} -> (&p->alloc_lock){+.+.}-{2:2}
-> [  251.414464][   T71]
-> [  251.414464][   T71] but this new dependency connects a SOFTIRQ-irq-safe lock:
-> [  251.414808][   T71]  (&ul->lock){+.-.}-{2:2}
-> 
-> https://netdev-3.bots.linux.dev/vmksft-tcp-ao-dbg/results/537201/17-icmps-discard-ipv4/stderr
-> 
-> 3. [ 264.280734][ C3] Possible unsafe locking scenario:
-> [  264.280734][    C3]
-> [  264.280968][    C3]        CPU0                    CPU1
-> [  264.281117][    C3]        ----                    ----
-> [  264.281263][    C3]   lock((&tw->tw_timer));
-> [  264.281427][    C3]
-> lock(&hashinfo->ehash_locks[i]);
-> [  264.281647][    C3]                                lock((&tw->tw_timer));
-> [  264.281834][    C3]   lock(&hashinfo->ehash_locks[i]);
-> 
-> https://netdev-3.bots.linux.dev/vmksft-tcp-ao-dbg/results/547461/19-self-connect-ipv4/stderr
-> 
-> I can spend some time on them after I verify that my fix for -stable
-> is actually fixing an issue I think it fixes.
-> Seems like your automation + my selftests are giving some fruits, hehe.
+On Wed, Apr 17, 2024 at 12:46=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Tue, Feb 27, 2024 at 02:06:05PM +0100, Bartosz Golaszewski wrote:
+> > On Wed, Feb 21, 2024 at 10:32=E2=80=AFPM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > >
+> > > In the cases when gpio_is_valid() is called with unsigned parameter
+> > > the result is always true in the GPIO library code, hence the check
+> > > for false won't ever be true. Get rid of such calls.
+> > >
+> > > While at it, move GPIO device base to be unsigned to clearly show
+> > > it won't ever be negative. This requires a new definition for the
+> > > maximum GPIO number in the system.
+>
+> > > ---
+> >
+> > It looks like a risky change that late in the release cycle. I want to
+> > avoid some CI problems at rc6. Please resend it once v6.9-rc1 is
+> > tagged.
+>
+> Not sure why resend, but I missed that somehow. Can you consider applying=
+ it?
+>
 
-Oh, very interesting, I don't recall these coming up before.
+Applied, thanks!
 
-We try to extract crashes but apparently we're missing lockdep splats.
-I'll try to improve the extraction logic...
+Bart
 
