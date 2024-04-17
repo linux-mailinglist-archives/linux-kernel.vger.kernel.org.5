@@ -1,91 +1,77 @@
-Return-Path: <linux-kernel+bounces-147822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE0C78A7A1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:22:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20F148A7A25
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:25:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD7E4B22529
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:22:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA5C2283B88
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:25:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CFC01FC8;
-	Wed, 17 Apr 2024 01:22:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A441FC8;
+	Wed, 17 Apr 2024 01:25:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EDuDcOSX"
-Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A9CXU70o"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B94AEBB;
-	Wed, 17 Apr 2024 01:22:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 903A11851;
+	Wed, 17 Apr 2024 01:25:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713316928; cv=none; b=X+jNaBoV90tPSZIwYTvnd5Iszjdr7ArwT1CaSJJVu2RUs/mCXHAQFtf8gZEw7FFFucnQ+vCrKwjBalzml2ssZ6OpNQhAwH5AEXM3jkMkhCbjJCyFz+ax3l2ZT9oQ+jpRH2AtYV6RCt4bQHrD/WWNO3Wp4FK+lIH7B871asIDCSA=
+	t=1713317126; cv=none; b=Vs5F4nlVZknL0AxNiKFBmYu24CD152M/AIaYXdwFm7L7elMWbEWDj1Xqp2HieitOcAWGAW3mQkakaCwFY2VUSPn9MQbsszKEiAzollY6iTQxWUHEMd85D7PJ7BL7CXe2DGQLUARo2j7DlcuQHjAkQuN8aL/uOWnKgJPFAzqfidg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713316928; c=relaxed/simple;
-	bh=DUYFWX4LWKaLj5DBHUFDv8Fo12atozH9lyEhZH1CAuI=;
+	s=arc-20240116; t=1713317126; c=relaxed/simple;
+	bh=SifNgk6MOylzLGjpF5LbD3QpijD39SXzUerpdQvNNWg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nmbPKVjxUT9JMipy9dUHKLycQ5TJ0bAMGnuhg+J9g0Klqryp8af+u3DloQ9KAJv5HhTkUXSJWpjotnBTUj+0t9T4UcPe0TmIAipyncZQncgsHF0ajv5KeU6PMZ622mjia8yCGsFp4RXef+tiG3LEOmLaZlRiNIMBdNTJVMIyeHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EDuDcOSX; arc=none smtp.client-ip=209.85.160.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-2330f85c2ebso3334075fac.1;
-        Tue, 16 Apr 2024 18:22:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713316926; x=1713921726; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LnX24HJPnbW9GAV5sbrmRceYLlMBy8M9WyMVqDoxp/w=;
-        b=EDuDcOSXKdmYeresZNQ1ht08joplx98WZYA+MhCOBa7mieaYlS+8tiwMnBUy04/2rx
-         mOkR8iz8MULqGqavAb+gA1pXAI+uFGJMWTGwvUVio+z2CiwwsF6YXQk+SBXMNCcjwncM
-         2qrGEcG8T608pn86lU+x3RwPvKXO3iWbMhvM+rHRF/iPxa1AylLwnr3qh0CQO44E8HdX
-         reri7yCFi5AiYQVfVB1NdcKH5iWnHdEq6dsyptJznkhRJ64uAhROOKFGm2fsVlZ0LZzr
-         L6HlhhpD6mGAAV6Q/uOKRNqp+gjeYWNPkgh6FvwOpbK5SF81/Y1ies869pFrrJtI2dz5
-         LSrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713316926; x=1713921726;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LnX24HJPnbW9GAV5sbrmRceYLlMBy8M9WyMVqDoxp/w=;
-        b=BIVL+q9jCdGWnHljVhUwp87xWbWvsVyN5YE0pxJWcDcpS6VN3DKPNbpT6GgBxsMISU
-         B+VLv1arejyRUV3koa0swnwXKw6dCzyydCyhuRNVNIOYA2BIo5+yVKJfNGUuCskr0unL
-         4oTDZl9mPmi36ctaFsHsO5iDWZun7Ach4u3gxDITRfDA7qHisydAfFJgAFeSNJu9+b17
-         t6kvm53qd7QHfGwbh5y+OxZcOWevoGY2bnPqOjeELzXOE1H4cWtDj7ifmhaC5aM7MuOH
-         YwGsmDAO/xWhVls9O9ZyA3KdkXIzAXIUc4EnB6IYtXtYsibHptLfrj4L3XBX2Z1v76iZ
-         jr6g==
-X-Forwarded-Encrypted: i=1; AJvYcCUIIYcaWlQIxtl+nJF2bMXJbumrhnjbCP8PPml36AT5NDyIDTbmkSOwiLLiGpUWr4PF8dWfaRV81TIF8pQAxuPw9cDc5/9VyaN7czX2F1X35Nb0N01/98DWT6yR4zWtkoL3amTGaFz6ExEQ2itohlpKtk7+HLM3xsgaOS9BxBSCHJKA
-X-Gm-Message-State: AOJu0Yx0fshlTLzyIWndMXKasaXNpytPB63j9VE9bGO6V28dbRyvQTdp
-	0MvwM55oLOiUm7spfRITt23Df1darMoJPuzC0O0l8baI89HjETg4
-X-Google-Smtp-Source: AGHT+IFQN2WvDvVvDfE7SiVQ/ZNnoEulyk0oTfQIzF72qCPjRTZocptPi/+XMX8fSvsGmb3tvGg4Ow==
-X-Received: by 2002:a05:6871:5224:b0:221:a881:df51 with SMTP id ht36-20020a056871522400b00221a881df51mr16998129oac.44.1713316926264;
-        Tue, 16 Apr 2024 18:22:06 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:6f51])
-        by smtp.gmail.com with ESMTPSA id x17-20020a056a00271100b006ed3509ecd0sm9665987pfv.56.2024.04.16.18.22.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 18:22:05 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 16 Apr 2024 15:22:04 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, chenhuacai@kernel.org, josef@toxicpanda.com,
-	jhs@mojatatu.com, svenjoac@gmx.de, raven@themaw.net,
-	pctammela@mojatatu.com, qde@naccy.de, zhaotianrui@loongson.cn,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev, cgroups@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com,
-	"yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH RFC v2 5/6] blk-throttle: support to destroy throtl_data
- when blk-throttle is disabled
-Message-ID: <Zh8kPGAu2TG4Su2M@slm.duckdns.org>
-References: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
- <20240406080059.2248314-6-yukuai1@huaweicloud.com>
- <Zhl37slglnnTSMO7@slm.duckdns.org>
- <1bb85208-1224-77dc-f0b2-7b7a228ef70b@huaweicloud.com>
- <Zh6wx4mXZy_EOViH@slm.duckdns.org>
- <19086c09-3060-a4ce-4ac6-811a29653979@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Nc8+6V6kNfUHHkbBIaw3Uuc3MAv1HpVqvvV97PbtECEEYW4VzBeDnRevPXLebUFPcOnRW15+Wes5ZG2sb+6bbAqnYfDKROLe5TQztXMwcf+HKBlmzM72yd87RA14mLRp0wZv8ZXzHpgQW7i5MMbDf4JvzUauWmsKj7pQz+++49I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A9CXU70o; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713317124; x=1744853124;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SifNgk6MOylzLGjpF5LbD3QpijD39SXzUerpdQvNNWg=;
+  b=A9CXU70ooITcC/8KDa67Ro9marnEAUvMACuddm8akoCisXsdbeM4Rp6T
+   yxh76chY/QXZpLVopZy8gzVcHJNEYn8TJlKfoS+Baz3N9+LOZvlt1F4gH
+   NEl7U0UuMSFl9xjoKuMOGha+zenxRXfFvqQWFghqUwkB18IIxUKo+bEbB
+   bVRZy4NH7lkQb4rFdATtG3//k0JudajK63FhK4qoAif+9ysBPsHHeZUNp
+   FAa4wExLiasQAK6lsaitP3CMNKw7TeVceauOwCGwfvbaD96tz5f6lrtEU
+   wgk0uQno9XXk3Dy/r9pKXXMPDWUHWItFF/I39PAtIMACvPECK/4ificTO
+   A==;
+X-CSE-ConnectionGUID: fA0mu7HMRc+VkSkjAq6e6Q==
+X-CSE-MsgGUID: ZIkZV0uNTi+PJ+rmkGhKQg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8911582"
+X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
+   d="scan'208";a="8911582"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 18:25:23 -0700
+X-CSE-ConnectionGUID: DQUm0QaISiegqb6Fxi0eqg==
+X-CSE-MsgGUID: OFj1QP6gTmODO7bZAwKFlg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
+   d="scan'208";a="22855228"
+Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
+  by orviesa006.jf.intel.com with ESMTP; 16 Apr 2024 18:25:21 -0700
+Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rwu33-0005vs-30;
+	Wed, 17 Apr 2024 01:25:17 +0000
+Date: Wed, 17 Apr 2024 09:24:29 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geetha sowjanya <gakula@marvell.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, kuba@kernel.org,
+	davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
+	sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+	hkelam@marvell.com
+Subject: Re: [net-next PATCH 3/9] octeontx2-pf: Create representor netdev
+Message-ID: <202404170922.RBiIclFT-lkp@intel.com>
+References: <20240416050616.6056-4-gakula@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,35 +80,112 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <19086c09-3060-a4ce-4ac6-811a29653979@huaweicloud.com>
+In-Reply-To: <20240416050616.6056-4-gakula@marvell.com>
 
-Hello,
+Hi Geetha,
 
-On Wed, Apr 17, 2024 at 09:13:34AM +0800, Yu Kuai wrote:
-> > Probably a better interface is for unloading to force blk-throtl to be
-> > deactivated rather than asking the user to nuke all configs.
-> 
-> I was thinking that rmmod in this case should return busy, for example,
-> if bfq is currently used for some disk, rmmod bfq will return busy.
-> 
-> Is there any example that unloading will deactivate resources that users
-> are still using?
+kernel test robot noticed the following build warnings:
 
-Hmm... yeah, I'm not sure. Pinning the module while in use is definitely
-more conventional, so let's stick with that. It's usually achieved by
-inc'ing the module's ref on each usage, so here, the module refs would be
-counting the number of active rules, I guess.
+[auto build test WARNING on net-next/main]
 
-I'm not sure about modularization tho mostly because we've historically had
-a lot of lifetime issues around block and blkcg data structures and the
-supposed gain here is rather minimal. We only have a handful of these
-policies and they aren't that big.
+url:    https://github.com/intel-lab-lkp/linux/commits/Geetha-sowjanya/octeontx2-pf-Refactoring-RVU-driver/20240416-131052
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20240416050616.6056-4-gakula%40marvell.com
+patch subject: [net-next PATCH 3/9] octeontx2-pf: Create representor netdev
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20240417/202404170922.RBiIclFT-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240417/202404170922.RBiIclFT-lkp@intel.com/reproduce)
 
-If hot path overhead when not being used is concern, lazy init solves most
-of it, no?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404170922.RBiIclFT-lkp@intel.com/
 
-Thanks.
+All warnings (new ones prefixed by >>):
+
+>> drivers/net/ethernet/marvell/octeontx2/nic/rep.c:167:7: warning: variable 'err' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+     167 |                 if (register_netdev(ndev)) {
+         |                     ^~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/marvell/octeontx2/nic/rep.c:181:9: note: uninitialized use occurs here
+     181 |         return err;
+         |                ^~~
+   drivers/net/ethernet/marvell/octeontx2/nic/rep.c:167:3: note: remove the 'if' if its condition is always false
+     167 |                 if (register_netdev(ndev)) {
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     168 |                         dev_err(priv->dev, "PFVF reprentator registration failed\n");
+         |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     169 |                         free_netdev(ndev);
+         |                         ~~~~~~~~~~~~~~~~~~
+     170 |                         ndev->netdev_ops = NULL;
+         |                         ~~~~~~~~~~~~~~~~~~~~~~~~
+     171 |                         goto exit;
+         |                         ~~~~~~~~~~
+     172 |                 }
+         |                 ~
+   drivers/net/ethernet/marvell/octeontx2/nic/rep.c:137:17: note: initialize the variable 'err' to silence this warning
+     137 |         int rep_id, err;
+         |                        ^
+         |                         = 0
+   1 warning generated.
+
+
+vim +167 drivers/net/ethernet/marvell/octeontx2/nic/rep.c
+
+   131	
+   132	int rvu_rep_create(struct otx2_nic *priv)
+   133	{
+   134		int rep_cnt = priv->rep_cnt;
+   135		struct net_device *ndev;
+   136		struct rep_dev *rep;
+   137		int rep_id, err;
+   138		u16 pcifunc;
+   139	
+   140		priv->reps = devm_kcalloc(priv->dev, rep_cnt, sizeof(struct rep_dev), GFP_KERNEL);
+   141		if (!priv->reps)
+   142			return -ENOMEM;
+   143	
+   144		for (rep_id = 0; rep_id < rep_cnt; rep_id++) {
+   145			ndev = alloc_etherdev(sizeof(*rep));
+   146			if (!ndev) {
+   147				dev_err(priv->dev, "PFVF representor:%d creation failed\n", rep_id);
+   148				err = -ENOMEM;
+   149				goto exit;
+   150			}
+   151	
+   152			rep = netdev_priv(ndev);
+   153			priv->reps[rep_id] = rep;
+   154			rep->mdev = priv;
+   155			rep->netdev = ndev;
+   156			rep->rep_id = rep_id;
+   157	
+   158			ndev->min_mtu = OTX2_MIN_MTU;
+   159			ndev->max_mtu = priv->hw.max_mtu;
+   160			pcifunc = priv->rep_pf_map[rep_id];
+   161			rep->pcifunc = pcifunc;
+   162	
+   163			snprintf(ndev->name, sizeof(ndev->name), "r%dp%dv%d", rep_id,
+   164				 rvu_get_pf(pcifunc), (pcifunc & RVU_PFVF_FUNC_MASK));
+   165	
+   166			eth_hw_addr_random(ndev);
+ > 167			if (register_netdev(ndev)) {
+   168				dev_err(priv->dev, "PFVF reprentator registration failed\n");
+   169				free_netdev(ndev);
+   170				ndev->netdev_ops = NULL;
+   171				goto exit;
+   172			}
+   173		}
+   174		err = rvu_rep_napi_init(priv);
+   175		if (err)
+   176			goto exit;
+   177	
+   178		return 0;
+   179	exit:
+   180		rvu_rep_free_netdev(priv);
+   181		return err;
+   182	}
+   183	
 
 -- 
-tejun
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
