@@ -1,164 +1,227 @@
-Return-Path: <linux-kernel+bounces-148473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC618A8316
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:25:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD9358A831C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:25:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC4001F249A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:25:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0E911C21285
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 126A213D24C;
-	Wed, 17 Apr 2024 12:24:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC92013D24C;
+	Wed, 17 Apr 2024 12:25:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="RdXC6o1D"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2087.outbound.protection.outlook.com [40.107.223.87])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h0QedpGj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0D113CF87;
-	Wed, 17 Apr 2024 12:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.87
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713356692; cv=fail; b=m7Lgsd0oHS6WuBmznNjyRtECML/Itx3PGZqpvVZUD+sYpYYO4zwezXNymTGyDAzmwVtyThnbUTHS01iDtdRzL1lLePnGpgPb3zT1EGo+UQzpnQayETmx957LxNy8I+6rNGy9XtIwe9eArEdj1Z8zHnhs+3D0o2FtLI36DNeKbRs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713356692; c=relaxed/simple;
-	bh=gowoofUGOd/RdEgpy1PBjmfcNehglOcOZnFjwAc8QX0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Q0TZ0DLRJ8X7tNdsgxY3rmrRvBBObJNpIsGLJBo4BpXLj7qYcTtXEmDO/KWGvGed1w9sHwWcVCMmkUk7CG+W9RT5eSM+MzgcUne/6+uG0dyY+WOJj9ZGhmBTxf8l+dCh8pIMxKds/iydhEVGoEWZooCWZvQJrBV8x5RqBPlAf/s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=RdXC6o1D; arc=fail smtp.client-ip=40.107.223.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hLxkvL/k8rNmCwAIvJcUi5jVb3Wj1jxVPH3nh1SMhuKg8noVMQUGAsKVrfLnAzUq9iOC6Fe2V1QZ08yxtZ17jw4nA0k/lPDjvyvWzCuoMKodARvVOY8XDN/B6gKGxgFxROtChQTf0owlEwxIYIR7yLPfMIlnL66fB2ZkWmDQMlXpwgn+zVg1g+Ww5AOu0jrrnbLDlSmvByRrCmn0hwbiZmbyeaurnl4D4fhWOwPur2ChY/qNX1qeMSvpHCZM+VvW7c/es6DvogV4mY9mfsrSa/LBGcBbHk741h553idzOt03KfrH5R86LZ/JLWMGk87tGi9htm3sCZpeSluMFnklCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=epML94k/deH4YjtzUV1zs8gm7UpOHZW+3Wo+zVBr3xQ=;
- b=nokz23g9xXkQ9i3h05o+IxJ3/kYRRsrJ9bBM8t+gVwIPhN+lG099F6Q7ic3bJX3pHGQlLDxDazh3a32Cs4k9isPE8d4yua7/ArPEk5x4nNdlJolQYBLvFXd/IqkGonlZ+suPvPIi5tLMuo+Y9qKXbDD4BrRkNT/v/cs7fifluJUswUoCZYSYp9W/mcD1lzUPB7lNYrlCN7vizn/KTVxAMN+ZMT4KPfUDjZUe09Qc8IUAYt6GNTfZaje+7ycVrzFv8hs9tQyUZH55SUepA4JoYwJH1a7a6ujnGvExNRIOgZ2uG97GGQq2yabJRdDAZ/crbaLJCdrsQFWtZuYM0pXeEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=epML94k/deH4YjtzUV1zs8gm7UpOHZW+3Wo+zVBr3xQ=;
- b=RdXC6o1D5RWkXQzzmwN3wIB+3mbf6UWSsTdjKpgE6BsnPoT6sqsNTOviHdriiSVXg6HbBAVHbtQiSpBAnI/gdN9ANNfPKX9yg64ltISnlSvouUGjMzJZG4MONm1AUmRwcLjPvWz6kUO/0v/VmMJDpZqGxuGL756XT1qmpjWtTqRB4vWYiBS9rj+ySniR8EOhWtvFOr3ExQlNzpm3CICCkZ6StRkSxfJg8NBYUO7PT6BhOr9n/gLs4E1HXJH1Q431Ady8B4pAex/9drYQPX7Ga8FB36cgzRpA5pby3qHTMgnv+HHWZQlZtfUzRRs/Q07wK4fum8SgvrpcFrkRiUFcvw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by CH3PR12MB7641.namprd12.prod.outlook.com (2603:10b6:610:150::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 17 Apr
- 2024 12:24:47 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7472.037; Wed, 17 Apr 2024
- 12:24:47 +0000
-Date: Wed, 17 Apr 2024 09:24:45 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Cc: Nicolin Chen <nicolinc@nvidia.com>, "will@kernel.org" <will@kernel.org>,
-	"robin.murphy@arm.com" <robin.murphy@arm.com>,
-	"joro@8bytes.org" <joro@8bytes.org>,
-	"thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-	"vdumpa@nvidia.com" <vdumpa@nvidia.com>,
-	"jonathanh@nvidia.com" <jonathanh@nvidia.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-	Jerry Snitselaar <jsnitsel@redhat.com>
-Subject: Re: [PATCH v5 0/6] Add Tegra241 (Grace) CMDQV Support (part 1/2)
-Message-ID: <20240417122445.GO3637727@nvidia.com>
-References: <cover.1712977210.git.nicolinc@nvidia.com>
- <20240415171426.GF3637727@nvidia.com>
- <f92efdb774cc4cd48a59495e7cb69c27@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f92efdb774cc4cd48a59495e7cb69c27@huawei.com>
-X-ClientProxiedBy: SA0PR11CA0193.namprd11.prod.outlook.com
- (2603:10b6:806:1bc::18) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD5DD13D295;
+	Wed, 17 Apr 2024 12:25:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713356700; cv=none; b=SCfJCzFzuiM66Mrmu13bmw/y3pFXf9ES9p+wTmDPYiEm4ZrtsB0mpX04T3jyLKB/ehOoJub36/fT6zJbNdbDqIMdoD1lqaM2XA4q77/EqfY7VCtbJK06TM28820rharnSRAkqRt/qFNlhkQe3jB/aqUEPuLX7yY9siWDxGp4LC0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713356700; c=relaxed/simple;
+	bh=Q8zT258WQRDiwJmPtFZzZIyJIR1jdZVS+ZzaCdOE9JI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R02+U87ua6PRL8QJiha44WF+C3nC8tl+Y1sxmRyt4c4kwMIxLDZCTWjkMsZ9sxClvSSGCPYes+Q+na5UulaDwGN4J7qJs2DV99TN3Ok0gK7MPPfYrtaJzPnpiahJvg70PliDEajgHACsZOpNSdZp5GumQqm9nBEN7kyEw2leEyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h0QedpGj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C983C072AA;
+	Wed, 17 Apr 2024 12:24:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713356700;
+	bh=Q8zT258WQRDiwJmPtFZzZIyJIR1jdZVS+ZzaCdOE9JI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=h0QedpGjj8RNmOqZMuHdkWOw1mh0PWamjez5Zq/LUjHsHnN8lLUFYpt9r7HF6zDyU
+	 U6kdycDZ+zKka5PgDsOIoPodGOy0JIpRNqDQ/nBqtBxcQn0Nd+6LfLMCx9mXpVlSKN
+	 OenkBaLJNzBsHVK+JDiqWNAvKYBLua0mJE2fz8n1LcHErcEkV6hOsQWvw3SivP+nUz
+	 pTt9FJs96J7FswU9Ru6XkyCmJeiBmUURrzlpxGhiPyGHmlPzFCDjHZx+MxMBOXA5eI
+	 q0VzeO8Kg2hh+x4/linpnOCPbOsR9BFrxJ8bfiMjt5NilkOo/TdyHeIuEYoU4hJMzC
+	 76GNDNcExvjpA==
+Date: Wed, 17 Apr 2024 13:24:54 +0100
+From: Lee Jones <lee@kernel.org>
+To: Matti Vaittinen <mazziesaccount@gmail.com>
+Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: Re: [RFC PATCH 3/6] mfd: support ROHM BD96801 PMIC core
+Message-ID: <20240417122454.GY2399047@google.com>
+References: <cover.1712058690.git.mazziesaccount@gmail.com>
+ <b86b7a73968810339b6cea7701bc3b6f626b4086.1712058690.git.mazziesaccount@gmail.com>
+ <20240411143856.GD2399047@google.com>
+ <25c959bc-fb02-42d9-b973-4a74cebd7208@gmail.com>
+ <20240412072347.GM2399047@google.com>
+ <700b63a1-ce91-4d91-9db7-43c195ba7a6f@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|CH3PR12MB7641:EE_
-X-MS-Office365-Filtering-Correlation-Id: a8c3b894-a32e-4646-fb19-08dc5ed95ee2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	EgqQ32nHHA9wxFwX6h2tFqZctNMSwmbhe2vBe30oBq0bED7NECyBcorM/JYCILnEUTvT/pDRDlVlZow++7nIp+7xo6XbS4SeaidyHuNANdU3glqnlQgJDImnLXSRkICRLA+hZhiGamrBABTrmH/ERMtWMXc7r8qZi+Y8GgZHdLG/y7i4yUkYAIFM6Zj0kzOAnB3/KxqGtb9y6oJnXnhYfpagEkytbuvYohyGLiG0Tr40UBC5wuptRJh70uYGlN1887+Li07zqYYJZSm8aWGDaIPzVFm+jEqqtu/6O3Srfki9Yen2+a87/YJJimQLyRTy9vcLeb7g6M5lM7JuEbOW/SdMQ3nF2J/FiUnYUnbYUE8iUZMCk+DZjVjrbrb7OS5EKxnf9mY6dFhC27qTO1QyL6U/drzv9nyyI3QNEduu0Qk3CTXAnR52QJOzxDnCMz0Ip64xx5kv/3tADJTsHi162e/7uQxvLAVfBLHSZm5KPf4MfTvQ8Lm0VPb4C3Mmg16FKB7Wzpv8aqId7okR+JFwTZmCMlxuazyfFbwQR7xsoKg78BUNDNZY1u0dlVtLl9eBs7BeAQGpcVWv33SENDuDoj+nBw5zrkygV6osgZ/KfcPqv7FE+iZFzW61IYr9aQP4GoDcKEuWGrY6R+0JdUuyLsN/LxpA5Ix6ftGPf8TDSNk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(7416005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?aDguiBuE8TDxNbpUGiQ5UGi2asOe6JEypJwciiYTFgWywpyRHm5DE5+WXdrw?=
- =?us-ascii?Q?Pfr5JqmtzYb1Ehseh1lIpRFkEeKGyOl8zoP51YNbxH2vdtkUnMA+y4HRw+Dr?=
- =?us-ascii?Q?UxOzAcna+N7ai7oKV0W07Rvmra8z6b0V/H6+6tEViO0lsxv//I/5nnnRvyCN?=
- =?us-ascii?Q?5l+fikvpN+oaDhchC8Ar9VD6Bh4SKTb956ihVfEbeUvkZsmx5QgYTJSFeKbh?=
- =?us-ascii?Q?NV+y6EclTDkMzpLp6XT97SPAzeBG7XBsCBnDqOmdrV6XptKj7AnzUZXyZ603?=
- =?us-ascii?Q?IOfjmEP4372PwpQqGw0HKNzTyruAsS6/tQm5XyxwW1I76zVt6PG8/NqqLpug?=
- =?us-ascii?Q?uo1ISNFacHDIviTNJAjF43ibSXGy31bcXyvt2PBBy5SllnZelOLOfHAMfjqR?=
- =?us-ascii?Q?PtBhvX75MKam8RQFNO6snTAgRmRJU3xsS1yALJTnVTZdJJSZ70IirE5aUsfO?=
- =?us-ascii?Q?oSYOvsUhR5T81FBCASOMcjiN2gKO1KOad0yt8EOD850Urp0bC8/DQh9STx6x?=
- =?us-ascii?Q?jP+iNcDmV4GvcLEB086H5cqPyzgQJEZaUpKx5Q60R8IRgLhrOCgHS8zATbYq?=
- =?us-ascii?Q?KuntqRiB9F+uRNBkCDNaGEDKvFtyy1qQ9sAJ7bKXlE8yUmM/lJv9U4Y0P0lV?=
- =?us-ascii?Q?fFLRTNGm6uc+v/phMi7FOgEtPqSahUkFRTual9bWAbeSkWHFLg41ahrrl82j?=
- =?us-ascii?Q?gMe+SqFTV/GooQLzm5WQV9jfCCfYsMTds5rQ+wwlJeO2OnT5p+SkNsDqDAGB?=
- =?us-ascii?Q?0Nqrjjfm3CmJeBR5FQC4TK+ipEJPdMGehe2bZPpv7B2IzYeTaOQeNiEWQQuG?=
- =?us-ascii?Q?rMYzgI2tIB4g3hPfwhvrpem5ys4D9flpuCD8xY/tgsZIStqU/FSEUsS+j5VL?=
- =?us-ascii?Q?Gf2WFjzIrvqAUBSGC7/G4cQ/3PocpfXIm4iYz3xHaCo+LnCFdcXZTpgh0C33?=
- =?us-ascii?Q?yJZgQgRw28yV2Eljbmq72y3qdX4cH0Lp2VhwzfihvOSQkrHIKHRQE6sm9773?=
- =?us-ascii?Q?/8AtO+hPAqMkJhwn8zdKYOkspxqR9QNp4AghXyJQAq3bMwlT2sjhY+1SxBpp?=
- =?us-ascii?Q?saaJ3jiWf5R0omOuYpNFvw7t2rk+Okpeqk0J17T9bZqC4xRK3ljooGal4y7Z?=
- =?us-ascii?Q?RqcoAyMA3+XICCI6XPipSdi4GVUECLeva5O/nBOJb4Owg0eRCi2mQ40J6PMO?=
- =?us-ascii?Q?dhhFMi/ouyJuE0OEnSZA8IgdJCTHjB0+Qq0FzEaBjmCcx7bFIxfITcNc0knD?=
- =?us-ascii?Q?/LHwyCmBbrAWwSpIfDaNSBIEQRpcLwnrAr7GkOuDZ2qzL+KsaqwhzFR62INh?=
- =?us-ascii?Q?hOmGlOMNv4X8W6hIJMJm3mZzIhslTLanEfvpl+enREdtd6LmrJapZ5682cXM?=
- =?us-ascii?Q?aVM+6EaaKQnaX9rlXiyS6ZI3NlDwQpY8PR2XPuqSvUfts6W5rISGBQ83Aq7h?=
- =?us-ascii?Q?yM9SDBi+ZAUtywz8zm7Km5MW/gUorHYup4HY2BzvSvYD0e+uHhOmNuSqjN8A?=
- =?us-ascii?Q?51KGM38vS9/G2p4klO0J2Do8HGDQpZr+iAkHfgCIgBOQlJBltljy7mxc1YKF?=
- =?us-ascii?Q?4fTUuW+ROCb9Ja6iwWpDpWSrZrnSn2v/sL6r11dq?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a8c3b894-a32e-4646-fb19-08dc5ed95ee2
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 12:24:47.4051
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4uoK/dvc/O6PE2Ao13q+nxTR/d45Knuer2IANvx7ibsyg4Evb+tSXrET+2bWUP1V
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7641
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <700b63a1-ce91-4d91-9db7-43c195ba7a6f@gmail.com>
 
-On Wed, Apr 17, 2024 at 08:01:10AM +0000, Shameerali Kolothum Thodi wrote:
-> We do have plans to revive the SMMUv3 ECMDQ series posted a while back[0]
-> and looking at this series, I am just wondering whether it makes sense to have
-> a similar one with ECMDQ as well?  I see that the NVIDIA VCMDQ has a special bit 
-> to restrict the commands that can be issued from user space. If we end up assigning
-> a ECMDQ to user space, is there any potential risk in doing so?
+On Fri, 12 Apr 2024, Matti Vaittinen wrote:
 
-I think there is some risk/trouble, ECMDQ needs some enhancement
-before it can be really safe to use from less privileged software, and
-it wasn't designed to have an isolated doorbell page either.
+> On 4/12/24 10:23, Lee Jones wrote:
+> > On Fri, 12 Apr 2024, Matti Vaittinen wrote:
+> > 
+> > > Hi deee Ho Lee!
+> > > 
+> > > Thanks a ton for taking a look at this :) I already sent the V2 yesterday,
+> > > briefly before receiving your comments. I think all of the comments are
+> > > relevant for the V2 as well, I will fix them for the V3 when I get to that.
+> > > If you find the time to take a look at V2, then the major things are
+> > > addition of a watchdog IRQ + a work-around for the debugFS name collision
+> > > for IRQ domains.
+> > > 
+> > > On 4/11/24 17:38, Lee Jones wrote:
+> > > > On Tue, 02 Apr 2024, Matti Vaittinen wrote:
+> > > > 
+> > > > > The ROHM BD96801 PMIC is highly customizable automotive grade PMIC
+> > > > > which integrates regulator and watchdog funtionalities.
+> > > > > 
+> > > > > Provide IRQ and register accesses for regulator/watchdog drivers.
+> > > > > 
+> > > > > Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+> > > > > ---
+> > > > >    drivers/mfd/Kconfig              |  13 +
+> > > > >    drivers/mfd/Makefile             |   1 +
+> > > > >    drivers/mfd/rohm-bd96801.c       | 454 +++++++++++++++++++++++++++++++
+> > > > >    include/linux/mfd/rohm-bd96801.h | 212 +++++++++++++++
+> > > > >    include/linux/mfd/rohm-generic.h |   1 +
+> > > > >    5 files changed, 681 insertions(+)
+> > > > >    create mode 100644 drivers/mfd/rohm-bd96801.c
+> > > > >    create mode 100644 include/linux/mfd/rohm-bd96801.h
+> > > > > 
+> > > > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > > > > index 4b023ee229cf..947045eb3a8e 100644
+> > > > > --- a/drivers/mfd/Kconfig
+> > > > > +++ b/drivers/mfd/Kconfig
+> > > > > @@ -2089,6 +2089,19 @@ config MFD_ROHM_BD957XMUF
+> > > > >    	  BD9573MUF Power Management ICs. BD9576 and BD9573 are primarily
+> > > > >    	  designed to be used to power R-Car series processors.
+> > > > > +config MFD_ROHM_BD96801
+> > > > > +	tristate "ROHM BD96801 Power Management IC"
+> > > > > +	depends on I2C=y
+> > > > > +	depends on OF
+> > > > > +	select REGMAP_I2C
+> > > > > +	select REGMAP_IRQ
+> > > > > +	select MFD_CORE
+> > > > > +	help
+> > > > > +	  Select this option to get support for the ROHM BD96801 Power
+> > > > > +	  Management IC. The ROHM BD96801 is a highly scalable power management
+> > > > 
+> > > > Power Management
+> > > 
+> > > Out of the curiosity, why is the "Power Management IC" written with
+> > > capitals, when speaking of a class of devices instead of a model? (I am 100%
+> > > fine with the change, just curious).
+> > 
+> > It's no different to how its expressed in the tristate section above.
+> > 
+> > Power Management IC or PMIC.
+> > 
+> >    "provides power management capabilities" describes its function?
+> > 
+> >    "is a scalable Power Management IC", describes the device?
+> > 
+> > But actually, it just looks odd when both are used in the same section.
+> > 
+> > /me likes uniformity and consistency.
+> 
+> It's okay, thanks for the explanation :)
+> 
+> > > > > +	  IC for industrial and automotive use. The BD96801 can be used as a
+> > > > > +	  master PMIC in a chained PMIC solutions with suitable companion PMICs
+> > > ...
+> > > 
+> > > > > +static int bd96801_i2c_probe(struct i2c_client *i2c)
+> > > > > +{
+> > > > > +	int i, ret, intb_irq, errb_irq, num_regu_irqs, num_intb, num_errb = 0;
+> > > > > +	struct regmap_irq_chip_data *intb_irq_data, *errb_irq_data;
+> > > > > +	struct irq_domain *intb_domain, *errb_domain;
+> > > > > +	const struct fwnode_handle *fwnode;
+> > > > > +	struct resource *regulator_res;
+> > > > > +	struct regmap *regmap;
+> > > > > +
+> > > > > +	fwnode = dev_fwnode(&i2c->dev);
+> > > > > +	if (!fwnode) {
+> > > > > +		dev_err(&i2c->dev, "no fwnode\n");
+> > > > > +		return -EINVAL;
+> > > > 
+> > > > Why not dev_err_probe() here for uniformity?
+> > > 
+> > > I can change it to dev_err_probe() if it's strongly preferred. It just feels
+> > > silly to use dev_err_probe() when the return value is hardcoded.
+> > 
+> > Not at all:
+> > 
+> > git grep dev_err_probe | grep "\-[A-Z]"
+> 
+> Yes, I know people do use the dev_err_probe() with hardcoded errors but it
+> does not make me feel any better about it :)
 
-> Not clear to me what are the major concerns here and maybe we can come up with 
-> something to address that in kernel.
+<look into my swirling eyes> Uniformity within the function!
 
-I haven't looked deeply but my impression has been the ECMDQ is not
-workable to support virtualization. At a minimum it has no way to
-constrain the command flow to a VMID and to do VSID -> PSID
-translation.
+> > > Intentionally writing code like
+> > > 
+> > > err = -EINVAL;
+> > > if (err == ...)
+> > > 
+> > > just makes me feel a bit sick.
+> > 
+> > Why would you want to do that?
+> 
+> This is what the dev_err_probe() with a hardcoded err does, right?
+> 
+> int dev_err_probe(const struct device *dev, int err, const char *fmt, ...)
+> {
+> 	...
+> 	if (err != -EPROBE_DEFER) {
+> 		dev_err(dev, "error %pe: %pV", ERR_PTR(err), &vaf);
+> 	} else {
+> 		device_set_deferred_probe_reason(dev, &vaf);
+> 		dev_dbg(dev, "error %pe: %pV", ERR_PTR(err), &vaf);
+> 	}
+> 	...
+> }
 
-I suggest you talk directly to ARM on this if you are interested in
-this.
+Attempt to purge this info from you brain!
 
-Jason
+> > > > > +	}
+> > > > > +
+> > > > > +	intb_irq = fwnode_irq_get_byname(fwnode, "intb");
+> > > > > +	if (intb_irq < 0)
+> > > > > +		return dev_err_probe(&i2c->dev, intb_irq,
+> > > > > +				     "No INTB IRQ configured\n");
+> > > > 
+> > > > This function would look nicer if you expanded to 100-chars.
+> > > 
+> > > The reason why I still prefer the good old 80-chars for files I work with,
+> > > is that I am often having 3 terminal windows parallel on my laptop screen.
+> > > (Or, when I have my wide mofnitor connected it is 3 editor windows +
+> > > minicom). I need to keep the terminals small enough. Besides... I hate to
+> > > admit this, but the time is finally taking it's toll. My eyes aren't quite
+> > > the same they were 2 years ago...
+> > 
+> > Upgrade your 14" CRT monitor to something more modern. :)
+> 
+> But those things were built to last! And throwing away perfectly working
+> stuff... :)
+
+Can't argue with that!  Maybe put 2 side-by-side or 4 in a matrix!
+
+-- 
+Lee Jones [李琼斯]
 
