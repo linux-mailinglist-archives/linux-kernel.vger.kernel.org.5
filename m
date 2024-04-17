@@ -1,123 +1,135 @@
-Return-Path: <linux-kernel+bounces-148006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DE928A7C83
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:47:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF6298A7C88
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:49:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F9661C22A90
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:47:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E49C9B21A50
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:48:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA476A325;
-	Wed, 17 Apr 2024 06:47:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D283A65BA8;
+	Wed, 17 Apr 2024 06:48:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W8+Opz2a"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=shruggie-ro.20230601.gappssmtp.com header.i=@shruggie-ro.20230601.gappssmtp.com header.b="GFG2I0q7"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B44BE2AF0A;
-	Wed, 17 Apr 2024 06:47:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC8D394
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 06:48:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713336429; cv=none; b=eRjHIlrRsRurVx63yrTTZO70pNCK94WjzAURpKxDI4XvPuvT7rdC4vn/zZNf9ZYauidar9Azg6zJbqhxn5Ou1RikMslMC2hlISFcBQRYruEtqU7ciTgVY0Tw3BgKFSnqWIjJvcLWoTxBZ+BxwYF91rcv7ia1u3z/Yb2SdhZoJIs=
+	t=1713336532; cv=none; b=JKJ9AsIWK3vltMQaVgQUcCF68JyiMy5JoBHgvk9Qyng5IFEmXYH690HDhKfXYbXfXr0Tr79+7GeIpY5vJspvyKkPqOTRaVVc45bhAzTXetEZABYsnAe0Rxc+AqZG4A+KS/MLf1XmHmGDLdbQ6qhOMM+K8YNdJBEtqKZPQEAI5ZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713336429; c=relaxed/simple;
-	bh=iN8fjmMLo89h+vHLb9rYvsnDFPIxSlHHgs1h/iLpzvo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N+uoN1uCcbfJvew2QvX7hIJiFQKw7fGkBGJ0LnGVQtdD/XeHOO3SXCwis0lzqGSsIF9JFlTPeB3zd0bLRK2VbnIkrRqduB9RvI/j7FJ+KEQPL72YPz4A39IPBsEGzKuD3WmndHgbItXlMeECVRcV8evfsUe/Q3it/uP1XCgbc/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W8+Opz2a; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713336428; x=1744872428;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=iN8fjmMLo89h+vHLb9rYvsnDFPIxSlHHgs1h/iLpzvo=;
-  b=W8+Opz2aCVnlv//VgpPTgwPOeBr90UsHId499SWRSOdGoAGfVw3sAQtq
-   cIhG0s+7xy0o+vTIHH9/ttTqxAZqJfqcTieg481xnAAQbTPo6KSeVz2ms
-   nGiijYdiFCRx2THb/qKV9dfICQmnJ2uNwBySoqRB5t4OYlm8vSpgqc6pC
-   qrZRxf02gW9OWfokvWf1Z2OrS9o8Tu7Vda45cJCN6iv/8UBIjKZ6FtTBf
-   TbeShJhcvN4NLfZu04tzyH0bLDcMN1W+VIGrnB3oMxlzgqmT/8AlSNIaH
-   xorBjNUPWmX13RK5H1e6hC4EWx7qCZipu6i79Fa3NVxWyHGapI5dolYgE
-   A==;
-X-CSE-ConnectionGUID: O2cNej9mQzKVdPbJ9/Jx5g==
-X-CSE-MsgGUID: 7xoJl23MQUW+MZM2PqZh8g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="9032028"
-X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
-   d="scan'208";a="9032028"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 23:47:07 -0700
-X-CSE-ConnectionGUID: 5fTzK/apTdeu9vd5aJkFJg==
-X-CSE-MsgGUID: gy4L9eKJQRCas0HRd0J3MA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
-   d="scan'208";a="22584918"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 23:47:06 -0700
-Date: Tue, 16 Apr 2024 23:47:06 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Chao Gao <chao.gao@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	Sean Christopherson <sean.j.christopherson@intel.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 059/130] KVM: x86/tdp_mmu: Don't zap private pages
- for unsupported cases
-Message-ID: <20240417064706.GD3039520@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <1ed955a44cd81738b498fe52823766622d8ad57f.1708933498.git.isaku.yamahata@intel.com>
- <Zh8yHEiOKyvZO+QR@chao-email>
+	s=arc-20240116; t=1713336532; c=relaxed/simple;
+	bh=8GdD1N+kL+Txs2fR62xmamHs4atP+AS/1YrbyOjH9XU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Q1c3qZxGu4rCtzLDJa9Fp4B7qM11pLmAoZO7T5hKZpcpXS/M6X8OCMYRT8oKi8M8Y28cld2a6FdddIsLkmbDIZdNvM09U8q2PWg9V7cDyddAtM2TKpZPix0fEF51Ypy9InbcI5Z1VIj5RZlPgEVREZxbeU3qgKlWSoDi2W5tH+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shruggie.ro; spf=pass smtp.mailfrom=shruggie.ro; dkim=pass (2048-bit key) header.d=shruggie-ro.20230601.gappssmtp.com header.i=@shruggie-ro.20230601.gappssmtp.com header.b=GFG2I0q7; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shruggie.ro
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shruggie.ro
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5194cebd6caso227940e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:48:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shruggie-ro.20230601.gappssmtp.com; s=20230601; t=1713336527; x=1713941327; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8GdD1N+kL+Txs2fR62xmamHs4atP+AS/1YrbyOjH9XU=;
+        b=GFG2I0q76lEDzP8gzQO5K3lFcYJpKA4n7HsUPL7fA+NKaax4/BiQLG9lxgNGU8VQj1
+         vGdzrB+PaF1vc356ZyfVsxeiAl3Eah83W2BcHDIRfyLgqkoPLe2dw6jle9ZXwvkTgVIh
+         d3cyTZLAA53xxCaWRLAHhYGuxT8IJuReEaHcJyxLhVapOap5PRZCn6ySixf/02KcIUnn
+         DXdCcMRHPv/eLUTfnN1Ktalpb7+/gLA068Nkqyjc4tNHqFnONsSNC4Oybc6CCstQh6//
+         uZtHnFPPvWu9DHafjHw8vwWpb/FfkdGeN5SBHXYvlQT3FJ+aT1Oya8rNzNUvKmb0TKWc
+         wgQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713336527; x=1713941327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8GdD1N+kL+Txs2fR62xmamHs4atP+AS/1YrbyOjH9XU=;
+        b=RNT3ZfEx6p2N4RwIAQcWkhlJks+nmZUatsZZUz48PVLXHAVGolYUhNOBSrV2yVBsrX
+         9ox+UmoA2ZJtqu4x+bpHxIOAUtIdUr6chJPtN7teG4NaAcx8spR2y0BEKI8mWh1OATrP
+         BrmVyC6mbixEPRauJVuEhAS+i3et1x3oIOFMZSXLKSAfbnBUj2auUWqw5G4L3JtNnMhc
+         A2/Til5vKBGvX3HXiYXHRjBBh7dc3d79HRLcaIUcfmtvfJ3udgUtCV8Vw8qhEjqAXSxm
+         3ev90130SVsONyx4oR+Gq81v+AjVRmj7cGNQltu7iqgsmIUyFak4KocTEkKFORJlSmwc
+         7T5Q==
+X-Gm-Message-State: AOJu0YypzMjCtTXP8+tdQI1PmpUtdxhJhrQrDCQOut5Q7ODdpkKaP+tm
+	h3lUO/cuYwNHt6mFqDPbTJtcsl0nWNyTObnEqiSLGiwF00bm9buSjlxOQSz6lbdrcm2AAz9LTga
+	WG5kL8X+BdhpG28BnfOpemcmKOMFigqgF3rS/6g==
+X-Google-Smtp-Source: AGHT+IELKwZURXxT6BzF+klrUUBwR99xlItfoxcCvrRVeeNi5J6r7J+VMpXsyCHSfWJEcHe5m5fOsWmif33f2yBisH0=
+X-Received: by 2002:ac2:464a:0:b0:518:9950:9079 with SMTP id
+ s10-20020ac2464a000000b0051899509079mr8518848lfo.2.1713336527056; Tue, 16 Apr
+ 2024 23:48:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Zh8yHEiOKyvZO+QR@chao-email>
+References: <20230516122202.954313-1-alex@shruggie.ro> <CAH3L5QoBqSOBHhoxSrYw6U34gqTPEhi_RB_Cve-YmBzYj3LXAQ@mail.gmail.com>
+ <CAH3L5QqZ61H9Fk24R4K3vNdpmvBjnxHaxH7CRTT5Fa3tbot_hg@mail.gmail.com> <xhsmho7ajanb5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+In-Reply-To: <xhsmho7ajanb5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+From: Alexandru Ardelean <alex@shruggie.ro>
+Date: Wed, 17 Apr 2024 09:48:36 +0300
+Message-ID: <CAH3L5Qr9Lmju1nXk-+O8d9Hj0r0WyLP-grrbaY6HfQx_Ga_KMw@mail.gmail.com>
+Subject: Re: [PATCH][V2] sched/rt: Print curr when RT throttling activated
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
+	tian.xianting@h3c.com, steffen.aschbacher@stihl.de, 
+	gregkh@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 17, 2024 at 10:21:16AM +0800,
-Chao Gao <chao.gao@intel.com> wrote:
+On Mon, Apr 8, 2024 at 6:25=E2=80=AFPM Valentin Schneider <vschneid@redhat.=
+com> wrote:
+>
+> On 01/04/24 18:47, Alexandru Ardelean wrote:
+> > On Thu, Jul 13, 2023 at 11:07=E2=80=AFPM Alexandru Ardelean <alex@shrug=
+gie.ro> wrote:
+> >>
+> >> On Tue, May 16, 2023 at 3:22=E2=80=AFPM Alexandru Ardelean <alex@shrug=
+gie.ro> wrote:
+> >> >
+> >> > From: Xianting Tian <tian.xianting@h3c.com>
+> >> >
+> >> > We may meet the issue, that one RT thread occupied the cpu by 950ms/=
+1s,
+> >> > The RT thread maybe is a business thread or other unknown thread.
+> >> >
+> >> > Currently, it only outputs the print "sched: RT throttling activated=
+"
+> >> > when RT throttling happen. It is hard to know what is the RT thread,
+> >> > For further analysis, we need add more prints.
+> >> >
+> >> > This patch is to print current RT task when RT throttling activated,
+> >> > It help us to know what is the RT thread in the first time.
+> >> >
+> >>
+> >> Adding Greg on this patch, since it 's been a while.
+> >> And also: ping :)
+> >
+> > Ping on this :)
+> >
+>
+> AFAIA this has been proposed a few times in the past, the problem is that
+> printing the current task isn't the right thing to do as it may not be th=
+e
+> one that contributed most of the runtime that lead to throttling.
+>
+> See https://lore.kernel.org/lkml/20221209163606.53a2370e@gandalf.local.ho=
+me/
 
-> On Mon, Feb 26, 2024 at 12:26:01AM -0800, isaku.yamahata@intel.com wrote:
-> >@@ -779,6 +780,10 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
-> > 
-> > 	lockdep_assert_held_write(&kvm->mmu_lock);
-> > 
-> >+	WARN_ON_ONCE(zap_private && !is_private_sp(root));
-> >+	if (!zap_private && is_private_sp(root))
-> >+		return false;
-> 
-> Should be "return flush;".
-> 
-> Fengwei and I spent one week chasing a bug where virtio-net in the TD guest may
-> stop working at some point after bootup if the host enables numad. We finally
-> found that the bug was introduced by the 'return false' statement, which left
-> some stale EPT entries unflushed.
+Ah.
+Thanks for the input :)
+I'll shut up on this.
 
-Thank you for chasing it down.
+Thanks
+Alex
 
-
-> I am wondering if we can refactor related functions slightly to make it harder
-> to make such mistakes and make it easier to identify them. e.g., we could make
-> "@flush" an in/out parameter of tdp_mmu_zap_leafs(), kvm_tdp_mmu_zap_leafs()
-> and kvm_tdp_mmu_unmap_gfn_range(). It looks more apparent that "*flush = false"
-> below could be problematic if the changes were something like:
-> 
-> 	if (!zap_private && is_private_sp(root)) {
-> 		*flush = false;
-> 		return;
-> 	}
-
-Yes, let me look into it.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+>
 
