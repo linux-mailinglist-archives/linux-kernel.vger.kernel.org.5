@@ -1,75 +1,73 @@
-Return-Path: <linux-kernel+bounces-148132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 168DD8A7E21
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:23:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 411268A7E23
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:23:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8FC928166B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:23:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B87E7B24098
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:23:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF6F27EF13;
-	Wed, 17 Apr 2024 08:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43FB47F470;
+	Wed, 17 Apr 2024 08:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cl0dXFi7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kxmhXOcf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A40584FAC;
-	Wed, 17 Apr 2024 08:23:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8746E7D08F;
+	Wed, 17 Apr 2024 08:23:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713342200; cv=none; b=SZKq+1XplUGwavJX+bYqPMUwwwEl+f4VLHOfiKtuC3KAV84PUtTk09cer0b0ACqhjgAS/DcqSoOa2xHRuqfshQPBv3XawtalwXgN8D/hrgockhUcP4IqAV7pUalVu5yIOBxGEgZBXIFKfV1JPd95geH3PWjM7ZUdS0wPQOP7FzQ=
+	t=1713342222; cv=none; b=JSsQOFb3C463TFUv0YCNvwx6GzQi26FHjH+0vpIrfjtaLhjsawy28I/Qq6jX9GXJrcy27qFm7HAG1lH82qRkD9mVAZx2bkZaCfANZZysAbUDxcVRUMcebK+OX2qOmJhU4vZloFBLEdkMG06Xi2YJHHYAIk+ij/gN5bDoQJ6xO1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713342200; c=relaxed/simple;
-	bh=C4tOCdvuBbe0nWsP1RYC0WfHw/yvoZ/fnppLyqdrzVg=;
+	s=arc-20240116; t=1713342222; c=relaxed/simple;
+	bh=PzPHik40qRXIBSVgn8cohGP5vcPZ5pS+tPSMejQQd/U=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NIfvlyUbyss5dti7iYFDrnOZSSrTpUTRapEFLIAWPAR2oqxhp9UW1SZWQRQZgpa1cnR7abC2eHyQdGPcwq7av0b1GQYfzBlI0B1TYa6YEDyuYHcDPAeHqyNZPgMu6X8jx/I4ecb/bcNZeVRp9sU347vbS4iCsTZi4/5BpUwKhXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cl0dXFi7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B2F4C32783;
-	Wed, 17 Apr 2024 08:23:19 +0000 (UTC)
+	 To:Cc:Content-Type; b=oiuNgs8moXzZAwaPBK1Ps25qAG1nsw5KZD4RFnduy0vd++gRMPTMhtzR0HSId02TQH9NeMyuF/f4M46BvX8ibUUliMt4ce6MWGs/YRPWvns0rdcOunnzbL1vwdNHuDbFVXX5kW6bQ7qZZywdOtgQszbQcY7ZNVtzujsBpe7zaf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kxmhXOcf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CF89C32783;
+	Wed, 17 Apr 2024 08:23:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713342199;
-	bh=C4tOCdvuBbe0nWsP1RYC0WfHw/yvoZ/fnppLyqdrzVg=;
+	s=k20201202; t=1713342222;
+	bh=PzPHik40qRXIBSVgn8cohGP5vcPZ5pS+tPSMejQQd/U=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Cl0dXFi7+cjctcO4EmDYic4Anp14X9g7oZQmOJzpgfUGrw+jlsNE4rsYPyaSGibd5
-	 AgrdAoHAghKXhkZuTLTsdHvmIxd8bjB5LauD7bPkXD1DMbx39P9GtgNZ33VtZzKLpp
-	 JfxgYOAT2KLRgnBpiDL4IsZ1RdcJpcEGZKQCWk0kilcCQaEqIZ0az8CrMEenlmvx0i
-	 dqWgyK1XnPJD7BGHp5uiFJzNv6UZyhwNBo27xo6aAM/EEIw/ZkLrPyDo4AJVKUaliG
-	 7eEYwPlT2cTGcnUA1IloRrDpURijulNu6E56nh2yOUvDC+UBMOh0sekIQ3V9XwuEqh
-	 KaK9v7OdBfLIg==
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5acdbfa6e95so191406eaf.3;
-        Wed, 17 Apr 2024 01:23:19 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWEarIp0Ahk38DyjcVUPMVj58WlTPjvmUZDq3deQ3R3dAi4jUfkubLodv/IXozSPD7/bmlK4F8t0D8Nn1b/kCwbbJsy5ODCIx4Twc25JhWI9yuuK27CaRNGuX7s2fWkKMK8HHk29d9cKOfytOQgWpDR198nsg0y6y1H9ZJ2sMInjveigAQH4tEA1taG
-X-Gm-Message-State: AOJu0YyX4r5tLUo5gLrCSj/v9kQy3UH7foDmsDrFvGP3mRi1U0LoF7p1
-	32NJPlsVfnnMONvGBKZXMU0g8DgT14y2IdfvWwhcBtyWo/X2KQjtqDodCWJoWDaEcKD0J6y1WBq
-	+lFPjcp317NawiSohOghjqqgUeMA=
-X-Google-Smtp-Source: AGHT+IEwWhyxwziJmItu3CudJNR/cbcOGfyy1lJsPIqbwVt2BL7zHv844Kmjt0yZaihq6jyNI/6OLt9Cemu6KrK30DQ=
-X-Received: by 2002:a05:6820:4003:b0:5a7:db56:915c with SMTP id
- fh3-20020a056820400300b005a7db56915cmr17216803oob.1.1713342198919; Wed, 17
- Apr 2024 01:23:18 -0700 (PDT)
+	b=kxmhXOcfK1s70GAFXkusWRsmemGoM96wlbixK7Nr2awefw+Pyu2hZ0k5PnSDAMp9G
+	 mQCDsPWQAvCDF7Y2zDq9oQvr1IfNdX741Wmy8XYNufSoFvnqh/NuEpRIBS8o9DD/vP
+	 22Hye1mBtRaYlVLNaG/Tx5jnYCo0NDk6skoroeXV9L04JhWJCyeS8jKxqyW/DmXb+r
+	 zg4hVXRxT994iuvf6FsTrXCCsKwRmpymy2o+iwKADqQcXiGdoSGntzAAj0BnRmxnQe
+	 Ih+p8D9/seWRrV4mIz3r0fLQzKd6CZgwYwB1kBc1i4PNcUTobDZLvlNcKOCGmqhXxO
+	 toQxkmD7t0dMQ==
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5acdbfa6e94so219403eaf.2;
+        Wed, 17 Apr 2024 01:23:42 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVxwc5eFIzRmn/WReR00j66b/AXXt/E+lOAQ5gWW9Ki3Ter2BNEhkuVtN8RQzg3bkd+gZMmjSwY5INKXHEq/ZKQ/gwmC2vAG2w=
+X-Gm-Message-State: AOJu0YwE5zravoQKvjSkNeb6IOwSeztCIpDuDgtzqMESjAIHmyzTg804
+	vggM929IrP9e4S9aga/TK2Jm7ame6QA5U60PF3TjdiXbDcTVeGr9ZxmmE4BZQF4MaYsO1sYf+3J
+	oBBULpmQCmKXE3Ys4BIW30Rgd4Cw=
+X-Google-Smtp-Source: AGHT+IH1XjxoGzsvqQtx3bEx7chObybM4zt/f7CX8mNjAGCQHR4R08+7Ry9J3HF1+jeyaNqa+ZQZALpDbfudkTJVwz8=
+X-Received: by 2002:a05:6820:4187:b0:5ac:6fc1:c2cb with SMTP id
+ fk7-20020a056820418700b005ac6fc1c2cbmr15325939oob.0.1713342221549; Wed, 17
+ Apr 2024 01:23:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416211941.9369-1-tony.luck@intel.com> <20240416212250.9969-1-tony.luck@intel.com>
-In-Reply-To: <20240416212250.9969-1-tony.luck@intel.com>
+References: <20240416211941.9369-1-tony.luck@intel.com> <20240416212253.9989-1-tony.luck@intel.com>
+In-Reply-To: <20240416212253.9989-1-tony.luck@intel.com>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 17 Apr 2024 10:23:06 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hJbpCzGeshmP4NT0P6We=GTTgxVi0OTUoRF8DYpvKGCQ@mail.gmail.com>
-Message-ID: <CAJZ5v0hJbpCzGeshmP4NT0P6We=GTTgxVi0OTUoRF8DYpvKGCQ@mail.gmail.com>
-Subject: Re: [PATCH v3 69/74] x86/cpu/vfm: Update intel_soc_dts_thermal.c
+Date: Wed, 17 Apr 2024 10:23:28 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0jmrWw-imb1Vr18LqmkdPVxquJPn0dH3N486-mUikPagg@mail.gmail.com>
+Message-ID: <CAJZ5v0jmrWw-imb1Vr18LqmkdPVxquJPn0dH3N486-mUikPagg@mail.gmail.com>
+Subject: Re: [PATCH v3 70/74] x86/cpu/vfm: Update drivers/thermal/intel/intel_tcc_cooling.c
 To: Tony Luck <tony.luck@intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org, 
-	patches@lists.linux.dev
+Cc: linux-kernel@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
+	Lukasz Luba <lukasz.luba@arm.com>, Hans de Goede <hdegoede@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, linux-pm@vger.kernel.org, patches@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -83,58 +81,52 @@ ote:
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
 > ---
->  include/linux/platform_data/x86/soc.h         | 12 ++++++------
->  drivers/thermal/intel/intel_soc_dts_thermal.c |  2 +-
->  2 files changed, 7 insertions(+), 7 deletions(-)
+>  drivers/thermal/intel/intel_tcc_cooling.c | 30 +++++++++++------------
+>  1 file changed, 15 insertions(+), 15 deletions(-)
 >
-> diff --git a/include/linux/platform_data/x86/soc.h b/include/linux/platfo=
-rm_data/x86/soc.h
-> index a5705189e2ac..f981907a5cb0 100644
-> --- a/include/linux/platform_data/x86/soc.h
-> +++ b/include/linux/platform_data/x86/soc.h
-> @@ -20,7 +20,7 @@
->  static inline bool soc_intel_is_##soc(void)                    \
->  {                                                              \
->         static const struct x86_cpu_id soc##_cpu_ids[] =3D {      \
-> -               X86_MATCH_INTEL_FAM6_MODEL(type, NULL),         \
-> +               X86_MATCH_VFM(type, NULL),                      \
->                 {}                                              \
->         };                                                      \
->         const struct x86_cpu_id *id;                            \
-> @@ -31,11 +31,11 @@ static inline bool soc_intel_is_##soc(void)          =
-       \
->         return false;                                           \
->  }
+> diff --git a/drivers/thermal/intel/intel_tcc_cooling.c b/drivers/thermal/=
+intel/intel_tcc_cooling.c
+> index 6c392147e6d1..63696e7d7b3c 100644
+> --- a/drivers/thermal/intel/intel_tcc_cooling.c
+> +++ b/drivers/thermal/intel/intel_tcc_cooling.c
+> @@ -49,21 +49,21 @@ static const struct thermal_cooling_device_ops tcc_co=
+oling_ops =3D {
+>  };
 >
-> -SOC_INTEL_IS_CPU(byt, ATOM_SILVERMONT);
-> -SOC_INTEL_IS_CPU(cht, ATOM_AIRMONT);
-> -SOC_INTEL_IS_CPU(apl, ATOM_GOLDMONT);
-> -SOC_INTEL_IS_CPU(glk, ATOM_GOLDMONT_PLUS);
-> -SOC_INTEL_IS_CPU(cml, KABYLAKE_L);
-> +SOC_INTEL_IS_CPU(byt, INTEL_ATOM_SILVERMONT);
-> +SOC_INTEL_IS_CPU(cht, INTEL_ATOM_AIRMONT);
-> +SOC_INTEL_IS_CPU(apl, INTEL_ATOM_GOLDMONT);
-> +SOC_INTEL_IS_CPU(glk, INTEL_ATOM_GOLDMONT_PLUS);
-> +SOC_INTEL_IS_CPU(cml, INTEL_KABYLAKE_L);
->
->  #undef SOC_INTEL_IS_CPU
->
-> diff --git a/drivers/thermal/intel/intel_soc_dts_thermal.c b/drivers/ther=
-mal/intel/intel_soc_dts_thermal.c
-> index 9c825c6e1f38..718c6326eaf4 100644
-> --- a/drivers/thermal/intel/intel_soc_dts_thermal.c
-> +++ b/drivers/thermal/intel/intel_soc_dts_thermal.c
-> @@ -36,7 +36,7 @@ static irqreturn_t soc_irq_thread_fn(int irq, void *dev=
-_data)
->  }
->
->  static const struct x86_cpu_id soc_thermal_ids[] =3D {
-> -       X86_MATCH_INTEL_FAM6_MODEL(ATOM_SILVERMONT, BYT_SOC_DTS_APIC_IRQ)=
-,
-> +       X86_MATCH_VFM(INTEL_ATOM_SILVERMONT, BYT_SOC_DTS_APIC_IRQ),
+>  static const struct x86_cpu_id tcc_ids[] __initconst =3D {
+> -       X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE, NULL),
+> -       X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_L, NULL),
+> -       X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE, NULL),
+> -       X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE_L, NULL),
+> -       X86_MATCH_INTEL_FAM6_MODEL(ICELAKE, NULL),
+> -       X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L, NULL),
+> -       X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE, NULL),
+> -       X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE_L, NULL),
+> -       X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE, NULL),
+> -       X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE, NULL),
+> -       X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L, NULL),
+> -       X86_MATCH_INTEL_FAM6_MODEL(ATOM_GRACEMONT, NULL),
+> -       X86_MATCH_INTEL_FAM6_MODEL(RAPTORLAKE, NULL),
+> -       X86_MATCH_INTEL_FAM6_MODEL(RAPTORLAKE_P, NULL),
+> -       X86_MATCH_INTEL_FAM6_MODEL(RAPTORLAKE_S, NULL),
+> +       X86_MATCH_VFM(INTEL_SKYLAKE, NULL),
+> +       X86_MATCH_VFM(INTEL_SKYLAKE_L, NULL),
+> +       X86_MATCH_VFM(INTEL_KABYLAKE, NULL),
+> +       X86_MATCH_VFM(INTEL_KABYLAKE_L, NULL),
+> +       X86_MATCH_VFM(INTEL_ICELAKE, NULL),
+> +       X86_MATCH_VFM(INTEL_ICELAKE_L, NULL),
+> +       X86_MATCH_VFM(INTEL_TIGERLAKE, NULL),
+> +       X86_MATCH_VFM(INTEL_TIGERLAKE_L, NULL),
+> +       X86_MATCH_VFM(INTEL_COMETLAKE, NULL),
+> +       X86_MATCH_VFM(INTEL_ALDERLAKE, NULL),
+> +       X86_MATCH_VFM(INTEL_ALDERLAKE_L, NULL),
+> +       X86_MATCH_VFM(INTEL_ATOM_GRACEMONT, NULL),
+> +       X86_MATCH_VFM(INTEL_RAPTORLAKE, NULL),
+> +       X86_MATCH_VFM(INTEL_RAPTORLAKE_P, NULL),
+> +       X86_MATCH_VFM(INTEL_RAPTORLAKE_S, NULL),
 >         {}
 >  };
->  MODULE_DEVICE_TABLE(x86cpu, soc_thermal_ids);
+>
 > --
 > 2.44.0
 >
