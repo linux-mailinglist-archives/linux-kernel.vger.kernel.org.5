@@ -1,275 +1,316 @@
-Return-Path: <linux-kernel+bounces-148936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87EF88A8960
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:53:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46FBF8A8961
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:53:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3AC01F245C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:53:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2793284B79
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08963171652;
-	Wed, 17 Apr 2024 16:52:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DFC6148847;
+	Wed, 17 Apr 2024 16:53:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="BhOEfckM"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y0M+6ya8"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91E2916FF41
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 16:52:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E83F16FF38
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 16:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713372775; cv=none; b=ex6M0EMOD//5nGtpF3gJ8NR0rKrUGNTS8j8WdLsVI5vpeZfn6AjY3egSJedQgM22j2dRUsT+EX/tn8k0Yt1Rb7dK5rkN0hECLrv0/FOYGOIMdYEATasvE9nPWrLrzJY4P25MtvVM6ekK+Qx9OGEzOtmc6Zlmlj4Ab7KzMdPJyqE=
+	t=1713372825; cv=none; b=CycOUSm2T95l6oFqEYKw8F6qZuCj3M0QvE99ZzH/vzmXGXHEIB1N0jtVcH6x18wqyeUeYwaMrot7T4Lr5t1474LERC3+pgizOx/F5mPyM3fdKfZ68GqsjFKbWBCcXApkJmZe2pp4cUpIQ6hIlPDWkMgOhlluXvsNml/OcV5Mk4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713372775; c=relaxed/simple;
-	bh=y5o2cUar+FbUvYxkGf2oG1OnSfHjjTiTQgi47IGHLM8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rJqLvijS8k7DBB+APQCNMfWcZfwoq2ATzXwDEyRtpnohURDn2Am0kQNGQZOAEewE03J+mZ5lzKZI1ZKUlHDL2ooXSz8ABkp2ZvamcIYYruy17Q8iOkROtl8Y06quvYYQvUXtfchUV+7TsPDufAK34gulMpgFdicud+ibA94BCVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=BhOEfckM; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6ed0e9ccca1so6540b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:52:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1713372774; x=1713977574; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JIKGQuMnRZv6xWX6j7nxdipChZ13KbC2J9mi8B7cOU8=;
-        b=BhOEfckM321hHaUBFiXHWHk75DYqHZwdlt1ZOBs7LTSSNHYN0QVAFE7AWSrzKjl4uS
-         KPW0BV0BFgBdmPDtYLEXTD0VRrK1ZoF48uDaFRO/9eO7KMkKt6jnB5SP0Ebqi3mILQoq
-         QYIxryS/Sk/Sow0xHXk1DOIh6uZmwHOp5R5tE=
+	s=arc-20240116; t=1713372825; c=relaxed/simple;
+	bh=bQG1MaJUaFy8g/RwWGQeRbVd3yteYykZFW4in/5zhSQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bw22jPNTsRQvCt/UXZXRVgaxTn9ocmGWKfJd5+e02yFRDmf+24IfsvAO9sa9K3C52Ru30QovR5q7ELAK/WFI7LUw/BPjfk1cYO6rqEKECRylk6Mm8+HR79WdzQuTbdLP/EXeRD2ipzFvl9Ezvvz3sm6y+Ub1UaRiR7qc+AGZPy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y0M+6ya8; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713372822;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H02MyDugUniOD5Yjk6O9xR+QftxPqn6fGk14KKlCFGA=;
+	b=Y0M+6ya8NsNwWJQXVIoYD5Wh5KGuEo08/2zrIBIbjyImFhlyMFqOfWO0ZrKha7qc/mLdZn
+	tQlyyCG8WbfOqmJ3KTfp2ZQ5YpSbqFN2nSd+ZClZReWtikET2PxzWuoBg5pHP+oEpyDVo5
+	3DYha/Hy3OfepRymawrRF1cs5O9xbVs=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-672-HkWj8JGSNXCkzTLwy-wtBg-1; Wed, 17 Apr 2024 12:53:39 -0400
+X-MC-Unique: HkWj8JGSNXCkzTLwy-wtBg-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-69b27e4ed7aso7606d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:53:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713372774; x=1713977574;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JIKGQuMnRZv6xWX6j7nxdipChZ13KbC2J9mi8B7cOU8=;
-        b=SUNWkoVvBQIJV/p8UnT32CFJaTNq9JUkaz7Vdh+jtYCQ6Jdk6Szsdd9SwyOOLcW5cy
-         3wgUXMS6DtP0gIMe7R26jsLsU1mFtTunKVu5t8GPkewsvgnm20iJeMZ4c9BIT78jFsKx
-         lLHZP/H4ZT8YOKEcu1Mvzbnf8yChfosr6ZtZcC217xj7zHVnLIfiLbSFXuqoVPNudIze
-         fGbXui3QBpRptdzVJdTpHENt3JSvhtIUj5Cta52IGGnu49JKzmtRMwfdCUbcb1bAOeHu
-         lpO4wMJkYS/ZvsCTEmAksnIF8sIhWQfYdiiIsRhf/Dl4ZavjyOu5gchyc2rzTH9VE5Tx
-         LsSg==
-X-Forwarded-Encrypted: i=1; AJvYcCUch5MYSYNXtxBHzM/B28OoIb0th5jCu4iXNnNPKzw7z5fZ/4w/TC9AF2fAJIycClxik1dr8P/t6bFN7V9RSz6dlJjQRuxiplvPe5ua
-X-Gm-Message-State: AOJu0YyZh+7yCCqT+zuOXIQNC28IeqVzalge5fiQrVeupabDp1H5T2jr
-	spyxgrtbJ22cJurISPfXdmmwYCI2NB+/B8fG1IOXet12rEvm9fTQw+3PaTidWA==
-X-Google-Smtp-Source: AGHT+IGQnqhDXTt3HFR1MjWIBL2VewkUfvA/6cRc16NoQlmGA8uSrtayaCX+ZxVMZeq6Cw/NBlRtcw==
-X-Received: by 2002:a05:6a20:2449:b0:1aa:4d10:db46 with SMTP id t9-20020a056a20244900b001aa4d10db46mr268538pzc.36.1713372773787;
-        Wed, 17 Apr 2024 09:52:53 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id g3-20020a170902868300b001e2c1e56f3bsm11766333plo.104.2024.04.17.09.52.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Apr 2024 09:52:52 -0700 (PDT)
-Message-ID: <3a5cb80e-7169-4e82-b10c-843ff1eb0fd3@broadcom.com>
-Date: Wed, 17 Apr 2024 09:52:47 -0700
+        d=1e100.net; s=20230601; t=1713372819; x=1713977619;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=H02MyDugUniOD5Yjk6O9xR+QftxPqn6fGk14KKlCFGA=;
+        b=DbT+SeEfkBgdKPLFLT3zHweKtZVExxt+9TB+IJawqndSQxG1nsYuXluV1DafPfXv8K
+         WxpE33wYy4IzianNPB5NFoXvHtmM1TckH+fFyN2HEPCjLtwMwNHu/38L1gowVhHdFeXL
+         WBinUyMV+zpm3aFCoEwcs4lfVR9Z7KoF5EYjFvsZCJMgdy9w1dwtV9VRLbEw9CYfVJfu
+         c5wmVepfA9xKqMiDZ+MmzR34EkEqPXhCVIHwPiuca6Iaiug6kJrrxvwMem12wpDfxMjP
+         +/OMjh73lsz2qkrH4GdKekK+sdnpr6FkKDIjvPEz2X3wsS5eEvV7Z3ZFLMfV0cK/WPc/
+         adfA==
+X-Gm-Message-State: AOJu0Yy72OGKSDGB4KFJGrjx3JszUhShvoXEBz0VEdls4LumQPAVwT9E
+	YOFis/fQwzr2mm7lz87ECK+vSjYC6dc+Xmwb1VPUBEl0rGg3Ky9dHfvwUAbWsMcqOUZfyAlunsM
+	IhbwxW2/5dw91Zl0ZqIYsoiDRSW/yRq1l09mBNaxMwaKTl9avSjPQDKhvWAsAnw==
+X-Received: by 2002:a05:620a:2443:b0:78e:c793:14b2 with SMTP id h3-20020a05620a244300b0078ec79314b2mr19654580qkn.3.1713372818474;
+        Wed, 17 Apr 2024 09:53:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG0ciY3X1h8yZAfYCjUW47evOs8smKQz9wB6AiReJa8oNK5KXTgyDXgta4lHqk6A8oTjCxxRw==
+X-Received: by 2002:a05:620a:2443:b0:78e:c793:14b2 with SMTP id h3-20020a05620a244300b0078ec79314b2mr19654539qkn.3.1713372817539;
+        Wed, 17 Apr 2024 09:53:37 -0700 (PDT)
+Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id bl36-20020a05620a1aa400b0078efd872d3csm886416qkb.14.2024.04.17.09.53.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 09:53:37 -0700 (PDT)
+Date: Wed, 17 Apr 2024 12:53:35 -0400
+From: Peter Xu <peterx@redhat.com>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	David Hildenbrand <david@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Axel Rasmussen <axelrasmussen@google.com>
+Subject: Re: [PATCH] mm/page_table_check: Support userfault wr-protect entries
+Message-ID: <Zh_-j56_0RWxd33E@x1n>
+References: <20240415205259.2535077-1-peterx@redhat.com>
+ <CA+CK2bCSs8om+7tO_Sq2fAUD+gzD_4unUXMtO9oRUB+=4biv-Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net: bcmasp: fix memory leak when bringing down if
-To: Simon Horman <horms@kernel.org>, Markus Elfring <Markus.Elfring@web.de>
-Cc: Justin Chen <justin.chen@broadcom.com>,
- bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
- kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-References: <20240412181631.3488324-1-justin.chen@broadcom.com>
- <6881c322-8fbb-422f-bdbb-392a83d0b326@web.de>
- <9afad2b3-38a5-470d-a66f-10aa2cba3bab@broadcom.com>
- <8ae97386-876f-45cf-9e82-af082d8ea338@web.de>
- <20240417161933.GA2320920@kernel.org>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
- M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
- JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
- PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
- KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
- AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
- IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
- ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
- bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
- Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
- tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
- TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
- zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
- WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
- IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
- U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
- 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
- pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
- MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
- IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
- gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
- obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
- N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
- CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
- C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
- wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
- EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
- fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
- MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
- 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
- 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20240417161933.GA2320920@kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000093fba406164dafcb"
-
---00000000000093fba406164dafcb
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+CK2bCSs8om+7tO_Sq2fAUD+gzD_4unUXMtO9oRUB+=4biv-Q@mail.gmail.com>
 
-On 4/17/24 09:19, Simon Horman wrote:
-> On Mon, Apr 15, 2024 at 09:46:44PM +0200, Markus Elfring wrote:
->>>>> When bringing down the TX rings we flush the rings but forget to
->>>>> reclaimed the flushed packets. This lead to a memory leak since we
->>>>> do not free the dma mapped buffers. …
->>>>
->>>> I find this change description improvable.
->>>>
->>>> * How do you think about to avoid typos?
->>>>
->>>> * Would another imperative wording be more desirable?
->>>
->>> The change description makes sense to me. Can you be a bit more specific as to what isn't clear here?
->>
->> Spelling suggestions:
->> + … forget to reclaim …
->> + … This leads to …
+On Tue, Apr 16, 2024 at 05:34:50PM -0400, Pasha Tatashin wrote:
+> Hi Peter,
+
+Pasha,
+
 > 
-> Markus, let's cut to the chase.
+> Thanks for this patch, I like this extra checking logic, my comments below:
+
+Thanks for taking a look.
+
 > 
-> What portion of your responses of this thread were produced
-> by an LLM or similar technology?
+> On Mon, Apr 15, 2024 at 4:53 PM Peter Xu <peterx@redhat.com> wrote:
+> >
+> > Allow page_table_check hooks to check over userfaultfd wr-protect criteria
+> > upon pgtable updates.  The rule is no co-existance allowed for any writable
+> > flag against userfault wr-protect flag.
+> >
+> > This should be better than c2da319c2e, where we used to only sanitize such
+> > issues during a pgtable walk, but when hitting such issue we don't have a
+> > good chance to know where does that writable bit came from [1], so that
+> > even the pgtable walk exposes a kernel bug (which is still helpful on
+> > triaging) but not easy to track and debug.
+> >
+> > Now we switch to track the source.  It's much easier too with the recent
+> > introduction of page table check.
+> >
+> > There are some limitations with using the page table check here for
+> > userfaultfd wr-protect purpose:
+> >
+> >   - It is only enabled with explicit enablement of page table check configs
+> >   and/or boot parameters, but should be good enough to track at least
+> >   syzbot issues, as syzbot should enable PAGE_TABLE_CHECK[_ENFORCED] for
+> >   x86 [1].  We used to have DEBUG_VM but it's now off for most distros,
+> >   while distros also normally not enable PAGE_TABLE_CHECK[_ENFORCED], which
+> >   is similar.
+> >
+> >   - It conditionally works with the ptep_modify_prot API.  It will be
+> >   bypassed when e.g. XEN PV is enabled, however still work for most of the
+> >   rest scenarios, which should be the common cases so should be good
+> >   enough.
+> >
+> >   - Hugetlb check is a bit hairy, as the page table check cannot identify
+> >   hugetlb pte or normal pte via trapping at set_pte_at(), because of the
+> >   current design where hugetlb maps every layers to pte_t... For example,
+> >   the default set_huge_pte_at() can invoke set_pte_at() directly and lose
+> >   the hugetlb context, treating it the same as a normal pte_t. So far it's
+> >   fine because we have huge_pte_uffd_wp() always equals to pte_uffd_wp() as
+> >   long as supported (x86 only).  It'll be a bigger problem when we'll
+> >   define _PAGE_UFFD_WP differently at various pgtable levels, because then
+> >   one huge_pte_uffd_wp() per-arch will stop making sense first.. as of now
+> >   we can leave this for later too.
+> >
+> > This patch also removes commit c2da319c2e altogether, as we have something
+> > better now.
+> >
+> > [1] https://lore.kernel.org/all/000000000000dce0530615c89210@google.com/
+> >
+> > Cc: Pasha Tatashin <pasha.tatashin@soleen.com>
+> > Signed-off-by: Peter Xu <peterx@redhat.com>
+> > ---
+> >  arch/x86/include/asm/pgtable.h | 18 +-----------------
+> >  mm/page_table_check.c          | 32 +++++++++++++++++++++++++++++++-
 > 
-> The suggestions in your second email are correct.
-> But, ironically, your first response appears to be grammatically incorrect.
+> Please add the new logic to: Documentation/mm/page_table_check.rst
+
+Will do.
+
 > 
-> Specifically:
+> >  2 files changed, 32 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+> > index 273f7557218c..65b8e5bb902c 100644
+> > --- a/arch/x86/include/asm/pgtable.h
+> > +++ b/arch/x86/include/asm/pgtable.h
+> > @@ -388,23 +388,7 @@ static inline pte_t pte_wrprotect(pte_t pte)
+> >  #ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
+> >  static inline int pte_uffd_wp(pte_t pte)
+> >  {
+> > -       bool wp = pte_flags(pte) & _PAGE_UFFD_WP;
+> > -
+> > -#ifdef CONFIG_DEBUG_VM
+> > -       /*
+> > -        * Having write bit for wr-protect-marked present ptes is fatal,
+> > -        * because it means the uffd-wp bit will be ignored and write will
+> > -        * just go through.
+> > -        *
+> > -        * Use any chance of pgtable walking to verify this (e.g., when
+> > -        * page swapped out or being migrated for all purposes). It means
+> > -        * something is already wrong.  Tell the admin even before the
+> > -        * process crashes. We also nail it with wrong pgtable setup.
+> > -        */
+> > -       WARN_ON_ONCE(wp && pte_write(pte));
+> > -#endif
+> > -
+> > -       return wp;
+> > +       return pte_flags(pte) & _PAGE_UFFD_WP;
+> >  }
+> >
+> >  static inline pte_t pte_mkuffd_wp(pte_t pte)
+> > diff --git a/mm/page_table_check.c b/mm/page_table_check.c
+> > index af69c3c8f7c2..d4eb1212f0f5 100644
+> > --- a/mm/page_table_check.c
+> > +++ b/mm/page_table_check.c
+> > @@ -7,6 +7,8 @@
+> >  #include <linux/kstrtox.h>
+> >  #include <linux/mm.h>
+> >  #include <linux/page_table_check.h>
+> > +#include <linux/swap.h>
+> > +#include <linux/swapops.h>
+> >
+> >  #undef pr_fmt
+> >  #define pr_fmt(fmt)    "page_table_check: " fmt
+> > @@ -182,6 +184,23 @@ void __page_table_check_pud_clear(struct mm_struct *mm, pud_t pud)
+> >  }
+> >  EXPORT_SYMBOL(__page_table_check_pud_clear);
+> >
+> > +/* Whether the swap entry cached writable information */
+> > +static inline bool swap_cached_writable(swp_entry_t entry)
+> > +{
+> > +       unsigned type = swp_type(entry);
+> > +
+> > +       return type == SWP_DEVICE_EXCLUSIVE_WRITE ||
+> > +           type == SWP_MIGRATION_WRITE;
+> > +}
+> > +
+> > +static inline void __page_table_check_pte(pte_t pte)
 > 
-> * What does "improvable" mean in this context?
+> may be something like:
+> page_table_check_new_pte() ? Naming is starting to get confusing. The
+> idea for this function is to check the pte that is about to be set
+> into the page table.
 
-I read it as "improbable", but this patch came out of an actual bug 
-report we had internally and code inspection revealed the leaks being 
-plugged by this patch.
+But then we keep __page_table_check_ptes_set() as is?
 
-> * "How do you think about to avoid typos?"
->    is, in my opinion, grammatically incorrect.
->    And, FWIW, I see no typos.
+It feels more natural if we keep using those underscores if all the rest
+does so.  The "_new" is also not matching with what you used to have as
+"_set".  If you see that's how I carefully chose the current name, with the
+hope to match everything..
 
-There was one, "This lead to a memory leak" -> "This leads to a memory leak"
+No strong opinions on these, but let me know your final choice of such
+name.  I'm happy to align that to your preference.
 
-> * "Would another imperative wording be more desirable?"
->    is, in my opinion, also grammatically incorrect.
 > 
-> And yet your comment is ostensibly about grammar.
-> I'm sorry, but this strikes me as absurd.
+> > +{
+> > +       if (pte_present(pte) && pte_uffd_wp(pte))
+> > +               WARN_ON_ONCE(pte_write(pte));
+> > +       else if (is_swap_pte(pte) && pte_swp_uffd_wp(pte))
+> > +               WARN_ON_ONCE(swap_cached_writable(pte_to_swp_entry(pte)));
+> > +}
+> > +
+> >  void __page_table_check_ptes_set(struct mm_struct *mm, pte_t *ptep, pte_t pte,
+> >                 unsigned int nr)
+> >  {
+> > @@ -190,18 +209,29 @@ void __page_table_check_ptes_set(struct mm_struct *mm, pte_t *ptep, pte_t pte,
+> >         if (&init_mm == mm)
+> >                 return;
+> >
+> > -       for (i = 0; i < nr; i++)
+> > +       for (i = 0; i < nr; i++) {
+> > +               __page_table_check_pte(pte);
+> 
+> This should really be called only once after this loop.
 
-Yeah, I share that too, if you are to nitpick on every single word 
-someone wrote in a commit message, your responses better be squeaky 
-clean such that Shakespeare himself would be proud of you.
+This is also my intention to keep it in the loop just to make it as generic
+e.g. to have no assumption of "ignoring PFNs", and I didn't worry on perf
+much as we'll read/write these ptes anyway, also because it's only enabled
+for debugging kernels.
 
-There is a track record of what people might consider bike shedding, 
-others might consider useless, and others might find uber pedantic 
-comments from Markus done under his other email address: 
-elfring@users.sourceforge.net.
+But I made it at least inaccurate by checking pte not *ptep..
 
-Me personally, I read his comments and apply my own judgement as to 
-whether they justify spinning a new patch just to address the feedback 
-given. He has not landed on my ignore filter, but of course that can 
-change at a moments notice.
+How about I move it out, rename it to __page_table_check_pte_flags(pte)?
+
+> 
+> >                 __page_table_check_pte_clear(mm, ptep_get(ptep + i));
+> > +       }
+> >         if (pte_user_accessible_page(pte))
+> >                 page_table_check_set(pte_pfn(pte), nr, pte_write(pte));
+> >  }
+> >  EXPORT_SYMBOL(__page_table_check_ptes_set);
+> >
+> > +static inline void __page_table_check_pmd(pmd_t pmd)
+> 
+> page_table_check_new_pmd() ?
+
+This is the same "careful choice" of mine on that, same reasoning as
+above on the pte helpers. :)
+
+But again, let me know your final decision on the namings of both.
+
+Thanks,
+
+> 
+> > +{
+> > +       if (pmd_present(pmd) && pmd_uffd_wp(pmd))
+> > +               WARN_ON_ONCE(pmd_write(pmd));
+> > +       else if (is_swap_pmd(pmd) && pmd_swp_uffd_wp(pmd))
+> > +               WARN_ON_ONCE(swap_cached_writable(pmd_to_swp_entry(pmd)));
+> > +}
+> > +
+> >  void __page_table_check_pmd_set(struct mm_struct *mm, pmd_t *pmdp, pmd_t pmd)
+> >  {
+> >         if (&init_mm == mm)
+> >                 return;
+> >
+> > +       __page_table_check_pmd(pmd);
+> >         __page_table_check_pmd_clear(mm, *pmdp);
+> >         if (pmd_user_accessible_page(pmd)) {
+> >                 page_table_check_set(pmd_pfn(pmd), PMD_SIZE >> PAGE_SHIFT,
+> > --
+> > 2.44.0
+> >
+> 
+> Thanks,
+> Pasha
+> 
+
 -- 
-Florian
+Peter Xu
 
-
---00000000000093fba406164dafcb
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIQeQYJKoZIhvcNAQcCoIIQajCCEGYCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg3QMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
-MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
-vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
-rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
-aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
-e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
-cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
-MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
-KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
-/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
-TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
-YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
-b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
-c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
-CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
-BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
-jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
-9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
-/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
-jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
-AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
-dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
-MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
-IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
-SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
-XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
-J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
-nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBp6lyNJHeWP7N/O
-943bKZVCPZFu2c5pvbfAdjbztJgJMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDQxNzE2NTI1NFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAObr0EOOI/QTb1SnMDR1MdlKZNztE6uVlD
-hv8tZfAgV/fAuVML9ldpIhgWcF3MyZk01Rv96Kim093q1oS9yRDLKHwWvNbR9q7uwXPbbcLucpWu
-nQInbc+KzppZDZxfESpcTxslFW5T0DkrgX4ARPUh40JmsfnUDTZNM08ErbQ2yclNj7g8cW4IvZd5
-fi0g2kpsZp71xbh54y0SdtugbWknTTFU19zESgpa6mqQVZ/ERNguGWKGqRd6xqvH2GOGldXvYUTK
-IBTvLF/7YPdibJwxOr8iYwzTWOMSh9WoK5uwLiBbsbdhyF7YQ0trC7B+NGTMazBG7odjTf83hYsv
-A31g
---00000000000093fba406164dafcb--
 
