@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-148371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C1388A819D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:05:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EEBD8A8196
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:04:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D4961C22A69
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:05:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 305B41F235F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:04:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1455213E3F4;
-	Wed, 17 Apr 2024 11:03:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8599113D525;
+	Wed, 17 Apr 2024 11:03:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OOh3VPBG"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gvw/aL19"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F065313CFB1;
-	Wed, 17 Apr 2024 11:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB8FC13C9A7;
+	Wed, 17 Apr 2024 11:03:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713351832; cv=none; b=opAx4rHjd1Xu4uc4baIfG20bLFXvBpSp6TFaPrFRUu2s/3k7FIyDw1gh0Cn0cLzG5WsTpbaNxtzi2n4PkOMJRHRBQ47kGwfyhhNg6gjB4a/kDdYkTfANMcggALCy8278lors2flxBrRoINAqgxusSPQ0JzrPSUu7IVQF+rUOO0U=
+	t=1713351830; cv=none; b=aNb75KDib6yqTPlg5rrqRz0do2oDt5HyJvVbc6uJCRT+1mp2AwoDhqvSjbDMYXDVgZnMyzOXFRSIVMBvUUWT/hvozT7z3SjfkEct1bac/Bz68ntFAgf80JA3yKRe6NVDJbkbuCAtQplMjFSnu/mAnCI3u8Aq7LwvTEKnvbOwdGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713351832; c=relaxed/simple;
-	bh=fTowosBJawg2jktG1ze451cVnqPzvsaV6zeLVnumwuA=;
+	s=arc-20240116; t=1713351830; c=relaxed/simple;
+	bh=fcw6oS8bqcoF1z0F8TEGeK5SgUH/8wJTF4cXw541tEA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fHCvJeH4uqM1RDsxao8/25EcbAsndmyJrgthKzF5Hs/Jxh0Rzi72DzikT7T/DwYDmkwIkutnzbrvsUU/LNTKxl9Wbd2QaMvactGZPqRlYaB9GKLk8fmiuUnrHFCIWYzOKXIoQVo8VcorJ8gWkJ7DYnOpjIaPNOvsjYekMbjChw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OOh3VPBG; arc=none smtp.client-ip=192.198.163.19
+	 MIME-Version; b=VY0n6hXOUfszI1DljZ2zIJz7qY/uYmhcZd4gv0M1kyLQyQmw3NMvoLZ21nH33yfAmNfd0DsNq2fE0Xu+uHj/rcz28dkGtZ/b6RM+3D80BDQ+nq0p/KPSVXHm6nxG4I+eR729nBHbPIGW1jzWW+mhdrOr2pL2XONmD0kS2fxfcsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Gvw/aL19; arc=none smtp.client-ip=192.198.163.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713351829; x=1744887829;
+  t=1713351828; x=1744887828;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=fTowosBJawg2jktG1ze451cVnqPzvsaV6zeLVnumwuA=;
-  b=OOh3VPBGlDCbF2REGLlSMNjLPdtmALVUnByowv5WNbKfjI11z1tbgcfR
-   Jjk6+iJgU3Qyn4cNhF0PuN+umt++jgoVhwqj6Xmna70sSZoYhiZLRzrtn
-   EOue2MD+CgLWM+wphGFCWWSaxFus75lvebzcetylpsVtsZrphwkxh7TF3
-   z1OMsbiICqVwqpexb2/PdXp9hdW1Wf595PGGSo9Q06TGeS9BF2ByNylsm
-   KTtU/Exg0PmHCxeot+i5P5AH+u7I41X4bnrDDpFHeKGTaXY7QZU70zdMj
-   w9OPyck67wif5TL8UVRsw+4TaA1VNa3RSQIanM5igfTsbs/L0Bwq56S/5
-   g==;
-X-CSE-ConnectionGUID: Y72OuRhxQ3WPgMwVbpRhhA==
-X-CSE-MsgGUID: mL5UuXUKShmo6Nj0jUyrWw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8698171"
+  bh=fcw6oS8bqcoF1z0F8TEGeK5SgUH/8wJTF4cXw541tEA=;
+  b=Gvw/aL19O5d0SiAL8DNuKPtVOpXmYCCsTjRGLfe9m4Fy80OLuFqHlb6d
+   l4eewbrCX6JwK9kr73CapFozocFexZJhRp4O4salCzTCYhNupYptO5GkU
+   Cwdyw2Wz6CgG9AkEzdZHIGtOlovnmvJVD6UVJW63ae9RYTBqwtnTLSzGE
+   6sR/kgqmNo9obeKtVN5noIpgGjA2dStXe+udiNeYJUbW11t9hEaqpfT9t
+   DWbGEff35Ob2r55i3b6ZGKa/Iuo9OWl+O5PQ+hsWWFkh9BWSS2uSnj8E5
+   F+m7GtLthMOCRl4xpfR6gj/nFwoEfZ8i+KGXgpK974X0vP9jKl/VSdHH4
+   w==;
+X-CSE-ConnectionGUID: syA/YU2ZQWaHSrscTyPOMQ==
+X-CSE-MsgGUID: Irn530xkSd6KKT5U6EWQqg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8698158"
 X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="8698171"
+   d="scan'208";a="8698158"
 Received: from fmviesa006.fm.intel.com ([10.60.135.146])
   by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 04:03:43 -0700
-X-CSE-ConnectionGUID: WpLsJvJ1SNiayBxDZVMrRw==
-X-CSE-MsgGUID: n7HqInwdROGiMLC6JgpESw==
+X-CSE-ConnectionGUID: NiOePWkJTmar9IgsX+1sIA==
+X-CSE-MsgGUID: mrw5q278QeaT6K1T2BscNA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="22653280"
+   d="scan'208";a="22653279"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmviesa006.fm.intel.com with ESMTP; 17 Apr 2024 04:03:40 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 9232D134D; Wed, 17 Apr 2024 14:03:36 +0300 (EEST)
+	id 9C647F69; Wed, 17 Apr 2024 14:03:36 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -69,9 +69,9 @@ Cc: Daniel Mack <daniel@zonque.org>,
 	Haojian Zhuang <haojian.zhuang@gmail.com>,
 	Robert Jarzmik <robert.jarzmik@free.fr>,
 	Russell King <linux@armlinux.org.uk>
-Subject: [PATCH v3 5/9] spi: pxa2xx: Don't use "proxy" headers
-Date: Wed, 17 Apr 2024 13:54:32 +0300
-Message-ID: <20240417110334.2671228-6-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 6/9] spi: pxa2xx: Drop struct pxa2xx_spi_chip
+Date: Wed, 17 Apr 2024 13:54:33 +0300
+Message-ID: <20240417110334.2671228-7-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 In-Reply-To: <20240417110334.2671228-1-andriy.shevchenko@linux.intel.com>
 References: <20240417110334.2671228-1-andriy.shevchenko@linux.intel.com>
@@ -83,116 +83,113 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Update header inclusions to follow IWYU (Include What You Use)
-principle.
+No more users.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/spi/spi-pxa2xx-dma.c | 10 ++++++++--
- drivers/spi/spi-pxa2xx-pci.c |  6 ++++++
- drivers/spi/spi-pxa2xx.c     | 10 +++++++---
- drivers/spi/spi-pxa2xx.h     |  3 +--
- 4 files changed, 22 insertions(+), 7 deletions(-)
+ drivers/spi/spi-pxa2xx-dma.c |  9 ++-------
+ drivers/spi/spi-pxa2xx.c     | 25 -------------------------
+ drivers/spi/spi-pxa2xx.h     | 14 --------------
+ 3 files changed, 2 insertions(+), 46 deletions(-)
 
 diff --git a/drivers/spi/spi-pxa2xx-dma.c b/drivers/spi/spi-pxa2xx-dma.c
-index 26416ced6505..751cb0f77b62 100644
+index 751cb0f77b62..d77279c3acd8 100644
 --- a/drivers/spi/spi-pxa2xx-dma.c
 +++ b/drivers/spi/spi-pxa2xx-dma.c
-@@ -6,16 +6,22 @@
-  * Author: Mika Westerberg <mika.westerberg@linux.intel.com>
-  */
- 
--#include <linux/device.h>
-+#include <linux/atomic.h>
-+#include <linux/dev_printk.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
-+#include <linux/errno.h>
-+#include <linux/irqreturn.h>
- #include <linux/scatterlist.h>
--#include <linux/sizes.h>
-+#include <linux/string.h>
-+#include <linux/types.h>
- 
- #include <linux/spi/spi.h>
- 
- #include "spi-pxa2xx.h"
- 
-+struct device;
-+
- static void pxa2xx_spi_dma_transfer_complete(struct driver_data *drv_data,
- 					     bool error)
+@@ -231,16 +231,11 @@ int pxa2xx_spi_set_dma_burst_and_threshold(struct chip_data *chip,
+ 					   u8 bits_per_word, u32 *burst_code,
+ 					   u32 *threshold)
  {
-diff --git a/drivers/spi/spi-pxa2xx-pci.c b/drivers/spi/spi-pxa2xx-pci.c
-index e11a613bc340..6d2efdb0e95f 100644
---- a/drivers/spi/spi-pxa2xx-pci.c
-+++ b/drivers/spi/spi-pxa2xx-pci.c
-@@ -6,9 +6,15 @@
-  * Copyright (C) 2016, 2021 Intel Corporation
-  */
- #include <linux/clk-provider.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
- #include <linux/module.h>
- #include <linux/pci.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
-+#include <linux/sprintf.h>
-+#include <linux/string.h>
-+#include <linux/types.h>
+-	struct pxa2xx_spi_chip *chip_info = spi->controller_data;
+ 	struct driver_data *drv_data = spi_controller_get_devdata(spi->controller);
+ 	u32 dma_burst_size = drv_data->controller_info->dma_burst_size;
  
- #include <linux/dmaengine.h>
- #include <linux/platform_data/dma-dw.h>
+-	/*
+-	 * If the DMA burst size is given in chip_info we use that,
+-	 * otherwise we use the default. Also we use the default FIFO
+-	 * thresholds for now.
+-	 */
+-	*burst_code = chip_info ? chip_info->dma_burst_size : dma_burst_size;
++	/* We use the default the DMA burst size and FIFO thresholds for now */
++	*burst_code = dma_burst_size;
+ 	*threshold = SSCR1_RxTresh(RX_THRESH_DFLT)
+ 		   | SSCR1_TxTresh(TX_THRESH_DFLT);
+ 
 diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
-index 82633682b581..cc0e54f8d2c3 100644
+index cc0e54f8d2c3..00aa33c937bf 100644
 --- a/drivers/spi/spi-pxa2xx.c
 +++ b/drivers/spi/spi-pxa2xx.c
-@@ -5,24 +5,28 @@
-  */
+@@ -1154,7 +1154,6 @@ static int pxa2xx_spi_unprepare_transfer(struct spi_controller *controller)
  
- #include <linux/acpi.h>
-+#include <linux/atomic.h>
- #include <linux/bitops.h>
-+#include <linux/bug.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/dmaengine.h>
- #include <linux/err.h>
--#include <linux/errno.h>
- #include <linux/gpio/consumer.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
-+#include <linux/io.h>
- #include <linux/ioport.h>
--#include <linux/kernel.h>
--#include <linux/module.h>
-+#include <linux/math64.h>
-+#include <linux/minmax.h>
- #include <linux/mod_devicetable.h>
-+#include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/property.h>
- #include <linux/slab.h>
-+#include <linux/types.h>
+ static int setup(struct spi_device *spi)
+ {
+-	struct pxa2xx_spi_chip *chip_info;
+ 	struct chip_data *chip;
+ 	const struct lpss_config *config;
+ 	struct driver_data *drv_data =
+@@ -1218,25 +1217,6 @@ static int setup(struct spi_device *spi)
+ 		chip->timeout = TIMOUT_DFLT;
+ 	}
  
- #include <linux/spi/spi.h>
+-	/*
+-	 * Protocol drivers may change the chip settings, so...
+-	 * if chip_info exists, use it.
+-	 */
+-	chip_info = spi->controller_data;
+-
+-	/* chip_info isn't always needed */
+-	if (chip_info) {
+-		if (chip_info->timeout)
+-			chip->timeout = chip_info->timeout;
+-		if (chip_info->tx_threshold)
+-			tx_thres = chip_info->tx_threshold;
+-		if (chip_info->tx_hi_threshold)
+-			tx_hi_thres = chip_info->tx_hi_threshold;
+-		if (chip_info->rx_threshold)
+-			rx_thres = chip_info->rx_threshold;
+-		chip->dma_threshold = 0;
+-	}
+-
+ 	chip->cr1 = 0;
+ 	if (spi_controller_is_target(drv_data->controller)) {
+ 		chip->cr1 |= SSCR1_SCFR;
+@@ -1256,11 +1236,6 @@ static int setup(struct spi_device *spi)
+ 		chip->lpss_tx_threshold = tx_thres;
+ 	}
  
+-	/*
+-	 * Set DMA burst and threshold outside of chip_info path so that if
+-	 * chip_info goes away after setting chip->enable_dma, the burst and
+-	 * threshold can still respond to changes in bits_per_word.
+-	 */
+ 	if (chip->enable_dma) {
+ 		/* Set up legal burst and threshold for DMA */
+ 		if (pxa2xx_spi_set_dma_burst_and_threshold(chip, spi,
 diff --git a/drivers/spi/spi-pxa2xx.h b/drivers/spi/spi-pxa2xx.h
-index 08296729ea80..f1097c96c50f 100644
+index f1097c96c50f..ae9c99bc9f6c 100644
 --- a/drivers/spi/spi-pxa2xx.h
 +++ b/drivers/spi/spi-pxa2xx.h
-@@ -8,8 +8,7 @@
- #define SPI_PXA2XX_H
+@@ -35,20 +35,6 @@ struct pxa2xx_spi_controller {
+ 	struct ssp_device ssp;
+ };
  
- #include <linux/dmaengine.h>
--#include <linux/interrupt.h>
--#include <linux/io.h>
-+#include <linux/irqreturn.h>
- #include <linux/types.h>
- #include <linux/sizes.h>
- 
+-/*
+- * The controller specific data for SPI target devices
+- * (resides in spi_board_info.controller_data),
+- * copied to spi_device.platform_data ... mostly for
+- * DMA tuning.
+- */
+-struct pxa2xx_spi_chip {
+-	u8 tx_threshold;
+-	u8 tx_hi_threshold;
+-	u8 rx_threshold;
+-	u8 dma_burst_size;
+-	u32 timeout;
+-};
+-
+ struct spi_controller;
+ struct spi_device;
+ struct spi_transfer;
 -- 
 2.43.0.rc1.1336.g36b5255a03ac
 
