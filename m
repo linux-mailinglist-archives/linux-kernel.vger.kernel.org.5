@@ -1,231 +1,160 @@
-Return-Path: <linux-kernel+bounces-148679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F5798A85FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:33:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 668558A8602
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:36:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1C3C1C215D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:33:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E27428375A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:36:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 774C0132807;
-	Wed, 17 Apr 2024 14:33:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A212338DD3;
+	Wed, 17 Apr 2024 14:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="dwoT+s1O"
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="anjArfD6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF6E53801
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:33:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93CC13A265
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:36:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713364416; cv=none; b=c7Mmnof6y7EtDFtOWy9ZuNxUnAN9qJcumMMg6JU3SD8ki937RvkNhvhWCN4cjsRy7osSe6vvjf4lz1U4zM71IrBIWHVossNhLEUrkwnhCAVv+mFWbvEb/RuKYNPvOn7gsiwMcBbE/qpNR3xkjlOOJB2hiDFbb9pNXi+gO4UBREI=
+	t=1713364569; cv=none; b=azvAtAwBdnt1T1XmyQGvYaOQ+aoGQCJUcisdoNEvkzZAUtcEzHkPhGUn18QN9ZsUXax5Y5eCpYsuZkXxwqtwf6c2rALJmBuumnzg4GDqSCbtbES+xUIERK4XaLsd6xUnVxJoPpCqCciXpquxVST3Z03HZlrcwE6YBA/ENTcP1vs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713364416; c=relaxed/simple;
-	bh=cF+RwtuyJsFL9waz9uZnB88UGKVak7U7/jR80I6v9Pw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ubV894nIoV0MctDzQ5cXJonyoN/Mygx6jAjmvVv2kfTtXOYX4IMSCgOQGbIzI59CvM+cDvO4s4Y4I2kgFF9Z4/Ql88ktKhPSNdhcWTHwdIGitAY4D3AC+rx29+idFaYCG+Ivgx1dO/jUt0r8CqFr4Keq16YMUdvD3mqJ4QubMEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=dwoT+s1O; arc=none smtp.client-ip=209.85.222.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78f02c96c52so30691085a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:33:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1713364411; x=1713969211; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fYjWrnxXzVPnBVhxJlTn/8OmhjvM1CO6cGLjT7MOA9I=;
-        b=dwoT+s1OfVGZgGvQYrhOxCZAKBQoGI0r3eUtu7UHUF08mrXRcVXrNux9CCS3IlBF+w
-         gTPAvkQCF2sU4sJTq5Bt8vnuM9ywVT6WGqRWv5cCCFiPrQWISDVTfnJj07AWxFa3Lqpr
-         ofnLC+LZxYOXm8uIMyK04vcMtmO4i0O3Z4kaIb2t/CGHkWcHj43rbzUr0MLFSD0NIBE4
-         8GVEjIVW31pQqVOSE850fDyjwnil/xsSTtxPKkVphxT5Y6C5a9EaXJQ064FmRtm51lWj
-         olfVcQ+Hf/z4VoFceIcLUvDx78MXBe6EehhY3AYkkcFhhxkpLJ5ODn3bM6JhJgkU5w1j
-         xmCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713364411; x=1713969211;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fYjWrnxXzVPnBVhxJlTn/8OmhjvM1CO6cGLjT7MOA9I=;
-        b=QRC59F/tXK+s7DJWvIQv/JtyvStJVBSNXxt4eHqlf6NJpcGpcf5i6pW5enwlL4bOXv
-         7sW391dU4dA1NMFJDXO7O0cP8tUOX9/SUCPYgpNJVl21nkoosZQ2zYyzeJUBLZfv6Q6d
-         noZruj/crK4jrSrB5L47bsXD/KE/e2GNN7cWP98BQPFmXS9XrexCWVIO//FD2RPHEnVZ
-         iw54un2rdr+/psSogelSbGnNViQZnUQaVmX2CQ3I2pFu6eMz4dvMrlTbnWNM201oL930
-         VjVsZt8qxKRPbAEulKfA+4a/IguESCT+qSBu4gxNTe5KMiIE+bEXjewTbx7PpNG4sYiN
-         t77g==
-X-Forwarded-Encrypted: i=1; AJvYcCVcSMKroAxZ4uOZg3xd7Vei7HUSxgeNVpoH/+lhjR1tkV0e0qehSNnulTraQX29zX5YajO+8gqj/fIWqfIkZMCLQ8nMelCkd11tvSJB
-X-Gm-Message-State: AOJu0YyNJmAfJSFUrVr75l2DA+z89J3AVz8uGFgWWJLxyAn26bqnCWQG
-	UbwQyg/OKgOSlEWTV6ShMPnDpQ89ZzQ/DM01BotliAVTwjHch9xtp2KdpuNuKuY=
-X-Google-Smtp-Source: AGHT+IGMO064THKZbI3D+TjKDUvnCQ9eceCJdFB3I+efweCrewGFx2TWhVjKd7pJ/Unkt/w7tOJsaw==
-X-Received: by 2002:a0c:dc8f:0:b0:69b:71f8:b3fe with SMTP id n15-20020a0cdc8f000000b0069b71f8b3femr10445124qvk.42.1713364411072;
-        Wed, 17 Apr 2024 07:33:31 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id gv5-20020a056214262500b0069b58f8c33dsm6787082qvb.45.2024.04.17.07.33.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 07:33:30 -0700 (PDT)
-Date: Wed, 17 Apr 2024 10:33:24 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Chengming Zhou <chengming.zhou@linux.dev>
-Cc: Nhat Pham <nphamcs@gmail.com>, Christian Heusel <christian@heusel.eu>,
-	Seth Jennings <sjenning@redhat.com>,
-	Dan Streetman <ddstreet@ieee.org>,
-	Vitaly Wool <vitaly.wool@konsulko.com>,
-	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, David Runge <dave@sleepmap.de>,
-	"Richard W.M. Jones" <rjones@redhat.com>,
-	Mark W <instruform@gmail.com>, regressions@lists.linux.dev,
-	Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [REGRESSION] Null pointer dereference while shrinking zswap
-Message-ID: <20240417143324.GA1055428@cmpxchg.org>
-References: <3iccc6vjl5gminut3lvpl4va2lbnsgku5ei2d7ylftoofy3n2v@gcfdvtsq6dx2>
- <CAKEwX=MZ3jTVpN4g-qrhTn2b0i0C6_M=8BtKt9KEPyFHb+4W2w@mail.gmail.com>
- <CAKEwX=NM1y-K1-Yw=CH3cM-8odER1PZBVoWo-rs7_OdjFG_puw@mail.gmail.com>
- <CAKEwX=MWPUf1NMGdn+1AkRdOUf25ifAbPyoP9zppPTx3U3Tv2Q@mail.gmail.com>
- <246c1f4d-af13-40fa-b968-fbaf36b8f91f@linux.dev>
+	s=arc-20240116; t=1713364569; c=relaxed/simple;
+	bh=+Y9JzAylpqFu2bRnmflUigQpLiwfuTJ/VegvAB2EcjM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=EXsuBnnRbitWR+/FcfG/YMvjbrni+0qZtprPxCDkebt+HnLQix79ZJViT/hiFU428XCM5e+4GiqYUHS3dDiC/k21tjBdt7CldlEGT1/x7Ph8HcBSG6aoHPDUZBO/tsiqeSEbsoMJdKKCxT60c0lR0HjM0oKn2fderTPyYKGR5rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=anjArfD6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A6F3C072AA;
+	Wed, 17 Apr 2024 14:36:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713364568;
+	bh=+Y9JzAylpqFu2bRnmflUigQpLiwfuTJ/VegvAB2EcjM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=anjArfD6oxx6cZ4qCiZG864wcbmxykfLW+BETZ+XMQD+XcgrVnvSeTdx2jB4Apr/n
+	 5ovg3ouCBrr84D1+CtJgiGng2wkoDTQkImulTZB80oJb+3jr86IPypSLiXsm2XewvE
+	 +x5bg8vdu2oFCQzyz5p6m8geYsaC7KnX7scs89gjskEKJAcHAwpjrOL5lLB3pB+U+/
+	 QY0AbML6ucdpVAtA6myQ5ciR8rJe/fliiOXbnWVVgQbw4TrpOAVuKr2l9ORtT9RZNq
+	 zLYMBC6yeu6F0CBnjwLPmyffVi1Xw07u6QYlCk1Pqbc6NrlSH68tlq0gOYCpdeQC93
+	 zNLfcSX/mubBw==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Michael Walle <mwalle@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux-kernel@vger.kernel.org,
+  linux-mtd@lists.infradead.org
+Subject: Re: [RFC PATCH v1 6/6] mtd: spi-nor: introduce support for
+ displaying deprecation message
+In-Reply-To: <20240412134405.381832-7-mwalle@kernel.org> (Michael Walle's
+	message of "Fri, 12 Apr 2024 15:44:05 +0200")
+References: <20240412134405.381832-1-mwalle@kernel.org>
+	<20240412134405.381832-7-mwalle@kernel.org>
+Date: Wed, 17 Apr 2024 16:36:06 +0200
+Message-ID: <mafs0jzkw6oq1.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <246c1f4d-af13-40fa-b968-fbaf36b8f91f@linux.dev>
+Content-Type: text/plain
 
-On Wed, Apr 17, 2024 at 11:44:45AM +0800, Chengming Zhou wrote:
-> On 2024/4/17 08:22, Nhat Pham wrote:
-> > On Tue, Apr 16, 2024 at 4:29 PM Nhat Pham <nphamcs@gmail.com> wrote:
-> >>
-> >> On Tue, Apr 16, 2024 at 3:14 PM Nhat Pham <nphamcs@gmail.com> wrote:
-> >>>
-> >>> On Tue, Apr 16, 2024 at 5:19 AM Christian Heusel <christian@heusel.eu> wrote:
-> >>>>
-> >>>> Hello everyone,
-> >>>
-> >>> Thanks for the report, Christian! Looking at it now.
-> >>>
-> >>>>
-> >>>> while rebuilding a few packages in Arch Linux we have recently come
-> >>>> across a regression in the linux kernel which was made visible by a test
-> >>>> failure in libguestfs[0], where the booted kernel showed a Call Trace
-> >>>> like the following one:
-> >>>>
-> >>>> [  218.738568] CPU: 0 PID: 167 Comm: guestfsd Not tainted 6.7.0-rc4-1-mainline-00158-gb5ba474f3f51 #1 bf39861cf50acae7a79c534e25532f28afe4e593^M
-> >>>
-> >>> Is this one of the kernel versions that was broken? That looks a bit
-> >>> odd, as zswap shrinker landed on 6.8...
-> >>
-> >> Ah ignore this - I understand the versioning now...
-> >>
-> >>>
-> >>>> [  218.739007] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS Arch Linux 1.16.3-1-1 04/01/2014^M
-> >>>> [  218.739787] RIP: 0010:memcg_page_state+0x9/0x30^M
-> >>>> [  218.740299] Code: 0d b8 ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 0f 1f 00 0f 1f 44 00 00 <48> 8b 87 00 06 00 00 48 63 f6 31 d2 48 8b 04 f0 48 85 c0 48 0f 48^M
-> >>>> [  218.740727] RSP: 0018:ffffb5fa808dfc10 EFLAGS: 00000202^M
-> >>>> [  218.740862] RAX: 0000000000000000 RBX: ffffb5fa808dfce0 RCX: 0000000000000002^M
-> >>>> [  218.741016] RDX: 0000000000000001 RSI: 0000000000000033 RDI: 0000000000000000^M
-> >>>> [  218.741168] RBP: 0000000000000000 R08: ffff976681ff8000 R09: 0000000000000000^M
-> >>>> [  218.741322] R10: 0000000000000001 R11: ffff9766833f9d00 R12: ffff9766ffffe780^M
-> >>>> [  218.742167] R13: 0000000000000000 R14: ffff976680cc1800 R15: ffff976682204d80^M
-> >>>> [  218.742376] FS:  00007f1479d9f540(0000) GS:ffff9766fbc00000(0000) knlGS:0000000000000000^M
-> >>>> [  218.742569] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
-> >>>> [  218.743256] CR2: 0000000000000600 CR3: 0000000103606000 CR4: 0000000000750ef0^M
-> >>>> [  218.743494] PKRU: 55555554^M
-> >>>> [  218.743593] Call Trace:^M
-> >>>> [  218.743733]  <TASK>^M
-> >>>> [  218.743847]  ? __die+0x23/0x70^M
-> >>>> [  218.743957]  ? page_fault_oops+0x171/0x4e0^M
-> >>>> [  218.744056]  ? free_unref_page+0xf6/0x180^M
-> >>>> [  218.744458]  ? exc_page_fault+0x7f/0x180^M
-> >>>> [  218.744551]  ? asm_exc_page_fault+0x26/0x30^M
-> >>>> [  218.744684]  ? memcg_page_state+0x9/0x30^M
-> >>>> [  218.744779]  zswap_shrinker_count+0x9d/0x110^M
-> >>>> [  218.744896]  do_shrink_slab+0x3a/0x360^M
-> >>>> [  218.744990]  shrink_slab+0xc7/0x3c0^M
-> >>>> [  218.745609]  drop_slab+0x85/0x140^M
-> >>>> [  218.745691]  drop_caches_sysctl_handler+0x7e/0xd0^M
-> >>>> [  218.745799]  proc_sys_call_handler+0x1c0/0x2e0^M
-> >>>> [  218.745912]  vfs_write+0x23d/0x400^M
-> >>>> [  218.745998]  ksys_write+0x6f/0xf0^M
-> >>>> [  218.746080]  do_syscall_64+0x64/0xe0^M
-> >>>> [  218.746169]  ? exit_to_user_mode_prepare+0x132/0x1f0^M
-> >>>> [  218.746873]  entry_SYSCALL_64_after_hwframe+0x6e/0x76^M
-> >>>>
-> > 
-> > Actually, inspecting the code a bit more - can memcg be null here?
-> > 
-> > Specifically, if mem_cgroup_disabled() is true, can we see null memcg
-> > here? Looks like in this case, mem_cgroup_iter() can return null, and
-> > the first iteration of drop_slab_node() can have null memcg if it's
-> > returned by mem_cgroup_iter().
-> > 
-> > shrink_slab() will still proceed and call do_shrink_slab() if the
-> > memcg is null - provided that mem_cgroup_disabled() holds:
-> > 
-> > if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
-> >       return shrink_slab_memcg(gfp_mask, nid, memcg, priority);
-> > 
-> 
-> Ah, I think your analysis is very right, here memcg is NULL but memcg_page_state
-> won't check.
+On Fri, Apr 12 2024, Michael Walle wrote:
 
-+1.
+> SPI-NOR will automatically detect the attached flash device most of the
+> time. We cannot easily find out if boards are using a given flash.
+> Therefore, introduce a (temporary) flag to display a message on boot if
 
-I could reproduce the NULL crash locally with cgroup_disable=memory,
-the shrinker enabled, and echo 3 >/proc/sys/vm/drop_caches.
+Why temporary? There will always be a need to deprecate one flash or
+another. Might as well keep the flag around.
 
-> > Inside zswap_shrink_count(), all the memcg accessors in this area seem
-> > to always check for null memcg (mem_cgroup_lruvec,
-> > mem_cgroup_zswap_writeback_enabled), *except* memcg_page_state, which
-> > is the one line that fail.
-> > 
-> > If this is all to it, we can simply add a null check or
-> > mem_cgroup_disabled() check here, and use pool stats instead?
-> 
-> Both look ok to me. The VM could only set sc->memcg to NULL when memcg
-> disabled, right?
+Also, this patch/series does not add any users of the deprecated flag.
+If you have some flashes in mind, it would be good to add them to the
+patch/series.
 
-Christian, can you please test the below patch on top of current
-upstream?
+I like the idea in general. Do you think we should also print a rough
+date for the deprecation as well?
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index caed028945b0..6f8850c44b61 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1331,15 +1331,22 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
- 	if (!gfp_has_io_fs(sc->gfp_mask))
- 		return 0;
- 
--#ifdef CONFIG_MEMCG_KMEM
--	mem_cgroup_flush_stats(memcg);
--	nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
--	nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
--#else
--	/* use pool stats instead of memcg stats */
--	nr_backing = zswap_pool_total_size >> PAGE_SHIFT;
--	nr_stored = atomic_read(&zswap_nr_stored);
--#endif
-+	/*
-+	 * For memcg, use the cgroup-wide ZSWAP stats since we don't
-+	 * have them per-node and thus per-lruvec. Careful if memcg is
-+	 * runtime-disabled: we can get sc->memcg == NULL, which is ok
-+	 * for the lruvec, but not for memcg_page_state().
-+	 *
-+	 * Without memcg, use the zswap pool-wide metrics.
-+	 */
-+	if (!mem_cgroup_disabled()) {
-+		mem_cgroup_flush_stats(memcg);
-+		nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
-+		nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
-+	} else {
-+		nr_backing = zswap_pool_total_size >> PAGE_SHIFT;
-+		nr_stored = atomic_read(&zswap_nr_stored);
-+	}
- 
- 	if (!nr_stored)
- 		return 0;
+> support for a given flash device is scheduled to be removed in the
+> future.
+>
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
+> ---
+>  drivers/mtd/spi-nor/core.c | 12 ++++++++++++
+>  drivers/mtd/spi-nor/core.h |  1 +
+>  2 files changed, 13 insertions(+)
+>
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 58d310427d35..a294eef2e34a 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -3312,6 +3312,7 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
+>  						       const char *name)
+>  {
+>  	const struct flash_info *jinfo = NULL, *info = NULL;
+> +	const char *deprecated = NULL;
+>  
+>  	if (name)
+>  		info = spi_nor_match_name(nor, name);
+> @@ -3326,6 +3327,17 @@ static const struct flash_info *spi_nor_get_flash_info(struct spi_nor *nor,
+>  			return jinfo;
+>  	}
+>  
+> +	if (info && (info->flags & SPI_NOR_DEPRECATED))
+> +		deprecated = info->name;
+> +	else if (jinfo && (jinfo->flags & SPI_NOR_DEPRECATED))
+> +		deprecated = jinfo->name;
+> +
+> +	if (deprecated)
+> +		pr_warn("Your board or device tree is using a SPI NOR flash (%s) with\n"
+> +			"deprecated driver support. It will be removed in future kernel\n"
+
+Nit: "removed in a future kernel version"
+
+> +			"version. If you feel this shouldn't be the case, please contact\n"
+> +			"us at linux-mtd@lists.infradead.org\n", deprecated);
+> +
+
+Hmm, this isn't so nice. I'd suggest doing something like:
+
+	/*
+         * If caller has specified name of flash model that can normally be
+         * ...
+         */
+	info = jinfo ?: info;
+
+	if (info->flags & SPI_NOR_DEPRECATED)
+        	pr_warn(...);
+
+	return info;
+
+>  	/*
+>  	 * If caller has specified name of flash model that can normally be
+>  	 * detected using JEDEC, let's verify it.
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 8552e31b1b07..0317d8e253f4 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -524,6 +524,7 @@ struct flash_info {
+>  #define SPI_NOR_NO_ERASE		BIT(6)
+>  #define SPI_NOR_QUAD_PP			BIT(8)
+>  #define SPI_NOR_RWW			BIT(9)
+> +#define SPI_NOR_DEPRECATED		BIT(15)
+
+If you do agree with my suggestion of making it permanent, would it make
+more sense to make it BIT(10) instead. Or BIT(9) once you move up the
+others because we no longer have BIT(7).
+
+>  
+>  	u8 no_sfdp_flags;
+>  #define SPI_NOR_SKIP_SFDP		BIT(0)
+
+-- 
+Regards,
+Pratyush Yadav
 
