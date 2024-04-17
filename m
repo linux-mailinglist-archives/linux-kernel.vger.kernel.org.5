@@ -1,143 +1,185 @@
-Return-Path: <linux-kernel+bounces-149226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A8408A8D59
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:57:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E53B8A8D5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:57:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B5F11C21E45
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:57:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA42A1F2172D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:57:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA7D4C600;
-	Wed, 17 Apr 2024 20:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5999F481BB;
+	Wed, 17 Apr 2024 20:57:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mU84SjDK"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FDJTSrq2"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C1B74AEE6;
-	Wed, 17 Apr 2024 20:56:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F15F52F6B;
+	Wed, 17 Apr 2024 20:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713387410; cv=none; b=uLyfAyPcxdRGHSokPtjAg+3whhL9Qob6dJNVo5DRXfVxu5SVfAi3/RiwJn5UPZPNHycBeDb/qqrJ2Dg6NthWd1AYRhYZ5ZyX+z7SUTNmLZ/3sNGRoJoVMzYNJoPTFfxqnSt1FRM7O5obWTJsYLBRz5fP9rABBQQIqR27O7UgdLA=
+	t=1713387440; cv=none; b=Cgxq0ZJQMC21qAT5sHki0CtyYltuh9xDsx67Vp+M6pucgHaYl0i5FcOlmGoNG1yBIizKMuXxFxyGZBKodnMPyV7EArnrr3ytbgEgrWFGIr5oyq4HpDUsScVbot7p/x0MB2WTAFSe7hwAsp1wLoC+xrYtROetbxvySlPYhlV8BBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713387410; c=relaxed/simple;
-	bh=uBroaOcNwptlw/wRzMzeHBNX0ZYdVGKGFyjpYDa/wwY=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VXUdqjPXyaSq6Ydbjk4xW7zDyHUcfpQmUBux7bi6FONd9XUwr5BskTcmafutaTgYp+gUtr+A1/y5qU2wcG0MClyVaDg3vmqkW1jlMpfYiQND++8pQGCwpNdWCCKpijYJg0g7dAAmgbEQ5lHGaz/8e+59a3EwGNie/NN35WtqnLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=mU84SjDK; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43H777mJ006420;
-	Wed, 17 Apr 2024 20:56:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=j3rD2swBZuMDhMJX740s1
-	CxFEKcxK850H2X23s0H9u4=; b=mU84SjDK7NDXdc8AeyqXjCpANQC/+qlT8jf/A
-	L3x9ce+sSoiekHx4pjLlNyW03KjQszAD2G/gblaHP50kQ+5k+/pLvhsr2RRMTPX9
-	8z5bp715MnRxgkvccuGPIxvzroQVeG21ynr0esrvlmR1/XxCYdelitp+LfrkpTwd
-	EvDzI7f8rQ4WLfzzmmXYkXqIY2IvUeOPfyATY/tgaC65FWdO7TFl3RXtmNHE87vH
-	jyA+0ZGGKoj+IVbQxqJqnFc58puG1GWoGzboLrLyhWUSHGmPf4EtH9GHkZGOT+Uw
-	Z+fzZDWsuY/1GMRsbuFfDoPdlWYO51U/QeeA+aPkSyx3hrYoQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xj9rma60m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 20:56:34 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43HKuWRX006246
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 20:56:32 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Wed, 17 Apr 2024 13:56:32 -0700
-Date: Wed, 17 Apr 2024 13:56:31 -0700
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Sibi Sankar <quic_sibis@quicinc.com>
-CC: <sudeep.holla@arm.com>, <cristian.marussi@arm.com>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <jassisinghbrar@gmail.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <dmitry.baryshkov@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_rgottimu@quicinc.com>, <quic_kshivnan@quicinc.com>,
-        <conor+dt@kernel.org>, <quic_gkohli@quicinc.com>,
-        <quic_nkela@quicinc.com>, <quic_psodagud@quicinc.com>
-Subject: Re: [PATCH V3 3/5] arm64: dts: qcom: x1e80100: Resize GIC
- Redistributor register region
-Message-ID: <ZiA3f58OWfe5xf1f@hu-bjorande-lv.qualcomm.com>
-References: <20240417132856.1106250-1-quic_sibis@quicinc.com>
- <20240417132856.1106250-4-quic_sibis@quicinc.com>
+	s=arc-20240116; t=1713387440; c=relaxed/simple;
+	bh=BPdpGyW1F/Eojz4Os/i9vRYjSRgNet0NXz4BiUZ19RY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nqSl+iGxbH6jAEM9jaSpk8YP+LswIK5W0apGQ4ChJoj72IpW9bS11TnfPbgCq4Bh7U7PyRCgOHMESbVK/ZIyo+aw/dqDMBs3gs46jky0C0SX1nQze/FbsaOAAUVDMKUxzMbayNmlgrR6tBF7BcNvmQMqpepOks17wYjNQpU6VDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=FDJTSrq2; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43HKv0uN005769;
+	Wed, 17 Apr 2024 15:57:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713387420;
+	bh=S95d30u0MX9I2P7CepbqjsFGIsPWOe4MadM11Qo/Kn4=;
+	h=From:To:CC:Subject:Date;
+	b=FDJTSrq2FlVPCa0YMrynwY/rYGqFP9yVdlkOL6S5VCm+In+tjTXnWucWWcEGuNGLK
+	 302z+bQcX6W9ilJ+WdJFVxGYRmggFPlkI8HhLzuwTLxxbLGvykS0CPnBWbL8E0siUT
+	 m1ozGP16IiLBdE9fzYiPZsyB08UqHOSB6dokPHlM=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43HKv0gJ005616
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 17 Apr 2024 15:57:00 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 17
+ Apr 2024 15:57:00 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 17 Apr 2024 15:57:00 -0500
+Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43HKv0ad071011;
+	Wed, 17 Apr 2024 15:57:00 -0500
+From: Judith Mendez <jm@ti.com>
+To: Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck
+	<linux@roeck-us.net>
+CC: <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Rafael
+ Beims <rafael.beims@toradex.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nick
+ Saulnier <nsaulnier@ti.com>
+Subject: [PATCH v3] watchdog: rti_wdt: Set min_hw_heartbeat_ms to accommodate a safety margin
+Date: Wed, 17 Apr 2024 15:57:00 -0500
+Message-ID: <20240417205700.3947408-1-jm@ti.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240417132856.1106250-4-quic_sibis@quicinc.com>
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: KQcvb4eADSXPM-yQlmYmAwk-n0Xq9o6D
-X-Proofpoint-GUID: KQcvb4eADSXPM-yQlmYmAwk-n0Xq9o6D
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-17_18,2024-04-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 adultscore=0 suspectscore=0
- mlxlogscore=749 priorityscore=1501 clxscore=1015 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404170148
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Wed, Apr 17, 2024 at 06:58:54PM +0530, Sibi Sankar wrote:
-> Resize the GICR register region as it currently seeps into the CPU Control
-> Processor mailbox RX region.
-> 
+On AM62x, the watchdog is pet before the valid window is open. Fix
+min_hw_heartbeat and accommodate a 2% + static offset safety margin.
+The static offset accounts for max hardware error.
 
-Not that anyone is running a stable kernel here, but please make a habit
-of adding Fixes: tags when correcting previous mistakes.
+Remove the hack in the driver which shifts the open window boundary,
+since it is no longer necessary due to the fix mentioned above.
 
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> ---
-> 
-> v2:
-> * Pickup Rb from Dimitry.
-> 
->  arch/arm64/boot/dts/qcom/x1e80100.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-> index f5a3b39ae70e..28f65296781d 100644
-> --- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
-> @@ -4949,7 +4949,7 @@ apps_smmu: iommu@15000000 {
->  		intc: interrupt-controller@17000000 {
->  			compatible = "arm,gic-v3";
->  			reg = <0 0x17000000 0 0x10000>,     /* GICD */
-> -			      <0 0x17080000 0 0x480000>;    /* GICR * 12 */
-> +			      <0 0x17080000 0 0x380000>;    /* GICR * 12 */
->  
+cc: stable@vger.kernel.org
+Fixes: 5527483f8f7c ("watchdog: rti-wdt: attach to running watchdog during probe")
+Signed-off-by: Judith Mendez <jm@ti.com>
+---
+Changes since v2:
+- Change safety margin to 2% + max hardware error
+- remove hack that shifts open window boundary
+---
+ drivers/watchdog/rti_wdt.c | 34 +++++++++++++++-------------------
+ 1 file changed, 15 insertions(+), 19 deletions(-)
 
-The 12th GICR ends a bit before that, and per your commit message you're
-just nudging it down to get this range out of the say of your other
-range - rather than giving it a proper value.
+diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
+index 8e1be7ba01039..c7d4de28e1891 100644
+--- a/drivers/watchdog/rti_wdt.c
++++ b/drivers/watchdog/rti_wdt.c
+@@ -59,6 +59,8 @@
+ #define PON_REASON_EOF_NUM	0xCCCCBBBB
+ #define RESERVED_MEM_MIN_SIZE	12
+ 
++#define MAX_HW_ERROR		250
++
+ static int heartbeat = DEFAULT_HEARTBEAT;
+ 
+ /*
+@@ -92,7 +94,7 @@ static int rti_wdt_start(struct watchdog_device *wdd)
+ 	 * to be 50% or less than that; we obviouly want to configure the open
+ 	 * window as large as possible so we select the 50% option.
+ 	 */
+-	wdd->min_hw_heartbeat_ms = 500 * wdd->timeout;
++	wdd->min_hw_heartbeat_ms = 520 * wdd->timeout + MAX_HW_ERROR;
+ 
+ 	/* Generate NMI when wdt expires */
+ 	writel_relaxed(RTIWWDRX_NMI, wdt->base + RTIWWDRXCTRL);
+@@ -126,31 +128,33 @@ static int rti_wdt_setup_hw_hb(struct watchdog_device *wdd, u32 wsize)
+ 	 * be petted during the open window; not too early or not too late.
+ 	 * The HW configuration options only allow for the open window size
+ 	 * to be 50% or less than that.
++	 * To avoid any glitches, we accommodate 2% + max hardware error
++	 * safety margin.
+ 	 */
+ 	switch (wsize) {
+ 	case RTIWWDSIZE_50P:
+-		/* 50% open window => 50% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 500 * heartbeat;
++		/* 50% open window => 52% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 520 * heartbeat + MAX_HW_ERROR;
+ 		break;
+ 
+ 	case RTIWWDSIZE_25P:
+-		/* 25% open window => 75% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 750 * heartbeat;
++		/* 25% open window => 77% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 770 * heartbeat + MAX_HW_ERROR;
+ 		break;
+ 
+ 	case RTIWWDSIZE_12P5:
+-		/* 12.5% open window => 87.5% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 875 * heartbeat;
++		/* 12.5% open window => 89.5% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 895 * heartbeat + MAX_HW_ERROR;
+ 		break;
+ 
+ 	case RTIWWDSIZE_6P25:
+-		/* 6.5% open window => 93.5% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 935 * heartbeat;
++		/* 6.5% open window => 95.5% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 955 * heartbeat + MAX_HW_ERROR;
+ 		break;
+ 
+ 	case RTIWWDSIZE_3P125:
+-		/* 3.125% open window => 96.9% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 969 * heartbeat;
++		/* 3.125% open window => 98.9% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 989 * heartbeat + MAX_HW_ERROR;
+ 		break;
+ 
+ 	default:
+@@ -228,14 +232,6 @@ static int rti_wdt_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 
+-	/*
+-	 * If watchdog is running at 32k clock, it is not accurate.
+-	 * Adjust frequency down in this case so that we don't pet
+-	 * the watchdog too often.
+-	 */
+-	if (wdt->freq < 32768)
+-		wdt->freq = wdt->freq * 9 / 10;
+-
+ 	pm_runtime_enable(dev);
+ 	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0) {
 
-Wouldn't 0x300000 be a better value here? Or am I perhaps missing
-something in the difference? If so, I'd like the commit message to state
-what, so someone doesn't get excited and correct/break it later.
+base-commit: 860bbe8e618fd62446309e286ab4a83d38201c0a
+-- 
+2.43.2
 
-Regards,
-Bjorn
-
->  			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
->  
-> -- 
-> 2.34.1
-> 
 
