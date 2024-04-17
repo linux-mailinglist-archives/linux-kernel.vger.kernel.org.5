@@ -1,120 +1,113 @@
-Return-Path: <linux-kernel+bounces-148946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C102A8A897A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:58:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 072CB8A896A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:56:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44C7DB22EFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:58:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1AA61F249C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33C82171E64;
-	Wed, 17 Apr 2024 16:57:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A80F16FF3D;
+	Wed, 17 Apr 2024 16:56:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b1LPlN6Z"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="0WEyWUJc"
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F24A717164B;
-	Wed, 17 Apr 2024 16:57:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4452A16FF55
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 16:56:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713373040; cv=none; b=MjSIAfHO1QHh7gXv+mEm2/K540JI0aqq76YxTtaBc/qrVfFy1xQq0756Z4vm/RbApgXTg2TWkzGiLxr0WYqeSQyLYpryAqjRs7Vd8ddkghla08wXkNluGwZZe8cDcvr3MYv9n+9XL5rcCBPgMKXFu6Vrezr4Vt68e9o4957lp8g=
+	t=1713372964; cv=none; b=VkSjRNst3miRXUOwblvaLCfmkBybChCE0H4ImzMHRDlZT8f1eg9JqA0KmzztBh5Yq3JMGbfCQfjDQE+C8dtOchQYHDEXur6+EivqzQskrLsTuJZSIYRT3j099DEfTfaflkz+0LmP073lBC3GM+DiD1rqlUf72qQGYvm7qDakgdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713373040; c=relaxed/simple;
-	bh=bgWGwCLui9Z4FRfsi9Q01Jk+7wL6L7PwnwPlqb0UfpE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UzTmQlCp4URaLny7pjZeXuLWQKQ9pdB9xP3Ab0sk32wvE2C9JPrMWyCfa8uv6eO4I/gSRstDujviZFapd7S3Hc/wDhilRhpD/tBYrbHfVISu4o6yHN5qQveklMIyZ0jVtIM3o3QHlNgcHKRkkVCC1g6vl68kgQxV7WtfASuKxK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b1LPlN6Z; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713373039; x=1744909039;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=bgWGwCLui9Z4FRfsi9Q01Jk+7wL6L7PwnwPlqb0UfpE=;
-  b=b1LPlN6ZVsbK76Vl4ZYt43G6Tf0eedAu4q9ZwvHjb04mrfLD2SMUJFM5
-   Kb6uU6yATo15Yv9Hp/v0K8yx7CIDPJSVwHEwqoT9Kq6fSKyFt+ybC9id9
-   PZu4q14GBjOEqFWe4mgC6ZLWzQaaHYFtrb1UIbcwRqdKi0iZ9vcmGoMLq
-   lCLo1GxaQ4Xc+cdlDCGB2mpqeXEv2FBcDt21H6fl9VEQ3ifsiltT4VD74
-   oJOg/N9rGbR2N3RYaFuXEY7VBgTD0/0CqiJaYWs/m6Z3gZyP2+zJ4nGhz
-   6GhBlwgLsARSpsmHFBwXvVJnEujvUkZ0dhEgEQHCYsExQaOPABwVrAxvI
-   g==;
-X-CSE-ConnectionGUID: WFFryQz1RvuTE+L9ou+ylw==
-X-CSE-MsgGUID: y0+nqwCPRhuO1fWGUF17rA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8737029"
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="8737029"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 09:57:18 -0700
-X-CSE-ConnectionGUID: rq6sC2tpRaSZZU4PxKytyQ==
-X-CSE-MsgGUID: 5SSBCHV2QnKQii/ZGQR1gw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="22571643"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa010.jf.intel.com with ESMTP; 17 Apr 2024 09:57:16 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id BB892169; Wed, 17 Apr 2024 19:57:11 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-mmc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Aubin Constans <aubin.constans@microchip.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Subject: [PATCH v1 5/5] mmc: atmel-mci: Switch to use dev_err_probe()
-Date: Wed, 17 Apr 2024 19:55:17 +0300
-Message-ID: <20240417165708.2965612-6-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
-In-Reply-To: <20240417165708.2965612-1-andriy.shevchenko@linux.intel.com>
-References: <20240417165708.2965612-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1713372964; c=relaxed/simple;
+	bh=NVzcN5A1MDUCRNGN1j82k+y9l46oc2GyJO6/C/mgrHc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XHrrGaCcRUJbKGvzsM0uL84xXrvGqlYwjN63hADWEq8YVTUbz0cg1Yha95uknyykM7Bwivv5bxnTgoQt9fqkPnTwtB1lu3QO4k6xo6/6sQPtmixKCGNlrJFHfoA4JeKC3k0SdqrTFrpJn3dmuTuxk4vfow/in+ma6iNQUX9w8pI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=0WEyWUJc; arc=none smtp.client-ip=209.85.166.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7d6b362115eso81991839f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 09:56:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1713372961; x=1713977761; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xUAHB5bPJ+iDHtRK1ERMDUYx1czMuNi349CzQq6TWhk=;
+        b=0WEyWUJcrZR3aCAi5Ej9l7OgvRRvl7Lz27A0cl0wV26+Bv03MiiW97JdgbGrlH1EaS
+         j8TxhrjPkSxDafHJXZGXrSC+LU4WFkoeASwLkWQDBrvHhepkD+pGOq1r9EPMXWvhslip
+         vVvFFfgQnE0CQEEmSCGo963slscTIcNbWn14BNcetvJTJepuQEBsfa9JLOHWOjFVcr7q
+         Vq92x1qtZJNCWaq7oNqnpku+y0OC3cjItCI27s5wHFVKbOu0sYdfKnTLXEfkn8ytomno
+         YmhPOQDc62yfIml9ZuQDIFIzsVXRdkbZm0Ls8wHWmc7DPqZBbYlq1K9aPHTJzqxE/fUa
+         /p2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713372961; x=1713977761;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xUAHB5bPJ+iDHtRK1ERMDUYx1czMuNi349CzQq6TWhk=;
+        b=aexQ3XHCSwmyjkSGnRSIiEA7k4uFhAr+nKPNx6kbUHbo3Qq3Qf3UxIa5ToyBWytFhf
+         HfnIPeCT7B7dYqcuJMwJnpI7wHQfVBUf7Eyk/Px3P2ItpzXc98YQiXNKrhxbFfIW8fsb
+         8KzmLwKaMvORHt3L77vvaypGOKvOrO8Ulh9iD6ACf4IUIw8fM0p7cJWohb0e8WQdT3KN
+         AGd3y83zmLhE8D2xxd50EPghc5gnQHx1b3ELno3fSUHZmWEDo2OtHPxuWmESwfS59Q79
+         LlCoR2WxymEZawBFcyVY/FzumCJgpivQVUAFfLOhMRBD97OGOBya1x2FQ161K0LrAy3D
+         EI4w==
+X-Forwarded-Encrypted: i=1; AJvYcCXq2/EZuVnQKegyhlmVViSYIPUisbLNg3F9c16EirDiaWOoqDbrvXdYnm1rxhp3koHsIvSCfiDEKQcRnuYuc5+UBfOomozWCglbfBzg
+X-Gm-Message-State: AOJu0YxUAzOEyq6rUnQwkZNwDz5uZxezcOoOIeoHfVFPEZV92d7fCS5e
+	mHNcRhqjdI5BESJid1HqQvv5HSgTxov54C9Y8lGL/Es81jdCz2VLxyZ0d+d0viw=
+X-Google-Smtp-Source: AGHT+IEq1tXs6bVu+t+KS2pPXVs3KAV+KvjBYxSJrIs1bc6wfc93/z+DAVpdNKnzJU21HV/Z+81VKQ==
+X-Received: by 2002:a5e:c907:0:b0:7d6:a792:3e32 with SMTP id z7-20020a5ec907000000b007d6a7923e32mr241839iol.1.1713372960935;
+        Wed, 17 Apr 2024 09:56:00 -0700 (PDT)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id dq3-20020a0566021b8300b007d5ebc40f82sm4010155iob.31.2024.04.17.09.55.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 09:56:00 -0700 (PDT)
+Message-ID: <e843abe1-0561-4ee7-a73e-4ffd407d523e@kernel.dk>
+Date: Wed, 17 Apr 2024 10:55:59 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] dm-io: don't warn if flush takes too long time
+Content-Language: en-US
+To: Mikulas Patocka <mpatocka@redhat.com>, Mike Snitzer
+ <msnitzer@redhat.com>, Damien Le Moal <dlemoal@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>
+Cc: Guangwu Zhang <guazhang@redhat.com>, dm-devel@lists.linux.dev,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <65c83995-1db-87ff-17df-20c43c1b74d7@redhat.com>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <65c83995-1db-87ff-17df-20c43c1b74d7@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Switch to use dev_err_probe() to simplify the error path and
-unify a message template.
+On 4/17/24 10:51 AM, Mikulas Patocka wrote:
+> There was reported hang warning when using dm-integrity on the top of loop
+> device on XFS on a rotational disk. The warning was triggered because
+> flush on the loop device was too slow.
+> 
+> There's no easy way to reduce the latency, so I made a patch that shuts
+> the warning up.
+> 
+> There's already a function blk_wait_io that avoids the hung task warning.
+> This commit moves this function from block/blk.h to
+> kernel/sched/completion.c, renames it to wait_for_completion_long_io
+> (because it is not dependent on the block layer at all) and uses it in
+> dm-io instead of wait_for_completion_io.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/mmc/host/atmel-mci.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Looks good to me, though I'd probably split out that dm change as it's a
+new addition where the other parts are strictly mechanical (moving the
+helper to where it belongs, and using it where we already do it).
 
-diff --git a/drivers/mmc/host/atmel-mci.c b/drivers/mmc/host/atmel-mci.c
-index 3ae17b8584a2..c4502482d967 100644
---- a/drivers/mmc/host/atmel-mci.c
-+++ b/drivers/mmc/host/atmel-mci.c
-@@ -2548,7 +2548,7 @@ static int atmci_probe(struct platform_device *pdev)
- 	}
- 
- 	if (!nr_slots) {
--		dev_err(dev, "init failed: no slot defined\n");
-+		dev_err_probe(dev, ret, "init failed: no slot defined\n");
- 		goto err_init_slot;
- 	}
- 
-@@ -2557,8 +2557,7 @@ static int atmci_probe(struct platform_device *pdev)
- 		                                  &host->buf_phys_addr,
- 						  GFP_KERNEL);
- 		if (!host->buffer) {
--			ret = -ENOMEM;
--			dev_err(dev, "buffer allocation failed\n");
-+			ret = dev_err_probe(dev, -ENOMEM, "buffer allocation failed\n");
- 			goto err_dma_alloc;
- 		}
- 	}
 -- 
-2.43.0.rc1.1336.g36b5255a03ac
+Jens Axboe
 
 
