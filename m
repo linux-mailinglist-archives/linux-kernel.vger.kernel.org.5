@@ -1,519 +1,127 @@
-Return-Path: <linux-kernel+bounces-149181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD7218A8CEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:32:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0830F8A8CF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:33:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CD491F223CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:32:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B71882888C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:33:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA4643BBFF;
-	Wed, 17 Apr 2024 20:31:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8A143FBB3;
+	Wed, 17 Apr 2024 20:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aKnXJSFC"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="sLatIE9L"
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4147EAC8;
-	Wed, 17 Apr 2024 20:31:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60AE60262;
+	Wed, 17 Apr 2024 20:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713385915; cv=none; b=piXTqbbbQljERY3oBvSAjchKnzvxRFrmsmjGyNGnCOUJW8LvQzBDY4Tlf/9UU373Pq4/XHaRH6x/Hhkj+jv+YpTJENbxSseXGzXr4GZdmS07T/9nt1DGCETicNI2YvRB9uDsFbQ35v2FMoJuw7SAB9ZSvLSqdFp+dbHPu5ivG+8=
+	t=1713385928; cv=none; b=mZLXggDQRsI+bKRA/HFvBBCkLarGgpcyUwponLEbLYMdjMhgbDbudsjqL0SILFiPF2Kk63pnu7kFpnjaC/1wais4cU2uCmliRz/AfB68xLr06arl9FTBv24Ah0gD4Nc+bmlJ9sfD1KFe7TlEq3p+BSURlv7riM16Pru0hY6Wemo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713385915; c=relaxed/simple;
-	bh=0kSV9BW2QeRUmRKwS5ilacYjl5kRTzsRH6TM2QfbJt8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=sgYHxSO1AO48jcpBAOsqpnCzoKCjeNyCNUbeSnS0lfFst+fsCOoZGdOSOU6GPceK9LohvORxAVBkkP4+4WVdjwOyLHpvmaTY8Sh7T7F0jnHLD+qs+5i1yM8vgwvzuctaomh4Dx3I2T0yOFe3SiyDOPZPW//U7y0zgHhERkLdnMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=aKnXJSFC; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43HIln6I017522;
-	Wed, 17 Apr 2024 20:31:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=UIGKlbm7WKGJ9jr3RKULR0/+UdS/jlwTIIH0vbfL5+c=; b=aK
-	nXJSFCVnmtDQzZQ/t2DojWhX/tRBFdw/lXUDUeoqDlVyz+EbSXEejZRkVVprKfXn
-	boOiks83vuOWbYsPahzHNQqC900YnEAEBkRlrYAJXlfVAQtpaNhnEODa0GdEYqVE
-	k4Afmj3nQu+r/8Z7Qxdp3qhN4NpwypSk3qRJP7NXLIp2ArdTjCLaoDNDVx7Lmbq9
-	hCwRYVRG5SWwZrUKc9PiJe9XHXShW50u8WZGvQltvDzKtRYJND2Ki9BNXILeiD2T
-	DjSCLiQ/LeWIuNYCiD96SB5SPO6ExqkcUkgslW22oQUocdvvzIUoovNBB9Vek1ZE
-	BXXnl/JchfA+fLKjo57g==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xjm0s070c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 20:31:23 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43HKVNpP012163
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Apr 2024 20:31:23 GMT
-Received: from [10.71.108.229] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 17 Apr
- 2024 13:31:22 -0700
-Message-ID: <338acf2c-7471-43cc-9e52-23c96cbe66bc@quicinc.com>
-Date: Wed, 17 Apr 2024 13:31:21 -0700
+	s=arc-20240116; t=1713385928; c=relaxed/simple;
+	bh=snUlQ8CUBvwt6t0rQcr2fBcuXmMSzuXKMUaznWhkeSc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=F2LqG7UG75VP7W7tO2GDhx6Mmgiw4w1x6GqOFtdTL+LgdyjvAKbfPXbQ0lz+PJt4y081BGBAdAX8zupXC92taOJ0sp4FPykLuNlyJ+DPJhIwnWFjLbFjoEGlQl3JZioTf9asBPCJCdwjkbQhDDMZsSNwwx6aM7VpoRy3CK7QK/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=sLatIE9L; arc=none smtp.client-ip=74.208.4.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
+	s=s1-ionos; t=1713385914; x=1713990714; i=parker@finest.io;
+	bh=zvVys0faffVpris9ppwK6fTUXrOggQ+stC07pDGKPks=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
+	 MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=sLatIE9LDzt0WajpvGCr4uskAHe/yyqH7XaRP37DRUobo+hvSNb6CQO7y5FIq76y
+	 ovjTtYK+Q6wKcD6yuTvhy/nLvpysCsmjwDwWpSb1tCbuGYvnguxdgRJB2ipBY99lC
+	 MR6j4wCNLgAzxhYj4w8Afx1Ov52+5+VskoNOrOAMKOuUPfsRXiRZkQys4lqEXo8LX
+	 xAqM0nugCcJHS6wRf5zNHA+AixlwwAaugGXJQ6J6pHX8R7ImExDfIRu2HxbNHord7
+	 nswKP1iRNUjEGBXqurPasK3uQzIA2CQVYlHU+igbsXnSdkS79T3jolAFIcd8UV40c
+	 dBf871M7BxpRP5MnWA==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from finest.io ([98.159.241.229]) by mrelay.perfora.net (mreueus004
+ [74.208.5.2]) with ESMTPSA (Nemesis) id 1MbS8j-1sZ0bI3p7Z-00brjB; Wed, 17 Apr
+ 2024 22:31:54 +0200
+From: Parker Newman <parker@finest.io>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Cc: Parker Newman <pnewman@connecttech.com>
+Subject: [PATCH v4 0/7] serial: exar: add Connect Tech serial cards to Exar driver
+Date: Wed, 17 Apr 2024 16:31:22 -0400
+Message-ID: <cover.1713382717.git.pnewman@connecttech.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] drm/panel: Add driver for EDO RM69380 OLED panel
-Content-Language: en-US
-To: David Wronek <david@mainlining.org>,
-        Neil Armstrong
-	<neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>, Daniel Vetter
-	<daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>
-References: <20240417-raydium-rm69380-driver-v4-0-e9c2337d0049@mainlining.org>
- <20240417-raydium-rm69380-driver-v4-2-e9c2337d0049@mainlining.org>
-From: Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <20240417-raydium-rm69380-driver-v4-2-e9c2337d0049@mainlining.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: m-mqkDqNXhd8no4mNraaf5t95avlyAyp
-X-Proofpoint-ORIG-GUID: m-mqkDqNXhd8no4mNraaf5t95avlyAyp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-17_17,2024-04-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 adultscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999
- spamscore=0 priorityscore=1501 phishscore=0 malwarescore=0 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404170145
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:pxhcMpEC6sD5WyFezOqtCU6EWMiMS1pMpoe2ZSE50fqA/DSe0UI
+ Shv36TiDEyzj94uGFXp3V0hgfQcbZ+rwgcatCxQhNqL/6l1r1IfxZdkho3BJUFIFpz75zd2
+ xHfW96in4DiY/0uJb/l6klgwdEYroQZ8rU9cJO1IerAEM+BnwDK+ZErHjPpZ/qUXztYuJj+
+ YFbax3Q9XmqiQMj8uEaMw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:bayDW9b21A8=;KlaPduv0NnbVVEkA3q2/aYIF2hD
+ BMy+RMfabRkxmR32Agv4r7Zl/XmcI7NwlhPg3Gs+njDfVsmRd89m8xP1WgNihHc6xINq+kn0Q
+ WED5pjvaOpUaBK7TizoFbRCw/UOQsKcCDkpl5iYjdkHirODtktMB+jIVSOZPfnqGsouQpgn4+
+ REezCQS6d2n7WwH4tEKgNOK4hEEwPAAxgP1iMuc6TkaKIEo8cdvw9wCpeNjEiC8voILAXRxXN
+ /b1mYdK4dfV8hG8HRoSSA1+ydbAEboakoJyjuSwObTFstqBRwlWfUzWM9KJOqqUbNOtImmwJ1
+ w1daMUTIYHWNhtQDbW3TcITw6FnEM1G4WCzWEzHZBxQ+hdlK3oxr0dBsI4qdCtrARUD3X8nV9
+ YeuhNFAwDSsnqoGr2/3Vd2cYikxFyGwk76EEEC1TDm5/lIDLHVipHTQ34WI2H+d/ySY8jqGN+
+ 9wUOOv0zdJDU5G4LZ7jYVw0dowCNaYu0RuOJKylbaGs5qU94sgk6UE0A7R0OnY4SNqbPotqsO
+ jKApFAQWFRHVYajJyjI0NmMN7q2WpAfas1F7fkZ4M9pqwtJO4ibMjdpVdz1q8tH6DO5D5t10Y
+ uCgahT/KNZFnFzG9hEXxDgaVdK/SeupV5jD7ezdwS+4BLVhlm77Il91s4WDdok6pJW34eqfqB
+ ossMACyyESD3wVWCKwNntYJgHbFPOsQV5yNlvXAUC1Pa9UQkwxR8q02z6kAuAog+fSbnM3afs
+ ubSYOrJPMSxlKt2PeyrUPlJtUNjHZnAsONNoiMX4QfiwiZNRIiLPd0=
+
+From: Parker Newman <pnewman@connecttech.com>
+
+Hello,
+These patches add proper support for most of Connect Tech's (CTI) Exar
+based serial cards. Previously, only a subset of CTI's cards would work
+with the Exar driver while the rest required the CTI out-of-tree driver.
+These patches are intended to phase out the out-of-tree driver.
+
+I am new to the mailing lists and contributing to the kernel so please
+let me know if I have made any mistakes or if you have any feedback.
+
+Changes in v2:
+- Put missing PCI IDs in 8250_exar.c instead of pci_ids.h
+- Split large patch into smaller ones
+
+Changes in v3:
+- Refactored patches to be easier to follow (based on feedback of v2)
+- Patch specific changes listed in corresponding patch
+
+Changes in v4:
+- Rebased to tty-testing branch
+- Removed v3 patch 8/8, "bug" didn't happen in current driver
+- Patch specific changes listed in corresponding patch
+
+Thank you,
+
+Parker Newman (7):
+  serial: exar: remove old Connect Tech setup
+  serial: exar: added a exar_get_nr_ports function
+  serial: exar: add optional board_init function
+  serial: exar: moved generic_rs485 further up in 8250_exar.c
+  serial: exar: add CTI cards to exar_get_nr_ports
+  serial: exar: add CTI specific setup code
+  serial: exar: fix checkpach warnings
+
+ drivers/tty/serial/8250/8250_exar.c | 981 ++++++++++++++++++++++++++--
+ 1 file changed, 916 insertions(+), 65 deletions(-)
 
 
+base-commit: b86ae40ffcf5a16b9569b1016da4a08c4f352ca2
+=2D-
+2.43.2
 
-On 4/17/2024 9:29 AM, David Wronek wrote:
-> Add support for the 2560x1600@90Hz OLED panel by EDO bundled with a
-> Raydium RM69380 controller, as found on the Lenovo Xiaoxin Pad Pro 2021.
-> 
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: David Wronek <david@mainlining.org>
-
-Hi David,
-
-Acked-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-
-Thanks,
-
-Jessica Zhang
-
-> ---
->   drivers/gpu/drm/panel/Kconfig                 |  12 +
->   drivers/gpu/drm/panel/Makefile                |   1 +
->   drivers/gpu/drm/panel/panel-raydium-rm69380.c | 344 ++++++++++++++++++++++++++
->   3 files changed, 357 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-> index 154f5bf82980..e2a66c21349f 100644
-> --- a/drivers/gpu/drm/panel/Kconfig
-> +++ b/drivers/gpu/drm/panel/Kconfig
-> @@ -542,6 +542,18 @@ config DRM_PANEL_RAYDIUM_RM692E5
->   	  Say Y here if you want to enable support for Raydium RM692E5-based
->   	  display panels, such as the one found in the Fairphone 5 smartphone.
->   
-> +config DRM_PANEL_RAYDIUM_RM69380
-> +	tristate "Raydium RM69380-based DSI panel"
-> +	depends on OF && GPIOLIB
-> +	depends on DRM_MIPI_DSI
-> +	depends on BACKLIGHT_CLASS_DEVICE
-> +	help
-> +	  Say Y here if you want to enable support for Raydium RM69380-based
-> +	  display panels.
-> +
-> +	  This panel controller can be found in the Lenovo Xiaoxin Pad Pro 2021
-> +	  in combination with an EDO OLED panel.
-> +
->   config DRM_PANEL_RONBO_RB070D30
->   	tristate "Ronbo Electronics RB070D30 panel"
->   	depends on OF
-> diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-> index 24a02655d726..e2a2807d4ef0 100644
-> --- a/drivers/gpu/drm/panel/Makefile
-> +++ b/drivers/gpu/drm/panel/Makefile
-> @@ -55,6 +55,7 @@ obj-$(CONFIG_DRM_PANEL_RASPBERRYPI_TOUCHSCREEN) += panel-raspberrypi-touchscreen
->   obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM67191) += panel-raydium-rm67191.o
->   obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM68200) += panel-raydium-rm68200.o
->   obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM692E5) += panel-raydium-rm692e5.o
-> +obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM69380) += panel-raydium-rm69380.o
->   obj-$(CONFIG_DRM_PANEL_RONBO_RB070D30) += panel-ronbo-rb070d30.o
->   obj-$(CONFIG_DRM_PANEL_SAMSUNG_ATNA33XC20) += panel-samsung-atna33xc20.o
->   obj-$(CONFIG_DRM_PANEL_SAMSUNG_DB7430) += panel-samsung-db7430.o
-> diff --git a/drivers/gpu/drm/panel/panel-raydium-rm69380.c b/drivers/gpu/drm/panel/panel-raydium-rm69380.c
-> new file mode 100644
-> index 000000000000..4dca6802faef
-> --- /dev/null
-> +++ b/drivers/gpu/drm/panel/panel-raydium-rm69380.c
-> @@ -0,0 +1,344 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Generated with linux-mdss-dsi-panel-driver-generator from vendor device tree.
-> + * Copyright (c) 2024 David Wronek <david@mainlining.org>
-> + */
-> +
-> +#include <linux/backlight.h>
-> +#include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of_graph.h>
-> +#include <linux/regulator/consumer.h>
-> +
-> +#include <video/mipi_display.h>
-> +
-> +#include <drm/drm_mipi_dsi.h>
-> +#include <drm/drm_modes.h>
-> +#include <drm/drm_panel.h>
-> +#include <drm/drm_probe_helper.h>
-> +
-> +struct rm69380_panel {
-> +	struct drm_panel panel;
-> +	struct mipi_dsi_device *dsi[2];
-> +	struct regulator_bulk_data supplies[2];
-> +	struct gpio_desc *reset_gpio;
-> +};
-> +
-> +static inline
-> +struct rm69380_panel *to_rm69380_panel(struct drm_panel *panel)
-> +{
-> +	return container_of(panel, struct rm69380_panel, panel);
-> +}
-> +
-> +static void rm69380_reset(struct rm69380_panel *ctx)
-> +{
-> +	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
-> +	usleep_range(15000, 16000);
-> +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-> +	usleep_range(10000, 11000);
-> +	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
-> +	msleep(30);
-> +}
-> +
-> +static int rm69380_on(struct rm69380_panel *ctx)
-> +{
-> +	struct mipi_dsi_device *dsi = ctx->dsi[0];
-> +	struct device *dev = &dsi->dev;
-> +	int ret;
-> +
-> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
-> +	if (ctx->dsi[1])
-> +		ctx->dsi[1]->mode_flags |= MIPI_DSI_MODE_LPM;
-> +
-> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0xd4);
-> +	mipi_dsi_dcs_write_seq(dsi, 0x00, 0x80);
-> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0xd0);
-> +	mipi_dsi_dcs_write_seq(dsi, 0x48, 0x00);
-> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0x26);
-> +	mipi_dsi_dcs_write_seq(dsi, 0x75, 0x3f);
-> +	mipi_dsi_dcs_write_seq(dsi, 0x1d, 0x1a);
-> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0x00);
-> +	mipi_dsi_dcs_write_seq(dsi, MIPI_DCS_WRITE_CONTROL_DISPLAY, 0x28);
-> +	mipi_dsi_dcs_write_seq(dsi, 0xc2, 0x08);
-> +
-> +	ret = mipi_dsi_dcs_set_tear_on(dsi, MIPI_DSI_DCS_TEAR_MODE_VBLANK);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to set tear on: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to exit sleep mode: %d\n", ret);
-> +		return ret;
-> +	}
-> +	msleep(20);
-> +
-> +	ret = mipi_dsi_dcs_set_display_on(dsi);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to set display on: %d\n", ret);
-> +		return ret;
-> +	}
-> +	msleep(36);
-> +
-> +	return 0;
-> +}
-> +
-> +static int rm69380_off(struct rm69380_panel *ctx)
-> +{
-> +	struct mipi_dsi_device *dsi = ctx->dsi[0];
-> +	struct device *dev = &dsi->dev;
-> +	int ret;
-> +
-> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
-> +	if (ctx->dsi[1])
-> +		ctx->dsi[1]->mode_flags &= ~MIPI_DSI_MODE_LPM;
-> +
-> +	ret = mipi_dsi_dcs_set_display_off(dsi);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to set display off: %d\n", ret);
-> +		return ret;
-> +	}
-> +	msleep(35);
-> +
-> +	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to enter sleep mode: %d\n", ret);
-> +		return ret;
-> +	}
-> +	msleep(20);
-> +
-> +	return 0;
-> +}
-> +
-> +static int rm69380_prepare(struct drm_panel *panel)
-> +{
-> +	struct rm69380_panel *ctx = to_rm69380_panel(panel);
-> +	struct device *dev = &ctx->dsi[0]->dev;
-> +	int ret;
-> +
-> +	ret = regulator_bulk_enable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to enable regulators: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	rm69380_reset(ctx);
-> +
-> +	ret = rm69380_on(ctx);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to initialize panel: %d\n", ret);
-> +		gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-> +		regulator_bulk_disable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int rm69380_unprepare(struct drm_panel *panel)
-> +{
-> +	struct rm69380_panel *ctx = to_rm69380_panel(panel);
-> +	struct device *dev = &ctx->dsi[0]->dev;
-> +	int ret;
-> +
-> +	ret = rm69380_off(ctx);
-> +	if (ret < 0)
-> +		dev_err(dev, "Failed to un-initialize panel: %d\n", ret);
-> +
-> +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-> +	regulator_bulk_disable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct drm_display_mode rm69380_mode = {
-> +	.clock = (2560 + 32 + 12 + 38) * (1600 + 20 + 4 + 8) * 90 / 1000,
-> +	.hdisplay = 2560,
-> +	.hsync_start = 2560 + 32,
-> +	.hsync_end = 2560 + 32 + 12,
-> +	.htotal = 2560 + 32 + 12 + 38,
-> +	.vdisplay = 1600,
-> +	.vsync_start = 1600 + 20,
-> +	.vsync_end = 1600 + 20 + 4,
-> +	.vtotal = 1600 + 20 + 4 + 8,
-> +	.width_mm = 248,
-> +	.height_mm = 155,
-> +	.type = DRM_MODE_TYPE_DRIVER,
-> +};
-> +
-> +static int rm69380_get_modes(struct drm_panel *panel,
-> +					struct drm_connector *connector)
-> +{
-> +	return drm_connector_helper_get_modes_fixed(connector, &rm69380_mode);
-> +}
-> +
-> +static const struct drm_panel_funcs rm69380_panel_funcs = {
-> +	.prepare = rm69380_prepare,
-> +	.unprepare = rm69380_unprepare,
-> +	.get_modes = rm69380_get_modes,
-> +};
-> +
-> +static int rm69380_bl_update_status(struct backlight_device *bl)
-> +{
-> +	struct mipi_dsi_device *dsi = bl_get_data(bl);
-> +	u16 brightness = backlight_get_brightness(bl);
-> +	int ret;
-> +
-> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
-> +
-> +	ret = mipi_dsi_dcs_set_display_brightness_large(dsi, brightness);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
-> +
-> +	return 0;
-> +}
-> +
-> +static int rm69380_bl_get_brightness(struct backlight_device *bl)
-> +{
-> +	struct mipi_dsi_device *dsi = bl_get_data(bl);
-> +	u16 brightness;
-> +	int ret;
-> +
-> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
-> +
-> +	ret = mipi_dsi_dcs_get_display_brightness_large(dsi, &brightness);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
-> +
-> +	return brightness;
-> +}
-> +
-> +static const struct backlight_ops rm69380_bl_ops = {
-> +	.update_status = rm69380_bl_update_status,
-> +	.get_brightness = rm69380_bl_get_brightness,
-> +};
-> +
-> +static struct backlight_device *
-> +rm69380_create_backlight(struct mipi_dsi_device *dsi)
-> +{
-> +	struct device *dev = &dsi->dev;
-> +	const struct backlight_properties props = {
-> +		.type = BACKLIGHT_RAW,
-> +		.brightness = 511,
-> +		.max_brightness = 2047,
-> +	};
-> +
-> +	return devm_backlight_device_register(dev, dev_name(dev), dev, dsi,
-> +					      &rm69380_bl_ops, &props);
-> +}
-> +
-> +static int rm69380_probe(struct mipi_dsi_device *dsi)
-> +{
-> +	struct mipi_dsi_host *dsi_sec_host;
-> +	struct rm69380_panel *ctx;
-> +	struct device *dev = &dsi->dev;
-> +	struct device_node *dsi_sec;
-> +	int ret, i;
-> +
-> +	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-> +	if (!ctx)
-> +		return -ENOMEM;
-> +
-> +	ctx->supplies[0].supply = "vddio";
-> +	ctx->supplies[1].supply = "avdd";
-> +	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(ctx->supplies),
-> +				      ctx->supplies);
-> +	if (ret < 0)
-> +		return dev_err_probe(dev, ret, "Failed to get regulators\n");
-> +
-> +	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
-> +	if (IS_ERR(ctx->reset_gpio))
-> +		return dev_err_probe(dev, PTR_ERR(ctx->reset_gpio),
-> +				     "Failed to get reset-gpios\n");
-> +
-> +	dsi_sec = of_graph_get_remote_node(dsi->dev.of_node, 1, -1);
-> +
-> +	if (dsi_sec) {
-> +		const struct mipi_dsi_device_info info = { "RM69380 DSI1", 0,
-> +							   dsi_sec };
-> +
-> +		dsi_sec_host = of_find_mipi_dsi_host_by_node(dsi_sec);
-> +		of_node_put(dsi_sec);
-> +		if (!dsi_sec_host)
-> +			return dev_err_probe(dev, -EPROBE_DEFER,
-> +					     "Cannot get secondary DSI host\n");
-> +
-> +		ctx->dsi[1] =
-> +			devm_mipi_dsi_device_register_full(dev, dsi_sec_host, &info);
-> +		if (IS_ERR(ctx->dsi[1]))
-> +			return dev_err_probe(dev, PTR_ERR(ctx->dsi[1]),
-> +					     "Cannot get secondary DSI node\n");
-> +
-> +		mipi_dsi_set_drvdata(ctx->dsi[1], ctx);
-> +	}
-> +
-> +	ctx->dsi[0] = dsi;
-> +	mipi_dsi_set_drvdata(dsi, ctx);
-> +
-> +	drm_panel_init(&ctx->panel, dev, &rm69380_panel_funcs,
-> +		       DRM_MODE_CONNECTOR_DSI);
-> +	ctx->panel.prepare_prev_first = true;
-> +
-> +	ctx->panel.backlight = rm69380_create_backlight(dsi);
-> +	if (IS_ERR(ctx->panel.backlight))
-> +		return dev_err_probe(dev, PTR_ERR(ctx->panel.backlight),
-> +				     "Failed to create backlight\n");
-> +
-> +	drm_panel_add(&ctx->panel);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(ctx->dsi); i++) {
-> +		if (!ctx->dsi[i])
-> +			continue;
-> +
-> +		dev_dbg(&ctx->dsi[i]->dev, "Binding DSI %d\n", i);
-> +
-> +		ctx->dsi[i]->lanes = 4;
-> +		ctx->dsi[i]->format = MIPI_DSI_FMT_RGB888;
-> +		ctx->dsi[i]->mode_flags = MIPI_DSI_MODE_VIDEO_BURST |
-> +					  MIPI_DSI_CLOCK_NON_CONTINUOUS;
-> +
-> +		ret = devm_mipi_dsi_attach(dev, ctx->dsi[i]);
-> +		if (ret < 0) {
-> +			drm_panel_remove(&ctx->panel);
-> +			return dev_err_probe(dev, ret,
-> +					     "Failed to attach to DSI%d\n", i);
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void rm69380_remove(struct mipi_dsi_device *dsi)
-> +{
-> +	struct rm69380_panel *ctx = mipi_dsi_get_drvdata(dsi);
-> +
-> +	drm_panel_remove(&ctx->panel);
-> +}
-> +
-> +static const struct of_device_id rm69380_of_match[] = {
-> +	{ .compatible = "lenovo,j716f-edo-rm69380" },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, rm69380_of_match);
-> +
-> +static struct mipi_dsi_driver rm69380_panel_driver = {
-> +	.probe = rm69380_probe,
-> +	.remove = rm69380_remove,
-> +	.driver = {
-> +		.name = "panel-raydium-rm69380",
-> +		.of_match_table = rm69380_of_match,
-> +	},
-> +};
-> +module_mipi_dsi_driver(rm69380_panel_driver);
-> +
-> +MODULE_AUTHOR("David Wronek <david@mainlining.org");
-> +MODULE_DESCRIPTION("DRM driver for Raydium RM69380-equipped DSI panels");
-> +MODULE_LICENSE("GPL");
-> 
-> -- 
-> 2.44.0
-> 
 
