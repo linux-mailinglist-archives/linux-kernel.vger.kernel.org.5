@@ -1,82 +1,77 @@
-Return-Path: <linux-kernel+bounces-148717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4208F8A868C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:49:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CA628A8691
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:49:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 495991C20492
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:49:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9326281937
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:49:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137D013D2AB;
-	Wed, 17 Apr 2024 14:45:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46FF6146A6E;
+	Wed, 17 Apr 2024 14:45:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=softathome1.onmicrosoft.com header.i=@softathome1.onmicrosoft.com header.b="EvmIq3wT"
-Received: from PAUP264CU001.outbound.protection.outlook.com (mail-francecentralazon11011008.outbound.protection.outlook.com [52.101.167.8])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="DB4tXPO1"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2085.outbound.protection.outlook.com [40.107.8.85])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A483E493;
-	Wed, 17 Apr 2024 14:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.167.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E241465B4;
+	Wed, 17 Apr 2024 14:45:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.85
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713365106; cv=fail; b=IbYO0A+ptzWjpHsshv4qIgDYn8peR1/yGQRjy4MgVfZdXFdOEJW0cH8IrJl+w/Rx5aAwkBux9+zBTNg3Pp+3f8aL0WUErJt0Zg1iCE/hLxVWl3iS+i7sOVok+UNSI23ynaU+byK02yKH49WWfQFFVWfNSPJtKNdfGP8SnvbigBA=
+	t=1713365118; cv=fail; b=Bkc7ZaNcFQmOskddpxcwI5wsUBVNHJ0/Nxbfd4NCv98XIqUqB3m/u/FPZpMkCRirfqLnBbWReG5ZjvbPg/1xWz2wLWHWfuIfmp8uq4VkwZuNpgSuUplRd7Z1fyJEMjQW/1UtPL715WrtSAWuSRwpkSavdAtf+UYFNVY7am0nLuE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713365106; c=relaxed/simple;
-	bh=UJHvjWrEdLCDGaGqYcPvjcKFwMXjtPQSK81JFS6xwoo=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=nNYZVrlD4VDwN5GVVCxQ3vuAbqHyztH5YRS6CkWGs3j9PVzdp0cyHbYKHEIX91FiReF4Oq8bVWopdgAByrUu5qA4Lzu4tPKGHMEFDnY3z7Uj+skbd0HmLNjCEq4PQ1i+NC3YzHiYkrgx7E0Jl83qj9RQ5pGWDalm0xc44EfWeqI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=softathome.com; spf=pass smtp.mailfrom=softathome.com; dkim=pass (2048-bit key) header.d=softathome1.onmicrosoft.com header.i=@softathome1.onmicrosoft.com header.b=EvmIq3wT; arc=fail smtp.client-ip=52.101.167.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=softathome.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=softathome.com
+	s=arc-20240116; t=1713365118; c=relaxed/simple;
+	bh=/HTHYwWLjK+OQA5U+i4RkkIYq3L2psKD8oP/dZZ3PDc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=JiDBgyV4zvdOhJKNxFa3e3MvBpuhmuAhtBghMLl+D0hYnubgd2Uteuge5GaXVN0ypol6TKCNTfav17zGwzPvTqxhFQAGL/fNe8zzmWQ/VGW1o+f3utX98+AeNWD8c0xKhFai85wVoLxEH/GbdnVNji8+TdVQA5K5ggK9xnkpdpY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=DB4tXPO1; arc=fail smtp.client-ip=40.107.8.85
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cbdxJeV02+HbxTpwPNLtc4t6jaC2xFXJ8oeafXF3U0TEi9asKp01s/vo+bxZxtWsuuL5SJdz/v98x1BfUcrMymKE59nOQUd/bUv09QDTPmWNes9aw9g5iUlpcjj0XBRdWXcAvS/P1xoJ0onIRokl8aAXcnvFo0WUxQ591LSnzyMldfsMsBGP4wFLryebOrlWjO1YxE5qK0Fs8RpvklNAR0BTQfRlO6kjD09Azr2FxPQtylr7qFhpgimeJmoy7ew561AZwhOEX1mm5uaQGWc2W7bmYoc6m2HXZOUm54Te9Su7yIgzbi1DDdYFmxdgBSjaeI9AgdWIePAeyhk5LF2sxw==
+ b=IZB15O6KaZeVZYzgNDV6XZmx7l1VyJG9jIGJMiG3Nixx6+k+mqoPtmYX9m2y0yozBV+Hh+FZerYwh8lOH4VEtHmVFzddyT3mK6HiMxApsTCExXWWPrRM5P4LOYhBuaMjQLV2zWAJFKXpZS/C6/ujHZ7PN7Sl414KLt5W+tYvvArKf2pFs5SeMPBbjhZ3OFBQSsoUmlyPvYBtaZAcnf8LR80Kcu5r7Lnp4fKu0lENlCC0J0HI7LP7S+HWKS7YcrT8u/CPhRTllq8k6eaCnS05Isg3BwsaakD0KMIGbGPmrUspp4SVdMKz7UVwIjj+o8jOhsxeXr+GTMgBL2wxmARCsg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=750BPtaqsFohe4pQU6APOAplOPGeXgrEIk9K7DnOO/k=;
- b=VDTfGwH3sZNHV6No63CUhCXT4jAQ1nSqzmEvjLMH5ifUUqXnWSValYiGNa8azP3+Qe28dnPj3erQexp/x5F4SFmUW7EMOIpIZpFDz18nQyWASTqzW0Q5QlsdJzVCKXFoLAhg4tbnpJF7XZdPzVw0EQ1d1g+WpiJyfsjfENO622FpuYCw6UJZ+CwNBLAaMeCTuujrN2TMbitDMzX315YpmKtDqRtRLdYfRsAE5O3DtoZ35M/ubBizhQfq/XC/aAhq/xgr4m94FCP8E2Et/d07bcOSsCF/zp3fiDtYFTc4PZlSCYxHJEKFlxgNLikt7uHwi+ivsRzFHUa0uQrjKx0yMw==
+ bh=HG42IqRZlci8O2aOXZoBJl8wGQRPDkJbLi1F9zUcv30=;
+ b=kOb4RlIZPOJ4qlNYFdgnq3x7DmsKORTxa0EZRRbuPVZ39ltOz0Fai91Gtyy7qnDoMame0L/v+38zzN7C40HB8jupks781COeZJ6WDaEDQLkG/DDVCpkkgUTAODeY9bPCfIZUIsPBeUL6RYHLN7b6jG0ZqGLHbj5pSbYaeHwV9rz62MYNaEmjojFoGzqfUsmOSsP1AqkpYt+O+8YTl5ATmvlHK3fd19KQhXfH+ZdR7V2TD3lj+msEaL7wNetVmj7uAnCqTa3OtF5PzJ97rlSpicfHds/7pNHythzhp1Eoyo/Rno0g8KJRw5+mCDxfnsKxXTtNekEv2Pl2bKtFVlh1Fw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=softathome.com; dmarc=pass action=none
- header.from=softathome.com; dkim=pass header.d=softathome.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=softathome1.onmicrosoft.com; s=selector1-softathome1-onmicrosoft-com;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=750BPtaqsFohe4pQU6APOAplOPGeXgrEIk9K7DnOO/k=;
- b=EvmIq3wTuNGJ2iJs97GKHkywDGlP7r8PM7nf+95Isc1mYd7p3Mmr8+Ll+wukSklK+6fGAwpczVdE5DLM+ndJ83i9jROEEe3CJLwoFGoj7QaOhAT8XPn+eG+QP7QaIGUMLE8t2/m95ro1etqv6Xv/D4YjAl95sv3YWz6Vz792SlUgKc4XIdgTnfrPmi5DcOZPtP4gzYOcPGSxsMsKSTA+jbDnhNDbuppQSxLW4Z/2uiD/PGeRVZzxZEV8RCk+jJ6Zv3bcMj3oQTTUt0CAtV9PcaHa7Nd0zAJq1KmwToW3O31WSBJLPH4yvjHWe5UcTweBz6w2xRly103SynhZAWq5Pg==
+ bh=HG42IqRZlci8O2aOXZoBJl8wGQRPDkJbLi1F9zUcv30=;
+ b=DB4tXPO1uhJzOfJexrDicG/xzFl8FaVBoUBzqibYpgQq8fYhMYNfWk+wH2OGku0nWOkXa5dhsk1ubNU6oDCQxTqAB4l0stUfmAOR4vZT/2eSDj9USCc/3DbfO3mMJmouSu6ucBShzUbsi+jiR9PiXI+Y/Jsu3nfdSxUgnTpiIE8=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=softathome.com;
-Received: from PR2P264MB0336.FRAP264.PROD.OUTLOOK.COM (2603:10a6:101:c::18) by
- PR0P264MB2373.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1e0::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.55; Wed, 17 Apr 2024 14:45:00 +0000
-Received: from PR2P264MB0336.FRAP264.PROD.OUTLOOK.COM
- ([fe80::480f:c9cf:874a:3f91]) by PR2P264MB0336.FRAP264.PROD.OUTLOOK.COM
- ([fe80::480f:c9cf:874a:3f91%7]) with mapi id 15.20.7472.037; Wed, 17 Apr 2024
- 14:45:00 +0000
-From: Olivier Blin <olivier.blin@softathome.com>
-To: linux-perf-users@vger.kernel.org
-Cc: Olivier Blin <olivier.blin@softathome.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	"Liang, Kan" <kan.liang@linux.intel.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] perf kmem: Report net allocation bytes per entry
-Date: Wed, 17 Apr 2024 16:44:39 +0200
-Message-Id: <20240417144439.3566267-1-olivier.blin@softathome.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-ClientProxiedBy: PR0P264CA0219.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1e::15) To PR2P264MB0336.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:101:c::18)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AM8PR04MB7475.eurprd04.prod.outlook.com (2603:10a6:20b:1d4::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Wed, 17 Apr
+ 2024 14:45:13 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
+ 14:45:13 +0000
+Date: Wed, 17 Apr 2024 10:45:05 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Joy Zou <joy.zou@nxp.com>
+Cc: peng.fan@nxp.com, vkoul@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+	conor+dt@kernel.org, imx@lists.linux.dev, dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] dt-bindings: fsl-dma: fsl-edma: clean up unused
+ "fsl,imx8qm-adma" compatible string
+Message-ID: <Zh/gcSXV3ZPpjufh@lizhi-Precision-Tower-5810>
+References: <20240417032642.3178669-1-joy.zou@nxp.com>
+ <20240417032642.3178669-3-joy.zou@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417032642.3178669-3-joy.zou@nxp.com>
+X-ClientProxiedBy: SJ0P220CA0008.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:a03:41b::17) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,241 +79,101 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PR2P264MB0336:EE_|PR0P264MB2373:EE_
-X-MS-Office365-Filtering-Correlation-Id: 87d3c0e3-bf65-4825-a205-08dc5eecf528
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AM8PR04MB7475:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3b126ff0-180d-4720-fe97-08dc5eecfd70
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	+KI06xDi8qRz+62tRm663yZrDpPK0TnbqDGgFjBYR8zCx5S0NHdaHjMMGN8ulvKP1Pj05sLR7pPwtIjTQ8tQPLCI18kdxuie4WwAXWPzodwWbWBZRJfy4jIc7TZMjlWspEiM8twgwrim2phV3Ph1h5VlOkkHSnjVJOSHudjeR/KR2SZlin4XJHs0fQx+bYWWdDC4ECc2zI2eZylvQGazwUfmKzC5hCL+zQpEZwPQzc7sxhSue5+szHI8KpWehiLs4S0V8QRehn6tEPXpA/zc3LvZADGW1hxNkWQBo7bwrZjPnLDGm60ecaYTFxDTlxrc4VSKrTB/clJOuwM6jzvN0ueJJdaGDuqVK2d+qOTnpY9+SiBONuQUsP5yDi51ntjpT7rR2l0+/51WGIB+9z+Xi07V39rLIksjZXGIZOigfx5xz18S/Kt1z5aB9IBjhbbkAb3Ff+1gVnznZttVV5XBJFSf7OEKQwqLhCcNIpSUHMJWCAdupntGaIaO0h7gPY0BH/SXJv4DicvBRs7rTDXm18NWImyQ+WV3BsAkdV3WTJ3dJ4hPV/WlaUfmpMt7hnkCTqsz6z0Lj38FULGkv8y8qN2vBJQ7/Egfpf7sp/H6L+21UmRYi4/6yDpN1icp8naFLogpKEDpwrANhz1z0+lGhba8eubNUFVCmZJUnxS8ERo=
+	TSyaEr0BhhIzzYSmPEFH0fhPYBHe2SJf5FgB6BUn8jYFU9eYREYLZbljlIrzgY1j06fJuYwTqjG2YTRhAJqUew9/DjT7hw2/ezGva6L5npgRd05UMnv5HEanLHrJo7Hdv2ZS5LIMpIMNAXJ+2DE9TM/PkAyV+l8G4Rlg5dY8bwzsyYYRYrk1R6a7y3165aQqnWO051Wcx2S9owR21mp1Vo74jonQOK/sdhuOiH76r9oXdYDsOGYWWGRy+lvSt+FKuY6W/HYsXEE1TNY+6Hqxyzmn0GRXWjVpqfrfFFOugfaGtdA3itm9SypMAiESoZUeim4w6r8S0RByYlWuiuct0AIldyM0G4M6tItARXzvvJC4RH3WwY+yd/RS2HYmvGT9K/Hq1+HjEcnMSXXirIQppzsWEX66ooNGLjkzqDF7HKuX35bY09N/CNOzBAnFyrDOWS2bw2p8UgS5WBjrI4UHzqy4ktto6h6sVDP0hF8z+4LWbQtPg+e64n78MhnGZkAdK9UmrdqCN2rUa+F7jyJzPEpRpUrmrPhX2gskey1pl8zNUFMkiWpJY+IM0KUjlF9TJWtOFlUuftd3YkHdfejEjzNVd5EAYt0eIuN+eur+/TT58Se2o2+yU/uqa2muqqYGozcE1khzybe9+BmoStnEXl93P1GWn5zteBU8pIQ0EbG3scg2UpDLvWHK+fB2OBpejBGQUdjklS3FPvSOGSZrJF2R9Bz0UyPkeyCKTKrel8I=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR2P264MB0336.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(52116005)(366007)(7416005)(1800799015)(376005);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(52116005)(38350700005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?RqgGH8zY6L+R2vBXyyKrP1dkBe2nMVjUL1rt39ywcp0hZ5kwXL6UO+i4WFt7?=
- =?us-ascii?Q?fDTucMMZC2xYzTaXxuRriCqmcfTMOgurPhPsyQWQRku5Xo4TnMhiKmm9tlsE?=
- =?us-ascii?Q?zRLkCdAdURLBSyuqPm9WZhi3vWTTJbnAF8kvN9LrUR8xnKiCWGtQ/XsG7gJ7?=
- =?us-ascii?Q?Du4aPmCxyDuXzGGiBzXNbLujXvSBxM6z2KTDKs2io11nKQar6ODt0kpg9Eio?=
- =?us-ascii?Q?TnPQJsZ5HZ0KNmOsO+OGQgLwpSiGrUVKRdWcNXHXJ9EGKg6tlWHcVcM1Wz97?=
- =?us-ascii?Q?SxDeOgFNsZvA12LGiNR3NcVxWNGZyBOLaEgJdat6G4NzhhTIOyEXGyHXE0Y/?=
- =?us-ascii?Q?tmDsFH4a/KuRuhk2/+gF4ayeIc+IXIFQQiAIuEisy3J9aJtG0msF0/Z8vkGL?=
- =?us-ascii?Q?yZ5zBtQ2BI5TKBCP45ASvWscT89LorhR+PDCeUYVZgJD3mMk8l5Kknd47kVo?=
- =?us-ascii?Q?w7StJl/1u4ybBhJScsI8hKnsonZSNPse0KcFUHOg5q5vOrzct0FIBg1+MKnB?=
- =?us-ascii?Q?OtVZz4oZcwcqG6x/BraGy0/bwEd7RUTqqBc9z727AsHI9xNZzra5JFmv94eG?=
- =?us-ascii?Q?Xx/cnPmIjEJt7tse/LFpKuFkQWqbHOa2Dbwfh0ZOU+1iltgcaWi+BNT1rhbu?=
- =?us-ascii?Q?qupbB8jkil2asei45ZoTWE29hGZNmAI+tZEls9RgMzoidSeEwtWVb8b/D9dT?=
- =?us-ascii?Q?0DcArFfSd3I53S2g4HSnUPHaXHQ22cGTPpYuczJCAJmwctWqWYwUvPRD1CDT?=
- =?us-ascii?Q?bxYOrG/K1rLUsT0WicMpjKrI7fTT3QgbqAEmIq/VdcgrB7PhV7sTvSSVF5gU?=
- =?us-ascii?Q?gVkHjbIMbZGKf4YXZK8RvlcjiS1y0emrEvB1wtXkpdoEOhc3jW7IoHCcipi4?=
- =?us-ascii?Q?7GuwZftve6du58/7p+9m7KSvXUe+2RbS7FnylILTqKpfHcK+x7D9VfnT/umT?=
- =?us-ascii?Q?p2iuDhNyKmtRAxEOd7TrvyY29Dwk6GepQetXjW0YWtqCdbb1ew1hMDhN1OH5?=
- =?us-ascii?Q?0KrNcYVSJntbZBz/p38LF3xezQXBgv1ydochKriH6p/KbpLjxGQ9U+q+CGeN?=
- =?us-ascii?Q?bDbYj6Ycj9DGKvCiSmXEf/i07hBha9a+fzbOEh5nEcBeqlh4uF7yOwsGS3Bo?=
- =?us-ascii?Q?2em2RHasOzSNLAg0dcXuY74FAKSq61M6t6nAcHONb5pg7GToNdpGn4U0iDBq?=
- =?us-ascii?Q?hnFN1HDCQW4CNBW/CAjPOhVyFLiwavjQB+0V/faB9ZPs3r0ZZZq2eDYiJFKJ?=
- =?us-ascii?Q?ywlLKHBRB/kMyAtXDKwgudZOmQDATqNCUuXhl4upY/LGuHrR2zdhFBxgksxr?=
- =?us-ascii?Q?50GCYXSAMxpab5PqZ/KBiZEfyIwxZ130OBB35kBg9X3cVjLzzA29EzV0k5/w?=
- =?us-ascii?Q?zjBX7hUe45vKhr3+ajPwd+Yutgruk3RSmGDRAsTPIVqJg6KQZ7ePMQYBQi72?=
- =?us-ascii?Q?0zW2mbL+0KDibGoTfZu/ELmFSE8CpAL09hWRzUhQBN8QEkg2YD36uJprJsIM?=
- =?us-ascii?Q?C5CQc3jVEao9iuKIY1uLEqC0Wg90gXE3Yfo3Del6ChrnQGxq0e9VbV9mJ99S?=
- =?us-ascii?Q?foMO4qFoi16yOh2jDAdfklIaBzpcCRIi1dXWuON6u8k31PZ9hnG9kE7FGvbo?=
- =?us-ascii?Q?T0xhVIhng+t1jq7Z60jV2j/lcejTsv8G4VvjomOq1EQW5gi3fNzfXPBrfnVi?=
- =?us-ascii?Q?HKpbSA=3D=3D?=
-X-OriginatorOrg: softathome.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87d3c0e3-bf65-4825-a205-08dc5eecf528
-X-MS-Exchange-CrossTenant-AuthSource: PR2P264MB0336.FRAP264.PROD.OUTLOOK.COM
+	=?us-ascii?Q?yNRwJmDgJaX81ZLq2e6RyqXKILF1pSUNyWw37W3QELe/9ia24g0lYpSmOjFD?=
+ =?us-ascii?Q?fpO2rK6KMhDx16Lj81QVXbCrdhT2SvS3h1LGYZMuJ72ujb+ZUJFXqiIkvN9d?=
+ =?us-ascii?Q?+ExS7A9mFBIH1Bf2e71AGvnvXQ+xyAEu9+4i57RdHAWI/+XOITjuacmcm+JZ?=
+ =?us-ascii?Q?vVRNwpTaGWK0rS1UvoHQqVkY1dE9sdunW+cULbNwOQM+jG8/O2reG0KQRXQB?=
+ =?us-ascii?Q?53k/ikrlcq7day9Ez5pt5r+Nzu4FaUHI1A8PIDRXoXYeXHcUGTkRf1m/5Zk6?=
+ =?us-ascii?Q?4ezYR97lqlZ6LtqIKtFOpmIe957zkywibQXl1F3MY/eiXzoKGWObUayPoot9?=
+ =?us-ascii?Q?uuHAaDeoI1NnOX9RVRKsK6np96M7EvPWh2nxz5JPPO0gs9nRBFFxzdx2MmWP?=
+ =?us-ascii?Q?zWwDONoQMVmkAcbwVbPF6jWNQLkrBBzDQWeei1RE6xqRtrUB8FF/ejc+Wf7C?=
+ =?us-ascii?Q?Kpp13Tr79lDE6klXehDmyTRxaY075nyOVtA0nibeLUCNROIA9zKHjJWTaNpe?=
+ =?us-ascii?Q?/LNZSPywuW9UWAl/NqkItCgfXWexIdTqAwqC1RgTGKB33N3ID96R6CQVQzl+?=
+ =?us-ascii?Q?AqKqWpLt/schxNYcqjvcHoTNdvq1Y1Dv3DyFfqVonxR5Ow7UOt5wxi9Ya98I?=
+ =?us-ascii?Q?iF9jRi3+6bRWno3/Ef02TcOaNrj6jcs38Snx8XCOUVX4KIhNgvtjrfJaS9o4?=
+ =?us-ascii?Q?oMjspBbAZSW+sa5G5BD2gRoEa2OT6A3/stqOV/eEYvCaDt7ONtjEhjl1vULb?=
+ =?us-ascii?Q?/SVRp7upqUlIEvzaDVTM0eElxQW/aZN64KaWq5Zl39jGlXlVQhr92AtUyX2e?=
+ =?us-ascii?Q?H7Vp6/GR5ZZpm2MyIzqeNntLea0lWqmnQOWI3o5OAIzZamWfOjC3hIN+NxgD?=
+ =?us-ascii?Q?CTNWt3b8KSXSI/gkYh5VYtaAm28qiLe/5pUol7ZxHyaIZj3Tu+ic//JQ3Hr+?=
+ =?us-ascii?Q?ZcdKydrzm4hhXfNNwQtGU1VukacQSo2qIEfGQMkFFWTvrkkcefok9yiK3R0g?=
+ =?us-ascii?Q?tjrVCouKHu2oio+JkKR/hQnT6MkI2P1dEMi6N0p+mg4jqTlysxSEz/fbrcCY?=
+ =?us-ascii?Q?RhZFGSXedK9fZEBRCnX9BUdvmyafDYFAJhBSB2xGLo2WW6DICQ1WHMv19cvs?=
+ =?us-ascii?Q?zCQU49wtYYt00n6UijdK5kVpZGvFjpP1ixDgyPuZdgm3GVHasY4Tsahjbaeg?=
+ =?us-ascii?Q?Nku1ca4moVhF3vLQtc107ZZlantPB0ubLiqMB7wy8m6TxmnSfU+VCH3CS/wN?=
+ =?us-ascii?Q?f6yj78n0/a/vcNSDDC42XmIkStVS+rET7MNuikwfZkte/egvgWVpOJxFK2AH?=
+ =?us-ascii?Q?seELJo5n9XQEOUC1mHEVlbAzkM8reivevrBXCmkAkPvQYFJBr8RtN+8R1EE2?=
+ =?us-ascii?Q?MJb0pWLTG76GDP4aP2EdcffVNDyItfrPuUPUXwuFF4dA2swS6whkb5J+RWt8?=
+ =?us-ascii?Q?T3rcArp+d7Q5wl2NO3UoZRFo7JFhf+VC3dbYY3xcOtCB3qS56TTN51Tzy0eg?=
+ =?us-ascii?Q?MjJ+AH6gJoqrnzEeIKtsF0lyuLC+xtJ2cpU26tPaitI1a7XkPSn2RSMON8gF?=
+ =?us-ascii?Q?odcBZA6rHmRP9W5pSlycI1hvpVnsKtyUTIrpja0I?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b126ff0-180d-4720-fe97-08dc5eecfd70
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 14:44:59.9532
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 14:45:13.8223
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: aa10e044-e405-4c10-8353-36b4d0cce511
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7TfNJgbAO1YnO5Lcx5zMUpBuQSzj+x0uAAGmEpE+KHeXqsMqk7mMW4va7xv7Dr3cBYA38qbtXAr4d0cDCdlyt0iU6eqNBo2njJGOrdgVTpk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB2373
+X-MS-Exchange-CrossTenant-UserPrincipalName: guv44Fg44lM2bRgWnP3/dL9ZocHWCAIHLfZ/ipkLyNHQ7PvbolkjAd3gjmwP73z0swjcC1jQOBwaKfIoPBe/cg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7475
 
-This allows to detect memory leaks more easily, by reporting net
-allocation bytes per caller or pointer in a new column.
+On Wed, Apr 17, 2024 at 11:26:42AM +0800, Joy Zou wrote:
+> The eDMA hardware issue only exist imx8QM A0. A0 never mass production.
+> The compatible string "fsl,imx8qm-adma" is unused. So remove the
+> workaround safely.
+> 
+> Signed-off-by: Joy Zou <joy.zou@nxp.com>
 
-This also adds a "net" sort key, so that "perf kmem --caller -s net stat"
-reports the main leakers first.
+"So remove it safely." 
 
-Signed-off-by: Olivier Blin <olivier.blin@softathome.com>
----
- tools/perf/builtin-kmem.c | 54 ++++++++++++++++++++++++++++++---------
- 1 file changed, 42 insertions(+), 12 deletions(-)
+There are no 'workaround' in bindings doc. after fix it,
 
-diff --git a/tools/perf/builtin-kmem.c b/tools/perf/builtin-kmem.c
-index 6fd95be5032b..59bdca64b22b 100644
---- a/tools/perf/builtin-kmem.c
-+++ b/tools/perf/builtin-kmem.c
-@@ -64,6 +64,7 @@ struct alloc_stat {
-        u64     bytes_req;
-        u64     bytes_alloc;
-        u64     last_alloc;
-+       s64     net_alloc;
-        u32     hit;
-        u32     pingpong;
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
 
-@@ -118,6 +119,7 @@ static int insert_alloc_stat(unsigned long call_site, u=
-nsigned long ptr,
-                data->hit =3D 1;
-                data->bytes_req =3D bytes_req;
-                data->bytes_alloc =3D bytes_alloc;
-+               data->net_alloc =3D 0;
-
-                rb_link_node(&data->node, parent, node);
-                rb_insert_color(&data->node, &root_alloc_stat);
-@@ -125,6 +127,7 @@ static int insert_alloc_stat(unsigned long call_site, u=
-nsigned long ptr,
-        data->call_site =3D call_site;
-        data->alloc_cpu =3D cpu;
-        data->last_alloc =3D bytes_alloc;
-+       data->net_alloc +=3D bytes_alloc;
-
-        return 0;
- }
-@@ -163,11 +166,14 @@ static int insert_caller_stat(unsigned long call_site=
-,
-                data->hit =3D 1;
-                data->bytes_req =3D bytes_req;
-                data->bytes_alloc =3D bytes_alloc;
-+               data->net_alloc =3D 0;
-
-                rb_link_node(&data->node, parent, node);
-                rb_insert_color(&data->node, &root_caller_stat);
-        }
-
-+       data->net_alloc +=3D bytes_alloc;
-+
-        return 0;
- }
-
-@@ -254,14 +260,19 @@ static int evsel__process_free_event(struct evsel *ev=
-sel, struct perf_sample *sa
-
-        total_freed +=3D s_alloc->last_alloc;
-
-+       s_alloc->net_alloc -=3D s_alloc->last_alloc;
-+
-+       s_caller =3D search_alloc_stat(0, s_alloc->call_site,
-+                                    &root_caller_stat,
-+                                    slab_callsite_cmp);
-+       if (!s_caller)
-+               return -1;
-+
-+       s_caller->net_alloc -=3D s_alloc->last_alloc;
-+
-        if ((short)sample->cpu !=3D s_alloc->alloc_cpu) {
-                s_alloc->pingpong++;
-
--               s_caller =3D search_alloc_stat(0, s_alloc->call_site,
--                                            &root_caller_stat,
--                                            slab_callsite_cmp);
--               if (!s_caller)
--                       return -1;
-                s_caller->pingpong++;
-        }
-        s_alloc->alloc_cpu =3D -1;
-@@ -1010,10 +1021,10 @@ static void __print_slab_result(struct rb_root *roo=
-t,
-        struct rb_node *next;
-        struct machine *machine =3D &session->machines.host;
-
--       printf("%.105s\n", graph_dotted_line);
-+       printf("%.117s\n", graph_dotted_line);
-        printf(" %-34s |",  is_caller ? "Callsite": "Alloc Ptr");
--       printf(" Total_alloc/Per | Total_req/Per   | Hit      | Ping-pong |=
- Frag\n");
--       printf("%.105s\n", graph_dotted_line);
-+       printf(" Total_alloc/Per | Total_req/Per   | Hit      | Net_alloc |=
- Ping-pong | Frag\n");
-+       printf("%.117s\n", graph_dotted_line);
-
-        next =3D rb_first(root);
-
-@@ -1039,12 +1050,13 @@ static void __print_slab_result(struct rb_root *roo=
-t,
-                        snprintf(buf, sizeof(buf), "%#" PRIx64 "", addr);
-                printf(" %-34s |", buf);
-
--               printf(" %9llu/%-5lu | %9llu/%-5lu | %8lu | %9lu | %6.3f%%\=
-n",
-+               printf(" %9llu/%-5lu | %9llu/%-5lu | %8lu | %9lld | %9lu | =
-%6.3f%%\n",
-                       (unsigned long long)data->bytes_alloc,
-                       (unsigned long)data->bytes_alloc / data->hit,
-                       (unsigned long long)data->bytes_req,
-                       (unsigned long)data->bytes_req / data->hit,
-                       (unsigned long)data->hit,
-+                      (long long)data->net_alloc,
-                       (unsigned long)data->pingpong,
-                       fragmentation(data->bytes_req, data->bytes_alloc));
-
-@@ -1052,9 +1064,9 @@ static void __print_slab_result(struct rb_root *root,
-        }
-
-        if (n_lines =3D=3D -1)
--               printf(" ...                                | ...          =
-   | ...             | ...      | ...       | ...   \n");
-+               printf(" ...                                | ...          =
-   | ...             | ...      | ...       | ...       | ...   \n");
-
--       printf("%.105s\n", graph_dotted_line);
-+       printf("%.117s\n", graph_dotted_line);
- }
-
- static const char * const migrate_type_str[] =3D {
-@@ -1496,6 +1508,23 @@ static struct sort_dimension bytes_sort_dimension =
-=3D {
-        .cmp    =3D bytes_cmp,
- };
-
-+static int net_cmp(void *a, void *b)
-+{
-+       struct alloc_stat *l =3D a;
-+       struct alloc_stat *r =3D b;
-+
-+       if (l->net_alloc < r->net_alloc)
-+               return -1;
-+       else if (l->net_alloc > r->net_alloc)
-+               return 1;
-+       return 0;
-+}
-+
-+static struct sort_dimension net_sort_dimension =3D {
-+       .name   =3D "net",
-+       .cmp    =3D net_cmp,
-+};
-+
- static int frag_cmp(void *a, void *b)
- {
-        double x, y;
-@@ -1667,6 +1696,7 @@ static struct sort_dimension *slab_sorts[] =3D {
-        &callsite_sort_dimension,
-        &hit_sort_dimension,
-        &bytes_sort_dimension,
-+       &net_sort_dimension,
-        &frag_sort_dimension,
-        &pingpong_sort_dimension,
- };
-@@ -1951,7 +1981,7 @@ int cmd_kmem(int argc, const char **argv)
-        OPT_CALLBACK_NOOPT(0, "alloc", NULL, NULL,
-                           "show per-allocation statistics", parse_alloc_op=
-t),
-        OPT_CALLBACK('s', "sort", NULL, "key[,key2...]",
--                    "sort by keys: ptr, callsite, bytes, hit, pingpong, fr=
-ag, "
-+                    "sort by keys: ptr, callsite, bytes, hit, net, pingpon=
-g, frag, "
-                     "page, order, migtype, gfp", parse_sort_opt),
-        OPT_CALLBACK('l', "line", NULL, "num", "show n lines", parse_line_o=
-pt),
-        OPT_BOOLEAN(0, "raw-ip", &raw_ip, "show raw ip instead of symbol"),
---
-2.34.1
-
--- This message and any attachments herein are confidential, intended solel=
-y for the addressees and are SoftAtHome=E2=80=99s ownership. Any unauthoriz=
-ed use or dissemination is prohibited. If you are not the intended addresse=
-e of this message, please cancel it immediately and inform the sender.
+> ---
+> Changes for v4:
+> 1. adjust the subject to keep consistent with existing patches.
+> 
+> Changes for v3:
+> 1. modify the commit message.
+> 2. remove the unused compatible string "fsl,imx8qm-adma" from allOf property.
+> ---
+>  Documentation/devicetree/bindings/dma/fsl,edma.yaml | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/fsl,edma.yaml b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+> index 825f4715499e..cf97ea86a7a2 100644
+> --- a/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+> +++ b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+> @@ -21,7 +21,6 @@ properties:
+>        - enum:
+>            - fsl,vf610-edma
+>            - fsl,imx7ulp-edma
+> -          - fsl,imx8qm-adma
+>            - fsl,imx8qm-edma
+>            - fsl,imx8ulp-edma
+>            - fsl,imx93-edma3
+> @@ -92,7 +91,6 @@ allOf:
+>          compatible:
+>            contains:
+>              enum:
+> -              - fsl,imx8qm-adma
+>                - fsl,imx8qm-edma
+>                - fsl,imx93-edma3
+>                - fsl,imx93-edma4
+> -- 
+> 2.37.1
+> 
 
