@@ -1,138 +1,126 @@
-Return-Path: <linux-kernel+bounces-148539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FD188A8424
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:19:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79BA28A8420
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:19:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF12C2823DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:19:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2ECCB1F2143A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:19:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C3D913F443;
-	Wed, 17 Apr 2024 13:18:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Z3MjoS6v"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD95B13EFF4;
+	Wed, 17 Apr 2024 13:18:46 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A632713D8B4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B5113C3E0;
 	Wed, 17 Apr 2024 13:18:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713359927; cv=none; b=Dgnu129MuB4wDwVLHVRW+9r8SH+MJVVFB8zHHyJKL5Un9IEeNg22ZWpsEOlcJgS9emiA43cSqNlZBrzAHOjS53F8RXXm/cLtLIoCZmkbzYO5QVSOF8GEEXzKV+h+eybcpMPb4Wb00fSOBTYRmi5UjDTwHFoVRWe+GA7oKLg9ILo=
+	t=1713359926; cv=none; b=VH6GWKU+19IEllNnbNB37hYWcATvwO6jbcjdBEp2LzHIU/lD0ARJm3JcHqjFE1WyZn45DTyQkZpYsQ5PkgKJzzHHprQKE05+2J33DB7kTG2SK9v+8xPQ1vapRWC4V7OhoHDqB+KCzhm/hYPQMS1QVQnH6mVpAGyTNMOATNepgRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713359927; c=relaxed/simple;
-	bh=RuHzYN0ZhBqkJDC8Ui0Nm3edOOTTp2WF+RIcT7keQlQ=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=gWT4X/GeaRpwHdRTTaZ1KdpL3y4y1lSidFQKcc7IJATTpFPsdlJezY8T2mfnxJg3uLDwd/7vmSPrUDdV/HKX34NyZYRLEe9y7gUHpasNUROBSB1mdBeaxK/JiJ54NL2zjFDWCVIlCKbh682DoL80cYtfFfYRrR5ssxgfr3F13R8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Z3MjoS6v; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713359925; x=1744895925;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=RuHzYN0ZhBqkJDC8Ui0Nm3edOOTTp2WF+RIcT7keQlQ=;
-  b=Z3MjoS6vLhbve00pn1jDDBm7HFc2hDU1ueBEYggr1dl40gb0FVbSGQNq
-   527vgUnegtKGMHQE3ZdNaSBTVsHDnysFd1u4BSIjIhZ3erhDQCXsxWK4h
-   bPrdECyLiAi83ipfRR/z85C9kKKrCqU0QsOOkZJpFtpLE5Y78jmftwpfo
-   4nzLi2z+PWYymcUHTrAEevS45zmyF+y4dqKzKxJuObZyhv5H4d0VBhSAR
-   tpZKudrHh9ZRPWBJDgoNmBK8rIgA/RhydoASDq7UEllnDd/HIXJP/m3TC
-   Qsr+X76Ztf+nLvAWc7OFDnsA/usvcKpHoiQRz8hOmJ7WGxtNcHGG3GPOw
-   Q==;
-X-CSE-ConnectionGUID: /GM8inDWTMuHvj7DRy79ng==
-X-CSE-MsgGUID: DaTE+ZnUSsO//O4LdEDRjA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="9018534"
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="9018534"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 06:18:44 -0700
-X-CSE-ConnectionGUID: sMzf6z22SD618eNgS1KsNw==
-X-CSE-MsgGUID: FJFoLFuUSRyFr4MWccoxdg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="23211608"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.35])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 06:18:41 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 17 Apr 2024 16:18:37 +0300 (EEST)
-To: Shravan Kumar Ramani <shravankr@nvidia.com>
-cc: Hans de Goede <hdegoede@redhat.com>, Vadim Pasternak <vadimp@nvidia.com>, 
-    David Thompson <davthompson@nvidia.com>, 
-    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/3] platform/mellanox: mlxbf-pmc: Add support for
- 64-bit counters and cycle count
-In-Reply-To: <aec3aaa44a5738940b2511726177976336a6c72d.1713334019.git.shravankr@nvidia.com>
-Message-ID: <e77f01b4-f314-6822-8533-95f37a42cd4f@linux.intel.com>
-References: <cover.1713334019.git.shravankr@nvidia.com> <aec3aaa44a5738940b2511726177976336a6c72d.1713334019.git.shravankr@nvidia.com>
+	s=arc-20240116; t=1713359926; c=relaxed/simple;
+	bh=zDIOvTM9o+jTTu1NNu/JxBSI7hr2E1MIf2PNjleRc6M=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=E+vqVJ3DJFADe/ZYNvQBNRRJpDHVa85yCQS3098DJ4Zhn2MBEVtbaqS0cwQ8LNv9j998iPUI7ymWAaUbB4ZHXxmNeOZxYlbbw3m475uWaNf8KfnbZ0UJBgRuOc5WO/NVyGU9eekzGRa02luZO14qIVzwcV28H4XfQfXjqExKh1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VKLxQ3gh3zXlNZ;
+	Wed, 17 Apr 2024 21:15:22 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 812AD140485;
+	Wed, 17 Apr 2024 21:18:41 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 17 Apr
+ 2024 21:18:41 +0800
+Subject: Re: [PATCH net-next v2 07/15] mm: page_frag: add '_va' suffix to
+ page_frag API
+To: Alexander H Duyck <alexander.duyck@gmail.com>, <davem@davemloft.net>,
+	<kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Jeroen de Borst
+	<jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+	Shailend Chand <shailend@google.com>, Eric Dumazet <edumazet@google.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen
+	<anthony.l.nguyen@intel.com>, Sunil Goutham <sgoutham@marvell.com>, Geetha
+ sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
+	hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, Sean Wang
+	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
+ Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Keith
+ Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
+	<hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, Chaitanya Kulkarni
+	<kch@nvidia.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang
+	<jasowang@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong
+ Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+	<jolsa@kernel.org>, David Howells <dhowells@redhat.com>, Marc Dionne
+	<marc.dionne@auristor.com>, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton
+	<jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga Kornievskaia
+	<kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
+	<tom@talpey.com>, Trond Myklebust <trond.myklebust@hammerspace.com>, Anna
+ Schumaker <anna@kernel.org>, <intel-wired-lan@lists.osuosl.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<linux-nvme@lists.infradead.org>, <kvm@vger.kernel.org>,
+	<virtualization@lists.linux.dev>, <linux-mm@kvack.org>,
+	<bpf@vger.kernel.org>, <linux-afs@lists.infradead.org>,
+	<linux-nfs@vger.kernel.org>
+References: <20240415131941.51153-1-linyunsheng@huawei.com>
+ <20240415131941.51153-8-linyunsheng@huawei.com>
+ <18ca19fa64267b84bee10473a81cbc63f53104a0.camel@gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <74e7259a-c462-e3c1-73ac-8e3f49fb80b8@huawei.com>
+Date: Wed, 17 Apr 2024 21:18:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <18ca19fa64267b84bee10473a81cbc63f53104a0.camel@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-On Wed, 17 Apr 2024, Shravan Kumar Ramani wrote:
-
-> Add support for programming any counter to monitor the cycle count.
-> Since counting of cycles using 32-bit ocunters would result in frequent
-> wraparounds, add the ability to combine 2 adjacent 32-bit counters to
-> form 1 64-bit counter.
-> Both these features are supported by BlueField-3 PMC hardware, hence
-> the required bit-fields are exposed by the driver via sysfs to allow
-> the user to configure as needed.
+On 2024/4/17 0:12, Alexander H Duyck wrote:
+> On Mon, 2024-04-15 at 21:19 +0800, Yunsheng Lin wrote:
+>> Currently most of the API for page_frag API is returning
+>> 'virtual address' as output or expecting 'virtual address'
+>> as input, in order to differentiate the API handling between
+>> 'virtual address' and 'struct page', add '_va' suffix to the
+>> corresponding API mirroring the page_pool_alloc_va() API of
+>> the page_pool.
+>>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 > 
-> Signed-off-by: Shravan Kumar Ramani <shravankr@nvidia.com>
-> Reviewed-by: David Thompson <davthompson@nvidia.com>
-> Reviewed-by: Vadim Pasternak <vadimp@nvidia.com>
-> ---
+> This patch is a total waste of time. By that logic we should be
+> renaming __get_free_pages since it essentially does the same thing.
+> 
+> This just seems like more code changes for the sake of adding code
+> changes rather than fixing anything. In my opinion it should be dropped
+> from the set.
 
-> @@ -1799,6 +1902,37 @@ static int mlxbf_pmc_init_perftype_counter(struct device *dev, unsigned int blk_
->  		attr = NULL;
->  	}
->  
-> +	if (pmc->block[blk_num].type == MLXBF_PMC_TYPE_CRSPACE) {
-> +		/*
-> +		 * Couple adjacent odd and even 32-bit counters to form 64-bit counters
-> +		 * using "use_odd_counter" sysfs which has one bit per even counter.
-> +		 */
-> +		attr = &pmc->block[blk_num].attr_use_odd_counter;
-> +		attr->dev_attr.attr.mode = 0644;
-> +		attr->dev_attr.show = mlxbf_pmc_use_odd_counter_show;
-> +		attr->dev_attr.store = mlxbf_pmc_use_odd_counter_store;
-> +		attr->nr = blk_num;
-> +		attr->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
-> +							  "use_odd_counter");
-> +		if (!attr->dev_attr.attr.name)
-> +			return -ENOMEM;
-> +		pmc->block[blk_num].block_attr[++i] = &attr->dev_attr.attr;
-> +		attr = NULL;
-> +
-> +		/* Program crspace counters to count clock cycles using "count_clock" sysfs */
-> +		attr = &pmc->block[blk_num].attr_count_clock;
-> +		attr->dev_attr.attr.mode = 0644;
-> +		attr->dev_attr.show = mlxbf_pmc_count_clock_show;
-> +		attr->dev_attr.store = mlxbf_pmc_count_clock_store;
-> +		attr->nr = blk_num;
-> +		attr->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
-> +							  "count_clock");
-> +		if (!attr->dev_attr.attr.name)
-> +			return -ENOMEM;
-> +		pmc->block[blk_num].block_attr[++i] = &attr->dev_attr.attr;
-> +		attr = NULL;
-> +	}
+The rename is to support different use case as mentioned below in patch
+14:
+"Depending on different use cases, callers expecting to deal with va, page or
+both va and page for them may call page_frag_alloc_va*, page_frag_alloc_pg*,
+or page_frag_alloc* API accordingly."
 
-Hi,
+Naming is hard anyway, I am open to better API naming for the above use cases.
 
-What was the reason why this driver could not use .dev_groups to setup 
-sysfs (filtering can be done with .is_visible)?
-
-
--- 
- i.
-
+> 
+> .
+> 
 
