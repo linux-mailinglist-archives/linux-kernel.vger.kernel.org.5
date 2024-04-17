@@ -1,307 +1,151 @@
-Return-Path: <linux-kernel+bounces-149242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BB818A8D9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 23:16:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F18CE8A8DA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 23:18:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F6541C2170F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:16:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A782F1F21139
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:18:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC7F524D9;
-	Wed, 17 Apr 2024 21:16:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF51E4CB36;
+	Wed, 17 Apr 2024 21:18:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="khHF4Kla"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j8S6ewoQ"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E699B37163;
-	Wed, 17 Apr 2024 21:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3AA68F4A;
+	Wed, 17 Apr 2024 21:18:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713388590; cv=none; b=Fb6SwUEs7UoKjBJ2QA9KQxmcSBn5xhcvGINp31msiVbRvIbFgiRL2pNF7KuI49gqPrkq4XfQXV6HiJnoqdLp/XeS/mGRv5+Db7ozOQgcI6qXw6e8PwdxP3bii+/gLB04kSuubQuPpfnpNDA9+Dh5z1gwJoj0pU80kw/PVFZLIJo=
+	t=1713388687; cv=none; b=LnuZegQlxbWfbhpIi2WJ3de4ejQsGt4SP2hVWSpvaeyXgS74RxKI459EVrxZh8omFckhgPfP2fHVC0NEznRD7ldEQR8LtixNGUa5tnsuMQ2tKzs3hLZMAFMSm07YpEFdKmT2JGrpKW5XI+yCnD5ESylPJ9nGPqKIe5dKEGVgzcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713388590; c=relaxed/simple;
-	bh=B8k0rdHz9AorZ8E2yhSratxIp+xQyckEI2Rmzx/g7NU=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=LPTiKs8f4AuOvfeUrrNb1DM34aiufJkWTygzrOoYosu1gc2ONV9C+t2FrTXjJ6xKAsQrqa+/cPxaU4xf9Qt4BJpW0KbcG3i8xwkcgQad2f7InXq5EeFxuaEaNPHm9gDxguf85voPG0J1yFv0OzohNlMAtLVvp9DAwEqnBEFmHCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=khHF4Kla; arc=none smtp.client-ip=209.85.210.171
+	s=arc-20240116; t=1713388687; c=relaxed/simple;
+	bh=fV/GBBG8Y1zKgQp11Kn4djvNyTsBgHc++2ZKipKlH/8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=J4rmhq+ywRXcyOY1YTCirhTKaOK0hb8++V4lK3Sm3h5sTxa8uZcsHIpGku0/FBdnHCXgj+nVArPBVXIlrex84YOYVG5VcDFRcRbokwnTzKZr8bNjKbSvQqCkEJl+K+N7xK5UtHZ0h68RQwIbm49SZ/uetkG4brbeZ6SmAuMh+Bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j8S6ewoQ; arc=none smtp.client-ip=209.85.208.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ecff9df447so246412b3a.1;
-        Wed, 17 Apr 2024 14:16:27 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2da01cb187cso3485431fa.0;
+        Wed, 17 Apr 2024 14:18:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713388587; x=1713993387; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1713388684; x=1713993484; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bn6gtyCUSwijw+6XX0qI9C//f05i55ZPnAFUJjnUL90=;
-        b=khHF4KlaSlUMwRvFnAXhT6aAxJ3H68ONM4EQimKS2OKWfrU1FYu0io1xoX1A9DAmAJ
-         tmnkQSYsVBEOMddjskYVEcjEAKKDopw9g54KZILywLdzaC2FtRNU31+56ks3TjHoOWhh
-         GwDkjYwHhxo2Tt6tZTCpGW7aQ7SXyLj2wLyvZO3CwLseY3mgTlvbe+M9nBWyJJI1Vcbo
-         nSCjoqit9MzsEHoUrx+F1R+Eg30wNT+4yfI+2iNAPyM0yJ7STovIxe8svR5hEuLxWODm
-         mUNEFLDU6FMGPPgU5kE28S1UkwkUy2I/Zwl+Cv2QObvDWySvkz63OiG3XVYeLP2nw/bK
-         a7Cw==
+        bh=MBkaCbNjydmVkpZXUhiI4uQ6IPkbRea+BjBhJXBTlwg=;
+        b=j8S6ewoQGak6o5Rk1OGQgZ6JGPd00pUJSgF4CvNwiuJwPJ7NsVzKV3OrqiXbq0E2t7
+         mIe33LIy4zA50Eyan2NvMyeKRg/MvGBQ+ZjSUn7zWP4dR5TFvWOtDNcT4YGjHxciGQOW
+         SKCqVC8w4rhyq73wBUmhuaz5MHVURZj5mn4DXkwJFM80bNWEs/7X2x41GepVPitj4QzY
+         cvMRFWZcPUvZzfx+k96ux944E3CiGNcnXTD3kyrtpJVqa3ANmYlKrIILTEamIWDQGiOm
+         Oy5LQitTI7cDZNRzAYkfFpS1RHoeYvovyM1ocnjxrEIuYpWFK1cHY//SRDmEg9kyxjFC
+         pXYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713388587; x=1713993387;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1713388684; x=1713993484;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bn6gtyCUSwijw+6XX0qI9C//f05i55ZPnAFUJjnUL90=;
-        b=M3/IA/K22jTkCMxKHWvjJkgbaURynhyohVoFjHIWq0vPni4RqWDy0lkN4f71dqIVQ/
-         ZErYYIctjlUo1+wNN03dt9BLA92BN8+ZlYEyKwHKCOU9dvM8vyG0SUYfymmzDAErekah
-         F1ng65h2iH/jW2CUk36p162s4BqKHt1V/gyraLwHOpryHVxrLnzZcxjrpkOcA7f87iB5
-         fVRhZd+KddYvFfs0q16z3Az9MbhXmrF+J1y7DkA1rNvnfIqhyk9Qk3rta666VbJSOxhJ
-         GclwCYPvkF8T6etLCmjiKbfQrZCUtNHnog3LxApaa+94K/k/3ElUtFvOJ2Nqqm8fxEWK
-         8ykQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVqHeWQcmAEHHGDr1dQDsAbZE/GS3Ya+mLKsQB4SJvT1+S2f+HwwvxX1ev+6fqPPqiOFO1wRN/XlfvB+52EKga7kPgfOEa2YqMw2xSEw57FnYnTLKRxAvkFmaOnWoAirAj2r6T3ivK2MnVMZwNix/iiCBEKT0xUKsgfz2S6EEWcSb+UKuvhMizS3nIz6k6Si6Vc7DkMfiPQsJhcUeUW/e7lIHtFzZnXwzihNUW332J9+v7fD9XXO7+8qSjmx1VKVAicYb3l0M9IDCjInVnarvaAr3kJDfQPggdz7txg45nd0cfFUdzCDElSMimzJKnrBi+XpOxnDXr68f+bA8D6mtisMSI0L6MrlRDR9cKF9lbe8WWhnt3kNv6ytgiecOCqRC0GdeV4lt9C3ld0QyQ=
-X-Gm-Message-State: AOJu0YyjfYlFiKm9ztD6Ofy37xWf1oxygn1iqh1RnM4uyXAF8T5Z/1w2
-	paOAaB33F8rnT6gjGBN2ueaB//zXiP64KK16F/2kfO1eMXiFPx2K
-X-Google-Smtp-Source: AGHT+IGaiPoLXXXpVrpLOJx1iAETWJgKsjUW+rWbh5/bn42gLXIa3/rbbH0xm62Oxp9IYd0WoUIt9A==
-X-Received: by 2002:aa7:8884:0:b0:6eb:1d5:6e43 with SMTP id z4-20020aa78884000000b006eb01d56e43mr962657pfe.11.1713388587052;
-        Wed, 17 Apr 2024 14:16:27 -0700 (PDT)
-Received: from devnote2 (113x37x226x201.ap113.ftth.ucom.ne.jp. [113.37.226.201])
-        by smtp.gmail.com with ESMTPSA id h3-20020a056a00218300b006ed4aa9d48esm110372pfi.212.2024.04.17.14.16.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 14:16:26 -0700 (PDT)
-Date: Thu, 18 Apr 2024 06:16:15 +0900
-From: Masami Hiramatsu <masami.hiramatsu@gmail.com>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
- Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Christophe
- Leroy <christophe.leroy@csgroup.eu>, "David S. Miller"
- <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, Donald Dutile
- <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, Heiko Carstens
- <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen
- <chenhuacai@kernel.org>, Kent Overstreet <kent.overstreet@linux.dev>, Luis
- Chamberlain <mcgrof@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Michael Ellerman <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Puranjay Mohan <puranjay12@gmail.com>,
- Rick Edgecombe <rick.p.edgecombe@intel.com>, Russell King
- <linux@armlinux.org.uk>, Song Liu <song@kernel.org>, Steven Rostedt
- <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
- bpf@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
- linux-mm@kvack.org, linux-modules@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
- netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 14/15] kprobes: remove dependency on CONFIG_MODULES
-Message-Id: <20240418061615.5fad23b954bf317c029acc4d@gmail.com>
-In-Reply-To: <20240411160051.2093261-15-rppt@kernel.org>
-References: <20240411160051.2093261-1-rppt@kernel.org>
-	<20240411160051.2093261-15-rppt@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        bh=MBkaCbNjydmVkpZXUhiI4uQ6IPkbRea+BjBhJXBTlwg=;
+        b=ZH6/qC9HzzTffDrcPnL6pKadCoD9K9nGE6dpXrPQhVnUZ7R1dVeLwhvdbVg5CHAJ29
+         sAk9JFEExrUgMvaogwaKfGjaB6dbyG6ANnwnNU5RfY9zuf/DDZ3EAQmkixZ5pTzvQyAQ
+         4HDJUP1/lvDIDSupRk+1AYWdrQALlG21Kimo72I/7jMVBG1RPwd6iQjZI67dbqZUYMc0
+         IE5/mJDXBYrVsaM1W7tHt7qKv8InczaopsWJzJFzWukG85nTyloj53wDp+rVmk+LS+S6
+         tIjMAK+ahW1h3LXMOu9Zl4b9F0LEqU/YkCof55zINE4PsTV7MQeFfdo3oDz4mjIg1w4f
+         Cy8g==
+X-Forwarded-Encrypted: i=1; AJvYcCXRohGprz6CWHLkyAoXCBcX2a2QbbSrlL+7d4Se6lxvpCaf5+Vu/iC4YOiz9BoDRHjAkUZ6AAztHXPhvXlDnthHODilPGCH06d6U3ZlaKhhPnpAqKblTB7WRZQb90mSRaM8X7JY5GIN2UWrndmm
+X-Gm-Message-State: AOJu0Yza1WeLB8fN2pKfO9D2ZYjqwMTGNK89GfIoB+yyFFKcgMXMSH60
+	JWsTfCV5/oWKOpu3Vyu9aJK4b2mxSyz0AHRn0oFExImqnqQgWUjMehk4q/DVbiiPfJzbzQrOA/C
+	alOJ8z4jxz7Dmq9tdC61m41nZtEw=
+X-Google-Smtp-Source: AGHT+IFtlAXpGYCpv+bg5gy1IxslsA0lmrPId3jvSe88OrBfqoz0X5D3GoSobh3u3Kz2TE2SrAf/xB9p3nkmG0nVIiw=
+X-Received: by 2002:a2e:92d7:0:b0:2d8:6a04:3bcd with SMTP id
+ k23-20020a2e92d7000000b002d86a043bcdmr312813ljh.3.1713388683280; Wed, 17 Apr
+ 2024 14:18:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240412095713.25641-1-hao.qin@mediatek.com>
+In-Reply-To: <20240412095713.25641-1-hao.qin@mediatek.com>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Wed, 17 Apr 2024 17:17:50 -0400
+Message-ID: <CABBYNZJ-rvMuqHjFmQuxhmWv_K5fGFktAk-CeZfx8rw36L-Etg@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: btusb: mediatek: Support auto revert for MT7922
+To: Hao Qin <hao.qin@mediatek.com>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg <johan.hedberg@gmail.com>, 
+	Sean Wang <sean.wang@mediatek.com>, Deren Wu <deren.Wu@mediatek.com>, 
+	Aaron Hou <aaron.hou@mediatek.com>, Chris Lu <chris.lu@mediatek.com>, 
+	Steve Lee <steve.lee@mediatek.com>, linux-bluetooth <linux-bluetooth@vger.kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	linux-mediatek <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Mike,
+Hi,
 
-On Thu, 11 Apr 2024 19:00:50 +0300
-Mike Rapoport <rppt@kernel.org> wrote:
+On Fri, Apr 12, 2024 at 5:57=E2=80=AFAM Hao Qin <hao.qin@mediatek.com> wrot=
+e:
+>
+> Add support for auto reverting MT7922 during reset process.
 
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> 
-> kprobes depended on CONFIG_MODULES because it has to allocate memory for
-> code.
-> 
-> Since code allocations are now implemented with execmem, kprobes can be
-> enabled in non-modular kernels.
-> 
-> Add #ifdef CONFIG_MODULE guards for the code dealing with kprobes inside
-> modules, make CONFIG_KPROBES select CONFIG_EXECMEM and drop the
-> dependency of CONFIG_KPROBES on CONFIG_MODULES.
+Need some more information of what auto reverting means in this
+context and what problem does it solves?
 
-Thanks for this work, but this conflicts with the latest fix in v6.9-rc4.
-Also, can you use IS_ENABLED(CONFIG_MODULES) instead of #ifdefs in
-function body? We have enough dummy functions for that, so it should
-not make a problem.
-
-Thank you,
-
-> 
-> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+>
+> Signed-off-by: Hao Qin <hao.qin@mediatek.com>
 > ---
->  arch/Kconfig                |  2 +-
->  kernel/kprobes.c            | 43 +++++++++++++++++++++----------------
->  kernel/trace/trace_kprobe.c | 11 ++++++++++
->  3 files changed, 37 insertions(+), 19 deletions(-)
-> 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index bc9e8e5dccd5..68177adf61a0 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -52,9 +52,9 @@ config GENERIC_ENTRY
->  
->  config KPROBES
->  	bool "Kprobes"
-> -	depends on MODULES
->  	depends on HAVE_KPROBES
->  	select KALLSYMS
-> +	select EXECMEM
->  	select TASKS_RCU if PREEMPTION
->  	help
->  	  Kprobes allows you to trap at almost any kernel address and
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 047ca629ce49..90c056853e6f 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1580,6 +1580,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
->  		goto out;
->  	}
->  
-> +#ifdef CONFIG_MODULES
->  	/* Check if 'p' is probing a module. */
->  	*probed_mod = __module_text_address((unsigned long) p->addr);
->  	if (*probed_mod) {
-> @@ -1603,6 +1604,8 @@ static int check_kprobe_address_safe(struct kprobe *p,
->  			ret = -ENOENT;
->  		}
->  	}
-> +#endif
+>  drivers/bluetooth/btusb.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index 4c0cc13adb47..0ad96ec8d31d 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -3032,7 +3032,16 @@ static int btusb_mtk_reset(struct hci_dev *hdev, v=
+oid *rst_data)
+>         usb_kill_anchored_urbs(&data->tx_anchor);
+>         mediatek =3D hci_get_priv(hdev);
+>
+> -       if (mediatek->dev_id =3D=3D 0x7925) {
+> +       if (mediatek->dev_id =3D=3D 0x7922) {
+> +               btusb_mtk_uhw_reg_read(data, MTK_BT_SUBSYS_RST, &val);
+> +               val |=3D 0x00002020;
+> +               btusb_mtk_uhw_reg_write(data, MTK_BT_SUBSYS_RST, val);
+> +               btusb_mtk_uhw_reg_write(data, MTK_EP_RST_OPT, 0x00010001)=
+;
+> +               btusb_mtk_uhw_reg_read(data, MTK_BT_SUBSYS_RST, &val);
+> +               val |=3D BIT(0);
+> +               btusb_mtk_uhw_reg_write(data, MTK_BT_SUBSYS_RST, val);
+> +               msleep(100);
+> +       } else if (mediatek->dev_id =3D=3D 0x7925) {
+>                 btusb_mtk_uhw_reg_read(data, MTK_BT_RESET_REG_CONNV3, &va=
+l);
+>                 val |=3D (1 << 5);
+>                 btusb_mtk_uhw_reg_write(data, MTK_BT_RESET_REG_CONNV3, va=
+l);
+> @@ -3072,6 +3081,9 @@ static int btusb_mtk_reset(struct hci_dev *hdev, vo=
+id *rst_data)
+>         if (err < 0)
+>                 bt_dev_err(hdev, "Reset timeout");
+>
+> +       if (mediatek->dev_id =3D=3D 0x7922)
+> +               btusb_mtk_uhw_reg_write(data, MTK_UDMA_INT_STA_BT, 0x0000=
+00FF);
 > +
->  out:
->  	preempt_enable();
->  	jump_label_unlock();
-> @@ -2482,24 +2485,6 @@ int kprobe_add_area_blacklist(unsigned long start, unsigned long end)
->  	return 0;
->  }
->  
-> -/* Remove all symbols in given area from kprobe blacklist */
-> -static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
-> -{
-> -	struct kprobe_blacklist_entry *ent, *n;
-> -
-> -	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
-> -		if (ent->start_addr < start || ent->start_addr >= end)
-> -			continue;
-> -		list_del(&ent->list);
-> -		kfree(ent);
-> -	}
-> -}
-> -
-> -static void kprobe_remove_ksym_blacklist(unsigned long entry)
-> -{
-> -	kprobe_remove_area_blacklist(entry, entry + 1);
-> -}
-> -
->  int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *value,
->  				   char *type, char *sym)
->  {
-> @@ -2564,6 +2549,25 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
->  	return ret ? : arch_populate_kprobe_blacklist();
->  }
->  
-> +#ifdef CONFIG_MODULES
-> +/* Remove all symbols in given area from kprobe blacklist */
-> +static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
-> +{
-> +	struct kprobe_blacklist_entry *ent, *n;
-> +
-> +	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
-> +		if (ent->start_addr < start || ent->start_addr >= end)
-> +			continue;
-> +		list_del(&ent->list);
-> +		kfree(ent);
-> +	}
-> +}
-> +
-> +static void kprobe_remove_ksym_blacklist(unsigned long entry)
-> +{
-> +	kprobe_remove_area_blacklist(entry, entry + 1);
-> +}
-> +
->  static void add_module_kprobe_blacklist(struct module *mod)
->  {
->  	unsigned long start, end;
-> @@ -2665,6 +2669,7 @@ static struct notifier_block kprobe_module_nb = {
->  	.notifier_call = kprobes_module_callback,
->  	.priority = 0
->  };
-> +#endif
->  
->  void kprobe_free_init_mem(void)
->  {
-> @@ -2724,8 +2729,10 @@ static int __init init_kprobes(void)
->  	err = arch_init_kprobes();
->  	if (!err)
->  		err = register_die_notifier(&kprobe_exceptions_nb);
-> +#ifdef CONFIG_MODULES
->  	if (!err)
->  		err = register_module_notifier(&kprobe_module_nb);
-> +#endif
->  
->  	kprobes_initialized = (err == 0);
->  	kprobe_sysctls_init();
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index 14099cc17fc9..f0610137d6a3 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -111,6 +111,7 @@ static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
->  	return strncmp(module_name(mod), name, len) == 0 && name[len] == ':';
->  }
->  
-> +#ifdef CONFIG_MODULES
->  static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
->  {
->  	char *p;
-> @@ -129,6 +130,12 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
->  
->  	return ret;
->  }
-> +#else
-> +static inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
-> +{
-> +	return false;
-> +}
-> +#endif
->  
->  static bool trace_kprobe_is_busy(struct dyn_event *ev)
->  {
-> @@ -670,6 +677,7 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
->  	return ret;
->  }
->  
-> +#ifdef CONFIG_MODULES
->  /* Module notifier call back, checking event on the module */
->  static int trace_kprobe_module_callback(struct notifier_block *nb,
->  				       unsigned long val, void *data)
-> @@ -704,6 +712,7 @@ static struct notifier_block trace_kprobe_module_nb = {
->  	.notifier_call = trace_kprobe_module_callback,
->  	.priority = 1	/* Invoked after kprobe module callback */
->  };
-> +#endif
->  
->  static int count_symbols(void *data, unsigned long unused)
->  {
-> @@ -1933,8 +1942,10 @@ static __init int init_kprobe_trace_early(void)
->  	if (ret)
->  		return ret;
->  
-> +#ifdef CONFIG_MODULES
->  	if (register_module_notifier(&trace_kprobe_module_nb))
->  		return -EINVAL;
-> +#endif
->  
->  	return 0;
->  }
-> -- 
-> 2.43.0
-> 
-> 
+>         btusb_mtk_id_get(data, 0x70010200, &val);
+>         if (!val)
+>                 bt_dev_err(hdev, "Can't get device id, subsys reset fail.=
+");
+> --
+> 2.18.0
+>
 
 
--- 
-Masami Hiramatsu
+--=20
+Luiz Augusto von Dentz
 
