@@ -1,292 +1,127 @@
-Return-Path: <linux-kernel+bounces-148657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CBFD8A85A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:11:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D9098A85A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:12:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 221BC28203C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:11:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0A411F23D6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:12:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E0A1411DC;
-	Wed, 17 Apr 2024 14:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F5BD1419BA;
+	Wed, 17 Apr 2024 14:11:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GLxrC3NH"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rRGhWObL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C091411C3
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:11:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E6A1411D3;
+	Wed, 17 Apr 2024 14:11:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713363094; cv=none; b=IcgAXUL1MA0Dk0DSv+U6xg8ihcC6KxTzBc9Op+Drgwl/f6ur4SeOHcQLc/sNEdCeH7HWBnIjTeVHgPyx44y8MVv55BDG3g5SUm4DzChmLdym6GPzg42k+SxgNvj/4lH5d5WtoznAoQMqb0saOkFyTQv1/JEvIBvUi01htCnkOZ0=
+	t=1713363102; cv=none; b=Layk8m159kUG0Kagng94137+ksQTKyzBMipkQNVIjTwqGRuRh8a6Guz18jCcnp97WrsLgkOblhW0XEvBsfjCLce1qu20/p7HXZ4KWyehuGxqIbzPpIssTZ10FOzKDS3dUCeTC80devtqxMnX3LjiLidzDDBXyOLDAAK9HRo+Ljc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713363094; c=relaxed/simple;
-	bh=WAkUwDCazUflR68F3S1NAKD6oDa/XvjFSCJtt+0KndM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=B1ebNZYE6VbFo1uSqTIrgTq0+D46Yc9naov2gnVEDDceXSikHflnrEF945YtigPhYRk1FG8BNvvTAzL4k9mv2VRUL4cF2R7IaeLBHUfR/eYB6q534N9y4Ebe/gw57qvgzbSZyViLGgU7PKpbNTq7bad/ON0ai2FvQ89e/kE74xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GLxrC3NH; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e2178b2cf2so51001555ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:11:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713363092; x=1713967892; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WOyzFWDhjtqDpZ8eiPXvRnBmlOv37Y/sWaQ3gyeQkVE=;
-        b=GLxrC3NHbzt44/FU0L8Gn1IR7sOJFebiJJovKvIK2WBx4+d439l+JYetBogrYQOhwF
-         RQ3SNRiEpJzMF1wR4dgu5cp8Fw+BEA86kf/WSYG9KB+opySSErfQzM9eCWoWACS5KNNz
-         r/SXIGL+rTabfKnH42CBQ3oh5L83W1IEOOziDwg1vlyXQbpjPmFjINkU8IJ+3FnHt4J8
-         9Z6UJ4vpLZtup+g/D8/TwC1rfudpHAXmy28xfs5ZevMkTuiohmy39DrxXOv9TTm2YFMb
-         mVPZllx9KPhPgwouZHl/0FfoAANWH0mZK08JvBqKq0qwosFTjm/Gsp6Eg6NFIJKvdpKz
-         Pg/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713363092; x=1713967892;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WOyzFWDhjtqDpZ8eiPXvRnBmlOv37Y/sWaQ3gyeQkVE=;
-        b=rplmrwnC2CP6thnloJHCH+CUZjWPqWAQL8xwK61cFq9aJKWm98E0KStefkmCjwWCVF
-         80NitYNZ1HA+gqFTJKHNZXhOpDF0EsBVLo5oI2V/sj8WHgyCrXJ8e8YtGmv94uEmPg2K
-         BKi2EAx294FmtPQeEjU//HE+0gRZLetweLQ/tyltJeY4ZwcdLUWokXmQfXk5L0BsafUL
-         PCKTBt8wwxkcZleOjXRvlmIfBGIq7hFgmWOq6jArUlAi/4KGpAlvcBieTwkJP6pBF4Im
-         fXimRlLVsaEZvLb8LLkcpnw4YMRWxIv6Oqf68fN6njiROf1k7SUDCznZ8F7ip6Q7x9PC
-         kEDw==
-X-Forwarded-Encrypted: i=1; AJvYcCUQME3vqbp6BZ6otmTKs/C/yNPaB0tdvcTdNlRbpeRMVGX/6Lsrn4JEoTXMy76sJeplUFGuJLn05OWTGjfKlhTMQM1mKLSawfSFNuJ9
-X-Gm-Message-State: AOJu0YzvuIoZabQsK1sBnhSYmdq0IPyL04oKmb5DWyfEPwxbWfajbcYS
-	6nAq8tHb9nUti9bb5TD14EEYkQ5syq+LVwdFN4GinhKJALV1eYGR
-X-Google-Smtp-Source: AGHT+IET3LK55hdttEvsXHzIZ5l9WR+u3/sJNRuAzlaYshciPv8sL0N3ZYenqgEV4MTlku+xLcvGhg==
-X-Received: by 2002:a17:902:a705:b0:1de:e47e:116c with SMTP id w5-20020a170902a70500b001dee47e116cmr14382321plq.39.1713363092309;
-        Wed, 17 Apr 2024 07:11:32 -0700 (PDT)
-Received: from LancedeMBP.lan ([112.10.225.217])
-        by smtp.gmail.com with ESMTPSA id bi5-20020a170902bf0500b001e3e0a6e76csm11542318plb.99.2024.04.17.07.11.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 07:11:31 -0700 (PDT)
-From: Lance Yang <ioworker0@gmail.com>
-To: akpm@linux-foundation.org
-Cc: willy@infradead.org,
-	maskray@google.com,
-	ziy@nvidia.com,
-	ryan.roberts@arm.com,
-	david@redhat.com,
-	21cnbao@gmail.com,
-	mhocko@suse.com,
-	fengwei.yin@intel.com,
-	zokeefe@google.com,
-	shy828301@gmail.com,
-	xiehuan09@gmail.com,
-	wangkefeng.wang@huawei.com,
-	songmuchun@bytedance.com,
-	peterx@redhat.com,
-	minchan@kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Lance Yang <ioworker0@gmail.com>
-Subject: [PATCH 1/1] mm/vmscan: avoid split PMD-mapped THP during shrink_folio_list()
-Date: Wed, 17 Apr 2024 22:11:11 +0800
-Message-Id: <20240417141111.77855-1-ioworker0@gmail.com>
-X-Mailer: git-send-email 2.33.1
+	s=arc-20240116; t=1713363102; c=relaxed/simple;
+	bh=06f/qT6/nj6DQGEH60ItVsmrSVxeXycROuqQlnHdOFA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WleTaLYk9i2dQfvtPTZjHHMwaS4+J7Onj9tPRziEioTQophd+DsWsllJS6l4Cxo8X9mWY+S28PDjBfaPeOCq+UGOvm54utkWXNjzkdR7beMWzT21V/TKEj5K5N2V9b1n/uqBTwGCKg6QmUhJdb/RM2HbOnDAFuq5TeARBoMl+Ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rRGhWObL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB9B6C072AA;
+	Wed, 17 Apr 2024 14:11:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713363102;
+	bh=06f/qT6/nj6DQGEH60ItVsmrSVxeXycROuqQlnHdOFA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=rRGhWObL8sehAg0hDZllAiBxOWziLTZ8FTINt66CEgNLuR1l49DxsqaCIaFKATJAi
+	 SnzsxQjo4zQCUrzCVykqGC7AUOIkaVJ6Opxm+bcA17X+VSqWrTmFkc6rHju1aP4SBE
+	 RNgtYDwk5Hi+uhutpJOf+SMQYFZTWfGo6CLjbGgL9gQUIhLLV6FjJI8Au7I/9Dope2
+	 weLyld3SaPCNc+33D8bxLSqwp3pm0OEmIqM4Kml2dfzHzDX5PC+ld+nVXlD6d8aEHY
+	 BxMh58rea3mwjEbojv9Da/CRLBSDXqRo7IsBPT06j3FuQbNo5+cwuWHqbfFmqL6UMy
+	 MH08+4dmUmJ4Q==
+Message-ID: <f3d2adfb-dbd7-49e4-8f5e-5d5cb4bd9fb8@kernel.org>
+Date: Wed, 17 Apr 2024 16:11:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] pinctrl: qcom-ssbi: add support for PM8901
+To: Herman van Hazendonk <github.com@herrie.org>, andersson@kernel.org
+Cc: benwolsieffer@gmail.com, chris.chapuis@gmail.com,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240415141743.1983350-1-github.com@herrie.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240415141743.1983350-1-github.com@herrie.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-When the user no longer requires the pages, they would use madvise(madv_free)
-to mark the pages as lazy free. IMO, they would not typically rewrite to the
-given range.
+On 15/04/2024 16:17, Herman van Hazendonk wrote:
+> The PM8901 is used alongside the APQ8060/MSM8660 on the APQ8060 Dragonboard
+> and HP TouchPad. It works the same as all others, so just add the
+> compatible string for this variant.
+> 
+> Signed-off-by: Herman van Hazendonk <github.com@herrie.org>
+> ---
 
-At present, a PMD-mapped THP marked as lazyfree during shrink_folio_list()
-is unconditionally split, which may be unnecessary. If the THP is exclusively
-mapped and clean, and the PMD associated with it is also clean, then we can
-attempt to remove the PMD mapping from it. This change will improve the
-efficiency of memory reclamation in this case.
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
 
-On an Intel i5 CPU, reclaiming 1GiB of PMD-mapped THPs using
-mem_cgroup_force_empty() results in the following runtimes in seconds
-(shorter is better):
 
---------------------------------------------
-|     Old       |      New       |  Change  |
---------------------------------------------
-|   0.683426    |    0.049197    |  -92.80% |
---------------------------------------------
-
-Signed-off-by: Lance Yang <ioworker0@gmail.com>
----
- include/linux/huge_mm.h |  1 +
- include/linux/rmap.h    |  1 +
- mm/huge_memory.c        |  2 +-
- mm/rmap.c               | 81 +++++++++++++++++++++++++++++++++++++++++
- mm/vmscan.c             |  7 ++++
- 5 files changed, 91 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index 7cd07b83a3d0..02a71c05f68a 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -36,6 +36,7 @@ bool move_huge_pmd(struct vm_area_struct *vma, unsigned long old_addr,
- int change_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 		    pmd_t *pmd, unsigned long addr, pgprot_t newprot,
- 		    unsigned long cp_flags);
-+inline void zap_deposited_table(struct mm_struct *mm, pmd_t *pmd);
- 
- vm_fault_t vmf_insert_pfn_pmd(struct vm_fault *vmf, pfn_t pfn, bool write);
- vm_fault_t vmf_insert_pfn_pud(struct vm_fault *vmf, pfn_t pfn, bool write);
-diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-index 0f906dc6d280..8c2f45713351 100644
---- a/include/linux/rmap.h
-+++ b/include/linux/rmap.h
-@@ -100,6 +100,7 @@ enum ttu_flags {
- 					 * do a final flush if necessary */
- 	TTU_RMAP_LOCKED		= 0x80,	/* do not grab rmap lock:
- 					 * caller holds it */
-+	TTU_LAZYFREE_THP	= 0x100, /* avoid split PMD-mapped THP */
- };
- 
- #ifdef CONFIG_MMU
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 58f2c4745d80..309fba9624c2 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1801,7 +1801,7 @@ bool madvise_free_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 	return ret;
- }
- 
--static inline void zap_deposited_table(struct mm_struct *mm, pmd_t *pmd)
-+inline void zap_deposited_table(struct mm_struct *mm, pmd_t *pmd)
- {
- 	pgtable_t pgtable;
- 
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 2608c40dffad..4994f9e402d4 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -77,6 +77,7 @@
- #include <linux/mm_inline.h>
- 
- #include <asm/tlbflush.h>
-+#include <asm/tlb.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/tlb.h>
-@@ -1606,6 +1607,80 @@ void folio_remove_rmap_pmd(struct folio *folio, struct page *page,
- #endif
- }
- 
-+static bool __try_to_unmap_lazyfree_thp(struct vm_area_struct *vma,
-+					     unsigned long address,
-+					     struct folio *folio)
-+{
-+	spinlock_t *ptl;
-+	pmd_t *pmdp, orig_pmd;
-+	struct mmu_notifier_range range;
-+	struct mmu_gather tlb;
-+	struct mm_struct *mm = vma->vm_mm;
-+	struct page *page;
-+	bool ret = false;
-+
-+	VM_WARN_ON_FOLIO(!folio_test_anon(folio), folio);
-+	VM_WARN_ON_FOLIO(folio_test_swapbacked(folio), folio);
-+	VM_WARN_ON_FOLIO(!folio_test_pmd_mappable(folio), folio);
-+	VM_WARN_ON_FOLIO(!folio_test_locked(folio), folio);
-+
-+	/*
-+	 * If we encounter a PMD-mapped THP that marked as lazyfree, we
-+	 * will try to unmap it without splitting.
-+	 *
-+	 * The folio exclusively mapped should only have two refs:
-+	 * one from the isolation and one from the rmap.
-+	 */
-+	if (folio_entire_mapcount(folio) != 1 || folio_test_dirty(folio) ||
-+	    folio_ref_count(folio) != 2)
-+		return false;
-+
-+	pmdp = mm_find_pmd(mm, address);
-+	if (unlikely(!pmdp))
-+		return false;
-+	if (pmd_dirty(*pmdp))
-+		return false;
-+
-+	tlb_gather_mmu(&tlb, mm);
-+	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, mm,
-+				address & HPAGE_PMD_MASK,
-+				(address & HPAGE_PMD_MASK) + HPAGE_PMD_SIZE);
-+	mmu_notifier_invalidate_range_start(&range);
-+
-+	ptl = pmd_lock(mm, pmdp);
-+	orig_pmd = *pmdp;
-+	if (unlikely(!pmd_present(orig_pmd) || !pmd_trans_huge(orig_pmd)))
-+		goto out;
-+
-+	page = pmd_page(orig_pmd);
-+	if (unlikely(page_folio(page) != folio))
-+		goto out;
-+
-+	orig_pmd = pmdp_huge_get_and_clear(mm, address, pmdp);
-+	tlb_remove_pmd_tlb_entry(&tlb, pmdp, address);
-+	/*
-+	 * There is a race between the first check of the dirty bit
-+	 * for the PMD and the TLB entry flush. If the PMD is re-dirty
-+	 * at this point, we will return to try_to_unmap_one() to call
-+	 * split_huge_pmd_address() to split it.
-+	 */
-+	if (pmd_dirty(orig_pmd))
-+		set_pmd_at(mm, address, pmdp, orig_pmd);
-+	else {
-+		folio_remove_rmap_pmd(folio, page, vma);
-+		zap_deposited_table(mm, pmdp);
-+		add_mm_counter(mm, MM_ANONPAGES, -HPAGE_PMD_NR);
-+		folio_put(folio);
-+		ret = true;
-+	}
-+
-+out:
-+	spin_unlock(ptl);
-+	mmu_notifier_invalidate_range_end(&range);
-+
-+	return ret;
-+}
-+
- /*
-  * @arg: enum ttu_flags will be passed to this argument
-  */
-@@ -1631,6 +1706,12 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
- 	if (flags & TTU_SYNC)
- 		pvmw.flags = PVMW_SYNC;
- 
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	if (flags & TTU_LAZYFREE_THP)
-+		if (__try_to_unmap_lazyfree_thp(vma, address, folio))
-+			return true;
-+#endif
-+
- 	if (flags & TTU_SPLIT_HUGE_PMD)
- 		split_huge_pmd_address(vma, address, false, folio);
- 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 49bd94423961..2358b1cff8bf 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1277,6 +1277,13 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
- 
- 			if (folio_test_pmd_mappable(folio))
- 				flags |= TTU_SPLIT_HUGE_PMD;
-+
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+			if (folio_test_anon(folio) && !was_swapbacked &&
-+			    flags & TTU_SPLIT_HUGE_PMD)
-+				flags |= TTU_LAZYFREE_THP;
-+#endif
-+
- 			/*
- 			 * Without TTU_SYNC, try_to_unmap will only begin to
- 			 * hold PTL from the first present PTE within a large
--- 
-2.33.1
+Best regards,
+Krzysztof
 
 
