@@ -1,99 +1,210 @@
-Return-Path: <linux-kernel+bounces-148735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAB358A86C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:53:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E5458A86C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:54:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4775B287A26
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:53:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDE2E1F2220F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:54:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C805F1422A4;
-	Wed, 17 Apr 2024 14:53:41 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A71B41422A4;
+	Wed, 17 Apr 2024 14:54:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gm94Q50I"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A6213D24A;
-	Wed, 17 Apr 2024 14:53:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9A7132807;
+	Wed, 17 Apr 2024 14:54:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713365621; cv=none; b=QAjHrf0E92E4OdyElWZJB6/0mPrx9kLAVoqzWzmDs4UStmMJ69R5QEDDlfiM8o7hU0zJlp39Rg8gLeQtdLL537Vv46Yz+jyfldwFImfGnAOEmGfqLfc5dZ4azJZ/SUxCQXAGepON8p+lC86RXHfYuyb6QHWhyUwBGRp12PHZc94=
+	t=1713365645; cv=none; b=GkYrGZVnAz7t60yd22CLnoicibwG/xi6fhZn+a4JWjb90F9t4ZgIAgkFMN4Z1vdDASncnT81GtKegi0WXsk2RqtbuGw86Lz+dglIfiTazp4b5HGr+9RgmWydDkAm7g9zPlhphzabMwlJ8R5uQ9Gct7Z2FQJozvfsoiYBmoeWjKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713365621; c=relaxed/simple;
-	bh=7SNM5GZDurYtgpeoMmLJ7ejYSH9vVUcjJXUXLjZHY2Q=;
+	s=arc-20240116; t=1713365645; c=relaxed/simple;
+	bh=KXoRcIdsjepxSU6ZzJ4NvcTWctTLBqKZBlDxeAr8ABI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Na6PsR0+NwxR7ELRENmXpGQmjmfgSEI0CkMDZdKhwznVoye4nbDrIUvMMSDJ+9b1ynK3vhSr6X3+wN2EU5soyiSQiLnm44wCCTERgSA39jfn8ufKQ6boBm31HJeUz0+sGbGyPNqXJkIOo4J8RC2ttL7RpTw+LXDUT4M5r/VyavY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
-X-CSE-ConnectionGUID: m2xIabjvQF6NmsjFNfdfOg==
-X-CSE-MsgGUID: VjD7vwsaSI247dvAEhSW/g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8726606"
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="8726606"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 07:53:39 -0700
-X-CSE-ConnectionGUID: 469OcrOyTH6csSgCd+yI2g==
-X-CSE-MsgGUID: kZUYMOd7Sv2S4PIWg6/a3w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
-   d="scan'208";a="22730571"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa009.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 07:53:37 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andy@kernel.org>)
-	id 1rx6fH-000000004QL-18Os;
-	Wed, 17 Apr 2024 17:53:35 +0300
-Date: Wed, 17 Apr 2024 17:53:34 +0300
-From: Andy Shevchenko <andy@kernel.org>
-To: Ivan Orlov <ivan.orlov0322@gmail.com>
-Cc: keescook@chromium.org, akpm@linux-foundation.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-	skhan@linuxfoundation.org
-Subject: Re: [PATCH] string: Implement KUnit test for str*cmp functions
-Message-ID: <Zh_ibi_Y6xogktg-@smile.fi.intel.com>
-References: <20240417135415.614284-1-ivan.orlov0322@gmail.com>
- <Zh_cgnMOFHuP-lKu@smile.fi.intel.com>
- <10085ec8-0109-444c-bce4-d0b0ef1a4164@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qWob64/V4l2D0/oq/MkW5LdMVl1dYPLYogSnrcdHoD0fLqyAlFlJ3xeelGmNv0uWBtgr1inONLnl6vgckRCmoPLHgYTuWRq+MF/MXkedyE3Dq0FwxbWT9VN3Nlnhy314Rwq2hnfo9poQVbY5pgf5D/vt7CNKwcD8rc2qlhVvkBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gm94Q50I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FB8CC072AA;
+	Wed, 17 Apr 2024 14:54:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713365644;
+	bh=KXoRcIdsjepxSU6ZzJ4NvcTWctTLBqKZBlDxeAr8ABI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Gm94Q50I1K8dNBm81Zb/69btVaVgZXrO+r9ncFacD1fPL1GgkThbxsp1pVL6AGRDQ
+	 KzUKo56OiWKmYKkOTQOxnH0zu41LIHJ284kQR11uM5yqR1KFv6fKHwdzBi3Md+J0qK
+	 mOBtuRQOjEpZHjAyVxCx0dcjTpaGaULJh4V8aI9TPVpcg0zXiwsgDpIleIh+3RnRa4
+	 M4/Eg2q5IgEHETq5LvwQKarykXUyrMRmL3GK8AWxFbBI/LHg0JQjWkQ8xoMFbIZOGB
+	 Ra0ebBzm54lQ+mlZxk1/uBE57SN3V3g+vDd9sbhTT23PwNAplzps4b3/WNfAzNoAsi
+	 MiDxnEBesu2cw==
+Date: Wed, 17 Apr 2024 15:53:59 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Pratik Farkase <pratikfarkase94@gmail.com>
+Cc: Pratik Farkase <pratik.farkase@wsisweden.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Stefan Wahren <wahrenst@gmx.net>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] dt-bindings: serial: brcm,bcm2835-aux-uart: convert
+ to dtschema
+Message-ID: <20240417-obscure-denial-ae7c53d0e321@spud>
+References: <20240417135111.20375-1-pratik.farkase@wsisweden.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="knnuLnAQI4vYAM9c"
+Content-Disposition: inline
+In-Reply-To: <20240417135111.20375-1-pratik.farkase@wsisweden.com>
+
+
+--knnuLnAQI4vYAM9c
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <10085ec8-0109-444c-bce4-d0b0ef1a4164@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 17, 2024 at 03:46:44PM +0100, Ivan Orlov wrote:
-> On 4/17/24 15:28, Andy Shevchenko wrote:
-> > On Wed, Apr 17, 2024 at 02:54:15PM +0100, Ivan Orlov wrote:
+On Wed, Apr 17, 2024 at 03:51:10PM +0200, Pratik Farkase wrote:
+> Convert the Broadcom BCM2835 Auxiliary UART to newer DT schema.
+> Created DT schema based on the .txt file which had
+> `compatible`, `reg` `clocks` and `interrupts` as the
+> required properties. This binding is used by Broadcom BCM2835
+> SOC used in some Raspberry PI boards.
+> Changes from original file:
+> Implemented complete example which the original txt binding lacked.
+>=20
+> Signed-off-by: Pratik Farkase <pratik.farkase@wsisweden.com>
+> ---
+> Changes in v2
+> - Updated Maintainers list according to feedback
+> - Fixed typo `Auxiliar` to `Auxiliary`
+> ---
+> ---
+>  .../bindings/serial/brcm,bcm2835-aux-uart.txt | 18 -------
+>  .../serial/brcm,bcm2835-aux-uart.yaml         | 48 +++++++++++++++++++
+>  2 files changed, 48 insertions(+), 18 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm2835=
+-aux-uart.txt
+>  create mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm2835=
+-aux-uart.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-ua=
+rt.txt b/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.txt
+> deleted file mode 100644
+> index b5cc6297cd1b..000000000000
+> --- a/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.txt
+> +++ /dev/null
+> @@ -1,18 +0,0 @@
+> -* BCM2835 AUXILIAR UART
+> -
+> -Required properties:
+> -
+> -- compatible: "brcm,bcm2835-aux-uart"
+> -- reg: The base address of the UART register bank.
+> -- interrupts: A single interrupt specifier.
+> -- clocks: Clock driving the hardware; used to figure out the baud rate
+> -  divisor.
+> -
+> -Example:
+> -
+> -	uart1: serial@7e215040 {
+> -		compatible =3D "brcm,bcm2835-aux-uart";
+> -		reg =3D <0x7e215040 0x40>;
+> -		interrupts =3D <1 29>;
+> -		clocks =3D <&aux BCM2835_AUX_CLOCK_UART>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-ua=
+rt.yaml b/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.ya=
+ml
+> new file mode 100644
+> index 000000000000..5d4d37371d6b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.yaml
+> @@ -0,0 +1,48 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/serial/brcm,bcm2835-aux-uart.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: BCM2835 AUXILIARY UART
+> +
+> +maintainers:
+> +  - Pratik Farkase <pratikfarkase94@gmail.com>
+> +  - Florian Fainelli <florian.fainelli@broadcom.com>
+> +  - Stefan Wahren <wahrenst@gmx.net>
+> +
+> +allOf:
+> +  - $ref: serial.yaml
+> +
+> +properties:
+> +  compatible:
+> +    const: brcm,bcm2835-aux-uart
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/bcm2835.h>
+> +    #include <dt-bindings/clock/bcm2835-aux.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
 
-..
+Only 1 of these headers seems used, there's only one define below.
 
-> > >   lib/strcmp_kunit.c | 170 +++++++++++++++++++++++++++++++++++++++++++++
-> > 
-> > Why is not part of the existing string_kunit.c?
-> 
-> There are already 2 other KUnit tests in `lib/` covering different groups of
-> string functions separately (lib/strscpy_kunit.c, lib/strcat_kunit.c), so
-> this patch just follows this pattern. I believe it makes sense: the tests
-> are separated to cover one specific group of string functions with a similar
-> purpose
+> +    uart1: serial@7e215040 {
 
-We have handful of the string functions, are you going to have a file per
-function? Isn't it way too many?
+The label is unused and can be dropped.
 
-P.S>
-Having those does not prove it's a correct approach. I would rather expect
-somebody to incorporate those into string_kunit.c.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Otherwise,
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
 
+> +        compatible =3D "brcm,bcm2835-aux-uart";
+> +        reg =3D <0x7e215040 0x40>;
+> +        interrupts =3D <1 29>;
+> +        clocks =3D <&aux BCM2835_AUX_CLOCK_UART>;
+> +    };
+> --=20
+> 2.34.1
+>=20
+
+--knnuLnAQI4vYAM9c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh/ihwAKCRB4tDGHoIJi
+0imwAP9/Is48Rdr8Ve/PrA6TGNes1do/R5ztpGZ9dIDeSWgULQEAiUqD0ir6iPVP
+x6UGbzh4csXpoErw8rW9Z1s6E1VC7wU=
+=kk4e
+-----END PGP SIGNATURE-----
+
+--knnuLnAQI4vYAM9c--
 
