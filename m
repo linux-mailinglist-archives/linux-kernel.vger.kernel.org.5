@@ -1,610 +1,519 @@
-Return-Path: <linux-kernel+bounces-149180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BFFE8A8CE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:29:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD7218A8CEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:32:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C64CD1F22390
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:29:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CD491F223CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:32:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C786C39AF2;
-	Wed, 17 Apr 2024 20:29:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA4643BBFF;
+	Wed, 17 Apr 2024 20:31:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SB+L2ySp"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aKnXJSFC"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C263383AC;
-	Wed, 17 Apr 2024 20:29:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4147EAC8;
+	Wed, 17 Apr 2024 20:31:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713385783; cv=none; b=uf8Lg7ZIvlI+Jc9oIUsVRc+VKlyAsf9rInhaX/vaexNSubxsw95nSq91DTY3clEDaXgnV5YcaCBNN1pM3RvtpXBvgQ5eSGVL1jBtnixJLHZeaU6as8fLXqfGNz3aV6trEigGNYA1qDy37azhpQ83SeRReWrbw3b/Dr+MmTf0+iY=
+	t=1713385915; cv=none; b=piXTqbbbQljERY3oBvSAjchKnzvxRFrmsmjGyNGnCOUJW8LvQzBDY4Tlf/9UU373Pq4/XHaRH6x/Hhkj+jv+YpTJENbxSseXGzXr4GZdmS07T/9nt1DGCETicNI2YvRB9uDsFbQ35v2FMoJuw7SAB9ZSvLSqdFp+dbHPu5ivG+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713385783; c=relaxed/simple;
-	bh=zp+2lX/d6oVVhftQC2UTZQ3BHON2MZJoJRY+xRflaV8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R3csEly8wgoSxZ3ZMe2n0QykDgEWdBudcq1UtF2DFJuIcj3jSKuXyDZ3ap6+DcFJfc2a4eoRkvOAnwLrIJmUoK8iMwA+aeZVbY6LRV7GdQxlIewRrfoGTkT4pXy2vwNfHMzj6hvRScyOlHteHOZJTl04L805fRV+mJfntS2Dczk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SB+L2ySp; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-415515178ceso1444305e9.0;
-        Wed, 17 Apr 2024 13:29:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713385780; x=1713990580; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=xLbl6gmY0vXVsSj+r8Cg2zhwxGnV7jPWT6o5rHerPX4=;
-        b=SB+L2ySpCkwL/vMwaIZBJcyHnc0u04wwrZk4vQiUa8oAESnZDxbmdqeSNorp28CIf+
-         F+HkxCQj4nWw8YBI1cGDDbsQkqjmVqMgjMAclqkf0v+oxQwuXITWWHnC7Gd48XdvKhnK
-         w9LxvoRksd+4HbfjrfsCdF5b/QS9X/23+0SNygowHPFTXed2NZq27gKtcKsl5c0OKix6
-         MLIzagm+6gnOfMxO7YYtL5kx/paAyPDFwvB1uPvpfrt0MwGKuxuteKk2uXPD+fpLb0Tn
-         lyYgSH+qwFi+naPbBUP/5G35QTX2SienjnLlyMKfrNiy0OCCYd83VbYJMddcUfURGAtg
-         mTGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713385780; x=1713990580;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xLbl6gmY0vXVsSj+r8Cg2zhwxGnV7jPWT6o5rHerPX4=;
-        b=LF71glLC2vbISs57zKHMjU06ZmC2aZzv54LMV+nQltCaoNj5OmsFPiv5KVNaE5S1y6
-         zoJGeFnB2A+MVB/OT74AUmI+eYd3xfttCye88exSl83pJ0eNAVtA/Hc4SyTVkJcR3/2X
-         d70c1PhO2jAJy5CteQFRDhFOPA5v99VffkXPyzosa1DHtM5iNhWNFtPZ8p1KTxzc7eJH
-         qwJIHnY1vaKux3naCDBk5TonLpgolmVPCIiwVBV6biSw3SyV8KROX69lootcU3YpH8JL
-         1uWpDEeolTc4AM3DYhsiMc3O0+W3ZPbKrTHCEc22vAs+hHGhxWYSyxFkZf7mX+TFSW21
-         FsKA==
-X-Forwarded-Encrypted: i=1; AJvYcCVJnW6nHKbnVNzhmbUfClvqtRiEg7+XkUrHwPOWLCENv1r+ahGMrZoIJPs26EF5X/03/+MT7dOMNWsA/0QWJppUUixsutlKKX0ov9nJH/SFFpHqPU5m3ceRDlWOFuEihIGzJtVrwga6nrW6UxLsASSCHyAV4MwjfIXkFt73AlIBWIvIlg==
-X-Gm-Message-State: AOJu0Ywgqd+Y+g/vAlIXSXxtIjMFVWswzhHpAP85uiSa69JDJa0NHi2V
-	EDdf+KNxp1A1cEXx8TtaUTOnGnSnFVBfoK+t1hUnT96DarY+Pt4B
-X-Google-Smtp-Source: AGHT+IEjAEBDHtn0xnmdyswaIyJaWejZ3w9BRDdqRqJOXBK95QmKvna74oahKQCvTJrzjxZM33Xekg==
-X-Received: by 2002:a05:600c:35c3:b0:418:d220:dfbd with SMTP id r3-20020a05600c35c300b00418d220dfbdmr528567wmq.23.1713385779332;
-        Wed, 17 Apr 2024 13:29:39 -0700 (PDT)
-Received: from debian ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id n4-20020a5d4844000000b00349f098f4a6sm31986wrs.53.2024.04.17.13.29.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 13:29:38 -0700 (PDT)
-Date: Wed, 17 Apr 2024 22:29:36 +0200
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-pwm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] pwm: add support for NXPs high-side switch
- MC33XS2410
-Message-ID: <20240417202936.GA148552@debian>
-References: <20240301111124.29283-1-dima.fedrau@gmail.com>
- <20240301111124.29283-3-dima.fedrau@gmail.com>
- <s256onwsfw2mfdlkeb42j5jucejogxinioumpkklrtd57icwrx@5uaqlj6z2i5h>
+	s=arc-20240116; t=1713385915; c=relaxed/simple;
+	bh=0kSV9BW2QeRUmRKwS5ilacYjl5kRTzsRH6TM2QfbJt8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=sgYHxSO1AO48jcpBAOsqpnCzoKCjeNyCNUbeSnS0lfFst+fsCOoZGdOSOU6GPceK9LohvORxAVBkkP4+4WVdjwOyLHpvmaTY8Sh7T7F0jnHLD+qs+5i1yM8vgwvzuctaomh4Dx3I2T0yOFe3SiyDOPZPW//U7y0zgHhERkLdnMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=aKnXJSFC; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43HIln6I017522;
+	Wed, 17 Apr 2024 20:31:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=UIGKlbm7WKGJ9jr3RKULR0/+UdS/jlwTIIH0vbfL5+c=; b=aK
+	nXJSFCVnmtDQzZQ/t2DojWhX/tRBFdw/lXUDUeoqDlVyz+EbSXEejZRkVVprKfXn
+	boOiks83vuOWbYsPahzHNQqC900YnEAEBkRlrYAJXlfVAQtpaNhnEODa0GdEYqVE
+	k4Afmj3nQu+r/8Z7Qxdp3qhN4NpwypSk3qRJP7NXLIp2ArdTjCLaoDNDVx7Lmbq9
+	hCwRYVRG5SWwZrUKc9PiJe9XHXShW50u8WZGvQltvDzKtRYJND2Ki9BNXILeiD2T
+	DjSCLiQ/LeWIuNYCiD96SB5SPO6ExqkcUkgslW22oQUocdvvzIUoovNBB9Vek1ZE
+	BXXnl/JchfA+fLKjo57g==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xjm0s070c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Apr 2024 20:31:23 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43HKVNpP012163
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Apr 2024 20:31:23 GMT
+Received: from [10.71.108.229] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 17 Apr
+ 2024 13:31:22 -0700
+Message-ID: <338acf2c-7471-43cc-9e52-23c96cbe66bc@quicinc.com>
+Date: Wed, 17 Apr 2024 13:31:21 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <s256onwsfw2mfdlkeb42j5jucejogxinioumpkklrtd57icwrx@5uaqlj6z2i5h>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/2] drm/panel: Add driver for EDO RM69380 OLED panel
+Content-Language: en-US
+To: David Wronek <david@mainlining.org>,
+        Neil Armstrong
+	<neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>, Daniel Vetter
+	<daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Marijn Suijten
+	<marijn.suijten@somainline.org>,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>
+References: <20240417-raydium-rm69380-driver-v4-0-e9c2337d0049@mainlining.org>
+ <20240417-raydium-rm69380-driver-v4-2-e9c2337d0049@mainlining.org>
+From: Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <20240417-raydium-rm69380-driver-v4-2-e9c2337d0049@mainlining.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: m-mqkDqNXhd8no4mNraaf5t95avlyAyp
+X-Proofpoint-ORIG-GUID: m-mqkDqNXhd8no4mNraaf5t95avlyAyp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-17_17,2024-04-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 adultscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 priorityscore=1501 phishscore=0 malwarescore=0 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404170145
 
-Am Tue, Mar 19, 2024 at 05:35:41PM +0100 schrieb Uwe Kleine-König:
-> Hello Dimitri,
->
-Hi Uwe,
 
-thanks for reviewing and sorry for the late reply.
 
-> On Fri, Mar 01, 2024 at 12:11:23PM +0100, Dimitri Fedrau wrote:
-> > diff --git a/drivers/pwm/pwm-mc33xs2410.c b/drivers/pwm/pwm-mc33xs2410.c
-> > new file mode 100644
-> > index 000000000000..35753039da6b
-> > --- /dev/null
-> > +++ b/drivers/pwm/pwm-mc33xs2410.c
-> > @@ -0,0 +1,324 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (C) 2024 Liebherr-Electronics and Drives GmbH
-> > + */
+On 4/17/2024 9:29 AM, David Wronek wrote:
+> Add support for the 2560x1600@90Hz OLED panel by EDO bundled with a
+> Raydium RM69380 controller, as found on the Lenovo Xiaoxin Pad Pro 2021.
 > 
-> Please document the general behaviour of the device here. For that
-> please stick to the format used in other drivers such that
-> 
-> 	sed -rn '/Limitations:/,/\*\/?$/p' drivers/pwm/*.c
-> 
-> does the right thing for your driver.
->
-Will add the description and limitations in the next version of the
-driver.
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Signed-off-by: David Wronek <david@mainlining.org>
 
-> > +
-> > +#include <linux/delay.h>
-> > +#include <linux/err.h>
-> > +#include <linux/module.h>
-> > +#include <linux/mutex.h>
-> > +#include <linux/of.h>
-> > +#include <linux/pwm.h>
-> > +
-> > +#include <asm/unaligned.h>
-> > +
-> > +#include <linux/spi/spi.h>
-> > +
-> > +#define MC33XS2410_GLB_CTRL		0x00
-> > +#define MC33XS2410_GLB_CTRL_MODE_MASK	GENMASK(7, 6)
-> > +#define MC33XS2410_GLB_CTRL_NORMAL_MODE	BIT(6)
-> > +#define MC33XS2410_GLB_CTRL_SAFE_MODE	BIT(7)
-> > +#define MC33XS2410_OUT1_4_CTRL		0x02
-> > +#define MC33XS2410_PWM_CTRL1		0x05
-> > +#define MC33XS2410_PWM_CTRL1_POL_INV(x)	BIT(x)
-> > +#define MC33XS2410_PWM_CTRL3		0x07
-> > +#define MC33XS2410_PWM_CTRL3_EN(x)	BIT(4 + (x))
-> 
-> Maybe add the valid range for x here. Something like:
-> 
-> #define MC33XS2410_PWM_CTRL3_EN(x)	BIT(4 + (x)) /* x in {0 ... 3} */
->
-Ok.
+Hi David,
 
-> > +#define MC33XS2410_PWM_CTRL3_EN_MASK	GENMASK(7, 4)
-> 
-> MC33XS2410_PWM_CTRL3_EN_MASK is unused.
-> 
-Will remove it.
+Acked-by: Jessica Zhang <quic_jesszhan@quicinc.com>
 
-> > +#define MC33XS2410_PWM_FREQ1		0x08
-> > +#define MC33XS2410_PWM_FREQ(x)		(MC33XS2410_PWM_FREQ1 + (x))
-> 
-> Huh, is it expected that MC33XS2410_PWM_FREQ(1) != MC33XS2410_PWM_FREQ1?
-> I guess the hardware manual numbers these registers from 1 .. max but
-> you're passing hwpwm which starts at 0? Hmm.
-> 
-> I think I'd use:
-> 
-> #define MC33XS2410_PWM_FREQ(x)		(MC33XS2410_PWM_FREQ1 + (x) - 1)
-> 
-> and pass hwpwm + 1.
-> 
-Ok.
+Thanks,
 
-> > +#define MC33XS2410_PWM_FREQ_STEP_MASK	GENMASK(7, 6)
-> > +#define MC33XS2410_PWM_FREQ_MASK	GENMASK(5, 0)
-> > +#define MC33XS2410_PWM_DC1		0x0c
-> > +#define MC33XS2410_PWM_DC(x)		(MC33XS2410_PWM_DC1 + (x))
-> > +#define MC33XS2410_WDT			0x14
-> > +
-> > +#define MC33XS2410_IN_OUT_STA		0x01
-> > +#define MC33XS2410_IN_OUT_STA_OUT_EN(x)	BIT(4 + (x))
-> > +
-> > +#define MC33XS2410_WR_FLAG		BIT(7)
-> > +#define MC33XS2410_RD_CTRL_FLAG		BIT(7)
-> > +#define MC33XS2410_RD_DATA_MASK		GENMASK(13, 0)
-> > +
-> > +#define MC33XS2410_PERIOD_MAX	0
-> > +#define MC33XS2410_PERIOD_MIN	1
-> 
-> This deserves a comment. (Or drop it after following my suggestion to
-> drop mc33xs2410_period[][].)
-> 
->
-I will drop it.
+Jessica Zhang
 
-> > +struct mc33xs2410_pwm {
-> > +	struct pwm_chip chip;
-> > +	struct spi_device *spi;
-> > +	struct mutex lock;
-> > +};
-> > +
-> > +enum mc33xs2410_freq_steps {
-> > +	STEP_05HZ,
-> > +	STEP_2HZ,
-> > +	STEP_8HZ,
-> > +	STEP_32HZ,
-> > +};
-> > +
-> > +/*
-> > + * When outputs are controlled by SPI, the device supports four frequency ranges
-> > + * with following steps:
-> > + * - 0.5 Hz steps from 0.5 Hz to 32 Hz
-> > + * - 2 Hz steps from 2 Hz to 128 Hz
-> > + * - 8 Hz steps from 8 Hz to 512 Hz
-> > + * - 32 Hz steps from 32 Hz to 2048 Hz
-> > + * Below are the minimum and maximum frequencies converted to periods in ns for
-> > + * each of the four frequency ranges.
-> > + */
-> > +static const u32 mc33xs2410_period[4][2] = {
-> > +	[STEP_05HZ] = { 2000000000, 31250000 },
-> > +	[STEP_2HZ] = { 500000000, 7812500 },
-> > +	[STEP_8HZ] = { 125000000, 1953125 },
-> > +	[STEP_32HZ] = { 31250000, 488281 },
-> > +};
-> > +
-> > +static struct mc33xs2410_pwm *mc33xs2410_pwm_from_chip(struct pwm_chip *chip)
-> > +{
-> > +	return container_of(chip, struct mc33xs2410_pwm, chip);
-> > +}
-> > +
-> > +static int mc33xs2410_write_reg(struct spi_device *spi, u8 reg, u8 val)
-> > +{
-> > +	u8 tx[2];
-> > +
-> > +	tx[0] = reg | MC33XS2410_WR_FLAG;
-> > +	tx[1] = val;
-> > +
-> > +	return spi_write(spi, tx, 2);
-> > +}
-> > +
-> > +static int mc33xs2410_read_reg(struct spi_device *spi, u8 reg, bool ctrl)
-> > +{
-> > +	u8 tx[2], rx[2];
-> > +	int ret;
-> > +
-> > +	tx[0] = reg;
-> > +	tx[1] = ctrl ? MC33XS2410_RD_CTRL_FLAG : 0;
-> > +
-> > +	ret = spi_write(spi, tx, 2);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	ret = spi_read(spi, rx, 2);
-> > +	if (ret < 0)
-> > +		return ret;
+> ---
+>   drivers/gpu/drm/panel/Kconfig                 |  12 +
+>   drivers/gpu/drm/panel/Makefile                |   1 +
+>   drivers/gpu/drm/panel/panel-raydium-rm69380.c | 344 ++++++++++++++++++++++++++
+>   3 files changed, 357 insertions(+)
 > 
-> This could benefit from using spi_write_then_read().
-> 
-The device needs the chip select to go inactive after two bytes are
-transmitted. I could go for spi_sync_transfer and set cs_change in the
-first spi_transfer to 1 to get this done.
-
-> > +
-> > +	return FIELD_GET(MC33XS2410_RD_DATA_MASK, get_unaligned_be16(rx));
-> > +}
-> > +
-> > +static int mc33xs2410_read_reg_ctrl(struct spi_device *spi, u8 reg)
-> > +{
-> > +	return mc33xs2410_read_reg(spi, reg, true);
-> > +}
-> > +
-> > +static int mc33xs2410_modify_reg(struct spi_device *spi, u8 reg, u8 mask, u8 val)
-> > +{
-> > +	int ret;
-> > +
-> > +	ret = mc33xs2410_read_reg_ctrl(spi, reg);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	ret &= ~mask;
-> > +	ret |= val & mask;
-> > +
-> > +	return mc33xs2410_write_reg(spi, reg, ret);
-> > +}
-> > +
-> > +static int mc33xs2410_read_reg_diag(struct spi_device *spi, u8 reg)
-> > +{
-> > +	return mc33xs2410_read_reg(spi, reg, false);
-> > +}
-> > +
-> > +static u8 mc33xs2410_pwm_get_freq(const struct pwm_state *state)
-> > +{
-> > +	u32 period, freq, max, min;
-> > +	int step;
-> > +	u8 ret;
-> 
-> When reading "ret" I'd expect this to be an integer representing an
-> error code. Maybe call it "freq" instead?
-> 
-Ok.
-
-> > +	period = state->period;
-> > +	/*
-> > +	 * Check if period is within the limits of each of the four frequency
-> > +	 * ranges, starting with the highest frequency(lowest period). Higher
-> > +	 * frequencies are represented with better resolution by the device.
-> > +	 */
-> > +	for (step = STEP_32HZ; step >= STEP_05HZ; step--) {
-> > +		min = mc33xs2410_period[step][MC33XS2410_PERIOD_MIN];
-> > +		max = mc33xs2410_period[step][MC33XS2410_PERIOD_MAX];
-> > +		if ((period <= max) && (period >= min))
-> > +			break;
-> > +	}
-> 
-> Given that mc33xs2410_period[step][0] is 2000000000 >> (2 * step) and
-> mc33xs2410_period[step][1] = 31250000 >> (2 * step), this can be
-> calculated without a loop.
-> 
-> Something like:
-> 
-> 	step = (fls((31250000 - 1) / period) + 1) / 2
-> 
-> or given there are only four options this can also be done as follows:
-> 
-> 	switch (period) {
-> 		case 488281 .. 31250000:
-> 			step = 3;
-> 			break;
-> 		case 31250001 .. 125000000:
-> 			...
-> 	}
->
-> which gives the compiler a real chance to implement it efficiently. Also
-> then you could drop mc33xs2410_period[][].
->
-I would stick to the switch and drop mc33xs2410_period[][].
-
-> > +	freq = DIV_ROUND_CLOSEST(max, period) - 1;
-> > +	ret = FIELD_PREP(MC33XS2410_PWM_FREQ_MASK, freq);
-> > +	return (ret | FIELD_PREP(MC33XS2410_PWM_FREQ_STEP_MASK, step));
-> 
-> Also using DIV_ROUND_CLOSEST smells wrong. Did you test with PWM_DEBUG
-> enabled?
-> 
-At least I enabled it and tested some cases. But I think
-DIV_ROUND_CLOSEST is what I want. The device is able to generate
-frequencies in four frequency ranges with different steps of resolution.
-I want to minimize the error introduced by this approach. When a user
-wants to set 1041 Hz, the device is not able to generate this frequency.
-It is able to generate 1024 Hz or 1056Hz and 1024 Hz is more accurate,
-which hopefully can be accomplished with DIV_ROUND_CLOSEST.
-
-> > +}
-> > +
-> > +static int mc33xs2410_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-> > +				const struct pwm_state *state)
-> > +{
-> > +	struct mc33xs2410_pwm *mc33xs2410 = mc33xs2410_pwm_from_chip(chip);
-> > +	struct spi_device *spi = mc33xs2410->spi;
-> > +	u8 mask, val;
-> > +	int ret;
-> > +
-> > +	if (state->period > mc33xs2410_period[STEP_05HZ][MC33XS2410_PERIOD_MAX])
-> > +		return -EINVAL;
-> 
-> Please make this:
-> 
-> 	u64 period = min(state->period, mc33xs2410_period[STEP_05HZ][MC33XS2410_PERIOD_MAX]);
->
-Ok.
-> > +
-> > +	if (state->period < mc33xs2410_period[STEP_32HZ][MC33XS2410_PERIOD_MIN])
-> > +		return -EINVAL;
-> > +
-> > +	guard(mutex)(&mc33xs2410->lock);
-> 
-> Huh, didn't know this syntax for locking. Interesting. However with the
-> pending changes for the next merge window, calls to .apply() are
-> serialized per chip already by the core, so you don't need locking.
-> 
-Ok.
-
-> > +	mask = MC33XS2410_PWM_CTRL1_POL_INV(pwm->hwpwm);
-> > +	val = (state->polarity == PWM_POLARITY_INVERSED) ? mask : 0;
-> > +	ret = mc33xs2410_modify_reg(spi, MC33XS2410_PWM_CTRL1, mask, val);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	ret = mc33xs2410_write_reg(spi, MC33XS2410_PWM_FREQ(pwm->hwpwm),
-> > +				   mc33xs2410_pwm_get_freq(state));
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	ret = mc33xs2410_write_reg(spi, MC33XS2410_PWM_DC(pwm->hwpwm),
-> > +				   pwm_get_relative_duty_cycle(state, 255));
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	mask = MC33XS2410_PWM_CTRL3_EN(pwm->hwpwm);
-> > +	val = (state->enabled) ? mask : 0;
-> > +	return mc33xs2410_modify_reg(spi, MC33XS2410_PWM_CTRL3, mask, val);
-> 
-> Is this procedure atomic? Or can it happen that the output pin does
-> something that is neither the old nor the new state in between?
-> 
-It is not atomic and I didn't find any information in the datasheet how
-to achieve this. Data is taken and valid only after the chip select is
-going inactive after each write transaction. Write transactions can't be
-bundled to make it atomic, not documented, but I still tried it without
-success. It is possible that the output pin does something that is
-neither the old nor the new state. At least this is what I see on my
-scope. Tested it with the lowest frequency 0.5Hz.
-
-> Maybe it's worth the effort doing that in a single spi transfer, both to
-> make the procedure quicker and (maybe?) atomic.
-> 
-I could go for spi_sync_transfer with multiple transfers which change
-chip select. This could maybe improve the procedure a little bit.
-
-> > +}
-> > +
-> > +static int mc33xs2410_pwm_get_state(struct pwm_chip *chip,
-> > +				    struct pwm_device *pwm,
-> > +				    struct pwm_state *state)
-> > +{
-> > +	struct mc33xs2410_pwm *mc33xs2410 = mc33xs2410_pwm_from_chip(chip);
-> > +	struct spi_device *spi = mc33xs2410->spi;
-> > +	u32 freq, code, steps;
-> > +	int ret;
-> > +
-> > +	guard(mutex)(&mc33xs2410->lock);
-> > +	ret = mc33xs2410_read_reg_ctrl(spi, MC33XS2410_PWM_CTRL1);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	state->polarity = (ret & MC33XS2410_PWM_CTRL1_POL_INV(pwm->hwpwm)) ?
-> > +			  PWM_POLARITY_INVERSED : PWM_POLARITY_NORMAL;
-> > +
-> > +	ret = mc33xs2410_read_reg_ctrl(spi, MC33XS2410_PWM_FREQ(pwm->hwpwm));
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	/* Lowest frequency steps are starting with 0.5Hz, scale them by two. */
-> > +	steps = (FIELD_GET(MC33XS2410_PWM_FREQ_STEP_MASK, ret) * 2) << 1;
-> 
-> You're multiplying by 2 twice here. I fail to follow.
-> 
-steps:
-  - 0 = 0.5Hz
-  - 1 = 2Hz
-  - 2 = 8Hz
-  - 3 = 32Hz
-frequency = (code + 1) x steps
-
-To avoid division in case steps is zero, I scale steps value by two
-keeping in mind that I doubled the frequency. This is important when
-calculating the period. I will document this properly in next version of
-the driver.
-
-> > +	code = FIELD_GET(MC33XS2410_PWM_FREQ_MASK, ret);
-> > +	/* Frequency = (code + 1) x steps */
-> > +	freq = (code + 1) * steps;
-> > +	/* Convert frequency to period in ns, considering scaled steps value. */
-> > +	state->period = 2000000000ULL / (freq);
-> 
-> Please make 2000000000ULL a define. This can then be used also in the
-> calculations that currently involve mc33xs2410_period[][].
-> 
-Ok.
-> Also you need to round up here.
-> 
-Ok.
-> > +	ret = mc33xs2410_read_reg_ctrl(spi, MC33XS2410_PWM_DC(pwm->hwpwm));
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	ret = pwm_set_relative_duty_cycle(state, ret, 255);
-> > +	if (ret)
-> > +		return ret;
-> 
-> Pretty sure this is also wrong and fails if you enable PWM_DEBUG.
-> 
-Yes, you are right. Would go for:
-pwm_set_relative_duty_cycle(state, ret + 1, 256);
-
-> > +	ret = mc33xs2410_read_reg_diag(spi, MC33XS2410_IN_OUT_STA);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	state->enabled = !!(ret & MC33XS2410_IN_OUT_STA_OUT_EN(pwm->hwpwm));
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct pwm_ops mc33xs2410_pwm_ops = {
-> > +	.apply = mc33xs2410_pwm_apply,
-> > +	.get_state = mc33xs2410_pwm_get_state,
-> > +};
-> > +
-> > +static int mc33xs2410_reset(struct device *dev)
-> > +{
-> > +	struct gpio_desc *reset_gpio;
-> > +
-> > +	reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-> > +	if (IS_ERR_OR_NULL(reset_gpio))
-> > +		return PTR_ERR_OR_ZERO(reset_gpio);
-> > +
-> > +	fsleep(1000);
-> > +	gpiod_set_value_cansleep(reset_gpio, 0);
-> > +	/* Wake-up time */
-> > +	fsleep(10000);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int mc33xs2410_probe(struct spi_device *spi)
-> > +{
-> > +	struct mc33xs2410_pwm *mc33xs2410;
-> > +	struct device *dev = &spi->dev;
-> > +	int ret;
-> > +
-> > +	mc33xs2410 = devm_kzalloc(&spi->dev, sizeof(*mc33xs2410), GFP_KERNEL);
-> 
-> After struct device *dev = &spi->dev you could better use dev here
-> instead of &spi->dev.
->
-Ok.
-
-> > +	if (!mc33xs2410)
-> > +		return -ENOMEM;
-> 
-> Please use devm_pwmchip_alloc(). See
-> 11ee0a124cb48bb837a1d90c3504a9c3376e96d1 for a simple example to copy
-> from.
->
-Ok.
-
-> > +	mc33xs2410->chip.dev = dev;
-> > +	mc33xs2410->chip.ops = &mc33xs2410_pwm_ops;
-> > +	mc33xs2410->chip.npwm = 4;
-> > +	mc33xs2410->spi = spi;
-> > +	mutex_init(&mc33xs2410->lock);
-> > +
-> > +	ret = mc33xs2410_reset(dev);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* Disable watchdog */
-> > +	ret = mc33xs2410_write_reg(spi, MC33XS2410_WDT, 0x0);
-> > +	if (ret < 0)
-> > +		return dev_err_probe(dev, ret, "Failed to disable watchdog\n");
-> > +
-> > +	/* Transitition to normal mode */
-> 
-> s/Transitition/Transition/
->
-Ok.
-
-> > +	ret = mc33xs2410_modify_reg(spi, MC33XS2410_GLB_CTRL,
-> > +				    MC33XS2410_GLB_CTRL_MODE_MASK,
-> > +				    MC33XS2410_GLB_CTRL_NORMAL_MODE);
-> > +	if (ret < 0)
-> > +		return dev_err_probe(dev, ret,
-> > +				     "Failed to transition to normal mode\n");
-> > +
-> > +	ret = devm_pwmchip_add(dev, &mc33xs2410->chip);
-> > +	if (ret < 0)
-> > +		return dev_err_probe(dev, ret, "Failed to add pwm chip\n");
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct spi_device_id mc33xs2410_spi_id[] = {
-> > +	{ "mc33xs2410", 0 },
-> 
-> driver_data is unused here, please drop it.
->
-Ok.
-
-> > +	{ }
-> > +};
-> > +MODULE_DEVICE_TABLE(spi, mc33xs2410_spi_id);
-> > +
-> > +static const struct of_device_id mc33xs2410_of_match[] = {
-> > +	{ .compatible = "nxp,mc33xs2410" },
-> > +	{ }
-> > +};
-> > +MODULE_DEVICE_TABLE(of, mc33xs2410_of_match);
-> > +
-> > +static struct spi_driver mc33xs2410_driver = {
-> > +	.driver = {
-> > +		.name = "mc33xs2410-pwm",
-> > +		.of_match_table = mc33xs2410_of_match,
-> > +	},
-> > +	.probe = mc33xs2410_probe,
-> > +	.id_table = mc33xs2410_spi_id,
-> > +};
-> > +module_spi_driver(mc33xs2410_driver);
-> > +
-> > +MODULE_DESCRIPTION("NXP MC33XS2410 high-side switch driver");
-> > +MODULE_AUTHOR("Dimitri Fedrau <dima.fedrau@gmail.com>");
-> > +MODULE_LICENSE("GPL");
-> 
-> Best regards
-> Uwe
+> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> index 154f5bf82980..e2a66c21349f 100644
+> --- a/drivers/gpu/drm/panel/Kconfig
+> +++ b/drivers/gpu/drm/panel/Kconfig
+> @@ -542,6 +542,18 @@ config DRM_PANEL_RAYDIUM_RM692E5
+>   	  Say Y here if you want to enable support for Raydium RM692E5-based
+>   	  display panels, such as the one found in the Fairphone 5 smartphone.
+>   
+> +config DRM_PANEL_RAYDIUM_RM69380
+> +	tristate "Raydium RM69380-based DSI panel"
+> +	depends on OF && GPIOLIB
+> +	depends on DRM_MIPI_DSI
+> +	depends on BACKLIGHT_CLASS_DEVICE
+> +	help
+> +	  Say Y here if you want to enable support for Raydium RM69380-based
+> +	  display panels.
+> +
+> +	  This panel controller can be found in the Lenovo Xiaoxin Pad Pro 2021
+> +	  in combination with an EDO OLED panel.
+> +
+>   config DRM_PANEL_RONBO_RB070D30
+>   	tristate "Ronbo Electronics RB070D30 panel"
+>   	depends on OF
+> diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+> index 24a02655d726..e2a2807d4ef0 100644
+> --- a/drivers/gpu/drm/panel/Makefile
+> +++ b/drivers/gpu/drm/panel/Makefile
+> @@ -55,6 +55,7 @@ obj-$(CONFIG_DRM_PANEL_RASPBERRYPI_TOUCHSCREEN) += panel-raspberrypi-touchscreen
+>   obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM67191) += panel-raydium-rm67191.o
+>   obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM68200) += panel-raydium-rm68200.o
+>   obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM692E5) += panel-raydium-rm692e5.o
+> +obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM69380) += panel-raydium-rm69380.o
+>   obj-$(CONFIG_DRM_PANEL_RONBO_RB070D30) += panel-ronbo-rb070d30.o
+>   obj-$(CONFIG_DRM_PANEL_SAMSUNG_ATNA33XC20) += panel-samsung-atna33xc20.o
+>   obj-$(CONFIG_DRM_PANEL_SAMSUNG_DB7430) += panel-samsung-db7430.o
+> diff --git a/drivers/gpu/drm/panel/panel-raydium-rm69380.c b/drivers/gpu/drm/panel/panel-raydium-rm69380.c
+> new file mode 100644
+> index 000000000000..4dca6802faef
+> --- /dev/null
+> +++ b/drivers/gpu/drm/panel/panel-raydium-rm69380.c
+> @@ -0,0 +1,344 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Generated with linux-mdss-dsi-panel-driver-generator from vendor device tree.
+> + * Copyright (c) 2024 David Wronek <david@mainlining.org>
+> + */
+> +
+> +#include <linux/backlight.h>
+> +#include <linux/delay.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_graph.h>
+> +#include <linux/regulator/consumer.h>
+> +
+> +#include <video/mipi_display.h>
+> +
+> +#include <drm/drm_mipi_dsi.h>
+> +#include <drm/drm_modes.h>
+> +#include <drm/drm_panel.h>
+> +#include <drm/drm_probe_helper.h>
+> +
+> +struct rm69380_panel {
+> +	struct drm_panel panel;
+> +	struct mipi_dsi_device *dsi[2];
+> +	struct regulator_bulk_data supplies[2];
+> +	struct gpio_desc *reset_gpio;
+> +};
+> +
+> +static inline
+> +struct rm69380_panel *to_rm69380_panel(struct drm_panel *panel)
+> +{
+> +	return container_of(panel, struct rm69380_panel, panel);
+> +}
+> +
+> +static void rm69380_reset(struct rm69380_panel *ctx)
+> +{
+> +	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
+> +	usleep_range(15000, 16000);
+> +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
+> +	usleep_range(10000, 11000);
+> +	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
+> +	msleep(30);
+> +}
+> +
+> +static int rm69380_on(struct rm69380_panel *ctx)
+> +{
+> +	struct mipi_dsi_device *dsi = ctx->dsi[0];
+> +	struct device *dev = &dsi->dev;
+> +	int ret;
+> +
+> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
+> +	if (ctx->dsi[1])
+> +		ctx->dsi[1]->mode_flags |= MIPI_DSI_MODE_LPM;
+> +
+> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0xd4);
+> +	mipi_dsi_dcs_write_seq(dsi, 0x00, 0x80);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0xd0);
+> +	mipi_dsi_dcs_write_seq(dsi, 0x48, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0x26);
+> +	mipi_dsi_dcs_write_seq(dsi, 0x75, 0x3f);
+> +	mipi_dsi_dcs_write_seq(dsi, 0x1d, 0x1a);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, MIPI_DCS_WRITE_CONTROL_DISPLAY, 0x28);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xc2, 0x08);
+> +
+> +	ret = mipi_dsi_dcs_set_tear_on(dsi, MIPI_DSI_DCS_TEAR_MODE_VBLANK);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to set tear on: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to exit sleep mode: %d\n", ret);
+> +		return ret;
+> +	}
+> +	msleep(20);
+> +
+> +	ret = mipi_dsi_dcs_set_display_on(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to set display on: %d\n", ret);
+> +		return ret;
+> +	}
+> +	msleep(36);
+> +
+> +	return 0;
+> +}
+> +
+> +static int rm69380_off(struct rm69380_panel *ctx)
+> +{
+> +	struct mipi_dsi_device *dsi = ctx->dsi[0];
+> +	struct device *dev = &dsi->dev;
+> +	int ret;
+> +
+> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
+> +	if (ctx->dsi[1])
+> +		ctx->dsi[1]->mode_flags &= ~MIPI_DSI_MODE_LPM;
+> +
+> +	ret = mipi_dsi_dcs_set_display_off(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to set display off: %d\n", ret);
+> +		return ret;
+> +	}
+> +	msleep(35);
+> +
+> +	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to enter sleep mode: %d\n", ret);
+> +		return ret;
+> +	}
+> +	msleep(20);
+> +
+> +	return 0;
+> +}
+> +
+> +static int rm69380_prepare(struct drm_panel *panel)
+> +{
+> +	struct rm69380_panel *ctx = to_rm69380_panel(panel);
+> +	struct device *dev = &ctx->dsi[0]->dev;
+> +	int ret;
+> +
+> +	ret = regulator_bulk_enable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to enable regulators: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	rm69380_reset(ctx);
+> +
+> +	ret = rm69380_on(ctx);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to initialize panel: %d\n", ret);
+> +		gpiod_set_value_cansleep(ctx->reset_gpio, 1);
+> +		regulator_bulk_disable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int rm69380_unprepare(struct drm_panel *panel)
+> +{
+> +	struct rm69380_panel *ctx = to_rm69380_panel(panel);
+> +	struct device *dev = &ctx->dsi[0]->dev;
+> +	int ret;
+> +
+> +	ret = rm69380_off(ctx);
+> +	if (ret < 0)
+> +		dev_err(dev, "Failed to un-initialize panel: %d\n", ret);
+> +
+> +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
+> +	regulator_bulk_disable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct drm_display_mode rm69380_mode = {
+> +	.clock = (2560 + 32 + 12 + 38) * (1600 + 20 + 4 + 8) * 90 / 1000,
+> +	.hdisplay = 2560,
+> +	.hsync_start = 2560 + 32,
+> +	.hsync_end = 2560 + 32 + 12,
+> +	.htotal = 2560 + 32 + 12 + 38,
+> +	.vdisplay = 1600,
+> +	.vsync_start = 1600 + 20,
+> +	.vsync_end = 1600 + 20 + 4,
+> +	.vtotal = 1600 + 20 + 4 + 8,
+> +	.width_mm = 248,
+> +	.height_mm = 155,
+> +	.type = DRM_MODE_TYPE_DRIVER,
+> +};
+> +
+> +static int rm69380_get_modes(struct drm_panel *panel,
+> +					struct drm_connector *connector)
+> +{
+> +	return drm_connector_helper_get_modes_fixed(connector, &rm69380_mode);
+> +}
+> +
+> +static const struct drm_panel_funcs rm69380_panel_funcs = {
+> +	.prepare = rm69380_prepare,
+> +	.unprepare = rm69380_unprepare,
+> +	.get_modes = rm69380_get_modes,
+> +};
+> +
+> +static int rm69380_bl_update_status(struct backlight_device *bl)
+> +{
+> +	struct mipi_dsi_device *dsi = bl_get_data(bl);
+> +	u16 brightness = backlight_get_brightness(bl);
+> +	int ret;
+> +
+> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
+> +
+> +	ret = mipi_dsi_dcs_set_display_brightness_large(dsi, brightness);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
+> +
+> +	return 0;
+> +}
+> +
+> +static int rm69380_bl_get_brightness(struct backlight_device *bl)
+> +{
+> +	struct mipi_dsi_device *dsi = bl_get_data(bl);
+> +	u16 brightness;
+> +	int ret;
+> +
+> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
+> +
+> +	ret = mipi_dsi_dcs_get_display_brightness_large(dsi, &brightness);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
+> +
+> +	return brightness;
+> +}
+> +
+> +static const struct backlight_ops rm69380_bl_ops = {
+> +	.update_status = rm69380_bl_update_status,
+> +	.get_brightness = rm69380_bl_get_brightness,
+> +};
+> +
+> +static struct backlight_device *
+> +rm69380_create_backlight(struct mipi_dsi_device *dsi)
+> +{
+> +	struct device *dev = &dsi->dev;
+> +	const struct backlight_properties props = {
+> +		.type = BACKLIGHT_RAW,
+> +		.brightness = 511,
+> +		.max_brightness = 2047,
+> +	};
+> +
+> +	return devm_backlight_device_register(dev, dev_name(dev), dev, dsi,
+> +					      &rm69380_bl_ops, &props);
+> +}
+> +
+> +static int rm69380_probe(struct mipi_dsi_device *dsi)
+> +{
+> +	struct mipi_dsi_host *dsi_sec_host;
+> +	struct rm69380_panel *ctx;
+> +	struct device *dev = &dsi->dev;
+> +	struct device_node *dsi_sec;
+> +	int ret, i;
+> +
+> +	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
+> +	if (!ctx)
+> +		return -ENOMEM;
+> +
+> +	ctx->supplies[0].supply = "vddio";
+> +	ctx->supplies[1].supply = "avdd";
+> +	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(ctx->supplies),
+> +				      ctx->supplies);
+> +	if (ret < 0)
+> +		return dev_err_probe(dev, ret, "Failed to get regulators\n");
+> +
+> +	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(ctx->reset_gpio))
+> +		return dev_err_probe(dev, PTR_ERR(ctx->reset_gpio),
+> +				     "Failed to get reset-gpios\n");
+> +
+> +	dsi_sec = of_graph_get_remote_node(dsi->dev.of_node, 1, -1);
+> +
+> +	if (dsi_sec) {
+> +		const struct mipi_dsi_device_info info = { "RM69380 DSI1", 0,
+> +							   dsi_sec };
+> +
+> +		dsi_sec_host = of_find_mipi_dsi_host_by_node(dsi_sec);
+> +		of_node_put(dsi_sec);
+> +		if (!dsi_sec_host)
+> +			return dev_err_probe(dev, -EPROBE_DEFER,
+> +					     "Cannot get secondary DSI host\n");
+> +
+> +		ctx->dsi[1] =
+> +			devm_mipi_dsi_device_register_full(dev, dsi_sec_host, &info);
+> +		if (IS_ERR(ctx->dsi[1]))
+> +			return dev_err_probe(dev, PTR_ERR(ctx->dsi[1]),
+> +					     "Cannot get secondary DSI node\n");
+> +
+> +		mipi_dsi_set_drvdata(ctx->dsi[1], ctx);
+> +	}
+> +
+> +	ctx->dsi[0] = dsi;
+> +	mipi_dsi_set_drvdata(dsi, ctx);
+> +
+> +	drm_panel_init(&ctx->panel, dev, &rm69380_panel_funcs,
+> +		       DRM_MODE_CONNECTOR_DSI);
+> +	ctx->panel.prepare_prev_first = true;
+> +
+> +	ctx->panel.backlight = rm69380_create_backlight(dsi);
+> +	if (IS_ERR(ctx->panel.backlight))
+> +		return dev_err_probe(dev, PTR_ERR(ctx->panel.backlight),
+> +				     "Failed to create backlight\n");
+> +
+> +	drm_panel_add(&ctx->panel);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(ctx->dsi); i++) {
+> +		if (!ctx->dsi[i])
+> +			continue;
+> +
+> +		dev_dbg(&ctx->dsi[i]->dev, "Binding DSI %d\n", i);
+> +
+> +		ctx->dsi[i]->lanes = 4;
+> +		ctx->dsi[i]->format = MIPI_DSI_FMT_RGB888;
+> +		ctx->dsi[i]->mode_flags = MIPI_DSI_MODE_VIDEO_BURST |
+> +					  MIPI_DSI_CLOCK_NON_CONTINUOUS;
+> +
+> +		ret = devm_mipi_dsi_attach(dev, ctx->dsi[i]);
+> +		if (ret < 0) {
+> +			drm_panel_remove(&ctx->panel);
+> +			return dev_err_probe(dev, ret,
+> +					     "Failed to attach to DSI%d\n", i);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void rm69380_remove(struct mipi_dsi_device *dsi)
+> +{
+> +	struct rm69380_panel *ctx = mipi_dsi_get_drvdata(dsi);
+> +
+> +	drm_panel_remove(&ctx->panel);
+> +}
+> +
+> +static const struct of_device_id rm69380_of_match[] = {
+> +	{ .compatible = "lenovo,j716f-edo-rm69380" },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, rm69380_of_match);
+> +
+> +static struct mipi_dsi_driver rm69380_panel_driver = {
+> +	.probe = rm69380_probe,
+> +	.remove = rm69380_remove,
+> +	.driver = {
+> +		.name = "panel-raydium-rm69380",
+> +		.of_match_table = rm69380_of_match,
+> +	},
+> +};
+> +module_mipi_dsi_driver(rm69380_panel_driver);
+> +
+> +MODULE_AUTHOR("David Wronek <david@mainlining.org");
+> +MODULE_DESCRIPTION("DRM driver for Raydium RM69380-equipped DSI panels");
+> +MODULE_LICENSE("GPL");
 > 
 > -- 
-> Pengutronix e.K.                           | Uwe Kleine-König            |
-> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
-Best regards
-Dimitri
+> 2.44.0
+> 
 
