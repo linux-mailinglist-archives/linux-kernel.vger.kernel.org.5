@@ -1,171 +1,158 @@
-Return-Path: <linux-kernel+bounces-148036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA6158A7CE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:14:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE53A8A7CE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:15:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 178EE1C20F02
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:14:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 759A7282890
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:15:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8390474401;
-	Wed, 17 Apr 2024 07:14:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1504F6EB65;
+	Wed, 17 Apr 2024 07:14:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="AKWXqiV5";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="tgRR7L8b"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rTIfmRVv"
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF076BB58;
-	Wed, 17 Apr 2024 07:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5056A34C
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:14:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713338046; cv=none; b=SsqD9i1mvejw7diiwL0VJPmjsoPdNZf4gYe+RmiSv3lwjQ+/sus8q8dkaSGePoWLXMfu2LMa55FF11RxUo7a74RVF3FG/nQFJbgV0MGiGucgRByyv6gjElSvUns+fcGW52cdj9HOq4dw2Tpytbev0W0o3MIdtum286GwrZaqJV8=
+	t=1713338057; cv=none; b=uWvbLF3cQNkFhfx/MZn0GGyRu26U7TZXcG7ukDmLMx8NHV45xzPkbaLYQt9tCcngpg/Np/Z6ENy0Q5Gms5UN3Y93P/dANcQoPBFrhNnUwPt4Hqlq67mhqf+WSSmNR2bqP+UFrog6K1fDPIje5sT9TTJGd1UGBqa7x6xtkRoYmMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713338046; c=relaxed/simple;
-	bh=2nnsV0uLoPgUeurBDIa4GBCWTyyWDiXq5bRAlfYpg4g=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=PRr1WxO4YWHBYNBTS43Bo5sPaQ0zqQci3Em5jCpNsNGudbgpKdmXFhj3dyJNhbVBgc/yZv2hobDev4lDsx99h7/mk3X8CqdbeV5NDTZFIe1HcXxiPIG4/GXnzEhQRZ06lwXl3Ro5SGS5d3bapN8wojKI4CXF3djM8ddfnF0sUGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=AKWXqiV5; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=tgRR7L8b reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+	s=arc-20240116; t=1713338057; c=relaxed/simple;
+	bh=Wg9bp/1KONUVlzT3UD7ChlmkEWpfB86YN/zEsuRAT8I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MVJ1ravXNzxGW0ar/5Ulh4/eJRiXGDviYkFDZcZXVb9aGtc4Ut6ZCbafR3gOYkrbApsh/P5cwBbj/I8G2M+GsGRCa1yoTFqthbxWdYxsMtpDEM1xpRoG5IKM3pZiPVTUVOkePeoJNoSFJZT5zKPFZfQ6CnGS9UsYSNIxNTvCIis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rTIfmRVv; arc=none smtp.client-ip=209.85.210.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6eb86aeeb2cso1496844a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:14:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1713338043; x=1744874043;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=AIBoe2UB0IuhJBhgewIF7D7CI6oTfNKrjyGYqYG2X9U=;
-  b=AKWXqiV5nIt+XZA9peXXOElpnC/I9NJSGQ/FeuDa5Solae2Ga6WW/8+L
-   1uUdFEz+p9iKDU+fqGUZH5j6ifCBs8OYhJZS6VQKXAv6CQ3GY32CRCZpH
-   Dms6f3dUmOxGQoP8yQxJWs5cLS4KFpUYQejF5igRuxqB+ehf941C8NFBt
-   1JbTCPjljWvk2Yk8eHCtt4/WatrPBny+ZzGSz36/pKZ/aDX8zUEUNhUMi
-   S8pPsfJFd6yYSNzD6aqHo2Uj6Gc7xoYtRhHr478yED8asb3nYSc5tYK16
-   sQ56uYg8ViCtx3QslYuwhjLG8PCOTpdjrICvcCdmi5WHbOzJ2LUtLnrP6
-   w==;
-X-IronPort-AV: E=Sophos;i="6.07,208,1708383600"; 
-   d="scan'208";a="36457832"
-Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 17 Apr 2024 09:13:59 +0200
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 2E4A0170497;
-	Wed, 17 Apr 2024 09:13:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1713338035;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=AIBoe2UB0IuhJBhgewIF7D7CI6oTfNKrjyGYqYG2X9U=;
-	b=tgRR7L8bYEKCdtgxRTHAJ13xwvZlyRCC0XUcm/7v80/I5AKlMpKS58FkLQYDA4H3hF/7n0
-	GiH2rjaKtanmM/MVctm0o15YAlmy4Nn/RKyvpAOvz6wLVQivYl37UMo4c1pncXFt5pnVx1
-	VYzWo7Omvy6rl9LBuoxYdESTm5rjvrYuOKFhiM8L8nrnDiySyjsZeZgMCTgpcNKtdKo0lc
-	3R7XtWptjmzH1Ne8Fr3BfFQtrUWjxweqVzVHG9R5f33ZmWUlYG4xVysJCuohsZI0JhSWGm
-	Hcceymo8upob/za93iF245MUgo6J7SL4akT4B5f1IgQ4vpGsWIeTIrCfNsNN/w==
-Message-ID: <5f09543db3de88e83116c5b2f6e3d9edbfdb4af8.camel@ew.tq-group.com>
-Subject: Re: [PATCH net] net: dsa: mv88e6xx: fix supported_interfaces setup
- in mv88e6250_phylink_get_caps()
-From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
- Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,  Jakub Kicinski
- <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-  linux-kernel@vger.kernel.org, linux@ew.tq-group.com
-Date: Wed, 17 Apr 2024 09:13:53 +0200
-In-Reply-To: <Zh6trxU0hB+yt6rV@shell.armlinux.org.uk>
-References: <20240416155054.3650354-1-matthias.schiffer@ew.tq-group.com>
-	 <Zh6trxU0hB+yt6rV@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=linaro.org; s=google; t=1713338055; x=1713942855; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rds/vSPkCgLztEVJcMBchz0yVanaqr2q9MoqHxNAgzI=;
+        b=rTIfmRVvzw7GHb80iifWSxFmg8JI2hSbMRbCejEm1be2oBphm1D/H+hLGi5Giardbh
+         PlVKu4XnCvTrJ/OYV1r4w179767uIzYG+2hUkum6PaO4MZXWt0elVHc5cBPHWpPEfIlN
+         PVfW3N0KMZp/+VTi2Uhw/jzQ3HhGnuM7Yi6aMUnHqYa5KCiSK/kGFAx/Ebk+9G9ZSsOT
+         ptKhmtZRvkpb4qCbNnK6pmToGBvvk+aZUr/fNvgOJhOcIHirNHYS7kAhirJmNvb3h95M
+         6BSNVaOT2DqfatW7rvJnvOBkZ7OofT+oi46l7zcO6fuZcJ7Vni1C3/t+yOQhFeGvi8fn
+         MkZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713338055; x=1713942855;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rds/vSPkCgLztEVJcMBchz0yVanaqr2q9MoqHxNAgzI=;
+        b=INegnvUW4ZmxNUbaRaeW6JTOuA3OHIUQeVMoJu6x66fTJGDZM+qutzXIwdCoXiuUbg
+         0YXjykPqsHgbrUz9OvuXZlkoxGHhLLhwxTFWRaGubYIafms59YCCsmCgXxExYEaWsxnf
+         UYiNkTRskxIxzzrOZxK603c6N+18jQvd/230xoV5yT3MgkH+Dba8uA+pDKDXld1JUODq
+         WkHMmRmpTllUJNmehRgEU4QCjZmMPg2AQqgmozOoLbdaN1Rayg2vjCoyotmmudhLhCCN
+         MvnN6vMfAkj8G5KFYoz/DNAZjpzh5yWEhWdx3nJqP2XnwkklGW6fcmd9PnupWno+8pSV
+         kt4A==
+X-Forwarded-Encrypted: i=1; AJvYcCVqvIisx2F9H0b/yzh2EE9wBKQGcVfce0DUd0orJoER8qUdTgEgLX5mtIrgvYp93QAxEyXOaVGnDHBkEQNt4in1SuRspGTQG0agHO+i
+X-Gm-Message-State: AOJu0YytYqHkY+rWXkv8n3loCVKfthd7al9AuTDShBMc2c8FV0pcumj0
+	Gso8Z49gQPYz8aDb3/HQk+PG26fUhjtEDYT5VrG0W8VNbMXKQgKjDp49z58qdw==
+X-Google-Smtp-Source: AGHT+IHaHrm2pb+wT7KKfQkSKKuzy7HKCVhCIyuFy2rzef2uOrb0UaXT1cyILAlN1opmVB/oaR6cAg==
+X-Received: by 2002:a05:6870:70a1:b0:22f:70da:1f26 with SMTP id v33-20020a05687070a100b0022f70da1f26mr19032069oae.27.1713338054787;
+        Wed, 17 Apr 2024 00:14:14 -0700 (PDT)
+Received: from thinkpad ([120.60.54.9])
+        by smtp.gmail.com with ESMTPSA id z3-20020aa78883000000b006e5571be110sm9998837pfe.214.2024.04.17.00.14.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 00:14:14 -0700 (PDT)
+Date: Wed, 17 Apr 2024 12:44:06 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-clk@vger.kernel.org
+Subject: Re: [PATCH v3 4/7] PCI: qcom: Add support for IPQ9574
+Message-ID: <20240417071406.GC3894@thinkpad>
+References: <20240415182052.374494-1-mr.nuke.me@gmail.com>
+ <20240415182052.374494-5-mr.nuke.me@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240415182052.374494-5-mr.nuke.me@gmail.com>
 
-On Tue, 2024-04-16 at 17:56 +0100, Russell King (Oracle) wrote:
-> On Tue, Apr 16, 2024 at 05:50:54PM +0200, Matthias Schiffer wrote:
-> > +int mv88e6250_port_get_mode(struct mv88e6xxx_chip *chip, int port,
-> > +			    phy_interface_t *mode)
-> > +{
-> > +	int err;
-> > +	u16 reg;
-> > +
-> > +	if (port < 5) {
-> > +		*mode =3D PHY_INTERFACE_MODE_INTERNAL;
-> > +		return 0;
-> > +	}
->=20
-> Note that if mv88e6xxx_phy_is_internal() returns TRUE for the port,
-> then this will be handled automatically.
->=20
-> > +
-> > +	err =3D mv88e6xxx_port_read(chip, port, MV88E6XXX_PORT_STS, &reg);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	switch (reg & MV88E6250_PORT_STS_PORTMODE_MASK) {
-> > +	case MV88E6250_PORT_STS_PORTMODE_MII_10_HALF_PHY:
-> > +	case MV88E6250_PORT_STS_PORTMODE_MII_100_HALF_PHY:
-> > +	case MV88E6250_PORT_STS_PORTMODE_MII_10_FULL_PHY:
-> > +	case MV88E6250_PORT_STS_PORTMODE_MII_100_FULL_PHY:
-> > +		*mode =3D PHY_INTERFACE_MODE_REVMII;
-> > +		break;
-> > +
-> > +	case MV88E6250_PORT_STS_PORTMODE_MII_HALF:
-> > +	case MV88E6250_PORT_STS_PORTMODE_MII_FULL:
-> > +		*mode =3D PHY_INTERFACE_MODE_MII;
-> > +		break;
-> > +
-> > +	case MV88E6250_PORT_STS_PORTMODE_MII_DUAL_100_RMII_FULL_PHY:
-> > +	case MV88E6250_PORT_STS_PORTMODE_MII_200_RMII_FULL_PHY:
-> > +	case MV88E6250_PORT_STS_PORTMODE_MII_10_100_RMII_HALF_PHY:
-> > +	case MV88E6250_PORT_STS_PORTMODE_MII_10_100_RMII_FULL_PHY:
-> > +		*mode =3D PHY_INTERFACE_MODE_REVRMII;
-> > +		break;
-> > +
-> > +	case MV88E6250_PORT_STS_PORTMODE_MII_DUAL_100_RMII_FULL:
-> > +	case MV88E6250_PORT_STS_PORTMODE_MII_10_100_RMII_FULL:
-> > +		*mode =3D PHY_INTERFACE_MODE_RMII;
-> > +		break;
-> > +
-> > +	case MV88E6250_PORT_STS_PORTMODE_MII_100_RGMII:
-> > +		*mode =3D PHY_INTERFACE_MODE_RGMII;
-> > +		break;
-> > +
-> > +	default:
-> > +		*mode =3D PHY_INTERFACE_MODE_NA;
->=20
-> What does this mean? I don't allow PHY_INTERFACE_MODE_NA to be set in
-> the list of supported interfaces because it isn't an interface mode.
-> If it's invalid, then it's probably best to return an error.
->=20
-> I wonder whether it would just be better to pass the
-> supported_interfaces bitmap into this function and have it set the
-> appropriate bit itself, renaming the function to something more
-> better suited to that purpose.
->=20
-> Thanks.
+On Mon, Apr 15, 2024 at 01:20:49PM -0500, Alexandru Gagniuc wrote:
+> Add support for the PCIe on IPQ9574. The main difference from ipq6018
+> is that the "iface" clock is not necessarry. Add a special case in
+> qcom_pcie_get_resources_2_9_0() to handle this.
+> 
 
-I'm explicitly checking for PHY_INTERFACE_MODE_NA in the caller to handle t=
-he "this interface isn't
-useable" case. Passing supported_interfaces into the function handling the =
-port modes is fine with
-me, too - will send a v2 later.
+Could you add more information about the PCIe controller used in this SoC? Like
+controller version, supported data rate, PCIe generation etc...
 
-Best regards,
-Matthias
+- Mani
 
+> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 14772edcf0d3..10560d6d6336 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -1101,15 +1101,19 @@ static int qcom_pcie_get_resources_2_9_0(struct qcom_pcie *pcie)
+>  	struct qcom_pcie_resources_2_9_0 *res = &pcie->res.v2_9_0;
+>  	struct dw_pcie *pci = pcie->pci;
+>  	struct device *dev = pci->dev;
+> -	int ret;
+> +	int ret, num_clks = ARRAY_SIZE(res->clks) - 1;
+>  
+> -	res->clks[0].id = "iface";
+> +	res->clks[0].id = "rchng";
+>  	res->clks[1].id = "axi_m";
+>  	res->clks[2].id = "axi_s";
+>  	res->clks[3].id = "axi_bridge";
+> -	res->clks[4].id = "rchng";
+>  
+> -	ret = devm_clk_bulk_get(dev, ARRAY_SIZE(res->clks), res->clks);
+> +	if (!of_device_is_compatible(dev->of_node, "qcom,pcie-ipq9574")) {
+> +		res->clks[4].id = "iface";
+> +		num_clks++;
+> +	}
+> +
+> +	ret = devm_clk_bulk_get(dev, num_clks, res->clks);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> @@ -1664,6 +1668,7 @@ static const struct of_device_id qcom_pcie_match[] = {
+>  	{ .compatible = "qcom,pcie-ipq8064-v2", .data = &cfg_2_1_0 },
+>  	{ .compatible = "qcom,pcie-ipq8074", .data = &cfg_2_3_3 },
+>  	{ .compatible = "qcom,pcie-ipq8074-gen3", .data = &cfg_2_9_0 },
+> +	{ .compatible = "qcom,pcie-ipq9574", .data = &cfg_2_9_0 },
+>  	{ .compatible = "qcom,pcie-msm8996", .data = &cfg_2_3_2 },
+>  	{ .compatible = "qcom,pcie-qcs404", .data = &cfg_2_4_0 },
+>  	{ .compatible = "qcom,pcie-sa8540p", .data = &cfg_sc8280xp },
+> -- 
+> 2.40.1
+> 
 
->=20
-
---=20
-TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Germ=
-any
-Amtsgericht M=C3=BCnchen, HRB 105018
-Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan Sch=
-neider
-https://www.tq-group.com/
+-- 
+மணிவண்ணன் சதாசிவம்
 
