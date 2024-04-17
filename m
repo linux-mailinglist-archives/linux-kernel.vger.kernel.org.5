@@ -1,129 +1,101 @@
-Return-Path: <linux-kernel+bounces-148403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55E3B8A820A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:26:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E63B8A8210
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:27:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 865B71C21D5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:26:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B03101F23125
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 11:27:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875B413C9A1;
-	Wed, 17 Apr 2024 11:26:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6872313C67D;
+	Wed, 17 Apr 2024 11:27:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y5fIZBeH"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OdGvaeIP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A4D13C912
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 11:26:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E6CC13C8EE;
+	Wed, 17 Apr 2024 11:27:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713353209; cv=none; b=MrO4mEd+j/ROunIoj2kzxu2LmcC+sKEx7elqpMsJxW69KqWfKwpYx2usX+83jM3IhEwSDgKNIFW+S4ZgjUxyFi0lqsi60E4oOGQUbUUEzwFkCqc8M8mOBLO9DodxmQkU/6I7vQRP+m2T4QKTdz/i64xnKpuT08YKVsgNCAT3f4Y=
+	t=1713353231; cv=none; b=AGrbDgn4oH1pW4ekQfj3uBPDDzBhcL/GMr6XPrN+7Q2KMVfG5LehYtohN0WXK0FqifwR0uIMNvnIqdZU4A0+GZcLqmBTqMuE21bLTwskQ0pn5GjM2itlg/BLuhfz8spjIJnQCY3Yn+QgNbzSar8qU4k+f7CgcXcVpdOntgSeYrY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713353209; c=relaxed/simple;
-	bh=9w15mbaH1qCPmMzqW2fuVbi4t+4cdxNW7m9J6W+SAcw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Dxq/l1Sy+OpFKA+OasCN0YX9KQVnucWwq2XqBG97O8rtsd1IJihFtFUEm0pbFLCffadd1v7FMtGU3qdZEur9zCFaWbyR2QhBGkHQzdASOBY4j7qA7IuiC0rN0lzHcA1CVLuKJhJwfIbY1i70AuA3SbVDk0HJ5Fa6gKASWfMRMP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Y5fIZBeH; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so5389811276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 04:26:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713353207; x=1713958007; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fEf0tlVvOtKKoShUsakltVb3hD3/VpXcFyQ1gefjJfU=;
-        b=Y5fIZBeH5Vy4N3V6A691s9vvWkxIhtBUw9MmdpaEoVD3T9H1MljZRsfDVdd4zrdwub
-         egO8NOLvTbbn0FedpzowPCK1rMFTJA4IjEygopfIzqnFyhdaeQBAD6XeRTOd+2OZHCiX
-         KSfb7inzPb0p/Jf/F0I4GxCtZmG9z/V9I4IiOt4sopzJu8GGT40diQllvXnHsWG95P9i
-         e/uOaDCNA+Azoik6ysPUxkrtaz29gLO7solHQQLdkpE25+hGGEBS0GQ/xLCogiFiyXlC
-         MDGSUVHCyEXvANBW+LZywlaO3orhHIRWz0/SCCWj7oaru5ZcLNi3um46BuNY5b7kG+ft
-         5T2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713353207; x=1713958007;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fEf0tlVvOtKKoShUsakltVb3hD3/VpXcFyQ1gefjJfU=;
-        b=tque0Qgy1xwrRsPoEDRkcgWGOoiEIjCbuoVDRK0hVM7n+27QD4oI8uWpomOGqio1El
-         60oNHNg6o9mo+l0SqgY2QskLLxrvaZAd+p0PkxbMzPcyCzXwy30g8ToYs84AaEVYPWx7
-         QAlUHeXp0E6nO3XbOVk5L2Ocx6Mt1YXmc4Wqfb8SbNVLViIa8ND9Ei9v/oiAaqu8kxQa
-         hrsfK4hnN52jL0pN8UDY6dmevvA0gzIMd5uAtCU7+9U6o6suLWqUKdu1XEsxpP6+A7d0
-         KsR+oVXUBGKGJQfaL1hgqUi2GpUYzNt0HDIwQJq30FwVCKveVJDELch8qy7mfDijakKg
-         eb0A==
-X-Forwarded-Encrypted: i=1; AJvYcCWJ0Jr8ywgsf0kL8Ton4uyLKgCEh+BzvJvd3aBrVqSijAefOCjlbQ7ksuDUawdGQL646j/tyUsKtGApW5+LfJJdH0Y6WO+YuC/iS5RP
-X-Gm-Message-State: AOJu0YyO4DvbcM+zKC67cHdTkS60sPp/AJ8YeWj1fp35AWKDBeS/WsGN
-	wFMUOQFgpkpiL61kahISkprtdeZUX8PRdrRE4eE9sNbMJNjeszwamqDc7UpPcE+ybw92DTIEhWd
-	AST89Y5Sh2FWMXU0C/0JQgC9Tqt12RURCkHiB2w==
-X-Google-Smtp-Source: AGHT+IEQk/I5LetE/DhGDVVO0twPSlWrg1ZbN08OoWEw3G7KQntEEGuJ8Lq3vNPpkhg2jG26xZma+XZL1vf3+BIUoXY=
-X-Received: by 2002:a25:d354:0:b0:dc7:45f4:44f7 with SMTP id
- e81-20020a25d354000000b00dc745f444f7mr12803841ybf.14.1713353207586; Wed, 17
- Apr 2024 04:26:47 -0700 (PDT)
+	s=arc-20240116; t=1713353231; c=relaxed/simple;
+	bh=z8FhVtgetX6LUdFuYuwud6VwQ1GU1TH7FJteCQo1HBY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LrkJvss+Wa6t06zvBnRgGycFogVuSgbomWni8FDPvNHs/tKZ77ZV+PiAzn/Jd48tvxKAmvO3nNalCgZsI+eHjv/xftkBggDrP96JbbHErXcvjzk3MITUN5dku2DhI4PDbQi0aNvyx74Lifc2eFgbT3VR62yj4JnBA9fL8KJy4Y4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OdGvaeIP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF582C072AA;
+	Wed, 17 Apr 2024 11:27:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713353231;
+	bh=z8FhVtgetX6LUdFuYuwud6VwQ1GU1TH7FJteCQo1HBY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=OdGvaeIPo+rdvJuwCI/5ibLrCzCKrqHk/PUjNtwX3H7VRIKV72/AGcHywfiKAXbrq
+	 PCs3rlias7N0Qv+ltsfCgCvyqnvLHQifekEx3gvysBlc1Loi540AkvHCsABnJhRtax
+	 VdnRPK5Ww3/8Alj/EQn1bF3fDaKLIHkf4xSNB2smo8cluF+jeCskZkZqDnlPQ71F3s
+	 Z4I9DfICZiNSspeCbO1rXIta5/2E6z0k/KkGXpV5IjeoSGdH+AfKE2h8O0pYpf5+KZ
+	 yPHBwtLMoQmNoqDfZD8pqDF6c0Gg3oo63FmPqxqawxvttRk5tA27p9pWubtmXItbRZ
+	 fCcFASMUtTdWw==
+From: Christian Brauner <brauner@kernel.org>
+To: David Howells <dhowells@redhat.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Jeff Layton <jlayton@kernel.org>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	netfs@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org,
+	v9fs@lists.linux.dev,
+	linux-afs@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] netfs: Fix writethrough-mode error handling
+Date: Wed, 17 Apr 2024 13:26:51 +0200
+Message-ID: <20240417-filmabend-matten-50d0cba545f5@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <6736.1713343639@warthog.procyon.org.uk>
+References: <6736.1713343639@warthog.procyon.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240417105605.836705-1-quic_varada@quicinc.com> <20240417105605.836705-3-quic_varada@quicinc.com>
-In-Reply-To: <20240417105605.836705-3-quic_varada@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 17 Apr 2024 14:26:36 +0300
-Message-ID: <CAA8EJpqaXU=H6Nhz2_WTYHS1A0bi1QrMdp7Y+s6HUELioCzbeg@mail.gmail.com>
-Subject: Re: [PATCH v8 2/7] clk: qcom: cbf-msm8996: Specify master and slave id
-To: Varadarajan Narayanan <quic_varada@quicinc.com>
-Cc: andersson@kernel.org, mturquette@baylibre.com, sboyd@kernel.org, 
-	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, 
-	konrad.dybcio@linaro.org, djakov@kernel.org, quic_anusha@quicinc.com, 
-	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1079; i=brauner@kernel.org; h=from:subject:message-id; bh=z8FhVtgetX6LUdFuYuwud6VwQ1GU1TH7FJteCQo1HBY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTJb/y38f3Nj+ytmktdNJX35xzYeHLFLj62taGfHqWFc cWdK2X26ChlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZjIZD1GhrO7umZK1fRuTcre Gnf7sN++9HVBSTU28vlsM33lDx1NK2f4w2tsOXNLqn/d5k8n766TifzjeCtQQSS8xcbPrY+r7/Z WTgA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Wed, 17 Apr 2024 at 13:56, Varadarajan Narayanan
-<quic_varada@quicinc.com> wrote:
->
-> The icc-clk driver has been changed to take master and slave id
-> from the caller instead of auto-generating them. Update
-> clk-cbf-8996 accordingly.
+On Wed, 17 Apr 2024 09:47:19 +0100, David Howells wrote:
+> Fix the error return in netfs_perform_write() acting in writethrough-mode
+> to return any cached error in the case that netfs_end_writethrough()
+> returns 0.
+> 
+> This can affect the use of O_SYNC/O_DSYNC/RWF_SYNC/RWF_DSYNC in 9p and afs.
+> 
+> 
+> [...]
 
-This should be squashed into the previous patch. Otherwise the driver
-is broken between two commits.
+Applied to the vfs.fixes branch of the vfs/vfs.git tree.
+Patches in the vfs.fixes branch should appear in linux-next soon.
 
->
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> ---
->  drivers/clk/qcom/clk-cbf-8996.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/clk/qcom/clk-cbf-8996.c b/drivers/clk/qcom/clk-cbf-8996.c
-> index fe24b4abeab4..a077d4403967 100644
-> --- a/drivers/clk/qcom/clk-cbf-8996.c
-> +++ b/drivers/clk/qcom/clk-cbf-8996.c
-> @@ -237,7 +237,12 @@ static int qcom_msm8996_cbf_icc_register(struct platform_device *pdev, struct cl
->         struct device *dev = &pdev->dev;
->         struct clk *clk = devm_clk_hw_get_clk(dev, cbf_hw, "cbf");
->         const struct icc_clk_data data[] = {
-> -               { .clk = clk, .name = "cbf", },
-> +               {
-> +                       .clk = clk,
-> +                       .name = "cbf",
-> +                       .master_id = MASTER_CBF_M4M,
-> +                       .slave_id = SLAVE_CBF_M4M,
-> +               },
->         };
->         struct icc_provider *provider;
->
-> --
-> 2.34.1
->
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
--- 
-With best wishes
-Dmitry
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.fixes
+
+[1/1] netfs: Fix writethrough-mode error handling
+      https://git.kernel.org/vfs/vfs/c/c70fd201bd29
 
