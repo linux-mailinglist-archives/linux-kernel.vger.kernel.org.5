@@ -1,154 +1,204 @@
-Return-Path: <linux-kernel+bounces-148604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26AA88A84F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:40:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 433B48A84FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:41:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57F621C212D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:40:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D32FB25912
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:41:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DFBB140386;
-	Wed, 17 Apr 2024 13:38:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A87E71411E0;
+	Wed, 17 Apr 2024 13:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="UuTudOMF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YnsCEG7P"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44AE813F432;
-	Wed, 17 Apr 2024 13:38:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C491411D6
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713361112; cv=none; b=mrumca2dPhj+5Wd6mULRY6KKFbWHJP92z49T2EAah1gZxUiEkbDTV7NhbHTqaChW92PwGfn2eE9IyRogiapq7UfgKXy5Cgqyjf+k1eOKhYqFK6KdadacH2X2mB3JoRBSGYcKiSu3VDqHEIc+jkzzUdG5ZQjkvPx/juRE0Wn4WnE=
+	t=1713361159; cv=none; b=kmK4OMwXb/8u1seEzldpTyDAyqJlTNMpWSXofESDQlr8HJmH0PZlO0I0RaL6rRnYlH35eEPj7yutbKzLuHFQovVpMyyqIkV11kGn+Su2Rf6/XHiNu46nkxnkSv42WI/7YS9dui3b/NnjineZM0fpQ1TMJIpXWRM4VMCh7X5rr4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713361112; c=relaxed/simple;
-	bh=UZD+Ms8pr+WTEw9cpD/15Yj1rj2z0moWejiq6l9MWTw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dOvfLhwplLkoV8n2X2qR48Xn+7crzdDhuNmhALruhxjWpaMrMy1bYLlRSqdX0NOL2EWT6q95uIIdohkqChZXXBfNT/VRR9m4kIvTWs9i/GyGC+6bFLoJ+uAOiz8qrThQxiPEN6ZoiHsCI30Y4pmz5TnsK1acEceyExBPEJ2igdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=UuTudOMF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30795C32786;
-	Wed, 17 Apr 2024 13:38:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713361111;
-	bh=UZD+Ms8pr+WTEw9cpD/15Yj1rj2z0moWejiq6l9MWTw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UuTudOMFbsObCPDtn2AlF/jkFC67E5iFBGINTsjcLvpUsD/+y1k4yn2EGzaW87JW8
-	 qdajHkWKAH+I38bpdwLyHX8AF/cIPWg08tWtF+s8chE89uqWVigb+NnPbFucr7T4sc
-	 kwNTGRSmlGqRSrPzycFeLch4ZeW32EaQK/JpTreI=
-Date: Wed, 17 Apr 2024 15:38:28 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Thorsten Leemhuis <linux@leemhuis.info>
-Cc: Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-	helpdesk@kernel.org,
-	"workflows@vger.kernel.org" <workflows@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Please create the email alias do-not-apply-to-stable@kernel.org
- -> /dev/null
-Message-ID: <2024041734-gleeful-freewill-b24b@gregkh>
-References: <b452fd54-fdc6-47e4-8c26-6627f6b7eff3@leemhuis.info>
- <20240417-lively-zebu-of-tact-efc8f3@lemur>
- <e7318984-7ef4-48cd-aae4-1deda3d711a5@leemhuis.info>
+	s=arc-20240116; t=1713361159; c=relaxed/simple;
+	bh=kAGKWwtoNDjk7HSM51GJieuaIFloBqHwAmZZJVJk9bw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=YpB+2yv0uSVZglTb/kY43DKnutL4pe39EoqIacSabNLerlPv2dj+BfBPmywaNvArTwDsXswkQyyo4kNWc2p7WzVgz02WRmHHgAdnl2fCGANgEWXN9sonXdMuOwdtz2HVS8+oaHY6qGBEfzL8A5qXUMqwBlVwH0CLxrONN6V7ev0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YnsCEG7P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FCD6C072AA;
+	Wed, 17 Apr 2024 13:39:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713361159;
+	bh=kAGKWwtoNDjk7HSM51GJieuaIFloBqHwAmZZJVJk9bw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=YnsCEG7Pfo0YoG0nzsYFviiIuEAIOA6YuthUd8BdGqZaHQ5vzeAVtzA2Hu/Xw/Oga
+	 n9DDPkvWHHW+Q8Fg9bkShSNTVbp2PeyktQF56TnKndgwrGZ2Td0VDnIZt7DBSuLdBL
+	 WFHGBuHHQHFqTDRMYXbQZByPD//YoFYpf9WDXquTLdThuIG18gRRgsGxQTrCmS+4dM
+	 SmPE8RJTGx2ADtjnMXjR90DWymomhgJFQhWKqQ95mT8vZzopGBaeMpxuRy94i5KPA+
+	 yeH4ganCTxvFMmi4CcYS/zaVc+mzh8noVc57Qmu00550MGb7ofBqrHR/YuxgRetpe5
+	 /nWS8TnIFp7gw==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Michael Walle <mwalle@kernel.org>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
+ <pratyush@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
+  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
+ <vigneshr@ti.com>,  linux-kernel@vger.kernel.org,
+  linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v1 3/6] mtd: spi-nor: get rid of SPI_NOR_NO_FR
+In-Reply-To: <20240412134405.381832-4-mwalle@kernel.org> (Michael Walle's
+	message of "Fri, 12 Apr 2024 15:44:02 +0200")
+References: <20240412134405.381832-1-mwalle@kernel.org>
+	<20240412134405.381832-4-mwalle@kernel.org>
+Date: Wed, 17 Apr 2024 15:39:16 +0200
+Message-ID: <mafs0sezk6rcr.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e7318984-7ef4-48cd-aae4-1deda3d711a5@leemhuis.info>
+Content-Type: text/plain
 
-On Wed, Apr 17, 2024 at 03:21:12PM +0200, Thorsten Leemhuis wrote:
-> On 17.04.24 14:52, Konstantin Ryabitsev wrote:
-> > On Wed, Apr 17, 2024 at 09:48:18AM +0200, Thorsten Leemhuis wrote:
-> >>
-> >> Could you please create the email alias
-> >> do-not-apply-to-stable@kernel.org which redirects all mail to /dev/null,
-> >> just like stable@kernel.org does?
-> >>
-> >> That's an idea GregKH brought up a few days ago here:
-> >> https://lore.kernel.org/all/2024041123-earthling-primarily-4656@gregkh/
-> >>
-> >> To quote:
-> >>
-> >>> How about:
-> >>> 	cc: <do-not-apply-to-stable@kernel.org> # Reason goes here, and must be present
-> >>>
-> >>> and we can make that address be routed to /dev/null just like
-> >>> <stable@kernel.org> is?
-> 
-> First, many thx for your feedback.
-> 
-> > That would make it into actual commits and probably irk maintainers and 
-> > Linus, no?
-> 
-> Yup.
-> 
-> > I also don't really love the idea of overloading email 
-> > addresses with additional semantics. Using Cc: stable kinda makes sense, 
-> > even if it's not a real email address (but it could become at some 
-> > point), but this feels different.
-> 
-> Okay.
-> 
-> > In general, I feel this information belongs in the patch basement (the 
-> > place where change-id, base-commit, etc goes). E.g.:
-> > 
-> >     stable-autosel: ignore
-> >     [This fix requires a feature that is only present in mainline]
-> > 
-> > This allows passing along structured information that can be parsed by 
-> > automated tooling without putting it into the commit.
-> 
-> That afaics makes them useless for the stable team (Greg may correct me
-> if I'm wrong here), as they deal with the commits and have no easy,
-> fast, and reliable way to look up the patch posting to query this. Or is
-> the "patch basement" available somehow in git for each commit and I just
-> missed that?
+Hi Michael,
 
-You are correct, as-is, that would make it useless for my tools.
+On Fri, Apr 12 2024, Michael Walle wrote:
 
-BUT I could, if it's possible, just look up the original in lore somehow
-and parse that.  If it's there, does anyone have a "simple" way to map a
-git commit back to a lore message if it does NOT have a Link: line in
-it?
+> The evervision FRAM devices are the only user of the NO_FR flag. Drop
+> the global flag and instead use a manufacturer fixup for the evervision
+> flashes to drop the fast read support.
+>
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
+> ---
+> Please note, that the fast read opcode will still be set in
+> spi_nor_init_default_params(), but the selection of the read opcodes
+> just depends on the mask.
 
-I guess I should look at setting up a local copy of lei to dig through
-the git record of lkml?  But what about patches that aren't cc: to lkml,
-I don't want to have to hit lore.kernel.org for each query, that's going
-to not be nice.
+Since that is the case now, might as well drop the
 
-> Guess in a better world we might use "git notes" for this, but we
-> currently do not use them because they iirc are somewhat tricky (they
-> are easily lost on rebases iirc is one of the reasons ) -- and starting
-> to use them just for this is not worth it.
+    if (params->hwcaps.mask & SNOR_HWCAPS_READ_FAST)
 
-git notes never works for anything, and everyone always mentions it :)
+in spi_nor_init_default_params().
 
-> >> There was some discussion about using something shorter, but in the end
-> >> there was no strong opposition and the thread ended a a few days ago.
-> > I feel this is a significant change to the workflow, so I would like the 
-> > workflows list to have another go at this topic. :)
-> 
-> FWIW, we could go back to what I initially proposed: use the existing
-> stable tag with a pre-defined comment to mark patches that AUTOSEL et.
-> al. should not pick up:
-> https://lore.kernel.org/all/c0a08b160b286e8c98549eedb37404c6e784cf8a.1712812895.git.linux@leemhuis.info/
+>
+> That is also something I want to fix soon: the opcodes can always
+> be set and the drivers/SFDP will only set the mask. Opcodes then can be
+> switched between 3b and 4b ones if necessary.
+> ---
+>  drivers/mtd/spi-nor/core.c     | 12 +++++-------
+>  drivers/mtd/spi-nor/core.h     |  2 --
+>  drivers/mtd/spi-nor/everspin.c | 19 +++++++++++++++----
+>  3 files changed, 20 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index fb76e0522665..65e6531ada0a 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -2952,14 +2952,12 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
+>  	params->page_size = info->page_size ?: SPI_NOR_DEFAULT_PAGE_SIZE;
+>  	params->n_banks = info->n_banks ?: SPI_NOR_DEFAULT_N_BANKS;
+>  
+> -	if (!(info->flags & SPI_NOR_NO_FR)) {
+> -		/* Default to Fast Read for DT and non-DT platform devices. */
+> -		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
+> +	/* Default to Fast Read for DT and non-DT platform devices. */
+> +	params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
+>  
+> -		/* Mask out Fast Read if not requested at DT instantiation. */
+> -		if (np && !of_property_read_bool(np, "m25p,fast-read"))
+> -			params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
+> -	}
+> +	/* Mask out Fast Read if not requested at DT instantiation. */
+> +	if (np && !of_property_read_bool(np, "m25p,fast-read"))
+> +		params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
 
-If you can pick a better string, possibly, yes.
+Nit: move this above where SNOR_CMD_READ_FAST is set up.
 
-But in the end, your proposal seems to imply:
+Also, I think this is a bit clearer:
 
-	cc: stable@kernel.org	# Psych!  Just kidding, never backport this!
+	/* Default to Fast Read for non-DT and enable it if requested by DT. */
+	if (!np || of_property_read_bool(np, "m25p,fast-read"))
+		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
 
-but really, that's just mean, and again, this is a VERY rare case you
-are trying to automate here.  We have MUCH better and simpler ways for
-maintainers to not have their subsystems scanned for stuff like this,
-why are we spending all of our time on this topic?
+>  
+>  	/* (Fast) Read settings. */
+>  	params->hwcaps.mask |= SNOR_HWCAPS_READ;
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 072c69b0d06c..9aa7d6399c8a 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -479,7 +479,6 @@ struct spi_nor_id {
+>   *                            Usually these will power-up in a write-protected
+>   *                            state.
+>   *   SPI_NOR_NO_ERASE:        no erase command needed.
+> - *   SPI_NOR_NO_FR:           can't do fastread.
+>   *   SPI_NOR_QUAD_PP:         flash supports Quad Input Page Program.
+>   *   SPI_NOR_RWW:             flash supports reads while write.
+>   *
+> @@ -528,7 +527,6 @@ struct flash_info {
+>  #define SPI_NOR_BP3_SR_BIT6		BIT(4)
+>  #define SPI_NOR_SWP_IS_VOLATILE		BIT(5)
+>  #define SPI_NOR_NO_ERASE		BIT(6)
+> -#define SPI_NOR_NO_FR			BIT(7)
+>  #define SPI_NOR_QUAD_PP			BIT(8)
+>  #define SPI_NOR_RWW			BIT(9)
 
-thanks,
+Move the other bits up since the slot is now free.
 
-greg k-h
+>  
+> diff --git a/drivers/mtd/spi-nor/everspin.c b/drivers/mtd/spi-nor/everspin.c
+> index 5f321e24ae7d..0720a61947e7 100644
+> --- a/drivers/mtd/spi-nor/everspin.c
+> +++ b/drivers/mtd/spi-nor/everspin.c
+> @@ -14,28 +14,39 @@ static const struct flash_info everspin_nor_parts[] = {
+>  		.size = SZ_16K,
+>  		.sector_size = SZ_16K,
+>  		.addr_nbytes = 2,
+> -		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
+> +		.flags = SPI_NOR_NO_ERASE,
+>  	}, {
+>  		.name = "mr25h256",
+>  		.size = SZ_32K,
+>  		.sector_size = SZ_32K,
+>  		.addr_nbytes = 2,
+> -		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
+> +		.flags = SPI_NOR_NO_ERASE,
+>  	}, {
+>  		.name = "mr25h10",
+>  		.size = SZ_128K,
+>  		.sector_size = SZ_128K,
+> -		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
+> +		.flags = SPI_NOR_NO_ERASE,
+>  	}, {
+>  		.name = "mr25h40",
+>  		.size = SZ_512K,
+>  		.sector_size = SZ_512K,
+> -		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
+> +		.flags = SPI_NOR_NO_ERASE,
+>  	}
+>  };
+>  
+> +static void evervision_nor_default_init(struct spi_nor *nor)
+> +{
+> +	/* Everspin FRAMs don't support the fast read opcode. */
+> +	nor->params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
+> +}
+> +
+> +static const struct spi_nor_fixups evervision_nor_fixups = {
+> +	.default_init = evervision_nor_default_init,
+> +};
+> +
+>  const struct spi_nor_manufacturer spi_nor_everspin = {
+>  	.name = "everspin",
+>  	.parts = everspin_nor_parts,
+>  	.nparts = ARRAY_SIZE(everspin_nor_parts),
+> +	.fixups = &evervision_nor_fixups,
+>  };
+
+-- 
+Regards,
+Pratyush Yadav
 
