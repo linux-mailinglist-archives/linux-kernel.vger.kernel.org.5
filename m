@@ -1,157 +1,154 @@
-Return-Path: <linux-kernel+bounces-147874-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 749A48A7AD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34FDB8A7AD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:05:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22B081F220F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:05:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAF201F2244F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:05:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3576979D2;
-	Wed, 17 Apr 2024 03:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72DDB67F;
+	Wed, 17 Apr 2024 03:05:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lpDJc3M/"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g8jRRMsN"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67980BA34;
-	Wed, 17 Apr 2024 03:05:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F3E7470;
+	Wed, 17 Apr 2024 03:05:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713323112; cv=none; b=NGpqLbH6u2jJI0rTQ+6f3TRErtCrkEZfGRzmD/a8QmTQbfwPZSc+hpa5earPTc5x8lEtm9V6SMhRcFTtQZrDmjvL9JJ/AEc965EEYV2BiJ9HYo3vPp5oOSZzp6KqEVqwy6KoVC9nexqTVagDNCClwR74rV1HpG6E29IA86YkdYc=
+	t=1713323114; cv=none; b=paaVGVdZBJCCC82UtSR4150Cf44ZezPY5/O3uMvprRTcuB+9q4kJbVnfKfVcwVAtKzAv0sInJOOakq49zYFQO4S56Vs4F60gmalYwpIUdY2brWzF+sjqqERo5c5Y1CKHXbvRAv1GtIY8+yJ0rwlOdnR33PDLCWLBiCj4ngqQWIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713323112; c=relaxed/simple;
-	bh=yNo/sEA9+IPA4jpZcFTeBPhClg9Mb+1/htRUayTG1QQ=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=Vhv83EirYcShXmqTmQhcHsDSnXuDylqgj4fRwMfrSEWx5Uzh2GfifGax07YdTcDmXCxkZsbf63ysvxUHtJVaAtBuahWb8wR1QtdU1UzwxFtCez9K0YpxKMMq2sAu8HGQxA2PSl8KCdkJ9XPBoFKB8Vf3VSu95puqTqcsKJrHSCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lpDJc3M/; arc=none smtp.client-ip=198.175.65.21
+	s=arc-20240116; t=1713323114; c=relaxed/simple;
+	bh=Ba8ZIoV9AFjElPasNWGPuIvN3p9BEsdOKGL+1Iz5T/A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q8UiUuA0Wikd/sKQ1/ZqQenBQw+S1e19IycWwlo0NwvXnZeGEndwUxRY+qWBwCtl4GZrWxxxFCOxiWRSfPln62mcUVc2inwEoTDZo5G9qmOESmsvIvYRVo+cOv+HMyqNPw2PsmMkx6VYRVkPEMaHeuawbrxiZ6WbqfHxqRALNLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g8jRRMsN; arc=none smtp.client-ip=198.175.65.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713323111; x=1744859111;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=yNo/sEA9+IPA4jpZcFTeBPhClg9Mb+1/htRUayTG1QQ=;
-  b=lpDJc3M/1WThnoa8d1F46HGUhNkQL8H57ynYg4773oRWAtngeRyWDP0m
-   sQihAk2T5oEZjBfbRXbgyG+N/Yg17zZx88VRkry0PMEzw1h2VG/SP8fI8
-   iYjzbSXxbMw7aiLZbSs1F3sXXUpmSoi394YKtkZWzJ7c/Oc+xBxnJ+9cX
-   nuzTmqaNNg/ZDtNlApbnKp3ro/Wkz+NHPIdmfeFhpPU6EDmncDVuwLStJ
-   egFh0QntfoJ0c+KdBMNGQ8v4XkGXpl1XGU5KJpWvMuUYw3myCXPOC1tVh
-   xGbvq9cWH9NTY3f41YwyGAW4jOSOCH0HG9l5Q6f76ZxdDNM9ZV+l5Y15O
-   Q==;
-X-CSE-ConnectionGUID: s4AfbYZlRiacGbgzr883DQ==
-X-CSE-MsgGUID: n1bq0bIfQayY7yqHaANYzQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8720968"
+  t=1713323113; x=1744859113;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Ba8ZIoV9AFjElPasNWGPuIvN3p9BEsdOKGL+1Iz5T/A=;
+  b=g8jRRMsN7piMUDpL8INLkA2KzJfiuPcLICBPb7MXvkkWvdA4zr+3H2VT
+   COTHMjk3Jk1D/j/6AFsP4PSa+ibutYFHV/nOxeRL561Sz8WCQZUrIf+MZ
+   4vlkTHjyAdJUufPLbf+TrnHM08oPgp8++M5PoaJXFUrdbq32fy0Edg/Ej
+   2gPmhyoYdhbCT7z/+qjM9WzSMVY0b6aEEd26CPv3RtZfw6o3bihS61JlB
+   +LSopdW9O8eGjVhlQlROIqb57bsial8jo3PIJGDN/K5m+keZ3WXsBczMB
+   o6QAwrM6rbcpQ0AA1qaCXGoFdrtHPN5Mglpv3zKpM83Q9VS+1LgItLOEZ
+   w==;
+X-CSE-ConnectionGUID: u8pyolaaTLGZsvIQVEu74w==
+X-CSE-MsgGUID: D67qaksMQMCsxWV70T6lHA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8720974"
 X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
-   d="scan'208";a="8720968"
+   d="scan'208";a="8720974"
 Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 20:05:10 -0700
-X-CSE-ConnectionGUID: zBmECAoyTxiWV7ddm8dO6g==
-X-CSE-MsgGUID: 3qvoq9GzREubbuuFXyWiTg==
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 20:05:11 -0700
+X-CSE-ConnectionGUID: dp/KWL6bRM+0UBrKHB5CAQ==
+X-CSE-MsgGUID: foXm7HnxRJ6HTGS9uHWSEw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
-   d="scan'208";a="22549765"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 16 Apr 2024 20:05:07 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: dave.hansen@linux.intel.com, kai.huang@intel.com, tj@kernel.org,
- mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
- x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
- tim.c.chen@linux.intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>, "Haitao
- Huang" <haitao.huang@linux.intel.com>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, chrisyan@microsoft.com
-Subject: Re: [PATCH v12 14/14] selftests/sgx: Add scripts for EPC cgroup
- testing
-References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
- <20240416032011.58578-15-haitao.huang@linux.intel.com>
- <D0LLS28WEXYA.G15BAG7WOJGR@kernel.org> <D0LLVE07V8O0.S8XF3CY2DQ9A@kernel.org>
- <op.2mbs1m05wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <D0LODQCRSTRA.2KSPCDB0FLK0X@kernel.org>
- <op.2mccxje2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <op.2mcdpygvwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-Date: Tue, 16 Apr 2024 22:05:05 -0500
+   d="scan'208";a="22549772"
+Received: from unknown (HELO [10.238.13.36]) ([10.238.13.36])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 20:05:07 -0700
+Message-ID: <ac0e50a6-6da4-4e07-8422-0e9f477c3fb3@linux.intel.com>
+Date: Wed, 17 Apr 2024 11:05:05 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2mcqursuwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <op.2mcdpygvwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 102/130] KVM: TDX: handle EXCEPTION_NMI and
+ EXTERNAL_INTERRUPT
+To: Isaku Yamahata <isaku.yamahata@intel.com>, Chao Gao <chao.gao@intel.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+ isaku.yamahata@linux.intel.com
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <3ac413f1d4adbac7db88a2cade97ded3b076c540.1708933498.git.isaku.yamahata@intel.com>
+ <ZgpuqJW365ZfuJao@chao-email>
+ <20240403185103.GK2444378@ls.amr.corp.intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20240403185103.GK2444378@ls.amr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, 16 Apr 2024 17:21:24 -0500, Haitao Huang  
-<haitao.huang@linux.intel.com> wrote:
 
-> On Tue, 16 Apr 2024 17:04:21 -0500, Haitao Huang  
-> <haitao.huang@linux.intel.com> wrote:
->
->> On Tue, 16 Apr 2024 11:08:11 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
->> wrote:
->>
->>> On Tue Apr 16, 2024 at 5:54 PM EEST, Haitao Huang wrote:
->>>> I did declare the configs in the config file but I missed it in my  
->>>> patch
->>>> as stated earlier. IIUC, that would not cause this error though.
->>>>
->>>> Maybe I should exit with the skip code if no CGROUP_MISC (no more
->>>> CGROUP_SGX_EPC) is configured?
->>>
->>> OK, so I wanted to do a distro kernel test here, and used the default
->>> OpenSUSE kernel config. I need to check if it has CGROUP_MISC set.
->>>
->>>> tools/testing/selftests$ find . -name README
->>>> ./futex/README
->>>> ./tc-testing/README
->>>> ./net/forwarding/README
->>>> ./powerpc/nx-gzip/README
->>>> ./ftrace/README
->>>> ./arm64/signal/README
->>>> ./arm64/fp/README
->>>> ./arm64/README
->>>> ./zram/README
->>>> ./livepatch/README
->>>> ./resctrl/README
->>>
->>> So is there a README because of override timeout parameter? Maybe it
->>> should be just set to a high enough value?
->>>
->>> BR, Jarkko
->>>
->>
->>
->>  From the docs, I think we are supposed to use override.
->> See:  
->> https://docs.kernel.org/dev-tools/kselftest.html#timeout-for-selftests
->>
->> Thanks
->> Haitao
->>
->
-> Maybe you are suggesting we add settings file? I can do that.
-> README also explains what the tests do though. Do you still think they  
-> should not exist?
-> I was mostly following resctrl as example.
->
-> Thanks
-> Haitao
->
 
-With the settings I shortened the README quite bit. Now I also lean  
-towards removing it. Let me know your preference. You can check the latest  
-at my branch for reference:
-https://github.com/haitaohuang/linux/tree/sgx_cg_upstream_v12_plus
+On 4/4/2024 2:51 AM, Isaku Yamahata wrote:
+> On Mon, Apr 01, 2024 at 04:22:00PM +0800,
+> Chao Gao <chao.gao@intel.com> wrote:
+>
+>> On Mon, Feb 26, 2024 at 12:26:44AM -0800, isaku.yamahata@intel.com wrote:
+>>> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>>>
+>>> Because guest TD state is protected, exceptions in guest TDs can't be
+>>> intercepted.  TDX VMM doesn't need to handle exceptions.
+>>> tdx_handle_exit_irqoff() handles NMI and machine check.  Ignore NMI and
+>> tdx_handle_exit_irqoff() doesn't handle NMIs.
+> Will it to tdx_handle_exception().
 
-Thanks
-Haitao
+I don't get  why tdx_handle_exception()?
+
+NMI is handled in tdx_vcpu_enter_exit() prior to leaving the safety of 
+noinstr, according to patch 098.
+https://lore.kernel.org/kvm/88920c598dcb55c15219642f27d0781af6d0c044.1708933498.git.isaku.yamahata@intel.com/
+
+@@ -837,6 +857,12 @@ static noinstr void tdx_vcpu_enter_exit(struct 
+vcpu_tdx *tdx)
+      WARN_ON_ONCE(!kvm_rebooting &&
+               (tdx->exit_reason.full & TDX_SW_ERROR) == TDX_SW_ERROR);
+
++    if ((u16)tdx->exit_reason.basic == EXIT_REASON_EXCEPTION_NMI &&
++        is_nmi(tdexit_intr_info(vcpu))) {
++        kvm_before_interrupt(vcpu, KVM_HANDLING_NMI);
++        vmx_do_nmi_irqoff();
++        kvm_after_interrupt(vcpu);
++    }
+      guest_state_exit_irqoff();
+  }
+
+>
+>
+>>> machine check and continue guest TD execution.
+>>>
+>>> For external interrupt, increment stats same to the VMX case.
+>>>
+>>> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+>>> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+>>> ---
+>>> arch/x86/kvm/vmx/tdx.c | 23 +++++++++++++++++++++++
+>>> 1 file changed, 23 insertions(+)
+>>>
+>>> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+>>> index 0db80fa020d2..bdd74682b474 100644
+>>> --- a/arch/x86/kvm/vmx/tdx.c
+>>> +++ b/arch/x86/kvm/vmx/tdx.c
+>>> @@ -918,6 +918,25 @@ void tdx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
+>>> 		vmx_handle_exception_irqoff(vcpu, tdexit_intr_info(vcpu));
+>>> }
+>>>
+>>> +static int tdx_handle_exception(struct kvm_vcpu *vcpu)
+
+Should this function be named as tdx_handle_exception_nmi() since it's 
+checking nmi as well?
+
+>>> +{
+>>> +	u32 intr_info = tdexit_intr_info(vcpu);
+>>> +
+>>> +	if (is_nmi(intr_info) || is_machine_check(intr_info))
+>>> +		return 1;
+>>
+
 
