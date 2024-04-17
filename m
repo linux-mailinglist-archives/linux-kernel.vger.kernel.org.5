@@ -1,119 +1,118 @@
-Return-Path: <linux-kernel+bounces-147990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 247FD8A7C4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:29:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B78108A7C52
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:29:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 609F3B21DBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:29:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74EC028597C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:29:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2EAC57898;
-	Wed, 17 Apr 2024 06:28:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C3DF57870;
+	Wed, 17 Apr 2024 06:29:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FmElhFwZ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LpsV1kuJ"
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D57E537E5;
-	Wed, 17 Apr 2024 06:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95A9056464
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 06:29:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713335336; cv=none; b=IfBSpCPnzMoy+YFAxp2ixc6fVtcNuy43wxMJfwvOtrl754OsO5weeTwpmYkStVdAJ29Y/Zoj68txJLAgqXGZtu+2MGVTtICrpeRs9UZEPxPBrb+ihtF2qhADtl/CPjjxged2cSOrTw9aeJOA0Q3Mk/8ZGCJPRAk9vmHINm+6EyM=
+	t=1713335366; cv=none; b=Pgh/vmk1ScElvnPMQ6a19HuP43ddTiDibwDdEjIFU5esPSmzQujC3FzjcCKfYKjyNgIhso330pUTb2uB19ssbBinf0Y7apFa6EXOZhtjUYorAwQtvJrlERJkxak1kcv2UBO1FM4N/mkHTQOCa/qnRIuVTN9HDTfyfYk6xmiT0rk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713335336; c=relaxed/simple;
-	bh=smjDec/8rpAG7SGBZVdym3JuATOncC3nq4kDgqqp4T4=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=szVJ85XzvBGXh8G4ru+zFVhNecgxu7q/5320gsMScg5fdCUnujDUu2Q9ic0rexyjV42yWFzYQ8paFlbTSREpZdSbxQd0oQ5EntwnGC6THdP+gv1g82UyuGESkl86D07AvxXOFZiklLfwQlbZmy8YEmMgip3BN4gUkPLHzviT7g0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FmElhFwZ; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713335330; x=1744871330;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=smjDec/8rpAG7SGBZVdym3JuATOncC3nq4kDgqqp4T4=;
-  b=FmElhFwZ5+4nZs2Rp62bc4+DJi/4d+9oBIRKs6pp5GKMZVRdebR3R3z7
-   YM4UcepTykRw1WBgQGfLYkJmnMi7x//ueNFh43vWDlNMlLCUHSxtM8gy+
-   IXzNgpLxjgBadVnmlfb7dVU3zzDGFQ9C3EchJQL7JflPxozgKmproFto4
-   zllyz9xOnOj6TzNwE1zYTJr5h4uW20Kr1YkL1CR6mDn6isX8m6wpiCuGj
-   G6HjeEM8y1mZD3aPf+QqvpV0hF1fGu/vDkb/mySNkktEEfKjQwsa9/5KP
-   tMRVSN+ra3pNZigc6q3pWskR0fjz7OvoD8xsyQzp1ocj35iQ57iX1nAei
-   Q==;
-X-CSE-ConnectionGUID: ABqC9J+DTtiDs7uV+cmsPQ==
-X-CSE-MsgGUID: xMC1x+RGQw+In89kSntntA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="9030484"
-X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
-   d="scan'208";a="9030484"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 23:28:49 -0700
-X-CSE-ConnectionGUID: 0GDMQVMmTrmsmFjCQAMLgQ==
-X-CSE-MsgGUID: 8ylpVV5nRniLqcZYoLqfmw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,208,1708416000"; 
-   d="scan'208";a="22576325"
-Received: from unknown (HELO localhost) ([10.245.247.35])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 23:28:47 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 17 Apr 2024 09:28:44 +0300 (EEST)
-To: Mohamed Ghanmi <mohamed.ghanmi@supcom.tn>
-cc: "Luke D. Jones" <luke@ljones.dev>, Hans de Goede <hdegoede@redhat.com>, 
-    corentin.chary@gmail.com, platform-driver-x86@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] platform/x86: asus-wmi: add support for vivobook fan
- profiles
-In-Reply-To: <Zh6oooU-DL2IXLg9@laptop>
-Message-ID: <e61ddc4f-5e55-248c-72fa-3c15d6316961@linux.intel.com>
-References: <20240413202112.37729-1-luke@ljones.dev> <dccc5701-f533-e80e-09f8-199f232f447f@linux.intel.com> <Zh6oooU-DL2IXLg9@laptop>
+	s=arc-20240116; t=1713335366; c=relaxed/simple;
+	bh=zOuw1eJRYDZNmaVdVjGYIu581bMf2HS6hcsde8LTzaQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PKg+ARqyNpJva+f2Rh8hvMsDbfm+C5YllZeh0Q8DkPMZdywGZXNCLHg+hruPbaBAfWGRIDc0CEs2G6Qh+FqrBD4zV2ieBLdsEuXY5lDo4Tlw98+nXRYUm4nveRH2/AZVB4xmrkTwkComujFGcEP6TpiY1miQKS/N23YOP7Wt35c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LpsV1kuJ; arc=none smtp.client-ip=209.85.160.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4348110e888so204481cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:29:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713335364; x=1713940164; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UyngQvsvNX4IVjE6EtxACZNPOHV77/T++2RB3m9+N3E=;
+        b=LpsV1kuJMLYPXRTYCAnuBPVjaC74V2HYUZOxWm4EMfnHIZZdKVQpI1CYfmojmI0zsZ
+         aeRI0Zia6cthod57DF6kjhhmMaqlXIP+i4Twap4YQePJV3kiY6tL1NiALOtA/ZHIxuE2
+         th2ZW5QgykcXDxOfOnmHIp0cIF2u3GIieYb0Jv5Lvn7bezZi0wHt25xRVPSEBdFE2tb8
+         kX1xGMq5FjQ/4cjFPRdOY4lhxn+dG/zQViTbhpnbTGEyC7lBSIiJWb/n1zHLW+mGKvmy
+         DPS6MFCsrZrn4pA1YMx37z102QALxM9mYgthr2kj48Kmv7ztOAOIFM5rUyx1FJk+DzEr
+         vD9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713335364; x=1713940164;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UyngQvsvNX4IVjE6EtxACZNPOHV77/T++2RB3m9+N3E=;
+        b=LPES2Y1oLJ+O7lbidb+DkvgTY4kfTMx00MyA/LeTH7CiQWHb/aUxcaIXxgdQv4icF9
+         CZGzgGINs/jebbESVeTz7NH34cSzsLL3PdN/8x1nl/pwcUmstH6dvSFHajLFF52zlMmD
+         eeOok/PKjYbM9rwaUCUcV/7lmIO7KZepNAXOlCL+sEi7G5r1jSap8aF1Ke+vvH7H1AVQ
+         cXyojLeczDEowAmYRagluLDmSdpEIvn5o4poX1sQjxJv63zob7hnJGDs0N6DnEXwx6kD
+         O0sIh6gpP0WesswJq5gvTll/dpVAFNBH2pJm9O/HZuLDWwuwyv4JBrURFj1kXA0DiEhc
+         3uog==
+X-Forwarded-Encrypted: i=1; AJvYcCXrrB5evrltXiuyvNJ0X+5wlZYHQZSJDJ06ad6o7kCNLHu9HP9a/19W+uBv5n4wRPIMRjaKSwdJGU66CxEqGwPA/fvV13Ax+OQHD2kJ
+X-Gm-Message-State: AOJu0YwkvS/H/QUehxXIylO9xFVYIlUJZI2muWRlwh9oihruPj0Au0wR
+	UBOzDE1PpTsx9xqDQLeuD22tbB5xxa1tm+9tE9YUQdUH6VKdCLK0iwrRgT5jpLu6OwyoXz5Xyi/
+	P36BSg6A18p5FXEoj6+HjFqeLJBBe8Z6GJKJO
+X-Google-Smtp-Source: AGHT+IGHXQ5c36NdPnQ8e2OzYJ8YGPtp3VigSixmG1sd9NrQgjUSDxsXVn1v8tti2TbzQ+n3DGTVwYYT2xmvyD/Cdj8=
+X-Received: by 2002:a05:622a:24f:b0:436:4015:1d82 with SMTP id
+ c15-20020a05622a024f00b0043640151d82mr176693qtx.24.1713335364329; Tue, 16 Apr
+ 2024 23:29:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1066009640-1713335324=:1007"
+References: <20240411235623.1260061-1-saravanak@google.com>
+ <20240411235623.1260061-3-saravanak@google.com> <CAL_JsqKRVVNzgQk6PETfJ9RrDuzT1CTjHWW02Twc_T4C82t__Q@mail.gmail.com>
+ <Zhx9qqiymJdXwYQs@finisterre.sirena.org.uk>
+In-Reply-To: <Zhx9qqiymJdXwYQs@finisterre.sirena.org.uk>
+From: Saravana Kannan <saravanak@google.com>
+Date: Tue, 16 Apr 2024 23:28:48 -0700
+Message-ID: <CAGETcx97QjnjVR8Z5g0ndLHpK96hLd4aYSV=iEkKPNbNOccYmA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] of: dynamic: Fix overlayed devices not probing
+ because of fw_devlink
+To: Mark Brown <broonie@kernel.org>
+Cc: Rob Herring <robh@kernel.org>, Herve Codina <herve.codina@bootlin.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	Wolfram Sang <wsa+renesas@sang-engineering.com>, Len Brown <lenb@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Scally <djrscally@gmail.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	kernel-team@android.com, Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org, 
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-spi@vger.kernel.org, linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Sun, Apr 14, 2024 at 6:06=E2=80=AFPM Mark Brown <broonie@kernel.org> wro=
+te:
+>
+> On Fri, Apr 12, 2024 at 07:54:32AM -0500, Rob Herring wrote:
+> > On Thu, Apr 11, 2024 at 6:56=E2=80=AFPM Saravana Kannan <saravanak@goog=
+le.com> wrote:
+>
+> > > +#define get_dev_from_fwnode(fwnode)    get_device((fwnode)->dev)
+>
+> > I think it is better to not have this wrapper. We want it to be clear
+> > when we're acquiring a ref. I know get_device() does that, but I have
+> > to look up what get_dev_from_fwnode() does exactly.
+>
+> Or perhaps calling it get_device_from_fwnode() would make it more
+> obvious that it is a get_device() variant?
 
---8323328-1066009640-1713335324=:1007
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Ack, I'll do this in my next version. Right now I'm waiting for Herve
+and Geert to confirm this series fixes their issues.
 
-On Tue, 16 Apr 2024, Mohamed Ghanmi wrote:
-
-> On Tue, Apr 16, 2024 at 03:51:03PM +0300, Ilpo J=E4rvinen wrote:
-> > On Sun, 14 Apr 2024, Luke D. Jones wrote:
-> >=20
-> > > From: Mohamed Ghanmi <mohamed.ghanmi@supcom.tn>
-> > >=20
-> > > Add support for vivobook fan profiles wmi call on the ASUS VIVOBOOK
-> > > to adjust power limits.
-> > >=20
-> > > These fan profiles have a different device id than the ROG series.
-
-
-> > > and different order.
-> >=20
-> > Fix grammar.
->=20
-> my grammar is not the greatest so i'm finding it hard to know what is
-> the error you're referring to but I think that 'add'
-> should become 'adds' ?
-
-That's not what I was referring to, you've a dangling/broken "sentence"
-right in front of my reply:=20
-
-"and different order."
-
-Please fix that. Perhaps you just want to remove the stop (".") from=20
-the previous sentence to join the sentences together?
-
---=20
- i.
-
---8323328-1066009640-1713335324=:1007--
+-Saravana
 
