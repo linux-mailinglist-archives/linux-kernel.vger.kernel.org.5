@@ -1,168 +1,177 @@
-Return-Path: <linux-kernel+bounces-148654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5C608A859A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:09:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 731D68A859D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:10:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9A141C20B60
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:09:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25F04282262
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:10:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486801411DF;
-	Wed, 17 Apr 2024 14:09:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43EB11420A6;
+	Wed, 17 Apr 2024 14:09:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manguebit.com header.i=@manguebit.com header.b="iTYVQPlS"
-Received: from mx.manguebit.com (mx.manguebit.com [167.235.159.17])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AraSwQd3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 088E113F444;
-	Wed, 17 Apr 2024 14:09:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=167.235.159.17
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713362984; cv=pass; b=Y65RszjLSlGMaqIPSxQG6bpKsFD0o3MGub3MZyc1RfrT/yC/d+B3k8FLo4eotEJPmiuJ1WAhMaIEsMG6OTMtdf8nxIfAJUPgm8bvAiEkZ3AzFlRuSuHOcd2f3PoZSXlyqid91Dn3Hk691wxA7lk9ROlrcJ3i1Yk755SY/JMNb7Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713362984; c=relaxed/simple;
-	bh=H72tLTn+tWh4iBVxWF+IWpBSQiW9MHUNPXx+EST5u0M=;
-	h=Message-ID:From:To:Cc:Subject:In-Reply-To:References:Date:
-	 MIME-Version:Content-Type; b=iZw/dz731dNgOqPRLlrRJLGv4U+2lH+HCjE9BTEimvBkiQXVcm9RGV6SgCZ0uk6tGVNxBCnyUIGCFsvYciR3mUkRCxe0toVv1NPu5CiXbnffQ53NtDbLO1FeUFlcGYgWg6kVengL0bXvFXKaWi49+DJ9ZxvnKss3f7dP327ADLQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manguebit.com; spf=pass smtp.mailfrom=manguebit.com; dkim=pass (2048-bit key) header.d=manguebit.com header.i=@manguebit.com header.b=iTYVQPlS; arc=pass smtp.client-ip=167.235.159.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manguebit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manguebit.com
-Message-ID: <1a94a15e6863d3844f0bcb58b7b1e17a@manguebit.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
-	s=dkim; t=1713362970;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4NcQc5OWiwLGuJmRXBj5L2SzigKuTXfrhVqalxKbG7I=;
-	b=iTYVQPlSQXvYnVvF9DHSaoux8qzgCkS7i8jKr5tR2PEaJqZnpWTSDJ7r2JxPla1uYhmVwS
-	AJToe7ezCYx7N+FCGDcc1+W0qzvPDrC6ujlsPar0UMoqYT/2wfupZuAmDyczHSgyF+VHS7
-	FSAArrkiwk5FlIGD876+2hsoDiNgxLSmzzOJqtxiBIsP7mwhhraHVX6ZVXHCLvAlFOW/Ku
-	wVAdt3ww8GcX2Vs+1eekGrF7xJYxKVhKRDvoF8rfiBOIEWBIrXnQPLTaCSziIAzzb8u9Yz
-	PdqfSr1jcIpr6i1kXi5kwGHMI6Egv5YMTJcNufuElHRPbDaLahznU9Qth3z5bg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
-	s=dkim; t=1713362970; h=from:from:sender:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4NcQc5OWiwLGuJmRXBj5L2SzigKuTXfrhVqalxKbG7I=;
-	b=g5SlQfIg7qyItlFMAB8wRrSeuLG/e2Z6fGelUhfLg2/e6ia6OrkFXzUpyQFZlt6NEEhV8O
-	xUpi793zP4VjMn6XtonhWnQoHdXXzuyLQJVoJG1lP1mk8j0aafkhD0o9MieYMTFXLyF1Zi
-	DLZx/nSFyb6k6ws01XO1TruzFjyg8+UDY/phZj45xXSVZ3JpwXVMZa77GMcoxtmQKjRExB
-	gXvp/xwbnC333EXaCohJ8VFDF6UIFtuiidzRY7EVcvJ0aMZ3tIWSO8vSPZ40EqItVPOYi9
-	xZpnBTqX6jOPI4pKIxIDm1etdkpqaQLIP6vJYo01WgHwRidA+H5ptnEEPxjl+Q==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.mailfrom=pc@manguebit.com
-ARC-Seal: i=1; s=dkim; d=manguebit.com; t=1713362971; a=rsa-sha256;
-	cv=none;
-	b=eTTAKlGFj10Rh/eoPObR+VqOpiGFPeu8c+9/AArcgN+ZoasyMtOo3K3SDzeWQYEAePPqZx
-	aubDeVPSEQk9/szK6ypV/iIf0XpYugetuuJSxJE5gc1n4vRPr5UdVvkmEgBP3XOjX703Tk
-	0gmsWd574A0Z2ARWIxvlDEwioDJRmUv8ZAlazujyl9PpeovNLGWVK9Ld7gbwJ78dO2jPNW
-	SIEuzjmIyAmvwvZuCgcqvBfQUTrTrum9qO9QW3KnbQ4RxGyX8XtDDrIu/XcXEoT7QLj8Ou
-	AE74eLM+1BGd1BjWySUIGGld5w62a1PDf0rA9NoxPTAwCXUWU85b1Zp9oG/HAA==
-From: Paulo Alcantara <pc@manguebit.com>
-To: David Howells <dhowells@redhat.com>
-Cc: dhowells@redhat.com, Steve French <sfrench@samba.org>, Shyam Prasad N
- <sprasad@microsoft.com>, linux-cifs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cifs: Fix reacquisition of volume cookie on still-live
- connection
-In-Reply-To: <2713340.1713286722@warthog.procyon.org.uk>
-References: <14e66691a65e3d05d3d8d50e74dfb366@manguebit.com>
- <3756406.1712244064@warthog.procyon.org.uk>
- <2713340.1713286722@warthog.procyon.org.uk>
-Date: Wed, 17 Apr 2024 11:09:27 -0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69CDF13A869;
+	Wed, 17 Apr 2024 14:09:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713362992; cv=none; b=fyDgeGzoU6SEp4jcOyvP/YrZZzJno8EGSTCGHrTPMu18qWGzFF/+3mm/6hA9bAR9mHBKJUzFKiwHP6+9EQBdbeSLTwtG3vRE9XlK3jhm7CIwhkuCyV3Grwcx3msCZQzrfItDpLpDKEYX/UVbpaDvBCJaoVRnBzTDX2qEfKiSDiA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713362992; c=relaxed/simple;
+	bh=Ffi4YvLul39xQcUmuQFR79aNhxBEoyGSwfFrwm4Dr+s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IS26iAbVapNALClvWfzm6n/SlW8bqMUWuE7YZYKDRvZ0UzEAFo8RbuyQOrveu8+y3Ymq31Dn1wAmI5Hr2Y/yF5/Qv6bDbZKRIMZC/oSztcfZWW0uFuOfmZ9IlZhWYvJduk5MH/aDbMEIpSuTCo+daRYLNsjB6DH0GnOPV98Y+xw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AraSwQd3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C087CC072AA;
+	Wed, 17 Apr 2024 14:09:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713362992;
+	bh=Ffi4YvLul39xQcUmuQFR79aNhxBEoyGSwfFrwm4Dr+s=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=AraSwQd31D+ISuyyjD07QULP8o882r3PE6nVkMLWB0cXVEDnZf5LsyvzV+yB6Pq/5
+	 yzkw+HFYNSRFGAB1k+/Tzq1mn3570HDX07+RW6VfugX+Pgu1z2t8KT/GyTxZHBGloF
+	 TNIHUmZV1pSr1L0y83W/sonYaPe06XjGlEHlHPslwpoXCCjr9xaB9GLEQeTPt8ifzb
+	 oek4gInOA9CpKKBnHceubFpw5kBW97Bel2oHyPOCdm6XgQtF3NNucSKiQLNrgeQ5Jp
+	 Vui7Ud67h6AHo8nMSPz4seTZcnw0X13AWy1tUu/bH6bhFl5XbQks5fPMccIytzuKBE
+	 PNTg/2gcIa0UA==
+Message-ID: <a9f1d643-f171-4b41-88c5-bd9bae0f8200@kernel.org>
+Date: Wed, 17 Apr 2024 16:09:51 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 4/5] dt-bindings: rng: Add vmgenid support
+To: Babis Chalios <bchalios@amazon.es>, tytso@mit.edu, Jason@zx2c4.com,
+ olivia@selenic.com, herbert@gondor.apana.org.au, robh@kernel.org,
+ krzk+dt@kernel.org, conor+dt@kernel.org, linux-crypto@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: sudanl@amazon.com, graf@amazon.de, xmarcalx@amazon.co.uk,
+ dwmw@amazon.co.uk, Alexander Graf <graf@amazon.com>
+References: <20240417104046.27253-1-bchalios@amazon.es>
+ <20240417104046.27253-5-bchalios@amazon.es>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240417104046.27253-5-bchalios@amazon.es>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-David Howells <dhowells@redhat.com> writes:
+On 17/04/2024 12:40, Babis Chalios wrote:
+> Virtual Machine Generation ID driver was introduced in commit af6b54e2b5ba
+> ("virt: vmgenid: notify RNG of VM fork and supply generation ID"), as an
+> ACPI only device.
+> 
+> VMGenID specification http://go.microsoft.com/fwlink/?LinkId=260709 defines
+> a mechanism for the BIOS/hypervisors to communicate to the virtual machine
+> that it is executed with a different configuration (e.g. snapshot execution
+> or creation from a template).
+> The guest operating system can use the notification for various purposes
+> such as re-initializing its random number generator etc.
+> 
+> As per the specs, hypervisor should provide a globally unique identified,
+> or GUID via ACPI.
+> 
+> This patch tries to mimic the mechanism to provide the same functionality
+> which is for a hypervisor/BIOS to notify the virtual machine when it is
+> executed with a different configuration.
+> 
+> As part of this support the devicetree bindings requires the hypervisors or
+> BIOS to provide a memory address which holds the GUID and an IRQ which is
+> used to notify when there is a change in the GUID.
+> The memory exposed in the DT should follow the rules defined in the
+> vmgenid spec mentioned above.
+> 
+> *Reason for this change*:
+> Chosing ACPI or devicetree is an intrinsic part of an hypervisor design.
+> Without going into details of why a hypervisor would chose DT over ACPI,
+> we would like to highlight that the hypervisors that have chose devicetree
+> and now want to make use of the vmgenid functionality cannot do so today
+> because vmgenid is an ACPI only device.
+> This forces these hypervisors to change their design which could have
+> undesirable impacts on their use-cases, test-scenarios etc.
+> 
+> The point of vmgenid is to provide a mechanism to discover a GUID when
+> the execution state of a virtual machine changes and the simplest
+> way to do it is pass a memory location and an interrupt via devicetree.
+> It would complicate things unnecessarily if instead of using devicetree,
+> we try to implement a new protocol or modify other protocols to somehow
+> provide the same functionility.
+> 
+> We believe that adding a devicetree binding for vmgenid is a simpler,
+> better alternative to provide the same functionality and will allow
+> such hypervisors as mentioned above to continue using devicetree.
+> 
+> More references to vmgenid specs:
+>  - https://www.qemu.org/docs/master/specs/vmgenid.html
+>  - https://learn.microsoft.com/en-us/windows/win32/hyperv_v2/virtual-
+> machine-generation-identifier
+> 
+> Co-authored-by: Sudan Landge <sudanl@amazon.com>
+> Signed-off-by: Babis Chalios <bchalios@amazon.es>
 
-> Paulo Alcantara <pc@manguebit.com> wrote:
->
->> Can't we just move the cookie acquisition to cifs_get_tcon() before it
->> gets added to list @ses->tcon_list.  This way we'll guarantee that the
->> cookie is set only once for the new tcon.
->
-> cifs_get_tcon() is used from more than one place and I'm not sure the second
-> place (__cifs_construct_tcon()) actually wants a cookie.  I'm not sure what
-> that path is for.
+What happened here?
 
-__cifs_construct_tcon() is used for creating sessions and tcons under
-multiuser mounts.  Whenever an user accesses a multiuser mount and the
-client can't find a credential for it, a new session and tcon will be
-created for the user accessing the mount -- new accesses from same user
-will end up reusing the created session and tcon.
+NAK
 
-And yes, I don't think we'll need a cookie for those tcons as the client
-seems to get the fscache cookie from master tcon (the one created from
-mount credentials).
+You are no the author of this patch. You changed here nothing and you
+took authorship?
 
-> Could all the (re)setting up being done in cifs_mount_get_tcon() be
-> pushed back into cifs_get_tcon()?
+Read carefully submitting patches, this is not acceptable.
 
-AFAICT, yes.  I'd need to look into it to make sure that's safe.
 
->> Besides, do we want to share a tcon with two different superblocks that
->> have 'fsc' and 'nofsc', respectively?  If not, it would be better to fix
->> match_tcon() as well to handle such case.
->
-> Maybe?  What does a tcon *actually* represent?  I note that in
-> cifs_match_super(), it's not the only criterion matched upon - so you can, at
-> least in apparent theory, get different superblocks for the same tcon anyway.
 
-tcon simply represents a tree connected SMB share.  It can be either an
-IPC share (\\srv\IPC$) or the actual share (\\srv\share) we're accessing
-the files from.
+Best regards,
+Krzysztof
 
-Consider the following example where a tcon is reused from different
-CIFS superblocks:
-
-  mount.cifs //srv/share /mnt/1 -o ${opts} # new super, new tcon
-  mount.cifs //srv/share/dir /mnt/2 -o ${opts} # new super, reused tcon
-
-So, /mnt/1/dir/foo and /mnt/2/foo will lead to different inodes.
-
-The two mounts are accessing the same tcon (\\srv\share) but the new
-superblock was created because the prefix path "\dir" didn't match in
-cifs_match_super().  Trust me, that's a very common scenario.
-
-> This suggests that the tcon might not be the best place for the fscache volume
-> cookie as you can have multiple inodes wishing to use the same file cookie if
-> there are multiple mounts mounting the same tcon but, say, with different
-> mount parameters.
-
-We're not supposed to allow mounts with different parameters reusing
-servers, sessions or tcons, so that should be no issue.
-
-> I'm not sure what the right way around this is.  The root of the problem is
-> coherency management.  If we make a change to an inode on one mounted
-> superblock and this bounces a change notification over to the server that then
-> pokes an inode in another mounted superblock on the same machine and causes it
-> to be invalidated, you lose your local cache if both inodes refer to the same
-> fscache cookie.
-
-Yes, that could be a problem.  Perhaps placing the fscache cookie in the
-superblock would be a way to go, so we can handle the different fscache
-cookies for the superblocks that contain different prefix paths and
-access same tcon.
-
-> Remember: fscache does not do this for you!  It's just a facility by which
-> which data can be stored and retrieved.  The netfs is responsible for telling
-> it when to invalidate and handling coherency.
-
-ACK.
-
-> That said, it might be possible to time-share a cookie on cifs with leases,
-> but the local superblocks would have to know about each other - in which case,
-> why are they separate superblocks?
-
-See above why they could be separate superblocks.
 
