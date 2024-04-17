@@ -1,122 +1,123 @@
-Return-Path: <linux-kernel+bounces-147862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3140E8A7AAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 04:43:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF95A8A7AB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 04:46:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D93B41F22232
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:43:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E06971C20BB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:46:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 266197482;
-	Wed, 17 Apr 2024 02:43:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F2B17470;
+	Wed, 17 Apr 2024 02:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="q+C5sCj2"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fpW4vqh0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4AE566A;
-	Wed, 17 Apr 2024 02:43:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91C64187F;
+	Wed, 17 Apr 2024 02:46:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713321785; cv=none; b=oGgyxlBVyAk/jr3wRBrnGSGtQv7vA8TwY3u6Akksltgcoep5Aio6j1ztFrpBwZphB5m8z7kxXjNqAiL4hzOMk7vNPBDbw/bQYK7VyAlrriA9a6cjdnuObXY9TwIWpZ4zS0mX9V4lXilnGb9PHvsZn4PTS/1+lL4otqdohNBh+NE=
+	t=1713321963; cv=none; b=g+nKTEsEgFLnrARyEEkV6M2XNt93OXLxCHjdM/bKKU4UN1XxUI5E2PnXr97OgTKsw/0vr4fBGNSWkmAWKfkOfdb5aa5/NtaBPdnIISq1qrUPrAops4883MVnknLvtIIVQ2W4hufjgfF9ksMUYSSh1RPgeEiVc5aZS2teV9GgDcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713321785; c=relaxed/simple;
-	bh=po9zb6Qn/5fT2i3jnTl0DLe9EyYWr9PtZv3ZiG+LgXk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qXUfC+hw0qspf6LYHth/KLepFwVHHxSQnq2Yhh1+Ju5rymph8lspCPKR5S7Vx9NFsV6LeMSageyOkpacsrnTAf9EXloVhE0ZGqcQR6ZyNHEr9AA/84ooV52H9S+7AYiKCu8p8JNHHglN9bJi0yMjyfxLX4nQGxJOp05i1AoIQyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=q+C5sCj2; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1713321784; x=1744857784;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=po9zb6Qn/5fT2i3jnTl0DLe9EyYWr9PtZv3ZiG+LgXk=;
-  b=q+C5sCj2hOl5nuwL9BCHVSiOPDbhM6BKvGoFWjhVqtwyeHArhSUATzFY
-   4NPmlDyihGveSlMn73DihzUHlMA2mruqpLWNOhPSBWQAbq9p2M619Y03W
-   9baGTHTUEkIkIkeDQkRL2vPjHhwZbc3W0/1cZ8/jZiR8VranWKp1TpOqW
-   WyrxVwyynSbSqaakrOI7lpqKghemUyF8hWjfX18AEjZTYGu/A37krHEMP
-   3dosrq/eMu+/S+L53EVP+fkqg5B6jH6uPXVFyF/ch6yh8FE46vmjxiipY
-   8A+rt85VzTw8T5bQrdIfUE8FDfbMYJAc31ByitpNBDHe5UUFcBqpqTYDB
-   w==;
-X-CSE-ConnectionGUID: lhqfj+ClRBmMsnzlRSNyvA==
-X-CSE-MsgGUID: /4SB2i6AQ1W1hSmKUxDBJw==
-X-IronPort-AV: E=Sophos;i="6.07,207,1708412400"; 
-   d="scan'208";a="23379754"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Apr 2024 19:43:03 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 16 Apr 2024 19:42:54 -0700
-Received: from che-lt-i70843lx.microchip.com (10.10.85.11) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Tue, 16 Apr 2024 19:42:43 -0700
-From: Dharma Balasubiramani <dharma.b@microchip.com>
-To: <Dharma.B@microchip.com>, <andrzej.hajda@intel.com>,
-	<neil.armstrong@linaro.org>, <rfoss@kernel.org>,
-	<Laurent.pinchart@ideasonboard.com>, <jonas@kwiboo.se>,
-	<jernej.skrabec@gmail.com>, <maarten.lankhorst@linux.intel.com>,
-	<mripard@kernel.org>, <tzimmermann@suse.de>, <airlied@gmail.com>,
-	<daniel@ffwll.ch>, <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <linux@armlinux.org.uk>,
-	<Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-	<claudiu.beznea@tuxon.dev>, <Manikandan.M@microchip.com>, <arnd@arndb.de>,
-	<geert+renesas@glider.be>, <Jason@zx2c4.com>, <mpe@ellerman.id.au>,
-	<gerg@linux-m68k.org>, <rdunlap@infradead.org>, <vbabka@suse.cz>,
-	<dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-CC: <oe-kbuild-all@lists.linux.dev>, Dharma Balasubiramani
-	<dharma.b@microchip.com>, Hari Prasath Gujulan Elango
-	<hari.prasathge@microchip.com>, Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: [PATCH v6 4/4] ARM: configs: at91: Enable LVDS serializer support
-Date: Wed, 17 Apr 2024 08:11:37 +0530
-Message-ID: <20240417024137.144727-5-dharma.b@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240417024137.144727-1-dharma.b@microchip.com>
-References: <20240417024137.144727-1-dharma.b@microchip.com>
+	s=arc-20240116; t=1713321963; c=relaxed/simple;
+	bh=oRtdwcXfjYROqHZ+bXnWxLq9Cp1snZlo3O4Podnjrow=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=RxonZy8AfajPp+H/mtc5Rgr4wpBFYLJGv7Af+8rRhUOjZ3MUaLj0p/wEyBju66ezuSm8Ql3LBLMRKcQWQvuonAeVtW6TBobDp8YVKZDlaqYos9DLdHopB+m9G/6CFsAxKuPBGWshqXCOkORmqUTsJd8AORVuE2JEl4U5lBWS8tg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fpW4vqh0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92545C113CE;
+	Wed, 17 Apr 2024 02:46:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713321963;
+	bh=oRtdwcXfjYROqHZ+bXnWxLq9Cp1snZlo3O4Podnjrow=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=fpW4vqh0BjpWsLCUBevhTAyL3ZG+QFur7d8HIWX6Yl7PECKnUaJzZcqEd5Ajg8CBU
+	 K7HvNhnlbXjf7UZJtI4CaVPZcDS0xmFpBGVy30SX5YP41IDLBxKGeOOUpg0F0DYFEI
+	 bOKY/MzExNwizaQjM7QQYUETz6XvNP5uEgTME7XokykGI2UWrI5jnRaupWxBct/vYK
+	 MML/15VIOedxSUXFFbbdLapD66lSgkXCrdhZFGEOS7lgI1kTd/afdl1RA6XdAY1J6z
+	 P36J6UIiGar0gzwO1eOYczLSgdXW5A7V4CkC3+Bi978ODdvCJjR4aBYRcmTGwv18z7
+	 7pK1Huo2rX3iw==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Shengjiu Wang <shengjiu.wang@nxp.com>, 
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, Frank Li <Frank.Li@nxp.com>
+Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, imx@lists.linux.dev, 
+ linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20240416-esai_arm_dts_warning-v2-0-879e59c0c3b8@nxp.com>
+References: <20240416-esai_arm_dts_warning-v2-0-879e59c0c3b8@nxp.com>
+Subject: Re: (subset) [PATCH v2 0/4] arm: dts: nxp: imx6: fix esai related
+ dtb_check warning
+Message-Id: <171332196061.1698800.11762670932468430918.b4-ty@kernel.org>
+Date: Wed, 17 Apr 2024 11:46:00 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-Enable LVDS serializer support for display pipeline.
+On Tue, 16 Apr 2024 10:47:46 -0400, Frank Li wrote:
+> two patches update binding doc. two patches fix dts file.
+> 
+> dt_binding_check each patch.
+> 
+> git rebase -i aa8a0e0038936 --exec "make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,esai.yaml"
+> Executing: make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,esai.yaml
+>   LINT    Documentation/devicetree/bindings
+>   DTEX    Documentation/devicetree/bindings/sound/fsl,esai.example.dts
+>   CHKDT   Documentation/devicetree/bindings/processed-schema.json
+>   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+>   DTC_CHK Documentation/devicetree/bindings/sound/fsl,esai.example.dtb
+> Executing: make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,esai.yaml
+>   DTEX    Documentation/devicetree/bindings/sound/fsl,esai.example.dts
+>   LINT    Documentation/devicetree/bindings
+>   CHKDT   Documentation/devicetree/bindings/processed-schema.json
+>   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+>   DTC_CHK Documentation/devicetree/bindings/sound/fsl,esai.example.dtb
+> Executing: make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,esai.yaml
+> Executing: make ARCH=arm CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,esai.yaml
+> Successfully rebased and updated refs/heads/b4/esai_arm_dts_warning.
+> 
+> [...]
 
-Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
-Acked-by: Hari Prasath Gujulan Elango <hari.prasathge@microchip.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
----
-Changelog
-v4 -> v5
-v3 -> v4
-v2 -> v3
-- No Changes.
----
- arch/arm/configs/at91_dt_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Applied to
 
-diff --git a/arch/arm/configs/at91_dt_defconfig b/arch/arm/configs/at91_dt_defconfig
-index 1d53aec4c836..6eabe2313c9a 100644
---- a/arch/arm/configs/at91_dt_defconfig
-+++ b/arch/arm/configs/at91_dt_defconfig
-@@ -143,6 +143,7 @@ CONFIG_VIDEO_OV2640=m
- CONFIG_VIDEO_OV7740=m
- CONFIG_DRM=y
- CONFIG_DRM_ATMEL_HLCDC=y
-+CONFIG_DRM_MICROCHIP_LVDS_SERIALIZER=y
- CONFIG_DRM_PANEL_SIMPLE=y
- CONFIG_DRM_PANEL_EDP=y
- CONFIG_FB_ATMEL=y
--- 
-2.25.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/4] ASoC: dt-bindings: fsl-esai: Remove 'fsl,*' from required list
+      commit: 5894ff6c4707af645f2faa36cf07cc2745e1658f
+[2/4] ASoC: dt-bindings: fsl-esai: Add ref: dai-common.yaml
+      commit: 9aea6d64bb3acbff6b2f33cb5bbff65e824ab9a7
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 
