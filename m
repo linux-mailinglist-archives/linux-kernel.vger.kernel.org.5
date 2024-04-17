@@ -1,84 +1,57 @@
-Return-Path: <linux-kernel+bounces-149009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B64B8A8A6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:49:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 058D58A8A6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:50:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BEC81C2226F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:49:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36F631C2229E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:50:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40979172BAF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82A3172BC6;
 	Wed, 17 Apr 2024 17:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EgDT14Gx"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KLtzx3DR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F249617277F
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 17:49:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0C1A171678;
+	Wed, 17 Apr 2024 17:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713376190; cv=none; b=sFr5cUVUjkw8Tb6ZuOwFklMhXS/7ikdiX0dTd67ZY+ftUpJCyxpikhEYWXko5uly2GD4Y7FlpwFUitBLAmRdMNm06UsZD2bdTx5XOppDUMyjlbB6dB+CIfzvrdSHpQpKI94lvUO+28Noe+dgKQHMytsu/wknAOfhoYlSontz2aA=
+	t=1713376191; cv=none; b=NpL9CatRJQ+iFg72MQdzV9xQtop/NCF1n0JCrtwlVQVQa7sXd6e5XYwxTsFpZnmI8ScmAw02/3LAv23vYrItB+aW5V4aDlRs62Hzavh/+NrQSTK+Kb0cUrTNO1j0zzLboFBtzG4UTW/kbBagOJd1O8xW+GuxX5tMymmAJ6QnW7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713376190; c=relaxed/simple;
-	bh=oxWHekQ5OXBmGUuU+tztCdvzM6eyMNbR/dCgKxXe2Kw=;
+	s=arc-20240116; t=1713376191; c=relaxed/simple;
+	bh=kKmiZAPl+q6hmp8UYUp88qDELSBUZ6KaZWZd1XSAtdk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TXWCRSpuxUPZO+FsHJp28EujJCzrsy6RjFLIlsrVl9+JT0ABd9JMMumCf0xzHoYWgtoLkt4qTIgPoF+vaxqijFy0+/OFeOdpJ1LQZT+xmRO07V5sJ4hrk15OYHwH6qEi8/AJnO4CXGX2xatkiiKxbSmQ6JN+1jV11DWQyq8cYJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EgDT14Gx; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a55323f2ef9so404547966b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 10:49:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713376187; x=1713980987; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LRKFqV1snGd5uv5mvNVXvyTr7CU8a2cbaQuP0dc1pLQ=;
-        b=EgDT14GxEEX8eQAaexcklsCWo6tkBskvNWp88VtscPZH3Rsd9Cc1MPLgZcyyPtELeP
-         k/RYePLxj2J9XfiE9PBrJyXEBUOo2t8z4xQjTo1cCr2TxqRmj3i6jn0nZ3FF2D4KbFN+
-         xW6iidiF2Qa4Ye4Fo/zoF5hiXIHhBap1aO8jPeTSxNBgSwKYz5Vsh5L3xyNsOfxOTRUB
-         Xa8jQ8U8Y4F53Rlme0J4eNueKPfW7JI8qZegu4YAanpxCNyv0BNS3QfTbl31FCBruFg6
-         kRxB8Et2AZFcMduitlwEI8HioBPv/ZZFwmACz2pclG3axXaiDupv6Y59I0CuijLKt6Lr
-         cvMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713376187; x=1713980987;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LRKFqV1snGd5uv5mvNVXvyTr7CU8a2cbaQuP0dc1pLQ=;
-        b=AC6gEiI2A4hMQRMLPFMxHjRw2DFrulu1JPHaempfdYyFXCi5ytp0GaiwQOy9oWunk2
-         wHUbEGFwn4oQmupv4cwAyPLLisv4a1/De5i9CO0gJxg3J/baSNAYm2TE6ehgwuRnVsuE
-         yxuMYtO0SSZy/vQ9BOpaZLRG/VOclZdSUoUcTR9TWwvs0p2uxt9DZacdnwp5OSKW8AiX
-         s8wOaUfPbD3kmy0yzM0SKrXSm2FM751Xwm9JDcs+6Xq2lXchidHX+ipfKBZCsF9vL4DW
-         8RqtIpie/31jYQuspW/gfF056WqRfgvgwuX0LZJCFzlKVJDB7LIkLg//nV3woV0NghER
-         S4/g==
-X-Forwarded-Encrypted: i=1; AJvYcCX6Bs+R28ypfNEZjdpKJQBSVi7j9SB3k2ho9OQT1gMytE6vJ1tkfqO+ev0cvM4+aqAdG522dwNzRLvAlsKr58vn1DG78mel5cjSzMaD
-X-Gm-Message-State: AOJu0YwdeDEIPnZadoznXZ2Y8UpthmWKqFpdBXI8PDxIICOQv4RYJVen
-	sxFhFXpBl6NiDK39RZ1RKMI/Q9DJnLnDmHy04QGQRIf0Jzawr/SJ0afx9Dm1RUw=
-X-Google-Smtp-Source: AGHT+IGNRrYHORr8DLR8IoMkueik1jDbuO89DRSsICBJMLSRV946km6P3dw7KzJalXO6n1f1siPw+w==
-X-Received: by 2002:a17:906:a04b:b0:a51:bc68:d61e with SMTP id bg11-20020a170906a04b00b00a51bc68d61emr160457ejb.30.1713376187064;
-        Wed, 17 Apr 2024 10:49:47 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id xa4-20020a170906fd8400b00a5252e69c7dsm5792242ejb.160.2024.04.17.10.49.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 10:49:46 -0700 (PDT)
-Date: Wed, 17 Apr 2024 20:49:42 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: Zeng Heng <zengheng4@huawei.com>, linus.walleij@linaro.org,
-	linux-kernel@vger.kernel.org, xiexiuqi@huawei.com,
-	linux-gpio@vger.kernel.org, weiyongjun1@huawei.com,
-	liwei391@huawei.com
-Subject: Re: [PATCH] pinctrl: devicetree: fix refcount leak in
- pinctrl_dt_to_map()
-Message-ID: <fe83e07f-ca28-4c00-9b1b-7d16c63bad62@moroto.mountain>
-References: <20240415105328.3651441-1-zengheng4@huawei.com>
- <Zh_rM04PspfXxlv_@smile.fi.intel.com>
- <d80e09d8-5f35-4865-9fe8-195b86527972@moroto.mountain>
- <ZiAC9zzSWume8063@smile.fi.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=u6WMIROxnkbe1oYDhhb2BWqdZ8xwoIN5ebeMtC2uAsb8xSRcWDXjptHD2wMA6DtKLEaNa5RkEaXxOSxn/t8XdjQVJvTd6ElnZRSJuZAAkB8s1X4V4cO99T8uJlKZ2qUT+ZuHlwTIgVv+FGT6kqBxR0Ex/8JHzuLjdADdhWSCdNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KLtzx3DR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACCABC072AA;
+	Wed, 17 Apr 2024 17:49:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713376190;
+	bh=kKmiZAPl+q6hmp8UYUp88qDELSBUZ6KaZWZd1XSAtdk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KLtzx3DRHZYf8q/L8qvoWsIV1j+mXQKUIxe3GMLZ42asCImYAwJZS/fjodoBAuPdp
+	 177Dv3Hy1M3KfWejLCuesWtBigYezXbqgMed3O0h9yaNWeoc0/yre4hzW/jF7I3R5w
+	 qCN0MUJmbhjf7O0DfU8Hx6MEfq1QzOTQWciowY1T1x6fEsfEcofdcp0sG2NX+lz4JQ
+	 VSYK6SquDVGk4ErhYIhI17i5fkVcdALqBaDquXWhcuo9FSP10dxu7Fd2D8eHu/MMrv
+	 gWR3zXZbH1NzX+Xlyhi7snGKiTBKjX0C03MIRE2JAJNBDScBAn9/JUosuRxZ4T10/D
+	 VcjsO5Xw/vqtg==
+Date: Wed, 17 Apr 2024 19:49:45 +0200
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [PATCH] PCI: endpoint: pci-epf-test: Make use of cached
+ 'epc_features' in pci_epf_test_core_init()
+Message-ID: <ZiALuYlshLmwLhvu@ryzen>
+References: <20240417-pci-epf-test-fix-v1-1-653c911d1faa@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,51 +60,128 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZiAC9zzSWume8063@smile.fi.intel.com>
+In-Reply-To: <20240417-pci-epf-test-fix-v1-1-653c911d1faa@linaro.org>
 
-On Wed, Apr 17, 2024 at 08:12:23PM +0300, Andy Shevchenko wrote:
-> On Wed, Apr 17, 2024 at 06:38:46PM +0300, Dan Carpenter wrote:
-> > On Wed, Apr 17, 2024 at 06:30:59PM +0300, Andy Shevchenko wrote:
-> > > On Mon, Apr 15, 2024 at 06:53:28PM +0800, Zeng Heng wrote:
+On Wed, Apr 17, 2024 at 10:47:25PM +0530, Manivannan Sadhasivam wrote:
+> Instead of getting the epc_features from pci_epc_get_features() API, use
+> the cached pci_epf_test::epc_features value to avoid the NULL check. Since
+> the NULL check is already performed in pci_epf_test_bind(), having one more
+> check in pci_epf_test_core_init() is redundant and it is not possible to
+> hit the NULL pointer dereference. This also leads to the following smatch
+> warning:
 > 
-> ...
+> drivers/pci/endpoint/functions/pci-epf-test.c:784 pci_epf_test_core_init()
+> error: we previously assumed 'epc_features' could be null (see line 747)
 > 
-> > > >  	for (state = 0; ; state++) {
-> > > >  		/* Retrieve the pinctrl-* property */
-> > > >  		propname = kasprintf(GFP_KERNEL, "pinctrl-%d", state);
-> > > > -		if (!propname)
-> > > > -			return -ENOMEM;
-> > > > +		if (!propname) {
-> > > > +			ret = -ENOMEM;
-> > > > +			goto err;
-> > > > +		}
-> > > >  		prop = of_find_property(np, propname, &size);
-> > > >  		kfree(propname);
-> > > >  		if (!prop) {
-> > > >  			if (state == 0) {
-> > > > -				of_node_put(np);
-> > > > -				return -ENODEV;
-> > > > +				ret = -ENODEV;
-> > > > +				goto err;
-> > > 
-> > > Has it been tested? How on earth is this a correct change?
-> > > 
-> > > We iterate over state numbers until we have properties available. This chunk is
-> > > _successful_ exit path, we may not free parsed maps! Am I wrong?
-> > 
-> > In this path state == 0 so we haven't had a successful iteration yet.
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/linux-pci/024b5826-7180-4076-ae08-57d2584cca3f@moroto.mountain/
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+I think you forgot:
+Fixes: a01e7214bef9 ("PCI: endpoint: Remove "core_init_notifier" flag")
+
+
+> ---
+>  drivers/pci/endpoint/functions/pci-epf-test.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 > 
-> Ah, indeed, this is not a status. Okay, makes sense, but calling that free
-> function for the purpose of the putting of_node seems an overkill...
+> diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+> index 977fb79c1567..0d28f413cb07 100644
+> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
+> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+> @@ -743,11 +743,10 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
+>  	bool msi_capable = true;
+>  	int ret;
+>  
+> -	epc_features = pci_epc_get_features(epc, epf->func_no, epf->vfunc_no);
+> -	if (epc_features) {
+> -		msix_capable = epc_features->msix_capable;
+> -		msi_capable = epc_features->msi_capable;
+> -	}
+> +	epc_features = epf_test->epc_features;
 
-Sure, that's one way to look at it, but it's suspicious looking when
-there is a direct return which is surrounded by gotos.  As I write this,
-I remember that Smatch has a warning for code like that.
+How about:
 
-Probably we should add a comment to say:
+index 977fb79c1567..4d6105c07ac0 100644
+--- a/drivers/pci/endpoint/functions/pci-epf-test.c
++++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+@@ -735,7 +735,7 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
+ {
+        struct pci_epf_test *epf_test = epf_get_drvdata(epf);
+        struct pci_epf_header *header = epf->header;
+-       const struct pci_epc_features *epc_features;
++       const struct pci_epc_features *epc_features = epf_test->epc_features;
+        struct pci_epc *epc = epf->epc;
+        struct device *dev = &epf->dev;
+        bool linkup_notifier = false;
+@@ -743,12 +743,6 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
+        bool msi_capable = true;
+        int ret;
+ 
+-       epc_features = pci_epc_get_features(epc, epf->func_no, epf->vfunc_no);
+-       if (epc_features) {
+-               msix_capable = epc_features->msix_capable;
+-               msi_capable = epc_features->msi_capable;
+-       }
+-
+        if (epf->vfunc_no <= 1) {
+                ret = pci_epc_write_header(epc, epf->func_no, epf->vfunc_no, header);
+                if (ret) {
+@@ -761,6 +755,7 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
+        if (ret)
+                return ret;
+ 
++       msi_capable = epc_features->msi_capable;
+        if (msi_capable) {
+                ret = pci_epc_set_msi(epc, epf->func_no, epf->vfunc_no,
+                                      epf->msi_interrupts);
+@@ -770,6 +765,7 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
+                }
+        }
+ 
++       msix_capable = epc_features->msix_capable;
+        if (msix_capable) {
+                ret = pci_epc_set_msix(epc, epf->func_no, epf->vfunc_no,
+                                       epf->msix_interrupts,
+@@ -814,11 +810,9 @@ static int pci_epf_test_alloc_space(struct pci_epf *epf)
+        void *base;
+        enum pci_barno test_reg_bar = epf_test->test_reg_bar;
+        enum pci_barno bar;
+-       const struct pci_epc_features *epc_features;
++       const struct pci_epc_features *epc_features = epf_test->epc_features;
+        size_t test_reg_size;
+ 
+-       epc_features = epf_test->epc_features;
+-
+        test_reg_bar_size = ALIGN(sizeof(struct pci_epf_test_reg), 128);
+ 
+        msix_capable = epc_features->msix_capable;
 
-	/* Return -ENODEV if the property 'pinctrl-0' is not present. */
 
-regards,
-dan carpenter
+Instead?
+
+That way, we assign msi_capable/msix_capable just before the if-statement
+where it is used. (Which matches how we already assign msix_capable just
+before the if-statement in pci_epf_test_alloc_space().)
+
+
+Kind regards,
+Niklas
+
+
+> +
+> +	msix_capable = epc_features->msix_capable;
+> +	msi_capable = epc_features->msi_capable;
+>  
+>  	if (epf->vfunc_no <= 1) {
+>  		ret = pci_epc_write_header(epc, epf->func_no, epf->vfunc_no, header);
+> 
+> ---
+> base-commit: 6e47dcb2ca223211c43c37497836cd9666c70674
+> change-id: 20240417-pci-epf-test-fix-2209ae22be80
+> 
+> Best regards,
+> -- 
+> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> 
 
