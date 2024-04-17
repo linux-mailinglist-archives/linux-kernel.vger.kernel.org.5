@@ -1,109 +1,163 @@
-Return-Path: <linux-kernel+bounces-148486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 839F08A834C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:42:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBF708A834E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:43:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DAC9B22E26
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:42:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87B67285D6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 12:43:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B71B13D61A;
-	Wed, 17 Apr 2024 12:42:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="aOUSpA2i"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563D913D2BA;
-	Wed, 17 Apr 2024 12:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E480113C837;
+	Wed, 17 Apr 2024 12:43:01 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71ABE2747F
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 12:42:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713357742; cv=none; b=adqMK6VPd+JpDbtJvzcjxJe65yXuhbPGjWA6W0FErMTc+9N9WlAfcUKXcb8/BgESplBtq/GhFFdgZ1d6GzESyg4s4LZgiY/cRGFJgZupLrZTzRduG9uh6FzVCnsdKfFhjxhyl8PAi0fc7uyyYlelhYXMm6vtSBcwd24OtKiRUhA=
+	t=1713357781; cv=none; b=NFrLAfjDgA1SCrAejrrCOJJ/4fTd3tixiZN5RWGVgwqoTTcES8ZUQuu0NBfxW51eZdn1DNYuplxTUrkNyY/bqLYu6sK0FAWfZ/tb06S43m1fIJxZYa0JomNCh1FM1uJ1ocjIsjab+duvQfV5L3QfxJBpfRhN38nj+uHTTuPd4lA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713357742; c=relaxed/simple;
-	bh=iElS8fLYtQfkeJ74Kw3ZZys+/3ME/EXDLVa34ENKV2w=;
+	s=arc-20240116; t=1713357781; c=relaxed/simple;
+	bh=1a4OEWNLsoI1GtLpWCaTfY3p0UrAFNGR6fvFVjWpP08=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BSWIofdunBgHBoXSQAvLtELnY17zGbrSQHsjd763Q1iSRf1gdKzFfeyGcsEEE6lwpnsUNjgdLOHJHcMZy5tMH5torJv86O9PFVNbzlf8wvHndmVpBkrlhY3/he44NIepBxMPELO0B7Y+o8EkWNXYvlP3NTbyLUDVgZh6y4cHwUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=aOUSpA2i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B7F2C072AA;
-	Wed, 17 Apr 2024 12:42:20 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="aOUSpA2i"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1713357739;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nhGk4qQoX6Vgfs3FX2NokLuDYqMjjQUysDddQh+F5Ec=;
-	b=aOUSpA2iqqAFoAaoF1qsBUUCw8TiJlDAqdWwniW4Z1WMUCMmLjMzLESJjhk5KT+IBBZ30q
-	Pk/saUu2ma4Gh+N5QHJN5NT95kdi+MbojjsJFloP8IZ+rOd0SY8PgCNHUeIwfGg8pIY9Is
-	1uaYzzO+TYwQRjOXmuiwVEczgRzYreE=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 91e10a78 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Wed, 17 Apr 2024 12:42:16 +0000 (UTC)
-Date: Wed, 17 Apr 2024 14:42:14 +0200
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: Babis Chalios <bchalios@amazon.es>
-Cc: Alexander Graf <graf@amazon.de>, tytso@mit.edu, olivia@selenic.com,
-	herbert@gondor.apana.org.au, robh@kernel.org, krzk+dt@kernel.org,
-	conor+dt@kernel.org, linux-crypto@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	sudanl@amazon.com, xmarcalx@amazon.co.uk, dwmw@amazon.co.uk
-Subject: Re: [PATCH v5 1/5] virt: vmgenid: rearrange code to make review
- easier
-Message-ID: <Zh_Dpi630-LXJkJm@zx2c4.com>
-References: <20240417081212.99657-1-bchalios@amazon.es>
- <20240417081212.99657-2-bchalios@amazon.es>
- <10d41e7e-87b1-4036-a740-da36270a4325@amazon.de>
- <2838b126-ad87-4642-9223-e24f3fdb2c63@amazon.es>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bg5NTR3XwEhY1Hl5TXsozETMbKNujbBKnZ/OHGYYmri/HphUG7HIIzYxLMAuiF6CBDkdhpOD43UI2WydsXZFCHgp1uM3Wdj8VcXUwyFEu8DpqTlxP9HUunzyNEgfY2jclZbAOuTdSXkT+8sTeN4ZwgAvHGVF8tyaeaGwho3oI/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A77FF339;
+	Wed, 17 Apr 2024 05:43:26 -0700 (PDT)
+Received: from pluto (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D89AE3F738;
+	Wed, 17 Apr 2024 05:42:54 -0700 (PDT)
+Date: Wed, 17 Apr 2024 13:42:50 +0100
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	james.quinlan@broadcom.com, f.fainelli@gmail.com,
+	vincent.guittot@linaro.org, peng.fan@oss.nxp.com,
+	michal.simek@amd.com, quic_sibis@quicinc.com,
+	konrad.dybcio@linaro.org, souvik.chakravarty@arm.com
+Subject: Re: [PATCH v2 1/2] firmware: arm_scmi: Add support for multiple
+ vendors custom protocols
+Message-ID: <Zh_Dyi_rJGpW4qZr@pluto>
+References: <20240408093052.3801576-1-cristian.marussi@arm.com>
+ <20240408093052.3801576-2-cristian.marussi@arm.com>
+ <20240417123208.criylj2kvdngoswe@bogus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2838b126-ad87-4642-9223-e24f3fdb2c63@amazon.es>
+In-Reply-To: <20240417123208.criylj2kvdngoswe@bogus>
 
-On Wed, Apr 17, 2024 at 11:05:27AM +0200, Babis Chalios wrote:
+On Wed, Apr 17, 2024 at 01:32:08PM +0100, Sudeep Holla wrote:
+> On Mon, Apr 08, 2024 at 10:30:51AM +0100, Cristian Marussi wrote:
+> > Add a mechanism to be able to tag vendor protocol modules at compile-time
+> > with a vendor/sub_vendor string and an implementation version and then to
+> > choose to load, at run-time, only those vendor protocol modules matching
+> > as close as possible the vendor/subvendor identification advertised by
+> > the SCMI platform server.
+> > 
+> > In this way, any in-tree existent vendor protocol module can be build and
+> > shipped by default in a single kernel image, even when using the same
+> > clashing protocol identification numbers, since the SCMI core will take
+> > care at run-time to load only the ones pertinent to the running system.
+> > 
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> >  drivers/firmware/arm_scmi/driver.c    | 165 ++++++++++++++++++++++----
+> >  drivers/firmware/arm_scmi/protocols.h |  15 +++
+> >  2 files changed, 158 insertions(+), 22 deletions(-)
+> > 
+> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> > index d0091459a276..aa18202054a5 100644
+> > --- a/drivers/firmware/arm_scmi/driver.c
+> > +++ b/drivers/firmware/arm_scmi/driver.c
 > 
+> [...]
 > 
-> On 17/4/24 10:35, Alexander Graf wrote:
-> >
-> > On 17.04.24 10:12, Babis Chalios wrote:
-> >> From: Sudan Landge <sudanl@amazon.com>
-> >>
-> >> Rearrage the functions of vmgenid to make the next commit,
-> >> which re-implements vmgenid as a platform driver, easier to review.
-> >>
-> >> Signed-off-by: Sudan Landge <sudanl@amazon.com>
-> >
-> >
-> > You can't sign off on behalf of someone else. The SoB here needs to be 
-> > yours. If you are taking over this code from Sudan, I'd suggest to 
-> > take over full ownership of it and put your own name as author and SoB 
-> > in all patches.
+> > +static const struct scmi_protocol *
+> > +scmi_vendor_protocol_lookup(int protocol_id, char *vendor_id,
+> > +			    char *sub_vendor_id, u32 impl_ver)
+> > +{
+> > +	unsigned long key;
+> > +	struct scmi_protocol *proto = NULL;
+> > +
+> > +	/* Searching for closest match ...*/
+> > +	key = scmi_protocol_key_calculate(protocol_id, vendor_id,
+> > +					  sub_vendor_id, impl_ver);
+> > +	if (key)
+> > +		proto = xa_load(&scmi_protocols, key);
+> > +
+> > +	if (proto)
+> > +		return proto;
+> > +
+> > +	/* Any match on vendor/sub_vendor ? */
+> > +	if (impl_ver) {
+> > +		key = scmi_protocol_key_calculate(protocol_id, vendor_id,
+> > +						  sub_vendor_id, 0);
+> > +		if (key)
+> > +			proto = xa_load(&scmi_protocols, key);
+> > +
+> > +		if (proto)
+> > +			return proto;
+> > +	}
+> > +
+> > +	/* Any match on just the vendor ? */
+> > +	if (sub_vendor_id) {
+> > +		key = scmi_protocol_key_calculate(protocol_id, vendor_id,
+> > +						  NULL, 0);
+> > +		if (key)
+> > +			proto = xa_load(&scmi_protocols, key);
+> > +	}
 > >
 > 
-> I thought about it and it seemed weird to me that I take over SoB and 
-> authorship since I only touched one line in one of
-> the patches, but I will be taking over the patches, so I can do that if 
-> that's the way we things are done.
+> I see a pattern here, can be simplify/compress by something like below ?
 > 
-> Does it make sense to at least add "Co-authored-by Sudan Landge 
-> <sudanl@amazon.com>" here?
+> static const struct scmi_protocol *
+> __scmi_vendor_protocol_lookup(int protocol_id, char *vendor_id,
+> 			      char *sub_vendor_id, u32 impl_ver)
+> {
+> 	unsigned long key;
+> 	struct scmi_protocol *proto = NULL;
+> 
+> 	key = scmi_protocol_key_calculate(protocol_id, vendor_id,
+> 					  sub_vendor_id, impl_ver);
+> 	if (key)
+> 		proto = xa_load(&scmi_protocols, key);
+> 
+> 	return proto;
+> }
 
-Wait, what? No. If you didn't write these patches, you're not the
-author. Sudan is the author. However, if they passed through you, it's
-fine to add your S-o-b. You can even mention the trivial change you made
-between Sudan's S-o-b and your own.
+Sure...was not completely sure to proceed that way because only 2 lines
+were saved for a each block....bit indeed is more clear...I'll d in V3
+> 
+> [...]
+> 
+> > diff --git a/drivers/firmware/arm_scmi/protocols.h b/drivers/firmware/arm_scmi/protocols.h
+> > index 317d3fb32676..45ee8b35f56d 100644
+> > --- a/drivers/firmware/arm_scmi/protocols.h
+> > +++ b/drivers/firmware/arm_scmi/protocols.h
+> > @@ -29,6 +29,8 @@
+> >  #define PROTOCOL_REV_MAJOR(x)	((u16)(FIELD_GET(PROTOCOL_REV_MAJOR_MASK, (x))))
+> >  #define PROTOCOL_REV_MINOR(x)	((u16)(FIELD_GET(PROTOCOL_REV_MINOR_MASK, (x))))
+> >  
+> > +#define SCMI_PROTOCOL_VENDOR	0x80
+> > +
+> 
+> s/SCMI_PROTOCOL_VENDOR/SCMI_PROTOCOL_VENDOR_BASE/
+> 
+> as I expect 0x80 to be used by most vendors.
+> 
 
-Anyway, if there doesn't wind up being a need for another patchset, I
-can fix this up upon committing to the tree.
+I'll do.
 
-Jason
+Thanks for the review.
+Cristian
 
