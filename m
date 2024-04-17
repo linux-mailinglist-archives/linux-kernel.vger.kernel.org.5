@@ -1,189 +1,247 @@
-Return-Path: <linux-kernel+bounces-149201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 473B58A8D1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:41:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E701A8A8D1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 22:41:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 696CA1C21BBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:41:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B205B24A86
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:41:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74B8547F62;
-	Wed, 17 Apr 2024 20:40:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lQ2zFftC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1126E4AEDB;
+	Wed, 17 Apr 2024 20:41:02 +0000 (UTC)
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E76B44C7B;
-	Wed, 17 Apr 2024 20:40:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 866DD481A8
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 20:40:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713386457; cv=none; b=priaKU97HkjiSb465UpTKjl0PogvCQX7a+AEKlKWLGnxYjrzdbaZZH7L3+sx+44BnDmclQxen2CO3sYf15fTmgrRjyz2tGijkJQfCGoWcbG6au5DZv3EzblL99XA1y2QdrevOSOV7xiYonn65GMgdGdEgZo+DLVcMu7rKGYl6xA=
+	t=1713386461; cv=none; b=LdGRskCWa+LLNnBpU3YKpwxbfsmwk7gTXqT0cnHB8GfEMA0StSMzXvVxH2DuJe5ClQG2aU4gZxinp/xWFerG6mDxSh+zwj877Ahme3IqFyXdSUFqU8JhP+bM2KVyAhyYf7ZBJBbC0qcQQDVFOkG4f0KOtSefU8SwuU65zANSFNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713386457; c=relaxed/simple;
-	bh=oZ2d6BQJiFao+w5iptjGcdQdSKyyboWurZy/GTwx25k=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mtCqISJT6TWWv+G4UZpheEL2goiILP0Y3rRJkBS5FeCNB2dev8+NzACXfg7MfxWhzR0P3D9a934shVLbXhd03ywQ4L+peFJogkL8AcwF88JH7DAjyoFp3vq/EZ2ALeSlgxTcP2hn4046UJawnDNocKsXL5mUP+PHVEMF3pTY5d0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lQ2zFftC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECB8DC072AA;
-	Wed, 17 Apr 2024 20:40:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713386457;
-	bh=oZ2d6BQJiFao+w5iptjGcdQdSKyyboWurZy/GTwx25k=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lQ2zFftC3hpzIHJqd2hN4HRau6ckGUHplil62MUbg29PYDkttbTMkRWoHw2GxJWaB
-	 25ZtfkT/G1I+4jEjn0jriCEOvw1F+6De8uaijmOa8RP99MSZPU+1FZYnzEq3AbIfGn
-	 xKbKF64LHZOaUwzMRGSSuQofsAmoaANU0ZI6cGCwz+w2/BotdsbJRm8CNMBntvpbRQ
-	 qoK7U/KYXNKYWh+946vT3D+saKu7utlKsQgXYiQxwHVqNuI1o23EzEfhprTxHxvpsS
-	 l7w081lvJ0m7Y15Yul72n3DiF88FlzUosAz+Fjv3yoEwcCN+F5hag/j4T6CNLWuqtX
-	 9P3jLRARof4og==
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: linux-pci@vger.kernel.org
-Cc: Mateusz Kaduk <mateusz.kaduk@gmail.com>,
+	s=arc-20240116; t=1713386461; c=relaxed/simple;
+	bh=xgZogUj89WqzyBAwgAsuVQjVj5WTZ3i1Q7lV9smEZo4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u+sIYtcU51xEtm2JgaBqDlAKnJN2kCrqZmVYXSXOxMDnKiwszR5FQWBkdUxJg7t0wg9l04kuCIGXdd46LzmMZRR754cWeSydOI5TP75WzJImkumNTBm3I7YxFghI6JRZidlFAEYjN8YavCW2U6aVaJPng5Q/eTnxajq/4Mw26g8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2342440E0177;
+	Wed, 17 Apr 2024 20:40:57 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id oCVnpNi6NNcn; Wed, 17 Apr 2024 20:40:52 +0000 (UTC)
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 110B140E0187;
+	Wed, 17 Apr 2024 20:40:36 +0000 (UTC)
+Date: Wed, 17 Apr 2024 22:40:30 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+	linux-coco@lists.linux.dev, svsm-devel@coconut-svsm.dev,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
-	Tj <linux@iam.tj>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	stable@vger.kernel.org
-Subject: [PATCH 1/1] x86/pci: Skip early E820 check for ECAM region
-Date: Wed, 17 Apr 2024 15:40:12 -0500
-Message-Id: <20240417204012.215030-2-helgaas@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240417204012.215030-1-helgaas@kernel.org>
-References: <20240417204012.215030-1-helgaas@kernel.org>
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Michael Roth <michael.roth@amd.com>,
+	Ashish Kalra <ashish.kalra@amd.com>
+Subject: Re: [PATCH v3 03/14] x86/sev: Check for the presence of an SVSM in
+ the SNP Secrets page
+Message-ID: <20240417204030.GIZiAzvuLG6qcFFMyT@fat_crate.local>
+References: <cover.1711405593.git.thomas.lendacky@amd.com>
+ <e8d4877f3b7248031931ed193c026c42dd3363ef.1711405593.git.thomas.lendacky@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e8d4877f3b7248031931ed193c026c42dd3363ef.1711405593.git.thomas.lendacky@amd.com>
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+On Mon, Mar 25, 2024 at 05:26:22PM -0500, Tom Lendacky wrote:
+> During early boot phases, check for the presence of an SVSM when running
+> as an SEV-SNP guest.
+> 
+> An SVSM is present if the 64-bit value at offset 0x148 into the secrets
+> page is non-zero. If an SVSM is present, save the SVSM Calling Area
+> address (CAA), located at offset 0x150 into the secrets page, and set
+> the VMPL level of the guest, which should be non-zero, to indicate the
+> presence of an SVSM.
 
-Arul, Mateusz, Imcarneiro91, and Aman reported a regression caused by
-07eab0901ede ("efi/x86: Remove EfiMemoryMappedIO from E820 map").  On the
-Lenovo Legion 9i laptop, that commit removes the area containing ECAM from
-E820, which means the early E820 validation started failing, which meant we
-didn't enable ECAM in the "early MCFG" path
+Where are we pointing to the SVSM spec?
 
-The lack of ECAM caused many ACPI methods to fail, resulting in the
-embedded controller, PS/2, audio, trackpad, and battery devices not being
-detected.  The _OSC method also failed, so Linux could not take control of
-the PCIe hotplug, PME, and AER features:
+This is in the 0th message
 
-  # pci_mmcfg_early_init()
+https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/58019.pdf
 
-  PCI: ECAM [mem 0xc0000000-0xce0fffff] (base 0xc0000000) for domain 0000 [bus 00-e0]
-  PCI: not using ECAM ([mem 0xc0000000-0xce0fffff] not reserved)
+but pls add it to our documentation here:
 
-  ACPI Error: AE_ERROR, Returned by Handler for [PCI_Config] (20230628/evregion-300)
-  ACPI: Interpreter enabled
-  ACPI: Ignoring error and continuing table load
-  ACPI BIOS Error (bug): Could not resolve symbol [\_SB.PC00.RP01._SB.PC00], AE_NOT_FOUND (20230628/dswload2-162)
-  ACPI Error: AE_NOT_FOUND, During name lookup/catalog (20230628/psobject-220)
-  ACPI: Skipping parse of AML opcode: OpcodeName unavailable (0x0010)
-  ACPI BIOS Error (bug): Could not resolve symbol [\_SB.PC00.RP01._SB.PC00], AE_NOT_FOUND (20230628/dswload2-162)
-  ACPI Error: AE_NOT_FOUND, During name lookup/catalog (20230628/psobject-220)
-  ...
-  ACPI Error: Aborting method \_SB.PC00._OSC due to previous error (AE_NOT_FOUND) (20230628/psparse-529)
-  acpi PNP0A08:00: _OSC: platform retains control of PCIe features (AE_NOT_FOUND)
+Documentation/arch/x86/amd-memory-encryption.rst
 
-  # pci_mmcfg_late_init()
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> ---
+>  arch/x86/boot/compressed/sev.c    | 35 ++++++++---------
+>  arch/x86/include/asm/sev-common.h |  4 ++
+>  arch/x86/include/asm/sev.h        | 25 +++++++++++-
+>  arch/x86/kernel/sev-shared.c      | 64 +++++++++++++++++++++++++++++++
+>  arch/x86/kernel/sev.c             | 16 ++++++++
+>  5 files changed, 125 insertions(+), 19 deletions(-)
+> 
+> diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
+> index 49dc9661176d..fe61ff630c7e 100644
+> --- a/arch/x86/boot/compressed/sev.c
+> +++ b/arch/x86/boot/compressed/sev.c
+> @@ -12,6 +12,7 @@
+>   */
+>  #include "misc.h"
+>  
+> +#include <linux/mm.h>
+>  #include <asm/bootparam.h>
+>  #include <asm/pgtable_types.h>
+>  #include <asm/sev.h>
+> @@ -29,6 +30,15 @@
+>  static struct ghcb boot_ghcb_page __aligned(PAGE_SIZE);
+>  struct ghcb *boot_ghcb;
+>  
+> +/*
+> + * SVSM related information:
+> + *   When running under an SVSM, the VMPL that Linux is executing at must be
+> + *   non-zero. The VMPL is therefore used to indicate the presence of an SVSM.
+> + */
+> +static u8 vmpl __section(".data");
+> +static u64 boot_svsm_caa_pa __section(".data");
+> +static struct svsm_ca *boot_svsm_caa __section(".data");
 
-  PCI: ECAM [mem 0xc0000000-0xce0fffff] (base 0xc0000000) for domain 0000 [bus 00-e0]
-  PCI: [Firmware Info]: ECAM [mem 0xc0000000-0xce0fffff] not reserved in ACPI motherboard resources
-  PCI: ECAM [mem 0xc0000000-0xce0fffff] is EfiMemoryMappedIO; assuming valid
-  PCI: ECAM [mem 0xc0000000-0xce0fffff] reserved to work around lack of ACPI motherboard _CRS
+Explain what those last 2 are in comments above it pls.
 
-Per PCI Firmware r3.3, sec 4.1.2, ECAM space must be reserved by a PNP0C02
-resource, but it need not be mentioned in E820, so we shouldn't look at
-E820 to validate the ECAM space described by MCFG.
+>  /*
+>   * SNP_FEATURES_IMPL_REQ is the mask of SNP features that will need
+>   * guest side implementation for proper functioning of the guest. If any
+> @@ -480,6 +472,13 @@ static bool early_snp_init(struct boot_params *bp)
+>  	 */
+>  	setup_cpuid_table(cc_info);
+>  
+> +	/*
+> +	 * Record the SVSM Calling Area address (CAA) if the guest is not
 
-946f2ee5c731 ("[PATCH] i386/x86-64: Check that MCFG points to an e820
-reserved area") added a sanity check of E820 to work around buggy MCFG
-tables, but that over-aggressive validation causes failures like this one.
+			Calling Area (CA) address
 
-Keep the E820 validation check only for older BIOSes (pre-2016) so the
-buggy 2006-era machines don't break.  Skip the early E820 check for 2016
-and newer BIOSes.
+> +	 * running at VMPL0. The CA will be used to communicate with the
 
-Fixes: 07eab0901ede ("efi/x86: Remove EfiMemoryMappedIO from E820 map")
-Reported-by: Mateusz Kaduk <mateusz.kaduk@gmail.com>
-Reported-by: Arul <...>
-Reported-by: Imcarneiro91 <...>
-Reported-by: Aman <...>
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218444
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Tested-by: Mateusz Kaduk <mateusz.kaduk@gmail.com>
-Cc: stable@vger.kernel.org
----
- arch/x86/pci/mmconfig-shared.c | 35 +++++++++++++++++++++++++++-------
- 1 file changed, 28 insertions(+), 7 deletions(-)
+and then you can use "CA" here.
 
-diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
-index 0cc9520666ef..53c7afa606c3 100644
---- a/arch/x86/pci/mmconfig-shared.c
-+++ b/arch/x86/pci/mmconfig-shared.c
-@@ -518,7 +518,34 @@ static bool __ref pci_mmcfg_reserved(struct device *dev,
- {
- 	struct resource *conflict;
- 
--	if (!early && !acpi_disabled) {
-+	if (early) {
-+
-+		/*
-+		 * Don't try to do this check unless configuration type 1
-+		 * is available.  How about type 2?
-+		 */
-+
-+		/*
-+		 * 946f2ee5c731 ("Check that MCFG points to an e820
-+		 * reserved area") added this E820 check in 2006 to work
-+		 * around BIOS defects.
-+		 *
-+		 * Per PCI Firmware r3.3, sec 4.1.2, ECAM space must be
-+		 * reserved by a PNP0C02 resource, but it need not be
-+		 * mentioned in E820.  Before the ACPI interpreter is
-+		 * available, we can't check for PNP0C02 resources, so
-+		 * there's no reliable way to verify the region in this
-+		 * early check.  Keep it only for the old machines that
-+		 * motivated 946f2ee5c731.
-+		 */
-+		if (dmi_get_bios_year() < 2016 && raw_pci_ops)
-+			return is_mmconf_reserved(e820__mapped_all, cfg, dev,
-+						  "E820 entry");
-+
-+		return true;
-+	}
-+
-+	if (!acpi_disabled) {
- 		if (is_mmconf_reserved(is_acpi_reserved, cfg, dev,
- 				       "ACPI motherboard resource"))
- 			return true;
-@@ -554,12 +581,6 @@ static bool __ref pci_mmcfg_reserved(struct device *dev,
- 	if (pci_mmcfg_running_state)
- 		return true;
- 
--	/* Don't try to do this check unless configuration
--	   type 1 is available. how about type 2 ?*/
--	if (raw_pci_ops)
--		return is_mmconf_reserved(e820__mapped_all, cfg, dev,
--					  "E820 entry");
--
- 	return false;
- }
- 
+> +	 * SVSM to perform the SVSM services.
+> +	 */
+> +	setup_svsm_ca(cc_info);
+> +
+>  	/*
+>  	 * Pass run-time kernel a pointer to CC info via boot_params so EFI
+>  	 * config table doesn't need to be searched again during early startup
+> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
+> index b463fcbd4b90..68a8cdf6fd6a 100644
+> --- a/arch/x86/include/asm/sev-common.h
+> +++ b/arch/x86/include/asm/sev-common.h
+> @@ -159,6 +159,10 @@ struct snp_psc_desc {
+>  #define GHCB_TERM_NOT_VMPL0		3	/* SNP guest is not running at VMPL-0 */
+>  #define GHCB_TERM_CPUID			4	/* CPUID-validation failure */
+>  #define GHCB_TERM_CPUID_HV		5	/* CPUID failure during hypervisor fallback */
+> +#define GHCB_TERM_SECRETS_PAGE		6	/* Secrets page failure */
+> +#define GHCB_TERM_NO_SVSM		7	/* SVSM is not advertised in the secrets page */
+> +#define GHCB_TERM_SVSM_VMPL0		8	/* SVSM is present but has set VMPL to 0 */
+> +#define GHCB_TERM_SVSM_CAA		9	/* SVSM is present but the CA is not page aligned */
+
+"CAA" in the comment I guess. :)
+
+> +/*
+> + * Maintain the GPA of the SVSM Calling Area (CA) in order to utilize the SVSM
+> + * services needed when not running in VMPL0.
+> + */
+> +static void __head setup_svsm_ca(const struct cc_blob_sev_info *cc_info)
+> +{
+> +	struct snp_secrets_page_layout *secrets_page;
+
+Why was that thing ever called "_layout" and not simply
+snp_secrets_page?
+
+Fix it?
+
+> +	u64 caa;
+> +
+> +	BUILD_BUG_ON(sizeof(*secrets_page) != PAGE_SIZE);
+
+Put it in the header under the struct definition I guess.
+
+> +	/*
+> +	 * Use __pa() since this routine is running identity mapped when
+> +	 * called, both by the decompressor code and the early kernel code.
+> +	 */
+> +	if (running_at_vmpl0((void *)__pa(&boot_ghcb_page)))
+> +		return;
+> +
+> +	/*
+> +	 * Not running at VMPL0, ensure everything has been properly supplied
+> +	 * for running under an SVSM.
+> +	 */
+> +	if (!cc_info || !cc_info->secrets_phys || cc_info->secrets_len != PAGE_SIZE)
+> +		sev_es_terminate(SEV_TERM_SET_LINUX, GHCB_TERM_SECRETS_PAGE);
+> +
+> +	secrets_page = (struct snp_secrets_page_layout *)cc_info->secrets_phys;
+> +	if (!secrets_page->svsm_size)
+> +		sev_es_terminate(SEV_TERM_SET_LINUX, GHCB_TERM_NO_SVSM);
+> +
+> +	if (!secrets_page->svsm_guest_vmpl)
+> +		sev_es_terminate(SEV_TERM_SET_LINUX, GHCB_TERM_SVSM_VMPL0);
+> +
+> +	vmpl = secrets_page->svsm_guest_vmpl;
+> +
+> +	caa = secrets_page->svsm_caa;
+> +	if (!PAGE_ALIGNED(caa))
+> +		sev_es_terminate(SEV_TERM_SET_LINUX, GHCB_TERM_SVSM_CAA);
+> +
+> +	/*
+> +	 * The CA is identity mapped when this routine is called, both by the
+> +	 * decompressor code and the early kernel code.
+> +	 */
+> +	boot_svsm_caa = (struct svsm_ca *)caa;
+> +	boot_svsm_caa_pa = caa;
+> +}
+> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+> index b59b09c2f284..64799a04feb4 100644
+> --- a/arch/x86/kernel/sev.c
+> +++ b/arch/x86/kernel/sev.c
+> @@ -135,6 +135,15 @@ struct ghcb_state {
+>  static DEFINE_PER_CPU(struct sev_es_runtime_data*, runtime_data);
+>  static DEFINE_PER_CPU(struct sev_es_save_area *, sev_vmsa);
+>  
+> +/*
+> + * SVSM related information:
+> + *   When running under an SVSM, the VMPL that Linux is executing at must be
+> + *   non-zero. The VMPL is therefore used to indicate the presence of an SVSM.
+> + */
+> +static u8 vmpl __ro_after_init;
+> +static struct svsm_ca *boot_svsm_caa __ro_after_init;
+> +static u64 boot_svsm_caa_pa __ro_after_init;
+
+Uff, duplication.
+
+Let's put them in sev-shared.c pls and avoid that.
+
+Thx.
+
 -- 
-2.34.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
