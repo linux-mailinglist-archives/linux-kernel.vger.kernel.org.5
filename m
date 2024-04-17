@@ -1,215 +1,369 @@
-Return-Path: <linux-kernel+bounces-149138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02B5C8A8C59
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:54:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C537D8A8C5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:57:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25DD71C2223B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:54:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69F302853F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:57:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3435C36AE4;
-	Wed, 17 Apr 2024 19:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A294364AA;
+	Wed, 17 Apr 2024 19:57:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f5PAOtio"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="1rI0aU73"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2077.outbound.protection.outlook.com [40.107.237.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0E6328DD5;
-	Wed, 17 Apr 2024 19:54:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713383688; cv=none; b=N0f+02KP1MtOPaB241ShtgzKh6mrMxTw93gq57jhU+GRuXuCmlQEUU09GE8wrg2jqlRd2+5EHMMgctj0emsCN97CoDzH3IBC3WYMuZcj3lycGzqmIErXzlnOuQ4bgfQ5oSVlTzbo8zdrGvYM6qxjQNQdXilBLkNbyrgKcRksHNQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713383688; c=relaxed/simple;
-	bh=Zf/OMyMDhlIYfCAkZI3UPMiUTOJQR+SmhpgNPSXKDpw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X16pVfwPBqszUl1BQvWdx3Y0tKWDhTw7cqnFrRKefp9xleIGTY89YPPEnE4D42DyfO0MwKWDdfeE91hpTMjtt4cYOaFH5ZZE1ZZ6xwlrGh2MEhIhaCHKw+bKROGrd0m5eQe4D19y6JFtISNIBIJc26PLl25dSxC03wVNw+v6ujg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f5PAOtio; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2db6f5977e1so1966061fa.2;
-        Wed, 17 Apr 2024 12:54:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713383685; x=1713988485; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=36yFaWb1Z3OgIPBn349UV5rtPMU6W5yanAqR4oXTBMg=;
-        b=f5PAOtiokFvyqxXzb4yaq111H9jwj/GCZN7Z6CVCitr7FzaKeJNV36MlcSOx1iSIAq
-         koPbOLvICM2HHR/BqidxCGcv8g+5zhKCq6ngHtHNn0RmUCkWWBPaWxxGQdyw5tliDM5V
-         9IuqgWFYKnz+0uKc44BpRZfTjTINR1J2qAZb1B6wUljXhCPR/+qbhgN2+5uYGvsw5OPC
-         vqagjm63zJR62Vl13UiOi28YjBUcwD4nM8Kgf69Xa98ueNuXeLLRvzCxKJTkGPGqF9df
-         Q5Syr690e8A9geqOi80fSKmEdGzPOjnAYFPh5TyLyLBHXMYzm4ro71LF6SatEgAo6rsn
-         KvTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713383685; x=1713988485;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=36yFaWb1Z3OgIPBn349UV5rtPMU6W5yanAqR4oXTBMg=;
-        b=S8N6kTEey9+4SRBcww5wfMDkC1F79ieqwY9IUuNOl8tfGqNHxNtDODGTgDgsIjdTbJ
-         jw5OoTZArh/RmiLalmbcpm+oQssAT13aQm6benV8F4WADqSGFAFmoJ/BgOXSmdUXftK2
-         rjfDNAYBajisLu6E4SCZoLwYvTz02hgYwcEhq73hO8kec2a9ic+qN2kFvEJuiajZVKdI
-         GwnkM2+K+kxITDpTGn25VwfnnMw0zR73ia+JTqh/KQMZTEL7Z0+bmU2bdKPWXUVd8yNY
-         z6urIZqSBlWl4fztPShI2FfAYjL2YsuO95R+9fcEUZeLKqb1O1YCKNHoiWnZYGP7s7dj
-         yivw==
-X-Forwarded-Encrypted: i=1; AJvYcCU63xdxKV05tZeCLoUpHvCbE9Bf7KCy/xjjZZ6x7/lJZd/+Q7A3+ZTESLGHulq4MoYfM9Hn/A9ydPD17Ka4778u3UICEWlDp9diyDrn8dMImD2Pu4o40gEkGKq6GwobIpY637lHL3kPKGN0Qle5CCKe5TijjNupRol7lp0SLAnR2yzzfbav
-X-Gm-Message-State: AOJu0Yy+GyjqEeNIGiMW897nLoGnrGK3s7fDHchgShqW6SPUpKPIVU4W
-	pxHg/38mu5TYXuompE6sY4RSf7SSomP9OlH2nAaCdBnRdxWR6KliQK82oxAr
-X-Google-Smtp-Source: AGHT+IHwkYbHUCRTNdHCafOnJ+v5cGpOTEYWAc8fzpKrdrcvjqn/iqabdLsEaqWzQ7Kdzmx/G05Yxw==
-X-Received: by 2002:a2e:900e:0:b0:2d8:3dc7:e302 with SMTP id h14-20020a2e900e000000b002d83dc7e302mr201574ljg.2.1713383684666;
-        Wed, 17 Apr 2024 12:54:44 -0700 (PDT)
-Received: from mobilestation.baikal.int (srv1.baikalchip.ru. [87.245.175.227])
-        by smtp.gmail.com with ESMTPSA id y1-20020a2e95c1000000b002d2d1c11703sm1965709ljh.76.2024.04.17.12.54.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 12:54:44 -0700 (PDT)
-Date: Wed, 17 Apr 2024 22:54:42 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org, linux-serial@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] dmaengine: dw: Add peripheral bus width verification
-Message-ID: <ut5notgwnjdj7ex3jeo7jnbdc2vhopebdg3miepto2wfrxti4b@b2xksvotrgph>
-References: <20240416162908.24180-1-fancer.lancer@gmail.com>
- <20240416162908.24180-2-fancer.lancer@gmail.com>
- <Zh680h4h6hURIb82@smile.fi.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4463B18026
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 19:57:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.77
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713383862; cv=fail; b=ECnNPPqmrQJrFEK6mt9TlE2zE94wAtfEWFyiKV+3hsBZnhJrMckuEAI9vrSMKQhKj4JLt3bw38GS1XWbMncvJUmtecG5jziUIdfJMoTUUKEwX6GHamdHXuZJldEj9B2F29sclbhjnBAPBw8rRzGGoEoovjIl0iUEJY6nRITxoNg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713383862; c=relaxed/simple;
+	bh=/IaiEn+iZolc+zNpjKdAmDwQRwSQb6dOhIUWXbvGEBc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=XMNwgFDRuh+X8F7DL5nLphXK2ADAwlG+OS4+SXIjsoHm4ho5g5Go8opp3si0WcjWh99v/orh7wfFDWHgh4gMTRGUjM7r5OHfwv0mqmOy0SsXZZvt8AFZiqOqlb3T1k7VYg7gzqaGC0IlIotlGT6+FGMrj93IyV203dmy30axtb8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=1rI0aU73; arc=fail smtp.client-ip=40.107.237.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H6lRAusSYICn1nBz0pAJPKvFb+5Y9lqN2mdvmKZCLBjsOYTapP/1GJQuCbRzE8LqXfXkUpiV09WBYNdoUme3D9NXdUJ5WzDlRTyO8A1D7z5/brxWGuKtJmBhRQeCPlhkzbRSxfJRbLkRg+aj/cVLYwtelP1vVQPp/OqUNOhHOl2t4QTzgz8i/kHw6uHUqKMuM7MNfzJsTS/ff270tv+yEedjubm1nVB6StKSIZFjRN1hHWnri7izSqlCTGTkk+sGoXqp8vYhbnWTTrUcSspNNahCK9GofKQwjGgUY1n+24xZpFCjjKhw/3EdTPOm54LMfxwXuBpfysqLPZYt2u5J5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=j2pxiBsvftUqbrkJr62IW9KcD75oy5eNRYECvcUreho=;
+ b=hMbBhmMqLV49NKzbbf2dJ3KJKJDrsTtsL1Hok3skeoQZri0sJg1TP2fJ3J+FKmP7tQd83V3Ybaq+RIy8fjn/pq72yRyOKgBShSatsaskDqYjQK+FQ0mMH4msJLtuZm7PJWqY+EVsD6MbKAxj4w1i1+bdGA8vxqO5x2pTciV2sdfJLSK+7IL+npetHkqc3jZ2rFnfs0rjP+Ecs20+kAG8njr49mgb6HF6muUMrZPlp0iMAx4VTesE/SvtoD9U0iuz5MgxoME1AbCiejxzLvksNiRAxU1+QQwTLyjPo7fnkOKiyIjUliHXhGzrA6tm/5LE8969l3DvOumQzq+qCPzBGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j2pxiBsvftUqbrkJr62IW9KcD75oy5eNRYECvcUreho=;
+ b=1rI0aU73o9um9bR7Z73NJioy2yc0fRBc5fW5Yve66Hkhrxas5Gi+AIx1GrbB4p+XftDoeBkbaxqfiGFBX47qJWc2Ua/katF3RV5lz1hSd4spDbB2pf9LPDiW8uKISWfqiT9Dt9SPms+D8wr9BsrEaaiB+Nw1Xzi/bQAyGk+IP3o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by PH7PR12MB7820.namprd12.prod.outlook.com (2603:10b6:510:268::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Wed, 17 Apr
+ 2024 19:57:30 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::1c2f:5c82:2d9c:6062]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::1c2f:5c82:2d9c:6062%5]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
+ 19:57:30 +0000
+Message-ID: <50eeda1a-f3e5-401b-a7f3-0b3fa219c212@amd.com>
+Date: Wed, 17 Apr 2024 15:57:18 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/4] drm/uAPI: Add "force color format" drm property as
+ setting for userspace
+To: Andri Yngvason <andri@yngvason.is>, Leo Li <sunpeng.li@amd.com>,
+ Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Jani Nikula <jani.nikula@linux.intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>,
+ Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+ Simon Ser <contact@emersion.fr>, Werner Sembach <wse@tuxedocomputers.com>
+References: <20240115160554.720247-1-andri@yngvason.is>
+ <20240115160554.720247-3-andri@yngvason.is>
+Content-Language: en-US
+From: Harry Wentland <harry.wentland@amd.com>
+In-Reply-To: <20240115160554.720247-3-andri@yngvason.is>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YT4PR01CA0452.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:10d::18) To CO6PR12MB5427.namprd12.prod.outlook.com
+ (2603:10b6:5:358::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zh680h4h6hURIb82@smile.fi.intel.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|PH7PR12MB7820:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4256c96d-afe6-4085-f51b-08dc5f1898c4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	uVbq9qPTr5f0jGS+KAa6C4AZY3sg4P2rjsWV1HADo97Molb/9edkZIy4E4B5B30Gbf13njl/7i0qUd+SuFxYGIJ0rcJYDCrg1PXIp9fVzEENIEaZbjAgZHObTlzDd2FAjNj62Aa64xe1LwBxzAthyU0NygWtrpJCJBpnx1LR9Vva4Hxg8uiGogshU1c9vgSst45H5d/imDQ+Y+i8j+0Ge1v4bgLO1AR4QpRgu2IYQq/Mo8aglQkpTy/aFVqCAUafiLBd1CSE/+rArAQHoI/EC3PSI9+xr5TJm6MEfEenIu2sRguHhWKvls+CcRIRBvgOH2cN1RYhBKUT12CqESN7o020sh+b3HDEdjeaXKj8hR7Y+bDDmY/PKoM7hhY2dQIq+PkCZ+76MliIYnl/QOUWbxPXuvkNFdemyKPe7Z/OxaYqDFBw/5oo58h6JG8YIdTXiS7j3YGW82ALmTxeRliKzvXzZb8YNeN9Q+vOFtJwQj5V0NFsxPbTIyCYuPVxjr94Zjtl0/Ihx2wE4hD6bhURv3lh5mzJ1ARdNtRKmxNMcEVXCllrd/jOLFHT64uq9kTcykuqy3Bq3xxMdm4AMUuFgJv1KGtuvOSY1TG48hzj1C9cKVnQ9cPW7Ta/05YUE3BNiLTqZ9tZWwPqMCbZslE+T0JMTasiO2gVACp7REdTMug2LtRed2Uo0eKcThCkD0NsGTrbRTI+IZs6UbX1KNF0lg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007)(921011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?eWkzK0M1UHpTRUtoNGRPdUhNd2dNdnF4N01pcUVka3hRREhwUlE0WnUvenFH?=
+ =?utf-8?B?WHhQNk83bEsyQkFrUlh4Q1VwSlFvNTZxZXNteFpENmZ2UjQzM1BWZ2FIeHZk?=
+ =?utf-8?B?WUVDOFhtL2RleHJDNmNqREFnejF0d05wYVhvYXpxZkhLQnZGMkVzK3RuZlhk?=
+ =?utf-8?B?d1U0N1orSmNMdytuTjZNNS9rVXR4SlZMbGYzVFl4S0EwVi96TmF5Q0hMeTNE?=
+ =?utf-8?B?bGZ2ZnB6SVZyaTVKTXNBN2tDc3QwYjhnaE5RT2pOZGJRTlZJK1pTQk9rOWxZ?=
+ =?utf-8?B?aGdYeXJ4RTMzL2ZmQk02eFVFMzBEbkJPcmdJTXJaaE9IYmJDRGJVMllxK0VD?=
+ =?utf-8?B?RFV5R283MVhCMVhNN05tU0ZIM3RzMkNwZDRJQ0NwSjNBekpxUzBTYjNIUXdt?=
+ =?utf-8?B?MWErYkNmNkNUTnY3ZDRNREVtcnIxZjVQMkVwdU1ENEFiRVlxZm8vVFRCenFu?=
+ =?utf-8?B?eDRRcU51eTBpRjcyS2lGbGh6cTUzdlBRa3lYVlkxdHorUitMSFowWkIwTmdy?=
+ =?utf-8?B?OFVIMkxwaEJjS05reW50aG9SVHJxWTJWMC9iU0ZuNVB2Z0lhSXFubU9BYXFQ?=
+ =?utf-8?B?L0kxTkh5RHpBTEFzUGhDSWpaOGJMTkI2SVdJVkM1dTI0aGkwZFFhQ09vYkFK?=
+ =?utf-8?B?VHVSZDY0S05yemcxRjFQVUQxak1yRHJQOGZMTVpJa3JTbFZnckgwOTNXemsx?=
+ =?utf-8?B?RmNtMmVmeXg0WjVRRmt3a3h5d0xGazBmcUtGOGM0dWFCUHZ1M09CbllUbi9L?=
+ =?utf-8?B?V205TVgyVXA4a01rZmw5YXJVdVgxQ0lSeXErbWgrclEzazRGMzdIUkZmQW1O?=
+ =?utf-8?B?SmJQbGtoeU8rUmFibkJ0SEpOZXdoU3JPYnhTTG1rbWRrMk1IQWMzL0FoMnlQ?=
+ =?utf-8?B?aTh4VlFwM0hrWkk3NVRWTlc3anMwNStHMVdnUXBySHRZN1hVdTk2RGF4ckJq?=
+ =?utf-8?B?RVZMcFVTMWVyNDlQWld1UFJCdjhLWkZ4T1dBUkNKRFM3enRaTW9LNGhaYnRo?=
+ =?utf-8?B?NHZJZDNPYS9jK0NPaFpsOXJvRnRzS2hnR0xaMzUrYytRTEVNMlk3RXVWRllU?=
+ =?utf-8?B?RytKUFl5aVlpQTA4TUhpOTU1WEtodnA4QWo3RDhHUEU2R0dOKzZKckR0SjAr?=
+ =?utf-8?B?VXNnMi8zZjZ0QVNvN1lyYnNvanBkVjZRcnM4Q0ZCWlRjOU1JTm5tZUFLT1ll?=
+ =?utf-8?B?SFg1d05mMkkydk5BN1lvTlNKWmptOUZ5UngxV0Fla25GYkRaakhubHc4M1hv?=
+ =?utf-8?B?a0thSW9uZ3J0b3JFUG5acTlsK1ZqNlQyU3lUSTRxaHRyeEJ3cElPMFl4SEoz?=
+ =?utf-8?B?UGY4TStqd0t2K1g3cGpnUVJ6WUl0QjhJVmpleHVER2hwc0dlcHNkNlc5MGVJ?=
+ =?utf-8?B?NGJUYVEwNG1UemRMdm1iSUlTdFRUd3k4U2tsNVFDUk9ZN0ptcWErenNpOXBp?=
+ =?utf-8?B?ampZZGNEbXBweHkyZG1mUFhoanAwNFYrdC8yTHU1cjliQ2xFK05Ic2dZOFlW?=
+ =?utf-8?B?UTdvanpNU2FWQzZJTm1pVDRjajRJeGU2K2FZZ29neFdIOWVzUnoxemRWb2pi?=
+ =?utf-8?B?eHhqOStZOC9QbHJVNGU2ditWY1g1UnU4cEw1T3JrVDF2MmdMcVFkVDRqS0JI?=
+ =?utf-8?B?THVMNjFROUg5SmtHaTJoNHIxc3QvWksrOWF0TEsyZXJDb0VLVkRBRUNzSGRh?=
+ =?utf-8?B?c3A1RkVJall2YUtlSDVHWDg0bE41ZGlrK2F1VC9TUHd2QkJscGxJRHRWaHQ2?=
+ =?utf-8?B?ZjI1bElDbGZVcFYzYTNzekQyYk5BL2pQMFMvNk9BbEpNeklxTTd2UldCc2ls?=
+ =?utf-8?B?ZWlvM2tLNEJrRnhqOFh6YzExMklVeHBVQWNNVUMrVVc3dk1xY3p3OVJndHJi?=
+ =?utf-8?B?VENMLzZFYk1GSWNLZTFiWG84Tml5REluaHNnVUpicndnaCt0d0RHR09DTnZV?=
+ =?utf-8?B?RmVBeGlDN0dSbTl5QU5EMEUrd2lXRkpCaGxsNDhaRDQrUTV6eFJsclhLbVh1?=
+ =?utf-8?B?SVdhUmFadnhNUW82ZDd0VW1JbmZsOEtVNUJ2alk5WjM0UExxTldHQmxUSXhN?=
+ =?utf-8?B?ZGJ1QXZuaHJrdU9sUHhrTjJpY1daWUc0d0txVTkyaGFPRWxFMndFRnlxVHRN?=
+ =?utf-8?Q?HszKPGznwHY+QmiPukKYawpLR?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4256c96d-afe6-4085-f51b-08dc5f1898c4
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 19:57:30.6334
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wVU1H0yzIYF+kOY8I3dC7sLTBZ/F8+rmenMbrbXkZY68g7HFev3Dh8TrU6uYTlU7VAmdUdWbhxUno4ljZIWsKA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7820
 
-On Tue, Apr 16, 2024 at 09:00:50PM +0300, Andy Shevchenko wrote:
-> On Tue, Apr 16, 2024 at 07:28:55PM +0300, Serge Semin wrote:
-> > Currently the src_addr_width and dst_addr_width fields of the
-> > dma_slave_config structure are mapped to the CTLx.SRC_TR_WIDTH and
-> > CTLx.DST_TR_WIDTH fields of the peripheral bus side in order to have the
-> > properly aligned data passed to the target device. It's done just by
-> > converting the passed peripheral bus width to the encoded value using the
-> > __ffs() function. This implementation has several problematic sides:
-> > 
-> > 1. __ffs() is undefined if no bit exist in the passed value. Thus if the
-> > specified addr-width is DMA_SLAVE_BUSWIDTH_UNDEFINED, __ffs() may return
-> > unexpected value depending on the platform-specific implementation.
-> > 
-> > 2. DW AHB DMA-engine permits having the power-of-2 transfer width limited
-> > by the DMAH_Mk_HDATA_WIDTH IP-core synthesize parameter. Specifying
-> > bus-width out of that constraints scope will definitely cause unexpected
-> > result since the destination reg will be only partly touched than the
-> > client driver implied.
-> > 
-> > Let's fix all of that by adding the peripheral bus width verification
-> > method which would make sure that the passed source or destination address
-> > width is valid and if undefined then the driver will just fallback to the
-> > 1-byte width transfer.
+I'm a bit late to the game but I don't think this is merged
+yet.
+
+On 2024-01-15 11:05, Andri Yngvason wrote:
+> From: Werner Sembach <wse@tuxedocomputers.com>
 > 
-
-> Please, add a word that you apply the check in the dwc_config() which is
-> supposed to be called before preparing any transfer?
-
-Ok.
-
+> Add a new general drm property "force color format" which can be used
+> by userspace to tell the graphics driver which color format to use.
 > 
-> ...
+> Possible options are:
+>     - auto (default/current behaviour)
+>     - rgb
+>     - ycbcr444
+>     - ycbcr422 (supported by neither amdgpu or i915)
+
+If no driver uses this should we expose this now? I would
+prefer to leave ycbcr422 out of this until we have a driver
+that actually uses it.
+
+I've seen too many properties with ever possible value defined
+but they're not used by any (open) userspace and then become
+the object of intense discussion on how they should work. I
+doubt that this would happen here, but I still feel a slight
+aversion to defining things that no open userspace can use at
+this point.
+
+I agree with all of Sebastian and Pekka's comments elsewhere in
+this thread, in particular with Sebastian's comments to not
+advertise color formats that a driver can't support. See this
+patch for how I implemented something similar for Colorspace
+c265f340eaa8 ("drm/connector: Allow drivers to pass list of supported colorspaces")
+
+Harry
+
+>     - ycbcr420
 > 
-> > +static int dwc_verify_p_buswidth(struct dma_chan *chan)
-> > +{
-> > +	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
-> > +	struct dw_dma *dw = to_dw_dma(chan->device);
-> > +	u32 reg_width, max_width;
-> > +
-> > +	if (dwc->dma_sconfig.direction == DMA_MEM_TO_DEV)
-> > +		reg_width = dwc->dma_sconfig.dst_addr_width;
-> > +	else if (dwc->dma_sconfig.direction == DMA_DEV_TO_MEM)
-> > +		reg_width = dwc->dma_sconfig.src_addr_width;
+> In theory the auto option should choose the best available option for the
+> current setup, but because of bad internal conversion some monitors look
+> better with rgb and some with ycbcr444.
 > 
-> > +	else /* DMA_MEM_TO_MEM */
+> Also, because of bad shielded connectors and/or cables, it might be
+> preferable to use the less bandwidth heavy ycbcr422 and ycbcr420 formats
+> for a signal that is less susceptible to interference.
 > 
-
-> Actually not only this direction,
-
-DW DMAC driver supports only three directions:
-	dw->dma.directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV) |
-			     BIT(DMA_MEM_TO_MEM);
-so in this case the else-clause is intended to be taken for the
-DMA_MEM_TO_MEM transfers only.
-
-> but TBH I do not see value in these comments.
-
-Value is in signifying that DMA_MEM_TO_MEM is implied by the else
-clause. If in some future point we have DMA_DEV_TO_DEV support added
-to the driver, then the if-else statement must be aligned
-respectively.
-
+> In the future, automatic color calibration for screens might also depend on
+> this option being available.
 > 
-> > +		return 0;
-> > +
-> > +	max_width = dw->pdata->data_width[dwc->dws.p_master];
-> > +
-> > +	/* Fall-back to 1byte transfer width if undefined */
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> Signed-off-by: Andri Yngvason <andri@yngvason.is>
+> Tested-by: Andri Yngvason <andri@yngvason.is>
+> ---
 > 
-
-> 1-byte
-> (as you even used in the commit message correctly)
-
-Ok.
-
+> Changes in v2:
+>  - Renamed to "force color format" from "preferred color format"
+>  - Removed Reported-by pointing to invalid email address
 > 
-> > +	if (reg_width == DMA_SLAVE_BUSWIDTH_UNDEFINED)
-> > +		reg_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
-> > +	else if (!is_power_of_2(reg_width) || reg_width > max_width)
-> > +		return -EINVAL;
-> > +	else /* bus width is valid */
-> > +		return 0;
-> > +
-> > +	/* Update undefined addr width value */
-> > +	if (dwc->dma_sconfig.direction == DMA_MEM_TO_DEV)
-> > +		dwc->dma_sconfig.dst_addr_width = reg_width;
-> > +	else /* DMA_DEV_TO_MEM */
-> > +		dwc->dma_sconfig.src_addr_width = reg_width;
+> ---
+>  drivers/gpu/drm/drm_atomic_helper.c |  4 +++
+>  drivers/gpu/drm/drm_atomic_uapi.c   |  4 +++
+>  drivers/gpu/drm/drm_connector.c     | 48 +++++++++++++++++++++++++++++
+>  include/drm/drm_connector.h         | 16 ++++++++++
+>  4 files changed, 72 insertions(+)
 > 
+> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+> index 39ef0a6addeba..1dabd164c4f09 100644
+> --- a/drivers/gpu/drm/drm_atomic_helper.c
+> +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> @@ -707,6 +707,10 @@ drm_atomic_helper_check_modeset(struct drm_device *dev,
+>  			if (old_connector_state->max_requested_bpc !=
+>  			    new_connector_state->max_requested_bpc)
+>  				new_crtc_state->connectors_changed = true;
+> +
+> +			if (old_connector_state->force_color_format !=
+> +			    new_connector_state->force_color_format)
+> +				new_crtc_state->connectors_changed = true;
+>  		}
+>  
+>  		if (funcs->atomic_check)
+> diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
+> index 29d4940188d49..e45949bf4615f 100644
+> --- a/drivers/gpu/drm/drm_atomic_uapi.c
+> +++ b/drivers/gpu/drm/drm_atomic_uapi.c
+> @@ -776,6 +776,8 @@ static int drm_atomic_connector_set_property(struct drm_connector *connector,
+>  		state->max_requested_bpc = val;
+>  	} else if (property == connector->privacy_screen_sw_state_property) {
+>  		state->privacy_screen_sw_state = val;
+> +	} else if (property == connector->force_color_format_property) {
+> +		state->force_color_format = val;
+>  	} else if (connector->funcs->atomic_set_property) {
+>  		return connector->funcs->atomic_set_property(connector,
+>  				state, property, val);
+> @@ -859,6 +861,8 @@ drm_atomic_connector_get_property(struct drm_connector *connector,
+>  		*val = state->max_requested_bpc;
+>  	} else if (property == connector->privacy_screen_sw_state_property) {
+>  		*val = state->privacy_screen_sw_state;
+> +	} else if (property == connector->force_color_format_property) {
+> +		*val = state->force_color_format;
+>  	} else if (connector->funcs->atomic_get_property) {
+>  		return connector->funcs->atomic_get_property(connector,
+>  				state, property, val);
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+> index b0516505f7ae9..e0535e58b4535 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -1061,6 +1061,14 @@ static const struct drm_prop_enum_list drm_dp_subconnector_enum_list[] = {
+>  	{ DRM_MODE_SUBCONNECTOR_Native,	     "Native"    }, /* DP */
+>  };
+>  
+> +static const struct drm_prop_enum_list drm_force_color_format_enum_list[] = {
+> +	{ 0, "auto" },
+> +	{ DRM_COLOR_FORMAT_RGB444, "rgb" },
+> +	{ DRM_COLOR_FORMAT_YCBCR444, "ycbcr444" },
+> +	{ DRM_COLOR_FORMAT_YCBCR422, "ycbcr422" },
+> +	{ DRM_COLOR_FORMAT_YCBCR420, "ycbcr420" },
+> +};
+> +
+>  DRM_ENUM_NAME_FN(drm_get_dp_subconnector_name,
+>  		 drm_dp_subconnector_enum_list)
+>  
+> @@ -1396,6 +1404,15 @@ static const u32 dp_colorspaces =
+>   *	drm_connector_attach_max_bpc_property() to create and attach the
+>   *	property to the connector during initialization.
+>   *
+> + * force color format:
+> + *	This property is used by userspace to change the used color format. When
+> + *	used the driver will use the selected format if valid for the hardware,
+> + *	sink, and current resolution and refresh rate combination. Drivers to
+> + *	use the function drm_connector_attach_force_color_format_property()
+> + *	to create and attach the property to the connector during
+> + *	initialization. Possible values are "auto", "rgb", "ycbcr444",
+> + *	"ycbcr422", and "ycbcr420".
+> + *
+>   * Connectors also have one standardized atomic property:
+>   *
+>   * CRTC_ID:
+> @@ -2457,6 +2474,37 @@ int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
+>  }
+>  EXPORT_SYMBOL(drm_connector_attach_max_bpc_property);
+>  
+> +/**
+> + * drm_connector_attach_force_color_format_property - attach "force color format" property
+> + * @connector: connector to attach force color format property on.
+> + *
+> + * This is used to add support for selecting a color format on a connector.
+> + *
+> + * Returns:
+> + * Zero on success, negative errno on failure.
+> + */
+> +int drm_connector_attach_force_color_format_property(struct drm_connector *connector)
+> +{
+> +	struct drm_device *dev = connector->dev;
+> +	struct drm_property *prop;
+> +
+> +	if (!connector->force_color_format_property) {
+> +		prop = drm_property_create_enum(dev, 0, "force color format",
+> +						drm_force_color_format_enum_list,
+> +						ARRAY_SIZE(drm_force_color_format_enum_list));
+> +		if (!prop)
+> +			return -ENOMEM;
+> +
+> +		connector->force_color_format_property = prop;
+> +	}
+> +
+> +	drm_object_attach_property(&connector->base, prop, 0);
+> +	connector->state->force_color_format = 0;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(drm_connector_attach_force_color_format_property);
+> +
+>  /**
+>   * drm_connector_attach_hdr_output_metadata_property - attach "HDR_OUTPUT_METADA" property
+>   * @connector: connector to attach the property on.
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index fe88d7fc6b8f4..9830e7c09c0ba 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -1026,6 +1026,14 @@ struct drm_connector_state {
+>  	 */
+>  	enum drm_privacy_screen_status privacy_screen_sw_state;
+>  
+> +	/**
+> +	 * @force_color_format: Property set by userspace to tell the GPU
+> +	 * driver which color format to use. It only gets applied if hardware,
+> +	 * meaning both the computer and the monitor, and the driver support the
+> +	 * given format at the current resolution and refresh rate.
+> +	 */
+> +	u32 force_color_format;
+> +
+>  	/**
+>  	 * @hdr_output_metadata:
+>  	 * DRM blob property for HDR output metadata
+> @@ -1699,6 +1707,12 @@ struct drm_connector {
+>  	 */
+>  	struct drm_property *privacy_screen_hw_state_property;
+>  
+> +	/**
+> +	 * @force_color_format_property: Default connector property for the
+> +	 * force color format to be driven out of the connector.
+> +	 */
+> +	struct drm_property *force_color_format_property;
+> +
+>  #define DRM_CONNECTOR_POLL_HPD (1 << 0)
+>  #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
+>  #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
+> @@ -2053,6 +2067,8 @@ void drm_connector_attach_privacy_screen_provider(
+>  	struct drm_connector *connector, struct drm_privacy_screen *priv);
+>  void drm_connector_update_privacy_screen(const struct drm_connector_state *connector_state);
+>  
+> +int drm_connector_attach_force_color_format_property(struct drm_connector *connector);
+> +
+>  /**
+>   * struct drm_tile_group - Tile group metadata
+>   * @refcount: reference count
 
-> So, can't you simply call clamp() for both fields in dwc_config()?
-
-Alas I can't. Because the addr-width is the non-memory peripheral
-setting. We can't change it since the client drivers calculate it on
-the application-specific basis (CSR widths, transfer length, etc). So
-we must make sure that the specified value is supported.
-
-> 
-> > +	return 0;
-> > +}
-> 
-> ...
-> 
-> > +	int err;
-> 
-
-> Hmm... we have two functions one of which is using different name for this.
-
-Right, the driver uses both variants (see of.c, platform.c, pci.c too).
-
-> Can we have a patch to convert to err the other one?
-
-To be honest I'd prefer to use the "ret" name instead. It better
-describes the variable usage context (Although the statements like "if
-(err) ..." look a bit more readable). So I'd rather convert the "err"
-vars to "ret". What do you think?
-
--Serge(y)
-
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
 
