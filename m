@@ -1,57 +1,74 @@
-Return-Path: <linux-kernel+bounces-149086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19B718A8BA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:54:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95C128A8BAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 20:54:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C23911F22884
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:54:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50B9E286285
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 18:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 538EA1DA53;
-	Wed, 17 Apr 2024 18:53:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73FA4200BA;
+	Wed, 17 Apr 2024 18:54:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bxEpOFV4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IQ+lCLWe"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C3D8BE55;
-	Wed, 17 Apr 2024 18:53:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 562CA1BF53;
+	Wed, 17 Apr 2024 18:54:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713380035; cv=none; b=SIe6b7u1nlSI1RLU1n3edzkyw20fVRrtm11uuqlIsNsoVUsQgArBmnktLR03YjG17UD0IdfsWY/EQow/OC6HUQX9UYUwHNNOqng7+PuSMx5i/SwnG9uhcLoKrWLfuH3ChiSsrliLimBpX3m85fI1qnCdgZ1BquuYeVzZHkH4c20=
+	t=1713380075; cv=none; b=oVw+zWT8WZsGWF4D4N0WtmdrJfv9UWZgN1s6oVgEQoj0/FrTQIyfxbM7JiuaKOVKaQZ4PdGW/jMzt8MUsaeh7WR2URzrEmnp8iEV8n72FGBJI67ksM6RW0KI/ndNeb/TCIZ0vUCZp6AVWpD8knf/5+2bghhk3KMKN6PyRXivBFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713380035; c=relaxed/simple;
-	bh=DDeR74mS5DOOoMadoBx3ZbQGlf27ZzKZOa0om7KQJ/Y=;
+	s=arc-20240116; t=1713380075; c=relaxed/simple;
+	bh=hyCQyZHf2ncj/nXm1VIUe6nfA7at8m+jSmVswf1Wnnc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l0emYvYaW/RMtPIn/UtzWLCHkIowynT6WtXXIQUBrTxUKEpTq2Zp9GCiChAaFk22r4GJ8NXKHOtACBr/taM0N+cktM82KccRj0lvssdWYdwXGqQO8WcV1pspGUJj2cYl4+DpFNuBEUw6mCicLVHD0XbQPq1eEOkL/p05lCc8wks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bxEpOFV4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9131C072AA;
-	Wed, 17 Apr 2024 18:53:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713380035;
-	bh=DDeR74mS5DOOoMadoBx3ZbQGlf27ZzKZOa0om7KQJ/Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bxEpOFV4BpdpKyEL9i/ywCy1U9Eb5aABJViZaxaimKZiK/AXh8aKsz98wu86KyKha
-	 4jGLFaZVp8L4E1s0Bi/u9FnzHoBvR6efGQHGV3036NcIuHFY0Sli000i6t6br1wyO7
-	 GOrSgeRuX0BE8LD/KQHo8YS2o8gqs7N92hMnYtoBXGuzKnAzx4n/0ERyL0HuSXxTbX
-	 x3byMrVFrryUuJA4M8geZjs50XaEG8msZJ9aHnAo1y7fx8Lo6bwFC6iUPnV5Q9y4uC
-	 ShUqrS+M7ky9FfUmkWKd6/CMN85hxRiN0aDpYYYv6C5mtTo5i5rIBCRxs+v9La4WlT
-	 i5Df56bvDpoBw==
-Date: Wed, 17 Apr 2024 13:53:52 -0500
-From: Rob Herring <robh@kernel.org>
-To: Joy Zou <joy.zou@nxp.com>
-Cc: frank.li@nxp.com, devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org, conor+dt@kernel.org,
-	imx@lists.linux.dev, vkoul@kernel.org, peng.fan@nxp.com,
-	krzk+dt@kernel.org
-Subject: Re: [PATCH v4 2/2] dt-bindings: fsl-dma: fsl-edma: clean up unused
- "fsl,imx8qm-adma" compatible string
-Message-ID: <171338001766.3087074.396640733918635003.robh@kernel.org>
-References: <20240417032642.3178669-1-joy.zou@nxp.com>
- <20240417032642.3178669-3-joy.zou@nxp.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Te3w6j4KwKSFIyQgchhhFHKi7vKVtKS0/7IAZpp0kyn9SevL+HHHFAyhXQ7N2CsS42TI/azF+f0/f7WRKqtLrIQIl6VPP3sx3fmykbHPXGZAksEIYwwoeb8g725CSTE7heQ7C9eMD3JF3qAE67FjnyHZsqOrPKFE0kpLw0mUKS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IQ+lCLWe; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713380074; x=1744916074;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hyCQyZHf2ncj/nXm1VIUe6nfA7at8m+jSmVswf1Wnnc=;
+  b=IQ+lCLWervtdqjtpe7jjl3H1R/H5KCO2y8b8UEJQGHeZxCAda5G/dSY/
+   JXG/M9GMA29CxzYYHADASFyKQFpedY1i0RM+Q6cUc1OoBIz3TvF+NW/JR
+   WW21asAuwNaRpRyPKXTPG2xLjaQ0RA8ZwLHu0Dw+Nv5ylV5I+xaOdFd/G
+   7kaJGFA9fdooh+Az9K1gmPksu157Jip8m9IN1kfYGiagI2phjVzv6UxnL
+   ILGHuecXlsX2cFlCeDfydNkghvm7Gsof8WnvsF7XS9cKCTOQ4v4VY+Y0M
+   segmovyGeSXeyYm14dkWQyw1QVsApxCuat7gPzGZWfPwr22NcAt3H4FW5
+   w==;
+X-CSE-ConnectionGUID: jiVHNqO2Q4CiwlJHlhB/Qw==
+X-CSE-MsgGUID: j5sM6DohQGCcEVvzZuqtVw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="9441220"
+X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
+   d="scan'208";a="9441220"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 11:54:34 -0700
+X-CSE-ConnectionGUID: PsnZ84biQUCxtewMM+gp4g==
+X-CSE-MsgGUID: IIUXUP1qTau8TFgvTNTJ+Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
+   d="scan'208";a="22729937"
+Received: from wangc3-mobl.amr.corp.intel.com (HELO desk) ([10.209.4.219])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 11:54:33 -0700
+Date: Wed, 17 Apr 2024 11:54:27 -0700
+From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To: Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
+	Dave Hansen <dave.hansen@linux.intel.com>, kvm@vger.kernel.org,
+	kernel test robot <oliver.sang@intel.com>
+Subject: Re: [linus:master] [x86/bugs] 6613d82e61:
+ general_protection_fault:#[##]
+Message-ID: <20240417185427.4msriy5rrt5gej2x@desk>
+References: <202403281553.79f5a16f-lkp@intel.com>
+ <20240328211742.bh2y3zsscranycds@desk>
+ <8c77ccfd-d561-45a1-8ed5-6b75212c7a58@leemhuis.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,27 +77,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240417032642.3178669-3-joy.zou@nxp.com>
+In-Reply-To: <8c77ccfd-d561-45a1-8ed5-6b75212c7a58@leemhuis.info>
 
-
-On Wed, 17 Apr 2024 11:26:42 +0800, Joy Zou wrote:
-> The eDMA hardware issue only exist imx8QM A0. A0 never mass production.
-> The compatible string "fsl,imx8qm-adma" is unused. So remove the
-> workaround safely.
+On Sun, Apr 14, 2024 at 08:41:52AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
+> Hi, Thorsten here, the Linux kernel's regression tracker.
 > 
-> Signed-off-by: Joy Zou <joy.zou@nxp.com>
-> ---
-> Changes for v4:
-> 1. adjust the subject to keep consistent with existing patches.
+> On 28.03.24 22:17, Pawan Gupta wrote:
+> > On Thu, Mar 28, 2024 at 03:36:28PM +0800, kernel test robot wrote:
+> >> compiler: clang-17
+> >> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> >>
+> >> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> >> the same patch/commit), kindly add following tags
+> >> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> >> | Closes: https://lore.kernel.org/oe-lkp/202403281553.79f5a16f-lkp@intel.com
 > 
-> Changes for v3:
-> 1. modify the commit message.
-> 2. remove the unused compatible string "fsl,imx8qm-adma" from allOf property.
-> ---
->  Documentation/devicetree/bindings/dma/fsl,edma.yaml | 2 --
->  1 file changed, 2 deletions(-)
+> TWIMC, a user report general protection faults with dosemu that were
+> bisected to a 6.6.y backport of the commit that causes the problem
+> discussed in this thread (6613d82e617dd7 ("x86/bugs: Use ALTERNATIVE()
+> instead of mds_user_clear static key")).
 > 
+> User compiles using gcc, so it might be a different problem. Happens
+> with 6.8.y as well.
+> 
+> The problem occurs with x86-32 kernels, but strangely only on some of
+> the x86-32 systems the reporter has (e.g. on some everything works
+> fine). Makes me wonder if the commit exposed an older problem that only
+> happens on some machines.
+> 
+> For details see https://bugzilla.kernel.org/show_bug.cgi?id=218707
+> Could not CC the reporter here due to the bugzilla privacy policy; if
+> you want to get in contact, please use bugzilla.
 
-Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
-
+Sorry for the late response, I was off work. I will look into this and
+get back. I might need help reproducing this issue, but let me first see
+if I can reproduce with the info in the bugzilla.
 
