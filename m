@@ -1,147 +1,119 @@
-Return-Path: <linux-kernel+bounces-148607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 910998A8500
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:41:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 502298A8505
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:42:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E7721F21A48
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:41:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 812E71C20D72
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:42:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF4A13FD93;
-	Wed, 17 Apr 2024 13:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A271313F42D;
+	Wed, 17 Apr 2024 13:42:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DTuPyB01";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AYde4Zra"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R4Jdsoqi"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1082B63A
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F0813F43A
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713361246; cv=none; b=RnbNGDUBZnpND+StdyOuINlvntp0IrXJxyztRUntxmp42ip8A3YEldy3rQ0o16hwHgin6fcJwOO7trK+5SgoKqTKeddMH59OSekCkcLMLPkj2HfqG6YvTcW7NCiCFlwkGN8WftnyZ8YHIDWpSMFttW6Q95HcLO9fdgZSXLNKU2s=
+	t=1713361323; cv=none; b=g8E6iBzeBONjF24uDaNh3vpVWPYWwaKvAD8u32rRyErXEly+yiYFiRSuEwEnptvyy3quelrBMV3FpdJDnplzKrnNKltcTaxEtoT8iszt4ew6+r3gQrBsAGnM+0e55yMdSbrHGZM75Au23FywvygEK5yL0S/EqShLCLwywEo0f+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713361246; c=relaxed/simple;
-	bh=CwT5+A+AAo9zDEcsy8FPvHCxrkbTomDQL9lgkxv8/Cs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=lR0B4nnWuI/yW6afqLpE9Ax61KUnlbwcpjsY7iCw747oNMneoh9Yes7qvJdiiH5G+LArn5AJomKr6PbDrJORI4e4c+JdcgoGXutzEaraHUk7RsbRjRIisoFC9XNry9VXbJTFQsOVFoPnrEaCaqWSOE78n1ljQBvZkhuiUXolWNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DTuPyB01; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=AYde4Zra; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713361237;
+	s=arc-20240116; t=1713361323; c=relaxed/simple;
+	bh=HLLrrxZ3arOPYNguUU/bPL7+NzL4etri3swaPdLmmJk=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=Vg1wHbbS36swaQbCseq4KRm/V5sHF1lChzHW5waRHVnz48FdMXdY2U9z7D3eJaqLtR7iCLMUHpRFAtsYks7EovXWb7iVE/OSJA3fT/zv3WOu7tcvtTctOIg2LuHj1D+uBn9Cv2n2P2nA8WNvUqSkBUO0TQnDvz8d3fLAM3GmY/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R4Jdsoqi; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713361320;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Eu9I8bD1ga5XJP8oacpJnpvCewJOm/t6+qEJfST3VTU=;
-	b=DTuPyB01c1OA7vKv0lwQXr3cZnRdSiMDL21JZSgXDmyKUGFsp/yGgvdoPSGGyUWCQC3QYw
-	EpDdoAsW+D8wOEmgzxRJyxE3+fTkspZQA3ZmO5aMVlS7Tv0uAIkidrCIChj6bpjetxy4aW
-	Gd6DzHKr9QEw9MG8/LCukwY5cAVYA0wYH/blqGVXy4v/WAQrudiDZEzDZPF/hHz5PBmpa0
-	wp7P+l6q23odQu5NdHIoQEqQE0yWvi47uCGSW2ydMAsR3QSJztNZBhhOUAwg0HJXua4UaY
-	kCyHtfH+lM3IxNAAm0eKIMGWN3kK2mU+D6F+QxCiE/4+A0ykox9K9dtyQHj00A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713361237;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Eu9I8bD1ga5XJP8oacpJnpvCewJOm/t6+qEJfST3VTU=;
-	b=AYde4Zralt5QbNG2e9IISOCBoivZy35aZOD4osZB1pFlh/e8zV7nAsyaXnoWSqT/rORcoP
-	/4avCy74h5r7Y+AA==
-To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>, John Stultz
- <jstultz@google.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar
- <mingo@kernel.org>, Stephen Boyd <sboyd@kernel.org>, Eric Biederman
- <ebiederm@xmission.com>, Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [patch V2 31/50] posix-timers: Add proper state tracking
-In-Reply-To: <20240410165552.895516106@linutronix.de>
-References: <20240410164558.316665885@linutronix.de>
- <20240410165552.895516106@linutronix.de>
-Date: Wed, 17 Apr 2024 15:40:36 +0200
-Message-ID: <8734rk5cq3.fsf@somnus>
+	bh=ngr4Dloj5AAsga8HGwFtYZk0llTT/AWVSmDZpIb9UnY=;
+	b=R4JdsoqiUVob4uS5SzNZfEonXddOA/vz1qoQe5Btd+FBKZ2TOwVBVG45SV76lFJng+hc+N
+	yVknhKxDsYqzWRqknhKitLTzSNWnqNTE9tP7sMYDHzZPL3RFzcqp26Mmo12T+bhMHqbxMe
+	8nTiG2J7arHn8yHo1/WUn+oydc+3lZU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-411-YrR0vHqyPQOHTneSpW2ncA-1; Wed, 17 Apr 2024 09:41:56 -0400
+X-MC-Unique: YrR0vHqyPQOHTneSpW2ncA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3CA2B8011AF;
+	Wed, 17 Apr 2024 13:41:56 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.200])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 7059D492BC7;
+	Wed, 17 Apr 2024 13:41:55 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <14e66691a65e3d05d3d8d50e74dfb366@manguebit.com>
+References: <14e66691a65e3d05d3d8d50e74dfb366@manguebit.com> <3756406.1712244064@warthog.procyon.org.uk>
+To: Paulo Alcantara <pc@manguebit.com>
+Cc: dhowells@redhat.com, Steve French <sfrench@samba.org>,
+    Shyam Prasad N <sprasad@microsoft.com>, linux-cifs@vger.kernel.org,
+    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cifs: Fix reacquisition of volume cookie on still-live connection
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <188148.1713361310.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 17 Apr 2024 14:41:50 +0100
+Message-ID: <188149.1713361310@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-Thomas Gleixner <tglx@linutronix.de> writes:
+Paulo Alcantara <pc@manguebit.com> wrote:
 
-> Right now the state tracking is done by two struct members:
->
->  - it_active:
->      A boolean which tracks armed/disarmed state
->
->  - it_signal_seq:
->      A sequence counter which is used to invalidate settings
->      and prevent rearming
->
-> Replace it_active with it_status and keep properly track about the states
-> in one place.
->
-> This allows to reuse it_signal_seq to track reprogramming, disarm and
-> delete operations in order to drop signals which are related to the state
-> previous of those operations.
->
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> > [!] Note: Looking at cifs_mount_get_tcon(), a more general solution ma=
+y
+> > actually be required.  Reacquiring the volume cookie isn't the only th=
+ing
+> > that function does: it also partially reinitialises the tcon record wi=
+thout
+> > any locking - which may cause live filesystem ops already using the tc=
+on
+> > through a previous mount to malfunction.
+> =
 
-[...]
+> Agreed.
 
-> --- a/kernel/time/posix-cpu-timers.c
-> +++ b/kernel/time/posix-cpu-timers.c
-> @@ -453,7 +453,6 @@ static void disarm_timer(struct k_itimer
->  	struct cpu_timer *ctmr = &timer->it.cpu;
->  	struct posix_cputimer_base *base;
->  
-> -	timer->it_active = 0;
->  	if (!cpu_timer_dequeue(ctmr))
->  		return;
->  
-> @@ -494,11 +493,12 @@ static int posix_cpu_timer_del(struct k_
->  		 */
->  		WARN_ON_ONCE(ctmr->head || timerqueue_node_queued(&ctmr->node));
->  	} else {
-> -		if (timer->it.cpu.firing)
-> +		if (timer->it.cpu.firing) {
->  			ret = TIMER_RETRY;
-> -		else
-> +		} else {
->  			disarm_timer(timer, p);
-> -
-> +			timer->it_status = POSIX_TIMER_DISARMED;
-> +		}
->  		unlock_task_sighand(p, &flags);
->  	}
+Looking over the code again, I'm not sure whether is actually necessary - =
+or
+whether it is necessary and will be a bit nasty to implement as it will
+require read locking also.
 
-Why do you move the update of the it_status here and do not reuse the
-place where you added the it_active in patch 21 "posix-cpu-timers: Make
-k_itimer::it_active consistent"? Then the update of the state would
-still be next to cpu_timer_dequeue().
+Firstly, reset_cifs_unix_caps() seems to re-set tcon->fsUnixInfo.Capabilit=
+y
+and tcon->unix_ext, which it would presumably set to the same things - whi=
+ch
+is probably fine.
 
-[...]
+However, cifs_qfs_tcon() makes RPC operations that reloads tcon->fsDevInfo=
+ and
+tcon->fsAttrInfo - both of which may be being accessed without locks.
 
-> @@ -647,10 +650,10 @@ void common_timer_get(struct k_itimer *t
->  	/* interval timer ? */
->  	if (iv) {
->  		cur_setting->it_interval = ktime_to_timespec64(iv);
-> -	} else if (!timr->it_active) {
-> +	} else if (timr->it_status == POSIX_TIMER_DISARMED) {
->  		/*
->  		 * SIGEV_NONE oneshot timers are never queued and therefore
-> -		 * timr->it_active is always false. The check below
-> +		 * timr->it_status is always DISARMED. The check below
+smb2_qfs_tcon() and smb3_qfs_tcon() alters everything cifs_qfs_tcon() does=
+,
+plus a bunch of extra tcon members.  Can this locally cached information
+change over time on the server whilst we have a connection to it?
 
-s/DISARMED/POSIX_TIMER_DISARMED/
-
-This change would help when using grep.
-
->  		 * vs. remaining time will handle this case.
->  		 *
->  		 * For all other timers there is nothing to update here, so
+David
 
 
