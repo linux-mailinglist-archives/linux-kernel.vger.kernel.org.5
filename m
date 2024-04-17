@@ -1,59 +1,84 @@
-Return-Path: <linux-kernel+bounces-148728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 170ED8A86AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D9F38A86B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 16:52:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 482551C21646
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:52:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 927191C21B83
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 14:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B9FE145348;
-	Wed, 17 Apr 2024 14:50:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993DE1422D5;
+	Wed, 17 Apr 2024 14:51:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="lkxRgT4c"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="GbWvw+2J"
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C3414290C;
-	Wed, 17 Apr 2024 14:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C0721422AB
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 14:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713365457; cv=none; b=XBOVWGkcq1RkflY4RAJzafolio1/o9Vszatwb3Esss/nilp/75W6qKeL2iwZXOOoQPiz2f1yHQVzOT+UQQVZLO7qo2vgcQorzNaNinz49heZEw64XuyZuOym9GtURthp63UmQK3AnJf7gzE9J6qUTE96V95W6ecMZQDc/NY+A4o=
+	t=1713365470; cv=none; b=F0ZzYbHO8u4TVaTKe77iBbvkQF6zMd3AOa/cRbJxN16HVvZElYrsNwMEQfunmNDEE4tFi4yPVP+P0FlI6JiNxPBjh446WNTs4LgNTNc2ZkK0Q9fn9JFrSDh5DdAlfnLNA3aPZ2RsMaNM2/UOQfn7je06QTeA0B2OPsmyGiylbtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713365457; c=relaxed/simple;
-	bh=KXyYkQguWhYNZJ8K2JdqO4nXcxU/vy0kD22Tcik71DI=;
+	s=arc-20240116; t=1713365470; c=relaxed/simple;
+	bh=wMVuMH9LI7UuNCb9GdN4WEGzyOQpVSkGjvVlOi7rgEU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VjoLvUPOLZMnra1YwVte3SgQFHD6lNMIlrwayWGkHeoV8Ysp6SBeS7DAn3CW4awhwpUj99PC0TyEUljyI+7uzhwXbTyOFeXov9CRAU5h2fB4KP/Rqak1Qwy78oyh3i3ZWrIj5onOpEARD6G5BQYOI82tcEEsGlpq7lbU7FO4AoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=lkxRgT4c; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=9szQsyAow1UDlIBLINoaPCqHbjIeUQuqhnIQmSRpz7U=; b=lkxRgT4c8zqJVjT2K8LtF4hNF8
-	wSGVpFUfoPWN5EzgvbBKxUp4am4UiAM+e93ytHsXNApOPZAdlnI9Sgink2+IsSPBlSxvs8TGA/dnR
-	vJOsSMBPQQaMiVvj0/8pUYnWx4DX3kQQ8/ypbbECqWfof9QFfXHmazimmrzP71Ow8kxyv1CJkyQh7
-	k6V83SuUULeavYY+AF/y1AxLmzLFFgfawk9E9hh3qXPu48UYuZruGXov3B3/c544JI6W88RV0LRMU
-	fCROVak1JR7rT8kjB+kvCNl/ienrDKw6FKB9Ft8c9Efcyyv2Ne94bx/9ow6T4zdgKCCoQ0IbKmS/v
-	lZiDp7Bg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rx6cg-0000000GRJS-2pw6;
-	Wed, 17 Apr 2024 14:50:54 +0000
-Date: Wed, 17 Apr 2024 07:50:54 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Mikulas Patocka <mpatocka@redhat.com>
-Cc: Mike Snitzer <msnitzer@redhat.com>, Damien Le Moal <dlemoal@kernel.org>,
-	Guangwu Zhang <guazhang@redhat.com>, dm-devel@lists.linux.dev,
-	Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] dm-io: don't warn if flush takes too long time
-Message-ID: <Zh_hzvgnY-VbkdO5@infradead.org>
-References: <754d1973-31cb-d3ca-1f6f-2d35b96364db@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y6RzMUhFgAUyqnoGID8A/b4TlzbPbhL7EdJcwlsJvrWOsO+mWhhN5GDGmGRA84s6M29WdzqxGnWMQnUMp5BiLnvXmQlEH/7Byf47Etj+YpRYH9TXRrvYG6g+TXMDPHO0O2g2T2+imVjGQz9tvgLqTj2vH7QVWRxBl1fxsk73xuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=GbWvw+2J; arc=none smtp.client-ip=209.85.161.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5acb90b2a82so2068629eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:51:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1713365468; x=1713970268; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sn16XyH2vGWqQiF5vmVfdCLTqM8qaB/bRtbPGNzH6uA=;
+        b=GbWvw+2JOhsvQI836BTW4ZxPtAgpMBZJ2acKNSvMV7bU4ePZrK4ZK3I9j8g5VoPfg2
+         0a6mvinVh/9kXeVuhoaNhFBgOnO4skOZJvRy0zNUbleZHCT/9uZana30+Y8LAeu9obuj
+         yskL0QvSGlLKAA5pq2Vjkz9LZLAWcdQcq4vd1ZreWAigzyZbL6Kmv56nJxnxE/P5d26Y
+         bnCZaaKRDcQ86DSZUEvyOoei/FB81GsD4xaxvsmzz+9fX+dUt6v1dUgPKe02DMdK/Cw3
+         5v+dOQYcHiEYXpCkxvpmo9Y2N7etRYhEEaEhcE8/PWRoe1XK8byWSec+meacWSHTtUE0
+         kjTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713365468; x=1713970268;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sn16XyH2vGWqQiF5vmVfdCLTqM8qaB/bRtbPGNzH6uA=;
+        b=dxjTIkS0tRTKtvJ4TZ43mywvVHp+cbICtWHCFEjsVfJzOhsIxjUXECUpHlgBuAmM9o
+         nKoRdH6JwkDZTDn4IXG80K9q+JolH1KFI0BV+/J9/DnsgarBoycaYANz0WDqSt9pg0NK
+         mnr7wJiieHxTpBq7Lw9VsrDuuo3bj/8CVLMZPh+wRoOjrpcgyxtTyKtlDXkcZbCCu7TP
+         oQkt67r3UG4wxGx6+YmSpGJKGmmuCBbscCsBkS0kKGxeRXKx9xrYTZj/+gcyhPkC3Fa/
+         n7GD5uG+eY3AREqT+UYsIy/hZqYzf4CtyEzfwyETAGV9CVS8UGnJ3M7XWV2hwcKq1KZp
+         sXcw==
+X-Forwarded-Encrypted: i=1; AJvYcCVhsRe3ouJ98UG0RUABOIAdNpUoE1f90Pl6Rr/1T9cBL2C5T6a1USTTkOLSDId14+fP4NyfzY7F0GfzIJDPZWzwXyyFEAMYyHc5a3Kt
+X-Gm-Message-State: AOJu0YxIeILx+OZgqw6dXUngVcaB48WnwJUiYsiRm9rKVW9ecQx0/KHi
+	46jzkzjNNs/yg97maikla+2c3pCZfyy+FdM4lb3+430xZGo4Jze8S7XTFx8LYP0=
+X-Google-Smtp-Source: AGHT+IF9jKclsfwc/2dOm0UYRDZe4Z7fbW7RD2LFqk2dv7+uXxlXrV0hKypQvQnIeBBazCFKKNl7Yg==
+X-Received: by 2002:a4a:8c2a:0:b0:5ac:bdbe:33f5 with SMTP id u39-20020a4a8c2a000000b005acbdbe33f5mr7840118ooj.3.1713365468101;
+        Wed, 17 Apr 2024 07:51:08 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id bg41-20020a056820082900b005aa6c0a9b3csm3063951oob.30.2024.04.17.07.51.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 07:51:07 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rx6cs-00CDTX-BT;
+	Wed, 17 Apr 2024 11:51:06 -0300
+Date: Wed, 17 Apr 2024 11:51:06 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>
+Cc: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
+	leon@kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rdma-next 2/2] RDMA/mana_ib: Implement get_dma_mr
+Message-ID: <20240417145106.GV223006@ziepe.ca>
+References: <1713363659-30156-1-git-send-email-kotaranov@linux.microsoft.com>
+ <1713363659-30156-3-git-send-email-kotaranov@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,77 +87,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <754d1973-31cb-d3ca-1f6f-2d35b96364db@redhat.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <1713363659-30156-3-git-send-email-kotaranov@linux.microsoft.com>
 
-> --- linux-2.6.orig/include/linux/completion.h	2024-04-15 15:54:22.000000000 +0200
-> +++ linux-2.6/include/linux/completion.h	2024-04-15 15:57:14.000000000 +0200
-> @@ -10,6 +10,7 @@
->   */
->  
->  #include <linux/swait.h>
-> +#include <linux/sched/sysctl.h>
-
-If you're touching completion.h you need to CC lkml and the people
-who wrote/maintain it even if we don't have a proper maintainer.
-
-I don't think adding yet another include into it is a good idea.
-
-As is this whole hack here.  Pleas just add the proper TASK_STATE for
-task that can legitimately sleep for very long times  instead of
-extending this hack again and again, just like I told Kent when he messed with the timeout.
-
->  
->  /*
->   * struct completion - structure used to maintain state for a "completion"
-> @@ -119,4 +120,20 @@ extern void complete(struct completion *
->  extern void complete_on_current_cpu(struct completion *x);
->  extern void complete_all(struct completion *);
->  
-> +/**
-> + * wait_for_completion_long_io - this is like wait_for_completion_io,
-> + * but it doesn't warn if the wait takes too long.
-> + */
-> +static inline void wait_for_completion_long_io(struct completion *done)
-> +{
-> +	/* Prevent hang_check timer from firing at us during very long I/O */
-> +	unsigned long timeout = sysctl_hung_task_timeout_secs * HZ / 2;
-> +
-> +	if (timeout)
-> +		while (!wait_for_completion_io_timeout(done, timeout))
-> +			;
-> +	else
-> +		wait_for_completion_io(done);
-> +}
-> +
->  #endif
-> Index: linux-2.6/block/bio.c
-> ===================================================================
-> --- linux-2.6.orig/block/bio.c	2024-03-30 20:07:03.000000000 +0100
-> +++ linux-2.6/block/bio.c	2024-04-15 15:55:13.000000000 +0200
-> @@ -1378,7 +1378,7 @@ int submit_bio_wait(struct bio *bio)
->  	bio->bi_end_io = submit_bio_wait_endio;
->  	bio->bi_opf |= REQ_SYNC;
->  	submit_bio(bio);
-> -	blk_wait_io(&done);
-> +	wait_for_completion_long_io(&done);
->  
->  	return blk_status_to_errno(bio->bi_status);
->  }
-> Index: linux-2.6/block/blk-mq.c
-> ===================================================================
-> --- linux-2.6.orig/block/blk-mq.c	2024-03-30 20:07:03.000000000 +0100
-> +++ linux-2.6/block/blk-mq.c	2024-04-15 15:55:05.000000000 +0200
-> @@ -1407,7 +1407,7 @@ blk_status_t blk_execute_rq(struct reque
->  	if (blk_rq_is_poll(rq))
->  		blk_rq_poll_completion(rq, &wait.done);
->  	else
-> -		blk_wait_io(&wait.done);
-> +		wait_for_completion_long_io(&wait.done);
->  
->  	return wait.ret;
->  }
+On Wed, Apr 17, 2024 at 07:20:59AM -0700, Konstantin Taranov wrote:
+> From: Konstantin Taranov <kotaranov@microsoft.com>
 > 
+> Implement allocation of DMA-mapped memory regions.
 > 
----end quoted text---
+> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> ---
+>  drivers/infiniband/hw/mana/device.c |  1 +
+>  drivers/infiniband/hw/mana/mr.c     | 36 +++++++++++++++++++++++++++++
+>  include/net/mana/gdma.h             |  5 ++++
+>  3 files changed, 42 insertions(+)
+
+What is the point of doing this without supporting enough verbs to
+allow a kernel ULP?
+
+Jason
 
