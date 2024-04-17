@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-148531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B8468A8406
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:16:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8582A8A840A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:16:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4F791F25B11
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:16:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E9B6285D21
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:16:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0300013DDA0;
-	Wed, 17 Apr 2024 13:16:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2DBC13C3E0;
+	Wed, 17 Apr 2024 13:16:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qpf1ADhB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tURE3Q0B"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA2913D2A9;
-	Wed, 17 Apr 2024 13:16:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C83AF13C684;
+	Wed, 17 Apr 2024 13:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713359770; cv=none; b=XzZ5RTyJPqhkpwKiUHSWsi29N9yAHypbcWBvr7veucU1wlseXP8iWFEIRRZU65uyQgZQjSlcJk554ze77mrqaOa4gABX5lhW1+9/XhFbXiM4caVtMebZpWD2I+7LjLXHDjvY5J4UCErbHHGzFEDUNC4lRKxrhwlkr/iF8E6rr5g=
+	t=1713359797; cv=none; b=YGUneo/tGTNTlbBfW/41OCrOYYLkD+gecxOf19NQEYdKaGrUE4WGOAonBoYzZkv4erXHzLyPEtkY5EucUIpu5Ea8fUiqqPAQaXL7Aadzsj0CPBgPdu4cgxbIQhtNoncqsM/yxGT5RRHh2649T1350ciWgBNDNMxxBk85CNKeSaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713359770; c=relaxed/simple;
-	bh=R6TC7JKYD0DDcZkU4htGYhkt/HbLeZov03taEWMCGGk=;
+	s=arc-20240116; t=1713359797; c=relaxed/simple;
+	bh=vIF/tuUXPZ1vvCuvAOdp+pF7cW+4Rnwljj95ZI6+nsU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Lu2yYmOBa+m6qy3F1edOEdL4Z32G/Txlc/DyTY1aFPm5aklkCHwniHaJOXCNU9ljrsLhaYAsBMSfiUDUwu7SWL/8I0OqEKa3pKOMwKuCIiOHtAoroYQ6L5fdE31qcWDbDzw9ef/ydhubhaWGks+jDXMOHVAHbvv/Z+0Aeq5IQls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qpf1ADhB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7513CC072AA;
-	Wed, 17 Apr 2024 13:16:09 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=mNGhe7uT7bLOHa6AVu5DzGy3KMMi4U7khjfWewhg99a6xhhnGoAdlXSUhVS1v6IVzoB22sYqv1lwTfYa1hLbkdnluO6EbJJIlWu7VJCZ+a2qyGzSn+CQQVHLTtzwMcVE6LEd1u7eu9o5qB3gaeavZn0nPFb4uy0aNIVh2fBO1gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tURE3Q0B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1791DC072AA;
+	Wed, 17 Apr 2024 13:16:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713359769;
-	bh=R6TC7JKYD0DDcZkU4htGYhkt/HbLeZov03taEWMCGGk=;
+	s=k20201202; t=1713359797;
+	bh=vIF/tuUXPZ1vvCuvAOdp+pF7cW+4Rnwljj95ZI6+nsU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Qpf1ADhBtA7bNAlMqu+AgwZKKGQrbXSjtXX+AhkTeX/5VKNNqbgFEi44cFcGd2pxq
-	 klv0KhgosfVzwVoz7k2cFU1ll4PItQNYxrBQ5M273dqPCOUSgny3xaz9tGg2Gi59nZ
-	 prMyU/eSAK3VK9/bSw/aQ3spOtUjss8Jnsi4uyBUBMxnUR7XqkY4pc+Kupila+JAwJ
-	 5PDQPTRKyfS+ilwHWuaT2Xs6OFXq4loUdM0iX0BdOlowXX6dLATQ2hvIwMeTo6Pfh6
-	 c34+/XTHXsC0SL/WaJoodjMAGmIO9W+lmDm2Mp97pXwMwhqT1VVyrnu8sFHG/c0hBD
-	 10Ri82M6cubhw==
-Message-ID: <71006589-c725-481d-be99-7ca1857d1e33@kernel.org>
-Date: Wed, 17 Apr 2024 15:16:08 +0200
+	b=tURE3Q0BqGDy7tHAmbeBItAdQakC0qmA5hO3u1m4LbRQVy6IWv7hoJLL0a4YWSscT
+	 GNhv3zNn5HxqBFviAcIFm672U7gfvvzUaRUwI9rbttSokxckaa3wbX85Po5iISPYfE
+	 V249m1RKrTOfsmfvMktyNhkEcmUHPAtWcHQ24MrFlrQWm08aTWljXDWvdCx26VroGd
+	 DuWDNkFTWw00N9G752yyKWCPFQfpelq+BUeMmgqGqHPnEmkeTsi9qLKQk3WLccK9HQ
+	 H5RLQ7MV2kHPo4diBHYJzHLY/3HBhQIYTSqpCHMkbUx86cjT1bs716SU5YuFi6F9Gz
+	 fyhJ9DDxzcwRQ==
+Message-ID: <156b27dd-0b3f-43b0-95ec-a69b69673e60@kernel.org>
+Date: Wed, 17 Apr 2024 15:16:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -114,22 +114,56 @@ On 17/04/2024 10:12, Babis Chalios wrote:
 > ("virt: vmgenid: notify RNG of VM fork and supply generation ID"), as an
 > ACPI only device.
 > 
+> VMGenID specification http://go.microsoft.com/fwlink/?LinkId=260709 defines
+> a mechanism for the BIOS/hypervisors to communicate to the virtual machine
+> that it is executed with a different configuration (e.g. snapshot execution
+> or creation from a template).
+> The guest operating system can use the notification for various purposes
+> such as re-initializing its random number generator etc.
+> 
+> As per the specs, hypervisor should provide a globally unique identified,
+> or GUID via ACPI.
+> 
+> This patch tries to mimic the mechanism to provide the same functionality
+> which is for a hypervisor/BIOS to notify the virtual machine when it is
+> executed with a different configuration.
+> 
+> As part of this support the devicetree bindings requires the hypervisors or
+> BIOS to provide a memory address which holds the GUID and an IRQ which is
+> used to notify when there is a change in the GUID.
+> The memory exposed in the DT should follow the rules defined in the
+> vmgenid spec mentioned above.
+> 
+> *Reason for this change*:
+> Chosing ACPI or devicetree is an intrinsic part of an hypervisor design.
+> Without going into details of why a hypervisor would chose DT over ACPI,
+> we would like to highlight that the hypervisors that have chose devicetree
+> and now want to make use of the vmgenid functionality cannot do so today
+> because vmgenid is an ACPI only device.
+> This forces these hypervisors to change their design which could have
+> undesirable impacts on their use-cases, test-scenarios etc.
+> 
+> The point of vmgenid is to provide a mechanism to discover a GUID when
+> the execution state of a virtual machine changes and the simplest
+> way to do it is pass a memory location and an interrupt via devicetree.
+> It would complicate things unnecessarily if instead of using devicetree,
+> we try to implement a new protocol or modify other protocols to somehow
+> provide the same functionility.
+> 
+> We believe that adding a devicetree binding for vmgenid is a simpler,
+> better alternative to provide the same functionality and will allow
+> such hypervisors as mentioned above to continue using devicetree.
+> 
+> More references to vmgenid specs:
+>  - https://www.qemu.org/docs/master/specs/vmgenid.html
+>  - https://learn.microsoft.com/en-us/windows/win32/hyperv_v2/virtual-
+> machine-generation-identifier
+> 
+> Signed-off-by: Sudan Landge <sudanl@amazon.com>
 
-This is a friendly reminder during the review process.
+Missing SoB. Probably everywhere...
 
-It looks like you received a tag and forgot to add it.
 
-If you do not know the process, here is a short explanation:
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
-
-If a tag was not added on purpose, please state why and what changed.
 
 Best regards,
 Krzysztof
