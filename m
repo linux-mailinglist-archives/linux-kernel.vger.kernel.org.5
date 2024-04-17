@@ -1,186 +1,187 @@
-Return-Path: <linux-kernel+bounces-147907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C45748A7B28
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 05:57:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78D6D8A7B39
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 06:05:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A825282651
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 03:57:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 040D71F22868
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 04:05:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 551F347F6B;
-	Wed, 17 Apr 2024 03:57:23 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9F4541C78;
+	Wed, 17 Apr 2024 04:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HwLxW4TE"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A86791E888;
-	Wed, 17 Apr 2024 03:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A06623C0C;
+	Wed, 17 Apr 2024 04:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713326242; cv=none; b=QEOjJALqwRIS3/wYcNJS8Og9GjxRrXNxyPh9GH+GrjpZghmDpJlc/ESdCIJy1Ti6W6cAKUrNMbMQGyEmGiA+xoHwjvGBMZH49mb2NExR7s9n5+F8kYNEirqt5VJo9ihkaZ+CL503XTCXVdg3gaN//JuAyg5e7FJqRXRw+xgS3Zg=
+	t=1713326705; cv=none; b=bC/MYT65VMzVJBiXlLOJiUC0z0xXE5Z4fLmBXr7aJnnqzbuGisVLN0PDfOjPVtoShSeV1fjoofawyjKAnELZNvtgIhvGZBFAH/hJpG071afBHafheMSJnEh0pyih+ggY24UFd/D7a3z9o57/oLaoxGqZnIMb2kJ7U8Ga9FtkPT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713326242; c=relaxed/simple;
-	bh=wii6+rVTqhTSBdS8cUxVrVBgMqOcNLARz3i+uByjOt8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=boPrnmGYsUl28sTs4r9Vtm+WS0wpr9DEBDGIWlprabL7eCk5QSme1ZEHSIgGvXtS7u3izDSPYJsl8nfH4Xy5Rd3zlC0HHbFVvVSXq2ELT62i2M++kyReR/eZxJOzYFL9pntugklyuWjoBeX1teuW5tJJAEYZh3mwtSqw8WZS0DI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VK6YH67Hmz4f3tNZ;
-	Wed, 17 Apr 2024 11:57:07 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id BEA361A0175;
-	Wed, 17 Apr 2024 11:57:16 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.67.174.193])
-	by APP1 (Coremail) with SMTP id cCh0CgAX6RGaSB9mzMnFKA--.65099S6;
-	Wed, 17 Apr 2024 11:57:16 +0800 (CST)
-From: Luo Gengkun <luogengkun@huaweicloud.com>
-To: peterz@infradead.org
-Cc: mingo@redhat.com,
-	acme@kernel.org,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	namhyung@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	luogengkun@huaweicloud.com
-Subject: [PATCH RESEND v2 2/2] perf/core: Fix incorrected time diff in tick adjust period
-Date: Wed, 17 Apr 2024 11:54:46 +0000
-Message-Id: <20240417115446.2908769-3-luogengkun@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240417115446.2908769-1-luogengkun@huaweicloud.com>
-References: <20240417115446.2908769-1-luogengkun@huaweicloud.com>
+	s=arc-20240116; t=1713326705; c=relaxed/simple;
+	bh=HOfPBSdVGNBfQOF+mbSVsnrPrK9o98qHLaKYRUCVpJY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MOf4uT1JNOTXcbdsXO0KIXSv76mFv+VfK1fhjNaqkG5gSZrNC42zYpoKEOQtkqmMmqgGJzSKI69fp2YQSz0k7SrwdFzTHZxwqybS7+fQN/6ICkfw81c4bRR7hQonI/bFOUghdcmG01bZCH84jPWP6WwSkM5bv6jC4N8xkeQ9MMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HwLxW4TE; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6eff2be3b33so2938983b3a.2;
+        Tue, 16 Apr 2024 21:05:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713326704; x=1713931504; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=88i8hZp8WQwdMQpbE4p6Q/JZcugf1vEOIIe60eOyG/s=;
+        b=HwLxW4TEpi+nzd/SMLeBb9qLT+BAB1GkGWEGn9Y5jBStBJTmOebV5ArysDsMN8KfvD
+         Vs3g1gfpImgQNEZBTS7XEHtfSxOqZwyGL7QjkZ2mUaqKwoCM7h5it/Z91d+eUX/RNGy3
+         lwqqQ1vUSIs29eYUxdrXrkDNbh6CC4K3iWgR1YBBzDEocBSUO2wwdXDiM6FL/1nXAIox
+         F7HmrJ/tXR7kRKpHKfUMw1phjcAbg4dwcnxFjVphVZsk1kXfXSM2sCG/rRjdTM+kiHe4
+         67C0z3oZq0jA0gz3Xv19q48ut+PQxeh8x2vsosGymnoZ1sBkXf5EDsSPoG+llwZ1pqs0
+         sjjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713326704; x=1713931504;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=88i8hZp8WQwdMQpbE4p6Q/JZcugf1vEOIIe60eOyG/s=;
+        b=KNprM/SpQicohyTC0R4qEeGD4bcNZUyjxsg+SRXnu2i/KjX8MhgVtbWMEdXllLsD9s
+         qdzgOM+pmpOVn2qisiTOIUlTWGgnDLbR+RI/U+525BTJqoiL6GOrAqrm1gZsbX8/2IsF
+         s+tIN5Jo2DvYA62m9Oua0GuKX6QxDsMB2K0p3vDr9lxZdt2RIFVMDiWsDWE+SRKJra7n
+         f2cLh4vbHrm7mAnYgKNrBEkLlI11KFuUuGiMGiYEpXbyjDegNCofpgGLMm+NOSwZIHDu
+         QUM/GyTI0/fAAT9a332fjibNEnnU811NaPN3+MDoYa1Zit2IyeKyoHH+eLL5hNJ3eqqU
+         GKMw==
+X-Forwarded-Encrypted: i=1; AJvYcCVpJ6onPg/QWCyV70iriyWZgVJGLIT8UhmZBRC8lp6FubbXyDeKZ7JGGdWyWbDUbYEacamsmO7IzdEGfSwWz8xqa09ntDjMtKicoL4wrrC4NtkUH6HKzkC09RlT+GN8tNeAvpiF6C25ykzkYHBREx6a7BU5lT5kV81M/VdvR4Hk+DLLfCI=
+X-Gm-Message-State: AOJu0YxcZMElwR34/y790tM5cKvA3H/Gh0LkNywP/KGlCeoHaRi9PdR0
+	b1BlTV/xxvq/iacKy5K8FbHW/vcq+xcAlw3yeLjGrZlc4LpUXHTE
+X-Google-Smtp-Source: AGHT+IG4lCy17MAMJdr91slgJvozQbRVeKZwyRaPLCviMwH0pkRyd3v0fm+QKx7eZYJ7QWGbovn62w==
+X-Received: by 2002:a05:6a00:1945:b0:6ec:fc71:3be2 with SMTP id s5-20020a056a00194500b006ecfc713be2mr16258358pfk.21.1713326703733;
+        Tue, 16 Apr 2024 21:05:03 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id m13-20020aa78a0d000000b006eaaaf5e0a8sm9690628pfa.71.2024.04.16.21.05.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 21:05:03 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 470991860FA40; Wed, 17 Apr 2024 11:05:00 +0700 (WIB)
+Date: Wed, 17 Apr 2024 11:05:00 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, Jonathan Corbet <corbet@lwn.net>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Mao Zhu <zhumao001@208suo.com>, Ran Sun <sunran001@208suo.com>,
+	Xiang wangx <wangxiang@cdjrlc.com>,
+	Shaomin Deng <dengshaomin@cdjrlc.com>,
+	Charles Han <hanchunchao@inspur.com>,
+	Attreyee M <tintinm2017@gmail.com>,
+	Linux Sound System <linux-sound@vger.kernel.org>,
+	Linux Documentation <linux-doc@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 07/12] ASoC: doc: dapm: extend initial descrption
+Message-ID: <Zh9KbP0BUDUT3cKi@archie.me>
+References: <20240416-dapm-docs-v1-0-a818d2819bf6@bootlin.com>
+ <20240416-dapm-docs-v1-7-a818d2819bf6@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAX6RGaSB9mzMnFKA--.65099S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF4xCw4xuF4UCFWDZrykGrg_yoWrXF1rpr
-	Wvyr13KFsrtF1j9wnYkFyrWry5Ww48Aan8G348Cw48Aw1fWr9xJF1kKF1UGF98CFZrZFyI
-	y3s0gw43tFWUtaUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUpj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2048vs2IY02
-	0E87I2jVAFwI0_Jryl82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2
-	F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjx
-	v20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2
-	z280aVCY1x0267AKxVW0oVCq3wAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2
-	xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2
-	jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5V
-	A0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI0_JF0_
-	Jw1l42xK82IYc2Ij64vIr41l4c8EcI0En4kS14v26r1Y6r17MxAqzxv26xkF7I0En4kS14
-	v26r126r1DMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E
-	5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtV
-	W8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY
-	1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI
-	0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7s
-	RERRR3UUUUU==
-X-CM-SenderInfo: 5oxrwvpqjn3046kxt4xhlfz01xgou0bp/
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="b7GZU7fJlI7GZVHh"
+Content-Disposition: inline
+In-Reply-To: <20240416-dapm-docs-v1-7-a818d2819bf6@bootlin.com>
 
-Adrian found that there is a probability that the number of samples
-is small, which is caused by the unreasonable large sampling period.
 
- # taskset --cpu 0 perf record -F 1000 -e cs -- taskset --cpu 1 ./test
- [ perf record: Woken up 1 times to write data ]
- [ perf record: Captured and wrote 0.010 MB perf.data (204 samples) ]
- # perf script
- ...
- test   865   265.377846:         16 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.378900:         15 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.379845:         14 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.380770:         14 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.381647:         15 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.382638:         16 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.383647:         16 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.384704:         15 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.385649:         14 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.386578:        152 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.396383:        154 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.406183:        154 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.415839:        154 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.425445:        154 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.435052:        154 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.444708:        154 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.454314:        154 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.463970:        154 cs:  ffffffff832e927b schedule+0x2b
- test   865   265.473577:        154 cs:  ffffffff832e927b schedule+0x2b
- ...
+--b7GZU7fJlI7GZVHh
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It seems that the Timer Interrupts is not coming every TICK_NSEC when
-system is idle. For example, counter increase n during 2 * TICK_NSEC,
-and it call perf_adjust_period using n and TICK_NSEC, so the final period
-we calculated will be bigger than expected one. What's more, if the
-the overflow time is larger than 2 * TICK_NSEC we cannot tune the period
-using __perf_event_account_interrupt. To fix this problem, perf can
-calculate the tick interval by itself.
+On Tue, Apr 16, 2024 at 07:56:13AM +0200, Luca Ceresoli wrote:
+> diff --git a/Documentation/sound/soc/dapm.rst b/Documentation/sound/soc/d=
+apm.rst
+> index cab40a6b4c96..3a2fde1d31bf 100644
+> --- a/Documentation/sound/soc/dapm.rst
+> +++ b/Documentation/sound/soc/dapm.rst
+> @@ -17,9 +17,27 @@ recompiling are required for user space applications t=
+o use it. DAPM makes
+>  power switching decisions based upon any audio stream (capture/playback)
+>  activity and audio mixer settings within the device.
+> =20
+> -DAPM spans the whole machine. It covers power control within the entire
+> -audio subsystem, this includes internal codec power blocks and machine
+> -level power systems.
+> +DAPM is based on two basic elements, called widgets and routes:
+> +
+> + * a **widget** is every part of the audio hardware that can be enabled =
+by
+> +   software when in use and disabled to save power when not in use
+> + * a **route** is an interconnection between widgets that exists when so=
+und
+> +   can flow from one widget to the other
+> +
+> +All DAPM power switching decisions are made automatically by consulting =
+an
+> +audio routing graph. This graph is specific to each sound card and spans
+> +the whole sound card, so some DAPM routes connect two widgets belonging =
+to
+> +different components (e.g. the LINE OUT pin of a CODEC and the input pin=
+ of
+> +an amplifier).
+> +
+> +The graph for the STM32MP1-DK1 sound card is shown in picture:
+> +
+> +.. kernel-figure:: dapm-graph.svg
+> +    :alt:   Example DAPM graph
+> +    :align: center
+> +
+> +DAPM power domains
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =20
+>  There are 4 power domains within DAPM:
+> =20
+> @@ -48,12 +66,6 @@ Stream domain
+>        Enabled and disabled when stream playback/capture is started and
+>        stopped respectively. e.g. aplay, arecord.
+> =20
+> -All DAPM power switching decisions are made automatically by consulting =
+an audio
+> -routing graph of the whole machine. This graph is specific to each machi=
+ne and
+> -consists of the interconnections between every audio component (including
+> -internal codec components). All audio components that affect power are c=
+alled
+> -widgets hereafter.
+> -
+> =20
+>  DAPM Widgets
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
 
-Signed-off-by: Luo Gengkun <luogengkun@huaweicloud.com>
----
- include/linux/perf_event.h |  1 +
- kernel/events/core.c       | 15 ++++++++++++---
- 2 files changed, 13 insertions(+), 3 deletions(-)
+The wording LGTM, thanks!
 
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index afb028c54f33..2708f1d0692c 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -265,6 +265,7 @@ struct hw_perf_event {
- 	 * State for freq target events, see __perf_event_overflow() and
- 	 * perf_adjust_freq_unthr_context().
- 	 */
-+	u64				freq_tick_stamp;
- 	u64				freq_time_stamp;
- 	u64				freq_count_stamp;
- #endif
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index cad50d3439f1..0f2025d631aa 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -4112,7 +4112,7 @@ perf_adjust_freq_unthr_context(struct perf_event_context *ctx, bool unthrottle)
- {
- 	struct perf_event *event;
- 	struct hw_perf_event *hwc;
--	u64 now, period = TICK_NSEC;
-+	u64 now, period, tick_stamp;
- 	s64 delta;
- 
- 	/*
-@@ -4151,6 +4151,10 @@ perf_adjust_freq_unthr_context(struct perf_event_context *ctx, bool unthrottle)
- 		 */
- 		event->pmu->stop(event, PERF_EF_UPDATE);
- 
-+		tick_stamp = perf_clock();
-+		period = tick_stamp - hwc->freq_tick_stamp;
-+		hwc->freq_tick_stamp = tick_stamp;
-+
- 		now = local64_read(&event->count);
- 		delta = now - hwc->freq_count_stamp;
- 		hwc->freq_count_stamp = now;
-@@ -4162,8 +4166,13 @@ perf_adjust_freq_unthr_context(struct perf_event_context *ctx, bool unthrottle)
- 		 * to perf_adjust_period() to avoid stopping it
- 		 * twice.
- 		 */
--		if (delta > 0)
--			perf_adjust_period(event, period, delta, false);
-+		if (delta > 0) {
-+			/*
-+			 * we skip first tick adjust period
-+			 */
-+			if (likely(period != tick_stamp))
-+				perf_adjust_period(event, period, delta, false);
-+		}
- 
- 		event->pmu->start(event, delta > 0 ? PERF_EF_RELOAD : 0);
- 	next:
--- 
-2.34.1
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--b7GZU7fJlI7GZVHh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZh9KbAAKCRD2uYlJVVFO
+o0m+APwMHE1k0TJ9ucDIKEakmToYvHcKnjrWJmxuigR6GgEZJQD8D46fkvIO6nwE
+IClRwzNZSt8vlPLDGZdHcBs9SP3uVgQ=
+=PQFt
+-----END PGP SIGNATURE-----
+
+--b7GZU7fJlI7GZVHh--
 
