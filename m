@@ -1,109 +1,95 @@
-Return-Path: <linux-kernel+bounces-148964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E423D8A89C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A88738A89C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:04:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2139B1C23B37
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:04:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9FBF1C23CD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C0C171647;
-	Wed, 17 Apr 2024 17:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1371117165D;
+	Wed, 17 Apr 2024 17:03:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="spxE8R9x"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hHChMN57"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2FE21411CF;
-	Wed, 17 Apr 2024 17:02:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5207F171079;
+	Wed, 17 Apr 2024 17:03:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713373337; cv=none; b=IzsbLFh5ik43BLylVZ0o1pMT5WRr4Q+69XWQbZCKGRbGFceFyO9rpuQBkDFTM/y54sm4vY7UJkV2PIq7osGoPlBKD74HJZ7SU8YIjhiGaCLncKfq3FaX/QmsEba5D9bNczMt33cGX6Xc8Sje67eKfB6cokvXOr8OuxvrOh1RmZQ=
+	t=1713373409; cv=none; b=djQswGIQfjyFbPKDSuHyzwS6SP8x0cprZ3n4TjKXqsYncV5IY3KVucRkZxX9Abuga0i5u8MiWk+/9z+loIZAGSKZWKK3l1hBCmMcHTZmg5BSaHR2aslEPn/4L3Kf8hj2wEythdM3WrBf6ccfwSxYGyPnEXDNEIMzfDYnH7HLJEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713373337; c=relaxed/simple;
-	bh=s89mJsOAnMWNTbTfm1fj3amuQEAZ4l1Gj99QXHAA41k=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=TD9dgMvyfUT57y9Xhp3J5LyGRk0mZlZTgtYslT4SpDZfv24V+tEqz8j8ikSfQq/yugq7DhSx+flVzquDFqBKFWE7rwK4q5PxjpuSACYYiKDzUK6HzOTaxC08n1YAH5K8jdhSkw1cedeswXz/C1ie+gqC/jivLOd2A1CdxUFp0PU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=spxE8R9x; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1713373409; c=relaxed/simple;
+	bh=QjtQ6V3Ehbk5LLxAr33UNMioxKiRpcYG4jFh+UYBzEE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HvD51BoGQgl5RI6+hbFXuZXr5kOJRsGUUooYfCmUeuhen6hGwhyqKMVYZzadF6JdhvlX1l4dJ/LKqukTyoLYKlYUEWRuyJSbL4fv12x+6ZEE/o4IO75YJFwz8E7sPAGrLTK58nkB6h23q6/thh3merdT9xrJv32PQ1ceuwnrbjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hHChMN57; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 504D6C072AA;
+	Wed, 17 Apr 2024 17:03:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713373408;
+	bh=QjtQ6V3Ehbk5LLxAr33UNMioxKiRpcYG4jFh+UYBzEE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hHChMN57kBOXbFM4QTwzgQyXPTNjbqinV6W7wCepAN0W6oYfeaCyE6dgKeTCTR9Xv
+	 G9gEj89fKjNhohGEO//tSrWYiXUTCgtUL61JfvkiXyV2qflbR+0Ju4n86LASM8Gklr
+	 +SYKoh/Yf160Uj7zpDeF/vPQnEA2Fv5pwxKYmY8Alo+/cv6LvvuWDJvCTvbqkdCiR+
+	 ctIWquCQr+S1e28UlSRsRzreoUOHkqDwxVp20LMc8VqBlaN6APWAr9UHoWtlRpq7B9
+	 DfKauiiui1p6RXPmALDG6N2WTI0W9lAOJhlx+HXi7wSDkfmilRwd2jZmRjkXkkGUhE
+	 vdQEAdyRcF6tw==
+Date: Wed, 17 Apr 2024 22:33:24 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Lizhi Hou <lizhi.hou@amd.com>
+Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Nishad Saraf <nishads@amd.com>, nishad.saraf@amd.com,
+	sonal.santan@amd.com, max.zhen@amd.com
+Subject: Re: [PATCH V10 1/1] dmaengine: amd: qdma: Add AMD QDMA driver
+Message-ID: <ZiAA3C4wXaAHcJ1E@matsya>
+References: <1709675352-19564-1-git-send-email-lizhi.hou@amd.com>
+ <1709675352-19564-2-git-send-email-lizhi.hou@amd.com>
+ <ZhKd7CHXHB7FadY0@matsya>
+ <aa6a63c0-7cce-1f49-4ae5-3e5d93f98fe5@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1713373323;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VHdkwE1wKobPUP6YkxHMexKranCL+6y9ijo3D9qQ91M=;
-	b=spxE8R9xWA8NmolDUPu8n10CZDK0eI349D6Og9WPjmCe2mni/UDucQdHAiAAvT6D3PAR2a
-	TSAtpW2P1LsPw24LaE2jd2oqITzhJGrH5W+o96ifCOGD8t0M1/iaRV8Aefs8nKDUS0JoXr
-	UCdVPJ7X5lkQORhSQyU4ji/bMqVlUmRBXKX3yOofrZvYr8YycS3/lpoOZDK3nGyF0+BLla
-	Cy15fNeqRqe619juzmZIl9rrLasjrvgr+Ns/E5AKUNKojsWeNJArhV+fZ/h6qSr7iGLezF
-	kmEL+RZ19sC1eoWeoyH1p0kHdhq6WNad8GWS6zbFi2fG9UCnn/QakeH1P5n7Vw==
-Date: Wed, 17 Apr 2024 19:02:02 +0200
-From: Dragan Simic <dsimic@manjaro.org>
-To: Chukun Pan <amadeus@jmu.edu.cn>
-Cc: jonas@kwiboo.se, conor+dt@kernel.org, devicetree@vger.kernel.org,
- heiko@sntech.de, krzk+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
- robh@kernel.org
-Subject: Re: [PATCH 2/2] arm64: dts: rockchip: Add Radxa ROCK3 Model C
-In-Reply-To: <20240417133016.62753-1-amadeus@jmu.edu.cn>
-References: <d7de2213-8dd2-42ec-9a30-a569ac71be3e@kwiboo.se>
- <20240417133016.62753-1-amadeus@jmu.edu.cn>
-Message-ID: <a144c052fcc2460a615a754a64a8f739@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aa6a63c0-7cce-1f49-4ae5-3e5d93f98fe5@amd.com>
 
-Hello Chukun,
+On 08-04-24, 11:06, Lizhi Hou wrote:
 
-On 2024-04-17 15:30, Chukun Pan wrote:
-> Hi Jonas,
->>> +	model = "Radxa ROCK3 Model C";
->> 
->> The marketing name seems to be "Radxa ROCK 3C" according to the 
->> product
->> page at [1].
->> 
->> [1] https://radxa.com/products/rock3/3c
+> > > +static void *qdma_get_metadata_ptr(struct dma_async_tx_descriptor *tx,
+> > > +				   size_t *payload_len, size_t *max_len)
+> > > +{
+> > > +	struct qdma_mm_vdesc *vdesc;
+> > > +
+> > > +	vdesc = container_of(tx, typeof(*vdesc), vdesc.tx);
+> > > +	if (payload_len)
+> > > +		*payload_len = sizeof(vdesc->dev_addr);
+> > > +	if (max_len)
+> > > +		*max_len = sizeof(vdesc->dev_addr);
+> > > +
+> > > +	return &vdesc->dev_addr;
+> > Can you describe what metadata is being used here for?
 > 
-> According to https://wiki.radxa.com/Rock3/3c , it should be called
-> "Radxa ROCK 3 Model C". I copied rock3a here without paying attention.
+> The metadata is the device address the dma request will transfer
+> 
+> data to / from.  Please see the example usage here:
+> 
+> https://github.com/houlz0507/XRT-1/blob/qdma_v1_usage/src/runtime_src/core/pcie/driver/linux/xocl/subdev/qdma.c#L311
+> 
+> Before dmaengine_submit(), it specifies the device address.
 
-If I may interject, here's the result of a quick qrep:
+Hmmm, why is the vaddr passed like this, why not use slave_config for
+this
 
-/rk3399pro-rock-pi-n10.dts:	model = "Radxa ROCK Pi N10";
-/rk3399-rock-pi-4a-plus.dts:	model = "Radxa ROCK Pi 4A+";
-/rk3588s-rock-5a.dts:	model = "Radxa ROCK 5 Model A";
-/rk3588-rock-5b.dts:	model = "Radxa ROCK 5 Model B";
-/rk3399-rock-4c-plus.dts:	model = "Radxa ROCK 4C+";
-/rk3399-rock-pi-4b-plus.dts:	model = "Radxa ROCK Pi 4B+";
-/rk3399-rock-pi-4b.dts:	model = "Radxa ROCK Pi 4B";
-/rk3399-rock-pi-4c.dts:	model = "Radxa ROCK Pi 4C";
-/rk3308-rock-pi-s.dts:	model = "Radxa ROCK Pi S";
-/rk3399-rock-pi-4a.dts:	model = "Radxa ROCK Pi 4A";
-/rk3399-rock-4se.dts:	model = "Radxa ROCK 4SE";
-/rk3328-rock-pi-e.dts:	model = "Radxa ROCK Pi E";
-/rk3568-rock-3a.dts:	model = "Radxa ROCK3 Model A";
-
-Based on that, I think that "Radxa ROCK 3 Model C" would actually
-be the preferred name...  Perhaps?
-
-If we end up following that approach, the last board dts on the list
-above should also be fixed to read "Radxa ROCK 3 Model A".
-
-Either that, or all "Model " strings should be stripped out from
-all board dts files that currently contain it.
+-- 
+~Vinod
 
