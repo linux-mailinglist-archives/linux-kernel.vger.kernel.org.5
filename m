@@ -1,238 +1,214 @@
-Return-Path: <linux-kernel+bounces-149310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3662F8A8F57
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A5FA8A8F65
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:33:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 597471C20C2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 23:32:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F17291C20D54
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 23:33:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 076048624B;
-	Wed, 17 Apr 2024 23:32:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CE32129A7F;
+	Wed, 17 Apr 2024 23:33:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ISw+Fe0R"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g9dcUgih"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82C848563E
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 23:32:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10AE38004A;
+	Wed, 17 Apr 2024 23:33:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713396734; cv=none; b=PNrZdyoaCU2R9slUwk2OSJT3Z362TCpWCTJR8HlxKvUAQLw7J4cFe+sNxS3SK0ET/C8JEQg3Wqy4GjvRsGGy4H00946VzwmUpANZG9o1p+EQIy2ILm+QBC7lLDh8KIOlt7ZE/HKLFX0CvXb0J16B00Ic97G5SyLUkYwB1WsuQto=
+	t=1713396784; cv=none; b=tStEU1qZ3kPrUPt4zO2FXdihlFei6FjD0B7bp6AF4aFqa8loJsyyEiDZ9bwaVQizWc+Gyn9cZudEgKIXgJFKeLBxr4gm9+zCi8JB/wmFRXpVNXDYKJ3Fa8RUol4F1DJw95aPiD4F4oGxI3DN0un9ZLK8sxda7khEFwYtjY9R0/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713396734; c=relaxed/simple;
-	bh=vvp1J1SpydGRs1Ir/XmxNMPAMc5m1dHH0Oe0z/29VuE=;
+	s=arc-20240116; t=1713396784; c=relaxed/simple;
+	bh=UVEJ59zmDjoboUO24xHkWUbtsfOaV4nMW96i+du0QWo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c6W6SCed8+j7ao12Y47UZFyuUMXuZad5m8+AZg2cKnycu4sBCMBcjDkXftAct7n6FzaGvwdIc6CIeS8mLHd3MA6yFdde7nTNQBusfU30WfoMfx1di3xD3+YcSG3iS/yKo94+kxnCde4Za447ygidaYq5yzn7eMQBDK1ABpq/Pb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ISw+Fe0R; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-516d2600569so298718e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 16:32:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713396731; x=1714001531; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pXeaIqHgrQqvoS7w1DDDiuOy+AYJG35Jgluc3WBXL9E=;
-        b=ISw+Fe0RApwzUwVDImCY+ouRCwZG7aMMd3HK5CmhhV04pKART+APpuulyB6th+mf59
-         zdIh+HiPONEYyo6UHKYgYO76ABBwMT4TQ3hQNqSXrCaBuZQ6u+TeULqgYrP0wy7im3xv
-         t/JIsrwLpeH0cxDtCAuntBbMMsiMP+/d4QeuQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713396731; x=1714001531;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pXeaIqHgrQqvoS7w1DDDiuOy+AYJG35Jgluc3WBXL9E=;
-        b=LanuIxoXj6YNjKtABHnv+luU0TpGL6LF4qrh7ecHiXEu8JC+Cgi4v8iKEhkYIz0m5K
-         OtWaOIHumvLQ6mloSjyJ9KhocQxE9aOLlStSVr6k6Bw/nUnl4cxF6+Iwmg9SlN/7mGCh
-         kuwX6iPG7xY9x2pebHC0g6Np2rSnGH5s3s7PvoE2b+n5ftj8najqfXjlfdmSBOaM6O2u
-         WfqTP3BHYxgfFVStlW+QY42uu7Q7OhhiSa/LCODmXpsBAoBAQFweaWuZRZ6E6mJw3vl4
-         IzBXDSPLOzNDERFvOKU/YPxCM3rprNxitQCxibLieIupfWUXOMhCcxQrPC9Kpp4/teNh
-         MC6w==
-X-Forwarded-Encrypted: i=1; AJvYcCWl5Xg+lKijz22MlsOnC2K5dQLTVi2xMJ38ww+gE3XNCIaaC7hUFGL99wFaOukBHwDZRvWutearyJ5sgLBlG4N0rTmWYrmsnf3Tt4OW
-X-Gm-Message-State: AOJu0Yz29/n5TR1yNGOcMlVOlFOjt9XAQfDOoFwv2odimxXiJpuCsP9A
-	90ilb1iVyWrfhZBHcgNuqH17C3ox+8v2HwFXvAs8QtusjjWxB4YBqiA9KfG1P0CmwaGhrdI5X0w
-	9RZY7yb/cIfQkXjkjCOZDxP/a1uVB/3AOHB48
-X-Google-Smtp-Source: AGHT+IEdA30trqC2FAaLVap4ZQxvHXDW+eQ/qMYNrW1mInC1+qlsTt9tjJAxb0ZRkJ6pUgTOzXndvJ5C7T1s5nX8MgU=
-X-Received: by 2002:ac2:5b4f:0:b0:519:17b6:f20 with SMTP id
- i15-20020ac25b4f000000b0051917b60f20mr445676lfp.6.1713396730437; Wed, 17 Apr
- 2024 16:32:10 -0700 (PDT)
+	 To:Cc:Content-Type; b=hD+sh86VP2lCUppSurKD/L+rUY8cfZvRrMZUmdGsKcHdRpy92xeEQMLXVngZYg1M372dbwOIOli+rjcX/qwOmPWC2CXT2pbmYmwkMbf/QVmu408XchGLSPtmJSX1h7DzIPdWLqPzu5msbdk/LP1Tims5JIGYosyhge3mjQMIvGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g9dcUgih; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79E66C2BD11;
+	Wed, 17 Apr 2024 23:33:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713396782;
+	bh=UVEJ59zmDjoboUO24xHkWUbtsfOaV4nMW96i+du0QWo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=g9dcUgihUruqLdH2UkphJBhOp4CI2upjvdLl3d3rVz9siUPLfDQYchyou7LXngIUI
+	 cWzssC+Ais5exj0vlxdgkfD0UISDabYE9ps2nLAsnUvPuJqZuWrDEKlEQm/130dxlJ
+	 TrDcK7sck1xghtXie5KS50aVdgaMGiZE0PmL7090xIdMdRRtto0B1IoLe8MFPUV77p
+	 MjHgPTklEJZLkSAT7P4KNSPweSGMUIkieLAdyvPoe4eF1OoYaNQIWGFhr3Y6mGm6h+
+	 jJ7M8h436v/tDSG5Z2WP2ZPQpJ7Xt9Fh8ZQRH+KDS3CTVxJrkYmgSzmsULNtE2/7ia
+	 VcpAfL6YqmCUQ==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-518931f8d23so181559e87.3;
+        Wed, 17 Apr 2024 16:33:02 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWU+Mf3njgqRifWxHNpROfCS/UruBBh8dyGnOStdbmcfQ1BA9TTxFeQZdcP/NktvCH9tRvk1GBXhEnQ2/Id0n1nOAs1N5KzdtGf38Ohka637wbiMGMiwxcUEx8ULsm3PjZvZ7PEP7eR5MfYnqTqQnCJxSJMNOZjKdGP7f21H7fJENmcgHGWiTS+nQor5G1Zoydv+JRjRyXK3Y+sniFHtakwH+szWz+/xo7xbh5c2S+4XHf/8ERz1U6Viutvs1sSGfogDyA5Ugcu0XyAcMAOZd63H5JW3JkcosODo9URBruOpi9rnIJON0yn5nwZtipqIcfT1wqJ5XRDtBfCsSi4FRjbvwoox2BI/7N5bh8SRp4o5AEvUvIewouxPYy0FxtwnBdtn9/ju33Cc+RjExNDt6BocTVAmFtotyjmzPDTICgvOabDu1BU1vVbUWk=
+X-Gm-Message-State: AOJu0Yxp3ZJcwr3NGUg945EqKE2eQ6SFNdNTi+8iMeKrnZK6kQzGpujY
+	QXpq+nG8gzn9qAhGZ/VNMh1jqtO+K9ut5wM42wMW9u9csx75aIvPH9fMyD7Oy7nwS3xLPFU3Qw6
+	8AfGAYq/KVgTrYxBdx/hr/fFXt98=
+X-Google-Smtp-Source: AGHT+IEHuhOgcI3i5xgKWDt/RXWKyZ/pV78ei3ikSzZKT8X4nbojHe59GGn0FqOU5qFFQVvC8y10X+N0SPB8sxHbE0Q=
+X-Received: by 2002:a05:6512:3184:b0:519:b95:22b5 with SMTP id
+ i4-20020a056512318400b005190b9522b5mr446945lfe.51.1713396780753; Wed, 17 Apr
+ 2024 16:33:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412073046.1192744-1-wenst@chromium.org> <20240412073046.1192744-2-wenst@chromium.org>
- <CAGp9Lzp=MKNYc70ZeGCAEgWfFVPOAOZQQ86BXukk+EQQM_C+OA@mail.gmail.com>
-In-Reply-To: <CAGp9Lzp=MKNYc70ZeGCAEgWfFVPOAOZQQ86BXukk+EQQM_C+OA@mail.gmail.com>
-From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Wed, 17 Apr 2024 16:31:59 -0700
-Message-ID: <CAGXv+5FeRwYm7x+fYS9KPXW-0tQ-zSuk5nU6AZ-=yU07wXnJ9w@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: net: bluetooth: Add MediaTek MT7921S
- SDIO Bluetooth
-To: Sean Wang <sean.wang@kernel.org>
-Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Sean Wang <sean.wang@mediatek.com>, linux-bluetooth@vger.kernel.org, 
-	netdev@vger.kernel.org, linux-mediatek@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
+References: <20240411160051.2093261-1-rppt@kernel.org> <20240411160051.2093261-6-rppt@kernel.org>
+ <20240415075241.GF40213@noisy.programming.kicks-ass.net> <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
+ <Zh4nJp8rv1qRBs8m@kernel.org>
+In-Reply-To: <Zh4nJp8rv1qRBs8m@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Wed, 17 Apr 2024 16:32:49 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6Pbg2k_Gu4dsBx+H8H5XCHvNdtEZJBPiG_eT0qqr9D1w@mail.gmail.com>
+Message-ID: <CAPhsuW6Pbg2k_Gu4dsBx+H8H5XCHvNdtEZJBPiG_eT0qqr9D1w@mail.gmail.com>
+Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, 
+	linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Bjorn Topel <bjorn@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, 
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, Luis Chamberlain <mcgrof@kernel.org>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Puranjay Mohan <puranjay12@gmail.com>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Russell King <linux@armlinux.org.uk>, 
+	Steven Rostedt <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 17, 2024 at 4:04=E2=80=AFPM Sean Wang <sean.wang@kernel.org> wr=
+On Tue, Apr 16, 2024 at 12:23=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wr=
 ote:
 >
-> Hi Chen-Yu,
+> On Mon, Apr 15, 2024 at 06:36:39PM +0100, Mark Rutland wrote:
+> > On Mon, Apr 15, 2024 at 09:52:41AM +0200, Peter Zijlstra wrote:
+> > > On Thu, Apr 11, 2024 at 07:00:41PM +0300, Mike Rapoport wrote:
+> > > > +/**
+> > > > + * enum execmem_type - types of executable memory ranges
+> > > > + *
+> > > > + * There are several subsystems that allocate executable memory.
+> > > > + * Architectures define different restrictions on placement,
+> > > > + * permissions, alignment and other parameters for memory that can=
+ be used
+> > > > + * by these subsystems.
+> > > > + * Types in this enum identify subsystems that allocate executable=
+ memory
+> > > > + * and let architectures define parameters for ranges suitable for
+> > > > + * allocations by each subsystem.
+> > > > + *
+> > > > + * @EXECMEM_DEFAULT: default parameters that would be used for typ=
+es that
+> > > > + * are not explcitly defined.
+> > > > + * @EXECMEM_MODULE_TEXT: parameters for module text sections
+> > > > + * @EXECMEM_KPROBES: parameters for kprobes
+> > > > + * @EXECMEM_FTRACE: parameters for ftrace
+> > > > + * @EXECMEM_BPF: parameters for BPF
+> > > > + * @EXECMEM_TYPE_MAX:
+> > > > + */
+> > > > +enum execmem_type {
+> > > > + EXECMEM_DEFAULT,
+> > > > + EXECMEM_MODULE_TEXT =3D EXECMEM_DEFAULT,
+> > > > + EXECMEM_KPROBES,
+> > > > + EXECMEM_FTRACE,
+> > > > + EXECMEM_BPF,
+> > > > + EXECMEM_TYPE_MAX,
+> > > > +};
+> > >
+> > > Can we please get a break-down of how all these types are actually
+> > > different from one another?
+> > >
+> > > I'm thinking some platforms have a tiny immediate space (arm64 comes =
+to
+> > > mind) and has less strict placement constraints for some of them?
+> >
+> > Yeah, and really I'd *much* rather deal with that in arch code, as I ha=
+ve said
+> > several times.
+> >
+> > For arm64 we have two bsaic restrictions:
+> >
+> > 1) Direct branches can go +/-128M
+> >    We can expand this range by having direct branches go to PLTs, at a
+> >    performance cost.
+> >
+> > 2) PREL32 relocations can go +/-2G
+> >    We cannot expand this further.
+> >
+> > * We don't need to allocate memory for ftrace. We do not use trampoline=
+s.
+> >
+> > * Kprobes XOL areas don't care about either of those; we don't place an=
+y
+> >   PC-relative instructions in those. Maybe we want to in future.
+> >
+> > * Modules care about both; we'd *prefer* to place them within +/-128M o=
+f all
+> >   other kernel/module code, but if there's no space we can use PLTs and=
+ expand
+> >   that to +/-2G. Since modules can refreence other modules, that ends u=
+p
+> >   actually being halved, and modules have to fit within some 2G window =
+that
+> >   also covers the kernel.
+
+Is +/- 2G enough for all realistic use cases? If so, I guess we don't
+really need
+EXECMEM_ANYWHERE below?
+
+> >
+> > * I'm not sure about BPF's requirements; it seems happy doing the same =
+as
+> >   modules.
 >
-> On Fri, Apr 12, 2024 at 12:31=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.org=
-> wrote:
-> >
-> > The MediaTek MT7921S is a WiFi/Bluetooth combo chip that works over
-> > SDIO. WiFi and Bluetooth are separate SDIO functions within the chip.
-> > While the Bluetooth SDIO function is fully discoverable, the chip has
-> > a pin that can reset just the Bluetooth core, as opposed to the full
-> > chip. This should be described in the device tree.
-> >
-> > Add a device tree binding for the Bluetooth SDIO function of the MT7921=
-S
-> > specifically to document the reset line. This binding is based on the M=
-MC
-> > controller binding, which specifies one device node per SDIO function.
-> >
-> > Cc: Sean Wang <sean.wang@mediatek.com>
-> > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> > ---
-> > Changes since v2:
-> > - Expand description and commit message to clearly state that WiFi and
-> >   Bluetooth are separate SDIO functions, and that each function should
-> >   be a separate device node, as specified by the MMC binding.
-> > - Change 'additionalProperties' to 'unevaluatedProperties'
-> > - Add missing separating new line
-> > - s/ot/to/
-> >
-> > Angelo's reviewed-by was not picked up due to the above changes.
-> >
-> > Changes since v1:
-> > - Reworded descriptions
-> > - Moved binding maintainer section before description
-> > - Added missing reference to bluetooth-controller.yaml
-> > - Added missing GPIO header to example
-> > ---
-> >  .../bluetooth/mediatek,mt7921s-bluetooth.yaml | 55 +++++++++++++++++++
-> >  MAINTAINERS                                   |  1 +
-> >  2 files changed, 56 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/net/bluetooth/med=
-iatek,mt7921s-bluetooth.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/net/bluetooth/mediatek,m=
-t7921s-bluetooth.yaml b/Documentation/devicetree/bindings/net/bluetooth/med=
-iatek,mt7921s-bluetooth.yaml
-> > new file mode 100644
-> > index 000000000000..67ff7caad599
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921s-=
-bluetooth.yaml
-> > @@ -0,0 +1,55 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/net/bluetooth/mediatek,mt7921s-blue=
-tooth.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: MediaTek MT7921S Bluetooth
-> > +
-> > +maintainers:
-> > +  - Sean Wang <sean.wang@mediatek.com>
-> > +
-> > +description:
-> > +  MT7921S is an SDIO-attached dual-radio WiFi+Bluetooth Combo chip; ea=
-ch
-> > +  function is its own SDIO function on a shared SDIO interface. The ch=
-ip
-> > +  has two dedicated reset lines, one for each function core.
-> > +  This binding only covers the Bluetooth SDIO function, with one devic=
-e
-> > +  node describing only this SDIO function.
-> > +
-> > +allOf:
-> > +  - $ref: bluetooth-controller.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - mediatek,mt7921s-bluetooth
-> > +
-> > +  reg:
-> > +    const: 2
-> > +
-> > +  reset-gpios:
-> > +    maxItems: 1
-> > +    description:
-> > +      An active-low reset line for the Bluetooth core; on typical M.2
-> > +      key E modules this is the W_DISABLE2# pin.
-> > +
+> BPF are happy with vmalloc().
 >
-> Thanks for adding the new setup for the MT7921S devices. They look good t=
-o me.
-> Sometimes, the MT7921S might be set up to wake up the host when it's
-> asleep using a sideband signal.
-> This might need an extra pin called "wakeup" to make it happen. Can
-> you help add this pin to the settings in the same update, or should I
-> do it later?
-
-I suggest you send a patch on top of this one? I'm not sure if you
-would model it as a GPIO or interrupt. And there doesn't seem to be
-any code in the driver expecting it.
-
-
-ChenYu
-
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +
-> > +unevaluatedProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +
-> > +    mmc {
-> > +        #address-cells =3D <1>;
-> > +        #size-cells =3D <0>;
-> > +
-> > +        bluetooth@2 {
-> > +            compatible =3D "mediatek,mt7921s-bluetooth";
-> > +            reg =3D <2>;
-> > +            reset-gpios =3D <&pio 8 GPIO_ACTIVE_LOW>;
-> > +        };
-> > +    };
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 88981d9f3958..218bc2a21207 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -13818,6 +13818,7 @@ M:      Sean Wang <sean.wang@mediatek.com>
-> >  L:     linux-bluetooth@vger.kernel.org
-> >  L:     linux-mediatek@lists.infradead.org (moderated for non-subscribe=
-rs)
-> >  S:     Maintained
-> > +F:     Documentation/devicetree/bindings/net/bluetooth/mediatek,mt7921=
-s-bluetooth.yaml
-> >  F:     Documentation/devicetree/bindings/net/mediatek-bluetooth.txt
-> >  F:     drivers/bluetooth/btmtkuart.c
+> > So if we *must* use a common execmem allocator, what we'd reall want is=
+ our own
+> > types, e.g.
 > >
-> > --
-> > 2.44.0.683.g7961c838ac-goog
+> >       EXECMEM_ANYWHERE
+> >       EXECMEM_NOPLT
+> >       EXECMEM_PREL32
 > >
-> >
+> > ... and then we use those in arch code to implement module_alloc() and =
+friends.
+>
+> I'm looking at execmem_types more as definition of the consumers, maybe I
+> should have named the enum execmem_consumer at the first place.
+
+I think looking at execmem_type from consumers' point of view adds
+unnecessary complexity. IIUC, for most (if not all) archs, ftrace, kprobe,
+and bpf (and maybe also module text) all have the same requirements.
+Did I miss something?
+
+IOW, we have
+
+enum execmem_type {
+        EXECMEM_DEFAULT,
+        EXECMEM_TEXT,
+        EXECMEM_KPROBES =3D EXECMEM_TEXT,
+        EXECMEM_FTRACE =3D EXECMEM_TEXT,
+        EXECMEM_BPF =3D EXECMEM_TEXT,      /* we may end up without
+_KPROBE, _FTRACE, _BPF */
+        EXECMEM_DATA,  /* rw */
+        EXECMEM_RO_DATA,
+        EXECMEM_RO_AFTER_INIT,
+        EXECMEM_TYPE_MAX,
+};
+
+Does this make sense?
+
+Thanks,
+Song
 
