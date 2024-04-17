@@ -1,197 +1,179 @@
-Return-Path: <linux-kernel+bounces-149095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDD788A8BC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C1EE8A8BC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 21:00:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5133DB262AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:00:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE428B260A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 19:00:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3175136AE4;
-	Wed, 17 Apr 2024 19:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="cVuaG39E"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9479B2C19D;
+	Wed, 17 Apr 2024 18:59:59 +0000 (UTC)
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2130.outbound.protection.outlook.com [40.107.243.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A83A82561D
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:59:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713380400; cv=none; b=cqF5MTFzPSvbF1pUEKk/0u3BGhT2uuzFRqpgqMEL7cB+CbBdtR7Wp5YH3e0F78JHKgJvgtJdFAImwpoB7ym9438Vw2XQ73wdrQZTv3ibgiFP8ptKq9pIUQ296Xq7FMRwJPSSxVXT1HG6LHDL7uSiKB3p4HgjLw6O7teboRQiQck=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713380400; c=relaxed/simple;
-	bh=/SqZqkJiNVuQuM+lltDEKIAs6D3ZqX8ZrKENy7eUmMg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=psWpB16J2s2hx3bqmYFSoTeP3Hl/Q9EGysKTOfmZbCs5O307N4foQ6x8UXGzUR+rcPVq9Osj13ITG4nkqN/sILe/h0oeHXxYFOxLhFrz1x1M5CDR16v1Z8UjLt/FjF6/tj/Ij7tvECq784r0BwUa2BCEU1CLVNdaPLWiOlL/39Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=cVuaG39E; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43HHiViW019610;
-	Wed, 17 Apr 2024 18:59:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2023-11-20;
- bh=vz/MWxuYKbCjC1t4MkPCHPpvqr4U9WONMklYCJ0rdMU=;
- b=cVuaG39EMK+RqJdvzopoz5AuVvT4sTmM0ah1F9NfMEonqEAFNxThirWFkqA88guAyOji
- wNi+1mkwEaYXv2hysb6eB59PzDDiWZZXSRK/cL/SvoghmVUDM4Sk2eBlz4swfP9zE/aM
- i9mxRQtOWbqR4Ye6FwWMj1xplLk2zU37GDcdiTuG9S/9LndLUhTMCV22ceY7YsKGl9B6
- +/DOe2p9UCSg/tasX21Wr2ZsoR7NC8v7U0PRrT/69jYdoc0viBa97Smt32r4uEhBK0H6
- 6WLcCI82VMX7pono3HGDx/6o4mZk9oPIyZBfjD/dtl3DqzCY/wmORsr33fli3lI598z0 uw== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfjkv8mmf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 17 Apr 2024 18:59:41 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43HI0GIn012573;
-	Wed, 17 Apr 2024 18:59:41 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xgkwhbxjv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 17 Apr 2024 18:59:41 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43HIxdmr026239;
-	Wed, 17 Apr 2024 18:59:40 GMT
-Received: from jfwang-mac.us.oracle.com (dhcp-10-65-140-165.vpn.oracle.com [10.65.140.165])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3xgkwhbxhc-2;
-	Wed, 17 Apr 2024 18:59:40 +0000
-From: Jianfeng Wang <jianfeng.w.wang@oracle.com>
-To: linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc: akpm@linux-foundation.org, cl@linux.com, vbabka@suse.cz,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        junxiao.bi@oracle.com
-Subject: [PATCH v2 1/1] slub: limit number of slabs to scan in count_partial()
-Date: Wed, 17 Apr 2024 11:59:38 -0700
-Message-ID: <20240417185938.5237-2-jianfeng.w.wang@oracle.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20240417185938.5237-1-jianfeng.w.wang@oracle.com>
-References: <20240417185938.5237-1-jianfeng.w.wang@oracle.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E0D21DFF3;
+	Wed, 17 Apr 2024 18:59:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.130
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713380398; cv=fail; b=DnAL94tlN42U6zOeU7WsRYSbP3MY82ZLrE+XwAK97i+O0ZKsS8me8G33em9MXlv6nWUKPXhKuN+VVjR/0BniwxenYEXT6zFANLSkCdTmUiDIKRwUnJKvIsk+NWEXwTN44TD/UARXrjAKGqj3VEqXD1F5W+t73Hsb3qkmPESZuPA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713380398; c=relaxed/simple;
+	bh=6efT8j3Ol15qRg0PJRIGIDgZtNQIeTGQIoOfx5nsxvA=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ijX5fSMSnwC16+4Y73BBnwyYkZp8CtFagfYMy9QNJHJSt/KZ1P07Mkj4vpGAsNsvfrd7VTD1r2Mo79mFKPICF1DZl46MofkN/uqbAleX0xXmT0P4nx6oX17HNsLttUoREqD1mUgi6bqjY+q9g6oYMaKYEn8P5B+svBfniEVvtDQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=talpey.com; spf=pass smtp.mailfrom=talpey.com; arc=fail smtp.client-ip=40.107.243.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=talpey.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=talpey.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kQuF01Hj1riem9C+zCGKA+ALywO5S1gqEbOzag7JmESBlqPQuKlIQczwdQfJcsYnLpHU29nFWGqMpqqegl5s0t9fHyzl6P6fLj8bvl/x6JhM+mv4dDIyxWq4Joew9dhp9FtR3H+hI3aJ3v8y+OX0Vm1EWXmfzro5D+5PS5Bzg1iEAxnWHNnohITUsMsKw1xZHg9lh3EjoNSZxXqz2PprLxDemgbSDgrNkRdYbfnEG4xT1S/TPHdEx7LzTxuIKIMPNhiSZ8j5nqS31D9YLbINpY/9DjuKXdjyHouff45GjAulEkpM5kcLBoHA84WpbgLkD0XfYTds/v/6JQ8ULm9/fQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IpDebR9NtUL5YhX00pDTxW061235RMhGzzgqwL/hkps=;
+ b=ZL7kSuF3q5Xsva0Cf/bGu97XoqGVAyFyz+qhnPHjCY562RhEbZlnoFtWka7ReATTOV61+OhYbSpMQ/rLb4ZGZ17xq2QRbyycR2CHKhMIxDlgkhiSZjNXxjihKDaJhwXun5uhhQNg2dy7zB0VXCgMXZ3yjf3SR6SfoVkyYAleryawn32AWkytjjOvqNM2047fIK6Z1TZvEqlfAc1TBdLyULPAPdSobLxUJigoNqEI7/U+iM/GsIxeimAN9UrckRvYvQ1+tSjv0hfE77FY56GRxodKckIPliM44ryP8qio/NWTLEixCXGoFkxlMxyZdZTRHPAw+8IIVKvGjEaBnyYvYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
+ dkim=pass header.d=talpey.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=talpey.com;
+Received: from CH0PR01MB7170.prod.exchangelabs.com (2603:10b6:610:f8::12) by
+ MW6PR01MB8368.prod.exchangelabs.com (2603:10b6:303:246::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.50; Wed, 17 Apr 2024 18:59:53 +0000
+Received: from CH0PR01MB7170.prod.exchangelabs.com
+ ([fe80::260f:c1b2:616a:af0]) by CH0PR01MB7170.prod.exchangelabs.com
+ ([fe80::260f:c1b2:616a:af0%6]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
+ 18:59:53 +0000
+Message-ID: <e33d0b65-fc0b-49ab-ba48-7a13327d88aa@talpey.com>
+Date: Wed, 17 Apr 2024 14:59:50 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cifs: Fix reacquisition of volume cookie on still-live
+ connection
+To: David Howells <dhowells@redhat.com>, Paulo Alcantara <pc@manguebit.com>
+Cc: Steve French <sfrench@samba.org>, Shyam Prasad N <sprasad@microsoft.com>,
+ linux-cifs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <1a94a15e6863d3844f0bcb58b7b1e17a@manguebit.com>
+ <14e66691a65e3d05d3d8d50e74dfb366@manguebit.com>
+ <3756406.1712244064@warthog.procyon.org.uk>
+ <2713340.1713286722@warthog.procyon.org.uk>
+ <277920.1713364693@warthog.procyon.org.uk>
+Content-Language: en-US
+From: Tom Talpey <tom@talpey.com>
+In-Reply-To: <277920.1713364693@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BL1PR13CA0298.namprd13.prod.outlook.com
+ (2603:10b6:208:2bc::33) To CH0PR01MB7170.prod.exchangelabs.com
+ (2603:10b6:610:f8::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-17_16,2024-04-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 phishscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404170136
-X-Proofpoint-ORIG-GUID: jdvXbnSCRn9YRfbIdXYvMB6viwMeTQjb
-X-Proofpoint-GUID: jdvXbnSCRn9YRfbIdXYvMB6viwMeTQjb
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH0PR01MB7170:EE_|MW6PR01MB8368:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4c8ab250-5da6-4f93-7b28-08dc5f1090b4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	JwoEO7pEKlmxog3CLp+2y4eBvBMz1mOgJ8YC/maCVSO6XkodF/m3SZncwIZF/vc0eScP/U6VBjSg7q0yBGm8ZGG+kE94Q14Pkh9roz14W50xDsfiLhsxqMVM/JE+e79Y246hmtEChwgy5S7VpwICCruqVv/FvMoxXXcXptB6kynYLOP9lich/aNuWVYjminc+co4HnWMTA4IIIRlp+B7WnLX4Ag2CslvnIN+fua5J7GSPo5yvxAIVafPp8qSZw5l3/VyGR6AuxSehZqoNwVRScU9wq2pMi4hWheto5eqk9fTwqp26JtLNK6yTJpJPYO45WdBaZBvAMGbgwncNcZ8eD0bpQmT8CdEUH93KKd78+unvFkZv6fXePFjr3mZKYRCjoUENTFao9eSD3brqbsSOSFiKz7yjAbQUuiNDEqxmhGQcfVTF7zeeeLLgTv6VVeqVrPJqwXj7EhywEWihzpRLMHe/yTBtd1E46MU6z/gNl9COaiSz3ySTc3HnvyT6zuwXeh9K4ZRyLyG/YU73nO5Gt6pqqlJ2YatqhADnJlOvF8pGtY7XoXhqd+7/Z/NaEK0fYMKvzbFDRGPH5zw3kNxU30d/h/FB55oJCtWSSUJzRrZe3jT9FEwqcOz/HLAjQtj+lyWxVdxeycc2bJlWq7Iq0L1YY4SlrzPhkRh0f0CGjg=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7170.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?b2tmR3NrRUJyZ09XR0lwcXpST0pERGU0ZHNZK1VWcnpkNzVoaGdqV0IyNXBq?=
+ =?utf-8?B?cXVrTHYvQmdVWWNUNEZoV2Jick95UlZJZDNZaFFkSitWc1VHRjBnVFpBWkt6?=
+ =?utf-8?B?d0hOaFJmNC9Eemx6eGgzT1pkUWJiSmIwOG5XUzMwaGpFWFFkUTdEVEF2aktJ?=
+ =?utf-8?B?cXdWaWFBTUZObTROWnFvTmZ5UUwwZmxVTWZpYXV2SmhKakE5TitONDVWTEV1?=
+ =?utf-8?B?aVkxM3puMFRqdmVWU2d1NmlwWU84Si92UVFEcDByYkNJM1dvMW9uSWltSEVj?=
+ =?utf-8?B?VDEyMzc1T21GbFF3eFJVSjJ3OHlrenZmOUFGa2NyS29xaDY5TDZXQTVVbHU0?=
+ =?utf-8?B?bFh3TGw3NUJnUzlVb0NpTFhOT29hQkY4VzNnMjVnbFZxQTN4YW82ZTBtcW1n?=
+ =?utf-8?B?YkhSSjNIaDhNZm5uN3I0TEh5TjJHVVVONk8yWlV3N3B0NlFkSEs0Ull2WVhq?=
+ =?utf-8?B?bCs2aWpTM21aNThZVTFPbEVSWXJQUjVuWlBpVjdCWjI4RzJ0bFpIWjNaN2lU?=
+ =?utf-8?B?dGMwMGRrRGlCQXdvOUpNNGxoczZGa29KeG9LUkxKRWdnVFVDWERkNVBic1lK?=
+ =?utf-8?B?dm54QWNLQ09MeXNnWldvNzRIeVNmaDY0WlhuNkkrSkZFT0hML3FYVUJaSk0w?=
+ =?utf-8?B?bjlGVkxqTDFleWhRYzFPUGhFNFhEL3pCYWdqaHhkL0xMRHpqRDFaa3hkQ1Zr?=
+ =?utf-8?B?RG9TdUxzbnJvL2lITUNLeEdjcWtSZ2pkQVlVNnNlclBUL1JkT0MrSlNpdEVW?=
+ =?utf-8?B?Y2ZFcnNGVm56TDRsSFFrWGpuUDFkRVp1Y3M0ZGpiNWlPeHJBdUhrNlBuTGRj?=
+ =?utf-8?B?clZhYjRxVkczNnc4QWh4YW5OZGVVZXE2WWRrZFhaVnJaWk9oZXRTc3ZMNXZR?=
+ =?utf-8?B?eVFOY2xJek1nanBuQXYvby9kemxMckFaSEZXVzdtZkFXTW92ZjAvSXkwSm04?=
+ =?utf-8?B?UEI2NWsyWjc0YXkwVVltUk9ueEs3V1dkUytkQzNpcXI3cHczWHRNZTY1Qmtq?=
+ =?utf-8?B?OEJKWTNUZHRXbDVvbVFsUHp6ck9semlHQThhVnlDYis5ZTRQemRjUlRHaVlJ?=
+ =?utf-8?B?RmU4U0hpenNjbkpWekNXZnFpVUE3dFZSaXVUTVdiV3hPWXRaQkY4RGZCWjNT?=
+ =?utf-8?B?c29pdVExdUx4WDRvQ0Fmc1ZLSWQzNU0zVmIrOE4zUTVvcmE3YStiYk1mTGhr?=
+ =?utf-8?B?U0JLbERVRXVxejV4TGFtazlDQW0wQkZXRnJ4VHo2RERRUmJza09rOTNBVmtJ?=
+ =?utf-8?B?bnNld29oL1FDOXZ4VDIrMzYwYnAvOGpoaW1SNW95YjVpMmNGaGJJTHp3WGFv?=
+ =?utf-8?B?RytKK0xOcGdXNlE4VUhXMktvcVlNeG9PUjk0UEJ4bUFUVWkrdDRBYmVaM1NH?=
+ =?utf-8?B?STU3c0Evb3RISVN2a0J3eldmWEZkaWZENkZXQjVCa3NlRVJHQjlKRlBRVlFx?=
+ =?utf-8?B?STZHV2hBRDd0T0tjWkR0dHY4ZVVNTXozbFRMQmZNRjJMRFJNUzJrM2JvQVJ2?=
+ =?utf-8?B?RDc1azZkNmorU1NyQWNmK0RoNWFaaW0vTnhNamM4THFrc0svVGE4Yk1ROCtY?=
+ =?utf-8?B?Mi9QRFhRMG1tMkpqbDFWTlF6VEtGN1BETHdFOGtNR3pldzdLMjU3dFNaRFhY?=
+ =?utf-8?B?SG1kVFhEWWxYU3NzWHQwWXBHM3pUc3BxNFM5azg0ZHlZZHpOQ211V1VBbXBQ?=
+ =?utf-8?B?TnY0anAveEhJVm12bXdoa3RxUzU0Zmw5KzcyREtzdG1yR3p4T3lNM2J3MkJ6?=
+ =?utf-8?B?cXhmYXV3ekV0QWVZWjdnZzJSR2xtTDkyVUkrMk95TUdsL29BWHZRbGZ2M3Ay?=
+ =?utf-8?B?ZFlzd1ZRdCtZV2N3L0VOa3hLZUQxNy9na2docjhRQTlOU29qOVlxU2M4NHkv?=
+ =?utf-8?B?YzBOT2R1MkZrRUcxRjJKdnhkQXZKNlBVL1V0blBYVmZxeDcwbEFsZHJWZnY2?=
+ =?utf-8?B?SGFvZm5ZbzRUYXpvL2RhQmU1ckl2YnZDdWhISG5nRjN4d2Z2d0lKNmtsL28r?=
+ =?utf-8?B?cVhQMlVRM3N3OGppSERvNDZoajhGcVhtZG04STNkZUJmNjNZbnBRdis5UEp0?=
+ =?utf-8?B?ZkpNUzNKUjZVUWExdjVnOFV6azhvTWEzdU1TWDFPK1huWkthejZQbGNZb05Q?=
+ =?utf-8?Q?0JuacblR4bqk2RBp3C5uYDAgs?=
+X-OriginatorOrg: talpey.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c8ab250-5da6-4f93-7b28-08dc5f1090b4
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7170.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 18:59:53.2800
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZYPI4yhb2OplAO/E3r6sNX8IR+9OAaIewlCZjNuj83jsNOJw+MS0B8vLGwZaiBA2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR01MB8368
 
-When reading "/proc/slabinfo", the kernel needs to report the number
-of free objects for each kmem_cache. The current implementation uses
-count_partial() to count the number of free objects by scanning each
-kmem_cache_node's list of partial slabs and summing free objects
-from every partial slab in the list. This process must hold per
-kmem_cache_node spinlock and disable IRQ, and may take a long time.
-Consequently, it can block slab allocations on other CPU cores and
-cause timeouts for network devices and so on, when the partial list
-is long. In production, even NMI watchdog can be triggered due to this
-matter: e.g., for "buffer_head", the number of partial slabs was
-observed to be ~1M in one kmem_cache_node. This problem was also
-confirmed by several others [1-3].
+On 4/17/2024 10:38 AM, David Howells wrote:
+> Paulo Alcantara <pc@manguebit.com> wrote:
+> 
+>> Consider the following example where a tcon is reused from different
+>> CIFS superblocks:
+>>
+>>    mount.cifs //srv/share /mnt/1 -o ${opts} # new super, new tcon
+>>    mount.cifs //srv/share/dir /mnt/2 -o ${opts} # new super, reused tcon
+>>
+>> So, /mnt/1/dir/foo and /mnt/2/foo will lead to different inodes.
+>>
+>> The two mounts are accessing the same tcon (\\srv\share) but the new
+>> superblock was created because the prefix path "\dir" didn't match in
+>> cifs_match_super().  Trust me, that's a very common scenario.
+> 
+> Why does it need to lead to a different superblock, assuming ${opts} is the
 
-Iterating a partial list to get the exact count of objects can cause
-soft lockups for a long list with or without the lock (e.g., if
-preemption is disabled), and is not very useful too: the object
-count can change right after the lock is released. The approach of
-maintaining free-object counters requires atomic operations on the
-fast path [3].
+The tcon is a property of the SMB3 session, it's not shared nor is
+it necessarily created at mount time.
 
-So, the fix is to limit the number of slabs to scan in count_partial().
-Suppose the limit is N. If the list's length is not greater than N,
-output the exact count by traversing the whole list; if its length is
-greater than N, then output an approximated count by traversing a
-subset of the list. The proposed method is to scan N/2 slabs from the
-list's head and the other N/2 slabs from the tail. For a partial list
-with ~280K slabs, benchmarks show that this approach performs better
-than just counting from the list's head, after slabs get sorted by
-kmem_cache_shrink(). Default the limit to 10000, as it produces an
-approximation within 1% of the exact count for both scenarios.
+Tom.
 
-Benchmarks: Diff = (exact - approximated) / exact
-* Normal case (w/o kmem_cache_shrink()):
-| MAX_TO_SCAN | Diff (count from head)| Diff (count head+tail)|
-| 1000        |  0.43  %              |  1.09  %              |
-| 5000        |  0.06  %              |  0.37  %              |
-| 10000       |  0.02  %              |  0.16  %              |
-| 20000       |  0.009 %              | -0.003 %              |
-
-* Skewed case (w/ kmem_cache_shrink()):
-| MAX_TO_SCAN | Diff (count from head)| Diff (count head+tail)|
-| 1000        |  12.46 %              |  6.75  %              |
-| 5000        |  5.38  %              |  1.27  %              |
-| 10000       |  4.99  %              |  0.22  %              |
-| 20000       |  4.86  %              | -0.06  %              |
-
-[1] https://lore.kernel.org/linux-mm/
-alpine.DEB.2.21.2003031602460.1537@www.lameter.com/T/
-[2] https://lore.kernel.org/lkml/
-alpine.DEB.2.22.394.2008071258020.55871@www.lameter.com/T/
-[3] https://lore.kernel.org/lkml/
-1e01092b-140d-2bab-aeba-321a74a194ee@linux.com/T/
-
-Signed-off-by: Jianfeng Wang <jianfeng.w.wang@oracle.com>
----
- mm/slub.c | 28 ++++++++++++++++++++++++++--
- 1 file changed, 26 insertions(+), 2 deletions(-)
-
-diff --git a/mm/slub.c b/mm/slub.c
-index 1bb2a93cf7b6..7e34f2f0ba85 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -3213,6 +3213,8 @@ static inline bool free_debug_processing(struct kmem_cache *s,
- #endif /* CONFIG_SLUB_DEBUG */
- 
- #if defined(CONFIG_SLUB_DEBUG) || defined(SLAB_SUPPORTS_SYSFS)
-+#define MAX_PARTIAL_TO_SCAN 10000
-+
- static unsigned long count_partial(struct kmem_cache_node *n,
- 					int (*get_count)(struct slab *))
- {
-@@ -3221,8 +3223,30 @@ static unsigned long count_partial(struct kmem_cache_node *n,
- 	struct slab *slab;
- 
- 	spin_lock_irqsave(&n->list_lock, flags);
--	list_for_each_entry(slab, &n->partial, slab_list)
--		x += get_count(slab);
-+	if (n->nr_partial <= MAX_PARTIAL_TO_SCAN) {
-+		list_for_each_entry(slab, &n->partial, slab_list)
-+			x += get_count(slab);
-+	} else {
-+		/*
-+		 * For a long list, approximate the total count of objects in
-+		 * it to meet the limit on the number of slabs to scan.
-+		 * Scan from both the list's head and tail for better accuracy.
-+		 */
-+		unsigned long scanned = 0;
-+
-+		list_for_each_entry(slab, &n->partial, slab_list) {
-+			x += get_count(slab);
-+			if (++scanned == MAX_PARTIAL_TO_SCAN / 2)
-+				break;
-+		}
-+		list_for_each_entry_reverse(slab, &n->partial, slab_list) {
-+			x += get_count(slab);
-+			if (++scanned == MAX_PARTIAL_TO_SCAN)
-+				break;
-+		}
-+		x = mult_frac(x, n->nr_partial, scanned);
-+		x = min(x, node_nr_objs(n));
-+	}
- 	spin_unlock_irqrestore(&n->list_lock, flags);
- 	return x;
- }
--- 
-2.42.1
-
+> same in both cases?  Can we not do as NFS does and share the superblock,
+> walking during the mount process through the directory prefix to the root
+> object?
+> 
+> In other words, why does:
+> 
+>      mount.cifs //srv/share /mnt/1 -o ${opts}
+>      mount.cifs //srv/share/dir /mnt/2 -o ${opts}
+> 
+> give you a different result to:
+> 
+>      mount.cifs //srv/share /mnt/1 -o ${opts}
+>      mount --bind /mnt/1/dir /mnt/2
+> 
+> David
+> 
+> 
+> 
 
