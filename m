@@ -1,209 +1,235 @@
-Return-Path: <linux-kernel+bounces-148792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 834238A877E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:25:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14F6C8A8790
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 17:28:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 393F11F24639
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:25:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38BE81C21B24
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:28:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2503D147C65;
-	Wed, 17 Apr 2024 15:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163D4147C61;
+	Wed, 17 Apr 2024 15:28:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VHnWeXsg"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="HiAbzuLT"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED53142625;
-	Wed, 17 Apr 2024 15:25:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E547140E29;
+	Wed, 17 Apr 2024 15:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713367504; cv=none; b=hBwftHdpZK9BYc39HWvfkzm/JpClBPNBdsbYgjhOaxdkygmXQxW09j03K+AHkrox6YEgClU1toLlUkadmv1wbu0jPjsYjveyCGLN2783rHgKr9nOCPvQ7mLrZwnnXDNVQGbXBKoPxX4GdL9uEguPQYauAm7MvFE1E9ye/u20ky0=
+	t=1713367705; cv=none; b=BOZlH3vSEUeIzinjC0SKypbNpTGaQIY5uORweiITd7pGsyCjXt7/hAyfVIyu8IdReDSD0+A6bEOiJuaauNEsbsGRsWYIMsCO9s8mqurI8cM3dJKjluUEnkSosbT5ORapMs411g3ECHHVvJxwH89V8rVu7DEgCbnU4BJ6bby/EXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713367504; c=relaxed/simple;
-	bh=GbEV6DcWZot6KJSDPPnWX8lMsWU0TcGngMUSJ4shjiA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aNi21QJSKriOv5e5MjZpho05VIN5d3jTvsvYAW1xWhHWuakUyjqgOAKQ4LH3CqAIfGwOkGnkz/j7uWA9/9yf3tA8lRf63pDXR1r/2jl6grO3FjtPLmYe9pRloIzI+6en/QTA+YQP/nMYTe6rJa3nrFNtw3hn6p8OAc2l/P8JXeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VHnWeXsg; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e3c9300c65so50253225ad.0;
-        Wed, 17 Apr 2024 08:25:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713367502; x=1713972302; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cmvhx+Oul5Xx3UUXy/kPtEtIBtMlVAQYlRqaqkPQiQ0=;
-        b=VHnWeXsgJ0juYQYR4iM9d6DVYvEFRNzK8fI1gEJuCj+/a6WlW/QjjqN6Lv1tmMVGFd
-         lwQvE7qGd0/QD+OZLiL7SiZWAee91iHWS+tQN/mlqNXGnwFXOYsrtMj5+JX4AgMC6+CS
-         GQBuAnffxcrpgfc5TqLEY/D6mqTz1kVJYUEKU+ueYW0baidpRz56WpeM2KQaw9P/UwFk
-         4064IpQpedCeyl/wGfM40twy2uzqjTjFYx6MdFufvWLPUAMxzpcrKV1VhyADKMJABr2t
-         nJakyGIvUd9CDf6c5TsbZHzaPVtTR8jzXglM5lEKfLjR/azhEilWE/To+ixwTRPeGtps
-         IPOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713367502; x=1713972302;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cmvhx+Oul5Xx3UUXy/kPtEtIBtMlVAQYlRqaqkPQiQ0=;
-        b=o/ODnLGbISEXfxaaurYq7IYTIy9oug1A9VguU63X1aaxQ19h0fdtceU7uNaLCcFE/L
-         egPTYOTZcJhT7HDfAzGEIptCsf4RFoq2UH31GBq9wqvYX+bUEb3PNAPAxaCpuGVuQiBp
-         sP7BhqOXxaKE7L/bVGeqEF6vokj/YpSj262yMNUVWMGAN/nYcHq5YjQDwsndF6uBxijA
-         6gXqegl3u1gKwaQEcOT4LiYx/ieW3oVZTgvSVtYNmwfUBu4SNbzxImImaHNMux1IVH2W
-         82GiLBv4xW6FpFzmu6wNDeiV5dyBMa0X4DP2ltglUmyz/Slz0OtEhmClTniNtav3ujje
-         2xkw==
-X-Forwarded-Encrypted: i=1; AJvYcCUu7AKCyePBeRcib7agd6UaOwcImXkPm3VVPo0Av7LbwstvQmn3YtQMUMJFXXz6+lKoYfRYw7tyWDIY4bE8GJijeW108u67etUon8yk+AiBXXIfD+UXNZxyfjvPlc8CsLUvVLQYbts1JLvjNndfhVgg2FdeoZWplptMfqMw5bKZSdEvTPrDvSl8wewcSF20W7VeVyG7CrXzm53vmqiC1g==
-X-Gm-Message-State: AOJu0Yxwja7jETS+xTdaIhgmiVVc0y8G3SgKWdyF7dcKLuS8iZJJgmGa
-	RbI9PHpecnhuvBO889KX7nXxflHY+v2vO9I22tSZSqyrKrZJdY/l
-X-Google-Smtp-Source: AGHT+IE7+zSbCFlNgD0i133Rt+SrZ/QhS0z5wU3Ww+NagxvK2QRzQcThaxpimlXKlWkgkvrKbO2VoA==
-X-Received: by 2002:a17:902:c1c5:b0:1e4:4b50:1b0a with SMTP id c5-20020a170902c1c500b001e44b501b0amr16719098plc.44.1713367501624;
-        Wed, 17 Apr 2024 08:25:01 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u2-20020a170902e5c200b001e446fe6843sm11678463plf.79.2024.04.17.08.25.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 08:25:00 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 17 Apr 2024 08:24:59 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Jose Ramon San Buenaventura <jose.sanbuenaventura@analog.com>
-Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-i2c@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-Subject: Re: [PATCH 2/2] hwmon: pmbus: adm1275: add adm1281 support
-Message-ID: <62f878f4-a4fb-4e3c-8eec-d1be5ba165a4@roeck-us.net>
-References: <20240417000722.919-1-jose.sanbuenaventura@analog.com>
- <20240417000722.919-3-jose.sanbuenaventura@analog.com>
- <b36db2c0-db31-4304-8e58-aa358ab811c5@roeck-us.net>
+	s=arc-20240116; t=1713367705; c=relaxed/simple;
+	bh=DW3I9GoVYzSlEMTLuU0jyORDXqMAP0u2EdSKwSWXNhY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rDBwqOU9+HAZGMzVxERCFbDOMoxynsUU+cIsUgvi1/bBfRxSvmg/ppbLh9yqunR4spWTxJomCr//jP+hlpCNwBV1NXOT/PbebhAMDAeMbyj43azKMQJdAY2hvEG0TAvHjopNaTAnFuh0gMpsf3HXDc0qPPx531ML91StEqaRFao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=HiAbzuLT; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43HF2XIa022980;
+	Wed, 17 Apr 2024 15:28:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=zAU0vRCOwSbovtMECRQap2vSgOqXnbXeo2+zCEfUK+w=;
+ b=HiAbzuLT8RE07UGwkIUjqiwKfEE15g75I1zWNU3Wwayj/CMwuiqcB5uCC3PLmUYEmBpE
+ AtLQ3FgZNpMnula1CZ8M3oRianvLRktuoq6RGzOlnx8YjownLCFIEudavfiw9cY5A3P1
+ kV3BFtc7NOd/tYKe6bFUE6Uc7HN5vi4TlEAy+C3CH7YUUZLtKQhK0xexV3XliA1nl8Vi
+ xq3/FbTm1ATInk2hIUXpgr+ImsXoiM4LiiG0irHkpqTpOSLsdLsfA/UI+94r/QXErO7A
+ tRagm7woItth5lDkzhfVOYXjV08DGCL5vhjdI8MsljuDZ93312FmhYHMGjAUcqpqkQ9V rA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xjgqd025x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Apr 2024 15:28:08 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43HFS75A000695;
+	Wed, 17 Apr 2024 15:28:07 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xjgqd0235-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Apr 2024 15:28:07 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43HEF9F2018212;
+	Wed, 17 Apr 2024 15:25:38 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xg4ctdf4k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Apr 2024 15:25:38 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43HFPXew50987316
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 17 Apr 2024 15:25:35 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 49FE22004B;
+	Wed, 17 Apr 2024 15:25:33 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 600B620043;
+	Wed, 17 Apr 2024 15:25:26 +0000 (GMT)
+Received: from li-fdfde5cc-27d0-11b2-a85c-e224154bf6d4.ibm.com.com (unknown [9.43.36.38])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 17 Apr 2024 15:25:26 +0000 (GMT)
+From: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+To: acme@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        namhyung@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com,
+        acme@redhat.com, atrajeev@linux.vnet.ibm.com, kjain@linux.ibm.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: vineethr@linux.ibm.com
+Subject: [PATCH] perf sched map: Add command-name option to filter the output map
+Date: Wed, 17 Apr 2024 20:55:21 +0530
+Message-ID: <20240417152521.80340-1-vineethr@linux.ibm.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b36db2c0-db31-4304-8e58-aa358ab811c5@roeck-us.net>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 0hCcYBIlLnzVcwT2slL7yQSC-tRhR0rk
+X-Proofpoint-ORIG-GUID: J4fkubprsoucha22FsBHO7ktq7gB7NC5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-17_12,2024-04-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 adultscore=0 phishscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 impostorscore=0
+ spamscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404170107
 
-On Tue, Apr 16, 2024 at 05:32:46PM -0700, Guenter Roeck wrote:
-> On Wed, Apr 17, 2024 at 08:07:22AM +0800, Jose Ramon San Buenaventura wrote:
-> > Adding support for adm1281 which is similar to adm1275
-> > 
-> > ADM1281 has STATUS_CML read support which is also being added.
-> > 
-> > Signed-off-by: Jose Ramon San Buenaventura <jose.sanbuenaventura@analog.com>
-> > ---
-> >  Documentation/hwmon/adm1275.rst | 14 +++++++++++---
-> >  drivers/hwmon/pmbus/Kconfig     |  4 ++--
-> >  drivers/hwmon/pmbus/adm1275.c   | 27 +++++++++++++++++++++++++--
-> >  3 files changed, 38 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/Documentation/hwmon/adm1275.rst b/Documentation/hwmon/adm1275.rst
-> > index 804590eea..467daf8ce 100644
-> > --- a/Documentation/hwmon/adm1275.rst
-> > +++ b/Documentation/hwmon/adm1275.rst
-> > @@ -43,6 +43,14 @@ Supported chips:
-> >  
-> >      Datasheet: www.analog.com/static/imported-files/data_sheets/ADM1278.pdf
-> >  
-> > +  * Analog Devices ADM1281
-> > +
-> > +    Prefix: 'adm1281'
-> > +
-> > +    Addresses scanned: -
-> > +
-> > +    Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/adm1281.pdf
-> > +
-> >    * Analog Devices ADM1293/ADM1294
-> >  
-> >      Prefix: 'adm1293', 'adm1294'
-> > @@ -58,10 +66,10 @@ Description
-> >  -----------
-> >  
-> >  This driver supports hardware monitoring for Analog Devices ADM1075, ADM1272,
-> > -ADM1275, ADM1276, ADM1278, ADM1293, and ADM1294 Hot-Swap Controller and
-> > +ADM1275, ADM1276, ADM1278, ADM1281, ADM1293, and ADM1294 Hot-Swap Controller and
-> >  Digital Power Monitors.
-> >  
-> > -ADM1075, ADM1272, ADM1275, ADM1276, ADM1278, ADM1293, and ADM1294 are hot-swap
-> > +ADM1075, ADM1272, ADM1275, ADM1276, ADM1278, ADM1281, ADM1293, and ADM1294 are hot-swap
-> >  controllers that allow a circuit board to be removed from or inserted into
-> >  a live backplane. They also feature current and voltage readback via an
-> >  integrated 12 bit analog-to-digital converter (ADC), accessed using a
-> > @@ -144,5 +152,5 @@ temp1_highest		Highest observed temperature.
-> >  temp1_reset_history	Write any value to reset history.
-> >  
-> >  			Temperature attributes are supported on ADM1272 and
-> > -			ADM1278.
-> > +			ADM1278, and ADM1281.
-> >  ======================= =======================================================
-> > diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-> > index 557ae0c41..9c1d0d7d5 100644
-> > --- a/drivers/hwmon/pmbus/Kconfig
-> > +++ b/drivers/hwmon/pmbus/Kconfig
-> > @@ -51,8 +51,8 @@ config SENSORS_ADM1275
-> >  	tristate "Analog Devices ADM1275 and compatibles"
-> >  	help
-> >  	  If you say yes here you get hardware monitoring support for Analog
-> > -	  Devices ADM1075, ADM1272, ADM1275, ADM1276, ADM1278, ADM1293,
-> > -	  and ADM1294 Hot-Swap Controller and Digital Power Monitors.
-> > +	  Devices ADM1075, ADM1272, ADM1275, ADM1276, ADM1278, ADM1281,
-> > +	  ADM1293, and ADM1294 Hot-Swap Controller and Digital Power Monitors.
-> >  
-> >  	  This driver can also be built as a module. If so, the module will
-> >  	  be called adm1275.
-> > diff --git a/drivers/hwmon/pmbus/adm1275.c b/drivers/hwmon/pmbus/adm1275.c
-> > index e2c61d6fa..6c3e8840f 100644
-> > --- a/drivers/hwmon/pmbus/adm1275.c
-> > +++ b/drivers/hwmon/pmbus/adm1275.c
-> > @@ -18,7 +18,7 @@
-> >  #include <linux/log2.h>
-> >  #include "pmbus.h"
-> >  
-> > -enum chips { adm1075, adm1272, adm1275, adm1276, adm1278, adm1293, adm1294 };
-> > +enum chips { adm1075, adm1272, adm1275, adm1276, adm1278, adm1281, adm1293, adm1294 };
-> >  
-> >  #define ADM1275_MFR_STATUS_IOUT_WARN2	BIT(0)
-> >  #define ADM1293_MFR_STATUS_VAUX_UV_WARN	BIT(5)
-> > @@ -101,6 +101,7 @@ struct adm1275_data {
-> >  	bool have_pin_max;
-> >  	bool have_temp_max;
-> >  	bool have_power_sampling;
-> > +	bool have_status_cml;
-> >  	struct pmbus_driver_info info;
-> >  };
-> >  
-> > @@ -469,6 +470,22 @@ static int adm1275_read_byte_data(struct i2c_client *client, int page, int reg)
-> >  				ret |= PB_VOLTAGE_UV_WARNING;
-> >  		}
-> >  		break;
-> > +	case PMBUS_STATUS_CML:
-> > +		if (!data->have_status_cml)
-> > +			return -ENXIO;
-> > +
-> > +		ret = pmbus_read_byte_data(client, page, PMBUS_STATUS_BYTE);
-> > +		if (ret < 0)
-> > +			break;
-> 
-> You'll have to explain why this additional status byte read
-> is necessary (while it isn't necessary for all other chips supporting
-> PMBUS_STATUS_CML).
-> 
+By default, perf sched map prints sched-in events for all the tasks
+which may not be required all the time as it prints lot of symbols
+and rows to the terminal.
 
-After looking more into the existing PMBus code and into this patch,
-I really fail to understand why the above change would be needed.
-The PMBus core code already reads the status register to check if
-there is a communication error. I fail to see why it would be necessary
-to do it again, and why it would be necessary to change behavior for
-the other chips supported by this driver.
+With --command-name option, one could specify the specific command
+for which the map has to be shown. This would help in analyzing the
+CPU usage patterns easier for that specific command. Since multiple
+PID's might have the same command name, using command-name filter
+would be more useful for debugging.
 
-Guenter
+For other tasks, instead of printing the symbol, ** is printed and
+the same . is used to represent idle. ** is used instead of symbol
+for other tasks because it helps in clear visualization of command
+of interest and secondly the symbol itself doesn't mean anything
+because the sched-in of that symbol will not be printed(first sched-in
+contains pid and the corresponding symbol).
+
+6.8.0
+======
+  *A0                   213864.670142 secs A0 => migration/0:18
+  *.                    213864.670148 secs .  => swapper:0
+   .  *B0               213864.670217 secs B0 => migration/1:21
+   .  *.                213864.670223 secs
+   .   .  *C0           213864.670247 secs C0 => migration/2:26
+   .   .  *.            213864.670252 secs
+
+6.8.0 + patch (--command-name = schbench)
+=============
+   **  .   ** *A0       213864.671055 secs A0 => schbench:104834
+  *B0  .   .   A0       213864.671156 secs B0 => schbench:104835
+  *C0  .   .   A0       213864.671187 secs C0 => schbench:104836
+  *D0  .   .   A0       213864.671219 secs D0 => schbench:104837
+  *E0  .   .   A0       213864.671250 secs E0 => schbench:104838
+   E0  .  *D0  A0
+
+This helps in visualizing how a benchmark like schbench is spread over
+the available cpus while also knowing which cpus are idle(.) and which
+are not(**). This will be more useful as number of CPUs increase.
+
+Signed-off-by: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+---
+ tools/perf/Documentation/perf-sched.txt |  4 ++++
+ tools/perf/builtin-sched.c              | 17 ++++++++++++++---
+ 2 files changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/tools/perf/Documentation/perf-sched.txt b/tools/perf/Documentation/perf-sched.txt
+index 5fbe42bd599b..b04a37560935 100644
+--- a/tools/perf/Documentation/perf-sched.txt
++++ b/tools/perf/Documentation/perf-sched.txt
+@@ -94,6 +94,10 @@ OPTIONS for 'perf sched map'
+ --color-pids::
+ 	Highlight the given pids.
+ 
++--command-name::
++	Map output only for the given command name.
++	(** indicates other tasks while . is idle).
++
+ OPTIONS for 'perf sched timehist'
+ ---------------------------------
+ -k::
+diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+index 0fce7d8986c0..e60836da53e5 100644
+--- a/tools/perf/builtin-sched.c
++++ b/tools/perf/builtin-sched.c
+@@ -156,6 +156,7 @@ struct perf_sched_map {
+ 	const char		*color_pids_str;
+ 	struct perf_cpu_map	*color_cpus;
+ 	const char		*color_cpus_str;
++	const char		*command;
+ 	struct perf_cpu_map	*cpus;
+ 	const char		*cpus_str;
+ };
+@@ -1594,8 +1595,6 @@ static int map_switch_event(struct perf_sched *sched, struct evsel *evsel,
+ 
+ 	sched->curr_thread[this_cpu.cpu] = thread__get(sched_in);
+ 
+-	printf("  ");
+-
+ 	new_shortname = 0;
+ 	if (!tr->shortname[0]) {
+ 		if (!strcmp(thread__comm_str(sched_in), "swapper")) {
+@@ -1605,7 +1604,8 @@ static int map_switch_event(struct perf_sched *sched, struct evsel *evsel,
+ 			 */
+ 			tr->shortname[0] = '.';
+ 			tr->shortname[1] = ' ';
+-		} else {
++		} else if (!sched->map.command || !strcmp(thread__comm_str(sched_in),
++								sched->map.command)) {
+ 			tr->shortname[0] = sched->next_shortname1;
+ 			tr->shortname[1] = sched->next_shortname2;
+ 
+@@ -1618,10 +1618,18 @@ static int map_switch_event(struct perf_sched *sched, struct evsel *evsel,
+ 				else
+ 					sched->next_shortname2 = '0';
+ 			}
++		} else {
++			tr->shortname[0] = '*';
++			tr->shortname[1] = '*';
+ 		}
+ 		new_shortname = 1;
+ 	}
+ 
++	if (sched->map.command && strcmp(thread__comm_str(sched_in), sched->map.command))
++		goto skip;
++
++	printf("  ");
++
+ 	for (i = 0; i < cpus_nr; i++) {
+ 		struct perf_cpu cpu = {
+ 			.cpu = sched->map.comp ? sched->map.comp_cpus[i].cpu : i,
+@@ -1678,6 +1686,7 @@ static int map_switch_event(struct perf_sched *sched, struct evsel *evsel,
+ out:
+ 	color_fprintf(stdout, color, "\n");
+ 
++skip:
+ 	thread__put(sched_in);
+ 
+ 	return 0;
+@@ -3560,6 +3569,8 @@ int cmd_sched(int argc, const char **argv)
+                     "highlight given CPUs in map"),
+ 	OPT_STRING(0, "cpus", &sched.map.cpus_str, "cpus",
+                     "display given CPUs in map"),
++	OPT_STRING(0, "command-name", &sched.map.command, "command",
++		"map output only for the given command name"),
+ 	OPT_PARENT(sched_options)
+ 	};
+ 	const struct option timehist_options[] = {
+-- 
+2.39.1
+
 
