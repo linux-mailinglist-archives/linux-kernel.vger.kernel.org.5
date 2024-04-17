@@ -1,204 +1,132 @@
-Return-Path: <linux-kernel+bounces-148605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 433B48A84FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:41:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15A8E8A84FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 15:41:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D32FB25912
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:41:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB8671F21330
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 13:41:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A87E71411E0;
-	Wed, 17 Apr 2024 13:39:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CAB31420BB;
+	Wed, 17 Apr 2024 13:40:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YnsCEG7P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G3frWAbK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C491411D6
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 13:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4C813F449;
+	Wed, 17 Apr 2024 13:40:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713361159; cv=none; b=kmK4OMwXb/8u1seEzldpTyDAyqJlTNMpWSXofESDQlr8HJmH0PZlO0I0RaL6rRnYlH35eEPj7yutbKzLuHFQovVpMyyqIkV11kGn+Su2Rf6/XHiNu46nkxnkSv42WI/7YS9dui3b/NnjineZM0fpQ1TMJIpXWRM4VMCh7X5rr4I=
+	t=1713361200; cv=none; b=Hcjv1zD3ApCLoLdrv96O+58JiLmAr0235OeEvlaoiuuydVOD/4Tp5lPaTI4qAyHRclL3nypflSFg3YX+ekyAkbfgGC0HbOW9BV87PU2yJBAU9OL3CaVj1AS918fd7Smnm/BSiCHoff0Q3luW6uU6kGJrwqRsh2DUphTpsBFbReQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713361159; c=relaxed/simple;
-	bh=kAGKWwtoNDjk7HSM51GJieuaIFloBqHwAmZZJVJk9bw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=YpB+2yv0uSVZglTb/kY43DKnutL4pe39EoqIacSabNLerlPv2dj+BfBPmywaNvArTwDsXswkQyyo4kNWc2p7WzVgz02WRmHHgAdnl2fCGANgEWXN9sonXdMuOwdtz2HVS8+oaHY6qGBEfzL8A5qXUMqwBlVwH0CLxrONN6V7ev0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YnsCEG7P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FCD6C072AA;
-	Wed, 17 Apr 2024 13:39:18 +0000 (UTC)
+	s=arc-20240116; t=1713361200; c=relaxed/simple;
+	bh=b/sDQSq5JjwUA6lrjG6U3vqq2NaTsKZLOqjslzcjaPQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cQibolCKgpF3dtCvNU1NPfn8B5guDxKRFP5oL1kceOgOmpoIoqQupt0ksKv8aSAjHEEbpst5LRhH1ex+I5reL12mbycw+fKXgngIgYlNLwrLMHPpqWSxLE0ZZlwHURYRWfw8k0NNej2QZaCBAos0gdbIQQ0mAldGsaHebu8wBIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G3frWAbK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE70DC072AA;
+	Wed, 17 Apr 2024 13:39:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713361159;
-	bh=kAGKWwtoNDjk7HSM51GJieuaIFloBqHwAmZZJVJk9bw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=YnsCEG7Pfo0YoG0nzsYFviiIuEAIOA6YuthUd8BdGqZaHQ5vzeAVtzA2Hu/Xw/Oga
-	 n9DDPkvWHHW+Q8Fg9bkShSNTVbp2PeyktQF56TnKndgwrGZ2Td0VDnIZt7DBSuLdBL
-	 WFHGBuHHQHFqTDRMYXbQZByPD//YoFYpf9WDXquTLdThuIG18gRRgsGxQTrCmS+4dM
-	 SmPE8RJTGx2ADtjnMXjR90DWymomhgJFQhWKqQ95mT8vZzopGBaeMpxuRy94i5KPA+
-	 yeH4ganCTxvFMmi4CcYS/zaVc+mzh8noVc57Qmu00550MGb7ofBqrHR/YuxgRetpe5
-	 /nWS8TnIFp7gw==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Michael Walle <mwalle@kernel.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
- <pratyush@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
-  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  linux-kernel@vger.kernel.org,
-  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v1 3/6] mtd: spi-nor: get rid of SPI_NOR_NO_FR
-In-Reply-To: <20240412134405.381832-4-mwalle@kernel.org> (Michael Walle's
-	message of "Fri, 12 Apr 2024 15:44:02 +0200")
-References: <20240412134405.381832-1-mwalle@kernel.org>
-	<20240412134405.381832-4-mwalle@kernel.org>
-Date: Wed, 17 Apr 2024 15:39:16 +0200
-Message-ID: <mafs0sezk6rcr.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=k20201202; t=1713361200;
+	bh=b/sDQSq5JjwUA6lrjG6U3vqq2NaTsKZLOqjslzcjaPQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=G3frWAbKid/PFYHRRbptixtGcA2rMU0xjx0kj6bXI+3GdbUHAYfUO9WURlMmxkr+4
+	 EWl0ebX7frfwTRdfEC/HXAB/ldZIORDKJ/v5Bhw9QJI/mo5TZP0qkLbFQgPPaib+jb
+	 fCNud3ASO8Lywj+Idh5ZHXx3Ze1Hpl0pHCP1SP+kjmfaqluWM/eAQWoHX4BMZ+8A1G
+	 J2nAZoYzItEe6qqMwaeO2uaeb35ORQq3P6+w+t79IwBP9VvwRHQxkMMWRlf3z7EhK5
+	 HEwrXkZl4hJVwOgnersh85w8K/xnDFXU7KfmwNlSk3nOhdZ+hSsQNSf8zJOtiHvhpk
+	 vmHVResSMaxpw==
+Date: Wed, 17 Apr 2024 10:39:56 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: James Clark <james.clark@arm.com>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>,
+	Chaitanya S Prakash <ChaitanyaS.Prakash@arm.com>,
+	Ian Rogers <irogers@google.com>, linux-perf-users@vger.kernel.org,
+	anshuman.khandual@arm.com, Josh Poimboeuf <jpoimboe@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Mike Leach <mike.leach@linaro.org>,
+	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
+	Leo Yan <leo.yan@linaro.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Chenyuan Mi <cymi20@fudan.edu.cn>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Ravi Bangoria <ravi.bangoria@amd.com>,
+	Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>,
+	Colin Ian King <colin.i.king@gmail.com>,
+	Changbin Du <changbin.du@huawei.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	Tiezhu Yang <yangtiezhu@loongson.cn>,
+	Georg =?iso-8859-1?Q?M=FCller?= <georgmueller@gmx.net>,
+	Liam Howlett <liam.howlett@oracle.com>, bpf@vger.kernel.org,
+	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 0/8] perf tools: Fix test "perf probe of function from
+ different CU"
+Message-ID: <Zh_RLG7a1xauRNK1@x1>
+References: <20240408062230.1949882-1-ChaitanyaS.Prakash@arm.com>
+ <d0dc91b6-98ee-4ddd-b0a9-ba74e1b6c85f@p183>
+ <f57685aa-fdbf-4625-900b-d612ffb747f3@arm.com>
+ <2d7a896b-bbee-4285-9b2b-3edfab6797d3@p183>
+ <1b52699d-8f92-4a79-89aa-c4df1594e8b1@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1b52699d-8f92-4a79-89aa-c4df1594e8b1@arm.com>
 
-Hi Michael,
+On Wed, Apr 17, 2024 at 02:24:33PM +0100, James Clark wrote:
+> On 14/04/2024 12:41, Alexey Dobriyan wrote:
+> > On Thu, Apr 11, 2024 at 05:40:04PM +0530, Chaitanya S Prakash wrote:
+> >> On 4/9/24 11:02, Alexey Dobriyan wrote:
+> >>> On Mon, Apr 08, 2024 at 11:52:22AM +0530, Chaitanya S Prakash wrote:
+> >>>> - Add str_has_suffix() and str_has_prefix() to tools/lib/string.c
+> >>>> - Delete ends_with() and replace its usage with str_has_suffix()
+> >>>> - Delete strstarts() from tools/include/linux/string.h and replace its
+> >>>>    usage with str_has_prefix()
+> >>> It should be the other way: starts_with is normal in userspace.
+> >>> C++, Python, Java, C# all have it. JavaScript too!
+> >>
+> >> This is done in accordance with Ian's comments on V1 of this patch
+> >> series. Please find the link to the same below.
+> > 
+> > Yes, but str_has_suffix() doesn't make sense in the wider context.
+> > 
+> >> https://lore.kernel.org/all/CAP-5=fUFmeoTjLuZTgcaV23iGQU1AdddG+7Rw=d6buMU007+1Q@mail.gmail.com/
+> > 
+> > 	The naming ends_with makes sense but there is also strstarts and
+> > 	str_has_prefix, perhaps str_has_suffix would be the most consistent
+> > 	and intention revealing name?
+ 
+> From a brief check it looks like str_has_prefix() is already quite
+> common with 94 uses. So the path of least resistance is to make
+> everything self consistent and add str_has_suffix().
+ 
+> I agree it's a bit of a mouthful and not so common in other languages.
+> Once this more complicated set gets through we could always do a simple
+> search and replace change it to anything we like. But it would touch
+> _lots_ of different drivers and trees, so it would be hard to justify.
 
-On Fri, Apr 12 2024, Michael Walle wrote:
+Right, we try to follow the kernel APIs to make tools/perf more familiar
+to kernel developers, this return strlen() thing on str_has_prefix()
+looked too clever for me at first, but since we need to do it anyway,
+and return !0 to indicate it has the prefix and there are usecase...
 
-> The evervision FRAM devices are the only user of the NO_FR flag. Drop
-> the global flag and instead use a manufacturer fixup for the evervision
-> flashes to drop the fast read support.
->
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
-> ---
-> Please note, that the fast read opcode will still be set in
-> spi_nor_init_default_params(), but the selection of the read opcodes
-> just depends on the mask.
+The bpftool people agreed as well, so in tools/ it seems we're in
+general agreement about using str_has_{prefix,suffix}().
 
-Since that is the case now, might as well drop the
-
-    if (params->hwcaps.mask & SNOR_HWCAPS_READ_FAST)
-
-in spi_nor_init_default_params().
-
->
-> That is also something I want to fix soon: the opcodes can always
-> be set and the drivers/SFDP will only set the mask. Opcodes then can be
-> switched between 3b and 4b ones if necessary.
-> ---
->  drivers/mtd/spi-nor/core.c     | 12 +++++-------
->  drivers/mtd/spi-nor/core.h     |  2 --
->  drivers/mtd/spi-nor/everspin.c | 19 +++++++++++++++----
->  3 files changed, 20 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index fb76e0522665..65e6531ada0a 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2952,14 +2952,12 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
->  	params->page_size = info->page_size ?: SPI_NOR_DEFAULT_PAGE_SIZE;
->  	params->n_banks = info->n_banks ?: SPI_NOR_DEFAULT_N_BANKS;
->  
-> -	if (!(info->flags & SPI_NOR_NO_FR)) {
-> -		/* Default to Fast Read for DT and non-DT platform devices. */
-> -		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
-> +	/* Default to Fast Read for DT and non-DT platform devices. */
-> +	params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
->  
-> -		/* Mask out Fast Read if not requested at DT instantiation. */
-> -		if (np && !of_property_read_bool(np, "m25p,fast-read"))
-> -			params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
-> -	}
-> +	/* Mask out Fast Read if not requested at DT instantiation. */
-> +	if (np && !of_property_read_bool(np, "m25p,fast-read"))
-> +		params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
-
-Nit: move this above where SNOR_CMD_READ_FAST is set up.
-
-Also, I think this is a bit clearer:
-
-	/* Default to Fast Read for non-DT and enable it if requested by DT. */
-	if (!np || of_property_read_bool(np, "m25p,fast-read"))
-		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
-
->  
->  	/* (Fast) Read settings. */
->  	params->hwcaps.mask |= SNOR_HWCAPS_READ;
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 072c69b0d06c..9aa7d6399c8a 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -479,7 +479,6 @@ struct spi_nor_id {
->   *                            Usually these will power-up in a write-protected
->   *                            state.
->   *   SPI_NOR_NO_ERASE:        no erase command needed.
-> - *   SPI_NOR_NO_FR:           can't do fastread.
->   *   SPI_NOR_QUAD_PP:         flash supports Quad Input Page Program.
->   *   SPI_NOR_RWW:             flash supports reads while write.
->   *
-> @@ -528,7 +527,6 @@ struct flash_info {
->  #define SPI_NOR_BP3_SR_BIT6		BIT(4)
->  #define SPI_NOR_SWP_IS_VOLATILE		BIT(5)
->  #define SPI_NOR_NO_ERASE		BIT(6)
-> -#define SPI_NOR_NO_FR			BIT(7)
->  #define SPI_NOR_QUAD_PP			BIT(8)
->  #define SPI_NOR_RWW			BIT(9)
-
-Move the other bits up since the slot is now free.
-
->  
-> diff --git a/drivers/mtd/spi-nor/everspin.c b/drivers/mtd/spi-nor/everspin.c
-> index 5f321e24ae7d..0720a61947e7 100644
-> --- a/drivers/mtd/spi-nor/everspin.c
-> +++ b/drivers/mtd/spi-nor/everspin.c
-> @@ -14,28 +14,39 @@ static const struct flash_info everspin_nor_parts[] = {
->  		.size = SZ_16K,
->  		.sector_size = SZ_16K,
->  		.addr_nbytes = 2,
-> -		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
-> +		.flags = SPI_NOR_NO_ERASE,
->  	}, {
->  		.name = "mr25h256",
->  		.size = SZ_32K,
->  		.sector_size = SZ_32K,
->  		.addr_nbytes = 2,
-> -		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
-> +		.flags = SPI_NOR_NO_ERASE,
->  	}, {
->  		.name = "mr25h10",
->  		.size = SZ_128K,
->  		.sector_size = SZ_128K,
-> -		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
-> +		.flags = SPI_NOR_NO_ERASE,
->  	}, {
->  		.name = "mr25h40",
->  		.size = SZ_512K,
->  		.sector_size = SZ_512K,
-> -		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
-> +		.flags = SPI_NOR_NO_ERASE,
->  	}
->  };
->  
-> +static void evervision_nor_default_init(struct spi_nor *nor)
-> +{
-> +	/* Everspin FRAMs don't support the fast read opcode. */
-> +	nor->params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
-> +}
-> +
-> +static const struct spi_nor_fixups evervision_nor_fixups = {
-> +	.default_init = evervision_nor_default_init,
-> +};
-> +
->  const struct spi_nor_manufacturer spi_nor_everspin = {
->  	.name = "everspin",
->  	.parts = everspin_nor_parts,
->  	.nparts = ARRAY_SIZE(everspin_nor_parts),
-> +	.fixups = &evervision_nor_fixups,
->  };
-
--- 
-Regards,
-Pratyush Yadav
+- Arnaldo
 
