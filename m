@@ -1,125 +1,167 @@
-Return-Path: <linux-kernel+bounces-148087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-148088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E09E98A7D89
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 09:59:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE4E68A7D92
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 10:00:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CE5A1C2189A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 07:59:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CC84B215EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 08:00:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92D9A6F068;
-	Wed, 17 Apr 2024 07:58:57 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76A177175E;
+	Wed, 17 Apr 2024 07:59:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="SOWomeNd"
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF26417F7
-	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 07:58:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC53933CC2;
+	Wed, 17 Apr 2024 07:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713340737; cv=none; b=cc85HJl1EijGBT14OV6U7EwpJ0ZObXETQmZAJAc/IP42b7WxLlSyBAsva15VPiBUYw40eNZOm3FjRPXiZfhhoUfwc0OqUZav6j/ynilTnszvzubH89Z3XOn81550gSFT5S8Y+L4TTCMC4CZHSvo1t6xWDU1p0CKw/1WIXu6D09Q=
+	t=1713340797; cv=none; b=djBEbelzy9+QsuUheIGeQ1Gm83Ym2aa7/SFTSwKptSLmgfVWg9VI+YuRzhu3DzY8Vkxjj1An+vel5T04zhvuuLRfqLdh8+e3W5QQsAOa4RvYOfse3O/XNsmySq6x/br97pMU4s48uycPuzceZy9zIfKMF7AybsljElNIOEmqBw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713340737; c=relaxed/simple;
-	bh=BO46pDitPo9UhofMMhsVMtjn6zQdsVT57wd1UvRoqQE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EC4JWYaazsKqnN/7VjwVQ5HF1J6p98biELcqY7GFcL1MAYFtR1yFiZBxmMrYNN7ok5XEKTrjSKOuXDH6n0WMZd5vDozR74oP0GZavg39fVRo4YaPSaA7Gy0NlDN7jdlKEGY0CVgEhfXKCEB1ecoj/bnR+HRn5Mr+MZpgT6DJTFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rx0BW-0006cy-IA; Wed, 17 Apr 2024 09:58:26 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rx0BU-00Ckm6-DJ; Wed, 17 Apr 2024 09:58:24 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rx0BU-002e2n-0y;
-	Wed, 17 Apr 2024 09:58:24 +0200
-Date: Wed, 17 Apr 2024 09:58:24 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Alexandre Mergnat <amergnat@baylibre.com>
-Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Jitao Shi <jitao.shi@mediatek.com>, CK Hu <ck.hu@mediatek.com>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, dri-devel@lists.freedesktop.org, 
-	linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org, linux-clk@vger.kernel.org, 
-	Fabien Parent <fparent@baylibre.com>
-Subject: Re: [PATCH v2 00/18] Add display support for the MT8365-EVK board
-Message-ID: <afetelidcystq4avtmfcvf6h4l5zdthwozwbhjica6jjybkiln@oxx2fqk65psx>
-References: <20231023-display-support-v2-0-33ce8864b227@baylibre.com>
+	s=arc-20240116; t=1713340797; c=relaxed/simple;
+	bh=36MTnlcp33XwHHxLO/m8OsWJKQx4HmShuAbNDoPWRD0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=R6Bz8Bb39dxonzJPH481vGIUvTl83S9Lkj5WjXiqhTBus1C7d4TlIGppjoYJ4QMOqPAmWpDPjhE9qKitR345J/RED3JESHFPfN/khSVraINJiFEEhCVSVjr84b5034UZGIJRISs+Vj31oIxtz5aaHFJ2iRYjZzSMBiebhVufukY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=SOWomeNd; arc=none smtp.client-ip=115.124.30.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713340787; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=00eV10aYqBSEYTxuhgv4GNMQMHte1deFn+CrhZCt04s=;
+	b=SOWomeNdq6rv0zkORBWlsPAY7d+p2MNfkmyFhpn5epQiCVr+Oe7NJBvOgU82+BdpRpNl6cMqv+jvGfhsqCoBhq3GUNHnJRL1M1kPVetAROOywJMnp1x0wjtUJHOnVvt6S0/gjA4U4JEYyBP966ycP2IluPTbPsr2OlTrAEqV4Wg=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W4kiWz7_1713340784;
+Received: from 30.221.148.177(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0W4kiWz7_1713340784)
+          by smtp.aliyun-inc.com;
+          Wed, 17 Apr 2024 15:59:46 +0800
+Message-ID: <ae00d109-403f-46f5-9b70-19fd7a94d3cf@linux.alibaba.com>
+Date: Wed, 17 Apr 2024 15:59:44 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nkhfub2sueyozzkj"
-Content-Disposition: inline
-In-Reply-To: <20231023-display-support-v2-0-33ce8864b227@baylibre.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v9] virtio_net: Support RX hash XDP hint
+To: Liang Chen <liangchen.linux@gmail.com>
+Cc: netdev@vger.kernel.org, virtualization@lists.linux.dev,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+ ast@kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>
+References: <20240417071822.27831-1-liangchen.linux@gmail.com>
+From: Heng Qi <hengqi@linux.alibaba.com>
+In-Reply-To: <20240417071822.27831-1-liangchen.linux@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
---nkhfub2sueyozzkj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello,
+在 2024/4/17 下午3:18, Liang Chen 写道:
+> The RSS hash report is a feature that's part of the virtio specification.
+> Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
+> (still a work in progress as per [1]) support this feature. While the
+> capability to obtain the RSS hash has been enabled in the normal path,
+> it's currently missing in the XDP path. Therefore, we are introducing
+> XDP hints through kfuncs to allow XDP programs to access the RSS hash.
+>
+> 1.
+> https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@daynix.com/#r
+>
+> Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
 
-On Tue, Apr 16, 2024 at 05:53:01PM +0200, Alexandre Mergnat wrote:
-> Alexandre Mergnat (16):
->       [...]
->       dt-bindings: pwm: mediatek,pwm-disp: add power-domains property
->       dt-bindings: pwm: mediatek,pwm-disp: add compatible for mt8365 SoC
-> [...]
-> base-commit: 890c94ce8a456aa4d7ead5f5fd2603b98dfe7b7e
-> change-id: 20231023-display-support-c6418b30e419
+Reviewed-by: Heng Qi <hengqi@linux.alibaba.com>
 
-I cannot find 890c94ce8a456aa4d7ead5f5fd2603b98dfe7b7e, neither in next
-nor in stable nor in drm-misc nor in Linus' repository.
+Thanks.
 
-For sure it's not based on next, because otherwise you'd have noticed
-that the power-domains property is already documented there. (Currently
-as fb7c3d8ba039df877886fd457538d8b24ca9c84b.)
+> ---
+>    Changes from v8:
+> - move max table macro out of uAPI
+>    Changes from v7:
+> - use table lookup for rss hash type
+>    Changes from v6:
+> - fix a coding style issue
+>    Changes from v5:
+> - Preservation of the hash value has been dropped, following the conclusion
+>    from discussions in V3 reviews. The virtio_net driver doesn't
+>    accessing/using the virtio_net_hdr after the XDP program execution, so
+>    nothing tragic should happen. As to the xdp program, if it smashes the
+>    entry in virtio header, it is likely buggy anyways. Additionally, looking
+>    up the Intel IGC driver,  it also does not bother with this particular
+>    aspect.
+> ---
+>   drivers/net/virtio_net.c | 43 ++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 43 insertions(+)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index c22d1118a133..eb99bf6c555e 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -4621,6 +4621,48 @@ static void virtnet_set_big_packets(struct virtnet_info *vi, const int mtu)
+>   	}
+>   }
+>   
+> +#define VIRTIO_NET_HASH_REPORT_MAX_TABLE      10
+> +static enum xdp_rss_hash_type
+> +virtnet_xdp_rss_type[VIRTIO_NET_HASH_REPORT_MAX_TABLE] = {
+> +	[VIRTIO_NET_HASH_REPORT_NONE] = XDP_RSS_TYPE_NONE,
+> +	[VIRTIO_NET_HASH_REPORT_IPv4] = XDP_RSS_TYPE_L3_IPV4,
+> +	[VIRTIO_NET_HASH_REPORT_TCPv4] = XDP_RSS_TYPE_L4_IPV4_TCP,
+> +	[VIRTIO_NET_HASH_REPORT_UDPv4] = XDP_RSS_TYPE_L4_IPV4_UDP,
+> +	[VIRTIO_NET_HASH_REPORT_IPv6] = XDP_RSS_TYPE_L3_IPV6,
+> +	[VIRTIO_NET_HASH_REPORT_TCPv6] = XDP_RSS_TYPE_L4_IPV6_TCP,
+> +	[VIRTIO_NET_HASH_REPORT_UDPv6] = XDP_RSS_TYPE_L4_IPV6_UDP,
+> +	[VIRTIO_NET_HASH_REPORT_IPv6_EX] = XDP_RSS_TYPE_L3_IPV6_EX,
+> +	[VIRTIO_NET_HASH_REPORT_TCPv6_EX] = XDP_RSS_TYPE_L4_IPV6_TCP_EX,
+> +	[VIRTIO_NET_HASH_REPORT_UDPv6_EX] = XDP_RSS_TYPE_L4_IPV6_UDP_EX
+> +};
+> +
+> +static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
+> +			       enum xdp_rss_hash_type *rss_type)
+> +{
+> +	const struct xdp_buff *xdp = (void *)_ctx;
+> +	struct virtio_net_hdr_v1_hash *hdr_hash;
+> +	struct virtnet_info *vi;
+> +	u16 hash_report;
+> +
+> +	if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
+> +		return -ENODATA;
+> +
+> +	vi = netdev_priv(xdp->rxq->dev);
+> +	hdr_hash = (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->hdr_len);
+> +	hash_report = __le16_to_cpu(hdr_hash->hash_report);
+> +
+> +	if (hash_report >= VIRTIO_NET_HASH_REPORT_MAX_TABLE)
+> +		hash_report = VIRTIO_NET_HASH_REPORT_NONE;
+> +
+> +	*rss_type = virtnet_xdp_rss_type[hash_report];
+> +	*hash = __le32_to_cpu(hdr_hash->hash_value);
+> +	return 0;
+> +}
+> +
+> +static const struct xdp_metadata_ops virtnet_xdp_metadata_ops = {
+> +	.xmo_rx_hash			= virtnet_xdp_rx_hash,
+> +};
+> +
+>   static int virtnet_probe(struct virtio_device *vdev)
+>   {
+>   	int i, err = -ENOMEM;
+> @@ -4747,6 +4789,7 @@ static int virtnet_probe(struct virtio_device *vdev)
+>   				  VIRTIO_NET_RSS_HASH_TYPE_UDP_EX);
+>   
+>   		dev->hw_features |= NETIF_F_RXHASH;
+> +		dev->xdp_metadata_ops = &virtnet_xdp_metadata_ops;
+>   	}
+>   
+>   	if (vi->has_rss_hash_report)
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---nkhfub2sueyozzkj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYfgR8ACgkQj4D7WH0S
-/k7mIQf+PbzquhwUkWhMaS47IM1H6SK1o8TJsEIaR6wb6Yy4bRV+XUEXe+POTalM
-BhknR+V0xm/DcBuQivWKRYfDF/jZUJ/DZ60ila73u0xZRbJhLQLY27RNP/URC3uj
-OdBwmD7H6JXYaFs1Rb0oYIyl8lpNtoIJIBDqh/tO7sXYWZtXTr6SXQeEPdhuPn3U
-mhZhnfOgESFdC6P41I2AP/MJ/lxTo+k8l0rZ7iD1TiimDtziKX/uH/bPNr/NVS7D
-qcL/ItrLaC0O7HA8uuUjxTIpbkPRPKFQKYrCYo0FzOYwv78RwW3qu4bVofMmbx1u
-JAVxhSAOAKBafJzgDfONyOIB6du9XA==
-=C88w
------END PGP SIGNATURE-----
-
---nkhfub2sueyozzkj--
 
