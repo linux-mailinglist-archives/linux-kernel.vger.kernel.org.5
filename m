@@ -1,135 +1,70 @@
-Return-Path: <linux-kernel+bounces-150411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5621F8A9EB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 755D48A9EA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:39:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA20E1F226CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:40:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 151641F21BA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB5F016F917;
-	Thu, 18 Apr 2024 15:39:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE5516F830;
+	Thu, 18 Apr 2024 15:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dhagt/Ds"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FhkqlAwL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0957416EBEA;
-	Thu, 18 Apr 2024 15:39:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C40F16C84E;
+	Thu, 18 Apr 2024 15:38:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713454752; cv=none; b=fKijyL+YYIiI+2sHng86TTZ55fJqZJEsIPnOrNa4VH5pEC0ALjUcIWO6jNfKcRswB+TWwcZ3gjiGeW69Z6Un9wnv2gaRXQHO0xp20ZZ+MfVJuSgbmwX8IoZRr1VGS9aId5sbF1pr2+O8Q6IroJUNnZtLzal/6hj31YzYzxNDBFE=
+	t=1713454727; cv=none; b=JxIeAXP3Z8SaPz7FQMpj6Fnq01lIORa0dY7QCBmZ3oCPHiPSXd/6v9No5eDoIAovC8aCwcUwWg/5qZGzVG4XT4sEK8aysh6pzxPtkoOp6B7UZfshD1zkmFSboApCZQp3RN/0tuufz7YZnmjFktQGHhvCTDdmvectQhjTKahpdzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713454752; c=relaxed/simple;
-	bh=poikjUesrlZvYhdkYUVTGKAXtyh6o27VwcY88bzAEGE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fgUz23QpKjmd6XW7OENeB6X87D6AebhPYH9qWBnL7uAo2vMfbECw0MbCyKL/bAz6SZfNYydUEIia4+9G0e68sWR7lR9uZdZZ7t2yDDzxkdxpydxE/fi3zCEWwMLyyO25ow7PUeEIAXZKMJOH/b+5mEmgIoyjWss3DYxy82O3aqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dhagt/Ds; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDB10C113CC;
-	Thu, 18 Apr 2024 15:38:58 +0000 (UTC)
+	s=arc-20240116; t=1713454727; c=relaxed/simple;
+	bh=9L+ytCqJGlRq3mzedi+5XWftfmTStIQGpeqQNjbi9W0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EQO7IP1qtttOpWbUAB6uOimbrwSlnZZQ+rr8IH5WA8xMhcaqb+0ihnn3ABAcvaVS8+jwR4vg3ZbtCc3adijRiipJb2IhaFyvmu3EAW0iTKQrVKnAQgZlssbu8k+TRQ9u7+pKvPSEusMS4Vj377p9h8e5sv2Ks2GxvXcluifwgiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FhkqlAwL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94367C113CC;
+	Thu, 18 Apr 2024 15:38:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713454751;
-	bh=poikjUesrlZvYhdkYUVTGKAXtyh6o27VwcY88bzAEGE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Dhagt/DsCV508bBCSM8PQFh0KZ4ChVYVPTqwgApoowoaluDog1pdK/qIVJU1bAfJ1
-	 yTHdqpTqCwsTRyfpVzaQYmToVgTGF005G8P5bcBRn51+TfjO6upp0QzeXZdpRVmP9T
-	 DyDQSEZc+G77sXhvEvzJVgEwHd81+hiEegtvxJRrNRYHrUsgJx5AWmHmLJX+3OoPI9
-	 DgUEekwf3Gv6AvfsAJ1j1lmBPCAVlRdxF5BEqB76VwjdS5tGiPR4UhLWWIRbIEiDfd
-	 AIVB7M07XTdJ0VLvAnDkmSjg91AV2IlHsKb94RwxZ2UFTajWhnfg+q+QMNKv4wdsDX
-	 0LvSLkPCKaqng==
-Date: Thu, 18 Apr 2024 18:37:52 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Masami Hiramatsu <masami.hiramatsu@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Donald Dutile <ddutile@redhat.com>,
-	Eric Chanudet <echanude@redhat.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 14/15] kprobes: remove dependency on CONFIG_MODULES
-Message-ID: <ZiE-UE27NalI-IeW@kernel.org>
-References: <20240411160051.2093261-1-rppt@kernel.org>
- <20240411160051.2093261-15-rppt@kernel.org>
- <20240418061615.5fad23b954bf317c029acc4d@gmail.com>
+	s=k20201202; t=1713454726;
+	bh=9L+ytCqJGlRq3mzedi+5XWftfmTStIQGpeqQNjbi9W0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=FhkqlAwLouBJA2FGHB5wBlMYjSFVy0bAyBCQaBukcpwfhQlqeRWJjdFcWcrtj3cjm
+	 u0T17lxmpCKznktqjnYy+0Aoi1ejwILyqT3aL5WzIPUgjd+OnSuHnlYg++g0Luwt9B
+	 yq4GdUoa8Fqz07kE1Qr/XiDIOJrlGMgZehjk8hCh4h/AddTHDar1N1Mm7hywKGDOYp
+	 Q5sWO/Wi2oJ46Wsn5ndjQ+iwijlELQalWLyeKhEfY3DQWf/fcCWQh/2eXw86q2t2Ia
+	 oCEMxlZkLd0nY/e8hdbfNDGHijQEvANN/+LoO+Y0DM/H237ywG4GT614RdyqElbcVf
+	 v9L9nJrBIMNvg==
+Date: Thu, 18 Apr 2024 08:38:45 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: "jun.gu" <jun.gu@easystack.cn>
+Cc: echaudro@redhat.com, dev@openvswitch.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v4] net: openvswitch: Check vport netdev name
+Message-ID: <20240418083845.3b1f2407@kernel.org>
+In-Reply-To: <20240418023242.259542-1-jun.gu@easystack.cn>
+References: <811765EC-AD27-4210-9AFC-034129F24BFA@redhat.com>
+	<20240418023242.259542-1-jun.gu@easystack.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418061615.5fad23b954bf317c029acc4d@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Masami,
+On Thu, 18 Apr 2024 10:32:42 +0800 jun.gu wrote:
+> +	if ((!vport->dev) || strcmp(name, ovs_vport_name(vport))) {
 
-On Thu, Apr 18, 2024 at 06:16:15AM +0900, Masami Hiramatsu wrote:
-> Hi Mike,
-> 
-> On Thu, 11 Apr 2024 19:00:50 +0300
-> Mike Rapoport <rppt@kernel.org> wrote:
-> 
-> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> > 
-> > kprobes depended on CONFIG_MODULES because it has to allocate memory for
-> > code.
-> > 
-> > Since code allocations are now implemented with execmem, kprobes can be
-> > enabled in non-modular kernels.
-> > 
-> > Add #ifdef CONFIG_MODULE guards for the code dealing with kprobes inside
-> > modules, make CONFIG_KPROBES select CONFIG_EXECMEM and drop the
-> > dependency of CONFIG_KPROBES on CONFIG_MODULES.
-> 
-> Thanks for this work, but this conflicts with the latest fix in v6.9-rc4.
-> Also, can you use IS_ENABLED(CONFIG_MODULES) instead of #ifdefs in
-> function body? We have enough dummy functions for that, so it should
-> not make a problem.
-
-I'll rebase and will try to reduce ifdefery where possible.
-
-> Thank you,
-> 
-> > 
-> > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> > ---
-> >  arch/Kconfig                |  2 +-
-> >  kernel/kprobes.c            | 43 +++++++++++++++++++++----------------
-> >  kernel/trace/trace_kprobe.c | 11 ++++++++++
-> >  3 files changed, 37 insertions(+), 19 deletions(-)
-> > 
-> 
-> -- 
-> Masami Hiramatsu
-
+Please drop the unnecessary brackets.
+When you repost, start a new thread, do not post new version
+in-reply-to.
 -- 
-Sincerely yours,
-Mike.
+pw-bot: cr
 
