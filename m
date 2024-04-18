@@ -1,180 +1,74 @@
-Return-Path: <linux-kernel+bounces-150742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAB108AA3FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:22:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FE538AA401
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:26:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE8951C20FD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:22:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7F5A1F230AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B7231836FD;
-	Thu, 18 Apr 2024 20:22:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16685181BB4;
+	Thu, 18 Apr 2024 20:26:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nHVRut7M"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="06hsNJH/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CC7713D626;
-	Thu, 18 Apr 2024 20:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 594EF2F30
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 20:26:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713471762; cv=none; b=rARuJyKe1IQEfHkTxnoDNtStBJBj7TvOr679CGcRSNjAsVO45z7VahwDdBqX4sh1/q94AIxg+PFHy0uwUtrwogH2yWJXZClGUZpVynooFUYXoNMJLEa4Shjmbdh2kbndN7S+++qoGFQEJndhBYvjmbMINBJOeYTkjbqCgtWMYgQ=
+	t=1713471962; cv=none; b=saA3+cYx4uM6Ly3sQGn6HlFV11rmvc8RxO2BYk87PC1hQoqDgJ5tjbL6qYQEuonQ0suAWAJewhShKOkpUNcDlhA0FKMsKqfdcCxxPxJJ03LXBXU+TBr9My4pdONwx25siIFKRUNHoqGpSJUUsMaQB/bgw/FM4LAOUl7sXrUbBoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713471762; c=relaxed/simple;
-	bh=40SDlxrTEy1tKYcd/loaYV6z14zKTw8+g0WRYTiJ/ks=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hnHupSuURrIwTEo6wd+sdLD+j3SUJTCtI/FokMRRKvAPxuy8I7ddO7qPX1UaE1UxQrWYU8VPCP25PQ+11XV96Bpj7J4oxNnGp65Zcq6ZL6JVvkc2qMTXYZLj0qfM2QQ0ZWqsgTe0jBmxSULnjNaVFbHMmT8t4tUKQQI++ejuKbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nHVRut7M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB98BC113CC;
-	Thu, 18 Apr 2024 20:22:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713471761;
-	bh=40SDlxrTEy1tKYcd/loaYV6z14zKTw8+g0WRYTiJ/ks=;
+	s=arc-20240116; t=1713471962; c=relaxed/simple;
+	bh=PCvEAVXvgM6u371jplSGRmq+8CDhW77O6b83jGw9Zy4=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=DMAbekO7QBZx0VXTZLM05gLCoxzgyv1+a3rxJgrbuLY+u5a0s7P7P/KRpEm89vwhiHXzLt1/kZE88XWEsRtR2gu7cOyPZy9lKM7avZ/0u82jRTvfVSo0QjSq+u2aIMmpR8WKfZ59uG2dBb7uJ/iWXZuA6bgCUGLr/yIhXDkNrxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=06hsNJH/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9158FC113CC;
+	Thu, 18 Apr 2024 20:26:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1713471961;
+	bh=PCvEAVXvgM6u371jplSGRmq+8CDhW77O6b83jGw9Zy4=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=nHVRut7MRgBEAkVf8AHawXLsTxYwcLi9zi/FHqkACKu0XmdEJZcwvxmO7Tg3l2hJc
-	 kYOcW0eR7xm5UmiMUD0o3potGz1qT05c1CFdHQx1yTLCPFqp6HpAsmUtsmWNb8jabn
-	 9iZ/6h9TPocn6hF5c5W/ErWDI0L4fM5Z6OUOp6THhRp4RyLBl6Vq+ZZwGiGMWF9Kyh
-	 wW3N6GYbU9q8gfFi+GvW9zcvOy2m6dhqnEyanb1Pe93DwsbSBnc753somSKVUtX+dT
-	 BcaA+Om88/hUx9bPbFY7SnIB/xQIrc6eqfFjmlKNT3a9n9O7ZwKJSnyXFwxufYSeSP
-	 3UKuacSS4S/IQ==
-Date: Thu, 18 Apr 2024 21:22:35 +0100
-From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?=
- <amadeuszx.slawinski@linux.intel.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Bard Liao
- <yung-chuan.liao@linux.intel.com>, Brady Norander
- <bradynorander@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown
- <broonie@kernel.org>, Mark Hasemeyer <markhas@chromium.org>, Takashi Iwai
- <tiwai@suse.com>, linux-sound@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] ALSA: hda: intel-dsp-config: Fix Huawei Matebook D14
- NBLB-WAX9N quirk detection
-Message-ID: <20240418212235.6548447d@sal.lan>
-In-Reply-To: <848bcc94-3a31-4fb4-81bc-bd3f138e12f6@linux.intel.com>
-References: <5e6ba980c0738199589749b68b83f2d730512107.1713430105.git.mchehab@kernel.org>
-	<20240418110453.10efcb60@sal.lan>
-	<848bcc94-3a31-4fb4-81bc-bd3f138e12f6@linux.intel.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	b=06hsNJH/gAWkXBp+LDoqehpGxJ+z/bIkR2RDaAaQXkGcfa8njuA90MVWViHHFU2pM
+	 ik50i12nj1g2jqhY5R1tV0c7nXntJZQXcUOMyReyObunDFJx6BxtfVAgpHK+EC7msh
+	 eHNwNzCqVtQobclwTX7b/4n+bMowJyvL+Sz79LnI=
+Date: Thu, 18 Apr 2024 13:26:00 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: tglx@linutronix.de, peterz@infradead.org, yury.norov@gmail.com,
+ linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpu: memoise number of possible cpus
+Message-Id: <20240418132600.ffbf4d53b39eaaeaffc28198@linux-foundation.org>
+In-Reply-To: <20240418041927.3903-1-adobriyan@gmail.com>
+References: <20240418041927.3903-1-adobriyan@gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-Em Thu, 18 Apr 2024 08:24:10 -0500
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> escreveu:
+On Thu, 18 Apr 2024 07:19:27 +0300 Alexey Dobriyan <adobriyan@gmail.com> wrote:
 
-> On 4/18/24 05:04, Mauro Carvalho Chehab wrote:
-> > Em Thu, 18 Apr 2024 09:48:27 +0100
-> > Mauro Carvalho Chehab <mchehab@kernel.org> escreveu:
-> >   
-> >> Newer Matebook D14 model comes with essx8336 and supports SOF,
-> >> but the initial models use the legacy driver, with a Realtek ALC 256
-> >> AC97 chip on it.
-> >>
-> >> The BIOS seems to be prepared to be used by both models, so
-> >> it contains an entry for ESSX8336 on its DSDT table.
-> >>
-> >> Add a quirk, as otherwise dspconfig driver will try to load
-> >> SOF, causing audio probe to fail.
-> >>
-> >> Cc: stable@vger.kernel.org
-> >> Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>  
-> > 
-> > Worth to mention that I opened an issue on Github about that:
-> > 
-> > https://github.com/thesofproject/linux/issues/4934
-> > 
-> > I added there the ACPI DSDT table as a reference.  
-> 
-> This sounds like an 'easy enough' fix, but I don't have a burning desire
-> to start adding quirks of this nature. To be clear, the entire support
-> of the ES8336 is an absolute nightmare that I've stopped looking at
-> completely given the lack of support of vendor/OEMs.
+> cpu_possible_mask is fixed after boot, so it makes sense
+> to calculate number of possible cpus to
+> a) make num_possible_cpus() faster (distros ship with _large_ NR_CPUS),
+> b) unscrew codegen elsewhere replacing function call
+>    with simple memory load.
 
-Heh, I know the pain, having working myself to have some support for audio
-on two different notebooks with my siblings, both with es8336. On both 
-cases, the BIOS info was not really useful, requiring quirks to make device
-to work properly.
+There are a lot of calls to set_cpu_possible().  Perhaps calculating
+num_possible_cpus within there would reduce risk of things getting out
+of sync, either now or in the future.
 
-This is btw a common issue I'm aware for a long time: BIOS data is
-not reliable, as vendors tend to re-use BIOS from one device on others,
-without actually reflecting what it is on each device.
+reset_cpu_possible_mask() appears to have no callers.  Kill?
 
-The EDAC subsystem never relies on DMI data for memory banks - as even
-server BIOS from top tear manufacturers usually report wrong data for
-motherboard's DIMM labels. Instead, an userspace application reads
-DMI data and propose changes, but patches for rasdaemon are required
-to add such labels to a database.
 
--
-
-In any case, this specific device doesn't have es8336 ;-)
-
-Also, I don't think this problem will remain confined to es8336: any
-other SOF driver may have the same problem: a BIOS (or a BIOS update)
-may add non-existent _HID devices to DSDT, causing the driver to
-disable AC97 support, enabling SOF instead and causing regressions.
-
-As I wrote at the Github issue, one solution would be to do an I2C
-scan to detect if the SOF device(s) reported by BIOS are really
-present. This would require that, before calling 
-snd_intel_acpi_dsp_driver_probe():
-
-	- the I2C bus to be created;
-	- Runtime PM for the audio device needs to put resume the
-	  device and I2C bus controller, if suspended;
-	- the I2C address of the audio device needs to be known
-	  by sound/hda/intel-dsp-config.c
-
-With that, a zero-byte (or one-byte if zero-byte not support)
-read or write could detect if the device is there, before
-initializing it - or calling the device-specific driver.
-
-Another solution would be to probe the SOF driver, falling back
-to AC97 if SOF init fails.
-
-> 
-> In this case, the ACPI table is completely wrong, we should try to
-> 'mark' the ES8336 device as 'not present' or detect the presence of HDaudio.
-> 
-> Andy, what do you think and what would be your recommendation?
-> 
-> >> ---
-> >>  sound/hda/intel-dsp-config.c | 16 ++++++++++++++++
-> >>  1 file changed, 16 insertions(+)
-> >>
-> >> diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-> >> index 6a384b922e4f..8e728f0585dd 100644
-> >> --- a/sound/hda/intel-dsp-config.c
-> >> +++ b/sound/hda/intel-dsp-config.c
-> >> @@ -46,6 +46,22 @@ static const struct snd_soc_acpi_codecs __maybe_unused essx_83x6 = {
-> >>   * - the first successful match will win
-> >>   */
-> >>  static const struct config_entry config_table[] = {
-> >> +	/* Quirks */
-> >> +	{
-> >> +		.flags = 0,	/* Model uses AC97 with Realtek ALC 256 */
-> >> +		.device = PCI_DEVICE_ID_INTEL_HDA_CML_LP,
-> >> +		.dmi_table = (const struct dmi_system_id []) {
-> >> +			{
-> >> +				.ident = "Huawei NBLB-WAX9N",
-> >> +				.matches = {
-> >> +					DMI_MATCH(DMI_SYS_VENDOR, "HUAWEI"),
-> >> +					DMI_MATCH(DMI_PRODUCT_NAME, "NBLB-WAX9N"),
-> >> +				}
-> >> +			},
-> >> +			{}
-> >> +		}
-> >> +	},
-> >> +
-> >>  /* Merrifield */
-> >>  #if IS_ENABLED(CONFIG_SND_SOC_SOF_MERRIFIELD)
-> >>  	{  
 
