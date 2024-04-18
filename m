@@ -1,222 +1,163 @@
-Return-Path: <linux-kernel+bounces-149750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A5FE8A9566
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 893D58A956E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:55:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 562ABB21D1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:54:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B69FCB21BF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:55:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05DAE15887A;
-	Thu, 18 Apr 2024 08:54:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B7C15AD83;
+	Thu, 18 Apr 2024 08:55:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="HFy+V53N"
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Bij8uIww"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753162E403
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFC2D15AABD
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713430471; cv=none; b=asxTyjcKigYqu5hgIijvk1WVHrM1ffDDxZKyAYp428ZroyAIaquxr9al2alVQFOl/TZFkbWv8bzZXJzE6xKUKeJgrO2B9ZO23092cquPpvtFsphIBkviAuHS2VcZ50K6L8x8fZbUW83S81NnW39ut6kjyP/s+bpYcSyBHOInuwM=
+	t=1713430529; cv=none; b=N1nA+RbRTC65um3GVxxk+qaEgOxY44WO/LgmN9XrtX/n1q/AsXbSpq9wLSKHTSmkzO5t6EZm/ZV4WgYZvuoM8kazzBgxB20ZUnEIdYvM9cuL/soPU0OqFJaY7a1nq2dkRAkZRd6Mzc5smSwDfOY5w1bvRaBDao7AZtJDYUVVgDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713430471; c=relaxed/simple;
-	bh=8Sf5p45HSy4PMZeqkZfsSMWf65uGHI432sC/e+pLm7U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WxJt0Cl4nd81MbHuk0cCxBiOEXWyASCPH9S/DvDQKV0SLUI8DlU3f7BD7NVuEV+A/aPNv80ltfC9yuzRDd+v1Um2eBY6Tg710esg7GXv4+/1lE6o/G/c1eEPD5fAFyHCkWM8RzhJ59CtiJbtlLNuJOc8MxpebsqxyRP/edTD1dE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=HFy+V53N; arc=none smtp.client-ip=178.60.130.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=z4UaoqgXsB0dca6CbFSbaOwi49boLq7Lal+1iuniKEA=; b=HFy+V53NdreiJ6pN2dRGcws+/D
-	UofqvY2nGkYTbzIbJ1m2BZLT87xgZRR4jfR3dInytuImyKqurUL2XXLUYrvsve5I98P522JwvxYMG
-	h1/no2qbHxCWSjcDQf7PzIwL9yl5edtjHFSIgQeCb2JmZdURlT9DbfMSQaJaZV372kB0TQo1+4+5+
-	wAbFg3DlBEIEqavJ9cOIxp2dZZjpOURDOi5wK31cArB46wHd9yik4n4fc8OueVxpDPrGv39sLq97R
-	3SBpcm198ws6Y1/iUsnymuJ1vUAL7dc/WUhLTi5oc6ZxBPp0WgCg7vftpFEkeX3syrN2iA+0j1COd
-	NS+w6PYA==;
-Received: from [84.65.0.132] (helo=[192.168.0.101])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rxNWz-005s44-QP; Thu, 18 Apr 2024 10:54:09 +0200
-Message-ID: <99b39d9e-1fae-41a5-96f9-d1298c7cc29c@igalia.com>
-Date: Thu, 18 Apr 2024 09:54:08 +0100
+	s=arc-20240116; t=1713430529; c=relaxed/simple;
+	bh=/tb4QbVu8c2QRsgW5XBC6GGQL9b2y9oos5e54hq7gZs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PuboodJuYXzj0GhoQS3HvunfZsx6vi1ncTB+Amq/p0UxNtBn+VktgU6BzP9c6++dZXjTpxjT1AeOUqDun/cPbSnUUdWPfr3/3Gyo0sUqUQV66zI/jLmVu71dg92dIN3x25IZNo1trpZUw+kntg4x4FqQb16XRFa6/dwdGj9QHW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Bij8uIww; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713430526;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4YlIQQIdea0zY9K7SGuaix12g/A/bXwMZDxEbsfa9Qo=;
+	b=Bij8uIwwNBNiHMR6O+FRre2z71cJC/yzmozHpGBGCay6QZooWzuNFooiKtRHIptOPxWMe6
+	cybF0DOcAgF39Ubu3lpfYoIgf7AHWRLwEGdzGXZTGbLp/vv9PyYfxFwtKHfo37UYRnmejy
+	1X74KTnYOJyY2LpjSPlZ19qU2OZLAD8=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-122-UYqEIVMdObuDwH6FZ2IYyg-1; Thu, 18 Apr 2024 04:55:25 -0400
+X-MC-Unique: UYqEIVMdObuDwH6FZ2IYyg-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-56fd91d9ec0so352236a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 01:55:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713430524; x=1714035324;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4YlIQQIdea0zY9K7SGuaix12g/A/bXwMZDxEbsfa9Qo=;
+        b=CqHLFAV2gQabsK62WNbYB3SBXPUG976MXrK2iGlzOkJv3t8Os0iVQc8TedEuJ62kWa
+         GDCgj8i7fcexq+27nPhmjfSGKh8bqVKJVn2EQCRmXdWYr8iMXaujF3Irr61ZxUfIaHMF
+         P4zuhcE0UoQ7vZO3TH8wLxTD1gKl9sutHr3iZN1hMYYBdy3xDWpd72VfWdMgMbdLaxv/
+         FWrB+kE4eWUS8EptOZA4TDTNzobGer8rQYTCgjFq5rau7DebuA35Z64pHD43NPntj/9d
+         mLwRNjXXP4omldvAo0h/aZGUk3SZoaZSXMv2QonjmGZl4zDboAr/qh/AUsxpmekbP7Xj
+         3Vmw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+zTkLzhmeZ6A/NAxEpnaIGOWXU7aKeeATqGll0zH5mvqGiLQHqUT9v9/B8iB+RVM/WnDRLylWYdZ7UADUZaekQeV6Cidrrhqv4U1+
+X-Gm-Message-State: AOJu0Yx34IhH/VUEOcufqwm1F1iETULbViRkSMVXWcnUsA0NEIHpHDwf
+	QobeL0Zj0au8eHxgIniOcyOWDknijs2vG7Rx32nCoM3wjqcL1ZTJxE58W3zf2RsbYWQaFg6KVmf
+	DgK9GkQ95ffLuieUJ3h5tOWsQCJ2DkY6HruhVs671PhgvwuiJt47dqILcx26bj8VIowft577YwP
+	AAnrrgKyvW1zQJoxMzykgo+WjmJJvAsR+b6/3p
+X-Received: by 2002:a50:d70b:0:b0:566:d333:45e8 with SMTP id t11-20020a50d70b000000b00566d33345e8mr1330884edi.20.1713430524385;
+        Thu, 18 Apr 2024 01:55:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFxI+7tuc8Le9HhsVxIWdWWRsOFfxFhBkIX4vcIcKLU6knTudbsJ0kY7SSOQ7z7lM64duYb3lMTtZqcPMqH8sc=
+X-Received: by 2002:a50:d70b:0:b0:566:d333:45e8 with SMTP id
+ t11-20020a50d70b000000b00566d33345e8mr1330856edi.20.1713430523993; Thu, 18
+ Apr 2024 01:55:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sched/psi: Optimise psi_group_change a bit
-Content-Language: en-GB
-To: Tvrtko Ursulin <tursulin@igalia.com>, Ingo Molnar <mingo@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Tvrtko Ursulin <tursulin@ursulin.net>,
- Suren Baghdasaryan <surenb@google.com>, Peter Ziljstra
- <peterz@infradead.org>, kernel-dev@igalia.com,
- Johannes Weiner <hannes@cmpxchg.org>
-References: <20240329160648.86999-1-tursulin@igalia.com>
- <20240329185147.GA877460@cmpxchg.org> <20240409223847.GE1057805@cmpxchg.org>
-From: Tvrtko Ursulin <tvrtko.ursulin@igalia.com>
-In-Reply-To: <20240409223847.GE1057805@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240416-bpf_wq-v1-0-c9e66092f842@kernel.org> <20240416-bpf_wq-v1-16-c9e66092f842@kernel.org>
+ <CAPhsuW46OYRj2TrqSeD4bPTN3bxbpj7DaFJnc3g0a--Gkjj2AQ@mail.gmail.com>
+In-Reply-To: <CAPhsuW46OYRj2TrqSeD4bPTN3bxbpj7DaFJnc3g0a--Gkjj2AQ@mail.gmail.com>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Thu, 18 Apr 2024 10:55:11 +0200
+Message-ID: <CAO-hwJJ7e-h7RwPGPe=GZf6F5+WpWyHcLHqBFiv-3HRafdZjeA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 16/18] selftests/bpf: add checks for bpf_wq_set_callback()
+To: Song Liu <song@kernel.org>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Apr 18, 2024 at 5:25=E2=80=AFAM Song Liu <song@kernel.org> wrote:
+>
+> On Tue, Apr 16, 2024 at 7:11=E2=80=AFAM Benjamin Tissoires <bentiss@kerne=
+l.org> wrote:
+> [...]
+>
+> > +SEC("?tc")
+> > +__log_level(2)
+> > +__failure
+> > +/* check that the first argument of bpf_wq_set_callback()
+> > + * is a correct bpf_wq pointer.
+> > + */
+> > +__msg("mark_precise: frame0: regs=3Dr1 stack=3D before")
+>
+> This line and some other "mark_precise" lines are causing issues for
+> test_progs-no_alu32 in the CI. I can reproduce it in my local tests.
+>
 
-Hi Ingo,
+Indeed. I can also reproduce locally. Here, it only happens for
+test_wq_init_nomap() and test_wq_init_wrong_map().
+TBH, I'm not sure what "precise" means, I just copied the checks from
+timer_failures.c.
 
-On 09/04/2024 23:38, Johannes Weiner wrote:
-> [ Oops, I still had an old mutt alias for Ingo's address. ]
-> 
-> Ingo, would you mind taking this through the scheduler tree?
+>
+> I am not quite sure what is the best fix. Maybe we can just
+> remove it.
 
-Gentle reminder so this one does not fall through the cracks.
+Given that most of the code is shared with timer, but given that we
+are working with kfuncs, we are not using the same r0 registers.
+So yeah, I would think we could rely on the timer tests for precise,
+and drop them here...
 
-Regards,
+Cheers,
+Benjamin
 
-Tvrtko
+>
+>
+> Thanks,
+> Song
+>
+> > +__msg(": (85) call bpf_wq_set_callback_impl#") /* anchor message */
+> > +__msg("off 1 doesn't point to 'struct bpf_wq' that is at 0")
+> > +long test_wrong_wq_pointer_offset(void *ctx)
+> > +{
+> > +       int key =3D 0;
+> > +       struct bpf_wq *wq;
+> > +
+> > +       wq =3D bpf_map_lookup_elem(&array, &key);
+> > +       if (!wq)
+> > +               return 1;
+> > +
+> > +       if (bpf_wq_init(wq, &array, 0))
+> > +               return 2;
+> > +
+> > +       if (bpf_wq_set_callback((void *)wq + 1, wq_cb_sleepable, 0))
+> > +               return 3;
+> > +
+> > +       return -22;
+> > +}
+> >
+> > --
+> > 2.44.0
+> >
+>
 
-> On Fri, Mar 29, 2024 at 02:51:53PM -0400, Johannes Weiner wrote:
->> On Fri, Mar 29, 2024 at 04:06:48PM +0000, Tvrtko Ursulin wrote:
->>> From: Tvrtko Ursulin <tursulin@ursulin.net>
->>>
->>> The current code loops over the psi_states only to call a helper which
->>> then resolves back to the action needed for each state using a switch
->>> statement. That is effectively creating a double indirection of a kind
->>> which, given how all the states need to be explicitly listed and handled
->>> anyway, we can simply remove. Both the for loop and the switch statement
->>> that is.
->>>
->>> The benefit is both in the code size and CPU time spent in this function.
->>> YMMV but on my Steam Deck, while in a game, the patch makes the CPU usage
->>> go from ~2.4% down to ~1.2%. Text size at the same time went from 0x323 to
->>> 0x2c1.
->>>
->>> Signed-off-by: Tvrtko Ursulin <tursulin@ursulin.net>
->>> Cc: Johannes Weiner <hannes@cmpxchg.org>
->>> Cc: Suren Baghdasaryan <surenb@google.com>
->>> Cc: Peter Ziljstra <peterz@infradead.org>
->>> Cc: linux-kernel@vger.kernel.org
->>> Cc: kernel-dev@igalia.com
->>
->> This is great.
->>
->> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
->>
->> Ingo, would you mind please taking this through the scheduler tree? I
->> think Peter is still out.
->>
->> Remaining quote below.
->>
->> Thanks
->>
->>> ---
->>>   kernel/sched/psi.c | 54 +++++++++++++++++++++++-----------------------
->>>   1 file changed, 27 insertions(+), 27 deletions(-)
->>>
->>> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
->>> index 7b4aa5809c0f..55720ecf420e 100644
->>> --- a/kernel/sched/psi.c
->>> +++ b/kernel/sched/psi.c
->>> @@ -218,28 +218,32 @@ void __init psi_init(void)
->>>   	group_init(&psi_system);
->>>   }
->>>   
->>> -static bool test_state(unsigned int *tasks, enum psi_states state, bool oncpu)
->>> +static u32 test_states(unsigned int *tasks, u32 state_mask)
->>>   {
->>> -	switch (state) {
->>> -	case PSI_IO_SOME:
->>> -		return unlikely(tasks[NR_IOWAIT]);
->>> -	case PSI_IO_FULL:
->>> -		return unlikely(tasks[NR_IOWAIT] && !tasks[NR_RUNNING]);
->>> -	case PSI_MEM_SOME:
->>> -		return unlikely(tasks[NR_MEMSTALL]);
->>> -	case PSI_MEM_FULL:
->>> -		return unlikely(tasks[NR_MEMSTALL] &&
->>> -			tasks[NR_RUNNING] == tasks[NR_MEMSTALL_RUNNING]);
->>> -	case PSI_CPU_SOME:
->>> -		return unlikely(tasks[NR_RUNNING] > oncpu);
->>> -	case PSI_CPU_FULL:
->>> -		return unlikely(tasks[NR_RUNNING] && !oncpu);
->>> -	case PSI_NONIDLE:
->>> -		return tasks[NR_IOWAIT] || tasks[NR_MEMSTALL] ||
->>> -			tasks[NR_RUNNING];
->>> -	default:
->>> -		return false;
->>> +	const bool oncpu = state_mask & PSI_ONCPU;
->>> +
->>> +	if (tasks[NR_IOWAIT]) {
->>> +		state_mask |= BIT(PSI_IO_SOME);
->>> +		if (!tasks[NR_RUNNING])
->>> +			state_mask |= BIT(PSI_IO_FULL);
->>>   	}
->>> +
->>> +	if (tasks[NR_MEMSTALL]) {
->>> +		state_mask |= BIT(PSI_MEM_SOME);
->>> +		if (tasks[NR_RUNNING] == tasks[NR_MEMSTALL_RUNNING])
->>> +			state_mask |= BIT(PSI_MEM_FULL);
->>> +	}
->>> +
->>> +	if (tasks[NR_RUNNING] > oncpu)
->>> +		state_mask |= BIT(PSI_CPU_SOME);
->>> +
->>> +	if (tasks[NR_RUNNING] && !oncpu)
->>> +		state_mask |= BIT(PSI_CPU_FULL);
->>> +
->>> +	if (tasks[NR_IOWAIT] || tasks[NR_MEMSTALL] || tasks[NR_RUNNING])
->>> +		state_mask |= BIT(PSI_NONIDLE);
->>> +
->>> +	return state_mask;
->>>   }
->>>   
->>>   static void get_recent_times(struct psi_group *group, int cpu,
->>> @@ -770,7 +774,6 @@ static void psi_group_change(struct psi_group *group, int cpu,
->>>   {
->>>   	struct psi_group_cpu *groupc;
->>>   	unsigned int t, m;
->>> -	enum psi_states s;
->>>   	u32 state_mask;
->>>   
->>>   	groupc = per_cpu_ptr(group->pcpu, cpu);
->>> @@ -841,10 +844,7 @@ static void psi_group_change(struct psi_group *group, int cpu,
->>>   		return;
->>>   	}
->>>   
->>> -	for (s = 0; s < NR_PSI_STATES; s++) {
->>> -		if (test_state(groupc->tasks, s, state_mask & PSI_ONCPU))
->>> -			state_mask |= (1 << s);
->>> -	}
->>> +	state_mask = test_states(groupc->tasks, state_mask);
->>>   
->>>   	/*
->>>   	 * Since we care about lost potential, a memstall is FULL
->>> @@ -1194,7 +1194,7 @@ void psi_cgroup_restart(struct psi_group *group)
->>>   	/*
->>>   	 * After we disable psi_group->enabled, we don't actually
->>>   	 * stop percpu tasks accounting in each psi_group_cpu,
->>> -	 * instead only stop test_state() loop, record_times()
->>> +	 * instead only stop test_states() loop, record_times()
->>>   	 * and averaging worker, see psi_group_change() for details.
->>>   	 *
->>>   	 * When disable cgroup PSI, this function has nothing to sync
->>> @@ -1202,7 +1202,7 @@ void psi_cgroup_restart(struct psi_group *group)
->>>   	 * would see !psi_group->enabled and only do task accounting.
->>>   	 *
->>>   	 * When re-enable cgroup PSI, this function use psi_group_change()
->>> -	 * to get correct state mask from test_state() loop on tasks[],
->>> +	 * to get correct state mask from test_states() loop on tasks[],
->>>   	 * and restart groupc->state_start from now, use .clear = .set = 0
->>>   	 * here since no task status really changed.
->>>   	 */
->>> -- 
->>> 2.44.0
->>>
 
