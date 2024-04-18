@@ -1,186 +1,157 @@
-Return-Path: <linux-kernel+bounces-150226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 353038A9BFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:59:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF3B08A9BF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:59:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEA292824D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:59:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4760B1F21917
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 894C21649D5;
-	Thu, 18 Apr 2024 13:59:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A614165FD0;
+	Thu, 18 Apr 2024 13:59:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="EFqRllpU"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JKFr0e5d"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF410168AE7
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 13:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86A831649D2
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 13:58:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713448748; cv=none; b=GbtkadKMXufFSegVXmLS46j2+kgd25xBWwEFQZJZBOL8Xwj+IWi59uS5lsblAQI4TJxY9yCuZlhb53oRLUU2k6NtIybvZhsCbMYcIHYj/cJmdU4DDFyvuWYVZhAZKhqKsZh2qattQ8D8KnYe6MAqAKINupoB+CBeKvUzegMJYhw=
+	t=1713448740; cv=none; b=OTmXlp9Z/ZhZYjvclDOPYrCrteCTtHFU9f8jncG+nhMwFk2alnosk61ge+hVc1RfGKQvCn2hOse1pwHyRQ1eQxEqmKZMaLehoMywC8e6a6rIbbfCyIXX9o5SdOTCeJ+WhqFhBKcf3ydyFXfCpYtlwpW3xihBCKSrWWBKZ2ANj5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713448748; c=relaxed/simple;
-	bh=JT3JZZTJ2Qm1KqHFfbHbqKzfMjaDTTZGcTW42XX/i6s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SwJgvNiH5h8hFhJd0rDSZQkwZBq6zHG3mygV8DpQ9uwJ26zrhewTngAg8Ihi2b1heHjjsZsCirImzwmL48s9NGJkVLUC4ajxzfh0AuIm5QrbHanhzOfo5W19ExVAYJn8HXzMHzSQhG4F3p/mP8ZBtcYlJAVpcxfk8QofJEmAJ14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=EFqRllpU; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed627829e6so1051435b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:59:05 -0700 (PDT)
+	s=arc-20240116; t=1713448740; c=relaxed/simple;
+	bh=jfJM8dSb6kGhQc66FRxX40igRNLtbqPBPjraUYrcYeU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=VkxNk+Vpy9Z93XN+4Wk1JJ2URL0553HlUoJYmothqAytD09eNuZTm6zSEPkOZ/j7+oBKOpG3T69UDqjRsq46GQrt3T7KKqv8mqKZLmQuVXfokol7NG8S9eiwjtpzgxKVyybvouQUEdfTKCBhmXcDvaWai5ECSqyT1J0mZ+DtX+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JKFr0e5d; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5d5a080baf1so928491a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:58:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1713448745; x=1714053545; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WZO5tEmqpe+L1U/C8UD1PE69dEQv50EfBPcTW8iw+NY=;
-        b=EFqRllpUznQCo9ebi00bs037YgXrZGTZjAcg3vZCFxw3n06tCB0+o7suTEzq38YYm6
-         yxzw20WLK+XijfWp9D7eaWDoH9woI7UjOQDKziPhgoRPp8yLx1eLshOfdnJcb8NTVuXm
-         teTu/VlH3/uj/lix7cIR5+J4+s4sTyqmfLZXK2Aj3i9h9n4Uaos/wOrBmjRrIKC8+PWG
-         UqsSBrywjrD/Erowl65CiqC5VWaISUwBe9k/wAe3NNfhsUgkVdpfXz/ac93mhI8IPavN
-         b4mgkjt++q9V0hmKlKv50Gdy+32wzph4I8FU0Q2gzRPHG08dEZaYjq33xkXHQR5KkBBw
-         LnwQ==
+        d=google.com; s=20230601; t=1713448739; x=1714053539; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yNDmhaFib5vUgSCj1EuHEP0N8f9l8mHKtBljI9aZIys=;
+        b=JKFr0e5d8H4A5jufLLQ28H0ENJ/8+aeFjRpZau5tDyynDdenWvHHYuyz3X6fNchT7y
+         ncuGLkybbx03H20nUu4s/gwr1as/f/60P0yr95NFSMrOyjVY9F4xwxMqVof3BmQYA2dD
+         usEBi3hVPCWpwA5bvGnygRJwgbXJROV4s5+1dSslV/uvMKJavcmK34P9Fjcu8GmA+tQs
+         63stFCCwYfoVrtLhWlNJIYRBTMng5BM3scp+4SlYLpySUUdzTWzGWjdDADoO8MZU7Puw
+         6V1Ci9AyoIfLcGSbF3G0Q3xI6TvEV+V/teXfou4QkCzuk1kBk2rQztC9zHmyLhY3Ytk7
+         Vbow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713448745; x=1714053545;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WZO5tEmqpe+L1U/C8UD1PE69dEQv50EfBPcTW8iw+NY=;
-        b=o9WYj/LQk/vkHyCh53qNxx29qAGU0HjSqWMaV7qO56SNNc+T2wCdbYlF7olAgbPK4+
-         PEazJixHVzVrX7YPLOvkufS4Zk8fisWokzRSKlXRHmfJ3QmW/uzW43KaKQrMH6wcDlyJ
-         Jjw62emkkuNZ3o9htoRu9NLT6aLrVkwSS4u0VCaYrdHgx1QXmIKcL2zL2zwuY9uO6h+1
-         6yJt8uIUs3YCRkYgxT+1XU2wlizgnsg7RZ557mEZlu5bPIZydDTwQdTDnUzc2XHnSYx5
-         a3rFIFpkilbrUn9YnN/uqTHdUJCo7WiB/KIZxICgxiwtazZp1Qfwws8s79RpJisz1k33
-         1iXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWlzFnKVgd8xk0+I5TXZutWlp/8COX1oMhS8tve3XCP4uccJFkOBpLwAzYw4fmmD6bn/9leIDLRBn7tut3uTw7cj7+M44SAxz5qBGt4
-X-Gm-Message-State: AOJu0YwORMzvpgCBpfBIm3dhK5m3RLHA1SnrlNUqo96B/fULYUcYI2xv
-	Y1pTzU45mKuBqRxtVWe64WMtS56PvvwFCivRy5TLUDFuDsSJ5s0RGnN9o79IU9Q55IJZcIeK9Kc
-	A8s4=
-X-Google-Smtp-Source: AGHT+IGUjEe5kgj82Lo/86KEUqPTE4pNtd6avdOYxdh0NqwVwVbNQ8pG380MXUqn5yro6JHyVQnxWQ==
-X-Received: by 2002:a05:6a00:8a0f:b0:6ec:da6c:fd69 with SMTP id ic15-20020a056a008a0f00b006ecda6cfd69mr2885160pfb.7.1713448744818;
-        Thu, 18 Apr 2024 06:59:04 -0700 (PDT)
-Received: from sunil-laptop ([106.51.189.72])
-        by smtp.gmail.com with ESMTPSA id km3-20020a056a003c4300b006eaa21301a7sm1488660pfb.162.2024.04.18.06.58.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 06:59:04 -0700 (PDT)
-Date: Thu, 18 Apr 2024 19:28:54 +0530
-From: Sunil V L <sunilvl@ventanamicro.com>
-To: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-	linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Anup Patel <anup@brainfault.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Robert Moore <robert.moore@intel.com>,
-	Haibo1 Xu <haibo1.xu@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Andrei Warkentin <andrei.warkentin@intel.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Subject: Re: [RFC PATCH v4 00/20] RISC-V: ACPI: Add external interrupt
- controller support
-Message-ID: <ZiEnHtWbT04bXYmP@sunil-laptop>
-References: <20240415170113.662318-1-sunilvl@ventanamicro.com>
- <87a5lqsrvh.fsf@all.your.base.are.belong.to.us>
+        d=1e100.net; s=20230601; t=1713448739; x=1714053539;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yNDmhaFib5vUgSCj1EuHEP0N8f9l8mHKtBljI9aZIys=;
+        b=JkDGX90yggQRD4BupugSgc8ZGy0mkT+1RSwM5nVeP/KzMcA6fm/FLtoSkjQef9IAKt
+         cHTocOcWq6ehlFsmi0DmKgHGSubNoatPinvkj9+MSaKDN1vcYfd/ctrkwbWvj+qA5+FV
+         SVFF0G0REFWN6yedux9vEt5no+tkx9co+S4wzpx9/MG3lt3gBGFtdCxIJhdk76BfcYZz
+         FWSmi2HRQmhu12iK5JseUw/H4yOUq6VKJnxXzQ/QfdccUEn53O1/VkHAWAPG2WhDCcpH
+         zmlbUFupl0SenRq5TAnO+UjXxL+jgW+E358bRG4eyRJ9tcyur7vckgtBcmpMlo1lprB6
+         XmLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWOh5F7XxQwW8Gt01QgrcQWwDwtoqXmKfJQwgzslGcmh/e9pF2ZSMeHNXleP4RhDdWYZ9PHFJyVOaVSmIAvM49ICAleYdf6EJ4j660i
+X-Gm-Message-State: AOJu0YzHtc7i4EbwqiJnCE3Vnd8bJSKjXirAs4uRDPuBk2zVWk8V/A7A
+	GsqE9Df8fEgp/gQQfdG9D00u43mjnhpy6hvmP5go2Z5eHnUB+BgcdsiWi6jtlZoXAPWpNPo9DFE
+	PRQ==
+X-Google-Smtp-Source: AGHT+IF/NVV828WbXcekdzll/VFb0eXEt6pK7hsJ3IAg6SEtS8UxqRGfLTiacsRBhENxV1bZpBNSUKpoYJk=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:4854:0:b0:5d5:1e4d:c845 with SMTP id
+ x20-20020a634854000000b005d51e4dc845mr24856pgk.10.1713448738618; Thu, 18 Apr
+ 2024 06:58:58 -0700 (PDT)
+Date: Thu, 18 Apr 2024 06:58:56 -0700
+In-Reply-To: <DS0PR11MB63739BE4347EC6369ED22EBADC0E2@DS0PR11MB6373.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87a5lqsrvh.fsf@all.your.base.are.belong.to.us>
+Mime-Version: 1.0
+References: <20240417150354.275353-1-wei.w.wang@intel.com> <Zh_4QN7eFxyu9hgA@google.com>
+ <DS0PR11MB63739BE4347EC6369ED22EBADC0E2@DS0PR11MB6373.namprd11.prod.outlook.com>
+Message-ID: <ZiEnIFW3ZQhDwdZ-@google.com>
+Subject: Re: [RFC PATCH v1] KVM: x86: Introduce macros to simplify KVM_X86_OPS
+ static calls
+From: Sean Christopherson <seanjc@google.com>
+To: Wei W Wang <wei.w.wang@intel.com>
+Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 
-On Thu, Apr 18, 2024 at 03:49:22PM +0200, Björn Töpel wrote:
-> Sunil V L <sunilvl@ventanamicro.com> writes:
+On Thu, Apr 18, 2024, Wei W Wang wrote:
+> On Thursday, April 18, 2024 12:27 AM, Sean Christopherson wrote:
+> > On Wed, Apr 17, 2024, Wei Wang wrote:
+> > > Introduces two new macros, KVM_X86_SC() and KVM_X86_SCC(), to
+> > > streamline the usage of KVM_X86_OPS static calls. The current
+> > > implementation of these calls is verbose and can lead to alignment
+> > > challenges due to the two pairs of parentheses. This makes the code
+> > > susceptible to exceeding the "80 columns per single line of code"
+> > > limit as defined in the coding-style document. The two macros are
+> > > added to improve code readability and maintainability, while adhering to
+> > the coding style guidelines.
+> > 
+> > Heh, I've considered something similar on multiple occasionsi.  Not because
+> > the verbosity bothers me, but because I often search for exact "word" matches
+> > when looking for function usage and the kvm_x86_ prefix trips me up.
 > 
-> > This series adds support for the below ECR approved by ASWG.
-> > 1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsIKia7zR/view?usp=sharing
-> >
-> > The series primarily enables irqchip drivers for RISC-V ACPI based
-> > platforms.
-> >
-> > The series can be broadly categorized like below. 
-> >
-> > 1) PCI ACPI related functions are migrated from arm64 to common file so
-> > that we don't need to duplicate them for RISC-V.
-> >
-> > 2) Added support for re-ordering the probe of interrupt controllers when
-> > IRQCHIP_ACPI_DECLARE is used.
-> >
-> > 3) To ensure probe order between interrupt controllers and devices,
-> > implicit dependency is created similar to when _DEP is present.
-> >
-> > 4) When PNP devices like Generic 16550A UART, have the dependency on the
-> > interrupt controller, they will not be added to PNP data structures. So,
-> > added second phase of pnpacpi_init to handle this.
-> >
-> > 5) ACPI support added in RISC-V interrupt controller drivers.
-> >
-> > This series is still kept as RFC to seek feedback on above design
-> > changes. Looking forward for the feedback!
-> >
-> > Changes since RFC v3:
-> > 	1) Moved to _DEP method instead of fw_devlink.
-> > 	2) PLIC/APLIC driver probe using namespace devices.
-> > 	3) Handling PNP devices as part of clearing dependency.
-> > 	4) Rebased to latest linux-next to get AIA DT drivers.
-> >
-> > Changes since RFC v2:
-> > 	1) Introduced fw_devlink for ACPI nodes for IRQ dependency.
-> > 	2) Dropped patches in drivers which are not required due to
-> > 	   fw_devlink support.
-> > 	3) Dropped pci_set_msi() patch and added a patch in
-> > 	   pci_create_root_bus().
-> > 	4) Updated pnp_irq() patch so that none of the actual PNP
-> > 	   drivers need to change.
-> >
-> > Changes since RFC v1:
-> > 	1) Abandoned swnode approach as per Marc's feedback.
-> > 	2) To cope up with AIA series changes which changed irqchip driver
-> > 	   probe from core_initcall() to platform_driver, added patches
-> > 	   to support deferred probing.
-> > 	3) Rebased on top of Anup's AIA v11 and added tags.
-> >
-> > To test the series,
-> >
-> > 1) Qemu should be built using the riscv_acpi_namespace_v1 branch at
-> > https://github.com/vlsunil/qemu.git
-> >
-> > 2) EDK2 should be built using the instructions at:
-> > https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README.md
+> Yeah, that's another compelling reason for the improvement.
 > 
-> Hi Sunil,
+> > IIRC, static_call_cond() is essentially dead code, i.e. it's the exact same as
+> > static_call().  I believe there's details buried in a proposed series to remove
+> > it[*].  And to not lead things astray, I verified that invoking a NULL kvm_x86_op
+> > with static_call() does no harm (well, doesn't explode at least).
+> > 
+> > So if we add wrapper macros, I would be in favor in removing all
+> > static_call_cond() as a prep patch so that we can have a single macro.
 > 
-> I started playing with your work, and FYI: Using U-boot instead of EDK2
-> works out of the box (with acpi.config added to U-boot).
-> 
-> I changed my rootfs/boot tooling like [1], and it boots.
-> 
-> (For those who prefer working with U-boot UEFI instead of EDK2.)
-> 
-> 
-Hi Björn,
+> Sounds good. Maybe KVM_X86_OP_OPTIONAL could now also be removed? 
 
-This is cool!. I was not aware that u-boot also supports ACPI on
-RISC-V. Many thanks!
+No, KVM_X86_OP_OPTIONAL() is what allow KVM to WARN if a mandatory hook isn't
+defined.  Without the OPTIONAL and OPTIONAL_RET variants, KVM would need to assume
+every hook is optional, and thus couldn't WARN.
 
-Thanks,
-Sunil
+  static inline void kvm_ops_update(struct kvm_x86_init_ops *ops)
+  {
+	memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
+
+#define __KVM_X86_OP(func) \
+	static_call_update(kvm_x86_##func, kvm_x86_ops.func);
+#define KVM_X86_OP(func) \
+	WARN_ON(!kvm_x86_ops.func); __KVM_X86_OP(func)
+#define KVM_X86_OP_OPTIONAL __KVM_X86_OP
+#define KVM_X86_OP_OPTIONAL_RET0(func) \
+	static_call_update(kvm_x86_##func, (void *)kvm_x86_ops.func ? : \
+					   (void *)__static_call_return0);
+#include <asm/kvm-x86-ops.h>
+#undef __KVM_X86_OP
+
+	kvm_pmu_ops_update(ops->pmu_ops);
+  }
+
+> > kvm_ops_update() already WARNs if a mandatory hook isn't defined, so doing
+> > more checks at runtime wouldn't provide any value.
+> 
+> > 
+> > As for the name, what about KVM_X86_CALL() instead of KVM_X86_SC()?  Two
+> > extra characters, but should make it much more obvious what's going on for
+> > readers that aren't familiar with the infrastructure.
+> 
+> I thought the macro definition is quite intuitive and those encountering it for the
+> first time could get familiar with it easily from the definition.
+> Similarly, KVM_X86_CALL() is fine to me, despite the fact that it doesn't explicitly
+> denote "static" calls.
+
+Repeat readers/developers will get used to KVM_X86_SC(), but for someone that has
+never read KVM code before, KVM_X86_SC() is unintuitive, e.g. basically requires
+looking at the implementation, especially if the reader isn't familiar with the
+kernel's static call framework.
+
+In other words, there needs to be "CALL" somewhere in the name to convey the basic
+gist of the code.  And IMO, the "static" part is a low level detail that isn't
+necessary to understand the core functionality of the code, so omitting it to
+shorten line lengths is a worthwhile tradeoff.
 
