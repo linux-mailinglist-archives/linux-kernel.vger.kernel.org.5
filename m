@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-149765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 670D58A958B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:01:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A0038A958C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:01:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AB9A1C20CAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:01:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4029C28290F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:01:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CC0E15CD40;
-	Thu, 18 Apr 2024 08:59:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6C115D5D2;
+	Thu, 18 Apr 2024 08:59:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pKT1lB/h"
-Received: from mail-lj1-f201.google.com (mail-lj1-f201.google.com [209.85.208.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jT4ig7/S"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E682515A4B8
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:59:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5604715CD5A
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:59:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713430782; cv=none; b=H2nrmajA++TPzH+DncLVYtLIXKU2ZCRam9wyXaV03E6ZBAmWAS0K6AD5TyCQsOfiOw9h6nqnHDxmaJuOujyF7cOljmYOZXs5LKJreajnse41kf9TBUTs6MjFQdATvvx4NCOt3THGj0HwWjlbObXir6uAFFiCEz99QR/m/VNjZLs=
+	t=1713430786; cv=none; b=npP59DWFBcv7SOiS4iAjOnipAoSwIkOLx4oho8v57DTCz1vKX8vX5cw4uZwfKny1uYmrjSSQE+8a8aqOM1hcwmFLXyPhipAq7ivcSw3uSuJW88ZqIEFyRMhhJrZVUGR9AXv9AAb2ozv4jKoYAw9KInNRaFSDIb2LMpa8nr5SvtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713430782; c=relaxed/simple;
-	bh=nI8Gb6Ut6mQQFRyrF/IoMMXllmm0f2L2teM9nYy0pQk=;
+	s=arc-20240116; t=1713430786; c=relaxed/simple;
+	bh=af0xmkxz5WwJ2caWqC4SIR0mhucvRiEoxb05tr7yw14=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=YP16J5IRdS5bkmpjmbOwuOBzyK1QUzgI81m5DvuTn8g7IfvE+CnIY32NVyCPorQAGi/1efRbhgRA5iSfG4Js4XEtmOHtEW4SR8qaozqC1adJS6TneMKfbJYNoEhUs8HCw1KjoKtKVa0O2o+zjuyCeYskau5L9JZ7dAEC10ZomhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pKT1lB/h; arc=none smtp.client-ip=209.85.208.201
+	 To:Cc:Content-Type; b=nNE/w+l3ecxrIouwzWnkzYP0+xgLTTKDw3VLkdZNUZ6DppNZPYQqTdsojqUPE6cOy+JlygRTzqT7PHMCeM+zQspqsaxhzXiFK0qjz4mgLQLaCmNEAoIx/pbPgoyHSMacb5DIUa7irD5WA9bHfImzIrQoQsXqNef6fwspaYK83r8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jT4ig7/S; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-lj1-f201.google.com with SMTP id 38308e7fff4ca-2d8a7bb09afso5655421fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 01:59:40 -0700 (PDT)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc743cc50a6so939045276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 01:59:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713430779; x=1714035579; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1713430782; x=1714035582; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HgZdNi+a47HOfHsTxDpJlGILwCywia5g2y3UnrPe+eU=;
-        b=pKT1lB/h1ceYRvXCxJ6fyVp+CUEA53mKc6suFUBMtQZ87Z01CxL4Zx+btMHFUSs+i2
-         sVLkrhk7L/KWGAMI1DGJ4hn2K6j4XenlMKNkld/7b4WF26uroAOlqAFFh1m6rErlhaeQ
-         9X0jEfy7LRbzhxku48OYmn5EVDwFU6Kj8dRCUmuTfH1bSKxfRi9Yxo+ciM6NE7t43tHN
-         4/t+RtVo13G62V/eaeNr8nFYeqDTqWMnjnGaJE3WBDng4CKQd3IgXyhELTKjD5JrsVLb
-         CANpU1rHpqrERqi0Y3q2JDvfbbOl+nTrZyoL7sdcJ/5B0JOqn+94bxs9l2fn8Nbsq1Oq
-         zHEg==
+        bh=2i7cIGrycSQYWPlCCdINwh9/UQnjF+IIqZAJpSGmhgU=;
+        b=jT4ig7/SBcQGwiG/AHNFpUNlEaYF5aOmPfi7nYObQfHk5EEs2t+jZ0r3DJLUY80cXr
+         iUyTc0qF/JAy8VyrG1VOp19j7R3pZeIoRqMqfPofLEU4ELAd/+2ejUK4NSfrbLJIIsqL
+         AxZRh6cZBOILitDvNcXsrOuoXknarXBYbyZuq0zEXTULLfptccGbkmWMPmSEgYLp9YXH
+         BBBOr9neEwotYBRUdNnSP38sWT7cJomXGwC2ApqtvLyaFziwt+zc5EoRAezVTBcMRDBj
+         AVvb2TnTmrOOREF6Uib3zdL6UI4d0XDrLMOnqWMjxIwjG0T2NFBx9Dt7Okeu86rXOhdf
+         CEDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713430779; x=1714035579;
+        d=1e100.net; s=20230601; t=1713430782; x=1714035582;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HgZdNi+a47HOfHsTxDpJlGILwCywia5g2y3UnrPe+eU=;
-        b=D2dJwq7z+Fg1OaQh5U5PL5WQXzYF6R40NqWPKFalA//qtQlGXs1qnXRFZLEbkA8auV
-         IweK0rEz/IWl7Gr3Ml1Zf8YVrGSIbgip7aU+8FNdNw04qCt5m/OJcv+eN4jdFCn0TM5Q
-         Rix4owXRBa7nCgYGznBdBOWf6AGkMOTDZ3kzFmBHhf9HfbNCvIiXcg8zERDDp6l7XOJ1
-         Y3cN+pTMFebTX6a5NsihIr8kYsFbwYO9dr2P6ecTPGn6qDtCp2gog+9K5poz7Lw67lT3
-         nGGKm3gFzN9qnKNnFFvZyPylabRtGGFYisqrTRUfEsTNRsF3Xm4abcwIfeLI0GBMqggl
-         4qVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWgJ5jVLEm1Wodw37rxZMipRTqkojKHbuCQRxNKg6eimM6UN/Sn8/5zd+GI6ywrZE2o91Aljr/byZqoa5zJ56eteB4SRjZBZnwU+C27
-X-Gm-Message-State: AOJu0Yw0ZlOr3FP3eh3X8uGFb2sp5jwTzGP/r2p/CpfpRdXNX0l+tgPA
-	9NUMsoMh68JULAgS4DtM4zBfdekFHH2Js77ZeXPNpP6Qbh2sFP0lJqy2VONi6yNOQJOCwkoCvdl
-	d7U0W/iuxb0Q6XQ==
-X-Google-Smtp-Source: AGHT+IH6ScDtDrgw+IgQwpvtBZKJlRmNiyvFjb4gONlBnfX6IBw590w36dZkN+MXAX42+StYgo9t80UV0fKV/JE=
+        bh=2i7cIGrycSQYWPlCCdINwh9/UQnjF+IIqZAJpSGmhgU=;
+        b=QF2NYWAyKykdBoKiT07B8gad1IbIHNdVkYEI5hMLKhuyl7HQQs1CsnOUfp6S4NyJJO
+         RDFCuKzktBQwaPK2L9HXv6g8i1k1+RlJrmUorhKGlsK1vObd2jN3wyGti6Gay8JYlsMu
+         RddejokY8uO4xma0XbRf1vQDR0umLatrIlmUoUJyc/hKFc5/1/ZA7deWQVMEGS+N8eQo
+         kkWQ8hC3VXPMax2sa0FFaMcBTNcTvXkwx5IRfdEb2A3oleP5cXO30DuI9Qfw5bk1TxG1
+         QM8fdEPwG1BMXpZLtJceNfClqFb6lTEY3yNVzu8A3tf1hVEKMLFMt4luqziRDdYyfpBM
+         J9IQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWGbDbdcV0bn/UKa0fF7S09NIBMvqtnwy4jHcuF9QXnGizMeMSNXWC7+GfL9N1cSDk+m1Rm6KEbAhb2EVLVsbYA2qBwvwYrOJ5QapWA
+X-Gm-Message-State: AOJu0Yx8t9d9+WHzYx/M+y7gbKq+gx5ar2rUbV3tbIqs0X6k9lCWZb/S
+	1oJfHvLB3X7nDpg+BskEayXJvawif7nzPHUNoF33tajHVhRNtq4fCbh+NyzvaHi36Ylan/p6E88
+	rbaetK1klVMXjJA==
+X-Google-Smtp-Source: AGHT+IG+jY4+0ofbPAOxP4aGGV+IDNpzgvLMZWhsS1WIS60BQrHa6xxYtx5GVync8b3M5DHqH+EipzY/b+2qzBU=
 X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6512:512:b0:518:bd37:87f2 with SMTP
- id o18-20020a056512051200b00518bd3787f2mr1938lfb.4.1713430779142; Thu, 18 Apr
- 2024 01:59:39 -0700 (PDT)
-Date: Thu, 18 Apr 2024 08:59:19 +0000
+ (user=aliceryhl job=sendgmr) by 2002:a05:6902:18cd:b0:de4:67d9:a2c6 with SMTP
+ id ck13-20020a05690218cd00b00de467d9a2c6mr89467ybb.2.1713430782225; Thu, 18
+ Apr 2024 01:59:42 -0700 (PDT)
+Date: Thu, 18 Apr 2024 08:59:20 +0000
 In-Reply-To: <20240418-alice-mm-v6-0-cb8f3e5d688f@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,22 +73,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240418-alice-mm-v6-0-cb8f3e5d688f@google.com>
 X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8978; i=aliceryhl@google.com;
- h=from:subject:message-id; bh=nI8Gb6Ut6mQQFRyrF/IoMMXllmm0f2L2teM9nYy0pQk=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBmIODvS6oNsms6X0YHcmuKs7EizEym1tAEymjog
- Q30/NA20CSJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZiDg7wAKCRAEWL7uWMY5
- RncsEACrSjtg5WqYkwrxGPaVxe3pCJO44xelyaMAJzezxUveUUN5hRIaFILfZELJj21aJsGBbVu
- l5N9yhyek7O3RPzQFGOzyapoR0QkuNWswj8JdEFq34/xHTp02Dy0WRmgxYUeIyQo+CkH+epFXbA
- yLxSgdLPnaqwYLFkJL6W5fwIbas8WiKJyS7u/Udsd+14bj2lHYAYCKosI5sSyJbIaRX4ODOrp9F
- BNHlogeI0A9yixFtpGGvN8z+kLxbDNafpriT58EFMWb5WmrXUjW6w+nxdvj3byMBWWqo3FxHHmt
- O80OQrBHRpoM5az1Xz7ctWqayHAL1Q8VsbQCu87jrGxP8BFwhvnYpHS1G9LtlkuBXeKLEKmlx+U
- D+fcJj9z/3j1P8biVsbOFvv/64U8re5ZdjqRyOqBygddDFvMEVkY9jW7n7Z3NtPyMuw8vQn8Prz
- DEAp2pVwpkf7Luo7EZhM431ixMB1xM1F0M9590356xT26n8/qycKA8X6ApHtnC30MoQLF8PXEte
- 4eMs4UvJmDodAIddQUXiz+Kj0FhmLVKyq85a2LEXuJuocTEzIoW7G1ytgOSkfmWFxmzjfa241x8
- MrruNrGto/mokKkTJkN9fr0Yr5NZeVs2OmcAPCWihtjiUChNskjqHNalBFknaZUrbLknfBkVYee XKo2SmbVJZgp8vg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=16029; i=aliceryhl@google.com;
+ h=from:subject:message-id; bh=af0xmkxz5WwJ2caWqC4SIR0mhucvRiEoxb05tr7yw14=;
+ b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBmIODvBTN1EJk4q9WLN6UPNG6sSesov6EsZDtRE
+ MaqZfGehSuJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZiDg7wAKCRAEWL7uWMY5
+ Rq/SD/9YqfoAjeuS9VklwHUSs1rn5vmzmFezb8JzHZ111jayAEZ1/AuITRgkAPPp+EY/GXWC9sR
+ qSazhLjpMbJlQQVgAskubdzy63Ep6bsr/3Gwb9EnhVo+cZxg3JA7DP9y/dtrBBTcnwuSCxz9Q9N
+ E4wScxVzeklnykkmwNHN4qiZ//mdG6b0FG3phZOIq+WAvWdhHxkQIxdODCWt6qPSvPntIj3+PPM
+ 8fekPfWDKPdRmER+eWXAPQBfsKHdzBrRhj7frTBdaUELnd6evJrnduAtglFnqu2znIaRwomBHsW
+ hMvEDO63+If+0T7pkWfEzrj0i4DPn7n4YaIMQwDYWdoxOWGiS/TUI3sRHFxGSL+7ooBt9SG7BRg
+ j4oYk88EmNiiNR0Jad2E5UJj7lX2yiP/T+JWhFjBEKpN5FMs8Nrt7KfN4x0JWKvE5XpnaQoRYla
+ rcqp0woeAlAzyGbo02t9PIb4TDQUwxTzsGgeMSxVq7izTevsrCCuj4LI6wbHCiSM2KIoSugK42l
+ Pu1NpgPsiw9Ys2RWtLhiZ99b38voiTCrUVSfeKbfDKUdsLsZisaPcs8OTQFOq0FoyOULZCYKDqT
+ I3b8KMNX9i0EfWQFLFCC7OpsoJBPfOH3RBtrOcEEcQ48hlvPvzHQyqAyLw6sm+nme1Ul+CPeo+T 7G1JpJbpOBZnLEw==
 X-Mailer: b4 0.13-dev-26615
-Message-ID: <20240418-alice-mm-v6-3-cb8f3e5d688f@google.com>
-Subject: [PATCH v6 3/4] rust: uaccess: add typed accessors for userspace pointers
+Message-ID: <20240418-alice-mm-v6-4-cb8f3e5d688f@google.com>
+Subject: [PATCH v6 4/4] rust: add abstraction for `struct page`
 From: Alice Ryhl <aliceryhl@google.com>
 To: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
 	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, 
@@ -105,219 +105,388 @@ Cc: Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.co
 	Christian Brauner <brauner@kernel.org>
 Content-Type: text/plain; charset="utf-8"
 
-Add safe methods for reading and writing Rust values to and from
-userspace pointers.
+Adds a new struct called `Page` that wraps a pointer to `struct page`.
+This struct is assumed to hold ownership over the page, so that Rust
+code can allocate and manage pages directly.
 
-The C methods for copying to/from userspace use a function called
-`check_object_size` to verify that the kernel pointer is not dangling.
-However, this check is skipped when the length is a compile-time
-constant, with the assumption that such cases trivially have a correct
-kernel pointer.
+The page type has various methods for reading and writing into the page.
+These methods will temporarily map the page to allow the operation. All
+of these methods use a helper that takes an offset and length, performs
+bounds checks, and returns a pointer to the given offset in the page.
 
-In this patch, we apply the same optimization to the typed accessors.
-For both methods, the size of the operation is known at compile time to
-be size_of of the type being read or written. Since the C side doesn't
-provide a variant that skips only this check, we create custom helpers
-for this purpose.
+This patch only adds support for pages of order zero, as that is all
+Rust Binder needs. However, it is written to make it easy to add support
+for higher-order pages in the future. To do that, you would add a const
+generic parameter to `Page` that specifies the order. Most of the
+methods do not need to be adjusted, as the logic for dealing with
+mapping multiple pages at once can be isolated to just the
+`with_pointer_into_page` method.
 
-The majority of reads and writes to userspace pointers in the Rust
-Binder driver uses these accessor methods. Benchmarking has found that
-skipping the `check_object_size` check makes a big difference for the
-cases being skipped here. (And that the check doesn't make a difference
-for the cases that use the raw read/write methods.)
+Rust Binder needs to manage pages directly as that is how transactions
+are delivered: Each process has an mmap'd region for incoming
+transactions. When an incoming transaction arrives, the Binder driver
+will choose a region in the mmap, allocate and map the relevant pages
+manually, and copy the incoming transaction directly into the page. This
+architecture allows the driver to copy transactions directly from the
+address space of one process to another, without an intermediate copy
+to a kernel buffer.
 
-This code is based on something that was originally written by Wedson on
-the old rust branch. It was modified by Alice to skip the
-`check_object_size` check, and to update various comments, including the
-notes about kernel pointers in `WritableToBytes`.
+This code is based on Wedson's page abstractions from the old rust
+branch, but it has been modified by Alice by removing the incomplete
+support for higher-order pages, by introducing the `with_*` helpers
+to consolidate the bounds checking logic into a single place, and
+various other changes.
 
 Co-developed-by: Wedson Almeida Filho <wedsonaf@gmail.com>
 Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+Reviewed-by: Andreas Hindborg <a.hindborg@samsung.com>
 Reviewed-by: Trevor Gross <tmgross@umich.edu>
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
 Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 ---
- rust/kernel/types.rs   | 64 ++++++++++++++++++++++++++++++++++++++++
- rust/kernel/uaccess.rs | 79 ++++++++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 141 insertions(+), 2 deletions(-)
+ rust/bindings/bindings_helper.h |   1 +
+ rust/helpers.c                  |  20 ++++
+ rust/kernel/alloc.rs            |   7 ++
+ rust/kernel/lib.rs              |   1 +
+ rust/kernel/page.rs             | 250 ++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 279 insertions(+)
 
-diff --git a/rust/kernel/types.rs b/rust/kernel/types.rs
-index 8fad61268465..9c57c6c75553 100644
---- a/rust/kernel/types.rs
-+++ b/rust/kernel/types.rs
-@@ -409,3 +409,67 @@ pub enum Either<L, R> {
-     /// Constructs an instance of [`Either`] containing a value of type `R`.
-     Right(R),
- }
-+
-+/// Types for which any bit pattern is valid.
-+///
-+/// Not all types are valid for all values. For example, a `bool` must be either zero or one, so
-+/// reading arbitrary bytes into something that contains a `bool` is not okay.
-+///
-+/// It's okay for the type to have padding, as initializing those bytes has no effect.
-+///
-+/// # Safety
-+///
-+/// All bit-patterns must be valid for this type. This type must not have interior mutability.
-+pub unsafe trait FromBytes {}
-+
-+// SAFETY: All bit patterns are acceptable values of the types below.
-+unsafe impl FromBytes for u8 {}
-+unsafe impl FromBytes for u16 {}
-+unsafe impl FromBytes for u32 {}
-+unsafe impl FromBytes for u64 {}
-+unsafe impl FromBytes for usize {}
-+unsafe impl FromBytes for i8 {}
-+unsafe impl FromBytes for i16 {}
-+unsafe impl FromBytes for i32 {}
-+unsafe impl FromBytes for i64 {}
-+unsafe impl FromBytes for isize {}
-+// SAFETY: If all bit patterns are acceptable for individual values in an array, then all bit
-+// patterns are also acceptable for arrays of that type.
-+unsafe impl<T: FromBytes> FromBytes for [T] {}
-+unsafe impl<T: FromBytes, const N: usize> FromBytes for [T; N] {}
-+
-+/// Types that can be viewed as an immutable slice of initialized bytes.
-+///
-+/// If a struct implements this trait, then it is okay to copy it byte-for-byte to userspace. This
-+/// means that it should not have any padding, as padding bytes are uninitialized. Reading
-+/// uninitialized memory is not just undefined behavior, it may even lead to leaking sensitive
-+/// information on the stack to userspace.
-+///
-+/// The struct should also not hold kernel pointers, as kernel pointer addresses are also considered
-+/// sensitive. However, leaking kernel pointers is not considered undefined behavior by Rust, so
-+/// this is a correctness requirement, but not a safety requirement.
-+///
-+/// # Safety
-+///
-+/// Values of this type may not contain any uninitialized bytes. This type must not have interior
-+/// mutability.
-+pub unsafe trait AsBytes {}
-+
-+// SAFETY: Instances of the following types have no uninitialized portions.
-+unsafe impl AsBytes for u8 {}
-+unsafe impl AsBytes for u16 {}
-+unsafe impl AsBytes for u32 {}
-+unsafe impl AsBytes for u64 {}
-+unsafe impl AsBytes for usize {}
-+unsafe impl AsBytes for i8 {}
-+unsafe impl AsBytes for i16 {}
-+unsafe impl AsBytes for i32 {}
-+unsafe impl AsBytes for i64 {}
-+unsafe impl AsBytes for isize {}
-+unsafe impl AsBytes for bool {}
-+unsafe impl AsBytes for char {}
-+unsafe impl AsBytes for str {}
-+// SAFETY: If individual values in an array have no uninitialized portions, then the array itself
-+// does not have any uninitialized portions either.
-+unsafe impl<T: AsBytes> AsBytes for [T] {}
-+unsafe impl<T: AsBytes, const N: usize> AsBytes for [T; N] {}
-diff --git a/rust/kernel/uaccess.rs b/rust/kernel/uaccess.rs
-index ee5623d7b98f..39481e374c40 100644
---- a/rust/kernel/uaccess.rs
-+++ b/rust/kernel/uaccess.rs
-@@ -4,10 +4,16 @@
- //!
- //! C header: [`include/linux/uaccess.h`](srctree/include/linux/uaccess.h)
+diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
+index ddb5644d4fd9..0862261cfbed 100644
+--- a/rust/bindings/bindings_helper.h
++++ b/rust/bindings/bindings_helper.h
+@@ -20,6 +20,7 @@
  
--use crate::{alloc::Flags, bindings, error::Result, prelude::*};
+ /* `bindgen` gets confused at certain things. */
+ const size_t RUST_CONST_HELPER_ARCH_SLAB_MINALIGN = ARCH_SLAB_MINALIGN;
++const size_t RUST_CONST_HELPER_PAGE_SIZE = PAGE_SIZE;
+ const gfp_t RUST_CONST_HELPER_GFP_ATOMIC = GFP_ATOMIC;
+ const gfp_t RUST_CONST_HELPER_GFP_KERNEL = GFP_KERNEL;
+ const gfp_t RUST_CONST_HELPER_GFP_KERNEL_ACCOUNT = GFP_KERNEL_ACCOUNT;
+diff --git a/rust/helpers.c b/rust/helpers.c
+index 312b6fcb49d5..72361003ba91 100644
+--- a/rust/helpers.c
++++ b/rust/helpers.c
+@@ -25,6 +25,8 @@
+ #include <linux/build_bug.h>
+ #include <linux/err.h>
+ #include <linux/errname.h>
++#include <linux/gfp.h>
++#include <linux/highmem.h>
+ #include <linux/mutex.h>
+ #include <linux/refcount.h>
+ #include <linux/sched/signal.h>
+@@ -93,6 +95,24 @@ int rust_helper_signal_pending(struct task_struct *t)
+ }
+ EXPORT_SYMBOL_GPL(rust_helper_signal_pending);
+ 
++struct page *rust_helper_alloc_pages(gfp_t gfp_mask, unsigned int order)
++{
++	return alloc_pages(gfp_mask, order);
++}
++EXPORT_SYMBOL_GPL(rust_helper_alloc_pages);
++
++void *rust_helper_kmap_local_page(struct page *page)
++{
++	return kmap_local_page(page);
++}
++EXPORT_SYMBOL_GPL(rust_helper_kmap_local_page);
++
++void rust_helper_kunmap_local(const void *addr)
++{
++	kunmap_local(addr);
++}
++EXPORT_SYMBOL_GPL(rust_helper_kunmap_local);
++
+ refcount_t rust_helper_REFCOUNT_INIT(int n)
+ {
+ 	return (refcount_t)REFCOUNT_INIT(n);
+diff --git a/rust/kernel/alloc.rs b/rust/kernel/alloc.rs
+index f1c2c4aa22d2..7ab2b33f19d4 100644
+--- a/rust/kernel/alloc.rs
++++ b/rust/kernel/alloc.rs
+@@ -20,6 +20,13 @@
+ #[derive(Clone, Copy)]
+ pub struct Flags(u32);
+ 
++impl Flags {
++    /// Get the raw representation of this flag.
++    pub(crate) fn as_raw(self) -> u32 {
++        self.0
++    }
++}
++
+ impl core::ops::BitOr for Flags {
+     type Output = Self;
+     fn bitor(self, rhs: Self) -> Self::Output {
+diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+index 7ee807ae4680..048e1662829a 100644
+--- a/rust/kernel/lib.rs
++++ b/rust/kernel/lib.rs
+@@ -35,6 +35,7 @@
+ pub mod kunit;
+ #[cfg(CONFIG_NET)]
+ pub mod net;
++pub mod page;
+ pub mod prelude;
+ pub mod print;
+ mod static_assert;
+diff --git a/rust/kernel/page.rs b/rust/kernel/page.rs
+new file mode 100644
+index 000000000000..121d20066645
+--- /dev/null
++++ b/rust/kernel/page.rs
+@@ -0,0 +1,250 @@
++// SPDX-License-Identifier: GPL-2.0
++
++//! Kernel page allocation and management.
++
 +use crate::{
-+    alloc::Flags,
++    alloc::{AllocError, Flags},
 +    bindings,
++    error::code::*,
 +    error::Result,
-+    prelude::*,
-+    types::{AsBytes, FromBytes},
++    uaccess::UserSliceReader,
 +};
- use alloc::vec::Vec;
- use core::ffi::{c_ulong, c_void};
--use core::mem::MaybeUninit;
-+use core::mem::{size_of, MaybeUninit};
- 
- /// The type used for userspace addresses.
- pub type UserPtr = usize;
-@@ -247,6 +253,41 @@ pub fn read_slice(&mut self, out: &mut [u8]) -> Result {
-         self.read_raw(out)
-     }
- 
-+    /// Reads a value of the specified type.
++use core::ptr::{self, NonNull};
++
++/// A bitwise shift for the page size.
++pub const PAGE_SHIFT: usize = bindings::PAGE_SHIFT as usize;
++
++/// The number of bytes in a page.
++pub const PAGE_SIZE: usize = bindings::PAGE_SIZE;
++
++/// A bitmask that gives the page containing a given address.
++pub const PAGE_MASK: usize = !(PAGE_SIZE - 1);
++
++/// A pointer to a page that owns the page allocation.
++///
++/// # Invariants
++///
++/// The pointer is valid, and has ownership over the page.
++pub struct Page {
++    page: NonNull<bindings::page>,
++}
++
++// SAFETY: Pages have no logic that relies on them staying on a given thread, so moving them across
++// threads is safe.
++unsafe impl Send for Page {}
++
++// SAFETY: Pages have no logic that relies on them not being accessed concurrently, so accessing
++// them concurrently is safe.
++unsafe impl Sync for Page {}
++
++impl Page {
++    /// Allocates a new page.
 +    ///
-+    /// Fails with `EFAULT` if the read happens on a bad address, or if the read goes out of bounds
-+    /// of this [`UserSliceReader`].
-+    pub fn read<T: FromBytes>(&mut self) -> Result<T> {
-+        let len = size_of::<T>();
-+        if len > self.length {
-+            return Err(EFAULT);
-+        }
-+        let Ok(len_ulong) = c_ulong::try_from(len) else {
-+            return Err(EFAULT);
-+        };
-+        let mut out: MaybeUninit<T> = MaybeUninit::uninit();
-+        // SAFETY: The local variable `out` is valid for writing `size_of::<T>()` bytes.
-+        //
-+        // By using the _copy_from_user variant, we skip the check_object_size check that verifies
-+        // the kernel pointer. This mirrors the logic on the C side that skips the check when the
-+        // length is a compile-time constant.
-+        let res = unsafe {
-+            bindings::_copy_from_user(
-+                out.as_mut_ptr().cast::<c_void>(),
-+                self.ptr as *const c_void,
-+                len_ulong,
-+            )
-+        };
-+        if res != 0 {
-+            return Err(EFAULT);
-+        }
-+        self.ptr = self.ptr.wrapping_add(len);
-+        self.length -= len;
-+        // SAFETY: The read above has initialized all bytes in `out`, and since `T` implements
-+        // `FromBytes`, any bit-pattern is a valid value for this type.
-+        Ok(unsafe { out.assume_init() })
++    /// # Examples
++    ///
++    /// Allocate memory for a page.
++    ///
++    /// ```
++    /// use kernel::page::Page;
++    ///
++    /// # fn dox() -> Result<(), kernel::alloc::AllocError> {
++    /// let page = Page::alloc_page(GFP_KERNEL)?;
++    /// # Ok(()) }
++    /// ```
++    ///
++    /// Allocate memory for a page and zero its contents.
++    ///
++    /// ```
++    /// use kernel::page::Page;
++    ///
++    /// # fn dox() -> Result<(), kernel::alloc::AllocError> {
++    /// let page = Page::alloc_page(GFP_KERNEL | __GFP_ZERO)?;
++    /// # Ok(()) }
++    /// ```
++    pub fn alloc_page(flags: Flags) -> Result<Self, AllocError> {
++        // SAFETY: Depending on the value of `gfp_flags`, this call may sleep. Other than that, it
++        // is always safe to call this method.
++        let page = unsafe { bindings::alloc_pages(flags.as_raw(), 0) };
++        let page = NonNull::new(page).ok_or(AllocError)?;
++        // INVARIANT: We just successfully allocated a page, so we now have ownership of the newly
++        // allocated page. We transfer that ownership to the new `Page` object.
++        Ok(Self { page })
 +    }
 +
-     /// Reads the entirety of the user slice, appending it to the end of the provided buffer.
-     ///
-     /// Fails with `EFAULT` if the read happens on a bad address.
-@@ -310,4 +351,38 @@ pub fn write_slice(&mut self, data: &[u8]) -> Result {
-         self.length -= len;
-         Ok(())
-     }
-+
-+    /// Writes the provided Rust value to this userspace pointer.
-+    ///
-+    /// Fails with `EFAULT` if the write happens on a bad address, or if the write goes out of bounds
-+    /// of this [`UserSliceWriter`]. This call may modify the associated userspace slice even if it
-+    /// returns an error.
-+    pub fn write<T: AsBytes>(&mut self, value: &T) -> Result {
-+        let len = size_of::<T>();
-+        if len > self.length {
-+            return Err(EFAULT);
-+        }
-+        let Ok(len_ulong) = c_ulong::try_from(len) else {
-+            return Err(EFAULT);
-+        };
-+        // SAFETY: The reference points to a value of type `T`, so it is valid for reading
-+        // `size_of::<T>()` bytes.
-+        //
-+        // By using the _copy_to_user variant, we skip the check_object_size check that verifies the
-+        // kernel pointer. This mirrors the logic on the C side that skips the check when the length
-+        // is a compile-time constant.
-+        let res = unsafe {
-+            bindings::_copy_to_user(
-+                self.ptr as *mut c_void,
-+                (value as *const T).cast::<c_void>(),
-+                len_ulong,
-+            )
-+        };
-+        if res != 0 {
-+            return Err(EFAULT);
-+        }
-+        self.ptr = self.ptr.wrapping_add(len);
-+        self.length -= len;
-+        Ok(())
++    /// Returns a raw pointer to the page.
++    pub fn as_ptr(&self) -> *mut bindings::page {
++        self.page.as_ptr()
 +    }
- }
++
++    /// Runs a piece of code with this page mapped to an address.
++    ///
++    /// The page is unmapped when this call returns.
++    ///
++    /// # Using the raw pointer
++    ///
++    /// It is up to the caller to use the provided raw pointer correctly. The pointer is valid for
++    /// `PAGE_SIZE` bytes and for the duration in which the closure is called. The pointer might
++    /// only be mapped on the current thread, and when that is the case, dereferencing it on other
++    /// threads is UB. Other than that, the usual rules for dereferencing a raw pointer apply: don't
++    /// cause data races, the memory may be uninitialized, and so on.
++    ///
++    /// If multiple threads map the same page at the same time, then they may reference with
++    /// different addresses. However, even if the addresses are different, the underlying memory is
++    /// still the same for these purposes (e.g., it's still a data race if they both write to the
++    /// same underlying byte at the same time).
++    fn with_page_mapped<T>(&self, f: impl FnOnce(*mut u8) -> T) -> T {
++        // SAFETY: `page` is valid due to the type invariants on `Page`.
++        let mapped_addr = unsafe { bindings::kmap_local_page(self.as_ptr()) };
++
++        let res = f(mapped_addr.cast());
++
++        // This unmaps the page mapped above.
++        //
++        // SAFETY: Since this API takes the user code as a closure, it can only be used in a manner
++        // where the pages are unmapped in reverse order. This is as required by `kunmap_local`.
++        //
++        // In other words, if this call to `kunmap_local` happens when a different page should be
++        // unmapped first, then there must necessarily be a call to `kmap_local_page` other than the
++        // call just above in `with_page_mapped` that made that possible. In this case, it is the
++        // unsafe block that wraps that other call that is incorrect.
++        unsafe { bindings::kunmap_local(mapped_addr) };
++
++        res
++    }
++
++    /// Runs a piece of code with a raw pointer to a slice of this page, with bounds checking.
++    ///
++    /// If `f` is called, then it will be called with a pointer that points at `off` bytes into the
++    /// page, and the pointer will be valid for at least `len` bytes. The pointer is only valid on
++    /// this task, as this method uses a local mapping.
++    ///
++    /// If `off` and `len` refers to a region outside of this page, then this method returns
++    /// `EINVAL` and does not call `f`.
++    ///
++    /// # Using the raw pointer
++    ///
++    /// It is up to the caller to use the provided raw pointer correctly. The pointer is valid for
++    /// `len` bytes and for the duration in which the closure is called. The pointer might only be
++    /// mapped on the current thread, and when that is the case, dereferencing it on other threads
++    /// is UB. Other than that, the usual rules for dereferencing a raw pointer apply: don't cause
++    /// data races, the memory may be uninitialized, and so on.
++    ///
++    /// If multiple threads map the same page at the same time, then they may reference with
++    /// different addresses. However, even if the addresses are different, the underlying memory is
++    /// still the same for these purposes (e.g., it's still a data race if they both write to the
++    /// same underlying byte at the same time).
++    fn with_pointer_into_page<T>(
++        &self,
++        off: usize,
++        len: usize,
++        f: impl FnOnce(*mut u8) -> Result<T>,
++    ) -> Result<T> {
++        let bounds_ok = off <= PAGE_SIZE && len <= PAGE_SIZE && (off + len) <= PAGE_SIZE;
++
++        if bounds_ok {
++            self.with_page_mapped(move |page_addr| {
++                // SAFETY: The `off` integer is at most `PAGE_SIZE`, so this pointer offset will
++                // result in a pointer that is in bounds or one off the end of the page.
++                f(unsafe { page_addr.add(off) })
++            })
++        } else {
++            Err(EINVAL)
++        }
++    }
++
++    /// Maps the page and reads from it into the given buffer.
++    ///
++    /// This method will perform bounds checks on the page offset. If `offset .. offset+len` goes
++    /// outside ot the page, then this call returns `EINVAL`.
++    ///
++    /// # Safety
++    ///
++    /// * Callers must ensure that `dst` is valid for writing `len` bytes.
++    /// * Callers must ensure that this call does not race with a write to the same page that
++    ///   overlaps with this read.
++    pub unsafe fn read_raw(&self, dst: *mut u8, offset: usize, len: usize) -> Result {
++        self.with_pointer_into_page(offset, len, move |src| {
++            // SAFETY: If `with_pointer_into_page` calls into this closure, then
++            // it has performed a bounds check and guarantees that `src` is
++            // valid for `len` bytes.
++            //
++            // There caller guarantees that there is no data race.
++            unsafe { ptr::copy_nonoverlapping(src, dst, len) };
++            Ok(())
++        })
++    }
++
++    /// Maps the page and writes into it from the given buffer.
++    ///
++    /// This method will perform bounds checks on the page offset. If `offset .. offset+len` goes
++    /// outside ot the page, then this call returns `EINVAL`.
++    ///
++    /// # Safety
++    ///
++    /// * Callers must ensure that `src` is valid for reading `len` bytes.
++    /// * Callers must ensure that this call does not race with a read or write to the same page
++    ///   that overlaps with this write.
++    pub unsafe fn write_raw(&self, src: *const u8, offset: usize, len: usize) -> Result {
++        self.with_pointer_into_page(offset, len, move |dst| {
++            // SAFETY: If `with_pointer_into_page` calls into this closure, then it has performed a
++            // bounds check and guarantees that `dst` is valid for `len` bytes.
++            //
++            // There caller guarantees that there is no data race.
++            unsafe { ptr::copy_nonoverlapping(src, dst, len) };
++            Ok(())
++        })
++    }
++
++    /// Maps the page and zeroes the given slice.
++    ///
++    /// This method will perform bounds checks on the page offset. If `offset .. offset+len` goes
++    /// outside ot the page, then this call returns `EINVAL`.
++    ///
++    /// # Safety
++    ///
++    /// Callers must ensure that this call does not race with a read or write to the same page that
++    /// overlaps with this write.
++    pub unsafe fn fill_zero_raw(&self, offset: usize, len: usize) -> Result {
++        self.with_pointer_into_page(offset, len, move |dst| {
++            // SAFETY: If `with_pointer_into_page` calls into this closure, then it has performed a
++            // bounds check and guarantees that `dst` is valid for `len` bytes.
++            //
++            // There caller guarantees that there is no data race.
++            unsafe { ptr::write_bytes(dst, 0u8, len) };
++            Ok(())
++        })
++    }
++
++    /// Copies data from userspace into this page.
++    ///
++    /// This method will perform bounds checks on the page offset. If `offset .. offset+len` goes
++    /// outside ot the page, then this call returns `EINVAL`.
++    ///
++    /// Like the other `UserSliceReader` methods, data races are allowed on the userspace address.
++    /// However, they are not allowed on the page you are copying into.
++    ///
++    /// # Safety
++    ///
++    /// Callers must ensure that this call does not race with a read or write to the same page that
++    /// overlaps with this write.
++    pub unsafe fn copy_from_user_slice_raw(
++        &self,
++        reader: &mut UserSliceReader,
++        offset: usize,
++        len: usize,
++    ) -> Result {
++        self.with_pointer_into_page(offset, len, move |dst| {
++            // SAFETY: If `with_pointer_into_page` calls into this closure, then it has performed a
++            // bounds check and guarantees that `dst` is valid for `len` bytes. Furthermore, we have
++            // exclusive access to the slice since the caller guarantees that there are no races.
++            reader.read_raw(unsafe { core::slice::from_raw_parts_mut(dst.cast(), len) })
++        })
++    }
++}
++
++impl Drop for Page {
++    fn drop(&mut self) {
++        // SAFETY: By the type invariants, we have ownership of the page and can free it.
++        unsafe { bindings::__free_pages(self.page.as_ptr(), 0) };
++    }
++}
 
 -- 
 2.44.0.683.g7961c838ac-goog
