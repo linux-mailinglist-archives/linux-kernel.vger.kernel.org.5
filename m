@@ -1,249 +1,192 @@
-Return-Path: <linux-kernel+bounces-149466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9AF98A9180
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:17:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFE9A8A9182
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:19:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A957283E53
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:17:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A05D1F2264C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:19:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA8C24F896;
-	Thu, 18 Apr 2024 03:17:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABDAC50251;
+	Thu, 18 Apr 2024 03:18:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QESCY0mJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LWR6Bfz/"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F199714294
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 03:17:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713410272; cv=none; b=XDVY+M0M00qdvKSvAG5ej/tjUvhGib5OYRK9jUC/v8pW5hoC9z0WANOCoIW5+fUor2W+kVRssFKjPW+eo8p2qmre/Vc3/vcRZjJ75YwuPSj6kXTxwlwCOv4f6NASOo13EFKp/DWWJVdDGncfn8KrOsrhfqs128lyUSQyNWB+IV8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713410272; c=relaxed/simple;
-	bh=AHMJpOA/WNn4yhMKG2A+aeW6Y5MThboNxtwBBUYg+xc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PoG001thx6ouOz6+VCiwxudZaNneXYlS1dWCbDi5DqTJjHUdrvMn6kKx5JHd4n6NvcRZE5zB3uJH0SHpEsMlS0fRiSdVmkVOG8DyYgrA0KyibRqAKVyWEY+33bmD8Rv1zJJ7snxWG8RSUbsV4WLhRC6HNC+CfYaQ+5poMzxwbm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QESCY0mJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94C9EC072AA
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 03:17:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713410271;
-	bh=AHMJpOA/WNn4yhMKG2A+aeW6Y5MThboNxtwBBUYg+xc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=QESCY0mJ1XO8iRUTVmcf7/Qbgj7t7L1NSKKKsp2k7GNvJAL5VhIlmwOCHztYBIVvI
-	 FM3Fk4gWF4rdvu532+QSViNlGMHOwlJw9j4scYg8T78ODIyJD+9LTT1CWdJfFxLmDL
-	 aretL3sy0I/KBEEHeac+4ovvpZTGfDWUGnV6d/q2supDbexRGNPFTov64y8DKWtZDM
-	 01O87MuLd3i2bFJYXZTTwwk5YDuNuR070yTuD/24CHEQS02N0OVtWazDdf8m8gOe5S
-	 2AtjP7L4bLwuVK07UaugOJ8Kxea+SiMtJDOoGPqKIA8FAi9agvXIYWPbZNk2U9hMq9
-	 7C8/tWVP476+g==
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a554afec54eso32765966b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 20:17:51 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXMXwptPSSn/5dj0D5U7lbMz0HMzsSFgEiFVoiCJE36GEZT8GSYQZhFi+agTsHWiOzIlSYfyCZJkfkDsD1HnhozKyR8KA3XYYGZet0v
-X-Gm-Message-State: AOJu0YwcLHui5fZqDgp2YJtRiqbQVrSgXEH7Ne4ZA70Sy8VYcm8xZVkr
-	/MFlWq7meRIeoLIrb/MCA+c2g9UcRxL5KiSlzorRc6mueM/ceUjCduZE+UYFL6XBTlafslyJOx5
-	HNfGTeofo8z151miY+TOYjNdJKQM=
-X-Google-Smtp-Source: AGHT+IHpWgawESLEc0MsVF2KVC/SpkAVwxgQ6CMFF2JuQZxca6wNbEISg9S+ODGUkaqtWFMybAMn6w6jVkEDb7fGx90=
-X-Received: by 2002:a17:907:9947:b0:a4e:7a36:4c38 with SMTP id
- kl7-20020a170907994700b00a4e7a364c38mr723682ejc.20.1713410270086; Wed, 17 Apr
- 2024 20:17:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1FE1EB46;
+	Thu, 18 Apr 2024 03:18:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713410332; cv=fail; b=iWy1E68LiNPn/PBalddPbDdIBHaCFNelTNPWNKMM3BLfY98Mky9Bi9tYPQgu9xtSGCSiVoYYQRPGQoNdY+M98mbt162/xZKiKCvlYYoAcpZ8SNoF6LIobDyTys8l+AwOq17nsh2HDcG7xzbW2Kq5Phc7fK9UVUqjfvPrhmvrK4I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713410332; c=relaxed/simple;
+	bh=0b3qDY01n6djr0T2tgkSzS79l16uRhXB0uehEfOez44=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=R4teMa/lvGgOqUeL0sr6YKEXp7lifLhcE26VMQ7k490MSBWlelBfD7bmh/QuAspKoc0qZFlWaAqNL5Wyp82PXXFrRLbgKwLkKpvN1bXn8wu49sb0o1tir/OnbFvJsp21hvhdYPiWhSDJSRP3cCzQ2g6B+cCPp7RpFpdL2kNp0zI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LWR6Bfz/; arc=fail smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713410331; x=1744946331;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=0b3qDY01n6djr0T2tgkSzS79l16uRhXB0uehEfOez44=;
+  b=LWR6Bfz/bH00Y2DUeSMGkOFlfTOQhxmFr6iZ3VsMb/GdujEdcmxex4W7
+   qj+jS9m6b/vfJ2L04HNhHt+/LgO/hZxBSZwr2ldPFIquN2DNxLX+aKYqb
+   edgmyQW1azAAfbeCkQLyTlYm1js51Zh4Ed4GpTFIL8++CpNeln67SoRrn
+   xK+SpzSF0B/0hg6YD1+H4UCeo4Xchah/o9Vvnww3oposiID3oNhKJz86H
+   i/JlKqj3+NYv9JUE170Ox2BVhAT8Fwjz3TyZC77zkvgSg9YHhbbbzoBWs
+   8OlAcG8zFDRW/XChl/LtANu4I8xZHngItqkmu+N9YtQR6WcSwoYSqC52O
+   w==;
+X-CSE-ConnectionGUID: YoZOT/o7TC2UkwggCNKfjg==
+X-CSE-MsgGUID: hSE0XrM4StKNrHxC7VbzcQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="8797883"
+X-IronPort-AV: E=Sophos;i="6.07,210,1708416000"; 
+   d="scan'208";a="8797883"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 20:18:50 -0700
+X-CSE-ConnectionGUID: HjroCpaCQPOrvP1yQ0A7tw==
+X-CSE-MsgGUID: jgXrCGCURS+1YyAi9xmEzg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,210,1708416000"; 
+   d="scan'208";a="27465428"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Apr 2024 20:18:50 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 17 Apr 2024 20:18:49 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 17 Apr 2024 20:17:48 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 17 Apr 2024 20:17:48 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 17 Apr 2024 20:17:47 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HwD2uQjk8Slsu6sYCrzeWi4zI/XNs/BlFvLP6vvccmYQcLqVIyUCtESY4RIc4nHoRZKQyfv2XwN/7VWLq+aqY5kR75Dg/VYL9kQRIQtuSRD3TDdj2N1TEOKd1s75zFCEiCvS+89YtErjvNd451yE17fhBru3q+76VFa9Ao7VSEMIGa02EdbzlOO6iap/vFgLtYcRnIhYysn5CuQoVR61tS9w1fqu9cLnMUkT+0EStUHfPRSn4fbuRq2P5iARmHqLzzMPvNynTGoMr4/OyKZLZh5G62lduL3+iXxhzGq/2wiPP7nKvsUQJAjaND/5gc79QhY1dUp+utLatce7824fVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o4vG5hIJDAm4LaERd0FKhMI1S7EzeTLcm9LTfq4Z9Xw=;
+ b=kObeeviKuB262BtKkhzZWppkDlIKF+2f8PNXl0Ov5Ke4IoZK/czhfzb1NBPWm4mJkMmTQDsjIzXXxamnKaC3JVO3QR4roJl6pqbVg80OAT5QitsCsAa+IcReYnJXqHd27A2qAJ1gb5a1bmYzdcvmOZmslglut9PksUS2HWMdwFhp1VzF6sz+G+0r60kR+27gSs/LFxG4vtOBxNyUX0ZWon3A2tcFkhESmA2C8rL0ZKkl3ODKrPzmK/Gya6d3444b6RxQOOC9rRJ9ssPGVcnAcNIC6+8kOO7NxpCk4xufYG5OtVd7XTsJiVP494ZVdyPRa3CQ1bbuopCNUeZ6i+Mi9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by CH0PR11MB5300.namprd11.prod.outlook.com (2603:10b6:610:bf::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.26; Thu, 18 Apr
+ 2024 03:17:45 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::d610:9c43:6085:9e68]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::d610:9c43:6085:9e68%7]) with mapi id 15.20.7452.049; Thu, 18 Apr 2024
+ 03:17:45 +0000
+Message-ID: <b8cef0a5-b9fd-48a2-b23d-2bbcd793e2f8@intel.com>
+Date: Wed, 17 Apr 2024 20:17:43 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] vfio/pci: fix potential memory leak in vfio_intx_enable()
+To: Ye Bin <yebin10@huawei.com>, <alex.williamson@redhat.com>,
+	<kevin.tian@intel.com>, <tglx@linutronix.de>, <brauner@kernel.org>,
+	<kvm@vger.kernel.org>
+CC: <linux-kernel@vger.kernel.org>
+References: <20240415015029.3699844-1-yebin10@huawei.com>
+Content-Language: en-US
+From: Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20240415015029.3699844-1-yebin10@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0097.namprd03.prod.outlook.com
+ (2603:10b6:a03:333::12) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240417095951.2635-1-yangtiezhu@loongson.cn> <20240417095951.2635-4-yangtiezhu@loongson.cn>
-In-Reply-To: <20240417095951.2635-4-yangtiezhu@loongson.cn>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Thu, 18 Apr 2024 11:17:43 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7Srx551P8_7i5JP020bJj9sgVkt8ndNraQ0D_q4L8xxA@mail.gmail.com>
-Message-ID: <CAAhV-H7Srx551P8_7i5JP020bJj9sgVkt8ndNraQ0D_q4L8xxA@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] LoongArch: Give chance to build under !CONFIG_SMP
-To: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>, 
-	loongarch@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	loongson-kernel@lists.loongnix.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|CH0PR11MB5300:EE_
+X-MS-Office365-Filtering-Correlation-Id: db2ab49f-3521-4192-395d-08dc5f561e1b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5e9YHej0OMeE8ufflGLB1m+/WU78j4Z5UwBTtX73PnyiwLf7EmiFzMZrZP2wm051B3uBjWfLXm6vFMNWDkQAmSh2UvjYshAkA8viEvll+gcLimBCUKostQyZ/tFdbNqHtTAE5BtDg++SsKfhlEcMqBlT0Aks2PaN0sDbDS4Ejc1ytgoyY4YcF4i26z82syNOyxQN5xsxCu3xzYXe5j0YSo+39Yny87BgDkk2smvH6mM2BdZLSLw4FG9ykmfu7huS4H4u6Rx3ZJynC25e7alfSFfxns4EI3Khrv7B0udkhbHCOMelIX0oDPNiDUEGWJJgQ5VwFQM5fxJt5MFR/CE1zt1duUdcd3F/if6Iq/aU7nu6bXEQJFCFRCmRPJO1BApQgG9h9Rhj/20TlRmd2SKlkLIWdDQXzVDc5Ubs4oYW4dIuAEjJoF1azFlbQ9+bdV17kXl1R17SHkOiudNvz9hjqcdJ2JKENYlEi9wucK89VWIVJH3cEuusBaQ8RfR86lkwjufsYerrbP40FgHPOr65Fj/XHuPd+5JnRud2uFVVvIQpY3FOl5hPDwEUcGsCNg8tA3/WTd9jSmYyfjR8sWVkcoBgsD89C41/muiujnIztkJgkWSRrvCHuKxa7xyK7lkFWg8nI3ZitTv0BimX0+lcUil0xtHFRsvp0Eyvm90Ivbs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bWRCZW8rMDM2U2FVQXVSdjlUTmtSM0pVYkRMaVRWZnZ0U1BHVDlxVjhHdmo2?=
+ =?utf-8?B?UG9lYTBNWEFkVnpkUFlwa0JqR1lvQUtXSXRmSVE5OElkejlWU0RyZ2tySDRq?=
+ =?utf-8?B?TDFSdHd6Y1pNOGZmZnlDQlY4MjZzdmdkNmpLbmF6ellKRFZtdlozNk4rMEdZ?=
+ =?utf-8?B?cUMwOTJndElhVXBCc2paYnIxMnh0MFFKVWxIZmE2RWhpNW5hd2JYZDRIeko3?=
+ =?utf-8?B?bElDUVFxZEtzcUNkZWQvVmc3V1BxVytBSmtOaU14eDF2S2p2dnlxRmRoZ294?=
+ =?utf-8?B?UzQzbFRKNXZYWFVkbzU1aU9SOXoxS3lGR3M4ZmRvemh1RDNnRk4reFFhNzVT?=
+ =?utf-8?B?N1piUTdFYzZiNU9XakRvaGdiY1NWT2YwUjNtcFVrUWJmQXNNRWdGdmpnaWF4?=
+ =?utf-8?B?QlB3OGhBQTRaOXp6bTZHOWVoUHNIZm5rU2d3TXBNV1l6YXhSTnc2M3IwYngw?=
+ =?utf-8?B?UWp6QTluWWNXYXYrQm56VmFJbWoxN1hRU1NKeVBYd2tnUUUxYnRGMXdhZ1M1?=
+ =?utf-8?B?Wi9zc0JySm9MNktMdDZycEhmN0ZsbXUwYlF0TUVxWE1BVlJGNXN0VzBmN1du?=
+ =?utf-8?B?cXZMVmFnTFVnSk5lZG9DVUhUaDMvdWRoRGdQMWFUd05YTVF0dVJVSDVNNnVX?=
+ =?utf-8?B?YThFRW40eDMvZi8rejNkczZ6UEpESTI1VENDTDR4T0p5alJ2RHVzanNQUlRU?=
+ =?utf-8?B?ZFpVK3VmVUZpUk1KdXc2Y0ZpNlFSaTZUaVJDSzRkaHZzL3FyYml5ODVwbFN5?=
+ =?utf-8?B?WjlOc1J4MHhXY1Jtdk9ZcVFlZDdMdUVhQmZMQ05iQlMyUDNWaTF4Y3Vkbm9i?=
+ =?utf-8?B?NlFwTlhPNG4xRnVHUUlkSVpXL3RsSStsUVc2dUhWcEljeHlmVE5tQ0luZy9B?=
+ =?utf-8?B?K1VGaXMrbnI3SDQyVDMxS2hCODNBanMzM1FCTUk5a1N0N3J3amxGL2NORktm?=
+ =?utf-8?B?Qkd4TnhJTTZ2QUx6eEorUWJ1bzk4UGpCMUNIcUU0clpyVjlOdGdHRXRqUHJL?=
+ =?utf-8?B?ai81QUw2YlJjUzgyQjVsUUVCbzRTTDJhQndxS2ovamlxZ29rc0I3UEgzaFlp?=
+ =?utf-8?B?Qk13L005L29qVzFYMUlxOE15RnZzQkNBcjRZd2ZybWZ5TGl5T3BLZUtVaXZw?=
+ =?utf-8?B?cU9qQzRXVFdTTmpFRk9TOWhzaGYwQkx1TjlTZVExUW1kcFovb1R4M2cvNlE4?=
+ =?utf-8?B?c05HdjVGSVByeEk4Vk9UMys1dGZ2QzhhdktqZ0RyR3I0SmRTTkkxRUMwN2tl?=
+ =?utf-8?B?VkNYYzFzTjF5dXhFaDFmVTJnNTdhR0hoUTgyVkVJWm5sZDFBQ1FtUjgvbGxK?=
+ =?utf-8?B?MHVjVDhYQ1kvcWVrdm9IMmUrdjdpUTJ5THlFSzROS1N1TjNmYkVlcFNqRjVY?=
+ =?utf-8?B?WFJ0MFRtVDdkMG1MM0JObHdVWG5MTlk2OGg0TFRBek9LcU94VWFzRFFpcmZL?=
+ =?utf-8?B?ekExVU1ndklTRndsWnNvSXJYNWh3cDFVSFJmZktuOHQvZ2w5ckw2eUZHUmsw?=
+ =?utf-8?B?bTByMHZVM25kTjA2OFJnMWtISkxvVzJWUDF4MGRxNkJ0ekNqcGM2WkxyVkxJ?=
+ =?utf-8?B?azlUbXIvalZ0Y1NuUDlvYWppbEZyczhxc09IVVQvd1ZpSVhhcWpuV3E4WFhy?=
+ =?utf-8?B?L2NvMWJzMTBlZy9UZ29YYUhoeG1PQjdncjArVWZ6eW11VTRaQUowRnpJUGFB?=
+ =?utf-8?B?Mk1NY0EySE1XSXY5Y3ZIbEhBaEtpcnNWaC80eDFjY3NrQzZaOXpDdy9DN1hn?=
+ =?utf-8?B?cndNRkJ2aXhUVm5zdHloYm5pMHE0WmdFSlZmaE56Rkg0VWlEcG03NStGdzYr?=
+ =?utf-8?B?TFcwSEhyaDA1Z0tjRHU5YVhoV0hSd2I5ZGhvNVl6KzdiN0ZFOHk2SUdrZkJZ?=
+ =?utf-8?B?d2l6OUIwK2Z6NFRVS09rellQNklibGxQdWhBMVdSeVM1bnpWM3RuOHdzTkVj?=
+ =?utf-8?B?NVRjOTcwVFRJYjBYQVQ3YlliN1daeWxqa3FRdkNSTnlaZk1zamNDbkxjL0Y2?=
+ =?utf-8?B?L3NmY3IyQWU1emVRWmlEMkVzK1I2bFFHdXk2a0tWU2dCT1JSZTkyK1dOT1VZ?=
+ =?utf-8?B?MndrZnBVb0t2R0V1QmxDKzNsNkhDWW91c2tBcWgwMWJCcTRaOXphL00xTXRs?=
+ =?utf-8?B?N01UV1k4RmJWMnhhMEFJcU9RU2pNSEw2eWlpMWViNDBZOWI3QnFsbDFJZk82?=
+ =?utf-8?B?MFE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: db2ab49f-3521-4192-395d-08dc5f561e1b
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 03:17:45.7881
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EhrEt7uhMv+kZNRNB3/t3bZnkP19bzq6E9FFr9M3ssFShz38K9wKcR7Dygb1yswjatJstviAB0wMYWnyWA2iXoZne1dVuvAUFKcdmmFBAt0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5300
+X-OriginatorOrg: intel.com
 
-Hi, Tiezhu,
 
-On Wed, Apr 17, 2024 at 6:00=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongson.cn=
-> wrote:
->
-> In the current code, SMP is selected in Kconfig for LoongArch, the users
-> can not unset it, this is reasonable for a multiprocessor machine. But as
-> the help info of config SMP said, if you have a system with only one CPU,
-> say N. On a uniprocessor machine, the kernel will run faster if you say N
-> here.
->
-> The Loongson-2K0500 is a single-core CPU for applications like industrial
-> control, printing terminals, and BMC (Baseboard Management Controller),
-> there are many development boards, products and solutions on the market,
-> so it is better and necessary to give a chance to build under !CONFIG_SMP
-> for a uniprocessor machine.
->
-> First of all, do not select SMP for config LOONGARCH in Kconfig to make i=
-t
-> possible to unset CONFIG_SMP. Then, do some changes to fix the warnings a=
-nd
-> errors if CONFIG_SMP is not set.
->
-> (1) Define get_ipi_irq() only if CONFIG_SMP is set to fix the warning:
-> arch/loongarch/kernel/irq.c:90:19: warning: 'get_ipi_irq' defined but not=
- used [-Wunused-function]
->
-> (2) Add "#ifdef CONFIG_SMP" in asm/smp.h to fix the warning:
-> ./arch/loongarch/include/asm/smp.h:49:9: warning: "raw_smp_processor_id" =
-redefined
->    49 | #define raw_smp_processor_id raw_smp_processor_id
->       |         ^~~~~~~~~~~~~~~~~~~~
-> ./include/linux/smp.h:198:9: note: this is the location of the previous d=
-efinition
->   198 | #define raw_smp_processor_id()                  0
->
-> (3) Define machine_shutdown() as empty under !CONFIG_SMP to fix the error=
-:
-> arch/loongarch/kernel/machine_kexec.c: In function 'machine_shutdown':
-> arch/loongarch/kernel/machine_kexec.c:233:25: error: implicit declaration=
- of function 'cpu_device_up'; did you mean 'put_device'? [-Wimplicit-functi=
-on-declaration]
->
-> (4) Make config SCHED_SMT depends on SMP to fix many errors such as:
-> kernel/sched/core.c: In function 'sched_core_find':
-> kernel/sched/core.c:310:43: error: 'struct rq' has no member named 'cpu'
->
-> (5) Define cpu_logical_map(cpu) as read_csr_cpuid() under !CONFIG_SMP
-> in asm/smp.h and then include asm/smp.h in asm/acpi.h (because acpi.h
-> is included in linux/irq.h indirectly) to fix many build errors under
-> drivers/irqchip such as:
-> drivers/irqchip/irq-loongson-eiointc.c: In function 'cpu_to_eio_node':
-> drivers/irqchip/irq-loongson-eiointc.c:59:16: error: implicit declaration=
- of function 'cpu_logical_map' [-Wimplicit-function-declaration]
->
-> When running the UnixBench tests with "-c 1" single-streamed pass,
-> the improvement in performance is about 9 percent with this patch.
->
-> By the way, it is helpful to debug and analysis the kernel issue
-> of multi-core system under !CONFIG_SMP.
->
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+
+On 4/14/2024 6:50 PM, Ye Bin wrote:
+> If vfio_irq_ctx_alloc() failed will lead to 'name' memory leak.
+> 
+> Fixes: 18c198c96a81 ("vfio/pci: Create persistent INTx handler")
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 > ---
->  arch/loongarch/Kconfig                | 2 +-
->  arch/loongarch/include/asm/acpi.h     | 1 +
->  arch/loongarch/include/asm/smp.h      | 5 +++++
->  arch/loongarch/kernel/irq.c           | 2 ++
->  arch/loongarch/kernel/machine_kexec.c | 2 +-
->  5 files changed, 10 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-> index a5f300ec6f28..8d892de0b7a8 100644
-> --- a/arch/loongarch/Kconfig
-> +++ b/arch/loongarch/Kconfig
-> @@ -174,7 +174,6 @@ config LOONGARCH
->         select PCI_QUIRKS
->         select PERF_USE_VMALLOC
->         select RTC_LIB
-> -       select SMP
->         select SPARSE_IRQ
->         select SYSCTL_ARCH_UNALIGN_ALLOW
->         select SYSCTL_ARCH_UNALIGN_NO_WARN
-> @@ -420,6 +419,7 @@ config EFI_STUB
->
->  config SCHED_SMT
->         bool "SMT scheduler support"
-> +       depends on SMP
->         default y
->         help
->           Improves scheduler's performance when there are multiple
-> diff --git a/arch/loongarch/include/asm/acpi.h b/arch/loongarch/include/a=
-sm/acpi.h
-> index 49e29b29996f..313f66f7913a 100644
-> --- a/arch/loongarch/include/asm/acpi.h
-> +++ b/arch/loongarch/include/asm/acpi.h
-> @@ -8,6 +8,7 @@
->  #ifndef _ASM_LOONGARCH_ACPI_H
->  #define _ASM_LOONGARCH_ACPI_H
->
-> +#include <asm/smp.h>
->  #include <asm/suspend.h>
->
->  #ifdef CONFIG_ACPI
-> diff --git a/arch/loongarch/include/asm/smp.h b/arch/loongarch/include/as=
-m/smp.h
-> index f81e5f01d619..1ec11b57e60c 100644
-> --- a/arch/loongarch/include/asm/smp.h
-> +++ b/arch/loongarch/include/asm/smp.h
-> @@ -6,6 +6,7 @@
->  #ifndef __ASM_SMP_H
->  #define __ASM_SMP_H
->
-> +#ifdef CONFIG_SMP
->  #include <linux/atomic.h>
->  #include <linux/bitops.h>
->  #include <linux/linkage.h>
-> @@ -101,4 +102,8 @@ static inline void __cpu_die(unsigned int cpu)
->  }
->  #endif
->
-> +#else /* !CONFIG_SMP */
-> +#define cpu_logical_map(cpu)   read_csr_cpuid()
-> +#endif /* CONFIG_SMP */
-Non-SMP kernel is not supposed to run on SMP hardware, just define it
-to 0 to keep it as simple as possible.
 
-Huacai
+Thank you for catching this.
 
-> +
->  #endif /* __ASM_SMP_H */
-> diff --git a/arch/loongarch/kernel/irq.c b/arch/loongarch/kernel/irq.c
-> index 883e5066ae44..e791fa275ec5 100644
-> --- a/arch/loongarch/kernel/irq.c
-> +++ b/arch/loongarch/kernel/irq.c
-> @@ -87,6 +87,7 @@ static void __init init_vec_parent_group(void)
->         acpi_table_parse(ACPI_SIG_MCFG, early_pci_mcfg_parse);
->  }
->
-> +#ifdef CONFIG_SMP
->  static int __init get_ipi_irq(void)
->  {
->         struct irq_domain *d =3D irq_find_matching_fwnode(cpuintc_handle,=
- DOMAIN_BUS_ANY);
-> @@ -96,6 +97,7 @@ static int __init get_ipi_irq(void)
->
->         return -EINVAL;
->  }
-> +#endif
->
->  void __init init_IRQ(void)
->  {
-> diff --git a/arch/loongarch/kernel/machine_kexec.c b/arch/loongarch/kerne=
-l/machine_kexec.c
-> index 2dcb9e003657..8ae641dc53bb 100644
-> --- a/arch/loongarch/kernel/machine_kexec.c
-> +++ b/arch/loongarch/kernel/machine_kexec.c
-> @@ -225,6 +225,7 @@ void crash_smp_send_stop(void)
->
->  void machine_shutdown(void)
->  {
-> +#ifdef CONFIG_SMP
->         int cpu;
->
->         /* All CPUs go to reboot_code_buffer */
-> @@ -232,7 +233,6 @@ void machine_shutdown(void)
->                 if (!cpu_online(cpu))
->                         cpu_device_up(get_cpu_device(cpu));
->
-> -#ifdef CONFIG_SMP
->         smp_call_function(kexec_shutdown_secondary, NULL, 0);
->  #endif
->  }
-> --
-> 2.42.0
->
->
+Acked-by: Reinette Chatre <reinette.chatre@intel.com>
+
+Reinette
 
