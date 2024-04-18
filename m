@@ -1,187 +1,159 @@
-Return-Path: <linux-kernel+bounces-150349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 479468A9DBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:57:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 759768A9DC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:58:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5A8D2818DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:57:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 142821F23A86
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:58:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5162616ABD7;
-	Thu, 18 Apr 2024 14:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5F016ABEA;
+	Thu, 18 Apr 2024 14:58:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cVvQm5yN"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="BAT8MIoK"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5CE538F94;
-	Thu, 18 Apr 2024 14:57:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713452270; cv=fail; b=If+MSYnjCpeVEZk8FIPv11mLeZOB3XBAvE4UMQxXuSxxTcvwUHBw+/NNZAlEqZy3EDmPAnQInvIJ0OsHecMgyUxGPr6bi9yya01yPx4cyKQvIvDa321LYZJJKYH41QEP2pfvkyrGNUxIfF9Gms3NrC8S1/CvOvNZrrGPFnurD6Y=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713452270; c=relaxed/simple;
-	bh=tButTGFPB0vnWjXAOdTfOkgogtnJIJJK/5QJ1ITI6YM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Q8JkoDGdt+gSEWiJ1OTeLnTmbcK2t+e87xoPJuo8fQcTMPO5E9zE+eLVGy7pRCaQw0ivQ9MP78TKfJ4uEig9xGEUx9H26BX1QbmT2E4kxkOF7Jb2z01gfakz6gaTnc6Es7CpBMZFPfp40rqYRcacYhPAbKSlxbvGxnYPDMhvvv8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cVvQm5yN; arc=fail smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713452269; x=1744988269;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=tButTGFPB0vnWjXAOdTfOkgogtnJIJJK/5QJ1ITI6YM=;
-  b=cVvQm5yNdKu2S6P9AVX4JFPo6JWWZH5CKIA1RmZ+JclWtGp+o8+1iD+S
-   mncazlycihUa43J2YMhu4ImIdqhUPikJ93/jhiLb0VP4Sity738crV/m+
-   AX9pPkmvAAOwncTwVdp4+fl95sDovnBM0DawvDCTpmBnczRYKwcLlpLuE
-   y6YDkfwmW/3FZAfJDAgOQWTi9NxtDRiqwBqICd9+Ec+5YbfK2O9grmL9o
-   gfK5Xoq3X44QLnDOBg/OpN9x8GxvdBJVvQ2iVMNC7ueGKcaGewii/dcLs
-   s6CPEpWxPd/ukarXOmJahPCczorg9g2M9SzOpP3SofE6xIv9DNxjRT04u
-   w==;
-X-CSE-ConnectionGUID: lE/EiNrgSm+E0rxdtDcytg==
-X-CSE-MsgGUID: tnRUnu2kT6Wt1mEuKBt3ng==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="12792099"
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="12792099"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 07:57:49 -0700
-X-CSE-ConnectionGUID: F+AWsDu9SHyWCRma4hFJkg==
-X-CSE-MsgGUID: Hf7nw/S1QaecEWX7myyjXA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="27671873"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Apr 2024 07:57:48 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 18 Apr 2024 07:57:47 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 18 Apr 2024 07:57:47 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 18 Apr 2024 07:57:46 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fx7qXtwt/OjRiN+NtSntLYiqMX2WGM6JEjVkjdMrX2HyJu3NtVZO530zCl8oeK2qj+F15n9fzxSWyzAkHKzR8XN+1xmZ6H8/XCAHcl0WJKWImZbUliYC5vHcdJa3y1urs5yrP+kASYl7gBQOpimpHZLQZIQDKfnS2GiBCLyFup4aUqLSfM5ZzQO3W7W5Nw8ybSBI16F5FotCW2Xq3x3NvZ5kKkV5wTk0mjxKPah9Ogs4nI6MV/nU0JucCqq1KiF8oUwBCMoWbHIUggrsZl7zHZZf/e7i0ETe19bFm4aDFuy/n3j6XvwP/R8coBkvh06sb6dXEgzi6X8PUIblZtFwUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+3tyaqlI/I+Bgm08thfRpd/WqyyeWnCtduAok5QwMM4=;
- b=Y9fUFWbVFMpMbNypMzx/johFmUlVN3raRWJ2kK7XerdV1OkDJb8hOvYsvu9GfgOY3FuT0cxhepoIV0+dybZOpencV0WgF1jOdq9RM7TczibII+QTZtkz0xTFYj9NPkpuSTUTxT0Z3Ii3YhU8tIyh0lE5xahI1b6KOY+3yuYrtC0dCM2bDLUFaqJ/VM1bZCIb1muNmD/wkSRYyLheRhS34SnrtJOofVYrjrBpeN6NG7ZIszXppmYMbfQMNmX6Frm6ASUcH72RcEzLC7F/oxv1qpBBjxtEM56eszyncMw/ZKnywUleE9mHdU0kTioOj84/19qB6EeYEoW4NAvP/Ufjxw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by CY5PR11MB6320.namprd11.prod.outlook.com (2603:10b6:930:3c::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.27; Thu, 18 Apr
- 2024 14:57:44 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::82fd:75df:40d7:ed71]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::82fd:75df:40d7:ed71%4]) with mapi id 15.20.7452.046; Thu, 18 Apr 2024
- 14:57:40 +0000
-Date: Thu, 18 Apr 2024 07:57:38 -0700
-From: Dan Williams <dan.j.williams@intel.com>
-To: "Li, Ming" <ming4.li@intel.com>, Terry Bowman <Terry.Bowman@amd.com>,
-	<dan.j.williams@intel.com>, <rrichter@amd.com>
-CC: <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 3/6] PCI/AER: Enable RCEC to report internal error
- for CXL root port
-Message-ID: <662134e290d89_5eec229450@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <20240313083602.239201-1-ming4.li@intel.com>
- <20240313083602.239201-4-ming4.li@intel.com>
- <7172ec2f-7cba-460b-a6c6-9fff45ba938b@amd.com>
- <b4a721c2-567d-4ab3-8a85-963e3f323e61@intel.com>
- <91ddd182-cc71-480f-a1b2-e7c31b29a549@amd.com>
- <f0b85a37-ead0-4954-b7e0-dd09cbd9ab09@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <f0b85a37-ead0-4954-b7e0-dd09cbd9ab09@intel.com>
-X-ClientProxiedBy: SJ0PR03CA0078.namprd03.prod.outlook.com
- (2603:10b6:a03:331::23) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6128016ABD8
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:57:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713452280; cv=none; b=nYYmfMKdDnI+dMJ5VMd3v7ipyV3b2lWFObOR/YJ1H9D48QSRY+82Zduli6fzzr0z3EvE8xdhfzv1xsVqkgJcQcTzuuG2KScsYEavvbGBYdYTiNxeB6Pfhu3U3yQqC/psSxqErIpDXwQQXA7kXXsycQ3biV3rz1x66pezFml7Awo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713452280; c=relaxed/simple;
+	bh=XnWJOnILBcBRDeU1BqBLAtGDVWZ7R54SvcYt0DpJjys=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kS5Z3aMEDqZIqaXusLTcsHgXYSggiE9pt6bLtPmaDJro15RTnLRh8SJx/IwPWoLN6kxNbUi3NG4yx+m+RO4FuGniv3bQ04y3PU+GJMu38AGCNKCwrc5OIVuQQ4DFdMUMODQDTbcp9YgAs9bqtnXWM7swJOXDZrJK2AOxeyK0y5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=BAT8MIoK; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 331673F68F
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:57:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1713452272;
+	bh=TPzhJ3AAYaNuKmuKpflVm92Wqe6tHXbtl8g4S4zlOco=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+	b=BAT8MIoKlopi90CacwOQVPh0v/pBJBYgIWvrP5qRLoZbLA2NqWDQHgyvXwiI8UEMW
+	 boJDhO6wVH6BH7mzp8Ow73Im10o8w+rMrgerZmcKTcYFIJDBknvCST6yCW3mHRykZM
+	 0BizvkRbPrM9H3XgXAf0ilFPS46mONPfyCS+QVy70t7LQzYpqFhwkCIYqwPoj9oT3h
+	 1YhQ0DXnF0rC3nmN1v3u5PyDfTA4r0v2m9wb/Quo2487xqk3uaBRR+SbHUfqAesfn7
+	 CEK/p7Db17pH0wwod0eVQHbuvDuv06EdP+R+fBKJnM1d40nWBWmqwQz27d6lQBW7L1
+	 9SCG5jpPRdd2w==
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a51beadf204so53247866b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:57:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713452271; x=1714057071;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TPzhJ3AAYaNuKmuKpflVm92Wqe6tHXbtl8g4S4zlOco=;
+        b=V6Nj8s1t4IfuTmebLz85F0VbxTzNp4K11ybRRz2XbVtOVwr14+XNNIg5Dl2csi/60y
+         mCDFzSOWTCD41atSjjl6MYRxmTHw37IUceY2EvcEE8zVOsPPhS2adJnt6E7HVSSmviK4
+         EXEA0Y0BrZ9Eo7m7QKpULMs4jRoiEZHrwXYi3TqK9PDisRtWkgkw1qQ0YPY6qB+zRoC1
+         0AiDgyQEZnRWn6huG1nDQAbQZftTDu22LTWTbJbdoU4JgKh3rPj0Uz3+KlIXhpKrjxWA
+         3w2kQi+AUvZnAy6r8vJXKtjBbmuJUkYLb7aeP4bg0Kia+xh4LKy0ayE6nP7lqv5DHJp9
+         LXXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+kxhhguPuhmtGsX2LmTqLN55/RdMzpr9vSJTvijY5IK0pHncZFmeDu24Z2yBG16/f4yTW3Jl5R7YJDcLWGkBJBkqCjuyUXtJ/kjTW
+X-Gm-Message-State: AOJu0YwampXcxaC0Nh/ekJ+wDFoGPpqFMmZR9W0XYzIeYVFMm9gQuSb9
+	84drBH54xoI1Ad3bvv8v7uiL7QhLavVU2jxvXQ3Do+rZjrFdE4od2Ug+m8rjgbYW3FUHuEdkqnj
+	YA0R96wbG2exTLwJDHl6A8T16bfsYqTkKNCBEd5Pm5SFG/2ZkFBDQcJpFJf3808RzlzvGmMdpXf
+	754g==
+X-Received: by 2002:a17:906:1182:b0:a52:58a7:11d1 with SMTP id n2-20020a170906118200b00a5258a711d1mr1836769eja.38.1713452271345;
+        Thu, 18 Apr 2024 07:57:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFhzDZOsSyjW2YgiF+3b9SbPzp6uVKID7mT1Wura27dE1HKH8MQkcJys3WmmEXVTnVSN92wWQ==
+X-Received: by 2002:a17:906:1182:b0:a52:58a7:11d1 with SMTP id n2-20020a170906118200b00a5258a711d1mr1836755eja.38.1713452271043;
+        Thu, 18 Apr 2024 07:57:51 -0700 (PDT)
+Received: from amikhalitsyn.lan ([2001:470:6d:781:320c:9c91:fb97:fbfc])
+        by smtp.gmail.com with ESMTPSA id jj17-20020a170907985100b00a522a073a64sm993665ejc.187.2024.04.18.07.57.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 07:57:50 -0700 (PDT)
+From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+To: horms@verge.net.au
+Cc: netdev@vger.kernel.org,
+	lvs-devel@vger.kernel.org,
+	netfilter-devel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+	Julian Anastasov <ja@ssi.bg>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>
+Subject: [PATCH net-next v3 1/2] ipvs: add READ_ONCE barrier for ipvs->sysctl_amemthresh
+Date: Thu, 18 Apr 2024 16:57:42 +0200
+Message-Id: <20240418145743.248109-1-aleksandr.mikhalitsyn@canonical.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|CY5PR11MB6320:EE_
-X-MS-Office365-Filtering-Correlation-Id: c605e8d0-09b4-4e5e-cc40-08dc5fb7e4cc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uifdoYdqaXzX1IUEnGSTD5t6/hNQbV5/lGUfff/xNxU3Eolh0W9dgnHxJiJobGA67EoDdHNwAQ6KZX/KjcsbKmIGkCks+kv4PsMJQhQ9ihfcDJ1o2EtnDX+msDVe9o1Sm88Pg5FTBbElS0KJsaWSayWD2bcuRZEzRqfIV8n7NOxpsg5K2VZhWlrOYLGwpp1X4uTeTJD7gW4qKCH7wL/G58srxXxSJ/6+VV7r5dHCjS3sKhA81W012dgI98VZyJPce1j6BXJLcjzVHBcmmv1VBSzCsHmlejeV3SvrGlbhqy1YqJcs1lNecMquuBB6TRM9yyBAAdMg8tseAclUfUB8ZRunACQArAjirPgQagO8o90x2gXc9CYOKH386Gd1x+6Dkpa2HsGVnyGU55vNe1MHGWCvfq3drbz6pwUp5+5USjou1DjV0f3sudQkIm4/6bZnzuUDIcCLYi0nsBV2hA2zqWduV6FdS6IMfSb1hFWFjWmaMRqgVi4y0CZJJd2P+R8VeXgUsJOGLGkc6hschG68c1/ND1yhWChtoaFMbBpfRjwGz1dVAgWy4WIapBPlmoCXHhkovo6Y32QtqnZd1e0nXreXUlDk1EkbUax85OwVW73HAS0i0gNEYXCX4jJUVN9fx2UGBsuQyXok7Jdk5SpYzfeGY1cJ/mWsx//xAkxQx1A=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lrzSAvNjFKXVeab+Q2CNrsHswihODtb68LGzDx+zx9Owf+qKd9TO1GNleZDx?=
- =?us-ascii?Q?cMrZBNlIrPxlyUEwwcVqZX9KDz1BDxHEiG047MDhQlOvK7DaBKhn9TGiDHIt?=
- =?us-ascii?Q?tu/1jwgzxQ5n/IokkHLmHxqBeZaZAa49kvEyi0HU6Le0+jRZrT+0Uxja1m5s?=
- =?us-ascii?Q?VKZ3n/gvGfZumKXrINy/+1TXczynCWKpIoMPzdGrwfpYgu9Y+o7J3vKBhm3i?=
- =?us-ascii?Q?1OAtK59PF7hDHXHK+mUaAMz2+S5bSEl1hsOLAzvGrstvY3UUxj1NLBlwLClB?=
- =?us-ascii?Q?kj5G5nqpcZUvUsaEmaJNjHh+JwZRnO1NibdJspHjtb5lUvp7l+yq6y/zZvfj?=
- =?us-ascii?Q?wwEkt0rLr2UwBgQWKeOuVRd7RQYd5YBSxPMuPrtraIvLLwAJw7WKKG/YICz3?=
- =?us-ascii?Q?b0v8fNpHhR7vtLZ2YsUcGpGG/WZOK2Rf/F+jwF624VQwqykh3LnJMAssTWLJ?=
- =?us-ascii?Q?7g1kVA4iAjqiadyW/QoYciAiPdr/PbiRpweRfJKmwyiR6SCgAennWZV+bOBs?=
- =?us-ascii?Q?TIsjP4Ds3H0rJ3EjLkTKzHw6Yc1MeqFOUr6DHnfVHsS7qGkgj6NxolY5vsBS?=
- =?us-ascii?Q?nxRFI6w5/JoXrCiXSjzy67KzdF50FTM3xZKGKZW0oOC7IlwWr8oxOO8vwZrP?=
- =?us-ascii?Q?5sMSgpoYYnUbaTzD81ebwrG7GdmJnVXoF6msKosjzObfyX+czyerl880/2am?=
- =?us-ascii?Q?KBhxYGGnd5uUZkEsoG8LGSWS/8tNvJAq7FoBZREhXumzT3Rh+Blcm+SMDj1J?=
- =?us-ascii?Q?5lz8HcXr8QNQrGe/O/wI31LS1bzHRKd7952Xfzowr97u1pGLTglrbdvG3Kvm?=
- =?us-ascii?Q?YEiremX4j2xcIMyQq7SeuzzCv+dcP03a3eGPnwGZa0nBp2xELUEa/ySy5ul3?=
- =?us-ascii?Q?ZoivOnHwftnvQGIcyjtf9gGucLD+AVfwc8h8Ga9+L/EP1nIO0vTPzCXl52Gr?=
- =?us-ascii?Q?u1H8qqyouBSI8EZaS7OqpHOvkuWptU98Ny++pSDoTWaI9BLMislfWtjpnDSM?=
- =?us-ascii?Q?dWSS4Vrasl1bN2agJzsRh7EBv4NfHFzxnVY0jmmIqHE3NbLYOEJxWgL+ZlVe?=
- =?us-ascii?Q?JcBS0TnfQPBd2uwIPsNjM9a/1BAdtYHEzrH7k+aqI7zaBnB2L+GNHeKoUDce?=
- =?us-ascii?Q?SbneOsnm6PWzHJZuI0eqiCO343zLFvaEMVJWL24ft5mX+PjUKRDKIMJwnXNP?=
- =?us-ascii?Q?u2WbsecfHmJeCwA0dGgq21sBpcSlByAXfwy2tNWAJN5nm0gJJQp7F0oHYl8Y?=
- =?us-ascii?Q?EYFv47zQmQ6NNCGHBP50cFfVRpYbbc+Fij+rT22TlwVYvYraKTP8pzhGtN6N?=
- =?us-ascii?Q?Hss1c4o9GFMm2dDiAwUZrO7zRzyRWrd7apeBlMyz1irrGInAcxcGj0TS5djt?=
- =?us-ascii?Q?O45HXgVQYjXfl4JuKl9jENUKyAUGKe1XJNAXeIiNrHNs3VcwTSESK0AFkt/1?=
- =?us-ascii?Q?FkAsklwcjedwog5qeNZcr1RpnJr0t3f4R8o21+HK1VQAzE6LHgLA/DdKAQQJ?=
- =?us-ascii?Q?n+SnDWKK8zZdPurpEJRt3ue+h3rGyW7jVkliQD3RvsSkk3Ptc6dJbrHU3h6C?=
- =?us-ascii?Q?L630g6/0JWY9MhEGuYpyiBLIeztAlBE/pw3iyYq17M9JaEx5vBSqSbdx/e7E?=
- =?us-ascii?Q?aA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c605e8d0-09b4-4e5e-cc40-08dc5fb7e4cc
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 14:57:40.3927
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qHSZLZjVaOojWUtRbA+Low+c7PA7dzgFYQDAB1/QJhgj6Gy1gg394Ton5xY9TgGlIHbMwG53XpFX/08XdC48cyYjTwIxEvgNgLqj8is3awM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6320
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 
-Li, Ming wrote:
-> On 4/16/2024 10:46 PM, Terry Bowman wrote:
-> > The driver support is much simpler if RCEC does not handle VH protocol errors. Is there 
-> > a reason to forward root port VH mode protocol errors to an RCEC rather than consume 
-> > in the root port's AER driver and forward to CXL error handler? 
-> > 
-> I agree that is simpler if only root port handle VH protocol errors,
-> but I think that software has no chance to choose if VH protocol
-> errors reported to RCEC or root port, it depends on platform
-> implementation. So I think we should support both cases.
+Cc: Julian Anastasov <ja@ssi.bg>
+Cc: Simon Horman <horms@verge.net.au>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc: Florian Westphal <fw@strlen.de>
+Suggested-by: Julian Anastasov <ja@ssi.bg>
+Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+---
+ net/netfilter/ipvs/ip_vs_ctl.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-The question is whether the CXL spec RDPAS behavior causes any problems
-for platforms that follow PCIe rather than CXL reporting flows for
-root-port errors. I.e. does it cause problems if Linux starts scanning
-root ports on RCEC notifications?
+diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+index 143a341bbc0a..32be24f0d4e4 100644
+--- a/net/netfilter/ipvs/ip_vs_ctl.c
++++ b/net/netfilter/ipvs/ip_vs_ctl.c
+@@ -94,6 +94,7 @@ static void update_defense_level(struct netns_ipvs *ipvs)
+ {
+ 	struct sysinfo i;
+ 	int availmem;
++	int amemthresh;
+ 	int nomem;
+ 	int to_change = -1;
+ 
+@@ -105,7 +106,8 @@ static void update_defense_level(struct netns_ipvs *ipvs)
+ 	/* si_swapinfo(&i); */
+ 	/* availmem = availmem - (i.totalswap - i.freeswap); */
+ 
+-	nomem = (availmem < ipvs->sysctl_amemthresh);
++	amemthresh = max(READ_ONCE(ipvs->sysctl_amemthresh), 0);
++	nomem = (availmem < amemthresh);
+ 
+ 	local_bh_disable();
+ 
+@@ -145,9 +147,8 @@ static void update_defense_level(struct netns_ipvs *ipvs)
+ 		break;
+ 	case 1:
+ 		if (nomem) {
+-			ipvs->drop_rate = ipvs->drop_counter
+-				= ipvs->sysctl_amemthresh /
+-				(ipvs->sysctl_amemthresh-availmem);
++			ipvs->drop_counter = amemthresh / (amemthresh - availmem);
++			ipvs->drop_rate = ipvs->drop_counter;
+ 			ipvs->sysctl_drop_packet = 2;
+ 		} else {
+ 			ipvs->drop_rate = 0;
+@@ -155,9 +156,8 @@ static void update_defense_level(struct netns_ipvs *ipvs)
+ 		break;
+ 	case 2:
+ 		if (nomem) {
+-			ipvs->drop_rate = ipvs->drop_counter
+-				= ipvs->sysctl_amemthresh /
+-				(ipvs->sysctl_amemthresh-availmem);
++			ipvs->drop_counter = amemthresh / (amemthresh - availmem);
++			ipvs->drop_rate = ipvs->drop_counter;
+ 		} else {
+ 			ipvs->drop_rate = 0;
+ 			ipvs->sysctl_drop_packet = 1;
+-- 
+2.34.1
 
-I do think the lookup needs to change to be based on CXL host-bridge
-detection and not CXL-type-3 endpoint detection, but otherwise it looks
-like CXL spec wants to invalidate PCIe spec expectations.
 
