@@ -1,187 +1,123 @@
-Return-Path: <linux-kernel+bounces-150417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 801678A9EE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 518DF8A9EEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:47:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37C27287BAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:46:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BF6B2829FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:47:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92D0416F82C;
-	Thu, 18 Apr 2024 15:46:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 794CE16F284;
+	Thu, 18 Apr 2024 15:46:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="mNiKJAJD"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vFKzHdH8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41A116E89A;
-	Thu, 18 Apr 2024 15:46:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8E7B16C434;
+	Thu, 18 Apr 2024 15:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713455205; cv=none; b=YR//jvise81xYQ2aQEMmbPtmnrRDx4bZGp6Um27E4jtfc0u6ohLe78f/y0pGsRg17q7oCwr49QPSB9bUi2P2ovbsF/is64C/Cc20yLaeKWJtZBOfYOwLuZmFub/QKrPv3EgnyriyPBeod7z4cxdK6YST2cyBlqwNRh/QPl3nMf0=
+	t=1713455217; cv=none; b=c05KP7fv9k7kns9zlePbUCKnmw4da2cZAjFFoNBkQpvic2JJPb1FJzXW48HPJh7BXjfveHETqEiKgbkfNAtjsdD1mMVNi4WRk4sOteBj7XkIu5I0aL9BTiHeNMXWbyCwD2MhN75gORSsC0vGARJHqOZwXxqhHIrCpSFDiq0woB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713455205; c=relaxed/simple;
-	bh=K6H40zZOBruNXEKy+mLBxL40J3Voj2XWEqqGuvJ9w94=;
+	s=arc-20240116; t=1713455217; c=relaxed/simple;
+	bh=CSADx2CB69mfT8jOoCkrOeYysFybh9E9rmHaG61n528=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VfVRCHVMHNoh9wGLSl4uMOSmJROR8cKJdQYUjvElGmsW/wkiKcZqQx570pEsg6O15wwQ7y12722j5dbSyH0ZIEE2auO+fa1uiNhnzkJqgCa0Lb2JpDB8ZnebOYXznVgx5eOrAws7/H/yqow9cd68DaSZSgyBnyD5QDfhW7jmF8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=mNiKJAJD; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2A03C802;
-	Thu, 18 Apr 2024 17:45:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1713455153;
-	bh=K6H40zZOBruNXEKy+mLBxL40J3Voj2XWEqqGuvJ9w94=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zl8cF2dqe22SkJlno8aFU4TFmDmhYsAmETPJjRv6h8F2N95YiCWefbBMeQsi2SqH+iD0FECmIYOtq48bGLoPg/rkXWrf9rwHbwW1uob9pfOwUsLnGx3y4GCe5OD63isAfl5OMBRo2atjZUnAke56bZtMXyIcjiHtBX2OZdvbvmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vFKzHdH8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42706C32782;
+	Thu, 18 Apr 2024 15:46:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713455217;
+	bh=CSADx2CB69mfT8jOoCkrOeYysFybh9E9rmHaG61n528=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mNiKJAJDsTkJYMYK4ZtsZ9zlV7xPYE85xk9V7yAnZZ4lXnvj+UhwJ4fKqYaFra0Xc
-	 2eBi44CBZWoMWyMkwDoCJV3GUcE9zfI7hzMI60oHIg/o5NGSS92iXbFgMGqv+gOkZe
-	 2N/SspWfXOLe5x5IbsUKTfY8A/Ga1vjvyZkxLsrw=
-Date: Thu, 18 Apr 2024 18:46:33 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>,
-	Martin Tuma <martin.tuma@digiteqautomotive.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Hugues Fruchet <hugues.fruchet@foss.st.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Sowjanya Komatineni <skomatineni@nvidia.com>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
-	Abylay Ospan <aospan@netup.ru>,
-	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-	Dmitry Osipenko <digetx@gmail.com>,
-	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-	Vikash Garodia <quic_vgarodia@quicinc.com>,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-	Sylvain Petinot <sylvain.petinot@foss.st.com>,
-	Jacopo Mondi <jacopo+renesas@jmondi.org>,
-	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-	Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
-	Pavel Machek <pavel@ucw.cz>, linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	Oleg Drokin <green@linuxhacker.ru>
-Subject: Re: [PATCH 00/35] media: Fix coccinelle warning/errors
-Message-ID: <20240418154633.GD31776@pendragon.ideasonboard.com>
-References: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
- <a003494c-a1a9-4fcd-83d8-766a75d6bbb2@moroto.mountain>
- <20240417155112.GQ12561@pendragon.ideasonboard.com>
- <CANiDSCs_qOXkhzuL+cFhpw0hvFMwU0TYyN2B5ZdAStb96TTKFA@mail.gmail.com>
- <20240418105310.GV12561@pendragon.ideasonboard.com>
- <CANiDSCuS3KQK9H37sDZJ+mcqheNSh7NBwchS3dPccVXcPTSNRA@mail.gmail.com>
+	b=vFKzHdH8ja1Efdd5hQT3JgGoW263bR7EeNpDUDXUL4XVWanxMqJFbAsotyQVmMfl/
+	 ePCIcAsmDs8qRilsFGd3NH7z4uA263dKdJa1HXenInrxspe2ju92SHDkXDwGUiuPp7
+	 mvyw0N/G6GNCzhKvmDSAiIK8UtpzE3b//hVFixWbPZCaG0gO447yNkPo8L6QzmYyLo
+	 wNUqTpIy9A68SZK0SFhPhbeFUeRZyLU1CCng/vvbuU+78cB2zD3gEonJSz1fyEDCMg
+	 kr4QKlgpO+KuvLmggUB8IjAozvMJdEhktlyYkotv29xJdb/oFvcTldMS4aoIFazC+2
+	 BVX6Un8RfU9TA==
+Date: Thu, 18 Apr 2024 17:46:55 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Haifeng Xu <haifeng.xu@shopee.com>, mingo@kernel.org
+Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+	adrian.hunter@intel.com, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] perf/core: Fix missing wakeup when waiting for
+ context reference
+Message-ID: <ZiFAb8VwTD8TddkK@localhost.localdomain>
+References: <20240418114209.22233-1-haifeng.xu@shopee.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CANiDSCuS3KQK9H37sDZJ+mcqheNSh7NBwchS3dPccVXcPTSNRA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240418114209.22233-1-haifeng.xu@shopee.com>
 
-Hi Ricardo,
-
-On Thu, Apr 18, 2024 at 04:51:06PM +0200, Ricardo Ribalda wrote:
-> On Thu, 18 Apr 2024 at 12:53, Laurent Pinchart wrote:
-> > On Wed, Apr 17, 2024 at 06:19:14PM +0200, Ricardo Ribalda wrote:
-> > > On Wed, 17 Apr 2024 at 17:51, Laurent Pinchart wrote:
-> > > > On Tue, Apr 16, 2024 at 11:47:17AM +0300, Dan Carpenter wrote:
-> > > > > In my opinion, it's better to just ignore old warnings.
-> > > >
-> > > > I agree. Whatever checkers we enable, whatever code we test, there will
-> > > > always be false positives. A CI system needs to be able to ignore those
-> > > > false positives and only warn about new issues.
-> > >
-> > > We already have support for that:
-> > > https://gitlab.freedesktop.org/linux-media/media-ci/-/tree/main/testdata/static?ref_type=heads
-> >
-> > Those are manually written filters. Would it be possible to reduce the
-> > manual step to flagging something as a false positive, and have a
-> > machine build the filters ?
+Le Thu, Apr 18, 2024 at 11:42:09AM +0000, Haifeng Xu a écrit :
+> In our production environment, we found many hung tasks which are
+> blocked for more than 18 hours. Their call traces are like this:
 > 
-> Do you expect that the list of exceptions will grow?
+> [346278.191038] __schedule+0x2d8/0x890
+> [346278.191046] schedule+0x4e/0xb0
+> [346278.191049] perf_event_free_task+0x220/0x270
+> [346278.191056] ? init_wait_var_entry+0x50/0x50
+> [346278.191060] copy_process+0x663/0x18d0
+> [346278.191068] kernel_clone+0x9d/0x3d0
+> [346278.191072] __do_sys_clone+0x5d/0x80
+> [346278.191076] __x64_sys_clone+0x25/0x30
+> [346278.191079] do_syscall_64+0x5c/0xc0
+> [346278.191083] ? syscall_exit_to_user_mode+0x27/0x50
+> [346278.191086] ? do_syscall_64+0x69/0xc0
+> [346278.191088] ? irqentry_exit_to_user_mode+0x9/0x20
+> [346278.191092] ? irqentry_exit+0x19/0x30
+> [346278.191095] ? exc_page_fault+0x89/0x160
+> [346278.191097] ? asm_exc_page_fault+0x8/0x30
+> [346278.191102] entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> I hope that once the CI is in place we will fix the warnings before
-> they land in the tree.
+> The task was waiting for the refcount become to 1, but from the vmcore,
+> we found the refcount has already been 1. It seems that the task didn't
+> get woken up by perf_event_release_kernel() and got stuck forever. The
+> below scenario may cause the problem.
+> 
+> Thread A					Thread B
+> ...						...
+> perf_event_free_task				perf_event_release_kernel
+> 						   ...
+> 						   acquire event->child_mutex
+> 						   ...
+> 						   get_ctx
+>    ...						   release event->child_mutex
+>    acquire ctx->mutex
+>    ...
+>    perf_free_event (acquire/release event->child_mutex)
+>    ...
+>    release ctx->mutex
+>    wait_var_event
+> 						   acquire ctx->mutex
+> 						   acquire event->child_mutex
+> 						   # move existing events to free_list
+> 						   release event->child_mutex
+> 						   release ctx->mutex
+> 						   put_ctx
+> ...						...
+> 
+> In this case, all events of the ctx have been freed, so we couldn't
+> find the ctx in free_list and Thread A will miss the wakeup. It's thus
+> necessary to add a wakeup after dropping the reference.
+> 
+> Fixes: 1cf8dfe8a661 ("perf/core: Fix race between close() and fork()")
+> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-Any static checker is bound to produce false positives. Some of them can
-be addressed by improving the checker, others by modifying the source
-code, but in some cases the first option would be too difficult and the
-second would reduce readability of the code. I thus thing the list of
-accepted false positives will grow over time.
-
-> > > But it would be great if those lists were as small as possible:
-> > >
-> > > - If we have a lot of warnings, two error messages can be combined and
-> > > will scape the filters
-> > > eg:
-> > > print(AAAA);
-> > > print(BBBB);
-> > > > AABBBAAB
-> > >
-> > > - The filters might hide new errors if they are too broad
-> > >
-> > >
-> > > Most of the patches in this series are simple and make a nicer code:
-> > > Eg the non return minmax() ,
-> > > Other patches show real integer overflows.
-> > >
-> > > Now that the patches are ready, let's bite the bullet and try to
-> > > reduce our technical debt.
-> > >
-> > > > > When code is new the warnings are going to be mostly correct.  The
-> > > > > original author is there and knows what the code does.  Someone has
-> > > > > the hardware ready to test any changes.  High value, low burden.
-> > > > >
-> > > > > When the code is old only the false positives are left.  No one is
-> > > > > testing the code.  It's low value, high burden.
-> > > > >
-> > > > > Plus it puts static checker authors in a difficult place because now
-> > > > > people have to work around our mistakes.  It creates animosity.
-> > > > >
-> > > > > Now we have to hold ourselves to a much higher standard for false
-> > > > > positives.  It sounds like I'm complaining and lazy, right?  But Oleg
-> > > > > Drokin has told me previously that I spend too much time trying to
-> > > > > silence false positives instead of working on new code.  He's has a
-> > > > > point which is that actually we have limited amount of time and we have
-> > > > > to make choices about what's the most useful thing we can do.
-> > > > >
-> > > > > So what I do and what the zero day bot does is we look at warnings one
-> > > > > time and we re-review old warnings whenever a file is changed.
-> > > > >
-> > > > > Kernel developers are very good at addressing static checker warnings
-> > > > > and fixing the real issues...  People sometimes ask me to create a
-> > > > > database of warnings which I have reviewed but the answer is that
-> > > > > anything old can be ignored.  As I write this, I've had a thought that
-> > > > > instead of a database of false positives maybe we should record a
-> > > > > database of real bugs to ensure that the fixes for anything real is
-> > > > > applied.
-
--- 
-Regards,
-
-Laurent Pinchart
+Thanks!
 
