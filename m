@@ -1,134 +1,254 @@
-Return-Path: <linux-kernel+bounces-150733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 326038AA3DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:10:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A447F8AA3E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:11:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23B5D1C211CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:10:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AF2128507B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:11:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0BED194C8A;
-	Thu, 18 Apr 2024 20:10:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA72519069B;
+	Thu, 18 Apr 2024 20:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="maHvPThe"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kLbTVmQk"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8794194C74;
-	Thu, 18 Apr 2024 20:10:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED47E190678;
+	Thu, 18 Apr 2024 20:10:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713471012; cv=none; b=ePqrDT9fibwiYoUiz81zeC16K+83GgMHCVCCsr1mEImJYxHF+dUH6Hd9vV8gxuuRLxzUvSHJddBNxe8W2lcUYJClXnevTLaEAq5IeHq4vxcAd+O8DQWzr5izV6rABnVyJYfvJgPmzqCT+XqdpzA2FYuFkd/e43bsZZtRfg+Uhkw=
+	t=1713471038; cv=none; b=kv8lzNKFdIRcJD7Ja7M0hKtltlb78LFFDbGYzLTaMgiJzEFgNSnbO+K0eXDMxGysXEVQyjPVi3Q6OF/d2cdlDwbQJej+J8j7oWDECe5RGETJGh+fcR8yp/Y8cuEYZmhaKtVuPmNfmD5pfOFD1BIQkLBSYSt1Yu2twj8OjWtW728=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713471012; c=relaxed/simple;
-	bh=1jbCnAE/ii2sK8qE3QI3BU+zcM+GW4I6gtOic2jfh/E=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ZmsU54OAnTsQ0wD3MwQwEjVCsm+YKFRHbalY4mpPiimUb76PWkNyhQ1rN9r+bJD2obdAPe2y3AZ4+9Ad4uxhiMz49cA705tcM7B9DFB0NMwX+GUmm6wRyJw6uXa+3gEuIvlGLaglybZDXoJHPyHQR5lsrpK2/2JqNdExJvs7/XM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=maHvPThe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 328C4C113CC;
-	Thu, 18 Apr 2024 20:10:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713471011;
-	bh=1jbCnAE/ii2sK8qE3QI3BU+zcM+GW4I6gtOic2jfh/E=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=maHvPTheexlW8Hckm36c6THqkXj57VC9Zg+iPO0oegPO6TEP0a1soaMRmcPLmKWWj
-	 UyFCY74mwJmUQtjH1WYEBvEtOahlhTSp7VrzaqrMlRYRzNW/p/J6eAMLiVEVZ1dMDn
-	 zZzutXtm3NY7JZ1JuRRVO/Ux2qXq2leHoOGwtqr0K4g82CFWe+Ua0paI2LK1CUdJWN
-	 gHciySLXMJ+PjNNgZWE4gythG/pdNz+gKMEjzlaXWP5IQB1sqa8U/QemeyunOUQr7C
-	 MFvShtooBgsgX7FUbrpXRmPMX9n/578Qxq11X3vSd1GlikpEx6bWtt3a1+OpydIRLe
-	 8FyV/FAINIJ1Q==
-From: "Rob Herring (Arm)" <robh@kernel.org>
-Date: Thu, 18 Apr 2024 15:09:26 -0500
-Subject: [PATCH 2/2] arm64: dts: freescale: ls1028a: Add standard PCI
- device compatible strings to ENETC
+	s=arc-20240116; t=1713471038; c=relaxed/simple;
+	bh=F84q09468QAuvyxXBUXYfaghdOKp4HFLLHGuiyrs3a0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=IYK1JAGPFCA5olkqlDrvRaflBHKrMGfwLtlUVdENniXIsZL1wFpyyW94Xah19hxmnmfwpXVUQq5/yIRihPXzd3OS5kC4AU/gqywNPu1E5rjdpj0LOYQxRnP/OSZMJufmZs/4vm3DbaTYyX0eK8vEcwEayfp0xA7TTcSSuEdI+uo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=kLbTVmQk; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43IIIk8M021455;
+	Thu, 18 Apr 2024 20:10:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Z6VrvUaNnN1z7gpcFIt1Tmie9n0FAyRjnFpoT2QRMtE=; b=kL
+	bTVmQkWedT59Qh4TJvZUzLEU8+rJO9Bty8idvYX5lP0lRgVoVDBi57mZM4n2BShO
+	rGCqCPMx+bKmnMf6BzJlA9pgx2cjWVZPybQ8En9YakdvcRq/0bJnKfFkBM9QJFdG
+	BoleIzc8JbMrFHCn7+HY363jjPohmBkAtyYsxyFZfakENjDVBdhbLXdBM82OAuic
+	KU/bRG/29HCvq2IdpToNTS4iZD83/qEbzEKFmV9SW4XBeNUPGqCKej55GydINyRd
+	pvCe/HOgmNxPifEJo73+3+61xUO4CfPuOlAU1ZLMOcTVtq9SEhaaNLxQo/K6Hmhi
+	zDywzdZxOeL+GqJ93/iA==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xjx54hv3f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 20:10:14 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43IKAEUV026821
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 20:10:14 GMT
+Received: from [10.110.72.56] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 18 Apr
+ 2024 13:10:09 -0700
+Message-ID: <cb922600-783e-4741-be85-260d1ded5bdb@quicinc.com>
+Date: Thu, 18 Apr 2024 13:10:08 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH bpf-next v4 2/2] net: Add additional bit to support
+ clockid_t timestamp type
+Content-Language: en-US
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
+        "Martin
+ KaFai Lau" <martin.lau@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+CC: <kernel@quicinc.com>
+References: <20240418004308.1009262-1-quic_abchauha@quicinc.com>
+ <20240418004308.1009262-3-quic_abchauha@quicinc.com>
+ <66216f3ec638b_f648a294ec@willemb.c.googlers.com.notmuch>
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+In-Reply-To: <66216f3ec638b_f648a294ec@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240418-dt-ls1028a-pci-fixes-v1-2-95f17405e481@kernel.org>
-References: <20240418-dt-ls1028a-pci-fixes-v1-0-95f17405e481@kernel.org>
-In-Reply-To: <20240418-dt-ls1028a-pci-fixes-v1-0-95f17405e481@kernel.org>
-To: Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Richard Cochran <richardcochran@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-X-Mailer: b4 0.14-dev
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: cj0pgGtvGJm6HELW5bhHtjm9-_3lwLcI
+X-Proofpoint-ORIG-GUID: cj0pgGtvGJm6HELW5bhHtjm9-_3lwLcI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-18_18,2024-04-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ suspectscore=0 malwarescore=0 phishscore=0 mlxlogscore=999 bulkscore=0
+ impostorscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404180146
 
-PCI devices should have a compatible string based on the vendor and device
-IDs. Add these to the Freescale ENETC devices.
 
-Putting the PCI compatible string first as vendor and device ID is more
-specific than a compatible without any device specific information.
 
-Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
----
- arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+On 4/18/2024 12:06 PM, Willem de Bruijn wrote:
+> Abhishek Chauhan wrote:
+>> tstamp_type is now set based on actual clockid_t compressed
+>> into 2 bits.
+>>
+>> To make the design scalable for future needs this commit bring in
+>> the change to extend the tstamp_type:1 to tstamp_type:2 to support
+>> other clockid_t timestamp.
+>>
+>> We now support CLOCK_TAI as part of tstamp_type as part of this
+>> commit with exisiting support CLOCK_MONOTONIC and CLOCK_REALTIME.
+>>
+>> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+>> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+>>  
+>>  /**
+>> - * tstamp_type:1 can take 2 values each
+>> + * tstamp_type:2 can take 4 values each
+>>   * represented by time base in skb
+>>   * 0x0 => real timestamp_type
+>>   * 0x1 => mono timestamp_type
+>> + * 0x2 => tai timestamp_type
+>> + * 0x3 => undefined timestamp_type
+> 
+> Same point as previous patch about comment that repeats name.
+> 
+Will take care, Noted!
+>> @@ -833,7 +836,8 @@ enum skb_tstamp_type {
+>>   *	@tstamp_type: When set, skb->tstamp has the
+>>   *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
+>>   *		skb->tstamp has the (rcv) timestamp at ingress and
+>> - *		delivery_time at egress.
+>> + *		delivery_time at egress or skb->tstamp defined by skb->sk->sk_clockid
+>> + *		coming from userspace
+> 
+> I would simplify the comment: clock base of skb->tstamp.
+> Already in the first patch.
+> 
+Will take care, Noted!
+>>   *	@napi_id: id of the NAPI struct this skb came from
+>>   *	@sender_cpu: (aka @napi_id) source CPU in XPS
+>>   *	@alloc_cpu: CPU which did the skb allocation.
+>> @@ -961,7 +965,7 @@ struct sk_buff {
+>>  	/* private: */
+>>  	__u8			__mono_tc_offset[0];
+>>  	/* public: */
+>> -	__u8			tstamp_type:1;	/* See SKB_CLOCK_*_MASK */
+>> +	__u8			tstamp_type:2;	/* See skb_tstamp_type enum */
+> 
+> Probably good to call out that according to pahole this fills a hole.
+> 
+I will do that . 
+>>  #ifdef CONFIG_NET_XGRESS
+>>  	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
+>>  	__u8			tc_skip_classify:1;
+>> @@ -1096,10 +1100,12 @@ struct sk_buff {
+>>   */
+>>  #ifdef __BIG_ENDIAN_BITFIELD
+>>  #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 7)
+>> -#define TC_AT_INGRESS_MASK		(1 << 6)
+>> +#define SKB_TAI_DELIVERY_TIME_MASK	(1 << 6)
+> 
+> SKB_TSTAMP_TYPE_BIT2_MASK?
+> 
+I was thinking to keep it as TAI because it will confuse developers. I hope thats okay. 
+>> +#define TC_AT_INGRESS_MASK		(1 << 5)
+>>  #else
+>>  #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 0)
+>> -#define TC_AT_INGRESS_MASK		(1 << 1)
+>> +#define SKB_TAI_DELIVERY_TIME_MASK	(1 << 1)
+>> +#define TC_AT_INGRESS_MASK		(1 << 2)
+>>  #endif
+>>  #define SKB_BF_MONO_TC_OFFSET		offsetof(struct sk_buff, __mono_tc_offset)
+>>  
+>> @@ -4206,6 +4212,11 @@ static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
+>>  	case CLOCK_MONOTONIC:
+>>  		skb->tstamp_type = SKB_CLOCK_MONO;
+>>  		break;
+>> +	case CLOCK_TAI:
+>> +		skb->tstamp_type = SKB_CLOCK_TAI;
+>> +		break;
+>> +	default:
+>> +		WARN_ONCE(true, "clockid %d not supported", tstamp_type);
+> 
+> and set to 0 and default tstamp_type?
+> Actually thinking about it. I feel if its unsupported just fall back to default is the correct thing. I will take care of this. 
+>>  	}
+>>  }
+> 
+>>  >
+>  @@ -9372,10 +9378,16 @@ static struct bpf_insn *bpf_convert_tstamp_type_read(const struct bpf_insn *si,
+>>  	*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg,
+>>  			      SKB_BF_MONO_TC_OFFSET);
+>>  	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
+>> -				SKB_MONO_DELIVERY_TIME_MASK, 2);
+>> +				SKB_MONO_DELIVERY_TIME_MASK | SKB_TAI_DELIVERY_TIME_MASK, 2);
+>> +	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
+>> +				SKB_MONO_DELIVERY_TIME_MASK, 3);
+>> +	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
+>> +				SKB_TAI_DELIVERY_TIME_MASK, 4);
+>>  	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_UNSPEC);
+>>  	*insn++ = BPF_JMP_A(1);
+>>  	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_MONO);
+>> +	*insn++ = BPF_JMP_A(1);
+>> +	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_TAI);
+>>  
+>>  	return insn;
+>>  }
+>> @@ -9418,10 +9430,26 @@ static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
+>>  		__u8 tmp_reg = BPF_REG_AX;
+>>  
+>>  		*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
+>> +		/*check if all three bits are set*/
+>>  		*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
+>> -					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
+>> -		*insn++ = BPF_JMP32_IMM(BPF_JNE, tmp_reg,
+>> -					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 2);
+>> +					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK |
+>> +					SKB_TAI_DELIVERY_TIME_MASK);
+>> +		/*if all 3 bits are set jump 3 instructions and clear the register */
+>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+>> +					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK |
+>> +					SKB_TAI_DELIVERY_TIME_MASK, 4);
+>> +		/*Now check Mono is set with ingress mask if so clear */
+>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+>> +					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 3);
+>> +		/*Now Check tai is set with ingress mask if so clear */
+>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+>> +					TC_AT_INGRESS_MASK | SKB_TAI_DELIVERY_TIME_MASK, 2);
+>> +		/*Now Check tai and mono are set if so clear */
+>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+>> +					SKB_MONO_DELIVERY_TIME_MASK |
+>> +					SKB_TAI_DELIVERY_TIME_MASK, 1);
+> 
+> This looks as if all JEQ result in "if so clear"?
+> 
+> Is the goal to only do something different for the two bits being 0x1,
+> can we have a single test with a two-bit mask, rather than four tests?
+> 
+I think Martin wanted to take care of TAI as well. I will wait for his comment here 
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-index 8f8179924851..70b8731029c4 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-@@ -1105,19 +1105,19 @@ pcie@1f0000000 { /* Integrated Endpoint Root Complex */
- 					<0000 0 0 2 &gic 0 0 GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
- 
- 			enetc_port0: ethernet@0,0 {
--				compatible = "fsl,enetc";
-+				compatible = "pci1957,e100", "fsl,enetc";
- 				reg = <0x000000 0 0 0 0>;
- 				status = "disabled";
- 			};
- 
- 			enetc_port1: ethernet@0,1 {
--				compatible = "fsl,enetc";
-+				compatible = "pci1957,e100", "fsl,enetc";
- 				reg = <0x000100 0 0 0 0>;
- 				status = "disabled";
- 			};
- 
- 			enetc_port2: ethernet@0,2 {
--				compatible = "fsl,enetc";
-+				compatible = "pci1957,e100", "fsl,enetc";
- 				reg = <0x000200 0 0 0 0>;
- 				phy-mode = "internal";
- 				status = "disabled";
-@@ -1130,14 +1130,14 @@ fixed-link {
- 			};
- 
- 			enetc_mdio_pf3: mdio@0,3 {
--				compatible = "fsl,enetc-mdio";
-+				compatible = "pci1957,ee01", "fsl,enetc-mdio";
- 				reg = <0x000300 0 0 0 0>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
- 			};
- 
- 			ethernet@0,4 {
--				compatible = "fsl,enetc-ptp";
-+				compatible = "pci1957,ee02", "fsl,enetc-ptp";
- 				reg = <0x000400 0 0 0 0>;
- 				clocks = <&clockgen QORIQ_CLK_HWACCEL 3>;
- 				little-endian;
-@@ -1205,7 +1205,7 @@ fixed-link {
- 			};
- 
- 			enetc_port3: ethernet@0,6 {
--				compatible = "fsl,enetc";
-+				compatible = "pci1957,e100", "fsl,enetc";
- 				reg = <0x000600 0 0 0 0>;
- 				phy-mode = "internal";
- 				status = "disabled";
+My Goal was to take care of invalid combos which does not hold valid
+1. If all 3 bits are set => invalid combo (Test case written is Insane)
+2. If 2 bits are set (tai+mono)(Test case written is Insane) => this cannot happen (because clock base can only be one in skb)
+3. If 2 bit are set (ingress + tai/mono) => This is existing logic + tai being added (clear tstamp in ingress)
+4. For all other cases go ahead and fill in the tstamp in the dest register. 
 
--- 
-2.43.0
-
+> 
 
