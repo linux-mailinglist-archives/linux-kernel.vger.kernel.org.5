@@ -1,102 +1,141 @@
-Return-Path: <linux-kernel+bounces-149963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D9A78A9878
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:24:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38EA08A987F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:26:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 147EE28418F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:24:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E31001F2241E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:26:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC68C15E7EC;
-	Thu, 18 Apr 2024 11:24:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39F915E803;
+	Thu, 18 Apr 2024 11:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RjKcP8eC"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RsOBlq/6"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28A7B15AD99;
-	Thu, 18 Apr 2024 11:24:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88F9415AAAD;
+	Thu, 18 Apr 2024 11:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713439466; cv=none; b=jQ2COdTfludtGTXmb+WKDw15GVVN6C6qAq+C9qB9+KpC2kgHOjbGTVsFujQ2L7twxmcizLmwkugvgDjh1JSeMIrwVKoOdx8NN0b6I8FIM9nD5M7Qg1bGGoVAPBCy2FtczAncmHH76PfWOtyxr0G2OMk0Ol2r0KS4s6XQng03qHE=
+	t=1713439572; cv=none; b=jAERP/6j3641OIhmS1DchRih0H8VsMNluURnslEYQtVe5SdfODpX5vRp+/RZ8OTvWbItFlcnlNO7SRVEOblEjmcf0eG4gQj7mqtj9N/DUBY112+wBgogVmDsA+wRZU05/EglscAbKi5U32RGJLC+hOB7Ke4o8qYzQbJRKxXxW+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713439466; c=relaxed/simple;
-	bh=oc066vT+D/F5ovmoh/FG9gPN0vrcXHwurKJtRWRajb8=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=ukdsEfvl81jJCoHEHSnMzeXEDIRl71Axd9Ft/DUutNdmtVyZbow2n0UCK5C2pfysWzJqCbty+P9R4AUYQtWlNrwVv1dnI3sAlUq3JPqPks9zxOks4KqeyJWr8QEet4vYe20AQGrFUrVcp1FjZlLAqZE9peBSKH3ey7+LBt6XGck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RjKcP8eC; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D7D8AE0003;
-	Thu, 18 Apr 2024 11:24:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713439460;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jMOGVNbuITYt7dy+1dT/3leK/5M9H8PcreUPt+p35qI=;
-	b=RjKcP8eCCvgTt8VGT8VoIlKf0Qq6wN1vbHBN65pxwLkuoNSCCRK9HMIckOEc7Pmk3kxTN0
-	Y14XTy+U0naNbBritHYr/5MoYDZj9oZm7AB5GSvTo4z9DTD0SiPxe0GwgxNzIW9eV9RVM/
-	LVS7FDjuhPyJyN2nvTk0SeXijjt7oVx4KDFMlSHrErHJ+5+n9mLvPfgmI05Jphqx8MXe/n
-	3HOKNshqS/DM6R0bDDbngk/eKBeSl9EvMysy9TeEGAVbxEVcf3IGTUaBJ8VQeJY27rfz8K
-	1oy9fzsN+qb+Glkaf/Na1dKUANBKFagdcw8XuoHhc0ZnI08f25vTEMLXOwy2+w==
-Date: Thu, 18 Apr 2024 13:24:56 +0200 (CEST)
-From: Romain Gantois <romain.gantois@bootlin.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-cc: Romain Gantois <romain.gantois@bootlin.com>, 
-    "David S. Miller" <davem@davemloft.net>, 
-    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-    Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
-    Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-    Conor Dooley <conor+dt@kernel.org>, 
-    Geert Uytterhoeven <geert+renesas@glider.be>, 
-    Magnus Damm <magnus.damm@gmail.com>, 
-    Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-    Jose Abreu <joabreu@synopsys.com>, 
-    Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-    Russell King <linux@armlinux.org.uk>, 
-    =?ISO-8859-15?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>, 
-    Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
-    devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-    linux-renesas-soc@vger.kernel.org, 
-    linux-stm32@st-md-mailman.stormreply.com, 
-    linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net-next v3 5/5] ARM: dts: r9a06g032: describe GMAC1
-In-Reply-To: <CAMuHMdVWEMSR6vKSPdXRbf5_dqBWsM+Z2PV46DBmwHAoBNv_5w@mail.gmail.com>
-Message-ID: <57f94b4a-75e2-32ad-506f-954c13498cd8@bootlin.com>
-References: <20240415-rzn1-gmac1-v3-0-ab12f2c4401d@bootlin.com> <20240415-rzn1-gmac1-v3-5-ab12f2c4401d@bootlin.com> <CAMuHMdVWEMSR6vKSPdXRbf5_dqBWsM+Z2PV46DBmwHAoBNv_5w@mail.gmail.com>
+	s=arc-20240116; t=1713439572; c=relaxed/simple;
+	bh=5N5/GthAZnmatehNZianrScGEQeyQtidTpCwtnZVSTs=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RluH3UgB8/d32H+VsOfAPey21L4pfgWrOwtfCkBj3Oz/wUchsy9/zVWlMU0bAFpFI6hmw48fymms8xgY1V74OSNJwPoiTbekJWVPu2733wkxObupnL3TsXXc6MCbZ8LYe7mg2tpR6DrarID7tnRBkG3wYKyVoiR9Df7/pKjypFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=RsOBlq/6; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43IBPJCZ117586;
+	Thu, 18 Apr 2024 06:25:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713439519;
+	bh=ILDNju0o0Gp9TIqLKVSPNzABvK9adaPpRims5XNw4t8=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=RsOBlq/6MUG7S3kgqzZ/ioTisRm/WA1en24YrVwJ28xOBxbAtTfRQbHQsU8hGpDzn
+	 Ql1AgPUPlVxvbA4vLMuJdlll423tocugH62VzbPvUVrXpgjNykiWu8WR0wLh4fa3lv
+	 KBWMsmODfzdprNGpLolX7Zhg6vZPia5iH2EEZFcM=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43IBPJEr017250
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 18 Apr 2024 06:25:19 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 18
+ Apr 2024 06:25:19 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 18 Apr 2024 06:25:19 -0500
+Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43IBPINQ105647;
+	Thu, 18 Apr 2024 06:25:19 -0500
+Date: Thu, 18 Apr 2024 16:55:18 +0530
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+To: Julien Panis <jpanis@baylibre.com>
+CC: Siddharth Vadapalli <s-vadapalli@ti.com>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Russell King
+	<linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann
+	<daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John
+ Fastabend <john.fastabend@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Simon Horman
+	<horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Ratheesh Kannoth
+	<rkannoth@marvell.com>,
+        Naveen Mamindlapalli <naveenm@marvell.com>,
+        Jacob
+ Keller <jacob.e.keller@intel.com>, <danishanwar@ti.com>,
+        <yuehaibing@huawei.com>, <rogerq@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>
+Subject: Re: [PATCH net-next v9 0/3] Add minimal XDP support to TI AM65 CPSW
+ Ethernet driver
+Message-ID: <1da48c7e-ba87-4f7a-b6d1-d35961005ab0@ti.com>
+References: <20240223-am65-cpsw-xdp-basic-v9-0-2c194217e325@baylibre.com>
+ <260d258f-87a1-4aac-8883-aab4746b32d8@ti.com>
+ <08319f88-36a9-445a-9920-ad1fba666b6a@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-GND-Sasl: romain.gantois@bootlin.com
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <08319f88-36a9-445a-9920-ad1fba666b6a@baylibre.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Geert,
-
-On Thu, 18 Apr 2024, Geert Uytterhoeven wrote:
-
-> > +               gmac1: ethernet@44000000 {
-> > +                       compatible = "renesas,r9a06g032-gmac", "renesas,rzn1-gmac", "snps,dwmac";
-> > +                       reg = <0x44000000 0x2000>;
-> > +                       interrupt-parent = <&gic>;
+On Thu, Apr 18, 2024 at 01:17:47PM +0200, Julien Panis wrote:
+> On 4/18/24 13:00, Siddharth Vadapalli wrote:
+> > On 12-04-2024 21:08, Julien Panis wrote:
+> > > This patch adds XDP support to TI AM65 CPSW Ethernet driver.
+> > > 
+> > > The following features are implemented: NETDEV_XDP_ACT_BASIC,
+> > > NETDEV_XDP_ACT_REDIRECT, and NETDEV_XDP_ACT_NDO_XMIT.
+> > > 
+> > > Zero-copy and non-linear XDP buffer supports are NOT implemented.
+> > > 
+> > > Besides, the page pool memory model is used to get better performance.
+> > > 
+> > > Signed-off-by: Julien Panis <jpanis@baylibre.com>
+> > Hello Julien,
+> > 
+> > This series crashes Linux on AM62ax SoC which also uses the
+> > AM65-CPSW-NUSS driver:
+> > https://gist.github.com/Siddharth-Vadapalli-at-TI/5ed0e436606001c247a7da664f75edee
+> > 
+> > Regards,
+> > Siddharth.
 > 
-> The surrounding "soc" node already specifies the interrupt parent,
-> so there is no need to repeat that. I could fix that while applying
-> to renesas-devel for v6.10, but it looks like there will be a v4 for
-> the rest of the series anyway?
+> Hello Siddharth.
+> 
+> Thanks for the log. I can read:
+> [    1.966094] Missing net_device from driver
+> 
+> Did you check that nodes exist in the device tree for the net devices ?
 
-Indeed there will be a v4 so I'll fix it.
+Yes it exists. The device-tree used was also built with linux-next
+tagged next-20240417. The node corresponding to eth0 is cpsw_port1 which
+is present and enabled in the device-tree:
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts?h=next-20240417#n644
 
-Thanks,
-
--- 
-Romain Gantois, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Regards,
+Siddharth.
 
