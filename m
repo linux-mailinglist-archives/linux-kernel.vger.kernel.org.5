@@ -1,278 +1,163 @@
-Return-Path: <linux-kernel+bounces-150091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29C238A9A4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:48:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D5F38A9A50
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:48:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C7A31C21016
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:48:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A6CE2842D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:48:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C8615FCF9;
-	Thu, 18 Apr 2024 12:44:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="P+0UlYNy"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552AB15F411;
+	Thu, 18 Apr 2024 12:45:07 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 535CF15FA88
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:44:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A7C12FF75
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713444282; cv=none; b=mQoD8a/8ZcmNxGShA5fFXEEsu9uoq64dsZQ4rddNxmJocYNbYGQAsmA5YFYrIYJhwXocM+X/rIdamSVBvEPGG+NWh0wr8ETNEeycTGJqnppPQKh+pq80/0D7Qw3TmnCkCO+8WdGZjQGkZlQg8jhDNWOBvVS3Uh5MAuyNzddWHIs=
+	t=1713444306; cv=none; b=L/vMv7GvS/z5MJrK66bkP0RWw9KJX4rl3lnIQGfWPht9mpjhAkpEBagf0i3589FEE4+HxC00i2zEyqf8/a50AiaVXfzadNge0YV8IURo6Zk0NFax/aexw96UGMkN1QcsiIak+En5rPv5zgmz1wJiWtkPilaXom5i4i6eLD4k0bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713444282; c=relaxed/simple;
-	bh=lQ6n1QrR/z/NqLOAbb5LGq9pRuyCYC/7b3o0ULyNSzI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OMyDUEEh4SDBpkHFTCX8PSCtp7zz+D+hJ93OabUaICioWeJh8LbVea/ecVTaEVg8idr7vIX/vBIXzienyGcQpq93aQhskjaIP2gydaujf/RQbX7k2QV7NUdVVFUWyKzmItMzAQoofbjI4m3zKrPnIqp/zUySuL7956wFQOHQjZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=P+0UlYNy; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713444279;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lG0krlZ+it7q+RSsgNALtPueMJ8Kp20TkYqHq7lIW6I=;
-	b=P+0UlYNya69v458d+Zgh6oyY+D0FAYQP+2tQJQFuuQuyjA5wETJJiHhHbCWElCwx+LTut1
-	Iu6OVABtbXKgyNosyjN8GJxgHPQoJJAmBV8aOBitoeXVozfisPh7RZMDwGg2P4SNCBypsM
-	QgPUOeiOZRTDy/dfxtpi27l1p+dkNMc=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-657-DmMBu6TMOHSna7IIvThGrQ-1; Thu, 18 Apr 2024 08:44:37 -0400
-X-MC-Unique: DmMBu6TMOHSna7IIvThGrQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-416ac21981dso4352905e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 05:44:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713444277; x=1714049077;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lG0krlZ+it7q+RSsgNALtPueMJ8Kp20TkYqHq7lIW6I=;
-        b=fKR7xOBd0wjliPnA0W+Z2uzzf4aSWDSSnBicdgtH+O2aXWvlpMuvAG0NiPDjntvkPA
-         wUGhAXYiXAdqRQxKjIhezr7EYmnwmTkB+afNeULJ0EyFeWZ0Yz9/1efjPuMRWYFzuL2V
-         xr8mJETyuL8dLVYElyaQlzhFU2UuRD+cO8Q8K9pKejJuG4yFXhBZPJUKbmUXRa/eBm9Q
-         QxikFOd/zyVLnmC2hZc6+myDd8LNzvl+33OyB63HYIWOZHARR5ApCzNqzquOHaH3nlFO
-         qpR3PjUd4YSov47MZ0FvMqpoLvyCBxZo9Z4mJMQXGYzmxAaaaGREpe3jkz70FW87SqNw
-         1p6w==
-X-Forwarded-Encrypted: i=1; AJvYcCWCcBBz08M1V172JwfAvDSmQgj9SCX0lctBd4ZigP3MJcb0Zx1SL83J2MiKcg1xWnBr7mO1lCvq0vQSkyWSAbMvLN6B8uIQNjlOcc6+
-X-Gm-Message-State: AOJu0Yzc4kuO5UK3tdez79lZ0figYFb16b5iXixtYEZd7PYiu+Lq2Ga9
-	ZOI8p06nQpnX7dzoyUZujpNZCUECSlAaUEyw/OFng8V7pRF5/0hcuNWkcrWX8nIevc7KLLsxw3d
-	rI1Ur5IXNbbRXWpn5znLpRYxqxmvFKHP1j6XKI6VH8n1C5o9209od3CklAoctTw==
-X-Received: by 2002:a05:600c:5250:b0:417:e316:fbb3 with SMTP id fc16-20020a05600c525000b00417e316fbb3mr1778639wmb.15.1713444276654;
-        Thu, 18 Apr 2024 05:44:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGgiXK6ctMPnbgS9twk1yZF4rMcb4I7rjgxi88AAT/3MluzJ9KQEAmdf15h5qkhMhqBkTT+Kg==
-X-Received: by 2002:a05:600c:5250:b0:417:e316:fbb3 with SMTP id fc16-20020a05600c525000b00417e316fbb3mr1778611wmb.15.1713444276119;
-        Thu, 18 Apr 2024 05:44:36 -0700 (PDT)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id q6-20020a05600c46c600b0041892857924sm2633614wmo.36.2024.04.18.05.44.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 05:44:35 -0700 (PDT)
-Message-ID: <89b534ab-ce9f-4a8a-984c-8460f686980d@redhat.com>
-Date: Thu, 18 Apr 2024 14:44:34 +0200
+	s=arc-20240116; t=1713444306; c=relaxed/simple;
+	bh=BX//LDamhCsN5RO0/Ar3nYwJvwCqv29g1oqAqiuZ1x4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=naOgrWkQQ1OWIyGoYlKS2OfAn1evPI5DmlD5IvlWK82h63C0GOJeIzSzS/1nurCh54528RL6pnskeaJW62yunLZp+fojzAQW3Jze62pWDZ2joc38/i/ZGWREA/9fqLqKHqEMAN+YGGiMPg3ENSg9dxdOwSuNVD9ePawTwyKiPcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from i5e861917.versanet.de ([94.134.25.23] helo=phil.lan)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rxR8H-0006mk-Bn; Thu, 18 Apr 2024 14:44:53 +0200
+From: Heiko Stuebner <heiko@sntech.de>
+To: heiko@sntech.de
+Cc: quentin.schulz@theobroma-systems.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	dsimic@manjaro.org,
+	Heiko Stuebner <heiko.stuebner@cherry.de>
+Subject: [PATCH v2] arm64: dts: rockchip: add PCIe3 support on rk3588-jaguar
+Date: Thu, 18 Apr 2024 14:44:45 +0200
+Message-Id: <20240418124445.2360491-1-heiko@sntech.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 4/4] mm/madvise: optimize lazyfreeing with mTHP in
- madvise_free
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, ryan.roberts@arm.com, 21cnbao@gmail.com,
- mhocko@suse.com, fengwei.yin@intel.com, zokeefe@google.com,
- shy828301@gmail.com, xiehuan09@gmail.com, wangkefeng.wang@huawei.com,
- songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240418105750.98866-1-ioworker0@gmail.com>
- <20240418105750.98866-5-ioworker0@gmail.com>
- <2fdcee93-b8ad-4374-a8ab-7c7bed463813@redhat.com>
- <CAK1f24m4y0kvmdFtHoJoPZeF9aeRpw4nnr1W5BMRz_OH49dHvg@mail.gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CAK1f24m4y0kvmdFtHoJoPZeF9aeRpw4nnr1W5BMRz_OH49dHvg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 18.04.24 14:33, Lance Yang wrote:
-> On Thu, Apr 18, 2024 at 8:03 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 18.04.24 12:57, Lance Yang wrote:
->>> This patch optimizes lazyfreeing with PTE-mapped mTHP[1]
->>> (Inspired by David Hildenbrand[2]). We aim to avoid unnecessary folio
->>> splitting if the large folio is fully mapped within the target range.
->>>
->>> If a large folio is locked or shared, or if we fail to split it, we just
->>> leave it in place and advance to the next PTE in the range. But note that
->>> the behavior is changed; previously, any failure of this sort would cause
->>> the entire operation to give up. As large folios become more common,
->>> sticking to the old way could result in wasted opportunities.
->>>
->>> On an Intel I5 CPU, lazyfreeing a 1GiB VMA backed by PTE-mapped folios of
->>> the same size results in the following runtimes for madvise(MADV_FREE) in
->>> seconds (shorter is better):
->>>
->>> Folio Size |   Old    |   New    | Change
->>> ------------------------------------------
->>>         4KiB | 0.590251 | 0.590259 |    0%
->>>        16KiB | 2.990447 | 0.185655 |  -94%
->>>        32KiB | 2.547831 | 0.104870 |  -95%
->>>        64KiB | 2.457796 | 0.052812 |  -97%
->>>       128KiB | 2.281034 | 0.032777 |  -99%
->>>       256KiB | 2.230387 | 0.017496 |  -99%
->>>       512KiB | 2.189106 | 0.010781 |  -99%
->>>      1024KiB | 2.183949 | 0.007753 |  -99%
->>>      2048KiB | 0.002799 | 0.002804 |    0%
->>>
->>> [1] https://lkml.kernel.org/r/20231207161211.2374093-5-ryan.roberts@arm.com
->>> [2] https://lore.kernel.org/linux-mm/20240214204435.167852-1-david@redhat.com
->>>
->>> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
->>> Signed-off-by: Lance Yang <ioworker0@gmail.com>
->>> ---
->>>    mm/madvise.c | 85 +++++++++++++++++++++++++++-------------------------
->>>    1 file changed, 44 insertions(+), 41 deletions(-)
->>>
->>> diff --git a/mm/madvise.c b/mm/madvise.c
->>> index 4597a3568e7e..375ab3234603 100644
->>> --- a/mm/madvise.c
->>> +++ b/mm/madvise.c
->>> @@ -643,6 +643,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->>>                                unsigned long end, struct mm_walk *walk)
->>>
->>>    {
->>> +     const cydp_t cydp_flags = CYDP_CLEAR_YOUNG | CYDP_CLEAR_DIRTY;
->>>        struct mmu_gather *tlb = walk->private;
->>>        struct mm_struct *mm = tlb->mm;
->>>        struct vm_area_struct *vma = walk->vma;
->>> @@ -697,44 +698,57 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->>>                        continue;
->>>
->>>                /*
->>> -              * If pmd isn't transhuge but the folio is large and
->>> -              * is owned by only this process, split it and
->>> -              * deactivate all pages.
->>> +              * If we encounter a large folio, only split it if it is not
->>> +              * fully mapped within the range we are operating on. Otherwise
->>> +              * leave it as is so that it can be marked as lazyfree. If we
->>> +              * fail to split a folio, leave it in place and advance to the
->>> +              * next pte in the range.
->>>                 */
->>>                if (folio_test_large(folio)) {
->>> -                     int err;
->>> +                     bool any_young, any_dirty;
->>>
->>> -                     if (folio_likely_mapped_shared(folio))
->>> -                             break;
->>> -                     if (!folio_trylock(folio))
->>> -                             break;
->>> -                     folio_get(folio);
->>> -                     arch_leave_lazy_mmu_mode();
->>> -                     pte_unmap_unlock(start_pte, ptl);
->>> -                     start_pte = NULL;
->>> -                     err = split_folio(folio);
->>> -                     folio_unlock(folio);
->>> -                     folio_put(folio);
->>> -                     if (err)
->>> -                             break;
->>> -                     start_pte = pte =
->>> -                             pte_offset_map_lock(mm, pmd, addr, &ptl);
->>> -                     if (!start_pte)
->>> -                             break;
->>> -                     arch_enter_lazy_mmu_mode();
->>> -                     pte--;
->>> -                     addr -= PAGE_SIZE;
->>> -                     continue;
->>> +                     nr = madvise_folio_pte_batch(addr, end, folio, pte,
->>> +                                                  ptent, &any_young, NULL);
->>> +
->>> +                     if (nr < folio_nr_pages(folio)) {
->>> +                             int err;
->>> +
->>> +                             if (folio_likely_mapped_shared(folio))
->>> +                                     continue;
->>> +                             if (!folio_trylock(folio))
->>> +                                     continue;
->>> +                             folio_get(folio);
->>> +                             arch_leave_lazy_mmu_mode();
->>> +                             pte_unmap_unlock(start_pte, ptl);
->>> +                             start_pte = NULL;
->>> +                             err = split_folio(folio);
->>> +                             folio_unlock(folio);
->>> +                             folio_put(folio);
->>> +                             start_pte = pte =
->>> +                                     pte_offset_map_lock(mm, pmd, addr, &ptl);
->>
->> I'd just put it on a single line.
-> 
-> start_pte = pte = pte_offset_map_lock(mm, pmd, addr, &ptl);
-> 
-> I suddenly realized that putting it on a single line would exceed the
-> 80-char limit.
+From: Heiko Stuebner <heiko.stuebner@cherry.de>
 
-Which is fine according to Documentation/process/coding-style.rst
+The Jaguar SBC provides an M.2 slot connected to the pcie3 controller.
+In contrast to a number of other boards the pcie-refclk is gpio-controlled,
+so the necessary clock and is added to the list of pcie3 clocks.
 
-.. as long as it aids readability.
+Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
+---
+changes in v2:
+- "an" M.2 slot (Dragan)
+- pinctrl for refclk-en and reset pin (Quentin)
+- don't repurpose the pcie30x4_pins pinctrl entry for only wake (Quentin)
 
-Alternatively, the following might do:
+ .../arm64/boot/dts/rockchip/rk3588-jaguar.dts | 64 +++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
-pte = pte_offset_map_lock(mm, pmd, addr, &ptl);
-start_pte = pte;
-
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts b/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts
+index 4076c92668ba..3407e777e97b 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts
+@@ -72,6 +72,27 @@ led-1 {
+ 		};
+ 	};
+ 
++	/*
++	 * 100MHz reference clock for PCIe peripherals from PI6C557-05BLE
++	 * clock generator.
++	 * The clock output is gated via the OE pin on the clock generator.
++	 * This is modeled as a fixed-clock plus a gpio-gate-clock.
++	 */
++	pcie_refclk_gen: pcie-refclk-gen-clock {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <1000000000>;
++	};
++
++	pcie_refclk: pcie-refclk-clock {
++		compatible = "gpio-gate-clock";
++		clocks = <&pcie_refclk_gen>;
++		#clock-cells = <0>;
++		enable-gpios = <&gpio0 RK_PC6 GPIO_ACTIVE_LOW>; /* PCIE30X4_CLKREQN_M0 */
++		pinctrl-names = "default";
++		pinctrl-0 = <&pcie30x4_clkreqn_m0>;
++	};
++
+ 	pps {
+ 		compatible = "pps-gpio";
+ 		gpios = <&gpio0 RK_PD5 GPIO_ACTIVE_HIGH>;
+@@ -358,6 +379,30 @@ &pcie2x1l0 {
+ 	status = "okay";
+ };
+ 
++&pcie30phy {
++	status = "okay";
++};
++
++&pcie3x4 {
++	/*
++	 * The board has a gpio-controlled "pcie_refclk" generator,
++	 * so add it to the list of clocks.
++	 */
++	clocks = <&cru ACLK_PCIE_4L_MSTR>, <&cru ACLK_PCIE_4L_SLV>,
++		 <&cru ACLK_PCIE_4L_DBI>, <&cru PCLK_PCIE_4L>,
++		 <&cru CLK_PCIE_AUX0>, <&cru CLK_PCIE4L_PIPE>,
++		 <&pcie_refclk>;
++	clock-names = "aclk_mst", "aclk_slv",
++		      "aclk_dbi", "pclk",
++		      "aux", "pipe",
++		      "ref";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pcie30x4_waken_m0 &pcie30x4_perstn_m0>;
++	reset-gpios = <&gpio0 RK_PD0 GPIO_ACTIVE_HIGH>; /* PCIE30X4_PERSTN_M0 */
++	vpcie3v3-supply = <&vcc3v3_mdot2>;
++	status = "okay";
++};
++
+ &pinctrl {
+ 	emmc {
+ 		emmc_reset: emmc-reset {
+@@ -376,6 +421,25 @@ led1_pin: led1-pin {
+ 			rockchip,pins = <1 RK_PD4 RK_FUNC_GPIO &pcfg_pull_none>;
+ 		};
+ 	};
++
++	pcie30x4 {
++		pcie30x4_clkreqn_m0: pcie30x4-clkreqn-m0 {
++			rockchip,pins = <0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		pcie30x4_perstn_m0: pcie30x4-perstn-m0 {
++			rockchip,pins = <0 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		pcie30x4_waken_m0: pcie30x4-waken-m0 {
++			/*
++			 * pcie30x4_clkreqn_m0 is used by the refclk generator
++			 * pcie30x4_perstn_m0 is used as via the reset-gpio
++			 * So only pcie30x4_waken_m0 is used.
++			 */
++			rockchip,pins = <0 RK_PC7 12 &pcfg_pull_none>;
++		};
++	};
+ };
+ 
+ &saradc {
 -- 
-Cheers,
-
-David / dhildenb
+2.39.2
 
 
