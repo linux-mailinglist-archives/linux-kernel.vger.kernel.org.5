@@ -1,126 +1,163 @@
-Return-Path: <linux-kernel+bounces-150299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88F0B8A9D00
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:27:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 682888A9D02
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:27:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32D821F212C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:27:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E77B283C71
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:27:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5396D15FA66;
-	Thu, 18 Apr 2024 14:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D4DF16C848;
+	Thu, 18 Apr 2024 14:26:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="a54bZwdj"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="IXVU/xSu";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="sMNUrgxx";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tNY4FVYd";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ZAQ5t7EA"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A9C165FB6;
-	Thu, 18 Apr 2024 14:25:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF1B11635C8;
+	Thu, 18 Apr 2024 14:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713450334; cv=none; b=QX8kmCs1Pk8nS3kJ97wC4Qt4zL3i76nGuXBKvIBvtKnk+9dKBU1pfP9Owvg2/YJwkwRd7D8k60o/qv/DCX1/q1WY/fvQnWfDD1tX7jCMAsgJWcZBFOxit3e7L5PRIXQgbeJ2GybfUQZBLHTO3YB07A/URr2E9CNoyS3fWsBkbH8=
+	t=1713450378; cv=none; b=tl6cvGyoIHdJjL5oNVKT86rKIIXo473FsADZvtbf43PN972tYebSljFOqJNmVmQ76uFmRhCkazqRiKVTCGWY32WXTNrIBufbTyv8txrrLUjeqVKDCV0GVgaYevLEjrPKCJAWI6jEivUxyRJ2Jtxw2u1NcUW4yXscBkdwye9svhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713450334; c=relaxed/simple;
-	bh=xKOoXd2m5g86klzLlV+Y20rOFjFNzLeMpDwIzLipyeg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OqIOQGSiHapLuBQ5WeKGyJwxmCXv50TCbIRGtNiK74y9wwhYjNp9UPPZ0JWHUN/r3kRXwROPolJjR1kkIicFpTTLn5kYwHKm3FiiSEWQxEcNYfufMZly01E+dj7q99njDHSQxjzPsMMs0Y5uoivwoqYsvyjLg6m2NbxjTRv/654=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=a54bZwdj; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=Zj6q68EGA4RlIzYy/XSYT8WM4sscbczTrgcDryITQrk=;
-	t=1713450332; x=1713882332; b=a54bZwdjVmPGx6Bp1QZG6UhImC4InVF7GniPpFaR86VvgGp
-	6CaUimQQITS+FXKoWJTTTUy1lxokl6U9RlmLq4dEoj32himcsPkjE3PzVhzjAeDhEikFSKBrOI181
-	3I2sXYhFprrv602dq77ZvJRZgayCnTAzwIqNgD9oqpJ6sIaTmVh0QiE8g/JzENwABgs2TSnF8B5zs
-	piwUfkDw/UuWOWWRrihiSANjh51N81SftxTYS4tTpzed8AlaiqmHcgtvPAjhDMq9mAMzxG2tAXNtS
-	fFIpXg0cfwg23Dtuvn4ycfHL1LlRG/iFktC5mIXit85HvZLnyEApGwVVPlLdQ3QA==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rxShb-0005cg-PE; Thu, 18 Apr 2024 16:25:27 +0200
-Message-ID: <93766ae3-30d9-4dd3-ba01-870cc6387df4@leemhuis.info>
-Date: Thu, 18 Apr 2024 16:25:26 +0200
+	s=arc-20240116; t=1713450378; c=relaxed/simple;
+	bh=rcRUkZ/y0khJhYr/AkkjZ27Nay/hu8KD3KL3PrlpfQ8=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gnhfOC2oCs3NYIhV3k5CGm4UKJDDbng0x6wztwEmvWJkesPP/ICkYK8BuRogKiBqq0gwrXKaLupCcskIgwkUtffLYXppCKAvLvnBr4IT2s73Fo+MT8K9ephHFMb6c62Vy63HPcCoO+bS1FMo+FvLe190cSIZ0ZA9LLalwNVe4hM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=IXVU/xSu; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=sMNUrgxx; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=tNY4FVYd; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ZAQ5t7EA; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 107A02081D;
+	Thu, 18 Apr 2024 14:26:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713450375; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=f7YVjJr+W3wk5uH+Tl4rlF4cuoUA+Yq43EM2JvCzVts=;
+	b=IXVU/xSup5fCS+dLaf7wlCHZjBRgfMCDRZLeBvRstnCUxsgUBTbj//VyiIdWyULbfOMiwR
+	vvr0KyKSOsRZLXpI7nNxgfAzfH2Wqv1eWiW2WC398rj+bGL578O3tpqaXgAbezfKsBNIRg
+	4djpy1nPvGA8RV6c/KzY2oiL+qEkTLk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713450375;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=f7YVjJr+W3wk5uH+Tl4rlF4cuoUA+Yq43EM2JvCzVts=;
+	b=sMNUrgxxeyE5i0gG2T2EZnfcoiXLrhthug86NEAUFxbBEJAUvo6O/pfeI16nrsZ++KPFdk
+	IirTgAlMZ8f+D3Aw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713450374; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=f7YVjJr+W3wk5uH+Tl4rlF4cuoUA+Yq43EM2JvCzVts=;
+	b=tNY4FVYdQG/CBJKeWtWSRM2IaW3t9DnG7//VoZyuaaT6ZnonCEWJpXctyo2Ez80BEehYxf
+	5v4B7JLDAY9pC5NBNn4AMT/jM01mx5bQ8ORbvL/Yt+2sqATxlnJ7qI7W6bo0pqirGzcSYU
+	WLOmzzPndlvga03+QZYrE0uzuNgx0mk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713450374;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=f7YVjJr+W3wk5uH+Tl4rlF4cuoUA+Yq43EM2JvCzVts=;
+	b=ZAQ5t7EAsFA5Xeu/aleZ7itWOzNV81up3+9GXkvariYnqYkotnFBXLIzWNtIAWag2t0J+O
+	3GzzToQ4LNo4D/AQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A0A7B13687;
+	Thu, 18 Apr 2024 14:26:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id NqMFJoUtIWY0JAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Thu, 18 Apr 2024 14:26:13 +0000
+Date: Thu, 18 Apr 2024 16:26:22 +0200
+Message-ID: <87ttjywxv5.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Nam Cao <namcao@linutronix.de>
+Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+	jayalk@intworks.biz,
+	Daniel Vetter <daniel@ffwll.ch>,
+	deller@gmx.de,
+	linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	tiwai@suse.de,
+	bigeasy@linutronix.de,
+	patrik.r.jakobsson@gmail.com,
+	LKML
+ <linux-kernel@vger.kernel.org>,
+	Vegard Nossum <vegard.nossum@oracle.com>,
+	George Kennedy <george.kennedy@oracle.com>,
+	Darren Kenny
+ <darren.kenny@oracle.com>,
+	chuansheng.liu@intel.com
+Subject: Re: [bug-report] task info hung problem in fb_deferred_io_work()
+In-Reply-To: <20240418160652.68df1a86@namcao>
+References: <271372d6-e665-4e7f-b088-dee5f4ab341a@oracle.com>
+	<20240418160652.68df1a86@namcao>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [REGRESSION] Null pointer dereference while shrinking zswap
-To: Johannes Weiner <hannes@cmpxchg.org>,
- Christian Heusel <christian@heusel.eu>
-Cc: Chengming Zhou <chengming.zhou@linux.dev>, Nhat Pham <nphamcs@gmail.com>,
- Seth Jennings <sjenning@redhat.com>, Dan Streetman <ddstreet@ieee.org>,
- Vitaly Wool <vitaly.wool@konsulko.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, David Runge <dave@sleepmap.de>,
- "Richard W.M. Jones" <rjones@redhat.com>, Mark W <instruform@gmail.com>,
- regressions@lists.linux.dev, Yosry Ahmed <yosryahmed@google.com>
-References: <3iccc6vjl5gminut3lvpl4va2lbnsgku5ei2d7ylftoofy3n2v@gcfdvtsq6dx2>
- <CAKEwX=MZ3jTVpN4g-qrhTn2b0i0C6_M=8BtKt9KEPyFHb+4W2w@mail.gmail.com>
- <CAKEwX=NM1y-K1-Yw=CH3cM-8odER1PZBVoWo-rs7_OdjFG_puw@mail.gmail.com>
- <CAKEwX=MWPUf1NMGdn+1AkRdOUf25ifAbPyoP9zppPTx3U3Tv2Q@mail.gmail.com>
- <246c1f4d-af13-40fa-b968-fbaf36b8f91f@linux.dev>
- <20240417143324.GA1055428@cmpxchg.org>
- <4c3ppfjxnrqx6g52qvvhqzcc4pated2q5g4mi32l22nwtrkqfq@a4lk6s5zcwvb>
- <20240418124043.GC1055428@cmpxchg.org>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <20240418124043.GC1055428@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1713450332;df5152e4;
-X-HE-SMSGID: 1rxShb-0005cg-PE
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Flag: NO
+X-Spam-Score: -1.48
+X-Spam-Level: 
+X-Spamd-Result: default: False [-1.48 / 50.00];
+	BAYES_HAM(-2.68)[98.61%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.de];
+	FREEMAIL_CC(0.00)[oracle.com,intworks.biz,ffwll.ch,gmx.de,vger.kernel.org,lists.freedesktop.org,suse.de,linutronix.de,gmail.com,intel.com];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
-On 18.04.24 14:40, Johannes Weiner wrote:
-> On Wed, Apr 17, 2024 at 07:18:14PM +0200, Christian Heusel wrote:
->> On 24/04/17 10:33AM, Johannes Weiner wrote:
-> Christian reports a NULL deref in zswap that he bisected down to the
-> zswap shrinker. The issue also cropped up in the bug trackers of
-> libguestfs [1] and the Red Hat bugzilla [2].
+On Thu, 18 Apr 2024 16:06:52 +0200,
+Nam Cao wrote:
 > 
-> The problem is that when memcg is disabled with the boot time flag,
-> the zswap shrinker might get called with sc->memcg == NULL. This is
-> okay in many places, like the lruvec operations. But it crashes in
-> memcg_page_state() - which is only used due to the non-node accounting
-> of cgroup's the zswap memory to begin with.
+> On 2024-04-18 Harshit Mogalapalli wrote:
+> > While fuzzing 5.15.y kernel with Syzkaller, we noticed a INFO: task hung 
+> > bug in fb_deferred_io_work()
 > 
-> Nhat spotted that the memcg can be NULL in the memcg-disabled case,
-> and I was then able to reproduce the crash locally as well.
+> Which framebuffer device are you using exactly? It is possible that
+> the problem is with the device driver, not core framebuffer.
 
-Thx for the fix. Nitpicking:
+Note that it was already known that using flush_delayed_work() caused
+a problem.  See the thread of the fix patch:
+  https://lore.kernel.org/all/20230129082856.22113-1-tiwai@suse.de/
 
-> [1] https://github.com/libguestfs/libguestfs/issues/139
-> [2] https://bugzilla.redhat.com/show_bug.cgi?id=2275252
+BTW, the problem is seen with bochs drm.
 
-FWIW, those should ideally look like this:
 
-Link: https://github.com/libguestfs/libguestfs/issues/139 [1]
-Link: https://bugzilla.redhat.com/show_bug.cgi?id=2275252 [2]
-
-> Fixes: b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure")
-> Cc: stable@vger.kernel.org	[v6.8]
-> Link: https://lkml.kernel.org/r/20240417143324.GA1055428@cmpxchg.org
-> Reported-by: Christian Heusel <christian@heusel.eu>
-
-And here checkpatch.pl should have complained that the above line should
-ideally be followed by a Link or Closes tag to the report, e.g.:
-
-Closes:
-https://lore.kernel.org/all/3iccc6vjl5gminut3lvpl4va2lbnsgku5ei2d7ylftoofy3n2v@gcfdvtsq6dx2/
-
-Which in this case would be nice, as I'm tracking this regression, hence
-regzbot will then track the patch and consider the regression resolved
-once the fix lands in mainline.
-
-Ciao, Thorsten
+Takashi
 
