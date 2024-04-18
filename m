@@ -1,119 +1,115 @@
-Return-Path: <linux-kernel+bounces-149584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BFFF8A931D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:31:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 101578A931F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:33:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB0B72817F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:31:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF1C1281E92
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23FA523770;
-	Thu, 18 Apr 2024 06:31:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA0F21373;
+	Thu, 18 Apr 2024 06:33:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a3vXDRAb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="UpYxncQ7"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F938F6B;
-	Thu, 18 Apr 2024 06:31:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1772923DE
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:33:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713421900; cv=none; b=RF5gzvIVXEQowjQxsJrermo2KEGwTfRt+8ltXgrTWcK6Cnnt0PURtLGnWSjI1if+EW7CqRLfhrFk4pRMCASPujILJvBmE9xUTIz0SbwLhyy5wwwn0nIo4SnL92bmE+iFlmOxxwzO/HW8xJ4sJuJOAYIp2bxNyUzthgUjYVeJexs=
+	t=1713421987; cv=none; b=C8zjiSCYMsbiQ48zHqHCl+dT4JK3YKwbFlIMP/ZcBEsbKWw0V9mj2UiqlzhhpbSIEUqoZQ3jOFqi5z0+ZKFJmYTGjUBWHFt9Lw74g07kvh4baGY7Zz2rLPkgOIActDcRthG6B85xyOWX3rr6HlmK2209JHJiI8QLX4HvDufF4Dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713421900; c=relaxed/simple;
-	bh=QK75sxWwO2BdHIbjXDFJ/BBEkaabbYciPzZkH2gMSO8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uUgErzZuhwxXQmO4bJUrmhzdPNCGi5DJ4PtZXHUOGqJ13ljEZ1+wJz8iOsW3VL9iri19w1vdU/U7VQvB2DW0nHbPTPVYa5CZeD0IHIIv5eB63hPv4wpMoA/nAa+kfvbal5hI+nkhoZAhcFygeabtctSZmWsIVHVpRVgnULNLQBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a3vXDRAb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2867C113CC;
-	Thu, 18 Apr 2024 06:31:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713421899;
-	bh=QK75sxWwO2BdHIbjXDFJ/BBEkaabbYciPzZkH2gMSO8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=a3vXDRAbOzBSaBvWgOOMfd/pjQ+MqUjO6tpkplhL3OknsEqxjbURT8p0Az/SNglGZ
-	 vsw72ELdF+CGJSmasxKoC4th0BMawFWtdHsFvpYMz7kFGldtI+oybvElpg43W9SSCF
-	 Rrpt7oUpPvg8OaJS9LDz6Rre7AyOMb3I6y6ZZxuNLdxQReg3Y6Ci5ygO1seu8EQ08r
-	 iGfd/f5XqnZ+KHi0Yt8BoRbn/TxcYA1NOqYKc5n5W6bkJXUge1n2OW0So3+o1SyzKH
-	 WTXsf+TFYiDyiuPsY5ZG/YnZxo/Lk/rURBZEJDL3dh84SmVszrRM+PF1cy21a05Hpx
-	 OL7L2Aj6njWjg==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rxLJ6-000000000MM-3I9T;
-	Thu, 18 Apr 2024 08:31:41 +0200
-Date: Thu, 18 Apr 2024 08:31:40 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc: ntfs3@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
-	Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Anton Altaparmakov <anton@tuxera.com>
-Subject: Re: [PATCH 11/11] fs/ntfs3: Taking DOS names into account during
- link counting
-Message-ID: <ZiC-TNxianVojCJv@hovoldconsulting.com>
-References: <6c99c1bd-448d-4301-8404-50df34e8df8e@paragon-software.com>
- <0cb0b314-e4f6-40a2-9628-0fe7d905a676@paragon-software.com>
+	s=arc-20240116; t=1713421987; c=relaxed/simple;
+	bh=pQMBecgqfKdbPKjdn4yS3sDc77mBnocF1E8KpVGeTVo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=OvSdwn2WrnFXqVW1m3TWiBEfY0MoArUuGnsTt0OvHN0JpGT8/mLl7TLQYks/Z3uvkvg60JZOS9G6H+1EtdChWh7VCF6P6GhWwLIX3EbxwE0vJS6wTDWQUzb86u6dSxF0vYdy5zodvx7xL3a7/sEnifmYbja5xh/OoBXsiIReLBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=UpYxncQ7; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1713421984;
+	bh=Os3n75joztuZwb7Uo98ZK8zUHbtnDL2bSCbwHpOcZE4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=UpYxncQ7XHP+jss1hZdkT5vMaxWi3UsZZtID/xtfljbj+dZWc2jBahOY2aXHfD8y/
+	 RVsJRnN7oRlQ51KLRItu4vVMzvHZuDSBlkXS2vaa0kLCo0FNzJDORHCGtohKi/qiq2
+	 O6Y3sB4pjJIKSL+WOdB+MPmuObWgwilq8rQFQIwrB1sqNBG7wj0xvmApVHx7J6xxz2
+	 MfSgJr2XjXJrJ9ZSMOm6Ti10tkZS3ejgm15X9sf+rIjEWWXpUVJ0XmA/4yCUKnhR9/
+	 6oxerVLHbTcaMiW2Qnfget/zDJ5DS+tRK6pFBaW6lVpH9PuNyfFHDPRPhH6lHPR6ra
+	 6I3EG15SaNS2g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VKnym2YSCz4wcR;
+	Thu, 18 Apr 2024 16:33:04 +1000 (AEST)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Naresh Kamboju
+ <naresh.kamboju@linaro.org>, linux-kernel@vger.kernel.org, linuxppc-dev
+ <linuxppc-dev@lists.ozlabs.org>, "Aneesh Kumar K . V"
+ <aneesh.kumar@kernel.org>, Anders Roxell <anders.roxell@linaro.org>, Kees
+ Cook <keescook@chromium.org>, Niklas Schnelle <schnelle@linux.ibm.com>,
+ clang-built-linux <llvm@lists.linux.dev>, Nick Desaulniers
+ <ndesaulniers@google.com>, Nathan Chancellor <nathan@kernel.org>, Jeff Xu
+ <jeffxu@chromium.org>, "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>, Dan
+ Carpenter <dan.carpenter@linaro.org>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>, Baoquan He
+ <bhe@redhat.com>, "Mike Rapoport (IBM)" <rppt@kernel.org>
+Subject: Re: [PATCH] powerpc: drop port I/O helpers for CONFIG_HAS_IOPORT=n
+In-Reply-To: <878r1bb2zj.fsf@mail.lhotse>
+References: <20240416153331.1617772-1-arnd@kernel.org>
+ <878r1bb2zj.fsf@mail.lhotse>
+Date: Thu, 18 Apr 2024 16:33:04 +1000
+Message-ID: <875xwfb2ov.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0cb0b314-e4f6-40a2-9628-0fe7d905a676@paragon-software.com>
+Content-Type: text/plain
 
-On Wed, Apr 17, 2024 at 04:10:59PM +0300, Konstantin Komarov wrote:
-> When counting and checking hard links in an ntfs file record,
-> 
->    struct MFT_REC {
->      struct NTFS_RECORD_HEADER rhdr; // 'FILE'
->      __le16 seq;        // 0x10: Sequence number for this record.
->  >>  __le16 hard_links;    // 0x12: The number of hard links to record.
->      __le16 attr_off;    // 0x14: Offset to attributes.
->    ...
-> 
-> the ntfs3 driver ignored short names (DOS names), causing the link count
-> to be reduced by 1 and messages to be output to dmesg.
+Michael Ellerman <mpe@ellerman.id.au> writes:
+> Arnd Bergmann <arnd@kernel.org> writes:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>>
+>> Calling inb()/outb() on powerpc when CONFIG_PCI is disabled causes
+>> a NULL pointer dereference, which is bad for a number of reasons.
+>>
+>> After my patch to turn on -Werror in linux-next, this caused a
+>> compiler-time warning with clang:
+>>
+>> In file included from arch/powerpc/include/asm/io.h:672:
+>> arch/powerpc/include/asm/io-defs.h:43:1: error: performing pointer
+>> arithmetic on a null pointer has undefined behavior
+>> [-Werror,-Wnull-pointer-arithmetic]
+>>    43 | DEF_PCI_AC_NORET(insb, (unsigned long p, void *b, unsigned long c),
+>>       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>    44 |                  (p, b, c), pio, p)
+>>       |                  ~~~~~~~~~~~~~~~~~~
+>>
+>> In this configuration, CONFIG_HAS_IOPORT is already disabled, and all
+>> drivers that use inb()/outb() should now depend on that (some patches are
+>> still in the process of getting marged).
+>>
+>> Hide all references to inb()/outb() in the powerpc code and the definitions
+>> when HAS_IOPORT is disabled to remove the possible NULL pointer access.
+>> The same should happin in asm-generic in the near future, but for now
+>> the empty inb() macros are still defined to ensure the generic version
+>> does not get pulled in.
+>>
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+>> --
+>
+> This needs a small fixup:
 
-I also reported seeing link counts being reduced by 2:
+Well, only because my tree doesn't have f0a816fb12da ("/dev/port: don't compile file operations without CONFIG_DEVPORT").
 
-[   78.307412] ntfs3: nvme0n1p3: ino=34e6, Correct links count -> 1 (3).
-[   78.307843] ntfs3: nvme0n1p3: ino=5bb23, Correct links count -> 1 (2).
-[   78.308509] ntfs3: nvme0n1p3: ino=5c722, Correct links count -> 1 (2).
-[   78.310018] ntfs3: nvme0n1p3: ino=5d761, Correct links count -> 1 (2).
-[   78.310717] ntfs3: nvme0n1p3: ino=33d18, Correct links count -> 1 (3).
-[   78.311179] ntfs3: nvme0n1p3: ino=5d75b, Correct links count -> 1 (3).
-[   78.311605] ntfs3: nvme0n1p3: ino=5c708, Correct links count -> 1 (3).
-
- - https://lore.kernel.org/all/Zhz_axTjkJ6Aqeys@hovoldconsulting.com/
-
-Are you sure there are not further issues with this code?
-
-> For Windows, such a situation is a minor error, meaning chkdsk does not 
-> report
-> errors on such a volume, and in the case of using the /f switch, it silently
-> corrects them, reporting that no errors were found. This does not affect
-> the consistency of the file system.
-> 
-> Nevertheless, the behavior in the ntfs3 driver is incorrect and
-> changes the content of the file system. This patch should fix that.
-
-This patch is white space damaged and does not apply.
-
-> PS: most likely, there has been a confusion of concepts
-> MFT_REC::hard_links and inode::__i_nlink.
-
-I'd also expect a Fixes and CC stable tag here.
-
-And as this patch does not seem to depend on the rest of the series it
-should go first (along with any other bug fixes).
-
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-
-Johan
+cheers
 
