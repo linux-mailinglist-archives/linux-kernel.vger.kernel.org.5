@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-150171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FED38A9B45
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:29:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D51528A9AF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:13:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF9DF286217
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:29:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 911B128608C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:13:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5099316078D;
-	Thu, 18 Apr 2024 13:29:04 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC18E15FA96;
+	Thu, 18 Apr 2024 13:13:25 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D2615FA9F;
-	Thu, 18 Apr 2024 13:29:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CDEB2C68C;
+	Thu, 18 Apr 2024 13:13:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713446943; cv=none; b=f46uYa+B2xQAOIYIko6xk8l5lizhpmDVKfZEcIJxkgSydx9vkKYEfcsY1FEvlXRTSs+Fx6QsL83ZEN11PrcafHhdWFT5kI2e4YvHV0JgSYo/WCBslvFywk1arVjK8OnDxzUf923n+lqsc5ssRe4j6h8O//K/UznLxPAJ3hg1wvM=
+	t=1713446005; cv=none; b=XIiLUDgHLZ6ll11HSWapdY6EgL9hFb+LJ9cpm5b0EQLT5gg0AeKmsk7nRcIAjR/OFF8iDUjJw2LzR1lYfrskWSfk0Sxikam9XpgHIZYLjAwUDriU7S7Y4JNHXLxE8hlxOInYKxM5zzqN+BDP2Lo3p4V12odDFioDAPSeSmBLxcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713446943; c=relaxed/simple;
-	bh=C3BIxOYSx6Edn78b6t4WlyI2Ut5N1AqMlgcYCcsxom4=;
+	s=arc-20240116; t=1713446005; c=relaxed/simple;
+	bh=vI/bactSSihewyPgC9byNk05aRJzbjeiW+DD9zyu6y4=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OPB97QaFehb3Mpa25yRana94Fp4zjXPxcz2eaZsBAnL067+us8tnkH2RGXcViPif4NYeKRkXRk/sDJjJz6EDtPtsAyMjM+/NQSHxNNqZY4SqR2OOf2sAhOqdz9bL5r5OEznmPCuTl5VOuy5Wlye0e6tqjQjMFE8i5g7tAQYb08Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	 MIME-Version:Content-Type; b=jNMzXWUyA0Cg5jZxlmkcq64d0Huog9K3zKFf6S8az71OCY5dve2ZWXjCJvutS9sTgj5SZRyMVc30xBAAXYNxW96guaALX8zJZduSTL7PX33fci5iFgJAIQsLGYhcWArsP4VDnzz1mS/k0psL178RgB0B8CrICf7j2MuVO1Q9AtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VKyqK5btzzJsf9;
-	Thu, 18 Apr 2024 21:12:13 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VKynl6GkxzNsWY;
+	Thu, 18 Apr 2024 21:10:51 +0800 (CST)
 Received: from kwepemd100011.china.huawei.com (unknown [7.221.188.204])
-	by mail.maildlp.com (Postfix) with ESMTPS id A23681800C3;
-	Thu, 18 Apr 2024 21:13:15 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id C1E2518006B;
+	Thu, 18 Apr 2024 21:13:16 +0800 (CST)
 Received: from M910t.huawei.com (10.110.54.157) by
  kwepemd100011.china.huawei.com (7.221.188.204) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 18 Apr 2024 21:13:14 +0800
+ 15.2.1258.28; Thu, 18 Apr 2024 21:13:15 +0800
 From: Changbin Du <changbin.du@huawei.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim
@@ -47,9 +47,9 @@ CC: Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin
  Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
 	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Changbin
  Du <changbin.du@huawei.com>
-Subject: [PATCH 1/4] perf trace beauty: Fix statx flags printing
-Date: Thu, 18 Apr 2024 21:13:01 +0800
-Message-ID: <20240418131304.3188385-2-changbin.du@huawei.com>
+Subject: [PATCH 2/4] perf trace beauty: Beautify newfstatat flags
+Date: Thu, 18 Apr 2024 21:13:02 +0800
+Message-ID: <20240418131304.3188385-3-changbin.du@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240418131304.3188385-1-changbin.du@huawei.com>
 References: <20240418131304.3188385-1-changbin.du@huawei.com>
@@ -64,25 +64,40 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  kwepemd100011.china.huawei.com (7.221.188.204)
 
-Missed a string specifier '%s' in format string.
+Beautify the flags argument of newfstatat() using the same scnprintf
+of statx().
 
 Signed-off-by: Changbin Du <changbin.du@huawei.com>
 ---
- tools/perf/trace/beauty/statx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/builtin-trace.c      | 3 ++-
+ tools/perf/trace/beauty/statx.c | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index 90eaff8c0f6e..19e81a467d6a 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -1050,7 +1050,8 @@ static const struct syscall_fmt syscall_fmts[] = {
+ 	{ .name	    = "name_to_handle_at",
+ 	  .arg = { [0] = { .scnprintf = SCA_FDAT, /* dfd */ }, }, },
+ 	{ .name	    = "newfstatat",
+-	  .arg = { [0] = { .scnprintf = SCA_FDAT, /* dfd */ }, }, },
++	  .arg = { [0] = { .scnprintf = SCA_FDAT, /* dfd */ },
++		   [3] = { .scnprintf = SCA_STATX_FLAGS, /* flags */ }, }, },
+ 	{ .name	    = "open",
+ 	  .arg = { [1] = { .scnprintf = SCA_OPEN_FLAGS, /* flags */ }, }, },
+ 	{ .name	    = "open_by_handle_at",
 diff --git a/tools/perf/trace/beauty/statx.c b/tools/perf/trace/beauty/statx.c
-index dc5943a6352d..c61f2be53bda 100644
+index c61f2be53bda..dd83a2a95d89 100644
 --- a/tools/perf/trace/beauty/statx.c
 +++ b/tools/perf/trace/beauty/statx.c
-@@ -21,7 +21,7 @@ size_t syscall_arg__scnprintf_statx_flags(char *bf, size_t size, struct syscall_
- 		return scnprintf(bf, size, "%s%s", show_prefix ? "AT_STATX_" : "", "SYNC_AS_STAT");
- #define	P_FLAG(n) \
- 	if (flags & AT_##n) { \
--		printed += scnprintf(bf + printed, size - printed, "%s%s", printed ? "|" : "", show_prefix ? prefix : "", #n); \
-+		printed += scnprintf(bf + printed, size - printed, "%s%s%s", printed ? "|" : "", show_prefix ? prefix : "", #n); \
- 		flags &= ~AT_##n; \
- 	}
+@@ -30,6 +30,7 @@ size_t syscall_arg__scnprintf_statx_flags(char *bf, size_t size, struct syscall_
+ 	P_FLAG(SYMLINK_FOLLOW);
+ 	P_FLAG(NO_AUTOMOUNT);
+ 	P_FLAG(EMPTY_PATH);
++	P_FLAG(STATX_SYNC_AS_STAT);
+ 	P_FLAG(STATX_FORCE_SYNC);
+ 	P_FLAG(STATX_DONT_SYNC);
  
 -- 
 2.34.1
