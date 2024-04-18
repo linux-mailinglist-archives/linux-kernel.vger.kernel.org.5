@@ -1,92 +1,97 @@
-Return-Path: <linux-kernel+bounces-150531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91D918AA09D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:00:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D853A8AA0A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:01:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C55C280D82
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:00:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BE8CB23392
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:01:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8898817556C;
-	Thu, 18 Apr 2024 16:59:57 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99CE4174EF8;
+	Thu, 18 Apr 2024 17:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ia4JPwSB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1A8171E75;
-	Thu, 18 Apr 2024 16:59:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D983916F8F3;
+	Thu, 18 Apr 2024 17:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713459597; cv=none; b=SQO/GN+0crN5JmnsHCOS7Xf8s+6iFU6CS85qOqRSVhp6Kafeg0kLWuYnlF7Yn45FNgGMLLC7MjOO/1l8qxfW4T8hk0CKix1S9GDkx4V2tW2rouBXUj1Mr0V//5c+81v9KwmMPeToJJS1Rx7fvzZHKI1Bsd4ZnTJVArEEo0pvWYM=
+	t=1713459627; cv=none; b=gV8P+uzlPwuMvjb5XVudrkY3BYGN5Y8Wm+qxGhLVcEc64Rokv8cUEx+ZzDJUoVBsD21VtDId/xFZdODxlv4usU/l3vu3YTrjwXr/yOOWl8aWmkgMz/51hZGQ8Z0bvLG47FrQqEk8cvEgO527F0jo6izML59ssgG7lJTfOsZDJqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713459597; c=relaxed/simple;
-	bh=NBVOz/kFsz91jcvQ9HTa1sBebQJOO2yZ//O+RPGVYSM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pvY1FwLLGs/hdaMcFZFtSggK2RSitJQaMItyEHPs+b10jGJ0mo6wN86rYL4Z4obsesvIIdvDYn9mJpU4LvN7qFmrmJXPkg/u01cbpHHEk+PTmrDqosREqH124RxfcPtheaesJSrwcSPkXFW4Z/TQv9l1ctuqfHpEaqWFC8zOu9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i5e861917.versanet.de ([94.134.25.23] helo=diego.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rxV6t-0000pc-I2; Thu, 18 Apr 2024 18:59:43 +0200
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To: linux-rockchip@lists.infradead.org, Dragan Simic <dsimic@manjaro.org>
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- robh+dt@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
- linux-kernel@vger.kernel.org, amadeus@jmu.edu.cn,
- FUKAUMI Naoki <naoki@radxa.com>
-Subject:
- Re: [PATCH 1/2] dt-bindings: arm: rockchip: Correct the descriptions for
- Radxa boards
-Date: Thu, 18 Apr 2024 18:59:42 +0200
-Message-ID: <1888572.CQOukoFCf9@diego>
-In-Reply-To:
- <1e148d6cd4486b31b5e7f3824cf6bccf536b74c0.1713457260.git.dsimic@manjaro.org>
-References:
- <1e148d6cd4486b31b5e7f3824cf6bccf536b74c0.1713457260.git.dsimic@manjaro.org>
+	s=arc-20240116; t=1713459627; c=relaxed/simple;
+	bh=mH0Q97/Y97fOQxrSnxwyK1qS3x1JxJFKt+pHylwoJ0U=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=iRmqpiAf5sbr9Bccb2Gur3rAstC1oV+wWhx5wuGgjS9SVfsHlpK0/Yv1d8X+PKy8jIZ6xvKc7URaZ68SUwmjWU+proqOYsaIdxVfXc7QHsH8q01ZquqAf5WfaqyfrRqEA9gwtvEo49H6f1Cn0jeJfqwYROvHfyd4wM7IR9MCZGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ia4JPwSB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7A7CBC116B1;
+	Thu, 18 Apr 2024 17:00:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713459627;
+	bh=mH0Q97/Y97fOQxrSnxwyK1qS3x1JxJFKt+pHylwoJ0U=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Ia4JPwSBElBNx6oISvmJN01lEMh7fdBinYV3GDirI7WsBczp0ytgO14+cAOsZ1yXT
+	 xiLTCB6QmIM5GLi8A1ae5wLSBxlEp8BgLxOznlhaB1GFoFdZpcEMdOx0cu8Yrttl0G
+	 dBlSfPlVHme3jrUt2aF8A7pEq3n8SPQzTlg5U2OFYI2Rv9hU6ftuYjH9zfTIRPKOn9
+	 zZ5gUb/Mf7wKMNtCpPn63zSSCaaCDMu6AhQwwtjo0L3nLkzdjzsF3dc7qRmMwAIvr3
+	 uQB1hBCZxq74TJ1mVMN0iYmGy8WZ6To3jpI8Vxa4vgOr/23TtoHGaXzjgh+oL0xnXw
+	 6zM61MhadvVuw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 67273C395C5;
+	Thu, 18 Apr 2024 17:00:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: ethernet: ti: am65-cpsw-nuss: cleanup DMA Channels
+ before using them
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171345962741.29083.17254723554623596143.git-patchwork-notify@kernel.org>
+Date: Thu, 18 Apr 2024 17:00:27 +0000
+References: <20240417095425.2253876-1-s-vadapalli@ti.com>
+In-Reply-To: <20240417095425.2253876-1-s-vadapalli@ti.com>
+To: Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, rogerq@kernel.org, dan.carpenter@linaro.org,
+ robh@kernel.org, jpanis@baylibre.com, u.kleine-koenig@pengutronix.de,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, spatton@ti.com, srk@ti.com
 
-Hi Dragan,
+Hello:
 
-Am Donnerstag, 18. April 2024, 18:26:19 CEST schrieb Dragan Simic:
-> Correct the descriptions of a few Radxa boards, according to the up-to-date
-> documentation from Radxa and the detailed explanation from Naoki. [1]  To sum
-> it up, the short naming, as specified by Radxa, is preferred.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Wed, 17 Apr 2024 15:24:25 +0530 you wrote:
+> The TX and RX DMA Channels used by the driver to exchange data with CPSW
+> are not guaranteed to be in a clean state during driver initialization.
+> The Bootloader could have used the same DMA Channels without cleaning them
+> up in the event of failure. Thus, reset and disable the DMA Channels to
+> ensure that they are in a clean state before using them.
 > 
-> [1] https://lore.kernel.org/linux-rockchip/B26C732A4DCEA9B3+282b8775-601b-4d4a-a513-4924b7940076@radxa.com/
+> Fixes: 93a76530316a ("net: ethernet: ti: introduce am65x/j721e gigabit eth subsystem driver")
+> Reported-by: Schuyler Patton <spatton@ti.com>
+> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
 > 
-> Suggested-by: FUKAUMI Naoki <naoki@radxa.com>
-> Signed-off-by: Dragan Simic <dsimic@manjaro.org>
-> ---
->  Documentation/devicetree/bindings/arm/rockchip.yaml | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
-> index fcf7316ecd74..ae58e25c29ec 100644
-> --- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-> +++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-> @@ -767,22 +767,22 @@ properties:
->            - const: radxa,rockpis
->            - const: rockchip,rk3308
->  
-> -      - description: Radxa Rock2 Square
-> +      - description: Radxa Rock 2 Square
+> [...]
 
-I may be just blind, but what changed here?
+Here is the summary with links:
+  - [net] net: ethernet: ti: am65-cpsw-nuss: cleanup DMA Channels before using them
+    https://git.kernel.org/netdev/net/c/c24cd679b075
 
-
-Heiko
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
 
