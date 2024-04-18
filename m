@@ -1,425 +1,367 @@
-Return-Path: <linux-kernel+bounces-149460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 769E38A916C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:07:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24A378A916E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:09:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03E6A1F21BAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:07:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 484111C20E50
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5C654F888;
-	Thu, 18 Apr 2024 03:07:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF5DF4F608;
+	Thu, 18 Apr 2024 03:09:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=endrift.com header.i=@endrift.com header.b="amkS6Lcn"
-Received: from endrift.com (endrift.com [173.255.198.10])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b8QE9vOJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596F3433BC;
-	Thu, 18 Apr 2024 03:07:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.255.198.10
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713409655; cv=none; b=aK2hv3sELaUQPU1nkIIJS7d8N3QjUIM9llW7QUuihpByHSUvh0w0g+CQ+RsHajxSWSySvSBzaQT3j2ZrQAIJ+kpxntrzxcvlyLuSN3mwhXONxQo1gsUkbqcL12rHngrdz4hjyBGjiOWM61L2/OP9fXSO0TDZ6ekdzMBysbGljFI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713409655; c=relaxed/simple;
-	bh=EOQgfIVF4B3dV+aIFM26YGLxtoN6CU+9+tjGDBiZfr4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X90DbiInetnq3vDZY50QQ430/7yVh9CoZFiU8z9zxFjDeC3cnjelEQFzANJZtGbt2bXljDSljn2SbNjz6iE/rFDFBK5Ibal0eKRGkxCU2zxdJtV0tC4JzaSnxcBuiOXYslGejaThHYUYExjP1ZsUS0kq8mS7Qf1rtz03VN4N3JQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endrift.com; spf=pass smtp.mailfrom=endrift.com; dkim=pass (2048-bit key) header.d=endrift.com header.i=@endrift.com header.b=amkS6Lcn; arc=none smtp.client-ip=173.255.198.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endrift.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endrift.com
-Received: from [192.168.0.22] (71-212-26-68.tukw.qwest.net [71.212.26.68])
-	by endrift.com (Postfix) with ESMTPSA id E62B1A275;
-	Wed, 17 Apr 2024 20:07:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=endrift.com; s=2020;
-	t=1713409646; bh=EOQgfIVF4B3dV+aIFM26YGLxtoN6CU+9+tjGDBiZfr4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=amkS6Lcn03UK/nKgtgZtmN/W0EdrDZWsf6+qr3tvM9F3v9w1ThZ3IquFyMGlNJ6P0
-	 X72jGEMensYEAxME96An3tMBqSjdUtuEn6B9XZcNCB5KZb2AsSzXNg1Nr4WzhwejyS
-	 A5aoWpYS9G1PUmJmOF1J+DCMA7vbnQxLc3Pz9VDRtKfy5KHTcXo5heLHiezpc/fPzW
-	 I5XhxobkhUh8cCG3fUGFooHkidIYONQy5R0jjewvtfFV5zjJQ6CDnmPwmyofCw8LS6
-	 lL8rOga0N9qiJUpjwNYq7TM/qw1DB4beQE+6jygqfi3Gdhs0SawMkZg6/qMMhJl5sI
-	 b/0ySqvHZ8OCg==
-Message-ID: <aed282d9-3a50-468d-a150-4621086299f7@endrift.com>
-Date: Wed, 17 Apr 2024 20:07:25 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B499433D6
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 03:09:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713409762; cv=fail; b=GmIyrAjmwFxjYNR8sRoP+39+6It/YKQRb4pRlr2jNPWqo/qrMt+LcCqoMyhePQ+fhdt+19QJE0PyX45sKXSUKNBn1SWQR0MfMOpgjdxl0GbgVNIpgZ6nZS+KXdWjnyvim3YCg4YB80nCKMgEQgNcPhbEzAZL9oRJES9CS5nfs3U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713409762; c=relaxed/simple;
+	bh=gdpvoPSSkaceUX91p44zx/T7T+yJtxFwZhYkjJcug88=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=PfY0NSCRcJNpdyQYG9L+qTgl8jxHFTigC8PMRJxWAFrI/GuzX/zfiolpNSe4lPkW9yLYQopwgm/RG0C2i4XP+Aetqsprex+T1HDR/U5re6nIT8XJ1fQHQOMEDGpLwQLkHpPvUJAkjGpx47pZoPNyyTtW/IrwLhY/jj1JskeqFmI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b8QE9vOJ; arc=fail smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713409760; x=1744945760;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=gdpvoPSSkaceUX91p44zx/T7T+yJtxFwZhYkjJcug88=;
+  b=b8QE9vOJ9zVJyQi5xjbCQsbadt7YQyy9qhe/0l0yQfd+m+yBia4RTqKW
+   ocv6mHEcK51yM9zV3ZBQ3B6236fCl2yXmfQP7RTqZrraEOYL89gUnyALv
+   gLBW5H75Bpse1k6wT6qxVNL5wt6Q0xE2DGzyDTSYUiu/TQPLulAM3OmS6
+   VkN9vsel9YiKQxrJ5loBkd4SALzoEGq4JlPs7uxO9SFTtKXRelU4qenqh
+   SIiOopPfBzOxEHwRVJjBXVF/UspwrbywQEL8USFvDNEKWaPqXC2CsRlkV
+   SZ/H309Xo3WJBjXJ7W16faQwOt6D+3vsDUEszJjs70Iv6rfHju9yfLqZG
+   A==;
+X-CSE-ConnectionGUID: f2dArqUYQWKSB9F1O+/Z8A==
+X-CSE-MsgGUID: wJQEi+rxT9aA1raC0TAyOg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="12716537"
+X-IronPort-AV: E=Sophos;i="6.07,210,1708416000"; 
+   d="scan'208";a="12716537"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 20:09:19 -0700
+X-CSE-ConnectionGUID: EYD7Z2KGT4qQcdiQWSj1yA==
+X-CSE-MsgGUID: dLswo9SHTXmoDzkR8eD2TQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,210,1708416000"; 
+   d="scan'208";a="27635960"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Apr 2024 20:09:19 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 17 Apr 2024 20:09:18 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 17 Apr 2024 20:09:17 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 17 Apr 2024 20:09:17 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 17 Apr 2024 20:09:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Idoh9mrHk4zWQA9uU5wauFGr7bfM336Zj+X4ortbyWGoMx2JHYcclmkVqCNpxcvzgFxmSoshmVrvoTX+jX+CXClGGGtRY9YTUkEhPmvB3kyaNQqvxWj1dTDn7aoToPU45ZOeEzeNAQL0yMnCg5npZDxpn+7cgiFgJhpi9CJkei7hFoJ8T+EixFJViFFWoCRpB4YLK1NGdck+NmpWGyg7NRLTg7MG0l13fZblAGUU7n74ED8H0tfjzZgJV00SRTFWyKNVCWd9CeNa6CYGsWXEc+F9S6VJmzpO2k6GojHJaOXRmzem58w58LEquB7Bz1R8sEQezQnRz+txDgbrsY8mmw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/pEAoB40b5CFUpEX88P6E7/ji3occyzCX6CJZe5gP8g=;
+ b=BTznwv+DssagR0IFiCCbeCFZUWq23GDGvoL0OMcz3cvdWtzO+MsEOLfns8Hx5s1vhhR0ZbET+d2hLMIKqn/mwsI9NSbd79TpOBelv5LigjM322BNzx62IFSKy8jgrLVr/RUhIbOKLidR34vb2rEsDBeVjYPEG8bWAJTVjxnYcBT5t7pmYcS9KHkAI1i2XYPZGFMFbjt+A0qqIrXZiUJe/RGKcS5Hm/aK/rl8xKZuidVNnODrMom5GgqCX4b9N4iljUl6zzek0T+Z4LSRnpGdHVtL0k/qOfyq4GXyCJZ7i0zctTA61YixAvtPLURxSf86ItcAhXAz32xyXIzwgy6WTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6020.namprd11.prod.outlook.com (2603:10b6:8:61::19) by
+ SA3PR11MB7463.namprd11.prod.outlook.com (2603:10b6:806:304::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.53; Thu, 18 Apr
+ 2024 03:09:10 +0000
+Received: from DM4PR11MB6020.namprd11.prod.outlook.com
+ ([fe80::5c31:7f0b:58b:a13f]) by DM4PR11MB6020.namprd11.prod.outlook.com
+ ([fe80::5c31:7f0b:58b:a13f%4]) with mapi id 15.20.7519.010; Thu, 18 Apr 2024
+ 03:09:09 +0000
+Date: Thu, 18 Apr 2024 11:08:57 +0800
+From: Chen Yu <yu.c.chen@intel.com>
+To: Xuewen Yan <xuewen.yan94@gmail.com>
+CC: Peter Zijlstra <peterz@infradead.org>, Abel Wu <wuyun.abel@bytedance.com>,
+	Ingo Molnar <mingo@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
+	Juri Lelli <juri.lelli@redhat.com>, Tim Chen <tim.c.chen@intel.com>, "Tiwei
+ Bie" <tiwei.btw@antgroup.com>, Honglei Wang <wanghonglei@didichuxing.com>,
+	Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.chen.surf@gmail.com>, Yujie Liu
+	<yujie.liu@intel.com>, <linux-kernel@vger.kernel.org>, kernel test robot
+	<oliver.sang@intel.com>
+Subject: Re: [RFC PATCH] sched/eevdf: Return leftmost entity in pick_eevdf()
+ if no eligible entity is found
+Message-ID: <ZiCOybMoVyNK6gPT@chenyu5-mobl2>
+References: <20240226082349.302363-1-yu.c.chen@intel.com>
+ <758ebf4e-ee84-414b-99ec-182537bcc168@bytedance.com>
+ <20240408115833.GF21904@noisy.programming.kicks-ass.net>
+ <ZhPtCyRmPxa0DpMe@chenyu5-mobl2>
+ <20240409092104.GA2665@noisy.programming.kicks-ass.net>
+ <ZiAWTU5xb/JMn/Hs@chenyu5-mobl2>
+ <CAB8ipk-fejQ41Jgk6z52+T6CP+impwbaOAfhA9vG_-FB9BeRyw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAB8ipk-fejQ41Jgk6z52+T6CP+impwbaOAfhA9vG_-FB9BeRyw@mail.gmail.com>
+X-ClientProxiedBy: SI2PR01CA0035.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:192::13) To DM4PR11MB6020.namprd11.prod.outlook.com
+ (2603:10b6:8:61::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] HID: hid-steam: Add Deck IMU support
-To: Max Maisel <mmm-1@posteo.net>
-Cc: benjamin.tissoires@redhat.com, jikos@kernel.org,
- linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
- rodrigorivascosta@gmail.com
-References: <0a92f4da-9517-4c12-a265-eb06f909f18b@endrift.com>
- <20240417165641.12994-1-mmm-1@posteo.net>
-Content-Language: en-US
-From: Vicki Pfau <vi@endrift.com>
-In-Reply-To: <20240417165641.12994-1-mmm-1@posteo.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6020:EE_|SA3PR11MB7463:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4cd2b759-3ca7-4357-6981-08dc5f54ea59
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: r3MJ0xNrUAE+CSGM1Cz83znxhadYfcFeVqu0zFUz4v58zokWA7m/fe3Bf816qTZcMQaaZbsMwKsz13t2/I6r/4L0yCnuBCtkbmuDvq2qFLcj+jS+8fR+H5pXRucxJtyMMA9KEwYdh47Bz2saFFdyJx6cXcM29T3drxFSYdoXa9b1EvzI1k1knRHUsYbfEcHOPJhmPAW4AL7C03/I1luLiMlYDlUrjEaOEEBp76oiNHuGUbtaWgJFJoiCA5eo9fUQ3CvikLAd3B7X3w09df5QygG+YaJsIE1fReyPjsXllqeNm6vnQVs40JSyVq2UUENK5qzXLqrIoIpM9YWt8wbKk1Mw4D34C5EgfhRK+6Ewf1+ILyV6ptlGuKfIoQK67tXCxLGctmuF3szlxtpwWoRTIja6064YSGiiK6CgdLFZl3zNsRstVuBKK8pupDp5ae0NDnK+gxYyZ+8w6woswEapknu1XnjlGBxE5F/b3eJZXzYS4V4+UPgqH4m3BD0QkVpuJdq0y86FROMfhbLlTsVUhXRiLNprRBay7OdvLGaqWPr078n65yiuuaZ0HkyrfvEKxo2Cwss3zcNBZkINNXvBves0T2/Dou4k+ZQJ2tp4NfxROUqNe61ZhEe27xQe/a39DIOdusi+xIQFnDvWXBCt0Bh6AuqunG13KM2NpL6S98k=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6020.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MjNPVHFQbk9yWVYvV2gzUWVLRUd4STRtWGIwT25qQk16dmNDcVQ2enVQaEll?=
+ =?utf-8?B?dVlyZW1MRWtITUdPcGl6N1pDS0M5ci9ONGpvWE1PVDd6VkdHU3hsNmc3cFZp?=
+ =?utf-8?B?eU9sRkhzaG93Z0hJdjFSdHhIS2Jza3R3L1ZwWml1VFpBTVcvc2IvL284aVlQ?=
+ =?utf-8?B?NG4rZ2NPQ3ZpQUZFMnhLY2pVSzZnNDN5TTl2UzVNNkZwRUpqQ3hEK2dyOWFi?=
+ =?utf-8?B?KzdHTUgzUFNINzJEN3dybmdVK0pEdGlNRVNNdW1zUy81eW9LUGc5NVcwS2xE?=
+ =?utf-8?B?N09Tb3g4OVRaMXRtQjJhVW1nZTJ5Ri9SdHhyaU9HMzRvbXFVQ2JEUk4zS1dT?=
+ =?utf-8?B?cGVCclluQlVUL0p0Rk5zbERrWW9aMkFkSzM5MHpvWGV3LzlQVm9iTFpMTnA4?=
+ =?utf-8?B?dmNPc0pzSGFNeG4zVmxGL01NdzNqWkszLzFreWR6U3ZQdHgzV3lKMmw4bStz?=
+ =?utf-8?B?OEVHUFlaNXRVVk1TZWI0VmtzUS95bTkvb2trOGI5VFNTZjVsODRBVlluQ0ND?=
+ =?utf-8?B?U2lRdFVLNnFHQm9HTVZsWWNHWWdJcEVkVUd2Nnl5aVJoUnNwOVo3UFZYWnVn?=
+ =?utf-8?B?OUdRclV3emtaZ0NESEh4ZlJyWTgvVXhpcFZoTEcxa0lUb1o4WFNqZjFGRXA1?=
+ =?utf-8?B?OUs5anFnM0hCUVp2eXhlZ0dNYThLejNLVlhJWTFIbjFiMXMvalhML0QrcXhN?=
+ =?utf-8?B?RVlOQyt0QW03U3ZSbEY4V2l1U0p5WFNIMVNEb0crNHg0OW12cGhSVkJ1WWtu?=
+ =?utf-8?B?Q1RxUFZIZG1IVWs1NGRsVllqbzNLa2pnTnJPUUwxQmtwSXMrM1FKaUhFaVgv?=
+ =?utf-8?B?ait4WnRPbU0xWWxTTTdzQkJqMS95eWFrTG9UZjdFaFpFcWllem0xWVQwb0F1?=
+ =?utf-8?B?WkxJdmRjaEpDYkhIZkVleGdCYmY3aGtMOWM4T280VllKUkxKdVFaeG5nTkM5?=
+ =?utf-8?B?Mlh3dHFVOXRrL2lsZS9vdmc5TEYxaWxFUkw4cXduRFFadUtiZUo2MEptSmNs?=
+ =?utf-8?B?c0kxWTZCVmtnK2MwcmorWis5aUZZMldRS0JCUDNqQnFYZ25FdzlCZVdXSS9F?=
+ =?utf-8?B?V1hRYUZLR3hmTkNjaFZZTEs5VElwNnZJVktrbnNpcHhpZEp2aExPbkVvaFlP?=
+ =?utf-8?B?UXVWQVNscXh0WHQxcFpEd1Y0MWwyeWRqRVovbnpPMThheEhSbUtpcjBuS0FX?=
+ =?utf-8?B?ZnY1aDJ4SklkT09vVExUYVF2YUlyWUFCVnp4Q1FEL01iTWNRR3cwa042a1NS?=
+ =?utf-8?B?UkZkZkRLWit5MG1kMUhVdlViNWdFWjQwNDdNMW1JaTREdDYzWFcyaUN0bjVh?=
+ =?utf-8?B?UlN0Z2RMd3BsSSs3TmhNZ2ZxOEpOdWFoUkVNZkE4Wk55OHhkYVZ1bW1id0dN?=
+ =?utf-8?B?aWZhWGVwenBySDdLUTc4YzgvMEtITHE4MWRqS0RCRFU2eDZxdHRvdllRb2pN?=
+ =?utf-8?B?QkVKYUFMdG5yMkVaelBNeDFXT1ZvVWQrWGVTUmxKVGRkYTBwUzM4RnUrY2tw?=
+ =?utf-8?B?cVRjSGhSK21mTVFDY0w3bDZuMVJYK2h6eEFINFl6WkRPL2c5N21meDFYY01T?=
+ =?utf-8?B?UnR4ZFQ5dGRmQ3ZMb2N1SXp5OThOa1grY2xjRlc3MlJBQ0RpallwQmZIOXBm?=
+ =?utf-8?B?TWFqUTBhKysyTnIzUkgvNFc0OGdrNkhWU1ZYMzhreEhmRVY2L3JqdjhEaU1t?=
+ =?utf-8?B?THZTajNoUk9TSXYzSDFzbm5ubzlBRlRSOUZ5TEhnRkVSczFaNExIU005QXFO?=
+ =?utf-8?B?TG1RdWpZZDZsN0F3czVlMVVNdDVCVWU4eVlQRDlGYjV5UVY2N3loVWtqd0RQ?=
+ =?utf-8?B?ank2bHRRL3NaK3ZDczJQSkFXU3JKR3hta2ppTXA5dTRsQWluMTU3WW15TFFa?=
+ =?utf-8?B?R2tIWjU4bklTaWlQbVMxMnBqSjJpYkZpejhXby8wQXdqSlFvRDVZSWtScG03?=
+ =?utf-8?B?K2d2MTlEbG1TcTAwT2pjbGpaa2haeDBVZ0JmTmFGRjFIRkp3b1orZFY0cXpx?=
+ =?utf-8?B?SHo3Vy94c3ZoUldIZkZ3dk5XNmdBRTJxMWs1Y3I5d1ZmSXU0THFvZjQrbklL?=
+ =?utf-8?B?b1JUUHhYQWZkN25GRktWYSt0bGNvV1UxZEtFTUZHWmFya0VFQktGT1kvWDVv?=
+ =?utf-8?Q?+G3JbVwf5/GaPxb8lrstjsC1O?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4cd2b759-3ca7-4357-6981-08dc5f54ea59
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6020.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 03:09:09.8231
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3d3nZEeFEfFIgWqWC1HDLMOiS2YumWrntDDLs9UNJoNk535V0aGIa7uCV8V4Py6883o+Fe+2tdfPZ4dB1lzgwQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB7463
+X-OriginatorOrg: intel.com
 
+On 2024-04-18 at 10:57:22 +0800, Xuewen Yan wrote:
+> Hi Yu
+> 
+> On Thu, Apr 18, 2024 at 2:35 AM Chen Yu <yu.c.chen@intel.com> wrote:
+> >
+> > On 2024-04-09 at 11:21:04 +0200, Peter Zijlstra wrote:
+> > > On Mon, Apr 08, 2024 at 09:11:39PM +0800, Chen Yu wrote:
+> > > > On 2024-04-08 at 13:58:33 +0200, Peter Zijlstra wrote:
+> > > > > On Thu, Feb 29, 2024 at 05:00:18PM +0800, Abel Wu wrote:
+> > > > >
+> > > > > > > According to the log, vruntime is 18435852013561943404, the
+> > > > > > > cfs_rq->min_vruntime is 763383370431, the load is 629 + 2048 = 2677,
+> > > > > > > thus:
+> > > > > > > s64 delta = (s64)(18435852013561943404 - 763383370431) = -10892823530978643
+> > > > > > >      delta * 2677 = 7733399554989275921
+> > > > > > > that is to say, the multiply result overflow the s64, which turns the
+> > > > > > > negative value into a positive value, thus eligible check fails.
+> > > > > >
+> > > > > > Indeed.
+> > > > >
+> > > > > From the data presented it looks like min_vruntime is wrong and needs
+> > > > > update. If you can readily reproduce this, dump the vruntime of all
+> > > > > tasks on the runqueue and see if min_vruntime is indeed correct.
+> > > > >
+> > > >
+> > > > This was the dump of all the entities on the tree, from left to right,
+> > >
+> > > Oh, my bad, I thought it was the pick path.
+> > >
+> > > > and also from top down in middle order traverse, when this issue happens:
+> > > >
+> > > > [  514.461242][ T8390] cfs_rq avg_vruntime:386638640128 avg_load:2048 cfs_rq->min_vruntime:763383370431
+> > > > [  514.535935][ T8390] current on_rq se 0xc5851400, deadline:18435852013562231446
+> > > >                     min_vruntime:18437121115753667698 vruntime:18435852013561943404, load:629
+> > > >
+> > > >
+> > > > [  514.536772][ T8390] Traverse rb-tree from left to right
+> > > > [  514.537138][ T8390]  se 0xec1234e0 deadline:763384870431 min_vruntime:763383370431 vruntime:763383370431 non-eligible  <-- leftmost se
+> > > > [  514.537835][ T8390]  se 0xec4fcf20 deadline:763762447228 min_vruntime:763760947228 vruntime:763760947228 non-eligible
+> > > >
+> > > > [  514.538539][ T8390] Traverse rb-tree from topdown
+> > > > [  514.538877][ T8390]  middle se 0xec1234e0 deadline:763384870431 min_vruntime:763383370431 vruntime:763383370431 non-eligible   <-- root se
+> > > > [  514.539605][ T8390]  middle se 0xec4fcf20 deadline:763762447228 min_vruntime:763760947228 vruntime:763760947228 non-eligible
+> > > >
+> > > > The tree looks like:
+> > > >
+> > > >           se (0xec1234e0)
+> > > >                   |
+> > > >                   |
+> > > >                   ----> se (0xec4fcf20)
+> > > >
+> > > >
+> > > > The root se 0xec1234e0 is also the leftmost se, its min_vruntime and
+> > > > vruntime are both 763383370431, which is aligned with
+> > > > cfs_rq->min_vruntime. It seems that the cfs_rq's min_vruntime gets
+> > > > updated correctly, because it is monotonic increasing.
+> > >
+> > > Right.
+> > >
+> > > > My guess is that, for some reason, one newly forked se in a newly
+> > > > created task group, in the rb-tree has not been picked for a long
+> > > > time(maybe not eligible). Its vruntime stopped at the negative
+> > > > value(near (unsigned long)(-(1LL << 20)) for a long time, its vruntime
+> > > > is long behind the cfs_rq->vruntime, thus the overflow happens.
+> > >
+> > > I'll have to do the math again, but that's something in the order of not
+> > > picking a task in about a day, that would be 'bad' :-)
+> > >
+> > > Is there any sane way to reproduce this, and how often does it happen?
+> >
+> > After adding some ftrace in place_entity() and pick_eevdf(), with the
+> > help from Yujie in lkp, the issue was reproduced today. The reason why se's vruntime
+> > is very small seems to be related to task group's reweight_entity():
+> >
+> > vlag = (s64)(avruntime - se->vruntime);
+> > vlag = div_s64(vlag * old_weight, weight);
+> > se->vruntime = avruntime - vlag;
+> >
+> > The vlag above is not limited by neither 2*se->slice nor TICK_NSEC,
+> > if the new weight is very small, which is very likely, then the vlag
+> > could be very large, results in a very small vruntime.
+> >
+> >
+> > The followings are the details why I think above could bring problems:
+> >
+> > Here is the debug log printed by place_entity():
+> >
+> >
+> > [  397.597268]cfs_rq:0xe75f7100
+> >               cfs_rq.avg_vruntime:-1111846207333767
+> >               cfs_rq.min_vruntime:810640668779
+> >               avg_vruntime():686982466017
+> >               curr(0xc59f4f20 rb_producer weight:15 vruntime:1447773196654 sum_exec_ns:187707021870 ctx(0 73)
+> >               leftmost(0xeacb6e00 vruntime:332464705486 sum_exec_ns:78776125437 load:677)
+> > ..
+> >
+> > [  397.877251]cfs_rq:0xe75f7100
+> >               cfs_rq.avg_vruntime:-759390883821798
+> >               cfs_rq.min_vruntime:810640668779
+> >               avg_vruntime(): 689577229374
+> >               curr(0xc59f4f20 rb_producer weight:15 vruntime:1453640907998 sum_ns:187792974673 ctx(0 73)
+> >               leftmost(0xeacb6e00 vruntime:-59752941080010 sum_ns:78776125437 load:4)
+> >
+> >
+> > The leftmost se is a task group, its vruntime reduces from 332464705486 to
+> > -59752941080010, because its load reduced from 677 to 4 due to update_cfs_group()
+> > on the tree entities.
+> >
+> > Back to reweight_entity():
+> > vlag = avruntime - se->vruntime = 689577229374 - 332464705486 = 357112523888;
+> > vlag = vlag * old_weight / weight = 357112523888 * 677 / 4 = 60441294668044;
+> > se->vruntime = avruntime - vlag = -59751717438670;
+> >
+> > the new se vruntime -59751717438670 is close to what we printed -59752941080010,
+> > consider that the avg_vruntime() vary.
+> >
+> > Then later this leftmost se has changed its load back and forth, and when the load is 2,
+> > the vuntime has reached a dangerous threshold to trigger the s64 overflow in
+> > eligible check:
+> >
+> > [  398.011991]cfs_rq:0xe75f7100
+> >               cfs_rq.avg_vruntime:-11875977385353427
+> >               cfs_rq.min_vruntime:810640668779
+> >               cfs_rq.avg_load:96985
+> >               leftmost(0xeacb6e00 vruntime:18446623907344963655 load:2)
+> >
+> > vruntime_eligible()
+> > {
+> >
+> >    key = se.vruntime - cfs_rq.min_vruntime = -120977005256740;
+> >    key * avg_load overflow s64...
+> > }
+> >
+> > As a result the leftmost one can not be picked, and NULL is returned.
+> >
+> > One workaround patch I'm thinking of, if this analysis is in the
+> > right direction, maybe I can have a test later:
+> >
+> > thanks,
+> > Chenyu
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 6e0968fb9ba8..7ab26cdc3487 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -3965,8 +3965,13 @@ static void reweight_eevdf(struct cfs_rq *cfs_rq, struct sched_entity *se,
+> >          *         = V  - vl'
+> >          */
+> >         if (avruntime != se->vruntime) {
+> > +               s64 limit;
+> > +
+> >                 vlag = (s64)(avruntime - se->vruntime);
+> >                 vlag = div_s64(vlag * old_weight, weight);
+> > +               /* TBD: using old weight or new weight? */
+> > +               limit = calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se);
+> > +               vlag = clamp(lag, -limit, limit);
+> >                 se->vruntime = avruntime - vlag;
+> >         }
+> >
+> 
+> According to previous discussion:
+> https://lore.kernel.org/all/CAB8ipk9N9verfQp6U9s8+TQgNbA5J0DWkOB1dShf20n0xbx94w@mail.gmail.com/
+> 
+> Could this patch avoid this problem?
+>
 
+Ah, right, I did not notice your previous patch has also addressed the overflow in
+reweight_eevdf(), as I was trying hard to reproduce the issue. Let me check your
+patch in detail.
 
-On 4/17/24 9:56 AM, Max Maisel wrote:
-> On Mon, 15. Apr 2024, Vicki Pfau wrote:
->> Hi,
->>
->> On 4/12/24 4:42 AM, Jiri Kosina wrote:
->>> On Sun, 7 Apr 2024, Max Maisel wrote:
->>>
->>>> The Deck's controller features an accelerometer and gyroscope which
->>>> send their measurement values by default in the main HID input report.
->>>> Expose both sensors to userspace through a separate evdev node as it
->>>> is done by the hid-nintendo and hid-playstation drivers.
->>>>
->>>> Signed-off-by: Max Maisel <mmm-1@posteo.net>
->>>
->>> CCing Rodrigo and Vicki ... could you please take a look and Ack the patch 
->>> below from Max?
->>>
->>> Thanks.
->>>
->>>> ---
->>>>
->>>> This patch was tested on a Steam Deck running Arch Linux. With it,
->>>> applications using latest SDL2/3 git libraries will pick up the sensors
->>>> without hidraw access. This was tested against the antimicrox gamepad mapper.
->>>>
->>>> Measurement value scaling was tested by moving the deck and a dualsense
->>>> controller simultaneously and comparing their reported values in
->>>> userspace with SDL3's testcontroller tool.
->>>>
->>>>  drivers/hid/hid-steam.c | 158 ++++++++++++++++++++++++++++++++++++++--
->>>>  1 file changed, 150 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/drivers/hid/hid-steam.c b/drivers/hid/hid-steam.c
->>>> index b08a5ab58528..af6e6c3b1356 100644
->>>> --- a/drivers/hid/hid-steam.c
->>>> +++ b/drivers/hid/hid-steam.c
->>>> @@ -66,6 +66,12 @@ static LIST_HEAD(steam_devices);
->>>>  #define STEAM_DECK_TRIGGER_RESOLUTION 5461
->>>>  /* Joystick runs are about 5 mm and 32768 units */
->>>>  #define STEAM_DECK_JOYSTICK_RESOLUTION 6553
->>>> +/* Accelerometer has 16 bit resolution and a range of +/- 2g */
->>>> +#define STEAM_DECK_ACCEL_RES_PER_G 16384
->>>> +#define STEAM_DECK_ACCEL_RANGE 32768
->>>> +/* Gyroscope has 16 bit resolution and a range of +/- 2000 dps */
->>>> +#define STEAM_DECK_GYRO_RES_PER_DPS 16
->>>> +#define STEAM_DECK_GYRO_RANGE 32000
->>
->> This value looks strange. How do you know it's not supposed to be 32768?
+thanks,
+Chenyu
+ 
+> BR
 > 
-> The "input-programming" documentation mentioned that the device must be able to
-> reach its min and max values so I subtracted a little bit from the 32768.
-> But with this in mind, the accelerometer max value looks wrong.
-
-I'm pretty sure I was able to max out the accelerometer. It's not too difficult to move something at 20 m/s^2 for a short amount of time. I didn't log the data though, but in realtime I did see it getting quite close.
-> 
-> If you agree, I would change it to 32768 since the playstation and nintendo
-> IMU drivers use powers of two derived maximum values as well.
-
-Yeah, I see no reason to arbitrarily restrict it when it probably can go to the full range.
-
-> 
->>>>  
->>>>  #define STEAM_PAD_FUZZ 256
->>>>  
->>>> @@ -288,6 +294,7 @@ struct steam_device {
->>>>  	struct mutex report_mutex;
->>>>  	unsigned long client_opened;
->>>>  	struct input_dev __rcu *input;
->>>> +	struct input_dev __rcu *sensors;
->>>>  	unsigned long quirks;
->>>>  	struct work_struct work_connect;
->>>>  	bool connected;
->>>> @@ -302,6 +309,7 @@ struct steam_device {
->>>>  	struct work_struct rumble_work;
->>>>  	u16 rumble_left;
->>>>  	u16 rumble_right;
->>>> +	unsigned int sensor_timestamp_us;
->>>>  };
->>>>  
->>>>  static int steam_recv_report(struct steam_device *steam,
->>>> @@ -825,6 +833,74 @@ static int steam_input_register(struct steam_device *steam)
->>>>  	return ret;
->>>>  }
->>>>  
->>>> +static int steam_sensors_register(struct steam_device *steam)
->>>> +{
->>>> +	struct hid_device *hdev = steam->hdev;
->>>> +	struct input_dev *sensors;
->>>> +	int ret;
->>>> +
->>>> +	if (!(steam->quirks & STEAM_QUIRK_DECK))
->>>> +		return 0;
->>>> +
->>>> +	rcu_read_lock();
->>>> +	sensors = rcu_dereference(steam->sensors);
->>>> +	rcu_read_unlock();
->>>> +	if (sensors) {
->>>> +		dbg_hid("%s: already connected\n", __func__);
->>>> +		return 0;
->>>> +	}
->>>> +
->>>> +	sensors = input_allocate_device();
->>>> +	if (!sensors)
->>>> +		return -ENOMEM;
->>>> +
->>>> +	input_set_drvdata(sensors, steam);
->>>> +	sensors->dev.parent = &hdev->dev;
->>>> +
->>>> +	sensors->name = "Steam Deck Motion Sensors";
->>>> +	sensors->phys = hdev->phys;
->>>> +	sensors->uniq = steam->serial_no;
->>>> +	sensors->id.bustype = hdev->bus;
->>>> +	sensors->id.vendor = hdev->vendor;
->>>> +	sensors->id.product = hdev->product;
->>>> +	sensors->id.version = hdev->version;
->>>> +
->>>> +	__set_bit(INPUT_PROP_ACCELEROMETER, sensors->propbit);
->>>> +	__set_bit(EV_MSC, sensors->evbit);
->>>> +	__set_bit(MSC_TIMESTAMP, sensors->mscbit);
->>>> +
->>>> +	input_set_abs_params(sensors, ABS_X, -STEAM_DECK_ACCEL_RANGE,
->>>> +			STEAM_DECK_ACCEL_RANGE, 16, 0);
->>>> +	input_set_abs_params(sensors, ABS_Y, -STEAM_DECK_ACCEL_RANGE,
->>>> +			STEAM_DECK_ACCEL_RANGE, 16, 0);
->>>> +	input_set_abs_params(sensors, ABS_Z, -STEAM_DECK_ACCEL_RANGE,
->>>> +			STEAM_DECK_ACCEL_RANGE, 16, 0);
->>>> +	input_abs_set_res(sensors, ABS_X, STEAM_DECK_ACCEL_RES_PER_G);
->>>> +	input_abs_set_res(sensors, ABS_Y, STEAM_DECK_ACCEL_RES_PER_G);
->>>> +	input_abs_set_res(sensors, ABS_Z, STEAM_DECK_ACCEL_RES_PER_G);
->>>> +
->>>> +	input_set_abs_params(sensors, ABS_RX, -STEAM_DECK_GYRO_RANGE,
->>>> +			STEAM_DECK_GYRO_RANGE, 16, 0);
->>>> +	input_set_abs_params(sensors, ABS_RY, -STEAM_DECK_GYRO_RANGE,
->>>> +			STEAM_DECK_GYRO_RANGE, 16, 0);
->>>> +	input_set_abs_params(sensors, ABS_RZ, -STEAM_DECK_GYRO_RANGE,
->>>> +			STEAM_DECK_GYRO_RANGE, 16, 0);
->>>> +	input_abs_set_res(sensors, ABS_RX, STEAM_DECK_GYRO_RES_PER_DPS);
->>>> +	input_abs_set_res(sensors, ABS_RY, STEAM_DECK_GYRO_RES_PER_DPS);
->>>> +	input_abs_set_res(sensors, ABS_RZ, STEAM_DECK_GYRO_RES_PER_DPS);
->>
->> I seem to recall hearing that this data is not calibrated coming off of the device, and the actual calibration data is in Steam somewhere, but I'm not sure which data this applies to. The gravitation acceleration looked fine when testing, but I didn't have a dualsense handy to test the gyro with. Have you tested this on more than one device?
-> 
-> I tested it with a single Steam Deck and Dualsense controller and compared
-> the rotation values by eye in SDL's testcontroller tool while holding the
-> Deck and Dualsense in both hands. In this test the rotation data matched
-> well if compared by eye.
-> 
-> I repeated the test with a makeshift rotational plate and data-logging
-> and got an average absolute angular velocity of about 49 degree per second
-> for the Dualsense controller and 51 degree per second for the Steam Deck.
-> Hence, I think the values and their scaling are fine.
-> 
-> I'll remove my comment above about factory calibration in the next
-> patchset.
-
-I logged some data that I gathered while swinging around a Steam Deck and Dualsense at the same time and found that once scaled they were only off by a little bit (by magnitude, because they axes weren't perfectly aligned when I collected the data), and not with a consistent scale. Graphing the data shows they're pretty close, so it seems fine.
-
-> 
->>
->>>> +
->>>> +	ret = input_register_device(sensors);
->>>> +	if (ret)
->>>> +		goto sensors_register_fail;
->>>> +
->>>> +	rcu_assign_pointer(steam->sensors, sensors);
->>>> +	return 0;
->>>> +
->>>> +sensors_register_fail:
->>>> +	input_free_device(sensors);
->>>> +	return ret;
->>>> +}
->>>> +
->>>>  static void steam_input_unregister(struct steam_device *steam)
->>>>  {
->>>>  	struct input_dev *input;
->>>> @@ -838,6 +914,24 @@ static void steam_input_unregister(struct steam_device *steam)
->>>>  	input_unregister_device(input);
->>>>  }
->>>>  
->>>> +static void steam_sensors_unregister(struct steam_device *steam)
->>>> +{
->>>> +	struct input_dev *sensors;
->>>> +
->>>> +	if (!(steam->quirks & STEAM_QUIRK_DECK))
->>>> +		return;
->>>> +
->>>> +	rcu_read_lock();
->>>> +	sensors = rcu_dereference(steam->sensors);
->>>> +	rcu_read_unlock();
->>>> +
->>>> +	if (!sensors)
->>>> +		return;
->>>> +	RCU_INIT_POINTER(steam->sensors, NULL);
->>>> +	synchronize_rcu();
->>>> +	input_unregister_device(sensors);
->>>> +}
->>>> +
->>>>  static void steam_battery_unregister(struct steam_device *steam)
->>>>  {
->>>>  	struct power_supply *battery;
->>>> @@ -890,18 +984,28 @@ static int steam_register(struct steam_device *steam)
->>>>  	spin_lock_irqsave(&steam->lock, flags);
->>>>  	client_opened = steam->client_opened;
->>>>  	spin_unlock_irqrestore(&steam->lock, flags);
->>>> +
->>>>  	if (!client_opened) {
->>>>  		steam_set_lizard_mode(steam, lizard_mode);
->>>>  		ret = steam_input_register(steam);
->>>> -	} else
->>>> -		ret = 0;
->>>> +		if (ret != 0)
->>>> +			goto steam_register_input_fail;
->>>> +		ret = steam_sensors_register(steam);
->>>> +		if (ret != 0)
->>>> +			goto steam_register_sensors_fail;
->>>> +	}
->>>> +	return 0;
->>>>  
->>>> +steam_register_sensors_fail:
->>>> +	steam_input_unregister(steam);
->>>> +steam_register_input_fail:
->>>>  	return ret;
->>>>  }
->>>>  
->>>>  static void steam_unregister(struct steam_device *steam)
->>>>  {
->>>>  	steam_battery_unregister(steam);
->>>> +	steam_sensors_unregister(steam);
->>>>  	steam_input_unregister(steam);
->>>>  	if (steam->serial_no[0]) {
->>>>  		hid_info(steam->hdev, "Steam Controller '%s' disconnected",
->>>> @@ -1010,6 +1114,7 @@ static int steam_client_ll_open(struct hid_device *hdev)
->>>>  	steam->client_opened++;
->>>>  	spin_unlock_irqrestore(&steam->lock, flags);
->>>>  
->>>> +	steam_sensors_unregister(steam);
->>>>  	steam_input_unregister(steam);
->>>>  
->>>>  	return 0;
->>>> @@ -1030,6 +1135,7 @@ static void steam_client_ll_close(struct hid_device *hdev)
->>>>  	if (connected) {
->>>>  		steam_set_lizard_mode(steam, lizard_mode);
->>>>  		steam_input_register(steam);
->>>> +		steam_sensors_register(steam);
->>>>  	}
->>>>  }
->>>>  
->>>> @@ -1121,6 +1227,7 @@ static int steam_probe(struct hid_device *hdev,
->>>>  	INIT_DELAYED_WORK(&steam->mode_switch, steam_mode_switch_cb);
->>>>  	INIT_LIST_HEAD(&steam->list);
->>>>  	INIT_WORK(&steam->rumble_work, steam_haptic_rumble_cb);
->>>> +	steam->sensor_timestamp_us = 0;
->>>>  
->>>>  	/*
->>>>  	 * With the real steam controller interface, do not connect hidraw.
->>>> @@ -1380,12 +1487,12 @@ static void steam_do_input_event(struct steam_device *steam,
->>>>   *  18-19 | s16   | ABS_HAT0Y | left-pad Y value
->>>>   *  20-21 | s16   | ABS_HAT1X | right-pad X value
->>>>   *  22-23 | s16   | ABS_HAT1Y | right-pad Y value
->>>> - *  24-25 | s16   | --        | accelerometer X value
->>>> - *  26-27 | s16   | --        | accelerometer Y value
->>>> - *  28-29 | s16   | --        | accelerometer Z value
->>>> - *  30-31 | s16   | --        | gyro X value
->>>> - *  32-33 | s16   | --        | gyro Y value
->>>> - *  34-35 | s16   | --        | gyro Z value
->>>> + *  24-25 | s16   | IMU ABS_X | accelerometer X value
->>>> + *  26-27 | s16   | IMU ABS_Z | accelerometer Y value
->>>> + *  28-29 | s16   | IMU ABS_Y | accelerometer Z value
->>>> + *  30-31 | s16   | IMU ABS_RX | gyro X value
->>>> + *  32-33 | s16   | IMU ABS_RZ | gyro Y value
->>>> + *  34-35 | s16   | IMU ABS_RY | gyro Z value
->>>>   *  36-37 | s16   | --        | quaternion W value
->>>>   *  38-39 | s16   | --        | quaternion X value
->>>>   *  40-41 | s16   | --        | quaternion Y value
->>>> @@ -1546,6 +1653,32 @@ static void steam_do_deck_input_event(struct steam_device *steam,
->>>>  	input_sync(input);
->>>>  }
->>>>  
->>>> +static void steam_do_deck_sensors_event(struct steam_device *steam,
->>>> +		struct input_dev *sensors, u8 *data)
->>>> +{
->>>> +	/*
->>>> +	 * The deck input report is received every 4 ms on average,
->>>> +	 * with a jitter of +/- 4 ms even though the USB descriptor claims
->>>> +	 * that it uses 1 kHz.
->>>> +	 * Since the HID report does not include a sensor timestamp,
->>>> +	 * use a fixed increment here.
->>>> +	 *
->>>> +	 * The reported sensors data is factory calibrated by default so
->>>> +	 * no extra logic for handling calibratrion is necessary.
->>>> +	 */
->>>> +	steam->sensor_timestamp_us += 4000;
->>>> +	input_event(sensors, EV_MSC, MSC_TIMESTAMP, steam->sensor_timestamp_us);
->>>> +
->>>> +	input_report_abs(sensors, ABS_X, steam_le16(data + 24));
->>>> +	input_report_abs(sensors, ABS_Z, -steam_le16(data + 26));
->>>> +	input_report_abs(sensors, ABS_Y, steam_le16(data + 28));
->>>> +	input_report_abs(sensors, ABS_RX, steam_le16(data + 30));
->>>> +	input_report_abs(sensors, ABS_RZ, -steam_le16(data + 32));
->>>> +	input_report_abs(sensors, ABS_RY, steam_le16(data + 34));
->>>> +
->>>> +	input_sync(sensors);
->>>> +}
->>>> +
->>>>  /*
->>>>   * The size for this message payload is 11.
->>>>   * The known values are:
->>>> @@ -1583,6 +1716,7 @@ static int steam_raw_event(struct hid_device *hdev,
->>>>  {
->>>>  	struct steam_device *steam = hid_get_drvdata(hdev);
->>>>  	struct input_dev *input;
->>>> +	struct input_dev *sensors;
->>>>  	struct power_supply *battery;
->>>>  
->>>>  	if (!steam)
->>>> @@ -1629,6 +1763,14 @@ static int steam_raw_event(struct hid_device *hdev,
->>>>  		if (likely(input))
->>>>  			steam_do_deck_input_event(steam, input, data);
->>>>  		rcu_read_unlock();
->>>> +
->>>> +		if (steam->quirks & STEAM_QUIRK_DECK) {
->>
->> This report ID is only sent on the Steam Deck. Checking the quirk here is unnecessary, especially since it'll just be null and fail out if something weird happens and we get this report on a non-Deck device.
-> 
-> You're right, I'll change it.
-> 
->>
->>>> +			rcu_read_lock();
->>>> +			sensors = rcu_dereference(steam->sensors);
->>>> +			if (likely(sensors))
->>>> +				steam_do_deck_sensors_event(steam, sensors, data);
->>>> +			rcu_read_unlock();
->>>> +		}
->>>>  		break;
->>>>  	case ID_CONTROLLER_WIRELESS:
->>>>  		/*
->>>>
->>>> base-commit: 39cd87c4eb2b893354f3b850f916353f2658ae6f
->>>> -- 
->>>> 2.44.0
->>>>
->>>
->>
->> Implementation looks mostly fine. However, I had some discussion with people at Valve about this who said they'd like the IMU to be silenced when gamepad mode is disabled the same way the gamepad data is.
->>
->> Vicki
-> 
-> I'll add a check for gamepad_mode to the sensors event.
-> 
-> Thank you for your feedback.
-> 
-> Max
-
-With those changes it'll probably be fine.
-
-Vicki
+> > --
+> > 2.25.1
+> >
+> >
+> >
 
