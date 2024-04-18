@@ -1,359 +1,204 @@
-Return-Path: <linux-kernel+bounces-150010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77BA48A9909
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:51:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F0AC8A9901
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:50:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C5F5285000
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:51:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91D201C2235A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80DD115FCF5;
-	Thu, 18 Apr 2024 11:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD6315F417;
+	Thu, 18 Apr 2024 11:49:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="KHGz7G+9"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UYb5vAg3"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B75615FD15
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CB7115F311
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713441004; cv=none; b=fjDY9UO/dD/3oOz2xRQ4sWTpoKWqY3VHve65DvrG602Ap1m7QY5IW7Gt6GAl9QHnRf/kx9orSlmJbJbENRBIzxROFWGeuZ5EhqkEWFjTsdSSdc26zdDJONmIm6Fwac+z8hrzt+Q7catOAs59P71dVBNZVRpdTrRFsasWTWap00Y=
+	t=1713440994; cv=none; b=utTbsppDw9b3ClrNg36ENLGbidMZ8eOG5qOwbQO7wkw7uYb6YMONKMp8ahoif6Fjg7yLeexAcyZSOy7iCzRlbhideXoKUpJNpFVFU3dWu6xtSKhLt0YL77MWZfP1jfZOKWvRgUTyWTQ1W8akzy6vo2CDmW5QsRltS/ID4YAMPsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713441004; c=relaxed/simple;
-	bh=QWYvIaZ/l1aoRggZiFczg8Abq8R4L6b5OCiLksmTXyc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Qu1OqulHqsaqLlDcZv1DWuZgAgq647x3vO9doZANKPpLZYddGk2Bs7zVbbD1etcfVx0/4lsyedCM4JS/OWH9vgDGroUWaLx1LDJCjKxMpvyuPBgk54KPp+D+9PLZxOVqnkYi/J7D0y2iDffUJ3IwbYOX59mNEtn3aUrlBCQ2g7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=KHGz7G+9; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5c229dabbb6so420324a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 04:50:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1713441002; x=1714045802; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zm558O2QVDPk1eRrVljSEfZNVakmWiw+kO/s+2oVqPM=;
-        b=KHGz7G+9KaiXhfNYQL4ALvlu9lVTsbRj9eDpfKf2aNnVK8OFVnmVWB9A0NOQRAQ1Zo
-         pjArrzBh3U228YM1zgfNjP0NMYL2JZIkD2k0Pee3/jxlXc7LgjYCyCl1Yq0G7AZoe0v2
-         VyHmEcJATrPBIiAOHLfiaUV6lDooy1gS7XgC0DmgelRyK1sCYBdHVHWOvG+d8G8+9r5O
-         DFdGDS0eGa1jq4pf0rpOi0P3/ufYZpqKwTkoguAigeiXVTUbpUi9QFXqkIkuhC7+QGbo
-         wOjMYGeZ3/inxoEI7z1YzAkiYLit/ArLVDxYnYgcgmyiKMGRYqU3SNFbVVQBjbfIkkIJ
-         /h+A==
+	s=arc-20240116; t=1713440994; c=relaxed/simple;
+	bh=oDakGs6VuVCmOsfEPVCbadU2m+jcQ6dLdKUr05Kv/mc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MoMxsSr4ExGK4ZmjUa2ZEP5YsYlhwcIujFoljJwREvmRGMbP9qggpeIVpIQj/O7Znjm4rCyvyAZNa40Qn+B2rIH111XU1bRtMUZD4c68Msz/BWx8ty8erQpPICTMAXozNQy5r+mCk6VIUifmo8Nf5yviRnCJO9iRzOxeMUgIJeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UYb5vAg3; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713440991;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=V8/aQld94UzLvlQOPHbYtcJg5juetjrvjETslid99FE=;
+	b=UYb5vAg3aqvwyywvNlDsWnrCptnqXaqra/OeoP2o71rbstRR7qNpoBpmlIQA2vSBmuBTCX
+	AkCMII1n4Q6G+7diX6oqB/miTsdNSR5PJJGIpEWPlvSNzuAG1LMum/bHUV85fLMVesYRvs
+	nXxSTyiB6tjAe805Fa65kNnDHD56xAs=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-284-iF72yxawNNuxcAh_ARqT2A-1; Thu, 18 Apr 2024 07:49:49 -0400
+X-MC-Unique: iF72yxawNNuxcAh_ARqT2A-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4183b895ef1so3596075e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 04:49:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713441002; x=1714045802;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zm558O2QVDPk1eRrVljSEfZNVakmWiw+kO/s+2oVqPM=;
-        b=IDWhXZXi3q167jOOxaupkypoPu1+O/3MX9vlC1+28hNWcEg8URV/6a3IUW3+YNMgMp
-         WleIWBlcfJ9nhSgM35CyYlUKgDOpB3+dSpcb8p8OvAyxsaziw/RSOYU6h+1/+c70FKk6
-         eLXKJ95OvhSDzkp+uOwdrfibGKy/Fxlw8QxBIqAZVSUEbku+sZa7UOsxXytljjAn63wq
-         eU3+FQZjfazxlcttXDCd81ohT/AVDLeCgpOfN8el9f4ImetYusGySr3uk1JUlmgZvzaw
-         aOQmUeI6brdhk5viDHFwna3rgxKEaZpWh/py84yv0HuIEYcpMQdhpdSChIWXqp2DwLdD
-         eIRA==
-X-Forwarded-Encrypted: i=1; AJvYcCVUva8TIFeprPlXeYmF5jMITTIH3Qf4TuyCJ4sEXFAmYk55qp6nqMPkSpCZrpi42cKq+n/9csuuzDDP8Ycmbmva7wkufv74WWCyc5AJ
-X-Gm-Message-State: AOJu0YwvavcbAAkVoH/I+OCpcpYVy7zdk3k/FgFYRqNS+/P7tgVev8bJ
-	ATVasKbm10PNZm7wPBs0tiuCiq2L/VXFLxgfHJ9UH1pIPUU1QCRQQMxdnK9NM7Y=
-X-Google-Smtp-Source: AGHT+IG08hqpF8uwiPrN1zWB27zGM+lpl666QMpL8Ui14+w3YozU4FioSKQ64+ALHNkfMcQdGOYAQA==
-X-Received: by 2002:a17:90a:fd82:b0:2ab:9c0d:da69 with SMTP id cx2-20020a17090afd8200b002ab9c0dda69mr1994655pjb.49.1713441002289;
-        Thu, 18 Apr 2024 04:50:02 -0700 (PDT)
-Received: from J9GPGXL7NT.bytedance.net ([61.213.176.55])
-        by smtp.gmail.com with ESMTPSA id y7-20020a17090aa40700b002abdb19f499sm1032293pjp.26.2024.04.18.04.49.58
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 18 Apr 2024 04:50:02 -0700 (PDT)
-From: Xu Lu <luxu.kernel@bytedance.com>
-To: paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	andy.chiu@sifive.com,
-	guoren@kernel.org
-Cc: linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	lihangjing@bytedance.com,
-	dengliang.1214@bytedance.com,
-	xieyongji@bytedance.com,
-	chaiwen.cc@bytedance.com,
-	Xu Lu <luxu.kernel@bytedance.com>
-Subject: [RFC 2/2] riscv: Use Zawrs to accelerate IPI to idle cpu
-Date: Thu, 18 Apr 2024 19:49:42 +0800
-Message-Id: <20240418114942.52770-3-luxu.kernel@bytedance.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <20240418114942.52770-1-luxu.kernel@bytedance.com>
-References: <20240418114942.52770-1-luxu.kernel@bytedance.com>
+        d=1e100.net; s=20230601; t=1713440988; x=1714045788;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V8/aQld94UzLvlQOPHbYtcJg5juetjrvjETslid99FE=;
+        b=M4/h1ErcBapgfLvykapbSGgvu0EYdvrtpAk4PpADu5FxiYdq4qLpNQtksRGoL6JVJG
+         SB6b6t5kwe5rgc6ouQ+U8/O3e6Yf8ncARLywwiRgSN/g6VdVTozoGUdclkUFUIByal6J
+         vsNxRWCV7mLI3m/1mi5FX7Ro2/3bNPrB9TSdgLHeX5Tvg4bHDz4p9o9km0OyuiyBcyro
+         OVELBHSUYT60VeW/paqhB4FF0A/CHxYQeS0+Jey7cTEegUsQh6MVRw/T1V6F6C5mfjBv
+         eXPEkzkodieVzXmbFXWmbRjWttWKAIzTCI/D9czGuRYIMTIS0ITJYulew51WIpKzKhVx
+         Abzg==
+X-Forwarded-Encrypted: i=1; AJvYcCUIAQo+8nG5zdXwqok9DJVnXbPjWyKLEmRdJAfypZ1xQ/itzIl8yu+vjW52510NP+VlzYPBapUoR1eWu29Xi29t8XOITu3t5HLCcHDg
+X-Gm-Message-State: AOJu0YzEV6w5+DTrnRF/YEQALa/0YNUWms4J22FGG5AAsHMGg3rzQJfp
+	A/yh3HuL7WsFyPxzsDLuA7X4/AJTTZCLdWS2/G992ZXZm2n2jUikyoG/QUn3NHlpMsfVE9RbWQ/
+	mC3rrIQOJ8gEoSV1scFmsTz3Xl/+FdsKHJIn6+Hkc56szrYqXdj+aXPpBM+zA1w==
+X-Received: by 2002:a05:600c:1c91:b0:416:34c0:de9 with SMTP id k17-20020a05600c1c9100b0041634c00de9mr2444312wms.29.1713440988678;
+        Thu, 18 Apr 2024 04:49:48 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGqgqQ3za1EXSURtOq9OHiqKrZ6jbAQ3F9YMHY3AB9QOCUv9Rem8Ber/zitOUCR7OWCSrpNwg==
+X-Received: by 2002:a05:600c:1c91:b0:416:34c0:de9 with SMTP id k17-20020a05600c1c9100b0041634c00de9mr2444293wms.29.1713440988260;
+        Thu, 18 Apr 2024 04:49:48 -0700 (PDT)
+Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
+        by smtp.gmail.com with ESMTPSA id m16-20020a05600c3b1000b0041496734318sm6310440wms.24.2024.04.18.04.49.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 04:49:47 -0700 (PDT)
+Message-ID: <c96e46b6-ef66-447d-8aaa-14e2f1d99d1b@redhat.com>
+Date: Thu, 18 Apr 2024 13:49:46 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] virtio_balloon: introduce memory allocation stall
+ counter
+To: zhenwei pi <pizhenwei@bytedance.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, virtualization@lists.linux.dev
+Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
+ akpm@linux-foundation.org
+References: <20240418062602.1291391-1-pizhenwei@bytedance.com>
+ <20240418062602.1291391-3-pizhenwei@bytedance.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240418062602.1291391-3-pizhenwei@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-When sending IPI to a cpu which has entered idle state using Zawrs
-extension, there is no need to send a physical software interrupt.
-Instead, we can write the IPI information to the address reserved by
-target cpu, which will wake it from WRS.NTO. Then the target cpu can
-handle the IPI directly without falling into traditional interrupt
-handling routine.
+On 18.04.24 08:26, zhenwei pi wrote:
+> Memory allocation stall counter represents the performance/latency of
+> memory allocation, expose this counter to the host side by virtio
+> balloon device via out-of-bound way.
+> 
+> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+> ---
+>   drivers/virtio/virtio_balloon.c     | 20 +++++++++++++++++++-
+>   include/uapi/linux/virtio_balloon.h |  6 ++++--
+>   2 files changed, 23 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+> index fd19934a847f..e88e6573afa5 100644
+> --- a/drivers/virtio/virtio_balloon.c
+> +++ b/drivers/virtio/virtio_balloon.c
+> @@ -321,7 +321,7 @@ static unsigned int update_balloon_stats(struct virtio_balloon *vb)
+>   	unsigned long events[NR_VM_EVENT_ITEMS];
+>   	struct sysinfo i;
+>   	unsigned int idx = 0;
+> -	long available;
+> +	long available, stall = 0;
+>   	unsigned long caches;
+>   
+>   	all_vm_events(events);
+> @@ -338,6 +338,24 @@ static unsigned int update_balloon_stats(struct virtio_balloon *vb)
+>   	update_stat(vb, idx++, VIRTIO_BALLOON_S_MAJFLT, events[PGMAJFAULT]);
+>   	update_stat(vb, idx++, VIRTIO_BALLOON_S_MINFLT, events[PGFAULT]);
+>   	update_stat(vb, idx++, VIRTIO_BALLOON_S_OOM_KILL, events[OOM_KILL]);
+> +
+> +	/* sum all the stall events */
+> +#ifdef CONFIG_ZONE_DMA
+> +	stall += events[ALLOCSTALL_DMA];
+> +#endif
+> +#ifdef CONFIG_ZONE_DMA32
+> +	stall += events[ALLOCSTALL_DMA32];
+> +#endif
+> +#ifdef CONFIG_HIGHMEM
+> +	stall += events[ALLOCSTALL_HIGH];
+> +#endif
+> +#ifdef CONFIG_ZONE_DEVICE
+> +	stall += events[ALLOCSTALL_DEVICE];
+> +#endif
 
-Signed-off-by: Xu Lu <luxu.kernel@bytedance.com>
----
- arch/riscv/include/asm/processor.h | 14 +++++++
- arch/riscv/include/asm/smp.h       | 14 +++++++
- arch/riscv/kernel/process.c        | 65 +++++++++++++++++++++++++++++-
- arch/riscv/kernel/smp.c            | 39 ++++++++++++------
- 4 files changed, 118 insertions(+), 14 deletions(-)
+Naive me would think that ALLOCSTALL_DEVICE is always 0. :)
 
-diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-index 1143367de8c6..76091cf2e8be 100644
---- a/arch/riscv/include/asm/processor.h
-+++ b/arch/riscv/include/asm/processor.h
-@@ -172,6 +172,20 @@ static inline void wrs_nto(unsigned long *addr)
- 			: : "memory");
- }
- 
-+static inline void wrs_nto_if(int *addr, int val)
-+{
-+	int prev;
-+
-+	__asm__ __volatile__(
-+			"lr.w %[p], %[a] \n\t"
-+			"bne %[p], %[v], 1f \n\t"
-+			".long 0x00d00073 \n\t"
-+			"1: \n\t"
-+			: [p] "=&r" (prev), [a] "+A" (*addr)
-+			: [v] "r" (val)
-+			: "memory");
-+}
-+
- extern phys_addr_t dma32_phys_limit;
- 
- struct device_node;
-diff --git a/arch/riscv/include/asm/smp.h b/arch/riscv/include/asm/smp.h
-index 0d555847cde6..2f27fd743092 100644
---- a/arch/riscv/include/asm/smp.h
-+++ b/arch/riscv/include/asm/smp.h
-@@ -19,6 +19,20 @@ extern unsigned long boot_cpu_hartid;
- 
- #include <linux/jump_label.h>
- 
-+enum ipi_message_type {
-+	IPI_RESCHEDULE,
-+	IPI_CALL_FUNC,
-+	IPI_CPU_STOP,
-+	IPI_CPU_CRASH_STOP,
-+	IPI_IRQ_WORK,
-+	IPI_TIMER,
-+	IPI_MAX
-+};
-+
-+int ipi_virq_base_get(void);
-+
-+irqreturn_t handle_IPI(int irq, void *data);
-+
- /*
-  * Mapping between linux logical cpu index and hartid.
-  */
-diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
-index 9f0f7b888bc1..7d6bf780d334 100644
---- a/arch/riscv/kernel/process.c
-+++ b/arch/riscv/kernel/process.c
-@@ -16,6 +16,7 @@
- #include <linux/ptrace.h>
- #include <linux/uaccess.h>
- #include <linux/static_call.h>
-+#include <linux/hardirq.h>
- 
- #include <asm/unistd.h>
- #include <asm/processor.h>
-@@ -27,6 +28,7 @@
- #include <asm/cpuidle.h>
- #include <asm/vector.h>
- #include <asm/cpufeature.h>
-+#include <asm/smp.h>
- 
- register unsigned long gp_in_global __asm__("gp");
- 
-@@ -38,6 +40,8 @@ EXPORT_SYMBOL(__stack_chk_guard);
- 
- extern asmlinkage void ret_from_fork(void);
- 
-+DEFINE_PER_CPU(atomic_t, idle_ipi_mask);
-+
- static __cpuidle void default_idle(void)
- {
- 	/*
-@@ -49,6 +53,16 @@ static __cpuidle void default_idle(void)
- 	wait_for_interrupt();
- }
- 
-+static __cpuidle void default_idle_enter(void)
-+{
-+	/* Do nothing */
-+}
-+
-+static __cpuidle void default_idle_exit(void)
-+{
-+	/* Do nothing */
-+}
-+
- static __cpuidle void wrs_idle(void)
- {
- 	/*
-@@ -57,10 +71,42 @@ static __cpuidle void wrs_idle(void)
- 	 * to entering WRS.NTO.
- 	 */
- 	mb();
-+#ifdef CONFIG_SMP
-+	wrs_nto_if(&this_cpu_ptr(&idle_ipi_mask)->counter, BIT(IPI_MAX));
-+#else
- 	wrs_nto(&current_thread_info()->flags);
-+#endif
-+}
-+
-+static __cpuidle void wrs_idle_enter(void)
-+{
-+#ifdef CONFIG_SMP
-+	atomic_set(this_cpu_ptr(&idle_ipi_mask), BIT(IPI_MAX));
-+#endif
-+}
-+
-+static __cpuidle void wrs_idle_exit(void)
-+{
-+#ifdef CONFIG_SMP
-+	int pending;
-+	unsigned long flags;
-+	enum ipi_message_type ipi;
-+
-+	local_irq_save(flags);
-+	pending = atomic_xchg_relaxed(this_cpu_ptr(&idle_ipi_mask), 0);
-+	for (ipi = IPI_RESCHEDULE; ipi < IPI_MAX; ipi++)
-+		if (pending & BIT(ipi)) {
-+			irq_enter();
-+			handle_IPI(ipi_virq_base_get() + ipi, NULL);
-+			irq_exit();
-+		}
-+	local_irq_restore(flags);
-+#endif
- }
- 
- DEFINE_STATIC_CALL_NULL(riscv_idle, default_idle);
-+DEFINE_STATIC_CALL_NULL(riscv_idle_enter, default_idle_enter);
-+DEFINE_STATIC_CALL_NULL(riscv_idle_exit, default_idle_exit);
- 
- void __cpuidle cpu_do_idle(void)
- {
-@@ -72,13 +118,28 @@ void __cpuidle arch_cpu_idle(void)
- 	cpu_do_idle();
- }
- 
-+void __cpuidle arch_cpu_idle_enter(void)
-+{
-+	static_call(riscv_idle_enter)();
-+}
-+
-+void __cpuidle arch_cpu_idle_exit(void)
-+{
-+	static_call(riscv_idle_exit)();
-+}
-+
- void __init select_idle_routine(void)
- {
- 	if (IS_ENABLED(CONFIG_RISCV_ZAWRS_IDLE) &&
--			riscv_has_extension_likely(RISCV_ISA_EXT_ZAWRS))
-+			riscv_has_extension_likely(RISCV_ISA_EXT_ZAWRS)) {
- 		static_call_update(riscv_idle, wrs_idle);
--	else
-+		static_call_update(riscv_idle_enter, wrs_idle_enter);
-+		static_call_update(riscv_idle_exit, wrs_idle_exit);
-+	} else {
- 		static_call_update(riscv_idle, default_idle);
-+		static_call_update(riscv_idle_enter, default_idle_enter);
-+		static_call_update(riscv_idle_exit, default_idle_exit);
-+	}
- }
- 
- int set_unalign_ctl(struct task_struct *tsk, unsigned int val)
-diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-index 45dd4035416e..b5416ee41967 100644
---- a/arch/riscv/kernel/smp.c
-+++ b/arch/riscv/kernel/smp.c
-@@ -26,16 +26,6 @@
- #include <asm/cacheflush.h>
- #include <asm/cpu_ops.h>
- 
--enum ipi_message_type {
--	IPI_RESCHEDULE,
--	IPI_CALL_FUNC,
--	IPI_CPU_STOP,
--	IPI_CPU_CRASH_STOP,
--	IPI_IRQ_WORK,
--	IPI_TIMER,
--	IPI_MAX
--};
--
- unsigned long __cpuid_to_hartid_map[NR_CPUS] __ro_after_init = {
- 	[0 ... NR_CPUS-1] = INVALID_HARTID
- };
-@@ -94,14 +84,34 @@ static inline void ipi_cpu_crash_stop(unsigned int cpu, struct pt_regs *regs)
- }
- #endif
- 
-+#if defined(CONFIG_RISCV_ZAWRS_IDLE) && defined(CONFIG_SMP)
-+DECLARE_PER_CPU(atomic_t, idle_ipi_mask);
-+#endif
-+
- static void send_ipi_mask(const struct cpumask *mask, enum ipi_message_type op)
- {
-+#if defined(CONFIG_RISCV_ZAWRS_IDLE) && defined(CONFIG_SMP)
-+	int cpu, val;
-+
-+	for_each_cpu(cpu, mask) {
-+		val = atomic_fetch_or_relaxed(BIT(op), per_cpu_ptr(&idle_ipi_mask, cpu));
-+		if (likely(!(val & BIT(IPI_MAX))))
-+			__ipi_send_mask(ipi_desc[op], cpumask_of(cpu));
-+	}
-+#else
- 	__ipi_send_mask(ipi_desc[op], mask);
-+#endif
- }
- 
- static void send_ipi_single(int cpu, enum ipi_message_type op)
- {
--	__ipi_send_mask(ipi_desc[op], cpumask_of(cpu));
-+#if defined(CONFIG_RISCV_ZAWRS_IDLE) && defined(CONFIG_SMP)
-+	int val;
-+
-+	val = atomic_fetch_or_relaxed(BIT(op), per_cpu_ptr(&idle_ipi_mask, cpu));
-+	if (likely(!(val & BIT(IPI_MAX))))
-+#endif
-+		__ipi_send_mask(ipi_desc[op], cpumask_of(cpu));
- }
- 
- #ifdef CONFIG_IRQ_WORK
-@@ -111,7 +121,7 @@ void arch_irq_work_raise(void)
- }
- #endif
- 
--static irqreturn_t handle_IPI(int irq, void *data)
-+irqreturn_t handle_IPI(int irq, void *data)
- {
- 	int ipi = irq - ipi_virq_base;
- 
-@@ -332,3 +342,8 @@ void arch_smp_send_reschedule(int cpu)
- 	send_ipi_single(cpu, IPI_RESCHEDULE);
- }
- EXPORT_SYMBOL_GPL(arch_smp_send_reschedule);
-+
-+int ipi_virq_base_get(void)
-+{
-+	return ipi_virq_base;
-+}
+Likely we should just do:
+
+for (zid = 0; zid < MAX_NR_ZONES; zid++)
+	stall += events[ALLOCSTALL_NORMAL - ZONE_NORMAL + zid];
+
+(see isolate_lru_folios() -> __count_zid_vm_events(), where we realy on 
+the same ordering)
+
+Apart form that, LGTM.
+
 -- 
-2.20.1
+Cheers,
+
+David / dhildenb
 
 
