@@ -1,166 +1,145 @@
-Return-Path: <linux-kernel+bounces-150337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ACE98A9D92
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:50:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC5F28A9D96
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:50:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8889B21CEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:50:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78F0C283D1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5CF168AE9;
-	Thu, 18 Apr 2024 14:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676F216C436;
+	Thu, 18 Apr 2024 14:50:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BauijufJ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AZvU5DZF"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39AF165FCD
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:50:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E09165FC7;
+	Thu, 18 Apr 2024 14:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713451816; cv=none; b=bUZDohopiBC/es4/wMclMWP1autC0jjj8YBbk6roKgdyniIPzixZ2Zk8fAjtbd38DB3id8UP+tAQ8RrxVyZSufoDFwjmiBjZumezErtaZy55lBsSegKBhtbbMtvBWpl8gwodN/hqhPXuEaTUx9kzq3X9c//eNqm6TEyjgpumpyc=
+	t=1713451823; cv=none; b=CpIdNtnckKcu6KIAvfXvYxvCUZ4NnhOlolraHHW/dyzRONqfosS6CBwgfiFiyvAQ8KYx95EeJur5x6zyaMe2GotO4Y9N0xxIvIQ4KP10R8LwWUN9/PUjkGfsUFWeI9Q8qvFeRripnAmJ5UFvqaMmX9tUb4FjN5JdLc8dnqUADeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713451816; c=relaxed/simple;
-	bh=OmM4Ol2cehc696v2G5IaKMs3D22emCXT7jfMzKndz4s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AOy0kZ3EAWOGsu7wOxqNo7Hjosl1QyA/ad0HhFqzW1HrLuO/yhIWOBw2ePTowrq+fg/hlM6hDM75psibH35HCz6lhloAHWwNfkTz4oszcV7z7joOQpdP1wYxKawLeECjxPAEu80WoNpi7Uw3biP9eQTjCBe7JYZs6iec2DqRddE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BauijufJ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713451813;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iA26oegDx20/Oc13YNzcYkvxMaaemAyNcLhc+rMuX3A=;
-	b=BauijufJhpNV0FEVOL1QASyPrFyzC3fd1+toDN7UFNqnRAsx75mSidPeW78/UXk4cfp1Lq
-	iQTMGvaaLa3heMVDUoRmcQAGFfUmGD4fJXgH4u240k8qakQ/W8lt4UFL3mopivfLfjaaJ0
-	XLmbDSxO+vBZ8So1lpmEQbac8uq30TQ=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-461-FBi5yr9LP8mOk6bxUDwbfw-1; Thu,
- 18 Apr 2024 10:50:10 -0400
-X-MC-Unique: FBi5yr9LP8mOk6bxUDwbfw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 454A6286A9C2;
-	Thu, 18 Apr 2024 14:50:09 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.39.195.76])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id CF95B40C1233;
-	Thu, 18 Apr 2024 14:50:05 +0000 (UTC)
-Date: Thu, 18 Apr 2024 10:50:02 -0400
-From: Phil Auld <pauld@redhat.com>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Leonardo Bras <leobras@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	linux-kernel@vger.kernel.org, Junyao Zhao <junzhao@redhat.com>,
-	Chris von Recklinghausen <crecklin@redhat.com>
-Subject: Re: [PATCH] sched/isolation: fix boot crash when the boot CPU is
- nohz_full
-Message-ID: <20240418145002.GC29188@lorien.usersys.redhat.com>
-References: <20240130010046.2730139-2-leobras@redhat.com>
- <20240402105847.GA24832@redhat.com>
- <20240411143905.GA19288@redhat.com>
+	s=arc-20240116; t=1713451823; c=relaxed/simple;
+	bh=/exCH+IFX8Lap5lGMTpE20vQSND7MoJrr62INE+iVGE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ZN38ozBV9HqOeRBE3rol8HC7ZuCkhmrimhm1TZlM20kqlN2AQNapxksfCj/xRXL4c5nBbGmuepZ1oL21HEjHsJh74yH+PMIY3jMCPB0qrfFkKzs2Q2XKjsxxVMH9+qHevaKARn3UQxq7hXLY9enrUA3p2TcqAND815fhOJy5RBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AZvU5DZF; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed3cafd766so910609b3a.0;
+        Thu, 18 Apr 2024 07:50:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713451821; x=1714056621; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6p+8w8Hh04Jmf8oGwjxpLa/UzKTop1h7DhMYms+7Tq8=;
+        b=AZvU5DZF+y8K23dSwWeOqRhYbsX4wmBtBeGic3Ed0QP0n58NYwaFbNUD96aDwkkcJT
+         gJQ3PmWKzJS6I0Gk51QhuG3uPq1I/5s8skUk9H38/b1YN7uR4Gzx20YRWMcyevdWiCXc
+         zw6gusvU+lXalm9oSla5mDBOYtU5p5qtdGMRuy20ePP8dLDWpUxoa4tqILEywf2yCy+d
+         LxYlnblsWWaZV2sD7tv1CM8kEbWH0EKIHQB6nBUlQyvQQBPQhEBKJ9IzhnkTIUXjrXte
+         6+icHvE/ib+AaXzsUrFHtx0stXbYzGLbcptq0i6wJSgQUjn9Lp4T/uMXf7RdZkR7w848
+         jMAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713451821; x=1714056621;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6p+8w8Hh04Jmf8oGwjxpLa/UzKTop1h7DhMYms+7Tq8=;
+        b=Gb22sE3flAPlWgNbg1p0cCQieQZpW0a0Sgta9YF99Cplr4wLijBUNiWYSaY8IBWyYf
+         Ef6anJrUxIZ3m7YkAvU0eP+ZmUM3mYKvCmoqHMo5uOveqwLtP6M2/vsFsvxa99o1F/YT
+         LtSK5moZgQJXwGKFptrnCyhvdEP/vdcdUdxE3NgRO2e/l4dRIcOelBdbP0Xr2+xuZUrx
+         4BNvJZ5KfDlL7iUM79Ot6fSnPx3wNDmLtSGf3K+nTFX14vH0xNEH2kMU+VWD3tEmuaCF
+         UyF2sUnPacF/cYohVL7mGoVM0WcbiGMkT+pYueELH2xJwXBIOhgRgcSShcOnccPyT/s8
+         o5lg==
+X-Forwarded-Encrypted: i=1; AJvYcCW9Qtc7kdSs7+DRrOUQYrkACQueiV7Gn6tksI7gS8BZ0xkdW7M5CVQPZNGVD6QdBGSB1mBSCojt1sND1muYYhK9IGQuDsOA0NBkdTZfGio5F8CzLM1lOX+bZw9bVDs3Gb+4vsi7M6ofyjaYW+AkIxqknZN7u41TgQwfFHeMBdME00oaDiY/yBiNUKTIazQJCtu22DL32vg8mS5emcc2ecpAzAvAnxLa4LKGVMCjHATPHjnk+3JvbaFzBX+DTILZ2q6g7uRpMpvTPSOYeM3tdh0RRdMtiAayxNO7s/C0UQ==
+X-Gm-Message-State: AOJu0YwifrUpVrSUZ/TiqciBU07wxdXG1Mx7QRvYhDAkXOCIr49VMgp5
+	K6+/M934UC4tqY9Hdx6+86ReySfahxxYzGmeNYTXj/L5AjWAcsZ1
+X-Google-Smtp-Source: AGHT+IEy3w5ti8d/aRlYULSHP6kn4xClYK6aejX5I6/4QNKJ+uBQwqqDM8a4ftyXRx5jRuNQIVC1bQ==
+X-Received: by 2002:a05:6a00:3d0c:b0:6ed:332:ffbc with SMTP id lo12-20020a056a003d0c00b006ed0332ffbcmr3858066pfb.20.1713451821509;
+        Thu, 18 Apr 2024 07:50:21 -0700 (PDT)
+Received: from LancedeMBP.lan ([112.10.225.217])
+        by smtp.gmail.com with ESMTPSA id fv3-20020a056a00618300b006eb3c3db4afsm1552999pfb.186.2024.04.18.07.50.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 07:50:21 -0700 (PDT)
+From: Lance Yang <ioworker0@gmail.com>
+To: david@redhat.com
+Cc: akpm@linux-foundation.org,
+	cgroups@vger.kernel.org,
+	chris@zankel.net,
+	corbet@lwn.net,
+	dalias@libc.org,
+	fengwei.yin@intel.com,
+	glaubitz@physik.fu-berlin.de,
+	hughd@google.com,
+	jcmvbkbc@gmail.com,
+	linmiaohe@huawei.com,
+	linux-doc@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-sh@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	muchun.song@linux.dev,
+	naoya.horiguchi@nec.com,
+	peterx@redhat.com,
+	richardycc@google.com,
+	ryan.roberts@arm.com,
+	shy828301@gmail.com,
+	willy@infradead.org,
+	ysato@users.sourceforge.jp,
+	ziy@nvidia.com
+Subject: Re: [PATCH v1 04/18] mm: track mapcount of large folios in single value
+Date: Thu, 18 Apr 2024 22:50:03 +0800
+Message-Id: <20240418145003.8780-1-ioworker0@gmail.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20240409192301.907377-5-david@redhat.com>
+References: <20240409192301.907377-5-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411143905.GA19288@redhat.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 11, 2024 at 04:39:05PM +0200 Oleg Nesterov wrote:
-> Documentation/timers/no_hz.rst states that the "nohz_full=" mask must not
-> include the boot CPU, this is no longer true after the commit 08ae95f4fd3b
-> ("nohz_full: Allow the boot CPU to be nohz_full").
-> 
-> However after another commit aae17ebb53cd ("workqueue: Avoid using isolated
-> cpus' timers on queue_delayed_work") the kernel will crash at boot time in
-> this case; housekeeping_any_cpu() returns an invalid cpu nr until smp_init()
-> paths bring the 1st housekeeping CPU up.
-> 
-> Change housekeeping_any_cpu() to check the result of cpumask_any_and() and
-> return smp_processor_id() in this case. Yes, this is just the simple and
-> backportable workaround which fixes the symptom, but smp_processor_id() at
-> boot time should be safe at least for type == HK_TYPE_TIMER, this more or
-> less matches the tick_do_timer_boot_cpu logic.
-> 
-> We should not worry about cpu_down(); tick_nohz_cpu_down() will not allow
-> to offline tick_do_timer_cpu (the 1st online housekeeping CPU).
-> 
-> Fixes: aae17ebb53cd ("workqueue: Avoid using isolated cpus' timers on queue_delayed_work")
-> Reported-by: Chris von Recklinghausen <crecklin@redhat.com>
-> Closes: https://lore.kernel.org/all/20240402105847.GA24832@redhat.com/
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Hey David,
 
-Checking the returned value instead of assuming seems safer in any case.
+FWIW, just a nit below.
 
-Reviewed-by: Phil Auld <pauld@redhat.com>
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 2608c40dffad..08bb6834cf72 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1143,7 +1143,6 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
+ 		int *nr_pmdmapped)
+ {
+ 	atomic_t *mapped = &folio->_nr_pages_mapped;
+-	const int orig_nr_pages = nr_pages;
+ 	int first, nr = 0;
+ 
+ 	__folio_rmap_sanity_checks(folio, page, nr_pages, level);
+@@ -1155,6 +1154,7 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
+ 			break;
+ 		}
+ 
++		atomic_add(nr_pages, &folio->_large_mapcount);
+ 		do {
+ 			first = atomic_inc_and_test(&page->_mapcount);
+ 			if (first) {
+@@ -1163,7 +1163,6 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
+ 					nr++;
+ 			}
+ 		} while (page++, --nr_pages > 0);
+-		atomic_add(orig_nr_pages, &folio->_large_mapcount);
+ 		break;
+ 	case RMAP_LEVEL_PMD:
+ 		first = atomic_inc_and_test(&folio->_entire_mapcount);
 
-> ---
->  Documentation/timers/no_hz.rst |  7 ++-----
->  kernel/sched/isolation.c       | 11 ++++++++++-
->  2 files changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/timers/no_hz.rst b/Documentation/timers/no_hz.rst
-> index f8786be15183..7fe8ef9718d8 100644
-> --- a/Documentation/timers/no_hz.rst
-> +++ b/Documentation/timers/no_hz.rst
-> @@ -129,11 +129,8 @@ adaptive-tick CPUs:  At least one non-adaptive-tick CPU must remain
->  online to handle timekeeping tasks in order to ensure that system
->  calls like gettimeofday() returns accurate values on adaptive-tick CPUs.
->  (This is not an issue for CONFIG_NO_HZ_IDLE=y because there are no running
-> -user processes to observe slight drifts in clock rate.)  Therefore, the
-> -boot CPU is prohibited from entering adaptive-ticks mode.  Specifying a
-> -"nohz_full=" mask that includes the boot CPU will result in a boot-time
-> -error message, and the boot CPU will be removed from the mask.  Note that
-> -this means that your system must have at least two CPUs in order for
-> +user processes to observe slight drifts in clock rate.) Note that this
-> +means that your system must have at least two CPUs in order for
->  CONFIG_NO_HZ_FULL=y to do anything for you.
->  
->  Finally, adaptive-ticks CPUs must have their RCU callbacks offloaded.
-> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-> index 373d42c707bc..2a262d3ecb3d 100644
-> --- a/kernel/sched/isolation.c
-> +++ b/kernel/sched/isolation.c
-> @@ -46,7 +46,16 @@ int housekeeping_any_cpu(enum hk_type type)
->  			if (cpu < nr_cpu_ids)
->  				return cpu;
->  
-> -			return cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
-> +			cpu = cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
-> +			if (likely(cpu < nr_cpu_ids))
-> +				return cpu;
-> +			/*
-> +			 * Unless we have another problem this can only happen
-> +			 * at boot time before start_secondary() brings the 1st
-> +			 * housekeeping CPU up.
-> +			 */
-> +			WARN_ON_ONCE(system_state == SYSTEM_RUNNING ||
-> +				     type != HK_TYPE_TIMER);
->  		}
->  	}
->  	return smp_processor_id();
-> -- 
-> 2.25.1.362.g51ebf55
-> 
-> 
-> 
-
--- 
-
+Thanks,
+Lance
 
