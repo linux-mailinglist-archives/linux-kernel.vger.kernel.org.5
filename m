@@ -1,86 +1,84 @@
-Return-Path: <linux-kernel+bounces-150252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA8108A9C4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:10:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A24A8A9C53
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:11:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBD2D1C209AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:10:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA66D281A1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:11:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5446165FC6;
-	Thu, 18 Apr 2024 14:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C1F4165FD1;
+	Thu, 18 Apr 2024 14:11:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="N5VmfLW9"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VEopHl0I"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF90B1649B3
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:10:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B61D165FBC
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:11:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713449428; cv=none; b=KgfpFF2byztIhB1MP/DtAbPsKKKLBeD6Ey8l9/EVIt+CsM5a0Jspbpxkb3GPHuQ9Xv/FbngTLhuwnn7A3P8TtLQr8WwpHj0jFEzzCSr+i1Sxgd5dHdQqvpIETSYkjGGEyGnTe+EwjWIcTn1CkjJq3SnGWpHnFPscVV8x4rAyZ0Y=
+	t=1713449468; cv=none; b=T8LJc7QD46T0lVTFYqsE1zBiHi8sz1tnf8qkLduTzZkbtZ7Of7OiaQknDkbc5GM2MW6wIL0DaZEt1htjKc6RITrLvtM+a3jgZlJf2nyxtg0aamSvFNOI2Q68PtQEKVbQi86seNySsdJtoNzR+scdXYc8IXRUKAih74C/63+/u7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713449428; c=relaxed/simple;
-	bh=MhPo15x3SxKdRDAF5Hg2hBfSEBMnhXYH7rFIINvOKIU=;
+	s=arc-20240116; t=1713449468; c=relaxed/simple;
+	bh=jKALt9KU/3y3wSFJZ2ycSc2VQe6xOqIlYBfJCm88MNA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kx6wZqDqx98FfSqjLK9S/jAUylDq1Kij43wK5UMxZBTWvlPD1gUSZrmuhKxlC1DdwpfVDmcTBU7hegtRQ675GP99S51d2VaqAibxq1hrGGsdqv6a65VTPInXC+HeEVu3Fdf1AtPisI7LCAamvusfHvTkJxMb/bIIaQMx6/s5YGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=N5VmfLW9; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-516d3a470d5so1039149e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:10:22 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=XtVksdEXKPHtDfExUTFxSeoiorz2Rapy0v1c/Pp8z3rD7J5jzD4tak7u7nquuNU48Vl4uLtG7fOBa2B4O/AFY9/gMP/oPYUT85Sbo9BSrhmH7wQcJ0z654LCH7RR4h8llkgZu3whzPU9zEB/0jIpCXVC3sQFSx9pjvCDb8X9RuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VEopHl0I; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d8a2cbe1baso12417441fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:11:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1713449421; x=1714054221; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1713449464; x=1714054264; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=d2TO+6uZMB/zwvZb021ALlLKsmPjZN9AI+Kk+fYRpT4=;
-        b=N5VmfLW91I+5cJGONBnWDx7WNduwnkv2lFHlPJFFP7o1fUTDcRRZss0TfczUphAQpf
-         es8zUGUaOEihReWE1wy4eze9r0hfBBaI3IcmZr3Yf/WSyEKQ8JovksngUH2QoA2mam0p
-         Kk/EY35COfyGLyhLL43cS9qHeaVWkk9I0yr46vPZz2QErxjXY42Qwol2XUxUDeNiWldA
-         TtlBm0SUNG+3YZ7biEn5WP39SIcHhbnSoFnfdk84iCtaeclELMpr4Q7k1FU3oTwUhm/g
-         m5DL216wcBZALRCcFqxy0cUqR2SJpLn4E6mQvS8w3UPzifyq+bfkfFBlHSSeJCqtCzsa
-         vqVw==
+        bh=LNtnra4jIvx0MSD1gfimaj73u3w4g6I0rnPlaCiirlk=;
+        b=VEopHl0InSjaQIJ62V7YRn3gCHa8nC1i2S63q1C0HKCHpP6nHI17VII7ifpsDektq+
+         Skh6VHK7tdGUCdpFDdfUaoanOcB59HpCkjPEGM5utzg9idIapJOKkCljHxBsv5I+u+oA
+         rSmw9Nhx6t+9RZPDuFu+R1S3QOM0bL/nNmolGZMun4/ZgGKKYDdjbW4yzUKU4KLvwkdd
+         ow2nI6u5avM+jWduPRiGqtiK4haP4U8TPXuAI7oAvBB4v9++uC0FuPBt5dIb91cas+5A
+         XhgiSY4SUzdzbu+a1YPpzLKpXU053Cqg8oUGNwdaZCwk3ck7s3fwWA1W5RsM8U5GGoeB
+         sXNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713449421; x=1714054221;
+        d=1e100.net; s=20230601; t=1713449464; x=1714054264;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d2TO+6uZMB/zwvZb021ALlLKsmPjZN9AI+Kk+fYRpT4=;
-        b=PoyjbSjInXeIIS7P8K6ZDLBPZ7pyfMGk8d+b3aQTUL5Rz10r2bNVrlC6KhLW2/Q6Gv
-         qhBTOp/aqyW3WCxpO4Du1PxcEMJulICbIFN/dr6aF+z2s8ax4s9HBBiCuplXDTG0zSBr
-         HR8CcHRqMHfoCjwumd+bvylsyWOuamtdqB6mU5RRPFiztXjzWhvtX5nQ5HDC6/Y8+6+b
-         PKbX5rUjwcLhR/QkSibbphMydFt83Spaq+9t6Ol+Bzychvex34ARG2bBEsMZOR+X7FQh
-         /82qrgxqY0htC2CNYPmD3kXvwTVgI8+lS1gtznlKdolhIQoMb2tZtx8EMXw0FN00deyX
-         QHzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUvflZIdQdK57v3O+isiUnJcy9J/KlitoCPHsM2NngclFZXwfV/ftIcsrffe9c6QBKBV/hmz/+qD1hBh9IkHm8LVvMf6ed59tSFeYDV
-X-Gm-Message-State: AOJu0YxakhufRNCYRDKRRPNgfrrraLLRbDFDBID67izBw6nj1PuW0nXe
-	nbY9GQ+5CwfqQEPuxzwi/fvWtyMu90Ks4fQPFp6q6mslB2Akk6+4GQcbKXwui08=
-X-Google-Smtp-Source: AGHT+IE36Axh+eo8YV5jJfyakiHVt4NrWCVCrtov9Ii3lj1CXix1Y7yCbpKd8JrdXYX5BJ58eAHjBw==
-X-Received: by 2002:ac2:4c3a:0:b0:518:e249:c10d with SMTP id u26-20020ac24c3a000000b00518e249c10dmr1792461lfq.37.1713449420877;
-        Thu, 18 Apr 2024 07:10:20 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id oz34-20020a1709077da200b00a5271ae4458sm966288ejc.16.2024.04.18.07.10.20
+        bh=LNtnra4jIvx0MSD1gfimaj73u3w4g6I0rnPlaCiirlk=;
+        b=O29SxlGS83ElTqv3DdD/9wPV3b51zx9HqLhoaZFmklvgGdYAqxR5g7Qsgnv1hhtDsM
+         e/Dl0U2OgQTwyeJ1lTxoi5FWdE9FZgITB6EqMN3+UeMoJwwg/qNfMDqTTCw+YG1SHJ33
+         4r9EtR/0Z39Cmn10cOvX9V4dxafl6nxHIFObFadMfBU8aIZ8uOhvELfi4vlPOvHOFHul
+         FEFraM4m1bnwiKV9Pc1kFE3r6YCbfn177MrmuXCLP6I0Ifrms2GdJKaaowtyka9AGtEi
+         Ddk39t1gL1uAoM9hAqbHQp1z5NWV3dBEZAhp1en3LjlbMUFzaHoP6S/RKPQID2481H24
+         C13g==
+X-Forwarded-Encrypted: i=1; AJvYcCU2fo2/SHxGOaEJ4vx+49YdthxDIby2Jl/CgiFxpKh0xAjhTL3m/OntLgz8mwBqMGUoZxAj7p1NqBxc1f0a38r8V+ZEVnUQQXjHcgoS
+X-Gm-Message-State: AOJu0YypD9s4EznAfqfkjLiVJ0+KoEu3+Z7tQ0jIVhvp1RxnnQ8PiJp7
+	GLHXmpIKh9Bkex/6TShBktYZH+St2IsLqD0viRudu3mCk2mvp4Yq0VJCZLe2b1A=
+X-Google-Smtp-Source: AGHT+IFdCUq3VqS+paDye/Ke7ewPYXel2f5bzxTKTI331K5OcS+VUSO1hNgDYfa3ldwMDWUI512s/Q==
+X-Received: by 2002:a2e:9789:0:b0:2da:5f41:10c8 with SMTP id y9-20020a2e9789000000b002da5f4110c8mr2170989lji.3.1713449464276;
+        Thu, 18 Apr 2024 07:11:04 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
+        by smtp.gmail.com with ESMTPSA id z28-20020a2eb53c000000b002d6c88b9addsm213024ljm.50.2024.04.18.07.11.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 07:10:20 -0700 (PDT)
-Date: Thu, 18 Apr 2024 16:10:19 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Xu Lu <luxu.kernel@bytedance.com>
-Cc: Christoph =?utf-8?Q?M=C3=BCllner?= <christoph.muellner@vrull.eu>, 
-	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, andy.chiu@sifive.com, 
-	guoren@kernel.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	lihangjing@bytedance.com, dengliang.1214@bytedance.com, xieyongji@bytedance.com, 
-	chaiwen.cc@bytedance.com, Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [External] Re: [RFC 0/2] riscv: Idle thread using Zawrs extension
-Message-ID: <20240418-606209ea257878abceb8dc79@orel>
-References: <20240418114942.52770-1-luxu.kernel@bytedance.com>
- <CAEg0e7gDk6SFRh4oF0KsA7xZoMr7RuZXFWL8qD7rmM2cBDLwcg@mail.gmail.com>
- <CAPYmKFsQQPCd-34GArHfC-Sv8PCYHgmZxprK3WHKnJquQDoXiQ@mail.gmail.com>
- <CAEg0e7hpjAec=2k+PwJeb0WezmJCFdUD=HbCiGe7+RxKgPHgtg@mail.gmail.com>
- <CAPYmKFudqq6Yg=uaVjAubCMM5TBMj8dkC0mXz+6eq3vNizTt7A@mail.gmail.com>
+        Thu, 18 Apr 2024 07:11:03 -0700 (PDT)
+Date: Thu, 18 Apr 2024 17:11:02 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Hsin-Yi Wang <hsinyi@google.com>
+Cc: lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>, 
+	mripard@kernel.org, airlied@gmail.com, daniel@ffwll.ch, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, dianders@google.com, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] drm/panel: kd101ne3: add new panel driver
+Message-ID: <vbt2nxddw2dc7hkreq4iybv5zv5xyp32oajybeqsphgfrhzmn7@tskvckljmxpe>
+References: <20240418081548.12160-1-lvzhaoxiong@huaqin.corp-partner.google.com>
+ <20240418081548.12160-3-lvzhaoxiong@huaqin.corp-partner.google.com>
+ <zanx5y3obqmewnbooovf52hx6vh7tpi4zsbse2dyzcqzddmzhw@kewxoa6n3mja>
+ <CACb=7PURWtS8bwT5EcAFHhu7deHd2Y8cNOattfdwyEYpOUcbnQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,107 +88,194 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPYmKFudqq6Yg=uaVjAubCMM5TBMj8dkC0mXz+6eq3vNizTt7A@mail.gmail.com>
+In-Reply-To: <CACb=7PURWtS8bwT5EcAFHhu7deHd2Y8cNOattfdwyEYpOUcbnQ@mail.gmail.com>
 
-On Thu, Apr 18, 2024 at 09:09:06PM +0800, Xu Lu wrote:
-> On Thu, Apr 18, 2024 at 8:56 PM Christoph Müllner
-> <christoph.muellner@vrull.eu> wrote:
+On Thu, Apr 18, 2024 at 09:11:37PM +0800, Hsin-Yi Wang wrote:
+> On Thu, Apr 18, 2024 at 7:46 PM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
 > >
-> > On Thu, Apr 18, 2024 at 2:44 PM Xu Lu <luxu.kernel@bytedance.com> wrote:
+> > On Thu, Apr 18, 2024 at 04:15:48PM +0800, lvzhaoxiong wrote:
+> > > The kingdisplay panel is based on JD9365DA controller.
+> > > Add a driver for it.
 > > >
-> > > On Thu, Apr 18, 2024 at 8:26 PM Christoph Müllner
-> > > <christoph.muellner@vrull.eu> wrote:
-> > > >
-> > > > On Thu, Apr 18, 2024 at 1:50 PM Xu Lu <luxu.kernel@bytedance.com> wrote:
-> > > > >
-> > > > > This patch series introduces a new implementation of idle thread using
-> > > > > Zawrs extension.
-> > > >
-> > > > This overlaps with the following series:
-> > > >   https://lore.kernel.org/all/20240315134009.580167-7-ajones@ventanamicro.com/
+> > > Signed-off-by: lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>
+> > > ---
+> > >  drivers/gpu/drm/panel/Kconfig                 |   9 +
+> > >  drivers/gpu/drm/panel/Makefile                |   1 +
+> > >  .../drm/panel/panel-kingdisplay-kd101ne3.c    | 607 ++++++++++++++++++
+> > >  3 files changed, 617 insertions(+)
+> > >  create mode 100644 drivers/gpu/drm/panel/panel-kingdisplay-kd101ne3.c
 > > >
-> > > Hi Christoph.
-> > > Thanks for your reply!
-> > > Actually our patch series is different from this. The work from your
-> > > link focuses on providing support for Zawrs and implementing spinlock
-> > > using it, while our work focuses on implementing idle thread using
-> > > Zawrs and accelerating IPI to idle cpu. Of course, the ISA ZAWRS
-> > > config part can be merged. We will refine our code in the next version
-> > > to reduce code conflicts.
-> >
-> > Yes, I've seen that this targets another optimization, but the basic
-> > Zawrs support
-> > would be identical to the other patchset (even if it is not).
-> > I would propose that we work on a basic Zawrs support patchset that introduces
-> > the Kconfig, DTS and hwprobe parts (a subset of Andrew's patchset).
-> > Once this is merged, all other optimizations can be built upon it
-> > (spinlocks, idle thread, glibc CPU spinning).
-> > If this proposal is fine for the maintainers/reviewers, then Andrew could resend
-> > these basic-support patches.
-> >
-> > BR
-> > Christoph
-> 
-> Roger that! This does make more sense. We will rebase our code on
-> Andrew's basic support patches in the next version.
-
-And I'm just about to send that next version. I'll send tomorrow morning
-if not yet today.
-
-Thanks,
-drew
-
-
-
-> 
-> Regards,
-> Xu Lu
-> 
-> >
-> >
+> > > diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> > > index 154f5bf82980..2c73086cf102 100644
+> > > --- a/drivers/gpu/drm/panel/Kconfig
+> > > +++ b/drivers/gpu/drm/panel/Kconfig
+> > > @@ -297,6 +297,15 @@ config DRM_PANEL_KINGDISPLAY_KD097D04
+> > >         24 bit RGB per pixel. It provides a MIPI DSI interface to
+> > >         the host and has a built-in LED backlight.
 > > >
-> > > >
-> > > > BR
-> > > > Christoph
-> > > >
-> > > > >
-> > > > > The Zawrs[0] extension introduces two new instructions named WRS.STO and
-> > > > > WRS.NTO in RISC-V. When software registers a reservation set using LR
-> > > > > instruction, a subsequent WRS.STO or WRS.NTO instruction will cause the
-> > > > > hart to stall in a low-power state until a store happens to the
-> > > > > reservation set or an interrupt becomes pending. The difference between
-> > > > > these two instructions is that WRS.STO will terminate stall after an
-> > > > > implementation-defined timeout while WRS.NTO won't.
-> > > > >
-> > > > > This patch series implements idle thread using WRS.NTO instruction.
-> > > > > Besides, we found there is no need to send a real IPI to wake up an idle
-> > > > > CPU. Instead, we write IPI information to the reservation set of an idle
-> > > > > CPU to wake it up and let it handle IPI quickly, without going through
-> > > > > tranditional interrupt handling routine.
-> > > > >
-> > > > > [0] https://github.com/riscv/riscv-zawrs/blob/main/zawrs.adoc
-> > > > >
-> > > > > Xu Lu (2):
-> > > > >   riscv: process: Introduce idle thread using Zawrs extension
-> > > > >   riscv: Use Zawrs to accelerate IPI to idle cpu
-> > > > >
-> > > > >  arch/riscv/Kconfig                 |  24 +++++++
-> > > > >  arch/riscv/include/asm/cpuidle.h   |  11 +---
-> > > > >  arch/riscv/include/asm/hwcap.h     |   1 +
-> > > > >  arch/riscv/include/asm/processor.h |  31 +++++++++
-> > > > >  arch/riscv/include/asm/smp.h       |  14 ++++
-> > > > >  arch/riscv/kernel/cpu.c            |   5 ++
-> > > > >  arch/riscv/kernel/cpufeature.c     |   1 +
-> > > > >  arch/riscv/kernel/process.c        | 102 ++++++++++++++++++++++++++++-
-> > > > >  arch/riscv/kernel/smp.c            |  39 +++++++----
-> > > > >  9 files changed, 205 insertions(+), 23 deletions(-)
-> > > > >
-> > > > > --
-> > > > > 2.20.1
-> > > > >
-> > > > >
-> > > > > _______________________________________________
-> > > > > linux-riscv mailing list
-> > > > > linux-riscv@lists.infradead.org
-> > > > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> > > +config DRM_PANEL_KINGDISPLAY_KD101NE3
+> > > +     tristate "Kingdisplay kd101ne3 panel"
+> > > +     depends on OF
+> > > +     depends on DRM_MIPI_DSI
+> > > +     depends on BACKLIGHT_CLASS_DEVICE
+> > > +     help
+> > > +       Say Y if you want to enable support for panels based on the
+> > > +       Kingdisplay kd101ne3 controller.
+> > > +
+> > >  config DRM_PANEL_LEADTEK_LTK050H3146W
+> > >       tristate "Leadtek LTK050H3146W panel"
+> > >       depends on OF
+> > > diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+> > > index 24a02655d726..cbd414b98bb0 100644
+> > > --- a/drivers/gpu/drm/panel/Makefile
+> > > +++ b/drivers/gpu/drm/panel/Makefile
+> > > @@ -30,6 +30,7 @@ obj-$(CONFIG_DRM_PANEL_JDI_LPM102A188A) += panel-jdi-lpm102a188a.o
+> > >  obj-$(CONFIG_DRM_PANEL_JDI_R63452) += panel-jdi-fhd-r63452.o
+> > >  obj-$(CONFIG_DRM_PANEL_KHADAS_TS050) += panel-khadas-ts050.o
+> > >  obj-$(CONFIG_DRM_PANEL_KINGDISPLAY_KD097D04) += panel-kingdisplay-kd097d04.o
+> > > +obj-$(CONFIG_DRM_PANEL_KINGDISPLAY_KD101NE3) += panel-kingdisplay-kd101ne3.o
+> > >  obj-$(CONFIG_DRM_PANEL_LEADTEK_LTK050H3146W) += panel-leadtek-ltk050h3146w.o
+> > >  obj-$(CONFIG_DRM_PANEL_LEADTEK_LTK500HD1829) += panel-leadtek-ltk500hd1829.o
+> > >  obj-$(CONFIG_DRM_PANEL_LG_LB035Q02) += panel-lg-lb035q02.o
+> > > diff --git a/drivers/gpu/drm/panel/panel-kingdisplay-kd101ne3.c b/drivers/gpu/drm/panel/panel-kingdisplay-kd101ne3.c
+> > > new file mode 100644
+> > > index 000000000000..dbf0992f8b81
+> > > --- /dev/null
+> > > +++ b/drivers/gpu/drm/panel/panel-kingdisplay-kd101ne3.c
+> > > @@ -0,0 +1,607 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * Panels based on the JD9365DA display controller.
+> > > + * Author: Zhaoxiong Lv <lvzhaoxiong@huaqin.corp-partner.google.com>
+> > > + */
+> > > +
+> > > +#include <linux/delay.h>
+> > > +#include <linux/gpio/consumer.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/of.h>
+> > > +#include <linux/of_device.h>
+> > > +#include <linux/regulator/consumer.h>
+> > > +
+> > > +#include <drm/drm_connector.h>
+> > > +#include <drm/drm_crtc.h>
+> > > +#include <drm/drm_mipi_dsi.h>
+> > > +#include <drm/drm_panel.h>
+> > > +
+> > > +#include <video/mipi_display.h>
+> > > +
+> > > +struct panel_desc {
+> > > +     const struct drm_display_mode *modes;
+> > > +     unsigned int bpc;
+> > > +
+> > > +     /**
+> > > +      * @width_mm: width of the panel's active display area
+> > > +      * @height_mm: height of the panel's active display area
+> > > +      */
+> > > +     struct {
+> > > +             unsigned int width_mm;
+> > > +             unsigned int height_mm;
+> >
+> > Please move to the declared mode;
+> >
+> > > +     } size;
+> > > +
+> > > +     unsigned long mode_flags;
+> > > +     enum mipi_dsi_pixel_format format;
+> > > +     const struct panel_init_cmd *init_cmds;
+> > > +     unsigned int lanes;
+> > > +     bool discharge_on_disable;
+> > > +     bool lp11_before_reset;
+> > > +};
+> > > +
+> > > +struct kingdisplay_panel {
+> > > +     struct drm_panel base;
+> > > +     struct mipi_dsi_device *dsi;
+> > > +
+> > > +     const struct panel_desc *desc;
+> > > +
+> > > +     enum drm_panel_orientation orientation;
+> > > +     struct regulator *pp3300;
+> > > +     struct gpio_desc *enable_gpio;
+> > > +};
+> > > +
+> > > +enum dsi_cmd_type {
+> > > +     INIT_DCS_CMD,
+> > > +     DELAY_CMD,
+> > > +};
+> > > +
+> > > +struct panel_init_cmd {
+> > > +     enum dsi_cmd_type type;
+> > > +     size_t len;
+> > > +     const char *data;
+> > > +};
+> > > +
+> > > +#define _INIT_DCS_CMD(...) { \
+> > > +     .type = INIT_DCS_CMD, \
+> > > +     .len = sizeof((char[]){__VA_ARGS__}), \
+> > > +     .data = (char[]){__VA_ARGS__} }
+> > > +
+> > > +#define _INIT_DELAY_CMD(...) { \
+> > > +     .type = DELAY_CMD,\
+> > > +     .len = sizeof((char[]){__VA_ARGS__}), \
+> > > +     .data = (char[]){__VA_ARGS__} }
+> >
+> > This is the third panel driver using the same appoach. Can you use
+> > mipi_dsi_generic_write_seq() instead of the huge table? Or if you prefer
+> > the table, we should extract this framework to a common helper.
+> > (my preference is shifted towards mipi_dsi_generic_write_seq()).
+> >
+> The drawback of mipi_dsi_generic_write_seq() is that it can cause the
+> kernel size grows a lot since every sequence will be expanded.
+> 
+> Similar discussion in here:
+> https://lore.kernel.org/dri-devel/CAD=FV=Wju3WS45=EpXMUg7FjYDh3-=mvm_jS7TF1tsaAzbb4Uw@mail.gmail.com/
+> 
+> This patch would increase the module size from 157K to 572K.
+> scripts/bloat-o-meter shows chg +235.95%.
+> 
+> So maybe the common helper is better regarding the kernel module size?
+
+Yes, let's get a framework done in a useful way.
+I'd say, drop the _INIT_DELAY_CMD. msleep() and usleep_range() should be
+used instead (and it's up to the developer to select correct delay
+function).
+
+> 
+> > > +
+> > > +static const struct panel_init_cmd kingdisplay_kd101ne3_init_cmd[] = {
+> > > +     _INIT_DELAY_CMD(50),
+> > > +     _INIT_DCS_CMD(0xE0, 0x00),
+
+[skipped the body of the table]
+
+> > > +     _INIT_DCS_CMD(0x0E, 0x48),
+> > > +
+> > > +     _INIT_DCS_CMD(0xE0, 0x00),
+
+> > > +     _INIT_DCS_CMD(0X11),
+
+Also, at least this is mipi_dsi_dcs_exit_sleep_mode().
+
+> > > +     /* T6: 120ms */
+> > > +     _INIT_DELAY_CMD(120),
+> > > +     _INIT_DCS_CMD(0X29),
+
+And this is mipi_dsi_dcs_set_display_on().
+
+Having a single table enourages people to put known commands into the
+table, the practice that must be frowned upon and forbidden.
+
+We have functions for some of the standard DCS commands. So, maybe
+instead of adding a single-table based approach we can improve
+mipi_dsi_generic_write_seq() to reduce the bloat. E.g. by moving the
+error handling to a common part of enable() / prepare() function.
+
+> > > +     _INIT_DELAY_CMD(20),
+> > > +     {},
+> > > +};
+
+-- 
+With best wishes
+Dmitry
 
