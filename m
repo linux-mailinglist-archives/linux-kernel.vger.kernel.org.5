@@ -1,133 +1,135 @@
-Return-Path: <linux-kernel+bounces-149665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C60EC8A943F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:39:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F1C68A9444
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:41:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F24831C2191F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:39:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 988EE1F228B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:41:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 773016E5EC;
-	Thu, 18 Apr 2024 07:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A74A374435;
+	Thu, 18 Apr 2024 07:40:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WzOBxWl6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ifd/1TqP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5963495CB;
-	Thu, 18 Apr 2024 07:39:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C6F495CB;
+	Thu, 18 Apr 2024 07:40:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713425975; cv=none; b=kgCgyvenTC7wnMxuKG1yPzucmbpiJ6g0xQ/S3frGUIkMme8tCIVafh1pQtVq38AXHjKIkoNw9eRpFMZCjITgrzoOu8J/tYQLq5Sho3GKTG2L11Qzi8DBS4SHoZbryfaarGX0cj+swVfTXyjVRtEsa4XWvjSGdE6BWg3e3zOpl40=
+	t=1713426057; cv=none; b=jcFTQxKTJUUSZbfeeiBi075gB48acJ7+0TMQemjVa7TlGXU3SXsBNu+eqLeJDcX6fTeJMPPiEkRa3dTA7KNYBW+c1nVYbYaMamAytXPg6AjKTHQPYcqiTn9Q3yq4aA5P8PRfIlmd1tLUDNGbaU06t3vVXdl245sMh0mHpxEOU6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713425975; c=relaxed/simple;
-	bh=Z+sLE9qE5yLeqgmy68oKMe/JtUYYlAxlrjumbj0nrSo=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Io9GK9UqsOMUF+RNpYsNyEufGtDXstcOHzKzyspxAOfIPN3ktxzkRGP3/uGqmcXGQPW8bpShoZjuhs14HtmCbTdxeuXpmCJpRWcaM64ZUxBrLFHtNWiOFP+3bfPLr5e5oJtIgiGXO9iXxniCJ7ggr+HND0uMcDfZnOCXxM6UjQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WzOBxWl6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E00DC113CC;
-	Thu, 18 Apr 2024 07:39:35 +0000 (UTC)
+	s=arc-20240116; t=1713426057; c=relaxed/simple;
+	bh=/9Nl/8RuILo1MY3dqqjIERbCWo3nCrR9a0GLPOG4+IM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DZp68M7DUcS3n4D6Yh2RwzSjok0VXz53tJHErtJo/PtoVTFOdo5tMcWVGfdjwyZake3wpqcYyejAsQ37Ek47/eSLBs6fhVUu62lvepWrBMMjBZ2ZFW1CJUDe26wjkXc/5bAbPMRVCoMQToBlsNFFQwptNOTH+ysFGXNQZCUOyQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ifd/1TqP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E81BC113CE;
+	Thu, 18 Apr 2024 07:40:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713425975;
-	bh=Z+sLE9qE5yLeqgmy68oKMe/JtUYYlAxlrjumbj0nrSo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=WzOBxWl6mPuDAJOSKv9gcHYVNsYYmhP3YY/MPeMbnylJljEzJipqQIEUx/6W4dU3O
-	 TSLH8oBTTxTgf1x5Fb8TN1LK7wZAbRNNHVNZbJATyDFeImhPD1ewDa+He11W30kayO
-	 okkmV9/8VcWuvYpHxd5YiM5nDuITnxvytTM1WQWJXgD55/+KTeUE6QLrreEd4XH1pW
-	 nXCQ2eAdMktJA1Z0/PNOlb72voRriKmSb8PiL5eQj9kFmXTpBmLNUfGTE/3lh5WILt
-	 T+Trrn0Ihf+4BnIcu//dHa+gZDtVOlLTBeUcx52oL/FcJs+/wm8pTRDZLrEjcQk4m1
-	 eZMPW4XPv1Sgw==
-Received: from ip-185-104-136-29.ptr.icomera.net ([185.104.136.29] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rxMMm-005eQO-Fc;
-	Thu, 18 Apr 2024 08:39:32 +0100
-Date: Thu, 18 Apr 2024 08:39:29 +0100
-Message-ID: <871q73rufi.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org,
-	catalin.marinas@arm.com,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Will Deacon <will@kernel.org>,
-	kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Fuad Tabba <tabba@google.com>
-Subject: Re: [PATCH 1/2] KVM: arm64: Replace custom macros with fields from ID_AA64PFR0_EL1
-In-Reply-To: <20240418053804.2573071-2-anshuman.khandual@arm.com>
-References: <20240418053804.2573071-1-anshuman.khandual@arm.com>
-	<20240418053804.2573071-2-anshuman.khandual@arm.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=k20201202; t=1713426056;
+	bh=/9Nl/8RuILo1MY3dqqjIERbCWo3nCrR9a0GLPOG4+IM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ifd/1TqPGQVCAMTVWhocs3n6jbCgfh1wYezSH4McXtIpi7cVmp89tdI0HcsxcPj85
+	 uia4lin9OSY0ZrCs+wkITwN+vjY3cYqtQ9DxCK9d0R+FxVQeq48bu6LySR8/5xJoNY
+	 XqE0TOdVahgXFtRFxV7K2c8yC3dLI/NS0Cmff4exfUAtMcVxiD6+H8vtZoNTUkGbBC
+	 AIQxle/9r5kTT79aWSx2Mx81bYyF2uxUcsvH4rVlO3F2mN/0Os7+yiNkBC3xFK8Kqu
+	 UNtMYtea0BTQ7zbbJmm2jX4h4Jp2ZJaiJdFrGYnOOj8jBSVxPhUBZXPQtSF1isCAvb
+	 BReQW/lwo72Tg==
+Date: Thu, 18 Apr 2024 09:40:50 +0200
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [PATCH] PCI: endpoint: pci-epf-test: Make use of cached
+ 'epc_features' in pci_epf_test_core_init()
+Message-ID: <ZiDOgr46TpJmC96e@x1-carbon>
+References: <20240417-pci-epf-test-fix-v1-1-653c911d1faa@linaro.org>
+ <ZiALuYlshLmwLhvu@ryzen>
+ <20240418054319.GB2861@thinkpad>
+ <ZiDB18w4bnUCSH7D@ryzen>
+ <20240418065308.GG2861@thinkpad>
+ <ZiDITzuUXsTZ7U4T@ryzen>
+ <20240418073023.GA4331@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.104.136.29
-X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, oliver.upton@linux.dev, will@kernel.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, tabba@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418073023.GA4331@thinkpad>
 
-+ Fuad
-
-On Thu, 18 Apr 2024 06:38:03 +0100,
-Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+On Thu, Apr 18, 2024 at 01:00:23PM +0530, Manivannan Sadhasivam wrote:
+> On Thu, Apr 18, 2024 at 09:14:23AM +0200, Niklas Cassel wrote:
+> > On Thu, Apr 18, 2024 at 12:23:08PM +0530, Manivannan Sadhasivam wrote:
+> > > On Thu, Apr 18, 2024 at 08:46:47AM +0200, Niklas Cassel wrote:
+> > > > On Thu, Apr 18, 2024 at 11:13:19AM +0530, Manivannan Sadhasivam wrote:
+> > > > > On Wed, Apr 17, 2024 at 07:49:45PM +0200, Niklas Cassel wrote:
+> > > > > > On Wed, Apr 17, 2024 at 10:47:25PM +0530, Manivannan Sadhasivam wrote:
+> > > > > > > Instead of getting the epc_features from pci_epc_get_features() API, use
+> > > > > > > the cached pci_epf_test::epc_features value to avoid the NULL check. Since
+> > > > > > > the NULL check is already performed in pci_epf_test_bind(), having one more
+> > > > > > > check in pci_epf_test_core_init() is redundant and it is not possible to
+> > > > > > > hit the NULL pointer dereference. This also leads to the following smatch
+> > > > > > > warning:
+> > > > > > > 
+> > > > > > > drivers/pci/endpoint/functions/pci-epf-test.c:784 pci_epf_test_core_init()
+> > > > > > > error: we previously assumed 'epc_features' could be null (see line 747)
+> > > > > > > 
+> > > > > > > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > > > > > > Closes: https://lore.kernel.org/linux-pci/024b5826-7180-4076-ae08-57d2584cca3f@moroto.mountain/
+> > > > > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > > > 
+> > > > > > I think you forgot:
+> > > > > > Fixes: a01e7214bef9 ("PCI: endpoint: Remove "core_init_notifier" flag")
+> > > > > > 
+> > > > > 
+> > > > > No, that's not the correct fixes tag I suppose. This redudant check is
+> > > > > introduced by commit, 5e50ee27d4a5 ("PCI: pci-epf-test: Add support to defer
+> > > > > core initialization") and this commit removes the redundant check (fixing smatch
+> > > > > warning is a side effect). So if the fixes tag needs to be added, then this
+> > > > > commit should be referenced.
+> > > > 
+> > > > Well, you have a Closes: tag that links to a bug report about a smatch
+> > > > warning that was introduced with 5e50ee27d4a5 ("PCI: pci-epf-test: Add
+> > > > support to defer core initialization").
+> > > > 
+> > > > So if you want to reference another commit, then you should probably
+> > > > drop the Closes: tag.
+> > > > 
+> > > 
+> > > Then checkpatch will complain... But I think I can keep the two tags? One is for
+> > > fixing the redudant check and another is for the smatch warning reported.
+> > 
+> > Yes, I think so too.
+> > 
+> > You can have Fixes: to the commit that introduced the redundant check,
 > 
-> This replaces custom macros usage (i.e ID_AA64PFR0_EL1_ELx_64BIT_ONLY and
-> ID_AA64PFR0_EL1_ELx_32BIT_64BIT) and instead directly uses register fields
-> from ID_AA64PFR0_EL1 sysreg definition.
+> That is 5e50ee27d4a5.
+
+Yes :)
+
+
 > 
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Oliver Upton <oliver.upton@linux.dev>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: kvmarm@lists.linux.dev
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/arm64/kvm/hyp/include/nvhe/fixed_config.h | 8 ++++----
->  arch/arm64/kvm/hyp/nvhe/pkvm.c                 | 4 ++--
->  arch/arm64/kvm/hyp/nvhe/sys_regs.c             | 2 +-
->  3 files changed, 7 insertions(+), 7 deletions(-)
+> > since this was obviously not the correct thing to do, and then perhaps
+> > just mention commit 5e50ee27d4a5 ("PCI: pci-epf-test: Add support to
+> > defer core initialization") somewhere in the commit log.
 > 
-> diff --git a/arch/arm64/kvm/hyp/include/nvhe/fixed_config.h b/arch/arm64/kvm/hyp/include/nvhe/fixed_config.h
-> index 51f043649146..0034bfffced6 100644
-> --- a/arch/arm64/kvm/hyp/include/nvhe/fixed_config.h
-> +++ b/arch/arm64/kvm/hyp/include/nvhe/fixed_config.h
-> @@ -52,10 +52,10 @@
->   *	Supported by KVM
->   */
->  #define PVM_ID_AA64PFR0_RESTRICT_UNSIGNED (\
-> -	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL0), ID_AA64PFR0_EL1_ELx_64BIT_ONLY) | \
-> -	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL1), ID_AA64PFR0_EL1_ELx_64BIT_ONLY) | \
-> -	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL2), ID_AA64PFR0_EL1_ELx_64BIT_ONLY) | \
-> -	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL3), ID_AA64PFR0_EL1_ELx_64BIT_ONLY) | \
-> +	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL0), ID_AA64PFR0_EL1_EL0_IMP) | \
-> +	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL1), ID_AA64PFR0_EL1_EL1_IMP) | \
-> +	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL2), ID_AA64PFR0_EL1_EL2_IMP) | \
-> +	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL3), ID_AA64PFR0_EL1_EL3_IMP) | \
+> You mean a01e7214bef9 here?
 
-If you are going to rework this, can we instead use something less
-verbose such as SYS_FIELD_GET()?
+Yes :)
+(I copied the wrong SHA1 here...)
 
-There is also a series from Fuad moving things around, and maybe
-that's the opportunity to rework this while limiting the amount of
-cosmetic churn. Not to that this fixed config stuff needs to be
-reworked in order to match the runtime feature enforcement that the
-rest of KVM has adopted.
 
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Kind regards,
+Niklas
 
