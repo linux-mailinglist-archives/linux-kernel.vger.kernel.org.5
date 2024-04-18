@@ -1,183 +1,132 @@
-Return-Path: <linux-kernel+bounces-150647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 275308AA23E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:45:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 194618AA23D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:45:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 933F61F214BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:45:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 703E9B2135C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:45:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D31317AD8C;
-	Thu, 18 Apr 2024 18:45:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F272017AD73;
+	Thu, 18 Apr 2024 18:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G9VQxbZr"
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QTTj0Mz5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2979A168B17
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 18:45:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B463174EF9;
+	Thu, 18 Apr 2024 18:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713465935; cv=none; b=M6UNO+rk2IsqlWIXLflHLUIxq3FrBxJgKdPs08FRB6XQHZjJ4tX8PRtu/iAUjSLSnG9BKcT8fnuidQ3WOTTYT3adTW6FVflXRBdYtXASaJ3kVqcZHrJKh1VoYQzdp4R9oRyLlas9VDz7L4sUmNnXexMn9AmRMmJ06ofmkgQRETA=
+	t=1713465934; cv=none; b=mXiNYAv834zuiALudCeJiBehQy5An8wowmMlGpmSYMST8OJ4QEcFSq0isFm3LB8GhLq8pGCX/gNJj3kRk8qbZzBw7Ntsj1VuxJVnazuLHBpvNNPAJakJlJk39iV8kxmo7BgjBUS1BhC4VxT25lPxNcAmoDFj6TDiZO/Hx2aIFEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713465935; c=relaxed/simple;
-	bh=6DlaHCpndY6XaJvSwdksWPmtb4u1FJgT/3nZxgAFFN8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NSWzg2r96og03pQKRik/l5gIHxEx6jeH6TfH5Yxf8vhzqJ7fGJkz472Lqf8JmjaxNHzCnotGWRkSYlWcC/B27Z5OFRX7v7Dhh2WxcdYGjt8VvsRdBvC5LkvDLEeFFRsQVOx8VhW4Qp+cEQ1DLtlFxM83j+8zrzJLK3nm9/8CQi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G9VQxbZr; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-61af74a010aso13001717b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:45:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713465933; x=1714070733; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pWlPuQVrcxAJuHxDJ7v28B9q4SkzWJBaWW1iwjmpTDA=;
-        b=G9VQxbZrh4pYu9TE7ZhdslwN2KlhBufi4rAd36k4nDSzbzHHmdIWc5Pl2iJNjYpHxL
-         Bcq8FM0+7nfJ1HDSt1dA/bEzbBbJaqRLC21AJOAEOggm4+maw5kf/VNBUDvqiXSfWkAU
-         dIPchU7+1g5RHFBDveIhO934TOGgQIpIqMA1DgfCsaZ4jfq8Z8GYG0qwXfZSMS6Bj2Jp
-         8edzX2uNpX74KfV0R7esKFlYTg9OATnG3ivgPnHLKVJt8Lyr/b/iUoMmUxN2ZUwtR6Hm
-         M7PbFK9dNFtfojGkw5cbsozQD/tGgLyXIn+lMuSUVszOt2jwcdYA0Lm6R2IGVidnj8jG
-         dUbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713465933; x=1714070733;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pWlPuQVrcxAJuHxDJ7v28B9q4SkzWJBaWW1iwjmpTDA=;
-        b=LVh2uKEyHEn8RXqia0RvU4UCtIrJQDpZi9Auy9tU5NvyJOlnaQDw87jTslob/Jt3tD
-         BhN1G0VM97GvLu2Z3DhKm72KGV5FhMiRJLhwrBz0AfP7mne+NcxKT9xghhISLbrYViLk
-         oVE/zX/CzD8PsSJlZRwVo09wToQITnHNDhhJ0KzzLsJOmdbq1vvdjR6qep2Xf5nf9MQB
-         35zDue6A7rO4wpiB8M+p1EbcWg5X3dXq6dgJHB88v4xj9F1DaH9n4RREvBras9a+aX0V
-         TVfjlSaJAhid7nzI5uTB2Xp4o8l6lCzoi/Iel3fIohd5sP1oOMtVwHKdNL6IGDCivNt7
-         8Q9A==
-X-Forwarded-Encrypted: i=1; AJvYcCWU8wVuuNz7UKdA4NdY8M09TTtXRhCLefcNnycJEs3xNg9ko+vP+1JlS/dK4vL6nmLS6cW7i2R4f+lT1pRUWG/Tnp4GcyBWKaFKBvbz
-X-Gm-Message-State: AOJu0Yxv5lr/rSJGa0h7XLhwG94svipfTov1hDBVsor2ED0EKLiKfyM1
-	2WN9F4ENtE82kNTC8W5VSMBYsFrkSLUPggBsQfxzeV7G0o9CD5MmHutiIw==
-X-Google-Smtp-Source: AGHT+IFO+kNrI9k7Cra9Jq3XFbz0xX1GmY19DZ7QvNt2iATqWVXjtsHLq4Kk20/pt+zm+ooQHqCUbg==
-X-Received: by 2002:a05:690c:88f:b0:61b:123e:7210 with SMTP id cd15-20020a05690c088f00b0061b123e7210mr3736512ywb.40.1713465933077;
-        Thu, 18 Apr 2024 11:45:33 -0700 (PDT)
-Received: from fedora ([2600:1700:2f7d:1800::49])
-        by smtp.gmail.com with ESMTPSA id w66-20020a817b45000000b0061521b0bb33sm443127ywc.63.2024.04.18.11.45.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 11:45:32 -0700 (PDT)
-Date: Thu, 18 Apr 2024 11:45:30 -0700
-From: Vishal Moola <vishal.moola@gmail.com>
-To: syzbot <syzbot+ad1b592fc4483655438b@syzkaller.appspotmail.com>
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, muchun.song@linux.dev,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [mm?] KASAN: slab-use-after-free Read in
- __vma_reservation_common
-Message-ID: <ZiFqSrSRLhIV91og@fedora>
-References: <000000000000daf1e10615e64dcb@google.com>
+	s=arc-20240116; t=1713465934; c=relaxed/simple;
+	bh=lKM6jp4loR9UtX0QaVbNiZZcTUL3CirpRy3Imh5A0mk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=lmdbgZvGN+uJoJm3rsyJPOh+ZAOJWvTdHxp3mQN6bIdWpNOeK6DP7YUMApr87/CZLwXIow2HvRKfEIQwnpaojiUiZ1AfR0cOJSufR3RhQIrZSGS7S5s6W1WheOBVWntBAlT7c6dLpQwYZfCMWB+87Ik3ZuHlAKH8jJafpq5hY1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QTTj0Mz5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8141DC113CC;
+	Thu, 18 Apr 2024 18:45:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713465933;
+	bh=lKM6jp4loR9UtX0QaVbNiZZcTUL3CirpRy3Imh5A0mk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=QTTj0Mz5XF92ESwg63sIEASiwqS2+47Ysq+/8nAqQdLB+L0KxMCi60r9Jo8I95gES
+	 b0EwoBKcfHO/F0zrXMqsXSpnA+pSbezCyNneX+Ys0IFLDcZ985ZhkaMECookvDHA2F
+	 I7vfwa2HZCb9idOIDQ3pHE4VAELdDmfOqQWQNlJ8+DwbJ4GDDvac3ei/ltznZb2ov4
+	 5uzX8izHuIgYDpSBMpeGrsVBqCXvxUL0mJRX++mrbR+C+04sMwHMI6wu1Srk2G4W2X
+	 XgrrWHcOJ42xgc2fCNckIhxyV0p9nnP9Rp3CsPuyN+Hj1ZiK6nC8JeOgjmhx/NWXjD
+	 yZYgWxlEN7EZg==
+Date: Thu, 18 Apr 2024 13:45:31 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	Herve Codina <herve.codina@bootlin.com>
+Subject: Re: local bus enumeration beyond a PCI device
+Message-ID: <20240418184531.GA245970@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="p+haZl/smbkDZq3d"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <000000000000daf1e10615e64dcb@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bad63409-ed2b-4cef-988b-3c143636e9fa@alliedtelesis.co.nz>
 
+[+cc Herve]
 
---p+haZl/smbkDZq3d
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Apr 12, 2024 at 06:32:33AM -0700, syzbot wrote:
-> Hello,
+On Thu, Apr 18, 2024 at 12:24:06AM +0000, Chris Packham wrote:
+> Hi,
 > 
-> syzbot found the following issue on:
+> We've got a custom x86_64 based design that is using an ASIX9100 to 
+> provide a PCI to local bus bridge. Attached to that local bus is an FPGA 
+> which mostly provides some GPIOs accessed via registers on the local 
+> bus. Right now we've got a custom driver that bundles everything 
+> together so effectively we've got a PCI device that provides GPIOs.
+
+What's the local bus?  The ASIX9100 (for which Google doesn't find any
+details) would have a PCI interface on the primary (upstream) side.
+What's the local bus on the secondary (downstream) side?  Below you
+mention "PCI bridge", which normally means both the primary and
+secondary sides are PCI buses.
+
+If the local bus is not PCI, I guess the ASIX9100 would look to the OS
+like an endpoint, i.e., PCI_HEADER_TYPE_NORMAL, and the ASIX9100
+driver would handle any "bridge" functionality completely internally?
+
+Maybe Herve's work at
+https://lore.kernel.org/r/20240325153919.199337-1-herve.codina@bootlin.com
+would be relevant?
+
+> But as things can change based on the FPGA program I'd like some 
+> flexibility to treat it separately from the PCI bridge. So really I'd 
+> like to have a PCI device driver for the ASIX9100 that provides a local 
+> bus controller and a (platform?) driver for the FPGA that provides the 
+> GPIOs where I can have different compatibles for the different 
+> implementations.
 > 
-> HEAD commit:    11cb68ad52ac Add linux-next specific files for 20240408
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13a6f483180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=727d5608101b5d77
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ad1b592fc4483655438b
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> Then in the ACPI overlay I'd have something like
 > 
-> Unfortunately, I don't have any reproducer for this issue yet.
+>      Scope (\_SB.PCI0.D0B0)
+>      {
+>          Device (ASIX)
+>          {
+>              Name (_ADR, 0x0000)
 > 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/4e90f2d3b1ef/disk-11cb68ad.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/d886b454e2cc/vmlinux-11cb68ad.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/ed94857c6f92/bzImage-11cb68ad.xz
+>              Device (FPGA)
+>              {
+>                          Name (_HID, "PRP0001")
+>                          Name (_DSD, Package ()
+>                          {
+> ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+>                                      Package ()
+>                                      {
+>                                                  Package () { 
+> "compatible", "my-platform-driver-for-fpga" },
+>                                      }
+>                          })
+>              }
+>          }
+>      }
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+ad1b592fc4483655438b@syzkaller.appspotmail.com
-
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git linus
-
---p+haZl/smbkDZq3d
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-hugetlb-Check-for-anon_vma-prior-to-folio-allocation.patch"
-
-From 8973cb789bbf64c35ca898541acf3aa6ee8ea2a4 Mon Sep 17 00:00:00 2001
-From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Date: Mon, 15 Apr 2024 14:17:47 -0700
-Subject: [PATCH] hugetlb: Check for anon_vma prior to folio allocation
-
-Commit 9acad7ba3e25 ("hugetlb: use vmf_anon_prepare() instead of
-anon_vma_prepare()") may bailout after allocating a folio if we do not
-hold the mmap lock. When this occurs, vmf_anon_prepare() will release the
-vma lock. Hugetlb then attempts to call restore_reserve_on_error(),
-which depends on the vma lock being held.
-
-We can move vmf_anon_prepare() prior to the folio allocation in order to
-avoid calling restore_reserve_on_error() without the vma lock.
-
-Fixes: 9acad7ba3e25 ("hugetlb: use vmf_anon_prepare() instead of anon_vma_prepare()")
-CC: stable@vger.kernel.org
-Reported-by: syzbot+ad1b592fc4483655438b@syzkaller.appspotmail.com
-Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
----
- mm/hugetlb.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 23ef240ba48a..948d197cd88f 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -6274,6 +6274,12 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
- 							VM_UFFD_MISSING);
- 		}
- 
-+		if (!(vma->vm_flags & VM_MAYSHARE)) {
-+			ret = vmf_anon_prepare(vmf);
-+			if (unlikely(ret))
-+				goto out;
-+		}
-+
- 		folio = alloc_hugetlb_folio(vma, haddr, 0);
- 		if (IS_ERR(folio)) {
- 			/*
-@@ -6310,15 +6316,12 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
- 				 */
- 				restore_reserve_on_error(h, vma, haddr, folio);
- 				folio_put(folio);
-+				ret = VM_FAULT_SIGBUS;
- 				goto out;
- 			}
- 			new_pagecache_folio = true;
- 		} else {
- 			folio_lock(folio);
--
--			ret = vmf_anon_prepare(vmf);
--			if (unlikely(ret))
--				goto backout_unlocked;
- 			anon_rmap = 1;
- 		}
- 	} else {
--- 
-2.43.0
-
-
---p+haZl/smbkDZq3d--
+>     Scope(\_SB)
+>     {
+>          Device(OTHR)
+>          {
+>              GpioIo (Exclusive, PullUp, 0, 0, IoRestrictionInputOnly, 
+> "\\_SB.PCI0.D0B0.ASIX.FPGA",) { 0 }
+>          }
+>     }
+> 
+> Is it even possible to register a host controller for another platform bus?
+> 
+> Thanks,
+> Chris
 
