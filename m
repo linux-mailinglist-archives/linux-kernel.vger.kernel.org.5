@@ -1,122 +1,103 @@
-Return-Path: <linux-kernel+bounces-150470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DDFB8A9FDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:16:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 116648A9FE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:19:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B80D51C219A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:16:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD8CD28488A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:19:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C1AE16FF43;
-	Thu, 18 Apr 2024 16:15:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3030F171093;
+	Thu, 18 Apr 2024 16:18:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="I+DPm/06"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5900016FF48;
-	Thu, 18 Apr 2024 16:15:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="CY24/O8X"
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D095156F54;
+	Thu, 18 Apr 2024 16:18:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713456952; cv=none; b=mMJnwIOd50dKoJm7xlhEwPABUvF84S3nFQb2GvY6t2RrADnjt163Rst/lhsnR7JVM1qGMNvSSogzbOL7O40td7jSKE4S0/qpiGbp3CyBr8yMiyn2fDCoUuE1iHgwabRZXu62S17DvofKSeCUlgoedaKHs8c5sZizSB6RgKWmb/M=
+	t=1713457132; cv=none; b=myExeNYPNOQMn0kKa/ev7ukuWhhfMQmY7lmTzbg9hirREH2h+ENmF/m4zfxpZNiWlQFSZLAb70JujDNLbPpxQe5qEFrcl3Ji3ppKSw6Xb+yIl5OZbpF9zZxxIe/j/baKtgY0bCQjOxwJUOGzblwiKkKt24ek8o1TpVQGtktyqXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713456952; c=relaxed/simple;
-	bh=dzWJk/AKNpODHXz+qqTZXgmHW+ImAxMS1UX+Qpbdyzs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JBlABd60j9gaIPIa2NmTXRWXFqwn58PpXYL7bqAiAnOuawY8JRILpPSF+zHHYB9YYZ2HXFoA+Om3R/RmkDYh6r9x2H5UPvexNEEELP/8V4OPdpipKKYTp+akvjoWOAneeptzjbSEKlsnUSLtVSrLeo1v7mFaUzl4NWlanBp65U4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=I+DPm/06; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.72.0.75] (unknown [20.236.11.102])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 68A3720FD8C4;
-	Thu, 18 Apr 2024 09:15:50 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 68A3720FD8C4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1713456950;
-	bh=MWOwTVDiu4K6YbjXv7uAPQpvbdgODgAb4GN8I5OuR7k=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=I+DPm/062TYCzU2rLwp0nsTAu4f1ZG79Rs0Uj/5pNupY+3mNAjWZRjiFTSAENC9Iq
-	 VXPb6a2PeNZh8WAQpPYFlepFy8DlJ8URIU2irBFW5umkNrYJvwXbvqoK1PnVnj+rtk
-	 ugrDiMk2lGJyxvNgL+8z/W/SlyQRHWJ5gqyvIx7E=
-Message-ID: <19df975d-167f-424a-92ce-5135cbeb8a07@linux.microsoft.com>
-Date: Thu, 18 Apr 2024 09:15:51 -0700
+	s=arc-20240116; t=1713457132; c=relaxed/simple;
+	bh=poIxThn5SO+bZMSKWV/zQXecY4gPv1jAHmJyjQa0Jis=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Bl27/ARZ5uk3av4uikvnVMnvgnyea41zd1V1zIvFvGefpqV3N5Dd0k4Mm/FbW2x4f7D8aNqQDB5ZCNkjUx6VmvYBH5LWnZEXUPCgm0KF+o1uBSC/xu1NPXJh+vl4h/awi2ryh5LkDYvJtByd1m7+JUnlJNqYmJW3ikdU4Zyzr7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=CY24/O8X; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id 4C768600A9;
+	Thu, 18 Apr 2024 16:18:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1713457121;
+	bh=poIxThn5SO+bZMSKWV/zQXecY4gPv1jAHmJyjQa0Jis=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CY24/O8XUMd0XS1um4Tx5ptgj+TSOqvKJUsGp+n5L4BpsqeGkTlk06oKFS8pXEGKW
+	 AuxCfrodZBwrB4Jau8doBtq/qD1RXexbhCMl6u191osXhT5dvm/n6RRf8WZSsjdW1P
+	 N0ZaVU0hH9hNUvncwJoKmX39ziwt3bGWRDmGA2YOJjjvPqPM42nthJXP8uWSc4XSc3
+	 NHHh1n0psPeXwwKYUtQ9q5AEbEzV6RzApJI9z2t4aQNMpKYE/VlpHxqOZT9KjqK0vU
+	 SuFiQnrdcFKUkXNMcFAVDODVb6c8r/hoB4r8fQbdActJVEa5/sGBfJzkFdZX/PUww5
+	 HgOzIPva7kbMA==
+Received: by x201s (Postfix, from userid 1000)
+	id 58CEE2061E5; Thu, 18 Apr 2024 16:17:53 +0000 (UTC)
+From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
+To: netdev@vger.kernel.org
+Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
+	linux-kernel@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Raju Rangoju <rajur@chelsio.com>
+Subject: [PATCH net-next] cxgb4: flower: validate control flags
+Date: Thu, 18 Apr 2024 16:17:49 +0000
+Message-ID: <20240418161751.189226-1-ast@fiberby.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Add a header in ifcfg and nm keyfiles describing the
- owner of the files
-To: Ani Sinha <anisinha@redhat.com>, "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>
-Cc: shradhagupta@linux.microsoft.com, linux-hyperv@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240418120549.59018-1-anisinha@redhat.com>
-Content-Language: en-CA
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-In-Reply-To: <20240418120549.59018-1-anisinha@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 4/18/2024 5:05 AM, Ani Sinha wrote:
-> A comment describing the source of writing the contents of the ifcfg and
-> network manager keyfiles (hyperv kvp daemon) is useful. It is valuable both
-> for debugging as well as for preventing users from modifying them.
-> 
-> CC: shradhagupta@linux.microsoft.com
-> CC: eahariha@linux.microsoft.com
-> CC: wei.liu@kernel.org
-> Signed-off-by: Ani Sinha <anisinha@redhat.com>
-> ---
->  tools/hv/hv_kvp_daemon.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> changelog:
-> v2: simplify and fix issues with error handling.
-> 
-> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-> index ae57bf69ad4a..014e45be6981 100644
-> --- a/tools/hv/hv_kvp_daemon.c
-> +++ b/tools/hv/hv_kvp_daemon.c
-> @@ -94,6 +94,8 @@ static char *lic_version = "Unknown version";
->  static char full_domain_name[HV_KVP_EXCHANGE_MAX_VALUE_SIZE];
->  static struct utsname uts_buf;
->  
-> +#define CFG_HEADER "# Generated by hyperv key-value pair daemon. Please do not modify.\n"
-> +
->  /*
->   * The location of the interface configuration file.
->   */
-> @@ -1435,6 +1437,18 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
->  		return HV_E_FAIL;
->  	}
->  
-> +	/* Write the config file headers */
-> +	error = fprintf(ifcfg_file, CFG_HEADER);
-> +	if (error < 0) {
-> +		error = HV_E_FAIL;
-> +		goto setval_error;
-> +	}
-> +	error = fprintf(nmfile, CFG_HEADER);
-> +	if (error < 0) {
-> +		error = HV_E_FAIL;
-> +		goto setval_error;
-> +	}
-> +
->  	/*
->  	 * First write out the MAC address.
->  	 */
+This driver currently doesn't support any control flags.
 
+Use flow_rule_match_has_control_flags() to check for control flags,
+such as can be set through `tc flower ... ip_flags frag`.
 
-Looks good to me, I'll defer to other folks on the recipient list on whether "hyperv" should be capitalized
-as HyperV or other such feedback.
+In case any control flags are masked, flow_rule_match_has_control_flags()
+sets a NL extended error message, and we return -EOPNOTSUPP.
 
-Reviewed-by: Easwar Hariharan <eahariha@linux.microsoft.com>
+Only compile-tested.
 
-Thanks,
-Easwar
+Only compile tested, no hardware available.
+
+Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+---
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_flower.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_flower.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_flower.c
+index 3a6987cafe59..69d045d769c4 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_flower.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_flower.c
+@@ -327,6 +327,9 @@ static int cxgb4_validate_flow_match(struct netlink_ext_ack *extack,
+ 		return -EOPNOTSUPP;
+ 	}
+ 
++	if (flow_rule_match_has_control_flags(rule, extack))
++		return -EOPNOTSUPP;
++
+ 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_BASIC)) {
+ 		struct flow_match_basic match;
+ 
+-- 
+2.43.0
+
 
