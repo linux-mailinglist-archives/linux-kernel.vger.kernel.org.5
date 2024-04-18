@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-150277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 542248A9CB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:20:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D29998A9CBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:21:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04A3B2840AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:20:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36E85B26265
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:20:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F10B16F0C7;
-	Thu, 18 Apr 2024 14:17:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E80E16D31A;
+	Thu, 18 Apr 2024 14:17:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="kkZbCyjJ"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="MeIJd2aB"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BAB716E898
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:17:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD3816DECF
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:17:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713449848; cv=none; b=Wq7gFXNb/CVrl9ltw+C9UUAa28UWcGCD04XfN66sLm72q9O+PcLifnTu4SLdEWIYE0mgsYBPls61/yCxPDAzywfjpxITf91aLX3oTBqHeo6k/8f6HoUKqRJNmekqiBrVO7xiGVBUNbcTGN1SMVyqxLsgTrdArkCsB52as3Kt51o=
+	t=1713449850; cv=none; b=dinuUwZpa5SEqoVKhihP42XLTtC351XlIvhSGB5f4lfzBx3fPOV+OwgfYcAgd+QziX6Zcb8uCGMl6dyyR5tL/yIVgu8NsNeJUkC7uDmPF1FTTgp7VhYa+YS9qG4yGuu0PsLAAT4DtG2f1rsEvfVqEmjfgqzSuGBz8tsPcCStVjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713449848; c=relaxed/simple;
-	bh=muTuIXTt3JZ+adeVzSiBV0lvPUUpPPEXnWM8MyjFIfI=;
+	s=arc-20240116; t=1713449850; c=relaxed/simple;
+	bh=FZE4p38am23Wbba4sdDEsuVyWoBZbiLCeYBCcNU5TdA=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=g4QPTWOSrl7m7WhKclX3O855/MFNYHRHNZ7lmDkr/L30ThjZPooEzIj1lpxmMk3e6Ywp4NTNj/GjSEDlNpm8hil85Fb0PKG1tuqEw/2wdGVsp0PpJZ7zt/Kr3s3zJcB1NEwO3rttW2h7sfk13kEwoNPYf7ASenR7Bj47TjjaD60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=kkZbCyjJ; arc=none smtp.client-ip=209.85.128.43
+	 In-Reply-To:To:Cc; b=FQv9OhRGaLuDJwuO78kI17tVQbFh3EJxbiUYRty+VbUZq+z2GnR2ZNxf4b/SIlyPiN/mfHvBYsfxQcPGIgGDr28BM5faPKp7V41JNHgYkeDk9Op/lm9uTTBoH6EvnQRH8OPzFW/A1eqpWfwTHCpzTtjflZXqV3iX3IpnB/WbGCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=MeIJd2aB; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4155819f710so7799185e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:17:25 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-418d1edcd4cso6836205e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:17:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713449844; x=1714054644; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713449846; x=1714054646; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GDKYuiqKi2lKHFjV6hEj5ZeFkUw2j/++ERAAAvYfJ+0=;
-        b=kkZbCyjJqzy7bZLKyiI3PX1y4WGDSaWZSAppwKpfyNjA5qIYSTk42FzlgL29ptBgZv
-         ng1bLky9zTjKA5gpTinEEnqWaPXh8XgglA2rDp85K6UuyAZulkDOgNzLbAvRyoCQdKQD
-         0JS/jBkn1HItEjbN4zTpsi3wfYgyl/MoCzpxSp+KQl9NcSGApd5PKgpcRvStLqf5x4w7
-         ceKqoY7KvO6TwKstxT7moSF903IaBkFTJBQS1eLgEVrNVtJ9t8AdG6rm6KzWku7xII8n
-         0D+sjjC1hfdN9+nGHZVIJmuqlioSzmFe0c2i3o8YLKTSFcANYX6xZKuy/PpjlVyCtIeP
-         HFOA==
+        bh=Xyh9I+7RDjmoXx6ibmqfU5YmUk8cuDqOZ30bQAqDPzU=;
+        b=MeIJd2aBc20FVm2eISaOtMi70Rk+/y8Dql/zdScD+174QD+bH99ADCEwz6fxWpGoED
+         jCZYYYcLrWKD61D8m+Q76ux0PjlAx8gyW8ldIqDJbgeR5fdnXVAaOBmnMuww2u5ehFfz
+         dyLqShGEZFBfZA8/c2joGqlmHl6TgzgBAAFeb42m3rvsMpJr1RzHB/BD0StTbo80I6T7
+         CXpC2stemWz9nnKzv1V+r39c9fDOQRlnLfzhw0UstjVfOJiaiPpgxwwNALbo2hwvMk03
+         XtdeV82zBh2umOOu8WZUuRXISXZ1G9k/1jKvGF/rCs/qz6i+GYXMdx1/1bAlRiMlrpMb
+         BVlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713449844; x=1714054644;
+        d=1e100.net; s=20230601; t=1713449846; x=1714054646;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GDKYuiqKi2lKHFjV6hEj5ZeFkUw2j/++ERAAAvYfJ+0=;
-        b=EDw/FmNFOz4yItxwMdVNmHqovut/hJM38DpRPGZuqQYch9CjkqotrO+NCd2OTtsOLp
-         C0yg3R7wbml2z2Orh1jLtYJU4BkHCBAZxyvfwRcrdRJW+kpjXxqYmGZ/soCau2ov1Tnd
-         m4P7L9QzRmP8+h5f95PdAikzQBaOWKZndAtOwQvpf1G6jegmdVx+I34bSXgdmV3kB0V0
-         VdbOCzwVlM8mW8z/I49G7uGiKZft5HgSbCtZuz1bO0azifUj018fuEOq2yuCf5qRr9sZ
-         Qpjo2iqNxQwPoOJh+qTUrrt9ECQWd0oj0RCFdcN0iOncNHE2c7+KQooTy+l23vsX4rgd
-         ljdw==
-X-Forwarded-Encrypted: i=1; AJvYcCUPLslfNstRPA4LvZYUbqAWGqVGqtJdRe7jBfxD6R0PiAcfk4IqQNgz8GqQejRbef7KQkByJFgEFJjpVJ5a8Gs3rareIEkF4RACxYWj
-X-Gm-Message-State: AOJu0YxnPX1hNxd+7B8rRfxwthX7w+zXZ1oi8DSWb6bwsByH7GbX1EP4
-	YI0kbLR6OLXW2iHqz2s9qFdG1o50UJuBqWJVDMnxW09fMDo6D+jb0Pp+Rr9J4JA=
-X-Google-Smtp-Source: AGHT+IFZpHUd3KKJqTG8Fspa5WV+CGK6XUr6/zHywZgyWssPB2EZ3Ze0JTvaDZBJmIElV5Y3Uwlkxw==
-X-Received: by 2002:a05:600c:3555:b0:418:f400:4af1 with SMTP id i21-20020a05600c355500b00418f4004af1mr763350wmq.38.1713449844499;
-        Thu, 18 Apr 2024 07:17:24 -0700 (PDT)
+        bh=Xyh9I+7RDjmoXx6ibmqfU5YmUk8cuDqOZ30bQAqDPzU=;
+        b=rTiT/R+ZU1HzxD+KarrmqPxx8Wa4MKQ7KvFvDr8rtWuL5Jjjoc/z8+EMfeFtmKHsre
+         TCjDJbAMUxQ5rOcXvkS/wM8oMWXdF7TYTMSGgpBfqfn4yYAiSZEBUNcpT4GYfR8FOY8P
+         a/5lsgMqbcpGgGk7bpCat4Cf6qHKZ3Mypril7X0qvDsyTUoeJ1eXAbQBVEcgHibgR2Qq
+         DqIVuR3639tn+Yqc9BavB1JWNNel8ApcKznXEotxLIOY1brqwZ/G7W7RnFQMXvzv8AAE
+         8dOIeybCNqiTOUejdKvLzw2WBkSzWegMzBnZADXdXtPYrM8FbsN93tex8No17xKy8SGz
+         RpsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWHe76X6lhKyFZP8Tug70SZhjJBDZUBBp1T7EHeBL3R0sVk2uEnOOvdcNJmltcpFBLfEBVNynyydKiAJ7zZ3icz8OtnfCms/p/O9U/N
+X-Gm-Message-State: AOJu0Yx7joOnXYh5rZGSRb3Ws8/5aFr2LR6ttIC+eb3WJYntMdeSsuM4
+	CYjDKgtBJJmXcf22rf824f69lQyqWsDvrZBWzH3N2l5n3dx4/JyMpEjjl/00P8Q=
+X-Google-Smtp-Source: AGHT+IEToY2RaHfp8/SGhr+SzxRU5xE6X46yItp1fzn/NmRrntSYP3f0mFM/gMKeI8XS0GnztZrbrg==
+X-Received: by 2002:a05:600c:3d92:b0:418:bdee:d58 with SMTP id bi18-20020a05600c3d9200b00418bdee0d58mr2125448wmb.12.1713449846274;
+        Thu, 18 Apr 2024 07:17:26 -0700 (PDT)
 Received: from [127.0.1.1] ([93.5.22.158])
-        by smtp.googlemail.com with ESMTPSA id i9-20020a05600c354900b004180c6a26b4sm6267510wmq.1.2024.04.18.07.17.23
+        by smtp.googlemail.com with ESMTPSA id i9-20020a05600c354900b004180c6a26b4sm6267510wmq.1.2024.04.18.07.17.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 07:17:24 -0700 (PDT)
+        Thu, 18 Apr 2024 07:17:25 -0700 (PDT)
 From: Alexandre Mergnat <amergnat@baylibre.com>
-Date: Thu, 18 Apr 2024 16:16:57 +0200
-Subject: [PATCH v3 09/17] dt-bindings: display: mediatek: ovl: add
+Date: Thu, 18 Apr 2024 16:16:58 +0200
+Subject: [PATCH v3 10/17] dt-bindings: display: mediatek: rdma: add
  compatible for MT8365 SoC
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231023-display-support-v3-9-53388f3ed34b@baylibre.com>
+Message-Id: <20231023-display-support-v3-10-53388f3ed34b@baylibre.com>
 References: <20231023-display-support-v3-0-53388f3ed34b@baylibre.com>
 In-Reply-To: <20231023-display-support-v3-0-53388f3ed34b@baylibre.com>
 To: Chun-Kuang Hu <chunkuang.hu@kernel.org>, 
@@ -102,42 +102,42 @@ Cc: dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org, 
  linux-clk@vger.kernel.org, Alexandre Mergnat <amergnat@baylibre.com>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=968; i=amergnat@baylibre.com;
- h=from:subject:message-id; bh=muTuIXTt3JZ+adeVzSiBV0lvPUUpPPEXnWM8MyjFIfI=;
- b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBmIStje16i3Wmletd3SAhUG1Wug6cEanDayKjSNnvt
- 7/PVI9SJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZiErYwAKCRArRkmdfjHURfoOD/
- 9gj3zgWQpv4BHx8KjNy8JDlZ0g1G2rz8wn3r/LiH75+rS9z1En5UetLdAjaERRHZRZFnApgNefHFvm
- MDqQyGfUNJk8+/K61L1TliZKKv4e7NyIbin/nzyCU2ZvScW9eQxofpZTZO0SUHHLr6cJB9HmxfXjvq
- 7EZukXjZ9rKSr7fyJEqe3yx+illLUJF/RSIQoYIU5LhqZYFAPY4JfzmCJIgePfDpRJseUCthCgPsvX
- 7mFUINNRHx/ngBxT+lcn1n6DlCXSPEeDu+9iRU1p6tvedD1g4zkXuUIIX93hAyG3bNF+OkBZRXdcLa
- W8FtyrgbSrU3nJ8MwP9OvtHimV9XIJxNY98EmkrY/TvIBasg8Hn/8qDhYKBkjvlZl8PtcgbIIhSoL1
- oby07eKpk1xgzf8eYmyXTdOEZumXcxUvmo8Jnq0Zl44wARwmuXFwGwq0sB3BRaCFkAckSiMAlG2lfL
- cjqdMhKJyn8pTYNVlo+Cvls51wlCIvir1CdnwzQxlv+19DIxt49XPXFUqzto64HtBCleLlVYJElILG
- pXA/MBvVLLFjgWV2X1yGSMU5yKcfqCOxKSgyn5RsRHQkTYFAZTuvQ4AEocDh7tppX/ZrjKKjWCqaeA
- IIzKhwiqMfM6d9/X+qZpbWPzvVA5mUeGTrZihTQmAFz1xemNVViMYtiXHzlA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1014; i=amergnat@baylibre.com;
+ h=from:subject:message-id; bh=FZE4p38am23Wbba4sdDEsuVyWoBZbiLCeYBCcNU5TdA=;
+ b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBmIStjb/g6WWWPTVLJUfpwBGujfY5yXZ146n2j/DZr
+ MvPY23uJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZiErYwAKCRArRkmdfjHUReRND/
+ 9YQd5KWvjqnnV42cCyJN+vg12K+UwcFK9Rqo+3q0ESv9jvSgt8Dsv4UtzVW1uX+WisefO/wnHatJF7
+ zmq/rIHOBgG0QUE3W48x/w7n7grwQbevcTrp3Ob+WdR6huTGfLIZNJtaYPzRfQrwJ29iPZS4+vFjyS
+ EehxV87xYf4zKrcZzqIv/MiJL4YE4DgHyb50p9iRHfHqk3ckmNP5DYih9BCPMg0M9F0aEFmnHvIHV/
+ J0VHAwMNctlR15SuKaxx603N5YhNwSGake9NtRGU9yR+EhVwZd3ekYKWH3hpQKcNoWCOw3zDz9xLd3
+ uxggMjXj3E98lG6sfnVMGyQBqd+FWL6oGD1+Q5A47BQmaDQ+UCmZzKhTr8PPAyIUoyizJgXlreYXfU
+ BAzAHe8Oiri/BtY4WAiGk6E++oY5VRR9Q1itentGNWiFJcrRqwjE52EVRbQ50WglmkFQ6If24plmxX
+ 5ndkqBsorM0ZOh6Qwado9dAe8FPWQtCux2D23eajIOzbqWp9EqP1k9/JNVUKkwOAtNX9jf8HMyBWBj
+ VqAhCrYJfqblrISh0Q+iWgRKeKXGTFpBpneWVrfGqwMO4k1M0vWqi+Zu7aRoiAr60qf5cLKBPDH09+
+ SBTNBjmjJBIRW8CV4F9gOKqoPW0hgoaz8D/jPji/HoRoudHa1889JQqqCOmw==
 X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
  fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
 
-Document the display Overlay on MT8365, which is compatible
-with that of the MT8192.
+Document the display Data Path Read DMA on MT8365, which is compatible
+with that of the MT8183.
 
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Acked-by: Rob Herring (Arm) <robh@kernel.org>
 Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
 ---
- Documentation/devicetree/bindings/display/mediatek/mediatek,ovl.yaml | 1 +
+ Documentation/devicetree/bindings/display/mediatek/mediatek,rdma.yaml | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,ovl.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,ovl.yaml
-index c471a181d125..d55611c7ce5e 100644
---- a/Documentation/devicetree/bindings/display/mediatek/mediatek,ovl.yaml
-+++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,ovl.yaml
-@@ -44,6 +44,7 @@ properties:
-       - items:
+diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,rdma.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,rdma.yaml
+index 39dbb5c8bcf8..4cadb245d028 100644
+--- a/Documentation/devicetree/bindings/display/mediatek/mediatek,rdma.yaml
++++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,rdma.yaml
+@@ -45,6 +45,7 @@ properties:
            - enum:
-               - mediatek,mt8186-disp-ovl
-+              - mediatek,mt8365-disp-ovl
-           - const: mediatek,mt8192-disp-ovl
+               - mediatek,mt8186-disp-rdma
+               - mediatek,mt8192-disp-rdma
++              - mediatek,mt8365-disp-rdma
+           - const: mediatek,mt8183-disp-rdma
  
    reg:
 
