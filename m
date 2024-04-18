@@ -1,36 +1,37 @@
-Return-Path: <linux-kernel+bounces-149919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 548698A97DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D42EF8A97E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:53:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B0381F212C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:53:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62FF11F2130F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F008015E5B8;
-	Thu, 18 Apr 2024 10:52:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33EBF15E807;
+	Thu, 18 Apr 2024 10:52:38 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E560115D5B7;
-	Thu, 18 Apr 2024 10:52:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70ACE15D5D6;
+	Thu, 18 Apr 2024 10:52:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713437555; cv=none; b=IQOY6hmRrEDk+AyT83aGaj+0yyqZhu6gjaFHHjNdeI6Th7BbeQNvpWrnkLXsbkYGTz1Yn66uY16fXK6IZu1kollu8axN4KYIrEG9z22KKNDTzGfa32oectn3RVfKP419lAnXRbYae/ic8Xhaw2wW+n8v7fKYKsXy1d+InUc4XsE=
+	t=1713437557; cv=none; b=HJZ1krS9TJ/OCqxjkt+9G2Ru+DT9xt4ZhwYd9rHa2b1igMNrTW+S+UwPeq4kbvPlA9FTca2t+NQ872Ljwib643018P+Zgxk7VNyouAgaFKhRHWBrwIS9nwHrcfH3bnflYtHmgtFuACbrGX/93vR31ehywyBAnolBcrLAN3DorcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713437555; c=relaxed/simple;
-	bh=kiPB+yMnAQ/errWXuztA428++u6EIv6kkQXBQ9DMCM4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=McT9VXFu4q+A6WKbTPCvzpo4KGOzshTeXZJycR18FSASOJwqpBqv1HN2hxoAel8eWAx6Bg4IsomzSVo3ywdUllh9sFz+bKRY79ki0xhyCwz1roJG0RE/Gk2yOhMXYfd6JIRVc9z7a/mb8L5GjD+9P0psDzjotRu4j6LHEm4x6fE=
+	s=arc-20240116; t=1713437557; c=relaxed/simple;
+	bh=O07uvBijdeWxh0c1JHJjki7H3hp3hIjqRRuaW+tdBFg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=csGABys7KY3b3qJ3XcIh5c+3a43kCLAWq5DXRakYAp42KCnLGNmxKu+K+rameU/eSARrGq6haKkuJXbfo9/x+h90Wv+55GwOpzyvRqwMu9oFK1i5oSbYv0oA9RA3/hxyVbUZnOVUEEK+OKIbm1RH4pNR83BqnEN65c4eQBE+zZY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D49A9DA7;
-	Thu, 18 Apr 2024 03:53:00 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B34AF339;
+	Thu, 18 Apr 2024 03:53:02 -0700 (PDT)
 Received: from e120937-lin.. (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0CE33F792;
-	Thu, 18 Apr 2024 03:52:31 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6478D3F792;
+	Thu, 18 Apr 2024 03:52:33 -0700 (PDT)
 From: Cristian Marussi <cristian.marussi@arm.com>
 To: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
@@ -40,11 +41,14 @@ Cc: sudeep.holla@arm.com,
 	jassisinghbrar@gmail.com,
 	robh+dt@kernel.org,
 	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Subject: [PATCH v5 0/2] Add initial ARM MHUv3 mailbox support
-Date: Thu, 18 Apr 2024 11:52:08 +0100
-Message-Id: <20240418105210.290938-1-cristian.marussi@arm.com>
+	conor+dt@kernel.org,
+	Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 1/2] dt-bindings: mailbox: arm,mhuv3: Add bindings
+Date: Thu, 18 Apr 2024 11:52:09 +0100
+Message-Id: <20240418105210.290938-2-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240418105210.290938-1-cristian.marussi@arm.com>
+References: <20240418105210.290938-1-cristian.marussi@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,100 +57,277 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+Add bindings for the ARM MHUv3 Mailbox controller.
 
-This series adds support for the new ARM Message Handling Unit v3 mailbox
-controller [1].
-
-The ARM MHUv3 can optionally support various extensions, enabling the
-usage of different transport protocols.
-
-Patch [2/2] adds a platform driver which, as of now, provides support only
-for the Doorbell extension using the combined interrupt.
-
-On the other side, bindings in [1/2] are introduced for all the extensions
-described by the specification, as long as they are of interest to an
-entity running from Normal world, like Linux: as such, Doorbell, FIFO and
-FastChannel extensions are documented.
-
-In these regards, note that the ARM MHUv3 controller can optionally
-implement a considerable number of interrupts to express a great deal of
-events and many of such interrupts are defined as being per-channel: with
-the total maximum amount of possibly implemented channels across all
-extensions being 1216 (1024+128+64), it would mean *a lot* of
-interrupt-names to enumerate in the bindings.
-
-For the sake of simplicity the binding as of now only introduces interrupt
-names for a mere 8-channels in the range (0,7) for each per-channel
-interrupt type: the idea is to leave open the possibility to add more to
-this list of numbered items only when (and if) new real HW appears that
-effectively needs more than 8 channels. (like AMBA, where the maximum
-number of IRQ was progressively increased when needed, AFAIU).
-
-Based on v6.9-rc1, tested on ARM TCS23 [2]
-(TCS23 reference SW stack is still to be made fully publicly available)
-
-Thanks,
-Cristian
-
-[1]: https://developer.arm.com/documentation/aes0072/aa/?lang=en
-[2]: https://community.arm.com/arm-community-blogs/b/tools-software-ides-blog/posts/total-compute-solutions-platform-software-stack-and-fvp
-
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
-v4 -> v5
-- changed Kconfig to depend on just OF && HAS_IOMEM
-- fixed LLVM warnings on FIELD_PREP and missing slab.h as reported-by <lkp@intel.com>
 v3 -> v4
- - avoid magic numbers for regs padding holes
- - renaming various enums terminators to count_ instead of max_
- - using scoped_guards for spinlock_save
- - dropping FIRST_EXT naming for 0-indexed enum
- - reduce indentation by using early returns or continue on failure-paths
- - use dev_err_probe where appropriate
- - be less noisy with dev_dbg
- - refactored mhuv3_mbx_comb_interrupt using __free cleanups for .read_data
- - refactored doorbell lookups with scoped_guards
- - fail on IRQ request failures: do not carry-on best effort
- - drop usage of platform_set_drvdata and .remove in favour of
-   devm_add_action_or_reset
- - review failures handling on extensions initialization
- - removed name clashes
- - more comments on regs decorations
- - decreasing line-lengths definitions
- - use __ffs instead of __builtin_ctz
- - dropped used of bitfields in favour of bitmasks
- - reading implementer/revision/variant/product_id
- - fixed a few misspellings
- - DT: using ARM GIC defines in example
- - DT: defined MHUv3 Extensions types in new file dt-bindings/arm/mhuv3-dt.h
+- using ARM GIC defines in example
+- defined MHUv3 Extensions types in dt-bindings/arm/mhuv3-dt.h
 v2 -> v3
- - fixed spurious tabs/spaces in DT binding
+- fixed spurious tabs in dt_binding_check
 v1 -> v2
- - clarified DT bindings extension descriptions around configurability
-   and discoverability
- - removed unused labels from the DT example
- - using pattern properties to define DT interrupt-names
- - bumped DT interrupt maxItems to 74 (allowing uo to 8 channels per extension)
- - fixed checkpatch warnings about side-effects on write/read bitfield macros
- - fixed sparse errors as reported
-   | Reported-by: kernel test robot <lkp@intel.com>
-   | Closes: https://lore.kernel.org/oe-kbuild-all/202403290015.tCLXudqC-lkp@intel.com/
-
-Cristian Marussi (2):
-  dt-bindings: mailbox: arm,mhuv3: Add bindings
-  mailbox: arm_mhuv3: Add driver
-
- .../bindings/mailbox/arm,mhuv3.yaml           |  224 ++++
- MAINTAINERS                                   |    9 +
- drivers/mailbox/Kconfig                       |   12 +
- drivers/mailbox/Makefile                      |    2 +
- drivers/mailbox/arm_mhuv3.c                   | 1103 +++++++++++++++++
- include/dt-bindings/arm/mhuv3-dt.h            |   13 +
- 6 files changed, 1363 insertions(+)
+- clarified extension descriptions around configurability and discoverability
+- removed unused labels from the example
+- using pattern properties to define interrupt-names
+- bumped interrupt maxItems to 74 (allowing uo to 8 channels per extension)
+---
+ .../bindings/mailbox/arm,mhuv3.yaml           | 224 ++++++++++++++++++
+ include/dt-bindings/arm/mhuv3-dt.h            |  13 +
+ 2 files changed, 237 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/mailbox/arm,mhuv3.yaml
- create mode 100644 drivers/mailbox/arm_mhuv3.c
  create mode 100644 include/dt-bindings/arm/mhuv3-dt.h
 
+diff --git a/Documentation/devicetree/bindings/mailbox/arm,mhuv3.yaml b/Documentation/devicetree/bindings/mailbox/arm,mhuv3.yaml
+new file mode 100644
+index 000000000000..449b55afeb7d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mailbox/arm,mhuv3.yaml
+@@ -0,0 +1,224 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mailbox/arm,mhuv3.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ARM MHUv3 Mailbox Controller
++
++maintainers:
++  - Sudeep Holla <sudeep.holla@arm.com>
++  - Cristian Marussi <cristian.marussi@arm.com>
++
++description: |
++  The Arm Message Handling Unit (MHU) Version 3 is a mailbox controller that
++  enables unidirectional communications with remote processors through various
++  possible transport protocols.
++  The controller can optionally support a varying number of extensions that, in
++  turn, enable different kinds of transport to be used for communication.
++  Number, type and characteristics of each supported extension can be discovered
++  dynamically at runtime.
++
++  Given the unidirectional nature of the controller, an MHUv3 mailbox controller
++  is composed of a MHU Sender (MHUS) containing a PostBox (PBX) block and a MHU
++  Receiver (MHUR) containing a MailBox (MBX) block, where
++
++   PBX is used to
++      - Configure the MHU
++      - Send Transfers to the Receiver
++      - Optionally receive acknowledgment of a Transfer from the Receiver
++
++   MBX is used to
++      - Configure the MHU
++      - Receive Transfers from the Sender
++      - Optionally acknowledge Transfers sent by the Sender
++
++  Both PBX and MBX need to be present and defined in the DT description if you
++  need to establish a bidirectional communication, since you will have to
++  acquire two distinct unidirectional channels, one for each block.
++
++  As a consequence both blocks needs to be represented separately and specified
++  as distinct DT nodes in order to properly describe their resources.
++
++  Note that, though, thanks to the runtime discoverability, there is no need to
++  identify the type of blocks with distinct compatibles.
++
++  Following are the MHUv3 possible extensions.
++
++  - Doorbell Extension (DBE): DBE defines a type of channel called a Doorbell
++    Channel (DBCH). DBCH enables a single bit Transfer to be sent from the
++    Sender to Receiver. The Transfer indicates that an event has occurred.
++    When DBE is implemented, the number of DBCHs that an implementation of the
++    MHU can support is between 1 and 128, numbered starting from 0 in ascending
++    order and discoverable at run-time.
++    Each DBCH contains 32 individual fields, referred to as flags, each of which
++    can be used independently. It is possible for the Sender to send multiple
++    Transfers at once using a single DBCH, so long as each Transfer uses
++    a different flag in the DBCH.
++    Optionally, data may be transmitted through an out-of-band shared memory
++    region, wherein the MHU Doorbell is used strictly as an interrupt generation
++    mechanism, but this is out of the scope of these bindings.
++
++  - FastChannel Extension (FCE): FCE defines a type of channel called a Fast
++    Channel (FCH). FCH is intended for lower overhead communication between
++    Sender and Receiver at the expense of determinism. An FCH allows the Sender
++    to update the channel value at any time, regardless of whether the previous
++    value has been seen by the Receiver. When the Receiver reads the channel's
++    content it gets the last value written to the channel.
++    FCH is considered lossy in nature, and means that the Sender has no way of
++    knowing if, or when, the Receiver will act on the Transfer.
++    FCHs are expected to behave as RAM which generates interrupts when writes
++    occur to the locations within the RAM.
++    When FCE is implemented, the number of FCHs that an implementation of the
++    MHU can support is between 1-1024, if the FastChannel word-size is 32-bits,
++    or between 1-512, when the FastChannel word-size is 64-bits.
++    FCHs are numbered from 0 in ascending order.
++    Note that the number of FCHs and the word-size are implementation defined,
++    not configurable but discoverable at run-time.
++    Optionally, data may be transmitted through an out-of-band shared memory
++    region, wherein the MHU FastChannel is used as an interrupt generation
++    mechanism which carries also a pointer to such out-of-band data, but this
++    is out of the scope of these bindings.
++
++  - FIFO Extension (FE): FE defines a Channel type called a FIFO Channel (FFCH).
++    FFCH allows a Sender to send
++       - Multiple Transfers to the Receiver without having to wait for the
++         previous Transfer to be acknowledged by the Receiver, as long as the
++         FIFO has room for the Transfer.
++       - Transfers which require the Receiver to provide acknowledgment.
++       - Transfers which have in-band payload.
++    In all cases, the data is guaranteed to be observed by the Receiver in the
++    same order which the Sender sent it.
++    When FE is implemented, the number of FFCHs that an implementation of the
++    MHU can support is between 1 and 64, numbered starting from 0 in ascending
++    order. The number of FFCHs, their depth (same for all implemented FFCHs) and
++    the access-granularity are implementation defined, not configurable but
++    discoverable at run-time.
++    Optionally, additional data may be transmitted through an out-of-band shared
++    memory region, wherein the MHU FIFO is used to transmit, in order, a small
++    part of the payload (like a header) and a reference to the shared memory
++    area holding the remaining, bigger, chunk of the payload, but this is out of
++    the scope of these bindings.
++
++properties:
++  compatible:
++    const: arm,mhuv3
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    minItems: 1
++    maxItems: 74
++
++  interrupt-names:
++    description: |
++      The MHUv3 controller generates a number of events some of which are used
++      to generate interrupts; as a consequence it can expose a varying number of
++      optional PBX/MBX interrupts, representing the events generated during the
++      operation of the various transport protocols associated with different
++      extensions. All interrupts of the MHU are level-sensitive.
++      Some of these optional interrupts are defined per-channel, where the
++      number of channels effectively available is implementation defined and
++      run-time discoverable.
++      In the following names are enumerated using patterns, with per-channel
++      interrupts implicitly capped at the maximum channels allowed by the
++      specification for each extension type.
++      For the sake of simplicity maxItems is anyway capped to a most plausible
++      number, assuming way less channels would be implemented than actually
++      possible.
++
++      The only mandatory interrupts on the MHU are:
++        - combined
++        - mbx-fch-xfer-<N> but only if mbx-fcgrp-xfer-<N> is not implemented.
++
++    minItems: 1
++    maxItems: 74
++    items:
++      oneOf:
++        - const: combined
++          description: PBX/MBX Combined interrupt
++        - const: combined-ffch
++          description: PBX/MBX FIFO Combined interrupt
++        - pattern: '^ffch-low-tide-[0-9]+$'
++          description: PBX/MBX FIFO Channel <N> Low Tide interrupt
++        - pattern: '^ffch-high-tide-[0-9]+$'
++          description: PBX/MBX FIFO Channel <N> High Tide interrupt
++        - pattern: '^ffch-flush-[0-9]+$'
++          description: PBX/MBX FIFO Channel <N> Flush interrupt
++        - pattern: '^mbx-dbch-xfer-[0-9]+$'
++          description: MBX Doorbell Channel <N> Transfer interrupt
++        - pattern: '^mbx-fch-xfer-[0-9]+$'
++          description: MBX FastChannel <N> Transfer interrupt
++        - pattern: '^mbx-fchgrp-xfer-[0-9]+$'
++          description: MBX FastChannel <N> Group Transfer interrupt
++        - pattern: '^mbx-ffch-xfer-[0-9]+$'
++          description: MBX FIFO Channel <N> Transfer interrupt
++        - pattern: '^pbx-dbch-xfer-ack-[0-9]+$'
++          description: PBX Doorbell Channel <N> Transfer Ack interrupt
++        - pattern: '^pbx-ffch-xfer-ack-[0-9]+$'
++          description: PBX FIFO Channel <N> Transfer Ack interrupt
++
++  '#mbox-cells':
++    description: |
++      The first argument in the consumers 'mboxes' property represents the
++      extension type, the second is for the channel number while the third
++      depends on extension type.
++
++      Extension types constants are defined in <dt-bindings/arm/mhuv3-dt.h>.
++
++      Extension type for DBE is DBE_EXT and the third parameter represents the
++      doorbell flag number to use.
++      Extension type for FCE is FCE_EXT, third parameter unused.
++      Extension type for FE is FE_EXT, third parameter unused.
++
++      mboxes = <&mhu DBE_EXT 0 5>; // DBE, Doorbell Channel Window 0, doorbell 5.
++      mboxes = <&mhu DBE_EXT 7>; // DBE, Doorbell Channel Window 1, doorbell 7.
++      mboxes = <&mhu FCE_EXT 0 0>; // FCE, FastChannel Window 0.
++      mboxes = <&mhu FCE_EXT 3 0>; // FCE, FastChannel Window 3.
++      mboxes = <&mhu FE_EXT 1 0>; // FE, FIFO Channel Window 1.
++      mboxes = <&mhu FE_EXT 7 0>; // FE, FIFO Channel Window 7.
++    const: 3
++
++  clocks:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-names
++  - '#mbox-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        mailbox@2aaa0000 {
++            compatible = "arm,mhuv3";
++            #mbox-cells = <3>;
++            reg = <0 0x2aaa0000 0 0x10000>;
++            clocks = <&clock 0>;
++            interrupt-names = "combined", "pbx-dbch-xfer-ack-1",
++                               "ffch-high-tide-0";
++            interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>,
++                         <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
++        };
++
++        mailbox@2ab00000 {
++            compatible = "arm,mhuv3";
++            #mbox-cells = <3>;
++            reg = <0 0x2aab0000 0 0x10000>;
++            clocks = <&clock 0>;
++            interrupt-names = "combined", "mbx-dbch-xfer-1", "ffch-low-tide-0";
++            interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>,
++                         <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>,
++                         <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
++        };
++    };
+diff --git a/include/dt-bindings/arm/mhuv3-dt.h b/include/dt-bindings/arm/mhuv3-dt.h
+new file mode 100644
+index 000000000000..4575406919dd
+--- /dev/null
++++ b/include/dt-bindings/arm/mhuv3-dt.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++/*
++ * This header provides constants for the defined MHUv3 types.
++ */
++
++#ifndef _DT_BINDINGS_ARM_MHUV3_DT_H
++#define _DT_BINDINGS_ARM_MHUV3_DT_H
++
++#define DBE_EXT		0
++#define FCE_EXT		1
++#define FE_EXT		2
++
++#endif /* _DT_BINDINGS_ARM_MHUV3_DT_H */
 -- 
 2.34.1
 
