@@ -1,193 +1,208 @@
-Return-Path: <linux-kernel+bounces-149973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 317B08A989F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:33:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71D0E8A98A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:34:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 544CC1C22037
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:33:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6294A1C21F90
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:34:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E9415E808;
-	Thu, 18 Apr 2024 11:33:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3FFA15E7F5;
+	Thu, 18 Apr 2024 11:34:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="T2l9eKaE"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="lOOAkxHR"
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6666215E5B2;
-	Thu, 18 Apr 2024 11:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F33515D5C1
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:34:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713440019; cv=none; b=bpolx8yQ0TDv3Ukqrp9igCuEEW4APH7GV/2VKdAJdzeW0xRDXsKYPstWfgGBZN0IRUknekT0KLW+Yv9TgIieHLjFSZJX6Ax6Fj/z8Vt4XDorriDIFP9iuOFCxIXE3i+cLVd8uJHMz31JczBoGJNBodaHR7tt8kIqYxtK4j8Z+q8=
+	t=1713440086; cv=none; b=htUY0vdSt2W9/bMxuKNo1Gvtc5RA/8a8VjhiwVfj+1BZCXLqb3e05YlSTKEJfQxFvUoVWWOppEvCM1bfuMyLLC6Z8APkeW2T6E7q194w++Kf4/DrFR+Ie4I6DSJMxACHYaKeVyOMuo+aC9ms6/AoMBVcq7LLVzdmD5BdGn9tcEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713440019; c=relaxed/simple;
-	bh=S0Qtd48tNRGLbVj/o0e5qeU3ZyCGi6a1vbQ/5oxDT60=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=pCI4xIfS7eDhbeIbNrwg809cyMNBEECCFo4sAyWN1on1mM6vLqUR2aBYzEAQpNysLydhwI+VjOd3mp1+bmzfqoCSMmDbADQNoIDDJ5HP84N88ySoEsIK6u6OYkkUhFEp7cdcEGMXjTR7UJ9pLZXASzZ2zdmbSGqzb23L+bFBlh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=T2l9eKaE; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 920941BF206;
-	Thu, 18 Apr 2024 11:33:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713440011;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k2t0MvM3jxvWGhN7eeYzckVy+rZfzBeuSxhEQgyjStA=;
-	b=T2l9eKaEQOh/hyimKIEDxMZ3Pn2pDXPAXRc6Qs194CynWl621S9CfaOzn6J8yWwAChl1jW
-	6Gb+U3xdQ2nN+H+Ysdo6Qx09jkQwPkQTnr6LFj7rJId12SmbDAjXcoJPII3SRN2jP1f2B+
-	/dVv8tiIq2ipOXEoZzZqlVcqNnEkqRvNhaWFlN5crMPdIQBVSvUTYWNwmJFFTGMVzAar2y
-	I1TVf87X3GglcePbiTlFkxGZ47pD+scs1RDbffKxXfn7A4dYhcKjcCG22uXUu9t8cEi/UZ
-	n0yxF39bBWUQb+89HQW7W3WSfvdJNqlMQy/aycd3D3XMtuoTe2fKuZ4xRMlYiQ==
-Date: Thu, 18 Apr 2024 13:34:06 +0200 (CEST)
-From: Romain Gantois <romain.gantois@bootlin.com>
-To: Serge Semin <fancer.lancer@gmail.com>
-cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-    Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
-    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-    Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>, 
-    Yanteng Si <siyanteng@loongson.cn>, 
-    Romain Gantois <romain.gantois@bootlin.com>, 
-    Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-    Simon Horman <horms@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, 
-    Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-    Samuel Holland <samuel@sholland.org>, netdev@vger.kernel.org, 
-    linux-stm32@st-md-mailman.stormreply.com, 
-    linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 2/2] net: stmmac: Move MAC caps init to
- phylink MAC caps getter
-In-Reply-To: <20240417140013.12575-3-fancer.lancer@gmail.com>
-Message-ID: <c441691f-906d-4f44-10c8-3d8437cd3833@bootlin.com>
-References: <20240417140013.12575-1-fancer.lancer@gmail.com> <20240417140013.12575-3-fancer.lancer@gmail.com>
+	s=arc-20240116; t=1713440086; c=relaxed/simple;
+	bh=4zsFF5AYsxVXIzDq1hoiHWnLEdf0Cp55+HBfY2N4ydE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mNYZedu6IKcSGh1EpNkv2SJWugiT7rFxQNd7NAE7OxjGyIQeQJNbf5nlcI/w0w/2Ms67EygDWzWttxLOaEwt5HLxumKdsVnlAeoN7TZtjVz7IJDB2JWhtoOLSn7S3f7LgkXS7sZu85F7xejxksi4bdhmSVCd9oAaWPXuqgYGGkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=lOOAkxHR; arc=none smtp.client-ip=209.85.160.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-2390335b67cso183318fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 04:34:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shopee.com; s=shopee.com; t=1713440084; x=1714044884; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qjCBMry39Lk6L9+ALxtldcRfwmnFxKh32JiUZIC2mus=;
+        b=lOOAkxHR4lH1DjjjkioIoE5Epgohsk4P+nGV6EVL+rfG9klh+Pk/RJJ/sip5Ng3Ac8
+         o7mWB/+4g+wbt2OIhPl+NrjREIaw85WaIpnhKL0mNc1QrhuISp+f93t60iU7RW40PQ+c
+         oObhloSRixLtE3SqvgahB0QTvWsOY2loSCHqfbpuPZq8SL8MKEHIvy1fmRm+cj6s0Uka
+         4ietJpSrzp12orXxsdF3VNF/vgEu/BtiRrxxcIvy4sbieZ8/Mhy+R4HktRBo9AyVRcz8
+         7XSKoYK4ceZ3/TXPWpC8MCYjBAask99XbsjT3jdqVQpg2GxV2vyVw+UCLmIva1r4xRx/
+         q5pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713440084; x=1714044884;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qjCBMry39Lk6L9+ALxtldcRfwmnFxKh32JiUZIC2mus=;
+        b=Gp/O0uK0fyT7CD4NZAgV06yIAkMtc+xthvOVvGNOf4GOWyOELsR1u5aRQJH4vC6gVm
+         0ZWZDJqy6MlV1cv1hniY4/xW6KgaDqUCTKSCYLlFLpD7CY7nAZUeZlFB9hM21Wf/chAI
+         kofJRa180mMqLrEaTJu1mYUWq8FR4S1yGkt02gsVe9T3OLzJ352trD8Loi4jAi8P/rAf
+         eJIA8sBg+9y4VspG7ZqFq3DUjwbt8JyUtfoaLnC4Dbulxiyw4MGjoEp+keYlhmUrK3oD
+         IH/2AIpzMuQft6vY/pCVeiWoUvA2sNrt+mwr4oncxCCGEZIMfrVpTrvDmL8zWd2nmgbL
+         OL2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXNT0t7HQM1ndXKbvEm0PfsP7/LgbjfYOhQhvp13QYblAIQhESPdB/tFnrjQoomvvmDDto1haDIvw//v9uWx9c6DdcQ2vIhGAD0xCNT
+X-Gm-Message-State: AOJu0YxH8LpaTOMdBQis2pLeqY1iOLxU5YnaMc+uloGr3n4sZmklBTEh
+	eoTnwuuY+mhTRUz/2etl3Ee4iwrv5NH6BAffhrgcuoVPw6NKltQsHMUXqxyND6A=
+X-Google-Smtp-Source: AGHT+IGY3vqQ89fwwmEVtjHhrL/KTOlD826r2HnbLbCoRyGY+no7Hm8XY8UjPWggVrNvkIOhOkmKVA==
+X-Received: by 2002:a05:6870:1606:b0:233:5570:a2c6 with SMTP id b6-20020a056870160600b002335570a2c6mr3002340oae.12.1713440083694;
+        Thu, 18 Apr 2024 04:34:43 -0700 (PDT)
+Received: from [10.54.24.115] (static-ip-148-99-134-202.rev.dyxnet.com. [202.134.99.148])
+        by smtp.gmail.com with ESMTPSA id lb3-20020a056a004f0300b006e4432027d1sm1309940pfb.142.2024.04.18.04.34.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 04:34:43 -0700 (PDT)
+Message-ID: <41bf4bc7-2ef6-4f48-ab93-577753d515b7@shopee.com>
+Date: Thu, 18 Apr 2024 19:34:38 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-GND-Sasl: romain.gantois@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] perf/core: Fix missing wakeup when waiting for context
+ reference
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+ mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+ namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+ linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240418080356.21639-1-haifeng.xu@shopee.com>
+ <ZiDv1P5AHj7+E7cW@lothringen>
+From: Haifeng Xu <haifeng.xu@shopee.com>
+In-Reply-To: <ZiDv1P5AHj7+E7cW@lothringen>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, 17 Apr 2024, Serge Semin wrote:
 
-> After a set of recent fixes the stmmac_phy_setup() and
-> stmmac_reinit_queues() methods have turned to having some duplicated code.
-> Let's get rid from the duplication by moving the MAC-capabilities
-> initialization to the PHYLINK MAC-capabilities getter. The getter is
-> called during each network device interface open/close cycle. So the
-> MAC-capabilities will be initialized in generic device open procedure and
-> in case of the Tx/Rx queues re-initialization as the original code
-> semantics implies.
-> 
-> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-> 
-> ---
-> 
-> Link: https://lore.kernel.org/netdev/20240412180340.7965-5-fancer.lancer@gmail.com/
-> Changelog v2:
-> - Resubmit the patch to net-next separately from the main patchset (Paolo)
-> ---
->  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 36 +++++++++----------
->  1 file changed, 17 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index b810f6b69bf5..0d6cd1704e6a 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -936,6 +936,22 @@ static void stmmac_mac_flow_ctrl(struct stmmac_priv *priv, u32 duplex)
->  			priv->pause, tx_cnt);
->  }
->  
-> +static unsigned long stmmac_mac_get_caps(struct phylink_config *config,
-> +					 phy_interface_t interface)
-> +{
-> +	struct stmmac_priv *priv = netdev_priv(to_net_dev(config->dev));
-> +
-> +	/* Refresh the MAC-specific capabilities */
-> +	stmmac_mac_update_caps(priv);
-> +
-> +	config->mac_capabilities = priv->hw->link.caps;
-> +
-> +	if (priv->plat->max_speed)
-> +		phylink_limit_mac_speed(config, priv->plat->max_speed);
-> +
-> +	return config->mac_capabilities;
-> +}
-> +
->  static struct phylink_pcs *stmmac_mac_select_pcs(struct phylink_config *config,
->  						 phy_interface_t interface)
->  {
-> @@ -1105,6 +1121,7 @@ static void stmmac_mac_link_up(struct phylink_config *config,
->  }
->  
->  static const struct phylink_mac_ops stmmac_phylink_mac_ops = {
-> +	.mac_get_caps = stmmac_mac_get_caps,
->  	.mac_select_pcs = stmmac_mac_select_pcs,
->  	.mac_config = stmmac_mac_config,
->  	.mac_link_down = stmmac_mac_link_down,
-> @@ -1204,7 +1221,6 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
->  	int mode = priv->plat->phy_interface;
->  	struct fwnode_handle *fwnode;
->  	struct phylink *phylink;
-> -	int max_speed;
->  
->  	priv->phylink_config.dev = &priv->dev->dev;
->  	priv->phylink_config.type = PHYLINK_NETDEV;
-> @@ -1225,15 +1241,6 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
->  		xpcs_get_interfaces(priv->hw->xpcs,
->  				    priv->phylink_config.supported_interfaces);
->  
-> -	/* Refresh the MAC-specific capabilities */
-> -	stmmac_mac_update_caps(priv);
-> -
-> -	priv->phylink_config.mac_capabilities = priv->hw->link.caps;
-> -
-> -	max_speed = priv->plat->max_speed;
-> -	if (max_speed)
-> -		phylink_limit_mac_speed(&priv->phylink_config, max_speed);
-> -
->  	fwnode = priv->plat->port_node;
->  	if (!fwnode)
->  		fwnode = dev_fwnode(priv->device);
-> @@ -7327,7 +7334,6 @@ int stmmac_reinit_queues(struct net_device *dev, u32 rx_cnt, u32 tx_cnt)
->  {
->  	struct stmmac_priv *priv = netdev_priv(dev);
->  	int ret = 0, i;
-> -	int max_speed;
->  
->  	if (netif_running(dev))
->  		stmmac_release(dev);
-> @@ -7341,14 +7347,6 @@ int stmmac_reinit_queues(struct net_device *dev, u32 rx_cnt, u32 tx_cnt)
->  			priv->rss.table[i] = ethtool_rxfh_indir_default(i,
->  									rx_cnt);
->  
-> -	stmmac_mac_update_caps(priv);
-> -
-> -	priv->phylink_config.mac_capabilities = priv->hw->link.caps;
-> -
-> -	max_speed = priv->plat->max_speed;
-> -	if (max_speed)
-> -		phylink_limit_mac_speed(&priv->phylink_config, max_speed);
-> -
->  	stmmac_napi_add(dev);
->  
->  	if (netif_running(dev))
-> -- 
-> 2.43.0
-> 
-> 
 
-Reviewed-by: Romain Gantois <romain.gantois@bootlin.com>
+On 2024/4/18 18:03, Frederic Weisbecker wrote:
+> On Thu, Apr 18, 2024 at 08:03:56AM +0000, Haifeng Xu wrote:
+>> In our production environment, we found many hung tasks which are
+>> blocked for more than 18 hours. Their call traces are like this:
+>>
+>> [346278.191038] __schedule+0x2d8/0x890
+>> [346278.191046] schedule+0x4e/0xb0
+>> [346278.191049] perf_event_free_task+0x220/0x270
+>> [346278.191056] ? init_wait_var_entry+0x50/0x50
+>> [346278.191060] copy_process+0x663/0x18d0
+>> [346278.191068] kernel_clone+0x9d/0x3d0
+>> [346278.191072] __do_sys_clone+0x5d/0x80
+>> [346278.191076] __x64_sys_clone+0x25/0x30
+>> [346278.191079] do_syscall_64+0x5c/0xc0
+>> [346278.191083] ? syscall_exit_to_user_mode+0x27/0x50
+>> [346278.191086] ? do_syscall_64+0x69/0xc0
+>> [346278.191088] ? irqentry_exit_to_user_mode+0x9/0x20
+>> [346278.191092] ? irqentry_exit+0x19/0x30
+>> [346278.191095] ? exc_page_fault+0x89/0x160
+>> [346278.191097] ? asm_exc_page_fault+0x8/0x30
+>> [346278.191102] entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>
+>> The task was waiting for the refcount become to 1, but from the vmcore,
+>> we found the refcount has already been 1. It seems that the task didn't
+>> get woken up by perf_event_release_kernel() and got stuck forever. The
+>> below scenario may cause the problem.
+>>
+>> Thread A					Thread B
+>> ...						...
+>> perf_event_free_task				perf_event_release_kernel
+>> 						   ...
+>> 						   acquire event->child_mutex
+>> 						   ...
+>> 						   get_ctx
+>>    ...						   release event->child_mutex
+>>    acquire ctx->mutex
+>>    ...
+>>    perf_free_event (acquire/release event->child_mutex)
+>>    ...
+>>    release ctx->mutex
+>>    wait_var_event
+>> 						   acquire ctx->mutex
+>> 						   acquire event->child_mutex
+>> 						   # move existing events to free_list
+>> 						   release event->child_mutex
+>> 						   release ctx->mutex
+>> 						   put_ctx
+>> ...						...
+>>
+>> In this case, all events of the ctx have been freed, so we couldn't
+>> find the ctx in free_list and Thread A will miss the wakeup. It's thus
+>> necessary to add a wakeup after dropping the reference.
+>>
+>> Fixes: 1cf8dfe8a661 ("perf/core: Fix race between close() and fork()")
+>> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
+>> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> 
+> Hint: always ask before putting someone else's Signed-off-by tag ;-)
+> And anyway you don't need it here.
 
-Thanks,
+Sorry, Frederic. I'll resend this with Reviewed-by tag.
 
--- 
-Romain Gantois, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Thanks!
+> 
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> 
+> 
+>> ---
+>> Changes since v1
+>> - Add the fixed tag.
+>> - Simplify v1's patch. (Frederic)
+>> ---
+>>  kernel/events/core.c | 13 +++++++++++++
+>>  1 file changed, 13 insertions(+)
+>>
+>> diff --git a/kernel/events/core.c b/kernel/events/core.c
+>> index 4f0c45ab8d7d..15c35070db6a 100644
+>> --- a/kernel/events/core.c
+>> +++ b/kernel/events/core.c
+>> @@ -5340,6 +5340,7 @@ int perf_event_release_kernel(struct perf_event *event)
+>>  again:
+>>  	mutex_lock(&event->child_mutex);
+>>  	list_for_each_entry(child, &event->child_list, child_list) {
+>> +		void *var = NULL;
+>>  
+>>  		/*
+>>  		 * Cannot change, child events are not migrated, see the
+>> @@ -5380,11 +5381,23 @@ int perf_event_release_kernel(struct perf_event *event)
+>>  			 * this can't be the last reference.
+>>  			 */
+>>  			put_event(event);
+>> +		} else {
+>> +			var = &ctx->refcount;
+>>  		}
+>>  
+>>  		mutex_unlock(&event->child_mutex);
+>>  		mutex_unlock(&ctx->mutex);
+>>  		put_ctx(ctx);
+>> +
+>> +		if (var) {
+>> +			/*
+>> +			 * If perf_event_free_task() has deleted all events from the
+>> +			 * ctx while the child_mutex got released above, make sure to
+>> +			 * notify about the preceding put_ctx().
+>> +			 */
+>> +			smp_mb(); /* pairs with wait_var_event() */
+>> +			wake_up_var(var);
+>> +		}
+>>  		goto again;
+>>  	}
+>>  	mutex_unlock(&event->child_mutex);
+>> -- 
+>> 2.25.1
+>>
 
