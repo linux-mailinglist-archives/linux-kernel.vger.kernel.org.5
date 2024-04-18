@@ -1,76 +1,51 @@
-Return-Path: <linux-kernel+bounces-149633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BBAD8A93B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:07:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 487B38A93B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:06:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C8752838B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:06:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D88DB221DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:06:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39CA03BB50;
-	Thu, 18 Apr 2024 07:06:25 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8D373C485;
+	Thu, 18 Apr 2024 07:06:46 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45DD238DD9;
-	Thu, 18 Apr 2024 07:06:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9305736AF2
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:06:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713423984; cv=none; b=kiuyhSQtIgnsCvfbH6+ryfDnNGcl8rftx2wBSYF1huvZ2m7p07RlXo14q0Aq62LNs4FtkRvKxv5NwTqXpGn4RNkFWAMkPTvJeMHoDr9oSmf76UvMKUBid3JbVFf+vehX0PgpxuCptYNPx0FVwkfp5Xe/4hWT133llyfsHwNS9Dg=
+	t=1713424006; cv=none; b=Ga7+i3I5h0qwdcC5xBUmzcDX7abZY5E5NW3rHeYC7BEJoc8katUVWWOYWreYiDsbAr7xfIiv+4tkqHe2HqHeZvZVdJeayUfqPcSOgpp3f28jd2fMg82ZREdt+OtVJMe5Tz/mpYLTLCwZLh78dxcLmbTV6sxk0WXf1yrEyy+665Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713423984; c=relaxed/simple;
-	bh=0cq2KNXJm8olaBiLZ4pdwZRcVn9JY5hk7eaXRwyGEJ8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CTwmhfzwfcOkpMjwFC0YlY562vWJee0AAZV8HkIDMDA8cxnArAnKWVBVklw/V3lwaz+xrtuEUJSvIkBD4OBYRfESqOzImQ6EQfQIPAsnRGKROg1wPswRAmIX/tk06HinuT/dCVtHULVY4v+1DvtsWRWTmQ1IxPo85EPjb9qbY0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 1e8c7d88fd5211ee9305a59a3cc225df-20240418
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:ac5da2f7-eedb-4fdc-948d-0bc3ae0cfbd4,IP:20,
-	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:10
-X-CID-INFO: VERSION:1.1.37,REQID:ac5da2f7-eedb-4fdc-948d-0bc3ae0cfbd4,IP:20,UR
-	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:10
-X-CID-META: VersionHash:6f543d0,CLOUDID:152c965dcca78d4fb2b481a9159d2bc1,BulkI
-	D:24041815060521XOATZ6,BulkQuantity:0,Recheck:0,SF:66|24|72|19|44|102,TC:n
-	il,Content:0,EDM:-3,IP:-2,URL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil
-	,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_ULN,TF_CID_SPAM_SNR,TF_CID_SPAM_FSD
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
-	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
-	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED
-	SN_UNTRUSTED, SN_UNFAMILIAR, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
-	CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
-	GTI_C_BU, AMN_T1, AMN_GOOD, AMN_C_TI, AMN_C_BU
-	ABX_MISS_RDNS
-X-UUID: 1e8c7d88fd5211ee9305a59a3cc225df-20240418
-X-User: jiangyunshui@kylinos.cn
-Received: from kylin-pc.. [(112.64.161.44)] by mailgw.kylinos.cn
-	(envelope-from <jiangyunshui@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 424594125; Thu, 18 Apr 2024 15:06:03 +0800
-From: yunshui <jiangyunshui@kylinos.cn>
-To: linux-kernel@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org
-Cc: corentin.chary@gmail.com,
-	hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	yunshui <jiangyunshui@kylinos.cn>,
-	Ai Chao <aichao@kylinos.cn>
-Subject: [PATCH] platform/x86: samsung-laptop: Use sysfs_emit() to replace the old interface sprintf()
-Date: Thu, 18 Apr 2024 15:05:50 +0800
-Message-Id: <20240418070550.628310-1-jiangyunshui@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713424006; c=relaxed/simple;
+	bh=XF9VbfgxuAaJkDPiaK+ClRJIVQCl+/Sgde0+4umseFo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XRrx1pFSkwJNb7mBF7ffLmcCGEeXvbcEGHYcTZFQ+QOin4Uo2Wr9tshbc1xFzN70kihxqSVwOrGSOT0C3TVIQiznL96e5uni+/793PNGQ8296j/VRAE7jDhv7gIrICq9vcdtUQ0CL9KNJMzusD/jlzGqk+0gGPDX4FwqAkRxlzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VKpfC3djFz1R8Yq;
+	Thu, 18 Apr 2024 15:03:47 +0800 (CST)
+Received: from dggpemd200001.china.huawei.com (unknown [7.185.36.224])
+	by mail.maildlp.com (Postfix) with ESMTPS id 02F901800C5;
+	Thu, 18 Apr 2024 15:06:41 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpemd200001.china.huawei.com
+ (7.185.36.224) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Thu, 18 Apr
+ 2024 15:06:40 +0800
+From: ZhaoLong Wang <wangzhaolong1@huawei.com>
+To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <vigneshr@ti.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>, <yi.zhang@huawei.com>,
+	<yangerkun@huawei.com>
+Subject: [PATCH V3] ubifs: correct UBIFS_DFS_DIR_LEN macro definition and improve code clarity
+Date: Thu, 18 Apr 2024 15:07:04 +0800
+Message-ID: <20240418070704.3080590-1-wangzhaolong1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,61 +53,168 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemd200001.china.huawei.com (7.185.36.224)
 
-    As Documentation/filesystems/sysfs.rst suggested,
-    show() should only use sysfs_emit() or sysfs_emit_at() when formatting
-    the value to be returned to user space.
+The UBIFS_DFS_DIR_LEN macro, which defines the maximum length of the UBIFS
+debugfs directory name, has an incorrect formula and misleading comments.
+The current formula is (3 + 1 + 2*2 + 1), which assumes that both UBI device
+number and volume ID are limited to 2 characters. However, UBI device number
+ranges from 0 to 31 (2 characters), and volume ID ranges from 0 to 127 (up
+to 3 characters).
 
-Signed-off-by: yunshui <jiangyunshui@kylinos.cn>
-Signed-off-by: Ai Chao <aichao@kylinos.cn>
+Although the current code works due to the cancellation of mathematical
+errors (9 + 1 = 10, which matches the correct UBIFS_DFS_DIR_LEN value), it
+can lead to confusion and potential issues in the future.
+
+This patch aims to improve the code clarity and maintainability by making
+the following changes:
+
+1. Corrects the UBIFS_DFS_DIR_LEN macro definition to (3 + 1 + 2 + 3 + 1),
+   accommodating the maximum lengths of both UBI device number and volume ID,
+   plus the separators and null terminator.
+2. Updates the snprintf calls to use UBIFS_DFS_DIR_LEN instead of
+   UBIFS_DFS_DIR_LEN + 1, removing the unnecessary +1.
+3. Modifies the error checks to compare against UBIFS_DFS_DIR_LEN using >=
+   instead of >, aligning with the corrected macro definition.
+4. Removes the redundant +1 in the dfs_dir_name array definitions in ubi.h
+   and debug.h.
+
+While these changes do not affect the runtime behavior, they make the code
+more readable, maintainable, and less prone to future errors.
+
+v2->v3:
+
+ - Removes the duplicated UBIFS_DFS_DIR_LEN and UBIFS_DFS_DIR_NAME macro
+   definitions in ubifs.h, as they are already defined in debug.h.
+
+Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
 ---
- drivers/platform/x86/samsung-laptop.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/ubi/debug.c | 4 ++--
+ drivers/mtd/ubi/ubi.h   | 2 +-
+ fs/ubifs/debug.c        | 4 ++--
+ fs/ubifs/debug.h        | 7 ++++---
+ fs/ubifs/sysfs.c        | 6 +++---
+ fs/ubifs/ubifs.h        | 7 -------
+ 6 files changed, 12 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/platform/x86/samsung-laptop.c b/drivers/platform/x86/samsung-laptop.c
-index b4aa8ba35d2d..3d2f8e758369 100644
---- a/drivers/platform/x86/samsung-laptop.c
-+++ b/drivers/platform/x86/samsung-laptop.c
-@@ -661,9 +661,9 @@ static ssize_t get_performance_level(struct device *dev,
- 	/* The logic is backwards, yeah, lots of fun... */
- 	for (i = 0; config->performance_levels[i].name; ++i) {
- 		if (sretval.data[0] == config->performance_levels[i].value)
--			return sprintf(buf, "%s\n", config->performance_levels[i].name);
-+			return sysfs_emit(buf, "%s\n", config->performance_levels[i].name);
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index d57f52bd2ff3..9ec3b8b6a0aa 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -598,9 +598,9 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ 	if (!IS_ENABLED(CONFIG_DEBUG_FS))
+ 		return 0;
+ 
+-	n = snprintf(d->dfs_dir_name, UBI_DFS_DIR_LEN + 1, UBI_DFS_DIR_NAME,
++	n = snprintf(d->dfs_dir_name, UBI_DFS_DIR_LEN, UBI_DFS_DIR_NAME,
+ 		     ubi->ubi_num);
+-	if (n > UBI_DFS_DIR_LEN) {
++	if (n >= UBI_DFS_DIR_LEN) {
+ 		/* The array size is too small */
+ 		return -EINVAL;
  	}
--	return sprintf(buf, "%s\n", "unknown");
-+	return sysfs_emit(buf, "%s\n", "unknown");
- }
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 32009a24869e..da4e53ef5b0a 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -420,7 +420,7 @@ struct ubi_debug_info {
+ 	unsigned int power_cut_min;
+ 	unsigned int power_cut_max;
+ 	unsigned int emulate_failures;
+-	char dfs_dir_name[UBI_DFS_DIR_LEN + 1];
++	char dfs_dir_name[UBI_DFS_DIR_LEN];
+ 	struct dentry *dfs_dir;
+ 	struct dentry *dfs_chk_gen;
+ 	struct dentry *dfs_chk_io;
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index ac77ac1fd73e..d91cec93d968 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -2827,9 +2827,9 @@ void dbg_debugfs_init_fs(struct ubifs_info *c)
+ 	const char *fname;
+ 	struct ubifs_debug_info *d = c->dbg;
  
- static ssize_t set_performance_level(struct device *dev,
-@@ -744,7 +744,7 @@ static ssize_t get_battery_life_extender(struct device *dev,
- 	if (ret < 0)
- 		return ret;
+-	n = snprintf(d->dfs_dir_name, UBIFS_DFS_DIR_LEN + 1, UBIFS_DFS_DIR_NAME,
++	n = snprintf(d->dfs_dir_name, UBIFS_DFS_DIR_LEN, UBIFS_DFS_DIR_NAME,
+ 		     c->vi.ubi_num, c->vi.vol_id);
+-	if (n > UBIFS_DFS_DIR_LEN) {
++	if (n >= UBIFS_DFS_DIR_LEN) {
+ 		/* The array size is too small */
+ 		return;
+ 	}
+diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
+index ed966108da80..d425861e6b82 100644
+--- a/fs/ubifs/debug.h
++++ b/fs/ubifs/debug.h
+@@ -19,10 +19,11 @@ typedef int (*dbg_znode_callback)(struct ubifs_info *c,
  
--	return sprintf(buf, "%d\n", ret);
-+	return sysfs_emit(buf, "%d\n", ret);
- }
+ /*
+  * The UBIFS debugfs directory name pattern and maximum name length (3 for "ubi"
+- * + 1 for "_" and plus 2x2 for 2 UBI numbers and 1 for the trailing zero byte.
++ * + 1 for "_" and 2 for UBI device numbers and 3 for volume number and 1 for
++ * the trailing zero byte.
+  */
+ #define UBIFS_DFS_DIR_NAME "ubi%d_%d"
+-#define UBIFS_DFS_DIR_LEN  (3 + 1 + 2*2 + 1)
++#define UBIFS_DFS_DIR_LEN  (3 + 1 + 2 + 3 + 1)
  
- static ssize_t set_battery_life_extender(struct device *dev,
-@@ -813,7 +813,7 @@ static ssize_t get_usb_charge(struct device *dev,
- 	if (ret < 0)
- 		return ret;
+ /**
+  * ubifs_debug_info - per-FS debugging information.
+@@ -103,7 +104,7 @@ struct ubifs_debug_info {
+ 	unsigned int chk_fs:1;
+ 	unsigned int tst_rcvry:1;
  
--	return sprintf(buf, "%d\n", ret);
-+	return sysfs_emit(buf, "%d\n", ret);
- }
+-	char dfs_dir_name[UBIFS_DFS_DIR_LEN + 1];
++	char dfs_dir_name[UBIFS_DFS_DIR_LEN];
+ 	struct dentry *dfs_dir;
+ 	struct dentry *dfs_dump_lprops;
+ 	struct dentry *dfs_dump_budg;
+diff --git a/fs/ubifs/sysfs.c b/fs/ubifs/sysfs.c
+index 1c958148bb87..aae32222f11b 100644
+--- a/fs/ubifs/sysfs.c
++++ b/fs/ubifs/sysfs.c
+@@ -91,17 +91,17 @@ static struct kset ubifs_kset = {
+ int ubifs_sysfs_register(struct ubifs_info *c)
+ {
+ 	int ret, n;
+-	char dfs_dir_name[UBIFS_DFS_DIR_LEN+1];
++	char dfs_dir_name[UBIFS_DFS_DIR_LEN];
  
- static ssize_t set_usb_charge(struct device *dev,
-@@ -878,7 +878,7 @@ static ssize_t get_lid_handling(struct device *dev,
- 	if (ret < 0)
- 		return ret;
+ 	c->stats = kzalloc(sizeof(struct ubifs_stats_info), GFP_KERNEL);
+ 	if (!c->stats) {
+ 		ret = -ENOMEM;
+ 		goto out_last;
+ 	}
+-	n = snprintf(dfs_dir_name, UBIFS_DFS_DIR_LEN + 1, UBIFS_DFS_DIR_NAME,
++	n = snprintf(dfs_dir_name, UBIFS_DFS_DIR_LEN, UBIFS_DFS_DIR_NAME,
+ 		     c->vi.ubi_num, c->vi.vol_id);
  
--	return sprintf(buf, "%d\n", ret);
-+	return sysfs_emit(buf, "%d\n", ret);
- }
+-	if (n > UBIFS_DFS_DIR_LEN) {
++	if (n >= UBIFS_DFS_DIR_LEN) {
+ 		/* The array size is too small */
+ 		ret = -EINVAL;
+ 		goto out_free;
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 1f3ea879d93a..7b6be3fb4f62 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -157,13 +157,6 @@
+ #define UBIFS_HMAC_ARR_SZ 0
+ #endif
  
- static ssize_t set_lid_handling(struct device *dev,
+-/*
+- * The UBIFS sysfs directory name pattern and maximum name length (3 for "ubi"
+- * + 1 for "_" and plus 2x2 for 2 UBI numbers and 1 for the trailing zero byte.
+- */
+-#define UBIFS_DFS_DIR_NAME "ubi%d_%d"
+-#define UBIFS_DFS_DIR_LEN  (3 + 1 + 2*2 + 1)
+-
+ /*
+  * Lockdep classes for UBIFS inode @ui_mutex.
+  */
 -- 
-2.34.1
+2.31.1
 
 
