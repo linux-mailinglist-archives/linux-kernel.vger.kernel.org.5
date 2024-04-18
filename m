@@ -1,210 +1,126 @@
-Return-Path: <linux-kernel+bounces-149540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8E1D8A9297
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FA0E8A929C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:51:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A9F91F2186E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:50:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 114971F21727
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:51:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02DFB56455;
-	Thu, 18 Apr 2024 05:50:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BBA55FB96;
+	Thu, 18 Apr 2024 05:51:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Q9BadeY5"
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6457654BFA
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 05:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="DHyc6I5x"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D5156454;
+	Thu, 18 Apr 2024 05:51:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713419440; cv=none; b=Mf0Kdhz7s33kIvrdG0P/tyOoG/F3IbeFg2Ac7kMKYn/mtBFaQjIyt4i38p/0gDU38kR8jbKyuYhU32FJNx0Bg5mVuFpfEaXSrwOgd2YjxXzKaj2+5dTQJ9+wE7CZkUTShaXk32VhOC6dF79TIKX4miU9yo3eohQgRTXDqH6fGLE=
+	t=1713419497; cv=none; b=E+zihHhgjz/jS1+47ZP5DcROPdSJx4tqTWyeLj65Hahryb9o6NMiVHVfon2R115ISQsOp8xcjM0XaAeZv8pZZJQUmowajhuIT0w4+oWqZuEs5YW8cK9NX1UVIZwHPdhm80+GTKu/EX5QOXQOOVFvdFFR32nPD1/ue281homDEmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713419440; c=relaxed/simple;
-	bh=PFyGbk56OmzNLjMtqAchKOOo908XeKp6oW+0qESPT2s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T+pXeCyJnfzOqaEKeGaVbR42spPEy4SiX1sAXFFZLpscVum8Wj904ojbR7hmAlsbHZNUfyNYwfIiK3bDHrUA8MiLlC3jfjlrx176U4j13GnQcEp+9Fy9EG1I4/NdP9OyCcqjhnoOkU8txWGXt4c5ZX5iqEk2/R0U2RznU9AYvUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Q9BadeY5; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1713419433; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=4eOeKenzK1gFrzCAeTlcjNO1rvtm7qAGVD0c/9ky3IQ=;
-	b=Q9BadeY5Qkk88lD94CxqBI+B96T8TVdwkxAcAik++G7CcC+lR9BAk9ihhRC6t7naMhJKm6YhQjGoEbs8lKkI6lWyktpZTt5aXW6Xz2kyRPPktk6Og4HJU03c8992boiO0OP7vD53zACWUaDnBYBahi6ccKvNnXsxcEKH3uP/FCY=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0W4nXygh_1713419431;
-Received: from 30.221.145.60(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W4nXygh_1713419431)
-          by smtp.aliyun-inc.com;
-          Thu, 18 Apr 2024 13:50:32 +0800
-Message-ID: <fb65c7d0-c348-409e-b977-07616d28b279@linux.alibaba.com>
-Date: Thu, 18 Apr 2024 13:50:30 +0800
+	s=arc-20240116; t=1713419497; c=relaxed/simple;
+	bh=zATJ74G5Sc1DMdnW7cJJ13791upLRtnZmKExsPlmzfk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rRMnaHivZK6d+GfBz8gMjFTOZgLYtMjocXcBozSIhkrbcvBpuRFDSxzP5gF0vL4UJC21MzaYF4/rgrywXBw3W6uHG7Ci//GXuJ597Rp7gYpgwGHa5c190JascXtZIatCnGF1k5Tp7b/hZ/6y7fOvRN0TPcaQB/7nIHmY4qobszw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=DHyc6I5x; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id C97D220FD4D8; Wed, 17 Apr 2024 22:51:35 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C97D220FD4D8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1713419495;
+	bh=mgD2zVbGomE9WC9wXHSFiZJILTvHN5Kfd0Rp4oWQDF8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DHyc6I5x+CWragIiq+raj0E0lD/tx6O6G4CHM9jHYNKswHCJG6E2TDzVzJdQhV+wt
+	 CPF7CUYy+TeAHFj7pRwqLQnRSkOPrIBKu/8M5uJ/5I/2escB1/GPYwZOs+0AlyjOQT
+	 GhUGkTJKYDUnoDIpcKRcy42FYTi0Z810i20H17vs=
+Date: Wed, 17 Apr 2024 22:51:35 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Michael Kelley <mikelley@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: Re: [PATCH net-next] net: mana: Add new device attributes for mana
+Message-ID: <20240418055135.GA13182@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1713174589-29243-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20240415161305.GO223006@ziepe.ca>
+ <56b0a8c1-50f6-41a9-9ea5-ed45ada58892@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] erofs: reliably distinguish block based and fscache
- mode
-Content-Language: en-US
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-erofs@lists.ozlabs.org, xiang@kernel.org, chao@kernel.org,
- huyue2@coolpad.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
- linux-kernel@vger.kernel.org, yangerkun@huawei.com, houtao1@huawei.com
-References: <20240417065513.3409744-1-libaokun1@huawei.com>
- <71e66b02-9c2b-4981-83e1-8af72d6c0975@linux.alibaba.com>
- <7fdf4bff-2d3d-bdc0-5446-caa58aeca314@huawei.com>
-From: Jingbo Xu <jefflexu@linux.alibaba.com>
-In-Reply-To: <7fdf4bff-2d3d-bdc0-5446-caa58aeca314@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56b0a8c1-50f6-41a9-9ea5-ed45ada58892@linux.dev>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-
-
-On 4/18/24 11:36 AM, Baokun Li wrote:
-> On 2024/4/18 10:16, Jingbo Xu wrote:
->> Hi Baokun,
->>
->> Thanks for catching this and move forward fixing this!
+On Tue, Apr 16, 2024 at 06:27:04AM +0200, Zhu Yanjun wrote:
+> ??? 2024/4/15 18:13, Jason Gunthorpe ??????:
+> >On Mon, Apr 15, 2024 at 02:49:49AM -0700, Shradha Gupta wrote:
+> >>Add new device attributes to view multiport, msix, and adapter MTU
+> >>setting for MANA device.
+> >>
+> >>Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> >>---
+> >>  .../net/ethernet/microsoft/mana/gdma_main.c   | 74 +++++++++++++++++++
+> >>  include/net/mana/gdma.h                       |  9 +++
+> >>  2 files changed, 83 insertions(+)
+> >>
+> >>diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> >>index 1332db9a08eb..6674a02cff06 100644
+> >>--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> >>+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> >>@@ -1471,6 +1471,65 @@ static bool mana_is_pf(unsigned short dev_id)
+> >>  	return dev_id == MANA_PF_DEVICE_ID;
+> >>  }
+> >>+static ssize_t mana_attr_show(struct device *dev,
+> >>+			      struct device_attribute *attr, char *buf)
+> >>+{
+> >>+	struct pci_dev *pdev = to_pci_dev(dev);
+> >>+	struct gdma_context *gc = pci_get_drvdata(pdev);
+> >>+	struct mana_context *ac = gc->mana.driver_data;
+> >>+
+> >>+	if (strcmp(attr->attr.name, "mport") == 0)
+> >>+		return snprintf(buf, PAGE_SIZE, "%d\n", ac->num_ports);
+> >>+	else if (strcmp(attr->attr.name, "adapter_mtu") == 0)
+> >>+		return snprintf(buf, PAGE_SIZE, "%d\n", gc->adapter_mtu);
+> >>+	else if (strcmp(attr->attr.name, "msix") == 0)
+> >>+		return snprintf(buf, PAGE_SIZE, "%d\n", gc->max_num_msix);
+> >>+	else
+> >>+		return -EINVAL;
+> >>+
+> >
+> >That is not how sysfs should be implemented at all, please find a
+> >good example to copy from. Every attribute should use its own function
+> >with the macros to link it into an attributes group and sysfs_emit
+> >should be used for printing
 > 
-> Hi Jingbo，
+> Not sure if this file drivers/infiniband/hw/usnic/usnic_ib_sysfs.c
+> is a good example or not.
 > 
-> Thanks for your review！
+> Zhu Yanjun
+Thanks for the reference, Zhu.
 > 
->>
->> On 4/17/24 2:55 PM, Baokun Li wrote:
->>> When erofs_kill_sb() is called in block dev based mode, s_bdev may
->>> not have
->>> been initialised yet, and if CONFIG_EROFS_FS_ONDEMAND is enabled, it
->>> will
->>> be mistaken for fscache mode, and then attempt to free an anon_dev
->>> that has
->>> never been allocated, triggering the following warning:
->>>
->>> ============================================
->>> ida_free called for id=0 which is not allocated.
->>> WARNING: CPU: 14 PID: 926 at lib/idr.c:525 ida_free+0x134/0x140
->>> Modules linked in:
->>> CPU: 14 PID: 926 Comm: mount Not tainted 6.9.0-rc3-dirty #630
->>> RIP: 0010:ida_free+0x134/0x140
->>> Call Trace:
->>>   <TASK>
->>>   erofs_kill_sb+0x81/0x90
->>>   deactivate_locked_super+0x35/0x80
->>>   get_tree_bdev+0x136/0x1e0
->>>   vfs_get_tree+0x2c/0xf0
->>>   do_new_mount+0x190/0x2f0
->>>   [...]
->>> ============================================
->>>
->>> Instead of allocating the erofs_sb_info in fill_super() allocate it
->>> during erofs_get_tree() and ensure that erofs can always have the info
->>> available during erofs_kill_sb().
->>
->> I'm not sure if allocating erofs_sb_info in erofs_init_fs_context() will
->> be better, as I see some filesystems (e.g. autofs) do this way.  Maybe
->> another potential advantage of doing this way is that erofs_fs_context
->> is not needed anymore and we can use sbi directly.
-> Yes, except for some extra memory usage when remounting,
-> this idea sounds great. Let me send a version of v3 to get rid
-> of erofs_fs_context.
-
-I'm not sure if Gao Xaing also prefers this.  I think it would be better
-to wait and listen for his thoughts before we sending v3.
-
->>
->>> Signed-off-by: Christian Brauner <brauner@kernel.org>
->>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->>> ---
->>> Changes since v1:
->>>    Allocate and initialise fc->s_fs_info in erofs_fc_get_tree()
->>> instead of
->>>    modifying fc->sb_flags.
->>>
->>> V1:
->>> https://lore.kernel.org/r/20240415121746.1207242-1-libaokun1@huawei.com/
->>>
->>>   fs/erofs/super.c | 51 ++++++++++++++++++++++++++----------------------
->>>   1 file changed, 28 insertions(+), 23 deletions(-)
->>>
->>> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
->>> index b21bd8f78dc1..4104280be2ea 100644
->>> --- a/fs/erofs/super.c
->>> +++ b/fs/erofs/super.c
->>> @@ -581,8 +581,7 @@ static const struct export_operations
->>> erofs_export_ops = {
->>>   static int erofs_fc_fill_super(struct super_block *sb, struct
->>> fs_context *fc)
->>>   {
->>>       struct inode *inode;
->>> -    struct erofs_sb_info *sbi;
->>> -    struct erofs_fs_context *ctx = fc->fs_private;
->>> +    struct erofs_sb_info *sbi = EROFS_SB(sb);
->>>       int err;
->>>         sb->s_magic = EROFS_SUPER_MAGIC;
->>> @@ -590,19 +589,6 @@ static int erofs_fc_fill_super(struct
->>> super_block *sb, struct fs_context *fc)
->>>       sb->s_maxbytes = MAX_LFS_FILESIZE;
->>>       sb->s_op = &erofs_sops;
->>>   -    sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
->>> -    if (!sbi)
->>> -        return -ENOMEM;
->>> -
->>> -    sb->s_fs_info = sbi;
->>> -    sbi->opt = ctx->opt;
->>> -    sbi->devs = ctx->devs;
->>> -    ctx->devs = NULL;
->>> -    sbi->fsid = ctx->fsid;
->>> -    ctx->fsid = NULL;
->>> -    sbi->domain_id = ctx->domain_id;
->>> -    ctx->domain_id = NULL;
->>> -
->>>       sbi->blkszbits = PAGE_SHIFT;
->>>       if (erofs_is_fscache_mode(sb)) {
->>>           sb->s_blocksize = PAGE_SIZE;
->>> @@ -704,11 +690,32 @@ static int erofs_fc_fill_super(struct
->>> super_block *sb, struct fs_context *fc)
->>>       return 0;
->>>   }
->>>   -static int erofs_fc_get_tree(struct fs_context *fc)
->>> +static void erofs_ctx_to_info(struct fs_context *fc)
->>>   {
->>>       struct erofs_fs_context *ctx = fc->fs_private;
->>> +    struct erofs_sb_info *sbi = fc->s_fs_info;
->>> +
->>> +    sbi->opt = ctx->opt;
->>> +    sbi->devs = ctx->devs;
->>> +    ctx->devs = NULL;
->>> +    sbi->fsid = ctx->fsid;
->>> +    ctx->fsid = NULL;
->>> +    sbi->domain_id = ctx->domain_id;
->>> +    ctx->domain_id = NULL;
->>> +}
->> I'm not sure if abstracting this logic into a seperate helper really
->> helps understanding the code as the logic itself is quite simple and
->> easy to be understood. Usually it's a hint of over-abstraction when a
->> simple helper has only one caller.
->>
-> Static functions that have only one caller are compiled inline, so we
-> don't have to worry about how that affects the code.
-> 
-> The reason these codes are encapsulated in a separate function is so
-> that the code reader understands that these codes are integrated
-> as a whole, and that we shouldn't have to move one or two of these
-> lines individually.
-> 
-> But after we get rid of erofs_fs_context, those won't be needed
-> anymore.
-
-Yeah, I understand. It's only coding style concerns.
-
-
-
--- 
-Thanks,
-Jingbo
+> >
+> >Jason
 
