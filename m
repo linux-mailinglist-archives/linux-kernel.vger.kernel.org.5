@@ -1,207 +1,168 @@
-Return-Path: <linux-kernel+bounces-150812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7CA38AA4D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:45:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 355878AA4DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:48:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CF21284286
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:45:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 892BCB22207
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90478199E86;
-	Thu, 18 Apr 2024 21:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18990199E89;
+	Thu, 18 Apr 2024 21:47:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="nAYQubXT";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YzSj/zk3"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=supcom.onmicrosoft.com header.i=@supcom.onmicrosoft.com header.b="kt5AoyIh"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2118.outbound.protection.outlook.com [40.107.20.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E4B16ABFF
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 21:45:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713476706; cv=none; b=A10XJsws10OhhKGXDojYpMzCzp1GyAhUCX4tsVpm+53mVM8qW5vM0EySA3erPCXVWGUPk7+MXhioTNzA6bZC3WRnKnei9ID1GP7Mdny1neKm/7d+GxfJzTSLayEfaBF9tYhv8jTAjNPnxYyf+J4PdY7sAgDItKSsotCJSM7vu7U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713476706; c=relaxed/simple;
-	bh=1bm/wORtkQCdpXihuwt8gUE+Ki2iVd0zJjtYxfzl9SI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=tdSG/zz6d/5mYVRDdLLYUWmAbDO7ERqAn7gd1r9rvTf09AQ0IXstAA61HKoWQzoP7DOWWZvmnReMf8b2igMyfNORMzmuxnnzAlCSX4J3EYZ/RmP4NNQTq0D7zrIN0jxjIVRPGuzeLP2hhJqDRfA+p/hdcCcll0xQwtzqBALozbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=nAYQubXT; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YzSj/zk3; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713476703;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sr+UNQV62Ol6VrGa4nW/aaDoGmYQye3tnIA9PG9k83w=;
-	b=nAYQubXTPnfoZjcGza6PlxJt1Q8CfxUqqrdXEtpFRGwOYWHqAtSgyI04m51ZLyTTSBMBj2
-	NQAr7/gXaQDfX5f80sCiy+mNvI+onK6WnJENJdxBry3Xtr4a/I3a+seBfjG0kiIVi7vkay
-	d+T/6Etlg5PbHz6zPrXpfXKaE+qjbqrUlsGg1ICHioogdxJLMsBICbMskHXVkFDkieEFni
-	kbEdYsRlF18H1MrHAmkfnFvlQykTvZOZlBWS6sCCZ2sNblipaospo1L8AlgRzH3uqiAP9Q
-	nNfPHyLrWWZX0k9WWakYw/DGeOtyWEgKW9bThp+Pl5G/ozG5kgvWb/MpWIRtCA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713476703;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sr+UNQV62Ol6VrGa4nW/aaDoGmYQye3tnIA9PG9k83w=;
-	b=YzSj/zk3vPAxj8zDTwM8SgAO2maHMQt0Ai8RP/bVJDxkoRJi3lG5waLiRBA3WdYLv7W8ql
-	hgkOPy8zDsfLk7Cw==
-To: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, Steven Rostedt
- <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v4 17/27] printk: nbcon: Use nbcon consoles in
- console_flush_all()
-In-Reply-To: <ZiEWaA3CeQsccEdj@pathway.suse.cz>
-References: <20240402221129.2613843-1-john.ogness@linutronix.de>
- <20240402221129.2613843-18-john.ogness@linutronix.de>
- <ZhfwXsEE2Y8IPPxX@localhost.localdomain>
- <ZhgCgBK7JdRruvkj@localhost.localdomain>
- <87plunoai0.fsf@jogness.linutronix.de> <ZiEWaA3CeQsccEdj@pathway.suse.cz>
-Date: Thu, 18 Apr 2024 23:51:01 +0206
-Message-ID: <87v84e4a76.fsf@jogness.linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 418EC16FF26;
+	Thu, 18 Apr 2024 21:47:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.118
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713476873; cv=fail; b=gXJL+xzgaHrwMO3wIeK0ChEQzlVKQaUH1XHlgw5VfPeSRhMKfYL8i3xq4xI/B/A4I4QViGj2m9VBBDg19Agauh6Z27YQr2gYh6H668vcNoFwV57YbE/+FXzUxCgbraOMgrF19UBRb9CSWT0HS6zzaNWbugqftCqObR+UwspqAoE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713476873; c=relaxed/simple;
+	bh=kor2ut6DXvSir5LuxXp3DpLefTQJiFH3VTLqPd+rQJo=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=rwxjgq5Xbb8xje4bT9ba/TkaN1EWNOlPAzDiKBHl0k2jbcuL+NOOyZdtZElrsebFMzf+cgfBHztgHNKIzzlCM7ztP8zkGVsKpInLup9JhSAHEUSNp5oLVHLzMfBaoOfR32VDL3t1x4Lnm+kVnITVEB6k+6ULoG+N/9Nkw92bpcs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=supcom.tn; spf=pass smtp.mailfrom=supcom.tn; dkim=pass (1024-bit key) header.d=supcom.onmicrosoft.com header.i=@supcom.onmicrosoft.com header.b=kt5AoyIh; arc=fail smtp.client-ip=40.107.20.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=supcom.tn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=supcom.tn
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XzoOPQj8/2PQ9hyfRw7SfL8kffjfZKuIFXPR8MxN9VmFe8pKqZTNgILyDBgjuhRWy7LUDBjb+JKxfIO37sELpaD3CpZ1OCGXu8k8dBmz2gXhplTNs79P7+149DOy4rDzLcUwUjy8y/w4SCSK9CKFhSofGp4Ty33kH88HkPjpGp0XDlJCcp+IdI3Z7JTO4nKeyPC/gknJgX0oY8Sh+hkDk3SxYqbgxP90Vhlw60lCbIVLIyeftuoOkoKJNWHeifxD7HwvrBWq4aGcY8G1xpn8rQyVGIaaYrEKYSNyJ4fjyAXIulMX8a0gXACe+6eVPTNAynsuyGk3nK+MUsk/Yyazjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DGDI3/Vc+hU/J0CXe/j0jQOXuBNroOVEeidunRSiyd8=;
+ b=QAN+fxxVr6CILjEL+d7SRTYKddWVb1aCKAzDyzeN+LrPXtfdafts1gBIDyFWf8Aw92CfE2oj5B6cxqEXJPaG6t2PcWz0h+rclASyJzJ3OaheRPb11PJDWTDhXwQB58lTmh6keMBNOo1HBNCujqUIm3EAbIUf05uHmyKwxQmLsQo8hrBraHXb+BIk3IWNDkbIbwy4GtAE8B6WlXMFOwvGknN/zxoBHW31WRBJE/W9DRSvPKaF/SoGDSzTsT+jqJFF5LhwUZixtmCFxYBx2h3q9LO3EUue2a+nYQXc4OPvJAz20FHgZ8oqxDhANdW46N8maeOpfl6CU8ANPoMaiJYNog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=supcom.tn; dmarc=pass action=none header.from=supcom.tn;
+ dkim=pass header.d=supcom.tn; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=supcom.onmicrosoft.com; s=selector2-supcom-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DGDI3/Vc+hU/J0CXe/j0jQOXuBNroOVEeidunRSiyd8=;
+ b=kt5AoyIhfEExfUFVNHFiowTeAfsQSNDyxiU+HVNsBN0LHW4mRNpUCLlgFvf9Z0qngwqpVeQF3OJio+RDZRdT4A0Gx2h+HU7YGBNopsFPkqvlkLtMhAblZxyEpR7xvZn8di1oMX+MkcmF1oC0+d9XoS4MS3MfQQbdA91RC2ekt2o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=supcom.tn;
+Received: from AM0PR0402MB3905.eurprd04.prod.outlook.com (2603:10a6:208:b::23)
+ by AM0PR04MB7092.eurprd04.prod.outlook.com (2603:10a6:208:19c::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Thu, 18 Apr
+ 2024 21:47:39 +0000
+Received: from AM0PR0402MB3905.eurprd04.prod.outlook.com
+ ([fe80::eb9a:367f:6384:7d62]) by AM0PR0402MB3905.eurprd04.prod.outlook.com
+ ([fe80::eb9a:367f:6384:7d62%4]) with mapi id 15.20.7452.049; Thu, 18 Apr 2024
+ 21:47:39 +0000
+From: Mohamed Ghanmi <mohamed.ghanmi@supcom.tn>
+To: hdegoede@redhat.com
+Cc: corentin.chary@gmail.com,
+	ilpo.jarvinen@linux.intel.com,
+	platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Luke D . Jones" <luke@ljones.dev>,
+	Mohamed Ghanmi <mohamed.ghanmi@supcom.tn>
+Subject: [PATCH v2 0/1] platform/x86: asus-wmi: add support for vivobook fan profiles
+Date: Thu, 18 Apr 2024 22:47:24 +0100
+Message-ID: <20240418214727.10658-1-mohamed.ghanmi@supcom.tn>
+X-Mailer: git-send-email 2.44.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MI2P293CA0005.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:45::12) To AM0PR0402MB3905.eurprd04.prod.outlook.com
+ (2603:10a6:208:b::23)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR0402MB3905:EE_|AM0PR04MB7092:EE_
+X-MS-Office365-Filtering-Correlation-Id: 099f037b-584c-4d90-cff7-08dc5ff12abd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	06nqkjNBLIewS0nINwU9g+yiEHbuV9Z0L8RM8r5RjoHPzph3PFFtdgMJx0JPQAxop1jO6pvxnH2IPbJGQRoA4x8c0LmFbgJdSQWze2WI0zvTHKKDWp6VFgLOXxvNK7t4wsAoiRuTqt5rPlOTemxgz2fGUA+ek0UUIHsyP83+eHe2WpZ5suSh+12rdiqI44h/kZzLdLdX8cnZUIAz/90HH5pFPZftBr/pchO40vb7FpMbPm6KssDFH8n8ToUrdZhJn2T3n6z6RjaAgwWBvWE+B9EfZq74ZASDHVVen5gzdfJ6tSU+IT7y8noE58UPuc98X5Mh8qK+H3OzLJd75tFRjd3bIyPUKyNa0SxujAGDN06zcseZC8spaJDqv8iyjGRY72pGVGoiTrNePjDWptIbRvab6w45EyHL8+mu3Xvac7748PnJq19SaL5Wxkele0NMkgeAJbG+KYt/PlRtFhSKYIpTTCVueasNWWQBoRHTiG44Ut/XNl+kk9cXZoESiOYsGaOhDdnu47O2Rh4zW3l58JYVCQPWBRLxk2FW4/4Q4ghlKdJt3+9H5ixN2s0SdcQsSz5yD3L5gpCTjNAl1YsrC1+9xwtdTT0Ag/rrrRBodAbEq9FoGZ2jBTdPVeFpJ9OjRZ6eYa4lcHRODL62TQ5W1yZYazR7LT6xKWZJiOXyes1tBagae+oFdqKHLso3InLtchv24lGc04Fm1YSZkpJNA7k1xmfRgKFUSRuBTrVYDL8=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR0402MB3905.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(41320700004)(376005)(52116005)(366007)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?cG43M3RLaFU0bmNTcmNMUzJPbU9OTlZXYWZjM0xITk0yVHFDRUd3WUJrNkt3?=
+ =?utf-8?B?M0Q3S29CNElQMkFoVE10NkdjRFVUS3JZMTViL2d2cnVRRVN0VVRzZUVVckQ2?=
+ =?utf-8?B?cXl3ckU1V0lDTnF1V2lyS2tZQWhMTUY0N3FQYTE3aXlGZitmK2M1VERGcnJo?=
+ =?utf-8?B?Yy9QTEVIcGV4Nk5FWEFGSjBFTTlUaTg2QlZwQlVuQkdudjJISWQrUmh4NE0x?=
+ =?utf-8?B?MkJuZ2dYOEF0R1NmclcwVGZaYldPdDhRckVGRnZJQStnOXZwQTJHTEJXS3Yx?=
+ =?utf-8?B?Z09qYmd6clFRTmM0YVdmdlVPaXAxd1ExRjYwZzR1VE1HUDVYRHEvdURLM0Jv?=
+ =?utf-8?B?TE1QNi94R09XYzJOc0NxY2xLYXBPMmhOS2dhYXZEazF5RDJUOGRQZFBjVXlB?=
+ =?utf-8?B?MHJUTURFQ0tYUkJwZXk1RTRUbTE4N2hjUHZMU0g3TzFncVo2cEM5d3d4MW1y?=
+ =?utf-8?B?ZFdETXJsNHI0SE01RkF2QXRvc3JsR001cCsvRFA2cGpEelVudXZQaWtsT1ZB?=
+ =?utf-8?B?dDUzMDhIZHBieDMrNWU3ZDNLdjdTcmU3dkV4T0xGUzBvNmM0Z0VMRUQ5N1Ny?=
+ =?utf-8?B?MjNBUkh3c25zblRkcHFMV2xIQ0M0b0dPcndHRC9kUzdUZVF1YkpVbjNvSkxs?=
+ =?utf-8?B?Z0dVa3ZGMVJiYzBkUHNhU2xKUWZLcXZ4SGhyWmRyWXZuNGNGSGVRbTVlTmk0?=
+ =?utf-8?B?d2tlTFJscnNudFZEVGQ0WHFSbFVnWC8rN2JuYmhOZjVEb0JCckJnU0M3aXBD?=
+ =?utf-8?B?VEE2Zk1rd0ZNTUZhWTF3RmFTMUZ6Sm1VNXIrbXc1MXNQVWVFbHZBQ3BOeVJV?=
+ =?utf-8?B?TTVsL01GOHVQUEtFdHZ5am1naENRL1JnbFczVmV0MXF3K0Nvbnc4ZnFIRlFN?=
+ =?utf-8?B?Z1Nma3paNDBoVmVOcmJBNEZmSDJqTHk2dzkzRkY2K1IyVzh3anJYOG5ubzZp?=
+ =?utf-8?B?M3FISGVXYTR0Sis5STRrZC9OYXlhSnYzQVMyemtFSTJYVEtUNk1pTGYyeU9p?=
+ =?utf-8?B?QUl2K1RaQXE3SnBhSHM4NllkZnFMUkpnOTlPanVoYThPZ1hRSWxRTTJkTXdC?=
+ =?utf-8?B?K3JiemptTXZFWThIMFF1Rkd5cHRQbEp5NWdOZnJPY3hTR1k0VzF3Y3FHeWs4?=
+ =?utf-8?B?ZU9mb2lPL296MFFmQ0RBbkVNNW1IZnczK09POG5ZOWJMaUYyS0x4MVdya2xr?=
+ =?utf-8?B?T0toVVVBbHVhcHlLc0dlNSs1S3JoQTltRFNMUmFBYVVRN2dsKzBxN0pyTFR6?=
+ =?utf-8?B?U3VMS3dFdVVqSVpUTjVaRWEwRHVCRVJESFcyd29NQzl3S3Zpd1REUUFYLy83?=
+ =?utf-8?B?eWM5ZE0vNEpuSFNlVStWdWNmZjcrRjZoRkdEaTVBZThySlZJQkh0YjBVUjR1?=
+ =?utf-8?B?ZUdtRGtRK3l2YlB5cGs3QzBJakZrOW5tL3hBYXJqcDVOSDlhS1VkOUlObUR1?=
+ =?utf-8?B?MDc5VWFvSWxEb3l5OHRPU0hjZTdOWkIrWW01TFVPa0F5WXkvcXQyQmVlZ2pW?=
+ =?utf-8?B?K0FQWHovTENVcXRWR3JnQUhFaW1kNUVJNFRKajFiSnFaOVZsMnlQNzcwc0xy?=
+ =?utf-8?B?anBtcE52Q1dUWGV6eHFnaVE2UkZCRlhic1hXeTJheTBGelhySHNiK2lORkdJ?=
+ =?utf-8?B?OTZOUnhqY1VGelB6S2lJc0Jwb0xSeXVzekVjcjk2UjBmR3pGRTlWT3JuamlP?=
+ =?utf-8?B?Z0M3K2VPUXhRU09vaUFkQkhSa1VnTWp4bVlIdjZLMWs2NHorTkozRzVySUVP?=
+ =?utf-8?B?T1poUGJReXNOM0RpOVF4UUhINlZPWm9hKzRRbEpFM0RXZ3ZXMFlyUWlvckh0?=
+ =?utf-8?B?eisxMDZWRVZueStFN1hRRmtJK1N3RHFYUnZPckk0WjQyeEtDQStZaklTemtq?=
+ =?utf-8?B?bnM0OXBEcGhjSDJBNk04Q0tZOU52b3hXaUpzeSs1b01HZEFYT2trRTZweTlh?=
+ =?utf-8?B?d1hkRkdGdDJTZmszTnUyZzhNMTFHdXVKQmlsTGRBWDFNTnFYcHlvZVA1TDdt?=
+ =?utf-8?B?YjkyQnRmTUxqQTRUdU8zeXBUeFZSNFVPL3JmZGZ2VUJ0L2I5cUlwbFZuRHA3?=
+ =?utf-8?B?dkZUQUVPSWE3MHROQkw3NDVUaUpldm4wWm9XV2VGRC9icFJ3Q3VCUEE4QWt6?=
+ =?utf-8?B?cU5tMCs4b25rWEF0NzA3WTYrODNTR1NoekdaLzZQdGh3OW9RTWZoekp4dFN2?=
+ =?utf-8?B?SXc9PQ==?=
+X-OriginatorOrg: supcom.tn
+X-MS-Exchange-CrossTenant-Network-Message-Id: 099f037b-584c-4d90-cff7-08dc5ff12abd
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR0402MB3905.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 21:47:39.0513
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8f85f528-6195-4e97-8e41-f5a9ad3bed4a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YUJ/8wXV99PphgzYVf6efWnOK4afUijN2ctYipTjZskMwLE7iJkFy0pbw0muOkwAqgcUys58Ohhb6i0gpwKKR1tpMNX90J+bKUq4FJU0oV8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7092
 
-On 2024-04-18, Petr Mladek <pmladek@suse.com> wrote:
->> > 	   Solve this problem by introducing[*] nbcon_atomic_flush_all()
->> > 	   which would flush even newly added messages and
->> > 	   call this in nbcon_cpu_emergency_exit() when the printk
->> > 	   kthread does not work. It should bail out when there
->> > 	   is a panic in progress.
->> >
->> > 	   Motivation: It does not matter which "atomic" context
->> > 		flushes NORMAL/EMERGENCY messages when
->> > 		the printk kthread is not available.
->> 
->> I do not think that solves the problem. If the console is in an unsafe
->> section, nothing can be printed.
->
-> IMHO, it solves the problem.
->
-> The idea is simple:
->
->   "The current nbcon console owner will be responsible for flushing
->    all messages when the printk kthread does not exist."
+Add support for vivobook fan profiles wmi call on the ASUS VIVOBOOK
+to adjust power limits.
 
-Currently this is not valid. It assumes owners are printers. That is not
-always true. The owner might be some task modifying the baud rate and
-has nothing to do with printing.
+These fan profiles have a different device id than the ROG series
+and different order. This reorders the existing modes and adds a new
+full speed mode available on these laptops.
 
-> The prove is more complicated:
->
->    1. Let's put aside panic. We already do the best effort there.
->
->    2. Emergency mode currently violates the rule because
->       nbcon_atomic_flush_pending() ignores the simple rule.
->
->       => FIX: improve nbcon_cpu_emergency_exit() to flush
-> 	      all messages when kthreads are not ready.
+As part of keeping the patch clean the throttle_thermal_policy_available
+boolean stored in the driver struct is removed and
+throttle_thermal_policy_dev is used in place (as on init it is zeroed).
 
-Emergency mode cannot flush _anything_ if there is an owner in an unsafe
-region. (And that owner may not be a printer.)
+Changelog:
+- V1
+  - Fixes grammar in description
+  - reorders macros
+  - adds throttle_thermal_policy_max_mode() helper function
+- V2
+  - removes unnecessary braces in throttle_thermal_policy_max_mode()
 
->    3. Normal mode flushes nbcon consoles via
->       nbcon_legacy_emit_next_record() from console_unlock()
->       before the kthreads are started.
->
->       It is not reliable when nbcon_try_acquire() fails.
->       But it would fail only when there is another user.
->       The other owner might be:
->
-> 	+ panic: will handle everything
->
-> 	+ emergency: should flush everything [*]
->
-> 	+ normal: can't happen because of con->device() lock.
+ drivers/platform/x86/asus-wmi.c            | 93 ++++++++++++----------
+ include/linux/platform_data/x86/asus-wmi.h |  1 +
+ 2 files changed, 51 insertions(+), 43 deletions(-)
 
-As the code is now, "normal" does not imply con->device() lock. When
-using con->write_atomic(), we do not (and can not) use the con->device()
-lock. So normal _can_ fail in nbcon_legacy_emit_next_record() if another
-CPU is adjusting the baud rate. This is why I said the problem with
-"emergency" is basically the same problem as "normal" (WRT using
-write_atomic()).
+-- 
+2.44.0
 
-> => The only remaining problem is to fix nbcon_atomic_flush_pending()
->    to flush everything when the kthreads are not started yet.
-
-I think my proposed change handles it better. I have been doing various
-tests and also adjusted it a bit.
-
-The reason the flushing fails is because another context owns the
-console. So I think it makes sense for that owner to handle flushing
-responsibility when releasing ownership (even if that context was just
-changing the baud rate).
-
-[ Keep in mind we are only talking about printing via write_atomic()
-when the kthread is not available. ]
-
-If the current owner is a normal printing context, it will print to
-completion anyway (via console_flush_all()).
-
-If the current owner is an emergency printing context, it will only
-print the emergency messages (as PRIO_EMERGENCY). However, when it
-releases ownership, it could flush the remaining records (as
-PRIO_NORMAL) in the same fashion as console_flush_all() does it.
-
-If the current owner is a non-printing context, when it releases
-ownership, it could flush the remaining records (as PRIO_NORMAL) in the
-same fashion as console_flush_all() does it.
-
-So what I am proposing is that we add two new normal-flushing sites that
-are only used when the kthread is not available:
-
-1. after exiting emergency mode: in nbcon_cpu_emergency_exit()
-
-2. after releasing ownership for non-printing: in nbcon_driver_release()
-
-I think this will close the gap and it does not require irq_work.
-
-> Sigh, all this is so complicated. I wonder how to document
-> this so that other people do not have to discover these
-> dependencies again and again. Is it even possible?
-
-In the end we will have the following 5 scenarios (assuming my
-proposal):
-
-1. PRIO_NORMAL non-printing activity, always under con->device() lock,
-   upon release flushes[*] full backlog
-
-2. PRIO_NORMAL printing using write_thread(), always called from task
-   context and under con->device() lock, always flushes full backlog
-
-3. PRIO_NORMAL printing using write_atomic(), called with hardware
-   interrupts disabled, always flushes full backlog, (only used when the
-   kthread is not available)
-
-4. PRIO_EMERGENCY printing using write_atomic(), called with hardware
-   interrupts disabled, flushes through emergency, upon exit flushes[*]
-   full backlog
-
-5. PRIO_PANIC printing using write_atomic(), called with hardware
-   interrupts disabled, flushes full backlog
-
-[*] Only when the kthread is not available. And in that case #3 is the
-    scenario used for the trailing full flushing by #1 and #4.
-
-
-Full flushing is attempted in all 5 scenarios. A failed attempt means
-there is a new owner, but that owner is also one of the 5 scenarios.
-
-Am I missing something?
-
-IMHO #3 is the only bizarre scenario. It exists only to cover when the
-kthread is not available.
-
-John
 
