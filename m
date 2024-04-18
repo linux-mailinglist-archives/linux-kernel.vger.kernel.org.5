@@ -1,199 +1,191 @@
-Return-Path: <linux-kernel+bounces-150838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3D0B8AA572
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1E8F8AA576
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:34:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CA8CB22983
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:24:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1C18B22495
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:34:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33300199EB7;
-	Thu, 18 Apr 2024 22:24:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D719F1EA6E;
+	Thu, 18 Apr 2024 22:33:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jBVmapYq"
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Dqr0v/gR"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2041.outbound.protection.outlook.com [40.107.220.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB839168B06;
-	Thu, 18 Apr 2024 22:24:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713479066; cv=none; b=DjQrKLTPkr57xhl00n+w28/Qc4xmN/bbNLHKn+dZi3llxkFmItSL0n3au6yhhMetFKtSD4GOGBfKShpJ9X9RxHxHUU+nk2yV8khVL9/8M4WqJaLLepYntK+r5ILh/AXM9XrWm/TIsMdbO/vvzUpbv1slM9rH2RkpMxgFnrsP5kw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713479066; c=relaxed/simple;
-	bh=4XIhe4LfbJ8qWHDQkf0DWffnpOmWtniEjgZwZ66z7HY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QYlmi81b/4VP0KO+7PBtElZyPsrDeRRJ53tlQvg+3R+3gSItZAeNwBVBl2Zhw2SHDa8JEw96WXi84zixO+JISxXpTx4Dr9EhwuB9lORfzd72RQa4JWbL5hTy2zUsaPl9rdU2GSY2U4igQkYgvIyWlieTkIwtLwCzaLS/bk816Tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jBVmapYq; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2a78c2e253aso1198134a91.3;
-        Thu, 18 Apr 2024 15:24:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713479064; x=1714083864; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=deUJvXeVY3838w4CjTqAEiIczD57MmjPpFzLc8yadh4=;
-        b=jBVmapYqAnDOFPzizbPRAEZaFOsfdgW9zJHSn2kd8bqj2NrzVDbBohekZ5HgR/Ir/N
-         Z5awE/ltdxz9HM4Ie5gt0mqR063ysLiJnSIt1Ok384WgT+4OmLt0+qZadhyUJQTzbxxc
-         Ao7yI2gQK6StBlzqGCEvFhBsO63AFg7hNOxam3eApHHiZbhs4GPHWLwSrumPiybbeTit
-         L3kssZWoJziO+KrXN1njh9p5nROFo5OPjltT8KqrvNKVv9gsbMDEYnQppYuNoPwQnYpi
-         0TwiKW/PrP1lt9IJczfB7/6zgurgtG3IhqX1hvuSQx8z7UCIfyy4Nka5MpP6EFxgQoQu
-         fM/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713479064; x=1714083864;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=deUJvXeVY3838w4CjTqAEiIczD57MmjPpFzLc8yadh4=;
-        b=Ssq6h1+T4umDRKTtS+lVQgBvQ7A+gWoDWkutYo8pz6tp/DAIZ6h6cT//jjGlDRN+gt
-         SOQQpvWxMoxa/63ycpW88k902OfKPDqwKMvDoW1FViOsb9CjEKqX0bQ+0xBxBw1MGjJb
-         6j9ESOoqEdKAN8NFC2zTLZALvxrZ2JPotyk1FjO6WSUtBzHi/YbVshfTLo+M0MW5zi5P
-         +VOKTTmIzLGO628ZHHEpkErHjImGDX0QvhIHjb+RlS6aVqfuL4gP1aDf1yCBkQP08OM5
-         6OpXF8/pARtDDzKDse/pHWfB3V9WeW27yuWR1ADfxawH4KsNlO/WTiHV+ordBVm55Qr4
-         j3qg==
-X-Forwarded-Encrypted: i=1; AJvYcCUc7IUSPLMeJlHmoeYGlHsZSPxXSppou8niKzZQplcqq8pErGV00oHtVG6AMP8pNf3KNdWkbeKzKidkFVgtGpHQL/iIGvK8AEm30xFz0V8MavtDQb0ytD7EVWrez4tZBjG3
-X-Gm-Message-State: AOJu0YzbdKfzlNFbzDNaGDW1ccNHRrq6YypF2T6Z440Mq8zAN8cfcTz1
-	FmoHQNHlvkrm5EgcBU2S8kU/p5CJ7UB079fRVTw/pVNTXS6tXQnc7u6NGPVvZFdenuPb+a67KVP
-	MtkcIi0fgKRbRHFrXbn7rumuc2AAxgg==
-X-Google-Smtp-Source: AGHT+IFVkNK2HKAQnoLco34pMJP8gkECXKggNPuoeOQagYF3NGXKTKpy/uzP/lCl0KuENwUqAaSFPNGh1aHg6OzXk/M=
-X-Received: by 2002:a05:6a21:2b13:b0:1a9:c3ac:c6d4 with SMTP id
- ss19-20020a056a212b1300b001a9c3acc6d4mr467473pzb.62.1713479064034; Thu, 18
- Apr 2024 15:24:24 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A8A317D2;
+	Thu, 18 Apr 2024 22:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713479633; cv=fail; b=BZmOH5Umc5GjVEIk6+714aTV8L2/CZ8n427l1TitjXYATbrKy9uzt3ivvppGKCW8+ACERBpeemg9+Mhbaf2ip2wd2weg8JtQ8bDj9Ven0SKQ8er3wSsLh2sbiJiwcgHKK/GQA/M4+kZM/iqR9YexB8zP7KNgu2+PohpLed3J4+w=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713479633; c=relaxed/simple;
+	bh=YZ4smW1ZSi26v/jXc3HHiWjd9wmZ9X3Kh6R/uYpcdpE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=BIQdZN6eDnT1RxirPmcDIIMgB85XgQC7DZ03ERKTRvDoifoTMJJhhtdap0+BnOmxUoDqwU7J8tCAuUhJQ4BMRdvhepBULJUXVs+MUQvGGlKgha09DdFSPvfhU/jNdeefOUgZFzJokAy3pAv/pHqYZLN1wLXF+zg0xNkZYd2da7Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Dqr0v/gR; arc=fail smtp.client-ip=40.107.220.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DE8hmUinfAd2wA/VV55Ug4oGTlLq0A9RwkQF3cnQGX9dajU3vhQ9Ys6Ts6028uQ8ax+coYxPaGzFMLIvWLuJlmQDKeoEYGCrTyO2xzQ5h8xjPiC3MHDi3y2BxQY873EKpasGM80P9nD7YfSur+DCg5Fg0C5vQA7s5Rrta0Y3opWT78cH8nxev76GCf0R4MwFOqJssD5yD/Xi6OCF0AJv+FEmnnK0plVJ7F//ctrLqs8unf3zl0+lIJrPVOCqtqx815bqG42jJTYX1rljseH4gftRRgqQOHnl9assQwVUBn5BZeQpnqvrNNb7dI10tchqwXOIVlzRH13Cy89SUlaXbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ml2DOiG9QdROq95LnfHa0LdOaopTDiTB119ItD6r5Uc=;
+ b=N04VkHvHXGItryvmI3e15YNQ88UCyC5yrq6iFLH1rzjgB9yjGKCQktaHEuxLoy66xJRrMoy+E9943D58rtjIXM893h5yqf3IR+k4gd+Lt2XsHqXWMki/m1dOcEYuOk9mZJnLx2WIzD3wbrOZO1dPohCOjaiA5j+ZKjqMg/x7/nhQZaMY/78DrStrkxJ1QXWf3kRR0G+5O11OY5HkohRhaDaIODxaQw7GbmPAVCxVAQ1VbOv7P80DRNLhxOXLaMb5UnY3iZiNfG0kk3pjfxWF4wn+y2t9X8CGQpDz6BHOIkgwDIFyDrSYVzgsJ3g7ET0txfdzrmSPcl5Llrpp5AKakw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ml2DOiG9QdROq95LnfHa0LdOaopTDiTB119ItD6r5Uc=;
+ b=Dqr0v/gR1UhtSwcTRAhX8TP1V0LevfgeUEki8hoBAqZbwBr5vvpO0bANj6BqNT/GWthtnQ7nqzMLFg7i/39tepJxHpxocWsMqktFVk33IDXe5mcmccN9mxSHxTn5gdbsmEc5/kgfvTU7ldgpf5CsdjfEJ3gfCmA3I87Up67TvCi+C2NtZ4CYwVNi4oQtgxbuvdEBSlL1fdpqUrcgRqiChoLlYfsv3b58afhEd1L4c1rbOz1+EqkhURguTakXKd2pjwPdbx3Kr7RhmpbklDSX5uXSBCdY0ZS83iyQCF729ZTP9dJntaw35zNa28z0gCUHyGtgYYxtEDzdr+Iryo+XOw==
+Received: from CYXPR03CA0082.namprd03.prod.outlook.com (2603:10b6:930:d3::10)
+ by SA1PR12MB8888.namprd12.prod.outlook.com (2603:10b6:806:38a::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Thu, 18 Apr
+ 2024 22:33:46 +0000
+Received: from CY4PEPF0000FCC3.namprd03.prod.outlook.com
+ (2603:10b6:930:d3:cafe::b0) by CYXPR03CA0082.outlook.office365.com
+ (2603:10b6:930:d3::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.28 via Frontend
+ Transport; Thu, 18 Apr 2024 22:33:46 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CY4PEPF0000FCC3.mail.protection.outlook.com (10.167.242.105) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.22 via Frontend Transport; Thu, 18 Apr 2024 22:33:46 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 18 Apr
+ 2024 15:33:21 -0700
+Received: from [10.110.48.28] (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 18 Apr
+ 2024 15:33:21 -0700
+Message-ID: <4149777d-d8ab-43aa-8de2-f240fee2ba2b@nvidia.com>
+Date: Thu, 18 Apr 2024 15:33:19 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240405124348.27644-1-puranjay12@gmail.com> <CAEf4BzZ2Tz5-GwbQKYg7KoGwqN8ewPBakmghHaH20MfoATe74g@mail.gmail.com>
- <87cyr0uwsg.fsf@all.your.base.are.belong.to.us>
-In-Reply-To: <87cyr0uwsg.fsf@all.your.base.are.belong.to.us>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 18 Apr 2024 15:24:11 -0700
-Message-ID: <CAEf4BzahfDssv6SgKYmay+CxQ7GAY9TD5LPG8D9NjGrzMBY28Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] riscv, bpf: add internal-only MOV instruction to
- resolve per-CPU addrs
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, bpf@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Pu Lehui <pulehui@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Documentation: coding-style: don't encourage WARN*()
+To: Eric Biggers <ebiggers@kernel.org>, Alex Elder <elder@linaro.org>
+CC: <corbet@lwn.net>, <gregkh@linuxfoundation.org>,
+	<workflows@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240414170850.148122-1-elder@linaro.org>
+ <20240418161430.GB2410@sol.localdomain>
+Content-Language: en-US
+From: John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <20240418161430.GB2410@sol.localdomain>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000FCC3:EE_|SA1PR12MB8888:EE_
+X-MS-Office365-Filtering-Correlation-Id: b325d0fe-5246-45a3-4e41-08dc5ff79c29
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	H+HI3/dH9cnKM5HjEL9WdBoXePNLLRPmCVa5fSzVCDtElnrg1wYuoWUGowTw9v2vsc76/NbidEeRDtE7UnVyURP+jPJby45e7LSgm4LLWjFFuFt9coKSk+UdcGpvOegIlk+sZO/weox087ZvcCssVfc4VHpZqusNTwu/45FabtVt29n7uasdCO5RbFDSHWMPnvWwwdHU4Wdr9pUeU4jJjq/qXovA/f0qWrep3hS+tnZX6wXOByUaZNNajaBbuUL4UcSPaVQaZLSfdOtCmS21bCbokbjvLqJCB8IMZE6l5o8EBuvbj1MMr2+jjzxqPsdHuyWKu+/8M9v22S9pdXFyBqvy/RPgL36qmlYV/BmMMkkYawSaIlQ4JPu4kPc7vd3QDjZRxJeLXkV5zFmEVMxtn88AUzKZs7FwvhY/HNjKgPa0FbaUhP4TU78Ng4itMfFIMmJh09rPdH4zmYKodo2/LZKP5EkPW54m3Qhll5ZuZcelVRXCBSxAhDC+OtpMGnisoAcJMEragoPlVfs+yKzsOOrzrrSP+yF8Ptg0hhVph5GdapQe2OBd02DB2xVUxJD8CP5rZQg/Ju1EfxKsYlS7mCQxqSJJQRC3/O2OcwcwsLtj0SjqeTmEQ9RDSM92nvIM5AqcRSIEV8+f/SnFUUqviSujI/mIigfeEiqdR36kqRjMBkk/U6Dwwa/ot69zw0oXd1mZYVuKe20IOppzS5TwWjCj/rVWL3tYnRPquSjz/9848lltodLdnFjMnaNkVSNj
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(376005)(82310400014)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 22:33:46.0187
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b325d0fe-5246-45a3-4e41-08dc5ff79c29
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000FCC3.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8888
 
-On Mon, Apr 8, 2024 at 12:40=E2=80=AFAM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel=
-org> wrote:
->
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
-> > On Fri, Apr 5, 2024 at 5:44=E2=80=AFAM Puranjay Mohan <puranjay12@gmail=
-com> wrote:
-> >>
-> >> Support an instruction for resolving absolute addresses of per-CPU
-> >> data from their per-CPU offsets. This instruction is internal-only and
-> >> users are not allowed to use them directly. They will only be used for
-> >> internal inlining optimizations for now between BPF verifier and BPF
-> >> JITs.
-> >>
-> >> RISC-V uses generic per-cpu implementation where the offsets for CPUs
-> >> are kept in an array called __per_cpu_offset[cpu_number]. RISCV stores
-> >> the address of the task_struct in TP register. The first element in
-> >> tast_struct is struct thread_info, and we can get the cpu number by
-> >> reading from the TP register + offsetof(struct thread_info, cpu).
-> >>
-> >> Once we have the cpu number in a register we read the offset for that
-> >> cpu from address: &__per_cpu_offset + cpu_number << 3. Then we add thi=
-s
-> >> offset to the destination register.
-> >>
-> >> To measure the improvement from this change, the benchmark in [1] was
-> >> used on Qemu:
-> >>
-> >> Before:
-> >> glob-arr-inc   :    1.127 =C2=B1 0.013M/s
-> >> arr-inc        :    1.121 =C2=B1 0.004M/s
-> >> hash-inc       :    0.681 =C2=B1 0.052M/s
-> >>
-> >> After:
-> >> glob-arr-inc   :    1.138 =C2=B1 0.011M/s
-> >> arr-inc        :    1.366 =C2=B1 0.006M/s
-> >> hash-inc       :    0.676 =C2=B1 0.001M/s
-> >
-> > TBH, I don't trust benchmarks done inside QEMU. Can you try running
-> > this on some real hardware?
->
-> I just ran it on a "VisionFive2" SBC:
->
-> BEFORE
-> =3D=3D=3D=3D=3D=3D
-> glob-arr-inc   :   11.586 =C2=B1 0.021M/s
-> arr-inc        :   10.892 =C2=B1 0.005M/s
-> hash-inc       :    1.517 =C2=B1 0.001M/s
->
-> AFTER
-> =3D=3D=3D=3D=3D
-> glob-arr-inc   :   11.893 =C2=B1 0.017M/s  (+2.6%)
-> arr-inc        :   11.630 =C2=B1 0.020M/s  (+6.8%)
-> hash-inc       :    1.543 =C2=B1 0.002M/s  (+1.7%)
->
+On 4/18/24 9:14 AM, Eric Biggers wrote:
+> On Sun, Apr 14, 2024 at 12:08:50PM -0500, Alex Elder wrote:
+>> diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
+>> index 9c7cf73473943..bce43b01721cb 100644
+>> --- a/Documentation/process/coding-style.rst
+>> +++ b/Documentation/process/coding-style.rst
+>> @@ -1235,17 +1235,18 @@ example. Again: WARN*() must not be used for a condition that is expected
+>>   to trigger easily, for example, by user space actions. pr_warn_once() is a
+>>   possible alternative, if you need to notify the user of a problem.
+>>   
+>> -Do not worry about panic_on_warn users
 
-Nice, looks pretty reasonable (and especially if
-bpf_smp_get_current_id() gets inlined as well, the numbers should be
-even better)
+This is still[1] good advice. panic_on_warn users have made a
+trade-off that works for them, but that should not mean that
+all of the valid cases for WARN*() suddenly disappear. In fact,
+without the WARN*() calls, panic_on_warn is a no-op, as someone
+else has already pointed out.
 
 
-> (It's early, and the coffee haven't kicked in, so I hope the
-> calculations are correct...)
->
-> >>
-> >> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
-> >>
-> >> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> >> ---
-> >>  arch/riscv/net/bpf_jit_comp64.c | 24 ++++++++++++++++++++++++
-> >>  1 file changed, 24 insertions(+)
-> >>
-> >> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_=
-comp64.c
-> >> index 15e482f2c657..e95bd1d459a4 100644
-> >> --- a/arch/riscv/net/bpf_jit_comp64.c
-> >> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> >> @@ -12,6 +12,7 @@
-> >>  #include <linux/stop_machine.h>
-> >>  #include <asm/patch.h>
-> >>  #include <asm/cfi.h>
-> >> +#include <asm/percpu.h>
-> >>  #include "bpf_jit.h"
-> >>
-> >>  #define RV_FENTRY_NINSNS 2
-> >> @@ -1089,6 +1090,24 @@ int bpf_jit_emit_insn(const struct bpf_insn *in=
-sn, struct rv_jit_context *ctx,
-> >>                         emit_or(RV_REG_T1, rd, RV_REG_T1, ctx);
-> >>                         emit_mv(rd, RV_REG_T1, ctx);
-> >>                         break;
-> >> +               } else if (insn_is_mov_percpu_addr(insn)) {
-> >> +                       if (rd !=3D rs)
-> >> +                               emit_mv(rd, rs, ctx);
-> >
-> > Is this an unconditional move instruction? in x86-64, EMIT_mov checks
-> > whether source and destination registers are the same and doesn't emit
-> > anything if they match (which makes sense, right)?
->
-> Yeah, it is. Folding the check into the emit sounds like a good idea.
->
+>> -**************************************
+>> +The panic_on_warn kernel option
+>> +********************************
+>>   
+>> -A few more words about panic_on_warn: Remember that ``panic_on_warn`` is an
+>> -available kernel option, and that many users set this option. This is why
+>> -there is a "Do not WARN lightly" writeup, above. However, the existence of
+>> -panic_on_warn users is not a valid reason to avoid the judicious use
+>> -WARN*(). That is because, whoever enables panic_on_warn has explicitly
+>> -asked the kernel to crash if a WARN*() fires, and such users must be
+>> -prepared to deal with the consequences of a system that is somewhat more
+>> -likely to crash.
+>> +Note that ``panic_on_warn`` is an available kernel option. If it is enabled,
+>> +a WARN*() call whose condition holds leads to a kernel panic.  Many users
+>> +(including Android and many cloud providers) set this option, and this is
+>> +why there is a "Do not WARN lightly" writeup, above.
+>> +
+>> +The existence of this option is not a valid reason to avoid the judicious
+>> +use of warnings. There are other options: ``dev_warn*()`` and ``pr_warn*()``
+>> +issue warnings but do **not** cause the kernel to crash. Use these if you
+>> +want to prevent such panics.
+>>   
+> 
+> Nacked-by: Eric Biggers <ebiggers@google.com>
 
-great
+Yes. I agree with this NAK.
 
->
-> Bj=C3=B6rn
+> 
+> WARN*() are for recoverable assertions, i.e. situations where the condition
+> being true can only happen due to a kernel bug but where they can be recovered
+> from (unlike BUG*() which are for unrecoverable situations).  The people who use
+> panic_on_warn *want* the kernel to crash when such a situation happens so that
+> the underlying issue can be discovered and fixed.  That's the whole point.
+> 
+> Also, it's not true that "Android" sets this option.  It might be the case that
+> some individual Android OEMs have decided to use it for some reason (they do
+> have the ability to customize their kernel command line, after all).  It's
+> certainly not used by default or even recommended.
+> 
+> - Eric
+> 
+
+[1] https://lore.kernel.org/lkml/0db131cf-013e-6f0e-c90b-5c1e840d869c@nvidia.com/T/#md6836102150ac1e6265569aad55a692e3af75f34
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
 
