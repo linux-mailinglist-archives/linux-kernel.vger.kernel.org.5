@@ -1,117 +1,115 @@
-Return-Path: <linux-kernel+bounces-149353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D61F08A8FFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:24:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCD8C8A8FFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:24:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77E5B1F2259C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 00:24:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 723141F2251A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 00:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DD333C24;
-	Thu, 18 Apr 2024 00:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A6B8487;
+	Thu, 18 Apr 2024 00:24:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="opzSoicw"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aDDhInLk"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C0510F2
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 00:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C9F16FA7
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 00:24:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713399857; cv=none; b=LyOZpOX/yQla9uyiV5/1woYBMYBCVDU8CdD041niJwjqbZcx4hXNVDxaE2+VGSWAaHXHI9m+WRckKiUOdNalpI7rDf6RZjm/ZufwuqlgGtIiUwtAzihWeYAsKX2/F4P9vxOe5x2xmwQc5zPOhSiCpqZDpsGNxjCZ3bsXki/BBGc=
+	t=1713399865; cv=none; b=gPlrlNx/lX11fRY7i7LLRHjCFdWmZbj9NZoQPzcFmJVUZqMSQ4gzhgz8Byp0OZjW5nNhT2eRcXwDzQeQst81EG4iSoUV0Lk9p0ChuqXWrYa++1qtrxHI37I+O7AP0kaE438ktAEgvoftLtI5O2mKhAox7wojudIbxA946XYf4KQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713399857; c=relaxed/simple;
-	bh=0iN+zs7FbJTFFZKHkZZGXu99GW8qS8VPabqrDqZaBXg=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=VOzB8VBLHFneBdI2w7CTWFj5pq2cHnwxUnF51dVCnVzBp77j4OepCyO+4zVq4p3UEQAm+vMaOVLni6K6+QQCZDi9cDIveNNXCpR3o/jMp+DJdGlr7k5CU6OAG3K38CtB2CkE0cmQjoMn4+6B2NSVXegh47toLgndj6nLd4JImH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=opzSoicw; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id D92022C02B0;
-	Thu, 18 Apr 2024 12:24:06 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1713399846;
-	bh=0iN+zs7FbJTFFZKHkZZGXu99GW8qS8VPabqrDqZaBXg=;
-	h=From:To:Subject:Date:From;
-	b=opzSoicw9JjaW0tmG3jy3zTWlNXpjW61G70j/xhSyqsmyaR0RXbMcAGbgeH15yrfu
-	 WjWwScogSc9UUvG2L74+sI93VE7f39uM+SMXJwLIIhCC6N6vFaMURjfVdsJhEgIAG6
-	 /phbJ3yQasPJ750KVUfdO8Zv6CVLgj+TZVsz2YSit2z4QS7ToQ7zFu1AFALfapqjfg
-	 NOYzSP+k0e88OPV6ybEEnkF6Ir9ZqSnIf+t1fxlsrTyy3xb5Ydsa4a5NJO8sCMIqCY
-	 CaEeGorViz02l5nupoPOLTRgCSlnJ1XnrNyhrq1XlYg+BcODm6UeGqYAh8hkSaTntL
-	 yvW9+q2L/DGCA==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B662068260000>; Thu, 18 Apr 2024 12:24:06 +1200
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Thu, 18 Apr 2024 12:24:06 +1200
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1544.009; Thu, 18 Apr 2024 12:24:06 +1200
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
-Subject: local bus enumeration beyond a PCI device
-Thread-Topic: local bus enumeration beyond a PCI device
-Thread-Index: AQHakSa58Ehmqkf3b0um4G7kLubeEw==
-Date: Thu, 18 Apr 2024 00:24:06 +0000
-Message-ID: <bad63409-ed2b-4cef-988b-3c143636e9fa@alliedtelesis.co.nz>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5A3D632F701D594E939AE2FF35281DCD@atlnz.lc>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1713399865; c=relaxed/simple;
+	bh=6ygLYaCatgmj8esyzxPKSf1Vm5MNhsxUau+glf4fnUA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ILWaEe+r4f8uUOSN7uqFpvELb78USBqQ4YWLKfZ2z6xDNEBVO8i0VFrrynyUyO3Wj2SWlAClngWuDEmVEoQcp3lT0iX7GuSgL5Iw0wbbNLHZPh1VRMt2q1mEhJXNyxbW9AG9YKbVJ6l2feyjVfc1Rn00zWxGJ9UQrksUvgW9sgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aDDhInLk; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713399863;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6ygLYaCatgmj8esyzxPKSf1Vm5MNhsxUau+glf4fnUA=;
+	b=aDDhInLkSdKvMqKc3/8MCQYJDYpiHNShuS4WQqoMhms68A10RCFusCucxP/wobq0/WYHxu
+	ifIs0ZHyPdA3jZm8jMCMvopt7Rh2yvewTvN0LMPAmDaJCnAt+m2pBuPeOnnhivJPpPtUH0
+	zk3+YDbBN7TXBWGfQ8EHMQeyDO3vMUM=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-283-fR9_WN6KPEqbleNJ_ulVuA-1; Wed, 17 Apr 2024 20:24:19 -0400
+X-MC-Unique: fR9_WN6KPEqbleNJ_ulVuA-1
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5dcbb769a71so303570a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 17:24:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713399858; x=1714004658;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6ygLYaCatgmj8esyzxPKSf1Vm5MNhsxUau+glf4fnUA=;
+        b=cAWbfrN2OP18CvTCp3f922pJjbFHnoWsNcx/QY9ROFc6IVlGRZqXYTSVgSR/fbOkQ3
+         xQIftvuunA0/IxxzFjTKG3fg5NOCIVX8cDRTqQQ3rXlwG1fW04b9GXVE3K4lNGn24Sna
+         eiPCfV9KYoLWnqPO1IKAWxRHaxkZ4aWJoGnDeI+3rrEkiU+MzSdZcGFA6JyS4g2sU4gI
+         0j7T+foMRnbUek19a6BTUhpYGYTafo2A/jxSvbg4rNjG9GX2RoWYqnP0L8CWbjDAEPgo
+         5PPY8hQu4FHbG5c4v6uSqJzDwv4lEwwVNEWFGFJTdIDhr4rtZChL6Iz1y+jbc326NyHm
+         +d/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVcy+ZT7tAwkSqFyKVIjD8FJ/3Is6sX9TCI6ArIJD85rbEEWKDgr+px5LubprpDiSXr70Ztky/yXYUo60A3bE97yWMptmzAdsPZoNhC
+X-Gm-Message-State: AOJu0YyDLbCn9MQP5g6i6SHtKzx9WzyrhFx9WobmI50twxylEZ+Mhs3X
+	16oGRbUGq9dI/Tv6v2EAY407j5ePnv5eqck9ELS2Y7YDXsedX/yvz0opdC4cYEKg9IoMJh3gM2a
+	2b2ptQQBjoN/7cUe8+VwODy+guapaYDv6r2hQssM5pxrL3dvxOhO+1o/XmwjILMfcU9cvmP0EVg
+	CpPZw0ZTMIKj2InhN62izqCXe+fOrh/b/ceztK
+X-Received: by 2002:a05:6a21:3a48:b0:1aa:9595:4261 with SMTP id zu8-20020a056a213a4800b001aa95954261mr870733pzb.22.1713399858445;
+        Wed, 17 Apr 2024 17:24:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IElOi+SwtyiWKoWx9Rs4yVtkTdu/i6pUpqiCyZiV2+/NEDFVMxkU8nklag1Drtb3Woi5q0BV46joIjy5ZPGPbE=
+X-Received: by 2002:a05:6a21:3a48:b0:1aa:9595:4261 with SMTP id
+ zu8-20020a056a213a4800b001aa95954261mr870713pzb.22.1713399858165; Wed, 17 Apr
+ 2024 17:24:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=dY4j3mXe c=1 sm=1 tr=0 ts=66206826 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=HKGT0sa775DmyZdDYaUA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+References: <20240417071822.27831-1-liangchen.linux@gmail.com>
+In-Reply-To: <20240417071822.27831-1-liangchen.linux@gmail.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Thu, 18 Apr 2024 08:24:06 +0800
+Message-ID: <CACGkMEuABgSn396Cfi1Pt42Q__fCsr-G3XJYZUH3CEOARZ5Opg@mail.gmail.com>
+Subject: Re: [PATCH net-next v9] virtio_net: Support RX hash XDP hint
+To: Liang Chen <liangchen.linux@gmail.com>
+Cc: mst@redhat.com, xuanzhuo@linux.alibaba.com, hengqi@linux.alibaba.com, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org, 
+	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-SGksDQoNCldlJ3ZlIGdvdCBhIGN1c3RvbSB4ODZfNjQgYmFzZWQgZGVzaWduIHRoYXQgaXMgdXNp
-bmcgYW4gQVNJWDkxMDAgdG8gDQpwcm92aWRlIGEgUENJIHRvIGxvY2FsIGJ1cyBicmlkZ2UuIEF0
-dGFjaGVkIHRvIHRoYXQgbG9jYWwgYnVzIGlzIGFuIEZQR0EgDQp3aGljaCBtb3N0bHkgcHJvdmlk
-ZXMgc29tZSBHUElPcyBhY2Nlc3NlZCB2aWEgcmVnaXN0ZXJzIG9uIHRoZSBsb2NhbCANCmJ1cy4g
-UmlnaHQgbm93IHdlJ3ZlIGdvdCBhIGN1c3RvbSBkcml2ZXIgdGhhdCBidW5kbGVzIGV2ZXJ5dGhp
-bmcgDQp0b2dldGhlciBzbyBlZmZlY3RpdmVseSB3ZSd2ZSBnb3QgYSBQQ0kgZGV2aWNlIHRoYXQg
-cHJvdmlkZXMgR1BJT3MuDQoNCkJ1dCBhcyB0aGluZ3MgY2FuIGNoYW5nZSBiYXNlZCBvbiB0aGUg
-RlBHQSBwcm9ncmFtIEknZCBsaWtlIHNvbWUgDQpmbGV4aWJpbGl0eSB0byB0cmVhdCBpdCBzZXBh
-cmF0ZWx5IGZyb20gdGhlIFBDSSBicmlkZ2UuIFNvIHJlYWxseSBJJ2QgDQpsaWtlIHRvIGhhdmUg
-YSBQQ0kgZGV2aWNlIGRyaXZlciBmb3IgdGhlIEFTSVg5MTAwIHRoYXQgcHJvdmlkZXMgYSBsb2Nh
-bCANCmJ1cyBjb250cm9sbGVyIGFuZCBhIChwbGF0Zm9ybT8pIGRyaXZlciBmb3IgdGhlIEZQR0Eg
-dGhhdCBwcm92aWRlcyB0aGUgDQpHUElPcyB3aGVyZSBJIGNhbiBoYXZlIGRpZmZlcmVudCBjb21w
-YXRpYmxlcyBmb3IgdGhlIGRpZmZlcmVudCANCmltcGxlbWVudGF0aW9ucy4NCg0KVGhlbiBpbiB0
-aGUgQUNQSSBvdmVybGF5IEknZCBoYXZlIHNvbWV0aGluZyBsaWtlDQoNCiDCoMKgwqAgU2NvcGUg
-KFxfU0IuUENJMC5EMEIwKQ0KIMKgwqDCoCB7DQogwqDCoMKgwqDCoMKgwqAgRGV2aWNlIChBU0lY
-KQ0KIMKgwqDCoMKgwqDCoMKgIHsNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIE5hbWUgKF9BRFIs
-IDB4MDAwMCkNCg0KIMKgwqDCoCDCoMKgwqAgwqDCoMKgIERldmljZSAoRlBHQSkNCiDCoMKgwqAg
-wqDCoMKgIMKgwqDCoCB7DQogwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKg
-wqAgTmFtZSAoX0hJRCwgIlBSUDAwMDEiKQ0KIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDC
-oMKgwqAgwqDCoMKgIE5hbWUgKF9EU0QsIFBhY2thZ2UgKCkNCiDCoMKgwqAgwqDCoMKgIMKgwqDC
-oCDCoMKgwqAgwqDCoMKgIMKgwqDCoCB7DQpUb1VVSUQoImRhZmZkODE0LTZlYmEtNGQ4Yy04YTkx
-LWJjOWJiZjRhYTMwMSIpLA0KIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDC
-oMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIFBhY2thZ2UgKCkNCiDCoMKgwqAgwqDCoMKgIMKgwqDC
-oCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCB7DQogwqDCoMKgIMKg
-wqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDC
-oMKgIMKgwqDCoCDCoMKgwqAgUGFja2FnZSAoKSB7IA0KImNvbXBhdGlibGUiLCAibXktcGxhdGZv
-cm0tZHJpdmVyLWZvci1mcGdhIiB9LA0KIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKg
-wqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIH0NCiDCoMKgwqAgwqDCoMKgIMKgwqDCoCDC
-oMKgwqAgwqDCoMKgIMKgwqDCoCB9KQ0KIMKgwqDCoCDCoMKgwqAgwqDCoMKgIH0NCiDCoMKgwqDC
-oMKgwqDCoCB9DQogwqDCoMKgIH0NCg0KIMKgwqAgU2NvcGUoXF9TQikNCiDCoMKgIHsNCiDCoMKg
-wqAgwqDCoMKgIERldmljZShPVEhSKQ0KIMKgwqDCoCDCoMKgwqAgew0KIMKgwqDCoCDCoMKgwqAg
-wqDCoMKgIEdwaW9JbyAoRXhjbHVzaXZlLCBQdWxsVXAsIDAsIDAsIElvUmVzdHJpY3Rpb25JbnB1
-dE9ubHksIA0KIlxcX1NCLlBDSTAuRDBCMC5BU0lYLkZQR0EiLCkgeyAwIH0NCiDCoMKgwqAgwqDC
-oMKgIH0NCiDCoMKgIH0NCg0KSXMgaXQgZXZlbiBwb3NzaWJsZSB0byByZWdpc3RlciBhIGhvc3Qg
-Y29udHJvbGxlciBmb3IgYW5vdGhlciBwbGF0Zm9ybSBidXM/DQoNClRoYW5rcywNCkNocmlzDQo=
+On Wed, Apr 17, 2024 at 3:20=E2=80=AFPM Liang Chen <liangchen.linux@gmail.c=
+om> wrote:
+>
+> The RSS hash report is a feature that's part of the virtio specification.
+> Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
+> (still a work in progress as per [1]) support this feature. While the
+> capability to obtain the RSS hash has been enabled in the normal path,
+> it's currently missing in the XDP path. Therefore, we are introducing
+> XDP hints through kfuncs to allow XDP programs to access the RSS hash.
+>
+> 1.
+> https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@daynix.=
+com/#r
+>
+> Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
+> ---
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+Thanks
+
 
