@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-150192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 567208A9B86
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:45:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8366E8A9B87
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:45:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87AF81C21603
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:45:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD6E4B22085
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:45:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B09B1635B7;
-	Thu, 18 Apr 2024 13:44:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E200160790;
+	Thu, 18 Apr 2024 13:44:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Za4/TxTW"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fy1jzZe1"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22DD161912
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 13:44:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F8B1635CA
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 13:44:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713447889; cv=none; b=LaY9xcwcuCn+Wl2GnwEnO8k05WmIDoF3RBVdHWigmjvlrdHiBt9K379W/HmqENK1q3qXKNxkCgyW08mX5J7AjnsLHaU5jWrLSCwPheQfyjGxP2lQo1mkCbLKNFgRGiggOkUyMkaaFlZmfiQJ9sxAaB3zBLzMLSyYd4GE/1w2Uc4=
+	t=1713447893; cv=none; b=WJhYREDlGzsTNXUZ7986ZXOqgkJ2ogFucxeL7CyISn5u6L23iGrCc7Q3DZCpZrHEkyB+cfR3Y2e/IzFL0kkFR7zbhn+e5qcl4OZ0mYWrcp+VkIFWmXZLfJsxzWTANitRUwzdqSEyp0Dd5qe403AyrpVlVenFeyMc6PIuMPGGF9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713447889; c=relaxed/simple;
-	bh=YS1E84UOxIjSnPESm8G/PnNhVqV2TAef9FqSYBszYkA=;
+	s=arc-20240116; t=1713447893; c=relaxed/simple;
+	bh=vs6Beq48+kXNT5qsMOGp08C7Ii4wZzzBthcyqUl9lGQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Xr90U158FMO9CtUjb935+ei5mYUY8vtaKy7EuibSVOaVurw3055IdQ1VyYF0rLchw4LboDWIidj5hbHOIW8CWK6NS6ne15tHPWOy1pdjJu7SnWboNttkVxwqaVyUX/uSH1RGHPYfrAb50Uw/dHQPiqnZfRZN+5+NyQUPyTkoR1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Za4/TxTW; arc=none smtp.client-ip=209.85.214.174
+	 MIME-Version; b=nN/6h94PItWrYu8WDQ0IyMOatLnx3CoqG0Fk3Qq7/2XVpOemLu0GpDTXc/VjU7yFX7sW9d2dFFZUjiJU4JuJZmoEBqZCgnNVkNTY5RVHwSMi6c1sl8FjRFKU/2d3LA0QN2T9WtqOfHvzLcncqxtSneYFVB0dNBZeS+9ZwGk+fdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fy1jzZe1; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e4f341330fso7427265ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:44:47 -0700 (PDT)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e2178b2cf2so7522085ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:44:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713447887; x=1714052687; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713447891; x=1714052691; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lkdNcUi/cFtD91tOAv56m6RXgS21TIueDzxwluwn/Lw=;
-        b=Za4/TxTWOepEKyGGfR0FHxnhf2XdyASegoAdc2nKQ+2RExImc/taLIT0k1Msa2C1vM
-         c7WXRd2DtgCPN9qUv0UXj5ekDJZwOlqE6GF0l9VcRJriyQnt3N4wf6tBpsCFh5yiJbVj
-         KDn0vnwxjWhZXTx5utzGWloemW+p83axogczbZ1C0bUM+t9GOZxshyqEjLfG/Z1oxF0J
-         wgOjAyuVBTAYcEh3jo0VVzCuCCvh1jLX+hfbHipcEMG7cB1L4VD7ugrIZiYyYdPrAEdh
-         P/7Ho8uMmQRAnGZ/HdfHXYm/lvaB8ykMvWVsvMXGDcIWxWQ8oVbtVj+OiBv1jOv8OIzL
-         yWTw==
+        bh=XITq4/hgHmAHZ0ZHlNrd2qmUtOIaf33ePb9J0ZwzOSE=;
+        b=fy1jzZe1tieU44OGut/eAKh14C0yk5j3Pr/YZ+XNHWdNgSsVSfAd9mRpYwGKpmYnK2
+         1OntILn48k1YHKXBCZo6UhZIvgTb5YunBD35J2nGSGEfXDVJ7BGErOON8gXDLg3R1wzC
+         17en/J/SZ+y9SZrL0xg/yKq4u0i5PyWW3iPNszUwts7y3RrZ7v84PjA7CQu7uDOmJj3v
+         Bol8+mjXtzDM9pKnvgNauVlJgEnLkBF8hzg1ntM8lk1RYhykrNMu6U4YBjN4ZQABpqa6
+         XH8FdMnJSgE3nPKKryn9mbfToRs/DKkczDy0LY+o0dJXAzL648/v5Je+EkmYA++o+VPe
+         p9qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713447887; x=1714052687;
+        d=1e100.net; s=20230601; t=1713447891; x=1714052691;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lkdNcUi/cFtD91tOAv56m6RXgS21TIueDzxwluwn/Lw=;
-        b=CAZJRv1YGY7mXGU9n3LQ+r5Y68Ya5FQzuRaNm/lWZcFQjOqcctq+RfoijXcCGA/vnG
-         kv81XqkReANTv08bsrhmzJYXy9QI7OQyKC4/UNNx8oRC7Al1dB8o0rF6crn3/kyBI5si
-         BpcjPJ55EricNUxqUxaz/KlcsbZogtf4uXDIJfKsmCr0EKoaUs+mbIe6XFAsoIh93Qgb
-         Yfuz7MUpbWmYK92zAEhQ0gMGTwK/g8Ij2Ch53R+ZTK0pDt1iFNMENBizX5dXlKQvKknv
-         Hzh69ww8FSQDJDqQSRwLelMXRkLyfAgdCLZj3DnHSxE+AlhcgKXeL7VADaeBAzHSj4S2
-         +rzg==
-X-Forwarded-Encrypted: i=1; AJvYcCVD+f43iHiwu1njspxqs/9PRX4LRJ2OTvX+WIdAtzm3iWEoot1iwbRAaoxJMPP25NdTdDpJ2byVHDRvFUy3wRuiVepqw+3R0ojXoEuB
-X-Gm-Message-State: AOJu0YzCPVJhrBHC7qp8MgJbcga2mwH00rdCpuBlyWEoF/KIjK/K/i6R
-	untUZjsgSpSzGfmaiGx0qjPj002PCShTVVEN0NMeF9AKcdMpr3Pv
-X-Google-Smtp-Source: AGHT+IG2GVYbLpKp4yUNNUcOXfACY+2bHpA67aILzi27vexy/CeFyGpA5xeZ5gYV+u3w513tsrVcFA==
-X-Received: by 2002:a17:902:c94e:b0:1e7:b775:64bd with SMTP id i14-20020a170902c94e00b001e7b77564bdmr3953276pla.53.1713447887193;
-        Thu, 18 Apr 2024 06:44:47 -0700 (PDT)
+        bh=XITq4/hgHmAHZ0ZHlNrd2qmUtOIaf33ePb9J0ZwzOSE=;
+        b=N1BMGNljkWRgnVt44DlDFrEzRuA54t1A/N76NNO5bVLdKi824YxLj/pdaLS+134KvI
+         9sNh2KiYD8XlSHKwsG75hk2FDIayBLaWNGv7xx3s9+ggGjYeDCieEKBQIa5lDk90PiX/
+         bVmci+QIf3rYJAwp01SL8jXCIdAiIWqIvlMDi7v7M1DYXj/zY3FiAdW2m8sI72mgU7EJ
+         fCyTIwIeacKrHZNvYy4U/5pWXBvx1lSYk3WUTximBjz3H/8mEccDbH9Jib08s23ah41O
+         KxOevsxFTxuUGJKWf84xppybcZGd4vgodsJV1QVszSws668X1aTFQFrCMpXGEKUbBv6k
+         SmKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXdtxMCRcNOxPQkkVLs4lT/iERWZAkguyf0tlJZ8jVsipaAiXvFsvo2FuzRUBlWrWCq/e9yi0EfHIO+1VH9oCV0KJ1FlkzYe5tcT6l8
+X-Gm-Message-State: AOJu0Yx5eRpZy85SUmxifyQcNHb1ZDvhFQbmIlXpQkbKwEuJV8CXbJs3
+	YJzhdkNXhGHS2ZLHpja/2GvM28LMeunbgLOZcUxD2ZA1vuZFfA3E
+X-Google-Smtp-Source: AGHT+IFMvPYbcwWGZBEI/RPL6zIG2k4X3bC8gD2IhYt301UAgb/Og2L2LjKZC1QkdaZ8PQQDYIe8QA==
+X-Received: by 2002:a17:902:db0a:b0:1e2:1db3:ebeb with SMTP id m10-20020a170902db0a00b001e21db3ebebmr3985587plx.57.1713447891167;
+        Thu, 18 Apr 2024 06:44:51 -0700 (PDT)
 Received: from LancedeMBP.lan ([112.10.225.217])
-        by smtp.gmail.com with ESMTPSA id d8-20020a170902b70800b001e4fdcf67desm1504837pls.299.2024.04.18.06.44.43
+        by smtp.gmail.com with ESMTPSA id d8-20020a170902b70800b001e4fdcf67desm1504837pls.299.2024.04.18.06.44.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 06:44:46 -0700 (PDT)
+        Thu, 18 Apr 2024 06:44:50 -0700 (PDT)
 From: Lance Yang <ioworker0@gmail.com>
 To: akpm@linux-foundation.org
 Cc: ryan.roberts@arm.com,
@@ -83,9 +83,9 @@ Cc: ryan.roberts@arm.com,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	Lance Yang <ioworker0@gmail.com>
-Subject: [PATCH v10 1/4] mm/madvise: introduce clear_young_dirty_ptes() batch helper
-Date: Thu, 18 Apr 2024 21:44:32 +0800
-Message-Id: <20240418134435.6092-2-ioworker0@gmail.com>
+Subject: [PATCH v10 2/4] mm/arm64: override clear_young_dirty_ptes() batch helper
+Date: Thu, 18 Apr 2024 21:44:33 +0800
+Message-Id: <20240418134435.6092-3-ioworker0@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20240418134435.6092-1-ioworker0@gmail.com>
 References: <20240418134435.6092-1-ioworker0@gmail.com>
@@ -97,147 +97,146 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit introduces clear_young_dirty_ptes() to replace mkold_ptes().
-By doing so, we can use the same function for both use cases
-(madvise_pageout and madvise_free), and it also provides the flexibility
-to only clear the dirty flag in the future if needed.
+The per-pte get_and_clear/modify/set approach would result in
+unfolding/refolding for contpte mappings on arm64. So we need
+to override clear_young_dirty_ptes() for arm64 to avoid it.
 
+Suggested-by: Barry Song <21cnbao@gmail.com>
 Suggested-by: Ryan Roberts <ryan.roberts@arm.com>
-Acked-by: David Hildenbrand <david@redhat.com>
 Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
 Signed-off-by: Lance Yang <ioworker0@gmail.com>
 ---
- include/linux/mm_types.h |  9 +++++
- include/linux/pgtable.h  | 74 ++++++++++++++++++++++++----------------
- mm/madvise.c             |  3 +-
- 3 files changed, 55 insertions(+), 31 deletions(-)
+ arch/arm64/include/asm/pgtable.h | 55 ++++++++++++++++++++++++++++++++
+ arch/arm64/mm/contpte.c          | 29 +++++++++++++++++
+ 2 files changed, 84 insertions(+)
 
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index db0adf5721cc..24323c7d0bd4 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -1368,6 +1368,15 @@ enum fault_flag {
- 
- typedef unsigned int __bitwise zap_flags_t;
- 
-+/* Flags for clear_young_dirty_ptes(). */
-+typedef int __bitwise cydp_t;
-+
-+/* Clear the access bit */
-+#define CYDP_CLEAR_YOUNG		((__force cydp_t)BIT(0))
-+
-+/* Clear the dirty bit */
-+#define CYDP_CLEAR_DIRTY		((__force cydp_t)BIT(1))
-+
- /*
-  * FOLL_PIN and FOLL_LONGTERM may be used in various combinations with each
-  * other. Here is what they mean, and how to use them:
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index e2f45e22a6d1..18019f037bae 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -361,36 +361,6 @@ static inline int ptep_test_and_clear_young(struct vm_area_struct *vma,
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index 9fd8613b2db2..1303d30287dc 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -1223,6 +1223,46 @@ static inline void __wrprotect_ptes(struct mm_struct *mm, unsigned long address,
+ 		__ptep_set_wrprotect(mm, address, ptep);
  }
- #endif
  
--#ifndef mkold_ptes
--/**
-- * mkold_ptes - Mark PTEs that map consecutive pages of the same folio as old.
-- * @vma: VMA the pages are mapped into.
-- * @addr: Address the first page is mapped at.
-- * @ptep: Page table pointer for the first entry.
-- * @nr: Number of entries to mark old.
-- *
-- * May be overridden by the architecture; otherwise, implemented as a simple
-- * loop over ptep_test_and_clear_young().
-- *
-- * Note that PTE bits in the PTE range besides the PFN can differ. For example,
-- * some PTEs might be write-protected.
-- *
-- * Context: The caller holds the page table lock.  The PTEs map consecutive
-- * pages that belong to the same folio.  The PTEs are all in the same PMD.
-- */
--static inline void mkold_ptes(struct vm_area_struct *vma, unsigned long addr,
--		pte_t *ptep, unsigned int nr)
--{
--	for (;;) {
--		ptep_test_and_clear_young(vma, addr, ptep);
--		if (--nr == 0)
--			break;
--		ptep++;
--		addr += PAGE_SIZE;
--	}
--}
--#endif
--
- #ifndef __HAVE_ARCH_PMDP_TEST_AND_CLEAR_YOUNG
- #if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_ARCH_HAS_NONLEAF_PMD_YOUNG)
- static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
-@@ -489,6 +459,50 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
- }
- #endif
- 
-+#ifndef clear_young_dirty_ptes
-+/**
-+ * clear_young_dirty_ptes - Mark PTEs that map consecutive pages of the
-+ *		same folio as old/clean.
-+ * @mm: Address space the pages are mapped into.
-+ * @addr: Address the first page is mapped at.
-+ * @ptep: Page table pointer for the first entry.
-+ * @nr: Number of entries to mark old/clean.
-+ * @flags: Flags to modify the PTE batch semantics.
-+ *
-+ * May be overridden by the architecture; otherwise, implemented by
-+ * get_and_clear/modify/set for each pte in the range.
-+ *
-+ * Note that PTE bits in the PTE range besides the PFN can differ. For example,
-+ * some PTEs might be write-protected.
-+ *
-+ * Context: The caller holds the page table lock.  The PTEs map consecutive
-+ * pages that belong to the same folio.  The PTEs are all in the same PMD.
-+ */
-+static inline void clear_young_dirty_ptes(struct vm_area_struct *vma,
-+					  unsigned long addr, pte_t *ptep,
-+					  unsigned int nr, cydp_t flags)
++static inline void __clear_young_dirty_pte(struct vm_area_struct *vma,
++					   unsigned long addr, pte_t *ptep,
++					   pte_t pte, cydp_t flags)
++{
++	pte_t old_pte;
++
++	do {
++		old_pte = pte;
++
++		if (flags & CYDP_CLEAR_YOUNG)
++			pte = pte_mkold(pte);
++		if (flags & CYDP_CLEAR_DIRTY)
++			pte = pte_mkclean(pte);
++
++		pte_val(pte) = cmpxchg_relaxed(&pte_val(*ptep),
++					       pte_val(old_pte), pte_val(pte));
++	} while (pte_val(pte) != pte_val(old_pte));
++}
++
++static inline void __clear_young_dirty_ptes(struct vm_area_struct *vma,
++					    unsigned long addr, pte_t *ptep,
++					    unsigned int nr, cydp_t flags)
 +{
 +	pte_t pte;
 +
 +	for (;;) {
-+		if (flags == CYDP_CLEAR_YOUNG)
-+			ptep_test_and_clear_young(vma, addr, ptep);
-+		else {
-+			pte = ptep_get_and_clear(vma->vm_mm, addr, ptep);
-+			if (flags & CYDP_CLEAR_YOUNG)
-+				pte = pte_mkold(pte);
-+			if (flags & CYDP_CLEAR_DIRTY)
-+				pte = pte_mkclean(pte);
-+			set_pte_at(vma->vm_mm, addr, ptep, pte);
-+		}
++		pte = __ptep_get(ptep);
++
++		if (flags == (CYDP_CLEAR_YOUNG | CYDP_CLEAR_DIRTY))
++			__set_pte(ptep, pte_mkclean(pte_mkold(pte)));
++		else
++			__clear_young_dirty_pte(vma, addr, ptep, pte, flags);
++
 +		if (--nr == 0)
 +			break;
 +		ptep++;
 +		addr += PAGE_SIZE;
 +	}
 +}
-+#endif
 +
- static inline void ptep_clear(struct mm_struct *mm, unsigned long addr,
- 			      pte_t *ptep)
- {
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 4b869b682fd5..f5e3699e7b54 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -507,7 +507,8 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 			continue;
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ #define __HAVE_ARCH_PMDP_SET_WRPROTECT
+ static inline void pmdp_set_wrprotect(struct mm_struct *mm,
+@@ -1379,6 +1419,9 @@ extern void contpte_wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
+ extern int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
+ 				unsigned long addr, pte_t *ptep,
+ 				pte_t entry, int dirty);
++extern void contpte_clear_young_dirty_ptes(struct vm_area_struct *vma,
++				unsigned long addr, pte_t *ptep,
++				unsigned int nr, cydp_t flags);
  
- 		if (!pageout && pte_young(ptent)) {
--			mkold_ptes(vma, addr, pte, nr);
-+			clear_young_dirty_ptes(vma, addr, pte, nr,
-+					       CYDP_CLEAR_YOUNG);
- 			tlb_remove_tlb_entries(tlb, pte, nr, addr);
- 		}
+ static __always_inline void contpte_try_fold(struct mm_struct *mm,
+ 				unsigned long addr, pte_t *ptep, pte_t pte)
+@@ -1603,6 +1646,17 @@ static inline int ptep_set_access_flags(struct vm_area_struct *vma,
+ 	return contpte_ptep_set_access_flags(vma, addr, ptep, entry, dirty);
+ }
  
++#define clear_young_dirty_ptes clear_young_dirty_ptes
++static inline void clear_young_dirty_ptes(struct vm_area_struct *vma,
++					  unsigned long addr, pte_t *ptep,
++					  unsigned int nr, cydp_t flags)
++{
++	if (likely(nr == 1 && !pte_cont(__ptep_get(ptep))))
++		__clear_young_dirty_ptes(vma, addr, ptep, nr, flags);
++	else
++		contpte_clear_young_dirty_ptes(vma, addr, ptep, nr, flags);
++}
++
+ #else /* CONFIG_ARM64_CONTPTE */
+ 
+ #define ptep_get				__ptep_get
+@@ -1622,6 +1676,7 @@ static inline int ptep_set_access_flags(struct vm_area_struct *vma,
+ #define wrprotect_ptes				__wrprotect_ptes
+ #define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
+ #define ptep_set_access_flags			__ptep_set_access_flags
++#define clear_young_dirty_ptes			__clear_young_dirty_ptes
+ 
+ #endif /* CONFIG_ARM64_CONTPTE */
+ 
+diff --git a/arch/arm64/mm/contpte.c b/arch/arm64/mm/contpte.c
+index 1b64b4c3f8bf..9f9486de0004 100644
+--- a/arch/arm64/mm/contpte.c
++++ b/arch/arm64/mm/contpte.c
+@@ -361,6 +361,35 @@ void contpte_wrprotect_ptes(struct mm_struct *mm, unsigned long addr,
+ }
+ EXPORT_SYMBOL_GPL(contpte_wrprotect_ptes);
+ 
++void contpte_clear_young_dirty_ptes(struct vm_area_struct *vma,
++				    unsigned long addr, pte_t *ptep,
++				    unsigned int nr, cydp_t flags)
++{
++	/*
++	 * We can safely clear access/dirty without needing to unfold from
++	 * the architectures perspective, even when contpte is set. If the
++	 * range starts or ends midway through a contpte block, we can just
++	 * expand to include the full contpte block. While this is not
++	 * exactly what the core-mm asked for, it tracks access/dirty per
++	 * folio, not per page. And since we only create a contpte block
++	 * when it is covered by a single folio, we can get away with
++	 * clearing access/dirty for the whole block.
++	 */
++	unsigned long start = addr;
++	unsigned long end = start + nr;
++
++	if (pte_cont(__ptep_get(ptep + nr - 1)))
++		end = ALIGN(end, CONT_PTE_SIZE);
++
++	if (pte_cont(__ptep_get(ptep))) {
++		start = ALIGN_DOWN(start, CONT_PTE_SIZE);
++		ptep = contpte_align_down(ptep);
++	}
++
++	__clear_young_dirty_ptes(vma, start, ptep, end - start, flags);
++}
++EXPORT_SYMBOL_GPL(contpte_clear_young_dirty_ptes);
++
+ int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
+ 					unsigned long addr, pte_t *ptep,
+ 					pte_t entry, int dirty)
 -- 
 2.33.1
 
