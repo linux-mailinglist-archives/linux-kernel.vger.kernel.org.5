@@ -1,1273 +1,236 @@
-Return-Path: <linux-kernel+bounces-149921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 458FC8A97E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:53:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 729B08A97E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:53:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFE5128185F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:53:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2821D281CBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:53:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A954115E208;
-	Thu, 18 Apr 2024 10:52:41 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A7315E7F6;
-	Thu, 18 Apr 2024 10:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713437559; cv=none; b=AAl+IQ6v612xmo+tdBXVpw35kVZM/Edagbb6w9PjmAmC2XMJPHdsGicepr0McrKOV7mR4AW1q4sGE79p7jrmsi6e/OQcf4vMRLatWPv1+OXn+uQX9z0FGXnYePbVeQ8dPl4JQMyJJpKRRfGuCEhH7x8eWfmtCSv3PZEKrPnWv+A=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713437559; c=relaxed/simple;
-	bh=dGQzDpsM/W55QuUgqZ+eGiw7HSRNZael/3cDZjiNJUQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HY4KhsQc2JNtiuyvAm4k0T/j0MHWSWjko3Q6+LBSO+pVy1W3jPISNY2ygF4AdfGanSf8ZHwOqVcYRq2yzroKEQ8oDI7X/rL4bSx+eO8h9UFz5s3MGf1vUSg1YVyCsk7Tw/5izXREjk99QCFDsph0QRpZjL7wiEVb82u28qfJLK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A32FEDA7;
-	Thu, 18 Apr 2024 03:53:04 -0700 (PDT)
-Received: from e120937-lin.. (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 456433F792;
-	Thu, 18 Apr 2024 03:52:35 -0700 (PDT)
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org
-Cc: sudeep.holla@arm.com,
-	cristian.marussi@arm.com,
-	jassisinghbrar@gmail.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Subject: [PATCH v5 2/2] mailbox: arm_mhuv3: Add driver
-Date: Thu, 18 Apr 2024 11:52:10 +0100
-Message-Id: <20240418105210.290938-3-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240418105210.290938-1-cristian.marussi@arm.com>
-References: <20240418105210.290938-1-cristian.marussi@arm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E89715E5A9;
+	Thu, 18 Apr 2024 10:52:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="c0IC4Rjc"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2066.outbound.protection.outlook.com [40.107.236.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F74715B96D;
+	Thu, 18 Apr 2024 10:52:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.66
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713437578; cv=fail; b=hNtrqiWevLOn5/+jnn4xrVnUAzkwvgBS9tpO4f5CXYDzilpWjVUJGzALkoreNpuZmp1biedaajTlO77YGzJNQtiypKpzDzflxwOY5lUYll0fZ2ezjhIZNbLAWLCW8oR3F9M1X9XvgGTqEWtn5HrRPn33TZIt2SAzL1oLXM1AA9s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713437578; c=relaxed/simple;
+	bh=ZRvujl/Cy326XtpHiD8ybAESeoFmvx5PaA2ZEUf2pyk=;
+	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Ca1RhMQo65y4+y6dvv07Gc5c098BJW3osLkD+ulXJLRv7ut2kDsYGcgigBRqZKNm4IZohlfd3iPAmJGQnkzLg3VduuskXPqgPV/Dsid1Komf3Aw7irtSl2Eczqjo57Ezr2HPnA+bGnh6sOPJVDp8J830gsitymvtEI5t/oMdzQc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=c0IC4Rjc; arc=fail smtp.client-ip=40.107.236.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lQFJpPAtF6S36nxCj/3WuSP4PeCwWvgLL2bE0ErmAhGn/gkHzVgSs3vpbwSellxR5WGPvzDD/a/MmugxSjhjoWWm1oPyKGXX4hz1vd0PKnFI1RVQp7OS2Uj9Xb7pfQ8I3kzfhoKpfBYup2IlLoY60CyYXBgqf+fG+cPy/zdahiDLHy3oQyeFs+pSEcNJtYvcdJb5W49Xw7J/piTBe5pGOxuLzbPJn8obu0XCb6fJKy732cR2iNQkI1JQHt7oWoaEQCaVcv5M6QS5fu1qXvkqc9XdvC86ePqT6ceedWISzUHTv+ML6FbqluIotC2FAD61igKWpXtJ07fcssVclWFYeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=E7qT5TGqE5E9TTrsZEV38RAXRgt4rJ4kJosYuVGvvLk=;
+ b=bJI0ngQbIqkY71th5uKgwJy0zvm9X1ZHkoP15RdVqhsZMymr6s+4+BGoIWfjIXcSwoChEZVB1iBIZZzubGjfYTKlJoCUhqmWr9KRTJbmh0Lux3fEbAjQR4KEN15LxBWaBG4hxkAzA6bGxrIF2PVE3/u5xDsKiRLwsVPqv+mcCb5Irn19JtvYjP/g2YwfbQvbtZIhRr0muHPUqqS0g1PX66CXE+MFOXqligftrP3E9ROyIOOPYnS3MvtbvvzdyQcaSa8rweDDVPeSWYirSUic0oZDXKmROopcfbGD6w+WisoeHLyVymd6xRl7IesuNC6AUxz4fZXtZtKyUkfM/JuZDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E7qT5TGqE5E9TTrsZEV38RAXRgt4rJ4kJosYuVGvvLk=;
+ b=c0IC4RjczhpRfGjpaZ6y5bQq1NLGYTHOOZoYVJ7R6zCNEMsPqqaGYsNyQPq/Yl2s7GcdNpudVB1//3aog1ef6s05WE2Sv5k+3GQPEN340zKcMXke7eipvb196dpxfZzUUoWItoFow/erT9sWcPWrAuBdgDBKGBwUTQQwaEmEwxDgG7AqMGIi2IAKEXSU7WRoqrWiOt6ZWbfUvvM9M1qevmxqsDypgnM9DvpnjEtAMFfvhOXc5GbuBU1ItwO6MzdSwBmQ5688HoYl2iOopiwur8OrPAibiT0dRimqXS6KX9Y8s/96w8e+AAbxeL5J2k+J6biCBOyEx+VT+EjgXyJ7lA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from PH8PR12MB6674.namprd12.prod.outlook.com (2603:10b6:510:1c1::18)
+ by IA1PR12MB7520.namprd12.prod.outlook.com (2603:10b6:208:42f::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Thu, 18 Apr
+ 2024 10:52:52 +0000
+Received: from PH8PR12MB6674.namprd12.prod.outlook.com
+ ([fe80::780:77f6:e0af:5b5c]) by PH8PR12MB6674.namprd12.prod.outlook.com
+ ([fe80::780:77f6:e0af:5b5c%4]) with mapi id 15.20.7452.049; Thu, 18 Apr 2024
+ 10:52:52 +0000
+Message-ID: <1427a905-1d01-4b90-8af5-acd1a7f5b1d7@nvidia.com>
+Date: Thu, 18 Apr 2024 16:22:43 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2] PCI: Clear errors logged in Secondary Status Register
+From: Vidya Sagar <vidyas@nvidia.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: bhelgaas@google.com, linux-pci@vger.kernel.org,
+ linux-kernel@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com,
+ kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
+References: <20240122230026.GA290856@bhelgaas>
+ <d93a3f29-b260-4910-aaf5-d734e6242223@nvidia.com>
+ <0c948351-9715-4c5c-ad0c-3727cd2ba8a8@nvidia.com>
+Content-Language: en-US
+In-Reply-To: <0c948351-9715-4c5c-ad0c-3727cd2ba8a8@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MA1PR01CA0149.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:71::19) To PH8PR12MB6674.namprd12.prod.outlook.com
+ (2603:10b6:510:1c1::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR12MB6674:EE_|IA1PR12MB7520:EE_
+X-MS-Office365-Filtering-Correlation-Id: 73cd9b77-eb02-4737-abc8-08dc5f95b1e1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	yg5VPMwqZsZlwfBA1UZt/whu4u1QfUKmqCnZ8BBLCr8OHPVlptXTHc98eQF0HhVhL5radQ0QWaytn/D7l122fC/HJUjM6Z0S5MU3HHnq6QfIw2KR+7bO21jfBga9OSWVYNJxiD5WUf7dmkWtX0yhZ+CgZbEFQS6PUn2vHLvUoLBk3JKGDbNjUZcvinxwI7VYTiCvBe2eggHco8EZB7MY/IamXkIOY6YDmAxvZHjhe4dWKIa2slAQD5epZlh9a916j5tttt/rcrLEhMdrvfSW4rFxUbZjjbhKDEbCccnQSXWtaV+gk2xZdodAHcmHs7x7GskKioCJa0p50cgwJGVeMCE8ZFlZp9pRcQFmh/o6q8RnCAdxS1ASG1vHPmc6gcCP2+unhvs9yd3Xt5/dFrE5Qaoc+4Ayo5Gi3CyHPDtVqvQmjQB/wkxwRKnr6uqMBUdcFG9wGPkyzdw2cgb5HpEFGyJasdbNsb34/fLSMPUufjujp+Aa7n+dy3a0rBQnSVhpv2Pp5jmKyo13aKX89JHqKoWYwRnXznSQZEkFoiMN4joziORddXbyIR/9xX9GiGbXOVnCU1IyUChHpf7/LP0gBTcUpdREpdGJnQ7IMYBIEqSjOlff7HCirwopQ4Bsg9p4zJtTqvqJavR8iwFyafyGwG6M6QqInVpaaT6aPMizI8s=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR12MB6674.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?RUx2eE53cjJoVU9QL0toUzRKck5ydTFtNUhGcUhLNlhhR2tGeWFpT1hOUmpj?=
+ =?utf-8?B?MTZnVnpiZG9XY0xOY21PcVk0TUJRSnJ3R0tYd0xrMEptK1cxWDkxU2pqZ1Bu?=
+ =?utf-8?B?SU42dXB5WDdkWmNtckF5QXVmVFV5VUQ3OXp1Mk1obGU4KytRYkNZSU1LSHYr?=
+ =?utf-8?B?VnF3a3NLTWxtTC9GazVpYy9QclpOVE5pR2ZtUHRLNzhoSXBVZVV5Ti9NUkNU?=
+ =?utf-8?B?NWE0cGNFOXdsS3lrR3pWakY0LzVjYVNnZzRzV1dEM2RjV3VCNnJDMDYxdnhn?=
+ =?utf-8?B?Wnc0ZkVBbVBTWGM0UlVETitmM2VveklLT2VLOGpiZWVxY1lNQmhGTU1xdlRs?=
+ =?utf-8?B?YkxwcURvTUVvRm9mTWhmS3lIL3ZZNzdCS0U2VTJxS0Nwc3h3Vy9LeGhhZDR2?=
+ =?utf-8?B?M1VpY0srREk2NlFxekNqM3ZFVjZVUDhmbVJ2QVBOdldUS1dMRDdGbkRzMHEw?=
+ =?utf-8?B?dkl5cVY2NlBpQ1FDN0RkRmJCYzcwa2dpVG1hYXNYeHRianMrc0FqQ2N1ZTQ0?=
+ =?utf-8?B?VWVMb1NnOXB4SmkwUFhrSUhvN2Vmc2dBc2ZPZENEc0JQc1JVQVZSSTJ2MTdJ?=
+ =?utf-8?B?T1dWVkx4NmJYeUc0YnUxMUhDY20vYWtuNmNOd0xNa1hQaVRiRTYreFZqUU9I?=
+ =?utf-8?B?dFB2QWpoMEdKWFBIa0h2ODVVL0U2M2pXM2s1dkZ4OFJpSTBOWEhYbGhhdnV3?=
+ =?utf-8?B?Vk1RRVJ3NlhRUnlPZzdldFY2aWs4MHc4QmlFUFNzdUxMS0FOSWIxUFNVbEdQ?=
+ =?utf-8?B?bE9qdzNOM3Jnek1aYXV6RFdVM1d0VG5obHlzS05FeVZsVGFpUTErV24vY0Ny?=
+ =?utf-8?B?OFBsYmFCc1BvN0lJdHZwVHd0dHFlK20yS2VsRlM1ekpMT2VweXdJeHFPNmxv?=
+ =?utf-8?B?dlNUK2svb1crSjE5NjFiRWM0bVljUmZOcnFvZDJGMnBLeitBMzhMMFdkek0r?=
+ =?utf-8?B?eHFkZExvaEJSSWZNOHZuczZZcTFjMjYrV2M1ejR2WDgzNnZzYkNuem9yMzY4?=
+ =?utf-8?B?b0NUYldwS0pWT25vamVWZUtBbmc4dGhPRGtEZ0VBZldrUHBpT2NwTGNVQy85?=
+ =?utf-8?B?UzgwVWY5NkxXRHVUNlB4SytNSjg1Rk9pKy9Qb1ZoamlQT3dQWFB1a24zUmNT?=
+ =?utf-8?B?VXZLZjh3b3Z0cTYzV0d0L1JLblBtZE5qMk83bzhLNHBvblhFUG1MU0xkNDZ4?=
+ =?utf-8?B?b3Q2NGY0anBYcFZDNUZ3Qy9aN3UyZkY3cjhUYmRwNUJaZjY1NnoyZzNWMnpw?=
+ =?utf-8?B?QVc0aFNqLzJaT2JqOUNwd2FQS2l2ZFNtWExCVEE0RmIzbHpWSVNaZmJHd3BC?=
+ =?utf-8?B?Z3UxRlYrRTM5dDd5YVZ5dEhPTEVIbDZOUGp0aDdoYVY0dDNEc1JoaUUzOUlQ?=
+ =?utf-8?B?ZlBCU3VkWDJzMXc1QlRTeG40SDIvTlAxT21kV05uRWxsbzRZdk5vclJwUFhD?=
+ =?utf-8?B?RkhjQ2hweVdodzh6VFpPQUpwOUZ6YUVWOHNDaEhrQWpCTEIxQmhxNFc0b2s3?=
+ =?utf-8?B?MGJ2d05iQlllNFY5KzQrSm40S3c1OStaL3JMRU8xYktJNk1tbnl2cXBzYkJr?=
+ =?utf-8?B?YzRWOGs0TTVOUG81WUV4OHUwNXg0NDBKcU84WkhCYjd5MnBtSlZSU1RxVUNz?=
+ =?utf-8?B?aExXTGgxWHpmeGNuN25LbkF4eTNLZDcyZDJ2ZXJDazZmaENwMHhaRnIvNzh0?=
+ =?utf-8?B?Qlo1VzhoTG5kd2NqOTd2SG1mcEhwTmVKLzRpT2JsM1VoTUppcm4rVGNYbEtE?=
+ =?utf-8?B?QzZXTE1Ya1NKNUFXKzZPRndHMk1SUDJpVkxSbFR3Q2pvaUxsNm9BM2h5MWtl?=
+ =?utf-8?B?bnNkN2hWSzZESmdpSlZEWEhoeFZHckhjTitwRTYrMGNUYjA5U3BZa2tmdHJI?=
+ =?utf-8?B?NUdrUzJSNHhJSjA3VzdTSm01NWdOb1F0dGd1M2J0SVEzZ2M1RVkyeDFMakN4?=
+ =?utf-8?B?U3dESWpOVldSM1phMDM3dDdxNjJvTkllSmdTNXhTVkNMVEhkenBrOE0rRjJs?=
+ =?utf-8?B?VU9vWGV1ckpmK1Y5YklwSEVEVjRMS1RnSi9oUDd4eW0veVFzRjBMckJiWHhR?=
+ =?utf-8?B?bnhEL2hIcktGWGJXQVl6MnRySVV4QVRSZ1pEam9ZODNlR3pwU3g0RjJ4clNj?=
+ =?utf-8?Q?qu2+25vPddTmIeqSf8g3vD2vj?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73cd9b77-eb02-4737-abc8-08dc5f95b1e1
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR12MB6674.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 10:52:52.2346
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Vmvzy1yR+ADUmOqb7ccaQ04JZxADCoyPzncnoa8+ReGrFe3uJcOP92xW+2lT+IoP/XPr+j8+Qp3lAHnmUL5BkQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7520
 
-Add support for ARM MHUv3 mailbox controller.
+Hi Bjorn,
+Sorry to bug you.
+Is this change good to be accepted?
 
-Support is limited to the MHUv3 Doorbell extension using only the PBX/MBX
-combined interrupts.
+Thanks,
+Vidya Sagar
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
-v4 -> v5
-- changed Kconfig depends on to just need oF && HAS_IOMEM
-- fixed LLVM warnings on FIELD_PREP as reported-by <lkp@intel.com>
-
-v3 -> v4
-- avoid magic numbers for padding holes
-- renaming various enums terminators to count_ instead of max_
-- using scoped_guards for spinlock_save
-- dropping FIRST_EXT naming for 0-indexed enum
-- less indentation by using early returns or continue on failure-paths
-- use dev_err_probe where appropriate
-- less noisy with dev_dbg
-- refactored mhuv3_mbx_comb_interrupt using __free cleanups for .read_data
-- refactored doorbell lookups with scoped_guards
-- fail on IRQ request failures: not carrying-on best effort
-- drop usage of platform_set_drvdata and .remove in favour of
-  devm_add_action_or_reset
-- review failures handling on extensions initialization
-- removed name clashes
-- more comments on regs decorations
-- decreasing line-lengths definitions
-- use __ffs instead of __builtin_ctz
-- dropped used of bitfields in favour of bitmasks
-- reading implementer/revision/variant/product_id
-- fixed misspellings
-
-v1 -> v2
-- fixed checkpatch warnings about side-effects
-- fixed sparse errors as reported
-  | Reported-by: kernel test robot <lkp@intel.com>
-  | Closes: https://lore.kernel.org/oe-kbuild-all/202403290015.tCLXudqC-lkp@intel.com/
----
- MAINTAINERS                 |    9 +
- drivers/mailbox/Kconfig     |   12 +
- drivers/mailbox/Makefile    |    2 +
- drivers/mailbox/arm_mhuv3.c | 1103 +++++++++++++++++++++++++++++++++++
- 4 files changed, 1126 insertions(+)
- create mode 100644 drivers/mailbox/arm_mhuv3.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aa3b947fb080..e957b9d9e32a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12998,6 +12998,15 @@ F:	Documentation/devicetree/bindings/mailbox/arm,mhuv2.yaml
- F:	drivers/mailbox/arm_mhuv2.c
- F:	include/linux/mailbox/arm_mhuv2_message.h
- 
-+MAILBOX ARM MHUv3
-+M:	Sudeep Holla <sudeep.holla@arm.com>
-+M:	Cristian Marussi <cristian.marussi@arm.com>
-+L:	linux-kernel@vger.kernel.org
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/mailbox/arm,mhuv3.yaml
-+F:	drivers/mailbox/arm_mhuv3.c
-+
- MAN-PAGES: MANUAL PAGES FOR LINUX -- Sections 2, 3, 4, 5, and 7
- M:	Alejandro Colomar <alx@kernel.org>
- L:	linux-man@vger.kernel.org
-diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
-index 42940108a187..cce8c33688fa 100644
---- a/drivers/mailbox/Kconfig
-+++ b/drivers/mailbox/Kconfig
-@@ -23,6 +23,18 @@ config ARM_MHU_V2
- 	  Say Y here if you want to build the ARM MHUv2 controller driver,
- 	  which provides unidirectional mailboxes between processing elements.
- 
-+config ARM_MHU_V3
-+	tristate "ARM MHUv3 Mailbox"
-+	depends on HAS_IOMEM || COMPILE_TEST
-+	depends on OF
-+	help
-+	  Say Y here if you want to build the ARM MHUv3 controller driver,
-+	  which provides unidirectional mailboxes between processing elements.
-+
-+	  ARM MHUv3 controllers can implement a varying number of extensions
-+	  that provides different means of transports: supported extensions
-+	  will be discovered and possibly managed at probe-time.
-+
- config IMX_MBOX
- 	tristate "i.MX Mailbox"
- 	depends on ARCH_MXC || COMPILE_TEST
-diff --git a/drivers/mailbox/Makefile b/drivers/mailbox/Makefile
-index 18793e6caa2f..5cf2f54debaf 100644
---- a/drivers/mailbox/Makefile
-+++ b/drivers/mailbox/Makefile
-@@ -9,6 +9,8 @@ obj-$(CONFIG_ARM_MHU)	+= arm_mhu.o arm_mhu_db.o
- 
- obj-$(CONFIG_ARM_MHU_V2)	+= arm_mhuv2.o
- 
-+obj-$(CONFIG_ARM_MHU_V3)	+= arm_mhuv3.o
-+
- obj-$(CONFIG_IMX_MBOX)	+= imx-mailbox.o
- 
- obj-$(CONFIG_ARMADA_37XX_RWTM_MBOX)	+= armada-37xx-rwtm-mailbox.o
-diff --git a/drivers/mailbox/arm_mhuv3.c b/drivers/mailbox/arm_mhuv3.c
-new file mode 100644
-index 000000000000..b97e79a5870f
---- /dev/null
-+++ b/drivers/mailbox/arm_mhuv3.c
-@@ -0,0 +1,1103 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * ARM Message Handling Unit Version 3 (MHUv3) driver.
-+ *
-+ * Copyright (C) 2024 ARM Ltd.
-+ *
-+ * Based on ARM MHUv2 driver.
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/bitops.h>
-+#include <linux/bits.h>
-+#include <linux/cleanup.h>
-+#include <linux/device.h>
-+#include <linux/interrupt.h>
-+#include <linux/mailbox_controller.h>
-+#include <linux/module.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
-+#include <linux/spinlock.h>
-+#include <linux/sizes.h>
-+#include <linux/slab.h>
-+#include <linux/types.h>
-+
-+/* ====== MHUv3 Registers ====== */
-+
-+/* Maximum number of Doorbell channel windows */
-+#define MHUV3_DBCW_MAX			128
-+/* Number of DBCH combined interrupt status registers */
-+#define MHUV3_DBCH_CMB_INT_ST_REG_CNT	4
-+
-+/* Number of FFCH combined interrupt status registers */
-+#define MHUV3_FFCH_CMB_INT_ST_REG_CNT	2
-+
-+#define MHUV3_FLAG_BITS			32
-+
-+/* Not a typo ... */
-+#define MHUV3_MAJOR_VERSION		2
-+
-+enum {
-+	MHUV3_MBOX_CELL_TYPE,
-+	MHUV3_MBOX_CELL_CHWN,
-+	MHUV3_MBOX_CELL_PARAM,
-+	MHUV3_MBOX_CELLS
-+};
-+
-+/* Padding bitfields/fields represents hole in the regs MMIO */
-+
-+/* CTRL_Page */
-+struct blk_id {
-+#define id		GENMASK(3, 0)
-+	u32 val;
-+} __packed;
-+
-+struct feat_spt0 {
-+#define	dbe_spt		GENMASK(3, 0)
-+#define	fe_spt		GENMASK(7, 4)
-+#define	fce_spt		GENMASK(11, 8)
-+	u32 val;
-+} __packed;
-+
-+struct feat_spt1 {
-+#define	auto_op_spt	GENMASK(3, 0)
-+	u32 val;
-+} __packed;
-+
-+struct dbch_cfg0 {
-+#define num_dbch	GENMASK(7, 0)
-+	u32 val;
-+} __packed;
-+
-+struct ffch_cfg0 {
-+#define num_ffch	GENMASK(7, 0)
-+#define x8ba_spt	BIT(8)
-+#define x16ba_spt	BIT(9)
-+#define x32ba_spt	BIT(10)
-+#define x64ba_spt	BIT(11)
-+#define ffch_depth	GENMASK(25, 16)
-+	u32 val;
-+} __packed;
-+
-+struct fch_cfg0 {
-+#define num_fch		GENMASK(9, 0)
-+#define fcgi_spt	BIT(10)		// MBX-only
-+#define num_fcg		GENMASK(15, 11)
-+#define num_fch_per_grp	GENMASK(20, 16)
-+#define fch_ws		GENMASK(28, 21)
-+	u32 val;
-+} __packed;
-+
-+struct ctrl {
-+#define op_req		BIT(0)
-+#define	ch_op_mask	BIT(1)
-+	u32 val;
-+} __packed;
-+
-+struct fch_ctrl {
-+#define _int_en		BIT(2)
-+	u32 val;
-+} __packed;
-+
-+struct iidr {
-+#define implementer	GENMASK(11, 0)
-+#define revision	GENMASK(15, 12)
-+#define variant		GENMASK(19, 16)
-+#define product_id	GENMASK(31, 20)
-+	u32 val;
-+} __packed;
-+
-+struct aidr {
-+#define arch_minor_rev	GENMASK(3, 0)
-+#define arch_major_rev	GENMASK(7, 4)
-+	u32 val;
-+} __packed;
-+
-+struct ctrl_page {
-+	struct blk_id blk_id;
-+	u8 pad[12];
-+	struct feat_spt0 feat_spt0;
-+	struct feat_spt1 feat_spt1;
-+	u8 pad1[8];
-+	struct dbch_cfg0 dbch_cfg0;
-+	u8 pad2[12];
-+	struct ffch_cfg0 ffch_cfg0;
-+	u8 pad3[12];
-+	struct fch_cfg0 fch_cfg0;
-+	u8 pad4[188];
-+	struct ctrl x_ctrl;
-+	/*-- MBX-only registers --*/
-+	u8 pad5[60];
-+	struct fch_ctrl fch_ctrl;
-+	u32 fcg_int_en;
-+	u8 pad6[696];
-+	/*-- End of MBX-only ---- */
-+	u32 dbch_int_st[MHUV3_DBCH_CMB_INT_ST_REG_CNT];
-+	u32 ffch_int_st[MHUV3_FFCH_CMB_INT_ST_REG_CNT];
-+	/*-- MBX-only registers --*/
-+	u8 pad7[88];
-+	u32 fcg_int_st;
-+	u8 pad8[12];
-+	u32 fcg_grp_int_st[32];
-+	u8 pad9[2760];
-+	/*-- End of MBX-only ---- */
-+	struct iidr iidr;
-+	struct aidr aidr;
-+	u32 imp_def_id[12];
-+} __packed;
-+
-+/* DBCW_Page */
-+
-+struct xbcw_ctrl {
-+#define comb_en		BIT(0)
-+	u32 val;
-+} __packed;
-+
-+struct pdbcw_int {
-+#define tfr_ack		BIT(0)
-+	u32 val;
-+} __packed;
-+
-+struct pdbcw_page {
-+	u32 st;
-+	u8 pad[8];
-+	u32 set;
-+	struct pdbcw_int int_st;
-+	struct pdbcw_int int_clr;
-+	struct pdbcw_int int_en;
-+	struct xbcw_ctrl ctrl;
-+} __packed;
-+
-+struct mdbcw_page {
-+	u32 st;
-+	u32 st_msk;
-+	u32 clr;
-+	u8 pad[4];
-+	u32 msk_st;
-+	u32 msk_set;
-+	u32 msk_clr;
-+	struct xbcw_ctrl ctrl;
-+} __packed;
-+
-+struct dummy_page {
-+	u8 pad[SZ_4K];
-+} __packed;
-+
-+struct mhu3_pbx_frame_reg {
-+	struct ctrl_page ctrl;
-+	struct pdbcw_page dbcw[MHUV3_DBCW_MAX];
-+	struct dummy_page ffcw;
-+	struct dummy_page fcw;
-+	u8 pad[SZ_4K * 11];
-+	struct dummy_page impdef;
-+} __packed;
-+
-+struct mhu3_mbx_frame_reg {
-+	struct ctrl_page ctrl;
-+	struct mdbcw_page dbcw[MHUV3_DBCW_MAX];
-+	struct dummy_page ffcw;
-+	struct dummy_page fcw;
-+	u8 pad[SZ_4K * 11];
-+	struct dummy_page impdef;
-+} __packed;
-+
-+/* Macro for reading a bitmask within a physically mapped packed struct */
-+#define readl_relaxed_bitmask(_regptr, _bitmask)			\
-+	({								\
-+		unsigned long _rval;					\
-+		_rval = readl_relaxed(_regptr);				\
-+		FIELD_GET(_bitmask, _rval);				\
-+	})
-+
-+/* Macro for writing a bitmask within a physically mapped packed struct */
-+#define writel_relaxed_bitmask(_value, _regptr, _bitmask)		\
-+	({								\
-+		unsigned long _rval;					\
-+		typeof(_regptr) _rptr = _regptr;			\
-+		typeof(_bitmask) _bmask = _bitmask;			\
-+		_rval = readl_relaxed(_rptr);				\
-+		_rval &= ~(_bmask);					\
-+		_rval |= FIELD_PREP((unsigned long long)_bmask, _value);\
-+		writel_relaxed(_rval, _rptr);				\
-+	})
-+
-+/* ====== MHUv3 data structures ====== */
-+
-+enum mhuv3_frame {
-+	PBX_FRAME,
-+	MBX_FRAME,
-+};
-+
-+static char *mhuv3_str[] = {
-+	"PBX",
-+	"MBX"
-+};
-+
-+enum mhuv3_extension_type {
-+	DBE_EXT,
-+	FCE_EXT,
-+	FE_EXT,
-+	NUM_EXT
-+};
-+
-+static char *mhuv3_ext_str[] = {
-+	"DBE",
-+	"FCE",
-+	"FE"
-+};
-+
-+struct mhuv3;
-+
-+/**
-+ * struct mhuv3_protocol_ops - MHUv3 operations
-+ *
-+ * @rx_startup: Receiver startup callback.
-+ * @rx_shutdown: Receiver shutdown callback.
-+ * @read_data: Read available Sender in-band LE data (if any).
-+ * @rx_complete: Acknowledge data reception to the Sender. Any out-of-band data
-+ *		 has to have been already retrieved before calling this.
-+ * @tx_startup: Sender startup callback.
-+ * @tx_shutdown: Sender shutdown callback.
-+ * @last_tx_done: Report back to the Sender if the last transfer has completed.
-+ * @send_data: Send data to the receiver.
-+ *
-+ * Each supported transport protocol provides its own implementation of
-+ * these operations.
-+ */
-+struct mhuv3_protocol_ops {
-+	int (*rx_startup)(struct mhuv3 *mhu, struct mbox_chan *chan);
-+	void (*rx_shutdown)(struct mhuv3 *mhu, struct mbox_chan *chan);
-+	void *(*read_data)(struct mhuv3 *mhu, struct mbox_chan *chan);
-+	void (*rx_complete)(struct mhuv3 *mhu, struct mbox_chan *chan);
-+	void (*tx_startup)(struct mhuv3 *mhu, struct mbox_chan *chan);
-+	void (*tx_shutdown)(struct mhuv3 *mhu, struct mbox_chan *chan);
-+	int (*last_tx_done)(struct mhuv3 *mhu, struct mbox_chan *chan);
-+	int (*send_data)(struct mhuv3 *mhu, struct mbox_chan *chan, void *arg);
-+};
-+
-+/**
-+ * struct mhuv3_mbox_chan_priv - MHUv3 channel private information
-+ *
-+ * @ch_idx: Channel window index associated to this mailbox channel.
-+ * @doorbell: Doorbell bit number within the @ch_idx window.
-+ *	      Only relevant to Doorbell transport.
-+ * @ops: Transport protocol specific operations for this channel.
-+ *
-+ * Transport specific data attached to mmailbox channel priv data.
-+ */
-+struct mhuv3_mbox_chan_priv {
-+	u32 ch_idx;
-+	u32 doorbell;
-+	const struct mhuv3_protocol_ops *ops;
-+};
-+
-+/**
-+ * struct mhuv3_extension - MHUv3 extension descriptor
-+ *
-+ * @type: Type of extension
-+ * @num_chans: Max number of channels found for this extension.
-+ * @base_ch_idx: First channel number assigned to this extension, picked from
-+ *		 the set of all mailbox channels descriptors created.
-+ * @mbox_of_xlate: Extension specific helper to parse DT and lookup associated
-+ *		   channel from the related 'mboxes' property.
-+ * @combined_irq_setup: Extension specific helper to setup the combined irq.
-+ * @channels_init: Extension specific helper to initialize channels.
-+ * @chan_from_comb_irq_get: Extension specific helper to lookup which channel
-+ *			    triggered the combined irq.
-+ * @pending_db: Array of per-channel pending doorbells.
-+ * @pending_lock: Protect access to pending_db.
-+ */
-+struct mhuv3_extension {
-+	enum mhuv3_extension_type type;
-+	unsigned int num_chans;
-+	unsigned int base_ch_idx;
-+	struct mbox_chan *(*mbox_of_xlate)(struct mhuv3 *mhu,
-+					   unsigned int channel,
-+					   unsigned int param);
-+	void (*combined_irq_setup)(struct mhuv3 *mhu);
-+	int (*channels_init)(struct mhuv3 *mhu);
-+	struct mbox_chan *(*chan_from_comb_irq_get)(struct mhuv3 *mhu);
-+	u32 pending_db[MHUV3_DBCW_MAX];
-+	/* Protect access to pending_db */
-+	spinlock_t pending_lock;
-+};
-+
-+/**
-+ * struct mhuv3 - MHUv3 mailbox controller data
-+ *
-+ * @frame:	Frame type: MBX_FRAME or PBX_FRAME.
-+ * @auto_op_full: Flag to indicate if the MHU supports AutoOp full mode.
-+ * @major: MHUv3 controller architectural major version.
-+ * @minor: MHUv3 controller architectural minor version.
-+ * @implem: MHUv3 controller IIDR implementer.
-+ * @rev: MHUv3 controller IIDR revision.
-+ * @var: MHUv3 controller IIDR variant.
-+ * @prod_id: MHUv3 controller IIDR product_id.
-+ * @num_chans: The total number of channnels discovered across all extensions.
-+ * @cmb_irq: Combined IRQ number if any found defined.
-+ * @ctrl: A reference to the MHUv3 control page for this block.
-+ * @pbx: Base address of the PBX register mapping region.
-+ * @mbx: Base address of the MBX register mapping region.
-+ * @ext: Array holding descriptors for any found implemented extension.
-+ * @mbox: Mailbox controller belonging to the MHU frame.
-+ */
-+struct mhuv3 {
-+	enum mhuv3_frame frame;
-+	bool auto_op_full;
-+	unsigned int major;
-+	unsigned int minor;
-+	unsigned int implem;
-+	unsigned int rev;
-+	unsigned int var;
-+	unsigned int prod_id;
-+	unsigned int num_chans;
-+	int cmb_irq;
-+	struct ctrl_page __iomem *ctrl;
-+	union {
-+		struct mhu3_pbx_frame_reg __iomem *pbx;
-+		struct mhu3_mbx_frame_reg __iomem *mbx;
-+	};
-+	struct mhuv3_extension *ext[NUM_EXT];
-+	struct mbox_controller mbox;
-+};
-+
-+#define mhu_from_mbox(_mbox) container_of(_mbox, struct mhuv3, mbox)
-+
-+typedef int (*mhuv3_extension_initializer)(struct mhuv3 *mhu);
-+
-+/* =================== Doorbell transport protocol operations =============== */
-+
-+static void mhuv3_doorbell_tx_startup(struct mhuv3 *mhu, struct mbox_chan *chan)
-+{
-+	struct mhuv3_mbox_chan_priv *priv = chan->con_priv;
-+
-+	/* Enable Transfer Acknowledgment events */
-+	writel_relaxed_bitmask(0x1, &mhu->pbx->dbcw[priv->ch_idx].int_en, tfr_ack);
-+}
-+
-+static void mhuv3_doorbell_tx_shutdown(struct mhuv3 *mhu, struct mbox_chan *chan)
-+{
-+	struct mhuv3_mbox_chan_priv *priv = chan->con_priv;
-+	struct mhuv3_extension *e = mhu->ext[DBE_EXT];
-+	unsigned long flags;
-+
-+	/* Disable Channel Transfer Ack events */
-+	writel_relaxed_bitmask(0x0, &mhu->pbx->dbcw[priv->ch_idx].int_en, tfr_ack);
-+
-+	/* Clear Channel Transfer Ack and pending doorbells */
-+	writel_relaxed_bitmask(0x1, &mhu->pbx->dbcw[priv->ch_idx].int_clr, tfr_ack);
-+	spin_lock_irqsave(&e->pending_lock, flags);
-+	e->pending_db[priv->ch_idx] = 0;
-+	spin_unlock_irqrestore(&e->pending_lock, flags);
-+}
-+
-+static int mhuv3_doorbell_rx_startup(struct mhuv3 *mhu, struct mbox_chan *chan)
-+{
-+	struct mhuv3_mbox_chan_priv *priv = chan->con_priv;
-+
-+	/* Unmask Channel Transfer events */
-+	writel_relaxed(BIT(priv->doorbell), &mhu->mbx->dbcw[priv->ch_idx].msk_clr);
-+
-+	return 0;
-+}
-+
-+static void mhuv3_doorbell_rx_shutdown(struct mhuv3 *mhu,
-+				       struct mbox_chan *chan)
-+{
-+	struct mhuv3_mbox_chan_priv *priv = chan->con_priv;
-+
-+	/* Mask Channel Transfer events */
-+	writel_relaxed(BIT(priv->doorbell), &mhu->mbx->dbcw[priv->ch_idx].msk_set);
-+}
-+
-+static void mhuv3_doorbell_rx_complete(struct mhuv3 *mhu, struct mbox_chan *chan)
-+{
-+	struct mhuv3_mbox_chan_priv *priv = chan->con_priv;
-+
-+	/* Clearing the pending transfer generates the Channel Transfer Ack */
-+	writel_relaxed(BIT(priv->doorbell), &mhu->mbx->dbcw[priv->ch_idx].clr);
-+}
-+
-+static int mhuv3_doorbell_last_tx_done(struct mhuv3 *mhu,
-+				       struct mbox_chan *chan)
-+{
-+	struct mhuv3_mbox_chan_priv *priv = chan->con_priv;
-+	int done;
-+
-+	done = !(readl_relaxed(&mhu->pbx->dbcw[priv->ch_idx].st) &
-+		 BIT(priv->doorbell));
-+	if (done) {
-+		struct mhuv3_extension *e = mhu->ext[DBE_EXT];
-+		unsigned long flags;
-+
-+		/* Take care to clear the pending doorbell also when polling */
-+		spin_lock_irqsave(&e->pending_lock, flags);
-+		e->pending_db[priv->ch_idx] &= ~BIT(priv->doorbell);
-+		spin_unlock_irqrestore(&e->pending_lock, flags);
-+	}
-+
-+	return done;
-+}
-+
-+static int mhuv3_doorbell_send_data(struct mhuv3 *mhu, struct mbox_chan *chan,
-+				    void *arg)
-+{
-+	struct mhuv3_mbox_chan_priv *priv = chan->con_priv;
-+	struct mhuv3_extension *e = mhu->ext[DBE_EXT];
-+
-+	scoped_guard(spinlock_irqsave, &e->pending_lock) {
-+		/* Only one in-flight Transfer is allowed per-doorbell */
-+		if (e->pending_db[priv->ch_idx] & BIT(priv->doorbell))
-+			return -EBUSY;
-+
-+		e->pending_db[priv->ch_idx] |= BIT(priv->doorbell);
-+	}
-+
-+	writel_relaxed(BIT(priv->doorbell), &mhu->pbx->dbcw[priv->ch_idx].set);
-+
-+	return 0;
-+}
-+
-+static const struct mhuv3_protocol_ops mhuv3_doorbell_ops = {
-+	.tx_startup = mhuv3_doorbell_tx_startup,
-+	.tx_shutdown = mhuv3_doorbell_tx_shutdown,
-+	.rx_startup = mhuv3_doorbell_rx_startup,
-+	.rx_shutdown = mhuv3_doorbell_rx_shutdown,
-+	.rx_complete = mhuv3_doorbell_rx_complete,
-+	.last_tx_done = mhuv3_doorbell_last_tx_done,
-+	.send_data = mhuv3_doorbell_send_data,
-+};
-+
-+/* Sender and receiver mailbox ops */
-+static bool mhuv3_sender_last_tx_done(struct mbox_chan *chan)
-+{
-+	struct mhuv3_mbox_chan_priv *priv = chan->con_priv;
-+	struct mhuv3 *mhu = mhu_from_mbox(chan->mbox);
-+
-+	return priv->ops->last_tx_done(mhu, chan);
-+}
-+
-+static int mhuv3_sender_send_data(struct mbox_chan *chan, void *data)
-+{
-+	struct mhuv3_mbox_chan_priv *priv = chan->con_priv;
-+	struct mhuv3 *mhu = mhu_from_mbox(chan->mbox);
-+
-+	if (!priv->ops->last_tx_done(mhu, chan))
-+		return -EBUSY;
-+
-+	return priv->ops->send_data(mhu, chan, data);
-+}
-+
-+static int mhuv3_sender_startup(struct mbox_chan *chan)
-+{
-+	struct mhuv3_mbox_chan_priv *priv = chan->con_priv;
-+	struct mhuv3 *mhu = mhu_from_mbox(chan->mbox);
-+
-+	if (priv->ops->tx_startup)
-+		priv->ops->tx_startup(mhu, chan);
-+
-+	return 0;
-+}
-+
-+static void mhuv3_sender_shutdown(struct mbox_chan *chan)
-+{
-+	struct mhuv3_mbox_chan_priv *priv = chan->con_priv;
-+	struct mhuv3 *mhu = mhu_from_mbox(chan->mbox);
-+
-+	if (priv->ops->tx_shutdown)
-+		priv->ops->tx_shutdown(mhu, chan);
-+}
-+
-+static const struct mbox_chan_ops mhuv3_sender_ops = {
-+	.send_data = mhuv3_sender_send_data,
-+	.startup = mhuv3_sender_startup,
-+	.shutdown = mhuv3_sender_shutdown,
-+	.last_tx_done = mhuv3_sender_last_tx_done,
-+};
-+
-+static int mhuv3_receiver_startup(struct mbox_chan *chan)
-+{
-+	struct mhuv3_mbox_chan_priv *priv = chan->con_priv;
-+	struct mhuv3 *mhu = mhu_from_mbox(chan->mbox);
-+
-+	return priv->ops->rx_startup(mhu, chan);
-+}
-+
-+static void mhuv3_receiver_shutdown(struct mbox_chan *chan)
-+{
-+	struct mhuv3_mbox_chan_priv *priv = chan->con_priv;
-+	struct mhuv3 *mhu = mhu_from_mbox(chan->mbox);
-+
-+	priv->ops->rx_shutdown(mhu, chan);
-+}
-+
-+static int mhuv3_receiver_send_data(struct mbox_chan *chan, void *data)
-+{
-+	dev_err(chan->mbox->dev,
-+		"Trying to transmit on a MBX MHUv3 frame\n");
-+	return -EIO;
-+}
-+
-+static bool mhuv3_receiver_last_tx_done(struct mbox_chan *chan)
-+{
-+	dev_err(chan->mbox->dev, "Trying to Tx poll on a MBX MHUv3 frame\n");
-+	return true;
-+}
-+
-+static const struct mbox_chan_ops mhuv3_receiver_ops = {
-+	.send_data = mhuv3_receiver_send_data,
-+	.startup = mhuv3_receiver_startup,
-+	.shutdown = mhuv3_receiver_shutdown,
-+	.last_tx_done = mhuv3_receiver_last_tx_done,
-+};
-+
-+static struct mbox_chan *mhuv3_dbe_mbox_of_xlate(struct mhuv3 *mhu,
-+						 unsigned int channel,
-+						 unsigned int doorbell)
-+{
-+	struct mhuv3_extension *e = mhu->ext[DBE_EXT];
-+	struct mbox_controller *mbox = &mhu->mbox;
-+	struct mbox_chan *chans = mbox->chans;
-+
-+	if (channel >= e->num_chans || doorbell >= MHUV3_FLAG_BITS) {
-+		dev_err(mbox->dev, "Couldn't xlate to a valid channel (%d: %d)\n",
-+			channel, doorbell);
-+		return ERR_PTR(-ENODEV);
-+	}
-+
-+	return &chans[e->base_ch_idx + channel * MHUV3_FLAG_BITS + doorbell];
-+}
-+
-+static void mhuv3_dbe_combined_irq_setup(struct mhuv3 *mhu)
-+{
-+	struct mhuv3_extension *e = mhu->ext[DBE_EXT];
-+	int i;
-+
-+	if (mhu->frame == PBX_FRAME) {
-+		struct pdbcw_page __iomem *dbcw = mhu->pbx->dbcw;
-+
-+		for (i = 0; i < e->num_chans; i++) {
-+			writel_relaxed_bitmask(0x1, &dbcw[i].int_clr, tfr_ack);
-+			writel_relaxed_bitmask(0x0, &dbcw[i].int_en, tfr_ack);
-+			writel_relaxed_bitmask(0x1, &dbcw[i].ctrl, comb_en);
-+		}
-+	} else {
-+		struct mdbcw_page __iomem *dbcw = mhu->mbx->dbcw;
-+
-+		for (i = 0; i < e->num_chans; i++) {
-+			writel_relaxed(0xFFFFFFFF, &dbcw[i].clr);
-+			writel_relaxed(0xFFFFFFFF, &dbcw[i].msk_set);
-+			writel_relaxed_bitmask(0x1, &dbcw[i].ctrl, comb_en);
-+		}
-+	}
-+}
-+
-+static int mhuv3_dbe_channels_init(struct mhuv3 *mhu)
-+{
-+	struct mhuv3_extension *e = mhu->ext[DBE_EXT];
-+	struct mbox_controller *mbox = &mhu->mbox;
-+	struct mbox_chan *chans;
-+	int i;
-+
-+	chans = mbox->chans + mbox->num_chans;
-+	e->base_ch_idx = mbox->num_chans;
-+	for (i = 0; i < e->num_chans; i++) {
-+		struct mhuv3_mbox_chan_priv *priv;
-+		int k;
-+
-+		for (k = 0; k < MHUV3_FLAG_BITS; k++) {
-+			priv = devm_kmalloc(mbox->dev, sizeof(*priv), GFP_KERNEL);
-+			if (!priv)
-+				return -ENOMEM;
-+
-+			priv->ch_idx = i;
-+			priv->ops = &mhuv3_doorbell_ops;
-+			priv->doorbell = k;
-+			chans++->con_priv = priv;
-+			mbox->num_chans++;
-+		}
-+	}
-+
-+	spin_lock_init(&e->pending_lock);
-+
-+	return 0;
-+}
-+
-+static bool mhuv3_dbe_doorbell_lookup(struct mhuv3 *mhu, unsigned int channel,
-+				      unsigned int *db)
-+{
-+	struct mhuv3_extension *e = mhu->ext[DBE_EXT];
-+	struct device *dev = mhu->mbox.dev;
-+	u32 st;
-+
-+	if (mhu->frame == PBX_FRAME) {
-+		u32 active_dbs, fired_dbs;
-+
-+		st = readl_relaxed_bitmask(&mhu->pbx->dbcw[channel].int_st,
-+					   tfr_ack);
-+		if (!st)
-+			goto err_spurious;
-+
-+		active_dbs = readl_relaxed(&mhu->pbx->dbcw[channel].st);
-+		scoped_guard(spinlock_irqsave, &e->pending_lock) {
-+			fired_dbs = e->pending_db[channel] & ~active_dbs;
-+			if (!fired_dbs)
-+				goto err_spurious;
-+
-+			*db = __ffs(fired_dbs);
-+			e->pending_db[channel] &= ~BIT(*db);
-+		}
-+		fired_dbs &= ~BIT(*db);
-+		/* Clear TFR Ack if no more doorbells pending */
-+		if (!fired_dbs)
-+			writel_relaxed_bitmask(0x1,
-+					       &mhu->pbx->dbcw[channel].int_clr,
-+					       tfr_ack);
-+	} else {
-+		st = readl_relaxed(&mhu->mbx->dbcw[channel].st_msk);
-+		if (!st)
-+			goto err_spurious;
-+
-+		*db = __ffs(st);
-+	}
-+
-+	return true;
-+
-+err_spurious:
-+	dev_warn(dev, "Spurious IRQ on %s channel:%d\n",
-+		 mhuv3_str[mhu->frame], channel);
-+
-+	return false;
-+}
-+
-+static struct mbox_chan *mhuv3_dbe_chan_from_comb_irq_get(struct mhuv3 *mhu)
-+{
-+	struct mhuv3_extension *e = mhu->ext[DBE_EXT];
-+	struct device *dev = mhu->mbox.dev;
-+	int i;
-+
-+	for (i = 0; i < MHUV3_DBCH_CMB_INT_ST_REG_CNT; i++) {
-+		unsigned int channel, db;
-+		u32 cmb_st;
-+
-+		cmb_st = readl_relaxed(&mhu->ctrl->dbch_int_st[i]);
-+		if (!cmb_st)
-+			continue;
-+
-+		channel = i * MHUV3_FLAG_BITS + __ffs(cmb_st);
-+		if (channel >= e->num_chans) {
-+			dev_err(dev, "Invalid %s channel:%d\n",
-+				mhuv3_str[mhu->frame], channel);
-+			return ERR_PTR(-EIO);
-+		}
-+
-+		if (!mhuv3_dbe_doorbell_lookup(mhu, channel, &db))
-+			continue;
-+
-+		dev_dbg(dev, "Found %s ch[%d]/db[%d]\n",
-+			mhuv3_str[mhu->frame], channel, db);
-+
-+		return &mhu->mbox.chans[channel * MHUV3_FLAG_BITS + db];
-+	}
-+
-+	return ERR_PTR(-EIO);
-+}
-+
-+static int mhuv3_dbe_init(struct mhuv3 *mhu)
-+{
-+	struct device *dev = mhu->mbox.dev;
-+	struct mhuv3_extension *e;
-+
-+	if (!readl_relaxed_bitmask(&mhu->ctrl->feat_spt0, dbe_spt))
-+		return 0;
-+
-+	dev_dbg(dev, "%s: Initializing DBE Extension.\n", mhuv3_str[mhu->frame]);
-+
-+	e = devm_kzalloc(dev, sizeof(*e), GFP_KERNEL);
-+	if (!e)
-+		return -ENOMEM;
-+
-+	e->type = DBE_EXT;
-+	/* Note that, by the spec, the number of channels is (num_dbch + 1) */
-+	e->num_chans =
-+		readl_relaxed_bitmask(&mhu->ctrl->dbch_cfg0, num_dbch) + 1;
-+	e->mbox_of_xlate = mhuv3_dbe_mbox_of_xlate;
-+	e->combined_irq_setup = mhuv3_dbe_combined_irq_setup;
-+	e->channels_init = mhuv3_dbe_channels_init;
-+	e->chan_from_comb_irq_get = mhuv3_dbe_chan_from_comb_irq_get;
-+
-+	mhu->num_chans += e->num_chans * MHUV3_FLAG_BITS;
-+	mhu->ext[DBE_EXT] = e;
-+
-+	dev_dbg(dev, "%s: found %d DBE channels.\n",
-+		mhuv3_str[mhu->frame], e->num_chans);
-+
-+	return 0;
-+}
-+
-+static int mhuv3_fce_init(struct mhuv3 *mhu)
-+{
-+	struct device *dev = mhu->mbox.dev;
-+
-+	if (!readl_relaxed_bitmask(&mhu->ctrl->feat_spt0, fce_spt))
-+		return 0;
-+
-+	dev_dbg(dev, "%s: FCE Extension not supported by driver.\n",
-+		mhuv3_str[mhu->frame]);
-+
-+	return 0;
-+}
-+
-+static int mhuv3_fe_init(struct mhuv3 *mhu)
-+{
-+	struct device *dev = mhu->mbox.dev;
-+
-+	if (!readl_relaxed_bitmask(&mhu->ctrl->feat_spt0, fe_spt))
-+		return 0;
-+
-+	dev_dbg(dev, "%s: FE Extension not supported by driver.\n",
-+		mhuv3_str[mhu->frame]);
-+
-+	return 0;
-+}
-+
-+static mhuv3_extension_initializer mhuv3_extension_init[NUM_EXT] = {
-+	mhuv3_dbe_init,
-+	mhuv3_fce_init,
-+	mhuv3_fe_init,
-+};
-+
-+static int mhuv3_initialize_channels(struct device *dev, struct mhuv3 *mhu)
-+{
-+	struct mbox_controller *mbox = &mhu->mbox;
-+	int i, ret = 0;
-+
-+	mbox->chans = devm_kcalloc(dev, mhu->num_chans,
-+				   sizeof(*mbox->chans), GFP_KERNEL);
-+	if (!mbox->chans)
-+		return dev_err_probe(dev, -ENOMEM,
-+				     "Failed to initialize channels\n");
-+
-+	for (i = 0; i < NUM_EXT && !ret; i++)
-+		if (mhu->ext[i])
-+			ret = mhu->ext[i]->channels_init(mhu);
-+
-+	return ret;
-+}
-+
-+static struct mbox_chan *mhuv3_mbox_of_xlate(struct mbox_controller *mbox,
-+					     const struct of_phandle_args *pa)
-+{
-+	struct mhuv3 *mhu = mhu_from_mbox(mbox);
-+	unsigned int type, channel, param;
-+
-+	if (pa->args_count != MHUV3_MBOX_CELLS)
-+		return ERR_PTR(-EINVAL);
-+
-+	type = pa->args[MHUV3_MBOX_CELL_TYPE];
-+	if (type >= NUM_EXT)
-+		return ERR_PTR(-EINVAL);
-+
-+	channel = pa->args[MHUV3_MBOX_CELL_CHWN];
-+	param = pa->args[MHUV3_MBOX_CELL_PARAM];
-+
-+	return mhu->ext[type]->mbox_of_xlate(mhu, channel, param);
-+}
-+
-+static void mhu_frame_cleanup_actions(void *data)
-+{
-+	struct mhuv3 *mhu = data;
-+
-+	writel_relaxed_bitmask(0x0, &mhu->ctrl->x_ctrl, op_req);
-+}
-+
-+static int mhuv3_frame_init(struct mhuv3 *mhu, void __iomem *regs)
-+{
-+	struct device *dev = mhu->mbox.dev;
-+	int i;
-+
-+	mhu->ctrl = regs;
-+	mhu->frame = readl_relaxed_bitmask(&mhu->ctrl->blk_id, id);
-+	if (mhu->frame > MBX_FRAME)
-+		return dev_err_probe(dev, -EINVAL,
-+				     "Invalid Frame type- %d\n", mhu->frame);
-+
-+	mhu->major = readl_relaxed_bitmask(&mhu->ctrl->aidr, arch_major_rev);
-+	mhu->minor = readl_relaxed_bitmask(&mhu->ctrl->aidr, arch_minor_rev);
-+	mhu->implem = readl_relaxed_bitmask(&mhu->ctrl->iidr, implementer);
-+	mhu->rev = readl_relaxed_bitmask(&mhu->ctrl->iidr, revision);
-+	mhu->var = readl_relaxed_bitmask(&mhu->ctrl->iidr, variant);
-+	mhu->prod_id = readl_relaxed_bitmask(&mhu->ctrl->iidr, product_id);
-+	if (mhu->major != MHUV3_MAJOR_VERSION)
-+		return dev_err_probe(dev, -EINVAL,
-+				     "Unsupported MHU %s block - major:%d  minor:%d\n",
-+				     mhuv3_str[mhu->frame], mhu->major,
-+				     mhu->minor);
-+
-+	mhu->auto_op_full =
-+		!!readl_relaxed_bitmask(&mhu->ctrl->feat_spt1, auto_op_spt);
-+	/* Request the PBX/MBX to remain operational */
-+	if (mhu->auto_op_full) {
-+		writel_relaxed_bitmask(0x1, &mhu->ctrl->x_ctrl, op_req);
-+		devm_add_action_or_reset(dev, mhu_frame_cleanup_actions, mhu);
-+	}
-+
-+	dev_dbg(dev,
-+		"Found MHU %s block - major:%d  minor:%d\n  implem:0x%X  rev:0x%X  var:0x%X  prod_id:0x%X",
-+		mhuv3_str[mhu->frame], mhu->major, mhu->minor,
-+		mhu->implem, mhu->rev, mhu->var, mhu->prod_id);
-+
-+	if (mhu->frame == PBX_FRAME)
-+		mhu->pbx = regs;
-+	else
-+		mhu->mbx = regs;
-+
-+	for (i = 0; i < NUM_EXT; i++) {
-+		int ret;
-+
-+		/*
-+		 * Note that extensions initialization fails only when such
-+		 * extension initialization routine fails and the extensions
-+		 * was found to be supported in hardware and in software.
-+		 */
-+		ret = mhuv3_extension_init[i](mhu);
-+		if (ret)
-+			return dev_err_probe(dev, ret,
-+					     "Failed to initialize %s %s\n",
-+					     mhuv3_str[mhu->frame],
-+					     mhuv3_ext_str[i]);
-+	}
-+
-+	return 0;
-+}
-+
-+static irqreturn_t mhuv3_pbx_comb_interrupt(int irq, void *arg)
-+{
-+	unsigned int i, found = 0;
-+	struct mhuv3 *mhu = arg;
-+	struct mbox_chan *chan;
-+	struct device *dev;
-+	int ret = IRQ_NONE;
-+
-+	dev = mhu->mbox.dev;
-+	for (i = 0; i < NUM_EXT; i++) {
-+		struct mhuv3_mbox_chan_priv *priv;
-+
-+		/* FCE does not participate to the PBX combined */
-+		if (i == FCE_EXT || !mhu->ext[i])
-+			continue;
-+
-+		chan = mhu->ext[i]->chan_from_comb_irq_get(mhu);
-+		if (IS_ERR(chan))
-+			continue;
-+
-+		found++;
-+		priv = chan->con_priv;
-+		if (!chan->cl) {
-+			dev_warn(dev, "TX Ack on UNBOUND channel (%u)\n",
-+				 priv->ch_idx);
-+			continue;
-+		}
-+
-+		mbox_chan_txdone(chan, 0);
-+		ret = IRQ_HANDLED;
-+	}
-+
-+	if (found == 0)
-+		dev_warn_once(dev, "Failed to find channel for the TX interrupt\n");
-+
-+	return ret;
-+}
-+
-+static irqreturn_t mhuv3_mbx_comb_interrupt(int irq, void *arg)
-+{
-+	unsigned int i, found = 0;
-+	struct mhuv3 *mhu = arg;
-+	struct mbox_chan *chan;
-+	struct device *dev;
-+	int ret = IRQ_NONE;
-+
-+	dev = mhu->mbox.dev;
-+	for (i = 0; i < NUM_EXT; i++) {
-+		struct mhuv3_mbox_chan_priv *priv;
-+		void *data __free(kfree) = NULL;
-+
-+		if (!mhu->ext[i])
-+			continue;
-+
-+		/* Process any extension which could be source of the IRQ */
-+		chan = mhu->ext[i]->chan_from_comb_irq_get(mhu);
-+		if (IS_ERR(chan))
-+			continue;
-+
-+		found++;
-+		/* From here on we need to call rx_complete even on error */
-+		priv = chan->con_priv;
-+		if (!chan->cl) {
-+			dev_warn(dev, "RX Data on UNBOUND channel (%u)\n",
-+				 priv->ch_idx);
-+			goto rx_ack;
-+		}
-+
-+		/* Read optional in-band LE data first. */
-+		if (priv->ops->read_data) {
-+			data = priv->ops->read_data(mhu, chan);
-+			if (IS_ERR(data)) {
-+				dev_err(dev,
-+					"Failed to read in-band data. err:%ld\n",
-+					PTR_ERR(no_free_ptr(data)));
-+				goto rx_ack;
-+			}
-+		}
-+
-+		mbox_chan_received_data(chan, data);
-+		ret = IRQ_HANDLED;
-+
-+		/*
-+		 * Acknowledge transfer after any possible optional
-+		 * out-of-band data has also been retrieved via
-+		 * mbox_chan_received_data().
-+		 */
-+rx_ack:
-+		if (priv->ops->rx_complete)
-+			priv->ops->rx_complete(mhu, chan);
-+	}
-+
-+	if (found == 0)
-+		dev_warn_once(dev, "Failed to find channel for the RX interrupt\n");
-+
-+	return ret;
-+}
-+
-+static int mhuv3_setup_pbx(struct mhuv3 *mhu)
-+{
-+	struct device *dev = mhu->mbox.dev;
-+
-+	mhu->mbox.ops = &mhuv3_sender_ops;
-+
-+	if (mhu->cmb_irq > 0) {
-+		int ret, i;
-+
-+		ret = devm_request_threaded_irq(dev, mhu->cmb_irq, NULL,
-+						mhuv3_pbx_comb_interrupt,
-+						IRQF_ONESHOT, "mhuv3-pbx", mhu);
-+		if (ret)
-+			return dev_err_probe(dev, ret,
-+					     "Failed to request PBX IRQ\n");
-+
-+		mhu->mbox.txdone_irq = true;
-+		mhu->mbox.txdone_poll = false;
-+
-+		for (i = 0; i < NUM_EXT; i++)
-+			if (mhu->ext[i])
-+				mhu->ext[i]->combined_irq_setup(mhu);
-+
-+		dev_dbg(dev, "MHUv3 PBX IRQs initialized.\n");
-+
-+		return 0;
-+	}
-+
-+	dev_info(dev, "Using PBX in Tx polling mode.\n");
-+	mhu->mbox.txdone_irq = false;
-+	mhu->mbox.txdone_poll = true;
-+	mhu->mbox.txpoll_period = 1;
-+
-+	return 0;
-+}
-+
-+static int mhuv3_setup_mbx(struct mhuv3 *mhu)
-+{
-+	struct device *dev = mhu->mbox.dev;
-+	int ret, i;
-+
-+	mhu->mbox.ops = &mhuv3_receiver_ops;
-+
-+	if (mhu->cmb_irq <= 0)
-+		return dev_err_probe(dev, -EINVAL,
-+				     "MBX combined IRQ is missing !\n");
-+
-+	ret = devm_request_threaded_irq(dev, mhu->cmb_irq, NULL,
-+					mhuv3_mbx_comb_interrupt, IRQF_ONESHOT,
-+					"mhuv3-mbx", mhu);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to request MBX IRQ\n");
-+
-+	for (i = 0; i < NUM_EXT; i++)
-+		if (mhu->ext[i])
-+			mhu->ext[i]->combined_irq_setup(mhu);
-+
-+	dev_dbg(dev, "MHUv3 MBX IRQs initialized.\n");
-+
-+	return ret;
-+}
-+
-+static int mhuv3_irqs_init(struct mhuv3 *mhu, struct platform_device *pdev)
-+{
-+	dev_dbg(mhu->mbox.dev, "Initializing %s block.\n",
-+		mhuv3_str[mhu->frame]);
-+
-+	if (mhu->frame == PBX_FRAME) {
-+		mhu->cmb_irq =
-+			platform_get_irq_byname_optional(pdev, "combined");
-+		return mhuv3_setup_pbx(mhu);
-+	}
-+
-+	mhu->cmb_irq = platform_get_irq_byname(pdev, "combined");
-+	return mhuv3_setup_mbx(mhu);
-+}
-+
-+static int mhuv3_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	void __iomem *regs;
-+	struct mhuv3 *mhu;
-+	int ret;
-+
-+	mhu = devm_kzalloc(dev, sizeof(*mhu), GFP_KERNEL);
-+	if (!mhu)
-+		return -ENOMEM;
-+
-+	regs = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(regs))
-+		return PTR_ERR(regs);
-+
-+	mhu->mbox.dev = dev;
-+	ret = mhuv3_frame_init(mhu, regs);
-+	if (ret)
-+		return ret;
-+
-+	ret = mhuv3_irqs_init(mhu, pdev);
-+	if (ret)
-+		return ret;
-+
-+	mhu->mbox.of_xlate = mhuv3_mbox_of_xlate;
-+	ret = mhuv3_initialize_channels(dev, mhu);
-+	if (ret)
-+		return ret;
-+
-+	ret = devm_mbox_controller_register(dev, &mhu->mbox);
-+	if (ret)
-+		return dev_err_probe(dev, ret,
-+				     "Failed to register ARM MHUv3 driver\n");
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id mhuv3_of_match[] = {
-+	{ .compatible = "arm,mhuv3", .data = NULL },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, mhuv3_of_match);
-+
-+static struct platform_driver mhuv3_driver = {
-+	.driver = {
-+		.name = "arm-mhuv3-mailbox",
-+		.of_match_table = mhuv3_of_match,
-+	},
-+	.probe = mhuv3_probe,
-+};
-+module_platform_driver(mhuv3_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("ARM MHUv3 Driver");
-+MODULE_AUTHOR("Cristian Marussi <cristian.marussi@arm.com>");
--- 
-2.34.1
+On 01-04-2024 13:29, Vidya Sagar wrote:
+> Hi Bjorn,
+> Just checking on this thread.
+> Is there anything else you want me to clarify on?
+>
+> Thanks,
+> Vidya Sagar
+>
+> On 14-03-2024 06:09, Vidya Sagar wrote:
+>>
+>>
+>> On 23-01-2024 04:30, Bjorn Helgaas wrote:
+>>> External email: Use caution opening links or attachments
+>>>
+>>>
+>>> On Tue, Jan 16, 2024 at 08:02:58PM +0530, Vidya Sagar wrote:
+>>>> The enumeration process leaves the 'Received Master Abort' bit set in
+>>>> the Secondary Status Register of the downstream port in the following
+>>>> scenarios.
+>>>>
+>>>> (1) The device connected to the downstream port has ARI capability
+>>>>      and that makes the kernel set the 'ARI Forwarding Enable' bit in
+>>>>      the Device Control 2 Register of the downstream port. This
+>>>>      effectively makes the downstream port forward the configuration
+>>>>      requests targeting the devices downstream of it, even though they
+>>>>      don't exist in reality. It causes the downstream devices return
+>>>>      completions with UR set in the status in turn causing 'Received
+>>>>      Master Abort' bit set.
+>>>>
+>>>>      In contrast, if the downstream device doesn't have ARI capability,
+>>>>      the 'ARI Forwarding Enable' bit in the downstream port is not set
+>>>>      and any configuration requests targeting the downstream devices
+>>>>      that don't exist are terminated (section 6.13 of PCI Express Base
+>>>>      6.0 spec) in the downstream port itself resulting in no change of
+>>>>      the 'Received Master Abort' bit.
+>>>>
+>>>> (2) A PCIe switch is connected to the downstream port and when the
+>>>>      enumeration flow tries to explore the presence of devices that
+>>>>      don't really exist downstream of the switch, the downstream
+>>>>      port receives the completions with UR set causing the 'Received
+>>>>      Master Abort' bit set.
+>>> Are these the only possible ways this error is logged?  I expected
+>>> them to be logged when we enumerate below a Root Port that has nothing
+>>> attached, for example.
+>> In this case, there won't be any TLP sent downstream. I talked about this 
+>> scenario in the
+>> second paragraph of point (1) above.
+>>> Does clearing them in pci_scan_bridge_extend() cover all ways this
+>>> error might be logged during enumeration?  I can't remember whether
+>>> all enumeration goes through this path.
+>> So far in my testing, clearing it in pci_scan_bridge_extend() covers all the 
+>> cases.
+>>
+>>>> Clear 'Received Master Abort' bit to keep the bridge device in a clean
+>>>> state post enumeration.
+>>>>
+>>>> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+>>>> ---
+>>>> V2:
+>>>> * Changed commit message based on Bjorn's feedback
+>>>>
+>>>>   drivers/pci/probe.c | 3 +++
+>>>>   1 file changed, 3 insertions(+)
+>>>>
+>>>> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+>>>> index 795534589b98..640d2871b061 100644
+>>>> --- a/drivers/pci/probe.c
+>>>> +++ b/drivers/pci/probe.c
+>>>> @@ -1470,6 +1470,9 @@ static int pci_scan_bridge_extend(struct pci_bus 
+>>>> *bus, struct pci_dev *dev,
+>>>>        }
+>>>>
+>>>>   out:
+>>>> +     /* Clear errors in the Secondary Status Register */
+>>>> +     pci_write_config_word(dev, PCI_SEC_STATUS, 0xffff);
+>>>> +
+>>>>        pci_write_config_word(dev, PCI_BRIDGE_CONTROL, bctl);
+>>>>
+>>>>        pm_runtime_put(&dev->dev);
+>>>> -- 
+>>>> 2.25.1
+>>>>
+>>
+>
 
 
