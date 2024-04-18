@@ -1,201 +1,217 @@
-Return-Path: <linux-kernel+bounces-150398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 884FE8A9E83
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:35:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B7CB8A9E91
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:37:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CE87283B3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:35:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2217B24690
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0720816D322;
-	Thu, 18 Apr 2024 15:35:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FB1416EBE8;
+	Thu, 18 Apr 2024 15:37:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FB+qG7eR"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aeWcQxDn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B66B3B18D;
-	Thu, 18 Apr 2024 15:35:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B5616C6B2;
+	Thu, 18 Apr 2024 15:37:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713454517; cv=none; b=KwoM3cD/EqOwrx9wp9mzh3l7N1M51xbm2fdeKYix67zOkdVETvpS4Q/HNAR2kHWZ/FO91VEr5MrbjF85ye6PXnzvmJfkvM24KvnyE/khFwutTK6jN+Ut/Qu+f68I3RNKV9L9FP7KB/8xkZGkc6nt6OLItFxk9NbvEa+dIP62WMA=
+	t=1713454627; cv=none; b=EjsNuF/e3w8gwcWSe5prn/SOCOKoMzrSXPVzcmHEgb7phSP9Hf2cHHUXuXjcY99tQuuknSehA+9ts4b/VehqPGs10AzLz+w8RvpyL/igJNXIivbHvvHM9YMRV/OyOdPVZbwp015fcNi6m4f2nWG8ZUfOb1dh7CgOeVysTiWlzCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713454517; c=relaxed/simple;
-	bh=OXoMHYERL63GkJ/oIQoh4RY1yeo5XbdvZz9GQ/ui6CM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=N4mvV1e4UNOPm9aLKxh+Tdj2o7V3EOznL/sbxK/pgvWWVkcMDgWFVLzYtqUFFT29sNDGmdPH3fCoNwy4FM8xAj8IztYRVvAOwVYHGpxIKv+7RytCHHYsUSri+epObam3x/FLWsuwq6PWMg+anyH0QbZOn+OLechnDHdINRnZTOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FB+qG7eR; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713454514; x=1744990514;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=OXoMHYERL63GkJ/oIQoh4RY1yeo5XbdvZz9GQ/ui6CM=;
-  b=FB+qG7eRwTSwAAA2rPKZGuTny+eCN/fswyIXKyIcgyE1V2scA9KrQI+B
-   yDrmwjfIU5R9/beH/GElZPNDSD65rx1f8YE70aslj5E1YWIQfrtmwafTM
-   s1KS5pJNkz4EN1iye2V7JC/bwUr2/mt9B2f/EEV8ASCOzpxTljLoFNdg9
-   U7w0mdUccZ4I3dJTGl+BunSeHd74JQBEwZms8qYP/xJYzF+Mk0TkLHKo5
-   aRzOKGu935YYDVr26O/zouEER8q5sVnZ70AxD9iQdYfPO3J52yEfs83uG
-   pXS5YKHCyKbY473UHEgheBua3sWDtJBFSSgdFtpmQaRgq6LVoMAN1aXvv
-   g==;
-X-CSE-ConnectionGUID: A/zIIgX4RtKRD4VUwENocw==
-X-CSE-MsgGUID: HisK9yvzQtWNYU0g9ZuICw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="8874990"
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="8874990"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 08:35:14 -0700
-X-CSE-ConnectionGUID: lRs5YyPKQ/S0K/pEzpp3yQ==
-X-CSE-MsgGUID: cM21zVMpSWurulbX493h9A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="54207050"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 08:35:14 -0700
-Received: from [10.213.167.231] (kliang2-mobl1.ccr.corp.intel.com [10.213.167.231])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id D2871206DFDC;
-	Thu, 18 Apr 2024 08:35:12 -0700 (PDT)
-Message-ID: <550e5ca5-f28c-48e1-b86e-9de3458a5737@linux.intel.com>
-Date: Thu, 18 Apr 2024 11:35:11 -0400
+	s=arc-20240116; t=1713454627; c=relaxed/simple;
+	bh=/6e7koqBjxGvjgcyfyqozsKjWrzhFa989KlG6h+G83A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h/O/9YP2XAw2VJx+ElzT1qWtTQidbE/OLxYy6Fzyo9F5B7biSUsL6bqeMzZSKjn7InQ4yAMugzGRAvatMWtdbH7T/vaU6jJCiKgAeMxOAXvruBfYx1zX6hNrABOkKWwNKsYy+mDa7efNr9gRlbw1Gv6fJXr+zGrLrKj33ePkgk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aeWcQxDn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19B5DC113CC;
+	Thu, 18 Apr 2024 15:36:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713454626;
+	bh=/6e7koqBjxGvjgcyfyqozsKjWrzhFa989KlG6h+G83A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aeWcQxDnlnHobtWl/wSsLjnz0sXveyb3C9ZWUzhRio2isgl/ECkWL5MfHpcmEMTW7
+	 /3gTsH9zle5F7iUK2MtYGoEYVXSVNBMbfrRBJdAbuLXT5C4Rci/tim3vMb2/HkXNT3
+	 0BdaT4fZ5qEwRw4j04psUJzOpDE+rRKi3VjZ9pFXSPLklZtfjmSfaFH4UR8286lGH5
+	 60/sHoFS02dtG3EW7cMEMNkjH3P1jYGW/oaOVey/LIzfE2ojr8NLFIf5bqbQCitx7d
+	 hsc5w5cHL6aJI5zSA/0oAAIzFKyYOhtBXIDwcp4O2/SqIU/0gLgXdRamRK8O7d7lre
+	 JIoqk7vYwCgbA==
+Date: Thu, 18 Apr 2024 18:35:48 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Song Liu <song@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Topel <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
+Message-ID: <ZiE91CJcNw7gBj9g@kernel.org>
+References: <20240411160051.2093261-1-rppt@kernel.org>
+ <20240411160051.2093261-6-rppt@kernel.org>
+ <20240415075241.GF40213@noisy.programming.kicks-ass.net>
+ <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
+ <Zh4nJp8rv1qRBs8m@kernel.org>
+ <CAPhsuW6Pbg2k_Gu4dsBx+H8H5XCHvNdtEZJBPiG_eT0qqr9D1w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1] perf pmu: Assume sysfs events are always lowercase
-To: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240413040812.4042051-1-irogers@google.com>
-Content-Language: en-US
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20240413040812.4042051-1-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW6Pbg2k_Gu4dsBx+H8H5XCHvNdtEZJBPiG_eT0qqr9D1w@mail.gmail.com>
 
-
-
-On 2024-04-13 12:08 a.m., Ian Rogers wrote:
-> Perf event names aren't case sensitive. For sysfs events the entire
-> directory of events is read then iterated comparing names in a case
-> insensitive way, most often to see if an event is present.
+On Wed, Apr 17, 2024 at 04:32:49PM -0700, Song Liu wrote:
+> On Tue, Apr 16, 2024 at 12:23 AM Mike Rapoport <rppt@kernel.org> wrote:
+> >
+> > On Mon, Apr 15, 2024 at 06:36:39PM +0100, Mark Rutland wrote:
+> > > On Mon, Apr 15, 2024 at 09:52:41AM +0200, Peter Zijlstra wrote:
+> > > > On Thu, Apr 11, 2024 at 07:00:41PM +0300, Mike Rapoport wrote:
+> > > > > +/**
+> > > > > + * enum execmem_type - types of executable memory ranges
+> > > > > + *
+> > > > > + * There are several subsystems that allocate executable memory.
+> > > > > + * Architectures define different restrictions on placement,
+> > > > > + * permissions, alignment and other parameters for memory that can be used
+> > > > > + * by these subsystems.
+> > > > > + * Types in this enum identify subsystems that allocate executable memory
+> > > > > + * and let architectures define parameters for ranges suitable for
+> > > > > + * allocations by each subsystem.
+> > > > > + *
+> > > > > + * @EXECMEM_DEFAULT: default parameters that would be used for types that
+> > > > > + * are not explcitly defined.
+> > > > > + * @EXECMEM_MODULE_TEXT: parameters for module text sections
+> > > > > + * @EXECMEM_KPROBES: parameters for kprobes
+> > > > > + * @EXECMEM_FTRACE: parameters for ftrace
+> > > > > + * @EXECMEM_BPF: parameters for BPF
+> > > > > + * @EXECMEM_TYPE_MAX:
+> > > > > + */
+> > > > > +enum execmem_type {
+> > > > > + EXECMEM_DEFAULT,
+> > > > > + EXECMEM_MODULE_TEXT = EXECMEM_DEFAULT,
+> > > > > + EXECMEM_KPROBES,
+> > > > > + EXECMEM_FTRACE,
+> > > > > + EXECMEM_BPF,
+> > > > > + EXECMEM_TYPE_MAX,
+> > > > > +};
+> > > >
+> > > > Can we please get a break-down of how all these types are actually
+> > > > different from one another?
+> > > >
+> > > > I'm thinking some platforms have a tiny immediate space (arm64 comes to
+> > > > mind) and has less strict placement constraints for some of them?
+> > >
+> > > Yeah, and really I'd *much* rather deal with that in arch code, as I have said
+> > > several times.
+> > >
+> > > For arm64 we have two bsaic restrictions:
+> > >
+> > > 1) Direct branches can go +/-128M
+> > >    We can expand this range by having direct branches go to PLTs, at a
+> > >    performance cost.
+> > >
+> > > 2) PREL32 relocations can go +/-2G
+> > >    We cannot expand this further.
+> > >
+> > > * We don't need to allocate memory for ftrace. We do not use trampolines.
+> > >
+> > > * Kprobes XOL areas don't care about either of those; we don't place any
+> > >   PC-relative instructions in those. Maybe we want to in future.
+> > >
+> > > * Modules care about both; we'd *prefer* to place them within +/-128M of all
+> > >   other kernel/module code, but if there's no space we can use PLTs and expand
+> > >   that to +/-2G. Since modules can refreence other modules, that ends up
+> > >   actually being halved, and modules have to fit within some 2G window that
+> > >   also covers the kernel.
 > 
-> Consider:
-> $ perf stat -e inst_retired.any true
+> Is +/- 2G enough for all realistic use cases? If so, I guess we don't
+> really need
+> EXECMEM_ANYWHERE below?
 > 
-> The event inst_retired.any may be present in any PMU, so every PMU's
-> sysfs events are loaded and then searched with strcasecmp to see if
-> any match. This event is only present on the cpu PMU as a json event
-> so a lot of events were loaded from sysfs unnecessarily just to prove
-> an event didn't exist there.
+> > >
+> > > * I'm not sure about BPF's requirements; it seems happy doing the same as
+> > >   modules.
+> >
+> > BPF are happy with vmalloc().
+> >
+> > > So if we *must* use a common execmem allocator, what we'd reall want is our own
+> > > types, e.g.
+> > >
+> > >       EXECMEM_ANYWHERE
+> > >       EXECMEM_NOPLT
+> > >       EXECMEM_PREL32
+> > >
+> > > ... and then we use those in arch code to implement module_alloc() and friends.
+> >
+> > I'm looking at execmem_types more as definition of the consumers, maybe I
+> > should have named the enum execmem_consumer at the first place.
 > 
-> This change avoids loading all the events by assuming sysfs event
-> names are always lowercase. 
+> I think looking at execmem_type from consumers' point of view adds
+> unnecessary complexity. IIUC, for most (if not all) archs, ftrace, kprobe,
+> and bpf (and maybe also module text) all have the same requirements.
+> Did I miss something?
 
-From what I searched in the kernel, it looks like all the sysfs event
-names (from different ARCHs and devices) are lowercase. It should not
-break the existing usages.
-I don't see a reason why a event name must be uppercase.
-However, I think we need to add something to guarantee the assumption.
+It's enough to have one architecture with different constrains for kprobes
+and bpf to warrant a type for each.
 
-Could you please update the doc to describe the assumption?
-Documentation/ABI/testing/sysfs-bus-event_source-devices-events
-So everybody can follow the rule.
+Where do you see unnecessary complexity?
+ 
+> IOW, we have
+> 
+> enum execmem_type {
+>         EXECMEM_DEFAULT,
+>         EXECMEM_TEXT,
+>         EXECMEM_KPROBES = EXECMEM_TEXT,
+>         EXECMEM_FTRACE = EXECMEM_TEXT,
+>         EXECMEM_BPF = EXECMEM_TEXT,      /* we may end up without
+> _KPROBE, _FTRACE, _BPF */
+>         EXECMEM_DATA,  /* rw */
+>         EXECMEM_RO_DATA,
+>         EXECMEM_RO_AFTER_INIT,
+>         EXECMEM_TYPE_MAX,
+> };
+> 
+> Does this make sense?
+ 
+How do you suggest to deal with e.g. riscv that has separate address spaces
+for modules, kprobes and bpf?
 
-I think a perf test is required as well.
-Maybe we can extend the test__pmu_events() to do the name check.
+> Thanks,
+> Song
 
-Thanks,
-Kan
-
-> It then uses file exists and only loads
-> the events when the desired event is present.
-> 
-> For the example above, the number of openat calls measured by perf
-> trace on a tigerlake laptop goes from 325 down to 255. The reduction
-> will be larger for machines with many PMUs, particularly replicated
-> uncore PMUs.
-> 
-> Make pmu_aliases_parse early return when aliases are loaded, ensure
-> the function is called before all uses of the aliases list.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/pmu.c | 20 +++++++++++++++-----
->  1 file changed, 15 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index ab30f22eaf10..ce72c99e4f61 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -425,9 +425,16 @@ static struct perf_pmu_alias *perf_pmu__find_alias(struct perf_pmu *pmu,
->  {
->  	struct perf_pmu_alias *alias;
->  
-> -	if (load && !pmu->sysfs_aliases_loaded)
-> -		pmu_aliases_parse(pmu);
-> +	if (load && !pmu->sysfs_aliases_loaded) {
-> +		char event_file_name[FILENAME_MAX + 8];
->  
-> +		scnprintf(event_file_name, sizeof(event_file_name), "events/%s", name);
-> +		for (size_t i = 7, n = 7 + strlen(name); i < n; i++)
-> +			event_file_name[i] = tolower(event_file_name[i]);
-> +
-> +		if (perf_pmu__file_exists(pmu, event_file_name))
-> +			pmu_aliases_parse(pmu);
-> +	}
->  	list_for_each_entry(alias, &pmu->aliases, list) {
->  		if (!strcasecmp(alias->name, name))
->  			return alias;
-> @@ -605,6 +612,9 @@ static int pmu_aliases_parse(struct perf_pmu *pmu)
->  	size_t len;
->  	int fd, dir_fd;
->  
-> +	if (pmu->sysfs_aliases_loaded)
-> +		return 0;
-> +
->  	len = perf_pmu__event_source_devices_scnprintf(path, sizeof(path));
->  	if (!len)
->  		return 0;
-> @@ -1689,9 +1699,7 @@ size_t perf_pmu__num_events(struct perf_pmu *pmu)
->  {
->  	size_t nr;
->  
-> -	if (!pmu->sysfs_aliases_loaded)
-> -		pmu_aliases_parse(pmu);
-> -
-> +	pmu_aliases_parse(pmu);
->  	nr = pmu->sysfs_aliases;
->  
->  	if (pmu->cpu_aliases_added)
-> @@ -1750,6 +1758,7 @@ int perf_pmu__for_each_event(struct perf_pmu *pmu, bool skip_duplicate_pmus,
->  	struct strbuf sb;
->  
->  	strbuf_init(&sb, /*hint=*/ 0);
-> +	pmu_aliases_parse(pmu);
->  	pmu_add_cpu_aliases(pmu);
->  	list_for_each_entry(event, &pmu->aliases, list) {
->  		size_t buf_used;
-> @@ -2154,6 +2163,7 @@ const char *perf_pmu__name_from_config(struct perf_pmu *pmu, u64 config)
->  	if (!pmu)
->  		return NULL;
->  
-> +	pmu_aliases_parse(pmu);
->  	pmu_add_cpu_aliases(pmu);
->  	list_for_each_entry(event, &pmu->aliases, list) {
->  		struct perf_event_attr attr = {.config = 0,};
+-- 
+Sincerely yours,
+Mike.
 
