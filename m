@@ -1,175 +1,124 @@
-Return-Path: <linux-kernel+bounces-150535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 249958AA0B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:04:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E70538AA0B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:04:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 566D01C21D48
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:04:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A955B2341C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:04:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64FA6171E4F;
-	Thu, 18 Apr 2024 17:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73A5172BCA;
+	Thu, 18 Apr 2024 17:04:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AQMnnnfS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B2j4RfRk"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E9B616F8F3;
-	Thu, 18 Apr 2024 17:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F2B171085;
+	Thu, 18 Apr 2024 17:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713459849; cv=none; b=OVnJDxmtDV+BrCdi0B1X9KTGtZ3M3GEa4HX7zGAXgW48QgNZEeYO3U/qtZO+EPI7yfuEtPiHIGF9wKGVmA9W1tirnGTFe1a6awvr0oZv+Jnd5WzaeridFG4Vgglf+xsTWCDjmR2ppgoBrChY3Kf7eVJ2s9vbawcJavwMDRqQC5M=
+	t=1713459857; cv=none; b=HgGJGHpskKUiu4mFli7GtVf/PqiApnoMg1/B7mDcbxcHrDpsU/GIgxoft5hfDdtrfb0M9+jRyZAUEORtKhdIR2HJh4nQwzdRvtg+wKlNWWxdBRI0DpN+XLNLAB/yY9OGEswCs7g6Ut8Sx8p5TdwKHwB2HfQTJyoTPbAwiXfwUvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713459849; c=relaxed/simple;
-	bh=+tpRTJtsOFRM7YQSk7tL2XGyEcaVFk2CAaRZfgRJnUo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lsngf8z9yOUBJVfzEB74ls8SKNcxtNJTgdpzHKjxVCIFcndYT69WTO+YX3nF8Y91yoLFrcxZoeJ6djt4sofwGSB3Cgp70zvykJD2ASDtnSvkTtkE9acff/DrdLTUYQ03ONjScXoXa+pYS73eDBxehZLGxhm+bRZ1C83dfCGdNDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AQMnnnfS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0FC4C113CC;
-	Thu, 18 Apr 2024 17:04:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713459849;
-	bh=+tpRTJtsOFRM7YQSk7tL2XGyEcaVFk2CAaRZfgRJnUo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AQMnnnfSBVUOkNmpDuqpanPgIdPXohtKKPOIs8QK66pW4vJF8MQEPEq5/TUf17sTm
-	 YakEmENtf9PxeIL9CSNhGp3C4EtF80Um2m5hh77C5bJUYSs4Zz9174vsy6guICe8DM
-	 TiHKlu2dPN5vERV2YsU8PrcUdxN+RpYdigWS94PwI/uUPA0i7VIaKlhmzT6jl6SQdz
-	 fUdyYrV8M3ylSy3NPrZlGxMPcpjTMIRhWO4j8XC+PkKcEU0RJBOgUUT6CiPvwmkKDF
-	 Kcdbx0VzPVsVz6A6A76A1w6ClOQD6GvVgunRf7gThzj04fQMs50F48O4h80Km4dEVw
-	 ErA3uwJndDYlA==
-Date: Thu, 18 Apr 2024 18:04:03 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Tomasz Jeznach <tjeznach@rivosinc.com>
-Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Sunil V L <sunilvl@ventanamicro.com>,
-	Nick Kossifidis <mick@ics.forth.gr>,
-	Sebastien Boeuf <seb@rivosinc.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	iommu@lists.linux.dev, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux@rivosinc.com
-Subject: Re: [PATCH v2 1/7] dt-bindings: iommu: riscv: Add bindings for
- RISC-V IOMMU
-Message-ID: <20240418-approach-liquefy-04551ddefbc4@spud>
-References: <cover.1713456597.git.tjeznach@rivosinc.com>
- <c37cb93e7baa7042a3f82130bf30be6831b558dc.1713456598.git.tjeznach@rivosinc.com>
+	s=arc-20240116; t=1713459857; c=relaxed/simple;
+	bh=5TvDNXuYEqdu49jOXNsS0qeHKx5kk+3m83qD8A4Nbi0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FF/vJKHHU4lNkWWXIQD1+YDddW/YTUWOFfp3HDv8/5VTOZjP7zsFPen+ZYvHKnddO0WxJ9ZRgFVNNUX5nSRZhYLPKKLwqG6pm6tGHtqzKe8tasVy/Dk30hoyuyHKT5jJln8xbe8bU/49VYKPZ/ztraAnahYyAQRXcMRmlw4jDsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B2j4RfRk; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5194cebd6caso1350426e87.0;
+        Thu, 18 Apr 2024 10:04:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713459854; x=1714064654; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lSLHn8Zl8BP0Wy/iVTor2ayV5AC0mJY5tLNZUubBiyI=;
+        b=B2j4RfRkqINyJtQGKO5aYmoN0x1tJ5ZHdJqPSyb+7eaLQ/H2aITDcW4Broc6HULCpb
+         PllNt4JdQVHEobUfaUaaISc8DAAyexkQh42GwtwMRVBgIXHbXFu6aGzXIgwmjB6kV7UU
+         /tRTunh57eZzdr4jwqDV2mWVYA78F6/6pvIFJgsvHbREAfwztch7ZxAbeVAP8nx0xxwL
+         ukdt69EhRlX+8M3DqA8UaIhSLww5coADSfOBiaWjgy6f5ZaGI+nzfW95ZYOp/HelsCO0
+         GxK4DNpTrOq2rv9uTNvVozuBPop/D8tRbkhFMv+Q4D6rx/HGDhKw1PQYnsIXEdf/YrzW
+         zk5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713459854; x=1714064654;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lSLHn8Zl8BP0Wy/iVTor2ayV5AC0mJY5tLNZUubBiyI=;
+        b=p59pudGq9bOz/KJbE8XHuLovpwFKucRcY/PN7RT+ABY9zX5HGPTpUx35FLZS4H8Iwi
+         7deCXpgTZHuzaKepFCfcathmAy5kKY1+gAIhoXtDEqS4HYVUP7NqtndPBJG15uVeoaHE
+         dkHj1yzqwYhXhJInj+e9QNjX+7x4BbDfz4Wm0LadXlPRZArvDpTSiQk8GkduedfTrLDG
+         u2LxTbnVADQFLBhs4zMTmjDW+owI76KMcBpV4bMIYaHXBsA8Ijggxqev6y2+e49sVA4y
+         RoXCvjhkvhSUTCSk9v3NB4SjUxHE5WFFSTP2r03OIdTUhmSgJjLTSOK6uSjVbolCD5Rf
+         JnKA==
+X-Forwarded-Encrypted: i=1; AJvYcCW3QfJfihrQM2n5AfkXGLC3CUajJ6WPP89TYX+jPV0T7sTk7CIYNkC67Eie90FpCAmNAN3O0AnoJAuj7o3+o2yEg7K/5N5/oZu9zMaW
+X-Gm-Message-State: AOJu0YxgRgOtAD2Obqw7v0NQ58rV9ODtBQpjeC+VitR+zeN2JcImwevT
+	ybf8qPiw6Kqy9anZ/Y6+vtrF7EPk+dRl3a64siFe0lVJ/sbcXzq8
+X-Google-Smtp-Source: AGHT+IFNmtDauh7kfAv04ZfeS5gpXspMJADhi0gjFGPb05MFwanTPIXDSevaDoHQ/7Ij1uzpt63NMA==
+X-Received: by 2002:a19:5f52:0:b0:517:89cf:bbef with SMTP id a18-20020a195f52000000b0051789cfbbefmr2136938lfj.7.1713459853687;
+        Thu, 18 Apr 2024 10:04:13 -0700 (PDT)
+Received: from [192.168.0.118] (88-113-27-52.elisa-laajakaista.fi. [88.113.27.52])
+        by smtp.gmail.com with ESMTPSA id v21-20020a056402175500b0056e7ba0497dsm1100636edx.28.2024.04.18.10.04.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 10:04:13 -0700 (PDT)
+Message-ID: <f2429c78-9189-410d-9c6a-644ae8a4d12c@gmail.com>
+Date: Thu, 18 Apr 2024 20:04:11 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Rqk2Fw9rLZ9f77fo"
-Content-Disposition: inline
-In-Reply-To: <c37cb93e7baa7042a3f82130bf30be6831b558dc.1713456598.git.tjeznach@rivosinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] HID: uclogic: Remove useless loop
+Content-Language: en-US
+To: Stefan Berzl <stefanberzl@gmail.com>, Jiri Kosina <jikos@kernel.org>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240401004757.22708-1-stefanberzl@gmail.com>
+ <nycvar.YFH.7.76.2404121751250.5680@cbobk.fhfr.pm>
+ <4ae4be2f-4edd-4d1e-87e9-df5687627d00@gmail.com>
+From: Nikolai Kondrashov <spbnick@gmail.com>
+In-Reply-To: <4ae4be2f-4edd-4d1e-87e9-df5687627d00@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+Hi Jiri, Stefan,
 
---Rqk2Fw9rLZ9f77fo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 4/18/24 4:31 PM, Stefan Berzl wrote:
+> 
+> On 12/04/2024 17:52, Jiri Kosina wrote:
+>> On Mon, 1 Apr 2024, Stefan Berzl wrote:
+>>
+>>> The while in question does nothing except provide the possibility
+>>> to have an infinite loop in case the subreport id is actually the same
+>>> as the pen id.
+>>>
+>>> Signed-off-by: Stefan Berzl <stefanberzl@gmail.com>
+>>
+>> Let me CC Nicolai, the author of the code of question (8b013098be2c9).
+> 
+> I agree that Nicolai's opinion would be invaluable, but even without it,
+> the patch is trivially correct. If we have a subreport that matches the
+> packet, we change the report_id accordingly. If we then loop back to the
+> beginning, either the report_id is different or we are caught in an
+> infinite loop. None of these are hardware registers where the access
+> itself would matter.
 
-On Thu, Apr 18, 2024 at 09:32:19AM -0700, Tomasz Jeznach wrote:
-> Add bindings for the RISC-V IOMMU device drivers.
->=20
-> Co-developed-by: Anup Patel <apatel@ventanamicro.com>
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> Signed-off-by: Tomasz Jeznach <tjeznach@rivosinc.com>
-> ---
->  .../bindings/iommu/riscv,iommu.yaml           | 149 ++++++++++++++++++
->  MAINTAINERS                                   |   7 +
->  2 files changed, 156 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iommu/riscv,iommu.y=
-aml
->=20
-> diff --git a/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml b/D=
-ocumentation/devicetree/bindings/iommu/riscv,iommu.yaml
-> new file mode 100644
-> index 000000000000..d6522ddd43fa
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iommu/riscv,iommu.yaml
-> @@ -0,0 +1,149 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iommu/riscv,iommu.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: RISC-V IOMMU Architecture Implementation
-> +
-> +maintainers:
-> +  - Tomasz Jeznach <tjeznach@rivosinc.com>
-> +
-> +description: |+
+Yes, Stefan is right. I was trying to implement general rewrite logic, and if
+we really had that, then the fix would need to be checking that the new ID is
+different. As such there's really no need, and Stefan's fix is fine.
 
-FYI, the + here is probably not needed.
+Only perhaps amend that comment to something like
 
-> +  The RISC-V IOMMU provides memory address translation and isolation for
-> +  input and output devices, supporting per-device translation context,
-> +  shared process address spaces including the ATS and PRI components of
-> +  the PCIe specification, two stage address translation and MSI remappin=
-g.
-> +  It supports identical translation table format to the RISC-V address
-> +  translation tables with page level access and protection attributes.
-> +  Hardware uses in-memory command and fault reporting queues with wired
-> +  interrupt or MSI notifications.
-> +
-> +  Visit https://github.com/riscv-non-isa/riscv-iommu for more details.
-> +
-> +  For information on assigning RISC-V IOMMU to its peripheral devices,
-> +  see generic IOMMU bindings.
-> +
-> +properties:
-> +  # For PCIe IOMMU hardware compatible property should contain the vendor
-> +  # and device ID according to the PCI Bus Binding specification.
-> +  # Since PCI provides built-in identification methods, compatible is not
-> +  # actually required. For non-PCIe hardware implementations 'riscv,iomm=
-u'
-> +  # should be specified along with 'reg' property providing MMIO locatio=
-n.
+    /* Change to the (non-pen) subreport ID, and continue */
 
-I dunno, I'd like to see soc-specific compatibles for implementations of
-the RISC-V IOMMU. If you need a DT compatible for use in QEMU, I'd
-suggest doing what was done for the aplic and having a dedicated
-compatible for that and disallow having "riscv,iommu" in isolation.
+Or at least remove ", and restart".
 
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: riscv,pci-iommu
-> +          - const: pci1efd,edf1
-> +      - items:
-> +          - const: pci1efd,edf1
-
-Why are both versions allowed? If the former is more understandable,
-can't we just go with that?
-
-> +      - items:
-> +          - const: riscv,iommu
-
-Other than the compatible setup I think this is pretty decent though,
-Conor.
-
---Rqk2Fw9rLZ9f77fo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiFSgwAKCRB4tDGHoIJi
-0l8lAQDVxpOYtqJ5N0VIeqSL5joovSdzpNunYGgrbV4XSnS+VAD/RSNSV7cgp+VK
-l9sXMIW7ys3Wzwv8/1/vz3UBCbiDuAo=
-=r1Kq
------END PGP SIGNATURE-----
-
---Rqk2Fw9rLZ9f77fo--
+Thank you, Stefan and Jiri!
+Nick
 
