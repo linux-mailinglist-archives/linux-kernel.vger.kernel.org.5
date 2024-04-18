@@ -1,118 +1,157 @@
-Return-Path: <linux-kernel+bounces-150384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F49F8A9E48
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:25:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 377248A9E50
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:26:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C32601F22009
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:25:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1CFD282E71
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:26:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 602CC16C698;
-	Thu, 18 Apr 2024 15:24:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC0F16C69B;
+	Thu, 18 Apr 2024 15:25:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="he8nYJjF"
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="DnHFHmYs"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11olkn2090.outbound.protection.outlook.com [40.92.18.90])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F2C161935;
-	Thu, 18 Apr 2024 15:24:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713453896; cv=none; b=BzbBVE/0nB0GMLiqEY20qoMKmHWWsaLJY6NgZumIn08G4CLvjuYa3YYSHGHatcNeP7sjrt5Shl7V9235K2YX0so2ytSr6bjHUFaaI8wjegyji4bKQqyYzRwseZWZLj0CIZd8Shlyqkgj5GTn2Sdc4zvVLVDvEpoXn2MbSjTbUw0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713453896; c=relaxed/simple;
-	bh=K6si/qWNSSEtfjq7a1SEzSelcRddlzdgf8u7W2c9iVw=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=ide1gCuZmhqz9ilRq+akFd2qTMrdqnsclvRCigCxZzVZlJcakCEmGGkzL2Fz8XbrX59UVDgFqHK3UuOtrZHeINRFgrHcGM1B5C8EFTN/dZR5iDo0OBxs4coASUPHo+cNINlCGceSSTnOyHf+zgJ9DKwm8sS2HqSQL4we+pM3CUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=he8nYJjF; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713453888; x=1714058688; i=markus.elfring@web.de;
-	bh=Vq9VWrH+gFfZimn1lXPfohIhS0gZTVPNGthLTor5jMs=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=he8nYJjF8NSkYh7XVLsTbYt46l2oJtjrf7sFBEZI087XsHoijwCi8SYflOC5S93i
-	 oMhyfqoTtyFw1N+LevQ8O6PaHdplLpvhhGvgCQ72vbALXvqA2PjJ3NpiCqIhX9xfF
-	 P59EoYB4Gjn41LvycD3FkWHGAvrafh1rzC2YY2vUKAxVTHj4v++/cV7T8SnEOJMFF
-	 4kz0SgAUv/BJqoWXrOCqYNvcEnpxUXs5+szlWh418GNU1aSh6dcs4VVV9/fLJjI6R
-	 lNROEawpPyXDiWszg2NeHJA+LnFOEnW/gZRt0SeR4OsfYp+6mOamj22AWiZA7zE0N
-	 aNnTiHfLSFH/EYUC6w==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mf3qY-1sdvze1UwU-00dp4F; Thu, 18
- Apr 2024 17:24:48 +0200
-Message-ID: <9ff84256-c7d2-48e5-b06b-09a993db2c39@web.de>
-Date: Thu, 18 Apr 2024 17:24:47 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ECB5161935;
+	Thu, 18 Apr 2024 15:25:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.18.90
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713453952; cv=fail; b=qLlRmZ+Kem/QRXN0WgblmDpW6QMQWJu+NUtAMPGavsLz7Ts3YIAZ2qajpSlfH1Vw+1IfFHeMkp/e1jfgx8dBF52q6dkocvSXKUJ+Jp/9byxmARkBOj9nBIJo5a2ZpiWIeyxYqciYBHDVhXXywVG0ziI0K1ldCMkX+PsTziCTBWQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713453952; c=relaxed/simple;
+	bh=k1NuydLhAUmibwDMxM6bSHmVgSD8ZulZDnS5kKChrbg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=pJ6V77pWqM7xpELQqn0Mn86TXjp6XCcBBRfnOH9kAjcfaImUo6HVeksORm75kLhryO5X5PzBzSmePWgQieQIyGLIGgoR1njA5Aqwq4sBASMU3pt84G/wPuWbleA+F0dnEsPUkKBaFDc4IXUX+thcgdpVgfdYIAbm+zKgaFF1M6o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=DnHFHmYs; arc=fail smtp.client-ip=40.92.18.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TQlwY28pSxH+38t0/u8r/VWqkCTmtli1zmJvrovVVdK5H5QmkEWDdxiMV6xrVhTzHdiuhUd5FH9qljydnej4iSReiDEyWl35UY7jU12ZyzyAe48AD6/yLR+exZ6Z4byikg7HeTt0NVvF+BiwEfvFrQtSHJwlmAu5BUMgobQWQ12JuAmGpdUlg8l2ZvJ8HuGMyzl7Kff2U2Y2nGOgYNJO9hDYPBUj4xkWVdeg/RW96+X28uHKESfCIEy05TyIfY+e4k0Y50Jh6RNtHAYM3D8EWnvhShlnHOukL49wxjLxN4nYdTmwDUNNGtbBKGiMaUkNPMMiGRWWno4GMjSZG9obew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JkdL7xjz4aO/iybJ8lM/saFQhcff1yi/wIEEydrW44g=;
+ b=HNrhUNXrfeLzVccXed6xVg3q8PPYGwah5Q6sTxDhaCzRtd+noPKd74rgjbdm5hmmaf6Co86wO5F/uwg7nFxMn74wsfHkFMkqoUJKLmv9a+0kfTChWLR3GQA1zH1V/7Iv5PPoFpadx0OX0viVDWyl/aQW6rtLRj6WaJD/1i5jszaMvPllqLALbmpL5sNJarH+WmBqiRcJ8nTri0sv3fekek2F2NsgAROTj3xymh9I1TKSboK4qsxTK1BX6DWa36CqkpGp8b3FhvcPob/+v5807nR5cq4ysGFlmfSUtSorkGaKzYAjeFxrGMF4ScjDNg420IfvjQZATUCIKwqyUxxdlw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JkdL7xjz4aO/iybJ8lM/saFQhcff1yi/wIEEydrW44g=;
+ b=DnHFHmYsXH/2iqIGvEHQBqw8B+Ku8/vbjk8iFtEM2s2r+LgkqL3TuhOsi7iqp9/KyQNouCPSal9r3hKutcnmjsoFSu6PdnZib7cyPKgZdDmoEmpzIDgN/jJL7YILWw19uXJkDxkOW9aTfdKpkdm4HLE5pYzwz8J3lZQfsIOzvcfVVvAmjlz2Qy1kFNes6nPwIbeTLCA/beqbGNQOM8ekbD+TakTFKnMu1KawFs3St95kNSkFrRf6gJmk8se7mR821Q3TfoFbARx0UH2+YZWQw8ys58eAbbDAiTcOzvyKYwPp9hfQXBsKYDBNbQbPOD1sQPilkVhcgLTjkVF4cFsZkw==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by CYYPR02MB9927.namprd02.prod.outlook.com (2603:10b6:930:bf::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.37; Thu, 18 Apr
+ 2024 15:25:48 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::1276:e87b:ae1:a596]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::1276:e87b:ae1:a596%5]) with mapi id 15.20.7472.037; Thu, 18 Apr 2024
+ 15:25:48 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Matthew Wilcox <willy@infradead.org>
+CC: "robin.murphy@arm.com" <robin.murphy@arm.com>, "joro@8bytes.org"
+	<joro@8bytes.org>, "will@kernel.org" <will@kernel.org>, "hch@lst.de"
+	<hch@lst.de>, "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+	"corbet@lwn.net" <corbet@lwn.net>, "iommu@lists.linux.dev"
+	<iommu@lists.linux.dev>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>, "petr@tesarici.cz" <petr@tesarici.cz>,
+	"roberto.sassu@huaweicloud.com" <roberto.sassu@huaweicloud.com>
+Subject: RE: [PATCH 1/1] Documentation/core-api: Add swiotlb documentation
+Thread-Topic: [PATCH 1/1] Documentation/core-api: Add swiotlb documentation
+Thread-Index: AQHakZfceiYYTi0lC0K56jdO8yuO3rFuFjoAgAAPoyA=
+Date: Thu, 18 Apr 2024 15:25:47 +0000
+Message-ID:
+ <SN6PR02MB415745AA09BE9E468001EFBED40E2@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240418135213.426671-1-mhklinux@outlook.com>
+ <ZiEuGIoa-FCE0p4X@casper.infradead.org>
+In-Reply-To: <ZiEuGIoa-FCE0p4X@casper.infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [cy1y2jeAaiWiOMVLoqpRcDSLQBMqTkn2]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|CYYPR02MB9927:EE_
+x-ms-office365-filtering-correlation-id: 20262499-b887-4229-d8e6-08dc5fbbd2be
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ ax6Eb/JSVNu6zWHB32KzAcs7/8sijf767Agd0UnTeasepHWg7VjLEOwZ3Qie27BbdCwzL45YUJHNBur5GTOwUsJq0vHRdIQdd56ExJgO4uqgwUWfYzf+IcORiOvGjyolTMf5cEH3dYRaktdaeU2tf/jKg65AJiHLxGzVnlcJCAreZMOjHgiEROTcA0ces/UDOpc0k5+k021TXGoWcbMJcj2wMBnf9/juAJ3IGMVqcNsHui5ciN8iWItVbWz/4rh17NtWxLwh+RpUCDJluV00AqwjuxuGr/h6VHE5AcOI/bWBW4xTjSwrAPx43m+OsqW1MkFC8k7hovO6iqMyPZ8P1SSO9yWQBYQk7W3KT1SZpdVtdB3AlvBM4hJKSm7h0g+PG68NwrXT7mSBWRpNAJzV7lwlVzOPzufTG7lpWK++gOUmzAc8mSWpYlY8iCOFLpEqQMiUAeMm7KI4nJXVglbX7E3jP4i6BRumDck45VpgbGMsd8IpQAz+O9aMrWI/B4Q4XbeFOYHa2Z8Mz1xPjh7VSJCNJA1Fb0tMxYl8DhfLNP8riqq6lDSGgRzPA66ObHrk
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?+cuhHkOkQS/whAb1sFtEJZzhks9OAW+a0rBNDYQxP6RRBMeRdNB5J+Kn1nKj?=
+ =?us-ascii?Q?dQz82SqkEFGfKJAWj72WzWQ5Wqglvm2pHxQ80l2GukK6Tzp9Gg3rQIu6Qw0b?=
+ =?us-ascii?Q?F4lpKnDaLgeACCpQtUvqn0DQsfSznz3wcILwnplLW6D/j72osxSBX1Ek3wDw?=
+ =?us-ascii?Q?XeYWS+IIh0nQyA67LPRctbjHtV/KItQ7+2qGJxRA8DSpixx5yq0dPR46FTa0?=
+ =?us-ascii?Q?DFcotffYtC7ubNF/OYwDCwX2TJYLoJQ3Vkr2ieuz8K9THm8yq6keMpPjTwBJ?=
+ =?us-ascii?Q?kwqy//4n/pPZalOdGAMNogsELitGdPwlRKn5w4dDlxHGnhWpXQX+pNGE31og?=
+ =?us-ascii?Q?+0tc9c/q2b6eQzvhTWOrswlSbfa0mrkvV4sWBjI/zn39Nd5mY0nUnpKkpL85?=
+ =?us-ascii?Q?cAqgYnARFp92bj5A62HKbp56DIkHzKBHJ5qZ37hdaLUnuOstxKBhERuNSwtG?=
+ =?us-ascii?Q?fwKuVpyqt54q51OIbhq/fqtc0D+gQq97CkdCH9gtUACg4g0YwUp2lQiDzLJo?=
+ =?us-ascii?Q?PY+l07JgAwG0gikb0zd8MOzKEFTCIA+V338Kk/3RT7WvFe10P/rk5UOyRpxh?=
+ =?us-ascii?Q?254NbJm4Uk3ZS/hMh6s37iquq26kV7+YLzXCcEYSvT2bdj7tfeaPe+ITy9UD?=
+ =?us-ascii?Q?vUhZc9PyzwlybWeuMAmGBu648VHl9mItBwlGFBHpFJNmgy4E9UdtAD4aa0ej?=
+ =?us-ascii?Q?ykDvU7dJzmWDy45y1tdUY/h9BZ5f6hkm7GR29P0ON257w0tVEqW5vrz3gH4h?=
+ =?us-ascii?Q?K/qsA0Jz7VVZeWH6duhd4bJ5wzuB3SywQIe5041PF+Awj3jbxOMoQN7zfVBR?=
+ =?us-ascii?Q?i+79U0+7se71fRt6kpyKFOdz5cO7aqgjRtHgO18CUGBz90/IEdDhW3hAMIHR?=
+ =?us-ascii?Q?u8R4PFtXt2qune0wAT3AOMmOy3ZmIGZMDO2A3zTSi+8UpCM95KCNi092caCp?=
+ =?us-ascii?Q?lZlCoTDzvPygv2JgAsp+ZBegIDj5CcWK+tb5/0nSO/cQ1rYE6HP/OUq4h/gP?=
+ =?us-ascii?Q?cCRPZkvGe8/7y5NNc4JQhMZ6Xd7MZX7Wb7CB7giL70wkwsH3zTg1wjoa06z8?=
+ =?us-ascii?Q?8x34KwxMq/be+pG4jsbVrT4H2bJdkImo6txeR+KzUPlkX5BlKx2Z6FgU3RVg?=
+ =?us-ascii?Q?EhaDe/RKPHCLe0SuoRcVXao2I08oywaBlysl+HnwsclWKiolq40zwvBoo9wC?=
+ =?us-ascii?Q?R2Qg5vR36C07kd6Ll2WyqHSxOIFKiBEWP1ZVDw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Wander Lairson Costa <wander@redhat.com>, kunit-dev@googlegroups.com,
- linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Brendan Higgins <brendan.higgins@linux.dev>, David Gow
- <davidgow@google.com>, Rae Moar <rmoar@google.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20240418131754.58217-3-wander@redhat.com>
-Subject: Re: [PATCH 2/2] kunit: avoid memory leak on device register error
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240418131754.58217-3-wander@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:18nIa5u5Z6yCz71VW5nr+AuTvLfOR5QY3AKj//R8Y/Oo6/3krry
- w1YOHjzYkwn4FfejR8lTSWBz/3UydDAgMyIUgBAKBqnAKL4FCkRKsJ+479V3zLa/USpSBby
- FLbnIHJmC/Ar/AhmHrVapw3NTVc7a0pgN0Xg9MrHxaRE4jNqudCHNH4GwzRlWocpDLgLxxc
- FG7pD6xuD/cIfev6+yqXA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:bv2N6UDqpNk=;q+yVHgJcfitJbCwRSNQKvalCrrl
- IZYAYamBlDjlWvVcnOizvwlPw+NxUcyMOspNOoS2UyZwweBn2AkLnJsVWgUqysNBvDViwk9Fn
- nWwS38GPvESSAwElOVg8JhdaSOxyb4VFrAfiVMmnVZbfpsNf5Qwzg6VAh0nRugpHhlpN0JF4d
- fBC/5Gjgax30/DmJI1LlML5/H3SPfEYhHt/7r4LFv5CHB716p4eQLWi9sfTjkHCHfkzLTd4BF
- tKYDeSho6nIVLGdSHmvFKI0Hdcw3OyGwkYrB7kW+hSeSzrVwYZqVCJR8RmggBHXLu6DVlKAu3
- sMAEwKXiANQ/jvP4AwRXXuKthFK3H+urBcAZc4W8BVREKD7mfMvheD/kjfeFFHyZRFrcs/mXt
- Q8UxoC5g5ni2a4fqqVoXVfjG5qc+HGSFdrXdQIUBUOvXGodk/Pjyx5jd3G487OBiGavX1Vg2R
- nSyKGQEYK/ZCTOLfr+H7Zcz/l2DoqqSYsDAVmFfOTle3kJy6d/H9705q2gL1Y+DyR8qSaFons
- 7s4RxSji2dky2zs08/keO09kiFT4abU5fArXvtxGOTSJOLcqAHFqJ71wG98vrHEE90VrGcom1
- enXJeOvyqN0U5P1vJcWwKb0nij8iIpTIBLFXd9tXZ4G22jxfgDsVGAZTjFyM7chhRLt7RoiVQ
- HUQkcm1AX6aO4/JDl0YwDy1tzC+2I1v+vUSCSDJ4D7ZWWUHFH6gPK3G0LvF+jrS5MEPDUFHO7
- gZwFss9kH77P7ARAeUPXsZWN2x8rhvmg8Wkmx2s0J+YJuLZt0RbZ7VoHnjhUZvtOi5jC+n0OL
- 8DHXPjUYxrtlqjTGBf9T62XfAhspE4KMmFizrhSQ4cIDM=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20262499-b887-4229-d8e6-08dc5fbbd2be
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Apr 2024 15:25:47.8651
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR02MB9927
 
-> If the device register fails, free the allocated memory before
-> returning.
+From: Matthew Wilcox <willy@infradead.org> Sent: Thursday, April 18, 2024 7=
+:29 AM
 
-* I suggest to use the word =E2=80=9Cregistration=E2=80=9D (instead of =E2=
-=80=9Cregister=E2=80=9D)
-  in the commit message.
+>=20
+> On Thu, Apr 18, 2024 at 06:52:13AM -0700, mhkelley58@gmail.com wrote:
+> > There's currently no documentation for the swiotlb. Add documentation
+> > describing usage scenarios, the key APIs, and implementation details.
+> > Group the new documentation with other DMA-related documentation.
+>=20
+> This is really well written.  Thank you.  One minor nit below.
+>=20
+> > +Usage Scenarios
+> > +---------------
+> > +The swiotlb was originally created to handle DMA for devices
+> > +with addressing limitations. As physical memory sizes grew
+> > +beyond 4 Gbytes, some devices could only provide 32-bit DMA
+> > +addresses. By allocating bounce buffer memory below the 4 Gbyte
+>=20
+> I'd prefer GiB to Gbytes; we might also prefer GB, Gigabyte or Gibibyte,
+> but Gbytes seems wrong.
 
-* Would you like to add the tag =E2=80=9CFixes=E2=80=9D accordingly?
+Good point.  I'll update sizes throughout to use the correct terminology.
 
+Michael
 
-> +++ b/lib/kunit/device.c
-> @@ -131,6 +131,7 @@ static struct kunit_device *kunit_device_register_in=
-ternal(struct kunit *test,
->  	err =3D device_register(&kunit_dev->dev);
->  	if (err) {
->  		put_device(&kunit_dev->dev);
-> +		kfree(kunit_dev);
->  		return ERR_PTR(err);
->  	}
-
-Common error handling code can be used instead
-if an additional label would be applied for a corresponding jump target.
-
-How do you think about to increase the application of scope-based resource=
- management here?
-
-Regards,
-Markus
+>=20
+> You've written a lot here, and I'm not an expert on swiommu, but nothing
+> else leapt out at me.
 
