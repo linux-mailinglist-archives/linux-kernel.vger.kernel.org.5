@@ -1,161 +1,136 @@
-Return-Path: <linux-kernel+bounces-150298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B39B8A9CFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:26:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60B5B8A9CFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:26:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 064EFB28208
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:26:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1606D2837BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:26:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B385816C44A;
-	Thu, 18 Apr 2024 14:24:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70AF5165FB0;
+	Thu, 18 Apr 2024 14:24:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="oVn8UC/W"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KMyNeIXj"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A36C16ABC2;
-	Thu, 18 Apr 2024 14:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F81163A9B;
+	Thu, 18 Apr 2024 14:24:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713450274; cv=none; b=QJcgmFhxDK+PDCvAa9XuwY0Ft96l3lkNjx2T5AjElVgBPccITINRJC1m6Nq0ZTPboctj6P7Qm+torpGnMWbeZJRE5SHBzwKHAuReUJJx06/HBe/rxeV/CRSQ5qP6mkrxVGS7qZ7L2EYuejPjBwOax3HdF0YVcvI4RUGBDjn2Skc=
+	t=1713450253; cv=none; b=W+zdqZj69mBpgrYYaH/4+KnrY2XMWQYnKTu0JT2ShuD56oXAYaxk1oPWuJPpFLUnRise9ubhVkllVCEn1ZiE2NE94X5+RvBEFKIe8XuLut00FGMzgRIAC2YFl+sxl5YQcw4Wx5ZRjg5YKj4mxsuRF5rwEMm82HnqkTap6hT2mvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713450274; c=relaxed/simple;
-	bh=pH0PBRBEjyEaCCaHbzJ9ynfPi+tXKlFVFiy1Z9RjDgo=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rq8/LbVSkpGm8sM4Y5XCyjvRCjcCH30dZGKedua6uQUDI63yAgAvGPL15lHCXrR1pD96ue3lmFGFrjx1DvwpDlJX9mRWxFM972NlTXJXTJyrEkp9AZX8ucwz3t0Wdw+fMjjn8AXljUfVUlYcmMssjLIsFTrJQrtU0wOAvY0qtgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=oVn8UC/W; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43IENhfk047904;
-	Thu, 18 Apr 2024 09:23:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713450223;
-	bh=d7W/YpTIZxIdyewzNIraH7hxkKMvrK+9RnPBHoiRgYU=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=oVn8UC/WraJiR9DfhqgRAMmWCKRPIN5gA4g9LgtVfHyr9ZYa0wpT1D1L9eCfM7V0I
-	 1kGeA3ACt202+YA8etLSCi4dNNilaO9oBQFFqcvrsUeQegCCSt1xx61Wj3XLbh5lUN
-	 TOOZmxV7HXQassnk1lpdykUeIfQeyrSrA+F0zYJo=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43IENhFG118313
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 18 Apr 2024 09:23:43 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 18
- Apr 2024 09:23:42 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 18 Apr 2024 09:23:42 -0500
-Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43IENfLj049819;
-	Thu, 18 Apr 2024 09:23:42 -0500
-Date: Thu, 18 Apr 2024 19:53:41 +0530
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: Julien Panis <jpanis@baylibre.com>
-CC: Siddharth Vadapalli <s-vadapalli@ti.com>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Russell King
-	<linux@armlinux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
-	<daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John
- Fastabend <john.fastabend@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Simon Horman
-	<horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Ratheesh Kannoth
-	<rkannoth@marvell.com>,
-        Naveen Mamindlapalli <naveenm@marvell.com>,
-        Jacob
- Keller <jacob.e.keller@intel.com>, <danishanwar@ti.com>,
-        <yuehaibing@huawei.com>, <rogerq@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH net-next v9 0/3] Add minimal XDP support to TI AM65 CPSW
- Ethernet driver
-Message-ID: <b406c8bd-5d25-4516-8553-4041705b2211@ti.com>
-References: <20240223-am65-cpsw-xdp-basic-v9-0-2c194217e325@baylibre.com>
- <260d258f-87a1-4aac-8883-aab4746b32d8@ti.com>
- <08319f88-36a9-445a-9920-ad1fba666b6a@baylibre.com>
- <1da48c7e-ba87-4f7a-b6d1-d35961005ab0@ti.com>
- <7f7fb71a-6d15-46f1-b63c-b569a2e230b7@baylibre.com>
+	s=arc-20240116; t=1713450253; c=relaxed/simple;
+	bh=Q8liASnYD+YPWYkT0PWK1605RH/y4SMfVkrndA1iMPM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EZUeSNTXfdHj0/k+CbOQwZSc33cHXd2G5eDKoYUjStL1Tgak6IlifobNFvp+RFF1p9KCfaULL9G4iUuwZ/8A4bm4+jA6U1w937Spk/roKryMN3y7VrHFVusrobUYSdAEz4aNanXtlr6g9eVv3Xf4N6QFahC/w5vAJh4Ho52xk6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KMyNeIXj; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713450252; x=1744986252;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Q8liASnYD+YPWYkT0PWK1605RH/y4SMfVkrndA1iMPM=;
+  b=KMyNeIXjxWrKa6XibqAbApOoOGsmGulQuAv4kbv2lSKBaY8xIlxPSM7j
+   t0v7T8T/CWLhvxAwjqo8OmOWuuntWvex5pLCmM21WghkvKKX6DD5UygbG
+   Qcozn6wbxZojylrBTOmBUAeryAtG40//Ih2xDwGWK7PeBCwxDP14OSul9
+   toUIPZ4VAqoC8MferN1uQSsALhCBoZeYgRKNoaqI8tnYoL3l1LrfkcL7p
+   GtC71kl/H4morfzDCHOdcluNDtH3wAC6aC+d2dJWsrAB78S7ChzHI9+bw
+   01PpotDbgNHpptohuzzeQQblF1eLdVQ9THD2PUktvSmKpLRPVQPm2CZKd
+   Q==;
+X-CSE-ConnectionGUID: lprb6clLS0m3lVvrxsZmuQ==
+X-CSE-MsgGUID: 3LxDbI8jTRyfGELmdR5c6A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="9158678"
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="9158678"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 07:24:11 -0700
+X-CSE-ConnectionGUID: V+rEpSbuT/Wkm0gBWdkukg==
+X-CSE-MsgGUID: TFK76s84Q5aop9x8DZ8azQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="23079726"
+Received: from stechane-mobl2.amr.corp.intel.com (HELO [10.209.94.1]) ([10.209.94.1])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 07:24:11 -0700
+Message-ID: <1d28f1dc-0aea-4b91-9df7-1a6d3a291e2e@intel.com>
+Date: Thu, 18 Apr 2024 07:24:10 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7f7fb71a-6d15-46f1-b63c-b569a2e230b7@baylibre.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/cpufeatures: Fix dependencies for GFNI, VAES, and
+ VPCLMULQDQ
+To: Eric Biggers <ebiggers@kernel.org>, x86@kernel.org
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240417060434.47101-1-ebiggers@kernel.org>
+Content-Language: en-US
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
+ LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
+ lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
+ MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
+ IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
+ aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
+ I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
+ E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
+ F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
+ CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
+ P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
+ 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
+ GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
+ MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
+ Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
+ lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
+ 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
+ qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
+ BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
+ 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
+ vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
+ FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
+ l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
+ yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
+ +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
+ asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
+ WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
+ sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
+ KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
+ MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
+ hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
+ vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
+In-Reply-To: <20240417060434.47101-1-ebiggers@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 18, 2024 at 04:03:15PM +0200, Julien Panis wrote:
-> On 4/18/24 13:25, Siddharth Vadapalli wrote:
-> > On Thu, Apr 18, 2024 at 01:17:47PM +0200, Julien Panis wrote:
-> > > On 4/18/24 13:00, Siddharth Vadapalli wrote:
-> > > > On 12-04-2024 21:08, Julien Panis wrote:
-> > > > > This patch adds XDP support to TI AM65 CPSW Ethernet driver.
-> > > > > 
-> > > > > The following features are implemented: NETDEV_XDP_ACT_BASIC,
-> > > > > NETDEV_XDP_ACT_REDIRECT, and NETDEV_XDP_ACT_NDO_XMIT.
-> > > > > 
-> > > > > Zero-copy and non-linear XDP buffer supports are NOT implemented.
-> > > > > 
-> > > > > Besides, the page pool memory model is used to get better performance.
-> > > > > 
-> > > > > Signed-off-by: Julien Panis <jpanis@baylibre.com>
-> > > > Hello Julien,
-> > > > 
-> > > > This series crashes Linux on AM62ax SoC which also uses the
-> > > > AM65-CPSW-NUSS driver:
-> > > > https://gist.github.com/Siddharth-Vadapalli-at-TI/5ed0e436606001c247a7da664f75edee
-> > > > 
-> > > > Regards,
-> > > > Siddharth.
-> > > Hello Siddharth.
-> > > 
-> > > Thanks for the log. I can read:
-> > > [    1.966094] Missing net_device from driver
-> > > 
-> > > Did you check that nodes exist in the device tree for the net devices ?
-> > Yes it exists. The device-tree used was also built with linux-next
-> > tagged next-20240417. The node corresponding to eth0 is cpsw_port1 which
-> > is present and enabled in the device-tree:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts?h=next-20240417#n644
-> > 
-> > Regards,
-> > Siddharth.
+On 4/16/24 23:04, Eric Biggers wrote:
+> Fix cpuid_deps[] to list the correct dependencies for GFNI, VAES, and
+> VPCLMULQDQ.  These features don't depend on AVX512, and there exist CPUs
+> that support these features but not AVX512.  GFNI actually doesn't even
+> depend on AVX.
 > 
-> I could reproduce the bug by disabling 'cpsw_port2' in my device tree,
-> which is 'k3-am625-sk.dts' for the board I use.
-> 
-> A condition is missing in am65_cpsw_create_xdp_rxqs() and
-> am65_cpsw_destroy_xdp_rxqs() functions.
-> 
-> For these 2 functions, the code which is in the for loop should be
-> run only when port ethX is enabled. That's why it crashes with
-> your device tree (cpsw_port2 is disabled, which is not the case by
-> default for the board I developed with).
-> 
-> I'll send a patch to fix the issue. Thanks for reporting it.
+> This prevents GFNI from being unnecessarily disabled if AVX is disabled
+> to mitigate the GDS vulnerability.
 
-Thank you for root-causing and working on the fix for this issue.
+Looks like the original commit was quite confused.  Thanks for finding this.
 
-Regards,
-Siddharth.
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+
 
