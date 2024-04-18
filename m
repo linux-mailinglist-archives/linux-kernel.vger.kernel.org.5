@@ -1,101 +1,127 @@
-Return-Path: <linux-kernel+bounces-149856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0073E8A96E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:00:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79C968A96E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:01:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B00872832D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:00:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AE421F2216B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:01:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4492015B56A;
-	Thu, 18 Apr 2024 10:00:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A47C15B571;
+	Thu, 18 Apr 2024 10:01:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pgaKqiNc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TQAKmmos"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DCEA15AAB2;
-	Thu, 18 Apr 2024 10:00:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 984C815B544;
+	Thu, 18 Apr 2024 10:01:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713434431; cv=none; b=sQwRNf5oiC8hA9Cq6J85fTK3BAzgX1BGiRFzztBgIBANadHtwgDHxtiqbAYNQDAUFV/5RYl4a4U/uMYjRKC7eGkvphU/9l/3PtnCBsOf1yYWwMSGc9ByHBIaX1EpaCeHrJvXmjNLFw78P+YJjRaWnWS2O7VlCNL1KwLCiD/ANa8=
+	t=1713434467; cv=none; b=hKO1hXApwRxzWTi4TcmlSVWWh4jY3bIYTrJf8iwn/LaWx+Mo116ckvbKHLNko6g80zY/GBeAJOmNiNN5qA9DgzPG1ttVz2mwN6pxi1CS7Ce/damqmlv1IKqEKXH/VaRruXUHZGPmz2mWRVRJ1M/tQYMUTtaoIdR9MC0VIl2a7Ng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713434431; c=relaxed/simple;
-	bh=VZ8PSIQDBZok+yillN9+DRYAlL6mgmiVxKVpDWlsKh4=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=d7qfn/BGgf/5LY7hR6df/5rvRwpfd6viAaSe/rGY7FoGVH7CKMETT5ZgeyiaR7mkvmyQ6sQCTK7cp+uvoUjMgPnqGW0/yHoSmuQkDyNLHrtRDqVXB+yJ85KhWwY9WyXlOyQvJ2UIbYV7AZDEAZGTvMa9wc9rjPgiD9IekKM6r60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pgaKqiNc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6261DC2BD11;
-	Thu, 18 Apr 2024 10:00:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713434430;
-	bh=VZ8PSIQDBZok+yillN9+DRYAlL6mgmiVxKVpDWlsKh4=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=pgaKqiNcAG7IEKmoE5YEi+tenjJE2ph2OUf5hpzmDgS55MHyINo4EV1np3TllCwZa
-	 CGGFuinqg6K4Af/oq7PI77a/uHPi2N4ypylANDrSaaxLneNmpmYlNy8n3yb7EqkfFq
-	 eXvBYBtzMs/xiBsn75S5YpJhTeq3BoIpz7xBOG016iXGOghsJkHTuUzTlPferwGvQP
-	 SI6GoB2yB1Y6ios9ZBiWX2ke2a/fzqbu6VkU0NS/cXrVajTOt5uru/+Y2L0Ue6MrsY
-	 gWcXLL5V1/+HZYYBARXAdYQg+UAnDeBLws7sUOPtDWbD5FlBQVL43jUHR7xaWbDZo4
-	 Kt7I+L/52yP7A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4E266C43618;
-	Thu, 18 Apr 2024 10:00:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1713434467; c=relaxed/simple;
+	bh=fM1ePhgpIwZy9P8FQ/OKj7GVvhqyF0/kUSuDnqbEfkg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ia2mWiid8E6PWNzd8Q7aPlqYe5dfhXX4WtR19hEGHR6qvLuCTYKj5M/Jyfw1cF8q4t7Csvbu9tBIazm3fSd9hsRNr1f1YjqmUq8vd/ahkqxTl+G/p/WMnqRfSPbsIYYVpWD79eqdFyNqXBwuqUVSTTrTth2nO9VQX0avz0D2fiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TQAKmmos; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713434463; x=1744970463;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fM1ePhgpIwZy9P8FQ/OKj7GVvhqyF0/kUSuDnqbEfkg=;
+  b=TQAKmmos8SyiZsNc2uxpPgIOchsrYmh8DekeA5loA6b6aXAZ4XuRizjS
+   ywrfWHLHteGk4JvnJBE8tHgd8LdKSE9f6pmkg8OwcvMjRuEJZIs7bp4gQ
+   VOGCgpNjF/SSS16OkALpZgHxPMRTAaSxsHXPdHcgT6uLhY/qfgZ1/ZuVH
+   TN1wDOrgAaB+g5/S8e9fkRJzGDVC9rLK+hELs2AAUEN/P86lUcwJnYDVn
+   oiSCj1zGw6WFFMQcsotNgeLYtKTPO1M3k14Dhjp5dNeZU+fIRWpHi4atf
+   voDdJ+XsdeXy5ZYF/ps7cksjVmDg9H9Kz2z3YFat8ZD2gSWVEQDewD1P6
+   Q==;
+X-CSE-ConnectionGUID: he1V1EQJQjGEPB3MfuJr+g==
+X-CSE-MsgGUID: PCNhjRlVQ5+QnB83dxbePQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="8835713"
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="8835713"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 03:01:02 -0700
+X-CSE-ConnectionGUID: kGVxlc+ST0yIpkknT1njyw==
+X-CSE-MsgGUID: WsLN18P7TRSF8QOMuUHihg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="22803176"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa010.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 03:01:00 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rxOZd-00000000I5c-0z8U;
+	Thu, 18 Apr 2024 13:00:57 +0300
+Date: Thu, 18 Apr 2024 13:00:56 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: [PATCH v1 1/2] gpiolib: acpi: Add fwnode name to the GPIO
+ interrupt label
+Message-ID: <ZiDvWObx-UyXEmw4@smile.fi.intel.com>
+References: <20240417103829.2324960-1-andriy.shevchenko@linux.intel.com>
+ <20240417103829.2324960-2-andriy.shevchenko@linux.intel.com>
+ <20240418044907.GO112498@black.fi.intel.com>
+ <ZiDmoT9gn7cFaYyV@smile.fi.intel.com>
+ <20240418093359.GQ112498@black.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net PATCH v3 0/4] ravb Ethernet driver bugfixes
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171343443031.11236.5934225163473526469.git-patchwork-notify@kernel.org>
-Date: Thu, 18 Apr 2024 10:00:30 +0000
-References: <20240416120254.2620-1-paul.barker.ct@bp.renesas.com>
-In-Reply-To: <20240416120254.2620-1-paul.barker.ct@bp.renesas.com>
-To: Paul Barker <paul.barker.ct@bp.renesas.com>
-Cc: s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, niklas.soderlund+renesas@ragnatech.se,
- geert+renesas@glider.be, claudiu.beznea.uj@bp.renesas.com,
- biju.das.jz@bp.renesas.com, yuehaibing@huawei.com, netdev@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418093359.GQ112498@black.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hello:
-
-This series was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Tue, 16 Apr 2024 13:02:50 +0100 you wrote:
-> These patches fix bugs found during recent work on the ravb driver.
+On Thu, Apr 18, 2024 at 12:33:59PM +0300, Mika Westerberg wrote:
+> On Thu, Apr 18, 2024 at 12:23:45PM +0300, Andy Shevchenko wrote:
+> > On Thu, Apr 18, 2024 at 07:49:07AM +0300, Mika Westerberg wrote:
+> > > On Wed, Apr 17, 2024 at 01:37:27PM +0300, Andy Shevchenko wrote:
+> > > > It's ambiguous to have a device-related index in the GPIO interrupt
+> > > > label as most of the devices will have it the same or very similar.
+> > > > Extend label with fwnode name for better granularity. It significantly
+> > > > reduces the scope of searching among devices.
+> > > 
+> > > Can you add an example here how it looks like before and after the
+> > > patch?
+> > 
+> > Sure:
+> > 
+> > Before:
+> > 
+> >   GpioInt() 0
+> >   GpioInt() 0
+> > 
+> > After:
+> > 
+> >   NIO1 GpioInt(0)
+> >   URT0 GpioInt(0)
+> > 
+> > Assuming I update this when applying, can you give your tag?
 > 
-> Patches 1 & 2 affect the R-Car code paths so have been tested on an
-> R-Car M3N Salvator-XS board - this is the only R-Car board I currently
-> have access to.
+> Sure. For both,
 > 
-> Patches 2, 3 & 4 affect the GbEth code paths so have been tested on
-> RZ/G2L and RZ/G2UL SMARC EVK boards.
-> 
-> [...]
+> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-Here is the summary with links:
-  - [net,v3,1/4] net: ravb: Count packets instead of descriptors in R-Car RX path
-    https://git.kernel.org/netdev/net/c/def52db470df
-  - [net,v3,2/4] net: ravb: Allow RX loop to move past DMA mapping errors
-    https://git.kernel.org/netdev/net/c/a892493a3434
-  - [net,v3,3/4] net: ravb: Fix GbEth jumbo packet RX checksum handling
-    https://git.kernel.org/netdev/net/c/c7c449502b51
-  - [net,v3,4/4] net: ravb: Fix RX byte accounting for jumbo packets
-    https://git.kernel.org/netdev/net/c/2e36c9fbc476
+Pushed to my review and testing queue, thanks!
 
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+With Best Regards,
+Andy Shevchenko
 
 
 
