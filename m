@@ -1,149 +1,193 @@
-Return-Path: <linux-kernel+bounces-149972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC7398A989A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 317B08A989F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:33:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E610E1C21F94
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:33:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 544CC1C22037
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:33:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC32C15E7E5;
-	Thu, 18 Apr 2024 11:33:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E9415E808;
+	Thu, 18 Apr 2024 11:33:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oSs2A/pj"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="T2l9eKaE"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ABA756464
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:33:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6666215E5B2;
+	Thu, 18 Apr 2024 11:33:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713440005; cv=none; b=gGqUJa5qlsLei2A9sIc9PjeqK0fRdKhheayRfSNBz4DNlfHNnyRVMj4pTnDU8r6LiXBKng1HNWctcs71vjqSCB9JD5ZLBgU75FoYXZb8TYWj8WRBGf0OgeDwX125EsXKNM4vQMRS9QBs1K5uSjLvRHrH+Kn4cpR4G71bNxGargI=
+	t=1713440019; cv=none; b=bpolx8yQ0TDv3Ukqrp9igCuEEW4APH7GV/2VKdAJdzeW0xRDXsKYPstWfgGBZN0IRUknekT0KLW+Yv9TgIieHLjFSZJX6Ax6Fj/z8Vt4XDorriDIFP9iuOFCxIXE3i+cLVd8uJHMz31JczBoGJNBodaHR7tt8kIqYxtK4j8Z+q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713440005; c=relaxed/simple;
-	bh=/rHfCjIVYXQVsvXGB8IxXfG+StoG4NwDe0rmylo5Qjg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VP3Fvl07bDC4zaeqMsPvlI5VUwxNRqJa146sBF3jKudXIQBM2cw3SRaDt3TMMdRmxQElKnGR0rK7FhYnEWB0YuLD2K7Nrn9IdnqVucy8axCNAGAp7QAueLiK+gWkxg2m/wFpYTc8SIr1R8D6vyisLTicOwq3drUEh4jVS9PeYqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oSs2A/pj; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e69a51a33so816058a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 04:33:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713440002; x=1714044802; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=b9lgOdCdIOmICWwhRzdOoCn2EAweW38pbbCbx3C0dQk=;
-        b=oSs2A/pjkYgDkyeDPExMdwe0B1bAdjO+o5gb5wZ/3JTWCDp/CJJNW+LKWtQaNXlzGg
-         IzCBih18iifxmMAigngQJnAmSmS8J7wjR2/0IF3BvunGkvQTuMWJtZ6HOS+qq+Y+39y2
-         4FHkj3wiM2UJWUP9J1wHSmtoJZw9c36WV+7HlQmaYANz6cPdQRCKbBmJC/8ELEGy1SMB
-         EC3gF6e0J6ZtDnnLysjdU0UstqDbirjNpuqtsgBca4BazdjRYEdfGIEO6TIXiTJ4xACC
-         cFrGWiH5uK/V213GNMj9xbp2Qq9Py8FM2xd3UQoYPGhxWKD0DqecAgO8HrZXv5rkbd+u
-         diXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713440002; x=1714044802;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b9lgOdCdIOmICWwhRzdOoCn2EAweW38pbbCbx3C0dQk=;
-        b=imwOaBrva1XBBKpKgQ7OTRQsLqQobSfeVV1oMrckbT1mbBZajnyETo/48z9Hf4TcGt
-         eqw9xTdntSje357bVSWBY6UIRL07BD+xjIsFDPUATaspPaV+0w04bwQ/CEt7d6BXjXop
-         l+BS1D5cC9FsoHARJX4VCcoa3T86GAdEhSXYE0qa3KhrpQ+QB/swzwueccgiGWNcF7DN
-         iefjbBuUIQzvvbEojXvINviWRXIL6WYZzOqC+cFVjsbhthQXQiG4+w9zARraYZtpPshk
-         X2NGroIuNB3bcnySj4m5hTxn7Gw9EubMtZAij64nyktfHKsMBIJjttphnRMLvITb3sxw
-         46qQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWFMtz6IwKM5RiBpWEvBiICjDdCxrdqV71xjNsB7iPEyydamHgCxl3sFL9YtGSt/aD7xCErIEcIYFZe9A9bWtu4A1iZmdoC4xH9RM1b
-X-Gm-Message-State: AOJu0YwwbIh6Gpe+8qh6EwTngW2hpUEU6igI+sh/Mzbhr0g+uIJq1Luy
-	WNg91IRmUTDwJqymOlzjzXZMZUKJWHG4h6N1RJpKOoW3YTCtZT3O4kyXAyP+gQA=
-X-Google-Smtp-Source: AGHT+IHKiVh6Nj87GB2UGWDfWcSeS1Qxmuucy3GshEAHNragzY3My+7Qk0/Is0MtMJzE3QOxcEZd4Q==
-X-Received: by 2002:a50:cd04:0:b0:56d:f7ce:e879 with SMTP id z4-20020a50cd04000000b0056df7cee879mr1750351edi.37.1713440002011;
-        Thu, 18 Apr 2024 04:33:22 -0700 (PDT)
-Received: from [192.168.45.55] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id eh11-20020a0564020f8b00b00571be394478sm501245edb.69.2024.04.18.04.33.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 04:33:21 -0700 (PDT)
-Message-ID: <e5c60b6f-3cab-4265-87fc-7eeab03795ec@linaro.org>
-Date: Thu, 18 Apr 2024 13:33:19 +0200
+	s=arc-20240116; t=1713440019; c=relaxed/simple;
+	bh=S0Qtd48tNRGLbVj/o0e5qeU3ZyCGi6a1vbQ/5oxDT60=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=pCI4xIfS7eDhbeIbNrwg809cyMNBEECCFo4sAyWN1on1mM6vLqUR2aBYzEAQpNysLydhwI+VjOd3mp1+bmzfqoCSMmDbADQNoIDDJ5HP84N88ySoEsIK6u6OYkkUhFEp7cdcEGMXjTR7UJ9pLZXASzZ2zdmbSGqzb23L+bFBlh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=T2l9eKaE; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 920941BF206;
+	Thu, 18 Apr 2024 11:33:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713440011;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=k2t0MvM3jxvWGhN7eeYzckVy+rZfzBeuSxhEQgyjStA=;
+	b=T2l9eKaEQOh/hyimKIEDxMZ3Pn2pDXPAXRc6Qs194CynWl621S9CfaOzn6J8yWwAChl1jW
+	6Gb+U3xdQ2nN+H+Ysdo6Qx09jkQwPkQTnr6LFj7rJId12SmbDAjXcoJPII3SRN2jP1f2B+
+	/dVv8tiIq2ipOXEoZzZqlVcqNnEkqRvNhaWFlN5crMPdIQBVSvUTYWNwmJFFTGMVzAar2y
+	I1TVf87X3GglcePbiTlFkxGZ47pD+scs1RDbffKxXfn7A4dYhcKjcCG22uXUu9t8cEi/UZ
+	n0yxF39bBWUQb+89HQW7W3WSfvdJNqlMQy/aycd3D3XMtuoTe2fKuZ4xRMlYiQ==
+Date: Thu, 18 Apr 2024 13:34:06 +0200 (CEST)
+From: Romain Gantois <romain.gantois@bootlin.com>
+To: Serge Semin <fancer.lancer@gmail.com>
+cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+    Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+    Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>, 
+    Yanteng Si <siyanteng@loongson.cn>, 
+    Romain Gantois <romain.gantois@bootlin.com>, 
+    Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+    Simon Horman <horms@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, 
+    Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+    Samuel Holland <samuel@sholland.org>, netdev@vger.kernel.org, 
+    linux-stm32@st-md-mailman.stormreply.com, 
+    linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 2/2] net: stmmac: Move MAC caps init to
+ phylink MAC caps getter
+In-Reply-To: <20240417140013.12575-3-fancer.lancer@gmail.com>
+Message-ID: <c441691f-906d-4f44-10c8-3d8437cd3833@bootlin.com>
+References: <20240417140013.12575-1-fancer.lancer@gmail.com> <20240417140013.12575-3-fancer.lancer@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: qcom: dispcc-x1e80100: Drop the reconfiguring of
- PLL0 on probe
-To: Abel Vesa <abel.vesa@linaro.org>, Bjorn Andersson <andersson@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Rajendra Nayak <quic_rjendra@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240418-x1e80100-dispcc-drop-pll0-reconfigure-v1-1-453e4e70e940@linaro.org>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240418-x1e80100-dispcc-drop-pll0-reconfigure-v1-1-453e4e70e940@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+X-GND-Sasl: romain.gantois@bootlin.com
 
-On 18.04.2024 12:51 PM, Abel Vesa wrote:
-> Currently, PLL0 is configured by the bootloader is the parent of the
-> mdp_clk_src. Reconfiguring it on probe leaves the PLL0 in "stand-by"
-> state (unlocked), which will trigger RCG child clocks to not update
-> their config,
+On Wed, 17 Apr 2024, Serge Semin wrote:
 
-Sounds like this is the problem that should be fixed instead.
-
- which then breaks eDP on all x1e80100 boards. So rely
-> on the bootloader for now. Drop the config values as well. Also add
-> a comment to explain why the PLL0 is not configured alongside PLL1.
+> After a set of recent fixes the stmmac_phy_setup() and
+> stmmac_reinit_queues() methods have turned to having some duplicated code.
+> Let's get rid from the duplication by moving the MAC-capabilities
+> initialization to the PHYLINK MAC-capabilities getter. The getter is
+> called during each network device interface open/close cycle. So the
+> MAC-capabilities will be initialized in generic device open procedure and
+> in case of the Tx/Rx queues re-initialization as the original code
+> semantics implies.
 > 
-> Fixes: ee3f0739035f ("clk: qcom: Add dispcc clock driver for x1e80100")
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+> 
 > ---
+> 
+> Link: https://lore.kernel.org/netdev/20240412180340.7965-5-fancer.lancer@gmail.com/
+> Changelog v2:
+> - Resubmit the patch to net-next separately from the main patchset (Paolo)
+> ---
+>  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 36 +++++++++----------
+>  1 file changed, 17 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index b810f6b69bf5..0d6cd1704e6a 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -936,6 +936,22 @@ static void stmmac_mac_flow_ctrl(struct stmmac_priv *priv, u32 duplex)
+>  			priv->pause, tx_cnt);
+>  }
+>  
+> +static unsigned long stmmac_mac_get_caps(struct phylink_config *config,
+> +					 phy_interface_t interface)
+> +{
+> +	struct stmmac_priv *priv = netdev_priv(to_net_dev(config->dev));
+> +
+> +	/* Refresh the MAC-specific capabilities */
+> +	stmmac_mac_update_caps(priv);
+> +
+> +	config->mac_capabilities = priv->hw->link.caps;
+> +
+> +	if (priv->plat->max_speed)
+> +		phylink_limit_mac_speed(config, priv->plat->max_speed);
+> +
+> +	return config->mac_capabilities;
+> +}
+> +
+>  static struct phylink_pcs *stmmac_mac_select_pcs(struct phylink_config *config,
+>  						 phy_interface_t interface)
+>  {
+> @@ -1105,6 +1121,7 @@ static void stmmac_mac_link_up(struct phylink_config *config,
+>  }
+>  
+>  static const struct phylink_mac_ops stmmac_phylink_mac_ops = {
+> +	.mac_get_caps = stmmac_mac_get_caps,
+>  	.mac_select_pcs = stmmac_mac_select_pcs,
+>  	.mac_config = stmmac_mac_config,
+>  	.mac_link_down = stmmac_mac_link_down,
+> @@ -1204,7 +1221,6 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
+>  	int mode = priv->plat->phy_interface;
+>  	struct fwnode_handle *fwnode;
+>  	struct phylink *phylink;
+> -	int max_speed;
+>  
+>  	priv->phylink_config.dev = &priv->dev->dev;
+>  	priv->phylink_config.type = PHYLINK_NETDEV;
+> @@ -1225,15 +1241,6 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
+>  		xpcs_get_interfaces(priv->hw->xpcs,
+>  				    priv->phylink_config.supported_interfaces);
+>  
+> -	/* Refresh the MAC-specific capabilities */
+> -	stmmac_mac_update_caps(priv);
+> -
+> -	priv->phylink_config.mac_capabilities = priv->hw->link.caps;
+> -
+> -	max_speed = priv->plat->max_speed;
+> -	if (max_speed)
+> -		phylink_limit_mac_speed(&priv->phylink_config, max_speed);
+> -
+>  	fwnode = priv->plat->port_node;
+>  	if (!fwnode)
+>  		fwnode = dev_fwnode(priv->device);
+> @@ -7327,7 +7334,6 @@ int stmmac_reinit_queues(struct net_device *dev, u32 rx_cnt, u32 tx_cnt)
+>  {
+>  	struct stmmac_priv *priv = netdev_priv(dev);
+>  	int ret = 0, i;
+> -	int max_speed;
+>  
+>  	if (netif_running(dev))
+>  		stmmac_release(dev);
+> @@ -7341,14 +7347,6 @@ int stmmac_reinit_queues(struct net_device *dev, u32 rx_cnt, u32 tx_cnt)
+>  			priv->rss.table[i] = ethtool_rxfh_indir_default(i,
+>  									rx_cnt);
+>  
+> -	stmmac_mac_update_caps(priv);
+> -
+> -	priv->phylink_config.mac_capabilities = priv->hw->link.caps;
+> -
+> -	max_speed = priv->plat->max_speed;
+> -	if (max_speed)
+> -		phylink_limit_mac_speed(&priv->phylink_config, max_speed);
+> -
+>  	stmmac_napi_add(dev);
+>  
+>  	if (netif_running(dev))
+> -- 
+> 2.43.0
+> 
+> 
 
-This works, because you have (at least) partially configured hardware, but
-we shouldn't assume this to be the case.
+Reviewed-by: Romain Gantois <romain.gantois@bootlin.com>
 
-Konrad
+Thanks,
+
+-- 
+Romain Gantois, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
