@@ -1,125 +1,102 @@
-Return-Path: <linux-kernel+bounces-149962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79E118A9870
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:21:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D9A78A9878
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:24:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04C6DB20A3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:21:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 147EE28418F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:24:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C8015E5D4;
-	Thu, 18 Apr 2024 11:21:25 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC68C15E7EC;
+	Thu, 18 Apr 2024 11:24:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RjKcP8eC"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F370D15B573;
-	Thu, 18 Apr 2024 11:21:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28A7B15AD99;
+	Thu, 18 Apr 2024 11:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713439285; cv=none; b=QhRHYgvAYcVdPUg9A0HqBLXnM6H2lftDl/vzV2eT0QfA/opAeYt9F/PZlb4+moRFLsUGnY4MV/ULs3qnMmusms9866sWHQ86j2LFTSOLqx0h3NN4EsFXZjgU6ATD7G7Jo9YGp5xicvFDo99Q9VUbnOAksfWJ5kIzieklrKevnAA=
+	t=1713439466; cv=none; b=jQ2COdTfludtGTXmb+WKDw15GVVN6C6qAq+C9qB9+KpC2kgHOjbGTVsFujQ2L7twxmcizLmwkugvgDjh1JSeMIrwVKoOdx8NN0b6I8FIM9nD5M7Qg1bGGoVAPBCy2FtczAncmHH76PfWOtyxr0G2OMk0Ol2r0KS4s6XQng03qHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713439285; c=relaxed/simple;
-	bh=GjmNQpVi6Pjtu34nTkDpKtBKEjPKDfdVMkq31b+TbhA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QzCGhQTaC1jGeqChMOtLTVp/K7h2ZYN3+Iezk71w00r8lKWxaPKERW33+rvTwRgHnhezd5HAvKsAMDM8d15+mHMcZsICz32pZ0BzBwccuejgqwqFQcqZCB8YLp7cf0PfQ6Pcmi5Xi757/2k4X3M+24CqQ7umSHlnoG75Vn6igBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91590C113CC;
-	Thu, 18 Apr 2024 11:21:19 +0000 (UTC)
-Date: Thu, 18 Apr 2024 12:21:17 +0100
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Marc Zyngier <maz@kernel.org>
-Cc: Naresh Kamboju <naresh.kamboju@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Mark Brown <broonie@kernel.org>, stable@vger.kernel.org,
-	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-	allen.lkml@gmail.com, Yihuang Yu <yihyu@redhat.com>,
-	Gavin Shan <gshan@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Shaoqin Huang <shahuang@redhat.com>, Will Deacon <will@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: [PATCH 6.6 000/122] 6.6.28-rc1 review
-Message-ID: <ZiECLaXHce05DSM6@arm.com>
-References: <20240415141953.365222063@linuxfoundation.org>
- <Zh5UJh31PlBkpZWd@finisterre.sirena.org.uk>
- <CA+G9fYu-AjRm-BBA=8fWS8oCbBJ5W443JHPh3uddD7ea7MY-YA@mail.gmail.com>
- <86y19dqw74.wl-maz@kernel.org>
- <Zh61KobDt_y1O46-@arm.com>
- <86sezjq688.wl-maz@kernel.org>
+	s=arc-20240116; t=1713439466; c=relaxed/simple;
+	bh=oc066vT+D/F5ovmoh/FG9gPN0vrcXHwurKJtRWRajb8=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=ukdsEfvl81jJCoHEHSnMzeXEDIRl71Axd9Ft/DUutNdmtVyZbow2n0UCK5C2pfysWzJqCbty+P9R4AUYQtWlNrwVv1dnI3sAlUq3JPqPks9zxOks4KqeyJWr8QEet4vYe20AQGrFUrVcp1FjZlLAqZE9peBSKH3ey7+LBt6XGck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RjKcP8eC; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D7D8AE0003;
+	Thu, 18 Apr 2024 11:24:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713439460;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jMOGVNbuITYt7dy+1dT/3leK/5M9H8PcreUPt+p35qI=;
+	b=RjKcP8eCCvgTt8VGT8VoIlKf0Qq6wN1vbHBN65pxwLkuoNSCCRK9HMIckOEc7Pmk3kxTN0
+	Y14XTy+U0naNbBritHYr/5MoYDZj9oZm7AB5GSvTo4z9DTD0SiPxe0GwgxNzIW9eV9RVM/
+	LVS7FDjuhPyJyN2nvTk0SeXijjt7oVx4KDFMlSHrErHJ+5+n9mLvPfgmI05Jphqx8MXe/n
+	3HOKNshqS/DM6R0bDDbngk/eKBeSl9EvMysy9TeEGAVbxEVcf3IGTUaBJ8VQeJY27rfz8K
+	1oy9fzsN+qb+Glkaf/Na1dKUANBKFagdcw8XuoHhc0ZnI08f25vTEMLXOwy2+w==
+Date: Thu, 18 Apr 2024 13:24:56 +0200 (CEST)
+From: Romain Gantois <romain.gantois@bootlin.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+cc: Romain Gantois <romain.gantois@bootlin.com>, 
+    "David S. Miller" <davem@davemloft.net>, 
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+    Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+    Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+    Conor Dooley <conor+dt@kernel.org>, 
+    Geert Uytterhoeven <geert+renesas@glider.be>, 
+    Magnus Damm <magnus.damm@gmail.com>, 
+    Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+    Jose Abreu <joabreu@synopsys.com>, 
+    Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+    Russell King <linux@armlinux.org.uk>, 
+    =?ISO-8859-15?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>, 
+    Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
+    devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+    linux-renesas-soc@vger.kernel.org, 
+    linux-stm32@st-md-mailman.stormreply.com, 
+    linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next v3 5/5] ARM: dts: r9a06g032: describe GMAC1
+In-Reply-To: <CAMuHMdVWEMSR6vKSPdXRbf5_dqBWsM+Z2PV46DBmwHAoBNv_5w@mail.gmail.com>
+Message-ID: <57f94b4a-75e2-32ad-506f-954c13498cd8@bootlin.com>
+References: <20240415-rzn1-gmac1-v3-0-ab12f2c4401d@bootlin.com> <20240415-rzn1-gmac1-v3-5-ab12f2c4401d@bootlin.com> <CAMuHMdVWEMSR6vKSPdXRbf5_dqBWsM+Z2PV46DBmwHAoBNv_5w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <86sezjq688.wl-maz@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+X-GND-Sasl: romain.gantois@bootlin.com
 
-On Thu, Apr 18, 2024 at 12:07:35PM +0100, Marc Zyngier wrote:
-> On Tue, 16 Apr 2024 18:28:10 +0100,
-> Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > On Tue, Apr 16, 2024 at 02:22:07PM +0100, Marc Zyngier wrote:
-> > > On Tue, 16 Apr 2024 14:07:30 +0100,
-> > > Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > > > On Tue, 16 Apr 2024 at 16:04, Mark Brown <broonie@kernel.org> wrote:
-> > > > > On Mon, Apr 15, 2024 at 04:19:25PM +0200, Greg Kroah-Hartman wrote:
-> > > > > > This is the start of the stable review cycle for the 6.6.28 release.
-> > > > > > There are 122 patches in this series, all will be posted as a response
-> > > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > > let me know.
-> > > > >
-> > > > > The bisect of the boot issue that's affecting the FVP in v6.6 (only)
-> > > > > landed on c9ad150ed8dd988 (arm64: tlb: Fix TLBI RANGE operand),
-> > > > > e3ba51ab24fdd in mainline, as being the first bad commit - it's also in
-> > > > > the -rc for v6.8 but that seems fine.  I've done no investigation beyond
-> > > > > the bisect and looking at the commit log to pull out people to CC and
-> > > > > note that the fix was explicitly targeted at v6.6.
-> > > > 
-> > > > Anders investigated this reported issues and bisected and also found
-> > > > the missing commit for stable-rc 6.6 is
-> > > > e2768b798a19 ("arm64/mm: Modify range-based tlbi to decrement scale")
-> > > 
-> > > Which is definitely *not* stable candidate. We need to understand why
-> > > the invalidation goes south when the scale go up instead of down.
-> > 
-> > If you backport e3ba51ab24fd ("arm64: tlb: Fix TLBI RANGE operand")
-> > which fixes 117940aa6e5f ("KVM: arm64: Define
-> > kvm_tlb_flush_vmid_range()") but without the newer e2768b798a19
-> > ("arm64/mm: Modify range-based tlbi to decrement scale"), it looks like
-> > "scale" in __flush_tlb_range_op() goes out of range to 4. Tested on my
-> > CBMC model, not on the actual kernel. It may be worth adding some
-> > WARN_ONs in __flush_tlb_range_op() if scale is outside the 0..3 range or
-> > num greater than 31.
-> > 
-> > I haven't investigated properly (and I'm off tomorrow, back on Thu) but
-> > it's likely the original code was not very friendly to the maximum
-> > range, never tested. Anyway, if one figures out why it goes out of
-> > range, I think the solution is to also backport e2768b798a19 to stable.
+Hi Geert,
+
+On Thu, 18 Apr 2024, Geert Uytterhoeven wrote:
+
+> > +               gmac1: ethernet@44000000 {
+> > +                       compatible = "renesas,r9a06g032-gmac", "renesas,rzn1-gmac", "snps,dwmac";
+> > +                       reg = <0x44000000 0x2000>;
+> > +                       interrupt-parent = <&gic>;
 > 
-> I looked into this, and I came to the conclusion that this patch is
-> pretty much incompatible with the increasing scale (even if you cap
-> num to 30).
+> The surrounding "soc" node already specifies the interrupt parent,
+> so there is no need to repeat that. I could fix that while applying
+> to renesas-devel for v6.10, but it looks like there will be a v4 for
+> the rest of the series anyway?
 
-Thanks Marc for digging into this.
+Indeed there will be a v4 so I'll fix it.
 
-> So despite my earlier comment, it looks like picking e2768b798a19 is
-> the right thing to do *if* we're taking e3ba51ab24fd into 6.6-stable.
-> 
-> Otherwise, we need a separate fix, which Ryan initially advocating for
-> initially.
-
-My preference would be to cherry-pick the two upstream commits than
-coming up with an alternative fix for 6.6.
+Thanks,
 
 -- 
-Catalin
+Romain Gantois, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
