@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-149668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A23B58A944F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:42:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 580288A9452
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:43:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E043281BE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:42:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EAE1281CB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:43:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 288B674435;
-	Thu, 18 Apr 2024 07:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD49D74BE5;
+	Thu, 18 Apr 2024 07:43:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="NvIqz0nk"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="jSSlcDUl"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7E5C3C489;
-	Thu, 18 Apr 2024 07:42:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5091E37719;
+	Thu, 18 Apr 2024 07:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713426139; cv=none; b=e2BP+HO8if9SNgjyhNGbgWBX8euWBLd/akk7nj6A63hOOdt8ff0TUMQWPtQ6tDurahzjukm4hhGChTHUwUMUBVWWbCcHKys3QSZ5dtMokN6pLlAPqFuKnlvXRikx1wytKjpo6311aN7R6PnTlkovfvFVtADHJiQpZyRVycupBIw=
+	t=1713426188; cv=none; b=SRS5nTr6FtLuzjxJCYhPaBMfUsIbMbuhCC11WKfv5VRHL7jkW31Io0bxM7c4gwfEcdQeBRe3uU+65mY8Zwx/jvE8yuiTUYlDjpLvC+WTF0uXUrN62lrZMqsRD3Pq/28HLg6FQ3UIlDs5wiq0lOIrp3lHun95nzvuTmL4/70aNy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713426139; c=relaxed/simple;
-	bh=dqSA5NoujkL4PW5NbCCZfdQkSnvU93YVUZl3EEQR5+Y=;
+	s=arc-20240116; t=1713426188; c=relaxed/simple;
+	bh=GLk8JMqo54bnpRu/mKNE88XqR0W0E3kJNx1Nb5NE5RM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=htMZqiVteQ02m7FPMznxgYYxdukkjW3sxga+oq3WAnynNOk5lmuToIK30K/VqfUP+k008KyyNce9GKo41PnA/VHOQwgJXdDGQUKW7eTsiqO6/HnlQF1LLcaQUiAsq9H7BqjnUexNJwn5aaL3fqctpV6sYd/gTION5IT4uvE5fro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=NvIqz0nk; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:Content-Type; b=qT2vu9otVgj+aRPzh3O61/Z7HL0isRJLT7/DhBRPzF84u5KVN0cF3pgrXcG66RkYNDVZnHiV6d/LTgpEFXaw3C0yBuOvsgTE4yo49rQIVtKRTfDENovkn2XjoO3ubMz/U3YO892scTXJSkeX6ki+SdKolxhy63AwUt7QAJsjNl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=jSSlcDUl; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713426135;
-	bh=dqSA5NoujkL4PW5NbCCZfdQkSnvU93YVUZl3EEQR5+Y=;
+	s=mail; t=1713426184;
+	bh=GLk8JMqo54bnpRu/mKNE88XqR0W0E3kJNx1Nb5NE5RM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=NvIqz0nk/PtcghNdZJ0AkED2ZIUiRrstINTajiF4z2Zzw15moOCxwncvzv25sBPWt
-	 HzZgZcAfmGfRprsu4V+fkup7xwPb4jZaY4M7zekg17X44F2o/vFT1Dmm0XybWZmZvn
-	 KGnATzK1ak77mKo0FT1wW1oXyBhkrNl/sqqGPoBxW43b9U1FlSvO7Q8OlZG+olSotx
-	 psjKdetGu8uPo1PPI/pRNN/mcqou5I/Ylk/AHWe8awL65tZIy5YqtzL7E5zeDWd9Ah
-	 G6qt/jGdKJ2q+INbQo+TXMe/0BbQcSsbPAu1fI8xvQ+dy5ecPhgXYGKbfDS+7AJvs7
-	 FHXhjEP3rV/1g==
+	b=jSSlcDUl3KojtgCcYK8Ve68K6Fol4vEzSfIwhqzZ0S3sxYT6M7ntIf2vYp0aPpkA2
+	 qtdihonwioKZJatjD9D2NK2OoBJ4eWfCa3IY1meOdZiROPt6AXYHfuY4EPH/iIRy2O
+	 HocyCBOLmfAjEc4hCpzyZe1HBk7cw4bDfoOhzFZ9FEEWZTv3q3JxFQk6fdBtxO9UOe
+	 aGTIbKFlhITcuRduoEAtMm9JiyLXNNM7xbA0Dq36HhcKeSj45pR+5M3dzOAhkujIDp
+	 L1h6mZkE5q1kVrskXUEBjka5+6X4u5cIdo90ulfjSHMQmc3KDeP4iVMAhO4U9FZ2PI
+	 paqmRCslQCsDg==
 Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 844F23782136;
-	Thu, 18 Apr 2024 07:42:14 +0000 (UTC)
-Message-ID: <4da3e998-d26d-4200-85ea-b8fd0176dff7@collabora.com>
-Date: Thu, 18 Apr 2024 09:42:13 +0200
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7EDB33781104;
+	Thu, 18 Apr 2024 07:43:03 +0000 (UTC)
+Message-ID: <1d1bbc68-b484-4dc5-92f2-9454e8e2d6fb@collabora.com>
+Date: Thu, 18 Apr 2024 09:43:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,8 +56,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/7] dt-bindings: regulator: Add bindings for MediaTek
- DVFSRC Regulators
+Subject: Re: [PATCH v2 2/7] dt-bindings: interconnect: Add MediaTek EMI
+ Interconnect bindings
 To: Rob Herring <robh@kernel.org>
 Cc: djakov@kernel.org, krzysztof.kozlowski+dt@linaro.org,
  conor+dt@kernel.org, matthias.bgg@gmail.com, lgirdwood@gmail.com,
@@ -67,126 +67,150 @@ Cc: djakov@kernel.org, krzysztof.kozlowski+dt@linaro.org,
  linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
  kernel@collabora.com, wenst@chromium.org, amergnat@baylibre.com
 References: <20240417091442.170505-1-angelogioacchino.delregno@collabora.com>
- <20240417091442.170505-2-angelogioacchino.delregno@collabora.com>
- <20240417145238.GA2348962-robh@kernel.org>
- <b728478d-d9c9-4256-aeab-a234316d81cc@collabora.com>
- <20240417191247.GA3101736-robh@kernel.org>
+ <20240417091442.170505-3-angelogioacchino.delregno@collabora.com>
+ <20240417145402.GA2355631-robh@kernel.org>
+ <207eb8d7-1a40-4114-a84b-26616dc39fcc@collabora.com>
+ <20240417191445.GB3101736-robh@kernel.org>
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Content-Language: en-US
-In-Reply-To: <20240417191247.GA3101736-robh@kernel.org>
+In-Reply-To: <20240417191445.GB3101736-robh@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Il 17/04/24 21:12, Rob Herring ha scritto:
-> On Wed, Apr 17, 2024 at 05:39:12PM +0200, AngeloGioacchino Del Regno wrote:
->> Il 17/04/24 16:52, Rob Herring ha scritto:
->>> On Wed, Apr 17, 2024 at 11:14:36AM +0200, AngeloGioacchino Del Regno wrote:
->>>> The Dynamic Voltage and Frequency Scaling Resource Collector Regulators
->>>> are controlled with votes to the DVFSRC hardware.
+Il 17/04/24 21:14, Rob Herring ha scritto:
+> On Wed, Apr 17, 2024 at 05:32:54PM +0200, AngeloGioacchino Del Regno wrote:
+>> Il 17/04/24 16:54, Rob Herring ha scritto:
+>>> On Wed, Apr 17, 2024 at 11:14:37AM +0200, AngeloGioacchino Del Regno wrote:
+>>>> Add bindings for the MediaTek External Memory Interface Interconnect,
+>>>> which providers support system bandwidth requirements through Dynamic
+>>>> Voltage Frequency Scaling Resource Collector (DVFSRC) hardware.
 >>>>
->>>> This adds support for the regulators found in MT6873, MT8183, MT8192
->>>> and MT8195 SoCs.
+>>>> This adds bindings for MediaTek MT8183 and MT8195 SoCs.
 >>>>
 >>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 >>>> ---
->>>>    .../mediatek,mt6873-dvfsrc-regulator.yaml     | 71 +++++++++++++++++++
->>>>    1 file changed, 71 insertions(+)
->>>>    create mode 100644 Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml
+>>>>    .../interconnect/mediatek,mt8183-emi.yaml     | 76 +++++++++++++++++++
+>>>>    .../interconnect/mediatek,mt8183.h            | 23 ++++++
+>>>>    .../interconnect/mediatek,mt8195.h            | 44 +++++++++++
+>>>>    3 files changed, 143 insertions(+)
+>>>>    create mode 100644 Documentation/devicetree/bindings/interconnect/mediatek,mt8183-emi.yaml
+>>>>    create mode 100644 include/dt-bindings/interconnect/mediatek,mt8183.h
+>>>>    create mode 100644 include/dt-bindings/interconnect/mediatek,mt8195.h
 >>>>
->>>> diff --git a/Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml b/Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml
+>>>> diff --git a/Documentation/devicetree/bindings/interconnect/mediatek,mt8183-emi.yaml b/Documentation/devicetree/bindings/interconnect/mediatek,mt8183-emi.yaml
 >>>> new file mode 100644
->>>> index 000000000000..446f1dab4d2e
+>>>> index 000000000000..3ad60fd21f83
 >>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml
->>>> @@ -0,0 +1,71 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>>>> +++ b/Documentation/devicetree/bindings/interconnect/mediatek,mt8183-emi.yaml
+>>>> @@ -0,0 +1,76 @@
+>>>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
 >>>> +%YAML 1.2
 >>>> +---
->>>> +$id: http://devicetree.org/schemas/regulator/mediatek,mt6873-dvfsrc-regulator.yaml#
+>>>> +$id: http://devicetree.org/schemas/interconnect/mediatek,mt8183-emi.yaml#
 >>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 >>>> +
->>>> +title: MediaTek DVFSRC-controlled Regulators
->>>> +
->>>> +description:
->>>> +  The Dynamic Voltage and Frequency Scaling Resource Collector Regulators
->>>> +  are controlled with votes to the DVFSRC hardware.
+>>>> +title: MediaTek External Memory Interface (EMI) Interconnect
 >>>> +
 >>>> +maintainers:
 >>>> +  - AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 >>>> +
+>>>> +description: |
+>>>> +  EMI interconnect providers support system bandwidth requirements through
+>>>> +  Dynamic Voltage Frequency Scaling Resource Collector (DVFSRC) hardware.
+>>>> +  The provider is able to communicate with the DVFSRC through Secure Monitor
+>>>> +  Call (SMC).
+>>>> +
+>>>> +             ICC provider         ICC Nodes
+>>>> +                              ----          ----
+>>>> +             _________       |CPU |   |--- |VPU |
+>>>> +    _____   |         |-----  ----    |     ----
+>>>> +   |     |->|  DRAM   |       ----    |     ----
+>>>> +   |DRAM |->|scheduler|----- |GPU |   |--- |DISP|
+>>>> +   |     |->|  (EMI)  |       ----    |     ----
+>>>> +   |_____|->|_________|---.   -----   |     ----
+>>>> +               /|\         `-|MMSYS|--|--- |VDEC|
+>>>> +                |             -----   |     ----
+>>>> +                |                     |     ----
+>>>> +                | change DRAM freq    |--- |VENC|
+>>>> +             --------                 |     ----
+>>>> +    SMC --> | DVFSRC |                |     ----
+>>>> +             --------                 |--- |IMG |
+>>>> +                                      |     ----
+>>>> +                                      |     ----
+>>>> +                                      |--- |CAM |
+>>>> +                                            ----
+>>>> +
 >>>> +properties:
 >>>> +  compatible:
 >>>> +    enum:
->>>> +      - mediatek,mt6873-dvfsrc-regulator
->>>> +      - mediatek,mt8183-dvfsrc-regulator
->>>> +      - mediatek,mt8192-dvfsrc-regulator
->>>> +      - mediatek,mt8195-dvfsrc-regulator
+>>>> +      - mediatek,mt8183-emi
+>>>> +      - mediatek,mt8195-emi
 >>>> +
 >>>> +  reg:
 >>>> +    maxItems: 1
 >>>> +
->>>> +  dvfsrc-vcore:
->>>> +    description: DVFSRC-controlled SoC Vcore regulator
->>>> +    $ref: regulator.yaml#
->>>
->>>          unevaluatedProperties: false
->>>
->>
->> Will do!
->>
->>>> +
->>>> +  dvfsrc-vscp:
->>>> +    description: DVFSRC-controlled System Control Processor regulator
->>>> +    $ref: regulator.yaml#
->>>
->>> ditto
->>>
+>>>> +  '#interconnect-cells':
+>>>> +    const: 1
 >>>> +
 >>>> +required:
 >>>> +  - compatible
+>>>> +  - '#interconnect-cells'
+>>>> +
+>>>> +unevaluatedProperties: false
+>>>> +
+>>>> +examples:
+>>>> +  - |
+>>>> +    #include <dt-bindings/interconnect/mediatek,mt8195.h>
+>>>> +
+>>>> +    soc {
+>>>> +        #address-cells = <2>;
+>>>> +        #size-cells = <2>;
+>>>> +
+>>>> +        system-controller@10012000 {
+>>>> +            compatible = "mediatek,mt8195-dvfsrc";
+>>>> +            reg = <0 0x10012000 0 0x1000>;
+>>>> +            #address-cells = <1>;
+>>>> +            #size-cells = <0>;
+>>>> +
+>>>> +            emi_icc: interconnect@1 {
+>>>> +                compatible = "mediatek,mt8195-emi";
+>>>> +                reg = <1>;
+>>>> +                #interconnect-cells = <1>;
 >>>
->>> 'reg' is never optional. And how is no regulators at all valid?
+>>>
+>>> There's not really any need for this node. Just put #interconnect-cells
+>>> in the parent.
 >>>
 >>
->> The two nodes that I'm adding with this series don't need reg, but others
->> that are not present in this do... but anyway, let's postpone that problem
->> for the future me, or the future-anyone-else implementing the rest, I will
->> remove the 'reg' property as it is indeed not needed for this node.
-> 
-> That might have been fine, but now that I know you *will* need it, it
-> isn't fine. You could wait 1 week to 6 months to repost and hope I
-> forget...
-
-My bad, I should've explained a bit better, that was referred to the DVFSRC
-main node, not to the REGULATOR node: that one doesn't need it at all.
-
-I get it as it's fine if I drop reg from all of them (here and icc, and the
-size/address cells from the parent node) and send a v3.
-
-Did I get that wrong?
-
-
-> 
-> The ideal for these cases is you put the actual sub-range of
-> MMIO registers in the child nodes. But sometimes it is just bit soup in
-> the register layout and that doesn't work.
-> 
-
-I can confirm that there's a bit soup situation on MediaTek - bits for different
-devices scattered all around in one register "far away".
-
+>> Actually, I modeled it to be a subnode of the DVFSRC for multiple reasons:
 >>
->> And yeah it's invalid to add that node without any regulator. Will check the
->> other regulator bindings on how they're doing it.
+>> 1. Some SoCs have more than one interconnect on the DVFSRC (two different kinds
+>>     of EMI interconnect, and then also a SMI interconnect); and
+>>
+>> 2. Some boards will want to not enable the interconnect driver because some of
+>>     those are not battery powered (so they just keep the knobs at full thrust
+>>     from the bootloader and never care scaling busses); and
+>>
+>> 3. Some DVFSRC interconnect features may depend on firmware (but I'm not
+>>     sure which ones and which SoCs, as there are lots of SMI/EMI ICC things that
+>>     are not implemented yet with this series).
+>>
+>> The alternative would've been to add a property to enable, or disable, the SMI ICC
+>> (not present in this series), and/or one, or the other kind of EMI ICC (this series
+>> implements only the simpler EMI ICC, and I keep saying "the other" because I
+>> currently don't remember the name).... which is really ugly.
+>>
+>> Ideas? :-)
 > 
-> 'required' or anyOf with a list of required entries.
+> Just provide that reasoning in the commit msg.
 > 
 
-That saves me lookup time - greatly appreciated, thank you!
+Okay, that's sensible - should've done that in v1 even. My bad.
 
-Cheers,
+Cheers
 Angelo
 
 > Rob
+
 
 
