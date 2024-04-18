@@ -1,181 +1,125 @@
-Return-Path: <linux-kernel+bounces-150124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150127-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EE938A9AC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:04:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 966BE8A9AD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:04:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFE1B1F256DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:03:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 533FB283417
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB06B165FCD;
-	Thu, 18 Apr 2024 13:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C963161920;
+	Thu, 18 Apr 2024 13:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="td7NRfGf";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="NTafIBCY"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="aa54c0oM"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A338B1465B1;
-	Thu, 18 Apr 2024 13:01:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDB2A161339
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 13:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713445317; cv=none; b=mI4pCO4qpBQUX3CeCe2Jnoov9c9fK2VQdIuEiUcQUv8buSWSg7hOpF5HGEWyUpS/u8Z6oYVWgJzXV7BIi59IJzZcqsm1Qldi/Tj3OKamQpHqu0myjjq8qnmKLSjbZBGBe3tcVb3TAJotQz3x4/RXTEkxFz9H9jpMp7BTk+FJ/kI=
+	t=1713445362; cv=none; b=h/baPv3/bHEU25bBX0dSANAc6S6WW1HyVyx9Z62FtZwwpjW9iyxisqYJA93gNOdUOLIZ7vC14DQtAZUQXT22Iy1qlJ1/bCRResDptL8gafWgai2ryG2zq3bILgYvdUnwKYwpa80jIKmyDJQF/6KlAsCp9WDn5RyYz5WTLO18ECA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713445317; c=relaxed/simple;
-	bh=/V9nJ3w6SVVFPJeLw5l/Mr1q879sKp9vUjziZRX9VjM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ss9U6aLsWCACHsw0ipMMN9uIaWnYvpp6jXxC5t/wHfkt29QTzZmHTj9gadQCv4GY876xDI9XkSZZdnDWrXFhwEp9Bfir4FBbxvbcU9bUQZSps+P7sNRl46F5qRdgPhjN0lcH/0qKyes1wKesBv/p7uqbtoyQpMG1RFNTwGm4gKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=td7NRfGf; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=NTafIBCY; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 18 Apr 2024 15:01:48 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713445310;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0GJg4wo0VKLac1PG97GL83QKeqaA9szY5zPKromLH+A=;
-	b=td7NRfGfcrv0MyyqY+R9o3SoF/k2jyFG+Hw7c1iUg6sGEx/jr18/rj4iS1DJnfvGCR68pw
-	rPRsi11sW51RYh1zIYoVxRPbgMoAcCiEAMrRLR9nlGI5MXoHvXTg5w8haFnEipTHC8L2HL
-	GWVwjcdQbvWzbsxenfbbEpLyISg/ZtzSzQqBBJIKiBRu1NpOfgm0acuuLOqhmM7RBrjlCv
-	s1DWtTp64zduTiWs856+1dllq2b+ovcJwOPy67hRL8w+Lhx9oDOQqbijAjb1461hu1NJiM
-	A0X0DzUjidKOd+p1q3gRJpZoCjKF40N02qN+mT8SxrMv/j+9pK+Fqj7LhvA3Yw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713445310;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0GJg4wo0VKLac1PG97GL83QKeqaA9szY5zPKromLH+A=;
-	b=NTafIBCYsXh1Tdh3iOhsXmxdqRGVtfe43CHFbsPqgsih4/iAHkX8D+I5XsL1Gc1tYxHC6+
-	BnB4ua0EWdlKKbCw==
-From: Nam Cao <namcao@linutronix.de>
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: Mike Rapoport <rppt@kernel.org>, Andreas Dilger <adilger@dilger.ca>,
- linux-riscv@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>,
- Andrew Morton <akpm@linux-foundation.org>, "ndesaulniers @ google . com"
- <ndesaulniers@google.com>, Luis Chamberlain <mcgrof@kernel.org>, Ingo
- Molnar <mingo@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Tejun Heo <tj@kernel.org>, Krister Johansen <kjlx@templeofstupid.com>,
- Changbin Du <changbin.du@huawei.com>, Arnd Bergmann <arnd@arndb.de>, Geert
- Uytterhoeven <geert+renesas@glider.be>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Subject: Re: [PATCH] init: fix allocated page overlapping with PTR_ERR
-Message-ID: <20240418150148.6a0b4664@namcao>
-In-Reply-To: <87edb2sv0d.fsf@all.your.base.are.belong.to.us>
-References: <20240418102943.180510-1-namcao@linutronix.de>
-	<20240418131238.636bee2c@namcao>
-	<87edb2sv0d.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1713445362; c=relaxed/simple;
+	bh=uZrB5vZp14AnyqyXxGpgGZ10yCrOT+gwRlBBTnMyGWM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=shFYf/JbjGZNIbmkfyYeFacLNAdBmcLQ7kzh32akV23waMRUzFF2SZQdYV1DIJtxvtpQALkrlKbuaNM+Va8RoKP2zRLCXdrjb0HM0ww582CFNelKsxdnX18wa1Yxkkx0mOarNyt8V7fIFLQOt6xmgjElUHj2ZUalXENBroguhT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=aa54c0oM; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a5557e3ebcaso148679166b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:02:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713445359; x=1714050159; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bVyPUZzpnAkaHf5uIez6yP0jHFtLyERSTeCCJwCmVdY=;
+        b=aa54c0oMddNzgGXnJXlwodm/eQ8VoSD7dIeW86Us0U64DoZmx7UxVWEe6E5HKSK93L
+         TU1WXGVZ4FI4b8lXTc5btkBlwhwl30BpsNe+DepYByfleYwMn+okdsAlT8/4wFZC/nJu
+         geZPxPtdECgMufIpk4EWTo934m05EHi+eKrB/YMcQ00YRWVHX1X+WdYciHa3zz0PzslV
+         QDpuguMQdtlycE8dHhpbs4GRdlma6nHg7LYe2pR3ZP/P5opP3mjsKKXOdgGjWGZ4gl5i
+         /kCPSxmW3BJMUuqnFykugK7AAjMw0oL+QR/PC7WuBN7ETarS7hNLW3cpjkSkUhhPnAPG
+         7GsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713445359; x=1714050159;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bVyPUZzpnAkaHf5uIez6yP0jHFtLyERSTeCCJwCmVdY=;
+        b=Jnr+/K5XnXn6oMuVUNL66VGn5gGRjHPrKVlIyN2aszgFES2zy2wEQkgR3q8DLyJBql
+         iDn97Nrl4k/FDoV5G+n/YV8xt5es48q0bK3hNbCWi4bgXtZlyL2ezZkDL8Zs+STwLLmi
+         59YnJnJ1bU7RG2/adncMpkTCjM5szPYbC2Qj2cHo0qtK/Y4qz2WAXL2PCnD6CB7vpY6u
+         kvxc5p463tIBHEN0aQUpFi24J1a1KfRsTNYUBQn+bCspOfoOjdqZpZkpERQb45a+ZU6X
+         QQKbhrg1G66XGEvASvl3/j2QMOSi+/o6soYLKNnw/+suGYgbDL6j71K1ozBRaeYmGYlZ
+         rNFg==
+X-Forwarded-Encrypted: i=1; AJvYcCXe++mFYT/GQ+m85pL7Xkobi7EHKIHAz9DsEJtn1ZwsQxFUflzka4F0XIXL8dqbpzRDyuyAcqMaJmo/rUr3KZAgMHUWJP0+QhwDB3ec
+X-Gm-Message-State: AOJu0YyRGtahDpDUtONk9hKCdEJTVVcMa1qkhtIPoy82nMbslqFxm8pA
+	CUVXjNvo0iSMIZecLWdAGNAch88jn6hygTqMj3NrH7849vT1ejX6cNZQ747EkEM=
+X-Google-Smtp-Source: AGHT+IH0N89eEQyHSFCXfRykybkZDOZuDp2tJqO99tXBPvhuSPwv2IlxEhe/EsNO/07OXybXEnBOWw==
+X-Received: by 2002:a17:907:36c1:b0:a55:6135:7ab7 with SMTP id bj1-20020a17090736c100b00a5561357ab7mr2297200ejc.6.1713445359195;
+        Thu, 18 Apr 2024 06:02:39 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id w23-20020a170907271700b00a556f2f18d6sm794633ejk.57.2024.04.18.06.02.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 06:02:38 -0700 (PDT)
+Message-ID: <57d55af9-33d1-45de-b8e2-ff9ab2e74e4f@baylibre.com>
+Date: Thu, 18 Apr 2024 15:02:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 18/18] arm64: dts: mediatek: add display support for
+ mt8365-evk
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>, Jitao Shi <jitao.shi@mediatek.com>,
+ CK Hu <ck.hu@mediatek.com>, =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?=
+ <u.kleine-koenig@pengutronix.de>, Michael Turquette
+ <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Cc: dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org,
+ linux-clk@vger.kernel.org
+References: <20231023-display-support-v2-0-33ce8864b227@baylibre.com>
+ <20231023-display-support-v2-18-33ce8864b227@baylibre.com>
+ <ee8d0a32-b4fb-4fc4-83b2-300f7453d95f@collabora.com>
+Content-Language: en-US
+From: Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <ee8d0a32-b4fb-4fc4-83b2-300f7453d95f@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 2024-04-18 Bj=C3=B6rn T=C3=B6pel wrote:
-> Nam Cao <namcao@linutronix.de> writes:
->=20
-> > On 2024-04-18 Nam Cao wrote:
-> >> There is nothing preventing kernel memory allocators from allocating a
-> >> page that overlaps with PTR_ERR(), except for architecture-specific
-> >> code that setup memblock.
-> >>=20
-> >> It was discovered that RISCV architecture doesn't setup memblock
-> >> corectly, leading to a page overlapping with PTR_ERR() being allocated,
-> >> and subsequently crashing the kernel (link in Close: )
-> >>=20
-> >> The reported crash has nothing to do with PTR_ERR(): the last page
-> >> (at address 0xfffff000) being allocated leads to an unexpected
-> >> arithmetic overflow in ext4; but still, this page shouldn't be
-> >> allocated in the first place.
-> >>=20
-> >> Because PTR_ERR() is an architecture-independent thing, we shouldn't
-> >> ask every single architecture to set this up. There may be other
-> >> architectures beside RISCV that have the same problem.
-> >>=20
-> >> Fix this one and for all by reserving the physical memory page that
-> >> may be mapped to the last virtual memory page as part of low memory.
-> >>=20
-> >> Unfortunately, this means if there is actual memory at this reserved
-> >> location, that memory will become inaccessible. However, if this page
-> >> is not reserved, it can only be accessed as high memory, so this
-> >> doesn't matter if high memory is not supported. Even if high memory is
-> >> supported, it is still only one page.
-> >>=20
-> >> Closes: https://lore.kernel.org/linux-riscv/878r1ibpdn.fsf@all.your.ba=
-se.are.belong.to.us
-> >> Signed-off-by: Nam Cao <namcao@linutronix.de>
-> >> Cc: <stable@vger.kernel.org> # all versions
-> >
-> > Sorry, forgot to add:
-> > Reported-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
->=20
-> Hmm, can't we get rid of the whole check in arch/riscv/mm/init.c for
-> 32b?
 
-We can, but that depends on this patch. So my intention is to wait for
-this patch to be applied first, because I don't want to bother the
-maintainers with dependencies.
 
-> --8<--
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index fe8e159394d8..1e91d5728887 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -196,7 +196,6 @@ early_param("mem", early_mem);
->  static void __init setup_bootmem(void)
->  {
->  	phys_addr_t vmlinux_end =3D __pa_symbol(&_end);
-> -	phys_addr_t max_mapped_addr;
->  	phys_addr_t phys_ram_end, vmlinux_start;
-> =20
->  	if (IS_ENABLED(CONFIG_XIP_KERNEL))
-> @@ -234,21 +233,6 @@ static void __init setup_bootmem(void)
->  	if (IS_ENABLED(CONFIG_64BIT))
->  		kernel_map.va_pa_offset =3D PAGE_OFFSET - phys_ram_base;
-> =20
-> -	/*
-> -	 * memblock allocator is not aware of the fact that last 4K bytes of
-> -	 * the addressable memory can not be mapped because of IS_ERR_VALUE
-> -	 * macro. Make sure that last 4k bytes are not usable by memblock
-> -	 * if end of dram is equal to maximum addressable memory.  For 64-bit
-> -	 * kernel, this problem can't happen here as the end of the virtual
-> -	 * address space is occupied by the kernel mapping then this check must
-> -	 * be done as soon as the kernel mapping base address is determined.
-> -	 */
-> -	if (!IS_ENABLED(CONFIG_64BIT)) {
-> -		max_mapped_addr =3D __pa(~(ulong)0);
-> -		if (max_mapped_addr =3D=3D (phys_ram_end - 1))
-> -			memblock_set_current_limit(max_mapped_addr - 4096);
-> -	}
-> -
+On 17/04/2024 12:27, AngeloGioacchino Del Regno wrote:
+> 
+>> +        irq_ite_pins {
+> 
+> Did you run dtbs_check?!? :-)
 
-If you are going to send this, you can add:
-Reviewed-by: Nam Cao <namcao@linutronix.de>
+Yes without error, here my command:
+dt-validate -s Documentation/devicetree/bindings arch/arm64/boot/dts/mediatek/mt8365-evk.dtb
 
->  	min_low_pfn =3D PFN_UP(phys_ram_base);
->  	max_low_pfn =3D max_pfn =3D PFN_DOWN(phys_ram_end);
->  	high_memory =3D (void *)(__va(PFN_PHYS(max_low_pfn)));
-> --8<--
->=20
-> Mike hints that's *not* the case
-> (https://lore.kernel.org/linux-riscv/ZiAkRMUfiPDUGPdL@kernel.org/).
-> memblock_reserve() should disallow allocation as well, no?
+Also I've done a "make dtbs_check" just to be sure, nothing wrong on mt8365-evk.dtb.
 
-He said it can't be removed if we set max_low_pfn instead of using
-memblock_reserve()
+For you, what is the issue please ?
 
-If max_low_pfn() is used, then it can be removed:
-https://lore.kernel.org/linux-riscv/Zh6n-nvnQbL-0xss@kernel.org
-
-Best regards,
-Nam
-
+-- 
+Regards,
+Alexandre
 
