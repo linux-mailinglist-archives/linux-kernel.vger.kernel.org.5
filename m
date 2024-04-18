@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-149675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98C668A9467
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:50:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AD518A9469
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:50:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EF831F2264A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:50:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE4CD1C20E70
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:50:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE4179950;
-	Thu, 18 Apr 2024 07:49:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A12B87C6CA;
+	Thu, 18 Apr 2024 07:49:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="XneAXZUF"
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="T1vF3yi3"
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4E97441A;
-	Thu, 18 Apr 2024 07:49:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 556A27BB11;
+	Thu, 18 Apr 2024 07:49:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713426594; cv=none; b=HWWz83y6b0mtQywyB6naHlxfGZoT/rVTWMbhEtZco4r6fV+aGhTWNgTq9Sxpga9HRubfDCBi7OKCidxiT8qJ8imBBUJmrHcs0NUxKGBdZvQN+VwS7RqZRFkXeLIRoZiYs1gfAkz0xwY+VgT7oXDuTxH3JiW8/JQQaybbZlZjezk=
+	t=1713426597; cv=none; b=DErEMfwtSt+AHetPGz1dAcpWMjVGrqQVBAEQqb70Cpu9nhpWV/9IQBlxe7R6JzNFPaH+Y21kzZKA/FfU1YQiGVvI/vXeJ5tCcdDhvbYstrKf7b70mXnVhz9BGs71bnjKeNa7oDIHpxqMAzpzuL2MQhAejDEXEnypAj7KwxiKrkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713426594; c=relaxed/simple;
-	bh=FRrlT/aY2FgpGFg9r1Iu9ANqmOPu7yBIf9SqSQmObGA=;
+	s=arc-20240116; t=1713426597; c=relaxed/simple;
+	bh=IhMFtZeQ2T2+WCiGXjtJeBAgi0XYTiLU3yPN8WN07Wg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=jyWyNXKMdRnIke0R8sI0x7PysJCljxU/4AEd+HIioCwYml3NX2JSP1pmUr+vuj9ljUsHv962yCbXyXXrIwr49kq334AJ+v3TdMUQk7vaS+PeJrzXFxAqdx3wbQMLgf67fEmP79QHJPy9lxifPRL2XKqzT/eL43qzM9RjSNpwfyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=XneAXZUF; arc=none smtp.client-ip=68.232.153.233
+	 In-Reply-To:To:CC; b=QTWWQqovD70GUGsFx8H//r0vgZS/YKBQa+F6rEfowA54HLkg7XQ8931a9iLzrK9fbF+4TShAPnbI2pdHGfNdIiAIFGIkYR/4hdxcQzwb76GTY6kTMtrzIa+ctmzARhCMiU+o2eQsN6c7iGwLDaySVUpp1Y/CR9B+WVoQQBKpxz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=T1vF3yi3; arc=none smtp.client-ip=68.232.153.233
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1713426592; x=1744962592;
+  t=1713426596; x=1744962596;
   h=from:date:subject:mime-version:content-transfer-encoding:
    message-id:references:in-reply-to:to:cc;
-  bh=FRrlT/aY2FgpGFg9r1Iu9ANqmOPu7yBIf9SqSQmObGA=;
-  b=XneAXZUFY5IfngSsKlOJFwBB1BDAVg3Cb2LS3GlFpHTZcXvIIegX8fDq
-   jXqAbfjTRkrc1Em3qsy7A3EXo+rLAZWgLd+walboPgDm4ffts83xpetXw
-   l2dR5wNZNwcVspiQIDcEEcrbSS4mQfEVWEYJNDNzCR67TNJPO71t5+xOQ
-   pWfd5N80YhiuxrcUW2WSDBty3WT/WTCgmF4+ltiyJmX+2JsIfc43iqVZI
-   vY2Hi1DyYixX/NxpHiGnHc3Yv6jTrEnPHSdVMYgqGcCrggvdxFk1/Y9kR
-   803d8czrceyJuoKgPXvJTbPdgZaE8yCswWGkWf3LhGXalllXTaEbLvkcd
-   g==;
-X-CSE-ConnectionGUID: DF5lhuK2QDKj8XIcvI9wEw==
-X-CSE-MsgGUID: YNN3beuRSCqu/F8ftu1gcQ==
+  bh=IhMFtZeQ2T2+WCiGXjtJeBAgi0XYTiLU3yPN8WN07Wg=;
+  b=T1vF3yi3ReKjJq8GZj23Cq4yyEl3IFBLjWkOCk5CSUsUpfSbP9CvCZfr
+   M5fSpxc4R2iG34URavVaM8aPGT1eSRwysfyX8msCQDcLxxHVpRuFPkzAw
+   I9lp2nCaeRW3ZRZFR01Cq2sy0DgybywM4OXhU2fg+bOwW1mYbfGAycp8D
+   r70k2MWoqtBRUicRu19Fd2Q0n1KQILH/hzBPxIQZUoN19w8JB9HE/vUSW
+   Oano0HJ0fLC4qQ9V85unfgENUtZnnK2J+WNUJg3Wg+HOBxa1l00ELmbT2
+   Vq5/obBKFr3z7U7bLmzWu2LznB8RrJk55MXZ6QM7N81/ChP6bLe/mbPFo
+   w==;
+X-CSE-ConnectionGUID: NQdi2Z4DREu4zFI25zkCMA==
+X-CSE-MsgGUID: Vgijnv27TKmLwt6m/MRV/Q==
 X-IronPort-AV: E=Sophos;i="6.07,211,1708412400"; 
-   d="scan'208";a="252373487"
+   d="scan'208";a="21570496"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Apr 2024 00:49:50 -0700
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Apr 2024 00:49:55 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 18 Apr 2024 00:49:44 -0700
+ 15.1.2507.35; Thu, 18 Apr 2024 00:49:47 -0700
 Received: from DEN-DL-M70577.microchip.com (10.10.85.11) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Thu, 18 Apr 2024 00:49:40 -0700
+ 15.1.2507.35 via Frontend Transport; Thu, 18 Apr 2024 00:49:44 -0700
 From: Daniel Machon <daniel.machon@microchip.com>
-Date: Thu, 18 Apr 2024 09:49:03 +0200
-Subject: [PATCH net-next 4/5] net: sparx5: add the tc glue to support port
- mirroring
+Date: Thu, 18 Apr 2024 09:49:04 +0200
+Subject: [PATCH net-next 5/5] net: sparx5: add support for matchall mirror
+ stats
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,7 +69,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20240418-port-mirroring-v1-4-e05c35007c55@microchip.com>
+Message-ID: <20240418-port-mirroring-v1-5-e05c35007c55@microchip.com>
 References: <20240418-port-mirroring-v1-0-e05c35007c55@microchip.com>
 In-Reply-To: <20240418-port-mirroring-v1-0-e05c35007c55@microchip.com>
 To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
@@ -86,76 +86,135 @@ CC: <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
 	<daniel.machon@microchip.com>
 X-Mailer: b4 0.14-dev
 
-Add the necessary tc glue to add and delete mirror rules through tc
-matchall.
+Add support for tc matchall mirror stats. When a new matchall mirror
+rule is added, the baseline stats for that port is saved.
 
 Signed-off-by: Daniel Machon <daniel.machon@microchip.com>
 Reviewed-by: Steen Hegelund <Steen.Hegelund@microchip.com>
 ---
- .../ethernet/microchip/sparx5/sparx5_tc_matchall.c | 36 +++++++++++++++++++++-
- 1 file changed, 35 insertions(+), 1 deletion(-)
+ .../net/ethernet/microchip/sparx5/sparx5_main.h    |  3 ++
+ .../net/ethernet/microchip/sparx5/sparx5_mirror.c  | 37 ++++++++++++++++++++++
+ .../ethernet/microchip/sparx5/sparx5_tc_matchall.c | 27 ++++++++++++++++
+ 3 files changed, 67 insertions(+)
 
+diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_main.h b/drivers/net/ethernet/microchip/sparx5/sparx5_main.h
+index 5d026e1670f5..1982ae03b4fe 100644
+--- a/drivers/net/ethernet/microchip/sparx5/sparx5_main.h
++++ b/drivers/net/ethernet/microchip/sparx5/sparx5_main.h
+@@ -174,6 +174,7 @@ struct sparx5_port {
+ 	struct phylink_config phylink_config;
+ 	struct phylink *phylink;
+ 	struct phylink_pcs phylink_pcs;
++	struct flow_stats mirror_stats;
+ 	u16 portno;
+ 	/* Ingress default VLAN (pvid) */
+ 	u16 pvid;
+@@ -562,6 +563,8 @@ void sparx5_new_base_time(struct sparx5 *sparx5, const u32 cycle_time,
+ /* sparx5_mirror.c */
+ int sparx5_mirror_add(struct sparx5_mall_entry *entry);
+ void sparx5_mirror_del(struct sparx5_mall_entry *entry);
++void sparx5_mirror_stats(struct sparx5_mall_entry *entry,
++			 struct flow_stats *fstats);
+ 
+ /* Clock period in picoseconds */
+ static inline u32 sparx5_clk_period(enum sparx5_core_clockfreq cclock)
+diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_mirror.c b/drivers/net/ethernet/microchip/sparx5/sparx5_mirror.c
+index 540bde15eeff..9dcc3c22fe49 100644
+--- a/drivers/net/ethernet/microchip/sparx5/sparx5_mirror.c
++++ b/drivers/net/ethernet/microchip/sparx5/sparx5_mirror.c
+@@ -194,3 +194,40 @@ void sparx5_mirror_del(struct sparx5_mall_entry *entry)
+ 				  mirror_idx,
+ 				  SPX5_MIRROR_MONITOR_PORT_DEFAULT);
+ }
++
++void sparx5_mirror_stats(struct sparx5_mall_entry *entry,
++			 struct flow_stats *fstats)
++{
++	struct sparx5_port *port = entry->port;
++	struct rtnl_link_stats64 new_stats;
++	struct flow_stats *old_stats;
++
++	old_stats = &entry->port->mirror_stats;
++	sparx5_get_stats64(port->ndev, &new_stats);
++
++	if (entry->ingress) {
++		flow_stats_update(fstats,
++				  new_stats.rx_bytes - old_stats->bytes,
++				  new_stats.rx_packets - old_stats->pkts,
++				  new_stats.rx_dropped - old_stats->drops,
++				  old_stats->lastused,
++				  FLOW_ACTION_HW_STATS_IMMEDIATE);
++
++		old_stats->bytes = new_stats.rx_bytes;
++		old_stats->pkts = new_stats.rx_packets;
++		old_stats->drops = new_stats.rx_dropped;
++		old_stats->lastused = jiffies;
++	} else {
++		flow_stats_update(fstats,
++				  new_stats.tx_bytes - old_stats->bytes,
++				  new_stats.tx_packets - old_stats->pkts,
++				  new_stats.tx_dropped - old_stats->drops,
++				  old_stats->lastused,
++				  FLOW_ACTION_HW_STATS_IMMEDIATE);
++
++		old_stats->bytes = new_stats.tx_bytes;
++		old_stats->pkts = new_stats.tx_packets;
++		old_stats->drops = new_stats.tx_dropped;
++		old_stats->lastused = jiffies;
++	}
++}
 diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_matchall.c b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_matchall.c
-index 2a33b347098f..cfd6fcd3d74e 100644
+index cfd6fcd3d74e..479f9b163533 100644
 --- a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_matchall.c
 +++ b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_matchall.c
-@@ -36,6 +36,13 @@ static void sparx5_tc_matchall_parse_action(struct sparx5_port *port,
- 	entry->cookie = cookie;
- }
- 
-+static void
-+sparx5_tc_matchall_parse_mirror_action(struct sparx5_mall_entry *entry,
-+				       struct flow_action_entry *action)
-+{
-+	entry->mirror.port = netdev_priv(action->dev);
-+}
-+
- static int sparx5_tc_matchall_replace(struct net_device *ndev,
- 				      struct tc_cls_matchall_offload *tmo,
- 				      bool ingress)
-@@ -65,6 +72,31 @@ static int sparx5_tc_matchall_replace(struct net_device *ndev,
- 
- 	sparx5 = port->sparx5;
- 	switch (action->id) {
-+	case FLOW_ACTION_MIRRED:
-+		sparx5_tc_matchall_parse_mirror_action(mall_entry, action);
-+		err = sparx5_mirror_add(mall_entry);
-+		if (err) {
-+			switch (err) {
-+			case -EEXIST:
-+				NL_SET_ERR_MSG_MOD(tmo->common.extack,
-+						   "Mirroring already exists");
-+				break;
-+			case -EINVAL:
-+				NL_SET_ERR_MSG_MOD(tmo->common.extack,
-+						   "Cannot mirror a monitor port");
-+				break;
-+			case -ENOENT:
-+				NL_SET_ERR_MSG_MOD(tmo->common.extack,
-+						   "No more mirror probes available");
-+				break;
-+			default:
-+				NL_SET_ERR_MSG_MOD(tmo->common.extack,
-+						   "Unknown error");
-+				break;
-+			}
-+			return err;
-+		}
-+		break;
+@@ -96,6 +96,8 @@ static int sparx5_tc_matchall_replace(struct net_device *ndev,
+ 			}
+ 			return err;
+ 		}
++		/* Get baseline stats for this port */
++		sparx5_mirror_stats(mall_entry, &tmo->stats);
+ 		break;
  	case FLOW_ACTION_GOTO:
  		err = vcap_enable_lookups(sparx5->vcap_ctrl, ndev,
- 					  tmo->common.chain_index,
-@@ -115,7 +147,9 @@ static int sparx5_tc_matchall_destroy(struct net_device *ndev,
- 	if (!entry)
- 		return -ENOENT;
+@@ -162,6 +164,29 @@ static int sparx5_tc_matchall_destroy(struct net_device *ndev,
+ 	return err;
+ }
  
--	if (entry->type == FLOW_ACTION_GOTO) {
++static int sparx5_tc_matchall_stats(struct net_device *ndev,
++				    struct tc_cls_matchall_offload *tmo,
++				    bool ingress)
++{
++	struct sparx5_port *port = netdev_priv(ndev);
++	struct sparx5 *sparx5 = port->sparx5;
++	struct sparx5_mall_entry *entry;
++
++	entry = sparx5_tc_matchall_entry_find(&sparx5->mall_entries,
++					      tmo->cookie);
++	if (!entry)
++		return -ENOENT;
++
 +	if (entry->type == FLOW_ACTION_MIRRED) {
-+		sparx5_mirror_del(entry);
-+	} else if (entry->type == FLOW_ACTION_GOTO) {
- 		err = vcap_enable_lookups(sparx5->vcap_ctrl, ndev,
- 					  0, 0, tmo->cookie, false);
- 	} else {
++		sparx5_mirror_stats(entry, &tmo->stats);
++	} else {
++		NL_SET_ERR_MSG_MOD(tmo->common.extack, "Unsupported action");
++		return -EOPNOTSUPP;
++	}
++
++	return 0;
++}
++
+ int sparx5_tc_matchall(struct net_device *ndev,
+ 		       struct tc_cls_matchall_offload *tmo,
+ 		       bool ingress)
+@@ -171,6 +196,8 @@ int sparx5_tc_matchall(struct net_device *ndev,
+ 		return sparx5_tc_matchall_replace(ndev, tmo, ingress);
+ 	case TC_CLSMATCHALL_DESTROY:
+ 		return sparx5_tc_matchall_destroy(ndev, tmo, ingress);
++	case TC_CLSMATCHALL_STATS:
++		return sparx5_tc_matchall_stats(ndev, tmo, ingress);
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
 
 -- 
 2.34.1
