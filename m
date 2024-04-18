@@ -1,212 +1,201 @@
-Return-Path: <linux-kernel+bounces-150760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2479B8AA438
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:46:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 213EE8AA43A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:47:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A45FD1F22C19
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:46:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 867D0280C51
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:46:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0DEC190699;
-	Thu, 18 Apr 2024 20:46:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00501190687;
+	Thu, 18 Apr 2024 20:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JdH5bB/L"
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uD4wCO9g"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A5F5427E
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 20:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C54432E416
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 20:46:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713473167; cv=none; b=IiHaiDi73WhgjEMMrVXYndsFWfmwbtk1fwGkfB2ADL9wnZXU1FGfh+8rFZSU3EyFGMTqY9mHxdl/NAN1RGzZVX7TuqLAVK6zKO9N6N0IQgzKcee7e/tQGahIVER/at6KfaTB/cNN/OTzmlvlG4xOhdo59bmJm5hxeKtXeoKNF14=
+	t=1713473212; cv=none; b=Z0rLwEDu1yxqHcnTRNfJHK77YJz9DSeGzl1mG3ykD8c5r/FTRa17lwq8/TI9MjWxeFMJg6fr3WoxZBX9ASd02gsh78uD4xymeGauBSr6aLcghuwJO//x4ZzLgIujLrCigkqOtnf7Ov2ZCYi188OLeq48s6DktVWUo7/c0wGlA0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713473167; c=relaxed/simple;
-	bh=HMVi7br3BVBav1YEFm3hGbVBKQuo4jcCj8gERVq5mRM=;
+	s=arc-20240116; t=1713473212; c=relaxed/simple;
+	bh=2uEjWGQAsOsIfV8JweL2+DM0EtwCDNgkVsQGr2+cEXg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p7DYxj6vZNpbuAqoqFl5fhQz3a80RP6ut90F27ZFYjzPZ+R8HICnyNi9vRV+XuBh2TTB8GFO0UfvGb41a4kUVLxmOyAgMSJvHHMWX6NyRelP6AVPtUYd3pcjrYhGWU+BdLhEvffW/S5VbteaegR/2tndn1T4AZyq5qvPlUSq0x4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JdH5bB/L; arc=none smtp.client-ip=209.85.216.52
+	 Content-Type:Content-Disposition:In-Reply-To; b=GldczNTXsk6CJnUjB9Ekh9tVezrWrc7bg2hBdm4TDop9G8q8pC4NcGG04zLQ0n9CxplVnxTSDGaMyjyCAquJg9SDqumzLFmPpLPpfEQHdaHDHd0E9qKpH5PPRpwwcAFbJvY8WtMG6PjWCU4Sh0oTHtQzjJLGUG6oNsxOB3ygZ2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uD4wCO9g; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2a2da57ab3aso1041059a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 13:46:05 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e8414dc4e8so11905ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 13:46:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713473165; x=1714077965; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NAMRKO5ZJMAgar9h9RnJOh/Wa8p7zabMhMg01dIRGOg=;
-        b=JdH5bB/LtWsQ8gpygCvhWh+bg2ci8KwLNDdR08ZBJmHIRs2pseOZh1D+tG57AJUvzX
-         dPJbsDO4P4m0lHrHZMefPaLcFJulBSeM+VIqQPAulLFiEwylLqX+6K6ksoOclnAT/iOs
-         nGpPYsw6vKJ9IEwflZF+FlhJpCX1hxxib8hKDBOV3NvAY+hNHKFa9hib+xbaRpNNDSes
-         fXQvNZY3+W4Y4S84EcKPcwLDJnC0PYuSEtDkyqRgKVIrrVSyzMK9wU6whMsvcmsnhtJl
-         57JWx2Onw6HxGFv8PxcIp8tWSvQxgsFlZiHuqwPT5aYG7QlakmHxKj15Ob6gYiPUbjG1
-         62tA==
+        d=google.com; s=20230601; t=1713473210; x=1714078010; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+OxDjoGGy1HqEOb4w0cL5x3uQ8o+UC2ei3huEHy8ahs=;
+        b=uD4wCO9gOe7TS7XxbYRnMo3yUekKX35BGa9TYKa4dmUy9UrpsqMtl/jL3geGsizwk1
+         YXGaaykmo8bD0eeYlgjTnsInU19/M1554+Y3lr92VLJsX+fMnkYO/MDctYneJ06uYHB3
+         grF4wQ+SzLZhRyRBDy9wr4ej1tewETDtk3gsI9qoEXNPUOb/F4S6OPVzfP8BcZfFbRdg
+         fd8GR+zjSGwrRpaAw6agoYhrtocTPe00bmFHAOukJgcMhr74lxV97D3uo3DP79yRj2vX
+         DalQHaF4JhGiihAQLe9CYU8F5+GXRxVtGwRoz7wTxQbV+OPNNJA2n0Myh7aENu0GAuT7
+         zkfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713473165; x=1714077965;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NAMRKO5ZJMAgar9h9RnJOh/Wa8p7zabMhMg01dIRGOg=;
-        b=C694yc8bxfgf8LDXyptmRkj9FoD9cKW9Xe58GNd21GtFFCl/Bioyf8YG01y4xoESte
-         bChVcKd8beHbaWmX8Sq44TinF115Hxln56Z7Bc2rpWkDKSkkmajOiz6e5ayRFbZ2FBMm
-         0WQdbXV3py/u4R1vGZXUryRj0zV2O+HNyFkVm7myqXqYYm4obfbUYp5up4IFYV1Ziuav
-         UZRBOPG5QR1BVKEUmIJ7XGWbHMAscbnZUhO/fuWx2//LhOlv/+gbUNb4d+Rl8f+qIhB1
-         Mnvtt9OLYtQ3qqNYLEktpLyP3sR9h6D4tR1ywy3URQ0lE3L8Q4skw0+Lv/qwQrOJXm2d
-         g9hg==
-X-Forwarded-Encrypted: i=1; AJvYcCUiAxU3taqvNzwABH05qzb4z+/vvDX2WYCyT7VBKTUt8KUiLo9VnN/rhyDHIIGDbISQ/4dQCZRxcBZ7H4bn2SbVTZHT0qf2Yupht1TH
-X-Gm-Message-State: AOJu0YzfQFZhvgCXlryoij7mBED9evw/z0RUHjVuj8ip+DMHBYw/U2ly
-	2/TIavudt0eI5kIbmGNMlolSjsLGVV+15wX9RpYyU38NlSIWVI8FCkveJ1aO/Q==
-X-Google-Smtp-Source: AGHT+IE6CmWwjk53jvURZMn2e6RsrDhXbrmpgr8uKqK7f4ECwf5qlnvF3BLnuP+6gnpYzXORmkclsw==
-X-Received: by 2002:a17:90b:3696:b0:2a5:3438:a31b with SMTP id mj22-20020a17090b369600b002a53438a31bmr284502pjb.37.1713473164448;
-        Thu, 18 Apr 2024 13:46:04 -0700 (PDT)
-Received: from google.com (60.89.247.35.bc.googleusercontent.com. [35.247.89.60])
-        by smtp.gmail.com with ESMTPSA id iq2-20020a17090afb4200b002a9f707ec45sm3611970pjb.11.2024.04.18.13.46.03
+        d=1e100.net; s=20230601; t=1713473210; x=1714078010;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+OxDjoGGy1HqEOb4w0cL5x3uQ8o+UC2ei3huEHy8ahs=;
+        b=gtFb2PqXOA6iFil4U2D2IBMvr77YKlTNhVnIFbyiSB2aVufku7S3H65/SgwuEcsZog
+         FyjSt18x+m9wGtsvqHP6ZmM7lwvUDA5E1Ylih9SosOPa1ZXMLevbIgAvEeKwXuq9z6fh
+         c+wrKeesprp2WN/z40JS+bB8O+aysMyfNONNBwcX6vo4di1j84PHa7H/SF4mpy2xdpiR
+         br4DelkS1+wYXyhg/Yw0VBLLz3ASlb8MvQ8Y/dxP/+S8ZE7n4gSmdp8EQjpFzkbqBp/7
+         jqtmmBtu3Pj0XpR5hkklVFwRpvXYlc9Cu9x0ViNsHkTTRab9xdvcCzdVkNBN+ec35lDD
+         e+Zg==
+X-Forwarded-Encrypted: i=1; AJvYcCUP6/4azbYoFSg4LZXXjPC3QH7eKmqnoDMfSvDdyDGo/7Ip08gTPLKLyRZ2NTXIcM1vz32axfPmnzHSVXlNokWD/zmA5pixFI0EI8Po
+X-Gm-Message-State: AOJu0YyJaxIL2ZXIJ03BMYV/Jr3XBqBdF5PlPZorxELJ993/TCJ7Bkgx
+	QJZpauCA//Hga/GouBaR5IVAISGM7MDumFCfd9B1D890Ytg+hRCPl0fjVt4Kpw==
+X-Google-Smtp-Source: AGHT+IFj941mf9cufQ2vfb9yEB1VjE8vhFQwbWqrjph2DM5feMXwOPO/D+qJcXCDQar1DEssSmKLYA==
+X-Received: by 2002:a17:902:fa07:b0:1e5:c85e:6b71 with SMTP id la7-20020a170902fa0700b001e5c85e6b71mr60894plb.22.1713473209904;
+        Thu, 18 Apr 2024 13:46:49 -0700 (PDT)
+Received: from google.com ([2620:15c:2d3:205:4bdb:93c3:5c52:fa8a])
+        by smtp.gmail.com with ESMTPSA id a8-20020aa78e88000000b006f0ba1c8ddesm318098pfr.184.2024.04.18.13.46.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 13:46:03 -0700 (PDT)
-Date: Thu, 18 Apr 2024 20:46:00 +0000
-From: Mingwei Zhang <mizhang@google.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
-	peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
-	dapeng1.mi@linux.intel.com, jmattson@google.com,
-	kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com,
-	eranian@google.com, irogers@google.com, samantha.alt@intel.com,
-	like.xu.linux@gmail.com, chao.gao@intel.com
-Subject: Re: [RFC PATCH 00/41] KVM: x86/pmu: Introduce passthrough vPM
-Message-ID: <ZiGGiOspm6N-vIta@google.com>
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
- <ZhgX6BStTh05OfEd@google.com>
+        Thu, 18 Apr 2024 13:46:49 -0700 (PDT)
+Date: Thu, 18 Apr 2024 13:46:45 -0700
+From: Fangrui Song <maskray@google.com>
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>,
+	linux-kernel@vger.kernel.org, x86@kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, Song Liu <song@kernel.org>,
+	Ricardo Ribalda <ribalda@kernel.org>,
+	Arthur Eubanks <aeubanks@google.com>, stable@vger.kernel.org,
+	Steve Wahl <steve.wahl@hpe.com>,
+	Vaibhav Rustagi <vaibhavrustagi@google.com>,
+	Andreas Smas <andreas@lonelycoder.com>
+Subject: Re: [PATCH] x86/purgatory: Switch to the position-independent small
+ code model
+Message-ID: <20240418204645.o4av4kl2y35qcm2u@google.com>
+References: <20240418201705.3673200-2-ardb+git@google.com>
+ <CAKwvOdnNurTJNb7iOVW4dpkV-rZGWg2t3HuLkL+B5sNOin39WA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <ZhgX6BStTh05OfEd@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKwvOdnNurTJNb7iOVW4dpkV-rZGWg2t3HuLkL+B5sNOin39WA@mail.gmail.com>
 
-On Thu, Apr 11, 2024, Sean Christopherson wrote:
-> <bikeshed>
-> 
-> I think we should call this a mediated PMU, not a passthrough PMU.  KVM still
-> emulates the control plane (controls and event selectors), while the data is
-> fully passed through (counters).
-> 
-> </bikeshed>
-Sean,
 
-I feel "mediated PMU" seems to be a little bit off the ..., no? In
-KVM, almost all of features are mediated. In our specific case, the
-legacy PMU is mediated by KVM and perf subsystem on the host. In new
-design, it is mediated by KVM only.
+On 2024-04-18, Nick Desaulniers wrote:
+>On Thu, Apr 18, 2024 at 1:17 PM Ard Biesheuvel <ardb+git@google.com> wrote:
+>>
+>> From: Ard Biesheuvel <ardb@kernel.org>
+>>
+>> On x86, the ordinary, position dependent 'small' and 'kernel' code models only
+>> support placement of the executable in 32-bit addressable memory, due to
+>> the use of 32-bit signed immediates to generate references to global
+>> variables. For the kernel, this implies that all global variables must
+>> reside in the top 2 GiB of the kernel virtual address space, where the
+>> implicit address bits 63:32 are equal to sign bit 31.
+>>
+>> This means the kernel code model is not suitable for other bare metal
+>> executables such as the kexec purgatory, which can be placed arbitrarily
+>> in the physical address space, where its address may no longer be
+>> representable as a sign extended 32-bit quantity. For this reason,
+>> commit
+>>
+>>   e16c2983fba0 ("x86/purgatory: Change compiler flags from -mcmodel=kernel to -mcmodel=large to fix kexec relocation errors")
+>>
+>> switched to the 'large' code model, which uses 64-bit immediates for all
+>> symbol references, including function calls, in order to avoid relying
+>> on any assumptions regarding proximity of symbols in the final
+>> executable.
+>>
+>> The large code model is rarely used, clunky and the least likely to
+>> operate in a similar fashion when comparing GCC and Clang, so it is best
+>> avoided. This is especially true now that Clang 18 has started to emit
+>> executable code in two separate sections (.text and .ltext), which
+>> triggers an issue in the kexec loading code at runtime.
+>>
+>> Instead, use the position independent small code model, which makes no
+>> assumptions about placement but only about proximity, where all
+>> referenced symbols must be within -/+ 2 GiB, i.e., in range for a
+>> RIP-relative reference. Use hidden visibility to suppress the use of a
+>> GOT, which carries absolute addresses that are not covered by static ELF
+>> relocations, and is therefore incompatible with the kexec loader's
+>> relocation logic.
+>>
+>> Cc: Nathan Chancellor <nathan@kernel.org>
+>> Cc: Nick Desaulniers <ndesaulniers@google.com>
+>
+>Thanks Ard!
+>
+>Acked-by: Nick Desaulniers <ndesaulniers@google.com>
+>Reported-by: ns <0n-s@users.noreply.github.com>
+>Closes: https://github.com/ClangBuiltLinux/linux/issues/2016
+>Fixes: e16c2983fba0 ("x86/purgatory: Change compiler flags from
+>-mcmodel=kernel to -mcmodel=large to fix kexec relocation errors")
+>
+>(I don't have a kexec setup ready to go; maybe someone that does can
+>help test it.)
 
-We intercept the control plan in current design, but the only thing
-we do is the event filtering. No fancy code change to emulate the control
-registers. So, it is still a passthrough logic.
+LGTM.
 
-In some (rare) business cases, I think maybe we could fully passthrough
-the control plan as well. For instance, sole-tenant machine, or
-full-machine VM + full offload. In case if there is a cpu errata, KVM
-can force vmexit and dynamically intercept the selectors on all vcpus
-with filters checked. It is not supported in current RFC, but maybe
-doable in later versions.
+Position-dependent small code model may generate R_X86_64_32S
+relocations with a range of [0,2GiB) (the negative half cannot be used).
+Position-independent small code model with hidden visibility will
+generate R_X86_64_PC32 and can typically be quite larger than 2G without
+hitting an overflow issue.
 
-With the above, I wonder if we can still use passthrough PMU for
-simplicity? But no strong opinion if you really want to keep this name.
-I would have to take some time to convince myself.
+(I have some notes about R_X86_64_32S at
+https://maskray.me/blog/2023-05-14-relocation-overflow-and-code-models#x86-64-linker-requirement)
 
-Thanks.
--Mingwei
-> 
-> On Fri, Jan 26, 2024, Xiong Zhang wrote:
-> 
-> > 1. host system wide / QEMU events handling during VM running
-> >    At VM-entry, all the host perf events which use host x86 PMU will be
-> >    stopped. These events with attr.exclude_guest = 1 will be stopped here
-> >    and re-started after vm-exit. These events without attr.exclude_guest=1
-> >    will be in error state, and they cannot recovery into active state even
-> >    if the guest stops running. This impacts host perf a lot and request
-> >    host system wide perf events have attr.exclude_guest=1.
-> > 
-> >    This requests QEMU Process's perf event with attr.exclude_guest=1 also.
-> > 
-> >    During VM running, perf event creation for system wide and QEMU
-> >    process without attr.exclude_guest=1 fail with -EBUSY. 
-> > 
-> > 2. NMI watchdog
-> >    the perf event for NMI watchdog is a system wide cpu pinned event, it
-> >    will be stopped also during vm running, but it doesn't have
-> >    attr.exclude_guest=1, we add it in this RFC. But this still means NMI
-> >    watchdog loses function during VM running.
-> > 
-> >    Two candidates exist for replacing perf event of NMI watchdog:
-> >    a. Buddy hardlock detector[3] may be not reliable to replace perf event.
-> >    b. HPET-based hardlock detector [4] isn't in the upstream kernel.
-> 
-> I think the simplest solution is to allow mediated PMU usage if and only if
-> the NMI watchdog is disabled.  Then whether or not the host replaces the NMI
-> watchdog with something else becomes an orthogonal discussion, i.e. not KVM's
-> problem to solve.
-> 
-> > 3. Dedicated kvm_pmi_vector
-> >    In emulated vPMU, host PMI handler notify KVM to inject a virtual
-> >    PMI into guest when physical PMI belongs to guest counter. If the
-> >    same mechanism is used in passthrough vPMU and PMI skid exists
-> >    which cause physical PMI belonging to guest happens after VM-exit,
-> >    then the host PMI handler couldn't identify this PMI belongs to
-> >    host or guest.
-> >    So this RFC uses a dedicated kvm_pmi_vector, PMI belonging to guest
-> >    has this vector only. The PMI belonging to host still has an NMI
-> >    vector.
-> > 
-> >    Without considering PMI skid especially for AMD, the host NMI vector
-> >    could be used for guest PMI also, this method is simpler and doesn't
-> 
-> I don't see how multiplexing NMIs between guest and host is simpler.  At best,
-> the complexity is a wash, just in different locations, and I highly doubt it's
-> a wash.  AFAIK, there is no way to precisely know that an NMI came in via the
-> LVTPC.
-> 
-> E.g. if an IPI NMI arrives before the host's PMU is loaded, confusion may ensue.
-> SVM has the luxury of running with GIF=0, but that simply isn't an option on VMX.
-> 
-> >    need x86 subsystem to reserve the dedicated kvm_pmi_vector, and we
-> >    didn't meet the skid PMI issue on modern Intel processors.
-> > 
-> > 4. per-VM passthrough mode configuration
-> >    Current RFC uses a KVM module enable_passthrough_pmu RO parameter,
-> >    it decides vPMU is passthrough mode or emulated mode at kvm module
-> >    load time.
-> >    Do we need the capability of per-VM passthrough mode configuration?
-> >    So an admin can launch some non-passthrough VM and profile these
-> >    non-passthrough VMs in host, but admin still cannot profile all
-> >    the VMs once passthrough VM existence. This means passthrough vPMU
-> >    and emulated vPMU mix on one platform, it has challenges to implement.
-> >    As the commit message in commit 0011, the main challenge is 
-> >    passthrough vPMU and emulated vPMU have different vPMU features, this
-> >    ends up with two different values for kvm_cap.supported_perf_cap, which
-> >    is initialized at module load time. To support it, more refactor is
-> >    needed.
-> 
-> I have no objection to an all-or-nothing setup.  I'd honestly love to rip out the
-> existing vPMU support entirely, but that's probably not be realistic, at least not
-> in the near future.
-> 
-> > Remain Works
-> > ===
-> > 1. To reduce passthrough vPMU overhead, optimize the PMU context switch.
-> 
-> Before this gets out of its "RFC" phase, I would at least like line of sight to
-> a more optimized switch.  I 100% agree that starting with a conservative
-> implementation is the way to go, and the kernel absolutely needs to be able to
-> profile KVM itself (and everything KVM calls into), i.e. _always_ keeping the
-> guest PMU loaded for the entirety of KVM_RUN isn't a viable option.
-> 
-> But I also don't want to get into a situation where can't figure out a clean,
-> robust way to do the optimized context switch without needing (another) massive
-> rewrite.
+Reviewed-by: Fangrui Song <maskray@google.com>
+
+>> Cc: Bill Wendling <morbo@google.com>
+>> Cc: Justin Stitt <justinstitt@google.com>
+>> Cc: Song Liu <song@kernel.org>
+>> Cc: Ricardo Ribalda <ribalda@kernel.org>
+>> Cc: Fangrui Song <maskray@google.com>
+>> Cc: Arthur Eubanks <aeubanks@google.com>
+>> Link: https://lore.kernel.org/all/20240417-x86-fix-kexec-with-llvm-18-v1-0-5383121e8fb7@kernel.org/
+>> Cc: <stable@vger.kernel.org>
+>> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+>> ---
+>>  arch/x86/purgatory/Makefile | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
+>> index bc31863c5ee6..a18591f6e6d9 100644
+>> --- a/arch/x86/purgatory/Makefile
+>> +++ b/arch/x86/purgatory/Makefile
+>> @@ -42,7 +42,8 @@ KCOV_INSTRUMENT := n
+>>  # make up the standalone purgatory.ro
+>>
+>>  PURGATORY_CFLAGS_REMOVE := -mcmodel=kernel
+>> -PURGATORY_CFLAGS := -mcmodel=large -ffreestanding -fno-zero-initialized-in-bss -g0
+>> +PURGATORY_CFLAGS := -mcmodel=small -ffreestanding -fno-zero-initialized-in-bss -g0
+>> +PURGATORY_CFLAGS += -fpic -fvisibility=hidden
+>>  PURGATORY_CFLAGS += $(DISABLE_STACKLEAK_PLUGIN) -DDISABLE_BRANCH_PROFILING
+>>  PURGATORY_CFLAGS += -fno-stack-protector
+>>
+>> --
+>> 2.44.0.769.g3c40516874-goog
+>>
+>
+>
+>-- 
+>Thanks,
+>~Nick Desaulniers
 
