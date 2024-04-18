@@ -1,136 +1,222 @@
-Return-Path: <linux-kernel+bounces-150457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0426C8A9FAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6486E8A9FAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:11:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB353286B5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:09:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16435281B4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C846A16FF43;
-	Thu, 18 Apr 2024 16:09:08 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7314816F8F3;
+	Thu, 18 Apr 2024 16:10:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gUJ4GnFl"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E3EF16F8F4
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 16:09:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7F416F84F
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 16:10:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713456548; cv=none; b=HbtjVdsWMqdJJOELInijLwti3RxTphbVkLb27xzWkrzWdVN8rhKr9nDCxAq8Ja/JkPGclksSrJX0JLVz/zy49tLr0adR3LY1k0W4y182VG3ZrEjvSOG6ADwM0sBo7sGJvv7EVR2reZmQODnCMDQoUPVXsxfbCmBpqMIhJCQi4Xs=
+	t=1713456658; cv=none; b=ftcZzmM88nXuTLQcJAol8hkPzddnx4K76vhL9eAVlAgL8O6XtdYap9i2w/Z439S1GYiPfPdzRae+/xDHyVEPoDl55FXm3C5sCWOpKtatgf/15r0z3+Tvdc39DXxmaT7zCtYmA5BQVHmbFhtFhrdIPqtLJnU4++1xWKEHjZdloTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713456548; c=relaxed/simple;
-	bh=qw3K/+SfNxQDzN/sng2vNMA4tQO/ldVUwAz3QXRsdOI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y2dC3RVKTwpOqVv+RNZK5Aav2d5hqY3WtkmQ5pV71MUdSgYifFKdJkIx8I2Zs0D6OM395J5sBC7U7GJFJ40ILqLaydaCU3BhATtDF/Mrz27lar+f3CBnYDEU7pOJhWve6rZEDbgKR3JDyC89mDWqBBPux2JrnkJUb59HQvEfwF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rxUJm-00030a-GI; Thu, 18 Apr 2024 18:08:58 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rxUJl-00D0SV-Sv; Thu, 18 Apr 2024 18:08:57 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rxUJl-003YhR-2b;
-	Thu, 18 Apr 2024 18:08:57 +0200
-Date: Thu, 18 Apr 2024 18:08:57 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org, linux-pwm@vger.kernel.org, 
-	JunYi Zhao <junyi.zhao@amlogic.com>
-Subject: Re: [PATCH v5 5/5] pwm: meson: add generic compatible for meson8 to
- sm1
-Message-ID: <4v5lhnjbfnjpj4k4rme6kfphurr56ae5ngup7pcsrxhs4f7qh5@jian42uepseu>
-References: <20240221151154.26452-1-jbrunet@baylibre.com>
- <20240221151154.26452-6-jbrunet@baylibre.com>
- <24ec3iiudmfapiosygpsvgu7kmdqe6csbkpuzx3p3sa4oyodqu@hshmbpvzhufb>
- <1jplumc276.fsf@starbuckisacylon.baylibre.com>
+	s=arc-20240116; t=1713456658; c=relaxed/simple;
+	bh=HmLfpMcHYrzZbuc/PhIlXzh89lXk9MVpBVgqARZJ8TE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BRo0vxMSAKORDW6hRsz8IUmeXNvwvCSKh2yii+0/P9iNMNgpF3xCuhNK2LEgs7yHPPlsyNB44QsC+04xXct5PivFRxZTirvwX5QdNaIXliQMpsBY5qAgLlgER4M//SgLOn7E+LW9EqTpIMSwAwUfi81h12Hajfw4PqY3EcJPmHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gUJ4GnFl; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1e44f82ff9cso141085ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:10:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713456656; x=1714061456; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JmLpmQ1JT6UkUs6uYJ7SZ3Nu+oVNswf7rXObpFV/9rU=;
+        b=gUJ4GnFljs3NdmqOXMP/UtGyMp1VDtls0i9qzPBhoI4C0UNycb8nTAnN2+Ihx9E2Bb
+         I0c3MMcAEyORX2ECJaR9/ek+Fn5ZjG2y8mBuz+d4SZwcmR0WPuCwm5hm5jgyE6uRZ5x6
+         FAK+mW3bUuHtq1/CKTdtBAPqSuvruiBgbhimLGpoXxuBJb3dPn8JUuZvy94TT9CGDil6
+         TQzx7+bVsZPelPS9vNarOFgI8S+Trp1GM05P/Gez1FyzfBdR5+HI+ORJRsFgsh+sfOy1
+         JgUetIsH1VhUvl/qrMQYqMs6LioAyv10ayU2VTk6HxeFxQqOydN4b7PWiUu6nCM9xTMU
+         aKBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713456656; x=1714061456;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JmLpmQ1JT6UkUs6uYJ7SZ3Nu+oVNswf7rXObpFV/9rU=;
+        b=pZGW1PQW2KgRlydGmAnhYjCSp9xi7Bo5CEqj9ezNCmvzRFL1Z7PppmyEBVABnc4OGf
+         RnQcC8U7Zp2SWFy+k+lafm2tHRF5mq1aqLOTTRZgjMVQbkyIi5JS1M98gZ7aSc9uODxv
+         dxpjIsC0SWbHn2Xyr4y0S69FfinvGsRG9T/hcfJ9lFsO9x9luznQAjF7nPeJRHD1Rqh1
+         8HqgzS2ROo16eSgwdXJqJodzuxB4fyXAfybUTYWQk3plouFPDqb0dZsdoK/4FgS3cdT8
+         W3d3684bvASLBL8MDzCROWL+x2Nayw+zf6luxy1SwlHxHR8EHo46ySKk1CzjyvEpQtl9
+         XAQw==
+X-Forwarded-Encrypted: i=1; AJvYcCXnhLU6Sd6g1OeO+RYlLfk/ZL0CBLi+zWGFyQs7p7zW3VT/Y1e/CgOGWBsvvrWYLJXP+Khyk609l2BIjc/MfBEjp6Z9f3aP7Iy24SXs
+X-Gm-Message-State: AOJu0YyqMsCRE36bqK8TdLhoINBXJ9MbNR0e4aizaZv4NlpUL8EaQlC9
+	MvtqbO7/7JsjvtsAUh/AKXrbRC2Y6T54cZTO6CLhIR3vaQ8p8uQRf8ysX/QL9Qq/Zy/NLBtlPSW
+	xtt410vq7Y3RkLXqgMbbZYlHBY4271+/uy9Ag
+X-Google-Smtp-Source: AGHT+IEacHdschB/zABXcMxk5QjHIwjCbz4AMh3Jc2XakPc3yzUMgZzafeJDoIf5eLklNdZJj2ACwvNgTYFLPbBkEyc=
+X-Received: by 2002:a17:902:ec92:b0:1e2:afe3:9128 with SMTP id
+ x18-20020a170902ec9200b001e2afe39128mr268330plg.14.1713456655880; Thu, 18 Apr
+ 2024 09:10:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ndkvbuldgxvpggvv"
-Content-Disposition: inline
-In-Reply-To: <1jplumc276.fsf@starbuckisacylon.baylibre.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---ndkvbuldgxvpggvv
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20240413040812.4042051-1-irogers@google.com> <550e5ca5-f28c-48e1-b86e-9de3458a5737@linux.intel.com>
+In-Reply-To: <550e5ca5-f28c-48e1-b86e-9de3458a5737@linux.intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 18 Apr 2024 09:10:42 -0700
+Message-ID: <CAP-5=fWCw2GWM-B4k_uYm+xVRn+GgKXBR5vq-2==T16Q0ej45Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v1] perf pmu: Assume sysfs events are always lowercase
+To: "Liang, Kan" <kan.liang@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@arm.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 18, 2024 at 01:57:03PM +0200, Jerome Brunet wrote:
-> On Fri 12 Apr 2024 at 14:08, Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengu=
-tronix.de> wrote:
-> > b4 + git applied the patch just fine even without patch #4 of this
-> > series. Would you be so kind to double check it works as intended?
->=20
-> It does, Thx.
-
-Thank you.
-=20
-> > BTW, b4 diagnosed:
+On Thu, Apr 18, 2024 at 8:35=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.c=
+om> wrote:
+>
+>
+>
+> On 2024-04-13 12:08 a.m., Ian Rogers wrote:
+> > Perf event names aren't case sensitive. For sysfs events the entire
+> > directory of events is read then iterated comparing names in a case
+> > insensitive way, most often to see if an event is present.
 > >
-> > Checking attestation on all messages, may take a moment...
+> > Consider:
+> > $ perf stat -e inst_retired.any true
+> >
+> > The event inst_retired.any may be present in any PMU, so every PMU's
+> > sysfs events are loaded and then searched with strcasecmp to see if
+> > any match. This event is only present on the cpu PMU as a json event
+> > so a lot of events were loaded from sysfs unnecessarily just to prove
+> > an event didn't exist there.
+> >
+> > This change avoids loading all the events by assuming sysfs event
+> > names are always lowercase.
+>
+> From what I searched in the kernel, it looks like all the sysfs event
+> names (from different ARCHs and devices) are lowercase. It should not
+> break the existing usages.
+> I don't see a reason why a event name must be uppercase.
+> However, I think we need to add something to guarantee the assumption.
+>
+> Could you please update the doc to describe the assumption?
+> Documentation/ABI/testing/sysfs-bus-event_source-devices-events
+> So everybody can follow the rule.
+>
+> I think a perf test is required as well.
+> Maybe we can extend the test__pmu_events() to do the name check.
+
+Great suggestions, I'll do a v2 with this. I've been thinking for a
+while we need a PMU driver test. A particular problem is for weak
+groups, where broken drivers don't return perf event open failures for
+groups that exceed the number of counters. There's the enum value
+MetricNoGroupEvents to workaround this problem in metrics, but it
+would still be nice to get the drivers fixed. So rather than keep
+growing the event parsing tests, I think adding it to the pmu test and
+making the pmu test a fuller suite checking properties of PMUs would
+be good.
+
+Thanks,
+Ian
+
+> Thanks,
+> Kan
+>
+> > It then uses file exists and only loads
+> > the events when the desired event is present.
+> >
+> > For the example above, the number of openat calls measured by perf
+> > trace on a tigerlake laptop goes from 325 down to 255. The reduction
+> > will be larger for machines with many PMUs, particularly replicated
+> > uncore PMUs.
+> >
+> > Make pmu_aliases_parse early return when aliases are loaded, ensure
+> > the function is called before all uses of the aliases list.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 > > ---
-> >   =E2=9C=97 [PATCH v5 5/5] pwm: meson: add generic compatible for meson=
-8 to sm1
-> >     + Link: https://lore.kernel.org/r/20240221151154.26452-6-jbrunet@ba=
-ylibre.com
-> >     + Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix=
-=2Ede>
-> >   ---
-> >   =E2=9C=97 BADSIG: DKIM/baylibre-com.20230601.gappssmtp.com
+> >  tools/perf/util/pmu.c | 20 +++++++++++++++-----
+> >  1 file changed, 15 insertions(+), 5 deletions(-)
 > >
-> > Is this only because it took me so long to reply, or is there a
-> > configuration issue with the baylibre MTA?
->=20
-> I have no idea. This is the first time this is reported
-
-I just picked up a patch by one of your colleagues and there the DKIM
-stuff was fine. I didn't debug that further.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
-   |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ndkvbuldgxvpggvv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYhRZgACgkQj4D7WH0S
-/k7xqAf+JC9/vEi2vZ/sd2kemNl+UY2srTmHUzycRI7fzF/xLgHjol8DQZHtHJrw
-zHW9PEr8n1sfrZqP0J9+rUoMpwmmD57MB/Ge/w2lHAm6pkQmyapVgMoMCivPO0aL
-zMtD1psf1ytCd5KbGssRzQv74NyskNVUbQrBgEqPuOpnzeFRQswMY+o+WqajhnIE
-9IdqU8EsdOejQoVVJY8uVnpEPPfp7agrp0rKKy/xKljb7HSKfW9CGLkvVMuL4JAv
-QUC8Qa2Eqb/3kU2+4m0kzAxVzw/FmbDNWshQIMuBagLf220pmHBS+JmBJO06wXED
-+uzDz1RL0zQxwox070ohIWmSOvn8Kw==
-=i0GN
------END PGP SIGNATURE-----
-
---ndkvbuldgxvpggvv--
+> > diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> > index ab30f22eaf10..ce72c99e4f61 100644
+> > --- a/tools/perf/util/pmu.c
+> > +++ b/tools/perf/util/pmu.c
+> > @@ -425,9 +425,16 @@ static struct perf_pmu_alias *perf_pmu__find_alias=
+(struct perf_pmu *pmu,
+> >  {
+> >       struct perf_pmu_alias *alias;
+> >
+> > -     if (load && !pmu->sysfs_aliases_loaded)
+> > -             pmu_aliases_parse(pmu);
+> > +     if (load && !pmu->sysfs_aliases_loaded) {
+> > +             char event_file_name[FILENAME_MAX + 8];
+> >
+> > +             scnprintf(event_file_name, sizeof(event_file_name), "even=
+ts/%s", name);
+> > +             for (size_t i =3D 7, n =3D 7 + strlen(name); i < n; i++)
+> > +                     event_file_name[i] =3D tolower(event_file_name[i]=
+);
+> > +
+> > +             if (perf_pmu__file_exists(pmu, event_file_name))
+> > +                     pmu_aliases_parse(pmu);
+> > +     }
+> >       list_for_each_entry(alias, &pmu->aliases, list) {
+> >               if (!strcasecmp(alias->name, name))
+> >                       return alias;
+> > @@ -605,6 +612,9 @@ static int pmu_aliases_parse(struct perf_pmu *pmu)
+> >       size_t len;
+> >       int fd, dir_fd;
+> >
+> > +     if (pmu->sysfs_aliases_loaded)
+> > +             return 0;
+> > +
+> >       len =3D perf_pmu__event_source_devices_scnprintf(path, sizeof(pat=
+h));
+> >       if (!len)
+> >               return 0;
+> > @@ -1689,9 +1699,7 @@ size_t perf_pmu__num_events(struct perf_pmu *pmu)
+> >  {
+> >       size_t nr;
+> >
+> > -     if (!pmu->sysfs_aliases_loaded)
+> > -             pmu_aliases_parse(pmu);
+> > -
+> > +     pmu_aliases_parse(pmu);
+> >       nr =3D pmu->sysfs_aliases;
+> >
+> >       if (pmu->cpu_aliases_added)
+> > @@ -1750,6 +1758,7 @@ int perf_pmu__for_each_event(struct perf_pmu *pmu=
+, bool skip_duplicate_pmus,
+> >       struct strbuf sb;
+> >
+> >       strbuf_init(&sb, /*hint=3D*/ 0);
+> > +     pmu_aliases_parse(pmu);
+> >       pmu_add_cpu_aliases(pmu);
+> >       list_for_each_entry(event, &pmu->aliases, list) {
+> >               size_t buf_used;
+> > @@ -2154,6 +2163,7 @@ const char *perf_pmu__name_from_config(struct per=
+f_pmu *pmu, u64 config)
+> >       if (!pmu)
+> >               return NULL;
+> >
+> > +     pmu_aliases_parse(pmu);
+> >       pmu_add_cpu_aliases(pmu);
+> >       list_for_each_entry(event, &pmu->aliases, list) {
+> >               struct perf_event_attr attr =3D {.config =3D 0,};
 
