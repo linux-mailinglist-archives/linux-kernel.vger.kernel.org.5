@@ -1,132 +1,130 @@
-Return-Path: <linux-kernel+bounces-150646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 194618AA23D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:45:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A2198AA242
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:46:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 703E9B2135C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:45:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFBF71F218D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F272017AD73;
-	Thu, 18 Apr 2024 18:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFA2517AD6E;
+	Thu, 18 Apr 2024 18:46:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QTTj0Mz5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VX7WSruz"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B463174EF9;
-	Thu, 18 Apr 2024 18:45:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F30417A93E;
+	Thu, 18 Apr 2024 18:46:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713465934; cv=none; b=mXiNYAv834zuiALudCeJiBehQy5An8wowmMlGpmSYMST8OJ4QEcFSq0isFm3LB8GhLq8pGCX/gNJj3kRk8qbZzBw7Ntsj1VuxJVnazuLHBpvNNPAJakJlJk39iV8kxmo7BgjBUS1BhC4VxT25lPxNcAmoDFj6TDiZO/Hx2aIFEM=
+	t=1713465975; cv=none; b=lrbJoQODEjv04sr4Xr7rC0unpB6pk5fqRSEINKFwHIC15FOkd3M2FQf3x5mHRJfRkWxFmOH+/RSV37pyxDd286e5W9vwIveGxnogSMFu0SzOI5kovGkZLo7hwLhQMMme78ZabFCsFk6CBvGX7B4QXRPtX+ykNo3EQg/exOdbg38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713465934; c=relaxed/simple;
-	bh=lKM6jp4loR9UtX0QaVbNiZZcTUL3CirpRy3Imh5A0mk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=lmdbgZvGN+uJoJm3rsyJPOh+ZAOJWvTdHxp3mQN6bIdWpNOeK6DP7YUMApr87/CZLwXIow2HvRKfEIQwnpaojiUiZ1AfR0cOJSufR3RhQIrZSGS7S5s6W1WheOBVWntBAlT7c6dLpQwYZfCMWB+87Ik3ZuHlAKH8jJafpq5hY1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QTTj0Mz5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8141DC113CC;
-	Thu, 18 Apr 2024 18:45:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713465933;
-	bh=lKM6jp4loR9UtX0QaVbNiZZcTUL3CirpRy3Imh5A0mk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=QTTj0Mz5XF92ESwg63sIEASiwqS2+47Ysq+/8nAqQdLB+L0KxMCi60r9Jo8I95gES
-	 b0EwoBKcfHO/F0zrXMqsXSpnA+pSbezCyNneX+Ys0IFLDcZ985ZhkaMECookvDHA2F
-	 I7vfwa2HZCb9idOIDQ3pHE4VAELdDmfOqQWQNlJ8+DwbJ4GDDvac3ei/ltznZb2ov4
-	 5uzX8izHuIgYDpSBMpeGrsVBqCXvxUL0mJRX++mrbR+C+04sMwHMI6wu1Srk2G4W2X
-	 XgrrWHcOJ42xgc2fCNckIhxyV0p9nnP9Rp3CsPuyN+Hj1ZiK6nC8JeOgjmhx/NWXjD
-	 yZYgWxlEN7EZg==
-Date: Thu, 18 Apr 2024 13:45:31 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	Herve Codina <herve.codina@bootlin.com>
-Subject: Re: local bus enumeration beyond a PCI device
-Message-ID: <20240418184531.GA245970@bhelgaas>
+	s=arc-20240116; t=1713465975; c=relaxed/simple;
+	bh=/fdg4WcslGD2kTmzgo7KgN+CMEoLed2hGFc1G6l34mE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nSU2d1/UK39DrXXpd+8M+3c3cMTnK2Us9o3xhFrTIs2oii8KhbH+8h+M6VUwe2KTLfWxuwoz4TBexpSUwgGpWa4TP8PPsYE4z1fT28m7oicKLOjVUrZEiqo3FhwSF1cSeU7nzF18BPvKI8iq6nGSXfsJKvEpK7dsCAfE47k8iXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VX7WSruz; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-346b96f1483so723299f8f.1;
+        Thu, 18 Apr 2024 11:46:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713465972; x=1714070772; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dMLCBbRwZzxsZCaPASD1MZbUpbynSGkJx7RFB3cvo6s=;
+        b=VX7WSruzxaMrtn7Fj+sMKKdc/WOovMq14rnw9MD1ShjY+RY5JR6+BEKoJ+6+qyRYhd
+         n4Wc8XQRZA1arSVQiHa3c8DRALBlto1WHEk5DMtbwZnNM+P3v9g6uxZcfICBnqieoUnO
+         fNnYOAM/6pGbpr2WDQOCGodzqqK5ozKyyEfna1jdjmmRX/3S9coKYmLiI6f/gwe1r3J3
+         JeWuBBcHQv4ANWG0JtWk4WJeSX4lOr/P5w1wrVl4JBDIRx24N1fGF2vBxHdlcVDXRMRC
+         HnMa9vE0PuDwy4+4PyvXgmuAUP06ekRDaJyB/r/kTJDii0q318HS1/clxV7CSXuVCZY+
+         QVUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713465972; x=1714070772;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dMLCBbRwZzxsZCaPASD1MZbUpbynSGkJx7RFB3cvo6s=;
+        b=cjoppoUx77A8AGSB49WhaqnG9TGHU/NnnMjnunUzC4YyGbkvTFaO/nVnLsFR1xL6gc
+         x0+kvtP3eyseBBQFbIAyOsXKxxH7Pyj22dRVTTmxLRbItn+zH1N+GnVBQkvCDHJxKS6I
+         l83mnDGzmul9q9eNrb2dHXltm2lsel+IlKYEEdduXBDLMsFZRvLcb9x7zXgPR3ocILeC
+         bq8+i+OfjLQaxSa+HcB15awsc3LqBE7wlDbPjfljccd1BM/g3vmM51f3gLcvbLq36sGE
+         4Z7n7f52xEFwjc5mjHVh8XHvscg4LO5LIeQ0ZLpeBUpslcIbDKZKpAwPfelYZ9SslD0h
+         xO5A==
+X-Forwarded-Encrypted: i=1; AJvYcCWlkyimq+ebo1Kq2QxlUeJ6DwaaCki7CPPG5/TB4NqSF8yaTNs8rIXLE1bn/i1jzLthll2U1tzs56x8ciMA3rBvfOwo1VZ/p8BuKOsv
+X-Gm-Message-State: AOJu0YzuD8ziTUksOQ+86p4lhbHs9V6wPDgpl15i7SN8nk9I3Zo+1/V6
+	RtexrWHPW3t43fqTpZx0yMVsCC4m0GFw6SmW7zrCEaaGw7VkSgJHAzo7EFTH
+X-Google-Smtp-Source: AGHT+IEcfZuciCzIqTP32bcd0EzGSNa5Vp3S6Ki+iJ4uzSrArdACLDDLe0IZkNR0/0qENRmN8oJImQ==
+X-Received: by 2002:a5d:6e86:0:b0:348:870:bbe4 with SMTP id k6-20020a5d6e86000000b003480870bbe4mr2575291wrz.7.1713465971486;
+        Thu, 18 Apr 2024 11:46:11 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:6d3f:e873:3f2f:a87f:452e:78c0? ([2a02:810d:6d3f:e873:3f2f:a87f:452e:78c0])
+        by smtp.gmail.com with ESMTPSA id u11-20020a5d6acb000000b00348b46a134bsm2501658wrw.1.2024.04.18.11.46.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 11:46:10 -0700 (PDT)
+Message-ID: <d26436f0-b85e-4102-a3b3-a31816f0452d@gmail.com>
+Date: Thu, 18 Apr 2024 20:46:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bad63409-ed2b-4cef-988b-3c143636e9fa@alliedtelesis.co.nz>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] HID: uclogic: Remove useless loop
+To: Nikolai Kondrashov <spbnick@gmail.com>, Jiri Kosina <jikos@kernel.org>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240401004757.22708-1-stefanberzl@gmail.com>
+ <nycvar.YFH.7.76.2404121751250.5680@cbobk.fhfr.pm>
+ <4ae4be2f-4edd-4d1e-87e9-df5687627d00@gmail.com>
+ <f2429c78-9189-410d-9c6a-644ae8a4d12c@gmail.com>
+Content-Language: en-US
+From: Stefan Berzl <stefanberzl@gmail.com>
+In-Reply-To: <f2429c78-9189-410d-9c6a-644ae8a4d12c@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-[+cc Herve]
+Hi!
 
-On Thu, Apr 18, 2024 at 12:24:06AM +0000, Chris Packham wrote:
-> Hi,
+On 18/04/2024 19:04, Nikolai Kondrashov wrote:
+> Hi Jiri, Stefan,
 > 
-> We've got a custom x86_64 based design that is using an ASIX9100 to 
-> provide a PCI to local bus bridge. Attached to that local bus is an FPGA 
-> which mostly provides some GPIOs accessed via registers on the local 
-> bus. Right now we've got a custom driver that bundles everything 
-> together so effectively we've got a PCI device that provides GPIOs.
+> On 4/18/24 4:31 PM, Stefan Berzl wrote:
+>>
+>> On 12/04/2024 17:52, Jiri Kosina wrote:
+>>> On Mon, 1 Apr 2024, Stefan Berzl wrote:
+>>>
+>>>> The while in question does nothing except provide the possibility
+>>>> to have an infinite loop in case the subreport id is actually the same
+>>>> as the pen id.
+>>>>
+>>>> Signed-off-by: Stefan Berzl <stefanberzl@gmail.com>
+>>>
+>>> Let me CC Nicolai, the author of the code of question (8b013098be2c9).
+>>
+>> I agree that Nicolai's opinion would be invaluable, but even without it,
+>> the patch is trivially correct. If we have a subreport that matches the
+>> packet, we change the report_id accordingly. If we then loop back to the
+>> beginning, either the report_id is different or we are caught in an
+>> infinite loop. None of these are hardware registers where the access
+>> itself would matter.
+> 
+> Yes, Stefan is right. I was trying to implement general rewrite logic, and if
+> we really had that, then the fix would need to be checking that the new ID is
+> different. As such there's really no need, and Stefan's fix is fine.
+> 
+> Only perhaps amend that comment to something like
+> 
+>     /* Change to the (non-pen) subreport ID, and continue */
+> 
+> Or at least remove ", and restart".
+> 
 
-What's the local bus?  The ASIX9100 (for which Google doesn't find any
-details) would have a PCI interface on the primary (upstream) side.
-What's the local bus on the secondary (downstream) side?  Below you
-mention "PCI bridge", which normally means both the primary and
-secondary sides are PCI buses.
+Will do! I'll send a v2 with the comment updated.
 
-If the local bus is not PCI, I guess the ASIX9100 would look to the OS
-like an endpoint, i.e., PCI_HEADER_TYPE_NORMAL, and the ASIX9100
-driver would handle any "bridge" functionality completely internally?
-
-Maybe Herve's work at
-https://lore.kernel.org/r/20240325153919.199337-1-herve.codina@bootlin.com
-would be relevant?
-
-> But as things can change based on the FPGA program I'd like some 
-> flexibility to treat it separately from the PCI bridge. So really I'd 
-> like to have a PCI device driver for the ASIX9100 that provides a local 
-> bus controller and a (platform?) driver for the FPGA that provides the 
-> GPIOs where I can have different compatibles for the different 
-> implementations.
-> 
-> Then in the ACPI overlay I'd have something like
-> 
->      Scope (\_SB.PCI0.D0B0)
->      {
->          Device (ASIX)
->          {
->              Name (_ADR, 0x0000)
-> 
->              Device (FPGA)
->              {
->                          Name (_HID, "PRP0001")
->                          Name (_DSD, Package ()
->                          {
-> ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
->                                      Package ()
->                                      {
->                                                  Package () { 
-> "compatible", "my-platform-driver-for-fpga" },
->                                      }
->                          })
->              }
->          }
->      }
-> 
->     Scope(\_SB)
->     {
->          Device(OTHR)
->          {
->              GpioIo (Exclusive, PullUp, 0, 0, IoRestrictionInputOnly, 
-> "\\_SB.PCI0.D0B0.ASIX.FPGA",) { 0 }
->          }
->     }
-> 
-> Is it even possible to register a host controller for another platform bus?
-> 
-> Thanks,
-> Chris
+Regards
 
