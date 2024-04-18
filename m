@@ -1,97 +1,149 @@
-Return-Path: <linux-kernel+bounces-150455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A5628A9F93
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:07:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F0958A9F99
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:08:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5DE7282155
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:07:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F19ECB242C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:08:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57F9317107D;
-	Thu, 18 Apr 2024 16:06:27 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A39E516F84D;
-	Thu, 18 Apr 2024 16:06:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D92D16F8F3;
+	Thu, 18 Apr 2024 16:08:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TftbM3dO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D502168B0D;
+	Thu, 18 Apr 2024 16:08:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713456386; cv=none; b=qNKkeFtdrn4oijZ5/EQZAUC8gRWa5H3aOvDkovdSsFQX6FXyytsC977uJT0l5zRq9W71B4l3ifk18M+YG8PkUa1MWfHU/v9DyAnUgzgVPet2mtHv4aj/Mp+Lqgzx/tbSdnygBvU6Lw4U1kHA8ZtjwQgjs4/MCYEflc6XYUPpxMA=
+	t=1713456494; cv=none; b=EeZExZnEcgmrBecOFjm7+PiXz5nma5A9URP2Tyw+xwlHlFl376wsgJ5d11LNUqv7s4Gn6enr/1W88T1pThGkOMgEZY9+7KGu102CIr6icwbzJoemU45m4Rw40pRf+Wt4lSat80olu7dUaeB0SCLtdlF5zu0WB3xIOwMBQI9FoZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713456386; c=relaxed/simple;
-	bh=h09iCW/axBdidz8NSHC6ATGFyq1RaAUUpwPJbfK8h20=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=thDgwRCMnSTz58LhFUOguutczdjKKOiW+yu+jezt1QGuWASXtFYJ0ezRwu/fWuJu3w0QR1t6FgWDLAU3PsQUq1ozq0HYIHQ2A6ZyCCrwtJkWdldiLqhKAj9wtvnJpNSxTp+BfNLwN2VNX7/VPGbYA5QyHeJ//zSgg/LiDVneYtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 071022F;
-	Thu, 18 Apr 2024 09:06:53 -0700 (PDT)
-Received: from [10.57.84.16] (unknown [10.57.84.16])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4CEBC3F64C;
-	Thu, 18 Apr 2024 09:06:22 -0700 (PDT)
-Message-ID: <23173718-1e44-49ce-9666-4443c7295ed8@arm.com>
-Date: Thu, 18 Apr 2024 17:06:20 +0100
+	s=arc-20240116; t=1713456494; c=relaxed/simple;
+	bh=rkrTpsLO+50r5ibEQOEvU3vQMmfUVtgFiQ5k83m5StM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jUPuHCssJyNBmxoAzQ84znEBOrxRUvArwW73t6gj8WZ4f2p4+j5jQJ2YyBZL7fGtFlKNGJigXJutBMbUM/lLkSaA+qsYk9LHpHZuONGQ9/th+Y8AWP9QIyFlMfvHd3Kjf/eGX7OWDcbczQVSMEkwpF46syhC2n45wYV5MUZxFNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TftbM3dO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C54FC113CC;
+	Thu, 18 Apr 2024 16:08:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713456493;
+	bh=rkrTpsLO+50r5ibEQOEvU3vQMmfUVtgFiQ5k83m5StM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TftbM3dOE3svEIaqrs8h/enmkXGrctoHLiseUF3xQMbQvYuNBYPYXtIAbtEonZ5b1
+	 41TO3gaVUdFt3J52keySYXF+cB4AfcNmvXY4z2m/R31WbwOFgffs3GuPoagJqG+PWk
+	 1YDt8QAR76YXXN5ZOy6B5Q9TXC3cX+UBFZSHUb2RAVsYzUREmpv3qGMzyCizDLjUi8
+	 F6O9Pyj0boTNTgetVQOl58vEVR/ZoQshLTyHAIbiibz/7uC61KyIy1tfU+Mfe4TcMV
+	 AheGu7QrCaOrVlc+1rBv1za5Y03RUdUGODesrbMktYMEdOOiHdGZzmh+lvBP1YJne2
+	 hgJ2wfppFkKZg==
+Date: Thu, 18 Apr 2024 17:08:08 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Diederik de Haas <didi.debian@cknow.org>
+Cc: liujianfeng1994@gmail.com, krzk@kernel.org,
+	linux-rockchip@lists.infradead.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, ezequiel@vanguardiasur.com.ar,
+	heiko@sntech.de, krzk+dt@kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org, mchehab@kernel.org,
+	p.zabel@pengutronix.de, robh@kernel.org, sfr@canb.auug.org.au,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v5 2/2] dt-bindings: media: rockchip-vpu: Add rk3588
+ vdpu121 compatible string
+Message-ID: <20240418-tipoff-neon-8c1fa60385cb@spud>
+References: <2a516484-ea87-444e-a89d-9fe33d08148f@kernel.org>
+ <20240413155709.802362-1-liujianfeng1994@gmail.com>
+ <1774986.o0yEF5yP89@bagend>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 33/43] arm64: rme: Enable PMU support with a realm
- guest
-Content-Language: en-GB
-To: kernel test robot <lkp@intel.com>, Steven Price <steven.price@arm.com>,
- kvm@vger.kernel.org, kvmarm@lists.linux.dev
-Cc: oe-kbuild-all@lists.linux.dev, Catalin Marinas <catalin.marinas@arm.com>,
- Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
- James Morse <james.morse@arm.com>, Oliver Upton <oliver.upton@linux.dev>,
- Zenghui Yu <yuzenghui@huawei.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, Joey Gouly <joey.gouly@arm.com>,
- Alexandru Elisei <alexandru.elisei@arm.com>,
- Christoffer Dall <christoffer.dall@arm.com>, Fuad Tabba <tabba@google.com>,
- linux-coco@lists.linux.dev,
- Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>,
- Jean-Philippe Brucker <jean-philippe@linaro.org>
-References: <20240412084309.1733783-34-steven.price@arm.com>
- <202404140723.GKwnJxeZ-lkp@intel.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <202404140723.GKwnJxeZ-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 14/04/2024 00:44, kernel test robot wrote:
-> Hi Steven,
-> 
-> kernel test robot noticed the following build errors:
-> 
-> [auto build test ERROR on kvmarm/next]
-> [also build test ERROR on kvm/queue arm64/for-next/core linus/master v6.9-rc3 next-20240412]
-> [cannot apply to kvm/linux-next]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Steven-Price/KVM-Prepare-for-handling-only-shared-mappings-in-mmu_notifier-events/20240412-170311
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm.git next
-> patch link:    https://lore.kernel.org/r/20240412084309.1733783-34-steven.price%40arm.com
-> patch subject: [PATCH v2 33/43] arm64: rme: Enable PMU support with a realm guest
-> config: arm64-randconfig-r064-20240414 (https://download.01.org/0day-ci/archive/20240414/202404140723.GKwnJxeZ-lkp@intel.com/config)
-> compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 8b3b4a92adee40483c27f26c478a384cd69c6f05)
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240414/202404140723.GKwnJxeZ-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202404140723.GKwnJxeZ-lkp@intel.com/
-
-I guess the problem is with CONFIG_HW_PERF_EVENT not set, arm_pmu is an
-empty struct, triggering all these errors.
-
-Suzuki
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="sKET8aOPU1iKBZV1"
+Content-Disposition: inline
+In-Reply-To: <1774986.o0yEF5yP89@bagend>
 
 
+--sKET8aOPU1iKBZV1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Apr 18, 2024 at 11:19:56AM +0200, Diederik de Haas wrote:
+> On Saturday, 13 April 2024 17:57:09 CEST Jianfeng Liu wrote:
+> > I'm sorry for my unkonwing about the kernel patching process. And I'm
+> > sorry to let maintainers do extra work. Thank you for teaching me this.
+> > I will do this right in future patches.
+> >=20
+> > I did received a Acked-by tag from Conor in v4:
+> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> >=20
+> > I note it here in case someone forgets this tag.
+>=20
+> I think it's beneficial to send a v6 with the following changes:
+> 1) Make this dt-bindings patch the first in the series
+> 2) Make sure you've collected all the tags you've received to all the pat=
+ches
+> 3) Specify the base commit
+>=20
+> ad 1) I don't know if it's a hard rule, but I've seen a consistent patter=
+n=20
+> where the dt-binding changes come before those changes being applied to=
+=20
+> DeviceTree files. It also makes sense as when the dt-binding change hasn'=
+t been=20
+> applied, then the DT file is technically invalid.
+
+It is definitely preferred, since there is tooling that checks for
+undocumented compatibles etc that would see spurious errors during
+bisection, were that to be done. Generally I wouldn't suggest resending
+for the order though if it were the only thing amiss.
+
+> ad 2) You shouldn't make maintainers do extra work to get your patch(es)=
+=20
+> merged; you want to make their work as easy as possible. Thus you do the=
+=20
+> (extra) work and provide a new version of the patch(es).
+> Sending multiple versions in a single day is generally not recommended as=
+ you=20
+> should give reviewers some time to do the review. But it should be fine n=
+ow as=20
+> several days have past without new reviews.
+
+I dunno, the best way to save our time is to not omit the tags in the
+first place (or give a reason as to why you did) as we'll likely pull up
+the previous version of the series to see if all comments were
+addressed, if made by another maintainer (at least I do that and Krzysztof
+must have here). In my workflow sending another ack takes much less time
+than looking up previous versions and checking to see if things were
+dealt with - probably that's in-part to me lacking automation for dfn:
+lore search from mutt though..
+
+>=20
+> ad 3) The `git format-patch` command has a `--base=3D<commit>` parameter =
+with=20
+> which you can make explicit upon which commit the patch is based.
+> That works a lot better/easier then a textual description.
+>=20
+> HTH
+
+
+
+--sKET8aOPU1iKBZV1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiFFaAAKCRB4tDGHoIJi
+0o0pAP9fk55H5h1zSZnxIKk23cdN+HBXKww/TkXCqriIsMnC6gD9F54oAW2uS2/S
+BilcF9zkehoRlEKSh4CiiY5wD9hLGAM=
+=YI8b
+-----END PGP SIGNATURE-----
+
+--sKET8aOPU1iKBZV1--
 
