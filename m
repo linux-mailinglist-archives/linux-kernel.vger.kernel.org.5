@@ -1,151 +1,123 @@
-Return-Path: <linux-kernel+bounces-150042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3E5E8A9982
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:09:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A0728A9983
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:10:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93497B21A16
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:09:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EC411F213F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:10:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E40515F3FC;
-	Thu, 18 Apr 2024 12:09:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 068FE15F3FD;
+	Thu, 18 Apr 2024 12:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WWMm4riq"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="n/TOSPfP";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SEVcYqVS"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39C915EFD8
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:09:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 822F815B578
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713442172; cv=none; b=jXl/9EK0G5bXlzu/jGHcapLekg5i9G0H7qylMKKXpvEswglc85m+K/nnNT+AaXqCJIIxa7Vi9967lgcBRCWfCZ9/XRyg5F/QWnmqX8MVhnAB1tmiMxAVyCzEklmzo4FUQpk33Rf6VXbN3Kmkz/+peaAbnaVgd4V5DInUiyglK0s=
+	t=1713442227; cv=none; b=FzqJcKqtSvLYCfYD9HhZKbhkUSihbuhItfBUyETT30YBl6RUzBq+8aj5H1QXZfR2/JxFW2wY5rI2ipGL++Q8ge4bueTfDpXQTrJAlJ0vDj/cjkRvu4fSO6vyCXmKq6AYf5vx52nz6MozpH0J7kGeCiiYIvnqrr7q4iSGiZfCbMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713442172; c=relaxed/simple;
-	bh=XXCqubAze/7WPDWGsGwFlxCvznCl8HkJMlTE0+n6qdY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gxt6GzKeAxYOQ2d7+3+c+pj0NxThynFM5dF+apFI+jabryy076KnkiTE6gVFP3p/Kt8wKbwR5GS/hKhgCmY95wpIVBdRNOyz6mYLsZcg304IJy/McTyl+1LFuGYZMDgbcl7B/zXuyGHNm+a6yj/HJ1zhtHULfh1eA5qJgX9uG4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WWMm4riq; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-571ba432477so700246a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 05:09:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713442169; x=1714046969; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s5K3W4xG55U9XN1pFNNqQImuxOw6l00UI+Hr/SOLhkU=;
-        b=WWMm4riqRSNezkqWp1OQoSQetxkQAqgwV8XKBSRCknta19b9BMQZYjOKwslBQRtpH3
-         IoV+NIKqf6KpWtkLJruEo2zDzMvThfFqBjkwkf6AZYHgOlZFfbjdwk+S1vKGRMuYAqCx
-         vOjkQXWRkOtuFZQWT8vjhyLbP8gLlATfkBuJVSS800kym5QbWwKLasq/S5Q38a5Qum9z
-         TI4XtUi6n3kWOFmguDits5mAkpAt4006Lt1ZPGwPztoPLwSnRWrLKEV3wb9bFElYA89l
-         wk9LNj55cmlPfWvHyhDRLufeOdIvEGi0WFcf7wsoYVfB2CYs2rXsVzdKjNe815A7T/j7
-         BVpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713442169; x=1714046969;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s5K3W4xG55U9XN1pFNNqQImuxOw6l00UI+Hr/SOLhkU=;
-        b=pMbXFZtsT8nLcR3ZiKvVpuF/mNvLrnKVSLVhiUjIP6kRiCpUfS7f2K4ziCwUIjomCe
-         2fmsewciYgrgZBQvvjojzVCMhsGzVXPE4g/ftRvtSL9n4d0TEDl0jwGdJtqCYHKZf4cd
-         qyohoAEMG36Vjo5oaeTplIrkH1A1Gzs24/tCCg+oejvBlOyRuiWCcXW+3pNaeGQXczDD
-         VfOSfJVJDQd/1PhOgSnysxrBiOP2L4MB8ood6y7hMXw3Egv0KNYM3oyzfG4Dav1yQMDK
-         nIESLxcjeZMLN/8aUc+l6DPeSU7Tm4EtdXBdPRtwi3p16GsB6G7HdD7Hh5E178VIHDol
-         kq4g==
-X-Forwarded-Encrypted: i=1; AJvYcCV6R2hL9YX7DD9zsQQ9KEBVcSI7gwAwWru8KVJnSK3qyuqgDs311YvLwuMGE6f1DBSUK6mROc0xeep+qCt9wG7lCNKBpoIrhXIhZNZj
-X-Gm-Message-State: AOJu0YytJ4V7g/RzG9hmdc5HZswUQZnB5HYBA8EdxgUoolEzCKJyTq1g
-	9wEaMvuoAs4fzDwB2dD1Beks1HsYUo2/l9PsJKXE3GjufNsxKn0NPyfvDW9OTXf9+yk3z3+8flm
-	UIc+RB5PmoC4h385COtuwqG053+c=
-X-Google-Smtp-Source: AGHT+IGViHTeCrergrz3VPH5VQOSjbayGlXq1x3tymtBxOJ652N7TE6Z9MtYTg+mOkfMnAW4LfAcpyShPf4x+ggcTN8=
-X-Received: by 2002:a50:d7cb:0:b0:56d:f00c:2b13 with SMTP id
- m11-20020a50d7cb000000b0056df00c2b13mr1503904edj.32.1713442168920; Thu, 18
- Apr 2024 05:09:28 -0700 (PDT)
+	s=arc-20240116; t=1713442227; c=relaxed/simple;
+	bh=mmHxbgkvcdq7I9XxDoEzaG1qsDjLvp2IM6Ipv6u6XmQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=txdYxvtqL8xa+1n0nNi4dig+8uT1NwnUX6hfLERThgw/cVPSJFkRDzJ4zN7/79Cv7YcanTGGnGx1qHs9YCyMY4qxnA/PuFQpAG6ZooRtRI2oF+BYJlR25HCTJaiowZw14AHSG4JnAWa2igertkEyS/alIV5bUM0HYIGK/6zBkcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=n/TOSPfP; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SEVcYqVS; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713442217;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zhpP4JnpNsRxYyCsXa/uiaJlYp5pfcUesjCAkban9ps=;
+	b=n/TOSPfPFWMaiK/uaHOYZHBbNHp0DmUpgkpuw2jj98/lvwnKjb6gd6njGvNPsInU8JwdQO
+	0IzMQgktOZ4HuAgQq0iGiyba8HYjNVrga7ixJ07C3salftCNWT0owgejewhRF8BBB5MCHv
+	K9kmjdQxhVngj1JtpDQMcsBCPmmysIgnEC9YNxHoCrp6iQr+R+6GvEILYC4TBpNe5h3CQ5
+	TxMSxuTeGtNybdfUe4Jd1JZce+OSlQkz2c+PPSnJd5rxc3D4U9I8XFNfSUifFrDFLR96i8
+	YyLb1UpAqJKlyoRCYYrMGeasZMOPHdGWEaVs5KfbRcCAATJbbbinBhCz5XmlVw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713442217;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zhpP4JnpNsRxYyCsXa/uiaJlYp5pfcUesjCAkban9ps=;
+	b=SEVcYqVSFdKHuWo4xMfn1fFuZOCfsET5EguPBnsKQJkRBoaU8f0PJe/9nIqOtJSM2vvcft
+	9sxml5Ab6hwh/4Dw==
+To: Petr Mladek <pmladek@suse.com>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, Steven Rostedt
+ <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>,
+ linux-kernel@vger.kernel.org, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH printk v4 06/27] printk: nbcon: Add callbacks to
+ synchronize with driver
+In-Reply-To: <ZiD3FNBZh_iMOVWY@pathway.suse.cz>
+References: <20240402221129.2613843-1-john.ogness@linutronix.de>
+ <20240402221129.2613843-7-john.ogness@linutronix.de>
+ <ZhUIatzxietD4F-m@localhost.localdomain>
+ <87y19djqr0.fsf@jogness.linutronix.de> <Zh_IrB4MyHwU8OJE@pathway.suse.cz>
+ <87bk68niod.fsf@jogness.linutronix.de> <ZiD3FNBZh_iMOVWY@pathway.suse.cz>
+Date: Thu, 18 Apr 2024 14:16:16 +0206
+Message-ID: <87h6fyswgn.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418105750.98866-1-ioworker0@gmail.com> <20240418105750.98866-4-ioworker0@gmail.com>
- <c73423cb-3288-47aa-b389-22566e883db7@redhat.com>
-In-Reply-To: <c73423cb-3288-47aa-b389-22566e883db7@redhat.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Thu, 18 Apr 2024 20:09:17 +0800
-Message-ID: <CAK1f24=ZVJ=7Yp5CFzO2kpphexkNuKryWMD-fjhTpLeXSnrETg@mail.gmail.com>
-Subject: Re: [PATCH v9 3/4] mm/memory: add any_dirty optional pointer to folio_pte_batch()
-To: David Hildenbrand <david@redhat.com>
-Cc: akpm@linux-foundation.org, ryan.roberts@arm.com, 21cnbao@gmail.com, 
-	mhocko@suse.com, fengwei.yin@intel.com, zokeefe@google.com, 
-	shy828301@gmail.com, xiehuan09@gmail.com, wangkefeng.wang@huawei.com, 
-	songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Thu, Apr 18, 2024 at 8:00=E2=80=AFPM David Hildenbrand <david@redhat.com=
-> wrote:
+On 2024-04-18, Petr Mladek <pmladek@suse.com> wrote:
+> I am not sure how it is done in other parts of kernel code where
+> RT needed to introduce some tricks. But I think that we should
+> really start mentioning RT behavior in the commit messages and
+> and comments where the RT mode makes huge changes.
+
+Yes, our motivation is RT. But these semantics are not RT-specific. They
+apply to the general kernel locking model. For example, even for a !RT
+system, it is semantically incorrect to take a spin_lock while holding a
+raw_spin_lock.
+
+In the full PREEMPT_RT series I have tried to be careful about only
+mentioning PREEMPT_RT when it is really PREEMPT_RT-specific. For example
+[0][1][2].
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/commit/?h=linux-6.9.y-rt-rebase&id=1564af55a92c32fe215af35cf55cb9359c5fff30
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/commit/?h=linux-6.9.y-rt-rebase&id=033b416ad25b17dc60d5f71c1a0b33a5fbc17639
+
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/commit/?h=linux-6.9.y-rt-rebase&id=7929ba9e5c110148a1fcd8bd93d6a4eff37aa265
+
+> The race could NOT happen in:
 >
-> On 18.04.24 12:57, Lance Yang wrote:
-> > This commit adds the any_dirty pointer as an optional parameter to
-> > folio_pte_batch() function. By using both the any_young and any_dirty p=
-ointers,
-> > madvise_free can make smarter decisions about whether to clear the PTEs=
- when
-> > marking large folios as lazyfree.
-> >
-> > Suggested-by: David Hildenbrand <david@redhat.com>
-> > Signed-off-by: Lance Yang <ioworker0@gmail.com>
-> > ---
-> >   mm/internal.h | 12 ++++++++++--
-> >   mm/madvise.c  | 19 ++++++++++++++-----
-> >   mm/memory.c   |  4 ++--
-> >   3 files changed, 26 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/mm/internal.h b/mm/internal.h
-> > index c6483f73ec13..daa59cef85d7 100644
-> > --- a/mm/internal.h
-> > +++ b/mm/internal.h
-> > @@ -134,6 +134,8 @@ static inline pte_t __pte_batch_clear_ignored(pte_t=
- pte, fpb_t flags)
-> >    *            first one is writable.
-> >    * @any_young: Optional pointer to indicate whether any entry except =
-the
-> >    *            first one is young.
-> > + * @any_dirty: Optional pointer to indicate whether any entry except t=
-he
-> > + *             first one is dirty.
-> >    *
->
+>    + NBCON_PRIO_PANIC context because it does not schedule
 
-Hey David,
+Yes.
 
-Thanks for taking time to review!
+>    + NBCON_PRIO_EMERGENCY context because we explicitly disable
+>      preemption there
 
-> I was also wondering if we should make that function return a
-> pte+nr_pages, instead of only nr_pages, and then simply have the
-> function, based on new flags, merge data into the original PTE.
->
+Yes.
 
-Nice, good idea!
+>    + NBCON_NORMAL_PRIO context when we ALWAYS do nbcon_try_acquire()
+>      under con->device() lock. Here the con->device_lock() serializes
+>      nbcon_try_acquire() calls even between running tasks.
 
-> But let's do that separately.
+The nbcon_legacy_emit_next_record() printing as NBCON_NORMAL_PRIO is a
+special situation where write_atomic() is used. It is safe because it
+disables hard interrupts and is never called from NMI context.
 
-Yep, let's do that separately :p
+nbcon_atomic_flush_pending() as NBCON_NORMAL_PRIO is safe in !NMI
+because it also disables hard interrupts. However,
+nbcon_atomic_flush_pending() could be called in NMI with
+NBCON_NORMAL_PRIO. I need to think about this case.
 
->
-> Acked-by: David Hildenbrand <david@redhat.com>
-
-Thanks again for the review!
-Lance
-
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+John
 
