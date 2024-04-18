@@ -1,131 +1,101 @@
-Return-Path: <linux-kernel+bounces-150440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 364388A9F62
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:00:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F7418A9F6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:01:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 666381C21C21
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:00:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABD791F23781
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F9A116F84E;
-	Thu, 18 Apr 2024 16:00:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73F5316F904;
+	Thu, 18 Apr 2024 16:00:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T94+CWwt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z6FG1YNN"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D8315D5AE
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 16:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67F4415D5AE
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 16:00:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713456006; cv=none; b=VUcqGFopiflQIV1HvND8+yWuwlUr35vV91S0ytaRVjsTCSkQdRgpJYEEgfwBs1BiilOKFO4pyLcCJdqNTu08hbOcuwfwu4k0BsJzlkqlQFiK6GbRV33nk4uVXn0WYyCYN66Zy0H2wtJB3Uw0A13fME8QRR4cppc5zsdq361TJ+Y=
+	t=1713456052; cv=none; b=pGaz9W5lfp8QGZS8OJSNEA+uzFxC7MRw6qQHwD76P5UnW34BoIWQ/IM/u12DM54QLQxMdHMopaeGDUAHFQiNpOCAgMjuPAvMpRwDL3f09uhvxY2XzMKhMpfTnbF1uO8C4aAAFT5X+t+s7k5lW1Rug7VdkspDMufVaWKF8c+ZrGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713456006; c=relaxed/simple;
-	bh=Hp5KTEXhVIq6MVBrhhK0mtcu3ZcUPbGX9anKs1DqGQ4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s4xQ9hPB11egmkcg9t7AG2+TiixRneMXJRNNncZ/8QJ+G/tE1DtzYN8OhGntzfMJjb83Kw7Epv19xsVmzAsvqh7wU3L+hRnv/cc0C1ib+5RDIEeVcMi4mXzHeBBwyEp3ahsfz4AzheaietFD+Di727c03x9lw5dN01BivTjp/jY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T94+CWwt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EA2FC113CC
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 16:00:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713456006;
-	bh=Hp5KTEXhVIq6MVBrhhK0mtcu3ZcUPbGX9anKs1DqGQ4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=T94+CWwtWNbbqAdBfNV0gGtJZEWong40cDwDpSpNSmGVixSCnauAIbPcl9O5cL0Mm
-	 OYpPaH5XLOojp/uzgCK5ZyxI3sQ5iW8SA0Tmoii6cA3nKjluL+S/AdGaOMBLiRFnRp
-	 GW1Mj4mjcljYxW5tu8JbBS+qRNtsYd4M9ElgIyuGbFlKpawTYkr2/4iVoEvnCu5SQl
-	 p3gls9UM+zOskZJdZJOLgj8DKLEk7lpvizR0ZfU0PIcV9bQzFkOZK4mSKjrXzNSjc+
-	 Sx7+f7V+HrFkjWzzixjH9C85x9NUq31ATzr55IcJ0ryU2FBsG49AhMvz9i6CWQfx0j
-	 8kaxfzRfTf+nQ==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5193363d255so1298591e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:00:06 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVYjnkUhLvqU1xQAprOVSWmCuY/PwfFEIBo9kNPoqEcHibICRcxd+zomVvg0/OTHFyobkrjWWUyTNQmLmlmfl0A/OycxsOems8SD52z
-X-Gm-Message-State: AOJu0YxAIiqijB1Q9Bk3veNsBwbWS87DpMpjNFRF968R+2H2ahalEfKk
-	dJxvdpRr7qKl6JLbaavydqqJduJ7WZJIPHMgRS31inlnKUvpENvlQ3mbWy2HA/fOCGDEpM50IKt
-	b+jaJY4TOG82eDK5h8kAN2l04i9I=
-X-Google-Smtp-Source: AGHT+IE3esknj6rnGRTfXAha0sULnP3J2grUQPDIpHSNw5T4GNwd0MTsH9nhVMktl4LlEDfMcVvDnMxpDtmmvnTlV7Q=
-X-Received: by 2002:ac2:5334:0:b0:518:bb48:f060 with SMTP id
- f20-20020ac25334000000b00518bb48f060mr1630854lfh.19.1713456004867; Thu, 18
- Apr 2024 09:00:04 -0700 (PDT)
+	s=arc-20240116; t=1713456052; c=relaxed/simple;
+	bh=cyofhNpuzNoJ61d5zp30RxmRNrJJzUEO0QXv/sR7gDc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WKeEkBvQHhm0gH8imu9o4HmGUKBsN4dEliWaSPDkOJTqfRKbbmh0tJllboCoXZE2vytOYgObvQTlbSg0Vk77C+X3BonmigM8BO7Ni6jNu1RThBX3aeppBZMlCSAG5gi0C+vdFqDfpoQHX5CTsQMTdNEic6Xpd7pf52WddU1w6DI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z6FG1YNN; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713456050;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=F0ag/Egk0C8yEugn2IgQOhKenICLMcEUisuefA5gpJU=;
+	b=Z6FG1YNNmebDBiLkxKFnWAinOxJbW54ME507E8gSNp9RKoonczMTttbWmKPcz+OqLen9QS
+	6/rA2LC9u7/hoNBKBpFJOzYjwGBovmnmXLeDg2C7i0QcyP5lLLukmFkYlkgfYqwRHSm5D0
+	uN56S8zZsvz2HdCZh/jPJgDkcm4kgxg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-104-V4V5UnIUPrikEavOkqdOMQ-1; Thu,
+ 18 Apr 2024 12:00:45 -0400
+X-MC-Unique: V4V5UnIUPrikEavOkqdOMQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3A6F73816442;
+	Thu, 18 Apr 2024 16:00:45 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.22.16.186])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 5516E40357A7;
+	Thu, 18 Apr 2024 16:00:42 +0000 (UTC)
+From: Wander Lairson Costa <wander@redhat.com>
+To: Brendan Higgins <brendan.higgins@linux.dev>,
+	David Gow <davidgow@google.com>,
+	Rae Moar <rmoar@google.com>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Maxime Ripard <mripard@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Matti Vaittinen <mazziesaccount@gmail.com>,
+	linux-kselftest@vger.kernel.org (open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)),
+	kunit-dev@googlegroups.com (open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)),
+	linux-kernel@vger.kernel.org (open list)
+Cc: Wander Lairson Costa <wander@redhat.com>
+Subject: [PATCH v2 0/2] kunit: fix minor error path mistakes
+Date: Thu, 18 Apr 2024 13:00:36 -0300
+Message-ID: <20240418160039.69993-1-wander@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240417-x86-fix-kexec-with-llvm-18-v1-0-5383121e8fb7@kernel.org>
- <46343CD5-24D6-46BF-92A7-0B0FA0E6937D@alien8.de> <CAKwvOd=3Jrzju++=Ve61=ZdeshxUM=K3-bGMNREnGOQgNw=aag@mail.gmail.com>
-In-Reply-To: <CAKwvOd=3Jrzju++=Ve61=ZdeshxUM=K3-bGMNREnGOQgNw=aag@mail.gmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Thu, 18 Apr 2024 17:59:53 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXH+rNU4pa0ywcgkohXBu4G+iCXML_s9WVJW03ZRwtwW-w@mail.gmail.com>
-Message-ID: <CAMj1kXH+rNU4pa0ywcgkohXBu4G+iCXML_s9WVJW03ZRwtwW-w@mail.gmail.com>
-Subject: Re: [PATCH 0/2] x86/purgatory: Avoid kexec runtime warning with LLVM 18
-To: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Borislav Petkov <bp@alien8.de>, Arthur Eubanks <aeubanks@google.com>, 
-	Nathan Chancellor <nathan@kernel.org>, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, morbo@google.com, 
-	justinstitt@google.com, song@kernel.org, ribalda@chromium.org, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, patches@lists.linux.dev, 
-	ns <0n-s@users.noreply.github.com>, Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Thu, 18 Apr 2024 at 17:44, Nick Desaulniers <ndesaulniers@google.com> wr=
-ote:
->
-> On Thu, Apr 18, 2024 at 4:15=E2=80=AFAM Borislav Petkov <bp@alien8.de> wr=
-ote:
-> > How much of this silliness should we expect now for other parts of the =
-kernel?
->
-> Looks like ARCH=3Dpowerpc sets -mcmodel=3Dlarge for modules and ARCH=3Dum
-> does for the whole kernel. So that LLVM change may have implications
-> for those 2 other architectures.  Not sure we've had any bug reports
-> or breakage in CI yet, like we have for x86+kexec.
->
-> > Can we turn this off?
->
-> Maybe we need to revisit
-> commit e16c2983fba0 ("x86/purgatory: Change compiler flags from
-> -mcmodel=3Dkernel to -mcmodel=3Dlarge to fix kexec relocation errors")
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
-/?id=3De16c2983fba0fa6763e43ad10916be35e3d8dc05
->
-> at least the -mcmodel=3Dkernel addition (since that patch added a few
-> additional compiler flags that still LGTM).
->
-..
+Hi,
 
-> + Fangrui, Ard, who might know of alternative solutions to
-> -mcmodel=3Dlarge for e16c2983fba0.
->
+These two patches fix some minor error path mistakes in the device
+module.
 
-I think it would be better to use -mcmodel=3Dsmall -fpic. As Nick
-explains, the large code model is really more suitable for executables
-that span a large memory range. The issue with the purgatory seems to
-be that it can be placed anywhere in memory, not that it is very big.
+Changes:
+--------
 
--mcmodel=3Dsmall -fpic is what user space typically uses, so it is much
-less likely to create problems.
+v1->v2:
+* Add fixes tag.
+* Add an imperative statement in the first commit descripton.
 
-Note that I have been looking into whether we can build the entire
-kernel with -fpic (for various reasons). There are some issues to
-resolve there, mostly related to per-CPU variables and the per-CPU
-stack protector, but beyond that, things work happily and the number
-of boot time relocations drops dramatically, due to the use of
-RIP-relative references. So for the purgatory, I wouldn't expect too
-many surprises.
+Wander Lairson Costa (2):
+  kunit: unregister the device on error
+  kunit: avoid memory leak on device register error
 
-> Otherwise, I think the dedicated linker script is the way to go. We
-> really want tight control over what is or is not in the purgatory
-> image.
+ lib/kunit/device.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Linker scripts are a bit tedious when it comes to maintenance,
-especially with weird executables such as this one and needing to
-support different linkers. So I'd prefer to avoid this.
+-- 
+2.44.0
+
 
