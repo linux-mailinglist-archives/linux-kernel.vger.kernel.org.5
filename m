@@ -1,196 +1,155 @@
-Return-Path: <linux-kernel+bounces-149702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 829058A94C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FE418A94C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:17:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBD181C21BBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:17:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36C971C20A43
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:17:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0432A145332;
-	Thu, 18 Apr 2024 08:16:43 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F689145FE3;
+	Thu, 18 Apr 2024 08:16:46 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA2513A86D;
-	Thu, 18 Apr 2024 08:16:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6907E14037F
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:16:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713428199; cv=none; b=KCgngxxqePKnhpLLT3/VgVEhqEgSfiDuErulacpcu+dFj9wDBJ5YvtvPCHitjZu4AM0Y5TfvZEh1v/C++oN520EzQVBzAYBRef8jFHqzpSQIYr3js3Z7Ti53J4Do8uy1XQkaPB1rm2+iYpFBvnmyDMcyEAXnd0CMK6ZNekEtC9Q=
+	t=1713428203; cv=none; b=bnpolcuHChCC/VmXHOEcr/9VWp4KZePaG7PvEJekZCA08O7ytGuPVoTSnEeXUV1nFv1vx+fIQC6NIDHkrsUlGuL+jHKFVsEt24QtXZ4FkNQE+Co8sUg4YlQibM95TUT7Fs7PEmAWMwprTHY1gP5WGYk2q30XALpG/8/WKtEyK1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713428199; c=relaxed/simple;
-	bh=+sCIQ6w4afRiSlqasIZfv0b05YQ2xgJ9KieX+ucnx74=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XLtsxpPVTJjMz06wLKrcUebsOP/1hh7v4961F2+XSCN1clSpfSMg/UAhDwJkWkatABYJjOKmLSmFYqXMmCbaAT52b9Tgi4KwxCZVcApdj0k+/k+rgTuYtkT48jwAb01AZKL3PZdrW38XSsbcknG1YvDejmWeJdsAjMvCHqaeFxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+	s=arc-20240116; t=1713428203; c=relaxed/simple;
+	bh=OvDJREwhCD1/pDuG7e5gFbgVRnC6NYV1EeoZGrcVAGU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=qP6MFfgGUP4DqSjFEQ0ae/PUI56iaT/MVGawQ0Fh5kbonSbZMLd353go9sDZahPaFAK3EzLF6Gc/RAzmdVZXAvkZKzm/ZDHyBOWFaf87i1CDTjr9yFaThMiGFqFoV039bBm5tksGDMlTJBRH0ZyHo/juVSZrzQG/ixu4+/3q76E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VKr8L2MwSz6D9BV;
-	Thu, 18 Apr 2024 16:11:30 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 256E5140519;
-	Thu, 18 Apr 2024 16:16:29 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 18 Apr
- 2024 09:16:28 +0100
-Date: Thu, 18 Apr 2024 09:16:27 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
-	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
-	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, "James Morse"
-	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
- Brucker <jean-philippe@linaro.org>, Catalin Marinas
-	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
-	<linuxarm@huawei.com>
-CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "Dave
- Hansen" <dave.hansen@linux.intel.com>, <justin.he@arm.com>,
-	<jianyong.wu@arm.com>
-Subject: Re: [PATCH v6 04/16] ACPI: processor: Move checks and availability
- of acpi_processor earlier
-Message-ID: <20240417174707.00002e86@huawei.com>
-In-Reply-To: <20240417131909.7925-5-Jonathan.Cameron@huawei.com>
-References: <20240417131909.7925-1-Jonathan.Cameron@huawei.com>
- <20240417131909.7925-5-Jonathan.Cameron@huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VKrBp38mxz1R8ZS;
+	Thu, 18 Apr 2024 16:13:38 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 01E07180073;
+	Thu, 18 Apr 2024 16:16:32 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 18 Apr 2024 16:16:31 +0800
+Message-ID: <bd839e9f-d3f2-f99d-34f7-e819a84c51cf@huawei.com>
+Date: Thu, 18 Apr 2024 16:16:31 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH v2] erofs: reliably distinguish block based and fscache
+ mode
+Content-Language: en-US
+To: Jingbo Xu <jefflexu@linux.alibaba.com>, <linux-erofs@lists.ozlabs.org>,
+	<xiang@kernel.org>, <chao@kernel.org>, <huyue2@coolpad.com>,
+	<viro@zeniv.linux.org.uk>, <brauner@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <yangerkun@huawei.com>, <houtao1@huawei.com>,
+	Baokun Li <libaokun1@huawei.com>
+References: <20240417065513.3409744-1-libaokun1@huawei.com>
+ <71e66b02-9c2b-4981-83e1-8af72d6c0975@linux.alibaba.com>
+ <7fdf4bff-2d3d-bdc0-5446-caa58aeca314@huawei.com>
+ <fb65c7d0-c348-409e-b977-07616d28b279@linux.alibaba.com>
+ <48b21671-19ae-0dbd-96cd-7300fd600c9b@huawei.com> <ZiDQgmN0hC2uIiPA@debian>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <ZiDQgmN0hC2uIiPA@debian>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-On Wed, 17 Apr 2024 14:18:57 +0100
-Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
+On 2024/4/18 15:49, Gao Xiang wrote:
+> Hi,
+>
+> On Thu, Apr 18, 2024 at 02:12:39PM +0800, Baokun Li wrote:
+>> On 2024/4/18 13:50, Jingbo Xu wrote:
+>>> On 4/18/24 11:36 AM, Baokun Li wrote:
+>>>> On 2024/4/18 10:16, Jingbo Xu wrote:
+>>>>> Hi Baokun,
+>>>>>
+>>>>> Thanks for catching this and move forward fixing this!
+>>>> Hi Jingbo，
+>>>>
+>>>> Thanks for your review！
+>>>>
+>>>>> On 4/17/24 2:55 PM, Baokun Li wrote:
 
-> Make the per_cpu(processors, cpu) entries available earlier so that
-> they are available in arch_register_cpu() as ARM64 will need access
-> to the acpi_handle to distinguish between acpi_processor_add()
-> and earlier registration attempts (which will fail as _STA cannot
-> be checked).
-> 
-> Reorder the remove flow to clear this per_cpu() after
-> arch_unregister_cpu() has completed, allowing it to be used in
-> there as well.
-> 
-> Note that on x86 for the CPU hotplug case, the pr->id prior to
-> acpi_map_cpu() may be invalid. Thus the per_cpu() structures
-> must be initialized after that call or after checking the ID
-> is valid (not hotplug path).
-> 
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> ---
-> v6: As per discussion in v5 thread, don't use the cpu->dev and
->     make this data available earlier by moving the assignment checks
->     int acpi_processor_get_info().
-> ---
->  drivers/acpi/acpi_processor.c | 79 +++++++++++++++++++++--------------
->  1 file changed, 47 insertions(+), 32 deletions(-)
-> 
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> index ba0a6f0ac841..2c164451ab53 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -184,7 +184,35 @@ static void __init acpi_pcc_cpufreq_init(void) {}
->  
->  /* Initialization */
->  #ifdef CONFIG_ACPI_HOTPLUG_CPU
-Note I messed up a rebase here.  This ifdef should come after the new function
-(see later)
+SNIP
 
-Will fix for v7.
-> -static int acpi_processor_hotadd_init(struct acpi_processor *pr)
-> +static DEFINE_PER_CPU(void *, processor_device_array);
-> +
-> +static void acpi_processor_set_per_cpu(struct acpi_processor *pr,
-> +				       struct acpi_device *device)
-> +{
-> +	BUG_ON(pr->id >= nr_cpu_ids);
-> +	/*
-> +	 * Buggy BIOS check.
-> +	 * ACPI id of processors can be reported wrongly by the BIOS.
-> +	 * Don't trust it blindly
-> +	 */
-> +	if (per_cpu(processor_device_array, pr->id) != NULL &&
-> +	    per_cpu(processor_device_array, pr->id) != device) {
-> +		dev_warn(&device->dev,
-> +			 "BIOS reported wrong ACPI id %d for the processor\n",
-> +			 pr->id);
-> +		/* Give up, but do not abort the namespace scan. */
-> +		return;
-> +	}
-> +	/*
-> +	 * processor_device_array is not cleared on errors to allow buggy BIOS
-> +	 * checks.
-> +	 */
-> +	per_cpu(processor_device_array, pr->id) = device;
-> +	per_cpu(processors, pr->id) = pr;
-> +}
-> +
+>>>>>
+>>>>> Instead of allocating the erofs_sb_info in fill_super() allocate it
+>>>>> during erofs_get_tree() and ensure that erofs can always have the info
+>>>>> available during erofs_kill_sb().
+>>>>> I'm not sure if allocating erofs_sb_info in erofs_init_fs_context() will
+>>>>> be better, as I see some filesystems (e.g. autofs) do this way.  Maybe
+>>>>> another potential advantage of doing this way is that erofs_fs_context
+>>>>> is not needed anymore and we can use sbi directly.
+>>>> Yes, except for some extra memory usage when remounting,
+>>>> this idea sounds great. Let me send a version of v3 to get rid
+>>>> of erofs_fs_context.
+>>> I'm not sure if Gao Xaing also prefers this.  I think it would be better
+>>> to wait and listen for his thoughts before we sending v3.
+>>   Okay, there's no rush on this.
+> I checked days ago, for example, XFS is also worked in this way.
+> And .reconfigure() needs to be carefully handled too.
 
-The ifdef should be here as...
+Ok, I'll implement it in the next iteration.
 
-> +static int acpi_processor_hotadd_init(struct acpi_processor *pr,
-> +				      struct acpi_device *device)
->  {
->  	int ret;
->  
-> @@ -198,6 +226,8 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
->  	if (ret)
->  		goto out;
->  
-> +	acpi_processor_set_per_cpu(pr, device);
-> +
->  	ret = arch_register_cpu(pr->id);
->  	if (ret) {
->  		acpi_unmap_cpu(pr->id);
-> @@ -217,7 +247,8 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
->  	return ret;
->  }
->  #else
-> -static inline int acpi_processor_hotadd_init(struct acpi_processor *pr)
-> +static inline int acpi_processor_hotadd_init(struct acpi_processor *pr,
-> +					     struct acpi_device *device)
->  {
->  	return -ENODEV;
->  }
-> @@ -232,6 +263,7 @@ static int acpi_processor_get_info(struct acpi_device *device)
->  	acpi_status status = AE_OK;
->  	static int cpu0_initialized;
->  	unsigned long long value;
-> +	int ret;
->  
->  	acpi_processor_errata();
->  
-> @@ -316,10 +348,12 @@ static int acpi_processor_get_info(struct acpi_device *device)
->  	 *  because cpuid <-> apicid mapping is persistent now.
->  	 */
->  	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
-> -		int ret = acpi_processor_hotadd_init(pr);
-> +		ret = acpi_processor_hotadd_init(pr, device);
->  
->  		if (ret)
-> -			return ret;
-> +			goto err;
-> +	} else {
-> +		acpi_processor_set_per_cpu(pr, device);
+>>>>>> +static void erofs_ctx_to_info(struct fs_context *fc)
+>>>>>>     {
+>>>>>>         struct erofs_fs_context *ctx = fc->fs_private;
+>>>>>> +    struct erofs_sb_info *sbi = fc->s_fs_info;
+>>>>>> +
+>>>>>> +    sbi->opt = ctx->opt;
+>>>>>> +    sbi->devs = ctx->devs;
+>>>>>> +    ctx->devs = NULL;
+>>>>>> +    sbi->fsid = ctx->fsid;
+>>>>>> +    ctx->fsid = NULL;
+>>>>>> +    sbi->domain_id = ctx->domain_id;
+>>>>>> +    ctx->domain_id = NULL;
+>>>>>> +}
+>>>>> I'm not sure if abstracting this logic into a seperate helper really
+>>>>> helps understanding the code as the logic itself is quite simple and
+>>>>> easy to be understood. Usually it's a hint of over-abstraction when a
+>>>>> simple helper has only one caller.
+>>>>>
+>>>> Static functions that have only one caller are compiled inline, so we
+>>>> don't have to worry about how that affects the code.
+>>>>
+>>>> The reason these codes are encapsulated in a separate function is so
+>>>> that the code reader understands that these codes are integrated
+>>>> as a whole, and that we shouldn't have to move one or two of these
+>>>> lines individually.
+>>>>
+>>>> But after we get rid of erofs_fs_context, those won't be needed
+>>>> anymore.
+>>> Yeah, I understand. It's only coding style concerns.
+>>>
+>>>
+>>>
+>> Okay, thanks！
+> I'm fine to get rid of those (erofs_fs_context) as long as the codebase
+> is more clearer and simple.  BTW, for the current codebase, I also think
+> it's unneeded to have a separate helper called once without extra actual
+> meaning...
+>
+> Thanks,
+> Gao Xiang
+>
+Ok, this helper function will be gone in the next iteration.
 
-This is not covered by CONFIG_ACPI_HOTPLUG_CPU
-
->  	}
-
-
+Thanks for the review!
+-- 
+With Best Regards,
+Baokun Li
 
