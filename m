@@ -1,64 +1,51 @@
-Return-Path: <linux-kernel+bounces-150297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60B5B8A9CFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:26:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88F0B8A9D00
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:27:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1606D2837BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:26:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32D821F212C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:27:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70AF5165FB0;
-	Thu, 18 Apr 2024 14:24:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5396D15FA66;
+	Thu, 18 Apr 2024 14:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KMyNeIXj"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="a54bZwdj"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F81163A9B;
-	Thu, 18 Apr 2024 14:24:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A9C165FB6;
+	Thu, 18 Apr 2024 14:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713450253; cv=none; b=W+zdqZj69mBpgrYYaH/4+KnrY2XMWQYnKTu0JT2ShuD56oXAYaxk1oPWuJPpFLUnRise9ubhVkllVCEn1ZiE2NE94X5+RvBEFKIe8XuLut00FGMzgRIAC2YFl+sxl5YQcw4Wx5ZRjg5YKj4mxsuRF5rwEMm82HnqkTap6hT2mvo=
+	t=1713450334; cv=none; b=QX8kmCs1Pk8nS3kJ97wC4Qt4zL3i76nGuXBKvIBvtKnk+9dKBU1pfP9Owvg2/YJwkwRd7D8k60o/qv/DCX1/q1WY/fvQnWfDD1tX7jCMAsgJWcZBFOxit3e7L5PRIXQgbeJ2GybfUQZBLHTO3YB07A/URr2E9CNoyS3fWsBkbH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713450253; c=relaxed/simple;
-	bh=Q8liASnYD+YPWYkT0PWK1605RH/y4SMfVkrndA1iMPM=;
+	s=arc-20240116; t=1713450334; c=relaxed/simple;
+	bh=xKOoXd2m5g86klzLlV+Y20rOFjFNzLeMpDwIzLipyeg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EZUeSNTXfdHj0/k+CbOQwZSc33cHXd2G5eDKoYUjStL1Tgak6IlifobNFvp+RFF1p9KCfaULL9G4iUuwZ/8A4bm4+jA6U1w937Spk/roKryMN3y7VrHFVusrobUYSdAEz4aNanXtlr6g9eVv3Xf4N6QFahC/w5vAJh4Ho52xk6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KMyNeIXj; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713450252; x=1744986252;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Q8liASnYD+YPWYkT0PWK1605RH/y4SMfVkrndA1iMPM=;
-  b=KMyNeIXjxWrKa6XibqAbApOoOGsmGulQuAv4kbv2lSKBaY8xIlxPSM7j
-   t0v7T8T/CWLhvxAwjqo8OmOWuuntWvex5pLCmM21WghkvKKX6DD5UygbG
-   Qcozn6wbxZojylrBTOmBUAeryAtG40//Ih2xDwGWK7PeBCwxDP14OSul9
-   toUIPZ4VAqoC8MferN1uQSsALhCBoZeYgRKNoaqI8tnYoL3l1LrfkcL7p
-   GtC71kl/H4morfzDCHOdcluNDtH3wAC6aC+d2dJWsrAB78S7ChzHI9+bw
-   01PpotDbgNHpptohuzzeQQblF1eLdVQ9THD2PUktvSmKpLRPVQPm2CZKd
-   Q==;
-X-CSE-ConnectionGUID: lprb6clLS0m3lVvrxsZmuQ==
-X-CSE-MsgGUID: 3LxDbI8jTRyfGELmdR5c6A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="9158678"
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="9158678"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 07:24:11 -0700
-X-CSE-ConnectionGUID: V+rEpSbuT/Wkm0gBWdkukg==
-X-CSE-MsgGUID: TFK76s84Q5aop9x8DZ8azQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="23079726"
-Received: from stechane-mobl2.amr.corp.intel.com (HELO [10.209.94.1]) ([10.209.94.1])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 07:24:11 -0700
-Message-ID: <1d28f1dc-0aea-4b91-9df7-1a6d3a291e2e@intel.com>
-Date: Thu, 18 Apr 2024 07:24:10 -0700
+	 In-Reply-To:Content-Type; b=OqIOQGSiHapLuBQ5WeKGyJwxmCXv50TCbIRGtNiK74y9wwhYjNp9UPPZ0JWHUN/r3kRXwROPolJjR1kkIicFpTTLn5kYwHKm3FiiSEWQxEcNYfufMZly01E+dj7q99njDHSQxjzPsMMs0Y5uoivwoqYsvyjLg6m2NbxjTRv/654=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=a54bZwdj; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=Zj6q68EGA4RlIzYy/XSYT8WM4sscbczTrgcDryITQrk=;
+	t=1713450332; x=1713882332; b=a54bZwdjVmPGx6Bp1QZG6UhImC4InVF7GniPpFaR86VvgGp
+	6CaUimQQITS+FXKoWJTTTUy1lxokl6U9RlmLq4dEoj32himcsPkjE3PzVhzjAeDhEikFSKBrOI181
+	3I2sXYhFprrv602dq77ZvJRZgayCnTAzwIqNgD9oqpJ6sIaTmVh0QiE8g/JzENwABgs2TSnF8B5zs
+	piwUfkDw/UuWOWWRrihiSANjh51N81SftxTYS4tTpzed8AlaiqmHcgtvPAjhDMq9mAMzxG2tAXNtS
+	fFIpXg0cfwg23Dtuvn4ycfHL1LlRG/iFktC5mIXit85HvZLnyEApGwVVPlLdQ3QA==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rxShb-0005cg-PE; Thu, 18 Apr 2024 16:25:27 +0200
+Message-ID: <93766ae3-30d9-4dd3-ba01-870cc6387df4@leemhuis.info>
+Date: Thu, 18 Apr 2024 16:25:26 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,71 +53,74 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/cpufeatures: Fix dependencies for GFNI, VAES, and
- VPCLMULQDQ
-To: Eric Biggers <ebiggers@kernel.org>, x86@kernel.org
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240417060434.47101-1-ebiggers@kernel.org>
-Content-Language: en-US
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20240417060434.47101-1-ebiggers@kernel.org>
+Subject: Re: [REGRESSION] Null pointer dereference while shrinking zswap
+To: Johannes Weiner <hannes@cmpxchg.org>,
+ Christian Heusel <christian@heusel.eu>
+Cc: Chengming Zhou <chengming.zhou@linux.dev>, Nhat Pham <nphamcs@gmail.com>,
+ Seth Jennings <sjenning@redhat.com>, Dan Streetman <ddstreet@ieee.org>,
+ Vitaly Wool <vitaly.wool@konsulko.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, David Runge <dave@sleepmap.de>,
+ "Richard W.M. Jones" <rjones@redhat.com>, Mark W <instruform@gmail.com>,
+ regressions@lists.linux.dev, Yosry Ahmed <yosryahmed@google.com>
+References: <3iccc6vjl5gminut3lvpl4va2lbnsgku5ei2d7ylftoofy3n2v@gcfdvtsq6dx2>
+ <CAKEwX=MZ3jTVpN4g-qrhTn2b0i0C6_M=8BtKt9KEPyFHb+4W2w@mail.gmail.com>
+ <CAKEwX=NM1y-K1-Yw=CH3cM-8odER1PZBVoWo-rs7_OdjFG_puw@mail.gmail.com>
+ <CAKEwX=MWPUf1NMGdn+1AkRdOUf25ifAbPyoP9zppPTx3U3Tv2Q@mail.gmail.com>
+ <246c1f4d-af13-40fa-b968-fbaf36b8f91f@linux.dev>
+ <20240417143324.GA1055428@cmpxchg.org>
+ <4c3ppfjxnrqx6g52qvvhqzcc4pated2q5g4mi32l22nwtrkqfq@a4lk6s5zcwvb>
+ <20240418124043.GC1055428@cmpxchg.org>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <20240418124043.GC1055428@cmpxchg.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1713450332;df5152e4;
+X-HE-SMSGID: 1rxShb-0005cg-PE
 
-On 4/16/24 23:04, Eric Biggers wrote:
-> Fix cpuid_deps[] to list the correct dependencies for GFNI, VAES, and
-> VPCLMULQDQ.  These features don't depend on AVX512, and there exist CPUs
-> that support these features but not AVX512.  GFNI actually doesn't even
-> depend on AVX.
+On 18.04.24 14:40, Johannes Weiner wrote:
+> On Wed, Apr 17, 2024 at 07:18:14PM +0200, Christian Heusel wrote:
+>> On 24/04/17 10:33AM, Johannes Weiner wrote:
+> Christian reports a NULL deref in zswap that he bisected down to the
+> zswap shrinker. The issue also cropped up in the bug trackers of
+> libguestfs [1] and the Red Hat bugzilla [2].
 > 
-> This prevents GFNI from being unnecessarily disabled if AVX is disabled
-> to mitigate the GDS vulnerability.
+> The problem is that when memcg is disabled with the boot time flag,
+> the zswap shrinker might get called with sc->memcg == NULL. This is
+> okay in many places, like the lruvec operations. But it crashes in
+> memcg_page_state() - which is only used due to the non-node accounting
+> of cgroup's the zswap memory to begin with.
+> 
+> Nhat spotted that the memcg can be NULL in the memcg-disabled case,
+> and I was then able to reproduce the crash locally as well.
 
-Looks like the original commit was quite confused.  Thanks for finding this.
+Thx for the fix. Nitpicking:
 
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+> [1] https://github.com/libguestfs/libguestfs/issues/139
+> [2] https://bugzilla.redhat.com/show_bug.cgi?id=2275252
 
+FWIW, those should ideally look like this:
+
+Link: https://github.com/libguestfs/libguestfs/issues/139 [1]
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=2275252 [2]
+
+> Fixes: b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure")
+> Cc: stable@vger.kernel.org	[v6.8]
+> Link: https://lkml.kernel.org/r/20240417143324.GA1055428@cmpxchg.org
+> Reported-by: Christian Heusel <christian@heusel.eu>
+
+And here checkpatch.pl should have complained that the above line should
+ideally be followed by a Link or Closes tag to the report, e.g.:
+
+Closes:
+https://lore.kernel.org/all/3iccc6vjl5gminut3lvpl4va2lbnsgku5ei2d7ylftoofy3n2v@gcfdvtsq6dx2/
+
+Which in this case would be nice, as I'm tracking this regression, hence
+regzbot will then track the patch and consider the regression resolved
+once the fix lands in mainline.
+
+Ciao, Thorsten
 
