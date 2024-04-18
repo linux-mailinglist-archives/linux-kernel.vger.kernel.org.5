@@ -1,151 +1,149 @@
-Return-Path: <linux-kernel+bounces-149971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AC2F8A9899
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:33:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC7398A989A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:33:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB8E3284A8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:33:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E610E1C21F94
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:33:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA92315E7EC;
-	Thu, 18 Apr 2024 11:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC32C15E7E5;
+	Thu, 18 Apr 2024 11:33:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jWJF9+G6"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oSs2A/pj"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5373856464;
-	Thu, 18 Apr 2024 11:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ABA756464
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:33:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713439980; cv=none; b=fxYMvdzlMe+R1t1EAqMQaASQz8zgUTv0xqlrqliIctNvBFEREegKgB6dE4AkQvmDyYdxr2Oe3kIy5xueCGo6+mmhCMpy3RIfSt9gN553HfEGHhocCjVBDBwTTV1OXGftI08DiL3B8/v71+mcAS0Jynfjs7GDYEPc/8MiSwR3gKM=
+	t=1713440005; cv=none; b=gGqUJa5qlsLei2A9sIc9PjeqK0fRdKhheayRfSNBz4DNlfHNnyRVMj4pTnDU8r6LiXBKng1HNWctcs71vjqSCB9JD5ZLBgU75FoYXZb8TYWj8WRBGf0OgeDwX125EsXKNM4vQMRS9QBs1K5uSjLvRHrH+Kn4cpR4G71bNxGargI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713439980; c=relaxed/simple;
-	bh=o+JV8MIGjKEeR3qwjniL+kE5kdz0uJ4owIBth1VetVs=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=kTyingfmOdXheRPs8wgLedcMMbDTLmDGQHf+KcKuLKqXbejKIM+Fx/9zMHbgzKXv/pPA7uiivmC1tObG0ZxEE7dvCbzcuZc7ZMTfA4yR4qWfSoBVVDf3x/Payl1sg+X5x+bZZFTYyX6IcFa1H+O54L8KBLdkc7Nmxcq0xAV7PFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jWJF9+G6; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713439978; x=1744975978;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=o+JV8MIGjKEeR3qwjniL+kE5kdz0uJ4owIBth1VetVs=;
-  b=jWJF9+G6rigZePUHBbGhwv4zBYmTTYJZmrTedn9MfJOegAO75LJgS8Eg
-   mVSKvtUYG8odtT4k+rA0oe3XidVAFy7W/HMVPEyWK4/cpVXW6JMfLKmx5
-   RZ33dC/cxJ05P3f76kGs2Ll6Fn73c7iEWm/nV0Lutj1ahB8adMIGzVQaK
-   JtIw4HOOYdN5OHGPdKBZel0Kx/twP/Q3SL3vt2VXyte1i1S//BFfradZO
-   i4V8Ij4hcn0nj/Qjvke6vz7KPKJ+x2AkSSnSriItPyB2W99T+SC9vDdgM
-   Zg1O/YbfTSWZU6MlTSTnlvTzXMNyBM1dr1VgFPSGiEl6O8thduSDZpG6/
-   g==;
-X-CSE-ConnectionGUID: +p17lV3/T3WesgTpFTaxRA==
-X-CSE-MsgGUID: T6MaTthQRoSR6DPRoXQ4yw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="8840329"
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="8840329"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:32:57 -0700
-X-CSE-ConnectionGUID: RoLqWj3RTOq8tkJZEN3BIA==
-X-CSE-MsgGUID: 3IQBj/aNRcmuq+D8X8DaUg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="23034623"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.36])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:32:55 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 18 Apr 2024 14:32:51 +0300 (EEST)
-To: Parker Newman <parker@finest.io>
-cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    Jiri Slaby <jirislaby@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-    linux-serial <linux-serial@vger.kernel.org>, 
-    Parker Newman <pnewman@connecttech.com>
-Subject: Re: [PATCH v4 3/7] serial: exar: add optional board_init function
-In-Reply-To: <0e72a3154114c733283ff273bc1e31456ee101f4.1713382717.git.pnewman@connecttech.com>
-Message-ID: <60feac79-2e71-4a66-729e-80d12cb660f2@linux.intel.com>
-References: <cover.1713382717.git.pnewman@connecttech.com> <0e72a3154114c733283ff273bc1e31456ee101f4.1713382717.git.pnewman@connecttech.com>
+	s=arc-20240116; t=1713440005; c=relaxed/simple;
+	bh=/rHfCjIVYXQVsvXGB8IxXfG+StoG4NwDe0rmylo5Qjg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VP3Fvl07bDC4zaeqMsPvlI5VUwxNRqJa146sBF3jKudXIQBM2cw3SRaDt3TMMdRmxQElKnGR0rK7FhYnEWB0YuLD2K7Nrn9IdnqVucy8axCNAGAp7QAueLiK+gWkxg2m/wFpYTc8SIr1R8D6vyisLTicOwq3drUEh4jVS9PeYqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oSs2A/pj; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e69a51a33so816058a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 04:33:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713440002; x=1714044802; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=b9lgOdCdIOmICWwhRzdOoCn2EAweW38pbbCbx3C0dQk=;
+        b=oSs2A/pjkYgDkyeDPExMdwe0B1bAdjO+o5gb5wZ/3JTWCDp/CJJNW+LKWtQaNXlzGg
+         IzCBih18iifxmMAigngQJnAmSmS8J7wjR2/0IF3BvunGkvQTuMWJtZ6HOS+qq+Y+39y2
+         4FHkj3wiM2UJWUP9J1wHSmtoJZw9c36WV+7HlQmaYANz6cPdQRCKbBmJC/8ELEGy1SMB
+         EC3gF6e0J6ZtDnnLysjdU0UstqDbirjNpuqtsgBca4BazdjRYEdfGIEO6TIXiTJ4xACC
+         cFrGWiH5uK/V213GNMj9xbp2Qq9Py8FM2xd3UQoYPGhxWKD0DqecAgO8HrZXv5rkbd+u
+         diXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713440002; x=1714044802;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b9lgOdCdIOmICWwhRzdOoCn2EAweW38pbbCbx3C0dQk=;
+        b=imwOaBrva1XBBKpKgQ7OTRQsLqQobSfeVV1oMrckbT1mbBZajnyETo/48z9Hf4TcGt
+         eqw9xTdntSje357bVSWBY6UIRL07BD+xjIsFDPUATaspPaV+0w04bwQ/CEt7d6BXjXop
+         l+BS1D5cC9FsoHARJX4VCcoa3T86GAdEhSXYE0qa3KhrpQ+QB/swzwueccgiGWNcF7DN
+         iefjbBuUIQzvvbEojXvINviWRXIL6WYZzOqC+cFVjsbhthQXQiG4+w9zARraYZtpPshk
+         X2NGroIuNB3bcnySj4m5hTxn7Gw9EubMtZAij64nyktfHKsMBIJjttphnRMLvITb3sxw
+         46qQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWFMtz6IwKM5RiBpWEvBiICjDdCxrdqV71xjNsB7iPEyydamHgCxl3sFL9YtGSt/aD7xCErIEcIYFZe9A9bWtu4A1iZmdoC4xH9RM1b
+X-Gm-Message-State: AOJu0YwwbIh6Gpe+8qh6EwTngW2hpUEU6igI+sh/Mzbhr0g+uIJq1Luy
+	WNg91IRmUTDwJqymOlzjzXZMZUKJWHG4h6N1RJpKOoW3YTCtZT3O4kyXAyP+gQA=
+X-Google-Smtp-Source: AGHT+IHKiVh6Nj87GB2UGWDfWcSeS1Qxmuucy3GshEAHNragzY3My+7Qk0/Is0MtMJzE3QOxcEZd4Q==
+X-Received: by 2002:a50:cd04:0:b0:56d:f7ce:e879 with SMTP id z4-20020a50cd04000000b0056df7cee879mr1750351edi.37.1713440002011;
+        Thu, 18 Apr 2024 04:33:22 -0700 (PDT)
+Received: from [192.168.45.55] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id eh11-20020a0564020f8b00b00571be394478sm501245edb.69.2024.04.18.04.33.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 04:33:21 -0700 (PDT)
+Message-ID: <e5c60b6f-3cab-4265-87fc-7eeab03795ec@linaro.org>
+Date: Thu, 18 Apr 2024 13:33:19 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1710506478-1713439971=:986"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: qcom: dispcc-x1e80100: Drop the reconfiguring of
+ PLL0 on probe
+To: Abel Vesa <abel.vesa@linaro.org>, Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Rajendra Nayak <quic_rjendra@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240418-x1e80100-dispcc-drop-pll0-reconfigure-v1-1-453e4e70e940@linaro.org>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240418-x1e80100-dispcc-drop-pll0-reconfigure-v1-1-453e4e70e940@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 18.04.2024 12:51 PM, Abel Vesa wrote:
+> Currently, PLL0 is configured by the bootloader is the parent of the
+> mdp_clk_src. Reconfiguring it on probe leaves the PLL0 in "stand-by"
+> state (unlocked), which will trigger RCG child clocks to not update
+> their config,
 
---8323328-1710506478-1713439971=:986
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Sounds like this is the problem that should be fixed instead.
 
-On Wed, 17 Apr 2024, Parker Newman wrote:
-
-> From: Parker Newman <pnewman@connecttech.com>
->=20
-> Add an optional "board_init()" function pointer to struct exar8250_board
-> which is called once during probe prior to setting up the ports. It will
-> be used in subsequent patches of this series.
->=20
-> Signed-off-by: Parker Newman <pnewman@connecttech.com>
+ which then breaks eDP on all x1e80100 boards. So rely
+> on the bootloader for now. Drop the config values as well. Also add
+> a comment to explain why the PLL0 is not configured alongside PLL1.
+> 
+> Fixes: ee3f0739035f ("clk: qcom: Add dispcc clock driver for x1e80100")
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 > ---
-> Changes in v3:
->  - Renamed board_setup to board_init.
->  - Changed pci_err to dev_err_probe
->  - Added note above about checkpatch fixes
->=20
-> Changes in v4:
->  - Removed checkpatch fixes, they will be in their own patch at the end
->  - Added pcidev to board_init() args to avoid needing to add to priv
->=20
->  drivers/tty/serial/8250/8250_exar.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/825=
-0/8250_exar.c
-> index 72385c7d2eda..f14f73d250bb 100644
-> --- a/drivers/tty/serial/8250/8250_exar.c
-> +++ b/drivers/tty/serial/8250/8250_exar.c
-> @@ -177,12 +177,14 @@ struct exar8250_platform {
->   * struct exar8250_board - board information
->   * @num_ports: number of serial ports
->   * @reg_shift: describes UART register mapping in PCI memory
-> - * @setup: quirk run at ->probe() stage
-> + * @board_init: quirk run once at ->probe() stage before setting up port=
-s
-> + * @setup: quirk run at ->probe() stage for each port
->   * @exit: quirk run at ->remove() stage
->   */
->  struct exar8250_board {
->  =09unsigned int num_ports;
->  =09unsigned int reg_shift;
-> +=09int     (*board_init)(struct exar8250 *priv, struct pci_dev *pcidev);
->  =09int=09(*setup)(struct exar8250 *, struct pci_dev *,
->  =09=09=09 struct uart_8250_port *, int);
->  =09void=09(*exit)(struct pci_dev *pcidev);
-> @@ -773,6 +775,15 @@ exar_pci_probe(struct pci_dev *pcidev, const struct =
-pci_device_id *ent)
->  =09if (rc)
->  =09=09return rc;
->=20
-> +=09if (board->board_init) {
-> +=09=09rc =3D board->board_init(priv, pcidev);
-> +=09=09if (rc) {
-> +=09=09=09dev_err_probe(&pcidev->dev, rc,
-> +=09=09=09=09=09"failed to init serial board\n");
-> +=09=09=09return rc;
-> +=09=09}
-> +=09}
-> +
 
-Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+This works, because you have (at least) partially configured hardware, but
+we shouldn't assume this to be the case.
 
---=20
- i.
-
---8323328-1710506478-1713439971=:986--
+Konrad
 
