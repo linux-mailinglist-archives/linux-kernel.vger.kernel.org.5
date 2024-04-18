@@ -1,102 +1,164 @@
-Return-Path: <linux-kernel+bounces-150069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5899D8A99F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:36:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6F338A99E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:32:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8933F1C213F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:36:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A20D8282D77
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 019CC29CEF;
-	Thu, 18 Apr 2024 12:36:50 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA004596B;
+	Thu, 18 Apr 2024 12:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eiNk++DM"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB4C11DA26;
-	Thu, 18 Apr 2024 12:36:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E13729CEF
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713443809; cv=none; b=u61AClSL4I8nd7Z0gzPpNL5fEmAmvA1ugTDnRI1jKDHwMbtxmaijmuZExxbZh3j9aS4Fj7+MZsdd41St95nqgsBSZgTcDRh6yVtz5TJ1rrJ0RyTgzbv17lNgvUcCQ01DRixOjM1W/0u41nynn/+TRemuoULu6PCz4C5lwUpML94=
+	t=1713443525; cv=none; b=piZa4KH0rCBWqTVybS+aZIcLRFmj5bpuXM7p3LC5k47q3gleD6UVVfcqGyAdRIFuhWAFm5Bz9XmR8EEOAWiGdY+U6fbMttY2amlLI+9IW0ka2zYe2ZxCRHkGLtTJSd3BcmO4X4ZmJqmPxr2gBCpUB9RTEvHbAp46E7UtTk6DId8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713443809; c=relaxed/simple;
-	bh=3YUauoGbeJ5ZxfusdnLISD6V1rVbaD0VMA4lUVm8NDU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PRbuY3HpWwtH+w2Ira+Iw8pFVrs9Sy9LB8PsVWVH6P1wKuZ+6OXfay8Wf99m1Wn9wVj0FGPgGNRLzzZcNJNqLIRDvB54JJNYNxAHfNj/6HECFlRctscU9GXzkbQ9pu6dKB9Szgj2t7/MOFGB+DqADkeAIOjkkvQV2a0dFGiJ4RA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VKxzT4Q43zNnwl;
-	Thu, 18 Apr 2024 20:34:13 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (unknown [7.185.36.114])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8908418006B;
-	Thu, 18 Apr 2024 20:36:38 +0800 (CST)
-Received: from hulk-vt.huawei.com (10.67.174.26) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 18 Apr 2024 20:36:38 +0800
-From: Xiu Jianfeng <xiujianfeng@huawei.com>
-To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-	<corbet@lwn.net>
-CC: <cgroups@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] docs, cgroup: add entries for pids to cgroup-v2.rst
-Date: Thu, 18 Apr 2024 12:30:12 +0000
-Message-ID: <20240418123012.916411-1-xiujianfeng@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713443525; c=relaxed/simple;
+	bh=YqqjyI4oiP/yXAptquTGZQq4WuZbwYBddBkxs2Tq4zw=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=Ni3zm/K3jf8E2lzRG3v00v4T6nP0rmsp9vLtazjEb2WDzsnT10N649twhxzigOInNpgP7E1fvKZXOPF5W+kHOOL4dspBIU3hSj/FXWvPZjDuhizk2fzjWJ3f48DvNCdMeFsZmHOpJZT1QxWDGoo8AEEPBzB4fQuILwKZAZjs59Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eiNk++DM; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-de46da8ced2so483769276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 05:32:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713443523; x=1714048323; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hBMrt7abAHFg6HP/pUKNzKWG1Ya5Ou5z4dVSJW9qzG8=;
+        b=eiNk++DMQvBw5xRdOMGTBeypQrG+B4tp4NgmG1m+Uvd5JXFloHaWnrIdW8nZTUA+4I
+         stg8hqHfTkAuFAwluKRLf41fpwBjRNkSwDbY75f0uMYROo5dBSHZ9yI3wtPdIrDi4BUv
+         7xF2qQ0Bl/E6frJHlxMVShQpTUYP0gNGCIHXkRwxmC3KfHnBaGPCqpst9F/r9IULt4VP
+         bNPLQOqamJllqFKZ1Piew1jBW+2qnRIApo3u/NX3buQjy13iLnvSDMNvk8Se7zbN7SEr
+         xJ9tus6KDJsYWquOglJsr3FSi/83G2jKCCVcFnDnTNfRO5uT4ZUv13eJ78UpU5YSYBr2
+         8fUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713443523; x=1714048323;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hBMrt7abAHFg6HP/pUKNzKWG1Ya5Ou5z4dVSJW9qzG8=;
+        b=jjeA4koPJvgZZrKU/NWNTcZH3BzoOueMGUKQXEFfePrCK6rfVYqZZNcBmit4MyzHS8
+         k06P2pLy4YUVuoAsRXSU/ZTLtJvRtx+6AsaJz8u0IpDcOOPBOyzC2rc7pUdYds9oM2za
+         zwKj5nFkmNVWWwoJXA/iOYL/MqHjCJDXrQHFGRIYaulR92noh5gHEm5aZ5u/lgk+RLlI
+         wkAOh04F3Qdk/dFThgZ03L0jciMU9H7o6iBZGgLNAdKtPZ+6kMD7KIRrNIVjmo9QBKsR
+         /zxr3t5A5Z4VEXGRmt1dTvFovYSkjts8HdiwvuHMH3BuUzXqwKt/o0Y/GR7ILDEduOHm
+         M2SQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWnHk9DTvRI3c35ofOoB76PaePsb6RYT+ultSFNft9NM4pgNszSaofA4UdurQvBcU3poxWo761THuljtG11frgIiHWIjjnGgPNUpX0/
+X-Gm-Message-State: AOJu0YxxNKFmhe3aJeoWTGmrVPQkT8mUCZU6EtlIzEsmPjC3GedUQ80X
+	igs4B08o5ZIJgG0VtUbd2c1kLZCPga2aH7nvVHfByU/Dth7Ig83JcnOx5TvhILVMGozC1O9IA22
+	XtbBYUv/Ih13CPqjy9z3yRNVJIywAoiJUsJ/6Kw==
+X-Google-Smtp-Source: AGHT+IE8M0WQNPrcBCZmpPscuxyU5gGtU5Y9ThtsKAZHFHZ07Igffy0ScmGH/QLZC38vl1oUYNHXJhm+5CXWUXMI3kc=
+X-Received: by 2002:a25:8052:0:b0:dc7:4a05:ca33 with SMTP id
+ a18-20020a258052000000b00dc74a05ca33mr2301879ybn.64.1713443523047; Thu, 18
+ Apr 2024 05:32:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500023.china.huawei.com (7.185.36.114)
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Thu, 18 Apr 2024 18:01:52 +0530
+Message-ID: <CA+G9fYsMhzDCyqCPoZ68oMUV5tMbMmi5qF7_C+55Ec9h6YfXgw@mail.gmail.com>
+Subject: selftests: arm64: sve-ptrace.c:85:40: warning: data argument not used
+ by format string [-Wformat-extra-args]
+To: "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+	Linux ARM <linux-arm-kernel@lists.infradead.org>, 
+	open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org, 
+	Linux Regressions <regressions@lists.linux.dev>
+Cc: Mark Brown <broonie@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Anders Roxell <anders.roxell@linaro.org>, 
+	Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-This patch add two entries (pids.peak and pids.events) for pids
-controller, and also update pids.current because it's on non-root.
+The Linux next building selftests with clang-17 and gcc-13 found these
+build warnings.
 
-Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Build log:
+---------
+PATH:
+selftests/arm64/fp
+The reported build warnings noticed on following test files.
+  * sve-ptrace.c
+  * za-ptrace.c
+  * zt-ptrace.c
+
+clang-17 warnings:
+-----
+sve-ptrace.c:85:40: warning: data argument not used by format string
+[-Wformat-extra-args]
+   85 |                 ksft_exit_fail_msg("PTRACE_TRACEME", strerror(errno));
+      |                                    ~~~~~~~~~~~~~~~~  ^
+sve-ptrace.c:88:40: warning: data argument not used by format string
+[-Wformat-extra-args]
+   88 |                 ksft_exit_fail_msg("raise(SIGSTOP)", strerror(errno));
+      |                                    ~~~~~~~~~~~~~~~~  ^
+sve-ptrace.c:344:11: warning: format specifies type 'int' but the
+argument has type 'size_t' (aka 'unsigned long') [-Wformat]
+  343 |                 ksft_test_result_fail("Error allocating %d
+byte buffer for %s VL %u\n",
+      |                                                         ~~
+      |                                                         %zu
+  344 |                                       data_size, type->name, vl);
+      |                                       ^~~~~~~~~
+and more
+
+Gcc-13 warnings:
+------
+sve-ptrace.c: In function 'do_child':
+sve-ptrace.c:85:36: warning: too many arguments for format [-Wformat-extra-args]
+   85 |                 ksft_exit_fail_msg("PTRACE_TRACEME", strerror(errno));
+      |                                    ^~~~~~~~~~~~~~~~
+sve-ptrace.c:88:36: warning: too many arguments for format [-Wformat-extra-args]
+   88 |                 ksft_exit_fail_msg("raise(SIGSTOP)", strerror(errno));
+      |                                    ^~~~~~~~~~~~~~~~
+sve-ptrace.c: In function 'ptrace_set_sve_get_sve_data':
+sve-ptrace.c:343:58: warning: format '%d' expects argument of type
+'int', but argument 2 has type 'size_t' {aka 'long unsigned int'}
+[-Wformat=]
+  343 |                 ksft_test_result_fail("Error allocating %d
+byte buffer for %s VL %u\n",
+      |                                                         ~^
+      |                                                          |
+      |                                                          int
+      |                                                         %ld
+  344 |                                       data_size, type->name, vl);
+      |                                       ~~~~~~~~~
+      |                                       |
+      |                                       size_t {aka long unsigned int}
+and more
+
+Steps to reproduce:
 ---
- Documentation/admin-guide/cgroup-v2.rst | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+tuxmake --runtime podman --target-arch arm64 --toolchain clang-nightly \
+  --kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2fDW3nAXzFH2GOEle3S3MVC53A9/config
+\
+  LLVM=1 LLVM_IAS=1 debugkernel dtbs dtbs-legacy headers kernel
+kselftest modules
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index d8b00f0ea96d..6f6fe744452e 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2188,11 +2188,25 @@ PID Interface Files
- 	Hard limit of number of processes.
- 
-   pids.current
--	A read-only single value file which exists on all cgroups.
-+	A read-only single value file which exists on non-root cgroups.
- 
- 	The number of processes currently in the cgroup and its
- 	descendants.
- 
-+  pids.peak
-+	A read-only single value file which exists on non-root cgroups.
-+
-+	The maximum value that the number of processes in the cgroup and its
-+	descendants has ever reached.
-+
-+  pids.events
-+	A read-only flat-keyed file which exists on non-root cgroups. The
-+	following entries are defined. Unless specified otherwise, a value
-+	change in this file generates a file modified event.
-+
-+	  max
-+		Number of times fork failed because limit was hit.
-+
- Organisational operations are not blocked by cgroup policies, so it is
- possible to have pids.current > pids.max.  This can be done by either
- setting the limit to be smaller than pids.current, or attaching enough
--- 
-2.34.1
 
+tuxmake --runtime podman --target-arch arm64 --toolchain gcc-13 \
+  --kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2fDW3wG8BqWxf0afUI5f4wkArPi/config
+\
+  debugkernel dtbs dtbs-legacy headers kernel kselftest modules
+
+Links:
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2fDW3nAXzFH2GOEle3S3MVC53A9/
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2fDW3wG8BqWxf0afUI5f4wkArPi/
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
