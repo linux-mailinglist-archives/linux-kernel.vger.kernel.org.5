@@ -1,125 +1,95 @@
-Return-Path: <linux-kernel+bounces-150374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83EB18A9E24
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:18:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 102E28A9E28
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:20:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E4842865E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:18:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4B771F22985
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:20:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC96C16C699;
-	Thu, 18 Apr 2024 15:18:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE0A016C6A1;
+	Thu, 18 Apr 2024 15:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BWtwB2+e"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OIEUZqdX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9422815E20F
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:18:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330BE6FC3;
+	Thu, 18 Apr 2024 15:20:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713453524; cv=none; b=G8yEnNEGrPMNfJZLbE0yNqm4h6CnEPz+2QidKdd99YZDNhDJ7HWA4K0XP0TrB1ZLOBohHAW/EyBoEI9d8G1Q6VOsZaFIa0Cc/0NwYum8irrdFEglEMDrIgLvFPzQm2VQks0O5my4xdlFelmBD+F2m2J9I6KgwrlzClPZx2SUVo0=
+	t=1713453635; cv=none; b=j/3TdAPC9pAUAQ/WIjZgpoybW+z0g+TgtqtSwy+B+VRMk/1fgy7ICfvt7s1H6cwv9yZtcnRqKCHa6OctFZmE8ssBMzJO7XkE9j7f7lVM1gMHJVnr0icZF02TmC4QDxWahWQmzNtjWNp7Orj7Tk/EuywLZ/RTfEJDUF0De81yWXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713453524; c=relaxed/simple;
-	bh=YwU6TGZyJFBdHkYGxkydvf9mq0nGI6wPqTIcDIgzqqA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Jb4wfi09ha46k5TuaUi6gHdn5sYJ3ukjowvpOY9HqHMqAM2oPpWjv5YcqR6LqPncGqhQGmjsQdyXaRT5Q1xG6DyrvvSJSWOlaJA+eZ6GW/4A+xJy3YSFJ2iMALEL95TvmQAApZOdWnCczDKkQ20wE9YJSLtv+pvORpqmDJeFDe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BWtwB2+e; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713453521;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=fRqyqZZz/beIO4QHAyMNc12G8bTOX3CjIzAVeMQ2tbU=;
-	b=BWtwB2+e2/eJeBUnN5AnFYwsikW0uNs/370YuD6TnT97dNGTvBS2JLyc/M6TcatB5lp4+a
-	4JaJDwF0eQ5LRb4MmSayTcRuXxCUJC9KOU3r57Fzppfx68B3ZzJKm5tJCt33+lHQSvyHIz
-	gBbpZtT/a2QFTxRTGr+m+65T9Hl4MJ0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-362-XPqDrA9YMa6ZQad_-ry7Zw-1; Thu, 18 Apr 2024 11:18:37 -0400
-X-MC-Unique: XPqDrA9YMa6ZQad_-ry7Zw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 56187104B501;
-	Thu, 18 Apr 2024 15:18:37 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.39.192.55])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 62A84C2595D;
-	Thu, 18 Apr 2024 15:18:35 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	David Hildenbrand <david@redhat.com>,
-	John Hubbard <jhubbard@nvidia.com>,
-	Zi Yan <ziy@nvidia.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v1] mm/huge_memory: improve split_huge_page_to_list_to_order() return value documentation
-Date: Thu, 18 Apr 2024 17:18:34 +0200
-Message-ID: <20240418151834.216557-1-david@redhat.com>
+	s=arc-20240116; t=1713453635; c=relaxed/simple;
+	bh=/e1tInGkYUBdYm7yvZRxryugFAXscOsuzj1rVya6Oog=;
+	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
+	 Cc:Message-ID:Date; b=Ds1MXgSF5EW/tpzBuwmC8wrixvXzp6WVrMxTtDf81gxNqzLidRghYYqXAPF/Ku1qXxqJeKTi/yaEeyat/8VfHSfHQUwK59zWGpdWkEsCoraJ/g1SFFiUs5XocmETV77mhgSbP6hia41jb0CzV3MQXNm0KpoVWc8N536QQ+egasc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OIEUZqdX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB43BC113CC;
+	Thu, 18 Apr 2024 15:20:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713453635;
+	bh=/e1tInGkYUBdYm7yvZRxryugFAXscOsuzj1rVya6Oog=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=OIEUZqdXtRzTWFAMtqknhihf1jrgD1+yPT4GM8WDLj0SbbYc83kKI9Rlp78TcqLVk
+	 N12Zxn1R1Dut8YqZz5tZO/2+X057JjRZiJSlVMtEcVjMrT8tcdzpsGBXJtpIrG52Vp
+	 U/1KK2sWteKaU+cb7FPUPclL5sAWYeVc+GO3OQPx1cgrY2m/GGgidb5iWOvhRH8Zi9
+	 gq6XtMhy5TPBLyLYcld/rpjxVHbSRxCLrGRQx2eBfVg991lQ/yPvybPplhsUXIPiv1
+	 fxKtHpFMuFFsOBAaEOQLDxV2RT11hox8dFUUY82WMIhLVzX/mtWbOOLX+B1Rh6wEjU
+	 NF4PWBZNuVO+w==
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2] wifi: ath11k: Fix error handling in
+ ath11k_wmi_p2p_noa_event()
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: 
+ <07f1fc75b2d5b4173ae1b7bb1da5be7f6fc608c8.1713212781.git.christophe.jaillet@wanadoo.fr>
+References: 
+ <07f1fc75b2d5b4173ae1b7bb1da5be7f6fc608c8.1713212781.git.christophe.jaillet@wanadoo.fr>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Jeff Johnson <jjohnson@kernel.org>, Kang Yang <quic_kangyang@quicinc.com>,
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Jeff Johnson <quic_jjohnson@quicinc.com>,
+ Kalle Valo <quic_kvalo@quicinc.com>, linux-wireless@vger.kernel.org,
+ ath11k@lists.infradead.org
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <171345363078.934743.11630888726665265520.kvalo@kernel.org>
+Date: Thu, 18 Apr 2024 15:20:32 +0000 (UTC)
 
-The documentation is wrong and relying on it almost resulted in BUGs
-in new callers: we return -EAGAIN on unexpected folio references, not
--EBUSY.
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-Let's fix that and also document which other return values we can
-currently see and why they could happen.
+> if (noa_descriptors > WMI_P2P_MAX_NOA_DESCRIPTORS), there is a mix of
+> return and goto. In such a case, 'td' should be freed to avoid a memory
+> leak.
+> 
+> While at it, change ath11k_wmi_p2p_noa_event() to return void.
+> '0' was returned in all cases, even in case of error and the only caller
+> does not handle the return value.
+> This is also more consistent with most of functions called from
+> ath11k_wmi_tlv_op_rx().
+> 
+> Fixes: 2408379f15a1 ("wifi: ath11k: implement handling of P2P NoA event")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Zi Yan <ziy@nvidia.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- mm/huge_memory.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+Patch applied to ath-next branch of ath.git, thanks.
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index ee12726291f1b..824eff9211db8 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2956,7 +2956,7 @@ bool can_split_folio(struct folio *folio, int *pextra_pins)
-  *
-  * 3) The folio must not be pinned. Any unexpected folio references, including
-  *    GUP pins, will result in the folio not getting split; instead, the caller
-- *    will receive an -EBUSY.
-+ *    will receive an -EAGAIN.
-  *
-  * 4) @new_order > 1, usually. Splitting to order-1 anonymous folios is not
-  *    supported for non-file-backed folios, because folio->_deferred_list, which
-@@ -2975,8 +2975,15 @@ bool can_split_folio(struct folio *folio, int *pextra_pins)
-  *
-  * Returns 0 if the huge page was split successfully.
-  *
-- * Returns -EBUSY if @page's folio is pinned, or if the anon_vma disappeared
-- * from under us.
-+ * Returns -EAGAIN if the folio has unexpected reference (e.g., GUP).
-+ *
-+ * Returns -EBUSY when trying to split the huge zeropage, if the folio is
-+ * under writeback, if fs-specific folio metadata cannot currently be
-+ * released, or if some unexpected race happened (e.g., anon VMA disappeared,
-+ * truncation).
-+ *
-+ * Returns -EINVAL when trying to split to an order that is incompatible
-+ * with the folio. Splitting to order 0 is compatible with all folios.
-  */
- int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
- 				     unsigned int new_order)
+6ef5b4c9598c wifi: ath11k: Fix error handling in ath11k_wmi_p2p_noa_event()
+
 -- 
-2.44.0
+https://patchwork.kernel.org/project/linux-wireless/patch/07f1fc75b2d5b4173ae1b7bb1da5be7f6fc608c8.1713212781.git.christophe.jaillet@wanadoo.fr/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
 
