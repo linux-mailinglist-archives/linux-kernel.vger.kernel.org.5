@@ -1,165 +1,102 @@
-Return-Path: <linux-kernel+bounces-150218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54A508A9BD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:57:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3E008A9BE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:58:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C806BB211B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:57:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B0181F215B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:58:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86743165FB4;
-	Thu, 18 Apr 2024 13:56:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 471EE165FBA;
+	Thu, 18 Apr 2024 13:57:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="F19z3Dz3"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11olkn2034.outbound.protection.outlook.com [40.92.18.34])
+	dkim=pass (1024-bit key) header.d=ya.ru header.i=@ya.ru header.b="eRoC1Yhv"
+Received: from forward501b.mail.yandex.net (forward501b.mail.yandex.net [178.154.239.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130E21649D5;
-	Thu, 18 Apr 2024 13:56:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.18.34
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713448614; cv=fail; b=Fd2i59q5ZpyabdTv83xzgg+bcUQq5jbmdHCpKA3TYeYWiQN9Tdp8HG2sVnqxa5PoH44VJPaO+tPQPAANvwy3CfkyaoPszAuA7Z/p/u651s7p2Sot+wrK/SHXp+euTVtSh9XFX0m0PVNbtS0z6DbAxDXoCGYMaiu/3VZdw9VfJdM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713448614; c=relaxed/simple;
-	bh=HlJsfb/TlgIgxwOUp5wIz0J/YhQ5isvqMs5g6JX5R3g=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=G36UaLlgNeDgBdFXvQ9lyGx2L/fzjOvVLwa7er6WSGCGyg29YP/dI44HRnzafjngltQpepWmyv74k5p4jHkcarQqZ9HurXsNQ/s/553F2BLX2fmmIopTVTVkTJe8raWh+651DW3vqBL9P74gLiruTTmuHWtLGkmHTdFivj3Rtdg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=F19z3Dz3; arc=fail smtp.client-ip=40.92.18.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oeOk5jKjsiaij1wpdLehAufmdvy9owVgfeIjLXhp1fYGSNSk9zWHu6Jgg1dHEVWx6EGWggwFrblX1I3oQ6fCMNNDe7lB1s5UlvBTwRbNTyoi0i8qSvPEUzFkP2NeQMuGEUcVCY5ebpmVhvgLE8d2e8pZ4nseJmk4K4jQq/acub4asZyAeZzqNokjDDARwSwIfPYpXVkFY3kKyc8Vbq4qsutXhOwVqq3OqqWh+/YC/MaDQlvuKGjKt1kAomuvQt2c5B8K6MwQtMd54N5bugZlgkA0DF8ske5YEjL37+PFzF/G0IwXdZuQ6ckoax8eFvyFipGlU1jQXrj9Egq+VDIL/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+hdT+BL+ygv9itSHI08CmEC/LpBZ9n3tHg4jp3A2+0c=;
- b=V1iIBH96zFZBr2ck8snGtHlZrmxaMuPjWbiKpzMYEI1IyJb5FpHevKcS9LVOGyhYaQnuqrEyjEoJsRUohRk8uZdrBPB3cK4RJSgTw3eqvfUHSaGpP++fZUSTyD0zbvaw2FwZWq8AoH7hBuCy63UBkjIyFnlh6iHCbWPsr6DlxbDq9pL/GUjsVuus8WeCiHn+cXktIQz+SdXDa2nB+3M0hJNS1vIJAX6e1T2DMI/p3pJdTazErXeMxr9osZyWMHavSLo6Y+FecZRrfB76NzDDn+JR3J5frcOqc1iDakdju5OqMH4W4GoHvGM+I9EFuwEh1g8vRWQLXl6uFRGqsmQUCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+hdT+BL+ygv9itSHI08CmEC/LpBZ9n3tHg4jp3A2+0c=;
- b=F19z3Dz3gcQHLUNTVf5vk3lhx/mnvwygs5wkUY9fgjwJzDozMRJkmCppJzV+8I9ZVZUTvacHNQwXdxeP+p/Cjto+GTg1JxOQWFtskr2YUF9hh32SsDeayo+s8YkwYYdR4FSsZawkVApvC+NBz4VuDuVN6JQ1KNBnLLN5w3PN9tS6LaGNg6tEAQ2FKV1b3SXLealKupnrtk4ho4OhwYOX0xusQpOLWMaX1vMOV7+9xv/6hd2n+GsT/gMEoHyFsFLBuzCtaEyyyvh6/GeZs/kAvpI2Uw2OazaJBAxL6m7MHFMYdP6DnIN36t4FKsIFOjY5ao88mwtptJbC3qB5WUfLCA==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by SN4PR0201MB8840.namprd02.prod.outlook.com (2603:10b6:806:207::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Thu, 18 Apr
- 2024 13:56:51 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::1276:e87b:ae1:a596]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::1276:e87b:ae1:a596%5]) with mapi id 15.20.7472.037; Thu, 18 Apr 2024
- 13:56:51 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Jean Delvare <jdelvare@suse.de>, Michael Schierl <schierlm@gmx.de>
-CC: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] firmware: dmi: Stop decoding on broken entry
-Thread-Topic: [PATCH v2] firmware: dmi: Stop decoding on broken entry
-Thread-Index: AQHakYvPrt/ylfUZoUy5VQ48m3QhGLFuDMKA
-Date: Thu, 18 Apr 2024 13:56:51 +0000
-Message-ID:
- <SN6PR02MB41578A69B87041B9EEFF983BD40E2@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240418142734.56e1db4b@endymion.delvare>
-In-Reply-To: <20240418142734.56e1db4b@endymion.delvare>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [74kwStrky6nlzCZAGxbNYrNxrL1hxx4B]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|SN4PR0201MB8840:EE_
-x-ms-office365-filtering-correlation-id: d811348e-5fd9-46f2-d208-08dc5faf65e4
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- NUGHu5onA7av6ENJEtZLlGa6hhQdiEWMG8sDjBsgH9WbfcFxiuyS4Adg//U3L0ZPVjnh5Y7+gtTgvzS/3ClRt3qzkx4iWjo2X4DB8AXx/JW4DzcivJuTLm0aaiKMBgCo+FSi6Ks9ou18qResUPHoHyO9oHyL8QY+RsIaiGy8oooYbMLjB9EBhnurlZetS6gadjK2VnAis0OTaKkjIG7biQWgr3l8duWfeJSdzmncym1sykdF3s/iVsc9q+EubbriMLHfIQwHp3hI2zq1ZqkbZ7Z8n/WEMbHizG1VgLBfDavdSLqBilzzDdMt+pgTZgjSKII+y8FeFcp+98EZBChqJBDei1+qCZYTktoIPIKPlY9+QWJr58476pwnJ3v/QEZcKGqn0XWgu8PLSuERBg41obNSxgjmf0pV5d9QqL3kskS7wzIdiaRGJjdNIkCQGuGTqVRl/ZfWNCJHePZsTTlMTF4/bkG1p/eJRX2SJYjskCSW9TelFDwB0gDwngr+64fWKv8hELat5dCfs+QZF+MW+KGYZl2Bt9n0oNChY7/vUDoiR0p+rsxBEH6xpuJoEidZRyMNsYBV/aRIrucRF0nGDeEV3ip3h1Sb0POsfF3dmY/Qcg8hw3AQlamOkfN0JS/0IZRZHQFi9e+EgY1MoRa8nQb9yOUkYGOq6IP0u8Veu9w=
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?Gx0PIyryYMVcAmYLnWWIss4jnqJU/emBfDjbJUWeQ9dHHJ7wXhkufCAa9BCb?=
- =?us-ascii?Q?LKARJmHzkQgvGHMAnwICRcmv3hHeWkP6KBDfFFpA2LxAJyWL0b2EQClTd7ds?=
- =?us-ascii?Q?vClm15Qr16zhL+NMzNrY6i7QvPlvcBJoWIsOI3EQtO8vmfGfa09nF4j1d0Q7?=
- =?us-ascii?Q?3K4plgoWWFH6h3Yr0dvi9pEmXcIYPdJfIZWU3bDIFC6NZ2k0+MWWE46K6dBA?=
- =?us-ascii?Q?8tqxtR25hAKVD13h0gMpVVV4q8oxHHCWFFSUpMdPVpLuQTn6Gr88isbmpexk?=
- =?us-ascii?Q?HkXBvQjwYHMmlAdTJxxa5mQ9ojhPORGuQrN2JlopByCymf5R6OwfTku3P5NY?=
- =?us-ascii?Q?VKECW4fNpuiQoPBAdLbBznMAaVop/3mX1CczoGW12rY4Xf0Mkh64vVg0IvQb?=
- =?us-ascii?Q?406Vc2s4PTUmkm+oysHwYjHhMsFD+tdJYRgbwQN7bQiUvKMVXW8Dw3c7g2og?=
- =?us-ascii?Q?4FolEmi56xk74T1EWqg1nhNrP4EqbCR8wenS8D0s3WZuTdpv3tx6LrZJ45wy?=
- =?us-ascii?Q?QE+yvtF+ilmTc8PDVFY5MLWXLJqkylwxROvnaUrVldIrunQY5J8064fSl403?=
- =?us-ascii?Q?BF0dqOjKOaHpBKPM/MMrqGvz5aV4JHEAanENDNrPHTig5Ys69nMuw1UyaoMg?=
- =?us-ascii?Q?XhWGh3CjzvYad2hnRbMPq1yeAddjz1BI/3e6Hu6jPbNOAjIXliq6MmQQlwdI?=
- =?us-ascii?Q?cXiY5iPNQSaBtMi18tHbtxgRs4Vum344TP2Nld7pRMfIaBAa4QthtF9uAnWd?=
- =?us-ascii?Q?Rt/s9VdPqdnnjL6Na0HOb3jb2dndOfWrCG4U4suXke8QArUwHzFLOA2NLk+x?=
- =?us-ascii?Q?y2dhUJ44TxyGwdOH7qSVzK0xLvMdiPOkdiGmjAnOKstNw8ucLGcbmkxpy5Ss?=
- =?us-ascii?Q?EQ4Y7C5GMgvJdB+nwhDoZjFmmYm0c7jjkqDe5XwMQckE4dDfeIc3NpsBli84?=
- =?us-ascii?Q?7wGllP7FRxV0Qxm9V62oY98a3qk6zqyocKwtvEacPtTRWHkvF9rIVYMV8mkx?=
- =?us-ascii?Q?8omKqoe7ZX6Np1y4rmL7fGqV333BR2pQHZ+rmJd5ziugFG8h9+xImYOhfMKt?=
- =?us-ascii?Q?hqMIapEyVNBZlbNQHuepkybkIjhxt/g7P+x3T77U0967KkrTp1KoCju0hA5o?=
- =?us-ascii?Q?uEors6B7ZBV07owC2h57RcKBuWNmFI0hMYjGbKMVIt+xcq8+nzRShjvkXu/8?=
- =?us-ascii?Q?4X5LcYM3cuoxMnZME2NftGcIc9MId3WrIPrNdQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23DEB165FA1;
+	Thu, 18 Apr 2024 13:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.145
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713448678; cv=none; b=Hv+lVazpOCuob4l6gYFa3FTwMHoRzormEfr1Vj9NFVvyrtrUvqxNSMvpWBdfJGwmpK5hAM3QhpGaFIJU/fNwPGeJ9oRftvRfa2PL9ztqljxGJ3OKaqR/eQ8jIafKdEDmVBFM/en5Q688qU5Sd7q8cmkX4WO+9veompGBxwMXZ6Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713448678; c=relaxed/simple;
+	bh=ZhlL4tjht7GlG67GG9kDbL7UVrYgSu0/4n5O5L0wbUY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=pQud/LlnLqW5j0rEMhkJinLPj4ifUuy8nYrT5WHTRO3nyEOp0YnuOamOOXUORufeIWckihNZ9wisT+0PpTUWCZfbHNnFCRI4dLDPilnbzukmHCY2UxpQ7w+NzWid0Ybf45yBZ8L2SgBaQ1fKKNuJgBtXQLXxfT96hmbdO65IvsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ya.ru; spf=pass smtp.mailfrom=ya.ru; dkim=pass (1024-bit key) header.d=ya.ru header.i=@ya.ru header.b=eRoC1Yhv; arc=none smtp.client-ip=178.154.239.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ya.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ya.ru
+Received: from mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net [IPv6:2a02:6b8:c08:c8ad:0:640:7c75:0])
+	by forward501b.mail.yandex.net (Yandex) with ESMTPS id F118261590;
+	Thu, 18 Apr 2024 16:57:52 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id gvF5FWNoJ8c0-d4s2iy88;
+	Thu, 18 Apr 2024 16:57:52 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ya.ru; s=mail;
+	t=1713448672; bh=TvATYFolPsmsitecl5MtmkLtQMecqxUnnNMJDk5m6iw=;
+	h=Message-Id:Date:In-Reply-To:Cc:Subject:References:To:From;
+	b=eRoC1YhvKeUwU5setA+cJMFuZa34BpfFtcWC9Lp9PTV79tdENeELNGqZBbG9xahoD
+	 6h0BDbRbfBVk7hFGtdj58pwJatXxY1bOoke3ud7SpR5SPIvbhnvhDRZzzRz3Y1R2Ur
+	 BxMK4oW48lqrzi49G1BAVXRZc+j6LthJAmqx8L2Q=
+Authentication-Results: mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net; dkim=pass header.i=@ya.ru
+From: Konstantin Pugin <rilian.la.te@ya.ru>
+To: 
+Cc: Konstantin Pugin <ria.freelander@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Lech Perczak <lech.perczak@camlingroup.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: [PATCH v2 1/3] serial: sc16is7xx: announce support of SER_RS485_RTS_ON_SEND
+Date: Thu, 18 Apr 2024 16:57:32 +0300
+Message-Id: <20240418135737.3659498-2-rilian.la.te@ya.ru>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240418135737.3659498-1-rilian.la.te@ya.ru>
+References: <20240418135737.3659498-1-rilian.la.te@ya.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: d811348e-5fd9-46f2-d208-08dc5faf65e4
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Apr 2024 13:56:51.2963
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0201MB8840
+Content-Transfer-Encoding: 8bit
 
-From: Jean Delvare <jdelvare@suse.de> Sent: Thursday, April 18, 2024 5:28 A=
-M
->=20
-> If a DMI table entry is shorter than 4 bytes, it is invalid. Due to
-> how DMI table parsing works, it is impossible to safely recover from
-> such an error, so we have to stop decoding the table.
->=20
-> Signed-off-by: Jean Delvare <jdelvare@suse.de>
-> Reported-by: Michael Schierl <schierlm@gmx.de>
-> Link: https://lore.kernel.org/linux-kernel/Zh2K3-HLXOesT_vZ@liuwe-devbox-=
-debian-v2/T/
-> Tested-by: Michael Schierl <schierlm@gmx.de>
-> ---
-> Changes since v1:
->  * Also log the offset of the corrupted entry (suggested by Michael Kelle=
-y)
->=20
->  drivers/firmware/dmi_scan.c |   11 +++++++++++
->  1 file changed, 11 insertions(+)
->=20
-> --- linux-6.8.orig/drivers/firmware/dmi_scan.c
-> +++ linux-6.8/drivers/firmware/dmi_scan.c
-> @@ -102,6 +102,17 @@ static void dmi_decode_table(u8 *buf,
->  		const struct dmi_header *dm =3D (const struct dmi_header *)data;
->=20
->  		/*
-> +		 * If a short entry is found (less than 4 bytes), not only it
-> +		 * is invalid, but we cannot reliably locate the next entry.
-> +		 */
-> +		if (dm->length < sizeof(struct dmi_header)) {
-> +			pr_warn(FW_BUG
-> +				"Corrupted DMI table, offset %ld (only %d entries processed)\n",
-> +				data - buf, i);
-> +			break;
-> +		}
-> +
-> +		/*
->  		 *  We want to know the total length (formatted area and
->  		 *  strings) before decoding to make sure we won't run off the
->  		 *  table in dmi_decode or dmi_string
->=20
+From: Konstantin Pugin <ria.freelander@gmail.com>
 
-Reviewed-by: Michael Kelley <mhklinux@outlook.com>
+Hardware supports both modes, but after
+commit 4afeced55baa ("serial: core: fix sanitizing check for RTS settings")
+we always end up with SER_RS485_RTS_AFTER_SEND and always write in
+register SC16IS7XX_EFCR_RTS_INVERT_BIT,
+which breaks some hardware using these chips,
+
+Fixes: 267913ecf737 ("serial: sc16is7xx: Fill in rs485_supported")
+Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
+---
+ drivers/tty/serial/sc16is7xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
+index 929206a9a6e1..a300eebf1401 100644
+--- a/drivers/tty/serial/sc16is7xx.c
++++ b/drivers/tty/serial/sc16is7xx.c
+@@ -1458,7 +1458,7 @@ static int sc16is7xx_setup_mctrl_ports(struct sc16is7xx_port *s,
+ }
+ 
+ static const struct serial_rs485 sc16is7xx_rs485_supported = {
+-	.flags = SER_RS485_ENABLED | SER_RS485_RTS_AFTER_SEND,
++	.flags = SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND | SER_RS485_RTS_AFTER_SEND,
+ 	.delay_rts_before_send = 1,
+ 	.delay_rts_after_send = 1,	/* Not supported but keep returning -EINVAL */
+ };
+-- 
+2.34.1
+
 
