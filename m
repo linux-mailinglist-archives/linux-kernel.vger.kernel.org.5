@@ -1,163 +1,78 @@
-Return-Path: <linux-kernel+bounces-150093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D5F38A9A50
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:48:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47BC48A9A54
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:49:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A6CE2842D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:48:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7CA9B20B96
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:49:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552AB15F411;
-	Thu, 18 Apr 2024 12:45:07 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3193A161308;
+	Thu, 18 Apr 2024 12:47:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="mBqQ3YaW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A7C12FF75
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6753B15E7E7;
+	Thu, 18 Apr 2024 12:47:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713444306; cv=none; b=L/vMv7GvS/z5MJrK66bkP0RWw9KJX4rl3lnIQGfWPht9mpjhAkpEBagf0i3589FEE4+HxC00i2zEyqf8/a50AiaVXfzadNge0YV8IURo6Zk0NFax/aexw96UGMkN1QcsiIak+En5rPv5zgmz1wJiWtkPilaXom5i4i6eLD4k0bs=
+	t=1713444421; cv=none; b=kdAdIx/MwcZPv86ek8rSwJ+BN7AOxZN2IiT01hLrxKC9lYCnI4RwrxzIhInmLKDNHEY8YwiGcAYqYIn4yvN0+x3ua4PHsPL3xlzlOzGK5AzGV6AVREB3Jf2kJbVJwn9AAcouoQonU6RnhDNu9IEGxjfOSdiY/95dY2Pmg4CPhME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713444306; c=relaxed/simple;
-	bh=BX//LDamhCsN5RO0/Ar3nYwJvwCqv29g1oqAqiuZ1x4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=naOgrWkQQ1OWIyGoYlKS2OfAn1evPI5DmlD5IvlWK82h63C0GOJeIzSzS/1nurCh54528RL6pnskeaJW62yunLZp+fojzAQW3Jze62pWDZ2joc38/i/ZGWREA/9fqLqKHqEMAN+YGGiMPg3ENSg9dxdOwSuNVD9ePawTwyKiPcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i5e861917.versanet.de ([94.134.25.23] helo=phil.lan)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rxR8H-0006mk-Bn; Thu, 18 Apr 2024 14:44:53 +0200
-From: Heiko Stuebner <heiko@sntech.de>
-To: heiko@sntech.de
-Cc: quentin.schulz@theobroma-systems.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	dsimic@manjaro.org,
-	Heiko Stuebner <heiko.stuebner@cherry.de>
-Subject: [PATCH v2] arm64: dts: rockchip: add PCIe3 support on rk3588-jaguar
-Date: Thu, 18 Apr 2024 14:44:45 +0200
-Message-Id: <20240418124445.2360491-1-heiko@sntech.de>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1713444421; c=relaxed/simple;
+	bh=A6gHdTX14hzxoADRPGN9sifbwuNE31ws3WFjmms2JaI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WEBTOzZhyGbrUWj0Sk1X/qZj92S9fCh1KMBdJ8GyEyIM9QfwKpl8iBRolUI3bPc1TzgG6KS7RdMeOxVbfZRbtrbQgtVU8AzpLaK/klva+5uHghzbfZARHAGwPljFCiOjfqatNSsCLJjrxsyQDIIJ174waCI/vQ2kj/HDkKKjcNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=mBqQ3YaW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89221C113CC;
+	Thu, 18 Apr 2024 12:47:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713444420;
+	bh=A6gHdTX14hzxoADRPGN9sifbwuNE31ws3WFjmms2JaI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mBqQ3YaWfdR4I/5K6W+ZmHFXCV92UX3hfcA/Mp0l0lz9wEdvHWlXQKRHkyebh2pEj
+	 Pr/CvZr651wNVWxIScQj1N/zd+Q+3ZFkEjOP7ULrUBhvdwqsUozQ8PV52fXXVq/76Y
+	 ieIry8zunRoeXrULaj8E7BgUl4yhoEL2kJNxL3VE=
+Date: Thu, 18 Apr 2024 14:46:58 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] Revert "vmgenid: emit uevent when VMGENID updates"
+Message-ID: <2024041829-gander-uninjured-5b2f@gregkh>
+References: <20240418114814.24601-1-Jason@zx2c4.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418114814.24601-1-Jason@zx2c4.com>
 
-From: Heiko Stuebner <heiko.stuebner@cherry.de>
+On Thu, Apr 18, 2024 at 01:48:08PM +0200, Jason A. Donenfeld wrote:
+> This reverts commit ad6bcdad2b6724e113f191a12f859a9e8456b26d. I had
+> nak'd it, and Greg said on the thread that it links that he wasn't going
+> to take it either, especially since it's not his code or his tree, but
+> then, seemingly accidentally, it got pushed up some months later, in
+> what looks like a mistake, with no further discussion in the linked
+> thread. So revert it, since it's clearly not intended.
+> 
+> Fixes: ad6bcdad2b67 ("vmgenid: emit uevent when VMGENID updates")
+> Cc: stable@vger.kernel.org
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Link: https://lore.kernel.org/r/20230531095119.11202-2-bchalios@amazon.es
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> ---
+>  drivers/virt/vmgenid.c | 2 --
+>  1 file changed, 2 deletions(-)
 
-The Jaguar SBC provides an M.2 slot connected to the pcie3 controller.
-In contrast to a number of other boards the pcie-refclk is gpio-controlled,
-so the necessary clock and is added to the list of pcie3 clocks.
+Sorry about that, I picked it up thinking I had missed it previously:
 
-Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
----
-changes in v2:
-- "an" M.2 slot (Dragan)
-- pinctrl for refclk-en and reset pin (Quentin)
-- don't repurpose the pcie30x4_pins pinctrl entry for only wake (Quentin)
-
- .../arm64/boot/dts/rockchip/rk3588-jaguar.dts | 64 +++++++++++++++++++
- 1 file changed, 64 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts b/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts
-index 4076c92668ba..3407e777e97b 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts
-@@ -72,6 +72,27 @@ led-1 {
- 		};
- 	};
- 
-+	/*
-+	 * 100MHz reference clock for PCIe peripherals from PI6C557-05BLE
-+	 * clock generator.
-+	 * The clock output is gated via the OE pin on the clock generator.
-+	 * This is modeled as a fixed-clock plus a gpio-gate-clock.
-+	 */
-+	pcie_refclk_gen: pcie-refclk-gen-clock {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <1000000000>;
-+	};
-+
-+	pcie_refclk: pcie-refclk-clock {
-+		compatible = "gpio-gate-clock";
-+		clocks = <&pcie_refclk_gen>;
-+		#clock-cells = <0>;
-+		enable-gpios = <&gpio0 RK_PC6 GPIO_ACTIVE_LOW>; /* PCIE30X4_CLKREQN_M0 */
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pcie30x4_clkreqn_m0>;
-+	};
-+
- 	pps {
- 		compatible = "pps-gpio";
- 		gpios = <&gpio0 RK_PD5 GPIO_ACTIVE_HIGH>;
-@@ -358,6 +379,30 @@ &pcie2x1l0 {
- 	status = "okay";
- };
- 
-+&pcie30phy {
-+	status = "okay";
-+};
-+
-+&pcie3x4 {
-+	/*
-+	 * The board has a gpio-controlled "pcie_refclk" generator,
-+	 * so add it to the list of clocks.
-+	 */
-+	clocks = <&cru ACLK_PCIE_4L_MSTR>, <&cru ACLK_PCIE_4L_SLV>,
-+		 <&cru ACLK_PCIE_4L_DBI>, <&cru PCLK_PCIE_4L>,
-+		 <&cru CLK_PCIE_AUX0>, <&cru CLK_PCIE4L_PIPE>,
-+		 <&pcie_refclk>;
-+	clock-names = "aclk_mst", "aclk_slv",
-+		      "aclk_dbi", "pclk",
-+		      "aux", "pipe",
-+		      "ref";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pcie30x4_waken_m0 &pcie30x4_perstn_m0>;
-+	reset-gpios = <&gpio0 RK_PD0 GPIO_ACTIVE_HIGH>; /* PCIE30X4_PERSTN_M0 */
-+	vpcie3v3-supply = <&vcc3v3_mdot2>;
-+	status = "okay";
-+};
-+
- &pinctrl {
- 	emmc {
- 		emmc_reset: emmc-reset {
-@@ -376,6 +421,25 @@ led1_pin: led1-pin {
- 			rockchip,pins = <1 RK_PD4 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 	};
-+
-+	pcie30x4 {
-+		pcie30x4_clkreqn_m0: pcie30x4-clkreqn-m0 {
-+			rockchip,pins = <0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		pcie30x4_perstn_m0: pcie30x4-perstn-m0 {
-+			rockchip,pins = <0 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		pcie30x4_waken_m0: pcie30x4-waken-m0 {
-+			/*
-+			 * pcie30x4_clkreqn_m0 is used by the refclk generator
-+			 * pcie30x4_perstn_m0 is used as via the reset-gpio
-+			 * So only pcie30x4_waken_m0 is used.
-+			 */
-+			rockchip,pins = <0 RK_PC7 12 &pcfg_pull_none>;
-+		};
-+	};
- };
- 
- &saradc {
--- 
-2.39.2
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 
