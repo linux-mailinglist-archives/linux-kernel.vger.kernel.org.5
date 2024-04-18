@@ -1,126 +1,150 @@
-Return-Path: <linux-kernel+bounces-149541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FA0E8A929C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:51:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA5CF8A92A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:54:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 114971F21727
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:51:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 182641C20F03
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:54:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BBA55FB96;
-	Thu, 18 Apr 2024 05:51:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="DHyc6I5x"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D5156454;
-	Thu, 18 Apr 2024 05:51:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 330915B217;
+	Thu, 18 Apr 2024 05:53:56 +0000 (UTC)
+Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289E25FB8F;
+	Thu, 18 Apr 2024 05:53:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.169.211.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713419497; cv=none; b=E+zihHhgjz/jS1+47ZP5DcROPdSJx4tqTWyeLj65Hahryb9o6NMiVHVfon2R115ISQsOp8xcjM0XaAeZv8pZZJQUmowajhuIT0w4+oWqZuEs5YW8cK9NX1UVIZwHPdhm80+GTKu/EX5QOXQOOVFvdFFR32nPD1/ue281homDEmk=
+	t=1713419635; cv=none; b=R0eF0QrT+ai5PjV9Z3kbgDT5dD2gz22O6U3cB/iFhEmLsekhvnL3e2qlHLyxKe+XP1xVrcjtethapdK6lqYwN+RSWeJJAldbR9PxG+1ejzV0WTeDCiMl1IDr59hMFWWKVHIp3VM1oWrFG6Hfza/epnCnLaojLPs80N+wSw47OzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713419497; c=relaxed/simple;
-	bh=zATJ74G5Sc1DMdnW7cJJ13791upLRtnZmKExsPlmzfk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rRMnaHivZK6d+GfBz8gMjFTOZgLYtMjocXcBozSIhkrbcvBpuRFDSxzP5gF0vL4UJC21MzaYF4/rgrywXBw3W6uHG7Ci//GXuJ597Rp7gYpgwGHa5c190JascXtZIatCnGF1k5Tp7b/hZ/6y7fOvRN0TPcaQB/7nIHmY4qobszw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=DHyc6I5x; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id C97D220FD4D8; Wed, 17 Apr 2024 22:51:35 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C97D220FD4D8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1713419495;
-	bh=mgD2zVbGomE9WC9wXHSFiZJILTvHN5Kfd0Rp4oWQDF8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DHyc6I5x+CWragIiq+raj0E0lD/tx6O6G4CHM9jHYNKswHCJG6E2TDzVzJdQhV+wt
-	 CPF7CUYy+TeAHFj7pRwqLQnRSkOPrIBKu/8M5uJ/5I/2escB1/GPYwZOs+0AlyjOQT
-	 GhUGkTJKYDUnoDIpcKRcy42FYTi0Z810i20H17vs=
-Date: Wed, 17 Apr 2024 22:51:35 -0700
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
-	linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Michael Kelley <mikelley@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Subject: Re: [PATCH net-next] net: mana: Add new device attributes for mana
-Message-ID: <20240418055135.GA13182@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1713174589-29243-1-git-send-email-shradhagupta@linux.microsoft.com>
- <20240415161305.GO223006@ziepe.ca>
- <56b0a8c1-50f6-41a9-9ea5-ed45ada58892@linux.dev>
+	s=arc-20240116; t=1713419635; c=relaxed/simple;
+	bh=lYmHWYwjXNyR35BoVTlYlLsaQ5d/bd2fXNxYkZW56cI=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=juv92eW6v/j64h6m2rrNUJE7W4+TvYzq5Z0j4oBRIYZVAwyAYrb2eLeVAMXawzHcxSgiOXoFNNBDeCSR1Z6hAa7nTAkrr5H5pMZtuask/GzJiZc/7E2EU7u2pu9qBYDGvHjsIV1XzpqX7OEYvWfUc3to9kF13sNhJUPh1iJlhcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=radxa.com; spf=pass smtp.mailfrom=radxa.com; arc=none smtp.client-ip=18.169.211.239
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=radxa.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=radxa.com
+X-QQ-mid: bizesmtpsz13t1713419533tf4gio
+X-QQ-Originating-IP: KK9L0DB68nJZeG2DfOPLLnMrgziwM3QZRsgGEYAJBOs=
+Received: from [192.168.159.131] ( [106.150.157.243])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Thu, 18 Apr 2024 13:52:11 +0800 (CST)
+X-QQ-SSF: 01100000000000C0G000000A0000000
+X-QQ-FEAT: 83ShfzFP0oC8nXF2nK1YIPY3n1Qcg8oyeTIWy3Fn5A9bOP4KrCgiPFprv0W9n
+	MslRqKoEPWyLKMlAmtgq3br1a0asRJiisfNBavmenK36g2HxTuSzidvFkwkmvHmwYoH7OyF
+	h9eK7FWdU8OOfMPAxWgyam2Vixa+f2x5+LpvaiEQVegoCEk09cx/YUePckIcI4MJjUkVxRV
+	vdjvTWN+JFZlNcL4BWMeLaRg/yPkYW9l88JqgseXYIOSgzKsbb9Fbg2vnjyyA/HNmZCGbqG
+	0LnQ8WDttduZ96gA4rNdSxrUZjGixdaHDsCZuVPRDwXHaqPhfxqqM1T1KBXHJ1Xkd2l2H3f
+	dajYZ4/URtpN/QqiM1c2Dm1A3ExN6KPqcny8DwLkeDQQ7mSHHGVM3Ql9ZcnuedHLaShfU0l
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 15298947766438916063
+Message-ID: <B26C732A4DCEA9B3+282b8775-601b-4d4a-a513-4924b7940076@radxa.com>
+Date: Thu, 18 Apr 2024 14:52:09 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56b0a8c1-50f6-41a9-9ea5-ed45ada58892@linux.dev>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+User-Agent: Mozilla Thunderbird
+From: FUKAUMI Naoki <naoki@radxa.com>
+Subject: Re: [PATCH 2/2] arm64: dts: rockchip: Add Radxa ROCK3 Model C
+To: Dragan Simic <dsimic@manjaro.org>, Chukun Pan <amadeus@jmu.edu.cn>
+Cc: jonas@kwiboo.se, conor+dt@kernel.org, devicetree@vger.kernel.org,
+ heiko@sntech.de, krzk+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ robh@kernel.org
+References: <d7de2213-8dd2-42ec-9a30-a569ac71be3e@kwiboo.se>
+ <20240417133016.62753-1-amadeus@jmu.edu.cn>
+ <a144c052fcc2460a615a754a64a8f739@manjaro.org>
+Content-Language: en-US
+In-Reply-To: <a144c052fcc2460a615a754a64a8f739@manjaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpsz:radxa.com:qybglogicsvrgz:qybglogicsvrgz6a-0
 
-On Tue, Apr 16, 2024 at 06:27:04AM +0200, Zhu Yanjun wrote:
-> ??? 2024/4/15 18:13, Jason Gunthorpe ??????:
-> >On Mon, Apr 15, 2024 at 02:49:49AM -0700, Shradha Gupta wrote:
-> >>Add new device attributes to view multiport, msix, and adapter MTU
-> >>setting for MANA device.
-> >>
-> >>Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> >>---
-> >>  .../net/ethernet/microsoft/mana/gdma_main.c   | 74 +++++++++++++++++++
-> >>  include/net/mana/gdma.h                       |  9 +++
-> >>  2 files changed, 83 insertions(+)
-> >>
-> >>diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> >>index 1332db9a08eb..6674a02cff06 100644
-> >>--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> >>+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> >>@@ -1471,6 +1471,65 @@ static bool mana_is_pf(unsigned short dev_id)
-> >>  	return dev_id == MANA_PF_DEVICE_ID;
-> >>  }
-> >>+static ssize_t mana_attr_show(struct device *dev,
-> >>+			      struct device_attribute *attr, char *buf)
-> >>+{
-> >>+	struct pci_dev *pdev = to_pci_dev(dev);
-> >>+	struct gdma_context *gc = pci_get_drvdata(pdev);
-> >>+	struct mana_context *ac = gc->mana.driver_data;
-> >>+
-> >>+	if (strcmp(attr->attr.name, "mport") == 0)
-> >>+		return snprintf(buf, PAGE_SIZE, "%d\n", ac->num_ports);
-> >>+	else if (strcmp(attr->attr.name, "adapter_mtu") == 0)
-> >>+		return snprintf(buf, PAGE_SIZE, "%d\n", gc->adapter_mtu);
-> >>+	else if (strcmp(attr->attr.name, "msix") == 0)
-> >>+		return snprintf(buf, PAGE_SIZE, "%d\n", gc->max_num_msix);
-> >>+	else
-> >>+		return -EINVAL;
-> >>+
-> >
-> >That is not how sysfs should be implemented at all, please find a
-> >good example to copy from. Every attribute should use its own function
-> >with the macros to link it into an attributes group and sysfs_emit
-> >should be used for printing
+Hi,
+
+this is Naoki @ Radxa.
+
+thank you for your great work!
+
+On 4/18/24 02:02, Dragan Simic wrote:
+> Hello Chukun,
 > 
-> Not sure if this file drivers/infiniband/hw/usnic/usnic_ib_sysfs.c
-> is a good example or not.
+> On 2024-04-17 15:30, Chukun Pan wrote:
+>> Hi Jonas,
+>>>> +    model = "Radxa ROCK3 Model C";
+>>>
+>>> The marketing name seems to be "Radxa ROCK 3C" according to the product
+>>> page at [1].
+>>>
+>>> [1] https://radxa.com/products/rock3/3c
+>>
+>> According to https://wiki.radxa.com/Rock3/3c , it should be called
+>> "Radxa ROCK 3 Model C". I copied rock3a here without paying attention.
+
+sorry, wiki.radxa.com is outdated.
+
+docs.radxa.com is correct one and maintained.
+(but it still has some errors, sorry)
+
+> If I may interject, here's the result of a quick qrep:
 > 
-> Zhu Yanjun
-Thanks for the reference, Zhu.
+> ./rk3399pro-rock-pi-n10.dts:    model = "Radxa ROCK Pi N10";
+> ./rk3399-rock-pi-4a-plus.dts:    model = "Radxa ROCK Pi 4A+";
+> ./rk3588s-rock-5a.dts:    model = "Radxa ROCK 5 Model A";
+> ./rk3588-rock-5b.dts:    model = "Radxa ROCK 5 Model B";
+> ./rk3399-rock-4c-plus.dts:    model = "Radxa ROCK 4C+";
+> ./rk3399-rock-pi-4b-plus.dts:    model = "Radxa ROCK Pi 4B+";
+> ./rk3399-rock-pi-4b.dts:    model = "Radxa ROCK Pi 4B";
+> ./rk3399-rock-pi-4c.dts:    model = "Radxa ROCK Pi 4C";
+> ./rk3308-rock-pi-s.dts:    model = "Radxa ROCK Pi S";
+> ./rk3399-rock-pi-4a.dts:    model = "Radxa ROCK Pi 4A";
+> ./rk3399-rock-4se.dts:    model = "Radxa ROCK 4SE";
+> ./rk3328-rock-pi-e.dts:    model = "Radxa ROCK Pi E";
+> ./rk3568-rock-3a.dts:    model = "Radxa ROCK3 Model A";
 > 
-> >
-> >Jason
+> Based on that, I think that "Radxa ROCK 3 Model C" would actually
+> be the preferred name...  Perhaps?
+> 
+> If we end up following that approach, the last board dts on the list
+> above should also be fixed to read "Radxa ROCK 3 Model A".
+> 
+> Either that, or all "Model " strings should be stripped out from
+> all board dts files that currently contain it.
+
+we have a document named "Radxa Product Naming Convention".
+there are "full name" and "short name". "Model" is used in "full name", 
+but it's not used in "short name". both are correct.
+
+but, we preferred to use "short name" for "model = " in mainline 
+linux/u-boot.
+
+for ROCK 3C, please use
+
+  model = "Radxa ROCK 3C";
+
+for ROCK 5A/5B and ROCK 3A,
+
+  model = "Radxa ROCK 5A";
+  model = "Radxa ROCK 5B";
+  model = "Radxa ROCK 3A";
+
+are preferred.
+
+we need to fix this inconsistency. (include our docs)
+
+Best regards,
+
+--
+FUKAUMI Naoki
+Radxa Computer (Shenzhen) Co., Ltd.
+
+
 
