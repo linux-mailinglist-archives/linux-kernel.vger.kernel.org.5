@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-150642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 529788AA230
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:42:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE2838AA235
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:43:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 842AF1C21291
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:41:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58AAA28482F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:43:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6756417AD8E;
-	Thu, 18 Apr 2024 18:41:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5127D17AD6D;
+	Thu, 18 Apr 2024 18:43:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SCB5+i6h"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="2irT8uje"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 915093D62;
-	Thu, 18 Apr 2024 18:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4FD71442F4;
+	Thu, 18 Apr 2024 18:43:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713465692; cv=none; b=i5qTTuJwe65d8zfSWzDvtsvuuugsnmqwggF54paP1U6dwSmb1ZJEExOYAqVYVv3NAJ2k2O9IaEWRD7HPjx3FTDtba/VkfCuQPoRChmVcwk63z2XsrKbmoyqFL8K7Wfefs0VSuEcICz+lzvI/cpiT5RUif2phieS89GrkhOB5sOo=
+	t=1713465786; cv=none; b=i2Ztu5L6336v95mVbzpG9XGxVBGHwN7ROl4JDb/6zbe+J+TVmbA3JDnMDd7deF+JZJgU3605yCkpxGpxmMxoRhFS3R3kQOmImiGQKFZIDLpbnqW9A4FpyQKIxPhlWVk6rjSywH+uPAnGaILI4jWmtWWWObhHD8z/AVgg4lnaYEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713465692; c=relaxed/simple;
-	bh=kEWHQmsJ7jcAxlIEcpREBxKEUkYR0ejcefjSl8M/NeQ=;
+	s=arc-20240116; t=1713465786; c=relaxed/simple;
+	bh=poi7sblqKuGVjBRS6baYMAH2Ecby1l888Y9D8KjJreA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cz5AUfoKSBAPiF4prR0yqq4Yf11VL/O/fJYLj9/LC/s+SYMPek3/lXxwyPo/taV4Cvi+OkuHYfgWut5HO4Q6pP3D8InjUb8/qVteFtOVWrfwyPNsY+DpnjJaJjAH21dMX4dc3EII+oepinRqU9G6b050uSwxdnR6X1sso78Cu7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SCB5+i6h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 579B2C113CC;
-	Thu, 18 Apr 2024 18:41:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713465692;
-	bh=kEWHQmsJ7jcAxlIEcpREBxKEUkYR0ejcefjSl8M/NeQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SCB5+i6hXvtGQUKyYNSOAgZj/U/0hMKrNf8a0QI97T9JtHWodoLi7koIZZ0J+zIDb
-	 8EjU6qAzoiLHW7PmnoNTwLI088osMLiL4r0di9DyFYBqOqMxpr6e+L4xu2cJyNoRMW
-	 1gLKDXwwVKmyRDstr+b7gDbTIcdVAlKVHGJYkhNCYkYRwrg2NjskAdXd3RrKELU28K
-	 jFP/47pp9xP1vNNSoqBKOPzkNBY/TMMBEkX0f74rYVsMB8l9iJwkT8sycFX8FIVHoh
-	 +RMBkCqXo58gzhYcxpfIg+8zfP6OCAuEvyZGetaoSS0Y9YXzRcJw4a3RueaRsdNkq9
-	 zHrlrWnvNfvKA==
-Date: Thu, 18 Apr 2024 11:41:29 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Conor Dooley <conor@kernel.org>
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	Andy Chiu <andy.chiu@sifive.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Heiko Stuebner <heiko@sntech.de>,
-	Guo Ren <guoren@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Jonathan Corbet <corbet@lwn.net>, Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Shuah Khan <shuah@kernel.org>, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-	Vincent Chen <vincent.chen@sifive.com>,
-	Greentime Hu <greentime.hu@sifive.com>, devicetree@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Joel Granados <j.granados@samsung.com>,
-	Jerry Shih <jerry.shih@sifive.com>
-Subject: Re: [PATCH v4 7/9] riscv: vector: adjust minimum Vector requirement
- to ZVE32X
-Message-ID: <20240418184129.GA1071@sol.localdomain>
-References: <20240412-zve-detection-v4-0-e0c45bb6b253@sifive.com>
- <20240412-zve-detection-v4-7-e0c45bb6b253@sifive.com>
- <20240418-brook-chili-4d3e61d1a55c@wendy>
- <20240418155256.GA2410@sol.localdomain>
- <20240418-ultimatum-yam-11de4b063b83@spud>
- <20240418173203.GA1081@sol.localdomain>
- <20240418173946.GB1081@sol.localdomain>
- <20240418-sterling-sanding-d59c3b0a2aaa@spud>
+	 Content-Type:Content-Disposition:In-Reply-To; b=o0tShnfVzeM1dnvAPhD9LpiyVcPfflROaAO1z6TjG4vAvWVP6whtocBHjIlP38NfD5NfRGcgQiuucKEVGNRDpLTJNfLZTdotBO3By0rKupxdNEe10n8/hypb8A9vAo6FvwxD9YvujRoo611IHTjXAJy2+0BxFMwXR2cSzWOniHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=2irT8uje; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=PmXbe7fZpTi+Z5rvQSKNZY21mtNwNGVnRETWJxHS1MI=; b=2irT8ujeDLf5JzJ86o5fj7ys4K
+	k3vVvftCxhwziqblLOCq3KModyyPSn97a6XgBQ3zcs09cf06U0JDXNTz0evVbfsgcob0cQTwSFhTK
+	x2Z6HzyKmRJH7pwKjYZ848DPvtpabIbFp3z4HXqR5bs0BxQV9wmjp/UWUG7Y5/FUB9gw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rxWip-00DNnt-1H; Thu, 18 Apr 2024 20:42:59 +0200
+Date: Thu, 18 Apr 2024 20:42:59 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Zhu Yanjun <yanjun.zhu@linux.dev>, linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Michael Kelley <mikelley@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: Re: [PATCH net-next] net: mana: Add new device attributes for mana
+Message-ID: <f3e7ea07-2903-4f19-ba86-94bba569dae9@lunn.ch>
+References: <1713174589-29243-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20240415161305.GO223006@ziepe.ca>
+ <56b0a8c1-50f6-41a9-9ea5-ed45ada58892@linux.dev>
+ <b34bfb11-98a3-4418-b482-14f2e50745d3@lunn.ch>
+ <20240418060108.GB13182@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20240418175059.GZ223006@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,72 +78,14 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240418-sterling-sanding-d59c3b0a2aaa@spud>
+In-Reply-To: <20240418175059.GZ223006@ziepe.ca>
 
-On Thu, Apr 18, 2024 at 07:26:00PM +0100, Conor Dooley wrote:
-> That's great if it does require that the version of the vector extension
-> must be standard. Higher quality spec than most if it does. But
-> "supported" in the context of riscv_isa_extension_available() means that
-> the hardware supports it (or set of harts), not that the currently
-> running kernel does. The Kconfig deps that must be met for the code to be
-> built at least mean the kernel is built with vector support, leaving only
-> "the kernel was built with vector support and the hardware supports vector
-> but for $reason the kernel refused to enable it".
-> 
-> I'm not sure if that final condition is actually possible with the system
-> ending up in a broken state, however - I'm not sure that we ever do turn
-> off access to the VPU at present (after we mark it usable), and if we do
-> it doesn't get reflected in has_vector() so the kernel and userspace would
-> both break, with what a crypto driver does probably being the least of
-> your worries.
->
-> > I am just concerned about how you're suggesting that non-standard extensions
-> > might be pretending to be standard ones and individual users of kernel-mode
-> > vector would need to work around that.
-> 
-> I am absolutely not suggesting that non-standard extensions should
-> masquerade as standard ones, I don't know where you got that from. What
-> I said was that a non-standard vector extension could reuse riscv_v_vlen
-> (and should IMO for simplicity reasons), not that any of the APIs we have
-> for checking extension availability would lie and say it was standard.
-> riscv_v_vlen having a value greater than 128 is not one of those APIs ;)
+> >From an RDMA perspective this is all available from other APIs already
+> at least and I wouldn't want to see new sysfs unless there is a netdev
+> justification.
 
-It sounded like you were suggesting that a CPU could plausibly have a
-pre-standard version of the vector extension but also have standard Zvkb.  I
-don't think this makes sense, due to the dependency.
+It is unlikely there is a netdev justification. Configuration happens
+via netlink, not sysfs.
 
-> > I think that neither has_vector() nor
-> > 'if (riscv_isa_extension_available(NULL, ZVKB))' should return true if the CPU's
-> > vector extension is non-standard.
-> 
-> riscv_isa_extension_available(NULL, ZVKB) only checks whether the extension
-> was present in DT or ACPI for all harts. It doesn't check whether or not
-> the required config option for vector has been set or anything related
-> to dependencies. has_vector() at least checks that the vector core has
-> been enabled (and uses the alternative-patched version of the check
-> given it is used in some hotter paths). That's kinda moot for code
-> that's only built if the vector core stuff is enabled as I said above
-> though.
-> 
-> We could of course make riscv_isa_extension_available() check
-> extension dependencies, but I'd rather leave dt validation to the dt
-> tooling (apparently ACPI tables are never wrong...). Either would allow
-> you to rely on the crypto extensions present only when the standard vector
-> extensions unless someone's DT/ACPI stuff is shite, but then they keep the
-> pieces IMO :)
-> 
-> Hope that makes sense?
-
-If the RISC-V kernel ever disables V, then it should also disable everything
-that depends on V.
-
-This would be similar to how on x86, if the kernel decides to disable AVX to
-mitigate the Gather Data Sampling vulnerability, it also disables AVX2, AVX512,
-VAES, VPCLMULQDQ, etc.  See cpuid_deps[] in arch/x86/kernel/cpu/cpuid-deps.c.
-
-Sometimes CPU features depend on other ones.  That's just the way things work.
-Whenever possible that should be handled centrally, not pushed down to every
-user both in-kernel and userspace.
-
-- Eric
+    Andrew
 
