@@ -1,202 +1,127 @@
-Return-Path: <linux-kernel+bounces-149648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1D338A93F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:23:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DD4F8A940C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:33:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 832831F214DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:23:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFD41B2242B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:33:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20CDF54BE2;
-	Thu, 18 Apr 2024 07:23:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VjWkmSy9"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D2E6A8CA;
+	Thu, 18 Apr 2024 07:32:38 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FA8F4EB45
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:23:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C33894EB45;
+	Thu, 18 Apr 2024 07:32:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713424997; cv=none; b=ejB/fRoGRmj7YpA6MKTeLnk2VCSTphOM1N9EfRxRaUMM6Bnx4X9AH5fU3lvjA9P9GMHPQbvwe+u185tx9wuSXdmuULDrRE8uNxBoCzYfS9jHOsdziawxhCz49nkMX1dZkifpREab30rFpnnWr6erK7Ig80WHdlY1K+edr/bOza8=
+	t=1713425557; cv=none; b=RDZowdvyT5tQ+r72HtqpbWoysihIxuynTU1Dg4/M10bCrbIy7do5vgG/4Zj24GMHwUwMkvATDbcO+DblC5XvTchYsydJ1Ss+KN705ZvXOPudXXid51qSnvxnXhe7AhutQoDSrZZyfm+cFjzme56gf362LwMeedNyV4Iu7FHLI/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713424997; c=relaxed/simple;
-	bh=vgK0r6JlkgRyVng0vK7xeA2Mb4CDysk3xJwerY7ubwc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Kr6TclnZyvmf2wWUtlN2TihNFJkkg/Bvk0zAd4UgUncRp/G2ZNHBu3tMHbY1LGt5/YzAfJ+99BpT+U+hKWd/YjwG3KNR6r6m+ee7e7WFhXMmkJ1bCwZuGZocFnGk/usBLeqayrga7GovD60fMgEhMgkIxtdfbSIxaje4iKTrsj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VjWkmSy9; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713424994;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cVEgCUNH2+ucbxNW8o7LrLo4xbai7FQO2lfQoIgrFHE=;
-	b=VjWkmSy98uksvOUNsnMKbFST6OeSILuBcps5/SE93pbDU/3S14T6X9Kyiz0+QfDHH4OL6z
-	UGaga6DBNSGltfxuYJZptA5lPURORWJN3w1M3UcbDpVwBmBOy2sQIQYIR7gD7v2q2f8MJW
-	387TGLWRtYvhlhgT6WvR+Hhov4JWavQ=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-331-bx_d_xSiPeeKetv2ovdnDQ-1; Thu, 18 Apr 2024 03:23:13 -0400
-X-MC-Unique: bx_d_xSiPeeKetv2ovdnDQ-1
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6edddd0375fso688193b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 00:23:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713424991; x=1714029791;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cVEgCUNH2+ucbxNW8o7LrLo4xbai7FQO2lfQoIgrFHE=;
-        b=vRb1OTiKgc9/FWVRSqKG+OL7NJzjO+3m+dCL7Sh9r1lH8IybN8VhV9eJuejNm30e3f
-         kbIgjmUOyiih1APsn9kJG3bUmLTbfIadgpkucDafZr7a39HNR8oOolUocFvecIVSeizj
-         +1a+/okKK4hbd71d1ibJDJLqkhqh7P9gVpCXCHSbcU1569XLFlMubUptbWONRwoNYWwp
-         2XU48W/nFc9082xmbK1aCso7/MC5hu2ZpExy5kW0SZHn1x/MvpVt2SwD/I3zwvRme1Qm
-         PO9Ab1/iziVgBAVSR9pMXxQ2PvgQjoRcMvHtAABFW/nsi7KGo4pRYAiDefP7yk8uY4Yf
-         +jOg==
-X-Forwarded-Encrypted: i=1; AJvYcCVTxYFa0pJXneqEoLaruBcS+KtkkpPVnXZ+5Fj/IKwVAfprBe6gtSNOTBfMU4VPvTeP1xHSoeRMf51ICI4yKC+jWdwr2dDeIwdE29eA
-X-Gm-Message-State: AOJu0Yz+RWmNAzpo7OSD6yawFPVRE9L6iMdbvHpLot/S/wjGY1LQsjje
-	6FXRymebcd1VDT2xzKPdgrWT5NIUrAeUBCvbPB5NKAuJlYlWe/9lqoWhOnjVjf7j3FsWWg9o/if
-	vYPXfZS0lCerOR04AsRG5kjrxlqkCnzgXJLMBDKHOMKUEYpfRUE+LGN/iw5IG0ZWE0z4O/My8z2
-	DuXApkrUp8SYKf7TycCewmgomVmKw5Be9L7ynq
-X-Received: by 2002:a05:6a21:999b:b0:1aa:66ad:6094 with SMTP id ve27-20020a056a21999b00b001aa66ad6094mr2646451pzb.8.1713424990633;
-        Thu, 18 Apr 2024 00:23:10 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFb6KDSdMbWA5pEE2/RfPBEDrTWyeMJrakgp6Dj7adISR0wr3x3K1kxRaRUXVxLHPRcarcIGEu4VMy3oL4mikE=
-X-Received: by 2002:a05:6a21:999b:b0:1aa:66ad:6094 with SMTP id
- ve27-20020a056a21999b00b001aa66ad6094mr2646428pzb.8.1713424990300; Thu, 18
- Apr 2024 00:23:10 -0700 (PDT)
+	s=arc-20240116; t=1713425557; c=relaxed/simple;
+	bh=h7PVw/s5YkA2E6D/+aBzDZKszhArG5Oeh3JVPlHIBSI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r3XEftZ7kDOOl90od4ifQE5nUYYmY4gcHUbNysmZUYwNMTxFnIFNSSGAK6wAfzyCNHxEakiFQDwwnpD4u1jwW+Z4KM9pIANLDg1oAC38/VTqgTqCoiv6q2qrwg5e65WdfKTpsHI83VoC6TpoEY0izMCdjXztV55+q1V9WxC8LiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VKqHD6cJ3z4f3kFb;
+	Thu, 18 Apr 2024 15:32:24 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 27D831A0175;
+	Thu, 18 Apr 2024 15:32:32 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgDHlxCOzCBmBygqKQ--.12535S4;
+	Thu, 18 Apr 2024 15:32:31 +0800 (CST)
+From: linan666@huaweicloud.com
+To: tj@kernel.org,
+	josef@toxicpanda.com,
+	axboe@kernel.dk
+Cc: hch@lst.de,
+	cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linan666@huaweicloud.com,
+	yukuai3@huawei.com,
+	yi.zhang@huawei.com,
+	houtao1@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH] blk-iocost: do not WARNING if iocg has already offlined
+Date: Thu, 18 Apr 2024 15:23:40 +0800
+Message-Id: <20240418072340.2090877-1-linan666@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416053909.256319-1-hpa@redhat.com> <20240416053909.256319-3-hpa@redhat.com>
- <CAHp75Vdw6gCN=45iRdKcm=qT07Z90+z6Cw=inYR+C6+5gML+_Q@mail.gmail.com>
-In-Reply-To: <CAHp75Vdw6gCN=45iRdKcm=qT07Z90+z6Cw=inYR+C6+5gML+_Q@mail.gmail.com>
-From: Kate Hsuan <hpa@redhat.com>
-Date: Thu, 18 Apr 2024 15:22:59 +0800
-Message-ID: <CAEth8oHx66Q8esGNNgXnOOT2RJXTFMAo3RJPLHDYh9oewxJKxQ@mail.gmail.com>
-Subject: Re: [PATCH v6 2/5] leds: rgb: leds-ktd202x: Get device properties
- through fwnode to support ACPI
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, linux-leds@vger.kernel.org, 
-	platform-driver-x86@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	=?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>, 
-	linux-kernel@vger.kernel.org, Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDHlxCOzCBmBygqKQ--.12535S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7WryxtrW3tryUXFWxJr4rGrg_yoW8WFWDpF
+	4agwnFkF1jqr13KF4kK3Z2q348uan5Wws3Jw4fWrZ8Za4fur1xX3Z7Zr4YyFySqrn5AFs3
+	ZF48G3y7Aa1UWaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+	F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+	4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+	648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lw4CEc2x0rVAKj4xxMxAIw28IcxkI7VAKI4
+	8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
+	wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
+	v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
+	Y4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUBSoJUUUUU=
+X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
 
-Hi Andy,
+From: Li Nan <linan122@huawei.com>
 
-Thank you for reviewing.
+In iocg_pay_debt(), warn is triggered if 'active_list' is empty, which
+is intended to confirm iocg is avitve when it has debt. However, warn
+can be triggered during removing cgroup controller, as
+iocg_waitq_timer_fn() is awakened at that time.
 
-On Wed, Apr 17, 2024 at 1:29=E2=80=AFAM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Tue, Apr 16, 2024 at 8:39=E2=80=AFAM Kate Hsuan <hpa@redhat.com> wrote=
-:
-> >
-> > This LED controller is installed on a Xiaomi pad2 and it is an x86
-> > platform. The original driver is based on the device tree and can't be
-> > used for this ACPI based system. This patch migrated the driver to use
-> > fwnode to access the properties. Moreover, the fwnode API supports the
-> > device tree so this work won't affect the original implementations.
->
-> ...
->
-> > -       int num_channels;
-> > +       int num_channels =3D 0;
->
-> Split this assignment, so...
->
-> >         int i =3D 0;
->
-> > -       num_channels =3D of_get_available_child_count(np);
->
-> ...it become
->
->   num_channels =3D 0;
->
-> here.
->
-> > +       fwnode_for_each_available_child_node(fwnode, child)
-> > +               num_channels++;
->
+  WARNING: CPU: 0 PID: 2344971 at block/blk-iocost.c:1402 iocg_pay_debt+0x14c/0x190
+  Call trace:
+  iocg_pay_debt+0x14c/0x190
+  iocg_kick_waitq+0x438/0x4c0
+  iocg_waitq_timer_fn+0xd8/0x130
+  __run_hrtimer+0x144/0x45c
+  __hrtimer_run_queues+0x16c/0x244
+  hrtimer_interrupt+0x2cc/0x7b0
 
-It will look like this:
-       num_channels =3D 0;
-       fwnode_for_each_available_child_node(fwnode, child)
-              num_channels++;
+The warn in this situation is meaningless. Since this iocg is being
+removed, the state of the 'active_list' is irrelevant, and 'waitq_timer'
+is canceled after removing 'active_list' in ioc_pd_free(), which ensure
+iocg is freed after iocg_waitq_timer_fn() returns.
 
-> ...
->
-> > -static int ktd202x_add_led(struct ktd202x *chip, struct device_node *n=
-p, unsigned int index)
-> > +static int ktd202x_add_led(struct ktd202x *chip,
-> > +                          struct fwnode_handle *fwnode,
-> > +                          unsigned int index)
->
-> Why split over 3 lines? I believe it can be still two or one
-> (depending if you use a relaxed limit).
+Therefore, add the check if iocg has already offlined to avoid warn
+when removing cgroup controller.
 
-Make it to be one line.
+Signed-off-by: Li Nan <linan122@huawei.com>
+---
+ block/blk-iocost.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> ...
->
-> >  static int ktd202x_probe_dt(struct ktd202x *chip)
->
-> Perhaps you want to rename this to something like ktd202x_probe_fw().
-
-Sounds good.
-
->
-> ...
->
-> > +       fwnode =3D dev_fwnode(dev);
->
-> Will be no use if the bellow applied, right?
-
-Right. It can be dropped.
-
->
-> ...
->
-> > -       for_each_available_child_of_node(np, child) {
-> > +       fwnode_for_each_available_child_node(fwnode, child) {
->
-> Use device_for_each_child_node() instead.
-
-Okay.
-
->
-> >         }
->
-> ...
->
-> > -       .shutdown =3D ktd202x_shutdown,
-> > +       .shutdown =3D ktd202x_shutdown
->
-> Stray change.
-
-I know the reason  :)
-
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
-
-
---=20
-BR,
-Kate
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index baa20c85799d..2e109c016a39 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -1440,7 +1440,7 @@ static void iocg_pay_debt(struct ioc_gq *iocg, u64 abs_vpay,
+ 	lockdep_assert_held(&iocg->waitq.lock);
+ 
+ 	/* make sure that nobody messed with @iocg */
+-	WARN_ON_ONCE(list_empty(&iocg->active_list));
++	WARN_ON_ONCE(list_empty(&iocg->active_list) && iocg->pd.online);
+ 	WARN_ON_ONCE(iocg->inuse > 1);
+ 
+ 	iocg->abs_vdebt -= min(abs_vpay, iocg->abs_vdebt);
+-- 
+2.39.2
 
 
