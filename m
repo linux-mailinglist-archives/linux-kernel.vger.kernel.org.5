@@ -1,101 +1,71 @@
-Return-Path: <linux-kernel+bounces-149796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 373E48A95F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE5AF8A9604
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:26:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6877B1C208EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:24:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A2BC1C20C25
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:26:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9AEB15D5CC;
-	Thu, 18 Apr 2024 09:23:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE2CA15F321;
+	Thu, 18 Apr 2024 09:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="jgCeem/i";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cvKw6z75"
-Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NiL2VV3a"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7438F15B98B
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:23:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 458A815EFCD;
+	Thu, 18 Apr 2024 09:23:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713432200; cv=none; b=qbReITEpWhyJciIDHb4sLsoutQJ5evPCoWPMUTGpcA5q3adDWXpyA2F9a4hpN8CegxwDCdK2ca/XQ32k7PZjYIreU7ZHbj0wVF3sUKB88epWBlaPanEFPO1movhP2bLhIujTJddgWdCYnXg5lkCwDj4m99wcGGHAFsffZVpifgU=
+	t=1713432223; cv=none; b=qj1/k8b6PVuiGGojAj+C+i29icOJ6AFgIoFQi/YyPWPAPT2drF4aw6fCUQ5m86sRgRpgT2K/bsaLsvrbinw+1BbcY1sBCWFKP6xtm2ykO9PcBIewc1ADsXZgwpA5XPo2QDtElTeTHA8erwQmRqbYXghcunmLrs5n5kgJQvxfMuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713432200; c=relaxed/simple;
-	bh=pLO3FhGZaNArOcfH1KMiwUqgnwV+BSPoHLgSZPIR818=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=baqrkqgxfdFI/ICfYBX55WoomTaxeIyQBebKkPSx/hjVLEZs5yTSqaRRsKt2I0ZKClHWYog1jj5orwM3MqHV/nAW5mB4gc+SnI8PQg99vvb7Owv92DeRuktu9tGkbk3kzfaW2GjoWI6WyEzbSUTn6gLCrq+q0xdKtYRZOWCQjeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=jgCeem/i; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cvKw6z75; arc=none smtp.client-ip=103.168.172.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id B32541140121;
-	Thu, 18 Apr 2024 05:23:18 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Thu, 18 Apr 2024 05:23:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
-	:from:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1713432198; x=
-	1713518598; bh=e+bYK+97MmRa/Ky4nfoRqpy88xXQ8TuiU/pcMg4OPnk=; b=j
-	gCeem/i7hOGoJRPWD74Y3vg3gZGNQI/Qhd9qZcr/JywlZHsDHxXzKWnijdRHicqu
-	SnwI9xah4cAhL45tSb415zZvwiRJx+SaAWdQ+OOLU2UIdZI1ADN1gbI98gbS2tTc
-	9TX43SK4iZ50dTtXt/h4WEa2nMn7OjFNRib1maEyhxnl/SmUsaXq0jenZZom1Q2G
-	wnG/Z/RtyvJC6a+TkQs9P2OrbUrRuoLUWcg/K3PpA4XvMfAot632tcqgCHhX5d/E
-	JJrcOMKoaKi4W9u3kNq9a97GtQjSNQafrm5qQoaYRQJUaopKKywulVsvfdgvBnTW
-	HzPzvQ1vQQqBFBYUt1yxQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1713432198; x=
-	1713518598; bh=e+bYK+97MmRa/Ky4nfoRqpy88xXQ8TuiU/pcMg4OPnk=; b=c
-	vKw6z75l+Ubezx6INQOX/CDgZ6CpU1UJwgSUlnOkAuu0qlcqGkS3Di5c6jeWZX/G
-	jmuWvwkc/rrN0g6EvtvmUvL23IatpwBs4C313qWCKxCIpyEnUOXIB3bhpuUMQLW3
-	XDqlW8zJaZCnHoVP8hczWbfjwA8xOV4wZhvOt8ulOLlTIdY69UV08aGQryqIZQ8i
-	QoyhI6v+/Sk0Pqmx/e2gYP9gz2gq/htvHpF8zhlHUDOxd496FNefLxWnMxt9lsfW
-	cQzCIGeBRJAaOgMxDjfw2uzI8uhIR5ui/7OvIwM0sn5nnk6lqTJjaz1GnfVIz1Mk
-	0zaU05xjQ24s9SVKEb55w==
-X-ME-Sender: <xms:huYgZmwLgy3NO8qaJEkVUpJrPiYUr9RFPseP9-EpohXLcEMLzFwkDw>
-    <xme:huYgZiQBlZQYITtsyF9yspdGnYflitzuNLetqwW239Of2FmhPmK--om5TT8DesxVu
-    RASmA0VbZVj5jfMxAA>
-X-ME-Received: <xmr:huYgZoUsCF89GXlOiNEKvWDpyGpmVRYNrsOTAZPvzxYIyPxNQMgPDiP437_-yyfnQaYk0JkfE7a3V49p_SLc-vpSKf_04hZoQ7AGrbcOtbTPFQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudektddgudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
-    rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpedvjefgje
-    euvdfguddukeelveetgfdtvefhtdfffeeigfevueetffeivdffkedvtdenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
-    hsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:huYgZsje-XM1e9AGKlSk86ZrL49tu8ufh8pz8o6R1Ll6K40OqKaNcg>
-    <xmx:huYgZoBPL-wv-DcKqE7Bckh9EAQjacsexCicaquExstdnX1Xa-GDEg>
-    <xmx:huYgZtJ1eNz8hiIyXaulbDqdaequYFB1Usgta1Q6WpUN9XaxRwY49w>
-    <xmx:huYgZvBnWkV-TuoCrBZDjCQZATTvn46f5vAwJt6Uvq5mjRuAPmJuIw>
-    <xmx:huYgZrPMxI5T_LhETwyNG18yytHw_zfrnYHcPGNjCyhUbL5XhzlILA4J>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 18 Apr 2024 05:23:17 -0400 (EDT)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: linux1394-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 08/13] firewire: core: replace local macros with common inline functions for isochronous packet header
-Date: Thu, 18 Apr 2024 18:22:58 +0900
-Message-ID: <20240418092303.19725-9-o-takashi@sakamocchi.jp>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240418092303.19725-8-o-takashi@sakamocchi.jp>
-References: <20240418092303.19725-1-o-takashi@sakamocchi.jp>
- <20240418092303.19725-2-o-takashi@sakamocchi.jp>
- <20240418092303.19725-3-o-takashi@sakamocchi.jp>
- <20240418092303.19725-4-o-takashi@sakamocchi.jp>
- <20240418092303.19725-5-o-takashi@sakamocchi.jp>
- <20240418092303.19725-6-o-takashi@sakamocchi.jp>
- <20240418092303.19725-7-o-takashi@sakamocchi.jp>
- <20240418092303.19725-8-o-takashi@sakamocchi.jp>
+	s=arc-20240116; t=1713432223; c=relaxed/simple;
+	bh=Fac+43+ZkiTIwPw+5Eung8Nlq978sDrkCo5KeRfxUBI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Pk4XNlc8MV03FCQwPUmYFZCyx7J7Shmm+REXbEoBTQs/erZPv+ObbeBZiOHiUjsn3RW3LPbrm7xhpS+46K/oLpDmyqv1x3m1Yf5OhOQfKMJ6MlIVHXZAfL7IQACRX7MZVOGWS8SBxnY1VRCPwDk9kNm3cMjFoClkcpL/IoSy0Aw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NiL2VV3a; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43I3kDao020377;
+	Thu, 18 Apr 2024 09:23:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=SilJgGv
+	0S/cTHjIt82kNZFIHhQaYicUU3VKMfUPu6X4=; b=NiL2VV3aw73r8jbLdtG3VcI
+	ryYNZSLQ6Dk0eltAVeISrdZUCQvWR6tp/tuF2WxjQOaZ2OWK6/q++yZNzFkOjtMP
+	TV+fdfHDoSpWgZqC1jrSZN/KgSQsZ+dLh51TMmqCBEpKypNq5QmMqTZPcPJaQwCW
+	CwNSJs4Abs0E1CYYC3mdzNscR/kyo/qjYWtRK0ryiZJpgG7aS0/5R4QrNuScF4IA
+	USj1RqwHvE8OTDaXops29OyvYbAuF5j1SSsF1+01U+cmrk+mqKVn7k6EpPEBNNKo
+	MIJ82vJxgEPWJk9DnTiIXbxyycxLV/tMgXUFdb25NqhtMNkFQs+4HBT3Eu4eR5A=
+	=
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xju74rs8j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 09:23:35 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43I9NYBw024740
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 09:23:34 GMT
+Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Thu, 18 Apr 2024 02:23:29 -0700
+From: Varadarajan Narayanan <quic_varada@quicinc.com>
+To: <andersson@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <djakov@kernel.org>,
+        <quic_varada@quicinc.com>, <dmitry.baryshkov@linaro.org>,
+        <quic_anusha@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+Subject: [PATCH v9 0/6] Add interconnect driver for IPQ9574 SoC
+Date: Thu, 18 Apr 2024 14:52:59 +0530
+Message-ID: <20240418092305.2337429-1-quic_varada@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -103,46 +73,105 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: aenDTy-QT9pWuzS8t7P8dq6frnwxg5Nv
+X-Proofpoint-ORIG-GUID: aenDTy-QT9pWuzS8t7P8dq6frnwxg5Nv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-18_08,2024-04-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=970
+ mlxscore=0 suspectscore=0 spamscore=0 clxscore=1015 adultscore=0
+ lowpriorityscore=0 malwarescore=0 priorityscore=1501 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404180065
 
-This commit replaces the local macros with the common inline functions
-to serialize the packer header for Asynchronous Streaming Packet.
+MSM platforms manage NoC related clocks and scaling from RPM.
+However, in IPQ SoCs, RPM is not involved in managing NoC
+related clocks and there is no NoC scaling.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+However, there is a requirement to enable some NoC interface
+clocks for the accessing the peripherals present in the
+system. Hence add a minimalistic interconnect driver that
+establishes a path from the processor/memory to those peripherals
+and vice versa.
+
 ---
- drivers/firewire/core-transaction.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+v9:	Squash icc-clk driver change and cbf-msm8996 change
+	Remove HWS_DATA macro
+v8:	Change icc-clk driver to take master and slave ids instead
+	of auto generating
+	Remove ICC_xxx defines from dt-bindings header
+	Define MASTER/SLAVE_xxx macros from 0 .. n
 
-diff --git a/drivers/firewire/core-transaction.c b/drivers/firewire/core-transaction.c
-index 24febc23c0c4..52d8d483c178 100644
---- a/drivers/firewire/core-transaction.c
-+++ b/drivers/firewire/core-transaction.c
-@@ -31,9 +31,6 @@
- #include "core.h"
- #include "packet-header-definitions.h"
- 
--#define HEADER_TCODE(tcode)		((tcode) << 4)
--#define HEADER_DATA_LENGTH(length)	((length) << 16)
--
- #define HEADER_DESTINATION_IS_BROADCAST(header) \
- 	((async_header_get_destination(header) & 0x3f) == 0x3f)
- 
-@@ -215,10 +212,11 @@ static void fw_fill_request(struct fw_packet *packet, int tcode, int tlabel,
- 	int ext_tcode;
- 
- 	if (tcode == TCODE_STREAM_DATA) {
--		packet->header[0] =
--			HEADER_DATA_LENGTH(length) |
--			destination_id |
--			HEADER_TCODE(TCODE_STREAM_DATA);
-+		// The value of destination_id argument should include tag, channel, and sy fields
-+		// as isochronous packet header has.
-+		packet->header[0] = destination_id;
-+		isoc_header_set_data_length(packet->header, length);
-+		isoc_header_set_tcode(packet->header, TCODE_STREAM_DATA);
- 		packet->header_length = 4;
- 		packet->payload = payload;
- 		packet->payload_length = length;
+v7:	Fix macro names in dt-bindings header
+	Do clock get in icc driver
+
+v6:	Removed 'Reviewed-by: Krzysztof' from dt-bindings patch
+	Remove clock get from ICC driver as suggested by Stephen Boyd
+	so that the actual peripheral can do the clock get
+	first_id -> icc_first_node_id
+	Remove tristate from INTERCONNECT_CLK
+v5:
+	Split gcc-ipq9574.c and common.c changes into separate patches
+	Introduce devm_icc_clk_register
+	Fix error handling
+v4:
+gcc-ipq9574.c
+	Use clk_hw instead of indices
+common.c
+	Do icc register in qcom_cc_probe() call stream
+common.h
+	Add icc clock info to qcom_cc_desc structure
+
+v3:
+qcom,ipq9574.h
+	Move 'first id' define to clock driver
+gcc-ipq9574.c:
+	Use indexed identifiers here to avoid confusion
+	Fix error messages and move code to common.c as it can be
+	shared with future SoCs
+
+v2:
+qcom,ipq9574.h
+	Fix license identifier
+	Rename macros
+qcom,ipq9574-gcc.yaml
+	Include interconnect-cells
+gcc-ipq9574.c
+	Update commit log
+	Remove IS_ENABLED(CONFIG_INTERCONNECT) and auto select it from Kconfig
+ipq9574.dtsi
+	Moved to separate patch
+	Include interconnect-cells to clock controller node
+drivers/clk/qcom/Kconfig:
+	Auto select CONFIG_INTERCONNECT & CONFIG_INTERCONNECT_CLK
+
+Varadarajan Narayanan (6):
+  interconnect: icc-clk: Allow user to specify master/slave ids
+  dt-bindings: interconnect: Add Qualcomm IPQ9574 support
+  interconnect: icc-clk: Add devm_icc_clk_register
+  clk: qcom: common: Add interconnect clocks support
+  clk: qcom: ipq9574: Use icc-clk for enabling NoC related clocks
+  arm64: dts: qcom: ipq9574: Add icc provider ability to gcc
+
+ .../bindings/clock/qcom,ipq9574-gcc.yaml      |  3 +
+ arch/arm64/boot/dts/qcom/ipq9574.dtsi         |  2 +
+ drivers/clk/qcom/Kconfig                      |  2 +
+ drivers/clk/qcom/clk-cbf-8996.c               |  7 ++-
+ drivers/clk/qcom/common.c                     | 35 ++++++++++-
+ drivers/clk/qcom/common.h                     |  9 +++
+ drivers/clk/qcom/gcc-ipq9574.c                | 31 ++++++++++
+ drivers/interconnect/icc-clk.c                | 24 +++++++-
+ .../dt-bindings/interconnect/qcom,ipq9574.h   | 59 +++++++++++++++++++
+ include/linux/interconnect-clk.h              |  4 ++
+ 10 files changed, 171 insertions(+), 5 deletions(-)
+ create mode 100644 include/dt-bindings/interconnect/qcom,ipq9574.h
+
 -- 
-2.43.0
+2.34.1
 
 
