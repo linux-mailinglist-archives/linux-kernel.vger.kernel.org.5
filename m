@@ -1,243 +1,296 @@
-Return-Path: <linux-kernel+bounces-149451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AF098A9147
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:46:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB1B18A9155
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:57:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5F6B28275A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:46:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01CFE1C20F07
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:57:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5511354679;
-	Thu, 18 Apr 2024 02:45:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B5E74F20E;
+	Thu, 18 Apr 2024 02:57:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="GDNujn8/"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2055.outbound.protection.outlook.com [40.107.22.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fVED6d/m"
+Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706DB537FC;
-	Thu, 18 Apr 2024 02:45:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.55
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713408331; cv=fail; b=f7HG1Aq7vm9yML5sORymoAw5S8k9iJOyv+lUdnvU2IN3/+cdNWbWnBKPYsFYkMXcvRJ/2vOp5rNMskJEuvuAfwKPQunwjptY3J29TcuBBAuEm07oFGy26FKcFC4SmSyWlmAw4GZpGxQlK5cNCPtfGYA2dJaTHAQADH7i9ZyDi3o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713408331; c=relaxed/simple;
-	bh=Gk4hU2r+iaIIfBmi9wqN/jM0lkrvMeT46nOOAxus8Z8=;
-	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=Tojb3/TtAxdtJgIBTyhm2PVnKo+l1kwB39oNLYdKpkb8EW7ukN0lM4bvgGGhCgrwYmOcpxsEHOH+8v+pkHjBFTdDmDXbVbyfKTdj0OhMZESBVVOPS+Numa6/yf+oIW+pei7FXYrL52i9IjW9jQXveXrqS4gO0ja4o/SNG3k5AYQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=GDNujn8/; arc=fail smtp.client-ip=40.107.22.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NUcYmNe86cMQ2rtOvc+/XC8tLwX/u3WuQpIW8Xk7xkIaiAWsqU4sBYEDC76l8xNHfDvZJYKi9LJ/jDEaNqrJ/6CX3+34xmP43J57rItmq9lpEuhOSgfX5wLbPFrvgnEI54tqCx/3useFWlgarOfCUC0DUlbYP6hoZh1TsjESqQp/nngfSh8KFMB9VjyL+yYZOJKj5Gfg0qQkSnMW+kz0Cu9A0GzS19ZvDd4Xgirn9r/49GZ8NFoVBurjHmk3Eex3y5V746J2YuV9ZKzxVnQ5WqlduURQFuViPuZMqpJf3qH5rKsSa1XWCzCUXll7u7t7lU50RlJPhuenZlHbcilirQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NS1364QTWuqHKoS3BSH6dxCAfRcqyGmb5slDWU3QQDs=;
- b=Azy7O/oMUXZ+9C4/HfKYI5uJIwzvojiO92alKMDPfPigJdFnnrE+ml2aPF1+PjPWF2sODj+1HGRChZOHUsAVwamc7exKFtlCFH4SLn6n84bCiXdxenRkd655IKX5lhZ2S1JFN4DIFiWlgtxrjD42/NbnMXXi4tkW1K5R83ciRBgf09Qji+UWJ95hMCK3atDwpjIqku1kL68tcAaQjA/R9NjMuP8Xv9lzEsBHJb5SQuGNQOdHnIaFteIBHDsuVCDf9APMhYQq/sNvjE4ZTU6IbRwbKNzb1uQ9PPXHBJifIJBL+aOOgQAY6fc5165XrGAq9JIjowhC6sIeku1kTpp/jQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NS1364QTWuqHKoS3BSH6dxCAfRcqyGmb5slDWU3QQDs=;
- b=GDNujn8/AtTm9yXVH6I0O/9w4114vTuIhxG9rX8pJt/n3vEsAFr6EkabATCRfsk1B9zKtdVkwXe9kgjPbUJOLwggTlfrCuMJVGW8U2PlPPo8Z9D2iYyVp24lwPcxsgQ8UAFgcmHRVOmrUPwZy6T3vRZZJoDsz/kO8Xth0OL7jFg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by DU4PR04MB10401.eurprd04.prod.outlook.com (2603:10a6:10:55e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.37; Thu, 18 Apr
- 2024 02:45:26 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7452.049; Thu, 18 Apr 2024
- 02:45:26 +0000
-From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Date: Thu, 18 Apr 2024 10:53:18 +0800
-Subject: [PATCH v2 2/2] pinctrl: scmi: support i.MX OEM pin configuration
- type
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240418-pinctrl-scmi-oem-v1-v2-2-3a555a3c58c3@nxp.com>
-References: <20240418-pinctrl-scmi-oem-v1-v2-0-3a555a3c58c3@nxp.com>
-In-Reply-To: <20240418-pinctrl-scmi-oem-v1-v2-0-3a555a3c58c3@nxp.com>
-To: Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, Peng Fan <peng.fan@arm.com>, 
- Sudeep Holla <sudeep.holla@arm.com>, 
- Cristian Marussi <cristian.marussi@arm.com>
-Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713408808; l=2796;
- i=peng.fan@nxp.com; s=20230812; h=from:subject:message-id;
- bh=zPpDa/61WB4JTsNH+KhyU/5a0m6RG00gkpxSuVKB/Qs=;
- b=XjNoNjaAaQ6U4pEzMhv/6Trs/JpRlXS2TEntq24sbVtXi+my5O1vvelWeu5ixiym/Aj3lRHkI
- ITJMMwyOYWZDFrtmJAkLmnPqNg+yDvCyG7C9TevQfyl+V5ic34Qj3c3
-X-Developer-Key: i=peng.fan@nxp.com; a=ed25519;
- pk=I4sJg7atIT1g63H7bb5lDRGR2gJW14RKDD0wFL8TT1g=
-X-ClientProxiedBy: SI2PR01CA0020.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::6) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EFC453AC
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 02:57:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713409055; cv=none; b=TcQhvqDSHlDxpTtkAS6ZjyAoLPr2Yme8/BLVT0LkKlncyTa9OlbTj8yL7gMUpDYHznu2IIrv9oJ2Z8AR921C2gWN3WjpYqmWLDmhev920CrEviWaJQA/DHGn6GGeqfyGKH8qb6c67aOZLfobI4uNlfgKt/OCiOe8qvvFhJk7bIg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713409055; c=relaxed/simple;
+	bh=fIv3bLYUQPcWF088aYdMkOMRQMqf1zFqm6Nv8oLXyuA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LYBk9bngtITBJ5810VGQIdv/GbYVx0JMfRpjJAAVuSR7H56msoL4SNZrl2wEYLAVFmfvVwoxJLw/aBQOSTh48TOVcm5tTx0ZfGznb88nfA07SMrCm06HOPQMEWuKvLrMiJzkeXAZcdGL7YZwpKA5eiNRyiBrKsN4bHVN7Xm6QEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fVED6d/m; arc=none smtp.client-ip=209.85.160.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-2390335b67cso6825fac.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 19:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713409053; x=1714013853; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J8kao/g8Q8+eIqH7aAXit3ZE9PsmSiD4NM8tiUS+pFA=;
+        b=fVED6d/mG7dQcCa97FI7axzk3qxrOUuFBGau09Ty0jzpZvLPzqc0HPvwbqMlXnDjNB
+         FQA9u6vOxDeTXOH0drx3z1vOAdPHAtgbQ6fsUoUJaLmy7snuFU7jUk7l7JA+aaxZXY7d
+         IKNgLfXMRGoIicMjSbLs1mrkmj6h/UD7eD5//B0tecxfJ4+/oRW8peqUarHFC7PG+GE6
+         ZjLS2htMvJfPwVWU9rwWLdPAKpMY3TxsPzfel33Nb8qrDM5nO6DEv3JmZjBSDWbfmblg
+         ZCPLQCBRfxDcKsSfpxScz5F0+87JeCG9v5Qg6WnI6xkbssWQLLjQ3hGxzINYzeYPD9si
+         Dsww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713409053; x=1714013853;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=J8kao/g8Q8+eIqH7aAXit3ZE9PsmSiD4NM8tiUS+pFA=;
+        b=SmeB08OmOL5aomArgUHyt0YvGv785/aMSvZJCalE1P6JYVn7QZHrljPMmL6tog9dZv
+         9JpiSZuAtQ5WD56S5yGbM5886t+Ks8oprszE/ap2G2D2lXA6E+316T+OcXuR1H5XLFVK
+         P+dIIfwRIqDKVYGuy/kPW8TiazM/do3pITi/6uYhkJr02H6w4hC5eDD9d253GJT5IeOt
+         btkAPHyWfMNoxCU6kANCMgeXhA/2ePs2rQpHCOqEPtlz17wjVn4ZCk+UBgMqILhIiD5E
+         J9sk/yjkQbKdfRACq483yj1Ua9zJbMbpXR90KkEHiiJfr+FCHJEos0zlRKv5iiPjrZ+v
+         144w==
+X-Forwarded-Encrypted: i=1; AJvYcCUFPwXL791mGUe63PzLljAOtcpjV74GbKogTnvUFx6vpECdBUeR4G6Ae5sS82Q0q8SQpLxLCjY+3Ahs9PHwF5BzfY7D5M4f4sYW2dmI
+X-Gm-Message-State: AOJu0Yzcad0ReZ9njaNmQjYioc3HQh9XE+egLZIWfZTHziIuYdmUl4pI
+	2IedyFvL4+Pb9mOKr4wMQdCEvY/oMbUq1NucPZQEcbAgfJySarZWjyF6s36BYzUvvH5kvO7o5Nd
+	iY67N2oL2FvNicuh8k4ydwJvqit4=
+X-Google-Smtp-Source: AGHT+IF9MjWUDc0G2dqgfYlGfH/cW1qfBklijD6u73H3QKnKwGmESUweLgWOmtdlNCgEGkxGNzH0AHVPAcpRsOKCiNY=
+X-Received: by 2002:a05:6870:f2a9:b0:22e:d258:bc43 with SMTP id
+ u41-20020a056870f2a900b0022ed258bc43mr1705883oap.42.1713409053017; Wed, 17
+ Apr 2024 19:57:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|DU4PR04MB10401:EE_
-X-MS-Office365-Filtering-Correlation-Id: 916dbc2c-4eb7-459f-5f6e-08dc5f519a52
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	vuINNb9gdi9BoHN8PCXpjB5vLlwbe7HYijRJP47t3gImjt+PLOhNAaI+nM0U1LirNSBgzebCxDitSlTWzwLV95HpcucTYcU3NrXk9TvxR7sosRpiyfTA84uN1wYPbAHpHpEHYc8bLRYS1oIiuUwODxSrDKDQaOSQNpqQnWxk8BtPNnuBPp4tPGz4FgIbgpNg9gnS/90L4jjrcyZxx4C2ltZzaNcJAXGuphzBXJRL16WjQw+0IP/mYDfIcYK9I55+EjbEno0P/1k1aQRpjYUGQqFtWUbzd5Tu1BC7Z4vA9d2kPaDCvfIVnoXGCdt9PK0ZNF6EJMDuSOejwOV+kvTlIXTUpvfCtO4PQ1AYQfrrCFF9qHaqsjLusCvzq8fRYIuJnmV9nODpuadHSpqd/odose2208vBTyfKkfNg8Q1MCd/VzUh80u8gHi9kx3v3wPW88ikohpVCoug8fbnXx9Y+0fPJWJm2qaLsBuapG5XLl3ryantS41ZClPdBKuScyHLhfwSG7DmWYaZemshztWzmvnLx2ERkDzpUSn0msUH3OVdPZz152xTJNXwJvE3e6FThPOpHKedontF6Y2SKJHK0m7V5E4lAbKKV7xIZ8SOsbn/vrPtgoXih3pDeUaO/ehIC0CuJTAZKXByzeTcgoFDBT1yMQqQZ8sAA7k3jJ99mx9iwCKtnlYqusWyiSuIHm5Z7UZqg2VO/yESiCR3/iONz4KDtkjnXl10lIH5M2YJMLCU=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(52116005)(376005)(366007)(921011)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?SHIzeStaNVVjMWxnUFJCQ0lXeGE2ZTdHcnZIQjExVGxPb2ZPYjZlR0lnVWZo?=
- =?utf-8?B?NTNFek1zWnhIOXErbUx1K1A2U0FvK2dWcCs3R1A3eElZRzA4Uk5XZE1IR29R?=
- =?utf-8?B?eU1IVlI5UkNucGZOck4xdmxpdnBlZXNXRDQ0RDFMakZiSDdoTlhjTHR0YXFG?=
- =?utf-8?B?elhVVzBqaEVyR2pDUjJzczVqS0h0dmRVeUtSK3FUUzZaQ2NsRWgrOGdvT05G?=
- =?utf-8?B?Tm4vQ1lZKytRL2twRTAwcEVHdHNOR1djQThMVHdIK1YxQ3hQQ1JnZ2crK3I1?=
- =?utf-8?B?ZWVPYkh5Z0tTTS9xQzhiUlBoaFludUZmMFlEelJ4NmdvdTA1VVRsSDZWK2h3?=
- =?utf-8?B?Z3RXWU5PdmxiS052dGhVVE1odEs2NXcrdnVzWVhwOHVtMmp5TEx2VVNpaER1?=
- =?utf-8?B?dk9rd1MxNmRQdG50WW9PeDgxbXhPN1E5TVpRWGxxNjh1bHZiakg3Q0RhdFFw?=
- =?utf-8?B?b0ZZbUlxOFUxYmtqNU0yZjFBeXZoWXprK0N1NVF6dUkrT0V6ZGIrbVROT1Y1?=
- =?utf-8?B?Z05ITlJ1TGk1N3JkZG9mZHJFTWZGWXZXZXNuaXlXcVFNSjJta3lUNFlJdjl6?=
- =?utf-8?B?dk9ncEptVENjWlZBS1NDMVJxT3BjOVkyN09nUHkrZkJaMzVqY3lTT2ppQXk4?=
- =?utf-8?B?T0x5RXloVzdrVWMwaUFNQ2d3aEp6Y09peEhuYUlzQkdXM2R3UXN5ekhmWkpM?=
- =?utf-8?B?UXZXN3RaMHlldFVDM1lweDNjbUdVNmFPQWs3cysvbFZuc3ovbXFlODcyemJ1?=
- =?utf-8?B?L2JjTHFCSEwwWUY4SE81RW13Qjl4WXhCaWRrYktXOFduWW90aWtCNFhUazA4?=
- =?utf-8?B?aG9tdzBEN0M3QXRiRzUyZnpBTGQzWUpVUW5pWmRFRnlqTHk3RHBaSlUxa09F?=
- =?utf-8?B?bW14MkhmRzMzMGVKU1FEUk5MZi8wdmhCU05ic1cwOUZYTGNiZ01oejROK0F5?=
- =?utf-8?B?N3BlZUVLT3JKclhuZjVLcUo5elcyZC93NTNYL0dBNzJSODhMSXFndWEzL1BO?=
- =?utf-8?B?VUl2Tk9SRGFjajh6SDljWE1Nd2xjOHFJdFBoRXZJcEdUUFEzaVA3MmhMRkxF?=
- =?utf-8?B?bFVvZ1h1a042UTE0OGhDS24vblIxWTJrNjJwd3VnVytzTCtwYytJNjFvQnkw?=
- =?utf-8?B?S3hKUU51WmhTNUxGeUpDRFNPWHJ6cm9lcXNwalZoejc3OEl4QXlKR1loOVVG?=
- =?utf-8?B?ZjRTUG1ob0JWTlNLSlc5N0w0eFplNDBOYnZIanNpMEJNUi9NUWtaNXpROGxq?=
- =?utf-8?B?Vm9jTjNKSnVDeS9WbDUyYmNHakh1SThMaVovQlNKT0Q1eFloYS9uRU9YWFFh?=
- =?utf-8?B?c3R3aUxxS1lNZmpIS1NORVlJMU1CR0VJR1NjU2xEcEUrdWZ4WFBmK2VFZStj?=
- =?utf-8?B?WnZ6bU1EbWp1aVJjNWVWUkQ4cjFlVVFURUk0RmxoVGZITzkybEtEMkJMWXJz?=
- =?utf-8?B?ZXpsWXdzUUhleWpzb2pYTlFMZEljTlpHdmtBa0ZhbGFtc1RDNno3eS9QV25n?=
- =?utf-8?B?VGc3RHlDRnJZaHEvQU9aT3NyeEl3RndXdUpwRzhvVjlLNnBrd3BIT0hWb056?=
- =?utf-8?B?L05TWmRGakUrY2s1YjJGWEY1RVRlZHFydTBXNDhXU1RCMGlUUDdISG1DUUo4?=
- =?utf-8?B?bnpudmJGU3RzL2NUS2orUkRvQWJQK3RCc1dnVUlNQXBuUE9vbm5kd3RLanho?=
- =?utf-8?B?RHlwVUNzVi92amg2N3laTzdJVXR4Y3M0SGNNQ2dsTDhqcnNMUkFicGhKbkhy?=
- =?utf-8?B?VmorYkdhbnFncncwQ0RhcVlpZjhmbzFsQ1BHbzBHOUJtZldUYmFNQ1MwNzEy?=
- =?utf-8?B?K2ViL1RlNkZZaHVmbW9ZbTdhbkN6ajhvdW5nQWEyYzBObHN5MDlRWVdtMjlR?=
- =?utf-8?B?Z2tZdDBiYzRXUW1XaExQdndodGsraTdyakRhR0hieWZiQnlDQ0pBR1lIdWk4?=
- =?utf-8?B?ZklyOWhBZTR5ZXpIWUZ5QlpUVlBRdGNPRlV4ZFlHMzFWOW9lZ0xvUkozdFI4?=
- =?utf-8?B?WVJMQ0VsR2ZPZzl2UlpmWWd4YlF5VFlXVHlCWjlKaG83ZXQxa2NaVGg2dnJE?=
- =?utf-8?B?UzU4UURYaDdjZEpGSmZXQ2E1K0RHQXpsdHRkWFpubXNVL2I0UzdtTERyQzFN?=
- =?utf-8?Q?68sjR3Chc7dpCKZSta6P/VMQl?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 916dbc2c-4eb7-459f-5f6e-08dc5f519a52
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 02:45:26.6623
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9s/W9yB1s7WOJaRd9ViX5EpbCGJAI2um5p6twNmTU34MjscQXisdkecEYY3ii7iyDPRJRtj/RpN0UdmLte9PFA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU4PR04MB10401
+References: <20240226082349.302363-1-yu.c.chen@intel.com> <758ebf4e-ee84-414b-99ec-182537bcc168@bytedance.com>
+ <20240408115833.GF21904@noisy.programming.kicks-ass.net> <ZhPtCyRmPxa0DpMe@chenyu5-mobl2>
+ <20240409092104.GA2665@noisy.programming.kicks-ass.net> <ZiAWTU5xb/JMn/Hs@chenyu5-mobl2>
+In-Reply-To: <ZiAWTU5xb/JMn/Hs@chenyu5-mobl2>
+From: Xuewen Yan <xuewen.yan94@gmail.com>
+Date: Thu, 18 Apr 2024 10:57:22 +0800
+Message-ID: <CAB8ipk-fejQ41Jgk6z52+T6CP+impwbaOAfhA9vG_-FB9BeRyw@mail.gmail.com>
+Subject: Re: [RFC PATCH] sched/eevdf: Return leftmost entity in pick_eevdf()
+ if no eligible entity is found
+To: Chen Yu <yu.c.chen@intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Abel Wu <wuyun.abel@bytedance.com>, 
+	Ingo Molnar <mingo@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Tim Chen <tim.c.chen@intel.com>, 
+	Tiwei Bie <tiwei.btw@antgroup.com>, Honglei Wang <wanghonglei@didichuxing.com>, 
+	Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.chen.surf@gmail.com>, 
+	Yujie Liu <yujie.liu@intel.com>, linux-kernel@vger.kernel.org, 
+	kernel test robot <oliver.sang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Peng Fan <peng.fan@nxp.com>
+Hi Yu
 
-i.MX95 System Manager FW supports SCMI PINCTRL protocol, but uses
-OEM Pin Configuration type, so extend the driver to support custom
-params.
+On Thu, Apr 18, 2024 at 2:35=E2=80=AFAM Chen Yu <yu.c.chen@intel.com> wrote=
+:
+>
+> On 2024-04-09 at 11:21:04 +0200, Peter Zijlstra wrote:
+> > On Mon, Apr 08, 2024 at 09:11:39PM +0800, Chen Yu wrote:
+> > > On 2024-04-08 at 13:58:33 +0200, Peter Zijlstra wrote:
+> > > > On Thu, Feb 29, 2024 at 05:00:18PM +0800, Abel Wu wrote:
+> > > >
+> > > > > > According to the log, vruntime is 18435852013561943404, the
+> > > > > > cfs_rq->min_vruntime is 763383370431, the load is 629 + 2048 =
+=3D 2677,
+> > > > > > thus:
+> > > > > > s64 delta =3D (s64)(18435852013561943404 - 763383370431) =3D -1=
+0892823530978643
+> > > > > >      delta * 2677 =3D 7733399554989275921
+> > > > > > that is to say, the multiply result overflow the s64, which tur=
+ns the
+> > > > > > negative value into a positive value, thus eligible check fails=
+.
+> > > > >
+> > > > > Indeed.
+> > > >
+> > > > From the data presented it looks like min_vruntime is wrong and nee=
+ds
+> > > > update. If you can readily reproduce this, dump the vruntime of all
+> > > > tasks on the runqueue and see if min_vruntime is indeed correct.
+> > > >
+> > >
+> > > This was the dump of all the entities on the tree, from left to right=
+,
+> >
+> > Oh, my bad, I thought it was the pick path.
+> >
+> > > and also from top down in middle order traverse, when this issue happ=
+ens:
+> > >
+> > > [  514.461242][ T8390] cfs_rq avg_vruntime:386638640128 avg_load:2048=
+ cfs_rq->min_vruntime:763383370431
+> > > [  514.535935][ T8390] current on_rq se 0xc5851400, deadline:18435852=
+013562231446
+> > >                     min_vruntime:18437121115753667698 vruntime:184358=
+52013561943404, load:629
+> > >
+> > >
+> > > [  514.536772][ T8390] Traverse rb-tree from left to right
+> > > [  514.537138][ T8390]  se 0xec1234e0 deadline:763384870431 min_vrunt=
+ime:763383370431 vruntime:763383370431 non-eligible  <-- leftmost se
+> > > [  514.537835][ T8390]  se 0xec4fcf20 deadline:763762447228 min_vrunt=
+ime:763760947228 vruntime:763760947228 non-eligible
+> > >
+> > > [  514.538539][ T8390] Traverse rb-tree from topdown
+> > > [  514.538877][ T8390]  middle se 0xec1234e0 deadline:763384870431 mi=
+n_vruntime:763383370431 vruntime:763383370431 non-eligible   <-- root se
+> > > [  514.539605][ T8390]  middle se 0xec4fcf20 deadline:763762447228 mi=
+n_vruntime:763760947228 vruntime:763760947228 non-eligible
+> > >
+> > > The tree looks like:
+> > >
+> > >           se (0xec1234e0)
+> > >                   |
+> > >                   |
+> > >                   ----> se (0xec4fcf20)
+> > >
+> > >
+> > > The root se 0xec1234e0 is also the leftmost se, its min_vruntime and
+> > > vruntime are both 763383370431, which is aligned with
+> > > cfs_rq->min_vruntime. It seems that the cfs_rq's min_vruntime gets
+> > > updated correctly, because it is monotonic increasing.
+> >
+> > Right.
+> >
+> > > My guess is that, for some reason, one newly forked se in a newly
+> > > created task group, in the rb-tree has not been picked for a long
+> > > time(maybe not eligible). Its vruntime stopped at the negative
+> > > value(near (unsigned long)(-(1LL << 20)) for a long time, its vruntim=
+e
+> > > is long behind the cfs_rq->vruntime, thus the overflow happens.
+> >
+> > I'll have to do the math again, but that's something in the order of no=
+t
+> > picking a task in about a day, that would be 'bad' :-)
+> >
+> > Is there any sane way to reproduce this, and how often does it happen?
+>
+> After adding some ftrace in place_entity() and pick_eevdf(), with the
+> help from Yujie in lkp, the issue was reproduced today. The reason why se=
+'s vruntime
+> is very small seems to be related to task group's reweight_entity():
+>
+> vlag =3D (s64)(avruntime - se->vruntime);
+> vlag =3D div_s64(vlag * old_weight, weight);
+> se->vruntime =3D avruntime - vlag;
+>
+> The vlag above is not limited by neither 2*se->slice nor TICK_NSEC,
+> if the new weight is very small, which is very likely, then the vlag
+> could be very large, results in a very small vruntime.
+>
+>
+> The followings are the details why I think above could bring problems:
+>
+> Here is the debug log printed by place_entity():
+>
+>
+> [  397.597268]cfs_rq:0xe75f7100
+>               cfs_rq.avg_vruntime:-1111846207333767
+>               cfs_rq.min_vruntime:810640668779
+>               avg_vruntime():686982466017
+>               curr(0xc59f4f20 rb_producer weight:15 vruntime:144777319665=
+4 sum_exec_ns:187707021870 ctx(0 73)
+>               leftmost(0xeacb6e00 vruntime:332464705486 sum_exec_ns:78776=
+125437 load:677)
+> ..
+>
+> [  397.877251]cfs_rq:0xe75f7100
+>               cfs_rq.avg_vruntime:-759390883821798
+>               cfs_rq.min_vruntime:810640668779
+>               avg_vruntime(): 689577229374
+>               curr(0xc59f4f20 rb_producer weight:15 vruntime:145364090799=
+8 sum_ns:187792974673 ctx(0 73)
+>               leftmost(0xeacb6e00 vruntime:-59752941080010 sum_ns:7877612=
+5437 load:4)
+>
+>
+> The leftmost se is a task group, its vruntime reduces from 332464705486 t=
+o
+> -59752941080010, because its load reduced from 677 to 4 due to update_cfs=
+_group()
+> on the tree entities.
+>
+> Back to reweight_entity():
+> vlag =3D avruntime - se->vruntime =3D 689577229374 - 332464705486 =3D 357=
+112523888;
+> vlag =3D vlag * old_weight / weight =3D 357112523888 * 677 / 4 =3D 604412=
+94668044;
+> se->vruntime =3D avruntime - vlag =3D -59751717438670;
+>
+> the new se vruntime -59751717438670 is close to what we printed -59752941=
+080010,
+> consider that the avg_vruntime() vary.
+>
+> Then later this leftmost se has changed its load back and forth, and when=
+ the load is 2,
+> the vuntime has reached a dangerous threshold to trigger the s64 overflow=
+ in
+> eligible check:
+>
+> [  398.011991]cfs_rq:0xe75f7100
+>               cfs_rq.avg_vruntime:-11875977385353427
+>               cfs_rq.min_vruntime:810640668779
+>               cfs_rq.avg_load:96985
+>               leftmost(0xeacb6e00 vruntime:18446623907344963655 load:2)
+>
+> vruntime_eligible()
+> {
+>
+>    key =3D se.vruntime - cfs_rq.min_vruntime =3D -120977005256740;
+>    key * avg_load overflow s64...
+> }
+>
+> As a result the leftmost one can not be picked, and NULL is returned.
+>
+> One workaround patch I'm thinking of, if this analysis is in the
+> right direction, maybe I can have a test later:
+>
+> thanks,
+> Chenyu
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 6e0968fb9ba8..7ab26cdc3487 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -3965,8 +3965,13 @@ static void reweight_eevdf(struct cfs_rq *cfs_rq, =
+struct sched_entity *se,
+>          *         =3D V  - vl'
+>          */
+>         if (avruntime !=3D se->vruntime) {
+> +               s64 limit;
+> +
+>                 vlag =3D (s64)(avruntime - se->vruntime);
+>                 vlag =3D div_s64(vlag * old_weight, weight);
+> +               /* TBD: using old weight or new weight? */
+> +               limit =3D calc_delta_fair(max_t(u64, 2*se->slice, TICK_NS=
+EC), se);
+> +               vlag =3D clamp(lag, -limit, limit);
+>                 se->vruntime =3D avruntime - vlag;
+>         }
+>
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/pinctrl/pinctrl-scmi.c | 23 +++++++++++++++++++++++
- drivers/pinctrl/pinctrl-scmi.h | 15 +++++++++++++++
- 2 files changed, 38 insertions(+)
+According to previous discussion:
+https://lore.kernel.org/all/CAB8ipk9N9verfQp6U9s8+TQgNbA5J0DWkOB1dShf20n0xb=
+x94w@mail.gmail.com/
 
-diff --git a/drivers/pinctrl/pinctrl-scmi.c b/drivers/pinctrl/pinctrl-scmi.c
-index 036bc1e3fc6c..d051fea0dbf5 100644
---- a/drivers/pinctrl/pinctrl-scmi.c
-+++ b/drivers/pinctrl/pinctrl-scmi.c
-@@ -21,6 +21,7 @@
- #include <linux/pinctrl/pinctrl.h>
- #include <linux/pinctrl/pinmux.h>
- 
-+#include "pinctrl-scmi.h"
- #include "pinctrl-utils.h"
- #include "core.h"
- #include "pinconf.h"
-@@ -469,6 +470,23 @@ static const struct pinconf_ops pinctrl_scmi_pinconf_ops = {
- 	.pin_config_config_dbg_show = pinconf_generic_dump_config,
- };
- 
-+static const struct pinconf_generic_params pinctrl_scmi_oem_dt_params[] = {
-+	{"nxp,func-id", IMX_SCMI_PIN_MUX, -1},
-+	{"nxp,daisy-id", IMX_SCMI_PIN_DAISY_ID, -1},
-+	{"nxp,daisy-conf", IMX_SCMI_PIN_DAISY_CFG, -1},
-+	{"nxp,pin-conf", IMX_SCMI_PIN_CONF, -1},
-+};
-+
-+#ifdef CONFIG_DEBUG_FS
-+static const
-+struct pin_config_item pinctrl_scmi_oem_conf_items[ARRAY_SIZE(pinctrl_scmi_oem_dt_params)] = {
-+	PCONFDUMP(IMX_SCMI_PIN_MUX, "FUNC-ID", NULL, true),
-+	PCONFDUMP(IMX_SCMI_PIN_DAISY_ID, "DAISY-ID", NULL, true),
-+	PCONFDUMP(IMX_SCMI_PIN_DAISY_CFG, "DAISY-CFG", NULL, true),
-+	PCONFDUMP(IMX_SCMI_PIN_CONF, "PIN-CONF", NULL, true),
-+};
-+#endif
-+
- static int pinctrl_scmi_get_pins(struct scmi_pinctrl *pmx,
- 				 struct pinctrl_desc *desc)
- {
-@@ -533,6 +551,11 @@ static int scmi_pinctrl_probe(struct scmi_device *sdev)
- 	pmx->pctl_desc.pctlops = &pinctrl_scmi_pinctrl_ops;
- 	pmx->pctl_desc.pmxops = &pinctrl_scmi_pinmux_ops;
- 	pmx->pctl_desc.confops = &pinctrl_scmi_pinconf_ops;
-+	pmx->pctl_desc.custom_params = pinctrl_scmi_oem_dt_params;
-+	pmx->pctl_desc.num_custom_params = ARRAY_SIZE(pinctrl_scmi_oem_dt_params);
-+#ifdef CONFIG_DEBUG_FS
-+	pmx->pctl_desc.custom_conf_items = pinctrl_scmi_oem_conf_items;
-+#endif
- 
- 	ret = pinctrl_scmi_get_pins(pmx, &pmx->pctl_desc);
- 	if (ret)
-diff --git a/drivers/pinctrl/pinctrl-scmi.h b/drivers/pinctrl/pinctrl-scmi.h
-new file mode 100644
-index 000000000000..fcc61bc19c98
---- /dev/null
-+++ b/drivers/pinctrl/pinctrl-scmi.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright 2024 NXP
-+ */
-+
-+#ifndef __DRIVERS_PINCTRL_SCMI_H
-+#define __DRIVERS_PINCTRL_SCMI_H
-+
-+/* OEM VENDOR Pin Configuration Type */
-+#define IMX_SCMI_PIN_MUX	192
-+#define IMX_SCMI_PIN_CONF	193
-+#define IMX_SCMI_PIN_DAISY_ID	194
-+#define IMX_SCMI_PIN_DAISY_CFG	195
-+
-+#endif /* __DRIVERS_PINCTRL_SCMI_H */
+Could this patch avoid this problem?
 
--- 
-2.37.1
+BR
 
+> --
+> 2.25.1
+>
+>
+>
 
