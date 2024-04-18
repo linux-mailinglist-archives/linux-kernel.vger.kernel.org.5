@@ -1,202 +1,116 @@
-Return-Path: <linux-kernel+bounces-150737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A18BC8AA3E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 38AB38AA3EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:16:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C30F71C2186E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:11:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6447A1C210E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:16:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EF16184113;
-	Thu, 18 Apr 2024 20:11:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0534418410C;
+	Thu, 18 Apr 2024 20:16:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EzZ/xxfX"
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AeaKFxT3"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6ADD17B4F8;
-	Thu, 18 Apr 2024 20:11:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06E3717B504
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 20:16:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713471104; cv=none; b=KgvfS91OcMiO0ZkumU1TvZ8Gw3oL7332TpNdMbAnV1Tzr8G9X4FXx+KeVFlPFy8pR8z+t+CGctngxMiGjuF3bGQ8qlNVpIc3siMZrG+568c0imsMZVhG+vhUHQSYpFbbDl9xtTTkWAzlTOJsfP7afOJPRjOltBfvQDVUDey1Fvo=
+	t=1713471377; cv=none; b=kkdizQc5mHQ2KEOwraeux4/+grn5AJ7HGyf28+MEx76Eql3zq+fnFdsC1pQzCGr6YakYrqSG03yd4erHoEy1dIiBc83X8A5oJt+Q3R89hA+aHcCYDUCRDdyizGCKDXNXZAU9S9NLi7CgKR5/4OwhO1dXj0LRu2GGBqqDkCYN8M8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713471104; c=relaxed/simple;
-	bh=w9QPgR67JPxBOUYeVl0ENHnaWdOJgRBXEMwIbrOQ96g=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=MZghOLhh9cpgOuMpTzZ1uANfvbumHIpvkCsAxCizZnYbCXVTyiGSCF23j5qsskQE8u6mKnbc7S6b6MSxh2esk2Lpm0E9dwX7DqcMPlBFdYAt9HkTiXfquleR3vpItbW3FmSjRG7F/g3c5E5HAEalWfPtqYv83GT2+FWsKM564eY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EzZ/xxfX; arc=none smtp.client-ip=209.85.160.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-436ffd27871so7980881cf.2;
-        Thu, 18 Apr 2024 13:11:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713471101; x=1714075901; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dV6l302/vcFJVA3Oq8h48egizVittlBZ5cAu1pxtTHo=;
-        b=EzZ/xxfXRSi1DLprehplWadj8984W7cnbUi2Ot6WKBzwGBngBj/+gRT366MI928Ojt
-         HeFCMEVPFUFFTbG4B6FEMrWRUpvSQV1RW9zZNAvI7oA55/Mqq4xrO+FCCkCcamEjhDnX
-         5tF3olF4ODrOddy7I6+/xRuhZB06aAdJGhKKqxHHbaZ6YssVZCmSPrZr00O1YyNr8etn
-         +jQ9z6O5dICAuOn4B9eVDsPMtocZGsNUq6l33OZzlI1SWI/5z/zmn9w3Fz1+I7AXmCh3
-         Qdca2WKwIALc54i48lDt6xzsYL9ifTwb1ql/ImGhQlW7swD9pEhOJ5xX2duq3UJgaB7P
-         c4SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713471101; x=1714075901;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=dV6l302/vcFJVA3Oq8h48egizVittlBZ5cAu1pxtTHo=;
-        b=o6SHg92ZezjgcAmTV+6POC9eTiESLS1DjhdTRLvLMxp+f02rK5OliWy/zgOBH/k8c0
-         9rpw/+BwKC9sm4DIj1K+ABAV9wcTOGjOAXur/2EvL1sslgPVu+cERjG3qM1hwV64taSH
-         13dIBqLJCPJdTYx9tlGA8a6IwIG451iEqgQi4W7vrBnKOzttXgKD0DZqFSy9GWBHcdDh
-         4Z3eAZmwb1f4gUtXAzAnhTJI1S50YCHRrGNtJJg7o0vZKOurjUtzTJJEqyvkIx76ddUx
-         Al0G+FkDhY/DlXaIeeum6kPH7XZkE+qbaXwO5EjlwWeWLlFuJ0NBhf9g9tG0LWebSkCN
-         +jcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX7+D2DMGLFUfqAei/Ae2goCYuz6mznD7BS8bx9Ia+z94z3+YCqFmLOebqY88GezoVLH33P/fvwca95XwZHChViEgdyHI6Sbjubr13URmxjtg0liiecUNSN2hiLIxPUxXHYP7hdQfvVUAsgpBalgGaQjpgnWRNVSH6j
-X-Gm-Message-State: AOJu0Ywk2h/dYp9NXSitMX+r1L24dJHh7Mi/26L8pdoJTxEET3d0ZcY0
-	I+Ua1WAevvKI8ulQsFAgvnh7O0atak9a03kDcC+mC9A4N2wd9MiD
-X-Google-Smtp-Source: AGHT+IFWqsMr8k14mrdzDa6mycXedZMQhFoiObtUgXjCJwj6RJcY2Kgqxc8upBgFwGD/3QohCpLpFA==
-X-Received: by 2002:a05:622a:1209:b0:436:5ca6:cd90 with SMTP id y9-20020a05622a120900b004365ca6cd90mr98392qtx.60.1713471101595;
-        Thu, 18 Apr 2024 13:11:41 -0700 (PDT)
-Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
-        by smtp.gmail.com with ESMTPSA id n2-20020a0cdc82000000b0069b160230cbsm938434qvk.11.2024.04.18.13.11.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 13:11:41 -0700 (PDT)
-Date: Thu, 18 Apr 2024 16:11:40 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Andrew Halaney <ahalaney@redhat.com>, 
- Martin KaFai Lau <martin.lau@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- bpf <bpf@vger.kernel.org>
-Cc: kernel@quicinc.com
-Message-ID: <66217e7ccb46b_f9d5d294b0@willemb.c.googlers.com.notmuch>
-In-Reply-To: <9a1f8011-2156-4855-8724-fea89d73df11@quicinc.com>
-References: <20240418004308.1009262-1-quic_abchauha@quicinc.com>
- <20240418004308.1009262-2-quic_abchauha@quicinc.com>
- <66216adc8677c_f648a294aa@willemb.c.googlers.com.notmuch>
- <9a1f8011-2156-4855-8724-fea89d73df11@quicinc.com>
-Subject: Re: [RFC PATCH bpf-next v4 1/2] net: Rename mono_delivery_time to
- tstamp_type for scalabilty
+	s=arc-20240116; t=1713471377; c=relaxed/simple;
+	bh=dx2yvgtH5yzxZfh42ugwTqymuzBLhNmK7ll7YG1RdO0=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=LLC0tYlfvsMF0gSFdLEO2KMoS1yPQSWSIEnkDm1gqmoWZx9hJba9zsIax5nCLOr26yFTGKe81uZIycRxmbRy5HCB5ZYx33QCmoAVLsQQWamfgyAFfpY8zzC7aHoySA3A8NriCZNzn3WLeNBZUq+k6Sgdl2I48z7OQq3x6q25SWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AeaKFxT3; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713471374;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type;
+	bh=RbnlUddStSZoE4ERVOKsgwX95yDpQSDI8hJv+RT7aiA=;
+	b=AeaKFxT3cNQ19RqAPEhzdmtOgshJ3vISLJ/E5eUwtBZFKCULvi5lGy3u5Yx8hRy5KmgEs2
+	RopoWYKPqrBYmsc11/sbq8fO+4K7AlHcnYodWVRV3WE0jFYReAhlidpEXACRnAIDawU0dj
+	EJZYQlx8HQ7sKMLCd1YU74zCgvi27t8=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-511-Jklv0C5YPRe8QU95TSFegA-1; Thu,
+ 18 Apr 2024 16:16:10 -0400
+X-MC-Unique: Jklv0C5YPRe8QU95TSFegA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E278629AA387;
+	Thu, 18 Apr 2024 20:16:09 +0000 (UTC)
+Received: from localhost (unknown [10.22.10.25])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D383940829C7;
+	Thu, 18 Apr 2024 20:16:08 +0000 (UTC)
+Date: Thu, 18 Apr 2024 17:16:07 -0300
+From: "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To: LKML <linux-kernel@vger.kernel.org>,
+	linux-rt-users <linux-rt-users@vger.kernel.org>,
+	stable-rt <stable-rt@vger.kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Carsten Emde <C.Emde@osadl.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Daniel Wagner <daniel.wagner@suse.com>,
+	Tom Zanussi <tom.zanussi@linux.intel.com>,
+	Clark Williams <williams@redhat.com>,
+	Mark Gross <markgross@kernel.org>, Pavel Machek <pavel@denx.de>,
+	Jeff Brady <jeffreyjbrady@gmail.com>,
+	Luis Goncalves <lgoncalv@redhat.com>
+Subject: [ANNOUNCE] 5.10.214-rt106
+Message-ID: <ZiF_h-W4jgLiRag5@uudg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-Abhishek Chauhan (ABC) wrote:
-> 
-> 
-> On 4/18/2024 11:47 AM, Willem de Bruijn wrote:
-> > Abhishek Chauhan wrote:
-> >> mono_delivery_time was added to check if skb->tstamp has delivery
-> >> time in mono clock base (i.e. EDT) otherwise skb->tstamp has
-> >> timestamp in ingress and delivery_time at egress.
-> >>
-> >> Renaming the bitfield from mono_delivery_time to tstamp_type is for
-> >> extensibilty for other timestamps such as userspace timestamp
-> >> (i.e. SO_TXTIME) set via sock opts.
-> >>
-> >> As we are renaming the mono_delivery_time to tstamp_type, it makes
-> >> sense to start assigning tstamp_type based on enum defined
-> >> in this commit.
-> >>
-> >> Earlier we used bool arg flag to check if the tstamp is mono in
-> >> function skb_set_delivery_time, Now the signature of the functions
-> >> accepts tstamp_type to distinguish between mono and real time.
-> >>
-> >> In future tstamp_type:1 can be extended to support userspace timestamp
-> >> by increasing the bitfield.
-> >>
-> >> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
-> >> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
-> > 
-> >> +/**
-> >> + * tstamp_type:1 can take 2 values each
-> >> + * represented by time base in skb
-> >> + * 0x0 => real timestamp_type
-> >> + * 0x1 => mono timestamp_type
-> >> + */
-> >> +enum skb_tstamp_type {
-> >> +	SKB_CLOCK_REAL,	/* Time base is skb is REALTIME */
-> >> +	SKB_CLOCK_MONO,	/* Time base is skb is MONOTONIC */
-> >> +};
-> >> +
-> > 
-> > Can drop the comments. These names are self documenting.
-> 
-> Noted! . I will take care of this
-> > 
-> >>  /**
-> >>   * DOC: Basic sk_buff geometry
-> >>   *
-> >> @@ -819,7 +830,7 @@ typedef unsigned char *sk_buff_data_t;
-> >>   *	@dst_pending_confirm: need to confirm neighbour
-> >>   *	@decrypted: Decrypted SKB
-> >>   *	@slow_gro: state present at GRO time, slower prepare step required
-> >> - *	@mono_delivery_time: When set, skb->tstamp has the
-> >> + *	@tstamp_type: When set, skb->tstamp has the
-> >>   *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
-> >>   *		skb->tstamp has the (rcv) timestamp at ingress and
-> >>   *		delivery_time at egress.
-> > 
-> > Is this still correct? I think all egress does now annotate correctly
-> > as SKB_CLOCK_MONO. So when not set it always is SKB_CLOCK_REAL.
-> > 
-> That is correct. 
-> 
-> >> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-> >> index 61119d42b0fd..a062f88c47c3 100644
-> >> --- a/net/ipv4/tcp_output.c
-> >> +++ b/net/ipv4/tcp_output.c
-> >> @@ -1300,7 +1300,7 @@ static int __tcp_transmit_skb(struct sock *sk, struct sk_buff *skb,
-> >>  	tp = tcp_sk(sk);
-> >>  	prior_wstamp = tp->tcp_wstamp_ns;
-> >>  	tp->tcp_wstamp_ns = max(tp->tcp_wstamp_ns, tp->tcp_clock_cache);
-> >> -	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, true);
-> >> +	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, CLOCK_MONOTONIC);
-> > 
-> > Multiple references to CLOCK_MONOTONIC left
-> > 
-> I think i took care of all the references. Apologies if i didn't understand your comment here. 
+Hello RT-list!
 
-On closer read, there is a type issue here.
+I'm pleased to announce the 5.10.214-rt106 stable release.
 
-skb_set_delivery_time takes a u8 tstamp_type. But it is often passed
-a clockid_t, and that is also what the switch expects.
+This release is simply an update to the new stable 5.10.214 version and no
+RT-specific changes have been performed.
 
-But it does also get called with a tstamp_type in code like the
-following:
+You can get this release via the git tree at:
 
-+       u8 tstamp_type = skb->tstamp_type;
-        unsigned int hlen, ll_rs, mtu;
-        ktime_t tstamp = skb->tstamp;
-        struct ip_frag_state state;
-@@ -82,7 +82,7 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,
-                        if (iter.frag)
-                                ip_fraglist_prepare(skb, &iter);
-  
--                       skb_set_delivery_time(skb, tstamp, mono_delivery_time);
-+                       skb_set_delivery_time(skb, tstamp, tstamp_type);
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
 
-So maybe we need two variants, one that takes a tstamp_type and one
-that tames a clockid_t?
+  branch: v5.10-rt
+  Head SHA1: 3d208061796d4addeb543c78e0a4ec769b6ce6b2
 
-The first can be simple, not switch needed. Just apply the two stores.
+Or to build 5.10.214-rt106 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.214.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10.214-rt106.patch.xz
+
+Signing key fingerprint:
+
+  9354 0649 9972 8D31 D464  D140 F394 A423 F8E6 7C26
+
+All keys used for the above files and repositories can be found on the
+following git repository:
+
+   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
+
+Enjoy!
+Luis
+
 
