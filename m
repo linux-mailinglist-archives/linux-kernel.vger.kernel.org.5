@@ -1,163 +1,178 @@
-Return-Path: <linux-kernel+bounces-149934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D78B8A9804
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:59:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D419B8A9809
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:00:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 810401C210FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:59:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46F571F224CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:00:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6903215EFD7;
-	Thu, 18 Apr 2024 10:58:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82B0315E20B;
+	Thu, 18 Apr 2024 10:59:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="idgauFRn"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="EsgIvVEN"
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AC4715E1EE
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 10:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2358E15E1EE;
+	Thu, 18 Apr 2024 10:59:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713437907; cv=none; b=hXH8Oo+4PTvYrZNP98uFTOJXAPeF15NVqim+A/ONMKRbWklTsYG6zgEZ/fz6eBqPYXpM20sIUt38QxlFEUbVlbedjlBXGfH5URR5IxZL5MTov9+jPcwmm2/EgR2sVWLBUwijFO4cklwZOU+YMPNddbzDuk3+ExU+4M56hY4GPrg=
+	t=1713437966; cv=none; b=uUDNdTm13uvkiZqSRw4iUjBJh9424iy8zWJ7Hmd5SwBDAskIwQivG0MJx4Y/oZUq+FDR+E9VWWWA/6UPZ1j9TDkCAsd/Xz49YZFCJpRgxmVef5hmKutnoLFzkkyDy8yHcxKT+jsnTsuP8KwxBGjF7eXC0doTUaRCQ8Zo95wWYTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713437907; c=relaxed/simple;
-	bh=zTOTkzFe7i6mwVPzvpuFuKg9+co3We1RwHUHZmalDAU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=az3PD3XDqLxGfwxWezSF+9IQrZgRvvky2dUVKTubVB8j/fz3h44c7Ji9jZlu65OW9g0P3s91YXsHrX0HBrPfsizdPl+L061im4KBgu4sUyIJqVV0mBpQcdys0mLLOgENR3JxKtUIMh3/Cm6oDGOCpFRPxO1bdapbYJ705dLStC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=idgauFRn; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713437904;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=e3Q519Xd0bzyd5fUjD22zYGmIt9PVitnNvbYLhe3u7U=;
-	b=idgauFRn7EpsaMvbQqa3oXqOQW7fDKXH6YYQBOeqUxf5tla3weyR7WD0qDEsEOk3KVlujr
-	qLszFzHrRNHTwGvRcELm7Cqlcw0Mc/Hi4W2iSyw7DbKQlyp7mGVHF41kVnVs7iHoLHn0KR
-	MYyQusjhMD0U9CebUH18CLqJnvkkfAk=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-683-_HFv2Dv0N8qDFyI9qfdjUw-1; Thu, 18 Apr 2024 06:58:23 -0400
-X-MC-Unique: _HFv2Dv0N8qDFyI9qfdjUw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-418a673c191so3654375e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 03:58:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713437902; x=1714042702;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e3Q519Xd0bzyd5fUjD22zYGmIt9PVitnNvbYLhe3u7U=;
-        b=aP8quDt544gtloAk7pl4btcngEbYsFq4ewLC75Z4fZZLdNFo0PwYsyxq67FXtHjb80
-         MFVgNLn6gAb4fkJSTCNbzoa9GydvumMuF3aWEuRr5e9BlUcJ5QkphXJfXc7J1g0fFkjL
-         qwAMEhIfqUnuYWTNXJidN+iLFUieXecwGyngyxpAkBOkFdWCK/c7jFP3ve7MYaAZ6szm
-         qpu19hD73TRw48vTDIC23Sw605NZn1hbFAXDPZI9xzz8nGO5BkNINLIJEJ8uiLttdCDD
-         PUEy8Zrsw0+cTrzgcOCVQtkyeca43TJVtnRjOsnpOc3qb3E4HTGwHx8M4VCUcYP4kKWP
-         v/pg==
-X-Forwarded-Encrypted: i=1; AJvYcCXDYV7Z1AHa4KBTXsi84j0J6kMDKtp49xhOQ9NEH//kJlrKVwq2+rOEYWIfrEAJ3M/62hZxXXzr6xcNXmT2XM5i+ddVIDSgbowbbSxs
-X-Gm-Message-State: AOJu0Yw+2o5qaVOC2M//RL/gXoT5SFCwyZgQBCJCSFdGNjAxvR+1X/rL
-	pP6jXcomiHy4w27QDFL7MzBtPiM3TCAqnnZ/A4pg3o3wJpBlU0ohxXdKr3gng+nh6v1A23VBDTf
-	q4D5yzGT1KeFLdpGCS5IGSqT9/c0VQN6LiMN5wfg12fjl/nVBehTbnRhB3b+a9w==
-X-Received: by 2002:a05:600c:4fc4:b0:418:a447:a2b4 with SMTP id o4-20020a05600c4fc400b00418a447a2b4mr1650259wmq.3.1713437901872;
-        Thu, 18 Apr 2024 03:58:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHw4pLCbR7ff+xkBLCuoZDdCLaBRv2TsxwjXdiRLDkVpmg8putzFIUNFiohJYuquLeWZAhtFA==
-X-Received: by 2002:a05:600c:4fc4:b0:418:a447:a2b4 with SMTP id o4-20020a05600c4fc400b00418a447a2b4mr1650242wmq.3.1713437901497;
-        Thu, 18 Apr 2024 03:58:21 -0700 (PDT)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id d15-20020a05600c34cf00b0041897c6171dsm6036966wmq.16.2024.04.18.03.58.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 03:58:21 -0700 (PDT)
-Message-ID: <02cfd9fb-5481-4ea1-9b43-b1aa24de82d1@redhat.com>
-Date: Thu, 18 Apr 2024 12:58:20 +0200
+	s=arc-20240116; t=1713437966; c=relaxed/simple;
+	bh=Dmw2mzRePDDaTlpv0cyxsROjXNG2sIARTqcRZ94iPag=;
+	h=From:To:CC:References:In-Reply-To:Subject:Date:Message-ID:
+	 MIME-Version:Content-Type; b=mHZLlOArs3KxIbn2k/PGtKPDfJPI4Yoa7Q77XSv6J0neVOACiC7kykpvNC8JWJPAIHj/7A/KF43VYaK/hHT20vxV3GznNV7Y9FTLzbIuzMYI7WaGWzDRmpliy80hxT1yjWc2gjoLiu074FNe5beGZ1r9TVFL1fzCkuUw/POwbNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=EsgIvVEN; arc=none smtp.client-ip=67.231.152.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43I7MKuD021498;
+	Thu, 18 Apr 2024 05:59:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:references:in-reply-to:subject:date:message-id
+	:mime-version:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=RlY3ymPRlrecGeYIf3u9yTqQFB6fZZei6Z2kUrb0t0k=; b=
+	EsgIvVENbI5fwPQNQDDWrnF2zv15un8Qa81c955laK2qpLYdYRZ8kzMxEQDbZ+m0
+	BAy9kUU5T0YG7H+qEUeHz1ook4QeXsx+5Cx9zBYM/4EG9tHTfV7l6jdX995SMIGr
+	E5x53e4HfGn2uPHjz47E7BGllRK+pFsZmTBKwWo51Itj2Piqlv+EKD99b2kGmq7K
+	Ekkts8qKHUvDuhnK6OElr4sLEQKV0L6bG7k7ouFBuQ3emRlIhhRECEt7PbJtqTxV
+	0Q2GoVt5S23lCE4Qsw5B9j90rsxuy52W2BfhQVvHvOjSBKgFVD3AEm5VC7CalgkJ
+	sJUnN9fIkpaQccBJyfNg7A==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3xfpfhvnad-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 05:59:21 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 18 Apr
+ 2024 11:59:19 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
+ via Frontend Transport; Thu, 18 Apr 2024 11:59:19 +0100
+Received: from LONN2DGDQ73 (LONN2DGDQ73.ad.cirrus.com [198.61.64.201])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 36044820245;
+	Thu, 18 Apr 2024 10:59:19 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: 'ArcticLampyrid' <ArcticLampyrid@outlook.com>, <james.schulman@cirrus.com>,
+        <david.rhodes@cirrus.com>, <rf@opensource.cirrus.com>
+CC: <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <TYCP286MB253523D85F6E0ECAA3E03D58C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM> <TYCP286MB25358BF2246DE04CE8D12BE8C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
+In-Reply-To: <TYCP286MB25358BF2246DE04CE8D12BE8C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
+Subject: RE: [PATCH v2 2/2] ALSA: hda/realtek: Fix internal speakers for Legion Y9000X 2022 IAH7
+Date: Thu, 18 Apr 2024 11:59:19 +0100
+Message-ID: <002201da917f$766278d0$63276a70$@opensource.cirrus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] virtio_balloon: introduce oom-kill invocations
-To: zhenwei pi <pizhenwei@bytedance.com>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, virtualization@lists.linux.dev
-Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
- akpm@linux-foundation.org
-References: <20240418062602.1291391-1-pizhenwei@bytedance.com>
- <20240418062602.1291391-2-pizhenwei@bytedance.com>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240418062602.1291391-2-pizhenwei@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-gb
+Thread-Index: AQJzUjqa4IlF22ZsXxMyjNS9IQLhdQGIbEcssDAWyjA=
+X-Proofpoint-ORIG-GUID: 6cGaL1IhxL8DSA0rTQRDX4c1sl7LL6Q3
+X-Proofpoint-GUID: 6cGaL1IhxL8DSA0rTQRDX4c1sl7LL6Q3
+X-Proofpoint-Spam-Reason: safe
 
-On 18.04.24 08:26, zhenwei pi wrote:
-> When the guest OS runs under critical memory pressure, the guest
-> starts to kill processes. A guest monitor agent may scan 'oom_kill'
-> from /proc/vmstat, and reports the OOM KILL event. However, the agent
-> may be killed and we will loss this critical event(and the later
-> events).
+Hi,
+
+> -----Original Message-----
+> From: ArcticLampyrid <ArcticLampyrid@outlook.com>
+> Sent: Thursday, April 18, 2024 7:46 AM
+> To: james.schulman@cirrus.com; david.rhodes@cirrus.com;
+> rf@opensource.cirrus.com
+> Cc: patches@opensource.cirrus.com; linux-sound@vger.kernel.org;
+linux-
+> kernel@vger.kernel.org; ArcticLampyrid <ArcticLampyrid@outlook.com>;
+> stable@vger.kernel.org
+> Subject: [PATCH v2 2/2] ALSA: hda/realtek: Fix internal speakers for
+Legion
+> Y9000X 2022 IAH7
 > 
-> For now we can also grep for magic words in guest kernel log from host
-> side. Rather than this unstable way, virtio balloon reports OOM-KILL
-> invocations instead.
+> This fixes the sound not working from internal speakers on
+> Lenovo Legion Y9000X 2022 IAH7 models.
 > 
-> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+> Signed-off-by: ArcticLampyrid <ArcticLampyrid@outlook.com>
+> Cc: <stable@vger.kernel.org>
+> ---
+>  sound/pci/hda/cs35l41_hda_property.c | 2 ++
+>  sound/pci/hda/patch_realtek.c        | 1 +
+>  2 files changed, 3 insertions(+)
+> 
+> diff --git a/sound/pci/hda/cs35l41_hda_property.c
+> b/sound/pci/hda/cs35l41_hda_property.c
+> index 8fb688e41414..60ad2344488b 100644
+> --- a/sound/pci/hda/cs35l41_hda_property.c
+> +++ b/sound/pci/hda/cs35l41_hda_property.c
+> @@ -109,6 +109,7 @@ static const struct cs35l41_config
+> cs35l41_config_table[] = {
+>  	{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+> }, 1, -1, 0, 0, 0, 0 },
+>  	{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+> }, 1, 2, 0, 0, 0, 0 },
+>  	{ "10433A60", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+> }, 1, 2, 0, 1000, 4500, 24 },
+> +	{ "17AA386E", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+> }, 0, 1, -1, 0, 0, 0 },
 
-Acked-by: David Hildenbrand <david@redhat.com>
+Looking at your ACPI, its clear that the Speaker ID is at index 2 not
+index 1.
+Thus, this should be:
 
--- 
-Cheers,
+	{ "17AA386E", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+}, 0, 2, -1, 0, 0, 0 },
 
-David / dhildenb
+Thanks,
+Stefan
+
+>  	{ "17AA386F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+> }, 0, -1, -1, 0, 0, 0 },
+>  	{ "17AA3877", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+> }, 0, 1, -1, 0, 0, 0 },
+>  	{ "17AA3878", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
+> }, 0, 1, -1, 0, 0, 0 },
+> @@ -500,6 +501,7 @@ static const struct cs35l41_prop_model
+> cs35l41_prop_model_table[] = {
+>  	{ "CSC3551", "10431F1F", generic_dsd_config },
+>  	{ "CSC3551", "10431F62", generic_dsd_config },
+>  	{ "CSC3551", "10433A60", generic_dsd_config },
+> +	{ "CSC3551", "17AA386E", generic_dsd_config },
+>  	{ "CSC3551", "17AA386F", generic_dsd_config },
+>  	{ "CSC3551", "17AA3877", generic_dsd_config },
+>  	{ "CSC3551", "17AA3878", generic_dsd_config },
+> diff --git a/sound/pci/hda/patch_realtek.c
+> b/sound/pci/hda/patch_realtek.c
+> index cdcb28aa9d7b..ac729187f6a7 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -10382,6 +10382,7 @@ static const struct snd_pci_quirk
+> alc269_fixup_tbl[] = {
+>  	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5",
+> ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
+>  	SND_PCI_QUIRK(0x17aa, 0x3855, "Legion 7 16ITHG6",
+> ALC287_FIXUP_LEGION_16ITHG6),
+>  	SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7",
+> ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
+> +	SND_PCI_QUIRK(0x17aa, 0x386e, "Legion Y9000X 2022 IAH7",
+> ALC287_FIXUP_CS35L41_I2C_2),
+>  	SND_PCI_QUIRK(0x17aa, 0x386f, "Legion 7i 16IAX7",
+> ALC287_FIXUP_CS35L41_I2C_2),
+>  	SND_PCI_QUIRK(0x17aa, 0x3870, "Lenovo Yoga 7 14ARB7",
+> ALC287_FIXUP_YOGA7_14ARB7_I2C),
+>  	SND_PCI_QUIRK(0x17aa, 0x3877, "Lenovo Legion 7 Slim
+> 16ARHA7", ALC287_FIXUP_CS35L41_I2C_2),
+> --
+> 2.44.0
+> 
+
 
 
