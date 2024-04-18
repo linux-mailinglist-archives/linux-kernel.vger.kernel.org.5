@@ -1,121 +1,154 @@
-Return-Path: <linux-kernel+bounces-149650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11D558A93FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:30:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B5028A9401
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:30:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A75311F21B22
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:30:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CA011F22783
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:30:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7401D53381;
-	Thu, 18 Apr 2024 07:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ED2B757E7;
+	Thu, 18 Apr 2024 07:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QY/N9fun"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BuNnMXTQ"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E154D38F96;
-	Thu, 18 Apr 2024 07:30:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23FC36A343
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713425428; cv=none; b=Ixd5fDEKHIwfM+SKVp3poT59Hfc93DrJU/7E84YxbgxdExnODpEAFJEg3RHiwFSV5F4Pot8DPKrBRg6Kqz0i+9br109pRJV5BZjJgIuEXAvPcU8vpp8i8wMr0eCNnGQgvejO2dDVPKt9N7C/eOqTLsy7+Ds0efITFvJC6HopoQY=
+	t=1713425431; cv=none; b=OyLSbWJlXLCLMPYL6y56ZoNW3S4ovYOF2dUoodqE7yuzxNhqXMFtrZ00YYZe0WdzSC+C3LNG2xHF5xG3IzOUvIQr28ux5cZDEsP8vcXriaDXPnl2POv55Ul5AgSen1Rb5aK8O65/c9kz547FSIaSGKsG0h3LmV/qnPOqPQ2a/OA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713425428; c=relaxed/simple;
-	bh=5g7iu/VVAy/L+SP4+CheknDrk8WwulKiELdeRGtgDF8=;
+	s=arc-20240116; t=1713425431; c=relaxed/simple;
+	bh=jo84Ctj+EJCX1GrpA4pW6fdXW7pDWtjFx80MeyJrxQo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M/MVCJyhMyZRF9YAsMSzda+yQs0rnNHxnOixg5tIqF5AS1hYkJKBMoyfRVsfImJhMt7u1K4AQqrYXbfQzGFbE2Te4N4uHpkuUzi2BjGEr6dPXKvZkpL5xGvj2Rk4RdFmdO+ApPB5P+mXsv1FSHhvmW2qD6zBRZnfpfPKkbcxBMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QY/N9fun; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713425427; x=1744961427;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=5g7iu/VVAy/L+SP4+CheknDrk8WwulKiELdeRGtgDF8=;
-  b=QY/N9fundHkAsTf2cChu4e4/6lr9980bnzNQ21h/OQP7ztb0yckr1Da1
-   i34raXWOw5n6RxnrdiN8af7KZs+2bkdOOdDWu+rktqUIdESRRczVvAfbb
-   byMtCuht0zcmgaRUfSCcYNSZw0a0lQH41/mYZVroRvnok8HJ0D7gLl1RA
-   kBJPpyyc28KBXpHU0lXAAgeKStSL4k8e2Q62SsYoDDSGiQXhjCtFL0cK7
-   IEmlY6ktAiUY/udcclDF9l2QlEE7/Ok2sNkfLfCVCiHSll9FpA6lYUf5L
-   KQ9bCwOxgkL4AyRlo5ClX4WXKd1f5tqkRGSFpopUBOQ6kA74s5ls7/kJk
-   w==;
-X-CSE-ConnectionGUID: PqrORcytQjq02UOIjScVZw==
-X-CSE-MsgGUID: HKcH8GKpRCKGXTbzgpFAEw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="9502750"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="9502750"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 00:30:26 -0700
-X-CSE-ConnectionGUID: iks+W5Y9Q5K1RKF6sS7HkQ==
-X-CSE-MsgGUID: KqH5QFqvRm68XI9aFxiv3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="23316867"
-Received: from unknown (HELO mev-dev) ([10.237.112.144])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 00:30:24 -0700
-Date: Thu, 18 Apr 2024 09:30:01 +0200
-From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-To: =?iso-8859-1?Q?Asbj=F8rn_Sloth_T=F8nnesen?= <ast@fiberby.net>
-Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>
-Subject: Re: [Intel-wired-lan] [PATCH iwl-next] ice: flower: validate control
- flags
-Message-ID: <ZiDL+TTeJWhYam6Q@mev-dev>
-References: <20240416144331.15336-1-ast@fiberby.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z9OdIu6LXLpO4dPAys4N+4WgOwm89ZQkXkXyjeat+8KMTyYEVQzt5wLQq8TgBvPCgOl8gRKGwkSmLY6UDHjDxHSyZvERc+2qsIjSrI6aXSgpzay9HjGcbUKEQ77NFgOxaPZzRuoKmhmYeIBeVxAWP0ZzUnJNyTOApmNwtkQAGG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BuNnMXTQ; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e4266673bbso5356655ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 00:30:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713425429; x=1714030229; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9KH/0gX4nuEqY5M5Shgab8r86I8FtVQ44AsXqRTnb4U=;
+        b=BuNnMXTQIDEJKUWx/2aFeg9hs86yWeNWfbs9fWr3NUfPHz4ZZ6bsaUF0AwI6OSZdKW
+         F9glOIhvsv4vQJ07yZg9yCaGrqNkPqhqn/h9XqDhKRHTUUL+fKC4sITH+Lg9It1tW8l4
+         oJG7wbB9Yx+x9VFci1TsNejc+PCU5kI4LOLHFtXneaM5Ofuif9XgNPWbIXnvEM1d7vxU
+         rZCgh2An6ORg8y5C92Io7bsjGO+q5+Md0itODxUk1boEmMTwvs5+2H9dM3dq22v7l6AF
+         ccBpLM7YHwXqcqEf321Ml0GflvY6gqVnLkwWWIyZMZzzzlqCAVJCkuh+9g/iRvKT1XHj
+         cbjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713425429; x=1714030229;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9KH/0gX4nuEqY5M5Shgab8r86I8FtVQ44AsXqRTnb4U=;
+        b=LJEVuk3liIQeSTQPfvCWa+nCSlXJPKGKCaQbj2qm8FR3lbIgyCzhHW0VuQW6RxesR3
+         LCEJmAIUsQlr1XrCJ2p/+qQT0G8/5uckLtt28J/1b2/89tblIBuamBrj3lZIMYl+hc2T
+         +gRSPms6Hakb5GxCiON+SnjvlR4uz+5R3pTybpJQMlYCk/LT+8wHvnBAGUhvplPZ1wZ2
+         i/rY0H7QBVzdhFq0VqSoLJ5cqvr4rZyXkqjlJRsmu6hc0fedWGwL1lvDNjEfmHErGqa1
+         l6QNf7fEVWMKD4Tk94QjA54VK4yHQCOaCuddvtZIcpqhVTPkSpLMUVpR6RL8FUPqNQT+
+         RmUA==
+X-Forwarded-Encrypted: i=1; AJvYcCXmbVKle6xMzFzb3EhMe8EKlJyuZrk49Ok6btpWN5VDDv5oZCl9MJCVf53kVD03INzTk3xm9MEUX3KJ+fWOVoLN7SzjgoQKhLCodp6h
+X-Gm-Message-State: AOJu0YwqFicdLsRYB8AkDo3bCBL8wDmtkl4eFpDyMcRyVFg/fhD1qeB4
+	wRu6SF6R2AToHlW//jJ9q8BYAsZ7Dgm+D3FVY98AOUKvUdM2JHSI3XMgRaKLhA==
+X-Google-Smtp-Source: AGHT+IFWMS7B+eevMfCZ0tH7FwXVvT82Lh4Zn0V4gbiALK6EFJmnT/7oWMZI+ml4e2wBetkcVDGhUg==
+X-Received: by 2002:a17:902:da85:b0:1e1:6850:f823 with SMTP id j5-20020a170902da8500b001e16850f823mr2668391plx.13.1713425428965;
+        Thu, 18 Apr 2024 00:30:28 -0700 (PDT)
+Received: from thinkpad ([120.56.197.253])
+        by smtp.gmail.com with ESMTPSA id j23-20020a170902759700b001deecb4f897sm837286pll.100.2024.04.18.00.30.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 00:30:28 -0700 (PDT)
+Date: Thu, 18 Apr 2024 13:00:23 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Niklas Cassel <cassel@kernel.org>
+Cc: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [PATCH] PCI: endpoint: pci-epf-test: Make use of cached
+ 'epc_features' in pci_epf_test_core_init()
+Message-ID: <20240418073023.GA4331@thinkpad>
+References: <20240417-pci-epf-test-fix-v1-1-653c911d1faa@linaro.org>
+ <ZiALuYlshLmwLhvu@ryzen>
+ <20240418054319.GB2861@thinkpad>
+ <ZiDB18w4bnUCSH7D@ryzen>
+ <20240418065308.GG2861@thinkpad>
+ <ZiDITzuUXsTZ7U4T@ryzen>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240416144331.15336-1-ast@fiberby.net>
+In-Reply-To: <ZiDITzuUXsTZ7U4T@ryzen>
 
-On Tue, Apr 16, 2024 at 02:43:30PM +0000, Asbj�rn Sloth T�nnesen wrote:
-> This driver currently doesn't support any control flags.
+On Thu, Apr 18, 2024 at 09:14:23AM +0200, Niklas Cassel wrote:
+> On Thu, Apr 18, 2024 at 12:23:08PM +0530, Manivannan Sadhasivam wrote:
+> > On Thu, Apr 18, 2024 at 08:46:47AM +0200, Niklas Cassel wrote:
+> > > On Thu, Apr 18, 2024 at 11:13:19AM +0530, Manivannan Sadhasivam wrote:
+> > > > On Wed, Apr 17, 2024 at 07:49:45PM +0200, Niklas Cassel wrote:
+> > > > > On Wed, Apr 17, 2024 at 10:47:25PM +0530, Manivannan Sadhasivam wrote:
+> > > > > > Instead of getting the epc_features from pci_epc_get_features() API, use
+> > > > > > the cached pci_epf_test::epc_features value to avoid the NULL check. Since
+> > > > > > the NULL check is already performed in pci_epf_test_bind(), having one more
+> > > > > > check in pci_epf_test_core_init() is redundant and it is not possible to
+> > > > > > hit the NULL pointer dereference. This also leads to the following smatch
+> > > > > > warning:
+> > > > > > 
+> > > > > > drivers/pci/endpoint/functions/pci-epf-test.c:784 pci_epf_test_core_init()
+> > > > > > error: we previously assumed 'epc_features' could be null (see line 747)
+> > > > > > 
+> > > > > > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > > > > > Closes: https://lore.kernel.org/linux-pci/024b5826-7180-4076-ae08-57d2584cca3f@moroto.mountain/
+> > > > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > > 
+> > > > > I think you forgot:
+> > > > > Fixes: a01e7214bef9 ("PCI: endpoint: Remove "core_init_notifier" flag")
+> > > > > 
+> > > > 
+> > > > No, that's not the correct fixes tag I suppose. This redudant check is
+> > > > introduced by commit, 5e50ee27d4a5 ("PCI: pci-epf-test: Add support to defer
+> > > > core initialization") and this commit removes the redundant check (fixing smatch
+> > > > warning is a side effect). So if the fixes tag needs to be added, then this
+> > > > commit should be referenced.
+> > > 
+> > > Well, you have a Closes: tag that links to a bug report about a smatch
+> > > warning that was introduced with 5e50ee27d4a5 ("PCI: pci-epf-test: Add
+> > > support to defer core initialization").
+> > > 
+> > > So if you want to reference another commit, then you should probably
+> > > drop the Closes: tag.
+> > > 
+> > 
+> > Then checkpatch will complain... But I think I can keep the two tags? One is for
+> > fixing the redudant check and another is for the smatch warning reported.
 > 
-> Use flow_rule_has_control_flags() to check for control flags,
-> such as can be set through `tc flower ... ip_flags frag`.
+> Yes, I think so too.
 > 
-> In case any control flags are masked, flow_rule_has_control_flags()
-> sets a NL extended error message, and we return -EOPNOTSUPP.
-> 
-> Only compile-tested.
-> 
-> Signed-off-by: Asbj�rn Sloth T�nnesen <ast@fiberby.net>
-> ---
->  drivers/net/ethernet/intel/ice/ice_tc_lib.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_tc_lib.c b/drivers/net/ethernet/intel/ice/ice_tc_lib.c
-> index 2f2fce285ecd..361abd7d7561 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_tc_lib.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_tc_lib.c
-> @@ -1673,6 +1673,10 @@ ice_parse_cls_flower(struct net_device *filter_dev, struct ice_vsi *vsi,
->  		flow_rule_match_control(rule, &match);
->  
->  		addr_type = match.key->addr_type;
-> +
-> +		if (flow_rule_has_control_flags(match.mask->flags,
-> +						fltr->extack))
-> +			return -EOPNOTSUPP;
->  	}
->  
+> You can have Fixes: to the commit that introduced the redundant check,
 
-Thanks,
-Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+That is 5e50ee27d4a5.
 
->  	if (addr_type == FLOW_DISSECTOR_KEY_IPV4_ADDRS) {
-> -- 
-> 2.43.0
-> 
+> since this was obviously not the correct thing to do, and then perhaps
+> just mention commit 5e50ee27d4a5 ("PCI: pci-epf-test: Add support to
+> defer core initialization") somewhere in the commit log.
+
+You mean a01e7214bef9 here?
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
