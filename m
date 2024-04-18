@@ -1,279 +1,235 @@
-Return-Path: <linux-kernel+bounces-149942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75BD98A981D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:03:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BED9D8A9822
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:04:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 991E11C20CBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:03:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16AFFB22EB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744AA15D5C1;
-	Thu, 18 Apr 2024 11:02:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A4F015E21D;
+	Thu, 18 Apr 2024 11:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="DifVgYHl"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R/LiRZ2O"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 395FA56464;
-	Thu, 18 Apr 2024 11:02:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC39615B969;
+	Thu, 18 Apr 2024 11:04:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713438166; cv=none; b=asKbC3Yd3edw8O0vQgTqhmoH4vhY28AxUj2OYZkmInw9D6BajAKhQY/L4Ons0giCIB6oGpi/vQ2M5cLNVoo4PHc7wJLPlf0DrMDTFgqbG8BCQExSZb7639zKORkn/Tzgz6sxov7OxhLn4AoseLi/PX0IhZ+qpweQ9vu9GZ61xgg=
+	t=1713438264; cv=none; b=m6VriwhLdZC1AVZyw+n/cjQxBb9QjWXLW8gLutswBxchRxVwzcGtIsUJ6+0WLm45FxaEsQ5OmuUUhWyz0GsSyXaVY1MK2araI5otOqb2NxFYFX6L0CIyu8hekpKJSLdxAqB/G+LmVbhCrA7p2vWkJulWSJLDEVCd47UUne59hOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713438166; c=relaxed/simple;
-	bh=FyCYOXuQuFnqLJOd0ixM+LSRi8DdC/fR8KXM8DwEEqA=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=es6RQ7vU4FmCDOJ2ViAKKh25hdpzrvKu/lZk6Wria6LIhQ1YCh3D48FQ0MFdG4K2xD7YgFDp9P5hv3VAqeF99nlBcmW2MqDF2hou3YbBkB/RlOWrqKPWwNkFQmYHpcuJOrQchpuY2DVjaqoVOYJUhw+nwudmbE6hcXKe3B/w7rA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=DifVgYHl; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+	s=arc-20240116; t=1713438264; c=relaxed/simple;
+	bh=XWOsXsu8uGtDESDHSeuY45wBrDWF50T4U1OxulxwcBA=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=bISgBIEdhpN0mffxFZH5YFri9Q7P2QSx344EQAVUT9K08Aq3bb+vYsgmdumSW63OVQb2mqjHD1p7MNg/RqEiKUoHHDf8sLjF2qt9gRt9OX4M2ZQ2IT6VNusYEN3sXYEYxOv7PWzWujHdpRakZrsN9ZQk8Wxi+xbxz+cF3UCNGDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R/LiRZ2O; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1713438161; x=1744974161;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FyCYOXuQuFnqLJOd0ixM+LSRi8DdC/fR8KXM8DwEEqA=;
-  b=DifVgYHlQfBx5zI6f9CeWUBcx4z3d7M+vK/34ptvXsx3lLJwGEzy2EWK
-   3/ZBD8q6oFk8u1k7Q9XrN/S5k0ncYWzhFFEI1w/LlUeHJHkanKrtDFPgL
-   Qbyu909DLn0CT50D/ukR6JpnrzXvLBY+xdNJV5WZNCggH6IK4IP0gH51H
-   Wo+jhwNzgfd2R6XO6EqIKGSZPDn5tM5VIVry1PkcxFv6N7f0LFPYkDbiy
-   X7H25nEFl4PUEkkstO9xJhR4n776mHLGqPs/ISbAEp11VS7S8q1XYHUk8
-   rHgxaH3ZeM2jA8INnntyofteV5cq6JbmLZBH07VvRkAta4FdPOvN3Lf9k
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713438262; x=1744974262;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=XWOsXsu8uGtDESDHSeuY45wBrDWF50T4U1OxulxwcBA=;
+  b=R/LiRZ2OAjdklgtWszC/Uzwb0KBHI1QNnUi/k2SlgGqwjPINzAf8N4vT
+   ZnHOWxKGaLhIYGqkTV4CQ7KMe1bI748MJ8XAqx2eXs91O8RQGmQf6WIRD
+   ZaYl3MCYXjDfw6R7ChYmPsb500E78ExdXnZkBrA5tYocEL09YGn3RJXAh
+   nB7Caky5C4CrJVdr0vozEnX4T+hQmpspwGHhRyl9CU6d+hkNPo0UMKTE+
+   6JAsDtV55Fttj7nJ/KkJcXmAMpWZBmbL9HLnuRygAqfBRSBTCCMekRiaS
+   YY3nWt4iW7AjAzIFqtDZpI0+w6bR+DAguf/W5U0NTqCN/+EeOg0ctq9KV
    w==;
-X-CSE-ConnectionGUID: rvrVkihjRC23jbRPgAPjgA==
-X-CSE-MsgGUID: 1ioO6pXxSeexXatwL4Ch4w==
-X-IronPort-AV: E=Sophos;i="6.07,212,1708412400"; 
-   d="asc'?scan'208";a="252394332"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Apr 2024 04:02:40 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 18 Apr 2024 04:02:29 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Thu, 18 Apr 2024 04:02:25 -0700
-Date: Thu, 18 Apr 2024 12:02:10 +0100
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Andy Chiu <andy.chiu@sifive.com>, Eric Biggers <ebiggers@google.com>
-CC: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
-	<palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Heiko Stuebner
-	<heiko@sntech.de>, Guo Ren <guoren@kernel.org>, Conor Dooley
-	<conor@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Jonathan Corbet <corbet@lwn.net>, Evan
- Green <evan@rivosinc.com>, =?iso-8859-1?Q?Cl=E9ment_L=E9ger?=
-	<cleger@rivosinc.com>, Shuah Khan <shuah@kernel.org>,
-	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Palmer
- Dabbelt <palmer@rivosinc.com>, Vincent Chen <vincent.chen@sifive.com>,
-	Greentime Hu <greentime.hu@sifive.com>, <devicetree@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>, Joel Granados
-	<j.granados@samsung.com>, Jerry Shih <jerry.shih@sifive.com>
-Subject: Re: [PATCH v4 7/9] riscv: vector: adjust minimum Vector requirement
- to ZVE32X
-Message-ID: <20240418-brook-chili-4d3e61d1a55c@wendy>
-References: <20240412-zve-detection-v4-0-e0c45bb6b253@sifive.com>
- <20240412-zve-detection-v4-7-e0c45bb6b253@sifive.com>
+X-CSE-ConnectionGUID: 4FAnzKocQCmnQItwXzRFvw==
+X-CSE-MsgGUID: uLLYlEp1Rde0R6vZKHbpyA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="12763847"
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="12763847"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:04:21 -0700
+X-CSE-ConnectionGUID: nSZmsw2jSJCxQQYzSBrtBw==
+X-CSE-MsgGUID: drCiHTiVRSaTYdjGTz49sQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="27615952"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.124.236.140]) ([10.124.236.140])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:04:18 -0700
+Message-ID: <dac4aa8c-94d1-475e-ae97-20229bd9ade2@linux.intel.com>
+Date: Thu, 18 Apr 2024 19:04:11 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Gv1MjADy0vzlN0Wa"
-Content-Disposition: inline
-In-Reply-To: <20240412-zve-detection-v4-7-e0c45bb6b253@sifive.com>
-
---Gv1MjADy0vzlN0Wa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-+CC Eric, Jerry
-
-On Fri, Apr 12, 2024 at 02:49:03PM +0800, Andy Chiu wrote:
-> Make has_vector take one argument. This argument represents the minimum
-> Vector subextension that the following Vector actions assume.
->=20
-> Also, change riscv_v_first_use_handler(), and boot code that calls
-> riscv_v_setup_vsize() to accept the minimum Vector sub-extension,
-> ZVE32X.
->=20
-> Most kernel/user interfaces requires minimum of ZVE32X. Thus, programs
-> compiled and run with ZVE32X should be supported by the kernel on most
-> aspects. This includes context-switch, signal, ptrace, prctl, and
-> hwprobe.
->=20
-> One exception is that ELF_HWCAP returns 'V' only if full V is supported
-> on the platform. This means that the system without a full V must not
-> rely on ELF_HWCAP to tell whether it is allowable to execute Vector
-> without first invoking a prctl() check.
->=20
-> Signed-off-by: Andy Chiu <andy.chiu@sifive.com>
-> Acked-by: Joel Granados <j.granados@samsung.com>
-
-I'm not sure that I like this patch to be honest. As far as I can tell,
-every user here of has_vector(ext) is ZVE32X, so why bother actually
-having an argument?
-
-Could we just document that has_vector() is just a tyre kick of "is
-there a vector unit and are we allowed to use it", and anything
-requiring more than the bare-minimum (so zve32x?)must explicitly check
-for that form of vector using riscv_has_extension_[un]likely()?
-
-Finally, the in-kernel crypto stuff or other things that use
-can_use_simd() to check for vector support - do they all function correctly
-with all of the vector flavours? I don't understand the vector
-extensions well enough to evaluate that - I know that they do check for
-the individual extensions like Zvkb during probe but don't have anything
-for the vector version (at least in the chacha20 and sha256 glue code).
-If they don't, then we need to make sure those drivers do not probe with
-the cut-down variants.
-
-Eric/Jerry (although read the previous paragraph too):
-I noticed that the sha256 glue code calls crypto_simd_usable(), and in
-turn may_use_simd() before kernel_vector_begin(). The chacha20 glue code
-does not call either, which seems to violate the edict in
-kernel_vector_begin()'s kerneldoc:
-"Must not be called unless may_use_simd() returns true."
-
-What am I missing there?
-
-Cheers,
-Conor.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 110/130] KVM: TDX: Handle TDX PV MMIO hypercall
+From: Binbin Wu <binbin.wu@linux.intel.com>
+To: isaku.yamahata@intel.com,
+ Sean Christopherson <sean.j.christopherson@intel.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <a4421e0f2eafc17b4703c920936e32489d2382a3.1708933498.git.isaku.yamahata@intel.com>
+ <e2400cf8-ee36-4e7f-ba1f-bb0c740b045c@linux.intel.com>
+In-Reply-To: <e2400cf8-ee36-4e7f-ba1f-bb0c740b045c@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-> diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_hwpr=
-obe.c
-> index c8219b82fbfc..e7c3fcac62a1 100644
-> --- a/arch/riscv/kernel/sys_hwprobe.c
-> +++ b/arch/riscv/kernel/sys_hwprobe.c
-> @@ -69,7 +69,7 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair,
->  	if (riscv_isa_extension_available(NULL, c))
->  		pair->value |=3D RISCV_HWPROBE_IMA_C;
-> =20
-> -	if (has_vector())
-> +	if (has_vector(v))
->  		pair->value |=3D RISCV_HWPROBE_IMA_V;
-> =20
->  	/*
-> @@ -112,7 +112,11 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *p=
-air,
->  		EXT_KEY(ZACAS);
->  		EXT_KEY(ZICOND);
-> =20
-> -		if (has_vector()) {
-> +		/*
-> +		 *  Vector crypto and ZVE* extensions are supported only if
-> +		 *  kernel has minimum V support of ZVE32X.
-> +		 */
-> +		if (has_vector(ZVE32X)) {
->  			EXT_KEY(ZVE32X);
->  			EXT_KEY(ZVE32F);
->  			EXT_KEY(ZVE64X);
 
-I find this to be an indicate of the new has_vector() being a poor API,
-as it is confusing that a check
-> diff --git a/arch/riscv/kernel/vector.c b/arch/riscv/kernel/vector.c
-> index 6727d1d3b8f2..e8a47fa72351 100644
-> --- a/arch/riscv/kernel/vector.c
-> +++ b/arch/riscv/kernel/vector.c
-> @@ -53,7 +53,7 @@ int riscv_v_setup_vsize(void)
-> =20
->  void __init riscv_v_setup_ctx_cache(void)
->  {
-> -	if (!has_vector())
-> +	if (!has_vector(ZVE32X))
->  		return;
-> =20
->  	riscv_v_user_cachep =3D kmem_cache_create_usercopy("riscv_vector_ctx",
-> @@ -173,8 +173,11 @@ bool riscv_v_first_use_handler(struct pt_regs *regs)
->  	u32 __user *epc =3D (u32 __user *)regs->epc;
->  	u32 insn =3D (u32)regs->badaddr;
-> =20
-> +	if (!has_vector(ZVE32X))
-> +		return false;
-> +
->  	/* Do not handle if V is not supported, or disabled */
-> -	if (!(ELF_HWCAP & COMPAT_HWCAP_ISA_V))
-> +	if (!riscv_v_vstate_ctrl_user_allowed())
->  		return false;
-> =20
->  	/* If V has been enabled then it is not the first-use trap */
-> @@ -213,7 +216,7 @@ void riscv_v_vstate_ctrl_init(struct task_struct *tsk)
->  	bool inherit;
->  	int cur, next;
-> =20
-> -	if (!has_vector())
-> +	if (!has_vector(ZVE32X))
->  		return;
-> =20
->  	next =3D riscv_v_ctrl_get_next(tsk);
-> @@ -235,7 +238,7 @@ void riscv_v_vstate_ctrl_init(struct task_struct *tsk)
-> =20
->  long riscv_v_vstate_ctrl_get_current(void)
->  {
-> -	if (!has_vector())
-> +	if (!has_vector(ZVE32X))
->  		return -EINVAL;
-> =20
->  	return current->thread.vstate_ctrl & PR_RISCV_V_VSTATE_CTRL_MASK;
-> @@ -246,7 +249,7 @@ long riscv_v_vstate_ctrl_set_current(unsigned long ar=
-g)
->  	bool inherit;
->  	int cur, next;
-> =20
-> -	if (!has_vector())
-> +	if (!has_vector(ZVE32X))
->  		return -EINVAL;
-> =20
->  	if (arg & ~PR_RISCV_V_VSTATE_CTRL_MASK)
-> @@ -296,7 +299,7 @@ static struct ctl_table riscv_v_default_vstate_table[=
-] =3D {
-> =20
->  static int __init riscv_v_sysctl_init(void)
->  {
-> -	if (has_vector())
-> +	if (has_vector(ZVE32X))
->  		if (!register_sysctl("abi", riscv_v_default_vstate_table))
->  			return -EINVAL;
->  	return 0;
-> diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
-> index bc22c078aba8..bbe143bb32a0 100644
-> --- a/arch/riscv/lib/uaccess.S
-> +++ b/arch/riscv/lib/uaccess.S
-> @@ -14,7 +14,7 @@
-> =20
->  SYM_FUNC_START(__asm_copy_to_user)
->  #ifdef CONFIG_RISCV_ISA_V
-> -	ALTERNATIVE("j fallback_scalar_usercopy", "nop", 0, RISCV_ISA_EXT_v, CO=
-NFIG_RISCV_ISA_V)
-> +	ALTERNATIVE("j fallback_scalar_usercopy", "nop", 0, RISCV_ISA_EXT_ZVE32=
-X, CONFIG_RISCV_ISA_V)
->  	REG_L	t0, riscv_v_usercopy_threshold
->  	bltu	a2, t0, fallback_scalar_usercopy
->  	tail enter_vector_usercopy
->=20
-> --=20
-> 2.44.0.rc2
->=20
+On 4/18/2024 5:29 PM, Binbin Wu wrote:
+>
+>> +
+>> +static int tdx_emulate_mmio(struct kvm_vcpu *vcpu)
+>> +{
+>> +    struct kvm_memory_slot *slot;
+>> +    int size, write, r;
+>> +    unsigned long val;
+>> +    gpa_t gpa;
+>> +
+>> +    KVM_BUG_ON(vcpu->mmio_needed, vcpu->kvm);
+>> +
+>> +    size = tdvmcall_a0_read(vcpu);
+>> +    write = tdvmcall_a1_read(vcpu);
+>> +    gpa = tdvmcall_a2_read(vcpu);
+>> +    val = write ? tdvmcall_a3_read(vcpu) : 0;
+>> +
+>> +    if (size != 1 && size != 2 && size != 4 && size != 8)
+>> +        goto error;
+>> +    if (write != 0 && write != 1)
+>> +        goto error;
+>> +
+>> +    /* Strip the shared bit, allow MMIO with and without it set. */
+> Based on the discussion 
+> https://lore.kernel.org/all/ZcUO5sFEAIH68JIA@google.com/
+> Do we still allow the MMIO without shared bit?
+>
+>> +    gpa = gpa & ~gfn_to_gpa(kvm_gfn_shared_mask(vcpu->kvm));
+>> +
+>> +    if (size > 8u || ((gpa + size - 1) ^ gpa) & PAGE_MASK)
+> "size > 8u" can be removed, since based on the check of size above, it 
+> can't be greater than 8.
+>
+>
+>> +        goto error;
+>> +
+>> +    slot = kvm_vcpu_gfn_to_memslot(vcpu, gpa_to_gfn(gpa));
+>> +    if (slot && !(slot->flags & KVM_MEMSLOT_INVALID))
+>> +        goto error;
+>> +
+>> +    if (!kvm_io_bus_write(vcpu, KVM_FAST_MMIO_BUS, gpa, 0, NULL)) {
+> Should this be checked for write first?
+>
+> I check the handle_ept_misconfig() in VMX, it doesn't check write 
+> first neither.
+>
+> Functionally, it should be OK since guest will not read the address 
+> range of fast mmio.
+> So the read case will be filtered out by ioeventfd_write().
+> But it has take a long way to get to ioeventfd_write().
+> Isn't it more efficient to check write first?
 
---Gv1MjADy0vzlN0Wa
-Content-Type: application/pgp-signature; name="signature.asc"
+I got the reason why in handle_ept_misconfig(), it tries to do fast mmio 
+write without checking.
+It was intended to make fast mmio faster.
+And for ept misconfig case, it's not easy to get the info of read/write.
 
------BEGIN PGP SIGNATURE-----
+But in this patch, we have already have read/write info, so maybe we can 
+add the check for write before fast mmio?
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiD9sgAKCRB4tDGHoIJi
-0hS5AQCdwRiPTKaH/dGSkcjf1wQonDQjGD5X0skDUYsM0VZcdQEAz/immLGV5ulM
-Dxx67jswzCJGlWQgDMMvkyy3LXO4fgA=
-=Td09
------END PGP SIGNATURE-----
 
---Gv1MjADy0vzlN0Wa--
+>
+>
+>> +        trace_kvm_fast_mmio(gpa);
+>> +        return 1;
+>> +    }
+>> +
+>> +    if (write)
+>> +        r = tdx_mmio_write(vcpu, gpa, size, val);
+>> +    else
+>> +        r = tdx_mmio_read(vcpu, gpa, size);
+>> +    if (!r) {
+>> +        /* Kernel completed device emulation. */
+>> +        tdvmcall_set_return_code(vcpu, TDVMCALL_SUCCESS);
+>> +        return 1;
+>> +    }
+>> +
+>> +    /* Request the device emulation to userspace device model. */
+>> +    vcpu->mmio_needed = 1;
+>> +    vcpu->mmio_is_write = write;
+>> +    vcpu->arch.complete_userspace_io = tdx_complete_mmio;
+>> +
+>> +    vcpu->run->mmio.phys_addr = gpa;
+>> +    vcpu->run->mmio.len = size;
+>> +    vcpu->run->mmio.is_write = write;
+>> +    vcpu->run->exit_reason = KVM_EXIT_MMIO;
+>> +
+>> +    if (write) {
+>> +        memcpy(vcpu->run->mmio.data, &val, size);
+>> +    } else {
+>> +        vcpu->mmio_fragments[0].gpa = gpa;
+>> +        vcpu->mmio_fragments[0].len = size;
+>> +        trace_kvm_mmio(KVM_TRACE_MMIO_READ_UNSATISFIED, size, gpa, 
+>> NULL);
+>> +    }
+>> +    return 0;
+>> +
+>> +error:
+>> +    tdvmcall_set_return_code(vcpu, TDVMCALL_INVALID_OPERAND);
+>> +    return 1;
+>> +}
+>> +
+>>   static int handle_tdvmcall(struct kvm_vcpu *vcpu)
+>>   {
+>>       if (tdvmcall_exit_type(vcpu))
+>> @@ -1229,6 +1341,8 @@ static int handle_tdvmcall(struct kvm_vcpu *vcpu)
+>>           return tdx_emulate_hlt(vcpu);
+>>       case EXIT_REASON_IO_INSTRUCTION:
+>>           return tdx_emulate_io(vcpu);
+>> +    case EXIT_REASON_EPT_VIOLATION:
+>> +        return tdx_emulate_mmio(vcpu);
+>>       default:
+>>           break;
+>>       }
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 03950368d8db..d5b18cad9dcd 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -13975,6 +13975,7 @@ EXPORT_SYMBOL_GPL(kvm_sev_es_string_io);
+>>     EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_entry);
+>>   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_exit);
+>> +EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_mmio);
+>>   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_fast_mmio);
+>>   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_inj_virq);
+>>   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_page_fault);
+>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+>> index e27c22449d85..bc14e1f2610c 100644
+>> --- a/virt/kvm/kvm_main.c
+>> +++ b/virt/kvm/kvm_main.c
+>> @@ -2689,6 +2689,7 @@ struct kvm_memory_slot 
+>> *kvm_vcpu_gfn_to_memslot(struct kvm_vcpu *vcpu, gfn_t gfn
+>>         return NULL;
+>>   }
+>> +EXPORT_SYMBOL_GPL(kvm_vcpu_gfn_to_memslot);
+>>     bool kvm_is_visible_gfn(struct kvm *kvm, gfn_t gfn)
+>>   {
+>> @@ -5992,6 +5993,7 @@ int kvm_io_bus_read(struct kvm_vcpu *vcpu, enum 
+>> kvm_bus bus_idx, gpa_t addr,
+>>       r = __kvm_io_bus_read(vcpu, bus, &range, val);
+>>       return r < 0 ? r : 0;
+>>   }
+>> +EXPORT_SYMBOL_GPL(kvm_io_bus_read);
+>>     int kvm_io_bus_register_dev(struct kvm *kvm, enum kvm_bus 
+>> bus_idx, gpa_t addr,
+>>                   int len, struct kvm_io_device *dev)
+>
+>
+
 
