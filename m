@@ -1,119 +1,99 @@
-Return-Path: <linux-kernel+bounces-149847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7501F8A96B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:52:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77CBE8A96BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:52:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13A0F1F211BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:52:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 354FA284386
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B109F15B985;
-	Thu, 18 Apr 2024 09:51:53 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE4115B56B
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:51:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B7415B146;
+	Thu, 18 Apr 2024 09:52:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="IFWeH69J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF54515AD86
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:52:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713433913; cv=none; b=Y0P+Flu8EuQaimNTJhmJVBH3kZiid0BubkAN6Ut2WJBBOo/HiY+UOg3V8AyXYGgsyzb+A0YBM+N6XM3VhlgGdegTlobq5q/4rIliyBDglw6UbB2Y6HiYyHIAlr+dCzenXpeiR0R+aiTL4NYcAYiIETcZyor3PlSunoefFrx+K24=
+	t=1713433966; cv=none; b=a2H0GTiNfbZByycFOWeo8K4TF7zpOi/NEKYk/NaLmV63S5rVpvXMOBPr3wy/i/M6H1NUORMCw1xS2TeHcXspykIOBUX4moJkR2SHesTNFsYSlfKOvUS0sYa6Q28H7kGRASCIdN69REZXh8L+N3uv4siLNPc/nUCWVzdiGpNZnZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713433913; c=relaxed/simple;
-	bh=NsGjx/jomoCy4xShRYD7a+fxBdFl3tLSSNdfPyeTJyU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D0eKSTMM7pRo+rJij49rUi4s+wBUCGiDL73Nu/eXVqFFGAxTq2hKFAwdjyG5AcS8aE/NhYW5V5cK69Lqdn4nR9JiCp4ugvmCVFtmrc060wtKn2G63berOYvYyPjP8MzY9mhSsJU/OJ6zqXRJOdC3y9CCyGuZL4NV7/65jEDc5us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B2D811595;
-	Thu, 18 Apr 2024 02:52:18 -0700 (PDT)
-Received: from pluto.guestnet.cambridge.arm.com (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 00F0D3F64C;
-	Thu, 18 Apr 2024 02:51:48 -0700 (PDT)
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: sudeep.holla@arm.com,
-	james.quinlan@broadcom.com,
-	f.fainelli@gmail.com,
-	vincent.guittot@linaro.org,
-	peng.fan@oss.nxp.com,
-	michal.simek@amd.com,
-	quic_sibis@quicinc.com,
-	konrad.dybcio@linaro.org,
-	souvik.chakravarty@arm.com,
-	Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH v3 2/2] firmware: arm_scmi: Add dedicated vendor protocols submenu
-Date: Thu, 18 Apr 2024 10:51:21 +0100
-Message-ID: <20240418095121.3238820-3-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240418095121.3238820-1-cristian.marussi@arm.com>
-References: <20240418095121.3238820-1-cristian.marussi@arm.com>
+	s=arc-20240116; t=1713433966; c=relaxed/simple;
+	bh=UILc22gN9ocfZvvxDWaiey3h29zRRo2zvofEpjVNhbE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XNA9LemFgy8uRT4CKHjREumDGaSggNkl/rZRwbTMWNqdWZWYuyxtsKNR5wZpaMgztwo/MWWL9Pj+cD5N67RSFYEEA4PwpFoQrIWToXhX+6WhDPrCZNmQe++/ARVJFzy4TwYPftc9JyZsCeGOVXg1igh7kuLewpDvqwNbibkcGIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=IFWeH69J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2454C113CC;
+	Thu, 18 Apr 2024 09:52:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713433966;
+	bh=UILc22gN9ocfZvvxDWaiey3h29zRRo2zvofEpjVNhbE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IFWeH69Jz3uobtuWKzimd0JGuGKgTXBEFvUVb7KHKr9f8HolsjeX3JPJ7aBP/U6NZ
+	 TBWu+HvjYAHPb9iNKIvxEwFwLfEg8fKtcjEp/V4FyhtoufTv2w72vC+GXKOvsGOcPC
+	 gf811mYD9FR+j50SHVDeyhXCoDT4E6bIV1Kt/wNw=
+Date: Thu, 18 Apr 2024 11:52:43 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: wangzhu <wangzhu9@huawei.com>
+Cc: "harry.wentland@amd.com" <harry.wentland@amd.com>,
+	"sunpeng.li@amd.com" <sunpeng.li@amd.com>,
+	"alexander.deucher@amd.com" <alexander.deucher@amd.com>,
+	"christian.koenig@amd.com" <christian.koenig@amd.com>,
+	"airlied@linux.ie" <airlied@linux.ie>,
+	"daniel@ffwll.ch" <daniel@ffwll.ch>,
+	"sanglipeng1@jd.com" <sanglipeng1@jd.com>,
+	"sashal@kernel.org" <sashal@kernel.org>,
+	"wayne.lin@amd.com" <wayne.lin@amd.com>,
+	"joshua@froggi.es" <joshua@froggi.es>,
+	"hongao@uniontech.com" <hongao@uniontech.com>,
+	"cssk@net-c.es" <cssk@net-c.es>,
+	"nicholas.kazlauskas@amd.com" <nicholas.kazlauskas@amd.com>,
+	"chiahsuan.chung@amd.com" <chiahsuan.chung@amd.com>,
+	"mwen@igalia.com" <mwen@igalia.com>,
+	"roman.li@amd.com" <roman.li@amd.com>,
+	"aurabindo.pillai@amd.com" <aurabindo.pillai@amd.com>,
+	"hansen.dsouza@amd.com" <hansen.dsouza@amd.com>,
+	"Rodrigo.Siqueira@amd.com" <Rodrigo.Siqueira@amd.com>,
+	"Konstantin Meskhidze (A)" <konstantin.meskhidze@huawei.com>,
+	"aric.cyr@amd.com" <aric.cyr@amd.com>,
+	"jaehyun.chung@amd.com" <jaehyun.chung@amd.com>,
+	"mario.limonciello@amd.com" <mario.limonciello@amd.com>,
+	"amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjUuMTA=?= =?utf-8?Q?=5D?=
+ drm/amd/display: Wake DMCUB before executing GPINT commands
+Message-ID: <2024041852-surrogate-nimbly-0538@gregkh>
+References: <20240416024347.2446403-1-wangzhu9@huawei.com>
+ <2024041633-breath-unfiled-86c1@gregkh>
+ <a0b467dd1c074758aa89a18fa7a9c6ab@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a0b467dd1c074758aa89a18fa7a9c6ab@huawei.com>
 
-Add a dedicated Kconfig submenu and directory where to collect SCMI vendor
-protocols implementations.
+On Thu, Apr 18, 2024 at 03:19:46AM +0000, wangzhu wrote:
+> Hi Greg, thanks for your reply. Since there is no patch to fix CVE-2023-52624 in linux-5.10, there is a patch in the linux-6.7 branch to fix it, its commit is 2ef98c6d753a744e333b7e34b9cf687040fba57d ("drm/amd/display: Wake DMCUB before executing GPINT commands"). When we apply this patch to linux-5.10, there are lots of conflicts, and we found there are lots of dependent patches, we do not apply all these patches since some are not meant to fix the cve, so we just get part of them, and for each patch we just get the part which is helpful to fix.
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
- drivers/firmware/arm_scmi/Kconfig          | 2 ++
- drivers/firmware/arm_scmi/Makefile         | 1 +
- drivers/firmware/arm_scmi/vendors/Kconfig  | 4 ++++
- drivers/firmware/arm_scmi/vendors/Makefile | 2 ++
- 4 files changed, 9 insertions(+)
- create mode 100644 drivers/firmware/arm_scmi/vendors/Kconfig
- create mode 100644 drivers/firmware/arm_scmi/vendors/Makefile
+Why do you think that specific CVE is relevent to the 5.10.y kernel?
+And if so, what about the ones newer than that, as you know I can not
+take patches only for older kernels, that would leave newer branches
+vulnerable to the same bug.
 
-diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
-index aa5842be19b2..db9166e99177 100644
---- a/drivers/firmware/arm_scmi/Kconfig
-+++ b/drivers/firmware/arm_scmi/Kconfig
-@@ -180,4 +180,6 @@ config ARM_SCMI_POWER_CONTROL
- 	  called scmi_power_control. Note this may needed early in boot to catch
- 	  early shutdown/reboot SCMI requests.
- 
-+source "drivers/firmware/arm_scmi/vendors/Kconfig"
-+
- endmenu
-diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-index a7bc4796519c..1316892a230d 100644
---- a/drivers/firmware/arm_scmi/Makefile
-+++ b/drivers/firmware/arm_scmi/Makefile
-@@ -15,6 +15,7 @@ scmi-module-objs := $(scmi-driver-y) $(scmi-protocols-y) $(scmi-transport-y)
- 
- obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-core.o
- obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-module.o
-+obj-$(CONFIG_ARM_SCMI_PROTOCOL) += vendors/
- 
- obj-$(CONFIG_ARM_SCMI_POWER_CONTROL) += scmi_power_control.o
- 
-diff --git a/drivers/firmware/arm_scmi/vendors/Kconfig b/drivers/firmware/arm_scmi/vendors/Kconfig
-new file mode 100644
-index 000000000000..7c1ca7a12603
---- /dev/null
-+++ b/drivers/firmware/arm_scmi/vendors/Kconfig
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+menu "ARM SCMI Vendor Protocols"
-+
-+endmenu
-diff --git a/drivers/firmware/arm_scmi/vendors/Makefile b/drivers/firmware/arm_scmi/vendors/Makefile
-new file mode 100644
-index 000000000000..c6c214158dd8
---- /dev/null
-+++ b/drivers/firmware/arm_scmi/vendors/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+# obj-$(CONFIG_ARM_SCMI_PROTOCOL_<your_vendor_proto>) += <your_vendor_proto>.o
--- 
-2.44.0
+So please submit fixes for all branches that you wish to see resolved at
+the same time.
 
+thanks,
+
+greg k-h
 
