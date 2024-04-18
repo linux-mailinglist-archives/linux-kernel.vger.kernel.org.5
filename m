@@ -1,108 +1,128 @@
-Return-Path: <linux-kernel+bounces-150343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF8268A9DAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:54:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D31BB8A9DAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:54:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9024B1F21F52
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:54:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F27E2818B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:54:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB2EF16ABC0;
-	Thu, 18 Apr 2024 14:54:14 +0000 (UTC)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6162816ABC2;
+	Thu, 18 Apr 2024 14:54:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ejI4EaRZ"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD85515E5C2;
-	Thu, 18 Apr 2024 14:54:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 268CC168B11;
+	Thu, 18 Apr 2024 14:54:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713452054; cv=none; b=Ta6glifHER4NuauMKr6uCQY+HfUkPPju+r0+WtEvVEyQuFXrOnaORCydVGsxo6gOPct7ztEgny39UoNCF4oaUyBVHPbdi8gtmGV6YRLOxpMce+QSqtXofxsesk9fKPkiRDQApazy64PYgp4vtbjX4t52s0GGAwBwGwGFw/hkOpc=
+	t=1713452070; cv=none; b=AIS9ekBeVMWkfFLCuDj/F/TlSKPyyUfTnu+Rg7oKiCVEPXG3TAm1rumTGQVMcH5lgbJZHP6xUu/EWI6dbwlQ7Bi9oDqCF3j4T3sSdrBJnkvyzYKNPMJhwl6p1XCLigPb0HLGkwWak9LwQ/1446om5DUtoTQCs0hpreYtNKCJjMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713452054; c=relaxed/simple;
-	bh=WNJKQU3xUvHfupkdLUkvqSa/rnxSBq6DXuy/CKfjo8c=;
+	s=arc-20240116; t=1713452070; c=relaxed/simple;
+	bh=OvGBkvFoWVsZGonrRvzCmb0bTHJXTs/4/G/PWLo4Ruw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IaM0VGaPxIKZ6m7WwiIUoeRdnTP5mq0ZmtEYeNTLZytDmCTxv1KEaIoVo7Ess5AFnv/deEkAGb59rNVltMYfoQZYiWlyJKl2FwT+JIz1zymqXx2zYqrYZrL2msFasfXiRO5Ns1usL/rPQdofJTGvkQwZ/2z2P92bhtldZla5s38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	 To:Cc:Content-Type; b=niJBsbVOcTrMd4QqiwBjj3ZXcowgEkcdIZQQ2JtOXo6+iHrVK7IM1zdnImdJw4yfMX/DUlPbjjg6QwlfhyrLMfsNwLwr0yPeJIAMDnxo+zZNe1OOCiFAViTpmW1PBzAAUcrhk5hacDbvZyYEz6lTijChvRE5raTSO0nvUB3TiAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ejI4EaRZ; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-617f8a59a24so8586267b3.1;
-        Thu, 18 Apr 2024 07:54:12 -0700 (PDT)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-34a32ba1962so296212f8f.2;
+        Thu, 18 Apr 2024 07:54:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713452067; x=1714056867; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OvGBkvFoWVsZGonrRvzCmb0bTHJXTs/4/G/PWLo4Ruw=;
+        b=ejI4EaRZmJTO0TmoeEAKyrXH8dJZyWVcDROO4BZKsjLAxC56M+4zvvouW5/jTaQmGz
+         YBEEhxKB7pEenbsCBQCnyHtVPKygNUVARV/biy03bAFbT3FgKdZ6vxPdfCgfVigFKGqe
+         shOWhz1rgTmRMuty/OPoRqcclcZEt+alS7mavnYURDSg6mOLHtQKHjsKYNpFklLykKap
+         Veq+UJc4hDmMvtAZRDaL11tWyjnq9umNIqW142DcDR+Xbel2DQgkF/cn9xDqSaWrVNOm
+         CfUY0Zdgce3c9qEsZkPtDMF50yrzCyFO2JOnuy0ZLeTdwIkHpPA5gKnWI8JGg7tFe0tC
+         SHTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713452051; x=1714056851;
+        d=1e100.net; s=20230601; t=1713452067; x=1714056867;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/POOUQgPdW9+xNwkTyuL8XDbLKnhNO+65dV00iG9onI=;
-        b=EJ7Jh+1B8hH8yq4oIhe+Rf1zvf+t8eDGZYMDz81/8o0p+Lh6u4tgFYJFnllslfWgM6
-         +9f/Kc9A9XNaYxcEDIauvPIkOMXW8MOGeyVn/486jf/GhpIvuZolCSyP9a6AJgIHEQK7
-         YklXc8fEcTWkdpC5L55VQBd0PPFjN5kP6zpxKhtS+x9N7a61/K0s6JwneJJlpp/3aZtz
-         cb5HKCNJtX4ICtGJB8JUx29n1EpVB9nb1r74GbeK9FGPgJy6vqsW4dVXDPyv7ji+ECS5
-         yPMPKHCMgZzFEerhmTiOYP6UtH+o76uYftCWQbwDY8CakcS6XlbbzLyafA8JoTiuaxwY
-         wSKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWHxzJaB19AJ7hdpO8n/Ne9+cVkW9ze4USAh90F6rQRg73xgVgnxZail6qTWV2We6BiBOXWdtKIWliET4go27CmuGiTs6vm5JcYb0efaY+G9tlr/QF5kOrGvjr9FxY1ClQvQpJaChsfF0KC7XjY+356u0IYZ168iH4w+7MRCTkcJ/gelum/LcDz0fE=
-X-Gm-Message-State: AOJu0YxsL5jsLhmKDMW+6ghMFbbFFOYdtJiEVZye7US7dIY82ly8fr0X
-	1ALC5wOwqQQ3Nzi7k4YNlIYOLF+w+AbTkY2R1rylaU07JxIaeeGZq4Bx7CqS
-X-Google-Smtp-Source: AGHT+IGIVOwVaCU6/zJ8IKLVXz4bRuiWRq9/FwkqH13jJcEWr3r+IYFjuKWmUejAmiYm7+Vf4dGjQA==
-X-Received: by 2002:a05:690c:dc3:b0:61b:69f:4c24 with SMTP id db3-20020a05690c0dc300b0061b069f4c24mr3206182ywb.20.1713452050044;
-        Thu, 18 Apr 2024 07:54:10 -0700 (PDT)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id w63-20020a0dd442000000b0061ab76e5f4dsm363859ywd.114.2024.04.18.07.54.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 07:54:09 -0700 (PDT)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-618769020bcso10506227b3.3;
-        Thu, 18 Apr 2024 07:54:09 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXZQTeuVuspQB37u10XgIRS4uQpQLlR9QF2ZexgmQFQAKWr/3F3tGUjFLIU2jn3FFcVDmQ1QGM7EtGJRbwv1nX5TvVDSwKN2DrMQj4HyEP7uM9rSMU9XGq60wluQmwkI2QAvdsWoQzgoTlWZVw7Ax2ye+CnCl8jt6hbuawpYFQu0unWi8U1/mJ+nPI=
-X-Received: by 2002:a25:83c2:0:b0:dcf:ba3f:a6e9 with SMTP id
- v2-20020a2583c2000000b00dcfba3fa6e9mr3025106ybm.42.1713452049634; Thu, 18 Apr
- 2024 07:54:09 -0700 (PDT)
+        bh=OvGBkvFoWVsZGonrRvzCmb0bTHJXTs/4/G/PWLo4Ruw=;
+        b=Ls4O9r68W/DmoWBMH5IBZo/im2u+f9RWAxT3xPEyUFt0BVdbqJKO+erhc3Y4fbmawY
+         vJwBuVMq5nieH1ts8pCcz+N0JVRMeBpIw3oQY6/JShAXrByix+G4KLt94InkKF85xzat
+         N+q5QFzgC2LQ8f6VoUgxr1YPOL5EslnLqYy0vG3vFp8klRU4AQ7r10jg9SE7Yfm81IIS
+         BWL4DXYyPZ5/l17OH6d/+W2DuHIgqvIlrQku4lpGnPCqwUDNaUkr4TNMU0gsF9tRTbTI
+         nEmt5h9CK2KNpnK6NQhAHLuNwWpBXqxx8IK9h1UZROboerbsNZRTUOih+z/FFy0xo2AC
+         zBkw==
+X-Forwarded-Encrypted: i=1; AJvYcCWPz0AS3mJ6bekTsVKgzT/NkWQFxMjHCwEG8uQi5jJwE3s1jW2+dNNtq3vxhQNR76elBAsGTe5uN0YNUenBl9aWuEi3qgz6m+MOn4wRzVmA+hY/7S0Vaovxiy8CQW0B6gSvQ8x7Y/724g==
+X-Gm-Message-State: AOJu0YybqAYmGCQX1KA64vefZ3RA9ZSXlPhIY8zozR61mACeL5G/J4bi
+	DrJdRU6KYh8txfVhl09JgHD82I3FhNq7BVDa4Ta+ovpuff25cXf2GEkaaar2BN6zr67WLhQa11G
+	fM5ItDkCHJzyxVg9ixYkAjFPGOi8=
+X-Google-Smtp-Source: AGHT+IF1GOB+9k0yqpKSFsOcg6dnXs0PLwnWjCVD16905JB4IckCABWiGjTamMXxYATZwLvowgjCD80p4Zu9jj0+CjI=
+X-Received: by 2002:a05:6000:1:b0:346:d2c0:7682 with SMTP id
+ h1-20020a056000000100b00346d2c07682mr1734554wrx.30.1713452067341; Thu, 18 Apr
+ 2024 07:54:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403200952.633084-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240403200952.633084-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 18 Apr 2024 16:53:57 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVN_B3xhNnq1=NOs=LmWw3P=dJGr0MhQMdqsChQ=VXWLA@mail.gmail.com>
-Message-ID: <CAMuHMdVN_B3xhNnq1=NOs=LmWw3P=dJGr0MhQMdqsChQ=VXWLA@mail.gmail.com>
-Subject: Re: [PATCH] clk: renesas: r9a07g043: Add clock and reset entry for PLIC
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <linux-mm@kvack.org> <20240416120635.361838-1-skseofh@gmail.com>
+ <20240416120635.361838-2-skseofh@gmail.com> <Zh9l_LpThq9aFUR7@kernel.org>
+In-Reply-To: <Zh9l_LpThq9aFUR7@kernel.org>
+From: DaeRo Lee <skseofh@gmail.com>
+Date: Thu, 18 Apr 2024 23:54:15 +0900
+Message-ID: <CAATEi5kywwC2yUaYjgs+Gm=4HM5o=KHTqH1ALKJijWE_gge0=g@mail.gmail.com>
+Subject: Re: [PATCH v2] memblock: add no-map alloc functions
+To: Mike Rapoport <rppt@kernel.org>
+Cc: robh@kernel.org, saravanak@google.com, akpm@linux-foundation.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Daero Lee <daero_le.lee@samsung.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 3, 2024 at 10:11=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
-om> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+2024=EB=85=84 4=EC=9B=94 17=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 3:03, M=
+ike Rapoport <rppt@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
 >
-> Add the missing clock and reset entry for PLIC. Also add
-> R9A07G043_NCEPLIC_ACLK to critical clocks list.
+> On Tue, Apr 16, 2024 at 09:06:35PM +0900, skseofh@gmail.com wrote:
+> > From: Daero Lee <daero_le.lee@samsung.com>
+> >
+> > Like reserved-memory with the 'no-map' property and only 'size' propert=
+y
+> > (w/o 'reg' property), there are memory regions need to be allocated in
+> > memblock.memory marked with the MEMBLOCK_NOMAP flag, but should not be
+> > allocated in memblock.reserved.
 >
-> Fixes: b3e77da00f1b ("riscv: dts: renesas: Add initial devicetree for Ren=
-esas RZ/Five SoC")
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> This still does not explain why you need such regions.
+>
+> As Wei Yang explained, memblock does not allocate memory from
+> memblock.reserved. The memblock.reserved array represents memory that is =
+in
+> use by firmware or by early kernel allocations and cannot be freed to pag=
+e
+> allocator.
+Thank you for your comments. I used the wrong word.
+When I use 'allocate', I mean that the region 'adds' to the memblock.reserv=
+ed.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-clk for v6.10.
+>
+> If you have a region that's _NOMAP in memblock.memory and is absent in
+> memblock.reserved it will not be mapped by the kernel page tables, but it
+> will be considered as free memory by the core mm.
+>
+> Is this really what you want?
+If my understanding is right, before freeing (memory && !reserved)
+area, we marked the memblock.reserved regions and memblock.memory
+regions with no-map flag. And when we free (memory && !reserved) area,
+we skip the memblock.memory regions with no-map(see
+should_skip_region). So, I think that the memory regions with no-map
+flag will not be considered as free memory.
 
-Gr{oetje,eeting}s,
+If there is anything I think is wrong, feel free to correct me.
 
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Regards,
+DaeRo Lee
 
