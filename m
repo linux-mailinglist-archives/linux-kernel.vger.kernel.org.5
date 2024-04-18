@@ -1,255 +1,222 @@
-Return-Path: <linux-kernel+bounces-150746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A3168AA408
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:28:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A60C8AA406
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:27:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 874281F21E79
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:28:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAB371C20FB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:27:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65DC517BB31;
-	Thu, 18 Apr 2024 20:28:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C88E7184123;
+	Thu, 18 Apr 2024 20:27:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CoVR3+n0"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IVWE9koW"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F614503A
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 20:28:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B974503A;
+	Thu, 18 Apr 2024 20:27:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713472098; cv=none; b=YveLdN6Znb5cqhVADh5rCQYyDhXizvaCO5Uo5rR+QNIiSp52TAzgOiad98kvumP3xUTXjoRTpT10IKEyJ/wK1iMB35/W5Dfv8JbDGaH96Mj5O0IImhJ+TJJB5zl1k6KoQBwtpnQhQcHmwXWSROXzaTCMYrYC3RkqcpGA7dp7PI8=
+	t=1713472059; cv=none; b=FnY2xdqyMVSwNBCD8y8uwjUaBe+jPR+vOgocUQ+7Ecl8L4p5iPLbzcf8Z122BdY9dN7ziE6kfUA0BcX4P4Z8WNQy/k2/kcFb+F8z6onqUHRl2m5lkb1cvUmHgISA922HwDmxUjgi6V6AkCKuAhuKmEB0jmiKz3Ctd+ofGpc9cvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713472098; c=relaxed/simple;
-	bh=ebjDp1x4/+AJnPekE5mmp2ZzbekdQDUtW3uk4KjajIs=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=iZeSEZMgiEHv9Yuj213jesBxnigPxQggk1W31Xj+dxgmhJ5rgReOPCzy1I0GTcr/5TEzqXMhT/PjcLwzJHQvbxb21T6StSMdb0wL3zmGIuXu+AySk2uujahYvJCR2S7fcVcHknsZk+xo1y2Re/OJKXgMs5vD0ajOJM5WqojDqq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CoVR3+n0; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1713472059; c=relaxed/simple;
+	bh=56WvnS3f709B7K9RPGkczORnhOF3uY6m2yAEXZgpwNA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=pBj8/UsfuRco4p+L70HFWhjxzilwLvcL0r/QdBalCi74F0m/MHfzMoX7g7PLmNjD2CPDGEaPydY/bTgB5BCa2wwuQ9EgzLbZM/V6N0Z3fg9/oLJj/V/XL63aBMRjGb3CEfwA7/pIKq9dhqKAjDx2TWbCDoClOZXjYrAYu6v5xtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IVWE9koW; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713472096; x=1745008096;
-  h=date:from:to:cc:subject:message-id;
-  bh=ebjDp1x4/+AJnPekE5mmp2ZzbekdQDUtW3uk4KjajIs=;
-  b=CoVR3+n0W3QSjK7yRjLwmyd8G2M5KWnn4XiWNntZtpEhzuvkMBW6R6gw
-   uUJcDYhIXOYLVodjVi63hRDicesVzsgYp7vl6Lwhll5dqk8lQ2b/K4auO
-   YHtYqHzMzvVjEE99cu3y4CbvIE/lWyDnWWAnD4HJhqOIBcDX8kRjzWIs6
-   X9NlI+6qhFLaC3xS9ESW8Q4mkycAv0jrXEzvB7F3z9+RwC+7eaXCWIQtW
-   1pnZY8wQtPXmlWkLFrnGlGlUBunqMw9w1h4yLRK0/jNTuNez0CcDpN23F
-   GhJbONG7U2OsYSoE8U0tWMiVrWnnyRKEkgQZmWxng/3mF/w8j4/PaD7NS
-   Q==;
-X-CSE-ConnectionGUID: Qayx1+KdRv+HULiQ4InM2w==
-X-CSE-MsgGUID: JZAncjNNRam6MpEmGFFBvw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="9220890"
+  t=1713472058; x=1745008058;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=56WvnS3f709B7K9RPGkczORnhOF3uY6m2yAEXZgpwNA=;
+  b=IVWE9koWD0uyIs6RnHA1/iziVe8vTygbJ/6eUzIbs7T7gJi/xpw+ci16
+   I4wpVo5b1Q1lc4981iBPXHyvetScOZFcG4wXL/Qv+wsqD3THLmt3uI0hx
+   ROFUNh/gz+EdxcRAWoqKPTkRkCLYfJtBpcCPhywRBbNF7D44KxjWBfPxF
+   7qtk4u9UgDH/bycm/5HHopK9ZeAZsZi1XFXq5FZ5xgeVX8e0MTpEmSl+m
+   DlLZMQR1/y5pkQr5oUuR4qU9xobF5yCYGlAeBSXIYyK/fzhn8f9WjRG9U
+   rTfH/x+SR5aMunS0hGCwpgNzxKHROz4SusAv9qjW66lFa0uIEQPYjWRDW
+   A==;
+X-CSE-ConnectionGUID: BvQpMSHzSSW7vqubRI53kg==
+X-CSE-MsgGUID: GXxCJSkPRb6XSVys8DGBVQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="31527990"
 X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="9220890"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 13:28:16 -0700
-X-CSE-ConnectionGUID: 0nFHhH5iTa+7VKSuCCOaaQ==
-X-CSE-MsgGUID: WYpiteKmTO2TS7L8Z73cTw==
+   d="scan'208";a="31527990"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 13:27:37 -0700
+X-CSE-ConnectionGUID: 91hlfWN5QMq+K6lQWIka8w==
+X-CSE-MsgGUID: O8kBm9WASfypw0PIe+8ARg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="46396515"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 18 Apr 2024 13:28:14 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rxYMe-0009C0-20;
-	Thu, 18 Apr 2024 20:28:12 +0000
-Date: Fri, 19 Apr 2024 04:27:16 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
- b93b7b4635f1b27dbbbf468f509e203a28c541ab
-Message-ID: <202404190413.48kDtqA4-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+   d="scan'208";a="23728689"
+Received: from linux.intel.com ([10.54.29.200])
+  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 13:27:36 -0700
+Received: from [10.212.69.180] (kliang2-mobl1.ccr.corp.intel.com [10.212.69.180])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id A2B38206DFDC;
+	Thu, 18 Apr 2024 13:27:34 -0700 (PDT)
+Message-ID: <ac8835f8-0ea5-4f28-941c-aa43f0da92fd@linux.intel.com>
+Date: Thu, 18 Apr 2024 16:27:33 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 11/16] perf parse-events: Improve error message for bad
+ numbers
+To: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ Atish Patra <atishp@rivosinc.com>, linux-riscv@lists.infradead.org,
+ Beeman Strong <beeman@rivosinc.com>
+References: <20240416061533.921723-1-irogers@google.com>
+ <20240416061533.921723-12-irogers@google.com>
+Content-Language: en-US
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20240416061533.921723-12-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: b93b7b4635f1b27dbbbf468f509e203a28c541ab  ftrace: Asynchronous grace period for register_ftrace_direct()
 
-elapsed time: 944m
 
-configs tested: 163
-configs skipped: 3
+On 2024-04-16 2:15 a.m., Ian Rogers wrote:
+> Use the error handler from the parse_state to give a more informative
+> error message.
+> 
+> Before:
+> ```
+> $ perf stat -e 'cycles/period=99999999999999999999/' true
+> event syntax error: 'cycles/period=99999999999999999999/'
+>                                   \___ parser error
+> Run 'perf list' for a list of valid events
+> 
+>  Usage: perf stat [<options>] [<command>]
+> 
+>     -e, --event <event>   event selector. use 'perf list' to list available events
+> ```
+> 
+> After:
+> ```
+> $ perf stat -e 'cycles/period=99999999999999999999/' true
+> event syntax error: 'cycles/period=99999999999999999999/'
+>                                   \___ parser error
+> 
+> event syntax error: '..les/period=99999999999999999999/'
+>                                   \___ Bad base 10 number "99999999999999999999"
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240418   gcc  
-arc                   randconfig-002-20240418   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240418   gcc  
-arm                   randconfig-002-20240418   gcc  
-arm                   randconfig-003-20240418   gcc  
-arm                   randconfig-004-20240418   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240418   clang
-arm64                 randconfig-002-20240418   gcc  
-arm64                 randconfig-003-20240418   gcc  
-arm64                 randconfig-004-20240418   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240418   gcc  
-csky                  randconfig-002-20240418   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240418   clang
-hexagon               randconfig-002-20240418   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240418   gcc  
-i386         buildonly-randconfig-002-20240418   gcc  
-i386         buildonly-randconfig-003-20240418   clang
-i386         buildonly-randconfig-004-20240418   gcc  
-i386         buildonly-randconfig-005-20240418   clang
-i386         buildonly-randconfig-006-20240418   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240418   gcc  
-i386                  randconfig-002-20240418   gcc  
-i386                  randconfig-003-20240418   clang
-i386                  randconfig-004-20240418   gcc  
-i386                  randconfig-005-20240418   gcc  
-i386                  randconfig-006-20240418   gcc  
-i386                  randconfig-011-20240418   clang
-i386                  randconfig-012-20240418   clang
-i386                  randconfig-013-20240418   gcc  
-i386                  randconfig-014-20240418   gcc  
-i386                  randconfig-015-20240418   gcc  
-i386                  randconfig-016-20240418   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240418   gcc  
-loongarch             randconfig-002-20240418   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240418   gcc  
-nios2                 randconfig-002-20240418   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240418   gcc  
-parisc                randconfig-002-20240418   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20240418   gcc  
-powerpc               randconfig-002-20240418   clang
-powerpc               randconfig-003-20240418   gcc  
-powerpc64             randconfig-001-20240418   gcc  
-powerpc64             randconfig-002-20240418   gcc  
-powerpc64             randconfig-003-20240418   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240418   gcc  
-riscv                 randconfig-002-20240418   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240418   clang
-s390                  randconfig-002-20240418   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240418   gcc  
-sh                    randconfig-002-20240418   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240418   gcc  
-sparc64               randconfig-002-20240418   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240418   gcc  
-um                    randconfig-002-20240418   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240418   clang
-x86_64       buildonly-randconfig-002-20240418   clang
-x86_64       buildonly-randconfig-003-20240418   clang
-x86_64       buildonly-randconfig-004-20240418   clang
-x86_64       buildonly-randconfig-005-20240418   gcc  
-x86_64       buildonly-randconfig-006-20240418   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240418   gcc  
-x86_64                randconfig-002-20240418   clang
-x86_64                randconfig-003-20240418   gcc  
-x86_64                randconfig-004-20240418   clang
-x86_64                randconfig-005-20240418   gcc  
-x86_64                randconfig-006-20240418   gcc  
-x86_64                randconfig-011-20240418   clang
-x86_64                randconfig-012-20240418   gcc  
-x86_64                randconfig-013-20240418   clang
-x86_64                randconfig-014-20240418   gcc  
-x86_64                randconfig-015-20240418   gcc  
-x86_64                randconfig-016-20240418   gcc  
-x86_64                randconfig-071-20240418   gcc  
-x86_64                randconfig-072-20240418   clang
-x86_64                randconfig-073-20240418   clang
-x86_64                randconfig-074-20240418   gcc  
-x86_64                randconfig-075-20240418   gcc  
-x86_64                randconfig-076-20240418   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240418   gcc  
-xtensa                randconfig-002-20240418   gcc  
+It seems the patch only works for decimal?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+/perf stat -e 'cycles/period=0xaaaaaaaaaaaaaaaaaaaaaa/' true
+event syntax error: '..les/period=0xaaaaaaaaaaaaaaaaaaaaaa/'
+                                   \___ parser error
+ Run 'perf list' for a list of valid events
+
+  Usage: perf stat [<options>] [<command>]
+
+     -e, --event <event>   event selector. use 'perf list' to list
+available events
+
+Thanks,
+Kan
+
+> Run 'perf list' for a list of valid events
+> 
+>  Usage: perf stat [<options>] [<command>]
+> 
+>     -e, --event <event>   event selector. use 'perf list' to list available events
+> ```
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/parse-events.l | 40 ++++++++++++++++++++--------------
+>  1 file changed, 24 insertions(+), 16 deletions(-)
+> 
+> diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
+> index 6fe37003ab7b..0cd68c9f0d4f 100644
+> --- a/tools/perf/util/parse-events.l
+> +++ b/tools/perf/util/parse-events.l
+> @@ -18,26 +18,34 @@
+>  
+>  char *parse_events_get_text(yyscan_t yyscanner);
+>  YYSTYPE *parse_events_get_lval(yyscan_t yyscanner);
+> +int parse_events_get_column(yyscan_t yyscanner);
+> +int parse_events_get_leng(yyscan_t yyscanner);
+>  
+> -static int __value(YYSTYPE *yylval, char *str, int base, int token)
+> +static int get_column(yyscan_t scanner)
+>  {
+> -	u64 num;
+> -
+> -	errno = 0;
+> -	num = strtoull(str, NULL, base);
+> -	if (errno)
+> -		return PE_ERROR;
+> -
+> -	yylval->num = num;
+> -	return token;
+> +	return parse_events_get_column(scanner) - parse_events_get_leng(scanner);
+>  }
+>  
+> -static int value(yyscan_t scanner, int base)
+> +static int value(struct parse_events_state *parse_state, yyscan_t scanner, int base)
+>  {
+>  	YYSTYPE *yylval = parse_events_get_lval(scanner);
+>  	char *text = parse_events_get_text(scanner);
+> +	u64 num;
+>  
+> -	return __value(yylval, text, base, PE_VALUE);
+> +	errno = 0;
+> +	num = strtoull(text, NULL, base);
+> +	if (errno) {
+> +		struct parse_events_error *error = parse_state->error;
+> +		char *help = NULL;
+> +
+> +		if (asprintf(&help, "Bad base %d number \"%s\"", base, text) > 0)
+> +			parse_events_error__handle(error, get_column(scanner), help , NULL);
+> +
+> +		return PE_ERROR;
+> +	}
+> +
+> +	yylval->num = num;
+> +	return PE_VALUE;
+>  }
+>  
+>  static int str(yyscan_t scanner, int token)
+> @@ -283,8 +291,8 @@ r0x{num_raw_hex}	{ return str(yyscanner, PE_RAW); }
+>  	 */
+>  "/"/{digit}		{ return PE_BP_SLASH; }
+>  "/"/{non_digit}		{ BEGIN(config); return '/'; }
+> -{num_dec}		{ return value(yyscanner, 10); }
+> -{num_hex}		{ return value(yyscanner, 16); }
+> +{num_dec}		{ return value(_parse_state, yyscanner, 10); }
+> +{num_hex}		{ return value(_parse_state, yyscanner, 16); }
+>  	/*
+>  	 * We need to separate 'mem:' scanner part, in order to get specific
+>  	 * modifier bits parsed out. Otherwise we would need to handle PE_NAME
+> @@ -330,8 +338,8 @@ cgroup-switches					{ return sym(yyscanner, PERF_COUNT_SW_CGROUP_SWITCHES); }
+>  {lc_type}-{lc_op_result}-{lc_op_result}	{ return str(yyscanner, PE_LEGACY_CACHE); }
+>  mem:			{ BEGIN(mem); return PE_PREFIX_MEM; }
+>  r{num_raw_hex}		{ return str(yyscanner, PE_RAW); }
+> -{num_dec}		{ return value(yyscanner, 10); }
+> -{num_hex}		{ return value(yyscanner, 16); }
+> +{num_dec}		{ return value(_parse_state, yyscanner, 10); }
+> +{num_hex}		{ return value(_parse_state, yyscanner, 16); }
+>  
+>  {modifier_event}	{ return str(yyscanner, PE_MODIFIER_EVENT); }
+>  {name}			{ return str(yyscanner, PE_NAME); }
 
