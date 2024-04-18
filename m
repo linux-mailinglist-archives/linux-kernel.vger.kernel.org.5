@@ -1,60 +1,54 @@
-Return-Path: <linux-kernel+bounces-149917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6993F8A97D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8364D8A97C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:50:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6F2FB23B2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:52:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2DEBB21FC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E711715E7EC;
-	Thu, 18 Apr 2024 10:51:02 +0000 (UTC)
-Received: from smtpbgbr2.qq.com (smtpbgbr2.qq.com [54.207.22.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4CE715E1E4;
+	Thu, 18 Apr 2024 10:50:09 +0000 (UTC)
+Received: from mail115-79.sinamail.sina.com.cn (mail115-79.sinamail.sina.com.cn [218.30.115.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159C915E5CE;
-	Thu, 18 Apr 2024 10:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.22.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FFF115D5C1
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 10:50:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.79
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713437462; cv=none; b=hylpwdp5Nmazadiy0OgZjvezRkcTczcn4uaMWnF/kjSgU2QdXoeHi2tN8eSd2zE/dz2dVfWzWubYQ5JUIYj49c+2MmnxHf5xCVgWkkCA8NCzEFMTd0ALezpgolBY9i3Fsb4LycBj8iimo49r5xYOwv7pb9ZccsXke9CSjybAigI=
+	t=1713437409; cv=none; b=AkMU/iEBKlmNClB8CHLd1a/lslmxMYs3eH0vZEV8ilXVXxwJwrtFfAfasDkYYG6j2Hjws6sGOApAMtOsCtwsf0lUk84uAg7LJM6KVIE27/7EVWODDgFPQUwAHKATq484XLLZGOFWNBSUcTuLiDDLEKtvQPY1yE/OClzjFdyXviA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713437462; c=relaxed/simple;
-	bh=WBVRxLIdWKwIhWvkYX40p+kNDCgLtSNi083tiZeIF84=;
+	s=arc-20240116; t=1713437409; c=relaxed/simple;
+	bh=AG8TyXJaQL3/lvYQvQsLtrYzfqub/rhZXTldlGAvJIQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fnRGtYme9OVMocRXu5P/61iDzIDzpyYMKdc05qVxdV/JEflcRHKX4Rih3BUoAIOBoq82/O9r42rEkkUzQJJhkvMS0oHzxfbebZw6XDPiBppb6nzcum53yrE+y/BFzvvbBFWyGu1htL9n06V+SGyNaouJRJF6SmSSorVzGE//ee0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.207.22.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp84t1713437427tx0r3mqm
-X-QQ-Originating-IP: rYl7aVSFMInFEJldnKJN23SbhrmIjafTmB1/3rjQe6U=
-Received: from localhost ( [112.0.147.129])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Thu, 18 Apr 2024 18:50:26 +0800 (CST)
-X-QQ-SSF: 01400000000000903000000A0000000
-X-QQ-FEAT: W+onFc5Tw4NcMRc6QjsEEEWUHz1Dtd6wntwnHBFMv84a1FNBfmtd9FZStN0R2
-	pRuiVh5Lt5J9wTXP4CQmlu//N65YJM560JYcenFgkSZ05ACquRteIQyqZt1kfSIv4ssg1ay
-	krqKI7k0wgODYU+qmaUu7fRFfxU1JW/zuD17MH8q1dH++dnPS5aeboX1rlXwNgZjUC5HgvB
-	0ulamcokuYP3VI82BzrOpn1EyPKaOOQSyxtZot6ZPtCw4Wzw6e3WRcCT+jMctf2mGslBL58
-	WaDY4mt3Zyk+QPpmu9Q3FkB/OcGubiqIxXVxwTrbOpcTeJTKYWc6EH97Xmji9YyYvo77Fdj
-	hU/7frTVLIfTSI0j1/j8+gyNXLmO79tUHpXe+HLldtbKd0RQ4P4mPvauZ0x9Q4cS9Yb3Yjh
-	giPuUAwE5DZckGRWffT69w==
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 17361949652161301272
-From: Dawei Li <dawei.li@shingroup.cn>
-To: davem@davemloft.net,
-	andreas@gaisler.com
-Cc: sparclinux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Dawei Li <dawei.li@shingroup.cn>
-Subject: [PATCH 5/5] sparc: Remove on-stack cpumask var
-Date: Thu, 18 Apr 2024 18:49:49 +0800
-Message-Id: <20240418104949.3606645-6-dawei.li@shingroup.cn>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20240418104949.3606645-1-dawei.li@shingroup.cn>
-References: <20240418104949.3606645-1-dawei.li@shingroup.cn>
+	 MIME-Version; b=j5x2x3tHZybwv3ITIXtS/nEQ/nxJ1KC3U1V00x6EtSNPhFk0fOWDbKEFry6GQ4Vj8R/DOV9Ozx8+LhUlQKcxfCuSStwrwfjKC2JH7+QO06NOkGnAFsmrUE2YjDDauz1T7Yk9Sz+lAQ7e4vFX9kBEot29U1YVBJnM86kF6zjjpRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.88.50.128])
+	by sina.com (10.75.12.45) with ESMTP
+	id 6620FAD100009CB9; Thu, 18 Apr 2024 18:49:55 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 69856531457805
+X-SMAIL-UIID: F42076E6E42B471386F28FD80FF96B6D-20240418-184955-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+7fd4b85697bcf2a9daa2@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [mm?] KASAN: slab-use-after-free Read in hugetlb_fault
+Date: Thu, 18 Apr 2024 18:49:52 +0800
+Message-Id: <20240418104952.2615-1-hdanton@sina.com>
+In-Reply-To: <000000000000b3c7fa061652665f@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,39 +56,58 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-In general it's preferable to avoid placing cpumasks on the stack, as
-for large values of NR_CPUS these can consume significant amounts of
-stack space and make stack overflows more likely.
+On Wed, 17 Apr 2024 15:30:26 -0700
+> syzbot found the following issue on:
+> 
+> HEAD commit:    9ed46da14b9b Add linux-next specific files for 20240412
+> git tree:       linux-next
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16f89857180000
 
-Since the cpumask var resides in __init function, which means it's free
-of any concurrenct access, it can be safely marked with static to get
-rid of allocation on stack.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git  9ed46da14b9b
 
-while at it, mark it with __initdata to keep it from persistently
-consumed memory.
-
-Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
----
- arch/sparc/mm/init_64.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
-index 1ca9054d9b97..088d9c103dcc 100644
---- a/arch/sparc/mm/init_64.c
-+++ b/arch/sparc/mm/init_64.c
-@@ -1438,7 +1438,7 @@ static int __init numa_attach_mlgroup(struct mdesc_handle *md, u64 grp,
- static int __init numa_parse_mdesc_group(struct mdesc_handle *md, u64 grp,
- 					 int index)
- {
--	cpumask_t mask;
-+	static cpumask_t mask __initdata;
- 	int cpu;
+--- x/mm/hugetlb.c
++++ y/mm/hugetlb.c
+@@ -6251,6 +6251,12 @@ static vm_fault_t hugetlb_no_page(struct
+ 							VM_UFFD_MISSING);
+ 		}
  
- 	numa_parse_mdesc_group_cpus(md, grp, &mask);
--- 
-2.27.0
-
++		if (!(vma->vm_flags & VM_MAYSHARE)) {
++			ret = vmf_anon_prepare(vmf);
++			if (unlikely(ret))
++				goto out;
++		}
++
+ 		folio = alloc_hugetlb_folio(vma, vmf->address, 0);
+ 		if (IS_ERR(folio)) {
+ 			/*
+@@ -6290,15 +6296,12 @@ static vm_fault_t hugetlb_no_page(struct
+ 				restore_reserve_on_error(h, vma, vmf->address,
+ 							folio);
+ 				folio_put(folio);
++				ret = VM_FAULT_SIGBUS;
+ 				goto out;
+ 			}
+ 			new_pagecache_folio = true;
+ 		} else {
+ 			folio_lock(folio);
+-
+-			ret = vmf_anon_prepare(vmf);
+-			if (unlikely(ret))
+-				goto backout_unlocked;
+ 			anon_rmap = 1;
+ 		}
+ 	} else {
+--- x/kernel/softirq.c
++++ y/kernel/softirq.c
+@@ -564,7 +564,7 @@ restart:
+ 	}
+ 
+ 	if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+-	    __this_cpu_read(ksoftirqd) == current)
++	    __this_cpu_read(ksoftirqd) == current && in_task())
+ 		rcu_softirq_qs();
+ 
+ 	local_irq_disable();
+--
 
