@@ -1,159 +1,150 @@
-Return-Path: <linux-kernel+bounces-149992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB3FC8A98DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:43:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 323F48A98DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:43:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1FD0282BF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:43:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A96C1B22C8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:43:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2456215E7F1;
-	Thu, 18 Apr 2024 11:43:29 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C319215E80D;
+	Thu, 18 Apr 2024 11:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kkpmaVqG"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD2156464
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:43:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821FC56464;
+	Thu, 18 Apr 2024 11:43:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713440608; cv=none; b=BwZyYLQ3RyjxwN5Lun7jAgCAxyxeakTqnZDR4JPalB5G0SE+3/cZUJUBLQqxRyz6Bec5NeJyXwZo1qGn8yuizVvi4RwYTa0+yscSq1pVg+NQ6UGWHDmKO/kNpbtC+nRH3RBMeC/DnmpghAOtHbjzA+uKNxq7KHLlYSliTzyK+5U=
+	t=1713440623; cv=none; b=bUhs+hZ8+kjnt+WbUQsTkkjxvSjDtkq1NTOTBNERqOo8qqPRSwpBoENY2Qt0nuLdb+t6ebb8C817bxNlJbY2VEhdjYUSKIjYvzy65zGlGlMruAoi+hxZ/gnJfbkTI001QooCNQFB6m7gO/1RirCt1WOafiShSQ6NY0wCcfpx5pI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713440608; c=relaxed/simple;
-	bh=hjgxql/TvoPEfUZHDYJEYDtWin16CxsW4II6SCrMIaM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ejYM8Py9vxPtl8NXSoMdfcBRzcJCBSXW91jkvj7Jg5R30DX0IkS3BNFsVSDb9oACL0OlMpwl8j5XsDb7yrC3dKSOiMGz8IMin483X60mf2VvS5+HlfJQ/zuLUTOBjwMGTiVD3b0c1tMpUb7OIoQNE7KyJ+LjG8rY+oZtR2XkD9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <sha@pengutronix.de>)
-	id 1rxQAe-0005H2-QC; Thu, 18 Apr 2024 13:43:16 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <sha@pengutronix.de>)
-	id 1rxQAd-00Cxsn-Kq; Thu, 18 Apr 2024 13:43:15 +0200
-Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <sha@pengutronix.de>)
-	id 1rxQAd-001Wn2-1o;
-	Thu, 18 Apr 2024 13:43:15 +0200
-Date: Thu, 18 Apr 2024 13:43:15 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] mtd: nand: mxc_nand: disable subpage reads
-Message-ID: <ZiEHUz3wicDJscGP@pengutronix.de>
-References: <20240417-mtd-nand-mxc-nand-exec-op-v1-0-d12564fe54e9@pengutronix.de>
- <20240417-mtd-nand-mxc-nand-exec-op-v1-4-d12564fe54e9@pengutronix.de>
- <ZiDCKGlG4MZ23Tqo@pengutronix.de>
- <20240418113244.6e535d3f@xps-13>
+	s=arc-20240116; t=1713440623; c=relaxed/simple;
+	bh=T4fBkydOARcqpAZpedsRkcZRcxSxeRnonLEt65AZCDk=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=nJ8bcIkyHTbEsnl/a5o3VC6uxt4taHQvdIzX6+HzSGuynJdTj9tVJm3+WyXbPbTokLGMPvl/CCzWfleAzvNbiXT2S0B89141Tr5/XVvr4vozopvYuK3zPNjAyZ9TDTxa3f2cCG6sacJ8ArCYgg2tAJ3QXgXLg8N1dxRyQcv2tWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kkpmaVqG; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713440622; x=1744976622;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=T4fBkydOARcqpAZpedsRkcZRcxSxeRnonLEt65AZCDk=;
+  b=kkpmaVqGiSLIQaD/zqs1kz0g9Fj5jvmG0ckn200x2Ke35ifEmZ8wxPp/
+   aAi0IQLNjue2FXNHbP1JecZsiSeocif0SiH9MZCM83X2PzICEad7p7CTI
+   C98x0stmxHmlwXHZIhVYM6767haMKF12UIcGCS8DKkc3JX3KIt0rUYalP
+   s0P5LeSTJDEutkw3/PSBhlVv4xRAW61DPB9NSctwW5Q/SmHDocByEJDso
+   b+4mvm8Fw0vgnJxDfU9ozV1fG206b6kQk63zlz/Kzw+ZNxrdITew773gl
+   4Ia39JCubV/wHgmq30e0+ciaxvDBjvfUgFvO1gOjeZBrDLQQppL0UlH9I
+   w==;
+X-CSE-ConnectionGUID: 0hyStRiVSmy0fjFg6cNG+g==
+X-CSE-MsgGUID: jmMSuNfDQJyBHE20Ht2Ylw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="9149569"
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="9149569"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:43:41 -0700
+X-CSE-ConnectionGUID: q8RaWKgCS2qalrCMofydew==
+X-CSE-MsgGUID: M79X7JZnSQC5AROw9vYsDQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="27387263"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.36])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:43:38 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Thu, 18 Apr 2024 14:43:32 +0300 (EEST)
+To: Parker Newman <parker@finest.io>
+cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+    Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org, 
+    linux-serial@vger.kernel.org, Parker Newman <pnewman@connecttech.com>
+Subject: Re: [PATCH v4 5/7] serial: exar: add CTI cards to
+ exar_get_nr_ports
+In-Reply-To: <0c64bdf852f39aec966b38696695d951e485d7e6.1713382717.git.pnewman@connecttech.com>
+Message-ID: <60790bd3-d35a-026d-ef38-ae3b12160fbe@linux.intel.com>
+References: <cover.1713382717.git.pnewman@connecttech.com> <0c64bdf852f39aec966b38696695d951e485d7e6.1713382717.git.pnewman@connecttech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418113244.6e535d3f@xps-13>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
 
-On Thu, Apr 18, 2024 at 11:32:44AM +0200, Miquel Raynal wrote:
-> Hi Sascha,
+On Wed, 17 Apr 2024, Parker Newman wrote:
+
+> From: Parker Newman <pnewman@connecttech.com>
 > 
-> s.hauer@pengutronix.de wrote on Thu, 18 Apr 2024 08:48:08 +0200:
+> Add code for getting number of ports of CTI cards to
+> exar_get_nr_ports().
 > 
-> > On Wed, Apr 17, 2024 at 09:13:31AM +0200, Sascha Hauer wrote:
-> > > The NAND core enabled subpage reads when a largepage NAND is used with
-> > > SOFT_ECC. The i.MX NAND controller doesn't support subpage reads, so
-> > > clear the flag again.
-> > > 
-> > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > > ---
-> > >  drivers/mtd/nand/raw/mxc_nand.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-> > > index f44c130dca18d..19b46210bd194 100644
-> > > --- a/drivers/mtd/nand/raw/mxc_nand.c
-> > > +++ b/drivers/mtd/nand/raw/mxc_nand.c
-> > > @@ -1667,6 +1667,8 @@ static int mxcnd_probe(struct platform_device *pdev)
-> > >  	if (err)
-> > >  		goto escan;
-> > >  
-> > > +	this->options &= ~NAND_SUBPAGE_READ;
-> > > +  
-> > 
-> > Nah, it doesn't work like this. It turns out the BBT is read using
-> > subpage reads before we can disable them here.
-> >
-> > This is the code in nand_scan_tail() we stumble upon:
-> > 
-> > 	/* Large page NAND with SOFT_ECC should support subpage reads */
-> > 	switch (ecc->engine_type) {
-> > 	case NAND_ECC_ENGINE_TYPE_SOFT:
-> > 		if (chip->page_shift > 9)
-> > 			chip->options |= NAND_SUBPAGE_READ;
-> > 		break;
-> > 
-> > 	default:
-> > 		break;
-> > 	}
-> > 
-> > So the code assumes subpage reads are ok when SOFT_ECC is in use, which
-> > in my case is not true. I guess some drivers depend on the
-> > NAND_SUBPAGE_READ bit magically be set, so simply removing this code is
-> > likely not an option.  Any ideas what to do?
+> Signed-off-by: Parker Newman <pnewman@connecttech.com>
+> ---
+> Changes in v3:
+> - moved to separate patch
+> - added spaces to single line comments
 > 
-> Can you elaborate why subpage reads are not an option in your
-> situation? While subpage writes depend on chip capabilities, reads
-> however should always work: it's just the controller selecting the
-> column where to start and then reading less data than it could from the
-> NAND cache. It's a very basic NAND controller feature, and I remember
-> this was working on eg. an i.MX27.
+>  drivers/tty/serial/8250/8250_exar.c | 22 +++++++++++++++++++---
+>  1 file changed, 19 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
+> index e68029a59122..197f45e306ff 100644
+> --- a/drivers/tty/serial/8250/8250_exar.c
+> +++ b/drivers/tty/serial/8250/8250_exar.c
+> @@ -711,12 +711,28 @@ static unsigned int exar_get_nr_ports(struct exar8250_board *board,
+>  {
+>  	unsigned int nr_ports = 0;
+> 
+> -	if (pcidev->vendor == PCI_VENDOR_ID_ACCESSIO)
+> +	if (pcidev->vendor == PCI_VENDOR_ID_ACCESSIO) {
 
-On the i.MX27 reading a full 2k page means triggering one read operation
-per 512 bytes in the NAND controller, so it would be possible to read
-subpages by triggering only one read operation instead of four in a row.
+You can add the braces while you moved the code around so you don't need 
+to play with them again here and this patch can be more to the point.
 
-The newer SoCs like i.MX25 always read a full page with a single read
-operation. We could likely read subpages by temporarily configuring the
-controller for a 512b page size NAND.
+>  		nr_ports = BIT(((pcidev->device & 0x38) >> 3) - 1);
+> -	else if (board->num_ports)
+> +	} else if (board->num_ports > 0) {
+> +		// Check if board struct overrides number of ports
+>  		nr_ports = board->num_ports;
 
-I just realized the real problem comes with reading the OOB data. With
-software BCH the NAND layer hardcodes the read_subpage hook to
-nand_read_subpage() which uses nand_change_read_column_op() to read the
-OOB data. This uses NAND_CMD_RNDOUT and I have now idea if/how this can
-be implemented in the i.MX NAND driver. Right now the controller indeed
-reads some data and then the SRAM buffer really contains part of the
-desired OOB data, but also part of the user data.
+The comment just tells what the code does, IMO that comment doesn't add 
+any value.
 
-We might overcome these problems, but I am not sure if it's worth it.
-It's ancient hardware that I don't want to put too much effort into and
-I doubt that the end result would have a better performance when we need
-one operation to read the subpage and another one to read OOB as opposed
-to always read full pages (which is only one operation, say one
-interrupt latency, for each page read).
+> -	else
+> +	} else if (pcidev->vendor == PCI_VENDOR_ID_EXAR) {
+> +		// Exar encodes # ports in last nibble of PCI Device ID ex. 0358
 
-Sascha
+This comment you can also add while you moved the code around (or make 
+another patch out of it after moving).
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+ i.
+
+>  		nr_ports = pcidev->device & 0x0f;
+> +	} else  if (pcidev->vendor == PCI_VENDOR_ID_CONNECT_TECH) {
+> +		// Handle CTI FPGA cards
+> +		switch (pcidev->device) {
+> +		case PCI_DEVICE_ID_CONNECT_TECH_PCI_XR79X_12_XIG00X:
+> +		case PCI_DEVICE_ID_CONNECT_TECH_PCI_XR79X_12_XIG01X:
+> +			nr_ports = 12;
+> +			break;
+> +		case PCI_DEVICE_ID_CONNECT_TECH_PCI_XR79X_16:
+> +			nr_ports = 16;
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +	}
+> 
+>  	return nr_ports;
+>  }
+> --
+> 2.43.2
+> 
+> 
 
