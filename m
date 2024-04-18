@@ -1,128 +1,160 @@
-Return-Path: <linux-kernel+bounces-150344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D31BB8A9DAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:54:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6AB28A9DAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:55:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F27E2818B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:54:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 740D31F212E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6162816ABC2;
-	Thu, 18 Apr 2024 14:54:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E524168B14;
+	Thu, 18 Apr 2024 14:54:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ejI4EaRZ"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Kgrzw3Vt"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 268CC168B11;
-	Thu, 18 Apr 2024 14:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF98B15E5C2
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:54:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713452070; cv=none; b=AIS9ekBeVMWkfFLCuDj/F/TlSKPyyUfTnu+Rg7oKiCVEPXG3TAm1rumTGQVMcH5lgbJZHP6xUu/EWI6dbwlQ7Bi9oDqCF3j4T3sSdrBJnkvyzYKNPMJhwl6p1XCLigPb0HLGkwWak9LwQ/1446om5DUtoTQCs0hpreYtNKCJjMs=
+	t=1713452093; cv=none; b=Nd1Sk30A19u4kGhaKVq+81MuqFiDztDZmWO2prihMkluLqSJIxtxGfdF4P4DG95BhOwqeZ5mzQTPFyUAyvrj+lvbK8JcVjpjCfTi4cViVaUDoIU4tGWAoomq6BF3Q3pyKlIIC3X9tdtcODanJvd7e/8oUr6RPArS7yhN13YnxyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713452070; c=relaxed/simple;
-	bh=OvGBkvFoWVsZGonrRvzCmb0bTHJXTs/4/G/PWLo4Ruw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=niJBsbVOcTrMd4QqiwBjj3ZXcowgEkcdIZQQ2JtOXo6+iHrVK7IM1zdnImdJw4yfMX/DUlPbjjg6QwlfhyrLMfsNwLwr0yPeJIAMDnxo+zZNe1OOCiFAViTpmW1PBzAAUcrhk5hacDbvZyYEz6lTijChvRE5raTSO0nvUB3TiAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ejI4EaRZ; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-34a32ba1962so296212f8f.2;
-        Thu, 18 Apr 2024 07:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713452067; x=1714056867; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OvGBkvFoWVsZGonrRvzCmb0bTHJXTs/4/G/PWLo4Ruw=;
-        b=ejI4EaRZmJTO0TmoeEAKyrXH8dJZyWVcDROO4BZKsjLAxC56M+4zvvouW5/jTaQmGz
-         YBEEhxKB7pEenbsCBQCnyHtVPKygNUVARV/biy03bAFbT3FgKdZ6vxPdfCgfVigFKGqe
-         shOWhz1rgTmRMuty/OPoRqcclcZEt+alS7mavnYURDSg6mOLHtQKHjsKYNpFklLykKap
-         Veq+UJc4hDmMvtAZRDaL11tWyjnq9umNIqW142DcDR+Xbel2DQgkF/cn9xDqSaWrVNOm
-         CfUY0Zdgce3c9qEsZkPtDMF50yrzCyFO2JOnuy0ZLeTdwIkHpPA5gKnWI8JGg7tFe0tC
-         SHTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713452067; x=1714056867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OvGBkvFoWVsZGonrRvzCmb0bTHJXTs/4/G/PWLo4Ruw=;
-        b=Ls4O9r68W/DmoWBMH5IBZo/im2u+f9RWAxT3xPEyUFt0BVdbqJKO+erhc3Y4fbmawY
-         vJwBuVMq5nieH1ts8pCcz+N0JVRMeBpIw3oQY6/JShAXrByix+G4KLt94InkKF85xzat
-         N+q5QFzgC2LQ8f6VoUgxr1YPOL5EslnLqYy0vG3vFp8klRU4AQ7r10jg9SE7Yfm81IIS
-         BWL4DXYyPZ5/l17OH6d/+W2DuHIgqvIlrQku4lpGnPCqwUDNaUkr4TNMU0gsF9tRTbTI
-         nEmt5h9CK2KNpnK6NQhAHLuNwWpBXqxx8IK9h1UZROboerbsNZRTUOih+z/FFy0xo2AC
-         zBkw==
-X-Forwarded-Encrypted: i=1; AJvYcCWPz0AS3mJ6bekTsVKgzT/NkWQFxMjHCwEG8uQi5jJwE3s1jW2+dNNtq3vxhQNR76elBAsGTe5uN0YNUenBl9aWuEi3qgz6m+MOn4wRzVmA+hY/7S0Vaovxiy8CQW0B6gSvQ8x7Y/724g==
-X-Gm-Message-State: AOJu0YybqAYmGCQX1KA64vefZ3RA9ZSXlPhIY8zozR61mACeL5G/J4bi
-	DrJdRU6KYh8txfVhl09JgHD82I3FhNq7BVDa4Ta+ovpuff25cXf2GEkaaar2BN6zr67WLhQa11G
-	fM5ItDkCHJzyxVg9ixYkAjFPGOi8=
-X-Google-Smtp-Source: AGHT+IF1GOB+9k0yqpKSFsOcg6dnXs0PLwnWjCVD16905JB4IckCABWiGjTamMXxYATZwLvowgjCD80p4Zu9jj0+CjI=
-X-Received: by 2002:a05:6000:1:b0:346:d2c0:7682 with SMTP id
- h1-20020a056000000100b00346d2c07682mr1734554wrx.30.1713452067341; Thu, 18 Apr
- 2024 07:54:27 -0700 (PDT)
+	s=arc-20240116; t=1713452093; c=relaxed/simple;
+	bh=RkoB4lpM7SQp7wLAY3W9tcar+vO2aUBWcAA9IdsjUNM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mqn5k/wNyuvGUUBvPDwykvcd/2oP2+CIcF7u+fXTI0kwF/HeZLN5eFBcAgXO5pM0f42T3hH0TTKyJC5AZ/jQdG+6dyewwklGLtCuVHaT8SUfWrGX9XqShlfgz52P3aTmzH7KcIbI7q7q7sad1HGboCEV5UdpWk59RKwGorZtfdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Kgrzw3Vt; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713452090;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rjAgIJ9bEDy7d1QsholKuarzIc+pJd8Rrqs4LlRJVNw=;
+	b=Kgrzw3VtMGZlcyEjqxOhF2mf3teXkKOxqPX9LRuMT4wytKamIgutPDhx8VqNnoisnqg6uo
+	4YnFkFb5Gt9CtturgFPh/d9azXioee1ufhQhzy8Z65jh1P4E9wKSpDvK7P35unl/eyfBu+
+	a7DSTTYGY4b8WHSFUf/KriCiWLKIYKY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-314-x9pjP0qyP5OyfMMLLoSzQA-1; Thu,
+ 18 Apr 2024 10:54:47 -0400
+X-MC-Unique: x9pjP0qyP5OyfMMLLoSzQA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3244829AA2CE;
+	Thu, 18 Apr 2024 14:54:47 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.39.195.76])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id C25EC3543A;
+	Thu, 18 Apr 2024 14:54:43 +0000 (UTC)
+Date: Thu, 18 Apr 2024 10:54:40 -0400
+From: Phil Auld <pauld@redhat.com>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Tejun Heo <tj@kernel.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	linux-kernel@vger.kernel.org, Junyao Zhao <junzhao@redhat.com>,
+	Chris von Recklinghausen <crecklin@redhat.com>
+Subject: Re: [PATCH] sched/isolation: fix boot crash when maxcpus <
+ first-housekeeping-cpu
+Message-ID: <20240418145440.GD29188@lorien.usersys.redhat.com>
+References: <20240130010046.2730139-2-leobras@redhat.com>
+ <20240402105847.GA24832@redhat.com>
+ <20240411143905.GA19288@redhat.com>
+ <20240413141746.GA10008@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <linux-mm@kvack.org> <20240416120635.361838-1-skseofh@gmail.com>
- <20240416120635.361838-2-skseofh@gmail.com> <Zh9l_LpThq9aFUR7@kernel.org>
-In-Reply-To: <Zh9l_LpThq9aFUR7@kernel.org>
-From: DaeRo Lee <skseofh@gmail.com>
-Date: Thu, 18 Apr 2024 23:54:15 +0900
-Message-ID: <CAATEi5kywwC2yUaYjgs+Gm=4HM5o=KHTqH1ALKJijWE_gge0=g@mail.gmail.com>
-Subject: Re: [PATCH v2] memblock: add no-map alloc functions
-To: Mike Rapoport <rppt@kernel.org>
-Cc: robh@kernel.org, saravanak@google.com, akpm@linux-foundation.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	Daero Lee <daero_le.lee@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240413141746.GA10008@redhat.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-2024=EB=85=84 4=EC=9B=94 17=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 3:03, M=
-ike Rapoport <rppt@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Tue, Apr 16, 2024 at 09:06:35PM +0900, skseofh@gmail.com wrote:
-> > From: Daero Lee <daero_le.lee@samsung.com>
-> >
-> > Like reserved-memory with the 'no-map' property and only 'size' propert=
-y
-> > (w/o 'reg' property), there are memory regions need to be allocated in
-> > memblock.memory marked with the MEMBLOCK_NOMAP flag, but should not be
-> > allocated in memblock.reserved.
->
-> This still does not explain why you need such regions.
->
-> As Wei Yang explained, memblock does not allocate memory from
-> memblock.reserved. The memblock.reserved array represents memory that is =
-in
-> use by firmware or by early kernel allocations and cannot be freed to pag=
-e
-> allocator.
-Thank you for your comments. I used the wrong word.
-When I use 'allocate', I mean that the region 'adds' to the memblock.reserv=
-ed.
+On Sat, Apr 13, 2024 at 04:17:46PM +0200 Oleg Nesterov wrote:
+> housekeeping_setup() checks cpumask_intersects(present, online) to ensure
+> that the kernel will have at least one housekeeping CPU after smp_init(),
+> but this doesn't work if the maxcpus= kernel parameter limits the number
+> of processors available after bootup.
+> 
+> For example, the kernel with "maxcpus=2 nohz_full=0-2" parameters crashes
+> at boot time on my virtual machine with 4 CPUs.
+> 
+> Change housekeeping_setup() to use cpumask_first_and() and check that the
+> returned cpu number is valid and less than setup_max_cpus.
+> 
+> Another corner case is "nohz_full=0" on a machine with a single CPU or
+> with the maxcpus=1 kernel argument. In this case non_housekeeping_mask
+> is empty and IIUC tick_nohz_full_setup() makes no sense. And indeed, the
+> kernel hits the WARN_ON(tick_nohz_full_running) in tick_sched_do_timer().
+> 
+> And how should the kernel interpret the "nohz_full=" parameter? I think
+> it should be silently ignored, but currently cpulist_parse() happily
+> returns the empty cpumask and this leads to the same problem.
+> 
+> Change housekeeping_setup() to check cpumask_empty(non_housekeeping_mask)
+> and do nothing in this case.
+> 
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 
->
-> If you have a region that's _NOMAP in memblock.memory and is absent in
-> memblock.reserved it will not be mapped by the kernel page tables, but it
-> will be considered as free memory by the core mm.
->
-> Is this really what you want?
-If my understanding is right, before freeing (memory && !reserved)
-area, we marked the memblock.reserved regions and memblock.memory
-regions with no-map flag. And when we free (memory && !reserved) area,
-we skip the memblock.memory regions with no-map(see
-should_skip_region). So, I think that the memory regions with no-map
-flag will not be considered as free memory.
+Looks good to me. One less footgun. 
 
-If there is anything I think is wrong, feel free to correct me.
+Reviewed-by: Phil Auld <pauld@redhat.com>
 
-Regards,
-DaeRo Lee
+> ---
+>  kernel/sched/isolation.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+> index 2a262d3ecb3d..5891e715f00d 100644
+> --- a/kernel/sched/isolation.c
+> +++ b/kernel/sched/isolation.c
+> @@ -118,6 +118,7 @@ static void __init housekeeping_setup_type(enum hk_type type,
+>  static int __init housekeeping_setup(char *str, unsigned long flags)
+>  {
+>  	cpumask_var_t non_housekeeping_mask, housekeeping_staging;
+> +	unsigned int first_cpu;
+>  	int err = 0;
+>  
+>  	if ((flags & HK_FLAG_TICK) && !(housekeeping.flags & HK_FLAG_TICK)) {
+> @@ -138,7 +139,8 @@ static int __init housekeeping_setup(char *str, unsigned long flags)
+>  	cpumask_andnot(housekeeping_staging,
+>  		       cpu_possible_mask, non_housekeeping_mask);
+>  
+> -	if (!cpumask_intersects(cpu_present_mask, housekeeping_staging)) {
+> +	first_cpu = cpumask_first_and(cpu_present_mask, housekeeping_staging);
+> +	if (first_cpu >= nr_cpu_ids || first_cpu >= setup_max_cpus) {
+>  		__cpumask_set_cpu(smp_processor_id(), housekeeping_staging);
+>  		__cpumask_clear_cpu(smp_processor_id(), non_housekeeping_mask);
+>  		if (!housekeeping.flags) {
+> @@ -147,6 +149,9 @@ static int __init housekeeping_setup(char *str, unsigned long flags)
+>  		}
+>  	}
+>  
+> +	if (cpumask_empty(non_housekeeping_mask))
+> +		goto free_housekeeping_staging;
+> +
+>  	if (!housekeeping.flags) {
+>  		/* First setup call ("nohz_full=" or "isolcpus=") */
+>  		enum hk_type type;
+> -- 
+> 2.25.1.362.g51ebf55
+> 
+> 
+> 
+
+-- 
+
 
