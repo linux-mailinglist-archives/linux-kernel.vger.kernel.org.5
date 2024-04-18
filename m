@@ -1,102 +1,110 @@
-Return-Path: <linux-kernel+bounces-150242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72B6C8A9C31
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:04:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33BAD8A9C33
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:05:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 281741F24A77
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:04:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90479B20A22
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:05:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC62165FB6;
-	Thu, 18 Apr 2024 14:04:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A997165FB5;
+	Thu, 18 Apr 2024 14:05:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ya.ru header.i=@ya.ru header.b="W1nXdZyN"
-Received: from forward502c.mail.yandex.net (forward502c.mail.yandex.net [178.154.239.210])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NLT/7kK6"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35F3615CD44;
-	Thu, 18 Apr 2024 14:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DBE91649CC;
+	Thu, 18 Apr 2024 14:05:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713449069; cv=none; b=cJ62NlSFl2bNMwfSFTHn6xFlBFY8RJZkcbQCn931BV7lLFZAaHzRjVHhGlF7hVh04gfVh9BIEE0wsslWISC1BHLWg1t9yh7N4cyFAIKdyVHtIUduRxd3DjygfH7NCnU9aAkg8B1y7zeIXLIy7drHqHxAo5fFhSgqZopH7hGJtKo=
+	t=1713449106; cv=none; b=phoN6zvWbA2T/FUaXy5SLqGme4m+4zKRGC8OKYbWD6gz73IiW8nh71156yvP2ZQpu+k1FWlTsntOV/lX1VIXSnx1+ubY0uM7Y9RjDxGiyKNJHpMPI5ccKJ+QzAgMJp1cdl7ZNgkW226mEGM37mfiGJAqYk+U2zH8IRIQnKmZl3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713449069; c=relaxed/simple;
-	bh=9Gus4EALRgDWt/WMSWwqimg/P1msG+zc8pxmZmJWgpA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YgvtZDv5tFJqwtkUVBI3dIxDURNihyQ++JkVp8XxdxFlkLJnX22vmRPS1dEJNnBNjHi9dlCa1VGzVJELefr3Usn7qjcMlAZ4kg1I1mz1spYVnaBDUfiGuu25OEGBCQbSGe+pJOVwfhoSC1yATJNbw0dxF+xGveNMMzGO/mb1hrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ya.ru; spf=pass smtp.mailfrom=ya.ru; dkim=pass (1024-bit key) header.d=ya.ru header.i=@ya.ru header.b=W1nXdZyN; arc=none smtp.client-ip=178.154.239.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ya.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ya.ru
-Received: from mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net [IPv6:2a02:6b8:c08:c8ad:0:640:7c75:0])
-	by forward502c.mail.yandex.net (Yandex) with ESMTPS id 5AB4B61354;
-	Thu, 18 Apr 2024 16:58:00 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id gvF5FWNoJ8c0-qPiK6YaR;
-	Thu, 18 Apr 2024 16:57:59 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ya.ru; s=mail;
-	t=1713448679; bh=CYpvT2N1pxyAISrMsrQLFmxiJD6VhxFEm/jx7F+8jGI=;
-	h=Message-Id:Date:In-Reply-To:Cc:Subject:References:To:From;
-	b=W1nXdZyNTE7q6Xu2+dxVHZDA03J8OcMZXftnuI4UlyZxdXaswJdOqjtWWR8nYwYCF
-	 ZXoc9QlHBl1SZbxZq1fzARyR/qugUKR0o8XK3h+nIkMoSZANPkpqCmFtUgCoJda0Wy
-	 9GFT8T5xfleEjIOiG6GAqAaOq8yi0i8LfOb6U/E8=
-Authentication-Results: mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net; dkim=pass header.i=@ya.ru
-From: Konstantin Pugin <rilian.la.te@ya.ru>
-To: 
-Cc: Konstantin Pugin <ria.freelander@gmail.com>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Lech Perczak <lech.perczak@camlingroup.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH v2 2/3] serial: sc16is7xx: Add bindings documentation for EXAR XR20M1172 UART
-Date: Thu, 18 Apr 2024 16:57:33 +0300
-Message-Id: <20240418135737.3659498-3-rilian.la.te@ya.ru>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240418135737.3659498-1-rilian.la.te@ya.ru>
-References: <20240418135737.3659498-1-rilian.la.te@ya.ru>
+	s=arc-20240116; t=1713449106; c=relaxed/simple;
+	bh=ffm9wt7h18bF8l/+SJ6vz1syVkmFX+Rsu+y3Rz24JkA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U1NXmpHqNGaDoJpCoO5mPkPCqwwAoop11g6oGyfAKiSs8BDQqazkw0MYfztxA3iy8jxJXgIlXwmu6aI8XV6lZbceDwVU/4YnY5WT/ixer7FnkDf4K1z6ISl3U4Fhu0PQ7GRFsJus72LZH8CTq0TVLALPYf9AlRdYwi5w39VRlGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NLT/7kK6; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713449104; x=1744985104;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ffm9wt7h18bF8l/+SJ6vz1syVkmFX+Rsu+y3Rz24JkA=;
+  b=NLT/7kK6b6aPLGzo/JBOXhvXhp++ms7F4AjGj1H7begXvarAep1wb9HB
+   i7p5SHMUGlULjM1xWnryvOozmmuQF/VibGebjesJREs84JgynEepe3Jcp
+   W1jJksyqpNc+/FH43KYsKxdmeDxxoOSU4wf8BX4LMY5p3y1RUyXMlWEHR
+   hmsifU766cezUACtQPK0IViHub5Ae9YGIOsnUmK6mRXtwBMYom2XQEFjy
+   faDHGWkafOsSOBfa4eL4kMasadTrOtPF1iXg3bQielYxCjB1V9b8xnszd
+   n1SFWXJ8yTVykj9Vydqe8ypYbd34qZYQH57GaRMibhsEAMLo+mZFUuB/6
+   g==;
+X-CSE-ConnectionGUID: fMTHk3asQhi8PLZUmcnvWQ==
+X-CSE-MsgGUID: JiYMg8gRTIyAjjulDIHvAg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="11939349"
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="11939349"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 07:05:03 -0700
+X-CSE-ConnectionGUID: QBTJWpBFTU2swZqG5+yixA==
+X-CSE-MsgGUID: 3bqEiufyTRCSE/aXWa8VNg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="23076175"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 07:05:01 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1rxSNn-00000000LVr-1Jxr;
+	Thu, 18 Apr 2024 17:04:59 +0300
+Date: Thu, 18 Apr 2024 17:04:58 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Zeng Heng <zengheng4@huawei.com>
+Cc: linus.walleij@linaro.org, dan.carpenter@linaro.org,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	liwei391@huawei.com
+Subject: Re: [PATCH v2 resend] pinctrl: devicetree: fix refcount leak in
+ pinctrl_dt_to_map()
+Message-ID: <ZiEoiuHbIyyWs5hE@smile.fi.intel.com>
+References: <20240418115813.93241-1-zengheng4@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418115813.93241-1-zengheng4@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-From: Konstantin Pugin <ria.freelander@gmail.com>
+On Thu, Apr 18, 2024 at 07:58:13PM +0800, Zeng Heng wrote:
+> If we fail to allocate propname buffer, we need to drop the reference
+> count we just took, otherwise it will lead reference leak. Here the
+> error exit path is modified to jump to the err label and call
+> pinctrl_dt_free_maps() which would drop the counter.
+> 
+> In the meantime, if it is found that the property 'pinctrl-0' is not
+> present, ENODEV is returned and also jump to the err label and call the
+> free function, in case the Smatch tool complains.
 
-This patch adds the devicetree documentation for the XR20M1172 UART.
+..
 
-Reviewed-by: Vladimir Zapolskiy <vz@mleia.com>
-Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
----
- Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml | 1 +
- 1 file changed, 1 insertion(+)
+> ---
+> v2: add a comment and modify the commit message, without any logical
+>     changes.
 
-diff --git a/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml b/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
-index 5dec15b7e7c3..68fe7b11961c 100644
---- a/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
-+++ b/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
-@@ -18,6 +18,7 @@ properties:
-       - nxp,sc16is752
-       - nxp,sc16is760
-       - nxp,sc16is762
-+      - exar,xr20m1172
- 
-   reg:
-     maxItems: 1
+You probably didn't get what I was saying...
+Linus already applied your version, what is missing is the comment.
+This should be done as a followup patch.
+
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
 
