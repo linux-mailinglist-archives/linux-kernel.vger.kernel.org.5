@@ -1,105 +1,121 @@
-Return-Path: <linux-kernel+bounces-149828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FC548A966D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:42:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E8A78A966C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:41:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EEB61C2215E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:42:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 544871F22ECD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:41:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A000615CD60;
-	Thu, 18 Apr 2024 09:41:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="JPtVj3UW"
-Received: from mout.web.de (mout.web.de [212.227.15.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A804815B968;
+	Thu, 18 Apr 2024 09:41:09 +0000 (UTC)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9469D15B98B;
-	Thu, 18 Apr 2024 09:41:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70C6715B109;
+	Thu, 18 Apr 2024 09:41:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713433272; cv=none; b=a0/Mf1cVq13CuOP/W7zWQS/UyYkkMahew3laPpK3cc5G43ahKUGwBoryqZO6dA31XuIhocuCQ4/EL5r0ir4iY+lw0AudeYoSsuMILSLkPZUMst1/P2mGpfVcPPvTAEJCax96efkucDzZsD4nZtvNWXWhicIcjeSF4ksv8L8xuas=
+	t=1713433269; cv=none; b=Cu7mzS2CoN5cTlidR7aa6BNiEIEMipFIuYcmKxYteYaMLSyPgGkNlXRXw1kQIIbEUZfAaKdn7qXVb0bIJPWiOmcpQrBr+FJsUMVS/xSsCGr/HcaMoL8acylkCCJ4iRbW72e06y7/5W6n/OOVDPhdFzPIrMNRUmvFtnREmo2tm5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713433272; c=relaxed/simple;
-	bh=AdahcIlgWLXAJKCG0JqEYzoHe+XLbYJ/FlvNan0T5gk=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=N32R0yevh8isoiaZZ06oylB1NJnnZBHmflr4RYugF4iBPbKdYhwrIhj+5OVyd7lwJiL7cmNaEnVX22g8gufykroM6ckHHK+k4RcP0Hz3MQGC54I4XwEoWHDh9VTXbRZIQdoXUhfUnJwH1z2qQTMbIPNcJprhsw2EGUf7aSyFIFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=JPtVj3UW; arc=none smtp.client-ip=212.227.15.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713433236; x=1714038036; i=markus.elfring@web.de;
-	bh=AdahcIlgWLXAJKCG0JqEYzoHe+XLbYJ/FlvNan0T5gk=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=JPtVj3UWRH/zitJgTYSWJ+X7L03KL9m8sCF6aMYs+2ZvKbh09iQ2dkfMjsHQ8xCK
-	 gjvci9uB1nxKSsluB4hxX2LkEiovi/0u4ySHwsCHPqkGvKj9ijCn8hOThfKJB4nEq
-	 9LMOtAEKK5EFVW5MHxHIQ+UTw/04wknLuqpEB/PhKh2vFhZUlhsVTW4ZQrnF9OK+Q
-	 gKHFLYah3X4Ac3+Y4E+41UzcV/jFNK0VlUleWib5oRwZdCzddZr4dCGocurRnGetp
-	 IaO4gTL8h7IDPTTJInDxD9623zbwHyx9OphQ5HozNLF60H7z2XOXHvrBOSqii3SW1
-	 0UTBDtuhKwXw6wb5nQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MODiX-1sLnxd2OXB-00OavU; Thu, 18
- Apr 2024 11:40:36 +0200
-Message-ID: <cb593f2a-7dbe-44aa-b9ff-7fc57a4bd70a@web.de>
-Date: Thu, 18 Apr 2024 11:40:26 +0200
+	s=arc-20240116; t=1713433269; c=relaxed/simple;
+	bh=X7mmMSW7WStS5uGM2nHr9Jyj4I7qxPWCtETwdZg8xmQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pu4+REh1C+/6B94XAGypToVLun34asbth/z2vesmCkOaOd2c97m6E6DVRqQxRqQuZmZ1oZGo6TnswHrnn7dTYvYUGQoRN0saoXlfERlW7DBxKbBto2Pc6y3lruBJKMF1G3BaahCfrdnue3+S9okQVm5DJiliUFEQBE81SdqsF5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-61acfd3fd3fso6439747b3.1;
+        Thu, 18 Apr 2024 02:41:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713433265; x=1714038065;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kkbR5FG9nHCaDQQ83/fhCPl692MGBzI0gOcU1PXseUQ=;
+        b=nYXdEE43IhQ0T+43wzBAEjMNSxggzS7nmbjKVjEZ8k3uLBOM2epVN+oyVrvTxwBt1j
+         B+VqflqEHyT0KOwQ4hAUiLtzHGCyIQn5mNOpN1MSkdBkiVWayQdVD+hDCFEMhhWRV/0t
+         95GMfTXCQ3HiN1HfQCQb5R6ou8hF48glPwufu5IuH8lR0gwua51vC0psPCoas3aLAQPw
+         oZnBuRgtoZYMcmTGqrZLuYEp5KAtfKQU3juJ60CeEp4qmDux5LhsdnugLtIwBVSDYGT4
+         UWLjFtvyMsKPQkKm86r9hq4PB98YyYFG1aNYQMqWmd1+4GD9Srn1hQ9OM9lE2hGfGmdO
+         UTnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXVEAasNiKcb72O6m7MlG4OJj/TCkcsEAji4RtPrI6Bvvl44ycy7DgC6v2aiT6wiXn8wl+JBJzMPqPAYHuXBSlxbbWMHDVgdbzSol3TCJZOkTUB/+x/cnCmiSmhbFK75YNcw0tDBLXR8c1WcKpMiuKd2xsRra4u/QTxo7Sxc4KVAPq6RwBFS6i1NUpH6jAwdidnll9r0cVXSk9KKKL8KdUUqUxB
+X-Gm-Message-State: AOJu0YxNeX/5VX/+rsBOuA/3H/csqzCQizu5hq94Pc/WwFshO+Ra4eHh
+	sP03UFHxZcJPmDeU99cyujtyqst3Ij0OgggNxWTbnBQTACGzQkraT5DPXE1DtiI=
+X-Google-Smtp-Source: AGHT+IEn54X5uiU3BE/DsxoFMqWcHS+NO5BYsT3yK2uQg5vWljAHSopORNAwPm2fiBzKzrL40NJJ4Q==
+X-Received: by 2002:a05:690c:6082:b0:60a:6ad0:6c72 with SMTP id hg2-20020a05690c608200b0060a6ad06c72mr2230224ywb.36.1713433265624;
+        Thu, 18 Apr 2024 02:41:05 -0700 (PDT)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id g125-20020a0ddd83000000b0061b06ae1d09sm261308ywe.29.2024.04.18.02.41.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 02:41:04 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-de45385a1b4so749987276.3;
+        Thu, 18 Apr 2024 02:41:04 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVwYCQt7oozfMLbG4YCH4/ioBH2L9rZZwTwfs7cZgBWfVcRKB36P6MjENpsPUP9aGxaudpftg/CX6Xrt/qARjs+nTwIun9sZZWlf4Pw3jnRD2gKOQZGWlL2eUU1QN1EbGpjGpGHtFyXd6SeHW/YpXPYqoOnXaHW+Ux1NzYyVCyXaIlhyOPdi3Mqn+IU8YXxdj8iIAT2HQSwoMLBhP2EmPvrBB0V
+X-Received: by 2002:a25:4a46:0:b0:de0:de85:e388 with SMTP id
+ x67-20020a254a46000000b00de0de85e388mr1985378yba.24.1713433264294; Thu, 18
+ Apr 2024 02:41:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Sean Wang <sean.wang@mediatek.com>, linux-bluetooth@vger.kernel.org,
- linux-mediatek@lists.infradead.org, kernel-janitors@vger.kernel.org,
- Johan Hedberg <johan.hedberg@gmail.com>,
- Luiz Von Dentz <luiz.dentz@gmail.com>, Marcel Holtmann <marcel@holtmann.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Sean Wang <sean.wang@kernel.org>,
- Chris Lu <chris.lu@mediatek.com>, Dan Carpenter <dan.carpenter@linaro.org>,
- Deren Wu <deren.wu@mediatek.com>,
- Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
- Manish Mandlik <mmandlik@google.com>, Miao-chen Chou <mcchou@chromium.org>,
- Michael Sun <michaelfsun@google.com>, shawnku@google.com,
- frankgor@google.com, jsiuda@google.com
-References: <da0859c4b24d314d9ff38179c26a58ee7e3f16d6.1713395895.git.sean.wang@kernel.org>
-Subject: Re: [PATCH RESEND] Bluetooth: btusb: medaitek: fix double free of skb
- in coredump
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <da0859c4b24d314d9ff38179c26a58ee7e3f16d6.1713395895.git.sean.wang@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:h60MNVHZTjz4/QmEHPXP1WbPwsusvY2fbKtPn9WCziwqPyptPlc
- ber44onTYjIxTlQrcfVbWexacjHT3eiioX3yg37VqYA/7nnuaSxwjFeHrhE74xvoYT64tc2
- 3Bx7x0020sHYynWpPs7rIOean2NNYeeYHgu9W3V01FD3Ay/7lpgcnd4zXRE3rnBDqHddr7i
- JELSN8JHpN9EF8kXS488g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:41/oj+AA2Xs=;BgPgrSRQrxZusn4FIjnNLvOq+Zn
- Way5JznIXv0bGOXGZANPoP33fZwEyhiP+DOSSF0yK0z8jJqbR3cX9AChIL3SrlXTFm4DAcF9/
- tFk2IVrY5rnCwoxd5x2HigKs9h5/nX2uAYP52ITODcNEikAGbTQ4aAZIy8G1CX1eyHh9DelrR
- 4nynCbeFHXqBLiB+yXNHLUBNWnOqgNJGVxLk03of5/Mk4WAkVAXUjogHa8J86rr7K9Eq8Whyr
- YapxCrQDUXJiHMUwKnJ3RuCugV7Ri5epnCKIXTY69hZoCKZ3tOaHAtiL7JvBsv/SGH+BCWwh6
- lEn9fBWqiLN5rkO5pKNUlzMCR01jJESrS2ct2uFraGLwYryaw7wD3YmrvSgl5LThotXpeQ/Hi
- FKwefg4ucDvQUrWqnLOTj1ANy8bLeQ4nTpN5GNxtNHAkIpOKqLAcI7P61Xsg1rNWfIkQcg7cc
- urlooCIzuygFbycqHrOB/XbPhyb4KuAJtuMpRJew4GaN9F/iOCHR1MP2v4TyHrdBp/C4lPIRT
- Jrk5o/Z0CQFBlIa01eGMNPwKA6j8TBDk9yyjWstfNhcppz3ylybstDNOtb4ae50fcDpF5vb6R
- BeN0GXDGYIzMietT+DZpVUicx1nnQFo9gZHvQjDZY2ntgUZTn9CVoGA7x7Vr/uarJTicehone
- PljgWkykcNWS5ph6B8uytPnv7tzNcRMpxaXBN0Wux4qziUggrqWsZhYLPYDC3b3rt+tdrDOiU
- A6HJhsAjKoGnvjYabnleJ+B3pvP/2ieQmU4d+mtuSzI9rf/a9cb8AcotaKHy/J1wqbbDAt+5A
- 4FZhxvoQC0XbQrhJex5/2wk1KLUbc/lHwC8a4fD2CYjDU=
+References: <20240415-rzn1-gmac1-v3-0-ab12f2c4401d@bootlin.com> <20240415-rzn1-gmac1-v3-1-ab12f2c4401d@bootlin.com>
+In-Reply-To: <20240415-rzn1-gmac1-v3-1-ab12f2c4401d@bootlin.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 18 Apr 2024 11:40:52 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUZJf=mL4bNik6ausMi9jOb9DegwX4ovLjdVLmnf7Sobg@mail.gmail.com>
+Message-ID: <CAMuHMdUZJf=mL4bNik6ausMi9jOb9DegwX4ovLjdVLmnf7Sobg@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 1/5] dt-bindings: net: renesas,rzn1-gmac:
+ Document RZ/N1 GMAC support
+To: Romain Gantois <romain.gantois@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Russell King <linux@armlinux.org.uk>, 
+	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> hci_devcd_append() would free the skb on error so the caller don't
-> have to free it again otherwise it would cause the double free of skb.
+On Mon, Apr 15, 2024 at 11:18=E2=80=AFAM Romain Gantois
+<romain.gantois@bootlin.com> wrote:
+> From: Cl=C3=A9ment L=C3=A9ger <clement.leger@bootlin.com>
+>
+> The RZ/N1 series of MPUs feature up to two Gigabit Ethernet controllers.
+> These controllers are based on Synopsys IPs. They can be connected to
+> RZ/N1 RGMII/RMII converters.
+>
+> Add a binding that describes these GMAC devices.
+>
+> Signed-off-by: Cl=C3=A9ment L=C3=A9ger <clement.leger@bootlin.com>
+> [rgantois: commit log]
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Romain Gantois <romain.gantois@bootlin.com>
 
-I hope that a typo will be avoided in the subsystem specification
-for the final commit.
+LGTM, so
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Regards,
-Markus
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
