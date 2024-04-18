@@ -1,281 +1,284 @@
-Return-Path: <linux-kernel+bounces-150717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EEB58AA377
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:54:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FA6A8AA3B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:04:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAB7B2885AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:54:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF866B29A16
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:58:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14F6C194C83;
-	Thu, 18 Apr 2024 19:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45F17190696;
+	Thu, 18 Apr 2024 19:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vt402P44"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YZ1pWEwS"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF19F18412C;
-	Thu, 18 Apr 2024 19:50:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5F5181BA7
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 19:53:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713469813; cv=none; b=MPgv9YSiVnfVq7eMppNbLrOeXGrhdQ77JHS9RySX1cwPGS4DnF164/VDqZwaD6GUB8fLmoRRTG5hnK0ToR7qzXN3F8tF1plEPEgKc0R57QC7JZ/CuIXmBa7MDWcX42IDEzUcuizZpr4pL2F1snEwNvC1QXXnY27kqaL+qQecosA=
+	t=1713470011; cv=none; b=uBtn+e0pvFbOWy1cats/MgTqKliFt5PGTPlJIMQz1yOWVkJa4M2zDJ89u3F1YNKUMPW8gpRVztgAjLzPu63Ry3ByBmNOQsF8i7QKGeMqlwVTJd8+nQNUMewKKrjQ8+fYcoIjmsVSNIu4Rn1buJUL2Tu4rvSpAXi1L5W6e2sdroU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713469813; c=relaxed/simple;
-	bh=+mg6oNFFFf0Lxegw9N1uQpSNvXxSJ8pm7AcHBnWA7CM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L4GtVIabOxVy5UvOBVTtuCr3eDyKV3NIYrJUbBAa6ifuiDtSc7LPRH2/A4RXNQU76qg2mK6aGLqLUpVv2nl2v7gScIncV9cG6qP58riT1TI/edO7Gn1Qv9wvJXP9SQdAuq81g+WXAyST3kao9WhljvTKeWDNREMrrLmZI0pHPWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vt402P44; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80E83C32782;
-	Thu, 18 Apr 2024 19:50:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713469812;
-	bh=+mg6oNFFFf0Lxegw9N1uQpSNvXxSJ8pm7AcHBnWA7CM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Vt402P44+opHalVbIXev0jcbDjlk5tc4cdr/wvSRlYxVhw9fLY9lrDjL+CODAWAcx
-	 Txh06SmYwF7dmpPVGvXhNgFBdVjT2DWDNNx7LDO5dgjZbT8weHaB7EvJNymR90aVEG
-	 rF+6RfSXfFW/rOwSJQS55pTV+Z+sQJn1xBXMLVWiNounzu7S9FqMDiLDf0CFWGN2Da
-	 uHeMWUoNEKYJJBLLbQjfr9OSG3/DrJs6VfO1AHi3je9vwz3SDkjQoyuw/RJxiGbN7M
-	 BQsWT8WHUnEwR9nlqcy9EwTQ1MfJC5gpaZZsiCtRmYMA9Azb/A1FrfkOo6K979JqJD
-	 c1vRAzoezEAwg==
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5acdbfac113so36255eaf.3;
-        Thu, 18 Apr 2024 12:50:12 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUFqymBuUFubqhx+RUcPnGXqBQe3X/Y2OFUI+cGHeI1Yq9GsSX4VdG+dQ5tK5jhUP5XYiRoejyQLq6Vig2/JAC8xC+cSNkYRFMiVheOhinM3dfLP/5JziY7jvQ+usQMZ7WESjzC0M1Wvug6F8pAWnLS22C/pfG1kE4+cfRhR0oqIlGqyTZ4h0NQ+jzn5H0ZiSnoRmBzccoOdaqKsyNipA==
-X-Gm-Message-State: AOJu0YzUYFNSmM9L46swOaBO3GAsZT6HpvfIdG89tzHWn46EGT6tlht1
-	caVDLf1Bg73uC7MVlg98xjYxe295dWT/HHbaLBjMnGFrhM8utiTkfsfbT8dGI7SlMqgj/CZHIAl
-	qIhIqgkjRZ1niDrLxoceeRSNho/s=
-X-Google-Smtp-Source: AGHT+IG/s7EKmy2bO/y6jHP2vmvuXqsiEa+jtC+cHW9NDGnh6xeBUwc5PuTsUkwf2RmJd7g2myrEOEfTZBzH1D+lIYQ=
-X-Received: by 2002:a05:6820:ecb:b0:5a4:7790:61b4 with SMTP id
- en11-20020a0568200ecb00b005a4779061b4mr283085oob.0.1713469811684; Thu, 18 Apr
- 2024 12:50:11 -0700 (PDT)
+	s=arc-20240116; t=1713470011; c=relaxed/simple;
+	bh=il+9bbj7Kl9RhDUwHRlD6PElXcZpj4hshubhhFULYxI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=be3qMrl4lLHPvYdlk+26n8rCmeUQdNiv65x25iEVeRGvizswKiko5HMBp4Bh8lET0qmSdDisaioQcUruMdOdvUFM7bqeWUZR3H/CsdzdAUJ7lEyph8rw6ObC+uIx3PTG9qC7PW5Oh4qmjoFJ/stncqJP4QoGGPbqMDMclYtU3Rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YZ1pWEwS; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6156b93c768so23022727b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:53:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713470008; x=1714074808; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9Fwrx9M7PjHp4hPBDgNAvgC8cnKrAzhv9n1yaPxLSA8=;
+        b=YZ1pWEwSwKfzg29f9CqfdwlDzesejVg5BnUVEIHZzcqRbanwhqMfZiiymZMMlSolTP
+         yDUM8GypdJ86L4YlWlGhM3mKp/o8JN9UfuoNWuXVZh/peYJwZcFq7mlR6GTKMsrZaFyG
+         mpNUhhYJgN8v+v7wKuGQUHCLjP+XANOb6wlBrWPglMl5rE13W7eO2ZFiFMWHB7fv+i0L
+         CBHqkmzCUUqZ1ociyNy+YaP1rIT5swURz1a2JJtNfV8vJY+8BiCBSMSZ2+j7MgXwDlGM
+         VNdnNStKxdzrd07anmf+8UtlCC+fS2TeftumhDxZuNeoF1+7D3tEP+fLPfFnqcKcqGcw
+         MsiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713470008; x=1714074808;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9Fwrx9M7PjHp4hPBDgNAvgC8cnKrAzhv9n1yaPxLSA8=;
+        b=QeIFXVnDDWv58fTOB34Fmomt+DL1KFgK1eYuFLEELM/hRKDdGJpEiMQibtTybCospL
+         LO1k1grVvuXtQwBVwOfKgDgxgEmsXW7IPWQOEEAH92uktJX76YTbJbABx7j3elLhsHca
+         NQDKBUXh90E7idlwyMVJPI8RAP9zeYZMzkz4MywrStgHi5dOULRgIaVC8+h0a0vjsfAs
+         vogaaMTP3aFqkESrd35x+Ph2dLAYWUifYiuRLmNqo6DyZgc7Qffd1YEq1+SaFr4h+6F9
+         dnSkJldoYxDQbo+YnO3f6CiJS17XOb1dbHQHvf16nGdX4CLPypYWDzjkc4mzxDW3EHA3
+         +7yA==
+X-Forwarded-Encrypted: i=1; AJvYcCWWZOxWt/btOkF5VW4ynQdSHt1nCtZiJpwqXjFWFs2S/vQtCiulpHxJrgoNlFds8dBoCNQ8ajR/WJK5G9h1NBpiznd0jovn3d5mjSuR
+X-Gm-Message-State: AOJu0YxZFY97dH6fXC9nL5wHjf8a/w93YYZ3fz4IS3VtggN/k9nf3kcL
+	PX+iVVU78mCHSHXv7eeriaYaQC2jlNzS7wrM6XLY5vsZHVv6p87opIpPJ7Wm33+Jkmd90dHcVof
+	pBg==
+X-Google-Smtp-Source: AGHT+IGGyn2/Eis9yr5uvFbHSsNr+5jpucEC9aioMrlcMqw+x+tJjikMNMKUFalz9faFMmsjcJGmE2MmVtI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:d9d3:0:b0:618:9044:4f8b with SMTP id
+ b202-20020a0dd9d3000000b0061890444f8bmr785538ywe.7.1713470008510; Thu, 18 Apr
+ 2024 12:53:28 -0700 (PDT)
+Date: Thu, 18 Apr 2024 12:53:26 -0700
+In-Reply-To: <20240418141932.GA1855@willie-the-truck>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
-In-Reply-To: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 18 Apr 2024 21:50:00 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0giKShCa7AaRRmhcfTshyjDKwn487-kqRr3pqVmYJ2BrA@mail.gmail.com>
-Message-ID: <CAJZ5v0giKShCa7AaRRmhcfTshyjDKwn487-kqRr3pqVmYJ2BrA@mail.gmail.com>
-Subject: Re: [PATCH v7 00/16] ACPI/arm64: add support for virtual cpu hotplug
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, linux-pm@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, 
-	Miguel Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, 
-	Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, linuxarm@huawei.com, justin.he@arm.com, 
-	jianyong.wu@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20240405115815.3226315-1-pbonzini@redhat.com> <20240405115815.3226315-2-pbonzini@redhat.com>
+ <20240412104408.GA27645@willie-the-truck> <86jzl2sovz.wl-maz@kernel.org>
+ <ZhlLHtfeSHk9gRRO@google.com> <86h6g5si0m.wl-maz@kernel.org>
+ <Zh1d94Pl6gneVoDd@google.com> <20240418141932.GA1855@willie-the-truck>
+Message-ID: <ZiF6NgGYLSsPNEOg@google.com>
+Subject: Re: [PATCH 1/4] KVM: delete .change_pte MMU notifier callback
+From: Sean Christopherson <seanjc@google.com>
+To: Will Deacon <will@kernel.org>
+Cc: Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org, 
+	kvm@vger.kernel.org, Oliver Upton <oliver.upton@linux.dev>, 
+	Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Nicholas Piggin <npiggin@gmail.com>, 
+	Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org, 
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Thu, Apr 18, 2024 at 3:54=E2=80=AFPM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> Whilst it is a bit quick after v6, a couple of critical issues
-> were pointed out by Russell, Salil and Rafael + one build issue
-> had been missed, so it seems sensible to make sure those conducting
-> testing or further review have access to a fixed version.
->
-> v7:
->   - Fix misplaced config guard that broke bisection.
->   - Greatly simplify the condition on which we call
->     acpi_processor_hotadd_init().
->   - Improve teardown ordering.
+On Thu, Apr 18, 2024, Will Deacon wrote:
+> On Mon, Apr 15, 2024 at 10:03:51AM -0700, Sean Christopherson wrote:
+> > On Sat, Apr 13, 2024, Marc Zyngier wrote:
+> > > On Fri, 12 Apr 2024 15:54:22 +0100, Sean Christopherson <seanjc@google.com> wrote:
+> > > > 
+> > > > On Fri, Apr 12, 2024, Marc Zyngier wrote:
+> > > > > On Fri, 12 Apr 2024 11:44:09 +0100, Will Deacon <will@kernel.org> wrote:
+> > > > > > On Fri, Apr 05, 2024 at 07:58:12AM -0400, Paolo Bonzini wrote:
+> > > > > > Also, if you're in the business of hacking the MMU notifier code, it
+> > > > > > would be really great to change the .clear_flush_young() callback so
+> > > > > > that the architecture could handle the TLB invalidation. At the moment,
+> > > > > > the core KVM code invalidates the whole VMID courtesy of 'flush_on_ret'
+> > > > > > being set by kvm_handle_hva_range(), whereas we could do a much
+> > > > > > lighter-weight and targetted TLBI in the architecture page-table code
+> > > > > > when we actually update the ptes for small ranges.
+> > > > > 
+> > > > > Indeed, and I was looking at this earlier this week as it has a pretty
+> > > > > devastating effect with NV (it blows the shadow S2 for that VMID, with
+> > > > > costly consequences).
+> > > > > 
+> > > > > In general, it feels like the TLB invalidation should stay with the
+> > > > > code that deals with the page tables, as it has a pretty good idea of
+> > > > > what needs to be invalidated and how -- specially on architectures
+> > > > > that have a HW-broadcast facility like arm64.
+> > > > 
+> > > > Would this be roughly on par with an in-line flush on arm64?  The simpler, more
+> > > > straightforward solution would be to let architectures override flush_on_ret,
+> > > > but I would prefer something like the below as x86 can also utilize a range-based
+> > > > flush when running as a nested hypervisor.
+> > 
+> > ...
+> > 
+> > > I think this works for us on HW that has range invalidation, which
+> > > would already be a positive move.
+> > > 
+> > > For the lesser HW that isn't range capable, it also gives the
+> > > opportunity to perform the iteration ourselves or go for the nuclear
+> > > option if the range is larger than some arbitrary constant (though
+> > > this is additional work).
+> > > 
+> > > But this still considers the whole range as being affected by
+> > > range->handler(). It'd be interesting to try and see whether more
+> > > precise tracking is (or isn't) generally beneficial.
+> > 
+> > I assume the idea would be to let arch code do single-page invalidations of
+> > stage-2 entries for each gfn?
+> 
+> Right, as it's the only code which knows which ptes actually ended up
+> being aged.
+> 
+> > Unless I'm having a brain fart, x86 can't make use of that functionality.  Intel
+> > doesn't provide any way to do targeted invalidation of stage-2 mappings.  AMD
+> > provides an instruction to do broadcast invalidations, but it takes a virtual
+> > address, i.e. a stage-1 address.  I can't tell if it's a host virtual address or
+> > a guest virtual address, but it's a moot point because KVM doen't have the guest
+> > virtual address, and if it's a host virtual address, there would need to be valid
+> > mappings in the host page tables for it to work, which KVM can't guarantee.
+> 
+> Ah, so it sounds like it would need to be an arch opt-in then.
 
-Thank you for the update!
+Even if x86 (or some other arch code) could use the precise tracking, I think it
+would make sense to have the behavior be arch specific.  Adding infrastructure
+to get information from arch code, only to turn around and give it back to arch
+code would be odd.
 
-From a quick look, patches [01-08/16] appear to be good now, but I'll
-do a more detailed review on the following days.
+Unless arm64 can't do the invalidation immediately after aging the stage-2 PTE,
+the best/easiest solution would be to let arm64 opt out of the common TLB flush
+when a SPTE is made young.
 
-> Fundamental change v6+: At the level of common ACPI infrastructure, use
-> the existing hotplug path for arm64 even though what needs to be
-> done at the architecture specific level is quite different.
->
-> An explicit check in arch_register_cpu() for arm64 prevents
-> this code doing anything if Physical CPU Hotplug is signalled.
->
-> This should resolve any concerns about treating virtual CPU
-> hotplug as if it were physical and potential unwanted side effects
-> if physical CPU hotplug is added to the ARM architecture in the
-> future.
->
-> v6: Thanks to Rafael for extensive help with the approach + reviews.
-> Specific changes:
->  - Do not differentiate wrt code flow between traditional CPU HP
->    and the new ARM flow.  The conditions on performing hotplug actions
->    do need to be adjusted though to incorporate the slightly different
->    state transition
->      Added PRESENT + !ENABLED -> PRESENT + ENABLED
->      to existing !PRESENT + !ENABLED -> PRESENT + ENABLED
->  - Enable ACPI_HOTPLUG_CPU on arm64 and drop the earlier patches that
->    took various code out of the protection of that.  Now the paths
->  - New patch to drop unnecessary _STA check in hotplug code. This
->    code cannot be entered unless ENABLED + PRESENT are set.
->  - New patch to unify the flow of already onlined (at time of driver
->    load) and hotplugged CPUs in acpi/processor_driver.c.
->    This change is necessary because we can't easily distinguish the
->    2 cases of deferred vs hotplug calls of register_cpu() on arm64.
->    It is also a nice simplification.
->  - Use flags rather than a structure for the extra parameter to
->    acpi_scan_check_and_detach() - Thank to Shameer for offline feedback.
->
-> Updated version of James' original introduction.
->
-> This series adds what looks like cpuhotplug support to arm64 for use in
-> virtual machines. It does this by moving the cpu_register() calls for
-> architectures that support ACPI into an arch specific call made from
-> the ACPI processor driver.
->
-> The kubernetes folk really want to be able to add CPUs to an existing VM,
-> in exactly the same way they do on x86. The use-case is pre-booting guest=
-s
-> with one CPU, then adding the number that were actually needed when the
-> workload is provisioned.
->
-> Wait? Doesn't arm64 support cpuhotplug already!?
-> In the arm world, cpuhotplug gets used to mean removing the power from a =
-CPU.
-> The CPU is offline, and remains present. For x86, and ACPI, cpuhotplug
-> has the additional step of physically removing the CPU, so that it isn't
-> present anymore.
->
-> Arm64 doesn't support this, and can't support it: CPUs are really a slice
-> of the SoC, and there is not enough information in the existing ACPI tabl=
-es
-> to describe which bits of the slice also got removed. Without a reference
-> machine: adding this support to the spec is a wild goose chase.
->
-> Critically: everything described in the firmware tables must remain prese=
-nt.
->
-> For a virtual machine this is easy as all the other bits of 'virtual SoC'
-> are emulated, so they can (and do) remain present when a vCPU is 'removed=
-'.
->
-> On a system that supports cpuhotplug the MADT has to describe every possi=
-ble
-> CPU at boot. Under KVM, the vGIC needs to know about every possible vCPU =
-before
-> the guest is started.
-> With these constraints, virtual-cpuhotplug is really just a hypervisor/fi=
-rmware
-> policy about which CPUs can be brought online.
->
-> This series adds support for virtual-cpuhotplug as exactly that: firmware
-> policy. This may even work on a physical machine too; for a guest the par=
-t of
-> firmware is played by the VMM. (typically Qemu).
->
-> PSCI support is modified to return 'DENIED' if the CPU can't be brought
-> online/enabled yet. The CPU object's _STA method's enabled bit is used to
-> indicate firmware's current disposition. If the CPU has its enabled bit c=
-lear,
-> it will not be registered with sysfs, and attempts to bring it online wil=
-l
-> fail. The notifications that _STA has changed its value then work in the =
-same
-> way as physical hotplug, and firmware can cause the CPU to be registered =
-some
-> time later, allowing it to be brought online.
->
-> This creates something that looks like cpuhotplug to user-space and the
-> kernel beyond arm64 architecture specific code, as the sysfs
-> files appear and disappear, and the udev notifications look the same.
->
-> One notable difference is the CPU present mask, which is exposed via sysf=
-s.
-> Because the CPUs remain present throughout, they can still be seen in tha=
-t mask.
-> This value does get used by webbrowsers to estimate the number of CPUs
-> as the CPU online mask is constantly changed on mobile phones.
->
-> Linux is tolerant of PSCI returning errors, as its always been allowed to=
- do
-> that. To avoid confusing OS that can't tolerate this, we needed an additi=
-onal
-> bit in the MADT GICC flags. This series copies ACPI_MADT_ONLINE_CAPABLE, =
-which
-> appears to be for this purpose, but calls it ACPI_MADT_GICC_CPU_CAPABLE a=
-s it
-> has a different bit position in the GICC.
->
-> This code is unconditionally enabled for all ACPI architectures, though f=
-or
-> now only arm64 will have deferred the cpu_register() calls.
->
-> If folk want to play along at home, you'll need a copy of Qemu that suppo=
-rts this.
-> https://github.com/salil-mehta/qemu.git virt-cpuhp-armv8/rfc-v2
->
-> Replace your '-smp' argument with something like:
->  | -smp cpus=3D1,maxcpus=3D3,cores=3D3,threads=3D1,sockets=3D1
->
->  then feed the following to the Qemu montior;
->  | (qemu) device_add driver=3Dhost-arm-cpu,core-id=3D1,id=3Dcpu1
->  | (qemu) device_del cpu1
->
-> James Morse (7):
->   ACPI: processor: Register deferred CPUs from acpi_processor_get_info()
->   ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug
->   arm64: acpi: Move get_cpu_for_acpi_id() to a header
->   irqchip/gic-v3: Don't return errors from gic_acpi_match_gicc()
->   irqchip/gic-v3: Add support for ACPI's disabled but 'online capable'
->     CPUs
->   arm64: document virtual CPU hotplug's expectations
->   cpumask: Add enabled cpumask for present CPUs that can be brought
->     online
->
-> Jean-Philippe Brucker (1):
->   arm64: psci: Ignore DENIED CPUs
->
-> Jonathan Cameron (8):
->   ACPI: processor: Simplify initial onlining to use same path for cold
->     and hotplug
->   cpu: Do not warn on arch_register_cpu() returning -EPROBE_DEFER
->   ACPI: processor: Drop duplicated check on _STA (enabled + present)
->   ACPI: processor: Move checks and availability of acpi_processor
->     earlier
->   ACPI: processor: Add acpi_get_processor_handle() helper
->   ACPI: scan: switch to flags for acpi_scan_check_and_detach()
->   arm64: arch_register_cpu() variant to check if an ACPI handle is now
->     available.
->   arm64: Kconfig: Enable hotplug CPU on arm64 if ACPI_PROCESSOR is
->     enabled.
->
->  .../ABI/testing/sysfs-devices-system-cpu      |   6 +
->  Documentation/arch/arm64/cpu-hotplug.rst      |  79 ++++++++++++
->  Documentation/arch/arm64/index.rst            |   1 +
->  arch/arm64/Kconfig                            |   1 +
->  arch/arm64/include/asm/acpi.h                 |  11 ++
->  arch/arm64/kernel/acpi.c                      |  16 +++
->  arch/arm64/kernel/acpi_numa.c                 |  11 --
->  arch/arm64/kernel/psci.c                      |   2 +-
->  arch/arm64/kernel/smp.c                       |  56 ++++++++-
->  drivers/acpi/acpi_processor.c                 | 113 ++++++++++--------
->  drivers/acpi/processor_driver.c               |  44 ++-----
->  drivers/acpi/scan.c                           |  47 ++++++--
->  drivers/base/cpu.c                            |  12 +-
->  drivers/irqchip/irq-gic-v3.c                  |  32 +++--
->  include/acpi/acpi_bus.h                       |   1 +
->  include/acpi/processor.h                      |   2 +-
->  include/linux/acpi.h                          |  10 +-
->  include/linux/cpumask.h                       |  25 ++++
->  kernel/cpu.c                                  |   3 +
->  19 files changed, 357 insertions(+), 115 deletions(-)
->  create mode 100644 Documentation/arch/arm64/cpu-hotplug.rst
->
-> --
-> 2.39.2
->
->
+With the range-based flushing bundled in, this?
+
+---
+ include/linux/kvm_host.h |  2 ++
+ virt/kvm/kvm_main.c      | 40 +++++++++++++++++++++++++---------------
+ 2 files changed, 27 insertions(+), 15 deletions(-)
+
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index afbc99264ffa..8fe5f5e16919 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -2010,6 +2010,8 @@ extern const struct kvm_stats_header kvm_vcpu_stats_header;
+ extern const struct _kvm_stats_desc kvm_vcpu_stats_desc[];
+ 
+ #ifdef CONFIG_KVM_GENERIC_MMU_NOTIFIER
++int kvm_arch_flush_tlb_if_young(void);
++
+ static inline int mmu_invalidate_retry(struct kvm *kvm, unsigned long mmu_seq)
+ {
+ 	if (unlikely(kvm->mmu_invalidate_in_progress))
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 38b498669ef9..5ebef8ef239c 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -595,6 +595,11 @@ static void kvm_null_fn(void)
+ }
+ #define IS_KVM_NULL_FN(fn) ((fn) == (void *)kvm_null_fn)
+ 
++int __weak kvm_arch_flush_tlb_if_young(void)
++{
++	return true;
++}
++
+ /* Iterate over each memslot intersecting [start, last] (inclusive) range */
+ #define kvm_for_each_memslot_in_hva_range(node, slots, start, last)	     \
+ 	for (node = interval_tree_iter_first(&slots->hva_tree, start, last); \
+@@ -611,6 +616,7 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_range(struct kvm *kvm,
+ 	struct kvm_gfn_range gfn_range;
+ 	struct kvm_memory_slot *slot;
+ 	struct kvm_memslots *slots;
++	bool need_flush = false;
+ 	int i, idx;
+ 
+ 	if (WARN_ON_ONCE(range->end <= range->start))
+@@ -663,10 +669,22 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_range(struct kvm *kvm,
+ 					break;
+ 			}
+ 			r.ret |= range->handler(kvm, &gfn_range);
++
++		       /*
++			* Use a precise gfn-based TLB flush when possible, as
++			* most mmu_notifier events affect a small-ish range.
++			* Fall back to a full TLB flush if the gfn-based flush
++			* fails, and don't bother trying the gfn-based flush
++			* if a full flush is already pending.
++			*/
++		       if (range->flush_on_ret && !need_flush && r.ret &&
++			   kvm_arch_flush_remote_tlbs_range(kvm, gfn_range.start,
++							    gfn_range.end - gfn_range.start + 1))
++			       need_flush = true;
+ 		}
+ 	}
+ 
+-	if (range->flush_on_ret && r.ret)
++	if (need_flush)
+ 		kvm_flush_remote_tlbs(kvm);
+ 
+ 	if (r.found_memslot)
+@@ -680,7 +698,8 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_range(struct kvm *kvm,
+ static __always_inline int kvm_handle_hva_range(struct mmu_notifier *mn,
+ 						unsigned long start,
+ 						unsigned long end,
+-						gfn_handler_t handler)
++						gfn_handler_t handler,
++						bool flush_on_ret)
+ {
+ 	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+ 	const struct kvm_mmu_notifier_range range = {
+@@ -688,7 +707,7 @@ static __always_inline int kvm_handle_hva_range(struct mmu_notifier *mn,
+ 		.end		= end,
+ 		.handler	= handler,
+ 		.on_lock	= (void *)kvm_null_fn,
+-		.flush_on_ret	= true,
++		.flush_on_ret	= flush_on_ret,
+ 		.may_block	= false,
+ 	};
+ 
+@@ -700,17 +719,7 @@ static __always_inline int kvm_handle_hva_range_no_flush(struct mmu_notifier *mn
+ 							 unsigned long end,
+ 							 gfn_handler_t handler)
+ {
+-	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+-	const struct kvm_mmu_notifier_range range = {
+-		.start		= start,
+-		.end		= end,
+-		.handler	= handler,
+-		.on_lock	= (void *)kvm_null_fn,
+-		.flush_on_ret	= false,
+-		.may_block	= false,
+-	};
+-
+-	return __kvm_handle_hva_range(kvm, &range).ret;
++	return kvm_handle_hva_range(mn, start, end, handler, false);
+ }
+ 
+ void kvm_mmu_invalidate_begin(struct kvm *kvm)
+@@ -876,7 +885,8 @@ static int kvm_mmu_notifier_clear_flush_young(struct mmu_notifier *mn,
+ {
+ 	trace_kvm_age_hva(start, end);
+ 
+-	return kvm_handle_hva_range(mn, start, end, kvm_age_gfn);
++	return kvm_handle_hva_range(mn, start, end, kvm_age_gfn,
++				    kvm_arch_flush_tlb_if_young());
+ }
+ 
+ static int kvm_mmu_notifier_clear_young(struct mmu_notifier *mn,
+
+base-commit: eae53272c8ad4e7ed2bbb11bd0456eb5b0484f0c
+-- 
+
 
