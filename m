@@ -1,177 +1,182 @@
-Return-Path: <linux-kernel+bounces-150729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49B4A8AA3A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:03:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 087228AA395
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:59:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE0ED28197E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:03:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D7A11C2146E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D78F5181BB2;
-	Thu, 18 Apr 2024 20:03:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86886181CE0;
+	Thu, 18 Apr 2024 19:58:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="gdHx1lqI"
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2063.outbound.protection.outlook.com [40.107.102.63])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hbBiCr+R"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 600BB3D62;
-	Thu, 18 Apr 2024 20:03:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.63
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713470604; cv=fail; b=Rxi6X+rygzlCsrfUNo3wAU0xA14QHfdINxomZi+cFlo7je292hFXs4KNbCPf3KxmHjYRjDq8n+kVkBGFTqPpGiFDyjdbMxMZ/9fZk/yQnMqjFAz8ZIuKiccFpSFHZI7XJmaYJzsTL/e+QhGuY6tJrEg6+/Ya/sNsd/YW0UaEBJ0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713470604; c=relaxed/simple;
-	bh=052H+aW9suF3VfJSnAm85r92IAzTRYyjmGREvPhhEJM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PpUnxJLxjya3RoYhJK+cOncpZJjx7d0WG70/XHqVO4IVBDzctseGlH/djTqxIquD8ccB79a24LmC1XGslWJCOn703T/8GekzfDuLRIqTgB/EN6vNuZDobgoxHcc0ieb9NVBCmeAevEIM88z+qBE38Q1H8QgUF+CYPfXfcaY5Dw4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=gdHx1lqI; arc=fail smtp.client-ip=40.107.102.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AGhP7uiwuD8meaSLEgq6eNWYi5WcHZWypPagBUFVSB6RoU4F8MDVMjU/LqaBcTkfsyhjGIZ/U9Yb2ph9tpIH1ooYxXbS4XEq0Om1QvXpoW3+NRxW3klq2fHpzJzhxx8OJGY0p4TeFAQdGfBz9sutQ2KoZPB9T/DUS12t8qOvp5vNXwqTSO+m5JlCfHAP/UcT9TD2KDNqQckfPBhFL7vMR9+PhDTAIjz4/278HnfCNybIcN3tQo7VZVkS5eu4vGryX1HjPQ9tU/f+4bRWmJ4scOTRXQQWvd1dTzz0rOo31ZRE+QkLx4QmmmUDaH5VU5DSJsJg4ZTakG/5R44EoGzSOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mWUZwqBM7GZGVd9g4qAU12o35H4l74rP3aHiyiVwwp0=;
- b=Qblz3eH4nNts/lZFkkD2NsrPGjD6zbYXMfHW63tVzAK1S4Kh5APnXj5YLfA2mxSpFbrQmC6IRtiBV6+DxJvnhBFF58/Wr0YFzRWVEKnfgxkvL+wjJ2WLJU0z+NahOYQLEm9IddyO4Y+EFIfe7OhxOYc7oPaTxQypr+cysdQCghrC0feEmCTEH0g7SshmOpoEf9cdyluh6x5DR5FMjE//mrCVsAygkeVP+ERqIjk+8rgV7nxvUjekbt0qKHZN512arkYPlOt6jsxiDoDLqITkaeUKiB9Ah5rEXoeC3gxj8dzvL6x4GnsKgKFcI88GfhNfZRbVnL7eS7q0l4kNE0Tt5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mWUZwqBM7GZGVd9g4qAU12o35H4l74rP3aHiyiVwwp0=;
- b=gdHx1lqIxigYH474PYgDlI2vDqyZ4z+EKe7BFPoKPEKX5X2nrr1bvqNNKXE74hH/uJjeWkeFgoTpxDrjrvMrWiEI7F/kK7/uC7DvCKkS0P0JSAUyb27a0XMCS21mMqnDeCMy0KBuPj3JXOE8XsrTa56QqlmYFi+gPIxZcfEj9Es=
-Received: from MN2PR18CA0001.namprd18.prod.outlook.com (2603:10b6:208:23c::6)
- by DM4PR12MB8521.namprd12.prod.outlook.com (2603:10b6:8:17e::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Thu, 18 Apr
- 2024 20:03:15 +0000
-Received: from MN1PEPF0000ECDB.namprd02.prod.outlook.com
- (2603:10b6:208:23c:cafe::19) by MN2PR18CA0001.outlook.office365.com
- (2603:10b6:208:23c::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.26 via Frontend
- Transport; Thu, 18 Apr 2024 20:03:15 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MN1PEPF0000ECDB.mail.protection.outlook.com (10.167.242.139) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.22 via Frontend Transport; Thu, 18 Apr 2024 20:03:15 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 18 Apr
- 2024 15:03:14 -0500
-Date: Thu, 18 Apr 2024 14:57:54 -0500
-From: Michael Roth <michael.roth@amd.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-CC: <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
-	<ardb@kernel.org>, <seanjc@google.com>, <vkuznets@redhat.com>,
-	<jmattson@google.com>, <luto@kernel.org>, <dave.hansen@linux.intel.com>,
-	<slp@redhat.com>, <pgonda@google.com>, <peterz@infradead.org>,
-	<srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
-	<dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>, <vbabka@suse.cz>,
-	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>
-Subject: Re: [PATCH v12 22/29] KVM: SEV: Implement gmem hook for invalidating
- private pages
-Message-ID: <20240418195754.h6gl5qd62kas7crx@amd.com>
-References: <20240329225835.400662-1-michael.roth@amd.com>
- <20240329225835.400662-23-michael.roth@amd.com>
- <f1e5aef5-989c-4f07-82af-9ed54cc192be@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289A317B4F8;
+	Thu, 18 Apr 2024 19:58:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713470308; cv=none; b=OOx1i2Bt+8onerg2RLDw33Z7ZgKDYR2BcJGI4iKpJc97sAlUay42sLKo9J2tClrqRr2ee0yA45FS0tXL4+FW3bhl0mXRk/26k9vmWZCjwt9KRIqnPbsCBHzKzwTy5Ra67ixjYjyyqrcfvCprIJsbEu5T9ajKxpZ4xYgSAfZHbws=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713470308; c=relaxed/simple;
+	bh=tisi65k+YGyhsUQNNBAR+SpVnahnqmqz5uWVgPGomCM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Tkmm0I14IfOyYDDUq+KBu1DNtTSL7UsHtugA+XLS3NbNeBfbmc1V4p8zBhdL+lGnQWNe4avBbCC7YNIiaXBy6ngvAZCQ0JwbvTaJRdg1lYeo1I8wqtw9Zw7DaUL1eCv44HfivSBk+fYY7/gJYLUkHbpoMzJ8yo7IAR/Gv2VnmZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hbBiCr+R; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43IJh1AK031009;
+	Thu, 18 Apr 2024 19:58:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=G3e6TiNghqcS7ahLIcRBHCG1AFPyU/zwTm2IKBSzs74=; b=hb
+	BiCr+RYNWzNqrj21IoJXwa9hI4rYocdHbwS7e5mb/1yo66HEWzb4YPO6/6lB4SST
+	l9Koi3R4FtXlaJI22zSyyOjURgBvGX7SgZ5+NT/s2Kt0TpXhBfRhgVAtEPIKl83c
+	U8gKu/Q3u56M6y1FcUAekqeEn4ScNVvWSr9FLEgHc9JZY6NDjeMHHKPaI71ccDXH
+	zbLmJrGl5QGrpWlphh06KSK7+kB1w41TodPybcnKjguJfAQqiC4wtEwIM7Q4V9i8
+	FMQJCV2IAH3bGqGjdn4+elPzbRGdo9e3ww1jYY2G0Qg+oRpIhoCMjjXQJR+9s7nT
+	BOFMKw0zznVRfkVithoQ==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xk4vm8une-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 19:58:05 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43IJw4qL030491
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 19:58:04 GMT
+Received: from [10.110.72.56] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 18 Apr
+ 2024 12:58:00 -0700
+Message-ID: <9a1f8011-2156-4855-8724-fea89d73df11@quicinc.com>
+Date: Thu, 18 Apr 2024 12:58:00 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <f1e5aef5-989c-4f07-82af-9ed54cc192be@redhat.com>
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECDB:EE_|DM4PR12MB8521:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4012ab85-c981-4eab-f4e6-08dc5fe295a2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	YzpMOCb/tgZpKgq6eE8r5BNSDeWJt2o4Yg9Smzth5/FJTwpiH9MUp6rj2xRIpTur8IaHEL2t8TNyNtzefBdWy2GEiHzQrrRn4Ealkm2QYHQZaLwn75B1UmfArVMkQPSe2JwgUmYf5+DefztPZcBJy9i9kWRfZad+oKrN4IxwwrX0Q/6rmEwtVMBr58tx6lJrVX9qVXcXWifnfG4mD5obuq9/UpA3kvecnVVp6nPkVSnDGqeqeM1R0FlVj4Mw/JpNdVVy9cqp2mwn59jGGrhIGcAIkStv+4Z7qxXVIxUz0PqcEOnpAO5hSQUA5SgBlDPNNqEly5phg21cyF7JCP+VFoQ+8sgAIKm60VGDXi7tfxUBbrPmdM/VrZYSwaHftz9FuhcQiNEEWb48XpSU4wmU++xVIOGVxDLRm2ZBNrSuw9U0qbZlPo1iljG2IK78NasMFznlpoMI1uE8GqDxpO9mzi5iHWtuDCdP/gGC6r2BAxbmm/wjwBNz3jTHgHhMNHzF90Tln9RnatyEwVCev+X0bA+ZXTViPS1FdY1hLS6X8amjSs4SJ5J41WQA6D4EpeF+9tUKYfYkOsz/ICI+8dEjFVqsgRqHZQSqQwv91E6O3ZOqa47pQzMnp5790v1mHdPj3SIyq7Gso/nE30kX6UPNFvACqv2lsGxNh8Q9JtULXFkrmSg1g4QHqYgX2TBRW7DFMQSj/oGcM1aY9QLJGK97fg==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(82310400014)(376005)(7416005)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 20:03:15.5937
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4012ab85-c981-4eab-f4e6-08dc5fe295a2
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000ECDB.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB8521
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH bpf-next v4 1/2] net: Rename mono_delivery_time to
+ tstamp_type for scalabilty
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
+        "Martin
+ KaFai Lau" <martin.lau@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+CC: <kernel@quicinc.com>
+References: <20240418004308.1009262-1-quic_abchauha@quicinc.com>
+ <20240418004308.1009262-2-quic_abchauha@quicinc.com>
+ <66216adc8677c_f648a294aa@willemb.c.googlers.com.notmuch>
+Content-Language: en-US
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+In-Reply-To: <66216adc8677c_f648a294aa@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: AcgPrii5VN7hizySZenTQUQVW40I3_Bw
+X-Proofpoint-GUID: AcgPrii5VN7hizySZenTQUQVW40I3_Bw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-18_18,2024-04-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ spamscore=0 impostorscore=0 bulkscore=0 clxscore=1015 suspectscore=0
+ lowpriorityscore=0 mlxlogscore=956 mlxscore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404180144
 
-On Sat, Mar 30, 2024 at 10:31:47PM +0100, Paolo Bonzini wrote:
-> On 3/29/24 23:58, Michael Roth wrote:
-> > +		/*
-> > +		 * If an unaligned PFN corresponds to a 2M region assigned as a
-> > +		 * large page in he RMP table, PSMASH the region into individual
-> > +		 * 4K RMP entries before attempting to convert a 4K sub-page.
-> > +		 */
-> > +		if (!use_2m_update && rmp_level > PG_LEVEL_4K) {
-> > +			rc = snp_rmptable_psmash(pfn);
-> > +			if (rc)
-> > +				pr_err_ratelimited("SEV: Failed to PSMASH RMP entry for PFN 0x%llx error %d\n",
-> > +						   pfn, rc);
-> > +		}
+
+
+On 4/18/2024 11:47 AM, Willem de Bruijn wrote:
+> Abhishek Chauhan wrote:
+>> mono_delivery_time was added to check if skb->tstamp has delivery
+>> time in mono clock base (i.e. EDT) otherwise skb->tstamp has
+>> timestamp in ingress and delivery_time at egress.
+>>
+>> Renaming the bitfield from mono_delivery_time to tstamp_type is for
+>> extensibilty for other timestamps such as userspace timestamp
+>> (i.e. SO_TXTIME) set via sock opts.
+>>
+>> As we are renaming the mono_delivery_time to tstamp_type, it makes
+>> sense to start assigning tstamp_type based on enum defined
+>> in this commit.
+>>
+>> Earlier we used bool arg flag to check if the tstamp is mono in
+>> function skb_set_delivery_time, Now the signature of the functions
+>> accepts tstamp_type to distinguish between mono and real time.
+>>
+>> In future tstamp_type:1 can be extended to support userspace timestamp
+>> by increasing the bitfield.
+>>
+>> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+>> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
 > 
-> Ignoring the PSMASH failure is pretty scary...  At this point .free_folio
-> cannot fail, should the psmash part of this patch be done in
-> kvm_gmem_invalidate_begin() before kvm_mmu_unmap_gfn_range()?
+>> +/**
+>> + * tstamp_type:1 can take 2 values each
+>> + * represented by time base in skb
+>> + * 0x0 => real timestamp_type
+>> + * 0x1 => mono timestamp_type
+>> + */
+>> +enum skb_tstamp_type {
+>> +	SKB_CLOCK_REAL,	/* Time base is skb is REALTIME */
+>> +	SKB_CLOCK_MONO,	/* Time base is skb is MONOTONIC */
+>> +};
+>> +
 > 
-> Also, can you get PSMASH_FAIL_INUSE and if so what's the best way to address
-> it?  Should fallocate() return -EBUSY?
+> Can drop the comments. These names are self documenting.
 
-FAIL_INUSE shouldn't occur since at this point the pages have been unmapped
-from NPT and only the task doing the cleanup should be attempting to
-access/PSMASH this particular 2M HPA range at this point.
-
-However, since FAIL_INUSE is transient, there isn't a good reason why we
-shouldn't retry until it clears itself up rather than risk hosing the
-system if some unexpected case ever did pop up, so I've updated
-snp_rmptable_psmash() to handle that case automatically and simplify the
-handling in sev_handle_rmp_fault() as well. (in the case of #NPF RMP
-faults there is actually potential for PSMASH errors other than
-FAIL_INUSE due to races with other vCPU threads which can interleave and
-put the RMP entry in an unexpected state, so there's additional
-handling/reporting to deal with those cases, but here they are not expected
-and will trigger WARN_*ONCE()'s now)
-
-I used this hacked up version of Sean's original patch to re-enable 2MB
-hugepage support in gmem for the purposes of re-testing this:
-
-  https://github.com/mdroth/linux/commit/15aa4f81811485997953130fc184e829ba4399d2
-
--Mike
-
+Noted! . I will take care of this
 > 
-> Thanks,
+>>  /**
+>>   * DOC: Basic sk_buff geometry
+>>   *
+>> @@ -819,7 +830,7 @@ typedef unsigned char *sk_buff_data_t;
+>>   *	@dst_pending_confirm: need to confirm neighbour
+>>   *	@decrypted: Decrypted SKB
+>>   *	@slow_gro: state present at GRO time, slower prepare step required
+>> - *	@mono_delivery_time: When set, skb->tstamp has the
+>> + *	@tstamp_type: When set, skb->tstamp has the
+>>   *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
+>>   *		skb->tstamp has the (rcv) timestamp at ingress and
+>>   *		delivery_time at egress.
 > 
-> Paolo
+> Is this still correct? I think all egress does now annotate correctly
+> as SKB_CLOCK_MONO. So when not set it always is SKB_CLOCK_REAL.
+> 
+That is correct. 
+
+>> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+>> index 61119d42b0fd..a062f88c47c3 100644
+>> --- a/net/ipv4/tcp_output.c
+>> +++ b/net/ipv4/tcp_output.c
+>> @@ -1300,7 +1300,7 @@ static int __tcp_transmit_skb(struct sock *sk, struct sk_buff *skb,
+>>  	tp = tcp_sk(sk);
+>>  	prior_wstamp = tp->tcp_wstamp_ns;
+>>  	tp->tcp_wstamp_ns = max(tp->tcp_wstamp_ns, tp->tcp_clock_cache);
+>> -	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, true);
+>> +	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, CLOCK_MONOTONIC);
+> 
+> Multiple references to CLOCK_MONOTONIC left
+> 
+I think i took care of all the references. Apologies if i didn't understand your comment here. 
+
+
 > 
 > 
 
