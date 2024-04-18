@@ -1,106 +1,128 @@
-Return-Path: <linux-kernel+bounces-149682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17A848A947A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:57:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FE188A947F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:59:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98635B21474
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:57:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51C1F1C21AC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:59:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ED1376037;
-	Thu, 18 Apr 2024 07:57:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CC62762DE;
+	Thu, 18 Apr 2024 07:59:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JVxzn7Sr"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zFlxowWd"
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E82C3C489;
-	Thu, 18 Apr 2024 07:57:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA75757EE
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:59:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713427039; cv=none; b=CFiTxac4bjyFVvILc87G5Pnt4yQds/Ns4CiS8rup85EQ71eRtxcpmRpbKz+wWOAiE5OhgjAq24HLUztaVz9Dkvrv6nRu9L95lNbUFYCfmsgYVPsnpQjVRJhJvQ2cG+nNel801f50V7wnsAWtuQv3shzfX4BwLSSBUsY4rBmcSWQ=
+	t=1713427172; cv=none; b=EgbnlpuNBy9vKihhKsr3s36UDg00zLDWFLA8muoLkYkKJFJdEsDYi6pBJqvWAB9QhU3t0HJWnazYmYbobkbZurGDiwF+t9sRubI+5c+mXJHcDOtw9nrIkliGEX/fWHsGzC1TuL0HMnIvHy8qDoHb4GeF57RpFgAr865D4DM3OMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713427039; c=relaxed/simple;
-	bh=Si78ZIO9jiOjKMkvkEkeQyg6jJmQr3a25j/e+Fe5PfU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XkxLCHATfIVUOCoRUBPEqQvJVfExOMiJZjP9pZoiUW5O+lG6VIB0OfJgzxz3CWFh+LnT8fvxx2rXPDsUj/iR5Ofwl21GHBme6kxuARPTk7ljn0lXuB1QS+/p+/iRV+BOdxCu+CB9YNZ7zUl80WlXGBH0/2JWQNxIgggmsZxJ4y8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JVxzn7Sr; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713427038; x=1744963038;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Si78ZIO9jiOjKMkvkEkeQyg6jJmQr3a25j/e+Fe5PfU=;
-  b=JVxzn7SrwmQAm027223Y+RVltl2N+rouumSIVZzj2Hegf3v36P00Z333
-   NUMvNg2vkHAKWGjUAyG7PenH5k84xGzmrJtuNrZCFN9F4ObTOphoPJayP
-   KBSGeNL8uq4z8if2dDAkO3FwCjNsLdG4Npn7VtqF4JOILOML1c1f9YBJI
-   Bd3JAejAzVCHGZ39bQBOX1Qel7id+m0VTpAFI5mr96E1o4XgFOi+InhHT
-   jxcst3blwDsNZS2u+9fncHJOku+9wqt7NhP94/5zgMN72V8E/PlvUoIR8
-   GtpyBtMXeo8ceJIKhM+OfshzxbHUnpkzILqCUs0HXdtvU+miBvjVl3VTB
-   w==;
-X-CSE-ConnectionGUID: 4c0bemaCTmmtfth1zbJPcQ==
-X-CSE-MsgGUID: Eb4X4tPZTWCVTeTb7KAgHQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="9114847"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="9114847"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 00:57:17 -0700
-X-CSE-ConnectionGUID: YLzzTWRuSryGJs9Wf85SKQ==
-X-CSE-MsgGUID: tuT1HyI5QB6HsphomVrlIw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="23507802"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.124.236.140]) ([10.124.236.140])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 00:57:14 -0700
-Message-ID: <d83e5fea-492e-4bd8-ba75-113bfd0c6643@linux.intel.com>
-Date: Thu, 18 Apr 2024 15:57:11 +0800
+	s=arc-20240116; t=1713427172; c=relaxed/simple;
+	bh=XghVFOhSOXYtS0ZzPlbb1ffc7Q2YWLhi8qHOjMBw5n8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kurbynThkYV+fp5xLEP6V7fHKthQzRrERXybbFYbrqHgK31xxGGtVfbehKozhGIEQG3WR+7j6hs2JiWJhGXnM6Aw+J1Fc9MAvBVLMPLZ6hboRqnpl99Euq+6vm7uAVGNgKpaW7Rh10GLvRnUrKSnzyOWUUBDiqdjPdbwu2tNzbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zFlxowWd; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6969388c36fso2701506d6.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 00:59:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713427170; x=1714031970; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XghVFOhSOXYtS0ZzPlbb1ffc7Q2YWLhi8qHOjMBw5n8=;
+        b=zFlxowWd5tuqKoOzB84rDNRlEQjw28s1UWYAt5asqGcj8iEY9Ne0KY2R7lxsdFPe8o
+         53D0gnBeydCeWH96q6lriHDpFxCJDTM7hJ+9LngA91XhiXiXhJq5f82xDaE2nqQmM2h2
+         2j+os80CkRLsKzW6aPJi3SEZWhIWBBqEOMjtvQ47q1jCG08HT2amQtuk9qHa86annMp0
+         PtWWwR5rAVT8PNNLQF/crAH5dSI5acYXdzFGO1P2QK2DhY5rkgnWcfS28bEtUhlB+5nD
+         uD97OyXNKV3qMLog2c66SEH/EUaPLDOPUDaN51ZUbad2bnmhgcjPXksTOcjkcK+Gp9iF
+         D3Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713427170; x=1714031970;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XghVFOhSOXYtS0ZzPlbb1ffc7Q2YWLhi8qHOjMBw5n8=;
+        b=WzYR0+2J1qtfBInvcqWiQrBOCa2BYQH40KSfL9W71DhoLKwtiuxzL8TlNyVrnySh6f
+         PS3dgjoUOcHUy6V/YKgTszjgzdUdnlP7O85OTXv5ksjGF0znXM45PxCnTCF+0l/r3xrI
+         t4LUsSO81GhUD+Pz5ZtTAw8uapPUUkBcJVvKjlNv4b14CZCQ50RMjC5rG32e4UEpH4/t
+         MUPooBzbf+xBmwaOPezkjj9T2g1Nrml8nbYloi2UAK1++6fpBDG9oEXCzFuKs3xUHY9e
+         oMkcKMQZ6X6UDG7j6LZrHSQdIZaCa2RO2XhF6lJOb/zYQO3QDPAxop6fHACYtA1Q36vg
+         eIdw==
+X-Forwarded-Encrypted: i=1; AJvYcCVh0DGhi3b/DS8pXJxwGHsv6q1k5TBSoLilLCDs7jZJllNzWKbd4h0/y9zqBVTQeSDv3piz7TfKwUEUXN68upn/NWDsu+Ow5FcKyXWd
+X-Gm-Message-State: AOJu0YziR3pgM4HZ6Xy5tqMUQpiP+UNudGzBMA4YBTkTwCOU4fKHPFP6
+	3l67KDh4/h654XUrs40I+YYmF1G8iYuoIWeL3DpM2Yhe5eWfDZYdwPvMXVEhxhZKVi9nbIB/ikU
+	I9A/wYKTVsxb2ELdZe5YQePGb+sJzA2na83rgltUjGKdErGDrDw==
+X-Google-Smtp-Source: AGHT+IGbcFRzLv6pomaBBc3XVX/IDYVa1Em//BE8YnIPhB/knIvodX6f6UaF9q+nacJvhbygoj0jKyZj5LFrCrDisKE=
+X-Received: by 2002:a0c:f782:0:b0:69b:798b:e9c6 with SMTP id
+ s2-20020a0cf782000000b0069b798be9c6mr2121417qvn.42.1713427170252; Thu, 18 Apr
+ 2024 00:59:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 079/130] KVM: TDX: vcpu_run: save/restore host
- state(host kernel gs)
-To: Isaku Yamahata <isaku.yamahata@intel.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
- isaku.yamahata@linux.intel.com
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <4a766983346b2c01e943348af3c5ca6691e272f9.1708933498.git.isaku.yamahata@intel.com>
- <8132ddff-16f3-482f-b08b-a73aa8eddbbc@linux.intel.com>
- <20240412201702.GJ3039520@ls.amr.corp.intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20240412201702.GJ3039520@ls.amr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <000000000000fe696d0615f120bb@google.com> <20240415131837.411c6e05eb7b0af077d6424a@linux-foundation.org>
+ <CAADnVQ+E=j1Z4MOuk2f-U33oqvUmmrRcvWvsDrmLXvD8FhUmsQ@mail.gmail.com>
+ <CAG_fn=Uxaq1juuq-3cA1qQu6gB7ZB=LpyxBEdKf7DpYfAo3zmg@mail.gmail.com> <CAADnVQLUXVV_viC7mmm6VaAyveQKMzibdCMpnUQdf_-3FdjM7Q@mail.gmail.com>
+In-Reply-To: <CAADnVQLUXVV_viC7mmm6VaAyveQKMzibdCMpnUQdf_-3FdjM7Q@mail.gmail.com>
+From: Alexander Potapenko <glider@google.com>
+Date: Thu, 18 Apr 2024 09:58:48 +0200
+Message-ID: <CAG_fn=X-etq6NQOo70tDJb9m8RZ8z67E1imSqn-Pq1nYV7Ub_g@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] KMSAN: kernel-infoleak in bpf_probe_write_user
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	syzbot <syzbot+79102ed905e5b2dc0fc3@syzkaller.appspotmail.com>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Apr 16, 2024 at 5:16=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Apr 16, 2024 at 1:52=E2=80=AFAM Alexander Potapenko <glider@googl=
+e.com> wrote:
+> >
+> > On Mon, Apr 15, 2024 at 11:06=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > syzbot folks, please disable such "bug" reporting.
+> > > The whole point of bpf is to pass such info to userspace.
+> > > probe_write_user, various ring buffers, bpf_*_printk-s, bpf maps
+> > > all serve this purpose of "infoleak".
+> > >
+> >
+> > Hi Alexei,
+> >
+> > From KMSAN's perspective it is fine to pass information to the
+> > userspace, unless it is marked as uninitialized.
+> > It could be that we are missing some initialization in kernel/bpf/core.=
+c though.
+> > Do you know which part of the code is supposed to initialize the stack
+> > in PROG_NAME?
+>
+> cap_bpf + cap_perfmon bpf program are allowed to read uninitialized stack=
+.
 
+Out of curiosity, is this feature supposed to be used in production kernels=
+?
 
-On 4/13/2024 4:17 AM, Isaku Yamahata wrote:
->>> +void tdx_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
->> Just like vmx_prepare_switch_to_host(), the input can be "struct vcpu_tdx
->> *", since vcpu is not used inside the function.
->> And the callsites just use "to_tdx(vcpu)"
->>
->>> +{
->>> +	struct vcpu_tdx *tdx = to_tdx(vcpu);
->> Then, this can be dropped.
-> prepare_switch_to_guest() is used for kvm_x86_ops.prepare_switch_to_guest().
-> kvm_x86_ops consistently takes struct kvm_vcpu.
+> And recently we added
+> commit e8742081db7d ("bpf: Mark bpf prog stack with
+> kmsan_unposion_memory in interpreter mode")
+> to shut up syzbot.
 
-Oh yes, it's not suitable for tdx_prepare_switch_to_guest().
-Still, it can be for tdx_prepare_switch_to_host().
-
-
-
+I checked that the report in question is not reproducible with this
+patch anymore. Let's just wait until it reaches the mainline.
 
