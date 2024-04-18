@@ -1,194 +1,148 @@
-Return-Path: <linux-kernel+bounces-150650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A7D18AA24A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:48:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9012E8AA24C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:50:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51457282E05
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:48:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A68961C20D46
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:50:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 663D217AD76;
-	Thu, 18 Apr 2024 18:48:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D45E17AD71;
+	Thu, 18 Apr 2024 18:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QdGk1yOV"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SMJvnAkT"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEE4E17AD67;
-	Thu, 18 Apr 2024 18:48:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D3925778;
+	Thu, 18 Apr 2024 18:50:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713466125; cv=none; b=AEGoHb9KInj/fsn8vhltchN3SKX38VICIF1JObFTiLUtM/jCZHzTeD/J3JsVhGp1Lo2IL7GJq0UOQpdzddzQLoFh3zshZKMr0x1CIYIs4ZtKuHJKEzWIyJPV9sNVzCnKFY7Wstecnd0/nlISqR5brZPCq867IXYi6j5BSRgpX8k=
+	t=1713466212; cv=none; b=NAdGAIsj+PhV3D8E/lIjAFRYTz6dUvUNLcV5nu8trOlwkbXGnRn/pe6BYwgk8YM6/NVgLksASmsEMyLBO5fxCQz78CDLnQ27dR6qdcvzosa0Kn0cJSkGHVURZpnji6/2raI+KDWw8gLP5zIcb4WK/qmEAOUFgem/QNjDG3y/PK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713466125; c=relaxed/simple;
-	bh=W5ulwgdUrJHJyD6YLuoUZA+UwpWoOeowPGuclddyjXc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T1/GRTiinAjfCVIQv3CW/ZuHCd5X/1tvBDtCKXcf7t9Ahz2uLELqhI51irgERzueriTxcOUYimELta+nanMoswZOkyUJDagkfz+U7VAdkxRN4QVMAeHzXhsKyqslbkLMrZchLEOXFGd61dRii47NivXn8WRP7fm5AevR3eLY4ZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QdGk1yOV; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d8b2389e73so15037751fa.3;
-        Thu, 18 Apr 2024 11:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713466122; x=1714070922; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JHiNbmJba67zCpDm1cRbfEhy21gaCwmHq3i30H1PcAM=;
-        b=QdGk1yOVIb+Ug499fXhfwasYsNq2Ui4mhsEdVq3RxbHY9NoHHbVXvrBs9n/jZsN6v2
-         IgtcCwfE/y8TCWlJwYwgO/2kekQsYm0sFpnU6fvs2xRkGoDeVNTXxAIWy5fdC9At+fKY
-         FkCscbEyUkfHRDw1swsqdUO2uAATujRdZ2aGDSmBUYZZ4c0fc5WYuwH60E4ffk5pV5ku
-         OzkC44Wwm4QIbX49lb7Fx7CEB8DsZyk8bVuoDXWTM3H98uj6GCou7/Ku+uL4WlkOg7mf
-         v2wBAwfwlqtBPM7ZJWGfuxwGwe0d3S7rqY8yiqenLLibqMnNRMqaSO4w+XvfBZzjgz8L
-         c4HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713466122; x=1714070922;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JHiNbmJba67zCpDm1cRbfEhy21gaCwmHq3i30H1PcAM=;
-        b=DY+uIbL6qD8LTg2C0UsQS5lgJDgAQ2WjeYHbThFxkRFKr+IVI5H0XKxrHbM+jNO+4f
-         19W8o7/lSt8r50496pc85kaMWN2z1lfZ6960Kf0dBi3/64ULVroGQEYqek1TDkcDURwa
-         y7OvWs00ayR0G4ZwzFuilzZ+5HV1Ni/cTrYTQaWYD8kJ/0uNGSouPs//zhT1XkiP1bSd
-         NJCt2wjZvvq5il4949CAyDPz1e3M+LJcOlgoCLySeKGxwbDiODphbqGVpOyYW9o3cpz4
-         SQuAnHgAzAIaInD0ydl0l9435NYNAXdglGjgD2mQG4c37C/LAAawEOOf6CkCWeesXddf
-         OIsg==
-X-Forwarded-Encrypted: i=1; AJvYcCXo4/W4tkxnHUkZlxsFDswns6rbKpHSBuNi8A6j7RmsSa4hNaXu7zUG8T/WYL3V0i3PVpTwnPXSasYr8aXH73oRJMDtCHiw0hrNZKL7
-X-Gm-Message-State: AOJu0Yw41G1fe4LA449oOqbzTz9zYcpZmFMQYurNbvbGclpm1TiTUHY0
-	dPBhJqN93zJLYukZqw1Wx+9RKnNTGXHl6Qcqrbs0mE6qVxw9DEsa
-X-Google-Smtp-Source: AGHT+IEDbiohkd5JSALTW+YmWcjHO6CO4lNYFjNvUSJLQGztz7zC86Pw5cHxWAIt7b2WCX3Cy4mFRw==
-X-Received: by 2002:a05:6512:512:b0:516:c099:e798 with SMTP id o18-20020a056512051200b00516c099e798mr2058601lfb.31.1713466121631;
-        Thu, 18 Apr 2024 11:48:41 -0700 (PDT)
-Received: from shift.daheim (p200300d5ff0fec0050f496fffe46beef.dip0.t-ipconnect.de. [2003:d5:ff0f:ec00:50f4:96ff:fe46:beef])
-        by smtp.gmail.com with ESMTPSA id ah2-20020a1709069ac200b00a4e393b6349sm1222385ejc.5.2024.04.18.11.48.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 11:48:41 -0700 (PDT)
-Received: from localhost.daheim ([127.0.0.1])
-	by shift.daheim with esmtp (Exim 4.97)
-	(envelope-from <chunkeey@gmail.com>)
-	id 1rxWnn-00000001Oik-19oY;
-	Thu, 18 Apr 2024 20:48:40 +0200
-Message-ID: <e17f3c8e-3f1b-42d6-9d30-7fe21699b632@gmail.com>
-Date: Thu, 18 Apr 2024 20:48:40 +0200
+	s=arc-20240116; t=1713466212; c=relaxed/simple;
+	bh=IHnBOaI2U0StIBqc/5Uk8rORn8+7HNbrh1nEC9OGb4o=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=ka/zVjUQFr7ZVCgiqxvmOhSwk3yOvsa/D80RFofON4P2dPGl9In9RA+Ao6kaf5R1IamL4g90tWcDXFe04Inp1sq71R6UTgZtdTo+/ODugFa/1p5wGXiYUVLYLAxnAr+ySbU5VTBW9PqR3SXnug7bhfiIYxW7tSHXYh034QnB71Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SMJvnAkT; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713466209; x=1745002209;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=IHnBOaI2U0StIBqc/5Uk8rORn8+7HNbrh1nEC9OGb4o=;
+  b=SMJvnAkTTFgiSG+WyxLkPhs608nxCCRsFhWK4ZBnXPL3lCDuv88w0VE8
+   CLbfdBz/BsVQ7mIi2aO68+pd63WAAH/GOWLawznyJkVCbXea56aZ93bmW
+   RX1uuKb/oeVa3CjJx3k1qJ/qgK85h6W+bcelk7ezgDkADgZ4adLkLeeCF
+   V10J5qUkaI042rb6TTnL5xm76kYfGhHuZLMSKA9M6Ieozm86dPptShNar
+   XxWAI8ZwSUZuPUX1uLpDthpsqJNF5qbCLMAjeWfCDz6M9HEiS9R6R6rCL
+   6c0tKjcQkO+zeU7VbW1K/H0WgNpRiKtfgOqHUZ8U8bm/pEXBhHaalUOE/
+   w==;
+X-CSE-ConnectionGUID: 98hPkIivQhG6rr8jpf4z2g==
+X-CSE-MsgGUID: O6IOHv3HRK6PXzBhEAzv8w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="12828118"
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="12828118"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 11:50:08 -0700
+X-CSE-ConnectionGUID: FmK+L6rLQ1mIJoFBVI8bcQ==
+X-CSE-MsgGUID: LaqPm/qLRxGMVWAAle7VPg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="23154191"
+Received: from unknown (HELO localhost) ([10.245.247.37])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 11:50:05 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Thu, 18 Apr 2024 21:50:01 +0300 (EEST)
+To: Mohamed Ghanmi <mohamed.ghanmi@supcom.tn>
+cc: Hans de Goede <hdegoede@redhat.com>, corentin.chary@gmail.com, 
+    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+    "Luke D . Jones" <luke@ljones.dev>
+Subject: Re: [PATCH v1 1/1] platform/x86: asus-wmi: add support for vivobook
+ fan profiles
+In-Reply-To: <20240418181057.2688-2-mohamed.ghanmi@supcom.tn>
+Message-ID: <772e3de4-4e42-474e-8a7f-75e592756053@linux.intel.com>
+References: <20240418181057.2688-1-mohamed.ghanmi@supcom.tn> <20240418181057.2688-2-mohamed.ghanmi@supcom.tn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] wifi: carl9170: add a proper sanity check for endpoints
-To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
- Kalle Valo <kvalo@kernel.org>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com, lvc-project@linuxtesting.org,
- syzbot+0ae4804973be759fa420@syzkaller.appspotmail.com
-References: <20240407131109.26212-1-n.zhandarovich@fintech.ru>
-Content-Language: de-DE
-From: Christian Lamparter <chunkeey@gmail.com>
-In-Reply-To: <20240407131109.26212-1-n.zhandarovich@fintech.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; BOUNDARY="8323328-1091724370-1713466068=:986"
+Content-ID: <b26a45ef-4e93-3195-e1bc-1456a1a7cc01@linux.intel.com>
 
-On 4/7/24 3:11 PM, Nikita Zhandarovich wrote:
-> Syzkaller reports [1] hitting a warning which is caused by presence
-> of a wrong endpoint type at the URB sumbitting stage. While there
-> was a check for a specific 4th endpoint, since it can switch types
-> between bulk and interrupt, other endpoints are trusted implicitly.
-> Similar warning is triggered in a couple of other syzbot issues [2].
-> 
-> Fix the issue by doing a comprehensive check of all endpoints
-> taking into account difference between high- and full-speed
-> configuration.
-> 
-> This patch has not been tested on real hardware.
-> 
-> [1] Syzkaller report:
-> ...
-> WARNING: CPU: 0 PID: 4721 at drivers/usb/core/urb.c:504 usb_submit_urb+0xed6/0x1880 drivers/usb/core/urb.c:504
-> ...
-> Call Trace:
->   <TASK>
->   carl9170_usb_send_rx_irq_urb+0x273/0x340 drivers/net/wireless/ath/carl9170/usb.c:504
->   carl9170_usb_init_device drivers/net/wireless/ath/carl9170/usb.c:939 [inline]
->   carl9170_usb_firmware_finish drivers/net/wireless/ath/carl9170/usb.c:999 [inline]
->   carl9170_usb_firmware_step2+0x175/0x240 drivers/net/wireless/ath/carl9170/usb.c:1028
->   request_firmware_work_func+0x130/0x240 drivers/base/firmware_loader/main.c:1107
->   process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
->   worker_thread+0x669/0x1090 kernel/workqueue.c:2436
->   kthread+0x2e8/0x3a0 kernel/kthread.c:376
->   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
->   </TASK>
-> 
-> [2] Related syzkaller crashes:
-> Link: https://syzkaller.appspot.com/bug?extid=e394db78ae0b0032cb4d
-> Link: https://syzkaller.appspot.com/bug?extid=9468df99cb63a4a4c4e1
-> 
-> Reported-and-tested-by: syzbot+0ae4804973be759fa420@syzkaller.appspotmail.com
-> Fixes: a84fab3cbfdc ("carl9170: 802.11 rx/tx processing and usb backend")
-> Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-This was tricky. USB 2.0 works and was easy to test.
-But I had to hunt down a FULLSPEED USB Host for this.
-The driver loads on with a OHCI Host (Silicon Image, Inc. USB0673 (rev 06))
+--8323328-1091724370-1713466068=:986
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <fa09e14c-8e07-1dd4-a33d-8cec3c7f03ee@linux.intel.com>
 
-So, I think this would work. But see my comments below.
+On Thu, 18 Apr 2024, Mohamed Ghanmi wrote:
 
+> Add support for vivobook fan profiles wmi call on the ASUS VIVOBOOK
+> to adjust power limits.
+>=20
+> These fan profiles have a different device id than the ROG series
+> and different order. This reorders the existing modes and adds a new
+> full speed mode available on these laptops.
+>=20
+> As part of keeping the patch clean the throttle_thermal_policy_available
+> boolean stored in the driver struct is removed and
+> throttle_thermal_policy_dev is used in place (as on init it is zeroed).
+>=20
+> Signed-off-by: Mohamed Ghanmi <mohamed.ghanmi@supcom.tn>
+> Co-developed-by: Luke D. Jones <luke@ljones.dev>
+> Signed-off-by: Luke D. Jones <luke@ljones.dev>
 > ---
-> P.S. as AR9170_USB_EP_CMD endpoint can switch between bulk and int,
-> I failed to find a prettier solution to this problem. Will be glad
-> to hear if there is a better option...
-> 
->   drivers/net/wireless/ath/carl9170/usb.c | 27 +++++++++++++++++++++++++++
->   1 file changed, 27 insertions(+)
-> 
-> diff --git a/drivers/net/wireless/ath/carl9170/usb.c b/drivers/net/wireless/ath/carl9170/usb.c
-> index c4edf8355941..66d2ad561fd3 100644
-> --- a/drivers/net/wireless/ath/carl9170/usb.c
-> +++ b/drivers/net/wireless/ath/carl9170/usb.c
-> @@ -1069,6 +1069,33 @@ static int carl9170_usb_probe(struct usb_interface *intf,
->   			ar->usb_ep_cmd_is_bulk = true;
->   	}
->   
-> +	/* Verify that all expected endpoints are present */
-> +	if (ar->usb_ep_cmd_is_bulk) {
-> +		u8 bulk_ep_addr[] = {
-> +			AR9170_USB_EP_RX | USB_DIR_IN,
-> +			AR9170_USB_EP_TX | USB_DIR_OUT,
-> +			AR9170_USB_EP_CMD | USB_DIR_OUT,
-> +			0};
-> +		u8 int_ep_addr[] = {
-> +			AR9170_USB_EP_IRQ | USB_DIR_IN,
-> +			0};
-> +		if (!usb_check_bulk_endpoints(intf, bulk_ep_addr) ||
-> +		    !usb_check_int_endpoints(intf, int_ep_addr))
-> +			return -ENODEV;
 
-Please call carl9170_free(ar); before returning here.
-Otherwise the "ar" will memleak'ed.
+> @@ -3618,38 +3623,38 @@ static int asus_wmi_custom_fan_curve_init(struct =
+asus_wmi *asus)
+>  }
+> =20
+>  /* Throttle thermal policy *********************************************=
+*******/
+> -
+> -static int throttle_thermal_policy_check_present(struct asus_wmi *asus)
+> +static u8 throttle_thermal_policy_max_mode(struct asus_wmi *asus)
+>  {
+> -=09u32 result;
+> -=09int err;
+> -
+> -=09asus->throttle_thermal_policy_available =3D false;
+> -
+> -=09err =3D asus_wmi_get_devstate(asus,
+> -=09=09=09=09    ASUS_WMI_DEVID_THROTTLE_THERMAL_POLICY,
+> -=09=09=09=09    &result);
+> -=09if (err) {
+> -=09=09if (err =3D=3D -ENODEV)
+> -=09=09=09return 0;
+> -=09=09return err;
+> +=09if (asus->throttle_thermal_policy_dev =3D=3D ASUS_WMI_DEVID_THROTTLE_=
+THERMAL_POLICY_VIVO) {
+> +=09=09return ASUS_THROTTLE_THERMAL_POLICY_FULLSPEED;
+> +=09} else {
+> +=09=09return ASUS_THROTTLE_THERMAL_POLICY_SILENT;
+>  =09}
 
-> +	} else {
-> +		u8 bulk_ep_addr[] = {
-> +			AR9170_USB_EP_RX | USB_DIR_IN,
-> +			AR9170_USB_EP_TX | USB_DIR_OUT,
-> +			0};
-> +		u8 int_ep_addr[] = {
-> +			AR9170_USB_EP_IRQ | USB_DIR_IN,
-> +			AR9170_USB_EP_CMD | USB_DIR_OUT,
-> +			0};
-> +		if (!usb_check_bulk_endpoints(intf, bulk_ep_addr) ||
-> +		    !usb_check_int_endpoints(intf, int_ep_addr))
-> +			return -ENODEV;
+Thanks for the update, braces are unnecessary here. Other than that, this=
+=20
+looks fine:
 
-Same here.
+Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
 
-> +	}
-> +
->   	usb_set_intfdata(intf, ar);
->   	SET_IEEE80211_DEV(ar->hw, &intf->dev);
->   
+(This was not v1 any more, although the v1 was sent not by you but
+Luke).
 
+
+--=20
+ i.
+--8323328-1091724370-1713466068=:986--
 
