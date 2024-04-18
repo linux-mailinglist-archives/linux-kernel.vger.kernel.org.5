@@ -1,174 +1,351 @@
-Return-Path: <linux-kernel+bounces-149612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA4A28A9377
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:46:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCFD88A937C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:47:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCB0B1C20CEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:46:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E05CF1C20C9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3C121103;
-	Thu, 18 Apr 2024 06:46:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82EF439FFD;
+	Thu, 18 Apr 2024 06:46:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="kvCwUMDb"
-Received: from TY3P286CU002.outbound.protection.outlook.com (mail-japaneastazolkn19011002.outbound.protection.outlook.com [52.103.43.2])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="r/UpCe65"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2085.outbound.protection.outlook.com [40.107.243.85])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A802D057;
-	Thu, 18 Apr 2024 06:46:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.43.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699DA25622;
+	Thu, 18 Apr 2024 06:46:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.85
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713422764; cv=fail; b=rJLG/ab9fMoRd72MPsfV2K0i0KWWqLDTtgMJybAcQetcLBAZwqUODkEU63K87fChSSlqNlu04oHSL9TqOtfdKzRjD7eHwmar4yfXk2I5n1qeoNmWK0Dibo3zcH+KhJLDnew7RCrDcq/bsNKwT6BNLIQ+gnh1IixquBUeuN0PWas=
+	t=1713422783; cv=fail; b=u7xUpySIdiXhZH8bPGpBQ8SQaQR4vS/l3i23W4ZJ/RuDFz2bxHj1EDIEi9XaL6rOI5/hOJPxQwUxz1QnU0IshcBr8SvVNqu/5DGS0Wv9KfdS5vQwYUdCUGwGmDblGXbgdq25pG2+PqOLrZuGVU84Ne1KlGaoVZ6mlpLxHAsdugM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713422764; c=relaxed/simple;
-	bh=vYxOV0wOMa+vYj3ZwetKI0ywFYi7hhRLEUXGISHaEhY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CFIx1JteMwe+n4ki8dWWlr8kdqp5JtAfP+EDtll+XpSbEsebyOvdLvLB1Sg5lsjkvxGWhDes11J02Ovev9pZNXnCWgDBlc3HjP5GbWIm1SzMMJeBtsDaSY0acOFUdwesjmhPQ+Mk6im6xVPyBIC9Rb94lX84FXqGOYFiNaS9ti4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=kvCwUMDb; arc=fail smtp.client-ip=52.103.43.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+	s=arc-20240116; t=1713422783; c=relaxed/simple;
+	bh=FSkxL4IMWMQJyx9kmj9G2MHgiAwFOxWdRSsJDE3Td9Q=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=O27ZiRpe6uStKi5P5vznXQ1ZK4j9DhBRwvcpZbKLrsQylyq5kodvC5jB6o/J2zQAlp1M6Es/zDj/ZAj/u3RDBcukrk0ijKRuUIa7mUPqGjfRpIXNoI2gY8AfPd3bP2tYkE5rgLC/A+WBg4gAiMzTnU+vQxyl1hQ8zskQzpuo/j4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=r/UpCe65; arc=fail smtp.client-ip=40.107.243.85
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m4VFCnjYfPnxw2NXRJm6suxlN7SqQJTKm8yo3Q1fpmBxtn7C4JAXdx1mFL5CZHUilyiFXBLhDqxfg7K/UhYjjCqx3X+CHsRk8REItBnKedPhJFztzAFNBWR3wJMJCXrxwGDRm9tp6IXifvg1crXNWZ0fyxZ2kf+LXksHUgJryclhoSAAbdV/zf/z1V3s+CvU0jjWRfYW9O+bN13vv1JFQSunZSkhVGQF4anUJcltrxNs0eiFwXvCQmD/48kD8av1DRII2mR56hayjWzX64kPc6X6w8VxxpuKH+3XHOerMwOOORP1li/HSkDyBLgfJxY2Og3MNQgxldBfYfCltUNpIA==
+ b=L4LRLAyyxNwe1fZK59qRyKewvZQUJtJwALO3DIvcR0RqDE5xBvyfFlYXBT2OLX+eVtLfbuOSiQg9wfA7OJrqxTH1KeasaThKWvlW2GI7T9JKnljSoxBQvppcPAb+MGXswJDB+2LFA8VwWh3N3LuUDQogYrOoqMf9aYfQBZByL3r47z3Vz6U6k4TOTN6ETOaC500zvtQS86i71K2UHkWUYj3bz8DNskM9AxFuDovVBWvyfmrhnD3mc1BPkx18zCCH5be9Y1d4DndQt5LKecBg8+d2/m7IpIpGdXk5YqH2SiN31v6ZGBK2NonrL/L9Fo8fwgmif36StylkQ07uOlhgBA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4b0BKBkpWpEgLf46H2ZiN45feDj7+6AF1xyN8VgC9aE=;
- b=O5wRg+zlASyahJTbsg3Cntklhtua0ixQofsq+IQY/bvU4TS5Y4gW6/GB7+072UqxcyxJ9+K8JoQwDs8wIYLQMysw51ugrVPpm3c23OuN+EH1rBUTEFvsYwcqrvEUFlgBFOwhfSAfUtoj0ygDUK9ULvGfdSRuveMIGGCx3Fy07jbeFY7m4+dm8qhlaojeKGZDK1VOo4K3iUIdRQ8PEw2DP6CjKI3o+zxieyRhOpgDWJI1mVzUmu1GG/AG0a3afEnO+9DmJLIj4vctfwyWGz0cqA2HaluJeplLXJ1sK8zu7QhPyf+fn1eqk/bdibX1ecG8GwNGkOYflVj55Fpmm6hG1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
+ bh=TARrtCyDCfzkoT0VW9l2Z8qCWst5hEfR07nQejtsTFQ=;
+ b=fMf2paEpRpTwH3cjCPCS05ymrKEDr+gOaXhJEmE8otVspPueVevDnB05oJirFi5+xpGpmMfkVQpgBhJ+97DhX/nmOi3iSBM031ecZ9I7zwWSGkxFIfSIIAbdfFby0Jtc1va+x1HpIzw6adje4sB8xcUr8IkqMpaRXRdGwqKnoRfzIHQ2d6ppz1dOyNFsLoFmvedeBM+REH7JheO4vqZHr4RB1Uu88NERpIzTU2uGYRn03qT1ctugog4Zy7BSavjzzMhh7JzPu/cVYrCAykBIMcTCU+0NIzy+JWUoIXh1EOUwFbRYPYfgWqq5l/M84GbAMVxawomzsZA7ByJDkcuVLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4b0BKBkpWpEgLf46H2ZiN45feDj7+6AF1xyN8VgC9aE=;
- b=kvCwUMDb2BLuHN0/8Ad/8xxtg993nd20w6xDpEyWhSamNqvy5R/bGBAC7IxEmItzcuVr3okW/rbd32lXnebbLtdzmINSlR32UPchOSwdHKjRbT81zQSCfQTRZVT66O5uoSNI/lZcqWH+QNnt3W6TFwxFaPZeComXHLlzMwWuYuDxJjueN9HKrpSm8eYcGktd/I6lJkugGqHuE9wda6ZzCJdMvG+XJHI37unsXcrRdU6K/P3Q8Od+ybjbaeU2XWGyTNV/IWO2BfafWTmwGnIYByBXmCsiy8z7/ddh8WlGRC3oUnVU4J1CBMvnVGsVyt2MLfS+68PcMnd8igjkUT/Z2g==
-Received: from TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:209::11)
- by OS3P286MB3372.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:20b::9) with
+ bh=TARrtCyDCfzkoT0VW9l2Z8qCWst5hEfR07nQejtsTFQ=;
+ b=r/UpCe65DDNQnNwOFnkg+vCI4BPpsRlJ0RcWSErtRz+A+UY61GFWGohqni+jjmuFFdvKBvbeCiOO66WrJPnaUiBu6VKh3EM2gUW4YxY3mCNI8w/2AqkzpbzimbuPRLgmXzcSAdIY8n4MSXmn71tQm/i+zVd4MM8Y9T0ha66tXgk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SJ0PR12MB5673.namprd12.prod.outlook.com (2603:10b6:a03:42b::13)
+ by CH3PR12MB9023.namprd12.prod.outlook.com (2603:10b6:610:17b::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.51; Thu, 18 Apr
- 2024 06:45:59 +0000
-Received: from TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
- ([fe80::f2c3:e53f:2ea9:55c8]) by TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
- ([fe80::f2c3:e53f:2ea9:55c8%4]) with mapi id 15.20.7452.050; Thu, 18 Apr 2024
- 06:45:59 +0000
-From: ArcticLampyrid <ArcticLampyrid@outlook.com>
-To: james.schulman@cirrus.com,
-	david.rhodes@cirrus.com,
-	rf@opensource.cirrus.com
-Cc: patches@opensource.cirrus.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ArcticLampyrid <ArcticLampyrid@outlook.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2 2/2] ALSA: hda/realtek: Fix internal speakers for Legion Y9000X 2022 IAH7
-Date: Thu, 18 Apr 2024 14:45:50 +0800
-Message-ID:
- <TYCP286MB25358BF2246DE04CE8D12BE8C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <TYCP286MB253523D85F6E0ECAA3E03D58C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
-References: <TYCP286MB253523D85F6E0ECAA3E03D58C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.37; Thu, 18 Apr
+ 2024 06:46:16 +0000
+Received: from SJ0PR12MB5673.namprd12.prod.outlook.com
+ ([fe80::f7eb:b717:d637:dcf7]) by SJ0PR12MB5673.namprd12.prod.outlook.com
+ ([fe80::f7eb:b717:d637:dcf7%6]) with mapi id 15.20.7452.049; Thu, 18 Apr 2024
+ 06:46:16 +0000
+Message-ID: <d4209754-5f26-422d-aca0-45cccbc44ad0@amd.com>
+Date: Thu, 18 Apr 2024 08:46:09 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dmabuf: fix dmabuf file poll uaf issue
+To: zhiguojiang <justinjiang@vivo.com>, "T.J. Mercier" <tjmercier@google.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+ linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+References: <20240327022903.776-1-justinjiang@vivo.com>
+ <5cf29162-a29d-4af7-b68e-aac5c862d20e@amd.com>
+ <cc7defae-60c1-4cc8-aee5-475d4460e574@vivo.com>
+ <23375ba8-9558-4886-9c65-af9fe8e8e8b6@amd.com>
+ <CABdmKX2Kf4ZmVzv3LGTz2GyP-9+rAtFY9hSAxdkrwK8mG0gDvQ@mail.gmail.com>
+ <e55cad9b-a361-4d27-a351-f6a4f5b8b734@vivo.com>
+ <40ac02bb-efe2-4f52-a4f2-7b56d9b93d2c@amd.com>
+ <4fedd80c-d5b6-4478-bfd3-02d1ee1a26e5@vivo.com>
+ <aab5ec51-fcff-44f2-a4f5-2979bd776a03@amd.com>
+ <2ebca2fd-9465-4e64-b3cc-ffb88ef87800@vivo.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <2ebca2fd-9465-4e64-b3cc-ffb88ef87800@vivo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [ZxYRBvbSVhl+wEq0q1DtED/LvmHEBklH5J6v/+JTyJEnOJg8azg0zg==]
-X-ClientProxiedBy: PS2PR02CA0084.apcprd02.prod.outlook.com
- (2603:1096:300:5c::24) To TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:209::11)
-X-Microsoft-Original-Message-ID:
- <20240418064550.13866-1-ArcticLampyrid@outlook.com>
+X-ClientProxiedBy: VI1P190CA0038.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:800:1bb::9) To SJ0PR12MB5673.namprd12.prod.outlook.com
+ (2603:10b6:a03:42b::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYCP286MB2535:EE_|OS3P286MB3372:EE_
-X-MS-Office365-Filtering-Correlation-Id: 338ba514-d49e-4a02-a9b1-08dc5f7334f6
+X-MS-TrafficTypeDiagnostic: SJ0PR12MB5673:EE_|CH3PR12MB9023:EE_
+X-MS-Office365-Filtering-Correlation-Id: ef0750dd-0b95-4ebe-c1a6-08dc5f733ec2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	L9SyoPRB9unc5TJqm9Rmj0TaUVBweSgVF1b2OCP0Q8wzsQnSmqfeo0T2XhZXFy0UnDz+kf3UhdaIcSrYQ8z9xoOZ9PJV16ArYvtHIRCPLIgGkyIGd9VZmKi3kQJnTAxE8WtkOHr8KCkTcGHpnvUMg/dEdDteQ+VyAyroV6J4ul3StHE4qPO0XQ2N7v1zw/ntgOICAomMIQs2s4tlPtxNS/Cbx2CHyNCRqzrB9zK94OhmJMyQlf0PilMx3hZgKKQFXx/0UGgUE30bzcEdZd6MjlHTeL5ZfVbOAOiZ5nsPUE5n/MTq+pCebdDMMnHAJtn5MeajNx6kvLzuqFcU1ZBC+KUfu+1WDckF1DkA0hF2OhXGsszbhrr0Av1LF+Px7cEc/EmZhqkUb8lLPQrvWi9rITACT20rO4HX5+FkoJbowkSV2fmT/blBQA51HlgRvYz9e1FfWyZH9vXPE+LfOhBrGScj64rNu5Dqv52Kd21iItU0WUGlXb/ztA7O3P0vf0b/EKBdtBUMQNQkjgcmm6Sz6NBFB/peiz/UUgYGVsAU3+86yb8yXDKzR+dikDKr+7ArsPLG9G5WoFp125ZNajF3A+di0sUvdoA3aIfwMStODq8=
+	=?utf-8?B?YzhXKzhxUFZwSVJWbUEweGR3YUY3TVE3ckhjUklEYTZ1ZEQ3VUQ0WDVGU0Jl?=
+ =?utf-8?B?MTY1QVUrNGMvMElKaitvcXB1eFZ0R0NaYmlTMGFTR0wwM3d2MXpDWEhSbkhx?=
+ =?utf-8?B?aUZ2YkZPbmZxMUR4WWYzelRuSEUrcUJENUZIay9HaXlzb2dQU2tYekc0TWFt?=
+ =?utf-8?B?L3M4alo5M1IyRjE4eldjdnpUR1lIOTloYmo4NTdNYmhLV21WZ0pFYU55VmNy?=
+ =?utf-8?B?c2ZwTnJSdFN2MkVzSXhUWlFZeDJidGt0SUx1Y0gyVTJyNU1JQ0hGVE82dXhP?=
+ =?utf-8?B?Ui9TeUNHSXlOKzJJRmRqajQzWkZFZ3FlUHpycTJ2UTdjbHF6YUdOZVlsblRN?=
+ =?utf-8?B?bkp6eWtxWjlEM0N5WFFzM3kwZjdxMkVHUm4xVGFQM1dzZS8wSkduZVlTU1N6?=
+ =?utf-8?B?U2NJa3ZmYjB5Z2JXc3o4UE16clpDTk5JVHVic1RhNkc5TXZYY3NhQ3A4UU9P?=
+ =?utf-8?B?OGdvditGaXF3VSs5WFBuMk01d1FmQWY2dUVIS21RdGYwTjJITlR3blNSemQ2?=
+ =?utf-8?B?NkdvMm5OWVNaKzQwa1FVS0RObzVwQXcxMGZwQktPbG5ySFBHN2RnR2JkNkFR?=
+ =?utf-8?B?cksvZXlHTllRRnUvMHhudHVKVzdNUzNzdXozb2dEdGpzQ0QrSGwvNVcwWCtT?=
+ =?utf-8?B?VFN4L0xudUlJVzhpQmZ5dHBzWm1CL1hJNzBIb3VUL05vc1grZDkzbmFKVHNE?=
+ =?utf-8?B?Z1R5aHpabkJ3S1JaUHFRbmI0Z3VpMjgrOUhUK0RQUERpbzR3SDZOc0QwUmxB?=
+ =?utf-8?B?S3NpSW1iMVVmbnphb3BlOUNaRi83djJ1SGpkejJSb09BTTVyZE1qSWZoNm1r?=
+ =?utf-8?B?bHlnc2tNcGloOVlPMWxVb3BJN0xmWmIwQ3hpV3laTGNzTW5pZGZDVVJ0ZDZC?=
+ =?utf-8?B?KzJuakkzbnVxaWRTYXlkaEl0dEcyRmxGZjFYTnZzTXhONlN6VGpxcnp6dWtU?=
+ =?utf-8?B?RFRpd2txRkw4NkthcW92TUk4dUcwRnBUSDZpcWZNRDZma040eXZSVzNTNVhK?=
+ =?utf-8?B?T3lVaEY3SUt2OW10SnhuVkJjbk9rcjA0SlcrT3VOL0VPS1hQYnMvUGw2Z3NY?=
+ =?utf-8?B?NklQa1Y5SWFXZHA5eUk1S0tGcDlBRFc4OWdNM1FtaDQrV0dDQTFBOTBkM2Zh?=
+ =?utf-8?B?T3lMVWZ3VCtlRHNNa3FJMXNrUlY5RjI1amhmVkRsdkZkMlBXNjUxYzFUOCs1?=
+ =?utf-8?B?OUlYSHkwWlF0bTcwbk1RR2ZXK202T2FFdUxoazNibFE2dWlwekUrN3BIaDdx?=
+ =?utf-8?B?MWFDZzcySWpSbjRJR1pLWFFvckFpN0tlNjN4bzAyRXZtMW5zVkRzcjZyOG1D?=
+ =?utf-8?B?S0V6aUdZVW1ud2dLbzZURGREaWxoek9rUGJPOCtTdVhCYkNhTXEvUVc2cE5Z?=
+ =?utf-8?B?SmIvc2RPOW9zKzM2Z3FsRUdVV3QvYVRWcFpZOE1DUjhsaHRJTUdLT3pEV00x?=
+ =?utf-8?B?WFR0bkZDRGIzL3FGNWlPWmVqMFRrRWFkYmQ2UmFUVWZjQldzNkY1cG1ldmRr?=
+ =?utf-8?B?QWFuN3RGeG5pYkZQVHVLcUUyU3Q3UHNEMFlUOFkzSlNTc1RwYzhQYjRsUHFy?=
+ =?utf-8?B?QzYwcnQxaG8zTHpGSEcyem1QRk9NTkN1UWhsTkhrM2VVVTg4UEpyQnZRcHAr?=
+ =?utf-8?B?S3NLeVhUa3pUSlovb2VidmE2V3l1SnBFV1JVTy84SnNTZzhYYkFzcE5ZNHBV?=
+ =?utf-8?B?UjdldFloU21MdnJIekV2Yi9PVWJ2cU0xajdDWTE3eUx4MVZGczVrZkN3PT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR12MB5673.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?6eY9srxP6gkHvqQmkapRtAhdUTjTzeEobmn8jczhwONKDIG48IFf0+ON9ct5?=
- =?us-ascii?Q?X5/N/XuXVVtanY4gq9Lud7it06yBHkwOYpUPow+K46wUZL/MODQTUyY+y/Vd?=
- =?us-ascii?Q?uXc1RJkkP/yYxx8poDZCxG8ogHzJU2rawpWwqQHWsIohC0xeSwX3iKeA+9ES?=
- =?us-ascii?Q?hZgOIp5Nv6oRicVNnS+9PGljOKekxiynp8Gv9UzsKbdgvscGUz8yqou8ni6v?=
- =?us-ascii?Q?W6ltRhGfOZExTttd8bSZcSOcq8BMA56YFPbur+szBfVjDVetPrzUZBa0k2ra?=
- =?us-ascii?Q?76zhSouIQvf2nDbrhbl1QIiv72XCZwPJUxQtsHusCEJTQ8zZNqwnRkgIin9A?=
- =?us-ascii?Q?sjpOINgEzJI9Uc6bo/jmSoSsVAK3tGA/mVEQPR/6eSWSpXgSGjkN7aLURCU/?=
- =?us-ascii?Q?aj4rLuIyKnEoS91oo1CP7qqnAEjhJZqN2T/rBtLj9p2Vcfls/TwF/F05fmOj?=
- =?us-ascii?Q?n1cPCEd16DEaSxLTHizB+orH21fM2DTtmDnno/25Z9WpYlzc/hzefjUzw+AD?=
- =?us-ascii?Q?PlqwPRnvGyHWMBAFIB42Kroi9ptypy2Z7870yEs5QGcFpUxOw/LfETip7Ttw?=
- =?us-ascii?Q?O29e2e+6GTFemBVrNHXntiO58533KialZfUelHVhVqZrAl0uwAZrwk0h+PHP?=
- =?us-ascii?Q?CncDXzSJbjE3pUMPcI0TgponpsuZPXJ7/Du+KvjX9iE5nlhMOWfRhSx64hFv?=
- =?us-ascii?Q?xiis+rYH1dVTshZ+cnSHenwHUsIbhzfZMtNMrgXDjGb3eF26mW/JBvUNVhRv?=
- =?us-ascii?Q?BF9rQ1feV1X30w9bAACYNv0bfTr0KAzEhX0fmxe6XSlnnvomHIHT9TJRLsra?=
- =?us-ascii?Q?bDMcajroFHMVqtuSsZHDmUbOVqKZ9/lLy35V87tRiPGYw72cWQk5uhrsgA1O?=
- =?us-ascii?Q?sbM3AlewCvyAV9leO1SRdbubzDsxsbQFCumiFoW8c9Cwgvhaz5c3kaDuU16L?=
- =?us-ascii?Q?Zx3AzTRrlbTcjtwErGO+rxIOFM69tLpwPPSSLpQPLkgJ93QRvHjofqbP9LsK?=
- =?us-ascii?Q?khtq46jtBjThQb+rdrHTwwZDJ7bB8+z9DWQSEobnSeD5+AHDI9dWnyxUiNEE?=
- =?us-ascii?Q?UpXg4wd8wpK0v8wjGJbnxTpu3G39/LphRPbfeDHKy1fPS/nyCUS4jr3cBEBk?=
- =?us-ascii?Q?4AbmyVKFSTX5Qe8FvzbfwD6kDUWGDYoxzVb7lNKHf52FdzAt9J1elmM7rOyo?=
- =?us-ascii?Q?rL4E76SpgNdyQEVAR7W3949PpL5ddWqJnsL3LGuSNNC2F2+BctEYIHbx2lUD?=
- =?us-ascii?Q?CqS5LuSn9AEjHHM/OcOU7tADlX2doGDINgJ1EFTUqg=3D=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 338ba514-d49e-4a02-a9b1-08dc5f7334f6
-X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+	=?utf-8?B?OGVZMDRiYitseE9oOW1PM1YrejNyc2lERlE1M2VKZFQzbFVCbDhwUnJ1djRo?=
+ =?utf-8?B?MUJ6RXptRlpPZUYrdktzdmZnNVl3ejlhR3F6bkxJdFhTaG9vdHljbzNXSGxW?=
+ =?utf-8?B?SkFINnVPakVwZkdWZll0UnlWekp6UnI5c2x4YjlXL0pJVGo5dGNiaVNRMUVy?=
+ =?utf-8?B?QjJ1dmhxMGJ3VmtremQvQmJRV1htYkw5Qm0yYWRhd2hwb2o4RVN5MWxPWGNN?=
+ =?utf-8?B?VGU0VGpNNlZ2Mmt1bGRxLzMzeGZTWThRcU1LQWlkSjFRZUE1K2sxNEorVWNv?=
+ =?utf-8?B?YUdhTzdqenFPd1JGMjZUcnpFaS9mOWVmTXZPYXNpeHNVNDE3b0VJUm5jdmla?=
+ =?utf-8?B?b3FQa0FxdGg0WUhRbXN3SHh4UE56UStwOGt3N2tDVlBpNk5CVlVvSmVPRy8y?=
+ =?utf-8?B?WXFKd3BxZTNMUW5IQW1GamdXQmI2bWF3QTYzSlVSQ1M1VFFCUjR3L1drQnJD?=
+ =?utf-8?B?ZSt5dzI2dHAxdmcrK1U5RTZXWEtRWjE2WVk2UE5BemhhVmZuaGtPL3krcmtJ?=
+ =?utf-8?B?N2orRnkyckNIWHFBVFVTb0VuNmhqWHJuN3E2emE4LzBjdUdwbEdEb2g2Q2Zk?=
+ =?utf-8?B?elgrZW50U25ZL0pGSWZWdFNySG9DSmV6S2dVWFhpT0cvR1BzUDNMZkp2bjla?=
+ =?utf-8?B?TFRPQnIzck9XbUdZbFdRTVhRYzVleGFSNUlPWEU3SmZsV3I1MHNVTWVUcUMw?=
+ =?utf-8?B?MVZ2YVBYNTQxZUU3T3MzQzd2NXZmS0xEUUxldHFDaFhTdHpJR01kcVVCTkZx?=
+ =?utf-8?B?ayt6TWlHN3hKeU94dXdCZTFiR2FUcmlOeDgzVTdnUmIwcmd6YkNMOGVkSVVr?=
+ =?utf-8?B?VzBlaUlpNTB1MFQvSHJibC80N1ptOUVGbXZIcWtnMktFVVR1dW4wS1NRUUxx?=
+ =?utf-8?B?d0hPUmVNVEx2R3U0cjZOcytGeGtxTC9lRWFpNlJPMEp3dnVoVWtjTGpOMjFp?=
+ =?utf-8?B?bjFIeG43RDl3aDRlelBzZFkzOVpTTVFsZWljL1ppRHhUamhXNnpQYmN5dFBH?=
+ =?utf-8?B?ZSt0U0dvQmFXNkFyd3BWV2FRNEVOWWpybUtHdjlpanB5ODgrSXhsbW9RUnZL?=
+ =?utf-8?B?VXgwYjIrRkNsVGNHamNiQkc5SDc2ZExVU3NDdEhaS3BLSVlGcjY4empoSlNR?=
+ =?utf-8?B?cUkzanpXWmpjYkZzd2Z2OE5zUlFkK1JRZW9rYVp2SDFXYWVwaU9RODAxYXlT?=
+ =?utf-8?B?anlMajVYUUlZajFIdFRhTkRmV2hIUFZEWlNKZ3Y5WnRRVXFnTmRWaDdZU0Vz?=
+ =?utf-8?B?NjlLM0wzMDV4SHNIbmp6SE1kT2cvbmszY2EwdHM4V201RVRsT1c0RHA3aEoz?=
+ =?utf-8?B?ZEtGc21WVzFwSmN4c25iMnBRZ252Zllrb0F5NTcrWXdva3c3ekljcDFMS0Iy?=
+ =?utf-8?B?Z2NaNEt1UzZRMGJQQjNxVzdqeHJFTThiMW9lczBQNDMxV0NPOEoyQlNySVdI?=
+ =?utf-8?B?eHNNalVkbE1OeUZwMEQwYkhEVkJQZU1DMEx1UXQ0UFVjb0pON3dFOG5JZ1Q0?=
+ =?utf-8?B?ZWJTZlFQTVNtQkJiTDR6TVVWYmwyQ2xuQnlPYjEyMzdpa3VuTFhUYzh2OWFn?=
+ =?utf-8?B?VURKdVhzSCtxS2dOMDY3RVdLT21wUmRERTJVd1hGQTZVRFA1TGdyT0VWTVEr?=
+ =?utf-8?B?MGJKNGxBQWgrUFphazgxWXJlTlZ4Yi9pQ1E4UkpmZGZaTXRsRk5Fa2l1cFYw?=
+ =?utf-8?B?aTZvcDdaZFFoV1o0L1RuMXpDcnQrcmFEWllSTWdDNnNMOXd6TEFEMkxKa1d2?=
+ =?utf-8?B?bWpMOUU2YkhQaFFDaitCUlNhU0w5K2V2S01sZktFYW1Fb2ljdk5ncWVhblg2?=
+ =?utf-8?B?Z1VXZ1p1YWlkZlEvaS9LT3E3QkZ3SVhNODNaQk4wYzM5eTdITlFGOGZYdFhY?=
+ =?utf-8?B?dzl1UUNycU5zT1lWUmtOZm8rL0Y4L21MUzhhb2c3TmFmNHFhOUxxakFkSEo4?=
+ =?utf-8?B?QlVzeTNMZ014MDVoeWFqc1pMQzdzNW42UUFZeUM5UTV2eE1XTU9PZnM5aGtv?=
+ =?utf-8?B?TlRNbHJXWjYyMG9ibUlIMjRUbmdrbkU3SWt1MTFENmhzamlRZFlrdGVJVGYr?=
+ =?utf-8?B?UGVxSHJvdXBoMEt3VTRrMXN4dkNEN3hqWU1xaC94OVlEUklPY2k1T0JqSldn?=
+ =?utf-8?Q?Y9IivweqMQOM6Rjal1V1K8te7?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef0750dd-0b95-4ebe-c1a6-08dc5f733ec2
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR12MB5673.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 06:45:59.6825
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 06:46:15.9665
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3P286MB3372
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SGH65eWGuKOkKAh7WbK5lVN+x/Zdy53towuLOY6CotaM1gF9kRo9vjBONLEtuBmF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9023
 
-This fixes the sound not working from internal speakers on
-Lenovo Legion Y9000X 2022 IAH7 models.
+Am 18.04.24 um 03:33 schrieb zhiguojiang:
+> 在 2024/4/15 19:57, Christian König 写道:
+>> [Some people who received this message don't often get email from 
+>> christian.koenig@amd.com. Learn why this is important at 
+>> https://aka.ms/LearnAboutSenderIdentification ]
+>>
+>> Am 15.04.24 um 12:35 schrieb zhiguojiang:
+>>> 在 2024/4/12 14:39, Christian König 写道:
+>>>> [Some people who received this message don't often get email from
+>>>> christian.koenig@amd.com. Learn why this is important at
+>>>> https://aka.ms/LearnAboutSenderIdentification ]
+>>>>
+>>>> Am 12.04.24 um 08:19 schrieb zhiguojiang:
+>>>>> [SNIP]
+>>>>> -> Here task 2220 do epoll again where internally it will get/put 
+>>>>> then
+>>>>> start to free twice and lead to final crash.
+>>>>>
+>>>>> Here is the basic flow:
+>>>>>
+>>>>> 1. Thread A install the dma_buf_fd via dma_buf_export, the fd 
+>>>>> refcount
+>>>>> is 1
+>>>>>
+>>>>> 2. Thread A add the fd to epoll list via epoll_ctl(EPOLL_CTL_ADD)
+>>>>>
+>>>>> 3. After use the dma buf, Thread A close the fd, then here fd 
+>>>>> refcount
+>>>>> is 0,
+>>>>>   and it will run __fput finally to release the file
+>>>>
+>>>> Stop, that isn't correct.
+>>>>
+>>>> The fs layer which calls dma_buf_poll() should make sure that the file
+>>>> can't go away until the function returns.
+>>>>
+>>>> Then inside dma_buf_poll() we add another reference to the file while
+>>>> installing the callback:
+>>>>
+>>>>                         /* Paired with fput in dma_buf_poll_cb */
+>>>>                         get_file(dmabuf->file);
+>>> Hi,
+>>>
+>>> The problem may just occurred here.
+>>>
+>>> Is it possible file reference count already decreased to 0 and fput
+>>> already being in progressing just before calling
+>>> get_file(dmabuf->file) in dma_buf_poll()?
+>>
+>> No, exactly that isn't possible.
+>>
+>> If a function gets a dma_buf pointer or even more general any reference
+>> counted pointer which has already decreased to 0 then that is a major
+>> bug in the caller of that function.
+>>
+>> BTW: It's completely illegal to work around such issues by using
+>> file_count() or RCU functions. So when you suggest stuff like that it
+>> will immediately face rejection.
+>>
+>> Regards,
+>> Christian.
+> Hi,
+>
+> Thanks for your kind comment.
+>
+> 'If a function gets a dma_buf pointer or even more general any reference
+>
+> counted pointer which has already decreased to 0 then that is a major
+>
+> bug in the caller of that function.'
+>
+> According to the issue log, we can see the dma buf file close and 
+> epoll operation running in parallel.
+>
+> Apparently at the moment caller calls epoll, although another task 
+> caller already called close on the same fd, but this fd was still in 
+> progress to close, so fd is still valid, thus no EBADF returned to 
+> caller.
 
-Signed-off-by: ArcticLampyrid <ArcticLampyrid@outlook.com>
-Cc: <stable@vger.kernel.org>
----
- sound/pci/hda/cs35l41_hda_property.c | 2 ++
- sound/pci/hda/patch_realtek.c        | 1 +
- 2 files changed, 3 insertions(+)
+No, exactly that can't happen either.
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index 8fb688e41414..60ad2344488b 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -109,6 +109,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
- 	{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
- 	{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
- 	{ "10433A60", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-+	{ "17AA386E", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
- 	{ "17AA386F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
- 	{ "17AA3877", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
- 	{ "17AA3878", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
-@@ -500,6 +501,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CSC3551", "10431F1F", generic_dsd_config },
- 	{ "CSC3551", "10431F62", generic_dsd_config },
- 	{ "CSC3551", "10433A60", generic_dsd_config },
-+	{ "CSC3551", "17AA386E", generic_dsd_config },
- 	{ "CSC3551", "17AA386F", generic_dsd_config },
- 	{ "CSC3551", "17AA3877", generic_dsd_config },
- 	{ "CSC3551", "17AA3878", generic_dsd_config },
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index cdcb28aa9d7b..ac729187f6a7 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -10382,6 +10382,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
- 	SND_PCI_QUIRK(0x17aa, 0x3855, "Legion 7 16ITHG6", ALC287_FIXUP_LEGION_16ITHG6),
- 	SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
-+	SND_PCI_QUIRK(0x17aa, 0x386e, "Legion Y9000X 2022 IAH7", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x386f, "Legion 7i 16IAX7", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x3870, "Lenovo Yoga 7 14ARB7", ALC287_FIXUP_YOGA7_14ARB7_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x3877, "Lenovo Legion 7 Slim 16ARHA7", ALC287_FIXUP_CS35L41_I2C_2),
--- 
-2.44.0
+As far as I can see the EPOLL holds a reference to the files it 
+contains. So it is perfectly valid to add the file descriptor to EPOLL 
+and then close it.
+
+In this case the file won't be closed, but be kept alive by it's 
+reference in the EPOLL file descriptor.
+
+>
+> Then the two task contexts operate on same dma buf fd(one is close, 
+> another is epoll) in kernel space.
+>
+> Please kindly help to comment whether above scenario is possible.
+>
+> If there is some bug in the caller logic, Can u help to point it out? :)
+
+Well what could be is that the EPOLL implementation is broken somehow, 
+but I have really doubts on that.
+
+As I said before the most likely explanation is that you have a broken 
+device driver which messes up the DMA-buf file reference count somehow.
+
+Regards,
+Christian.
+
+>
+> Regards,
+> Zhiguo
+>>
+>>>
+>>>>
+>>>> This reference is only dropped after the callback is completed in
+>>>> dma_buf_poll_cb():
+>>>>
+>>>>         /* Paired with get_file in dma_buf_poll */
+>>>>         fput(dmabuf->file);
+>>>>
+>>>> So your explanation for the issue just seems to be incorrect.
+>>>>
+>>>>>
+>>>>> 4. Here Thread A not do epoll_ctl(EPOLL_CTL_DEL) manunally, so it
+>>>>> still resides in one epoll_list.
+>>>>>   Although __fput will call eventpoll_release to remove the file from
+>>>>> binded epoll list,
+>>>>>   but it has small time window where Thread B jumps in.
+>>>>
+>>>> Well if that is really the case then that would then be a bug in
+>>>> epoll_ctl().
+>>>>
+>>>>>
+>>>>> 5. During the small window, Thread B do the poll action for
+>>>>> dma_buf_fd, where it will fget/fput for the file,
+>>>>>   this means the fd refcount will be 0 -> 1 -> 0, and it will call
+>>>>> __fput again.
+>>>>>   This will lead to __fput twice for the same file.
+>>>>>
+>>>>> 6. So the potenial fix is use get_file_rcu which to check if file
+>>>>> refcount already zero which means under free.
+>>>>>   If so, we just return and no need to do the dma_buf_poll.
+>>>>
+>>>> Well to say it bluntly as far as I can see this suggestion is 
+>>>> completely
+>>>> nonsense.
+>>>>
+>>>> When the reference to the file goes away while dma_buf_poll() is
+>>>> executed then that's a massive bug in the caller of that function.
+>>>>
+>>>> Regards,
+>>>> Christian.
+>>>>
+>>>>>
+>>>>> Here is the race condition:
+>>>>>
+>>>>> Thread A Thread B
+>>>>> dma_buf_export
+>>>>> fd_refcount is 1
+>>>>> epoll_ctl(EPOLL_ADD)
+>>>>> add dma_buf_fd to epoll list
+>>>>> close(dma_buf_fd)
+>>>>> fd_refcount is 0
+>>>>> __fput
+>>>>> dma_buf_poll
+>>>>> fget
+>>>>> fput
+>>>>> fd_refcount is zero again
+>>>>>
+>>>>> Thanks
+>>>>>
+>>>>
+>>>
+>>
+>
 
 
