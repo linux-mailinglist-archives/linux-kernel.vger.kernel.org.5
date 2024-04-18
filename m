@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-150269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 639AC8A9C93
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:18:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26A778A9C96
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:18:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D7A7286A95
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:18:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE476286D7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:18:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3736D165FD9;
-	Thu, 18 Apr 2024 14:17:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BB5E16C6A2;
+	Thu, 18 Apr 2024 14:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="0MHs0XoH"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="vKAucm63"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D6D7165FC5
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5CAA168AE7
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713449834; cv=none; b=Ac4I7vjHCbp1TijzTcoAMW219K8YiVSvn+mG6+L8rebcr5SIh4k1ousjLvs43HuREDsU1vcAvjw43NbXp7RCNshBxA6zMsYQl/JiJvIIv16vmMNfUaZwYEyhj/uRHWi6zSE6kGAXLD++dY6QDK/5avQBb0em2nH6NMIU8oOwIgk=
+	t=1713449835; cv=none; b=VJxWrvHyTZ1/QoR4/kyYft8I/BP6sNws0YlaFh8ngJkMWBsrOc10QGnPQ/WeAWJZZ/pMccDm+Bbn9stAElAEr0Yr5y28963q1NTUfUXLBAfxNzE9ZOeLpRrjbozFvjTXXfSZyXRYubdAdbraiHRO57joo1zwIePu/inxzaX+Ye8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713449834; c=relaxed/simple;
-	bh=k+btns924mgO0ndeMmYcNT303bVziMBQNLMXrYRxVa0=;
+	s=arc-20240116; t=1713449835; c=relaxed/simple;
+	bh=DLryLa8O7iEQrZUEVAGOL74G0qHULUzTiJ6209ggFjg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=VaHgkWvrZnhT9gAkEZUm4d4YrJT9VkOPUAiFckbgusq+8mfQgyZ1fAwtEvGWsX5RQdoeRFE1jQo5+3LCrkzPO1CCkBKzQUoDtbA6eDJYzWF932vKqV7yQXa10nCSN6i9BltRnkXNQ2lp3z4rtuScrctwB6TDVdWuTUQL76R9DtE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=0MHs0XoH; arc=none smtp.client-ip=209.85.128.43
+	 In-Reply-To:To:Cc; b=dBvLe5XC98z33SKIeuxUJ4URP6eKOa6alnHADrosMvkT8rXtpNN2Wo4zYDy9rSzAqRz62PxwCk7xvLUDhmlJWEzlIb0ErfAUL5/dI6vyvUTsiPKKpFuOTa3tYvizS6O6hj0cC6Nr0PSWMTDkQ3Vii+Uxnp1K8M2RGYCtwGQKnDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=vKAucm63; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41881bce4b5so10004285e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:17:11 -0700 (PDT)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41551639550so6569385e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:17:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713449830; x=1714054630; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713449832; x=1714054632; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=qSFnuWZU02Pj+jNQxOwjPB7Yh5V2Ct2ICa/Ty3dFlQI=;
-        b=0MHs0XoHuCX8zVdULVmaCBbyR3uIBNL1DGc3twwK/9v2RYPKR22h5r4p8x6kd9gbC/
-         sx6lVONtb3queVrMrv2/lSjoRl2z5WvmOnMa+t4ttOSU2GPfuC4Lf5b9whHSbslv1+Mb
-         P59TCthXVFb18ct3ZzzAR7q+6YTMPNWn3lHjGk8nSZTmReNi25mjnbeaAzrdYOlTe1ZG
-         uziusRSYTXs+e2n99qvcHldKaXY/cuZz+iVY0HaSzJgSfj75NlyZyfRitUbTNtznh3t0
-         TBDloFG0k2ORcVVnLc3TkxtqEdWmChO9pw1Wx+WtXsXXMOtZIdYhreTkUyZKS9sRsJYZ
-         T2vA==
+        bh=49BUJCpffUTma/23KKg2oGJXJqjsBZNRYKTB4uG1eb4=;
+        b=vKAucm63l4/dZ6tRbfjJO/b1+a45yweJsJS/AeWAiYaz2CdVG23ecduPhiE2TlVYsV
+         uDoS0MC/7JO8zL4DGJ4b2WnZY42i4h1B+XmhVYIWNMmfy8HyftH5BHK8UPa+zSc5XaI2
+         /cgldMMJXaIQE02uxs45tiYxCjGm6lUyE1Kz9v77h/ba7Q2rW+eZL499NQtiJfKv+k/Q
+         gdHlwi3vVx6zV7LEit6SLfdYsTumflalbX5tzkhystUQyz+fvWkkmcCPbbMC82/mUK4U
+         jzY8aJGibwhfRY3t5tnyUxUyDcnFHAeJeanB+U8UB5HMm/I66mhffnRkYbj7KYEs1luD
+         /0Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713449830; x=1714054630;
+        d=1e100.net; s=20230601; t=1713449832; x=1714054632;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qSFnuWZU02Pj+jNQxOwjPB7Yh5V2Ct2ICa/Ty3dFlQI=;
-        b=qP4rdnf+woJtZOgVmQd471vgKKz5YGeIcV+HZ0iSHBJ6syppk8vkoimMwBElPIM7c8
-         w5i55GhWyg3L7MtHPTAyqRlLqAPBpA5nhk+BbbuOoEtvYr83HILcBfqDwIwuiS2WqUao
-         7/QboQPdtL9BZPZGoqRNF4RqOT6aXWwU8JKxvwzRQtHx+LuLZzrUqMPrGeMSik4/jPsx
-         2hfs/nFrdzxf5TKsM/paP3O+5DuR/9ZZ0279G3plsluGi6lxYFp+IFEtGnJE2g+3M+Sl
-         Pikl39btZXtRLKpPI8jIyTvH6bi5waSl6zpcqKhNnnx2kYEFVXomGSEcX2PLyPVgi8r+
-         fbUg==
-X-Forwarded-Encrypted: i=1; AJvYcCXnQnbJX6UZ5mjiEfiDTUs4y1FNTm8oAScw+gMvWU4ISWUZcwFF38UDsDfXMiwcQUDShOIpOuZWM8MGBDklprZbqQOCzbbh7bqJ1UOh
-X-Gm-Message-State: AOJu0Yw+/NQE11ULeNuJm4MS1z8OkAtqJdh502UHik9hAyBhSx+An51B
-	yU3ml+2h9ed4p+xKtxb+a/F1b+vtpib5m0/EbrQFoo9rFbxUltaw2AGdtVczQ2A=
-X-Google-Smtp-Source: AGHT+IFH5zwg0DYunY8MHTPUkoUZW6jYQiwpcrjw84bDm8QBlcdfSqPva29r1m6tFBZKlPW0GU48tg==
-X-Received: by 2002:a05:600c:3ba4:b0:418:f6b7:429a with SMTP id n36-20020a05600c3ba400b00418f6b7429amr730099wms.27.1713449830604;
-        Thu, 18 Apr 2024 07:17:10 -0700 (PDT)
+        bh=49BUJCpffUTma/23KKg2oGJXJqjsBZNRYKTB4uG1eb4=;
+        b=f6fBP6gVulrRuZmNJ3CmQCmEfhRlgafMAJf5u0MfTWJWN/y1bFFHaQ+Vxp+ephdSK6
+         BgiOGmZYEcyOnJNMUdCBkY0U4BIR/z40rrm9wERr8/1cyt6beZ5qEE/6jR4c3Hk2cjYs
+         MH+bdeOwowj7Xls0nNwBFii0pU8prw6lFOObCy8XIdWZXK7+HwTdlL1uuSLM7kNVSVWL
+         auJPaOG9J7CLuc4CrUG4sIUoHn93m3G6+7poaFlq/xl9rzQGnUpUFNSEmWWyA9dcHSx5
+         CiX+QRNW/5QjZExSMcqxKCmsN+CC+wdlKb1+FRI4NITN5bL4flP1LY2hoq60CSOlaJFt
+         DLeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW1pu2zmrrA/idj1JXb3+LroqxyYIJY/z6c4wS8IM+Rz+VknqhdNJsw6WgHdn1CvZu5oFaXQI39Li28YOw4JS1boKeKUWenMFsd83US
+X-Gm-Message-State: AOJu0Ywmf8Dsm9wxXVPYc5O5dMHwsbl7xZUZ1hUNIUliZch/PnEOAiEM
+	UuZwdjD6EgcJ6/9ahGpFH2l+6VMJ28AiJE8ueuIuPhX1cxzI7jFhOsEss95YhiA=
+X-Google-Smtp-Source: AGHT+IFTjzRpWK6iDi01DywjVdh8/v4t3z3199bOhoMDOHvDHlFawM4QhxRAJOfj2/Qsjae2GFxPbg==
+X-Received: by 2002:a05:600c:4710:b0:418:829e:efa5 with SMTP id v16-20020a05600c471000b00418829eefa5mr2601682wmo.20.1713449832214;
+        Thu, 18 Apr 2024 07:17:12 -0700 (PDT)
 Received: from [127.0.1.1] ([93.5.22.158])
-        by smtp.googlemail.com with ESMTPSA id i9-20020a05600c354900b004180c6a26b4sm6267510wmq.1.2024.04.18.07.17.08
+        by smtp.googlemail.com with ESMTPSA id i9-20020a05600c354900b004180c6a26b4sm6267510wmq.1.2024.04.18.07.17.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 07:17:09 -0700 (PDT)
+        Thu, 18 Apr 2024 07:17:11 -0700 (PDT)
 From: Alexandre Mergnat <amergnat@baylibre.com>
-Date: Thu, 18 Apr 2024 16:16:49 +0200
-Subject: [PATCH v3 01/17] dt-bindings: display: mediatek: aal: add
+Date: Thu, 18 Apr 2024 16:16:50 +0200
+Subject: [PATCH v3 02/17] dt-bindings: display: mediatek: ccorr: add
  compatible for MT8365 SoC
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231023-display-support-v3-1-53388f3ed34b@baylibre.com>
+Message-Id: <20231023-display-support-v3-2-53388f3ed34b@baylibre.com>
 References: <20231023-display-support-v3-0-53388f3ed34b@baylibre.com>
 In-Reply-To: <20231023-display-support-v3-0-53388f3ed34b@baylibre.com>
 To: Chun-Kuang Hu <chunkuang.hu@kernel.org>, 
@@ -102,44 +102,46 @@ Cc: dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org, 
  linux-clk@vger.kernel.org, Alexandre Mergnat <amergnat@baylibre.com>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1032; i=amergnat@baylibre.com;
- h=from:subject:message-id; bh=k+btns924mgO0ndeMmYcNT303bVziMBQNLMXrYRxVa0=;
- b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBmIStiwjjQsGMtkIBC4BIIe8mmC5l4Gh+lOg1h4Dhy
- Wl9VXL+JAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZiErYgAKCRArRkmdfjHURUjxD/
- 4g49trsbsJN/Y0FHB0Xht+mvp/FZBOgNuCfI+SZcbNnEti9L32hez80bpcp3eUQFn+6zjwkUYkOhUt
- xnKm8fkxFakHCTmmKVpP5PzjrJEi35Vs183xIQGs21+HCLShJuyamUu2PwMx2eEPKjuzeOdYch1pDV
- KWmwe79GtpBowp9iLGCh8tfwd6TzXFSnJw/LvGPNl4WaQ+v9kbzF8d6lAkp9QvLG92ZePSrWlNaqFs
- 6HsyhyFT/nIFIUiJyxp7buN5jj/XEYQdo5IcXE4fsYvsTXyI2UPvgf2DSCawfMAhy9W0HGB1cpxOfg
- Sde0gOULET2QSf3qIHvyis2FYE8sLn9Qy6n6eDWqusXKelWS2S+mj7q1zbjLiibDDYuNzdw2L7I3de
- /akgPlmPvmQxMqkSmxj2CvCF/NkzfBLxva0rXJPwtGbk0vJ8scPqofhiA53B7qSO1I5xDD8BEQsHoT
- TM8XStsqw6o2O542hSJ5wXolsYXc7O7LT1XVr8dqgSMVel2XaYiLi3MDSUkx8QxWJfRbQukUNHWimz
- i16o0brEt4WAu9rjERbWeT0Vd+cDN4mz34E6XqY5IxqJd3GMin99psmzCT+x7jGOFy45XxpVKX9IZi
- oh9FtNak9KhKad/TRYV+tzdn5WpciFi53tMAlBmJE1k7idYTGlXzuscWMagg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1102; i=amergnat@baylibre.com;
+ h=from:subject:message-id; bh=DLryLa8O7iEQrZUEVAGOL74G0qHULUzTiJ6209ggFjg=;
+ b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBmISti5dQRvICs+TNWn9PcvcaXjHRymsUXz5cyKmOy
+ gTr2alGJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZiErYgAKCRArRkmdfjHURTCbD/
+ 0RoSlJPIusbA/ANyTOZy03WTuf6qpmm/7E76EPyETfQy89dcQx89oVWZG7tbWvZYTCLLYQdqDSIbXJ
+ EW0M94hkg3BbwPvN8d1Y35T+9XjOZj2cX8RkgQt1HJ6mN+j43iIUqY73ZQUMVY5t2xXNqYdA6vy5tG
+ RwvuL8F81Qu0WbD9S4pKCHDdN+yvIvMmA5og2KAw9RKnQZWZvE0DXVkHurMOHgZFGXFwqOppvCLF+6
+ c7DKgP5D5yLPrGTdHYTjfZf6AI8PacTvv1KcaGGeCW1zq6cSpv6AKfjiGETGhJxyIURzmQ8acFhHYk
+ fMNj+AxQczDMNk4KL3Neuyu38RLeDKmi2pnevus7THXSeOuKWUxHFO9Ns8+gwjAb62vOhiNiDcxR30
+ u22RhSdXqMhNRnPNX59D1r36QGMrOHsemN7CzpMXxtf0lmdYXIvhwD14NTSkIVDQWdV+Ko2ZcObJyd
+ PjAcqW7cirsORw8QcQAb74RODyEjKrZnDN3DSaNitv++UgqdT+Ph8Jw/K+yYrCnmvS4fXIY5+aEmSZ
+ AQqnjibLgU7WtuTuGSkjjThwWhmlprsOrYQvqGb+bpOna0y9QxbaXpPWgWw2JLgiRyC3Y25ayG40fL
+ gUuyPpivBHlfmrEQ8mvpA6d1e1NypftXdVe5aqr5gJGUXm89nrXYGVNU4v9w==
 X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
  fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
 
-Document the display Adaptive Ambient Light on MT8365, which is compatible
+Document the display Color Correction on MT8365, which is compatible
 with that of the MT8183.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Acked-by: Rob Herring (Arm) <robh@kernel.org>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
 ---
- Documentation/devicetree/bindings/display/mediatek/mediatek,aal.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/display/mediatek/mediatek,ccorr.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,aal.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,aal.yaml
-index b4c28e96dd55..cf24434854ff 100644
---- a/Documentation/devicetree/bindings/display/mediatek/mediatek,aal.yaml
-+++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,aal.yaml
-@@ -36,6 +36,7 @@ properties:
-               - mediatek,mt8188-disp-aal
-               - mediatek,mt8192-disp-aal
-               - mediatek,mt8195-disp-aal
-+              - mediatek,mt8365-disp-aal
-           - const: mediatek,mt8183-disp-aal
- 
-   reg:
+diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,ccorr.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,ccorr.yaml
+index 8c2a737237f2..9f8366763831 100644
+--- a/Documentation/devicetree/bindings/display/mediatek/mediatek,ccorr.yaml
++++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,ccorr.yaml
+@@ -24,6 +24,9 @@ properties:
+       - enum:
+           - mediatek,mt8183-disp-ccorr
+           - mediatek,mt8192-disp-ccorr
++      - items:
++          - const: mediatek,mt8365-disp-ccorr
++          - const: mediatek,mt8183-disp-ccorr
+       - items:
+           - enum:
+               - mediatek,mt8186-disp-ccorr
 
 -- 
 2.25.1
