@@ -1,169 +1,107 @@
-Return-Path: <linux-kernel+bounces-150067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B56B68A99EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EFC78A99F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:35:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 436C2B2144A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:34:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BB88B21873
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:35:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E20D22F19;
-	Thu, 18 Apr 2024 12:34:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C71641EA8F;
+	Thu, 18 Apr 2024 12:35:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lcXtCurw"
-Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="CQyTwiPo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E611DA26
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:34:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3BA3BBFE;
+	Thu, 18 Apr 2024 12:35:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713443685; cv=none; b=IfhyPSzMBKSxBSa3WqjwsteYv57TVbmhcHxv2DpDYFWxdTZKpPQ9WYYvHY0lVqEO+bJ48cLCqxjMmqGlZLYiCnZcwmw11UJ0uj7j2M5tkHx4llyKgi6BkKx8qiLTfJF7kKiaXjkMTRwHx2NIRKiEuabAqWxjd0Fr1k2BSqik9Q8=
+	t=1713443701; cv=none; b=FHk75pm8LvIyFvAA9nK+zKH2ZWY+MJnQfKygmreWRVu8nuHV9BZlt6JJp32GbfkoYYkNFMBNHcpgn/TdH7APQQgVSB5d6W1t2S4mpAjvcZmvN76XvY6NpJE4AaKCRN318lXIiUNd+zp9YYPytfVaJLXSn5nN43ZJ87/VZNrSaqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713443685; c=relaxed/simple;
-	bh=B+6GB4/OCyyStGw/ue3Vas1OEHIwT7vYsI2tWaOCaHs=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=J4cY72dIXUdh1fIRXCncik1KpXgb3yTxGk6NsvzbczEldikafox4ukGRMe6gYDUAm77Eb+BecMaNx6rdtuqruxgzXRIkU8WCyhWoTAjL1HmaLK+cY/tOKNIP3HH0aHhyAMbwd356W/4YE/Rzafa0wLmdqGu7UWJLI4H3imbxcOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lcXtCurw; arc=none smtp.client-ip=209.85.221.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-4db27d21a22so241177e0c.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 05:34:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713443683; x=1714048483; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ipPrK9EjD6DeorbTfyjfvzjZb+slj22QZKPXwKOud0E=;
-        b=lcXtCurwUF/lilyg0KOLTApWbp1zytjntmFJMxgucBCi5v3vNOEYCkFuyY5fZ2YycA
-         oOqDPrAI3FXf/vj9pNyCj0e2VClHniN0yBjIb1T/E1ll8u7xhlU1OVAmL8/H6P5YCH8F
-         plgOWEjfBcQy/XfiUJDj7hTFjohWosKT7FvGcoX9dP+4uHKyTdl50ZMNVzFREU1lmsP0
-         pKQyGonE0wmP4BO7W62fN89nP6igp4zaD3m0yqlmy6yoOrQgqjlFRUd8LQO8aiflMo2E
-         IYASxIlo3heVv0crZTIMkutnqRfzLyhQ7hvKlKeMHFfK9bhL4GKvVqgZGGasgfLGQuXc
-         430Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713443683; x=1714048483;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ipPrK9EjD6DeorbTfyjfvzjZb+slj22QZKPXwKOud0E=;
-        b=rvKlDjD8owyBZAu4FRAlFU7KsnnkrX79FCQ3YqvRXajDrPJgA2Lca2KtDEK7HyU4gv
-         +ZgBp1g3kdYEhvcwrzX7iwzyXOdECvGkQVdo2A10m87Lw8Vxsf7EU14ddu1o0i3tO+GJ
-         6usCt+5RzC/qZVpxnwbNTN1xgy4b5H4KDZGFXDPRrI4EgV1XSS09O0aBNiKaFEE3YTI3
-         fjPBqiO9CjrG1Ya23Eki2JPzVZddLnJ8vpjdWGvDR6ddHEgSPo+Wk22tuZjLAbBCR+PW
-         PBFN1C8pOXPePtQjVmVSaQTe9BLd2roTJvHrm7Qu9Dq2WXB5/bq58aIpIVNJJIRyDFtR
-         Y0AQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXPog0w45tjjcZUhSXNBGCgB0s4eSL2PThaBr6gMvq85WmYjwqiHEJ8wjS/BlK9ubMRQn/vwpUQ7byPkeZOTNhtloX0IVylv4sIEzXY
-X-Gm-Message-State: AOJu0Yz5O+iJFPB/xQd8F77iKVbWbQWJ2RHc/YCPr/w3NLooPNDn8sJz
-	wQW7sRAHPvjT70mx4WKUJwIMHcFGMIn5OqsZh7I3uG3KRDQy9LTuoyKJBm6QH8+C3hwb2Ibfb3X
-	BoUyARL3DGnSkFO7pSTtzdnvhbchSGu6opZoS15ERoZaFj3SWJ/k=
-X-Google-Smtp-Source: AGHT+IE3NKjPZchvxKTF6nxS5pBTq01eu1Q3p1+qrHemeOlAnU1tkm01Opcsjyvz+j9/RhVgmEuttM3ePjf773uDYCE=
-X-Received: by 2002:a05:6122:507:b0:4c8:ee1:5a0b with SMTP id
- x7-20020a056122050700b004c80ee15a0bmr3133353vko.15.1713443683124; Thu, 18 Apr
- 2024 05:34:43 -0700 (PDT)
+	s=arc-20240116; t=1713443701; c=relaxed/simple;
+	bh=QoJZ9cDGA2Of8vEpXDv/CLcAZv4SkKX2GQYHhqv/IbY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uTboaRtiKpirj8eMhvI1mMUUSbPkisKCgqrZux5MQ+LwCidrvB/p5Nn7aiGgCTqyYpFiQX/vvexRPm99nntgVuvuI7/isyeHEzTzExAv3NTNbzdz0hpgt1eILWuDJJFk69u0CWQnZHI/H7IIPvsQNPK0NAhVHmKjjh1qZ/IFaJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=CQyTwiPo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EC3CC113CC;
+	Thu, 18 Apr 2024 12:34:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713443700;
+	bh=QoJZ9cDGA2Of8vEpXDv/CLcAZv4SkKX2GQYHhqv/IbY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CQyTwiPoVVC0pNAFTtI1GZv01E2u9Ol/4Cjb3RJC+O0Co/QR9Cydl/HrENH+jiyF8
+	 pxewW0+3oBDpvtyIBzfGPd2tHdQkLNxC28zcq5P+5JEznmItWBBjuy1eX0XkQ9QXh6
+	 eKSbPs/NnSfARu3CQeMLGot5uovNpuKX8WWiBMFQ=
+Date: Thu, 18 Apr 2024 14:34:57 +0200
+From: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To: Siddh Raman Pant <siddh.raman.pant@oracle.com>
+Cc: "cve@kernel.org" <cve@kernel.org>,
+	"linux-cve-announce@vger.kernel.org" <linux-cve-announce@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: CVE-2024-26920: tracing/trigger: Fix to return error if failed
+ to alloc snapshot
+Message-ID: <2024041805-rippling-entourage-1a72@gregkh>
+References: <2024041738-CVE-2024-26920-a681@gregkh>
+ <6fa1eb4368cbaa2d0b243539f1d91692da95e117.camel@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 18 Apr 2024 18:04:32 +0530
-Message-ID: <CA+G9fYtukczdEnnqtD4jeHqDYwf30A2RpfK8knB6jaJSE+mobg@mail.gmail.com>
-Subject: selftests: arm64: check_buffer_fill.c:94:93: warning: format '%lx'
- expects argument of type 'long unsigned int', but argument 3 has type 'char
- *' [-Wformat=]
-To: "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
-	open list <linux-kernel@vger.kernel.org>, 
-	Linux ARM <linux-arm-kernel@lists.infradead.org>, lkft-triage@lists.linaro.org, 
-	Linux Regressions <regressions@lists.linux.dev>
-Cc: Mark Brown <broonie@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Anders Roxell <anders.roxell@linaro.org>, 
-	Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6fa1eb4368cbaa2d0b243539f1d91692da95e117.camel@oracle.com>
 
-The Linux next building selftests with clang and gcc-13 found these
-build warnings.
+On Thu, Apr 18, 2024 at 11:59:41AM +0000, Siddh Raman Pant wrote:
+> Hi Greg,
+> 
+> > In the Linux kernel, the following vulnerability has been resolved:
+> > 
+> > tracing/trigger: Fix to return error if failed to alloc snapshot
+> > 
+> > Fix register_snapshot_trigger() to return error code if it failed to
+> > allocate a snapshot instead of 0 (success). Unless that, it will register
+> > snapshot trigger without an error.
+> 
+> This commit is problematic on 4.19.y, 5.4.y, 5.10.y, and 5.15.y,
+> and should be reversed, and this CVE should be rejected for those
+> versions.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Then please submit a patch for this.
 
-Build log:
----------
-PATH:
-Reported build warnings noticed on following test files,
-selftests/arm64/mte/
- * check_buffer_fill.c
- * mte_common_util.c
-
-check_buffer_fill.c: In function 'check_buffer_underflow_by_byte':
-check_buffer_fill.c:94:93: warning: format '%lx' expects argument of
-type 'long unsigned int', but argument 3 has type 'char *' [-Wformat=]
-   94 |                                 ksft_print_msg("Buffer is not
-filled at index:%d of ptr:0x%lx\n",
-      |
-                           ~~^
-      |
-                             |
-      |
-                             long unsigned int
-      |
-                           %s
-   95 |                                                 j, ptr);
-      |                                                    ~~~
-      |                                                    |
-      |                                                    char *
-
-<trim>
-
-mte_common_util.c: In function 'mte_default_handler':
-mte_common_util.c:41:101: warning: format '%lx' expects argument of
-type 'long unsigned int', but argument 2 has type 'long long unsigned
-int' [-Wformat=]
-   41 |                                 ksft_print_msg("Got unexpected
-SEGV_MTEAERR at pc=$lx, fault addr=%lx\n",
-      |
-                                   ~~^
-      |
-                                     |
-      |
-                                     long unsigned int
-      |
-                                   %llx
-   42 |                                                ((ucontext_t
-*)uc)->uc_mcontext.pc,
-      |
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |
-               |
-      |
-               long long unsigned int
-mte_common_util.c:41:48: warning: too many arguments for format
-[-Wformat-extra-args]
-   41 |                                 ksft_print_msg("Got unexpected
-SEGV_MTEAERR at pc=$lx, fault addr=%lx\n",
-      |
-^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Steps to reproduce:
----
-tuxmake --runtime podman --target-arch arm64 --toolchain clang-nightly \
-  --kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2fDW3nAXzFH2GOEle3S3MVC53A9/config
-\
-  LLVM=1 LLVM_IAS=1 debugkernel dtbs dtbs-legacy headers kernel
-kselftest modules
+But note, CVEs are not for specific versions, sorry.  We give a hint as
+to what kernel versions might be affected, but we don not assign CVE to
+versions.
 
 
-tuxmake --runtime podman --target-arch arm64 --toolchain gcc-13 \
-  --kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2fDW3wG8BqWxf0afUI5f4wkArPi/config
-\
-  debugkernel dtbs dtbs-legacy headers kernel kselftest modules
+> 
+> The return value should be 0 on failure, because in the functions
+> event_trigger_callback() and event_enable_trigger_func(), we have:
+> 
+> 	ret = cmd_ops->reg(glob, trigger_ops, trigger_data, file);
+> 	/*
+> 	 * The above returns on success the # of functions enabled,
+> 	 * but if it didn't find any functions it returns zero.
+> 	 * Consider no functions a failure too.
+> 	 */
+> 	if (!ret) {
+> 		ret = -ENOENT;
+> 
+> Thus, the commit breaks this assumption.
+> 
+> This commit needs b8cc44a4d3c1 ("tracing: Remove logic for registering
+> multiple event triggers at a time") as a prerequisite, as it removes
+> the above.
 
+Should we just take that patch instead?
 
-Links:
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2fDW3nAXzFH2GOEle3S3MVC53A9/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2fDW3wG8BqWxf0afUI5f4wkArPi/
+thanks,
 
---
-Linaro LKFT
-https://lkft.linaro.org
+greg k-h
 
