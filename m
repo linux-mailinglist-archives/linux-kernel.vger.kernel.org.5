@@ -1,93 +1,90 @@
-Return-Path: <linux-kernel+bounces-150013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE6E8A9916
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:52:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1F718A9917
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:53:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 497F31F2102B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:52:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8059BB226B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:53:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC1FB15F320;
-	Thu, 18 Apr 2024 11:52:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92B0615EFBB;
+	Thu, 18 Apr 2024 11:53:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AiiJ4opM"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QwFPhtlP"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A52D615ECCC;
-	Thu, 18 Apr 2024 11:52:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6984315E7FA
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:53:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713441132; cv=none; b=e1G6UEtMb9E7+EnrmZBHmbzdO0XTzju2y6nff1H0p4qRWu/6H4dCgIcnI8MdBqNySylG00y1QC6N54Sn066RW0FOb+Uxw1DpbEXvjLHwZ1GKwtSq+/A1jJfoXeK6+1FYw4vFygepcrOvRhPWz8tr4pTP2+a+2ZVZT3uh4nllyAk=
+	t=1713441227; cv=none; b=A9OVr4R0v/wSm6uHxYF/V5oHo77hbtFaaQp4xlX4aBz/SmkUM5OHSFfKBd0aY5NvnAisrMK5rVvSSUHNjZqImPlOvOcRVXVTd5o4RaqGrwXTRhKlCCIxgR7uLpsZZUgPWGPkahnGrNtA3K45N2pkJFKdR8GSclLsnchzSLSgWNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713441132; c=relaxed/simple;
-	bh=NNLjt8tWDXIZVT3SCOlsS+2zQ3f4L2mZhjbwYH3fVHY=;
+	s=arc-20240116; t=1713441227; c=relaxed/simple;
+	bh=tkl33SZf8yom7WU4rICjpTPTPslg5lqttSlZkZ3e+8s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XegtpbgPKDTNUl4yJBoJz8eSCuMBZuCr7QDI+vUca6643m4lr5OMh/iyhmH8yt/q6X9wkHyvuoKtCfWkfQ/WoSy77L3j1VWLZCdU9W6Ecww51fM4UQm1pbcrg8t1eugJH+NMmDQLWZnvHzGc1Eqee5YGXrhxGup3nun4tQOsAOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AiiJ4opM; arc=none smtp.client-ip=192.198.163.9
+	 Content-Type:Content-Disposition:In-Reply-To; b=opcejzvQUBZWBbcSkbAOMbLvFj6MiVVJU9jy3wcp8s2Db0mnX8KYMEXeie3YMiIepWgtfJ+qeGiyWSW+Ww9P3QlPxU558C3SV1I+wZdU8h7uzDxkyF13CHFREZWadmRL3tZp4RIXrCpwBFIfY9284hzr2/2/nESINW5qellGLc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QwFPhtlP; arc=none smtp.client-ip=192.198.163.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713441130; x=1744977130;
+  t=1713441226; x=1744977226;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:content-transfer-encoding:in-reply-to;
-  bh=NNLjt8tWDXIZVT3SCOlsS+2zQ3f4L2mZhjbwYH3fVHY=;
-  b=AiiJ4opMGlKAGTQ7+vdBqKchWhTjGGxHGC90tvdDz5c8xv8kvcZ0ISZt
-   46wzDYGVNmpKzvajLurrbCYseosL9E3CMnF2A0ix3ZcE3vWtz+U9c17SL
-   QGm8LFR1knx6ermiMPJ7+4JobZujKgehkzAKCS+8EWUOYSGoP96hhi8H0
-   MYxsOlvCu+hGnLBkqfCxwyEyI8KJOFp+cIMxS2qXPcCk35vASSpXmeNI2
-   7n3WG7BQ6hvnUQYP2HLI9Dz0DJSDzBQIqK8R1yLTVKtirMupX0wtVdI6+
-   4PQX87FhBhVMPkrS6GVmjB0371F3H5dkpf49LE7kkq9BwT8N6JeG6xsP6
-   Q==;
-X-CSE-ConnectionGUID: MedRW+rRS/qUqf7fXQiSiw==
-X-CSE-MsgGUID: 7yT2wxYGT86weIhOW8WxoA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="19681133"
+  bh=tkl33SZf8yom7WU4rICjpTPTPslg5lqttSlZkZ3e+8s=;
+  b=QwFPhtlPLY8m46ELX8Cf1hQDY2Vu63yPH2Di/qolQiXp+sHMswzp/Znl
+   wxOQDPA4BeGoXuFD+ycfPy7Yop1Kfuyr+ijYXaABKtYewUgHZHxGp48VU
+   S8s/RQsh2dXhU9RY0v3JYBFRKdr3nbMyIXzOXIwfOgdhLICEyrGh1jlRi
+   1fziPv9fXROAg+UWx2GtrUMgMnRr1du0hdau5Hm7YrvXmL8HOl7JkQVSv
+   uXRk4aah/oMOMC/HNWjGtgbs/T24ICzxcb9U6nwgVH7OPn0wG9TotDWbq
+   Tx2rn3tB8bxwusJbSGnmrvKC2BW/UqEG4lHNUFc/dzNjekZBJxqVdQXFW
+   w==;
+X-CSE-ConnectionGUID: 8XMRLcu4TC+JhpIY1QFUlA==
+X-CSE-MsgGUID: 8+Umx3eXSsWkiC2ZAM9oKw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="12766879"
 X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="19681133"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:52:10 -0700
-X-CSE-ConnectionGUID: tFOkMf+JQ6ijNWjkG/hSmA==
-X-CSE-MsgGUID: qFJqIMf5QP2xm/Krp1j0vw==
+   d="scan'208";a="12766879"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:53:45 -0700
+X-CSE-ConnectionGUID: 0oftRFAaTVSyIA87JqdqZw==
+X-CSE-MsgGUID: j30FugN4QeWRlkXR6gDe2w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="23567364"
+   d="scan'208";a="27773357"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:52:06 -0700
+  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:53:42 -0700
 Received: from andy by smile.fi.intel.com with local (Exim 4.97)
 	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rxQJ9-00000000JcA-0NbX;
-	Thu, 18 Apr 2024 14:52:03 +0300
-Date: Thu, 18 Apr 2024 14:52:02 +0300
+	id 1rxQKg-00000000JdM-3CI3;
+	Thu, 18 Apr 2024 14:53:38 +0300
+Date: Thu, 18 Apr 2024 14:53:38 +0300
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org, brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Arend van Spriel <arend.vanspriel@broadcom.com>,
-	Kalle Valo <kvalo@kernel.org>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v2 1/2] gpiolib: Fix a mess with the GPIO_* flags
-Message-ID: <ZiEJYiNNnx_gYvm1@smile.fi.intel.com>
-References: <20240408231727.396452-1-andriy.shevchenko@linux.intel.com>
- <20240408231727.396452-2-andriy.shevchenko@linux.intel.com>
- <CACRpkdYaXVvtt3b9rFxU4ZNShD17Bm4XU9X3h4dY501iJy3kPA@mail.gmail.com>
- <ZhlSaFWlbE6OS7om@smile.fi.intel.com>
- <CAMRc=Me489H-mTfT1hfUsY47iKwoaVsf6sgkiBwBVkxJOBo9UA@mail.gmail.com>
- <CACRpkdZRp-DFQgb3=Ut27DHd1w11_aEY0HbLjJHob=C5Ek-dyw@mail.gmail.com>
- <Zh6FkejXcwBTAqIR@smile.fi.intel.com>
- <CAMRc=MeXV4_MT5_DKYtHqO+324dFJnr+Y1UtR9w9mj-y2OOqAw@mail.gmail.com>
- <Zh-MMAjf6hhNOCpL@smile.fi.intel.com>
- <CAMRc=MfJdfwP7=a3govCcj8XHR7uPwCf2BA+BiWqif74pW5u8A@mail.gmail.com>
+To: "Xu, Baojun" <baojun.xu@ti.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+	"perex@perex.cz" <perex@perex.cz>,
+	"pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
+	"Lu, Kevin" <kevin-lu@ti.com>,
+	"Ding, Shenghao" <shenghao-ding@ti.com>,
+	"Navada Kanyana, Mukund" <navada@ti.com>,
+	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
+	"yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
+	"broonie@kernel.org" <broonie@kernel.org>,
+	"soyer@irl.hu" <soyer@irl.hu>
+Subject: Re: [EXTERNAL] Re: [PATCH v2 2/3] ALSA: hda/tas2781: Main code of
+ tas2781 driver for SPI
+Message-ID: <ZiEJwr5iv77wLkwd@smile.fi.intel.com>
+References: <20240409024816.1180-1-baojun.xu@ti.com>
+ <20240409024816.1180-3-baojun.xu@ti.com>
+ <ZhVA1_HTET4Q4T9d@smile.fi.intel.com>
+ <e3f73d92d1fa466cb70e3d738a7926c9@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,32 +94,43 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MfJdfwP7=a3govCcj8XHR7uPwCf2BA+BiWqif74pW5u8A@mail.gmail.com>
+In-Reply-To: <e3f73d92d1fa466cb70e3d738a7926c9@ti.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Apr 17, 2024 at 08:39:52PM +0200, Bartosz Golaszewski wrote:
-> On Wed, Apr 17, 2024 at 10:45 AM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Tue, Apr 16, 2024 at 11:07:58PM +0200, Bartosz Golaszewski wrote:
+On Thu, Apr 18, 2024 at 05:12:03AM +0000, Xu, Baojun wrote:
+> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Sent: 09 April 2024 21:21
+> > To: Xu, Baojun
+> > On Tue, Apr 09, 2024 at 10: 48: 14AM +0800, Baojun Xu wrote:
+> > On Tue, Apr 09, 2024 at 10:48:14AM +0800, Baojun Xu wrote:
 
 ..
 
-> > Again, the problem now is only in open source / open drain configurations
-> > and there are only a few users of these flags _in kernel_. I do not see
-> > why it can not be done in one or two evenings time range.
+> > > +#ifndef __TAS2781_SPI_H__
+> > > +#define __TAS2781_SPI_H__
+> > 
+> > + bits.h
+> > + mutex.h
+> > + time.h? (for struct tm)
+> > + types.h
+> > 
+> > struct calidata is from?..
+> > 
+> > > +#include <sound/tas2781-dsp.h>
+> > 
+> > Not sure how this is being used.
 > 
-> So you know what needs doing. I'm at a conference now, I'll be off for
-> a week in April and I also have another conference scheduled for May.
-> If you believe this needs addressing urgently, then I suggest you do
-> it right. Otherwise, I'll get to it when I have the time.
-> Unfortunately my TODO list runneth over. :(
+> Was used for firmware binary file parser, all of file format information
+> was defined in this header file. It can be shared between SPI & I2C.
 
-I have started already as you may have noticed.
+_This header_ file seems not using anything from it, does it?
 
-> But I have to say, I suspect it won't be as easy as you present it
-> because we have so many build configs that may fail.
-
-Let's see (with a hope)...
+> > Also some forward declarations:
+> > 
+> > + struct device;
+> > + struct firmware;
+> > + struct gpio_desc;
+> > + struct regmap;
 
 -- 
 With Best Regards,
