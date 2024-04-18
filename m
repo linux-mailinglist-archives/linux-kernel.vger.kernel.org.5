@@ -1,118 +1,189 @@
-Return-Path: <linux-kernel+bounces-150559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFD618AA0E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:16:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F40E8AA0EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:17:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 734E71F226C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:16:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52CF31C2118B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:17:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A0BA172BD0;
-	Thu, 18 Apr 2024 17:16:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F46171E47;
+	Thu, 18 Apr 2024 17:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kc6Dekqb"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="ZR2vh+F8"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14C87172790
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 17:16:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 824AA16F8F7
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 17:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713460596; cv=none; b=blI2qp/d/5EnKgy+ToaQZePC+X2LMTfx4cYbkzGl5jbgdqn88rfZn6wOgCtzwp03j3i4GX7h8oWPVKw7uUHf2GLidYKWuKwZU+63TisDQcQN6PhIh51mBGHKdFxrlRzvlTNwyupATr2eFvbyXrV+oA6R7AFp6e7pN1o5qRPTfig=
+	t=1713460635; cv=none; b=dsTkJFlRBxaW6vPTzrNwZZ754ei4wfbALyANuFYkhWRvdZLgwm+AlBMgMZGugRSxHSw9uCv0z30ZNWba2AjUq/DMs4xOTy74y5mHRCDzCr87hbMNs8vXjJp8zm4sdqU450UU+asEpzCfCOobj7uixsR5iz9bOEyOGEj+AcTSOFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713460596; c=relaxed/simple;
-	bh=Qe4POCSHxjWm3wFsaHCsEFxKNuqKh7otgYlk3HiwZ1s=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QMuOvvhJBgA80fwOJ4dBNGOPsRhpbroV7ZrIgQqU1WhR1uX2yQx3a+taBnkxg2lAcZBttpCrUSgjc+UN98jDYUeFmV/KPd1imuzVy7Q/vFriVxIxSsKDQd4R2jAf4ru31r1VtC0hdxEo7PPhuWM+yRaR5MHZuWWZ+MuoQem4pX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kc6Dekqb; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e3ca4fe4cfso9106435ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 10:16:33 -0700 (PDT)
+	s=arc-20240116; t=1713460635; c=relaxed/simple;
+	bh=v5XuTFSt2Kik+XEmSmTAttULoZnECzNaRJxl6D9YXHU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KSMjut3gjvdQ/KRZQjbKURedWjreW9ub08WmdMx3QVLztKJ2MTihK8k7OhvKSVHR5oQEuELSquU+kDygrPjlHIum/dAzQ3PTSfb+04VQOG3SHo/rtqsh6BJBQuregnMJV/SnAoXw/hiAk3Q90mxR54c3SnPI4sJH9dGxmVQMhV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=ZR2vh+F8; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-516d0c004b1so1467131e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 10:17:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713460593; x=1714065393; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1713460632; x=1714065432; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=F/uD81xAZaCWFwuTc9j81/JSG6jiqzchn2BejnWerUc=;
-        b=kc6DekqbChvvM6wPjR4T2XsTqs37gQa42JpU5Ch5an7MX7VSIgK6yfLLbEON8oAlCq
-         v3zNKiCocudZsU9ATzOJL96UOg6JW3vyRyIXBlcKFZSUOKF5sM1Q0AcwmkEYt3CSpjuI
-         eHlwGMOZCKwSCI2S05iKxCD8hNMzgw2yJ4kxU=
+        bh=pRA3Nwo8/llUCeKE7NO8/3NSffIJqFe+sm4EX8Gj6IY=;
+        b=ZR2vh+F8IfVihlYJXzRawnhMIgZS2EBrUR6HdC4SeTtWGjiRIm9++/yYljF+Si/Otq
+         HSsqlMaZuZ1SzVjZzs2m1JZgMbU6Rm1YxuFTvttw5l2slqhUXlIh1VbO++Q0cPWkjorg
+         Y/nHxBB4m0CyX2pGIMXXvB/k2lb67GN8KuBL3I76T9+/QtEdUbQs0tRI7J6Uy+16oh/2
+         Tu8ZYffgV5SpZA6w2+2k4Oc75+FYlQOsy2AZO90bCY044zqNBc6Fe7mY8cKq8MqXMy3y
+         WU+4BpIU/pZK9Sq/Hi6v0I14a/Y5q9o8lLBur1jRjwN48MfuDJZ0KBrcjlloIt5gjLVI
+         0Tog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713460593; x=1714065393;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1713460632; x=1714065432;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=F/uD81xAZaCWFwuTc9j81/JSG6jiqzchn2BejnWerUc=;
-        b=Ei3g1waXTZmf76E3XhDfyXs9xFzYxqwlB+GyJ6eIxmIoiQco282F8xfpEEBJbh8uxd
-         qa4NA0PqOskbmLeAZLcjYRT2cD4mckVNxeMemutC7D+DtZ6da5w8a/qUZjfkm0UdxSiW
-         gycRz4nQzGpaE/o6s4EX7M4eC006L4YpMXMybyByNZxNZ6cjX/AT40xJuhCVWuakfJSo
-         i64URF8ZUa+IMX48G03OYGVIdUKx1mzY8KOPx8JA3eXybW3DCP4voDbtWyjmaw0A3tLu
-         e4XZBqKOiZ0S6v/jEW5Gx69cUUKrq9myyPxWAY8vlj+IPEr/hN94d49IRyPpWKTjE+Qu
-         f+4g==
-X-Forwarded-Encrypted: i=1; AJvYcCWawa935lxhW3xj0mi7anrgNoQimcXkayt/8BUosyRwSSZ1HS26b0mKxYUaYhqnrp2s477Zpzb1vDZZ9/DROIcF0ueeuJqOFk9zTBwy
-X-Gm-Message-State: AOJu0YzJEgdp/ipQ40K5cLbG7xdNHFYWLSNc9wrnIXjB4Oy4RoB/Bxbo
-	JXy1L9GlGzj1lCtmse9uvQJjoN33ODqwSPWuepWrQ5zv4LrTvpog6kFiasDU4w==
-X-Google-Smtp-Source: AGHT+IF4PJgI0BdB8W3UuYRsvVhssCDWMQrlZJDq6Ju6m2xTCnHYPSN2BvrH3mRx6EOdyhF6OdVi3Q==
-X-Received: by 2002:a17:90a:f40f:b0:2aa:9738:ad2f with SMTP id ch15-20020a17090af40f00b002aa9738ad2fmr3697941pjb.6.1713460593351;
-        Thu, 18 Apr 2024 10:16:33 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id u23-20020a17090ae01700b002a219f8079fsm1698092pjy.33.2024.04.18.10.16.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 10:16:32 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: andy@kernel.org,
-	akpm@linux-foundation.org,
-	Ivan Orlov <ivan.orlov0322@gmail.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	kunit-dev@googlegroups.com,
-	skhan@linuxfoundation.org
-Subject: Re: [PATCH v2] string_kunit: Add test cases for str*cmp functions
-Date: Thu, 18 Apr 2024 10:16:28 -0700
-Message-Id: <171346058636.2400104.10410975122158438453.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240417233033.717596-1-ivan.orlov0322@gmail.com>
-References: <20240417233033.717596-1-ivan.orlov0322@gmail.com>
+        bh=pRA3Nwo8/llUCeKE7NO8/3NSffIJqFe+sm4EX8Gj6IY=;
+        b=DhYwQrk3ISMjr0g+t0Gy86gqYwwZJap9u8WLNYIMPK6jUgPGEEph0E3Rvt3U8MfbGZ
+         RKBH1JAVxDoyh42gxlSXGvNYVgwK86o++I0gpQjy691Ev2KbRDN+9myd4PXAq6+qfcaE
+         rX/v59z7KapUgN+KpGRkYcyX0Kop+ECWNUxaxeosjZSc8Qka3Zal/nFjWt9hDrOfyF0b
+         RZjtG+PLA1RCxhCkH0cxmWgjOuF3+quBEMcu77DqYbFpi45eaqyETlqbjZtL6jerOGWC
+         O9VxlKgRRDgfTNkPVk559wuJ6tcHjUAwZb/CjwDCA2Cm5cZKfTo1eBvAzwE8xEHofeMm
+         9FEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVliB5E6CeUlxom4sFe6cRZNlMM9Q+pdgtkrmtJ3cs0KzRXnJRNcZ42YJluJimPH1UgFc1YtpAPWu2Shc/ykBnnwHnrFwwlSP3EZC8A
+X-Gm-Message-State: AOJu0YyrszhYYGbhXqaT+cqivTQvJpeoda0DlHNAxCbArHl1OM6wsJlp
+	zmLdlMb/dtmkT5z7CqVaJTEyYHXCSKk9xg/e6Rve7KCRDIUz5Hn+9OxpQ6lFH+mcv9myLLq3p9w
+	h+4UteD5Z3JeAC53EfYQG+kkSf7S7hRCWxaJSKj9vpl+WGXzCjhM=
+X-Google-Smtp-Source: AGHT+IGxt4gY5xvRqj+X0q6Yo3MbqlkRZaOSX6Mvc6ee2gPDB2zYeEmWVTTaFoLHAJ+chcVvCtVjJ16zdnVjKjkHWcs=
+X-Received: by 2002:a19:2d14:0:b0:515:b164:4112 with SMTP id
+ k20-20020a192d14000000b00515b1644112mr2535477lfj.68.1713460631543; Thu, 18
+ Apr 2024 10:17:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20240417230637.2592473-1-dtokazaki@google.com>
+ <CAMRc=Mcbi8BQ-tHNs+BVjbm3aDSVY0zzOM4QfND3d2y8ryT62g@mail.gmail.com>
+ <CAMRc=McRiv6vtU5LySrkbfdbCaqZ2tXbHnazo4iahRS-SKAXxg@mail.gmail.com> <CAOC40965VyOQX_WHxA0a=Ke6knoeYYYjqTkFva9eNyG55_Yi-g@mail.gmail.com>
+In-Reply-To: <CAOC40965VyOQX_WHxA0a=Ke6knoeYYYjqTkFva9eNyG55_Yi-g@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 18 Apr 2024 19:17:00 +0200
+Message-ID: <CAMRc=Mcb0uAjUBOKraLaev_xU+3OObj9YJm1Yq2A2s2bZOViiQ@mail.gmail.com>
+Subject: Re: [PATCH v1] at24: fix memory corruption race condition
+To: Daniel Okazaki <dtokazaki@google.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, kernel-team@android.com, 
+	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 18 Apr 2024 00:30:33 +0100, Ivan Orlov wrote:
-> Currently, str*cmp functions (strcmp, strncmp, strcasecmp and
-> strncasecmp) are not covered with tests. Extend the `string_kunit.c`
-> test by adding the test cases for them.
-> 
-> This patch adds 8 more test cases:
-> 
-> 1) strcmp test
-> 2) strcmp test on long strings (2048 chars)
-> 3) strncmp test
-> 4) strncmp test on long strings (2048 chars)
-> 5) strcasecmp test
-> 6) strcasecmp test on long strings
-> 7) strncasecmp test
-> 8) strncasecmp test on long strings
-> 
-> [...]
+On Thu, Apr 18, 2024 at 7:13=E2=80=AFPM Daniel Okazaki <dtokazaki@google.co=
+m> wrote:
+>
+> nvmem devices allow for linking by name in the DTS which doesn't
+> create a dependency in the probe order.
+>
+> What happens is driver B probe starts shortly after the eeprom
+> probe and calls of_nvmem_device_get. Since a device is
+> registered it starts using it; however if the eeprom isn't there
+> then the read will fail and it will start tearing down the resources.
+> Driver B will now access invalid memory causing a kernel panic.
+>
+> Daniel
+>
 
-Applied to for-linus/hardening, thanks!
+Please don't top-post on the linux kernel mailing list.
 
-[1/1] string_kunit: Add test cases for str*cmp functions
-      (no commit info)
+I'm Cc'ing Srini, the maintainer of NVMEM. I think this is an issue
+with nvmem core as it shouldn't allow access to nvmem devices once it
+starts tearing them down. Srini, could you comment on this?
 
-Take care,
+Bartosz
 
--- 
-Kees Cook
-
+>
+> On Wed, Apr 17, 2024 at 5:23=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
+l> wrote:
+> >
+> > On Thu, Apr 18, 2024 at 1:59=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev=
+pl> wrote:
+> > >
+> > > On Thu, Apr 18, 2024 at 1:07=E2=80=AFAM Daniel Okazaki <dtokazaki@goo=
+gle.com> wrote:
+> > > >
+> > > > If the eeprom is not accessible, an nvmem device will be registered=
+, the
+> > > > read will fail, and the device will be torn down. If another driver
+> > > > accesses the nvmem device after the teardown, it will reference
+> > > > invalid memory.
+> > > >
+> > > > Move the failure point before registering the nvmem device.
+> > > >
+> > > > Signed-off-by: Daniel Okazaki <dtokazaki@google.com>
+> > > > ---
+> > > >  drivers/misc/eeprom/at24.c | 18 +++++++++---------
+> > > >  1 file changed, 9 insertions(+), 9 deletions(-)
+> > > >
+> > > > diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.=
+c
+> > > > index 572333ead5fb..4bd4f32bcdab 100644
+> > > > --- a/drivers/misc/eeprom/at24.c
+> > > > +++ b/drivers/misc/eeprom/at24.c
+> > > > @@ -758,15 +758,6 @@ static int at24_probe(struct i2c_client *clien=
+t)
+> > > >         }
+> > > >         pm_runtime_enable(dev);
+> > > >
+> > > > -       at24->nvmem =3D devm_nvmem_register(dev, &nvmem_config);
+> > > > -       if (IS_ERR(at24->nvmem)) {
+> > > > -               pm_runtime_disable(dev);
+> > > > -               if (!pm_runtime_status_suspended(dev))
+> > > > -                       regulator_disable(at24->vcc_reg);
+> > > > -               return dev_err_probe(dev, PTR_ERR(at24->nvmem),
+> > > > -                                    "failed to register nvmem\n");
+> > > > -       }
+> > > > -
+> > > >         /*
+> > > >          * Perform a one-byte test read to verify that the chip is =
+functional,
+> > > >          * unless powering on the device is to be avoided during pr=
+obe (i.e.
+> > > > @@ -782,6 +773,15 @@ static int at24_probe(struct i2c_client *clien=
+t)
+> > > >                 }
+> > > >         }
+> > > >
+> > > > +       at24->nvmem =3D devm_nvmem_register(dev, &nvmem_config);
+> > > > +       if (IS_ERR(at24->nvmem)) {
+> > > > +               pm_runtime_disable(dev);
+> > > > +               if (!pm_runtime_status_suspended(dev))
+> > > > +                       regulator_disable(at24->vcc_reg);
+> > > > +               return dev_err_probe(dev, PTR_ERR(at24->nvmem),
+> > > > +                                    "failed to register nvmem\n");
+> > > > +       }
+> > > > +
+> > > >         /* If this a SPD EEPROM, probe for DDR3 thermal sensor */
+> > > >         if (cdata =3D=3D &at24_data_spd)
+> > > >                 at24_probe_temp_sensor(client);
+> > > > --
+> > > > 2.44.0.683.g7961c838ac-goog
+> > > >
+> > >
+> > > Looks good, can you add a Fixes tag?
+> > >
+> > > Thanks,
+> > > Bartosz
+> >
+> > Wait... While the patch is still correct - we shouldn't needlessly
+> > create the nvmem device - why would anything crash? Looks like a
+> > problem with nvmem then? How did you trigger this issue?
+> >
+> > Bart
 
