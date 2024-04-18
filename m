@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-150732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 715FF8AA3DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:10:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 326038AA3DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:10:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D662284C56
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:10:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23B5D1C211CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:10:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D10E019069B;
-	Thu, 18 Apr 2024 20:10:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0BED194C8A;
+	Thu, 18 Apr 2024 20:10:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rUWltMsZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="maHvPThe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1142719067C;
-	Thu, 18 Apr 2024 20:10:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8794194C74;
+	Thu, 18 Apr 2024 20:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713471009; cv=none; b=YcdtAs/DLLjxBFvgimjR925XNsXrrVpT3WKGZBZkDDQ8FSUn0OIBhPXeotb+v0zsyWP7fjWJh6gChyexvJx3R+Twahsqlp5X+7rEHFZufdbqrwtJu6DP1hx1Z9Itlz/QEsl2dwk4peLj0511ySY+B5p8JLGrYpb7z3J+T9u8+7A=
+	t=1713471012; cv=none; b=ePqrDT9fibwiYoUiz81zeC16K+83GgMHCVCCsr1mEImJYxHF+dUH6Hd9vV8gxuuRLxzUvSHJddBNxe8W2lcUYJClXnevTLaEAq5IeHq4vxcAd+O8DQWzr5izV6rABnVyJYfvJgPmzqCT+XqdpzA2FYuFkd/e43bsZZtRfg+Uhkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713471009; c=relaxed/simple;
-	bh=h4USdSWrObqaShpccdjzCvfL0FvhrtPROlPptuSSiLI=;
+	s=arc-20240116; t=1713471012; c=relaxed/simple;
+	bh=1jbCnAE/ii2sK8qE3QI3BU+zcM+GW4I6gtOic2jfh/E=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=B+nmLi9st8xgDhyCcdBev0LNDn23nNUekSfhaDDKTNCruK7Ymvju0aDxW7N/ooQtps82sa1dmjKePsbC7iyVRMOapm1dWcmztUmMV2202DvpPwADw7ZVxglBnH2gTO0o48e5d0qs3cX0BrLEVHfbxq46UHro1loGFosX3K+26OE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rUWltMsZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2035C113CC;
-	Thu, 18 Apr 2024 20:10:08 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=ZmsU54OAnTsQ0wD3MwQwEjVCsm+YKFRHbalY4mpPiimUb76PWkNyhQ1rN9r+bJD2obdAPe2y3AZ4+9Ad4uxhiMz49cA705tcM7B9DFB0NMwX+GUmm6wRyJw6uXa+3gEuIvlGLaglybZDXoJHPyHQR5lsrpK2/2JqNdExJvs7/XM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=maHvPThe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 328C4C113CC;
+	Thu, 18 Apr 2024 20:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713471008;
-	bh=h4USdSWrObqaShpccdjzCvfL0FvhrtPROlPptuSSiLI=;
+	s=k20201202; t=1713471011;
+	bh=1jbCnAE/ii2sK8qE3QI3BU+zcM+GW4I6gtOic2jfh/E=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=rUWltMsZ6VPntRp6y4U+QHQ+4xtS8rjX4+FYb4cin/PwkgpuIEgaAApMw+10WVMZW
-	 yFzAUfWLwjc2Qos6kfN+zHy1sS6f3x0UixcWRjNnoWHzewCbM63yFa1Nad+qpSHnVS
-	 tlNch7Wy0LBufrSrjVDLNDnVwhlfMwkHjeErHgTVFOc5NKJU1M0/NxfsY8RecMFLyL
-	 sfqbbKWXtjw3Y6jrGxN/MP9cyC6FcHpMFEesVOotyLEcNyMBXwkbGXrgYcd8H3bt6R
-	 +KNo0WHZm5vMj5nXvUzd60jy4AYqocwtW/Bp9WQB777z39u9nIraRrWO4TWfgIMwDn
-	 nrg4ztiOLNBWQ==
+	b=maHvPTheexlW8Hckm36c6THqkXj57VC9Zg+iPO0oegPO6TEP0a1soaMRmcPLmKWWj
+	 UyFCY74mwJmUQtjH1WYEBvEtOahlhTSp7VrzaqrMlRYRzNW/p/J6eAMLiVEVZ1dMDn
+	 zZzutXtm3NY7JZ1JuRRVO/Ux2qXq2leHoOGwtqr0K4g82CFWe+Ua0paI2LK1CUdJWN
+	 gHciySLXMJ+PjNNgZWE4gythG/pdNz+gKMEjzlaXWP5IQB1sqa8U/QemeyunOUQr7C
+	 MFvShtooBgsgX7FUbrpXRmPMX9n/578Qxq11X3vSd1GlikpEx6bWtt3a1+OpydIRLe
+	 8FyV/FAINIJ1Q==
 From: "Rob Herring (Arm)" <robh@kernel.org>
-Date: Thu, 18 Apr 2024 15:09:25 -0500
-Subject: [PATCH 1/2] arm64: dts: freescale: ls1028a: Fix embedded PCI
- interrupt mapping
+Date: Thu, 18 Apr 2024 15:09:26 -0500
+Subject: [PATCH 2/2] arm64: dts: freescale: ls1028a: Add standard PCI
+ device compatible strings to ENETC
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,7 +52,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240418-dt-ls1028a-pci-fixes-v1-1-95f17405e481@kernel.org>
+Message-Id: <20240418-dt-ls1028a-pci-fixes-v1-2-95f17405e481@kernel.org>
 References: <20240418-dt-ls1028a-pci-fixes-v1-0-95f17405e481@kernel.org>
 In-Reply-To: <20240418-dt-ls1028a-pci-fixes-v1-0-95f17405e481@kernel.org>
 To: Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>, 
@@ -63,52 +63,70 @@ Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 X-Mailer: b4 0.14-dev
 
-PCI devices should use PCI interrupt binding for their interrupts assuming
-they function as standard PCI interrupts. The embedded PCI devices in the
-LS1028a are mapping the interrupts directly to the host interrupt
-controller. While that works here, it is unusual.
+PCI devices should have a compatible string based on the vendor and device
+IDs. Add these to the Freescale ENETC devices.
 
-Based on the reference manual, there is not any INTC or INTD to map, so
-only INTA and INTB are mapped.
+Putting the PCI compatible string first as vendor and device ID is more
+specific than a compatible without any device specific information.
 
 Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-index ae534c23b970..8f8179924851 100644
+index 8f8179924851..70b8731029c4 100644
 --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
 +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-@@ -1099,6 +1099,10 @@ pcie@1f0000000 { /* Integrated Endpoint Root Complex */
- 				  0xc2000000 0x1 0xf8230000  0x1 0xf8230000  0x0 0x020000
- 				  /* BAR4 (PF5) - non-prefetchable memory */
- 				  0x82000000 0x1 0xfc000000  0x1 0xfc000000  0x0 0x400000>;
-+			#interrupt-cells = <1>;
-+			interrupt-map-mask = <0 0 0 7>;
-+			interrupt-map = <0000 0 0 1 &gic 0 0 GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>,
-+					<0000 0 0 2 &gic 0 0 GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
+@@ -1105,19 +1105,19 @@ pcie@1f0000000 { /* Integrated Endpoint Root Complex */
+ 					<0000 0 0 2 &gic 0 0 GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
  
  			enetc_port0: ethernet@0,0 {
- 				compatible = "fsl,enetc";
-@@ -1143,7 +1147,7 @@ ethernet@0,4 {
- 			mscc_felix: ethernet-switch@0,5 {
- 				reg = <0x000500 0 0 0 0>;
- 				/* IEP INT_B */
--				interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupts = <2>;
+-				compatible = "fsl,enetc";
++				compatible = "pci1957,e100", "fsl,enetc";
+ 				reg = <0x000000 0 0 0 0>;
  				status = "disabled";
- 
- 				mscc_felix_ports: ports {
-@@ -1216,7 +1220,7 @@ fixed-link {
- 			rcec@1f,0 {
- 				reg = <0x00f800 0 0 0 0>;
- 				/* IEP INT_A */
--				interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupts = <1>;
  			};
- 		};
  
+ 			enetc_port1: ethernet@0,1 {
+-				compatible = "fsl,enetc";
++				compatible = "pci1957,e100", "fsl,enetc";
+ 				reg = <0x000100 0 0 0 0>;
+ 				status = "disabled";
+ 			};
+ 
+ 			enetc_port2: ethernet@0,2 {
+-				compatible = "fsl,enetc";
++				compatible = "pci1957,e100", "fsl,enetc";
+ 				reg = <0x000200 0 0 0 0>;
+ 				phy-mode = "internal";
+ 				status = "disabled";
+@@ -1130,14 +1130,14 @@ fixed-link {
+ 			};
+ 
+ 			enetc_mdio_pf3: mdio@0,3 {
+-				compatible = "fsl,enetc-mdio";
++				compatible = "pci1957,ee01", "fsl,enetc-mdio";
+ 				reg = <0x000300 0 0 0 0>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
+ 			};
+ 
+ 			ethernet@0,4 {
+-				compatible = "fsl,enetc-ptp";
++				compatible = "pci1957,ee02", "fsl,enetc-ptp";
+ 				reg = <0x000400 0 0 0 0>;
+ 				clocks = <&clockgen QORIQ_CLK_HWACCEL 3>;
+ 				little-endian;
+@@ -1205,7 +1205,7 @@ fixed-link {
+ 			};
+ 
+ 			enetc_port3: ethernet@0,6 {
+-				compatible = "fsl,enetc";
++				compatible = "pci1957,e100", "fsl,enetc";
+ 				reg = <0x000600 0 0 0 0>;
+ 				phy-mode = "internal";
+ 				status = "disabled";
 
 -- 
 2.43.0
