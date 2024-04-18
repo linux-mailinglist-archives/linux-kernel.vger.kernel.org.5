@@ -1,105 +1,74 @@
-Return-Path: <linux-kernel+bounces-149800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEABF8A95FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:25:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8AE78A9616
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:27:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91FA5284719
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:25:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5DC91C218E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:27:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F68A15E5CA;
-	Thu, 18 Apr 2024 09:23:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976C21607A2;
+	Thu, 18 Apr 2024 09:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="DnCEBtEr";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YAU48Izp"
-Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="c+9DLdFN"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14BD915E215
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CE8615FD15;
+	Thu, 18 Apr 2024 09:23:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713432206; cv=none; b=Kj9IbN3lHk+LXGi1tOvfn9doA5t5IsVMNXOTEf7cBx8hqnr+dGBTSVu/waFnSnJs/icG5K9GAgOf/TeT5dVFFi4NsDhjYpmT4xWO7G/17XnCWibpg0ttA1zPLPTyU9X4IbJmLKvJwKR4pZfZT8qsTWdlsY6yaQl4Er/BxF1lrQk=
+	t=1713432234; cv=none; b=hPxZOhEz8P6ZGXYbN4WOB+qrf6jbKf0fBr1BLleFd+KiBahxS5/apmaOvLyUjbEGBWaHo4bxCg2+/DqjJu5Jhotbsbl2p6pRcHvoVeFoAq19AfCraWIu+bxM/XGpDacr7ARBSR44isJlgT2uYKrSJs+NLdQhsw3FIYe5EqWpziY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713432206; c=relaxed/simple;
-	bh=+iue6vUJSFEkVGwlqQ49JgmUF0zJCSuRmxg9vrDDtHA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KC3ZSZDM75tZoHj7KoJyvlii7Fc/M94M497xV3GdHWSGi3ln527YBgeL+JB2VANl8631LLeDAuYvLuLr00ZgIAH3m8x6B/8MdIUyjtKvojKsqj3+gPX4q7PzEfO9PuysuRCor+xGLiE/Ph4w2sGJDmLrJhkHRTYIKFVH3UHOik8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=DnCEBtEr; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YAU48Izp; arc=none smtp.client-ip=103.168.172.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 3ACCD114011F;
-	Thu, 18 Apr 2024 05:23:24 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Thu, 18 Apr 2024 05:23:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
-	:from:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1713432204; x=
-	1713518604; bh=FDQwV+EcmAsl476lXLMlzTwzlhfthYLIcTW64tkepxs=; b=D
-	nCEBtErDjGHapb0yZmxwr/smuBOJ8BOlxPLPFVjxuJjSd0M0lm910U9ImP2sg9w5
-	F3F+XhKaTF38VWhhr55QSAo5v0qOIRlAgNCLsV+IB2Ja1Jg/R91YfEhc19Pb6ZVP
-	bhOxCSdJb3ih1LV22RI7f6dXPd/nr5v317mekRc7UnBjhlPAv+saNZKVpYvIa5t9
-	0p0Bt2v5gozXE2gnhpjXsyDupWgDv5pTvtcSOSQQBtNm5WIHGKKkV2KcaBA0y0MW
-	CKW29wHD/sJYCFI4Eg5wUCh1av4eWKuZJznPxgYp7eIr7J4UsKzSAR8nluhNLaIt
-	K0fIenCw79P09EszTlW0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1713432204; x=
-	1713518604; bh=FDQwV+EcmAsl476lXLMlzTwzlhfthYLIcTW64tkepxs=; b=Y
-	AU48IzpAhqW+/UinTkLuykptFSZdSD4R+pifposyY5U+vmFSScvVPh7SwISJuX4A
-	OvKRqkKlQmL4L6fT4NyCMk6ZMwk72HSM2HHLtWotC2ZQly1wWmwvlGdXBXixH35E
-	fFOYJxleJekLqmXZ4FfR8EVPNlEOjkDG7WjdVwQYY1R+s7fdHszrJlKPPC7wpPFD
-	gNSqq2mKKRiCvpABYWoaAlzrLWwZCfVUFyUTmZjYjzw+g0EgNSdy1cey/RTE5Bf4
-	rQKRctbIcV8PzUKRl7RjqZAm+fqg1SlU6H35kk7Ucya1SMXR4h/ASsuhyEOsKech
-	9lE+4AYtJiThtgcud+/2w==
-X-ME-Sender: <xms:jOYgZgoTLxKXFe6IDwIe00JZxVCqMwcWOXoG-NyHR7GqgZfba36FOQ>
-    <xme:jOYgZmozVIoAaradK5Uq6_asGKklja57XxHZk7oX-v-qQJkfBCv33IGdwoX7dRQI0
-    lTwpVL0_FPk2QiPlcQ>
-X-ME-Received: <xmr:jOYgZlN4I9Xe5cvt_IHNQt-CWGDYnY5jGA2nGKH1dcFPwc_mhFNILm9IPwqaTyMmZRUBPZvrDUFK5qsClsfwFVWDbnGwWUagENoTCDI2d1dOrQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudektddgudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
-    rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpedvjefgje
-    euvdfguddukeelveetgfdtvefhtdfffeeigfevueetffeivdffkedvtdenucevlhhushht
-    vghrufhiiigvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
-    hsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:jOYgZn45nMmFZ-_cBosJYh-DsU3A6sy4mbQJFYoeHlIDSq2XVH_dUw>
-    <xmx:jOYgZv5yl7OUUs1hgkdJUlCiXEUf_RB0vgV4wbWqA05tt-XKcrPe7Q>
-    <xmx:jOYgZnjG2k_hwqZDV55SunLwEoMVVxBQp1m0ODQ3rRG9Y881kdfdYg>
-    <xmx:jOYgZp7isweVygzX18iDa36dXYIvUuCXAOE-eEI9jIG0NaDXi-Le7w>
-    <xmx:jOYgZvGhclQBzklAMsJRnBNSgPmovfbPX6kdIgd-0L8AYF-484aRP2sU>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 18 Apr 2024 05:23:23 -0400 (EDT)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: linux1394-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 12/13] firewire: core: add tracepoint event for asynchronous inbound request
-Date: Thu, 18 Apr 2024 18:23:02 +0900
-Message-ID: <20240418092303.19725-13-o-takashi@sakamocchi.jp>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240418092303.19725-12-o-takashi@sakamocchi.jp>
-References: <20240418092303.19725-1-o-takashi@sakamocchi.jp>
- <20240418092303.19725-2-o-takashi@sakamocchi.jp>
- <20240418092303.19725-3-o-takashi@sakamocchi.jp>
- <20240418092303.19725-4-o-takashi@sakamocchi.jp>
- <20240418092303.19725-5-o-takashi@sakamocchi.jp>
- <20240418092303.19725-6-o-takashi@sakamocchi.jp>
- <20240418092303.19725-7-o-takashi@sakamocchi.jp>
- <20240418092303.19725-8-o-takashi@sakamocchi.jp>
- <20240418092303.19725-9-o-takashi@sakamocchi.jp>
- <20240418092303.19725-10-o-takashi@sakamocchi.jp>
- <20240418092303.19725-11-o-takashi@sakamocchi.jp>
- <20240418092303.19725-12-o-takashi@sakamocchi.jp>
+	s=arc-20240116; t=1713432234; c=relaxed/simple;
+	bh=T7Rgau1rzdZt01khVIDbkhoJQLqfaHI/1aq574/2kh0=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JzjCNleWbNtnZgN6Bqu9hMzvrQMrakRVBOVBv4wBm+zKLXZvZQCiI53RyjbPcY4gSpsrz5z1AX2Cmvc6Xgkhe1DKlucAo8kdYM666YXQnBikkQ6yFlSbLM6kML/BPg2xklj5oKzU9Qn1OwBlEtQM1Q78Sku/WNE1Z9wBhtEgYpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=c+9DLdFN; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43HNcr5M014398;
+	Thu, 18 Apr 2024 09:23:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	qcppdkim1; bh=0Xh6KXQvbd4uP5SbqSIAeRt/gx3dC3hjpO/8cGO9rRQ=; b=c+
+	9DLdFNxOpj3Id+6tlXJZfqvEPiNfd7S6ghSuSNmNAxnQF7xr5ya/eC5BuntGcANI
+	XSS8SxambmzDjgCM+DUc6A8nanI0QxoiJe+iSOr+i7oviWluC4fx4JCINimwPQXp
+	0E3TS8deG+ECtm13okz/zdLTJsXsnfXu+c0dwxVliTqeOU2Rm2daxj5PP/0YIiFS
+	Nv0NMb018FDXDe4Qq6uNBKgz2QLt6698vKFJdViFGB6oG98yoXQXDgjIGsHC2uyp
+	U+vs9rw1nHJs/wwEA3bNU8jspAV72yYwx+UicZhakO7Bd0LHSuCb2kYBeEwt2Fup
+	3+ezA7E5VYagbx6SUH8w==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xjr92hc42-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 09:23:49 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43I9Nnxg012767
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 09:23:49 GMT
+Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Thu, 18 Apr 2024 02:23:44 -0700
+From: Varadarajan Narayanan <quic_varada@quicinc.com>
+To: <andersson@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <djakov@kernel.org>,
+        <quic_varada@quicinc.com>, <dmitry.baryshkov@linaro.org>,
+        <quic_anusha@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+Subject: [PATCH v9 3/6] interconnect: icc-clk: Add devm_icc_clk_register
+Date: Thu, 18 Apr 2024 14:53:02 +0530
+Message-ID: <20240418092305.2337429-4-quic_varada@quicinc.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240418092305.2337429-1-quic_varada@quicinc.com>
+References: <20240418092305.2337429-1-quic_varada@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -107,111 +76,79 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: wZrWsJOJsCIP07Gw5KgHA2dzfszQQMQ5
+X-Proofpoint-ORIG-GUID: wZrWsJOJsCIP07Gw5KgHA2dzfszQQMQ5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-18_08,2024-04-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 bulkscore=0
+ phishscore=0 impostorscore=0 spamscore=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404180065
 
-This commit adds an event for asynchronous inbound request.
+Wrap icc_clk_register to create devm_icc_clk_register to be
+able to release the resources properly.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
 ---
- drivers/firewire/core-transaction.c |  8 ++++-
- drivers/firewire/trace.h            | 54 +++++++++++++++++++++++++++++
- 2 files changed, 61 insertions(+), 1 deletion(-)
+v8: Added Reviewed-by: Dmitry Baryshkov
+v7: Simplify devm_icc_clk_register implementation as suggested in review
+v5: Introduced devm_icc_clk_register
+---
+ drivers/interconnect/icc-clk.c   | 18 ++++++++++++++++++
+ include/linux/interconnect-clk.h |  2 ++
+ 2 files changed, 20 insertions(+)
 
-diff --git a/drivers/firewire/core-transaction.c b/drivers/firewire/core-transaction.c
-index 977d8a36f969..1b972e95fe36 100644
---- a/drivers/firewire/core-transaction.c
-+++ b/drivers/firewire/core-transaction.c
-@@ -972,11 +972,13 @@ void fw_core_handle_request(struct fw_card *card, struct fw_packet *p)
- {
- 	struct fw_request *request;
- 	unsigned long long offset;
-+	unsigned int tcode;
+diff --git a/drivers/interconnect/icc-clk.c b/drivers/interconnect/icc-clk.c
+index 2be193fd7d8f..f788db15cd76 100644
+--- a/drivers/interconnect/icc-clk.c
++++ b/drivers/interconnect/icc-clk.c
+@@ -148,6 +148,24 @@ struct icc_provider *icc_clk_register(struct device *dev,
+ }
+ EXPORT_SYMBOL_GPL(icc_clk_register);
  
- 	if (p->ack != ACK_PENDING && p->ack != ACK_COMPLETE)
- 		return;
- 
--	if (tcode_is_link_internal(async_header_get_tcode(p->header))) {
-+	tcode = async_header_get_tcode(p->header);
-+	if (tcode_is_link_internal(tcode)) {
- 		fw_cdev_handle_phy_packet(card, p);
- 		return;
- 	}
-@@ -987,6 +989,10 @@ void fw_core_handle_request(struct fw_card *card, struct fw_packet *p)
- 		return;
- 	}
- 
-+	trace_async_request_inbound(card, request, p->ack, p->speed, p->timestamp, p->generation,
-+				    p->header, request->data,
-+				    tcode_is_read_request(tcode) ? 0 : request->length / 4);
++static void devm_icc_release(void *res)
++{
++	icc_clk_unregister(res);
++}
 +
- 	offset = async_header_get_offset(p->header);
- 
- 	if (!is_in_fcp_region(offset, request->length))
-diff --git a/drivers/firewire/trace.h b/drivers/firewire/trace.h
-index 5187f5f2b140..ba09eb720933 100644
---- a/drivers/firewire/trace.h
-+++ b/drivers/firewire/trace.h
-@@ -136,6 +136,60 @@ TRACE_EVENT(async_response_inbound,
- 	)
- )
- 
-+TRACE_EVENT(async_request_inbound,
-+	TP_PROTO(const struct fw_card *card, const struct fw_request *request, unsigned int ack,
-+		 unsigned int scode, unsigned int timestamp, unsigned int generation,
-+		 const u32 *header, const u32 *data, unsigned int data_count),
-+	TP_ARGS(card, request, ack, scode, timestamp, generation, header, data, data_count),
-+	TP_STRUCT__entry(
-+		__field(u64, transaction)
-+		__field(u8, scode)
-+		__field(u8, ack)
-+		__field(u8, generation)
-+		__field(u16, timestamp)
-+		__field(u16, destination)
-+		__field(u8, tlabel)
-+		__field(u8, retry)
-+		__field(u8, tcode)
-+		__field(u8, priority)
-+		__field(u16, source)
-+		__field(u64, offset)
-+		__dynamic_array(u32, data, data_count)
-+	),
-+	TP_fast_assign(
-+		__entry->transaction = (u64)request;
-+		__entry->scode = scode;
-+		__entry->ack = ack;
-+		__entry->generation = generation;
-+		__entry->timestamp = timestamp;
-+		__entry->destination = async_header_get_destination(header);
-+		__entry->tlabel = async_header_get_tlabel(header);
-+		__entry->retry = async_header_get_retry(header);
-+		__entry->tcode = async_header_get_tcode(header);
-+		__entry->priority = async_header_get_priority(header);
-+		__entry->source = async_header_get_source(header);
-+		__entry->offset = async_header_get_offset(header);
-+		memcpy(__get_dynamic_array(data), data, __get_dynamic_array_len(data));
-+	),
-+	TP_printk(
-+		"transaction=0x%llx scode=%u ack=%u generation=%u timestamp=0x%04x dst_id=0x%04x tlabel=%u retry=%u tcode=%u priority=%u src_id=0x%04x offset=0x%012llx data=%s",
-+		__entry->transaction,
-+		__entry->scode,
-+		__entry->ack,
-+		__entry->generation,
-+		__entry->timestamp,
-+		__entry->destination,
-+		__entry->tlabel,
-+		__entry->retry,
-+		__entry->tcode,
-+		__entry->priority,
-+		__entry->source,
-+		__entry->offset,
-+		__print_array(__get_dynamic_array(data),
-+			      __get_dynamic_array_len(data) / sizeof(u32), sizeof(u32))
-+	)
-+)
++int devm_icc_clk_register(struct device *dev, unsigned int first_id,
++			  unsigned int num_clocks, const struct icc_clk_data *data)
++{
++	struct icc_provider *prov;
 +
- #endif // _FIREWIRE_TRACE_EVENT_H
++	prov = icc_clk_register(dev, first_id, num_clocks, data);
++	if (IS_ERR(prov))
++		return PTR_ERR(prov);
++
++	return devm_add_action_or_reset(dev, devm_icc_release, prov);
++}
++EXPORT_SYMBOL_GPL(devm_icc_clk_register);
++
+ /**
+  * icc_clk_unregister() - unregister a previously registered clk interconnect provider
+  * @provider: provider returned by icc_clk_register()
+diff --git a/include/linux/interconnect-clk.h b/include/linux/interconnect-clk.h
+index 170898faaacb..9bcee3e9c56c 100644
+--- a/include/linux/interconnect-clk.h
++++ b/include/linux/interconnect-clk.h
+@@ -19,6 +19,8 @@ struct icc_provider *icc_clk_register(struct device *dev,
+ 				      unsigned int first_id,
+ 				      unsigned int num_clocks,
+ 				      const struct icc_clk_data *data);
++int devm_icc_clk_register(struct device *dev, unsigned int first_id,
++			  unsigned int num_clocks, const struct icc_clk_data *data);
+ void icc_clk_unregister(struct icc_provider *provider);
  
- #define TRACE_INCLUDE_PATH	.
+ #endif
 -- 
-2.43.0
+2.34.1
 
 
