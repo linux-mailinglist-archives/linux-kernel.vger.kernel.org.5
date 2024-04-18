@@ -1,105 +1,119 @@
-Return-Path: <linux-kernel+bounces-149635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E39278A93C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:11:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D97B8A93CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:14:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25E9E1C21765
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:11:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E03DFB21B66
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:14:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631EE3B785;
-	Thu, 18 Apr 2024 07:11:45 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 554E03C473;
+	Thu, 18 Apr 2024 07:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QGNpDcr2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 457EF25777
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:11:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C6625777;
+	Thu, 18 Apr 2024 07:14:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713424305; cv=none; b=ddDV1xtx2SQSvV9wLWDI1Y4LL6/J/jWsjOhEOb9PUPUZVCtfTrEH30K4wxm6nzo6Bs/OXJaPLG1rNrKWZ/dZMdli/sayBReWUvVa8keIYRup5PKsatRY53OxzorIxN4W/nPXAk5C8iQ5l1TWTQV+ScowSnoM8YhCzzEpTDhfqUI=
+	t=1713424468; cv=none; b=gYzxaHIn2UUXPwtYp/1pPtw/WQBbuB+vu77ahXaXKYeXk2Jhwk5QCGYml2y+r94zpKfEsgxgH6YdIjYc2xnKZP1JJzA6FFWT84vxOfqa/fNXMAoLkWfz6jD+q9ApepJPS7dT93KV+VhNwDaBbXHaxtdk/rTbnQnm8SRVlo3+ffg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713424305; c=relaxed/simple;
-	bh=Ap9iYqzhgv9llNxrD1QByufe1cUyyBleHHekxCCfc2k=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Uj81Z/Qa/Wpiw4Re8ETmz10dXyLn24YQApPaU9PcdjhfCwYGPhn3uLM9aa1PNlIUhwgA8eD1OJZ1UC9mqEse69UZ95M5M2lnjLlPoRF3kO0q+VUeIhtKNEzcbtOK5l24VG3sgEuHzp1uG211PGdzXUHzcMiNxvk681TR8S/E4No=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VKpmP04R9zNnhS;
-	Thu, 18 Apr 2024 15:09:09 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id A37C31800C4;
-	Thu, 18 Apr 2024 15:11:33 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 18 Apr 2024 15:11:32 +0800
-Subject: Re: [PATCH V3] ubifs: correct UBIFS_DFS_DIR_LEN macro definition and
- improve code clarity
-To: ZhaoLong Wang <wangzhaolong1@huawei.com>, <richard@nod.at>,
-	<miquel.raynal@bootlin.com>, <vigneshr@ti.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>
-References: <20240418070704.3080590-1-wangzhaolong1@huawei.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <fde03388-9673-af46-ffef-9d387605d015@huawei.com>
-Date: Thu, 18 Apr 2024 15:11:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1713424468; c=relaxed/simple;
+	bh=4BQPv4B/v1j+fulAMYhGvhNNxdk2a/dTI7NYJ6+EHd8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tvA3KHM4bvc6mYKJf/0czQcJ5U6I6LSUSgwdRNfpoALsalmJsrLk0MRKylOTa6GQbm5psVg+/qIj09ELB/KiU2T7NDOEyjJiUFz60jsCzfK+GCRQ53Jj8ev8c9GhdJMEYIEy+lCemc1yfqqxHN5oz3XbW/J4vkg9Ca0Eisz0Hv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QGNpDcr2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B494FC113CC;
+	Thu, 18 Apr 2024 07:14:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713424468;
+	bh=4BQPv4B/v1j+fulAMYhGvhNNxdk2a/dTI7NYJ6+EHd8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QGNpDcr2tnGzZGRThhoDFSt0Q30d7Xag0KLEq7A9MABYm0Y6b/GhE/EibYVpcG/FL
+	 dOTHndzhk9eXC+45+n/0rmelN06A1PZM2OihZ4Egq4fSETFREPHDvNIvKBpI3z4+pP
+	 avV8ZHCcoCCco/V4vzRZmQkdPxFPOK9eGhY5pnVrWvPmopcKZcE8aTNpwvGA3WskGL
+	 v1bbuhV0XR4z9c8n6cU2q99vlvP/8z8ARxfPhaPhGNJhiQPrtiX+HWJ0SZcQ/UUD1T
+	 xYeoKuif/U1Yr505oqrMad44TH7QsBkC11rFi1SS5Kv/QHbhrspRIq5m+Nme6Gouc+
+	 qiHE7saodJMUg==
+Date: Thu, 18 Apr 2024 09:14:23 +0200
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [PATCH] PCI: endpoint: pci-epf-test: Make use of cached
+ 'epc_features' in pci_epf_test_core_init()
+Message-ID: <ZiDITzuUXsTZ7U4T@ryzen>
+References: <20240417-pci-epf-test-fix-v1-1-653c911d1faa@linaro.org>
+ <ZiALuYlshLmwLhvu@ryzen>
+ <20240418054319.GB2861@thinkpad>
+ <ZiDB18w4bnUCSH7D@ryzen>
+ <20240418065308.GG2861@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240418070704.3080590-1-wangzhaolong1@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418065308.GG2861@thinkpad>
 
-ÔÚ 2024/4/18 15:07, ZhaoLong Wang Ð´µÀ:
-> The UBIFS_DFS_DIR_LEN macro, which defines the maximum length of the UBIFS
-> debugfs directory name, has an incorrect formula and misleading comments.
-> The current formula is (3 + 1 + 2*2 + 1), which assumes that both UBI device
-> number and volume ID are limited to 2 characters. However, UBI device number
-> ranges from 0 to 31 (2 characters), and volume ID ranges from 0 to 127 (up
-> to 3 characters).
+On Thu, Apr 18, 2024 at 12:23:08PM +0530, Manivannan Sadhasivam wrote:
+> On Thu, Apr 18, 2024 at 08:46:47AM +0200, Niklas Cassel wrote:
+> > On Thu, Apr 18, 2024 at 11:13:19AM +0530, Manivannan Sadhasivam wrote:
+> > > On Wed, Apr 17, 2024 at 07:49:45PM +0200, Niklas Cassel wrote:
+> > > > On Wed, Apr 17, 2024 at 10:47:25PM +0530, Manivannan Sadhasivam wrote:
+> > > > > Instead of getting the epc_features from pci_epc_get_features() API, use
+> > > > > the cached pci_epf_test::epc_features value to avoid the NULL check. Since
+> > > > > the NULL check is already performed in pci_epf_test_bind(), having one more
+> > > > > check in pci_epf_test_core_init() is redundant and it is not possible to
+> > > > > hit the NULL pointer dereference. This also leads to the following smatch
+> > > > > warning:
+> > > > > 
+> > > > > drivers/pci/endpoint/functions/pci-epf-test.c:784 pci_epf_test_core_init()
+> > > > > error: we previously assumed 'epc_features' could be null (see line 747)
+> > > > > 
+> > > > > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > > > > Closes: https://lore.kernel.org/linux-pci/024b5826-7180-4076-ae08-57d2584cca3f@moroto.mountain/
+> > > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > 
+> > > > I think you forgot:
+> > > > Fixes: a01e7214bef9 ("PCI: endpoint: Remove "core_init_notifier" flag")
+> > > > 
+> > > 
+> > > No, that's not the correct fixes tag I suppose. This redudant check is
+> > > introduced by commit, 5e50ee27d4a5 ("PCI: pci-epf-test: Add support to defer
+> > > core initialization") and this commit removes the redundant check (fixing smatch
+> > > warning is a side effect). So if the fixes tag needs to be added, then this
+> > > commit should be referenced.
+> > 
+> > Well, you have a Closes: tag that links to a bug report about a smatch
+> > warning that was introduced with 5e50ee27d4a5 ("PCI: pci-epf-test: Add
+> > support to defer core initialization").
+> > 
+> > So if you want to reference another commit, then you should probably
+> > drop the Closes: tag.
+> > 
 > 
-> Although the current code works due to the cancellation of mathematical
-> errors (9 + 1 = 10, which matches the correct UBIFS_DFS_DIR_LEN value), it
-> can lead to confusion and potential issues in the future.
-> 
-> This patch aims to improve the code clarity and maintainability by making
-> the following changes:
-> 
-> 1. Corrects the UBIFS_DFS_DIR_LEN macro definition to (3 + 1 + 2 + 3 + 1),
->     accommodating the maximum lengths of both UBI device number and volume ID,
->     plus the separators and null terminator.
-> 2. Updates the snprintf calls to use UBIFS_DFS_DIR_LEN instead of
->     UBIFS_DFS_DIR_LEN + 1, removing the unnecessary +1.
-> 3. Modifies the error checks to compare against UBIFS_DFS_DIR_LEN using >=
->     instead of >, aligning with the corrected macro definition.
-> 4. Removes the redundant +1 in the dfs_dir_name array definitions in ubi.h
->     and debug.h.
-> 
-> While these changes do not affect the runtime behavior, they make the code
-> more readable, maintainable, and less prone to future errors.
-> 
-> v2->v3:
-> 
->   - Removes the duplicated UBIFS_DFS_DIR_LEN and UBIFS_DFS_DIR_NAME macro
->     definitions in ubifs.h, as they are already defined in debug.h.
-> 
-> Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
+> Then checkpatch will complain... But I think I can keep the two tags? One is for
+> fixing the redudant check and another is for the smatch warning reported.
 
-You lost my 'review-by' in last v3.
+Yes, I think so too.
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+You can have Fixes: to the commit that introduced the redundant check,
+since this was obviously not the correct thing to do, and then perhaps
+just mention commit 5e50ee27d4a5 ("PCI: pci-epf-test: Add support to
+defer core initialization") somewhere in the commit log.
 
 
+Kind regards,
+Niklas
 
