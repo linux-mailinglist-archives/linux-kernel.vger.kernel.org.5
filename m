@@ -1,214 +1,210 @@
-Return-Path: <linux-kernel+bounces-149539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A45E18A9295
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B8E1D8A9297
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:50:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BBA21F219E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:47:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A9F91F2186E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9385757334;
-	Thu, 18 Apr 2024 05:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02DFB56455;
+	Thu, 18 Apr 2024 05:50:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="H+HFtCVV"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Q9BadeY5"
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CF2153AC
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 05:47:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6457654BFA
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 05:50:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713419237; cv=none; b=RCq6NvRMNBNQCgXa6Mdpu6qPTXxkEEOb7c5orrQmMskAM9FiwSKX73hZidw3y0643LRE0QNpYsAKBBgdmtnAEHoMHCVbGhePUrw4Pw2zJfgX4+L16J/+Cv3WMbgWxyDflr8aB6LDzm37yiwANa+ReT9jmjTVFBr2MUiELR6CSIQ=
+	t=1713419440; cv=none; b=Mf0Kdhz7s33kIvrdG0P/tyOoG/F3IbeFg2Ac7kMKYn/mtBFaQjIyt4i38p/0gDU38kR8jbKyuYhU32FJNx0Bg5mVuFpfEaXSrwOgd2YjxXzKaj2+5dTQJ9+wE7CZkUTShaXk32VhOC6dF79TIKX4miU9yo3eohQgRTXDqH6fGLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713419237; c=relaxed/simple;
-	bh=Nan2Lzf74Vcrmmcjb06iRvfKVjD+6Nn1IcpeEKK8nyw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wq7u5Vhof6+H5aWsQAQGCbz8vBwIZCwcRqEiMRSezxLKYfEWRZo8wvX1fLNrnjGS4ofkpwh6Su2aK2zBx6UfJQqsgwXW9tvsjjBfwWVBhQ3d1dgwA8/unY+NxOSh00YCiLBBM8m2VMMbM0Kja4lBDkjdGp8yBgRe19R9zUoBCms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=H+HFtCVV; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ed5109d924so486443b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 22:47:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713419234; x=1714024034; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rJ0ucjqO681AGSVpzOzpFDV0+o+xgP7xumjdjPG5uGY=;
-        b=H+HFtCVVQThhOw1Je7Y/iXYKJ/8KQd4LX1pCRTu5zu0MhuUuU3H20B0suXaz+Ews8S
-         ecvLc2S4wL4vlh2uBbcBaCBc+0S3s2rZOeSuG0UhZYHSr6Yxc+KwVXvwsET09Xxl4bfT
-         m9EAQdxgBu7rk4GhH+5VizC8qD97EMfG2yql4GxU29pHZ4ribq62/aMXh2KQmJTJloI9
-         Qk0SnRjW0qo/b5ODFlJW/L+oTWr//yGfb92lpcezSjy6eOoTutMg4LalGdYnG02XqHZe
-         4YxgPmZ0sjA8GInLKVdbtTPw0z4JP3uG97hTi6FkopfkNFIpXhq4gaE6g49HeShXLi0K
-         dWKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713419234; x=1714024034;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rJ0ucjqO681AGSVpzOzpFDV0+o+xgP7xumjdjPG5uGY=;
-        b=RMVkXQlQj9Cqb+Zf37LsRZGIJB7KF7raC6bLZqPKGEgk2KdDxvM2oWjIiBMyvr369A
-         nNdxZ5FnNwVMhgZclyChoz/oOMx7W6mZFA4nsIVJWm1chIIpOEOA6rM4aJNfHF+fbmFW
-         2JHZxPJki1xmnTpl4OX/P7BjR2BVIJMfMoLDriHlL/lYYmiGff3vN5+ZHU9FO1sEyd0M
-         e+gtMWHE0WKz632dC7wnzMKYeyP3QrjdJtiF/fu+Hcky3XVkcW/T/wvFGRrfvH6hljXW
-         tsbibI+amkV13mXC6vUGx729DIHjWKaSDmCSX1stgT0Sk2tPo2TkJL8jK7uxqUv7gD02
-         S2KQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXsakfpPW9aRuD7R8n57U3rvtqoz2WvXbSkmPtY7RQZygPcC9djX11IvhorEd4Ei+dDyIy7tQcATDnOSA4GNSRj1qTr3/Mt5Y6KW/VN
-X-Gm-Message-State: AOJu0Ywc5P4mVrsB/hz4TW1FnWu92fWPqPFqPB+Qr9RCZjCQZrcGxewB
-	8Fdp52uEyWJPUQbV0vVy01ee2TGGx1UmjAj3AV4C9TczFLgvhCWJRR3wlthk/Q==
-X-Google-Smtp-Source: AGHT+IG9No3vP9eUDX6SRaldDoIbhYetj8jaxmpj2g7yR2uDF76eNih7yDR/ywwqm0hXg8GeXnDkpg==
-X-Received: by 2002:a05:6a21:2b13:b0:1a7:336c:555c with SMTP id ss19-20020a056a212b1300b001a7336c555cmr1890716pzb.60.1713419234473;
-        Wed, 17 Apr 2024 22:47:14 -0700 (PDT)
-Received: from thinkpad ([120.56.197.253])
-        by smtp.gmail.com with ESMTPSA id f21-20020a17090a4a9500b002a058af5e12sm2347965pjh.12.2024.04.17.22.47.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 22:47:13 -0700 (PDT)
-Date: Thu, 18 Apr 2024 11:17:08 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH] PCI: endpoint: pci-epf-test: Make use of cached
- 'epc_features' in pci_epf_test_core_init()
-Message-ID: <20240418054708.GC2861@thinkpad>
-References: <20240417-pci-epf-test-fix-v1-1-653c911d1faa@linaro.org>
- <ZiALuYlshLmwLhvu@ryzen>
- <ZiAM8Hp24XF8CyUJ@ryzen>
+	s=arc-20240116; t=1713419440; c=relaxed/simple;
+	bh=PFyGbk56OmzNLjMtqAchKOOo908XeKp6oW+0qESPT2s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T+pXeCyJnfzOqaEKeGaVbR42spPEy4SiX1sAXFFZLpscVum8Wj904ojbR7hmAlsbHZNUfyNYwfIiK3bDHrUA8MiLlC3jfjlrx176U4j13GnQcEp+9Fy9EG1I4/NdP9OyCcqjhnoOkU8txWGXt4c5ZX5iqEk2/R0U2RznU9AYvUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Q9BadeY5; arc=none smtp.client-ip=115.124.30.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713419433; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=4eOeKenzK1gFrzCAeTlcjNO1rvtm7qAGVD0c/9ky3IQ=;
+	b=Q9BadeY5Qkk88lD94CxqBI+B96T8TVdwkxAcAik++G7CcC+lR9BAk9ihhRC6t7naMhJKm6YhQjGoEbs8lKkI6lWyktpZTt5aXW6Xz2kyRPPktk6Og4HJU03c8992boiO0OP7vD53zACWUaDnBYBahi6ccKvNnXsxcEKH3uP/FCY=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0W4nXygh_1713419431;
+Received: from 30.221.145.60(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W4nXygh_1713419431)
+          by smtp.aliyun-inc.com;
+          Thu, 18 Apr 2024 13:50:32 +0800
+Message-ID: <fb65c7d0-c348-409e-b977-07616d28b279@linux.alibaba.com>
+Date: Thu, 18 Apr 2024 13:50:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] erofs: reliably distinguish block based and fscache
+ mode
+Content-Language: en-US
+To: Baokun Li <libaokun1@huawei.com>
+Cc: linux-erofs@lists.ozlabs.org, xiang@kernel.org, chao@kernel.org,
+ huyue2@coolpad.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+ linux-kernel@vger.kernel.org, yangerkun@huawei.com, houtao1@huawei.com
+References: <20240417065513.3409744-1-libaokun1@huawei.com>
+ <71e66b02-9c2b-4981-83e1-8af72d6c0975@linux.alibaba.com>
+ <7fdf4bff-2d3d-bdc0-5446-caa58aeca314@huawei.com>
+From: Jingbo Xu <jefflexu@linux.alibaba.com>
+In-Reply-To: <7fdf4bff-2d3d-bdc0-5446-caa58aeca314@huawei.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZiAM8Hp24XF8CyUJ@ryzen>
 
-On Wed, Apr 17, 2024 at 07:54:56PM +0200, Niklas Cassel wrote:
-> On Wed, Apr 17, 2024 at 07:49:45PM +0200, Niklas Cassel wrote:
-> > On Wed, Apr 17, 2024 at 10:47:25PM +0530, Manivannan Sadhasivam wrote:
-> > > Instead of getting the epc_features from pci_epc_get_features() API, use
-> > > the cached pci_epf_test::epc_features value to avoid the NULL check. Since
-> > > the NULL check is already performed in pci_epf_test_bind(), having one more
-> > > check in pci_epf_test_core_init() is redundant and it is not possible to
-> > > hit the NULL pointer dereference. This also leads to the following smatch
-> > > warning:
-> > > 
-> > > drivers/pci/endpoint/functions/pci-epf-test.c:784 pci_epf_test_core_init()
-> > > error: we previously assumed 'epc_features' could be null (see line 747)
-> > > 
-> > > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > > Closes: https://lore.kernel.org/linux-pci/024b5826-7180-4076-ae08-57d2584cca3f@moroto.mountain/
-> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > 
-> > I think you forgot:
-> > Fixes: a01e7214bef9 ("PCI: endpoint: Remove "core_init_notifier" flag")
-> > 
-> > 
-> > > ---
-> > >  drivers/pci/endpoint/functions/pci-epf-test.c | 9 ++++-----
-> > >  1 file changed, 4 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-> > > index 977fb79c1567..0d28f413cb07 100644
-> > > --- a/drivers/pci/endpoint/functions/pci-epf-test.c
-> > > +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-> > > @@ -743,11 +743,10 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
-> > >  	bool msi_capable = true;
-> > >  	int ret;
-> > >  
-> > > -	epc_features = pci_epc_get_features(epc, epf->func_no, epf->vfunc_no);
-> > > -	if (epc_features) {
-> > > -		msix_capable = epc_features->msix_capable;
-> > > -		msi_capable = epc_features->msi_capable;
-> > > -	}
-> > > +	epc_features = epf_test->epc_features;
-> > 
-> > How about:
-> > 
-> > index 977fb79c1567..4d6105c07ac0 100644
-> > --- a/drivers/pci/endpoint/functions/pci-epf-test.c
-> > +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-> > @@ -735,7 +735,7 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
-> >  {
-> >         struct pci_epf_test *epf_test = epf_get_drvdata(epf);
-> >         struct pci_epf_header *header = epf->header;
-> > -       const struct pci_epc_features *epc_features;
-> > +       const struct pci_epc_features *epc_features = epf_test->epc_features;
-> >         struct pci_epc *epc = epf->epc;
-> >         struct device *dev = &epf->dev;
-> >         bool linkup_notifier = false;
-> > @@ -743,12 +743,6 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
-> >         bool msi_capable = true;
-> >         int ret;
-> >  
-> > -       epc_features = pci_epc_get_features(epc, epf->func_no, epf->vfunc_no);
-> > -       if (epc_features) {
-> > -               msix_capable = epc_features->msix_capable;
-> > -               msi_capable = epc_features->msi_capable;
-> > -       }
-> > -
-> >         if (epf->vfunc_no <= 1) {
-> >                 ret = pci_epc_write_header(epc, epf->func_no, epf->vfunc_no, header);
-> >                 if (ret) {
-> > @@ -761,6 +755,7 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
-> >         if (ret)
-> >                 return ret;
-> >  
-> > +       msi_capable = epc_features->msi_capable;
-> >         if (msi_capable) {
-> >                 ret = pci_epc_set_msi(epc, epf->func_no, epf->vfunc_no,
-> >                                       epf->msi_interrupts);
-> > @@ -770,6 +765,7 @@ static int pci_epf_test_core_init(struct pci_epf *epf)
-> >                 }
-> >         }
-> >  
-> > +       msix_capable = epc_features->msix_capable;
-> >         if (msix_capable) {
-> >                 ret = pci_epc_set_msix(epc, epf->func_no, epf->vfunc_no,
-> >                                        epf->msix_interrupts,
-> > @@ -814,11 +810,9 @@ static int pci_epf_test_alloc_space(struct pci_epf *epf)
-> >         void *base;
-> >         enum pci_barno test_reg_bar = epf_test->test_reg_bar;
-> >         enum pci_barno bar;
-> > -       const struct pci_epc_features *epc_features;
-> > +       const struct pci_epc_features *epc_features = epf_test->epc_features;
-> >         size_t test_reg_size;
-> >  
-> > -       epc_features = epf_test->epc_features;
-> > -
-> >         test_reg_bar_size = ALIGN(sizeof(struct pci_epf_test_reg), 128);
-> >  
-> >         msix_capable = epc_features->msix_capable;
-> > 
-> > 
-> > Instead?
-> > 
-> > That way, we assign msi_capable/msix_capable just before the if-statement
-> > where it is used. (Which matches how we already assign msix_capable just
-> > before the if-statement in pci_epf_test_alloc_space().)
-> 
-> ...or just kill the local variables:
-> bool msi_capable/msix_capable in pci_epf_test_core_init(), and
-> bool msix_capable pci_epf_test_alloc_space()
-> and just do:
-> 
-> if (epc_features->msix_capable) / if (epc_features->msi_capable)
-> 
-> directly?
-> 
 
-Yeah, that will also work.
 
-- Mani
+On 4/18/24 11:36 AM, Baokun Li wrote:
+> On 2024/4/18 10:16, Jingbo Xu wrote:
+>> Hi Baokun,
+>>
+>> Thanks for catching this and move forward fixing this!
+> 
+> Hi Jingbo，
+> 
+> Thanks for your review！
+> 
+>>
+>> On 4/17/24 2:55 PM, Baokun Li wrote:
+>>> When erofs_kill_sb() is called in block dev based mode, s_bdev may
+>>> not have
+>>> been initialised yet, and if CONFIG_EROFS_FS_ONDEMAND is enabled, it
+>>> will
+>>> be mistaken for fscache mode, and then attempt to free an anon_dev
+>>> that has
+>>> never been allocated, triggering the following warning:
+>>>
+>>> ============================================
+>>> ida_free called for id=0 which is not allocated.
+>>> WARNING: CPU: 14 PID: 926 at lib/idr.c:525 ida_free+0x134/0x140
+>>> Modules linked in:
+>>> CPU: 14 PID: 926 Comm: mount Not tainted 6.9.0-rc3-dirty #630
+>>> RIP: 0010:ida_free+0x134/0x140
+>>> Call Trace:
+>>>   <TASK>
+>>>   erofs_kill_sb+0x81/0x90
+>>>   deactivate_locked_super+0x35/0x80
+>>>   get_tree_bdev+0x136/0x1e0
+>>>   vfs_get_tree+0x2c/0xf0
+>>>   do_new_mount+0x190/0x2f0
+>>>   [...]
+>>> ============================================
+>>>
+>>> Instead of allocating the erofs_sb_info in fill_super() allocate it
+>>> during erofs_get_tree() and ensure that erofs can always have the info
+>>> available during erofs_kill_sb().
+>>
+>> I'm not sure if allocating erofs_sb_info in erofs_init_fs_context() will
+>> be better, as I see some filesystems (e.g. autofs) do this way.  Maybe
+>> another potential advantage of doing this way is that erofs_fs_context
+>> is not needed anymore and we can use sbi directly.
+> Yes, except for some extra memory usage when remounting,
+> this idea sounds great. Let me send a version of v3 to get rid
+> of erofs_fs_context.
+
+I'm not sure if Gao Xaing also prefers this.  I think it would be better
+to wait and listen for his thoughts before we sending v3.
+
+>>
+>>> Signed-off-by: Christian Brauner <brauner@kernel.org>
+>>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>>> ---
+>>> Changes since v1:
+>>>    Allocate and initialise fc->s_fs_info in erofs_fc_get_tree()
+>>> instead of
+>>>    modifying fc->sb_flags.
+>>>
+>>> V1:
+>>> https://lore.kernel.org/r/20240415121746.1207242-1-libaokun1@huawei.com/
+>>>
+>>>   fs/erofs/super.c | 51 ++++++++++++++++++++++++++----------------------
+>>>   1 file changed, 28 insertions(+), 23 deletions(-)
+>>>
+>>> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+>>> index b21bd8f78dc1..4104280be2ea 100644
+>>> --- a/fs/erofs/super.c
+>>> +++ b/fs/erofs/super.c
+>>> @@ -581,8 +581,7 @@ static const struct export_operations
+>>> erofs_export_ops = {
+>>>   static int erofs_fc_fill_super(struct super_block *sb, struct
+>>> fs_context *fc)
+>>>   {
+>>>       struct inode *inode;
+>>> -    struct erofs_sb_info *sbi;
+>>> -    struct erofs_fs_context *ctx = fc->fs_private;
+>>> +    struct erofs_sb_info *sbi = EROFS_SB(sb);
+>>>       int err;
+>>>         sb->s_magic = EROFS_SUPER_MAGIC;
+>>> @@ -590,19 +589,6 @@ static int erofs_fc_fill_super(struct
+>>> super_block *sb, struct fs_context *fc)
+>>>       sb->s_maxbytes = MAX_LFS_FILESIZE;
+>>>       sb->s_op = &erofs_sops;
+>>>   -    sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
+>>> -    if (!sbi)
+>>> -        return -ENOMEM;
+>>> -
+>>> -    sb->s_fs_info = sbi;
+>>> -    sbi->opt = ctx->opt;
+>>> -    sbi->devs = ctx->devs;
+>>> -    ctx->devs = NULL;
+>>> -    sbi->fsid = ctx->fsid;
+>>> -    ctx->fsid = NULL;
+>>> -    sbi->domain_id = ctx->domain_id;
+>>> -    ctx->domain_id = NULL;
+>>> -
+>>>       sbi->blkszbits = PAGE_SHIFT;
+>>>       if (erofs_is_fscache_mode(sb)) {
+>>>           sb->s_blocksize = PAGE_SIZE;
+>>> @@ -704,11 +690,32 @@ static int erofs_fc_fill_super(struct
+>>> super_block *sb, struct fs_context *fc)
+>>>       return 0;
+>>>   }
+>>>   -static int erofs_fc_get_tree(struct fs_context *fc)
+>>> +static void erofs_ctx_to_info(struct fs_context *fc)
+>>>   {
+>>>       struct erofs_fs_context *ctx = fc->fs_private;
+>>> +    struct erofs_sb_info *sbi = fc->s_fs_info;
+>>> +
+>>> +    sbi->opt = ctx->opt;
+>>> +    sbi->devs = ctx->devs;
+>>> +    ctx->devs = NULL;
+>>> +    sbi->fsid = ctx->fsid;
+>>> +    ctx->fsid = NULL;
+>>> +    sbi->domain_id = ctx->domain_id;
+>>> +    ctx->domain_id = NULL;
+>>> +}
+>> I'm not sure if abstracting this logic into a seperate helper really
+>> helps understanding the code as the logic itself is quite simple and
+>> easy to be understood. Usually it's a hint of over-abstraction when a
+>> simple helper has only one caller.
+>>
+> Static functions that have only one caller are compiled inline, so we
+> don't have to worry about how that affects the code.
+> 
+> The reason these codes are encapsulated in a separate function is so
+> that the code reader understands that these codes are integrated
+> as a whole, and that we shouldn't have to move one or two of these
+> lines individually.
+> 
+> But after we get rid of erofs_fs_context, those won't be needed
+> anymore.
+
+Yeah, I understand. It's only coding style concerns.
+
+
 
 -- 
-மணிவண்ணன் சதாசிவம்
+Thanks,
+Jingbo
 
