@@ -1,115 +1,118 @@
-Return-Path: <linux-kernel+bounces-150432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C72188A9F3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:56:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D7DB8A9F44
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:57:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5357F281BED
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:56:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27C10B21839
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A38916F83E;
-	Thu, 18 Apr 2024 15:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E4E16F84B;
+	Thu, 18 Apr 2024 15:57:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OTxcocgG"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HC8VKVm5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F300A15FA9F
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F3015FA9F;
+	Thu, 18 Apr 2024 15:57:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713455779; cv=none; b=ayoHYOkCO2qLeB0OvQlrD8Ge0gLnxnmB76PSWDYZo6kdJaAC+qep1K+RESf+fzXLHbxiArHzznCYRqjQVYDEgQzK2B5GQdJiBN7EXTN4Nmvxp3yxXw475fzPdqYqqGmv/N2C1lRlhYUeZs7ElNzX+GkZaPXTCnqdZlutyyEUEQI=
+	t=1713455825; cv=none; b=SigxKr5ZqfUYYKS0cDUyGCd7hUodFiiFTreBiWTZLOknqxmpZSxhDlexv0rWcx9bKxOZ+6RZMXxxWp8dLNpkhTkjv8fq6MVDvazEttG9SUT5pIc9AGNlAzXKVMhctNAPKeacG0Ag/fj7UQjpFE4h7mc1ApRZmdC4I1tUp9sXl1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713455779; c=relaxed/simple;
-	bh=mDRjfBiPjMWn261FMr3b8oWZieXKRIxWEC729h8K7sg=;
+	s=arc-20240116; t=1713455825; c=relaxed/simple;
+	bh=NuLhSfmYURyeA4KyKnBJ8GgZw3mwTQhoH5JrHj17W2U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DL9j9K7udsxTPWnrKRLK8gV67cTON8r/P7Vi1FCvKO3OXc1rkpP5U6RWXCaSs0KsCUzGVm97TEwJxdVhtYRkLe1iAKWuHCAbowhHKYz3Z/a9N6zL2YSz/xM8Wt7P/bbY0nKuF65KZm+QJGXJSph+sZCUlAFPYasI2tKVCSGxXvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OTxcocgG; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ed01c63657so988369b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:56:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713455777; x=1714060577; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GnRoVABkMpTwTwJRlnT/WRT83zNRcjsjqktPei1RqZc=;
-        b=OTxcocgG+gc/7Br+1KJeAFOHbYwSFqLV0joIJBS/GUX2vZVMYpSetfcLwnw3XGMsu2
-         lrxWZUV6tXbNTpig1y1H1ukh81KJxdiDYqbEfPttYwRamQ/295ZedcoLg60ukF83F8BZ
-         QQNlmS18OpWYDJE+tc0o9eNdEXLfHW8/7uAtlBuMZwduvhTOdIeHVGwzYA5/p1uq4529
-         R9vU9fiAt9eIVmqTFCrLMeOtS32rf2EM8i7+aaRqUQFHPyKVdWD6jPvAWdBH198uSr7Z
-         sfscgwcENVmsEFNgWYOcOOHUV4ZiN9mYXDy7AtY+J9xygdVzdLQAao1ReP6c4W+LYJHt
-         eyUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713455777; x=1714060577;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GnRoVABkMpTwTwJRlnT/WRT83zNRcjsjqktPei1RqZc=;
-        b=OjmuevfwkrVI+valAm7iiQEIBy/pQHt5oJi7o9oncRnprFtFLITCpMMo7WTYsVxmtK
-         cMEMLosYeHY7lM08ANRefgiCVLRZa8kahPEpC5hiVZuspJX8ylLTm7L0ShDGzu7xQj7j
-         GKoXhdPDtJ1CSAtBuUvLUdPZU17zy4nsXXSaQ8PQWiAlvSQIbBILPfSTWNHor0Uoddoi
-         atIZLMHeMFZhbJ8AHJoJB2UiLtjYg1rz3ikPX8x2zmHNnq4vXiRWbGPdKIvbd/T69khr
-         tNsHaeQaTb++QZK9XwphVmDThVbCggz3Za4l8lUwrqpVclgjot97L81mNC8dujf5zEH9
-         09Ag==
-X-Forwarded-Encrypted: i=1; AJvYcCWA+KooQbGnVF/BJXNE0QefDxU1z+7BZ+tzmh6t4qOlXV/8s3PsHVwDkvnjhSmN6EuTvNgaBNCiwLcq9kjTLSQLpFaHMilTMKMKu3D+
-X-Gm-Message-State: AOJu0YzE5uSCz0d6/94kKxvDvj+xgExEj1/hiEjpFNRHgCcWpLZX2wSH
-	G+a1gK8vsViesgzt41E0Fb2r75ntybUVUjhWgXZQw76hMJCVIXvG
-X-Google-Smtp-Source: AGHT+IGXisnKjI71uANED1CP/KTHgH+Gcr2xad6cRyLgWvCNRvdOFFUmfzdZFprOYudDsZZZcmmqGA==
-X-Received: by 2002:a05:6a00:3d07:b0:6ed:41f3:cd06 with SMTP id lo7-20020a056a003d0700b006ed41f3cd06mr3912520pfb.7.1713455777244;
-        Thu, 18 Apr 2024 08:56:17 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:6f51])
-        by smtp.gmail.com with ESMTPSA id x12-20020a056a000bcc00b006e580678dfbsm1639967pfu.193.2024.04.18.08.56.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 08:56:16 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 18 Apr 2024 05:56:15 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Sven Schnelle <svens@linux.ibm.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] workqueue: fix selection of wake_cpu in kick_pool()
-Message-ID: <ZiFCn2RLWhk7i4oB@slm.duckdns.org>
-References: <20240415053550.538722-1-svens@linux.ibm.com>
- <Zh8EfxdVdiIj_27H@slm.duckdns.org>
- <yt9dpluogfw9.fsf@linux.ibm.com>
- <ZiB9rYBu-0qjsCbF@slm.duckdns.org>
- <yt9djzkvfc6a.fsf@linux.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RjaSI5HlAi1YmUYhBYJmcAyTUYrlRr0xu7+qwphS0ZZer7r5BXsOCUYe67h6KS+R/QvtSERck9GHLozAs2ceLKQF02FEw8vdL/nrvuEc1Km6TxwmD+WBJtpRfPG63t4915uC6SKJD706M31aZEnFsEHvqq0R2ZdffQK99lWN8Kw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HC8VKVm5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DE17C113CC;
+	Thu, 18 Apr 2024 15:57:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713455824;
+	bh=NuLhSfmYURyeA4KyKnBJ8GgZw3mwTQhoH5JrHj17W2U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HC8VKVm5hRy2IWpiv+a8i3bjGGmhEFdfpcgke+gWkBdnKp/GfF5li0yOqubX0m3bt
+	 dPTnBjB0ibYwUMXtA2qBD04QQf5EYFdGid5NPHouU9RvlXo+XwuXwUw8wOytI5JqR6
+	 5pNPmDYJhJYEswFyq/7AUHJIjxUqIvis0irOFtW1D9pBQJYQ5OblC72B43UYRj0bxK
+	 Deli09g5qDv4VpnClB9wlI3cSXOhCANJ1AjMl1xnZnomcAIOEm2vAHSCNM5+6OX+cM
+	 r8mxMVYUwJvZpel05v/cxU1PtG1fTuh0LCjX1s2Oq2/ESfT0i3W9u6nX3eyJ5od/Fi
+	 yB4TX5eQPHC0A==
+Date: Thu, 18 Apr 2024 16:57:00 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Dragan Simic <dsimic@manjaro.org>
+Cc: Chukun Pan <amadeus@jmu.edu.cn>, Heiko Stuebner <heiko@sntech.de>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, FUKAUMI Naoki <naoki@radxa.com>
+Subject: Re: [PATCH 1/2] dt-bindings: arm: rockchip: correct the model name
+ for Radxa ROCK 3A
+Message-ID: <20240418-skinless-aptitude-245665a7c757@spud>
+References: <20240418130120.67663-1-amadeus@jmu.edu.cn>
+ <d00953aab0f1c978e3720885a6844caa@manjaro.org>
+ <20240418-drove-boasting-d189ee3e22e0@spud>
+ <7fec3e2f4e16b1aca6cd08e1882bd885@manjaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="e6Eqyn2mnOtnO6RB"
+Content-Disposition: inline
+In-Reply-To: <7fec3e2f4e16b1aca6cd08e1882bd885@manjaro.org>
+
+
+--e6Eqyn2mnOtnO6RB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <yt9djzkvfc6a.fsf@linux.ibm.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 18, 2024 at 07:54:37AM +0200, Sven Schnelle wrote:
-> Tejun Heo <tj@kernel.org> writes:
-> 
-> > Hello,
-> >
-> > On Wed, Apr 17, 2024 at 05:36:38PM +0200, Sven Schnelle wrote:
-> >> > This generally seems like a good idea but isn't this still racy? The CPU may
-> >> > go down between setting p->wake_cpu and wake_up_process().
-> >> 
-> >> Don't know without reading the source, but how does this code normally
-> >> protect against that?
-> >
-> > Probably by wrapping determining the wake_cpu and the wake_up inside
-> > cpu_read_lock() section.
-> 
-> Thanks. Should i send a v2 and incorporate your additional changes or do
-> you want to do that?
+On Thu, Apr 18, 2024 at 05:46:30PM +0200, Dragan Simic wrote:
+> Hello Conor,
+>=20
+> On 2024-04-18 17:37, Conor Dooley wrote:
+> > On Thu, Apr 18, 2024 at 05:21:18PM +0200, Dragan Simic wrote:
+> > > On 2024-04-18 15:01, Chukun Pan wrote:
+> > > > According to https://radxa.com/products/rock3/3a,
+> > > > the name of this board should be "Radxa ROCK 3A".
+> > > > Also update compatible to match the model name.
+> > > >
+> > > > Suggested-by: FUKAUMI Naoki <naoki@radxa.com>
+> > > > Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
+> > >=20
+> > > Looking good to me.  I'll send the remaining naming cleanup patches
+> > > a bit later.
+> >=20
+> > What remaining patches?
+>=20
+> The same naming cleanups need to be performed for the Radxa
+> ROCK 5 boards. [1]  I had some more cleanups for the ROCK 4
+> boards in mind, but I'll drop them after your NAK. [2]
+>=20
+> Though, I'm not really sure why the NAK?  Those names aren't
+> used anywhere, neither in the Linux kernel, nor in U-Boot.
 
-Yes, please send a v2.
+There may well be other users outside of those two projects that are
+actually looking at it - I don't think that adding a hyphen is worth
+disrupting anyone for, it seems perfectly clear without it what board
+this is.
 
-Thanks.
+--e6Eqyn2mnOtnO6RB
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-tejun
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiFCzAAKCRB4tDGHoIJi
+0qZRAQDvp1WMjeZQ5UkpdXHldOb66YBev1YO2u1XU0t6ffUyzgEAkK6CFkop9QIu
+mtkvqS5obGem7DzXQW/A9taovKtQTQw=
+=VAgQ
+-----END PGP SIGNATURE-----
+
+--e6Eqyn2mnOtnO6RB--
 
