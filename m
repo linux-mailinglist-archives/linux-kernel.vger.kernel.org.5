@@ -1,166 +1,164 @@
-Return-Path: <linux-kernel+bounces-150671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23ACC8AA2C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DCE48AA2D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:31:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44F081C20BEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:30:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E3011C211FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A773A17BB31;
-	Thu, 18 Apr 2024 19:30:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668FB180A67;
+	Thu, 18 Apr 2024 19:31:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="BS29PgEd"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lUEv9uwr"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ED1B6A00E;
-	Thu, 18 Apr 2024 19:30:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20DAC6A00E;
+	Thu, 18 Apr 2024 19:31:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713468649; cv=none; b=m76KYaWcMUn08+P2JPYstKmyKeQFXVDCtle4LrtJvPu2s4rXqskvhUV6ZayM5Gn15nHY3A3e8SuPzjK3Na4LW4A11jxezkOGhf0DOOM9ec58oFmaTcviLy8RFyFTJWrH7Qdf366IzqSEccmRsp16ci+yXMC0DaH1sZIY0hEd/q0=
+	t=1713468694; cv=none; b=RKr7x5bUBe9pOB6k/xwUvZF/XwYc7Lm8lLMrNLrc1Pe5FQ7xL1DINjI9vAyMZcknuotkgFQWC38VFnui0bvMRIDjMaCDtC4cfjjbAUqlRLL9/+mOe4GkhLbSR+kfnEGgmXQEObGuKA6/fqo41gB5awzRXKGK/RkwJlONbx2R4mM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713468649; c=relaxed/simple;
-	bh=HD/BnfrA7s2/PqPWeAgv2uhUr75jb64JNPmf2nCJVTA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XrgRXRrgVbaRQZ/JJFsi91tRiXccrkT4mAZ5D/K7Y49yAEfUEyqopa54Q7lLXv4wVhCs7AIDz+iz/A3KEf5fBswAr9K827VKd8dIpqQRJpzit1u148lEFsDgIFoOSYivazpzZmGCFLcXqiEiuMQSZBWAOrmFigAySgF4OTIyWcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=BS29PgEd; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1713468599; x=1714073399; i=deller@gmx.de;
-	bh=+qPebcqkijmpejiAsFg4+LeCVvQ99DkwFSGw6uBdRfk=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=BS29PgEdovGlE236FFXT5vd7JeaTXskt4NDDEyqAKpYn3LnoePUl5QRxbHMICscY
-	 vTuAroUzIV3dhcFa3U+YDE+lDC1W4Y3+opzrkgKEVTW6WC5Rv6X/CkfSUG0jAWEpQ
-	 uHqTD844qI1Ok7yfu9xyL1eXEYOWeZvp+DEBzma0GdHjFHwboRyTiZXEO9Yc8ydix
-	 J+ngsmrbQ6xLh0E2zbMcqqMxye+7mxHUC0Hzlyj4lhmancm9iEJi7HFiMWPEIhlqN
-	 hlSnIJj1fEzA5j1IZFHNw7vb0Ger4XEAwHAxY7P4UFLaoRiRls8iE1RLQjCeCi1dM
-	 VeZi1/lBO6+ymhUA3Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.55] ([89.244.184.44]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MVeI8-1s7KZ12P0G-00RX3z; Thu, 18
- Apr 2024 21:29:59 +0200
-Message-ID: <a7843657-c3f6-4d2e-8c36-5541d4c52956@gmx.de>
-Date: Thu, 18 Apr 2024 21:29:57 +0200
+	s=arc-20240116; t=1713468694; c=relaxed/simple;
+	bh=Ps3ERSaJ3Nubf413Mgm5+5UAMdezoWO525AtmvS7hLg=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=kRicg1RyoXGu/ZHwAfSmhZNRzdWFDwXLr12Bj3NL4Mvi/WVdAAVTbLTtnPM/HlDfuK5tsYyuNw4yDixTfXu052lDRLWqA5WPTWr12ZgCDsng/qVKlGUAaO5lSZ597wS8N4ZSdK37oaVH1btlq+mkNfIWjgWXSD3a5IPM6rkwdSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lUEv9uwr; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3465921600dso1071781f8f.3;
+        Thu, 18 Apr 2024 12:31:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713468691; x=1714073491; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ps3ERSaJ3Nubf413Mgm5+5UAMdezoWO525AtmvS7hLg=;
+        b=lUEv9uwrH2d1EIeIr6R1nj4v0AOv2obynUkrSBtRy60ku3qo7KemDH6bn7tYVlzO3a
+         P5/pUB3KHASzb7TMGBP7JKc+uslQ3eJdvZY0TuPG9QuxXQ+nkKtpV+bIK6ZHs+KJ5HmM
+         cjrxADU9Ke+fWIZEejQVhgV6FbazGZLgT0OsMzN014yCpa+7DZy/ywfpRS4RR3HGb4+d
+         Rna2RRpJov+QfFeqYviAVwfzq7evgJsYXxwGSrwAWkPjCi4cAYvK60IO92usyBooRtqt
+         zZvUCvA+V6nh95/ojlY/CvOvWGlH6Q6RRIXF7DAneqKh9WFI/iMLkXz0VL6VRe76FSIM
+         7FfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713468691; x=1714073491;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ps3ERSaJ3Nubf413Mgm5+5UAMdezoWO525AtmvS7hLg=;
+        b=lBa95u7ACsS5NO8engccFk57GAyRzMQn/qT9Riv3mgAdPXl9ZENdogkc40erLlnWQE
+         22/ZWpMIjqdEMnbnIpiMrGS31/IHjOmoPvFz3wY+So5tTH1tPX+2NsNmTgD9syJDAQNm
+         InYr0639kH4kENE/K8SmwjxNfpqR6GMNGHiR/rVFChpyNbSjmVORZ34Ct7SqrsUpMb9p
+         /MLwj3lqwRbAD8BroWigTa95nuWQfDMIXbmXWg89Gi8uQAZok9DbKOgZg2wc3QmhpVMI
+         i0SnWwW5ZFxbyLn6S2roWdhKXQviVloSNicPPus/+Jui/GZGgf6xXz+ScOfTEllDQZhb
+         hs2w==
+X-Forwarded-Encrypted: i=1; AJvYcCUlHWkSgsaICGh2U7PrQXuUTnhBvu/x5CGEN7ia5U1WhO4BJIkl8N7VBVnpzaHQiJaodloWMPIHuAho+PC5tRBxugetCX0imNF+xHgnNcbnMmzm3hfZPPNVWVWFN+AjpqpIQQCTWqYbsSAtqca5xQJ1cPnK751L3dVEx1ycMwkGWR71OGksQ7+XUL2LocBIOe/L6Df6Nl9kBM3a09AcUzwgor/qs8NtcVjH4DqsiicYztbzG317zsKcRJR9BdqhK88=
+X-Gm-Message-State: AOJu0YzDlr6XDccMuhEFaLfzUpD25iWbEc3we+goWzbkoNvQuZys5aAT
+	19qWTgc6AIiuPWVHTbA0hwg5+7Ru/XkMZWIqg1PN/UHicX65wAxe
+X-Google-Smtp-Source: AGHT+IH0u8bsjFHZqemZxrgoGwtoIHFPdCVNpm0ysNZP2RZZazFU1pUbMRvZ+DfZhHxeIo/1VeVn9Q==
+X-Received: by 2002:adf:e58f:0:b0:349:eb59:c188 with SMTP id l15-20020adfe58f000000b00349eb59c188mr2213684wrm.5.1713468690932;
+        Thu, 18 Apr 2024 12:31:30 -0700 (PDT)
+Received: from smtpclient.apple ([132.69.239.36])
+        by smtp.gmail.com with ESMTPSA id c26-20020a170906d19a00b00a55662919c1sm1277105ejz.172.2024.04.18.12.31.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 18 Apr 2024 12:31:30 -0700 (PDT)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [bug-report] task info hung problem in fb_deferred_io_work()
-To: Takashi Iwai <tiwai@suse.de>, Nam Cao <namcao@linutronix.de>,
- Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
- Daniel Vetter <daniel@ffwll.ch>, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, bigeasy@linutronix.de,
- patrik.r.jakobsson@gmail.com, LKML <linux-kernel@vger.kernel.org>,
- Vegard Nossum <vegard.nossum@oracle.com>,
- George Kennedy <george.kennedy@oracle.com>,
- Darren Kenny <darren.kenny@oracle.com>, chuansheng.liu@intel.com
-References: <271372d6-e665-4e7f-b088-dee5f4ab341a@oracle.com>
- <20240418160652.68df1a86@namcao> <87ttjywxv5.wl-tiwai@suse.de>
-Content-Language: en-US
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <87ttjywxv5.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [RFC PATCH 3/7] module: [
+From: Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <ZiDz4YbIHEOAnpwF@kernel.org>
+Date: Thu, 18 Apr 2024 22:31:16 +0300
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Andy Lutomirski <luto@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Christoph Hellwig <hch@infradead.org>,
+ Helge Deller <deller@gmx.de>,
+ Lorenzo Stoakes <lstoakes@gmail.com>,
+ Luis Chamberlain <mcgrof@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Russell King <linux@armlinux.org.uk>,
+ Song Liu <song@kernel.org>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Uladzislau Rezki <urezki@gmail.com>,
+ Will Deacon <will@kernel.org>,
+ bpf <bpf@vger.kernel.org>,
+ linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+ linux-modules@vger.kernel.org,
+ linux-parisc@vger.kernel.org,
+ linux-riscv@lists.infradead.org,
+ linux-trace-kernel@vger.kernel.org,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ the arch/x86 maintainers <x86@kernel.org>
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:HwANtY5pHX9qYll2jJJf4uOJIN+l61iXICErTSTzPZFd3Vw2k/u
- N1hnYThu6D0Km2BQUPRL5mUUfHMNfwVEgAbF1CZIeHZFIg8ncO4e3JTKGyHcwTroK23ibQA
- rE7IhaMGYIUrgTnljq/YB/bdaXefSM3CvV7JPwYb7uvdWmPSRsVYQ+qaoReJ5m5G5RW9Ghf
- /s2NNjCj0JSmKT7LjGvuQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:jG/myljbTF4=;XPgAA4qo5ZIYpJtOlwbLSQBsokR
- 6qH4ow+QPVJ+ryv/KBeGIP0ttNGiSC8lizgwQxwCRRct7do+0/oiRTFX+1onIOtT8z4QBIl07
- UgzY9stE243qLk2UXNHvnNX2CLA8N+rztXofZoekxibMOZyfxrsx8wQ/uSohxV2Jg7+zRocA1
- 35flv2MaiKB9dBe4VS7Fscg0S9I3rEjfcikxNJ6orik0v+AjNmf8i1yT48ljDCb3pjL9usdES
- 56B4Cx7Az16c4AjkxdW14F/fTKX9SQAWCogHGks9/F3tbNVlZ8eic1oEvzMXsHtBylmjkYGpB
- IQ7mk7/2n9dg/IrxExBMT6bBWcW6bxDW+lePowFjUO3RwxbVOWoQrIj8S53IKoemvuaI/baBn
- GTdVBp36Ut6+K/X9KXiw3a5lfrnzBG9a1pOFh0Muy/apVFZjdqx5RVDubXDH8k1K2W5HgUmmt
- PY6lEN+9nJ77iD2Myi7uPM98nzpTgYOmsFYTXLGT6faFnh/h6sgzYY+kmppE+kKEqk+tESiXM
- YyG48Hq7Gx8WfKiZVQ6j8MD61U2qdOwiU9ELeIX/ipatw9+NzlGhYxcn7KGmZdv+KpfWW1qCW
- hmqTQnaxuWOKyfsz8CbAWryRK0R4TAfCqe/0XAeU6VsrElkEf3g2aO8hI3zoC0YoDJDbGdqmU
- j4Xttq98kVKPZYNYkXa9m/LT+QPumgaebWxv/qe1NBQSbE6BcwrSJO/j1dfZ1f6oEj4K990tN
- Z/AjgoygKtKeeEFX/jWv2miNB/2yGa08gF7EUjKJbqTFpqZIZc0CEUtAfCoBahUjuvxJunEtc
- 08RK2hk3ZyTqpITWf8ciiSZaCO6iCoaQuX4pP4n45UAic=
+Message-Id: <A714B340-9EFB-4F27-9CD6-CFBC1BC9139F@gmail.com>
+References: <20240411160526.2093408-1-rppt@kernel.org>
+ <20240411160526.2093408-4-rppt@kernel.org>
+ <0C4B9C1A-97DE-4798-8256-158369AF42A4@gmail.com>
+ <ZiDz4YbIHEOAnpwF@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
-On 4/18/24 16:26, Takashi Iwai wrote:
-> On Thu, 18 Apr 2024 16:06:52 +0200,
-> Nam Cao wrote:
->>
->> On 2024-04-18 Harshit Mogalapalli wrote:
->>> While fuzzing 5.15.y kernel with Syzkaller, we noticed a INFO: task hu=
-ng
->>> bug in fb_deferred_io_work()
->>
->> Which framebuffer device are you using exactly? It is possible that
->> the problem is with the device driver, not core framebuffer.
->
-> Note that it was already known that using flush_delayed_work() caused
-> a problem.  See the thread of the fix patch:
->    https://lore.kernel.org/all/20230129082856.22113-1-tiwai@suse.de/
 
-Harshit reported the hung tasks with kernel v5.15-stable, and can even rep=
-roduce
-that issue with kernel v6.9-rc4 although it has all of your patches from
-that referenced mail thread applied.
-So, what does your statement that "it was already known that it causes pro=
-blems" exactly mean?
-Can it be fixed? Is someone looking into fixing it?
 
-> BTW, the problem is seen with bochs drm.
+> On 18 Apr 2024, at 13:20, Mike Rapoport <rppt@kernel.org> wrote:
+>=20
+> On Tue, Apr 16, 2024 at 12:36:08PM +0300, Nadav Amit wrote:
+>>=20
+>>=20
+>>=20
+>> I might be missing something, but it seems a bit racy.
+>>=20
+>> IIUC, module_finalize() calls alternatives_smp_module_add(). At this
+>> point, since you don=E2=80=99t hold the text_mutex, some might do =
+text_poke(),
+>> e.g., by enabling/disabling static-key, and the update would be
+>> overwritten. No?
+>=20
+> Right :(
+> Even worse, for UP case alternatives_smp_unlock() will "patch" still =
+empty
+> area.
+>=20
+> So I'm thinking about calling alternatives_smp_module_add() from an
+> additional callback after the execmem_update_copy().
+>=20
+> Does it make sense to you?
 
-Helge
+Going over the code again - I might have just been wrong: I confused the
+alternatives and the jump-label mechanisms (as they do share a lot of
+code and characteristics).
+
+The jump-labels are updated when prepare_coming_module() is called, =
+which
+happens after post_relocation() [which means they would be updated using
+text_poke() =E2=80=9Cinefficiently=E2=80=9D but should be safe].
+
+The =E2=80=9Calternatives=E2=80=9D appear only to use text_poke() (in =
+contrast for
+text_poke_early()) from very specific few flows, e.g.,=20
+common_cpu_up() -> alternatives_enable_smp().
+
+Are those flows pose a problem after boot?
+
+Anyhow, sorry for the noise.=
 
