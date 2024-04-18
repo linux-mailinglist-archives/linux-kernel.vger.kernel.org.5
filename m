@@ -1,188 +1,149 @@
-Return-Path: <linux-kernel+bounces-149768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A20C48A9594
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:02:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA8A38A95BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:13:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4875B231AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:02:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC3611C20FBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:13:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB2B815AABC;
-	Thu, 18 Apr 2024 09:02:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 018FA15ADAF;
+	Thu, 18 Apr 2024 09:12:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eBfnU/Ik"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n2CN5d18"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A2F7BAF0;
-	Thu, 18 Apr 2024 09:02:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E2D15A4BB;
+	Thu, 18 Apr 2024 09:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713430931; cv=none; b=N7WIyaXZAKAYeuc+JHhr9jCPTmzPHB00yWi31SUOr3lNpF4ITZ1WCe3IxqvQAThXoqIdfEz89ou+ovtv6wAo+PSrzX4is68fkJeq157atwzyHCUFx/McF8LF2q4jAW7FNd0j6BPQ3LWFyj+4064G30d1HnKIjHOPxAyrVkUvsMA=
+	t=1713431558; cv=none; b=Mujo0KoMcRDIhhaP4RoN2/gwbTBK9/gbh3WKtGCdc41XLMFh7olueTHHVZF4nSzJ5z/O3iuzNFY03iDXkKqY9pTuETJTHDBrU/l7wBvrhUPFhfJm4aACwm86TFkDNUWrEPLa69/Te00VKdzPyOVFEoR9Di86pQ+Ce0tGFaSUWRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713430931; c=relaxed/simple;
-	bh=Z/laLqr/RJd1W/kEW84zTCYug41kjmWmk6qr6YqBijI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sOjoyjcRarJIBaDqiUYmj98bpmrcPzLa4RmDQhumQ0bCVkTG5uRSA4OBWVz+NrBIjxBobBdM8lcM7+qswXEyaoc8Df+9asQM7pCfiV4qQTiyqHUiEdROQV/NierPgfXWiT3PjOnz3JHdzR+xd2BLojQtzW6ZRWGr4ueIBwEZCTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eBfnU/Ik; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFC03C113CC;
-	Thu, 18 Apr 2024 09:02:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713430930;
-	bh=Z/laLqr/RJd1W/kEW84zTCYug41kjmWmk6qr6YqBijI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=eBfnU/IkQZ1L1XRTqw0UmorODD5ilT+1CVEM7iL+2ka5Ny4lZ0kVe6rRMXqXJ4SIO
-	 F4Y7cSf4LnLedtT+7jBW9MMYjnKORkAlfRZCoObIfxIvHPK+cdTbXhRNGIsTL06VLW
-	 +aXuCl0Iu9E7lBQN9E7eKLlT+yqGSkq2U6RBoijSvFnSbZiDYyOe/lQgqHGrhH2Q7V
-	 H4ZTMclryfdaAD/nZAXVkwomUZQaKraw7xOUIuqRUXrdAiLY/s8mUc+YOZO2BN4uRN
-	 QWsmlPYrftPKsXvbvZ7nb11wQdk8GTunmvOov+4Kwcjn//5YL75JZ+Vyvh8eV1lv2/
-	 Ary12cO7joHkw==
-Message-ID: <651a52ac-b545-4b25-b82f-ad3a2a57bf69@kernel.org>
-Date: Thu, 18 Apr 2024 11:02:06 +0200
+	s=arc-20240116; t=1713431558; c=relaxed/simple;
+	bh=4t2cLoLBXffGWFuuzf20vblalSwZwoEoyJ/BXtoEVhc=;
+	h=From:To:Cc:Date:Subject:Message-ID:MIME-Version:Content-Type; b=bje//TsXdMi7pBfVbduLmb7BcS0GSPWIkVLIxmMX25zAV9SkeeRIE/vO1toZoXc2EwU38L3/DOwFZBXmykOER1sExqi8zf8T4+ANZpXZYZz5hdc6gBDP1/07Uz0BaS8k1ibrOKFAMjiR9AVcjroDgZQGSQVl8fezbmbN7ZBCQfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n2CN5d18; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713431556; x=1744967556;
+  h=from:to:cc:date:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4t2cLoLBXffGWFuuzf20vblalSwZwoEoyJ/BXtoEVhc=;
+  b=n2CN5d18i5LHASZMsaBYG87Rr/8pUAetZojaSn5qJPeJ4VdyZPKh1V/t
+   2U343n/mvh5WGKgY0ucpBn6+jYDnMXCUYSHVpXCGxaiPrKg63Oy1GX0Un
+   rKghgJ0LWhpAaTp33rSGZCz9z/iiyRCFkKhBmCqbDJ7P6cm+qgjrhB3gq
+   GUBsKfBbN7oEvIO8Gt+YZ8oXJaMMjf4ZWQh2ftfQOEJmnJexh0GKQuE3E
+   kAvud1FAoXs/nxAC5QYDj4MLrBecPRridtaW/e+HYIEya/ZC1pTu4XfZe
+   P2Jof9aBApU9BpmMEpWFIz4hDtAk8OA1ukpBW4Swjfd6YABQK9AL5wCv7
+   w==;
+X-CSE-ConnectionGUID: VhbnCsBiSAC6CNClbW3fKw==
+X-CSE-MsgGUID: U/xzei4XRk6rTgXre82UYA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="12803418"
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="12803418"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 02:12:34 -0700
+X-CSE-ConnectionGUID: opN75KlGSvCABr06Ru7qHA==
+X-CSE-MsgGUID: PN5c//8OTkS3wx6mFqLPNw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="60343594"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.36])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 02:12:32 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, PDx86 <platform-driver-x86@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy Shevchenko <andy@kernel.org>
+Date: Thu, 18 Apr 2024 12:03:32 +0300
+Subject: [GIT PULL] platform-drivers-x86 for v6.9-3
+Message-ID: <pdx86-pr-20240418120332-847319520@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/3] cgroup/rstat: convert cgroup_rstat_lock back to
- mutex
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com,
- cgroups@vger.kernel.org, longman@redhat.com, netdev@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, shakeel.butt@linux.dev,
- kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org
-References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
- <171328989335.3930751.3091577850420501533.stgit@firesoul>
- <CAJD7tkZFnQK9CFofp5rxa7Mv9wYH2vWF=Bb28Dchupm8LRt7Aw@mail.gmail.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <CAJD7tkZFnQK9CFofp5rxa7Mv9wYH2vWF=Bb28Dchupm8LRt7Aw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+Hi Linus,
+
+Here is a platform-drivers-x86 fixes PR for v6.9. Except for adding the
+quirks support code into amd/pmf, this one has simple and well-contained
+changes.
+
+Changes:
+ - amd/pmf: Add SPS notifications quirk (+ quirk support)
+ - amd/pmf: Lower Smart PC check message severity
+ - x86/ISST: New HW support
+ - x86/intel-uncore-freq: Bump minor version to avoid "unsupported" message
+ - amd/pmc: New BIOS version still needs Spurious IRQ1 quirk
+
+Regards, i.
 
 
-On 18/04/2024 04.19, Yosry Ahmed wrote:
-> On Tue, Apr 16, 2024 at 10:51 AM Jesper Dangaard Brouer <hawk@kernel.org> wrote:
->>
->> Since kernel v4.18, cgroup_rstat_lock has been an IRQ-disabling spinlock,
->> as introduced by commit 0fa294fb1985 ("cgroup: Replace cgroup_rstat_mutex
->> with a spinlock").
->>
->> Despite efforts in cgroup_rstat_flush_locked() to yield the lock when
->> necessary during the collection of per-CPU stats, this approach has led
->> to several scaling issues observed in production environments. Holding
->> this IRQ lock has caused starvation of other critical kernel functions,
->> such as softirq (e.g., timers and netstack). Although kernel v6.8
->> introduced optimizations in this area, we continue to observe instances
->> where the spin_lock is held for 64-128 ms in production.
->>
->> This patch converts cgroup_rstat_lock back to being a mutex lock. This
->> change is made possible thanks to the significant effort by Yosry Ahmed
->> to eliminate all atomic context use-cases through multiple commits,
->> ending in 0a2dc6ac3329 ("cgroup: removecgroup_rstat_flush_atomic()"),
->> included in kernel v6.5.
->>
->> After this patch lock contention will be less obvious, as converting this
->> to a mutex avoids multiple CPUs spinning while waiting for the lock, but
->> it doesn't remove the lock contention. It is recommended to use the
->> tracepoints to diagnose this.
-> 
-> I will keep the high-level conversation about using the mutex here in
-> the cover letter thread, but I am wondering why we are keeping the
-> lock dropping logic here with the mutex?
-> 
+The following changes since commit e71c8481692582c70cdfd0996c20cdcc71e425d3:
 
-I agree that yielding the mutex in the loop makes less sense.
-Especially since the raw_spin_unlock_irqrestore(cpu_lock, flags) call
-will be a preemption point for my softirq.   But I kept it because, we
-are running a CONFIG_PREEMPT_VOLUNTARY kernel, so I still worried that
-there was no sched point for other userspace processes while holding the
-mutex, but I don't fully know the sched implication when holding a mutex.
+  platform/x86: lg-laptop: fix %s null argument warning (2024-04-08 18:32:14 +0300)
 
+are available in the Git repository at:
 
-> If this is to reduce lock contention, why does it depend on
-> need_resched()? spin_needbreak() is a good indicator for lock
-> contention, but need_resched() isn't, right?
->
+  https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.9-3
 
-As I said, I'm unsure of the semantics of holding a mutex.
+for you to fetch changes up to f609e7b1b49e4d15cf107d2069673ee63860c398:
 
+  platform/x86/amd/pmc: Extend Framework 13 quirk to more BIOSes (2024-04-17 17:05:30 +0300)
 
-> Also, how was this tested?
-> 
+----------------------------------------------------------------
+platform-drivers-x86 for v6.9-3
 
-I tested this in a testlab, prior to posting upstream, with parallel
-reader of the stat files.  As I said in other mail, I plan to experiment
-with these patches(2+3) in production, as micro-benchmarking will not
-reveal the corner cases we care about.  With BPF based measurements of
-the lock congestion time, I hope we can catch production issues at a
-time scale that is happens prior to user visible impacts.
+Changes:
+ - amd/pmf: Add SPS notifications quirk (+ quirk support)
+ - amd/pmf: Lower Smart PC check message severity
+ - x86/ISST: New HW support
+ - x86/intel-uncore-freq: Bump minor version to avoid "unsupported" message
+ - amd/pmc: New BIOS version still needs Spurious IRQ1 quirk
 
+The following is an automated shortlog grouped by driver:
 
-> When I did previous changes to the flushing logic I used to make sure
-> that userspace read latency was not impacted, as well as in-kernel
-> flushers (e.g. reclaim). We should make sure there are no regressions
-> on both fronts.
-> 
+amd/pmc:
+ -  Extend Framework 13 quirk to more BIOSes
 
-Agree, we should consider both userspace readers and in-kernel flushers.
-Maybe these needed separate handing as they have separate needs.
+amd: pmf:
+ -  Add infrastructure for quirking supported funcs
+ -  Add quirk for ROG Zephyrus G14
+ -  Decrease error message to debug
 
->>
->> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
->> ---
->>   kernel/cgroup/rstat.c |   10 +++++-----
->>   1 file changed, 5 insertions(+), 5 deletions(-)
->>
->> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
->> index ff68c904e647..a90d68a7c27f 100644
->> --- a/kernel/cgroup/rstat.c
->> +++ b/kernel/cgroup/rstat.c
->> @@ -9,7 +9,7 @@
->>
->>   #include <trace/events/cgroup.h>
->>
->> -static DEFINE_SPINLOCK(cgroup_rstat_lock);
->> +static DEFINE_MUTEX(cgroup_rstat_lock);
->>   static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
->>
->>   static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu);
->> @@ -238,10 +238,10 @@ static inline void __cgroup_rstat_lock(struct cgroup *cgrp, int cpu_in_loop)
->>   {
->>          bool contended;
->>
->> -       contended = !spin_trylock_irq(&cgroup_rstat_lock);
->> +       contended = !mutex_trylock(&cgroup_rstat_lock);
->>          if (contended) {
->>                  trace_cgroup_rstat_lock_contended(cgrp, cpu_in_loop, contended);
->> -               spin_lock_irq(&cgroup_rstat_lock);
->> +               mutex_lock(&cgroup_rstat_lock);
->>          }
->>          trace_cgroup_rstat_locked(cgrp, cpu_in_loop, contended);
->>   }
->> @@ -250,7 +250,7 @@ static inline void __cgroup_rstat_unlock(struct cgroup *cgrp, int cpu_in_loop)
->>          __releases(&cgroup_rstat_lock)
->>   {
->>          trace_cgroup_rstat_unlock(cgrp, cpu_in_loop, false);
->> -       spin_unlock_irq(&cgroup_rstat_lock);
->> +       mutex_unlock(&cgroup_rstat_lock);
->>   }
->>
->>   /* see cgroup_rstat_flush() */
->> @@ -278,7 +278,7 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp)
->>                  }
->>
->>                  /* play nice and yield if necessary */
->> -               if (need_resched() || spin_needbreak(&cgroup_rstat_lock)) {
->> +               if (need_resched()) {
->>                          __cgroup_rstat_unlock(cgrp, cpu);
->>                          if (!cond_resched())
->>                                  cpu_relax();
+intel-uncore-freq:
+ -  Increase minor number support
+
+ISST:
+ -  Add Granite Rapids-D to HPM CPU list
+
+----------------------------------------------------------------
+Mario Limonciello (4):
+      platform/x86/amd: pmf: Decrease error message to debug
+      platform/x86/amd: pmf: Add infrastructure for quirking supported funcs
+      platform/x86/amd: pmf: Add quirk for ROG Zephyrus G14
+      platform/x86/amd/pmc: Extend Framework 13 quirk to more BIOSes
+
+Srinivas Pandruvada (2):
+      platform/x86: ISST: Add Granite Rapids-D to HPM CPU list
+      platform/x86/intel-uncore-freq: Increase minor number support
+
+ drivers/platform/x86/amd/pmc/pmc-quirks.c          |  9 ++++
+ drivers/platform/x86/amd/pmf/Makefile              |  2 +-
+ drivers/platform/x86/amd/pmf/acpi.c                |  7 ++-
+ drivers/platform/x86/amd/pmf/core.c                |  1 +
+ drivers/platform/x86/amd/pmf/pmf-quirks.c          | 51 ++++++++++++++++++++++
+ drivers/platform/x86/amd/pmf/pmf.h                 |  3 ++
+ .../x86/intel/speed_select_if/isst_if_common.c     |  1 +
+ .../intel/uncore-frequency/uncore-frequency-tpmi.c |  4 +-
+ 8 files changed, 73 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/platform/x86/amd/pmf/pmf-quirks.c
 
