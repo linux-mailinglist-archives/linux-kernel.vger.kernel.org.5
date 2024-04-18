@@ -1,162 +1,187 @@
-Return-Path: <linux-kernel+bounces-150170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE3278A9B44
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C1B48A9B4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:32:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD0C61C21ECF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:28:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF7351C22DBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:32:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5570616133B;
-	Thu, 18 Apr 2024 13:28:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07FD15FD11;
+	Thu, 18 Apr 2024 13:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="wh5BN/C6"
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DQ46UO5o"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 579EF15FA91
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 13:28:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE1B13247D;
+	Thu, 18 Apr 2024 13:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713446907; cv=none; b=bl/FqG+aps3Tl8UA45aXmPSQkhO23wFyCsqELSaKKH+enc/3qqmePrs7ulRbDvC/8jqd8nydSbgKqttRGxldddswMcB/yzmuu0z4e4ji/LJZM9sRwQNvN6Dht40AZZ6bj1AzE4lIXhhb/DoCddnDPl8Wuq/0vpqC3LfmeKiRTHM=
+	t=1713447128; cv=none; b=cYrCmkI0j7gXqN6m+boEKHYftGrO+H7I7zn0HaZB5gb5DS8OkRfoT7LcEV3QIm3rc3GoJGWRDPfy6MClL0ZBt/2Qb3XQM8zhI/GqdMps4BHH5hrfmfSoxFf7dn4EjD7bjxeKSvmEaadk0jEgbnsJm6VVPbKEa2DOzllQfj7/EOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713446907; c=relaxed/simple;
-	bh=xlB7rdi2o9xH7y6LdwhVg9RVEN+FAlcEKx+Jy8RyAyc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qviX8cs63ILjd79RCa1SAROYHFT5Bi62l+FL4ePwthEUIAm1ORi5IZP0ii+bdxdy1kh8Ck865i49KfVghGYH2/d7jyeZAYCPOjjl+e8IEHxcy35kZbC6O+Iw0UvsgY07TLwBraQariDY054zA48vJyWXefmawtERn1vSdojLHI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=wh5BN/C6; arc=none smtp.client-ip=209.85.166.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-36b045c17d5so6040755ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:28:26 -0700 (PDT)
+	s=arc-20240116; t=1713447128; c=relaxed/simple;
+	bh=LSGIQxyjWaoQbkFih8PYwxF1WOXPzlUfmE71TCh83Z4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sC4VJos5l3mQ0tirjuk2RdzZMc5djdlUE1DVpfVSu3f6vGlwLnbMvJEMq3IH+pHdYJuR0V6yc5qxkk1h6FSt9Nx6ySBPcLf5iauJvIpkvlHVbHnhAclXOtYb/797FRRpACLJtl9WZmLGcwz1kdnEC0s8VQ4fXTez51CrYh/PFrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DQ46UO5o; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-346f4266e59so573231f8f.3;
+        Thu, 18 Apr 2024 06:32:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1713446905; x=1714051705; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KMNMsgIxykHwVLRcqTZk25HnL0Z5DBPcc9H1w13fRk4=;
-        b=wh5BN/C6ovuEY6CE4JRdE/sqYVByicuEaAlCaOsUeUFhM3jcFfYTpsBhKDnaJW9Hho
-         GCXfvRTFXXW3/fzppewG3dxxUAq/2BJjcG86+ztbNUVUCUjaH9mV2XzXbvHvhYPXgift
-         qeZRuJm9bT0qK9TLbkDIKvyeWExVpsQOwCU4aT9Sryy9T5pacPvPJzBqZShV2Z0zE7JS
-         BaOVStRsA+OnbUWBBVR+LFOI+lwFc1A3ohFULOT1DWWmJALOBjBikLODStgJuJXbNtZK
-         ugOcQ+ZRGBvXDxFeyLgME52HSpE5lOxU43Tfj7QNj8JC1NzG1iRYgDrd/fbZSUBESxGL
-         ntcA==
+        d=gmail.com; s=20230601; t=1713447125; x=1714051925; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MBrKPWdTMW9CAPsRQ3Dci4rO75QpqJILBEyvPcJID6w=;
+        b=DQ46UO5o1JDCmPysuvOlBe8Bas5TJBqp+q4Hy7x9qS/TylcLt5ByNRiOizgE7rpDVY
+         h3rylMdcZ1Z2dV15qsWUtAUXbilKbC668saJsHMdHDA1sH7fjzyj2681npdGVl415652
+         M4mN755JJC/qeEGy0xy7jxXLrvlBPYDphsb5ClrdeP0Y1rF5y4DRYoMakX2wPtpoqG1Q
+         JAxZEkjDiNZrVl6RaXdPMNCjuWbwrvLMQUq4iPuEcoj6/ev5hoLf5zIcW8gPo7vd5HXR
+         0xnDiQwYyVYjwaJoMb5wSr9DcQTlFPPzBQRe7u0QaucQUjChcg9vHPrXlbAUD34zNuIl
+         1Fvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713446905; x=1714051705;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KMNMsgIxykHwVLRcqTZk25HnL0Z5DBPcc9H1w13fRk4=;
-        b=EP3RL44BUYCWXQWxjvCLJ4zKKHzrWPDY5kpBSlFTd3iS82gxJrhY+zv4fOiCrzh+sn
-         A7b6WhpeQt/9YVYIGv/nqfedirN0y5yY1G7iMlFhxbihC5/9splRw9dLnwx1HlzShHIB
-         UjcaHwo4vgvK77ZtKKizAx71fMCNOa1dW9t8wk9wje5XGoEzWJUhVtC//yMjysB+wbfI
-         DN6+QVEWohXevnTJp30UaoIYhcf02IBByqvX2i4f/5PfPTAC9915uet0nZfnEzoTnOr6
-         Cxs9SYfyb08+5H/Kzhq/GIQIG3Bup/tR1GZdk/3xN4VBBRRnx7brNAJfaubT8ZeeQ5RI
-         BvmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVOO6V87AGQ7BjES3AQ0Wj7iohu9JPi3RskI9uaiQB4s4TyBUiOYFQv5m20jEPBwx/Va0WayilME8HOdlEz2XIJNfScCCb0/msBhdAA
-X-Gm-Message-State: AOJu0YyCE/kbhi7PPl862wMBWyAZ9XsCXjwR1nb/L2nKor7qj9GQEeX3
-	iynZvdYCnW2McdaNPNb0dyYWcOuIn9GYh+kb/iP1QUzSY9UE1dRMKwUWciwV+qTmjsU6/m5dD/Z
-	X0DHSGfpgjEc5KcGExbbH4LZQu27wqgQA6bKPKg==
-X-Google-Smtp-Source: AGHT+IFrWxljQUhM4BHCWc1rpwi1ngTEKRjguXPUXYX/AlzCjkEoKCfJFfKh82U9YYFX9h6A9SWk0YTxswpzIbsp85s=
-X-Received: by 2002:a05:6e02:1c8b:b0:368:920b:e211 with SMTP id
- w11-20020a056e021c8b00b00368920be211mr3604422ill.5.1713446905449; Thu, 18 Apr
- 2024 06:28:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713447125; x=1714051925;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MBrKPWdTMW9CAPsRQ3Dci4rO75QpqJILBEyvPcJID6w=;
+        b=s09H0GbFm/cDS1VBbmfkSQMBW3tqC++EuE9/8agNpp0SYQmcjqnZXWZg9JiQWIKGyO
+         Aur9Y7a9/lnEWXGkLcBsPuQuo5RR0/bgdEm27DvbcC7BeH7mTc75Tfu51C2V9lC04QkQ
+         lh5kZNxbg0oy9BBt0cQhuZjYjpA4fHicD6kv8MgD/rVYFK9iVQMuvRrlvzLrkxSC+Cbi
+         q+46vkeJwQJkhf3k/qVUaKwWNccqqJnV7fPs1eB6mpywADcYbSxAXLL9mprQPqcQmZci
+         auFkBnU75NfN4mI+QriK3T2GgBVr3HH455NXCg+9Ql/D2WEp5rfVyJN9vh9cc2IUWGyM
+         szxg==
+X-Forwarded-Encrypted: i=1; AJvYcCVMKPghl4ERowvzn13+bTL8AWYwT+GoYeu1GGkkwrVc1SRNMIHgPpTfLNpWDmEmkSkUg7FKydkhDq/76qw/D4lX4B9YiiRRVe261SuX
+X-Gm-Message-State: AOJu0Yxkrfz35flnYXainLNlX32xJZpPkfKeEHWacTnCUdvM25bTboqu
+	TyT+kvKmV6q9Jg9+tXHMaJpHA6TcGZcDBY7EVoNV3Xmv+WpnTl93
+X-Google-Smtp-Source: AGHT+IEOZ04IAf6iJFVcxPNeRusLj2LszHSOwC9mKTIp0I+Yi20LnnDTztkjvEerJ0h25eSQ4lCjHQ==
+X-Received: by 2002:adf:a44d:0:b0:33e:be35:d449 with SMTP id e13-20020adfa44d000000b0033ebe35d449mr1636693wra.44.1713447124485;
+        Thu, 18 Apr 2024 06:32:04 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:6d3f:e873:5a16:baae:4269:c8f3? ([2a02:810d:6d3f:e873:5a16:baae:4269:c8f3])
+        by smtp.gmail.com with ESMTPSA id u6-20020a5d6da6000000b00346ab3c372bsm1882390wrs.73.2024.04.18.06.32.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 06:32:03 -0700 (PDT)
+Message-ID: <4ae4be2f-4edd-4d1e-87e9-df5687627d00@gmail.com>
+Date: Thu, 18 Apr 2024 15:31:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418124300.1387978-1-cleger@rivosinc.com>
-In-Reply-To: <20240418124300.1387978-1-cleger@rivosinc.com>
-From: Anup Patel <anup@brainfault.org>
-Date: Thu, 18 Apr 2024 18:58:13 +0530
-Message-ID: <CAAhSdy0RPOX7_rLQ8GcYzbWQ8wzKDxDKXUqNoNd2ZFkVx4sfMg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] Add support for a few Zc* extensions as well as Zcmop
-To: Palmer Dabbelt <palmer@dabbelt.com>, Palmer Dabbelt <palmer@rivosinc.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Shuah Khan <shuah@kernel.org>, 
-	Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, kvm@vger.kernel.org, 
-	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org, 
-	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Re: [PATCH] HID: uclogic: Remove useless loop
+To: Jiri Kosina <jikos@kernel.org>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Nikolai Kondrashov <spbnick@gmail.com>
+References: <20240401004757.22708-1-stefanberzl@gmail.com>
+ <nycvar.YFH.7.76.2404121751250.5680@cbobk.fhfr.pm>
+Content-Language: en-US
+From: Stefan Berzl <stefanberzl@gmail.com>
+In-Reply-To: <nycvar.YFH.7.76.2404121751250.5680@cbobk.fhfr.pm>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Palmer,
 
-On Thu, Apr 18, 2024 at 6:13=E2=80=AFPM Cl=C3=A9ment L=C3=A9ger <cleger@riv=
-osinc.com> wrote:
->
-> Add support for (yet again) more RVA23U64 missing extensions. Add
-> support for Zcmop, Zca, Zcf, Zcd and Zcb extensions isa string parsing,
-> hwprobe and kvm support. Zce, Zcmt and Zcmp extensions have been left
-> out since they target microcontrollers/embedded CPUs and are not needed
-> by RVA23U64
->
-> This series is based on the Zimop one [1].
->
-> Link: https://lore.kernel.org/linux-riscv/20240404103254.1752834-1-cleger=
-@rivosinc.com/ [1]
->
-> ---
-> v2:
->  - Add Zc* dependencies validation in dt-bindings
->  - v1: https://lore.kernel.org/lkml/20240410091106.749233-1-cleger@rivosi=
-nc.com/
->
-> Cl=C3=A9ment L=C3=A9ger (12):
->   dt-bindings: riscv: add Zca, Zcf, Zcd and Zcb ISA extension
->     description
->   riscv: dts: enable Zc* extensions when needed
->   dt-bindings: riscv: add Zc* extension rules implied by C extension
->   riscv: add ISA parsing for Zca, Zcf, Zcd and Zcb
->   riscv: hwprobe: export Zca, Zcf, Zcd and Zcb ISA extensions
->   RISC-V: KVM: Allow Zca, Zcf, Zcd and Zcb extensions for Guest/VM
->   KVM: riscv: selftests: Add some Zc* extensions to get-reg-list test
->   dt-bindings: riscv: add Zcmop ISA extension description
->   riscv: add ISA extension parsing for Zcmop
->   riscv: hwprobe: export Zcmop ISA extension
->   RISC-V: KVM: Allow Zcmop extension for Guest/VM
->   KVM: riscv: selftests: Add Zcmop extension to get-reg-list test
->
->  Documentation/arch/riscv/hwprobe.rst          |  24 ++
->  .../devicetree/bindings/riscv/cpus.yaml       |   8 +-
->  .../devicetree/bindings/riscv/extensions.yaml | 124 +++++++++
->  arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi |   4 +-
->  arch/riscv/boot/dts/microchip/mpfs.dtsi       |  20 +-
->  arch/riscv/boot/dts/renesas/r9a07g043f.dtsi   |   4 +-
->  arch/riscv/boot/dts/sifive/fu540-c000.dtsi    |  20 +-
->  arch/riscv/boot/dts/sifive/fu740-c000.dtsi    |  20 +-
->  arch/riscv/boot/dts/sophgo/cv18xx.dtsi        |   4 +-
->  arch/riscv/boot/dts/sophgo/sg2042-cpus.dtsi   | 256 +++++++++---------
->  arch/riscv/boot/dts/starfive/jh7100.dtsi      |   8 +-
->  arch/riscv/boot/dts/starfive/jh7110.dtsi      |  20 +-
->  arch/riscv/boot/dts/thead/th1520.dtsi         |  16 +-
->  arch/riscv/include/asm/hwcap.h                |   5 +
->  arch/riscv/include/uapi/asm/hwprobe.h         |   5 +
->  arch/riscv/include/uapi/asm/kvm.h             |   5 +
->  arch/riscv/kernel/cpufeature.c                |   5 +
->  arch/riscv/kernel/sys_hwprobe.c               |   5 +
->  arch/riscv/kvm/vcpu_onereg.c                  |  10 +
->  .../selftests/kvm/riscv/get-reg-list.c        |  20 ++
->  20 files changed, 394 insertions(+), 189 deletions(-)
->
-> --
-> 2.43.0
->
+On 12/04/2024 17:52, Jiri Kosina wrote:
+> On Mon, 1 Apr 2024, Stefan Berzl wrote:
+> 
+>> The while in question does nothing except provide the possibility
+>> to have an infinite loop in case the subreport id is actually the same
+>> as the pen id.
+>>
+>> Signed-off-by: Stefan Berzl <stefanberzl@gmail.com>
+> 
+> Let me CC Nicolai, the author of the code of question (8b013098be2c9).
 
-Most likely the KVM RISC-V related changes in this series
-will conflict with the KVM RISC-V repo.
+I agree that Nicolai's opinion would be invaluable, but even without it,
+the patch is trivially correct. If we have a subreport that matches the
+packet, we change the report_id accordingly. If we then loop back to the
+beginning, either the report_id is different or we are caught in an
+infinite loop. None of these are hardware registers where the access
+itself would matter.
 
-I will provide a shared tag based on 6.9-rc3 tomorrow or
-early next week.
-
-Regards,
-Anup
+>> ---
+>>  drivers/hid/hid-uclogic-core.c | 55 ++++++++++++++++------------------
+>>  1 file changed, 25 insertions(+), 30 deletions(-)
+>>
+>> diff --git a/drivers/hid/hid-uclogic-core.c b/drivers/hid/hid-uclogic-core.c
+>> index ad74cbc9a0aa..a56f4de216de 100644
+>> --- a/drivers/hid/hid-uclogic-core.c
+>> +++ b/drivers/hid/hid-uclogic-core.c
+>> @@ -431,40 +431,35 @@ static int uclogic_raw_event(struct hid_device *hdev,
+>>  	if (uclogic_exec_event_hook(params, data, size))
+>>  		return 0;
+>>  
+>> -	while (true) {
+>> -		/* Tweak pen reports, if necessary */
+>> -		if ((report_id == params->pen.id) && (size >= 2)) {
+>> -			subreport_list_end =
+>> -				params->pen.subreport_list +
+>> -				ARRAY_SIZE(params->pen.subreport_list);
+>> -			/* Try to match a subreport */
+>> -			for (subreport = params->pen.subreport_list;
+>> -			     subreport < subreport_list_end; subreport++) {
+>> -				if (subreport->value != 0 &&
+>> -				    subreport->value == data[1]) {
+>> -					break;
+>> -				}
+>> -			}
+>> -			/* If a subreport matched */
+>> -			if (subreport < subreport_list_end) {
+>> -				/* Change to subreport ID, and restart */
+>> -				report_id = data[0] = subreport->id;
+>> -				continue;
+>> -			} else {
+>> -				return uclogic_raw_event_pen(drvdata, data, size);
+>> +	/* Tweak pen reports, if necessary */
+>> +	if ((report_id == params->pen.id) && (size >= 2)) {
+>> +		subreport_list_end =
+>> +			params->pen.subreport_list +
+>> +			ARRAY_SIZE(params->pen.subreport_list);
+>> +		/* Try to match a subreport */
+>> +		for (subreport = params->pen.subreport_list;
+>> +		     subreport < subreport_list_end; subreport++) {
+>> +			if (subreport->value != 0 &&
+>> +			    subreport->value == data[1]) {
+>> +				break;
+>>  			}
+>>  		}
+>> -
+>> -		/* Tweak frame control reports, if necessary */
+>> -		for (i = 0; i < ARRAY_SIZE(params->frame_list); i++) {
+>> -			if (report_id == params->frame_list[i].id) {
+>> -				return uclogic_raw_event_frame(
+>> -					drvdata, &params->frame_list[i],
+>> -					data, size);
+>> -			}
+>> +		/* If a subreport matched */
+>> +		if (subreport < subreport_list_end) {
+>> +			/* Change to subreport ID, and restart */
+>> +			report_id = data[0] = subreport->id;
+>> +		} else {
+>> +			return uclogic_raw_event_pen(drvdata, data, size);
+>>  		}
+>> +	}
+>>  
+>> -		break;
+>> +	/* Tweak frame control reports, if necessary */
+>> +	for (i = 0; i < ARRAY_SIZE(params->frame_list); i++) {
+>> +		if (report_id == params->frame_list[i].id) {
+>> +			return uclogic_raw_event_frame(
+>> +				drvdata, &params->frame_list[i],
+>> +				data, size);
+>> +		}
+>>  	}
+>>  
+>>  	return 0;
+>> -- 
+>> 2.43.0
+>>
+> 
 
