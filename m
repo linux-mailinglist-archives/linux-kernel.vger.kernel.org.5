@@ -1,108 +1,127 @@
-Return-Path: <linux-kernel+bounces-150679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150681-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D37888AA2F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:38:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC6BE8AA2F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:39:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E32A11C2272F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:38:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE00B1C22677
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:39:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56CF0180A6D;
-	Thu, 18 Apr 2024 19:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9822817F360;
+	Thu, 18 Apr 2024 19:39:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZoQFXyBT"
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lZR3OOny"
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CEB17736;
-	Thu, 18 Apr 2024 19:38:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A56E917736;
+	Thu, 18 Apr 2024 19:39:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713469091; cv=none; b=qZyV7aYC+5toHKdpJ18jEX8hu+LiaeazgSGE2YP6fyV+CFsdu3COxZm6cqHeLnqZ9f0CQkDChG4GWoAGoWaDoODUn5Ks2/zPDIpV4B1JNuWdmtO+xGrXp6xqIUB+ppb7JM1fGXTuYgoZHu3q65lPK6iDjz+kFr8vfE/wBph5Ut4=
+	t=1713469142; cv=none; b=citL69aR3yU5ByGZR85v7gkXBQ3JM3nU/0XFm1wpFEDRNINygrNgJ/Vwaw8908la9aZjAxHanjSchBghVevl4RDbFy6W2ghSxK0Ev5zIcGgAmpSsTz/dK75kAssWpkj05Z5JUhw96r37ktAHkBZt1VRX++Ki4l5buTR9GbVGXgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713469091; c=relaxed/simple;
-	bh=krN7TDVY8gsasYGH21Hk8s3B3pWnfrUYQtqBSfSjSD0=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=XsV4jgTuQXld0/mY+P5K8ZGmHeI3SgNISlIQRstQHknPhB9Ulko6cHGEXESe4iFWrLrOz2lK4LioVMQgtAM1jnBwzpBEuNDXaCxNCN9wupa9+1ocIn/+LnVFnFi+7SL+UYUVSptqOhBSMs8Sti5mVzaSU0Ny8irDoeMEdTwOeQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZoQFXyBT; arc=none smtp.client-ip=209.85.221.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1713469142; c=relaxed/simple;
+	bh=3AmLu6fuTglDHdN6HuJ7Xq3eNdZpOuUL/x2iprMEBP8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Oen0DzOfRk8TK2XmEyLz0TeSlThyRv3hFz7pK/OaJQZ/GPS9UW67BpaS0gBPPS7JObPcmlngsC/1ZmdqiNuSp+W1FkIrR68oOyRcxYXNtmoJv8BqsE09Hq9MLkM10aysFYJ1kZQzlzVwvwi4iB0+VVoyW7RV96TN84gzbwrulYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lZR3OOny; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4dcd4cb27beso362637e0c.3;
-        Thu, 18 Apr 2024 12:38:09 -0700 (PDT)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2a4bdef3d8eso1087108a91.1;
+        Thu, 18 Apr 2024 12:39:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713469089; x=1714073889; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=73xcy9UhpOQbwGv1P/rFuD3j5Fn9C/d34aHsmJnVy1o=;
-        b=ZoQFXyBT/6BM2razCldrO81fIK9VIBnATEXZDZ+zwwiPI9W7Rumy7mcbTRF86yY/D+
-         IIqNqrWsJK00SZEekPm/89nAsoMPIuYQ6L9TxxAgesfMLfbKAw1RSkFgTULjiv3Lu5NB
-         rKdd7DqkLRwecB5iub7ryQOls/om31MnlLOuACtdWhqx27VM6bXr/pPBqYjAmjdYN5H6
-         LTVW3JREH6ZhxZ00ySOZtZavhcvIUdYpJXEMIdGrAvDhF1wTVobplRa4T+YQdSIOlBhd
-         fuoESU48HBDm6rtFr6crRZG+/WHtw2oMGT2G/n9tq+5f9c4ZclQtmbyq3oTRZEokktNO
-         /QVQ==
+        d=gmail.com; s=20230601; t=1713469141; x=1714073941; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EgmECHn+IUJlMNN8CLsfysKsR/Z7Bc7D2FVBk+o+7qQ=;
+        b=lZR3OOnyIai1EtkYhOJIsCjXwKLTdFPf0jkztwC9WGQJAfrc7QJbaSTBwD01RQydHK
+         DANEetnKjSgBTqI6Ag03WbYjkPfOi64fEHQH9QCNh+rRYqR9XXCWxzZIa3luh1rKq6+2
+         8kD5juXY247/7ZENBNJq1KUbXrpV/fzyDIMAfMCsSQzq+F6UQPldL5386nbgSf0cgpPF
+         sH+OF8Wz4p0MUQxDVxug2nDP3fCVVbNdDQ3Aza1UXAIIxD4Gju2PnKXylcGs7bckAiDg
+         hsak8zHjeznCfguWPet1KhYX1UyMO11vxlCDcY830y3rpDp0Hc8OEQ6iuK4aYPSsyLA2
+         49Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713469089; x=1714073889;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=73xcy9UhpOQbwGv1P/rFuD3j5Fn9C/d34aHsmJnVy1o=;
-        b=tDEqv9hBbN7QVtylo1V8GwyBrx77VJ4jaKCW7dg/wlk6XJQNmh9aMAJ/9w+6t+unxk
-         II43vXrjfXcCcoy0ot8IAQB6CeCba1Tqz2klDzLwoR+r6HnN5yY+M0DHOfUN+ui4iE0B
-         hK/KUJb6jK6e3ngoHiDb25n/PmMMHux7a7pNCVirODuVQRaMaB7qOrvcIBJ1p48+VYKM
-         sei05nPzR/mS08DL4dJ/AG8yliwMwpuySARI+Mj9w6QlvuQ8W8Ixl5fiEOiec3dr6djt
-         Dzxv2NZS8057hXwDJ9/iJCu0THRyOhngm0fFjw2wFQ5HAhxSs2H2u01EKZSt0Pc10KxH
-         A8fg==
-X-Forwarded-Encrypted: i=1; AJvYcCXADeMxqO+0ZjmnA1iSkUGEPar2IP30CZ9xqPRAhPcAkbqVbWU1L+1VB0y0/ym4y2bjO893UWWlKl3AjdbFidbjE+StcNNhx4c6dH4nKSScKpcUi6Ca0wgSoszqADDbQsT5ohxV
-X-Gm-Message-State: AOJu0YxwpQwFgnxaO1t9iqdwgEStcHgMrbTkanTkWFFuxLAX2nTQlO3I
-	RxxNijnWAQ7bb+bCvw2K3OS14gfcTxsqQAb5SKIUMSLtfFPsii3b
-X-Google-Smtp-Source: AGHT+IHBKc0wN3jAJfQwdq2HZ6fSIHBZYzooVvacnfYa+xx7vPre8ykaNL1aGlkdE0n5zkvgKs7M0Q==
-X-Received: by 2002:a05:6122:8cf:b0:4d8:df31:6b34 with SMTP id 15-20020a05612208cf00b004d8df316b34mr3771436vkg.8.1713469089105;
-        Thu, 18 Apr 2024 12:38:09 -0700 (PDT)
-Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
-        by smtp.gmail.com with ESMTPSA id ow17-20020a0562143f9100b006a05aaf748bsm433587qvb.81.2024.04.18.12.38.08
+        d=1e100.net; s=20230601; t=1713469141; x=1714073941;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EgmECHn+IUJlMNN8CLsfysKsR/Z7Bc7D2FVBk+o+7qQ=;
+        b=GUdpgtTeUVYUaDLTylYfPdXfIJkj4WZoCbrUiNvyVTfMd4lOGseIGV1MYjURBGHO7g
+         7t7jFuaXZ17wost2uGjbxJJNsrGa9fFsvI2ZcSUNw+H0OzKlwkCfnhdeeKb7P5yBnuMY
+         a6ZmtNW6RVuvbLVKMMFoJqM5nNFLzpdFUOV58I4zRGsW0m/fr6+hIa2pHBRT+/8H3Pg2
+         k/RvSsfRE7xPhICNKXP069ABf38IK+JoaczqF4uxCv4TzsDr+SP+c/ZHHGPZcIZmiKgn
+         3dYugyuRs0EggM2bPdi/z9d5067l3ldEjteLFtEg6GO0GlHbB4zny7ZppA97G5U9GZ+1
+         tFJg==
+X-Forwarded-Encrypted: i=1; AJvYcCVj1OI+6EzFeeWioJwqmQkarADYhu5C6Te4CivuXcFR/ioqMST22e+Baw7MJ9y+6OLSJIZYI7BqvuUtFT/M7Y5fmKEFgdN2faFVaKbG
+X-Gm-Message-State: AOJu0YyK4XwjcOMJmlMaeFXhM2kfiiSkYEZ6Z/MpEktQPp29q5R/ur54
+	l2vvIHgQ2ey7IQ0iR9ai9adajf5F0Gc2mVBOv4r+ezZtWw0yGY23
+X-Google-Smtp-Source: AGHT+IGcl83ls5csOd31qry2hdPL3nzhI3ZTNwSoEJX1jZOXPdbKQ92PAX5/q90K087n49o0YP/DnQ==
+X-Received: by 2002:a17:90a:ebd1:b0:2a3:be59:e969 with SMTP id cf17-20020a17090aebd100b002a3be59e969mr114833pjb.47.1713469140821;
+        Thu, 18 Apr 2024 12:39:00 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y3-20020a17090a390300b002a232e4f9ddsm1982272pjb.34.2024.04.18.12.38.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 12:38:08 -0700 (PDT)
-Date: Thu, 18 Apr 2024 15:38:08 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Yick Xie <yick.xie@gmail.com>, 
- willemdebruijn.kernel@gmail.com, 
- willemb@google.com
-Cc: netdev@vger.kernel.org, 
- davem@davemloft.net, 
- dsahern@kernel.org, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- linux-kernel@vger.kernel.org, 
- stable@vger.kernel.org
-Message-ID: <662176a05a2ff_f8180294a3@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20240418170610.867084-1-yick.xie@gmail.com>
-References: <6621259d66d0f_ec9b929478@willemb.c.googlers.com.notmuch>
- <20240418170610.867084-1-yick.xie@gmail.com>
-Subject: Re: [PATCH net v3] udp: preserve the connected status if only UDP
- cmsg
+        Thu, 18 Apr 2024 12:39:00 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Thu, 18 Apr 2024 12:38:59 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+	allen.lkml@gmail.com, broonie@kernel.org,
+	Phillip Pearson <philpearson@google.com>
+Subject: Re: [PATCH 5.4 000/215] 5.4.274-rc1 review
+Message-ID: <c5d0c7f7-96a0-4806-b3b6-269d9189037d@roeck-us.net>
+References: <20240411095424.875421572@linuxfoundation.org>
+ <787e0ac1-cb31-47d9-8200-3f6a3b4119dd@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <787e0ac1-cb31-47d9-8200-3f6a3b4119dd@roeck-us.net>
 
-Yick Xie wrote:
-> If "udp_cmsg_send()" returned 0 (i.e. only UDP cmsg),
-> "connected" should not be set to 0. Otherwise it stops
-> the connected socket from using the cached route.
+On Thu, Apr 18, 2024 at 12:25:21PM -0700, Guenter Roeck wrote:
+> On Thu, Apr 11, 2024 at 11:53:29AM +0200, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.4.274 release.
+> > There are 215 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
+> > Anything received after that time might be too late.
+> > 
+> [ ... ]
+> > 
+> > Sean Christopherson <seanjc@google.com>
+> >     KVM: Always flush async #PF workqueue when vCPU is being destroyed
+> > 
 > 
-> Fixes: 2e8de8576343 ("udp: add gso segment cmsg")
-> Signed-off-by: Yick Xie <yick.xie@gmail.com>
-> Cc: stable@vger.kernel.org
+> This backport is bad. In kvm_setup_async_pf(), it removes a call to
+> kvm_get_kvm(). However, it does not remove the call to kvm_put_kvm()
+> in its error handler. Also see upstream commit 7863e346e108 ("KVM:
+> async_pf: Cleanup kvm_setup_async_pf()") which explains that one of
+> the error paths in kvm_setup_async_pf() which is not supposed to be
+> observed can be observed after all.
+> 
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+Reverting the above commit from v5.4.y fixes the problem. Alternatively,
+applying commit 7863e346e108 on top of v5.4.274 fixes it as well.
+
+I added Phillip Pearson to Cc:; he did all the testing and can provide
+additional information if needed.
+
+Thanks,
+Guenter
 
