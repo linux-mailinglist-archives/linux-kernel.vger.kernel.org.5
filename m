@@ -1,181 +1,113 @@
-Return-Path: <linux-kernel+bounces-150826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 259AC8AA54F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:12:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA4698AA561
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:15:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31FDC1C21E45
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:12:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94DB82817D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB37199E9B;
-	Thu, 18 Apr 2024 22:12:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E3E91A0AEF;
+	Thu, 18 Apr 2024 22:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="zDheyhDn"
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="aqs5FGO5"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACEBA180A67
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 22:11:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292AC199E98;
+	Thu, 18 Apr 2024 22:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713478320; cv=none; b=qJ9e97KGivtovLbcTQiV6K9EbF7XYMOi5YpXrr5iXhx6ivGDypN941q84fT3hOeGl4MSAbHzFo0LWvCggO8XpNhnm/QTKcofZNKlDYsGE5gGWV0MVH7L4pThCWuitF4UpilzoGxSxjzphr+j67nBtyuzwbQ8mgYRCImCfXfsuGs=
+	t=1713478515; cv=none; b=W8zkzTakqehivOLTVHWWK6xrBJYHXnhHXyUQTeBU0dgFrTV42s5HFDRX9Xk8c4pGSgT4h2guudYX9TAoTIok1ZUMuTtNc6t/uYxi1F7OuMAv7npeYT7RK7fIft103wlBuF0EY/c2pJ/YR60Rcit8/wIlwPCeC257CDAPtNtSFXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713478320; c=relaxed/simple;
-	bh=qC73A3C+2ySXkYRdhc6wiS5hdCuQCzyFsXeqp/DMf2w=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=gGrszSREAQhzv4KuKyg0gdosuURTAvwA6YF0dUhPAHYhQ0QeaoUl9umU537t4IsxBbF1O8xonTb31DrbUQVeSumfEPsatLDTBxfcienOxek1ribRfbLvHQfT14RElLKg2pMW/peemeUXWuD7dKznePQkHqbUTx5cgZ5KUm8SXNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=zDheyhDn; arc=none smtp.client-ip=209.85.160.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-22ec61aaf01so833626fac.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:11:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1713478318; x=1714083118; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fJWNYLKtKkE3VgEEb7txo69kf/MROzgyItmd/8X/Bkw=;
-        b=zDheyhDnes1JFgEb7i7lavl61MoAOiTBxb0W4oMg1oV6h4nwVnyGvQPlc/EOT9cING
-         dHak2xF2NisrUCnaHNcrig7gQQXANiOeLOJj66w1aW12agsBDJlDTH4h2aKdFF+BgPpx
-         XPQKpaVpSEN2sPvFN28+Jdsyqcgv/ea6Wi6M2hO8kW4GD77xJ4Niis991ryVbYAGvhtL
-         quRpnFMRAXYFrVdxpR+KzoGaA6ARa7IG59vN1BRIrIMx+Q0fV96XJglo4EkA1zlR1Lwo
-         m7LU8g4OD8/O8+4D5eNRXq7KyVerZsNQ76PBG7Xi4w3l2Bc83uIYGuVXDMcKT7kPeDnO
-         K88A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713478318; x=1714083118;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fJWNYLKtKkE3VgEEb7txo69kf/MROzgyItmd/8X/Bkw=;
-        b=ZpoZ+RkHuxeYIvQSk6oKh6r94QNIs/cerufNxA24XAsFTT8zref/EIY7DeVxf1zhXb
-         +rPxE+bnEVxSsoHaeDamFTuiVp7Ef34a+7CV8NY5PEj9j2e2VWGmZMQOVfrn0PWLw7MH
-         fpe9GEDpN+jVTsGZqeNaft3IiZ6/i5IeYC32WCWqd9w0h43Jgv7mUiT0oanP8eb1yxf1
-         1GpyL3CP4+gM2z5uMtU39R2Xri7RCZBbGvCc7drziDObKj20WvCjPZxy2+pu/PDjm9vy
-         WC58Dqi7YrFNA1a2y0//g1S16IICKOoiVpsgRHla5J7fokWAaCv8FQ88DcnvR80jYPBq
-         YepQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVLPOdA9FVMalwar0eXr0fhcoiftq9lwVfb2czUpdDeiDwyLWlj1T+s/30CZ62ab+cHcFFXd9nuk09iZ9LLoiNMo9c1ywiA0cvuQLJT
-X-Gm-Message-State: AOJu0YzodU9SO6PFDrc3JEVrYQwPvllBMYgwHBHFnFjaMthTSkq9q2wQ
-	b0rN0w5CeX1+o6CQGI4DamFGl9f9ELWlkcoS+AcDsIIggooEiidT7xRpTgudtl8=
-X-Google-Smtp-Source: AGHT+IH5Rrf98QC4gFatEepR9aZzJYc9ESCNODVH0HHIz4PIvza73yv3y89sBwp3q1CAuQ8k41fxxw==
-X-Received: by 2002:a05:6870:d187:b0:232:ff53:44fe with SMTP id a7-20020a056870d18700b00232ff5344femr362648oac.38.1713478317422;
-        Thu, 18 Apr 2024 15:11:57 -0700 (PDT)
-Received: from localhost ([50.145.13.30])
-        by smtp.gmail.com with ESMTPSA id q9-20020a63d609000000b005dc9439c56bsm1877624pgg.13.2024.04.18.15.11.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 15:11:56 -0700 (PDT)
-Date: Thu, 18 Apr 2024 15:11:56 -0700 (PDT)
-X-Google-Original-Date: Thu, 18 Apr 2024 15:11:55 PDT (-0700)
-Subject:     Re: [PATCH 0/9] Merge arm64/riscv hugetlbfs contpte support
-In-Reply-To: <CAHVXubiH64beFuB_GHSq5BKCus=O_+bqYTCwWQ+=2Q-F=T=ctQ@mail.gmail.com>
-CC: ryan.roberts@arm.com, Catalin Marinas <catalin.marinas@arm.com>,
-  Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Paul Walmsley <paul.walmsley@sifive.com>,
-  aou@eecs.berkeley.edu, akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org,
-  linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, linux-mm@kvack.org
-From: Palmer Dabbelt <palmer@dabbelt.com>
-To: alexghiti@rivosinc.com
-Message-ID: <mhng-911ba065-e6c8-4d42-978c-e47897bcb493@palmer-ri-x1c9a>
+	s=arc-20240116; t=1713478515; c=relaxed/simple;
+	bh=F16f7m+rXA4gqWpAX3hVUPiuUj/nL5rhRES+7nViR3k=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jSDmiSdsBBaW2Ge1uv8AWwcYA1o0e66XHDd4X4/DerB2L4hB5CBxxn0ZcbfAwoNl0x3lWBGFOuz9pVmcQf3wZ1vFwI+t4eSwlcD7TVw93n+40uxvsNJHSL9N4JMFlQtvUfTkIryh49XRKWrAzmPGSnddqu51eCSfu37W86Ba19E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=aqs5FGO5; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43IMEH8O054612;
+	Thu, 18 Apr 2024 17:14:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713478457;
+	bh=kEuyqCXrDydWu1snvJbTAmkNKiY15UuzZvoSw7vyxXo=;
+	h=From:To:CC:Subject:Date;
+	b=aqs5FGO5h3fONrjTiVETv7F6Ia+Ye3e7ioACqD8jNxL0hePrVHn79atWKdIPqiuCE
+	 JICbtWkIKFRVaRWxEA6ktxn08/cOeqVUFQwAzjVbAr+IN9rirPDRZ5WUeSTZC9CoOm
+	 4v62gSA1XNcOPBeAOrehqZOIseIQ8DIig9z3qW4U=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43IMEHbA112329
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 18 Apr 2024 17:14:17 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 18
+ Apr 2024 17:14:17 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 18 Apr 2024 17:14:17 -0500
+Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43IMEHqo111027;
+	Thu, 18 Apr 2024 17:14:17 -0500
+From: Judith Mendez <jm@ti.com>
+To: Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        William Breathitt Gray <william.gray@linaro.org>
+CC: David Lechner <david@lechnology.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+Subject: [PATCH 0/7] Enable eQEP DT support for Sitara K3 platforms
+Date: Thu, 18 Apr 2024 17:14:10 -0500
+Message-ID: <20240418221417.1592787-1-jm@ti.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, 01 Mar 2024 03:29:18 PST (-0800), alexghiti@rivosinc.com wrote:
-> Hi Ryan,
->
-> On Fri, Mar 1, 2024 at 11:45 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> Hi Alexandre,
->>
->> I confess I haven't looked at the patches yet, but this cover letter raises a
->> few quesions for me. I'll aim to look at the actual patches in due course.
+This patch series adds eQEP DT nodes for K3 Sitara devices:
+- AM62x
+- AM62ax
+- AM62px
+- AM64x
 
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+Also enable eQEP to be built as a module for ARCH_k3.
 
-in case someone wants to pick them up via a generic tree.  I'm happy to 
-take them via the RISC-V tree if folk want, no rush on my end I'm just 
-scrubbing through old stuff.
+Judith Mendez (7):
+  arm64: dts: ti: k3-am62-main: Add eQEP nodes
+  arm64: dts: ti: k3-am62a-main: Add eQEP nodes
+  arm64: dts: ti: k3-am62p-main: Add eQEP nodes
+  arm64: dts: ti: k3-am64-main: Add eQEP nodes
+  dt-bindings: counter: Update TI eQEP binding
+  counter: ti-eqep: Allow eQEP driver to be built for K3 devices
+  arm64: defconfig: Enable TI eQEP Driver
 
->> On 01/03/2024 09:14, Alexandre Ghiti wrote:
->> > This patchset intends to merge the contiguous ptes hugetlbfs implementation
->> > of arm64 and riscv.
->> >
->> > Both arm64 and riscv support the use of contiguous ptes to map pages that
->> > are larger than the default page table size, respectively called contpte
->> > and svnapot.
->> >
->> > The riscv implementation differs from the arm64's in that the LSBs of the
->> > pfn of a svnapot pte are used to store the size of the mapping, allowing
->> > for future sizes to be added (for now only 64KB is supported). That's an
->> > issue for the core mm code which expects to find the *real* pfn a pte points
->> > to. Patch 1 fixes that by always returning svnapot ptes with the real pfn
->> > and restores the size of the mapping when it is written to a page table.
->>
->> Yes that makes sense to me. The intention for mTHP (!hugetlb) is to fully
->> encapsulate PTEs beind set_ptes(), ptep_get() and friends, so what's actually
->> written to the pgtable is arch-specific and well abstracted.
->>
->> >
->> > The following patches are just merges of the 2 different implementations
->> > that currently exist in arm64 and riscv which are very similar. It paves
->> > the way to the reuse of the recent contpte THP work by Ryan [1] to avoid
->> > reimplementing the same in riscv.
->>
->> You seem to be talking about both hugetlb (which uses the "huge" pte helpers)
->> and contpte for THP (i.e. mTHP, which uses the regular pte helpers). They are
->> pretty separate in my mind, so not sure why you would be modifying them both in
->> the same series?
->
-> I don't, this patchset only deals with hugetlb, I just meant that this
-> series was just the beginning as I'm working on moving the contpte for
-> THP support in the generic code for riscv to use.
->
-> Sorry my wording was ambiguous :)
->
-> Thanks,
->
-> Alex
->
->>
->> Thanks,
->> Ryan
->>
->> >
->> > This patchset was tested by running the libhugetlbfs testsuite with 64KB
->> > and 2MB pages on both architectures (on a 4KB base page size arm64 kernel).
->> >
->> > [1] https://lore.kernel.org/linux-arm-kernel/20240215103205.2607016-1-ryan.roberts@arm.com/
->> >
->> > Alexandre Ghiti (9):
->> >   riscv: Restore the pfn in a NAPOT pte when manipulated by core mm code
->> >   riscv: Safely remove huge_pte_offset() when manipulating NAPOT ptes
->> >   mm: Use common huge_ptep_get() function for riscv/arm64
->> >   mm: Use common set_huge_pte_at() function for riscv/arm64
->> >   mm: Use common huge_pte_clear() function for riscv/arm64
->> >   mm: Use common huge_ptep_get_and_clear() function for riscv/arm64
->> >   mm: Use common huge_ptep_set_access_flags() function for riscv/arm64
->> >   mm: Use common huge_ptep_set_wrprotect() function for riscv/arm64
->> >   mm: Use common huge_ptep_clear_flush() function for riscv/arm64
->> >
->> >  arch/arm64/Kconfig                  |   1 +
->> >  arch/arm64/include/asm/pgtable.h    |  59 +++++-
->> >  arch/arm64/mm/hugetlbpage.c         | 291 +---------------------------
->> >  arch/riscv/Kconfig                  |   1 +
->> >  arch/riscv/include/asm/hugetlb.h    |   2 +-
->> >  arch/riscv/include/asm/pgtable-64.h |  11 ++
->> >  arch/riscv/include/asm/pgtable.h    | 120 +++++++++++-
->> >  arch/riscv/mm/hugetlbpage.c         | 227 ----------------------
->> >  mm/Kconfig                          |   3 +
->> >  mm/Makefile                         |   1 +
->> >  mm/contpte.c                        | 268 +++++++++++++++++++++++++
->> >  11 files changed, 456 insertions(+), 528 deletions(-)
->> >  create mode 100644 mm/contpte.c
->> >
->>
+ .../devicetree/bindings/counter/ti-eqep.yaml  | 10 +++++--
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi      | 30 +++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am62a-main.dtsi     | 30 +++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am62p-main.dtsi     | 30 +++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi      | 30 +++++++++++++++++++
+ arch/arm64/configs/defconfig                  |  1 +
+ drivers/counter/Kconfig                       |  2 +-
+ 7 files changed, 129 insertions(+), 4 deletions(-)
+
+
+base-commit: 534ad093bb80f19c20b251a89f09ce1a0e3d4f2d
+-- 
+2.43.2
+
 
