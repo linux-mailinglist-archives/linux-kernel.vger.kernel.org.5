@@ -1,113 +1,159 @@
-Return-Path: <linux-kernel+bounces-150018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D65D8A9924
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:56:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF2568A9934
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:58:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 906DBB24065
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:56:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A2371C20865
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:58:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3946E15F30B;
-	Thu, 18 Apr 2024 11:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E091A15F32E;
+	Thu, 18 Apr 2024 11:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OHibYdSt"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="lz75U9xr"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43DD215B578
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA27515E7F1
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713441405; cv=none; b=CG1uZETetY5rkCKapH2JIRJJLGezJgsd0bOxQujG6oAE0EZgIfj2NL+nXIYK8DmwUzmpxGwTEix93T6aYnK2DEIaANed7HFZvC6n5Rpye260h5csZ68VWEgJCij7hn1DMt4RcX9X9wj6S2of3qKoxA3HUvxUXgZ8qco3mv2Ahcg=
+	t=1713441507; cv=none; b=RmMcrzmm2Z2bAPCWiAbkjsH/fgmqS+g2wb7lL2VymPakNC9XNJKcOC1d8YHdkhSj+dxuOIGNFWy322QDyvqc85sI8dVg/v1nED2+YKaSZa2lscCJn1+xZmhS9f1kvfuT3gVhrrUMQ3IjtgWCKeI92e9nMoPFj2tzMNZoZjbPIrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713441405; c=relaxed/simple;
-	bh=Geu961+SVr9aZ7BLK4Mm8AQ6E9OjYikibtvsd2knVAs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c9PEfosW+MVkOLS3SHhbZJmdUmLENErhgLQweybi0e/obZiVshhh/2235aSni6jsDyIst6XS7sx8LLMPogcA6q1iKucVXi1xZXQcv9gjKrFddPPKe4uyyom/sZRuY84b7VkkTC2qF5sbbLN7+XS3v5E28tSZDX5j0qiiIVK9W0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OHibYdSt; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713441404; x=1744977404;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Geu961+SVr9aZ7BLK4Mm8AQ6E9OjYikibtvsd2knVAs=;
-  b=OHibYdStON1vQz20JTySKcp0sijFp/QhFY9ZciCNHUwyQLetHfb9YsGx
-   2W/eGzDdMeagLV+DLL4sV1f8Ofns6PqHSm6+doTdnT2gJrdhrxwqAbeY6
-   s78xW89rSWfTUeYdU25C3kKa5hxneUpmwZTyeqiJij+bXDLNTMZ2neHRY
-   GHipZrRbbG4n1yR5Q9F4XdP1dbA0Fc3msXd0wXL6p4DrXlu6iZZaNBF4r
-   /B2oISD8bshAOVkzgmriFGPvcX0JrhIFR1t5x9gHALm5uhjV29tNFS0tR
-   opJm/FQXCtCE6p6VwHRb10sljBd9Ix66lRLcRh/pVd6KsAxbiwB7BU+og
-   w==;
-X-CSE-ConnectionGUID: SFEI+ve6SGu5/bZPX0W14A==
-X-CSE-MsgGUID: mAz2NvW+Qq+gjshuigdr7Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="20128123"
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="20128123"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:56:43 -0700
-X-CSE-ConnectionGUID: ybbDpHq6RhaPbzSEQhiOAw==
-X-CSE-MsgGUID: ZgfGlSTURE2FhXwvBTtjgQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="27732961"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:56:38 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rxQNX-00000000Jfk-2mVN;
-	Thu, 18 Apr 2024 14:56:35 +0300
-Date: Thu, 18 Apr 2024 14:56:35 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Baojun Xu <baojun.xu@ti.com>
-Cc: tiwai@suse.de, robh+dt@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
-	pierre-louis.bossart@linux.intel.com, kevin-lu@ti.com,
-	shenghao-ding@ti.com, navada@ti.com, 13916275206@139.com,
-	v-po@ti.com, niranjan.hy@ti.com, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
-	yung-chuan.liao@linux.intel.com, broonie@kernel.org, soyer@irl.hu
-Subject: Re: [PATCH v3 1/3] ALSA: hda/tas2781: Modification for add tas2781
- driver for SPI
-Message-ID: <ZiEKc4OTVlOt8llU@smile.fi.intel.com>
-References: <20240418040240.2337-1-baojun.xu@ti.com>
- <20240418040240.2337-2-baojun.xu@ti.com>
+	s=arc-20240116; t=1713441507; c=relaxed/simple;
+	bh=nC86tYRxqcAFYcUE3xNHvYSmqS9yxpHeryGhsn+Gyk8=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=N6R/LJDO96cd05bkYKNS3tHneetmt0/GH+dsQqxYuwtqPa6NLpx7axtNNxDUi0waWKrBlpXctqK3PGGtXQa+k0UW591q0fHl/jImB8zUyVUtPRGNa6iBDatOstY5W9ytD0AJvwyZe7m7WcKbGBfh8QYl8NB3h5HGreo1ayVhMek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=lz75U9xr; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-418def30e50so4670715e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 04:58:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713441503; x=1714046303; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
+         :subject:cc:to:from:user-agent:references:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bPinJVRyhqHu/v9gEjCPoBsAucy1v6DhCrUwhF/wDyo=;
+        b=lz75U9xrrXa9SLXostP344+/EdNWzdVboGZoC0RG5otr/z4AWN6oa9usfcv3Espi9C
+         S+Bbddw+cIt5kqQUiSl0sDTiAxtvEa5Tg+pkAAJoSt6EOLjlB0Y9CBzzX9Xb6blpIQUn
+         dVKq8uwqLILauqDE68SYNoFyhzoeETqF9Yq/iM9XSWJCxAk0YZSnzQ6zs6dAI2imDIQd
+         aapmLwKnhasDTW8M47sLQGnSz9WBAUPZBoNv1hQbRXdOgJ3POIjRdv/lzci5PD/kAc0y
+         d4lnokn7a6SANv658b7cM1XY7G9BhgCeh2LjqgmW6NnJsuZjANT4pst0hncCZK7/uzyw
+         a42A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713441503; x=1714046303;
+        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
+         :subject:cc:to:from:user-agent:references:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=bPinJVRyhqHu/v9gEjCPoBsAucy1v6DhCrUwhF/wDyo=;
+        b=cj6wL3Xvz0D+weuPI68JxT9aArmTVBBQrDOwxlc0xVI3DUJXzCE+11uuamnE0P8aqn
+         xxDYw4tzkVt6i4syy7hM91VzHPTI7iJZttUuc5hRNwWYNyFKmib9GDSrE3vwRcfW0HEw
+         kO6GSHLYGwCI/a/TLr15sGXvog2B1es2Vbn4q8icYhUcvCK4v8vTkibgdWQGpXLg11Q5
+         zZUYrX92cl5MmOvjo3dmrPp0+7x+Ou/0Zl7oLuJi9w4ZqQctex55U3SfG5CgXMeS6ZO3
+         vMqK/+xbTgsHnoDCcKlt+jmORrBfelcAy/iM0AwPo995cFaW3GwV4faX8/bm7wosLNer
+         49uA==
+X-Forwarded-Encrypted: i=1; AJvYcCWV64O0Bs0nnfFJ/iS4AI9Os1e8cSHG5oA3qhKhrARyGU0kgBO5hSKGaPnCeD4u5w672Q7FlEHtxFECaUenQoFGr7eFHdRvaiW3CEwt
+X-Gm-Message-State: AOJu0YxK2lUsNx8Ee6FUM3OEeqI/iF5ITgU+VsMTcmytUw+NRcRlchZt
+	L9VEkUqFCrjW47boACuTjUWNdpBzJLu5mOmN9aCWtvOy9SPLxyhWZUX7x2hfQtA=
+X-Google-Smtp-Source: AGHT+IH+ypEXEnKApXif3+7iV5cx+ug+vkoC+Z6959v+sNY3h0cmujX0MOmJ4M28zqLTPsn2KUXHJw==
+X-Received: by 2002:a05:600c:a10:b0:418:792d:f8b4 with SMTP id z16-20020a05600c0a1000b00418792df8b4mr2480514wmp.23.1713441503081;
+        Thu, 18 Apr 2024 04:58:23 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:5e54:be3b:baad:80ee])
+        by smtp.gmail.com with ESMTPSA id k29-20020a05600c1c9d00b00418948a5eb0sm6286143wms.32.2024.04.18.04.58.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 04:58:22 -0700 (PDT)
+References: <20240221151154.26452-1-jbrunet@baylibre.com>
+ <20240221151154.26452-6-jbrunet@baylibre.com>
+ <24ec3iiudmfapiosygpsvgu7kmdqe6csbkpuzx3p3sa4oyodqu@hshmbpvzhufb>
+User-agent: mu4e 1.10.8; emacs 29.2
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-amlogic@lists.infradead.org, linux-pwm@vger.kernel.org, JunYi Zhao
+ <junyi.zhao@amlogic.com>
+Subject: Re: [PATCH v5 5/5] pwm: meson: add generic compatible for meson8 to
+ sm1
+Date: Thu, 18 Apr 2024 13:57:03 +0200
+In-reply-to: <24ec3iiudmfapiosygpsvgu7kmdqe6csbkpuzx3p3sa4oyodqu@hshmbpvzhufb>
+Message-ID: <1jplumc276.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418040240.2337-2-baojun.xu@ti.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-
-On Thu, Apr 18, 2024 at 12:02:37PM +0800, Baojun Xu wrote:
-> Integrate tas2781 configs for HP Laptops. Every tas2781 in the laptop
-> will work as a single speaker on SPI bus. The code support realtek as
-
-Realtek
-
-> the primary codec.
-
-..
-
->  sound/pci/hda/Kconfig                           | 15 +++++++++++++++
->  sound/pci/hda/Makefile                          |  2 ++
-
-Is this correct? You are adding a dead "code", isn't it?
-
-..
-
-The rest LGTM.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
 
+On Fri 12 Apr 2024 at 14:08, Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutr=
+onix.de> wrote:
+
+> [[PGP Signed Part:Undecided]]
+> On Wed, Feb 21, 2024 at 04:11:51PM +0100, Jerome Brunet wrote:
+>> Introduce a new compatible support in the Amlogic PWM driver.
+>>=20
+>> The PWM HW is actually the same for all SoCs supported so far. A specific
+>> compatible is needed only because the clock sources of the PWMs are
+>> hard-coded in the driver.
+>>=20
+>> It is better to have the clock source described in DT but this changes t=
+he
+>> bindings so a new compatible must be introduced.
+>>=20
+>> When all supported platform have migrated to the new compatible, support
+>> for the legacy ones may be removed from the driver.
+>>=20
+>> The addition of this new compatible makes the old ones obsolete, as
+>> described in the DT documentation.
+>>=20
+>> Adding a callback to setup the clock will also make it easier to add
+>> support for the new PWM HW found in a1, s4, c3 and t7 SoC families.
+>>=20
+>> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+>
+> After spending some brain cycles on this one I think I understood it.
+> Looks fine to me, I only considered questioning if the dev_warn_once is
+> too offensive.
+>
+> b4 + git applied the patch just fine even without patch #4 of this
+> series. Would you be so kind to double check it works as intended?
+
+It does, Thx.
+
+>
+> BTW, b4 diagnosed:
+>
+> Checking attestation on all messages, may take a moment...
+> ---
+>   =E2=9C=97 [PATCH v5 5/5] pwm: meson: add generic compatible for meson8 =
+to sm1
+>     + Link: https://lore.kernel.org/r/20240221151154.26452-6-jbrunet@bayl=
+ibre.com
+>     + Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.d=
+e>
+>   ---
+>   =E2=9C=97 BADSIG: DKIM/baylibre-com.20230601.gappssmtp.com
+>
+> Is this only because it took me so long to reply, or is there a
+> configuration issue with the baylibre MTA?
+
+I have no idea. This is the first time this is reported
+
+
+>
+> Best regards
+> Uwe
+
+
+--=20
+Jerome
 
