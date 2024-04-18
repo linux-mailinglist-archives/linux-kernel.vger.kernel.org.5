@@ -1,181 +1,109 @@
-Return-Path: <linux-kernel+bounces-149642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 612DF8A93D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:18:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D79798A93E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:19:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84BC41C20C58
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:18:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A8AAB223BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:19:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D65993E493;
-	Thu, 18 Apr 2024 07:18:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D22843C489;
+	Thu, 18 Apr 2024 07:19:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="ulnMLQ0y"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u0DL3bwI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 449F438F9A;
-	Thu, 18 Apr 2024 07:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A4938F9A
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713424693; cv=none; b=pTLEs9RAutbGmtIfnHoIUo5Q6RLeFmJmIW8SPFx/DTFKlSeOWm1TJUgxqCDVIQZPrsTimW3fBZFwns/ozjDxEbB3J2H8KEJofYCvygLaCEZGuzRrNtxJ8t2iiqgT1EZUXOgNW7TDpene0sXUtuDdF6sjceCcoBPfIFLtGzgqa+k=
+	t=1713424767; cv=none; b=jxmo24DaLlU8lZeehdeBFWk6nIpJPfe/SU4HRKo7uvEVEQzUehepCOUx/CozZX3MlQFD6z995+UBaQCdaQ2ColThXUuOCej/Kel0WDTSoR2dzq068rOgIYEN+SE2KCF7OWsZGKDQayZILuZgWFi91VbgkKFmnjRxcMH8P1A8NNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713424693; c=relaxed/simple;
-	bh=goE/qDaO4VHKS7K9FeJgejduaauF9topo8TgMn4Vd4g=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=YxdatqokD4Yl4FUHczNNlMc5DoePSyNaO8dr0QjMF/seVoBWbNMRDYrz3hg+PgDmb0VNy7oEOiQvHeclnsdUYBaif++WQXHnI9IUi3VMgnj3YUFT7zRKGWjq9KoL1igSHrt3zEqza4ZyzfPc72TfNT88Am0fM0BtdRBlitt0Xlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=ulnMLQ0y; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1713424767; c=relaxed/simple;
+	bh=iVNEkWhaYxo85+q/ZaRi29XbrrdDZIdNKqJFHi/EYM4=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZcM8HXxfDWHdRi/G6yf1tVN180YzDDAlTmVGr0PtbClV8AGTlokQshzgRqsg8KEc63kL1U3MedMbBJOg4jC3woJPs3S1fLv/LrMSc3fTw1/PRpF+CeJ1baJRy/yUGXXDGVqpw3Q/ToJKf77+lxWPo2xv9FhitBK9CNcDX6pDgiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u0DL3bwI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B369AC113CC;
+	Thu, 18 Apr 2024 07:19:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713424765;
+	bh=iVNEkWhaYxo85+q/ZaRi29XbrrdDZIdNKqJFHi/EYM4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=u0DL3bwIiqjxY7xLQmaSPLc4XsT2YoTyGLc68yDk5pHZyGvT3WqLHIdAvRIIUl3PS
+	 7TNRFxfQj/vColwkosB7T5H8+4V2eVMYpe8rFJNqp3DgbnjMRopc56KHeSHHvlNKen
+	 E4vIbyc9RpLS52iShpaeFM2BVaiJ7i0cQwHDm0DaHllrTw+sOVSB9C0ymsNBy3ZmfI
+	 Ss6vVRQ40UJSQdJO1UMGtBRYftDQccXfK1u2Hur5x8Hs8yskjnegFE3hZRDBSP95wC
+	 0uscDyNsbn9m/JL8D48UXAQzg8gz3ezH4Ig419hc5F6agHv0Z1cFaHU0TubyhBfGsF
+	 116+QCViAV0Lw==
+Received: from ip-185-104-136-29.ptr.icomera.net ([185.104.136.29] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rxM3G-005e59-F5;
+	Thu, 18 Apr 2024 08:19:23 +0100
+Date: Thu, 18 Apr 2024 08:18:59 +0100
+Message-ID: <8734rjrvdo.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: 	tglx@linutronix.de,  Guanrui Huang <guanrui.huang@linux.alibaba.com>
+Cc:	yuzenghui@huawei.com,
+	shannon.zhao@linux.alibaba.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/2] irqchip/gic-v3-its: Fix double free on error 
+In-Reply-To: <20240418061053.96803-1-guanrui.huang@linux.alibaba.com>
+References: <20240418061053.96803-1-guanrui.huang@linux.alibaba.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1713424688;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kNxJpDgz3ydxdfldvoCq44swMIRMijaZQ8+0vq0di0E=;
-	b=ulnMLQ0yGxKcMqnkHFDU3bPy/kR5S9tGBHsKJsHd6i2aIUt2N7ItMvCjqGiTdYC1HvpW0k
-	X6f6w7o9SdfRVpF88iZScbRcnfTGWJItDyhsjhnZ141zgGSqzrQIMIaeXiU0hc9+fUltqn
-	9lql3nH0u2pjQxbzlmc+J2wRYKwr9r+H5zrdZjyUyoNtak66VvpV0ZQJKxyYSKvxO9ZtRI
-	Oby02TC9WHTjTfYv+pBq/IhsM9VvbfIpd6Ulzu4wrgw+cJK8KHmc+9Mig7gFshKFIRIIjT
-	/ul+QTMWIBlgDzPzxYHuyeE6BQZFW4lNsvx8bdVx01ZOfCd68J7scQjUmK/h+w==
-Date: Thu, 18 Apr 2024 09:18:07 +0200
-From: Dragan Simic <dsimic@manjaro.org>
-To: FUKAUMI Naoki <naoki@radxa.com>
-Cc: Chukun Pan <amadeus@jmu.edu.cn>, jonas@kwiboo.se, conor+dt@kernel.org,
- devicetree@vger.kernel.org, heiko@sntech.de, krzk+dt@kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-rockchip@lists.infradead.org, robh@kernel.org
-Subject: Re: [PATCH 2/2] arm64: dts: rockchip: Add Radxa ROCK3 Model C
-In-Reply-To: <ebf7b5f5ff4cd3c8cbee36f35df6ef5d@manjaro.org>
-References: <d7de2213-8dd2-42ec-9a30-a569ac71be3e@kwiboo.se>
- <20240417133016.62753-1-amadeus@jmu.edu.cn>
- <a144c052fcc2460a615a754a64a8f739@manjaro.org>
- <B26C732A4DCEA9B3+282b8775-601b-4d4a-a513-4924b7940076@radxa.com>
- <9e915ef29a2b49ce56446ec9d474eb64@manjaro.org>
- <ebf7b5f5ff4cd3c8cbee36f35df6ef5d@manjaro.org>
-Message-ID: <730e21fc4c74bf42b8a5e54473270899@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.104.136.29
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, guanrui.huang@linux.alibaba.com, yuzenghui@huawei.com, shannon.zhao@linux.alibaba.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On 2024-04-18 08:33, Dragan Simic wrote:
-> On 2024-04-18 07:55, Dragan Simic wrote:
->> On 2024-04-18 07:52, FUKAUMI Naoki wrote:
->>> this is Naoki @ Radxa.
->>> 
->>> thank you for your great work!
->>> 
->>> On 4/18/24 02:02, Dragan Simic wrote:
->>>> Hello Chukun,
->>>> 
->>>> On 2024-04-17 15:30, Chukun Pan wrote:
->>>>> Hi Jonas,
->>>>>>> +    model = "Radxa ROCK3 Model C";
->>>>>> 
->>>>>> The marketing name seems to be "Radxa ROCK 3C" according to the 
->>>>>> product
->>>>>> page at [1].
->>>>>> 
->>>>>> [1] https://radxa.com/products/rock3/3c
->>>>> 
->>>>> According to https://wiki.radxa.com/Rock3/3c , it should be called
->>>>> "Radxa ROCK 3 Model C". I copied rock3a here without paying 
->>>>> attention.
->>> 
->>> sorry, wiki.radxa.com is outdated.
->>> 
->>> docs.radxa.com is correct one and maintained.
->>> (but it still has some errors, sorry)
->>> 
->>>> If I may interject, here's the result of a quick qrep:
->>>> 
->>>> ./rk3399pro-rock-pi-n10.dts:    model = "Radxa ROCK Pi N10";
->>>> ./rk3399-rock-pi-4a-plus.dts:    model = "Radxa ROCK Pi 4A+";
->>>> ./rk3588s-rock-5a.dts:    model = "Radxa ROCK 5 Model A";
->>>> ./rk3588-rock-5b.dts:    model = "Radxa ROCK 5 Model B";
->>>> ./rk3399-rock-4c-plus.dts:    model = "Radxa ROCK 4C+";
->>>> ./rk3399-rock-pi-4b-plus.dts:    model = "Radxa ROCK Pi 4B+";
->>>> ./rk3399-rock-pi-4b.dts:    model = "Radxa ROCK Pi 4B";
->>>> ./rk3399-rock-pi-4c.dts:    model = "Radxa ROCK Pi 4C";
->>>> ./rk3308-rock-pi-s.dts:    model = "Radxa ROCK Pi S";
->>>> ./rk3399-rock-pi-4a.dts:    model = "Radxa ROCK Pi 4A";
->>>> ./rk3399-rock-4se.dts:    model = "Radxa ROCK 4SE";
->>>> ./rk3328-rock-pi-e.dts:    model = "Radxa ROCK Pi E";
->>>> ./rk3568-rock-3a.dts:    model = "Radxa ROCK3 Model A";
->>>> 
->>>> Based on that, I think that "Radxa ROCK 3 Model C" would actually
->>>> be the preferred name...  Perhaps?
->>>> 
->>>> If we end up following that approach, the last board dts on the list
->>>> above should also be fixed to read "Radxa ROCK 3 Model A".
->>>> 
->>>> Either that, or all "Model " strings should be stripped out from
->>>> all board dts files that currently contain it.
->>> 
->>> we have a document named "Radxa Product Naming Convention".
->>> there are "full name" and "short name". "Model" is used in "full
->>> name", but it's not used in "short name". both are correct.
->>> 
->>> but, we preferred to use "short name" for "model = " in mainline 
->>> linux/u-boot.
->>> 
->>> for ROCK 3C, please use
->>> 
->>>  model = "Radxa ROCK 3C";
->>> 
->>> for ROCK 5A/5B and ROCK 3A,
->>> 
->>>  model = "Radxa ROCK 5A";
->>>  model = "Radxa ROCK 5B";
->>>  model = "Radxa ROCK 3A";
->>> 
->>> are preferred.
->>> 
->>> we need to fix this inconsistency. (include our docs)
->> 
->> Great, thanks for this detailed clarification!
+On Thu, 18 Apr 2024 07:10:51 +0100,
+Guanrui Huang <guanrui.huang@linux.alibaba.com> wrote:
 > 
-> I went ahead and prepared a patch that cleans up currently present
-> naming inconsistencies for the Radxa boards.  AFAICT, there should
-> be no issues arising from the changes in the "model" and "compatible"
-> strings, because they aren't used anywhere in the drivers.  There
-> are no board-specific ALSA UCM2 profiles, which could be affected
-> by those changes.  U-Boot is also fine.
+> Hello everyone, this is the v5 of the patch to fix double free 
+> in gic driver.
 > 
-> I'll think a bit more about it, and I'll send the patch over a bit
-> later.  If it goes well, I'll prepare and send one more similar patch,
-> for some other boards.
+> The differences from the v3 and v4:
+> 1. modify description: add "Fixes" in patch 1, as suggested by Markus Elfring.
+> 
+> 2. improve patch granularity: split 'remove BUG_ON' into a secord patch, 
+>    as suggested by Zenghui and Markus Elfring.
+> 
+> 3. modify description: explain why the BUG_ON is useless in patch 2, 
+>    as suggested by Marc Zyngier.
+> 
+> Thanks,
+> Guanrui
+> 
+> Guanrui Huang (2):
+>   irqchip/gic-v3-its: Fix double free on error
+>   irqchip/gic-v3-its: remove BUG_ON in its_vpe_irq_domain_alloc
+> 
+>  drivers/irqchip/irq-gic-v3-its.c | 11 ++---------
+>  1 file changed, 2 insertions(+), 9 deletions(-)
+> 
 
-Actually, a couple of board dts(i) files, listed below, need to
-be renamed to add dashes into their names.  That, together with
-the other naming cleanups I've already prepared, would make the
-naming cleanup of the Radxa boards complete.
+Thomas, can you please take this in for 6.10?
 
-- arch/arm/boot/dts/rockchip/rk3288-rock2-som.dtsi
-   (-> arch/arm/boot/dts/rockchip/rk3288-rock-2-som.dtsi)
-- arch/arm/boot/dts/rockchip/rk3288-rock2-square.dts
-   (-> arch/arm/boot/dts/rockchip/rk3288-rock-2-square.dts)
+Thanks,
 
-I see no possible issues in the kernel arising from these two
-file renames, with the other related changes applied, of course,
-but there are some issues in U-Boot.  Luckily, overcoming those
-issues shouldn't be too hard, and I've already submitted a small
-preparatory patch to the U-Boot mailing list. [1]  We'll see
-how it goes.
+	M.
 
-[1] 
-https://lore.kernel.org/u-boot/369151a2b8d73d733ca79eca98d4d5958f90d491.1713423687.git.dsimic@manjaro.org/
+-- 
+Without deviation from the norm, progress is not possible.
 
