@@ -1,96 +1,103 @@
-Return-Path: <linux-kernel+bounces-149370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AA778A9030
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B965F8A9032
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:54:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A99E1C21098
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 00:51:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EABB71C218E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 00:54:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 748985CB8;
-	Thu, 18 Apr 2024 00:51:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 635165660;
+	Thu, 18 Apr 2024 00:54:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WKf+OguL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="DYLgMPLH"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B66444411;
-	Thu, 18 Apr 2024 00:51:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D50E10FA;
+	Thu, 18 Apr 2024 00:54:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713401502; cv=none; b=V8SPHiN/xkP3P9DmdkRa4AnP60SjbRGBcyhVquQ5IFiALU2TgpVSl1ImQGuKN/cflzdlCNrlAhOybBUpeB7J79lhjLufnNxpzIJ5fqmKJF0rWKltiKWDIO8PWc0wyDCPJ3+u/pGqSzt/0xj1lZokmR18T8CpY/m07sX/ocOB5S8=
+	t=1713401677; cv=none; b=GYpOGkibDxn79A0QtkuiLBp3fEtX661OB2FXgIJ7i2Ste0wA1zq98u84ycUkn3OwbSc/KthkIo29yKNU/GQjSGKSHc5whm3RUiuLScJQNV11gzyOtlo+OEfbH2jls/FZyIuilDuJKtwwcnUgYvCBYaj8SZTfB90T5aL5Roik8BU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713401502; c=relaxed/simple;
-	bh=mMCx+Q5ZhD8dntQuzq//+QwDx2PsSxKIUdRbMcDpWLM=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=m3kPZDBM1slNjAuBgxz9R5HXheS9RGSXhQlhhhaJJHdqDSo4AayiNi4nTGWntJIeRIPnRqtlLInlWpVb1bhN2aPslqymxfGd0BkGHOOlsWluwfLMGWdfUcrEk7h7KHB1J+1Vgq67Wf0wsuqBcZJD//44t3H4xaD9SzjIbG0aIH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WKf+OguL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4938FC2BD11;
-	Thu, 18 Apr 2024 00:51:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713401502;
-	bh=mMCx+Q5ZhD8dntQuzq//+QwDx2PsSxKIUdRbMcDpWLM=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=WKf+OguLQQ+TmOzEaXzWP9IdL+Qru1u7iFeAYUnMqUswylLRvZbLbENHh9ZBjjwlX
-	 0z5XQT+AcZRyT/+7s+URchFYpVqvhX6tz+DKM2Uzl2xXB+gVHBBvb275nL+Qg8/GCI
-	 hTxiPp+qqEeRSE8bYWMyzF4R0jde7EdJEGwFoXUq4aQxO4lgQX1GapTH/h5jI66PCD
-	 t5WYaXspdszdrqo6TVWuEX1OEsD22MfdZDmwd6SoC0akrf3QrSzwn0xbTai3DoV2MR
-	 zBXNpSlv37Bjp3bRyt0O2WX6SytcfWNP/Nzz/RTXU335IWgTxp4jN3vqeTQTq5qZNH
-	 VfcV+qDOehlbA==
-From: Mark Brown <broonie@kernel.org>
-To: Yang Yingliang <yangyingliang@huawei.com>, linux-spi@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240417104730.2510856-1-andriy.shevchenko@linux.intel.com>
-References: <20240417104730.2510856-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH, resend v1 1/1] spi: oc-tiny: Remove unused of_gpio.h
-Message-Id: <171340150106.1715024.6887354681093706976.b4-ty@kernel.org>
-Date: Thu, 18 Apr 2024 09:51:41 +0900
+	s=arc-20240116; t=1713401677; c=relaxed/simple;
+	bh=wAfm/febHBO7WS9l7V3gS7eMe755bKnF0FqkdZH3vP4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=KBEH401BF7zWeG/l/wtOY0ya9avyu5X3ofduSx9R2w8Q5Ad3ORCOJOtYNR4MPNfgflN0hSelfYPv7FLPSq8JQL0wZcihX8xf+W252FABf8ylZrbWxI2ww032eCzj3nIUBV7cff5eXrli3AiqigfkjXEG/m+yjZHoXaDY6I+4IfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=DYLgMPLH; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1713401672;
+	bh=aDG3p51AHQpbTq3NLy30yBtk1qMbUt6rlsMzU/0vs+c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=DYLgMPLH7SaX85J65aHjr0TWwpsRnrweVRL98MhbWZ4q21Lei0zwZPOWNu7TrLJMN
+	 s4NbXruH9JqHTfkJzzzFgRcK1lKN+PZhkpIRJajRKan9W6hjirqxzCe3nLZMSV+YHH
+	 Kka/I2aV70qA10VAlOQYT8JmsOrJX9ICFnXiJ9a1CrzJKKbwaZBVc2b73zPr8kDAXK
+	 ZX3m6zOxVzMXijOKC//fdze2SFVKFuMe8tYzb/0MnypqftsXd82i2X/7U9b4YBq6ji
+	 crBIT26y2on2KH1wNgXIXH0rC28O9n8G6ztMcIj2p/Vzy8RsnknXWX0+iLogW+YQet
+	 r91oA7HDUjB4A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VKfS66FgYz4wjF;
+	Thu, 18 Apr 2024 10:54:30 +1000 (AEST)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Sean Christopherson <seanjc@google.com>, Jonathan Corbet
+ <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Peter Zijlstra <peterz@infradead.org>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Stephen
+ Rothwell <sfr@canb.auug.org.au>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Sean Christopherson <seanjc@google.com>
+Subject: Re: [PATCH 1/2] cpu: Re-enable CPU mitigations by default for !X86
+ architectures
+In-Reply-To: <20240417001507.2264512-2-seanjc@google.com>
+References: <20240417001507.2264512-1-seanjc@google.com>
+ <20240417001507.2264512-2-seanjc@google.com>
+Date: Thu, 18 Apr 2024 10:54:28 +1000
+Message-ID: <87jzkvbid7.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
+Content-Type: text/plain
 
-On Wed, 17 Apr 2024 13:47:30 +0300, Andy Shevchenko wrote:
-> of_gpio.h is deprecated and subject to remove.
-> The driver doesn't use it, simply remove the unused header.
-> 
-> 
+Sean Christopherson <seanjc@google.com> writes:
+> Add a generic Kconfig, CPU_MITIGATIONS, to control whether or not CPU
+> mitigations are enabled by default, and force it on for all architectures
+> except x86.  A recent commit to turn mitigations off by default if
+> SPECULATION_MITIGATIONS=n kinda sorta missed that "cpu_mitigations" is
+> completely generic, where as SPECULATION_MITIGATIONS is x86 specific.
+>
+> Alternatively, SPECULATION_MITIGATIONS could simply be defined in common
+> code, but that creates weirdness for x86 because SPECULATION_MITIGATIONS
+> ends up being defined twice, and the default behavior would likely depend
+> on the arbitrary include order (if the two definitions diverged).
+>
+> Ideally, CPU_MITIGATIONS would be unconditionally on by default for all
+> architectures, and manually turned off, but there is no way to unselect a
+> Kconfig.
+>
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Reported-by: Michael Ellerman <mpe@ellerman.id.au>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Closes: https://lkml.kernel.org/r/20240413115324.53303a68%40canb.auug.org.au
+> Fixes: f337a6a21e2f ("x86/cpu: Actually turn off mitigations by default for SPECULATION_MITIGATIONS=n")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
 
-Applied to
+Thanks for fixing it up.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+Tested-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 
-Thanks!
-
-[1/1] spi: oc-tiny: Remove unused of_gpio.h
-      commit: 037c633df6680500f35a9e9a06286d4e1401897e
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+cheers
 
