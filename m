@@ -1,133 +1,108 @@
-Return-Path: <linux-kernel+bounces-149770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D57548A959A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:05:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 805D28A959E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:08:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40A30B2173F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:05:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 308221F225F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78CDA15A499;
-	Thu, 18 Apr 2024 09:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CBrmcrLk"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BFBD15A4B8;
+	Thu, 18 Apr 2024 09:08:06 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AC377BAF0
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 623C0136991
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:07:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713431144; cv=none; b=SSVkPyQpkRyvBqNqVK9dMIiSLZcsV9MS+4UU9jIx5kHuH+5s9CiWyqkL8hp7Yh9KWfUuaILadB21ONvxzSWUHA9JMN9GVvAbviq6MxXo4HD5qSMTFPh4d0Kw6brbcLypffZVjQevqMfD1QLOTwvnwvndJzSQEfA14MnL1bGnnys=
+	t=1713431285; cv=none; b=PLXyLMdJTKGHO+TkFeIeCx7EfLD/iSgTcXLe83SpgorxMQc5eagvolE2DECoXxBgSqq8Lhnx8T23F7suvEQATW0AYYThvEftU2PGYdVE+GwalgvkFaUpDqnWnwDSdvf6uqZ5UepleeXAFALubawmG65BXuPuWhzHlGljhN8Ddec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713431144; c=relaxed/simple;
-	bh=ePckogndbT/HMJ6Dkb0NZIGm65xXskRus//486LRAjQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fhWGSCZJ+433OOUQ5SA3i1K2KFwXro8+NknTqo/kWJ6u5dsAsZBrnb+QF9MDVX3AE1D6lE7gkzDYzZ1axMCiV7PbdZ0sH3xKsQwqbU2yoBqr1GAsHYgWTIEYAhL4kt/FQYc03MTBra0t4483K57OnIg0HXVyPxx4/Tg3Rw7tkA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CBrmcrLk; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4167fce0a41so10074395e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 02:05:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713431141; x=1714035941; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=euB3vcyNRkqSsujp1rBWtIUz95ZDQeOsD0X15ArXVN8=;
-        b=CBrmcrLk/ovs2ABxT0cXYt1PpOu/cfPoycdKTlppbhZT93KsoSc8My+yyDEZbQNzJA
-         jCZkh0arON1rZoxu25X062rq4XjS6rYmlR25CBUTuH5H0F02UPDlPm7FObx+wZWUj6fG
-         DkahhAJcYdfybPWs2olLJw9gGh3oCrRoxt6MRNLi98WitTuG784kINf/H1uYyxJeRB+f
-         kvcFaRRo9LP1uzj0Flq4U7Dls0+uxOMO/1s7Ud6FvY33Swyh6SASXpO1vvhBk8KewF6a
-         HveSTyE4+d5IpFeyY+eA5/siXbs1V2dP2Y2neU69jEsT3+iAOSzufHkngoP8daKBPBpU
-         K4Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713431141; x=1714035941;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=euB3vcyNRkqSsujp1rBWtIUz95ZDQeOsD0X15ArXVN8=;
-        b=NsfCJIes7F+FFOw336Rw04SWM1tGvNGcRUvxtMpAO23DZy8SfWcjqchchdbVdF33gw
-         eFP4xbttnpvjwK4kEs4taUVVmMqEkfBhQiM7vZOR7+v+ZRRacYsWCNfffp88h9vs9AYa
-         l7mUO+AFlxo+HMYiKUXkGCg/8rC0Q7kOyvDBINnBEd8W5zjXNnDzezcYzipOKL7zOSXM
-         3FJzIvGZJz+G2lD6slFtZRB+VZRDoD143YjFEeIhASMYcusT+3I5Iko4S8qVaHsNtHJj
-         2Cve5kVWX7ljWIa8bPYCLa4S85TsNM83lLu+JvB3vqTJYsiG99jJ0RIvIKvYJzAJJmlS
-         mMNA==
-X-Forwarded-Encrypted: i=1; AJvYcCW5R7XXp6Y9e4+u0poZlfXYcQeeS7gwU3YH2NHaRyZpigWY/mVgrj/W+UVBTCoW6V42v7mqjZDadx6xKUeNi71JCBXn63jK9tQ5WB6d
-X-Gm-Message-State: AOJu0Yw57sKzqYUwSlLgDJ2+CyZy4dpLyxoeJS3bg1jED9obXasxkqKf
-	aCfQt+6CIOsuv56e0nnNJMG5YOT9SkAq4cDoUFBxn++B499i8rADjNAWLnue7Yo=
-X-Google-Smtp-Source: AGHT+IG5HhSMVcn1nLDLtOfxsytHEqcveQ4MV1aOv60X6+6dklq/C+iAIIstaQcJbkGV6ywa6bgoKQ==
-X-Received: by 2002:a05:600c:3554:b0:418:3ad0:742 with SMTP id i20-20020a05600c355400b004183ad00742mr1223954wmq.4.1713431141344;
-        Thu, 18 Apr 2024 02:05:41 -0700 (PDT)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id bi11-20020a05600c3d8b00b00418effbc4f7sm557536wmb.38.2024.04.18.02.05.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 02:05:40 -0700 (PDT)
-Date: Thu, 18 Apr 2024 10:05:43 +0100
-From: Daniel Thompson <daniel.thompson@linaro.org>
-To: Liuye <liu.yeC@h3c.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>,
-	"andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-	"dianders@chromium.org" <dianders@chromium.org>,
-	"jason.wessel@windriver.com" <jason.wessel@windriver.com>,
-	"jirislaby@kernel.org" <jirislaby@kernel.org>,
-	"kgdb-bugreport@lists.sourceforge.net" <kgdb-bugreport@lists.sourceforge.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
-Subject: Re: =?utf-8?B?UmXvvJpbUEFUQw==?= =?utf-8?Q?H?= V11] kdb: Fix the
- deadlock issue in KDB debugging.
-Message-ID: <20240418090543.GC162404@aspen.lan>
-References: <186cdeea58094d06b351b07eefa2189d@h3c.com>
+	s=arc-20240116; t=1713431285; c=relaxed/simple;
+	bh=GkOI1exuQQfDFEVfrCXf/l0c9+WgsCIFXlSCqwzTLJ8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=e1WLLmjXff/ZMopuu55oZjRvNQq3zDp131wtSU/Y3wUigY+OkJTKbyE5xdjCwaupjlW979hsSiU0BjpMq2qXdIZg/WfRvq52kkB37WlbJwg2zJXw9J6T7Hb1/xoLV1/ZoCnEge0Nd8CdVheScTW4FN6mNFX1OmmgApTAvjRNNCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VKsPM5ZPyz4f3l8C
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 17:07:51 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 7201C1A0DF7
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 17:07:56 +0800 (CST)
+Received: from [10.174.179.247] (unknown [10.174.179.247])
+	by APP2 (Coremail) with SMTP id Syh0CgC32w7q4iBmfXcbKg--.44051S3;
+	Thu, 18 Apr 2024 17:07:56 +0800 (CST)
+Message-ID: <6d826865-b296-627c-3f83-e0a18263de7a@huaweicloud.com>
+Date: Thu, 18 Apr 2024 17:07:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <186cdeea58094d06b351b07eefa2189d@h3c.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH v2] ubi: block: fix memleak in ubiblock_create()
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
+ houtao1@huawei.com, yangerkun@huawei.com
+References: <20231208074629.1656356-1-linan666@huaweicloud.com>
+ <79703e8b-ce3a-4407-9750-05f9202039d4@moroto.mountain>
+From: Li Nan <linan666@huaweicloud.com>
+In-Reply-To: <79703e8b-ce3a-4407-9750-05f9202039d4@moroto.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgC32w7q4iBmfXcbKg--.44051S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZrW7Gw47JFy3CryrtFWxtFb_yoWxAFbE9a
+	n0vr95ZrWxAr9FywsrG3sYkwn8Jrn8t3y8ZrZ7JrZxur18ZFykGFZxX3s0ya15Za13uan0
+	k345Kr4Igw1FgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbaAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l
+	5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67
+	AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
+	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
+	MI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
+	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3
+	Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8Jr
+	UvcSsGvfC2KfnxnUUI43ZEXa7IU1VOJ7UUUUU==
+X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
 
-On Wed, Apr 17, 2024 at 11:01:56AM +0000, Liuye wrote:
-> >---
-> >V10 -> V11: Revert to V9
-> >V9 -> V10 : Add Signed-off-by of Greg KH and Andy Shevchenko, Acked
-> >            by of Daniel Thompson
-> >V8 -> V9: Modify call trace format and move irq_work.h before module.h
-> >V7 -> V8: Update the description information and comments in the code.
-> >	   : Submit this patch based on version linux-6.9-rc2.
-> >V6 -> V7: Add comments in the code.
-> >V5 -> V6: Replace with a more professional and accurate answer.
-> >V4 -> V5: Answer why schedule another work in the irq_work and not do
-> >          the job directly.
-> >V3 -> V4: Add changelogs
-> >V2 -> V3: Add description information
-> >V1 -> V2: using irq_work to solve this properly.
-> >---
->
-> What is the current status of PATCH V11? Are there any additional
-> modifications needed?
+Hi, dan,
 
-I understood that is blocked pending outcome of the legal matters
-raised by v10...  and that this is why you were asked not to post
-v11 until they had been resolved.
+在 2024/4/15 14:33, Dan Carpenter 写道:
+> On Fri, Dec 08, 2023 at 03:46:29PM +0800, linan666@huaweicloud.com wrote:
+>> From: Li Nan <linan122@huawei.com>
+>>
+>> If idr_alloc() fails, dev->gd will be put after goto out_cleanup_disk in
+>> ubiblock_create(), but dev->gd has not been assigned yet at this time, and
+>> 'gd' will not be put anymore. Fix it by putting 'gd' directly.
+>>
+> 
+> There is another invalid reference to dev->gd if blk_mq_alloc_tag_set()
+> fails.
+> 
+> 	dev_err(disk_to_dev(dev->gd), "blk_mq_alloc_tag_set failed");
+>                              ^^^^^^^
+> 
 
-To be honest given that [I wrote all of the C code][1] for the most
-recent version of the patch and that I'd like to see the bug fixed,
-then I will probably have to give up on co-authorship. Instead I can
-post my code with a new comment and patch description and credit you
-with a Reported-by:. That should take the pressure off in terms of
-landing this bug fix.
+You are really very careful! I will fix it later.
 
-However, the legal issues do still need to be resolved or there is a
-risk that other upstream contributions from your company will be
-delayed.
+> regards,
+> dan carpenter
 
+-- 
+Thanks,
+Nan
 
-Daniel.
-
-
-[1]: https://lore.kernel.org/all/20240314130916.GE202685@aspen.lan/
 
