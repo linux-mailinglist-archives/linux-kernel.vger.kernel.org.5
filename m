@@ -1,218 +1,166 @@
-Return-Path: <linux-kernel+bounces-149742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5A1E8A9548
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:47:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 801208A954A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:48:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DA171F21028
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:47:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E92501F21BB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:47:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D8515886C;
-	Thu, 18 Apr 2024 08:47:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78123158A05;
+	Thu, 18 Apr 2024 08:47:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Gd/ZJtJ6"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XKD6jw9g"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C22BA39FDD
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:47:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ABBB7B3FD
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:47:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713430028; cv=none; b=ffFV9bsdwbMcv1vrVnQQn+J+LsNpMe+sdap1ih6A210Hy821Cw2vWIyNMnjn4Va2/yNIL33jZ4gQkzq8P7j9tNKSa6LrDYNC5twEKISCwtq4poK1WKrFPw7nNggugVkdFhWA45SJVofO0yrK7TiWgxpoIML4kAuyngV3b/rqaaM=
+	t=1713430070; cv=none; b=BPT5VKISRLTVMAz+9w+QVxS9wgW/jXOGsrUyD3TTIaPDIxBuZS2j8fUvhOAT/firwPzdae0VSIB0rKkR2izJzvZ9vRtNN6jasjPOInSNQHWpp5hB0Dp7bm3CephCN6Hs8LPUe3KPY9Rz0yRP1wwg/3dMtjLLeetkClqBJxWgLC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713430028; c=relaxed/simple;
-	bh=hZhXW9wg4wjoavT+9EfcCTWpvN/SZJQnteH7FnhHDXI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i3iEVpnPUG6RX1ca3xra1UJrYkYZzThWomIDoB/+lttwjm8UHXtq6BX7LbsH2uI09L6yPKmlGZBIvd5VEY91VrnDD7WJgCA051zmkXcQ2dkNeDuM+qYu25jnkKvXxGnXaAhLeDQH5LWC1Sjc4SfjtPWyiNJ9VjNzAGlzruhuDjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Gd/ZJtJ6; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1713430070; c=relaxed/simple;
+	bh=GfBYlvdAGTCQ1bE/wGtCuDXFAP0eWOuU/lTVLOOfC5Q=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=qMkVoULZkr9DYvEtQiRexdRCFwTb14LLpw0CHg3ZKGpG9pvRv6hEn7jHiNVTu/l2KxJAuRbDjynhH2WKVZN+KrkSE2bsBbE47VpUnJfjWhBgSSs2r89Bwkaaq4dXfvfufnm02foiwxZYg7jFPvSdWZavcL67EE1ETh7nOhitqOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XKD6jw9g; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713430024;
+	s=mimecast20190719; t=1713430068;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ypu/IzdSRACz4KGvkLD7l6pluK2joJIPj93eOoJKFJU=;
-	b=Gd/ZJtJ6nQ6wAGsux7zoAVMNqQavIgpAMSTLsoIarQOs+Ozib7vb85WdMc+jjYC0IiRb9f
-	2oVO0c+YuazINKkO+VIP4ucIabpiRPocRZWJ2oRPRLTKuKKo3Jl97Hk3NXYINc8RzE6d5B
-	f49svQuBLVMhDovuvKCTNdls4HJxhPY=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=c+bxT+WHkhQSYYDIJ6Aj+zyB0rRNxM4fAFl1TIin11Y=;
+	b=XKD6jw9gsf8sj39ocJ6EeCoXtJmOjMfSl1KygVDvutPqypcRmCRFh8UyFrMK6+9L/akTD2
+	cbia35pJ4pug+4UbW78NdB2WNht33ApIR+/FaxZ/CZnDGkOroQ5A9onKkHaVqE5rRIm11J
+	fCfgh0HPpKx3TrU/Kg5IUQ+Z8x7sQwU=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-427-NAJydeRwNP2e0EdgHJX2qw-1; Thu, 18 Apr 2024 04:47:03 -0400
-X-MC-Unique: NAJydeRwNP2e0EdgHJX2qw-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-516ddd6d66fso467498e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 01:47:02 -0700 (PDT)
+ us-mta-81-Yr51UAU4Mt2c52nwUt0zIw-1; Thu, 18 Apr 2024 04:47:46 -0400
+X-MC-Unique: Yr51UAU4Mt2c52nwUt0zIw-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-348973b648fso109151f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 01:47:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713430021; x=1714034821;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1713430065; x=1714034865;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ypu/IzdSRACz4KGvkLD7l6pluK2joJIPj93eOoJKFJU=;
-        b=K1eHGp4uh9JWLGrqYB/mI43QmS0GDRGHIDEVPbaCFNvSBiVQmoZVqzx1ZolXFgzFsB
-         JTN835mRxdpGWPXql43oXXMKeNRPbDH+9A/NFYxUtJNcJ8e6wv7HpopJU9Q/M+4bqEzq
-         V3BAzNYQZuFJ8JZ6rK1r1QAkQAtJqq28wJGbhlc6cKjzxzygKw2K8ok6WwCre+wZlvKO
-         xp6kFUD9gBcNpcvRlRkg7AaBdgj/9ydMBQfmMbiF1T3xcdi1ryugrBgbzQCM2UUijB38
-         XQyjt5eq6L48MknKhaRhFgVA9+0nN9ALic/TCgr2c5Cma3ioThmANSd0cD2NsxT/FF1o
-         TREg==
-X-Forwarded-Encrypted: i=1; AJvYcCXwMwsJryPprVFmSHE0qm49fGKgm9amfw71PdC7c1NZpDi5hYFI4OiELhkMZ8taUg37TRMCaGMLi1yozsu3WzZTKGYNbOWcqYAKPwGu
-X-Gm-Message-State: AOJu0YxXXldWq/oPMU9b7QsWUqzd5eI7JYtpVspFAGQcv1RRelY3BcqM
-	iuVxiHgOxUH42LQaOjcagJJv5Z3NBv7QWSOFYEUuOtLvWvtasRp+hEX6GC5CCSDWCEQWVGVY8XK
-	ouzjGV5V7SKGEU5YcfI1fi9HhPcTYdtoB5M38Dgvj+CPDTJRkc8n0XEyluss4Ww==
-X-Received: by 2002:ac2:514a:0:b0:518:dfae:2691 with SMTP id q10-20020ac2514a000000b00518dfae2691mr934548lfd.11.1713430021714;
-        Thu, 18 Apr 2024 01:47:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHmRh2T6pvnSqHalT0e9jZSTumH+2b2s1Adv+nj5rhoXDlqkM4PEjAaGAuY6sV4enTEM5Eukw==
-X-Received: by 2002:ac2:514a:0:b0:518:dfae:2691 with SMTP id q10-20020ac2514a000000b00518dfae2691mr934538lfd.11.1713430021471;
-        Thu, 18 Apr 2024 01:47:01 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id k4-20020a50cb84000000b005705bb48307sm600965edi.42.2024.04.18.01.47.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 01:47:01 -0700 (PDT)
-Message-ID: <9d4800ed-ac7d-406e-ad66-7b5bcd136c30@redhat.com>
-Date: Thu, 18 Apr 2024 10:47:00 +0200
+        bh=c+bxT+WHkhQSYYDIJ6Aj+zyB0rRNxM4fAFl1TIin11Y=;
+        b=T/nEjGZJq4SkEHsoNE5VYUN8imtNWdmXPoKdg6D/jut7lZCrSTrLup5A13u4jRRIJn
+         2HgTtgIZxvzpP2VgfRJGU8llePBKWC/cQ/25m8uJHjqe5K5kYAw/bFjHhIijomwDLu1K
+         v2Y4WnUTeFfKjBI1cXjIPIKf/BdgjFddVsBY/czWpwxPQGXg7177sPGruwOR776aTivo
+         UOG0aF3mNzf5gTe2a7t1u7MSpwF+LG0ZE6TU3z5vDkFMFfYEEcsEwxd9+082k267vh57
+         kVMzlsnT7bdgiGeuq40r6pa0Ik5znAoUB6ndVNRozfiGyJ0JvVJnuQ3RIb/YK5ivIfho
+         nknQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUgHn3j3AKgnBxNpp/6RUhjXFGcitff67UwoeP+wDwFZx3Bxu90AIOt62sDT35T1DeKoe9Y9D93cwMLLC9PhueJwWt87j+LyW94G95W
+X-Gm-Message-State: AOJu0YxdRkUIVjf0O497DUFpGF5Zx/Na48NQ0mxq3t3MprJYQcD/Korg
+	tpGZkU7BY6dzOObea6/7PYyLUKxBP/lBgr4yJh1KDmYFZM3nfrwU3Dnk9CCqFzL+qRw7jkAWB+y
+	si29GG+nyO50MAghS7M0PjUyL4OiuJyRdauz5TUW3wvN135f5O9REb+QWffWfZQ==
+X-Received: by 2002:a05:600c:1c91:b0:418:9a5b:d51 with SMTP id k17-20020a05600c1c9100b004189a5b0d51mr1597147wms.0.1713430064949;
+        Thu, 18 Apr 2024 01:47:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEuX9Onk+JFsKlfGWkDC5OFvrhLuJ7rcnieRMoInGdDbO7Ygp2ZtjuTFhV7kCUsNUGl3mDQTg==
+X-Received: by 2002:a05:600c:1c91:b0:418:9a5b:d51 with SMTP id k17-20020a05600c1c9100b004189a5b0d51mr1597136wms.0.1713430064564;
+        Thu, 18 Apr 2024 01:47:44 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-236-143.dyn.eolo.it. [146.241.236.143])
+        by smtp.gmail.com with ESMTPSA id u18-20020a05600c19d200b0041896d2a05fsm1916295wmq.5.2024.04.18.01.47.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 01:47:44 -0700 (PDT)
+Message-ID: <497b3f9b6d91a076c67f959ba878583a91b03cf5.camel@redhat.com>
+Subject: Re: [net-next PATCH v5 1/4] net: hsr: Provide RedBox support
+ (HSR-SAN)
+From: Paolo Abeni <pabeni@redhat.com>
+To: Lukasz Majewski <lukma@denx.de>, netdev@vger.kernel.org
+Cc: Andrew Lunn <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, 
+ Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,  Oleksij Rempel
+ <o.rempel@pengutronix.de>, Tristram.Ha@microchip.com, Sebastian Andrzej
+ Siewior <bigeasy@linutronix.de>, Ravi Gunasekaran <r-gunasekaran@ti.com>,
+ Simon Horman <horms@kernel.org>, Nikita Zhandarovich
+ <n.zhandarovich@fintech.ru>, Murali Karicheri <m-karicheri2@ti.com>, Jiri
+ Pirko <jiri@resnulli.us>, Dan Carpenter <dan.carpenter@linaro.org>,  Ziyang
+ Xuan <william.xuanziyang@huawei.com>, Shigeru Yoshida
+ <syoshida@redhat.com>, "Ricardo B. Marliere" <ricardo@marliere.net>,
+ linux-kernel@vger.kernel.org
+Date: Thu, 18 Apr 2024 10:47:42 +0200
+In-Reply-To: <20240415124928.1263240-2-lukma@denx.de>
+References: <20240415124928.1263240-1-lukma@denx.de>
+	 <20240415124928.1263240-2-lukma@denx.de>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86: msi-laptop: Use sysfs_emit() to replace
- sprintf()
-To: yunshui <jiangyunshui@kylinos.cn>, linux-kernel@vger.kernel.org,
- platform-driver-x86@vger.kernel.org
-Cc: jlee@suse.com, ilpo.jarvinen@linux.intel.com, Ai Chao <aichao@kylinos.cn>
-References: <20240418072257.631977-1-jiangyunshui@kylinos.cn>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240418072257.631977-1-jiangyunshui@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-Hi,
+On Mon, 2024-04-15 at 14:49 +0200, Lukasz Majewski wrote:
+> Introduce RedBox support (HSR-SAN to be more precise) for HSR networks.
+> Following traffic reduction optimizations have been implemented:
+> - Do not send HSR supervisory frames to Port C (interlink)
+> - Do not forward to HSR ring frames addressed to Port C
+> - Do not forward to Port C frames from HSR ring
+> - Do not send duplicate HSR frame to HSR ring when destination is Port C
+>=20
+> The corresponding patch to modify iptable2 sources has already been sent:
+> https://lore.kernel.org/netdev/20240308145729.490863-1-lukma@denx.de/T/
+>=20
+> Testing procedure:
+> ------------------
+> The EVB-KSZ9477 has been used for testing on net-next branch
+> (SHA1: 5fc68320c1fb3c7d456ddcae0b4757326a043e6f).
+>=20
+> Ports 4/5 were used for SW managed HSR (hsr1) as first hsr0 for ports 1/2
+> (with HW offloading for ksz9477) was created. Port 3 has been used as
+> interlink port (single USB-ETH dongle).
+>=20
+> Configuration - RedBox (EVB-KSZ9477):
+> if link set lan1 down;ip link set lan2 down
+> ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 ver=
+sion 1
+> ip link add name hsr1 type hsr slave1 lan4 slave2 lan5 interlink lan3 sup=
+ervision 45 version 1
+> ip link set lan4 up;ip link set lan5 up
+> ip link set lan3 up
+> ip addr add 192.168.0.11/24 dev hsr1
+> ip link set hsr1 up
+>=20
+> Configuration - DAN-H (EVB-KSZ9477):
+>=20
+> ip link set lan1 down;ip link set lan2 down
+> ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 ver=
+sion 1
+> ip link add name hsr1 type hsr slave1 lan4 slave2 lan5 supervision 45 ver=
+sion 1
+> ip link set lan4 up;ip link set lan5 up
+> ip addr add 192.168.0.12/24 dev hsr1
+> ip link set hsr1 up
+>=20
+> This approach uses only SW based HSR devices (hsr1).
+>=20
+> --------------          -----------------       ------------
+> DAN-H  Port5 | <------> | Port5         |       |
+>        Port4 | <------> | Port4   Port3 | <---> | PC
+>              |          | (RedBox)      |       | (USB-ETH)
+> EVB-KSZ9477  |          | EVB-KSZ9477   |       |
+> --------------          -----------------       ------------
 
-Thanks, patch looks good to me:
+The above description is obsoleted by follow-up tests, right?
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Thanks,
 
-On 4/18/24 9:22 AM, yunshui wrote:
->     As Documentation/filesystems/sysfs.rst suggested,
->     show() should only use sysfs_emit() or sysfs_emit_at() when formatting
->     the value to be returned to user space.
-> 
-> Signed-off-by: yunshui <jiangyunshui@kylinos.cn>
-> Signed-off-by: Ai Chao <aichao@kylinos.cn>
-
-Note same weird S-o-b here though.
-
-Regards,
-
-Hans
-
-
-
-
-> ---
->  drivers/platform/x86/msi-laptop.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/msi-laptop.c b/drivers/platform/x86/msi-laptop.c
-> index f4c6c36e05a5..e5391a37014d 100644
-> --- a/drivers/platform/x86/msi-laptop.c
-> +++ b/drivers/platform/x86/msi-laptop.c
-> @@ -317,7 +317,7 @@ static ssize_t show_wlan(struct device *dev,
->  	if (ret < 0)
->  		return ret;
->  
-> -	return sprintf(buf, "%i\n", enabled);
-> +	return sysfs_emit(buf, "%i\n", enabled);
->  }
->  
->  static ssize_t store_wlan(struct device *dev,
-> @@ -341,7 +341,7 @@ static ssize_t show_bluetooth(struct device *dev,
->  	if (ret < 0)
->  		return ret;
->  
-> -	return sprintf(buf, "%i\n", enabled);
-> +	return sysfs_emit(buf, "%i\n", enabled);
->  }
->  
->  static ssize_t store_bluetooth(struct device *dev,
-> @@ -364,7 +364,7 @@ static ssize_t show_threeg(struct device *dev,
->  	if (ret < 0)
->  		return ret;
->  
-> -	return sprintf(buf, "%i\n", threeg_s);
-> +	return sysfs_emit(buf, "%i\n", threeg_s);
->  }
->  
->  static ssize_t store_threeg(struct device *dev,
-> @@ -383,7 +383,7 @@ static ssize_t show_lcd_level(struct device *dev,
->  	if (ret < 0)
->  		return ret;
->  
-> -	return sprintf(buf, "%i\n", ret);
-> +	return sysfs_emit(buf, "%i\n", ret);
->  }
->  
->  static ssize_t store_lcd_level(struct device *dev,
-> @@ -413,7 +413,7 @@ static ssize_t show_auto_brightness(struct device *dev,
->  	if (ret < 0)
->  		return ret;
->  
-> -	return sprintf(buf, "%i\n", ret);
-> +	return sysfs_emit(buf, "%i\n", ret);
->  }
->  
->  static ssize_t store_auto_brightness(struct device *dev,
-> @@ -443,7 +443,7 @@ static ssize_t show_touchpad(struct device *dev,
->  	if (result < 0)
->  		return result;
->  
-> -	return sprintf(buf, "%i\n", !!(rdata & MSI_STANDARD_EC_TOUCHPAD_MASK));
-> +	return sysfs_emit(buf, "%i\n", !!(rdata & MSI_STANDARD_EC_TOUCHPAD_MASK));
->  }
->  
->  static ssize_t show_turbo(struct device *dev,
-> @@ -457,7 +457,7 @@ static ssize_t show_turbo(struct device *dev,
->  	if (result < 0)
->  		return result;
->  
-> -	return sprintf(buf, "%i\n", !!(rdata & MSI_STANDARD_EC_TURBO_MASK));
-> +	return sysfs_emit(buf, "%i\n", !!(rdata & MSI_STANDARD_EC_TURBO_MASK));
->  }
->  
->  static ssize_t show_eco(struct device *dev,
-> @@ -471,7 +471,7 @@ static ssize_t show_eco(struct device *dev,
->  	if (result < 0)
->  		return result;
->  
-> -	return sprintf(buf, "%i\n", !!(rdata & MSI_STANDARD_EC_ECO_MASK));
-> +	return sysfs_emit(buf, "%i\n", !!(rdata & MSI_STANDARD_EC_ECO_MASK));
->  }
->  
->  static ssize_t show_turbo_cooldown(struct device *dev,
-> @@ -485,7 +485,7 @@ static ssize_t show_turbo_cooldown(struct device *dev,
->  	if (result < 0)
->  		return result;
->  
-> -	return sprintf(buf, "%i\n", (!!(rdata & MSI_STANDARD_EC_TURBO_MASK)) |
-> +	return sysfs_emit(buf, "%i\n", (!!(rdata & MSI_STANDARD_EC_TURBO_MASK)) |
->  		(!!(rdata & MSI_STANDARD_EC_TURBO_COOLDOWN_MASK) << 1));
->  }
->  
-> @@ -500,7 +500,7 @@ static ssize_t show_auto_fan(struct device *dev,
->  	if (result < 0)
->  		return result;
->  
-> -	return sprintf(buf, "%i\n", !!(rdata & MSI_STANDARD_EC_AUTOFAN_MASK));
-> +	return sysfs_emit(buf, "%i\n", !!(rdata & MSI_STANDARD_EC_AUTOFAN_MASK));
->  }
->  
->  static ssize_t store_auto_fan(struct device *dev,
+Paolo
 
 
