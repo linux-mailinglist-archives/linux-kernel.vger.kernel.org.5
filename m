@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-150528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8B3A8AA08F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 13B718AA094
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:59:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 591E91F22270
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:59:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A870C1F21DDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:59:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC64176FA8;
-	Thu, 18 Apr 2024 16:58:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3672E1779A4;
+	Thu, 18 Apr 2024 16:59:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KFh/M0xR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ru7QLtXj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C2217107B;
-	Thu, 18 Apr 2024 16:58:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F40A6A8D8;
+	Thu, 18 Apr 2024 16:59:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713459522; cv=none; b=PtvJXoTPyX95Mit9x1E4sZynmB7HDlJG7+Msc7XMmcO6l+hbZX5jJDaglxp2foljd2Tr2EbJDhVsM+8M+MD00kLwv/iwAq/tkZgDRbSnLg0R3UZmb9X7vcwp0xOQyG+TyifKMzhdc8bmJMK4PiqDnLTPR7dIuwh24iy6j+1bnWE=
+	t=1713459540; cv=none; b=cYYAvRvJttKaBswOmfLMLx1zTrnAcDiqB04o0XabZoWV6uMo5g2jKaKfAjWsocDpeLUHNkRThncAvP6j3XhP9MYnJRMjNCxu7zvj06Aize7fBGiMLhgephjArkdyYnsaUA+W1pVnFGbLnGbFF4s+LZF++8G8ZxlWOKECWwYmJVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713459522; c=relaxed/simple;
+	s=arc-20240116; t=1713459540; c=relaxed/simple;
 	bh=5chOe6JIMo3R8o3U5AdjF8G33+dSjfClr9tPBijYi9A=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L/cztx7WWmNoSkRwNcUCHtrW+C+t+e9OPrmWMKMBXtTjdWO3Sqd0GGNhNklPydY8na6ZV5V8d6Mbk7qv4rnl5AdFfPGe0WAqrJO8Azp9tnLzmf2IuHOoWCGE2wJyOkIJxJDBXJ6DwChFLofS9vl3t1vXXk/WQXorhwKJLoaT1pI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KFh/M0xR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15076C32783;
-	Thu, 18 Apr 2024 16:58:39 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=P2eT4rTisrylYxjsIQ71cd87FeXcxujhAlCPSxy0ZkixGmB6IiIc23kTb929rz8hT1f3cjf+oPcJNAo5ZBp3uqXfGmjQrDDjB966/2utKT8+w3TsODxUHwuQAhVwOvTQhOBKC8oSxN3Y32KtO9Vv8nAhP1Z1Je4T6G5jBWn8W6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ru7QLtXj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4E82C113CC;
+	Thu, 18 Apr 2024 16:58:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713459521;
+	s=k20201202; t=1713459539;
 	bh=5chOe6JIMo3R8o3U5AdjF8G33+dSjfClr9tPBijYi9A=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=KFh/M0xRhWJ/vBjPUwecjyhh8t+5o8orgVg63c5tU7HdlpIlNjVNyGwBrBss8zpPO
-	 PY1t0m0ex3TILx3MKzN3pdspJQVWWbegiz5reexx0dEBgxVsSIdBDeMahXbFbyG88Z
-	 MSMDURBu0nhmGuZDJ3625bJQgF8McsgYJR4PhrvMBg/RvgxA7prPQ/hgqfWszytgaL
-	 wF+oQmcB4CFDvNYtd6BXJmvJY2LBBmuAYUO/P8rm2KSJr1DdFezF3FPeGm4W8mRzie
-	 JayNTY2yZTVcjn5Q+hSkGV3Y6UlCDJuubd+yBcqhAKlpD6yquXNeXjP13ot28NhJhR
-	 MH7TV1iu6pVHQ==
-Message-ID: <cc7aba44-e111-4cb3-b842-f7fedda24113@kernel.org>
-Date: Thu, 18 Apr 2024 18:58:39 +0200
+	b=Ru7QLtXjoA1yUtQ6/7BbjmYkLt76lJ1vOUtNI9mJJ+aDRV/1Sd0Cy/5I3mdvmIuVL
+	 0zhq0ILGaJUvxBuC05xOk5I6uVwr8h2TNOWITKINrWUfJafqMEpvUE2EVH+/H1lTSg
+	 sfgupJ6CdIhyX+0LlZeI63IETaAQoX7oidw8UCWn6pQQNyJ567Q6XspDyVQCUWcNd4
+	 wao/otuQ9Tc5ojFEYd1+YZfX62yBqiTarXEHuFoURzOBd9oNEsHxCFIEvBuIl9sKqW
+	 iZ1qXNFdl74Yr03sOPifoDU3RbTuyD6ODLr95hwaFSEgSvLTNTgpQKMWJUiOUhG4s7
+	 oZdl7lF/5daJA==
+Message-ID: <daec0a0e-057a-4f14-ac1b-40e147c2fa6a@kernel.org>
+Date: Thu, 18 Apr 2024 18:58:48 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,7 +49,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/5] arm64: dts: freescale: imx8mp-evk: remove
+Subject: Re: [PATCH v2 3/5] arm64: dts: freescale: imx8mp-verdin: remove
  tx-sched-sp property
 To: Flavio Suligoi <f.suligoi@asem.it>,
  Alexandre Torgue <alexandre.torgue@foss.st.com>,
@@ -69,7 +69,7 @@ Cc: netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
  imx@lists.linux.dev, linux-arm-msm@vger.kernel.org,
  linux-kernel@vger.kernel.org
 References: <20240418122859.2079099-1-f.suligoi@asem.it>
- <20240418122859.2079099-3-f.suligoi@asem.it>
+ <20240418122859.2079099-4-f.suligoi@asem.it>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -115,7 +115,7 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240418122859.2079099-3-f.suligoi@asem.it>
+In-Reply-To: <20240418122859.2079099-4-f.suligoi@asem.it>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
