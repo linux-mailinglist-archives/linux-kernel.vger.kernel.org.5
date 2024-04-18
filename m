@@ -1,148 +1,178 @@
-Return-Path: <linux-kernel+bounces-149581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E4B18A9312
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:27:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B7308A9314
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:28:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39D79281801
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:27:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14CCC1C20BD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:28:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A4226FE06;
-	Thu, 18 Apr 2024 06:27:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4764F6F065;
+	Thu, 18 Apr 2024 06:28:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="i/Kw3dy2"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tm2HkL3x";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="K2x9Gyy/";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tm2HkL3x";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="K2x9Gyy/"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C0228C11;
-	Thu, 18 Apr 2024 06:27:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DAEE58129;
+	Thu, 18 Apr 2024 06:28:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713421654; cv=none; b=h72GvjAxidnBSnsMFiPmdRfTeDCXNv/S3Vj1l/6E3QDkRq9xRx9ztdDSmXCFYpcf57TlU8NvLSqEvhUjVb2qYyXZ7QKZbvLdR5+OXHnqkvMaqRCfoAk10HcdjGAWWuc2Hf0RZRFhVnddG94gp6hhg0hKPNJZKI4Kb+pa4amOk+0=
+	t=1713421687; cv=none; b=AtSh/NILI8vQRIyCjMpYDRj6uOH4jlhUM2YvhR7tEueB08+ek+eiVjOJ+o/ByfhKZp2ISlQOH80VayPLybX7irp/aSkPqmtSOZR9+XqQKhbAkA/qTmjekWK2lxguR7h+X4HeU1YKreacesSHN+UZa8x7rfwWEpuKX7jGqvyXMtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713421654; c=relaxed/simple;
-	bh=ck6D+u1yHGSMSsvI+farJRo08q/q17J/RdpWxcYLUzU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=V88VafIgtlU15OJ66JDzEFgI59Sct4BCBnK9odoIOZJql1WM+LLB3OorkxQgEV6VRAlWYWbdh06gJbh4kjmFRCSjP1wSRNAGv2I2dSdc03fgJ/8d3kIIH39jrCm/Vq0mSPzS1A/u5203NJZee3GKQO9DXRc/X2hHer9g6h0rLvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=i/Kw3dy2; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43HNrE0P018338;
-	Thu, 18 Apr 2024 06:27:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=tbWp83ngc6+C04lMqJmQF5eKNNcGbKVIZblsmEVEZDk=; b=i/
-	Kw3dy2+SLlBMkynWa4ccWUpbylndODYMvO/yknuuebbdm/N5JASvLAjc1ZzkXaXy
-	wwCVNdDoIDPSNX+b8vabYIT22lK/OUo8tflP6MZsqbXJdJjZwCioaOPDzqImcSPh
-	TUUlM7CjVsWUfyMPQxWum54UwUzelmXQlJnq0vWK2z0Z2ojeohNH3SSdXXAufciX
-	n9n2zFx+OhJs1G3/KCeWjvE7XgGqIQoDI4FCgswnYU371iMF+B4RzmA5mIRra/tS
-	Q4Tz1+RZxtpwMS9BQLs7Kx9Jz57Owz4fGr22nUDl+2l4XY6u0n3lkW25egFxsA+Y
-	1Bed6WS9/govow426Gqg==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xjrfxgv25-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Apr 2024 06:27:25 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43I6RNZO027974
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Apr 2024 06:27:23 GMT
-Received: from [10.131.33.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 17 Apr
- 2024 23:27:18 -0700
-Message-ID: <1e334bd5-6d90-8ac7-084f-8b7928072c17@quicinc.com>
-Date: Thu, 18 Apr 2024 11:57:14 +0530
+	s=arc-20240116; t=1713421687; c=relaxed/simple;
+	bh=DhP+wdzR337uZ5KL27fznIhxVqt9DRsWldIIAKOEgm0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HjJvqy7yx8N4IQ7mSqS1Z5QExYmJgcy6W8hHqstwpabxWOHKcD9D0Ijd1t+4ai46OhkDEm7iyNA0s7o9w+uLTQGkTIGzncq0J4cPWZpt2mqwS3OywpBXPPMe6oLeemPGRKDjlkeJY1tuY59jdrJC5LuYRzbkr/rQMB5WRyKOEuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=tm2HkL3x; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=K2x9Gyy/; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=tm2HkL3x; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=K2x9Gyy/; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2F3035C4ED;
+	Thu, 18 Apr 2024 06:28:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713421683; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PGHryipV7m3ISlljFcCVSwJdP+QGddzGbQWc+EpBMrI=;
+	b=tm2HkL3xVelzcBJRtWYwQkYmovSqm5VIyQt2W6YEldQAjji6WU0UirMlrJJ1JddMN77qZJ
+	sUyr1dJtvdy17mHb0n7J/aQfB6K+XJPIikqZRZxIyYyn/lOzjrHP5PBiDd5IzMMjAaDg9K
+	y2YEdYXMwTlxevsMic+rAZuz/EGO6gw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713421683;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PGHryipV7m3ISlljFcCVSwJdP+QGddzGbQWc+EpBMrI=;
+	b=K2x9Gyy/mYZOutVO1XXWOGeRnRGGyQRFTHqn7NC/nvMAstawRIYH3i8T4DOFImJ4AzWgP3
+	O4W0GVfUHDsrAhCQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=tm2HkL3x;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="K2x9Gyy/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713421683; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PGHryipV7m3ISlljFcCVSwJdP+QGddzGbQWc+EpBMrI=;
+	b=tm2HkL3xVelzcBJRtWYwQkYmovSqm5VIyQt2W6YEldQAjji6WU0UirMlrJJ1JddMN77qZJ
+	sUyr1dJtvdy17mHb0n7J/aQfB6K+XJPIikqZRZxIyYyn/lOzjrHP5PBiDd5IzMMjAaDg9K
+	y2YEdYXMwTlxevsMic+rAZuz/EGO6gw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713421683;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PGHryipV7m3ISlljFcCVSwJdP+QGddzGbQWc+EpBMrI=;
+	b=K2x9Gyy/mYZOutVO1XXWOGeRnRGGyQRFTHqn7NC/nvMAstawRIYH3i8T4DOFImJ4AzWgP3
+	O4W0GVfUHDsrAhCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D271D13687;
+	Thu, 18 Apr 2024 06:28:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id G62JMXK9IGb2cgAAD6G6ig
+	(envelope-from <hare@suse.de>); Thu, 18 Apr 2024 06:28:02 +0000
+Message-ID: <248d92b7-23b0-4c84-8c38-58d956b88a64@suse.de>
+Date: Thu, 18 Apr 2024 08:28:01 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH V3 1/5] dt-bindings: mailbox: qcom: Add CPUCP mailbox
- controller bindings
+User-Agent: Mozilla Thunderbird
+Subject: Re: API break, sysfs "capability" file
 Content-Language: en-US
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
-CC: <sudeep.holla@arm.com>, <cristian.marussi@arm.com>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <jassisinghbrar@gmail.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <dmitry.baryshkov@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_rgottimu@quicinc.com>, <quic_kshivnan@quicinc.com>,
-        <conor+dt@kernel.org>, <quic_gkohli@quicinc.com>,
-        <quic_nkela@quicinc.com>, <quic_psodagud@quicinc.com>,
-        Rob Herring <robh@kernel.org>
-References: <20240417132856.1106250-1-quic_sibis@quicinc.com>
- <20240417132856.1106250-2-quic_sibis@quicinc.com>
- <ZiA0hOkpGVlVFp5u@hu-bjorande-lv.qualcomm.com>
-From: Sibi Sankar <quic_sibis@quicinc.com>
-In-Reply-To: <ZiA0hOkpGVlVFp5u@hu-bjorande-lv.qualcomm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: CBqy4x_L3vRJwV6AY0rDmH2Iand2eEA2
-X-Proofpoint-GUID: CBqy4x_L3vRJwV6AY0rDmH2Iand2eEA2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-18_04,2024-04-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 spamscore=0 mlxscore=0 phishscore=0 suspectscore=0
- adultscore=0 mlxlogscore=908 clxscore=1015 malwarescore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404180042
+To: Christoph Hellwig <hch@lst.de>, Lennart Poettering <mzxreary@0pointer.de>
+Cc: Keith Busch <kbusch@kernel.org>,
+ Linux regressions mailing list <regressions@lists.linux.dev>,
+ linux-block@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Jens Axboe <axboe@kernel.dk>
+References: <54e3c969-3ee8-40d8-91d9-9b9402001d27@leemhuis.info>
+ <ZhQ6ZBmThBBy_eEX@kbusch-mbp.dhcp.thefacebook.com>
+ <ZhRSVSmNmb_IjCCH@gardel-login>
+ <ZhRyhDCT5cZCMqYj@kbusch-mbp.dhcp.thefacebook.com>
+ <ZhT5_fZ9SrM0053p@gardel-login> <20240409141531.GB21514@lst.de>
+ <Zh6J75OrcMY3dAjY@gardel-login> <Zh6O5zTBs5JtV4D2@kbusch-mbp>
+ <20240417151350.GB2167@lst.de> <Zh_vQG9EyVt34p16@gardel-login>
+ <20240417155913.GA6447@lst.de>
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20240417155913.GA6447@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -5.50
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 2F3035C4ED
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-5.50 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	XM_UA_NO_VERSION(0.01)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.de:+]
 
-
-
-On 4/18/24 02:13, Bjorn Andersson wrote:
-> On Wed, Apr 17, 2024 at 06:58:52PM +0530, Sibi Sankar wrote:
->> Add devicetree binding for CPUSS Control Processor (CPUCP) mailbox
->> controller.
->>
->> Reviewed-by: Rob Herring <robh@kernel.org>
->> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
->> ---
->>
->> v2:
->> * Pickup Rb from Dimitry.
->>
->>   .../bindings/mailbox/qcom,cpucp-mbox.yaml     | 49 +++++++++++++++++++
->>   1 file changed, 49 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml b/Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml
->> new file mode 100644
->> index 000000000000..491b0a05e630
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml
->> @@ -0,0 +1,49 @@
->> +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/mailbox/qcom,cpucp-mbox.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm Technologies, Inc. CPUCP Mailbox Controller
->> +
->> +maintainers:
->> +  - Sibi Sankar <quic_sibis@qti.qualcomm.com>
+On 4/17/24 17:59, Christoph Hellwig wrote:
+> On Wed, Apr 17, 2024 at 05:48:16PM +0200, Lennart Poettering wrote:
+>> Block devices with part scanning off are quite common after all,
+>> i.e. "losetup" creates them by default like that, and partition block
+>> devices themselves have no part scanning on and so on, hence we have
+>> to be ablet to operate sanely with them.
 > 
-> That doesn't look like the correct domain.
-
-Thanks, I don't know how I even constructed this chimera of an email-id
-lol.
-
--Sibi
-
+> Maybe and ioctl to turn on partition scanning if it is currently disabled
+> or return an error otherwise would be the better thing?  It would
+> do the right thing for the most common loop case, and with a bit more
+> work could do the right thing for those that more or less disable it
+> graciously (ubiblock, drbd, zram) and would just fail for those who are
+> so grotty old code and slow devices that we never want to do a partition
+> scan (basically old floppy drivers and the Nintendo N64 cartridge driver)
 > 
-> Regards,
-> Bjorn
+> 
+The world is going to end.
+hch suggests an ioctl.
+
+Cheers,
+
+Hannes
+-- 
+Dr. Hannes Reinecke                  Kernel Storage Architect
+hare@suse.de                                +49 911 74053 688
+SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
+HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
+
 
