@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-150523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AE458AA07A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:57:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04CC08AA07F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:58:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 917BD285B44
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:57:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7F6B283DE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:58:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F78D17332B;
-	Thu, 18 Apr 2024 16:57:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B4E1176FB1;
+	Thu, 18 Apr 2024 16:57:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="k2/ST5Gv"
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="eEK+P2+k"
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90BA216F29F;
-	Thu, 18 Apr 2024 16:57:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B924E16078D;
+	Thu, 18 Apr 2024 16:57:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713459442; cv=none; b=tP2IrrzGZ2VDpugT2JvKuWJHqJJTI+YuSGju8ngnSsOhbDZQECT7oLZtt5EhNTXFtAEIzAXz4/K5X+icvt8o9bQfFmAu+yxoBjRQ7AKvzrBleTqOyVPgwb/0tZnL4MkMapwVyMvda5HSN4pH+es4+5DMGVyOQnNwFAs0ZB6W2bM=
+	t=1713459443; cv=none; b=TA4cm/Y/c85row2uq6ubUQgfdPy3KAp2484VsWSLXZvlcA+O7EgwLy699bKSX2MNboIp6qE/LlSB+ywHK+eEQaYxNruYHHTqFs21m5rPEeauvXtUxF9HUBmXGmWS1pP1id5T4tCMtpm8xujeX10yDHOQIPSydDfy5md7ch9fWdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713459442; c=relaxed/simple;
-	bh=JSxhXh6RPEu44GhG9pzlc/+ekiyPeScDzIdegYj3TeE=;
+	s=arc-20240116; t=1713459443; c=relaxed/simple;
+	bh=9+3RpHdiu9N+hHXVc785KNc32OSelwLqLQLwZye2W9A=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=k0kn9MpcUXPNcgMU1NrylL/CZLzGgumq42wyGpfkgDQivbwgd2zSdk1R85l/zf0ppUoeJDEaHrd2b6auQZoIc87g7j03Now0V28jDZw7cWl2/CB7BSut1BND/j+ywkqXNkGBarsjcEoYvQZYL9ftQCB7BtXrwE3WyATPlLd81Q8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=k2/ST5Gv; arc=none smtp.client-ip=68.232.154.123
+	 In-Reply-To:To:CC; b=ZyiAtgyWXgUT/4GVL7oe/uEO4ioU9Bk5mWQ1MUoIIRqkK3ZMl21SApH8IaTdVYC9y9Eu0YSYaJMURtVr+Eag1mOs+h/1PmS+EXtVBGZv+Lo4sv5OCFpGblD0DuRsztrUZQOsH+BLFwt0+XE+YQERKo241XLEkAD87ffkLHz0QZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=eEK+P2+k; arc=none smtp.client-ip=68.232.154.123
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1713459440; x=1744995440;
+  t=1713459441; x=1744995441;
   h=from:date:subject:mime-version:content-transfer-encoding:
    message-id:references:in-reply-to:to:cc;
-  bh=JSxhXh6RPEu44GhG9pzlc/+ekiyPeScDzIdegYj3TeE=;
-  b=k2/ST5GvWVQDCeKE5py/HfitdtKCoxzFPkHBGclyIx9UtLr3+Qpn3weU
-   T+84N+JbLfVjRVakMV6/zQkbytY1Nm10AARz8dkWICbKyZfNGIQCrWUEU
-   cdWMTZTvYLvUyQouqbjdml/mOCcg7pmRlJP9xgtxU/mZm3HXj3xiTPaRh
-   9MY7XgcN5BShqG6dmzuCOyqdNHBFqvDTfImp75FeehKen3+rC3tV6ODke
-   8nmEx4hKlAON8WuihqnzdE+f0ORp3HGXUZr4njLtAWE/bh++V+F/1WdMa
-   INNhQRtJQXfNG114vR/u7py0B5y2lMUSg0cMkm8lEpxok4+RIaCXohiDP
-   Q==;
+  bh=9+3RpHdiu9N+hHXVc785KNc32OSelwLqLQLwZye2W9A=;
+  b=eEK+P2+kTSUDJi7qsfZXv5H+I6L8RxXD2/uo5/TxdIK8eb2UhYkzJzBE
+   crEtIzRX76yt8uahwxTdpQ4T9M+mhJfRM5CF6IiRVaKStoiWGGcTT9jw6
+   e75zDwH2/oeziySt4l/YJ3iWzXpTcu4YRqVi0jYvjRF2B5AM4wve0AXwE
+   BbVeZzB9hZsP4AH4JpZhNmE3/GWUqQaTfcb6qpDwxGXPDJTbpnFHQCxlc
+   pbhkw5WsYWbjqBboC7rnoqiBPpPWWzL8B5zwzZsA86167cHy+7i7CZ/Gr
+   c1RkBe8ojuNjRVv1XgoCgLPdUSwvyBnmn9CDjf+gPV11gSXr2aSSvtzBC
+   A==;
 X-CSE-ConnectionGUID: IpAKQTwwQLuvUOb4hfuiSQ==
-X-CSE-MsgGUID: iOTLrk4UTDWqDF7PYp7tHw==
+X-CSE-MsgGUID: KqRfNEAaRXOukzlUDeGtLg==
 X-IronPort-AV: E=Sophos;i="6.07,212,1708412400"; 
-   d="scan'208";a="188927089"
+   d="scan'208";a="188927091"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
   by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Apr 2024 09:57:19 -0700
 Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 18 Apr 2024 09:56:50 -0700
+ 15.1.2507.35; Thu, 18 Apr 2024 09:56:54 -0700
 Received: from DEN-DL-M70577.microchip.com (10.10.85.11) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Thu, 18 Apr 2024 09:56:47 -0700
+ 15.1.2507.35 via Frontend Transport; Thu, 18 Apr 2024 09:56:50 -0700
 From: Daniel Machon <daniel.machon@microchip.com>
-Date: Thu, 18 Apr 2024 18:56:35 +0200
-Subject: [PATCH net-next v2 2/5] net: sparx5: add bookkeeping code for
- matchall rules
+Date: Thu, 18 Apr 2024 18:56:36 +0200
+Subject: [PATCH net-next v2 3/5] net: sparx5: add port mirroring
+ implementation
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,7 +69,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20240418-port-mirroring-v2-2-20642868b386@microchip.com>
+Message-ID: <20240418-port-mirroring-v2-3-20642868b386@microchip.com>
 References: <20240418-port-mirroring-v2-0-20642868b386@microchip.com>
 In-Reply-To: <20240418-port-mirroring-v2-0-20642868b386@microchip.com>
 To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
@@ -86,171 +86,275 @@ CC: <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
 	<daniel.machon@microchip.com>
 X-Mailer: b4 0.14-dev
 
-In preparation for new tc matchall rules, we add a bit of bookkeeping
-code to keep track of them. The rules are identified by the cookie
-passed from the tc stack.
+The hardware supports three independent mirroring probes. Each probe can
+be configured to mirror rx or tx traffic (direction).
+
+Using tc matchall, it is now possible to add a source port and a monitor
+port to a mirror probe. Depending on the mirror direction, rx or tx
+traffic from a source port will be mirrored to the monitor port.
+
+A single source port can be a member of multiple mirror probes.
 
 Signed-off-by: Daniel Machon <daniel.machon@microchip.com>
 Reviewed-by: Steen Hegelund <Steen.Hegelund@microchip.com>
 ---
- .../net/ethernet/microchip/sparx5/sparx5_main.c    |  3 ++
- .../net/ethernet/microchip/sparx5/sparx5_main.h    | 10 ++++
- .../ethernet/microchip/sparx5/sparx5_tc_matchall.c | 62 +++++++++++++++++++---
- 3 files changed, 67 insertions(+), 8 deletions(-)
+ drivers/net/ethernet/microchip/sparx5/Makefile     |   3 +-
+ .../net/ethernet/microchip/sparx5/sparx5_main.h    |  12 ++
+ .../net/ethernet/microchip/sparx5/sparx5_mirror.c  | 196 +++++++++++++++++++++
+ 3 files changed, 210 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
-index 3c066b62e689..b64c814eac11 100644
---- a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
-+++ b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
-@@ -899,6 +899,9 @@ static int mchp_sparx5_probe(struct platform_device *pdev)
- 		dev_err(sparx5->dev, "PTP failed\n");
- 		goto cleanup_ports;
- 	}
-+
-+	INIT_LIST_HEAD(&sparx5->mall_entries);
-+
- 	goto cleanup_config;
+diff --git a/drivers/net/ethernet/microchip/sparx5/Makefile b/drivers/net/ethernet/microchip/sparx5/Makefile
+index 1cb1cc3f1a85..b68fe9c9a656 100644
+--- a/drivers/net/ethernet/microchip/sparx5/Makefile
++++ b/drivers/net/ethernet/microchip/sparx5/Makefile
+@@ -10,7 +10,8 @@ sparx5-switch-y  := sparx5_main.o sparx5_packet.o \
+  sparx5_switchdev.o sparx5_calendar.o sparx5_ethtool.o sparx5_fdma.o \
+  sparx5_ptp.o sparx5_pgid.o sparx5_tc.o sparx5_qos.o \
+  sparx5_vcap_impl.o sparx5_vcap_ag_api.o sparx5_tc_flower.o \
+- sparx5_tc_matchall.o sparx5_pool.o sparx5_sdlb.o sparx5_police.o sparx5_psfp.o
++ sparx5_tc_matchall.o sparx5_pool.o sparx5_sdlb.o sparx5_police.o \
++ sparx5_psfp.o sparx5_mirror.o
  
- cleanup_ports:
+ sparx5-switch-$(CONFIG_SPARX5_DCB) += sparx5_dcb.o
+ sparx5-switch-$(CONFIG_DEBUG_FS) += sparx5_vcap_debugfs.o
 diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_main.h b/drivers/net/ethernet/microchip/sparx5/sparx5_main.h
-index 316fed5f2735..4de37a5387a4 100644
+index 4de37a5387a4..5d026e1670f5 100644
 --- a/drivers/net/ethernet/microchip/sparx5/sparx5_main.h
 +++ b/drivers/net/ethernet/microchip/sparx5/sparx5_main.h
-@@ -18,6 +18,7 @@
- #include <linux/ptp_clock_kernel.h>
- #include <linux/hrtimer.h>
- #include <linux/debugfs.h>
-+#include <net/flow_offload.h>
- 
- #include "sparx5_main_regs.h"
- 
-@@ -227,6 +228,14 @@ struct sparx5_mdb_entry {
+@@ -228,12 +228,20 @@ struct sparx5_mdb_entry {
  	u16 pgid_idx;
  };
  
-+struct sparx5_mall_entry {
-+	struct list_head list;
++struct sparx5_mall_mirror_entry {
++	u32 idx;
 +	struct sparx5_port *port;
-+	unsigned long cookie;
-+	enum flow_action_id type;
-+	bool ingress;
 +};
 +
- #define SPARX5_PTP_TIMEOUT		msecs_to_jiffies(10)
- #define SPARX5_SKB_CB(skb) \
- 	((struct sparx5_skb_cb *)((skb)->cb))
-@@ -295,6 +304,7 @@ struct sparx5 {
- 	struct vcap_control *vcap_ctrl;
- 	/* PGID allocation map */
- 	u8 pgid_map[PGID_TABLE_SIZE];
-+	struct list_head mall_entries;
- 	/* Common root for debugfs */
- 	struct dentry *debugfs_root;
+ struct sparx5_mall_entry {
+ 	struct list_head list;
+ 	struct sparx5_port *port;
+ 	unsigned long cookie;
+ 	enum flow_action_id type;
+ 	bool ingress;
++	union {
++		struct sparx5_mall_mirror_entry mirror;
++	};
  };
-diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_matchall.c b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_matchall.c
-index d88a93f22606..2a33b347098f 100644
---- a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_matchall.c
-+++ b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_matchall.c
-@@ -11,11 +11,37 @@
- #include "sparx5_main.h"
- #include "sparx5_vcap_impl.h"
  
-+static struct sparx5_mall_entry *
-+sparx5_tc_matchall_entry_find(struct list_head *entries, unsigned long cookie)
-+{
-+	struct sparx5_mall_entry *entry;
+ #define SPARX5_PTP_TIMEOUT		msecs_to_jiffies(10)
+@@ -551,6 +559,10 @@ void sparx5_psfp_init(struct sparx5 *sparx5);
+ void sparx5_new_base_time(struct sparx5 *sparx5, const u32 cycle_time,
+ 			  const ktime_t org_base_time, ktime_t *new_base_time);
+ 
++/* sparx5_mirror.c */
++int sparx5_mirror_add(struct sparx5_mall_entry *entry);
++void sparx5_mirror_del(struct sparx5_mall_entry *entry);
 +
-+	list_for_each_entry(entry, entries, list) {
-+		if (entry->cookie == cookie)
-+			return entry;
+ /* Clock period in picoseconds */
+ static inline u32 sparx5_clk_period(enum sparx5_core_clockfreq cclock)
+ {
+diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_mirror.c b/drivers/net/ethernet/microchip/sparx5/sparx5_mirror.c
+new file mode 100644
+index 000000000000..540bde15eeff
+--- /dev/null
++++ b/drivers/net/ethernet/microchip/sparx5/sparx5_mirror.c
+@@ -0,0 +1,196 @@
++// SPDX-License-Identifier: GPL-2.0+
++/* Microchip Sparx5 Switch driver
++ *
++ * Copyright (c) 2024 Microchip Technology Inc. and its subsidiaries.
++ */
++
++#include "sparx5_main.h"
++#include "sparx5_main_regs.h"
++#include "sparx5_tc.h"
++
++#define SPX5_MIRROR_PROBE_MAX 3
++#define SPX5_MIRROR_DISABLED 0
++#define SPX5_MIRROR_EGRESS 1
++#define SPX5_MIRROR_INGRESS 2
++#define SPX5_MIRROR_MONITOR_PORT_DEFAULT 65
++#define SPX5_QFWD_MP_OFFSET 9 /* Mirror port offset in the QFWD register */
++
++/* Convert from bool ingress/egress to mirror direction */
++static u32 sparx5_mirror_to_dir(bool ingress)
++{
++	return ingress ? SPX5_MIRROR_INGRESS : SPX5_MIRROR_EGRESS;
++}
++
++/* Get ports belonging to this mirror */
++static u64 sparx5_mirror_port_get(struct sparx5 *sparx5, u32 idx)
++{
++	return (u64)spx5_rd(sparx5, ANA_AC_PROBE_PORT_CFG1(idx)) << 32 |
++	       spx5_rd(sparx5, ANA_AC_PROBE_PORT_CFG(idx));
++}
++
++/* Add port to mirror (only front ports) */
++static void sparx5_mirror_port_add(struct sparx5 *sparx5, u32 idx, u32 portno)
++{
++	u32 val, reg = portno;
++
++	val = BIT(do_div(reg, 32));
++
++	if (reg == 0)
++		return spx5_rmw(val, val, sparx5, ANA_AC_PROBE_PORT_CFG(idx));
++	else
++		return spx5_rmw(val, val, sparx5, ANA_AC_PROBE_PORT_CFG1(idx));
++}
++
++/* Delete port from mirror (only front ports) */
++static void sparx5_mirror_port_del(struct sparx5 *sparx5, u32 idx, u32 portno)
++{
++	u32 val, reg = portno;
++
++	val = BIT(do_div(reg, 32));
++
++	if (reg == 0)
++		return spx5_rmw(0, val, sparx5, ANA_AC_PROBE_PORT_CFG(idx));
++	else
++		return spx5_rmw(0, val, sparx5, ANA_AC_PROBE_PORT_CFG1(idx));
++}
++
++/* Check if mirror contains port */
++static bool sparx5_mirror_contains(struct sparx5 *sparx5, u32 idx, u32 portno)
++{
++	return (sparx5_mirror_port_get(sparx5, idx) & BIT_ULL(portno)) != 0;
++}
++
++/* Check if mirror is empty */
++static bool sparx5_mirror_is_empty(struct sparx5 *sparx5, u32 idx)
++{
++	return sparx5_mirror_port_get(sparx5, idx) == 0;
++}
++
++/* Get direction of mirror */
++static u32 sparx5_mirror_dir_get(struct sparx5 *sparx5, u32 idx)
++{
++	u32 val = spx5_rd(sparx5, ANA_AC_PROBE_CFG(idx));
++
++	return ANA_AC_PROBE_CFG_PROBE_DIRECTION_GET(val);
++}
++
++/* Set direction of mirror */
++static void sparx5_mirror_dir_set(struct sparx5 *sparx5, u32 idx, u32 dir)
++{
++	spx5_rmw(ANA_AC_PROBE_CFG_PROBE_DIRECTION_SET(dir),
++		 ANA_AC_PROBE_CFG_PROBE_DIRECTION, sparx5,
++		 ANA_AC_PROBE_CFG(idx));
++}
++
++/* Set the monitor port for this mirror */
++static void sparx5_mirror_monitor_set(struct sparx5 *sparx5, u32 idx,
++				      u32 portno)
++{
++	spx5_rmw(QFWD_FRAME_COPY_CFG_FRMC_PORT_VAL_SET(portno),
++		 QFWD_FRAME_COPY_CFG_FRMC_PORT_VAL, sparx5,
++		 QFWD_FRAME_COPY_CFG(idx + SPX5_QFWD_MP_OFFSET));
++}
++
++/* Get the monitor port of this mirror */
++static u32 sparx5_mirror_monitor_get(struct sparx5 *sparx5, u32 idx)
++{
++	u32 val = spx5_rd(sparx5,
++			  QFWD_FRAME_COPY_CFG(idx + SPX5_QFWD_MP_OFFSET));
++
++	return QFWD_FRAME_COPY_CFG_FRMC_PORT_VAL_GET(val);
++}
++
++/* Check if port is the monitor port of this mirror */
++static bool sparx5_mirror_has_monitor(struct sparx5 *sparx5, u32 idx,
++				      u32 portno)
++{
++	return sparx5_mirror_monitor_get(sparx5, idx) == portno;
++}
++
++/* Get a suitable mirror for this port */
++static int sparx5_mirror_get(struct sparx5_port *sport,
++			     struct sparx5_port *mport, u32 dir, u32 *idx)
++{
++	struct sparx5 *sparx5 = sport->sparx5;
++	u32 i;
++
++	/* Check if this port is already used as a monitor port */
++	for (i = 0; i < SPX5_MIRROR_PROBE_MAX; i++)
++		if (sparx5_mirror_has_monitor(sparx5, i, sport->portno))
++			return -EINVAL;
++
++	/* Check if existing mirror can be reused
++	 * (same direction and monitor port).
++	 */
++	for (i = 0; i < SPX5_MIRROR_PROBE_MAX; i++) {
++		if (sparx5_mirror_dir_get(sparx5, i) == dir &&
++		    sparx5_mirror_has_monitor(sparx5, i, mport->portno)) {
++			*idx = i;
++			return 0;
++		}
 +	}
 +
-+	return NULL;
++	/* Return free mirror */
++	for (i = 0; i < SPX5_MIRROR_PROBE_MAX; i++) {
++		if (sparx5_mirror_is_empty(sparx5, i)) {
++			*idx = i;
++			return 0;
++		}
++	}
++
++	return -ENOENT;
 +}
 +
-+static void sparx5_tc_matchall_parse_action(struct sparx5_port *port,
-+					    struct sparx5_mall_entry *entry,
-+					    struct flow_action_entry *action,
-+					    bool ingress,
-+					    unsigned long cookie)
++int sparx5_mirror_add(struct sparx5_mall_entry *entry)
 +{
-+	entry->port = port;
-+	entry->type = action->id;
-+	entry->ingress = ingress;
-+	entry->cookie = cookie;
++	u32 mirror_idx, dir = sparx5_mirror_to_dir(entry->ingress);
++	struct sparx5_port *sport, *mport;
++	struct sparx5 *sparx5;
++	int err;
++
++	/* Source port */
++	sport = entry->port;
++	/* monitor port */
++	mport = entry->mirror.port;
++	sparx5 = sport->sparx5;
++
++	if (sport->portno == mport->portno)
++		return -EINVAL;
++
++	err = sparx5_mirror_get(sport, mport, dir, &mirror_idx);
++	if (err)
++		return err;
++
++	if (sparx5_mirror_contains(sparx5, mirror_idx, sport->portno))
++		return -EEXIST;
++
++	/* Add port to mirror */
++	sparx5_mirror_port_add(sparx5, mirror_idx, sport->portno);
++
++	/* Set direction of mirror */
++	sparx5_mirror_dir_set(sparx5, mirror_idx, dir);
++
++	/* Set monitor port for mirror */
++	sparx5_mirror_monitor_set(sparx5, mirror_idx, mport->portno);
++
++	entry->mirror.idx = mirror_idx;
++
++	return 0;
 +}
 +
- static int sparx5_tc_matchall_replace(struct net_device *ndev,
- 				      struct tc_cls_matchall_offload *tmo,
- 				      bool ingress)
- {
- 	struct sparx5_port *port = netdev_priv(ndev);
-+	struct sparx5_mall_entry *mall_entry;
- 	struct flow_action_entry *action;
- 	struct sparx5 *sparx5;
- 	int err;
-@@ -27,6 +53,16 @@ static int sparx5_tc_matchall_replace(struct net_device *ndev,
- 	}
- 	action = &tmo->rule->action.entries[0];
- 
-+	mall_entry = kzalloc(sizeof(*mall_entry), GFP_KERNEL);
-+	if (!mall_entry)
-+		return -ENOMEM;
-+
-+	sparx5_tc_matchall_parse_action(port,
-+					mall_entry,
-+					action,
-+					ingress,
-+					tmo->cookie);
-+
- 	sparx5 = port->sparx5;
- 	switch (action->id) {
- 	case FLOW_ACTION_GOTO:
-@@ -59,6 +95,9 @@ static int sparx5_tc_matchall_replace(struct net_device *ndev,
- 		NL_SET_ERR_MSG_MOD(tmo->common.extack, "Unsupported action");
- 		return -EOPNOTSUPP;
- 	}
-+
-+	list_add_tail(&mall_entry->list, &sparx5->mall_entries);
-+
- 	return 0;
- }
- 
-@@ -67,19 +106,26 @@ static int sparx5_tc_matchall_destroy(struct net_device *ndev,
- 				      bool ingress)
- {
- 	struct sparx5_port *port = netdev_priv(ndev);
--	struct sparx5 *sparx5;
++void sparx5_mirror_del(struct sparx5_mall_entry *entry)
++{
++	struct sparx5_port *port = entry->port;
 +	struct sparx5 *sparx5 = port->sparx5;
-+	struct sparx5_mall_entry *entry;
- 	int err;
- 
--	sparx5 = port->sparx5;
--	if (!tmo->rule && tmo->cookie) {
-+	entry = sparx5_tc_matchall_entry_find(&sparx5->mall_entries,
-+					      tmo->cookie);
-+	if (!entry)
-+		return -ENOENT;
++	u32 mirror_idx = entry->mirror.idx;
 +
-+	if (entry->type == FLOW_ACTION_GOTO) {
- 		err = vcap_enable_lookups(sparx5->vcap_ctrl, ndev,
- 					  0, 0, tmo->cookie, false);
--		if (err)
--			return err;
--		return 0;
-+	} else {
-+		NL_SET_ERR_MSG_MOD(tmo->common.extack, "Unsupported action");
-+		err = -EOPNOTSUPP;
- 	}
--	NL_SET_ERR_MSG_MOD(tmo->common.extack, "Unsupported action");
--	return -EOPNOTSUPP;
++	sparx5_mirror_port_del(sparx5, mirror_idx, port->portno);
++	if (!sparx5_mirror_is_empty(sparx5, mirror_idx))
++		return;
 +
-+	list_del(&entry->list);
++	sparx5_mirror_dir_set(sparx5, mirror_idx, SPX5_MIRROR_DISABLED);
 +
-+	return err;
- }
- 
- int sparx5_tc_matchall(struct net_device *ndev,
++	sparx5_mirror_monitor_set(sparx5,
++				  mirror_idx,
++				  SPX5_MIRROR_MONITOR_PORT_DEFAULT);
++}
 
 -- 
 2.34.1
