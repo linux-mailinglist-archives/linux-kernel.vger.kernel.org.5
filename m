@@ -1,289 +1,222 @@
-Return-Path: <linux-kernel+bounces-149487-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D2628A91BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:03:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B71BF8A91C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:06:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C513CB22330
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:03:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECE2DB20C31
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:06:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A53535A2;
-	Thu, 18 Apr 2024 04:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="fvAJJSoh"
-Received: from OS0P286CU011.outbound.protection.outlook.com (mail-japanwestazolkn19011003.outbound.protection.outlook.com [52.103.66.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0B85465B;
+	Thu, 18 Apr 2024 04:05:59 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2098.outbound.protection.partner.outlook.cn [139.219.17.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB1C537FC;
-	Thu, 18 Apr 2024 04:03:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.66.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC425537EF;
+	Thu, 18 Apr 2024 04:05:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.98
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713413014; cv=fail; b=jxyLCxefJGQwwWrACMlm0Bfz0YffKDclhjpVqIixGJi9j0x9Rn02V7xEXp/bZZFP0wHzVjUkqXwxvHY3KNQAsp/FFnbLLdJ40TFLqYCsWh3nqogDEKUgkQIS7nx2MrogzjeAD2mL2P3+SiWtfHy1ATZmXZaNOvDwIt+09pqJxGQ=
+	t=1713413158; cv=fail; b=TlraHa1F6UC5chiPqjlxiGmYynTFIWzmIq9bYUa/AzbFlafnj3pd3YiHmIi34i0petl5TtO5WeMDLttuEZMsmo820q5b7WPVJ/yEnUOL2d8JN+mXdU/qAUS3Yl1DDj06tJTdCouFDXHG1ZzNJb3vVyW3rl3+XWpj8uYHYlBSTrk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713413014; c=relaxed/simple;
-	bh=t8xp5apU8X+UApxP15kool4VAvFOg7C65GvCLLq0H00=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=McyUeQ/9Ur8zA9gofV/xmcAXqdjuTAP33pOTkJg0we3XjKyI0qjdxgBJ2Npx5mcZpqdtA5q1vEiIgJFfsDhWfThj0Zo3PauEW33aLYMSOI/YdLGH/YkwsHlVF1O6bPtGKg4WBDBt02NegTQhLOXRvRPUGzqElEG/7k3qXBEeRBI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=fvAJJSoh; arc=fail smtp.client-ip=52.103.66.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+	s=arc-20240116; t=1713413158; c=relaxed/simple;
+	bh=wUpxNct44GGjaCxiXjPB8YPNRruiCvkT72VnJlto0xQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=utlBQH3y6T8rynXrDXe287QqOwOoNkC4dj9eQ0FC7gxgfkdjGbNluMhZfkK047UI4Yu+0RRRSqCmCMouCMthdwGtqwyrRFWSaXlr3gqDgFX39jBV88kCwTMMusNUvL8O2RKI9kLb09znSI8h5BE7BUWuIu84pXzUTLjj4tkxpcc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VOHzD2MARJyal1IwSt/td+FoSe1irbhwixj9iQ8ww2eoWV/DXtyMUwlQ5+9DgEGvwbkkngd3E0eRBTm3+id0aefUKed+9lnIXEUzNKzA1PPzV+B9Cw/oCuydhkBp78ccQOCVGU9GokTyiYZY0JAiKWr14sDGbQBXPa2U17fSRn1svzId/90SQ2b8N9SaC/a12677uyx2MzB2ROp7G+G1vnPoCTIRhB/yfDRsaBrOzaJeo4toF+/2VcZgRxxfzVObmg7A/qIW9l2vuRxhys0OguPxt9Y52bpB8mduqaX0iRErxVqDbIWQ8NLrc/KN4Py3tToPTYSEz7pWAe2pBretdg==
+ b=Yq1q69oUcIHQGaeOwZ2LFHoKY5DFXVwCZCR6FM37YRLFprmWJDYR6Q3AypyEPhdr1gc6xbGMq6c3B2MStY810Jz4WaUAAvHuksyrT6ZMkSdPTg6X1RKZbixEu68r/+NPmhtQKPPqLFHmUpQjME1ZTumihEh2LAqbbOmAcLFlZC9EZXcCDCWvARQ/sZxmgZmcL6iVrm77td8dZc9R3usZENGWT1M0fqv8owRb3LnmhfYmd29yzLlJFvQam7N9bPdtV2NXX0RO76aPGH00N1pLz4JqxpfBbDGhTIPbepIElktFFHYlA+jzFTNd82T3qBlVTYksbhQeL3mPEA7XAWhVnQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KuAVI16s5BB5VXUboJtA1/dc+fRBFo96cINyvpMMu7k=;
- b=h28GEePOqllhIAV1J5Up/Db9w4bZbaWoWaITKXDbKx3I9GoqYi8ArwMTh0Uaj86qf1P6yR7HD8DMFNtsNqZY9q9lqsgZNAcyfoIExONv/yJ+3moSJlgZmOu/0+3Oy1J6GHpo5TuFCrhN+xCwCfpGvW9bhpVGreD/ni9DF+Ez0cPnHKC5ak2OT68eI40vca0EzbipNUBkOLMJA30ywFbL1Ppz6I1ynsxYzXPAjeZORqvDrGE0dcDGDKLzzZ3q+rr1D2RcyoaNBCfwpPDDIl3fZfKjUTYRZnIQyIpQF0mfab9hcokkMa4GxAD0VNTt0ICxaP2FLf0jDk4MqbmelD3fmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KuAVI16s5BB5VXUboJtA1/dc+fRBFo96cINyvpMMu7k=;
- b=fvAJJSohAbpKnwXhsnC8YGOoyjL1dYPEXCYgw4L98Hoe/sNWmZ7LHLl6A2y+enJbva/ew9xmxsPL2X638RV2iap7CpPOX8x3e8HT9lYzPCEdvFHv2iephblKdvBPVKjFWSPV6SG6zpfUAQ61tNq6Ew/X+BuVR9aR0KgyRCbsMKThSW1orjly/QyPrEw0vBw92FSjNEHmeVKrcbKu4bbzMRjCnDHsThJel3H9t/sc5UEAi2aCwoivRVMPH44lx+1ZPyZQ1INOzWPgBRU9+gJumhECudbisrERASYS5mal3nx8qF3ejMuue0D5tlqmnr9SSLlxwwbLi5mJqSjSol3lcg==
-Received: from TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:209::11)
- by OS9P286MB3909.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:2ce::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Thu, 18 Apr
- 2024 04:03:29 +0000
-Received: from TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
- ([fe80::f2c3:e53f:2ea9:55c8]) by TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
- ([fe80::f2c3:e53f:2ea9:55c8%4]) with mapi id 15.20.7452.050; Thu, 18 Apr 2024
- 04:03:29 +0000
-From: ArcticLampyrid <ArcticLampyrid@outlook.com>
-To: sbinding@opensource.cirrus.com
-Cc: ArcticLampyrid@outlook.com,
-	david.rhodes@cirrus.com,
-	james.schulman@cirrus.com,
-	linux-kernel@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	patches@opensource.cirrus.com,
-	rf@opensource.cirrus.com,
-	stable@vger.kernel.org
-Subject: Re: RE: Re: [PATCH] ALSA: hda/realtek: Fix internal speakers for Legion Y9000X 2022 IAH7
-Date: Thu, 18 Apr 2024 12:03:17 +0800
-Message-ID:
- <TYCP286MB253572FE78870D62C35E6CACC40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <003501da90da$7495b710$5dc12530$@opensource.cirrus.com>
-References: <003501da90da$7495b710$5dc12530$@opensource.cirrus.com>
-Content-Transfer-Encoding: 8bit
+ bh=jpbv33Qm5JbEyqBAkVoJlNkxqwRsX4nokG26GW9Gtbg=;
+ b=EZF5SOCUOAizzJREvq9sRs+uwbU61b5jJnAVp/kDXyVVEZb1MjdwsEAmvkgtiIchNmhZWzd5LJPJKxgmjf68KGYbATTAVXY+aixiCjD8xtXqLq1gCxDYbE4oxFp990xRTRW9Ck8enBKerG0x6G6P8ZD4Nk9X5Gv7141YcOJLa2DF/dJMort9WCL3bsT/dPy1FDj/fTrb/ZfA+I1nnk2GQqS+Q8uwQ9DEXdik7EpFf+QUgSBCWIhJ/WJkJvmH459JVjfLZKTETmATVo9XIUDsi0edIzRa2EA80FTbpyQQX2711GIVQ4gRp/0MIlEJdfw2nYXuEhD2omlUe2zJa3WCjg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:3::6) by NT0PR01MB1071.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:3::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 18 Apr
+ 2024 03:50:34 +0000
+Received: from NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
+ ([fe80::103a:5792:ddaf:4283]) by
+ NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn ([fe80::103a:5792:ddaf:4283%4])
+ with mapi id 15.20.7409.042; Thu, 18 Apr 2024 03:50:34 +0000
+From: Shengyang Chen <shengyang.chen@starfivetech.com>
+To: devicetree@vger.kernel.org,
+	linux-phy@lists.infradead.org
+Cc: vkoul@kernel.org,
+	kishon@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	p.zabel@pengutronix.de,
+	minda.chen@starfivetech.com,
+	changhuang.liang@starfivetech.com,
+	rogerq@kernel.org,
+	geert+renesas@glider.be,
+	keith.zhao@starfivetech.com,
+	shengyang.chen@starfivetech.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v5 1/2] dt-bindings: phy: Add starfive,jh7110-dphy-tx
+Date: Thu, 18 Apr 2024 11:50:19 +0800
+Message-Id: <20240418035020.47876-2-shengyang.chen@starfivetech.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240418035020.47876-1-shengyang.chen@starfivetech.com>
+References: <20240418035020.47876-1-shengyang.chen@starfivetech.com>
 Content-Type: text/plain
-X-TMN: [MVByz4WUmy8Cw7nATttwZWtAGhEdLr1Lz93J//y3ho+NIxt+EJdxIw==]
-X-ClientProxiedBy: TYCP301CA0086.JPNP301.PROD.OUTLOOK.COM
- (2603:1096:405:7b::12) To TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:209::11)
-X-Microsoft-Original-Message-ID:
- <20240418040317.7779-1-ArcticLampyrid@outlook.com>
+X-ClientProxiedBy: NT0PR01CA0036.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:c::13) To NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:3::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYCP286MB2535:EE_|OS9P286MB3909:EE_
-X-MS-Office365-Filtering-Correlation-Id: 73b8acf3-0892-4a0c-f06d-08dc5f5c8158
+X-MS-TrafficTypeDiagnostic: NT0PR01MB1070:EE_|NT0PR01MB1071:EE_
+X-MS-Office365-Filtering-Correlation-Id: 71299701-1f91-421e-4cf7-08dc5f5ab3ab
+X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	+ifJSmX7MholYPde9ciazxGj1u2jDuf5tkoxoEE+ED46sP1HXboucmOVK1VauxujJTlIBkjcg0NtIgLoPsZ6154YqFNfH3e2HlpMgGcqH4806AHqVhUBtn1JCjHuFzym+mcPiVDRnfytxaMMjkHjyA8XGMcmolh0B4ErpELYZVuraL6SzsfMSkdRMQvyPTislIm8a4Bq8rcrbqW+7v//8BU3ttvOLqNYiRjlCRy26/gRA5UZwsE6YJHSRjTseZ9rjUuWeUlm0dV9fsZ9FKey18AGFqqfD0zmC1gw1QRqEWHdSy3FApUk5wTcFNiVHF32djW/vHVxFpzq3Z4N5GtcOU3bxtv0qz00VLtKeFXIuwvNs0urKZOalUFkrJvY4PyZfiZ/wjoVjajT/65IkxE9TTgXoLJKo/Sb/bapkcYzGtZEod6O53Qs8je8mpyMBT89f/7FV3B/Z/6c2S3LAKfaey1YwSelIIOKRepEgTebsK5rCYvfb+1L1GZbPVoBXVC/lgeETl55YqlONLcyAa/088a647m6Fy/wluUHZj/YamH7wD2jQyaAm3vaUg5AVGJmamNyVHd26mHbSkJbtcu4eORb3QZ8OJ9IqAWyNofxpniM4aFVNVlLCAn12HlDYjbfNE+9d/AyZPIiLmEAxedBQ43lbqHss/cjf2mX3PgjyMXFxPFc8/df2ud/RquApxfuEIWBYiH5sCnG2YixQFtNLWIxGoAiRIit4u3Q42SCoD3todBzwXE/uoPxXos/Tzod
+	3Hjq/6LZrKc/hYMnNyieq/s61X1LMNQh6GYNJrxJedYzJVvavAZnMPqmr0CcgPHI/B+1zkgQILwbKKWxARi0FGUjnp4z7Yilx0Eojmo1xmhiFvKV685gaYtjKt4SDJUXnOeeGSinZ/YGr01YagvT6nwdGL/afq6OPFeaR49r0+7HCo3/UwENbFZxoWCUkSMk8EAZzSY8qysIjSGD1eDBdXzRk86k5cUpbRO/qTiYu+ng7+JD+agckwExTZ817oPIcZ7L16n41Hv5AOi3eZG5DJzGrQMfwUdg51mjC88qijbGS2cEgScJKRST1W8U2kEqW09gqh+u4WbRaFT32RH2rXL5dvuMZUGnp1ZRrRdZizRDaZjDTolSQIWgG8OhzKxfwGTiHfMp5ykTgcfb5c7/CxThjYG2yujBFY2Jyjd4koVNAomL6yRx3rOISuh90hgpd49zhLrhq6YUYn/+ffeQHdkkGc+6qk8/LdGFgWGiM5e/GSkXTJfh4OoYcz4Ygf3SDHQ1TS0CUEQGOhfqxx8FsjOVPFoWlwi4fljO3M5YDwbiJogpwyR49zvoeYdaJ8QNGoZv/ncHc9crVKnOJas3B5GCHgwnoc9xk9QHWDrxAQ/dtqp5QjqZtZ7aAsUq3SRI
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(366007)(41320700004)(1800799015)(52116005)(7416005)(38350700005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?3nD+KQBqHQ4LLuTk/JIqFPTP388hgWuM799nakTrjwDiHr63Ic9vSlE7klTt?=
- =?us-ascii?Q?Wmnsfhx7YXWH9WLtF1+upfs1GVPOqRu+rbEXt48Lk5xL3KhCdjzGXUwKz2Rk?=
- =?us-ascii?Q?iUxIKkSu9LuTohvsrBvI2bOX1HcypXLDJzaPh0fTeu+FQiHBcm+b6+tjUz8M?=
- =?us-ascii?Q?vvvchuM2nS9o7uogucFw/qwSFYrDjjncM+V5zOd56nSe4OqbVv0qKoMNPY6e?=
- =?us-ascii?Q?JBenV1Tyzns2cqWiJ8PSPHEhuNhLML9r6p4NQlK5pqlMHPRIHWKId4eevWcE?=
- =?us-ascii?Q?LVW9BasqQHp/uDdy/pIe9fVC7kKa5+vFZntNsKXkBZlhsdnQS7Ct0iVUEFMo?=
- =?us-ascii?Q?yZEh8QQg/sG/8n/QD2DNmhUvSOEMhOodd4Alp4ROXzKxwiI05HiLEM9RNVMi?=
- =?us-ascii?Q?uPfIquy9JlesDUV0gcZoZdjKf09P5xCnBtKqyuFY9HnCFZ7D/hOxQk1nShQs?=
- =?us-ascii?Q?qH7zFgutmRzHc1fYg5DuzmBGZK2Sj3QxVyFaPnPpprUSTVOqoQsvd7lbIcc3?=
- =?us-ascii?Q?Rct/qLDgSKT8tDJZ2oZ1lS2g+d+Hyx94leXSLCSKkSsZXTkwA+2VWycOj1NN?=
- =?us-ascii?Q?82JxTQmg6qN4bhMKvFKlGo7gdMJwRkvMwtLKiprZ7GHCxxgGbuUdYwca6sbE?=
- =?us-ascii?Q?s/vnhsGN5OuLRk9pNP3SWUww8Ks09fuvNiDZlqd9pCWzQJFrFg84/hs/VtkO?=
- =?us-ascii?Q?RRlQmWTwQe34glLpK4xxdjae7f96Vr+8N09GCt0hLedn3HTiRPmGJJZmbqsv?=
- =?us-ascii?Q?aeWT+eHIOqoaQQS/+r7Wq+DQJ5YLwMKj5q3AgOz5MI0mxHP7sUNRU/8uqgtW?=
- =?us-ascii?Q?ZfhkIt/MRsz+IEOYEAVSWSoDmuU0g2kL18uUIKJMEs+FTQvkY3e9nG5ZFMQ2?=
- =?us-ascii?Q?oJlQcWPiEd8/JngZk1xU7wDTqX2+kfm4X5EZ292N0/l2FU5rCQBz1RzA9UVG?=
- =?us-ascii?Q?aUILKYjw6pm2yTRYQnSb2zXqhjiAys2dc4hL4HYO9SfK2xLu7JJsthRFMK7X?=
- =?us-ascii?Q?dYB2Qig8A/oKWFwfhgGDtWP34Ww/jHQ2pPzkwXWj6ft4f3XWk16DkwLBNNLJ?=
- =?us-ascii?Q?g1HwnjrSKooiTwdDH2aEfo+pHU4MsayS/b1YUfeYmhj0NcPlCMlYSFHDGlo1?=
- =?us-ascii?Q?vxMSNM4zWrp46j+z9Fkd9sv25eZTn1sIkFRYzKT5KfLzIU3uBS511CcR0t+l?=
- =?us-ascii?Q?wWmBR9Zrg45bM3utsV4C9Lm3nbtHmWtDGiKrKJ7uvWsKEUwlsJ7UPTVFu/61?=
- =?us-ascii?Q?Wj07bfR0h3F/7uzLZW1ifJzu9BKGg4RdXNvPqjQ6cw=3D=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73b8acf3-0892-4a0c-f06d-08dc5f5c8158
-X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+	=?us-ascii?Q?YEojOIK9Wr8CxYZMqV8A4laFf0gKDY/9Ypmr6C3wCzrB+IFDTyGX9C6zDqn+?=
+ =?us-ascii?Q?/8McJwnrNmaBD40bfGvuncjI3VhRbybiH2K1y/eTqslZw4SGh3xonpo6nEkS?=
+ =?us-ascii?Q?4155Umy03CIqgMzz7hmP87G1+GPjHxIp5fsRq8NGz/hNyOAafWLDoT7EwzSx?=
+ =?us-ascii?Q?4bjMuhe2QXfX4DPY5U1ZdF/zGhHyr+FOgA07+MpQUAt22gwkTUqmaASfbUqB?=
+ =?us-ascii?Q?sw1FN4NsKy8lD6FUdLfskSI7m75AUD9iX9Ogcwetw9pYT5CXikV9gWsMgVIS?=
+ =?us-ascii?Q?Az+amN/ow3Gzdt+dCiHzBJSezLgowet3FToukOEHuv9GRBFHrnV/EwF3BBpS?=
+ =?us-ascii?Q?lVI9qQ4nGFhkGa1+b8t5RuuPDzdfkbookcdS+RRbZdbk1OHldJdhkni6u8CV?=
+ =?us-ascii?Q?uIhDVTBbUyZ+0FCQ+uuElfUPV9/eXCf0FvCr0ixGKUGo/bY4MwFRn+lcbkAw?=
+ =?us-ascii?Q?PmzEAqm/YORlsNbC7ewmiyNBIB3KzlukIwv+FEv/I9kPhFEJlLwYOCVEWQg8?=
+ =?us-ascii?Q?1FlLnHG00ThNN2YoWQ+b6dYqZsS82P+pJKWYyDw1xlfoAUYlyBWv7oZikZ5B?=
+ =?us-ascii?Q?gaMi6odwRereANVMofS8fevDEzqa11SkyXecGyOg1eERdOu6XV+tBlC+X2Lv?=
+ =?us-ascii?Q?c9rKRiCpR2mUNVv8zWGyDdEfdEA8N3err+oHU10VGbkwTk5uHIDsykUNiElO?=
+ =?us-ascii?Q?j/dojBSyHU6S7sUkKRARHMrMXIkIsKqAbt3fR9fLOyijp1lQ0ZPP8AR9F1sM?=
+ =?us-ascii?Q?u16m0Qa47jRmLLcf1LVi8lYaFdIgnlpf0K+jWo3JmYPipWNUP18UxhKDewG2?=
+ =?us-ascii?Q?hxzR7mMQw8bDJgFdEhi1soT1B7+Z4zAj/8IZKtiMShqTuUC5vBvoVRuSQveE?=
+ =?us-ascii?Q?uJ6aqEvtVVWMWwZFq8JFRygIi+Zrf5btBl+9gG9p6xGNtp8hef6yezAyRuuv?=
+ =?us-ascii?Q?HGFXCRffXZ6bu2drZNkMbpVZrPMi+S/rx3MJDu/+iHYqFo6lu2eWRDPA+CO8?=
+ =?us-ascii?Q?1qeiyNmSPNjucaOT3Q1O5WlkPvLsq3Z88dBaON1LMjeiboB9PxdVok1kI1zA?=
+ =?us-ascii?Q?zDR/rnSvgzX2DjLZrYtm2wZaFNYp+PiJ9RtlYN4hkOetTLpgtIiHVJYQ1IQj?=
+ =?us-ascii?Q?bOxgyP01GchQF0MgKKD8qjHdOD/Pg4qFEATTrv+PnJx6gv4a8PFKvyDcWgAX?=
+ =?us-ascii?Q?aNJYun8ivQWK/UCgkgih6+knCnTdmK+bRL5q63W9HcPAhDMr7ZXgZshNZS5g?=
+ =?us-ascii?Q?gNyfCy7ztQLhxqV8/NVGNv8DII3FXRUZoEc76+9Jf18nJeqOcdaPD6iSVdP7?=
+ =?us-ascii?Q?L4qqc+9kLLSqrXhhwBQImy4YhiyQGr8diSGNmYK6afAqMT9m6OoBR3o9y4x2?=
+ =?us-ascii?Q?ELMYbfp0qxNTvd9KLW8xozeoSMxs9uwM0GyjrjHpa2NHPx3vAHHhWHjmghce?=
+ =?us-ascii?Q?2k4zaDrsjH6jkIAuFraC7ya0bXD86VZJpdcYb50gSdqNwFQnWD5lYsxG9Cnp?=
+ =?us-ascii?Q?t+wPggiuuX/8dlz+MISq7nG8bf8+VydmAKUXsUjJBOaR5YEz9AKquUSdC3B6?=
+ =?us-ascii?Q?PPA66L/gydYpfO/RpEI6cQcXQe18lQag0rV6kE+CbigToMsc8NIrELNTQ1hh?=
+ =?us-ascii?Q?r+ONiVdegHgDx+Ni24RvTlk=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 71299701-1f91-421e-4cf7-08dc5f5ab3ab
+X-MS-Exchange-CrossTenant-AuthSource: NT0PR01MB1070.CHNPR01.prod.partner.outlook.cn
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 04:03:29.6800
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 03:50:34.8086
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS9P286MB3909
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fpgipPBCpYGL3kHSR5oJueMLdLxWvWO60ZzDJ0Z05QV44Bbmv4iC/cksf7VRvMpfaT9n4E68ha53eO5QQ0RRP9uj6cC4O5V3MvmfRVnqw9c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: NT0PR01MB1071
 
-> To clarify, was the log you attached here using:
->   { "17AA386E", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0}, 0, 2, -1, 0, 0, 0 },
-> Or was it using your original value (index 1)?
+StarFive SoCs like the jh7110 use a MIPI D-PHY TX
+controller based on a M31 IP. Add a binding for it.
 
-Both get the same log.
+Signed-off-by: Shengyang Chen <shengyang.chen@starfivetech.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ .../bindings/phy/starfive,jh7110-dphy-tx.yaml | 68 +++++++++++++++++++
+ 1 file changed, 68 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/starfive,jh7110-dphy-tx.yaml
 
-> For further investigation, can you create a bugzilla ticket at the
-> below address and CC Cirrus Patches (patches@opensource.cirrus.com) to
-> it.
+diff --git a/Documentation/devicetree/bindings/phy/starfive,jh7110-dphy-tx.yaml b/Documentation/devicetree/bindings/phy/starfive,jh7110-dphy-tx.yaml
+new file mode 100644
+index 000000000000..4a06a2642b4a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/starfive,jh7110-dphy-tx.yaml
+@@ -0,0 +1,68 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/phy/starfive,jh7110-dphy-tx.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Starfive SoC MIPI D-PHY Tx Controller
++
++maintainers:
++  - Keith Zhao <keith.zhao@starfivetech.com>
++  - Shengyang Chen <shengyang.chen@starfivetech.com>
++
++description:
++  The Starfive SoC uses the MIPI DSI D-PHY based on M31 IP to transfer
++  DSI data.
++
++properties:
++  compatible:
++    const: starfive,jh7110-dphy-tx
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: txesc
++
++  resets:
++    items:
++      - description: MIPITX_DPHY_SYS reset
++
++  reset-names:
++    items:
++      - const: sys
++
++  power-domains:
++    maxItems: 1
++
++  "#phy-cells":
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - resets
++  - reset-names
++  - power-domains
++  - "#phy-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    phy@295e0000 {
++      compatible = "starfive,jh7110-dphy-tx";
++      reg = <0x295e0000 0x10000>;
++      clocks = <&voutcrg 14>;
++      clock-names = "txesc";
++      resets = <&syscrg 10>;
++      reset-names = "sys";
++      power-domains = <&aon_syscon 0>;
++      #phy-cells = <0>;
++    };
+-- 
+2.17.1
 
-OK. https://bugzilla.kernel.org/show_bug.cgi?id=218744
-
-> Can you also mention which distro you are using, as well which Kernel you are using.
-
-I'm using Arch Linux, the kernel is v6.8.5-arch1.
-
-> Both amps use the same GPIO for the interrupt line, thus the interrupt is shared, and there is only a single interrupt line.
-
-BTW, it's connected to APIC.
-
-> Also, can you please attach a dmesg of the error
-
-Without any patches, I got
-```log
-    Serial bus multi instantiate pseudo device driver CSC3551:00: Instantiated 2 I2C devices.
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: Failed property cirrus,dev-index: -22
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: error -EINVAL: Platform not supported
-    cs35l41-hda: probe of i2c-CSC3551:00-cs35l41-hda.0 failed with error -22
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: Failed property cirrus,dev-index: -22
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: error -EINVAL: Platform not supported
-    cs35l41-hda: probe of i2c-CSC3551:00-cs35l41-hda.1 failed with error -22
-```
-
-With `generic_dsd_config` I got
-```log
-    kernel: genirq: Flags mismatch irq 58. 00002088 (cs35l41 IRQ1 Controller) vs. 00002088 (cs35l41 IRQ1 Controller)
-```
-as memtioned in the previous email.
-
-With my initial patch:
-```log
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: Adding DSD properties for 17AA386E
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: Using extra _DSD properties, bypassing _DSD in ACPI
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: Cirrus Logic CS35L41 (35a40), Revision: B2
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: Adding DSD properties for 17AA386E
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: Using extra _DSD properties, bypassing _DSD in ACPI
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: Reset line busy, assuming shared reset
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: Cirrus Logic CS35L41 (35a40), Revision: B2
-    Serial bus multi instantiate pseudo device driver CSC3551:00: Instantiated 2 I2C devices.
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: Falling back to default firmware.
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: DSP1: Firmware version: 3
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: DSP1: cirrus/cs35l41-dsp1-spk-prot.wmfw: Fri 24 Jun 2022 14:55:56 GMT Daylight Time
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: DSP1: Firmware: 400a4 vendor: 0x2 v0.58.0, 2 algorithms
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: DSP1: cirrus/cs35l41-dsp1-spk-prot.bin: v0.58.0
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: DSP1: spk-prot: e:\workspace\workspace\tibranch_release_playback_6.76_2\ormis\staging\default_tunings\internal\CS35L53\Fixed_Attenuation_Mono_48000_29.78.0\full\Fixed_Attenuation_Mono_48000_29.78.0_full.bin
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: CS35L41 Bound - SSID: 17AA386E, BST: 1, VSPK: 1, CH: L, FW EN: 1, SPKID: 1
-    snd_hda_codec_realtek ehdaudio0D0: bound i2c-CSC3551:00-cs35l41-hda.0 (ops cs35l41_hda_comp_ops [snd_hda_scodec_cs35l41])
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: Falling back to default firmware.
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: DSP1: Firmware version: 3
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: DSP1: cirrus/cs35l41-dsp1-spk-prot.wmfw: Fri 24 Jun 2022 14:55:56 GMT Daylight Time
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: DSP1: Firmware: 400a4 vendor: 0x2 v0.58.0, 2 algorithms
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: DSP1: cirrus/cs35l41-dsp1-spk-prot.bin: v0.58.0
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: DSP1: spk-prot: e:\workspace\workspace\tibranch_release_playback_6.76_2\ormis\staging\default_tunings\internal\CS35L53\Fixed_Attenuation_Mono_48000_29.78.0\full\Fixed_Attenuation_Mono_48000_29.78.0_full.bin
-    cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: CS35L41 Bound - SSID: 17AA386E, BST: 1, VSPK: 1, CH: R, FW EN: 1, SPKID: 1
-    snd_hda_codec_realtek ehdaudio0D0: bound i2c-CSC3551:00-cs35l41-hda.1 (ops cs35l41_hda_comp_ops [snd_hda_scodec_cs35l41])
-```
-
-> as well as the acpidump of your laptop.
-
-The full acpi dump is shared via
-https://bugzilla.kernel.org/show_bug.cgi?id=218744
-
-The related item I think in DSDT table may be:
-```
-    Device (SPKR)
-    {
-        Name (_HID, "CSC3551")  // _HID: Hardware ID
-        Name (_SUB, "17AA386E")  // _SUB: Subsystem ID
-        Name (_UID, One)  // _UID: Unique ID
-        Name (SRS0, 0x09060000)
-        Name (SIN0, 0x0908000E)
-        Name (SID0, 0x09060001)
-        Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-        {
-            Name (RBUF, ResourceTemplate ()
-            {
-                I2cSerialBusV2 (0x0040, ControllerInitiated, 0x000F4240,
-                    AddressingMode7Bit, "\\_SB.PC00.I2C3",
-                    0x00, ResourceConsumer, , Exclusive,
-                    )
-                I2cSerialBusV2 (0x0041, ControllerInitiated, 0x000F4240,
-                    AddressingMode7Bit, "\\_SB.PC00.I2C3",
-                    0x00, ResourceConsumer, , Exclusive,
-                    )
-                GpioIo (Exclusive, PullNone, 0x0000, 0x0000, IoRestrictionOutputOnly,
-                    "\\_SB.GPI0", 0x00, ResourceConsumer, ,
-                    )
-                    {   // Pin list
-                        0x0000
-                    }
-                GpioIo (Shared, PullNone, 0x0064, 0x0000, IoRestrictionInputOnly,
-                    "\\_SB.GPI0", 0x00, ResourceConsumer, ,
-                    )
-                    {   // Pin list
-                        0x0000
-                    }
-                GpioIo (Exclusive, PullNone, 0x0000, 0x0000, IoRestrictionInputOnly,
-                    "\\_SB.GPI0", 0x00, ResourceConsumer, ,
-                    )
-                    {   // Pin list
-                        0x0000
-                    }
-                Interrupt (ResourceConsumer, Edge, ActiveHigh, SharedAndWake, ,, _Y58)
-                {
-                    0x00000000,
-                }
-            })
-            CreateWordField (RBUF, 0x59, RST0)
-            CreateWordField (RBUF, 0x7C, INT0)
-            CreateWordField (RBUF, 0x9F, PID0)
-            CreateDWordField (RBUF, \_SB.PC00.I2C3.SPKR._CRS._Y58._INT, INT1)  // _INT: Interrupts
-            RST0 = GNUM (SRS0)
-            INT0 = GNUM (SIN0)
-            PID0 = GNUM (SID0)
-            INT1 = INUM (SIN0)
-            Return (RBUF) /* \_SB_.PC00.I2C3.SPKR._CRS.RBUF */
-        }
-
-        Method (_INI, 0, NotSerialized)  // _INI: Initialize
-        {
-            SGRA (0x0908000E, One)
-            SGII (0x0908000E, Zero)
-            GRXE (0x0908000E, 0x03)
-        }
-
-        Method (_STA, 0, NotSerialized)  // _STA: Status
-        {
-            Return (0x0F)
-        }
-
-        Method (_DIS, 0, NotSerialized)  // _DIS: Disable Device
-        {
-        }
-
-        Method (_PS0, 0, Serialized)  // _PS0: Power State 0
-        {
-            ^^^LPCB.H_EC.ECWT (Zero, RefOf (^^^LPCB.H_EC.AM12))
-        }
-
-        Method (_PS2, 0, Serialized)  // _PS2: Power State 2
-        {
-            ^^^LPCB.H_EC.ECWT (One, RefOf (^^^LPCB.H_EC.AM12))
-        }
-
-        Method (_PS3, 0, Serialized)  // _PS3: Power State 3
-        {
-        }
-    }
-```
 
