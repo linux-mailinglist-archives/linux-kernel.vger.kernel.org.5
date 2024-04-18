@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-149759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 509BC8A9580
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:59:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EABE88A9582
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:59:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81FCC1C20CEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:59:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 638E71F21B9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30C4D15AABE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B907A15B112;
 	Thu, 18 Apr 2024 08:59:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="K4U0P0ba";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="6akd4Mxd"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tJwwBFsN";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="9qCIBcLw"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF3BF15AAA4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF2615AAA8;
 	Thu, 18 Apr 2024 08:59:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713430750; cv=none; b=fENZXcz9jHlU4bZlwgslCjowzA5CUSaXg1FN/jR7/s3ZKH6DZCLLG3WM7jWd1ER009XAiBllkyNjEVF43q5hnhnTT4AxzB+vCY84HZ6aIpwkuiXUZmBoMvfZPh4Iyz7tHb+JdJn3WRe+RBg8+GJ3c4os3rQ8W5mlijUipN7gtdc=
+	t=1713430751; cv=none; b=boAxutmh2R+CYuOfPkiNVxWBlEBm0W56mpUcuYRVfqfw6nCPhbxvIXrJ0piZjRosDH986idKjl0U0x3Q69zFr50NP7cD/tq5zloAoKamaGdb7iMJgQm5GRKmezl4XpnzVWA2G46kg/KetLWq18AQVsdqflVjV+JLZLKVlg5Zy3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713430750; c=relaxed/simple;
-	bh=tkveMfw/zqlF+5IcwqNPbU5PReiD4uUyTp5l8aRY+B8=;
+	s=arc-20240116; t=1713430751; c=relaxed/simple;
+	bh=ZEsPCpG7/bePMkAti19PTun4xE4R1F48IXuZVXgQlZU=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=iv/yVSRE495cQYq0omaTDIrr7XoIHR84dyRt/ckNMLp9/vxEIzJBr2tw5xEPFaB3k1BlmXxnvmXw2hGxmXgCMqWuMvA1GE/zKOAnXTg8FFzvrtDKsIXIqbgeldvc8kn8z992E2ozFWPHjQ1mdH0YenMr6OUswtj5DX+y0BPnRF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=K4U0P0ba; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=6akd4Mxd; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=Oqc6zWrJALiFS9lpmOVOL+YX5ZJX/jG5fHn7Yi8Cu2ZzFmSyl8zltbetNWKXZU/1VOD3UOiBeQ4HjktH8E5cgjE+fpGCo05UhUqVGfsKAbB8KFimaP4bANtVpKeh6L+NveuH40/YC5bLc8UlApTK2whtVG1QUQzsLV42xdLiw2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tJwwBFsN; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=9qCIBcLw; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Date: Thu, 18 Apr 2024 08:59:06 -0000
@@ -39,12 +39,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sa2awveOSUbd2VDTato0L3LcO727x7iaOZh9zyeapOk=;
-	b=K4U0P0baneN3iPnitHAMt4pPOJF4GY6m4wxKeJ2CjsUvTqDTlM4A0hCbBkiH0v2WG59nPq
-	CcFdkJxxwpR00bGIdjxtryHoGS8rNME869aX2hPlbj5JO7CIYi1Dh4QDBZxWQuamkClroO
-	hjEXUosG3AX1WfAAeFYCMDrIp/f7iSz5c7KGjA9cOzY4PDKN6EfA5AlWizHNo4jXNlHw7C
-	0JP8rR2xv8yjy2yWK97zq8ei89RaqNV9WERruam9aCtySYxIJOQyMrJhd9RLC7OAd0utkZ
-	Q9j3zE4Dl8Qqo2ywcNzkZjJ6dfGHsQr3rjyMabA7foYJFJtC7MduRseTaFEy+w==
+	bh=3DzCTW/rvviKfEef1seIKYEq7DyCVwKK623GNOwOcOY=;
+	b=tJwwBFsNXoRUv4mP1ju3vaeExsLeiwwuW6uNnk3N6uxyI+YBMD7EAHxljQSt6O25RmnP3i
+	Bg/dDe6M2OVHxC9PwiXD5xXZsZFOhxJgbli56mYa0J6S+CA1o3jJtSEud8IvzMd6Vw8783
+	80JuzTQN9tvOmXdprca6vfLrnOn+swHPYEDZOqNZoFTpoHAn76wg5+qwcKrmUf8PQ0jHik
+	FJXHKy7PhzBwb0IsVil5d2TCT15Ov36hawmw3lhAaPgT9FfMHflFtwdAhbZfpMKle8Yg4G
+	w2Uph8yWsg+qfo+IQ9CGNnDyMhpAK+IGrxnR7aRzjlBEZIAt6oaovmr983V1AQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1713430747;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -52,30 +52,26 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sa2awveOSUbd2VDTato0L3LcO727x7iaOZh9zyeapOk=;
-	b=6akd4MxdDPmeHGy01Prs6bHoa4/ik9NyjqKFskIxX0WkhceSQC6El3SJUYoMkGSkKIhYcC
-	PXzl4kEDGTCrA4Bw==
-From: "tip-bot2 for Hou Wenlong" <tip-bot2@linutronix.de>
+	bh=3DzCTW/rvviKfEef1seIKYEq7DyCVwKK623GNOwOcOY=;
+	b=9qCIBcLwAwTdk3oRYLAg7LuXTbthwCq77C5td+QR16SKVW6n/7jc8w5UqD7+gW+hSQCog5
+	QTyGm6MKbo4bxkCA==
+From: "tip-bot2 for Xin Li (Intel)" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/fred: Fix incorrect error code printout in
- fred_bad_type()
-Cc: Hou Wenlong <houwenlong.hwl@antgroup.com>,
- "Borislav Petkov (AMD)" <bp@alien8.de>,
- "H. Peter Anvin (Intel)" <hpa@zytor.com>, x86@kernel.org,
+Subject: [tip: x86/urgent] x86/fred: Fix INT80 emulation for FRED
+Cc: "H. Peter Anvin (Intel)" <hpa@zytor.com>, "Xin Li (Intel)" <xin@zytor.com>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
  linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3Cb2a8f0a41449d25240e314a2ddfbf6549511fb04=2E17133?=
- =?utf-8?q?53612=2Egit=2Ehouwenlong=2Ehwl=40antgroup=2Ecom=3E?=
-References: =?utf-8?q?=3Cb2a8f0a41449d25240e314a2ddfbf6549511fb04=2E171335?=
- =?utf-8?q?3612=2Egit=2Ehouwenlong=2Ehwl=40antgroup=2Ecom=3E?=
+In-Reply-To: <20240417174731.4189592-1-xin@zytor.com>
+References: <20240417174731.4189592-1-xin@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171343074601.10875.15730658639010324110.tip-bot2@tip-bot2>
+Message-ID: <171343074673.10875.6611903314262261610.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -85,54 +81,119 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     a4b37f5033fa812f02f3b7bd1242393d347ba791
-Gitweb:        https://git.kernel.org/tip/a4b37f5033fa812f02f3b7bd1242393d347ba791
-Author:        Hou Wenlong <houwenlong.hwl@antgroup.com>
-AuthorDate:    Wed, 17 Apr 2024 19:34:25 +08:00
+Commit-ID:     32f5f73b79ffdef215e2e1bcb6ad74387c0f925c
+Gitweb:        https://git.kernel.org/tip/32f5f73b79ffdef215e2e1bcb6ad74387c0f925c
+Author:        Xin Li (Intel) <xin@zytor.com>
+AuthorDate:    Wed, 17 Apr 2024 10:47:31 -07:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Thu, 18 Apr 2024 10:47:17 +02:00
+CommitterDate: Thu, 18 Apr 2024 10:37:11 +02:00
 
-x86/fred: Fix incorrect error code printout in fred_bad_type()
+x86/fred: Fix INT80 emulation for FRED
 
-regs->orig_ax has been set to -1 on entry so in the printout,
-fred_bad_type() should use the passed parameter error_code.
+Add a FRED-specific INT80 handler and document why it differs from the
+current one. Eventually, the common bits will be unified once FRED hw is
+available and it turns out that no further changes are needed but for
+now, keep the handlers separate for everyone's sanity's sake.
 
-Fixes: 14619d912b65 ("x86/fred: FRED entry/exit and dispatch code")
-Signed-off-by: Hou Wenlong <houwenlong.hwl@antgroup.com>
+  [ bp: Zap duplicated commit message, massage. ]
+
+Fixes: 55617fb991df ("x86/entry: Do not allow external 0x80 interrupts")
+Suggested-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+Signed-off-by: Xin Li (Intel) <xin@zytor.com>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Acked-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-Link: https://lore.kernel.org/r/b2a8f0a41449d25240e314a2ddfbf6549511fb04.1713353612.git.houwenlong.hwl@antgroup.com
+Link: https://lore.kernel.org/r/20240417174731.4189592-1-xin@zytor.com
 ---
- arch/x86/entry/entry_fred.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/x86/entry/common.c     | 65 ++++++++++++++++++++++++++++++++++++-
+ arch/x86/entry/entry_fred.c |  2 +-
+ 2 files changed, 66 insertions(+), 1 deletion(-)
 
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index 6de50b8..51cc9c7 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -255,6 +255,71 @@ __visible noinstr void do_int80_emulation(struct pt_regs *regs)
+ 	instrumentation_end();
+ 	syscall_exit_to_user_mode(regs);
+ }
++
++#ifdef CONFIG_X86_FRED
++/*
++ * A FRED-specific INT80 handler is warranted for the follwing reasons:
++ *
++ * 1) As INT instructions and hardware interrupts are separate event
++ *    types, FRED does not preclude the use of vector 0x80 for external
++ *    interrupts. As a result, the FRED setup code does not reserve
++ *    vector 0x80 and calling int80_is_external() is not merely
++ *    suboptimal but actively incorrect: it could cause a system call
++ *    to be incorrectly ignored.
++ *
++ * 2) It is called only for handling vector 0x80 of event type
++ *    EVENT_TYPE_SWINT and will never be called to handle any external
++ *    interrupt (event type EVENT_TYPE_EXTINT).
++ *
++ * 3) FRED has separate entry flows depending on if the event came from
++ *    user space or kernel space, and because the kernel does not use
++ *    INT insns, the FRED kernel entry handler fred_entry_from_kernel()
++ *    falls through to fred_bad_type() if the event type is
++ *    EVENT_TYPE_SWINT, i.e., INT insns. So if the kernel is handling
++ *    an INT insn, it can only be from a user level.
++ *
++ * 4) int80_emulation() does a CLEAR_BRANCH_HISTORY. While FRED will
++ *    likely take a different approach if it is ever needed: it
++ *    probably belongs in either fred_intx()/ fred_other() or
++ *    asm_fred_entrypoint_user(), depending on if this ought to be done
++ *    for all entries from userspace or only system
++ *    calls.
++ *
++ * 5) INT $0x80 is the fast path for 32-bit system calls under FRED.
++ */
++DEFINE_FREDENTRY_RAW(int80_emulation)
++{
++	int nr;
++
++	enter_from_user_mode(regs);
++
++	instrumentation_begin();
++	add_random_kstack_offset();
++
++	/*
++	 * FRED pushed 0 into regs::orig_ax and regs::ax contains the
++	 * syscall number.
++	 *
++	 * User tracing code (ptrace or signal handlers) might assume
++	 * that the regs::orig_ax contains a 32-bit number on invoking
++	 * a 32-bit syscall.
++	 *
++	 * Establish the syscall convention by saving the 32bit truncated
++	 * syscall number in regs::orig_ax and by invalidating regs::ax.
++	 */
++	regs->orig_ax = regs->ax & GENMASK(31, 0);
++	regs->ax = -ENOSYS;
++
++	nr = syscall_32_enter(regs);
++
++	local_irq_enable();
++	nr = syscall_enter_from_user_mode_work(regs, nr);
++	do_syscall_32_irqs_on(regs, nr);
++
++	instrumentation_end();
++	syscall_exit_to_user_mode(regs);
++}
++#endif
+ #else /* CONFIG_IA32_EMULATION */
+ 
+ /* Handles int $0x80 on a 32bit kernel */
 diff --git a/arch/x86/entry/entry_fred.c b/arch/x86/entry/entry_fred.c
-index 9fa18b8..89c1476 100644
+index ac120cb..9fa18b8 100644
 --- a/arch/x86/entry/entry_fred.c
 +++ b/arch/x86/entry/entry_fred.c
-@@ -28,9 +28,9 @@ static noinstr void fred_bad_type(struct pt_regs *regs, unsigned long error_code
- 	if (regs->fred_cs.sl > 0) {
- 		pr_emerg("PANIC: invalid or fatal FRED event; event type %u "
- 			 "vector %u error 0x%lx aux 0x%lx at %04x:%016lx\n",
--			 regs->fred_ss.type, regs->fred_ss.vector, regs->orig_ax,
-+			 regs->fred_ss.type, regs->fred_ss.vector, error_code,
- 			 fred_event_data(regs), regs->cs, regs->ip);
--		die("invalid or fatal FRED event", regs, regs->orig_ax);
-+		die("invalid or fatal FRED event", regs, error_code);
- 		panic("invalid or fatal FRED event");
- 	} else {
- 		unsigned long flags = oops_begin();
-@@ -38,10 +38,10 @@ static noinstr void fred_bad_type(struct pt_regs *regs, unsigned long error_code
+@@ -66,7 +66,7 @@ static noinstr void fred_intx(struct pt_regs *regs)
+ 	/* INT80 */
+ 	case IA32_SYSCALL_VECTOR:
+ 		if (ia32_enabled())
+-			return int80_emulation(regs);
++			return fred_int80_emulation(regs);
+ 		fallthrough;
+ #endif
  
- 		pr_alert("BUG: invalid or fatal FRED event; event type %u "
- 			 "vector %u error 0x%lx aux 0x%lx at %04x:%016lx\n",
--			 regs->fred_ss.type, regs->fred_ss.vector, regs->orig_ax,
-+			 regs->fred_ss.type, regs->fred_ss.vector, error_code,
- 			 fred_event_data(regs), regs->cs, regs->ip);
- 
--		if (__die("Invalid or fatal FRED event", regs, regs->orig_ax))
-+		if (__die("Invalid or fatal FRED event", regs, error_code))
- 			sig = 0;
- 
- 		oops_end(flags, regs, sig);
 
