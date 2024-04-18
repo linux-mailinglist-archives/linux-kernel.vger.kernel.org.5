@@ -1,125 +1,162 @@
-Return-Path: <linux-kernel+bounces-150169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47E358A9B3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE3278A9B44
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:28:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BFCD1C21D27
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:28:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD0C61C21ECF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:28:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4752315FD11;
-	Thu, 18 Apr 2024 13:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5570616133B;
+	Thu, 18 Apr 2024 13:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="SgP7+cyG"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="wh5BN/C6"
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6DC71E4AD;
-	Thu, 18 Apr 2024 13:28:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 579EF15FA91
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 13:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713446906; cv=none; b=R/k8je7uEoHLazhZiBDysTYzWLFZKWbHNBqK3voRV2/jXgzXs1ZiiV+pSiWzPYkl03nhiwjPZAOCwcA3OointDT3dJVo4udYs5H5Tar8c2UduFFF8k2PCGiEYvgOCuI0JryTPuuYEE8UEta4sN7lf45a5wRQIpLqfkeMgzSRPis=
+	t=1713446907; cv=none; b=bl/FqG+aps3Tl8UA45aXmPSQkhO23wFyCsqELSaKKH+enc/3qqmePrs7ulRbDvC/8jqd8nydSbgKqttRGxldddswMcB/yzmuu0z4e4ji/LJZM9sRwQNvN6Dht40AZZ6bj1AzE4lIXhhb/DoCddnDPl8Wuq/0vpqC3LfmeKiRTHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713446906; c=relaxed/simple;
-	bh=15LPlCyRM81vOGjzDxrl6KXHOHp5iqRPEIb9hDh66tU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hh3QBq9MzcB0NM3qWTB6m5ue01yuA+F+XteRaTfnY7K9DHPKpVzXZ0ifFX+5cHC+1tLhuX+CrSWAfMmOsULFnzL9JR74/AYKuxqgGTIo0/b7Xzistiq2FXpS0L7il2ok4xaMH+i/HPM6EGqoGumowOZe0LztRMwi59RtqK0jq/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=SgP7+cyG; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43ICItAm016003;
-	Thu, 18 Apr 2024 13:28:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=/rQLjm77xGR+HZhohR1S8rUegbh2eDq/nXt99qYuhCo=;
- b=SgP7+cyG+MSVKUL0DW5IHlD5PlpRhryMrsQhnunJqiDNzNaxtgSPOTz6k5qUUHNOcJIg
- gWbnvl1AmnQ6hwBteREXPyLdhD0HQonmHUKeYNGTBEq1Q8E/2f42ZrFsFB60GtK+ibJC
- BwhZvFUpR2bLX1Awy7Ht4zaTzTtlHmVy+npC5ostl2at8L6VhogjBpbd8J3IDSQwCrRx
- XXX9pVb6nEKR3X4zYD5Hs6zZPrPtdsqoBcqgayvMF2T7LqVbCOmf5V6kmLX9vWN5bRom
- OP7DhNypfwr6rFv70QXaocLuDTaJcmKUzp5sZOzrfsz1FBe6NCQQpSE54PWoYpDm/bQE qw== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfgujtmq9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 18 Apr 2024 13:28:18 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43IC0h1c004339;
-	Thu, 18 Apr 2024 13:28:18 GMT
-Received: from localhost.uk.oracle.com (dhcp-10-175-207-172.vpn.oracle.com [10.175.207.172])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3xfgggp2x3-1;
-	Thu, 18 Apr 2024 13:28:17 +0000
-From: Siddh Raman Pant <siddh.raman.pant@oracle.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>
-Cc: linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, stable@kernel.org
-Subject: [PATCH] Revert "tracing/trigger: Fix to return error if failed to alloc snapshot"
-Date: Thu, 18 Apr 2024 18:58:06 +0530
-Message-ID: <20240418132806.159307-1-siddh.raman.pant@oracle.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1713446907; c=relaxed/simple;
+	bh=xlB7rdi2o9xH7y6LdwhVg9RVEN+FAlcEKx+Jy8RyAyc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qviX8cs63ILjd79RCa1SAROYHFT5Bi62l+FL4ePwthEUIAm1ORi5IZP0ii+bdxdy1kh8Ck865i49KfVghGYH2/d7jyeZAYCPOjjl+e8IEHxcy35kZbC6O+Iw0UvsgY07TLwBraQariDY054zA48vJyWXefmawtERn1vSdojLHI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=wh5BN/C6; arc=none smtp.client-ip=209.85.166.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-36b045c17d5so6040755ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:28:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1713446905; x=1714051705; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KMNMsgIxykHwVLRcqTZk25HnL0Z5DBPcc9H1w13fRk4=;
+        b=wh5BN/C6ovuEY6CE4JRdE/sqYVByicuEaAlCaOsUeUFhM3jcFfYTpsBhKDnaJW9Hho
+         GCXfvRTFXXW3/fzppewG3dxxUAq/2BJjcG86+ztbNUVUCUjaH9mV2XzXbvHvhYPXgift
+         qeZRuJm9bT0qK9TLbkDIKvyeWExVpsQOwCU4aT9Sryy9T5pacPvPJzBqZShV2Z0zE7JS
+         BaOVStRsA+OnbUWBBVR+LFOI+lwFc1A3ohFULOT1DWWmJALOBjBikLODStgJuJXbNtZK
+         ugOcQ+ZRGBvXDxFeyLgME52HSpE5lOxU43Tfj7QNj8JC1NzG1iRYgDrd/fbZSUBESxGL
+         ntcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713446905; x=1714051705;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KMNMsgIxykHwVLRcqTZk25HnL0Z5DBPcc9H1w13fRk4=;
+        b=EP3RL44BUYCWXQWxjvCLJ4zKKHzrWPDY5kpBSlFTd3iS82gxJrhY+zv4fOiCrzh+sn
+         A7b6WhpeQt/9YVYIGv/nqfedirN0y5yY1G7iMlFhxbihC5/9splRw9dLnwx1HlzShHIB
+         UjcaHwo4vgvK77ZtKKizAx71fMCNOa1dW9t8wk9wje5XGoEzWJUhVtC//yMjysB+wbfI
+         DN6+QVEWohXevnTJp30UaoIYhcf02IBByqvX2i4f/5PfPTAC9915uet0nZfnEzoTnOr6
+         Cxs9SYfyb08+5H/Kzhq/GIQIG3Bup/tR1GZdk/3xN4VBBRRnx7brNAJfaubT8ZeeQ5RI
+         BvmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVOO6V87AGQ7BjES3AQ0Wj7iohu9JPi3RskI9uaiQB4s4TyBUiOYFQv5m20jEPBwx/Va0WayilME8HOdlEz2XIJNfScCCb0/msBhdAA
+X-Gm-Message-State: AOJu0YyCE/kbhi7PPl862wMBWyAZ9XsCXjwR1nb/L2nKor7qj9GQEeX3
+	iynZvdYCnW2McdaNPNb0dyYWcOuIn9GYh+kb/iP1QUzSY9UE1dRMKwUWciwV+qTmjsU6/m5dD/Z
+	X0DHSGfpgjEc5KcGExbbH4LZQu27wqgQA6bKPKg==
+X-Google-Smtp-Source: AGHT+IFrWxljQUhM4BHCWc1rpwi1ngTEKRjguXPUXYX/AlzCjkEoKCfJFfKh82U9YYFX9h6A9SWk0YTxswpzIbsp85s=
+X-Received: by 2002:a05:6e02:1c8b:b0:368:920b:e211 with SMTP id
+ w11-20020a056e021c8b00b00368920be211mr3604422ill.5.1713446905449; Thu, 18 Apr
+ 2024 06:28:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-18_11,2024-04-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
- mlxlogscore=999 suspectscore=0 bulkscore=0 spamscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404180096
-X-Proofpoint-ORIG-GUID: Wapcbe12npm_BidS0zFgRethTNsYNxOn
-X-Proofpoint-GUID: Wapcbe12npm_BidS0zFgRethTNsYNxOn
+References: <20240418124300.1387978-1-cleger@rivosinc.com>
+In-Reply-To: <20240418124300.1387978-1-cleger@rivosinc.com>
+From: Anup Patel <anup@brainfault.org>
+Date: Thu, 18 Apr 2024 18:58:13 +0530
+Message-ID: <CAAhSdy0RPOX7_rLQ8GcYzbWQ8wzKDxDKXUqNoNd2ZFkVx4sfMg@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] Add support for a few Zc* extensions as well as Zcmop
+To: Palmer Dabbelt <palmer@dabbelt.com>, Palmer Dabbelt <palmer@rivosinc.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Shuah Khan <shuah@kernel.org>, 
+	Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, kvm@vger.kernel.org, 
+	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org, 
+	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This reverts commit b5085b5ac1d96ea2a8a6240f869655176ce44197.
+Hi Palmer,
 
-The change has an incorrect assumption about the return value because
-in the current stable trees for versions 5.15 and before, the following
-commit responsible for making 0 a success value is not present:
-b8cc44a4d3c1 ("tracing: Remove logic for registering multiple event triggers at a time")
+On Thu, Apr 18, 2024 at 6:13=E2=80=AFPM Cl=C3=A9ment L=C3=A9ger <cleger@riv=
+osinc.com> wrote:
+>
+> Add support for (yet again) more RVA23U64 missing extensions. Add
+> support for Zcmop, Zca, Zcf, Zcd and Zcb extensions isa string parsing,
+> hwprobe and kvm support. Zce, Zcmt and Zcmp extensions have been left
+> out since they target microcontrollers/embedded CPUs and are not needed
+> by RVA23U64
+>
+> This series is based on the Zimop one [1].
+>
+> Link: https://lore.kernel.org/linux-riscv/20240404103254.1752834-1-cleger=
+@rivosinc.com/ [1]
+>
+> ---
+> v2:
+>  - Add Zc* dependencies validation in dt-bindings
+>  - v1: https://lore.kernel.org/lkml/20240410091106.749233-1-cleger@rivosi=
+nc.com/
+>
+> Cl=C3=A9ment L=C3=A9ger (12):
+>   dt-bindings: riscv: add Zca, Zcf, Zcd and Zcb ISA extension
+>     description
+>   riscv: dts: enable Zc* extensions when needed
+>   dt-bindings: riscv: add Zc* extension rules implied by C extension
+>   riscv: add ISA parsing for Zca, Zcf, Zcd and Zcb
+>   riscv: hwprobe: export Zca, Zcf, Zcd and Zcb ISA extensions
+>   RISC-V: KVM: Allow Zca, Zcf, Zcd and Zcb extensions for Guest/VM
+>   KVM: riscv: selftests: Add some Zc* extensions to get-reg-list test
+>   dt-bindings: riscv: add Zcmop ISA extension description
+>   riscv: add ISA extension parsing for Zcmop
+>   riscv: hwprobe: export Zcmop ISA extension
+>   RISC-V: KVM: Allow Zcmop extension for Guest/VM
+>   KVM: riscv: selftests: Add Zcmop extension to get-reg-list test
+>
+>  Documentation/arch/riscv/hwprobe.rst          |  24 ++
+>  .../devicetree/bindings/riscv/cpus.yaml       |   8 +-
+>  .../devicetree/bindings/riscv/extensions.yaml | 124 +++++++++
+>  arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi |   4 +-
+>  arch/riscv/boot/dts/microchip/mpfs.dtsi       |  20 +-
+>  arch/riscv/boot/dts/renesas/r9a07g043f.dtsi   |   4 +-
+>  arch/riscv/boot/dts/sifive/fu540-c000.dtsi    |  20 +-
+>  arch/riscv/boot/dts/sifive/fu740-c000.dtsi    |  20 +-
+>  arch/riscv/boot/dts/sophgo/cv18xx.dtsi        |   4 +-
+>  arch/riscv/boot/dts/sophgo/sg2042-cpus.dtsi   | 256 +++++++++---------
+>  arch/riscv/boot/dts/starfive/jh7100.dtsi      |   8 +-
+>  arch/riscv/boot/dts/starfive/jh7110.dtsi      |  20 +-
+>  arch/riscv/boot/dts/thead/th1520.dtsi         |  16 +-
+>  arch/riscv/include/asm/hwcap.h                |   5 +
+>  arch/riscv/include/uapi/asm/hwprobe.h         |   5 +
+>  arch/riscv/include/uapi/asm/kvm.h             |   5 +
+>  arch/riscv/kernel/cpufeature.c                |   5 +
+>  arch/riscv/kernel/sys_hwprobe.c               |   5 +
+>  arch/riscv/kvm/vcpu_onereg.c                  |  10 +
+>  .../selftests/kvm/riscv/get-reg-list.c        |  20 ++
+>  20 files changed, 394 insertions(+), 189 deletions(-)
+>
+> --
+> 2.43.0
+>
 
-The return value should be 0 on failure in the current tree, because in
-the functions event_trigger_callback() and event_enable_trigger_func(),
-we have:
+Most likely the KVM RISC-V related changes in this series
+will conflict with the KVM RISC-V repo.
 
-	ret = cmd_ops->reg(glob, trigger_ops, trigger_data, file);
-	/*
-	 * The above returns on success the # of functions enabled,
-	 * but if it didn't find any functions it returns zero.
-	 * Consider no functions a failure too.
-	 */
-	if (!ret) {
-		ret = -ENOENT;
+I will provide a shared tag based on 6.9-rc3 tomorrow or
+early next week.
 
-Cc: stable@kernel.org # 5.15, 5.10, 5.4, 4.19
-Signed-off-by: Siddh Raman Pant <siddh.raman.pant@oracle.com>
----
- kernel/trace/trace_events_trigger.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
-index dfdbcf1da216..106f9813841a 100644
---- a/kernel/trace/trace_events_trigger.c
-+++ b/kernel/trace/trace_events_trigger.c
-@@ -1161,10 +1161,8 @@ register_snapshot_trigger(char *glob, struct event_trigger_ops *ops,
- 			  struct event_trigger_data *data,
- 			  struct trace_event_file *file)
- {
--	int ret = tracing_alloc_snapshot_instance(file->tr);
--
--	if (ret < 0)
--		return ret;
-+	if (tracing_alloc_snapshot_instance(file->tr) != 0)
-+		return 0;
- 
- 	return register_trigger(glob, ops, data, file);
- }
--- 
-2.43.0
-
+Regards,
+Anup
 
