@@ -1,66 +1,82 @@
-Return-Path: <linux-kernel+bounces-150167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 150A68A9B39
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:26:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CCF08A9B3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:26:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37EE31C22AC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:26:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E4DD1F23702
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:26:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5154115FD15;
-	Thu, 18 Apr 2024 13:25:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B3D015FCED;
+	Thu, 18 Apr 2024 13:26:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ya.ru header.i=@ya.ru header.b="g03tgqlm"
-Received: from forward500c.mail.yandex.net (forward500c.mail.yandex.net [178.154.239.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dqQA7eu1"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0A191607B7;
-	Thu, 18 Apr 2024 13:25:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D006415FA94;
+	Thu, 18 Apr 2024 13:26:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713446747; cv=none; b=VCNnfKJqV9LS/ngswJwAC2qGNJHurinYXZeX+XjRpfXelBOdFy71YZ3ljy8yhGOzYocl3IFrntI/Usi2sPvMMPA++L3ChEZUCpRyyWZVLQ98s2fVLMh+hfbED378+T6RPJDLBhz/KyzWfjbnFOzm0L2GdEyAbcypTQakCec/7/s=
+	t=1713446776; cv=none; b=JOo04ZgO/we1hOV3m2dmvEW3BzqDVRfWbXHaiVv9nW4D1fQHQUkYi34+IuswbuWC5M0Ugvdn1lU/7Gc8qG02BMX1fQ31GckUK/YKj3LiqzYnBvM+vtOZfJuKPyi/hpv8m6pq1H+q0ZZhhRriY17pp8Eakx5QATgPlbheoeT5NV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713446747; c=relaxed/simple;
-	bh=316iesLTpesEW+mMqiUlnSfsLRZCpN89vKmk0hopAVI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KQz57tmWKxaSlYUUUlpA7mN4HfyyU4MpFgxVZGQnQoigCmMNpkcGIIjut6bavKq3pmJYCaLG+W93WMjPYgEnmyjEHwiaLK1+lcHZJimBiLFDS8srDLJPodtFgJxONqZ7++rhhAVNlIaOKyzNWPP8SBv1JiNGu6YBBRor1JVQY/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ya.ru; spf=pass smtp.mailfrom=ya.ru; dkim=pass (1024-bit key) header.d=ya.ru header.i=@ya.ru header.b=g03tgqlm; arc=none smtp.client-ip=178.154.239.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ya.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ya.ru
-Received: from mail-nwsmtp-smtp-production-main-38.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-38.myt.yp-c.yandex.net [IPv6:2a02:6b8:c05:84:0:640:40f8:0])
-	by forward500c.mail.yandex.net (Yandex) with ESMTPS id A67CF6141F;
-	Thu, 18 Apr 2024 16:25:37 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-38.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id HPFFWsDX0Cg0-9RDYRYzA;
-	Thu, 18 Apr 2024 16:25:36 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ya.ru; s=mail;
-	t=1713446736; bh=NnsLyYUHpsog8bfJ51lGJAeIHrXGTvcsmPGgAsASHuE=;
-	h=Message-Id:Date:In-Reply-To:Cc:Subject:References:To:From;
-	b=g03tgqlmtVWz/Mx1dZYoPBmdgWd7XN0u+QXa+gbY+ZudiYoOLrYv2pMTOJEDUAuUy
-	 yB0Yd1I9Ri+dUrU8bhJQCQA23q8wYz+Ng6z+zlMcB215Cm30eUQGUD9ES1lmiEmSnL
-	 eLhw5AGEil7WP5hpeuTRTSV72ENoAkEHnURL3Ecc=
-Authentication-Results: mail-nwsmtp-smtp-production-main-38.myt.yp-c.yandex.net; dkim=pass header.i=@ya.ru
-From: Konstantin <rilian.la.te@ya.ru>
-To: 
-Cc: Konstantin <ria.freelander@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Lech Perczak <lech.perczak@camlingroup.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: [PATCH 3/3] serial: sc16is7xx: add support for EXAR XR20M1172 UART
-Date: Thu, 18 Apr 2024 16:25:05 +0300
-Message-Id: <20240418132508.3447800-4-rilian.la.te@ya.ru>
+	s=arc-20240116; t=1713446776; c=relaxed/simple;
+	bh=W8loeJgPBjnjnkzn24m+LbcwcKGo+/TYQDyUzZ/j8q0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kdV+ZpyWPsSL39h5XXz1UyVxiVTanUZr8l2I0UCUdAIB7hdoxbGb5+IcsSnivO5dy+jJ8RLghyT3Amm2Q8R31WVflXBXBTrL/e+wtmp9RRMPwL8bJfy7haQlxvVO7uUgAS7sR7WTlxJAE2pdp5zFfBzFxtbKmlvOhNMa6KodDh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dqQA7eu1; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-418c2bf2f55so6267125e9.2;
+        Thu, 18 Apr 2024 06:26:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713446773; x=1714051573; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lAjezbYFk4kRuwBAyZVCH+a9cPM1rylHv2qjz+E2Bv8=;
+        b=dqQA7eu1t6NUDnFvDRM/uT6RukUzyUVJ6ZwiaWrzJ6c/YiBiVE5gylPyyTN4SHY4Jd
+         KkZi+N1QLyNirA75Iw7Xy4ORDaa31mPyQV39F4pJZ2lX6gKLh1K880EV6JVftJVh0Gb6
+         aJo7g/uDUUzzZDxcfIqCTli/EK+QWYvj2wLS7rfsplu5OdkzsZs9jkshimvIyXXhCAp3
+         9bJ7pgRqzuvLCm+7UiMXH/8bTEzRttZ0xtW7yUPqoRTL24FTEKST45oPg9WsIJD0DZUE
+         G8wIAlmvHHQrFdyDLa6BRLUnn2V90HtWuZPNRql21gZDjuxAsSoToB6l9MuJCv7+GmLv
+         kBVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713446773; x=1714051573;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lAjezbYFk4kRuwBAyZVCH+a9cPM1rylHv2qjz+E2Bv8=;
+        b=U0MNd15k5+U3TOuzJDXY+ua0vUJ6phPbjgEUZ7hbv/Z7BNsz8w9HZgdyD72zyBNJO8
+         cUQVpmO7yyp8JXzyAc3SjPjlOl/W6ajvettzWkXMeiuFZDTSG16lwrnJBDym/oqfSSWF
+         j2byJoYuPaCPWXtsfv6JykRggYfkMX6jZjAZoRSAuYj06GErj+Po4DuLV+lDFZcom3i/
+         BLaXQje5B4J/LOBGagqmLtK+0y9Y03e0K/hghFs0s2+BO+aPZyHNomecokivXGCgmSc4
+         LaaoORymL0ySuXxvq6Ku7UewbhbUZgkRxrcST3vLpsOjx12xa5EPe2Ljnj4iCTv+PxsX
+         w9UA==
+X-Forwarded-Encrypted: i=1; AJvYcCUYE8zaoQw65T88IGPBnZtqrocRy74iUxKkN+0Pt60YAAMQ08/NUrq2ukabfucSUwd1/HMLOP5M7N73gKbVLE9TsY9OHmlRb75TmueRgyXtFYI=
+X-Gm-Message-State: AOJu0Yy4OWuPpRkdAJblbqu3NuCmbTQKaXNAosMrAGUSXk/c6YNqL91L
+	NDKRrfBq295QhcKqmFum79zwxYxRtK2rO6YtpOJ/Dht5kEr4uaUZ
+X-Google-Smtp-Source: AGHT+IHxYO+QfxTRPoNL7RDTcNFo5mTVb9cQ2OcGI4ZiHygN0wUQzL0DbxYZeODNTK6uvRDv7tT/Lw==
+X-Received: by 2002:a05:6000:927:b0:341:bfe2:4509 with SMTP id cx7-20020a056000092700b00341bfe24509mr1511694wrb.42.1713446772752;
+        Thu, 18 Apr 2024 06:26:12 -0700 (PDT)
+Received: from prasmi.home ([2a00:23c8:2500:a01:2595:4364:d152:dff3])
+        by smtp.gmail.com with ESMTPSA id t15-20020adfeb8f000000b00349ff2e0345sm1853396wrn.70.2024.04.18.06.26.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 06:26:12 -0700 (PDT)
+From: Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Philipp Zabel <p.zabel@pengutronix.de>
+Cc: linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+	Prabhakar <prabhakar.csengg@gmail.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [RFC PATCH] reset: Add devm_reset_control_deassert helper
+Date: Thu, 18 Apr 2024 14:26:02 +0100
+Message-Id: <20240418132602.509313-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240418132508.3447800-1-rilian.la.te@ya.ru>
-References: <20240418132508.3447800-1-rilian.la.te@ya.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,171 +85,81 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Konstantin <ria.freelander@gmail.com>
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Its register set is mostly compatible with SC16IS762, but
-it has a support for additional division rates of UART
-with special DLD register. So, add handling this register
-via UPF_MAGIC_MULTIPLIER port flag.
+A typical code pattern for reset_control_deassert() call is to call it in
+the _probe function and to call reset_control_assert() both from _probe
+error path and from _remove function.
 
-Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
+Add helper function to replace this bolierplate piece of code. Calling
+devm_reset_control_deassert() removes the need for calling
+reset_control_assert() both in the probe()'s error path and in the
+remove() function.
+
+Suggested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 ---
- drivers/tty/serial/sc16is7xx.c | 54 ++++++++++++++++++++++++++++++++--
- 1 file changed, 51 insertions(+), 3 deletions(-)
+ drivers/reset/core.c  | 22 ++++++++++++++++++++++
+ include/linux/reset.h |  6 ++++++
+ 2 files changed, 28 insertions(+)
 
-diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index a300eebf1401..7fc1c19b3891 100644
---- a/drivers/tty/serial/sc16is7xx.c
-+++ b/drivers/tty/serial/sc16is7xx.c
-@@ -65,6 +65,7 @@
- /* Special Register set: Only if ((LCR[7] == 1) && (LCR != 0xBF)) */
- #define SC16IS7XX_DLL_REG		(0x00) /* Divisor Latch Low */
- #define SC16IS7XX_DLH_REG		(0x01) /* Divisor Latch High */
-+#define SC16IS7XX_DLD_REG		(0x02) /* Divisor Latch Mode (only on EXAR chips) */
+diff --git a/drivers/reset/core.c b/drivers/reset/core.c
+index dba74e857be6..a2a6eff8e599 100644
+--- a/drivers/reset/core.c
++++ b/drivers/reset/core.c
+@@ -592,6 +592,28 @@ int reset_control_deassert(struct reset_control *rstc)
+ }
+ EXPORT_SYMBOL_GPL(reset_control_deassert);
  
- /* Enhanced Register set: Only if (LCR == 0xBF) */
- #define SC16IS7XX_EFR_REG		(0x02) /* Enhanced Features */
-@@ -218,6 +219,20 @@
- #define SC16IS7XX_TCR_RX_HALT(words)	((((words) / 4) & 0x0f) << 0)
- #define SC16IS7XX_TCR_RX_RESUME(words)	((((words) / 4) & 0x0f) << 4)
- 
-+/* Divisor Latch Mode bits (EXAR extension)
-+ *
-+ * EXAR hardware is mostly compatible with SC16IS7XX, but supports additional feature:
-+ * 4x and 8x divisor, instead of default 16x. It has a special register to program it.
-+ * Bits 0 to 3 is fractional divisor, it used to set value of last 16 bits of
-+ * uartclk * (16 / divisor) / baud, in case of default it will be uartclk / baud.
-+ * Bits 4 and 5 used as switches, and should not be set to 1 simultaneously.
++static void reset_control_assert_action(void *rstc)
++{
++	reset_control_assert(rstc);
++}
++
++/**
++ * devm_reset_control_deassert - devres-enabled version of reset_control_deassert()
++ * @dev: device that requests the reset control
++ * @rstc: reset controller
 + */
++int devm_reset_control_deassert(struct device *dev, struct reset_control *rstc)
++{
++	int ret;
 +
-+#define SC16IS7XX_DLD_16X		0
-+#define SC16IS7XX_DLD_DIV(m)	((m) & 0xf)
-+#define SC16IS7XX_DLD_8X		BIT(4)
-+#define SC16IS7XX_DLD_4X		BIT(5)
++	ret = reset_control_deassert(rstc);
++	if (ret)
++		return ret;
 +
- /*
-  * TLR register bits
-  * If TLR[3:0] or TLR[7:4] are logical 0, the selectable trigger levels via the
-@@ -310,6 +325,7 @@ struct sc16is7xx_devtype {
- 	char	name[10];
- 	int	nr_gpio;
- 	int	nr_uart;
-+	bool has_dld;
- };
- 
- #define SC16IS7XX_RECONF_MD		(1 << 0)
-@@ -522,6 +538,13 @@ static const struct sc16is7xx_devtype sc16is762_devtype = {
- 	.nr_uart	= 2,
- };
- 
-+static const struct sc16is7xx_devtype xr20m1172_devtype = {
-+	.name		= "XR20M1172",
-+	.nr_gpio	= 8,
-+	.nr_uart	= 2,
-+	.has_dld	= true,
-+};
++	return devm_add_action_or_reset(dev, reset_control_assert_action, rstc);
++}
++EXPORT_SYMBOL_GPL(devm_reset_control_deassert);
 +
- static bool sc16is7xx_regmap_volatile(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
-@@ -559,13 +582,29 @@ static int sc16is7xx_set_baud(struct uart_port *port, int baud)
- 	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
- 	u8 lcr;
- 	u8 prescaler = 0;
--	unsigned long clk = port->uartclk, div = clk / 16 / baud;
-+	u8 divisor = 16;
-+	u8 dld_mode = SC16IS7XX_DLD_16X;
-+	bool has_dld = !!(port->flags & UPF_MAGIC_MULTIPLIER);
-+	unsigned long clk = port->uartclk, div, div16;
-+
-+	if (has_dld)
-+		while (DIV_ROUND_CLOSEST(port->uartclk, baud) < divisor)
-+			divisor /= 2;
-+
-+	div16 = clk * (16 / divisor) / baud;
-+	div = div16 / 16; /* For divisor = 16, it is the same as clk / 16 / baud */
- 
- 	if (div >= BIT(16)) {
- 		prescaler = SC16IS7XX_MCR_CLKSEL_BIT;
- 		div /= 4;
- 	}
- 
-+	/* Count additional divisor for EXAR devices */
-+	if (divisor == 8)
-+		dld_mode = SC16IS7XX_DLD_8X;
-+	if (divisor == 4)
-+		dld_mode = SC16IS7XX_DLD_4X;
-+
- 	/* Enable enhanced features */
- 	sc16is7xx_efr_lock(port);
- 	sc16is7xx_port_update(port, SC16IS7XX_EFR_REG,
-@@ -586,12 +625,14 @@ static int sc16is7xx_set_baud(struct uart_port *port, int baud)
- 	regcache_cache_bypass(one->regmap, true);
- 	sc16is7xx_port_write(port, SC16IS7XX_DLH_REG, div / 256);
- 	sc16is7xx_port_write(port, SC16IS7XX_DLL_REG, div % 256);
-+	if (has_dld)
-+		sc16is7xx_port_write(port, SC16IS7XX_DLD_REG, dld_mode | SC16IS7XX_DLD_DIV(div16));
- 	regcache_cache_bypass(one->regmap, false);
- 
- 	/* Restore LCR and access to general register set */
- 	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG, lcr);
- 
--	return DIV_ROUND_CLOSEST(clk / 16, div);
-+	return DIV_ROUND_CLOSEST(clk / divisor, div);
+ /**
+  * reset_control_bulk_deassert - deasserts the reset lines in reverse order
+  * @num_rstcs: number of entries in rstcs array
+diff --git a/include/linux/reset.h b/include/linux/reset.h
+index 514ddf003efc..e41e752ba098 100644
+--- a/include/linux/reset.h
++++ b/include/linux/reset.h
+@@ -31,6 +31,7 @@ int reset_control_reset(struct reset_control *rstc);
+ int reset_control_rearm(struct reset_control *rstc);
+ int reset_control_assert(struct reset_control *rstc);
+ int reset_control_deassert(struct reset_control *rstc);
++int devm_reset_control_deassert(struct device *dev, struct reset_control *rstc);
+ int reset_control_status(struct reset_control *rstc);
+ int reset_control_acquire(struct reset_control *rstc);
+ void reset_control_release(struct reset_control *rstc);
+@@ -91,6 +92,11 @@ static inline int reset_control_deassert(struct reset_control *rstc)
+ 	return 0;
  }
  
- static void sc16is7xx_handle_rx(struct uart_port *port, unsigned int rxlen,
-@@ -1014,6 +1055,7 @@ static void sc16is7xx_set_termios(struct uart_port *port,
- 	unsigned int lcr, flow = 0;
- 	int baud;
- 	unsigned long flags;
-+	bool has_dld = !!(port->flags & UPF_MAGIC_MULTIPLIER);
- 
- 	kthread_cancel_delayed_work_sync(&one->ms_work);
- 
-@@ -1093,7 +1135,7 @@ static void sc16is7xx_set_termios(struct uart_port *port,
- 	/* Get baud rate generator configuration */
- 	baud = uart_get_baud_rate(port, termios, old,
- 				  port->uartclk / 16 / 4 / 0xffff,
--				  port->uartclk / 16);
-+				  port->uartclk / (has_dld ? 4 : 16));
- 
- 	/* Setup baudrate generator */
- 	baud = sc16is7xx_set_baud(port, baud);
-@@ -1550,6 +1592,9 @@ static int sc16is7xx_probe(struct device *dev,
- 		s->p[i].port.type	= PORT_SC16IS7XX;
- 		s->p[i].port.fifosize	= SC16IS7XX_FIFO_SIZE;
- 		s->p[i].port.flags	= UPF_FIXED_TYPE | UPF_LOW_LATENCY;
-+		/* If we have DLD register, then set UPF_MAGIC_MULTIPLIER flag */
-+		if (devtype->has_dld)
-+			s->p[i].port.flags |= UPF_MAGIC_MULTIPLIER;
- 		s->p[i].port.iobase	= i;
- 		/*
- 		 * Use all ones as membase to make sure uart_configure_port() in
-@@ -1688,6 +1733,7 @@ static const struct of_device_id __maybe_unused sc16is7xx_dt_ids[] = {
- 	{ .compatible = "nxp,sc16is752",	.data = &sc16is752_devtype, },
- 	{ .compatible = "nxp,sc16is760",	.data = &sc16is760_devtype, },
- 	{ .compatible = "nxp,sc16is762",	.data = &sc16is762_devtype, },
-+	{ .compatible = "exar,xr20m1172",	.data = &xr20m1172_devtype, },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, sc16is7xx_dt_ids);
-@@ -1776,6 +1822,7 @@ static const struct spi_device_id sc16is7xx_spi_id_table[] = {
- 	{ "sc16is752",	(kernel_ulong_t)&sc16is752_devtype, },
- 	{ "sc16is760",	(kernel_ulong_t)&sc16is760_devtype, },
- 	{ "sc16is762",	(kernel_ulong_t)&sc16is762_devtype, },
-+	{ "xr20m1172",	(kernel_ulong_t)&xr20m1172_devtype, },
- 	{ }
- };
- 
-@@ -1826,6 +1873,7 @@ static const struct i2c_device_id sc16is7xx_i2c_id_table[] = {
- 	{ "sc16is752",	(kernel_ulong_t)&sc16is752_devtype, },
- 	{ "sc16is760",	(kernel_ulong_t)&sc16is760_devtype, },
- 	{ "sc16is762",	(kernel_ulong_t)&sc16is762_devtype, },
-+	{ "xr20m1172",	(kernel_ulong_t)&xr20m1172_devtype, },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, sc16is7xx_i2c_id_table);
++static inline int devm_reset_control_deassert(struct device *dev, struct reset_control *rstc)
++{
++	return 0;
++}
++
+ static inline int reset_control_status(struct reset_control *rstc)
+ {
+ 	return 0;
 -- 
 2.34.1
 
