@@ -1,160 +1,141 @@
-Return-Path: <linux-kernel+bounces-150633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 655888AA219
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:35:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A09EC8AA21C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:37:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD101B23964
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:35:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 578E91F215AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:37:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34C2F172BAC;
-	Thu, 18 Apr 2024 18:35:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D116717335B;
+	Thu, 18 Apr 2024 18:37:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BmR2ROPf"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rS82ilXo"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B04438DF2;
-	Thu, 18 Apr 2024 18:34:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCFD916D30B
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 18:36:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713465301; cv=none; b=SJCrWNYVAl80bHY2xlghTNUPQW/vSNoLR1b+rYkQLB2jXH6t6mt3jBiXdEjhjjgdpuGJEiknjO+vmTnKc0MPiOd8UpifBI/hvqlbrSlRH2XlZk274UTaPJwnZOm5shfVCC7NXnqIrc5EnyWK0W3IYsY6tg9GTeVZ7O4X8/5eJfU=
+	t=1713465421; cv=none; b=ilq0uYXoKLlawoVufHEUNpNx/honOKHNtTvQQ+YdmIw7Y4PYEs1NrOW9k8ncnJ9LH+fquryZ+jr0dmlTgxq2fCJKTkPjA6yZJDNustHd0GXBby+pQTJlQ6U7NI2ENgch4EbHHbhWZRQCkz1KAInsVH6HGSp1Hnhwn6ydC1S5Z+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713465301; c=relaxed/simple;
-	bh=cPt44jxSVrdhZJrIQnC8pnx/xoLCJM42pv8YS2Rc51w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cER/LfvI0JymXpRjoS3r6FeNbQb/nQV9O4kFVFJaIW18MCXp05+VDeY4aiXK7dfWKJbwV8fD/e/s7FV76kMQjt/VST6LcKVRrAhvkeTtfYNPkWUKu2LzXQqwoII06mBZqX+VVLPQl1p0MSAcqw1ytz30lSW4kZjkQU+PxL3FgnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BmR2ROPf; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed2170d89fso1560140b3a.1;
-        Thu, 18 Apr 2024 11:34:59 -0700 (PDT)
+	s=arc-20240116; t=1713465421; c=relaxed/simple;
+	bh=5M7sY2eNkmePxZYEhbphJRX7F7XSNeGGbs2z+TtGQ10=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=llXnI/x21oYV5JassrT5aGjrHLFSVziDmLI3ZBVNAnKLWOediWDTWTJ1zTZDtsDjtU7b+k0PPQwsHOFQiQ61fI82VWr+3Ma0fRJO3LytM5Xd5TVRPRtiqF1hIse7Eo85SAH4etaW4A9vdIyoYm3hBE7RGjoFwFiEXKl7r/dSIYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rS82ilXo; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5f7c0bb1b95so207202a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:36:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713465299; x=1714070099; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/h/Do95bbYq5Tt0KYD+0H8my015G5GgNdhr/yLxS+rI=;
-        b=BmR2ROPfUHjXmPwg/lsQajN9js9jtNXfTQ2nNjlKZbWekzB+MHpuVHUnG8QKFj01ap
-         n5FPasCpfGLPnBMolNCSxx+l4j0MJRUULrLnkZ4lmHwLZYlJuygzaFrufrSwSs5T7k9G
-         9mR55GJCN68FIu/KaY5H14lfMWV2O3yIEbI9OawOgOpcdpgTaqFuNFZlaCqVpJzw1t6E
-         CQpjITTujxV+itZxY51zZ3EXQYLuV8Vk3+QSYeFA7tNcOibEYyw3D7mzVaEZFlGwDIfG
-         VbHnNpqGDVc0aMEAEf0Fj06w6lPiq3HWarAm498s1qHxOi0zRo398qZ2TTPCZGyDdd6e
-         rz9g==
+        d=google.com; s=20230601; t=1713465419; x=1714070219; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+wlN/ce91bTf9rbFasUDQdfgpzsyETmNKvn6NbsAl7o=;
+        b=rS82ilXoy6GZhfwknA0JqCrTPIg4eHWWzsNFXY1+6YnMxmOVOpz2aPS6qs/yvXNBC/
+         IY3p6GFKqzBramDmAMK2oJckpsfw/Yn598Tt+qBYIbQXbpPg6r7dHXVYtSC9+j8yen4A
+         dy9TKe3tzEbKadQoCnB6lloa+66xFKtdSB3yzhbns4IPAoFx9sWYXfxqEmbOvbrr7ZK3
+         Hx97/T559MRJtWsHSU0EpXXuuGNu70C0n9jExU8vFZuGpJy9SBuFgezejK6ccnSJSS0g
+         rX93TTJp4H1GGbpedbgpkbLoU1sFTgy2HMnDjqDK7y1T3VFujup1bgFNb4wy/Fp7G4nu
+         6ozg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713465299; x=1714070099;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/h/Do95bbYq5Tt0KYD+0H8my015G5GgNdhr/yLxS+rI=;
-        b=EB1iN+crgrVmjGy/Sjv5BhYo3oFuBsep4+DDRDISX6lGBeYLtDIetjDwCtsMdZtDej
-         Wbtmm2mXRnKhWbByKu7MCgYvDZAy7fwNR0Bk+3OuXjhfilfMCyUqAiYy6x3XLkaSjNqj
-         FgAHOefCB5D4+62fvcHgWeE+jy+oeejt/qyAP3bAaXz+VP+4gOCr6IPs24oG234VK3sE
-         scWgA9RnIOPg2fPE3Th57WEMuQtVj4urhspoQ6r6oHUl7uadYeP+qZsy+n0WEt6mLquP
-         3i3umhkDzDsmSow7UW2sgvrSFooT3r37EcsT8Es3Y/h925N/sKXNlA0jnmdWfNTzskgN
-         NxDA==
-X-Forwarded-Encrypted: i=1; AJvYcCV8/J8YnNzUvaUfHw45Js1vTtgZR/Qgtnh/4QqKTiKJ/c1UTeMhKRX3p5rbG+qnRCDsraeLur6LgiJQHqh9T9cAWxarUTyvg6RvDtFHhpCHQCrLyHyppVWP3EfdUaZE04vEnyvAymQewjOOvugEDD6UxKSqqN+ORDjoA/oPHjkNVXlKEXTT
-X-Gm-Message-State: AOJu0YxfgJ7Dy8B9bWWf4sHofxnuf+DZxBMyVjUmcxOg+eqsUAQgZ1IF
-	yEKAaIvAupKOieTRUnXy6XaIlsxmtyqL0OL7sttL5rIbCy6niLLdhC0RVAg/bO9x6TxJZawr77L
-	yPWAEyf1b3LEmq7jMLSmTx4pVw4vgfQ==
-X-Google-Smtp-Source: AGHT+IEB3bUb0iplzA4oMVXjAhm6Bb8bKdPQg8QMrh0wepwiuAokgwg5qhBuLi7t8YCF8gknqnuogEna5gHrEuq+3oE=
-X-Received: by 2002:a05:6a21:2d8a:b0:1a7:53c1:ad8d with SMTP id
- ty10-20020a056a212d8a00b001a753c1ad8dmr44266pzb.24.1713465299216; Thu, 18 Apr
- 2024 11:34:59 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713465419; x=1714070219;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+wlN/ce91bTf9rbFasUDQdfgpzsyETmNKvn6NbsAl7o=;
+        b=lHF9cPk22rRighONkxABWVhZ7krmubNTC9c8qNo2DxqlsA76iXH6Y6ia/wPcFxdifG
+         bkgm7SCzVKw3Wk+ybNHxiAe3XiWqKzY1V7caYAhGoNsX5hiZDIyfGvyDd0p0c385yfKa
+         LRdZ/aiGmg+TSBEi0RPPNcXL+LiPalRnyc8ffYUP0GxIyPnvyvtgte4w/Sxbho1R7LU+
+         esUTJrNJEI49qt44owbO2NG9g2ktHB/0NDC5uiI320ddUYolJXqb2hvMmihIUUsAyvvO
+         B3gcUGy/9CbX6Y/+cvf57tD/AjFAwYYwu5hjiOmfVKKc99h4OvwR8653TiItFPsT4kWj
+         E55w==
+X-Forwarded-Encrypted: i=1; AJvYcCWvlHaQrLvcjGgqNXVlxPDyG2cZDrNfrfT2tQPzhX8h8IgeDbwFeHM+yQVfRKHSV/qjd3rqHhzLhyUklGAwwhuSw7llwQDtVz8tZCXA
+X-Gm-Message-State: AOJu0YyAk9NG0stFOktQrPy09uwA0tC3flU05B8LpyPuEcCfCtMOUM2a
+	7xtR57jhU74UgfDyUzdpITzo6K1b1Ca/FVZ59mlKt5I7MbVtbAflu3npCKY3WceJNVW7AFl2/ON
+	E5w==
+X-Google-Smtp-Source: AGHT+IEEQdqUCVbpG8urZmuw0tUnHYvNqYQTHwsqXS5Je37zGkNyPzcVm0cNUkYflnrODXJVMl1KaQDGJeY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90a:3d4f:b0:2a2:bcae:83c1 with SMTP id
+ o15-20020a17090a3d4f00b002a2bcae83c1mr15360pjf.3.1713465419139; Thu, 18 Apr
+ 2024 11:36:59 -0700 (PDT)
+Date: Thu, 18 Apr 2024 11:36:57 -0700
+In-Reply-To: <70f9f3f847e614cbb95be4c011ecb0a5cbd2ef34.camel@cyberus-technology.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240402093302.2416467-1-jolsa@kernel.org> <20240402093302.2416467-2-jolsa@kernel.org>
- <ZhzkbN7DWq6Tzp5G@krava>
-In-Reply-To: <ZhzkbN7DWq6Tzp5G@krava>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 18 Apr 2024 11:34:46 -0700
-Message-ID: <CAEf4BzZ_en3hw72zqjW3tyn9M+Az069NXU3a3+hsn_k0T0TwnA@mail.gmail.com>
-Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return probe
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <20240416123558.212040-1-julian.stecklina@cyberus-technology.de>
+ <Zh6MmgOqvFPuWzD9@google.com> <ecb314c53c76bc6d2233a8b4d783a15297198ef8.camel@cyberus-technology.de>
+ <Zh6WlOB8CS-By3DQ@google.com> <c2ca06e2d8d7ef66800f012953b8ea4be0147c92.camel@cyberus-technology.de>
+ <Zh6-e9hy7U6DD2QM@google.com> <adb07a02b3923eeb49f425d38509b340f4837e17.camel@cyberus-technology.de>
+ <Zh_0sJPPoHKce5Ky@google.com> <70f9f3f847e614cbb95be4c011ecb0a5cbd2ef34.camel@cyberus-technology.de>
+Message-ID: <ZiFoSdKY7nrh7cfL@google.com>
+Subject: Re: [PATCH 1/2] KVM: nVMX: fix CR4_READ_SHADOW when L0 updates CR4
+ during a signal
+From: Sean Christopherson <seanjc@google.com>
+To: Thomas Prescher <thomas.prescher@cyberus-technology.de>
+Cc: "mingo@redhat.com" <mingo@redhat.com>, "x86@kernel.org" <x86@kernel.org>, 
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "hpa@zytor.com" <hpa@zytor.com>, 
+	Julian Stecklina <julian.stecklina@cyberus-technology.de>, 
+	"tglx@linutronix.de" <tglx@linutronix.de>, "bp@alien8.de" <bp@alien8.de>, 
+	"pbonzini@redhat.com" <pbonzini@redhat.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 1:25=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Tue, Apr 02, 2024 at 11:33:00AM +0200, Jiri Olsa wrote:
->
-> SNIP
->
-> >  #include <linux/kdebug.h>
-> >  #include <asm/processor.h>
-> > @@ -308,6 +309,88 @@ static int uprobe_init_insn(struct arch_uprobe *au=
-probe, struct insn *insn, bool
-> >  }
-> >
-> >  #ifdef CONFIG_X86_64
-> > +
-> > +asm (
-> > +     ".pushsection .rodata\n"
-> > +     ".global uretprobe_syscall_entry\n"
-> > +     "uretprobe_syscall_entry:\n"
-> > +     "pushq %rax\n"
-> > +     "pushq %rcx\n"
-> > +     "pushq %r11\n"
-> > +     "movq $" __stringify(__NR_uretprobe) ", %rax\n"
-> > +     "syscall\n"
-> > +     "popq %r11\n"
-> > +     "popq %rcx\n"
-> > +
-> > +     /* The uretprobe syscall replaces stored %rax value with final
-> > +      * return address, so we don't restore %rax in here and just
-> > +      * call ret.
-> > +      */
-> > +     "retq\n"
-> > +     ".global uretprobe_syscall_end\n"
-> > +     "uretprobe_syscall_end:\n"
-> > +     ".popsection\n"
-> > +);
-> > +
-> > +extern u8 uretprobe_syscall_entry[];
-> > +extern u8 uretprobe_syscall_end[];
-> > +
-> > +void *arch_uprobe_trampoline(unsigned long *psize)
-> > +{
-> > +     *psize =3D uretprobe_syscall_end - uretprobe_syscall_entry;
-> > +     return uretprobe_syscall_entry;
->
-> fyi I realized this screws 32-bit programs, we either need to add
-> compat trampoline, or keep the standard breakpoint for them:
->
-> +       struct pt_regs *regs =3D task_pt_regs(current);
-> +       static uprobe_opcode_t insn =3D UPROBE_SWBP_INSN;
-> +
-> +       if (user_64bit_mode(regs)) {
-> +               *psize =3D uretprobe_syscall_end - uretprobe_syscall_entr=
-y;
-> +               return uretprobe_syscall_entry;
-> +       }
-> +
-> +       *psize =3D UPROBE_SWBP_INSN_SIZE;
-> +       return &insn;
->
->
-> not sure it's worth the effort to add the trampoline, I'll check
->
+On Thu, Apr 18, 2024, Thomas Prescher wrote:
+> You are right. After your pointers and looking at the nesting code
+> again, I think I know what to do. Just to make sure I understand this
+> correctly:=C2=A0
+>=20
+> If L0 exits with L2 state, KVM_GET_NESTED_STATE will have
+> KVM_STATE_NESTED_RUN_PENDING set in the flags field.
 
-32-bit arch isn't a high-performance target anyways, so I'd probably
-not bother and prioritize simplicity and long term maintenance.
+Not necessarily.  KVM_STATE_NESTED_GUEST_MODE is the flag that says "L2 sta=
+te is
+loaded", the NESTED_RUN_PENDING flag is effectively a modifier on top of th=
+at.
 
->
-> jirka
+KVM_STATE_NESTED_RUN_PENDING is set when userspace interrupts KVM in the mi=
+ddle
+of nested VM-Enter emulation.  In that case, KVM needs to complete emulatio=
+n of
+the VM-Enter instruction (VMLAUNCH, VMRESUME, or VMRUN) before doing anythi=
+ng.
+I.e. KVM has loaded L2 state and is committed to completing VM-Enter, but h=
+asn't
+actually done so yet.
+
+In retrospect, KVM probably should have forced userspace to call back into =
+KVM to
+complete emulation before allowing KVM_GET_NESTED_STATE to succeed, but it'=
+s a
+minor blip.
+
+> So when we restore the vCPU state after a vmsave/vmload cycle, we don't n=
+eed
+> to update anything in kvm_run.s.regs because KVM will enter the L2
+> immediately.  Is that correct?
+
+No?  Presumably your touching vCPU state, otherwise you wouldn't be doing
+vmsave/vmload.  And if you touch vCPU state, then you need to restore the o=
+ld
+state for things to work.
+
+Again, what are you trying to do, at a higher level?  I.e. _why_ are you do=
+ing
+a save/restore cycle?  If it's for something akin to live migration, where =
+you
+need to save and restore *everything*, then stating the obvious, you need t=
+o
+save and restore everything in KVM too, which includes nested state.
 
