@@ -1,106 +1,74 @@
-Return-Path: <linux-kernel+bounces-149801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE2CF8A95FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:25:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 809938A9629
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:28:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB8B31C20D73
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:25:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 358A42844FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:28:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2020F15E7FF;
-	Thu, 18 Apr 2024 09:23:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2501A161912;
+	Thu, 18 Apr 2024 09:24:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="CuDOMn5q";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Wtn1C5B3"
-Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZPidlU95"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E8515B0F4
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:23:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE6D415B0E6;
+	Thu, 18 Apr 2024 09:24:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713432208; cv=none; b=uifAZO6KKFYbTe7R2V8XYy7hGvsHX/iwJ96XIf/Om7vCZ1btaD6/y483BlO3YMCOR2Fa88PdQJ2/nVAC0kYSwoHTlH0vxFB3iqHnl3OGVIHXMw6GIC6Rlq35n9da1yp3riZcFQMuUPqxooRpQMhQS/z1lfjNL191xTezFRLQ6Jg=
+	t=1713432279; cv=none; b=lGjajdRCxI3ShvqAnUfombuoZGDsm7oNlEBqU/nnqshc7vImZepb/x228qer0nE/8o1EgMePoKW5D2RLfQ2tbKgKf/qWOzTgzbMww0lvHRexrJAY3exg7Xd4SWhQbIcbNpzt0nIfrT6Niq3d3boGgFgpodS1prBzduZut0wkHf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713432208; c=relaxed/simple;
-	bh=vcrT1TYwKnqYJ5PZxNHW/N9+G0t6gtyJtgQOMM2ZuAg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Wj+ttnB0f5al/lkULWj/IaagydgATbRz276c6ylT1JFxJpU+zEWfGQcpGOKLxZV6OVzNNivFEmXWGANT/kQNK0RHjzZ98QjmZL5HyPy7fgRY6X8VJCIdtB+YOL1DrGP7ZiIzNX6gA0ROYNpZPGq72taA3bmujYAtLnpeCz5h1Ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=CuDOMn5q; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Wtn1C5B3; arc=none smtp.client-ip=103.168.172.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 99CD61140156;
-	Thu, 18 Apr 2024 05:23:25 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 18 Apr 2024 05:23:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
-	:from:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1713432205; x=
-	1713518605; bh=EOlC4Zi0Zmvr/N4ssp9EJZk79C5SCm6pNZw7lzj8X9g=; b=C
-	uDOMn5qNjXJaOklHhGGbmujk5dfKMhifgd44/yrcg2WTgKNNFRzdrsnhV9azaRd2
-	r/T8AutERuXyOWlLVTC26yWNBl8b8dcuWrD0eET9heq3lwwPFDcAoU9kL2tUOd45
-	adARqMLJ3tAwTe8VJ+eM66JL5+6rEGKRSIlpRcrXTULUUlldBqQSjIFZSPmuszBP
-	hx2f3DK0qqms+x9Wv0WN1R5OP2T0cRV+VWOlHw3QajVWHWsqfUdVUykRcBmu1mwk
-	koRy/ox8pCzBi8xaCWiNXaID3QOqUallBWxa2yACqI4Jhb3a5Q+vlEhdGk0sAGbV
-	Qd+NNNVYIAKzPwjjcEx5w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1713432205; x=
-	1713518605; bh=EOlC4Zi0Zmvr/N4ssp9EJZk79C5SCm6pNZw7lzj8X9g=; b=W
-	tn1C5B3va83kDpDyYKnT0eFWvZaxQZOik5FvHxfcHiio9BtLa09tRgr5idJsavUR
-	bUED4wWjxFzvpIO9V06NyQuTNppgBTjEH+5D80GV6X84PTHPNiuhnbTOb8sKjbes
-	ldeDujR1jpoeZxVUXBsJHx0sUK7WiPgjsiBeV7mmjhziEoQ/qVcLSCclArAQM9YG
-	u2gPyaBHF+J7lKW1vypf1KVWSjav+7VuuLGXRvxCA5zGqQTTG6K0FqfCT9qhY6TS
-	AkJYz9p0Jw4wxLuczxkhV/L5r7pSYPH1t+TRP+ESHzdaUL7jHQAxSC+4pAcK7SlW
-	fS7P3RQRCP4BsbNGs94tA==
-X-ME-Sender: <xms:jeYgZho45otOSuA8ROFSxeMDM8x0aE-rmaCgx2KfYFgN-TXaaH-dfA>
-    <xme:jeYgZjpbW_NwOIVSV9izhtcPvIYDfGlBSYKlOgzXp8TnpnBRMybIaVrIALtWglKxp
-    kwFuSipGnPzKzQgouo>
-X-ME-Received: <xmr:jeYgZuNLtA7X1FigDX5fS7wKr3UV3-98O6UnjlwDEAZJNsiPZqfydZ0tUrLdSTcvjg3wDyDAvbLD67QXf3VWbDj8TYZ1_j2WmcMOLAuRxW3_DA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudektddgudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
-    rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpedvjefgje
-    euvdfguddukeelveetgfdtvefhtdfffeeigfevueetffeivdffkedvtdenucevlhhushht
-    vghrufhiiigvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
-    hsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:jeYgZs6tGVO-1jbkrWKf75uv7S1-2f2ipPvkjD1nyVElVSczAhrXsg>
-    <xmx:jeYgZg7ZQY5Esg3Tp3ZzMJFY2fWNrdEOgHkEPj1c206mqU7cZzWyuA>
-    <xmx:jeYgZkib2ngTycPh9cYvCDHEgX-_xHVwKqA733tY8TVSdmR21F8zIw>
-    <xmx:jeYgZi5flOUyJ5WDwZXP5CFQHK2QVGToQREzH1TP9JPZ7tukdip8aA>
-    <xmx:jeYgZgG6HQry5RoWQxArsnCE7qu5QX0jx047_DlMejerq4tPwEf2Kbeb>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 18 Apr 2024 05:23:24 -0400 (EDT)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: linux1394-devel@lists.sourceforge.net
-Cc: linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 13/13] firewire: core: add tracepoints events for asynchronous outbound response
-Date: Thu, 18 Apr 2024 18:23:03 +0900
-Message-ID: <20240418092303.19725-14-o-takashi@sakamocchi.jp>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240418092303.19725-13-o-takashi@sakamocchi.jp>
-References: <20240418092303.19725-1-o-takashi@sakamocchi.jp>
- <20240418092303.19725-2-o-takashi@sakamocchi.jp>
- <20240418092303.19725-3-o-takashi@sakamocchi.jp>
- <20240418092303.19725-4-o-takashi@sakamocchi.jp>
- <20240418092303.19725-5-o-takashi@sakamocchi.jp>
- <20240418092303.19725-6-o-takashi@sakamocchi.jp>
- <20240418092303.19725-7-o-takashi@sakamocchi.jp>
- <20240418092303.19725-8-o-takashi@sakamocchi.jp>
- <20240418092303.19725-9-o-takashi@sakamocchi.jp>
- <20240418092303.19725-10-o-takashi@sakamocchi.jp>
- <20240418092303.19725-11-o-takashi@sakamocchi.jp>
- <20240418092303.19725-12-o-takashi@sakamocchi.jp>
- <20240418092303.19725-13-o-takashi@sakamocchi.jp>
+	s=arc-20240116; t=1713432279; c=relaxed/simple;
+	bh=TI+Duxp2EJGVJ4LdDfnyodpBJpXYgGGAd/jITQiOpN0=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=czn4y7/rJl/M0aeC2rmneQ2w/Xnh+UKCaifIt9oT/w8nrqluPEf3KAlYzGbqxBmDKX8fqmU7lkHWihwwrtk2w40hDII3xflwVXNQrTeji6FqyGTw7mryHimENE27E151tTcVpcDD/rxJrPDZjmgABXEOIuHMIWNzK85aF+nISbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ZPidlU95; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43I6JibM007521;
+	Thu, 18 Apr 2024 09:24:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	qcppdkim1; bh=bTD3rZD1+ix+HL2KnDkU+hVfMXeUhq9jJbKM8O/mw78=; b=ZP
+	idlU95whYITm5uDhrjfUteG63zAj5mwLtkWJk8BJiTi1PrpYaacLZAiwDioQsvwV
+	Uu6M9qpXS5OtV9Q1R2JvuQIiHxB+nkmZ7uBcbSmG4IkyjKlLF9gzrHp0bs7cJqEi
+	sIfPKbqixw5rfX2Re8b9JWUJPI8qTK6nLyjBtVkHMdpEI0wL1byxWq94ZTt306n3
+	InG/d/ZTPmJXM6odJdtE5YEJUHQQNBwIe99ttESbp2lX5ljC4oO2bBgrEUWNyE/0
+	ieVGTu40k7TsLA8ZbBt6+Mi7OIgmc523S8DE80z3heefLul5sa6HovSB5Q8l7CoC
+	5Loim04Q0qzZhDdpEugw==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xjx54gdar-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 09:24:34 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43I9NslX012822
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 09:23:54 GMT
+Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Thu, 18 Apr 2024 02:23:49 -0700
+From: Varadarajan Narayanan <quic_varada@quicinc.com>
+To: <andersson@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <djakov@kernel.org>,
+        <quic_varada@quicinc.com>, <dmitry.baryshkov@linaro.org>,
+        <quic_anusha@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+Subject: [PATCH v9 4/6] clk: qcom: common: Add interconnect clocks support
+Date: Thu, 18 Apr 2024 14:53:03 +0530
+Message-ID: <20240418092305.2337429-5-quic_varada@quicinc.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240418092305.2337429-1-quic_varada@quicinc.com>
+References: <20240418092305.2337429-1-quic_varada@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -108,148 +76,146 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: j5yO9rlF3iYdUpt2CiCh0iVNw2cpMJ5G
+X-Proofpoint-ORIG-GUID: j5yO9rlF3iYdUpt2CiCh0iVNw2cpMJ5G
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-18_08,2024-04-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ suspectscore=0 malwarescore=0 phishscore=0 mlxlogscore=999 bulkscore=0
+ impostorscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404180066
 
-In a view of core transaction service, the asynchronous outbound response
-consists of two stages; initiation and completion.
+Unlike MSM platforms that manage NoC related clocks and scaling
+from RPM, IPQ SoCs dont involve RPM in managing NoC related
+clocks and there is no NoC scaling.
 
-This commit adds a pair of events for the asynchronous outbound response.
+However, there is a requirement to enable some NoC interface
+clocks for accessing the peripheral controllers present on
+these NoCs. Though exposing these as normal clocks would work,
+having a minimalistic interconnect driver to handle these clocks
+would make it consistent with other Qualcomm platforms resulting
+in common code paths. This is similar to msm8996-cbf's usage of
+icc-clk framework.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
 ---
- drivers/firewire/core-transaction.c | 21 ++++++---
- drivers/firewire/trace.h            | 68 +++++++++++++++++++++++++++++
- 2 files changed, 82 insertions(+), 7 deletions(-)
+v9: Remove HWS_DATA macro
+v8: Explicitly set master and slave ids
+v7: Restore clk_get
+v6: first_id -> icc_first_node_id
+    Remove clock get so that the peripheral that uses the clock
+    can do the clock get
+v5: Split changes in common.c to separate patch
+    Fix error handling
+    Use devm_icc_clk_register instead of icc_clk_register
+v4: Use clk_hw instead of indices
+    Do icc register in qcom_cc_probe() call stream
+    Add icc clock info to qcom_cc_desc structure
+v3: Use indexed identifiers here to avoid confusion
+    Fix error messages and move to common.c
+v2: Move DTS to separate patch
+    Update commit log
+    Auto select CONFIG_INTERCONNECT & CONFIG_INTERCONNECT_CLK to fix build error
+---
+ drivers/clk/qcom/common.c | 35 ++++++++++++++++++++++++++++++++++-
+ drivers/clk/qcom/common.h |  9 +++++++++
+ 2 files changed, 43 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/firewire/core-transaction.c b/drivers/firewire/core-transaction.c
-index 1b972e95fe36..c963832d9824 100644
---- a/drivers/firewire/core-transaction.c
-+++ b/drivers/firewire/core-transaction.c
-@@ -667,6 +667,8 @@ static void free_response_callback(struct fw_packet *packet,
- {
- 	struct fw_request *request = container_of(packet, struct fw_request, response);
+diff --git a/drivers/clk/qcom/common.c b/drivers/clk/qcom/common.c
+index 75f09e6e057e..a6410b1828ca 100644
+--- a/drivers/clk/qcom/common.c
++++ b/drivers/clk/qcom/common.c
+@@ -8,6 +8,7 @@
+ #include <linux/regmap.h>
+ #include <linux/platform_device.h>
+ #include <linux/clk-provider.h>
++#include <linux/interconnect-clk.h>
+ #include <linux/reset-controller.h>
+ #include <linux/of.h>
  
-+	trace_async_response_outbound_complete(card, request, packet);
+@@ -234,6 +235,38 @@ static struct clk_hw *qcom_cc_clk_hw_get(struct of_phandle_args *clkspec,
+ 	return cc->rclks[idx] ? &cc->rclks[idx]->hw : NULL;
+ }
+ 
++static int qcom_cc_icc_register(struct device *dev,
++				const struct qcom_cc_desc *desc)
++{
++	struct icc_clk_data *icd;
++	struct clk_hw *hws;
++	int i;
 +
- 	// Decrease the reference count since not at in-flight.
- 	fw_request_put(request);
- 
-@@ -849,6 +851,9 @@ static struct fw_request *allocate_request(struct fw_card *card,
- void fw_send_response(struct fw_card *card,
- 		      struct fw_request *request, int rcode)
- {
-+	u32 *data = NULL;
-+	unsigned int data_length = 0;
++	if (!IS_ENABLED(CONFIG_INTERCONNECT_CLK))
++		return 0;
 +
- 	/* unified transaction or broadcast transaction: don't respond */
- 	if (request->ack != ACK_PENDING ||
- 	    HEADER_DESTINATION_IS_BROADCAST(request->request_header)) {
-@@ -856,17 +861,19 @@ void fw_send_response(struct fw_card *card,
- 		return;
- 	}
- 
--	if (rcode == RCODE_COMPLETE)
--		fw_fill_response(&request->response, request->request_header,
--				 rcode, request->data,
--				 fw_get_response_length(request));
--	else
--		fw_fill_response(&request->response, request->request_header,
--				 rcode, NULL, 0);
-+	if (rcode == RCODE_COMPLETE) {
-+		data = request->data;
-+		data_length = fw_get_response_length(request);
++	if (!desc->icc_hws)
++		return 0;
++
++	icd = devm_kcalloc(dev, desc->num_icc_hws, sizeof(*icd), GFP_KERNEL);
++	if (!icd)
++		return -ENOMEM;
++
++	for (i = 0; i < desc->num_icc_hws; i++) {
++		icd[i].master_id = desc->icc_hws[i].master_id;
++		icd[i].slave_id = desc->icc_hws[i].slave_id;
++		hws = &desc->clks[desc->icc_hws[i].clk_id]->hw;
++		icd[i].clk = devm_clk_hw_get_clk(dev, hws, "icc");
++		if (!icd[i].clk)
++			return dev_err_probe(dev, -ENOENT,
++					     "(%d) clock entry is null\n", i);
++		icd[i].name = clk_hw_get_name(hws);
 +	}
 +
-+	fw_fill_response(&request->response, request->request_header, rcode, data, data_length);
- 
- 	// Increase the reference count so that the object is kept during in-flight.
- 	fw_request_get(request);
- 
-+	trace_async_response_outbound_initiate(card, request, &request->response, data,
-+					       data ? data_length / 4 : 0);
++	return devm_icc_clk_register(dev, desc->icc_first_node_id,
++						     desc->num_icc_hws, icd);
++}
 +
- 	card->driver->send_response(card, &request->response);
+ int qcom_cc_really_probe(struct platform_device *pdev,
+ 			 const struct qcom_cc_desc *desc, struct regmap *regmap)
+ {
+@@ -303,7 +336,7 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+ 	if (ret)
+ 		return ret;
+ 
+-	return 0;
++	return qcom_cc_icc_register(dev, desc);
  }
- EXPORT_SYMBOL(fw_send_response);
-diff --git a/drivers/firewire/trace.h b/drivers/firewire/trace.h
-index ba09eb720933..0109a70d3b02 100644
---- a/drivers/firewire/trace.h
-+++ b/drivers/firewire/trace.h
-@@ -190,6 +190,74 @@ TRACE_EVENT(async_request_inbound,
- 	)
- )
+ EXPORT_SYMBOL_GPL(qcom_cc_really_probe);
  
-+TRACE_EVENT(async_response_outbound_initiate,
-+	TP_PROTO(const struct fw_card *card, const struct fw_request *request,
-+		 const struct fw_packet *packet, const u32 *data, unsigned int data_count),
-+	TP_ARGS(card, request, packet, data, data_count),
-+	TP_STRUCT__entry(
-+		__field(u64, transaction)
-+		__field(u8, scode)
-+		__field(u8, generation)
-+		__field(u16, destination)
-+		__field(u8, tlabel)
-+		__field(u8, retry)
-+		__field(u8, tcode)
-+		__field(u8, priority)
-+		__field(u16, source)
-+		__field(u8, rcode)
-+		__dynamic_array(u32, data, data_count)
-+	),
-+	TP_fast_assign(
-+		__entry->transaction = (u64)request;
-+		__entry->scode = packet->speed;
-+		__entry->generation = packet->generation;
-+		__entry->destination = async_header_get_destination(packet->header);
-+		__entry->tlabel = async_header_get_tlabel(packet->header);
-+		__entry->retry = async_header_get_retry(packet->header);
-+		__entry->tcode = async_header_get_tcode(packet->header);
-+		__entry->priority = async_header_get_priority(packet->header);
-+		__entry->source = async_header_get_source(packet->header);
-+		__entry->rcode = async_header_get_rcode(packet->header);
-+		memcpy(__get_dynamic_array(data), data, __get_dynamic_array_len(data));
-+	),
-+	TP_printk(
-+		"transaction=0x%llx scode=%u generation=%u dst_id=0x%04x tlabel=%u retry=%u tcode=%u priority=%u src_id=0x%04x rcode=%u data=%s",
-+		__entry->transaction,
-+		__entry->scode,
-+		__entry->generation,
-+		__entry->destination,
-+		__entry->tlabel,
-+		__entry->retry,
-+		__entry->tcode,
-+		__entry->priority,
-+		__entry->source,
-+		__entry->rcode,
-+		__print_array(__get_dynamic_array(data), __get_dynamic_array_len(data), sizeof(u32))
-+	)
-+)
-+
-+TRACE_EVENT(async_response_outbound_complete,
-+	TP_PROTO(const struct fw_card *card, const struct fw_request *request,
-+		 const struct fw_packet *packet),
-+	TP_ARGS(card, request, packet),
-+	TP_STRUCT__entry(
-+		__field(u64, transaction)
-+		__field(u8, ack)
-+		__field(u16, timestamp)
-+	),
-+	TP_fast_assign(
-+		__entry->transaction = (u64)request;
-+		__entry->ack = packet->ack;
-+		__entry->timestamp = packet->timestamp;
-+	),
-+	TP_printk(
-+		"transaction=0x%llx ack=%u timestamp=0x%04x",
-+		__entry->transaction,
-+		__entry->ack,
-+		__entry->timestamp
-+	)
-+)
-+
- #endif // _FIREWIRE_TRACE_EVENT_H
+diff --git a/drivers/clk/qcom/common.h b/drivers/clk/qcom/common.h
+index 9c8f7b798d9f..ea96b2ca3cac 100644
+--- a/drivers/clk/qcom/common.h
++++ b/drivers/clk/qcom/common.h
+@@ -19,6 +19,12 @@ struct clk_hw;
+ #define PLL_VOTE_FSM_ENA	BIT(20)
+ #define PLL_VOTE_FSM_RESET	BIT(21)
  
- #define TRACE_INCLUDE_PATH	.
++struct qcom_icc_hws_data {
++	int master_id;
++	int slave_id;
++	int clk_id;
++};
++
+ struct qcom_cc_desc {
+ 	const struct regmap_config *config;
+ 	struct clk_regmap **clks;
+@@ -29,6 +35,9 @@ struct qcom_cc_desc {
+ 	size_t num_gdscs;
+ 	struct clk_hw **clk_hws;
+ 	size_t num_clk_hws;
++	struct qcom_icc_hws_data *icc_hws;
++	size_t num_icc_hws;
++	unsigned int icc_first_node_id;
+ };
+ 
+ /**
 -- 
-2.43.0
+2.34.1
 
 
