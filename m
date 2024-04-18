@@ -1,191 +1,192 @@
-Return-Path: <linux-kernel+bounces-150358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1B668A9DDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:02:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88E928A9DE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:02:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15480B255BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:02:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 382F5285AFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:02:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E12E16C43B;
-	Thu, 18 Apr 2024 15:02:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC65B16C44E;
+	Thu, 18 Apr 2024 15:02:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="EsK3BI3w"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="pItwYMi4"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 939FA168B00
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:02:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB99168B00;
+	Thu, 18 Apr 2024 15:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713452527; cv=none; b=YtRKbpLpn628F8Wu1C1iRl9mJsYtvU12leltqq2TEKZ8vyl01lio3KzxQkg2sro+zzQ97dCASczkue+HpDMKop4lWFupT2RRuSluB6sIXWjIu0gmM+Zrh/XEFQ7PkZ9ZTnd58OWQLY1oDC6LJBVlmcs6frtgOSU2hQVTAqU7uIA=
+	t=1713452553; cv=none; b=k18t+DEyab0zWSezr+2fYVCTLlYb4wccObvDh7qdQLqGYSKwQ92yFkGNNYD0k9wQt5j3rpCkXJqdvyTAumbVyDDgKWdRiGsogzPedugrkhk0ltaQOj5JWTBokbUHP2ck6rWdUNJY1IxegrA85ippYKmCLuwsV4Q+KXbtonso7mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713452527; c=relaxed/simple;
-	bh=DQg9N9NsmAiomB3YevtTSMmyEr0U2U0LM9Xrfnum6ck=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aF/OMXSGOxyasMO41K6i+n/CTeZhqA+GZCK6UcZYqyCHoYt90ZR6eSJjlHXWK6aYvzfC0nw4oBvV/cvjoBeCAF8jr8iJNRMw0hNL6FPtrZOFr0jqImqDxj3qRyTz1UEmfq04blaiIVNcj8emIXiBrOM7sr/ZVzFY3S0P1KutroU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=EsK3BI3w; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com [209.85.219.69])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1C1953F8E7
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:02:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1713452522;
-	bh=Uwv3V9NnGMB5Wj85PeZTAIoBr809/UIjglv9mvQKrBw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=EsK3BI3w/36KL1YiurVwhkCrgd74JYbPyQcAtL/9YzbiE+NUkaCHkonopFsZOh8OI
-	 E3/esZxM6q0lBihe3VAj9NzaIEMOfv9iVyCrOpTkFmEeIdhn15GGCVHF291tFpz+8u
-	 AqWIbnRqsYKgeV1xQbLGXCPEVZF3Gtx/kNDrPGn5Xgmhdlnyy+AHpyvXWELQSZg3DH
-	 QSmFgJVvrYPsM3dlrZk3uZjtVteGIsxIMY2ZG5BX2sT3nHNLNB0lN8OStlBRKkzJQy
-	 yuMVC0g7mCiquoE3lZ3RcmNEq2NKUmaETyYZQvK0ZjEspQ0wmlbY/mBRQ6I1p0o+fg
-	 kQ3y2y5VjkZKg==
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-6994084553bso12635876d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:02:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713452521; x=1714057321;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Uwv3V9NnGMB5Wj85PeZTAIoBr809/UIjglv9mvQKrBw=;
-        b=iaMPTGOWft3GksQrxclTvpTxy9RYe09OKIiZa0ytukq5IB4+WIaq4lA2dYItXzRaRa
-         U6cLxctklrYfP7RoQOCgjLQDGgkdW7rembwQg+rEenG4bvhGEh7lRjXkwWhEa2PxVJCU
-         PkMwFyLTaOAqu+QFpMpfMiF1uPTXk3//Fh8YFJuQAONletjdklLzbDTuvXJerCO7T2YS
-         0Y5lr5qcHaY1FMs9xv5v5BTZBNbkdf+sMN9Qd+45yenAzhTQHX8EuQIeXVgW85I+nn6c
-         w0Whkm91G9AztZdT39Pk7LZX7CW7m1zpOd+tzLsYnnQROalsRWJzF+642qVF1Gxu0h35
-         af7g==
-X-Forwarded-Encrypted: i=1; AJvYcCUdzVK71ZAiCSYYWeVal4YZ9wuXZjFy8X80Hy1i9ydmeZ5FLCxfYRqC1vPrmykiZinGrhL1hVPpe6iZaFDuKtvF87whoFF91z2OEChs
-X-Gm-Message-State: AOJu0Yw/xKdJY4BIB+wnSfBMFg8L8Fb+QcVytpqED7Y15f/INuWkcu4z
-	nV1GE3xC0L2AKW1Xut1XMD1EGS/OkNTFLHZ2XRhuQrpkUKsymi3QRkY+EyEY9CYw4ZApbozCVDW
-	t8fd2tFm/PeWsDcl8Y2OmYJcS8XLk2e1mqiUmLm0dluiQoHXnHVp40OYOKUrCegnCV8tt73xK9n
-	pQyzlFrj1P4nMwc4ZIzhxwdSWyGluX36wuE8KEkrePDJG6mOQUC4b00pH3iyE+1dI=
-X-Received: by 2002:ad4:414f:0:b0:69b:5961:1ff4 with SMTP id z15-20020ad4414f000000b0069b59611ff4mr2636825qvp.63.1713452520911;
-        Thu, 18 Apr 2024 08:02:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFwnD/dVrXbHRIjywyojR4601i9J6JDecCBPGXdOo9n2JxohMovJ/J3JuT2jIjVRTbNhUbSWJ19JUCG2v0M57o=
-X-Received: by 2002:ad4:414f:0:b0:69b:5961:1ff4 with SMTP id
- z15-20020ad4414f000000b0069b59611ff4mr2636758qvp.63.1713452520029; Thu, 18
- Apr 2024 08:02:00 -0700 (PDT)
+	s=arc-20240116; t=1713452553; c=relaxed/simple;
+	bh=7OrWGR7uUGj5WD8ukNtQAAEgG5TyYDvXmdcs72e53PI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nytoFN/LYv4wklvm42DSn2Gg/SXHTPK/l98fUCxBCwjmeOdYOKW3b3luIDYIupeuOt9JbXqDY41r+1gHiLe0IUU0js8PgfsErH/JgI/Th8ycS0Y0XuH7o0aazKplf4w2JNVqJZJUTd+2BNhpCLQkAHj4tgEDtRXbuBcAN2YLKDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=pItwYMi4; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=K5JziYjNp24S2C0b51bJopK9Dezy2DYDvLSOH+g4vyY=; b=pItwYMi4HEGWpIZtNXTAJZ8iZH
+	xHKWnszJf9A+JKlX+rFnscAot3yj24A56YN6dMc4XSfveGqy/zf4LpPdd2F926ouKNSyxtwj7J63h
+	4Yhk7kBv6VcNESf+p+EyFWnNC+uwaCGDZ6DF6D1qRHAm83ODc/MJaetfVva14NYvRbC/oJGbvgrWL
+	dqngS+JaEIEvLs8d4lrB+enRbw87uBtJSmOsY+YFfSU5u6OjqElo3OvYNa0ZVKY9ovZ3udfFRgMMa
+	mbQlO4m5wvTpXvAS/DB+lwnytLrOmRD3XWcTYOKP/OZlsrLAQwr6oVm+tTPGTW0SWsDD2qhHyAPyo
+	TepeYzCw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38082)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rxTH0-0006PF-0X;
+	Thu, 18 Apr 2024 16:02:02 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rxTGx-00070y-Er; Thu, 18 Apr 2024 16:01:59 +0100
+Date: Thu, 18 Apr 2024 16:01:59 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Stefan Eichenberger <eichest@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	lxu@maxlinear.com, hkallweit1@gmail.com, michael@walle.cc,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] net: phy: mxl-gpy: add new device tree property
+ to disable SGMII autoneg
+Message-ID: <ZiE156+BPpx/ciL6@shell.armlinux.org.uk>
+References: <20240416121032.52108-1-eichest@gmail.com>
+ <20240416121032.52108-3-eichest@gmail.com>
+ <3f7f278f-e490-47f1-971c-ecf44a70cee4@lunn.ch>
+ <Zh6clAtI3NO+nMEi@eichest-laptop>
+ <5ed39628-4ac0-4c4e-9a16-fd4bf9a6db29@lunn.ch>
+ <Zh6mIv1Ee+1h21Xo@shell.armlinux.org.uk>
+ <Zh6z90iCpLqF4fla@eichest-laptop>
+ <Zh6/oVHUvnOVtHaC@shell.armlinux.org.uk>
+ <Zh94yqo2EHRq8eEq@eichest-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418110153.102781-1-aleksandr.mikhalitsyn@canonical.com> <eb0b4b89-9a1f-0e1b-9744-6eb3396048bd@ssi.bg>
-In-Reply-To: <eb0b4b89-9a1f-0e1b-9744-6eb3396048bd@ssi.bg>
-From: Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Date: Thu, 18 Apr 2024 17:01:49 +0200
-Message-ID: <CAEivzxd_Lz3o8Qmqq6wyfK_UduVL1Qm9jQ9UJaoE_O7wWPrg-Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 1/2] ipvs: add READ_ONCE barrier for ipvs->sysctl_amemthresh
-To: Julian Anastasov <ja@ssi.bg>
-Cc: horms@verge.net.au, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, 
-	netfilter-devel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>, 
-	Florian Westphal <fw@strlen.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zh94yqo2EHRq8eEq@eichest-laptop>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Thu, Apr 18, 2024 at 3:23=E2=80=AFPM Julian Anastasov <ja@ssi.bg> wrote:
->
->
->         Hello,
+On Wed, Apr 17, 2024 at 09:22:50AM +0200, Stefan Eichenberger wrote:
+> On Tue, Apr 16, 2024 at 07:12:49PM +0100, Russell King (Oracle) wrote:
+> > On Tue, Apr 16, 2024 at 07:23:03PM +0200, Stefan Eichenberger wrote:
+> > > Hi Russell and Andrew,
+> > > 
+> > > On Tue, Apr 16, 2024 at 05:24:02PM +0100, Russell King (Oracle) wrote:
+> > > > On Tue, Apr 16, 2024 at 06:02:08PM +0200, Andrew Lunn wrote:
+> > > > > On Tue, Apr 16, 2024 at 05:43:16PM +0200, Stefan Eichenberger wrote:
+> > > > > > Hi Andrew,
+> > > > > > 
+> > > > > > Thanks a lot for the feedback.
+> > > > > > 
+> > > > > > On Tue, Apr 16, 2024 at 03:46:19PM +0200, Andrew Lunn wrote:
+> > > > > > > On Tue, Apr 16, 2024 at 02:10:32PM +0200, Stefan Eichenberger wrote:
+> > > > > > > > Add a new device tree property to disable SGMII autonegotiation and
+> > > > > > > > instead use the option to match the SGMII speed to what was negotiated
+> > > > > > > > on the twisted pair interface (tpi).
+> > > > > > > 
+> > > > > > > Could you explain this is more detail.
+> > > > > > > 
+> > > > > > > SGMII always runs its clocks at 1000Mbps. The MAC needs to duplicate
+> > > > > > > the symbols 100 times when running at 10Mbs, and 10 times when running
+> > > > > > > at 100Mbps.
+> > > > > > 
+> > > > > > Currently, the mxl-gpy driver uses SGMII autonegotiation for 10 Mbps,
+> > > > > > 100 Mbps, and 1000 Mbps. For our Ethernet controller, which is on an
+> > > > > > Octeon TX2 SoC, this means that we have to enable "in-band-status" on
+> > > > > > the controller. This will work for all three speed settings. However, if
+> > > > > > we have a link partner that can do 2.5 Gbps, the mxl-gpy driver will
+> > > > > > disable SGMII autonegotiation in gpy_update_interface. This is not
+> > > > > > supported by this Ethernet controller because in-band-status is still
+> > > > > > enabled. Therefore, we will not be able to transfer data at 2.5 Gbps,
+> > > > > > the SGMII link will not go into a working state.
+> > > > > 
+> > > > > This is where i expect Russel to point out that SGMII does not support
+> > > > > 2.5G. What you actually mean is that the PHY swaps to 2500BaseX. And
+> > > > > 2500BaseX does not perform speed negotiation, since it only supports
+> > > > > 2500. So you also need the MAC to swap to 2500BaseX.
+> > > > 
+> > > > Yes, absolutely true that SGMII does not support 2.5G... and when
+> > > > operating faster, than 2500base-X is normally used.
+> > > > 
+> > > > How, 2500base-X was slow to be standardised, and consequently different
+> > > > manufacturers came up with different ideas. The common theme is that
+> > > > it's 1000base-X up-clocked by 2.5x. Where the ideas differ is whether
+> > > > in-band negotiation is supported or not. This has been a pain point for
+> > > > a while now.
+> > > > 
+> > > > As I mentioned in my previous two messages, I have an experimental
+> > > > patch series that helps to address this.
+> > > > 
+> > > > The issue is that implementations mix manufacturers, so we need to
+> > > > know the capabilities of the PHY and the capabilities of the PCS, and
+> > > > then hope that we can find some common ground between their
+> > > > requirements.
+> > > > 
+> > > > There is then the issue that if you're not using phylink, then...
+> > > > guess what... you either need to convert to use phylink or implement
+> > > > the logic in your own MAC driver to detect what the PHY is doing
+> > > > and what its capabilities are - but I think from what you've said,
+> > > > you are using phylink.
+> > > 
+> > > Thanks for the patch series and the explanation. In our use case we have
+> > > the mismatch between the PHY and the mvpp2 driver in 2500BaseX mode.
+> > 
+> > Ah, mvpp2. This is one of those cases where I think you have a
+> > disagreement between manufacturers over 2500base-X.
+> > 
+> > Marvell's documentation clearly states that when operating in 1000base-X
+> > mode, AN _must_ be enabled. Since programming 2500base-X is programming
+> > the mvpp2 hardware for 1000base-X and then configuring the COMPHY to
+> > clock faster, AN must also be enabled when operating at 2500base-X.
+> > 
+> > It seems you've coupled it with the mxl-gpy PHY which doesn't apparently
+> > support AN when in 2500base-X.
+> > 
+> > Welcome to the mess of 2500base-X, and sadly we finally have the
+> > situation that I've feared for years: one end of a 2500base-X link
+> > that's documented as requiring AN, and the other end not providing it.
+> > 
+> > Sigh. If only the IEEE 802.3 committee had been more pro-active and
+> > standardised 2500base-X _before_ manufacturers went off and did their
+> > own different things.
+> 
+> I also checked the datasheet and you are right about the 1000base-X mode
+> and in-band AN. What worked for us so far was to use SGMII mode even for
+> 2.5Gbps and disable in-band AN (which is possible for SGMII). I think
+> this works because as you wrote, the genphy just multiplies the clock by
+> 2.5 and doesn't care if it's 1000base-X or SGMII. With your patches we
+> might even be able to use in-band autonegoation for 10,100 and 1000Mbps
+> and then just disable it for 2.5Gbps. I need to test it, but I have hope
+> that this should work.
 
-Dear Julian,
+There is another way we could address this. If the querying support
+had a means to identify that the endpoint supports bypass mode, we
+could then have phylink identify that, and arrange to program the
+mvpp2 end to be in 1000base-X + x2.5 clock + AN bypass, which would
+mean it wouldn't require the inband 16-bit word to be present.
 
->
-> On Thu, 18 Apr 2024, Alexander Mikhalitsyn wrote:
->
-> > Cc: Julian Anastasov <ja@ssi.bg>
-> > Cc: Simon Horman <horms@verge.net.au>
-> > Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-> > Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
-> > Cc: Florian Westphal <fw@strlen.de>
-> > Suggested-by: Julian Anastasov <ja@ssi.bg>
-> > Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.c=
-om>
-> > ---
-> >  net/netfilter/ipvs/ip_vs_ctl.c | 12 +++++++-----
-> >  1 file changed, 7 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_=
-ctl.c
-> > index 143a341bbc0a..daa62b8b2dd1 100644
-> > --- a/net/netfilter/ipvs/ip_vs_ctl.c
-> > +++ b/net/netfilter/ipvs/ip_vs_ctl.c
->
-> > @@ -105,7 +106,8 @@ static void update_defense_level(struct netns_ipvs =
-*ipvs)
-> >       /* si_swapinfo(&i); */
-> >       /* availmem =3D availmem - (i.totalswap - i.freeswap); */
-> >
-> > -     nomem =3D (availmem < ipvs->sysctl_amemthresh);
-> > +     amemthresh =3D max(READ_ONCE(ipvs->sysctl_amemthresh), 0);
-> > +     nomem =3D (availmem < amemthresh);
-> >
-> >       local_bh_disable();
-> >
-> > @@ -146,8 +148,8 @@ static void update_defense_level(struct netns_ipvs =
-*ipvs)
-> >       case 1:
-> >               if (nomem) {
-> >                       ipvs->drop_rate =3D ipvs->drop_counter
-> > -                             =3D ipvs->sysctl_amemthresh /
-> > -                             (ipvs->sysctl_amemthresh-availmem);
-> > +                             =3D amemthresh /
-> > +                             (amemthresh-availmem);
->
->         Thanks, both patches look ok except that the old styling
-> is showing warnings for this patch:
->
-> scripts/checkpatch.pl --strict /tmp/file1.patch
->
->         It would be great if you silence them somehow in v3...
+I haven't fully thought it through yet - for example, I haven't
+considered how we should indicate to the PCS that AN bypass mode
+should be enabled or disabled via the pcs_config() method.
 
-Yeah, I have fixed this in v3. Also, I had to split multiple
-assignments into different
-lines because of:
->CHECK: multiple assignments should be avoided
-
-Now everything looks fine.
-
->
->         BTW, est_cpulist is masked with current->cpus_mask of the
-> sysctl writer process, if that is of any help. That is why I skipped
-> it but lets keep it read-only for now...
-
-That's a good point! Probably I'm too conservative ;-)
-
->
-> >                       ipvs->sysctl_drop_packet =3D 2;
-> >               } else {
-> >                       ipvs->drop_rate =3D 0;
-> > @@ -156,8 +158,8 @@ static void update_defense_level(struct netns_ipvs =
-*ipvs)
-> >       case 2:
-> >               if (nomem) {
-> >                       ipvs->drop_rate =3D ipvs->drop_counter
-> > -                             =3D ipvs->sysctl_amemthresh /
-> > -                             (ipvs->sysctl_amemthresh-availmem);
-> > +                             =3D amemthresh /
-> > +                             (amemthresh-availmem);
-> >               } else {
-> >                       ipvs->drop_rate =3D 0;
-> >                       ipvs->sysctl_drop_packet =3D 1;
->
-> Regards
-
-Kind regards,
-Alex
-
->
-> --
-> Julian Anastasov <ja@ssi.bg>
->
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
