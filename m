@@ -1,103 +1,119 @@
-Return-Path: <linux-kernel+bounces-149374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D5AF8A9040
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:00:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 521798A9045
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:07:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E1CA1C219B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:00:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D6A8281DFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:07:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 983D36FA7;
-	Thu, 18 Apr 2024 01:00:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97A2179F0;
+	Thu, 18 Apr 2024 01:07:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="SDAV5RYY"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="F9+yefgp"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94288376;
-	Thu, 18 Apr 2024 01:00:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902D4611B
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 01:07:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713402048; cv=none; b=OZP4E0efDSNfelfX16/yzDukmlNHXb7cD/HvxGOTgAi0jW8wlkrz2FEGicHDHypupFLPoR/gIPlxGRBiC06I2D95u8yDg+MTql47HEKGH1I4BTp+1kyoyLHI78Yt3zBquVmWRyrAMiWJ2lU4B0z5fmW45hfPF7lY1NchFUTG5VY=
+	t=1713402448; cv=none; b=qylO6CKaXM8deQgIRFHMzTsRvtLtKz9d+YQihaAzyuYEnXgJ+ypWHiJ/C0FcHxW6mbg04edI1hz2MWCdgH2VNH2b/7cYNXKLVZNNpPSuWVv4svs4rHHfhzorQ+VmcjibITkErtzOHqizSzaB3Ar472y0Kn5yz4rijpfF4lyiqMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713402048; c=relaxed/simple;
-	bh=vTanqau4t/U+Uyls6+AXjIbwm8dSM1/9KWNhqrmGuGY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=otEjDYYAxJzUPU8dIoTzzJUQEzhpYqWb6RLecslo7r8ZwZ4efbl+X2Xji6PiyeyqT3kZvZuAkxLYYsLderBNpJKlnbS2zU9pXdS6mwkTQgfvoerdhVoOsp4UpWKKUxfGge14+y0YkmXKzNfz8ZmVkPGKU1fVKaZjuRpAjm3xSYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=SDAV5RYY; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1713402045;
-	bh=vTanqau4t/U+Uyls6+AXjIbwm8dSM1/9KWNhqrmGuGY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=SDAV5RYYCtv9/IfXyhzcOOOTEmUMqPzfiEGS4GgSjQnGQUV7yADPMa14Nd0rmUE/K
-	 aquXYXEUaYGpBv5GCsf8zH15kInnF/2Xi9xZigUB1VFYkbS3IWcata7UA7dTgHg+rs
-	 7Fd+yV9yJBuUoLZkiMLrspqMbOl6FKqPUQ87rykTej4IKlGrkD83YiCNOwliRNm4yR
-	 osPxlSCN9oSgSQNXy9fbIMcKfAXI08A3mrZCyZ3alA/xpYUJRjClRlIDtlLJqY56IV
-	 SHmyD7lVNtHX7SS+8Q95mEw1DDSmFAz18MUgX1C0dHSN0cUPgvKKr58M4Yvj5nc+fc
-	 4UEOJKGC3p1iA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VKfbJ1h6Hz4wc8;
-	Thu, 18 Apr 2024 11:00:44 +1000 (AEST)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Frederic Weisbecker <frederic@kernel.org>, Alexander Gordeev
- <agordeev@linux.ibm.com>, Ingo Molnar <mingo@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
- <vincent.guittot@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
- linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org, Nicholas Piggin
- <npiggin@gmail.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
- <gor@linux.ibm.com>
-Subject: Re: [PATCH v2 RESEND 0/5] sched/vtime: vtime.h headers cleanup
-In-Reply-To: <Zh-kEvJbNR2krwmx@localhost.localdomain>
-References: <cover.1712760275.git.agordeev@linux.ibm.com>
- <Zh-kEvJbNR2krwmx@localhost.localdomain>
-Date: Thu, 18 Apr 2024 11:00:43 +1000
-Message-ID: <87h6fzbi2s.fsf@mail.lhotse>
+	s=arc-20240116; t=1713402448; c=relaxed/simple;
+	bh=ugT74PoHd8kn03j1TJX7vb14OkXu1n5AwTPK5v5aCCg=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=hc+1JC25SQI+vxHKuM/zUmsAoROhv4N0nABOD4kHT6wKrSBfD5aBuJZVQZxkNnkZ0UJnKH7KwT6ggaL7ABbgfKjDOZJFYx9ZTuaCtMVKhbuD5sA7N6Kso9tK0cXamfdeJfZhIMW0ohMkxt55wYYBNvfBye6XAc9RZlv151X/bhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=F9+yefgp; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcc0bcf9256so643982276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:07:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713402446; x=1714007246; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MdSRxrDWVrTdyXc/SZ7hHOG18QRAIlMKQeP4juS8/a4=;
+        b=F9+yefgp1nl7+IS9tccDVRKISTF7ti0wHBoZYtO5xeMClW5IeoRjUIg5mnKy2wExkQ
+         7IbHtLW1LvUwFLNr702k+80yPJoTL2wvcjGc7w4aoQB0uCLCQBMcvDobMNegIIn+wLW7
+         i+0VrBR9if43i1lQt3ByjE35ojYTmwQkt7LxhHklhh2euRfj0DewgA7/nkzpUxMQWTJf
+         0kQ7G2bMk2CsqcxHhr4dJ+GcEogX1fjeIuTcLD92z5ymnSotq2S97GjY3bZhTDc+8IEN
+         KtBvH3Yzl91CCV3Bh3lh46x90600Bp3cjixEu6y9opcMcmgW3TuIuEElSYbCFdSLRLb9
+         Ye/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713402446; x=1714007246;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MdSRxrDWVrTdyXc/SZ7hHOG18QRAIlMKQeP4juS8/a4=;
+        b=H9kpXE4dK8qnGsSP+rWw8OEz5dRYfSyZwD6zh2ijwqj/ngyhV66CpBlTAcTnIhNLjf
+         EE8c/XkWyNTfBUfsuKpxJb7uU2qoootcgTeQHgBe6Frlwtwf2Y43my9SO7FSAgFUmWxi
+         /74jvxiSW88zcMdyiRse8ZoajcqW37rbqn+kfmQ/+8WuKs3Z0jVCGXnF6mSmpmP58znt
+         wyEuZ2bXjxUFDgrEuXNG/3MV2ZkDvh+HL4TlvaIpVi1gHRRh9KqncXSBrCkqykB+NhX1
+         pkb1IHgjKhXcSrfL6+WK49zOabsQlEyDpsF19YSkyvP38Wcn8rZBmdPOnUEsN3D43Qfn
+         rR3w==
+X-Forwarded-Encrypted: i=1; AJvYcCWAItgqrTvabdVCV4JOSmN6VabeYSuY6ORjrmRBlCvi6Yb0vUpsa615hQfnU8ylqX+VwwY3TfkL9o4/VNcBQlRmm1Q4nWbqHQV/fdBK
+X-Gm-Message-State: AOJu0Yxd2bnhhOMiXhTjCY0dND+ReEUF2oJV88Dh1F+8+4uVeKxtBkGT
+	gTFzjQa83lomZa0PRsDKb6P9GOl325zAwArBCS/WYcgaOOfB/FweJA4Mcm2Ku3b3Blcw2Obiool
+	1fQ==
+X-Google-Smtp-Source: AGHT+IG38wIupQEk9EdfJseXhTp62aHkse9umTarR8j0kkObuskwYS0w1aDzglzbg09ZRXU2Ys2DSXgm74o=
+X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
+ (user=edliaw job=sendgmr) by 2002:a05:6902:18cc:b0:dc6:b982:cfa2 with SMTP id
+ ck12-20020a05690218cc00b00dc6b982cfa2mr116831ybb.8.1713402446546; Wed, 17 Apr
+ 2024 18:07:26 -0700 (PDT)
+Date: Thu, 18 Apr 2024 01:07:09 +0000
+In-Reply-To: <16430256912363@kroah.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <16430256912363@kroah.com>
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+Message-ID: <20240418010723.3069001-1-edliaw@google.com>
+Subject: [PATCH 5.15.y v2 0/5] Backport bounds checks for bpf
+From: Edward Liaw <edliaw@google.com>
+To: stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Hao Luo <haoluo@google.com>
+Cc: bpf@vger.kernel.org, kernel-team@android.com, 
+	Edward Liaw <edliaw@google.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Frederic Weisbecker <frederic@kernel.org> writes:
-> Le Wed, Apr 10, 2024 at 05:09:43PM +0200, Alexander Gordeev a =C3=A9crit :
->> Hi All,
->>=20
->> There are no changes since the last post, just a re-send.
->>=20
->> v2:
->> - patch 4: commit message reworded (Heiko)
->> - patch 5: vtime.h is removed from Kbuild scripts (PowerPC only) (Heiko)
->>=20
->> v1:
->> Please find a small cleanup to vtime_task_switch() wiring.
->> I split it into smaller patches to allow separate PowerPC
->> vs s390 reviews. Otherwise patches 2+3 and 4+5 could have
->> been merged.
->>=20
->> I tested it on s390 and compile-tested it on 32- and 64-bit
->> PowerPC and few other major architectures only, but it is
->> only of concern for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE-capable
->> ones (AFAICT).
->>=20
->> Thanks!
->
-> It probably makes sense to apply the whole series to the scheduler tree.
-> Does any powerpc or s390 maintainer oppose to that?
+These backports fix CVE-2021-4204, CVE-2022-23222 for 5.15.y.
 
-No objection. It has acks and reviews from powerpc.
+This includes a conflict resolution with 45ce4b4f9009 ("bpf: Fix crash
+due to out of bounds access into reg2btf_ids.") which was cherry-picked
+previously.
+Link: https://lore.kernel.org/all/20220428235751.103203-11-haoluo@google.com/
 
-cheers
+They were tested on 5.15.94 to pass LTP test bpf_prog06 with no
+regressions from the bpf selftests.
+
+v2:
+Made a mistake of not including the out of bounds reg2btf_ids fix
+
+Daniel Borkmann (4):
+  bpf: Generalize check_ctx_reg for reuse with other types
+  bpf: Generally fix helper register offset check
+  bpf: Fix out of bounds access for ringbuf helpers
+  bpf: Fix ringbuf memory type confusion when passing to helpers
+
+Kumar Kartikeya Dwivedi (1):
+  bpf: Extend kfunc with PTR_TO_CTX, PTR_TO_MEM argument support
+
+ include/linux/bpf.h          |  9 +++-
+ include/linux/bpf_verifier.h |  4 +-
+ kernel/bpf/btf.c             | 93 ++++++++++++++++++++++++++++--------
+ kernel/bpf/verifier.c        | 66 +++++++++++++++++--------
+ 4 files changed, 129 insertions(+), 43 deletions(-)
+
+--
+2.44.0.769.g3c40516874-goog
+
 
