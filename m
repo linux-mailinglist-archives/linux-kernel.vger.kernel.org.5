@@ -1,256 +1,231 @@
-Return-Path: <linux-kernel+bounces-150652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C8948AA252
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:53:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C45A78AA25C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:59:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67229284BD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:53:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B5EB284991
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:59:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43DB617AD7E;
-	Thu, 18 Apr 2024 18:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBEC417AD82;
+	Thu, 18 Apr 2024 18:59:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DDVi0ibU"
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="RW/v5Wto"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2042.outbound.protection.outlook.com [40.107.22.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B597917335B;
-	Thu, 18 Apr 2024 18:53:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713466406; cv=none; b=h7CiSt/X/vqlbSSZIOdyjiqibORyYI3Ow6xJG7pyEeBrFTDNuvjYx9HdlOOFtm3iIlV/WtAwC/fDLy0M8MPQvNHeurpEWb6QZP1K2tEyqK8duoWuMR8dm2w9xmPYnPZYDzbK8ODXbmIOeEc8XxZk7f/WXPkwujTlhcy5mgWLa6E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713466406; c=relaxed/simple;
-	bh=NErdMtdTcltTG+B8NDqZl8S8L5b+1hC0gXiSoSWJphI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eg3JOFr8mRHnEFun+9eaj+zuRqKp2697F6WaOsqZALPaxtSnJNQRjwwxi+8DIA1mN57uU4dj3DG6yNuE4pC3IAtZb6pSlJeD06s7oSbSJ00aoMlSU2bnyaNOprwrv0T1ypwblUehtPBOg+ORlptpVjVAL9DYA0j1xBoRXBlP8I4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DDVi0ibU; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-69b137d09e3so7960746d6.1;
-        Thu, 18 Apr 2024 11:53:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713466403; x=1714071203; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9r7Cqzwpa0N6ahjvlQwho0MrL0UhOcI3CGtbp3521uQ=;
-        b=DDVi0ibUTpoixT6pxbPuB9zcUQp8Jy6yLnHBc8J4V854m+7WnEQg5bybQ3Lj9DHgDT
-         63/UFKtSd/hjEOjYBOhNdtVH7GQsgWDxUeLdry0wDq0o5ctFZUmwfshCqZxk9nWfDf8v
-         hhAaLB4iFN6VaIiBaM9CrwzCNLkhFCSCcL5R3OIEPQ9bnzOhm9FTj3pNFL29davtdiJF
-         AiZlEyH/MDkaQgTYPCaYgIQJd+r/X4aQq4iOl2Wotz9J50LyfXHJ3SBS97hO9/czl5ZL
-         6Q3YaSFkgClFfzeDyB4nDQqCzRb5wDtm7U7tL+g8IZBv2XlAz1pa1wwFXbSJO4x+JfJz
-         JHOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713466403; x=1714071203;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9r7Cqzwpa0N6ahjvlQwho0MrL0UhOcI3CGtbp3521uQ=;
-        b=Bk3XN9RC4saLbS/+YkfFsCtc7OqEc3XKXbLCeHqbn33M1UcWWJkCE+Lrk2Ay905YlI
-         udAr3yyG5TWAA6zzUixcrrlUpdeOUYqsjMZZlxMF9OKtndx16W7HXbKKUbLExSq6SSlU
-         FzvjTF0NOrhx5VAtjE4mpjwoNp69bs++KDtoLXmo4p40mnXdKlk3rOUydTE80zYM56nL
-         DPyTigU92B+/gQHsBkQ7QykkoTX0DKZgtqMFe+nf58t9+au7uqClo7OettDuf7vi8HTg
-         +mO4XRNLpWMaCKk3afRIwmVi1ff/ZOWDb+Hm3tWxmwo3fnlmLntG+W1g8jjgSJrph04E
-         mU+g==
-X-Forwarded-Encrypted: i=1; AJvYcCVg3BPGliM7Sk9w8V5F0ADH52OlEWxCa7nj0ZLpIK0Cu84iub0xA211jjNE55YAvM5tuld5Lw5NIx3uRjmSL+Fmt9T+CaL3dKByjeRbxVfOZmtVHu4Q3wMLezMY7jBkkMIQFNoz7JfdRfJZfNU=
-X-Gm-Message-State: AOJu0YzC93nHSJJFkndazzpGRvC+/TmoTBR60nKamgVcEkbIm5swKUjy
-	CCywBxJPku7UTKZvnEypj73cRboEnP/rLe8muzSFUNJKHLMvG72G
-X-Google-Smtp-Source: AGHT+IGYj8Z9DdNusXwRbFDJgf6QW2DcyYlg/XNuCin6S3U7WarnpdkqqVX9H+XSmkhJvov6jUOCIA==
-X-Received: by 2002:a0c:c252:0:b0:69b:1e3b:61d8 with SMTP id w18-20020a0cc252000000b0069b1e3b61d8mr3630668qvh.29.1713466403444;
-        Thu, 18 Apr 2024 11:53:23 -0700 (PDT)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id g11-20020a0caacb000000b006994062299dsm886050qvb.33.2024.04.18.11.53.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 11:53:22 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id DC63D1200032;
-	Thu, 18 Apr 2024 14:53:21 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 18 Apr 2024 14:53:21 -0400
-X-ME-Sender: <xms:IWwhZpAlkd8M4B55j5SLy8hO71yigh1lbfnJbE3xFfBBVT8hGDjOmg>
-    <xme:IWwhZnh6QmEVCGYPvxysUF9jSq5LdI_OcMED9jut6ySM5GhB0DL4hpkssbkVnf-J9
-    Q28S0liH1AId6JmlQ>
-X-ME-Received: <xmr:IWwhZklNVhHXyjyv_U3HOh4xA-NL26snAoJbiTvFV1nc-cdEH7roV8uFEJ-Jug>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudektddguddvlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
-    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:IWwhZjzqXb0hAKxR8W28ZtpfTJyLOMucSPtxL1mynN5RSfSFLCwAsA>
-    <xmx:IWwhZuRnAjVe6y1VkbSYyQ-ZYszZWK7Rfxce4bm4WgThEXF7Xaptgg>
-    <xmx:IWwhZmawc7rr28an9vUnC2Ax4S1isr1rfagk8GjM4XDdv7WHYCEzLA>
-    <xmx:IWwhZvRQY9gkdKoOulybi4fP0MVSeT2qs-QccQnSr42_VPqRhOvXAw>
-    <xmx:IWwhZsB8pZ6HxZhyR4VlL30sVFvh9-NpJUzjK8Vcn_Cgf06CFbkSIdec>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 18 Apr 2024 14:53:21 -0400 (EDT)
-Date: Thu, 18 Apr 2024 11:52:56 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <keescook@chromium.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Arnd Bergmann <arnd@arndb.de>, Trevor Gross <tmgross@umich.edu>,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	rust-for-linux@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v6 4/4] rust: add abstraction for `struct page`
-Message-ID: <ZiFsCLb-BZWbBHsu@boqun-archlinux>
-References: <20240418-alice-mm-v6-0-cb8f3e5d688f@google.com>
- <20240418-alice-mm-v6-4-cb8f3e5d688f@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4D517AD71;
+	Thu, 18 Apr 2024 18:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713466750; cv=fail; b=LFVvLc3QeVG3x6tATVt5ZL/puMOIfymgFd/VevscH/AkbQ/25YdY7X1EmhRtDqh4mOcFP/kzW6HFhLow9Z4HmdB15j5xD5fOjA8PVnEwm99D7dHk4fxct3rAcxC1SdQsUTBkPwEmXIk6QMXK7NRH4xQ4D54Ldv6G3yg9SkGk7M4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713466750; c=relaxed/simple;
+	bh=yguA8Cf0jrTEisMl+XgsgWrujNKBaCZqROyOU0iZhT0=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=XU8mxBAuLpf6wEUK1AQhG2dkPQHEgWbNZ8Zdh5CA7tserlLvLhp5THb9ehn9+ysbOSe+Kl9c6xNB2r2zp+H8lc+qw/RIX9FNEwxoAk7Fkg/XSalx45Fg1D/rS7qSl5PAMB7/ePlfg7yruPzuO0EwNuyKUJWxZJVAVGzkvJ3FqFw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=RW/v5Wto; arc=fail smtp.client-ip=40.107.22.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C4UaKrKsI2aptbDbjjrXA4Db++fb/0t7ApOhog2AtiUDC8tIrBLNzSXL2vOc9anBMeALaEQr0AUDaJYGmD485TTkCaSjmtSB9cWJOTQFL6vm+z2xelqhG+JabWHSl9LXe7QfCSMY27Vudzdk0WxbgvTF2Tz8YmHIjqVwfo+iYG5pU61vszUeP4xXoI1QemDdlH+QdnI/XZKnI3vLtGZzrhLbEXujR/yHDRsYc3obbwy4XGEoJOcijAcvUP+J2R3KEgjg7WxK0TuTFNcP+Cmx9yfMNT33X/16lVx0dd0Sl7O0PHMjX9j1SQ1i3nuEgXRWkjwdVYvGeqsM/OJxRyZu7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qNXAUljkrhvRTFyzEctKTDH8tVmcKFuxgRIKUVxMve8=;
+ b=liIDST+yXZHmlCRT7UGr6UW9fumraZ8KA9OwWPs1fL8hA07VDagZghNbSV/0Ivi5Xj+FnR6m5nU32pg4TtfDHysoBUhgCogjIGKkodnE0PqSZBZM2CTjbxWMD0Gpm5EKK/oteQUr8nIGm0Jq96HCkCp5K2DVJxGTd4sgllrJp/uD73i2LZUt4dvgPvpdNXHUn/HfiioYvuZ/6DP32NjJ/kwJsnejrLFOKWjXwR/HZaeSvMFOu0+cG8LfWM9d++ZRotJe1muyxjmWcl130UxkteEmAmhyLI1lL5oKXQWA/Rd9r95uAU0RnUBSZyqMqv3m+9NHi45tn3F/2V901RR5mg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qNXAUljkrhvRTFyzEctKTDH8tVmcKFuxgRIKUVxMve8=;
+ b=RW/v5Wto8agc8P0Ny/GrNbkWeUxYiK/tU6s8GWfDR1wQ5I48AU19VaHPWCyvsBSjSeAJ9ssEOnc8yvwszTUB8DOW4IDq6xoL4zVvt+inBtqVLy4OOtH1ZXYjlQCu8dqlrlkc9XzWx7+NrKfd+wMOufs+xBNxq8RJY5boJ0/Q0+s=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by DBBPR04MB7788.eurprd04.prod.outlook.com (2603:10a6:10:1e4::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Thu, 18 Apr
+ 2024 18:59:05 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7472.037; Thu, 18 Apr 2024
+ 18:59:05 +0000
+From: Frank Li <Frank.Li@nxp.com>
+To: Vinod Koul <vkoul@kernel.org>,
+	dmaengine@vger.kernel.org (open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM),
+	linux-kernel@vger.kernel.org (open list)
+Cc: imx@lists.linux.dev
+Subject: [PATCH 1/1] dmaengine: fsl-dpaa2-qdma: Fix kernel-doc check warning
+Date: Thu, 18 Apr 2024 14:58:49 -0400
+Message-Id: <20240418185851.3221726-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR02CA0022.namprd02.prod.outlook.com
+ (2603:10b6:a02:ee::35) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418-alice-mm-v6-4-cb8f3e5d688f@google.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DBBPR04MB7788:EE_
+X-MS-Office365-Filtering-Correlation-Id: e953cc57-8587-4380-e0a2-08dc5fd99e8c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	aYNu2duKoAnJySYTrGLjdvRN/3rGMSMIxWmIB9Si7QFH/euHMmXq44vatCaSYZxwZRQxZcAfI+xfMmLS8IR8XgdC3cVZNjCBRp9P9V5suq3dknYwdu6Xy059u7rhxRvD7bOh3MfxjDr+U8/DN7wk+RdPwHW2FE4gJciwYwZHff2ptLd6WnU2FAEanGar/+dmEDfd3gAXGi3/o+/V+ztBFvvXqv0UOOcv81jEbSuxhNU4DjDJm9elnQ8632ujhzZaR3MTpavfQSmdKYMpModPR07tekDxwTZBK57DFNLjuohtJMAa0WTu+azvFpOI9D0l50OdEv96sRKZvmZq3TZT1v0apJBRduOc1YuCNGQkfqSvScHGs6XSPunF4TfoH58QrbGZqVf5m4X/vCV8tns18EG8Xf4jUih+5riPH79l6Mrrx9Ixa8TcsK+PcgAvSxZ422HWkMsgk5gLIFLD55fl0nsQq9S4Ye1TfkHKtXETzd0a7g7bb/OBYAchkLKQYZkWDSH3aMigUgtOskuzsTDo5E98Rn4mGXwCUVMXDz40V2w+rYPo0PRh+CZ/j0SOAd090yUm5xGwiXZfnq+QLBcc0tfqCx/sQ3ebmrMeF89levC3iTbKRB/GVMwz47lvvmQ6o7UHnMDQQxJs1O2BE5FHUH1HKwCQIQkrjkkjN068d7mudVLpwlavmvGt02J2baGkiuKoKV3LcFrOxyv5uI9DS6D+6Iw/sg6wuy5Lrr0bGtI=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(52116005)(1800799015)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?y0tUHZJQeTXufA55CQknVNcHoFdB/m08TXXq9hrUh6yFFXRBCXKJVbIvdC4e?=
+ =?us-ascii?Q?nNJh8RxIfI+htcACoyuuc02oxmZPFxYGzQewXaIqy2M/xegyUOhhTh61+rM1?=
+ =?us-ascii?Q?FTaDdJttmLonX9CzESbJPpwux42txiQX2DzDb48jekUTalLYrDoe+Iymn7F1?=
+ =?us-ascii?Q?2JbHGO1k3AafSdEOIGZVaazQVdMxQgG4v3NTmW42ldhl1bgXju31wPZlZUhA?=
+ =?us-ascii?Q?CWSL4N2ho7xWn2l1AB2XW96M5KVqSh9ftU3rho3AMWosGG1eVcqeqBoMv0fH?=
+ =?us-ascii?Q?wAe07Mp7jdLSOWHhii2XLkKlTWrN1DKJSsoDTpPKiLwFg6WI+dQRHSeooQnm?=
+ =?us-ascii?Q?hAty9OycBTuIZPPCJY2p/khpSXA87ou/Bub7cJU5FyOdU8KCNQnVUfo0l9Hi?=
+ =?us-ascii?Q?kJ8bZKyJbiiQEt9vTuqJPSY0LsdRaH9800fW+UUo0H18ziN0QurrSz4abSym?=
+ =?us-ascii?Q?cyPo6HDoySNbQ0opa+uawJEWrfElmyZZ8dyhLNB3BmeP+R0bXiJIbylvk2D4?=
+ =?us-ascii?Q?15XfO9YFV/g4ADPNarC0DgZJRVq/i66pEwxIu2pvOQk+L8hC2qUP849phEIv?=
+ =?us-ascii?Q?PsNWsvT9ONw0FJXaOj9DUw/40tOu07e4aUn8iS7uhXFc4g9BlKGLkSoeHJgP?=
+ =?us-ascii?Q?15aKuxyzecUJbX3KQrAJUdOTtcoSIEsd6u9gAig5lkNXEkjyO0sMXVHhNGjo?=
+ =?us-ascii?Q?fTPsu0mdEa9+qFGrN7uHkALTCsqmNw3OD92GNWJo62O/MeTes/reVJQV/41f?=
+ =?us-ascii?Q?hBGYUHaiByat72CtaJ+B1MIgrsNte0EbJtKDc0IfufMfLTZmYYpziOFclvVt?=
+ =?us-ascii?Q?0WV0RHaSniNCtH/Sxh2L4XvGWHGEYkA8yz7kEepce77GY3HBIrJQFRmM4eW4?=
+ =?us-ascii?Q?NzvEn95k1BHF+Y8i5Zu55MIWIsrGWCPTiFPcyXV2Gu+8Rzn2uMF/DYxZQTIA?=
+ =?us-ascii?Q?T54JCsIL5XXz6gygm6MXrYEqQg7PwgK2o4FeyF8594Z9xq9joV5WkeJwSZIx?=
+ =?us-ascii?Q?+Yr65ln+mpK8hDfJgw/HGgK2NEWQdivDuaqF2HHwDX4UQYYz6p5SOW78J2Hx?=
+ =?us-ascii?Q?91h46yAHUGv6RiPM3VTsVw7naJqNG45ZAchnWF0VntfmsJPh2CuZ1I8RmNJ0?=
+ =?us-ascii?Q?IhFB8JH7S0LAbMkBWSI8JHZg9Pk12C+CYjemA1F45wVImIsBF9M4k9y0jims?=
+ =?us-ascii?Q?H5XzHUvDTAX/SruKejN2icTBk+L0ArJAuyeA+aTrykO+5co6FOQG7MH3JW4E?=
+ =?us-ascii?Q?e61fUfON7Ns3NIcf2GKglSSFuVivM4Esr66fdlnvTsruolk6DIb7b+LtCln+?=
+ =?us-ascii?Q?PuUczCTH4bfEnxDv0vHVPXQae2pSmswqDYtH2c8Mia+Q8JYb3zFeMvHspkOv?=
+ =?us-ascii?Q?KQ44bEOFJwNxm3yqJY9r1+xyxMtSPCeXQMAmZFMnsWz/tNAX2T6ZqyLIWhGD?=
+ =?us-ascii?Q?LCl0ExZVJ5bFk9hx5ZdoIMXCTkmudIeJzjAz5cJwrotfWS6zbIld9zpLGSHs?=
+ =?us-ascii?Q?vNgNrJeBK7WXygC4Qb6xFReTqc6aNDGoPeVTqsF4hj2V5DuH+kdg0lz8a8p1?=
+ =?us-ascii?Q?t6IRhUXxPDfqYS3NUZhb/pISd6W0MRliyEv2YYfQ?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e953cc57-8587-4380-e0a2-08dc5fd99e8c
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 18:59:05.3591
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IZq3cP6s1ELjY41oqi61UtfG/2x1jJ+IvOfanaeWpQpMbga5KijmJVkhs7uhHQYOUt7YY2LjR1peJi5ZgwfJ8A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7788
 
-On Thu, Apr 18, 2024 at 08:59:20AM +0000, Alice Ryhl wrote:
-> Adds a new struct called `Page` that wraps a pointer to `struct page`.
-> This struct is assumed to hold ownership over the page, so that Rust
-> code can allocate and manage pages directly.
-> 
-> The page type has various methods for reading and writing into the page.
-> These methods will temporarily map the page to allow the operation. All
-> of these methods use a helper that takes an offset and length, performs
-> bounds checks, and returns a pointer to the given offset in the page.
-> 
-> This patch only adds support for pages of order zero, as that is all
-> Rust Binder needs. However, it is written to make it easy to add support
-> for higher-order pages in the future. To do that, you would add a const
-> generic parameter to `Page` that specifies the order. Most of the
-> methods do not need to be adjusted, as the logic for dealing with
-> mapping multiple pages at once can be isolated to just the
-> `with_pointer_into_page` method.
-> 
+Fix all kernel-doc warnings under drivers/dma/fsl-dpaa2-qdma.
 
-Thank you for doing this, and breaking the chicken-and-egg problem chain
-;-) For sure, the whole package of page API would need more time to
-design, implement and review, but this patch looks good enough to me.
+/scripts/kernel-doc -v -none drivers/dma/fsl-dpaa2-qdma/*
+drivers/dma/fsl-dpaa2-qdma/dpdmai.c:262: warning: Function parameter or struct member 'queue_idx' not described in 'dpdmai_set_rx_queue'
+drivers/dma/fsl-dpaa2-qdma/dpdmai.c:339: warning: Excess function parameter 'fqid' description in 'dpdmai_get_tx_queue'
+..
 
-> Rust Binder needs to manage pages directly as that is how transactions
-> are delivered: Each process has an mmap'd region for incoming
-> transactions. When an incoming transaction arrives, the Binder driver
-> will choose a region in the mmap, allocate and map the relevant pages
-> manually, and copy the incoming transaction directly into the page. This
-> architecture allows the driver to copy transactions directly from the
-> address space of one process to another, without an intermediate copy
-> to a kernel buffer.
-> 
-> This code is based on Wedson's page abstractions from the old rust
-> branch, but it has been modified by Alice by removing the incomplete
-> support for higher-order pages, by introducing the `with_*` helpers
-> to consolidate the bounds checking logic into a single place, and
-> various other changes.
-> 
-> Co-developed-by: Wedson Almeida Filho <wedsonaf@gmail.com>
-> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
-> Reviewed-by: Andreas Hindborg <a.hindborg@samsung.com>
-> Reviewed-by: Trevor Gross <tmgross@umich.edu>
-> Reviewed-by: Benno Lossin <benno.lossin@proton.me>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202404190019.t4IhmbHh-lkp@intel.com/
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
+ drivers/dma/fsl-dpaa2-qdma/dpdmai.c |  5 ++++-
+ drivers/dma/fsl-dpaa2-qdma/dpdmai.h | 15 +++++++--------
+ 2 files changed, 11 insertions(+), 9 deletions(-)
 
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+diff --git a/drivers/dma/fsl-dpaa2-qdma/dpdmai.c b/drivers/dma/fsl-dpaa2-qdma/dpdmai.c
+index a824450fe19c2..36897b41ee7e5 100644
+--- a/drivers/dma/fsl-dpaa2-qdma/dpdmai.c
++++ b/drivers/dma/fsl-dpaa2-qdma/dpdmai.c
+@@ -251,6 +251,7 @@ EXPORT_SYMBOL_GPL(dpdmai_get_attributes);
+  * @mc_io:	Pointer to MC portal's I/O object
+  * @cmd_flags:	Command flags; one or more of 'MC_CMD_FLAG_'
+  * @token:	Token of DPDMAI object
++ * @queue_idx:	DMA queue index
+  * @priority:	Select the queue relative to number of
+  *		priorities configured at DPDMAI creation
+  * @cfg:	Rx queue configuration
+@@ -286,6 +287,7 @@ EXPORT_SYMBOL_GPL(dpdmai_set_rx_queue);
+  * @mc_io:	Pointer to MC portal's I/O object
+  * @cmd_flags:	Command flags; one or more of 'MC_CMD_FLAG_'
+  * @token:	Token of DPDMAI object
++ * @queue_idx:	DMA Queue index
+  * @priority:	Select the queue relative to number of
+  *				priorities configured at DPDMAI creation
+  * @attr:	Returned Rx queue attributes
+@@ -328,9 +330,10 @@ EXPORT_SYMBOL_GPL(dpdmai_get_rx_queue);
+  * @mc_io:	Pointer to MC portal's I/O object
+  * @cmd_flags:	Command flags; one or more of 'MC_CMD_FLAG_'
+  * @token:	Token of DPDMAI object
++ * @queue_idx:	DMA queue index
+  * @priority:	Select the queue relative to number of
+  *			priorities configured at DPDMAI creation
+- * @fqid:	Returned Tx queue
++ * @attr:	Returned DMA Tx queue attributes
+  *
+  * Return:	'0' on Success; Error code otherwise.
+  */
+diff --git a/drivers/dma/fsl-dpaa2-qdma/dpdmai.h b/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
+index 1efca2a305334..3fe7d8327366e 100644
+--- a/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
++++ b/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
+@@ -45,25 +45,26 @@
+  * Contains initialization APIs and runtime control APIs for DPDMAI
+  */
+ 
+-/**
++/*
+  * Maximum number of Tx/Rx priorities per DPDMAI object
+  */
+ #define DPDMAI_PRIO_NUM		2
+ 
+ /* DPDMAI queue modification options */
+ 
+-/**
++/*
+  * Select to modify the user's context associated with the queue
+  */
+ #define DPDMAI_QUEUE_OPT_USER_CTX	0x1
+ 
+-/**
++/*
+  * Select to modify the queue's destination
+  */
+ #define DPDMAI_QUEUE_OPT_DEST		0x2
+ 
+ /**
+  * struct dpdmai_cfg - Structure representing DPDMAI configuration
++ * @num_queues:	Number of the DMA queues
+  * @priorities: Priorities for the DMA hardware processing; valid priorities are
+  *	configured with values 1-8; the entry following last valid entry
+  *	should be configured with 0
+@@ -77,15 +78,13 @@ struct dpdmai_cfg {
+  * struct dpdmai_attr - Structure representing DPDMAI attributes
+  * @id: DPDMAI object ID
+  * @version: DPDMAI version
++ * @version.major: DPDMAI major version
++ * @version.minor: DPDMAI minor version
+  * @num_of_priorities: number of priorities
++ * @num_of_queues: number of the DMA queues
+  */
+ struct dpdmai_attr {
+ 	int	id;
+-	/**
+-	 * struct version - DPDMAI version
+-	 * @major: DPDMAI major version
+-	 * @minor: DPDMAI minor version
+-	 */
+ 	struct {
+ 		u16 major;
+ 		u16 minor;
+-- 
+2.34.1
 
-Something I want to bring up for discussion below:
-
-[...]
-
-> +    /// Runs a piece of code with a raw pointer to a slice of this page, with bounds checking.
-> +    ///
-> +    /// If `f` is called, then it will be called with a pointer that points at `off` bytes into the
-> +    /// page, and the pointer will be valid for at least `len` bytes. The pointer is only valid on
-> +    /// this task, as this method uses a local mapping.
-> +    ///
-> +    /// If `off` and `len` refers to a region outside of this page, then this method returns
-> +    /// `EINVAL` and does not call `f`.
-> +    ///
-> +    /// # Using the raw pointer
-> +    ///
-> +    /// It is up to the caller to use the provided raw pointer correctly. The pointer is valid for
-> +    /// `len` bytes and for the duration in which the closure is called. The pointer might only be
-> +    /// mapped on the current thread, and when that is the case, dereferencing it on other threads
-> +    /// is UB. Other than that, the usual rules for dereferencing a raw pointer apply: don't cause
-> +    /// data races, the memory may be uninitialized, and so on.
-> +    ///
-> +    /// If multiple threads map the same page at the same time, then they may reference with
-> +    /// different addresses. However, even if the addresses are different, the underlying memory is
-> +    /// still the same for these purposes (e.g., it's still a data race if they both write to the
-> +    /// same underlying byte at the same time).
-> +    fn with_pointer_into_page<T>(
-> +        &self,
-> +        off: usize,
-> +        len: usize,
-> +        f: impl FnOnce(*mut u8) -> Result<T>,
-
-I wonder whether the way to go here is making this function signature:
-
-    fn with_slice_in_page<T> (
-        &self,
-	off: usize,
-	len: usize,
-	f: iml FnOnce(&UnsafeCell<[u8]>) -> Result<T>
-    ) -> Result<T>
-
-, because in this way, it makes a bit more clear that what memory that
-`f` can access, in other words, the users are less likely to use the
-pointer in a wrong way.
-
-But that depends on whether `&UnsafeCell<[u8]>` is the correct
-abstraction and the ecosystem around it: for example, I feel like these
-two functions:
-
-	fn len(slice: &UnsafeCell<[u8]>) -> usize
-	fn as_ptr(slice: &UnsafeCell<[u8]>) -> *mut u8
-
-should be trivially safe, but I might be wrong. Again this is just for
-future discussion.
-
-Regards,
-Boqun
-
-> +    ) -> Result<T> {
-> +        let bounds_ok = off <= PAGE_SIZE && len <= PAGE_SIZE && (off + len) <= PAGE_SIZE;
-> +
-> +        if bounds_ok {
-> +            self.with_page_mapped(move |page_addr| {
-> +                // SAFETY: The `off` integer is at most `PAGE_SIZE`, so this pointer offset will
-> +                // result in a pointer that is in bounds or one off the end of the page.
-> +                f(unsafe { page_addr.add(off) })
-> +            })
-> +        } else {
-> +            Err(EINVAL)
-> +        }
-> +    }
-> +
-[...]
-> 
-> -- 
-> 2.44.0.683.g7961c838ac-goog
-> 
 
