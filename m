@@ -1,102 +1,187 @@
-Return-Path: <linux-kernel+bounces-150416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C99CF8A9EE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:46:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 801678A9EE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:46:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 070AD1C220B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:46:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37C27287BAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:46:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1B9016EBEA;
-	Thu, 18 Apr 2024 15:46:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92D0416F82C;
+	Thu, 18 Apr 2024 15:46:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="KZ46A4kC"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="mNiKJAJD"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 382E84D9E8;
-	Thu, 18 Apr 2024 15:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41A116E89A;
+	Thu, 18 Apr 2024 15:46:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713455195; cv=none; b=KEMFTuyCnmbYSk2H/dbi1bRT01+YlOcfDHfhKpxszP4/Ua/AQcErkfDo6yVckgbdWwfovfDgiHndiz4bXaNu9qEhoMkFRwy6eiD74fCuAEL+k8vFPaDyOQ3xODiZ0TsacIo6bSlZDsG+WFI9GEmw2kdJGWMgaleZ9zec+WbjJuo=
+	t=1713455205; cv=none; b=YR//jvise81xYQ2aQEMmbPtmnrRDx4bZGp6Um27E4jtfc0u6ohLe78f/y0pGsRg17q7oCwr49QPSB9bUi2P2ovbsF/is64C/Cc20yLaeKWJtZBOfYOwLuZmFub/QKrPv3EgnyriyPBeod7z4cxdK6YST2cyBlqwNRh/QPl3nMf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713455195; c=relaxed/simple;
-	bh=NgY60Jm642tJfiFrdyzn4Mu50PHSmRd7nqrYLF5xtHQ=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=T4DNUqtIXtWLcdGXJRNZ8qhpDGgt9ol2NDt22jgtxqDAb5wRvOZdsOr3O4Tm3R7hoQtrOgjJ4W1//km2aFfhWmCXYb2NgaLktRNkumuXD2ZiWbTS00AEwmfiZWENynXAhNRuhjnLwiKCG8jghCaSMgciDcffJOdbp8ZqPTA6yE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=KZ46A4kC; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1713455205; c=relaxed/simple;
+	bh=K6H40zZOBruNXEKy+mLBxL40J3Voj2XWEqqGuvJ9w94=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VfVRCHVMHNoh9wGLSl4uMOSmJROR8cKJdQYUjvElGmsW/wkiKcZqQx570pEsg6O15wwQ7y12722j5dbSyH0ZIEE2auO+fa1uiNhnzkJqgCa0Lb2JpDB8ZnebOYXznVgx5eOrAws7/H/yqow9cd68DaSZSgyBnyD5QDfhW7jmF8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=mNiKJAJD; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2A03C802;
+	Thu, 18 Apr 2024 17:45:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1713455153;
+	bh=K6H40zZOBruNXEKy+mLBxL40J3Voj2XWEqqGuvJ9w94=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mNiKJAJDsTkJYMYK4ZtsZ9zlV7xPYE85xk9V7yAnZZ4lXnvj+UhwJ4fKqYaFra0Xc
+	 2eBi44CBZWoMWyMkwDoCJV3GUcE9zfI7hzMI60oHIg/o5NGSS92iXbFgMGqv+gOkZe
+	 2N/SspWfXOLe5x5IbsUKTfY8A/Ga1vjvyZkxLsrw=
+Date: Thu, 18 Apr 2024 18:46:33 +0300
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Ricardo Ribalda <ribalda@chromium.org>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>,
+	Martin Tuma <martin.tuma@digiteqautomotive.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Hugues Fruchet <hugues.fruchet@foss.st.com>,
+	Alain Volmat <alain.volmat@foss.st.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Sowjanya Komatineni <skomatineni@nvidia.com>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
+	Abylay Ospan <aospan@netup.ru>,
+	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+	Dmitry Osipenko <digetx@gmail.com>,
+	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+	Vikash Garodia <quic_vgarodia@quicinc.com>,
+	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+	Sylvain Petinot <sylvain.petinot@foss.st.com>,
+	Jacopo Mondi <jacopo+renesas@jmondi.org>,
+	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+	Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
+	Pavel Machek <pavel@ucw.cz>, linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	Oleg Drokin <green@linuxhacker.ru>
+Subject: Re: [PATCH 00/35] media: Fix coccinelle warning/errors
+Message-ID: <20240418154633.GD31776@pendragon.ideasonboard.com>
+References: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
+ <a003494c-a1a9-4fcd-83d8-766a75d6bbb2@moroto.mountain>
+ <20240417155112.GQ12561@pendragon.ideasonboard.com>
+ <CANiDSCs_qOXkhzuL+cFhpw0hvFMwU0TYyN2B5ZdAStb96TTKFA@mail.gmail.com>
+ <20240418105310.GV12561@pendragon.ideasonboard.com>
+ <CANiDSCuS3KQK9H37sDZJ+mcqheNSh7NBwchS3dPccVXcPTSNRA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1713455190;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HM7rYIk76bCGMzcR/q0QxvkvY1vzyCqN0RtGYsrgTuI=;
-	b=KZ46A4kCUWKwYCT75IN2Rnng31/8njvn4+Idy4CiAthEl4S+nyvttUR1zIF2uHOYskzfaa
-	5aJNhDAvG4qS+1t5fSO+dNctp2W7sYCWPSpJWRMHD6z3OG52vBBP4nVHOAPn29+IX60AM0
-	Ys9DxZ58ucHiWGmQMz/MNPQWOmtBnF0EZDrYEZuqHQL6dgD3F/o28LhTbRPRmI0/7d9KKy
-	fDp0pbiAaKzkC3hVS1m5GGRR0QWkR+aC2GSwRqzfSxOfSYZ7WCjJJiDJAXBA1Jxuk6B7Ge
-	X08/YFhKgkOex5duU3qGJKLSuvxwit9l+WDJ6inUkp5u0L1TELeTqfFBAMdAIA==
-Date: Thu, 18 Apr 2024 17:46:30 +0200
-From: Dragan Simic <dsimic@manjaro.org>
-To: Conor Dooley <conor@kernel.org>
-Cc: Chukun Pan <amadeus@jmu.edu.cn>, Heiko Stuebner <heiko@sntech.de>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, FUKAUMI Naoki
- <naoki@radxa.com>
-Subject: Re: [PATCH 1/2] dt-bindings: arm: rockchip: correct the model name
- for Radxa ROCK 3A
-In-Reply-To: <20240418-drove-boasting-d189ee3e22e0@spud>
-References: <20240418130120.67663-1-amadeus@jmu.edu.cn>
- <d00953aab0f1c978e3720885a6844caa@manjaro.org>
- <20240418-drove-boasting-d189ee3e22e0@spud>
-Message-ID: <7fec3e2f4e16b1aca6cd08e1882bd885@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CANiDSCuS3KQK9H37sDZJ+mcqheNSh7NBwchS3dPccVXcPTSNRA@mail.gmail.com>
 
-Hello Conor,
+Hi Ricardo,
 
-On 2024-04-18 17:37, Conor Dooley wrote:
-> On Thu, Apr 18, 2024 at 05:21:18PM +0200, Dragan Simic wrote:
->> On 2024-04-18 15:01, Chukun Pan wrote:
->> > According to https://radxa.com/products/rock3/3a,
->> > the name of this board should be "Radxa ROCK 3A".
->> > Also update compatible to match the model name.
->> >
->> > Suggested-by: FUKAUMI Naoki <naoki@radxa.com>
->> > Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
->> 
->> Looking good to me.  I'll send the remaining naming cleanup patches
->> a bit later.
+On Thu, Apr 18, 2024 at 04:51:06PM +0200, Ricardo Ribalda wrote:
+> On Thu, 18 Apr 2024 at 12:53, Laurent Pinchart wrote:
+> > On Wed, Apr 17, 2024 at 06:19:14PM +0200, Ricardo Ribalda wrote:
+> > > On Wed, 17 Apr 2024 at 17:51, Laurent Pinchart wrote:
+> > > > On Tue, Apr 16, 2024 at 11:47:17AM +0300, Dan Carpenter wrote:
+> > > > > In my opinion, it's better to just ignore old warnings.
+> > > >
+> > > > I agree. Whatever checkers we enable, whatever code we test, there will
+> > > > always be false positives. A CI system needs to be able to ignore those
+> > > > false positives and only warn about new issues.
+> > >
+> > > We already have support for that:
+> > > https://gitlab.freedesktop.org/linux-media/media-ci/-/tree/main/testdata/static?ref_type=heads
+> >
+> > Those are manually written filters. Would it be possible to reduce the
+> > manual step to flagging something as a false positive, and have a
+> > machine build the filters ?
 > 
-> What remaining patches?
+> Do you expect that the list of exceptions will grow?
+> 
+> I hope that once the CI is in place we will fix the warnings before
+> they land in the tree.
 
-The same naming cleanups need to be performed for the Radxa
-ROCK 5 boards. [1]  I had some more cleanups for the ROCK 4
-boards in mind, but I'll drop them after your NAK. [2]
+Any static checker is bound to produce false positives. Some of them can
+be addressed by improving the checker, others by modifying the source
+code, but in some cases the first option would be too difficult and the
+second would reduce readability of the code. I thus thing the list of
+accepted false positives will grow over time.
 
-Though, I'm not really sure why the NAK?  Those names aren't
-used anywhere, neither in the Linux kernel, nor in U-Boot.
+> > > But it would be great if those lists were as small as possible:
+> > >
+> > > - If we have a lot of warnings, two error messages can be combined and
+> > > will scape the filters
+> > > eg:
+> > > print(AAAA);
+> > > print(BBBB);
+> > > > AABBBAAB
+> > >
+> > > - The filters might hide new errors if they are too broad
+> > >
+> > >
+> > > Most of the patches in this series are simple and make a nicer code:
+> > > Eg the non return minmax() ,
+> > > Other patches show real integer overflows.
+> > >
+> > > Now that the patches are ready, let's bite the bullet and try to
+> > > reduce our technical debt.
+> > >
+> > > > > When code is new the warnings are going to be mostly correct.  The
+> > > > > original author is there and knows what the code does.  Someone has
+> > > > > the hardware ready to test any changes.  High value, low burden.
+> > > > >
+> > > > > When the code is old only the false positives are left.  No one is
+> > > > > testing the code.  It's low value, high burden.
+> > > > >
+> > > > > Plus it puts static checker authors in a difficult place because now
+> > > > > people have to work around our mistakes.  It creates animosity.
+> > > > >
+> > > > > Now we have to hold ourselves to a much higher standard for false
+> > > > > positives.  It sounds like I'm complaining and lazy, right?  But Oleg
+> > > > > Drokin has told me previously that I spend too much time trying to
+> > > > > silence false positives instead of working on new code.  He's has a
+> > > > > point which is that actually we have limited amount of time and we have
+> > > > > to make choices about what's the most useful thing we can do.
+> > > > >
+> > > > > So what I do and what the zero day bot does is we look at warnings one
+> > > > > time and we re-review old warnings whenever a file is changed.
+> > > > >
+> > > > > Kernel developers are very good at addressing static checker warnings
+> > > > > and fixing the real issues...  People sometimes ask me to create a
+> > > > > database of warnings which I have reviewed but the answer is that
+> > > > > anything old can be ignored.  As I write this, I've had a thought that
+> > > > > instead of a database of false positives maybe we should record a
+> > > > > database of real bugs to ensure that the fixes for anything real is
+> > > > > applied.
 
-[1] 
-https://lore.kernel.org/linux-rockchip/B26C732A4DCEA9B3+282b8775-601b-4d4a-a513-4924b7940076@radxa.com/
-[2] 
-https://lore.kernel.org/linux-rockchip/20240418-liberty-pry-d270065a544f@spud/
+-- 
+Regards,
+
+Laurent Pinchart
 
