@@ -1,138 +1,241 @@
-Return-Path: <linux-kernel+bounces-150622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 372B78AA1F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:20:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 100718AA1F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:22:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5AA1284AA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:20:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 920DF1F22A1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0642117AD88;
-	Thu, 18 Apr 2024 18:20:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1492617AD68;
+	Thu, 18 Apr 2024 18:21:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TjAaH3rT"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T62taqkf"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6ED117AD78;
-	Thu, 18 Apr 2024 18:20:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C3283A07;
+	Thu, 18 Apr 2024 18:21:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713464405; cv=none; b=JTl5T136aYViEtvjP05htcCDkxO1NLqJ+NtqPrM6oj2NDymFAP6qriHe6TT3lgBUvU9+HoBrykoTZOSMhb7/AqsDC5IzfjnhLKX1U2rqinOwDmm/VUT+MdcJ4gBPl6bvQHRh2fF0teeosg6VRTS4ldKEXKwxsspNlR4yNJXhccU=
+	t=1713464516; cv=none; b=lxkLWyZIGj+DffkfbZK2/RJdZg4wjgrRNgOycyET2ZPc/9coekmoI6K6kgQwm1OqHc3brbQyiCAUKKYRrOUZRMB7XNVnxGLHHnlw9A0QFDF/OsSL+4TXSq+yq6kLpHqurlmNI9NqPamWHFJ6MO+tT0FR1WHZYvua5Y9Q60DdngQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713464405; c=relaxed/simple;
-	bh=eG3q+zpUjWVOdPOZkaSjqo0usEFxFJPlILtnK4zyysA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qfmKTG2ZNGM98SuYB+yHL5FSToNSnwhONOHGuvktWLGl9vzshp+VmPTFsnQEWki0bLSoh9o7J9tZ4q2Q5nd0kQb41/S3UVM+8TckDe+NUbaN9Bkt2gBJcKuZlNGu3LrV0QVZelYD7lpK6lsd3EfJJ5xSBabEGecTBYbtwIR03Jc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TjAaH3rT; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5196c755e82so1527929e87.0;
-        Thu, 18 Apr 2024 11:20:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713464402; x=1714069202; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eG3q+zpUjWVOdPOZkaSjqo0usEFxFJPlILtnK4zyysA=;
-        b=TjAaH3rTcwZ6baENl3JUClYjXuNMYAGnHMc2Do0UqNcXq6iKXfphcPn/YEuiQc04EH
-         r6sovmdLq36+sYpiocEw/AYX493w5HBFxWxMhLbMf4NCEenXNb7/nK8BLX4Hn1hyVUJ0
-         2DNQgSS06phU3tEYhDk5M0MqfTThvqeCrKofEvivuqxdWuCzYq3dKdZW4Sgvjij15cel
-         vJTx7B7SmymBG36jrkDD5tZM/NVcSA6jCBVIVXN4n9g3BkMjWNq3Xvf9QaKTlZ5CZVxk
-         wHuD6QAhNceA5HmJpltl4RRjs+yqh9nrjDT30v5N6GeUrfhAeRzgIIIfpW1/GM+f5dS5
-         9dfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713464402; x=1714069202;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eG3q+zpUjWVOdPOZkaSjqo0usEFxFJPlILtnK4zyysA=;
-        b=k8HN+lQxyRGtaAmPcO8s5w6Fj+NU0E77E1VuDSlAcaP/P3hrlNIqb1Qx5R5DkKZLlC
-         ZkK/FJsvCoQHo815a9tk6LZR7CQreeQ4sgcWQddOqOohefi7eK/f2cCdoELGFpwsA58m
-         21T52ez7ahVoAUTNsF+SG9Nzp9xd6Icqg16CldY0pgG489+674McEO7nn+7s2Xisl/vh
-         k5uQDejpeTMpA6OGWEDuTEvQz2DdytvXW//tIMItMvX/WYEh+LnaefehhhBPt7z/rnvm
-         nfFRs0jodqN8OrAX/HBMWp+9e73V+sFjQ+Z74Pr9r1ZxGIBSQ2CrB2wtt0f7V1nRQre5
-         TMLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWQ+3tBJQz6CLSEWc0ibw4jvg1KDXrqR8jP0nQyTCoMjmmvCWu3tvkynShwBExFvtoUekEmlBoc25AUoxiDbV7dqiqRhUZvxJZbCUvok4bk8rxGVzmgzkVNfEfej72orIacBZ8TathXlSt0hFhmFht+QqBXwaxpE8G4/v1K6nLyE8bV10ht+6KY4Zhnrq65YebLYAZt4SybWFBCSlqmtdxD
-X-Gm-Message-State: AOJu0Yw0M5oi82PgzpNaD4YKRgpGI3SuKSnfOdIbr16GWHWK2NCSCD6i
-	Rr6FJb+Te5wwp6o+7k4wK79RQw1hVcnFtsQircUMeFBz398tSDKeRbLABiTnlUU58HgyCqqF5ZQ
-	wOLWlntBPhgWM34pdjte+VNuLprI=
-X-Google-Smtp-Source: AGHT+IHalOQ/s3NxiyYDgT5G+ca4oEPzuDrE48u3GmuLSNbZCinbhI/Pfbda9fQysbueYW+MPNlitEcynwqbQEQ4c54=
-X-Received: by 2002:a05:6512:3b1e:b0:515:9185:652f with SMTP id
- f30-20020a0565123b1e00b005159185652fmr2480035lfv.33.1713464401599; Thu, 18
- Apr 2024 11:20:01 -0700 (PDT)
+	s=arc-20240116; t=1713464516; c=relaxed/simple;
+	bh=di7AEMML3XBmS6NNk5yHpV2YGbf6QjEDD4R85XDT5mo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ij5iXbEUWHSxK6EhluAofAudkALBtt/xZWGoFTpsPjlFyu0tpBONLTHqn6nvkXnEtJBCL++cg+M36D9ngSN10ylI664prGfuHgianNna4EheDPLL/klEboZhjXUZR4kH8UWvKq7tqgl3413owA7MhwY5je0yTJgvrEvT/Ddztvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=T62taqkf; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713464514; x=1745000514;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=di7AEMML3XBmS6NNk5yHpV2YGbf6QjEDD4R85XDT5mo=;
+  b=T62taqkfFat9gpksDnMh8APP/37qV7ucPb2P7cVWPrhwtkJrNsE2GKjw
+   8iV1lBqyRmuhoXqCVNT68tmX3oNFyd6FxZMZg7dpNHG5UanjE+Edj+5Pa
+   O9QracNts7YwboQcz0a85ZA6ByHENfTI8fxJ+GK//jAQdNaId5W11dVBN
+   CDcXYy52fmLDwEoBlcc0qQqTl0CJjcRBqYyIUm3n8lLlREfV1R89brUoW
+   zACrfN5rDZK4UmzeACLvvVFrqM2Z8LZJIAq7gllSoznmeXroawQVS4qeT
+   IGbU3midrcmbhTapFePhAiW7nIHSNy2AVIcEO10l8ydPR5NyEPnnOU7l6
+   Q==;
+X-CSE-ConnectionGUID: ij1xVX3BRtSGKa/BN7U7PA==
+X-CSE-MsgGUID: wkXhNfWpRguTRl+NXL5w0g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="8898352"
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="8898352"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 11:21:53 -0700
+X-CSE-ConnectionGUID: W6zduy+0QkW3zModnl3a/g==
+X-CSE-MsgGUID: JpytdpXORt2rOjRS5AKkpw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="27531776"
+Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
+  by fmviesa005.fm.intel.com with ESMTP; 18 Apr 2024 11:21:49 -0700
+Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rxWOJ-00095q-0X;
+	Thu, 18 Apr 2024 18:21:47 +0000
+Date: Fri, 19 Apr 2024 02:21:13 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kairui Song <ryncsn@gmail.com>, linux-mm@kvack.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	"Huang, Ying" <ying.huang@intel.com>,
+	Matthew Wilcox <willy@infradead.org>, Chris Li <chrisl@kernel.org>,
+	Barry Song <v-songbaohua@oppo.com>,
+	Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>,
+	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Kairui Song <kasong@tencent.com>
+Subject: Re: [PATCH 8/8] mm/swap: reduce swap cache search space
+Message-ID: <202404190258.wljFnvCL-lkp@intel.com>
+References: <20240417160842.76665-9-ryncsn@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240414175300.956243-1-aren@peacevolution.org>
- <20240414175716.958831-1-aren@peacevolution.org> <20240414175716.958831-2-aren@peacevolution.org>
- <CAHp75VdZavToGYqLYnkKYt53HXoQxXnRER5Cn5b2==gWTvkAWQ@mail.gmail.com>
- <xxeg3as5m5vmmu6fbjujcnvchrerxs2rr42nloirwsktbv4r57@vpxtxblxmspl>
- <CAHp75Veoibnk2pYuAY-T+u=8t7ackQ8zBjxSHcWb1AeHnq84yQ@mail.gmail.com> <fvuaq2yo4jh6jc3cklkvatr5r5du2jzmqblvvkpkpmxdt7e2ys@345lrhtnipfw>
-In-Reply-To: <fvuaq2yo4jh6jc3cklkvatr5r5du2jzmqblvvkpkpmxdt7e2ys@345lrhtnipfw>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Thu, 18 Apr 2024 21:19:24 +0300
-Message-ID: <CAHp75VdvbQzwqTBzioqVkiV4vHrQFX6UpoDce1t6whWYHcXYKw@mail.gmail.com>
-Subject: Re: [PATCH 2/4] iio: light: stk3310: Implement vdd supply and power
- it off during suspend
-To: Aren <aren@peacevolution.org>
-Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, Liam Girdwood <lgirdwood@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, Ondrej Jirman <megi@xff.cz>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	linux-iio@vger.kernel.org, phone-devel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	Willow Barraco <contact@willowbarraco.fr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240417160842.76665-9-ryncsn@gmail.com>
 
-On Thu, Apr 18, 2024 at 8:50=E2=80=AFPM Aren <aren@peacevolution.org> wrote=
-:
-> On Thu, Apr 18, 2024 at 06:56:09PM +0300, Andy Shevchenko wrote:
-> > On Thu, Apr 18, 2024 at 6:06=E2=80=AFPM Aren <aren@peacevolution.org> w=
-rote:
-> > > On Mon, Apr 15, 2024 at 05:04:53PM +0300, Andy Shevchenko wrote:
-> > > > On Sun, Apr 14, 2024 at 8:57=E2=80=AFPM Aren Moynihan <aren@peacevo=
-lution.org> wrote:
+Hi Kairui,
 
-..
+kernel test robot noticed the following build errors:
 
-> > > > I forgot to check the order of freeing resources, be sure you have =
-no
-> > > > devm_*() releases happening before this call.
-> > >
-> > > If I understand what you're saying, this should be fine. The driver j=
-ust
-> > > uses devm to clean up acquired resources after remove is called. Or a=
-m I
-> > > missing something and resources could be freed before calling
-> > > stk3310_remove?
-> >
-> > I'm not objecting to that. The point here is that the resources should
-> > be freed in the reversed order. devm-allocated resources are deferred
-> > to be freed after the explicit driver ->remove() callback. At the end
-> > it should not interleave with each other, i.o.w. it should be
-> > probe: devm followed by non-devm
-> > remove: non-devm only.
->
-> I think what you're describing is already the case, with the exception
-> of parts of the probe function not changed in this patch mixing
-> acquiring resources through devm with configuring the device.
+[auto build test ERROR on ceph-client/testing]
+[also build test ERROR on ceph-client/for-linus trondmy-nfs/linux-next konis-nilfs2/upstream jaegeuk-f2fs/dev-test jaegeuk-f2fs/dev cifs/for-next linus/master v6.9-rc4]
+[cannot apply to akpm-mm/mm-everything next-20240418]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Okay, then we are fine!
+url:    https://github.com/intel-lab-lkp/linux/commits/Kairui-Song/NFS-remove-nfs_page_lengthg-and-usage-of-page_index/20240418-001343
+base:   https://github.com/ceph/ceph-client.git testing
+patch link:    https://lore.kernel.org/r/20240417160842.76665-9-ryncsn%40gmail.com
+patch subject: [PATCH 8/8] mm/swap: reduce swap cache search space
+config: i386-buildonly-randconfig-002-20240419 (https://download.01.org/0day-ci/archive/20240419/202404190258.wljFnvCL-lkp@intel.com/config)
+compiler: gcc-9 (Ubuntu 9.5.0-4ubuntu2) 9.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240419/202404190258.wljFnvCL-lkp@intel.com/reproduce)
 
-> I hope I'm not being dense, thanks for the clarification
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404190258.wljFnvCL-lkp@intel.com/
 
---=20
-With Best Regards,
-Andy Shevchenko
+All errors (new ones prefixed by >>):
+
+   mm/huge_memory.c: In function '__split_huge_page':
+>> mm/huge_memory.c:2906:12: error: implicit declaration of function 'swap_cache_index' [-Werror=implicit-function-declaration]
+    2906 |   offset = swap_cache_index(folio->swap);
+         |            ^~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/swap_cache_index +2906 mm/huge_memory.c
+
+  2888	
+  2889	static void __split_huge_page(struct page *page, struct list_head *list,
+  2890			pgoff_t end, unsigned int new_order)
+  2891	{
+  2892		struct folio *folio = page_folio(page);
+  2893		struct page *head = &folio->page;
+  2894		struct lruvec *lruvec;
+  2895		struct address_space *swap_cache = NULL;
+  2896		unsigned long offset = 0;
+  2897		int i, nr_dropped = 0;
+  2898		unsigned int new_nr = 1 << new_order;
+  2899		int order = folio_order(folio);
+  2900		unsigned int nr = 1 << order;
+  2901	
+  2902		/* complete memcg works before add pages to LRU */
+  2903		split_page_memcg(head, order, new_order);
+  2904	
+  2905		if (folio_test_anon(folio) && folio_test_swapcache(folio)) {
+> 2906			offset = swap_cache_index(folio->swap);
+  2907			swap_cache = swap_address_space(folio->swap);
+  2908			xa_lock(&swap_cache->i_pages);
+  2909		}
+  2910	
+  2911		/* lock lru list/PageCompound, ref frozen by page_ref_freeze */
+  2912		lruvec = folio_lruvec_lock(folio);
+  2913	
+  2914		ClearPageHasHWPoisoned(head);
+  2915	
+  2916		for (i = nr - new_nr; i >= new_nr; i -= new_nr) {
+  2917			__split_huge_page_tail(folio, i, lruvec, list, new_order);
+  2918			/* Some pages can be beyond EOF: drop them from page cache */
+  2919			if (head[i].index >= end) {
+  2920				struct folio *tail = page_folio(head + i);
+  2921	
+  2922				if (shmem_mapping(folio->mapping))
+  2923					nr_dropped++;
+  2924				else if (folio_test_clear_dirty(tail))
+  2925					folio_account_cleaned(tail,
+  2926						inode_to_wb(folio->mapping->host));
+  2927				__filemap_remove_folio(tail, NULL);
+  2928				folio_put(tail);
+  2929			} else if (!PageAnon(page)) {
+  2930				__xa_store(&folio->mapping->i_pages, head[i].index,
+  2931						head + i, 0);
+  2932			} else if (swap_cache) {
+  2933				__xa_store(&swap_cache->i_pages, offset + i,
+  2934						head + i, 0);
+  2935			}
+  2936		}
+  2937	
+  2938		if (!new_order)
+  2939			ClearPageCompound(head);
+  2940		else {
+  2941			struct folio *new_folio = (struct folio *)head;
+  2942	
+  2943			folio_set_order(new_folio, new_order);
+  2944		}
+  2945		unlock_page_lruvec(lruvec);
+  2946		/* Caller disabled irqs, so they are still disabled here */
+  2947	
+  2948		split_page_owner(head, order, new_order);
+  2949	
+  2950		/* See comment in __split_huge_page_tail() */
+  2951		if (folio_test_anon(folio)) {
+  2952			/* Additional pin to swap cache */
+  2953			if (folio_test_swapcache(folio)) {
+  2954				folio_ref_add(folio, 1 + new_nr);
+  2955				xa_unlock(&swap_cache->i_pages);
+  2956			} else {
+  2957				folio_ref_inc(folio);
+  2958			}
+  2959		} else {
+  2960			/* Additional pin to page cache */
+  2961			folio_ref_add(folio, 1 + new_nr);
+  2962			xa_unlock(&folio->mapping->i_pages);
+  2963		}
+  2964		local_irq_enable();
+  2965	
+  2966		if (nr_dropped)
+  2967			shmem_uncharge(folio->mapping->host, nr_dropped);
+  2968		remap_page(folio, nr);
+  2969	
+  2970		if (folio_test_swapcache(folio))
+  2971			split_swap_cluster(folio->swap);
+  2972	
+  2973		/*
+  2974		 * set page to its compound_head when split to non order-0 pages, so
+  2975		 * we can skip unlocking it below, since PG_locked is transferred to
+  2976		 * the compound_head of the page and the caller will unlock it.
+  2977		 */
+  2978		if (new_order)
+  2979			page = compound_head(page);
+  2980	
+  2981		for (i = 0; i < nr; i += new_nr) {
+  2982			struct page *subpage = head + i;
+  2983			struct folio *new_folio = page_folio(subpage);
+  2984			if (subpage == page)
+  2985				continue;
+  2986			folio_unlock(new_folio);
+  2987	
+  2988			/*
+  2989			 * Subpages may be freed if there wasn't any mapping
+  2990			 * like if add_to_swap() is running on a lru page that
+  2991			 * had its mapping zapped. And freeing these pages
+  2992			 * requires taking the lru_lock so we do the put_page
+  2993			 * of the tail pages after the split is complete.
+  2994			 */
+  2995			free_page_and_swap_cache(subpage);
+  2996		}
+  2997	}
+  2998	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
