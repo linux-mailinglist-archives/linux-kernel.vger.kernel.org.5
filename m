@@ -1,99 +1,125 @@
-Return-Path: <linux-kernel+bounces-149961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BBCB8A986C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:20:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79E118A9870
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:21:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5062F2827C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:20:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04C6DB20A3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:21:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 797DE15E5B9;
-	Thu, 18 Apr 2024 11:20:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="skBB0CGx"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C8015E5D4;
+	Thu, 18 Apr 2024 11:21:25 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF61E15E214
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:20:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F370D15B573;
+	Thu, 18 Apr 2024 11:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713439207; cv=none; b=ehWWKZgSDRn+yZxpdnxSz9bEV8nlnYtfDziFsMpW81S5fq2M7enlXFybEl2FEbl5oScoAbzivYi52oGEqf4K8fmxciO/caJPPtSWTAy+fT0BNIjVBg8BZpiFzfcpfxNSEAjLPODfwp9NYf6vt7zw55QFswv7hXyOi8y6O5oVQHU=
+	t=1713439285; cv=none; b=QhRHYgvAYcVdPUg9A0HqBLXnM6H2lftDl/vzV2eT0QfA/opAeYt9F/PZlb4+moRFLsUGnY4MV/ULs3qnMmusms9866sWHQ86j2LFTSOLqx0h3NN4EsFXZjgU6ATD7G7Jo9YGp5xicvFDo99Q9VUbnOAksfWJ5kIzieklrKevnAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713439207; c=relaxed/simple;
-	bh=pTH4AMFIX/a1mvllVA9nEz2QdISSpNcl3msKV0Ms2qE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=TFaIG8DxDaC67OIxlaOMUlaMYRSHhr7RBGTnDK0aHX9JgDAJNXW4anjRSbrem3d7jxiSBUGf2611KOyoISs/gO81DPDMiLSeVU7k2rDqPi1Tj+Ztl+UYqaASWv+6qPFrjaJWZzDbq+1e5M+J+JFw0M2rjzLtOi3HGhMt75ihDtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=skBB0CGx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E862DC2BD11;
-	Thu, 18 Apr 2024 11:20:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713439207;
-	bh=pTH4AMFIX/a1mvllVA9nEz2QdISSpNcl3msKV0Ms2qE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=skBB0CGxR8U4BMU3oTyatlqb+Ux82gAo1aQ91iF9dBoWU+MxdKF360YJOFinq+Clp
-	 09Hr9I3Gx6k8kOiUdpttSRQEZuEwPAff4N2g39HYYsqay39X9GNlwwizN1pVkU/b/T
-	 zZdGelMgN5wIyfq9oi92tjVvsNcyr22i+aznxes++L7lPJHUBz4eWEm9AKSl+rFBMA
-	 K5YpqSDFXOO+dpnYjnpUIgsJokRR8HlfchHOtjgixQ36yinzCrM79G1+O5k7SDbxdO
-	 vcUiQKf1EqcN39oS4XzPtoV4VdKbMak7kJjd2dooXFnX7whHqO9YZ8rkJhPbfzfn2v
-	 ewcREo8XVKPog==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: "Michael Walle" <mwalle@kernel.org>
-Cc: "Pratyush Yadav" <pratyush@kernel.org>,  "Tudor Ambarus"
- <tudor.ambarus@linaro.org>,  "Miquel Raynal" <miquel.raynal@bootlin.com>,
-  "Richard Weinberger" <richard@nod.at>,  "Vignesh Raghavendra"
- <vigneshr@ti.com>,  <linux-kernel@vger.kernel.org>,
-  <linux-mtd@lists.infradead.org>
-Subject: Re: [RFC PATCH v1 6/6] mtd: spi-nor: introduce support for
- displaying deprecation message
-In-Reply-To: <D0N5QYQMX1X4.831Q9SEANU4S@kernel.org> (Michael Walle's message
-	of "Thu, 18 Apr 2024 11:57:27 +0200")
-References: <20240412134405.381832-1-mwalle@kernel.org>
-	<20240412134405.381832-7-mwalle@kernel.org>
-	<mafs0jzkw6oq1.fsf@kernel.org> <D0MHEH8OOS44.2PPBZ3LFU4QG3@kernel.org>
-	<mafs0bk686l67.fsf@kernel.org> <D0N5QYQMX1X4.831Q9SEANU4S@kernel.org>
-Date: Thu, 18 Apr 2024 13:20:04 +0200
-Message-ID: <mafs034ri7w9n.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1713439285; c=relaxed/simple;
+	bh=GjmNQpVi6Pjtu34nTkDpKtBKEjPKDfdVMkq31b+TbhA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QzCGhQTaC1jGeqChMOtLTVp/K7h2ZYN3+Iezk71w00r8lKWxaPKERW33+rvTwRgHnhezd5HAvKsAMDM8d15+mHMcZsICz32pZ0BzBwccuejgqwqFQcqZCB8YLp7cf0PfQ6Pcmi5Xi757/2k4X3M+24CqQ7umSHlnoG75Vn6igBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91590C113CC;
+	Thu, 18 Apr 2024 11:21:19 +0000 (UTC)
+Date: Thu, 18 Apr 2024 12:21:17 +0100
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Marc Zyngier <maz@kernel.org>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Mark Brown <broonie@kernel.org>, stable@vger.kernel.org,
+	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+	allen.lkml@gmail.com, Yihuang Yu <yihyu@redhat.com>,
+	Gavin Shan <gshan@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Shaoqin Huang <shahuang@redhat.com>, Will Deacon <will@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: [PATCH 6.6 000/122] 6.6.28-rc1 review
+Message-ID: <ZiECLaXHce05DSM6@arm.com>
+References: <20240415141953.365222063@linuxfoundation.org>
+ <Zh5UJh31PlBkpZWd@finisterre.sirena.org.uk>
+ <CA+G9fYu-AjRm-BBA=8fWS8oCbBJ5W443JHPh3uddD7ea7MY-YA@mail.gmail.com>
+ <86y19dqw74.wl-maz@kernel.org>
+ <Zh61KobDt_y1O46-@arm.com>
+ <86sezjq688.wl-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86sezjq688.wl-maz@kernel.org>
 
-On Thu, Apr 18 2024, Michael Walle wrote:
+On Thu, Apr 18, 2024 at 12:07:35PM +0100, Marc Zyngier wrote:
+> On Tue, 16 Apr 2024 18:28:10 +0100,
+> Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > On Tue, Apr 16, 2024 at 02:22:07PM +0100, Marc Zyngier wrote:
+> > > On Tue, 16 Apr 2024 14:07:30 +0100,
+> > > Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > > > On Tue, 16 Apr 2024 at 16:04, Mark Brown <broonie@kernel.org> wrote:
+> > > > > On Mon, Apr 15, 2024 at 04:19:25PM +0200, Greg Kroah-Hartman wrote:
+> > > > > > This is the start of the stable review cycle for the 6.6.28 release.
+> > > > > > There are 122 patches in this series, all will be posted as a response
+> > > > > > to this one.  If anyone has any issues with these being applied, please
+> > > > > > let me know.
+> > > > >
+> > > > > The bisect of the boot issue that's affecting the FVP in v6.6 (only)
+> > > > > landed on c9ad150ed8dd988 (arm64: tlb: Fix TLBI RANGE operand),
+> > > > > e3ba51ab24fdd in mainline, as being the first bad commit - it's also in
+> > > > > the -rc for v6.8 but that seems fine.  I've done no investigation beyond
+> > > > > the bisect and looking at the commit log to pull out people to CC and
+> > > > > note that the fix was explicitly targeted at v6.6.
+> > > > 
+> > > > Anders investigated this reported issues and bisected and also found
+> > > > the missing commit for stable-rc 6.6 is
+> > > > e2768b798a19 ("arm64/mm: Modify range-based tlbi to decrement scale")
+> > > 
+> > > Which is definitely *not* stable candidate. We need to understand why
+> > > the invalidation goes south when the scale go up instead of down.
+> > 
+> > If you backport e3ba51ab24fd ("arm64: tlb: Fix TLBI RANGE operand")
+> > which fixes 117940aa6e5f ("KVM: arm64: Define
+> > kvm_tlb_flush_vmid_range()") but without the newer e2768b798a19
+> > ("arm64/mm: Modify range-based tlbi to decrement scale"), it looks like
+> > "scale" in __flush_tlb_range_op() goes out of range to 4. Tested on my
+> > CBMC model, not on the actual kernel. It may be worth adding some
+> > WARN_ONs in __flush_tlb_range_op() if scale is outside the 0..3 range or
+> > num greater than 31.
+> > 
+> > I haven't investigated properly (and I'm off tomorrow, back on Thu) but
+> > it's likely the original code was not very friendly to the maximum
+> > range, never tested. Anyway, if one figures out why it goes out of
+> > range, I think the solution is to also backport e2768b798a19 to stable.
+> 
+> I looked into this, and I came to the conclusion that this patch is
+> pretty much incompatible with the increasing scale (even if you cap
+> num to 30).
 
-> Hi,
->
-> On Wed Apr 17, 2024 at 5:52 PM CEST, Pratyush Yadav wrote:
->> On Wed, Apr 17 2024, Michael Walle wrote:
->> > On Wed Apr 17, 2024 at 4:36 PM CEST, Pratyush Yadav wrote:
-[...]
->> >> I like the idea in general. Do you think we should also print a rough
->> >> date for the deprecation as well?
->> >
->> > Might make sense, any suggestions?
->>
->> How about a simple string to flash_info?
->
-> Ahh, I was rather asking if you already had a time frame in mind.
->
-> Besides that, should it be a date or a (future) kernel version?
-> Roughly about two/three kernel releases?
+Thanks Marc for digging into this.
 
-I think kernel version is better.
+> So despite my earlier comment, it looks like picking e2768b798a19 is
+> the right thing to do *if* we're taking e3ba51ab24fd into 6.6-stable.
+> 
+> Otherwise, we need a separate fix, which Ryan initially advocating for
+> initially.
 
-I don't base this on any real data, only on gut feeling, but I think
-three kernel releases is a good time. Should add up to about 6-7 months.
-
-[...]
+My preference would be to cherry-pick the two upstream commits than
+coming up with an alternative fix for 6.6.
 
 -- 
-Regards,
-Pratyush Yadav
+Catalin
 
