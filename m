@@ -1,115 +1,161 @@
-Return-Path: <linux-kernel+bounces-149585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 101578A931F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:33:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7B3D8A9324
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:34:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF1C1281E92
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:33:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0404D1C20C78
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA0F21373;
-	Thu, 18 Apr 2024 06:33:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44DA72576F;
+	Thu, 18 Apr 2024 06:34:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="UpYxncQ7"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="HuxvxZ+v"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1772923DE
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:33:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E16B8111BB;
+	Thu, 18 Apr 2024 06:34:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713421987; cv=none; b=C8zjiSCYMsbiQ48zHqHCl+dT4JK3YKwbFlIMP/ZcBEsbKWw0V9mj2UiqlzhhpbSIEUqoZQ3jOFqi5z0+ZKFJmYTGjUBWHFt9Lw74g07kvh4baGY7Zz2rLPkgOIActDcRthG6B85xyOWX3rr6HlmK2209JHJiI8QLX4HvDufF4Dk=
+	t=1713422043; cv=none; b=APWeRf+geb+d/Ve3y3wkyrTWqWeCRk50qjaYaShyz+DJQXjg2Cq+v0YWnj9fynULPWf5Mrc8gR2OuFu3hhkw/eQGXztFQiQ6m2LUwTssiJkkQF186jwZoFGyvxGuTwoCOMXPsOqv4lKVInyRCPr//q1dwKdREULfCwqi6EnI46I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713421987; c=relaxed/simple;
-	bh=pQMBecgqfKdbPKjdn4yS3sDc77mBnocF1E8KpVGeTVo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=OvSdwn2WrnFXqVW1m3TWiBEfY0MoArUuGnsTt0OvHN0JpGT8/mLl7TLQYks/Z3uvkvg60JZOS9G6H+1EtdChWh7VCF6P6GhWwLIX3EbxwE0vJS6wTDWQUzb86u6dSxF0vYdy5zodvx7xL3a7/sEnifmYbja5xh/OoBXsiIReLBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=UpYxncQ7; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1713421984;
-	bh=Os3n75joztuZwb7Uo98ZK8zUHbtnDL2bSCbwHpOcZE4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=UpYxncQ7XHP+jss1hZdkT5vMaxWi3UsZZtID/xtfljbj+dZWc2jBahOY2aXHfD8y/
-	 RVsJRnN7oRlQ51KLRItu4vVMzvHZuDSBlkXS2vaa0kLCo0FNzJDORHCGtohKi/qiq2
-	 O6Y3sB4pjJIKSL+WOdB+MPmuObWgwilq8rQFQIwrB1sqNBG7wj0xvmApVHx7J6xxz2
-	 MfSgJr2XjXJrJ9ZSMOm6Ti10tkZS3ejgm15X9sf+rIjEWWXpUVJ0XmA/4yCUKnhR9/
-	 6oxerVLHbTcaMiW2Qnfget/zDJ5DS+tRK6pFBaW6lVpH9PuNyfFHDPRPhH6lHPR6ra
-	 6I3EG15SaNS2g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VKnym2YSCz4wcR;
-	Thu, 18 Apr 2024 16:33:04 +1000 (AEST)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Naresh Kamboju
- <naresh.kamboju@linaro.org>, linux-kernel@vger.kernel.org, linuxppc-dev
- <linuxppc-dev@lists.ozlabs.org>, "Aneesh Kumar K . V"
- <aneesh.kumar@kernel.org>, Anders Roxell <anders.roxell@linaro.org>, Kees
- Cook <keescook@chromium.org>, Niklas Schnelle <schnelle@linux.ibm.com>,
- clang-built-linux <llvm@lists.linux.dev>, Nick Desaulniers
- <ndesaulniers@google.com>, Nathan Chancellor <nathan@kernel.org>, Jeff Xu
- <jeffxu@chromium.org>, "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>, Dan
- Carpenter <dan.carpenter@linaro.org>, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>, Baoquan He
- <bhe@redhat.com>, "Mike Rapoport (IBM)" <rppt@kernel.org>
-Subject: Re: [PATCH] powerpc: drop port I/O helpers for CONFIG_HAS_IOPORT=n
-In-Reply-To: <878r1bb2zj.fsf@mail.lhotse>
-References: <20240416153331.1617772-1-arnd@kernel.org>
- <878r1bb2zj.fsf@mail.lhotse>
-Date: Thu, 18 Apr 2024 16:33:04 +1000
-Message-ID: <875xwfb2ov.fsf@mail.lhotse>
+	s=arc-20240116; t=1713422043; c=relaxed/simple;
+	bh=RHIejf4V54iNzGlOs7usTAyAIGAlOA/ZaJt8Mf4ep/w=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=CB3VCLvd3Qs5w22QQLqSgtIKATFjH+01mw/zQO7ds4EgIB9xb8/rMCe6Rz/MElVoxYKwgLb+o4ZZ5t8qePNLrTMX88xPb97En7ReJtfJ+FQyFweTyQevfAoOTMSIjTmP+6Wahpv6a9ygGXPkN6mZxonrweNN3mcf/R10sdbc9Pg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=HuxvxZ+v; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1713422038;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FJfHenXGscRQCfMOH93v/ydARNP1MmiUsLyM1PnpdpI=;
+	b=HuxvxZ+vIQDChoGpBAoPM4zf+SQyTRodNZa4WDHc57jd0ZUM/VJWKclmWAsxiZJuLXa+ct
+	M5m1O3JiEw1m4cjZ2Gs8fwdV2qP7VYXnl4p4e82vFQfnKdHU4nfwiwzRPOh9YIcJMYxcfP
+	7QsT+PypYWMtnaAmV+lZVzeXTWvQBB/CBqJux2cGtCNB0UIn5X/UhAvOGJDcObD3LWccoc
+	TKrTFyM0C8mPtyUn4pOetsyAkYMxQSj3IQQoB4i+MWRpb4kG4VZTfEObXflmCf6MxYRiaj
+	AerknqM00o7STOBNGTl+A5GWcZ9V8X0pVYVuC4lP7bUW/ast1hQQZcbpUJuNLQ==
+Date: Thu, 18 Apr 2024 08:33:55 +0200
+From: Dragan Simic <dsimic@manjaro.org>
+To: FUKAUMI Naoki <naoki@radxa.com>
+Cc: Chukun Pan <amadeus@jmu.edu.cn>, jonas@kwiboo.se, conor+dt@kernel.org,
+ devicetree@vger.kernel.org, heiko@sntech.de, krzk+dt@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, robh@kernel.org
+Subject: Re: [PATCH 2/2] arm64: dts: rockchip: Add Radxa ROCK3 Model C
+In-Reply-To: <9e915ef29a2b49ce56446ec9d474eb64@manjaro.org>
+References: <d7de2213-8dd2-42ec-9a30-a569ac71be3e@kwiboo.se>
+ <20240417133016.62753-1-amadeus@jmu.edu.cn>
+ <a144c052fcc2460a615a754a64a8f739@manjaro.org>
+ <B26C732A4DCEA9B3+282b8775-601b-4d4a-a513-4924b7940076@radxa.com>
+ <9e915ef29a2b49ce56446ec9d474eb64@manjaro.org>
+Message-ID: <ebf7b5f5ff4cd3c8cbee36f35df6ef5d@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-Michael Ellerman <mpe@ellerman.id.au> writes:
-> Arnd Bergmann <arnd@kernel.org> writes:
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->> Calling inb()/outb() on powerpc when CONFIG_PCI is disabled causes
->> a NULL pointer dereference, which is bad for a number of reasons.
->>
->> After my patch to turn on -Werror in linux-next, this caused a
->> compiler-time warning with clang:
->>
->> In file included from arch/powerpc/include/asm/io.h:672:
->> arch/powerpc/include/asm/io-defs.h:43:1: error: performing pointer
->> arithmetic on a null pointer has undefined behavior
->> [-Werror,-Wnull-pointer-arithmetic]
->>    43 | DEF_PCI_AC_NORET(insb, (unsigned long p, void *b, unsigned long c),
->>       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    44 |                  (p, b, c), pio, p)
->>       |                  ~~~~~~~~~~~~~~~~~~
->>
->> In this configuration, CONFIG_HAS_IOPORT is already disabled, and all
->> drivers that use inb()/outb() should now depend on that (some patches are
->> still in the process of getting marged).
->>
->> Hide all references to inb()/outb() in the powerpc code and the definitions
->> when HAS_IOPORT is disabled to remove the possible NULL pointer access.
->> The same should happin in asm-generic in the near future, but for now
->> the empty inb() macros are still defined to ensure the generic version
->> does not get pulled in.
->>
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
->> --
->
-> This needs a small fixup:
+Hello all,
 
-Well, only because my tree doesn't have f0a816fb12da ("/dev/port: don't compile file operations without CONFIG_DEVPORT").
+On 2024-04-18 07:55, Dragan Simic wrote:
+> On 2024-04-18 07:52, FUKAUMI Naoki wrote:
+>> this is Naoki @ Radxa.
+>> 
+>> thank you for your great work!
+>> 
+>> On 4/18/24 02:02, Dragan Simic wrote:
+>>> Hello Chukun,
+>>> 
+>>> On 2024-04-17 15:30, Chukun Pan wrote:
+>>>> Hi Jonas,
+>>>>>> +    model = "Radxa ROCK3 Model C";
+>>>>> 
+>>>>> The marketing name seems to be "Radxa ROCK 3C" according to the 
+>>>>> product
+>>>>> page at [1].
+>>>>> 
+>>>>> [1] https://radxa.com/products/rock3/3c
+>>>> 
+>>>> According to https://wiki.radxa.com/Rock3/3c , it should be called
+>>>> "Radxa ROCK 3 Model C". I copied rock3a here without paying 
+>>>> attention.
+>> 
+>> sorry, wiki.radxa.com is outdated.
+>> 
+>> docs.radxa.com is correct one and maintained.
+>> (but it still has some errors, sorry)
+>> 
+>>> If I may interject, here's the result of a quick qrep:
+>>> 
+>>> ./rk3399pro-rock-pi-n10.dts:    model = "Radxa ROCK Pi N10";
+>>> ./rk3399-rock-pi-4a-plus.dts:    model = "Radxa ROCK Pi 4A+";
+>>> ./rk3588s-rock-5a.dts:    model = "Radxa ROCK 5 Model A";
+>>> ./rk3588-rock-5b.dts:    model = "Radxa ROCK 5 Model B";
+>>> ./rk3399-rock-4c-plus.dts:    model = "Radxa ROCK 4C+";
+>>> ./rk3399-rock-pi-4b-plus.dts:    model = "Radxa ROCK Pi 4B+";
+>>> ./rk3399-rock-pi-4b.dts:    model = "Radxa ROCK Pi 4B";
+>>> ./rk3399-rock-pi-4c.dts:    model = "Radxa ROCK Pi 4C";
+>>> ./rk3308-rock-pi-s.dts:    model = "Radxa ROCK Pi S";
+>>> ./rk3399-rock-pi-4a.dts:    model = "Radxa ROCK Pi 4A";
+>>> ./rk3399-rock-4se.dts:    model = "Radxa ROCK 4SE";
+>>> ./rk3328-rock-pi-e.dts:    model = "Radxa ROCK Pi E";
+>>> ./rk3568-rock-3a.dts:    model = "Radxa ROCK3 Model A";
+>>> 
+>>> Based on that, I think that "Radxa ROCK 3 Model C" would actually
+>>> be the preferred name...  Perhaps?
+>>> 
+>>> If we end up following that approach, the last board dts on the list
+>>> above should also be fixed to read "Radxa ROCK 3 Model A".
+>>> 
+>>> Either that, or all "Model " strings should be stripped out from
+>>> all board dts files that currently contain it.
+>> 
+>> we have a document named "Radxa Product Naming Convention".
+>> there are "full name" and "short name". "Model" is used in "full
+>> name", but it's not used in "short name". both are correct.
+>> 
+>> but, we preferred to use "short name" for "model = " in mainline 
+>> linux/u-boot.
+>> 
+>> for ROCK 3C, please use
+>> 
+>>  model = "Radxa ROCK 3C";
+>> 
+>> for ROCK 5A/5B and ROCK 3A,
+>> 
+>>  model = "Radxa ROCK 5A";
+>>  model = "Radxa ROCK 5B";
+>>  model = "Radxa ROCK 3A";
+>> 
+>> are preferred.
+>> 
+>> we need to fix this inconsistency. (include our docs)
+> 
+> Great, thanks for this detailed clarification!
 
-cheers
+I went ahead and prepared a patch that cleans up currently present
+naming inconsistencies for the Radxa boards.  AFAICT, there should
+be no issues arising from the changes in the "model" and "compatible"
+strings, because they aren't used anywhere in the drivers.  There
+are no board-specific ALSA UCM2 profiles, which could be affected
+by those changes.  U-Boot is also fine.
+
+I'll think a bit more about it, and I'll send the patch over a bit
+later.  If it goes well, I'll prepare and send one more similar patch,
+for some other boards.
 
