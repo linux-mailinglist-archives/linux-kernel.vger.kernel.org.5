@@ -1,292 +1,140 @@
-Return-Path: <linux-kernel+bounces-150369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD0C58A9E0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:11:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60E0C8A9E0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:12:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6357328353C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:11:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19CDC284068
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B198D16C456;
-	Thu, 18 Apr 2024 15:11:29 +0000 (UTC)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F066A16C68B;
+	Thu, 18 Apr 2024 15:12:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DeSevptl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754A4161935;
-	Thu, 18 Apr 2024 15:11:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361FD16ABEE;
+	Thu, 18 Apr 2024 15:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713453089; cv=none; b=LVp7OqLYUjNAfQ0qxbeIx5MPz3qNOzzERlK9dwSX7fEjWW6/BCaJAKw+AQQc+VlBni8uaBDKS7ZDymKj+Fc59MYzAFNTAqgbaziCU+GR7upRRJiXwqvRyOnyb3TBx+Rx/XRnlnjlQyjHnc2+Q2DthbIqoubhvsMOWGR8Ce1NnQs=
+	t=1713453149; cv=none; b=Jm86WvcOhM2vwlH3e2CMqRjXsAv8loBMk+n1Bdha7PhrthHrgf8GC9qH8uSupLNI1PWP4TGYJGpGTr1AzJ7OEI30uhl0xlDPWV1WSDhYKW0R50jFfrIShsK46OKXRi3CxzgHdA0EToa4tgHqhDnOGxwJxdMXHxKxPaYUvobr0Cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713453089; c=relaxed/simple;
-	bh=Gr7nAtEgOt+/LCEsIZFS2DhpmzzOe4xq8nfvfsQkXH0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EJwUhn/fpjYcPzKtBgx/gKh5C2jR+ftCcDKqjf38xdLMSJFDr9Uzf8mD/MlUp4fjESJoRfOen8P/1wXe/ILpvC0dVhc6yB8zB/+5rar7r8b18ryEHhXTyPgg89eno95earav0zmuDzRpx1B57iJAR7EuZ7ZAi6TX3QG2+yNE4co=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-61500da846fso7294347b3.1;
-        Thu, 18 Apr 2024 08:11:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713453081; x=1714057881;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PYgx8PoYC9becIlnatSH9CSdIsX+U/O8aOip/So2vJQ=;
-        b=ja/mXEJ9kbN4ejKq2iQ6RG6aBSyzz2Hoz1kZ9SPlAMIYxKlM+yXfciuIPv1H/Q3mnp
-         HC6DNPojGWmD/g+OC6B8Thq6k6dDfRNy/T+RNKN0/eHCFdg3PatVNK50JDsf7Spe7aFm
-         1EQeAWsCxkvmJTb7SVj+UY2q+wYGXj/q2OskhEq3XTg9sRiWs8tO/Jn4uS+AGTMfdCO8
-         vMeYduK0r1PCfoCWh1ePDGPiHiirE5oyANcpyAu19YgNmqYMnOjsgo+63c8iudX28+r7
-         Wk2Q7OFxYWpz1z53lhNYZOdAL6MaxrIDDvZ/JP7+JjdpIUqWtpR4Ubg7Bb3tELl/xYYZ
-         DVow==
-X-Forwarded-Encrypted: i=1; AJvYcCXFVskIfYtXYAqJlEMWu8iD0HIBIr999l16ER5JUMpe8n3YWT8tif9qDPEFdwEL+3HUcOd7g7D1X2meftbY3PBVFKiPNejwcgyIR9dJVi8POfX9RaJ1rznsPdtFlpqEbYH1uY3RfPfNeRH82MBuMEKB1gmXnalrSYJXIHJvtfJ7nH9DegKk2wnH5k7V
-X-Gm-Message-State: AOJu0Yz5kGG+F4BsS8UNVuB7Xtgp7Mo/atXF7bWT+f7mDRV7kikV8vxk
-	TE13Qd9srX6F9QnF3e0bgGsR70AptS0FMsF0/ksu0SCyiOtLsKZrGXCuxCuH
-X-Google-Smtp-Source: AGHT+IFZlQ+qX8rzKn8ElzG8yCUImquEiojp/b6X5fxhR28P/XjE2K7NqJihR3krTeFDl+XKDG0T+Q==
-X-Received: by 2002:a05:690c:c09:b0:615:2ed7:59e with SMTP id cl9-20020a05690c0c0900b006152ed7059emr3191793ywb.14.1713453081472;
-        Thu, 18 Apr 2024 08:11:21 -0700 (PDT)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
-        by smtp.gmail.com with ESMTPSA id n74-20020a0dcb4d000000b0061520765e11sm361726ywd.143.2024.04.18.08.11.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 08:11:21 -0700 (PDT)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6153d85053aso8821257b3.0;
-        Thu, 18 Apr 2024 08:11:21 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUDI5io9w1YRFtqtdcKPN/bGbvIW4g69voMqD0hNwgG6wpEZaXhi/Y1jMOp3gssDRrEPhJkT+sw0VuEORoMvRo/6PH0xbq44CYanG97XXn7rmh7XXfLjtf/Y+DZjhcnd8mLwoPHoptHDkWGYcLCgOxusZZkuVd9LDeV3lHQTcCs2k0m4kOFUj1oTLUa
-X-Received: by 2002:a25:6989:0:b0:dc7:5018:4022 with SMTP id
- e131-20020a256989000000b00dc750184022mr3364707ybc.44.1713453080848; Thu, 18
- Apr 2024 08:11:20 -0700 (PDT)
+	s=arc-20240116; t=1713453149; c=relaxed/simple;
+	bh=EwDk+acs40utZgqR2KMpvEatz3bas2MtIZ7ZVuGevL0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ewuu0t+ghb5KC/P2fHDpAqi7VnJYOQxxOxEDxLerdFOUlhOhq1sXnlCkOLC6B9WJt02Zv1w3I5vYpriv/pL5Me+ecsyzo00S/GGQacrHIEq+GILltdna3ofdczf9AFVp/e4DbWZQGJr07n3nerW0mzkR4Jx6bdb/CeOEFJEpHP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DeSevptl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5E15C113CC;
+	Thu, 18 Apr 2024 15:12:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713453148;
+	bh=EwDk+acs40utZgqR2KMpvEatz3bas2MtIZ7ZVuGevL0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DeSevptlefNRiLs6nr2IrizdzKvBEPRi0LXFaXIzoZkqEtfTbs3hjC9rZzBhaqPDR
+	 Ne4wRFifwbVdZn7uDz0CNmIzRF6sK+azDYtywG9BuHPZmizapHWzrdg8DU4VKQD8ql
+	 hMAvg6FlWiGuPorvoCJQYTsX8HNrQ2wgjFrfUYnZdT+yehHZuOZoTqHLn6+Ef6oGTl
+	 mAnDvcOt8Z3v9bfwDbHt2hdj5e/3BJE2B6QJ2N9qkD761sRSGxQ6L/iy/lu4TBHleq
+	 DAVh8vGeeqpAEN53dnW7CZMvxC/YHclsPJzVi9WRPIadvu7+uuIVfUC6cJUDCxZVfh
+	 cH7OnZ5VuJBbg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rxTR8-000000001QT-3nmZ;
+	Thu, 18 Apr 2024 17:12:31 +0200
+Date: Thu, 18 Apr 2024 17:12:30 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Caleb Connolly <caleb.connolly@linaro.org>
+Subject: Re: [PATCH v3] usb: typec: qcom-pmic-typec: split HPD bridge alloc
+ and registration
+Message-ID: <ZiE4Xpjhv2llY4pG@hovoldconsulting.com>
+References: <20240416-qc-pmic-typec-hpd-split-v3-1-fd071e3191a1@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403203503.634465-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240403203503.634465-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240403203503.634465-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 18 Apr 2024 17:11:09 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdW7kiSYm8n8CfMs9zKaN+PhVt+=16nx=ttLk6Ur_jOa-g@mail.gmail.com>
-Message-ID: <CAMuHMdW7kiSYm8n8CfMs9zKaN+PhVt+=16nx=ttLk6Ur_jOa-g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] irqchip/renesas-rzg2l: Add support for RZ/Five SoC
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416-qc-pmic-typec-hpd-split-v3-1-fd071e3191a1@linaro.org>
 
-Hi Prabhakar,
+On Tue, Apr 16, 2024 at 05:18:56AM +0300, Dmitry Baryshkov wrote:
+> If a probe function returns -EPROBE_DEFER after creating another device
+> there is a change of ending up in a probe deferral loop, (see commit
+> fbc35b45f9f6 ("Add documentation on meaning of -EPROBE_DEFER"). In case
+> of the qcom-pmic-typec driver the tcpm_register_port() function looks up
+> external resources (USB role switch and inherently via called
+> typec_register_port() USB-C muxes, switches and retimers).
+> 
+> In order to prevent such probe-defer loops caused by qcom-pmic-typec
+> driver, use the API added by Johan Hovold and move HPD bridge
+> registration to the end of the probe function.
+> 
+> The devm_drm_dp_hpd_bridge_add() is called at the end of the probe
+> function after all TCPM start functions. This is done as a way to
+> overcome a different problem, the DRM subsystem can not properly cope
+> with the DRM bridges being destroyed once the bridge is attached. Having
+> this function call at the end of the probe function prevents possible
+> DRM bridge device creation followed by destruction in case one of the
+> TCPM start functions returns an error.
 
-On Wed, Apr 3, 2024 at 10:36=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
-om> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> The IX45 block has additional mask registers (NMSK/IMSK/TMSK) as compared
-> to the RZ/G2L (family) SoC.
->
-> Introduce masking/unmasking support for IRQ and TINT interrupts in IRQC
-> controller driver. Two new registers, IMSK and TMSK, are defined to
-> handle masking on RZ/Five SoC. The implementation utilizes a new data
-> structure, `struct rzg2l_irqc_data`, to determine mask support for a
-> specific controller instance.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
-> v1->v2
-> - Added IRQCHIP_MATCH() for RZ/Five
-> - Retaining a copy of OF data in priv
-> - Rebased the changes
+You're still not explaining why it is ok to move registration of the
+bridge to after starting the port and pdphy.
 
-Thanks for the update!
+Perhaps it's obvious to you but it should still go in the commit message
+as such a change is potentially something that could end up causing
+trouble (e.g. enabling interrupts before all resources have been setup
+and registered).
 
-> --- a/drivers/irqchip/irq-renesas-rzg2l.c
-> +++ b/drivers/irqchip/irq-renesas-rzg2l.c
-> @@ -37,6 +37,8 @@
->  #define TSSEL_SHIFT(n)                 (8 * (n))
->  #define TSSEL_MASK                     GENMASK(7, 0)
->  #define IRQ_MASK                       0x3
-> +#define IMSK                           0x10010
-> +#define TMSK                           0x10020
->
->  #define TSSR_OFFSET(n)                 ((n) % 4)
->  #define TSSR_INDEX(n)                  ((n) / 4)
-> @@ -66,15 +68,25 @@ struct rzg2l_irqc_reg_cache {
->         u32     titsr[2];
->  };
->
-> +/**
-> + * struct rzg2l_irqc_of_data - OF data structure
-> + * @mask_supported: Indicates if mask registers are available
-> + */
-> +struct rzg2l_irqc_of_data {
-> +       bool    mask_supported;
-> +};
-> +
->  /**
->   * struct rzg2l_irqc_priv - IRQ controller private data structure
->   * @base:      Controller's base address
-> + * @data:      OF data pointer
->   * @fwspec:    IRQ firmware specific data
->   * @lock:      Lock to serialize access to hardware registers
->   * @cache:     Registers cache for suspend/resume
->   */
->  static struct rzg2l_irqc_priv {
->         void __iomem                    *base;
-> +       const struct rzg2l_irqc_of_data *data;
+As I've mentioned before, I'm also sceptical to papering over the DRM
+issue in each and every driver registering a bridge. These late error
+paths would normally not be taken, unlike the earlier ones which can be
+triggered by probe deferrals and which we have to fix also for the probe
+deferral loops.
 
-That's not a copy, but a pointer.
+> @@ -92,7 +92,7 @@ static int qcom_pmic_typec_probe(struct platform_device *pdev)
+>  	if (!tcpm->tcpc.fwnode)
+>  		return -EINVAL;
+>  
+> -	bridge_dev = drm_dp_hpd_bridge_register(tcpm->dev, to_of_node(tcpm->tcpc.fwnode));
+> +	bridge_dev = devm_drm_dp_hpd_bridge_alloc(tcpm->dev, to_of_node(tcpm->tcpc.fwnode));
+>  	if (IS_ERR(bridge_dev))
+>  		return PTR_ERR(bridge_dev);
+>  
+> @@ -110,6 +110,10 @@ static int qcom_pmic_typec_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto fwnode_remove;
+>  
+> +	ret = devm_drm_dp_hpd_bridge_add(tcpm->dev, bridge_dev);
+> +	if (ret)
+> +		goto fwnode_remove;
 
->         struct irq_fwspec               fwspec[IRQC_NUM_IRQ];
->         raw_spinlock_t                  lock;
->         struct rzg2l_irqc_reg_cache     cache;
-> @@ -138,18 +150,102 @@ static void rzg2l_irqc_eoi(struct irq_data *d)
->         irq_chip_eoi_parent(d);
->  }
->
-> +static void rzg2l_irqc_mask_irq_interrupt(struct rzg2l_irqc_priv *priv,
-> +                                         unsigned int hwirq)
-> +{
-> +       u32 imsk =3D readl_relaxed(priv->base + IMSK);
-> +       u32 bit =3D BIT(hwirq - IRQC_IRQ_START);
-> +
-> +       writel_relaxed(imsk | bit, priv->base + IMSK);
-> +}
-> +
-> +static void rzg2l_irqc_unmask_irq_interrupt(struct rzg2l_irqc_priv *priv=
-,
-> +                                           unsigned int hwirq)
-> +{
-> +       u32 imsk =3D readl_relaxed(priv->base + IMSK);
-> +       u32 bit =3D BIT(hwirq - IRQC_IRQ_START);
-> +
-> +       writel_relaxed(imsk & ~bit, priv->base + IMSK);
-> +}
-> +
-> +static void rzg2l_irqc_mask_tint_interrupt(struct rzg2l_irqc_priv *priv,
-> +                                          unsigned int hwirq)
-> +{
-> +       u32 tmsk =3D readl_relaxed(priv->base + TMSK);
-> +       u32 bit =3D BIT(hwirq - IRQC_TINT_START);
-> +
-> +       writel_relaxed(tmsk | bit, priv->base + TMSK);
-> +}
-> +
-> +static void rzg2l_irqc_unmask_tint_interrupt(struct rzg2l_irqc_priv *pri=
-v,
-> +                                            unsigned int hwirq)
-> +{
-> +       u32 tmsk =3D readl_relaxed(priv->base + TMSK);
-> +       u32 bit =3D BIT(hwirq - IRQC_TINT_START);
-> +
-> +       writel_relaxed(tmsk & ~bit, priv->base + TMSK);
-> +}
-> +
-> +/* Must be called while priv->lock is held */
-> +static void rzg2l_irqc_mask_once(struct rzg2l_irqc_priv *priv, unsigned =
-int hwirq)
-> +{
-> +       if (!priv->data->mask_supported)
-> +               return;
-> +
-> +       if (hwirq >=3D IRQC_IRQ_START && hwirq <=3D IRQC_IRQ_COUNT)
-> +               rzg2l_irqc_mask_irq_interrupt(priv, hwirq);
-> +       else if (hwirq >=3D IRQC_TINT_START && hwirq < IRQC_NUM_IRQ)
-> +               rzg2l_irqc_mask_tint_interrupt(priv, hwirq);
-> +}
-> +
-> +static void rzg2l_irqc_mask(struct irq_data *d)
-> +{
-> +       struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
-> +
-> +       raw_spin_lock(&priv->lock);
-> +       rzg2l_irqc_mask_once(priv, irqd_to_hwirq(d));
-> +       raw_spin_unlock(&priv->lock);
-> +       irq_chip_mask_parent(d);
-> +}
-> +
-> +/* Must be called while priv->lock is held */
-> +static void rzg2l_irqc_unmask_once(struct rzg2l_irqc_priv *priv, unsigne=
-d int hwirq)
-> +{
-> +       if (!priv->data->mask_supported)
-> +               return;
-> +
-> +       if (hwirq >=3D IRQC_IRQ_START && hwirq <=3D IRQC_IRQ_COUNT)
-> +               rzg2l_irqc_unmask_irq_interrupt(priv, hwirq);
-> +       else if (hwirq >=3D IRQC_TINT_START && hwirq < IRQC_NUM_IRQ)
-> +               rzg2l_irqc_unmask_tint_interrupt(priv, hwirq);
-> +}
-> +
-> +static void rzg2l_irqc_unmask(struct irq_data *d)
-> +{
-> +       struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
-> +
-> +       raw_spin_lock(&priv->lock);
-> +       rzg2l_irqc_unmask_once(priv, irqd_to_hwirq(d));
-> +       raw_spin_unlock(&priv->lock);
-> +       irq_chip_unmask_parent(d);
-> +}
-> +
->  static void rzg2l_tint_irq_endisable(struct irq_data *d, bool enable)
->  {
-> +       struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
->         unsigned int hw_irq =3D irqd_to_hwirq(d);
->
->         if (hw_irq >=3D IRQC_TINT_START && hw_irq < IRQC_NUM_IRQ) {
-> -               struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
->                 u32 offset =3D hw_irq - IRQC_TINT_START;
->                 u32 tssr_offset =3D TSSR_OFFSET(offset);
->                 u8 tssr_index =3D TSSR_INDEX(offset);
->                 u32 reg;
->
->                 raw_spin_lock(&priv->lock);
-> +               if (enable)
-> +                       rzg2l_irqc_unmask_once(priv, hw_irq);
-> +               else
-> +                       rzg2l_irqc_mask_once(priv, hw_irq);
+This is leaking resources and can lead to a use-after-free.
 
-You already know this is a TINT interrupt, so you could call
-rzg2l_irqc_(un)mask_irq_interrupt() directly.
+When looking at the driver, I noticed that the existing error handling
+is already broken so I just sent a fix here:
 
->                 reg =3D readl_relaxed(priv->base + TSSR(tssr_index));
->                 if (enable)
->                         reg |=3D TIEN << TSSEL_SHIFT(tssr_offset);
-> @@ -157,6 +253,13 @@ static void rzg2l_tint_irq_endisable(struct irq_data=
- *d, bool enable)
->                         reg &=3D ~(TIEN << TSSEL_SHIFT(tssr_offset));
->                 writel_relaxed(reg, priv->base + TSSR(tssr_index));
->                 raw_spin_unlock(&priv->lock);
-> +       } else {
-> +               raw_spin_lock(&priv->lock);
-> +               if (enable)
-> +                       rzg2l_irqc_unmask_once(priv, hw_irq);
-> +               else
-> +                       rzg2l_irqc_mask_once(priv, hw_irq);
+	https://lore.kernel.org/lkml/20240418145730.4605-1-johan+linaro@kernel.org/
 
-Likewise.
+You should rebase on that series and not introduce further issues with
+the new bridge-add error path.
 
-> +               raw_spin_unlock(&priv->lock);
->         }
->  }
+> +
+>  	return 0;
+>  
+>  fwnode_remove:
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Johan
 
