@@ -1,257 +1,166 @@
-Return-Path: <linux-kernel+bounces-150670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C27668AA2B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:26:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23ACC8AA2C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:30:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EB4C1C212A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:26:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44F081C20BEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:30:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD0C817F36B;
-	Thu, 18 Apr 2024 19:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A773A17BB31;
+	Thu, 18 Apr 2024 19:30:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=LIVE.NL header.i=@LIVE.NL header.b="f9mXujrn"
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02olkn2096.outbound.protection.outlook.com [40.92.49.96])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="BS29PgEd"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A9F1EA74;
-	Thu, 18 Apr 2024 19:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.49.96
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713468384; cv=fail; b=Lsiud632uGPhynrbkO/doiszG1TCCthusDGlIIh/U7rv8bK5d+rGkzK2NPCN0EQGwTJ14woLqS6at7xM+55mszYcdb14Ai3MjJ49y3o1verNGERoYrJZ4sCiQ8Y1lqETLfcgpx9Rwu4fdEcmqUrmaV+EE2jwGXm/AZ6J/8LhstM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713468384; c=relaxed/simple;
-	bh=xF+qmHv0WeCn5dP4yJjwI0JKijafRqi24s5JsxrEqOg=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=dRs62+6QXbmPshziE1bt4/V2vCuguQECPK2Xze0QYIQGdaBQbQ671PGzg1cHwUspIs+9AM+tcIxUxOS/EaQu0xu6sTfQjN/oI/6wf25DJK+eDLO6EtEdr8ZlQNmJbT+LOCE0sbPDac4tC7AnFrBQHhNPJ+ggcUezbBB9xIfYr5k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=live.nl; spf=pass smtp.mailfrom=live.nl; dkim=pass (2048-bit key) header.d=LIVE.NL header.i=@LIVE.NL header.b=f9mXujrn; arc=fail smtp.client-ip=40.92.49.96
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=live.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=live.nl
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UWVCS2Gzv2qbw+kWdBOB536POl0YWDPbKc8KPsiYTeeqOme0lDcOjZ05BRZxLS5HKFD2faPJFeOWQDOdMSOz10CgCBsHLJZ6G1bxhLbeZ/q63iYwY25bdiKBZxwVKqoe3uYfFBNtYJpfVMnpnSffI6G4eu7wiT/HaohdI9Yb3pcnfrGOR5ButUomlHEXXpnvjZDnhE9DqErwnOMSeHnN88aBg/Pr57tEBwam8S0JBsN5KB8PxJJ9g3W7JMGSLrPNisczZUz2YTdFppimOwilg04T92GQsxOYHJ+yjb078XP/G81Hlld0uKBUFIXsL7vfsP1l0E5d5UzhXyao2Wcecw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hBvcj55h1U2bNNLqD+rejW+HJwxvv3oQ8Wne4mZ/z5E=;
- b=LtrQ4+GtPzEqFXbuWnpK/8jTUUPCelteusHx1vfYzMEuAWH04LmtNWkbvDkXxMY/ruHCAblOX7Wt3KqCo3GD+/E0PDXSxOOOCqFMGbKF3qPrXsplywMMitvyo3CM9XRwHUAX8LbTx84NhK1J3XD4VD2sZiLbMEafWavpdM8P/s6SO1KvTClE3qbcaLh729Z0wEsnbqM5swOeHQwrbJX0rvhc8L6msOcPCAj6XKsPlG/FXePgqnfNaf8mfBid/+wXoRrrnpKqa/XvhIHV8MW0e+MRwkU0zNJLt/O6ROLlXzZEHhuO6kuxWpyo8V283sS0NNTJDn2ZpYSz7ALSiyp/PA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=LIVE.NL; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hBvcj55h1U2bNNLqD+rejW+HJwxvv3oQ8Wne4mZ/z5E=;
- b=f9mXujrnduQ0EMlRUIFjMIa8eIx6vvREkQVXAQaOmKQyNVR/vFJXX/QgjYhfcfeQXVuDoRFfv/1zkkdU5dkIHTJMt4FcywRvTkqdAudWmyXuA8a3NbqwdNFtU74G/lDtEOJoCqvlpEUboPxUxwkVexQcNZwP2nGDcompxGbBRLa0ATrNbWnNGpSaKjKMHM4KvojOpLHLi+vB1gt2FQOmArVhtspTallj88XYJFkd0cDofpZdIaYal8pQhRL6V8do4dhXgTgufzCgey3vMquTjFCU4ugzzAmz9WoQzhvLYc5sxD2sclA7DCKm8EPaLnHAUyAHjJ6Ua4irBS00RJ/TOA==
-Received: from DB7PR09MB2684.eurprd09.prod.outlook.com (2603:10a6:10:4d::14)
- by PA2PR09MB7014.eurprd09.prod.outlook.com (2603:10a6:102:406::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Thu, 18 Apr
- 2024 19:26:20 +0000
-Received: from DB7PR09MB2684.eurprd09.prod.outlook.com
- ([fe80::b1cf:c248:d141:19e9]) by DB7PR09MB2684.eurprd09.prod.outlook.com
- ([fe80::b1cf:c248:d141:19e9%4]) with mapi id 15.20.7472.037; Thu, 18 Apr 2024
- 19:26:13 +0000
-From: Paul Geurts <paul_geurts@live.nl>
-To: mgreer@animalcreek.com,
-	krzk@kernel.org,
-	linux-wireless@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Paul Geurts <paul_geurts@live.nl>
-Subject: [PATCH v2] NFC: trf7970a: disable all regulators on removal
-Date: Thu, 18 Apr 2024 21:25:38 +0200
-Message-ID:
- <DB7PR09MB26847A4EBF88D9EDFEB1DA0F950E2@DB7PR09MB2684.eurprd09.prod.outlook.com>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [UbqrPdS+bZuXMCVm575ZqH+mNFlvgbxyjnJEdZPEzK4M8PHCWBKxWAeR7UT+iLED]
-X-ClientProxiedBy: AM0PR03CA0102.eurprd03.prod.outlook.com
- (2603:10a6:208:69::43) To DB7PR09MB2684.eurprd09.prod.outlook.com
- (2603:10a6:10:4d::14)
-X-Microsoft-Original-Message-ID: <20240418192537.2520-1-paul_geurts@live.nl>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ED1B6A00E;
+	Thu, 18 Apr 2024 19:30:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713468649; cv=none; b=m76KYaWcMUn08+P2JPYstKmyKeQFXVDCtle4LrtJvPu2s4rXqskvhUV6ZayM5Gn15nHY3A3e8SuPzjK3Na4LW4A11jxezkOGhf0DOOM9ec58oFmaTcviLy8RFyFTJWrH7Qdf366IzqSEccmRsp16ci+yXMC0DaH1sZIY0hEd/q0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713468649; c=relaxed/simple;
+	bh=HD/BnfrA7s2/PqPWeAgv2uhUr75jb64JNPmf2nCJVTA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XrgRXRrgVbaRQZ/JJFsi91tRiXccrkT4mAZ5D/K7Y49yAEfUEyqopa54Q7lLXv4wVhCs7AIDz+iz/A3KEf5fBswAr9K827VKd8dIpqQRJpzit1u148lEFsDgIFoOSYivazpzZmGCFLcXqiEiuMQSZBWAOrmFigAySgF4OTIyWcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=BS29PgEd; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1713468599; x=1714073399; i=deller@gmx.de;
+	bh=+qPebcqkijmpejiAsFg4+LeCVvQ99DkwFSGw6uBdRfk=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=BS29PgEdovGlE236FFXT5vd7JeaTXskt4NDDEyqAKpYn3LnoePUl5QRxbHMICscY
+	 vTuAroUzIV3dhcFa3U+YDE+lDC1W4Y3+opzrkgKEVTW6WC5Rv6X/CkfSUG0jAWEpQ
+	 uHqTD844qI1Ok7yfu9xyL1eXEYOWeZvp+DEBzma0GdHjFHwboRyTiZXEO9Yc8ydix
+	 J+ngsmrbQ6xLh0E2zbMcqqMxye+7mxHUC0Hzlyj4lhmancm9iEJi7HFiMWPEIhlqN
+	 hlSnIJj1fEzA5j1IZFHNw7vb0Ger4XEAwHAxY7P4UFLaoRiRls8iE1RLQjCeCi1dM
+	 VeZi1/lBO6+ymhUA3Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.55] ([89.244.184.44]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MVeI8-1s7KZ12P0G-00RX3z; Thu, 18
+ Apr 2024 21:29:59 +0200
+Message-ID: <a7843657-c3f6-4d2e-8c36-5541d4c52956@gmx.de>
+Date: Thu, 18 Apr 2024 21:29:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB7PR09MB2684:EE_|PA2PR09MB7014:EE_
-X-MS-Office365-Filtering-Correlation-Id: c5f36bb1-520a-4bf0-e445-08dc5fdd68af
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	TEF1WnB6xPE7f4ZMopsdsfz4TbOdIp/3c7z/FPRs8XVeRHRUV4VCZnydpbG+LzLLjwZiZbf5GSCMXf+CrKn7j/MiWpZvj5tdGFkJfZh1Zf0INIyjRGfl7prdR2iyRdbmtW+Rt6gxe9Svial/NkEuoDI8JdX5GKzWPlEt9Khr7I4SzwMgxd1Rd4TccPviwc4XH+1zhqCMCpImqFXOcFN2IxRG6qIrHTgpb+7iq2vnlHgbpNwcH0wakUXR4/Q0lgcgW0zf1BitnzdaJVeTqYZaVG9nA/J3dLYTHvY2jTs4w1tlsPv7Gzda4WeRpAQJanSFD60hU+Bhu+/lhCvJKOj98qqTLTE4GPocjcFBnyRxwmQ2KNbq10Sf8ChVZ5WO3BMsQ05VEsrzJigepRVDaigElgG+cx2OsasAhObH2uzHVp17DPk9rVxmDC1Ht7TXPiru8sP/xU+TYOw3tGy0Cz2LnR/aNLaMETwEwi/kc+HFnyDNgQp8HcMIijSUYSoh64EGi0JChlcXWfI6Bqv33z9LOvQAiKkH2L+GHMEVFOqDp1VdOf73gFIas0G8keVK+L5MKApSl467HLhi8K6dBfQtvOjwu2VkwN6yvb+6b89F3+5m3d1qG3zWlP/ljCaGUi4I
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ZskxeuYEy0NiR0iSjyc+bSl5hNofVCBCfmIqUJBiKxE3YOjgMFpwXz8dJ3ZA?=
- =?us-ascii?Q?lLULF2H61OjHJQrpZ6md7xICWVSFA7fgogqWxQN5EZNTTRl+zDBcwlF58n6Z?=
- =?us-ascii?Q?4LRKn907FP35OQ7a1QD1G1Y9f/GQbHgP5VM+ugJUuJPHI2XRjG6oHMn5SetE?=
- =?us-ascii?Q?YBH4qiqsyQOT3H04LO6JLM+Xl/GRJUATYWIAEpsZCAK1ooq3wKpA3QYE+Sm1?=
- =?us-ascii?Q?GZbCruBPe76/hsMMlB3eW+vME/blLpHaGSkLbiSTeKZaxSbCoS5AkBcJE8Tq?=
- =?us-ascii?Q?ewr18JUNbpY8PlBse6TKlPyGHUVd/nNvptjhgF8taN2IP/O2j0N41FMF7LGR?=
- =?us-ascii?Q?RV7X0XxhSZTk1UTAWJaXebhZ/N9Y16/Q8cqgJ+GKK2iFAJFAcE1b6JzcbEqg?=
- =?us-ascii?Q?kx16imxJA25sXoHyR2ccQ5VpjHOG6iDX+Hbt72rTZ3H+U/HW4+UvbEaSLPDe?=
- =?us-ascii?Q?WjnHkWRjaA0MDdwh7dG+d134RIet6TxuIZvVHNc063fGI5loxjxyP3m8FSkr?=
- =?us-ascii?Q?Tl8uTAbQE6AsD05+GxN4rXQpi5gz8ndWPwn/68HOZMphzqqQd/C2xodZfUz3?=
- =?us-ascii?Q?I5cyaF7Z9+1thnBd9Lpvm59CoNMnoqyl8Tu9Mai3CuGCgnA1zXju9wlShJZ3?=
- =?us-ascii?Q?/7qo5mMPjU0MVttyJniMuDZIEgy3pxCUwK+96Wvqe1lb1kh4pQv4YoxCs/vT?=
- =?us-ascii?Q?BBSPGQFivgPyjziRiwr7GnpUeBmX7aDniHlCr4dDq5A9Pxnu+Zg3oEpQbiO1?=
- =?us-ascii?Q?Gs4a1XVuMmd25ErSgcj/sx2Kp1/TuYFuL9LzY6TQ/uC88jrpwqRvPUO5ZOof?=
- =?us-ascii?Q?rV49E7+OPdQJ+MgrpuTO1d3OSNeDpzKb12Y3SwM2gx+RdELbOkEaRaC5dhGP?=
- =?us-ascii?Q?xF4DqRq7YbLj7C+nxWzsKBeEVun0m6ZpCSXWjR2oDucz4EQcw5akwgJViMq7?=
- =?us-ascii?Q?2pSA62sly66/y5ttRnfqCv49OvcAEWYfiwmXg4onr/pZWwARIxYBuO8Zpd1j?=
- =?us-ascii?Q?2cAWuo+onZ+Ma54XVqRl2VRA7uJJ1IdvQoFeSLG0eqX/q2s5dd5PGY8mknCO?=
- =?us-ascii?Q?Y4/3q1ZfpXyVS/BYMyK1xRpULJ1zrYZ4ceShdqEHv9q7hIHjfIQx0aGJfprK?=
- =?us-ascii?Q?a+Z8sVIPzukXWzhs4z3MWownE3Pux987eWLSLPm/xPka0FkIV1Ilr++1hOM2?=
- =?us-ascii?Q?TGJDPyq8VJQGTbaY/rZcif9iYp3wCf/bKJS6j4jTlaaB0e0Ng/zJU1UL+0yU?=
- =?us-ascii?Q?+scKJjPwfwD8dTVj0Nkgx9POF7fh3/uVuQLYcXZj0/+BwBtwggJn64AFIUO5?=
- =?us-ascii?Q?Nss=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-64da6.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5f36bb1-520a-4bf0-e445-08dc5fdd68af
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR09MB2684.eurprd09.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 19:26:13.1956
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA2PR09MB7014
+User-Agent: Mozilla Thunderbird
+Subject: Re: [bug-report] task info hung problem in fb_deferred_io_work()
+To: Takashi Iwai <tiwai@suse.de>, Nam Cao <namcao@linutronix.de>,
+ Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+ Daniel Vetter <daniel@ffwll.ch>, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, bigeasy@linutronix.de,
+ patrik.r.jakobsson@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+ Vegard Nossum <vegard.nossum@oracle.com>,
+ George Kennedy <george.kennedy@oracle.com>,
+ Darren Kenny <darren.kenny@oracle.com>, chuansheng.liu@intel.com
+References: <271372d6-e665-4e7f-b088-dee5f4ab341a@oracle.com>
+ <20240418160652.68df1a86@namcao> <87ttjywxv5.wl-tiwai@suse.de>
+Content-Language: en-US
+From: Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <87ttjywxv5.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:HwANtY5pHX9qYll2jJJf4uOJIN+l61iXICErTSTzPZFd3Vw2k/u
+ N1hnYThu6D0Km2BQUPRL5mUUfHMNfwVEgAbF1CZIeHZFIg8ncO4e3JTKGyHcwTroK23ibQA
+ rE7IhaMGYIUrgTnljq/YB/bdaXefSM3CvV7JPwYb7uvdWmPSRsVYQ+qaoReJ5m5G5RW9Ghf
+ /s2NNjCj0JSmKT7LjGvuQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:jG/myljbTF4=;XPgAA4qo5ZIYpJtOlwbLSQBsokR
+ 6qH4ow+QPVJ+ryv/KBeGIP0ttNGiSC8lizgwQxwCRRct7do+0/oiRTFX+1onIOtT8z4QBIl07
+ UgzY9stE243qLk2UXNHvnNX2CLA8N+rztXofZoekxibMOZyfxrsx8wQ/uSohxV2Jg7+zRocA1
+ 35flv2MaiKB9dBe4VS7Fscg0S9I3rEjfcikxNJ6orik0v+AjNmf8i1yT48ljDCb3pjL9usdES
+ 56B4Cx7Az16c4AjkxdW14F/fTKX9SQAWCogHGks9/F3tbNVlZ8eic1oEvzMXsHtBylmjkYGpB
+ IQ7mk7/2n9dg/IrxExBMT6bBWcW6bxDW+lePowFjUO3RwxbVOWoQrIj8S53IKoemvuaI/baBn
+ GTdVBp36Ut6+K/X9KXiw3a5lfrnzBG9a1pOFh0Muy/apVFZjdqx5RVDubXDH8k1K2W5HgUmmt
+ PY6lEN+9nJ77iD2Myi7uPM98nzpTgYOmsFYTXLGT6faFnh/h6sgzYY+kmppE+kKEqk+tESiXM
+ YyG48Hq7Gx8WfKiZVQ6j8MD61U2qdOwiU9ELeIX/ipatw9+NzlGhYxcn7KGmZdv+KpfWW1qCW
+ hmqTQnaxuWOKyfsz8CbAWryRK0R4TAfCqe/0XAeU6VsrElkEf3g2aO8hI3zoC0YoDJDbGdqmU
+ j4Xttq98kVKPZYNYkXa9m/LT+QPumgaebWxv/qe1NBQSbE6BcwrSJO/j1dfZ1f6oEj4K990tN
+ Z/AjgoygKtKeeEFX/jWv2miNB/2yGa08gF7EUjKJbqTFpqZIZc0CEUtAfCoBahUjuvxJunEtc
+ 08RK2hk3ZyTqpITWf8ciiSZaCO6iCoaQuX4pP4n45UAic=
 
-During module probe, regulator 'vin' and 'vdd-io' are used and enabled,
-but the vdd-io regulator overwrites the 'vin' regulator pointer. During
-remove, only the vdd-io is disabled, as the vin regulator pointer is not
-available anymore. When regulator_put() is called during resource
-cleanup a kernel warning is given, as the regulator is still enabled.
+On 4/18/24 16:26, Takashi Iwai wrote:
+> On Thu, 18 Apr 2024 16:06:52 +0200,
+> Nam Cao wrote:
+>>
+>> On 2024-04-18 Harshit Mogalapalli wrote:
+>>> While fuzzing 5.15.y kernel with Syzkaller, we noticed a INFO: task hu=
+ng
+>>> bug in fb_deferred_io_work()
+>>
+>> Which framebuffer device are you using exactly? It is possible that
+>> the problem is with the device driver, not core framebuffer.
+>
+> Note that it was already known that using flush_delayed_work() caused
+> a problem.  See the thread of the fix patch:
+>    https://lore.kernel.org/all/20230129082856.22113-1-tiwai@suse.de/
 
-Store the two regulators in separate pointers and disable both the
-regulators on module remove.
+Harshit reported the hung tasks with kernel v5.15-stable, and can even rep=
+roduce
+that issue with kernel v6.9-rc4 although it has all of your patches from
+that referenced mail thread applied.
+So, what does your statement that "it was already known that it causes pro=
+blems" exactly mean?
+Can it be fixed? Is someone looking into fixing it?
 
-Fixes: 49d22c70aaf0 ("NFC: trf7970a: Add device tree option of 1.8 Volt IO voltage")
-Signed-off-by: Paul Geurts <paul_geurts@live.nl>
----
-V1 -> V2: Removed blank line between Fixes and Signed-off-by tag
+> BTW, the problem is seen with bochs drm.
 
- drivers/nfc/trf7970a.c | 42 +++++++++++++++++++++++-------------------
- 1 file changed, 23 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/nfc/trf7970a.c b/drivers/nfc/trf7970a.c
-index 7eb17f46a815..9e1a34e23af2 100644
---- a/drivers/nfc/trf7970a.c
-+++ b/drivers/nfc/trf7970a.c
-@@ -424,7 +424,8 @@ struct trf7970a {
- 	enum trf7970a_state		state;
- 	struct device			*dev;
- 	struct spi_device		*spi;
--	struct regulator		*regulator;
-+	struct regulator		*vin_regulator;
-+	struct regulator		*vddio_regulator;
- 	struct nfc_digital_dev		*ddev;
- 	u32				quirks;
- 	bool				is_initiator;
-@@ -1883,7 +1884,7 @@ static int trf7970a_power_up(struct trf7970a *trf)
- 	if (trf->state != TRF7970A_ST_PWR_OFF)
- 		return 0;
- 
--	ret = regulator_enable(trf->regulator);
-+	ret = regulator_enable(trf->vin_regulator);
- 	if (ret) {
- 		dev_err(trf->dev, "%s - Can't enable VIN: %d\n", __func__, ret);
- 		return ret;
-@@ -1926,7 +1927,7 @@ static int trf7970a_power_down(struct trf7970a *trf)
- 	if (trf->en2_gpiod && !(trf->quirks & TRF7970A_QUIRK_EN2_MUST_STAY_LOW))
- 		gpiod_set_value_cansleep(trf->en2_gpiod, 0);
- 
--	ret = regulator_disable(trf->regulator);
-+	ret = regulator_disable(trf->vin_regulator);
- 	if (ret)
- 		dev_err(trf->dev, "%s - Can't disable VIN: %d\n", __func__,
- 			ret);
-@@ -2065,37 +2066,37 @@ static int trf7970a_probe(struct spi_device *spi)
- 	mutex_init(&trf->lock);
- 	INIT_DELAYED_WORK(&trf->timeout_work, trf7970a_timeout_work_handler);
- 
--	trf->regulator = devm_regulator_get(&spi->dev, "vin");
--	if (IS_ERR(trf->regulator)) {
--		ret = PTR_ERR(trf->regulator);
-+	trf->vin_regulator = devm_regulator_get(&spi->dev, "vin");
-+	if (IS_ERR(trf->vin_regulator)) {
-+		ret = PTR_ERR(trf->vin_regulator);
- 		dev_err(trf->dev, "Can't get VIN regulator: %d\n", ret);
- 		goto err_destroy_lock;
- 	}
- 
--	ret = regulator_enable(trf->regulator);
-+	ret = regulator_enable(trf->vin_regulator);
- 	if (ret) {
- 		dev_err(trf->dev, "Can't enable VIN: %d\n", ret);
- 		goto err_destroy_lock;
- 	}
- 
--	uvolts = regulator_get_voltage(trf->regulator);
-+	uvolts = regulator_get_voltage(trf->vin_regulator);
- 	if (uvolts > 4000000)
- 		trf->chip_status_ctrl = TRF7970A_CHIP_STATUS_VRS5_3;
- 
--	trf->regulator = devm_regulator_get(&spi->dev, "vdd-io");
--	if (IS_ERR(trf->regulator)) {
--		ret = PTR_ERR(trf->regulator);
-+	trf->vddio_regulator = devm_regulator_get(&spi->dev, "vdd-io");
-+	if (IS_ERR(trf->vddio_regulator)) {
-+		ret = PTR_ERR(trf->vddio_regulator);
- 		dev_err(trf->dev, "Can't get VDD_IO regulator: %d\n", ret);
--		goto err_destroy_lock;
-+		goto err_disable_vin_regulator;
- 	}
- 
--	ret = regulator_enable(trf->regulator);
-+	ret = regulator_enable(trf->vddio_regulator);
- 	if (ret) {
- 		dev_err(trf->dev, "Can't enable VDD_IO: %d\n", ret);
--		goto err_destroy_lock;
-+		goto err_disable_vin_regulator;
- 	}
- 
--	if (regulator_get_voltage(trf->regulator) == 1800000) {
-+	if (regulator_get_voltage(trf->vddio_regulator) == 1800000) {
- 		trf->io_ctrl = TRF7970A_REG_IO_CTRL_IO_LOW;
- 		dev_dbg(trf->dev, "trf7970a config vdd_io to 1.8V\n");
- 	}
-@@ -2108,7 +2109,7 @@ static int trf7970a_probe(struct spi_device *spi)
- 	if (!trf->ddev) {
- 		dev_err(trf->dev, "Can't allocate NFC digital device\n");
- 		ret = -ENOMEM;
--		goto err_disable_regulator;
-+		goto err_disable_vddio_regulator;
- 	}
- 
- 	nfc_digital_set_parent_dev(trf->ddev, trf->dev);
-@@ -2137,8 +2138,10 @@ static int trf7970a_probe(struct spi_device *spi)
- 	trf7970a_shutdown(trf);
- err_free_ddev:
- 	nfc_digital_free_device(trf->ddev);
--err_disable_regulator:
--	regulator_disable(trf->regulator);
-+err_disable_vddio_regulator:
-+	regulator_disable(trf->vddio_regulator);
-+err_disable_vin_regulator:
-+	regulator_disable(trf->vin_regulator);
- err_destroy_lock:
- 	mutex_destroy(&trf->lock);
- 	return ret;
-@@ -2157,7 +2160,8 @@ static void trf7970a_remove(struct spi_device *spi)
- 	nfc_digital_unregister_device(trf->ddev);
- 	nfc_digital_free_device(trf->ddev);
- 
--	regulator_disable(trf->regulator);
-+	regulator_disable(trf->vddio_regulator);
-+	regulator_disable(trf->vin_regulator);
- 
- 	mutex_destroy(&trf->lock);
- }
--- 
-2.39.2
-
+Helge
 
