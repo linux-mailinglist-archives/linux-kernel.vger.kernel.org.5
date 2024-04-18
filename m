@@ -1,166 +1,143 @@
-Return-Path: <linux-kernel+bounces-149445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B68B28A9137
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:39:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C1138A913A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:43:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7A9D1C20F51
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:39:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE8C3B21B97
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:43:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C581A53E28;
-	Thu, 18 Apr 2024 02:39:05 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E385B4F1FA;
+	Thu, 18 Apr 2024 02:42:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TvU/ncvk"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D635453371
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 02:39:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 887252AC29;
+	Thu, 18 Apr 2024 02:42:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713407945; cv=none; b=csnV7KtPk00q0SYrQqmau4Xgd4qc6xdYgq2XTj+v/q7QZ1SJEfT0C8iMenMn8BDZEehZRFrYMcpIRsfFP2rfrhBbRuLx6gQow2alfj3F8pIGz8hDxNP8iOBo0gd8yDgdhRNUhZxL7KMjFbG0YIo7F4pGhCV0eWwNu9jwana/raA=
+	t=1713408176; cv=none; b=jww+KGpDaT58YaPxAaUJ+RCraOp+Z2jlLSk7/JooobksBs9PRYI5rlrpr1SV6+AUZ5LovxjgsyXqF/7KpsMdif6FDA/MjDH8h1SMAiXjssTru7UrDKNWXTZlIAWYC7y7zG/2GA+yMGNQoG5Jg+XPECtimgMOwQoF/G0bAkBztt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713407945; c=relaxed/simple;
-	bh=/dLyDWObIqnB42KBKAKv62CCxMIOsiKRjoLnPcPYRAo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Y3JbgFk3bfqdwuBeBEWX5oWpVUwQTaf+okCkD7gyChUUboWnQxrdxwlZFSzfey0g2v9hPtbQ3fdrND1gGKnifTmwJWh8szQQBhWDtYETC9eVwVtqkRDg96g6jzw7zyfmo95tTstymgvjJb/6MhcbcLZIga3l0OPV1NHHRiMVZec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36a208afb78so5166155ab.2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 19:39:03 -0700 (PDT)
+	s=arc-20240116; t=1713408176; c=relaxed/simple;
+	bh=nc0l6I8uY2Sfpbn0gl6LiAY4AgSqwND6FWwyoGGgez4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hF/HhLm+HrPTNS3RkQ009hlEuDsPCR7qEwrt7jufSZyEd2X3SgCf/bkoqh+X7LMV2hnL+3ObMKQr07GV6NPcgxCVxup9VXVafDkZ/fQu1k48RiyXY0eJ+a89/3RtjmZkDs29g2jQ1AD2VmRBDaHZwP4TGrjUGNunHxgPxCWfwlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TvU/ncvk; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d715638540so4336601fa.3;
+        Wed, 17 Apr 2024 19:42:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713408173; x=1714012973; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/TQOSEIxhOk2cmOktSZ5shcHbGjzSHGcTvMcNwlLnO0=;
+        b=TvU/ncvknU4OO7x/d+H/i7v+aVx0L4D2OZ5zKHQhLaNO33awmWPMK/F9pjnMgS1Hmr
+         qd4o5rbk++VlBWiiWbHKhvT6bqNGKbEUUXRxBfgS68vq7T6P6RzzwhNzOJhPAQVZmfEt
+         sNGiSUzbwz159WYJlBz/iHOkGQ4XZ7bARxbRABTfLQiTYRXZvGc/5+3k0UYmhYi9fDNQ
+         t9GnUXG5k3xtsNWuZVwM2XTdcPQpQFvE2bMhZXIUxGTgk82EnM8Rv/RFdTH/F76zhIgF
+         H7DG609LeFN4bjgYHWG78vAyPw8tlZysa8shkAX/bLPHJJbbzhCoQSFD9w7CYV1vE/OV
+         KPYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713407943; x=1714012743;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lBituP3Wm+uhtEROLQKJYYHbwWhTc1zAjgRPTJ/giA4=;
-        b=sk2dKa08eRFT95XJgs1YBQAmOhNE9r+A4kW+t7gfJUOyYIQlFpEzSi/RwACc8icsAq
-         NqJnTpReEg8DYOw2rzi9mOO6V6ae3evuT1lbOpukc6Jp2Bj5Lco5gJyW1Ix6h1WjoitU
-         jEAaaJBAyisypFQ0u6dKXhIvlRScliceMrzknSP4nGCubbtx24U1jYjG1Nk/OHDf1m3m
-         HdhJIi+5alqEWTVGmCzykQOqiIebeOdfCcS0lIWqwmLoBHQgJlTvVtA20eNJ7AE5fyap
-         MY45GLNwgPPZWrAquubnJbwzpB1eTGN3He/bNO/VLGVGTPK8nyBQ4DeDF+pkohmdgOyW
-         CFHw==
-X-Forwarded-Encrypted: i=1; AJvYcCUrHL3WdIvwdqAOM1w/yTXUl6InMNt1dMjYI0un1ujlZOGGuvTOHDS2lbslaGHcbpKl9/qIIfYEFmhEdagxDZLlgFCjGrXRem+ddcfY
-X-Gm-Message-State: AOJu0Yy1fqZRRitRlMJP3i2zJmm9uQftDXoYNU4kNvzwuV6izEJ7C8d6
-	zKLO7FHqmdLfDtoAlrlXAhQVgWgsCDaM/4iqFvTO4FRQEepM5XUjzcIVMcb46JQHcsNH1gWozid
-	OS7T8fHWvkK8n5qxFd1VkqeEdDrSdXFXcHlw5NUdxR2UGykoCixWM0ig=
-X-Google-Smtp-Source: AGHT+IGXIAztf2ZFb7ACTC51EaqLxIrmbewurYDyGgAyi4rXlzAawGH0pxwsZRVnn03wpKwGf+GCsar8+C7pQZVR2D8ltxD4otii
+        d=1e100.net; s=20230601; t=1713408173; x=1714012973;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/TQOSEIxhOk2cmOktSZ5shcHbGjzSHGcTvMcNwlLnO0=;
+        b=ZLiYNu7afm3FQNdME3Da3dIB3GkQh5L1wf0hBOSNvszRpUor56k7OcyoJSQNU+JDd1
+         Vz8GnRbaQY7Ijt8weQ0ARuxQxvYLULKT0NniLorJZ43GuEyL3bPlGf4gOBb2zie7oDHU
+         TPo1L5b5ASv/XY7wUHJaowOnaxbIssa12jwvoZBp/gMHO9cvSWy8XgG0erz+OeszHzGO
+         5F8Sr+2tqAIaTpjxW3u1fJoNVaI7zmUBEyIEurhL2+wTOzAMmW7VJyeHl40Yr9hlhPo6
+         lOYz6ZK2YEOMlDwN0rusXcUAAFRyN0v7VIXgjSAj0fl6uLO8VMAQOgUmVZkmJa05EG6O
+         R1yA==
+X-Forwarded-Encrypted: i=1; AJvYcCXWmnpWN93NxUjLqUlquJRxPfQy1/pM/Mueq8hc2d3id7/rgkLZ8ldeQ3zjFuZlB41wkUFPtxhmGaYTce2JYA4FFraJ/DIz02yGoNQNIUhXSdd9WtnlbEyC2CxvCZpWDAP1HjFgt86W7I4WBg==
+X-Gm-Message-State: AOJu0YzmrKpBnJBPOBtLvQCNc3HIYFMgnKnDk5sxm/JfI0wqjkw43mRG
+	Q/TeIoXrw9EDGljmPhbGV5EsZ03bCTKe96dTcqPHRUmD7wugny/VmBgBqq24sZUQgDqjeOb8/Pa
+	EqyQy3BXERFRuLmYYTaKGvPIRSI0=
+X-Google-Smtp-Source: AGHT+IGUEZNaH1Nq5WQddmFU8g1mQEhzGkckKwS8KO/2Erjlf+2TGH5g2oFxff0F3SECj/jdoY4ESxgMVnXuKs22ShI=
+X-Received: by 2002:a2e:9402:0:b0:2da:d964:fc2b with SMTP id
+ i2-20020a2e9402000000b002dad964fc2bmr435026ljh.49.1713408172451; Wed, 17 Apr
+ 2024 19:42:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:13a1:b0:36a:3615:33e4 with SMTP id
- h1-20020a056e0213a100b0036a361533e4mr33935ilo.4.1713407943014; Wed, 17 Apr
- 2024 19:39:03 -0700 (PDT)
-Date: Wed, 17 Apr 2024 19:39:02 -0700
-In-Reply-To: <20240417231300.2556-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cc8a8b061655dfa1@google.com>
-Subject: Re: [syzbot] [mm?] KASAN: slab-use-after-free Read in hugetlb_fault
-From: syzbot <syzbot+7fd4b85697bcf2a9daa2@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <20240417160842.76665-1-ryncsn@gmail.com> <20240417160842.76665-8-ryncsn@gmail.com>
+ <CAGsJ_4xv8m-Xjih0PmKD1PcUSGVRsti8EH0cbStZOFmX+YhnFA@mail.gmail.com>
+In-Reply-To: <CAGsJ_4xv8m-Xjih0PmKD1PcUSGVRsti8EH0cbStZOFmX+YhnFA@mail.gmail.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Thu, 18 Apr 2024 10:42:35 +0800
+Message-ID: <CAMgjq7Am+5ftvAW4X2xOhAZ+zotSR8gD8oG+_CV=pJvsqy2Oyw@mail.gmail.com>
+Subject: Re: [PATCH 7/8] mm: drop page_index/page_file_offset and convert swap
+ helpers to use folio
+To: Barry Song <21cnbao@gmail.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	"Huang, Ying" <ying.huang@intel.com>, Matthew Wilcox <willy@infradead.org>, Chris Li <chrisl@kernel.org>, 
+	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, 
+	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Thu, Apr 18, 2024 at 9:55=E2=80=AFAM Barry Song <21cnbao@gmail.com> wrot=
+e:
+>
+> On Thu, Apr 18, 2024 at 4:12=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wr=
+ote:
+> >
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > When applied on swap cache pages, page_index / page_file_offset was use=
+d
+> > to retrieve the swap cache index or swap file offset of a page, and the=
+y
+> > have their folio equivalence version: folio_index / folio_file_pos.
+> >
+> > We have eliminated all users for page_index / page_file_offset, everyth=
+ing
+> > is using folio_index / folio_file_pos now, so remove the old helpers.
+> >
+> > Then convert the implementation of folio_index / folio_file_pos to
+> > to use folio natively.
+> >
+> > After this commit, all users that might encounter mixed usage of swap
+> > cache and page cache will only use following two helpers:
+> >
+> > folio_index (calls __folio_swap_cache_index)
+> > folio_file_pos (calls __folio_swap_file_pos)
+> >
+> > The offset in swap file and index in swap cache is still basically the
+> > same thing at this moment, but will be different in following commits.
+> >
+> > Signed-off-by: Kairui Song <kasong@tencent.com>
+>
+> Hi Kairui, thanks !
+>
+> I also find it rather odd that folio_file_page() is utilized for both
+> swp and file.
+>
+> mm/memory.c <<do_swap_page>>
+>              page =3D folio_file_page(folio, swp_offset(entry));
+> mm/swap_state.c <<swapin_readahead>>
+>              return folio_file_page(folio, swp_offset(entry));
+> mm/swapfile.c <<unuse_pte>>
+>              page =3D folio_file_page(folio, swp_offset(entry));
+>
+> Do you believe it's worthwhile to tidy up?
+>
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING: suspicious RCU usage in __do_softirq
+Hi Barry,
 
-=============================
-WARNING: suspicious RCU usage
-6.9.0-rc3-next-20240412-syzkaller-dirty #0 Not tainted
------------------------------
-kernel/rcu/tree.c:276 Illegal rcu_softirq_qs() in RCU read-side critical section!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 1
-1 lock held by ksoftirqd/0/16:
- #0: ffffffff8e334060 (rcu_read_lock_sched){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
- #0: ffffffff8e334060 (rcu_read_lock_sched){....}-{1:2}, at: rcu_read_lock_sched include/linux/rcupdate.h:933 [inline]
- #0: ffffffff8e334060 (rcu_read_lock_sched){....}-{1:2}, at: pfn_valid include/linux/mmzone.h:2019 [inline]
- #0: ffffffff8e334060 (rcu_read_lock_sched){....}-{1:2}, at: __virt_addr_valid+0x183/0x520 arch/x86/mm/physaddr.c:65
-
-stack backtrace:
-CPU: 0 PID: 16 Comm: ksoftirqd/0 Not tainted 6.9.0-rc3-next-20240412-syzkaller-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- lockdep_rcu_suspicious+0x221/0x340 kernel/locking/lockdep.c:6712
- rcu_softirq_qs+0xd9/0x370 kernel/rcu/tree.c:273
- __do_softirq+0x5fd/0x980 kernel/softirq.c:568
- invoke_softirq kernel/softirq.c:428 [inline]
- __irq_exit_rcu+0xf2/0x1c0 kernel/softirq.c:633
- irq_exit_rcu+0x9/0x30 kernel/softirq.c:645
- instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
- sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1043
- </IRQ>
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
-RIP: 0010:lock_release+0x51/0x9f0 kernel/locking/lockdep.c:5762
-Code: 04 25 28 00 00 00 48 89 84 24 e0 00 00 00 49 bf 00 00 00 00 00 fc ff df 48 c7 44 24 60 b3 8a b5 41 48 c7 44 24 68 5d 09 b4 8d <48> c7 44 24 70 e0 d2 72 81 4c 8d 64 24 60 49 c1 ec 03 48 b8 f1 f1
-RSP: 0018:ffffc90000157920 EFLAGS: 00000282
-RAX: 1ce013f6d4eb5b00 RBX: 0000000000000001 RCX: ffff888016ec5a00
-RDX: 0000000000000000 RSI: ffffffff81423eb3 RDI: ffffffff8e334060
-RBP: ffffc90000157a48 R08: ffffffff81424067 R09: 1ffffffff25ee6b4
-R10: dffffc0000000000 R11: fffffbfff25ee6b5 R12: 000000002524d378
-R13: ffffffff81423eb3 R14: ffffffff81423eb3 R15: dffffc0000000000
- rcu_lock_release include/linux/rcupdate.h:339 [inline]
- rcu_read_unlock_sched include/linux/rcupdate.h:954 [inline]
- pfn_valid include/linux/mmzone.h:2029 [inline]
- __virt_addr_valid+0x41e/0x520 arch/x86/mm/physaddr.c:65
- kasan_addr_to_slab+0xd/0x80 mm/kasan/common.c:37
- __kasan_record_aux_stack+0x11/0xc0 mm/kasan/generic.c:526
- __call_rcu_common kernel/rcu/tree.c:3102 [inline]
- call_rcu+0x167/0xa70 kernel/rcu/tree.c:3206
- context_switch kernel/sched/core.c:5412 [inline]
- __schedule+0x17f0/0x4a50 kernel/sched/core.c:6746
- __schedule_loop kernel/sched/core.c:6823 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6838
- smpboot_thread_fn+0x61e/0xa30 kernel/smpboot.c:160
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-----------------
-Code disassembly (best guess):
-   0:	04 25                	add    $0x25,%al
-   2:	28 00                	sub    %al,(%rax)
-   4:	00 00                	add    %al,(%rax)
-   6:	48 89 84 24 e0 00 00 	mov    %rax,0xe0(%rsp)
-   d:	00
-   e:	49 bf 00 00 00 00 00 	movabs $0xdffffc0000000000,%r15
-  15:	fc ff df
-  18:	48 c7 44 24 60 b3 8a 	movq   $0x41b58ab3,0x60(%rsp)
-  1f:	b5 41
-  21:	48 c7 44 24 68 5d 09 	movq   $0xffffffff8db4095d,0x68(%rsp)
-  28:	b4 8d
-* 2a:	48 c7 44 24 70 e0 d2 	movq   $0xffffffff8172d2e0,0x70(%rsp) <-- trapping instruction
-  31:	72 81
-  33:	4c 8d 64 24 60       	lea    0x60(%rsp),%r12
-  38:	49 c1 ec 03          	shr    $0x3,%r12
-  3c:	48                   	rex.W
-  3d:	b8                   	.byte 0xb8
-  3e:	f1                   	int1
-  3f:	f1                   	int1
-
-
-Tested on:
-
-commit:         9ed46da1 Add linux-next specific files for 20240412
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1260ada3180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7ea0abc478c49859
-dashboard link: https://syzkaller.appspot.com/bug?extid=7fd4b85697bcf2a9daa2
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16ccb37d180000
-
+I'm not sure about this. Using folio_file_page doesn't look too bad,
+and it will be gone once we convert them to always use folio, this
+shouldn't take too long.
 
