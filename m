@@ -1,281 +1,214 @@
-Return-Path: <linux-kernel+bounces-150037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47DA18A9971
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37FA38A9978
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:06:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C68891F20FF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:03:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAED21F21E7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:06:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5152C15F3EA;
-	Thu, 18 Apr 2024 12:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9605615F410;
+	Thu, 18 Apr 2024 12:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YZwm9yvK"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="iNHix+fM"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2048.outbound.protection.outlook.com [40.107.244.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7092715E5B2
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:03:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713441797; cv=none; b=fjhnUAhh/F8mWr1X9O6M7D7zwiiGz1B4MDfhkj7Mkca5sgwXSZNnY3QDG8gLqefoGssyXSezllq9gHVT8AqM0kK77ewpI8cMCbj0ghTh2NCR8PHdBMlJfMWPZz0++vF9ELkMXlZxSAwGLOycW78XqDuG4cOJxaE+V3aroCni4z4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713441797; c=relaxed/simple;
-	bh=dIN5ibiNjDcnglryE6cFy12BvK14wE7Zl5MMUArX634=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A8fMAnFhtjXRDt/MUChuPu1Kmdh49PsC+hjoXVDwJrgSIFhAz8NLGYl8jopJHTTG8F3Ur5OGGJ1budfQV3aZacGqujDcFwAdOhvO61Fvy9wgdD1wDqUGFoDl9lfH2p81YNdcrxaTn2cf/EDd76cJdDEMxoYbvDVjGWQO1XUd5K4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YZwm9yvK; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713441791;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=I52kKdJ22CxR+krHno97zYnQgTsBygWH4VGH+1uFaFI=;
-	b=YZwm9yvKYjaeVo82E5USvG67+xDx8UmHFICQEH+ln/bKw6nzeq0eVuz5jVFy6/53DO6RUp
-	Nwd3oAYg7W7+PAtsmHMmWxZpEbSih2xvPYijY47UVUKSpMc+SAIyVX4qAXFd/OhJadnjhO
-	7Jc/VGpHqeQ1HTpViABVhLZe2/2xVhs=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-106-zh5jRtpcMw-hZV6zvOwV0g-1; Thu, 18 Apr 2024 08:03:07 -0400
-X-MC-Unique: zh5jRtpcMw-hZV6zvOwV0g-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4155db7b58cso4624935e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 05:03:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713441787; x=1714046587;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=I52kKdJ22CxR+krHno97zYnQgTsBygWH4VGH+1uFaFI=;
-        b=WCU2957xfMtC/+fL5DJoeiRQG260NBOGknsbcjdfnTJkyKnfiW2K2wDsV+bFGKzDgs
-         VvdfA4uZtgGMQnfrEXgyAP7WEjNS0ZlBwBB7jkoqwMYovILjC3ccF4chTjvORUxVEauS
-         UHexz6Mk9EQBCNHVLNU7plywmWPAE+LaYY/Ep41Ck+vXLEAbFFOOb4IigYpsYjgYjfe4
-         OTOUti05eJoWfNaCShNrmtfsCVwqws3FpKHq4rCm1WorVgi5ZxRhJt8q50KDRCFKPLgu
-         jbt2UXHauIpnkGYf7zioSq19tthO51PxfubFousfU73NC9SfeYGl8EppVkaPkoI2Ymty
-         ZPEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWo6ZlnuTB3O0Z1ar3m6AHQeeHTbkRB/Z+pAimwoDPft1LNhGBvRPV56Yun8c7MuQxqbZSGbNl1ZRu+Ltpdbfjy4/P4zl7wtJMnE2bA
-X-Gm-Message-State: AOJu0Yz7/+7rMWlUZwxdPs5brkwfWTweuCsnh6Q9yr09hrDqhitdgAwz
-	SGPX28c9sj3Jjgjo8PEMArARVBl8P8TBBbisABO0fTNdxYAW3Dv/3M6zE6NfMfjFz7Z6EUq4Ce9
-	ZQgfwsPRLO7YPPCY3vUnZ6ZC0x+iTut3ebd1N4j8Z6NuD7yTnkLM5tNOMlCV0UA==
-X-Received: by 2002:a05:600c:1f0d:b0:418:ec8b:9e1b with SMTP id bd13-20020a05600c1f0d00b00418ec8b9e1bmr893488wmb.12.1713441786832;
-        Thu, 18 Apr 2024 05:03:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGM+23vZOkZtXhsHoLXjILiVzlIplixD0h7ofkJC1brany6nwU+i0zSK4p/1Snv51JwgGlL/Q==
-X-Received: by 2002:a05:600c:1f0d:b0:418:ec8b:9e1b with SMTP id bd13-20020a05600c1f0d00b00418ec8b9e1bmr893473wmb.12.1713441786374;
-        Thu, 18 Apr 2024 05:03:06 -0700 (PDT)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id f11-20020a05600c4e8b00b00417ee886977sm6350910wmq.4.2024.04.18.05.03.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 05:03:05 -0700 (PDT)
-Message-ID: <2fdcee93-b8ad-4374-a8ab-7c7bed463813@redhat.com>
-Date: Thu, 18 Apr 2024 14:03:05 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FFCE15E5B2
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:06:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.48
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713441964; cv=fail; b=qbKhBc6Zgapsdo4r+R7u9vtFa2FPkrcEOluUsskflwxfIBjyWSJVASX/Et6D+RX5UGWlvBrWyq06rQYjabHVFhuYzGkSxl22KY8OOcTrZABLHLBAnYNFdC/0ifGy2k/WQt4Q2MVLijVS+lyq3yso2ZnH0pkgVM7GomonBNPsduE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713441964; c=relaxed/simple;
+	bh=5bomFa9lXv5Z43gx8vWRwtZFs8vLTmn1tidGh3fld3s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Q2Vn5Om5NyhJZz4WbNZZKkfK6EnWAlKpmx+eTUVXD0ckYqLTr2Emz6KeJt4qIFdgceyJsAfDzoXUaTiXQsT1AtVPhqWR+/PshPXVIHR8a0QVm766VsrRlK6eikhXTUKNdLZ77qq4tWGMXZm/3TuywcuUbPlXAuvN58495Khavdw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=iNHix+fM; arc=fail smtp.client-ip=40.107.244.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dVlAGcTrhwBnKloHnrGEmt5hwVCy3Sj6Zeon8M2kHBYFVJNKruswPdmRfU4zrRF+DpSOFIrIsXBKskZtSQiOQgfuDfIbvLErOPMT5uvdkebgVZHVUqkNW0VBZdydDI2cg27W9Nru6Bl4noMNL3aSM6KZxGxvrd6fHwD/Hy77jFFiKiAzc9EuTReswi1c77Jr+PCe34erb6/9ezrk7RGoyMZCE0GtGyDWZIBGlCAFlsA9vbwD1A5H6rL2l38Wgmp0MS0crbEZdhyqcxKFIjxizdGWI2qHzMBoY4uxxmyXaEFQOpGjEmw5SeXN5NZOIjqGKmvKdNLgBtNvwDQMjvaQbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QITnup423DPxcArR2zfby0c9mBpl/s/nXjrq3xDTUIM=;
+ b=J2Pngmn0jXmFM1iAkfINIVefvP03P0aAdM1or/+noWobOdQhxNikOZf5JZDLA3NUBPKpAXTTyrtHePW9Vk1PCxPXkv+d3hqvCRVDNNj9rAVsbxT6O/inUvV9jQCuz+ZKVM+aFUcpBGk00xmhky175DeM/OJ/inTX0T9XXmpwfPooSXU/zRgipKb6Yb4Sh16jU8osoq+GdmIO+OxCRyelyJBNFGuvWcjIrIExDF3y3Z+08hwHfeFgX5reFsxp1RAodm0ChEpSMyTg7SBucAeFh2n4DVeu4rHPECFlXO9LkgGCWyIBVLfKvUOpAWEfI9lIi7RTVKOw//j/j/7tmYC3Ng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QITnup423DPxcArR2zfby0c9mBpl/s/nXjrq3xDTUIM=;
+ b=iNHix+fMW5dz/honntxAI7pO4p2OoMZWjonLY7yaQl42oA1nY8EV5wsuK2xQYCf7+967WBfHLMc+IQ44pZXNrljm0PdfyhLBqc05KHaELWbXcYZqiuUfrF6eUshvY2X4cX6ml6ass8G3+c1HkIDbIJQqltVadD6ya7uuYbuz/MA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CYYPR12MB8750.namprd12.prod.outlook.com (2603:10b6:930:be::18)
+ by SA3PR12MB7974.namprd12.prod.outlook.com (2603:10b6:806:307::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Thu, 18 Apr
+ 2024 12:05:56 +0000
+Received: from CYYPR12MB8750.namprd12.prod.outlook.com
+ ([fe80::7ecf:eda6:7dc7:119]) by CYYPR12MB8750.namprd12.prod.outlook.com
+ ([fe80::7ecf:eda6:7dc7:119%7]) with mapi id 15.20.7472.037; Thu, 18 Apr 2024
+ 12:05:56 +0000
+Date: Thu, 18 Apr 2024 14:05:49 +0200
+From: Robert Richter <rrichter@amd.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	linux-kernel@vger.kernel.org, jgross@suse.com, tglx@linutronix.de,
+	x86@kernel.org, Kim Phillips <kim.phillips@amd.com>,
+	Robert Richter <rric@kernel.org>
+Subject: Re: [PATCH 2/4] perf/x86/ibs: Use CPUID region helper
+Message-ID: <ZiEMnWaHkn99_oyW@rric.localdomain>
+References: <20240403153508.7328E749@davehans-spike.ostc.intel.com>
+ <20240403153511.75CB9DA0@davehans-spike.ostc.intel.com>
+ <20240416151242.GGZh6VaiO2gC4ej2BT@fat_crate.local>
+ <f142e9c4-4829-4ace-8757-485246ad3572@intel.com>
+ <20240416174850.GEZh66AmnDjrLxoXaw@fat_crate.local>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416174850.GEZh66AmnDjrLxoXaw@fat_crate.local>
+X-ClientProxiedBy: FR5P281CA0045.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f3::12) To CYYPR12MB8750.namprd12.prod.outlook.com
+ (2603:10b6:930:be::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 4/4] mm/madvise: optimize lazyfreeing with mTHP in
- madvise_free
-To: Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org
-Cc: ryan.roberts@arm.com, 21cnbao@gmail.com, mhocko@suse.com,
- fengwei.yin@intel.com, zokeefe@google.com, shy828301@gmail.com,
- xiehuan09@gmail.com, wangkefeng.wang@huawei.com, songmuchun@bytedance.com,
- peterx@redhat.com, minchan@kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240418105750.98866-1-ioworker0@gmail.com>
- <20240418105750.98866-5-ioworker0@gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
- AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
- 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
- rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
- wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
- 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
- pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
- KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
- BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
- 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
- 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
- M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
- AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
- boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
- 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
- XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
- a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
- Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
- 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
- kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
- th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
- jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240418105750.98866-5-ioworker0@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CYYPR12MB8750:EE_|SA3PR12MB7974:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8b6d9e4f-2f36-429a-7b12-08dc5f9fe6c5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	h3jev8kCsJ95xCfaDI5gzaGHssuK4c0IAVFstqfZo5bgpAGACQD+UrJW0R+CiSuOhN0BLlM62AMMi0Y39a9+R6AnoSspFuzqKTfI/1V7bMMUaDzgJS716VTcxUt+gxkkY+ZFjRv3opLVU8PvcqLYxX/MdawJFhLCpe/w86BrOEowjzfgJ7ZiCKSLA6FKmkpIJSsj+e/w6DgeXlDGIlNo41uvSXrBwBJx+LFoekIwt1MFLVbw69bSb/70rluJtTIW2eT9repGRg45vQQg09rrzoHBuK/gy7Mgw8U6ESgAhkDm94vcXyGEI4PIgw6D/0uIDsn4V8q1lmfZ3nlQrX0ppcgBzVSzzdFeSM8/izttrSucnfHWhfDYT990V94qzTU/5Ui3ErxFJa6JYGg3xki2k/MZWHcXvU5dBIXrVK7ECkCGe81fpgbrkR21B52BXAWbmKU7mpxesx3u2uEV787Mynpf+FnImN5eMUWy7XHCqIOKkSW5NRqNNdk2B9BCoPi2NmQ/E388ZpZwVbmjreMDxuXJT7uDjiUgoN1cqPcN7HyUAz/pb8kQfv8iA/WOw0US3ld2UaY7wyXkn32VUekvqE9SxhrDttUBSbyTn82Q+347SFIe7TL9+U4H7gpaWbhzanWkVw3vLkbG0X8IlJdfjWCFf08ZlTNW2vx4MnYAQ2M=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYYPR12MB8750.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?cpD/o1f8xc1D2kAwW96ixjVJwVNEGWmY3FixT1NP2c5n356AYNBtnMs9PRw0?=
+ =?us-ascii?Q?eGvJv7d1qOIi8EgctiPhZyKAA8OH+D11c7S1L1g0VAMOLWiXDyDIVxifANS1?=
+ =?us-ascii?Q?c3VVl1hAZF+r9OwQMUtPJU6R4PmE46aWoQKBPtRdcqGlfQqdGW2+4qQTck3K?=
+ =?us-ascii?Q?7yrsVaJZqPraTtKAZ2SmfEq6rTFL27VUkbu51seKF6FCGA6V3kaInXPtZe2U?=
+ =?us-ascii?Q?31EfyDDX8B+ttxLOynKi2IsgXziOJ6VjyJxJ0YtSqdYpsMEOmR2GEyZJ820z?=
+ =?us-ascii?Q?5ozHcS9X3QfBL+EMTNi1O02PNhrkmdfUTunKUx1JVsWQ1lnKqvfcKVwU5w6v?=
+ =?us-ascii?Q?vsBOlbAEoXFk6u/6HNPQNfIX5frfoVVsKwVABpvTAnACEd9CH9UfOee3F8UG?=
+ =?us-ascii?Q?TNWdTrXXpKHwdB9RQ/9vrCRxDNC3N195AMd8D1P0bpbCtaAL4GWQZSL3OE2o?=
+ =?us-ascii?Q?X3/MHbIubrtyPmCyTW2BgQHZh8oYv+vX7a93Hwr8zT3s5LRRRWzzdyHaN+RR?=
+ =?us-ascii?Q?HptrCUIL1qR6Aj71AiqJbV1Zx1Ee8KyPzYAtqmqMvwLmkIoSPAPNe3OTSH5M?=
+ =?us-ascii?Q?IqKGElHpK0FOK2RVbarsrzFPOsQWzROAxbjUdr3zc2JU+NGgJEuar5f5E1i0?=
+ =?us-ascii?Q?yoLf6wkapH5lhffG4t58Qt1VLyiPe2foYpswFq/RPlBUpNzqRIa35+fbUnJo?=
+ =?us-ascii?Q?qDms22I0SUl61D+ob1wrPEaWhn3bO4AmhmcaqBD/yfAkPAiS+lhFtVI4v+iR?=
+ =?us-ascii?Q?oz+ohpjCnvmQCgVNKusAsJ8HDRei9IBSfQlcqyXevT8ZSgX637A+AmHUVgPr?=
+ =?us-ascii?Q?m5ntlsJAP7hJDT43ypek4QXaG7YfMRP3Mzi5VSFoUEtavNIe+oKW5xZQSChm?=
+ =?us-ascii?Q?CUPeS8AFCKpcK1v7JubC8fMu+zc+sY+Me49emIbo1fbOeYOijhURoaBzytVB?=
+ =?us-ascii?Q?+IU4joirGTHoKfCDFJuCPCxshBH3Sil8Rd7oF8G4FVH1krwmrJ1tf+GdLt6I?=
+ =?us-ascii?Q?onA8AayqG/nmyGxvLsEciq15VA14izCsfV7pyQh0ikSLoSP+clduBMmsMcuK?=
+ =?us-ascii?Q?5Fw3g9lGfH39mJNpqpvRNEpRKDogz/3+AW2XzQt9OBSr1s6+l8/JinCRLE8g?=
+ =?us-ascii?Q?Vc5sJdmPpLn38rOv0fcKT53zJBv8ZuzeFsf6+CDZibp0QvqiKNUNLT1OaKdZ?=
+ =?us-ascii?Q?kf0Qx/uMbehzuHlpmb0eyMPTXOiDO+nLO5T2dDgrOSAzounp2E7kM/Tc0uoE?=
+ =?us-ascii?Q?nJZv2ptTAr8sQlZG7lGsGsNrgZwyom0kp5N4IavgqO/ROux5akdip635SH4x?=
+ =?us-ascii?Q?YXmPbE5LS8aogESC4mkqpGVL1nwO+hGlwXcEAe46NL5V0qVcdCqn+vmwSRRL?=
+ =?us-ascii?Q?Y2YtP575TGc9chIilXQBN2yguz6iI7/HPU7PzsfXiUSCiK1QV0j+XkiWvU1Y?=
+ =?us-ascii?Q?3vdyt0MXymVuvg9iGCfJH7Es/VZXalkRizuVkn3jwAq6BF6fEjYjl0+ZwOot?=
+ =?us-ascii?Q?0hu+DItW9oJ/5squTGxu9rYxnc9ZwqR6ZbgQnYKn/lsocciG0zzWhPqmalNJ?=
+ =?us-ascii?Q?Axjclop7YxT4IuiFkOECkiLGvbiFdZhYyt6ELWA7?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b6d9e4f-2f36-429a-7b12-08dc5f9fe6c5
+X-MS-Exchange-CrossTenant-AuthSource: CYYPR12MB8750.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 12:05:55.9247
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MtFTUDQ/hjDE6+h+1gzntQEpweZn6ALVDWHOtY6IFwS5L1yWx5qTXhwQq8j6tHMjprF2SJFS6taaYFFbuOjzZw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7974
 
-On 18.04.24 12:57, Lance Yang wrote:
-> This patch optimizes lazyfreeing with PTE-mapped mTHP[1]
-> (Inspired by David Hildenbrand[2]). We aim to avoid unnecessary folio
-> splitting if the large folio is fully mapped within the target range.
+On 16.04.24 19:48:50, Borislav Petkov wrote:
+> On Tue, Apr 16, 2024 at 08:23:58AM -0700, Dave Hansen wrote:
+> > When I was looking at it, I (maybe wrongly) assumed that 0x8000001b and
+> > X86_FEATURE_IBS were independent for a reason.  Because, oddly enough:
+> > 
+> > 	#define IBS_CAPS_DEFAULT         (IBS_CAPS_AVAIL         \
+> >                                          | IBS_CAPS_FETCHSAM    \
+> >                                          | IBS_CAPS_OPSAM)
+> > 
+> > So, if the CPU enumerates X86_FEATURE_IBS but has a
+> > max_level<IBS_CPUID_FEATURES then it assumes there's a working IBS
+> > because the software-inserted IBS_CAPS_DEFAULT has IBS_CAPS_AVAIL set.
 > 
-> If a large folio is locked or shared, or if we fail to split it, we just
-> leave it in place and advance to the next PTE in the range. But note that
-> the behavior is changed; previously, any failure of this sort would cause
-> the entire operation to give up. As large folios become more common,
-> sticking to the old way could result in wasted opportunities.
+> Right, that's why I added Robert. I found this in a F10h doc (old
+> Greyhound CPU rust):
 > 
-> On an Intel I5 CPU, lazyfreeing a 1GiB VMA backed by PTE-mapped folios of
-> the same size results in the following runtimes for madvise(MADV_FREE) in
-> seconds (shorter is better):
+> "CPUID Fn8000_0001_ECX Feature Identifiers
 > 
-> Folio Size |   Old    |   New    | Change
-> ------------------------------------------
->        4KiB | 0.590251 | 0.590259 |    0%
->       16KiB | 2.990447 | 0.185655 |  -94%
->       32KiB | 2.547831 | 0.104870 |  -95%
->       64KiB | 2.457796 | 0.052812 |  -97%
->      128KiB | 2.281034 | 0.032777 |  -99%
->      256KiB | 2.230387 | 0.017496 |  -99%
->      512KiB | 2.189106 | 0.010781 |  -99%
->     1024KiB | 2.183949 | 0.007753 |  -99%
->     2048KiB | 0.002799 | 0.002804 |    0%
+> ...
 > 
-> [1] https://lkml.kernel.org/r/20231207161211.2374093-5-ryan.roberts@arm.com
-> [2] https://lore.kernel.org/linux-mm/20240214204435.167852-1-david@redhat.com
+> 10: IBS: Instruction Based Sampling = 1.
 > 
-> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
-> Signed-off-by: Lance Yang <ioworker0@gmail.com>
-> ---
->   mm/madvise.c | 85 +++++++++++++++++++++++++++-------------------------
->   1 file changed, 44 insertions(+), 41 deletions(-)
+> ...
 > 
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index 4597a3568e7e..375ab3234603 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -643,6 +643,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->   				unsigned long end, struct mm_walk *walk)
->   
->   {
-> +	const cydp_t cydp_flags = CYDP_CLEAR_YOUNG | CYDP_CLEAR_DIRTY;
->   	struct mmu_gather *tlb = walk->private;
->   	struct mm_struct *mm = tlb->mm;
->   	struct vm_area_struct *vma = walk->vma;
-> @@ -697,44 +698,57 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->   			continue;
->   
->   		/*
-> -		 * If pmd isn't transhuge but the folio is large and
-> -		 * is owned by only this process, split it and
-> -		 * deactivate all pages.
-> +		 * If we encounter a large folio, only split it if it is not
-> +		 * fully mapped within the range we are operating on. Otherwise
-> +		 * leave it as is so that it can be marked as lazyfree. If we
-> +		 * fail to split a folio, leave it in place and advance to the
-> +		 * next pte in the range.
->   		 */
->   		if (folio_test_large(folio)) {
-> -			int err;
-> +			bool any_young, any_dirty;
->   
-> -			if (folio_likely_mapped_shared(folio))
-> -				break;
-> -			if (!folio_trylock(folio))
-> -				break;
-> -			folio_get(folio);
-> -			arch_leave_lazy_mmu_mode();
-> -			pte_unmap_unlock(start_pte, ptl);
-> -			start_pte = NULL;
-> -			err = split_folio(folio);
-> -			folio_unlock(folio);
-> -			folio_put(folio);
-> -			if (err)
-> -				break;
-> -			start_pte = pte =
-> -				pte_offset_map_lock(mm, pmd, addr, &ptl);
-> -			if (!start_pte)
-> -				break;
-> -			arch_enter_lazy_mmu_mode();
-> -			pte--;
-> -			addr -= PAGE_SIZE;
-> -			continue;
-> +			nr = madvise_folio_pte_batch(addr, end, folio, pte,
-> +						     ptent, &any_young, NULL);
-> +
-> +			if (nr < folio_nr_pages(folio)) {
-> +				int err;
-> +
-> +				if (folio_likely_mapped_shared(folio))
-> +					continue;
-> +				if (!folio_trylock(folio))
-> +					continue;
-> +				folio_get(folio);
-> +				arch_leave_lazy_mmu_mode();
-> +				pte_unmap_unlock(start_pte, ptl);
-> +				start_pte = NULL;
-> +				err = split_folio(folio);
-> +				folio_unlock(folio);
-> +				folio_put(folio);
-> +				start_pte = pte =
-> +					pte_offset_map_lock(mm, pmd, addr, &ptl);
+> CPUID Fn8000_001B Instruction Based Sampling Identifiers
+> 
+> ...
+> 
+> IBSFFV. IBS feature flags valid. Revision B = 0. Revision C = 1."
+> 
+> which makes this look like some hack to fix broken CPUID IBS reporting.
 
-I'd just put it on a single line.
+There is the X86_FEATURE_IBS bit (Fn8000_0001_ECX, bit 10) which is
+available from the beginning of IBS (all Fam10h production releases,
+revB onwards).
 
-> +				if (!start_pte)
-> +					break;
-> +				arch_enter_lazy_mmu_mode();
-> +				if (!err)
-> +					nr = 0;
-> +				continue;
-> +			}
-> +
-> +			if (any_young)
-> +				ptent = pte_mkyoung(ptent);
-> +			if (any_dirty)
+And right, IBS_CPUID_FEATURES (CPUID Fn8000_001B) was introduced with
+revC. The capabilities of revB are set in IBS_CAPS_DEFAULT.
 
-any_dirty is never set, likely missed to pass it to 
-madvise_folio_pte_batch().
+It doesn't look broken to me, simply the ibs caps field was introduced
+later which can be determined checking the return code of
+get_cpuid_region_leaf().
 
-Apart from that LGTM and this patch is much easier to review now!
+> 
+> And if it is that, I don't think we care, frankly, because revB is
+> ooold. Mine is somewhere in the basement on some old board which got
+> bricked so I don't know even if I could use it anymore.
+> 
+> And I'm not even planing to - that CPU is almost 20 years old and no one
+> cares whether it can even do IBS.
+> 
+> So I wouldn't mind at all if we simplify this code for the sake of it.
+> I don't think anyone would care or notice.
+> 
+> But let's see what Robert says first...
 
+My preference would be:
 
-With above:
+	[...]
+	if (!get_cpuid_region_leaf(IBS_CPUID_FEATURES, CPUID_EAX, &caps))
+		return IBS_CAPS_DEFAULT;
 
-Acked-by: David Hildenbrand <david@redhat.com>
+	if (caps & IBS_CAPS_AVAIL)
+		return caps;
 
--- 
-Cheers,
+	return 0;
+	[...]
 
-David / dhildenb
+Not too complex?
 
+This slightly modifies the functionality so that 0 is return if
+!IBS_CAPS_AVAIL (instead of IBS_CAPS_DEFAULT). The feature could be
+disabled then by overriding IBS_CAPS_AVAIL by just clearing the ibs
+leaf, valid even for newer systems.
+
+Thanks,
+
+-Robert
 
