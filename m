@@ -1,342 +1,194 @@
-Return-Path: <linux-kernel+bounces-150655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49A478AA263
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:01:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6F578AA267
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:01:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D6B71C20D74
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:01:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D18C284B0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:01:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D95E417AD92;
-	Thu, 18 Apr 2024 19:01:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 583BF17AD85;
+	Thu, 18 Apr 2024 19:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="ZDzAfjb5"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="fVwu+cxM"
+Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11023015.outbound.protection.outlook.com [52.101.61.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0BA17AD88;
-	Thu, 18 Apr 2024 19:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713466861; cv=none; b=P0XwoTDShdYiF1B2qyaygaeCU/xPIQSn5SacMbNq5lhSvhgnSSt/QLtzZwYswTGTiys/je4Y3b2ufx71w/468LaAvwYMsOSAQAEd9nPuWd4H9YM4ztucDGb1o6T31SIQNNU+rpRDjEDggtJUktbKSGhbyS8/dH5tn2a431YJJ6U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713466861; c=relaxed/simple;
-	bh=jcTqVXkT1gbKTV4T4r8fNjf2jwIiwW0ZhFAaNjUD+6A=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kbHdYxokVQE/u7A4jVvBvw3yXTv2GCWbTvOax8nIXU3EIVE3kZnY+IdrQ7HmcRLur1g79xde3xCaxtO+a0jmXgwoTTwviJ0oCUMBFtPmD64Hmox8WLCtqEMIZ/6m/tVeZg5C01cCI5mDr0TOon81WbGEmkJj/SrlkbWnb/ktHaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=ZDzAfjb5; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43IHpQ7W014840;
-	Thu, 18 Apr 2024 12:00:38 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=pfpt0220; bh=3VvB3z4p
-	wOTWpKeDA/bWeRZhl3IVNwulEOxSDWil810=; b=ZDzAfjb5ADgwYFdXAgxg8muF
-	7Ut8X9U1RRplMQa9LbOOztSVrl5nB4rCBiOU+G8R25mWLuvBMS+bCH7Yb86SefKP
-	/av7q3qswqvnPhbbudUw3tC0TbM3GocM82H1eUr7ZtMTm9EbZqzuTipIxQdDYhcp
-	mHfHhZu2eUFtJgLEjk5UMewqLsJoYs0LU5Sje/OJ/Sk50wKCiEGnb5O59Td8S32d
-	S0l5zX6KpSBVNiJVV2fdOaJcwRU9ZHpuNGJlBG9yg03vaQFusTtqnsHTnDqNseKq
-	MZbz3/3anK8+Y6JpvfHz7apmVSuNJTAnPmoFK3JE36PWhHSLDeD8rbCRJn8zGA==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3xk89mr835-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Apr 2024 12:00:37 -0700 (PDT)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Thu, 18 Apr 2024 12:00:37 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Thu, 18 Apr 2024 12:00:37 -0700
-Received: from hyd1425.marvell.com (unknown [10.29.37.83])
-	by maili.marvell.com (Postfix) with ESMTP id A58643F70C3;
-	Thu, 18 Apr 2024 12:00:33 -0700 (PDT)
-From: Sai Krishna <saikrishnag@marvell.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <hkelam@marvell.com>, <sbhatta@marvell.com>
-CC: Sai Krishna <saikrishnag@marvell.com>
-Subject: [net-next PATCH v2] octeontx2-pf: Add ucast filter count configurability via devlink.
-Date: Fri, 19 Apr 2024 00:30:31 +0530
-Message-ID: <20240418190031.1115865-1-saikrishnag@marvell.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D859817AD62;
+	Thu, 18 Apr 2024 19:01:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713466887; cv=fail; b=DCqJYUJ9T23cbD79QLrAD/7kPmnHIAOuEDvjmevuR/ZtsdEK0ZQjVeyk78TLIMwsh+YsFiMZrFmohuqd6dbeJybLwz4jCkKEdtmZiZsf/D633s4m1h17Z5K3ju0GgOO7vXIMdCrvJOsJg8bvR4/gDLbl59hJEh+ozfEs0D674Q8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713466887; c=relaxed/simple;
+	bh=Snd+UveWgpgEM0cvFpPJOpHelBvCXeJz7Vw37uMYgdQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=I2qobN9r8TLt9a+gKjX3OYXE3sia+jPPOAMFd5TGgRmq00NFQMAMWQENynsgUrHlRItCe7bq2CD1chaQ4Gm3fnn7mKXoilQ3oTX6tF2lnHV5gMNXUxqWaUhepE+y+O9VTSYKWqzX3BLVv00sQ3xKvhG0Yba+n7nQERiCHmQoG1Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=fVwu+cxM; arc=fail smtp.client-ip=52.101.61.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L4llOdErjWKkllPADITRvhd9IY4hhVBX6o6xGPv3vKLYTYzOMB58PHo9n/ckav+2Bp3i5GVOIwEj+9OgAW0cPt9VMbCXtQyYttxnClUd2PDOONFtkXERITbISvOV+gpyC06btuaps8MUNBbopZhN3Gz4SUjnE4UWROVekSvjeyVsang3WX177M6tbXnENZ7O9QNpwuTCWS3L3lkNEv7ueZH7ZViOsgOcSv4CXu5h3CTPh0BfdXt9kwNFx7xiIp3FXpxkraUsGX2kkaFSZ+UbRxLYB5DVYTmFh/9r0HegEpmTBc2FMgmV1o/IwNhQg/twdhOoS/WvOCZHvFZRor4C2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Snd+UveWgpgEM0cvFpPJOpHelBvCXeJz7Vw37uMYgdQ=;
+ b=QdXx6enmlcl2no5WjQ/sqXTotiZFxS7aHq8PPp+BVC90vQKduwgsg/Rh4h1pqC1jgXeLkDnkWLHk185twDbk1FrRd3Rr5LPPKz4FiAXtqQhhYrsNIHCLYyi3AIdJMPEw/3ekblkfoecR6/8ucFG4/X6aEsTnbiMzJHgcwCXgw81wLRx9GSBBKKUl2ga8DpBJ2NCOPnUhHJsAYuLEu3J2K45ZSULcHdoA1OT8OzasbsI1JwY2uwN4OV4SmCgVbouH6Sypvfwmjc8UthZtWgWfVdsfqCHXICepy3rYgxI3cDiParOGaZ7jzX7QBVcUxtFIYJPDi5zqYmvnmH/DEpnXvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Snd+UveWgpgEM0cvFpPJOpHelBvCXeJz7Vw37uMYgdQ=;
+ b=fVwu+cxM5W6530HPJDaT5dkWmN7iiLe8Js5KUbVc5ulmiA9MN4N46yKu0j0qaH1N9pod7umlGZsC/sK96o1zVbCOaPd0qLdM30nWSEEqalb+bpMDaDbx8gXg/p+LbCTgD9l+i18kd/LmidbJatnCK4lhszlwgLKA3gLiBkaquLo=
+Received: from CY5PR21MB3759.namprd21.prod.outlook.com (2603:10b6:930:c::10)
+ by MN2PR21MB1439.namprd21.prod.outlook.com (2603:10b6:208:20a::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.12; Thu, 18 Apr
+ 2024 19:01:20 +0000
+Received: from CY5PR21MB3759.namprd21.prod.outlook.com
+ ([fe80::aec4:da4e:adae:568e]) by CY5PR21MB3759.namprd21.prod.outlook.com
+ ([fe80::aec4:da4e:adae:568e%3]) with mapi id 15.20.7519.006; Thu, 18 Apr 2024
+ 19:01:20 +0000
+From: Dexuan Cui <decui@microsoft.com>
+To: Easwar Hariharan <eahariha@linux.microsoft.com>, Ani Sinha
+	<anisinha@redhat.com>, KY Srinivasan <kys@microsoft.com>, Haiyang Zhang
+	<haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>
+CC: "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2] Add a header in ifcfg and nm keyfiles describing the
+ owner of the files
+Thread-Topic: [PATCH v2] Add a header in ifcfg and nm keyfiles describing the
+ owner of the files
+Thread-Index: AQHakauwDfAGVwh0yE230RtcTkYkHrFuYOvA
+Date: Thu, 18 Apr 2024 19:01:20 +0000
+Message-ID:
+ <CY5PR21MB3759203A552E72B7F2669FACBF0E2@CY5PR21MB3759.namprd21.prod.outlook.com>
+References: <20240418120549.59018-1-anisinha@redhat.com>
+ <19df975d-167f-424a-92ce-5135cbeb8a07@linux.microsoft.com>
+In-Reply-To: <19df975d-167f-424a-92ce-5135cbeb8a07@linux.microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=19129bd3-8b4f-4d1f-a53e-e3592952896a;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-04-18T18:56:33Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CY5PR21MB3759:EE_|MN2PR21MB1439:EE_
+x-ms-office365-filtering-correlation-id: 71178a29-0331-4c02-2e01-08dc5fd9ef14
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230031|366007|1800799015|376005|38070700009;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?Uk94TDRkdHZlaTVBUEg0YmtRN2szTy95Um8zOWx2STVhZ1Y5b0ZuV3pWZ21x?=
+ =?utf-8?B?cUFCQzA2bWt3TG5wQ0xJZVpZQUdZa1JVblJCQ0pQM3NQKzA2RWlmeExWUWZa?=
+ =?utf-8?B?TXlyS0pmN1RnT3FLYnFJSzRIc2R3Uk90L0lRQ2dRT3FyS2FXalpQclN1WURr?=
+ =?utf-8?B?SG11dEVDL0Z6eS83UzJZMzlYNG5lWjc4V2RWSGtUYmV6M3JHajB5eXZpd3h4?=
+ =?utf-8?B?anBzSGU3dmtYcGRyMmhHYTlQK2Z6cm5Gamh2czdEQ1p0VU9FRkoxOWFiaHVp?=
+ =?utf-8?B?VTJWMmoyQTY4QVVSMkZIK0xVV1FOaVZJMk9kOUpJVXgzQVNQTTU2WktmOGdq?=
+ =?utf-8?B?a01UVUEyN2tZbnFrU2RoL1JPaDhyYVVMOWIrTk96Rm5EQXo2d2QwME5XNWdh?=
+ =?utf-8?B?emY4Z2t6Qlh4dHhRRm1rSjNlMDlBYW5GekRSWklTclNmVy9ObENqazgrRnQw?=
+ =?utf-8?B?VWY5bHpIcnBpRjVFM0Y2RC9lOStQZStFa1RyakN1VGd0cjVTa0hLaTdweFRM?=
+ =?utf-8?B?VmE3TE5tdFNSSzh0c2dLVFJWa1FLT1hGWHpSMFNFZFJtVjVodHdJYXZ6eDQz?=
+ =?utf-8?B?TFlET1JIbGxzVjhHc0lmUTZrdkl0VVpKQXYxNENWUUp4Y0o4czJXTlBYeWVJ?=
+ =?utf-8?B?YzVTSnRSbUNxSE1FS3RQUUtvbVlzSWxYK3BSVThtOHc5cEw3NW5icmZWdkxt?=
+ =?utf-8?B?Vm1PODBuR3RDdFZOMFVyMEhHUFlURjh4OENSSjZGenlhbS9PR0w4TDVHVkc0?=
+ =?utf-8?B?MmhxTkdhQVpodkJpamt0L05LbjkweHRHbWFaK0Q0OWRsaURKUzBDUlM1ZUo2?=
+ =?utf-8?B?K2xsYjV0eVQzQi9uS1BSMzk5RDRtYmR6VWRDNkNtcUxkWTAvYklZQUg3SFln?=
+ =?utf-8?B?VVJ3Yk5IY21GeGJxcVNCVDUzTk0vcjl4R2lVc1NSSlJvaUdMODdRZGJsdG9n?=
+ =?utf-8?B?cSt3WHFIT1kvRWR1Y3BhSzhkY2dyeXh4NlI4R0tvRXFEYlFSeVp3WCt0RnRi?=
+ =?utf-8?B?cVRDUFpuRUNkQld6SFVDaTR4eG05bHcxV1pLQUJhSGgrendvSEVTcFdOQXpu?=
+ =?utf-8?B?QkVuY0RaNE5WekdJbWJJUk5OOHdtbEo2bllOMUtWZFZBVXlWN3JNZjJpWFZr?=
+ =?utf-8?B?V25jamwxSXh6YTVOcWJFdU9UcFU4UHJGSDZOYmorYjJXOTFBd3U5Q242MXhp?=
+ =?utf-8?B?V0twZjZHN2l0TmdCT2NoeS8vQjBPTXRhWitsVUl3MWRpWWpsU3RMMWxjNzd4?=
+ =?utf-8?B?SmlxRGl2ZjJXbkdheGhtZ3FXSElHS2QrQzRCeFIzSGYxQnVDbUhzSG1hYjVs?=
+ =?utf-8?B?UzRnVnZnQnJ6US9lRDRCRk1uSXZFNk1CZWRqTXlScEU3M0dlNmVSTDkyZTZy?=
+ =?utf-8?B?SXNldHBFaldhRlVOL0J1RkZ6T25KbUlQRGxZdFR3RXMrd1JzZjAyM3FGSllM?=
+ =?utf-8?B?WEttNUZvQ0h6NlNSRnJENllnTS9xMEtCek1hR1RTTVZXVlNQL1dIK1hISkd2?=
+ =?utf-8?B?SXNDemVIZnVGRDFtTURmK25KSXNsSE5JZmsxUkd3YTh2RjNRQXEvd2k3aU9K?=
+ =?utf-8?B?VGpEbUVvTkZ2MWJaYVg4NTBWd21GN09McG80NHl2QUdKNjNDd09uTVM4WllB?=
+ =?utf-8?B?QkRwRmVrOUpTRTdBSG9ZbVhmTWZKS3RFK0E1V0Z3NndRMzh1WTFzenFWOXQ4?=
+ =?utf-8?B?eHFKbnZ4c1pNNmRCSkI5eDN1Qkh3NXNobzV6K2llQTZUMVRNUEl2b0hBbU54?=
+ =?utf-8?B?akpTc1ova2lPa3hXU3VKTzBYK2R5Uk1oYVA0SWtCN1QyTjN5d0Mva2ZTNGw4?=
+ =?utf-8?B?OWFRYjdPZFVvVEUySkJLZz09?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR21MB3759.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?TlY0UjN3a1c2V1BPbDREZVVzVU5SakFqUVRSSEhDTUhMZncwR2dzNWZCYlpN?=
+ =?utf-8?B?ZzFWdE1TZmtFUjZvcGw1cWlqaVhRblQ1eSs5K2doWnhWa0RpSWFobjV6ZUtL?=
+ =?utf-8?B?aDVNY1h1czVHUXBiWmJWTTR3aC8xSjZlaTJaL1BSTGVxY0o2aFdNRUJQWjNy?=
+ =?utf-8?B?Y3dxaVNxcVl1YWhrY3lRVTFIdlJVU3dVblp0dUl0Z2Q4ZzN3Z1JvMEFIaGM4?=
+ =?utf-8?B?Zk1qd2hEVXJLSDBHV2lKQ1lPY1JUYndiQ2twSjBmQ2J5Y2wxWXRuZ3krNk1m?=
+ =?utf-8?B?ZmZvazNBV294UlZtWVl0V2g4QUxmVWE1bHYzczMvd3MvMVdkSE9DMjBoMjRs?=
+ =?utf-8?B?QVZKZWlRdWQrRU5weHBRQlBIaENhK2tyNXJtOGx4RXZXL0h6L0pCZHBUelc4?=
+ =?utf-8?B?MzlSSTJFR1NBRkRsaXhBdThncU1qVU15Q3BVRVJzZDZNSmtrVklwYmF4N3JS?=
+ =?utf-8?B?TzFYUzZ5dWtacCtHWEJkYW1McW9YTVEzK1crK1ltcHNTdklJeHgrM1lRRjhJ?=
+ =?utf-8?B?NkpTSHZ1Ym1OSk8xL3BjMStDZU0xMzBLM01NRVRNeGJRMnVPbmRETXZnaTNZ?=
+ =?utf-8?B?L1NEK1pBbUxkdlhsZlQyYy8yT1V2TElWeGFTa3VPdGMrNWFIaXM2bnRMOUFU?=
+ =?utf-8?B?NTdGWEYvdjhCZzVjWHNqU1UzWDBFbWpVY0VUVTlYMHhFWWFLT1N2NW9tU1Na?=
+ =?utf-8?B?OWl5Vzk4Zml3WFBJODRCNWRnTzRkNXBaOFJ2UE9vWjgzQTBJZnZvVHo3c0RC?=
+ =?utf-8?B?V0lKcXMxbmlTbFY5VEJVM1NraWpmV2wwbUJUV0lKa3ZWcTA2K09JV2VkWm1t?=
+ =?utf-8?B?bnhOY1ZxemJOd3hhRmxwUHIwd3JPbUVFalU1a0lpak1TWmtNZlVnMUYrN2RH?=
+ =?utf-8?B?YmVCNk4rTjgxNk1tOW9NU1ZlRFZBZFJFN1l5MWc5c1BoaWNBZ0dVRlBPTDh2?=
+ =?utf-8?B?WUllMEJsNTFPbU9oK0pidkdhMURRL2V4WGJjOVRjMHlIN0p1YXY5MW5jekxh?=
+ =?utf-8?B?ZmJaZGFNOWlocE9kMnVCeWlDMGIvNjIxNkxIOEt6T2YvUS9EYWYxSklkajVR?=
+ =?utf-8?B?YkN5RU5YTFYyZ2kxOHh4dFhDM1RMMldoVjRRVnVVK09YM2YxMlMwVjhjSzVW?=
+ =?utf-8?B?bnZNOVkwRGpXTnR2R3hXV1Z6dy9QUDNrOWY0azNSdFRRZTFHbHRCQlRwMW91?=
+ =?utf-8?B?VVdWWUZpcnEvSFpPZFNMSjZpdjBYY0FuVzNNZlhqUm1jUFZwYldEQUloTE1j?=
+ =?utf-8?B?U21qczNmOUdyWlNXdzh0YUlXemg4NHZQcm14bnRGUWl6bUplNWRuV0RIZWc2?=
+ =?utf-8?B?SGcvWE9nSGpUWUplSzRTeGxoY3FvclBxaVQ1NnhWOVZOTUp1RFRLcUo5UEI0?=
+ =?utf-8?B?NmtGZTFweEhDMXNPMGppdUV1ekVLMjk0QXBFdzRwdmJ6VUhyZ2M5WlgrOFFN?=
+ =?utf-8?B?OXVLSjg1cGVVWVRKR2h6Sml6RTBCcUhsamFYUGhsT20rb0VDdSt2SSswL2I4?=
+ =?utf-8?B?aVh3d2M2L0NhbUp5MEM3QXN0MTF2ZWR4R0o1TFVKbnNQUjIxa2VBWEI5QjBF?=
+ =?utf-8?B?cFY0aGZ2VVkySG9iMGhwWGdmODd1L1dMZHJIRlJUeWJtMDN0bkxiVlg3Mnlo?=
+ =?utf-8?B?MFE2ZkNVcHladUc3WndraEVrUndGaVBENitHVm5WWkNEb0dnQUpiTHNWbTlS?=
+ =?utf-8?B?TWlsZjZSeDV4YUhTVXRBUEJyUFJmU2k2OVBwbVpQVER2T0Z3VHZYejF6Mloz?=
+ =?utf-8?B?YkdwbnVmQlRNTUxaUXEweU1HTWovaU1MSFQ4eEtmb0xML3lRbkRlME9Pb0VR?=
+ =?utf-8?B?eXpKREp1a2V1MGJMRlhKS2xlTDRQUDhER1FyOWthR29SN0tVUjRpOCszNHF0?=
+ =?utf-8?B?cnZGUFI0NUJJclV6MkJZTkxvTnBNdjE3ZEI1dHNuNkM0WmZjQnprd2thOWVy?=
+ =?utf-8?B?b1hsdkQ0ZVhNV2dFQVRZVDBGbzNmcEhMT0ZFREtpdk1OaTRKc1htakZGRUha?=
+ =?utf-8?B?MUEzaTQxTDBFR2xwUEIrZ3RubWdHd3FkSHJmTlN5WVFEUVowR1NZdlRkWG1Q?=
+ =?utf-8?B?QUtwNkNrajVQL1hqT0xJQlNRVUkzSU03QjNTUFdlaldlSyttVzE0NFVWY05E?=
+ =?utf-8?Q?bn54=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: uL-mU_jwocUC1o15TGNWiQ4w_2QZs0K1
-X-Proofpoint-ORIG-GUID: uL-mU_jwocUC1o15TGNWiQ4w_2QZs0K1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-18_17,2024-04-17_01,2023-05-22_02
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR21MB3759.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 71178a29-0331-4c02-2e01-08dc5fd9ef14
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Apr 2024 19:01:20.3295
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: SPMFXt4FFAAR0WeEU2vGCDfDBWDiBjTyNndbYQXaEaZsoDm9C9M8bAtE9matjCTwMjVap8LAHwzsmHvugGzj1A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR21MB1439
 
-Added a devlink param to set/modify unicast filter count. Currently
-it's hardcoded with a macro.
-
-commands:
-
-To get the current unicast filter count
- # devlink dev param show pci/0002:02:00.0 name unicast_filter_count
-
-To change/set the unicast filter count
- # devlink dev param  set  pci/0002:02:00.0  name unicast_filter_count
- value 5 cmode runtime
-
-Signed-off-by: Sai Krishna <saikrishnag@marvell.com>
----
-v2:
-    - Addressed review comments given by Simon Horman
-	1. Updated the commit message with example commads
-        2. Modified/optimized conditions
-
- .../marvell/octeontx2/nic/otx2_common.h       |  7 +--
- .../marvell/octeontx2/nic/otx2_devlink.c      | 63 +++++++++++++++++++
- .../marvell/octeontx2/nic/otx2_flows.c        | 20 +++---
- .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  2 +-
- 4 files changed, 78 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index c5de3ba33e2f..e20b898eae97 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -346,12 +346,9 @@ struct otx2_flow_config {
- 	u16			*def_ent;
- 	u16			nr_flows;
- #define OTX2_DEFAULT_FLOWCOUNT		16
--#define OTX2_MAX_UNICAST_FLOWS		8
-+#define OTX2_DEFAULT_UNICAST_FLOWS	4
- #define OTX2_MAX_VLAN_FLOWS		1
- #define OTX2_MAX_TC_FLOWS	OTX2_DEFAULT_FLOWCOUNT
--#define OTX2_MCAM_COUNT		(OTX2_DEFAULT_FLOWCOUNT + \
--				 OTX2_MAX_UNICAST_FLOWS + \
--				 OTX2_MAX_VLAN_FLOWS)
- 	u16			unicast_offset;
- 	u16			rx_vlan_offset;
- 	u16			vf_vlan_offset;
-@@ -364,6 +361,7 @@ struct otx2_flow_config {
- 	u32			dmacflt_max_flows;
- 	u16                     max_flows;
- 	struct list_head	flow_list_tc;
-+	u8			ucast_flt_cnt;
- 	bool			ntuple;
- };
- 
-@@ -1065,6 +1063,7 @@ int otx2_handle_ntuple_tc_features(struct net_device *netdev,
- int otx2_smq_flush(struct otx2_nic *pfvf, int smq);
- void otx2_free_bufs(struct otx2_nic *pfvf, struct otx2_pool *pool,
- 		    u64 iova, int size);
-+int otx2_mcam_entry_init(struct otx2_nic *pfvf);
- 
- /* tc support */
- int otx2_init_tc(struct otx2_nic *nic);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_devlink.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_devlink.c
-index 4e1130496573..4d6f8caa1a1c 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_devlink.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_devlink.c
-@@ -63,9 +63,67 @@ static int otx2_dl_mcam_count_get(struct devlink *devlink, u32 id,
- 	return 0;
- }
- 
-+static int otx2_dl_ucast_flt_cnt_set(struct devlink *devlink, u32 id,
-+				     struct devlink_param_gset_ctx *ctx)
-+{
-+	struct otx2_devlink *otx2_dl = devlink_priv(devlink);
-+	struct otx2_nic *pfvf = otx2_dl->pfvf;
-+	int err;
-+
-+	pfvf->flow_cfg->ucast_flt_cnt = ctx->val.vu8;
-+
-+	otx2_mcam_flow_del(pfvf);
-+	err = otx2_mcam_entry_init(pfvf);
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static int otx2_dl_ucast_flt_cnt_get(struct devlink *devlink, u32 id,
-+				     struct devlink_param_gset_ctx *ctx)
-+{
-+	struct otx2_devlink *otx2_dl = devlink_priv(devlink);
-+	struct otx2_nic *pfvf = otx2_dl->pfvf;
-+
-+	ctx->val.vu8 = pfvf->flow_cfg ? pfvf->flow_cfg->ucast_flt_cnt : 0;
-+
-+	return 0;
-+}
-+
-+static int otx2_dl_ucast_flt_cnt_validate(struct devlink *devlink, u32 id,
-+					  union devlink_param_value val,
-+					  struct netlink_ext_ack *extack)
-+{
-+	struct otx2_devlink *otx2_dl = devlink_priv(devlink);
-+	struct otx2_nic *pfvf = otx2_dl->pfvf;
-+
-+	/* Check for UNICAST filter support*/
-+	if (!(pfvf->flags & OTX2_FLAG_UCAST_FLTR_SUPPORT)) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Unicast filter not enabled");
-+		return -EINVAL;
-+	}
-+
-+	if (!pfvf->flow_cfg) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "pfvf->flow_cfg not initialized");
-+		return -EINVAL;
-+	}
-+
-+	if (pfvf->flow_cfg->nr_flows) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Cannot modify count when there are active rules");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- enum otx2_dl_param_id {
- 	OTX2_DEVLINK_PARAM_ID_BASE = DEVLINK_PARAM_GENERIC_ID_MAX,
- 	OTX2_DEVLINK_PARAM_ID_MCAM_COUNT,
-+	OTX2_DEVLINK_PARAM_ID_UCAST_FLT_CNT,
- };
- 
- static const struct devlink_param otx2_dl_params[] = {
-@@ -74,6 +132,11 @@ static const struct devlink_param otx2_dl_params[] = {
- 			     BIT(DEVLINK_PARAM_CMODE_RUNTIME),
- 			     otx2_dl_mcam_count_get, otx2_dl_mcam_count_set,
- 			     otx2_dl_mcam_count_validate),
-+	DEVLINK_PARAM_DRIVER(OTX2_DEVLINK_PARAM_ID_UCAST_FLT_CNT,
-+			     "unicast_filter_count", DEVLINK_PARAM_TYPE_U8,
-+			     BIT(DEVLINK_PARAM_CMODE_RUNTIME),
-+			     otx2_dl_ucast_flt_cnt_get, otx2_dl_ucast_flt_cnt_set,
-+			     otx2_dl_ucast_flt_cnt_validate),
- };
- 
- static const struct devlink_ops otx2_devlink_ops = {
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-index 97a71e9b8563..78c2f31d153b 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-@@ -12,8 +12,6 @@
- 
- #define OTX2_DEFAULT_ACTION	0x1
- 
--static int otx2_mcam_entry_init(struct otx2_nic *pfvf);
--
- struct otx2_flow {
- 	struct ethtool_rx_flow_spec flow_spec;
- 	struct list_head list;
-@@ -161,7 +159,7 @@ int otx2_alloc_mcam_entries(struct otx2_nic *pfvf, u16 count)
- }
- EXPORT_SYMBOL(otx2_alloc_mcam_entries);
- 
--static int otx2_mcam_entry_init(struct otx2_nic *pfvf)
-+int otx2_mcam_entry_init(struct otx2_nic *pfvf)
- {
- 	struct otx2_flow_config *flow_cfg = pfvf->flow_cfg;
- 	struct npc_get_field_status_req *freq;
-@@ -172,7 +170,7 @@ static int otx2_mcam_entry_init(struct otx2_nic *pfvf)
- 	int ent, count;
- 
- 	vf_vlan_max_flows = pfvf->total_vfs * OTX2_PER_VF_VLAN_FLOWS;
--	count = OTX2_MAX_UNICAST_FLOWS +
-+	count = flow_cfg->ucast_flt_cnt +
- 			OTX2_MAX_VLAN_FLOWS + vf_vlan_max_flows;
- 
- 	flow_cfg->def_ent = devm_kmalloc_array(pfvf->dev, count,
-@@ -214,7 +212,7 @@ static int otx2_mcam_entry_init(struct otx2_nic *pfvf)
- 	flow_cfg->vf_vlan_offset = 0;
- 	flow_cfg->unicast_offset = vf_vlan_max_flows;
- 	flow_cfg->rx_vlan_offset = flow_cfg->unicast_offset +
--					OTX2_MAX_UNICAST_FLOWS;
-+					flow_cfg->ucast_flt_cnt;
- 	pfvf->flags |= OTX2_FLAG_UCAST_FLTR_SUPPORT;
- 
- 	/* Check if NPC_DMAC field is supported
-@@ -254,6 +252,7 @@ static int otx2_mcam_entry_init(struct otx2_nic *pfvf)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL(otx2_mcam_entry_init);
- 
- /* TODO : revisit on size */
- #define OTX2_DMAC_FLTR_BITMAP_SZ (4 * 2048 + 32)
-@@ -301,6 +300,8 @@ int otx2_mcam_flow_init(struct otx2_nic *pf)
- 	INIT_LIST_HEAD(&pf->flow_cfg->flow_list);
- 	INIT_LIST_HEAD(&pf->flow_cfg->flow_list_tc);
- 
-+	pf->flow_cfg->ucast_flt_cnt = OTX2_DEFAULT_UNICAST_FLOWS;
-+
- 	/* Allocate bare minimum number of MCAM entries needed for
- 	 * unicast and ntuple filters.
- 	 */
-@@ -313,7 +314,7 @@ int otx2_mcam_flow_init(struct otx2_nic *pf)
- 		return 0;
- 
- 	pf->mac_table = devm_kzalloc(pf->dev, sizeof(struct otx2_mac_table)
--					* OTX2_MAX_UNICAST_FLOWS, GFP_KERNEL);
-+					* pf->flow_cfg->ucast_flt_cnt, GFP_KERNEL);
- 	if (!pf->mac_table)
- 		return -ENOMEM;
- 
-@@ -355,7 +356,7 @@ static int otx2_do_add_macfilter(struct otx2_nic *pf, const u8 *mac)
- 		return -ENOMEM;
- 
- 	/* dont have free mcam entries or uc list is greater than alloted */
--	if (netdev_uc_count(pf->netdev) > OTX2_MAX_UNICAST_FLOWS)
-+	if (netdev_uc_count(pf->netdev) > pf->flow_cfg->ucast_flt_cnt)
- 		return -ENOMEM;
- 
- 	mutex_lock(&pf->mbox.lock);
-@@ -366,7 +367,7 @@ static int otx2_do_add_macfilter(struct otx2_nic *pf, const u8 *mac)
- 	}
- 
- 	/* unicast offset starts with 32 0..31 for ntuple */
--	for (i = 0; i <  OTX2_MAX_UNICAST_FLOWS; i++) {
-+	for (i = 0; i <  pf->flow_cfg->ucast_flt_cnt; i++) {
- 		if (pf->mac_table[i].inuse)
- 			continue;
- 		ether_addr_copy(pf->mac_table[i].addr, mac);
-@@ -409,7 +410,7 @@ static bool otx2_get_mcamentry_for_mac(struct otx2_nic *pf, const u8 *mac,
- {
- 	int i;
- 
--	for (i = 0; i < OTX2_MAX_UNICAST_FLOWS; i++) {
-+	for (i = 0; i < pf->flow_cfg->ucast_flt_cnt; i++) {
- 		if (!pf->mac_table[i].inuse)
- 			continue;
- 
-@@ -1393,6 +1394,7 @@ int otx2_destroy_mcam_flows(struct otx2_nic *pfvf)
- 	}
- 
- 	pfvf->flags &= ~OTX2_FLAG_MCAM_ENTRIES_ALLOC;
-+	flow_cfg->max_flows = 0;
- 	mutex_unlock(&pfvf->mbox.lock);
- 
- 	return 0;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index 6a44dacff508..78c4b3114a82 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -1714,7 +1714,7 @@ static void otx2_do_set_rx_mode(struct otx2_nic *pf)
- 		return;
- 
- 	if ((netdev->flags & IFF_PROMISC) ||
--	    (netdev_uc_count(netdev) > OTX2_MAX_UNICAST_FLOWS)) {
-+	    (netdev_uc_count(netdev) > pf->flow_cfg->ucast_flt_cnt)) {
- 		promisc = true;
- 	}
- 
--- 
-2.25.1
-
+PiBGcm9tOiBFYXN3YXIgSGFyaWhhcmFuIDxlYWhhcmloYUBsaW51eC5taWNyb3NvZnQuY29tPg0K
+PiBTZW50OiBUaHVyc2RheSwgQXByaWwgMTgsIDIwMjQgOToxNiBBTQ0KPiANCj4gT24gNC8xOC8y
+MDI0IDU6MDUgQU0sIEFuaSBTaW5oYSB3cm90ZToNCj4gPiBBIGNvbW1lbnQgZGVzY3JpYmluZyB0
+aGUgc291cmNlIG9mIHdyaXRpbmcgdGhlIGNvbnRlbnRzIG9mIHRoZSBpZmNmZyBhbmQNCj4gPiBu
+ZXR3b3JrIG1hbmFnZXIga2V5ZmlsZXMgKGh5cGVydiBrdnAgZGFlbW9uKSBpcyB1c2VmdWwuIEl0
+IGlzIHZhbHVhYmxlDQoNCnMvaHlwZXJ2L0h5cGVyLVYvDQoNCj4gPiArI2RlZmluZSBDRkdfSEVB
+REVSICIjIEdlbmVyYXRlZCBieSBoeXBlcnYga2V5LXZhbHVlIHBhaXIgZGFlbW9uLg0KPiBQbGVh
+c2UgZG8gbm90IG1vZGlmeS5cbiINCg0Kcy9oeXBlcnYvSHlwZXItVi8NCg0KPiBMb29rcyBnb29k
+IHRvIG1lLCBJJ2xsIGRlZmVyIHRvIG90aGVyIGZvbGtzIG9uIHRoZSByZWNpcGllbnQgbGlzdCBv
+biB3aGV0aGVyDQo+ICJoeXBlcnYiIHNob3VsZCBiZSBjYXBpdGFsaXplZCBhcyBIeXBlclYgb3Ig
+b3RoZXIgc3VjaCBmZWVkYmFjay4NCg0KSXQncyByZWNvbW1lbmRlZCB0byB1c2UgIkh5cGVyLVYi
+LiBXZWkgY2FuIGhlbHAgZml4IHRoaXMgc28gSSBndWVzcw0KdGhlcmUgaXMgbm8gbmVlZCB0byBy
+ZXNlbmQgdGhlIHBhdGNoIDotKQ0K
 
