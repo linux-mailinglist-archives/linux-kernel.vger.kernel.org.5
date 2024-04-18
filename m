@@ -1,220 +1,89 @@
-Return-Path: <linux-kernel+bounces-149731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FBBE8A9522
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:38:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96B718A9529
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:40:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14BED282163
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:38:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C51B1F2231B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:40:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25462158842;
-	Thu, 18 Apr 2024 08:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D0771586C0;
+	Thu, 18 Apr 2024 08:40:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TVZSxHd2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Npwd5rNs";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="swas1d1F";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mg01c/1Q"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SOWOp2cl"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 279481E489;
-	Thu, 18 Apr 2024 08:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9E11E489
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:40:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713429502; cv=none; b=CAb/eLMwe6CpACpOKYb0ymIcUeSX71t/bVKkXIBFasKAfBUp3eYLf+Fol8b0sEfD6OEHEcN04kcQo5r9nJDvLIrZnYYNCQiDNEHAEA3Lt4RWsd4O2gtYUWdcN8VvlDTFk1xI5n8fdX5CCV6z1/25dVJo10bIQTYCODt3iA4ygu0=
+	t=1713429616; cv=none; b=lho2Vx6LUSFzjbsXhB1mGNrkowdYmhh7iABWRIgWmxxRFHme55ei9GQzogxDKVqLee9YVa9KN4XlD1By5Ql8GgdYqGlcKr1WRQRO/pRqXC2d3DDW1jyJ0+Esk5sISdi5zTARoQYO3jGWtAmnRGiVvJlqmiUrKct/Ew6ELCVaOus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713429502; c=relaxed/simple;
-	bh=gC82ojHyQRv9o7U3cJhcomhfqvdL8b5auhWdEGoLyts=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DUzWLITv0ZfTljY6rdfRQKfhqqzFvWvgkLaHM/qr5ImY/wbOwPq8VxlmjMDjXHYOSJZKKF6vzyOfMzwpYlX96FyZTJKsnw4iw5k/6F5/4zSrI5vHneCpMja9PSzsLZkKxGNGvVAkJ1559BDCaGpOVl6R2svgEp4KVHW7v2xpJSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TVZSxHd2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Npwd5rNs; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=swas1d1F; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mg01c/1Q; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DB5A65C6E3;
-	Thu, 18 Apr 2024 08:38:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713429496; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dQHI2HfhY8U7ChqqJPGtYV9epgIcoTThki5zkJAswYc=;
-	b=TVZSxHd2PLnZkdQSg+uvQ1UvK6pRgbrYL+SFpOK4c1mqz+rufDOE8IiMMKNoBcdyFeHqBB
-	I1QO3JrMgQqO5g1tnPhnJt0S/cyCYKoA7n0zVpijRqsW8a3qvH7YWnUM/ruNCpG8QSiXD0
-	yL6mg6Jv12yWSeJVyLjyVj+H+G8P8i8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713429496;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dQHI2HfhY8U7ChqqJPGtYV9epgIcoTThki5zkJAswYc=;
-	b=Npwd5rNs20t17xatnQGS+LsO0xP4lMi7x0Z0X9ozy3fydXHu0AVlZVcNaEz5TNZDQOIjOK
-	KR+oBjFUfXrWXnBQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=swas1d1F;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="mg01c/1Q"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713429495; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dQHI2HfhY8U7ChqqJPGtYV9epgIcoTThki5zkJAswYc=;
-	b=swas1d1F0v96+qwfHrFZcLhRCZP9vy8pkgUTHLA2A1mrjozBRy2I4lM9C3PhZt+FQG/CIr
-	cDCtEt81F7pkWVuL5eZfaGy0qhTmNeyCbWUQprX2zjUbdZsc3GRVogpf/omad1/0cs4kkq
-	AW34Ji3TpFYFT2PpzNm1SHQBsZ/92AY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713429495;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dQHI2HfhY8U7ChqqJPGtYV9epgIcoTThki5zkJAswYc=;
-	b=mg01c/1Q3ng9Mpby0s7ulX18bRqiHZ17a+D+EP2liUJWM/tmbnIbVtGraZvHNHs/4A6z+W
-	h0cKJVpO+nOkJkAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D1A0613687;
-	Thu, 18 Apr 2024 08:38:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id z/ooM/fbIGalJQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 18 Apr 2024 08:38:15 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 7D3A2A0812; Thu, 18 Apr 2024 10:38:15 +0200 (CEST)
-Date: Thu, 18 Apr 2024 10:38:15 +0200
-From: Jan Kara <jack@suse.cz>
-To: Ye Bin <yebin10@huawei.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jack@suse.cz
-Subject: Re: [PATCH] e2fsck: fix acl block leak when process orphan list
-Message-ID: <20240418083815.3qjyo7jpaqhueen3@quack3>
-References: <20240418063946.2802835-1-yebin10@huawei.com>
+	s=arc-20240116; t=1713429616; c=relaxed/simple;
+	bh=2yLR9iE2LkhbTFYfU2TN/WL6XVZjfvkOelxFDiCfsO8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=kQyndUR1k+v+673KU9HUjz7Vo9r0kY4wY+HOgurXLs6N/NJ8J9z1PLUPAv9zzF/U5Ir/J6muqxDdrCfXAkgzEjwtasXfzj6RGLBqGLV4W5Eejtl7IVxVEOH8JwaNcl8SdExeZlKLtXXAOuJhqeTovkzq4k0q0V73ea+JT0EJnxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SOWOp2cl; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6f074520c8cso619124b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 01:40:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713429615; x=1714034415; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2yLR9iE2LkhbTFYfU2TN/WL6XVZjfvkOelxFDiCfsO8=;
+        b=SOWOp2clbHLYLZTQ9TfvNtjr8jw6/A/7F59wDKOwYm6f6y5UPXYzKBz8zm8KCmoImW
+         5DYGw0XIbwZsqOhm7Qg2TpZVgQATUpf6WsPR5zz75Ud7U674XDT1Sa/UyADjTWrNKWUD
+         OBPUdxMccRacb0e+tX42/XpfAHkLXJVzm5/Wdz0r3fTqXQC6s8DL0cPPsPQtJ7fr2TJM
+         rRnRuIEa9hlR0SQoASrbSXXBjfOUCOAwZSifnqYiEU+yk3f6Qt9T8KAwZcOgHdo9xs3f
+         xQgj4TjBZzSW0BF2wEP7wwKgZ0o5nxFt9fd4YGBZkpyOgiTjmdlz3QhSQR9hTVxRbOsT
+         75mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713429615; x=1714034415;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2yLR9iE2LkhbTFYfU2TN/WL6XVZjfvkOelxFDiCfsO8=;
+        b=xNkuqEDpsMT0cSMLIvHmiGY0eB9Tlc++6Z8w0+ji/DxETOaw9uOY2uH5Z+gc34FhTw
+         PqV0Ah///k//VzDwFynYOb/MYmP/rkOCV+7loLMqbWZ5FPcJQU+FT5bizPdup3JG749g
+         n//LJe3kQqax4QFwLGwtr86PnRdqSV+2NNd6SpTpcRh5RUujmMl+iadzjNTP+JRt9J03
+         nlqEdwDv6uU5IwKJQ+oQoe2YDzIC8ZkRnLGwgb7aA87IFzrP6TNC6JDdkBvSUabszQAb
+         OnpEtBELS+B4vt3aLLP8Wbq9oS+HBNY4Q57IJT1flCKSDW3iwDSUw6XC7rGNK2zHP3nR
+         exDQ==
+X-Gm-Message-State: AOJu0YzpFe41vLelOkWqdGwYYNdkPLHXIyxGciHdAZWctl/KRzsR1r/H
+	c2iTCMBzOrN/EKa3PZRc6n+TmgejGraPRcLHPELTnOizwgL7rfnO
+X-Google-Smtp-Source: AGHT+IF/9a9hJcTLiQZ9mcGVsae5ad2hLAqR1OWnQVxs196eYM5Qh8idzc3qDVqyOB85VrDgXbKL6A==
+X-Received: by 2002:a05:6a20:de89:b0:1a9:c3ac:c6d4 with SMTP id la9-20020a056a20de8900b001a9c3acc6d4mr2091140pzb.62.1713429614720;
+        Thu, 18 Apr 2024 01:40:14 -0700 (PDT)
+Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id j18-20020a62e912000000b006e681769ee0sm996078pfh.145.2024.04.18.01.40.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 01:40:14 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: syzbot+a81f2759d022496b40ab@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] KMSAN: uninit-value in hsr_get_node (3)
+Date: Thu, 18 Apr 2024 17:40:11 +0900
+Message-Id: <20240418084011.313378-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <0000000000004a86bf0616571fc7@google.com>
+References: <0000000000004a86bf0616571fc7@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418063946.2802835-1-yebin10@huawei.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MISSING_XM_UA(0.00)[];
-	ARC_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,huawei.com:email,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: DB5A65C6E3
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
+Content-Transfer-Encoding: 8bit
 
-On Thu 18-04-24 14:39:46, Ye Bin wrote:
-> There's a issue:
-> []$~/e2fsprogs/e2fsck/e2fsck -f scsi-disk2.img
-> e2fsck 1.47.0 (5-Feb-2023)
-> scsi-disk2.img: recovering journal
-> Clearing orphaned inode 12 (uid=0, gid=0, mode=0140777, size=0)
-> Pass 1: Checking inodes, blocks, and sizes
-> Extended attribute block 4247 has reference count 3, should be 2.  Fix<y>? no
-> Pass 2: Checking directory structure
-> Pass 3: Checking directory connectivity
-> Pass 4: Checking reference counts
-> Pass 5: Checking group summary information
-> Free blocks count wrong (249189, counted=249188).
-> Fix<y>? no
-> Free inodes count wrong (65526, counted=65523).
-> Fix<y>? no
-> 
-> scsi-disk2.img: ***** FILE SYSTEM WAS MODIFIED *****
-> 
-> scsi-disk2.img: ********** WARNING: Filesystem still has errors **********
-> 
-> scsi-disk2.img: 10/65536 files (0.0% non-contiguous), 12955/262144 blocks
-> 
-> Above issue can reproduce as follows:
-> step1: socat UNIX-LISTEN:/home/test/mysocket.sock,mode=777,reuseaddr,fork EXEC:/home/test  &
-> step2: setfacl some xattr for mysocket.sock
-> step3: cp -a /home/test/mysocket.sock /home/test/sock1
->        cp -a /home/test/mysocket.sock /home/test/sock2
-> step4: sync
-> step5: Power-off
-> step6: run e2fsck
-> 
-> As after commit 42475e281d22 add ext2fs_inode_has_valid_blocks() judgement in
-> release_inode_blocks() which means socket type file skip realse block include
-> ACL block. The kernel does not restrict the setting of extended attributes for
-> socket files. So this will lead to ACL block leak.
-> To solve above issue there's need to release ACL block for other kind of
-> special file.
-> 
-> Fixes: 42475e281d22 ("super.c (release_inode_blocks): Don't try to release the blocks if the orphaned inode is a device file, symlink, or some other kind of special file that doesn't have a block list.")
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+please test uninit-value in hsr_get_node
 
-Makes sense. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-
-> ---
->  e2fsck/super.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/e2fsck/super.c b/e2fsck/super.c
-> index be40dd8f..cefc2b07 100644
-> --- a/e2fsck/super.c
-> +++ b/e2fsck/super.c
-> @@ -196,7 +196,7 @@ static int release_inode_blocks(e2fsck_t ctx, ext2_ino_t ino,
->  	__u32				count;
->  
->  	if (!ext2fs_inode_has_valid_blocks2(fs, EXT2_INODE(inode)))
-> -		return 0;
-> +		goto release_acl;
->  
->  	pb.buf = block_buf + 3 * ctx->fs->blocksize;
->  	pb.ctx = ctx;
-> @@ -235,7 +235,7 @@ static int release_inode_blocks(e2fsck_t ctx, ext2_ino_t ino,
->  	if (pb.truncated_blocks)
->  		ext2fs_iblk_sub_blocks(fs, EXT2_INODE(inode),
->  				pb.truncated_blocks);
-> -
-> +release_acl:
->  	blk = ext2fs_file_acl_block(fs, EXT2_INODE(inode));
->  	if (blk) {
->  		retval = ext2fs_adjust_ea_refcount3(fs, blk, block_buf, -1,
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+#syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
