@@ -1,212 +1,292 @@
-Return-Path: <linux-kernel+bounces-150368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1B8F8A9E06
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:10:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD0C58A9E0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:11:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A1991C21BC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:10:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6357328353C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:11:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816ED16C68D;
-	Thu, 18 Apr 2024 15:09:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Gcrl2TOa"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B198D16C456;
+	Thu, 18 Apr 2024 15:11:29 +0000 (UTC)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 327A116C444
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754A4161935;
+	Thu, 18 Apr 2024 15:11:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713452989; cv=none; b=oJWZAWLjNm9d7P7fjftu8YuLDAUp4GPMbu3X0Ir5aeOefqOu40oruFc0qf/xv7oT3tSipoPKb43em9/0gVKJftSWCU6D+duY4QXLEjfFr3Lj2gQztT75p7Kg8iChqXsMkGh+rm5LLHkHrjPFebibVjQx52GFJOpJzTEM3TgzV6k=
+	t=1713453089; cv=none; b=LVp7OqLYUjNAfQ0qxbeIx5MPz3qNOzzERlK9dwSX7fEjWW6/BCaJAKw+AQQc+VlBni8uaBDKS7ZDymKj+Fc59MYzAFNTAqgbaziCU+GR7upRRJiXwqvRyOnyb3TBx+Rx/XRnlnjlQyjHnc2+Q2DthbIqoubhvsMOWGR8Ce1NnQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713452989; c=relaxed/simple;
-	bh=Pg4War1EBSgo4DT2T7yT4CMqRvEKyWd4B12VFZv1LMM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z4AWsSaRE1TklnREK+WkWSxYJj2Q/Yi/OrO3Lcau+QzywFlAC8VSDxwoBddbtkn24dYEKKHS64yGFzQEzxKBHZLpP32P58tD/SuoQkI0Blirg6DJyPRYgWyungV21pyB2v+rhClcKMPLjox7HRD3W8x2TY7vVSq3Xn86m8ez/vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Gcrl2TOa; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713452987;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=vwjfiFQnjjbAD99CHjoCNe/Mj9Dk40lmq8ErGQAJMSo=;
-	b=Gcrl2TOaZAI23dUqAkxi7v2aircG3m1HsD44L4w8wQUGBTznEVKX50WY+GdVeAHtBQulUY
-	9QTCYc/zRcOzbSOXe8+ZaGK+ZsQoqr+TpRvp8gUDmGPlSzPT72B7Pw73ZU6CffKr6Icwm5
-	gXnPbty86MgVGtX3s3e+M/8Baf48Hf4=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-617-aRQmpIjPPRicVXagkR_3jg-1; Thu, 18 Apr 2024 11:09:45 -0400
-X-MC-Unique: aRQmpIjPPRicVXagkR_3jg-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4165339d3a5so5488695e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:09:45 -0700 (PDT)
+	s=arc-20240116; t=1713453089; c=relaxed/simple;
+	bh=Gr7nAtEgOt+/LCEsIZFS2DhpmzzOe4xq8nfvfsQkXH0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EJwUhn/fpjYcPzKtBgx/gKh5C2jR+ftCcDKqjf38xdLMSJFDr9Uzf8mD/MlUp4fjESJoRfOen8P/1wXe/ILpvC0dVhc6yB8zB/+5rar7r8b18ryEHhXTyPgg89eno95earav0zmuDzRpx1B57iJAR7EuZ7ZAi6TX3QG2+yNE4co=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-61500da846fso7294347b3.1;
+        Thu, 18 Apr 2024 08:11:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713452984; x=1714057784;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vwjfiFQnjjbAD99CHjoCNe/Mj9Dk40lmq8ErGQAJMSo=;
-        b=ewZ7unDOngMpqhdsIryHYkm0tMUydJgtwUByWuNbAJcjQixmAy1MtMiDKkP8bgtl9x
-         8OgxciY9I72cPSRqbG8wOI1kwYX0QsEdvrvwkGFuLwj+vvOrMphIaGLIfS9LGbZjRP6F
-         mmjuj8bhHwLEGiXfXm9OjlV3OGRSpJWzKNx1OHhYBGeScn7+yKbUTvYRub1YfhWcbr7b
-         vqqxZb4zZPhbSf1Ujqq5YF/HRNy3KNWd7a6IBlTGdgp+HX6Sy9KAitpIZJ9KEtQtqcBi
-         SdlWsdNQ+igQ7NPzHGGUAuRcuBU8I3HmMxZnj5f1jJxcCfMf+zsYod+RQyTlHlDxAEke
-         HjAw==
-X-Forwarded-Encrypted: i=1; AJvYcCVtfo4/3McEM8D3rESHoCdPsi2k46svAelXHTutJTjQCbwL1nnXopsnG9Hl0C3YC40uX3d+80yGf0iiJ2++fk0wOXy15T8a5vz9gpxN
-X-Gm-Message-State: AOJu0YyWN17lIKTBcxLdRKdNMm0L85GOeabK3A9rXdFyKA8Zo10Y7XcL
-	dsyE9ka4Fd0ygMZ9DfoIcWjoTWfdGTaeEj2opwGQwZw/uROTRP2/QM21g4KrJJ22901/tr8SSNx
-	iJfC52XuxznL3wNkrhA8M4GMFAcRm3UEKEW4ItPe8XClm2Dw3EPoXLOhO6DD/xw==
-X-Received: by 2002:a05:600c:524a:b0:416:3db7:74b4 with SMTP id fc10-20020a05600c524a00b004163db774b4mr2040025wmb.24.1713452984167;
-        Thu, 18 Apr 2024 08:09:44 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFTNhHILxv2DrETC17o2+9HAaRjsk+gWsTIv9PW4hja8gy+K29xAShokS3+g00FJ+3co5c44Q==
-X-Received: by 2002:a05:600c:524a:b0:416:3db7:74b4 with SMTP id fc10-20020a05600c524a00b004163db774b4mr2040006wmb.24.1713452983695;
-        Thu, 18 Apr 2024 08:09:43 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c708:4e00:fd61:512:d944:28f6? (p200300cbc7084e00fd610512d94428f6.dip0.t-ipconnect.de. [2003:cb:c708:4e00:fd61:512:d944:28f6])
-        by smtp.gmail.com with ESMTPSA id hg12-20020a05600c538c00b00415dfa709dasm2976731wmb.15.2024.04.18.08.09.42
+        d=1e100.net; s=20230601; t=1713453081; x=1714057881;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PYgx8PoYC9becIlnatSH9CSdIsX+U/O8aOip/So2vJQ=;
+        b=ja/mXEJ9kbN4ejKq2iQ6RG6aBSyzz2Hoz1kZ9SPlAMIYxKlM+yXfciuIPv1H/Q3mnp
+         HC6DNPojGWmD/g+OC6B8Thq6k6dDfRNy/T+RNKN0/eHCFdg3PatVNK50JDsf7Spe7aFm
+         1EQeAWsCxkvmJTb7SVj+UY2q+wYGXj/q2OskhEq3XTg9sRiWs8tO/Jn4uS+AGTMfdCO8
+         vMeYduK0r1PCfoCWh1ePDGPiHiirE5oyANcpyAu19YgNmqYMnOjsgo+63c8iudX28+r7
+         Wk2Q7OFxYWpz1z53lhNYZOdAL6MaxrIDDvZ/JP7+JjdpIUqWtpR4Ubg7Bb3tELl/xYYZ
+         DVow==
+X-Forwarded-Encrypted: i=1; AJvYcCXFVskIfYtXYAqJlEMWu8iD0HIBIr999l16ER5JUMpe8n3YWT8tif9qDPEFdwEL+3HUcOd7g7D1X2meftbY3PBVFKiPNejwcgyIR9dJVi8POfX9RaJ1rznsPdtFlpqEbYH1uY3RfPfNeRH82MBuMEKB1gmXnalrSYJXIHJvtfJ7nH9DegKk2wnH5k7V
+X-Gm-Message-State: AOJu0Yz5kGG+F4BsS8UNVuB7Xtgp7Mo/atXF7bWT+f7mDRV7kikV8vxk
+	TE13Qd9srX6F9QnF3e0bgGsR70AptS0FMsF0/ksu0SCyiOtLsKZrGXCuxCuH
+X-Google-Smtp-Source: AGHT+IFZlQ+qX8rzKn8ElzG8yCUImquEiojp/b6X5fxhR28P/XjE2K7NqJihR3krTeFDl+XKDG0T+Q==
+X-Received: by 2002:a05:690c:c09:b0:615:2ed7:59e with SMTP id cl9-20020a05690c0c0900b006152ed7059emr3191793ywb.14.1713453081472;
+        Thu, 18 Apr 2024 08:11:21 -0700 (PDT)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id n74-20020a0dcb4d000000b0061520765e11sm361726ywd.143.2024.04.18.08.11.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 08:09:43 -0700 (PDT)
-Message-ID: <f8f30747-1313-4939-a2ad-3accd14ba01f@redhat.com>
-Date: Thu, 18 Apr 2024 17:09:41 +0200
+        Thu, 18 Apr 2024 08:11:21 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6153d85053aso8821257b3.0;
+        Thu, 18 Apr 2024 08:11:21 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUDI5io9w1YRFtqtdcKPN/bGbvIW4g69voMqD0hNwgG6wpEZaXhi/Y1jMOp3gssDRrEPhJkT+sw0VuEORoMvRo/6PH0xbq44CYanG97XXn7rmh7XXfLjtf/Y+DZjhcnd8mLwoPHoptHDkWGYcLCgOxusZZkuVd9LDeV3lHQTcCs2k0m4kOFUj1oTLUa
+X-Received: by 2002:a25:6989:0:b0:dc7:5018:4022 with SMTP id
+ e131-20020a256989000000b00dc750184022mr3364707ybc.44.1713453080848; Thu, 18
+ Apr 2024 08:11:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 04/18] mm: track mapcount of large folios in single
- value
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, cgroups@vger.kernel.org, chris@zankel.net,
- corbet@lwn.net, dalias@libc.org, fengwei.yin@intel.com,
- glaubitz@physik.fu-berlin.de, hughd@google.com, jcmvbkbc@gmail.com,
- linmiaohe@huawei.com, linux-doc@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linux-sh@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, muchun.song@linux.dev,
- naoya.horiguchi@nec.com, peterx@redhat.com, richardycc@google.com,
- ryan.roberts@arm.com, shy828301@gmail.com, willy@infradead.org,
- ysato@users.sourceforge.jp, ziy@nvidia.com
-References: <20240409192301.907377-5-david@redhat.com>
- <20240418145003.8780-1-ioworker0@gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240418145003.8780-1-ioworker0@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240403203503.634465-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240403203503.634465-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240403203503.634465-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 18 Apr 2024 17:11:09 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW7kiSYm8n8CfMs9zKaN+PhVt+=16nx=ttLk6Ur_jOa-g@mail.gmail.com>
+Message-ID: <CAMuHMdW7kiSYm8n8CfMs9zKaN+PhVt+=16nx=ttLk6Ur_jOa-g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] irqchip/renesas-rzg2l: Add support for RZ/Five SoC
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 18.04.24 16:50, Lance Yang wrote:
-> Hey David,
-> 
-> FWIW, just a nit below.
+Hi Prabhakar,
 
-Hi!
+On Wed, Apr 3, 2024 at 10:36=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
+om> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> The IX45 block has additional mask registers (NMSK/IMSK/TMSK) as compared
+> to the RZ/G2L (family) SoC.
+>
+> Introduce masking/unmasking support for IRQ and TINT interrupts in IRQC
+> controller driver. Two new registers, IMSK and TMSK, are defined to
+> handle masking on RZ/Five SoC. The implementation utilizes a new data
+> structure, `struct rzg2l_irqc_data`, to determine mask support for a
+> specific controller instance.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+> v1->v2
+> - Added IRQCHIP_MATCH() for RZ/Five
+> - Retaining a copy of OF data in priv
+> - Rebased the changes
 
-Thanks, but that was done on purpose.
+Thanks for the update!
 
-This way, we'll have a memory barrier (due to at least one 
-atomic_inc_and_test()) between incrementing the folio refcount 
-(happening before the rmap change) and incrementing the mapcount.
+> --- a/drivers/irqchip/irq-renesas-rzg2l.c
+> +++ b/drivers/irqchip/irq-renesas-rzg2l.c
+> @@ -37,6 +37,8 @@
+>  #define TSSEL_SHIFT(n)                 (8 * (n))
+>  #define TSSEL_MASK                     GENMASK(7, 0)
+>  #define IRQ_MASK                       0x3
+> +#define IMSK                           0x10010
+> +#define TMSK                           0x10020
+>
+>  #define TSSR_OFFSET(n)                 ((n) % 4)
+>  #define TSSR_INDEX(n)                  ((n) / 4)
+> @@ -66,15 +68,25 @@ struct rzg2l_irqc_reg_cache {
+>         u32     titsr[2];
+>  };
+>
+> +/**
+> + * struct rzg2l_irqc_of_data - OF data structure
+> + * @mask_supported: Indicates if mask registers are available
+> + */
+> +struct rzg2l_irqc_of_data {
+> +       bool    mask_supported;
+> +};
+> +
+>  /**
+>   * struct rzg2l_irqc_priv - IRQ controller private data structure
+>   * @base:      Controller's base address
+> + * @data:      OF data pointer
+>   * @fwspec:    IRQ firmware specific data
+>   * @lock:      Lock to serialize access to hardware registers
+>   * @cache:     Registers cache for suspend/resume
+>   */
+>  static struct rzg2l_irqc_priv {
+>         void __iomem                    *base;
+> +       const struct rzg2l_irqc_of_data *data;
 
-Is it required? Not 100% sure, refcount vs. mapcount checks are always a 
-bit racy. But doing it this way let me sleep better at night ;)
+That's not a copy, but a pointer.
 
-[with no subpage mapcounts, we'd do the atomic_inc_and_test on the large 
-mapcount and have the memory barrier there again; but that's stuff for 
-the future]
+>         struct irq_fwspec               fwspec[IRQC_NUM_IRQ];
+>         raw_spinlock_t                  lock;
+>         struct rzg2l_irqc_reg_cache     cache;
+> @@ -138,18 +150,102 @@ static void rzg2l_irqc_eoi(struct irq_data *d)
+>         irq_chip_eoi_parent(d);
+>  }
+>
+> +static void rzg2l_irqc_mask_irq_interrupt(struct rzg2l_irqc_priv *priv,
+> +                                         unsigned int hwirq)
+> +{
+> +       u32 imsk =3D readl_relaxed(priv->base + IMSK);
+> +       u32 bit =3D BIT(hwirq - IRQC_IRQ_START);
+> +
+> +       writel_relaxed(imsk | bit, priv->base + IMSK);
+> +}
+> +
+> +static void rzg2l_irqc_unmask_irq_interrupt(struct rzg2l_irqc_priv *priv=
+,
+> +                                           unsigned int hwirq)
+> +{
+> +       u32 imsk =3D readl_relaxed(priv->base + IMSK);
+> +       u32 bit =3D BIT(hwirq - IRQC_IRQ_START);
+> +
+> +       writel_relaxed(imsk & ~bit, priv->base + IMSK);
+> +}
+> +
+> +static void rzg2l_irqc_mask_tint_interrupt(struct rzg2l_irqc_priv *priv,
+> +                                          unsigned int hwirq)
+> +{
+> +       u32 tmsk =3D readl_relaxed(priv->base + TMSK);
+> +       u32 bit =3D BIT(hwirq - IRQC_TINT_START);
+> +
+> +       writel_relaxed(tmsk | bit, priv->base + TMSK);
+> +}
+> +
+> +static void rzg2l_irqc_unmask_tint_interrupt(struct rzg2l_irqc_priv *pri=
+v,
+> +                                            unsigned int hwirq)
+> +{
+> +       u32 tmsk =3D readl_relaxed(priv->base + TMSK);
+> +       u32 bit =3D BIT(hwirq - IRQC_TINT_START);
+> +
+> +       writel_relaxed(tmsk & ~bit, priv->base + TMSK);
+> +}
+> +
+> +/* Must be called while priv->lock is held */
+> +static void rzg2l_irqc_mask_once(struct rzg2l_irqc_priv *priv, unsigned =
+int hwirq)
+> +{
+> +       if (!priv->data->mask_supported)
+> +               return;
+> +
+> +       if (hwirq >=3D IRQC_IRQ_START && hwirq <=3D IRQC_IRQ_COUNT)
+> +               rzg2l_irqc_mask_irq_interrupt(priv, hwirq);
+> +       else if (hwirq >=3D IRQC_TINT_START && hwirq < IRQC_NUM_IRQ)
+> +               rzg2l_irqc_mask_tint_interrupt(priv, hwirq);
+> +}
+> +
+> +static void rzg2l_irqc_mask(struct irq_data *d)
+> +{
+> +       struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
+> +
+> +       raw_spin_lock(&priv->lock);
+> +       rzg2l_irqc_mask_once(priv, irqd_to_hwirq(d));
+> +       raw_spin_unlock(&priv->lock);
+> +       irq_chip_mask_parent(d);
+> +}
+> +
+> +/* Must be called while priv->lock is held */
+> +static void rzg2l_irqc_unmask_once(struct rzg2l_irqc_priv *priv, unsigne=
+d int hwirq)
+> +{
+> +       if (!priv->data->mask_supported)
+> +               return;
+> +
+> +       if (hwirq >=3D IRQC_IRQ_START && hwirq <=3D IRQC_IRQ_COUNT)
+> +               rzg2l_irqc_unmask_irq_interrupt(priv, hwirq);
+> +       else if (hwirq >=3D IRQC_TINT_START && hwirq < IRQC_NUM_IRQ)
+> +               rzg2l_irqc_unmask_tint_interrupt(priv, hwirq);
+> +}
+> +
+> +static void rzg2l_irqc_unmask(struct irq_data *d)
+> +{
+> +       struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
+> +
+> +       raw_spin_lock(&priv->lock);
+> +       rzg2l_irqc_unmask_once(priv, irqd_to_hwirq(d));
+> +       raw_spin_unlock(&priv->lock);
+> +       irq_chip_unmask_parent(d);
+> +}
+> +
+>  static void rzg2l_tint_irq_endisable(struct irq_data *d, bool enable)
+>  {
+> +       struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
+>         unsigned int hw_irq =3D irqd_to_hwirq(d);
+>
+>         if (hw_irq >=3D IRQC_TINT_START && hw_irq < IRQC_NUM_IRQ) {
+> -               struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
+>                 u32 offset =3D hw_irq - IRQC_TINT_START;
+>                 u32 tssr_offset =3D TSSR_OFFSET(offset);
+>                 u8 tssr_index =3D TSSR_INDEX(offset);
+>                 u32 reg;
+>
+>                 raw_spin_lock(&priv->lock);
+> +               if (enable)
+> +                       rzg2l_irqc_unmask_once(priv, hw_irq);
+> +               else
+> +                       rzg2l_irqc_mask_once(priv, hw_irq);
 
-Thanks!
+You already know this is a TINT interrupt, so you could call
+rzg2l_irqc_(un)mask_irq_interrupt() directly.
 
-> 
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 2608c40dffad..08bb6834cf72 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1143,7 +1143,6 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
->   		int *nr_pmdmapped)
->   {
->   	atomic_t *mapped = &folio->_nr_pages_mapped;
-> -	const int orig_nr_pages = nr_pages;
->   	int first, nr = 0;
->   
->   	__folio_rmap_sanity_checks(folio, page, nr_pages, level);
-> @@ -1155,6 +1154,7 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
->   			break;
->   		}
->   
-> +		atomic_add(nr_pages, &folio->_large_mapcount);
->   		do {
->   			first = atomic_inc_and_test(&page->_mapcount);
->   			if (first) {
-> @@ -1163,7 +1163,6 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
->   					nr++;
->   			}
->   		} while (page++, --nr_pages > 0);
-> -		atomic_add(orig_nr_pages, &folio->_large_mapcount);
->   		break;
->   	case RMAP_LEVEL_PMD:
->   		first = atomic_inc_and_test(&folio->_entire_mapcount);
-> 
-> Thanks,
-> Lance
-> 
+>                 reg =3D readl_relaxed(priv->base + TSSR(tssr_index));
+>                 if (enable)
+>                         reg |=3D TIEN << TSSEL_SHIFT(tssr_offset);
+> @@ -157,6 +253,13 @@ static void rzg2l_tint_irq_endisable(struct irq_data=
+ *d, bool enable)
+>                         reg &=3D ~(TIEN << TSSEL_SHIFT(tssr_offset));
+>                 writel_relaxed(reg, priv->base + TSSR(tssr_index));
+>                 raw_spin_unlock(&priv->lock);
+> +       } else {
+> +               raw_spin_lock(&priv->lock);
+> +               if (enable)
+> +                       rzg2l_irqc_unmask_once(priv, hw_irq);
+> +               else
+> +                       rzg2l_irqc_mask_once(priv, hw_irq);
 
--- 
-Cheers,
+Likewise.
 
-David / dhildenb
+> +               raw_spin_unlock(&priv->lock);
+>         }
+>  }
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
