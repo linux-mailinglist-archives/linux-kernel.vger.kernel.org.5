@@ -1,135 +1,231 @@
-Return-Path: <linux-kernel+bounces-149432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17FB78A9117
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:14:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 654B78A9119
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:16:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 497701C2102F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:14:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA4051F22467
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620454DA11;
-	Thu, 18 Apr 2024 02:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95DB5481D3;
+	Thu, 18 Apr 2024 02:16:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Xf6JRe/b"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="rTh0DBgu"
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 275203BBD8
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 02:14:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 574DA53AC
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 02:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713406459; cv=none; b=UGOnKZlr4S/v2WDb8ojLQmvoeixxPRUleW0LJQOnVKfYxDdsuYOUQs6k9uflzgkCErrKoFsaxqj4IZQQ7OutdClt8J9W5zKz6wr03IUMKr+JMrHjXJ6V4QMQCSQq17rHESMJMvRL5U6XB9Km7vK50bwGb15m5nL8y+gP39Wn+MM=
+	t=1713406587; cv=none; b=X+dYzjVfI2LvvIOhQPqRNDRjoaH4oCnb7uJb97VJncy5Gn1gm35eq83EwW+gSfiJGW/VJE/nODSyIHv/YUMeJ2dSYsU9mYxmGtVL+x2Q5jUsYQwnYqlW6fDHbzfYno4eLo493KZy61xxrXbsnyMSMQpC8gYkFgqz6US2ldO3Ru8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713406459; c=relaxed/simple;
-	bh=xy2v9XI+hu3E9BlWSVNBUmL0WFz0IgfDKWRA7V5lq14=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jfYI0QLHx7TZdqj2QdWNzJywNgTMcBQI100hGZWU/AHiw+O3c1GG0g0S+hS/EL+sGr63SnWN82DqsyEzzhjWYhQzgLYdbSOQsid5EXmUQbB0b21/4rc+ZADZD3P1vNtW+9UPtpajUdFfpl2CVtYHO7mA1GeOV4dS+fAXtCq93lU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Xf6JRe/b; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a526d0b2349so27459366b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 19:14:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713406456; x=1714011256; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7EWy3InHHcdr6Et3oKPqHiA/efKMXLdl9NWj5a3LIKA=;
-        b=Xf6JRe/baC1edVV8aM4en7Mzm8ydcn0MB7AwP3LQU6oy8jgPmzDamgns4SNzEhLtYL
-         wObW74eejHnRfU0kjoI7K4+HOo77nYZFDfVNQapiD/kMvskbuiGtTWFd8Irk1iRNtWy+
-         0AzQ/3klXzvrnr+h26siGOQmNKVTQ0sHasRzCcgMzvVPd+wM749uwPQbDwToXZgrZ3Ve
-         N3HHqGg2755agdAn/OU6iWkwxy5Wvh8j+OQkiSjiuuEWc49ZJrld7OfhCc9wNRZj5lB1
-         Tb3M0PSReI9r9vHMOajseP7+E7PhEj+ecj5Ojz1EEjLBqyqvNVgmhZ4Nti+LNuENnJYM
-         zyqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713406456; x=1714011256;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7EWy3InHHcdr6Et3oKPqHiA/efKMXLdl9NWj5a3LIKA=;
-        b=V9K3Dx1Hg7FpnuWiwprSRhW2eyDPRkVy1QZepcZjyA+bRF9w7HpHdD0SSYChf4mY4Y
-         6YZ4rUSRn1O8E5m/GfhMwyGwvhDP+uqdnqYKx4raPjdeAdEIlqGPfgi44AbyGuZOYO2k
-         1H1k68mByViAUxwQ0xuoNb1omzGMz56IAhH8z/hdraYINYAZAh9QqoBE1kjtwfzmtnSm
-         pshLRNHwuB+M1/UaNgoH9+lkps4bO7eNtKk04A5yK3NUFcSFFBvNLm9GKXNH2CvMjTuL
-         WddUrpNEklmTeQJLxjFAYmpk1UWQyUO53wJrxnlEZtfIBonzTr6HTZ8pQiZbU0+1bxt5
-         BuBg==
-X-Forwarded-Encrypted: i=1; AJvYcCUshJHOT1HfFu3Jvo+fSOrZHr/BYX2PTXspeKm6wKOrolSA2LK82y4QCgjJEZt3k/IdPyRvWK2JbGbyc1MhfIO8h/EoL8/6uXGatuGJ
-X-Gm-Message-State: AOJu0Yw8+aC5t9wrqxIAIwk/m+9rG40VP505WN/glxoUpLBOJkQYjyMX
-	ZX7/uneVPolpGLaAhBZSn7jz5mPQXK+53mCST560muU7h/5A5VdiP/dhg9iFoOADnzHeFCFD6N4
-	kSd+kkhlraPqbJdxCDOXJDvznIhiimry4Z5i+
-X-Google-Smtp-Source: AGHT+IE/Nf4C5eaH5s4T2RRQ0jDt7/fjhylkOElaSpZipRuSnyI2rIKGrPh8cigEE9JO5l6XGaOIHOMiew3CNftZbYw=
-X-Received: by 2002:a17:907:6d07:b0:a55:6f39:3364 with SMTP id
- sa7-20020a1709076d0700b00a556f393364mr296261ejc.15.1713406456189; Wed, 17 Apr
- 2024 19:14:16 -0700 (PDT)
+	s=arc-20240116; t=1713406587; c=relaxed/simple;
+	bh=om5S56drMap1VIxWGUiL99nWRa3VfL3sZ1hI3fORSts=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sWNvQ6zRl8mkJxeL9h6mHnQhYO1uollpqG6TN5pUp/GbZXChXKmwWG5aKX6rpL41p8VU5bMiGrZuG+Gq1uF4LqBadRGQH2G11KX/I7iLUF4xF5nVV+pBbP5zhpH6GCm33jpvHYFWl8QT/CLw5F7uzrxv7neL49rRUJPq+wtSXwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=rTh0DBgu; arc=none smtp.client-ip=115.124.30.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713406581; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=TM7yh3Pc+NlyrCnP/xTpDY59CYpvgC4vK6lCHL3DuuQ=;
+	b=rTh0DBguVLd8j+ibpuK9B1l8/MqCHrh58g9GVNgsuHmAo41LpwnlUFedXZMyOGWctjYBqws1RaEJDzwDMDae2Mg0Z1xW7LkFGDoZxRpeMfnstufAWdUge4xs6YTuOv4NSbxGVaeU7GgswyyEiNMb8heyC+yd4YPFo9OoEvJGIAs=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0W4mrYNk_1713406579;
+Received: from 30.221.145.60(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W4mrYNk_1713406579)
+          by smtp.aliyun-inc.com;
+          Thu, 18 Apr 2024 10:16:21 +0800
+Message-ID: <71e66b02-9c2b-4981-83e1-8af72d6c0975@linux.alibaba.com>
+Date: Thu, 18 Apr 2024 10:16:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <171328983017.3930751.9484082608778623495.stgit@firesoul> <Zh7vuBRbA9rT5OCO@slm.duckdns.org>
-In-Reply-To: <Zh7vuBRbA9rT5OCO@slm.duckdns.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 17 Apr 2024 19:13:40 -0700
-Message-ID: <CAJD7tkZhjYZQqsnTvUnv9EB1KUNyKijxLbYLOMsEcsRcZw=j3Q@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] cgroup/rstat: global cgroup_rstat_lock changes
-To: Tejun Heo <tj@kernel.org>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, hannes@cmpxchg.org, lizefan.x@bytedance.com, 
-	cgroups@vger.kernel.org, longman@redhat.com, netdev@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, shakeel.butt@linux.dev, 
-	kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org, Wei Xu <weixugc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] erofs: reliably distinguish block based and fscache
+ mode
+To: Baokun Li <libaokun1@huawei.com>, linux-erofs@lists.ozlabs.org
+Cc: xiang@kernel.org, chao@kernel.org, huyue2@coolpad.com,
+ viro@zeniv.linux.org.uk, brauner@kernel.org, linux-kernel@vger.kernel.org,
+ yangerkun@huawei.com, houtao1@huawei.com
+References: <20240417065513.3409744-1-libaokun1@huawei.com>
+Content-Language: en-US
+From: Jingbo Xu <jefflexu@linux.alibaba.com>
+In-Reply-To: <20240417065513.3409744-1-libaokun1@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 16, 2024 at 2:38=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> On Tue, Apr 16, 2024 at 07:51:19PM +0200, Jesper Dangaard Brouer wrote:
-> > This patchset is focused on the global cgroup_rstat_lock.
-> >
-> >  Patch-1: Adds tracepoints to improve measuring lock behavior.
-> >  Patch-2: Converts the global lock into a mutex.
-> >  Patch-3: Limits userspace triggered pressure on the lock.
->
-> Imma wait for people's inputs on patch 2 and 3. ISTR switching the lock t=
-o
-> mutex made some tail latencies really bad for some workloads at google?
-> Yosry, was that you?
+Hi Baokun,
 
-I spent some time going through the history of my previous patchsets
-to find context.
+Thanks for catching this and move forward fixing this!
 
-There were two separate instances where concerns were raised about
-using a mutex.
 
-(a) Converting the global rstat spinlock to a mutex:
+On 4/17/24 2:55 PM, Baokun Li wrote:
+> When erofs_kill_sb() is called in block dev based mode, s_bdev may not have
+> been initialised yet, and if CONFIG_EROFS_FS_ONDEMAND is enabled, it will
+> be mistaken for fscache mode, and then attempt to free an anon_dev that has
+> never been allocated, triggering the following warning:
+> 
+> ============================================
+> ida_free called for id=0 which is not allocated.
+> WARNING: CPU: 14 PID: 926 at lib/idr.c:525 ida_free+0x134/0x140
+> Modules linked in:
+> CPU: 14 PID: 926 Comm: mount Not tainted 6.9.0-rc3-dirty #630
+> RIP: 0010:ida_free+0x134/0x140
+> Call Trace:
+>  <TASK>
+>  erofs_kill_sb+0x81/0x90
+>  deactivate_locked_super+0x35/0x80
+>  get_tree_bdev+0x136/0x1e0
+>  vfs_get_tree+0x2c/0xf0
+>  do_new_mount+0x190/0x2f0
+>  [...]
+> ============================================
+> 
+> Instead of allocating the erofs_sb_info in fill_super() allocate it
+> during erofs_get_tree() and ensure that erofs can always have the info
+> available during erofs_kill_sb().
 
-Shakeel had concerns about priority inversion with a global sleepable
-lock. So I never actually tested replacing the spinlock with a mutex
-based on Shakeel's concerns as priority inversions would be difficult
-to reproduce with synthetic tests.
 
-Generally speaking, other than priority inversions, I was depending on
-Wei's synthetic test to measure performance for userspace reads, and a
-script I wrote with parallel reclaimers to measure performance for
-in-kernel flushers.
+I'm not sure if allocating erofs_sb_info in erofs_init_fs_context() will
+be better, as I see some filesystems (e.g. autofs) do this way.  Maybe
+another potential advantage of doing this way is that erofs_fs_context
+is not needed anymore and we can use sbi directly.
 
-(b) Adding a mutex on top of the global rstat spinlock for userspace
-reads (to limit contention from userspace on the in-kernel lock):
 
-Wei reported that this significantly affects userspace read latency
-[2]. I then proceeded to add per-memcg thresholds for flushing, which
-resulted in the regressions from that mutex going away. However, at
-that point the mutex didn't really provide much value, so I removed it
-[3].
+> 
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+> Changes since v1:
+>   Allocate and initialise fc->s_fs_info in erofs_fc_get_tree() instead of
+>   modifying fc->sb_flags.
+> 
+> V1: https://lore.kernel.org/r/20240415121746.1207242-1-libaokun1@huawei.com/
+> 
+>  fs/erofs/super.c | 51 ++++++++++++++++++++++++++----------------------
+>  1 file changed, 28 insertions(+), 23 deletions(-)
+> 
+> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+> index b21bd8f78dc1..4104280be2ea 100644
+> --- a/fs/erofs/super.c
+> +++ b/fs/erofs/super.c
+> @@ -581,8 +581,7 @@ static const struct export_operations erofs_export_ops = {
+>  static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
+>  {
+>  	struct inode *inode;
+> -	struct erofs_sb_info *sbi;
+> -	struct erofs_fs_context *ctx = fc->fs_private;
+> +	struct erofs_sb_info *sbi = EROFS_SB(sb);
+>  	int err;
+>  
+>  	sb->s_magic = EROFS_SUPER_MAGIC;
+> @@ -590,19 +589,6 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
+>  	sb->s_maxbytes = MAX_LFS_FILESIZE;
+>  	sb->s_op = &erofs_sops;
+>  
+> -	sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
+> -	if (!sbi)
+> -		return -ENOMEM;
+> -
+> -	sb->s_fs_info = sbi;
+> -	sbi->opt = ctx->opt;
+> -	sbi->devs = ctx->devs;
+> -	ctx->devs = NULL;
+> -	sbi->fsid = ctx->fsid;
+> -	ctx->fsid = NULL;
+> -	sbi->domain_id = ctx->domain_id;
+> -	ctx->domain_id = NULL;
+> -
+>  	sbi->blkszbits = PAGE_SHIFT;
+>  	if (erofs_is_fscache_mode(sb)) {
+>  		sb->s_blocksize = PAGE_SIZE;
+> @@ -704,11 +690,32 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
+>  	return 0;
+>  }
+>  
+> -static int erofs_fc_get_tree(struct fs_context *fc)
+> +static void erofs_ctx_to_info(struct fs_context *fc)
+>  {
+>  	struct erofs_fs_context *ctx = fc->fs_private;
+> +	struct erofs_sb_info *sbi = fc->s_fs_info;
+> +
+> +	sbi->opt = ctx->opt;
+> +	sbi->devs = ctx->devs;
+> +	ctx->devs = NULL;
+> +	sbi->fsid = ctx->fsid;
+> +	ctx->fsid = NULL;
+> +	sbi->domain_id = ctx->domain_id;
+> +	ctx->domain_id = NULL;
+> +}
 
-[1]https://lore.kernel.org/lkml/CALvZod441xBoXzhqLWTZ+xnqDOFkHmvrzspr9NAr+n=
-ybqXgS-A@mail.gmail.com/
-[2]https://lore.kernel.org/lkml/CAAPL-u9D2b=3DiF5Lf_cRnKxUfkiEe0AMDTu6yhrUA=
-zX0b6a6rDg@mail.gmail.com/
-[3]https://lore.kernel.org/lkml/CAJD7tkZgP3m-VVPn+fF_YuvXeQYK=3DtZZjJHj=3Dd=
-zD=3DCcSSpp2qg@mail.gmail.com/
+I'm not sure if abstracting this logic into a seperate helper really
+helps understanding the code as the logic itself is quite simple and
+easy to be understood. Usually it's a hint of over-abstraction when a
+simple helper has only one caller.
+
+
+>  
+> -	if (IS_ENABLED(CONFIG_EROFS_FS_ONDEMAND) && ctx->fsid)
+> +static int erofs_fc_get_tree(struct fs_context *fc)
+> +{
+> +	struct erofs_sb_info *sbi;
+> +
+> +	sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
+> +	if (!sbi)
+> +		return -ENOMEM;
+> +
+> +	fc->s_fs_info = sbi;
+> +	erofs_ctx_to_info(fc);
+> +
+> +	if (IS_ENABLED(CONFIG_EROFS_FS_ONDEMAND) && sbi->fsid)
+>  		return get_tree_nodev(fc, erofs_fc_fill_super);
+>  
+>  	return get_tree_bdev(fc, erofs_fc_fill_super);
+> @@ -767,6 +774,7 @@ static void erofs_fc_free(struct fs_context *fc)
+>  	kfree(ctx->fsid);
+>  	kfree(ctx->domain_id);
+>  	kfree(ctx);
+> +	kfree(fc->s_fs_info);
+>  }
+>  
+>  static const struct fs_context_operations erofs_context_ops = {
+> @@ -783,6 +791,7 @@ static int erofs_init_fs_context(struct fs_context *fc)
+>  	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+>  	if (!ctx)
+>  		return -ENOMEM;
+> +
+>  	ctx->devs = kzalloc(sizeof(struct erofs_dev_context), GFP_KERNEL);
+>  	if (!ctx->devs) {
+>  		kfree(ctx);
+> @@ -799,17 +808,13 @@ static int erofs_init_fs_context(struct fs_context *fc)
+>  
+>  static void erofs_kill_sb(struct super_block *sb)
+>  {
+> -	struct erofs_sb_info *sbi;
+> +	struct erofs_sb_info *sbi = EROFS_SB(sb);
+>  
+> -	if (erofs_is_fscache_mode(sb))
+> +	if (IS_ENABLED(CONFIG_EROFS_FS_ONDEMAND) && sbi->fsid)
+>  		kill_anon_super(sb);
+>  	else
+>  		kill_block_super(sb);
+>  
+> -	sbi = EROFS_SB(sb);
+> -	if (!sbi)
+> -		return;
+> -
+>  	erofs_free_dev_context(sbi->devs);
+>  	fs_put_dax(sbi->dax_dev, NULL);
+>  	erofs_fscache_unregister_fs(sb);
+
+-- 
+Thanks,
+Jingbo
 
