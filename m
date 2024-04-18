@@ -1,152 +1,215 @@
-Return-Path: <linux-kernel+bounces-150845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5A0A8AA58F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:55:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB5188AA590
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:56:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74CFE283749
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:55:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69EC81F215D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:56:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5B8C4E1BE;
-	Thu, 18 Apr 2024 22:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4024B4DA03;
+	Thu, 18 Apr 2024 22:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="i+a+MSxx"
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W3uofsCc"
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE9674A20
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 22:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F21286AF;
+	Thu, 18 Apr 2024 22:56:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713480950; cv=none; b=i3+eEp9xBIKqm+eGzZtrZbS2RoERqQx1Zose6g4GtW04wnhbWQoXUtoFn3tN+EcLBjUDSNAvAt5gxMBT6u2oZk5zRBoSbE4hZkVQRr5GC//lIHzdABasmlXgrrLYvDwjOfxQoi7zg+/vXMjrCpFObqy0RUZQSmTEusCnF+n7Hws=
+	t=1713481001; cv=none; b=Jmlv06fULTJAP5CutneboWWlmTjZnUcroS/vqp2paZB5A3J6FvczYxhWDbbdzDMm12kRZP307Qc/btsuZ1Gib574nnkFVglOfFiqGZwU3GD92o3Sy5MyeX2aohZYW1vNx7h9UACPGbG2oNHZCwEdRpR0ThjlHWXAXsvFe+U7zTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713480950; c=relaxed/simple;
-	bh=cPe9F+1uPtYL1EyBRc5Pqrbp18H/tVCOotQUZelZlhk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=slGhfj8ym+HzwcwgjqtlxG/ktOCjsTw1tXXdsIFSdn2WiKzjO0kVcToubBf58HZWr85dkd4x5Z4IlWO2ahlQ2q1OGzDCzRIPIu3wkDJ44lBGTtfzqF/9UFXxm10bSCFImm8G9WRx5d7VKn0EZKtXF66bVRgsfBxnWNOTHCPsNrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=i+a+MSxx; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2a78c2e253aso1218683a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:55:48 -0700 (PDT)
+	s=arc-20240116; t=1713481001; c=relaxed/simple;
+	bh=bHJCGzkyI/xV99l7MF5GV4Nn6oNmJKgGAoB0mOAvELk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tJAW3Qhg13GHUpq2RhQWsfkborWLXDQDnL7Wia+WQtGKuk96oyLDv2FclIKMsPRRR1j7nLnQj1wD9ODns99G0RDI6aRYDjdUMqAqiLbJq/ToZUSGkjAHVRMS7Zt8QxoBEyGAW/R2cs7LGLgkrq5G0pfmUfEEeegKIW2ciXTjP+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W3uofsCc; arc=none smtp.client-ip=209.85.219.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-69b59c10720so8241256d6.3;
+        Thu, 18 Apr 2024 15:56:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713480948; x=1714085748; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=j/AgmAZ6+RAasgCGPbj9vxrfH+4BA1gKwCa1XaUTckY=;
-        b=i+a+MSxxvwxSYq9qHjSPB+n8QAhiKAi3uV/p1Pxuy+eQCHm8JHWsDpQZs+Wsql5z/l
-         nR9W2Ara0BxLO0Zyw3pUe2y0zEgggameOSxCGPrEMoWAx2Smapx7J3d0YX8xQpxqJNJR
-         tCSNCU2XYiX9RRPULY/8VnV0AxmgWVqd9s8w25dcjMCU4wrAdOn+CRsAMCjUGSdldFRr
-         iShvN7Zzz0+0byUzRx8z2HibzV8kXs2FMH7D5FwAo4YqjZCZvPIiFfl1dqgtaXJjEulA
-         g9Aow24Ca/TU4rF6pKoO8PI6ZFChx1kuIJow14pzwwLeR4WP4FkG+CkgBHs8AGd3S1qY
-         S59g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713480948; x=1714085748;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1713480999; x=1714085799; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=j/AgmAZ6+RAasgCGPbj9vxrfH+4BA1gKwCa1XaUTckY=;
-        b=Dg+cfByQhhWBBabkoU2ZHvF7hn9T87RzsmSBpQhBxXhpK/aYAyLrZXx/dOCPNp99z6
-         gEFZ81ZG5bj5ErjEDumHC53/CwR9lTAiKarK7n4RizICPznyC8bRVLBwuLfZww6SAUJT
-         xyy+6OUDClZ2VeH2r50NpCsA7BqboW+ajzXaeGoUYtMRArKtewwTwzlK2toufMA5bs6H
-         WEqRvFMb8jLWqzgSgX9gh2GCnAQczxlFQCz+u15MzLi/+JGSpXHEPdJi0uA8mEjQ8fp5
-         BNuQsajo3WrUlszZGMmuJp4nnQVAg3gVhvJ4NCDnYufzngdM0GEZ8CPdhX9XV7rMv4eX
-         syXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVFFikI8JvcnCj8HTPU10P0Ejgz/dVxzgd/PRGiqx6EH2yDzNs+RtdPa2HQKyCC/FlngO3FYGGIucGcCMWAYQz4Y5mbEcj+DEuBWH+c
-X-Gm-Message-State: AOJu0YzI7luV3SRCTBZjRWj+N1py8Fkk+JNYt1ppZ6q+kW2/5Fw4lD+z
-	p2HnfuiTDdxbOyCP+ZR59kMQMMZviStqRRYOzOe/l9PcVNHAb+syYTM3tSBJJ3I=
-X-Google-Smtp-Source: AGHT+IFS6dDxC2D+6Tvg/9J9cHYpZDpn5UX5r6bXsft6wNHl1PtvfxAL+kEVmFKphnwqwSrUUkUbJw==
-X-Received: by 2002:a17:90a:bb81:b0:2ac:9ee:5250 with SMTP id v1-20020a17090abb8100b002ac09ee5250mr606727pjr.35.1713480948032;
-        Thu, 18 Apr 2024 15:55:48 -0700 (PDT)
-Received: from [10.36.51.174] ([24.75.208.147])
-        by smtp.gmail.com with ESMTPSA id gk1-20020a17090b118100b002a5290ad3d4sm1994328pjb.3.2024.04.18.15.55.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 15:55:47 -0700 (PDT)
-Message-ID: <086f2bb6-c8d7-477b-9048-bce12961d20e@linaro.org>
-Date: Fri, 19 Apr 2024 00:55:37 +0200
+        bh=a1ppV7Fh/1Iy/7RRfewnFGGAltFLGrqr5zJ2zdSeDXI=;
+        b=W3uofsCcgjq+jufEPDD8MSq/Nf0++MUBopztwTL6x0OLzInrVa8EbwaS989DO2RkL1
+         2i73b01Kcy1He3nPAVtR5eufmG9/NJx4kNFbLq8Ih7vGbdK4f+bec163NHy16FzNG8gl
+         Dj+kgz2TtTAxgIwzyZHANzRoZRF5EvrdQE35kV4yaP1R+Yl1YkL5isnjicVumZl2izNN
+         1BGk0S+kDG0HSa21kRKdBfpk1MUss4cgwk5n14lmQGKlme0SxAG8cLOKD9UEuaOGu5mk
+         tns9WxIQf9eiKtn1InLIneWIhHNfwHqhtnUsVQmubb7wEVwZmbIWnPTctqLvHusInM8a
+         xBHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713480999; x=1714085799;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a1ppV7Fh/1Iy/7RRfewnFGGAltFLGrqr5zJ2zdSeDXI=;
+        b=Dc+Ohjr5S3CSpNDIkcyGic4IVdhS+asLGiKTagG6ORLjD0Kmd3keqIWgEM7jTpDav3
+         bcMOvOeyZf7tUVzwrpenetdD8llZAFlA3Z2NFqshAXJkG/mCyKI0u4RW6GNBVNP14Whu
+         t4+ppL6zIcVTrRir3Jd9S5g88jn9+B7zUK0MQqIuToIokAIV7ifGP4eecC1xpoDuoNgl
+         qyCm/unurn0Dp8lhc/JKMjNM0FbL93eHjbMGWd5pbmwTDDti6Q6nnZJQyTdDgoHNtf3R
+         zR/oul5fRpjZiMr4HhDLTuyrVqhAbq/cLRZAK9Fvg2jq6l8l4+gCuRrEXnx/6uza43LD
+         UJoA==
+X-Forwarded-Encrypted: i=1; AJvYcCWOb8vaWEBQGbMaS4wM1kAiLOZlHRkIEFPJz2vbQIj004zfu1UdrW1yse3lOCygAF21xl6P9Au1Psv55AyKbbMAvev5oVWeYEOTTZFozVemF+hBp1aOHEGaDe/Mvw583FpLBtBW9tF5/KxcG/E=
+X-Gm-Message-State: AOJu0Yx578sQETIp1ZHcJ/vcIbOQGt8k+hx2hHCi72ChZ4efW4JJNztO
+	UUjK4+J6yATTT9AzaVptbs8oJJGtfkMeNZBiARgVfid7gMr5+5vn
+X-Google-Smtp-Source: AGHT+IHJM9HcyMUvnziIjo9BnAimxWSPyNQZw63kKsHcZeY+F0D8c+NSU9CBu/ztB4ikC/Hh0gEFkA==
+X-Received: by 2002:a05:6214:a52:b0:699:1f58:398c with SMTP id ee18-20020a0562140a5200b006991f58398cmr447097qvb.5.1713480998697;
+        Thu, 18 Apr 2024 15:56:38 -0700 (PDT)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id a13-20020a0ce38d000000b0069b23dd33besm1042193qvl.126.2024.04.18.15.56.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 15:56:38 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 2BC041200032;
+	Thu, 18 Apr 2024 18:56:37 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 18 Apr 2024 18:56:37 -0400
+X-ME-Sender: <xms:JKUhZuGHX4MjYtDMwuL6XKCQaZEtK45sSciI8KLmBwpGlPdZwwULjQ>
+    <xme:JKUhZvUcI23fxtqYlzD6yOr1goDzVkzeNYjBzltsMh0ul_agIdDrMbBM2bssWDSP9
+    -ATpVNaNUIbb-I32Q>
+X-ME-Received: <xmr:JKUhZoLKMyP3xSFQA5d8GfXaWC49rzQ3n9f5pTYbNfbLyzbfn6MoPZd9lEI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudekuddgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goufhprghmrfhhohhnvgdqohhuthculdehtddtmdenucfjughrpeffhffvvefukfhfgggt
+    uggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhnucfhvghnghcuoegsohhquhhnrd
+    hfvghnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvghrnhephedugfduffffteeu
+    tddvheeuveelvdfhleelieevtdeguefhgeeuveeiudffiedvnecuufhprghmrfhhohhnvg
+    epudektdegvdegvddthedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthi
+    dqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghi
+    lhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:JaUhZoFxuTWwu6t4mxEXHAbPzLuUHNGv7TMmgnKUMhoVPALm_dITSQ>
+    <xmx:JaUhZkX-HjnOIdthpG8GcJOfpEJuuAOO_OrnEYP8ShR4GHAfvdYexQ>
+    <xmx:JaUhZrPdJulVkvVsMFLruG80lwYcGa4hsRVw8___4NNFq6sqH3PYJw>
+    <xmx:JaUhZr3IXD5MPtAYgXXb3lvKARkjU6CM6UCQUCf7oXTW2VAd-gtpXA>
+    <xmx:JaUhZlUTyOZeCGxrmuXr5iPZB1KyhXarHAIjB1RSvn3SFSmme0ftUmst>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 18 Apr 2024 18:56:36 -0400 (EDT)
+Date: Thu, 18 Apr 2024 15:56:11 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <keescook@chromium.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Carlos Llamas <cmllamas@google.com>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Arnd Bergmann <arnd@arndb.de>, Trevor Gross <tmgross@umich.edu>,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	rust-for-linux@vger.kernel.org,
+	Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH v6 4/4] rust: add abstraction for `struct page`
+Message-ID: <ZiGlC5AtRRikE1AI@boqun-archlinux>
+References: <20240418-alice-mm-v6-0-cb8f3e5d688f@google.com>
+ <20240418-alice-mm-v6-4-cb8f3e5d688f@google.com>
+ <ZiFsCLb-BZWbBHsu@boqun-archlinux>
+ <87dc4cdf-ccf6-4b08-8915-313aad313f93@proton.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/2] dt-bindings: input: i2c-hid: Introduce Ilitek
- ili2900
-To: lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>,
- dmitry.torokhov@gmail.com, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, jikos@kernel.org,
- benjamin.tissoires@redhat.co, dianders@google.com, hsinyi@google.com
-Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240418124815.31897-1-lvzhaoxiong@huaqin.corp-partner.google.com>
- <20240418124815.31897-2-lvzhaoxiong@huaqin.corp-partner.google.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240418124815.31897-2-lvzhaoxiong@huaqin.corp-partner.google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87dc4cdf-ccf6-4b08-8915-313aad313f93@proton.me>
 
-On 18/04/2024 14:48, lvzhaoxiong wrote:
-> The ili2900 touch screen chip same as ilitek ili9882t controller
-> has a reset gpio.
+On Thu, Apr 18, 2024 at 10:08:40PM +0000, Benno Lossin wrote:
+> On 18.04.24 20:52, Boqun Feng wrote:
+> > On Thu, Apr 18, 2024 at 08:59:20AM +0000, Alice Ryhl wrote:
+> >> +    /// Runs a piece of code with a raw pointer to a slice of this page, with bounds checking.
+> >> +    ///
+> >> +    /// If `f` is called, then it will be called with a pointer that points at `off` bytes into the
+> >> +    /// page, and the pointer will be valid for at least `len` bytes. The pointer is only valid on
+> >> +    /// this task, as this method uses a local mapping.
+> >> +    ///
+> >> +    /// If `off` and `len` refers to a region outside of this page, then this method returns
+> >> +    /// `EINVAL` and does not call `f`.
+> >> +    ///
+> >> +    /// # Using the raw pointer
+> >> +    ///
+> >> +    /// It is up to the caller to use the provided raw pointer correctly. The pointer is valid for
+> >> +    /// `len` bytes and for the duration in which the closure is called. The pointer might only be
+> >> +    /// mapped on the current thread, and when that is the case, dereferencing it on other threads
+> >> +    /// is UB. Other than that, the usual rules for dereferencing a raw pointer apply: don't cause
+> >> +    /// data races, the memory may be uninitialized, and so on.
+> >> +    ///
+> >> +    /// If multiple threads map the same page at the same time, then they may reference with
+> >> +    /// different addresses. However, even if the addresses are different, the underlying memory is
+> >> +    /// still the same for these purposes (e.g., it's still a data race if they both write to the
+> >> +    /// same underlying byte at the same time).
+> >> +    fn with_pointer_into_page<T>(
+> >> +        &self,
+> >> +        off: usize,
+> >> +        len: usize,
+> >> +        f: impl FnOnce(*mut u8) -> Result<T>,
+> > 
+> > I wonder whether the way to go here is making this function signature:
+> > 
+> >      fn with_slice_in_page<T> (
+> >          &self,
+> > 	       off: usize,
+> > 	       len: usize,
+> > 	       f: iml FnOnce(&UnsafeCell<[u8]>) -> Result<T>
+> >      ) -> Result<T>
+> > 
+> > , because in this way, it makes a bit more clear that what memory that
+> > `f` can access, in other words, the users are less likely to use the
+> > pointer in a wrong way.
+> > 
+> > But that depends on whether `&UnsafeCell<[u8]>` is the correct
+> > abstraction and the ecosystem around it: for example, I feel like these
+> > two functions:
+> > 
+> > 	    fn len(slice: &UnsafeCell<[u8]>) -> usize
+> > 	    fn as_ptr(slice: &UnsafeCell<[u8]>) -> *mut u8
+> > 
+> > should be trivially safe, but I might be wrong. Again this is just for
+> > future discussion.
 > 
-> Signed-off-by: lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>
+> I think the "better" type would be `&[UnsafeCell<u8>]`. Since there you
+> can always access the length.
+> 
 
-Except that this was not tested, please use full name, not login, if
-possible.
+Hmm.. here is the thing, having `&UnsafeCell<[u8]>` means having a `*mut
+[u8]>`, and it should always be safe to get a "length" of `*mut [u8]`,
+right? I haven't found any method doing that, but the length should be
+just a part of fat pointer, so I think getting that is a defined
+behavior. But maybe I'm missing something.
 
+> Another question would be if page allows for uninitialized bits, in that
+> case, we would need `&[Opaque<u8>]`.
+> 
 
-Best regards,
-Krzysztof
+Yes, or `&Opaque<[u8>]`.
 
+Regards,
+Boqun
+
+> But I don't remember how to get a valid raw pointer from
+> `&[UnsafeCell<u8>]`.
+> 
+> -- 
+> Cheers,
+> Benno
+> 
 
