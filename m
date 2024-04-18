@@ -1,94 +1,110 @@
-Return-Path: <linux-kernel+bounces-150588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09FDB8AA150
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:45:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24B408AA153
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:46:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8DD2283E95
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:45:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D28F6283E95
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:46:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D722176FB3;
-	Thu, 18 Apr 2024 17:44:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17C83176FBD;
+	Thu, 18 Apr 2024 17:46:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="ZlEkK+hS"
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Fb97ymLN"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A142C174EF9
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 17:44:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D09B7175564
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 17:45:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713462293; cv=none; b=IMD0IKLl62kCwx4DqHbVL1rncIyBycqR5Nt6u/cbwqlqkoK2ddBQWWITo8frtWZLQu74Pmeklfd6Nl7rGsdJmBHPyrFmr0RkTa/yhx3UPpo5bRw9PNv2ue/wXb4hOyck+owakZ5yBHEbWtrn/+nXk65S+hAA1EyORERPICHli44=
+	t=1713462359; cv=none; b=UrD4aFsUWu+oIKX1NxMN/JweJhMEgg0UKD21w5oWYNnwl5GSmOdYLfDGNtPLtbVp1E+hFsgmynVkfgA7depb/bUheHg1FalngFme4I3D+LHqjoR5bgA3EQinYDGwZiJjJ3pwLy/4cU8mrQvxDIG9ssbyui/wDb2ZpGs3dvLzhR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713462293; c=relaxed/simple;
-	bh=EndrSlUL8lOUGOcQbCMTZWu/7CtEhpYfDQ/0p0uQKLs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=T1IAEq3GJt1U36OeaUqjsRrXI8R9cGbfphL8+6ukEjfanTLIrshIrAhj6hGC9G4EtxWZUXXpF8dBP1l7cxm2nWkPVQ3+O+IT7a5RftPbBSj1lh0mhp9rzBH7YE4VhYY7hM2hZJ60A8rLHPFN6UEtNj0ZRLZ04C/qJeNWw2LMcmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=ZlEkK+hS; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1713462283;
-	bh=EndrSlUL8lOUGOcQbCMTZWu/7CtEhpYfDQ/0p0uQKLs=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=ZlEkK+hSEytOWrYlgHowGpBxHnRBlr2XVpDMd/0GBYgOboQopAsDNuFVcOC6n2wmY
-	 7xAhePZtZJisDQjP1mRpYoWGNRbuVgOxS8d8CGyJQ2THyRm4luUOCc00MamIW7jPAm
-	 cgWQ4EdxM3Tkkt65Eqz7cHwcpt9nJzvnF/8bwbNc=
-Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id A770C1A3F62;
-	Thu, 18 Apr 2024 13:44:41 -0400 (EDT)
-Message-ID: <5e005ed913086d7e641306b89baa29b070e0359b.camel@xry111.site>
-Subject: Re: [PATCH v3 0/4] Give chance to build under !CONFIG_SMP for
- LoongArch
-From: Xi Ruoyao <xry111@xry111.site>
-To: Arnd Bergmann <arnd@arndb.de>, Huacai Chen <chenhuacai@kernel.org>, Marc
- Zyngier <maz@kernel.org>, Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Thomas Gleixner <tglx@linutronix.de>, loongarch@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
-Date: Fri, 19 Apr 2024 01:44:39 +0800
-In-Reply-To: <b752273b-0e94-4325-9cf8-6f16a204818b@app.fastmail.com>
-References: <20240411010510.22135-1-yangtiezhu@loongson.cn>
-	 <CAAhV-H6bHudfUVE4SWY88mxmLhFok9DS8UyODSZEdUJ816V8Rg@mail.gmail.com>
-	 <b752273b-0e94-4325-9cf8-6f16a204818b@app.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1713462359; c=relaxed/simple;
+	bh=cmVM7114Wg4c+eTojAQNT4khmmHaTED7X82UXWToh7c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oxdyJZHfyp9w2Hz9l6GbOrovYjpY92KORUU8yZuyReiIqWD5OQy+9sR8nOI5YG0HqNpibfLv5tcZXZhi+HqImd2DBThtdBDfCl0WJCei+OBlLXqQtHXCZkJDmzx/kUWVwEmpKWC8iezme2/CTYIL2RsayPHHYQ4UBZIT48eKXLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Fb97ymLN; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51ab4ee9df8so54277e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 10:45:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713462356; x=1714067156; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CnaZqLleXkKRQtG9lodbPU6Ant05+dj1iWTT1GEt3P0=;
+        b=Fb97ymLNSS5pF2oHoQ7M0Sm+fkc/FR3rdNIvTvsbwpSoF3WWpo33jhDtk0+hIt8w31
+         S2+F5D4wujYAy9rQW56SIs1qqd474avBrGtcXVKGJ5uePCx4RB4je04c3bYszeEt2V1O
+         Yhw4QH3Uxl8ghxBYzEqPftCWhsDctReLp1srgLyHHQl5bPANL8rWCjJLsTVh7QeIOM/g
+         9962+HvpYUzrRQLscSS/ePxU5k8Nsje6YvP1yiC1njbHcleyW9+GT97KptvBHEvRdk3R
+         Op9CRvIrvIAJ/Ke6zW42Gt0rVIqICN26O+jw6A+GGcGO4LeLKk1wZkmWAHJUWliHYpmm
+         Akwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713462356; x=1714067156;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CnaZqLleXkKRQtG9lodbPU6Ant05+dj1iWTT1GEt3P0=;
+        b=b1Mn9hZIkRgAScEEFFHXUg2XXBId48Q0gSqqJFeRKACZO72jcmP8iksc5rq0xOdssJ
+         2BJQMQkUKys7rpU2d6yz0QdBSj923axMNlVL+S8/px3BT/i/NkhpuRtRjg+7jmMz/1xI
+         B+QykE1Zb7bj5+FzYNKnufQ+iejNp92TfETGwAdFBG+DHJzxPJuqMjmRWFqmMGT7sdM0
+         WHqJVVxrP+O0Mmqd77J04FoRFBCN9ctZBh3xirkOCWd6djgoSHQ57JCdZiypKwghQebg
+         PYRwu8ybv4j+TYERkXhdRHGVs36hriiGjhUhv+b2J7Xlyxaf6WEQguCVT8xHIRMXHbZM
+         avug==
+X-Forwarded-Encrypted: i=1; AJvYcCUuTLCoFyL/6mUzhVO7QksQiTp89GGPumRV0J354PVqQ+Ii8DpwDP89ZNgqTeHfjEjg9PSSoghVmrmToKiHs9k+fKibhPdNE3CHnuDR
+X-Gm-Message-State: AOJu0Yx5NlOx6e5fBcr2ISO5LyHUdJAIyQcTfqMSIYOO3dGWBcWTDiXk
+	WC3BGJ7hCBMrUxjUIYLRmRyGpLkh/1HZvUPFPWqgKSxnCHrNlVqxfacK+NrE70o=
+X-Google-Smtp-Source: AGHT+IHyMINeDJMq/yGej8du0gbVkUuDu458MwsKllIzhnyz9PhEDktjd7blUOHB5UnvEw9HDOFp0w==
+X-Received: by 2002:a05:6512:2809:b0:518:dc5b:6f5e with SMTP id cf9-20020a056512280900b00518dc5b6f5emr3078202lfb.43.1713462355939;
+        Thu, 18 Apr 2024 10:45:55 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
+        by smtp.gmail.com with ESMTPSA id q18-20020ac25292000000b0051a20afb4d9sm171124lfm.255.2024.04.18.10.45.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 10:45:55 -0700 (PDT)
+Date: Thu, 18 Apr 2024 20:45:53 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Johan Hovold <johan+linaro@kernel.org>
+Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] usb: typec: qcom-pmic: fix use-after-free on late
+ probe errors
+Message-ID: <whokqg6gei5knc6kpmp6jidalljlfvf2kpa4xwjyh6xfsfj4ql@rjkweiqeu5fq>
+References: <20240418145730.4605-1-johan+linaro@kernel.org>
+ <20240418145730.4605-2-johan+linaro@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418145730.4605-2-johan+linaro@kernel.org>
 
-On Thu, 2024-04-11 at 08:06 +0200, Arnd Bergmann wrote:
-> On Thu, Apr 11, 2024, at 06:26, Huacai Chen wrote:
-> >=20
-> > I remember that you both suggested not introducing NOSMP support for a
-> > modern architecture which brings additional complexity. I wonder if
-> > you still have the same attitude now. I will merge this series only if
-> > you think it is worthy to introduce NOSMP now.
->=20
-> It's an interesting question, as we have recently discussed two
-> opposite ideas and may end up doing both (or possible neither)
-> in the future:
->=20
-> - On x86, there is no real reason to need non-SMP kernels as the
-> =C2=A0 memory savings are fairly small, and it tends to break because
-> =C2=A0 of lack of users testing it.
+On Thu, Apr 18, 2024 at 04:57:29PM +0200, Johan Hovold wrote:
+> Make sure to stop and deregister the port in case of late probe errors
+> to avoid use-after-free issues when the underlying memory is released by
+> devres.
+> 
+> Fixes: a4422ff22142 ("usb: typec: qcom: Add Qualcomm PMIC Type-C driver")
+> Cc: stable@vger.kernel.org	# 6.5
+> Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
+>  drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
 
-FWIW I'm still running the latest Linux kernel on a Athlon 64 3000+
-launched in 2004 with !CONFIG_SMP :).
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-No objection to this paragraph (and other paragraphs) though.
-
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+-- 
+With best wishes
+Dmitry
 
