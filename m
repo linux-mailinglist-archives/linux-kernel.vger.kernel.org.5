@@ -1,82 +1,53 @@
-Return-Path: <linux-kernel+bounces-150463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFB338A9FCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:14:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7141E8A9FCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:14:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DC711C214A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:14:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D98E283B15
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:14:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB55A16F910;
-	Thu, 18 Apr 2024 16:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6465616FF29;
+	Thu, 18 Apr 2024 16:14:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gDVYX5TI"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bj5tuHOY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C73156F54;
-	Thu, 18 Apr 2024 16:14:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A9C16F90F;
+	Thu, 18 Apr 2024 16:14:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713456873; cv=none; b=Y/Vpjy+ifdg0dze4F+88AptmgZakR4AKMKLhiKQcUzN1c17gB+8q/BpMCQrNVpAvIOsUDU9c8UAahIsC6mjm9f+64GR5YWYr2knqA3kXZ8dd9G2m6jjMdnmJ20+blxBS1isYam/YeAWfOZ8K3hlMgh027gYIKwXC12HczuA3Pug=
+	t=1713456873; cv=none; b=gimBBCIEOHHaCK1GP+Bjdp9c4UIhCqNcPML4qRQESzdRd+U9Y15RQhpGqik1iTSldVqa0gE177OCEIhIfeq1XcD8/AvIfs/JAVH9vsb7q4s+zZZ9+OqYKoylSOtoFueeXZskMP4sM+YvFsjanfiU5rGt0CQDag1wdD2ngEeNnN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713456873; c=relaxed/simple;
-	bh=9r4p8A+grzt9+R6tG2B3r+bIJI41c+ksyzkS1k6re2E=;
+	bh=+l71YujbwnGzn01gUZb635Sx3Bh6QLbxqYBJkSt6IYM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hpwsWFJWQZlF+qnl/ybwYpAFtqpVU3WMWGRs4P4k9/kJldBMn+vlpsQ4hSGzb+8TcBp7mawF5zB43ateccHY3T/Geu8fj3GRYqEFkqW4GDL9tMB+nVL5J04B4lhQYSjTCeus+x4mIOsCKqgGMx72i5u3jVKmGj/QlSrxHeTn2KQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gDVYX5TI; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e40042c13eso8650525ad.2;
-        Thu, 18 Apr 2024 09:14:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713456870; x=1714061670; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hz5AqVbMIQVzagVfr43mCYrmlccOEhqDHxOQ5R4Qr/E=;
-        b=gDVYX5TIIEl+Kx4MhzpPKClTswucuZYXmJvfeTWcT0+7p5Epf9n2Cq2dgBWcYPhL48
-         shwZE8RZO1GCRmN3awT+MPCBEu4KEc99dgubD/0GIzXIWRBdstxJI2bH2C3jg8A9pw6w
-         ogJUWw7LmUVn4rvo597SmF6bqB17gAxBVsxnjp2zaNGhEUe7Fg+fXtY8P9TVFzE1O3E5
-         3W32Q8Y9Wv02VBBkDM1Ep4Nfcya/dCm2kVcOu9fUGHongZWPyaar6prv55atK/rcNU0n
-         jq6oRyBhszwKOC+YNa/TvOxOtaNKjriehlC6zyp63c1Sd5kIFlL4pE1acRL7q4XwJFYP
-         MaAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713456870; x=1714061670;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hz5AqVbMIQVzagVfr43mCYrmlccOEhqDHxOQ5R4Qr/E=;
-        b=mfP1Xkpryo6fN5ojqGj3aqMjUMeUJhTeXX6JVKQhuSy4+Lrsqc9nJDygAtZBojOjBw
-         vUpO9oqL31exUPHmZ12ouyVclCPDVQnfokItcIjMKoEb8OxIT4riQ72OAPZc1RkIdRTO
-         Gf4RMXnpTSxvrbaGEywyeX2vtxswYHCAS39+wE2RhZRNucpwrHAK8byLxdSODRlwGxnK
-         cE7ZTwGgJKRECgm6gsOHwxL/U4V0hH7iCJu2PvrtpSRCzhKRuXvsZoY9W/ZXYvCv5WBL
-         QnufYy0jJAzs2A0zUW6ldJ9Sqw38eFh7ZqrQytR8nnHhrFEZcS5RUxixsAM56ZevsHlH
-         aRYw==
-X-Forwarded-Encrypted: i=1; AJvYcCXvMtvtEmjiMiRCvyqvWnTpRDF+wBqrzNszQMwv5yqIbM4F9ckRooARQ0og0ghjC0byAM9QMz4DIUAWaacNX7dJC7Gl9IyLX+2zXtd0lHZXyGl53r0TjlJxUiyQtP8Afm+H12Ca42WdFTyxojvcLFgtQrpU+pPsT16KhdbvaaD1XN4i
-X-Gm-Message-State: AOJu0Yz+MsxDlzyeR2Y8w9b9dRHwDQwyiEuiWGE3+VHe3X2XtPdXOJBl
-	gZ1hxBbXCW0RgDMQ9tEqZZlu6mWnccDNHnIN154fyX0y/e0wzNOx
-X-Google-Smtp-Source: AGHT+IEMg34T9/sHL1htsox4qC0LnWXh8YAzs15J15MH+wNZC7UiWdVMZSp+B14Rj9cBheMe3xORLg==
-X-Received: by 2002:a17:902:ec92:b0:1e4:9ac6:1f3f with SMTP id x18-20020a170902ec9200b001e49ac61f3fmr4223968plg.5.1713456869965;
-        Thu, 18 Apr 2024 09:14:29 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:6f51])
-        by smtp.gmail.com with ESMTPSA id s10-20020a170902a50a00b001e0da190a07sm1707307plq.167.2024.04.18.09.14.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 09:14:29 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 18 Apr 2024 06:14:28 -1000
-From: Tejun Heo <tj@kernel.org>
-To: linan666@huaweicloud.com
-Cc: josef@toxicpanda.com, axboe@kernel.dk, hch@lst.de,
-	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-	yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH] blk-iocost: do not WARNING if iocg has already offlined
-Message-ID: <ZiFG5KtGGpYdOmnY@slm.duckdns.org>
-References: <20240418072340.2090877-1-linan666@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=esHmhUMMaM3yrxg/EUVPgM6UC1qQfOBh97QuRzDBHqbxwu5CRl1BzbDui/uuQ/fWBUgX5W9vRVi31FYusIbn8QGlQHC4FDE077mq3VXLdQwCKmzsULbikgU53DqpBn0589wnhN0d6dKsku0IkGdGqi3LF9oBLXHNJNfQcgrE0V8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bj5tuHOY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E41F7C113CC;
+	Thu, 18 Apr 2024 16:14:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713456872;
+	bh=+l71YujbwnGzn01gUZb635Sx3Bh6QLbxqYBJkSt6IYM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Bj5tuHOYbzHnNkBi3b5apDmR8m+Zrd29XRqZpstixbbqhO/LQriaqLSst0JIt+N2m
+	 oXXIBYhFrGcbd3JDlBgCotfNw44b0ciHHRUSrlZ76F2lJIG7z946hfqpm4982OCm5P
+	 OQ2daCuX22Vot50jNGXFFr2u3hQCPPvgI5oXrUuWZr/KoeZe0jcJ1Ram/p564H6DU4
+	 F4bXQhuwPi6V+fhi4CM5w7gLrWeAb6IDD6d/RkANhmH7MawtaFXLfSIWv46gK/1W7L
+	 35F8yLI205vhJ/ycNw24ZYLKv9DINc7iIrd5FRv/l1D7dgd5uaEPTX5JhtGyzhabs6
+	 dYqdQSiZX5q+Q==
+Date: Thu, 18 Apr 2024 09:14:30 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Alex Elder <elder@linaro.org>
+Cc: corbet@lwn.net, gregkh@linuxfoundation.org, workflows@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: coding-style: don't encourage WARN*()
+Message-ID: <20240418161430.GB2410@sol.localdomain>
+References: <20240414170850.148122-1-elder@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,62 +56,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240418072340.2090877-1-linan666@huaweicloud.com>
+In-Reply-To: <20240414170850.148122-1-elder@linaro.org>
 
-Hello,
-
-On Thu, Apr 18, 2024 at 03:23:40PM +0800, linan666@huaweicloud.com wrote:
-> From: Li Nan <linan122@huawei.com>
-> 
-> In iocg_pay_debt(), warn is triggered if 'active_list' is empty, which
-> is intended to confirm iocg is avitve when it has debt. However, warn
-> can be triggered during removing cgroup controller, as
-
-Maybe saying "a blkcg is being removed" is clearer?
-
-> iocg_waitq_timer_fn() is awakened at that time.
-> 
->   WARNING: CPU: 0 PID: 2344971 at block/blk-iocost.c:1402 iocg_pay_debt+0x14c/0x190
->   Call trace:
->   iocg_pay_debt+0x14c/0x190
->   iocg_kick_waitq+0x438/0x4c0
->   iocg_waitq_timer_fn+0xd8/0x130
->   __run_hrtimer+0x144/0x45c
->   __hrtimer_run_queues+0x16c/0x244
->   hrtimer_interrupt+0x2cc/0x7b0
-> 
-> The warn in this situation is meaningless. Since this iocg is being
-> removed, the state of the 'active_list' is irrelevant, and 'waitq_timer'
-> is canceled after removing 'active_list' in ioc_pd_free(), which ensure
-> iocg is freed after iocg_waitq_timer_fn() returns.
-> 
-> Therefore, add the check if iocg has already offlined to avoid warn
-> when removing cgroup controller.
-> 
-> Signed-off-by: Li Nan <linan122@huawei.com>
-> ---
->  block/blk-iocost.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-> index baa20c85799d..2e109c016a39 100644
-> --- a/block/blk-iocost.c
-> +++ b/block/blk-iocost.c
-> @@ -1440,7 +1440,7 @@ static void iocg_pay_debt(struct ioc_gq *iocg, u64 abs_vpay,
->  	lockdep_assert_held(&iocg->waitq.lock);
+On Sun, Apr 14, 2024 at 12:08:50PM -0500, Alex Elder wrote:
+> diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
+> index 9c7cf73473943..bce43b01721cb 100644
+> --- a/Documentation/process/coding-style.rst
+> +++ b/Documentation/process/coding-style.rst
+> @@ -1235,17 +1235,18 @@ example. Again: WARN*() must not be used for a condition that is expected
+>  to trigger easily, for example, by user space actions. pr_warn_once() is a
+>  possible alternative, if you need to notify the user of a problem.
 >  
->  	/* make sure that nobody messed with @iocg */
-> -	WARN_ON_ONCE(list_empty(&iocg->active_list));
-> +	WARN_ON_ONCE(list_empty(&iocg->active_list) && iocg->pd.online);
+> -Do not worry about panic_on_warn users
+> -**************************************
+> +The panic_on_warn kernel option
+> +********************************
+>  
+> -A few more words about panic_on_warn: Remember that ``panic_on_warn`` is an
+> -available kernel option, and that many users set this option. This is why
+> -there is a "Do not WARN lightly" writeup, above. However, the existence of
+> -panic_on_warn users is not a valid reason to avoid the judicious use
+> -WARN*(). That is because, whoever enables panic_on_warn has explicitly
+> -asked the kernel to crash if a WARN*() fires, and such users must be
+> -prepared to deal with the consequences of a system that is somewhat more
+> -likely to crash.
+> +Note that ``panic_on_warn`` is an available kernel option. If it is enabled,
+> +a WARN*() call whose condition holds leads to a kernel panic.  Many users
+> +(including Android and many cloud providers) set this option, and this is
+> +why there is a "Do not WARN lightly" writeup, above.
+> +
+> +The existence of this option is not a valid reason to avoid the judicious
+> +use of warnings. There are other options: ``dev_warn*()`` and ``pr_warn*()``
+> +issue warnings but do **not** cause the kernel to crash. Use these if you
+> +want to prevent such panics.
+>  
 
-Can you add a comment explaining why we need the pd.online test?
+Nacked-by: Eric Biggers <ebiggers@google.com>
 
-Other than the above nits, looks great to me. Please feel free to add
+WARN*() are for recoverable assertions, i.e. situations where the condition
+being true can only happen due to a kernel bug but where they can be recovered
+from (unlike BUG*() which are for unrecoverable situations).  The people who use
+panic_on_warn *want* the kernel to crash when such a situation happens so that
+the underlying issue can be discovered and fixed.  That's the whole point.
 
-  Acked-by: Tejun Heo <tj@kernel.org>
+Also, it's not true that "Android" sets this option.  It might be the case that
+some individual Android OEMs have decided to use it for some reason (they do
+have the ability to customize their kernel command line, after all).  It's
+certainly not used by default or even recommended.
 
-Thanks.
-
--- 
-tejun
+- Eric
 
