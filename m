@@ -1,188 +1,119 @@
-Return-Path: <linux-kernel+bounces-149463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3F6B8A917B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:14:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E588A8A917C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:15:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5957E1F22911
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:14:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D1AC282F8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:15:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94F824F888;
-	Thu, 18 Apr 2024 03:14:37 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C634A4F88E;
+	Thu, 18 Apr 2024 03:15:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AoW6bWee"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CB34F1E4
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 03:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DE54F1E4
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 03:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713410077; cv=none; b=LDYuSiomWlM6QzD+VQuRAG07gKnNcbC3R7uzonydUYibBAclXw0TgEKP19L0dMnQa/r/BMkyWjVKquVsM2R6R2qmxSBfRSCE/UBPoF1NrBN2o9dsRKNVMV9lLsR8+qX8oznPm8ntinUI5LYa2a90Idim4n/JwqNV14t9ZdIUtY4=
+	t=1713410114; cv=none; b=q2ezF9pTN7axNqlQOPSfMVMsBf+pz9WInPtrlDsMT0TS5XFx5IciJm957tyGzisptNFAB/ALE9JMixunsuie/W/SRtfYW/IBYrmGJFZlsrYwQyEQFBJqaBeuu69uxjljsiM2iAq0GmGfaiwHsb1jH8lDBhmOL1OCfIe18vmd2vA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713410077; c=relaxed/simple;
-	bh=RbzcyBAI5wsMAmRgiU+sGHRdol0ANTtH8m1UhiTjdOw=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=IR/W5PvyZpg6KUkixtEw/8uI0pOM/z+jO+QfBN1udybzFrC97szKuHaaqnh7Y0sxh/UWvmrKik/MNWBv8h+fhBO0+19W9RYQk//pZMRPmI/0M3Bqt8owd0JEQMA0H8GDEZ/dEZAoaMb54Fi/VUW4whr+hmYntwOiV61tLqRLMnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VKjXZ6T5Xz1HBjL;
-	Thu, 18 Apr 2024 11:13:34 +0800 (CST)
-Received: from dggpeml100025.china.huawei.com (unknown [7.185.36.37])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5DDBB1402C7;
-	Thu, 18 Apr 2024 11:14:29 +0800 (CST)
-Received: from dggpeml500025.china.huawei.com (7.185.36.35) by
- dggpeml100025.china.huawei.com (7.185.36.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 18 Apr 2024 11:14:29 +0800
-Received: from dggpeml500025.china.huawei.com ([7.185.36.35]) by
- dggpeml500025.china.huawei.com ([7.185.36.35]) with mapi id 15.01.2507.035;
- Thu, 18 Apr 2024 11:14:29 +0800
-From: wangzhu <wangzhu9@huawei.com>
-To: Alex Deucher <alexdeucher@gmail.com>
-CC: Greg KH <gregkh@linuxfoundation.org>, "harry.wentland@amd.com"
-	<harry.wentland@amd.com>, "sunpeng.li@amd.com" <sunpeng.li@amd.com>,
-	"Rodrigo.Siqueira@amd.com" <Rodrigo.Siqueira@amd.com>,
-	"alexander.deucher@amd.com" <alexander.deucher@amd.com>,
-	"christian.koenig@amd.com" <christian.koenig@amd.com>, "airlied@linux.ie"
-	<airlied@linux.ie>, "daniel@ffwll.ch" <daniel@ffwll.ch>,
-	"qingqing.zhuo@amd.com" <qingqing.zhuo@amd.com>, "stylon.wang@amd.com"
-	<stylon.wang@amd.com>, "Josip.Pavic@amd.com" <Josip.Pavic@amd.com>,
-	"trix@redhat.com" <trix@redhat.com>, "cruise.hung@amd.com"
-	<cruise.hung@amd.com>, "Eric.Yang2@amd.com" <Eric.Yang2@amd.com>,
-	"mario.limonciello@amd.com" <mario.limonciello@amd.com>, "alvin.lee2@amd.com"
-	<alvin.lee2@amd.com>, "jun.lei@amd.com" <jun.lei@amd.com>,
-	"austin.zheng@amd.com" <austin.zheng@amd.com>, "sunglee@amd.com"
-	<sunglee@amd.com>, "paul.hsieh@amd.com" <paul.hsieh@amd.com>,
-	"hanghong.ma@amd.com" <hanghong.ma@amd.com>, "JinZe.Xu@amd.com"
-	<JinZe.Xu@amd.com>, "lewis.huang@amd.com" <lewis.huang@amd.com>,
-	"alex.hung@amd.com" <alex.hung@amd.com>, "syed.hassan@amd.com"
-	<syed.hassan@amd.com>, "wayne.lin@amd.com" <wayne.lin@amd.com>,
-	"nicholas.kazlauskas@amd.com" <nicholas.kazlauskas@amd.com>,
-	"chiahsuan.chung@amd.com" <chiahsuan.chung@amd.com>,
-	"aurabindo.pillai@amd.com" <aurabindo.pillai@amd.com>, "aric.cyr@amd.com"
-	<aric.cyr@amd.com>, "amd-gfx@lists.freedesktop.org"
-	<amd-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjYuNl0gZHJtL2FtZC9kaXNwbGF5OiBXYWtlIERN?=
- =?utf-8?Q?CUB_before_executing_GPINT_commands?=
-Thread-Topic: [PATCH v6.6] drm/amd/display: Wake DMCUB before executing GPINT
- commands
-Thread-Index: AQHaj7JoVDAN/0mP/Uu5GFZtNQKS9LFpzsuAgANwVPD//4MmAIAAmn4A
-Date: Thu, 18 Apr 2024 03:14:28 +0000
-Message-ID: <b9ab29ad37f94dfa81da3aa88c6456c2@huawei.com>
-References: <20240416035240.2450127-1-wangzhu9@huawei.com>
- <2024041658-imagines-unlatch-a9b6@gregkh>
- <036c3371d3a64ef8881260197ce37dbc@huawei.com>
- <CADnq5_NML_BiqQx2UmwH86d3qv57D3tFRL--dro1qA99r0Qr5w@mail.gmail.com>
-In-Reply-To: <CADnq5_NML_BiqQx2UmwH86d3qv57D3tFRL--dro1qA99r0Qr5w@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1713410114; c=relaxed/simple;
+	bh=E9AmNyGddq5Eb53DUqVaIzShMqppKvErLUvIciv93mA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KVF11WRigsdqbigJN1xgkviaOGCgLZBnOaLD1PwOnns5BpRPmqib9Gaw8IA4STrw8xERbYFDtkAns9hb0jnzEveLDNVf22l3cObPUBwpEUCSSyGMIV86B/aWIrkjC1gn808LxVSoT5eH7+WW/FfWJONNhIxtZBx/tzzwA3dxyho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AoW6bWee; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB6B5C32783
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 03:15:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713410113;
+	bh=E9AmNyGddq5Eb53DUqVaIzShMqppKvErLUvIciv93mA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=AoW6bWee1E/bveIDufe2XczRcTRein3ATgmEHU0H1rlejql0PWVaaznSt5D54d4SA
+	 cCY+V75o23di5g8zo7qyBPldTlBVrj4o15WGWNg1idom16qcBDuLwK/K9q1tN2GdkE
+	 m5FRYKa4XVzdTgodN/YJjN5Kn+/OvQjmZOM+eQaX3mr9qYGWCSXBIGmRsrPLUuyxzT
+	 Z6+CNZ2uO7cOdI79+swl83QOjhUbKC5SHxmF+QbtU2ZBg5sq5yP3E/HgoK1w2gPbBs
+	 Kd4V04B8FYZhHAEvIv6cvoodK4cmp9Sj+pv3wqQZkkL/hdMdS2ByY0/nTEM0N7JIkS
+	 8w67aIfZSDMZA==
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a52223e004dso24415266b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 20:15:13 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUHDRossT/tCEx0wdtZB/NDHsyWlSihEifj73bifw1YAGe4quhGK/OAwezI5U47cJPfn839N7obVd1oD8RjlK6y5upy8SKJ1BT/focB
+X-Gm-Message-State: AOJu0YzNR5+MpSiCT/0juugz/2woWx8mEdO9ZuOwgaz8A72YGNMV1HYg
+	jTlv9e3S4udprSy9ExMdCVL1hHoOZZ53NURRoJJq2BUiPJv+A9Zw6g066KAgG0nIzZiAwxHRVuB
+	TPt+gvUQUNF7k+IBInKZv7J/FJqI=
+X-Google-Smtp-Source: AGHT+IH9z7hHQPUEX63FNBa0KnX03pY3RNYjUifUrqlFSfL67QP2/vgNuWA+OWw67fLYmM/RYW/MC4n3Rpv3BYH8l1U=
+X-Received: by 2002:a17:906:d113:b0:a52:7456:bac8 with SMTP id
+ b19-20020a170906d11300b00a527456bac8mr996857ejz.6.1713410112184; Wed, 17 Apr
+ 2024 20:15:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240417095951.2635-1-yangtiezhu@loongson.cn> <20240417095951.2635-2-yangtiezhu@loongson.cn>
+In-Reply-To: <20240417095951.2635-2-yangtiezhu@loongson.cn>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Thu, 18 Apr 2024 11:15:05 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4WxQa26cQ7jtt-dj6WrAvpo5LuzF0QXVS9pv3FywSbQA@mail.gmail.com>
+Message-ID: <CAAhV-H4WxQa26cQ7jtt-dj6WrAvpo5LuzF0QXVS9pv3FywSbQA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] LoongArch: Modify acpi_parse_processor() for non-SMP
+To: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>, 
+	loongarch@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	loongson-kernel@lists.loongnix.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-VGhlIENWRS0yMDIzLTUyNjI0IGlzIGZpeGVkIGluIGxpbnV4LTYuNyBzdGFibGUsIHdoaWxlIGl0
-IGlzIG5vdCBmaXhlZCBpbiA2LjYsIHRoaXMgY29tbWl0IGlzIHByZXNlbnRlZCB0byBmaXggaXQg
-aW4gbGludXgtNi42IHN0YWJsZS4NCg0KLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0K5Y+R5Lu25Lq6
-OiBBbGV4IERldWNoZXIgW21haWx0bzphbGV4ZGV1Y2hlckBnbWFpbC5jb21dIA0K5Y+R6YCB5pe2
-6Ze0OiAyMDI05bm0NOaciDE45pelIDk6NTgNCuaUtuS7tuS6ujogd2FuZ3podSA8d2FuZ3podTlA
-aHVhd2VpLmNvbT4NCuaKhOmAgTogR3JlZyBLSCA8Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+
-OyBoYXJyeS53ZW50bGFuZEBhbWQuY29tOyBzdW5wZW5nLmxpQGFtZC5jb207IFJvZHJpZ28uU2lx
-dWVpcmFAYW1kLmNvbTsgYWxleGFuZGVyLmRldWNoZXJAYW1kLmNvbTsgY2hyaXN0aWFuLmtvZW5p
-Z0BhbWQuY29tOyBhaXJsaWVkQGxpbnV4LmllOyBkYW5pZWxAZmZ3bGwuY2g7IHFpbmdxaW5nLnpo
-dW9AYW1kLmNvbTsgc3R5bG9uLndhbmdAYW1kLmNvbTsgSm9zaXAuUGF2aWNAYW1kLmNvbTsgdHJp
-eEByZWRoYXQuY29tOyBjcnVpc2UuaHVuZ0BhbWQuY29tOyBFcmljLllhbmcyQGFtZC5jb207IG1h
-cmlvLmxpbW9uY2llbGxvQGFtZC5jb207IGFsdmluLmxlZTJAYW1kLmNvbTsganVuLmxlaUBhbWQu
-Y29tOyBhdXN0aW4uemhlbmdAYW1kLmNvbTsgc3VuZ2xlZUBhbWQuY29tOyBwYXVsLmhzaWVoQGFt
-ZC5jb207IGhhbmdob25nLm1hQGFtZC5jb207IEppblplLlh1QGFtZC5jb207IGxld2lzLmh1YW5n
-QGFtZC5jb207IFpoZW5nemVuZ2thaSA8emhlbmd6ZW5na2FpQGh1YXdlaS5jb20+OyBhbGV4Lmh1
-bmdAYW1kLmNvbTsgc3llZC5oYXNzYW5AYW1kLmNvbTsgd2F5bmUubGluQGFtZC5jb207IG5pY2hv
-bGFzLmthemxhdXNrYXNAYW1kLmNvbTsgY2hpYWhzdWFuLmNodW5nQGFtZC5jb207IGF1cmFiaW5k
-by5waWxsYWlAYW1kLmNvbTsgYXJpYy5jeXJAYW1kLmNvbTsgYW1kLWdmeEBsaXN0cy5mcmVlZGVz
-a3RvcC5vcmc7IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7IGxpbnV4LWtlcm5lbEB2
-Z2VyLmtlcm5lbC5vcmcNCuS4u+mimDogUmU6IFtQQVRDSCB2Ni42XSBkcm0vYW1kL2Rpc3BsYXk6
-IFdha2UgRE1DVUIgYmVmb3JlIGV4ZWN1dGluZyBHUElOVCBjb21tYW5kcw0KDQpPbiBXZWQsIEFw
-ciAxNywgMjAyNCBhdCA5OjUx4oCvUE0gd2FuZ3podSA8d2FuZ3podTlAaHVhd2VpLmNvbT4gd3Jv
-dGU6DQo+DQo+IEhpIEdyZWcsIHRoYW5rcyBmb3IgeW91ciByZXBseS4gU2luY2UgdGhlcmUgaXMg
-bm8gcGF0Y2ggdG8gZml4IENWRS0yMDIzLTUyNjI0IGluIGxpbnV4LTUuMTAsIHRoZXJlIGlzIGEg
-cGF0Y2ggaW4gdGhlIGxpbnV4LTYuNyBicmFuY2gsIGl0cyBjb21taXQgaXMgMmVmOThjNmQ3NTNh
-NzQ0ZTMzM2I3ZTM0YjljZjY4NzA0MGZiYTU3ZCAoImRybS9hbWQvZGlzcGxheTogV2FrZSBETUNV
-QiBiZWZvcmUgZXhlY3V0aW5nIEdQSU5UIGNvbW1hbmRzIikuIFdoZW4gd2UgYXBwbHkgdGhpcyBw
-YXRjaCB0byBsaW51eC01LjEwLCB0aGVyZSBhcmUgbG90cyBvZiBjb25mbGljdHMsIGFuZCB3ZSBm
-b3VuZCB0aGVyZSBhcmUgbG90cyBvZiBkZXBlbmRlbnQgcGF0Y2hlcywgYW5kIGxvdHMgb2YgcGF0
-Y2hlcyBhcmUgbm90IHByb3Bvc2VkIHRvIGZpeCB0aGUgY3ZlLCB0aGV5IGFyZSBwcmVzZW50ZWQg
-dG8gYWRkIG5ldyBmdW5jdGlvbnMgb2YgdGhlIGtlcm5lbC4NCj4NCg0KV2h5IGlzIHRoZXJlIGEg
-Q1ZFPyAgSGF2ZSB5b3UgdW5jb3ZlcmVkIHNvbWUgc3BlY2lmaWMgaXNzdWU/DQoNCkFsZXgNCg0K
-PiBNeSBjb21taXQgY29tZXMgZnJvbSBuZWFybHkgMjAgcGF0Y2hlcy4gRm9yIGVhY2ggcGF0Y2gs
-IG5vdCBhbGwgb2YgaXRzIGNvbnRlbnQgaXMgbWVhbnQgdG8gZml4IHRoZSBjdmUsIHNvIEkganVz
-dCBnZXQgdGhlIHBhcnQgd2hpY2ggaXMgaGVscGZ1bCB0byBmaXguIEl0IGlzIHdoeSBJIGRvbid0
-IHByZXNlbnQgdGhlIHBhdGNoZXMgb25lIGJ5IG9uZSBpbnN0ZWFkIG9mIG1lcmdpbmcgdGhlbSBp
-bnRvIG9uZSBiaWcgcGF0Y2guDQo+DQo+DQo+IC0tLS0t6YKu5Lu25Y6f5Lu2LS0tLS0NCj4g5Y+R
-5Lu25Lq6OiBHcmVnIEtIIFttYWlsdG86Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmddDQo+IOWP
-kemAgeaXtumXtDogMjAyNOW5tDTmnIgxNuaXpSAxMjo1NA0KPiDmlLbku7bkuro6IHdhbmd6aHUg
-PHdhbmd6aHU5QGh1YXdlaS5jb20+DQo+IOaKhOmAgTogaGFycnkud2VudGxhbmRAYW1kLmNvbTsg
-c3VucGVuZy5saUBhbWQuY29tOyANCj4gUm9kcmlnby5TaXF1ZWlyYUBhbWQuY29tOyBhbGV4YW5k
-ZXIuZGV1Y2hlckBhbWQuY29tOyANCj4gY2hyaXN0aWFuLmtvZW5pZ0BhbWQuY29tOyBhaXJsaWVk
-QGxpbnV4LmllOyBkYW5pZWxAZmZ3bGwuY2g7IA0KPiBxaW5ncWluZy56aHVvQGFtZC5jb207IHN0
-eWxvbi53YW5nQGFtZC5jb207IEpvc2lwLlBhdmljQGFtZC5jb207IA0KPiB0cml4QHJlZGhhdC5j
-b207IGNydWlzZS5odW5nQGFtZC5jb207IEVyaWMuWWFuZzJAYW1kLmNvbTsgDQo+IG1hcmlvLmxp
-bW9uY2llbGxvQGFtZC5jb207IGFsdmluLmxlZTJAYW1kLmNvbTsganVuLmxlaUBhbWQuY29tOyAN
-Cj4gYXVzdGluLnpoZW5nQGFtZC5jb207IHN1bmdsZWVAYW1kLmNvbTsgcGF1bC5oc2llaEBhbWQu
-Y29tOyANCj4gaGFuZ2hvbmcubWFAYW1kLmNvbTsgSmluWmUuWHVAYW1kLmNvbTsgbGV3aXMuaHVh
-bmdAYW1kLmNvbTsgDQo+IFpoZW5nemVuZ2thaSA8emhlbmd6ZW5na2FpQGh1YXdlaS5jb20+OyBh
-bGV4Lmh1bmdAYW1kLmNvbTsgDQo+IHN5ZWQuaGFzc2FuQGFtZC5jb207IHdheW5lLmxpbkBhbWQu
-Y29tOyBuaWNob2xhcy5rYXpsYXVza2FzQGFtZC5jb207IA0KPiBjaGlhaHN1YW4uY2h1bmdAYW1k
-LmNvbTsgYXVyYWJpbmRvLnBpbGxhaUBhbWQuY29tOyBhcmljLmN5ckBhbWQuY29tOyANCj4gYW1k
-LWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5v
-cmc7IA0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IOS4u+mimDogUmU6IFtQQVRD
-SCB2Ni42XSBkcm0vYW1kL2Rpc3BsYXk6IFdha2UgRE1DVUIgYmVmb3JlIGV4ZWN1dGluZyANCj4g
-R1BJTlQgY29tbWFuZHMNCj4NCj4gT24gVHVlLCBBcHIgMTYsIDIwMjQgYXQgMDM6NTI6NDBBTSAr
-MDAwMCwgWmh1IFdhbmcgd3JvdGU6DQo+ID4gRnJvbTogTmljaG9sYXMgS2F6bGF1c2thcyA8bmlj
-aG9sYXMua2F6bGF1c2thc0BhbWQuY29tPg0KPiA+DQo+ID4gc3RhYmxlIGluY2x1c2lvbg0KPiA+
-IGZyb20gc3RhYmxlLXY2LjcuMw0KPiA+IGNvbW1pdCAyZWY5OGM2ZDc1M2E3NDRlMzMzYjdlMzRi
-OWNmNjg3MDQwZmJhNTdkDQo+ID4gY2F0ZWdvcnk6IGJ1Z2ZpeA0KPiA+IGJ1Z3ppbGxhOiBodHRw
-czovL2dpdGVlLmNvbS9zcmMtb3BlbmV1bGVyL2tlcm5lbC9pc3N1ZXMvSTlCVjRDDQo+ID4gQ1ZF
-OiBDVkUtMjAyMy01MjYyNA0KPiA+DQo+ID4gUmVmZXJlbmNlOg0KPiA+IGh0dHBzOi8vZ2l0Lmtl
-cm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdC9jDQo+
-ID4gb20gbWl0Lz9pZD0yZWY5OGM2ZDc1M2E3NDRlMzMzYjdlMzRiOWNmNjg3MDQwZmJhNTdkDQo+
-ID4NCj4gPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiA+DQo+ID4gWyBVcHN0
-cmVhbSBjb21taXQgZTVmZmQxMjYzZGQ1YjQ0OTI5YzY3NjE3MTgwMmU3YjZhZjQ4M2YyMSBdDQo+
-ID4NCj4gPiBbV2h5XQ0KPiA+IERNQ1VCIGNhbiBiZSBpbiBpZGxlIHdoZW4gd2UgYXR0ZW1wdCB0
-byBpbnRlcmZhY2Ugd2l0aCB0aGUgSFcgDQo+ID4gdGhyb3VnaCB0aGUgR1BJTlQgbWFpbGJveCBy
-ZXN1bHRpbmcgaW4gYSBzeXN0ZW0gaGFuZy4NCj4gPg0KPiA+IFtIb3ddDQo+ID4gQWRkIGRjX3dh
-a2VfYW5kX2V4ZWN1dGVfZ3BpbnQoKSB0byB3cmFwIHRoZSB3YWtlLCBleGVjdXRlLCBzbGVlcCAN
-Cj4gPiBzZXF1ZW5jZS4NCj4gPg0KPiA+IElmIHRoZSBHUElOVCBleGVjdXRlcyBzdWNjZXNzZnVs
-bHkgdGhlbiBETUNVQiB3aWxsIGJlIHB1dCBiYWNrIGludG8gDQo+ID4gc2xlZXAgYWZ0ZXIgdGhl
-IG9wdGlvbmFsIHJlc3BvbnNlIGlzIHJldHVybmVkLg0KPiA+DQo+ID4gSXQgZnVuY3Rpb25zIHNp
-bWlsYXIgdG8gdGhlIGluYm94IGNvbW1hbmQgaW50ZXJmYWNlLg0KPiA+DQo+ID4gQ2M6IE1hcmlv
-IExpbW9uY2llbGxvIDxtYXJpby5saW1vbmNpZWxsb0BhbWQuY29tPg0KPiA+IENjOiBBbGV4IERl
-dWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+DQo+ID4gQ2M6IHN0YWJsZUB2Z2VyLmtl
-cm5lbC5vcmcNCj4gPiBSZXZpZXdlZC1ieTogSGFuc2VuIERzb3V6YSA8aGFuc2VuLmRzb3V6YUBh
-bWQuY29tPg0KPiA+IEFja2VkLWJ5OiBXYXluZSBMaW4gPHdheW5lLmxpbkBhbWQuY29tPg0KPiA+
-IFNpZ25lZC1vZmYtYnk6IE5pY2hvbGFzIEthemxhdXNrYXMgPG5pY2hvbGFzLmthemxhdXNrYXNA
-YW1kLmNvbT4NCj4gPiBUZXN0ZWQtYnk6IERhbmllbCBXaGVlbGVyIDxkYW5pZWwud2hlZWxlckBh
-bWQuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEFsZXggRGV1Y2hlciA8YWxleGFuZGVyLmRldWNo
-ZXJAYW1kLmNvbT4NCj4gPg0KPiA+IFRoaXMgY29tbWl0IGNvbWVzIGZyb20gZm9sbG93aW5nIGNv
-bW1pdHM6DQo+ID4NCj4gPiAgODc3NDAyOWY3NmI5ICgiZHJtL2FtZC9kaXNwbGF5OiBBZGQgRENO
-MzUgQ0xLX01HUiIpICA2NTEzOGViNzJlMWYNCj4gPiAoImRybS9hbWQvZGlzcGxheTogQWRkIERD
-TjM1IERNVUIiKSAgZGMwMWM0Yjc5YmZlICgiZHJtL2FtZC9kaXNwbGF5Og0KPiA+IFVwZGF0ZSBk
-cml2ZXIgYW5kIElQUyBpbnRlcm9wIikNCj4gPiAgODIwYzM4NzBjNDkxICgiZHJtL2FtZC9kaXNw
-bGF5OiBSZWZhY3RvciBETUNVQiBlbnRlci9leGl0IGlkbGUNCj4gPiBpbnRlcmZhY2UiKSAgMmVm
-OThjNmQ3NTNhICgiZHJtL2FtZC9kaXNwbGF5OiBXYWtlIERNQ1VCIGJlZm9yZSANCj4gPiBleGVj
-dXRpbmcgR1BJTlQgY29tbWFuZHMiKQ0KPg0KPiBXaHkgYXJlIHlvdSBwdXR0aW5nIG11bHRpcGxl
-IGNvbW1pdHMgdG9nZXRoZXIgYW5kIG5vdCBqdXN0IHN1Ym1pdHRpbmcgdGhlIGluZGl2aWR1YWwg
-b25lcz8gIEFuZCB3aGF0IGlzIHRoaXMgZm9yPw0KPg0KPiBjb25mdXNlZCwNCj4NCj4gZ3JlZyBr
-LWgNCg==
+Hi, Tiezhu,
+
+On Wed, Apr 17, 2024 at 6:00=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongson.cn=
+> wrote:
+>
+> When CONFIG_SMP is disabled, mapping won't be created for all cpus.
+> CPUs more than num_possible_cpus will be ignored. This is preparation
+> for later patch.
+This patch makes no sense, don't "fix" anything unless it is broken.
+
+Huacai
+
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/loongarch/kernel/acpi.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/loongarch/kernel/acpi.c b/arch/loongarch/kernel/acpi.c
+> index 5cf59c617126..ccfa90faf0ea 100644
+> --- a/arch/loongarch/kernel/acpi.c
+> +++ b/arch/loongarch/kernel/acpi.c
+> @@ -98,8 +98,15 @@ acpi_parse_processor(union acpi_subtable_headers *head=
+er, const unsigned long en
+>                 return -EINVAL;
+>
+>         acpi_table_print_madt_entry(&header->common);
+> +
+> +       /*
+> +        * When CONFIG_SMP is disabled, mapping won't be created for all =
+cpus.
+> +        * CPUs more than num_possible_cpus will be ignored.
+> +        */
+> +       if (processor->core_id >=3D 0 && processor->core_id < num_possibl=
+e_cpus())
+> +               acpi_core_pic[processor->core_id] =3D *processor;
+> +
+>  #ifdef CONFIG_SMP
+> -       acpi_core_pic[processor->core_id] =3D *processor;
+>         set_processor_mask(processor->core_id, processor->flags);
+>  #endif
+>
+> --
+> 2.42.0
+>
+>
 
