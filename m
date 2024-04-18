@@ -1,190 +1,121 @@
-Return-Path: <linux-kernel+bounces-149652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 662678A9402
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:31:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11D558A93FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:30:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9788A1C217BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:31:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A75311F21B22
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:30:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BFA93E493;
-	Thu, 18 Apr 2024 07:31:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7401D53381;
+	Thu, 18 Apr 2024 07:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="U1tzA1E4"
-Received: from smtpcmd14162.aruba.it (smtpcmd14162.aruba.it [62.149.156.162])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QY/N9fun"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF9F3D984
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:31:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.156.162
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E154D38F96;
+	Thu, 18 Apr 2024 07:30:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713425479; cv=none; b=KbBZzjPjLshLW66nB6aY4byeC1KwEOnp0u581FO0jwPNjbHHckbwlORFHP3CAQriVVNdqII+nftoAgZXs1uuxZnNpkB1cGX7uIKEUUQlkk8tnTZcL4xJ0BSpBiSTvU1g1znJH+yePrDhjGOQDhJRPPZxbGGzdNW4cwEhjTsipYs=
+	t=1713425428; cv=none; b=Ixd5fDEKHIwfM+SKVp3poT59Hfc93DrJU/7E84YxbgxdExnODpEAFJEg3RHiwFSV5F4Pot8DPKrBRg6Kqz0i+9br109pRJV5BZjJgIuEXAvPcU8vpp8i8wMr0eCNnGQgvejO2dDVPKt9N7C/eOqTLsy7+Ds0efITFvJC6HopoQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713425479; c=relaxed/simple;
-	bh=/D7loSoJ8LTuZFSDTmGdK+mo8Ji5LnnuBOROJJyE4rY=;
+	s=arc-20240116; t=1713425428; c=relaxed/simple;
+	bh=5g7iu/VVAy/L+SP4+CheknDrk8WwulKiELdeRGtgDF8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MUgDDmOEhn6gcdvweQHM0wHY//Npt0deMAnK7o+PUzdU8N5y2NSmZpPO8CZVwtuDcrcfv+Gg+nrJG9jQG5rGretIni39BLe5U6ItQ1cYC+svaVp74lHR9gyv7gzOupfwPz47RfWJKRDMrcQxVlEFIsWpIa3nLYh7MRyC8JrLS84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=U1tzA1E4; arc=none smtp.client-ip=62.149.156.162
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
-Received: from engicam ([146.241.28.123])
-	by Aruba Outgoing Smtp  with ESMTPSA
-	id xMBpr2JFzjEwexMBqrCMpp; Thu, 18 Apr 2024 09:28:15 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1713425295; bh=/D7loSoJ8LTuZFSDTmGdK+mo8Ji5LnnuBOROJJyE4rY=;
-	h=Date:From:To:Subject:MIME-Version:Content-Type;
-	b=U1tzA1E4DcLAj/KgA3NwRvty/MP3y1sdyO95Qk+bPG7EtxNfh3K6HzmV7bfGip5w8
-	 pyr3GytQicCeaDLF1GqbqtVQyYYeXPesTUxazjbUbOMKLqFwIXx9C6x3wli2Le1rou
-	 NNZjSbgRvOMlSNYmp1LaAWJi2hcr5SGWtD8hGhRmY2JLyuSlhOOjqUzne7zgFZWqgb
-	 gxmzFgWsXwOp+GXU1+BfcmsXP+MXH5DGbbraQMCxVGK7RIeKbjbrO+C4b3D2uvVpSf
-	 0hDybEJidTM68sU7AuTEjicW7t/no38M3twffTYcjZVGef8uUenkQuiLWjZ6ZVieVt
-	 o5sv6+Ey1JrUw==
-Date: Thu, 18 Apr 2024 09:28:13 +0200
-From: Fabio Aiuto <fabio.aiuto@engicam.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
-	Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Matteo Lisi <matteo.lisi@engicam.com>,
-	Mirko Ardinghi <mirko.ardinghi@engicam.com>
-Subject: Re: [PATCH 4/4] arm64: dts: imx93: Add Engicam i.Core MX93 EDIMM 2.0
- Starter Kit
-Message-ID: <ZiDLjT3wEeiiHjz9@engicam>
-References: <20240417153528.7838-1-fabio.aiuto@engicam.com>
- <20240417153528.7838-5-fabio.aiuto@engicam.com>
- <41a1ca01-384a-40ca-a5f6-6205bb43825b@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=M/MVCJyhMyZRF9YAsMSzda+yQs0rnNHxnOixg5tIqF5AS1hYkJKBMoyfRVsfImJhMt7u1K4AQqrYXbfQzGFbE2Te4N4uHpkuUzi2BjGEr6dPXKvZkpL5xGvj2Rk4RdFmdO+ApPB5P+mXsv1FSHhvmW2qD6zBRZnfpfPKkbcxBMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QY/N9fun; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713425427; x=1744961427;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=5g7iu/VVAy/L+SP4+CheknDrk8WwulKiELdeRGtgDF8=;
+  b=QY/N9fundHkAsTf2cChu4e4/6lr9980bnzNQ21h/OQP7ztb0yckr1Da1
+   i34raXWOw5n6RxnrdiN8af7KZs+2bkdOOdDWu+rktqUIdESRRczVvAfbb
+   byMtCuht0zcmgaRUfSCcYNSZw0a0lQH41/mYZVroRvnok8HJ0D7gLl1RA
+   kBJPpyyc28KBXpHU0lXAAgeKStSL4k8e2Q62SsYoDDSGiQXhjCtFL0cK7
+   IEmlY6ktAiUY/udcclDF9l2QlEE7/Ok2sNkfLfCVCiHSll9FpA6lYUf5L
+   KQ9bCwOxgkL4AyRlo5ClX4WXKd1f5tqkRGSFpopUBOQ6kA74s5ls7/kJk
+   w==;
+X-CSE-ConnectionGUID: PqrORcytQjq02UOIjScVZw==
+X-CSE-MsgGUID: HKcH8GKpRCKGXTbzgpFAEw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="9502750"
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="9502750"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 00:30:26 -0700
+X-CSE-ConnectionGUID: iks+W5Y9Q5K1RKF6sS7HkQ==
+X-CSE-MsgGUID: KqH5QFqvRm68XI9aFxiv3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="23316867"
+Received: from unknown (HELO mev-dev) ([10.237.112.144])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 00:30:24 -0700
+Date: Thu, 18 Apr 2024 09:30:01 +0200
+From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+To: =?iso-8859-1?Q?Asbj=F8rn_Sloth_T=F8nnesen?= <ast@fiberby.net>
+Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>
+Subject: Re: [Intel-wired-lan] [PATCH iwl-next] ice: flower: validate control
+ flags
+Message-ID: <ZiDL+TTeJWhYam6Q@mev-dev>
+References: <20240416144331.15336-1-ast@fiberby.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <41a1ca01-384a-40ca-a5f6-6205bb43825b@kernel.org>
-X-CMAE-Envelope: MS4xfIqOolBh5THzUaCAYTNotxuYXn9r+bHpV5qiOjW+r+LG0RRPRAuuhMJP3GdpT68KtsTYjnbSJjA2+B/dCIdYpLrAFzxPmzu+hBEbVQxIZrOY7UQ30p+Q
- gw3/qYokJYm74WgWpoTFvFE5IpQYBT0ZII3yTf1zNeDC9QX5Vd58gCB8+h7GJI5BabYj13u2HajQXqhCLHI336qT5/bOP8qzPAVl9lbsAfD0KTJkiNRiezuI
- Rr1FQrl+wFvvZCqKSU8jqgBabiy6w0XdD2+Pp7aI/hFIfXQyYcTvE4vleTgKlPdueCT2HWmMqWMc3EO99Pz2kEtd5zcJM9srfj5H5/T7st5iDf11g1Pg+9SG
- GNxeZpPrx5NGgOjSKqzjHD1cjMjzIqznEalKYS3ERV2jFuxqvhRkwv6PnBSg4Pef+jTTgLmV6RKShJoEtLcf7R6ZKDqwgdPWpKWhGIFGsOHMWO4HNDjE7+7p
- MiPfX4EI1D6kkypVa+IDiLyFohlqBnWNwJ3J3hBCGoxuw9nc9p7LMpsOSVFBJEbHH8qZl01ld+JrbuzNH3ANce4ucFtVSIXqJ7wGCocJ8ELj1X3J+GiJC2v3
- NGrFtucMcI9X89RnRSKp52cW
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240416144331.15336-1-ast@fiberby.net>
 
-Dear Krzysztof,
+On Tue, Apr 16, 2024 at 02:43:30PM +0000, Asbjørn Sloth Tønnesen wrote:
+> This driver currently doesn't support any control flags.
+> 
+> Use flow_rule_has_control_flags() to check for control flags,
+> such as can be set through `tc flower ... ip_flags frag`.
+> 
+> In case any control flags are masked, flow_rule_has_control_flags()
+> sets a NL extended error message, and we return -EOPNOTSUPP.
+> 
+> Only compile-tested.
+> 
+> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+> ---
+>  drivers/net/ethernet/intel/ice/ice_tc_lib.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/intel/ice/ice_tc_lib.c b/drivers/net/ethernet/intel/ice/ice_tc_lib.c
+> index 2f2fce285ecd..361abd7d7561 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_tc_lib.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_tc_lib.c
+> @@ -1673,6 +1673,10 @@ ice_parse_cls_flower(struct net_device *filter_dev, struct ice_vsi *vsi,
+>  		flow_rule_match_control(rule, &match);
+>  
+>  		addr_type = match.key->addr_type;
+> +
+> +		if (flow_rule_has_control_flags(match.mask->flags,
+> +						fltr->extack))
+> +			return -EOPNOTSUPP;
+>  	}
+>  
 
-Il Wed, Apr 17, 2024 at 07:08:00PM +0200, Krzysztof Kozlowski ha scritto:
-> On 17/04/2024 17:35, Fabio Aiuto wrote:
-> > i.Core MX93 is a NXP i.MX93 based SoM by Enigcam which
-> > needs to be mounted on top of Engicam baseboards.
-> > 
-> > Add support for EDIMM 2.0 Starter Kit hosting
-> > i.Core MX93.
-> > 
-> > Starter Kit main features:
-> > 
-> > 2x LVDS interfaces
-> > HDMI output
-> > Audio out
-> > Mic in
-> > Micro SD card slot
-> > USB 3.0 A port
-> > 3x USB 2.0 A port
-> > Gb Ethernet
-> > 2x CAN bus, 3x UART interfaces
-> > SIM card slot
-> > M.2 KEY_B slot
-> > 
-> > Cc: Matteo Lisi <matteo.lisi@engicam.com>
-> > Cc: Mirko Ardinghi <mirko.ardinghi@engicam.com>
-> > Signed-off-by: Fabio Aiuto <fabio.aiuto@engicam.com>
-> > ---
-> >  arch/arm64/boot/dts/freescale/Makefile        |   1 +
-> >  .../dts/freescale/imx93-icore-mx93-edimm2.dts | 356 ++++++++++++++++++
-> >  2 files changed, 357 insertions(+)
-> >  create mode 100644 arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-> > 
-> > diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> > index 045250d0a040..d26c0a458a44 100644
-> > --- a/arch/arm64/boot/dts/freescale/Makefile
-> > +++ b/arch/arm64/boot/dts/freescale/Makefile
-> > @@ -226,6 +226,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx8qxp-tqma8xqp-mba8xx.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb
-> > +dtb-$(CONFIG_ARCH_MXC) += imx93-icore-mx93-edimm2.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx93-phyboard-segin.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxca.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
-> > diff --git a/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts b/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-> > new file mode 100644
-> > index 000000000000..75cac97d919c
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-> > @@ -0,0 +1,356 @@
-> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > +/*
-> > + * Copyright 2022 NXP
-> > + * Copyright 2024 Engicam s.r.l.
-> > + */
-> > +
-> > +/dts-v1/;
-> > +
-> > +#include <dt-bindings/usb/pd.h>
-> > +#include "imx93-icore-mx93.dtsi"
-> > +
-> > +/ {
-> > +	model = "Engicam i.Core MX93 - EDIMM 2 Starterkit";
-> > +	compatible = "engicam,icore-mx93-edimm2", "engicam,icore-mx93",
-> > +		     "fsl,imx93";
-> > +
-> > +	aliases {
-> > +		rtc1= &bbnsm_rtc;
-> 
-> Missing pace before =
-> 
-> > +	};
-> > +
-> > +	bt_reg_on: regulator-btregon {
-> > +		compatible = "regulator-gpio";
-> > +		regulator-name = "BT_REG_ON";
-> > +		pinctrl-names = "default";
-> > +		regulator-min-microvolt = <100000>;
-> > +		regulator-max-microvolt = <3300000>;
-> > +		states = <3300000 0x1>,
-> > +				 <100000 0x0>;
-> 
-> Misaligned indentation
-> 
-> > +		gpios = <&gpio2 19 GPIO_ACTIVE_HIGH>;
-> > +		regulator-always-on;
-> > +	};
-> > +
-> > +	chosen {
-> > +		stdout-path = &lpuart1;
-> > +	};
-> > +
-> > +	reg_1v8_sgtl: reg_1v8_sgtl_regulator {
-> 
-> Do not use underscores in node names. I am pretty sure you got this
-> comment before.
-> 
-> Also, you have confusing naming scheme - sometimes prefix reg, sometimes
-> regulator. Keep nodes ordered.
+Thanks,
+Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
 
-thanks, will submit a v2 patchset
-
-kr,
-
-fabio
-
-> 
-> 
-> 
-> Best regards,
-> Krzysztof
+>  	if (addr_type == FLOW_DISSECTOR_KEY_IPV4_ADDRS) {
+> -- 
+> 2.43.0
 > 
 
