@@ -1,120 +1,109 @@
-Return-Path: <linux-kernel+bounces-149423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A7118A90EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:02:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 990728A90F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:02:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ACCA1C20B4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:02:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C8182821B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:02:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEFDC3A27E;
-	Thu, 18 Apr 2024 02:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055C44E1BE;
+	Thu, 18 Apr 2024 02:02:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="boS+kwTY"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="u2nXTwEo"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6B0B4F887;
-	Thu, 18 Apr 2024 02:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BA34AED6;
+	Thu, 18 Apr 2024 02:02:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713405739; cv=none; b=N3e2mQb7rwLp02P20Je4uVvfF+oB+vIkfiim7dyLB/ndCLSCZUyz0z8EFKV8OxLdbm5g0PPyGzDTW6EKCy85KoZ6oA3H+2oDTFBAoi8CiWJsDKM/6ah8rSMPSgPe8KPaztb/zzpQ2Qpi99MawjjYoGNARSAfrKcA/ToRBUlMEkU=
+	t=1713405750; cv=none; b=mZ/VbU/HwUHiEwLaxISbV/6EUk78MGen+/FeiRYVTy0BgbD4Uq8g5og7wnkkhcUq1C7N+H0qS9SV9OOOp89AEBiu0m0UZPRGnCR8GIMB3b16+7Zm4kya3ieofmw/B9BFbk5x4rxWYsOe7qrBcPbIAcBS65AzHZARWq5gEhYCLcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713405739; c=relaxed/simple;
-	bh=8wQoDT/7NOKMTE80UgxESvDJgj7uWjTrlOpXXXDcBv4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AXuu6BOD+jevqHJBKxsr705dyuUOpfW4rCBczGKZJ53bMJsXPLMCKM7xPFhGsU+0yNohaevGhyMuV3VDlq4jKA647j94pZ8QyDa4TSo9VZzidhHR+5ZEmgZjyQR5Wa6vtY91IBgSxilpxM7siKENhxvOe+7hpETtC+60wQ25yW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=boS+kwTY; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5c6bd3100fcso191174a12.3;
-        Wed, 17 Apr 2024 19:02:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713405736; x=1714010536; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Wvjc4I9zVrii6+4lvGmCflRZZaopkcwkKKuCNg7PNrA=;
-        b=boS+kwTYr3Pc7G8EMtOJSdWY1F12Ic0HhFaVPZ9D6mlWB6Gu8pkjHH3FhEHr0/Pa0q
-         0jEuY77ks9qr36pFgmR8xtMtAs1ETZ8wjvFmWIBIo3+9l0xQvc944OQm+WwRVLdYoaRY
-         E2e+s1CRzQEsnjGD2VF2LSu2BdZ2M7HL5p+IP3UGDnmqzu2SY70eLGQ2E604NPTlSMXw
-         uBXVdugzMc5dMj95qFiEnBkfnWUdphJvuB8KKK14fkSoERTQ96ofpdy9BdVVSoUDjU30
-         z0zElksoUeEzhBPiaf8Y4anlr2WA4Exq7mNeYfJR2OVEeFnJyXE/miHmLVRnUKoWZr/q
-         DpdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713405736; x=1714010536;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Wvjc4I9zVrii6+4lvGmCflRZZaopkcwkKKuCNg7PNrA=;
-        b=s5zloOEzRYoo+PDul9LXsLKJb2y8EmTwITNmbki6B80To7YK2Wv4UolXp9DKxjbqSG
-         Jbm3qae32reX3ND2AJIzGbPW45sR1DV5sSUNL/uQKDnWH32hwSeKVJmmM/yoRk9/PWKI
-         iTHxYZuLxPnTfWjCb3JRy7643eh3L88YC9716brOyR4OztfY2RXKNCpVUNvBKyu2wBXJ
-         /Qw5AbW6KO96wLBh+mL+C3qKwWZ2sTzIJ3JuhdiUC23f3/guUGLBkMPgcqIUyGwSLvIF
-         t4akUFci9Agh5SlcymRbPr7E6uLmg1RWLILHjLAZpRGjSsuAfFX0Hi0iJNpUqpoEN4Fd
-         lsqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUP0nXIBLOVUOZqMSbDDU/8n/u5JMjaRX5NbEF+4ipPxqPazsgbDM+1WI66E/iuXmJ6L2UgI6xdHJkLHx7j2LfKzNk4RfU6sRkioLHn83ku7Qv66je2heXX+zQdkNCLW3CxOZqGpw==
-X-Gm-Message-State: AOJu0YwSbez9RQBKiQISSXFnw9yqX/y5BQNUuiQBtw/IAASJiw0Uy3ye
-	eIQrLVHapqbDwuFNkH8tdfuSEl7g6z0uJmewFn1t9HufYk0LfB+p/DHwxhBm
-X-Google-Smtp-Source: AGHT+IHd6qaRHQzsC46JCsWbvCgwOaSJANmZnUHo2qQF1xbcWUIi2cK5x15za76GV3HRv0hHa6KqsA==
-X-Received: by 2002:a05:6a21:3e0d:b0:1a7:75ee:6062 with SMTP id bk13-20020a056a213e0d00b001a775ee6062mr1669931pzc.54.1713405736061;
-        Wed, 17 Apr 2024 19:02:16 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:6f51])
-        by smtp.gmail.com with ESMTPSA id i16-20020a17090332d000b001e0c568ae8fsm311848plr.192.2024.04.17.19.02.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 19:02:15 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 17 Apr 2024 16:02:14 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
-Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] cgroup: don't call cgroup1_pidlist_destroy_all()
- for v2
-Message-ID: <ZiB_Jhj2I8YdYs64@slm.duckdns.org>
-References: <20240417021359.883736-1-xiujianfeng@huaweicloud.com>
+	s=arc-20240116; t=1713405750; c=relaxed/simple;
+	bh=dBnEAgXUMi9S55V8EIauoEJPZbWof3chHTPwvl/9OBY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Y77S/ipkxTek56jmJJBQRUCm/zPU+MdT4ZTRatZDRZ46gGD7O47VjBgxQaGsj5QgNS+4oZ+dgTuk0PaNUg5oTAPC7NeaVqOxYsWTgxVMFXh108VpJ2llvkVio/JoUqrpLwB4pSlukVjHUig8WmHUTSE99x5TiuMvUs+g8/3NvuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=u2nXTwEo; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1713405743;
+	bh=115XVd+6iunRlQLEtb4+vpJ6TMykVoK4WBVz2uB0HIA=;
+	h=Date:From:To:Cc:Subject:From;
+	b=u2nXTwEo4MjoEZAaidarVfnSenmbvUYEY9hsyvtxwq43dJ9knBi54qi40OUhk0Pkv
+	 BsJFxG7LtdHoQgp206IQygYHVfAiCIk45BJWDWujJUag4wy58ALiIsi9odt4DwpiZh
+	 WS3bUMEZCqyIXotBiai2NL3L4GaDOr6OvsnQo4e6o3SZgSCFhyjgcVgYczeiAJ2cGC
+	 Eg/tSQqYkBe6LjJSbgzJKXf1OTnoJ6dJ6E5SWa3vSx/0qDK/yCZ2UGG/EryPUpUF3K
+	 U7NKyWujUNqJzxn547+voTeoU2K9S9zThnkqvUka+0E3J9YWcAKEGzRAFTmao+Temx
+	 j8dPV2wKaO0eQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VKgyR4dVsz4wx6;
+	Thu, 18 Apr 2024 12:02:23 +1000 (AEST)
+Date: Thu, 18 Apr 2024 12:02:22 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Huacai Chen <chenhuacai@loongson.cn>, Andrew Morton
+ <akpm@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the loongarch tree
+Message-ID: <20240418120222.77c2bd2f@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240417021359.883736-1-xiujianfeng@huaweicloud.com>
+Content-Type: multipart/signed; boundary="Sig_/Qrl8Xi2s2TysjXv._lgUoz8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hello,
+--Sig_/Qrl8Xi2s2TysjXv._lgUoz8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 17, 2024 at 02:13:59AM +0000, Xiu Jianfeng wrote:
-> From: Xiu Jianfeng <xiujianfeng@huawei.com>
-> 
-> Currently cgroup1_pidlist_destroy_all() will be called when releasing
-> cgroup even if the cgroup is on default hierarchy, however it doesn't
-> make any sense for v2 to destroy pidlist of v1.
-> 
-> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-> ---
->  kernel/cgroup/cgroup-v1.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-> index 520a11cb12f4..46d89157d558 100644
-> --- a/kernel/cgroup/cgroup-v1.c
-> +++ b/kernel/cgroup/cgroup-v1.c
-> @@ -197,6 +197,8 @@ void cgroup1_pidlist_destroy_all(struct cgroup *cgrp)
->  {
->  	struct cgroup_pidlist *l, *tmp_l;
->  
-> +	if (cgroup_on_dfl(cgrp))
-> +		return;
+Hi all,
 
-Can you move the test to the caller?
+The following commits are also in the mm tree as different commits
+(but the same patches):
 
-Thanks.
+  34248ae447d5 ("LoongArch: Fix Kconfig item and left code related to CRASH=
+_CORE")
+  ffc3e380b629 ("LoongArch: Fix a build error due to __tlb_remove_tlb_entry=
+()")
 
--- 
-tejun
+These are commits
+
+  3d7d0770dda6 ("arch/loongarch: clean up the left code and Kconfig item re=
+lated to CRASH_CORE")
+  b97004d9fb95 ("LoongArch/tlb: fix "error: parameter 'ptep' set but not us=
+ed" due to __tlb_remove_tlb_entry()")
+
+in the mm-nonmm-unstable branch of the mm tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Qrl8Xi2s2TysjXv._lgUoz8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYgfy4ACgkQAVBC80lX
+0Gx55wgAhXMsxF1SL+T//5PHvj5JtGLLVRu8DioKOwGxZgWFE/R2SgFtmh6INP5C
+iR8M5egp+9m3jiFAwSvDYZVGV5dVv2jvjsx5b+mbSm+RGdMCKTcbnGLCPlUH3Vkc
+HvHgKGa9EZQOpJUyAozCLC4BD5y5/bjDZcTwZsdeduUoxtdg2rhE72zNrBq4Un4t
+E2bQf7iFI07Qduh9smLb7kjqUhQ0+m16DOriErBROdI+Y2OX//SbympmhP+NtJ2U
+seIxiEauB8bnFfXEfOaS/BUO9+kNxLguoaJD/lkxRzLtI96jy2P7beWFxr2XqjOj
+Hmvr41TnLpf3GJGg2GhePvJzu5y3og==
+=nnoM
+-----END PGP SIGNATURE-----
+
+--Sig_/Qrl8Xi2s2TysjXv._lgUoz8--
 
