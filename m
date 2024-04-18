@@ -1,189 +1,179 @@
-Return-Path: <linux-kernel+bounces-150327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E3438A9D67
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:45:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 980BA8A9D6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:45:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1ED82B226FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:44:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCA251C20F31
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:45:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E73616ABFF;
-	Thu, 18 Apr 2024 14:44:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2838F16D314;
+	Thu, 18 Apr 2024 14:44:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="tf9UAxTV"
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="j/Axis4a";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="O2lISPE8";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="j/Axis4a";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="O2lISPE8"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2E50165FC5;
-	Thu, 18 Apr 2024 14:44:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B5116ABF8;
+	Thu, 18 Apr 2024 14:44:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713451477; cv=none; b=AsqD+eJORWKdq2lJJ6dLSjTEGUAfZ5OrhVeBA7MVTkxu1HWxRYvhAOGCI7X4A01xZ9+gqOD3rQTcs+UXvFt9gZ+tQxHD010NKJDJD9uhaekPNLp/reqRSakvSMBc7TOt7+eyIb2fFBCYZBIU+3q5pUxv9jr3Ch8Yc5Ej5XtSRH8=
+	t=1713451480; cv=none; b=JB/P9tIqlcebiBrhPgKl1w1VX8UeDMo3+VA1eggRZNCpkoQfaS7hflw0R/+srsvpIkdluZJQikYLGzL0nKFtQymZdBC9cM35H7T1TK6ybcJSJ/QM0tzMrYzvLagmWvCNn7LU/MJCN9CS0uMQHkpMuEnZDvXbCxnua1ACn8hvmgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713451477; c=relaxed/simple;
-	bh=qGvIo65M/O9XSi3OcO+KBDaMzqHEMwrb0/nSlAgIJK8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XOxgeHVGl7Z2x9UPHKcl71AewQvonepRq4X7We5jwSceqonP9ZxVGodlJpJXahnQkBAy8wpdFQ4cbUs2sMFCH/UvnoimRxwiTqoUqt32GK3SLq2QGVhUAuGA9M2k6PFtL9imFMKFsTx/uL3hA1RNwNq0kJNf8Fr/l9S1wyYp+/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=tf9UAxTV; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43I9ZrBH012295;
-	Thu, 18 Apr 2024 16:43:58 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type:content-transfer-encoding; s=
-	selector1; bh=6NIHXnPi2/F1Fg1UZ+58Nla4m2nGFD2Orsz8Fiuy0lU=; b=tf
-	9UAxTVCQ34SJRJhZFeA0c/7GSc5sytw5pB1n/I0UqO+8bJ30EbETwuk4yildqC1X
-	6ghftpvefU0Grr21G50z+H5XBEkjz1mf80KOADBZBCMCHjyCjWJ8M8BDhZM45iJM
-	vqUwJoLxpRTp2Uv18Wmf5bxyPdMJ0t3G5Sv2aa0Xhf/8rQYPcjpmey2I/ZV3EGuR
-	ez8Fp/wbMGqRG9qEuO0SrhjnaFsg21TCTPbSABZNxQQIPblqo+9vQ5TVzG3VbUVg
-	X+4U55SGwWlF/gx722I8pafTGWVLWOE0lBIGqqXXXHNzV+h5YdYlHTtlXpLE/fYV
-	ieDOc5G45d9L4lTWQCug==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xffffre01-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Apr 2024 16:43:57 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 24A0E40046;
-	Thu, 18 Apr 2024 16:43:41 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CF974221951;
-	Thu, 18 Apr 2024 16:43:03 +0200 (CEST)
-Received: from localhost (10.48.86.103) by SHFDAG1NODE3.st.com (10.75.129.71)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 18 Apr
- 2024 16:43:03 +0200
-From: Maxime MERE <maxime.mere@foss.st.com>
-To: Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller"
-	<davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre
- Torgue <alexandre.torgue@foss.st.com>
-CC: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Rob
- Herring <robh@kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] crypto: stm32/cryp - add CRYPTO_ALG_KERN_DRIVER_ONLY flag
-Date: Thu, 18 Apr 2024 16:42:56 +0200
-Message-ID: <20240418144256.3736800-4-maxime.mere@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240418144256.3736800-1-maxime.mere@foss.st.com>
-References: <20240418144256.3736800-1-maxime.mere@foss.st.com>
+	s=arc-20240116; t=1713451480; c=relaxed/simple;
+	bh=ZqAH7306niXiQArTyjwVWMfx2ANJaugoiGrkEfxF2TU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XWS8A1GhiLE4icpUIYT8dtvVyXf9KWXk8FVm3O1qoi7c12FpQEYMiNQJgwZeJXOg4jMugldYWFnfiqIrE8fFuSsJbhZRwaCUBp9vhlu+hXwPt5HiqvbL5OldypyoAqugy/rQD6B0jU3V/x7L4MnoUMidkLJNnmxj1XOl5qeCW04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=j/Axis4a; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=O2lISPE8; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=j/Axis4a; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=O2lISPE8; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7960E3505B;
+	Thu, 18 Apr 2024 14:44:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713451476; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=4cd8tcLxMJ30U42Bh798cIOLemd1q1CfZwxFcZrbsdo=;
+	b=j/Axis4aHrFpxH/lxpaI/21MnufZ/B9eF1x5iaxfPmAsiVd5rWAV2FwVXnraHtwwGZH0RB
+	CyIcERvigYzM4XCvUEFDyUvyP/SXtV8R9Z8IRqHH85oW99K6YX5bJJLAN9bLaEgH0oTyM1
+	VGp7IHreuy+GIRfHiao30L6GNOJH4w8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713451476;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=4cd8tcLxMJ30U42Bh798cIOLemd1q1CfZwxFcZrbsdo=;
+	b=O2lISPE8Qu+ZE1uV4cBI7wKO3VEdbwZ8/2cNXQNNULaWrh85pA3lq8MixxeNIRoIdkD5qN
+	CFFB7Sa63gN1+/Bg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713451476; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=4cd8tcLxMJ30U42Bh798cIOLemd1q1CfZwxFcZrbsdo=;
+	b=j/Axis4aHrFpxH/lxpaI/21MnufZ/B9eF1x5iaxfPmAsiVd5rWAV2FwVXnraHtwwGZH0RB
+	CyIcERvigYzM4XCvUEFDyUvyP/SXtV8R9Z8IRqHH85oW99K6YX5bJJLAN9bLaEgH0oTyM1
+	VGp7IHreuy+GIRfHiao30L6GNOJH4w8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713451476;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=4cd8tcLxMJ30U42Bh798cIOLemd1q1CfZwxFcZrbsdo=;
+	b=O2lISPE8Qu+ZE1uV4cBI7wKO3VEdbwZ8/2cNXQNNULaWrh85pA3lq8MixxeNIRoIdkD5qN
+	CFFB7Sa63gN1+/Bg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 52ADD13687;
+	Thu, 18 Apr 2024 14:44:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id kCjxENQxIWaTKgAAD6G6ig
+	(envelope-from <iluceno@suse.de>); Thu, 18 Apr 2024 14:44:36 +0000
+From: Ismael Luceno <iluceno@suse.de>
+To: linux-kernel@vger.kernel.org
+Cc: Ismael Luceno <iluceno@suse.de>,
+	Firo Yang <firo.yang@suse.com>,
+	Andreas Taschner <andreas.taschner@suse.com>,
+	=?UTF-8?q?Michal=20Kube=C4=8Dek?= <mkubecek@suse.com>,
+	Simon Horman <horms@verge.net.au>,
+	Julian Anastasov <ja@ssi.bg>,
+	lvs-devel@vger.kernel.org,
+	netfilter-devel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	coreteam@netfilter.org
+Subject: [PATCH] ipvs: Fix checksumming on GSO of SCTP packets
+Date: Thu, 18 Apr 2024 16:44:33 +0200
+Message-ID: <20240418144434.16407-1-iluceno@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE3.st.com
- (10.75.129.71)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-18_12,2024-04-17_01,2023-05-22_02
+X-Spam-Flag: NO
+X-Spam-Score: -0.30
+X-Spam-Level: 
+X-Spamd-Result: default: False [-0.30 / 50.00];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	BAYES_HAM(-0.00)[29.92%];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:email]
 
-From: Maxime Méré <maxime.mere@foss.st.com>
+It was observed in the wild that pairs of consecutive packets would leave
+the IPVS with the same wrong checksum, and the issue only went away when
+disabling GSO.
 
-This flag is needed to make the driver visible from openssl and cryptodev.
+IPVS needs to avoid computing the SCTP checksum when using GSO.
 
-Signed-off-by: Maxime Méré <maxime.mere@foss.st.com>
+Co-developed-by: Firo Yang <firo.yang@suse.com>
+Signed-off-by: Ismael Luceno <iluceno@suse.de>
+Tested-by: Andreas Taschner <andreas.taschner@suse.com>
+CC: Michal Kubeček <mkubecek@suse.com>
+CC: Simon Horman <horms@verge.net.au>
+CC: Julian Anastasov <ja@ssi.bg>
+CC: lvs-devel@vger.kernel.org
+CC: netfilter-devel@vger.kernel.org
+CC: netdev@vger.kernel.org
+CC: coreteam@netfilter.org
 ---
- drivers/crypto/stm32/stm32-cryp.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ net/netfilter/ipvs/ip_vs_proto_sctp.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/stm32/stm32-cryp.c b/drivers/crypto/stm32/stm32-cryp.c
-index 4480d0e52260..5679ea1032a0 100644
---- a/drivers/crypto/stm32/stm32-cryp.c
-+++ b/drivers/crypto/stm32/stm32-cryp.c
-@@ -2292,7 +2292,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
- 		.base.cra_name		= "ecb(aes)",
- 		.base.cra_driver_name	= "stm32-ecb-aes",
- 		.base.cra_priority	= 300,
--		.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.base.cra_blocksize	= AES_BLOCK_SIZE,
- 		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
- 		.base.cra_alignmask	= 0,
-@@ -2314,7 +2314,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
- 		.base.cra_name		= "cbc(aes)",
- 		.base.cra_driver_name	= "stm32-cbc-aes",
- 		.base.cra_priority	= 300,
--		.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.base.cra_blocksize	= AES_BLOCK_SIZE,
- 		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
- 		.base.cra_alignmask	= 0,
-@@ -2337,7 +2337,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
- 		.base.cra_name		= "ctr(aes)",
- 		.base.cra_driver_name	= "stm32-ctr-aes",
- 		.base.cra_priority	= 300,
--		.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.base.cra_blocksize	= 1,
- 		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
- 		.base.cra_alignmask	= 0,
-@@ -2360,7 +2360,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
- 		.base.cra_name		= "ecb(des)",
- 		.base.cra_driver_name	= "stm32-ecb-des",
- 		.base.cra_priority	= 300,
--		.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.base.cra_blocksize	= DES_BLOCK_SIZE,
- 		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
- 		.base.cra_alignmask	= 0,
-@@ -2382,7 +2382,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
- 		.base.cra_name		= "cbc(des)",
- 		.base.cra_driver_name	= "stm32-cbc-des",
- 		.base.cra_priority	= 300,
--		.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.base.cra_blocksize	= DES_BLOCK_SIZE,
- 		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
- 		.base.cra_alignmask	= 0,
-@@ -2405,7 +2405,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
- 		.base.cra_name		= "ecb(des3_ede)",
- 		.base.cra_driver_name	= "stm32-ecb-des3",
- 		.base.cra_priority	= 300,
--		.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.base.cra_blocksize	= DES_BLOCK_SIZE,
- 		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
- 		.base.cra_alignmask	= 0,
-@@ -2427,7 +2427,7 @@ static struct skcipher_engine_alg crypto_algs[] = {
- 		.base.cra_name		= "cbc(des3_ede)",
- 		.base.cra_driver_name	= "stm32-cbc-des3",
- 		.base.cra_priority	= 300,
--		.base.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.base.cra_blocksize	= DES_BLOCK_SIZE,
- 		.base.cra_ctxsize	= sizeof(struct stm32_cryp_ctx),
- 		.base.cra_alignmask	= 0,
-@@ -2461,7 +2461,7 @@ static struct aead_engine_alg aead_algs[] = {
- 		.cra_name		= "gcm(aes)",
- 		.cra_driver_name	= "stm32-gcm-aes",
- 		.cra_priority		= 300,
--		.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.cra_blocksize		= 1,
- 		.cra_ctxsize		= sizeof(struct stm32_cryp_ctx),
- 		.cra_alignmask		= 0,
-@@ -2484,7 +2484,7 @@ static struct aead_engine_alg aead_algs[] = {
- 		.cra_name		= "ccm(aes)",
- 		.cra_driver_name	= "stm32-ccm-aes",
- 		.cra_priority		= 300,
--		.cra_flags		= CRYPTO_ALG_ASYNC,
-+		.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_KERN_DRIVER_ONLY,
- 		.cra_blocksize		= 1,
- 		.cra_ctxsize		= sizeof(struct stm32_cryp_ctx),
- 		.cra_alignmask		= 0,
+diff --git a/net/netfilter/ipvs/ip_vs_proto_sctp.c b/net/netfilter/ipvs/ip_vs_proto_sctp.c
+index a0921adc31a9..3205b45ce161 100644
+--- a/net/netfilter/ipvs/ip_vs_proto_sctp.c
++++ b/net/netfilter/ipvs/ip_vs_proto_sctp.c
+@@ -126,7 +126,8 @@ sctp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
+ 	if (sctph->source != cp->vport || payload_csum ||
+ 	    skb->ip_summed == CHECKSUM_PARTIAL) {
+ 		sctph->source = cp->vport;
+-		sctp_nat_csum(skb, sctph, sctphoff);
++		if (!skb_is_gso_sctp(skb))
++			sctp_nat_csum(skb, sctph, sctphoff);
+ 	} else {
+ 		skb->ip_summed = CHECKSUM_UNNECESSARY;
+ 	}
+@@ -174,7 +175,8 @@ sctp_dnat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
+ 	    (skb->ip_summed == CHECKSUM_PARTIAL &&
+ 	     !(skb_dst(skb)->dev->features & NETIF_F_SCTP_CRC))) {
+ 		sctph->dest = cp->dport;
+-		sctp_nat_csum(skb, sctph, sctphoff);
++		if (!skb_is_gso_sctp(skb))
++			sctp_nat_csum(skb, sctph, sctphoff);
+ 	} else if (skb->ip_summed != CHECKSUM_PARTIAL) {
+ 		skb->ip_summed = CHECKSUM_UNNECESSARY;
+ 	}
 -- 
-2.25.1
+2.43.0
 
 
