@@ -1,118 +1,114 @@
-Return-Path: <linux-kernel+bounces-149745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BED68A9551
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:49:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6E4A8A9553
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:49:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41C8B1F21F86
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:49:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E65CB20EB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3575515AABC;
-	Thu, 18 Apr 2024 08:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A96315AD83;
+	Thu, 18 Apr 2024 08:48:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pM6RAXcY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="LIimsa/f"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7601D1EEE4;
-	Thu, 18 Apr 2024 08:48:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7055715AAC9;
+	Thu, 18 Apr 2024 08:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713430129; cv=none; b=QmeCBp6zp7b04iTuxgBVhvdNt3mZbAqTmHmnD/HLhx3cgbwAbxE3h/AzpsCLGXcvQuqTC47eLOmE2RBzufCoVNwFDcQ4amGIJlrrFgTiRU6sfzbmd0I3L/3Nk+sglAn+njtmYPGelvTqdzUJ+AYS7VEbu+qlDmhmWa4tDEHEJF4=
+	t=1713430133; cv=none; b=hESICLKiG3sOwBJVrgfLEsLLMhKnC5++Jpj+gfcKDHLGDHJdTSDv5HMWTSEc4zpyrjgNFbGgnNyzAa39BZgMlCJZi0JZaDbujYNbVWyFug7b94WG2poRZIhirBPbubotSJd3GQLAZqNLYrBQywy2xl2dZ2uu0XRDs6C5jski6AY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713430129; c=relaxed/simple;
-	bh=IcW5HH5uLJMQErQnLPAUQVaxQ2dPNEI1SzIPahK7MGY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=E8j6U2c0oJW1M+QEvch5rBs3P6lwbdwXYGH37eo3IIIFUYJ70B14mEgL+lPXEC/2MFbV7zW9CKi2Y0YtA4GYzFx6Kz2vb9J6bxKJv65hExk1SUOg0Rmab4RAg40rxXeQdeT1csT+HxRQ8RY3n6Uybezb1kZkX3d5gZzmjv98+po=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pM6RAXcY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E04DCC2BD11;
-	Thu, 18 Apr 2024 08:48:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713430128;
-	bh=IcW5HH5uLJMQErQnLPAUQVaxQ2dPNEI1SzIPahK7MGY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=pM6RAXcYxLIpwPYr0Bu42IjhAZ46yUDnhVS/DYAHTONRJt8BuWL3GwTbiHIeFqBDj
-	 b5N36zVUgol0TpndMnXUtwmgdfDP+iloJrqRZ97amj6exIVRQHk3HD0OApsPz5T+K5
-	 c30nCckHwbVqnTGL3rAW1yjoqFbNaZtKN5bfW0zm7Gg8DBGafQbgDGED2RTr4mdzqU
-	 2XfjCfbsJMVEKnRcIC6kdevqFarqqGuBLMOgkF2fiOH01rZWhCL1u6w8FFstKBmuG+
-	 lmsrPJ8G3RyPc6PVI/tCGLYtWY5VPqLqKygARfjzOIVtXIWHFqYWlf2rDwmCg64QbZ
-	 adZ/ORRWndwXw==
-Received: from mchehab by mail.kernel.org with local (Exim 4.97.1)
-	(envelope-from <mchehab@kernel.org>)
-	id 1rxNRl-000000000uU-123p;
-	Thu, 18 Apr 2024 09:48:45 +0100
-From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	=?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Brady Norander <bradynorander@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Mark Brown <broonie@kernel.org>,
-	Mark Hasemeyer <markhas@chromium.org>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH] ALSA: hda: intel-dsp-config: Fix Huawei Matebook D14 NBLB-WAX9N quirk detection
-Date: Thu, 18 Apr 2024 09:48:27 +0100
-Message-ID: <5e6ba980c0738199589749b68b83f2d730512107.1713430105.git.mchehab@kernel.org>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713430133; c=relaxed/simple;
+	bh=cCZcSL0YIDAF5qz+4wzip6oQvBGsMJ9ti10QUAp/PH4=;
+	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=lxTPN1I34wHUwfhlxvUd6ai6Hf6B9ohVm+e8iQU/+4k1lQW1VxT349mAxRxNoNTrp3St5OKYxaeSxL0/33FO/7GtIlHFmEYaMM8FsGSuVTM+DSM8+4yDz5nXAEhJxAM9OTFn2IUDi1DwYFZLzd1MedYfG9crslaPqH8a0rUWl3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=LIimsa/f; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	Reply-To:Subject:Cc:To:From:MIME-Version:Date:Message-ID:From:Sender:Reply-To
+	:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=ceJILIOVA2WDBG4d054KS51MjWUMSrgtQobFchiud7w=; t=1713430131;
+	x=1713862131; b=LIimsa/fAMNjDmSmZRH9wMKuyxY3DkeZSljscBj73THRs7plnK0OGTVxDGE0q
+	JT7B9WYprfRkMq0eQoxxTT+A2+eM23K2I0kcAKY6jC4f090lXVweIl3ScSTR7fg+3yZCGrt/WafEi
+	OfXlcoXU/+A3hXEZUF/9eeEcUMeM+dW+Aw8k0ZKn9OaRQJ/LhuoeaZBFHavy+Pgv2F7/2cBp4KCdY
+	reSWHyg8ABuy2COuAlZAv31NJXWE0Je6sOdqMLoSl/brOylI2uFKJ6TxRT2CYLrH2UQHVJXPdzN7I
+	3CW5KQ4ZiOOFvGanEzLJ9eWJpobnIDTvmeHmCR7SP3/SLqqaQA==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rxNRi-0004qb-BO; Thu, 18 Apr 2024 10:48:42 +0200
+Message-ID: <e17e5bf2-657a-4a22-a925-94db95fe8ca1@leemhuis.info>
+Date: Thu, 18 Apr 2024 10:48:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+To: Felix Fietkau <nbd@nbd.name>, Lorenzo Bianconi <lorenzo@kernel.org>,
+ Ryder Lee <ryder.lee@mediatek.com>
+Cc: Kalle Valo <kvalo@kernel.org>,
+ "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ Linux kernel regressions list <regressions@lists.linux.dev>
+Subject: [regression] Tri-band AMD RZ608 (MediaTek MT7921K) has 6GHz band
+ disabled in kernel 6.8 despite working in <=6.6
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1713430131;169e7109;
+X-HE-SMSGID: 1rxNRi-0004qb-BO
 
-Newer Matebook D14 model comes with essx8336 and supports SOF,
-but the initial models use the legacy driver, with a Realtek ALC 256
-AC97 chip on it.
+Hi, Thorsten here, the Linux kernel's regression tracker.
 
-The BIOS seems to be prepared to be used by both models, so
-it contains an entry for ESSX8336 on its DSDT table.
+mt7921 maintainers, I noticed a report about a regression in
+bugzilla.kernel.org related to your driver. As many (most?) kernel
+developers don't keep an eye on bugzilla, I decided to write this mail.
+To quote from https://bugzilla.kernel.org/show_bug.cgi?id=218731 :
 
-Add a quirk, as otherwise dspconfig driver will try to load
-SOF, causing audio probe to fail.
+> On kernel 6.6.27-1-lts, running `iw list` shows that 6GHz channels are supported:>
+> [...]
+> Similarly, discovering and connecting to 6GHz APs works fine.
+> 
+> However, in recent kernel 6.8.5, running `iw list` shows that 6GHz channels are disabled:
+>
+> [...]
+>
+> And scanning or connecting to 6GHz APs does not work. 
+> 
+> There's nothing in `dmesg` that differs between boots of the two kernels. On 6.8.5, 6GHz band doesn't work like it did on previous kernels. 
+> 
+> I can provide more logs or help debug the issue if needed.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
----
- sound/hda/intel-dsp-config.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+See the ticket for more details. Note, you have to use bugzilla to reach
+the reporter, as I sadly[1] can not CCed them in mails like this.
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index 6a384b922e4f..8e728f0585dd 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -46,6 +46,22 @@ static const struct snd_soc_acpi_codecs __maybe_unused essx_83x6 = {
-  * - the first successful match will win
-  */
- static const struct config_entry config_table[] = {
-+	/* Quirks */
-+	{
-+		.flags = 0,	/* Model uses AC97 with Realtek ALC 256 */
-+		.device = PCI_DEVICE_ID_INTEL_HDA_CML_LP,
-+		.dmi_table = (const struct dmi_system_id []) {
-+			{
-+				.ident = "Huawei NBLB-WAX9N",
-+				.matches = {
-+					DMI_MATCH(DMI_SYS_VENDOR, "HUAWEI"),
-+					DMI_MATCH(DMI_PRODUCT_NAME, "NBLB-WAX9N"),
-+				}
-+			},
-+			{}
-+		}
-+	},
-+
- /* Merrifield */
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_MERRIFIELD)
- 	{
--- 
-2.44.0
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
+[1] because bugzilla.kernel.org tells users upon registration their
+"email address will never be displayed to logged out users"
+
+P.S.: let me use this mail to also add the report to the list of tracked
+regressions to ensure it's doesn't fall through the cracks:
+
+#regzbot introduced: v6.6..v6.8.5
+#regzbot title: wifi drivers: mt7921: 6GHz band stopped working
+#regzbot from: AlexDeLorenzo.dev
+#regzbot duplicate: https://bugzilla.kernel.org/show_bug.cgi?id=218731
+#regzbot ignore-activity
 
