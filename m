@@ -1,170 +1,101 @@
-Return-Path: <linux-kernel+bounces-149855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4B658A96D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0073E8A96E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:00:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B4B5283687
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:58:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B00872832D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D67515B555;
-	Thu, 18 Apr 2024 09:58:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4492015B56A;
+	Thu, 18 Apr 2024 10:00:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MI/tAaCr"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pgaKqiNc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F021515B543
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:58:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DCEA15AAB2;
+	Thu, 18 Apr 2024 10:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713434308; cv=none; b=J/lT89tx89/gj8TOX/ehBrkVITyQTE0Y91VOPPMbdicNvOgnM7hKVGgXTVYa8CY8CvxCxBVJ4TMkn9eKO5ZcZw53FmtiYofC1xjKAy2HT7gJOrQ8kyuHJRdeJqXTkhsF9a+93AhZ7Mfz2zFgI9+IBrU4odVJHOejsfCN0KziCxA=
+	t=1713434431; cv=none; b=sQwRNf5oiC8hA9Cq6J85fTK3BAzgX1BGiRFzztBgIBANadHtwgDHxtiqbAYNQDAUFV/5RYl4a4U/uMYjRKC7eGkvphU/9l/3PtnCBsOf1yYWwMSGc9ByHBIaX1EpaCeHrJvXmjNLFw78P+YJjRaWnWS2O7VlCNL1KwLCiD/ANa8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713434308; c=relaxed/simple;
-	bh=IYL6T+V3bODA/4KtalNC0fiFQICw8IbbpWhSWYj7wXA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sK2a8I9db+3Zx64azQxXcGO+cObEYkqdaw6bIF23oSJuKPatgTPtWHi4yoT/yA7wXHDY9Tg0enr/J4it2FPRUe5er4g8rCf5Ams/L80gxeLJOb6smDGEZ7kDVl9C6y5vZdHXT3Gl47LkmQ8LOQbqKPuDLUvLEdhZ43fbEMMyyQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MI/tAaCr; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713434305;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zKPGI9ew2fkbkDGXx4HvqG1PWWY8ELG5N7Cy+nQnEhg=;
-	b=MI/tAaCruDEksn8P0BzyI7M3F9ji4jy7513b8JtEFUdIUcEcAGMW5hCQglO1kX+H/LKtyC
-	5sLfEIe7zLttlr1zhQAzXDHJbhLuFgmFPUS74oQYj3abRpR9eAzPdzBnHzEwjL+xlDb+Nt
-	I17f28tXtCPArjIcIaSOIA+KrrSSoZU=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-447-_Vf69qvNM-aKLu4t0LXbTA-1; Thu, 18 Apr 2024 05:58:24 -0400
-X-MC-Unique: _Vf69qvNM-aKLu4t0LXbTA-1
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5f44b50ed93so876810a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 02:58:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713434303; x=1714039103;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zKPGI9ew2fkbkDGXx4HvqG1PWWY8ELG5N7Cy+nQnEhg=;
-        b=ih2dD1jMV5XljLlhOTZ0P4Tehga38iZ7MVfwEj3+9a6zRlkhXJMD5CNlKnJNZ2yG33
-         9ZchBxrc0PofYQLbKmtsPB+WTgN7cPBMKkjI/h0ZLqEMf8IGPn1+ikLNW4dqNOMpc1wV
-         5Hsec34H07NIeImFyiXD24NCqP/8DXlow0DWoIdGuylRi52Nl8C48SOuVxBiarP03ZRb
-         MYD8JrykMcbE3P6Uq7bIxOiLf/0oLPpEzGLjvkxaPsGrPLWfS30uV95MFMoi1LYzZZAv
-         03y+TQG7o63HC+NEGO3Zu7J7vt++zV8AUrrcPlwXNczGECj6gm8JDm4EGQJMCyqWYMND
-         mb2A==
-X-Forwarded-Encrypted: i=1; AJvYcCWR4aJqZqnNtKX5Rh4jZCqcypD3YDWyYlLRarp4FI8v+nM7zIcDTZVY9I1cuJiOLv1sN0UfmRgNPPIeeyVvBo6BxHFazJ1XAp45lAQx
-X-Gm-Message-State: AOJu0YxOr/WeX1H6wapeH9Rr7O3RBlJDjHAY8h61TlbfNeQbfpMlnQMl
-	BYxryBeuj2nJvGQGwa7F2IxMOwa8InddoTq6dpwn/44/tKiVqF81QBmArroGYwwG3o1A5OiiQj4
-	jl/yiB+F3PrY3bPR7zFtKetmEw8IXcLAANCNq1JfYmCRgRcQhDUuHKvYMgeuEUGR/Nh0EQHe0vq
-	tw2U3gMUT0MrVjWmFD7aKtnE6PyxrjIqArZuX/
-X-Received: by 2002:a05:6a21:1644:b0:1a9:86dd:177b with SMTP id no4-20020a056a21164400b001a986dd177bmr3290231pzb.44.1713434303407;
-        Thu, 18 Apr 2024 02:58:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGa4dwQFhrk1w0SYLZzniPfi43GT7mCS2Xf+l6IkxifisTK5fxxbC7c3s1aLJXxzomHmCC4Yk8eG0UTt2+BxDo=
-X-Received: by 2002:a05:6a21:1644:b0:1a9:86dd:177b with SMTP id
- no4-20020a056a21164400b001a986dd177bmr3290218pzb.44.1713434303098; Thu, 18
- Apr 2024 02:58:23 -0700 (PDT)
+	s=arc-20240116; t=1713434431; c=relaxed/simple;
+	bh=VZ8PSIQDBZok+yillN9+DRYAlL6mgmiVxKVpDWlsKh4=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=d7qfn/BGgf/5LY7hR6df/5rvRwpfd6viAaSe/rGY7FoGVH7CKMETT5ZgeyiaR7mkvmyQ6sQCTK7cp+uvoUjMgPnqGW0/yHoSmuQkDyNLHrtRDqVXB+yJ85KhWwY9WyXlOyQvJ2UIbYV7AZDEAZGTvMa9wc9rjPgiD9IekKM6r60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pgaKqiNc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6261DC2BD11;
+	Thu, 18 Apr 2024 10:00:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713434430;
+	bh=VZ8PSIQDBZok+yillN9+DRYAlL6mgmiVxKVpDWlsKh4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=pgaKqiNcAG7IEKmoE5YEi+tenjJE2ph2OUf5hpzmDgS55MHyINo4EV1np3TllCwZa
+	 CGGFuinqg6K4Af/oq7PI77a/uHPi2N4ypylANDrSaaxLneNmpmYlNy8n3yb7EqkfFq
+	 eXvBYBtzMs/xiBsn75S5YpJhTeq3BoIpz7xBOG016iXGOghsJkHTuUzTlPferwGvQP
+	 SI6GoB2yB1Y6ios9ZBiWX2ke2a/fzqbu6VkU0NS/cXrVajTOt5uru/+Y2L0Ue6MrsY
+	 gWcXLL5V1/+HZYYBARXAdYQg+UAnDeBLws7sUOPtDWbD5FlBQVL43jUHR7xaWbDZo4
+	 Kt7I+L/52yP7A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4E266C43618;
+	Thu, 18 Apr 2024 10:00:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <3c0ab8eb94ad4b6fb4cb2159f0638650@kioxia.com>
-In-Reply-To: <3c0ab8eb94ad4b6fb4cb2159f0638650@kioxia.com>
-From: Xiao Ni <xni@redhat.com>
-Date: Thu, 18 Apr 2024 17:58:11 +0800
-Message-ID: <CALTww2_zw8=_wizsA=msnYsx-cKAHzHBB4maYp7T+GZmkAQvqg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/11] md: avoid counter operation conflicts
-To: tada keisuke <keisuke1.tada@kioxia.com>
-Cc: "song@kernel.org" <song@kernel.org>, "yukuai3@huawei.com" <yukuai3@huawei.com>, 
-	"linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net PATCH v3 0/4] ravb Ethernet driver bugfixes
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171343443031.11236.5934225163473526469.git-patchwork-notify@kernel.org>
+Date: Thu, 18 Apr 2024 10:00:30 +0000
+References: <20240416120254.2620-1-paul.barker.ct@bp.renesas.com>
+In-Reply-To: <20240416120254.2620-1-paul.barker.ct@bp.renesas.com>
+To: Paul Barker <paul.barker.ct@bp.renesas.com>
+Cc: s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, niklas.soderlund+renesas@ragnatech.se,
+ geert+renesas@glider.be, claudiu.beznea.uj@bp.renesas.com,
+ biju.das.jz@bp.renesas.com, yuehaibing@huawei.com, netdev@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Thu, Apr 18, 2024 at 2:21=E2=80=AFPM tada keisuke <keisuke1.tada@kioxia.=
-com> wrote:
->
-> Changes in v2:
->  - Add message of performance in cover.
->  - Fix a problem of error code initialization in patch 6.
->  - Fix a problem of sleeping during rcu_read_lock() in patch 9.
->  - Change base-commit from md-6.9 to md-6.10
->
-> Currently, active_aligned_reads and nr_pending used as counters are atomi=
-c types.
-> Therefore, when inc/dec in a multi-core results in conflicts and READ I/O=
- becomes slow.
-> To improve performance, use "percpu_ref" counters that can avoid conflict=
-s and maintain consistency.
->
-> Switch modes of percpu_ref to achieve both consistency and conflict avoid=
-ance.
-> During normal operations such as inc/dec, it operates as percpu mode.
-> When consistency is required, it operates as atomic mode.
-> The operations that require consistency are as follows:
->  - Zero check for the counter
->  - All operations in RAID 1/10
->
-> Patches 1, 3, 6 change active_aligned_reads, and patches 2, 4, 5, 7 to 11=
- change nr_pending.
-> nr_pending temporarily switch from percpu mode to atomic mode in patch 7.
-> This is to reduce the amount of changes from patches 8 to 10.
-> Finally, nr_pending switch from atomic mode to percpu mode in patch 11.
->
-> We applied the patch to base-commit and used fio to compare IOPS.
-> CPU: AMD EPYC 7313P (3.0GHz, 16cores)
-> DISK: ramdisk x 3 (modprobe brd rd_nr=3D3)
-> RAID: level 5
-> fio config: bs=3D4k, rw=3Drandread, iodepth=3D128, numjobs=3D16
->
-> without patch: 3.64 MIOPS
-> with patch   : 3.84 MIOPS
+Hello:
 
-Hi Tada
+This series was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Thanks for the patch set. Have you done tests with nvme/ssd or hdd?
-It's better to see the results with real disks.
+On Tue, 16 Apr 2024 13:02:50 +0100 you wrote:
+> These patches fix bugs found during recent work on the ravb driver.
+> 
+> Patches 1 & 2 affect the R-Car code paths so have been tested on an
+> R-Car M3N Salvator-XS board - this is the only R-Car board I currently
+> have access to.
+> 
+> Patches 2, 3 & 4 affect the GbEth code paths so have been tested on
+> RZ/G2L and RZ/G2UL SMARC EVK boards.
+> 
+> [...]
 
-Best Regards
-Xiao
->
-> Keisuke TADA (11):
->   add infra for active_aligned_reads changes
->   add infra for nr_pending changes
->   workaround for inconsistency of config state in takeover
->   minimize execution of zero check for nr_pending
->   match the type of variables to percpu_ref
->   avoid conflicts in active_aligned_reads operations
->   change the type of nr_pending from atomic_t to percpu_ref
->   add atomic mode switching in RAID 1/10
->   add atomic mode switching when removing disk
->   add atomic mode switching when I/O completion
->   avoid conflicts in nr_pending operations
->
->  drivers/md/md-bitmap.c   |  2 +-
->  drivers/md/md.c          | 48 ++++++++++++++++++---
->  drivers/md/md.h          | 62 +++++++++++++++++++++++----
->  drivers/md/raid1.c       | 37 +++++++++++------
->  drivers/md/raid10.c      | 60 ++++++++++++++++-----------
->  drivers/md/raid5-cache.c |  4 +-
->  drivers/md/raid5.c       | 90 +++++++++++++++++++++++++++-------------
->  drivers/md/raid5.h       | 17 +++++++-
->  8 files changed, 238 insertions(+), 82 deletions(-)
->
->
-> base-commit: 9d1110f99c253ccef82e480bfe9f38a12eb797a7
-> --
-> 2.34.1
->
->
->
+Here is the summary with links:
+  - [net,v3,1/4] net: ravb: Count packets instead of descriptors in R-Car RX path
+    https://git.kernel.org/netdev/net/c/def52db470df
+  - [net,v3,2/4] net: ravb: Allow RX loop to move past DMA mapping errors
+    https://git.kernel.org/netdev/net/c/a892493a3434
+  - [net,v3,3/4] net: ravb: Fix GbEth jumbo packet RX checksum handling
+    https://git.kernel.org/netdev/net/c/c7c449502b51
+  - [net,v3,4/4] net: ravb: Fix RX byte accounting for jumbo packets
+    https://git.kernel.org/netdev/net/c/2e36c9fbc476
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
