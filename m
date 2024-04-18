@@ -1,121 +1,132 @@
-Return-Path: <linux-kernel+bounces-150317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C25FD8A9D52
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:40:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BABD48A9D34
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:35:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA453B2598B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:34:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7668F2824F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F11168AFC;
-	Thu, 18 Apr 2024 14:34:43 +0000 (UTC)
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0816015F409;
+	Thu, 18 Apr 2024 14:35:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CLFS+Kvf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 213E9168AE6;
-	Thu, 18 Apr 2024 14:34:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC486FB0;
+	Thu, 18 Apr 2024 14:35:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713450883; cv=none; b=VTaxoLAT5hivtVC/pso3rTaLlA48szlw1j8TWnieCQKwfNfNSGv5hLxqp1gZQmTlir6wMI0Zab07l/ARZZO3bR1D267EaA71K0Hn2grtGZLbWjP/Sfme1gkUM0xR+O54Vg3+G9E8ZhHTgy7y37atUVRxRLjSQEJzdozgkDcxD1A=
+	t=1713450909; cv=none; b=UncDFQnzT9OYz3iVNQ+CSp0tz3+xqrSEmgIKpvBRa5gg4HGmBChp7xu2G5JZ8wApVy5phqa/13RsDV7ALyrpFm2m95WxJhg2xFc1LPx6YD3ILiaqLJM6Wlf1SCU6ExjDtWpZwZc/czBoZaOnV2l2gwqOtMZLlhp6sdkyq4QhmoE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713450883; c=relaxed/simple;
-	bh=lFEhPvk18dl4N7zV23MlFHhVbDsGmOEDL6eGyAMEQRw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sO/3qoMGAB7Aat2O242Ac8e8Zvt4pl3pHjGyj40NxAbt1W0T2fKcgrlFkPCOj6AMA9MfkEe7CytazMBIPt8NdLOVkXjeLu8qPRepWiumJxWwb23rKzMgU8RsO180zk8guTIEewLU9QfypX9rl5lFS2VAArXCJW5KyVhtoftDsQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-de466c641aaso745120276.3;
-        Thu, 18 Apr 2024 07:34:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713450877; x=1714055677;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l4qMhjuBqY7JwfLnRM9VZooBQ1VsIWFaDYIE/bOR1ec=;
-        b=sDjOKojwqlbIe56AGxzofrEOLgR2pVCALmKM77/aXaepNHQMgOss9ayi6h14znWmAT
-         V75CevMZlq+TboFzhV6Q7P4Za3aLXqhqtqf+x5l6g+DwP61LjAkFAIziJYojImZLeoSb
-         RYfd4hRrjkpRjL03nvE3o2p/0+eSHc8Vyg0aGwKYfBlnHPNic2sA0IIX29/3rTCio6lk
-         pqtL9jYlWsEKpsTG/MNL/siCac1eKbe+rvyv38apvFOwIdUIl1rjcPN/6jnB6ORRW+Tf
-         aLJJ+yZaro3kmHevV6AwQXm0Y/yh8epW9U3GWaHeu0u3muAAmRKpRW3xBY65vZm+f3Ed
-         69jQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUCjlIKidWJXE7MnXVGsMemAXoysk3UI252eoH9x3kzH0IB6zYnRcAsMKXKP4Cw116breijCyxJjw3S3WYKi8dpiEhhqWNgZRJqfdVBYx9wi3+nfCAThG5OJAXLo3jn28XYZJetVcOZ7plhbSBG5xG648wwavJv4F9R9JTwW9Kn4UvqVX0SsMyTkQmV
-X-Gm-Message-State: AOJu0Yxek1vEesbPpg+5/T2nMBpE2wjcbWwK24Eit5VyJpysG13haSNp
-	9ZZTZ58CKkR9nWKXkbwum0WVaCGuYjG/J/Otf4no1v+Kt2t38qvUHArtXjvU
-X-Google-Smtp-Source: AGHT+IFH+s1XB4/ulKiA43Bo/LRnLJ9TxopCHKWiSVlnWoryyJkwzCeGE+kzyAVPfHHlK99bJAyR6Q==
-X-Received: by 2002:a5b:18c:0:b0:dc7:5cb3:256a with SMTP id r12-20020a5b018c000000b00dc75cb3256amr2937512ybl.42.1713450876832;
-        Thu, 18 Apr 2024 07:34:36 -0700 (PDT)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com. [209.85.128.170])
-        by smtp.gmail.com with ESMTPSA id t1-20020a056902124100b00dc254858399sm376653ybu.2.2024.04.18.07.34.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 07:34:36 -0700 (PDT)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6150670d372so8653337b3.1;
-        Thu, 18 Apr 2024 07:34:36 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV6Lzg7yo8mZcB/lkuVxKS4grXI84mw/+vYIgwOqkue5KxmUHrOOvTqDxWJ4G7ieKepjthtMffnlwl9H90QLdzCWliD7bi8T2+kLweBActyzuVCRpj0+w9Fm/2bMe+NIgG5sOV5n9GtgeZvlU0Ta+P7h/Sn3IUjx4C5iH9UO+I45ppXneA5X60U9mgt
-X-Received: by 2002:a25:df11:0:b0:de4:16b0:c8f6 with SMTP id
- w17-20020a25df11000000b00de416b0c8f6mr2918064ybg.14.1713450876072; Thu, 18
- Apr 2024 07:34:36 -0700 (PDT)
+	s=arc-20240116; t=1713450909; c=relaxed/simple;
+	bh=OEXF5v2Z/Fz6GXadkZnudB6JdYfvV5Jh7Dv77dnNqH0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BxhEyfhD5jq93iSLZDGNGW/rnAjTe3e4YafN0gt4PuJCtN+yA8Wf3E6qrl5Cn/bOfZkwpo8AOogHfwJacqs/F9IPj9U4yk3HGAdVGjBfQl76kHCjFWqldsdASxojiHT/a5QwdnnZgI4HZ2opxnNdI9Bz8tkGn1zUWTr+5S+tRb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CLFS+Kvf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 628DEC113CC;
+	Thu, 18 Apr 2024 14:35:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713450908;
+	bh=OEXF5v2Z/Fz6GXadkZnudB6JdYfvV5Jh7Dv77dnNqH0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CLFS+KvfC4yz42/ZvPtVa1JR+3VpF1SnyRmcsg79sL9c9Mh1+7odVb3yanDzLBIaZ
+	 lG/qW1+t8HN49kq0flP7g/KJw5jsU16ZYt5m+j2jKYdYcbi+99J8xzq1/9YEGwW1cb
+	 o6pYCHkpsFH9DPn6J3ZrELrEfCn5566dKM1dEPct22EkP1RoVe2t1LUDJ7sAlMU1rp
+	 +huprQEG8wwFf7hKW0z0zQbnmomN9MFf0rsHUem0Q+c8Ouaiti+I3edb0IRHWaD59Y
+	 QkfmXS+E9P2PrfhtZ2G5nTMVBz5Z67458aT5o7kItN1sAgZqvPh/PiW/BrgyIaUyjk
+	 3UEI5NvykCdHw==
+Date: Thu, 18 Apr 2024 11:35:05 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Changbin Du <changbin.du@huawei.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] perf trace beauty: Fix statx flags printing
+Message-ID: <ZiEvmabmIxTjDLeb@x1>
+References: <20240418131304.3188385-1-changbin.du@huawei.com>
+ <20240418131304.3188385-2-changbin.du@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403203503.634465-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240403203503.634465-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240403203503.634465-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 18 Apr 2024 16:34:23 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWUooMrm2GjGwoK4xo-BfOmX+mwvT-62KHqPcCg8kBMEw@mail.gmail.com>
-Message-ID: <CAMuHMdWUooMrm2GjGwoK4xo-BfOmX+mwvT-62KHqPcCg8kBMEw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] dt-bindings: interrupt-controller:
- renesas,rzg2l-irqc: Document RZ/Five SoC
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240418131304.3188385-2-changbin.du@huawei.com>
 
-On Wed, Apr 3, 2024 at 10:36=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
-om> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Document RZ/Five (R9A07G043F) IRQC bindings. The IRQC block on the RZ/Fiv=
-e
-> SoC is almost identical to the one found on the RZ/G2L SoC, with the only
-> difference being that it has additional mask control registers for
-> NMI/IRQ/TINT.
->
-> Hence new compatible string "renesas,r9a07g043f-irqc" is added for RZ/Fiv=
-e
-> SoC.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Thu, Apr 18, 2024 at 09:13:01PM +0800, Changbin Du wrote:
+> Missed a string specifier '%s' in format string.
+
+Humm, what branch should this be applied to? I ask because:
+
+⬢[acme@toolbox perf-tools-next]$ git log --oneline tools/perf/trace/beauty/statx.c
+f122b3d6d179455e perf beauty: Introduce scrape script for the 'statx' syscall 'mask' argument
+3d6cfbaf279ddec9 perf beauty: Introduce scrape script for various fs syscalls 'flags' arguments
+a672af9139a843eb tools headers: Remove almost unused copy of uapi/stat.h, add few conditional defines
+6652830c87be8446 perf beauty: Use the system linux/fcntl.h instead of a copy from the kernel
+690811f0128eb603 tools headers uapi: Sync linux/stat.h with the kernel sources to pick STATX_MNT_ID_UNIQUE
+49c75d30b0078d30 tools headers uapi: Sync linux/stat.h with the kernel sources
+5d33cbfedb51f732 perf beauty: Add support to STATX_MNT_ID in the 'statx' syscall 'mask' argument
+c65c83ffe9045901 perf trace: Allow asking for not suppressing common string prefixes
+794f594e0c3be619 perf beauty: Switch from GPL v2.0 to LGPL v2.1
+fd5cead23f546973 (tag: perf-core-for-mingo-4.12-20170331) perf trace: Beautify statx syscall 'flag' and 'mask' arguments
+⬢[acme@toolbox perf-tools-next]$
+
+⬢[acme@toolbox perf-tools-next]$ tools/perf/trace/beauty/statx_mask.sh 
+static const char *statx_mask[] = {
+	[ilog2(0x00000001) + 1] = "TYPE",
+	[ilog2(0x00000002) + 1] = "MODE",
+	[ilog2(0x00000004) + 1] = "NLINK",
+	[ilog2(0x00000008) + 1] = "UID",
+	[ilog2(0x00000010) + 1] = "GID",
+	[ilog2(0x00000020) + 1] = "ATIME",
+	[ilog2(0x00000040) + 1] = "MTIME",
+	[ilog2(0x00000080) + 1] = "CTIME",
+	[ilog2(0x00000100) + 1] = "INO",
+	[ilog2(0x00000200) + 1] = "SIZE",
+	[ilog2(0x00000400) + 1] = "BLOCKS",
+	[ilog2(0x00000800) + 1] = "BTIME",
+	[ilog2(0x00001000) + 1] = "MNT_ID",
+	[ilog2(0x00002000) + 1] = "DIOALIGN",
+	[ilog2(0x00004000) + 1] = "MNT_ID_UNIQUE",
+};
+⬢[acme@toolbox perf-tools-next]$
+
+Can you please try with what is in
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git,
+branch perf-tools-next?
+
+- Arnaldo
+ 
+> Signed-off-by: Changbin Du <changbin.du@huawei.com>
 > ---
-> v1->v2
-> - Dropped the checks for interrupts as its already handled
-> - Added SoC specific compat string
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+>  tools/perf/trace/beauty/statx.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/trace/beauty/statx.c b/tools/perf/trace/beauty/statx.c
+> index dc5943a6352d..c61f2be53bda 100644
+> --- a/tools/perf/trace/beauty/statx.c
+> +++ b/tools/perf/trace/beauty/statx.c
+> @@ -21,7 +21,7 @@ size_t syscall_arg__scnprintf_statx_flags(char *bf, size_t size, struct syscall_
+>  		return scnprintf(bf, size, "%s%s", show_prefix ? "AT_STATX_" : "", "SYNC_AS_STAT");
+>  #define	P_FLAG(n) \
+>  	if (flags & AT_##n) { \
+> -		printed += scnprintf(bf + printed, size - printed, "%s%s", printed ? "|" : "", show_prefix ? prefix : "", #n); \
+> +		printed += scnprintf(bf + printed, size - printed, "%s%s%s", printed ? "|" : "", show_prefix ? prefix : "", #n); \
+>  		flags &= ~AT_##n; \
+>  	}
+>  
+> -- 
+> 2.34.1
 
