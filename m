@@ -1,108 +1,287 @@
-Return-Path: <linux-kernel+bounces-149953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F02B28A984B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:10:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 317718A9852
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:11:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C59D1C20EDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:10:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EA4EB24596
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:11:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB62715E803;
-	Thu, 18 Apr 2024 11:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4863915EFBD;
+	Thu, 18 Apr 2024 11:11:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I8RUpAz1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bZn6QWcC"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D95815E21B;
-	Thu, 18 Apr 2024 11:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C7715E81D;
+	Thu, 18 Apr 2024 11:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713438632; cv=none; b=QPBwV3Ww+yWMpjbz56+HgdWVmAgIK+1ewWmc4Pb+Y2hd4VSPJ3jY2A2RIVTREtWvIgCyxDjuR4uzLIxOSMe/Ibfmb6UzUKjudVLVMXgP4tI2WiNFXQ1W+tzaeSWjgfkKZPSDk8129gz8PHsywWE50EBymSD9tt4gG/a3ga14cAo=
+	t=1713438664; cv=none; b=Vk7hDLwaelOG3I2DxdutcZphjCaE5ohOI/td8nTmy/CufCRIjkj4I7tZtFwb0w9P373Jn6estdiRqVrtsOYvh5dYRYy7fnknKxNgggVT6m4YfU+fOPAvLNuGr0FwXIE0VnCd4by67ANG6ejDIUVi9PgHR5x/SN/DeM81zzt9S40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713438632; c=relaxed/simple;
-	bh=zOHH2X/lpw7NGyKEvIeTY5HrLvu107q7by/WfSVVR6I=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=aBtN3DfFVrl5ts9xGFmXbHniNXj8DQ+iiNGckhmnEm16Fvjk9750Gi1Qo40+80rMtE5gDDRd4fEfjlGX/U07e8kbkvtYCqtejwzLITmBZsjLEZpXC6ewL/upavsjBiBQJok9olwjBI3w4+6yaVCVocewft21VhtA1kSJjgXgKbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I8RUpAz1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 93874C3277B;
-	Thu, 18 Apr 2024 11:10:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713438630;
-	bh=zOHH2X/lpw7NGyKEvIeTY5HrLvu107q7by/WfSVVR6I=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=I8RUpAz1dQR7zg+/kkLL6I6I6GZElSYRB6cVVEXdzPPRO7I2GrQFOxqqpJ96NHJ/q
-	 FaKhemo08AMamdjT9R6pIGvffLIXsGp0iAOq/gkhNawcWBTt3xb70BtuqmcMoRIIbh
-	 9XG5gY6pZ0MiRE6gq5BiiPOUTWxotkcTvQJYr0qoJwZ/2i7gkKJmKU4Mckcrb7i+jO
-	 v6m/jz9hk71ocibw/IuGjzXypBvwVBte8GK+/A67vRro++huXP+/nowwlgRKmifVai
-	 f2IuqkHQ4wHcNGMWhxYVwlBYrS0LLLil26mnla0CxMLUjg1CAwFfRsZU/VTd0qgxsQ
-	 3OHPYMS6JKHHA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7ED9AC43616;
-	Thu, 18 Apr 2024 11:10:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1713438664; c=relaxed/simple;
+	bh=jbkjH0oMfHSOLsZFAKrCDRnqKRYEKhNM61Mt/WQOWPE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VbhtEsb/u+nOIwNOamTExtXH/0Nnc6xkjwRIu75kVOm4wEF3hBneweZNceaiYdr1dwk1MgySwJGYFk763LIV0Q4+e54cAc+trLXRqlzaq3DnsDDFW2RQLwRPIG8T1opOROoXSMps850Vh2ck+A8aLIa480QUrlG6sTOL/4QoWvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bZn6QWcC; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a554afec54eso81772066b.1;
+        Thu, 18 Apr 2024 04:11:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713438661; x=1714043461; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ajRcHzOO+dTeV5Ygaxyp7yiGlFkKEfT94A9BqR9K7GI=;
+        b=bZn6QWcCtu8HyFyjmVBv67KQzxlyE6cBoJb3SmHM/zcH9QzEHrB56+Ya6nZRUyk2jB
+         /qQKg1oAiU3vxZAHyO9AaTWfpYS+vborsV/+Bwdg6dUm1IBlF25acF/dhrmzQd3wNCPF
+         u0hYXkQ6kQ90S1b/Sl8q1x75SpJ96THddiMFKw1y8LUgQ6sdIYCs3M9/HBVQzXiSsIkX
+         wOAhl9WSsNRVEEb6UPaVU1BInBFpoBkFLI3hotgEy7utdIk1uqA73VJvG2LD0xTFvYTu
+         fKwUWYIzhIoRLguGC5x4tD1U4D3XSMtOiifScps2caxw+0RsI1j8tz7zOAQjLOVQk6E9
+         bwww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713438661; x=1714043461;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ajRcHzOO+dTeV5Ygaxyp7yiGlFkKEfT94A9BqR9K7GI=;
+        b=WQeAveBW5FwFwCf03YFSMivblTDhjNyAdpcdq1YokBp0gql9zvMrKem1sL8LD/K4yO
+         SIY2MqCNy1oJlWRkcAbCM9mONQl/+T0c5bjHNsdMRnJrDb0CSum60e0IdCnZGiohCBww
+         pD6C45AJOqRnB0tR0R9ZJhT0tiVTcQkqUiEejtfoBSvvU7iQhnEgivWFvDXJ5AUnHrCE
+         ykm7QGeiJvqHEgCPHoe4VhN/xuv06h03ieE/Qyb2z6/O6IDa+ZrFtaZj5046uDAEktEk
+         DP63NjHoTh29TsYE/y3HPqy+XZG0LKbm/M2q6XM1aWHDA7KleS0Jp5H/X1s/sG+JREmy
+         OYpA==
+X-Forwarded-Encrypted: i=1; AJvYcCUNFIchAa0EjfLUhubPWYNWrW33DMSbnEqZvc6PPNUURM14FO4JOYfttwgz2ri/sMhXoDKnZIJlOuT4l5YOGAqp3ugcStZcuD6f3AgTt2NDMUdqe8rFNTsa8Q+A6AKIE+EnOP4yn7poDNAjAu0poXN5Tkz2q1tOH/aLODb4eZVp2k7BJKXXmP4JbAWjGF7fXTo/M4ubMopMmKHi8yJ/RF9cz7IxGBW7yA==
+X-Gm-Message-State: AOJu0YxSY1vMGw7pyaK/15nXuLFXavTdv8DpHASQwrmtnrTawgABdZ37
+	534KR1FUUPorusJtbVsFBP8d2Pbbb72xrvRp/WU9/dhShKi+i10I
+X-Google-Smtp-Source: AGHT+IHrKOeN/AH8DZsWKCyxRbOMxHQnpvQ/kEy1CAgntia3tbrsbxSyKBmd2sApDc6dRfvjP4HPGw==
+X-Received: by 2002:a17:906:aa54:b0:a51:f463:cfa6 with SMTP id kn20-20020a170906aa5400b00a51f463cfa6mr1420963ejb.29.1713438660622;
+        Thu, 18 Apr 2024 04:11:00 -0700 (PDT)
+Received: from jonhaslam-mbp.dhcp.thefacebook.com ([2620:10d:c092:500::4:6637])
+        by smtp.gmail.com with ESMTPSA id q27-20020a17090622db00b00a520b294d9dsm742333eja.150.2024.04.18.04.10.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 04:11:00 -0700 (PDT)
+Date: Thu, 18 Apr 2024 12:10:59 +0100
+From: Jonthan Haslam <jonathan.haslam@gmail.com>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	linux-trace-kernel@vger.kernel.org, andrii@kernel.org, bpf@vger.kernel.org, rostedt@goodmis.org, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] uprobes: reduce contention on uprobes_tree access
+Message-ID: <u6rrbsrjxpu43re5vb5o6vzvpxoto42wq47av3hagge6mfjsaj@25pujxi7z3u7>
+References: <20240325120323.ec3248d330b2755e73a6571e@kernel.org>
+ <CAEf4BzZS_QCsSY0oGY_3pGveGfXKK_TkVURyNq=UQXVXSqi2Fw@mail.gmail.com>
+ <20240327084245.a890ae12e579f0be1902ae4a@kernel.org>
+ <54jakntmdyedadce7yrf6kljcjapbwyoqqt26dnllrqvs3pg7x@itra4a2ikgqw>
+ <20240328091841.ce9cc613db375536de843cfb@kernel.org>
+ <CAEf4BzYCJWXAzdV3q5ex+8hj5ZFCnu5CT=w8eDbZCGqm+CGYOQ@mail.gmail.com>
+ <CAEf4BzbSvMa2+hdTifMKTsNiOL6X=P7eor4LpPKfHM=Y9-71fw@mail.gmail.com>
+ <20240330093631.72273967ba818cb16aeb58b6@kernel.org>
+ <lcc6lnkbfnyr6yjvybckevhzaafvh7jmpse6tnviq5bjar3y6z@yvz6cuzjzrky>
+ <20240411082156.6613cf4dc03129ea1183ab88@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/7] net: ipa: header hygiene
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171343863051.18842.5095544708093707768.git-patchwork-notify@kernel.org>
-Date: Thu, 18 Apr 2024 11:10:30 +0000
-References: <20240416231018.389520-1-elder@linaro.org>
-In-Reply-To: <20240416231018.389520-1-elder@linaro.org>
-To: Alex Elder <elder@linaro.org>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, mka@chromium.org, andersson@kernel.org,
- quic_cpratapa@quicinc.com, quic_avuyyuru@quicinc.com,
- quic_jponduru@quicinc.com, quic_subashab@quicinc.com, elder@kernel.org,
- netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240411082156.6613cf4dc03129ea1183ab88@kernel.org>
 
-Hello:
+Hi Masami,
 
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Tue, 16 Apr 2024 18:10:11 -0500 you wrote:
-> The end result of this series is that the list of files included in
-> every IPA source file will be maintained in sorted order.  This
-> imposes some consistency that was previously not possible.
+> > > OK, then I'll push this to for-next at this moment.
+> > > Please share if you have a good idea for the batch interface which can be
+> > > backported. I guess it should involve updating userspace changes too.
+> > 
+> > Did you (or anyone else) need anything more from me on this one so that it
+> > can be pushed? I provided some benchmark numbers but happy to provide
+> > anything else that may be required.
 > 
-> If an IPA header file requires a symbol or type declared in another
-> header, that other header must be included.  E.g., if bool or u32
-> type is used in a function declaration in an IPA header file, the
-> IPA header must include <linux/types.h>.
+> Yeah, if you can update with the result, it looks better to me.
+> Or, can I update the description?
+
+Just checking if you need me to do anything on this so that it can be
+pushed to for-next? Would be really great if we can get this in. Thanks
+for all your help.
+
+Jon.
+
 > 
-> [...]
-
-Here is the summary with links:
-  - [net-next,1/7] net: ipa: include some standard header files
-    https://git.kernel.org/netdev/net-next/c/ff39eefde76a
-  - [net-next,2/7] net: ipa: remove unneeded standard includes
-    https://git.kernel.org/netdev/net-next/c/8c044024e608
-  - [net-next,3/7] net: ipa: include "ipa_interrupt.h" where needed
-    https://git.kernel.org/netdev/net-next/c/a53c85f35258
-  - [net-next,4/7] net: ipa: add some needed struct declarations
-    https://git.kernel.org/netdev/net-next/c/81186959917a
-  - [net-next,5/7] net: ipa: eliminate unneeded struct declarations
-    https://git.kernel.org/netdev/net-next/c/116061962d88
-  - [net-next,6/7] net: ipa: more include file cleanup
-    https://git.kernel.org/netdev/net-next/c/f60e5fb6dfaf
-  - [net-next,7/7] net: ipa: sort all includes
-    https://git.kernel.org/netdev/net-next/c/884122775e67
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> Thank you,
+> 
+> > 
+> > Thanks!
+> > 
+> > Jon.
+> > 
+> > > 
+> > > Thank you!
+> > > 
+> > > > >
+> > > > > So I hope you can reconsider and accept improvements in this patch,
+> > > > > while Jonathan will keep working on even better final solution.
+> > > > > Thanks!
+> > > > >
+> > > > > > I look forward to your formalized results :)
+> > > > > >
+> > > > 
+> > > > BTW, as part of BPF selftests, we have a multi-attach test for uprobes
+> > > > and USDTs, reporting attach/detach timings:
+> > > > $ sudo ./test_progs -v -t uprobe_multi_test/bench
+> > > > bpf_testmod.ko is already unloaded.
+> > > > Loading bpf_testmod.ko...
+> > > > Successfully loaded bpf_testmod.ko.
+> > > > test_bench_attach_uprobe:PASS:uprobe_multi_bench__open_and_load 0 nsec
+> > > > test_bench_attach_uprobe:PASS:uprobe_multi_bench__attach 0 nsec
+> > > > test_bench_attach_uprobe:PASS:uprobes_count 0 nsec
+> > > > test_bench_attach_uprobe: attached in   0.120s
+> > > > test_bench_attach_uprobe: detached in   0.092s
+> > > > #400/5   uprobe_multi_test/bench_uprobe:OK
+> > > > test_bench_attach_usdt:PASS:uprobe_multi__open 0 nsec
+> > > > test_bench_attach_usdt:PASS:bpf_program__attach_usdt 0 nsec
+> > > > test_bench_attach_usdt:PASS:usdt_count 0 nsec
+> > > > test_bench_attach_usdt: attached in   0.124s
+> > > > test_bench_attach_usdt: detached in   0.064s
+> > > > #400/6   uprobe_multi_test/bench_usdt:OK
+> > > > #400     uprobe_multi_test:OK
+> > > > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+> > > > Successfully unloaded bpf_testmod.ko.
+> > > > 
+> > > > So it should be easy for Jonathan to validate his changes with this.
+> > > > 
+> > > > > > Thank you,
+> > > > > >
+> > > > > > >
+> > > > > > > Jon.
+> > > > > > >
+> > > > > > > >
+> > > > > > > > Thank you,
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > BTW, how did you measure the overhead? I think spinlock overhead
+> > > > > > > > > > will depend on how much lock contention happens.
+> > > > > > > > > >
+> > > > > > > > > > Thank you,
+> > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > [0] https://docs.kernel.org/locking/spinlocks.html
+> > > > > > > > > > >
+> > > > > > > > > > > Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
+> > > > > > > > > > > ---
+> > > > > > > > > > >  kernel/events/uprobes.c | 22 +++++++++++-----------
+> > > > > > > > > > >  1 file changed, 11 insertions(+), 11 deletions(-)
+> > > > > > > > > > >
+> > > > > > > > > > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> > > > > > > > > > > index 929e98c62965..42bf9b6e8bc0 100644
+> > > > > > > > > > > --- a/kernel/events/uprobes.c
+> > > > > > > > > > > +++ b/kernel/events/uprobes.c
+> > > > > > > > > > > @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
+> > > > > > > > > > >   */
+> > > > > > > > > > >  #define no_uprobe_events()   RB_EMPTY_ROOT(&uprobes_tree)
+> > > > > > > > > > >
+> > > > > > > > > > > -static DEFINE_SPINLOCK(uprobes_treelock);    /* serialize rbtree access */
+> > > > > > > > > > > +static DEFINE_RWLOCK(uprobes_treelock);      /* serialize rbtree access */
+> > > > > > > > > > >
+> > > > > > > > > > >  #define UPROBES_HASH_SZ      13
+> > > > > > > > > > >  /* serialize uprobe->pending_list */
+> > > > > > > > > > > @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
+> > > > > > > > > > >  {
+> > > > > > > > > > >       struct uprobe *uprobe;
+> > > > > > > > > > >
+> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
+> > > > > > > > > > > +     read_lock(&uprobes_treelock);
+> > > > > > > > > > >       uprobe = __find_uprobe(inode, offset);
+> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
+> > > > > > > > > > > +     read_unlock(&uprobes_treelock);
+> > > > > > > > > > >
+> > > > > > > > > > >       return uprobe;
+> > > > > > > > > > >  }
+> > > > > > > > > > > @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
+> > > > > > > > > > >  {
+> > > > > > > > > > >       struct uprobe *u;
+> > > > > > > > > > >
+> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
+> > > > > > > > > > > +     write_lock(&uprobes_treelock);
+> > > > > > > > > > >       u = __insert_uprobe(uprobe);
+> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
+> > > > > > > > > > > +     write_unlock(&uprobes_treelock);
+> > > > > > > > > > >
+> > > > > > > > > > >       return u;
+> > > > > > > > > > >  }
+> > > > > > > > > > > @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
+> > > > > > > > > > >       if (WARN_ON(!uprobe_is_active(uprobe)))
+> > > > > > > > > > >               return;
+> > > > > > > > > > >
+> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
+> > > > > > > > > > > +     write_lock(&uprobes_treelock);
+> > > > > > > > > > >       rb_erase(&uprobe->rb_node, &uprobes_tree);
+> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
+> > > > > > > > > > > +     write_unlock(&uprobes_treelock);
+> > > > > > > > > > >       RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
+> > > > > > > > > > >       put_uprobe(uprobe);
+> > > > > > > > > > >  }
+> > > > > > > > > > > @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
+> > > > > > > > > > >       min = vaddr_to_offset(vma, start);
+> > > > > > > > > > >       max = min + (end - start) - 1;
+> > > > > > > > > > >
+> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
+> > > > > > > > > > > +     read_lock(&uprobes_treelock);
+> > > > > > > > > > >       n = find_node_in_range(inode, min, max);
+> > > > > > > > > > >       if (n) {
+> > > > > > > > > > >               for (t = n; t; t = rb_prev(t)) {
+> > > > > > > > > > > @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
+> > > > > > > > > > >                       get_uprobe(u);
+> > > > > > > > > > >               }
+> > > > > > > > > > >       }
+> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
+> > > > > > > > > > > +     read_unlock(&uprobes_treelock);
+> > > > > > > > > > >  }
+> > > > > > > > > > >
+> > > > > > > > > > >  /* @vma contains reference counter, not the probed instruction. */
+> > > > > > > > > > > @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
+> > > > > > > > > > >       min = vaddr_to_offset(vma, start);
+> > > > > > > > > > >       max = min + (end - start) - 1;
+> > > > > > > > > > >
+> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
+> > > > > > > > > > > +     read_lock(&uprobes_treelock);
+> > > > > > > > > > >       n = find_node_in_range(inode, min, max);
+> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
+> > > > > > > > > > > +     read_unlock(&uprobes_treelock);
+> > > > > > > > > > >
+> > > > > > > > > > >       return !!n;
+> > > > > > > > > > >  }
+> > > > > > > > > > > --
+> > > > > > > > > > > 2.43.0
+> > > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > --
+> > > > > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > --
+> > > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > > > >
+> > > > > >
+> > > > > > --
+> > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > 
+> > > 
+> > > -- 
+> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
