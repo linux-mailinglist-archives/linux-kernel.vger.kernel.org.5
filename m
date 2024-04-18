@@ -1,109 +1,133 @@
-Return-Path: <linux-kernel+bounces-149424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 990728A90F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:02:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45D3C8A90F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:05:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C8182821B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:02:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91EEDB213FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:05:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055C44E1BE;
-	Thu, 18 Apr 2024 02:02:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BA874EB32;
+	Thu, 18 Apr 2024 02:05:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="u2nXTwEo"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iaQXswJS"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BA34AED6;
-	Thu, 18 Apr 2024 02:02:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 073E22AC29
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 02:05:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713405750; cv=none; b=mZ/VbU/HwUHiEwLaxISbV/6EUk78MGen+/FeiRYVTy0BgbD4Uq8g5og7wnkkhcUq1C7N+H0qS9SV9OOOp89AEBiu0m0UZPRGnCR8GIMB3b16+7Zm4kya3ieofmw/B9BFbk5x4rxWYsOe7qrBcPbIAcBS65AzHZARWq5gEhYCLcU=
+	t=1713405930; cv=none; b=q+jrOwyb3gXF5cnjAYh8j+WxlEI7mQTfQRS3Jym11dGCJoKGdJhQEF4525dC3jK1qGI18hERwG2HiWiCBhCYoKIXTHpPoh5cIdnYk80t0skxEnrwMAveOCfJBPp6jo9d0n14jjwL1UUj6fGB6twG1cyQzktzJ8nuTybe84zEOrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713405750; c=relaxed/simple;
-	bh=dBnEAgXUMi9S55V8EIauoEJPZbWof3chHTPwvl/9OBY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Y77S/ipkxTek56jmJJBQRUCm/zPU+MdT4ZTRatZDRZ46gGD7O47VjBgxQaGsj5QgNS+4oZ+dgTuk0PaNUg5oTAPC7NeaVqOxYsWTgxVMFXh108VpJ2llvkVio/JoUqrpLwB4pSlukVjHUig8WmHUTSE99x5TiuMvUs+g8/3NvuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=u2nXTwEo; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1713405743;
-	bh=115XVd+6iunRlQLEtb4+vpJ6TMykVoK4WBVz2uB0HIA=;
-	h=Date:From:To:Cc:Subject:From;
-	b=u2nXTwEo4MjoEZAaidarVfnSenmbvUYEY9hsyvtxwq43dJ9knBi54qi40OUhk0Pkv
-	 BsJFxG7LtdHoQgp206IQygYHVfAiCIk45BJWDWujJUag4wy58ALiIsi9odt4DwpiZh
-	 WS3bUMEZCqyIXotBiai2NL3L4GaDOr6OvsnQo4e6o3SZgSCFhyjgcVgYczeiAJ2cGC
-	 Eg/tSQqYkBe6LjJSbgzJKXf1OTnoJ6dJ6E5SWa3vSx/0qDK/yCZ2UGG/EryPUpUF3K
-	 U7NKyWujUNqJzxn547+voTeoU2K9S9zThnkqvUka+0E3J9YWcAKEGzRAFTmao+Temx
-	 j8dPV2wKaO0eQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VKgyR4dVsz4wx6;
-	Thu, 18 Apr 2024 12:02:23 +1000 (AEST)
-Date: Thu, 18 Apr 2024 12:02:22 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Huacai Chen <chenhuacai@loongson.cn>, Andrew Morton
- <akpm@linux-foundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the loongarch tree
-Message-ID: <20240418120222.77c2bd2f@canb.auug.org.au>
+	s=arc-20240116; t=1713405930; c=relaxed/simple;
+	bh=T0QnjAhdYrmACiuwAPDxnR5HIy4p9penGkBMygu+5uU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tB1GoSJKraM3+uoPbTf0Jml3jqWd3Ae/nXj7g3h/aY6q1RWvvR1DRBxdnO9uEUO/7+/Zquh2PiWo4s2DPR2T30TLr6LZ+bLc0desCRN2X6XoZUBzdKGhvnQlWfGtppj9NqJRjksEyNbzyIjQ5VpfaoBtWX7TotYyWGFF8n0+8D8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iaQXswJS; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2db2f6cb312so6776931fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 19:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713405927; x=1714010727; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=T0QnjAhdYrmACiuwAPDxnR5HIy4p9penGkBMygu+5uU=;
+        b=iaQXswJSwbd6W25fe4Gm0Pjcaxlny+oZVrwFZ5yeQDqUCqctGQ0oJzeErLjcaqSVjQ
+         c5rROx3N5EHWyGn7GYvncjhJ2MW+mzH4mfu0FnHyvfU/krB54BJpgMR7zL7aXg3gHt1h
+         Cix3sRYVObXpzTpratyv/GQAbufq/aQo47i5wFdquZDGtwXA1bRzIChHOiU9gnz9YgWO
+         pVtgb4K/M67JhK2l5S2DYN/nP1WKudwWA/AFyov3uh9pQgyGoFU2m8gEh9/1UdgACd/e
+         /VoLNfpm6mfQJYZ3SJRs1JomoDjYLJ055rtMehVwPTfjEW5/Vs2/KqpkVDlMUOR2Prfc
+         BuBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713405927; x=1714010727;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T0QnjAhdYrmACiuwAPDxnR5HIy4p9penGkBMygu+5uU=;
+        b=EMOyYZLpQjC5eLDtXBMB0eTWX/09ger7KH65Y1HK0p26tmuk5Q6B65pbypQV8Vxnad
+         5ugwigWy1uLvJrBzfGJ9D9WeaHi6UDvDnnOGX+3aSQi5YWcTPNpazkGUJebXVBJ1JW2y
+         IVQA2b5jeQ/TcDo4mDjvY/0Zyi9nEioOmdmoGvFEzhiaIKioylak1Zt8cJ3ue08SS7b5
+         oV28FCoMlbd0sGS27YzBiH/2Ml8Jw6odTIQqjzB0lNFxhCcs5I7oBAOt+dTCm6AhBA7d
+         n5AHnXotNVOQJ0JQZcpa/VK9MSOXq8kHcVr+J3KpFH7yYjr1fvvfu052qFGhDCDL+URA
+         P6dQ==
+X-Forwarded-Encrypted: i=1; AJvYcCULA3CZ4hDFaui/21XXKGAR4zR9r/0dok7S12F90DcnRoe+vztvml5z8FokEH+0LqNkhPzYzDqZxfcznXL+nEjbdRM9zlLige3DsR7Y
+X-Gm-Message-State: AOJu0YxJG6Gfpramd3vCxTWN2h0CH+Kgz9hasHvAUj+gYyYjhPJyhLE7
+	zyHfTV1bTZpduOKPiFqUD1FIafrt13MTRYpbxCBZ9noFSN/TS+5qN/9Pl+oRe1LIeaG65FyGdti
+	OxAP9UKEJ+pjPhqscEVFGc/62EABqTnh6Sl+C
+X-Google-Smtp-Source: AGHT+IFCm3pN2ShD28Z+g4gvIKer7DIONCtgHex5oajrniOoI2un8C3zrZeQwrRhrc0hLYs0bHNGtT9KLILyXzzacvw=
+X-Received: by 2002:a2e:9003:0:b0:2d8:bda5:c5f5 with SMTP id
+ h3-20020a2e9003000000b002d8bda5c5f5mr644366ljg.35.1713405927096; Wed, 17 Apr
+ 2024 19:05:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Qrl8Xi2s2TysjXv._lgUoz8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
+ <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org> <96728c6d-3863-48c7-986b-b0b37689849e@redhat.com>
+ <CAJD7tkZrVjhe5PPUZQNoAZ5oOO4a+MZe283MVTtQHghGSxAUnA@mail.gmail.com>
+ <4fd9106c-40a6-415a-9409-c346d7ab91ce@redhat.com> <f72ab971-989e-4a1c-9246-9b8e57201b60@kernel.org>
+ <CAJD7tka=1AnBNFn=frp7AwfjGsZMGcDjw=xiWeqNygC5rPf6uQ@mail.gmail.com>
+ <75d837cc-4d33-44f6-bb0c-7558f0488d4e@kernel.org> <CAJD7tka_ESbcK6cspyEfVqv1yTW0uhWSvvoO4bqMJExn-j-SEg@mail.gmail.com>
+ <9f6333ec-f28c-4a91-b7b9-07a028d92225@kernel.org> <f6daabzdesdwo7zdouexow5mdub3qnzr7e67lonmhh3itjgk5j@qw3xpvqoyb7j>
+In-Reply-To: <f6daabzdesdwo7zdouexow5mdub3qnzr7e67lonmhh3itjgk5j@qw3xpvqoyb7j>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Wed, 17 Apr 2024 19:04:50 -0700
+Message-ID: <CAJD7tkYnSRwJTpXxSnGgo-i3-OdD7cdT-e3_S_yf7dSknPoRKw@mail.gmail.com>
+Subject: Re: Advice on cgroup rstat lock
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, Waiman Long <longman@redhat.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, 
+	Jesper Dangaard Brouer <jesper@cloudflare.com>, "David S. Miller" <davem@davemloft.net>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Shakeel Butt <shakeelb@google.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
+	kernel-team <kernel-team@cloudflare.com>, cgroups@vger.kernel.org, 
+	Linux-MM <linux-mm@kvack.org>, Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Ivan Babrou <ivan@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 
---Sig_/Qrl8Xi2s2TysjXv._lgUoz8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+[..]
 
-Hi all,
+> > > I personally don't like mem_cgroup_flush_stats_ratelimited() very
+> > > much, because it is time-based (unlike memcg_vmstats_needs_flush()),
+> > > and a lot of changes can happen in a very short amount of time.
+> > > However, it seems like for some workloads it's a necessary evil :/
+> > >
+>
+> Other than obj_cgroup_may_zswap(), there is no other place which really
+> need very very accurate stats. IMO we should actually make ratelimited
+> version the default one for all the places. Stats will always be out of
+> sync for some time window even with non-ratelimited flush and I don't
+> see any place where 2 second old stat would be any issue.
 
-The following commits are also in the mm tree as different commits
-(but the same patches):
+We disagreed about this before, and I am not trying to get you to
+debate this with me again :)
 
-  34248ae447d5 ("LoongArch: Fix Kconfig item and left code related to CRASH=
-_CORE")
-  ffc3e380b629 ("LoongArch: Fix a build error due to __tlb_remove_tlb_entry=
-()")
+I just prefer that we avoid this if possible. We have seen cases where
+the 2 sec window caused issues. Not because 2 sec is a long time, but
+because userspace reads the stats after an event occurs (e.g.
+proactive reclaim), but gets stats from before the event.
 
-These are commits
+[..]
+>
+> >
+> >
+> > With a mutex lock contention will be less obvious, as converting this to
+> > a mutex avoids multiple CPUs spinning while waiting for the lock, but
+> > it doesn't remove the lock contention.
+> >
+>
+> I don't like global sleepable locks as those are source of priority
+> inversion issues on highly utilized multi-tenant systems but I still
+> need to see how you are handling that.
 
-  3d7d0770dda6 ("arch/loongarch: clean up the left code and Kconfig item re=
-lated to CRASH_CORE")
-  b97004d9fb95 ("LoongArch/tlb: fix "error: parameter 'ptep' set but not us=
-ed" due to __tlb_remove_tlb_entry()")
+For context, this was discussed before as well in [1].
 
-in the mm-nonmm-unstable branch of the mm tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Qrl8Xi2s2TysjXv._lgUoz8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYgfy4ACgkQAVBC80lX
-0Gx55wgAhXMsxF1SL+T//5PHvj5JtGLLVRu8DioKOwGxZgWFE/R2SgFtmh6INP5C
-iR8M5egp+9m3jiFAwSvDYZVGV5dVv2jvjsx5b+mbSm+RGdMCKTcbnGLCPlUH3Vkc
-HvHgKGa9EZQOpJUyAozCLC4BD5y5/bjDZcTwZsdeduUoxtdg2rhE72zNrBq4Un4t
-E2bQf7iFI07Qduh9smLb7kjqUhQ0+m16DOriErBROdI+Y2OX//SbympmhP+NtJ2U
-seIxiEauB8bnFfXEfOaS/BUO9+kNxLguoaJD/lkxRzLtI96jy2P7beWFxr2XqjOj
-Hmvr41TnLpf3GJGg2GhePvJzu5y3og==
-=nnoM
------END PGP SIGNATURE-----
-
---Sig_/Qrl8Xi2s2TysjXv._lgUoz8--
+[1]https://lore.kernel.org/lkml/CALvZod441xBoXzhqLWTZ+xnqDOFkHmvrzspr9NAr+nybqXgS-A@mail.gmail.com/
 
