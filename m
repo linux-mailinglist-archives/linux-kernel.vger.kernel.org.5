@@ -1,74 +1,62 @@
-Return-Path: <linux-kernel+bounces-150321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 810A68A9D45
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:39:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2ECC8A9D57
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:42:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DE182870C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:39:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA0B6B2515C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:40:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA3D115FA73;
-	Thu, 18 Apr 2024 14:39:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26DA8165FB0;
+	Thu, 18 Apr 2024 14:40:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h0fv+MTi"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vl+8FzIY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2801DFD8
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F7CA1DFD8;
+	Thu, 18 Apr 2024 14:40:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713451169; cv=none; b=ZCV4Y/MLHu7ajr0pumjEt8+4tejRi1D7D2j5uCQqhsb9dJ52p1geMWjcWIzR4e9nyuLjtjCqrqejNqZsq7UB1AbK8RHWGKTnyYjQ/7tBeRaoueU2kuoTUREQtolbK1WFMoEMOEi2g7HFjSTGBESACyQTMNo/AWPBpgSm6voFy2o=
+	t=1713451222; cv=none; b=FmVlB2NI3ea1nEVVfC+xIYlcei+phGUkzw5AoDOubuudqTeA0Lls2BSVWXf39e5IVlH8lihtv5r3v7bwkTb0UtddafcAeNqUMNu9KjpvL6P4x0JkSyrymFpVyfZGq44A5PXPx8myPBKYSi3OsqeUlX9RRSjY5Sv+D1FZHp6a0Mg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713451169; c=relaxed/simple;
-	bh=xzkBULFksHDhU7jOlgpR7yw1uylcLv9ne9ijbOk2w7E=;
+	s=arc-20240116; t=1713451222; c=relaxed/simple;
+	bh=5wfD8jgqY0xbfl+rru6H0p8KlLn4S30xcJPK4wWQpgw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sEtzWCbMF++AXMUuHb8Ib1mr8MBd/iLfLayXkQpUKnI11WmmaVv6uT/B28EmWasyU7z0IH2OtvPqpVxpCoYoZp0ffpzaXrYnsSk9JL1CFaiDEC9jeVCNad4woCLyJoaUBoMynabzMHYjlwRWb9zJk+K12ujVneAd/cNpSRD6smg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h0fv+MTi; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713451166;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3vSMQ/GMnXjT/XayffdJbIn3Jctp8OFBvmPGYKJ8Q9w=;
-	b=h0fv+MTi/VOPGUc2RkXj5xscMSk9Tex9aBwd5ngcCYUfzQMsSdPtsVV2+rWCd6hGUWDXD7
-	umLbDsctdnl4I49I8G55KYuG1VUfWQcqlQJhPf/N5h9W/c46GXTpMjgVzZKKsfM06tWXTw
-	cSXxQfjtRnWyPhMt9GF3uQaUpOpfS6s=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-643-XPQZDb6zMIWRcvMiCC614Q-1; Thu, 18 Apr 2024 10:39:22 -0400
-X-MC-Unique: XPQZDb6zMIWRcvMiCC614Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D71FD18B184E;
-	Thu, 18 Apr 2024 14:39:21 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.182])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 57A1C1121312;
-	Thu, 18 Apr 2024 14:39:16 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Thu, 18 Apr 2024 16:37:56 +0200 (CEST)
-Date: Thu, 18 Apr 2024 16:37:50 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	John Stultz <jstultz@google.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-	Eric Biederman <ebiederm@xmission.com>
-Subject: Re: [patch V2 24/50] signal: Replace BUG_ON()s
-Message-ID: <20240418143750.GB19794@redhat.com>
-References: <20240410164558.316665885@linutronix.de>
- <20240410165552.447880671@linutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ofJEin1LY8tcX/AdqwWDvvX591vLixPxvN2fSiqRrRd6I+IDYlX2IMQUVN+pSHy293K0CHk0NqbilEPOQAKBosn+AcuXMlMPPTKdRCwxuCgxewdXq5P6WOoA+b4XbO/CbBtbQHXWn7gvkkZZRSHL/qWy3J4FiL+UZ7Bala6eQ8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vl+8FzIY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFDF3C113CC;
+	Thu, 18 Apr 2024 14:40:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713451222;
+	bh=5wfD8jgqY0xbfl+rru6H0p8KlLn4S30xcJPK4wWQpgw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Vl+8FzIY8lRwJQCg8/tnlOURjc1wqcdh2vmm0xxZZ0zPph+fvjmfCadtMGrSsFrTa
+	 DDTDsfopTL9Fxw32cu9fL0PCSRBw+tcoSzz8m9m+3TcCAb8GAMb3OlSqxdddqrnAEf
+	 C/eopdDzijTjqOxHb34ePAtFwPYnvT+FoCpudq5r0wvZd4m5kgzm1cYCwQ1/5aoPN1
+	 fCj2ZmtpMMtU12U2Wiw+Co0nqdtma9JBL+CmY4yIq5H3lmeNnBIZVhG4YIONVcgCZV
+	 i2ZZR5/IND1sbWTOjoOTU6VEP0GmbWeRUPkJgsjtTnRPAJVrn9EQMj5q3qp3rM5lBL
+	 K00jwZmjZgQGw==
+Date: Thu, 18 Apr 2024 09:40:19 -0500
+From: Rob Herring <robh@kernel.org>
+To: Alisa-Dariana Roman <alisadariana@gmail.com>
+Cc: michael.hennerich@analog.com, linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	alexandru.tachici@analog.com, lars@metafoo.de, jic23@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	lgirdwood@gmail.com, broonie@kernel.org, andy@kernel.org,
+	nuno.sa@analog.com, marcelo.schmitt@analog.com,
+	bigunclemax@gmail.com, dlechner@baylibre.com, okan.sahin@analog.com,
+	fr0st61te@gmail.com, alisa.roman@analog.com,
+	marcus.folkesson@gmail.com, schnelle@linux.ibm.com,
+	liambeguin@gmail.com
+Subject: Re: [PATCH v6 4/5] dt-bindings: iio: adc: ad7192: Add AD7194 support
+Message-ID: <20240418144019.GA1581398-robh@kernel.org>
+References: <20240417170054.140587-1-alisa.roman@analog.com>
+ <20240417170054.140587-5-alisa.roman@analog.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,20 +65,143 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240410165552.447880671@linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+In-Reply-To: <20240417170054.140587-5-alisa.roman@analog.com>
 
-On 04/11, Thomas Gleixner wrote:
->
-> These really can be handled gracefully without killing the machine.
->
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+On Wed, Apr 17, 2024 at 08:00:53PM +0300, Alisa-Dariana Roman wrote:
+> Unlike the other AD719Xs, AD7194 has configurable differential
+> channels. The user can dynamically configure them in the devicetree.
+> 
+> Also add an example for AD7194 devicetree.
+> 
+> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
 > ---
->  kernel/signal.c |   11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
+>  .../bindings/iio/adc/adi,ad7192.yaml          | 77 +++++++++++++++++++
+>  1 file changed, 77 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
+> index cf5c568f140a..7e4e15e4e648 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
+> @@ -21,8 +21,15 @@ properties:
+>        - adi,ad7190
+>        - adi,ad7192
+>        - adi,ad7193
+> +      - adi,ad7194
+>        - adi,ad7195
+>  
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+>    reg:
+>      maxItems: 1
+>  
+> @@ -89,6 +96,30 @@ properties:
+>      description: see Documentation/devicetree/bindings/iio/adc/adc.yaml
+>      type: boolean
+>  
+> +patternProperties:
+> +  "^channel@[0-9a-z]+$":
 
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+Unit-addresses are hex (typically). So something like:
 
+'^channel@(100|[0-9a-f]{1,2})$'
+
+> +    type: object
+> +    $ref: adc.yaml
+> +    unevaluatedProperties: false
+> +
+> +    properties:
+> +      reg:
+> +        description: The channel index.
+> +        minimum: 1
+> +        maximum: 256
+
+Why not 0 based?
+
+
+> +
+> +      diff-channels:
+> +        description: |
+
+Don't need '|' if no formatting.
+
+> +          Both inputs can be connected to pins AIN1 to AIN16 by choosing the
+> +          appropriate value from 1 to 16.
+> +        items:
+> +          minimum: 1
+> +          maximum: 16
+> +
+> +    required:
+> +      - reg
+> +      - diff-channels
+
+Single ended modes aren't supported?
+
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -103,6 +134,17 @@ required:
+>  
+>  allOf:
+>    - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - adi,ad7190
+> +            - adi,ad7192
+> +            - adi,ad7193
+> +            - adi,ad7195
+> +    then:
+> +      patternProperties:
+> +        "^channel@[0-9a-z]+$": false
+>  
+>  unevaluatedProperties: false
+>  
+> @@ -133,3 +175,38 @@ examples:
+>              adi,burnout-currents-enable;
+>          };
+>      };
+> +  - |
+> +    spi {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        adc@0 {
+> +            compatible = "adi,ad7194";
+> +            reg = <0>;
+> +
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            spi-max-frequency = <1000000>;
+> +            spi-cpol;
+> +            spi-cpha;
+> +            clocks = <&ad7192_mclk>;
+> +            clock-names = "mclk";
+> +            interrupts = <25 0x2>;
+> +            interrupt-parent = <&gpio>;
+> +            aincom-supply = <&aincom>;
+> +            dvdd-supply = <&dvdd>;
+> +            avdd-supply = <&avdd>;
+> +            vref-supply = <&vref>;
+> +
+> +            channel@1 {
+> +                reg = <1>;
+> +                diff-channels = <1 6>;
+> +            };
+> +
+> +            channel@2 {
+> +                reg = <2>;
+> +                diff-channels = <16 5>;
+> +            };
+> +        };
+> +    };
+> -- 
+> 2.34.1
+> 
 
