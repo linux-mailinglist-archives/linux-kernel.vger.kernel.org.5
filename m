@@ -1,150 +1,130 @@
-Return-Path: <linux-kernel+bounces-150779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A31A8AA479
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:00:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD6768AA485
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:01:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BFD71F21DA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:00:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9B9A1C209FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:01:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88AC3194C6A;
-	Thu, 18 Apr 2024 21:00:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB1C9194C80;
+	Thu, 18 Apr 2024 21:01:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RPl5kAtR"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="os3i7OUl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 371B4165FD6;
-	Thu, 18 Apr 2024 21:00:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75B1181BB2;
+	Thu, 18 Apr 2024 21:01:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713474047; cv=none; b=E93PKmbGR5YK9lL0/PaFSWxGhPGe1oMOw4In4m9kPwcYhSXWIO8OAhv9n7s2YnijcJnRkhg2oCS+oJLHHc2A/mhiBqOvuG4v8l7ZMbWlk0+9teaXxe2EhXEZoJkvNmHZO7XlaZulHKM6zcOiSA/Oele56ZwkVMnkxBOWMXHZvyc=
+	t=1713474096; cv=none; b=juJVu8Pax7GY/2jO7F3QFUV2bMvNmO3PYQKqR270aq9nhRsFMRT1pHXTh6vNegjsO76hGpnp27D/LZOsYB3prDpto9hAp5SelZsC8WUZFZ9/EkLMlASjIUFCAJYgnLxDIYe2HRMUR5+/drE8yZWwtdFFsLi4XqdUCCjKBs2OwgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713474047; c=relaxed/simple;
-	bh=8FcS+d3XqPALYlKipast1fx6gvgoQgjVL9Fu3VpDnLA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XPtLob/FQ03bJZDd9MdTIIDhke3NtPJnGjcf25Qzx6HRAhwEXrV8ERrctcG7NHEyvaJf1SAbVntHnS8sZSnZLS2haQxDb9RkeWjxFQYik6mUGxcoZ2H2hbzXlkKvSQLI83reGjFVk+CDzAeHLq8+C+A3ylYzpT0wbmDIzZj4A/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RPl5kAtR; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713474047; x=1745010047;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8FcS+d3XqPALYlKipast1fx6gvgoQgjVL9Fu3VpDnLA=;
-  b=RPl5kAtRpAcuAbJqxzwsGcjpeTg5pIsamhEGIso2xUzLBC3IFzJOFxPg
-   +RVLJw52f9JCmihI6AUVb3uGV0hvWeYeHeWaTncnVlxmPvbErYfuS1twr
-   j2E51xmB2tiHb+a8EmlHvp53EucAQ5hwft8B4RXbRaBAaH6rN7Fkbuvoy
-   JRVcwdVWyN2QJRQ7Y7in/RhnEKI28mBvaeDtyHSgmnl/MVYnl7aubV3IB
-   PLVDWV3MEZHgayCS9/diDMS7aCpXw/v0EB6eAXB3pZNVrWPC9+OHEDvh0
-   n9viuEey5War5H1HuGm52tezYzr+d2KWMRcqdukJhFMtZuSsG40Wt0OmN
-   g==;
-X-CSE-ConnectionGUID: MN+mgiDQQU+mV+yJGkcy2g==
-X-CSE-MsgGUID: IsJfKF/9Rfu7vaorLvNsFA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="8887569"
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="8887569"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 14:00:46 -0700
-X-CSE-ConnectionGUID: nELOdJapRMKou4dSOlVNNw==
-X-CSE-MsgGUID: PG/RLJrHQxqtfy0ZX+NVSw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="27879557"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 14:00:43 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rxYs4-00000000Uaz-1KZK;
-	Fri, 19 Apr 2024 00:00:40 +0300
-Date: Fri, 19 Apr 2024 00:00:40 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] dmaengine: dw: Simplify prepare CTL_LO methods
-Message-ID: <ZiGJ-DspJq5R6Dym@smile.fi.intel.com>
-References: <20240416162908.24180-1-fancer.lancer@gmail.com>
- <20240416162908.24180-4-fancer.lancer@gmail.com>
- <Zh7LyszPd2sNfWRm@smile.fi.intel.com>
- <lzcgxh7trwoksd4bx2fsybellbngvpwhgq2a76ou2iufemockp@3dca4bfox2ps>
- <ZiEIRluj-50FMIgp@smile.fi.intel.com>
- <xfa7evanbrvdxdoq6473wpymvqogezspwkdoawu2dr6mnyxiwq@zx2schip66wj>
+	s=arc-20240116; t=1713474096; c=relaxed/simple;
+	bh=Q9xFEu3Y5LoeO0EqCkhUGHL0dsvPtZI4/AmKYvf5MnY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b+0txUzk5jK372QzTaz06e3UetBupnMUMh0c0sXUWXVGXQbNID8oChy+JzzSmHlvrbXEBhABFCYWr1jkplkUVNUld8ypXwzVqN/rfPwJ3r67GfYI2KH1PZxyEhljlZQoB3vXJHhS1sFr5xDKu3NQSoWCKV7cNkptrG0rWtw4EI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=os3i7OUl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2941AC116B1;
+	Thu, 18 Apr 2024 21:01:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713474096;
+	bh=Q9xFEu3Y5LoeO0EqCkhUGHL0dsvPtZI4/AmKYvf5MnY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=os3i7OUlnuFPwuywx5IIlmo6dtB59/Q7XJaGiZcHLePn7Eo9BufTvQVTR9mtW/eWI
+	 r4VK8QYyOlINdoOVjMcOehKmc6Sz4RWc7AtrGTHCmGpbXOTolpO+C2kb76Yr0cYvCD
+	 FMV4Iw8AtSf28SLOw4t9ku4hBlZ5jBKnjL2Jb3XS6QpCLdtSLjS9TIGuRVkBAtaceK
+	 Ynk+zxcFm8+Rdi8k+nN2pCkddAj7x4BuIRqRa6CNsxBp/r1PxXoHz9fS6XaoKD1pY8
+	 suIp6V5PCH1MCOf8eW5abdXsn+Qdv014GIVeNCWNab/ijMMs94IjvrIAImNdFlp9rg
+	 H2pmiaunPJ3ng==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5193363d255so1680614e87.3;
+        Thu, 18 Apr 2024 14:01:36 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXdsvnbLDbcUzdTwvNlfEf/J2+sRkWH+nKCsviXNlfBx3cDYng6/7AWgS6PTAFPIlk3Z7Emj69Zu/ZGHHYs6zSXTa+Oy+ttoUBdIdBtHg0AB+4XjekacyTx1qh8Xh4+4JHTTQhdTQ+jGFirf0pTn4wZvIlU+Wg4vdnMjDWgzIaVaAd7rS03c8i+nPQWdUt3TjBWi1VarY3Px16fo2aGdrqPKH5CS/6T4MWguKsofonzcpAiBdB4iLBHmVm10oLwbvgCTsWQd3fJz6jm6LstPIDpaYS3CwJv7i1M4sTdgKKMHw3vdySSytDoWcsXfUPNvSW4GNQcgA3k4V+741spUVa0kElB0fwD4htNDnjEwsEkAZxtyKRztK773FFcbfUfBoJAj6GsNkKwJzXlhAmzpWfTwhRIFnPCpXf8aOD/IRjXSd/AhUAO1LLgLos=
+X-Gm-Message-State: AOJu0YyVr8D8aTN3AsKi5MTkbI+ETPboRkITKyi31uZXtp7shRbDFjct
+	TfiUcwVZ+Ay5YhV7bwS6+4UzYAL+m0x4/5LUtYwf4kuu7tAZbeG0JeItREuz8sqnDrsZA2qeiTN
+	xRtZE+HXyocLjRYPOJs5fQESe6dY=
+X-Google-Smtp-Source: AGHT+IHNxy9sJsnZs3KQVfU0+czeg8tBpsYhbjwNsSaDNt4tlgSyRo9Mz2ssjEN7kjA5vVRJEg5DihQkgyMA2Jl/jC4=
+X-Received: by 2002:a05:6512:1251:b0:516:cec0:1fc0 with SMTP id
+ fb17-20020a056512125100b00516cec01fc0mr104453lfb.63.1713474094462; Thu, 18
+ Apr 2024 14:01:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <xfa7evanbrvdxdoq6473wpymvqogezspwkdoawu2dr6mnyxiwq@zx2schip66wj>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240411160051.2093261-1-rppt@kernel.org> <20240411160051.2093261-6-rppt@kernel.org>
+ <20240415075241.GF40213@noisy.programming.kicks-ass.net> <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
+ <Zh4nJp8rv1qRBs8m@kernel.org> <CAPhsuW6Pbg2k_Gu4dsBx+H8H5XCHvNdtEZJBPiG_eT0qqr9D1w@mail.gmail.com>
+ <ZiE91CJcNw7gBj9g@kernel.org> <CAPhsuW4au6v8k8Ab7Ff6Yj64rGvZ7wkz=Xrgh8ZZtLyscpChqQ@mail.gmail.com>
+ <ZiFd567L4Zzm2okO@kernel.org>
+In-Reply-To: <ZiFd567L4Zzm2okO@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Thu, 18 Apr 2024 14:01:22 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5SL4_=ZXdHZV8o0KS+5Vf25UMvEKhRgFQLioFtf2pgoQ@mail.gmail.com>
+Message-ID: <CAPhsuW5SL4_=ZXdHZV8o0KS+5Vf25UMvEKhRgFQLioFtf2pgoQ@mail.gmail.com>
+Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, 
+	linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Bjorn Topel <bjorn@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, 
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, Luis Chamberlain <mcgrof@kernel.org>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Puranjay Mohan <puranjay12@gmail.com>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Russell King <linux@armlinux.org.uk>, 
+	Steven Rostedt <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 18, 2024 at 10:00:02PM +0300, Serge Semin wrote:
-> On Thu, Apr 18, 2024 at 02:47:18PM +0300, Andy Shevchenko wrote:
-> > On Wed, Apr 17, 2024 at 11:11:46PM +0300, Serge Semin wrote:
-> > > On Tue, Apr 16, 2024 at 10:04:42PM +0300, Andy Shevchenko wrote:
-> > > > On Tue, Apr 16, 2024 at 07:28:57PM +0300, Serge Semin wrote:
+On Thu, Apr 18, 2024 at 10:54=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wr=
+ote:
+>
+> On Thu, Apr 18, 2024 at 09:13:27AM -0700, Song Liu wrote:
+> > On Thu, Apr 18, 2024 at 8:37=E2=80=AFAM Mike Rapoport <rppt@kernel.org>=
+ wrote:
+> > > > >
+> > > > > I'm looking at execmem_types more as definition of the consumers,=
+ maybe I
+> > > > > should have named the enum execmem_consumer at the first place.
+> > > >
+> > > > I think looking at execmem_type from consumers' point of view adds
+> > > > unnecessary complexity. IIUC, for most (if not all) archs, ftrace, =
+kprobe,
+> > > > and bpf (and maybe also module text) all have the same requirements=
+.
+> > > > Did I miss something?
+> > >
+> > > It's enough to have one architecture with different constrains for kp=
+robes
+> > > and bpf to warrant a type for each.
+> >
+> > AFAICT, some of these constraints can be changed without too much work.
+>
+> But why?
+> I honestly don't understand what are you trying to optimize here. A few
+> lines of initialization in execmem_info?
 
-..
+IIUC, having separate EXECMEM_BPF and EXECMEM_KPROBE makes it
+harder for bpf and kprobe to share the same ROX page. In many use cases,
+a 2MiB page (assuming x86_64) is enough for all BPF, kprobe, ftrace, and
+module text. It is not efficient if we have to allocate separate pages for =
+each
+of these use cases. If this is not a problem, the current approach works.
 
-> > > > > +	if (dwc->direction == DMA_MEM_TO_DEV) {
-> > > > > +		sms = dwc->dws.m_master;
-> > > > > +		smsize = 0;
-> > > > > +		dms = dwc->dws.p_master;
-> > > > > +		dmsize = sconfig->dst_maxburst;
-> > > 
-> > > > I would group it differently, i.e.
-> > > > 
-> > > > 		sms = dwc->dws.m_master;
-> > > > 		dms = dwc->dws.p_master;
-> > > > 		smsize = 0;
-> > > > 		dmsize = sconfig->dst_maxburst;
-> > > 
-> > > Could you please clarify, why? From my point of view it was better to
-> > > group the source master ID and the source master burst size inits
-> > > together.
-> 
-> > Sure. The point here is that when you look at the DMA channel configuration
-> > usually you operate with the semantically tied fields for source and
-> > destination. At least this is my experience, I always check both sides
-> > of the transfer for the same field, e.g., master setting, hence I want to
-> > have them coupled.
-> 
-> Ok. I see. Thanks for clarification. I normally do that in another
-> order: group the functionally related fields together - all
-> source-related configs first, then all destination-related configs.
-> Honestly I don't have strong opinion about this part, it's just my
-> personal preference. Am I right to think that from your experience in
-> kernel it's normally done in the order you described?
-
-In this driver I believe I have followed that one, yes.
-
-> > > > > +	} else if (dwc->direction == DMA_DEV_TO_MEM) {
-> > > > > +		sms = dwc->dws.p_master;
-> > > > > +		smsize = sconfig->src_maxburst;
-> > > > > +		dms = dwc->dws.m_master;
-> > > > > +		dmsize = 0;
-> > > > > +	} else /* DMA_MEM_TO_MEM */ {
-> > > > > +		sms = dwc->dws.m_master;
-> > > > > +		smsize = 0;
-> > > > > +		dms = dwc->dws.m_master;
-> > > > > +		dmsize = 0;
-> > > > > +	}
-> > > > 
-> > > > Ditto for two above cases.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Song
 
