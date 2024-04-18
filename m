@@ -1,115 +1,154 @@
-Return-Path: <linux-kernel+bounces-149695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 299FE8A94B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 50AA68A94B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:13:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD058B226A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:12:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2F4AB2252A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:13:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C44987D091;
-	Thu, 18 Apr 2024 08:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YU2vQLJx"
-Received: from mail-lj1-f202.google.com (mail-lj1-f202.google.com [209.85.208.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47DB17D3E3;
+	Thu, 18 Apr 2024 08:13:02 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F107E110
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3D607D09A
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:12:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713427949; cv=none; b=rttOKtO1t4hc791GU05KR0a7k2HFsvHYYT8XMapd/oR8yTu4Av/WqZanDKnGs5Nr0hPR9Q0pJDOCph2bYttuhk87nYF1FH7BCrgDB6z6HwqzJbHd7bYG8kS3lr1FtjBFwHvYMu9V/4QvvaqOAp2gtM5YilgsmYDbb1sIdlFy/Rg=
+	t=1713427981; cv=none; b=sYQPd1O0OjFSnHElLvqgIfOo5TUrQqSiygoaqBh0h8lkMDX3qyEvduirm7ZFLoyoWXEi5UyY1LevPQvTLsB/mDpcE4b1VxnsrgUr7RohHDjKSoFCqpu047C+9qvQMA+a/3Zh9Uj98NpcPi7tQIyBuS3WTokH4al8jopsRyFaf14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713427949; c=relaxed/simple;
-	bh=bY3ju86zcgJmVbLLguEE+K84ZW771J3V7iD06qo5EfU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=gR/EuQUyuvySbU1d03QwcxCQKJtXKggBQO6Tji7xMrfE3rEClTJo7QfeM4h2t935rzI3nk+q0oMig2UDgCutT+CAKr055O31synEjOemi36dHaqUKUjw/ovf2fHl+YXOomzKALfU5iTx6rD7z9ercUDPOKqhJ/fadwxUYo6Fn9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YU2vQLJx; arc=none smtp.client-ip=209.85.208.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-lj1-f202.google.com with SMTP id 38308e7fff4ca-2d87ba1f5e0so5424221fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 01:12:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713427945; x=1714032745; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZVL4jjrbBC+Bt7Hp+2Jpj3qHtwDFtxoS4Uo7rWQ9gqY=;
-        b=YU2vQLJxkNlk8859LOTqv6RtHfukd5V6CA2P/6vVcHC8gyXLiHWns5qJ9AsP18dFjC
-         J1JCFCWbrp6UwF46LNfVwdz1Om5cmTyoTdjmfmFBCLoKM6zFaXT8Iwh1JP6MGRvvjA2y
-         agsXNAF3IbgSidGkiw04FUbUA/XTqwv8mmZGaOLOTpD09sejdhYF7xQRSPXbq+Ta/1tr
-         Wjada401tWdzaF+U2WDyw7tLH6jc8+Xjo7b2yrDAF3dOPa3mCFJFuB2tMqx87/j+O0T/
-         Lm10nlYINkAmdoNoBIiGx6fx0Lv2Vpyb8SjmIB7aREocjqFxbg9MWbJNWhCWcZP4gEmi
-         iRmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713427945; x=1714032745;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZVL4jjrbBC+Bt7Hp+2Jpj3qHtwDFtxoS4Uo7rWQ9gqY=;
-        b=Wwn/77d/3nY9weoa1+JvmaRtclvlkMxAZJOHowDXI4mbkHpECNx5lG/yQTR8KkL1V+
-         vNdlQNXGV3HfN5BxgsAdPiOCI4McGBoqxGaUE7uapaLbUKhvzPDl5aO7wk2lyQCl0lhZ
-         77VsqN3v5ic4XB6YO0J9XFm1aabX04ywvK6l5EQy96vm0sKp3RKXLIbQ3GkkqUWJ7E8N
-         Mo3wQaFRk+Dwr/OmX9qwP9hACaBBrW8LXz+h+843ezpYe7U9TaxsOxSqWMrC8unxE0HU
-         0hIUCkVhF2IaNfcnLcTcQZz5d7QawEKtIEy+Q0CHI2GnJgXLGi59aHdH87nPclTxO6PF
-         ubpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWNk5BKVkHXnLXU9TTdjxMYh3kxPAfd7XuyuB6ekzAomFH6iHQx2jvtOLbDXheN8iYAGwlVyr2z2RvPXaL/SDtUWMMoVJiTsAFAk09E
-X-Gm-Message-State: AOJu0Ywn0oVv0QfI/1cFECq2Tssf0WV+nK78+tnP/FNpVc85FJ/BrIm9
-	C9NotGezDDqg7mH6aECkLNaB2SGsSf2Tsb5zRUW1Y24kjf+nC69HZRBZfr0sJPR1ThuwIeRzzU2
-	RJ63f31AV8X21QA==
-X-Google-Smtp-Source: AGHT+IF/hmTW9nqgxlg/zyJ3kU0+wGR6ekMhCkaLc9VX4d7u1YMtJpMUGZ8cByZHS1Khb85Rg+27Y8FE0NRCirs=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a2e:9a15:0:b0:2da:7932:4357 with SMTP id
- cy21-20020a2e9a15000000b002da79324357mr2153ljb.1.1713427945324; Thu, 18 Apr
- 2024 01:12:25 -0700 (PDT)
-Date: Thu, 18 Apr 2024 08:12:22 +0000
-In-Reply-To: <20240417191418.1341988-3-cmllamas@google.com>
+	s=arc-20240116; t=1713427981; c=relaxed/simple;
+	bh=a1lDZyQcKMG8tu88vZXH92dfxB+K0HC43vvv9bgkkGI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PHz+7njcAMJ00WrfgqLxFxR58QI12U1XOf7z9266phq1LfFyQ0/lro9Tn89AaKUkDKuIL/gyjCVWz+ac0pwdpUoMWDVl/s+i6JeOatejeac6HJWn5Uas7M0fgh/mwnXByFRDFhTMr+Lgu8G+G/R6kB3Q85kDzJOjxKoxtXgX3+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from i5e861917.versanet.de ([94.134.25.23] helo=diego.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rxMt5-0004Xm-Bg; Thu, 18 Apr 2024 10:12:55 +0200
+From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Heiko Stuebner <heiko.stuebner@cherry.de>
+Subject: Re: [PATCH] arm64: dts: rockchip: add PCIe3 support on rk3588-jaguar
+Date: Thu, 18 Apr 2024 10:12:54 +0200
+Message-ID: <5932394.MhkbZ0Pkbq@diego>
+In-Reply-To: <cb2004e3-563e-4d36-ab69-89b1d9f6221b@theobroma-systems.com>
+References:
+ <20240417141642.2243193-1-heiko@sntech.de>
+ <cb2004e3-563e-4d36-ab69-89b1d9f6221b@theobroma-systems.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240417191418.1341988-3-cmllamas@google.com>
-X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-Message-ID: <20240418081222.3871629-1-aliceryhl@google.com>
-Subject: Re: [PATCH 2/4] binder: migrate ioctl to new PF_SPAM_DETECTION
-From: Alice Ryhl <aliceryhl@google.com>
-To: cmllamas@google.com
-Cc: aliceryhl@google.com, arve@android.com, brauner@kernel.org, 
-	gregkh@linuxfoundation.org, joel@joelfernandes.org, kernel-team@android.com, 
-	linux-kernel@vger.kernel.org, maco@android.com, surenb@google.com, 
-	tkjos@android.com
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Carlos Llamas <cmllamas@google.com> writes:
-> @@ -5553,7 +5553,8 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  			goto err;
->  		}
->  		binder_inner_proc_lock(proc);
-> -		proc->oneway_spam_detection_enabled = (bool)enable;
-> +		proc->flags &= ~PF_SPAM_DETECTION;
-> +		proc->flags |= enable & PF_SPAM_DETECTION;
+Am Donnerstag, 18. April 2024, 10:07:37 CEST schrieb Quentin Schulz:
+> On 4/17/24 16:16, Heiko Stuebner wrote:
+> > From: Heiko Stuebner <heiko.stuebner@cherry.de>
+> > 
+> > The Jaguar SBC provides a M.2 slot connected to the pcie3 controller.
+> > In contrast to a number of other boards the pcie-refclk is gpio-controlled,
+> > so the necessary clock is added to the list of pcie3 clocks.
+> > 
+> > Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
+> > ---
+> >   .../arm64/boot/dts/rockchip/rk3588-jaguar.dts | 53 +++++++++++++++++++
+> >   1 file changed, 53 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts b/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts
+> > index 5002105dc78e..908fbabd8b00 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts
+> > @@ -72,6 +72,25 @@ led-1 {
+> >   		};
+> >   	};
+> >   
+> > +	/*
+> > +	 * 100MHz reference clock for PCIe peripherals from PI6C557-05BLE
+> > +	 * clock generator.
+> > +	 * The clock output is gated via the OE pin on the clock generator.
+> > +	 * This is modeled as a fixed-clock plus a gpio-gate-clock.
+> > +	 */
+> > +	pcie_refclk_gen: pcie-refclk-gen-clock {
+> > +		compatible = "fixed-clock";
+> > +		#clock-cells = <0>;
+> > +		clock-frequency = <1000000000>;
+> > +	};
+> > +
+> > +	pcie_refclk: pcie-refclk-clock {
+> > +		compatible = "gpio-gate-clock";
+> > +		clocks = <&pcie_refclk_gen>;
+> > +		#clock-cells = <0>;
+> > +		enable-gpios = <&gpio0 RK_PC6 GPIO_ACTIVE_LOW>; /* PCIE30X4_CLKREQN_M0 */
+> 
+> I think we usually want to have the pinctrl for GPIOs as well to not 
+> assume the pins are muxed in that function by default or by the bootloader?
+> 
+> > +	};
+> > +
+> >   	pps {
+> >   		compatible = "pps-gpio";
+> >   		gpios = <&gpio0 RK_PD5 GPIO_ACTIVE_HIGH>;
+> > @@ -466,6 +485,40 @@ &pcie2x1l0 {
+> >   	status = "okay";
+> >   };
+> >   
+> > +&pcie30phy {
+> > +	status = "okay";
+> > +};
+> > +
+> > +&pcie30x4m0_pins {
+> 
+> I'm wondering if it really makes sense to reuse this node if we're 
+> planning to change the only property it has to mean something different?
 
-The bitwise and in `enable & PF_SPAM_DETECTION` only works because
-PF_SPAM_DETECTION happens to be equal to 1. This seems pretty fragile to
-me. Would you be willing to do this instead?
+ok, will create a specific node for the new pinctrl
+As an added pro, this also moves it to the pinctrl area in the dts
 
-proc->flags &= ~PF_SPAM_DETECTION;
-if (enable)
-	proc->flags |= PF_SPAM_DETECTION;
+> > +	/*
+> > +	 * pcie30x4_clkreqn_m0 is used by the refclk generator
+> > +	 * pcie30x4_perstn_m0 is used as via the reset-gpio
+> > +	 */
+> > +	rockchip,pins =
+> > +		/* pcie30x4_waken_m0 */
+> > +		<0 RK_PC7 12 &pcfg_pull_none>;
+> > +};
+> > +
+> > +&pcie3x4 {
+> > +	/*
+> > +	 * The board has a gpio-controlled "pcie_refclk" generator,
+> > +	 * so add it to the list of clocks.
+> > +	 */
+> > +	clocks = <&cru ACLK_PCIE_4L_MSTR>, <&cru ACLK_PCIE_4L_SLV>,
+> > +		 <&cru ACLK_PCIE_4L_DBI>, <&cru PCLK_PCIE_4L>,
+> > +		 <&cru CLK_PCIE_AUX0>, <&cru CLK_PCIE4L_PIPE>,
+> > +		 <&pcie_refclk>;
+> > +	clock-names = "aclk_mst", "aclk_slv",
+> > +		      "aclk_dbi", "pclk",
+> > +		      "aux", "pipe",
+> > +		      "ref";
+> > +	pinctrl-names = "default";
+> > +	pinctrl-0 = <&pcie30x4m0_pins>;
+> > +	reset-gpios = <&gpio0 RK_PD0 GPIO_ACTIVE_HIGH>; /* PCIE30X4_PERSTN_M0 */
+> 
+> Ditto, I assume we want to have a pinmux for that GPIO as well?
+
+Correct. While the Rockchip pinctrl driver _does_ the muxing when a gpio
+is requested, it wouldn't touch pinconf settings u-boot or whoever might
+have set differently before.
+
+Heiko
 
 
-Carlos Llamas <cmllamas@google.com> writes:
-> -			if (proc->oneway_spam_detection_enabled &&
-> -				   w->type == BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT)
-> +			if (proc->flags & PF_SPAM_DETECTION &&
-> +			    w->type == BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT)
-
-Maybe I am just not sufficiently familiar with C, but I had to look up
-the operator precedence rules for this one. Could we add parenthesises
-around `proc->flags & PF_SPAM_DETECTION`? Or even define a macro for it?
-
-Alice
 
