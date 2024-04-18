@@ -1,118 +1,145 @@
-Return-Path: <linux-kernel+bounces-149821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60E658A9651
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:37:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 117C68A9653
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:37:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BD382831E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:37:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42F561C2169B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:37:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ECF415AD81;
-	Thu, 18 Apr 2024 09:37:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EC0F15B0E8;
+	Thu, 18 Apr 2024 09:37:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="G5t0i7wA"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lQYA8nsS"
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C44F15AAD9;
-	Thu, 18 Apr 2024 09:37:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ABB415ADB0
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:37:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713433036; cv=none; b=EUg9CFljpfyFWu6RdkAFuuvcE/qQYh0s3EW6/XaA5HXw/9p3V2rVOwn7W82bWwwP9tyJeN8CRrRj+FvqTWBYh6rlzJgEW1j522v8JcAQqRagg1rByrjEEFsAnOE0RORBVSucIfxenMq4vnV8q3w5RzAyGBJ76jHp2l0gx5OCfA8=
+	t=1713433057; cv=none; b=lOEFs+XWUMJDydndSAXOey/tAL8Qp+8ZPd/d/NvXvg/OL0aK378IR5R1UFlfF1jjlKnwdmPGOT5AYZGN2cNweZtCBPpWx1LQI/e4QWe6w7P5tgtzFq4kXmXhM/scU1xHr3eZ6Y1AZMD4muR2XHeu3OSI9UYHnk6TEIN7snojFvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713433036; c=relaxed/simple;
-	bh=oGYvt4iKMHHWhGz5AK/8DOoOoy2yJB9YCvtzW26d0Ds=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k71v7luL+vtvbi5SdH2uuJZwrGPwy+lAC7wupQrQgxPW7aQdMU6pgwkdMBCVw/0boY0kR6j6SpWkZ7IXGVo4VuzRPFsb+qCxuzLdLXrvk5iubuCex1caaAbTR46dBgj83NZMgbQa88RMlMZSz5JlB/x9xqZLIbda6lKTzy4CUmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=G5t0i7wA; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713433036; x=1744969036;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=oGYvt4iKMHHWhGz5AK/8DOoOoy2yJB9YCvtzW26d0Ds=;
-  b=G5t0i7wA4XvHrJYtnrbsvyEVvSMzzGUTiOhXAfLocK2PWQSE3dVsb+c6
-   HwU6HUyiSP8IIdEdGQN5c2nRlf7v9O772dt79VOG88spXHiZl9xP1AQ0L
-   jXmB2B2kmtClhlT/ajvvwtJKJEETaGuBs8LxxcGbQCZRCsegCf8no1jMK
-   KhKSb93pNb4g7dfUtpXoVKJbO8+PWEHgTeK8muaVo2ZEY8ZCqHyECRKiA
-   PJr7yfKjevOb290pHEhOyypZfqfOM8wk9xnqiv5NkwC1OGjCNeh4Ihwyc
-   iEPeZ1q8BYzrqF6hKiU/+Ti7mL5gZG8oxr27ZTIz8uSgcKvWZqVtdftaH
-   g==;
-X-CSE-ConnectionGUID: 3kKKTdjQQDWvgcA4tG5DwA==
-X-CSE-MsgGUID: MiuPENkeSn6e+duh/XMP/A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="20114225"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="20114225"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 02:37:15 -0700
-X-CSE-ConnectionGUID: TJ+NKD5eTfi9RFMXbh3Fvw==
-X-CSE-MsgGUID: J6qdL3rrSyO1+VGtr5HN/A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="27699688"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 02:37:13 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rxOCb-00000000Hkt-3eLe;
-	Thu, 18 Apr 2024 12:37:09 +0300
-Date: Thu, 18 Apr 2024 12:37:09 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH 2/4] dmaengine: dw: Add memory bus width verification
-Message-ID: <ZiDpxb-diEt91My4@smile.fi.intel.com>
-References: <20240416162908.24180-1-fancer.lancer@gmail.com>
- <20240416162908.24180-3-fancer.lancer@gmail.com>
- <Zh7Hpuo-TzSmlz69@smile.fi.intel.com>
- <lzipslbrr4fkpqc3plfllltls2sy2mrlentp7clpjoppvgscoi@zlmysqym2kyb>
- <ZiAGpsldQMB-dKkn@smile.fi.intel.com>
- <nroj7c7hvo5ao5gfuububc2zqj7z4rpkoji5flhbrie3xrmgwg@6rhzllxwgj4w>
+	s=arc-20240116; t=1713433057; c=relaxed/simple;
+	bh=oKebPGc7csYied+Trqn6NoQuTo1kiGGrhWQNjyzLyFU=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=aixQ0JwwVcf2umn/j2KyhCOM21thvLOqdB/o2o/P18OWvcGTqeeKx9bKqLRMw8IXKf9HT5U6h8r1Ic61aSEN2OIecuDwcuhsKJ7JCbAwKJp6T5gDILeLeCXPkgL3h62FWNjdxM6mEjBvI9DYIogSW4FbVeLbaKbTHdEthMOFfzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lQYA8nsS; arc=none smtp.client-ip=209.85.217.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-47a0f54fb13so257707137.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 02:37:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713433055; x=1714037855; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=R+5jHDSpgy+V7CAH4lxvvOy3F/SpQIh5uBt2JeDM398=;
+        b=lQYA8nsSlFbSyRwvmCNnYGoNSVDHN2i0dP5KcJlO1cW8gEV5NnstNZIG4PCjkowhGt
+         1TU2xFS/Zd3O1kVJIzr4OeZSIjicr3qlTW2Al021gNtSjM9oibmZ5APbkvkrdov1CMb9
+         /yDNRO6J5gsa2HVvIxoAk8b+woXLnDO1U3YFwBOILykDY2E5b5iLDrH+uYjOEeu8uAve
+         QHCD5TPvpjPKuYHb+vdf3/l6ana1LhEWd+qgDcEapqCvzMQ7ieSv0FMHLTpxphn8T1bU
+         JxmQ1ilux0+S2qFjJlvQ0AtjcQ9obHIs2wqRAtxqXohNNwlxuRwM75BBtah4AgdkS4kD
+         meVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713433055; x=1714037855;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R+5jHDSpgy+V7CAH4lxvvOy3F/SpQIh5uBt2JeDM398=;
+        b=BotP9HQgmrrtinv2MQAla6JqJ0ThNtNGCl0gssKN+hbvxkiFddbFCEhTwarjRzURO4
+         DsCUdv+OsJxIvLyUu5l8IA6zfjatcVFQ4s4l3aItp/MyAeTp1Ax2LYmp/25ZQP5CHwlr
+         QUqr0z678pXNsJlZP9tXDGU1L8qKb458MLIkZE/93suJ83s/gqComGPONhoMv9NTgyjh
+         WY/K7NF3RE8T3kHlITqHTALQRsIlVC/Il6pnxIKp54EnT4MXIMTaFVYbDKd96u9Ejwek
+         fd34Mj5bOwqV+VdBxHqsNfD9LBNjY286xOlBCUkgB334sFHMZB/UeVTSo30TVAWKxrFV
+         rg5g==
+X-Forwarded-Encrypted: i=1; AJvYcCXus4dDoCQbBDpVL0jsfFry6tcCcY4b8GefMLWZR0ndzu0epVKKo8lIHB7ooYsavmgh9GBxWcLxqgD/u8Xv7l9vp5021c37mmRtVrtv
+X-Gm-Message-State: AOJu0YxVntL9AMg+35n9x/zVE4TsjiTnXUzny1vGhzs31Cx36y78yKHj
+	h6uxGEdr1pA0ynSe27VnKZoQQ2n8ajiOUUjeXSFkVmrLRKAlrGAMKzOXEQK1snppG/W5jy0OjWd
+	uMZGXLFxOz/2MQcrcaeTuBEhSEUgnsUqiM+5DCA==
+X-Google-Smtp-Source: AGHT+IGUiLjVF51AxMwojfexM6qeVP3BXEPl/EhnR3F2ljxY1JpFWs3N20simlQ0PqdaxtXXPMv54pqI1R7waXf5uug=
+X-Received: by 2002:a05:6102:f08:b0:47b:99c5:50fc with SMTP id
+ v8-20020a0561020f0800b0047b99c550fcmr3113575vss.1.1713433054849; Thu, 18 Apr
+ 2024 02:37:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nroj7c7hvo5ao5gfuububc2zqj7z4rpkoji5flhbrie3xrmgwg@6rhzllxwgj4w>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Thu, 18 Apr 2024 15:07:23 +0530
+Message-ID: <CA+G9fYvacWNZsmizotfcwD35xBq0999_EAV0wZgwjdi46yivgg@mail.gmail.com>
+Subject: selftests: mm: seal_elf.c:140:45: warning: format '%s' expects
+ argument of type 'char *', but argument 5 has type 'char (*)[5]' [-Wformat=]
+To: "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+	open list <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	lkft-triage@lists.linaro.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>, 
+	Anders Roxell <anders.roxell@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Apr 17, 2024 at 09:52:42PM +0300, Serge Semin wrote:
-> On Wed, Apr 17, 2024 at 08:28:06PM +0300, Andy Shevchenko wrote:
-> > On Wed, Apr 17, 2024 at 08:13:59PM +0300, Serge Semin wrote:
+The Linux next building selftests with gcc-13 found these build warnings
+and errors.
 
-..
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> > Got it. Maybe a little summary in the code to explain all this magic?
-> 
-> Will it be enough to add something like this:
-> /*
->  * It's possible to have a data portion locked in the DMA FIFO in case
->  * of the channel suspension. Subsequent channel disabling will cause
->  * that data silent loss. In order to prevent that maintain the src
->  * and dst transfer widths coherency by means of the relation:
->  * (CTLx.SRC_TR_WIDTH * CTLx.SRC_MSIZE >= CTLx.DST_TR_WIDTH)
->  */
+Build log:
+---------
+PATH:
+selftests/mm/seal_elf
 
-Yes, and you may add something like
-"Look for the details in the commit message that brings this change."
-at the end of it.
+seal_elf.c: In function 'test_seal_elf':
+seal_elf.c:140:45: warning: format '%s' expects argument of type 'char
+*', but argument 5 has type 'char (*)[5]' [-Wformat=]
+  140 |                 if (sscanf(line, "%lx-%lx %4s %*x %*x:%*x %*u
+%255[^\n]",
+      |                                           ~~^
+      |                                             |
+      |                                             char *
+  141 |                         &addr_start, &addr_end, &prot,
+&filename) == 4) {
+      |                                                 ~~~~~
+      |                                                 |
+      |                                                 char (*)[5]
+seal_elf.c:140:69: warning: format '%[^
+   ' expects argument of type 'char *', but argument 6 has type 'char
+(*)[256]' [-Wformat=]
+  140 |                 if (sscanf(line, "%lx-%lx %4s %*x %*x:%*x %*u
+%255[^\n]",
+      |                                                               ~~~~~~^~
+      |                                                                     |
+      |
+     char *
+  141 |                         &addr_start, &addr_end, &prot,
+&filename) == 4) {
+      |                                                        ~~~~~~~~~
+      |                                                        |
+      |                                                        char (*)[256]
+seal_elf.c:110:13: warning: unused variable 'size' [-Wunused-variable]
+  110 |         int size = 0;
+      |             ^~~~
+/usr/lib/gcc-cross/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/bin/ld:
+/tmp/cczODkiZ.o: in function `test_seal_elf':
+seal_elf.c:(.text+0x738): undefined reference to `sys_mprotect'
+/usr/lib/gcc-cross/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/bin/ld:
+seal_elf.c:(.text+0x794): undefined reference to `sys_mprotect'
+/usr/lib/gcc-cross/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/bin/ld:
+seal_elf.c:(.text+0x944): undefined reference to `sys_mprotect'
+collect2: error: ld returned 1 exit status
 
--- 
-With Best Regards,
-Andy Shevchenko
+Steps to reproduce:
+---
+tuxmake --runtime podman --target-arch arm64 --toolchain gcc-13 \
+  --kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2fDW3wG8BqWxf0afUI5f4wkArPi/config
+\
+  debugkernel dtbs dtbs-legacy headers kernel kselftest modules
 
+Links:
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2fDW3wG8BqWxf0afUI5f4wkArPi/
 
+--
+Linaro LKFT
+https://lkft.linaro.org
 
