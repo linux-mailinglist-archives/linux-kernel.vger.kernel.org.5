@@ -1,177 +1,181 @@
-Return-Path: <linux-kernel+bounces-150825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB3DD8AA546
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:10:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 259AC8AA54F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:12:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECEDA1C214F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:10:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31FDC1C21E45
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:12:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFCFC199E98;
-	Thu, 18 Apr 2024 22:10:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB37199E9B;
+	Thu, 18 Apr 2024 22:12:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OPjc9z4Y"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="zDheyhDn"
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F97180A67
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 22:10:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACEBA180A67
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 22:11:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713478203; cv=none; b=Il5VHC8Aod/m+X/Lu6faFCU0x811+kMNL5zzoY5qTA87AKnMa9+Dnn43f8bcAPf5PRsBaKTOC1t1AF8Mbib5O0szvYEU586OPDVtvW7YHobhZmSTAkVQVlgLxLqKpMaS87ObRm5dMs3bqqEEnrT3WK8Bqat32DyQeFmT/T6BJNY=
+	t=1713478320; cv=none; b=qJ9e97KGivtovLbcTQiV6K9EbF7XYMOi5YpXrr5iXhx6ivGDypN941q84fT3hOeGl4MSAbHzFo0LWvCggO8XpNhnm/QTKcofZNKlDYsGE5gGWV0MVH7L4pThCWuitF4UpilzoGxSxjzphr+j67nBtyuzwbQ8mgYRCImCfXfsuGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713478203; c=relaxed/simple;
-	bh=YSbQDzB7oVXA+6U+Fn5mPYeVPvR2ma9l+pzDAVPKnH0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RMWM9n1f2JjR+cCPJ1aJFiNTcIYF9fYriPh5deksNRD13q4XJlfvw1pL+AABYro7eHfkg1RDENLNLWbd29Q0g4OKkU1SGDV+mk/yNkeyomVaSPKdSqOJWLUDn+nSlyNA2BoNvWebLPcOYaisjybYXm2fRGu20nVO2oHn3+p3Hxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OPjc9z4Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B41EFC113CE;
-	Thu, 18 Apr 2024 22:09:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713478202;
-	bh=YSbQDzB7oVXA+6U+Fn5mPYeVPvR2ma9l+pzDAVPKnH0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OPjc9z4YNOQeIrinhriBSIfB9agDKGdqBf+Mo65aoKZs20wTvEGuAzfXAMzT4qbOw
-	 PpFj7+FOOPeV8O075FI+6u2cFhnvRlp/idzIma2CRSPbBNQgwz4Zj6XyYUJQTY/ApF
-	 WL7bfhXgnjnGGTE/zcxtIcpmu4l6dS1N9EZFWonf8keq8h+H7OO/ZXa6ZD4LLvfvr9
-	 7WsE1+ksJ0GSU7y9YBggF4qHJwS+9hNov6LVFYlDyS2xIYNhLoHvAxFQnyngVHxnRC
-	 h1j+xChfAZaO0hu12ITi8TXS1VvdnT4WR9W1SCUV2GFCaY+6PYBDgg4LI9/YBM+AuR
-	 l3gfmUXux9rMQ==
-Date: Thu, 18 Apr 2024 23:09:57 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Andrew Jones <ajones@ventanamicro.com>,
-	Xu Lu <luxu.kernel@bytedance.com>, paul.walmsley@sifive.com,
-	palmer@dabbelt.com, aou@eecs.berkeley.edu, andy.chiu@sifive.com,
-	guoren@kernel.org, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, lihangjing@bytedance.com,
-	dengliang.1214@bytedance.com, xieyongji@bytedance.com,
-	chaiwen.cc@bytedance.com
-Subject: Re: [RFC 1/2] riscv: process: Introduce idle thread using Zawrs
- extension
-Message-ID: <20240418-smilingly-overplant-c5f3a698fdc2@spud>
-References: <20240418114942.52770-1-luxu.kernel@bytedance.com>
- <20240418114942.52770-2-luxu.kernel@bytedance.com>
- <20240418-dove-deferral-2b01100e13ca@spud>
- <20240418-d9f305770dc71c2687a6e84b@orel>
- <33de5d8f-5ccb-4dd0-9915-720e6f800560@sifive.com>
+	s=arc-20240116; t=1713478320; c=relaxed/simple;
+	bh=qC73A3C+2ySXkYRdhc6wiS5hdCuQCzyFsXeqp/DMf2w=;
+	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
+	 Content-Type; b=gGrszSREAQhzv4KuKyg0gdosuURTAvwA6YF0dUhPAHYhQ0QeaoUl9umU537t4IsxBbF1O8xonTb31DrbUQVeSumfEPsatLDTBxfcienOxek1ribRfbLvHQfT14RElLKg2pMW/peemeUXWuD7dKznePQkHqbUTx5cgZ5KUm8SXNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=zDheyhDn; arc=none smtp.client-ip=209.85.160.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-22ec61aaf01so833626fac.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:11:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1713478318; x=1714083118; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fJWNYLKtKkE3VgEEb7txo69kf/MROzgyItmd/8X/Bkw=;
+        b=zDheyhDnes1JFgEb7i7lavl61MoAOiTBxb0W4oMg1oV6h4nwVnyGvQPlc/EOT9cING
+         dHak2xF2NisrUCnaHNcrig7gQQXANiOeLOJj66w1aW12agsBDJlDTH4h2aKdFF+BgPpx
+         XPQKpaVpSEN2sPvFN28+Jdsyqcgv/ea6Wi6M2hO8kW4GD77xJ4Niis991ryVbYAGvhtL
+         quRpnFMRAXYFrVdxpR+KzoGaA6ARa7IG59vN1BRIrIMx+Q0fV96XJglo4EkA1zlR1Lwo
+         m7LU8g4OD8/O8+4D5eNRXq7KyVerZsNQ76PBG7Xi4w3l2Bc83uIYGuVXDMcKT7kPeDnO
+         K88A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713478318; x=1714083118;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fJWNYLKtKkE3VgEEb7txo69kf/MROzgyItmd/8X/Bkw=;
+        b=ZpoZ+RkHuxeYIvQSk6oKh6r94QNIs/cerufNxA24XAsFTT8zref/EIY7DeVxf1zhXb
+         +rPxE+bnEVxSsoHaeDamFTuiVp7Ef34a+7CV8NY5PEj9j2e2VWGmZMQOVfrn0PWLw7MH
+         fpe9GEDpN+jVTsGZqeNaft3IiZ6/i5IeYC32WCWqd9w0h43Jgv7mUiT0oanP8eb1yxf1
+         1GpyL3CP4+gM2z5uMtU39R2Xri7RCZBbGvCc7drziDObKj20WvCjPZxy2+pu/PDjm9vy
+         WC58Dqi7YrFNA1a2y0//g1S16IICKOoiVpsgRHla5J7fokWAaCv8FQ88DcnvR80jYPBq
+         YepQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVLPOdA9FVMalwar0eXr0fhcoiftq9lwVfb2czUpdDeiDwyLWlj1T+s/30CZ62ab+cHcFFXd9nuk09iZ9LLoiNMo9c1ywiA0cvuQLJT
+X-Gm-Message-State: AOJu0YzodU9SO6PFDrc3JEVrYQwPvllBMYgwHBHFnFjaMthTSkq9q2wQ
+	b0rN0w5CeX1+o6CQGI4DamFGl9f9ELWlkcoS+AcDsIIggooEiidT7xRpTgudtl8=
+X-Google-Smtp-Source: AGHT+IH5Rrf98QC4gFatEepR9aZzJYc9ESCNODVH0HHIz4PIvza73yv3y89sBwp3q1CAuQ8k41fxxw==
+X-Received: by 2002:a05:6870:d187:b0:232:ff53:44fe with SMTP id a7-20020a056870d18700b00232ff5344femr362648oac.38.1713478317422;
+        Thu, 18 Apr 2024 15:11:57 -0700 (PDT)
+Received: from localhost ([50.145.13.30])
+        by smtp.gmail.com with ESMTPSA id q9-20020a63d609000000b005dc9439c56bsm1877624pgg.13.2024.04.18.15.11.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 15:11:56 -0700 (PDT)
+Date: Thu, 18 Apr 2024 15:11:56 -0700 (PDT)
+X-Google-Original-Date: Thu, 18 Apr 2024 15:11:55 PDT (-0700)
+Subject:     Re: [PATCH 0/9] Merge arm64/riscv hugetlbfs contpte support
+In-Reply-To: <CAHVXubiH64beFuB_GHSq5BKCus=O_+bqYTCwWQ+=2Q-F=T=ctQ@mail.gmail.com>
+CC: ryan.roberts@arm.com, Catalin Marinas <catalin.marinas@arm.com>,
+  Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+  aou@eecs.berkeley.edu, akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org,
+  linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, linux-mm@kvack.org
+From: Palmer Dabbelt <palmer@dabbelt.com>
+To: alexghiti@rivosinc.com
+Message-ID: <mhng-911ba065-e6c8-4d42-978c-e47897bcb493@palmer-ri-x1c9a>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Ugf9QOJEd3IvGO73"
-Content-Disposition: inline
-In-Reply-To: <33de5d8f-5ccb-4dd0-9915-720e6f800560@sifive.com>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
+On Fri, 01 Mar 2024 03:29:18 PST (-0800), alexghiti@rivosinc.com wrote:
+> Hi Ryan,
+>
+> On Fri, Mar 1, 2024 at 11:45 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> Hi Alexandre,
+>>
+>> I confess I haven't looked at the patches yet, but this cover letter raises a
+>> few quesions for me. I'll aim to look at the actual patches in due course.
 
---Ugf9QOJEd3IvGO73
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
 
-On Thu, Apr 18, 2024 at 05:00:42PM -0500, Samuel Holland wrote:
-> Hi Drew,
->=20
-> On 2024-04-18 2:10 PM, Andrew Jones wrote:
-> > On Thu, Apr 18, 2024 at 04:05:55PM +0100, Conor Dooley wrote:
-> >> + Drew,
-> >>
-> >> On Thu, Apr 18, 2024 at 07:49:41PM +0800, Xu Lu wrote:
-> >>> The Zawrs extension introduces a new instruction WRS.NTO, which will
-> >>> register a reservation set and causes the hart to temporarily stall
-> >>> execution in a low-power state until a store occurs to the reservation
-> >>> set or an interrupt is observed.
-> >>>
-> >>> This commit implements new version of idle thread for RISC-V via Zawrs
-> >>> extension.
-> >>>
-> >>> Signed-off-by: Xu Lu <luxu.kernel@bytedance.com>
-> >>> Reviewed-by: Hangjing Li <lihangjing@bytedance.com>
-> >>> Reviewed-by: Liang Deng <dengliang.1214@bytedance.com>
-> >>> Reviewed-by: Wen Chai <chaiwen.cc@bytedance.com>
-> >>> ---
-> >>>  arch/riscv/Kconfig                 | 24 +++++++++++++++++
-> >>>  arch/riscv/include/asm/cpuidle.h   | 11 +-------
-> >>>  arch/riscv/include/asm/hwcap.h     |  1 +
-> >>>  arch/riscv/include/asm/processor.h | 17 +++++++++++++
-> >>>  arch/riscv/kernel/cpu.c            |  5 ++++
-> >>>  arch/riscv/kernel/cpufeature.c     |  1 +
-> >>>  arch/riscv/kernel/process.c        | 41 ++++++++++++++++++++++++++++=
-+-
-> >>>  7 files changed, 89 insertions(+), 11 deletions(-)
-> >>>
-> >>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> >>> index be09c8836d56..a0d344e9803f 100644
-> >>> --- a/arch/riscv/Kconfig
-> >>> +++ b/arch/riscv/Kconfig
-> >>> @@ -19,6 +19,7 @@ config RISCV
-> >>>  	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if PGTABLE_LEVELS > 2
-> >>>  	select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
-> >>>  	select ARCH_HAS_BINFMT_FLAT
-> >>> +	select ARCH_HAS_CPU_FINALIZE_INIT
-> >>>  	select ARCH_HAS_CURRENT_STACK_POINTER
-> >>>  	select ARCH_HAS_DEBUG_VIRTUAL if MMU
-> >>>  	select ARCH_HAS_DEBUG_VM_PGTABLE
-> >>> @@ -525,6 +526,20 @@ config RISCV_ISA_SVPBMT
-> >>> =20
-> >>>  	   If you don't know what to do here, say Y.
-> >>> =20
-> >>> +config RISCV_ISA_ZAWRS
-> >>> +	bool "Zawrs extension support for wait-on-reservation-set instructi=
-ons"
-> >>> +	depends on RISCV_ALTERNATIVE
-> >>> +	default y
-> >>> +	help
-> >>> +	   Adds support to dynamically detect the presence of the Zawrs
-> >>> +	   extension and enable its usage.
-> >>
-> >> Drew, could you, in your update, use the wording:
-> >> 	   Add support for enabling optimisations in the kernel when the
-> >> 	   Zawrs extension is detected at boot.
-> >=20
-> > How about
+in case someone wants to pick them up via a generic tree.  I'm happy to 
+take them via the RISC-V tree if folk want, no rush on my end I'm just 
+scrubbing through old stuff.
 
-Probably should have said, this was just a replacement for the first
-paragraph, not the entire text.
-
-> >=20
-> >   The Zawrs extension defines a pair of instructions to be used in
-> >   polling loops which allow a hart to enter a low-power state or to
-> >   trap to the hypervisor while waiting on a store to a memory location.
-> >   Enable the use of these instructions when the Zawrs extension is
->=20
->                                         ^ in the kernel
->=20
-> I believe "in the kernel" was an important part of the clarification that=
- these
-> Kconfig options do not affect whether userspace can use these instruction=
-s.
-
-Meant to reply earlier but forgot. Samuel's correct, it is indeed the
-key bit I wanted, I just suggest what's above to match what was in the
-patch I had sent earlier today. Don't really care all that much if it
-is a match nor not, but I do care about the help text actually
-describing /who/ gets to use the extension when the option is enabled.
-
-Thanks,
-Conor.
-
---Ugf9QOJEd3IvGO73
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiGaNQAKCRB4tDGHoIJi
-0rGbAQCve/ypa8G6DlerInRYzzxFD0tAVZln/I9+DBoPxO+1RQEAwyQ7fhUf0HZd
-QigfiK03EdAOxRAxiAkuHOuIO6r5fws=
-=SkO0
------END PGP SIGNATURE-----
-
---Ugf9QOJEd3IvGO73--
+>> On 01/03/2024 09:14, Alexandre Ghiti wrote:
+>> > This patchset intends to merge the contiguous ptes hugetlbfs implementation
+>> > of arm64 and riscv.
+>> >
+>> > Both arm64 and riscv support the use of contiguous ptes to map pages that
+>> > are larger than the default page table size, respectively called contpte
+>> > and svnapot.
+>> >
+>> > The riscv implementation differs from the arm64's in that the LSBs of the
+>> > pfn of a svnapot pte are used to store the size of the mapping, allowing
+>> > for future sizes to be added (for now only 64KB is supported). That's an
+>> > issue for the core mm code which expects to find the *real* pfn a pte points
+>> > to. Patch 1 fixes that by always returning svnapot ptes with the real pfn
+>> > and restores the size of the mapping when it is written to a page table.
+>>
+>> Yes that makes sense to me. The intention for mTHP (!hugetlb) is to fully
+>> encapsulate PTEs beind set_ptes(), ptep_get() and friends, so what's actually
+>> written to the pgtable is arch-specific and well abstracted.
+>>
+>> >
+>> > The following patches are just merges of the 2 different implementations
+>> > that currently exist in arm64 and riscv which are very similar. It paves
+>> > the way to the reuse of the recent contpte THP work by Ryan [1] to avoid
+>> > reimplementing the same in riscv.
+>>
+>> You seem to be talking about both hugetlb (which uses the "huge" pte helpers)
+>> and contpte for THP (i.e. mTHP, which uses the regular pte helpers). They are
+>> pretty separate in my mind, so not sure why you would be modifying them both in
+>> the same series?
+>
+> I don't, this patchset only deals with hugetlb, I just meant that this
+> series was just the beginning as I'm working on moving the contpte for
+> THP support in the generic code for riscv to use.
+>
+> Sorry my wording was ambiguous :)
+>
+> Thanks,
+>
+> Alex
+>
+>>
+>> Thanks,
+>> Ryan
+>>
+>> >
+>> > This patchset was tested by running the libhugetlbfs testsuite with 64KB
+>> > and 2MB pages on both architectures (on a 4KB base page size arm64 kernel).
+>> >
+>> > [1] https://lore.kernel.org/linux-arm-kernel/20240215103205.2607016-1-ryan.roberts@arm.com/
+>> >
+>> > Alexandre Ghiti (9):
+>> >   riscv: Restore the pfn in a NAPOT pte when manipulated by core mm code
+>> >   riscv: Safely remove huge_pte_offset() when manipulating NAPOT ptes
+>> >   mm: Use common huge_ptep_get() function for riscv/arm64
+>> >   mm: Use common set_huge_pte_at() function for riscv/arm64
+>> >   mm: Use common huge_pte_clear() function for riscv/arm64
+>> >   mm: Use common huge_ptep_get_and_clear() function for riscv/arm64
+>> >   mm: Use common huge_ptep_set_access_flags() function for riscv/arm64
+>> >   mm: Use common huge_ptep_set_wrprotect() function for riscv/arm64
+>> >   mm: Use common huge_ptep_clear_flush() function for riscv/arm64
+>> >
+>> >  arch/arm64/Kconfig                  |   1 +
+>> >  arch/arm64/include/asm/pgtable.h    |  59 +++++-
+>> >  arch/arm64/mm/hugetlbpage.c         | 291 +---------------------------
+>> >  arch/riscv/Kconfig                  |   1 +
+>> >  arch/riscv/include/asm/hugetlb.h    |   2 +-
+>> >  arch/riscv/include/asm/pgtable-64.h |  11 ++
+>> >  arch/riscv/include/asm/pgtable.h    | 120 +++++++++++-
+>> >  arch/riscv/mm/hugetlbpage.c         | 227 ----------------------
+>> >  mm/Kconfig                          |   3 +
+>> >  mm/Makefile                         |   1 +
+>> >  mm/contpte.c                        | 268 +++++++++++++++++++++++++
+>> >  11 files changed, 456 insertions(+), 528 deletions(-)
+>> >  create mode 100644 mm/contpte.c
+>> >
+>>
 
