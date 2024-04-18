@@ -1,143 +1,157 @@
-Return-Path: <linux-kernel+bounces-150600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44F4F8AA179
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C3BEC8AA194
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:54:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A14332863E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:52:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F132280E14
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:54:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FA5176FD8;
-	Thu, 18 Apr 2024 17:52:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 902CC1791F4;
+	Thu, 18 Apr 2024 17:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="UWbM272w"
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qitx/umw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829401442F4
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 17:52:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2311442F4;
+	Thu, 18 Apr 2024 17:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713462746; cv=none; b=R1eWrxZHBo8QCzzHHIFk6oeOZNkclOEXvKRszHHDKUR6sJf94SOy4huzeUffYyQ5iVX0CPouzX6nVc8jy4Crqu5svY4ar7guC7bLx+FZtyYI93BsMOqga6HUZqF4NpelaYhGVwJA21xZE7GjS4m6+L5l/0e4dUZyL1F+yB4hGbk=
+	t=1713462839; cv=none; b=i9w5i8935nPo1sdrS6/UQmSKRCap9P+Ga8M96m0Aa2f/AaDznnb7SrkKX6zzJPlkzGj83Owk1yKukmnFLuQFHgUBDKAeCJDUXlKZERBL97VW/vtESPO+UH/iOIi0RdTKmrDjokSBxgUbb1c47Q6ersSVFvKXv18DQNEr6rzQYDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713462746; c=relaxed/simple;
-	bh=6Qed5vhGTcz1STV7H9fAkWDWQkTCrI3P/ws6hdROluw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cL0Ar5ucOhdxbRmmTy9fLjMJKK9y6XXUp1xiMFfQnPmFUEj6EHwUWOjs4l0FuQF5zrShFdv1QdOe5q9vyCLT9tdsGuXQYwoWggW8rfAkch90QSKxDV30NymcqaBVVl/LbK+zrX/A2f5Kvw+JUru7MOpGQ1eC38TGb+LuSEagA+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=UWbM272w; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc236729a2bso1290879276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 10:52:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1713462743; x=1714067543; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fezWjsLogxXqyEuKKr9Hy9rCs7/m/0D7LZfJ5JnAum0=;
-        b=UWbM272wKEru3SvTEgnLznGYhaaYuAhPDatXjQl1zOt6D6O8oDl7cvbRKNvzwfWOvg
-         nDPQ408o4fZe9prdIOvJiP2HhjRtNT8+tN3T9j63+rPfCmcq2HYb2c1AL4op/F5ykv/v
-         B/Oqz7xy+Et+Mso5/TKbyNrZnn4R+48Ba2Cb4mV6UkDWXEvnohssQMN0JNKXxbnAwjU0
-         e5rbAHxpKbmCn5MmIpH/A0SeCbmyp27te79kmS15tCZlke629ASvZO40I6os41UYtl1A
-         7KC0gp6L0WyMW47ow9+lc1WH5p48q5aN8/xGzoHvvdg7EycSaVkCBcgxIB1UpMaVvazm
-         7a2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713462743; x=1714067543;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fezWjsLogxXqyEuKKr9Hy9rCs7/m/0D7LZfJ5JnAum0=;
-        b=lW9uRdFnE6ivLeeK2EvfVFSYIQZ5fjeU69U55IrF18jVZzQordQJWn+geqxGof9BC8
-         DfKcGxXpo77XaPms/1UG7T5JQOTUzDv+mHIlSw3nLkAeFoiWXFnPqnHqx2odrfRKt25X
-         StIsbWjy4IZLsczG0Y5cUV66anIVP8BujgpoiC2BON1eKs8/DX/aiDEo5Kra3NlfO0z9
-         WCwk8JYJSBWn4giD1lFG3eouYDL8aVv5G04foY2x1k6oZ8X+BXavWEmziBPp6qjsS4hT
-         fdGADMtWOlTkGTz0fvHOvYWujKT4/S+9rqaNT56yVQF01wbxEOGCHaZDB66Kf788yELs
-         p1dw==
-X-Forwarded-Encrypted: i=1; AJvYcCW4Tho6nv8kJQhTUIbzN996+Bnnlxy3gLRSYQEEDdl6KNO2UGUEjeLTHYeW7HC9qV9EPkYEZeWJWvs2r/F1RIkDpGUdNmW9cIMhgtNk
-X-Gm-Message-State: AOJu0Ywd08UPvu2MZPjNuceLFkz3tjTvDEaO4oNqrLyZ/e1PVWoptYWk
-	NI2nCtFHnJngR2GLdU2N/10a3+e4RkGyVDifynZege/KosOGZrVT3pSeaWPFsY88TqA+r0v72Ti
-	8rYD40Bx/500dsG1Cqn9d7XtKbEG7ArZFwYHc2Q==
-X-Google-Smtp-Source: AGHT+IHLIxLV6AmwYctLpvdfNF/hPmIXNgahPf3Z+946bF20hsA3skulNWrlmiOhkxE68LjMsdpOYru+qXDZ9OIWRJE=
-X-Received: by 2002:a25:8586:0:b0:dc6:4d0c:e9de with SMTP id
- x6-20020a258586000000b00dc64d0ce9demr4057848ybk.0.1713462743430; Thu, 18 Apr
- 2024 10:52:23 -0700 (PDT)
+	s=arc-20240116; t=1713462839; c=relaxed/simple;
+	bh=GVKHg9/GMb+Q7svthQO5bm+rPzNDL6zXlQZOsDeKWL0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iPDzZv5Y/UdvP5C0JHl0OsL2oiIyxexW4QoxqHuXhvBsKnOxQsbvnFrhuqK/y8RwqIwVgQLyace7C4RywoTWZIjx8w1Mvl2OrVeuA6YyeEuJdEVgz7BIGd8GYISmj1vCGm/Slf3tCd6PZdiqc/ocV0DX5HFZ9kCkgZCd25yjBMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qitx/umw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F12DC3277B;
+	Thu, 18 Apr 2024 17:53:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713462839;
+	bh=GVKHg9/GMb+Q7svthQO5bm+rPzNDL6zXlQZOsDeKWL0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qitx/umwjvXDKNme47QxvztrUiipBcKV2Lg0Yvd1RXezrm9EMN+zfFrxXb923+dxO
+	 AxZ6KgXvjlorR3mUIjvBXST4+3n8nelthPynguxJTOQoS9rNBrqZ+3MIlU37kTQ9FA
+	 a4e+nx+8unMMLT17+KcFFJ93DVlkbK2eXc4Av0nU3f2Yxj+rBXrkR0WI95IANr/7qX
+	 uZj4q1Xb4qjUIP87QNJk+Jgy4oid7eW9FtvEPOx7D0x1Tt1iXSqSWNLPcTP4XbQ2OW
+	 z8BEya9Rxr0dlQHlDm5T4jpRs2aqcA2Iy8EkKuiv4ehWjUKDt48ywWZ7K+xjdgeN4d
+	 Qxf4CJCyjHkiA==
+Date: Thu, 18 Apr 2024 20:52:39 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Song Liu <song@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Topel <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
+Message-ID: <ZiFd567L4Zzm2okO@kernel.org>
+References: <20240411160051.2093261-1-rppt@kernel.org>
+ <20240411160051.2093261-6-rppt@kernel.org>
+ <20240415075241.GF40213@noisy.programming.kicks-ass.net>
+ <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
+ <Zh4nJp8rv1qRBs8m@kernel.org>
+ <CAPhsuW6Pbg2k_Gu4dsBx+H8H5XCHvNdtEZJBPiG_eT0qqr9D1w@mail.gmail.com>
+ <ZiE91CJcNw7gBj9g@kernel.org>
+ <CAPhsuW4au6v8k8Ab7Ff6Yj64rGvZ7wkz=Xrgh8ZZtLyscpChqQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418-alice-mm-v6-0-cb8f3e5d688f@google.com>
- <20240418-alice-mm-v6-3-cb8f3e5d688f@google.com> <5fd684d8-d46d-4009-bcf8-134dab342322@proton.me>
-In-Reply-To: <5fd684d8-d46d-4009-bcf8-134dab342322@proton.me>
-From: Trevor Gross <tmgross@umich.edu>
-Date: Thu, 18 Apr 2024 13:52:12 -0400
-Message-ID: <CALNs47tJyrnmp-5AXs2mHU=JKC5ibHnn+Soy4U95NziRoc4z4Q@mail.gmail.com>
-Subject: Re: [PATCH v6 3/4] rust: uaccess: add typed accessors for userspace pointers
-To: Benno Lossin <benno.lossin@proton.me>, Boqun Feng <boqun.feng@gmail.com>
-Cc: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, 
-	Matthew Wilcox <willy@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Andrew Morton <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW4au6v8k8Ab7Ff6Yj64rGvZ7wkz=Xrgh8ZZtLyscpChqQ@mail.gmail.com>
 
-On Thu, Apr 18, 2024 at 9:03=E2=80=AFAM Benno Lossin <benno.lossin@proton.m=
-e> wrote:
->
-> On 18.04.24 10:59, Alice Ryhl wrote:
-> > diff --git a/rust/kernel/types.rs b/rust/kernel/types.rs
-> > index 8fad61268465..9c57c6c75553 100644
-> > --- a/rust/kernel/types.rs
-> > +++ b/rust/kernel/types.rs
-> > @@ -409,3 +409,67 @@ pub enum Either<L, R> {
-> >      /// Constructs an instance of [`Either`] containing a value of typ=
-e `R`.
-> >      Right(R),
-> >  }
-> > +
-> > +/// Types for which any bit pattern is valid.
-> > +///
-> > +/// Not all types are valid for all values. For example, a `bool` must=
- be either zero or one, so
-> > +/// reading arbitrary bytes into something that contains a `bool` is n=
-ot okay.
-> > +///
-> > +/// It's okay for the type to have padding, as initializing those byte=
-s has no effect.
-> > +///
-> > +/// # Safety
-> > +///
-> > +/// All bit-patterns must be valid for this type. This type must not h=
-ave interior mutability.
->
-> What is the reason for disallowing interior mutability here? I agree
-> that it is necessary for `AsBytes`, but I don't think we need it here.
-> For example it is fine to convert `u8` to `UnsafeCell<u8>`. Niches also
-> should not be a problem, since eg `Option<UnsafeCell<NonNull<u8>>>`
-> already fails the "All bit-patterns must be valid for this type".
->
-> --
-> Cheers,
-> Benno
->
-> > +pub unsafe trait FromBytes {}
+On Thu, Apr 18, 2024 at 09:13:27AM -0700, Song Liu wrote:
+> On Thu, Apr 18, 2024 at 8:37 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > > >
+> > > > I'm looking at execmem_types more as definition of the consumers, maybe I
+> > > > should have named the enum execmem_consumer at the first place.
+> > >
+> > > I think looking at execmem_type from consumers' point of view adds
+> > > unnecessary complexity. IIUC, for most (if not all) archs, ftrace, kprobe,
+> > > and bpf (and maybe also module text) all have the same requirements.
+> > > Did I miss something?
+> >
+> > It's enough to have one architecture with different constrains for kprobes
+> > and bpf to warrant a type for each.
+> 
+> AFAICT, some of these constraints can be changed without too much work.
 
-See also the reasoning in zerocopy [1] and bytemuck [2]
+But why?
+I honestly don't understand what are you trying to optimize here. A few
+lines of initialization in execmem_info?
+What is the advantage in forcing architectures to have imposed limits on
+kprobes or bpf allocations?
 
-[1]: https://docs.rs/zerocopy/latest/zerocopy/derive.FromBytes.html#analysi=
-s
-[2]: https://docs.rs/bytemuck/latest/bytemuck/trait.AnyBitPattern.html#safe=
-ty
+> > Where do you see unnecessary complexity?
+> >
+> > > IOW, we have
+> > >
+> > > enum execmem_type {
+> > >         EXECMEM_DEFAULT,
+> > >         EXECMEM_TEXT,
+> > >         EXECMEM_KPROBES = EXECMEM_TEXT,
+> > >         EXECMEM_FTRACE = EXECMEM_TEXT,
+> > >         EXECMEM_BPF = EXECMEM_TEXT,      /* we may end up without
+> > > _KPROBE, _FTRACE, _BPF */
+> > >         EXECMEM_DATA,  /* rw */
+> > >         EXECMEM_RO_DATA,
+> > >         EXECMEM_RO_AFTER_INIT,
+> > >         EXECMEM_TYPE_MAX,
+> > > };
+> > >
+> > > Does this make sense?
+> >
+> > How do you suggest to deal with e.g. riscv that has separate address spaces
+> > for modules, kprobes and bpf?
+> 
+> IIUC, modules and bpf use the same address space on riscv
+
+Not exactly, bpf is a subset of modules on riscv.
+
+> while kprobes use vmalloc address.
+
+The whole point of using the entire vmalloc for kprobes is to avoid
+pollution of limited modules space.
+ 
+> Thanks,
+> Song
+
+-- 
+Sincerely yours,
+Mike.
 
