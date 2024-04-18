@@ -1,217 +1,218 @@
-Return-Path: <linux-kernel+bounces-150755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F6438AA425
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:39:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3685E8AA428
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:39:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8E3E1F21808
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:39:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2C2F282950
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA199190696;
-	Thu, 18 Apr 2024 20:38:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FDB19DF59;
+	Thu, 18 Apr 2024 20:38:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YeaMMQHg"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KgWJPvG+"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CFC1199E8B;
-	Thu, 18 Apr 2024 20:38:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20A5E199EBA;
+	Thu, 18 Apr 2024 20:38:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713472706; cv=none; b=sehMKlQdmjq5v2l2WA17B2XNciDMHNr9RT889ysOF4CVgO+vOovxSMAZ06n/CFJ6aZ5m+3gqeAXcUzbZNXdBurqVX7jVv/V6kenLbQipcknOLnT6SKJzjJbK4MQLbd5Hd1kBJCqhwAm/1I+4U3xUJWZucEGx1T3CfOQ8TCRI1vw=
+	t=1713472710; cv=none; b=q6NQuWq1GI8ZI6VliVPGjkQoJms5wMpFNKYEgKg4f39CzUS70dwpF2UfQXlDGt3OTF7G8lzO5z8QKAmIkd/ERIDUNj2Jyy0Bwg5yrrB67umrZe3IwsAWl9g8LNHtUNtWaJiFlboKZoly+NMAOgZjjzcp6dudp+An471eM0v79uE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713472706; c=relaxed/simple;
-	bh=IXsOSB48KhBFOf88YD8Blw+Mq+X3++0K3YE2RV82H3M=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=i+ubhUx9R4hMIcqnP0OlWPnR7uoTQhRtEQ1BB+pe60+quOVfZ4Paye/Lx0wv9OiUNIhizHrr44Lmoyh3I9qq3oG5QWYyMPl+0JmcncMxM8U2X7O61fWHJSkQ3obCx74mFcTXLN/T/BNq+8Vh0kJ4r1O6FyeF0dZ7z+7T/Al02j4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YeaMMQHg; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a52582ecde4so121980666b.0;
-        Thu, 18 Apr 2024 13:38:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713472703; x=1714077503; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7A9GTsxN8IunCYp1DUkY8RgJAa3KxxBOsbu5rncJB9Y=;
-        b=YeaMMQHgSoYK8eiiUqWRCwQVO9h9/+vdk4P+HzU9+3PF2Nug/vmBanjR9jVxkRp4fj
-         /XL4HPKTJ6IHsM/ra4LfrAz1A176WWlPLtZJooIGtyCmJxKsjWo0JucC5yKUz8pAp9Do
-         d+QOr9I1zv1m+ptF6KWoyXXvCc9XbXq8g84qg/bm5sxr4Oqv82X5CAzfjlFO9aImYVAc
-         U98qCvTc2QYHzmGXoEATvO6rvuBvukyYmkhn8J3TfcV/RZ50fs5wSzKzJcB7JGQlidV5
-         NyIlLXwOmxep1g+fcEgYXg041NXIejbDY+56vzuc1M+IbnFYhnJ/GakBkqdWcHLNztP1
-         wDMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713472703; x=1714077503;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7A9GTsxN8IunCYp1DUkY8RgJAa3KxxBOsbu5rncJB9Y=;
-        b=m7kKkfAcuEg70ZbjvsAp3ELpbQDVhG8ETVQLZYCNHThMDhv6dXJhXs5qHKovhDox/L
-         UqXC8K0+EoW646QpsIBnX+0t+7u1ln4Wc5dQzlaF7r1/vOUyyJxWTtp3hu9DEVKeeaME
-         R/snxTFoUCQjC2FqbTMYrSBHsF6h5/lLiXA2SUCsW3jyq8czHtjjDYjlOCTLYhzaOS+Q
-         Hfucz6/wFvZY2NiZUhym2P4moOyt5NyK1+IRTb2C2m9PVznmoCCQoXzTbAmcrOXnS4hM
-         rJv0uha/eF7i4Mbu0JVrzmxn1xflceGoQtfXw7P7YrPAwmCO/8t8+i65Y7RkE3ZKf8Di
-         lPiw==
-X-Forwarded-Encrypted: i=1; AJvYcCWXZndWjs+Sh/ECwej2dDPDzsu1BmFLPi0kZmf2w7jsdcYJGPkSPhAUiJurugJlzNFn+mXzU3mLRg1mjK4KahH7MWFMwlX7hE74yLnpiVNz8tC2o5suJFgZ0V+4Hv2uqRpQyNKWNoJJGw==
-X-Gm-Message-State: AOJu0YzqtU4dhbuUhbFX15Ou9Jd6XOptiW615peS1KCgQf6wwHWCG735
-	ldhUqLufat0Z7fl0QtmphVfPhKVMjIptKo8s3tKWeDBAbIYdToN9
-X-Google-Smtp-Source: AGHT+IGzLyE7VxWjZDABe7Un265onJx95a/vOFgpB1qchpktSO/egBKsgsmbcFgr7ax7wodqHkbROQ==
-X-Received: by 2002:a17:906:5f89:b0:a55:5ba6:ace9 with SMTP id a9-20020a1709065f8900b00a555ba6ace9mr165722eju.9.1713472702807;
-        Thu, 18 Apr 2024 13:38:22 -0700 (PDT)
-Received: from lmc-playground.localdomain ([188.25.209.252])
-        by smtp.gmail.com with ESMTPSA id l21-20020a170906079500b00a473774b027sm1305649ejc.207.2024.04.18.13.38.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 13:38:22 -0700 (PDT)
-From: Laurentiu Mihalcea <laurentiumihalcea111@gmail.com>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Daniel Baluta <daniel.baluta@nxp.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>,
-	Liu Ying <victor.liu@nxp.com>
-Cc: Laurentiu Mihalcea <laurentiu.mihalcea@nxp.com>,
-	devicetree@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 3/3] arm64: dts: imx8ulp: add DSP node
-Date: Thu, 18 Apr 2024 23:37:20 +0300
-Message-Id: <20240418203720.8492-4-laurentiumihalcea111@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240418203720.8492-1-laurentiumihalcea111@gmail.com>
-References: <20240418203720.8492-1-laurentiumihalcea111@gmail.com>
+	s=arc-20240116; t=1713472710; c=relaxed/simple;
+	bh=U8Jdac4J7AbOYdOO7iaSyo1Pc4fD5186kqXjTCi5JXA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=eF6ABxvaozhJV+5HORurTS99u6RzC3bFdJuUPJwn/cCQMcbMrUcEvgT37VHhXEsRGZszW5yerIsn+w9Bw/nWQLivB39AkBg2+PIcztSkRCkygBmYUPy8kfuJQPH2zzmMXZGQLMdG/K+I/6b1W2c6BJq9spiQLdnJHfJ7npyMGHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KgWJPvG+; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43IKZuNi030508;
+	Thu, 18 Apr 2024 20:38:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=KK0ofOdVlXP7XXsVIpp96JdiQ3FZc76aKMyRRIPwHNc=; b=Kg
+	WJPvG+TC66/vLt70OcF5CEIbz8J1F+e/ezsjULGllWm2d9jjUypcvUrBN1yC+a1q
+	HIX4nxA8RWX+VQpOnUHxAm5JNyczIQT4L3r0iGOhOfhKuPqPDPh/Qm+zSfu7rvoM
+	wre6PP7Mcy+qCCV5YVRpy+nGQa3po38iqzQXV39pwQvixuw4K/NTXj/e4xL8b/Ju
+	6mCxvSHhP5/3mV7/lE2tdtVNxEh4uOmmGvbI+Wr1+VOGEWCyGhBA05KHtMnFv3LN
+	PnyxuMSS7hiMlRWI5QhI2b57znXkqm1Dx91KHJGkKiWV/qZWrogwWRECXavT0aw2
+	0GWFtIGN9Vz1eUsiB+sg==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xk155hedd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 20:38:08 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43IKc7Cx020072
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 20:38:07 GMT
+Received: from [10.110.72.56] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 18 Apr
+ 2024 13:38:03 -0700
+Message-ID: <d25533d6-5d09-4c9f-8801-54ac35db98ed@quicinc.com>
+Date: Thu, 18 Apr 2024 13:38:03 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH bpf-next v4 1/2] net: Rename mono_delivery_time to
+ tstamp_type for scalabilty
+Content-Language: en-US
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
+        "Martin
+ KaFai Lau" <martin.lau@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+CC: <kernel@quicinc.com>
+References: <20240418004308.1009262-1-quic_abchauha@quicinc.com>
+ <20240418004308.1009262-2-quic_abchauha@quicinc.com>
+ <66216adc8677c_f648a294aa@willemb.c.googlers.com.notmuch>
+ <9a1f8011-2156-4855-8724-fea89d73df11@quicinc.com>
+ <66217e7ccb46b_f9d5d294b0@willemb.c.googlers.com.notmuch>
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+In-Reply-To: <66217e7ccb46b_f9d5d294b0@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: gDZKXrd7xPRM0cOdYqGIB6iqtzTdTHAH
+X-Proofpoint-GUID: gDZKXrd7xPRM0cOdYqGIB6iqtzTdTHAH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-18_18,2024-04-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 clxscore=1015 lowpriorityscore=0
+ suspectscore=0 malwarescore=0 bulkscore=0 impostorscore=0 spamscore=0
+ phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404180149
 
-From: Laurentiu Mihalcea <laurentiu.mihalcea@nxp.com>
 
-Add node for i.MX8ULP's DSP core and its dependencies.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Signed-off-by: Laurentiu Mihalcea <laurentiu.mihalcea@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8ulp-evk.dts | 39 +++++++++++++++++++
- arch/arm64/boot/dts/freescale/imx8ulp.dtsi    | 22 +++++++++++
- 2 files changed, 61 insertions(+)
+On 4/18/2024 1:11 PM, Willem de Bruijn wrote:
+> Abhishek Chauhan (ABC) wrote:
+>>
+>>
+>> On 4/18/2024 11:47 AM, Willem de Bruijn wrote:
+>>> Abhishek Chauhan wrote:
+>>>> mono_delivery_time was added to check if skb->tstamp has delivery
+>>>> time in mono clock base (i.e. EDT) otherwise skb->tstamp has
+>>>> timestamp in ingress and delivery_time at egress.
+>>>>
+>>>> Renaming the bitfield from mono_delivery_time to tstamp_type is for
+>>>> extensibilty for other timestamps such as userspace timestamp
+>>>> (i.e. SO_TXTIME) set via sock opts.
+>>>>
+>>>> As we are renaming the mono_delivery_time to tstamp_type, it makes
+>>>> sense to start assigning tstamp_type based on enum defined
+>>>> in this commit.
+>>>>
+>>>> Earlier we used bool arg flag to check if the tstamp is mono in
+>>>> function skb_set_delivery_time, Now the signature of the functions
+>>>> accepts tstamp_type to distinguish between mono and real time.
+>>>>
+>>>> In future tstamp_type:1 can be extended to support userspace timestamp
+>>>> by increasing the bitfield.
+>>>>
+>>>> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+>>>> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+>>>
+>>>> +/**
+>>>> + * tstamp_type:1 can take 2 values each
+>>>> + * represented by time base in skb
+>>>> + * 0x0 => real timestamp_type
+>>>> + * 0x1 => mono timestamp_type
+>>>> + */
+>>>> +enum skb_tstamp_type {
+>>>> +	SKB_CLOCK_REAL,	/* Time base is skb is REALTIME */
+>>>> +	SKB_CLOCK_MONO,	/* Time base is skb is MONOTONIC */
+>>>> +};
+>>>> +
+>>>
+>>> Can drop the comments. These names are self documenting.
+>>
+>> Noted! . I will take care of this
+>>>
+>>>>  /**
+>>>>   * DOC: Basic sk_buff geometry
+>>>>   *
+>>>> @@ -819,7 +830,7 @@ typedef unsigned char *sk_buff_data_t;
+>>>>   *	@dst_pending_confirm: need to confirm neighbour
+>>>>   *	@decrypted: Decrypted SKB
+>>>>   *	@slow_gro: state present at GRO time, slower prepare step required
+>>>> - *	@mono_delivery_time: When set, skb->tstamp has the
+>>>> + *	@tstamp_type: When set, skb->tstamp has the
+>>>>   *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
+>>>>   *		skb->tstamp has the (rcv) timestamp at ingress and
+>>>>   *		delivery_time at egress.
+>>>
+>>> Is this still correct? I think all egress does now annotate correctly
+>>> as SKB_CLOCK_MONO. So when not set it always is SKB_CLOCK_REAL.
+>>>
+>> That is correct. 
+>>
+>>>> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+>>>> index 61119d42b0fd..a062f88c47c3 100644
+>>>> --- a/net/ipv4/tcp_output.c
+>>>> +++ b/net/ipv4/tcp_output.c
+>>>> @@ -1300,7 +1300,7 @@ static int __tcp_transmit_skb(struct sock *sk, struct sk_buff *skb,
+>>>>  	tp = tcp_sk(sk);
+>>>>  	prior_wstamp = tp->tcp_wstamp_ns;
+>>>>  	tp->tcp_wstamp_ns = max(tp->tcp_wstamp_ns, tp->tcp_clock_cache);
+>>>> -	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, true);
+>>>> +	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, CLOCK_MONOTONIC);
+>>>
+>>> Multiple references to CLOCK_MONOTONIC left
+>>>
+>> I think i took care of all the references. Apologies if i didn't understand your comment here. 
+> 
+> On closer read, there is a type issue here.
+> 
+> skb_set_delivery_time takes a u8 tstamp_type. But it is often passed
+> a clockid_t, and that is also what the switch expects.
+> 
+> But it does also get called with a tstamp_type in code like the
+> following:
+> 
+> +       u8 tstamp_type = skb->tstamp_type;
+>         unsigned int hlen, ll_rs, mtu;
+>         ktime_t tstamp = skb->tstamp;
+>         struct ip_frag_state state;
+> @@ -82,7 +82,7 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,
+>                         if (iter.frag)
+>                                 ip_fraglist_prepare(skb, &iter);
+>   
+> -                       skb_set_delivery_time(skb, tstamp, mono_delivery_time);
+> +                       skb_set_delivery_time(skb, tstamp, tstamp_type);
+> 
+> So maybe we need two variants, one that takes a tstamp_type and one
+> that tames a clockid_t?
+> 
+> The first can be simple, not switch needed. Just apply the two stores.
+I agree to what you are saying but clockid_t => points to int itself. 
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
-index 24bb253b938d..5dadcbba370d 100644
---- a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
-@@ -67,6 +67,32 @@ vdevbuffer: vdevbuffer@a8400000 {
- 			reg = <0 0xa8400000 0 0x100000>;
- 			no-map;
- 		};
-+
-+		dsp_reserved: dsp_reserved@8e000000 {
-+			reg = <0 0x8e000000 0 0x1000000>;
-+			no-map;
-+		};
-+
-+		dsp_reserved_heap: dsp_reserved_heap@8f000000 {
-+			reg = <0 0x8f000000 0 0xef0000>;
-+			no-map;
-+		};
-+
-+		dsp_vdev0vring0: vdev0vring0@8fef0000 {
-+			reg = <0 0x8fef0000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		dsp_vdev0vring1: vdev0vring1@8fef8000 {
-+			reg = <0 0x8fef8000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		dsp_vdev0buffer: vdev0buffer@8ff00000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0 0x8ff00000 0 0x100000>;
-+			no-map;
-+		};
- 	};
- 
- 	clock_ext_rmii: clock-ext-rmii {
-@@ -95,6 +121,15 @@ &cm33 {
- 	status = "okay";
- };
- 
-+&dsp {
-+	assigned-clocks = <&cgc2 IMX8ULP_CLK_HIFI_SEL>, <&cgc2 IMX8ULP_CLK_HIFI_DIVCORE>;
-+	assigned-clock-parents = <&cgc2 IMX8ULP_CLK_PLL4_PFD0>;
-+	assigned-clock-rates = <0>, <475200000>;
-+	memory-region = <&dsp_vdev0buffer>, <&dsp_vdev0vring0>,
-+			<&dsp_vdev0vring1>, <&dsp_reserved>;
-+	status = "okay";
-+};
-+
- &flexspi2 {
- 	pinctrl-names = "default", "sleep";
- 	pinctrl-0 = <&pinctrl_flexspi2_ptd>;
-@@ -176,6 +211,10 @@ &mu {
- 	status = "okay";
- };
- 
-+&mu3 {
-+	status = "okay";
-+};
-+
- &iomuxc1 {
- 	pinctrl_enet: enetgrp {
- 		fsl,pins = <
-diff --git a/arch/arm64/boot/dts/freescale/imx8ulp.dtsi b/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-index c4a0082f30d3..99ed8c1ee57c 100644
---- a/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-@@ -198,6 +198,22 @@ soc: soc@0 {
- 		ranges = <0x0 0x0 0x0 0x40000000>,
- 			 <0x60000000 0x0 0x60000000 0x1000000>;
- 
-+		dsp: dsp@21170000 {
-+			compatible = "fsl,imx8ulp-hifi4";
-+			reg = <0x21170000 0x20000>;
-+			clocks = <&cgc2 IMX8ULP_CLK_LPAV_BUS_DIV>,
-+				 <&cgc2 IMX8ULP_CLK_HIFI_DIVPLAT>,
-+				 <&cgc2 IMX8ULP_CLK_HIFI_DIVCORE>,
-+				 <&pcc5 IMX8ULP_CLK_MU3_B>;
-+			clock-names = "ipg", "ocram", "core", "mu";
-+			power-domains = <&scmi_devpd IMX8ULP_PD_HIFI4>;
-+			firmware-name = "imx/dsp/hifi4.bin";
-+			mbox-names = "tx", "rx", "rxdb";
-+			mboxes = <&mu3 0 0>, <&mu3 1 0>, <&mu3 3 0>;
-+			fsl,dsp-ctrl = <&avd_sim>;
-+			status = "disabled";
-+		};
-+
- 		s4muap: mailbox@27020000 {
- 			compatible = "fsl,imx8ulp-mu-s4";
- 			reg = <0x27020000 0x10000>;
-@@ -520,6 +536,12 @@ per_bridge5: bus@2d800000 {
- 			#size-cells = <1>;
- 			ranges;
- 
-+			avd_sim: syscon@2da50000 {
-+				compatible = "fsl,imx8ulp-avd-sim", "syscon", "simple-mfd";
-+				reg = <0x2da50000 0x38>;
-+				clocks = <&pcc5 IMX8ULP_CLK_AVD_SIM>;
-+			};
-+
- 			cgc2: clock-controller@2da60000 {
- 				compatible = "fsl,imx8ulp-cgc2";
- 				reg = <0x2da60000 0x10000>;
--- 
-2.34.1
+For example :- 
+		void qdisc_watchdog_init_clockid(struct qdisc_watchdog *wd, struct Qdisc *qdisc,
+				 clockid_t clockid)
 
+		qdisc_watchdog_init_clockid(wd, qdisc, CLOCK_MONOTONIC); => sch_api.c
+	       qdisc_watchdog_init_clockid(&q->watchdog, sch, q->clockid); =>sch_etf.c (q->clockid is int)
+	
+But i can change it to two new APIs one which accepts only clock_id (with switch) and other accepts u8 to directly store whatever is given. 
 
