@@ -1,128 +1,123 @@
-Return-Path: <linux-kernel+bounces-150605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA1528AA1AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:58:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F56B8AA1B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:59:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C84CB20D97
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:58:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E19CEB20D27
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:59:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3FA6177983;
-	Thu, 18 Apr 2024 17:58:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 196E81779BA;
+	Thu, 18 Apr 2024 17:59:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jAKnZiBT"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bwu8kxmI"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA3D416ABE3;
-	Thu, 18 Apr 2024 17:58:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F15E16ABE3;
+	Thu, 18 Apr 2024 17:59:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713463103; cv=none; b=Ge2rIPoW9PL6R6cnKPGU+TeCp2JARHxIIL6qwOjprjXWSbycniokuEfx0VhMrkffNmsDrFJgr81HGWAkuxxup5b8CTeMFqSahwBbzySGGJLqwGdj6XuOz9ahdfQGNzh91J1ClqtZXyUarH6mNlUhp5Zw4WTEP703SKroXH5K57M=
+	t=1713463159; cv=none; b=Fxz2veJ60RblGS3Jg5T5XeC/3cZPKOM0vKhciYamUFW6zHAQn6NRtzIqGow7ls9BXWDCnKocSNY5voLVn2bmjLpHHj1bW/eo+MSCe9og5fEksCVMM7djHyC+xNwZcToOpwoOOWMg/Vf03yCfaGc1bKW0vA3wLlRzx00Oc1jXH/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713463103; c=relaxed/simple;
-	bh=27/uXdpGHcncFOlSxDwRdjvgNaliKyoLpv4C5/cBwrE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VU0OpAJ7KqIQuwrxR40jFbCQpgOvla+3MVmhLybG0y1uMiNKnbt9pOayVVZt6f6eriG4NQLZXVh7E2VfC+FJaHvD2/2UTYpmVSjopAoZUCDug3mAdFoYECCi06ZIrPtHJihoXL+IDA7lQb3o/sJXanJM+MpW+o/cGqMXG9Ulpu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jAKnZiBT; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713463102; x=1744999102;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=27/uXdpGHcncFOlSxDwRdjvgNaliKyoLpv4C5/cBwrE=;
-  b=jAKnZiBTs2/pWxLe4w4bwaJXu9GWWdGjHYxTm+wMzDFJmjq8S5WsnB38
-   1cUf3Xu7560ECqkADeIhdKG3z2fGShE/0yN7NQl0xuTh0IaQwU6Muzkuo
-   KEHynvJLXQd/VUDpUORZHalAeRCSt94VeKQf0vyriwEyPMHvHkcSEVehQ
-   YqqKmKhWEiMWltltf75gE1mxQtJM28rtsu06xOmgz3ovPBXu5SteyJK95
-   twuXaOHoVNAQUL/Kb9eexFUKh7An3sloK+8Hg8vzcFMt8SiC8ZB7ePyk5
-   U7qJp1l5vQYsWBczNUmLB5JpAO6O4+dM+NDpErVVQduKaxWXxah/Uc/p4
-   g==;
-X-CSE-ConnectionGUID: /2jmpFMiSNSSIGbFsT3cOg==
-X-CSE-MsgGUID: 00n/7oQGQfeEKdzBHrNOcg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="8956787"
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="8956787"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 10:58:21 -0700
-X-CSE-ConnectionGUID: 2LW46ca+RAaObzm62NgxXQ==
-X-CSE-MsgGUID: +45gGWBQR5irnhv7ELeu7g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="27891075"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 10:58:18 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rxW1W-00000000Qd4-30aR;
-	Thu, 18 Apr 2024 20:58:14 +0300
-Date: Thu, 18 Apr 2024 20:58:14 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: "Konstantin P." <ria.freelander@gmail.com>
-Cc: Konstantin Pugin <rilian.la.te@ya.ru>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	Lech Perczak <lech.perczak@camlingroup.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] serial: sc16is7xx: announce support of
- SER_RS485_RTS_ON_SEND
-Message-ID: <ZiFfNl-wj3pzZqiH@smile.fi.intel.com>
-References: <20240418170610.759838-1-rilian.la.te@ya.ru>
- <20240418170610.759838-2-rilian.la.te@ya.ru>
- <ZiFacIT0wzvhzaEk@smile.fi.intel.com>
- <CAF1WSuyauXes-RncLqRrYYaeP1KaDyfG82YcAaa8gK_mFUWCHg@mail.gmail.com>
+	s=arc-20240116; t=1713463159; c=relaxed/simple;
+	bh=h/nW+kruTWdp4SWOP6RcI1nNPO74h4z/FStukqK1vkI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cEk0PcYUnzTeZC/SR87h7y7Fpd0DC1Q3vi/oChHy7P4p94q27MrbqtONhsq+J1inwrfT2PdS0UX5TxKbaU/0xuJHIm/5bYL7ttwx2ZGdZxLwtsenLdKivWJLVZaLnyBzLztpe3Upq3HFdr/KLhWrxnYDlrFcBVK9e1kycUkLlhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bwu8kxmI; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ed04c91c46so1198210b3a.0;
+        Thu, 18 Apr 2024 10:59:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713463157; x=1714067957; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OdF5x7vF8xwnkw2w5Ox3+BgtHbr4Ax47Y2qoa3FahQg=;
+        b=bwu8kxmIpGMSExgbsTxJUcxmSyu2qDSeL5UuWrQDTVN8JqXu2FuYmIShBkTmBReENb
+         gpqVWJUrbgZgfX3xgLF8R8VzRbeFg/HcbJsyVC3VtZ+tolrZ6gA+QCB0YFvMoN0+Zm0j
+         LwXCT/fE537XzpbhgNP9h9zndNbuv7ZIeurL1ZbA7Ipb90F7GhF3b11jginyGvqoobuB
+         UQg0tzL2pX/ZG0TcTiErtSFDOK4Coyiucj5No60cmTencGda6gh5tDj1LmZLvUQbtHg9
+         orXPfXDjTRSNH1coyAnM6eZB3MGq+q3R9nhaiJyWL6Zb1fEAz6KsxFS9k79gsMzDufA5
+         AZvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713463157; x=1714067957;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OdF5x7vF8xwnkw2w5Ox3+BgtHbr4Ax47Y2qoa3FahQg=;
+        b=CfwJcPtYJfRpBf2w/UQjsk7hVvXQSszGCP9Y96jqtSFSiuPkjq+TPNalEKdKVAMuMk
+         Sv0DfqM1kbGRe5vUmRoxRQG3w1+Jzf1NbaW0UkXNyhrklKfD8vuegf9j+wFxUd7tiCYq
+         QTv2kkruEFSHH59xIPS01c9BukukweoH3EdnEIpgddy7LtcXzKopufeuSSQyNVO9nOqJ
+         Bl20RnL0B1i0PMLTkBkzmfs87jFzvarJIvvk3D0cQ3tL7BO1V8KAlkmxkv2jBc5fLQg+
+         EGVkSkxpxkbYptO8/XsKNPJk3SiHVqegPFCzx5FZU8DcOtME5PaGgwiHOhaPW7vClG2C
+         O4UA==
+X-Forwarded-Encrypted: i=1; AJvYcCW36ml/whMS43G7nhcw7UWVwmAVAt2q03qRqfBejXEAu0YAIsU4RceXwHlpl+fwMMVNH4Tmt+zC28yv8mNtGxgLauRYDRup0fPu9YH+cb9iMVppRB5zdl9p9fNEzQi1MsncdGif8nDEZyZD7poEahCHHz7DyGJnadXAzn8nr9+s
+X-Gm-Message-State: AOJu0Yzwkj0m3gM3/Ylj62swR/nedoyzmf1YyDEslXb2xHBHTGiPeXpp
+	w4HvMuK37WC4/xi3puhPE9pp5VhIkC3rWRQ5S/aSTRZ/0tRmc+1C
+X-Google-Smtp-Source: AGHT+IFqH+guHGlcfs13QIIC4MHTvQXBK2yUOp2fQZAETdpd0omktYoWkPOoaUq/hjldeBnYsl53jw==
+X-Received: by 2002:a05:6a20:da84:b0:1a9:9cbc:4daf with SMTP id iy4-20020a056a20da8400b001a99cbc4dafmr4484441pzb.27.1713463157437;
+        Thu, 18 Apr 2024 10:59:17 -0700 (PDT)
+Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id c18-20020a63d512000000b005dc49afed53sm1735229pgg.55.2024.04.18.10.59.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 10:59:17 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: davem@davemloft.net
+Cc: edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linux-kernel@vger.kernel.org,
+	linux-ppp@vger.kernel.org,
+	netdev@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	syzbot+393d0ef63475d9bb1f16@syzkaller.appspotmail.com,
+	Jeongjun Park <aha310510@gmail.com>
+Subject: [PATCH] ppp: Fix deadlock caused by unsafe-irq lock in ap_get()
+Date: Fri, 19 Apr 2024 02:59:10 +0900
+Message-Id: <20240418175910.7641-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF1WSuyauXes-RncLqRrYYaeP1KaDyfG82YcAaa8gK_mFUWCHg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Apr 18, 2024 at 08:52:36PM +0300, Konstantin P. wrote:
 
-Please, do not top post!
+read_lock() present in ap_get() is interrupt-vulnerable, so the function needs to be modified.
 
-> How I should check this? Vladimir does not said anything about his tag
-> scope - whether it applies only to patch 2 or to series as a whole, and
-> initially I assumed than his tag were given only to patch 2.
 
-If there was not explicitly said, the algo is following:
-- if the tag against cover letter — all patches are covered
-- otherwise only the patches reply to which has been sent
+Reported-by: syzbot+393d0ef63475d9bb1f16@syzkaller.appspotmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+---
+ drivers/net/ppp/ppp_async.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-> But then you said than I missed his tag, so, I thought that it applies to
-> series as a whole and in version 3 I added his tag to all patches.
-
-I might missed the difference explained above. Sorry about that.
-
-> On Thu, Apr 18, 2024, 20:37 Andy Shevchenko <
-> andriy.shevchenko@linux.intel.com> wrote:
-> 
-> > On Thu, Apr 18, 2024 at 08:06:05PM +0300, Konstantin Pugin wrote:
-> > > From: Konstantin Pugin <ria.freelander@gmail.com>
-
-..
-
-> > I might have been not clear about Vladimir's tag. Please double check
-> > if he gave it against the certain patch or the entire series.
-
+diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
+index c33c3db3cc08..dc1d4633428a 100644
+--- a/drivers/net/ppp/ppp_async.c
++++ b/drivers/net/ppp/ppp_async.c
+@@ -133,12 +133,13 @@ static DEFINE_RWLOCK(disc_data_lock);
+ static struct asyncppp *ap_get(struct tty_struct *tty)
+ {
+ 	struct asyncppp *ap;
++	unsigned long flags;
+ 
+-	read_lock(&disc_data_lock);
++	flags = read_lock_irqsave(&disc_data_lock);
+ 	ap = tty->disc_data;
+ 	if (ap != NULL)
+ 		refcount_inc(&ap->refcnt);
+-	read_unlock(&disc_data_lock);
++	read_unlock_irqrestore(&disc_data_lock, flags);
+ 	return ap;
+ }
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+2.34.1
 
