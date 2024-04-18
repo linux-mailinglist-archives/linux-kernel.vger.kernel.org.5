@@ -1,95 +1,79 @@
-Return-Path: <linux-kernel+bounces-149500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20CB68A9213
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:28:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42E808A9216
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:28:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3DC2B21EE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:28:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA3C4B21771
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B24E854BC4;
-	Thu, 18 Apr 2024 04:27:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BD34n9rX"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B048D56454;
+	Thu, 18 Apr 2024 04:27:51 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3C0E4F1F1;
-	Thu, 18 Apr 2024 04:27:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C39537FC
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 04:27:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713414470; cv=none; b=PIEkB1ZG28A4rY/DEGaghG993mmDvMtjK3T8cAMsbUoT56OxPNomVI6D//PRUpTxlXjjUt/xV07M3GHs5CCbBPBP2flSxL+4GXrIjhygE9ylMOBXzwzYmh6isSrituOgyVXuNmxGDe2rvuEj0WBOvlgtKf4hAzNayrenMr90RzI=
+	t=1713414471; cv=none; b=Umxyr1nioUCL6IrTL1XyN+le6eixxwk3ICKqkdN7z4lz3SYYyHAoMl2fNzPf2ej+qKbtcRpHKxp1GT6TBp9HhVv6fHf7oqL9wuykTZDy+oWFVWnJ2Vca2eX7/6yyH/vA7ApL313bED4zJ9WQE5EAbYbkYaZffI6fgOg6qVHPmwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713414470; c=relaxed/simple;
-	bh=e+2n9zdpzho51DX26dxC0W/s2nVs2mo0YE4fE0B781M=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=J7A/2FN4rsrjDOi+3wgTzA82BakgheNLS2f1bk1fWbYwu8f1a0kztMbWdh6+M4OYEjQM2Cm3scoH02wsiTQkY2FGzbj6fiXjuEAv2j7Zv0XU9NcnKjAZLuMvZtnOspdABtvawOnpwOWtN955QJ87ujLuGRoJzvy67b8ie+Q/ZHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BD34n9rX; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so249381a12.1;
-        Wed, 17 Apr 2024 21:27:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713414468; x=1714019268; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e+2n9zdpzho51DX26dxC0W/s2nVs2mo0YE4fE0B781M=;
-        b=BD34n9rX1w/w3L/hvknEjm1CdBDDHgeB6gO0d3+hrlw/XrMk6xha8mbDm/phgiURqI
-         SjVnGUumsbTbD0er7SZj5s34xgTxx8Mq+CmjHMfvX3EJ/Ktc9kWXv9UlyTaN+x8+Pmf8
-         fkqPdnNRnIICM6DGo6RdNusQS29QOITNiy9CfnlEKa+Es7cBWPJAdv1GoYltNsAdCNux
-         lozLuTjxxNQPmK6kJLhSxeYiugfMOcNElk6zNrMwsRSuV1lJHgeMm+pgb5EGkef3Rwac
-         257CRMA/D/0/5MxvHbPMBtYQnsZ0BcBvcHEIfaoB5m7s2hJVdkHISjAycaCrYbMLJN2V
-         ks2w==
+	s=arc-20240116; t=1713414471; c=relaxed/simple;
+	bh=SfG1s1y1fbs4IRvRpyJEItMWdHRLy7BTd3xvVF3hb1Q=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=NBAmUq6y/cxOf+G3WdpnRK3AItVJ8H91qzivkNMi3Fg8ySnXc1iGui/X0jiTPOyHD4/pti4EuSnyP9yqxZ9/PSNS+3KWOPAusa78qi0O+OPd6O9+4JiDxPL9FRQUs5f+yHA3QVFrBuZG2D+qhihrfngigYebpIKy/oNpGnXm4VI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7d6c32ef13bso46011539f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 21:27:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713414468; x=1714019268;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e+2n9zdpzho51DX26dxC0W/s2nVs2mo0YE4fE0B781M=;
-        b=V4KivVyUDRNva49nDJy9euLBAWv/p9buhbtvpWEyaSXGHln7KREuBsMK9lvvi1n0hi
-         xVJhq07zNcIGHQSZVKT0PYv2kw0XYtMDJSbcIxX+o6q0hZyBp+V0kxJPhJW60765cGTQ
-         HtyaywrdSO/Ec8P5WSLuQ5xUb80WhQvqHETvSp48+t6hBtar2HePNtbL10Yh6TltJooU
-         tPSNJiOFtiAD4QGpjWuDcVYvxrDE3qU4UTahmsMBAI1Df6I2e083SooR5RnqOjqAaIw0
-         KHTSGHZCrmZJIOdJ3I6tMJzSnr8tIJiaOpcSBPTK4x9x6MxzSN4SGyklx4SPK2HPHYWH
-         GYoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWccjkDwmcGOIb0vdP1qMULulYJQGAWBaztQjoiQ+11T1aP85Dp9WN22Vm8ukoqXS1bRPm+UTd0/pHLKrdSPdZHEZLAMhT5ZI202MgvHL+gxwAUPonlQOrWbKBOd8bapqUi+qqN0xSdDTkbs3o8BP5Sp/aJBKm58WqEGQKi4jMzJlm9BrU0JA==
-X-Gm-Message-State: AOJu0YwR1YIox9YeNwaRe6z1MLb9HITB2U9ZqW/aHK1pl3htONa54hZk
-	1Un+DQm73cS4ZC7A0Am2s9Nx6G8dM0yZZHGDwPsZPSJo91eJmWXM
-X-Google-Smtp-Source: AGHT+IGRp4EaYkCD6tb6+IH/JVx/AOdoqsGefrvDn+4Yx+ZzTEtN9IIFT8qTptKuHa0koMIDOfGx6Q==
-X-Received: by 2002:a05:6a20:4311:b0:1a7:5fe0:1c96 with SMTP id h17-20020a056a20431100b001a75fe01c96mr2453379pzk.23.1713414467801;
-        Wed, 17 Apr 2024 21:27:47 -0700 (PDT)
-Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id a18-20020a170902ecd200b001e5c7d05cc2sm477605plh.184.2024.04.17.21.27.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 21:27:47 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: syzbot+606f94dfeaaa45124c90@syzkaller.appspotmail.com
-Cc: djwong@kernel.org,
-	hch@infradead.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-xfs@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [fs?] [mm?] KCSAN: data-race in __filemap_remove_folio / folio_mapping (2)
-Date: Thu, 18 Apr 2024 13:27:40 +0900
-Message-Id: <20240418042740.313103-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <000000000000d0737c05fa0fd499@google.com>
-References: <000000000000d0737c05fa0fd499@google.com>
+        d=1e100.net; s=20230601; t=1713414469; x=1714019269;
+        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SfG1s1y1fbs4IRvRpyJEItMWdHRLy7BTd3xvVF3hb1Q=;
+        b=XHpjdLMW1yLFe1meujGmNZ/FnfknC0Lmj6jaQ7KKeER4ePmBJOqba7+4fHXSB3IYcf
+         IzzPrv5X1/9a3nuWU39ulWNcal5C741yKe4La4K8NpvSfio24U/fl58KoKY6FHc/4tyA
+         MJKlSFjeVeWlyj3lbZ2cJTISnhXKahO87fh9eaLl4XSgyzt+tiTCunhFEoJJMSNvjBJe
+         5MqOyyVgiiJv47KGH6zk/VsWGBS+GIppdiI7eMeiNoq+9G1qWubewfjntRpqZysIQOFm
+         Z0hPjDi0FJHsyuTV69/D3e4Y4GMcw5Rf8uNg5GTBfj6KS8/lFmysifkSyFqwDOkb7+IX
+         1xnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW3cWn+2969WX+nrnCZWxSTMaDHXHBJTJBIQx+59oQ65+FEwPwPJfrx49XZHVenaMmG82KdVRV3jLRdmedQTlG8aUoWKVunwRtbcTJ4
+X-Gm-Message-State: AOJu0YyahtBfHPDyLjuPvimfHGprbGSbnRgTXx7kv9uNb4Ab8+HjPyZv
+	tmoSJ9q84adWDPkBweIiKOOX8f6dhXN5PTYmtqpKV+36koKPa4NtzluGmmWo1ri9V2zNrSjJH96
+	6QTcbzWMQzF4lVa2u2xpig/AhX10JKjQ8eTsBbqiMvV9pRTE5t+frFgE=
+X-Google-Smtp-Source: AGHT+IFwL8qeN80Hv4nk9W+bxA3Mu/wX0/j/+lzG4a9AN7cCSGgQotKYvsLnIC5qQraEK1JJIlW4Sb3AG3WAp6IiyW2Ip0HUyaAR
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:8523:b0:482:e922:2823 with SMTP id
+ is35-20020a056638852300b00482e9222823mr99129jab.0.1713414468938; Wed, 17 Apr
+ 2024 21:27:48 -0700 (PDT)
+Date: Wed, 17 Apr 2024 21:27:48 -0700
+In-Reply-To: <20240418042740.313103-1-aha310510@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c63725061657646d@google.com>
+Subject: Re: [syzbot] [fs?] [mm?] KCSAN: data-race in __filemap_remove_folio /
+ folio_mapping (2)
+From: syzbot <syzbot+606f94dfeaaa45124c90@syzkaller.appspotmail.com>
+To: aha310510@gmail.com
+Cc: aha310510@gmail.com, djwong@kernel.org, hch@infradead.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-xfs@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-please test data-race in __filemap_remove_folio / folio_mapping
+> please test data-race in __filemap_remove_folio / folio_mapping
+>
+> #syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-#syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+This crash does not have a reproducer. I cannot test it.
+
 
