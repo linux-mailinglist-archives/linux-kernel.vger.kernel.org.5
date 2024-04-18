@@ -1,118 +1,143 @@
-Return-Path: <linux-kernel+bounces-150434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D7DB8A9F44
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:57:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F14BF8A9F4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:57:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27C10B21839
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:57:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F582B22E01
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:57:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E4E16F84B;
-	Thu, 18 Apr 2024 15:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HC8VKVm5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D48EC16F8F3;
+	Thu, 18 Apr 2024 15:57:42 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F3015FA9F;
-	Thu, 18 Apr 2024 15:57:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A6E416F851
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:57:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713455825; cv=none; b=SigxKr5ZqfUYYKS0cDUyGCd7hUodFiiFTreBiWTZLOknqxmpZSxhDlexv0rWcx9bKxOZ+6RZMXxxWp8dLNpkhTkjv8fq6MVDvazEttG9SUT5pIc9AGNlAzXKVMhctNAPKeacG0Ag/fj7UQjpFE4h7mc1ApRZmdC4I1tUp9sXl1o=
+	t=1713455862; cv=none; b=mfPuOl4CQN3CiNUc5ElDwsnrHhaxPh2jOuSTS6nbPTgQugE3XAUiN+L03zzpg9LZantbV0zvYKar8gQ/MHBALSugyiawyyDiLnCXFB2j3dJv+u6rrxGWw1YzCL4+kXS7SfHpqpy/OQiohtIoGlYN5MpJWLUDZQcIeV51+7usXI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713455825; c=relaxed/simple;
-	bh=NuLhSfmYURyeA4KyKnBJ8GgZw3mwTQhoH5JrHj17W2U=;
+	s=arc-20240116; t=1713455862; c=relaxed/simple;
+	bh=cZ3+TYpIR/lBULnBJellkQ5YnuCM3qph2lvrK3Pgs7M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RjaSI5HlAi1YmUYhBYJmcAyTUYrlRr0xu7+qwphS0ZZer7r5BXsOCUYe67h6KS+R/QvtSERck9GHLozAs2ceLKQF02FEw8vdL/nrvuEc1Km6TxwmD+WBJtpRfPG63t4915uC6SKJD706M31aZEnFsEHvqq0R2ZdffQK99lWN8Kw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HC8VKVm5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DE17C113CC;
-	Thu, 18 Apr 2024 15:57:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713455824;
-	bh=NuLhSfmYURyeA4KyKnBJ8GgZw3mwTQhoH5JrHj17W2U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HC8VKVm5hRy2IWpiv+a8i3bjGGmhEFdfpcgke+gWkBdnKp/GfF5li0yOqubX0m3bt
-	 dPTnBjB0ibYwUMXtA2qBD04QQf5EYFdGid5NPHouU9RvlXo+XwuXwUw8wOytI5JqR6
-	 5pNPmDYJhJYEswFyq/7AUHJIjxUqIvis0irOFtW1D9pBQJYQ5OblC72B43UYRj0bxK
-	 Deli09g5qDv4VpnClB9wlI3cSXOhCANJ1AjMl1xnZnomcAIOEm2vAHSCNM5+6OX+cM
-	 r8mxMVYUwJvZpel05v/cxU1PtG1fTuh0LCjX1s2Oq2/ESfT0i3W9u6nX3eyJ5od/Fi
-	 yB4TX5eQPHC0A==
-Date: Thu, 18 Apr 2024 16:57:00 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Dragan Simic <dsimic@manjaro.org>
-Cc: Chukun Pan <amadeus@jmu.edu.cn>, Heiko Stuebner <heiko@sntech.de>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, FUKAUMI Naoki <naoki@radxa.com>
-Subject: Re: [PATCH 1/2] dt-bindings: arm: rockchip: correct the model name
- for Radxa ROCK 3A
-Message-ID: <20240418-skinless-aptitude-245665a7c757@spud>
-References: <20240418130120.67663-1-amadeus@jmu.edu.cn>
- <d00953aab0f1c978e3720885a6844caa@manjaro.org>
- <20240418-drove-boasting-d189ee3e22e0@spud>
- <7fec3e2f4e16b1aca6cd08e1882bd885@manjaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BSkV6xk1CaZbUzh75FWIjRV0FzaWk0LeHU4NivqGPlfrVqQ3PaWOUpUIs80irqpj2Fw5NR+Chu4vKFjegg9JyQ+EeCYw7RDVNKrsYxwJOzDBCxiFrXuEfn//O6i3DwiCCiduXA93cg8tdzAmuY48QZMRNNrSA8wD4o00iMZZmdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rxU8H-0006Yg-SF; Thu, 18 Apr 2024 17:57:05 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rxU8D-00D07n-UP; Thu, 18 Apr 2024 17:57:01 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rxU8D-003YUR-2e;
+	Thu, 18 Apr 2024 17:57:01 +0200
+Date: Thu, 18 Apr 2024 17:57:01 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Alexandre Mergnat <amergnat@baylibre.com>
+Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Jitao Shi <jitao.shi@mediatek.com>, CK Hu <ck.hu@mediatek.com>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Fabien Parent <fparent@baylibre.com>, Markus Schneider-Pargmann <msp@baylibre.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, dri-devel@lists.freedesktop.org, 
+	linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v3 11/17] dt-bindings: pwm: mediatek,pwm-disp: add
+ compatible for mt8365 SoC
+Message-ID: <ddqgzbhmkp57wupumrm7ht3bivohukfzebn5vez2ft2ksij4yc@irllweyitwoy>
+References: <20231023-display-support-v3-0-53388f3ed34b@baylibre.com>
+ <20231023-display-support-v3-11-53388f3ed34b@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="e6Eqyn2mnOtnO6RB"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="mfe5lzcqzhilqxcv"
 Content-Disposition: inline
-In-Reply-To: <7fec3e2f4e16b1aca6cd08e1882bd885@manjaro.org>
+In-Reply-To: <20231023-display-support-v3-11-53388f3ed34b@baylibre.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
 
---e6Eqyn2mnOtnO6RB
-Content-Type: text/plain; charset=us-ascii
+--mfe5lzcqzhilqxcv
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 18, 2024 at 05:46:30PM +0200, Dragan Simic wrote:
-> Hello Conor,
->=20
-> On 2024-04-18 17:37, Conor Dooley wrote:
-> > On Thu, Apr 18, 2024 at 05:21:18PM +0200, Dragan Simic wrote:
-> > > On 2024-04-18 15:01, Chukun Pan wrote:
-> > > > According to https://radxa.com/products/rock3/3a,
-> > > > the name of this board should be "Radxa ROCK 3A".
-> > > > Also update compatible to match the model name.
-> > > >
-> > > > Suggested-by: FUKAUMI Naoki <naoki@radxa.com>
-> > > > Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
-> > >=20
-> > > Looking good to me.  I'll send the remaining naming cleanup patches
-> > > a bit later.
-> >=20
-> > What remaining patches?
->=20
-> The same naming cleanups need to be performed for the Radxa
-> ROCK 5 boards. [1]  I had some more cleanups for the ROCK 4
-> boards in mind, but I'll drop them after your NAK. [2]
->=20
-> Though, I'm not really sure why the NAK?  Those names aren't
-> used anywhere, neither in the Linux kernel, nor in U-Boot.
+Hello,
 
-There may well be other users outside of those two projects that are
-actually looking at it - I don't think that adding a hyphen is worth
-disrupting anyone for, it seems perfectly clear without it what board
-this is.
+On Thu, Apr 18, 2024 at 04:16:59PM +0200, Alexandre Mergnat wrote:
+> Add a compatible string for MediaTek Genio 350 MT8365's display PWM
+> block: this is the same as MT8183.
+>=20
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
+ora.com>
+> Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> Acked-by: Rob Herring (Arm) <robh@kernel.org>
+> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
+> ---
+>  Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml=
+ b/Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml
+> index f8988af05287..180dd8366935 100644
+> --- a/Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml
+> +++ b/Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml
+> @@ -31,6 +31,7 @@ properties:
+>                - mediatek,mt8188-disp-pwm
+>                - mediatek,mt8192-disp-pwm
+>                - mediatek,mt8195-disp-pwm
+> +              - mediatek,mt8365-disp-pwm
+>            - const: mediatek,mt8183-disp-pwm
+> =20
+>    reg:
 
---e6Eqyn2mnOtnO6RB
+As there is still no feedback about how this should be merged, I went on
+and applied this patch to
+https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git pwm/for-=
+next
+=2E
+
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--mfe5lzcqzhilqxcv
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiFCzAAKCRB4tDGHoIJi
-0qZRAQDvp1WMjeZQ5UkpdXHldOb66YBev1YO2u1XU0t6ffUyzgEAkK6CFkop9QIu
-mtkvqS5obGem7DzXQW/A9taovKtQTQw=
-=VAgQ
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYhQswACgkQj4D7WH0S
+/k7XLwf9E9OpRFmUhJZZk3JE9n1r/ktNvu8zeUbfAQag5XpWlYUY2beEvVqVuxZC
+YtZvITxe3UZ0UpMk7znYoeI1PMZlUTyZwOEOvltlWl6macba9jX+VQ+xjK82f63C
+A3rcI9ENcwhZWaHCstFPn/bjUp6Axjay+g/s7ROlANv+DzfuuB6qvGB9XWnegBap
+dNX5ml9DULwd+nNqH5wWO1BEaVqLtsxd9tV+yitrdLW3AQnpfS95u9XH1MKDq/aS
+f+X9nY+zJ3mb4nGhHCvq4Hw3jZkqobclHUVI9D7yD05LBe5HnVJji2dSOGssblDB
+SjQo2XmiwuL8WgQ3MXKJZ2QiytiyPA==
+=cDLN
 -----END PGP SIGNATURE-----
 
---e6Eqyn2mnOtnO6RB--
+--mfe5lzcqzhilqxcv--
 
