@@ -1,166 +1,332 @@
-Return-Path: <linux-kernel+bounces-149494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B6E18A91C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 238998A91E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:16:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AE27282B09
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:08:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEB73282B3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:16:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0CCE5467A;
-	Thu, 18 Apr 2024 04:08:26 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 065A154913;
+	Thu, 18 Apr 2024 04:15:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="o16NOjeI"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C985339A
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 04:08:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AFEF54794
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 04:15:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713413306; cv=none; b=a47W3Vsby+eC0wtxJo1e7oFmHmeR0tdpCdFtEznaTO/D7X4IVjAlflhTI8XYakjAWJVgY2QRpbIMTKxl/npgQcFj7EuEmw9KcbLUcNe/2mub0/5sB5Y8DMrmgIFd+rURYEe9Mfq9s0zpS59NqUA86GAF1NMRxSBV7FAL552aykM=
+	t=1713413757; cv=none; b=o32neyRVbQf1o5to2Xy0kNNZUFNsQg/Zg0QKj+r9ZkasgRPsjpVQeU+/G2LovbIWYnFk6wwVlHhpi/rkD3GGuL15wJYODfukjgE4NPvG5XzcyEQok+n+ximXadGILmTav5dlsvrbMr+8CByZgaY+NvwQJ8xr0Yt9qyEblfLjVAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713413306; c=relaxed/simple;
-	bh=9EPin60FMQwmiUIVEuZfRjJCOiYzUKIb+YY7pff0TiY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ILT8Sdz4yoLjgeg6At7CGy/GXe5If9wRbQLRgpxj62IQodBVnVGwpn/Do3tMjvJmwrCskSEgw7bp3T45LvLQnuscIKmebhKSNs2X30oGkpI8CxALi2x673D+cIU7nIwBcqSSh54NIv3SRXPKSUT2ayIt9GPjE5OisDzdsnvVZbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d9913d3174so58823239f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 21:08:23 -0700 (PDT)
+	s=arc-20240116; t=1713413757; c=relaxed/simple;
+	bh=rIjhTSCAnsnjiu64hl14QjOMSBjuVyUzL8jWgHEufos=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lgFffqx47sBldftaWZ7jRL27Gz6iGR626P8+SSNqJrAuCcDxAQFwCJvmQkVZoNe6a7kIyCE/Bejh6JIwXGWdtmsb8HccZ9X8eOuGSgDD2hCjVWyZ8TUr5cwtN5TCpxc+115Hxyf9+D52aDQgFEZilpS7XhDQUsUY6kAO/2A+8Y4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=o16NOjeI; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e2e851794so4659a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 21:15:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713413753; x=1714018553; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6Ex9vkWAdcavtfrxF59Az8ojAz4XUwKMAJT3nUTpt4g=;
+        b=o16NOjeI1QWj9dQkYZLX2YQuSzrHvu/k3nkubK07UFXv0FWnfxz1Ngw0p3yC54CjQX
+         tXYqsBqU9Nv3M7s6QebiX9Y4XAOzSI/QyFhtGTw/rflH2sIEGYYo2/8lm7YpVjzcTAYz
+         8KCCjeFpCxN6gZfBCDKu7xCPKHGal7ExYSegPOi7RzTPzrqcmmDTL32WFy89HyquDjgZ
+         iNZpNhE8oRtH5eUzin2ub9DUGfZ7kPZPFyelPLqy1Zjr8dgPiSjx48+AfXYXAmNAZowi
+         neI+dinR/n1yljPKvdpWOLOGHs4XRk76QNebpJ+tUbo8HrNlW64Yyp5ZWn4pdGWD/JyH
+         xA0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713413303; x=1714018103;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xEM+T9nXxPjWZkYEN8IWHVP344j+ho4lS7Ek9uvoVuk=;
-        b=xSHqOd8EPV5Jh9quLfeu9OBX7JgLfG2ihY+68CrjxjuoRxjSGEJo183PPIB8TYNxdI
-         u5F6sOM/Ro6N7zIvZebkVJwYhDWW0JpH0INOSMxp7JMM4Vbd36SRmaT5hgb9Amoy7XSQ
-         Gm1qVy8mvRogU0QBVeDZpTM2jxN4QjbFsJ7K0H2nJnYzcvleJiPJrueZOfSGHF7Wo6qE
-         /vXeDV0ttdQNww1zD0jUymNcrgqFDF5ol8ZMPiatuCg0pk1zo7CvYdX8hGNuTt8jItsY
-         DMR2KLzHJD1TkGyHwdjkK2ZQjoMGat2P8lqxQDSkxeHIDXwXuqvoW/BP+yQLQMkIMFcm
-         N7rQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVLcInfxZRgXXs4pn+w6rMBWqnyEhSDPRHzCC10cCERQyvWHHc1OeXj4U7O5H5D1tSPSgXhYPfe6Kwi4cUyhGh/hQdzIrCMXqzwjwHq
-X-Gm-Message-State: AOJu0Yyum63soUde7Et0LnnV818aYwKxHSmMdiiA0bUnoTOFb1yleRGY
-	vcne9o9GJrSYnpCirnQ11JCtE90Plcr4TmQe1YVRWBkkjQ0Z/+iM9c6ILOqAXId5GqkYMq76KQE
-	81wk91xrpcgrxTxg3J6deXY6LBP5OA48s6jq4iloiwXayb60KPX1K9mY=
-X-Google-Smtp-Source: AGHT+IGwAdiCevEF3sEmP4AsPpg0YvxJYhO7El/Z4OL7Y5tMo/4Dz301dpzt2f4nSUgjxumT+r6SwJ7TEng/JzXeCd6iml7jhmbE
+        d=1e100.net; s=20230601; t=1713413753; x=1714018553;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6Ex9vkWAdcavtfrxF59Az8ojAz4XUwKMAJT3nUTpt4g=;
+        b=nhyv+8/YdQfiqcm1UPcaOiQnuq+1entvzFsQeKFFvkylltSjn+AeHbNwuEmIJ30sBV
+         RsEI1k7EwkGOV9eEFcmLEvx627TeIcy1pJBkzh0Z3rcYyNBBODDmuBHLSfpPK+SHsrFj
+         1t7M+7w9vTqDPqOn2POccJSI0Y80BvNWDnH7Iqp++1cjlL87TORQnk2y0qAplaH8qym0
+         MRGIVh0Yd7HlWfdwvkYClcJ6GQdgZHUsEpd2/lbfLlERez8gNrvyswsnlaB4NH9h3Mys
+         rRTF7jFwU9n5r4OkNpkDYTFq3RLU0RWJnE1sqSss6c2txa5qlvOUW8CvdGN7EOvl3yl/
+         kVcA==
+X-Forwarded-Encrypted: i=1; AJvYcCWlWFmG9LeH1ldA44xZWnKqByUZ8zFQlHBMkcoNsqtTVQWEmWxS7PeZbJcBx93mYG17ZpEQWA+wRfpzz7jA1VaE6UJDsPBuuheYwl/z
+X-Gm-Message-State: AOJu0YzZhwbe2McFsdtHhMmmbOcIdoaBNrC9eOuUUFdt3/+MNCP6uit5
+	dZU3sWORjHQ+hoUldIxuuFh3J7+yul0jRyIu1P1gAZ/4T6d2KJNDCX4y9udaHZShLvHmPqJh2Sh
+	8DanyqZFpBrvkbxEKX1tvxKoTKnGa0kgKBIygZq5UO5B5tsLI0H25
+X-Google-Smtp-Source: AGHT+IFtBPp05x4Gt43PJgKZuHCBaPT9SIJnaGjMBBmGzTlaXBVIIe7oqKuU1n08iv6jroCwKE9Iprc9cbGOb5q9FQI=
+X-Received: by 2002:a05:6402:50a:b0:571:b9c7:2804 with SMTP id
+ m10-20020a056402050a00b00571b9c72804mr45961edv.5.1713413753150; Wed, 17 Apr
+ 2024 21:15:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:850e:b0:482:fa6f:78f1 with SMTP id
- is14-20020a056638850e00b00482fa6f78f1mr90141jab.6.1713413303202; Wed, 17 Apr
- 2024 21:08:23 -0700 (PDT)
-Date: Wed, 17 Apr 2024 21:08:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004a86bf0616571fc7@google.com>
-Subject: [syzbot] [net?] KMSAN: uninit-value in hsr_get_node (3)
-From: syzbot <syzbot+a81f2759d022496b40ab@syzkaller.appspotmail.com>
-To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
+References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
+ <661d93b4e3ec3_3010129482@willemb.c.googlers.com.notmuch> <65e3e88a53d466cf5bad04e5c7bc3f1648b82fd7.camel@mediatek.com>
+ <CANP3RGdkxT4TjeSvv1ftXOdFQd5Z4qLK1DbzwATq_t_Dk+V8ig@mail.gmail.com>
+ <661eb25eeb09e_6672129490@willemb.c.googlers.com.notmuch> <CANP3RGdrRDERiPFVQ1nZYVtopErjqOQ72qQ_+ijGQiL7bTtcLQ@mail.gmail.com>
+ <CANP3RGd+Zd-bx6S-NzeGch_crRK2w0-u6xwSVn71M581uCp9cQ@mail.gmail.com>
+ <661f066060ab4_7a39f2945d@willemb.c.googlers.com.notmuch> <77068ef60212e71b270281b2ccd86c8c28ee6be3.camel@mediatek.com>
+ <662027965bdb1_c8647294b3@willemb.c.googlers.com.notmuch> <11395231f8be21718f89981ffe3703da3f829742.camel@mediatek.com>
+In-Reply-To: <11395231f8be21718f89981ffe3703da3f829742.camel@mediatek.com>
+From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date: Wed, 17 Apr 2024 21:15:38 -0700
+Message-ID: <CANP3RGdh24xyH2V7Sa2fs9Ca=tiZNBdKu1qQ8LFHS3sY41CxmA@mail.gmail.com>
+Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without fraglist
+To: =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>
+Cc: "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, "kuba@kernel.org" <kuba@kernel.org>, 
+	=?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?= <Shiming.Cheng@mediatek.com>, 
+	"pabeni@redhat.com" <pabeni@redhat.com>, "edumazet@google.com" <edumazet@google.com>, 
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, 
+	"davem@davemloft.net" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Wed, Apr 17, 2024 at 7:53=E2=80=AFPM Lena Wang (=E7=8E=8B=E5=A8=9C) <Len=
+a.Wang@mediatek.com> wrote:
+>
+> On Wed, 2024-04-17 at 15:48 -0400, Willem de Bruijn wrote:
+> >
+> > External email : Please do not click links or open attachments until
+> > you have verified the sender or the content.
+> >  Lena Wang (=E7=8E=8B=E5=A8=9C) wrote:
+> > > On Tue, 2024-04-16 at 19:14 -0400, Willem de Bruijn wrote:
+> > > >
+> > > > External email : Please do not click links or open attachments
+> > until
+> > > > you have verified the sender or the content.
+> > > >  > > > > Personally, I think bpf_skb_pull_data() should have
+> > > > automatically
+> > > > > > > > (ie. in kernel code) reduced how much it pulls so that it
+> > > > would pull
+> > > > > > > > headers only,
+> > > > > > >
+> > > > > > > That would be a helper that parses headers to discover
+> > header
+> > > > length.
+> > > > > >
+> > > > > > Does it actually need to?  Presumably the bpf pull function
+> > could
+> > > > > > notice that it is
+> > > > > > a packet flagged as being of type X (UDP GSO FRAGLIST) and
+> > reduce
+> > > > the pull
+> > > > > > accordingly so that it doesn't pull anything from the non-
+> > linear
+> > > > > > fraglist portion???
+> > > > > >
+> > > > > > I know only the generic overview of what udp gso is, not any
+> > > > details, so I am
+> > > > > > assuming here that there's some sort of guarantee to how
+> > these
+> > > > packets
+> > > > > > are structured...  But I imagine there must be or we wouldn't
+> > be
+> > > > hitting these
+> > > > > > issues deeper in the stack?
+> > > > >
+> > > > > Perhaps for a packet of this type we're already guaranteed the
+> > > > headers
+> > > > > are in the linear portion,
+> > > > > and the pull should simply be ignored?
+> > > > >
+> > > > > >
+> > > > > > > Parsing is better left to the BPF program.
+> > > >
+> > > > I do prefer adding sanity checks to the BPF helpers, over having
+> > to
+> > > > add then in the net hot path only to protect against dangerous
+> > BPF
+> > > > programs.
+> > > >
+> > > Is it OK to ignore or decrease pull length for udp gro fraglist
+> > packet?
+> > > It could save the normal packet and sent to user correctly.
+> > >
+> > > In common/net/core/filter.c
+> > > static inline int __bpf_try_make_writable(struct sk_buff *skb,
+> > >               unsigned int write_len)
+> > > {
+> > > +if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
+> > > +(SKB_GSO_UDP  |SKB_GSO_UDP_L4)) {
+> >
+> > The issue is not with SKB_GSO_UDP_L4, but with SKB_GSO_FRAGLIST.
+> >
+> Current in kernel just UDP uses SKB_GSO_FRAGLIST to do GRO. In
+> udp_offload.c udp4_gro_complete gso_type adds "SKB_GSO_FRAGLIST|
+> SKB_GSO_UDP_L4". Here checking these two flags is to limit the packet
+> as "UDP + need GSO + fraglist".
+>
+> We could remove SKB_GSO_UDP_L4 check for more packet that may addrive
+> skb_segment_list.
+>
+> > > +return 0;
+> >
+> > Failing for any pull is a bit excessive. And would kill a sane
+> > workaround of pulling only as many bytes as needed.
+> >
+> > > +     or if (write_len > skb_headlen(skb))
+> > > +write_len =3D skb_headlen(skb);
+> >
+> > Truncating requests would be a surprising change of behavior
+> > for this function.
+> >
+> > Failing for a pull > skb_headlen is arguably reasonable, as
+> > the alternative is that we let it go through but have to drop
+> > the now malformed packets on segmentation.
+> >
+> >
+> Is it OK as below?
+>
+> In common/net/core/filter.c
+> static inline int __bpf_try_make_writable(struct sk_buff *skb,
+>               unsigned int write_len)
+> {
+> +       if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
+> +               SKB_GSO_FRAGLIST) && (write_len > skb_headlen(skb))) {
+> +               return 0;
 
-syzbot found the following issue on:
+please limit write_len to skb_headlen() instead of just returning 0
 
-HEAD commit:    0bbac3facb5d Linux 6.9-rc4
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=15d9a36d180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=87a805e655619c64
-dashboard link: https://syzkaller.appspot.com/bug?extid=a81f2759d022496b40ab
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14069fcb180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=155da7cb180000
+> +       }
+>         return skb_ensure_writable(skb, write_len);
+> }
+>
+> > > +}
+> > > return skb_ensure_writable(skb, write_len);
+> > > }
+> > >
+> > >
+> > > > In this case, it would be detecting this GSO type and failing the
+> > > > operation if exceeding skb_headlen().
+> > > > > > >
+> > > > > > > > and not packet content.
+> > > > > > > > (This is assuming the rest of the code isn't ready to
+> > deal
+> > > > with a longer pull,
+> > > > > > > > which I think is the case atm.  Pulling too much, and
+> > then
+> > > > crashing or forcing
+> > > > > > > > the stack to drop packets because of them being malformed
+> > > > seems wrong...)
+> > > > > > > >
+> > > > > > > > In general it would be nice if there was a way to just
+> > say
+> > > > pull all headers...
+> > > > > > > > (or possibly all L2/L3/L4 headers)
+> > > > > > > > You in general need to pull stuff *before* you've even
+> > looked
+> > > > at the packet,
+> > > > > > > > so that you can look at the packet,
+> > > > > > > > so it's relatively hard/annoying to pull the correct
+> > length
+> > > > from bpf
+> > > > > > > > code itself.
+> > > > > > > >
+> > > > > > > > > > > BPF needs to modify a proper length to do pull
+> > data.
+> > > > However kernel
+> > > > > > > > > > > should also improve the flow to avoid crash from a
+> > bpf
+> > > > function
+> > > > > > > > > > call.
+> > > > > > > > > > > As there is no split flow and app may not decode
+> > the
+> > > > merged UDP
+> > > > > > > > > > packet,
+> > > > > > > > > > > we should drop the packet without fraglist in
+> > > > skb_segment_list
+> > > > > > > > > > here.
+> > > > > > > > > > >
+> > > > > > > > > > > Fixes: 3a1296a38d0c ("net: Support GRO/GSO fraglist
+> > > > chaining.")
+> > > > > > > > > > > Signed-off-by: Shiming Cheng <
+> > > > shiming.cheng@mediatek.com>
+> > > > > > > > > > > Signed-off-by: Lena Wang <lena.wang@mediatek.com>
+> > > > > > > > > > > ---
+> > > > > > > > > > >  net/core/skbuff.c | 3 +++
+> > > > > > > > > > >  1 file changed, 3 insertions(+)
+> > > > > > > > > > >
+> > > > > > > > > > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > > > > > > > > > > index b99127712e67..f68f2679b086 100644
+> > > > > > > > > > > --- a/net/core/skbuff.c
+> > > > > > > > > > > +++ b/net/core/skbuff.c
+> > > > > > > > > > > @@ -4504,6 +4504,9 @@ struct sk_buff
+> > > > *skb_segment_list(struct
+> > > > > > > > > > sk_buff *skb,
+> > > > > > > > > > >  if (err)
+> > > > > > > > > > >  goto err_linearize;
+> > > > > > > > > > >
+> > > > > > > > > > > +if (!list_skb)
+> > > > > > > > > > > +goto err_linearize;
+> > > > > > > > > > > +
+> > > > > > >
+> > > > > > > This would catch the case where the entire data frag_list
+> > is
+> > > > > > > linearized, but not a pskb_may_pull that only pulls in part
+> > of
+> > > > the
+> > > > > > > list.
+> > > > > > >
+> > > > > > > Even with BPF being privileged, the kernel should not crash
+> > if
+> > > > BPF
+> > > > > > > pulls a FRAGLIST GSO skb.
+> > > > > > >
+> > > > > > > But the check needs to be refined a bit. For a UDP GSO
+> > packet,
+> > > > I
+> > > > > > > think gso_size is still valid, so if the head_skb length
+> > does
+> > > > not
+> > > > > > > match gso_size, it has been messed with and should be
+> > dropped.
+> > > > > > >
+> > > Is it OK as below? Is it OK to add log to record the error for easy
+> > > checking issue.
+> > >
+> > > In net/core/skbuff.c skb_segment_list
+> > > +unsigned int mss =3D skb_shinfo(head_skb)->gso_size;
+> > > +bool err_len =3D false;
+> > >
+> > > +if ( mss !=3D GSO_BY_FRAGS && mss !=3D skb_headlen(head_skb)) {
+> > > +pr_err("skb is dropped due to messed data. gso size:%d,
+> > > +hdrlen:%d", mss, skb_headlen(head_skb)
+> >
+> > Such logs should always be rate limited. But no need to log cases
+> > where we well understood how we get there.
+> >
+> > I would stick with one approach: either in the BPF func or in
+> > segmentation, not both. And then I find BPF preferable, as explained
+> > before.
+> >
+> OK, we try make a patch in BPF func.
+>
+> > > +if (!list_skb)
+> > > +goto err_linearize;
+> > > +else
+> > > +err_len =3D true;
+> > > +}
+> > >
+> > > ...
+> > > +if (err_len) {
+> > > +goto err_linearize;
+> > > +}
+> > >
+> > > skb_get(skb);
+> > > ...
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/93eb2bab28b5/disk-0bbac3fa.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/47a883d2dfaa/vmlinux-0bbac3fa.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6bc56900ec1d/bzImage-0bbac3fa.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a81f2759d022496b40ab@syzkaller.appspotmail.com
-
-syz_tun: entered promiscuous mode
-batadv_slave_0: entered promiscuous mode
-=====================================================
-BUG: KMSAN: uninit-value in hsr_get_node+0xab0/0xad0 net/hsr/hsr_framereg.c:250
- hsr_get_node+0xab0/0xad0 net/hsr/hsr_framereg.c:250
- fill_frame_info net/hsr/hsr_forward.c:577 [inline]
- hsr_forward_skb+0x330/0x30e0 net/hsr/hsr_forward.c:615
- hsr_handle_frame+0xa20/0xb50 net/hsr/hsr_slave.c:69
- __netif_receive_skb_core+0x1cff/0x6190 net/core/dev.c:5432
- __netif_receive_skb_one_core net/core/dev.c:5536 [inline]
- __netif_receive_skb+0xca/0xa00 net/core/dev.c:5652
- netif_receive_skb_internal net/core/dev.c:5738 [inline]
- netif_receive_skb+0x58/0x660 net/core/dev.c:5798
- tun_rx_batched+0x3ee/0x980 drivers/net/tun.c:1549
- tun_get_user+0x5566/0x69e0 drivers/net/tun.c:2002
- tun_chr_write_iter+0x3af/0x5d0 drivers/net/tun.c:2048
- call_write_iter include/linux/fs.h:2110 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0xb63/0x1520 fs/read_write.c:590
- ksys_write+0x20f/0x4c0 fs/read_write.c:643
- __do_sys_write fs/read_write.c:655 [inline]
- __se_sys_write fs/read_write.c:652 [inline]
- __x64_sys_write+0x93/0xe0 fs/read_write.c:652
- x64_sys_call+0x3062/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:2
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Uninit was created at:
- __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
- alloc_pages_mpol+0x299/0x990 mm/mempolicy.c:2264
- alloc_pages+0x1bf/0x1e0 mm/mempolicy.c:2335
- skb_page_frag_refill+0x2bf/0x7c0 net/core/sock.c:2921
- tun_build_skb drivers/net/tun.c:1679 [inline]
- tun_get_user+0x1258/0x69e0 drivers/net/tun.c:1819
- tun_chr_write_iter+0x3af/0x5d0 drivers/net/tun.c:2048
- call_write_iter include/linux/fs.h:2110 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0xb63/0x1520 fs/read_write.c:590
- ksys_write+0x20f/0x4c0 fs/read_write.c:643
- __do_sys_write fs/read_write.c:655 [inline]
- __se_sys_write fs/read_write.c:652 [inline]
- __x64_sys_write+0x93/0xe0 fs/read_write.c:652
- x64_sys_call+0x3062/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:2
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-CPU: 1 PID: 5050 Comm: syz-executor387 Not tainted 6.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--
+Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
 
