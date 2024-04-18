@@ -1,156 +1,226 @@
-Return-Path: <linux-kernel+bounces-150817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A94958AA4E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:54:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 105398AA4ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:57:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEC1C1C20FE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:54:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 343A81C20DC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:57:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D950194C8E;
-	Thu, 18 Apr 2024 21:54:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5F4D199EA5;
+	Thu, 18 Apr 2024 21:57:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="X9CCQAGP"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hdDV1nrZ"
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF199199E82
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 21:54:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFD6418131D
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 21:57:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713477279; cv=none; b=S6GQ5MBFTK0QNVUlbjTl/pW8V9OkjByOrQS0TNRn127t262spuRa0Dwqbc8W8ypwtGDvK7TDyhrDqjCCElWtK8BO8yI8fEP+64tRGmpKal3YZYGtpdS1GiGSEcP5PXvT8CJwm98G3qY9yoxlPnVYPLIgWMQADn0XY3j9Q3HzfWE=
+	t=1713477444; cv=none; b=BB+BGvvAJeIjC5sB3sY3Xws2Pn/rwn4KhB/X0ELb4m/iLpTagXDvFRfftjq4KIUL74QyQ6K2l5cDQOYiXUsbrdpyoHMayI3IQn7pESSTkROZCdsrSNA086eZYZ+k0OhlMXaJkHfeuzarc72M3E6ILOJraVYMUJExuPb6sxbuUuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713477279; c=relaxed/simple;
-	bh=/fIZnrTgxkprElJlF6zWXgMXsg0CVEGbxuta0DCFlM4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KIBVZJWcDlfqXfRpLC9VY0/EsKcHOoY5rDrDus2Z3JwrVoaaFfMIYQeXkmn4zU+KBQklPtv+rjWdojhQEL4qseJx3cVuNAuZFMtPGk28Z1myiIaY0m2ELuq7WezIJ/g9msLeUu98QsQEapdW+EIztozEdKrmrlNKN06w60/oSfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=X9CCQAGP; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6edc61d0ff6so1397610b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:54:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713477277; x=1714082077; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UzoUB/DlZEEpnQQocpp8LNj0cC4Hbh3hYFeNjb1gymQ=;
-        b=X9CCQAGPZ99SN2MkP9S6gDKVi6ocby6DNLHtZcj6MwvEp1nmeacQZb++EMmDCHE9+W
-         aOvPUB4UsnBY0lgm7Zr7IlzW1DKehF5DXMEEMvXGFzYiquQWqHxaQen37pQB8PqD4T7N
-         7PaE8vS0VkI31dEtGCbF3lUZeUvQ8kQ2r3ZOmmYyuEJXqI+04C5SRJiVk8fF+HTyFeDm
-         h/kK/06ygZ+cPhZm5RBpMPsMZWf50zSVeEVOv9qlX7rD3Pj/gIyAGjjNDHxyQ8mNy+qV
-         KAHXfbwEsbEBJJI8GKuoDyNPL2wJmeePkJKyP5NELwmOIWWbtjKgynB8UyjEgHdSuJqN
-         /xNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713477277; x=1714082077;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UzoUB/DlZEEpnQQocpp8LNj0cC4Hbh3hYFeNjb1gymQ=;
-        b=mtM8op+BPwRckXzmUPcMSy0L3RziUU/9A+2D8CcjlH8hmRJ1SLZeL101QtGSPvAxCb
-         iB3KY1d77SCb/toEw16MuGyIUd9oQsb9pgeuNASK91JCudMN3uHBodRfzqqA0ST+I02A
-         fomZo9p/u4uVlSzcTi06aSOIx3wdrQo0rLyqDqv/J4dpzQU81f/9C/efQJ2Kr3ufDWAt
-         KQ2Ww2DA7SYXWC05TCstkexOVjJutvSUHNfWbKQ+4CH9ntBmxR203EsZ6Jgax1JBcZ88
-         P+lj2T72nDKt3tVKjvD/xi4Dh7WXH3+9wTKw1pI4t02SKcw0BXPjlvPjRvG96C47b1Pk
-         wimQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXy/SxhmzZtbG3n0deEEx4cYurUDXNMPIzhyKPbWslsFtj/VhttgQlE5lvRj/+cGU/vznnxdxGE7PJCiR1MELKmmm49q7Cc8YKmGRND
-X-Gm-Message-State: AOJu0Yyv9ouXvv90OKMGW33ZI/QT9sDLkd2I9GVXvscgHCelCkUpx3M5
-	2IOGYA91xjxau3eZIamo8obQrxkBXnJdTZPVQ1gdL3DXjysOiXGAh3bnHOH2iQ==
-X-Google-Smtp-Source: AGHT+IE3z+8bNqqr4xeyAId229RXIQ3OirfWY3drhqnoI012Iq7hg1mMY9eY9ZzsD1VRqnMYJE/4/g==
-X-Received: by 2002:a05:6a00:2e8f:b0:6ea:86f2:24fb with SMTP id fd15-20020a056a002e8f00b006ea86f224fbmr541761pfb.25.1713477276564;
-        Thu, 18 Apr 2024 14:54:36 -0700 (PDT)
-Received: from google.com (176.13.105.34.bc.googleusercontent.com. [34.105.13.176])
-        by smtp.gmail.com with ESMTPSA id z8-20020a056a00240800b006ecf6417a9bsm1970815pfh.29.2024.04.18.14.54.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 14:54:35 -0700 (PDT)
-Date: Thu, 18 Apr 2024 21:54:32 +0000
-From: Mingwei Zhang <mizhang@google.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
-	peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
-	dapeng1.mi@linux.intel.com, jmattson@google.com,
-	kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com,
-	eranian@google.com, irogers@google.com, samantha.alt@intel.com,
-	like.xu.linux@gmail.com, chao.gao@intel.com
-Subject: Re: [RFC PATCH 40/41] KVM: x86/pmu: Separate passthrough PMU logic
- in set/get_msr() from non-passthrough vPMU
-Message-ID: <ZiGWmCgu8fGZHULu@google.com>
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
- <20240126085444.324918-41-xiong.y.zhang@linux.intel.com>
- <ZhhvyhdvF-1LZNlu@google.com>
+	s=arc-20240116; t=1713477444; c=relaxed/simple;
+	bh=zooV8U1KdjxrLXansfLdXT2+NI7EJnxfn32RZkboLRk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ab4dowA2pKXcZUwz2HCqFR6Uodkell68GaUfs3izE+1JUAbnCGf5foPNKNMjbQ/rWYk4iQ9YJg4Y4hb1+BE3xSyivaayMQaJ/qPe1WXc2fbvJmBO4dWPrMhabwb/1Byx0nvwHPUNpKhk425E59Q2DgTAqjgSzHeacFV77m/Xzc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hdDV1nrZ; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <c6f33a36-1fac-4738-8a4f-c930b544ba62@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713477439;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=biLTizcyKoXID4ZbzhVKkocFif6oiK6wrP0PDSnRgzg=;
+	b=hdDV1nrZbThWa8XN/NOAuO1TL/Ie+Qg92kBzCL9omoSluxR1TfCLUx3kwj9uwhbZkQYaly
+	uNfd4ePrxFLgf+WRQfHgp2SaiXqpRKDRAXNl3xVPpKLOw7cA/oobIZEK8kVA4zAI/YhO1e
+	GatKGoshXof6N78AwIH65m7xeSRUk7E=
+Date: Thu, 18 Apr 2024 14:57:12 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhhvyhdvF-1LZNlu@google.com>
+Subject: Re: [RFC PATCH bpf-next v4 2/2] net: Add additional bit to support
+ clockid_t timestamp type
+To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+ kernel@quicinc.com
+References: <20240418004308.1009262-1-quic_abchauha@quicinc.com>
+ <20240418004308.1009262-3-quic_abchauha@quicinc.com>
+ <66216f3ec638b_f648a294ec@willemb.c.googlers.com.notmuch>
+ <cb922600-783e-4741-be85-260d1ded5bdb@quicinc.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+In-Reply-To: <cb922600-783e-4741-be85-260d1ded5bdb@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Apr 11, 2024, Sean Christopherson wrote:
-> On Fri, Jan 26, 2024, Xiong Zhang wrote:
-> > From: Mingwei Zhang <mizhang@google.com>
-> > 
-> > Separate passthrough PMU logic from non-passthrough vPMU code. There are
-> > two places in passthrough vPMU when set/get_msr() may call into the
-> > existing non-passthrough vPMU code: 1) set/get counters; 2) set global_ctrl
-> > MSR.
-> > 
-> > In the former case, non-passthrough vPMU will call into
-> > pmc_{read,write}_counter() which wires to the perf API. Update these
-> > functions to avoid the perf API invocation.
-> > 
-> > The 2nd case is where global_ctrl MSR writes invokes reprogram_counters()
-> > which will invokes the non-passthrough PMU logic. So use pmu->passthrough
-> > flag to wrap out the call.
-> > 
-> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> > ---
-> >  arch/x86/kvm/pmu.c |  4 +++-
-> >  arch/x86/kvm/pmu.h | 10 +++++++++-
-> >  2 files changed, 12 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-> > index 9e62e96fe48a..de653a67ba93 100644
-> > --- a/arch/x86/kvm/pmu.c
-> > +++ b/arch/x86/kvm/pmu.c
-> > @@ -652,7 +652,9 @@ int kvm_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-> >  		if (pmu->global_ctrl != data) {
-> >  			diff = pmu->global_ctrl ^ data;
-> >  			pmu->global_ctrl = data;
-> > -			reprogram_counters(pmu, diff);
-> > +			/* Passthrough vPMU never reprogram counters. */
-> > +			if (!pmu->passthrough)
-> 
-> This should probably be handled in reprogram_counters(), otherwise we'll be
-> playing whack-a-mole, e.g. this misses MSR_IA32_PEBS_ENABLE, which benign, but
-> only because PEBS isn't yet supported.
-> 
-> > +				reprogram_counters(pmu, diff);
-> >  		}
-> >  		break;
-> >  	case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
-> > diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
-> > index 0fc37a06fe48..ab8d4a8e58a8 100644
-> > --- a/arch/x86/kvm/pmu.h
-> > +++ b/arch/x86/kvm/pmu.h
-> > @@ -70,6 +70,9 @@ static inline u64 pmc_read_counter(struct kvm_pmc *pmc)
-> >  	u64 counter, enabled, running;
-> >  
-> >  	counter = pmc->counter;
-> > +	if (pmc_to_pmu(pmc)->passthrough)
-> > +		return counter & pmc_bitmask(pmc);
-> 
-> Won't perf_event always be NULL for mediated counters?  I.e. this can be dropped,
-> I think.
+On 4/18/24 1:10 PM, Abhishek Chauhan (ABC) wrote:
+>>>   #ifdef CONFIG_NET_XGRESS
+>>>   	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
+>>>   	__u8			tc_skip_classify:1;
+>>> @@ -1096,10 +1100,12 @@ struct sk_buff {
+>>>    */
+>>>   #ifdef __BIG_ENDIAN_BITFIELD
+>>>   #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 7)
+>>> -#define TC_AT_INGRESS_MASK		(1 << 6)
+>>> +#define SKB_TAI_DELIVERY_TIME_MASK	(1 << 6)
+>>
+>> SKB_TSTAMP_TYPE_BIT2_MASK?
 
-yeah. I double checked and seems when perf_event == NULL, the logic is
-correct. If so, we can drop that.
+nit. Shorten it to just SKB_TSTAMP_TYPE_MASK?
 
-Thanks.
--Mingwei
+#ifdef __BIG_ENDIAN_BITFIELD
+#define SKB_TSTAMP_TYPE_MASK	(3 << 6)
+#define SKB_TSTAMP_TYPE_RSH	(6)	/* more on this later */
+#else
+#define SKB_TSTAMP_TYPE_MASK	(3)
+#endif
+
+>>
+> I was thinking to keep it as TAI because it will confuse developers. I hope thats okay.
+
+I think it is not very useful to distinguish each bit since it is an enum value 
+now. It becomes more like the "pkt_type:3" and its PKT_TYPE_MAX.
+
+>>> +#define TC_AT_INGRESS_MASK		(1 << 5)
+>>>   #else
+>>>   #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 0)
+>>> -#define TC_AT_INGRESS_MASK		(1 << 1)
+>>> +#define SKB_TAI_DELIVERY_TIME_MASK	(1 << 1)
+>>> +#define TC_AT_INGRESS_MASK		(1 << 2)
+>>>   #endif
+>>>   #define SKB_BF_MONO_TC_OFFSET		offsetof(struct sk_buff, __mono_tc_offset)
+>>>   
+>>> @@ -4206,6 +4212,11 @@ static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
+>>>   	case CLOCK_MONOTONIC:
+>>>   		skb->tstamp_type = SKB_CLOCK_MONO;
+>>>   		break;
+>>> +	case CLOCK_TAI:
+>>> +		skb->tstamp_type = SKB_CLOCK_TAI;
+>>> +		break;
+>>> +	default:
+>>> +		WARN_ONCE(true, "clockid %d not supported", tstamp_type);
+>>
+>> and set to 0 and default tstamp_type?
+>> Actually thinking about it. I feel if its unsupported just fall back to default is the correct thing. I will take care of this.
+>>>   	}
+>>>   }
+>>
+>>>   >
+>>   @@ -9372,10 +9378,16 @@ static struct bpf_insn *bpf_convert_tstamp_type_read(const struct bpf_insn *si,
+>>>   	*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg,
+>>>   			      SKB_BF_MONO_TC_OFFSET);
+>>>   	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
+>>> -				SKB_MONO_DELIVERY_TIME_MASK, 2);
+>>> +				SKB_MONO_DELIVERY_TIME_MASK | SKB_TAI_DELIVERY_TIME_MASK, 2);
+>>> +	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
+>>> +				SKB_MONO_DELIVERY_TIME_MASK, 3);
+>>> +	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
+>>> +				SKB_TAI_DELIVERY_TIME_MASK, 4);
+>>>   	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_UNSPEC);
+>>>   	*insn++ = BPF_JMP_A(1);
+>>>   	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_MONO);
+>>> +	*insn++ = BPF_JMP_A(1);
+>>> +	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_TAI);
+
+With SKB_TSTAMP_TYPE_MASK defined like above, this could be simplified like this 
+(untested):
+
+static struct bpf_insn *bpf_convert_tstamp_type_read(const struct bpf_insn *si,
+                                                      struct bpf_insn *insn)
+{
+	__u8 value_reg = si->dst_reg;
+	__u8 skb_reg = si->src_reg;
+
+	BUILD_BUG_ON(__SKB_CLOCK_MAX != BPF_SKB_TSTAMP_DELIVERY_TAI);
+	*insn++ = BPF_LDX_MEM(BPF_B, value_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
+	*insn++ = BPF_ALU32_IMM(BPF_AND, value_reg, SKB_TSTAMP_TYPE_MASK);
+#ifdef __BIG_ENDIAN_BITFIELD
+	*insn++ = BPF_ALU32_IMM(BPF_RSH, value_reg, SKB_TSTAMP_TYPE_RSH);
+#else
+	BUILD_BUG_ON(!(SKB_TSTAMP_TYPE_MASK & 0x1));
+#endif
+
+	return insn;
+}
+
+>>>   
+>>>   	return insn;
+>>>   }
+>>> @@ -9418,10 +9430,26 @@ static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
+>>>   		__u8 tmp_reg = BPF_REG_AX;
+>>>   
+>>>   		*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
+>>> +		/*check if all three bits are set*/
+>>>   		*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
+>>> -					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
+>>> -		*insn++ = BPF_JMP32_IMM(BPF_JNE, tmp_reg,
+>>> -					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 2);
+>>> +					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK |
+>>> +					SKB_TAI_DELIVERY_TIME_MASK);
+>>> +		/*if all 3 bits are set jump 3 instructions and clear the register */
+>>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+>>> +					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK |
+>>> +					SKB_TAI_DELIVERY_TIME_MASK, 4);
+>>> +		/*Now check Mono is set with ingress mask if so clear */
+>>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+>>> +					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 3);
+>>> +		/*Now Check tai is set with ingress mask if so clear */
+>>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+>>> +					TC_AT_INGRESS_MASK | SKB_TAI_DELIVERY_TIME_MASK, 2);
+>>> +		/*Now Check tai and mono are set if so clear */
+>>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
+>>> +					SKB_MONO_DELIVERY_TIME_MASK |
+>>> +					SKB_TAI_DELIVERY_TIME_MASK, 1);
+
+Same as the bpf_convert_tstamp_type_read, this could be simplified with 
+SKB_TSTAMP_TYPE_MASK.
+
+>>
+>> This looks as if all JEQ result in "if so clear"?
+>>
+>> Is the goal to only do something different for the two bits being 0x1,
+>> can we have a single test with a two-bit mask, rather than four tests?
+>>
+> I think Martin wanted to take care of TAI as well. I will wait for his comment here
+> 
+> My Goal was to take care of invalid combos which does not hold valid
+> 1. If all 3 bits are set => invalid combo (Test case written is Insane)
+> 2. If 2 bits are set (tai+mono)(Test case written is Insane) => this cannot happen (because clock base can only be one in skb)
+> 3. If 2 bit are set (ingress + tai/mono) => This is existing logic + tai being added (clear tstamp in ingress)
+> 4. For all other cases go ahead and fill in the tstamp in the dest register.
+
+If it is to ensure no new type is added without adding 
+BPF_SKB_TSTAMP_DELIVERY_XYZ, I would simplify this runtime bpf insns here and 
+use a BUILD_BUG_ON to catch it at compile time. Something like,
+
+enum skb_tstamp_type {
+         SKB_CLOCK_REAL, /* Time base is skb is REALTIME */
+         SKB_CLOCK_MONO, /* Time base is skb is MONOTONIC */
+  	SKB_CLOCK_TAI,  /* Time base in skb is TAI */
+         __SKB_CLOCK_MAX = SKB_CLOCK_TAI,
+};
+
+/* Same one used in the bpf_convert_tstamp_type_read() above */
+BUILD_BUG_ON(__SKB_CLOCK_MAX != BPF_SKB_TSTAMP_DELIVERY_TAI);
+
+Another thing is, the UDP test in test_tc_dtime.c probably needs to be adjusted, 
+the userspace is using the CLOCK_TAI in SO_TXTIME and it is getting forwarded now.
 
