@@ -1,127 +1,146 @@
-Return-Path: <linux-kernel+bounces-149857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79C968A96E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:01:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B2398A96E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:01:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AE421F2216B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:01:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D42C1C220EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:01:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A47C15B571;
-	Thu, 18 Apr 2024 10:01:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8012815B57A;
+	Thu, 18 Apr 2024 10:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TQAKmmos"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aw/8P9iq"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 984C815B544;
-	Thu, 18 Apr 2024 10:01:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5940B15AAD7
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 10:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713434467; cv=none; b=hKO1hXApwRxzWTi4TcmlSVWWh4jY3bIYTrJf8iwn/LaWx+Mo116ckvbKHLNko6g80zY/GBeAJOmNiNN5qA9DgzPG1ttVz2mwN6pxi1CS7Ce/damqmlv1IKqEKXH/VaRruXUHZGPmz2mWRVRJ1M/tQYMUTtaoIdR9MC0VIl2a7Ng=
+	t=1713434487; cv=none; b=LrymSMOekdCrSdPGvlQa/QPOD926Rv1o+eYGA21vPE56+jKhOIUe2F34SZy3394AFXmGPNlEWt1rhZ51enOFMiGi1aZr0jq+7rLvw4+/8TTxuxrtD2G0ohM2Q2nj+8s55nD7LRm2zXb04SniCNsL43CcP/Xe7X2vAP8q+fRqRDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713434467; c=relaxed/simple;
-	bh=fM1ePhgpIwZy9P8FQ/OKj7GVvhqyF0/kUSuDnqbEfkg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ia2mWiid8E6PWNzd8Q7aPlqYe5dfhXX4WtR19hEGHR6qvLuCTYKj5M/Jyfw1cF8q4t7Csvbu9tBIazm3fSd9hsRNr1f1YjqmUq8vd/ahkqxTl+G/p/WMnqRfSPbsIYYVpWD79eqdFyNqXBwuqUVSTTrTth2nO9VQX0avz0D2fiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TQAKmmos; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713434463; x=1744970463;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fM1ePhgpIwZy9P8FQ/OKj7GVvhqyF0/kUSuDnqbEfkg=;
-  b=TQAKmmos8SyiZsNc2uxpPgIOchsrYmh8DekeA5loA6b6aXAZ4XuRizjS
-   ywrfWHLHteGk4JvnJBE8tHgd8LdKSE9f6pmkg8OwcvMjRuEJZIs7bp4gQ
-   VOGCgpNjF/SSS16OkALpZgHxPMRTAaSxsHXPdHcgT6uLhY/qfgZ1/ZuVH
-   TN1wDOrgAaB+g5/S8e9fkRJzGDVC9rLK+hELs2AAUEN/P86lUcwJnYDVn
-   oiSCj1zGw6WFFMQcsotNgeLYtKTPO1M3k14Dhjp5dNeZU+fIRWpHi4atf
-   voDdJ+XsdeXy5ZYF/ps7cksjVmDg9H9Kz2z3YFat8ZD2gSWVEQDewD1P6
-   Q==;
-X-CSE-ConnectionGUID: he1V1EQJQjGEPB3MfuJr+g==
-X-CSE-MsgGUID: PCNhjRlVQ5+QnB83dxbePQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="8835713"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="8835713"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 03:01:02 -0700
-X-CSE-ConnectionGUID: kGVxlc+ST0yIpkknT1njyw==
-X-CSE-MsgGUID: WsLN18P7TRSF8QOMuUHihg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="22803176"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa010.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 03:01:00 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rxOZd-00000000I5c-0z8U;
-	Thu, 18 Apr 2024 13:00:57 +0300
-Date: Thu, 18 Apr 2024 13:00:56 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: [PATCH v1 1/2] gpiolib: acpi: Add fwnode name to the GPIO
- interrupt label
-Message-ID: <ZiDvWObx-UyXEmw4@smile.fi.intel.com>
-References: <20240417103829.2324960-1-andriy.shevchenko@linux.intel.com>
- <20240417103829.2324960-2-andriy.shevchenko@linux.intel.com>
- <20240418044907.GO112498@black.fi.intel.com>
- <ZiDmoT9gn7cFaYyV@smile.fi.intel.com>
- <20240418093359.GQ112498@black.fi.intel.com>
+	s=arc-20240116; t=1713434487; c=relaxed/simple;
+	bh=a71/SiU5KJx7Ms0b+OJ/gEOzH6yCrAFm+lS0rqmxGAw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lnd1jfBm+4mCWOvla6b7F6e/xHDnHcXfn2bJOpy9klLrF0vcs06Z/Yr+b/a0shAr5K8USuW9TRs7QFCABW+D9iW1yS0VMbi/7up4zzqi8QtYxBY/2XRTtkqCFifhRghr9kJnesG37k6CLJsRClxBtRfX64wHQLoXchnxL9Zr9oI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aw/8P9iq; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a554afec54eso74437266b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 03:01:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713434481; x=1714039281; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=1pf1mAA/6NMUQyAgFcZPxZ6nbHjAHUH3C0AGYT83PgE=;
+        b=aw/8P9iqQ2YP0sMzARpB035NIHOrZJr4As1zOiZ7y06YSCBDROxQWEeLdu4LN0redb
+         qRV+IFXf9rlL+BiTmfmIe39iLrQPvUr1zvYdqTg/FFTUBWP8tyo81d40iMMHS5ADWvZ4
+         GXIj2nr6zXTL3dQsMCZfddGO69EDJGXkIDl4NqqOXmLQ8FtRvq/PdwrjgdLYgHmuLyW1
+         hXnTuFhKeV0twdIOIz1WNsnT9q1vMNnfMFDGVN/vdUJ4Rd7xaXwxay1e6zukUxxj8WRA
+         7Jllin6leyRJKHGf6NGwMBGfdzk39cS3KPgWJhKj2RCR4oj2pEeypQuBnxqHbhZQlwvS
+         N94w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713434481; x=1714039281;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1pf1mAA/6NMUQyAgFcZPxZ6nbHjAHUH3C0AGYT83PgE=;
+        b=NNsaSy643oerjuzNE7u1XpWL8T3kyHG+r3ZbumZQHSVHz3g1KojN1zYr5sDzrxI84k
+         vhW+tCR74XLrwCJbNPJKqJsHLbx3CAL+tO38r699wPry9dpsya4PGggx85mCsxXP36kd
+         4eUprBPQwv7U2j0vznUpurVvU85H47Kk9Qajf31kvWRM+ZOPd3vgIv0X/htWi5HnGz7Z
+         uiweIbQM26zGSDozM/wd9miMMj6UMdVPJiu2Fx9OdpXIqufc2ZPx974t2KnrbNmbLE5w
+         U46LSn3F/RbNdlZsE37rClWqgeBw8vcXx0+vMT/ochY6hgBVpd0zDAchK3lqc7xzdW9I
+         nKHg==
+X-Forwarded-Encrypted: i=1; AJvYcCUu/Uyc6XPZYNTk3v9OaLHxtHCCcJn3RcuZMQbjVEznGDogimLrEA5Vr5v8ihP/b/Yf/l+iUIA936TA8mUNTtScu7Fg0tuCxFi3zueU
+X-Gm-Message-State: AOJu0YwT9o33m7oDeyQz1gOLk8vZSM0dv1+6yM8+gy5YbE9q72Jowjtj
+	b7OL78cxM0r7GY98PRwu0TtKW5W0VgdghKqhZpAWUqD/nbUGbni0U86po/7OvxP6a+dUgRNXLVl
+	m
+X-Google-Smtp-Source: AGHT+IFR9G7tUCBHZF0uqiUjDBLI1xxggsUPZAlg0f+UEA7J7e7NFdmBwEo2wI3dmDKOr/I3QPOp8w==
+X-Received: by 2002:a17:906:a14e:b0:a55:387b:ef07 with SMTP id bu14-20020a170906a14e00b00a55387bef07mr1433955ejb.13.1713434480707;
+        Thu, 18 Apr 2024 03:01:20 -0700 (PDT)
+Received: from [192.168.45.55] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id h20-20020a170906591400b00a51d3785c7bsm662615ejq.196.2024.04.18.03.01.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 03:01:20 -0700 (PDT)
+Message-ID: <c1763d69-f0a4-4415-be7a-31b04153fbfb@linaro.org>
+Date: Thu, 18 Apr 2024 12:01:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418093359.GQ112498@black.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] arm64: dts: qcom: pmi632: Add vibrator
+To: Luca Weiss <luca.weiss@fairphone.com>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Fenglin Wu <quic_fenglinw@quicinc.com>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240418-fp3-vibra-v1-0-b636b8b3ff32@fairphone.com>
+ <20240418-fp3-vibra-v1-1-b636b8b3ff32@fairphone.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240418-fp3-vibra-v1-1-b636b8b3ff32@fairphone.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 18, 2024 at 12:33:59PM +0300, Mika Westerberg wrote:
-> On Thu, Apr 18, 2024 at 12:23:45PM +0300, Andy Shevchenko wrote:
-> > On Thu, Apr 18, 2024 at 07:49:07AM +0300, Mika Westerberg wrote:
-> > > On Wed, Apr 17, 2024 at 01:37:27PM +0300, Andy Shevchenko wrote:
-> > > > It's ambiguous to have a device-related index in the GPIO interrupt
-> > > > label as most of the devices will have it the same or very similar.
-> > > > Extend label with fwnode name for better granularity. It significantly
-> > > > reduces the scope of searching among devices.
-> > > 
-> > > Can you add an example here how it looks like before and after the
-> > > patch?
-> > 
-> > Sure:
-> > 
-> > Before:
-> > 
-> >   GpioInt() 0
-> >   GpioInt() 0
-> > 
-> > After:
-> > 
-> >   NIO1 GpioInt(0)
-> >   URT0 GpioInt(0)
-> > 
-> > Assuming I update this when applying, can you give your tag?
+On 18.04.2024 8:36 AM, Luca Weiss wrote:
+> Add a node for the vibrator module found inside the PMI632.
 > 
-> Sure. For both,
-> 
-> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> ---
 
-Pushed to my review and testing queue, thanks!
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
--- 
-With Best Regards,
-Andy Shevchenko
+On a side note, this is a totally configuration-free peripheral that doesn't do
+anything crazy until manually configured.
 
+In the slow quest to be (hopefully) more sane about the defaults, should we keep
+them enabled by default? Bjorn?
 
+Konrad
 
