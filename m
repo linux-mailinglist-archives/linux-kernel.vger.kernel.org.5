@@ -1,319 +1,345 @@
-Return-Path: <linux-kernel+bounces-150841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47A788AA582
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:45:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8BDB8AA583
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:50:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDFCC1F22AEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:45:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD3001C21390
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:50:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35422AE66;
-	Thu, 18 Apr 2024 22:45:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFE7639855;
+	Thu, 18 Apr 2024 22:49:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="lFG5P0XV";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="b4WJltUX"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F0lB1kkT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A46F311CB4
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 22:45:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713480312; cv=fail; b=euIyRgJEhofUNKuHFlrR1AutwZi+C6Cjbh8SxiIuOmfUdPdC22UsVS2W4fWI4Uo7zIYFEghXVda/RY6waBbYt/G04qTpoJDqZ/rS2bFHgltIFy1O/FoaOXXa4gbTqTqe7frxTCZ6rvfL5Kl6rBt0kBwQX7nBRbL1Ewj4cL2LpvA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713480312; c=relaxed/simple;
-	bh=ULIs7rQ0u4vEgEor89dr3uslisbZt0nGLxeBNz2E1Kw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=vApuMkfpRJP6HD9JFa3hwAr+PC2Jz3F+1i5vPDhq2V06yQRQce2Oon+4bTW69H92bEHVFTPLADooTFqh1sL51OFlny1/4NWivJxzU4pKJmrxdK5JKkWVJxuDGAFEjuPxbR42o7DZrY/X0pLJ0JJB2I3ejj3J++ZgoDUg1W8e7qw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=lFG5P0XV; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=b4WJltUX; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43IJiXEn022464;
-	Thu, 18 Apr 2024 22:44:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=LJ6SYYJIwwa7hVaJM64amQ61dg1hZkcXQefVUPygc7Y=;
- b=lFG5P0XVRzikXB7R9ytoVcX/UQfAkPtsA0MTArm+c/asCZky1d7JIXST9m/0mqDogBue
- vH2bTSHxljb6zzxVLL5+IgO8+UDwb17J0DDY5I/HC/pxLJCTunHzK2g7RgkJux+tysGl
- VMFeetCf397zxou9oB3qzbpIkyV0yxIBiDigIbdvoMrpxx+cQidBAl5ji9sWY9HuW5vC
- VqWl+cxGZEljf/cqEDLjMreecwMewGbU9Zx9LZ8ULeHzHWhJ73izcwgO4wgZDikTUbMn
- UL0ejXFLvvrkQ2suBhnfFHrVssT5DlG4pYPXvX/k7pjvsd7GsUfxZ5d/ez5lWZ9lfx95 kQ== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfgn2urbx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 18 Apr 2024 22:44:46 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43ILskVs014872;
-	Thu, 18 Apr 2024 22:44:45 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xkbuq9eb8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 18 Apr 2024 22:44:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TFoVHhn0ttUQq0LgoASHUgO417n8yMRqZBNFe9Z2SnFxppFh9EVizKqXfox1dQ3tNLLD2zpsRjcCcIhNLWQfAvwUsT/G+VsYp1O6Thh3MjE4SawZNm/2zkvV9LJ49XOG/28zMFYBH1M8mrqQRhcm2tZzvf6Yy/XdkWTH0SWOeNiLuZnC3GLir3z1bY6c87OnUPHfm9AqKLVh1ekmCMf2WVpO1cWQqR+sLzyFKkR7BnJQ4qqMn4zfyBTFYL7aGRpYeUnsfvSq4i+whXEuLCeYO2IVR5Z45v23/zWjnm7+H4EpiE/YRFnhnKaFhtyUrLPnvEWlkhWKnpFquwM+PlBc9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LJ6SYYJIwwa7hVaJM64amQ61dg1hZkcXQefVUPygc7Y=;
- b=cOYiJME7R+vHRmS9E8L6kuTuPvP74nbKVmM32X1DPTB3yqSYMi6EPYNS1E+ZsR7S2IxqTvdXuJxzp3pZioKB4ktZU0jduWmG0/pOyl3LYUfmOtNIWhAnw5vl1bD5b5i/5aQkkRo0PB6WyJDZzw2hAGsyX0DM9COxNlXvr5lb/6bfLbbCLqSAdr+Z5Tfb+PaFaLrBNhhxw8lN4lOQQWJPdfSdWcCosdFk2kxly9WFEWDYLJ70z/YVsPbo1u5fQL9HJa+w6wU7y7DIAQnIC7q1u4m8h7kFB3k9wDF75vU8qEIlZXXzxW4xaIbAxuOnwPTMCCpvvfM7jcqr5+S0JOgTYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LJ6SYYJIwwa7hVaJM64amQ61dg1hZkcXQefVUPygc7Y=;
- b=b4WJltUXrqBDmZFvJAo6pGK2T/0vP5Qq2drA8jrG9ng7q9amSJXeNUrSyy8XPEyVPIf4Y5PmjY+QEmgKeHMby9LGlHAmhh0gcnI+SZ/7C7spjJ+eRt6r1N9zwU9NUPsPBpW3zlWpulnWT2asrIXkRY9EGEBBU3z87wrbg90aM74=
-Received: from PH7PR10MB6379.namprd10.prod.outlook.com (2603:10b6:510:1a9::15)
- by CY8PR10MB6660.namprd10.prod.outlook.com (2603:10b6:930:52::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.37; Thu, 18 Apr
- 2024 22:44:43 +0000
-Received: from PH7PR10MB6379.namprd10.prod.outlook.com
- ([fe80::de1f:84ac:fe86:2865]) by PH7PR10MB6379.namprd10.prod.outlook.com
- ([fe80::de1f:84ac:fe86:2865%6]) with mapi id 15.20.7452.049; Thu, 18 Apr 2024
- 22:44:42 +0000
-Message-ID: <7bbbd88d-3350-4a67-93de-f054176ae9ff@oracle.com>
-Date: Thu, 18 Apr 2024 15:44:38 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] slub: limit number of slabs to scan in
- count_partial()
-To: Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc: akpm@linux-foundation.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com, junxiao.bi@oracle.com
-References: <20240417185938.5237-1-jianfeng.w.wang@oracle.com>
- <20240417185938.5237-2-jianfeng.w.wang@oracle.com>
- <9863d6b8-cb6d-4555-b35e-38d495f3afbd@suse.cz>
-Content-Language: en-US
-From: Jianfeng Wang <jianfeng.w.wang@oracle.com>
-In-Reply-To: <9863d6b8-cb6d-4555-b35e-38d495f3afbd@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR20CA0043.namprd20.prod.outlook.com
- (2603:10b6:208:235::12) To PH7PR10MB6379.namprd10.prod.outlook.com
- (2603:10b6:510:1a9::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE8351FC8
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 22:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713480598; cv=none; b=RKdHhHqZll65BgwBZP9Kgy5VL+PlVN7DSQAhCn3gEiTWsCknKE+r4GdYraGz4CfNE6+n7Rk4ql5qQKoFGhf59BbmHJJLetubXGgguh9zBAI66rBhp8yIPJLuCQyH2uOgNj0l0aW1k2kW+0b6v8B8ByWSRlU+zIwJRYRpHbEiBSc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713480598; c=relaxed/simple;
+	bh=p/kBugcRIkIWyPASyMtZqCRxWBeX2eQIsTiRDVPlbTo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EhD5ggVXsF6QhFmPxjAU5jgea2xCbmH6kXaygmjK9E7Hy76L/cVAeaJNSrCknS3LHyBENBKdmOf2X49I936a/+h+YpZu16ZAWIVP+0ZmGC/flLLA4N6BuKZNRB+36yu8q8oZ3WFxx/KpBcxuXMIo4Z5BlkehJvCqwbRkEkZw1oM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F0lB1kkT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3426C113CC;
+	Thu, 18 Apr 2024 22:49:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713480598;
+	bh=p/kBugcRIkIWyPASyMtZqCRxWBeX2eQIsTiRDVPlbTo=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=F0lB1kkTpPX69GSIuwOKKzTO8NBETYYxn19hU8YziZIaLNad/CIzMA5Yh3/lQi1pl
+	 TGxr82N2yJi+91V+9NX/JL8EvSiRjvXbqJJiDTGSLFr+WuT8nJ/KzW6CLqY+LOnQ8Z
+	 Mu6e5txQmsy11V64O2ZV+mbKSPEVXWJP/5UFgz5kQlQmoc+D6H4m5f6VMl+dTFqo5G
+	 OV5ocHMTmCZO1r6W3bERPUTLjaDYkwsPIgrSJ5q2DqOTz6i4rY72nN2aDealbw3y6O
+	 cQpa+/oSDgGyAPKFo8vq1S9ITxRp2WO+1J8DUnT8Z1cWtfZ8LAzQgys+LUaPl5TvdF
+	 07CeIvhpNsuug==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 6C004CE14C2; Thu, 18 Apr 2024 15:49:55 -0700 (PDT)
+Date: Thu, 18 Apr 2024 15:49:55 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Z qiang <qiang.zhang1211@gmail.com>
+Cc: syzbot <syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com>,
+	linux-kernel@vger.kernel.org, peterz@infradead.org,
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Subject: Re: [syzbot] [kernel?] WARNING: suspicious RCU usage in __do_softirq
+Message-ID: <ac7bf2c3-c752-46db-a5c8-0c55a1af8561@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <000000000000b24903061520f3e9@google.com>
+ <CALm+0cWx1kYtftE4nj7Jjgx2_bmNmSrBAgd36ksSvxJtNVhxHg@mail.gmail.com>
+ <CALm+0cWRC1kqLJvmEqda4O97PZ-n0R0UQ35=fi6oA3rLsPoUSQ@mail.gmail.com>
+ <8f281a10-b85a-4586-9586-5bbc12dc784f@paulmck-laptop>
+ <CALm+0cWN0+cCsYddBUefya3aUw9c9Xn89GVV=Ys1_UPjS19WrQ@mail.gmail.com>
+ <4c09abb6-4f6e-42d7-9944-c5da995649cb@paulmck-laptop>
+ <CALm+0cVaLfE2ieK9aqh9yHkPDyO7zWbMe9K6WjTUgm4t9SnSFQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR10MB6379:EE_|CY8PR10MB6660:EE_
-X-MS-Office365-Filtering-Correlation-Id: 716c4779-6244-4881-eca7-08dc5ff92352
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	CgjwU76yQKdZx6ZBetAxILzvXxlHVfuM1pxVqjK5Yv3VcaUNANPHZ7eypmJdCgfcXSYeVB4YNRjwwJGisPRT1x3tBG4hGc98hkCtfCBHMg5pR5fYpZv+1G7qWg252Vz/jtTyekAx153DUPBieybOczS5u/m0NK4+BQzrWUTidl8ywWJD92+QN7YTN8Vrkhj4DWrnIGaqxbJhdmdmCtYR+rmaU5uTpZrjTWZ+bcA8FBhDRUT5hNvnAn5k8kt36nJc6evG3HDQdIobk4T5GIidMY4+cMw9Ay9vhiSwHqIiLGobZ3B33Tke7Nez6ck1swdnIFchuRFFJI9MYk51Y0a1dY24w1HP1mmH9pDx4CDFdZwTYrOR7JgexyTbDmXSKZtYDgdDeXeak77Qk6C38cof7htoAg8XHvA7RH3hpB3RWnoBSJOqZHMtrkPU5AGw182qEcPMUDD4pL9Ri6VcMnTg1gg9OyuQAZ5RmYb0Z9Yo9FW7/GkhliDkfWAORWWIf9gfzv/8WuC6CzPW2H2RD2QFvRPXBqZ7T5EOxpf5ZV9SE/bfXkCOtNzX/u7S8FQfULzlwajaA3tV/RM0MTHBYyb23mcLwU05wGilDHvd1MZJJ7eP+H6DhG8+xhWagoIcjXjL
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR10MB6379.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?dkR0NWtvODVDaHVPcjNONnhnTEM2M1dOWWw5WERPSU01aXVLTnp4R1R5Ynht?=
- =?utf-8?B?KzBHWW0yVVM2cFhQdC9JejRsaEtxdHcrd1I1OG80WVFVbjhSWTJaWmRHb2hU?=
- =?utf-8?B?OUczY2hXM3YxdlRBcVBBaWdkQzAvaDlrSldoN2VxdWh0VlZpYVhMOXJNbG1Z?=
- =?utf-8?B?aXdGRG94RkN6NEdLcUgzbElyZkRYTk91czlqMS85MCtNRmdIK2VEdE0rNElh?=
- =?utf-8?B?WW9NeXQxUzNhUEw1ZDlLbXQ4dDVzRldWdHpFZGxOOU54N25LbU1PbUViSENo?=
- =?utf-8?B?TmoyMDVRd29DKzVmWm02VndjZUI0ZklHRmtmQ1I2K2d3ajJvOUM1UkNxZmxz?=
- =?utf-8?B?SGsvQnVBWFpXNHFnMXdndUxKazJ2VFY2MEN2eWxpeFhDTWhOUXR2NEF4ZzdW?=
- =?utf-8?B?RnNXbjlMZ2ZJOXg3dmhrTlhEY2RKSWYwdGFrZ3pMMkVLWjBPd2F1RSs0ei82?=
- =?utf-8?B?ajdpV2I5WFUyWENVcnlJSkorcENJQnplQjluOWRmL2xqMm92TjRTYkdnOGZp?=
- =?utf-8?B?b2xJYTRoaktoMlpqeTQyUWk1UFVYU1UwRkhraXVSQm5McHBsZkNSL1dHdktx?=
- =?utf-8?B?cUdJT1R4NkdnYkxUcnJUVGtaQnR3U2hTMHI0cVU3ZkFqQXZhNCs0bGdwOHBp?=
- =?utf-8?B?ZzNOL2FPU0NXS2JlL2RRYXNHYmsxdWs4S2NkUG83azVoRzNWdXRBWFI4eEJQ?=
- =?utf-8?B?QnRDT3VJWW5BTmFmbVBrc3JiQk5YOFJlNWdhbVRoR0FLRG9lRjRmTGhyOUpt?=
- =?utf-8?B?TDNHZWM2VzJNd29FTnRHTDVGWTE2eVJ0YlB1VnBXUStnL0gxTHBaY1ZiTnNu?=
- =?utf-8?B?Y1EvZnpibDNKeEk0YjVGK3kzRnl2di9hU0xRZ3g1dWZLeE9WV3ZIR0Nudlly?=
- =?utf-8?B?OU9PTnlDUjRzQStqOGZZeWJ6MnRpb2RYY3NzWGNNVnVRUkFDckZhQ3ZVbWUr?=
- =?utf-8?B?aDVKVk15RU50ei9XSk1KaG4xVi9MTzJneTJUN3U3Mnd6U2ZxY1BLaE03Q09X?=
- =?utf-8?B?U1grbXc1NlY3RFFTaXhXNzdxc0JXZWJOSzR2YUFjbGkvWlJlVVBYOWZzME5I?=
- =?utf-8?B?d2ZFUjY3Sm45TzgyclJKMEl6UHVjK0t3a3gxRkxtRklGSlBLVkJMbzNpMVJW?=
- =?utf-8?B?ZHBYcmNMRFBlZ1kxMU93cC9FVnZpSUhvdm5mS2d4SEJnQW1KRzJiYnc2L092?=
- =?utf-8?B?bkNnSUtjbURLclpHY3JkUDFlZEFabUttSHJselF6V3Zza1VVVUxuNjAzK1Fq?=
- =?utf-8?B?clo4NUlMeWNORjZ6K0VCVEVsT3Zic0xlWmtMSmkyaWZBWUFTMTdxc1BZdE1I?=
- =?utf-8?B?SUJ1dkRmekpkMFh6d3lrL3JUYUd6ZUlkUEpRNWRjdzYwbUI0ejVpY0YxN1FY?=
- =?utf-8?B?dnoxaGJPUmxFejJYbUxGeFdyMmpvK2RGVjRtQVJSa1EwTVR0WjlUb1JQbzBL?=
- =?utf-8?B?V0M1MFZuR2pJTi9wOVdONlhKWUJzTXpRK2NUeHkvblMrWG1jeGFPWHVIaHdP?=
- =?utf-8?B?YUc5c21oaFh1ZDFtRWgzK21ueld2Z2QrMUZmRjZFUm1TU3laQnNxZ3VXK0x0?=
- =?utf-8?B?bjgrTWJTQTBZK2cvcHY1VGg2MzFtM0xxcjAxbEptRmVRakdEMkYrY2Q2Q1NF?=
- =?utf-8?B?QXEwSDA3TVcrVXlWQzRpR1VzVy9RemVWUW9aUUpwYTRvL1VhcDBQUEU0T2hL?=
- =?utf-8?B?S3VSbWl0Syt1NWY1Zm45VGhHb1FQd2pZQWlsYlNWNi9wUmhzdldSd0F4THd1?=
- =?utf-8?B?b1lFNUMrM0RSb3NDNmFGSS9oSjdPa0hFRzJiZkI0dVBzakcwdWRsTTR1WlRh?=
- =?utf-8?B?aktOU1BZbC8yUEJHVStFZ00zS2xwUGpvVDUyS3F3UUErR1R0NVhXUlNjdkpT?=
- =?utf-8?B?ZjVKcXFSR1VOMHlSY1lVWjN0N2dyRzVvRlFWaGJEVzF6S0xiWGVIakRndVlu?=
- =?utf-8?B?eHdvdDd4dGlnMHJxcCtXbTdPcW55QnJsTUYxUHQxNG9FbWFjSGdnUThialVR?=
- =?utf-8?B?K0t6eTI5YTRpK2hZT1c2a0tsOEJDZUxROGVpYXZqbTNkQ3BYUWkrNmJBMmpj?=
- =?utf-8?B?Tkw5UzJaWkdHTU9xVFFTRkFOOFRsUjhHZ1ZqV2NRdjhQN2V1eHVuWlNxRHhi?=
- =?utf-8?B?NmNxK0pxTmZxU0l6d0ZMcjV6RHYyL2JhRXZiQlkvL21SdzFvN21Zc0VwaE9F?=
- =?utf-8?B?elE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	FM59sjl5g/XU7Re2x6QyNxc7iXyW3Mf2yL4b1lYo1N8OhYJB/p3df+Cl5p7Kz2GUJ521TLsy4J9Gt/LUhw5Sp/fiogcrMn6F7IttiShPrilmZ75HwhrIb9hA0m2YEHfVFaNwxK4OUxgnzsP+tT+dmFDZW96g0GFAdDWRFzaIKVjbyQMnV2eV/12qkdN0XlBHJ4wFyTEJSEtyYuE2RAxiNvEqb7sO2hPh+T6MSRyDVPSEjZei80mnilAHXNZPbu7CmPpt+AMCsevW7ILY0zms8rVeHb3GoABkjETSgEL/Rlvc7cA27lGX9OZytzNnjMUbiu4NVsaD0EktqUgKEvo+rQ3DPjYHs+ue6cNS9klsBHF4tzafTCfqVsOJ2ipLxdhkz5d8XnsRizahOGahllniRVj7Ey306jHJ/v9K9OayOkgXpZZqvtL2EpM7l0pDTUEPxklN7Wy8kwHeugKRPTqEtqGzIQWkoY8a6mc2P60y1OzekhF3TMmJQZq9aNCz5CnZVtoGUbLzmq8+/R0kZJzNDuWftstP/91jbnorTmpEPM3gyJ3x+kkYqwmlQbJrEvYMzrnqhqH6SxP2r0uXVf6GkWsLsx1ygi7N/KE/9Jq5LvU=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 716c4779-6244-4881-eca7-08dc5ff92352
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR10MB6379.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 22:44:42.5883
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: M2nhSqw9xb3jXkJB7Wzd1IR52IXG49Kf5hzF0whwLc8bTxeEXLI+yqa5WdhQBcTwJ/+pAdUK2mgIhFgVhKbi13gS4O2ILOEmAOYOaGF7f+4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB6660
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-18_20,2024-04-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- phishscore=0 mlxscore=0 bulkscore=0 spamscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404180163
-X-Proofpoint-ORIG-GUID: mH0hCj5xAKx_SGPeczGrvxPFSYQI2NHi
-X-Proofpoint-GUID: mH0hCj5xAKx_SGPeczGrvxPFSYQI2NHi
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALm+0cVaLfE2ieK9aqh9yHkPDyO7zWbMe9K6WjTUgm4t9SnSFQ@mail.gmail.com>
 
-
-On 4/18/24 3:01 AM, Vlastimil Babka wrote:
-> On 4/17/24 20:59, Jianfeng Wang wrote:
->> When reading "/proc/slabinfo", the kernel needs to report the number
->> of free objects for each kmem_cache. The current implementation uses
->> count_partial() to count the number of free objects by scanning each
+On Thu, Apr 18, 2024 at 05:49:38PM +0800, Z qiang wrote:
+> >
+> > On Wed, Apr 17, 2024 at 10:25:01AM +0800, Z qiang wrote:
+> > > >
+> > > > On Tue, Apr 16, 2024 at 04:44:54PM +0800, Z qiang wrote:
+> > > > > On Tue, Apr 16, 2024 at 4:10 PM Z qiang <qiang.zhang1211@gmail.com> wrote:
+> > > > > >
+> > > > > > Cc: Paul
+> > > > > > >
+> > > > > > > Hello,
+> > > > > > >
+> > > > > > > syzbot found the following issue on:
+> > > > > > >
+> > > > > > > HEAD commit:    c0b832517f62 Add linux-next specific files for 20240402
+> > > > > > > git tree:       linux-next
+> > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=15f64776180000
+> > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=afcaf46d374cec8c
+> > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=dce04ed6d1438ad69656
+> > > > > > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> > > > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f00471180000
+> > > > > > >
+> > > > > > > Downloadable assets:
+> > > > > > > disk image: https://storage.googleapis.com/syzbot-assets/0d36ec76edc7/disk-c0b83251.raw.xz
+> > > > > > > vmlinux: https://storage.googleapis.com/syzbot-assets/6f9bb4e37dd0/vmlinux-c0b83251.xz
+> > > > > > > kernel image: https://storage.googleapis.com/syzbot-assets/2349287b14b7/bzImage-c0b83251.xz
+> > > > > > >
+> > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > > > Reported-by: syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com
+> > > > > > >
+> > > > > > > =============================
+> > > > > > > WARNING: suspicious RCU usage
+> > > > > > > 6.9.0-rc2-next-20240402-syzkaller #0 Not tainted
+> > > > > > > -----------------------------
+> > > > > > > kernel/rcu/tree.c:276 Illegal rcu_softirq_qs() in RCU read-side critical section!
+> > > > > > >
+> > > > > > > other info that might help us debug this:
+> > > > > > >
+> > > > > > >
+> > > > > > > rcu_scheduler_active = 2, debug_locks = 1
+> > > > > > > 1 lock held by ksoftirqd/0/16:
+> > > > > > >  #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+> > > > > > >  #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}, at: rcu_read_lock_sched include/linux/rcupdate.h:933 [inline]
+> > > > > > >  #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}, at: pfn_valid include/linux/mmzone.h:2019 [inline]
+> > > > > > >  #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}, at: __virt_addr_valid+0x183/0x520 arch/x86/mm/physaddr.c:65
+> > > > > > >
+> > > > > > > stack backtrace:
+> > > > > > > CPU: 0 PID: 16 Comm: ksoftirqd/0 Not tainted 6.9.0-rc2-next-20240402-syzkaller #0
+> > > > > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+> > > > > > > Call Trace:
+> > > > > > >  <IRQ>
+> > > > > > >  __dump_stack lib/dump_stack.c:88 [inline]
+> > > > > > >  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+> > > > > > >  lockdep_rcu_suspicious+0x221/0x340 kernel/locking/lockdep.c:6712
+> > > > > > >  rcu_softirq_qs+0xd9/0x370 kernel/rcu/tree.c:273
+> > > > > > >  __do_softirq+0x5fd/0x980 kernel/softirq.c:568
+> > > >
+> > > > Huh.  This statement is supposed to prevent this call to __do_softirq()
+> > > > from interrupt exit::
+> > > >
+> > > >         if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+> > > >             __this_cpu_read(ksoftirqd) == current)
+> > > >
+> > > > So was the ksoftirqd kthread interrupted at a point where it happens to
+> > > > have softirq enabled?
+> > >
+> > > It should look like this:
+> > > schedule()
+> > > switch_to ksoftirqd/0
+> > > finish_task_switch
+> >
+> > So this CPU's ksoftirqd task is running.
+> >
+> > > ->put_task_struct_rcu_user
+> > >    ->call_rcu(&task->rcu, delayed_put_task_struct)
+> > >       ->__kasan_record_aux_stack
+> > >          ->pfn_valid
+> > >             ->rcu_read_lock_sched
+> > >                 <interrupt>
+> > >                  __irq_exit_rcu
+> > >                  ->__do_softirq
+> > >                     -> if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+> > >                              __this_cpu_read(ksoftirqd) == current)
+> >
+> > But we are also running __do_softirq() from return from interrupt.  While
+> > running in this mode, we are not supposed to invoke rcu_softirq_qs().
+> > But the "__this_cpu_read(ksoftirqd) == current" check yields "true",
+> > so we do call rcu_softirq_qs() anyway.  That is a bug.
+> >
+> > We need to upgrade or replace that check to something that returns true
+> > only if called at process level from ksoftirqd.
+> >
+> > Any thoughts on a good way to do that?  For example, would adding "&&
+> > in_task()" do the trick, or are there other unfortunate corner cases?
 > 
-> Hi,
+> The rcu_softirq_qs() is invoked in softirq_handle_begin/end() critical section,
+> in softirqd/0 task context,  the "in_task()" should return false, will miss
+> qs report in softirqd/0 task context.
 > 
-> thanks. I wanted to apply this patch but then I realized we use the same
-> function besides slabinfo for sysfs and slab_out_of_memory(), and it's
-> not always counting free objects. When somebody is debugging with sysfs,
-> they may expect the exact counts and pay the price if needed, but we
-> probably don't want to make slab_out_of_memory() slow and precise, so
-> that's more like the slabinfo.
+> diff --git a/kernel/softirq.c b/kernel/softirq.c
+> index b315b21fb28c..9b8f0c0f7675 100644
+> --- a/kernel/softirq.c
+> +++ b/kernel/softirq.c
+> @@ -563,10 +563,6 @@ asmlinkage __visible void __softirq_entry
+> __do_softirq(void)
+>                 pending >>= softirq_bit;
+>         }
 > 
-> So what I propose is to create a new variant of count_partial, called
-> e.g. count_partial_free_approx() which has no get_count parameter but
-> hardcodes what count_free() does.
-> Then use this new function only for slabinfo and slab_out_of_memory(),
-> leaving the other count_partial() users unchanged.
-> Another benefit of that is that we remove the overhead of calling
-> get_count(), which may be nontrivial with the current cpu vulnerability
-> mitigations so it's good to avoid for slabinfo and oom reports.
+> -       if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+> -           __this_cpu_read(ksoftirqd) == current)
+> -               rcu_softirq_qs();
+> -
+>         local_irq_disable();
 > 
-> Thanks!
+>         pending = local_softirq_pending();
+> @@ -915,6 +911,8 @@ static int ksoftirqd_should_run(unsigned int cpu)
 > 
+>  static void run_ksoftirqd(unsigned int cpu)
+>  {
+> +       unsigned long last_qs = jiffies;
+> +
+>         ksoftirqd_run_begin();
+>         if (local_softirq_pending()) {
+>                 /*
+> @@ -923,6 +921,7 @@ static void run_ksoftirqd(unsigned int cpu)
+>                  */
+>                 __do_softirq();
+>                 ksoftirqd_run_end();
+> +               rcu_softirq_qs_periodic(last_qs);
 
-Thank you both for review.
+Unfortunately, we need the quiescent state to be within __do_softirq().
 
-I assume that: in most cases, people would stop at /proc/slabinfo;
-and they must have a good reason to dig into the exact object count
-in sysfs. At that point, it is better that the kernel can offer it.
-So, it sounds good to me to offer the two capabilities, i.e., fast
-approximation and exact count.
+>                 cond_resched();
+>                 return;
+>         }
+> 
+> Any thoughts?
 
-I will send a v3.
+Can we mask the return value from preempt_count(), for example, as shown
+in the CONFIG_PREEMPTION=n version of rcu_flavor_sched_clock_irq()?
 
->> kmem_cache_node's list of partial slabs and summing free objects
->> from every partial slab in the list. This process must hold per
->> kmem_cache_node spinlock and disable IRQ, and may take a long time.
->> Consequently, it can block slab allocations on other CPU cores and
->> cause timeouts for network devices and so on, when the partial list
->> is long. In production, even NMI watchdog can be triggered due to this
->> matter: e.g., for "buffer_head", the number of partial slabs was
->> observed to be ~1M in one kmem_cache_node. This problem was also
->> confirmed by several others [1-3].
->>
->> Iterating a partial list to get the exact count of objects can cause
->> soft lockups for a long list with or without the lock (e.g., if
->> preemption is disabled), and is not very useful too: the object
->> count can change right after the lock is released. The approach of
->> maintaining free-object counters requires atomic operations on the
->> fast path [3].
->>
->> So, the fix is to limit the number of slabs to scan in count_partial().
->> Suppose the limit is N. If the list's length is not greater than N,
->> output the exact count by traversing the whole list; if its length is
->> greater than N, then output an approximated count by traversing a
->> subset of the list. The proposed method is to scan N/2 slabs from the
->> list's head and the other N/2 slabs from the tail. For a partial list
->> with ~280K slabs, benchmarks show that this approach performs better
->> than just counting from the list's head, after slabs get sorted by
->> kmem_cache_shrink(). Default the limit to 10000, as it produces an
->> approximation within 1% of the exact count for both scenarios.
->>
->> Benchmarks: Diff = (exact - approximated) / exact
->> * Normal case (w/o kmem_cache_shrink()):
->> | MAX_TO_SCAN | Diff (count from head)| Diff (count head+tail)|
->> | 1000        |  0.43  %              |  1.09  %              |
->> | 5000        |  0.06  %              |  0.37  %              |
->> | 10000       |  0.02  %              |  0.16  %              |
->> | 20000       |  0.009 %              | -0.003 %              |
->>
->> * Skewed case (w/ kmem_cache_shrink()):
->> | MAX_TO_SCAN | Diff (count from head)| Diff (count head+tail)|
->> | 1000        |  12.46 %              |  6.75  %              |
->> | 5000        |  5.38  %              |  1.27  %              |
->> | 10000       |  4.99  %              |  0.22  %              |
->> | 20000       |  4.86  %              | -0.06  %              |
->>
->> [1] https://urldefense.com/v3/__https://lore.kernel.org/linux-mm/__;!!ACWV5N9M2RV99hQ!LuGLO7jdg-btEuCdiGR-urqWDlQa9J1c_HdkmkBogW_86XHSFoohzTP29qfBZScVYn3BKt0s5m5CUniSpHWw$ 
->> alpine.DEB.2.21.2003031602460.1537@www.lameter.com/T/
->> [2] https://urldefense.com/v3/__https://lore.kernel.org/lkml/__;!!ACWV5N9M2RV99hQ!LuGLO7jdg-btEuCdiGR-urqWDlQa9J1c_HdkmkBogW_86XHSFoohzTP29qfBZScVYn3BKt0s5m5CUo6BnK68$ 
->> alpine.DEB.2.22.394.2008071258020.55871@www.lameter.com/T/
->> [3] https://urldefense.com/v3/__https://lore.kernel.org/lkml/__;!!ACWV5N9M2RV99hQ!LuGLO7jdg-btEuCdiGR-urqWDlQa9J1c_HdkmkBogW_86XHSFoohzTP29qfBZScVYn3BKt0s5m5CUo6BnK68$ 
->> 1e01092b-140d-2bab-aeba-321a74a194ee@linux.com/T/
->>
->> Signed-off-by: Jianfeng Wang <jianfeng.w.wang@oracle.com>
->> ---
->>  mm/slub.c | 28 ++++++++++++++++++++++++++--
->>  1 file changed, 26 insertions(+), 2 deletions(-)
->>
->> diff --git a/mm/slub.c b/mm/slub.c
->> index 1bb2a93cf7b6..7e34f2f0ba85 100644
->> --- a/mm/slub.c
->> +++ b/mm/slub.c
->> @@ -3213,6 +3213,8 @@ static inline bool free_debug_processing(struct kmem_cache *s,
->>  #endif /* CONFIG_SLUB_DEBUG */
->>  
->>  #if defined(CONFIG_SLUB_DEBUG) || defined(SLAB_SUPPORTS_SYSFS)
->> +#define MAX_PARTIAL_TO_SCAN 10000
->> +
->>  static unsigned long count_partial(struct kmem_cache_node *n,
->>  					int (*get_count)(struct slab *))
->>  {
->> @@ -3221,8 +3223,30 @@ static unsigned long count_partial(struct kmem_cache_node *n,
->>  	struct slab *slab;
->>  
->>  	spin_lock_irqsave(&n->list_lock, flags);
->> -	list_for_each_entry(slab, &n->partial, slab_list)
->> -		x += get_count(slab);
->> +	if (n->nr_partial <= MAX_PARTIAL_TO_SCAN) {
->> +		list_for_each_entry(slab, &n->partial, slab_list)
->> +			x += get_count(slab);
->> +	} else {
->> +		/*
->> +		 * For a long list, approximate the total count of objects in
->> +		 * it to meet the limit on the number of slabs to scan.
->> +		 * Scan from both the list's head and tail for better accuracy.
->> +		 */
->> +		unsigned long scanned = 0;
->> +
->> +		list_for_each_entry(slab, &n->partial, slab_list) {
->> +			x += get_count(slab);
->> +			if (++scanned == MAX_PARTIAL_TO_SCAN / 2)
->> +				break;
->> +		}
->> +		list_for_each_entry_reverse(slab, &n->partial, slab_list) {
->> +			x += get_count(slab);
->> +			if (++scanned == MAX_PARTIAL_TO_SCAN)
->> +				break;
->> +		}
->> +		x = mult_frac(x, n->nr_partial, scanned);
->> +		x = min(x, node_nr_objs(n));
->> +	}
->>  	spin_unlock_irqrestore(&n->list_lock, flags);
->>  	return x;
->>  }
+The trick is that we should be able to ignore SOFTIRQ_MASK because
+__do_softirq() should not be invoked when softirqs are disabled.
+Emphasis on "should".  ;-)
+
+							Thanx, Paul
+
+> Thanks
+> Zqiang
+> 
+> 
+> >
+> > (And good job tracking this down, by the way!)
+> >
+> >                                                         Thanx, Paul
+> >
+> > >                               rcu_softirq_qs
+> > >                                ->
+> > > RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map))
+> > >
+> > > Thanks
+> > > Zqiang
+> > >
+> > >
+> > > >
+> > > >                                                         Thanx, Paul
+> > > >
+> > > > > > >  invoke_softirq kernel/softirq.c:428 [inline]
+> > > > > > >  __irq_exit_rcu+0xf2/0x1c0 kernel/softirq.c:633
+> > > > > > >  irq_exit_rcu+0x9/0x30 kernel/softirq.c:645
+> > > > > > >  instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
+> > > > > > >  sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1043
+> > > > > > >  </IRQ>
+> > > > > > >  <TASK>
+> > > > > > >  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+> > > > > > > RIP: 0010:debug_lockdep_rcu_enabled+0xd/0x40 kernel/rcu/update.c:320
+> > > > > > > Code: f5 90 0f 0b 90 90 90 eb c6 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 31 c0 83 3d c7 0f 28 04 00 <74> 1e 83 3d 26 42 28 04 00 74 15 65 48 8b 0c 25 c0 d3 03 00 31 c0
+> > > > > > > RSP: 0018:ffffc90000157a50 EFLAGS: 00000202
+> > > > > > > RAX: 0000000000000000 RBX: 00000000000000a0 RCX: 0000000000000001
+> > > > > > > RDX: dffffc0000000000 RSI: ffffffff8bcae740 RDI: ffffffff8c1f7ec0
+> > > > > > > RBP: dffffc0000000000 R08: ffffffff92f3a527 R09: 1ffffffff25e74a4
+> > > > > > > R10: dffffc0000000000 R11: fffffbfff25e74a5 R12: 0000000029373578
+> > > > > > > R13: 1ffff9200002af64 R14: ffffffff814220f3 R15: ffff88813fff90a0
+> > > > > > >  rcu_read_lock_sched include/linux/rcupdate.h:934 [inline]
+> > > > > > >  pfn_valid include/linux/mmzone.h:2019 [inline]
+> > > > > > >  __virt_addr_valid+0x1a9/0x520 arch/x86/mm/physaddr.c:65
+> > > > > > >  kasan_addr_to_slab+0xd/0x80 mm/kasan/common.c:37
+> > > > > > >  __kasan_record_aux_stack+0x11/0xc0 mm/kasan/generic.c:526
+> > > > > >
+> > > > > >
+> > > > > > This should be caused by the following commit:
+> > > > > > d818cc76e2b4 ("kasan: Record work creation stack trace with interrupts enabled")
+> > > > > >
+> > > > > > Is it possible to make the rcu_softirq_qs() run only in ksoftirqd task?
+> > > > >
+> > > > > use rcu_softirq_qs_periodic() in run_ksoftirqd().
+> > > > >
+> > > > > >
+> > > > > > Thanks
+> > > > > > Zqiang
+> > > > > >
+> > > > > > >  __call_rcu_common kernel/rcu/tree.c:3096 [inline]
+> > > > > > >  call_rcu+0x167/0xa70 kernel/rcu/tree.c:3200
+> > > > > > >  context_switch kernel/sched/core.c:5412 [inline]
+> > > > > > >  __schedule+0x17f0/0x4a50 kernel/sched/core.c:6746
+> > > > > > >  __schedule_loop kernel/sched/core.c:6823 [inline]
+> > > > > > >  schedule+0x14b/0x320 kernel/sched/core.c:6838
+> > > > > > >  smpboot_thread_fn+0x61e/0xa30 kernel/smpboot.c:160
+> > > > > > >  kthread+0x2f0/0x390 kernel/kthread.c:388
+> > > > > > >  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+> > > > > > >  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+> > > > > > >  </TASK>
+> > > > > > > ----------------
+> > > > > > > Code disassembly (best guess):
+> > > > > > >    0:   f5                      cmc
+> > > > > > >    1:   90                      nop
+> > > > > > >    2:   0f 0b                   ud2
+> > > > > > >    4:   90                      nop
+> > > > > > >    5:   90                      nop
+> > > > > > >    6:   90                      nop
+> > > > > > >    7:   eb c6                   jmp    0xffffffcf
+> > > > > > >    9:   0f 1f 40 00             nopl   0x0(%rax)
+> > > > > > >    d:   90                      nop
+> > > > > > >    e:   90                      nop
+> > > > > > >    f:   90                      nop
+> > > > > > >   10:   90                      nop
+> > > > > > >   11:   90                      nop
+> > > > > > >   12:   90                      nop
+> > > > > > >   13:   90                      nop
+> > > > > > >   14:   90                      nop
+> > > > > > >   15:   90                      nop
+> > > > > > >   16:   90                      nop
+> > > > > > >   17:   90                      nop
+> > > > > > >   18:   90                      nop
+> > > > > > >   19:   90                      nop
+> > > > > > >   1a:   90                      nop
+> > > > > > >   1b:   90                      nop
+> > > > > > >   1c:   90                      nop
+> > > > > > >   1d:   f3 0f 1e fa             endbr64
+> > > > > > >   21:   31 c0                   xor    %eax,%eax
+> > > > > > >   23:   83 3d c7 0f 28 04 00    cmpl   $0x0,0x4280fc7(%rip)        # 0x4280ff1
+> > > > > > > * 2a:   74 1e                   je     0x4a <-- trapping instruction
+> > > > > > >   2c:   83 3d 26 42 28 04 00    cmpl   $0x0,0x4284226(%rip)        # 0x4284259
+> > > > > > >   33:   74 15                   je     0x4a
+> > > > > > >   35:   65 48 8b 0c 25 c0 d3    mov    %gs:0x3d3c0,%rcx
+> > > > > > >   3c:   03 00
+> > > > > > >   3e:   31 c0                   xor    %eax,%eax
+> > > > > > >
+> > > > > > >
+> > > > > > > ---
+> > > > > > > This report is generated by a bot. It may contain errors.
+> > > > > > > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > > > > > > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > > > > > >
+> > > > > > > syzbot will keep track of this issue. See:
+> > > > > > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > > > > > >
+> > > > > > > If the report is already addressed, let syzbot know by replying with:
+> > > > > > > #syz fix: exact-commit-title
+> > > > > > >
+> > > > > > > If you want syzbot to run the reproducer, reply with:
+> > > > > > > #syz test: git://repo/address.git branch-or-commit-hash
+> > > > > > > If you attach or paste a git patch, syzbot will apply it before testing.
+> > > > > > >
+> > > > > > > If you want to overwrite report's subsystems, reply with:
+> > > > > > > #syz set subsystems: new-subsystem
+> > > > > > > (See the list of subsystem names on the web dashboard)
+> > > > > > >
+> > > > > > > If the report is a duplicate of another one, reply with:
+> > > > > > > #syz dup: exact-subject-of-another-report
+> > > > > > >
+> > > > > > > If you want to undo deduplication, reply with:
+> > > > > > > #syz undup
+> > > > > > >
 
