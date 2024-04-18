@@ -1,149 +1,133 @@
-Return-Path: <linux-kernel+bounces-150160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC03E8A9B23
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:22:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2984C8A9B25
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:22:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B1EBB21F96
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:22:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CD841C22A46
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:22:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2313B16133C;
-	Thu, 18 Apr 2024 13:21:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D83111465BA;
+	Thu, 18 Apr 2024 13:21:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="gUTmnMoj"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="UWFbh6LA"
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2043.outbound.protection.outlook.com [40.92.99.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2060615F3FD
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 13:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713446491; cv=none; b=i/LoqjT97kctIu40uz5ipfq7pG2qvW5N3q76aWrt0N8nNV7b/WFCoGHwe7vzDbWGODkJ6jVBj9hPclxx1pq2PndzMSL8vZVmhiTi9bQQ3HSAliBTx40xRVf8Vp9n8eXTyR+s/sETnZ1BcuPpDJmuVp5J6dhZc7yzX245yr+8SXo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713446491; c=relaxed/simple;
-	bh=xCkZWZsd5MbyA9NOc8fkXFwd6tpKTJgqXPaccDVFJJU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fpqa3v6lxy3fz0rl/HZBsf3htsc9aatN8RFVGrs/bHO0uzzIoh+aVtn/7K42Y2NTW2cTWquvvLRkcBf+/LBmhd8mMwFUcUiYvZRc/y6N1G8Di5cOIY1aKLGdTNZdgIGeAhKh9GQOc0swSnQZ6Lty0Z1xUMiwDCyX7UU+mPvwEDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=gUTmnMoj; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-36a15df0f8cso2950475ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:21:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1713446488; x=1714051288; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JO0ozNsqTpxBsROn3x3SanAr//Rutf3lUig74CS14aw=;
-        b=gUTmnMojQcAZ+zR440uQFQcsuAARj0DB1VvGNV3zfZfs6KmN/un01BR93KkxEVK86b
-         Yy2I/YRMBjV0P065f6RFwCj+HAT2J8VWhJUkAdFDFu2LQ0S7M7AtUOD3Snw1yDt/C8Rl
-         hVIUXUW5+JosBkUvozfCGSpFuL0tKjcg35iSDM44XTsv8Q5Dg1YJTYdaq8tK8Ph9GtbV
-         ITw9lBGrsyEkmdf0s0lORQuHWvz6crD3QduRWDhDNdHivK/9RyyOE6Y3U6qvOq+5dGkM
-         JEs0Bk9b6VwLGXavabelFkzHaS3ZEysoXLLvjhD8BpdOUVzgDKpr9uBUdohcudRZvX8Q
-         Px3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713446488; x=1714051288;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JO0ozNsqTpxBsROn3x3SanAr//Rutf3lUig74CS14aw=;
-        b=g4ckxeKs2tSh2fDqxnF27Hm+yDLn7Z8BXoWJg6XHpP6Ul2s20XT7e1mLb/E7o4qu3T
-         wdPHpkgLzQ1uDfPaR6DGJHq3UUPyxh9iP/B8t1BjaX/gmNBl3pxXIkQAcJIqKrZFe46d
-         P6USGOdXwDFhgbF1j3lhr7/K1F+P2ZgQL83P8kJdTPd4ZucCuy+MBRG3vDWhNugw3J9H
-         a84vQJW7l8QjgNkLuuDsjYmTzHQmkQO249Ps6SQrVEjHpvHWvBobx5TT2GE3HYawBOZt
-         nviq4/P6GvrAWsblQoYyzJQo85AI1rGOmFYjirIMwcyEdCrn5ouxALNfI/aFAOCm52hx
-         EmGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU8xqCSnoBNqrDdCPObyxOa9zZZTcjiMoyMIS5jJCR0Re3FnklDtDWk6MLlO3Ifv6tVy76WTgFQHs520FaGBvaG5IyZJO84oocSI0j3
-X-Gm-Message-State: AOJu0YzDUOhbg0riJ10JgnnZCIXUmVx5CdlnIexuvPilR0kQaq5HZwwz
-	YMhpRH62so8fQnUctPvxaf+pq8HG2c01qPrx3kIIJMjOXyy7e6vzRkh29NWZK7eqr06j6bSyo+4
-	Z3Dp2GwmBhdIkiBSH7EF3Q25j/UWouGthvVtlrQ==
-X-Google-Smtp-Source: AGHT+IFYxMvNR0jXCZIG1KPR1/WCDVRMgUDvpXntlv1WYC3zuUPdvb9LjVkJtYSDV5Al2WTKHOMIUCYgVBtJncbys6A=
-X-Received: by 2002:a05:6e02:219c:b0:36a:3ef4:aa0a with SMTP id
- j28-20020a056e02219c00b0036a3ef4aa0amr3216818ila.24.1713446488311; Thu, 18
- Apr 2024 06:21:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F4B215FCFB;
+	Thu, 18 Apr 2024 13:21:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.99.43
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713446505; cv=fail; b=AXgh2RpbZIOwkgGyX17oCXQbSftptX0YNW/VwetasbWxhUqVc/bj1u6wbz1mcrpdBJoGVvubidtjbN2VTWhhBiZWThUEXvOm3sb5ib54W0fea2d6Ks/LAwgBweUPJPNQGknXeb6nOuxf9tdmFW3l6bJNOmccpVh5qpmj5CkuoXg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713446505; c=relaxed/simple;
+	bh=ADIR+9Ku3mm0J06oief9gIePole6FIIpNQBUuR7iv0Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=sOlsyjQnz4A7+7zPaHg71OErhMlu1bKU75Kt/wbXjCqcvg+GM82TP1ACAg7ni5rkvmYusRX90lZovVs8ubsK+LdC7xztUoPSY29nMx8P4uN6hLFhlO+lWQLWjDwjCc+OGqFRA8Zv6bHse+kSaijiIbutjxz0X/Goft2jJfMSWOw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=UWFbh6LA; arc=fail smtp.client-ip=40.92.99.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YPPUqtHfxBwvykTZ7SYMKRHU/p8B1QqDQhyjHWeawruPSZsImS297y9fhSoIyVask6i8GyHuQGuWD7kUnXOH4TI+9SqkTPWgkOmJRbLXa5f20SmWSD4NNGoJ5DMPn2rq9N2dflrg7y6hTAQDsOihsDOq//PQcweluuuhXA2jnfLRpg8zoILlWVwTvLgp27euF/BgMy5QeyBqOMMts+xNrqF3jmh/Bsr64YkldTXs8CY4P6J5rO8iTzkwb5ckJ0qjGGgajVQx717iu/zAQY0r3jxlMezE1Ls5CF87Z5fcdz7Dlj7hFclVX46b1movRP69F0c/IavQYpBYx6gPhgo+IA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ADIR+9Ku3mm0J06oief9gIePole6FIIpNQBUuR7iv0Q=;
+ b=k/v/hAPjtBja4vqtacGEGHsE4OBVHXGN/3GkAZIe0smt/WNCIdJt1Z97cxYPWn9hx2GVBatPOSo+ZQXfhC13/lYtFxJ7kVGIuBBIGj19e8Xuq6hyXQOQrmO/n9JiLy/3JUtP5cGiJaPe02jqpcsT4uWkjYv9SqZeQkXMHisOO8hr7f6EPqDNvGuB/znxLM+MbTdO5RSmsxqLSBxTX+Vr7upcOkLZtyxxZcUIMjg22pSyswmnytSIT9tCflCY/puoiypfpytkF3dFpchTkFNoxFcOeN6pyXfcHN7DFYCCYs6uMVJBgLpk5fd+L1Aco8U+uQQH3WSKtiBXHNG0ZudQog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ADIR+9Ku3mm0J06oief9gIePole6FIIpNQBUuR7iv0Q=;
+ b=UWFbh6LAsvJrw9C77BYvI9oWSMDkn1d2Yq5KVf0LSmdH+A9VRAmnRVrnO6xbKCIhr6ZKk//J3OsBBtfq3NSNbd8PySZA4rnen7mNlFAphYBEms/1wbsR1IUJ1vAFCIggxeAuXuyj2djrOAp5rNqg+SeRDmep6uUyyabH02PUis4AJmXzQwfRC6nGnAav1KHxhjH3zyxrs/f1C3RTH7I5iMR/ansnyRgH+dOjA9YgfvtKd7yReClvtvdIYNNXDJbINiRs6+/EGbNcOyymT1l9pHEwjhE8mvqM2o2sJJEVs6VzxwRwSxYdHzO6DX+Xe7VCIC7onPtJ+ccVU4Gf1FXGQg==
+Received: from TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:209::11)
+ by TYWP286MB2794.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:23d::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Thu, 18 Apr
+ 2024 13:21:40 +0000
+Received: from TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::f2c3:e53f:2ea9:55c8]) by TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::f2c3:e53f:2ea9:55c8%4]) with mapi id 15.20.7472.037; Thu, 18 Apr 2024
+ 13:21:40 +0000
+From: ArcticLampyrid <ArcticLampyrid@outlook.com>
+To: ArcticLampyrid@outlook.com,
+	sbinding@opensource.cirrus.com
+Cc: david.rhodes@cirrus.com,
+	james.schulman@cirrus.com,
+	linux-kernel@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	patches@opensource.cirrus.com,
+	rf@opensource.cirrus.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] ALSA: hda/realtek: Fix internal speakers for Legion Y9000X 2022 IAH7
+Date: Thu, 18 Apr 2024 21:21:26 +0800
+Message-ID:
+ <TYCP286MB25350DBE9597E25E48965360C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <TYCP286MB253523D85F6E0ECAA3E03D58C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
+References: <TYCP286MB253523D85F6E0ECAA3E03D58C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [jwE6gPhcTb0sa3NhfLg6PkdwPFVf/A6oZ6jeW8Mp8nxNcNKRgS9LVg==]
+X-ClientProxiedBy: PS2PR01CA0054.apcprd01.prod.exchangelabs.com
+ (2603:1096:300:57::18) To TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:209::11)
+X-Microsoft-Original-Message-ID:
+ <20240418132126.33043-1-ArcticLampyrid@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418124300.1387978-1-cleger@rivosinc.com> <20240418124300.1387978-12-cleger@rivosinc.com>
-In-Reply-To: <20240418124300.1387978-12-cleger@rivosinc.com>
-From: Anup Patel <anup@brainfault.org>
-Date: Thu, 18 Apr 2024 18:51:16 +0530
-Message-ID: <CAAhSdy3bjKQhRRFLhNtCGNG=f9cj=LHhr0sPWdeFFR9KpC3RVw@mail.gmail.com>
-Subject: Re: [PATCH v2 11/12] RISC-V: KVM: Allow Zcmop extension for Guest/VM
-To: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Shuah Khan <shuah@kernel.org>, 
-	Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, kvm@vger.kernel.org, 
-	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYCP286MB2535:EE_|TYWP286MB2794:EE_
+X-MS-Office365-Filtering-Correlation-Id: 027096d4-2ca5-4086-fc40-08dc5faa7b7d
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	O6VGZfZIkViVrl+s79cV0bAQ2ldTl9vJI1QG9tE85M0Mardqa3CgZK1kicJJrL0hI/wREUk1OYye7FHCgBt0u2Es3ibh5ntxETXUrBUDSroM/efQK26hqpjtn+oDNNwSI9oAafRl4MBjAvrYB+8rpTviNtysSQyg11SSVHsfNdo9NE7KuiCPIlnPZHvWArludvOv17Bq+/k50lPXH2j29c7XYCY6aeXyLx6wF+o8LUn8yvbsdQ3/XIMVzSMmODyVGcy4J1EBm7DoMCa6v7Sco5LCSgNf7Q/zGYcp34ERPGznV0YAai49ZPR4f6PH2jh7zR/+et29cv1EzXJKaNM7xIG1R7G/QSPeqAsBpsOItoDuoujqRpqI1Cdt/TurPuBbKnoIsqFMge4ZW2DYF1ZiPR6cFDqPnIPGozOm6qJENqDdDfHhNNb6ZTILJv43ODy+zcJzJTsMz6q2gQvzVnW2jjXrYArfg5k2GrqX/35RIRxyjrS26qg3x33gBV6oISD4d/O6ZaZohjtqv5mR3YqPa9kx0507IfwgcCoSOUllRV7LNe6vtE+7j/EfdbwD0UsjD/krqUBXOqUSRrDDHvY4ZQhRIedw8PWojqznE1f/gsTW4Mxgw8Ii/3tAWmqvGA8nklVFmkl1GQZl3ycg/x52ITDxx9OuIEt8WWaj++FppkigpRECCVPiZm6T+VN/LdDHhW/8ofM1rcQQB33oiUjjgA==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?IyGO+JyX2ac3Em/K0/QtGhyAnMv5NI22IOgzTuO0U5XEWhiBENhxkG8ckO0U?=
+ =?us-ascii?Q?MldbR/ew3qIlOb/pNAGUocveMqvpMNGhoNvZgr89GKhCDKe0xSc8OV1G6cbI?=
+ =?us-ascii?Q?c9qa9KN1pmwjsaOXPSDY7NStFiMLXy/3Yo15iTlOOpFLGSTdzISVPu+aMkuU?=
+ =?us-ascii?Q?S47j260djLxu3GobLG5oi8P83nJnH4tHG62Q+hdkl6EYDiFVhA282Tbpi7Ji?=
+ =?us-ascii?Q?cMv2Sm0SeiICQ0yRCfG2+OaTkwVn0KHsHbm0mM7hqSqIOJIc0+9yve8ysN0t?=
+ =?us-ascii?Q?ADspVaFjrt92814GO1PIWjUEwSIxfkRsW1sLMCef0eOBewc16Bvp4JD3sye6?=
+ =?us-ascii?Q?zEL76lzJiP7QaMSXJk87AyQ2xSx35N2So//xqtbr6W/zdiCCmbyjmNqkcK8K?=
+ =?us-ascii?Q?81t7bxxmpaEaAaiNlAr5Bw+sG8lX/vzcrIQTHLTVA5Sz7RroYs/ffii5aKvh?=
+ =?us-ascii?Q?6uWKkRnimNFO2VJvB7x9tRs+bEEUMdHYoXO9aElJvH4hICNIT/PpcU3gBY9k?=
+ =?us-ascii?Q?0MtZmctn1+QMiIbiLLnpUpdVYrEuupOpMbj22vzAxoYkAzkNTIoOjeksdirS?=
+ =?us-ascii?Q?FMZ/85vd5daCwxof3G1/ZsdGPi0GMA/5wQUvg5atCcVFuEKJo+N62uvJbT3x?=
+ =?us-ascii?Q?SrB1p6rYJqTtzJVqxg2d3YeJI1nSXhHJEX5SbzSyxEEBIR9rM0XIO+cfGNBi?=
+ =?us-ascii?Q?30IF8QEaSqyjtumORxJdTtPZICe+Eb7Gv6Qn2EKA2u0ZLJJLJGlFaqgQ7q0f?=
+ =?us-ascii?Q?P4WvJsrXINfofFFNiF0WKG5oOh/mpKl8eM3D5WR2OcpVUyFMnBfwxV1OHm0m?=
+ =?us-ascii?Q?lTPkEZ8wy+/CJrOyNbBuABaue6sC1mm/+AyOhazG2adaZS0oZO/agjNse6cp?=
+ =?us-ascii?Q?BVwPJFNz4Bb/B3fb3nwPxG+mVGOQRPjz3XxTFaa4kWuiR6IPo+VxkgVdH2KT?=
+ =?us-ascii?Q?F/6eqifzDJn4Bza8emfLKxq4MdH634sEZdadsSUbihG0/wVdvGk2T7V/xZON?=
+ =?us-ascii?Q?TJ0bUW5YQFujkNFMeuQk8seYV0+eab2jOHrUU0mRNmrN3A8Q6AzJhAwZdW35?=
+ =?us-ascii?Q?ObvSe1+Y91ftVUlNB29EEEFuOVi40oI3TsJT+GRPTD/Ls+PuYi6HNdtBWWml?=
+ =?us-ascii?Q?jqEpaP9smXAfBuqIi5UQT2tjBG0PSQxPQFWKRPnC3sJAHaNMecbdLx3cT13O?=
+ =?us-ascii?Q?yndFLrWsfPa5x3+OZRu6CxwYa6IhORA/gwTlrV8jnDdSRwIJkk10786TRo5Q?=
+ =?us-ascii?Q?LdcZJr93O+WjRuscnbH+6LHGSwFlVeEYulti/vkquQ=3D=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 027096d4-2ca5-4086-fc40-08dc5faa7b7d
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 13:21:40.3731
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWP286MB2794
 
-On Thu, Apr 18, 2024 at 6:14=E2=80=AFPM Cl=C3=A9ment L=C3=A9ger <cleger@riv=
-osinc.com> wrote:
->
-> Extend the KVM ISA extension ONE_REG interface to allow KVM user space
-> to detect and enable Zcmop extension for Guest/VM.
->
-> Signed-off-by: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
+spkid index is corrected in v3
 
-LGTM.
-
-Reviewed-by: Anup Patel <anup@brainfault.org>
-Acked-by: Anup Patel <anup@brainfault.org>
-
-Thanks,
-Anup
-
-> ---
->  arch/riscv/include/uapi/asm/kvm.h | 1 +
->  arch/riscv/kvm/vcpu_onereg.c      | 2 ++
->  2 files changed, 3 insertions(+)
->
-> diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uapi/=
-asm/kvm.h
-> index 57db3fea679f..0366389a0bae 100644
-> --- a/arch/riscv/include/uapi/asm/kvm.h
-> +++ b/arch/riscv/include/uapi/asm/kvm.h
-> @@ -172,6 +172,7 @@ enum KVM_RISCV_ISA_EXT_ID {
->         KVM_RISCV_ISA_EXT_ZCB,
->         KVM_RISCV_ISA_EXT_ZCD,
->         KVM_RISCV_ISA_EXT_ZCF,
-> +       KVM_RISCV_ISA_EXT_ZCMOP,
->         KVM_RISCV_ISA_EXT_MAX,
->  };
->
-> diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.c
-> index a2747a6dbdb6..77a0d337faeb 100644
-> --- a/arch/riscv/kvm/vcpu_onereg.c
-> +++ b/arch/riscv/kvm/vcpu_onereg.c
-> @@ -52,6 +52,7 @@ static const unsigned long kvm_isa_ext_arr[] =3D {
->         KVM_ISA_EXT_ARR(ZCB),
->         KVM_ISA_EXT_ARR(ZCD),
->         KVM_ISA_EXT_ARR(ZCF),
-> +       KVM_ISA_EXT_ARR(ZCMOP),
->         KVM_ISA_EXT_ARR(ZFA),
->         KVM_ISA_EXT_ARR(ZFH),
->         KVM_ISA_EXT_ARR(ZFHMIN),
-> @@ -136,6 +137,7 @@ static bool kvm_riscv_vcpu_isa_disable_allowed(unsign=
-ed long ext)
->         case KVM_RISCV_ISA_EXT_ZCB:
->         case KVM_RISCV_ISA_EXT_ZCD:
->         case KVM_RISCV_ISA_EXT_ZCF:
-> +       case KVM_RISCV_ISA_EXT_ZCMOP:
->         case KVM_RISCV_ISA_EXT_ZFA:
->         case KVM_RISCV_ISA_EXT_ZFH:
->         case KVM_RISCV_ISA_EXT_ZFHMIN:
-> --
-> 2.43.0
->
+Link to v3: https://lore.kernel.org/lkml/TYCP286MB25357A4599E935F26A8AAB24C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM/T/
 
