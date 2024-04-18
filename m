@@ -1,140 +1,177 @@
-Return-Path: <linux-kernel+bounces-149787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C12E18A95DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:21:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F6478A95E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:23:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5020FB21AC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:21:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 241B628474F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:23:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A75A415AD87;
-	Thu, 18 Apr 2024 09:21:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E68D915AD8F;
+	Thu, 18 Apr 2024 09:23:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OJ9tXmlW"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="OCOwZLhx";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="enHVTZU8"
+Received: from fout6-smtp.messagingengine.com (fout6-smtp.messagingengine.com [103.168.172.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D4EE158209;
-	Thu, 18 Apr 2024 09:21:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40AAE158868
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713432082; cv=none; b=AcX5ULcC/R+RqWXCn8f6vZbll2JYSTIZL4d+VBiotV5TLENX8o1sZyd1ij/kd0AukUC6hMMkfCIkBog8xWeTiGNAmWiz93ycccue5ezV5WfQK96vlYM0ddr4E3sr4kRxEHTAwawLeO9UMOz5ClGrH8dXbGZncMfZx5qRGnkHoLY=
+	t=1713432190; cv=none; b=R3JMbU5rXUpwul7IzcMAoCMjyNSl4IWzgIHd6z3cK26ikCVfGxGd5HR8wlufvBNklUxlJ8aMxAUGXLS8gA4oU/r4C08TIaLihoXbAkzNTTzakgYQS28y1LcggSY2DqIljX4Rcv1Kf4KsSKzMW2C1zP7n4hkXBQ3OUMRg8r5keaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713432082; c=relaxed/simple;
-	bh=IlWNze6ctzdm9JLeCil+Nc1IfJcqrJwNQIEEI1aqgFU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UiCtFHKPeccLfXGwe3Yq9LblLdVEpNds3C4GHcCx0jRbDFbd/jcBPrF2vXlcWesGQqkAPIlWmlR2fKXmvQlgGf1TXnsN9vmtInXmF7p+aJ1oWVP3926Yb9RAQOCevaZ8eYwGMwwdVuNyF2RfCKQ/yYP4cC+o2gfYcrq6uxJYQNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OJ9tXmlW; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713432081; x=1744968081;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=IlWNze6ctzdm9JLeCil+Nc1IfJcqrJwNQIEEI1aqgFU=;
-  b=OJ9tXmlWEwFoNJM+Gm7V5ORsONLFbvOiH9g1163aQueM4i/UCxFXrRvD
-   vAmtTev2dQe/QfqtAy9iH1zyzk0bPcmAubeDfasI7hXJJ9vCfU0WuUS1f
-   OcdNwClBvrHcGMTMcLAhdCN510jBwwuDoSmNNB50Es0ZNR59cUvbErHjE
-   BwRQCdGK4f9+NfiJeWE4dbCScTRBzSOJuQ3pBC3h8j7x41QrnumbV33z0
-   GmPCMRG9wRVW3ujemX78q5W+m4FKsDcEPiY+FUJ2KTH+n60QJjV71yMIX
-   GiJzc8YoFI0CqdcnEY1Sl6VN3VZnat/3wQVylvKq9fw9Sna415UHA6BUV
-   Q==;
-X-CSE-ConnectionGUID: 4CLwjnFYR6CdQWit9KbqTg==
-X-CSE-MsgGUID: cbu0OmHER/6sDQzIuq67Dg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="26426464"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="26426464"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 02:21:20 -0700
-X-CSE-ConnectionGUID: a+X8M6xzRQSUoBAkrngLEQ==
-X-CSE-MsgGUID: nmZY6+VJRy26bH1rmSBdaA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="27495996"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 02:21:17 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rxNxD-00000000HVC-1qwy;
-	Thu, 18 Apr 2024 12:21:15 +0300
-Date: Thu, 18 Apr 2024 12:21:15 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [rfc, PATCH v1 1/1] gpiolib: Get rid of never false
- gpio_is_valid() calls
-Message-ID: <ZiDmC1uF0S73SI9f@smile.fi.intel.com>
-References: <20240221213208.17914-1-andriy.shevchenko@linux.intel.com>
- <CAMRc=Mfh-ojboNUELXfszKUbZRfeZn9vsN-HMTdMQv6my6ZrdQ@mail.gmail.com>
- <Zh-oku-XzpcH_8FH@smile.fi.intel.com>
- <CAMRc=MfO_7smzcG2+FM2EHNb1FbqS7PbfJuzBH6gL6KXT2fVUQ@mail.gmail.com>
+	s=arc-20240116; t=1713432190; c=relaxed/simple;
+	bh=Za0pdOUubJ3GArouCFnXQf6FdPJ5xrIZCvnwSJ+M+3Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KLjkK8DO1Y8jfs7B5+4Ie65qoub6OvhO5i4KYQpDCVMC92iDO6vl9HjXA+daK8bxoDudoc8vKa9+7dRkYe66yVwGwWYvyNPiKp/UzEaCJ0aeGYxruHprWzXE8jvZXQAJ8+IIHF4/i/H2CT+7mumITTN5poswyPk43uvc9fr+/4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=OCOwZLhx; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=enHVTZU8; arc=none smtp.client-ip=103.168.172.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 4E0F313800CE;
+	Thu, 18 Apr 2024 05:23:07 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Thu, 18 Apr 2024 05:23:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
+	:from:in-reply-to:message-id:mime-version:reply-to:subject
+	:subject:to:to; s=fm3; t=1713432187; x=1713518587; bh=b5uV8UhRzV
+	ktf5c7Ro3Gio5czUP975e887v2Xxyituo=; b=OCOwZLhx5Dx1cIqlG4Dj32G1Um
+	Smk0SucGCk78DBvddZXcMV2Fm4Mv/stnFwj2v6PWjGm1Nk6RrmF9hCElgcTMmErj
+	uQH937teoa9i3Lgh04n810b/6dlXX0LtznKVMaHxZebdVKKLG1CWkE/O/Bks5YyH
+	1dTAFGLBBq+d1XhoYFc8kbPKFNeIO6QTFAJc+qZoNm/bnNMsudpZKfD/804yIAMy
+	MSuZFh7TfOj9owsWc2V3XZqoCTRHC30kbaR1QYSOLmA4kQQUdEat7yu7Gcve53Kj
+	CqlQyvTt4ZCaCa29F7XeC3yR1TkYJD+I0vTqE5oQIMDdkOKJIpmAJk3F06sw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1713432187; x=1713518587; bh=b5uV8UhRzVktf5c7Ro3Gio5czUP9
+	75e887v2Xxyituo=; b=enHVTZU8c75Uf5DkONAJl1L9MBH1u+xVi3oRL24IUivU
+	uYU0EHPcBBGriOxzy2PdoTH48iNle8M7zPv7oberGjljNvyW9onmHGpEypxL3V6D
+	dB3NkWzearEPEyOEyO4SS+EAykIJe6X9Lh5Xo24HBoRgSCultXEdpKZYinLgZ5d5
+	vbWPx08Wlip9mVdtCGM7fL7a21wDWnh8JRwxbUi56MqceBmAg6k3NrRokuAuG49C
+	1VcG9z43TBeGU9USY5ybyCyeTYaJt8nJPHbLbiCfzX6J1zz+oPpLajGriqS1Y6Ar
+	jHrlyKzeAgnCgrQb5HDXhTJtqHsx+vs30wmv3tifYw==
+X-ME-Sender: <xms:e-YgZuabLTlhFX7e9_S8EdqfudrR6YmANelvLt5y1Vxu6S3oKNY6wQ>
+    <xme:e-YgZhYhesaiNMZQuvaTn5Kex6fWXBuY4JKfnewsY2441oXsOD4dpmRC6pvqss082
+    rV-lh5Rfo9m_VF8cJQ>
+X-ME-Received: <xmr:e-YgZo8yYsf6PU6fL_RZWLIAoCoIrkndaSq1gJAFxExJ1NWsCxrHWSg6P5lNJMOUqID79GlXH8fXUv3FgUcIPLFhpSyJoguvi8LVB7DLC8wW8w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudektddgudehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
+    hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeffvdeuleffve
+    ekudfhteejudffgefhtedtgfeutdfgvdfgueefudehveehveekkeenucevlhhushhtvghr
+    ufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrg
+    hkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:e-YgZgpt8wA9jDIzJrY8_cnpFkalYu5wekAusk90aLEMMUzroUEguw>
+    <xmx:e-YgZpotGIkYE4d7Ge335sRemqEdrg8D7564P7Bsxdi9FZsrquaqbw>
+    <xmx:e-YgZuRiIi82SFG8tp5pJ7MxP_SnLmx7VO--hsOE3YvtBdQS9lB3ZA>
+    <xmx:e-YgZpqESkvWz5b7XKHvzHlhM8Ozc14iVIDzpOIXAusaJJTr84KJPA>
+    <xmx:e-YgZg2UfapCPgrrccKFcue7vQUuWQLgoTWZ6MQns28MZlUwQps_snqT>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 18 Apr 2024 05:23:06 -0400 (EDT)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: linux1394-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 00/13] firewire: add tracepoints events for asynchronous communication
+Date: Thu, 18 Apr 2024 18:22:50 +0900
+Message-ID: <20240418092303.19725-1-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MfO_7smzcG2+FM2EHNb1FbqS7PbfJuzBH6gL6KXT2fVUQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Apr 17, 2024 at 10:47:23PM +0200, Bartosz Golaszewski wrote:
-> On Wed, Apr 17, 2024 at 12:46 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Tue, Feb 27, 2024 at 02:06:05PM +0100, Bartosz Golaszewski wrote:
-> > > On Wed, Feb 21, 2024 at 10:32 PM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > >
-> > > > In the cases when gpio_is_valid() is called with unsigned parameter
-> > > > the result is always true in the GPIO library code, hence the check
-> > > > for false won't ever be true. Get rid of such calls.
-> > > >
-> > > > While at it, move GPIO device base to be unsigned to clearly show
-> > > > it won't ever be negative. This requires a new definition for the
-> > > > maximum GPIO number in the system.
-> >
-> > > > ---
-> > >
-> > > It looks like a risky change that late in the release cycle. I want to
-> > > avoid some CI problems at rc6. Please resend it once v6.9-rc1 is
-> > > tagged.
-> >
-> > Not sure why resend, but I missed that somehow. Can you consider applying it?
-> 
-> Applied, thanks!
+Hi,
 
-Thank you!
+In a view of IEEE 1394 bus, the main function of kernel core is to
+provide transaction service to the bus. It is helpful to have some
+mechanisms to trace any action of the service.
 
-I have grepped the kernel sources for these use cases:
+This series of changes adds some tracepoints events for the purpose.
+It adds the following tracepoints events via firewire subsystem:
 
-  $ git grep -n -C6 '= devm_gpio_request([^A-Z]'
-  $ git grep -n -C6 '= gpio_request([^A-Z]'
+* For outbound transactions (e.g. initiated by user process)
+    * async_request_outbound_initiate
+    * async_request_outbound_complete
+    * async_response_inbound
+* For inbound transactions (e.g. initiated by the other nodes in the bus)
+    * async_request_inbound
+    * async_response_outbound_initiate
+    * async_response_outbound_complete
 
-to see how many users might not have checked the validness of the GPIO before
-passing to gpio_request(). All what I found is something like ~10 drivers.
+When probing these tracepoints events, the content of 'struct fw_packet'
+passed between the core function and 1394 OHCI driver is recorded with
+the fields of header and packet data. For example of the outbound
+transaction:
 
-They are basically in the risk category of my change.
+async_request_outbound_initiate: \
+    transaction=0xffffb7e382373718 scode=2 generation=6 dst_id=0xffc0 \
+    tlabel=59 retry=1 tcode=1 priority=0 src_id=0xffc1 \
+    offset=0xecc000000000 \
+    data={0x6000000,0x1000000,0x40000100,0x3000000,0x1000000,0x0}
+async_request_outbound_complete: \
+    transaction=0xffffb7e382373718 scode=2 generation=6 ack=2 \
+    timestamp=0x2296
+async_response_inbound: \
+    transaction=0xffffb7e382373718 scode=2 timestamp=0x2297 dst_id=0xffc1 \
+    tlabel=59 retry=1 tcode=2 priority=0 src_id=0xffc0 rcode=0 data={}
 
-Another risky part that touches everybody is the base finding algo.
-I spent quite a time before sending this patch and looked at it again
-to see if there is any potential flaw, but found nothing. Hopefully
-we will see no reports or many and sooner than later while it sits
-in Linux Next.
+To provide the parsed fields of header, the series adds some helper
+incline functions for this purpose, then refactors the existent code in
+both core and 1394 OHCI driver with sufficient tests.
 
-TL;DR: the above is a note to be in archives just in case.
+Takashi Sakamoto (13):
+  firewire: core: add common inline functions to serialize/deserialize
+    asynchronous packet header
+  firewire: core: replace local macros with common inline functions for
+    asynchronous packet header
+  firewire: ohci: replace local macros with common inline functions for
+    asynchronous packet header
+  firewire: ohci: replace hard-coded values with inline functions for
+    asynchronous packet header
+  firewire: ohci: replace hard-coded values with common macros
+  firewire: core: obsolete tcode check macros with inline functions
+  firewire: core: add common macro to serialize/deserialize isochronous
+    packet header
+  firewire: core: replace local macros with common inline functions for
+    isochronous packet header
+  firewire: core: add support for Linux kernel tracepoints
+  firewire: core: add tracepoints events for asynchronous outbound
+    request
+  firewire: core: add tracepoints event for asynchronous inbound
+    response
+  firewire: core: add tracepoint event for asynchronous inbound request
+  firewire: core: add tracepoints events for asynchronous outbound
+    response
+
+ drivers/firewire/.kunitconfig                |   1 +
+ drivers/firewire/Kconfig                     |  16 +
+ drivers/firewire/Makefile                    |   8 +-
+ drivers/firewire/core-transaction.c          | 239 ++++----
+ drivers/firewire/core.h                      |  21 +-
+ drivers/firewire/ohci.c                      |  78 +--
+ drivers/firewire/packet-header-definitions.h | 234 ++++++++
+ drivers/firewire/packet-serdes-test.c        | 582 +++++++++++++++++++
+ drivers/firewire/trace.c                     |   5 +
+ drivers/firewire/trace.h                     | 265 +++++++++
+ 10 files changed, 1280 insertions(+), 169 deletions(-)
+ create mode 100644 drivers/firewire/packet-header-definitions.h
+ create mode 100644 drivers/firewire/packet-serdes-test.c
+ create mode 100644 drivers/firewire/trace.c
+ create mode 100644 drivers/firewire/trace.h
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.43.0
 
 
