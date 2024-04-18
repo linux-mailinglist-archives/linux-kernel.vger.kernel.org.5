@@ -1,199 +1,180 @@
-Return-Path: <linux-kernel+bounces-150361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B81C8A9DEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:04:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC8E38A9DF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:06:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 833E11F22A7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:04:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A88A1286C03
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:06:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2299216ABEE;
-	Thu, 18 Apr 2024 15:03:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8006116C698;
+	Thu, 18 Apr 2024 15:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="EujSt0qI"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C9rIHRet"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4DB11649DE
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:03:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A8AE16C685;
+	Thu, 18 Apr 2024 15:06:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713452637; cv=none; b=M0myg/0xDGo5QLRJwOAJfSM51LpH+EZ1sZeU6Tq7ojX0BTxxTLgeZJADfyCDsnDsHWV5MuGdW5So8GHUo/0LRbEaQ7p72wCV3lWFVzfsJs1ofAMmptcAVCiDWvPK0bjEh/P3xS7ckEwnIIwJ2K+RyH7OTw3wt/jTCO76EQUrPjA=
+	t=1713452764; cv=none; b=Ui6vkDQnkTXM1eHQdLEJxg2mH40XxGo8w0qhu2374kOMPGul1FXRxEp0Yg0IoqIvlQmot2lj1diq5SPFC1+iHmgGcIDqNzhY1cpGajoE9r3gUpX3fe3DtoGefo4CNULCz28QECwlwFmhhWM8suzL10IeyawrbNo9hV+nj3q5E+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713452637; c=relaxed/simple;
-	bh=xGfPRY1qTmJ7gvR6rws0haqyz6KMxDGzBv7XztbhHGg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CN4mZE98pcrZC89QpoVBlm2m/MZHscAfT7FEKpDIexvaE2U+64Wft6PbQgUVETUAFaEfPbX3IhS0YbrIyKOkJRY7FT6iPfAb9wqfh69Wuf/puNEshu6JQ2MXNR+Udj+T/JEYbFq6QfBbLk5i6tJOeoX3Eq4Nu70j54Q9t0accfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=EujSt0qI; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-418dde387a3so7543965e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:03:51 -0700 (PDT)
+	s=arc-20240116; t=1713452764; c=relaxed/simple;
+	bh=xz1KryzBkXPpCkiszO0fSTagmb1tt/fdTNZWOu6yhsA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=m0SZiiFeJUF4Ew7hJXAcGr2aRbesTNfGt+DJgAn65xypls6IATXhuV7X8ialIBgLJV5EjVBDOPoRnrlrQJT88TQ2tKskIIhNT0XP6dxaujzrjjbDygOkl2voCHY2xaCc1CyHiGU3CqXxcfok7wPXEUoKwPhGWcuIqdLuJ5quFxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C9rIHRet; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-34388753650so483273f8f.3;
+        Thu, 18 Apr 2024 08:06:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1713452630; x=1714057430; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/iG0C4gcrx0ejEYPefXn/oJdDvpEFVh0exY1ffll4kg=;
-        b=EujSt0qISzEfrsI2PqPfiQX1mzI28CU+OXIHz/+xfnagDqmkD87bFDo5bR1veKButk
-         IyYji2SgCkCgclxd17bXFh+ScV/ifdQl0P6UrOxvMWcCWKgIPLYg2aT0g+C7SjrR3JHq
-         v10SWyQiLz8z7SJff24hbc4bwLyfKS+7VGBjtAkK69nYpvS5dvHMRcTd7O0I8dgXk6KA
-         sjsf60YwcuTx5mqkYeWhv/NQ6IzQconZrV0wa6MUB1mCvvMqaAYAFle689MopSVnxKGT
-         jbnUVzR1row0EbXlFyVcVFxwOINg+jcJLA4ctM6Wgq+C/HzI6SnNsO3jACsH+Jt38SJe
-         TGaQ==
+        d=gmail.com; s=20230601; t=1713452761; x=1714057561; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2e/V3U1UC9ugP6i7TU7zPmhluDvsy6sYXgqrEvEBwwY=;
+        b=C9rIHRetxmzPQ3wkgHnWBQ/7ACNbIePWHIuyWPXrmziIMraePz5CFlRoyjogkH7XT3
+         GhcaPkcuc76UJ4THGpz8ZjFqR1Ghc4einfCK/wdx1i5rOmjGVSz1ClUO8HVPa7lhDAwZ
+         XVyjdQJ5Tg+JjbmNaKifCbXw3oehMgiGzaW/AwN/yG54Eng/GraFKl8hNhdli6z54Duf
+         TM7xs/Y7WO6D1fzcgBK5EJp8AaW1l49pZsee3ck0KLlW6Lrvje9ukscGZaHnh++0A3Rr
+         6QaAuP2Pik1fwyba0NF3JcXMLQlCj3GKuxfOZUnhBYaNo51hMH2i9hbRwwdh7tXPapjD
+         DO7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713452630; x=1714057430;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/iG0C4gcrx0ejEYPefXn/oJdDvpEFVh0exY1ffll4kg=;
-        b=SqNP970K9n6EqRIXKU3CRWJnA0JMpBdJ9gnN59iMTKe7CN1EpVoLPvSYWpgwSTHTH2
-         5ez7FbhHDTfIbl8aEKffyugH7tkXJKrKOkhFCsmkDi1trKyBubS12moXB5msArRBZ8km
-         VvSCiVmV4luQ7LpenF/TQB8X0UAgZqE8eheyXSwhWut/PH1rlr0zDaZUMaUMf4n73BGq
-         NiGHuVRdPGnE1C1wr5HZHaczUgq8LfLGQR/Qiy50QeVOne3szY9pPKTbfbY/B7p+uqql
-         FarSLaJVXzeaXGzEZLp31B/cAoA6T4ZVT4ys4rX7NQaUkufdpHOaG8xtFe5C+7j/KNcJ
-         RYOw==
-X-Forwarded-Encrypted: i=1; AJvYcCXTP/cBqfLkBw68p5vsW24i3qPZ7ziOTl3CNKvnLPQE/JjzK850JI7VnNWaq9Zw25QYQ2V3vg8nfjYu3yRq8J2DJzvArPv04tFhy1to
-X-Gm-Message-State: AOJu0YwPvVWWDUY/hz8j0RxBSrJbs/RQNbFPQOZf6sbGVXzHwFSj/eoZ
-	WFD5gjXaL5LYXmf2Es9zg0syfig9KHmaGYD/HBzB2bEVEn9XDTwckiaRhX27kHo=
-X-Google-Smtp-Source: AGHT+IE07HzTBUUk6cHsSABxdSCMqvtNsGxapy+8fEBxDBZ8dapr7sEIHtnyquqaF8VQ77kvjBTG5A==
-X-Received: by 2002:a05:600c:1c03:b0:418:2e93:163e with SMTP id j3-20020a05600c1c0300b004182e93163emr2678761wms.31.1713452630240;
-        Thu, 18 Apr 2024 08:03:50 -0700 (PDT)
-Received: from pathway.suse.cz ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id h4-20020a5d5044000000b00343daeddcb2sm2031301wrt.45.2024.04.18.08.03.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 08:03:49 -0700 (PDT)
-Date: Thu, 18 Apr 2024 17:03:48 +0200
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH printk v4 06/27] printk: nbcon: Add callbacks to
- synchronize with driver
-Message-ID: <ZiE2VO9Q03TvHJ_t@pathway.suse.cz>
-References: <20240402221129.2613843-1-john.ogness@linutronix.de>
- <20240402221129.2613843-7-john.ogness@linutronix.de>
- <ZhUIatzxietD4F-m@localhost.localdomain>
- <87y19djqr0.fsf@jogness.linutronix.de>
- <Zh_IrB4MyHwU8OJE@pathway.suse.cz>
- <87bk68niod.fsf@jogness.linutronix.de>
- <ZiD3FNBZh_iMOVWY@pathway.suse.cz>
- <87h6fyswgn.fsf@jogness.linutronix.de>
+        d=1e100.net; s=20230601; t=1713452761; x=1714057561;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2e/V3U1UC9ugP6i7TU7zPmhluDvsy6sYXgqrEvEBwwY=;
+        b=Kj9DBCxnV+0Cn4H9EOA5fv4yj63x9M7NEeT5H64B0ITiDutS0zYFDU8pzKK74fT0KE
+         UAqifrNW+/GaCDExHfkv0yAvmJpeWkq6bSuJUkR1nPn//AywMJfUi9hN55twVbQLjFm3
+         73FLFtr70F9UOU/Oq5iGX+U3iqkhsJwMk2b6Q7R0j6mCfnCNx7TxWvcaztcOXHW3HtDO
+         UkYz39Qr+J55hQOTgRYJ3kyJ3HSYoDLEUIgSZBSrmhpgbombNzFPiWL5tlpnthQWL378
+         f6VWOgRo/je9Qf66Y1kC4UU2Fwo0rTadiyQkZ//vNinbQnkoLtQqNtl0uIUO3mJ+msex
+         /4vQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXi8Dn2N1e098oGm7evElCvhc1AeEP8U0B/kMDG3uCUG+zeknSTdGxfRDXX+RSNDbQ5TNOdgGlXELJJSsAWF8n4xu8hOksu9i8/8/bQynyrhCGF+4jY1o5ZXIMV6qK9/wpxSUIp6EawYkbLM5nEZboqR50+Sh0iNV42l3bCCbVCsvYm5QRk
+X-Gm-Message-State: AOJu0Yw+niYiVhHjFVVl8Yc+iDHC29pD1XKwwFOEC1y1twCgGtuadT49
+	3DxZi8uTZ4zH44CTGyXbOUeVN+D4SGK8QiXK89abKEltl7YxQJrd
+X-Google-Smtp-Source: AGHT+IH+5mlTQpMMxVoyFt8D37CbaekJa0gy7uCGu59GilYj7x1ah3z0l5u9qwAxEJYwtfdM36z4Dg==
+X-Received: by 2002:a05:6000:25b:b0:347:9bec:9ba3 with SMTP id m27-20020a056000025b00b003479bec9ba3mr1954606wrz.66.1713452761184;
+        Thu, 18 Apr 2024 08:06:01 -0700 (PDT)
+Received: from debian ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id d4-20020a5d6dc4000000b00341ce80ea66sm2040456wrz.82.2024.04.18.08.05.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 08:06:00 -0700 (PDT)
+Message-ID: <f4b10cc8-fdd9-4dd6-92c7-60acf66702e0@gmail.com>
+Date: Thu, 18 Apr 2024 17:05:42 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h6fyswgn.fsf@jogness.linutronix.de>
+Subject: Re: [PATCH net-next v7 2/3] net: gro: move L3 flush checks to
+ tcp_gro_receive and udp_gro_receive_segment
+To: Paolo Abeni <pabeni@redhat.com>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, dsahern@kernel.org,
+ willemdebruijn.kernel@gmail.com, shuah@kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240412155533.115507-1-richardbgobert@gmail.com>
+ <20240412155533.115507-3-richardbgobert@gmail.com>
+ <a36bf0b117f7786bbf028494d68185486025777d.camel@redhat.com>
+ <469c26d112600bce3a7fe77131c62eae4ecae5d1.camel@redhat.com>
+From: Richard Gobert <richardbgobert@gmail.com>
+In-Reply-To: <469c26d112600bce3a7fe77131c62eae4ecae5d1.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu 2024-04-18 14:16:16, John Ogness wrote:
-> On 2024-04-18, Petr Mladek <pmladek@suse.com> wrote:
-> > I am not sure how it is done in other parts of kernel code where
-> > RT needed to introduce some tricks. But I think that we should
-> > really start mentioning RT behavior in the commit messages and
-> > and comments where the RT mode makes huge changes.
+
+
+Paolo Abeni wrote:
+> On Tue, 2024-04-16 at 11:21 +0200, Paolo Abeni wrote:
+>> On Fri, 2024-04-12 at 17:55 +0200, Richard Gobert wrote:
+>>> {inet,ipv6}_gro_receive functions perform flush checks (ttl, flags,
+>>> iph->id, ...) against all packets in a loop. These flush checks are used
+>>> currently in all tcp flows and in some UDP flows in GRO.
+>>>
+>>> These checks need to be done only once and only against the found p skb,
+>>> since they only affect flush and not same_flow.
+>>>
+>>> Leveraging the previous commit in the series, in which correct network
+>>> header offsets are saved for both outer and inner network headers -
+>>> allowing these checks to be done only once, in tcp_gro_receive and
+>>> udp_gro_receive_segment. As a result, NAPI_GRO_CB(p)->flush is not used at
+>>> all. In addition, flush_id checks are more declarative and contained in
+>>> inet_gro_flush, thus removing the need for flush_id in napi_gro_cb.
+>>>
+>>> This results in less parsing code for UDP flows and non-loop flush tests
+>>> for TCP flows.
+>>>
+>>> To make sure results are not within noise range - I've made netfilter drop
+>>> all TCP packets, and measured CPU performance in GRO (in this case GRO is
+>>> responsible for about 50% of the CPU utilization).
+>>>
+>>> L3 flush/flush_id checks are not relevant to UDP connections where
+>>> skb_gro_receive_list is called. The only code change relevant to this flow
+>>> is inet_gro_receive. The rest of the code parsing this flow stays the
+>>> same.
+>>>
+>>> All concurrent connections tested are with the same ip srcaddr and
+>>> dstaddr.
+>>>
+>>> perf top while replaying 64 concurrent IP/UDP connections (UDP fwd flow):
+>>> net-next:
+>>>         3.03%  [kernel]  [k] inet_gro_receive
+>>>
+>>> patch applied:
+>>>         2.78%  [kernel]  [k] inet_gro_receive
+>>
+>> Why there are no figures for
+>> udp_gro_receive_segment()/gro_network_flush() here?
+>>
+>> Also you should be able to observer a very high amount of CPU usage by
+>> GRO even with TCP with very high speed links, keeping the BH/GRO on a
+>> CPU and the user-space/data copy on a different one (or using rx zero
+>> copy).
 > 
-> Yes, our motivation is RT. But these semantics are not RT-specific. They
-> apply to the general kernel locking model.
-
-Yes, but RT is a nice example where it is clear what want to achieve.
-IMHO, a clear example is always better then a scientific formulation
-where every word might be important. Especially when different people
-might understand some words different ways.
-
-
-> For example, even for a !RT system, it is semantically incorrect to
-> take a spin_lock while holding a raw_spin_lock.
-
-Really? I am not aware of it. I know that lockdep complains even
-in no-RT configuration. But I have expected that it only helps
-to catch potential problems when the same code is used with
-RT enabled.
-
-Is there any difference between spin_lock() and raw_spin_lock()
-when RT is disabled. I do not see any. This is from
-include/linux/spinlock.h:
-
-	/* Non PREEMPT_RT kernel, map to raw spinlocks: */
-	#ifndef CONFIG_PREEMPT_RT
-	[...]
-	static __always_inline void spin_lock(spinlock_t *lock)
-	{
-		raw_spin_lock(&lock->rlock);
-	}
-
-Would raw_spinlock() API exist without CONFIG_PREEMPT_RT?
-
-Maybe, you do not understand what I suggest. Let's talk about
-particular comments in the code.
-
-
-> In the full PREEMPT_RT series I have tried to be careful about only
-> mentioning PREEMPT_RT when it is really PREEMPT_RT-specific. For example
-> [0][1][2].
+> To be more explicit: I think at least the above figures are required, 
+> and I still fear the real gain in that case would range from zero to
+> negative. 
 > 
-> [0] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/commit/?h=linux-6.9.y-rt-rebase&id=1564af55a92c32fe215af35cf55cb9359c5fff30
+
+I wrote about it in the commit message in short, sorry if I wasn't clear
+enough.
+
+gro_network_flush is compiled in-line to both udp_gro_receive_segment and
+tcp_gro_receive. udp_gro_receive_segment is compiled in-line to
+udp_gro_receive.
+
+The UDP numbers I posted are not relevant anymore after Willem and
+Alexander's thread, after which we understood flush and flush_id should be
+calculated for all UDP flows.
+
+I can post new numbers for the UDP fwd path after implementing the correct
+change. As for TCP - the numbers I posted stay the same.
+
+You should note there is an increase in CPU utilization in tcp_gro_receive
+because of the inline compilation of gro_network_flush. The numbers make
+sense and show performance enhancement in the case I showed when both
+inet_gro_receive and tcp_gro_receive are accounted for.
+
+> If you can't do the TCP part of the testing, please provide at least
+> the figures for a single UDP flow, that should give more indication WRT
+> the result we can expect with TCP.
 > 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/commit/?h=linux-6.9.y-rt-rebase&id=033b416ad25b17dc60d5f71c1a0b33a5fbc17639
+> Note that GRO is used mainly by TCP and TCP packets with different
+> src/dst port will land into different GRO hash buckets, having
+> different RX hash.
 > 
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/commit/?h=linux-6.9.y-rt-rebase&id=7929ba9e5c110148a1fcd8bd93d6a4eff37aa265
+> That will happen even for UDP, at least for some (most?) nics include
+> the UDP ports in the RX hash.
 > 
-> > The race could NOT happen in:
-> >
-> >    + NBCON_PRIO_PANIC context because it does not schedule
+> Thanks,
 > 
-> Yes.
+> Paolo
 > 
-> >    + NBCON_PRIO_EMERGENCY context because we explicitly disable
-> >      preemption there
-> 
-> Yes.
-> 
-> >    + NBCON_NORMAL_PRIO context when we ALWAYS do nbcon_try_acquire()
-> >      under con->device() lock. Here the con->device_lock() serializes
-> >      nbcon_try_acquire() calls even between running tasks.
-> 
-> The nbcon_legacy_emit_next_record() printing as NBCON_NORMAL_PRIO is a
-> special situation where write_atomic() is used. It is safe because it
-> disables hard interrupts and is never called from NMI context.
-> 
-> nbcon_atomic_flush_pending() as NBCON_NORMAL_PRIO is safe in !NMI
-> because it also disables hard interrupts. However,
-> nbcon_atomic_flush_pending() could be called in NMI with
-> NBCON_NORMAL_PRIO. I need to think about this case.
-
-It is safe. The race scenario requires _double_ scheduling (A->B->A):
-
- 1. [CPU 0]: process A acquires the context and is scheduled (CPU 0)
-
- 2. [CPU 1] The nbcon context is taken over and released in emergency.
-
- 3. [CPU 0] process B acquires the context and is scheduled
-
- 4. [CPU 0] process A thinks that it still owns the context
-	    and continue when it ended.
-
-
-This could not happen with the current code when:
-
-   + nbcon_try_acquire() is serialized by con->device_lock()
-     because process B would get blocked on this lock.
-
-   + nbcon_try_acquire() is called in atomic context
-     because the context is always released before scheduling.
-
-
-I would say that this is far from obvious and we really need
-to document this somehow. I would mention these details above
-nbcon_context_try_acquire().
-
-Best Regards,
-Petr
 
