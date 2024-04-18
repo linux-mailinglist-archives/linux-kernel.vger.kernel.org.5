@@ -1,180 +1,180 @@
-Return-Path: <linux-kernel+bounces-150363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC8E38A9DF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:06:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E8448A9DF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:06:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A88A1286C03
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:06:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA6B9286C6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:06:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8006116C698;
-	Thu, 18 Apr 2024 15:06:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D824316C437;
+	Thu, 18 Apr 2024 15:06:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C9rIHRet"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mE03bmgw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A8AE16C685;
-	Thu, 18 Apr 2024 15:06:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2425916ABEA
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:06:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713452764; cv=none; b=Ui6vkDQnkTXM1eHQdLEJxg2mH40XxGo8w0qhu2374kOMPGul1FXRxEp0Yg0IoqIvlQmot2lj1diq5SPFC1+iHmgGcIDqNzhY1cpGajoE9r3gUpX3fe3DtoGefo4CNULCz28QECwlwFmhhWM8suzL10IeyawrbNo9hV+nj3q5E+I=
+	t=1713452760; cv=none; b=FNZq7+1veIbuftos+jSK1ePLghXUUgc4F5hpFUy3pvLJ4R78geL8hRnmQPLvU8sgt8JkjRpscXFnH9s0S5FEwACAlzDIjY8MOtMidycaQlBsdaqiZX/LxjfE/k2DP9uoYmqhVFt0izobi7Kph+QkYL5inKrZbyYbzX9VYF08byc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713452764; c=relaxed/simple;
-	bh=xz1KryzBkXPpCkiszO0fSTagmb1tt/fdTNZWOu6yhsA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=m0SZiiFeJUF4Ew7hJXAcGr2aRbesTNfGt+DJgAn65xypls6IATXhuV7X8ialIBgLJV5EjVBDOPoRnrlrQJT88TQ2tKskIIhNT0XP6dxaujzrjjbDygOkl2voCHY2xaCc1CyHiGU3CqXxcfok7wPXEUoKwPhGWcuIqdLuJ5quFxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C9rIHRet; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-34388753650so483273f8f.3;
-        Thu, 18 Apr 2024 08:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713452761; x=1714057561; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2e/V3U1UC9ugP6i7TU7zPmhluDvsy6sYXgqrEvEBwwY=;
-        b=C9rIHRetxmzPQ3wkgHnWBQ/7ACNbIePWHIuyWPXrmziIMraePz5CFlRoyjogkH7XT3
-         GhcaPkcuc76UJ4THGpz8ZjFqR1Ghc4einfCK/wdx1i5rOmjGVSz1ClUO8HVPa7lhDAwZ
-         XVyjdQJ5Tg+JjbmNaKifCbXw3oehMgiGzaW/AwN/yG54Eng/GraFKl8hNhdli6z54Duf
-         TM7xs/Y7WO6D1fzcgBK5EJp8AaW1l49pZsee3ck0KLlW6Lrvje9ukscGZaHnh++0A3Rr
-         6QaAuP2Pik1fwyba0NF3JcXMLQlCj3GKuxfOZUnhBYaNo51hMH2i9hbRwwdh7tXPapjD
-         DO7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713452761; x=1714057561;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2e/V3U1UC9ugP6i7TU7zPmhluDvsy6sYXgqrEvEBwwY=;
-        b=Kj9DBCxnV+0Cn4H9EOA5fv4yj63x9M7NEeT5H64B0ITiDutS0zYFDU8pzKK74fT0KE
-         UAqifrNW+/GaCDExHfkv0yAvmJpeWkq6bSuJUkR1nPn//AywMJfUi9hN55twVbQLjFm3
-         73FLFtr70F9UOU/Oq5iGX+U3iqkhsJwMk2b6Q7R0j6mCfnCNx7TxWvcaztcOXHW3HtDO
-         UkYz39Qr+J55hQOTgRYJ3kyJ3HSYoDLEUIgSZBSrmhpgbombNzFPiWL5tlpnthQWL378
-         f6VWOgRo/je9Qf66Y1kC4UU2Fwo0rTadiyQkZ//vNinbQnkoLtQqNtl0uIUO3mJ+msex
-         /4vQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXi8Dn2N1e098oGm7evElCvhc1AeEP8U0B/kMDG3uCUG+zeknSTdGxfRDXX+RSNDbQ5TNOdgGlXELJJSsAWF8n4xu8hOksu9i8/8/bQynyrhCGF+4jY1o5ZXIMV6qK9/wpxSUIp6EawYkbLM5nEZboqR50+Sh0iNV42l3bCCbVCsvYm5QRk
-X-Gm-Message-State: AOJu0Yw+niYiVhHjFVVl8Yc+iDHC29pD1XKwwFOEC1y1twCgGtuadT49
-	3DxZi8uTZ4zH44CTGyXbOUeVN+D4SGK8QiXK89abKEltl7YxQJrd
-X-Google-Smtp-Source: AGHT+IH+5mlTQpMMxVoyFt8D37CbaekJa0gy7uCGu59GilYj7x1ah3z0l5u9qwAxEJYwtfdM36z4Dg==
-X-Received: by 2002:a05:6000:25b:b0:347:9bec:9ba3 with SMTP id m27-20020a056000025b00b003479bec9ba3mr1954606wrz.66.1713452761184;
-        Thu, 18 Apr 2024 08:06:01 -0700 (PDT)
-Received: from debian ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id d4-20020a5d6dc4000000b00341ce80ea66sm2040456wrz.82.2024.04.18.08.05.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 08:06:00 -0700 (PDT)
-Message-ID: <f4b10cc8-fdd9-4dd6-92c7-60acf66702e0@gmail.com>
-Date: Thu, 18 Apr 2024 17:05:42 +0200
+	s=arc-20240116; t=1713452760; c=relaxed/simple;
+	bh=+n6ASrep4rJoEHRc9MR1zx75DlI9VbOIWLCu5kaRRS0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Sa9kczCWjoKU3xS51MBE+vf/f2kYNChVawBd9VrcrXy4Gn/WdWuXzmEfjPkHHq1Rh2kGYCeoeO8BS7MrfdNUMnY1CW5qytwicB4nv/EcYck0qXJ96b9HeYNQ4HvM5LNTh5E4sEGu+5tOsd3q9G6exP4QEczPeiSNeHbB6atiNuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mE03bmgw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70079C113CC;
+	Thu, 18 Apr 2024 15:05:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713452760;
+	bh=+n6ASrep4rJoEHRc9MR1zx75DlI9VbOIWLCu5kaRRS0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mE03bmgwtprNd/G1IRYw0JNGMZbK3KktG2zSr0Nn4pRG4ZnbILOkUnUoQcns8qQPT
+	 3N9p7MVJzYT4xOjy2n+ga/vowLGxcraGOm6bOG06q/oWanx10qOEKQvHgoX6BJ+i2A
+	 GIEk62HwkKAOv9Ae0tp0tPWft2fCbvd7nxeP86/0E0Sy/VlgRWf4YNxSJ70XYRH/jF
+	 gF9czmv0d+oSy70KmhUvl8zpoiE69hqmNl1VbsmMhIYCtN5VYEo1jORmuhiAtELy4T
+	 deYoX24zrtX1JDVCtpkTa7dUrV+nlm/jyMEepxscwfFDIr4cTpYMxgauabdNjZOd8l
+	 hDHSN7mYwDp1Q==
+Date: Thu, 18 Apr 2024 16:05:55 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Xu Lu <luxu.kernel@bytedance.com>
+Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	andy.chiu@sifive.com, guoren@kernel.org,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	lihangjing@bytedance.com, dengliang.1214@bytedance.com,
+	xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
+	Andrew Jones <ajones@ventanamicro.com>
+Subject: Re: [RFC 1/2] riscv: process: Introduce idle thread using Zawrs
+ extension
+Message-ID: <20240418-dove-deferral-2b01100e13ca@spud>
+References: <20240418114942.52770-1-luxu.kernel@bytedance.com>
+ <20240418114942.52770-2-luxu.kernel@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v7 2/3] net: gro: move L3 flush checks to
- tcp_gro_receive and udp_gro_receive_segment
-To: Paolo Abeni <pabeni@redhat.com>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, dsahern@kernel.org,
- willemdebruijn.kernel@gmail.com, shuah@kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240412155533.115507-1-richardbgobert@gmail.com>
- <20240412155533.115507-3-richardbgobert@gmail.com>
- <a36bf0b117f7786bbf028494d68185486025777d.camel@redhat.com>
- <469c26d112600bce3a7fe77131c62eae4ecae5d1.camel@redhat.com>
-From: Richard Gobert <richardbgobert@gmail.com>
-In-Reply-To: <469c26d112600bce3a7fe77131c62eae4ecae5d1.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="W4+rgWywh9lWFt3p"
+Content-Disposition: inline
+In-Reply-To: <20240418114942.52770-2-luxu.kernel@bytedance.com>
+
+
+--W4+rgWywh9lWFt3p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
++ Drew,
+
+On Thu, Apr 18, 2024 at 07:49:41PM +0800, Xu Lu wrote:
+> The Zawrs extension introduces a new instruction WRS.NTO, which will
+> register a reservation set and causes the hart to temporarily stall
+> execution in a low-power state until a store occurs to the reservation
+> set or an interrupt is observed.
+>=20
+> This commit implements new version of idle thread for RISC-V via Zawrs
+> extension.
+>=20
+> Signed-off-by: Xu Lu <luxu.kernel@bytedance.com>
+> Reviewed-by: Hangjing Li <lihangjing@bytedance.com>
+> Reviewed-by: Liang Deng <dengliang.1214@bytedance.com>
+> Reviewed-by: Wen Chai <chaiwen.cc@bytedance.com>
+> ---
+>  arch/riscv/Kconfig                 | 24 +++++++++++++++++
+>  arch/riscv/include/asm/cpuidle.h   | 11 +-------
+>  arch/riscv/include/asm/hwcap.h     |  1 +
+>  arch/riscv/include/asm/processor.h | 17 +++++++++++++
+>  arch/riscv/kernel/cpu.c            |  5 ++++
+>  arch/riscv/kernel/cpufeature.c     |  1 +
+>  arch/riscv/kernel/process.c        | 41 +++++++++++++++++++++++++++++-
+>  7 files changed, 89 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index be09c8836d56..a0d344e9803f 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -19,6 +19,7 @@ config RISCV
+>  	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if PGTABLE_LEVELS > 2
+>  	select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
+>  	select ARCH_HAS_BINFMT_FLAT
+> +	select ARCH_HAS_CPU_FINALIZE_INIT
+>  	select ARCH_HAS_CURRENT_STACK_POINTER
+>  	select ARCH_HAS_DEBUG_VIRTUAL if MMU
+>  	select ARCH_HAS_DEBUG_VM_PGTABLE
+> @@ -525,6 +526,20 @@ config RISCV_ISA_SVPBMT
+> =20
+>  	   If you don't know what to do here, say Y.
+> =20
+> +config RISCV_ISA_ZAWRS
+> +	bool "Zawrs extension support for wait-on-reservation-set instructions"
+> +	depends on RISCV_ALTERNATIVE
+> +	default y
+> +	help
+> +	   Adds support to dynamically detect the presence of the Zawrs
+> +	   extension and enable its usage.
+
+Drew, could you, in your update, use the wording:
+	   Add support for enabling optimisations in the kernel when the
+	   Zawrs extension is detected at boot.
+
+There was some confusion recently about what these options were actually
+for, because this option doesn't control "dynamic detection" as the
+ACPI or DT detection is compiled at all times. I had written a patch for
+this wording in other options at the time but had forgotten to properly
+send it:
+https://lore.kernel.org/linux-riscv/20240418-stable-railway-7cce07e1e440@sp=
+ud/T/#u
+
+> +
+> +	   The Zawrs extension defines a pair of instructions to be used
+> +	   in polling loops that allows a core to enter a low-power state
+> +	   and wait on a store to a memory location.
+> +
+> +	   If you don't know what to do here, say Y.
+> +
+>  config TOOLCHAIN_HAS_V
+>  	bool
+>  	default y
+> @@ -1075,6 +1090,15 @@ endmenu # "Power management options"
+> =20
+>  menu "CPU Power Management"
+> =20
+> +config RISCV_ZAWRS_IDLE
+> +	bool "Idle thread using ZAWRS extensions"
+> +	depends on RISCV_ISA_ZAWRS
+> +	default y
+> +	help
+> +		Adds support to implement idle thread using ZAWRS extension.
+> +
+> +		If you don't know what to do here, say Y.
+
+I don't think this second option is needed, why would we not always want
+to use the Zawrs version of this when it is available? Can we do it
+unconditionally when RISCV_ISA_ZAWRS is set and the extension is
+detected at runtime?
+
+Cheers,
+Conor.
 
 
 
-Paolo Abeni wrote:
-> On Tue, 2024-04-16 at 11:21 +0200, Paolo Abeni wrote:
->> On Fri, 2024-04-12 at 17:55 +0200, Richard Gobert wrote:
->>> {inet,ipv6}_gro_receive functions perform flush checks (ttl, flags,
->>> iph->id, ...) against all packets in a loop. These flush checks are used
->>> currently in all tcp flows and in some UDP flows in GRO.
->>>
->>> These checks need to be done only once and only against the found p skb,
->>> since they only affect flush and not same_flow.
->>>
->>> Leveraging the previous commit in the series, in which correct network
->>> header offsets are saved for both outer and inner network headers -
->>> allowing these checks to be done only once, in tcp_gro_receive and
->>> udp_gro_receive_segment. As a result, NAPI_GRO_CB(p)->flush is not used at
->>> all. In addition, flush_id checks are more declarative and contained in
->>> inet_gro_flush, thus removing the need for flush_id in napi_gro_cb.
->>>
->>> This results in less parsing code for UDP flows and non-loop flush tests
->>> for TCP flows.
->>>
->>> To make sure results are not within noise range - I've made netfilter drop
->>> all TCP packets, and measured CPU performance in GRO (in this case GRO is
->>> responsible for about 50% of the CPU utilization).
->>>
->>> L3 flush/flush_id checks are not relevant to UDP connections where
->>> skb_gro_receive_list is called. The only code change relevant to this flow
->>> is inet_gro_receive. The rest of the code parsing this flow stays the
->>> same.
->>>
->>> All concurrent connections tested are with the same ip srcaddr and
->>> dstaddr.
->>>
->>> perf top while replaying 64 concurrent IP/UDP connections (UDP fwd flow):
->>> net-next:
->>>         3.03%  [kernel]  [k] inet_gro_receive
->>>
->>> patch applied:
->>>         2.78%  [kernel]  [k] inet_gro_receive
->>
->> Why there are no figures for
->> udp_gro_receive_segment()/gro_network_flush() here?
->>
->> Also you should be able to observer a very high amount of CPU usage by
->> GRO even with TCP with very high speed links, keeping the BH/GRO on a
->> CPU and the user-space/data copy on a different one (or using rx zero
->> copy).
-> 
-> To be more explicit: I think at least the above figures are required, 
-> and I still fear the real gain in that case would range from zero to
-> negative. 
-> 
+--W4+rgWywh9lWFt3p
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I wrote about it in the commit message in short, sorry if I wasn't clear
-enough.
+-----BEGIN PGP SIGNATURE-----
 
-gro_network_flush is compiled in-line to both udp_gro_receive_segment and
-tcp_gro_receive. udp_gro_receive_segment is compiled in-line to
-udp_gro_receive.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiE20wAKCRB4tDGHoIJi
+0mB2AP9jDM+N0TaP3N/aRVlNJxBAwWPjQeQiXXdjkXc4uIfepAEAxccqrQyX3H0O
+FYtsk8xkGJ2X1LJ0uU4Kb7k4EqyF5wA=
+=byH8
+-----END PGP SIGNATURE-----
 
-The UDP numbers I posted are not relevant anymore after Willem and
-Alexander's thread, after which we understood flush and flush_id should be
-calculated for all UDP flows.
-
-I can post new numbers for the UDP fwd path after implementing the correct
-change. As for TCP - the numbers I posted stay the same.
-
-You should note there is an increase in CPU utilization in tcp_gro_receive
-because of the inline compilation of gro_network_flush. The numbers make
-sense and show performance enhancement in the case I showed when both
-inet_gro_receive and tcp_gro_receive are accounted for.
-
-> If you can't do the TCP part of the testing, please provide at least
-> the figures for a single UDP flow, that should give more indication WRT
-> the result we can expect with TCP.
-> 
-> Note that GRO is used mainly by TCP and TCP packets with different
-> src/dst port will land into different GRO hash buckets, having
-> different RX hash.
-> 
-> That will happen even for UDP, at least for some (most?) nics include
-> the UDP ports in the RX hash.
-> 
-> Thanks,
-> 
-> Paolo
-> 
+--W4+rgWywh9lWFt3p--
 
