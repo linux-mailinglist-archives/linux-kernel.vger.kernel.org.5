@@ -1,197 +1,159 @@
-Return-Path: <linux-kernel+bounces-149991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DEF18A98D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:42:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB3FC8A98DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:43:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F267B2254A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:42:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1FD0282BF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:43:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7006E15E803;
-	Thu, 18 Apr 2024 11:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="TLiNkAyj"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2456215E7F1;
+	Thu, 18 Apr 2024 11:43:29 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BBA015E5BC
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:42:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD2156464
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:43:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713440544; cv=none; b=DT+RcdE3NnOCTVE5MMZMViWWJTJpRiAWVDQ8HNoYG8aLOf2Yw1K3JiWQwA+uy8hGqyXfaeFBR7x0wPh82hWq3p1i6lBiJVmLaoVs2U9tweFRzVZnE2L7VzBetSpFDcUF0aVwhAllzzFWslP2PHxyaAICWLPMkOcQSdIBLSnwkFY=
+	t=1713440608; cv=none; b=BwZyYLQ3RyjxwN5Lun7jAgCAxyxeakTqnZDR4JPalB5G0SE+3/cZUJUBLQqxRyz6Bec5NeJyXwZo1qGn8yuizVvi4RwYTa0+yscSq1pVg+NQ6UGWHDmKO/kNpbtC+nRH3RBMeC/DnmpghAOtHbjzA+uKNxq7KHLlYSliTzyK+5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713440544; c=relaxed/simple;
-	bh=ytMaJqyg9zf7adMfPzz8lLdVsAjH7idIhqxx16pyfVk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iw86TmXxNmGSg2Ah164uAjgKmKrjuvuV5U7Om7EPOvG5d0gfg0Q0eI9WjELCs8cWvxTQunDOUW+r8x8j5xVKQVmp+w7cB0wpz1uB3wIMeL4vz3spKH0If56sWshiOuoDdzilxGzh+mZH8ljrvP54eNeU+EpKwGVikuoi+6czlsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=TLiNkAyj; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1e2c725e234so14788995ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 04:42:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1713440542; x=1714045342; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+0fSMosEc0GfSuz2R1ztbj1Ka0piZP84Pfqpm8EYeOw=;
-        b=TLiNkAyjKlBpzFIV6gIMIlMApi0JvdXxnLEjUOT/IExPVHoDfRj/G8jdXvDrtm8Um4
-         gewYLLtF7g+WbOs0hR8HAevH5Ebe1tu2+wjMtZOmx0uA28Y/WTAEpIbcEyQ5gPKWt4Aq
-         SIkOxRHF9wUfhGXjKCHW76TqLmRFU7b5mO1U+yb36IwpKahtQGCtxiDTkHe4NAiMhsfQ
-         XLMU+j+yPtgFQUoHHUqOQTCglSl8/6nR2Im8NJ9dAaf8hmYDerbrQdFHxq9ndxXMD+UT
-         nn4vxKsFbGkVMYcJYHt8U2q2Zrt14CrvJvolnTevXZ9TIRKc6SSr6+1tALaxEp82u5OB
-         xBEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713440542; x=1714045342;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+0fSMosEc0GfSuz2R1ztbj1Ka0piZP84Pfqpm8EYeOw=;
-        b=DtmJSzcqnpyPY0IOvT3pd6dInfdaNFsI1W9kn1DzTAZF4CFJTuRxfB0Fz/uCNAG6D0
-         WQq2ynyyVuh9W0OCG0PaWBFI/d5VFytb/MGR0jsvvnZ+JvuIjxATF42TZLfgNQJykKBG
-         psVnpAXaJJOstE/nH50q32YV+BSKgpLGRnWI3EM+RMkVIg2lj6TOer0tuYrwygXyMcL+
-         oeV0rcL5akJK+eNgTCaZEcnbKtnHdFRG7eGUD3o1HJ1PUd8+fWiiggpHx1+kgjRZv4tt
-         KV42zyLq7DKkk1Behmi02dK2hA8qAN6zgSL7zImhl7o0ZvGynKIqCaNLpRFD7KrJjRAv
-         8kjw==
-X-Forwarded-Encrypted: i=1; AJvYcCW8BN1HHjvixbabReXrEYR8ZZ4bpoXs+1Y7YE6Cb2K5cETGR0SxS567YDIuAO9dk3jvtjYtqZwHF6PIjLC/h7LhaciopJnXs5skQ7BY
-X-Gm-Message-State: AOJu0YyCdZSQX5We12TWeJiLvSqCV8DncNSkiXOJf1Xc3+oFwGurYsLT
-	qbEEMIXlav5jBNa7wDOmhPLRSOwSjKsRiw+upcaMGEjRmFTw/Z1zTD+H02kuZm8=
-X-Google-Smtp-Source: AGHT+IEGhLzO8tdC2RFtIqL97YSISRu4T45ilDZUX0jzJBPVbnIACyD61LrVqqnY/2ZWl38G615JaA==
-X-Received: by 2002:a17:902:ce91:b0:1e0:ab65:85e5 with SMTP id f17-20020a170902ce9100b001e0ab6585e5mr3435636plg.1.1713440542651;
-        Thu, 18 Apr 2024 04:42:22 -0700 (PDT)
-Received: from localhost.localdomain ([101.127.248.173])
-        by smtp.gmail.com with ESMTPSA id bi2-20020a170902bf0200b001e27ad5199csm1309945plb.281.2024.04.18.04.42.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 04:42:22 -0700 (PDT)
-From: Haifeng Xu <haifeng.xu@shopee.com>
-To: peterz@infradead.org,
-	mingo@redhat.com,
-	frederic@kernel.org
-Cc: acme@kernel.org,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	namhyung@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Haifeng Xu <haifeng.xu@shopee.com>
-Subject: [PATCH v3] perf/core: Fix missing wakeup when waiting for context reference
-Date: Thu, 18 Apr 2024 11:42:09 +0000
-Message-Id: <20240418114209.22233-1-haifeng.xu@shopee.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1713440608; c=relaxed/simple;
+	bh=hjgxql/TvoPEfUZHDYJEYDtWin16CxsW4II6SCrMIaM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ejYM8Py9vxPtl8NXSoMdfcBRzcJCBSXW91jkvj7Jg5R30DX0IkS3BNFsVSDb9oACL0OlMpwl8j5XsDb7yrC3dKSOiMGz8IMin483X60mf2VvS5+HlfJQ/zuLUTOBjwMGTiVD3b0c1tMpUb7OIoQNE7KyJ+LjG8rY+oZtR2XkD9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rxQAe-0005H2-QC; Thu, 18 Apr 2024 13:43:16 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rxQAd-00Cxsn-Kq; Thu, 18 Apr 2024 13:43:15 +0200
+Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rxQAd-001Wn2-1o;
+	Thu, 18 Apr 2024 13:43:15 +0200
+Date: Thu, 18 Apr 2024 13:43:15 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] mtd: nand: mxc_nand: disable subpage reads
+Message-ID: <ZiEHUz3wicDJscGP@pengutronix.de>
+References: <20240417-mtd-nand-mxc-nand-exec-op-v1-0-d12564fe54e9@pengutronix.de>
+ <20240417-mtd-nand-mxc-nand-exec-op-v1-4-d12564fe54e9@pengutronix.de>
+ <ZiDCKGlG4MZ23Tqo@pengutronix.de>
+ <20240418113244.6e535d3f@xps-13>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418113244.6e535d3f@xps-13>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-In our production environment, we found many hung tasks which are
-blocked for more than 18 hours. Their call traces are like this:
+On Thu, Apr 18, 2024 at 11:32:44AM +0200, Miquel Raynal wrote:
+> Hi Sascha,
+> 
+> s.hauer@pengutronix.de wrote on Thu, 18 Apr 2024 08:48:08 +0200:
+> 
+> > On Wed, Apr 17, 2024 at 09:13:31AM +0200, Sascha Hauer wrote:
+> > > The NAND core enabled subpage reads when a largepage NAND is used with
+> > > SOFT_ECC. The i.MX NAND controller doesn't support subpage reads, so
+> > > clear the flag again.
+> > > 
+> > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > > ---
+> > >  drivers/mtd/nand/raw/mxc_nand.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
+> > > index f44c130dca18d..19b46210bd194 100644
+> > > --- a/drivers/mtd/nand/raw/mxc_nand.c
+> > > +++ b/drivers/mtd/nand/raw/mxc_nand.c
+> > > @@ -1667,6 +1667,8 @@ static int mxcnd_probe(struct platform_device *pdev)
+> > >  	if (err)
+> > >  		goto escan;
+> > >  
+> > > +	this->options &= ~NAND_SUBPAGE_READ;
+> > > +  
+> > 
+> > Nah, it doesn't work like this. It turns out the BBT is read using
+> > subpage reads before we can disable them here.
+> >
+> > This is the code in nand_scan_tail() we stumble upon:
+> > 
+> > 	/* Large page NAND with SOFT_ECC should support subpage reads */
+> > 	switch (ecc->engine_type) {
+> > 	case NAND_ECC_ENGINE_TYPE_SOFT:
+> > 		if (chip->page_shift > 9)
+> > 			chip->options |= NAND_SUBPAGE_READ;
+> > 		break;
+> > 
+> > 	default:
+> > 		break;
+> > 	}
+> > 
+> > So the code assumes subpage reads are ok when SOFT_ECC is in use, which
+> > in my case is not true. I guess some drivers depend on the
+> > NAND_SUBPAGE_READ bit magically be set, so simply removing this code is
+> > likely not an option.  Any ideas what to do?
+> 
+> Can you elaborate why subpage reads are not an option in your
+> situation? While subpage writes depend on chip capabilities, reads
+> however should always work: it's just the controller selecting the
+> column where to start and then reading less data than it could from the
+> NAND cache. It's a very basic NAND controller feature, and I remember
+> this was working on eg. an i.MX27.
 
-[346278.191038] __schedule+0x2d8/0x890
-[346278.191046] schedule+0x4e/0xb0
-[346278.191049] perf_event_free_task+0x220/0x270
-[346278.191056] ? init_wait_var_entry+0x50/0x50
-[346278.191060] copy_process+0x663/0x18d0
-[346278.191068] kernel_clone+0x9d/0x3d0
-[346278.191072] __do_sys_clone+0x5d/0x80
-[346278.191076] __x64_sys_clone+0x25/0x30
-[346278.191079] do_syscall_64+0x5c/0xc0
-[346278.191083] ? syscall_exit_to_user_mode+0x27/0x50
-[346278.191086] ? do_syscall_64+0x69/0xc0
-[346278.191088] ? irqentry_exit_to_user_mode+0x9/0x20
-[346278.191092] ? irqentry_exit+0x19/0x30
-[346278.191095] ? exc_page_fault+0x89/0x160
-[346278.191097] ? asm_exc_page_fault+0x8/0x30
-[346278.191102] entry_SYSCALL_64_after_hwframe+0x44/0xae
+On the i.MX27 reading a full 2k page means triggering one read operation
+per 512 bytes in the NAND controller, so it would be possible to read
+subpages by triggering only one read operation instead of four in a row.
 
-The task was waiting for the refcount become to 1, but from the vmcore,
-we found the refcount has already been 1. It seems that the task didn't
-get woken up by perf_event_release_kernel() and got stuck forever. The
-below scenario may cause the problem.
+The newer SoCs like i.MX25 always read a full page with a single read
+operation. We could likely read subpages by temporarily configuring the
+controller for a 512b page size NAND.
 
-Thread A					Thread B
-..						...
-perf_event_free_task				perf_event_release_kernel
-						   ...
-						   acquire event->child_mutex
-						   ...
-						   get_ctx
-   ...						   release event->child_mutex
-   acquire ctx->mutex
-   ...
-   perf_free_event (acquire/release event->child_mutex)
-   ...
-   release ctx->mutex
-   wait_var_event
-						   acquire ctx->mutex
-						   acquire event->child_mutex
-						   # move existing events to free_list
-						   release event->child_mutex
-						   release ctx->mutex
-						   put_ctx
-..						...
+I just realized the real problem comes with reading the OOB data. With
+software BCH the NAND layer hardcodes the read_subpage hook to
+nand_read_subpage() which uses nand_change_read_column_op() to read the
+OOB data. This uses NAND_CMD_RNDOUT and I have now idea if/how this can
+be implemented in the i.MX NAND driver. Right now the controller indeed
+reads some data and then the SRAM buffer really contains part of the
+desired OOB data, but also part of the user data.
 
-In this case, all events of the ctx have been freed, so we couldn't
-find the ctx in free_list and Thread A will miss the wakeup. It's thus
-necessary to add a wakeup after dropping the reference.
+We might overcome these problems, but I am not sure if it's worth it.
+It's ancient hardware that I don't want to put too much effort into and
+I doubt that the end result would have a better performance when we need
+one operation to read the subpage and another one to read OOB as opposed
+to always read full pages (which is only one operation, say one
+interrupt latency, for each page read).
 
-Fixes: 1cf8dfe8a661 ("perf/core: Fix race between close() and fork()")
-Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
----
-Changes since v1:
-- Add the fixed tag.
-- Simplify v1's patch. (Frederic)
+Sascha
 
-Changes since v2:
-- Use Reviewed-by tag instead of Signed-off-by tag.
----
- kernel/events/core.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 4f0c45ab8d7d..15c35070db6a 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -5340,6 +5340,7 @@ int perf_event_release_kernel(struct perf_event *event)
- again:
- 	mutex_lock(&event->child_mutex);
- 	list_for_each_entry(child, &event->child_list, child_list) {
-+		void *var = NULL;
- 
- 		/*
- 		 * Cannot change, child events are not migrated, see the
-@@ -5380,11 +5381,23 @@ int perf_event_release_kernel(struct perf_event *event)
- 			 * this can't be the last reference.
- 			 */
- 			put_event(event);
-+		} else {
-+			var = &ctx->refcount;
- 		}
- 
- 		mutex_unlock(&event->child_mutex);
- 		mutex_unlock(&ctx->mutex);
- 		put_ctx(ctx);
-+
-+		if (var) {
-+			/*
-+			 * If perf_event_free_task() has deleted all events from the
-+			 * ctx while the child_mutex got released above, make sure to
-+			 * notify about the preceding put_ctx().
-+			 */
-+			smp_mb(); /* pairs with wait_var_event() */
-+			wake_up_var(var);
-+		}
- 		goto again;
- 	}
- 	mutex_unlock(&event->child_mutex);
 -- 
-2.25.1
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
