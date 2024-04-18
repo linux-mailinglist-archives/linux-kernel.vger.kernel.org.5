@@ -1,157 +1,98 @@
-Return-Path: <linux-kernel+bounces-150225-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF3B08A9BF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:59:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 434678A9C07
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:00:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4760B1F21917
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:59:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0003028284A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A614165FD0;
-	Thu, 18 Apr 2024 13:59:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FEC4168AF7;
+	Thu, 18 Apr 2024 14:00:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JKFr0e5d"
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="Jla47F2B"
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86A831649D2
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 13:58:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E111F84D02;
+	Thu, 18 Apr 2024 13:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713448740; cv=none; b=OTmXlp9Z/ZhZYjvclDOPYrCrteCTtHFU9f8jncG+nhMwFk2alnosk61ge+hVc1RfGKQvCn2hOse1pwHyRQ1eQxEqmKZMaLehoMywC8e6a6rIbbfCyIXX9o5SdOTCeJ+WhqFhBKcf3ydyFXfCpYtlwpW3xihBCKSrWWBKZ2ANj5A=
+	t=1713448801; cv=none; b=I1KA5grR7Z9ePK9ZCcWLQj/fVOh5TfvkSDR+9sWXABjtq6dENQiw1UlEuiTVVvJCq1c9AcDgN/uEEMXIe0htun3r9uFuLOT0sD7PJlTOeMmfCpOpLCqh8aMkTBfsDCAXWexcstLvh0orqAhP70EK6uQa3glQwWmIlKYcipuIPA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713448740; c=relaxed/simple;
-	bh=jfJM8dSb6kGhQc66FRxX40igRNLtbqPBPjraUYrcYeU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=VkxNk+Vpy9Z93XN+4Wk1JJ2URL0553HlUoJYmothqAytD09eNuZTm6zSEPkOZ/j7+oBKOpG3T69UDqjRsq46GQrt3T7KKqv8mqKZLmQuVXfokol7NG8S9eiwjtpzgxKVyybvouQUEdfTKCBhmXcDvaWai5ECSqyT1J0mZ+DtX+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JKFr0e5d; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5d5a080baf1so928491a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:58:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713448739; x=1714053539; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yNDmhaFib5vUgSCj1EuHEP0N8f9l8mHKtBljI9aZIys=;
-        b=JKFr0e5d8H4A5jufLLQ28H0ENJ/8+aeFjRpZau5tDyynDdenWvHHYuyz3X6fNchT7y
-         ncuGLkybbx03H20nUu4s/gwr1as/f/60P0yr95NFSMrOyjVY9F4xwxMqVof3BmQYA2dD
-         usEBi3hVPCWpwA5bvGnygRJwgbXJROV4s5+1dSslV/uvMKJavcmK34P9Fjcu8GmA+tQs
-         63stFCCwYfoVrtLhWlNJIYRBTMng5BM3scp+4SlYLpySUUdzTWzGWjdDADoO8MZU7Puw
-         6V1Ci9AyoIfLcGSbF3G0Q3xI6TvEV+V/teXfou4QkCzuk1kBk2rQztC9zHmyLhY3Ytk7
-         Vbow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713448739; x=1714053539;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yNDmhaFib5vUgSCj1EuHEP0N8f9l8mHKtBljI9aZIys=;
-        b=JkDGX90yggQRD4BupugSgc8ZGy0mkT+1RSwM5nVeP/KzMcA6fm/FLtoSkjQef9IAKt
-         cHTocOcWq6ehlFsmi0DmKgHGSubNoatPinvkj9+MSaKDN1vcYfd/ctrkwbWvj+qA5+FV
-         SVFF0G0REFWN6yedux9vEt5no+tkx9co+S4wzpx9/MG3lt3gBGFtdCxIJhdk76BfcYZz
-         FWSmi2HRQmhu12iK5JseUw/H4yOUq6VKJnxXzQ/QfdccUEn53O1/VkHAWAPG2WhDCcpH
-         zmlbUFupl0SenRq5TAnO+UjXxL+jgW+E358bRG4eyRJ9tcyur7vckgtBcmpMlo1lprB6
-         XmLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWOh5F7XxQwW8Gt01QgrcQWwDwtoqXmKfJQwgzslGcmh/e9pF2ZSMeHNXleP4RhDdWYZ9PHFJyVOaVSmIAvM49ICAleYdf6EJ4j660i
-X-Gm-Message-State: AOJu0YzHtc7i4EbwqiJnCE3Vnd8bJSKjXirAs4uRDPuBk2zVWk8V/A7A
-	GsqE9Df8fEgp/gQQfdG9D00u43mjnhpy6hvmP5go2Z5eHnUB+BgcdsiWi6jtlZoXAPWpNPo9DFE
-	PRQ==
-X-Google-Smtp-Source: AGHT+IF/NVV828WbXcekdzll/VFb0eXEt6pK7hsJ3IAg6SEtS8UxqRGfLTiacsRBhENxV1bZpBNSUKpoYJk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:4854:0:b0:5d5:1e4d:c845 with SMTP id
- x20-20020a634854000000b005d51e4dc845mr24856pgk.10.1713448738618; Thu, 18 Apr
- 2024 06:58:58 -0700 (PDT)
-Date: Thu, 18 Apr 2024 06:58:56 -0700
-In-Reply-To: <DS0PR11MB63739BE4347EC6369ED22EBADC0E2@DS0PR11MB6373.namprd11.prod.outlook.com>
+	s=arc-20240116; t=1713448801; c=relaxed/simple;
+	bh=AJPEjPlUPQHJ4hOGffADPP2SRRuSF2ri7CkK+4eg5ro=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XsCeEimNA2wKvLo0vL0rCwAhRVmACVAGhbTGydrUV/fczsGfTd1+KOhOWhbHgyCKlaRfeHsgpBN/XR6KrPCB/BnZCEjA5zlLAa+Po8lR9pDaPX37ocqjp/mF9jsyvLsfKA0GaE8Pk9sjkfyD50DeRLxYCJf5Knzd4Ax13E47hqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=Jla47F2B; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43I4kSSo025732;
+	Thu, 18 Apr 2024 08:59:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=PODMain02222019; bh=RViRRtMM8/41BS4
+	fsufbmgDyWahRy+WUSOiq+FX5YFc=; b=Jla47F2B05U0+DpWmxSAtlFEchV+PoB
+	+6us+KXEh7/ptsumv/cUSMS+3sjIwcEydfhucC68WWDVu5dDL21uVfWNbpiuTwbl
+	xjy3ZOnV+Th2yH0OOMevp/tQ1ihqV7IGKX5Valuf57i8qHQm9S1/3PYQdmnF5R2V
+	xMSKsB3u6TJYa6dDsL2MvY6lPSiluyGqMi1o6lCTwkntxf/HQ9fFy/Matci99PHl
+	PlBCjOf4QX9izX5ww6vPTI2RwTVCRwJLeO0c+TNzsTX3Jo6nJAwnUcCjQRphgwOa
+	nsGg4fcCkHWs4ccgK9/m5KgAxDfu7rd5mza2hxxtXASAFalu9/S5R6A==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xfqeyctxv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 08:59:55 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 18 Apr
+ 2024 14:59:53 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
+ via Frontend Transport; Thu, 18 Apr 2024 14:59:53 +0100
+Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id 61517820245;
+	Thu, 18 Apr 2024 13:59:53 +0000 (UTC)
+Date: Thu, 18 Apr 2024 13:59:52 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: ArcticLampyrid <ArcticLampyrid@outlook.com>
+CC: <sbinding@opensource.cirrus.com>, <david.rhodes@cirrus.com>,
+        <james.schulman@cirrus.com>, <linux-kernel@vger.kernel.org>,
+        <linux-sound@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        <rf@opensource.cirrus.com>, <stable@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] ALSA: hda/realtek: Fix internal speakers for
+ Legion Y9000X 2022 IAH7
+Message-ID: <ZiEnWBbvmWwKqytK@ediswmail9.ad.cirrus.com>
+References: <TYCP286MB25357A4599E935F26A8AAB24C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
+ <TYCP286MB25359B61BB685A4B3110BB44C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240417150354.275353-1-wei.w.wang@intel.com> <Zh_4QN7eFxyu9hgA@google.com>
- <DS0PR11MB63739BE4347EC6369ED22EBADC0E2@DS0PR11MB6373.namprd11.prod.outlook.com>
-Message-ID: <ZiEnIFW3ZQhDwdZ-@google.com>
-Subject: Re: [RFC PATCH v1] KVM: x86: Introduce macros to simplify KVM_X86_OPS
- static calls
-From: Sean Christopherson <seanjc@google.com>
-To: Wei W Wang <wei.w.wang@intel.com>
-Cc: "pbonzini@redhat.com" <pbonzini@redhat.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <TYCP286MB25359B61BB685A4B3110BB44C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
+X-Proofpoint-GUID: CX0RV_R6dqnRXP9MnD36QRZK8Bh6ECaB
+X-Proofpoint-ORIG-GUID: CX0RV_R6dqnRXP9MnD36QRZK8Bh6ECaB
+X-Proofpoint-Spam-Reason: safe
 
-On Thu, Apr 18, 2024, Wei W Wang wrote:
-> On Thursday, April 18, 2024 12:27 AM, Sean Christopherson wrote:
-> > On Wed, Apr 17, 2024, Wei Wang wrote:
-> > > Introduces two new macros, KVM_X86_SC() and KVM_X86_SCC(), to
-> > > streamline the usage of KVM_X86_OPS static calls. The current
-> > > implementation of these calls is verbose and can lead to alignment
-> > > challenges due to the two pairs of parentheses. This makes the code
-> > > susceptible to exceeding the "80 columns per single line of code"
-> > > limit as defined in the coding-style document. The two macros are
-> > > added to improve code readability and maintainability, while adhering to
-> > the coding style guidelines.
-> > 
-> > Heh, I've considered something similar on multiple occasionsi.  Not because
-> > the verbosity bothers me, but because I often search for exact "word" matches
-> > when looking for function usage and the kvm_x86_ prefix trips me up.
+On Thu, Apr 18, 2024 at 09:20:06PM +0800, ArcticLampyrid wrote:
+> This fixes the sound not working from internal speakers on
+> Lenovo Legion Y9000X 2022 IAH7 models.
 > 
-> Yeah, that's another compelling reason for the improvement.
-> 
-> > IIRC, static_call_cond() is essentially dead code, i.e. it's the exact same as
-> > static_call().  I believe there's details buried in a proposed series to remove
-> > it[*].  And to not lead things astray, I verified that invoking a NULL kvm_x86_op
-> > with static_call() does no harm (well, doesn't explode at least).
-> > 
-> > So if we add wrapper macros, I would be in favor in removing all
-> > static_call_cond() as a prep patch so that we can have a single macro.
-> 
-> Sounds good. Maybe KVM_X86_OP_OPTIONAL could now also be removed? 
+> Signed-off-by: ArcticLampyrid <ArcticLampyrid@outlook.com>
 
-No, KVM_X86_OP_OPTIONAL() is what allow KVM to WARN if a mandatory hook isn't
-defined.  Without the OPTIONAL and OPTIONAL_RET variants, KVM would need to assume
-every hook is optional, and thus couldn't WARN.
+I would wait for Stefan to review the content before respinning
+but you need to use your real name for the Signed-off-by line as
+per Documentation/process/submitting-patches.rst, it's a legal
+thing.
 
-  static inline void kvm_ops_update(struct kvm_x86_init_ops *ops)
-  {
-	memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
-
-#define __KVM_X86_OP(func) \
-	static_call_update(kvm_x86_##func, kvm_x86_ops.func);
-#define KVM_X86_OP(func) \
-	WARN_ON(!kvm_x86_ops.func); __KVM_X86_OP(func)
-#define KVM_X86_OP_OPTIONAL __KVM_X86_OP
-#define KVM_X86_OP_OPTIONAL_RET0(func) \
-	static_call_update(kvm_x86_##func, (void *)kvm_x86_ops.func ? : \
-					   (void *)__static_call_return0);
-#include <asm/kvm-x86-ops.h>
-#undef __KVM_X86_OP
-
-	kvm_pmu_ops_update(ops->pmu_ops);
-  }
-
-> > kvm_ops_update() already WARNs if a mandatory hook isn't defined, so doing
-> > more checks at runtime wouldn't provide any value.
-> 
-> > 
-> > As for the name, what about KVM_X86_CALL() instead of KVM_X86_SC()?  Two
-> > extra characters, but should make it much more obvious what's going on for
-> > readers that aren't familiar with the infrastructure.
-> 
-> I thought the macro definition is quite intuitive and those encountering it for the
-> first time could get familiar with it easily from the definition.
-> Similarly, KVM_X86_CALL() is fine to me, despite the fact that it doesn't explicitly
-> denote "static" calls.
-
-Repeat readers/developers will get used to KVM_X86_SC(), but for someone that has
-never read KVM code before, KVM_X86_SC() is unintuitive, e.g. basically requires
-looking at the implementation, especially if the reader isn't familiar with the
-kernel's static call framework.
-
-In other words, there needs to be "CALL" somewhere in the name to convey the basic
-gist of the code.  And IMO, the "static" part is a low level detail that isn't
-necessary to understand the core functionality of the code, so omitting it to
-shorten line lengths is a worthwhile tradeoff.
+Thanks,
+Charles
 
