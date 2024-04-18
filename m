@@ -1,135 +1,107 @@
-Return-Path: <linux-kernel+bounces-149888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29FA38A976D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:32:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40B358A976F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:33:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1502285219
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:32:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D42651F235AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:33:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 655FE15B98C;
-	Thu, 18 Apr 2024 10:32:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF891586F5;
+	Thu, 18 Apr 2024 10:33:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VcC210eU"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="pydh4FwE"
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A440481B5
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 10:32:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77FE68821;
+	Thu, 18 Apr 2024 10:33:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713436365; cv=none; b=Cg8ZZUhg+jEZvmrZgJg6ZwuAB8bXQXhjcvy8oAYvAOyHaT1K7wFQkT5Lds4oS5a4/xw0ONsZ5jZIQSwbUx0zqQ+7AoQMXdpv/65gZXLCxiGrYVOK12A2RcA3RmyPbpylOZn4wkqiQImwd3IIBc8bj0it6ozONS6xhMoHuAhrjJQ=
+	t=1713436411; cv=none; b=uqH2YrTEQLg75tIZvt4bkSYLYf+2aBPHnjfoOTo8oDZccr131v7VdXsBW51ykEkeUEPoX/uNLujm/A2IU2Mh8Z72vUD2U7NVv51Muou1eLAUtQlJdmJFINLCe9UPpf/937vuNWRYCvERgOLGoC1Vtb3PM4LEJs0ufaCOOekwGaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713436365; c=relaxed/simple;
-	bh=qDA7ncPskclNtcNdD4qPnFycTHKFsiKsJmDSnUI8qtY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=qv1WYucDCW7BZGu4HiAbwXGMlv9Afk7mS/4qYFgHjnv7i+bwJ3+YfygUj0eLOHwSpHLxz1LGW6vx8zhOoSvUyQdK8+Nwy2hDC7wu75eEs/zlN5rUP2NnYyc/etAaCupYH/oPCC3xYNZYUnIBNsu5rYDE8aWfCqMG6tndYaDMzI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VcC210eU; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713436363;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=YXR9F/npCdkSOpAXUaKTWQ5tHjvfF/kvK+EEn8u6+ic=;
-	b=VcC210eUKuENLyZefkwtcn9FnmEcYcSTJdBlH4U9/6JAPQ98MdoPEtT/ZnlM6Y+4Xos01i
-	Zoyl+bnumT0JaTiLBqAv7S0IRz20OlrbKXemaLYfJd8s7h1xJ5f3UngT1bt/jp5fQLtvrM
-	NnNBLpPKgT/eRdmPPfMV+TokqdStRtc=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-601-LKuERQi_POCDX2p5rr3TYg-1; Thu, 18 Apr 2024 06:32:41 -0400
-X-MC-Unique: LKuERQi_POCDX2p5rr3TYg-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-349d169170bso101904f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 03:32:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713436360; x=1714041160;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YXR9F/npCdkSOpAXUaKTWQ5tHjvfF/kvK+EEn8u6+ic=;
-        b=YABlDAeZBFQmZCkAzY8TI3ltI+nkCO90zGbxXCzPuynFQajYTrvJShtEWkoXmjVxzm
-         FqDPvU3NXDVBQ47g2fMeLuYSl7j/GoOSAX7mUScqlHaYKKmwQmnDJA/hAHZPEoceI7SR
-         80RV1fN21EVCZon3EXguvsh/ShVdhn2H15LJqqP6ZTbcbUFDsEoLVVzY0c71dTH7KZ3Q
-         nDcT0kpvcAvv6pxf2E2/KumKzJ1QjkQZgBzqA07Ec5h4ccJo+jfsvY8DRXntrZzBRYH+
-         zXSS/AplTMEVNV1T6fRV10pZIH9hE+BjRBDl1D8d72qB6x/KnQKZBMoN76lUwzM2PtcW
-         s6Qw==
-X-Forwarded-Encrypted: i=1; AJvYcCUGdAbwLBWpIn96cTBWJmWb5pLZjcC8RY4zxYxWQtzp1S1EcoIRwjLU5MbBP+bUPO7qDC/QIkxSGwoZq3jeL1Cula4+cH5TP99ZRhrP
-X-Gm-Message-State: AOJu0Yw3LkHZARHQke/DY8FSUzelPJFr2k6UedfdqJGu7/RfR/+6LF8y
-	FUjIzW4vc7WkPrgzMwwU0ocphvnLsxCOhPHQiddj8fVTzFkZHJ7lQGB86WwpdfSszLxjTHZUpXB
-	AKOhdZpb+2bxu2u3BOZfepbPslc9ppw2ObamEF5l52iznWf37kce/D5XrHaryIg==
-X-Received: by 2002:a05:600c:1c91:b0:418:9a5b:d51 with SMTP id k17-20020a05600c1c9100b004189a5b0d51mr1791825wms.0.1713436360722;
-        Thu, 18 Apr 2024 03:32:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHg2H/1atXrATgPKNqMD5yHr4CuTsUiPGp8df/cWohFlVSB12daqy1BxY2y2j6KQJEDLY+KCA==
-X-Received: by 2002:a05:600c:1c91:b0:418:9a5b:d51 with SMTP id k17-20020a05600c1c9100b004189a5b0d51mr1791812wms.0.1713436360336;
-        Thu, 18 Apr 2024 03:32:40 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-236-143.dyn.eolo.it. [146.241.236.143])
-        by smtp.gmail.com with ESMTPSA id o12-20020a05600c4fcc00b00418a6d62ad0sm6011177wmq.34.2024.04.18.03.32.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 03:32:39 -0700 (PDT)
-Message-ID: <0a17d6745d5c6d4bb635cfac1029e90c1ac2c676.camel@redhat.com>
-Subject: Re: [PATCH net v2] udp: don't be set unconnected if only UDP cmsg
-From: Paolo Abeni <pabeni@redhat.com>
-To: Yick Xie <yick.xie@gmail.com>, willemdebruijn.kernel@gmail.com, 
-	willemb@google.com
-Cc: netdev@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org, 
-	edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org
-Date: Thu, 18 Apr 2024 12:32:38 +0200
-In-Reply-To: <20240416190330.492972-1-yick.xie@gmail.com>
-References: <20240416190330.492972-1-yick.xie@gmail.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1713436411; c=relaxed/simple;
+	bh=fXyGjhAm0JIkMbjnAel3FGNCVvKR94WIGzZRwngByII=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mZX/H0YJhvYVuCQ7eWfDXcAmtwJb4Waa/GiyGBkBdy6huXm+Yer3IJrYXCxpUm3Pwb60/kV7KmWoZekujxZrGwawTMCmJ4NzgHJW9L5khPjqW1YVgaf/Xif/YI1TCCc1Fc5b3foADmDPMUFXuPDGeshTLqd9DxeUHILosTCqXqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=pydh4FwE; arc=none smtp.client-ip=67.231.152.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43I5jALP019878;
+	Thu, 18 Apr 2024 05:33:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=j
+	z5Rie3do+TgO9XWh4Mv9YDCnGPamrE2rEo8a/X/MDM=; b=pydh4FwEJLg1Qny7B
+	eNSffSk6r0c+l22PehWiFHSC4f05Fxn/c4SbOvtZ0bs/oMp0WZZ0aRSxPSyTn3P3
+	/RraFWKt823nGKkzRKq7QO/c27Y/RcESVC87hVQWSle6+FdYlA2SPJ8OJjdNO18R
+	nPJu6Qn2ygM2BDnJux3yM4PlR+NmWCM7LVUEYMRdl4tRHSig0JpzWqsQuFwLPhW6
+	800ZQjuBXDBZxiNAeKF1mMF7KpMKyCVog5+oGf7zm/r5oAzw7pKn9sJd2LU59Jli
+	+vxnw4xkDUwnJS9r8Tp2T7495SMuAC2KLn2hBuwRPJh/iKGaR0yJfjzmIgbbuQW8
+	bZG5g==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3xfpfhvmqc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 05:33:19 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 18 Apr
+ 2024 11:33:17 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
+ via Frontend Transport; Thu, 18 Apr 2024 11:33:17 +0100
+Received: from ediswws03.ad.cirrus.com (ediswws03.ad.cirrus.com [198.90.208.11])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 4BA24820245;
+	Thu, 18 Apr 2024 10:33:17 +0000 (UTC)
+From: Maciej Strozek <mstrozek@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>
+CC: <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Maciej Strozek
+	<mstrozek@opensource.cirrus.com>
+Subject: [PATCH v2] spi: cs42l43: Correct name of ACPI property
+Date: Thu, 18 Apr 2024 11:33:15 +0100
+Message-ID: <20240418103315.1487267-1-mstrozek@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: URX_4b8_yisaN-CnDypzhKTNTYFAWsep
+X-Proofpoint-GUID: URX_4b8_yisaN-CnDypzhKTNTYFAWsep
+X-Proofpoint-Spam-Reason: safe
 
-Hi,
+Fixes: 439fbc97502a ("spi: cs42l43: Add bridged cs35l56 amplifiers")
 
-On Wed, 2024-04-17 at 03:03 +0800, Yick Xie wrote:
-> If "udp_cmsg_send()" returned 0 (i.e. only UDP cmsg),
-> "connected" should not be set to 0. Otherwise it stops
-> the connected socket from using the cached route.
->=20
-> Fixes: 2e8de8576343 ("udp: add gso segment cmsg")
-> Signed-off-by: Yick Xie <yick.xie@gmail.com>
-> Cc: stable@vger.kernel.org
+Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+---
+v2: Corrected the Fixes tag to point to right commit
 
-Minor: the patch subj is IMHO a bit confusing, what about removing the
-double negation?
+ drivers/spi/spi-cs42l43.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-preserve connect status with UDP-only cmsg
+diff --git a/drivers/spi/spi-cs42l43.c b/drivers/spi/spi-cs42l43.c
+index cdc61cd089ad..9d747ea69926 100644
+--- a/drivers/spi/spi-cs42l43.c
++++ b/drivers/spi/spi-cs42l43.c
+@@ -267,7 +267,7 @@ static bool cs42l43_has_sidecar(struct fwnode_handle *fwnode)
+ 			continue;
 
-> ---
-> v2: Add Fixes tag
-> v1: https://lore.kernel.org/netdev/20240414195213.106209-1-yick.xie@gmail=
-com/
-> ---
->  net/ipv4/udp.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->=20
-> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> index c02bf011d4a6..420905be5f30 100644
-> --- a/net/ipv4/udp.c
-> +++ b/net/ipv4/udp.c
+ 		ret = fwnode_property_read_u32(ext_fwnode,
+-					       "01fa-cirrus-sidecar-instances",
++					       "01fa-sidecar-instances",
+ 					       &val);
 
-What about ipv6? why this fix does not apply there, too?
-
-Thanks!
-
-Paolo
+ 		fwnode_handle_put(ext_fwnode);
+--
+2.34.1
 
 
