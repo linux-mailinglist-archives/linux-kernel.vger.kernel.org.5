@@ -1,117 +1,122 @@
-Return-Path: <linux-kernel+bounces-150663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FC0E8AA28F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:12:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54C3E8AA290
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:13:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E4401F21FA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:12:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 860E61C21044
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:13:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2273917B4E9;
-	Thu, 18 Apr 2024 19:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3CE417AD9F;
+	Thu, 18 Apr 2024 19:13:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n6c3XuEf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ffd2ya2d";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="762nyUUU"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612BA17A93E;
-	Thu, 18 Apr 2024 19:12:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A405A17A93E
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 19:13:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713467564; cv=none; b=niC/lmoM+Uoyye6AjjQfU9pPxyt31po09d/n6yjkWFAegEJjWqvr/TeDeWB5dZJ/4OArnTQ0UN9jtzwvwplnGgqBN8S607/2bXqKy1FR9Kp++8qR5ZsqtHXJ7sABVJ4hDDTSIOcHewf2JcdYFlapemKmYiwHzZl+NGzSIXcPnuQ=
+	t=1713467623; cv=none; b=WCktE7czn6TQ1wFFI4z2fkCwKlsBy6rVGHw5MdrkI9IIPVg3MFbXMMbnRisjlN2V17mWCFAUhovf7Da/xdUlaLloCjJxNCGeyA44ipvFt37wv8f+pCSPkseTSAG68SeyjyytgWaPrzl5nDsyMGQA40RAJusFaE0u8PXfCgFCE4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713467564; c=relaxed/simple;
-	bh=Xf7SPq6XyvmePWusI/MC6x61q3Kj6qK9pS9dZ3LkypI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D2WHMoOW6tqFK2fQP3dhyQFhd2oRRUFoy5nv++WG2QJfWWZUEcjOKOu9ZR7ENtsS3FFcDSFHV6DTWGwWzhvqDgZUnM3BwFZ5v2zZ3fD9/lDbcZihcJsk+h0hlmgdAn9e2CTG8HCon5fZ+Q6kw3JlL84tQb0C1jHalcht2wqXAGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n6c3XuEf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CBC4C113CC;
-	Thu, 18 Apr 2024 19:12:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713467563;
-	bh=Xf7SPq6XyvmePWusI/MC6x61q3Kj6qK9pS9dZ3LkypI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n6c3XuEfQurje/t707E9xyCJQUoeKl+BvbIEQvphsQH2O7Cpbq9FPHoHKH/EKtH2h
-	 LAH/KSBDoqLbT51Kl2OIWDHUgz9Q6Fa8uClFXIb63m3S6zL3WNV4iO883SAm7fcmMA
-	 r/90ECcC92zsQ86tbWaY4wuJN/PK602C4fe5txDRtfJmEDoPTp07R2aTmI5ERy3vaw
-	 hVn7IIqCq+Wp9XdstpEh+i+9liQW3AxWbKcaAz/HLVrm4ACDq5pysYaU5SmSxB8OII
-	 maTvDGmF8toj/EDFOw8CEnzP8YYGwtf3X7nHzPm1CKPhe8cVp1uMawTmO6Wp+Zm65H
-	 nj41SDVYP+rLw==
-Date: Thu, 18 Apr 2024 21:12:39 +0200
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Piyush Malgujar <pmalgujar@marvell.com>
-Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	sgarapati@marvell.com, cchavva@marvell.com, jannadurai@marvell.com
-Subject: Re: [PATCH v6 2/4] i2c: thunderx: Support for High speed mode
-Message-ID: <wdnzttdq5gqthmzztylpu42ps22hpbbwev6onevxl76d5zf7em@bjiryyhqcj6f>
-References: <20240402134018.2686919-1-pmalgujar@marvell.com>
- <20240402134018.2686919-3-pmalgujar@marvell.com>
+	s=arc-20240116; t=1713467623; c=relaxed/simple;
+	bh=Iz678KAmXfBm/mZt3v+X1aeipm5kBNZsPm3UhrqtPf4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Zvn1Y0NQU+utlwnB1K2fGvoUqUKJpekW101jUC6AvnqEFPlvb31XpD0xPWjdYyknD574DA4GAWPf5+2TUNgbz+0UzFo3TgTqTVqeX3MB5oFsgUnJzf4JnytFpOVSGwUVNK8OyIVFR6drQSPV5h4z8Ye0e+cDfUpTmaTTfkcEtTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ffd2ya2d; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=762nyUUU; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713467619;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j9rMqMzziPBG66zzSo6AyqknRc91sFEhQHJFsmE6nzg=;
+	b=Ffd2ya2doIEt7x3rnqzKbBOJK2Fz1s6IYUY7CduKWzuTopfZzIDlTe2xyeFpFjbKYPNsXb
+	VvBO/WNbKFb3xHW8MBlieiz4HX4Qx0LLbP/nkwNOFcAyucKy3cRe0uY14vLExD33Ssm51t
+	uKuEAn3M5XF5WRNSveCHiwspacH9Xu7RG5d24hDDaCCY93c+qDpOqWqyMzdOpmwG+uZYuv
+	pNHBXmCP2DGqsS5nbWAxFwXXXZf6Ba/lCORs56rpccQ3ZFTNcRB32VeoakHrqv5M8xmrXB
+	idoybO+j3Ic20KugPSoFeTG8qX9f8m3G9XzNepSs71mvq15m192pGSs6K2XNMw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713467619;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j9rMqMzziPBG66zzSo6AyqknRc91sFEhQHJFsmE6nzg=;
+	b=762nyUUUP9eTxaItKAik/TRrsj62zTb2lQlaflWMsqPAFYqhiNIc5NZ95f8t9VN9gj89Ln
+	B/RWEIasyvfYYdDw==
+To: Lyude Paul <lyude@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Early boot regression from f0551af0213 ("x86/topology: Ignore
+ non-present APIC IDs in a present package")
+In-Reply-To: <fd040809d95b3e12b2fdc78a2409e187716bc66f.camel@redhat.com>
+References: <3d77cb89857ee43a9c31249f4eab7196013bc4b4.camel@redhat.com>
+ <20240418082703.GCZiDZVyra7qOQbyqn@fat_crate.local>
+ <fd040809d95b3e12b2fdc78a2409e187716bc66f.camel@redhat.com>
+Date: Thu, 18 Apr 2024 21:13:34 +0200
+Message-ID: <87plumxz4x.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240402134018.2686919-3-pmalgujar@marvell.com>
+Content-Type: text/plain
 
-Hi Piyush,
+On Thu, Apr 18 2024 at 13:20, Lyude Paul wrote:
 
-On Tue, Apr 02, 2024 at 06:40:12AM -0700, Piyush Malgujar wrote:
-> From: Suneel Garapati <sgarapati@marvell.com>
-> 
-> To support bus operations for high speed bus frequencies greater than
-> 400KHZ following control bits need to be setup accordingly
->  - hs_mode (bit 0) field in Mode register to switch controller
->    between low-speed and high-speed frequency operating mode.
->  - Setup clock divisors for desired TWSI bus frequency using
->    FOSCL output frequency divisor (D):
->    0 - sets the divisor to 10 for low speed mode
->    1 - sets the divisor to 15 for high speed mode.
-> The TWSI bus output frequency, in master mode is based on:
-> 		TCLK = 100MHz / (THP + 2)
-> 		FOSCL = FSAMP / (M+1)×D = TCLK / (2 ^ N × (M + 1) × 15)
-> 		FSAMP = TCLK / 2 ^ N
-> where,
-> 	N is <2:0> and M is <6:3> of TWSI Clock Control Register
-> 	D is 10 for low speed or 15 for HS_MODE
-> 
-> With high speed mode support, HLC mode usage is limited to
-> low speed frequency (<=400KHz) bus transfers in hardware.
+> Just gave it a try, unfortunately I'm still seeing the same result on
+> that branch.
+>
+> One more piece of information I apparently missed when reporting this
+> yesterday btw: I noticed one more kernel message that comes before the
+> panic that's probably relevant:
+>
+> ..TIMER: vector=0x30 apic1=0 pin1=2 apic2=-1 pin2=-1
 
-Thanks! :-)
+Can you please apply the debug patch below which should make it boot
+again.
 
-> Signed-off-by: Suneel Garapati <sgarapati@marvell.com>
-> Signed-off-by: Piyush Malgujar <pmalgujar@marvell.com>
+Please also provide the output of the files underneath of
 
-..
+       /sys/kernel/debug/x86/topo/
 
-> -#define SW_TWSI(x)	(x->roff.sw_twsi)
-> -#define TWSI_INT(x)	(x->roff.twsi_int)
-> -#define SW_TWSI_EXT(x)	(x->roff.sw_twsi_ext)
-> +#define OCTEON_REG_SW_TWSI(x)		((x)->roff.sw_twsi)
-> +#define OCTEON_REG_TWSI_INT(x)		((x)->roff.twsi_int)
-> +#define OCTEON_REG_SW_TWSI_EXT(x)	((x)->roff.sw_twsi_ext)
+Thanks,
 
-This is a good cleanup, can we please put it in a different
-patch? This way the patch gets smaller and it's easier to review
-and bisect.
+        tglx
+---
+ arch/x86/kernel/cpu/topology.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-> +#define OCTEON_REG_MODE(x)		((x)->roff.mode)
-> +
-> +/* Set REFCLK_SRC and HS_MODE in TWSX_MODE register */
-> +#define TWSX_MODE_REFCLK_SRC	BIT(4)
-> +#define TWSX_MODE_HS_MODE	BIT(0)
-> +#define TWSX_MODE_HS_MASK	(TWSX_MODE_REFCLK_SRC | TWSX_MODE_HS_MODE)
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -176,6 +176,8 @@ static __init void topo_register_apic(u3
+ {
+ 	int cpu, dom;
+ 
++	pr_info("APIC ID %x present %d\n", apic_id, present);
++
+ 	if (present) {
+ 		set_bit(apic_id, phys_cpu_present_map);
+ 
+@@ -201,10 +203,7 @@ static __init void topo_register_apic(u3
+ 		 */
+ 		if (hypervisor_is_type(X86_HYPER_NATIVE) &&
+ 		    topo_unit_count(pkgid, TOPO_PKG_DOMAIN, phys_cpu_present_map)) {
+-			pr_info_once("Ignoring hot-pluggable APIC ID %x in present package.\n",
+-				     apic_id);
+-			topo_info.nr_rejected_cpus++;
+-			return;
++			pr_info("Hot-pluggable APIC ID %x in present package.\n", apic_id);
+ 		}
+ 
+ 		topo_info.nr_disabled_cpus++;
 
-Thanks!
 
-All the rest looks good.
-
-Andi
 
