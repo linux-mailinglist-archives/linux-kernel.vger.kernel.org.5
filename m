@@ -1,190 +1,143 @@
-Return-Path: <linux-kernel+bounces-150569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D06E98AA10C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:27:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC16F8AA0F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:20:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84A001F22822
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:27:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 922B0284A56
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:20:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95F62174EED;
-	Thu, 18 Apr 2024 17:27:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98994172BD0;
+	Thu, 18 Apr 2024 17:20:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lg0GAjAm"
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OULG06U9"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B37B172790;
-	Thu, 18 Apr 2024 17:27:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F56516F902
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 17:20:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713461228; cv=none; b=ahjXVxWmlThKI5qQPgHz2u1eGhs32VIrnBBGTgCc8p61j8INWN95jzb81zWUzdivTtk0t0/+FHWq8GvsYwiY6PD+6xmMLy8SBlDYOXeRko7dIVsrUfRmBCWI0DYAaHyHFXjfu6CX1B6VvkisLuOZP6FAM5XmyU+NauiEe2Ecu6I=
+	t=1713460811; cv=none; b=fOkk/8FtJF06biAP367x3w5PJjCQ30mefUkvvF7WUa+nhhzjHvdO2BIVuSVQzLFsdOt/QqZ3UPeTirKFWYuA33dTGhEDgUnSn0ZJVjlZ2wEW3GX4zmKJdSZVbgn2hlvCckLV0pKoX56Cdj1CCHlI/AGQqOdeFZczaVczHpgZbO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713461228; c=relaxed/simple;
-	bh=rP0Xkz7LY/9paQcIY9KIgH2ieBP45u1ZxnYsJw7BSs8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BcFbfS+FM/cKCeGYRppAbmiaaRwHe4AmhwCJ1Mt1rqlhGJiChBmcStW3k61+UkuGL0Hcnffr9Pf1iOGPerWnS2RJr/7rqT3Sk0WfEuY7mQ3rTMoVQtZNCkpK42Y08P9WwvFXNvXqvI3B+yhUl9OaObGGMyKV+0NBatS6HGafEV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lg0GAjAm; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-78f049ddd7dso74104485a.1;
-        Thu, 18 Apr 2024 10:27:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713461226; x=1714066026; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=lKzOdELtr17UxT9sbgBt88s9IxuTCx7orfaIApRzVA8=;
-        b=lg0GAjAmQzQeMPryoqa2Sa0BbFcbTt82hSNl50zMplaIioPdXtyGzEN2IW7/7Q4Cu/
-         eXcyyhcSC80o2bzYHEDAfaZQVHRHS9QyYht6VkHKeYPm52Qijl2LVjeXLUBDIEBcTqIj
-         /nbr8KGa3eYTG+XCe0wbT45pMoKyFojnxNuQEl0t61/lmd2/3vrhDbJXRAsJh43CO4i1
-         lw/m0Ydx5QSd5MjL9r7jJPipATkiEDPss9S3dKG81LtZKG2nTofx8DAEg/+phQzmghD6
-         u3Fwv+wXC8xVPtSxIuaEjobcKOE1ky/NT6+g8ajqETrLe6D3DJju5xMh/uU5Sy86ZYz2
-         odaw==
+	s=arc-20240116; t=1713460811; c=relaxed/simple;
+	bh=nsSRpLkwj27ZorcNMBH6sJlAY/oO2M4I078c2pj0UsE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=V6OGspWsuAB7tvciZbybBOTGkU/0A6RBsmIy/d6IRWACk/gsDaejRzrtXWnswErGIOwoKycL4Pa7Itu8O6BkQ7h/CCsGvRrDI+eIpt+7/ZzZhZYcZyFvxdf+ruKgxQ6Nfw++kjkwkeRyGFIjXTtv/AYwi+4NB6haUx5cO3/t97M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OULG06U9; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713460809;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=nsSRpLkwj27ZorcNMBH6sJlAY/oO2M4I078c2pj0UsE=;
+	b=OULG06U9HnnXxu7anAkdLEhwCGH80SVfHcV4C1hNDietVl9r8sYTkJdmYbITnCVi9IM8+8
+	jQBy/9O7u7aybL3Tm4mp3dN1pnOiX6JcdZ2ECyTU8kuglpBtfj4Bf2ws78plCrGh+ywbE1
+	stWDcibAyoRWTrMQrd2z++GCO+9B6P8=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-295--qU6r8oTOY2rUQ0iHgTDxA-1; Thu, 18 Apr 2024 13:20:07 -0400
+X-MC-Unique: -qU6r8oTOY2rUQ0iHgTDxA-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6a0506a9c1bso11922136d6.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 10:20:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713461226; x=1714066026;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lKzOdELtr17UxT9sbgBt88s9IxuTCx7orfaIApRzVA8=;
-        b=RvhAH5ie6MqzarIigxopb44VbcPdnfBIatZvDoLW6UOt8BOBLia8vLsVwImwR8mNsS
-         zTM3IyeAy5z/HDP/sGdJy9lhFn52L8YrpU5ylMdpJs/GgAqTvD3dbFQ2KNYXc8HpjgN+
-         rMCbuQz0xKycxbKqfefxnIhyixnHOhTuZmVkuHVYSi0ajLliRdOaP9Cv9kz9VFFKihKI
-         /LOPF3ng+cCOA5ngfCvqkdeoxtwgzMxOA2L6D6h0N9fijtNmEDlwRUSo/rD7GD1lH9t/
-         iyBeCODRtBYeJqVHmvbvSfkekJlsh+8gyLbQOL5xFSsR8aAGIGYbxQnDHowEb3IznFdF
-         QyRg==
-X-Forwarded-Encrypted: i=1; AJvYcCXGvKE+C3ykYg+W2kcLiUooISvfeCfhV1eVji+TQZjj85AsDndw+bypDWVn1uFTki3XBaBEyHPgjsntaOEPtwKk/7aAYQ5wI5G8y259i5T1q2riB1/m+smMnUQWjbtB3t2ZHcyrVCq98srEgvU=
-X-Gm-Message-State: AOJu0YxCRbTLYC7Dzlab6p0AyKMQen49vGs7+tNsyzgVb6AJ5WFRmJhx
-	HDuVWEN0VrqUuRg0q5tP15/E6LUIoPP9ZiPU7XPWB5yK7p8xFQLZ
-X-Google-Smtp-Source: AGHT+IEyP13rku9EoBhl3GBbdeEvkFMwjRN2G8cKqPKJDutUNj7zCLBRGGi8Q5ZNqInv4TdRcVurtw==
-X-Received: by 2002:a05:6214:b05:b0:6a0:583b:8cc5 with SMTP id u5-20020a0562140b0500b006a0583b8cc5mr1986476qvj.33.1713461226239;
-        Thu, 18 Apr 2024 10:27:06 -0700 (PDT)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id d27-20020a0caa1b000000b0069b1db7b0f8sm819856qvb.23.2024.04.18.10.27.04
+        d=1e100.net; s=20230601; t=1713460807; x=1714065607;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :autocrypt:references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nsSRpLkwj27ZorcNMBH6sJlAY/oO2M4I078c2pj0UsE=;
+        b=lI456K1lyp+xxUe4MEkFn4/PqvSrVPMFWDPsETeD3VcoquxaO/GG5ifxtg1P09+Gqu
+         3SbamGYfmhUHCpSvHHuMOOzjiolKGfulJObhaU4cnRWtjG8l869ZX2dm0vuSIiafjZf8
+         cVbFVt1O9LVmKDX6SmqNwD8SPJazoxdzN9NXnYF3X1YyKbJ40FuabCMvBFLXo6kntaLa
+         bx96D1JsQX4xeqTyKTV9Z6cGjkkKJy1ZtH7bXAlLOMBz2EnavP+bAjIU3zOLhpvgB3Vl
+         s49WO+joHoI2HmjFO1e9dqT4hhiCTDdxgWm9rHwiaqw/uO+nuK+INWFTMefpeTI/ByQr
+         PLyg==
+X-Forwarded-Encrypted: i=1; AJvYcCVvdGyESQtaeuTf0rYs0djXUoSt0TaXZrsXsxlmt8wpTxVRXmpfuBmhse5Jg7QRCKHgfdmnsCNfXSOyP1oasAm4ndjPkB06ak7JhTAk
+X-Gm-Message-State: AOJu0Yx4knAx5he82OYFQ9mBEElx5nY1wIDoxQnM/NU24oj5MvMW7Wuc
+	gk2qgMoE41FzOFmB/jNOKwemTLwp/M+xpOoFSzROJGEViw3rNj3hV6o0uGTRlmq5i5MOGjBuppJ
+	B6I2n3zw2PpvBI6th/bzQCFYGgOvZmLFvYLBRbwitIrWEpEovl2K9LG0YCqLp6g==
+X-Received: by 2002:a05:6214:f6f:b0:69b:1803:1bbc with SMTP id iy15-20020a0562140f6f00b0069b18031bbcmr4079340qvb.34.1713460807154;
+        Thu, 18 Apr 2024 10:20:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFi4AseeJLNT5XA7bmgDX2qkWofNQ/2DM4RDk2p9s0PsljEwpKdQBUkcWNqI5q3CBITq1oGOg==
+X-Received: by 2002:a05:6214:f6f:b0:69b:1803:1bbc with SMTP id iy15-20020a0562140f6f00b0069b18031bbcmr4079326qvb.34.1713460806878;
+        Thu, 18 Apr 2024 10:20:06 -0700 (PDT)
+Received: from ?IPv6:2600:4040:5c6c:a300::789? ([2600:4040:5c6c:a300::789])
+        by smtp.gmail.com with ESMTPSA id s12-20020a0ce30c000000b0069b5a7a6bb4sm802610qvl.36.2024.04.18.10.20.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 10:27:05 -0700 (PDT)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id EEB73120007D;
-	Thu, 18 Apr 2024 13:19:52 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Thu, 18 Apr 2024 13:19:52 -0400
-X-ME-Sender: <xms:OFYhZoPVSGZr4ThZoIZ-o8InQS79beav4r0k2k2VvyRWYlKC4jacpQ>
-    <xme:OFYhZu-2kLOiTCv3xz8gwRBYI_xIyVYcr2IfMJHq-AkJent6R8LIS8BA-GieNR1s9
-    uAl4n-ReCbxX3z0zA>
-X-ME-Received: <xmr:OFYhZvT1rFYbaA-BETvn9NP-8lkDvKYrbcEsKzN6FejMnvA4Z2WEroQkizbuhg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudektddgudduudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepueho
-    qhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtf
-    frrghtthgvrhhnpeevgffhueevkedutefgveduuedujeefledthffgheegkeekiefgudek
-    hffggeelfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeeh
-    tdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmse
-    hfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:OFYhZgtdceZ7od9uw63rtZ8CY7Dl3E6h2fpD7GOpMBjjJxT56m49hg>
-    <xmx:OFYhZgdERIQaB_Lbi4DH4osqkOv0rpAgOytWR8rTKFZEprMzYjP1qA>
-    <xmx:OFYhZk3die_i5r4BHdy1zVIIf4Wb2Z5HqhuU_gg9t4NfKWbGCPFurA>
-    <xmx:OFYhZk_5HxYH4MVHXayPgfbTl2Jzj3dkfO0ymJ18tTtYUrgbUc5bVw>
-    <xmx:OFYhZn_tHoWAw4caBBPumKl71b-rQK3jJpUPzua1q-GlJGkIgN6xy9-U>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 18 Apr 2024 13:19:52 -0400 (EDT)
-Date: Thu, 18 Apr 2024 10:19:28 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <keescook@chromium.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Arnd Bergmann <arnd@arndb.de>, Trevor Gross <tmgross@umich.edu>,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	rust-for-linux@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v6 3/4] rust: uaccess: add typed accessors for userspace
- pointers
-Message-ID: <ZiFWIFMSBbU0i8JF@boqun-archlinux>
-References: <20240418-alice-mm-v6-0-cb8f3e5d688f@google.com>
- <20240418-alice-mm-v6-3-cb8f3e5d688f@google.com>
- <5fd684d8-d46d-4009-bcf8-134dab342322@proton.me>
- <CAH5fLgiMLxmmm0AVX_5HQF61FzzN69GCKabrr-uM_oV-rRMuHw@mail.gmail.com>
- <c6239407-8410-49e2-a8a1-16be8468ab88@proton.me>
+        Thu, 18 Apr 2024 10:20:06 -0700 (PDT)
+Message-ID: <fd040809d95b3e12b2fdc78a2409e187716bc66f.camel@redhat.com>
+Subject: Re: Early boot regression from f0551af0213 ("x86/topology: Ignore
+ non-present APIC IDs in a present package")
+From: Lyude Paul <lyude@redhat.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org, 
+	linux-kernel@vger.kernel.org
+Date: Thu, 18 Apr 2024 13:20:05 -0400
+In-Reply-To: <20240418082703.GCZiDZVyra7qOQbyqn@fat_crate.local>
+References: <3d77cb89857ee43a9c31249f4eab7196013bc4b4.camel@redhat.com>
+	 <20240418082703.GCZiDZVyra7qOQbyqn@fat_crate.local>
+Autocrypt: addr=lyude@redhat.com; prefer-encrypt=mutual; keydata=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
+Organization: Red Hat Inc.
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c6239407-8410-49e2-a8a1-16be8468ab88@proton.me>
 
-On Thu, Apr 18, 2024 at 04:23:06PM +0000, Benno Lossin wrote:
-> On 18.04.24 15:17, Alice Ryhl wrote:
-> > On Thu, Apr 18, 2024 at 3:02 PM Benno Lossin <benno.lossin@proton.me> wrote:
-> >>
-> >> On 18.04.24 10:59, Alice Ryhl wrote:
-> >>> diff --git a/rust/kernel/types.rs b/rust/kernel/types.rs
-> >>> index 8fad61268465..9c57c6c75553 100644
-> >>> --- a/rust/kernel/types.rs
-> >>> +++ b/rust/kernel/types.rs
-> >>> @@ -409,3 +409,67 @@ pub enum Either<L, R> {
-> >>>       /// Constructs an instance of [`Either`] containing a value of type `R`.
-> >>>       Right(R),
-> >>>   }
-> >>> +
-> >>> +/// Types for which any bit pattern is valid.
-> >>> +///
-> >>> +/// Not all types are valid for all values. For example, a `bool` must be either zero or one, so
-> >>> +/// reading arbitrary bytes into something that contains a `bool` is not okay.
-> >>> +///
-> >>> +/// It's okay for the type to have padding, as initializing those bytes has no effect.
-> >>> +///
-> >>> +/// # Safety
-> >>> +///
-> >>> +/// All bit-patterns must be valid for this type. This type must not have interior mutability.
-> >>
-> >> What is the reason for disallowing interior mutability here? I agree
-> >> that it is necessary for `AsBytes`, but I don't think we need it here.
+Just gave it a try, unfortunately I'm still seeing the same result on
+that branch.
 
-Hmm.. technically, if the interior mutability behaves in a way that each
-byte is still initialized during the modification, then it should be
-fine for `AsBytes`, for example and `AtomicI32` (implemented by asm
-blocks)? Not making any change suggestion, just checking my understand.
+One more piece of information I apparently missed when reporting this
+yesterday btw: I noticed one more kernel message that comes before the
+panic that's probably relevant:
 
-Regards,
-Boqun
+.TIMER: vector=3D0x30 apic1=3D0 pin1=3D2 apic2=3D-1 pin2=3D-1
 
-> >> For example it is fine to convert `u8` to `UnsafeCell<u8>`. Niches also
-> >> should not be a problem, since eg `Option<UnsafeCell<NonNull<u8>>>`
-> >> already fails the "All bit-patterns must be valid for this type".
-> > 
-> > If T: FromBytes allows transmuting &[u8; size_of::<T>] into &T, then
-> > it would be a problem as you could then use it to modify the original
-> > &[u8].
-> 
-> Ahh that makes a lot of sense.
-> 
-> -- 
-> Cheers,
-> Benno
-> 
-> 
+On Thu, 2024-04-18 at 10:27 +0200, Borislav Petkov wrote:
+> On Wed, Apr 17, 2024 at 05:21:43PM -0400, Lyude Paul wrote:
+> > Hi! I just wanted to let you know that one of the desktops I use
+> > for
+> > testing no longer seems to boot after this commit (just finished
+> > bisecting and confirming). The machine hangs before it gets to
+> > fbcon,
+> > and the error I'm seeing in the early boot console is as such:
+> >=20
+> > =C2=A0=C2=A0 Kernel panic - not syncing: timer doesn't work through
+> > Interrupt-remapped IO-APIC
+> > =C2=A0=C2=A0 CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.8.0-rc5Lyude-T=
+est+
+> > #20
+> > =C2=A0=C2=A0 Hardware name: MSI MS-7A39/A320M GAMING PRO (MS-7A39), BIO=
+S 1.10
+> > 01/22/2019
+>=20
+> Looks like an AMD chipset. Thomas did fix some fallout from the topo
+> rework on AMD, can you test the tip/master branch pls?
+>=20
+> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/
+>=20
+> Thx.
+>=20
+
+--=20
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
+
 
