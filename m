@@ -1,93 +1,111 @@
-Return-Path: <linux-kernel+bounces-149687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DDD28A9489
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:01:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99DB98A948A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:01:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B211E1F22B62
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:01:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB3911C21C89
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:01:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FF567D094;
-	Thu, 18 Apr 2024 08:00:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gbNnVMCs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8875579DC5;
+	Thu, 18 Apr 2024 08:00:51 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5EF5762E5;
-	Thu, 18 Apr 2024 08:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D5678B49
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:00:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713427221; cv=none; b=JNnGOzqHuzxJ1R1tVW0WiXEFqh4B2mxfoz4NLm07HwRkCVnIJUi5nq/u0ny21+HhacMm9EK4S3h+nqIxfbEzTHjfC5BxiXIW9I2Q2Dg04LFHL+f3km4JZ2YNWaiJIkrzlOOQZx1UinxxmGzV+crgW05jNZE0z2vlX/Pb3qhYEEY=
+	t=1713427251; cv=none; b=qoIfk/CRIN9EKBUsudvA81W3k7Og37fDgrlcW9fGE/ivGwiy0XIky2KGFC9y1rGClRpb6+QAKaJv/5Xev4lKWvwUaseNzcwDyuvVkN4NFguOlmo1TFDo2NL5L18yWb2zIZm6NxHi+5NbR+IUhp0dNaUK7hCpqTanb4qHOquRLE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713427221; c=relaxed/simple;
-	bh=8xkMYyuEcKoA6xltCA5FHMbWSOH1kFJ6bzMXvN0SpMY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uNDUHBDPEAilRWh276aOOC4QADBr9fOqHJJSrL+CKpoUI/LaXaBKGySkVcBLSIMeRg5p1i4tCMraTIgzJu4mT+M+farwVV5uuMQfPBcVKwbZTrc9jPgNrNoHZekCVYo78AJlSw8oVje6fDLE5HqwOVR490JcdJVLtDX/RsREoGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gbNnVMCs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF511C113CE;
-	Thu, 18 Apr 2024 08:00:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713427221;
-	bh=8xkMYyuEcKoA6xltCA5FHMbWSOH1kFJ6bzMXvN0SpMY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=gbNnVMCs3OpZ7tw3N/dPN0SJ6ZdFxArs40SVqZA5Ck30OuzATWr6xJPV4JA3o4Yr1
-	 b1Wcy7Nd/n4ZsLB/XDkxkqHZE2hU6cfwI2oquZcJEnYExFg4JHxetExSmOPZS0gc3S
-	 hOxVkGla6AERdW7iJxLvvHcNwIUKVXX3kZJ//Bvugn/wv6J4By7WhNBrZLzp8O1jrZ
-	 rW6HXz2lIB9WdNjkGOhNS2Kcb1MGluHl5pThVJ8QIiXJexT6mkhFytklyPkdimV+iG
-	 R07jRsGzXA3zgtZLW6yz+cB+5YfJPI1/mAitJZTjpGjQSAdBouZwbYfkrDmrHpzeR2
-	 YzC017NummtaA==
-Message-ID: <2f08b2c8-a931-4fc9-85c1-e63b49dbfebc@kernel.org>
-Date: Thu, 18 Apr 2024 10:00:17 +0200
+	s=arc-20240116; t=1713427251; c=relaxed/simple;
+	bh=VQF2Ei3awZBGH1coNeifKni7R8CulQ0uaVhSG8NwWLI=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=O3eJUf7XNnIG2CefFvyArVy1qvtUNVI6uwT5rQI1IQeJ3obFGWOoKL7YjF3trVw/iocpf5Ao/cjAsvaHRpHblW/z8JBm3cYHf/2LjnEyw+Ky+oCPy56ufYQfixEaLDxi9tyYVMVXioHQasL2bDx1EBlsHW7PnWNE7pt5PAOYZT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VKqs72Pnqz1xtxL;
+	Thu, 18 Apr 2024 15:58:19 +0800 (CST)
+Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9C6011A016C;
+	Thu, 18 Apr 2024 16:00:43 +0800 (CST)
+Received: from [10.173.135.154] (10.173.135.154) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 18 Apr 2024 16:00:43 +0800
+Subject: Re: [PATCH 1/2] mm/hugetlb: fix DEBUG_LOCKS_WARN_ON(1) when
+ dissolve_free_hugetlb_folio()
+To: Oscar Salvador <osalvador@suse.de>
+CC: <akpm@linux-foundation.org>, <muchun.song@linux.dev>, <david@redhat.com>,
+	<vbabka@suse.cz>, <willy@infradead.org>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240418022000.3524229-1-linmiaohe@huawei.com>
+ <20240418022000.3524229-2-linmiaohe@huawei.com>
+ <ZiCb_r8O24p8qHIz@localhost.localdomain>
+From: Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <a852eb0c-f64e-f1d7-d685-a4e81a6416c6@huawei.com>
+Date: Thu, 18 Apr 2024 16:00:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/3] cgroup/rstat: add cgroup_rstat_lock helpers and
- tracepoints
-To: Tejun Heo <tj@kernel.org>
-Cc: hannes@cmpxchg.org, lizefan.x@bytedance.com, cgroups@vger.kernel.org,
- yosryahmed@google.com, longman@redhat.com, netdev@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, shakeel.butt@linux.dev,
- kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org
-References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
- <171328988660.3930751.17537768209042139758.stgit@firesoul>
- <Zh7vVPp-Rj5hB6eN@slm.duckdns.org>
+In-Reply-To: <ZiCb_r8O24p8qHIz@localhost.localdomain>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <Zh7vVPp-Rj5hB6eN@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500002.china.huawei.com (7.192.104.244)
 
-
-On 16/04/2024 23.36, Tejun Heo wrote:
-> On Tue, Apr 16, 2024 at 07:51:26PM +0200, Jesper Dangaard Brouer wrote:
->> This commit enhances the ability to troubleshoot the global
->> cgroup_rstat_lock by introducing wrapper helper functions for the lock
->> along with associated tracepoints.
+On 2024/4/18 12:05, Oscar Salvador wrote:
+> On Thu, Apr 18, 2024 at 10:19:59AM +0800, Miaohe Lin wrote:
+>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>> index 26ab9dfc7d63..1da9a14a5513 100644
+>> --- a/mm/hugetlb.c
+>> +++ b/mm/hugetlb.c
+>> @@ -1788,7 +1788,8 @@ static void __update_and_free_hugetlb_folio(struct hstate *h,
+>>  		destroy_compound_gigantic_folio(folio, huge_page_order(h));
+>>  		free_gigantic_folio(folio, huge_page_order(h));
+>>  	} else {
+>> -		INIT_LIST_HEAD(&folio->_deferred_list);
+>> +		if (!folio_test_hugetlb(folio))
+>> +			INIT_LIST_HEAD(&folio->_deferred_list);
 > 
-> Applied to cgroup/for-6.10.
+> Ok, it took me a bit to figure this out.
+> 
+> So we basically init __deferred_list when we know that
+> folio_put will not end up calling free_huge_folio
+> because a previous call to remove_hugetlb_folio has already cleared the
+> bit.
+> 
+> Maybe Matthew thought that any folio ending here would not end up in
+> free_huge_folio (which is the one fiddling subpool).
+> 
+> I mean, fix looks good because if hugetlb flag is cleared,
+> destroy_large_folio will go straight to free_the_page, but the
+> whole thing is a bit subtle.
+
+AFAICS, this is the most straightforward way to fix the issue. Do you have any suggestions
+on how to fix this in a more graceful way?
+
+> 
+> And if we decide to go with this, I think we are going to need a comment
+> in there explaining what is going on like "only init _deferred_list if
+> free_huge_folio cannot be call".
+
+Yes, this comment will help.
+Thanks.
+.
+
+> 
 > 
 
-Thanks for applying the tracepoint patch. I've backported this to our 
-main production kernels v6.6 LTS (with before mentioned upstream cgroup 
-work from Yosry and Longman). I have it running in production on two 
-machines this morning.  Doing manual bpftrace script inspection now, but 
-plan is monitor this continuously (ebpf_exporter[1]) and even have 
-alerts on excessive wait time on contention.
-
-It makes sense to delay applying the next two patches, until we have 
-some production experiments with those two patches, and I have fleet 
-monitoring in place.  I'm be offline next week (on dive trip), so I'll 
-resume work on this 29 April, before I start doing prod experiments.
-
---Jesper
-[1] https://github.com/cloudflare/ebpf_exporter
 
