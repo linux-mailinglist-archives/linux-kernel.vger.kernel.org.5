@@ -1,60 +1,62 @@
-Return-Path: <linux-kernel+bounces-150335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74A728A9D8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:49:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3011D8A9D8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:49:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A695B1C21BF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:49:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C54F01F23F4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4242E16C43B;
-	Thu, 18 Apr 2024 14:49:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6386168B0D;
+	Thu, 18 Apr 2024 14:49:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iEARRixF"
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QW4/11Zc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985EA16ABD8
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:49:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08240165FCB;
+	Thu, 18 Apr 2024 14:49:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713451755; cv=none; b=aeA3AUHw2IYSc0as2wM11pZ1E7ZjRsu88lMmBomFA5JRHuMPr2v78hOAO0ej/ARTTMdcq8L7lf/3f3gpJ9xPgj14ZW0vf3PbSPrL4d5HmN0akKqQyORWhM17BOTyQiN2pl0jejBa810gusf4RG89g8oqoKHaFTPdGNQeUCRXqok=
+	t=1713451751; cv=none; b=SD7VzRQ4G2zsNOlWu8qtdqWoDdKWTNhZSvhlW5yBusAhB4nn0irpe7D19UHuY3W4ECrLfXfhKisA4l+URfiyKDeyNmsdgE+nEYOZ5Ym5Bna51yrpNHL+tX5UB5PE9V0ewV1xSB6oyaEgmUiYndivLnotCveKk6wamx7GhANCgBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713451755; c=relaxed/simple;
-	bh=P94DH8AqKAA5lye5i75LmkzjhoEdyTbF8tps1jGtw38=;
+	s=arc-20240116; t=1713451751; c=relaxed/simple;
+	bh=rDbUab31w3dB1JmzdTeQ6kvukXa2XZnDAfrUgOMw7rI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GauqQiOSKQuERCZaz633WCRZXv08xAf98WidFfySEe041C4nxgVRxWtj0CJTN32ZQUYd6BimA/lJwvvHZEXJQ/SzBuXQ8tMtEb+Dy0vEbL0wkqrikj9TfZcTxKGC8BvulSanMP9sywSNdz3N8BOlWFwx7EcLjvZQdV3u/Nv3r0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iEARRixF; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 18 Apr 2024 07:49:02 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713451751;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L+oZNHCiAYDQYgTy7C1ugxmdQ034rdJRx6SliQtfo3k=;
-	b=iEARRixFPb7tY694aPQ7hwwXPQqJZftXCopWiRG8K7LuZOlONNwzObwH4juZlvCU8THu3g
-	hivCPVdZKszLw3dA047mPNFgYGE0J5Y2chC7EIdAfCoyR9ryDC++O/Q+t79Fn8O5v6p52F
-	+WXAeQRqDuYsoq2y3t68OFrSNJUIJrQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Yosry Ahmed <yosryahmed@google.com>, tj@kernel.org, hannes@cmpxchg.org, 
-	lizefan.x@bytedance.com, cgroups@vger.kernel.org, longman@redhat.com, 
-	netdev@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org
-Subject: Re: [PATCH v1 2/3] cgroup/rstat: convert cgroup_rstat_lock back to
- mutex
-Message-ID: <lxzi557wfbrkrj6phdlub4nmtulzbegykbmroextadvssdyfhe@qarxog72lheh>
-References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
- <171328989335.3930751.3091577850420501533.stgit@firesoul>
- <CAJD7tkZFnQK9CFofp5rxa7Mv9wYH2vWF=Bb28Dchupm8LRt7Aw@mail.gmail.com>
- <651a52ac-b545-4b25-b82f-ad3a2a57bf69@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gz1Cpw0hm6Lmzc24dp6wJm0QPP6R81yy9DPcQZ7g7y+pjZiqdJJkBwl1PyHssygmex0GUQDJX8oSw2VwBq9Xup8JXsyf4UR18sJpBLsKrXlHeC6dCN36JdvFeKQ6hojx1tLjMtkjxygU33ySqkH/yqajr+TpO92zfHknWu1dwR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QW4/11Zc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DA2CC113CC;
+	Thu, 18 Apr 2024 14:49:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713451750;
+	bh=rDbUab31w3dB1JmzdTeQ6kvukXa2XZnDAfrUgOMw7rI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QW4/11Zc0MAOdJOuCp9c+QFLurWnhvoH2qdgj7xHlsJIHUetIlBa92h+/4VhJcqPX
+	 eQzaeTWsxSZFVdot+9Se00mUeADHsUAr7XFDyPwssQnvlkutqNzlTMBgeFvqrDdIxz
+	 kSmctl6EFgw+4pX+ESbHbK0khZlOvpirfg8NnEUQq695oKHBXLcoic6v7vbLVDjAhe
+	 AmsJGALJDKYg018EenIyUy9Zr4IoCRQXIj3ibuLRYbP+T9PI4XX5ZjibvHYUp0Fsn7
+	 r8FpEizpVvGQiQSCdqilFsOn7DSjMHexvtO+D3VLl4rcvvZdCpOwli24TVga1J7gOY
+	 MQaHdQl6UKf9w==
+Date: Thu, 18 Apr 2024 16:49:04 +0200
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mhi@lists.linux.dev, linux-tegra@vger.kernel.org,
+	Damien Le Moal <dlemoal@kernel.org>
+Subject: Re: [PATCH v3 3/9] PCI: endpoint: Rename BME to Bus Master Enable
+Message-ID: <ZiEy4EVcVpUry9qn@ryzen>
+References: <20240418-pci-epf-rework-v3-0-222a5d1ed2e5@linaro.org>
+ <20240418-pci-epf-rework-v3-3-222a5d1ed2e5@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,35 +65,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <651a52ac-b545-4b25-b82f-ad3a2a57bf69@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240418-pci-epf-rework-v3-3-222a5d1ed2e5@linaro.org>
 
-On Thu, Apr 18, 2024 at 11:02:06AM +0200, Jesper Dangaard Brouer wrote:
+On Thu, Apr 18, 2024 at 05:28:31PM +0530, Manivannan Sadhasivam wrote:
+> BME which stands for 'Bus Master Enable' is not defined in the PCIe base
+> spec even though it is commonly referred in many places (vendor docs). But
+> to align with the spec, let's rename it to its expansion 'Bus Master
+> Enable'.
 > 
-> 
-> On 18/04/2024 04.19, Yosry Ahmed wrote:
-[...]
-> > 
-> > I will keep the high-level conversation about using the mutex here in
-> > the cover letter thread, but I am wondering why we are keeping the
-> > lock dropping logic here with the mutex?
-> > 
-> 
-> I agree that yielding the mutex in the loop makes less sense.
-> Especially since the raw_spin_unlock_irqrestore(cpu_lock, flags) call
-> will be a preemption point for my softirq.   But I kept it because, we
-> are running a CONFIG_PREEMPT_VOLUNTARY kernel, so I still worried that
-> there was no sched point for other userspace processes while holding the
-> mutex, but I don't fully know the sched implication when holding a mutex.
-> 
+> Suggested-by: Damien Le Moal <dlemoal@kernel.org>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
 
-Are the softirqs you are interested in, raised from the same cpu or
-remote cpu? What about local_softirq_pending() check in addition to
-need_resched() and spin_needbreak() checks? If softirq can only be
-raised on local cpu then convert the spin_lock to non-irq one (Please
-correct me if I am wrong but on return from hard irq and not within bh
-or irq disabled spin_lock, the kernel will run the pending softirqs,
-right?). Did you get the chance to test these two changes or something
-similar in your prod environment?
+Reviewed-by: Niklas Cassel <cassel@kernel.org>
 
+
+Outside the scope of this patch/series:
+Do we perhaps want to add a bus_master_enable() callback also for the
+pci-epf-test driver?
+
+In my opinion, the test driver should be "the driver" that tests that
+all the EPF features/callbacks work, at least a basic test "does it
+work at all". Other EPF drivers can implement the callbacks, and do
+more intelligent things, i.e. more than just seeing that "it works".
+
+
+Kind regards,
+Niklas
 
