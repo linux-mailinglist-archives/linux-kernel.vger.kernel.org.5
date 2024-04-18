@@ -1,177 +1,146 @@
-Return-Path: <linux-kernel+bounces-150056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D499B8A99BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E2E938A99C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:29:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03B6B1C20D8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:27:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 209931C213C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 111AD15FA73;
-	Thu, 18 Apr 2024 12:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE5DE15F411;
+	Thu, 18 Apr 2024 12:29:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="c+frCZT7";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="hohUDKmb";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="c+frCZT7";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="hohUDKmb"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=smtpcorp.com header.i=@smtpcorp.com header.b="nuLjUiO6";
+	dkim=pass (2048-bit key) header.d=asem.it header.i=@asem.it header.b="PlydqyOr"
+Received: from e3i51.smtp2go.com (e3i51.smtp2go.com [158.120.84.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1C215F405;
-	Thu, 18 Apr 2024 12:27:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D9B15FA77
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:29:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=158.120.84.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713443262; cv=none; b=YQcWyDH0d1G8kYbsWnnhheQfwnuYfDgaJL1sYb6J74Iz7bxTP3livlgthPfPPCB23U/ENzd2hHTMlakaSiwMsgB5lS5pyCX5Mqtj+xha9qTfIB2C/pOSLWD22Lbte5ZNjRMJIpQUhJBZqtJansIbCT2kXTilnKn4+Y6sEEQOr6E=
+	t=1713443369; cv=none; b=uqCmDGUPxjtKY581f4DozH1e/rbI+qTEFTyceRKkYQOkzNJynpT5l20nvSYMoFPXQXl+tPtyJJ5xXRJ9qVMVeAwSzmb/FDPSZkKKA4QJF+OS7GEMVBRpvfDf3OFUbzRqjfPaAQ6uqajXs63Oi1mKUE8vAkv7aKd21LlWFRjIJuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713443262; c=relaxed/simple;
-	bh=pATeS5SPR6X8cLAtFccaCt0+DXe5ZptNwFh+l7hFbzM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=bK7SlSWLagmjf34jzuaY4W6LEs55Bw8sP9wAUV0HKRIPLDlj6AOgajn1lsy+NhNhlq05V/h3eWnGnwqOVnnJY6KEy8l7JYn6KKfKhq1kbreYOkw2VSq6VQCVMfN2XElvgw3PmwBM5xhH0AsD8bT99mcDZMIBfNdoKoYFp3cB5Ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=c+frCZT7; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=hohUDKmb; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=c+frCZT7; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=hohUDKmb; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 939EA5CA72;
-	Thu, 18 Apr 2024 12:27:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713443258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=iacDreTbLiNlUPYvwqy/30EORNDWG1S3S2E0kuUcCNE=;
-	b=c+frCZT7hbNPKmkRaTVa+XlOe1+FcDcaRSIGfpEIWLG0f3/FguLbbsWrOA6Ythm6x1AcDR
-	Do0xmHuYQL9cyRqQsDihzRKAxag0BnhJZYZR1HMAjlCj4/3EcJqNKkYyXW0xRWDPDaX577
-	IogtWDi1/wU9ZqRxIOzhJkjaDyhR+hQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713443258;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=iacDreTbLiNlUPYvwqy/30EORNDWG1S3S2E0kuUcCNE=;
-	b=hohUDKmb2sC4HKhlB15tjpKVe69ZXufxX7ytFpa2CLdUrxVa+y46FACYMoTbrGpLXyAquc
-	Rh1EdRZYn+G6MEDA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=c+frCZT7;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=hohUDKmb
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713443258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=iacDreTbLiNlUPYvwqy/30EORNDWG1S3S2E0kuUcCNE=;
-	b=c+frCZT7hbNPKmkRaTVa+XlOe1+FcDcaRSIGfpEIWLG0f3/FguLbbsWrOA6Ythm6x1AcDR
-	Do0xmHuYQL9cyRqQsDihzRKAxag0BnhJZYZR1HMAjlCj4/3EcJqNKkYyXW0xRWDPDaX577
-	IogtWDi1/wU9ZqRxIOzhJkjaDyhR+hQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713443258;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=iacDreTbLiNlUPYvwqy/30EORNDWG1S3S2E0kuUcCNE=;
-	b=hohUDKmb2sC4HKhlB15tjpKVe69ZXufxX7ytFpa2CLdUrxVa+y46FACYMoTbrGpLXyAquc
-	Rh1EdRZYn+G6MEDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DB7F613687;
-	Thu, 18 Apr 2024 12:27:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id T67NLrkRIWYeeAAAD6G6ig
-	(envelope-from <jdelvare@suse.de>); Thu, 18 Apr 2024 12:27:37 +0000
-Date: Thu, 18 Apr 2024 14:27:34 +0200
-From: Jean Delvare <jdelvare@suse.de>
-To: Michael Schierl <schierlm@gmx.de>
-Cc: linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org, Michael 
- Kelley <mhklinux@outlook.com>
-Subject: [PATCH v2] firmware: dmi: Stop decoding on broken entry
-Message-ID: <20240418142734.56e1db4b@endymion.delvare>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1713443369; c=relaxed/simple;
+	bh=fop2tDdvT4Rg5l7ondzUbscaRR+uHGG3gHYZCup3Lls=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mDbGuH23Q3mj0oSSzQXUpDOGx6n7FWv5dfsUgKDMEll7vIafm9prspbnWe2jmWW67ohr+jVwX76mEz03UBDWoj+wx5dj1Ad2Fo6XoaMdnvjLNC4kIy0DqwMeoERsCnDYlTJR5NZPg3DaeHFphqRiTqsRX6GDkBw3MWUViEk+DZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asem.it; spf=pass smtp.mailfrom=em1174574.asem.it; dkim=pass (2048-bit key) header.d=smtpcorp.com header.i=@smtpcorp.com header.b=nuLjUiO6; dkim=pass (2048-bit key) header.d=asem.it header.i=@asem.it header.b=PlydqyOr; arc=none smtp.client-ip=158.120.84.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asem.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=em1174574.asem.it
+Received: from [10.86.249.198] (helo=asas054.asem.intra)
+	by smtpcorp.com with esmtpa (Exim 4.96.1-S2G)
+	(envelope-from <f.suligoi@asem.it>)
+	id 1rxQtI-wSFvR6-2U;
+	Thu, 18 Apr 2024 12:29:24 +0000
+Received: from flavio-x.asem.intra ([172.16.18.47]) by asas054.asem.intra with Microsoft SMTPSVC(10.0.14393.4169);
+	 Thu, 18 Apr 2024 14:29:23 +0200
+From: Flavio Suligoi <f.suligoi@asem.it>
+To: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Giuseppe Cavallaro <peppe.cavallaro@st.com>
+Cc: netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH v2 0/5] arm64: dts: remove tx-sched-sp property in snps,dwmac
+Date: Thu, 18 Apr 2024 14:28:54 +0200
+Message-Id: <20240418122859.2079099-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	HAS_ORG_HEADER(0.00)[];
-	FREEMAIL_TO(0.00)[gmx.de];
-	TO_DN_SOME(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmx.de,outlook.com];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	RCPT_COUNT_THREE(0.00)[4];
-	FREEMAIL_CC(0.00)[vger.kernel.org,outlook.com];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.de:email]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 939EA5CA72
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -4.51
+Content-Transfer-Encoding: 8bit
+X-OriginalArrivalTime: 18 Apr 2024 12:29:23.0515 (UTC) FILETIME=[0B7EA8B0:01DA918C]
+X-smtpcorp-track: 1rxQtmwSFvR62l.mcmgue4Kqyvyx
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=smtpcorp.com;
+ i=@smtpcorp.com; q=dns/txt; s=a1-4; t=1713443366; h=feedback-id :
+ x-smtpcorp-track : date : message-id : to : subject : from : reply-to
+ : sender : list-unsubscribe;
+ bh=gHoVF4+qnuYpG3bFpPHolfB6dA01j229z+bTKcaSRuA=;
+ b=nuLjUiO6/TLnK3jmzYjOTFqZDuruI/8Gj62NNTYvQOQ3fJUdpdnOZdK6H6FPaCwexE7NY
+ 5mI5AGNtp12Oa06xQjvSFZHTVJ4f7QHtiUxqVQDrWL375mVxlcWwbL/EnSJ/Pqn7Q3f4k5x
+ pED2B9DjuGRN40ilzEOu3nHU0+ZOl6knwkS36or2pa+fA3l6CBiDWhMTBEuKevKekSopcNN
+ sFcgcuy2Wc889GKZlRrZ0REARTOqTKmO9U3YgvOOroYo4MeWIT46hS5A8MMxNwHfJobm8eN
+ LBid1gcnzVsHLYpx8XapOJV4BlsnYYEPUhYcO6nCkmOejLYUUIoQ2JCYIY2w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it;
+ i=@asem.it; q=dns/txt; s=s1174574; t=1713443366; h=from : subject : to
+ : message-id : date; bh=gHoVF4+qnuYpG3bFpPHolfB6dA01j229z+bTKcaSRuA=;
+ b=PlydqyOrtD4hsTAl7I1ZhCGZVE9jyua/ddh/rTxm4Odqr33f43QBrTAcuq4BJI1MldP/U
+ Dme8Pzl3jd1xu2PWHHnexUzdewGX6/aiqgMykdyT+1tIvYYmxb/2MYmIM24PKwQq+M5bcRS
+ eCzhEIy/hCtjCT7Lxc3qHdhg9No9LUZqdN1/cdJCxM056MbMQ91ItXXCBx2kLfRYP7+ycm0
+ /xXk0whs1IUAWHf7/TPzX1vxCFsxz1f2VwX56uv8HNn/Ov0MfJqpkC1znFnXNMkZ+lrIbao
+ lEo1OyaRlIBQaEPyJDQhYHLa6BCn8JGCa6t9CJLZk3TrjnUVLP6edAQXe0Tw==
 
-If a DMI table entry is shorter than 4 bytes, it is invalid. Due to
-how DMI table parsing works, it is impossible to safely recover from
-such an error, so we have to stop decoding the table.
+In the ethernet stmmac device driver:
 
-Signed-off-by: Jean Delvare <jdelvare@suse.de>
-Reported-by: Michael Schierl <schierlm@gmx.de>
-Link: https://lore.kernel.org/linux-kernel/Zh2K3-HLXOesT_vZ@liuwe-devbox-debian-v2/T/
-Tested-by: Michael Schierl <schierlm@gmx.de>
----
-Changes since v1:
- * Also log the offset of the corrupted entry (suggested by Michael Kelley)
+- drivers/net/ethernet/stmicro/stmmac/
 
- drivers/firmware/dmi_scan.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+The "Strict priority" for the tx scheduler is by default in Linux driver,
+so the tx-sched-sp property was removed in commit aed6864035b1 ("net:
+stmmac: platform: Delete a redundant condition branch").
 
---- linux-6.8.orig/drivers/firmware/dmi_scan.c
-+++ linux-6.8/drivers/firmware/dmi_scan.c
-@@ -102,6 +102,17 @@ static void dmi_decode_table(u8 *buf,
- 		const struct dmi_header *dm = (const struct dmi_header *)data;
- 
- 		/*
-+		 * If a short entry is found (less than 4 bytes), not only it
-+		 * is invalid, but we cannot reliably locate the next entry.
-+		 */
-+		if (dm->length < sizeof(struct dmi_header)) {
-+			pr_warn(FW_BUG
-+				"Corrupted DMI table, offset %ld (only %d entries processed)\n",
-+				data - buf, i);
-+			break;
-+		}
-+
-+		/*
- 		 *  We want to know the total length (formatted area and
- 		 *  strings) before decoding to make sure we won't run off the
- 		 *  table in dmi_decode or dmi_string
+This patch series remove this property from the following device-tree
+files:
 
+- arch/arm64/boot/dts/freescale/imx8mp-beacon-som.dtsi
+- arch/arm64/boot/dts/freescale/imx8mp-evk.dts
+- arch/arm64/boot/dts/freescale/imx8mp-verdin.dtsi
+- arch/arm64/boot/dts/qcom/sa8540p-ride.dts
+- arch/arm64/boot/dts/qcom/sa8775p-ride.dts
+
+There is no problem if that property is still used in these DTS,
+since, as seen above, it is a default property of the driver.
+
+The property is also removed, in a separate patch, from the corresponding
+dt_bindings file:
+- Documentation/devicetree/bindings/net/snps,dwmac.yaml
+
+v2 - This patch is the 2nd version of a previous patch, where both the DTS
+     and the yaml files were included toghether. Then I split this 1st
+     patch in two, as suggested by Krzysztof.
+v1 - original version of the patch where, in addition to these DTS patches,
+     there was also the one related to the correspondent snps,dwmac.yaml
+     dt_binding file.
+
+Flavio Suligoi (5):
+  arm64: dts: freescale: imx8mp-beacon: remove tx-sched-sp property
+  arm64: dts: freescale: imx8mp-evk: remove tx-sched-sp property
+  arm64: dts: freescale: imx8mp-verdin: remove tx-sched-sp property
+  arm64: dts: qcom: sa8540p-ride: remove tx-sched-sp property
+  arm64: dts: qcom: sa8775p-ride: remove tx-sched-sp property
+
+ arch/arm64/boot/dts/freescale/imx8mp-beacon-som.dtsi | 1 -
+ arch/arm64/boot/dts/freescale/imx8mp-evk.dts         | 1 -
+ arch/arm64/boot/dts/freescale/imx8mp-verdin.dtsi     | 1 -
+ arch/arm64/boot/dts/qcom/sa8540p-ride.dts            | 2 --
+ arch/arm64/boot/dts/qcom/sa8775p-ride.dts            | 2 --
+ 5 files changed, 7 deletions(-)
 
 -- 
-Jean Delvare
-SUSE L3 Support
+2.34.1
+
 
