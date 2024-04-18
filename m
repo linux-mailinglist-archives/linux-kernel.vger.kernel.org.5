@@ -1,107 +1,91 @@
-Return-Path: <linux-kernel+bounces-149944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F30E8A9825
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CC998A9829
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:05:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06EF92840FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:04:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48A98284007
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C7915B969;
-	Thu, 18 Apr 2024 11:04:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B37D15E7F4;
+	Thu, 18 Apr 2024 11:04:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iwuquuFV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5agX036W";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XI4mK2VA";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lRh68gjo"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="ZGildrEZ"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 859F015D5C1;
-	Thu, 18 Apr 2024 11:04:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFEAE15E5B2;
+	Thu, 18 Apr 2024 11:04:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713438284; cv=none; b=XYjYOGmMcTsvaNcEw5BC8vydgJ6ZxluBDGFiJptMrN2S/QcAod/rKIwJXVwYMsoME3izyJfQFZb6CT0uX/5sjItIuH7ZItKBURnloqU8AcjroUCjejJIrpVfWZ1p+IT2jPX6qsQ+XsIGcCbHNnR63+SK5SMd2qcCg5Fo/qeQnos=
+	t=1713438292; cv=none; b=LkoESuy9BWbBYA/6/lEWsx0qgQoz1yTzh5NCWIzMukkJelF9O0chR2dQ+3YieZhx3SO1SoHOw1Ca8I7+QGsntZ0+GP5tCDJlPeg3C7C5yJ6W0yYKxZIICAHZjSwatBobZ1T9Dl4cLK9P8EJp368agrVzPi/h8Youin6Tgt7xxxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713438284; c=relaxed/simple;
-	bh=n6GYePWKGsaNVZpPhB0ngSYw7xW4miHlMzKXOKwuVms=;
+	s=arc-20240116; t=1713438292; c=relaxed/simple;
+	bh=nVrJ30MzRcVeLHpwfXp7hOiRaAkKYzwTLRPhrFm0ixw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t3TW8uBUTqXx4qpMii562uehiOTEn6GZCd0I+Q+toPHqckq4LdANvtLPVCQMVKfcptqPIdLOid7zaZVDrJt3UhOSJc199Gy3oEy3EO4Q+f/3MtMqhD/ErSSn4h8z/xURuI4jmszW9LgXhOLvvVs133hwIaB/acktdtQpMsjVUuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iwuquuFV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5agX036W; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XI4mK2VA; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lRh68gjo; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B234C34DD5;
-	Thu, 18 Apr 2024 11:04:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713438275; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gv1S5z4U/Lpggcm746FJVB5sgVR9PpMNoPlpi/9ROxQ=;
-	b=iwuquuFVSRj3wbZCLHn+iERrfqZ94jpQwcRoAjkTgPgCjZ9T5yHoslKOU7yjTp2Qn7GhQI
-	4bp/2Jm/BhOOW45u/3kTokz1zh3D9BRjs2v5BXX0U6hohw/BdwtSc4lvfUA5lsrufbci3b
-	XSEcEqETcdua1ZbS1B7L450I6w+Rcnc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713438275;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gv1S5z4U/Lpggcm746FJVB5sgVR9PpMNoPlpi/9ROxQ=;
-	b=5agX036W69nvNXNH3kJXYCpizMe4x2w1YlQxcUWUiKddCrUfqw1yXh3VJB7M6C0kkf0SzM
-	8aXAirlqboDm7SCg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=XI4mK2VA;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=lRh68gjo
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713438274; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gv1S5z4U/Lpggcm746FJVB5sgVR9PpMNoPlpi/9ROxQ=;
-	b=XI4mK2VAsewf9Mau4YEWo81qOrnE2L6X7K447OkXOVwrenGAseIJdpA75NAw3F06xbZnV2
-	5oB1MfaA+dUoJIs2Ki0kWbes/57/3OEdsf29V7TVph11AOK07vbTL83ycbxzKMy/Mzv2di
-	5rBtIkL/Iq0VRQIDp11LMq2JREALHTw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713438274;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gv1S5z4U/Lpggcm746FJVB5sgVR9PpMNoPlpi/9ROxQ=;
-	b=lRh68gjome/yMlDFGPIYA9g2odX3SgIGtGtf7dAvaJwfZUQxh0UVwOfZBK60hYYb/EcL07
-	PbLXKw4KbgMc1ECw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A60E91384C;
-	Thu, 18 Apr 2024 11:04:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id LpV7KEL+IGYrWwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 18 Apr 2024 11:04:34 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 4DEF6A0812; Thu, 18 Apr 2024 13:04:34 +0200 (CEST)
-Date: Thu, 18 Apr 2024 13:04:34 +0200
-From: Jan Kara <jack@suse.cz>
-To: Zach O'Keefe <zokeefe@google.com>
-Cc: Jan Kara <jack@suse.cz>, Andrew Morton <akpm@linux-foundation.org>,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	Maxim Patlasov <MPatlasov@parallels.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] mm/writeback: fix possible divide-by-zero in
- wb_dirty_limits(), again
-Message-ID: <20240418110434.g5bx5ntp2m4433eo@quack3>
-References: <20240118181954.1415197-1-zokeefe@google.com>
- <20240417111001.fa2eg5gp6t2wiwco@quack3>
- <CAAa6QmSOum_0ZhyUq1ppguLp0jpEs0u1U843GkF==xMwaMGV4A@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=alSGiumo+V9k2YRcQ2BaJNgIho4VRcDW+xSghTRst7h4GPLohSpZ3he6b4n3Cc4gEYjui15HX5qf7cU+Po39AsxsR6EQT3yatq8JQd3FJlJtz70LsuE/DDLNYqhpyw5VhkN40D5KnRpjQdgpebrfJyVOHa5POm7D0Udh7m229Sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=ZGildrEZ; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8ACEBC8E;
+	Thu, 18 Apr 2024 13:03:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1713438237;
+	bh=nVrJ30MzRcVeLHpwfXp7hOiRaAkKYzwTLRPhrFm0ixw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZGildrEZ8PscbwJPkrVEQ9AVQQ5ZqsFtIzLjmF9plRRPHNE6nYXij+2WJ4wHeQ/Vt
+	 tbErl0bgSpuTcVcaqqltDwf7r27d4aQqy4R23+6SvyevGzwbJqe+dJwie8wJOCDzuq
+	 WkVX5b8VtifCgZq58ru+v0enMsxJOUVui5DkYPqU=
+Date: Thu, 18 Apr 2024 14:04:38 +0300
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Ricardo Ribalda <ribalda@chromium.org>
+Cc: Martin Tuma <martin.tuma@digiteqautomotive.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Hugues Fruchet <hugues.fruchet@foss.st.com>,
+	Alain Volmat <alain.volmat@foss.st.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Sowjanya Komatineni <skomatineni@nvidia.com>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
+	Abylay Ospan <aospan@netup.ru>,
+	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+	Dmitry Osipenko <digetx@gmail.com>,
+	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+	Vikash Garodia <quic_vgarodia@quicinc.com>,
+	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+	Sylvain Petinot <sylvain.petinot@foss.st.com>,
+	Jacopo Mondi <jacopo+renesas@jmondi.org>,
+	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+	Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
+	Pavel Machek <pavel@ucw.cz>, linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 03/35] media: uvcvideo: Refactor iterators
+Message-ID: <20240418110438.GX12561@pendragon.ideasonboard.com>
+References: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
+ <20240415-fix-cocci-v1-3-477afb23728b@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -110,116 +94,95 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAa6QmSOum_0ZhyUq1ppguLp0jpEs0u1U843GkF==xMwaMGV4A@mail.gmail.com>
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: B234C34DD5
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
-	MISSING_XM_UA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_TRACE(0.00)[suse.cz:+]
+In-Reply-To: <20240415-fix-cocci-v1-3-477afb23728b@chromium.org>
 
-On Wed 17-04-24 12:33:39, Zach O'Keefe wrote:
-> On Wed, Apr 17, 2024 at 4:10 AM Jan Kara <jack@suse.cz> wrote:
-> > > diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> > > index cd4e4ae77c40a..02147b61712bc 100644
-> > > --- a/mm/page-writeback.c
-> > > +++ b/mm/page-writeback.c
-> > > @@ -1638,7 +1638,7 @@ static inline void wb_dirty_limits(struct dirty_throttle_control *dtc)
-> > >        */
-> > >       dtc->wb_thresh = __wb_calc_thresh(dtc);
-> > >       dtc->wb_bg_thresh = dtc->thresh ?
-> > > -             div_u64((u64)dtc->wb_thresh * dtc->bg_thresh, dtc->thresh) : 0;
-> > > +             div64_u64(dtc->wb_thresh * dtc->bg_thresh, dtc->thresh) : 0;
-..
-> > Thirdly, if thresholds are larger than 1<<32 pages, then dirty balancing is
-> > going to blow up in many other spectacular ways - consider only the
-> > multiplication on this line - it will not necessarily fit into u64 anymore.
-> > The whole dirty limiting code is interspersed with assumptions that limits
-> > are actually within u32 and we do our calculations in unsigned longs to
-> > avoid worrying about overflows (with occasional typing to u64 to make it
-> > more interesting because people expected those entities to overflow 32 bits
-> > even on 32-bit archs). Which is lame I agree but so far people don't seem
-> > to be setting limits to 16TB or more. And I'm not really worried about
-> > security here since this is global-root-only tunable and that has much
-> > better ways to DoS the system.
-> >
-> > So overall I'm all for cleaning up this code but in a sensible way please.
-> > E.g. for these overflow issues at least do it one function at a time so
-> > that we can sensibly review it.
-> >
-> > Andrew, can you please revert this patch until we have a better fix? So far
-> > it does more harm than good... Thanks!
-> 
-> Shall we just roll-forward with a suitable fix? I think all the
-> original code actually "needed" was to cast the ternary predicate,
-> like:
-> 
-> ---8<---
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index fba324e1a010..ca1bfc0c9bdd 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -1637,8 +1637,8 @@ static inline void wb_dirty_limits(struct
-> dirty_throttle_control *dtc)
->          *   at some rate <= (write_bw / 2) for bringing down wb_dirty.
->          */
->         dtc->wb_thresh = __wb_calc_thresh(dtc);
-> -       dtc->wb_bg_thresh = dtc->thresh ?
-> -               div64_u64(dtc->wb_thresh * dtc->bg_thresh, dtc->thresh) : 0;
-> +       dtc->wb_bg_thresh = (u32)dtc->thresh ?
-> +               div_u64((u64)dtc->wb_thresh * dtc->bg_thresh, dtc->thresh) : 0;
+Hi Ricardo,
 
-Well, this would fix the division by 0 but when you read the code you
-really start wondering what's going on :) And as I wrote above when
-thresholds pass UINT_MAX, the dirty limitting code breaks down anyway so I
-don't think the machine will be more usable after your fix. Would you be up
-for a challenge to modify mm/page-writeback.c so that such huge limits
-cannot be set instead? That would be actually a useful fix...
+Thank you for the patch.
 
-								Honza
+On Mon, Apr 15, 2024 at 07:34:20PM +0000, Ricardo Ribalda wrote:
+> Avoid using the iterators after the list_for_each() constructs.
+> This patch should be a NOP, but makes cocci, happier:
+> 
+> drivers/media/usb/uvc/uvc_ctrl.c:1861:44-50: ERROR: invalid reference to the index variable of the iterator on line 1850
+> drivers/media/usb/uvc/uvc_ctrl.c:2195:17-23: ERROR: invalid reference to the index variable of the iterator on line 2179
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/usb/uvc/uvc_ctrl.c | 24 +++++++++++++-----------
+>  1 file changed, 13 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> index e59a463c2761..a4a987913430 100644
+> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> @@ -1850,16 +1850,18 @@ int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+>  	list_for_each_entry(entity, &chain->entities, chain) {
 
+If we really want to ensure the iterator won't be used after the loop,
+it could be declared in the loop statement itself, now that the kernel
+has switched to a newer C version.
+
+>  		ret = uvc_ctrl_commit_entity(chain->dev, entity, rollback,
+>  					     &err_ctrl);
+> -		if (ret < 0)
+> +		if (ret < 0) {
+> +			if (ctrls)
+> +				ctrls->error_idx =
+> +					uvc_ctrl_find_ctrl_idx(entity, ctrls,
+> +							       err_ctrl);
+>  			goto done;
+> +		}
+>  	}
+>  
+>  	if (!rollback)
+>  		uvc_ctrl_send_events(handle, ctrls->controls, ctrls->count);
+>  done:
+> -	if (ret < 0 && ctrls)
+> -		ctrls->error_idx = uvc_ctrl_find_ctrl_idx(entity, ctrls,
+> -							  err_ctrl);
+>  	mutex_unlock(&chain->ctrl_mutex);
+>  	return ret;
+>  }
+> @@ -2165,7 +2167,7 @@ static int uvc_ctrl_init_xu_ctrl(struct uvc_device *dev,
+>  int uvc_xu_ctrl_query(struct uvc_video_chain *chain,
+>  	struct uvc_xu_control_query *xqry)
+>  {
+> -	struct uvc_entity *entity;
+> +	struct uvc_entity *entity, *iter;
+>  	struct uvc_control *ctrl;
+>  	unsigned int i;
+>  	bool found;
+> @@ -2175,16 +2177,16 @@ int uvc_xu_ctrl_query(struct uvc_video_chain *chain,
+>  	int ret;
+>  
+>  	/* Find the extension unit. */
+> -	found = false;
+> -	list_for_each_entry(entity, &chain->entities, chain) {
+> -		if (UVC_ENTITY_TYPE(entity) == UVC_VC_EXTENSION_UNIT &&
+> -		    entity->id == xqry->unit) {
+> -			found = true;
+> +	entity = NULL;
+> +	list_for_each_entry(iter, &chain->entities, chain) {
+
+Same here, iter could be declared in the loop.
+
+> +		if (UVC_ENTITY_TYPE(iter) == UVC_VC_EXTENSION_UNIT &&
+> +		    iter->id == xqry->unit) {
+> +			entity = iter;
+>  			break;
+>  		}
+>  	}
+>  
+> -	if (!found) {
+> +	if (!entity) {
+>  		uvc_dbg(chain->dev, CONTROL, "Extension unit %u not found\n",
+>  			xqry->unit);
+>  		return -ENOENT;
 > 
->         /*
->          * In order to avoid the stacked BDI deadlock we need
-> ---8<---
-> 
-> Thanks, and apologize for the inconvenience
-> 
-> Zach
-> 
-> >                                                                 Honza
-> > --
-> > Jan Kara <jack@suse.com>
-> > SUSE Labs, CR
-> 
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Regards,
+
+Laurent Pinchart
 
