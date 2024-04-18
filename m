@@ -1,257 +1,203 @@
-Return-Path: <linux-kernel+bounces-149883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F1128A975D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:27:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F6328A9762
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:28:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 870A7B2196E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:27:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3B6A1F23793
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:28:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8B415CD4C;
-	Thu, 18 Apr 2024 10:27:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C66E215CD4A;
+	Thu, 18 Apr 2024 10:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lZYNYMlL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y0UZVUnh"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A325C15AD88;
-	Thu, 18 Apr 2024 10:27:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633B615AD88;
+	Thu, 18 Apr 2024 10:28:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713436028; cv=none; b=jNXeQJ0qDXR/pDS18lNLQ75xaGDebWXGXZBQBzp4OQszf1gn+RSjoNKOcMR3hfem+0uEuH4FdXbsogFoupPMCBr6S270D2/+xIxpBAVaUEKT6BBQWOA40tHQeRxrypqC0QmI/Eo/7Y/9bScFGbadPvP4gb2vMqXUzFBdSj0DpgM=
+	t=1713436121; cv=none; b=u/y09zwnMr93TFTNbIqilugd++MLkNIloYw/2bbJw2j+3IIwZFhSp43bsYJ27ySQ9Jnnh9lKBE661+xLZ6INYJwONLhfoWz1O8LhWOp6gED7dWRQ7kdMeer0wzo6ypdB7IBrKtHM7o7FfIwmfM4zM28+ItfHHwwPKafh+dtG1Zs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713436028; c=relaxed/simple;
-	bh=snJLjn63STpeMflAGhp2j2GxYJy8Px6zZ4o/bbeFQLE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KZZzyv8LA0QwpWWfNhqdg6HNJo6jn9dIl+qiileaFaLXp7sFfOLoI6XB8Aa/yODEPZTGpTC2fOGNRm/y0oz/BCNfkJ5bRlqNNbH5qjqpATfBuBfR7QuypvXg9tJOXWZOa6wvlxmhKQPmFvWAHT7GoxF+wbqeBOa8VL0aLBRZoZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lZYNYMlL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 580AEC113CC;
-	Thu, 18 Apr 2024 10:27:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713436028;
-	bh=snJLjn63STpeMflAGhp2j2GxYJy8Px6zZ4o/bbeFQLE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lZYNYMlL6+m5qAygccM2JtYn9DVn+P1lAFPGiWSoqdWfRBDA9GXziZwMOri0QZf1W
-	 Iwutv+zX2BIYkDUooZ7CNqfm+mg2s4mGHS2auJeUNaIqjL44wonuI3wj6icZWhr8xz
-	 P1FilN4xeyx+x5fhxQqU3i+b4/dCH0bbkqaJS+XJZguP+rmFtnErBvcWSSB2cHKul9
-	 vwAn+xc9IGbWCErkYRBgCnv5YlA3xw+KE/k6lIydtfa/cdYPpHqrIUtNncQhYOCpL/
-	 ucUq/ycAn3QVbe07+0V5+tp9bp5gU7AAJlg3eQZS2yez3dGzl0w0C50ZtwUQ0/fkBC
-	 d1V+t7cnjJCqg==
-Date: Thu, 18 Apr 2024 12:27:02 +0200
-From: Alexey Gladkov <legion@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	kbd@lists.linux.dev, linux-api@vger.kernel.org,
-	linux-fbdev@vger.kernel.org, linux-serial@vger.kernel.org,
-	Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH v5 2/3] VT: Add KDFONTINFO ioctl
-Message-ID: <ZiD1dih_LQik_zWS@example.org>
-References: <cover.1712080158.git.legion@kernel.org>
- <cover.1713375378.git.legion@kernel.org>
- <bd2755e7b6ebe9b49e82d04d9908a176e0fe2f15.1713375378.git.legion@kernel.org>
- <2024041830-feisty-gristle-5fd0@gregkh>
+	s=arc-20240116; t=1713436121; c=relaxed/simple;
+	bh=E7HNZEiU4nQt6IdXGx6tQYSSdGU7fkBugRG2RaCVSgw=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=pWnrLr/xmVU41oCMq7+0PjAww0s2dLccp9vSSm/EXyO2+DCIQbd++R92AmpIc4OtdKN261b9p15Uq27+3HfkOntPhrEAWTcdj1WcyUTxy743pWgzBE7SeK5+1BiKVR0M5rE5pzxm1/6ezdhpdUHDyBdnvsxKya+V5UP4Dp6BaHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y0UZVUnh; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d8a2cbe1baso9422271fa.0;
+        Thu, 18 Apr 2024 03:28:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713436117; x=1714040917; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rtbLebE67WL0AWOnzTi1FCXuJBT54tkis+j6KHxQOGE=;
+        b=Y0UZVUnh8JS79avQXheyAvmgsmu0azw+QVoRtmgdu59HnORE5lqw+VkgcqN76PKvfi
+         3751/ll34uXOaUKZEKj3j30n1eR0lK2y32ypaY20MwSNnnSov01w/KeVNX4bFDkplnP2
+         5/c6/9nO6tSToy0SjbeucP1OpCzYekNFg8ebGF6Z/8LoWFYV7tta6AlqOwQM6pyNwpEM
+         EdTDE54T8ZmgUvJ6QOEhdXEGNdhuTCUaURAN5dBd5k6JIomYGcrqnCR9wAYowdDuss2e
+         lxegacxZxusTNdRq6OUHIhngeECwXfvFlrDgV5HiaqqNjkyAI5brJp7OBRTySheoR6o8
+         eiQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713436117; x=1714040917;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rtbLebE67WL0AWOnzTi1FCXuJBT54tkis+j6KHxQOGE=;
+        b=TECXt1QDtP9qzl4DbcldvipkjKpmGq99gFq5G6l+jN+S6lIlD/GeiOlXQ7aHzGnaME
+         aznLjHI91+wUeF8SCM8ze5DAgPSl9+qKHJSpkOpqLHT73nf0ppU2GVC7COZ0O8diTdPY
+         5GUzaRO1WV+dDNsX/EUFwQqpoLD7qkWvxLlQ4XfM2OY8T1ZoXDKfHJ7uSfLiQWh6AQS5
+         eNJxcXxpkpRIp/JS4tCRvNP6iExbRItk3DhtR20C7cOyWPBELDOgIcK5w4xHnekkppWt
+         HR3we2UUOyq7LTl+U7AkW168WB503Z2wqLZVcDkC7u7k6Jkw0Dq64n3uUrSuU700PeTv
+         eyOA==
+X-Forwarded-Encrypted: i=1; AJvYcCUvBmlhfhLD8EB/ptguSKwOBBPHnGu3vqblbLpR7XhLZ/Je2L89KXsXcPm2bQGZw/SfBoSDSnwE+SxdJpoQp1zzLlnxHGgxroyyyHq2
+X-Gm-Message-State: AOJu0YyteAZtIYawBtPFHjNFiFu/c5RGWPBvmuMBmckDneLbZagIlS0U
+	12RyhBkZqhHwnp7IgrZ1g0ANZjzGAcK/JlG6J9wHztpacfZQlT8h8MWthw==
+X-Google-Smtp-Source: AGHT+IFVv7vf8mGGnCjtTVYEq77xaJsHORhEbOKzVh8FU87fiYglBz4S9OT56d+QC3bbb0zI7HoAmQ==
+X-Received: by 2002:a2e:a4c6:0:b0:2d8:5e8b:7de4 with SMTP id p6-20020a2ea4c6000000b002d85e8b7de4mr1536128ljm.6.1713436117140;
+        Thu, 18 Apr 2024 03:28:37 -0700 (PDT)
+Received: from [10.16.124.60] ([212.227.34.98])
+        by smtp.gmail.com with ESMTPSA id l16-20020a05600c4f1000b00417f7ddd21dsm6077179wmq.37.2024.04.18.03.28.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 03:28:36 -0700 (PDT)
+From: Zhu Yanjun <zyjzyj2000@gmail.com>
+X-Google-Original-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+Message-ID: <4865def4-8c34-4719-b505-ffb9914d8b6c@linux.dev>
+Date: Thu, 18 Apr 2024 12:28:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024041830-feisty-gristle-5fd0@gregkh>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH rdma-next 2/2] RDMA/mana_ib: Implement get_dma_mr
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>,
+ kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
+ jgg@ziepe.ca, leon@kernel.org
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1713363659-30156-1-git-send-email-kotaranov@linux.microsoft.com>
+ <1713363659-30156-3-git-send-email-kotaranov@linux.microsoft.com>
+Content-Language: en-US
+In-Reply-To: <1713363659-30156-3-git-send-email-kotaranov@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 18, 2024 at 08:18:33AM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Apr 17, 2024 at 07:37:36PM +0200, Alexey Gladkov wrote:
-> > Each driver has its own restrictions on font size. There is currently no
-> > way to understand what the requirements are. The new ioctl allows
-> > userspace to get the minimum and maximum font size values.
+On 17.04.24 16:20, Konstantin Taranov wrote:
+> From: Konstantin Taranov <kotaranov@microsoft.com>
 > 
-> Is there any userspace code that uses this yet that we can point to
-> here?
+> Implement allocation of DMA-mapped memory regions.
+> 
+> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> ---
+>   drivers/infiniband/hw/mana/device.c |  1 +
+>   drivers/infiniband/hw/mana/mr.c     | 36 +++++++++++++++++++++++++++++
+>   include/net/mana/gdma.h             |  5 ++++
+>   3 files changed, 42 insertions(+)
+> 
+> diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
+> index 6fa902ee80a6..043cef09f1c2 100644
+> --- a/drivers/infiniband/hw/mana/device.c
+> +++ b/drivers/infiniband/hw/mana/device.c
+> @@ -29,6 +29,7 @@ static const struct ib_device_ops mana_ib_dev_ops = {
+>   	.destroy_rwq_ind_table = mana_ib_destroy_rwq_ind_table,
+>   	.destroy_wq = mana_ib_destroy_wq,
+>   	.disassociate_ucontext = mana_ib_disassociate_ucontext,
+> +	.get_dma_mr = mana_ib_get_dma_mr,
+>   	.get_port_immutable = mana_ib_get_port_immutable,
+>   	.mmap = mana_ib_mmap,
+>   	.modify_qp = mana_ib_modify_qp,
+> diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
+> index 4f13423ecdbd..7c9394926a18 100644
+> --- a/drivers/infiniband/hw/mana/mr.c
+> +++ b/drivers/infiniband/hw/mana/mr.c
+> @@ -8,6 +8,8 @@
+>   #define VALID_MR_FLAGS                                                         \
+>   	(IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_WRITE | IB_ACCESS_REMOTE_READ)
+>   
+> +#define VALID_DMA_MR_FLAGS IB_ACCESS_LOCAL_WRITE
+> +
+>   static enum gdma_mr_access_flags
+>   mana_ib_verbs_to_gdma_access_flags(int access_flags)
+>   {
+> @@ -39,6 +41,8 @@ static int mana_ib_gd_create_mr(struct mana_ib_dev *dev, struct mana_ib_mr *mr,
+>   	req.mr_type = mr_params->mr_type;
+>   
+>   	switch (mr_params->mr_type) {
+> +	case GDMA_MR_TYPE_GPA:
+> +		break;
+>   	case GDMA_MR_TYPE_GVA:
+>   		req.gva.dma_region_handle = mr_params->gva.dma_region_handle;
+>   		req.gva.virtual_address = mr_params->gva.virtual_address;
+> @@ -168,6 +172,38 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
+>   	return ERR_PTR(err);
+>   }
+>   
 
-Yes. I have a code that uses this. It waits for this ioctl to appear in
-the kernel.
+Not sure if the following function needs comments or not.
+If yes, the kernel doc 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/doc-guide/kernel-doc.rst?h=v6.9-rc4#n67 
+can provide a good example.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/legion/kbd.git/commit/?h=kdfontinfo-v1&id=e2ad0117ca8e46cedd8668934db7b04e9054d5d7
+Best Regards,
+Zhu Yanjun
 
-> I know tty ioctls are woefully undocumented, but could there be some
-> documentation here?
-
-Yes, this is a big problem for this interface. The ioctl_console(2)
-describes PIO_FONT/PIO_FONTX, which is no longer supported, but does not
-describe KDFONTOP at all, which is exactly used by userspace.
-
-My TODO has a task to fix this.
-
-But I would suggest creating documentation in the kernel because life
-shows that man-page is far behind what is implemented.
-
-> > 
-> > Acked-by: Helge Deller <deller@gmx.de>
-> > Signed-off-by: Alexey Gladkov <legion@kernel.org>
-> > ---
-> >  drivers/tty/vt/vt.c       | 24 ++++++++++++++++++++++++
-> >  drivers/tty/vt/vt_ioctl.c | 13 +++++++++++++
-> >  include/linux/console.h   |  3 +++
-> >  include/linux/vt_kern.h   |  1 +
-> >  include/uapi/linux/kd.h   | 14 ++++++++++++++
-> >  5 files changed, 55 insertions(+)
-> > 
-> > diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-> > index 9b5b98dfc8b4..e8db0e9ea674 100644
-> > --- a/drivers/tty/vt/vt.c
-> > +++ b/drivers/tty/vt/vt.c
-> > @@ -4851,6 +4851,30 @@ int con_font_op(struct vc_data *vc, struct console_font_op *op)
-> >  	return -ENOSYS;
-> >  }
-> >  
-> > +int con_font_info(struct vc_data *vc, struct console_font_info *info)
-> > +{
-> > +	int rc;
-> > +
-> > +	info->min_height = 0;
-> > +	info->max_height = max_font_height;
-> > +
-> > +	info->min_width = 0;
-> > +	info->max_width = max_font_width;
-> > +
-> > +	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
-> > +
-> > +	console_lock();
-> > +	if (vc->vc_mode != KD_TEXT)
-> > +		rc = -EINVAL;
-> > +	else if (vc->vc_sw->con_font_info)
-> > +		rc = vc->vc_sw->con_font_info(vc, info);
-> > +	else
-> > +		rc = -ENOSYS;
-> > +	console_unlock();
-> > +
-> > +	return rc;
-> > +}
-> > +
-> >  /*
-> >   *	Interface exported to selection and vcs.
-> >   */
-> > diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
-> > index 4b91072f3a4e..9a2f8081f650 100644
-> > --- a/drivers/tty/vt/vt_ioctl.c
-> > +++ b/drivers/tty/vt/vt_ioctl.c
-> > @@ -479,6 +479,19 @@ static int vt_k_ioctl(struct tty_struct *tty, unsigned int cmd,
-> >  		break;
-> >  	}
-> >  
-> > +	case KDFONTINFO: {
-> > +		struct console_font_info fnt_info;
-> > +
-> > +		memset(&fnt_info, 0, sizeof(fnt_info));
-> > +
-> > +		ret = con_font_info(vc, &fnt_info);
-> 
-> Shouldn't con_font_info() memset it first?  No need to do it in the
-> caller.
-> 
-> > +		if (ret)
-> > +			return ret;
-> > +		if (copy_to_user(up, &fnt_info, sizeof(fnt_info)))
-> > +			return -EFAULT;
-> > +		break;
-> > +	}
-> > +
-> >  	default:
-> >  		return -ENOIOCTLCMD;
-> >  	}
-> > diff --git a/include/linux/console.h b/include/linux/console.h
-> > index 31a8f5b85f5d..4b798322aa01 100644
-> > --- a/include/linux/console.h
-> > +++ b/include/linux/console.h
-> > @@ -21,6 +21,7 @@
-> >  #include <linux/vesa.h>
-> >  
-> >  struct vc_data;
-> > +struct console_font_info;
-> >  struct console_font_op;
-> >  struct console_font;
-> >  struct module;
-> > @@ -102,6 +103,8 @@ struct consw {
-> >  	bool	(*con_switch)(struct vc_data *vc);
-> >  	bool	(*con_blank)(struct vc_data *vc, enum vesa_blank_mode blank,
-> >  			     bool mode_switch);
-> > +	int	(*con_font_info)(struct vc_data *vc,
-> > +				 struct console_font_info *info);
-> 
-> To make the names more obvious, how about:
-> 	con_font_info_get()?
-> 
-> >  	int	(*con_font_set)(struct vc_data *vc,
-> >  				const struct console_font *font,
-> >  				unsigned int vpitch, unsigned int flags);
-> > diff --git a/include/linux/vt_kern.h b/include/linux/vt_kern.h
-> > index d008c3d0a9bb..383b3a4f6113 100644
-> > --- a/include/linux/vt_kern.h
-> > +++ b/include/linux/vt_kern.h
-> > @@ -33,6 +33,7 @@ void do_blank_screen(int entering_gfx);
-> >  void do_unblank_screen(int leaving_gfx);
-> >  void poke_blanked_console(void);
-> >  int con_font_op(struct vc_data *vc, struct console_font_op *op);
-> > +int con_font_info(struct vc_data *vc, struct console_font_info *info);
-> >  int con_set_cmap(unsigned char __user *cmap);
-> >  int con_get_cmap(unsigned char __user *cmap);
-> >  void scrollback(struct vc_data *vc);
-> > diff --git a/include/uapi/linux/kd.h b/include/uapi/linux/kd.h
-> > index 8ddb2219a84b..68b715ad4d5c 100644
-> > --- a/include/uapi/linux/kd.h
-> > +++ b/include/uapi/linux/kd.h
-> > @@ -185,6 +185,20 @@ struct console_font {
-> >  
-> >  #define KD_FONT_FLAG_DONT_RECALC 	1	/* Don't recalculate hw charcell size [compat] */
-> >  
-> > +/* font information */
-> > +
-> > +#define KD_FONT_INFO_FLAG_LOW_SIZE	_BITUL(0) /* 256 */
-> > +#define KD_FONT_INFO_FLAG_HIGH_SIZE	_BITUL(1) /* 512 */
-> 
-> I don't understand why bit 0 and bit 1 have those comments after them.
-> That's confusing (i.e. bit 0 is NOT 256...)
-> 
-> > +
-> > +struct console_font_info {
-> > +	__u32  flags;			/* KD_FONT_INFO_FLAG_* */
-> 
-> Why are there flags if you are only setting these 2 values?  What are
-> the flags for?
-> 
-> If this is going to be a "multiplexed" type of structure, then make it a
-> union?  Or maybe we are totally over thinking this whole thing.
-> 
-> All you want is the min/max font size of the console, right?  So perhaps
-> the whole structure is just:
-> 
-> > +	__u32 min_width, min_height;	/* minimal font size */
-> > +	__u32 max_width, max_height;	/* maximum font size */
-> 
-> Those 4 variables?  Why have anything else here at all?  For any new
-> thing you wish to discover, have it be a new ioctl?
-> 
-> > +	__u32 reserved[5];		/* This field is reserved for future use. Must be 0. */
-> 
-> I understand the "must be 0" but this is a read-only structure, so
-> saying "it will be set to 0" might be better?"  Or something like that?
-> 
-> > +};
-> > +
-> > +#define KDFONTINFO	_IOR(KD_IOCTL_BASE, 0x73, struct console_font_info)
-> 
-> As mentioned above how about KDFONTINFOGET?
-> 
-> thanks,
-> 
-> greg k-h
-> 
-
--- 
-Rgrds, legion
+> +struct ib_mr *mana_ib_get_dma_mr(struct ib_pd *ibpd, int access_flags)
+> +{
+> +	struct mana_ib_pd *pd = container_of(ibpd, struct mana_ib_pd, ibpd);
+> +	struct gdma_create_mr_params mr_params = {};
+> +	struct ib_device *ibdev = ibpd->device;
+> +	struct mana_ib_dev *dev;
+> +	struct mana_ib_mr *mr;
+> +	int err;
+> +
+> +	dev = container_of(ibdev, struct mana_ib_dev, ib_dev);
+> +
+> +	if (access_flags & ~VALID_DMA_MR_FLAGS)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
+> +	if (!mr)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	mr_params.pd_handle = pd->pd_handle;
+> +	mr_params.mr_type = GDMA_MR_TYPE_GPA;
+> +
+> +	err = mana_ib_gd_create_mr(dev, mr, &mr_params);
+> +	if (err)
+> +		goto err_free;
+> +
+> +	return &mr->ibmr;
+> +
+> +err_free:
+> +	kfree(mr);
+> +	return ERR_PTR(err);
+> +}
+> +
+>   int mana_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+>   {
+>   	struct mana_ib_mr *mr = container_of(ibmr, struct mana_ib_mr, ibmr);
+> diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+> index 8d796a30ddde..dc19b5cb33a6 100644
+> --- a/include/net/mana/gdma.h
+> +++ b/include/net/mana/gdma.h
+> @@ -788,6 +788,11 @@ struct gdma_destory_pd_resp {
+>   };/* HW DATA */
+>   
+>   enum gdma_mr_type {
+> +	/*
+> +	 * Guest Physical Address - MRs of this type allow access
+> +	 * to any DMA-mapped memory using bus-logical address
+> +	 */
+> +	GDMA_MR_TYPE_GPA = 1,
+>   	/* Guest Virtual Address - MRs of this type allow access
+>   	 * to memory mapped by PTEs associated with this MR using a virtual
+>   	 * address that is set up in the MST
 
 
