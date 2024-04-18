@@ -1,192 +1,181 @@
-Return-Path: <linux-kernel+bounces-150073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48FC98A99FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:41:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EFE98A99FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:41:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 257C5B20805
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:41:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B23531C219F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:41:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3388738F9B;
-	Thu, 18 Apr 2024 12:40:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA5D22F19;
+	Thu, 18 Apr 2024 12:41:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="XGJKaNoS"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Do9eUX88";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="wwjPwJkL";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Do9eUX88";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="wwjPwJkL"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 025E71EA8F
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219B6182C5
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:41:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713444053; cv=none; b=HsZLieb27jDmA8WMaEIZanJ1E29vGChhqCF6+CjWyx8g6MtMHgeDNOqzBQKQQI12SYpEp6mDrN3XPgH2eMxXEVPhPHcXGQPWXMFS7TPIAwzrXtYsyo15VzUTDI79sUEO3h4Vhl1WLVOwhHOD20a31H2YnyHNnr5ZYKky8HLzR6o=
+	t=1713444088; cv=none; b=ovgbfqZGi9w/Eq350DSjBYBUfJTruMnaBF09WwhgUbogg2ZZ9qq6zL3SYaKTaAsd1ARzDsSUJyoBleD0EEzAZcYbsgPjQPbrc46KALmBokuvKEWjZqn+hztGtsKR3IMHwO763VFaJPIZ2KLAHuT11PS6OOG8Na0oAJyUZbzPKdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713444053; c=relaxed/simple;
-	bh=WIWI3yHKnVFiaW6pEn33UHdpoGSoHsOI9hbl8L7S3KU=;
+	s=arc-20240116; t=1713444088; c=relaxed/simple;
+	bh=Dot82zyMxUe9JpcgnocyYwO3KhCnP0t07rc/4gubA+o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aONDvxh1RC2nG8+DYySPpNd/faMujNKi4lKf/+/dIO+xEl6hobbRj6ddyflW4rZiKOorhJCFmyztewZDtPDW2lvpaipVaXkjGkj9B0Luzk7PAv2Mm5YIyn0vMIJgfu3aYIfV56zwnZZNyKNOiPHjgmCEhlHl3d7YAEmW70ZWhkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=XGJKaNoS; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-de45385a1b4so914640276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 05:40:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1713444049; x=1714048849; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GsKNX1Jtc4wi0IxWCLI9huAtIgpytdCJy3O9dcSAXkc=;
-        b=XGJKaNoSUHwS0aMz2Nt8GYvkHQPOunGIZtOjtSENXyxo8V67zeKLxZlJotT8d/9Uye
-         XB00o3nMrAvnvzXEWG5kTMNr+7WoIAQl3YPIdTFg3U+q9rxqkOc9olKmKOA3QxiXGhec
-         vul2+o3tbPtYSQRBbD8NxmU6ki317E6v5PDRM+VGKTPXKW5Nh/ER6tE7nVqiKMMDddel
-         1OcM7BoxzQFO5FoKkJJGOL2BOrmhpoqio8aD8bNskudrReHSbjqha0T/IYb7t71dtXb0
-         aS3HWU1yLq+oilAKnC8SWeeeW/QE/5hYiwToG4E2ZT487XUp0GvGBUfN3m+kxJ/hxlJP
-         tCgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713444049; x=1714048849;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GsKNX1Jtc4wi0IxWCLI9huAtIgpytdCJy3O9dcSAXkc=;
-        b=fDbvVJhLrTaumt8b2d7d4RxoFS306sQ/ni7lFUrPoEJb/nqk+PguNuHI/jNpnP4e7w
-         r47SjDgxj3k5p6gBMXP5tGi2cTFPhCFW9dMzH1nJBS5ySGGSFXtGh8n0leyATxHjjpa/
-         2RM9GfoRAbC/Cng9aKT2MiWnkkwmAuJUebrbeWcY7EjayHkVUQbJuYnhLuI4likgzDv4
-         jBVbBh+96w6oMsQAL61AsvbbDnmKXNJr3UK8WEIXjqkqL1qinvLYtdpRgHm44HCCKsPD
-         EmFYxRyl2GdKoJ/2Mgi5dLKRYpRzbH0CeHVnonPYU5U37VHAxfAVL415y+hhA63SadDg
-         kCqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVvKH35EtwdRELh2XhVqQyNOwN9kVJUYu4cS+dpfuNtuRAeO0+R7ATmF/NHHQMXOIR1AGZixjVbqMDC9zACGrd7g72sMbgLdtgboKNF
-X-Gm-Message-State: AOJu0Yxl49emyeyXAfyzX43b8bZYeBe9ku5g5aCpl2TJDeeE3lFvEZfr
-	4T3s/IzmLciZ3jZ6QNKBfE7Cgw/Q/uiC0zdQr7ANtabn6o/e/KXUhJH0zZW+Qfw=
-X-Google-Smtp-Source: AGHT+IERuqNJodHHhR9bpgG5Jr20Xw1NRIZhIY4E3cxpBfRykLDmFH6hSFHv4vP9FAislo8rM+OVMw==
-X-Received: by 2002:a25:198b:0:b0:de4:5c94:f58f with SMTP id 133-20020a25198b000000b00de45c94f58fmr2504112ybz.15.1713444048816;
-        Thu, 18 Apr 2024 05:40:48 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:fe4f])
-        by smtp.gmail.com with ESMTPSA id a14-20020a0ce34e000000b0069b4fe0569fsm587500qvm.109.2024.04.18.05.40.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 05:40:48 -0700 (PDT)
-Date: Thu, 18 Apr 2024 08:40:43 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Christian Heusel <christian@heusel.eu>
-Cc: Chengming Zhou <chengming.zhou@linux.dev>,
-	Nhat Pham <nphamcs@gmail.com>, Seth Jennings <sjenning@redhat.com>,
-	Dan Streetman <ddstreet@ieee.org>,
-	Vitaly Wool <vitaly.wool@konsulko.com>,
-	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, David Runge <dave@sleepmap.de>,
-	"Richard W.M. Jones" <rjones@redhat.com>,
-	Mark W <instruform@gmail.com>, regressions@lists.linux.dev,
-	Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [REGRESSION] Null pointer dereference while shrinking zswap
-Message-ID: <20240418124043.GC1055428@cmpxchg.org>
-References: <3iccc6vjl5gminut3lvpl4va2lbnsgku5ei2d7ylftoofy3n2v@gcfdvtsq6dx2>
- <CAKEwX=MZ3jTVpN4g-qrhTn2b0i0C6_M=8BtKt9KEPyFHb+4W2w@mail.gmail.com>
- <CAKEwX=NM1y-K1-Yw=CH3cM-8odER1PZBVoWo-rs7_OdjFG_puw@mail.gmail.com>
- <CAKEwX=MWPUf1NMGdn+1AkRdOUf25ifAbPyoP9zppPTx3U3Tv2Q@mail.gmail.com>
- <246c1f4d-af13-40fa-b968-fbaf36b8f91f@linux.dev>
- <20240417143324.GA1055428@cmpxchg.org>
- <4c3ppfjxnrqx6g52qvvhqzcc4pated2q5g4mi32l22nwtrkqfq@a4lk6s5zcwvb>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LZWTMvGLZqcXAajYfa4IFiRChE4nYwyRJTvV9wcW0+SWsd8Lqz4ytcxHoRrmyPSIrHp3Xwo7VK+f+Joscf77KyqsD3lm1KMEPPx5xlT2w9tnxtmuZzboA3tRjMgb+cGBtfWnq4DgU4ZHZKcmnnrpJtUe10MN0SwMHCHV/X6dQgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Do9eUX88; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=wwjPwJkL; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Do9eUX88; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=wwjPwJkL; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 18E975CA7F;
+	Thu, 18 Apr 2024 12:41:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713444085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U7DjYF/kzJVRyzAMWLo9U8Tt/CvqZCHiGjMu2GCpIDI=;
+	b=Do9eUX882YqcS8xoSEeXDPg4XTx6cgiXlVX/YK6G17yn00bKmKkiYuLOAe0RxGtTEEYuGA
+	gjYJClaNGYxtypuUrOW2JQww2tA0GEK0YBVpov1RyoBP4hDwsZDjCuOtKkoAaZQb8XWx7i
+	98euAmb9sM35tluf2Xs6z7Yd1vktniI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713444085;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U7DjYF/kzJVRyzAMWLo9U8Tt/CvqZCHiGjMu2GCpIDI=;
+	b=wwjPwJkLn9NuL2V4IfPdQnaU2WxlBfx1gurlLfpMq0IUkNcXpZ0viQmf67/jerGBufzDzO
+	88l9eMsO8Gbuv1DQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Do9eUX88;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=wwjPwJkL
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713444085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U7DjYF/kzJVRyzAMWLo9U8Tt/CvqZCHiGjMu2GCpIDI=;
+	b=Do9eUX882YqcS8xoSEeXDPg4XTx6cgiXlVX/YK6G17yn00bKmKkiYuLOAe0RxGtTEEYuGA
+	gjYJClaNGYxtypuUrOW2JQww2tA0GEK0YBVpov1RyoBP4hDwsZDjCuOtKkoAaZQb8XWx7i
+	98euAmb9sM35tluf2Xs6z7Yd1vktniI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713444085;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U7DjYF/kzJVRyzAMWLo9U8Tt/CvqZCHiGjMu2GCpIDI=;
+	b=wwjPwJkLn9NuL2V4IfPdQnaU2WxlBfx1gurlLfpMq0IUkNcXpZ0viQmf67/jerGBufzDzO
+	88l9eMsO8Gbuv1DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 96F5E13687;
+	Thu, 18 Apr 2024 12:41:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id iKYuIvQUIWYyfQAAD6G6ig
+	(envelope-from <osalvador@suse.de>); Thu, 18 Apr 2024 12:41:24 +0000
+Date: Thu, 18 Apr 2024 14:41:23 +0200
+From: Oscar Salvador <osalvador@suse.de>
+To: Miaohe Lin <linmiaohe@huawei.com>
+Cc: akpm@linux-foundation.org, muchun.song@linux.dev, david@redhat.com,
+	vbabka@suse.cz, willy@infradead.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm/hugetlb: fix DEBUG_LOCKS_WARN_ON(1) when
+ dissolve_free_hugetlb_folio()
+Message-ID: <ZiEU83kaHP7AG25z@localhost.localdomain>
+References: <20240418022000.3524229-1-linmiaohe@huawei.com>
+ <20240418022000.3524229-2-linmiaohe@huawei.com>
+ <ZiCb_r8O24p8qHIz@localhost.localdomain>
+ <a852eb0c-f64e-f1d7-d685-a4e81a6416c6@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4c3ppfjxnrqx6g52qvvhqzcc4pated2q5g4mi32l22nwtrkqfq@a4lk6s5zcwvb>
+In-Reply-To: <a852eb0c-f64e-f1d7-d685-a4e81a6416c6@huawei.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 18E975CA7F
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.51
 
-On Wed, Apr 17, 2024 at 07:18:14PM +0200, Christian Heusel wrote:
-> On 24/04/17 10:33AM, Johannes Weiner wrote:
-> >
-> > Christian, can you please test the below patch on top of current
-> > upstream?
-> >
+On Thu, Apr 18, 2024 at 04:00:42PM +0800, Miaohe Lin wrote:
+> On 2024/4/18 12:05, Oscar Salvador wrote:
+> > On Thu, Apr 18, 2024 at 10:19:59AM +0800, Miaohe Lin wrote:
+> >> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> >> index 26ab9dfc7d63..1da9a14a5513 100644
+> >> --- a/mm/hugetlb.c
+> >> +++ b/mm/hugetlb.c
+> >> @@ -1788,7 +1788,8 @@ static void __update_and_free_hugetlb_folio(struct hstate *h,
+> >>  		destroy_compound_gigantic_folio(folio, huge_page_order(h));
+> >>  		free_gigantic_folio(folio, huge_page_order(h));
+> >>  	} else {
+> >> -		INIT_LIST_HEAD(&folio->_deferred_list);
+> >> +		if (!folio_test_hugetlb(folio))
+> >> +			INIT_LIST_HEAD(&folio->_deferred_list);
+> > 
+> > Ok, it took me a bit to figure this out.
+> > 
+> > So we basically init __deferred_list when we know that
+> > folio_put will not end up calling free_huge_folio
+> > because a previous call to remove_hugetlb_folio has already cleared the
+> > bit.
+> > 
+> > Maybe Matthew thought that any folio ending here would not end up in
+> > free_huge_folio (which is the one fiddling subpool).
+> > 
+> > I mean, fix looks good because if hugetlb flag is cleared,
+> > destroy_large_folio will go straight to free_the_page, but the
+> > whole thing is a bit subtle.
 > 
-> Hey Johannes,
-> 
-> I have applied your patch on top of 6.9-rc4 and it did solve the crash for
-> me, thanks for hacking together a fix so quickly! 🤗
-> 
-> Tested-By: Christian Heusel <christian@heusel.eu>
+> AFAICS, this is the most straightforward way to fix the issue. Do you have any suggestions
+> on how to fix this in a more graceful way?
 
-Thanks for confirming it, and sorry about the breakage.
+Not from the top of my head.
+Anyway, I have been thinking for a while that this code needs some love,
+so I will check how this can be untangled.
 
-Andrew, can you please use the updated changelog below?
 
----
-
-From 52f67f5fab6a743c2aedfc8e04a582a9d1025c28 Mon Sep 17 00:00:00 2001
-From: Johannes Weiner <hannes@cmpxchg.org>
-Date: Thu, 18 Apr 2024 08:26:28 -0400
-Subject: [PATCH] mm: zswap: fix shrinker NULL crash with cgroup_disable=memory
-
-Christian reports a NULL deref in zswap that he bisected down to the
-zswap shrinker. The issue also cropped up in the bug trackers of
-libguestfs [1] and the Red Hat bugzilla [2].
-
-The problem is that when memcg is disabled with the boot time flag,
-the zswap shrinker might get called with sc->memcg == NULL. This is
-okay in many places, like the lruvec operations. But it crashes in
-memcg_page_state() - which is only used due to the non-node accounting
-of cgroup's the zswap memory to begin with.
-
-Nhat spotted that the memcg can be NULL in the memcg-disabled case,
-and I was then able to reproduce the crash locally as well.
-
-[1] https://github.com/libguestfs/libguestfs/issues/139
-[2] https://bugzilla.redhat.com/show_bug.cgi?id=2275252
-
-Fixes: b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure")
-Cc: stable@vger.kernel.org	[v6.8]
-Link: https://lkml.kernel.org/r/20240417143324.GA1055428@cmpxchg.org
-Reported-by: Christian Heusel <christian@heusel.eu>
-Debugged-by: Nhat Pham <nphamcs@gmail.com>
-Suggested-by: Nhat Pham <nphamcs@gmail.com>
-Tested-By: Christian Heusel <christian@heusel.eu>
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/zswap.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
-
-diff --git a/mm/zswap.c b/mm/zswap.c
-index caed028945b0..6f8850c44b61 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1331,15 +1331,22 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
- 	if (!gfp_has_io_fs(sc->gfp_mask))
- 		return 0;
- 
--#ifdef CONFIG_MEMCG_KMEM
--	mem_cgroup_flush_stats(memcg);
--	nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
--	nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
--#else
--	/* use pool stats instead of memcg stats */
--	nr_backing = zswap_pool_total_size >> PAGE_SHIFT;
--	nr_stored = atomic_read(&zswap_nr_stored);
--#endif
-+	/*
-+	 * For memcg, use the cgroup-wide ZSWAP stats since we don't
-+	 * have them per-node and thus per-lruvec. Careful if memcg is
-+	 * runtime-disabled: we can get sc->memcg == NULL, which is ok
-+	 * for the lruvec, but not for memcg_page_state().
-+	 *
-+	 * Without memcg, use the zswap pool-wide metrics.
-+	 */
-+	if (!mem_cgroup_disabled()) {
-+		mem_cgroup_flush_stats(memcg);
-+		nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
-+		nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
-+	} else {
-+		nr_backing = zswap_pool_total_size >> PAGE_SHIFT;
-+		nr_stored = atomic_read(&zswap_nr_stored);
-+	}
- 
- 	if (!nr_stored)
- 		return 0;
 -- 
-2.44.0
+Oscar Salvador
+SUSE Labs
 
