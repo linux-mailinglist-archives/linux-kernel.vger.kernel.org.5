@@ -1,246 +1,270 @@
-Return-Path: <linux-kernel+bounces-150792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 166C08AA49B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:07:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7B958AA49E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:08:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 950231F22E56
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:07:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC5FD1C22A1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF89E180A7E;
-	Thu, 18 Apr 2024 21:07:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C42A19068F;
+	Thu, 18 Apr 2024 21:08:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Vi4EFwlF"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ldc9vV1e"
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2053.outbound.protection.outlook.com [40.107.104.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADB3E146596
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 21:07:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713474468; cv=none; b=hmdVbOXcIbiUa7CULrsWywMFOEg3lBBAYmT0VJPRMg9hdbwBpsSpWmm58LHoki5vLvlRgh+zz/2HKHABhaWAJupNcF8EI2EMtd10eEzXZ874q/XHPUi0PUzLyfn143UTA/IaSFwyRAGS7MA+E9oiaC6HDfDZscp+tSSMFI/+EOw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713474468; c=relaxed/simple;
-	bh=Al81Wp+BoxuxKClZlHKjCIreDgKIXroUMDGs1QrF9Ko=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Aswq9hoHOt6lXgm/IJcyfMtIs1NV4bh2wCs0O87zCTkl6oOnEl2S8WgEGnPNDstxbJVzJWBKptY3usGy2nQ7VRqxiELRwbXOrtjGFb0aMmr8xVJcHwfr28Al1jwnb8XZXpg6yk03Z0gSCCm0NXM11urkinOZLSLB0lUkJFHTfFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Vi4EFwlF; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e86333bbe9so59915ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:07:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713474466; x=1714079266; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AJVJe5DYIGKiqAkh914q9HNHt4cBXtTHQHGV+XEJwYc=;
-        b=Vi4EFwlFM28ybRcnmn6VX/igBn/i4iP7gH0VzlPArBTFNtYthliIkagoM3eWVr5wNL
-         dKIjpw0+Rqi2dsxdLFQKAsisbWf6iF7yl3X9OmLAlKqvHy4Eqa35086Y3SQJJ8gI8Uwb
-         C/93Nf8YvmCRiLE8jFT2yxFu+RuQ2BPz+XRCPvPtc7RZuDJ3SYu5P50izSJVwk501uYO
-         ATv6gmV/8Mx2s+3DdMBQikwxa1RRMSFuQ6dFLm/xMC1TGQ+w0+IvNtgd1yO+ZUECxquz
-         EXqcuLqFaWz6m9XPvfIwUkaed0opc/HfsG8YyMHeSaRtdVHn6c5TVh7wdY7lceVlepDK
-         jbQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713474466; x=1714079266;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AJVJe5DYIGKiqAkh914q9HNHt4cBXtTHQHGV+XEJwYc=;
-        b=KhLt0p0NrdKdRI3xJ1qN7IB8uSFWfo/5nAovvm3V89Dv1EdfFYabpFb8EfotAMsUV1
-         VmKUxb68f+T4vb5ZxkmWEvpsLsSDOgO00/x1OPze3aZ7lv1O01mcEcMVv8ASMhaaRy7s
-         d8nSTUgnruw1i2RIl+/7waBbXi3Mv4EM03NVnykZSWea6GCJDEApg89obEegArAyb1TC
-         m+JFftocGE50r9UzEZkZxM7WgjUkUuSw3grIxUgUkqldvdhbWezkmupX185Gb7ZFR4P4
-         fPdnaj2LABSNaGyRLdQ9huYr1EIVRsdVAym98694ApPcug8fIDAPiF3+LIpGhYMMQ/F/
-         NCZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX5LjkZHST9KG1cw88pz6E58YSWHXemJurzOKrG7WR2SNNQH9MXA1rnhph43t/oosx8zxP3NL8Nx/f6wM9YCO8rTjPrXPk8IHOBDRkt
-X-Gm-Message-State: AOJu0YwmHn8A91fx3PVEZ8kv0MuHfSsVAugxdtULn17k2lguS4rZS13N
-	3upaOYzqkPcib9cP78XBqZcS5daT1L/TJgvHW2L7m3ebWxInxbUz0JiB6ShMnOVHg7/pIU25lQL
-	uv6p8vDUHAis2NIH+oOwIwTcA+tfXiQT0lJ/z
-X-Google-Smtp-Source: AGHT+IGllCxp65eQfyYK3/aoRyDs6LzYbT60FkRzl2fi4BM0xmIMleEppw8pZ1EJkTt6eSUC/kh6f8ZA8Pc/FzTdMig=
-X-Received: by 2002:a17:902:680c:b0:1e3:cb9b:d29c with SMTP id
- h12-20020a170902680c00b001e3cb9bd29cmr15441plk.23.1713474465710; Thu, 18 Apr
- 2024 14:07:45 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF3C8194C6A;
+	Thu, 18 Apr 2024 21:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.53
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713474515; cv=fail; b=IrbszbeUzylo2M0sI6ZqQvjjmumC8S8cHK6bpkRhzTPUiiclWzIoM84mZMop1Js1nLBDPV75/60R8Z+N9zg62Q7nYf/xjsj0hRqxlh4AKEwtTdqMRPn4QvXa/I8KvabQWOS5RgizKXhmO1OHsKmsulaKN4fNXCtxjsluiCoA2Ak=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713474515; c=relaxed/simple;
+	bh=THPOI2X0JHbJrd1+6+X7x0GIh27IDP1/73OZTagUPLw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=hB92rwKOQ/UUzJtFt8jel5MRLKbCdTBTgRKy7erRQSqeIGmgl15SuVIhydshUodmchUHNmG82zaWKdee9lbu9EX6j7JtfVEol4Q+bbXSvr1knGD0NsqeOv1zsE0TWu3GWTs9Prc0RazIfnjvovW2MlP9Rj4wp0gb//QUDIYd+No=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=ldc9vV1e; arc=fail smtp.client-ip=40.107.104.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TJcBOkGjIgO9fIbstPk9SscZEWeE6gwp+pEhB+mFxRlFtwyO+2jJvrs383C/NZBaBg0yLecuNNdIjpj7e2RSAxHfXegL+r0+FhKVqtj2lHaIM5rK69xQwKGVmpQ/gKPg2ShNTVNoB8dmIgZjMlbCaIlI9M6IojEoNwQtbbVwEjzK3mx9VxEnIwKRuRwOXAMtEpiSyQJJqNGM6z42gfNvSTQqnwQMP8BlEfEs4icAsobCpFeOo/6WYei37IoEuGy62w1BqaTNZLAxi1nkht2IFmkwe7GIQyWd1bYuYOyXBD7ES6hmun8hx1RTSVROpiqzDJMMFRdeU9lWpZah1nc5bQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ouCBZyrIAcHp8FM8vBHyBWMzvwMmpG+f6YJ7shwQ1Pw=;
+ b=bg6R99uOH7I/jYFqjyh9vc/SK4bgFbnwCxtflzp+ockw7S9yHczKWGFlNGhpoCSNFkvtB93YDb7E4gPJupf3AB8Ga5vRE1CkJswKsOl8KDkPFTkUIEXIkA90zXcdrfnwBJVrBuuNXD5+yKV5l+jm5CWCYikWV89TtMDNfudT/jDiKoiRMH3M1zoDnkjPDaCBggeFAD+3WZluHFalg/tBxstGP91V1JVIb8crCRvATTBfKmxUrLNmyifvMMhMAmbZTDtJ9U4QSx/TfBUfDlVWybolwR86aektsV+EkV+xtnFhPq/FTeiIsOJqYj2NeND5B8rCClt6ngPDNYl8t9LLAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ouCBZyrIAcHp8FM8vBHyBWMzvwMmpG+f6YJ7shwQ1Pw=;
+ b=ldc9vV1eDxUOr+7wd/64ZB6UfQqlNE/fw3IDdtd5gGXN1yRtavGQuMWumpl6o1lUnmOxYuey6we81y2JBGLBaj5vsipxG+UkzcLaKdkp3DEUBDxOjYJb3mircVrE5BjZSH/7pkKozVDwVHIs85e06TFTohH6mRoKsFBzb63EtsQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by PA4PR04MB8014.eurprd04.prod.outlook.com (2603:10a6:102:c7::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.43; Thu, 18 Apr
+ 2024 21:08:29 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7472.037; Thu, 18 Apr 2024
+ 21:08:29 +0000
+Date: Thu, 18 Apr 2024 17:08:20 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Laurentiu Mihalcea <laurentiumihalcea111@gmail.com>
+Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	Shengjiu Wang <shengjiu.wang@nxp.com>,
+	Liu Ying <victor.liu@nxp.com>,
+	Laurentiu Mihalcea <laurentiu.mihalcea@nxp.com>,
+	devicetree@vger.kernel.org, imx@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/3] dt-bindings: dsp: support imx8ulp dsp clocks
+Message-ID: <ZiGLxBa8CMsaRSTc@lizhi-Precision-Tower-5810>
+References: <20240418203720.8492-1-laurentiumihalcea111@gmail.com>
+ <20240418203720.8492-2-laurentiumihalcea111@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418203720.8492-2-laurentiumihalcea111@gmail.com>
+X-ClientProxiedBy: SJ0PR13CA0219.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c1::14) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416061533.921723-1-irogers@google.com> <20240416061533.921723-12-irogers@google.com>
- <ac8835f8-0ea5-4f28-941c-aa43f0da92fd@linux.intel.com>
-In-Reply-To: <ac8835f8-0ea5-4f28-941c-aa43f0da92fd@linux.intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 18 Apr 2024 14:07:31 -0700
-Message-ID: <CAP-5=fXkn-nFTqGEqBYt6NUvoXU7OyLJeSCnWdD3taLHyK-xtQ@mail.gmail.com>
-Subject: Re: [PATCH v2 11/16] perf parse-events: Improve error message for bad numbers
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@arm.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, Atish Patra <atishp@rivosinc.com>, linux-riscv@lists.infradead.org, 
-	Beeman Strong <beeman@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PA4PR04MB8014:EE_
+X-MS-Office365-Filtering-Correlation-Id: 39414b12-3fc9-4aa0-42c0-08dc5febb265
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	/Hzc1Q5oFZfG93dYHIi/QCAkbrf2L/7DdgAwOR9TY3247ZZ3B2XowjuGst0yNy/XcfwVFjwK6aVnsq77a1O9Ft38HQFimQOROakmyvC5eergPpHXr2W7PoK8cafe7dxiLxg5lKnYFxmOPkToGJ/hVYL8/ieedAiI7UnYpO/vWw7qS/Dt3LoLbBiHK5tpUyNtlUWUJ89vPmbnhjCBbh8pzv8obqnqBvN5TT/Gi/rLOxLRssRDPdNaNhrkUaKmSoiXSLhpEU6+XCFDI/nJfPb1BQSPcg17HBliX2x2LqqMFz5pG0WkrxP6qwyoGXcUmKbnBKr4W2pluvzm4G8fSmKrEna9BGcW8duq3577svsJ466VJHG8Sn6pES0x0DpqeNsYyy7Ta90yqT9fZAvAsnoI0nSpjpNjCqvBn3QZXlIBSXR4PlkBFQNabXenzHE7UbudpRP66+yIAE+sYiKXsC3kzXJGN0MQIdwYJrLrSkSwR1ysDp5fJo58aVW80FCJ0WHmWYX+wmH/TTL8npixfATeM88D/pS14izuTOa8+xEyUMj1Ow10g9UAAl2ndo7p2xii7lAIK+ToWRyfi8kotLNs2T1Gwo24phqkOi5Hjzxo6XPSoo20GgBnzSAq6MkdMMDWAlxXU3aGjRruKATBujzTlkwQ+DD7Ex3NKerFX9Wwrl56NgtZv4jGUZxT9jna051XVEEWRuF7bLNT20WtzHgipVeV2lz5E6+9IfE776Ma2pg=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(366007)(52116005)(376005)(1800799015)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?6kaikUrqYMMDIbuLdyvX5SxETWxzfaVL8J2JS34lOfTUldC3S4tGHm/1mjjw?=
+ =?us-ascii?Q?0XHZkSG8ybhsKt3EPTGZyg/e5D7jRgvx0kYqPUuwZJ7cqnlePMbbclDlkqM8?=
+ =?us-ascii?Q?uiOht5WBDsBOyb2iZI8lUdp1C/IZUEA0FDDUVYSOIeIweT6rGYaI0U7lFl4Z?=
+ =?us-ascii?Q?C7US7qwGiGT7IyukDl+V5SbpiYCkn0YKN9LjS7K9+Tn4EUzEHINj+/ZbzGez?=
+ =?us-ascii?Q?9Nr/mV1vNn5O7YmjW5goZ7QVqCOUk0bsaCng8pLdYXol7+yVJoKlNSCPSgvt?=
+ =?us-ascii?Q?b6NfnTyGbi9taQNGPu/+tyzMqya2ZdoF/rla/OsI5jdco+95EEzKm4fYZmoa?=
+ =?us-ascii?Q?ZTkOU64szGvY9uzkKDTZMpzSXGnMJqj9Jw82Yc0iSCDwaZ4tsR82xODWoJ5M?=
+ =?us-ascii?Q?WsTcOvXejiS6n8EuNWOaBgqj++pqCv0o6nBqiYmTd9YYGTjMiAFNRNdFZH9k?=
+ =?us-ascii?Q?aoYOqwxz89fY1KIfe1vXOb2IiggSEdLSbfa32p6N+QKHaUD60Jl8HJqbhoq1?=
+ =?us-ascii?Q?7g0BrTfXRzKZt18DBFTlK9ngxIoLe3bWDEDu/N8oMRtblPfAvGD8EmsA/Wja?=
+ =?us-ascii?Q?akYQWc5BEd28uh1WUDZ9DAIAIgEVpgiSMYvtmDXH1JaRztLck/0TsTeFuJWH?=
+ =?us-ascii?Q?vPycXjuCcgcJDvhiSM5HgQteoWZa0mR9M/U86FJe4h9oZqXsJuoU3ZUgRc7v?=
+ =?us-ascii?Q?nk5DE7YVp7/HX9MT04hk3y+kHP7z1F4aAYhI7PbPBqsxWXm5Hvog1rLssAPe?=
+ =?us-ascii?Q?9hcdMDIB4mQM6dNatSmkThRdOMTYed5XMh6Aj5Zoj3cf9OkYvzTk+F37q01C?=
+ =?us-ascii?Q?YsEPdYMm6tiP2SuWhbHHwthtnv9ndE/kQHDu1bFyZC9yNFePt8vx9rGxcoxB?=
+ =?us-ascii?Q?hFnwlOgu27NtPxbI41kQ1eEQvdoTZ4NpgKQ+UTurujGJoKtn6aSi8lNwe5ah?=
+ =?us-ascii?Q?hD7m86WrJIp/GMOIKn3i/z5LtozkqmGwMLZUwQvrPlWDhcj6B06v2fm4whYW?=
+ =?us-ascii?Q?EaErQgTDa522YzKFqvUoMi2EWQpZ54D7ECJGo7WMIxjUsLl+eRfZFSCTUU4I?=
+ =?us-ascii?Q?SLMKcAnPAEbW7cfVn+gV/KgnUuzykCKsLZzUYAtGBOXYHr6qtPpGg+yK/3nZ?=
+ =?us-ascii?Q?mxRPi1VETupdMsMulnsjJAdamw/+TURp9QV0EinwgIYCvmsuvLxcUD372ZnI?=
+ =?us-ascii?Q?bT8QDyi2T+cy4w48avTEXqHJlEvohTgvy84Zyt8wAMK54UVJEUbS8tjNu9D9?=
+ =?us-ascii?Q?2qYgl+1d2F1k9mm82Uky6h9g6D+yDdqQOpmDILfLb1QJT+I7QLghnUwoVbNn?=
+ =?us-ascii?Q?ewuIwMzkItQfwWMYjh4dkmlxxkUQcouVOSpLrdEE7duRCuMkEryetWmpS4zj?=
+ =?us-ascii?Q?17LmgjK/JTqUu8H8TVDnxD5WSy6P5phgPeNUvx4sv+yx2SlOkbeUXQEHQArC?=
+ =?us-ascii?Q?gGNYdiIS/esQO2/ya+Cy+OZFT1eLeiMITUcI89VxlCWGNcJgyabyRADtxOYx?=
+ =?us-ascii?Q?yo4RQVbMvRW7V/yYiFeRrD9Jorpo0BiAWgdUmt+9gHwlzMk6GgHKK2BojQlt?=
+ =?us-ascii?Q?JPARDTwwfMBJYYCBkJhU+tCe31AeIWPjYr8eM6IF?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 39414b12-3fc9-4aa0-42c0-08dc5febb265
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 21:08:29.6178
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L5veAqGTfQY3aV8rXoFRyXsa4nlKhdB8NTpWjEyKjEwrB+wnE2FBLD4o0gsNO+sU9na8lR6/WUb3Fof6yj71JA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB8014
 
-On Thu, Apr 18, 2024 at 1:27=E2=80=AFPM Liang, Kan <kan.liang@linux.intel.c=
-om> wrote:
->
->
->
-> On 2024-04-16 2:15 a.m., Ian Rogers wrote:
-> > Use the error handler from the parse_state to give a more informative
-> > error message.
-> >
-> > Before:
-> > ```
-> > $ perf stat -e 'cycles/period=3D99999999999999999999/' true
-> > event syntax error: 'cycles/period=3D99999999999999999999/'
-> >                                   \___ parser error
-> > Run 'perf list' for a list of valid events
-> >
-> >  Usage: perf stat [<options>] [<command>]
-> >
-> >     -e, --event <event>   event selector. use 'perf list' to list avail=
-able events
-> > ```
-> >
-> > After:
-> > ```
-> > $ perf stat -e 'cycles/period=3D99999999999999999999/' true
-> > event syntax error: 'cycles/period=3D99999999999999999999/'
-> >                                   \___ parser error
-> >
-> > event syntax error: '..les/period=3D99999999999999999999/'
-> >                                   \___ Bad base 10 number "999999999999=
-99999999"
->
->
-> It seems the patch only works for decimal?
->
-> ./perf stat -e 'cycles/period=3D0xaaaaaaaaaaaaaaaaaaaaaa/' true
-> event syntax error: '..les/period=3D0xaaaaaaaaaaaaaaaaaaaaaa/'
->                                    \___ parser error
->  Run 'perf list' for a list of valid events
->
->   Usage: perf stat [<options>] [<command>]
->
->      -e, --event <event>   event selector. use 'perf list' to list
-> available events
->
-> Thanks,
-> Kan
+On Thu, Apr 18, 2024 at 11:37:18PM +0300, Laurentiu Mihalcea wrote:
+> From: Laurentiu Mihalcea <laurentiu.mihalcea@nxp.com>
+> 
+> i.MX8ULP DSP node needs a MU clock, but doesn't need
+> a debug clock. Change "clocks" and "clock-names" properties
+> to allow for this case.
+> 
+> Signed-off-by: Laurentiu Mihalcea <laurentiu.mihalcea@nxp.com>
+> ---
+>  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 51 ++++++++++++++-----
+>  1 file changed, 39 insertions(+), 12 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> index 9af40da5688e..4a39d57b1cc6 100644
+> --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> @@ -30,22 +30,12 @@ properties:
+>      maxItems: 1
+>  
+>    clocks:
+> -    items:
+> -      - description: ipg clock
+> -      - description: ocram clock
+> -      - description: core clock
+> -      - description: debug interface clock
+> -      - description: message unit clock
+>      minItems: 3
+> +    maxItems: 5
+>  
+>    clock-names:
+> -    items:
+> -      - const: ipg
+> -      - const: ocram
+> -      - const: core
+> -      - const: debug
+> -      - const: mu
+>      minItems: 3
+> +    maxItems: 5
+>  
+>    power-domains:
+>      description:
+> @@ -93,6 +83,43 @@ required:
+>    - memory-region
+>  
+>  allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: fsl,imx8ulp-hifi4
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: ipg clock
+> +            - description: ocram clock
+> +            - description: core clock
+> +            - description: message unit clock
+> +        clock-names:
+> +          items:
+> +            - const: ipg
+> +            - const: ocram
+> +            - const: core
+> +            - const: mu
+> +    else:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: ipg clock
+> +            - description: ocram clock
+> +            - description: core clock
+> +            - description: debug interface clock
+> +            - description: message unit clock
+> +          minItems: 3
+> +        clock-names:
+> +          items:
+> +            - const: ipg
+> +            - const: ocram
+> +            - const: core
+> +            - const: debug
+> +            - const: mu
+> +          minItems: 3
 
-Right, for hexadecimal we say the number of digits is at most 16, so
-when you exceed this the token is no longer recognized. It just
-becomes input that can't be parsed, hence parser error. Doing this
-means we can simplify other strtoull checks, but I agree having a
-better error message for hexadecimal would be good. Let's do it as
-follow up.
+According to your descript, look like only clk "debug" is difference.
 
-Thanks,
-Ian
+How about
 
-> > Run 'perf list' for a list of valid events
-> >
-> >  Usage: perf stat [<options>] [<command>]
-> >
-> >     -e, --event <event>   event selector. use 'perf list' to list avail=
-able events
-> > ```
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/util/parse-events.l | 40 ++++++++++++++++++++--------------
-> >  1 file changed, 24 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-eve=
-nts.l
-> > index 6fe37003ab7b..0cd68c9f0d4f 100644
-> > --- a/tools/perf/util/parse-events.l
-> > +++ b/tools/perf/util/parse-events.l
-> > @@ -18,26 +18,34 @@
-> >
-> >  char *parse_events_get_text(yyscan_t yyscanner);
-> >  YYSTYPE *parse_events_get_lval(yyscan_t yyscanner);
-> > +int parse_events_get_column(yyscan_t yyscanner);
-> > +int parse_events_get_leng(yyscan_t yyscanner);
-> >
-> > -static int __value(YYSTYPE *yylval, char *str, int base, int token)
-> > +static int get_column(yyscan_t scanner)
-> >  {
-> > -     u64 num;
-> > -
-> > -     errno =3D 0;
-> > -     num =3D strtoull(str, NULL, base);
-> > -     if (errno)
-> > -             return PE_ERROR;
-> > -
-> > -     yylval->num =3D num;
-> > -     return token;
-> > +     return parse_events_get_column(scanner) - parse_events_get_leng(s=
-canner);
-> >  }
-> >
-> > -static int value(yyscan_t scanner, int base)
-> > +static int value(struct parse_events_state *parse_state, yyscan_t scan=
-ner, int base)
-> >  {
-> >       YYSTYPE *yylval =3D parse_events_get_lval(scanner);
-> >       char *text =3D parse_events_get_text(scanner);
-> > +     u64 num;
-> >
-> > -     return __value(yylval, text, base, PE_VALUE);
-> > +     errno =3D 0;
-> > +     num =3D strtoull(text, NULL, base);
-> > +     if (errno) {
-> > +             struct parse_events_error *error =3D parse_state->error;
-> > +             char *help =3D NULL;
-> > +
-> > +             if (asprintf(&help, "Bad base %d number \"%s\"", base, te=
-xt) > 0)
-> > +                     parse_events_error__handle(error, get_column(scan=
-ner), help , NULL);
-> > +
-> > +             return PE_ERROR;
-> > +     }
-> > +
-> > +     yylval->num =3D num;
-> > +     return PE_VALUE;
-> >  }
-> >
-> >  static int str(yyscan_t scanner, int token)
-> > @@ -283,8 +291,8 @@ r0x{num_raw_hex}  { return str(yyscanner, PE_RAW); =
-}
-> >        */
-> >  "/"/{digit}          { return PE_BP_SLASH; }
-> >  "/"/{non_digit}              { BEGIN(config); return '/'; }
-> > -{num_dec}            { return value(yyscanner, 10); }
-> > -{num_hex}            { return value(yyscanner, 16); }
-> > +{num_dec}            { return value(_parse_state, yyscanner, 10); }
-> > +{num_hex}            { return value(_parse_state, yyscanner, 16); }
-> >       /*
-> >        * We need to separate 'mem:' scanner part, in order to get speci=
-fic
-> >        * modifier bits parsed out. Otherwise we would need to handle PE=
-_NAME
-> > @@ -330,8 +338,8 @@ cgroup-switches                                   {=
- return sym(yyscanner, PERF_COUNT_SW_CGROUP_SWITCHES); }
-> >  {lc_type}-{lc_op_result}-{lc_op_result}      { return str(yyscanner, P=
-E_LEGACY_CACHE); }
-> >  mem:                 { BEGIN(mem); return PE_PREFIX_MEM; }
-> >  r{num_raw_hex}               { return str(yyscanner, PE_RAW); }
-> > -{num_dec}            { return value(yyscanner, 10); }
-> > -{num_hex}            { return value(yyscanner, 16); }
-> > +{num_dec}            { return value(_parse_state, yyscanner, 10); }
-> > +{num_hex}            { return value(_parse_state, yyscanner, 16); }
-> >
-> >  {modifier_event}     { return str(yyscanner, PE_MODIFIER_EVENT); }
-> >  {name}                       { return str(yyscanner, PE_NAME); }
+  clocks:                                                               
+    items:                                                              
+      - description: ipg clock                                          
+      - description: ocram clock                                        
+      - description: core clock                                         
+      - description: message unit clock                                 
+      - description: debug interface clock
+
+   clock-names:                                                          
+      items:                                                              
+        - const: ipg                                                      
+        - const: ocram                                                    
+        - const: core
+	- const: mu                                                     
+        - const: debug                                                    
+
+allOf:
+   if:                                                                 
+     properties:                                                       
+       compatible:                                                     
+          contains:                                                     
+            const: fsl,imx8ulp-hifi4
+   then:
+     properties:
+       clocks:
+         minItems: 4
+       clock-names:
+         minItems: 4
+
+   else:
+     propertyies:
+       clocks:
+         minItems: 3
+       clock-names:
+         minItems: 3
+
+
+
+>    - if:
+>        properties:
+>          compatible:
+> -- 
+> 2.34.1
+> 
 
