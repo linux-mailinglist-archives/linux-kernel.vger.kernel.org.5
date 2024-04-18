@@ -1,102 +1,68 @@
-Return-Path: <linux-kernel+bounces-149664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0A858A943E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:38:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C60EC8A943F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:39:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D5361F2242B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:38:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F24831C2191F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 089826EB5A;
-	Thu, 18 Apr 2024 07:38:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 773016E5EC;
+	Thu, 18 Apr 2024 07:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lnvFHSrA";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="OYvDBgjG";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lnvFHSrA";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="OYvDBgjG"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WzOBxWl6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F000E495CB;
-	Thu, 18 Apr 2024 07:38:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5963495CB;
+	Thu, 18 Apr 2024 07:39:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713425897; cv=none; b=pIBxA/9FqDtOpS1aj1+f9I8AhtN9/SzdgU11P8vW0p0gelSIRIm1D2dj/i89GTr3AU9lwP93MrWb8g3XCqtetQcwPHTnfIBLKztiba+wJfQqSaaM+lz4PV9BcDLgTgQ09mswx1ZwwFh01W1UVPpRYz4Pfdc4ygYWAbghBUmxNCo=
+	t=1713425975; cv=none; b=kgCgyvenTC7wnMxuKG1yPzucmbpiJ6g0xQ/S3frGUIkMme8tCIVafh1pQtVq38AXHjKIkoNw9eRpFMZCjITgrzoOu8J/tYQLq5Sho3GKTG2L11Qzi8DBS4SHoZbryfaarGX0cj+swVfTXyjVRtEsa4XWvjSGdE6BWg3e3zOpl40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713425897; c=relaxed/simple;
-	bh=cB02ygBIYWAmN9avtVxh22JTZFVbrPvtMdEwWza9xhA=;
+	s=arc-20240116; t=1713425975; c=relaxed/simple;
+	bh=Z+sLE9qE5yLeqgmy68oKMe/JtUYYlAxlrjumbj0nrSo=;
 	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=InSaKGLhoMB+rzd9fsz/wcL7ZyT7CEYGidZ/lZJxmHMpg32T2wCGbBPjc1BhdvmvlOVrsdMvVtwUO1jkHgliaItdbv3/miLlQ4MLLVNIReBRwlqZgT2aLch6+UQtTq0vTfwldlkg59ySdTkweW3SoNszweXYUPTdlo1Hk0EsVkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lnvFHSrA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=OYvDBgjG; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lnvFHSrA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=OYvDBgjG; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 438275C5F7;
-	Thu, 18 Apr 2024 07:38:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713425894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cB02ygBIYWAmN9avtVxh22JTZFVbrPvtMdEwWza9xhA=;
-	b=lnvFHSrAn3FVeiXIQEq78rKA2dSBgZMZL1zx57hjYTFMRCT0YOvo3fqariAqew0z0/kLUH
-	t4iGra0oqIFfMq9r5QFanunjUu+MyRRLsbmJJrIA4ZInzBQwn5kGO/sw8yJHf9khaMdGpc
-	1llY7vsS5k934NDGstwBbv1kXN+JKaU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713425894;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cB02ygBIYWAmN9avtVxh22JTZFVbrPvtMdEwWza9xhA=;
-	b=OYvDBgjGCDGz9OyWZ9rIjGq91iuiJY9mA7cOFSv6+y9NrijpGBVKAYCyWwoIqY32O887RF
-	fkctYJ7VNku81JBg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=lnvFHSrA;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=OYvDBgjG
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713425894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cB02ygBIYWAmN9avtVxh22JTZFVbrPvtMdEwWza9xhA=;
-	b=lnvFHSrAn3FVeiXIQEq78rKA2dSBgZMZL1zx57hjYTFMRCT0YOvo3fqariAqew0z0/kLUH
-	t4iGra0oqIFfMq9r5QFanunjUu+MyRRLsbmJJrIA4ZInzBQwn5kGO/sw8yJHf9khaMdGpc
-	1llY7vsS5k934NDGstwBbv1kXN+JKaU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713425894;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cB02ygBIYWAmN9avtVxh22JTZFVbrPvtMdEwWza9xhA=;
-	b=OYvDBgjGCDGz9OyWZ9rIjGq91iuiJY9mA7cOFSv6+y9NrijpGBVKAYCyWwoIqY32O887RF
-	fkctYJ7VNku81JBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0BA931384C;
-	Thu, 18 Apr 2024 07:38:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id n24bAebNIGb8DQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 18 Apr 2024 07:38:14 +0000
-Date: Thu, 18 Apr 2024 09:38:22 +0200
-Message-ID: <8734rjxgr5.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: syzbot <syzbot+8933e1c7c07fe8f2dcd3@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	perex@perex.cz,
-	syzkaller-bugs@googlegroups.com,
-	tiwai@suse.com
-Subject: Re: [syzbot] [sound?] inconsistent lock state in snd_hrtimer_callback (2)
-In-Reply-To: <0000000000000b0bf30616069d1e@google.com>
-References: <0000000000000b0bf30616069d1e@google.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	 MIME-Version:Content-Type; b=Io9GK9UqsOMUF+RNpYsNyEufGtDXstcOHzKzyspxAOfIPN3ktxzkRGP3/uGqmcXGQPW8bpShoZjuhs14HtmCbTdxeuXpmCJpRWcaM64ZUxBrLFHtNWiOFP+3bfPLr5e5oJtIgiGXO9iXxniCJ7ggr+HND0uMcDfZnOCXxM6UjQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WzOBxWl6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E00DC113CC;
+	Thu, 18 Apr 2024 07:39:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713425975;
+	bh=Z+sLE9qE5yLeqgmy68oKMe/JtUYYlAxlrjumbj0nrSo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=WzOBxWl6mPuDAJOSKv9gcHYVNsYYmhP3YY/MPeMbnylJljEzJipqQIEUx/6W4dU3O
+	 TSLH8oBTTxTgf1x5Fb8TN1LK7wZAbRNNHVNZbJATyDFeImhPD1ewDa+He11W30kayO
+	 okkmV9/8VcWuvYpHxd5YiM5nDuITnxvytTM1WQWJXgD55/+KTeUE6QLrreEd4XH1pW
+	 nXCQ2eAdMktJA1Z0/PNOlb72voRriKmSb8PiL5eQj9kFmXTpBmLNUfGTE/3lh5WILt
+	 T+Trrn0Ihf+4BnIcu//dHa+gZDtVOlLTBeUcx52oL/FcJs+/wm8pTRDZLrEjcQk4m1
+	 eZMPW4XPv1Sgw==
+Received: from ip-185-104-136-29.ptr.icomera.net ([185.104.136.29] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rxMMm-005eQO-Fc;
+	Thu, 18 Apr 2024 08:39:32 +0100
+Date: Thu, 18 Apr 2024 08:39:29 +0100
+Message-ID: <871q73rufi.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org,
+	catalin.marinas@arm.com,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Will Deacon <will@kernel.org>,
+	kvmarm@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Fuad Tabba <tabba@google.com>
+Subject: Re: [PATCH 1/2] KVM: arm64: Replace custom macros with fields from ID_AA64PFR0_EL1
+In-Reply-To: <20240418053804.2573071-2-anshuman.khandual@arm.com>
+References: <20240418053804.2573071-1-anshuman.khandual@arm.com>
+	<20240418053804.2573071-2-anshuman.khandual@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -104,41 +70,64 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-X-Spamd-Result: default: False [0.78 / 50.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	BAYES_HAM(-0.21)[71.72%];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	SINGLE_SHORT_PART(0.00)[];
-	TAGGED_RCPT(0.00)[8933e1c7c07fe8f2dcd3];
-	DKIM_TRACE(0.00)[suse.de:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: 0.78
-X-Spamd-Bar: /
-X-Rspamd-Queue-Id: 438275C5F7
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
+X-SA-Exim-Connect-IP: 185.104.136.29
+X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, oliver.upton@linux.dev, will@kernel.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, tabba@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-#syz fix: ALSA: timer: Fix missing irq-disable at closing
++ Fuad
+
+On Thu, 18 Apr 2024 06:38:03 +0100,
+Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+> 
+> This replaces custom macros usage (i.e ID_AA64PFR0_EL1_ELx_64BIT_ONLY and
+> ID_AA64PFR0_EL1_ELx_32BIT_64BIT) and instead directly uses register fields
+> from ID_AA64PFR0_EL1 sysreg definition.
+> 
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Oliver Upton <oliver.upton@linux.dev>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: kvmarm@lists.linux.dev
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/arm64/kvm/hyp/include/nvhe/fixed_config.h | 8 ++++----
+>  arch/arm64/kvm/hyp/nvhe/pkvm.c                 | 4 ++--
+>  arch/arm64/kvm/hyp/nvhe/sys_regs.c             | 2 +-
+>  3 files changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/hyp/include/nvhe/fixed_config.h b/arch/arm64/kvm/hyp/include/nvhe/fixed_config.h
+> index 51f043649146..0034bfffced6 100644
+> --- a/arch/arm64/kvm/hyp/include/nvhe/fixed_config.h
+> +++ b/arch/arm64/kvm/hyp/include/nvhe/fixed_config.h
+> @@ -52,10 +52,10 @@
+>   *	Supported by KVM
+>   */
+>  #define PVM_ID_AA64PFR0_RESTRICT_UNSIGNED (\
+> -	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL0), ID_AA64PFR0_EL1_ELx_64BIT_ONLY) | \
+> -	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL1), ID_AA64PFR0_EL1_ELx_64BIT_ONLY) | \
+> -	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL2), ID_AA64PFR0_EL1_ELx_64BIT_ONLY) | \
+> -	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL3), ID_AA64PFR0_EL1_ELx_64BIT_ONLY) | \
+> +	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL0), ID_AA64PFR0_EL1_EL0_IMP) | \
+> +	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL1), ID_AA64PFR0_EL1_EL1_IMP) | \
+> +	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL2), ID_AA64PFR0_EL1_EL2_IMP) | \
+> +	FIELD_PREP(ARM64_FEATURE_MASK(ID_AA64PFR0_EL1_EL3), ID_AA64PFR0_EL1_EL3_IMP) | \
+
+If you are going to rework this, can we instead use something less
+verbose such as SYS_FIELD_GET()?
+
+There is also a series from Fuad moving things around, and maybe
+that's the opportunity to rework this while limiting the amount of
+cosmetic churn. Not to that this fixed config stuff needs to be
+reworked in order to match the runtime feature enforcement that the
+rest of KVM has adopted.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
