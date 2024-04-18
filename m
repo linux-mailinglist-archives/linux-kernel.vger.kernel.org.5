@@ -1,121 +1,244 @@
-Return-Path: <linux-kernel+bounces-149469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 009658A9189
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:25:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 276C08A918A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:26:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8456AB21ECB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:25:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 934B51F22801
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:26:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02AA252F6E;
-	Thu, 18 Apr 2024 03:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 403B650A73;
+	Thu, 18 Apr 2024 03:26:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IhrUr3wQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="QivVdbs3"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C7935244;
-	Thu, 18 Apr 2024 03:25:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4386286AF
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 03:26:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713410734; cv=none; b=bXasLddcOOLJ1ZnmXrVs9pMOgG5Wr7E6Dw43sqdM8WuDm7HKGC/IXytciqnQj4k3IuStlRrHAhwJomOag5fBs6Mso7r/HjpijwGap+XJlCcIJxgEuX/WERFYMT3/1IEMW3k+E0rfuEX77zIf60bbBpZte0FebFWhSo6P4aoQd3o=
+	t=1713410777; cv=none; b=ayECkYohw8AFBCDif99pcleCkk6w7pV0v8lYSCO+l8pPpE77kquvbuNs/xBsyIT4Nu6CxbyjpcIITkNb1ZKj+P17JMesZ9D/kWqJpm9F+N+/OEjDF5WkB5LQ/MWlrYTt4HAFQCqL5GBj+V3BuykIdHFULsUdnp0tsNrSSRpvuno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713410734; c=relaxed/simple;
-	bh=rxKsOCKe0DAcEdcR0ylfZC8wvWu25zLu+9a6x1ho/mM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E4+vUr175AGLpnrrvtVLD8JJkv++vaeE87bI+Atbb6tj8tsJxjiMth0POC2idwn3SRByVenrjOaZQHHfm+DqHKjqb57Gz5e5potqrIBdxNyQhNkwGfPJO4cRotQn6gg0UD1XRpGXplAVG80qisT4NHnRY5YNPOMFthrTunSwBQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IhrUr3wQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD2CDC4AF07;
-	Thu, 18 Apr 2024 03:25:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713410733;
-	bh=rxKsOCKe0DAcEdcR0ylfZC8wvWu25zLu+9a6x1ho/mM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=IhrUr3wQdS7pMOqL38LvOm8p0MZNEvn6fOcHj2wfhmP+73+5LLudV1Lgnfamja9Y6
-	 sRl3cvEx4+efmsi6OoN6IQjmIVywTvetkiMpSK/kppc0rcmLoQirUiGUNuRp5zaDZ2
-	 LjJ4fHwEigd6MH+yOWiy4vP0aMpf8qmvO6JPDKtnG9dlwK1a1r0jYllWkLv2Q22jj/
-	 3qtmgPDWL0OloTxzL4fcSRTYW7nhY00gB6uFDeGTbOUItxehk8YdogbK0ZWu5vtDn9
-	 DY0o74obhDlmX7PpkTQP2qmin9R4/WNa2pfOLif9mG5R57uVTPils9I/cDFnsNeX8J
-	 68kk/Rkf0r9LA==
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-516cdb21b34so410129e87.1;
-        Wed, 17 Apr 2024 20:25:33 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVs4+6ZxYTa7WihoPdbf64NIZhJrHZcxf8fIddCPb84mFIjd5lK3YvBo2lXXj+YYaS/g/eZ/2hG1yqqjQOBSB5GVS/krVCzA3T9y5uJDs0LHx53j3H/bnPQA0R+j/QWA20kOPk9rZvzE7Y7lXX/z7iM1gLZ8zHP0SN0G/vTHCgrpzkx
-X-Gm-Message-State: AOJu0Yznro36Xf84n9BQhJjXaL5xOAOnnR1/fWP8UFSU+36xh5s5u1XQ
-	TFReJ8HriQT6tH9uoOQA10Bjb6PBhIZBc30ZP/1BB2rW8GI9RvQ/9aKXg6LGzozM9Sgju4VjIuC
-	QEmrbYijPM+e+qzVAoTH6cQdUbYU=
-X-Google-Smtp-Source: AGHT+IGUtpS9rTXmlBW6njK75ylM7y5nn/N0myZPB1e1PWVQP7ROCNH19qp8oV8CHQjg2tUP6qEN1GWUJ/J9UvLa6d8=
-X-Received: by 2002:a19:771d:0:b0:518:8e3c:4647 with SMTP id
- s29-20020a19771d000000b005188e3c4647mr624875lfc.7.1713410732054; Wed, 17 Apr
- 2024 20:25:32 -0700 (PDT)
+	s=arc-20240116; t=1713410777; c=relaxed/simple;
+	bh=KNfQStDglR7kPEh2jWKZCSvCebnvLHoecf23uDfOkIY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p2Mvo5yp1ya3F8i33XFU9epVpkd4xSyeao5O7Os5s2eL2m+MV+d2Tl4IRH+P4L3aJYOKG4N1CcnA5SeXoA1MqGGrx3pbdrUBRV154RJAbd834a9YXfzDClugSXU0eqU9QSwTvlC/+z1KBePMQ6bAFoG82Xo+rQqRFBMPWTKsD2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=QivVdbs3; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e651a9f3ffso2916775ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 20:26:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shopee.com; s=shopee.com; t=1713410775; x=1714015575; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QFTAjtM3f8h+Urx2x//CqQOtFkuR1kgk8D12m9A+m5E=;
+        b=QivVdbs3jDqRolAfz6Q8Z8+phVwTOLrSDQdfxO1xTkreply9ROnzzklBuDAOBESiox
+         mIUNlORcw0eD+VHORKjePy89AI9/dxUzj/Lof3ESqW1CQ5BLy3SYH5Prup1zTHiYbxyG
+         XEWkoqj2agEvIItvTTzYgkTcErta7sCDrbRJ1JhopVK+76fIlBah1fksqJcpLVsO29RC
+         OrAAA9hYKT0Y95XNyEaJu0Mt1wySGL8Fo97WswPxdz/jjLhQbYLxeGiE6n6BzvyKFQRc
+         cZQMhUK/nkOjoNUSKF8k56Mr8YKF6lOOn2RT8AEDL7DN8PZzUXwGJjJyaxKTCd5JLZLq
+         I/HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713410775; x=1714015575;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=QFTAjtM3f8h+Urx2x//CqQOtFkuR1kgk8D12m9A+m5E=;
+        b=m0uppMhVddWOiG5XWW511Qw66P8Ll+bofCBL73XGLopV+gOUSjhYRwR2/pfye+I3yX
+         FsEPmBY0MCufUR0ree1PsEzrVX87hydGpzRDoGSNIGTTrQavCkRn4KiuEWZKjcPzRLUd
+         wyZB1NKipoO4L6y+D1Sq7TUO0qS+atTc/K6ZMAr7YwUuyNpzVey/EhDEplXzLjTUYWMW
+         qnQPfUmLeLRNQmmD8ta5PIIEdzueLtXQM1ekCwxRYzeqi2AJ5WvX2eCU1yCfVOCHVePY
+         n2a+y/8i4n3rOzBwOOYFKl9KKWmN3jac+bm/Fla9MJxY16O9xfkX0Iphm6FHeAWStLDy
+         HEtw==
+X-Forwarded-Encrypted: i=1; AJvYcCVvUSENxrv6M0Tdsfc9e3g+agnk3SPVtILpA1WQToA+TQF4AQO6K1QnZTY8/T2sqXOf2ubVK1d/i6gGqoHGmTgwXg/PfzlJkEy6MfRD
+X-Gm-Message-State: AOJu0Yw6qlsxnIgkAkYyFLfrQX7PJhB173+8oju0gv589AuTACFaUQ7S
+	g93i644cB40GQjWZMe+N0rWiHoDlN5CookN2VgTHSxSw0i8uk4fSM3wVzWxSBTE=
+X-Google-Smtp-Source: AGHT+IHHs5IjKp87EK4YTz1xuPnPct23eqJRVDf4bTtBn9ITzGm07U0YTYlE6ZFnP/DL8vhc5dygSw==
+X-Received: by 2002:a17:902:700c:b0:1e5:28cd:4ef9 with SMTP id y12-20020a170902700c00b001e528cd4ef9mr1436753plk.30.1713410775232;
+        Wed, 17 Apr 2024 20:26:15 -0700 (PDT)
+Received: from [10.54.24.115] (static-ip-148-99-134-202.rev.dyxnet.com. [202.134.99.148])
+        by smtp.gmail.com with ESMTPSA id w9-20020a1709026f0900b001e20be11688sm410256plk.229.2024.04.17.20.26.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 20:26:14 -0700 (PDT)
+Message-ID: <6af2cb1b-4d93-4fd4-a5f5-0fdf2ae9d759@shopee.com>
+Date: Thu, 18 Apr 2024 11:26:09 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416-bpf_wq-v1-0-c9e66092f842@kernel.org> <20240416-bpf_wq-v1-16-c9e66092f842@kernel.org>
-In-Reply-To: <20240416-bpf_wq-v1-16-c9e66092f842@kernel.org>
-From: Song Liu <song@kernel.org>
-Date: Wed, 17 Apr 2024 20:25:20 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW46OYRj2TrqSeD4bPTN3bxbpj7DaFJnc3g0a--Gkjj2AQ@mail.gmail.com>
-Message-ID: <CAPhsuW46OYRj2TrqSeD4bPTN3bxbpj7DaFJnc3g0a--Gkjj2AQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 16/18] selftests/bpf: add checks for bpf_wq_set_callback()
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] perf/core: Fix missing wakeup when waiting for context
+ reference
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+ mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+ namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+ linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240410035506.599192-1-haifeng.xu@shopee.com>
+ <Zh_8FpT10qoE-x1u@localhost.localdomain>
+From: Haifeng Xu <haifeng.xu@shopee.com>
+In-Reply-To: <Zh_8FpT10qoE-x1u@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 16, 2024 at 7:11=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.=
-org> wrote:
-[...]
 
-> +SEC("?tc")
-> +__log_level(2)
-> +__failure
-> +/* check that the first argument of bpf_wq_set_callback()
-> + * is a correct bpf_wq pointer.
-> + */
-> +__msg("mark_precise: frame0: regs=3Dr1 stack=3D before")
 
-This line and some other "mark_precise" lines are causing issues for
-test_progs-no_alu32 in the CI. I can reproduce it in my local tests.
+On 2024/4/18 00:43, Frederic Weisbecker wrote:
+> Le Wed, Apr 10, 2024 at 03:55:06AM +0000, Haifeng Xu a écrit :
+>> In our production environment, we found many hung tasks which are
+>> blocked for more than 18 hours. Their call traces are like this:
+>>
+>> [346278.191038] __schedule+0x2d8/0x890
+>> [346278.191046] schedule+0x4e/0xb0
+>> [346278.191049] perf_event_free_task+0x220/0x270
+>> [346278.191056] ? init_wait_var_entry+0x50/0x50
+>> [346278.191060] copy_process+0x663/0x18d0
+>> [346278.191068] kernel_clone+0x9d/0x3d0
+>> [346278.191072] __do_sys_clone+0x5d/0x80
+>> [346278.191076] __x64_sys_clone+0x25/0x30
+>> [346278.191079] do_syscall_64+0x5c/0xc0
+>> [346278.191083] ? syscall_exit_to_user_mode+0x27/0x50
+>> [346278.191086] ? do_syscall_64+0x69/0xc0
+>> [346278.191088] ? irqentry_exit_to_user_mode+0x9/0x20
+>> [346278.191092] ? irqentry_exit+0x19/0x30
+>> [346278.191095] ? exc_page_fault+0x89/0x160
+>> [346278.191097] ? asm_exc_page_fault+0x8/0x30
+>> [346278.191102] entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>
+>> The task was waiting for the refcount become to 1, but from the vmcore,
+>> we found the refcount has already been 1. It seems that the task didn't
+>> get woken up by perf_event_release_kernel() and got stuck forever. The
+>> below scenario may cause the problem.
+>>
+>> Thread A					Thread B
+>> ...						...
+>> perf_event_free_task				perf_event_release_kernel
+>> 						   ...
+>> 						   acquire event->child_mutex
+>> 						   ...
+>> 						   get_ctx
+>>    ...						   release event->child_mutex
+>>    acquire ctx->mutex
+>>    ...
+>>    perf_free_event (acquire/release event->child_mutex)
+>>    ...
+>>    release ctx->mutex
+>>    wait_var_event
+>> 						   acquire ctx->mutex
+>> 						   acquire event->mutex
+>> 						   # move existing events to free_list
+>> 						   release event->child_mutex
+>> 						   release ctx->mutex
+>> 						   put_ctx
+>> ...						...
+>>
+>> In this case, all events of the ctx have been freed, so we couldn't
+>> find the ctx in free_list and Thread A will miss the wakeup. It's thus
+>> necessary to add a wakeup after dropping the reference.
+>>
+>> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
+>> ---
+>>  kernel/events/core.c | 16 ++++++++++++++++
+>>  1 file changed, 16 insertions(+)
+>>
+>> diff --git a/kernel/events/core.c b/kernel/events/core.c
+>> index 4f0c45ab8d7d..01dfe715f09e 100644
+>> --- a/kernel/events/core.c
+>> +++ b/kernel/events/core.c
+>> @@ -5340,6 +5340,8 @@ int perf_event_release_kernel(struct perf_event *event)
+>>  again:
+>>  	mutex_lock(&event->child_mutex);
+>>  	list_for_each_entry(child, &event->child_list, child_list) {
+>> +		void *var;
+>> +		bool freed = false;
+>>  
+>>  		/*
+>>  		 * Cannot change, child events are not migrated, see the
+>> @@ -5380,11 +5382,25 @@ int perf_event_release_kernel(struct perf_event *event)
+>>  			 * this can't be the last reference.
+>>  			 */
+>>  			put_event(event);
+>> +		} else {
+>> +			freed = true;
+>> +			var = &ctx->refcount;
+>>  		}
+>>  
+>>  		mutex_unlock(&event->child_mutex);
+>>  		mutex_unlock(&ctx->mutex);
+>>  		put_ctx(ctx);
+>> +
+>> +		if (freed) {
+>> +			/*
+>> +			 * perf_event_free_task() delete all events of the ctx and
+>> +			 * there is no event of the ctx in free_list. It may step
+>> +			 * into wait_var_event() before decrement the refcount. So
+>> +			 * we should add a wakeup here.
+>> +			 */
+>> +			smp_mb(); /* pairs with wait_var_event() */
+>> +			wake_up_var(var);
+>> +		}
+>>  		goto again;
+> 
+> Good catch!
+> 
+> How about the following slightly simplified version?
 
-I am not quite sure what is the best fix. Maybe we can just
-remove it.
+Yes. I'll send next verion with your suggestions and add:
 
-Thanks,
-Song
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-> +__msg(": (85) call bpf_wq_set_callback_impl#") /* anchor message */
-> +__msg("off 1 doesn't point to 'struct bpf_wq' that is at 0")
-> +long test_wrong_wq_pointer_offset(void *ctx)
-> +{
-> +       int key =3D 0;
-> +       struct bpf_wq *wq;
+> 
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 724e6d7e128f..4082d0161b2b 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -5365,6 +5365,7 @@ int perf_event_release_kernel(struct perf_event *event)
+>  again:
+>  	mutex_lock(&event->child_mutex);
+>  	list_for_each_entry(child, &event->child_list, child_list) {
+> +		void *var = NULL;
+>  
+>  		/*
+>  		 * Cannot change, child events are not migrated, see the
+> @@ -5405,11 +5406,23 @@ int perf_event_release_kernel(struct perf_event *event)
+>  			 * this can't be the last reference.
+>  			 */
+>  			put_event(event);
+> +		} else {
+> +			var = &ctx->refcount;
+>  		}
+>  
+>  		mutex_unlock(&event->child_mutex);
+>  		mutex_unlock(&ctx->mutex);
+>  		put_ctx(ctx);
 > +
-> +       wq =3D bpf_map_lookup_elem(&array, &key);
-> +       if (!wq)
-> +               return 1;
-> +
-> +       if (bpf_wq_init(wq, &array, 0))
-> +               return 2;
-> +
-> +       if (bpf_wq_set_callback((void *)wq + 1, wq_cb_sleepable, 0))
-> +               return 3;
-> +
-> +       return -22;
-> +}
->
-> --
-> 2.44.0
->
+> +		if (var) {
+> +			/*
+> +			 * If perf_event_free_task() has deleted all events from the
+> +			 * ctx while the child_mutex got released above, make sure to
+> +			 * notify about the preceding put_ctx().
+> +			 */
+> +			smp_mb(); /* pairs with wait_var_event() */
+> +			wake_up_var(var);
+> +		}
+>  		goto again;
+>  	}
+>  	mutex_unlock(&event->child_mutex);
+> 
+> 
+> 
+>>  	}
+>>  	mutex_unlock(&event->child_mutex);
+>> -- 
+>> 2.25.1
+>>
+>>
 
