@@ -1,74 +1,104 @@
-Return-Path: <linux-kernel+bounces-149805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92E338A960E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:27:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A83E48A95FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:25:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08D432823E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:27:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DA9E1F22510
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C803115FA9E;
-	Thu, 18 Apr 2024 09:23:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6239C15B0EB;
+	Thu, 18 Apr 2024 09:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="U6AExl0D"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="GVKFDobg";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jYCnF71i"
+Received: from fout6-smtp.messagingengine.com (fout6-smtp.messagingengine.com [103.168.172.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7224C15FA7A;
-	Thu, 18 Apr 2024 09:23:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B831815E1F0
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713432229; cv=none; b=tLN4RK8ypxUlYvnReK5t6ovzU45Bv8n3FKSMy8dJ8xFpo5Pk1N19zukU7eEhMVRJ7aii6nFQ4S9Yn6ptdLgIQcea9yrp4a9keRdua2icIZpHRJX+VNhsvUxJY4fEkuiDnsZeCfewHCqw++Gvfv7yyQ5xa8kGCwCrIXXsh9VJD1U=
+	t=1713432205; cv=none; b=kz++oqlFlKpLkq0PHZOw0HlztXIxdCIZrv4AI+LBZz1JZODajdmCkL93opFgpxjfIhRA1cxMNmzw4eucOxeBNpQCm/HufJnd4iM4YrIuN6gb1v//eNhW7CvLCM7MsZ5CKMeTGwzbJSA96ow51sCmXRU34HJQi0tvKA4yseV4KpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713432229; c=relaxed/simple;
-	bh=oJtfiid9IioNRrugLc5bUVBOYEZmj6gElh2LpdZgvyU=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qFVEoNzpRTGyNaCy+jxM419rGhfIRQqXFhYqTWW7KRBXQbQm8VQD8cXBVPZSr1bX2E2M3q1WCZqyIyYxDsuKiHTFdw+xvw/zrKPt4Wf8aIaDttdYZjgCIXJk0CS1RpqgE7pOJQm2RObZeZm5X49APWRmj2el0fnbUAbQ1VsM1hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=U6AExl0D; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43I34F25020842;
-	Thu, 18 Apr 2024 09:23:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=Dez6Zyb+4DE2Om2f/t0vMGrmQF8kSk8Xomnq2/egjB4=; b=U6
-	AExl0DlgIOmK4EdSY2WpUErgiroPjsCHEa70BelcvEBTHxoNyozIEa9BUwqjzmGg
-	PYilSOgYLZaP4fd8Yow8Nrzw5OZjYUu59splaG0nr+7Hj6wxdg+vLhUC66+wY7XL
-	TxmpcC+OE5cF3J4eAjkX8kpklsnLkx6wQmk5OmqXxeVT1tnyFLiiNkPugYtMYjt1
-	x6pzrCKwVPYEof8oPboMVy+DeyuNo4TYZYe2EW4xbQV2pz4tiNhDXaDmBDHSNdsF
-	92BTH4hvsbvd7JmODXhDRktuscf7OhJBxXI5lEnbPcceecZTRE0C7nMeeQoBvppN
-	WTNekb7FfV4gKLpVP4sg==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xju9m0qu8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Apr 2024 09:23:44 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43I9Niwd012736
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Apr 2024 09:23:44 GMT
-Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Thu, 18 Apr 2024 02:23:39 -0700
-From: Varadarajan Narayanan <quic_varada@quicinc.com>
-To: <andersson@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
-        <konrad.dybcio@linaro.org>, <djakov@kernel.org>,
-        <quic_varada@quicinc.com>, <dmitry.baryshkov@linaro.org>,
-        <quic_anusha@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
-Subject: [PATCH v9 2/6] dt-bindings: interconnect: Add Qualcomm IPQ9574 support
-Date: Thu, 18 Apr 2024 14:53:01 +0530
-Message-ID: <20240418092305.2337429-3-quic_varada@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240418092305.2337429-1-quic_varada@quicinc.com>
-References: <20240418092305.2337429-1-quic_varada@quicinc.com>
+	s=arc-20240116; t=1713432205; c=relaxed/simple;
+	bh=YYd24lzdOEAiopxmzeWnvG3MqZg5713h5PUFbBbZh6g=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=HmxZ+5ygGIMDEiexaiRxjXzTm8WkcLixVozDXR49WY2/hsXcOVK+jrRjTlEfMpiLdbhB/Nr45UpxKcAqVDUG0x+nW0fzeJHocMa9/Kyxp8oQ2CKAGHh7cGlj89/+Zp1cuG4Y6AKxgKSwCKp0tWeEguKQwoWlXJF0PkoZaEHY3LA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=GVKFDobg; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jYCnF71i; arc=none smtp.client-ip=103.168.172.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfout.nyi.internal (Postfix) with ESMTP id D4F8113800C6;
+	Thu, 18 Apr 2024 05:23:22 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 18 Apr 2024 05:23:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
+	:from:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm3; t=1713432202; x=
+	1713518602; bh=HJ3aHw2ntpRqnqoos49E4hWJ+XH7yH2ocsiFtJ2lzRs=; b=G
+	VKFDobg+YjM+jyKPdvZmoV0f7KvXBLV406VfF0atmc3m9oWmhZ9lTiFupWZVMlFP
+	q+dt3HrxboPkuGL8J9dInaMnM1ORs8taYxzD0AvacRmEzUNjF6Aah4KOCN3mNRAe
+	xjyKshclp9phxPmKYqpr34MFcmTd84liMRvX7HLj5jnFlzRooibwF2QXs1yyQbCm
+	XEkvbHL3qQHEKnqWf8qMTewIQoa5e02m0PI4xeXdF9KQE4inDvlD9AKr7S7imoB3
+	deKrGMoLd0QyPVrS0SjI2uOeV3rqzt4x5yMNB7iUvECvUf3lLMdPRc1CssRE1l+W
+	c8twBKXdH0oKNULl1zPhQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1713432202; x=
+	1713518602; bh=HJ3aHw2ntpRqnqoos49E4hWJ+XH7yH2ocsiFtJ2lzRs=; b=j
+	YCnF71imnzATdTUYfKxZAb4G+nE085BHkYhBbc+yV+bl0vHGgO5jXkMcxJh5Q6Va
+	Doi94TxcACHQ92CPCN8QaCTOHCA+NA4ZW48kA2L6aoQWcaGLBlLFSubouqCi2X9Y
+	gyluSsdUDQ98PXhQDKDzEKtdAWm0G5tBMjFt/PPhhsvlru7fkDvqt68Z1LTp4SmY
+	banjcDHDBvO2E52oVbXkxFe/+VmdO2WFPprxA1Ro41Wk/ytMgiit6tAl9nCudW1y
+	SvgwC3dWZ4fzLDXcVptjpUk03UWjuuhC8+fFHSP44N9/FVqcBoM7//QbQAFCn1CT
+	eKcuzimtsQIf4T581wFtg==
+X-ME-Sender: <xms:iuYgZjUUVfkTjG5JGRA8GGiULafhupEdYWfVhatNzhGRfMC0SWRkCQ>
+    <xme:iuYgZrlUM3jYM0ZhIByGy_R3_TLMoLRQIKfrvI_cRAZrou6dB6K1k3Rfv1QHWRNe7
+    n6AMb1_A13tZMSt7gU>
+X-ME-Received: <xmr:iuYgZvag5ct9bbklV5Pkc75Oxmx2KJRZU6zbuC6lz6KYi6rquhwZP04IHno_4MdLC2R6EB8GKp31vsmGpvzX7mg-ngvlZluFpvM31UP7hUOmpA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudektddgudehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
+    ertdertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
+    rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpedvjefgje
+    euvdfguddukeelveetgfdtvefhtdfffeeigfevueetffeivdffkedvtdenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhise
+    hsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:iuYgZuX4DRuDHrfh53wJ9weXNhWT7enn3b5MWm2-kJzbrKZrzTdJsw>
+    <xmx:iuYgZtl78Ff5AwvxdzIKrASHIiItsNLZ9i833JUlQOASPpU-n053yA>
+    <xmx:iuYgZrdNnFtKuLSH76FUj_9B9aCNxCpR9bx-tzTZmRXc2eXPXXa95Q>
+    <xmx:iuYgZnESsTjMheCbu0RYEhFhIVA-cbzi1s3VX-XeVbHeqLPJby5RQA>
+    <xmx:iuYgZizLEx34yh4xASfXfWVDVx7aGfqRAEpmsNIIT6lHfM58G96rp-Tw>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 18 Apr 2024 05:23:21 -0400 (EDT)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: linux1394-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 11/13] firewire: core: add tracepoints event for asynchronous inbound response
+Date: Thu, 18 Apr 2024 18:23:01 +0900
+Message-ID: <20240418092303.19725-12-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240418092303.19725-11-o-takashi@sakamocchi.jp>
+References: <20240418092303.19725-1-o-takashi@sakamocchi.jp>
+ <20240418092303.19725-2-o-takashi@sakamocchi.jp>
+ <20240418092303.19725-3-o-takashi@sakamocchi.jp>
+ <20240418092303.19725-4-o-takashi@sakamocchi.jp>
+ <20240418092303.19725-5-o-takashi@sakamocchi.jp>
+ <20240418092303.19725-6-o-takashi@sakamocchi.jp>
+ <20240418092303.19725-7-o-takashi@sakamocchi.jp>
+ <20240418092303.19725-8-o-takashi@sakamocchi.jp>
+ <20240418092303.19725-9-o-takashi@sakamocchi.jp>
+ <20240418092303.19725-10-o-takashi@sakamocchi.jp>
+ <20240418092303.19725-11-o-takashi@sakamocchi.jp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,133 +106,152 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: jpgmxNPpfs23tDuzF76v8R5sVtDvGhia
-X-Proofpoint-ORIG-GUID: jpgmxNPpfs23tDuzF76v8R5sVtDvGhia
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-18_08,2024-04-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- suspectscore=0 malwarescore=0 mlxscore=0 spamscore=0 adultscore=0
- priorityscore=1501 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404180065
 
-Add interconnect-cells to clock provider so that it can be
-used as icc provider.
+In the transaction of IEEE 1394, the node to receive the asynchronous
+request transfers response packet to the requester.
 
-Add master/slave ids for Qualcomm IPQ9574 Network-On-Chip
-interfaces. This will be used by the gcc-ipq9574 driver
-that will for providing interconnect services using the
-icc-clk framework.
+This commit adds an event for the incoming packet. Note that the code to
+decode the packet header is moved, against the note about the sanity
+check.
 
-Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
-v8:
-Remove ICC_xxx macros
-Fix macro defines to be consistent with other bindings
-v7:
-Fix macro names to be consistent with other bindings
-v6:
-Removed Reviewed-by: Krzysztof Kozlowski
-Redefine the bindings such that driver and DT can share them
+ drivers/firewire/core-transaction.c | 54 +++++++++++++++--------------
+ drivers/firewire/trace.h            | 48 +++++++++++++++++++++++++
+ 2 files changed, 76 insertions(+), 26 deletions(-)
 
-v3:
-Squash Documentation/ and include/ changes into same patch
-
-qcom,ipq9574.h
-	Move 'first id' to clock driver
-
----
- .../bindings/clock/qcom,ipq9574-gcc.yaml      |  3 +
- .../dt-bindings/interconnect/qcom,ipq9574.h   | 59 +++++++++++++++++++
- 2 files changed, 62 insertions(+)
- create mode 100644 include/dt-bindings/interconnect/qcom,ipq9574.h
-
-diff --git a/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml b/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
-index 944a0ea79cd6..824781cbdf34 100644
---- a/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
-+++ b/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
-@@ -33,6 +33,9 @@ properties:
-       - description: PCIE30 PHY3 pipe clock source
-       - description: USB3 PHY pipe clock source
+diff --git a/drivers/firewire/core-transaction.c b/drivers/firewire/core-transaction.c
+index 11a60094182a..977d8a36f969 100644
+--- a/drivers/firewire/core-transaction.c
++++ b/drivers/firewire/core-transaction.c
+@@ -1010,32 +1010,10 @@ void fw_core_handle_response(struct fw_card *card, struct fw_packet *p)
+ 	source = async_header_get_source(p->header);
+ 	rcode = async_header_get_rcode(p->header);
  
-+  '#interconnect-cells':
-+    const: 1
+-	spin_lock_irqsave(&card->lock, flags);
+-	list_for_each_entry(iter, &card->transaction_list, link) {
+-		if (iter->node_id == source && iter->tlabel == tlabel) {
+-			if (!try_cancel_split_timeout(iter)) {
+-				spin_unlock_irqrestore(&card->lock, flags);
+-				goto timed_out;
+-			}
+-			list_del_init(&iter->link);
+-			card->tlabel_mask &= ~(1ULL << iter->tlabel);
+-			t = iter;
+-			break;
+-		}
+-	}
+-	spin_unlock_irqrestore(&card->lock, flags);
+-
+-	if (!t) {
+- timed_out:
+-		fw_notice(card, "unsolicited response (source %x, tlabel %x)\n",
+-			  source, tlabel);
+-		return;
+-	}
+-
+-	/*
+-	 * FIXME: sanity check packet, is length correct, does tcodes
+-	 * and addresses match.
+-	 */
++	// FIXME: sanity check packet, is length correct, does tcodes
++	// and addresses match to the transaction request queried later.
++	//
++	// For the tracepoints event, let us decode the header here against the concern.
+ 
+ 	switch (tcode) {
+ 	case TCODE_READ_QUADLET_RESPONSE:
+@@ -1061,6 +1039,30 @@ void fw_core_handle_response(struct fw_card *card, struct fw_packet *p)
+ 		break;
+ 	}
+ 
++	spin_lock_irqsave(&card->lock, flags);
++	list_for_each_entry(iter, &card->transaction_list, link) {
++		if (iter->node_id == source && iter->tlabel == tlabel) {
++			if (!try_cancel_split_timeout(iter)) {
++				spin_unlock_irqrestore(&card->lock, flags);
++				goto timed_out;
++			}
++			list_del_init(&iter->link);
++			card->tlabel_mask &= ~(1ULL << iter->tlabel);
++			t = iter;
++			break;
++		}
++	}
++	spin_unlock_irqrestore(&card->lock, flags);
 +
- required:
-   - compatible
-   - clocks
-diff --git a/include/dt-bindings/interconnect/qcom,ipq9574.h b/include/dt-bindings/interconnect/qcom,ipq9574.h
-new file mode 100644
-index 000000000000..42019335c7dd
---- /dev/null
-+++ b/include/dt-bindings/interconnect/qcom,ipq9574.h
-@@ -0,0 +1,59 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-+#ifndef INTERCONNECT_QCOM_IPQ9574_H
-+#define INTERCONNECT_QCOM_IPQ9574_H
++	trace_async_response_inbound(card, t, p, data, data_length / 4);
 +
-+#define MASTER_ANOC_PCIE0		0
-+#define SLAVE_ANOC_PCIE0		1
-+#define MASTER_SNOC_PCIE0		2
-+#define SLAVE_SNOC_PCIE0		3
-+#define MASTER_ANOC_PCIE1		4
-+#define SLAVE_ANOC_PCIE1		5
-+#define MASTER_SNOC_PCIE1		6
-+#define SLAVE_SNOC_PCIE1		7
-+#define MASTER_ANOC_PCIE2		8
-+#define SLAVE_ANOC_PCIE2		9
-+#define MASTER_SNOC_PCIE2		10
-+#define SLAVE_SNOC_PCIE2		11
-+#define MASTER_ANOC_PCIE3		12
-+#define SLAVE_ANOC_PCIE3		13
-+#define MASTER_SNOC_PCIE3		14
-+#define SLAVE_SNOC_PCIE3		15
-+#define MASTER_USB			16
-+#define SLAVE_USB			17
-+#define MASTER_USB_AXI			18
-+#define SLAVE_USB_AXI			19
-+#define MASTER_NSSNOC_NSSCC		20
-+#define SLAVE_NSSNOC_NSSCC		21
-+#define MASTER_NSSNOC_SNOC_0		22
-+#define SLAVE_NSSNOC_SNOC_0		23
-+#define MASTER_NSSNOC_SNOC_1		24
-+#define SLAVE_NSSNOC_SNOC_1		25
-+#define MASTER_NSSNOC_PCNOC_1		26
-+#define SLAVE_NSSNOC_PCNOC_1		27
-+#define MASTER_NSSNOC_QOSGEN_REF	28
-+#define SLAVE_NSSNOC_QOSGEN_REF		29
-+#define MASTER_NSSNOC_TIMEOUT_REF	30
-+#define SLAVE_NSSNOC_TIMEOUT_REF	31
-+#define MASTER_NSSNOC_XO_DCD		32
-+#define SLAVE_NSSNOC_XO_DCD		33
-+#define MASTER_NSSNOC_ATB		34
-+#define SLAVE_NSSNOC_ATB		35
-+#define MASTER_MEM_NOC_NSSNOC		36
-+#define SLAVE_MEM_NOC_NSSNOC		37
-+#define MASTER_NSSNOC_MEMNOC		38
-+#define SLAVE_NSSNOC_MEMNOC		39
-+#define MASTER_NSSNOC_MEM_NOC_1		40
-+#define SLAVE_NSSNOC_MEM_NOC_1		41
++	if (!t) {
++ timed_out:
++		fw_notice(card, "unsolicited response (source %x, tlabel %x)\n",
++			  source, tlabel);
++		return;
++	}
 +
-+#define MASTER_NSSNOC_PPE		0
-+#define SLAVE_NSSNOC_PPE		1
-+#define MASTER_NSSNOC_PPE_CFG		2
-+#define SLAVE_NSSNOC_PPE_CFG		3
-+#define MASTER_NSSNOC_NSS_CSR		4
-+#define SLAVE_NSSNOC_NSS_CSR		5
-+#define MASTER_NSSNOC_IMEM_QSB		6
-+#define SLAVE_NSSNOC_IMEM_QSB		7
-+#define MASTER_NSSNOC_IMEM_AHB		8
-+#define SLAVE_NSSNOC_IMEM_AHB		9
+ 	/*
+ 	 * The response handler may be executed while the request handler
+ 	 * is still pending.  Cancel the request handler.
+diff --git a/drivers/firewire/trace.h b/drivers/firewire/trace.h
+index 0f7d176ba647..5187f5f2b140 100644
+--- a/drivers/firewire/trace.h
++++ b/drivers/firewire/trace.h
+@@ -88,6 +88,54 @@ TRACE_EVENT(async_request_outbound_complete,
+ 	)
+ )
+ 
++TRACE_EVENT(async_response_inbound,
++	TP_PROTO(const struct fw_card *card, const struct fw_transaction *transaction,
++		 const struct fw_packet *packet, u32 *data, unsigned int data_count),
++	TP_ARGS(card, transaction, packet, data, data_count),
++	TP_STRUCT__entry(
++		__field(u64, transaction)
++		__field(u8, scode)
++		__field(u8, generation)
++		__field(u16, timestamp)
++		__field(u16, destination)
++		__field(u8, tlabel)
++		__field(u8, retry)
++		__field(u8, tcode)
++		__field(u8, priority)
++		__field(u16, source)
++		__field(u8, rcode)
++		__dynamic_array(u32, data, data_count)
++	),
++	TP_fast_assign(
++		__entry->transaction = (u64)transaction;
++		__entry->scode = packet->speed;
++		__entry->timestamp = packet->timestamp;
++		__entry->destination = async_header_get_destination(packet->header);
++		__entry->tlabel = async_header_get_tlabel(packet->header);
++		__entry->retry = async_header_get_retry(packet->header);
++		__entry->tcode = async_header_get_tcode(packet->header);
++		__entry->priority = async_header_get_priority(packet->header);
++		__entry->source = async_header_get_source(packet->header);
++		__entry->rcode = async_header_get_rcode(packet->header);
++		memcpy(__get_dynamic_array(data), data, __get_dynamic_array_len(data));
++	),
++	TP_printk(
++		"transaction=0x%llx scode=%u timestamp=0x%04x dst_id=0x%04x tlabel=%u retry=%u tcode=%u priority=%u src_id=0x%04x rcode=%u data=%s",
++		__entry->transaction,
++		__entry->scode,
++		__entry->timestamp,
++		__entry->destination,
++		__entry->tlabel,
++		__entry->retry,
++		__entry->tcode,
++		__entry->priority,
++		__entry->source,
++		__entry->rcode,
++		__print_array(__get_dynamic_array(data),
++			      __get_dynamic_array_len(data) / sizeof(u32), sizeof(u32))
++	)
++)
 +
-+#endif /* INTERCONNECT_QCOM_IPQ9574_H */
+ #endif // _FIREWIRE_TRACE_EVENT_H
+ 
+ #define TRACE_INCLUDE_PATH	.
 -- 
-2.34.1
+2.43.0
 
 
