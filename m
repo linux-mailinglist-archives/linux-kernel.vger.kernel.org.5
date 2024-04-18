@@ -1,172 +1,94 @@
-Return-Path: <linux-kernel+bounces-149923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11A068A97E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:54:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B1D88A97EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:54:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDC1A282217
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:54:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D02F1C20DDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F23B815E5CF;
-	Thu, 18 Apr 2024 10:53:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC96515F316;
+	Thu, 18 Apr 2024 10:53:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="M6E1BxnR"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="kR+ja2UM"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47E3615DBD8;
-	Thu, 18 Apr 2024 10:53:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D68F415E7EA;
+	Thu, 18 Apr 2024 10:53:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713437602; cv=none; b=Q/vFqW0iUQ+wCW/qEpvmynOc8+nDRlB9FG999dbtFUdD0E+KGsgENpbFZOkVzJOGM3Js+RiEOdgJUfYSCrL6oH4MvMc4sxen3uD7WrE4ZH98B4Fd122RWkhq0eLU24Xu4dhXrm6cWMYlgyOhTBdyOYREz7BB1LzOGitZ3ehmt+U=
+	t=1713437605; cv=none; b=TWmtHMTxLMBA2ox5NpSfV2mWVDGdXBkBJ+734AF6GLGnpWpafiDHGk3DT5kci/Re8LGtFcnWfupXjRGW4778X5JipHUpYqHaj3xMYAv/xbbwaSCfLp9L92rxzlPBqHgE3yHR4uCEkm+HExQUfjusa1147PczxMPf1Txhb3UlCCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713437602; c=relaxed/simple;
-	bh=y44ptJ3mDFUWxmkBcurUdX8DIYAovhjAxSbpW9R/eNQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jBvX7QokVICKIa9GvRbG85F3P2lclry895nFjdGP8RgYW00b8vFIl8ZqtkVdyVAuEOakeeFfncsJQDPV2SyM1b2Q7QyKCKTCTNqcVfU2Z8e75DehNcEZk+dQ9q3qeA4dkGN2zGAbkUfqoZ1W3IlX0IPUVkHZA5HxoJdYHI2ZfY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=M6E1BxnR; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id B9034827;
-	Thu, 18 Apr 2024 12:52:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1713437549;
-	bh=y44ptJ3mDFUWxmkBcurUdX8DIYAovhjAxSbpW9R/eNQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M6E1BxnRdcjsS4JSj03zg7VJHuDZPXJ+ccXs0PNg0Q6+F9PZypIPKnmHsM7+MY+QG
-	 i4OWslc7wfgQ8vqT7fK1OBDEdeUb+3KXLPbYZy4/Py4vKtQ7bl65D6tTnVXUuYzsgG
-	 Q/FjedEb+g0AcsE72tr78ry7U9NTypqT9lt5kX70=
-Date: Thu, 18 Apr 2024 13:53:10 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>,
-	Martin Tuma <martin.tuma@digiteqautomotive.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Hugues Fruchet <hugues.fruchet@foss.st.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Sowjanya Komatineni <skomatineni@nvidia.com>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	s=arc-20240116; t=1713437605; c=relaxed/simple;
+	bh=SDDFhbUiNOwHfeB4Vw/OZxgE2arSxDacnYuS9csQZRQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IZBXuJBMU2xjf/2pRRtJ1f9SvbDgOf9ursx6k1JiCiU2QYi9/6Tt8M0e1zu7rYGhWV7waSc/UUbvwMl6UA3H6BO7Pce46Y3dWsPxW+qKFWeNxxCxawXa4HHfHgXivpjD5VpV601b4smxMl1uQUF13KrEPuS+ltsrC2nEinYuM4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=kR+ja2UM; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713437601;
+	bh=SDDFhbUiNOwHfeB4Vw/OZxgE2arSxDacnYuS9csQZRQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=kR+ja2UMsEgj0JRYQpxSDG7coPupOpBYOaLnNRByXmaQn3wgUqA6Bb02s+UX0Hsbk
+	 +0YeVKxn+uPnO7zWvz8f1nhFKoLOpHo3pkgJd7UM1fvaYAfPLqO9SUNQnxTB1E4YS7
+	 9aX31mD04D7PXwVXBtd3pgbbyntchqXNhLnEJEYbA5inq41D9VmqVX5vwPPSGRfvmo
+	 rqSfIPrf3bwH1xWykPcvFrdEY7fNsawkCIQ1Fk4YUS86StCtxUq7W6GWshpxfN/plx
+	 eiwDiR+KdEn3bDBfslA5EMajyk2uOHkqTUCtpi6rPRrY0//XiJNNff0lZpYO7RioeO
+	 /D+YhDal8E4Dw==
+Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id F1A3C3780C22;
+	Thu, 18 Apr 2024 10:53:20 +0000 (UTC)
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+To: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
 	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
-	Abylay Ospan <aospan@netup.ru>,
-	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-	Dmitry Osipenko <digetx@gmail.com>,
-	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-	Vikash Garodia <quic_vgarodia@quicinc.com>,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-	Sylvain Petinot <sylvain.petinot@foss.st.com>,
-	Jacopo Mondi <jacopo+renesas@jmondi.org>,
-	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-	Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
-	Pavel Machek <pavel@ucw.cz>, linux-media@vger.kernel.org,
+	Michael Walle <mwalle@kernel.org>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	Oleg Drokin <green@linuxhacker.ru>
-Subject: Re: [PATCH 00/35] media: Fix coccinelle warning/errors
-Message-ID: <20240418105310.GV12561@pendragon.ideasonboard.com>
-References: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
- <a003494c-a1a9-4fcd-83d8-766a75d6bbb2@moroto.mountain>
- <20240417155112.GQ12561@pendragon.ideasonboard.com>
- <CANiDSCs_qOXkhzuL+cFhpw0hvFMwU0TYyN2B5ZdAStb96TTKFA@mail.gmail.com>
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: arm64: mediatek: add Kontron 3.5"-SBC-i1200
+Date: Thu, 18 Apr 2024 12:53:15 +0200
+Message-ID: <171343758902.247007.7489492694009874618.b4-ty@collabora.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240408080816.4134370-1-mwalle@kernel.org>
+References: <20240408080816.4134370-1-mwalle@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANiDSCs_qOXkhzuL+cFhpw0hvFMwU0TYyN2B5ZdAStb96TTKFA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Ricardo,
+On Mon, 08 Apr 2024 10:08:15 +0200, Michael Walle wrote:
+> Add the compatible string for the Kontron 3.5"-SBC-i1200 single board
+> computer.
+> 
+> 
 
-On Wed, Apr 17, 2024 at 06:19:14PM +0200, Ricardo Ribalda wrote:
-> On Wed, 17 Apr 2024 at 17:51, Laurent Pinchart wrote:
-> > On Tue, Apr 16, 2024 at 11:47:17AM +0300, Dan Carpenter wrote:
-> > > In my opinion, it's better to just ignore old warnings.
-> >
-> > I agree. Whatever checkers we enable, whatever code we test, there will
-> > always be false positives. A CI system needs to be able to ignore those
-> > false positives and only warn about new issues.
-> 
-> We already have support for that:
-> https://gitlab.freedesktop.org/linux-media/media-ci/-/tree/main/testdata/static?ref_type=heads
+Applied to v6.9-next/dts64, thanks!
 
-Those are manually written filters. Would it be possible to reduce the
-manual step to flagging something as a false positive, and have a
-machine build the filters ?
+[1/2] dt-bindings: arm64: mediatek: add Kontron 3.5"-SBC-i1200
+      commit: 465fd1517d9fda695f8105867cb8547272e9963c
+[2/2] arm64: dts: mediatek: add Kontron 3.5"-SBC-i1200
+      commit: 7d35c006a52661fd4d17a9f1ab627336cb215b97
 
-> But it would be great if those lists were as small as possible:
-> 
-> - If we have a lot of warnings, two error messages can be combined and
-> will scape the filters
-> eg:
-> print(AAAA);
-> print(BBBB);
-> > AABBBAAB
-> 
-> - The filters might hide new errors if they are too broad
-> 
-> 
-> Most of the patches in this series are simple and make a nicer code:
-> Eg the non return minmax() ,
-> Other patches show real integer overflows.
-> 
-> Now that the patches are ready, let's bite the bullet and try to
-> reduce our technical debt.
-> 
-> > > When code is new the warnings are going to be mostly correct.  The
-> > > original author is there and knows what the code does.  Someone has
-> > > the hardware ready to test any changes.  High value, low burden.
-> > >
-> > > When the code is old only the false positives are left.  No one is
-> > > testing the code.  It's low value, high burden.
-> > >
-> > > Plus it puts static checker authors in a difficult place because now
-> > > people have to work around our mistakes.  It creates animosity.
-> > >
-> > > Now we have to hold ourselves to a much higher standard for false
-> > > positives.  It sounds like I'm complaining and lazy, right?  But Oleg
-> > > Drokin has told me previously that I spend too much time trying to
-> > > silence false positives instead of working on new code.  He's has a
-> > > point which is that actually we have limited amount of time and we have
-> > > to make choices about what's the most useful thing we can do.
-> > >
-> > > So what I do and what the zero day bot does is we look at warnings one
-> > > time and we re-review old warnings whenever a file is changed.
-> > >
-> > > Kernel developers are very good at addressing static checker warnings
-> > > and fixing the real issues...  People sometimes ask me to create a
-> > > database of warnings which I have reviewed but the answer is that
-> > > anything old can be ignored.  As I write this, I've had a thought that
-> > > instead of a database of false positives maybe we should record a
-> > > database of real bugs to ensure that the fixes for anything real is
-> > > applied.
+Cheers,
+Angelo
 
--- 
-Regards,
-
-Laurent Pinchart
 
