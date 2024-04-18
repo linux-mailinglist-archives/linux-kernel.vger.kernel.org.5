@@ -1,128 +1,146 @@
-Return-Path: <linux-kernel+bounces-150423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 949A58A9F05
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:50:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0B078A9F0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:50:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 506612840DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:50:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B87C285D8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B31B16F904;
-	Thu, 18 Apr 2024 15:49:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7633617108B;
+	Thu, 18 Apr 2024 15:49:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lVH8D3sW"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="SnDWsU68"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E16016EBFB;
-	Thu, 18 Apr 2024 15:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28D0E16F8FD;
+	Thu, 18 Apr 2024 15:49:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713455376; cv=none; b=pyGEurNiNP06VFa4GLHo7c/dQGe+BthwgeUaF79UENvJBivbSuf+UO7rv5e8YIXAy6hf8k9ztCmi92x8uc/f60ImXqN2segoOf72p6vr5zlzOO4xBewEvR5e4T5GemuTlOt/4Zwnec+IUnmGOCWzeSO+DxmueOsRYITyQE9Qhpg=
+	t=1713455378; cv=none; b=mVdNX9Qdsw9dexNpJtns4ErozXImzV5BCy+CFcDpAhYwm78ABTy+8ipt1nxnVq3s2pfUxqmkE0+y3PGfBuxqfSmcQmg4R3hV87W2oTnamdmsEJFaQjtHxboZ+3UIyYxlDf/K/6t6Cycfz3Ehvd3ZYcrD2eealm70ZfcMxLChfR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713455376; c=relaxed/simple;
-	bh=cgOxz3t5+D06EepcrvAFwiMe6M9c4cdtC73ERv6sXc8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KTEjzrxJ/0b4TaUYdeR5w68qQc8tLhxt2th0AFz1wYwIFe+fQJqn0Zu5EIfouezhWbf5G7wwMwdVM+HpPHBeb7vczRzdKbQZNDYnavNjgnl7SHk+In0YMJnxhc8G3ygylWu7e69shL0JgFgE/qduQDQJ/grP0ZqK/eXrpwgzOJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lVH8D3sW; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713455376; x=1744991376;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=cgOxz3t5+D06EepcrvAFwiMe6M9c4cdtC73ERv6sXc8=;
-  b=lVH8D3sW9LRb6BzDNj7vrdibsNb8dW+oDkwexpZa/ewGZobhf2oRrSGm
-   CsblU3cMNPseWnWeccq/89IhOjHdD3w6nKtPev0a3HqYRPBfVh4y837/o
-   a38fMlLfwRRytExK9y1B+JzRq1ACxdwKU0h+BsB78BH9VTF0j9iMJDZ4O
-   Pae8jFS9GfWf3BvGF9f36srcEeTeSHfyLKiTq6elWf60FHlLxGOguPTj6
-   ALgQWyEsZ5sQW0c3/uc0ogapC8pYDvy7oMYd4DeyOj4mXixsiD7VzE5Yo
-   EkaCDF/pRVCbMKmUVJLYNXfUS+XNf7xOQmMc6CGQjQ38QSxP2P0rFxqf1
-   A==;
-X-CSE-ConnectionGUID: kVr5l4SmRL2XaAsScqNfKA==
-X-CSE-MsgGUID: KaWSfV5IRIStaNIhlmSFow==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="12800840"
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="12800840"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 08:49:34 -0700
-X-CSE-ConnectionGUID: YxxEDX90TnWQkLlIcxgu9A==
-X-CSE-MsgGUID: Noj5MdCyRMOyZy2OciXg/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="23102507"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa008.fm.intel.com with ESMTP; 18 Apr 2024 08:49:30 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 92E1C3A6; Thu, 18 Apr 2024 18:49:29 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Mathias Nyman <mathias.nyman@linux.intel.com>,
-	Niklas Neronin <niklas.neronin@intel.com>,
-	linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Mathias Nyman <mathias.nyman@intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 2/2] xhci: pci: Group out Thunderbolt xHCI IDs
-Date: Thu, 18 Apr 2024 18:48:34 +0300
-Message-ID: <20240418154928.3641649-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
-In-Reply-To: <20240418154928.3641649-1-andriy.shevchenko@linux.intel.com>
-References: <20240418154928.3641649-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1713455378; c=relaxed/simple;
+	bh=UwEg6jQHcTgWeL4xO3d8TIf8vYvHIDPpAbd7TlKkK9Y=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gHeZagCK8Ifb6SjdpIyXSzqIxLsDS5jqpikR/YUgxDx7PxoFUk/rn3+ZeGdxhAwdYPL9TEPPncokB3MydQz2Yrj1naK/0Dvo+BN7K99guq3EEQQ3EHBb/PReeYPVnWRNgQWcHvM84ugEvmutPYszVXKT7Up+lBE3V39aunaLtjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=SnDWsU68; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43I6JiOF007499;
+	Thu, 18 Apr 2024 15:49:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=xDnVdRubm2YXL//ItdDE7
+	olh+rPORPbRBCmmNqyZEqA=; b=SnDWsU68k87TLXy3IBt5MAPIPhXeEzEVDhxIH
+	BRejN8tVvTTFK9cUUMjukaAyCmNpESQqVjegG1kuGZPhk87U4ckaTPrMnQYKYZFg
+	kuRpytWviOwRj54Pg+4fF7oJg6tsOB2LUc7B7p3gBtubL8lYAGOLxfDymC5eQAcv
+	LVVR4b82a/WNDq0pi/9wbeIDSg57fLYbis91bm94FzOzK09CDYsyX1myoEc/zAVz
+	Vsq2DwUPtnwBXxcVYpnka+1KZhFcWPk8/vl2n2yVyVXvb2cQSAJ7kWIQ/rEa+3eB
+	igjGbFBLnH60+mc3RU4vrjY6k5Uo2zmAmWbTU7XrQA4GgQNTQ==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xjx54h8cq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 15:49:29 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43IFnSkr009256
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 15:49:28 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Thu, 18 Apr 2024 08:49:27 -0700
+Date: Thu, 18 Apr 2024 08:49:26 -0700
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Sibi Sankar <quic_sibis@quicinc.com>
+CC: <sudeep.holla@arm.com>, <cristian.marussi@arm.com>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <jassisinghbrar@gmail.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <dmitry.baryshkov@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_rgottimu@quicinc.com>, <quic_kshivnan@quicinc.com>,
+        <conor+dt@kernel.org>, <quic_gkohli@quicinc.com>,
+        <quic_nkela@quicinc.com>, <quic_psodagud@quicinc.com>
+Subject: Re: [PATCH V3 2/5] mailbox: Add support for QTI CPUCP mailbox
+ controller
+Message-ID: <ZiFBBh+kQy6Pu3BM@hu-bjorande-lv.qualcomm.com>
+References: <20240417132856.1106250-1-quic_sibis@quicinc.com>
+ <20240417132856.1106250-3-quic_sibis@quicinc.com>
+ <ZiA+mE3QduLxc+a5@hu-bjorande-lv.qualcomm.com>
+ <b8ba5179-cb36-6b13-4244-6da1ff96c2d3@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <b8ba5179-cb36-6b13-4244-6da1ff96c2d3@quicinc.com>
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: VfKhppR1wgkYFVVoSwLUFTIakXyyUK0s
+X-Proofpoint-ORIG-GUID: VfKhppR1wgkYFVVoSwLUFTIakXyyUK0s
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-18_13,2024-04-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ suspectscore=0 malwarescore=0 phishscore=0 mlxlogscore=860 bulkscore=0
+ impostorscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404180112
 
-It's better to keep track on Thunderbold xHCI IDs in a separate group.
+On Thu, Apr 18, 2024 at 01:01:50PM +0530, Sibi Sankar wrote:
+> On 4/18/24 02:56, Bjorn Andersson wrote:
+> > On Wed, Apr 17, 2024 at 06:58:53PM +0530, Sibi Sankar wrote:
+> > > diff --git a/drivers/mailbox/qcom-cpucp-mbox.c b/drivers/mailbox/qcom-cpucp-mbox.c
+[..]
+> > 
+> > > +		if (status & BIT(i)) {
+> > 
+> > Can't you combine the for loop and this conditional into a
+> > for_each_bit_set()?
+> 
+> The only drawback I see here is if the number of channels increase to
+> it's full capacity of 64 since for_each_set_bit expects unsigned long.
+> 
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/usb/host/xhci-pci.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+It takes a unsigned long * and it can take a size > BITS_PER_LONG. But
+I've not convinced myself that the bit order across two of those matches
+the u64 bits.
 
-diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
-index 70bf318fd7ef..332c5843ada5 100644
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -46,6 +46,15 @@
- #define PCI_DEVICE_ID_INTEL_BROXTON_M_XHCI		0x0aa8
- #define PCI_DEVICE_ID_INTEL_BROXTON_B_XHCI		0x1aa8
- #define PCI_DEVICE_ID_INTEL_APOLLO_LAKE_XHCI		0x5aa8
-+#define PCI_DEVICE_ID_INTEL_DENVERTON_XHCI		0x19d0
-+#define PCI_DEVICE_ID_INTEL_ICE_LAKE_XHCI		0x8a13
-+#define PCI_DEVICE_ID_INTEL_TIGER_LAKE_XHCI		0x9a13
-+#define PCI_DEVICE_ID_INTEL_COMET_LAKE_XHCI		0xa3af
-+#define PCI_DEVICE_ID_INTEL_ALDER_LAKE_PCH_XHCI		0x51ed
-+#define PCI_DEVICE_ID_INTEL_ALDER_LAKE_N_PCH_XHCI	0x54ed
-+
-+/* Thunderbolt */
-+#define PCI_DEVICE_ID_INTEL_MAPLE_RIDGE_XHCI		0x1138
- #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_2C_XHCI	0x15b5
- #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_XHCI	0x15b6
- #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_LP_XHCI	0x15c1
-@@ -54,13 +63,6 @@
- #define PCI_DEVICE_ID_INTEL_TITAN_RIDGE_2C_XHCI		0x15e9
- #define PCI_DEVICE_ID_INTEL_TITAN_RIDGE_4C_XHCI		0x15ec
- #define PCI_DEVICE_ID_INTEL_TITAN_RIDGE_DD_XHCI		0x15f0
--#define PCI_DEVICE_ID_INTEL_DENVERTON_XHCI		0x19d0
--#define PCI_DEVICE_ID_INTEL_ICE_LAKE_XHCI		0x8a13
--#define PCI_DEVICE_ID_INTEL_TIGER_LAKE_XHCI		0x9a13
--#define PCI_DEVICE_ID_INTEL_COMET_LAKE_XHCI		0xa3af
--#define PCI_DEVICE_ID_INTEL_MAPLE_RIDGE_XHCI		0x1138
--#define PCI_DEVICE_ID_INTEL_ALDER_LAKE_PCH_XHCI		0x51ed
--#define PCI_DEVICE_ID_INTEL_ALDER_LAKE_N_PCH_XHCI	0x54ed
- 
- #define PCI_DEVICE_ID_AMD_RENOIR_XHCI			0x1639
- #define PCI_DEVICE_ID_AMD_PROMONTORYA_4			0x43b9
--- 
-2.43.0.rc1.1336.g36b5255a03ac
+> > 
+> > > +			val = readl(cpucp->rx_base + APSS_CPUCP_RX_MBOX_CMD(i) + APSS_CPUCP_MBOX_CMD_OFF);
+> > > +			chan = &cpucp->chans[i];
+> > > +			spin_lock_irqsave(&chan->lock, flags);
+> > 
+> > Can you please add a comment here to document that the lock is taken
+> > here to deal with races against client registration? (It wasn't obvious
+> > to me...)
+> 
+> This is was put in to handle irqs after channel closure. Meaning we
+> don't want to send data on a closed/empty channel.
+> 
 
+You're dealing with that through the chan->cl check below, not the lock
+itself. So the lock here would be for synchronizing this code with
+potentially concurrent execution of __mbox_bind_client() or e.g.
+mbox_free_channel().
+
+But if this is indeed the problem, then we're locking here to ensure
+that mbox_chan_received_data() will not dereference chan->cl while it's
+being modified elsewhere int he mailbox core.
+
+If that's the case, I think this needs to be strongly documented in the
+API, or perhaps better yet the lock being moved into
+mbox_chan_received_data().
+
+Regards,
+Bjorn
 
