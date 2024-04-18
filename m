@@ -1,106 +1,131 @@
-Return-Path: <linux-kernel+bounces-150439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43C1F8A9F59
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 364388A9F62
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:00:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75EA01C2100A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:59:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 666381C21C21
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 376EB16F84D;
-	Thu, 18 Apr 2024 15:59:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F9A116F84E;
+	Thu, 18 Apr 2024 16:00:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="gVWBrhR9"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T94+CWwt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E04D81607B1;
-	Thu, 18 Apr 2024 15:58:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D8315D5AE
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 16:00:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713455939; cv=none; b=Fr4xD68wu+4rW6FhRpRwxkwmMjiDIAFhtgm+6V0hZoL/hqKMfeUmejDRE4kBL3dvzCagwjIUjSWAMtb//qes4G+/Yxki02RSopvuKUs83QZlOgnHz30S6Irs0Vt0mOrkCGjwgUo9i++SLwU4X8Slxkolme804rayLDMdEnzXy84=
+	t=1713456006; cv=none; b=VUcqGFopiflQIV1HvND8+yWuwlUr35vV91S0ytaRVjsTCSkQdRgpJYEEgfwBs1BiilOKFO4pyLcCJdqNTu08hbOcuwfwu4k0BsJzlkqlQFiK6GbRV33nk4uVXn0WYyCYN66Zy0H2wtJB3Uw0A13fME8QRR4cppc5zsdq361TJ+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713455939; c=relaxed/simple;
-	bh=+uB7/UsaUGKlCCqX7X+DXQT1L/e3kM05JcWb60PdCMg=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=lLKyWAl0KN+PxOiNU3SKiTSbC5CouJEnYZ/EPqEwgT0gONFZNr3jtRaRxfNx3S5O56ASiBBPiGnkdS5hY31D8/sJwkCHoK3a3ZhbEtIq7gGBUCmOleTp7jvApv7TD4nTgmLo+x+SrJzsblW8MCO4B20yCLiL19PyaKC5aV+X+ik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=gVWBrhR9; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1713456006; c=relaxed/simple;
+	bh=Hp5KTEXhVIq6MVBrhhK0mtcu3ZcUPbGX9anKs1DqGQ4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s4xQ9hPB11egmkcg9t7AG2+TiixRneMXJRNNncZ/8QJ+G/tE1DtzYN8OhGntzfMJjb83Kw7Epv19xsVmzAsvqh7wU3L+hRnv/cc0C1ib+5RDIEeVcMi4mXzHeBBwyEp3ahsfz4AzheaietFD+Di727c03x9lw5dN01BivTjp/jY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T94+CWwt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EA2FC113CC
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 16:00:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713456006;
+	bh=Hp5KTEXhVIq6MVBrhhK0mtcu3ZcUPbGX9anKs1DqGQ4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=T94+CWwtWNbbqAdBfNV0gGtJZEWong40cDwDpSpNSmGVixSCnauAIbPcl9O5cL0Mm
+	 OYpPaH5XLOojp/uzgCK5ZyxI3sQ5iW8SA0Tmoii6cA3nKjluL+S/AdGaOMBLiRFnRp
+	 GW1Mj4mjcljYxW5tu8JbBS+qRNtsYd4M9ElgIyuGbFlKpawTYkr2/4iVoEvnCu5SQl
+	 p3gls9UM+zOskZJdZJOLgj8DKLEk7lpvizR0ZfU0PIcV9bQzFkOZK4mSKjrXzNSjc+
+	 Sx7+f7V+HrFkjWzzixjH9C85x9NUq31ATzr55IcJ0ryU2FBsG49AhMvz9i6CWQfx0j
+	 8kaxfzRfTf+nQ==
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5193363d255so1298591e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:00:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVYjnkUhLvqU1xQAprOVSWmCuY/PwfFEIBo9kNPoqEcHibICRcxd+zomVvg0/OTHFyobkrjWWUyTNQmLmlmfl0A/OycxsOems8SD52z
+X-Gm-Message-State: AOJu0YxAIiqijB1Q9Bk3veNsBwbWS87DpMpjNFRF968R+2H2ahalEfKk
+	dJxvdpRr7qKl6JLbaavydqqJduJ7WZJIPHMgRS31inlnKUvpENvlQ3mbWy2HA/fOCGDEpM50IKt
+	b+jaJY4TOG82eDK5h8kAN2l04i9I=
+X-Google-Smtp-Source: AGHT+IE3esknj6rnGRTfXAha0sULnP3J2grUQPDIpHSNw5T4GNwd0MTsH9nhVMktl4LlEDfMcVvDnMxpDtmmvnTlV7Q=
+X-Received: by 2002:ac2:5334:0:b0:518:bb48:f060 with SMTP id
+ f20-20020ac25334000000b00518bb48f060mr1630854lfh.19.1713456004867; Thu, 18
+ Apr 2024 09:00:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1713455935;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kiW4f7FdjCXio2Csij/Fy9C8DuPPxHwY5d9PSj9jra0=;
-	b=gVWBrhR9O0t7sklMHJuPowAW1JBqpbiO8lYTO9h8bpzXNPbNpEZdPVIS0hj2+p5LfHdJOG
-	I/PfMNf3g7pxY8TQwqMpGH90aMbSRxhvdkQzFn3G5WlSf0S91lQ1KtzXThs2wTkAo1enCv
-	XvXUkinDb5WOjpTzU0S/EMCIXP8juYJ1+wwRyPSoEyGI0Ua7CauQ4tk8KIXbcrUucwqs6d
-	HBzhMKQBZ9JslLFCX+S+Iair2HZbq73twNykIJ1RNkF4vsMHXI6Jz7AFwFwmr5wFoKUmwr
-	/bDSyBEIk3eXXFsFPZDZ/z4rz9HhoMwbMsEEPFH2ovHUO0yBIVt7X6zQxRgX/Q==
-Date: Thu, 18 Apr 2024 17:58:54 +0200
-From: Dragan Simic <dsimic@manjaro.org>
-To: Conor Dooley <conor@kernel.org>
-Cc: Chukun Pan <amadeus@jmu.edu.cn>, Heiko Stuebner <heiko@sntech.de>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, FUKAUMI Naoki
- <naoki@radxa.com>
-Subject: Re: [PATCH 1/2] dt-bindings: arm: rockchip: correct the model name
- for Radxa ROCK 3A
-In-Reply-To: <20240418-skinless-aptitude-245665a7c757@spud>
-References: <20240418130120.67663-1-amadeus@jmu.edu.cn>
- <d00953aab0f1c978e3720885a6844caa@manjaro.org>
- <20240418-drove-boasting-d189ee3e22e0@spud>
- <7fec3e2f4e16b1aca6cd08e1882bd885@manjaro.org>
- <20240418-skinless-aptitude-245665a7c757@spud>
-Message-ID: <865d70eea51c18570d94a4fc86dcb5b5@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+References: <20240417-x86-fix-kexec-with-llvm-18-v1-0-5383121e8fb7@kernel.org>
+ <46343CD5-24D6-46BF-92A7-0B0FA0E6937D@alien8.de> <CAKwvOd=3Jrzju++=Ve61=ZdeshxUM=K3-bGMNREnGOQgNw=aag@mail.gmail.com>
+In-Reply-To: <CAKwvOd=3Jrzju++=Ve61=ZdeshxUM=K3-bGMNREnGOQgNw=aag@mail.gmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 18 Apr 2024 17:59:53 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXH+rNU4pa0ywcgkohXBu4G+iCXML_s9WVJW03ZRwtwW-w@mail.gmail.com>
+Message-ID: <CAMj1kXH+rNU4pa0ywcgkohXBu4G+iCXML_s9WVJW03ZRwtwW-w@mail.gmail.com>
+Subject: Re: [PATCH 0/2] x86/purgatory: Avoid kexec runtime warning with LLVM 18
+To: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Borislav Petkov <bp@alien8.de>, Arthur Eubanks <aeubanks@google.com>, 
+	Nathan Chancellor <nathan@kernel.org>, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, morbo@google.com, 
+	justinstitt@google.com, song@kernel.org, ribalda@chromium.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, patches@lists.linux.dev, 
+	ns <0n-s@users.noreply.github.com>, Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-04-18 17:57, Conor Dooley wrote:
-> On Thu, Apr 18, 2024 at 05:46:30PM +0200, Dragan Simic wrote:
->> On 2024-04-18 17:37, Conor Dooley wrote:
->> > On Thu, Apr 18, 2024 at 05:21:18PM +0200, Dragan Simic wrote:
->> > > On 2024-04-18 15:01, Chukun Pan wrote:
->> > > > According to https://radxa.com/products/rock3/3a,
->> > > > the name of this board should be "Radxa ROCK 3A".
->> > > > Also update compatible to match the model name.
->> > > >
->> > > > Suggested-by: FUKAUMI Naoki <naoki@radxa.com>
->> > > > Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
->> > >
->> > > Looking good to me.  I'll send the remaining naming cleanup patches
->> > > a bit later.
->> >
->> > What remaining patches?
->> 
->> The same naming cleanups need to be performed for the Radxa
->> ROCK 5 boards. [1]  I had some more cleanups for the ROCK 4
->> boards in mind, but I'll drop them after your NAK. [2]
->> 
->> Though, I'm not really sure why the NAK?  Those names aren't
->> used anywhere, neither in the Linux kernel, nor in U-Boot.
-> 
-> There may well be other users outside of those two projects that are
-> actually looking at it - I don't think that adding a hyphen is worth
-> disrupting anyone for, it seems perfectly clear without it what board
-> this is.
+On Thu, 18 Apr 2024 at 17:44, Nick Desaulniers <ndesaulniers@google.com> wr=
+ote:
+>
+> On Thu, Apr 18, 2024 at 4:15=E2=80=AFAM Borislav Petkov <bp@alien8.de> wr=
+ote:
+> > How much of this silliness should we expect now for other parts of the =
+kernel?
+>
+> Looks like ARCH=3Dpowerpc sets -mcmodel=3Dlarge for modules and ARCH=3Dum
+> does for the whole kernel. So that LLVM change may have implications
+> for those 2 other architectures.  Not sure we've had any bug reports
+> or breakage in CI yet, like we have for x86+kexec.
+>
+> > Can we turn this off?
+>
+> Maybe we need to revisit
+> commit e16c2983fba0 ("x86/purgatory: Change compiler flags from
+> -mcmodel=3Dkernel to -mcmodel=3Dlarge to fix kexec relocation errors")
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+/?id=3De16c2983fba0fa6763e43ad10916be35e3d8dc05
+>
+> at least the -mcmodel=3Dkernel addition (since that patch added a few
+> additional compiler flags that still LGTM).
+>
+..
 
-I see, it's perhaps better to stay on the safe side.
+> + Fangrui, Ard, who might know of alternative solutions to
+> -mcmodel=3Dlarge for e16c2983fba0.
+>
+
+I think it would be better to use -mcmodel=3Dsmall -fpic. As Nick
+explains, the large code model is really more suitable for executables
+that span a large memory range. The issue with the purgatory seems to
+be that it can be placed anywhere in memory, not that it is very big.
+
+-mcmodel=3Dsmall -fpic is what user space typically uses, so it is much
+less likely to create problems.
+
+Note that I have been looking into whether we can build the entire
+kernel with -fpic (for various reasons). There are some issues to
+resolve there, mostly related to per-CPU variables and the per-CPU
+stack protector, but beyond that, things work happily and the number
+of boot time relocations drops dramatically, due to the use of
+RIP-relative references. So for the purgatory, I wouldn't expect too
+many surprises.
+
+> Otherwise, I think the dedicated linker script is the way to go. We
+> really want tight control over what is or is not in the purgatory
+> image.
+
+Linker scripts are a bit tedious when it comes to maintenance,
+especially with weird executables such as this one and needing to
+support different linkers. So I'd prefer to avoid this.
 
