@@ -1,160 +1,143 @@
-Return-Path: <linux-kernel+bounces-150162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 132168A9B29
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:22:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1452A8A9B31
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:23:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9210FB22B56
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:22:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A813A1F23720
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D6F160877;
-	Thu, 18 Apr 2024 13:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715061607B0;
+	Thu, 18 Apr 2024 13:23:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="0QmWqPqv"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="VPMuh+U8"
+Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10EDC161327
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 13:21:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BAE115FD16;
+	Thu, 18 Apr 2024 13:23:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713446516; cv=none; b=ADCvZa7y18JQ4Ls8l8FXCQjK+9+jSTodfpaLN320Xzt4ss0CGaXfXGtiLgi7yE4dOGO7AgYXm/YtEOa5+GSmrEY9hIsxAk982NTBKC6RmUOe/O7goAKbAp2jJQManWM5d0WlIEMKRUAOTYcOba2u5ookvdlqDFL8Z1+lBXQE+Cc=
+	t=1713446601; cv=none; b=dPI/TLcK/Kp00XxiCVLWKKU/onJaxqozQQwa+PNUbERB5feXmP8mnUNDtGVfzD3nVezvj+vd1wBSM4n6gOlQ8hflDXl/HF97nBeffGIV9szuDUVt7UoPEeNnjujd4BCOPcOdi8fLutS4RH/0TetVML85PZrwbmtAknezgkFqa9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713446516; c=relaxed/simple;
-	bh=IyiFSVactuT3EqeiswOvJ3nQb+Z8wWWbXb7zgKRPAb8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uCIGaAtkwlFGroYAo95ZeXcW1618YN+HCNSZpy/g2Y4XI0gHDQNNuBtNwYk498QlLJLcVRL7Ve3kPBRtQ+uQcl2NnygIMrDVGRm4RptIN0d9qHOwEJnfjhnzEt7ETuphNRrqIsKvkIEMQR+ZIG9V1L5BCZRtz3cHWJ9tqbR2984=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=0QmWqPqv; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-36a165b8845so2695725ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:21:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1713446514; x=1714051314; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XoKv/RvImu/DvMyByUVz7vVdzNGU4YtRJIIOcys5EGM=;
-        b=0QmWqPqv4ZBk7s5ifqNl0zFk1mqVQtNs2Xj61pqJ64Zu+ioRk6YCPjWV+fTZA8+59u
-         cG009/hcw+TbDYVlRYb0VYLwWeif74OIEGtWv4UncLNRY4Bs+6OCz6wd+Hqx/wOah2qA
-         Sv2io15IpR9e/RZYpTPBsgMLnzzpEJdHWdE2bYrQElgQybw08473LQVjNlD6cWaeq7Yj
-         EPywCNPb39kuvLQ2q5A6zTvtJNsc9cQWXN075/YG57eV7GmClB3Wie0uY4njoYNnG1aL
-         ZAQvyb+8TtjtEUXvpksE2eeAzs43CTzwY4ECSb/rEEa/ljLr5JEFBp9xu9vMuEhjPYIg
-         zWSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713446514; x=1714051314;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XoKv/RvImu/DvMyByUVz7vVdzNGU4YtRJIIOcys5EGM=;
-        b=KM3ltTRGUdZRYrJUG2t8KM6CRnrvX8s74EZJLuhU0Yu8ShsF1T6PSEDjRYP6kSYf71
-         bTQg4a2kBZ/BE3ZzPdf53AiIbeEqVf7XNwt6wJE110jQ25NcljDA+OznEGZLxED/4+no
-         yylDVR8cM2oSg664u32JBm5C/RZaVl/236keKqup4L5M/ntk8rzjL5w5HukL56s7Q4o5
-         0jNTuApASQH2DRf8W5hbDsXzyWH1zM44fgRIKzItKlvsh0uJGG21Z5xnqrtblWkJ33P5
-         RZqM59WZaIpmXDO2X3Jb8uo1hseWcLdiNXHIQ2riqoTaifXI7sFlk/O7nz54xQF7yxtc
-         eX2g==
-X-Forwarded-Encrypted: i=1; AJvYcCU6urJks6Xp+yfmxY9duTCX41dnzUvRn4ydnyrpHfhUna9GgOr53LTs/nJxWlUJZACXcKR8LUrrYFxglATqsJIcLGSGYu1cmN3eGdrk
-X-Gm-Message-State: AOJu0YwuC5xhcB0Fjxc9+DsF6t1iE9l84DGe77Z0sd2mgmaXsyFFPxmB
-	oZWVBG06pM1K2RG96I4fwzrPmPWKLPiYtSNQZ668N5fLn3x0yD5O0uVjW5tubRXyHTu4qAbWhZ5
-	C6qzsONzO2DOBVaim/EZC9ynlNWhz9QlI29Tyhw==
-X-Google-Smtp-Source: AGHT+IEApINqgeOPDHJLzzONqjKCkFgNoR1r7odlJyA+5mEx0EiPGBX8zhfWadQ1GLIFdXLBTz+rTCuaedf0Dv5uyZs=
-X-Received: by 2002:a05:6e02:1688:b0:36a:3c40:3e34 with SMTP id
- f8-20020a056e02168800b0036a3c403e34mr3335042ila.1.1713446514294; Thu, 18 Apr
- 2024 06:21:54 -0700 (PDT)
+	s=arc-20240116; t=1713446601; c=relaxed/simple;
+	bh=WAl7L1iBp86eXNg2Shw1xOHGw0vm5p71Lv8WUKHUN1s=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=aHh7fq3/ZJvLEX1fLjxhhwMvgblJov0W4VWFzB/6va4IVQr/FtvmF9RmfKBGPASRZxPSb1gDiWULt+cp4uTxtZPfanqPGcV49TptFxKzPouqxEPIUY0atdRt/NE0zlH9nfcUkz/bQGbnsf1FyHZ7fiIlSYo4B3gADorWRtXPuUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=VPMuh+U8; arc=none smtp.client-ip=193.238.174.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+	by mg.ssi.bg (Proxmox) with ESMTP id F0A0A1836A;
+	Thu, 18 Apr 2024 16:23:09 +0300 (EEST)
+Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
+	by mg.ssi.bg (Proxmox) with ESMTPS;
+	Thu, 18 Apr 2024 16:23:09 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [213.16.62.126])
+	by ink.ssi.bg (Postfix) with ESMTPSA id BFD95900570;
+	Thu, 18 Apr 2024 16:23:05 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
+	t=1713446586; bh=WAl7L1iBp86eXNg2Shw1xOHGw0vm5p71Lv8WUKHUN1s=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References;
+	b=VPMuh+U8F/Dd/e+BkI2TBEssJim6xN25jHmgFlpSmaL9wrwBSHkpkOMSCM5xXPCQw
+	 mtKTpzXsmLIvxEEtJKBz6s0S3XbZknzChjrQMGnEdndru2+08SopfQ86HOdVAcQddG
+	 3329gWCWZ+MoCyY7jaKvAqFx3TbndwCaosCxiIDM=
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 43IDMtKa057494;
+	Thu, 18 Apr 2024 16:22:57 +0300
+Date: Thu, 18 Apr 2024 16:22:55 +0300 (EEST)
+From: Julian Anastasov <ja@ssi.bg>
+To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+cc: horms@verge.net.au, netdev@vger.kernel.org, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Subject: Re: [PATCH net-next v2 1/2] ipvs: add READ_ONCE barrier for
+ ipvs->sysctl_amemthresh
+In-Reply-To: <20240418110153.102781-1-aleksandr.mikhalitsyn@canonical.com>
+Message-ID: <eb0b4b89-9a1f-0e1b-9744-6eb3396048bd@ssi.bg>
+References: <20240418110153.102781-1-aleksandr.mikhalitsyn@canonical.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418124300.1387978-1-cleger@rivosinc.com> <20240418124300.1387978-13-cleger@rivosinc.com>
-In-Reply-To: <20240418124300.1387978-13-cleger@rivosinc.com>
-From: Anup Patel <anup@brainfault.org>
-Date: Thu, 18 Apr 2024 18:51:42 +0530
-Message-ID: <CAAhSdy1VTn_etwfYa-pYM-1hFFK02aBvynHJA7JVsOZvSdDx6w@mail.gmail.com>
-Subject: Re: [PATCH v2 12/12] KVM: riscv: selftests: Add Zcmop extension to
- get-reg-list test
-To: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Shuah Khan <shuah@kernel.org>, 
-	Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, kvm@vger.kernel.org, 
-	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 
-On Thu, Apr 18, 2024 at 6:14=E2=80=AFPM Cl=C3=A9ment L=C3=A9ger <cleger@riv=
-osinc.com> wrote:
->
-> The KVM RISC-V allows Zcmop extension for Guest/VM so add this
-> extension to get-reg-list test.
->
-> Signed-off-by: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
 
-LGTM.
+	Hello,
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
-Acked-by: Anup Patel <anup@brainfault.org>
+On Thu, 18 Apr 2024, Alexander Mikhalitsyn wrote:
 
-Thanks,
-Anup
-
+> Cc: Julian Anastasov <ja@ssi.bg>
+> Cc: Simon Horman <horms@verge.net.au>
+> Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+> Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
+> Cc: Florian Westphal <fw@strlen.de>
+> Suggested-by: Julian Anastasov <ja@ssi.bg>
+> Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
 > ---
->  tools/testing/selftests/kvm/riscv/get-reg-list.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/tes=
-ting/selftests/kvm/riscv/get-reg-list.c
-> index 61cad4514197..9604c8ece787 100644
-> --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> @@ -59,6 +59,7 @@ bool filter_reg(__u64 reg)
->         case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV=
-_ISA_EXT_ZCB:
->         case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV=
-_ISA_EXT_ZCD:
->         case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV=
-_ISA_EXT_ZCF:
-> +       case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV=
-_ISA_EXT_ZCMOP:
->         case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV=
-_ISA_EXT_ZFA:
->         case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV=
-_ISA_EXT_ZFH:
->         case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV=
-_ISA_EXT_ZFHMIN:
-> @@ -429,6 +430,7 @@ static const char *isa_ext_single_id_to_str(__u64 reg=
-_off)
->                 KVM_ISA_EXT_ARR(ZCB),
->                 KVM_ISA_EXT_ARR(ZCD),
->                 KVM_ISA_EXT_ARR(ZCF),
-> +               KVM_ISA_EXT_ARR(ZCMOP),
->                 KVM_ISA_EXT_ARR(ZFA),
->                 KVM_ISA_EXT_ARR(ZFH),
->                 KVM_ISA_EXT_ARR(ZFHMIN),
-> @@ -957,6 +959,7 @@ KVM_ISA_EXT_SIMPLE_CONFIG(zca, ZCA),
->  KVM_ISA_EXT_SIMPLE_CONFIG(zcb, ZCB),
->  KVM_ISA_EXT_SIMPLE_CONFIG(zcd, ZCD),
->  KVM_ISA_EXT_SIMPLE_CONFIG(zcf, ZCF),
-> +KVM_ISA_EXT_SIMPLE_CONFIG(zcmop, ZCMOP);
->  KVM_ISA_EXT_SIMPLE_CONFIG(zfa, ZFA);
->  KVM_ISA_EXT_SIMPLE_CONFIG(zfh, ZFH);
->  KVM_ISA_EXT_SIMPLE_CONFIG(zfhmin, ZFHMIN);
-> @@ -1017,6 +1020,7 @@ struct vcpu_reg_list *vcpu_configs[] =3D {
->         &config_zcb,
->         &config_zcd,
->         &config_zcf,
-> +       &config_zcmop,
->         &config_zfa,
->         &config_zfh,
->         &config_zfhmin,
-> --
-> 2.43.0
->
+>  net/netfilter/ipvs/ip_vs_ctl.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+> index 143a341bbc0a..daa62b8b2dd1 100644
+> --- a/net/netfilter/ipvs/ip_vs_ctl.c
+> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
+
+> @@ -105,7 +106,8 @@ static void update_defense_level(struct netns_ipvs *ipvs)
+>  	/* si_swapinfo(&i); */
+>  	/* availmem = availmem - (i.totalswap - i.freeswap); */
+>  
+> -	nomem = (availmem < ipvs->sysctl_amemthresh);
+> +	amemthresh = max(READ_ONCE(ipvs->sysctl_amemthresh), 0);
+> +	nomem = (availmem < amemthresh);
+>  
+>  	local_bh_disable();
+>  
+> @@ -146,8 +148,8 @@ static void update_defense_level(struct netns_ipvs *ipvs)
+>  	case 1:
+>  		if (nomem) {
+>  			ipvs->drop_rate = ipvs->drop_counter
+> -				= ipvs->sysctl_amemthresh /
+> -				(ipvs->sysctl_amemthresh-availmem);
+> +				= amemthresh /
+> +				(amemthresh-availmem);
+
+	Thanks, both patches look ok except that the old styling
+is showing warnings for this patch:
+
+scripts/checkpatch.pl --strict /tmp/file1.patch
+
+	It would be great if you silence them somehow in v3...
+
+	BTW, est_cpulist is masked with current->cpus_mask of the
+sysctl writer process, if that is of any help. That is why I skipped
+it but lets keep it read-only for now...
+
+>  			ipvs->sysctl_drop_packet = 2;
+>  		} else {
+>  			ipvs->drop_rate = 0;
+> @@ -156,8 +158,8 @@ static void update_defense_level(struct netns_ipvs *ipvs)
+>  	case 2:
+>  		if (nomem) {
+>  			ipvs->drop_rate = ipvs->drop_counter
+> -				= ipvs->sysctl_amemthresh /
+> -				(ipvs->sysctl_amemthresh-availmem);
+> +				= amemthresh /
+> +				(amemthresh-availmem);
+>  		} else {
+>  			ipvs->drop_rate = 0;
+>  			ipvs->sysctl_drop_packet = 1;
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
+
 
