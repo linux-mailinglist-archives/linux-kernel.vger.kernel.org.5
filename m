@@ -1,176 +1,208 @@
-Return-Path: <linux-kernel+bounces-150591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6B738AA15D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:49:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D6F48AA164
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:51:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55D051F2189C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:49:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FC1E1C20F8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:51:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC41168B06;
-	Thu, 18 Apr 2024 17:48:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0584177983;
+	Thu, 18 Apr 2024 17:50:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lefzVpvd"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="NzcFfWac"
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2087.outbound.protection.outlook.com [40.107.96.87])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACE317556D;
-	Thu, 18 Apr 2024 17:48:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713462538; cv=none; b=d6ToJzqW1sNgE8uiebeDNGsEM7MNB5/W1mbGGt9jGjtTfINGCtapDhsSBCkaL8CwK0Fx6fVaWE85fSxhRAYwEGGxpPLfAQqYaW6puL3/9nNLNdHre6ebpB36xDPWvFNa1zt4CuCzLSyXSufZ66hoVElzMBDqnvtulL47TYzWATc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713462538; c=relaxed/simple;
-	bh=P2+1M5xlz5nO98fQHEzHTaHBC6pZovHWDXMrzDKvvkk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i4oLWk/K1obeLYo5ZVeeVLFUUpSryVYrcRqr3eiXpOiIEOfavFyrgffrgQdUg1YURe+P/uhHMCL2TGY51Wj6B40/hIPSZbG+w/4Xus2cIuTLgIe3dkZTj6qda48fJDP+smHtpTYhalVxHMvh7Nex6h/t3vSUc5qtJWtrgqDNWNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lefzVpvd; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d9fe2b37acso15166511fa.2;
-        Thu, 18 Apr 2024 10:48:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713462535; x=1714067335; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nWjRP/RRJQ8mM83fkHijl/axycbWYPWuBIUVY65UOGA=;
-        b=lefzVpvdhSmK89ZXjbG4ujrLhIF769iRqcnzoiAvU2S2q6T04padjjOVi4weBjduae
-         ZmZM0ldexer7TeynnsICi8pKc9UWMXqQS0UfJGXcoIHz8J3XKQv9ZRizwXl7cMUn6CV7
-         2QuDRtjdaWGojfZBFOpoyCQyGTXgsIkZ1ghBuRnN7IV0+GPSart/xOimzX06RqJwLB+E
-         Lvd5xaTDCrjwIJeo2w0mZhrHURsiftDX+HLg0zl8pfHxgQ4nlNK911UknkQ2/Amwnnq2
-         Ht+7VW7n/Haj9mlMbe8wnTXBdVEJN7m+atdn9RtvrqlknJYV4nZ0+Awv96fOoCmCz+Py
-         saOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713462535; x=1714067335;
-        h=content-transfer-encoding:in-reply-to:content-language:from
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nWjRP/RRJQ8mM83fkHijl/axycbWYPWuBIUVY65UOGA=;
-        b=FN+1L6kZ9/1IHALKblwvVk8hJAxsVoxkNIl6dDfzUDUewhAKxBWKTV5Vy00frfDW41
-         5edzCCCDfSEfywlxnUkMEj9PGodLy5KmhgefIzDScjPi5VpFjLFbY2+bL7MvyvItvS1w
-         vGc9WtIwWadkYOwd0fhF9IpYmcuDolSKHfaiVyWtU23renthFtiYs+rWnWoUIwLMg2R2
-         DoWKhbrrWXexRcDsks72kvfcORaxJg1o8Zft+PGQ1F9r4sSc5g+sjbeQ88uSWRoDewei
-         TIQBMLk3pIma50YTrwraC0IdQc/fucQ+za/veUNznXZoGId+VBnWqXGbc5LfdrRvpWY1
-         6u4w==
-X-Forwarded-Encrypted: i=1; AJvYcCWEzbOMhbPjEVLIVjD0QgbiLfGs9//NCovId+K2TCsS3srATyhq7toHPox52zfWDWDvAmdpCpjWK1EJh6ug4hUKu4ps/nvtxtuJlpy6SUbL7cN2S45SdFyu6DgnSATYbnI1qEAC0gy+ZUDkztNyFlNpzlY4bmmgksKCphHVLD/0Ayc=
-X-Gm-Message-State: AOJu0Yxbi2tw32ll7l47hVYQGOL/Wl4WNSUDvyXOtjv5SyfTam7FtlVJ
-	SNUhGWHrFpO0EfknIKbVAtzjWkWxdj4eF89a/hZSiBOzVbgrnHpq
-X-Google-Smtp-Source: AGHT+IFLN8AVKD6AbFTXCtyt/i2xPnyVSWhKPGW1JF/2/FqWjGy5naOgcXt0w7tJVCAdQgHvWpQApQ==
-X-Received: by 2002:a2e:8807:0:b0:2da:9ebe:e35f with SMTP id x7-20020a2e8807000000b002da9ebee35fmr1923468ljh.22.1713462534894;
-        Thu, 18 Apr 2024 10:48:54 -0700 (PDT)
-Received: from [10.0.0.100] (host-213-145-200-116.kaisa-laajakaista.fi. [213.145.200.116])
-        by smtp.gmail.com with ESMTPSA id p12-20020a2ea40c000000b002d80b78c1e0sm268671ljn.117.2024.04.18.10.48.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 10:48:54 -0700 (PDT)
-Message-ID: <f0dcab9a-1f9d-4db5-b886-0d2174070f37@gmail.com>
-Date: Thu, 18 Apr 2024 20:49:09 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C8C71442F4;
+	Thu, 18 Apr 2024 17:50:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.87
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713462657; cv=fail; b=ictEBJnr0P4gkAmd/uLpeD/VCwz/g6TPjfW1N7n5/FmPDjheRS0paN8n6Tjf4qTIkvYCk6GmxcVWiLc3oQ4/wo8c5q5NeTBL+weumUe0kBJeF1s3fIbZtrvuFtzlcCt5vh5GoM9ddtG0xhOIOIUAjQdtwqaDZilpYa5airIRHEA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713462657; c=relaxed/simple;
+	bh=4RtSnB4k4UyAZO4z+xcCFZoHyvYzzNo8OZLBk+JmcnQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=g4/1ANji6V8nSUwUjlks7VdqouPb5qhksVXwfAmsgPJ1Re1fqeRH9kg0FiI8MTlSuQN9qKM6B1d6vIYUwaPpM9IdT26ha1x4ZMJhP0VLKmhAd7FJTHKHtRelWBJ+eePmnoxbjai5tjkOcWYY1EUeiiHlJBD2NjewPxOcO2rIQDk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=NzcFfWac; arc=fail smtp.client-ip=40.107.96.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bX+NTupk//WxW9gVjJKCguOTFiklges8f3CT5Cgli6x3FQVFplZi6+unCHvDtdngS8LrXb0HDtKmKeLMQArJRclQh4fHGlRL0KhYh8XgeTQ+dF4JtC8PVSex0kqEr9XwDCNU+M8nHVB+K90IC/3zCkHFx9MidT8c8wzazPvhGwmoL+SyN6zkMJ4rKkgWSiIXfTHHSsSwuloOwWotqtOxG4PLYeDNDQEatEwX7w0cdsL/VebbeTRC7tdddueTExrGiimErmDmyDhs+8TyJ0yl7v2MjRHQM0PDel0uH6xh+4qlafbMGlG/qkyPlkUgszXBtljKgxuUlr2wUjTMRO2vAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=y82wlPYsBKuKZP7Z4V77tukVWKnZHErs4EDVcuPaNAE=;
+ b=oS6n8hMRufCPHJLRnHXSPJIZ3Ojguc8aZD1zqQS/n81sofNuw+840b64BNY/+FL0nrKGiv9MUNJLKW/0/wzSFM0wEz6bYOviSNSe5XnGmowOIlf8dPOndlQpUav3G8OL38ZuhaHPpzE6NBFVxY+VKKkCKgPJoAWbPyHiby4pvhkfeHmPy8aEogwyL3AXqKzRYPY3tTzIaSrDMTxtaH3qLR3jU89RKPrTPLYYEsAc1mB8cUFJvwUndQ8kbskqYpff9GflVhEhYRZ25ehHHqOOl5zjPeV2EiwjifvTb3wjOQwdlZyeWXYmi4NTO1LZMUEGSzJzWQ+kc6n+4xQOjiAO2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y82wlPYsBKuKZP7Z4V77tukVWKnZHErs4EDVcuPaNAE=;
+ b=NzcFfWacd+7PXwmOJwQ45PEoSZddA6zsUzX3PcAogpRtvbHxfDRhrq2U4fwtjvg/y5rsTVjZQOPgz2CVIT2eebog7xYoQ6MA/ezgJ/Ze5i1nilOPeacG/Wp9j2awqVFOKPbSHbUwJrk6kXZ7L2e/VFLZBzxW3i05dgahgSL1NP4=
+Received: from CH2PR18CA0042.namprd18.prod.outlook.com (2603:10b6:610:55::22)
+ by CY8PR12MB7513.namprd12.prod.outlook.com (2603:10b6:930:91::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.37; Thu, 18 Apr
+ 2024 17:50:49 +0000
+Received: from DS3PEPF000099D4.namprd04.prod.outlook.com
+ (2603:10b6:610:55:cafe::96) by CH2PR18CA0042.outlook.office365.com
+ (2603:10b6:610:55::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.27 via Frontend
+ Transport; Thu, 18 Apr 2024 17:50:49 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS3PEPF000099D4.mail.protection.outlook.com (10.167.17.5) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7452.22 via Frontend Transport; Thu, 18 Apr 2024 17:50:49 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 18 Apr
+ 2024 12:50:48 -0500
+Received: from xsjlizhih40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Thu, 18 Apr 2024 12:50:47 -0500
+From: Lizhi Hou <lizhi.hou@amd.com>
+To: <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: Lizhi Hou <lizhi.hou@amd.com>, <nishad.saraf@amd.com>,
+	<sonal.santan@amd.com>, <max.zhen@amd.com>
+Subject: [PATCH V12 0/1] AMD QDMA driver
+Date: Thu, 18 Apr 2024 10:50:42 -0700
+Message-ID: <1713462643-11781-1-git-send-email-lizhi.hou@amd.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: ti: davinci-mcasp: Fix race condition during probe
-To: Joao Paulo Goncalves <jpaulo.silvagoncalves@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Joao Paulo Goncalves <joao.goncalves@toradex.com>,
- Jai Luthra <j-luthra@ti.com>, alsa-devel@alsa-project.org,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-References: <20240417184138.1104774-1-jpaulo.silvagoncalves@gmail.com>
-From: =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Content-Language: en-US
-In-Reply-To: <20240417184138.1104774-1-jpaulo.silvagoncalves@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Received-SPF: None (SATLEXMB04.amd.com: lizhi.hou@amd.com does not designate
+ permitted sender hosts)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099D4:EE_|CY8PR12MB7513:EE_
+X-MS-Office365-Filtering-Correlation-Id: 99abe3d8-8713-4f37-64ac-08dc5fd0153c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	fDi3Hiu2Uv75KBcPsEMFkS0L3T8nSdyYuEki15JQTgOu7m/KCJJ4OltXeywK4q3ugBKSqalHDz9K3RAZzgA+nSkEdwBGLw/NEHaAHT3pOnQ9QPSazveV+sTAN1MkLS0oz0wPOgh+AIoORexYY+KUpZB2PXkIlPhcs5P9U8jL4bqf0bnZN2AefmzPXo8KyEAFcq3/puFB2tefEvmxCU6LYmQRiwGueugXv8MApq2AHlnTPvTq3dnFcG3/aiXQFLjNlqjsa6xxQt8Gq30m2L7sNznq2s4eZK0GGEwwrITxm5a8dPgq8HpZU5cYBSPrcAljYxJD7lh9Wey+tHZWsJp0uPtTwqR8D42XQBuHHN6qaRHXiB9Z17Un0YSQXCTwlxlR+1erPWMApfJAdDjBaINkpbCCF/kKLyFAEHVUE3RYdg0PQsaPI6k+Nykq82g98aYpwwzb3IRuBPrgG85P69U5rw4n4NWoVKZ4swXut3CDpscSFUAHb2ANjcuyDHza/A73Uj0sCtj67O+q1eXiryMfSxZbpzcLsFX+by5p7zBF8rLwvV52fP25FG0enkukt9kR5pVYhc538NHBSDi8B8xX/K3pEt19jy5IBHNRfjbodiI0wg2q90sxqWZ+l0gf/q0IHX8uPAI2xS8/iT4XwfoyZKAEY3Fc+uBT/i0RVA1hKLDfkKgN+h07ZZf6tL9apNFhLNmsen1cr8B5wG0DwJvSGsNyOoQcPFuczXf+TiRf6jLF4ljsqdYqPww3M+38IOxxt1CU42kNB/JjI6zk9tAZ5w==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(1800799015)(36860700004)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 17:50:49.2321
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99abe3d8-8713-4f37-64ac-08dc5fd0153c
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS3PEPF000099D4.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7513
 
+Hello,
 
+The QDMA subsystem is used in conjunction with the PCI Express IP block
+to provide high performance data transfer between host memory and the
+card's DMA subsystem.
 
-On 17/04/2024 21:41, Joao Paulo Goncalves wrote:
-> From: Joao Paulo Goncalves <joao.goncalves@toradex.com>
-> 
-> When using davinci-mcasp as CPU DAI with simple-card, there are some
-> conditions that cause simple-card to finish registering a sound card before
-> davinci-mcasp finishes registering all sound components. This creates a
-> non-working sound card from userspace with no problem indication apart
-> from not being able to play/record audio on a PCM stream. The issue
-> arises during simultaneous probe execution of both drivers. Specifically,
-> the simple-card driver, awaiting a CPU DAI, proceeds as soon as
-> davinci-mcasp registers its DAI. However, this process can lead to the
-> client mutex lock (client_mutex in soc-core.c) being held or davinci-mcasp
-> being preempted before PCM DMA registration on davinci-mcasp finishes.
-> This situation occurs when the probes of both drivers run concurrently.
-> Below is the code path for this condition. To solve the issue, defer
-> davinci-mcasp CPU DAI registration to the last step in the audio part of
-> it. This way, simple-card CPU DAI parsing will be deferred until all
-> audio components are registered.
-> 
-> Fail Code Path:
-> 
-> simple-card.c: probe starts
-> simple-card.c: simple_dai_link_of: simple_parse_node(..,cpu,..) returns EPROBE_DEFER, no CPU DAI yet
-> davinci-mcasp.c: probe starts
-> davinci-mcasp.c: devm_snd_soc_register_component() register CPU DAI
-> simple-card.c: probes again, finish CPU DAI parsing and call devm_snd_soc_register_card()
-> simple-card.c: finish probe
-> davinci-mcasp.c: *dma_pcm_platform_register() register PCM  DMA
-> davinci-mcasp.c: probe finish
+            +-------+       +-------+       +-----------+
+   PCIe     |       |       |       |       |           |
+   Tx/Rx    |       |       |       |  AXI  |           |
+ <=======>  | PCIE  | <===> | QDMA  | <====>| User Logic|
+            |       |       |       |       |           |
+            +-------+       +-------+       +-----------+
 
-Interesting... Thanks for the details.
-Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Comparing to AMD/Xilinx XDMA subsystem,
+    https://lore.kernel.org/lkml/Y+XeKt5yPr1nGGaq@matsya/
+the QDMA subsystem is a queue based, configurable scatter-gather DMA
+implementation which provides thousands of queues, support for multiple
+physical/virtual functions with single-root I/O virtualization (SR-IOV),
+and advanced interrupt support. In this mode the IP provides AXI4-MM and
+AXI4-Stream user interfaces which may be configured on a per-queue basis.
 
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 9fbd58cf4ab0 ("ASoC: davinci-mcasp: Choose PCM driver based on configured DMA controller")
+The QDMA has been used for Xilinx Alveo PCIe devices.
+    https://www.xilinx.com/applications/data-center/v70.html
 
-Just to note that the DAI registration was always before the platform
-registration (ever since the DAI driver started to register the
-platform) and I think most TI (and probably other vendor's) driver does
-things this way. McASP does a bit of lifting by requesting a DMA channel
-to figure out the type of DMA...
+This patch series is to provide the platform driver for AMD QDMA subsystem
+to support AXI4-MM DMA transfers. More functions, such as AXI4-Stream
+and SR-IOV, will be supported by future patches.
 
-> Signed-off-by: Joao Paulo Goncalves <joao.goncalves@toradex.com>
-> ---
->  sound/soc/ti/davinci-mcasp.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-> index b892d66f78470..1e760c3155213 100644
-> --- a/sound/soc/ti/davinci-mcasp.c
-> +++ b/sound/soc/ti/davinci-mcasp.c
-> @@ -2417,12 +2417,6 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
->  
->  	mcasp_reparent_fck(pdev);
->  
-> -	ret = devm_snd_soc_register_component(&pdev->dev, &davinci_mcasp_component,
-> -					      &davinci_mcasp_dai[mcasp->op_mode], 1);
-> -
-> -	if (ret != 0)
-> -		goto err;
-> -
->  	ret = davinci_mcasp_get_dma_type(mcasp);
->  	switch (ret) {
->  	case PCM_EDMA:
-> @@ -2449,6 +2443,12 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
->  		goto err;
->  	}
->  
-> +	ret = devm_snd_soc_register_component(&pdev->dev, &davinci_mcasp_component,
-> +					      &davinci_mcasp_dai[mcasp->op_mode], 1);
-> +
-> +	if (ret != 0)
-> +		goto err;
-> +
->  no_audio:
->  	ret = davinci_mcasp_init_gpiochip(mcasp);
->  	if (ret) {
+The device driver for any FPGA based PCIe device which leverages QDMA can
+call the standard dmaengine APIs to discover and use the QDMA subsystem
+without duplicating the QDMA driver code in its own driver.
+
+Changes since v11:
+- Removed metadata callback and added device_config callback
+
+Changes since v10:
+- Fixed Copyright
+
+Changes since v9:
+- Merge 2 patches into 1 patch
+
+Changes since v8:
+- Replaced dma_alloc_coherent() with dmam_alloc_coherent()
+
+Changes since v7:
+- Fixed smatch warnings
+
+Changes since v6:
+- Added a patch to create amd/ and empty Kconfig/Makefile for AMD drivers
+- Moved source code under amd/qdma/
+- Minor changes for code review comments
+
+Changes since v5:
+- Add more in patch description.
+
+Changes since v4:
+- Convert to use platform driver callback .remove_new()
+
+Changes since v3:
+- Minor changes in Kconfig description.
+
+Changes since v2:
+- A minor change from code review comments.
+
+Changes since v1:
+- Minor changes from code review comments.
+- Fixed kernel robot warning.
+
+Nishad Saraf (1):
+  dmaengine: amd: qdma: Add AMD QDMA driver
+
+ MAINTAINERS                            |    8 +
+ drivers/dma/Kconfig                    |    2 +
+ drivers/dma/Makefile                   |    1 +
+ drivers/dma/amd/Kconfig                |   14 +
+ drivers/dma/amd/Makefile               |    3 +
+ drivers/dma/amd/qdma/Makefile          |    5 +
+ drivers/dma/amd/qdma/qdma-comm-regs.c  |   64 ++
+ drivers/dma/amd/qdma/qdma.c            | 1143 ++++++++++++++++++++++++
+ drivers/dma/amd/qdma/qdma.h            |  266 ++++++
+ include/linux/platform_data/amd_qdma.h |   36 +
+ 10 files changed, 1542 insertions(+)
+ create mode 100644 drivers/dma/amd/Kconfig
+ create mode 100644 drivers/dma/amd/Makefile
+ create mode 100644 drivers/dma/amd/qdma/Makefile
+ create mode 100644 drivers/dma/amd/qdma/qdma-comm-regs.c
+ create mode 100644 drivers/dma/amd/qdma/qdma.c
+ create mode 100644 drivers/dma/amd/qdma/qdma.h
+ create mode 100644 include/linux/platform_data/amd_qdma.h
 
 -- 
-Péter
+2.34.1
+
 
