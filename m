@@ -1,122 +1,157 @@
-Return-Path: <linux-kernel+bounces-150366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3836B8A9DFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:09:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECA728A9E02
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:09:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEB6A1F22FF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:09:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CBAEB25929
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA87165FDF;
-	Thu, 18 Apr 2024 15:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D89361635B3;
+	Thu, 18 Apr 2024 15:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="B1LZJjoU"
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EFxETBMW"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 887F916ABFA
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E99168AE3;
+	Thu, 18 Apr 2024 15:09:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713452952; cv=none; b=IiXfr4tA8gK8thNAYVYcRy+PI2oN0zkBlHPlQ7wrOpd12FcM4wzYaYwneqjaEZStoHrzJ2X/f6IJgC0MeoeUSoiXCN4tMiK90Zy+WFzsuDIJEpuwUIZ60ZELZ+BvvYImQJlIFEdokVhEvphSnkyTE8J1ynHRIgsK6c+LFo90wIU=
+	t=1713452977; cv=none; b=DkBF1VvU6m56GDPuG/k+j1KXq2BybxggX3bswNiaekb3yJWqZ77Yyx81YN4wJh6q3ISo5A1wz4dHM6N941dQ1siP7H3VdS/GRfz21S/uxhAuwJG43SJuwTtJWN3XMKxYK8WjX8W+n3ZboIpp8Cq313EvOB3LnWLt0PR8pW87y2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713452952; c=relaxed/simple;
-	bh=k+6r0GGg1vUggBFS1HFE+EGyXIm1V66bbTL8/78gpIg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tWO2oHltiCCvYjADwAT8PqunQeYV1/NOE+buCWiPELR/ImPXRryICqLb5hNkY3JE4eF8dN5z/nZJwP7IlcqtR5O7e1GEYPnYwlml490LD4bXxJ3k/20tRJgd7nBEr2xkWfYDWbhzS/dbFJW6uhoqg0FvekccWeQVKc22a+js2TQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=B1LZJjoU; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2ab48c1156dso51950a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:09:10 -0700 (PDT)
+	s=arc-20240116; t=1713452977; c=relaxed/simple;
+	bh=5V/8SD/HulFx4j7iUDTwTCRIQaTsnJpjphSUueb4kLc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Ybv1/tFvvTMJJxK0lihDQItO4FEmRWP65LRHE2TynjlBew9w9fVqHE6sNjCKrncajtZq4DKAHliM0eQKFtuyepjhGM1LPiB99kqvTNJChOB7aAIj75grmvXfWrg6dfo77mqCUOitwSqVddMOuBXTIctoMZQ7Mfv4QMO1YcYQQwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EFxETBMW; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-343d2b20c4bso730258f8f.2;
+        Thu, 18 Apr 2024 08:09:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1713452950; x=1714057750; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=p9O3FV94jh7vQc95L9k9nvefdNDVfaT9ibGX8CYdkE0=;
-        b=B1LZJjoUCtuOlGcn9U1cjNB8sFIjuVv1mQmVusLC7U5bSe2BDxPeb7PGK/33ad+bqU
-         ko/ZJ8dY9HhSS6fdKjasdd4PV7gPyYyQgDlre+82dSCb/pmvMzXwQagxGYMz+Co+69wi
-         ycdVvJKuCA3aw+qds9laOO3L3eEkCWoW7tdngejNkRT7gEqFxB0GuVo3ZLJ3lo8YqMgM
-         2jTDaScUD5Ca7toegrIE/OZ7gvt6wBA2oikW4pt+IU8Pv3EK2PEVjm7d3x7QKGmKcxWI
-         iucju/+lE0j7ZW+3LaMz7tFKFpMSJ92Q5E+fehRyMVRNx4LADj2qVaDI6fHUvlFNqfSK
-         Of5w==
+        d=gmail.com; s=20230601; t=1713452974; x=1714057774; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e/4uukz7S3lJHc8p/Wazomkdz7qo+fUYZ/Ax/hIr994=;
+        b=EFxETBMWJLT6aKLcIYwGEc0D5vPzinx7ZeNR2vAmZ051VUVUoIWBttmkLSsshpRSlD
+         0HrLZdJu9SItHt3KUcgw7/YVoEY5LJUXDN8xCYHxj35dkKR4ZqTbm+a/+LukEItIv4rL
+         bASxthHwpvStRrUTjnaFjuXrbU+nQ+25lCzWZTqZnhYcTNyc/SmujwJ8hi9svXDvUp8x
+         hgMe7PRQnmqQBEV+RrUzV1h1K6YExO60dWx0R5HntlNK0i44KgQBPKqVyd+e0vr1jntI
+         l8ytvJ3ct0h0Ej2cWGI21//ASjq9+jhpBGZL6ishhxGqKO8CIbhxVxbZuozV8ByeRVXP
+         kavQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713452950; x=1714057750;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p9O3FV94jh7vQc95L9k9nvefdNDVfaT9ibGX8CYdkE0=;
-        b=UPDTkp5Cy0jwFPO97krSEvv4oKrS3/VDl7oJAvF2gcDb4UX7e5o7ZlYvE77ZnpYxpQ
-         yOTPWtCTPb/+Hy5dP3wkvsNEf06l30GFuujKRZefexnS618ktzktp69ulxSLKS1njp48
-         fIU04cxxQUQjjGcy6Gl/RSM9uew9jtUgJGnZ8Ubx9MDDybO5qXLNknzdt/VKS0dksHxP
-         8gxN83/jvfPQT9If7Fn8sm7y5ru9GQKUKTR5wkStCVmQUpwiu/ipQiyinTpn7RwqENgD
-         OSudGerpO52Aci2nLg7WnBUdSISIs0luEv41gPeYVdyzw/DDPX7Sc8sBED4XedZUGQ92
-         BYcw==
-X-Forwarded-Encrypted: i=1; AJvYcCX1Tcm2UrTrmWIjGqgFbVV8scbrPULLT5rP1t2RoMMUQU/k3mjPQzPcVAr+xq9CDiRQkXynBLQkgIa8UzrPpsGoaa5Vj+Eoq0hHyxR4
-X-Gm-Message-State: AOJu0Yz/u7QnwFT2nUCzWRM5iPVDCOQe7Z/jpz1HRmKyUh+Af9r0++5s
-	Qlgk1G+aoxb/9b1NNQk8P/l83NqxeDFH81OUT3nURBBZpu/osW4apTn/gllM/Mg=
-X-Google-Smtp-Source: AGHT+IEpDI3SLb6DK8eESf91mbfRxTkqd15fvUPDNtPee/hawli5VCPVwcKmvtkaX2PmBdDDW5btOg==
-X-Received: by 2002:a17:90a:7e0e:b0:2a3:be48:23f3 with SMTP id i14-20020a17090a7e0e00b002a3be4823f3mr2885933pjl.4.1713452949760;
-        Thu, 18 Apr 2024 08:09:09 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id s22-20020a17090aa11600b002ab664e5e17sm1547775pjp.1.2024.04.18.08.09.08
+        d=1e100.net; s=20230601; t=1713452974; x=1714057774;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=e/4uukz7S3lJHc8p/Wazomkdz7qo+fUYZ/Ax/hIr994=;
+        b=D4Oy5txgiire4KY15dFdSP2oMOyvauMEImAIwqQTM/2yYpdDRo6GiGm42wqsOzNPPg
+         L/YKUP/c6OtQLoe+Q4rP2ctMRz2QUwbdDlYq0C5PpW+iKh/FA3B9uxmH3ys8f57xVnBw
+         frFT2n+V+Iwwyy2E6UzPKwRpv/dEFiFo0gBq8sntRpz73clfqhzBtLGhgDDLKlEWIFy1
+         r6jsN5bLgfwNiaRoeeztexAf/vmIAoRYcujT326ebD71nze1LGs9BGs97vn9jR6B+ge3
+         KkrsoDaDfAsHRav2WBXGSJYwqf0JQgANwop99axgWHPm6YYAqpAmRuxFdIrn1sw+Huhr
+         7G0A==
+X-Forwarded-Encrypted: i=1; AJvYcCUFBKavgPx/x00gvFQcAWZxfBVs5co/zKGDVD2KXsIskEllD0JhtXbPbm3W3CKjtGU3WbdlyMjItWNbJAp5QbWlph2j4TOANXOwaf8gyrHo6Oz/Wz9ZaDkljsA7XaWszr7a9UNrDPoUaE/V8iKIk2OqvUi6qQQsz1ZjXcg/9XJLMtKxKG38
+X-Gm-Message-State: AOJu0Yy624hYT26jo9SZiPOWNiFhei9t5D/TmzG23pfT1HuPPj9SzaaZ
+	ynkLVL/iaueE2wzUBGpwBjUPW2awuHmSRiGAdnn6DtCrDcgKKBqn
+X-Google-Smtp-Source: AGHT+IHrs0oQ2LBEHPBjoqFp7Zn0xluXjWNAhtVqPhUzD8fzS6C0IOdJRiasHU1NnZnBtIz+RVHZJg==
+X-Received: by 2002:a5d:6d8a:0:b0:346:bbd8:d512 with SMTP id l10-20020a5d6d8a000000b00346bbd8d512mr2641308wrs.9.1713452973658;
+        Thu, 18 Apr 2024 08:09:33 -0700 (PDT)
+Received: from debian ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id u6-20020a5d6da6000000b00346ab3c372bsm2072060wrs.73.2024.04.18.08.09.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 08:09:09 -0700 (PDT)
-Message-ID: <362c3c63-6fd9-401c-9281-e2e0c7efc14a@kernel.dk>
-Date: Thu, 18 Apr 2024 09:09:07 -0600
+        Thu, 18 Apr 2024 08:09:33 -0700 (PDT)
+Message-ID: <ae2f3e8b-7566-4ba9-ad83-31ff75fd28c6@gmail.com>
+Date: Thu, 18 Apr 2024 17:09:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] completion: move blk_wait_io to
- kernel/sched/completion.c
-Content-Language: en-US
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Mikulas Patocka <mpatocka@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Mike Snitzer <msnitzer@redhat.com>,
- Damien Le Moal <dlemoal@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
- Guangwu Zhang <guazhang@redhat.com>, dm-devel@lists.linux.dev,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <31b118f3-bc8d-b18b-c4b9-e57d74a73f@redhat.com>
- <20240417175538.GP40213@noisy.programming.kicks-ass.net>
- <546473fd-ca4b-3c64-349d-cc739088b748@redhat.com>
- <ZiCoIHFLAzCva2lU@infradead.org>
- <5f3d434b-e05c-445f-bee5-2bb1f11a5946@kernel.dk>
- <ZiEyLvL6Pq_RB-Eh@infradead.org>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <ZiEyLvL6Pq_RB-Eh@infradead.org>
+Subject: Re: [PATCH net-next v7 1/3] net: gro: add {inner_}network_offset to
+ napi_gro_cb
+To: Paolo Abeni <pabeni@redhat.com>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, dsahern@kernel.org,
+ willemdebruijn.kernel@gmail.com, shuah@kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240412155533.115507-1-richardbgobert@gmail.com>
+ <20240412155533.115507-2-richardbgobert@gmail.com>
+ <49dafb7c4d4aef2946dac86296c29dc4c9b993d4.camel@redhat.com>
+From: Richard Gobert <richardbgobert@gmail.com>
+In-Reply-To: <49dafb7c4d4aef2946dac86296c29dc4c9b993d4.camel@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 4/18/24 8:46 AM, Christoph Hellwig wrote:
-> On Thu, Apr 18, 2024 at 08:30:14AM -0600, Jens Axboe wrote:
->> It certainly is a hack/work-around, but unless there are a lot more that
->> should be using something like this, I don't think adding extra core
->> complexity in terms of a special task state (or per-task flag, at least
->> that would be easier) is really warranted.
+Paolo Abeni wrote:
+> On Fri, 2024-04-12 at 17:55 +0200, Richard Gobert wrote:
+>> This patch adds network_offset and inner_network_offset to napi_gro_cb, and
+>> makes sure both are set correctly. In the common path there's only one
+>> write (skb_gro_reset_offset).
+>>
+>> Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
 > 
-> Basically any kernel thread doing on-demand work has the same problem.
-> It just has an easier workaround hack, as the kernel threads can simply
-> claim to do an interruptible sleep to not trigger the softlockup
-> warnings.
+> Does not apply cleanly to net-next. You have to wait until the net
+> dependency is merged into net-next before posting.
+> 
+>> ---
+>>  drivers/net/geneve.c           |  1 +
+>>  drivers/net/vxlan/vxlan_core.c |  1 +
+>>  include/net/gro.h              | 18 ++++++++++++++++--
+>>  net/8021q/vlan_core.c          |  2 ++
+>>  net/core/gro.c                 |  1 +
+>>  net/ethernet/eth.c             |  1 +
+>>  net/ipv4/af_inet.c             |  5 +----
+>>  net/ipv4/gre_offload.c         |  1 +
+>>  net/ipv6/ip6_offload.c         |  8 ++++----
+>>  9 files changed, 28 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+>> index 9c18a39b0d0c..a6256ea1f5bc 100644
+>> --- a/drivers/net/geneve.c
+>> +++ b/drivers/net/geneve.c
+>> @@ -545,6 +545,7 @@ static struct sk_buff *geneve_gro_receive(struct sock *sk,
+>>  	if (!ptype)
+>>  		goto out;
+>>  
+>> +	NAPI_GRO_CB(skb)->inner_network_offset = hlen;
+>>  	pp = call_gro_receive(ptype->callbacks.gro_receive, head, skb);
+>>  	flush = 0;
+>>  
+>> diff --git a/drivers/net/vxlan/vxlan_core.c b/drivers/net/vxlan/vxlan_core.c
+>> index 6fb182d9d6e7..9fb93c3953c1 100644
+>> --- a/drivers/net/vxlan/vxlan_core.c
+>> +++ b/drivers/net/vxlan/vxlan_core.c
+>> @@ -754,6 +754,7 @@ static struct sk_buff *vxlan_gpe_gro_receive(struct sock *sk,
+>>  
+>>  	vh = vxlan_gro_prepare_receive(sk, head, skb, &grc);
+>>  	if (vh) {
+>> +		NAPI_GRO_CB(skb)->inner_network_offset = skb_gro_offset(skb);
+>>  		if (!vxlan_parse_gpe_proto(vh, &protocol))
+>>  			goto out;
+>>  		ptype = gro_find_receive_by_type(protocol);
+> 
+> What about vxlan_gro_receive? and fou/gue?
+> 
 
-A kernel thread can just use TASK_INTERRUPTIBLE, as it doesn't take
-signals anyway. But yeah, I guess you could view that as a work-around
-as well.
+No need to write in fou/gue functions, as both functions call
+{inet,inet6}_offloads, which means if there's an IP/IPv6 header after
+fou/gue - ipip_gro_receive will be called (or ip6ip6_gro_receive, or
+sit_ip6ip6_gro_receive, etc), in which inner_network_offset is written.
 
-Outside of that, mostly only a block problem, where our sleep is always
-uninterruptible. Unless there are similar hacks elsewhere in the kernel
-that I'm not aware of?
+vxlan_gro_receive calls eth_gro_receive, in which inner_network_offset
+is written as well.
 
--- 
-Jens Axboe
-
+> Side note: the latter apparently exist mainly to make UDP-related
+> changes more difficult, can we deprecated them once for all?
+> 
+> Thank,
+> 
+> Paolo
+> 
 
