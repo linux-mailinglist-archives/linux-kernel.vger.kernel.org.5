@@ -1,85 +1,83 @@
-Return-Path: <linux-kernel+bounces-150661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15D818AA28C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:10:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C30BF8AA28D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:11:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C03251F21D21
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:10:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A17521C20B6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:11:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F90717B4ED;
-	Thu, 18 Apr 2024 19:10:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86CDD17AD9C;
+	Thu, 18 Apr 2024 19:11:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f52zaE4M"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="dCZAvTUx"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55FDF177980;
-	Thu, 18 Apr 2024 19:10:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1915317AD78
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 19:10:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713467409; cv=none; b=gcpNszYRZFmIwP4nPLQh9vfs3eBrL64m7StT6B9xZnQ/MJeBlDeuAKp6yQIv55DQ4qWtp7Pdm87+d4JWbC/Ed+cIKcasukn8308mUjJHal6PtnkRM/Y91aF78buJTcpxTQv7wF2YiTJRmERn+kTbBvuoK+7/zdTAE1H1oABtF8c=
+	t=1713467459; cv=none; b=ON3YOajySHkfQuPUVrXsGac35uE/idDMdeImOl/drVT3QLRYs7Tiu7efAZqEW4lPH1OgULzO3OJ22n2GwNmA4lV59i1lKB7wDutPASrE79aVian5v+PglmMbr1DFsFBrOMFcloG4N6chAL3ORKRNCb67Ij12Ko61829k1NFaeNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713467409; c=relaxed/simple;
-	bh=LNYSLafohNI3OcAPQLdlG1Op1X2KxPSSInkwWTm9e9k=;
+	s=arc-20240116; t=1713467459; c=relaxed/simple;
+	bh=fKvjYa4hT357YRHB0hcQ/ZXQT9zlt9zFPHDmQfgcgPE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i03DPz2NzCwqyIZ/lu+9TYK66QNBe8WcwJjJkRPcCqPux09rEiAlRL8g4W6Cr4FNRGodz0yNMpFIOGmFPYlFoeLvp83vliJHb8Z6yjDx98HvjhwWB4TPm0/1/vJjn34OhBt3BiGoxie9yWXuTNREKYkwBAhWHqyg8frp6x/ffcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f52zaE4M; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-518f8a69f82so1511055e87.2;
-        Thu, 18 Apr 2024 12:10:08 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=uEx1IsrYxTPEZz07KGJYHjQhM8+G3Iixp0HlWwHJyQwB1jkVfQZHeDmtBkyUVBGFvre5oRrswqU/6d9egcEFZfcnNtR2jzdMo/TDcJ71zn7a7tVtZ0Sjg+RLplGYh68OM+BVmjfHjtG94L/0t9Mz+6s9BBs+ja8gGQDFkwA9QhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=dCZAvTUx; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-418c2bf2f15so10491195e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:10:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713467406; x=1714072206; darn=vger.kernel.org;
+        d=ventanamicro.com; s=google; t=1713467456; x=1714072256; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LFCOV5/FbvZyadb0eigbmic/UPzgGtARohnH/S7yn5M=;
-        b=f52zaE4MY0RS5TFgCrG79fG0RkfpF+xLXDYU0+/bYKXVbENGgdFdq6XagTqNarcHan
-         KpPkv7naSQ/lzIdOtZlaMUz+JdA/iO6luBGWC2CrUas78pQumhH4ouWBSRtvMzB+5tAf
-         M78YhkvOdRhKu0wjyp25Ji4LDTZaMtgW3DVsfsxLbfqerF9o06YomjjI2M+ChogwRZV7
-         Vo1YSUwoDTueBeeIS4AEaUkOjBMtnx81o8FluaflRbCLqJZYu54nx1jF0kjoWqJ5P90W
-         oaPxMrfVmWtJtULoLuZYMLs2CgFtDPjdJooDErfP38K6bWnu3WUNb3aPMckp3lA/77TF
-         lptQ==
+        bh=yXdSYYCw4tbBK12sFpumhiTHBryJ6X9NPqaTloVYbGU=;
+        b=dCZAvTUxdjq43+gm0Ks91sLpqqJcXtuw4u6O3w9hxUyhDr3RWVDfzNx7E2XCl3HWbU
+         j/+wKYeWEeGGSZ7HLLCnFxGmqlCSHnCR6kDeLeqQB58+NFDBjfarDN09ubQsSIuBf3jm
+         yq/Op/MOiYJRCt6+GH1+JpXhU8jBcL5tHQ1Rh92RdkXD7ka6DNpX0ydDArbAaIXQ+VoQ
+         0wv5zabGLP0Srjmitc8PWqpVlWbPcr353qwSESYbS9saOO63ci8kAGKL0vnRB9/uwVTy
+         woRuLuvjIx5QmnTumN5syEX5uFJVIvCSRdTM4hZEGZ11dkZXgHLOC5FmbMK6ZBRyEn2t
+         BR/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713467406; x=1714072206;
+        d=1e100.net; s=20230601; t=1713467456; x=1714072256;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LFCOV5/FbvZyadb0eigbmic/UPzgGtARohnH/S7yn5M=;
-        b=F9vAG/VnSmY7QZS25HusxlT1CE4c3NV1Bsmn8CzNpGKHe0xJDNuuDY4AMirBX7AlQ/
-         UHLs46eIxiZFoZnWi1hudeXsRsz1qFDr/U1Rj5JhhKYIhkSlgaKLFs/RzRUW1OEBer3j
-         aYA29PWowWlHAR9GH1A6at0szc7ZTmEOzrC0baYDdIL8DVfatDfB9IVUMfJDMUIntwgq
-         0qSX+nVYXwdOn6IF16YAcGt4EeBRodEp23bqMaUSHZvp9I1cXz66x07ZpelzW3FsdIGL
-         Jilse5DPaJA/YeGMsOxd6zU87VtCI1T4LipnHkVoSwRbOk51RVsbXLaRsVKgyJxFvfWw
-         7rYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVczPUEmJfiBPi9qyVY5qd2gWzEqpN6AYGAPtJeYZkFeUtOHlMIL08PSAw53ASs75ILhr74rtpdQ1LTlbnIyM1ZwUu6irzLBIPtmSzxQH4nJRelqwe8XZ/VJgOcEhdc0TlQfPSdba2vwsjR+Hjrrq5k09QCqep41YvTbDaec3vMz+kHiExa
-X-Gm-Message-State: AOJu0YyW0AjKU6jUhlp8cKvqldBlNnqSwYBIxfrIhihMqf0KNzQx/8Jj
-	cmz/KMorm8gezg/bhedz+jx8V7lmJWzwlNM0K/HKfmvqMGBeSf+v
-X-Google-Smtp-Source: AGHT+IHeGbZo3NR5cIAMrdyKdsxgouRoWv0Ml67OyFVx/dFz8bHvQmI84/kBwrtuR7IbXbEyjH6uzw==
-X-Received: by 2002:ac2:4836:0:b0:516:d3ba:5602 with SMTP id 22-20020ac24836000000b00516d3ba5602mr2273115lft.16.1713467406333;
-        Thu, 18 Apr 2024 12:10:06 -0700 (PDT)
-Received: from mobilestation.baikal.int (srv1.baikalchip.ru. [87.245.175.227])
-        by smtp.gmail.com with ESMTPSA id a22-20020a195f56000000b00518e16f8297sm352294lfj.55.2024.04.18.12.10.05
+        bh=yXdSYYCw4tbBK12sFpumhiTHBryJ6X9NPqaTloVYbGU=;
+        b=p++KyLQsKWm4JurfBeWKKej7Vg7UTPa0FvYgRX/B/sqavP1dQ41NRwCB6C2UtLBPfV
+         KlbSHmU1zhWSVXXzAr794q2ZPiadEq+bMpR5+yk7HH3hI1d6lMl3BGdutFNx8t/kagnD
+         9G+ziAtyVE2nbQTvaf2WCLlmyk/wdJoxsU5AuhXHU0yEXiC4n75Qny4DYWhpj06m2dN0
+         gacylATCUolT5bIaZ+MBR7gq3t5LkDbUTPAWIl9BgePfYAbDe/2NLcb0EPGMoaE87ZNQ
+         Xg/4AyE4nd/7a0K9ZDd3v7qG1cDmkWAnRTniWJKo9xSVGQFs565GbVerZXRaG3p7qoef
+         WsMg==
+X-Forwarded-Encrypted: i=1; AJvYcCX1r6bxbuhjg28JYpRpI9j0c7rJNpM4WZ9KO3dxHcCmgRUHVkHy11xy9kkT+MwXctVMoBYiR3+srhmbcO2cFXd6KDs+YxYQJfD1j5AX
+X-Gm-Message-State: AOJu0YzL3OhbQ5vxoMOG+kQi8hZtxjSj5u6QMWWcAXCscxK6lI89rhJq
+	v8SAXu0wXI+qICO1c0Y8T0pOpGSGyCqctF/bQvG8JIlgkphf/E21cJ5L6M2X0cE=
+X-Google-Smtp-Source: AGHT+IEW9e+5B+54U3zhcer9b4WmdKoqb4N3E3Rq+DsJVrLICB1hplQdrHWsY00Soarca1d97Rc1YA==
+X-Received: by 2002:a05:600c:4511:b0:417:fbc2:caf8 with SMTP id t17-20020a05600c451100b00417fbc2caf8mr2760993wmo.23.1713467456173;
+        Thu, 18 Apr 2024 12:10:56 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id o12-20020a05600c4fcc00b00418a6d62ad0sm7472101wmq.34.2024.04.18.12.10.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 12:10:05 -0700 (PDT)
-Date: Thu, 18 Apr 2024 22:10:04 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org, linux-serial@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] dmaengine: dw: Simplify max-burst calculation
- procedure
-Message-ID: <2htaobgfle7glf4t7v5vjlhx6hdzja6bbwn3fonhejs3dbxgij@puaipep4ycwp>
-References: <20240416162908.24180-1-fancer.lancer@gmail.com>
- <20240416162908.24180-5-fancer.lancer@gmail.com>
- <Zh7NfmffgSBSjVWv@smile.fi.intel.com>
- <tez5uqt4lg2qf5nooxuqo2rqhkqzzzbpeysdcbljokznbztkhj@j5t7cy4gd4pd>
- <ZiEIxq8dHxObrYZx@smile.fi.intel.com>
+        Thu, 18 Apr 2024 12:10:55 -0700 (PDT)
+Date: Thu, 18 Apr 2024 21:10:54 +0200
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: Xu Lu <luxu.kernel@bytedance.com>, paul.walmsley@sifive.com, 
+	palmer@dabbelt.com, aou@eecs.berkeley.edu, andy.chiu@sifive.com, guoren@kernel.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, lihangjing@bytedance.com, 
+	dengliang.1214@bytedance.com, xieyongji@bytedance.com, chaiwen.cc@bytedance.com
+Subject: Re: [RFC 1/2] riscv: process: Introduce idle thread using Zawrs
+ extension
+Message-ID: <20240418-d9f305770dc71c2687a6e84b@orel>
+References: <20240418114942.52770-1-luxu.kernel@bytedance.com>
+ <20240418114942.52770-2-luxu.kernel@bytedance.com>
+ <20240418-dove-deferral-2b01100e13ca@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,37 +86,70 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZiEIxq8dHxObrYZx@smile.fi.intel.com>
+In-Reply-To: <20240418-dove-deferral-2b01100e13ca@spud>
 
-On Thu, Apr 18, 2024 at 02:49:26PM +0300, Andy Shevchenko wrote:
-> On Wed, Apr 17, 2024 at 11:35:39PM +0300, Serge Semin wrote:
-> > On Tue, Apr 16, 2024 at 10:11:58PM +0300, Andy Shevchenko wrote:
-> > > On Tue, Apr 16, 2024 at 07:28:58PM +0300, Serge Semin wrote:
+On Thu, Apr 18, 2024 at 04:05:55PM +0100, Conor Dooley wrote:
+> + Drew,
 > 
-> ...
-> 
-> > > > +static void dwc_verify_maxburst(struct dma_chan *chan)
+> On Thu, Apr 18, 2024 at 07:49:41PM +0800, Xu Lu wrote:
+> > The Zawrs extension introduces a new instruction WRS.NTO, which will
+> > register a reservation set and causes the hart to temporarily stall
+> > execution in a low-power state until a store occurs to the reservation
+> > set or an interrupt is observed.
 > > 
-> > > It's inconsistent to the rest of _verify methods. It doesn't verify as it
-> > > doesn't return anything. Make it int or rename the function.
+> > This commit implements new version of idle thread for RISC-V via Zawrs
+> > extension.
 > > 
-> > Making it int won't make much sense since currently the method doesn't
-> > imply returning an error status. IMO using "verify" was ok, but since
-> > you don't see it suitable please suggest a better alternative. mend,
-> > fix, align?
+> > Signed-off-by: Xu Lu <luxu.kernel@bytedance.com>
+> > Reviewed-by: Hangjing Li <lihangjing@bytedance.com>
+> > Reviewed-by: Liang Deng <dengliang.1214@bytedance.com>
+> > Reviewed-by: Wen Chai <chaiwen.cc@bytedance.com>
+> > ---
+> >  arch/riscv/Kconfig                 | 24 +++++++++++++++++
+> >  arch/riscv/include/asm/cpuidle.h   | 11 +-------
+> >  arch/riscv/include/asm/hwcap.h     |  1 +
+> >  arch/riscv/include/asm/processor.h | 17 +++++++++++++
+> >  arch/riscv/kernel/cpu.c            |  5 ++++
+> >  arch/riscv/kernel/cpufeature.c     |  1 +
+> >  arch/riscv/kernel/process.c        | 41 +++++++++++++++++++++++++++++-
+> >  7 files changed, 89 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > index be09c8836d56..a0d344e9803f 100644
+> > --- a/arch/riscv/Kconfig
+> > +++ b/arch/riscv/Kconfig
+> > @@ -19,6 +19,7 @@ config RISCV
+> >  	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if PGTABLE_LEVELS > 2
+> >  	select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
+> >  	select ARCH_HAS_BINFMT_FLAT
+> > +	select ARCH_HAS_CPU_FINALIZE_INIT
+> >  	select ARCH_HAS_CURRENT_STACK_POINTER
+> >  	select ARCH_HAS_DEBUG_VIRTUAL if MMU
+> >  	select ARCH_HAS_DEBUG_VM_PGTABLE
+> > @@ -525,6 +526,20 @@ config RISCV_ISA_SVPBMT
+> >  
+> >  	   If you don't know what to do here, say Y.
+> >  
+> > +config RISCV_ISA_ZAWRS
+> > +	bool "Zawrs extension support for wait-on-reservation-set instructions"
+> > +	depends on RISCV_ALTERNATIVE
+> > +	default y
+> > +	help
+> > +	   Adds support to dynamically detect the presence of the Zawrs
+> > +	   extension and enable its usage.
 > 
+> Drew, could you, in your update, use the wording:
+> 	   Add support for enabling optimisations in the kernel when the
+> 	   Zawrs extension is detected at boot.
 
-> My suggestion is (and was) to have it return 0 for now.
+How about
 
-Ok. Let's have it returning zero then.
+  The Zawrs extension defines a pair of instructions to be used in
+  polling loops which allow a hart to enter a low-power state or to
+  trap to the hypervisor while waiting on a store to a memory location.
+  Enable the use of these instructions when the Zawrs extension is
+  detected at boot.
 
-
--Serge(y)
-
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+Thanks,
+drew
 
