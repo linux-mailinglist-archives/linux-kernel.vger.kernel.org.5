@@ -1,151 +1,206 @@
-Return-Path: <linux-kernel+bounces-149421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BD878A90EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:01:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20C258A90A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:28:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FA011C20CFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:01:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 842B71F225B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1C663BBD8;
-	Thu, 18 Apr 2024 02:00:59 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2112.outbound.protection.partner.outlook.cn [139.219.146.112])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E0968488;
+	Thu, 18 Apr 2024 01:28:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eT3eZnKO"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D624481D3;
-	Thu, 18 Apr 2024 02:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.112
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713405659; cv=fail; b=Jj0OXE5HBBqHzxiqc/YtHnZT0WLgt7aK2tDl9TbzYX4teb/a1giYtmvRjXxCXUIkYRWqbh+Yi0HHgn37zmp7P7PtRoIpjFQh0gBsWEJ2avn6HzUCvfpTbn4lbqjOTaeoz7CZYliYVKHjn9muGLai+LBIS2mwR/k4HiB53UcAKL4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713405659; c=relaxed/simple;
-	bh=iYr56Oclq+HJNOH0APVrxA6/PNI0cLYsvO7OULPBnGI=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=DJiG4WPfLTRjcd4HPN2Blz8Heug4Hvg6sxOBcAOvUCCDnJFwuTWvsq2jS0wHKSp4hveR3aKXl5GtHep7R52ZYgcwT9Ll+HqfMfYD4T0Cjz9JbhK51QPM1VJd9OXQxIdJLMdu/U7a8muG2878UqZLV2Zkb+a+KtUUZt55BwO0uVk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mE9EYXyXHmaQWZj6e6DS29b8cQdOA0kUbo7bS4IcmfjWgLCiGfJNAKpbyz2sO+lhbGrUbkfe0jIUbnXwe0xAVXjkWze+s7KgrI6HRbDcFQpKUhApXpHy/dU3GadsyQ1eLpDTjSQZMFWmxHI0Q5K8H4DDUfhmkOQyEtQtRP/C5Gf+4LIDxH2ztz0oZDlc8zcJ8TYonCH3S6fwAkSoe/5Wgte7cIBmTVJEAcbxGew/kg9F79++urJWo97rRnyIXVfne/R/evajxZcRfyXLRsiyfwHGQvwZ3IF/fKX+6em5V8lRPzfKYc44ppg7cZ6IhQVKGZzWw+QO0y23MpU50b+ucw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iYr56Oclq+HJNOH0APVrxA6/PNI0cLYsvO7OULPBnGI=;
- b=CvupmHhYJlktPb0bkxG6pjBdvCyjv2ksXpsXB4nkfqXoXTJR7RXjjIPTkW3H03AwPtb8k+ycgcvJI4mQKToIYBzwCUJo/n5+o+tt/L984wrR3iaf6FfAg7brTasqOmPpHYnqzK5LzyT2We8zyWj21KTLnb7RyySz1UhiaOGZBN4O7kSHuES9C0tuINepIf4DV1s4ancd7YBKj3764x6hEMA/+95c5/S4IXB7m6yBKZSTii3JBDhi00wB/QvtaYS6qhF1EcdAVDFCgWyoGOliWKNPGsS2Y8996HTEo8RjIO/Hwt3se0wP2CcT4aBc2okqwne1rUyrcX6IPsWr8z0k/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:25::10) by SHXPR01MB0848.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:25::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 18 Apr
- 2024 01:27:05 +0000
-Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
- ([fe80::b0af:4c9d:2058:a344]) by
- SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn ([fe80::b0af:4c9d:2058:a344%7])
- with mapi id 15.20.7409.055; Thu, 18 Apr 2024 01:27:05 +0000
-From: Changhuang Liang <changhuang.liang@starfivetech.com>
-To: Mauro Carvalho Chehab <mchehab@kernel.org>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>
-CC: Hans Verkuil <hverkuil-cisco@xs4all.nl>, Laurent Pinchart
-	<laurent.pinchart@ideasonboard.com>, Jack Zhu <jack.zhu@starfivetech.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>, "linux-media@vger.kernel.org"
-	<linux-media@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-staging@lists.linux.dev"
-	<linux-staging@lists.linux.dev>
-Subject:
- =?gb2312?B?u9i4tDogW3YxXSBzdGFnaW5nOiBtZWRpYTogc3RhcmZpdmU6IENsZWFuIHBh?=
- =?gb2312?B?ZCBzZWxlY3Rpb24gaW4gaXNwX3RyeV9mb3JtYXQoKQ==?=
-Thread-Topic: [v1] staging: media: starfive: Clean pad selection in
- isp_try_format()
-Thread-Index: AQHadCdXg2iQIaE4RE2+8VSiB5BEfLFtdhSw
-Date: Thu, 18 Apr 2024 01:27:04 +0000
-Message-ID:
- <SHXPR01MB06710239B9F69E2F0EC0CB01F20EA@SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn>
-References: <20240312024520.11022-1-changhuang.liang@starfivetech.com>
-In-Reply-To: <20240312024520.11022-1-changhuang.liang@starfivetech.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SHXPR01MB0671:EE_|SHXPR01MB0848:EE_
-x-ms-office365-filtering-correlation-id: f2fe3824-97b3-44fc-1983-08dc5f46a7f8
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- b4fuAd3IT/gcx9pFgseFreYOAXiXB87CVtOB6e+5pl8oi3lOaQZNVgUKOeWfBbrX/A3jF+/Ywl5FrcxV+4F5lCM4WD3TbaCiA+iWyikNVtkEAFyDrhXrjdQtvd5+Jwj6IT6WHstZVLz08WmIvx3aR5nFfskBVjQDFB+u8pxTwAd2Lu0cUq0RFt0Q0OyUM1PFsNE9CjTacxnIHH0fjmtd4ZeRu4vrhgmDOwbM0smZhHfkvd4chsfB8R8SoC8OoDlMeUJFuAgYKaq2/NoG9PvD5CA3/3PfEypSNNj4a7jCiMThWVswJmM6R//TpYxHJtb6xnRS9LHPdvr6xzTMTedxwOe6JLB6zOujwgwT0yIJGWpWwDZRUzGkidAOQEq4NnqCkVssrOLHTM7oBjkg3jP99KggZTfI749u/jJRxZDw9B4y5OlLKRxhxUJSft1hRi+uvXL1MP7i90/JTAH4XsKrK30GlZRUWn3T4PZYpr2mDA97Ww6nvB/B6RViuHiVqVANsXWDYveqrgYGIhITuIdlrs3NzbHUml/XbAQAhnwQ9JcsqpzyMupuvmG5kQ5wm/oMUOOUqWUJ4mAG5KET6XpipKDVuJnaoyfn35joLF2JePGBS5Bgr3HVLMyNDL9SVRDw
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(41320700004)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?gb2312?B?MXd5eVhLR3Z2cVVhRGlUOWNXZGZvazM1T3QzcWgreFBlQm1vdklyVDNRVCtZ?=
- =?gb2312?B?WSt4V2hyWHR4bHpjZWpmS0JaRVNYU3ZYbGk5UWMyaG42RVlVL2hWd1R3alNT?=
- =?gb2312?B?dXNhUi9qL0xmZkVzWDdxS2F6c0NjMFVGalBBb2ZhRFJ3T0lJRzA3QTFIR1Zu?=
- =?gb2312?B?Q3RkeGJlWDBBZEsxVGU5dEl2ZzR4M1pEVjRJcDNQUjkrOCtjR0NtOFVMaTEr?=
- =?gb2312?B?VVkyOUNOcEtYTDN6VjhSWjZCUFFHaHNkL0h6Mnl2TFpHUGJEakNuZGVUV2RK?=
- =?gb2312?B?MXVPTEtqQUdJM1hZRTRlMjFiNWNuWjZSL1pFd0V2WWtLcU9KZFRTNmFLdmpz?=
- =?gb2312?B?SlJrVEI0NXdyMFgzc0RQVWp0Nm83bFoxanNpMVhPQk5UVVdjT1lsWGxvMS9o?=
- =?gb2312?B?V3cwSFMxL2N4ejdCWGQxWVhjalNMVnd2bFU2LzR4Vm5DYnlRWG83Zm9ScVpJ?=
- =?gb2312?B?WHdIV25zVExtVmxlRTN5Uzduem5mVnIzSm93bFF5SjlFODNUcWYwbW5RZ0JE?=
- =?gb2312?B?RzRkZGhCM3BDcG1BV0V4b3pkVDM0Qkh2V1RIZG1pMTVGVkpDNUJQdjI5ZzYv?=
- =?gb2312?B?elRzSVA3K0ZQYjlzUmwxZ2M3dlg0cDVLclNRQjVhVzBtQk5CQzVjeEhVN2pm?=
- =?gb2312?B?a0t3WTdXYnVvNUQvMkdHbklSaWJvd2RKNnU1SXgvVS9saCt3di9vdGNDU2Mz?=
- =?gb2312?B?eW80R3BBakY0NWR3L3dZUitKN2RFZEVQRjdaTmRRL1ZFc2p3VW9DRE9RRVRP?=
- =?gb2312?B?UU1hVGtyWUJuVmNpWnpHUEFSdTBsSmJjZ1VsUmhKYmFUbkZQRFdJbTN4eDRm?=
- =?gb2312?B?MVFBQlZaUGlyK0ZQa28wRzhNQW5NRlJ4eWNLUDEyRm1lRFBIcnM3cnhPV3Jm?=
- =?gb2312?B?WjZOOXliZFAvbVlMaXZ5MENNemlhTE9SYy84NnVDbWN2bE92R2I4U3MzZGRT?=
- =?gb2312?B?UWRjQ1hUa3RleGxadXZpUzllQTZvbHhlZUpja2pzc0tMTzF6MkNyTFZmQTZX?=
- =?gb2312?B?OXlKZ0oxVU11aTVIU3dBVzBNZGtmSlMxVGxZUWJHUDBTNnhndVJ3UXFLbko2?=
- =?gb2312?B?dCtuTmhtTm1SN2MwanMreFZiVWF2UUtiR2NIZklsTzBOL3FqMklyaXUvQXFj?=
- =?gb2312?B?MWhXdklGOGQwS2tucWVKRU4vNDN5d2poSVdjZFBydmJUTHpFZDBSSTBHKzN4?=
- =?gb2312?B?d0ovUUdXeDZtdnhQcWpwU2xnMW1NQTNrV1h5Y3d0N1FMY0I5WFhoT0Z4K1BC?=
- =?gb2312?B?ejFPZmk2YXRIZzNVK2dyOFZFcXh0bzgvbDQvYS9iYlRqVlhBemlrbHRXMURK?=
- =?gb2312?B?aTI2WFc5Vm1LZUc4NkdKdHd3Q2IwQWU0b01FekcrYzRIOGRlbm44V2d0aFUr?=
- =?gb2312?B?aUdxZTNnakNLNi8zcnhzZVhDRHBXZytDZ1VCOHFpT2toQ21NRjYrNndneTkw?=
- =?gb2312?B?Wjlsak56ZUE1OVduMmdnTldZSTNneHZhaWp6cGtrTmFLUWEvVlB0ZUNSN3Vq?=
- =?gb2312?B?b3BpT0srSEx3NkNDeEhJYnRpa2ZVZDVDNzduQWtHVkpTbG1YYmxDU1gvaklJ?=
- =?gb2312?B?MGRlVEs2WWl6NEUveHFveXZ5QzZvYjhqczJ3NGJpajRPdnR4ZkNRR2NMeFFv?=
- =?gb2312?B?RU5VOGtySU1aaVRuUUp3VEQ2RkRDL2RrZkhjVXJyWXlLcjZUUzFGcW5IcTdz?=
- =?gb2312?B?STdOMXRVVlQ2YlZpQzN5OGNWeHJ1OWRyL2JOekN5SUdoSWdHekcwK3FJRjV5?=
- =?gb2312?B?enI1d0RlczlKZ1U0akRHSURRTmxpOTZEUFcxSVJrcFUrakZLOWNxUkwrYmF5?=
- =?gb2312?B?QlFHK3k0SWE4Z0xEdU5JSUxFeUhtS0NoQ3o0emFQWExISDZWUnlXLzVlVWVs?=
- =?gb2312?B?TnBWLzNGaGcvcVRZemswcnNWa0FUdElPYjF1eEswUk9WTW1TSTdoVm9nbVBO?=
- =?gb2312?B?NEhnelQ0SVdmVi91aDloT2tiUXRCOFlrU3czVGxOTVBsb2tUY2dNeXFTUU5D?=
- =?gb2312?B?Qk1JcU8xU2hiTkVtVVBRMGFoM2VVek1ISko5Q2JzZCswaGc1MVF5SDQzS0RF?=
- =?gb2312?B?T0MyaEd6Uzk0cWpjY3BwQndhWW5uQUp6VHJhWWdKWmcyOEVBU0Y5Y3FPcm1T?=
- =?gb2312?B?ZExOaVZoMy83S1A3dTZNdzdSMU9FMzhodUgzenBHUlNnZEl5YWpFc1lqUU5u?=
- =?gb2312?B?OHc9PQ==?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2714019A
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 01:28:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713403720; cv=none; b=n+L8NioxFFkiRs3wmJnL/Lu7LhZcVEUlDT9kJvw9nLQZ5HKx/ANiFIKkm09v+Vnq9Ugkdy6bajREJ2nktpLR0PQqv1wZpWgu97LBULRbTC9RG1+5D8s/MMd1pK6Cy07t1vHiITYrifExBEK0UuR/5vPpp8ES0rOS0zZF6kDWcjw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713403720; c=relaxed/simple;
+	bh=D9uAxfhXCIibdUQvBdEAguSzWPl/w/50yeP3Yso4sDY=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=eP4RzwdeSwuTFHtjiaPpNyTLWBAvQmXQ1VKS3C56pqBd5L+sfK4f+eyq6TMcq0N80iwJJRTxZ+nNiDqRUsZ01ebCW495+JDHwlf68pGAZZ+Rqvel/my1S6lDz6RLfia5k7p9zuNPuBaaapQ1QpSk3RVEdqOFr3pKzCkFvrTJtCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eT3eZnKO; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5d8bff2b792so333665a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:28:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713403718; x=1714008518; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FYDQyLdFdWMdeiUN2dEgWolx8IdIlWszL4UA+NDjWJ0=;
+        b=eT3eZnKOldVPe7K82MsF4QaeqJSwao0PfngldjfOYNu0iJRNF6toUGZZ8ppTPiD2Jb
+         z+f9/SISFwDgCpkyZ/TKHdvUon5lgtcYdtZOH1CeZmeN78vPSDKsHuHj7Q7PxXVVTIrb
+         XIqf98c4DahuWYVB2RGBvobCUj9B+YVt1AVTxyKGWw7SCwFElH1HioInME0KhqAV7FS1
+         +Ww1nlEPLe0JjnJu9kXAzJQVVIOg2mq4ROfApEYB41MBygZh9jCc05y2W0UNbULqfblN
+         4wPfDzg0ojdpH/B0iLhpQ7q25H3OPtA/Ofn2K7Vno81Iv8OslCCB7O1GourmCCSavw0g
+         Ke3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713403718; x=1714008518;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FYDQyLdFdWMdeiUN2dEgWolx8IdIlWszL4UA+NDjWJ0=;
+        b=dE2Qvl+Y7UH/kuFRGj/5xSdrpPQx6Ncp+PKBunyLECKotPSUPnYXzytHYz8E5JdleG
+         mfOp9ZucJxG6Bk1FIuQKh1U65WamquprWhQI61bJoom3EVQMiHTBLIyPSBUo+8w+F20N
+         JhDMV5hmad2Aq0/wNkviHufWENfC5gxNHVqqmT7AGzVUrZJ2+CzXf0VmxcvpYF1+avur
+         WUThFHRtt+iy7oRm/9Dzx74pac2xw3WpveZeVHpQfc5yoZ/95as6W73nCCX6+sa2kQgX
+         2rFriqQ97+pFumHL+wk8ky3A1O+mmiFtw1DkpAv7PPXiXgZjiNeXtGfz32I9JRpI3BzX
+         nA/g==
+X-Forwarded-Encrypted: i=1; AJvYcCUGr7q0UAgyOoF4YbjhdD7C2bTjkNMwLxYQ1RDZqSApI9KUkZcDVUeUaDHOsPNP+JU4B4abLPX2CV5CDH7fTJmdcFtIA7+RYe5dyw5Q
+X-Gm-Message-State: AOJu0YxXClBi30RLPxLEHvPlyjRxnj551mI6qipNqLoVuS7P0IeME+BY
+	yIQBNmGM+rAKdFjpIFLwNIxXcDWsVMQ1t8rhepXbg5rtaw9d2C4E6UkRis/pYg4xKFLReY+VknS
+	6hcbaf0FQsKpR4xe7Og==
+X-Google-Smtp-Source: AGHT+IEqdMaTCeR+5N661ePS75QOvFa8jZaaiw9BcHvMUuJwBncrqCmIT7qsnybEQWIN2tFvBp2petyzPSOYJ3zy
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a63:e57:0:b0:5dc:20e1:c894 with SMTP id
+ 23-20020a630e57000000b005dc20e1c894mr3697pgo.4.1713403718174; Wed, 17 Apr
+ 2024 18:28:38 -0700 (PDT)
+Date: Thu, 18 Apr 2024 01:28:33 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2fe3824-97b3-44fc-1983-08dc5f46a7f8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Apr 2024 01:27:04.9721
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PoUsAzeXeEjvUgzhiFZaw53urtgRJ9RWU1V66++6y4E/wyTZCmQy/wnlxWNEcdhBS2Ubl48rF/PH92gTCln+NG2DFMtVNeCTD/J27fQ2zvyv4VxRq0omwefL1z/D35IW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0848
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
+Message-ID: <20240418012835.3360429-1-yosryahmed@google.com>
+Subject: [PATCH tip:x86/mm v3 1/3] x86/mm: Use IPIs to synchronize LAM enablement
+From: Yosry Ahmed <yosryahmed@google.com>
+To: x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-SGksIEhhbnMNCg0KPiBUaGUgY29kZSB0byBzZWxlY3QgaXNwX2Rldi0+Zm9ybWF0c1tdIGlzIG92
-ZXJseSBjb21wbGljYXRlZC4gIFdlIGNhbiBqdXN0IHVzZQ0KPiB0aGUgInBhZCIgYXMgdGhlIGlu
-ZGV4LiAgVGhpcyB3aWxsIG1ha2luZyBhZGRpbmcgbmV3IHBhZHMgZWFzaWVyIGluIGZ1dHVyZQ0K
-PiBwYXRjaGVzLiAgTm8gZnVuY3Rpb25hbCBjaGFuZ2UuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBD
-aGFuZ2h1YW5nIExpYW5nIDxjaGFuZ2h1YW5nLmxpYW5nQHN0YXJmaXZldGVjaC5jb20+DQo+IC0t
-LQ0KDQpDb3VsZCB5b3UgcGxlYXNlIGhlbHAgdG8gcmV2aWV3IHRoaXMgcGF0Y2gsIHRoYW5rcyBm
-b3IgeW91ciB0aW1lLg0KDQpCZXN0IHJlZ2FyZHMsDQpDaGFuZ2h1YW5nDQoNCg==
+LAM can only be enabled when a process is single-threaded.  But _kernel_
+threads can temporarily use a single-threaded process's mm.
+
+If LAM is enabled by a userspace process while a kthread is using its
+mm, the kthread will not observe LAM enablement (i.e.  LAM will be
+disabled in CR3). This could be fine for the kthread itself, as LAM only
+affects userspace addresses. However, if the kthread context switches to
+a thread in the same userspace process, CR3 may or may not be updated
+because the mm_struct doesn't change (based on pending TLB flushes). If
+CR3 is not updated, the userspace thread will run incorrectly with LAM
+disabled, which may cause page faults when using tagged addresses.
+Example scenario:
+
+CPU 1                                   CPU 2
+/* kthread */
+kthread_use_mm()
+                                        /* user thread */
+                                        prctl_enable_tagged_addr()
+                                        /* LAM enabled on CPU 2 */
+/* LAM disabled on CPU 1 */
+                                        context_switch() /* to CPU 1 */
+/* Switching to user thread */
+switch_mm_irqs_off()
+/* CR3 not updated */
+/* LAM is still disabled on CPU 1 */
+
+Synchronize LAM enablement by sending an IPI from
+prctl_enable_tagged_addr() to all CPUs running with the mm_struct to
+enable LAM. This makes sure LAM is enabled on CPU 1 in the above
+scenario before prctl_enable_tagged_addr() returns and userspace starts
+using tagged addresses, and before it's possible to run the userspace
+process on CPU 1.
+
+In switch_mm_irqs_off(), move reading the LAM mask until after
+mm_cpumask() is updated. This ensures that if an outdated LAM mask is
+written to CR3, an IPI is received to update it right after IRQs are
+re-enabled.
+
+Fixes: 82721d8b25d7 ("x86/mm: Handle LAM on context switch")
+Suggested-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+---
+
+v2 -> v3:
+- Rebased on top of the latest tip:x86/mm after v6.9-rc3.
+- Collected R-b on patch 2 (thanks!).
+
+---
+ arch/x86/kernel/process_64.c | 13 +++++++++++--
+ arch/x86/mm/tlb.c            |  7 +++----
+ 2 files changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+index 7062b84dd467d..c27798f23ef82 100644
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -798,6 +798,16 @@ static long prctl_map_vdso(const struct vdso_image *image, unsigned long addr)
+ 
+ #define LAM_U57_BITS 6
+ 
++static void enable_lam_func(void *__mm)
++{
++	struct mm_struct *mm = __mm;
++
++	if (this_cpu_read(cpu_tlbstate.loaded_mm) == mm) {
++		write_cr3(__read_cr3() | mm->context.lam_cr3_mask);
++		set_tlbstate_lam_mode(mm);
++	}
++}
++
+ static int prctl_enable_tagged_addr(struct mm_struct *mm, unsigned long nr_bits)
+ {
+ 	if (!cpu_feature_enabled(X86_FEATURE_LAM))
+@@ -830,8 +840,7 @@ static int prctl_enable_tagged_addr(struct mm_struct *mm, unsigned long nr_bits)
+ 		return -EINVAL;
+ 	}
+ 
+-	write_cr3(__read_cr3() | mm->context.lam_cr3_mask);
+-	set_tlbstate_lam_mode(mm);
++	on_each_cpu_mask(mm_cpumask(mm), enable_lam_func, mm, true);
+ 	set_bit(MM_CONTEXT_LOCK_LAM, &mm->context.flags);
+ 
+ 	mmap_write_unlock(mm);
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 44ac64f3a047c..a041d2ecd8380 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -503,9 +503,9 @@ void switch_mm_irqs_off(struct mm_struct *unused, struct mm_struct *next,
+ {
+ 	struct mm_struct *prev = this_cpu_read(cpu_tlbstate.loaded_mm);
+ 	u16 prev_asid = this_cpu_read(cpu_tlbstate.loaded_mm_asid);
+-	unsigned long new_lam = mm_lam_cr3_mask(next);
+ 	bool was_lazy = this_cpu_read(cpu_tlbstate_shared.is_lazy);
+ 	unsigned cpu = smp_processor_id();
++	unsigned long new_lam;
+ 	u64 next_tlb_gen;
+ 	bool need_flush;
+ 	u16 new_asid;
+@@ -619,9 +619,7 @@ void switch_mm_irqs_off(struct mm_struct *unused, struct mm_struct *next,
+ 			cpumask_clear_cpu(cpu, mm_cpumask(prev));
+ 		}
+ 
+-		/*
+-		 * Start remote flushes and then read tlb_gen.
+-		 */
++		/* Start receiving IPIs and then read tlb_gen (and LAM below) */
+ 		if (next != &init_mm)
+ 			cpumask_set_cpu(cpu, mm_cpumask(next));
+ 		next_tlb_gen = atomic64_read(&next->context.tlb_gen);
+@@ -633,6 +631,7 @@ void switch_mm_irqs_off(struct mm_struct *unused, struct mm_struct *next,
+ 		barrier();
+ 	}
+ 
++	new_lam = mm_lam_cr3_mask(next);
+ 	set_tlbstate_lam_mode(next);
+ 	if (need_flush) {
+ 		this_cpu_write(cpu_tlbstate.ctxs[new_asid].ctx_id, next->context.ctx_id);
+-- 
+2.44.0.683.g7961c838ac-goog
+
 
