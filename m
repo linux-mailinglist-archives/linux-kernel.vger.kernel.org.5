@@ -1,478 +1,239 @@
-Return-Path: <linux-kernel+bounces-150265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 130C68A9C84
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A3678A9C8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:18:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36AD01C23CFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:17:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C7F81C2404E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:18:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE3E16D335;
-	Thu, 18 Apr 2024 14:15:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA91016C423;
+	Thu, 18 Apr 2024 14:16:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LnT9tITS"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IvMN2+ym"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FDBD165FD8
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:15:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C63B16ABEE
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:16:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713449756; cv=none; b=ZkWCCF3vVrdLoym7vuMYS1yKTwjKyD1GsrNrPgr31hUaPlLcnY7F1UMr2+mAlWOke1664nvdJD0pvmuzZAsJWhed4Bhgu2palgu/cIPGOKejSxMi/7AkkcafOQMnCqOA7QT8+NR4rM5tt1+iV+hafwSXD9Xgam/4H8aVKOlBVGg=
+	t=1713449771; cv=none; b=MosWlEFwTF7vUrIf8u8TOBdAEqjbrdG2Z9o2ldyhi5jIKvM0LkJ6K9AKqsKrNBpoEAxW8QF+LdaYm5hULW5odCm7d2tiEgL3+dkVxR/mdAwaoBEC4wdQJTT3LAcd8b8f6/6s99ww6GQzkqDBfpvhmhaUcJpXHf2bMiXX3oHuP5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713449756; c=relaxed/simple;
-	bh=FBCNdiEj+A0D8yYINrDwvCTiCL63Jq+X5eZW2pO7mtw=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=tgAzWpGcpHIz8MDgXkKODs4xUPJ0ZNuWr4PpYywgASPsbvpR3DLwkC9vixFslIbICGeyi2htHPqbVfGXXXyKJZ1H0aObFQ0CVkoKloGu/m5tPxo9GmFBuYiNe9isHPfyeCqItMNFAoqJKNYHwNasFvNxzViCMqX6pkKH00iyAf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--mattgilbride.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LnT9tITS; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--mattgilbride.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-de45d510553so1667790276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:15:51 -0700 (PDT)
+	s=arc-20240116; t=1713449771; c=relaxed/simple;
+	bh=K4KLZyB4pjOZHxyDBkfWN3vq6dPZje/ZZGT4mFX1CFA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WMgI+71zuXQyD0jjcoWrWsKBl7we2LmE97CIP18COUghaAcynKCh10DvbPCdAs62m2pgHsFFy/c0/qo+ikxlk+nfU53PlaQaEh3wqBxA4MxW0MRbfH3wSg1hI+sXGDbDJz+kKoy041lbQAkGhrWMv8P49IfUKEcv85EO6wjZqNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IvMN2+ym; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5f034b4dcecso629122a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:16:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713449750; x=1714054550; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FM4hEqePImh5iV5+3UJD4A4a8jKpvu1mGuCtm7zmIag=;
-        b=LnT9tITShwJFkEO2dxuLLiQEHtoz1pmeDMIb7eXwfMq4zksnNyv7G4UIbp3iGpDEJc
-         +S6jdQjebywr9mP0S07zFhozcEwJ8CSWTJPYZN4B/qeTUIYmaOa5biUhTxFD0S83aWfc
-         Im/jFVheuvbdBFfcCTPvuqY2a09SXDgeT0R9bBDCrQtyOrUx8v+um+sP2hM2fuAQTP0N
-         iW0dfwhEQMhNuZI7Sw9aFdepMgCSVHEA10Hs9VQIwY5YCx0ZrPWsHwAsbwTWbrqvyEsd
-         X+U9fDFsyuiskfMVYAKT0Hkxu1j4ebZnzho8JUZfj35g0Zqb46hzz6DoSVQZVfrk5LJp
-         kYsQ==
+        d=gmail.com; s=20230601; t=1713449766; x=1714054566; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=moo2/Q0I4e+0pVWR8KV3lFeGCDDdXA9IltM3T9wFqic=;
+        b=IvMN2+ympjiXjfiw5HnHS2SOf+iqdYEOX/sTw7UOJ3zYZeYxcuFIRffWqnrjTKgHBI
+         KXJu/qKrssbNBdsUtka+Hsb1om5m2Y+0nfYTv/dhIKTdxPGnYfRWiM0FideAKSRw7MOM
+         IOvZGv4L2OGN84OAVboy9WhojjGLq4A/hCY839sETHz5Ts9uARTw8rqgy+aJWaYVw3Jm
+         Py2g55KSzKTW3/gWE/Mm1xuhwXBc6shtiLyP08qx812T7lEctiZKlFKrJhyIhI5yeE12
+         sm+zr2NFyc2IapLqyGuVvTPVEOXMoHyp+W0amkYX1JrGte50DqfjLtz1ggczd0lM2w00
+         5O5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713449750; x=1714054550;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FM4hEqePImh5iV5+3UJD4A4a8jKpvu1mGuCtm7zmIag=;
-        b=AAHUBUKqtXvE86peCnRqm1ii1nEVyZKohuzUBH2SRDxJIpK8TLFXYhiAxrS2vJQnhG
-         j7gaUQa3ViPiT6T5Lq5VainiZnrCT6z4+1qHhD3gvUoUlbPJ2nK+z5090CUMRXvc9GnA
-         Ik3kVMH1dW8t5O9GVNUniWVqt81x9VOAuThclkgvXmXXqLZqcexWyL+9fUA4MPg4qNtV
-         +1KOmVHVdR4d4W6Z2PWVdsNcHH383LImZflNb5r/HeSAfFQw1ZP2XELqyGvHs8mPSki6
-         6KxNW4kuz+AUWkcHQ3GNnkthJlEvZpS6IKrGSfbcBgisDUI9uAgVL5e6BfQ+oDJ0rkI9
-         cz2g==
-X-Forwarded-Encrypted: i=1; AJvYcCXDg3ufDByb/d9tQ9YZFoAX4gyF/+PmjTII6o/mhM6L9cV3u1/22LVPL5JFPZMrTD6hdXSljPYB7lo1aTc0+TP3AcUSb/2t1hGPiNNm
-X-Gm-Message-State: AOJu0YwORlhcqcEi+4HcSVdJm9XPhh7MgkvAVw5iumT5a3PBN7XDnMyg
-	YljAaNPvk3NSK4DnVGuonIam1ADkHO9VUQ3sMVV8VdpzIsqj5MX+c9ids3ZvKmcY8+fJFweZagr
-	o+TiIb2OCqhFFBrjHlLSgc/EuLA==
-X-Google-Smtp-Source: AGHT+IFe6MeLS1rzJNaDGGx9bsvL4OmC15Tor/40iy+NTfO4lsvrfVReZJ36PTq7b1UbbuIegylbksvu2JcrctxTKZ8=
-X-Received: from mattgilbride.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:2ac5])
- (user=mattgilbride job=sendgmr) by 2002:a05:6902:1005:b0:dcb:fb69:eadc with
- SMTP id w5-20020a056902100500b00dcbfb69eadcmr291683ybt.6.1713449750611; Thu,
- 18 Apr 2024 07:15:50 -0700 (PDT)
-Date: Thu, 18 Apr 2024 14:15:44 +0000
-In-Reply-To: <20240418-b4-rbtree-v3-0-323e134390ce@google.com>
+        d=1e100.net; s=20230601; t=1713449766; x=1714054566;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=moo2/Q0I4e+0pVWR8KV3lFeGCDDdXA9IltM3T9wFqic=;
+        b=rtM4PLiimEWr8zkltvtT6tluIYDMhspGZrGYVzMqZZjOQ5yXRUOZVsJjtk+aYLjnvO
+         f7cpzZes1jaMrNa90ieRQQ4jYgmMqmvuLJVmxrpDRFccExEF9pUwnpr8HDUrVDmk1u1J
+         z9D6SumsRVt33lg7WeoGzmEB9OibCtz5a0E1fnK3stUq4Uvgm2eHoqG29zQ87+gDjoUM
+         SOK0QZHiwnvKmgaA0zUGFSK8C3hJkV1Yn03zsT5cwkEfP8boWM2RzN0/G3CzBqlDAgc/
+         Ru6Bi+YwqAFlP+IFV5xyV9fU2MvZxSMtdpAIkiBnh4jIIIymGjYwRVdlPEP5wYyk3EeU
+         mu1g==
+X-Forwarded-Encrypted: i=1; AJvYcCWixe/hjijjc8IEszW4XsMG9W6DpVH2duNK8FvQXm58fucLxB0a/xmwMwONGJT4jVG/Ccic7FMED4Gyr78+jBsX6nUVQjhDdunDzNWi
+X-Gm-Message-State: AOJu0YxgZnDuVymejBbckHPLGnOPLa3a4gJVCyW9c5UDBV8j07KZauj6
+	vBmSAOfIM61Hqqn0AEyGeL+gP2mZLHogKQ2Y+qtNREh5ZohkVXz23acP89ASPX8voMPrIdhsSMF
+	xrAVsASwwO9hEc6H0TSdDBO50JOE=
+X-Google-Smtp-Source: AGHT+IEdyd0JATd51DcGbv6THoQN/0K3QOYQ7h6+Uta4jclpsLKEG8cNeixgOGO2GEKCzQBJTjF5GXxvDkfsBPD0c2s=
+X-Received: by 2002:a17:90b:1090:b0:2aa:c389:c9f0 with SMTP id
+ gj16-20020a17090b109000b002aac389c9f0mr3770698pjb.12.1713449766156; Thu, 18
+ Apr 2024 07:16:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240418-b4-rbtree-v3-0-323e134390ce@google.com>
-X-Mailer: b4 0.12.4
-Message-ID: <20240418-b4-rbtree-v3-5-323e134390ce@google.com>
-Subject: [PATCH v3 5/5] rust: rbtree: add `RBTree::entry`
-From: Matt Gilbride <mattgilbride@google.com>
-To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	"=?utf-8?q?Bj=C3=B6rn_Roy_Baron?=" <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"=?utf-8?q?Arve_Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Christian Brauner <brauner@kernel.org>
-Cc: Rob Landley <rob@landley.net>, Davidlohr Bueso <dave@stgolabs.net>, 
-	Michel Lespinasse <michel@lespinasse.org>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Matt Gilbride <mattgilbride@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+References: <20240416035240.2450127-1-wangzhu9@huawei.com> <2024041658-imagines-unlatch-a9b6@gregkh>
+ <036c3371d3a64ef8881260197ce37dbc@huawei.com> <CADnq5_NML_BiqQx2UmwH86d3qv57D3tFRL--dro1qA99r0Qr5w@mail.gmail.com>
+ <b9ab29ad37f94dfa81da3aa88c6456c2@huawei.com>
+In-Reply-To: <b9ab29ad37f94dfa81da3aa88c6456c2@huawei.com>
+From: Alex Deucher <alexdeucher@gmail.com>
+Date: Thu, 18 Apr 2024 10:15:53 -0400
+Message-ID: <CADnq5_PF=hynw-Fdt6JGxULXjBSCh1bM8dOgSbpeR4nAjh1pUw@mail.gmail.com>
+Subject: Re: [PATCH v6.6] drm/amd/display: Wake DMCUB before executing GPINT commands
+To: wangzhu <wangzhu9@huawei.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>, 
+	"harry.wentland@amd.com" <harry.wentland@amd.com>, "sunpeng.li@amd.com" <sunpeng.li@amd.com>, 
+	"Rodrigo.Siqueira@amd.com" <Rodrigo.Siqueira@amd.com>, 
+	"alexander.deucher@amd.com" <alexander.deucher@amd.com>, 
+	"christian.koenig@amd.com" <christian.koenig@amd.com>, "airlied@linux.ie" <airlied@linux.ie>, 
+	"daniel@ffwll.ch" <daniel@ffwll.ch>, "qingqing.zhuo@amd.com" <qingqing.zhuo@amd.com>, 
+	"stylon.wang@amd.com" <stylon.wang@amd.com>, "Josip.Pavic@amd.com" <Josip.Pavic@amd.com>, 
+	"trix@redhat.com" <trix@redhat.com>, "cruise.hung@amd.com" <cruise.hung@amd.com>, 
+	"Eric.Yang2@amd.com" <Eric.Yang2@amd.com>, 
+	"mario.limonciello@amd.com" <mario.limonciello@amd.com>, "alvin.lee2@amd.com" <alvin.lee2@amd.com>, 
+	"jun.lei@amd.com" <jun.lei@amd.com>, "austin.zheng@amd.com" <austin.zheng@amd.com>, 
+	"sunglee@amd.com" <sunglee@amd.com>, "paul.hsieh@amd.com" <paul.hsieh@amd.com>, 
+	"hanghong.ma@amd.com" <hanghong.ma@amd.com>, "JinZe.Xu@amd.com" <JinZe.Xu@amd.com>, 
+	"lewis.huang@amd.com" <lewis.huang@amd.com>, "alex.hung@amd.com" <alex.hung@amd.com>, 
+	"syed.hassan@amd.com" <syed.hassan@amd.com>, "wayne.lin@amd.com" <wayne.lin@amd.com>, 
+	"nicholas.kazlauskas@amd.com" <nicholas.kazlauskas@amd.com>, 
+	"chiahsuan.chung@amd.com" <chiahsuan.chung@amd.com>, 
+	"aurabindo.pillai@amd.com" <aurabindo.pillai@amd.com>, "aric.cyr@amd.com" <aric.cyr@amd.com>, 
+	"amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>, 
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Alice Ryhl <aliceryhl@google.com>
+On Wed, Apr 17, 2024 at 11:14=E2=80=AFPM wangzhu <wangzhu9@huawei.com> wrot=
+e:
+>
+> The CVE-2023-52624 is fixed in linux-6.7 stable, while it is not fixed in=
+ 6.6, this commit is presented to fix it in linux-6.6 stable.
 
-This mirrors the entry API [1] from the Rust standard library on
-`RBTree`. This API can be used to access the entry at a specific key and
-make modifications depending on whether the key is vacant or occupied.
-This API is useful because it can often be used to avoid traversing the
-tree multiple times.
+Why is there a CVE in the first place?  Is this actually an issue you
+have seen?  It seems like you just picked a random patch and opened a
+CVE.
 
-This is used by binder to look up and conditionally access or insert a
-value, depending on whether it is there or not [2].
+Alex
 
-Link: https://doc.rust-lang.org/stable/std/collections/btree_map/enum.Entry.html [1]
-Link: https://android-review.googlesource.com/c/kernel/common/+/2849906 [2]
-Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-Tested-by: Alice Ryhl <aliceryhl@google.com>
-Signed-off-by: Matt Gilbride <mattgilbride@google.com>
----
- rust/kernel/rbtree.rs | 304 +++++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 229 insertions(+), 75 deletions(-)
 
-diff --git a/rust/kernel/rbtree.rs b/rust/kernel/rbtree.rs
-index 606ff2f8c8de..c9bdbc5fd509 100644
---- a/rust/kernel/rbtree.rs
-+++ b/rust/kernel/rbtree.rs
-@@ -309,12 +309,18 @@ pub fn try_create_and_insert(&mut self, key: K, value: V) -> Result<Option<RBTre
-     /// key/value pair). Returns [`None`] if a node with the same key didn't already exist.
-     ///
-     /// This function always succeeds.
--    pub fn insert(&mut self, RBTreeNode { node }: RBTreeNode<K, V>) -> Option<RBTreeNode<K, V>> {
--        let node = Box::into_raw(node);
--        // SAFETY: `node` is valid at least until we call `Box::from_raw`, which only happens when
--        // the node is removed or replaced.
--        let node_links = unsafe { addr_of_mut!((*node).links) };
-+    pub fn insert(&mut self, node: RBTreeNode<K, V>) -> Option<RBTreeNode<K, V>> {
-+        match self.raw_entry(&node.node.key) {
-+            RawEntry::Occupied(entry) => Some(entry.replace(node)),
-+            RawEntry::Vacant(entry) => {
-+                entry.insert(node);
-+                None
-+            }
-+        }
-+    }
- 
-+    fn raw_entry(&mut self, key: &K) -> RawEntry<'_, K, V> {
-+        // The returned `RawEntry` is used to call either `rb_link_node` or `rb_replace_node`.
-         // The parameters of `rb_link_node` are as follows:
-         // - `node`: A pointer to an uninitialized node being inserted.
-         // - `parent`: A pointer to an existing node in the tree. One of its child pointers must be
-@@ -332,63 +338,54 @@ pub fn insert(&mut self, RBTreeNode { node }: RBTreeNode<K, V>) -> Option<RBTree
-         // we store `parent` and `child_field_of_parent`, and the new `node` will go somewhere
-         // in the subtree of `parent` that `child_field_of_parent` points at. Once
-         // we find an empty subtree, we can insert the new node using `rb_link_node`.
--        let mut parent = core::ptr::null_mut();
-         let mut child_field_of_parent: &mut *mut bindings::rb_node = &mut self.root.rb_node;
--        while !child_field_of_parent.is_null() {
--            parent = *child_field_of_parent;
-+        let mut parent = core::ptr::null_mut();
-+        while !(*child_field_of_parent).is_null() {
-+            let curr = *child_field_of_parent;
-+            // SAFETY: All links fields we create are in a `Node<K, V>`.
-+            let node = unsafe { container_of!(curr, Node<K, V>, links) };
- 
--            // We need to determine whether `node` should be the left or right child of `parent`,
--            // so we will compare with the `key` field of `parent` a.k.a. `this` below.
--            //
--            // SAFETY: By the type invariant of `Self`, all non-null `rb_node` pointers stored in `self`
--            // point to the links field of `Node<K, V>` objects.
--            let this = unsafe { container_of!(parent, Node<K, V>, links) };
--
--            // SAFETY: `this` is a non-null node so it is valid by the type invariants. `node` is
--            // valid until the node is removed.
--            match unsafe { (*node).key.cmp(&(*this).key) } {
--                // We would like `node` to be the left child of `parent`.  Move to this child to check
--                // whether we can use it, or continue searching, at the next iteration.
--                //
--                // SAFETY: `parent` is a non-null node so it is valid by the type invariants.
--                Ordering::Less => child_field_of_parent = unsafe { &mut (*parent).rb_left },
--                // We would like `node` to be the right child of `parent`.  Move to this child to check
--                // whether we can use it, or continue searching, at the next iteration.
--                //
--                // SAFETY: `parent` is a non-null node so it is valid by the type invariants.
--                Ordering::Greater => child_field_of_parent = unsafe { &mut (*parent).rb_right },
-+            // SAFETY: `node` is a non-null node so it is valid by the type invariants.
-+            match key.cmp(unsafe { &(*node).key }) {
-+                // SAFETY: `curr` is a non-null node so it is valid by the type invariants.
-+                Ordering::Less => child_field_of_parent = unsafe { &mut (*curr).rb_left },
-+                // SAFETY: `curr` is a non-null node so it is valid by the type invariants.
-+                Ordering::Greater => child_field_of_parent = unsafe { &mut (*curr).rb_right },
-                 Ordering::Equal => {
--                    // There is an existing node in the tree with this key, and that node is
--                    // parent.  Thus, we are replacing parent with a new node.
--                    //
--                    // INVARIANT: We are replacing an existing node with a new one, which is valid.
--                    // It remains valid because we "forgot" it with `Box::into_raw`.
--                    // SAFETY: All pointers are non-null and valid.
--                    unsafe { bindings::rb_replace_node(parent, node_links, &mut self.root) };
--
--                    // INVARIANT: The node is being returned and the caller may free it, however,
--                    // it was removed from the tree. So the invariants still hold.
--                    return Some(RBTreeNode {
--                        // SAFETY: `this` was a node in the tree, so it is valid.
--                        node: unsafe { Box::from_raw(this.cast_mut()) },
--                    });
-+                    return RawEntry::Occupied(OccupiedEntry {
-+                        rbtree: self,
-+                        node_links: curr,
-+                    })
-                 }
-             }
-+            parent = curr;
-         }
- 
--        // INVARIANT: We are linking in a new node, which is valid. It remains valid because we
--        // "forgot" it with `Box::into_raw`.
--        // SAFETY: All pointers are non-null and valid (`*next_child` is null, but `next_child` is a
--        // mutable reference).
--        unsafe { bindings::rb_link_node(node_links, parent, child_field_of_parent) };
-+        RawEntry::Vacant(RawVacantEntry {
-+            parent,
-+            child_field_of_parent,
-+            rbtree: self,
-+        })
-+    }
- 
--        // SAFETY: All pointers are valid. `node` has just been inserted into the tree.
--        unsafe { bindings::rb_insert_color(node_links, &mut self.root) };
--        None
-+    /// Gets the given key's corresponding entry in the map for in-place manipulation.
-+    pub fn entry(&mut self, key: K) -> Entry<'_, K, V> {
-+        match self.raw_entry(&key) {
-+            RawEntry::Occupied(entry) => Entry::Occupied(entry),
-+            RawEntry::Vacant(entry) => Entry::Vacant(VacantEntry { raw: entry, key }),
-+        }
-     }
- 
--    /// Returns a node with the given key, if one exists.
--    fn find(&self, key: &K) -> Option<NonNull<Node<K, V>>> {
-+    /// Used for accessing the given node, if it exists.
-+    pub fn find_mut(&mut self, key: &K) -> Option<OccupiedEntry<'_, K, V>> {
-+        match self.raw_entry(key) {
-+            RawEntry::Occupied(entry) => Some(entry),
-+            RawEntry::Vacant(_entry) => None,
-+        }
-+    }
-+
-+    /// Returns a reference to the value corresponding to the key.
-+    pub fn get(&self, key: &K) -> Option<&V> {
-         let mut node = self.root.rb_node;
-         while !node.is_null() {
-             // SAFETY: By the type invariant of `Self`, all non-null `rb_node` pointers stored in `self`
-@@ -400,47 +397,30 @@ fn find(&self, key: &K) -> Option<NonNull<Node<K, V>>> {
-                 Ordering::Less => unsafe { (*node).rb_left },
-                 // SAFETY: `node` is a non-null node so it is valid by the type invariants.
-                 Ordering::Greater => unsafe { (*node).rb_right },
--                Ordering::Equal => return NonNull::new(this.cast_mut()),
-+                // SAFETY: `node` is a non-null node so it is valid by the type invariants.
-+                Ordering::Equal => return Some(unsafe { &(*this).value }),
-             }
-         }
-         None
-     }
- 
--    /// Returns a reference to the value corresponding to the key.
--    pub fn get(&self, key: &K) -> Option<&V> {
--        // SAFETY: The `find` return value is a node in the tree, so it is valid.
--        self.find(key).map(|node| unsafe { &node.as_ref().value })
--    }
--
-     /// Returns a mutable reference to the value corresponding to the key.
-     pub fn get_mut(&mut self, key: &K) -> Option<&mut V> {
--        // SAFETY: The `find` return value is a node in the tree, so it is valid.
--        self.find(key)
--            .map(|mut node| unsafe { &mut node.as_mut().value })
-+        self.find_mut(key).map(|node| node.into_mut())
-     }
- 
-     /// Removes the node with the given key from the tree.
-     ///
-     /// It returns the node that was removed if one exists, or [`None`] otherwise.
--    fn remove_node(&mut self, key: &K) -> Option<RBTreeNode<K, V>> {
--        let mut node = self.find(key)?;
--
--        // SAFETY: The `find` return value is a node in the tree, so it is valid.
--        unsafe { bindings::rb_erase(&mut node.as_mut().links, &mut self.root) };
--
--        // INVARIANT: The node is being returned and the caller may free it, however, it was
--        // removed from the tree. So the invariants still hold.
--        Some(RBTreeNode {
--            // SAFETY: The `find` return value was a node in the tree, so it is valid.
--            node: unsafe { Box::from_raw(node.as_ptr()) },
--        })
-+    pub fn remove_node(&mut self, key: &K) -> Option<RBTreeNode<K, V>> {
-+        self.find_mut(key).map(OccupiedEntry::remove_node)
-     }
- 
-     /// Removes the node with the given key from the tree.
-     ///
-     /// It returns the value that was removed if one exists, or [`None`] otherwise.
-     pub fn remove(&mut self, key: &K) -> Option<V> {
--        self.remove_node(key).map(|node| node.node.value)
-+        self.find_mut(key).map(OccupiedEntry::remove)
-     }
- 
-     /// Returns a cursor over the tree nodes based on the given key.
-@@ -1119,3 +1099,177 @@ unsafe impl<K: Send, V: Send> Send for RBTreeNode<K, V> {}
- // SAFETY: If K and V can be accessed without synchronization, then it's also okay to access
- // [`RBTreeNode`] without synchronization.
- unsafe impl<K: Sync, V: Sync> Sync for RBTreeNode<K, V> {}
-+
-+impl<K, V> RBTreeNode<K, V> {
-+    /// Drop the key and value, but keep the allocation.
-+    ///
-+    /// It then becomes a reservation that can be re-initialised into a different node (i.e., with
-+    /// a different key and/or value).
-+    ///
-+    /// The existing key and value are dropped in-place as part of this operation, that is, memory
-+    /// may be freed (but only for the key/value; memory for the node itself is kept for reuse).
-+    pub fn into_reservation(self) -> RBTreeNodeReservation<K, V> {
-+        let raw = Box::into_raw(self.node);
-+        let mut ret = RBTreeNodeReservation {
-+            // SAFETY: The pointer came from a valid `Node`, which has the same layout as
-+            // `MaybeUninit<Node>`.
-+            node: unsafe { Box::from_raw(raw as _) },
-+        };
-+        // SAFETY: Although the type is `MaybeUninit<Node>`, we know it has been initialised
-+        // because it came from a `Node`. So it is safe to drop it.
-+        unsafe { core::ptr::drop_in_place::<Node<K, V>>(ret.node.as_mut_ptr()) };
-+        ret
-+    }
-+}
-+
-+/// A view into a single entry in a map, which may either be vacant or occupied.
-+///
-+/// This enum is constructed from the [`entry`] method on [`RBTree`].
-+///
-+/// [`entry`]: fn@RBTree::entry
-+pub enum Entry<'a, K, V> {
-+    /// This [`RBTree`] does not have a node with this key.
-+    Vacant(VacantEntry<'a, K, V>),
-+    /// This [`RBTree`] already has a node with this key.
-+    Occupied(OccupiedEntry<'a, K, V>),
-+}
-+
-+/// Like [`Entry`], except that it doesn't have ownership of the key.
-+enum RawEntry<'a, K, V> {
-+    Vacant(RawVacantEntry<'a, K, V>),
-+    Occupied(OccupiedEntry<'a, K, V>),
-+}
-+
-+/// A view into a vacant entry in a [`RBTree`]. It is part of the [`Entry`] enum.
-+pub struct VacantEntry<'a, K, V> {
-+    key: K,
-+    raw: RawVacantEntry<'a, K, V>,
-+}
-+
-+/// Like [`VacantEntry`], but doesn't hold on to the key.a
-+///
-+/// # Invariants
-+/// - `parent` may be null if the new node becomes the root.
-+/// - `child_field_of_parent` is a valid pointer to the left-child or right-child of `parent`. If `parent` is
-+///     null, it is a pointer to the root of the [`RBTree`].
-+struct RawVacantEntry<'a, K, V> {
-+    rbtree: &'a mut RBTree<K, V>,
-+    /// The node that will become the parent of the new node if we insert one.
-+    parent: *mut bindings::rb_node,
-+    /// This points to the left-child or right-child field of `parent`, or `root` if `parent` is
-+    /// null.
-+    child_field_of_parent: *mut *mut bindings::rb_node,
-+}
-+
-+impl<'a, K, V> RawVacantEntry<'a, K, V> {
-+    /// Inserts the given node into the [`RBTree`] at this entry.
-+    ///
-+    /// The `node` must have a key such that inserting it here does not break the ordering of this
-+    /// [`RBTree`].
-+    fn insert(self, node: RBTreeNode<K, V>) -> &'a mut V {
-+        let node = Box::into_raw(node.node);
-+
-+        // SAFETY: `node` is valid at least until we call `Box::from_raw`, which only happens when
-+        // the node is removed or replaced.
-+        let node_links = unsafe { addr_of_mut!((*node).links) };
-+
-+        // INVARIANT: We are linking in a new node, which is valid. It remains valid because we
-+        // "forgot" it with `Box::into_raw`.
-+        // SAFETY: All pointers are null or valid in an appropriate way.
-+        unsafe { bindings::rb_link_node(node_links, self.parent, self.child_field_of_parent) };
-+
-+        // SAFETY: All pointers are valid. `node` has just been inserted into the tree.
-+        unsafe { bindings::rb_insert_color(node_links, &mut self.rbtree.root) };
-+
-+        // SAFETY: The node is valid until we remove it from the tree.
-+        unsafe { &mut (*node).value }
-+    }
-+}
-+
-+impl<'a, K, V> VacantEntry<'a, K, V> {
-+    /// Inserts the given node into the [`RBTree`] at this entry.
-+    pub fn insert(self, value: V, reservation: RBTreeNodeReservation<K, V>) -> &'a mut V {
-+        self.raw.insert(reservation.into_node(self.key, value))
-+    }
-+}
-+
-+/// A view into an occupied entry in a [`RBTree`]. It is part of the [`Entry`] enum.
-+///
-+/// # Invariants
-+/// - `node_links` is a valid, non-null pointer to a tree node.
-+pub struct OccupiedEntry<'a, K, V> {
-+    rbtree: &'a mut RBTree<K, V>,
-+    /// The node that this entry corresponds to.
-+    node_links: *mut bindings::rb_node,
-+}
-+
-+impl<'a, K, V> OccupiedEntry<'a, K, V> {
-+    fn node_ptr(&self) -> *mut Node<K, V> {
-+        // SAFETY: By the type invariant of `Self`, all `node_links` pointers stored in `self`
-+        // point to the links field of `Node<K, V>` objects.
-+        unsafe { container_of!(self.node_links, Node<K, V>, links) }.cast_mut()
-+    }
-+
-+    /// Gets a reference to the value in the entry.
-+    pub fn get(&self) -> &V {
-+        // SAFETY: `self.node_ptr` produces a valid pointer to a node in the tree.
-+        unsafe { &(*self.node_ptr()).value }
-+    }
-+
-+    /// Gets a mutable reference to the value in the entry.
-+    pub fn get_mut(&mut self) -> &mut V {
-+        // SAFETY: `self.node_ptr` produces a valid pointer to a node in the tree.
-+        unsafe { &mut (*self.node_ptr()).value }
-+    }
-+
-+    /// Converts the entry into a mutable reference to its value.
-+    ///
-+    /// If you need multiple references to the `OccupiedEntry`, see [`self#get_mut`].
-+    pub fn into_mut(self) -> &'a mut V {
-+        // SAFETY: `self.node_ptr` produces a valid pointer to a node in the tree.
-+        unsafe { &mut (*self.node_ptr()).value }
-+    }
-+
-+    /// Remove this entry from the [`RBTree`].
-+    pub fn remove_node(self) -> RBTreeNode<K, V> {
-+        // SAFETY: The node is a node in the tree, so it is valid.
-+        unsafe { bindings::rb_erase(self.node_links, &mut self.rbtree.root) };
-+
-+        // INVARIANT: The node is being returned and the caller may free it, however, it was
-+        // removed from the tree. So the invariants still hold.
-+        RBTreeNode {
-+            // SAFETY: The node was a node in the tree, but we removed it, so we can convert it
-+            // back into a box.
-+            node: unsafe { Box::from_raw(self.node_ptr()) },
-+        }
-+    }
-+
-+    /// Takes the value of the entry out of the map, and returns it.
-+    pub fn remove(self) -> V {
-+        self.remove_node().node.value
-+    }
-+
-+    /// Swap the current node for the provided node.
-+    ///
-+    /// The key of both nodes must be equal.
-+    fn replace(self, node: RBTreeNode<K, V>) -> RBTreeNode<K, V> {
-+        let node = Box::into_raw(node.node);
-+
-+        // SAFETY: `node` is valid at least until we call `Box::from_raw`, which only happens when
-+        // the node is removed or replaced.
-+        let new_node_links = unsafe { addr_of_mut!((*node).links) };
-+
-+        // SAFETY: This updates the pointers so that `new_node_links` is in the tree where
-+        // `self.node_links` used to be.
-+        unsafe {
-+            bindings::rb_replace_node(self.node_links, new_node_links, &mut self.rbtree.root)
-+        };
-+
-+        // SAFETY:
-+        // - `self.node_ptr` produces a valid pointer to a node in the tree.
-+        // - Now that we removed this entry from the tree, we can convert the node to a box.
-+        let old_node = unsafe { Box::from_raw(self.node_ptr()) };
-+
-+        RBTreeNode { node: old_node }
-+    }
-+}
-
--- 
-2.44.0.769.g3c40516874-goog
-
+>
+> -----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
+> =E5=8F=91=E4=BB=B6=E4=BA=BA: Alex Deucher [mailto:alexdeucher@gmail.com]
+> =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2024=E5=B9=B44=E6=9C=8818=E6=97=A5 =
+9:58
+> =E6=94=B6=E4=BB=B6=E4=BA=BA: wangzhu <wangzhu9@huawei.com>
+> =E6=8A=84=E9=80=81: Greg KH <gregkh@linuxfoundation.org>; harry.wentland@=
+amd.com; sunpeng.li@amd.com; Rodrigo.Siqueira@amd.com; alexander.deucher@am=
+d.com; christian.koenig@amd.com; airlied@linux.ie; daniel@ffwll.ch; qingqin=
+g.zhuo@amd.com; stylon.wang@amd.com; Josip.Pavic@amd.com; trix@redhat.com; =
+cruise.hung@amd.com; Eric.Yang2@amd.com; mario.limonciello@amd.com; alvin.l=
+ee2@amd.com; jun.lei@amd.com; austin.zheng@amd.com; sunglee@amd.com; paul.h=
+sieh@amd.com; hanghong.ma@amd.com; JinZe.Xu@amd.com; lewis.huang@amd.com; Z=
+hengzengkai <zhengzengkai@huawei.com>; alex.hung@amd.com; syed.hassan@amd.c=
+om; wayne.lin@amd.com; nicholas.kazlauskas@amd.com; chiahsuan.chung@amd.com=
+; aurabindo.pillai@amd.com; aric.cyr@amd.com; amd-gfx@lists.freedesktop.org=
+; dri-devel@lists.freedesktop.org; linux-kernel@vger.kernel.org
+> =E4=B8=BB=E9=A2=98: Re: [PATCH v6.6] drm/amd/display: Wake DMCUB before e=
+xecuting GPINT commands
+>
+> On Wed, Apr 17, 2024 at 9:51=E2=80=AFPM wangzhu <wangzhu9@huawei.com> wro=
+te:
+> >
+> > Hi Greg, thanks for your reply. Since there is no patch to fix CVE-2023=
+-52624 in linux-5.10, there is a patch in the linux-6.7 branch, its commit =
+is 2ef98c6d753a744e333b7e34b9cf687040fba57d ("drm/amd/display: Wake DMCUB b=
+efore executing GPINT commands"). When we apply this patch to linux-5.10, t=
+here are lots of conflicts, and we found there are lots of dependent patche=
+s, and lots of patches are not proposed to fix the cve, they are presented =
+to add new functions of the kernel.
+> >
+>
+> Why is there a CVE?  Have you uncovered some specific issue?
+>
+> Alex
+>
+> > My commit comes from nearly 20 patches. For each patch, not all of its =
+content is meant to fix the cve, so I just get the part which is helpful to=
+ fix. It is why I don't present the patches one by one instead of merging t=
+hem into one big patch.
+> >
+> >
+> > -----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
+> > =E5=8F=91=E4=BB=B6=E4=BA=BA: Greg KH [mailto:gregkh@linuxfoundation.org=
+]
+> > =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2024=E5=B9=B44=E6=9C=8816=E6=97=
+=A5 12:54
+> > =E6=94=B6=E4=BB=B6=E4=BA=BA: wangzhu <wangzhu9@huawei.com>
+> > =E6=8A=84=E9=80=81: harry.wentland@amd.com; sunpeng.li@amd.com;
+> > Rodrigo.Siqueira@amd.com; alexander.deucher@amd.com;
+> > christian.koenig@amd.com; airlied@linux.ie; daniel@ffwll.ch;
+> > qingqing.zhuo@amd.com; stylon.wang@amd.com; Josip.Pavic@amd.com;
+> > trix@redhat.com; cruise.hung@amd.com; Eric.Yang2@amd.com;
+> > mario.limonciello@amd.com; alvin.lee2@amd.com; jun.lei@amd.com;
+> > austin.zheng@amd.com; sunglee@amd.com; paul.hsieh@amd.com;
+> > hanghong.ma@amd.com; JinZe.Xu@amd.com; lewis.huang@amd.com;
+> > Zhengzengkai <zhengzengkai@huawei.com>; alex.hung@amd.com;
+> > syed.hassan@amd.com; wayne.lin@amd.com; nicholas.kazlauskas@amd.com;
+> > chiahsuan.chung@amd.com; aurabindo.pillai@amd.com; aric.cyr@amd.com;
+> > amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org;
+> > linux-kernel@vger.kernel.org
+> > =E4=B8=BB=E9=A2=98: Re: [PATCH v6.6] drm/amd/display: Wake DMCUB before=
+ executing
+> > GPINT commands
+> >
+> > On Tue, Apr 16, 2024 at 03:52:40AM +0000, Zhu Wang wrote:
+> > > From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+> > >
+> > > stable inclusion
+> > > from stable-v6.7.3
+> > > commit 2ef98c6d753a744e333b7e34b9cf687040fba57d
+> > > category: bugfix
+> > > bugzilla: https://gitee.com/src-openeuler/kernel/issues/I9BV4C
+> > > CVE: CVE-2023-52624
+> > >
+> > > Reference:
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/c
+> > > om mit/?id=3D2ef98c6d753a744e333b7e34b9cf687040fba57d
+> > >
+> > > --------------------------------
+> > >
+> > > [ Upstream commit e5ffd1263dd5b44929c676171802e7b6af483f21 ]
+> > >
+> > > [Why]
+> > > DMCUB can be in idle when we attempt to interface with the HW
+> > > through the GPINT mailbox resulting in a system hang.
+> > >
+> > > [How]
+> > > Add dc_wake_and_execute_gpint() to wrap the wake, execute, sleep
+> > > sequence.
+> > >
+> > > If the GPINT executes successfully then DMCUB will be put back into
+> > > sleep after the optional response is returned.
+> > >
+> > > It functions similar to the inbox command interface.
+> > >
+> > > Cc: Mario Limonciello <mario.limonciello@amd.com>
+> > > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > > Cc: stable@vger.kernel.org
+> > > Reviewed-by: Hansen Dsouza <hansen.dsouza@amd.com>
+> > > Acked-by: Wayne Lin <wayne.lin@amd.com>
+> > > Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+> > > Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+> > > Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+> > >
+> > > This commit comes from following commits:
+> > >
+> > >  8774029f76b9 ("drm/amd/display: Add DCN35 CLK_MGR")  65138eb72e1f
+> > > ("drm/amd/display: Add DCN35 DMUB")  dc01c4b79bfe ("drm/amd/display:
+> > > Update driver and IPS interop")
+> > >  820c3870c491 ("drm/amd/display: Refactor DMCUB enter/exit idle
+> > > interface")  2ef98c6d753a ("drm/amd/display: Wake DMCUB before
+> > > executing GPINT commands")
+> >
+> > Why are you putting multiple commits together and not just submitting t=
+he individual ones?  And what is this for?
+> >
+> > confused,
+> >
+> > greg k-h
 
