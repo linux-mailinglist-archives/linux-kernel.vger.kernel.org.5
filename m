@@ -1,141 +1,183 @@
-Return-Path: <linux-kernel+bounces-149964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38EA08A987F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:26:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F7F88A9881
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:27:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E31001F2241E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:26:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 471CB283D33
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:27:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39F915E803;
-	Thu, 18 Apr 2024 11:26:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D7E815E7E4;
+	Thu, 18 Apr 2024 11:27:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RsOBlq/6"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ekqcJ5F3"
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88F9415AAAD;
-	Thu, 18 Apr 2024 11:26:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3941315DBD6;
+	Thu, 18 Apr 2024 11:27:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713439572; cv=none; b=jAERP/6j3641OIhmS1DchRih0H8VsMNluURnslEYQtVe5SdfODpX5vRp+/RZ8OTvWbItFlcnlNO7SRVEOblEjmcf0eG4gQj7mqtj9N/DUBY112+wBgogVmDsA+wRZU05/EglscAbKi5U32RGJLC+hOB7Ke4o8qYzQbJRKxXxW+M=
+	t=1713439651; cv=none; b=YwpAFuB63x5oncbE1OnXNMvHGhNAxIFISUxqe96gCNof8oAi+cxisRG9uZUd3k8mnxfDm2yduy3b1wqdOcmcs+BwL5aNqV0+XzQzs2Pz/uyUNNLPqAuzDOBa+LWhUVVi/NRyYyeMLsTba+tYYZt8KbCYvIXTiQvF8S2hWtTlMLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713439572; c=relaxed/simple;
-	bh=5N5/GthAZnmatehNZianrScGEQeyQtidTpCwtnZVSTs=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RluH3UgB8/d32H+VsOfAPey21L4pfgWrOwtfCkBj3Oz/wUchsy9/zVWlMU0bAFpFI6hmw48fymms8xgY1V74OSNJwPoiTbekJWVPu2733wkxObupnL3TsXXc6MCbZ8LYe7mg2tpR6DrarID7tnRBkG3wYKyVoiR9Df7/pKjypFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=RsOBlq/6; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43IBPJCZ117586;
-	Thu, 18 Apr 2024 06:25:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713439519;
-	bh=ILDNju0o0Gp9TIqLKVSPNzABvK9adaPpRims5XNw4t8=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=RsOBlq/6MUG7S3kgqzZ/ioTisRm/WA1en24YrVwJ28xOBxbAtTfRQbHQsU8hGpDzn
-	 Ql1AgPUPlVxvbA4vLMuJdlll423tocugH62VzbPvUVrXpgjNykiWu8WR0wLh4fa3lv
-	 KBWMsmODfzdprNGpLolX7Zhg6vZPia5iH2EEZFcM=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43IBPJEr017250
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 18 Apr 2024 06:25:19 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 18
- Apr 2024 06:25:19 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 18 Apr 2024 06:25:19 -0500
-Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43IBPINQ105647;
-	Thu, 18 Apr 2024 06:25:19 -0500
-Date: Thu, 18 Apr 2024 16:55:18 +0530
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: Julien Panis <jpanis@baylibre.com>
-CC: Siddharth Vadapalli <s-vadapalli@ti.com>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Russell King
-	<linux@armlinux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
-	<daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John
- Fastabend <john.fastabend@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Simon Horman
-	<horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Ratheesh Kannoth
-	<rkannoth@marvell.com>,
-        Naveen Mamindlapalli <naveenm@marvell.com>,
-        Jacob
- Keller <jacob.e.keller@intel.com>, <danishanwar@ti.com>,
-        <yuehaibing@huawei.com>, <rogerq@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH net-next v9 0/3] Add minimal XDP support to TI AM65 CPSW
- Ethernet driver
-Message-ID: <1da48c7e-ba87-4f7a-b6d1-d35961005ab0@ti.com>
-References: <20240223-am65-cpsw-xdp-basic-v9-0-2c194217e325@baylibre.com>
- <260d258f-87a1-4aac-8883-aab4746b32d8@ti.com>
- <08319f88-36a9-445a-9920-ad1fba666b6a@baylibre.com>
+	s=arc-20240116; t=1713439651; c=relaxed/simple;
+	bh=zYiLdrEVejpU8szBAhDTQgAKOfNea1cTA7YCvvFRdlk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aQnlZzVFefWPml8BZTu/nyLbUPLLU+sELu//sJl1XANjHsbjSp3sFVCoZUQULyf3MEfMXyKmmyGCvYQm1VtuKOpd3YexZ9sSwzRsFKO7l6/Vw0len7lKd6yiXBggDcKnQiVwSEvZPpd8zTcCue/rVpp+Dl+BRvpMhxToh3otv3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ekqcJ5F3; arc=none smtp.client-ip=209.85.210.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6eb7d1a5d39so414685a34.2;
+        Thu, 18 Apr 2024 04:27:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713439649; x=1714044449; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=554fH9Cd7MwhrlcujjseGkWqSlH0FyRp9PRDR7JpJZ4=;
+        b=ekqcJ5F3Ubg3gx+Y8Na7uDX6TSGlQ1SHM+DLncB6J+TbuD8ZDvu461Ak/mp438e58A
+         ObaOyb+d8o1HgeLycfgeZbsiLniVb0Dht9/uxNp49WwcTCpjASZUVHWdCIN51cGsPe8t
+         m57aCX2yPSFTv7TK7kD9heT/YPq9wftf4AGRl8K7UY3v4WdmL0axG8R877Mi/m4dTDfh
+         r1Lq9rFx60yvxbnnM67waj7ZBjyrj5aC4NJCYLy8YN2qWgB1GhNkhoHm2wDdj89wa/H0
+         9zwAxbI8Sj3m1+tLLaMgA/8VvJXrli+6sy0GCTCKPmAVYMcHMAvJPdKG1A7Z+tB+I2dH
+         b7DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713439649; x=1714044449;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=554fH9Cd7MwhrlcujjseGkWqSlH0FyRp9PRDR7JpJZ4=;
+        b=MoFVak/DGQCAup/TK2mOjvvWXfvWc+krXZqEDhThMTBxMcfHpXPvO2xrKxRu+KYOOn
+         L5b9fvEzcaGdxH/avKG/SX2NHJ2cwExaRs9/UBZP9bPRjQ7iDC8liZt1KGdfrpN8jljS
+         4yJsbBkMmHg7f1iz/zGp/p6KJTYWMFcCmoic60Raq5AMOp1t4TlA4copjfJScYPVWLa6
+         uGE8X7hFcqZURwhWRbgBVcSE+sNKVVpN4CbRDP0mjTsykaLjuojdYDtZdQIUSBEFlVhM
+         +DhXBLZQFIuZxy5C0gXI/vTjoR/bkIN1HzfkHVnwYQRbO+xQszyqBktUCjFUa5vpK0sV
+         66Ng==
+X-Forwarded-Encrypted: i=1; AJvYcCUqGqY3Xfh+vRLpJsZiTQLKu7xLSJEg9RJAIwAup/LpeWUYwFG4dHaD4NmXp63JbC25vh2Tx36uHSWmDLmbRiKbN/QmSPOItylWtuHiVotOAgtpu7CyMO5/iBDm4YSIhntsu4nVOqetGRlgowrFKJD8zw==
+X-Gm-Message-State: AOJu0Yzh31mPQZUdCn22MxhV3Wqey1mQyGgpJiHNAUmVmJYMPptZGoTU
+	VNt6nLVyAGh2SIyc+EXsglmCav8Bp9p1PkC3SckdoxQzhLVwDDco
+X-Google-Smtp-Source: AGHT+IEH413XYHfbdvqk0bZhern4tn8FikGz5ZML2LlZc9rEH/V5ftZAw36OLSRN1EAw1xhuE5mp8w==
+X-Received: by 2002:a05:6830:928:b0:6eb:7a4b:a56e with SMTP id v40-20020a056830092800b006eb7a4ba56emr3253986ott.23.1713439649108;
+        Thu, 18 Apr 2024 04:27:29 -0700 (PDT)
+Received: from ?IPV6:2600:1700:70:f702:9c77:c230:a0ba:a1a1? ([2600:1700:70:f702:9c77:c230:a0ba:a1a1])
+        by smtp.gmail.com with ESMTPSA id v3-20020a05683011c300b006ebab994655sm303698otq.43.2024.04.18.04.27.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 04:27:28 -0700 (PDT)
+Message-ID: <1071ea83-7919-469a-ac5b-3209fe9e018c@gmail.com>
+Date: Thu, 18 Apr 2024 06:27:28 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <08319f88-36a9-445a-9920-ad1fba666b6a@baylibre.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] platform/x86/amd: Don't allow HSMP to be loaded on
+ non-server hardware
+Content-Language: en-US
+To: Hans de Goede <hdegoede@redhat.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>,
+ Carlos Bilbao <carlos.bilbao@amd.com>,
+ "open list:AMD HSMP DRIVER" <platform-driver-x86@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ Mario Limonciello <mario.limonciello@amd.com>
+References: <20240416182057.8230-1-superm1@gmail.com>
+ <ca6e0dc7-f5ea-4c0a-b9fe-0667fadc78a6@redhat.com>
+From: Mario Limonciello <superm1@gmail.com>
+In-Reply-To: <ca6e0dc7-f5ea-4c0a-b9fe-0667fadc78a6@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 18, 2024 at 01:17:47PM +0200, Julien Panis wrote:
-> On 4/18/24 13:00, Siddharth Vadapalli wrote:
-> > On 12-04-2024 21:08, Julien Panis wrote:
-> > > This patch adds XDP support to TI AM65 CPSW Ethernet driver.
-> > > 
-> > > The following features are implemented: NETDEV_XDP_ACT_BASIC,
-> > > NETDEV_XDP_ACT_REDIRECT, and NETDEV_XDP_ACT_NDO_XMIT.
-> > > 
-> > > Zero-copy and non-linear XDP buffer supports are NOT implemented.
-> > > 
-> > > Besides, the page pool memory model is used to get better performance.
-> > > 
-> > > Signed-off-by: Julien Panis <jpanis@baylibre.com>
-> > Hello Julien,
-> > 
-> > This series crashes Linux on AM62ax SoC which also uses the
-> > AM65-CPSW-NUSS driver:
-> > https://gist.github.com/Siddharth-Vadapalli-at-TI/5ed0e436606001c247a7da664f75edee
-> > 
-> > Regards,
-> > Siddharth.
-> 
-> Hello Siddharth.
-> 
-> Thanks for the log. I can read:
-> [    1.966094] Missing net_device from driver
-> 
-> Did you check that nodes exist in the device tree for the net devices ?
 
-Yes it exists. The device-tree used was also built with linux-next
-tagged next-20240417. The node corresponding to eth0 is cpsw_port1 which
-is present and enabled in the device-tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts?h=next-20240417#n644
 
-Regards,
-Siddharth.
+On 4/18/24 04:04, Hans de Goede wrote:
+> Hi,
+> 
+> On 4/16/24 8:20 PM, Mario Limonciello wrote:
+>> From: Mario Limonciello <mario.limonciello@amd.com>
+>>
+>> If the HSMP driver is compiled into the kernel or a module manually loaded
+>> on client hardware it can cause problems with the functionality of the PMC
+>> module since it probes a mailbox with a different definition on servers.
+>>
+>> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2414
+>> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/3285
+>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+>> ---
+>> v1->v2:
+>>   * use pm preferred profile instead
+> 
+> Thanks, patch looks good to me:
+> 
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> 
+> Mario, should this go in as a fix for the 6.9 cylce, or is
+> this for-next material ?  (I'm not sure what to do myself)
+The main risk with this patch is if there are servers that previously 
+loaded amd-hsmp no longer working because of a BIOS bug to exporting the 
+incorrect profile.  I think this is quite unlikely but not non-zero.
+
+To at least give some time for anything like that to be raised I feel 
+this should go to for-next.
+
+Ideally I do want to see it go to stable kernels after we're all 
+sufficiently happy though.  Random bug reports to me like the ones I 
+added to the commit message get raised mostly by people who compile 
+their own (stable) kernels and enable all the AMD stuff because they 
+have AMD hardware.
+
+So how about we target for-next, but also add a stable tag for when it 
+gets merged in the 6.10 cycle?
+
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+> 
+> 
+>> ---
+>>   drivers/platform/x86/amd/hsmp.c | 16 ++++++++++++++++
+>>   1 file changed, 16 insertions(+)
+>>
+>> diff --git a/drivers/platform/x86/amd/hsmp.c b/drivers/platform/x86/amd/hsmp.c
+>> index 1927be901108..102a49c3e945 100644
+>> --- a/drivers/platform/x86/amd/hsmp.c
+>> +++ b/drivers/platform/x86/amd/hsmp.c
+>> @@ -907,6 +907,17 @@ static int hsmp_plat_dev_register(void)
+>>   	return ret;
+>>   }
+>>   
+>> +static bool hsmp_supported_profile(void)
+>> +{
+>> +	switch (acpi_gbl_FADT.preferred_profile) {
+>> +	case PM_ENTERPRISE_SERVER:
+>> +	case PM_SOHO_SERVER:
+>> +	case PM_PERFORMANCE_SERVER:
+>> +		return true;
+>> +	}
+>> +	return false;
+>> +}
+>> +
+>>   static int __init hsmp_plt_init(void)
+>>   {
+>>   	int ret = -ENODEV;
+>> @@ -917,6 +928,11 @@ static int __init hsmp_plt_init(void)
+>>   		return ret;
+>>   	}
+>>   
+>> +	if (!hsmp_supported_profile()) {
+>> +		pr_err("HSMP is only supported on servers");
+>> +		return ret;
+>> +	}
+>> +
+>>   	/*
+>>   	 * amd_nb_num() returns number of SMN/DF interfaces present in the system
+>>   	 * if we have N SMN/DF interfaces that ideally means N sockets
+> 
 
