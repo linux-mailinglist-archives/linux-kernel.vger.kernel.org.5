@@ -1,154 +1,241 @@
-Return-Path: <linux-kernel+bounces-149696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50AA68A94B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:13:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7B408A94B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:14:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2F4AB2252A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:13:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D8D9282D99
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:14:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47DB17D3E3;
-	Thu, 18 Apr 2024 08:13:02 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D69AC7D401;
+	Thu, 18 Apr 2024 08:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H/v26Mvw"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3D607D09A
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6845B7C0A9
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:14:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713427981; cv=none; b=sYQPd1O0OjFSnHElLvqgIfOo5TUrQqSiygoaqBh0h8lkMDX3qyEvduirm7ZFLoyoWXEi5UyY1LevPQvTLsB/mDpcE4b1VxnsrgUr7RohHDjKSoFCqpu047C+9qvQMA+a/3Zh9Uj98NpcPi7tQIyBuS3WTokH4al8jopsRyFaf14=
+	t=1713428069; cv=none; b=aa56c/+DrWqfHkmxwA6j4HZTHn3Xx82nXhbivYce9Jom7MdNIqZUxm0Wbftnv0HRpj14Gj8HtLyegSx3k6vh8HOHOq820lvcy6WSEREuwMQGH6uY+jb9QZkI1S80hoGlBpmizebv1uq7E1vHRtbC7BS7WYG7c7LGRYFkgLevcqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713427981; c=relaxed/simple;
-	bh=a1lDZyQcKMG8tu88vZXH92dfxB+K0HC43vvv9bgkkGI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PHz+7njcAMJ00WrfgqLxFxR58QI12U1XOf7z9266phq1LfFyQ0/lro9Tn89AaKUkDKuIL/gyjCVWz+ac0pwdpUoMWDVl/s+i6JeOatejeac6HJWn5Uas7M0fgh/mwnXByFRDFhTMr+Lgu8G+G/R6kB3Q85kDzJOjxKoxtXgX3+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i5e861917.versanet.de ([94.134.25.23] helo=diego.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rxMt5-0004Xm-Bg; Thu, 18 Apr 2024 10:12:55 +0200
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To: Quentin Schulz <quentin.schulz@theobroma-systems.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, Heiko Stuebner <heiko.stuebner@cherry.de>
-Subject: Re: [PATCH] arm64: dts: rockchip: add PCIe3 support on rk3588-jaguar
-Date: Thu, 18 Apr 2024 10:12:54 +0200
-Message-ID: <5932394.MhkbZ0Pkbq@diego>
-In-Reply-To: <cb2004e3-563e-4d36-ab69-89b1d9f6221b@theobroma-systems.com>
-References:
- <20240417141642.2243193-1-heiko@sntech.de>
- <cb2004e3-563e-4d36-ab69-89b1d9f6221b@theobroma-systems.com>
+	s=arc-20240116; t=1713428069; c=relaxed/simple;
+	bh=OmyJ4CCIcPHCYBOIHKM/SO5ZvFHjMk+iPD2ShEtPKW4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=khy9dAsccpxALUy8id0Op8MRtAEE+LEkOngsU1x1pnFPjDHxbiTYTInOY/Cfi3AVXZFyUMmfutz4+n26qobp6Dz2bXs3l2PL0x9cd/ZFI6iufULCQTCGicylRRcH2cPih6bH+q0hNcyLVeAFOssp+hwn3R1jgnXo8eLdaUHkPt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H/v26Mvw; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713428066;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m9Ui1mDTOM4AD6M9Ta2r6+9nSqGNzGJnd1ALyUw6BX8=;
+	b=H/v26MvwDvTl1OJlziTaKHoWuGhWb+GN7v9sDjxAuO19fKJQPUGJhYj0OBVJZwynTEZxAx
+	MeZ51e2VYveGDZ59QD29YrWnxEnmlHBoAtt+RqH/Xg3W4SwK0FVT1LKIIfKD4ePuVcT/Ck
+	Dm5PSQPINYWvXsSxaCBxLcxJhwAzEho=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-504-sMrgV6lBPuqdDoww7p5hew-1; Thu, 18 Apr 2024 04:14:24 -0400
+X-MC-Unique: sMrgV6lBPuqdDoww7p5hew-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a467a6d4e3eso18833866b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 01:14:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713428063; x=1714032863;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=m9Ui1mDTOM4AD6M9Ta2r6+9nSqGNzGJnd1ALyUw6BX8=;
+        b=E8wgyD8U02W2oZrzzQotNN4dNb5Ccq6fckcx1sZDNLY3n/ZqeUL/mzqXSE0rn9TxN0
+         fMuhc9rgS0kdd8P2v0N9xooKujLFfkamQK5K20W1GhIaKPFn4NblTnKthhyUphejKeTG
+         8qzH2eDcEuCbwbhJ/8qnuMhO/aarNfxrh0J/HmDU0KKNoM4wiRz01lMF8fbCPtHgIRrF
+         lWSK429XjJ+dBdEM8Vja+rgIXDa+fnNj1rw4A+Ok5ttQqnamf2UP4b7HRtH1K1cY/zB8
+         8TmZ5MDvrmPCVXPU8/GwyqJP9sx3m6K6pE/2BT0oWkzWCpa5zJfuG/2+Ejd08KNaAD1R
+         w6Bw==
+X-Forwarded-Encrypted: i=1; AJvYcCWBlc8uvaO2OqFkK72wZrpnmbzPp0XhyjlV9D2/cL96Ke/bE0SskzoEr241ptZtwWw3xKChNrYEklYNgIoK8B8RE8c/LN9p5Pt3Xb4p
+X-Gm-Message-State: AOJu0YxGRRY7LCs1CM/TaR6FS5W0HYyzymTIsKxdatSANUcGx235jQA0
+	wD5TZfB/iMG4qVIT0tdXz+g3tOvB9FQ94QkJMUxkGt+rYUCqwYpLQh11t/eDpn3OQF97Fj1Ts1L
+	0sIn4+LMZe2vbnoHEDKCcxlYdV3xdCE8iUce1sZkbZOXGRzQQBhPVDK6cmMdtxg==
+X-Received: by 2002:a17:906:3108:b0:a52:408f:8575 with SMTP id 8-20020a170906310800b00a52408f8575mr1134295ejx.12.1713428063186;
+        Thu, 18 Apr 2024 01:14:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEgqLUhBNwIayrRWKNw8a6roBMGoqLy7R5iBXwNsfyU8W95SRZ4G+cQy68OohlTtrn3M4pMKw==
+X-Received: by 2002:a17:906:3108:b0:a52:408f:8575 with SMTP id 8-20020a170906310800b00a52408f8575mr1134273ejx.12.1713428062763;
+        Thu, 18 Apr 2024 01:14:22 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id 17-20020a170906329100b00a4ea067f6f8sm551939ejw.161.2024.04.18.01.14.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 01:14:22 -0700 (PDT)
+Message-ID: <c1897030-77a4-416d-86c4-6d4d560e5fd8@redhat.com>
+Date: Thu, 18 Apr 2024 10:14:21 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] x86/pci: Skip early E820 check for ECAM region
+To: Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org
+Cc: Mateusz Kaduk <mateusz.kaduk@gmail.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Tj <linux@iam.tj>, Andy Shevchenko <andy.shevchenko@gmail.com>,
+ x86@kernel.org, linux-kernel@vger.kernel.org,
+ Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org
+References: <20240417204012.215030-1-helgaas@kernel.org>
+ <20240417204012.215030-2-helgaas@kernel.org>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240417204012.215030-2-helgaas@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Am Donnerstag, 18. April 2024, 10:07:37 CEST schrieb Quentin Schulz:
-> On 4/17/24 16:16, Heiko Stuebner wrote:
-> > From: Heiko Stuebner <heiko.stuebner@cherry.de>
-> > 
-> > The Jaguar SBC provides a M.2 slot connected to the pcie3 controller.
-> > In contrast to a number of other boards the pcie-refclk is gpio-controlled,
-> > so the necessary clock is added to the list of pcie3 clocks.
-> > 
-> > Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
-> > ---
-> >   .../arm64/boot/dts/rockchip/rk3588-jaguar.dts | 53 +++++++++++++++++++
-> >   1 file changed, 53 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts b/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts
-> > index 5002105dc78e..908fbabd8b00 100644
-> > --- a/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts
-> > +++ b/arch/arm64/boot/dts/rockchip/rk3588-jaguar.dts
-> > @@ -72,6 +72,25 @@ led-1 {
-> >   		};
-> >   	};
-> >   
-> > +	/*
-> > +	 * 100MHz reference clock for PCIe peripherals from PI6C557-05BLE
-> > +	 * clock generator.
-> > +	 * The clock output is gated via the OE pin on the clock generator.
-> > +	 * This is modeled as a fixed-clock plus a gpio-gate-clock.
-> > +	 */
-> > +	pcie_refclk_gen: pcie-refclk-gen-clock {
-> > +		compatible = "fixed-clock";
-> > +		#clock-cells = <0>;
-> > +		clock-frequency = <1000000000>;
-> > +	};
-> > +
-> > +	pcie_refclk: pcie-refclk-clock {
-> > +		compatible = "gpio-gate-clock";
-> > +		clocks = <&pcie_refclk_gen>;
-> > +		#clock-cells = <0>;
-> > +		enable-gpios = <&gpio0 RK_PC6 GPIO_ACTIVE_LOW>; /* PCIE30X4_CLKREQN_M0 */
+Hi all,
+
+On 4/17/24 10:40 PM, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
 > 
-> I think we usually want to have the pinctrl for GPIOs as well to not 
-> assume the pins are muxed in that function by default or by the bootloader?
+> Arul, Mateusz, Imcarneiro91, and Aman reported a regression caused by
+> 07eab0901ede ("efi/x86: Remove EfiMemoryMappedIO from E820 map").  On the
+> Lenovo Legion 9i laptop, that commit removes the area containing ECAM from
+> E820, which means the early E820 validation started failing, which meant we
+> didn't enable ECAM in the "early MCFG" path
 > 
-> > +	};
-> > +
-> >   	pps {
-> >   		compatible = "pps-gpio";
-> >   		gpios = <&gpio0 RK_PD5 GPIO_ACTIVE_HIGH>;
-> > @@ -466,6 +485,40 @@ &pcie2x1l0 {
-> >   	status = "okay";
-> >   };
-> >   
-> > +&pcie30phy {
-> > +	status = "okay";
-> > +};
-> > +
-> > +&pcie30x4m0_pins {
+> The lack of ECAM caused many ACPI methods to fail, resulting in the
+> embedded controller, PS/2, audio, trackpad, and battery devices not being
+> detected.  The _OSC method also failed, so Linux could not take control of
+> the PCIe hotplug, PME, and AER features:
 > 
-> I'm wondering if it really makes sense to reuse this node if we're 
-> planning to change the only property it has to mean something different?
-
-ok, will create a specific node for the new pinctrl
-As an added pro, this also moves it to the pinctrl area in the dts
-
-> > +	/*
-> > +	 * pcie30x4_clkreqn_m0 is used by the refclk generator
-> > +	 * pcie30x4_perstn_m0 is used as via the reset-gpio
-> > +	 */
-> > +	rockchip,pins =
-> > +		/* pcie30x4_waken_m0 */
-> > +		<0 RK_PC7 12 &pcfg_pull_none>;
-> > +};
-> > +
-> > +&pcie3x4 {
-> > +	/*
-> > +	 * The board has a gpio-controlled "pcie_refclk" generator,
-> > +	 * so add it to the list of clocks.
-> > +	 */
-> > +	clocks = <&cru ACLK_PCIE_4L_MSTR>, <&cru ACLK_PCIE_4L_SLV>,
-> > +		 <&cru ACLK_PCIE_4L_DBI>, <&cru PCLK_PCIE_4L>,
-> > +		 <&cru CLK_PCIE_AUX0>, <&cru CLK_PCIE4L_PIPE>,
-> > +		 <&pcie_refclk>;
-> > +	clock-names = "aclk_mst", "aclk_slv",
-> > +		      "aclk_dbi", "pclk",
-> > +		      "aux", "pipe",
-> > +		      "ref";
-> > +	pinctrl-names = "default";
-> > +	pinctrl-0 = <&pcie30x4m0_pins>;
-> > +	reset-gpios = <&gpio0 RK_PD0 GPIO_ACTIVE_HIGH>; /* PCIE30X4_PERSTN_M0 */
+>   # pci_mmcfg_early_init()
 > 
-> Ditto, I assume we want to have a pinmux for that GPIO as well?
+>   PCI: ECAM [mem 0xc0000000-0xce0fffff] (base 0xc0000000) for domain 0000 [bus 00-e0]
+>   PCI: not using ECAM ([mem 0xc0000000-0xce0fffff] not reserved)
+> 
+>   ACPI Error: AE_ERROR, Returned by Handler for [PCI_Config] (20230628/evregion-300)
+>   ACPI: Interpreter enabled
+>   ACPI: Ignoring error and continuing table load
+>   ACPI BIOS Error (bug): Could not resolve symbol [\_SB.PC00.RP01._SB.PC00], AE_NOT_FOUND (20230628/dswload2-162)
+>   ACPI Error: AE_NOT_FOUND, During name lookup/catalog (20230628/psobject-220)
+>   ACPI: Skipping parse of AML opcode: OpcodeName unavailable (0x0010)
+>   ACPI BIOS Error (bug): Could not resolve symbol [\_SB.PC00.RP01._SB.PC00], AE_NOT_FOUND (20230628/dswload2-162)
+>   ACPI Error: AE_NOT_FOUND, During name lookup/catalog (20230628/psobject-220)
+>   ...
+>   ACPI Error: Aborting method \_SB.PC00._OSC due to previous error (AE_NOT_FOUND) (20230628/psparse-529)
+>   acpi PNP0A08:00: _OSC: platform retains control of PCIe features (AE_NOT_FOUND)
+> 
+>   # pci_mmcfg_late_init()
+> 
+>   PCI: ECAM [mem 0xc0000000-0xce0fffff] (base 0xc0000000) for domain 0000 [bus 00-e0]
+>   PCI: [Firmware Info]: ECAM [mem 0xc0000000-0xce0fffff] not reserved in ACPI motherboard resources
+>   PCI: ECAM [mem 0xc0000000-0xce0fffff] is EfiMemoryMappedIO; assuming valid
+>   PCI: ECAM [mem 0xc0000000-0xce0fffff] reserved to work around lack of ACPI motherboard _CRS
+> 
+> Per PCI Firmware r3.3, sec 4.1.2, ECAM space must be reserved by a PNP0C02
+> resource, but it need not be mentioned in E820, so we shouldn't look at
+> E820 to validate the ECAM space described by MCFG.
+> 
+> 946f2ee5c731 ("[PATCH] i386/x86-64: Check that MCFG points to an e820
+> reserved area") added a sanity check of E820 to work around buggy MCFG
+> tables, but that over-aggressive validation causes failures like this one.
+> 
+> Keep the E820 validation check only for older BIOSes (pre-2016) so the
+> buggy 2006-era machines don't break.  Skip the early E820 check for 2016
+> and newer BIOSes.
 
-Correct. While the Rockchip pinctrl driver _does_ the muxing when a gpio
-is requested, it wouldn't touch pinconf settings u-boot or whoever might
-have set differently before.
+I know a fix for this has been long in the making so I don't want to throw
+a spanner into the works, but I wonder why is the is_efi_mmio() check inside
+the if (!early && !acpi_disabled) {} block (before this patch) ?
 
-Heiko
+is_efi_mmio() only relies on EFI memdescriptors and those are setup pretty
+early. Assuming that the EFI memdescriptors are indeed setup before
+pci_mmcfg_reserved(..., ..., early=true) gets called we could simply move
+the is_efi_mmio(&cfg->res) outside (below) the if (!early && !acpi_disabled)
+{} so that it always runs before the is_mmconf_reserved(e820__mapped_all, ...)
+check.
 
+Looking at the dmesg above the is_efi_mmio() check does succeed, so this
+should fix the issue without needing a BIOS year check ?
+
+Regards,
+
+Hans
+
+
+
+
+
+> Fixes: 07eab0901ede ("efi/x86: Remove EfiMemoryMappedIO from E820 map")
+> Reported-by: Mateusz Kaduk <mateusz.kaduk@gmail.com>
+> Reported-by: Arul <...>
+> Reported-by: Imcarneiro91 <...>
+> Reported-by: Aman <...>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218444
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> Tested-by: Mateusz Kaduk <mateusz.kaduk@gmail.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  arch/x86/pci/mmconfig-shared.c | 35 +++++++++++++++++++++++++++-------
+>  1 file changed, 28 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+> index 0cc9520666ef..53c7afa606c3 100644
+> --- a/arch/x86/pci/mmconfig-shared.c
+> +++ b/arch/x86/pci/mmconfig-shared.c
+> @@ -518,7 +518,34 @@ static bool __ref pci_mmcfg_reserved(struct device *dev,
+>  {
+>  	struct resource *conflict;
+>  
+> -	if (!early && !acpi_disabled) {
+> +	if (early) {
+> +
+> +		/*
+> +		 * Don't try to do this check unless configuration type 1
+> +		 * is available.  How about type 2?
+> +		 */
+> +
+> +		/*
+> +		 * 946f2ee5c731 ("Check that MCFG points to an e820
+> +		 * reserved area") added this E820 check in 2006 to work
+> +		 * around BIOS defects.
+> +		 *
+> +		 * Per PCI Firmware r3.3, sec 4.1.2, ECAM space must be
+> +		 * reserved by a PNP0C02 resource, but it need not be
+> +		 * mentioned in E820.  Before the ACPI interpreter is
+> +		 * available, we can't check for PNP0C02 resources, so
+> +		 * there's no reliable way to verify the region in this
+> +		 * early check.  Keep it only for the old machines that
+> +		 * motivated 946f2ee5c731.
+> +		 */
+> +		if (dmi_get_bios_year() < 2016 && raw_pci_ops)
+> +			return is_mmconf_reserved(e820__mapped_all, cfg, dev,
+> +						  "E820 entry");
+> +
+> +		return true;
+> +	}
+> +
+> +	if (!acpi_disabled) {
+>  		if (is_mmconf_reserved(is_acpi_reserved, cfg, dev,
+>  				       "ACPI motherboard resource"))
+>  			return true;
+> @@ -554,12 +581,6 @@ static bool __ref pci_mmcfg_reserved(struct device *dev,
+>  	if (pci_mmcfg_running_state)
+>  		return true;
+>  
+> -	/* Don't try to do this check unless configuration
+> -	   type 1 is available. how about type 2 ?*/
+> -	if (raw_pci_ops)
+> -		return is_mmconf_reserved(e820__mapped_all, cfg, dev,
+> -					  "E820 entry");
+> -
+>  	return false;
+>  }
+>  
 
 
