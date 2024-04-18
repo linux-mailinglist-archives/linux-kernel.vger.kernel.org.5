@@ -1,260 +1,196 @@
-Return-Path: <linux-kernel+bounces-150053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 753FA8A99B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:23:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6371A8A99BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:26:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B271281AF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:23:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ACDA1C20F58
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:26:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF0C15F411;
-	Thu, 18 Apr 2024 12:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6206515F418;
+	Thu, 18 Apr 2024 12:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b="ldN9XJZi";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Vh4wuoky"
-Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="BvT4Vmom"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2066.outbound.protection.outlook.com [40.107.93.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D45E15E7E7;
-	Thu, 18 Apr 2024 12:23:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713443031; cv=none; b=R7GMlbRfkAj//0EFFHOZH8m98/OLKvfsbC6OFyZqVII4xD1N88ZTfZ/Du4jkFJpRpqFXd0hJRlMpZwC7z22okwSOu8fL2c7NcXaQct9IfzinVDCM4iaj722k2mYOhzRJldNo+1QVI1UZWLeo0YT8UYyCPFQLC/l3ZKHz35vInm8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713443031; c=relaxed/simple;
-	bh=CW+ZkdqeMy+Gcnrm9/xb2jWnC0SqwGr/GAHMdTk3Kmc=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=LNLgk1nUGs9BDJ0qjniTMLQy/CT6sQ3p0alNFvSU4VYtcarzJmX+blHH1u1cUtgsvGlXNK38HkGmC3yOQOYLVx0XqWyBwzjAIhzjdb5w1i21IiGnPIPICtJAyXbtI7czN2rqdGTiBZACmlAjDcWPFVMq38g4uu2wqpXPS/Vy5qE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca; spf=pass smtp.mailfrom=squebb.ca; dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b=ldN9XJZi; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Vh4wuoky; arc=none smtp.client-ip=64.147.123.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squebb.ca
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailfhigh.west.internal (Postfix) with ESMTP id BB1E318001A3;
-	Thu, 18 Apr 2024 08:23:47 -0400 (EDT)
-Received: from imap52 ([10.202.2.102])
-  by compute3.internal (MEProxy); Thu, 18 Apr 2024 08:23:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=squebb.ca; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1713443027; x=1713529427; bh=Ku9n4CtW+a
-	96ju08gyViB+v8W7/g00oO3k3aplYVJ0E=; b=ldN9XJZi8g5C7BvQTJ2ERKhwqt
-	ZkZUAHQgaWyxHDMCfD20MYO7I3md2CZyEW4t4x0BkBiyvngHia5qKIMhbCzK2qql
-	O1k5MjzaDJImQCITAtUGd534740UcPiI7jVN36X/irtGijjUlLaysTRJuPvTRCjc
-	nHlf0hhQECIuLkNAfCpzUlTDbxS0MBeJSsQym6hEhopVNpn1WvEF0Xdu4VsnFX+k
-	Vfmjwn0yJlUT0Vp1JKxrW+nzx2vQFZpa+6u6tJjkPsKRrjpwFkrT6axZOuIfV8F/
-	MKRgkVkoXeUcR9obRQ1U1kPRoUcOuiRbCciIkcrHpF3lQEw/Px7rHPFjd6QQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1713443027; x=1713529427; bh=Ku9n4CtW+a96ju08gyViB+v8W7/g
-	00oO3k3aplYVJ0E=; b=Vh4wuokyMg9jrF/4RxLHf/QfW94Pz10TAsrHwP6cnTBn
-	wic9F2Mic+GtLTNkpXY34xQfKOev8x5HXjQcYKzdhj27urzqzemlR+CivQSIioDh
-	1m9AbjcRfvdIkNi1E6s9Nmis+Hoth+a5IO0y8I68d+1iw042DysGCFVrUo9oeYjn
-	6/LjIohpIEcq04YKrMkrza3Dwue8iF8nMtwgPELAbbJb3+/EE4qdMhyQXw6O2VGo
-	ejlOtBSlrzW3jSh879pirw+ze3fPsjq+l6dsYo+TercxC6VLnLJsDV14/JkTu6NE
-	LnSZ0JgDvL9MDdE4MIanLETZJW0PK6WEH2p/kO17xg==
-X-ME-Sender: <xms:0hAhZr15_2WWwS4UaEjGdYycNHw4hyLevagG1RII9cBz0xTG7bm7JQ>
-    <xme:0hAhZqG_WF1K63Sbk9dF9R5kaA30o84dWidAeIq5Erw_iaNXNVxG6eo6BZX_gUs6t
-    AtvHl38VzLrqTzIyBI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudektddghedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfofgr
-    rhhkucfrvggrrhhsohhnfdcuoehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssg
-    drtggrqeenucggtffrrghtthgvrhhnpeeiueefjeeiveetuddvkeetfeeltdevffevudeh
-    ffefjedufedvieejgedugeekhfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssgdrtggr
-X-ME-Proxy: <xmx:0hAhZr6VwLi-cJHYY508U-ABMdYz8x2XdotuhxjokEYbGp-9u2nzbA>
-    <xmx:0hAhZg3ik8QeEoUAZHlwc0CYpahtJK6v9E9XHQiT43IjTj8nhUWZ4A>
-    <xmx:0hAhZuGxTnY1Rw-NVP9SMMAULkxDlkN-Qf78vy1-001oxveALjTtZQ>
-    <xmx:0hAhZh9_pK2fai9sW6wthgXItVxHRU45KyyLfE6CegQpQg1a2cyAFQ>
-    <xmx:0xAhZhCgSXx1qVWsezvEvDn0hwp3sZmcyTwj0TAmAAv-_uRwXHl3DBOF>
-Feedback-ID: ibe194615:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 85BA8C60098; Thu, 18 Apr 2024 08:23:46 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C675171B20;
+	Thu, 18 Apr 2024 12:26:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.66
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713443171; cv=fail; b=VOrntUCVWr+M5iNQRV8UW0a3RT2ggFGcWS8DhNc3WT9Q34VbAVJTX22PeTGLvewK6EXKsDhbLWanZmRKastTBDVVMha6LbHBSSIiYvtcEHttTb+RWmntDn+mFMIDqFPM4PjrSFOUT9cp4RGgClJNvq/X6uHGW4MPfjR/i5F8QA0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713443171; c=relaxed/simple;
+	bh=GXLDPl91cv0iGuZ1wPRgtFiv3oA+pJ1K+BzzwoI9lyo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=WhiTkX/SUUknTfK3O3XAmUSxzOZ3FOqf4AVBkjf7Horcn2HV4kzDJz8Oq3CUyhFpMimlDFLuVJD+d/2ZvrCiFCj55nUJX9FJfsy6JwPiYnvBTTn6X7XL7GCUI3FHTkvXxicDT1KXwsiAGFVBD9vETWDpaOOEcZtABJ6q1wmPCXA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=BvT4Vmom; arc=fail smtp.client-ip=40.107.93.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gxuk+tF3h9T6bA220Qkv5kvHHxuWJ8wg7FANnP9xjIwl5rniD6G+4E48Ng7+46fKdjWB5VxhMBnfO851/kq9VAobCbV9cwQRmAyOCYW2fkv+7fFWoUAriLShTAEN+2zmurHbNpviM3hr90Yr5QkT1Tb1enY/qG9+1CZbupuIcmiDxuw809Mui6h6YCulppbCfJf+A3xWObjAgPOKDpHkOV44QQ7KrRDjNkPKAn2TpXr0woCJpBDuNGd3qN8U9rrOCGeOIH1tlbUbkPa5diTfwcYvw9q2YCFTLHzHKjwVrUgtzEeztoaL/94KAVh2n/L8dynqmTmMhEiynZsRbxCerA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GXLDPl91cv0iGuZ1wPRgtFiv3oA+pJ1K+BzzwoI9lyo=;
+ b=OyQImkHm56+0i/PEWfzk8bg2pFDvyjxikzDW7OXz8RrueSRtYI5zw/nDFQPz050GjfPU0EnHi4m1C9kdF9lnQ82T/mphXGX6cgId5lXA+R/KGL+YCgGwCLPkLcU3Sy0lSW12wBTNmMDQKPGphYwBWfebQIv6jhRewhC4anggFCz6eS+PHZ+fqMLWXCz0Ok/q4grIaqKW9XnjatRxhkVT9t2s+fyUyWz/5+ynVK4MW/KbhdNyEXRjaS7qIeMiQ6WP+DImcgDmqYuS6RvQ8VeFTi+aIpFibF2YDKNMnMi/LzD9C+xRiIuQgbwhG8wqOq3HozjDW/db4b3MMpM8mJ7Bug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GXLDPl91cv0iGuZ1wPRgtFiv3oA+pJ1K+BzzwoI9lyo=;
+ b=BvT4Vmom7pgriogaEiEgKhCVKvqjPdCQ4C4pOp18yjTLdlWfjiZTKu68LmSSvSgZMItgM7MLbQBJFx22RBegaiwg5lgpf19lx/7GjcA0dkYRaA27jRE9tUoYHwgaDfoNKAokJ9lpS1lMkQ7JwTc2BNhYzD40ynHXz0Qgi7bUM/A=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by SN7PR12MB6911.namprd12.prod.outlook.com (2603:10b6:806:261::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Thu, 18 Apr
+ 2024 12:26:07 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7472.037; Thu, 18 Apr 2024
+ 12:26:07 +0000
+Message-ID: <23c8a80d-a816-455b-b5ab-d65b159fd90f@amd.com>
+Date: Thu, 18 Apr 2024 14:25:59 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/ttm: Print the memory decryption status just once
+To: Zack Rusin <zack.rusin@broadcom.com>, dri-devel@lists.freedesktop.org
+Cc: Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Ian Forbes
+ <ian.forbes@broadcom.com>, Martin Krastev <martin.krastev@broadcom.com>,
+ Maaz Mombasawala <maaz.mombasawala@broadcom.com>,
+ =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20240408155605.1398631-1-zack.rusin@broadcom.com>
+ <843fdfa2-348b-410e-8ff1-84ab86cac17d@amd.com>
+ <CABQX2QMtTB9iiQuce36dnk6eO1Xcsm+Xt3vc1Nk93TGD+TtV9w@mail.gmail.com>
+ <5ca415e9-fb3e-4d81-b385-71e8780a1399@amd.com>
+ <CABQX2QMaF6e6o4Ewg6sExfaEZMXRaUrNHNYUCAYG3+44P=7epQ@mail.gmail.com>
+ <CABQX2QNbbM-frtkVwYWZytUAqP0t0gyyd_tZc_s0bDxu+MaFUg@mail.gmail.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <CABQX2QNbbM-frtkVwYWZytUAqP0t0gyyd_tZc_s0bDxu+MaFUg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: VI1P190CA0013.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:802:2b::26) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <0917e5bc-a198-4aa8-812e-31434408e78d@app.fastmail.com>
-In-Reply-To: <76d92fdc-ad0a-40a2-9e1b-d550f8e07267@redhat.com>
-References: <mpearson-lenovo@squebb.ca>
- <20240417173124.9953-1-mpearson-lenovo@squebb.ca>
- <20240417173124.9953-2-mpearson-lenovo@squebb.ca>
- <98082080-0fcf-470f-afa5-76ec2bbffee7@redhat.com>
- <55ded7c3-fbc5-4fa5-8b63-da4d7aa4966c@redhat.com>
- <a7f7d94a-f1c8-4d6a-9c65-b5de59b9f7c0@app.fastmail.com>
- <76d92fdc-ad0a-40a2-9e1b-d550f8e07267@redhat.com>
-Date: Thu, 18 Apr 2024 08:24:40 -0400
-From: "Mark Pearson" <mpearson-lenovo@squebb.ca>
-To: "Hans de Goede" <hdegoede@redhat.com>
-Cc: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- "Henrique de Moraes Holschuh" <hmh@hmh.eng.br>,
- ibm-acpi-devel@lists.sourceforge.net,
- "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
- linux-kernel@vger.kernel.org, "Nitin Joshi1" <njoshi1@lenovo.com>,
- "Vishnu Sankar" <vsankar@lenovo.com>,
- "Peter Hutterer" <peter.hutterer@redhat.com>,
- "Vishnu Sankar" <vishnuocv@gmail.com>
-Subject: Re: [PATCH v2 2/4] platform/x86: thinkpad_acpi: Support for trackpoint
- doubletap
-Content-Type: text/plain
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SN7PR12MB6911:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0a05cb77-3240-42e8-5be7-08dc5fa2b8fb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	9nlzjgp2twrMJ6d4a0Xqj6zYTDkX7ug/9qPiz8ApahPzrD6pKPFkJY89HwNRZli5bWJfBN961PRW6W3Z86DKvlK9vsBzjEfxuudEFE82oSeo6XaZdeRiXafuGPKLqrzkh5aLxpUVeB4TUxNCa3HeKdtfZe9eTpYomno82F6aUOopSg5DTd9hn7iaqDDitGNta1kzD3haVbnkRgHnGYGYbiwvd4EekdbtFLACgfn4k/HHW5AkA191wHlKvEPsuHv2v9Y3icpgKlZA3DHEPP862T4LYwzQUW6XSPXmz3am03Q5pCaIZ0BAwVDfmpTu1NB+OWBci6X8Hihg8vcEjKpB+AfiCFh62FCP0gW3FlGMz3/CFHCcPoLaF0gy6UvNkPwQ1jKVE6B2pNVSZv8oZQ0b50XyquaqS+jRTzIlQd3YunxAqP+1zv1/Q18pEzB3Ta9iW9Dzxq+RZq4c9spOUCW13d0g/E+5mEae0UBTPD+RE/Tgwa4a/VhLb3zzgXHBxD0rLQBdzhf7cTmKllhhe9Ri0G/fQODViz/iD4J13pr8XT46pgwsn9RpeOHPBMtk7zs3tYY/18ALgoFRgxQQ3c6TF5NXUXQ5Zl+wPCkNTsDNgTTl00+AOQpR7DOsrZGNN1JwCchZxI5snqB+aBt7gLReXzTCDLrpqPop2fTgC5GpUOI=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NWV1RlhWWEJUbkpIYTQzaW1NN1N0SXVEZW9PL2FLM0dKaWw2dlVsaUQ2T0Ez?=
+ =?utf-8?B?MldBRVpKNFBjMEVmbm1NVVFoN3FITVMveEk1eXY3b0dxYS9vTFFYU2dBV3B2?=
+ =?utf-8?B?bVZMclQ3N2IrZW9qeXE5SlJURGF2Uld3bXNaYkY3OWdTeEliZXUrVFJlYnZH?=
+ =?utf-8?B?eXQrbWNpa1ZYUWNFaEw2NzlJZVdUa29QclBXbmM1ZFprRGFlVC81NUZRak1O?=
+ =?utf-8?B?VnJYckNFOEVVS09pZXdMRGpwQlVoYk1zR01LVzkxRWlpcUQ4L2UxRXJxL01L?=
+ =?utf-8?B?VWwvQUY3MUhKSStBVEkrSzNOWm9rUXlsNE4xWHFFRGsxdzV6T0o5cWtvT2FT?=
+ =?utf-8?B?SjUyc2Z3K3hjd0xGMFpQc2thQzlhcjBZTTMvQjBNU2dDNXRGMEcxZEYzd0FW?=
+ =?utf-8?B?OGVncXRUODlKQ3dZSGJ6YjE5Y3Q3MHZLdjliV2s2ZjBtQWJtM1grS3hOSzha?=
+ =?utf-8?B?RnhHbHRicHIzdXYwUzI0WDlXcWpibFp4UG0zUVFjbTVSRDh5SS95bXNaWFZl?=
+ =?utf-8?B?RGxjWEY5WUpVRmFCQys5a3NLVWZzME9obXg1ckVEK3A2QWZtc052L09RU0Rr?=
+ =?utf-8?B?R2JkYmJ5bEU4OHJoTmFhNC9rRllpUHA0VXZxMTRjRlJ3bTUrczZmUXlUYjEw?=
+ =?utf-8?B?WjdPVVI4Mitmc3NzU1Bvb1VQOVJCSCt0L0NDbWlVOHVYemxGVXdQUHh0Z2I5?=
+ =?utf-8?B?MVZzNGpCQURZN081SUVuOHpMa0VpTmpjTTUrUlNZUHFvdmVqWCsxNk0zbUUv?=
+ =?utf-8?B?bU1neVVuRnV4YTRIbE44TGdyaEtWb2JJbHdIalN3M0dFYW1iTzUxSU5mb2Jz?=
+ =?utf-8?B?VlZuMGZIaXBlRytlRTgxZVFqVW00ZnFZViszblRxSlNjTGdtSFEzckp5bGpz?=
+ =?utf-8?B?b3lXeG1jUXdSWFR0S2VhSU9ET2hFRFFWaVNZS0NJZjBNNkErRkNVellSVHQv?=
+ =?utf-8?B?TXpwOGFZMi9lTGh5ZDN4d3VsbVllR0p0Wlg1YUFTcS9rc2tZSnhuVlBTSHRD?=
+ =?utf-8?B?NzAydks0eXIvNmlwZ1hWRGhhU3dncGp2bEMzTWJnV05udUpVcDFXRC90eEto?=
+ =?utf-8?B?eTgyYTVBNXM3ZlBjMVg5RXV2b2xLVFNmUDlPaXhIcmZQYUJZL2FkYk90akhi?=
+ =?utf-8?B?RG82djJjODN2NWtrUTlRWDVraWVQTUEzN1lpM1pKc002L1dHblMrdG1NWk10?=
+ =?utf-8?B?Z3ZnTk8vb3gwaUNCODFjZGpTUnNHaG9icm1sUlhtLzFHaFUvazdYOXNvSnNU?=
+ =?utf-8?B?ck5OMy9JSW1nTk1kbi94WlArWHZxS0tkeU1VcmFHNXY5Rmt1NTNUaTNHL0dp?=
+ =?utf-8?B?RVczMVJaRy9hcmFUTGRGU0dJNWZuVWxUb21zQkJPWVJMdlFVVVJrY21iS2R3?=
+ =?utf-8?B?d3ErZDJEVkdtUnRSbEZoWWthWnRZcGVoUFF1SGorbkJGMmhoRHdYSUkxbE5x?=
+ =?utf-8?B?WFVqUnpwZ2orNGIzSmNLYzhhV2UvdU1BRHdQd1JQcE10QVYvQlUrVEZadi9O?=
+ =?utf-8?B?ZXJGczVBUGZ4WUQ0L0ZJdGs0aFJCZFVKb1lCY3Nxby9nc3JVUU1uTVRxM1JF?=
+ =?utf-8?B?SDhXUkZ0NThBTmFONVQ5dEMvN0laNzhJcGo2Vlhya2xmalV3ZVRpV0llNGZJ?=
+ =?utf-8?B?R2VLSVRSWVphY08zeENLb01yU0VyTlc1VFFoQmt1dWFtMEJpajcyK0ViZzhY?=
+ =?utf-8?B?QUl1d0lxejl2b1ovOCsrbkZBUU9BMCsvYWNwY0F4Z3BWOEQ3d1MxWlBLeDAr?=
+ =?utf-8?B?cGtyQmhMVHlEalI5S2ozSG9vWnAzWFRQdVBjSlNoS0owZlpKb1BqOEtCd0Zy?=
+ =?utf-8?B?QnVOQUYyU1VTRXVjYVhYaEVBdm9nM0UxTG9RNHF4c21WSVcvM3FZNjFZc01W?=
+ =?utf-8?B?b09peWlRSkp2azA3dndJQm5vMUtGaHRHbUllMHRRK2syTUxQWUdpRFpHcWlw?=
+ =?utf-8?B?WEkvVkcwMWNzVWE4R1hidXRVdU54MmgzcXcrMzdRbVlxbVJXdnlObnFhSTA5?=
+ =?utf-8?B?WDlIcWo3YjFreG1vKzRjQTBYRGNWQi9zdElnaG9xWkZxUllQdzl0RzVBaGVD?=
+ =?utf-8?B?bmZOQXhLZFBHNHN2cTJlMjNVWmpsTk13MHhPUWZGeldsbTU5bmtLKzJzYUVF?=
+ =?utf-8?Q?d3Pg7c5ypCCn+WITH8a7fk5nM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a05cb77-3240-42e8-5be7-08dc5fa2b8fb
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 12:26:07.3930
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6/kj2P5dIPmg6zod/XyBncx/Or3NWmUmCj/WiShX7e8n91Q54FpgUsHMUp6AfI1I
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6911
 
-Hi Hans,
+Sorry haven't seen your reply. Feel free to add my rb to the patch.
 
-On Thu, Apr 18, 2024, at 7:34 AM, Hans de Goede wrote:
-> Hi Mark,
->
-> On 4/18/24 1:57 AM, Mark Pearson wrote:
->> Hi Hans,
->> 
->> On Wed, Apr 17, 2024, at 4:06 PM, Hans de Goede wrote:
->>> Hi Mark,
->>>
->>> On 4/17/24 9:39 PM, Hans de Goede wrote:
->>>> Hi Mark,
->>>>
->>>> Thank you for the new version of this series, overall this looks good,
->>>> one small remark below.
->>>>
->>>> On 4/17/24 7:31 PM, Mark Pearson wrote:
->>>>> Lenovo trackpoints are adding the ability to generate a doubletap event.
->>>>> This handles the doubletap event and sends the KEY_PROG1 event to
->>>>> userspace.
->>>>>
->>>>> Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
->>>>> Signed-off-by: Vishnu Sankar <vishnuocv@gmail.com>
->>>>> ---
->>>>> Changes in v2:
->>>>>  - Use KEY_PROG1 instead of KEY_DOUBLETAP as input maintainer doesn't
->>>>>    want new un-specific key codes added.
->>>>>  - Add doubletap to hotkey scan code table and use existing hotkey
->>>>>    functionality.
->>>>>  - Tested using evtest, and then gnome settings to configure a custom shortcut
->>>>>    to launch an application.
->>>>>
->>>>>  drivers/platform/x86/thinkpad_acpi.c | 18 ++++++++++++++++++
->>>>>  1 file changed, 18 insertions(+)
->>>>>
->>>>> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
->>>>> index 3b48d893280f..6d04d45e8d45 100644
->>>>> --- a/drivers/platform/x86/thinkpad_acpi.c
->>>>> +++ b/drivers/platform/x86/thinkpad_acpi.c
->>>>> @@ -232,6 +232,9 @@ enum tpacpi_hkey_event_t {
->>>>>  
->>>>>  	/* Misc */
->>>>>  	TP_HKEY_EV_RFKILL_CHANGED	= 0x7000, /* rfkill switch changed */
->>>>> +
->>>>> +	/* Misc2 */
->>>>> +	TP_HKEY_EV_TRACK_DOUBLETAP      = 0x8036, /* trackpoint doubletap */
->>>>>  };
->>>>>  
->>>>>  /****************************************************************************
->>>>> @@ -1786,6 +1789,7 @@ enum {	/* hot key scan codes (derived from ACPI DSDT) */
->>>>>  	TP_ACPI_HOTKEYSCAN_NOTIFICATION_CENTER,
->>>>>  	TP_ACPI_HOTKEYSCAN_PICKUP_PHONE,
->>>>>  	TP_ACPI_HOTKEYSCAN_HANGUP_PHONE,
->>>>
->>>> I understand why you've done this but I think this needs a comment,
->>>> something like:
->>>>
->>>>         /*
->>>>          * For TP_HKEY_EV_TRACK_DOUBLETAP, unlike the codes above which map to:
->>>>          * (hkey_event - 0x1300) + TP_ACPI_HOTKEYSCAN_EXTENDED_START, this is
->>>>          * hardcoded for TP_HKEY_EV_TRACK_DOUBLETAP handling. Therefor this must
->>>>          * always be the last entry (after any 0x1300-0x13ff entries).
->>>>          */
->>>> +	TP_ACPI_HOTKEYSCAN_DOUBLETAP,
->>>
->>> Ugh, actually this will not work becuuse we want hotkeyscancodes to be stable
->>> because these are userspace API since they can be remapped using hwdb so we
->>> cannot have the hotkeyscancode changing when new 0x1300-0x13ff range entries
->>> get added.
->>>
->>> So we need to either grow the table a lot and reserve a whole bunch of space
->>> for future 0x13xx - 0x13ff codes or maybe something like this:
->>>
->>> diff --git a/drivers/platform/x86/thinkpad_acpi.c 
->>> b/drivers/platform/x86/thinkpad_acpi.c
->>> index 771aaa7ae4cf..af3279889ecc 100644
->>> --- a/drivers/platform/x86/thinkpad_acpi.c
->>> +++ b/drivers/platform/x86/thinkpad_acpi.c
->>> @@ -1742,7 +1742,12 @@ enum {	/* hot key scan codes (derived from ACPI 
->>> DSDT) */
->>>  	TP_ACPI_HOTKEYSCAN_VOLUMEDOWN,
->>>  	TP_ACPI_HOTKEYSCAN_MUTE,
->>>  	TP_ACPI_HOTKEYSCAN_THINKPAD,
->>> -	TP_ACPI_HOTKEYSCAN_UNK1,
->>> +	/*
->>> +	 * Note this gets send both on 0x1019 and on 
->>> TP_HKEY_EV_TRACK_DOUBLETAP
->>> +	 * hotkey-events. 0x1019 events have never been seen on any actual hw
->>> +	 * and a scancode is needed for the special 0x8036 doubletap 
->>> hotkey-event.
->>> +	 */
->>> +	TP_ACPI_HOTKEYSCAN_DOUBLETAP,
->>>  	TP_ACPI_HOTKEYSCAN_UNK2,
->>>  	TP_ACPI_HOTKEYSCAN_UNK3,
->>>  	TP_ACPI_HOTKEYSCAN_UNK4,
->>>
->>> or just hardcode KEY_PROG1 like your previous patch does, but I'm not
->>> a fan of that because of loosing hwdb remapping functionality for this
->>> "key" then.
->>>
->>> Note I'm open to other suggestions.
->>>
->> Oh...I hadn't thought of that impact. That's not great :(
->> 
->> I have an idea, but want to prototype it to see if it works out or not. Will update once I've had a chance to play with it.
->
-> Thinking more about this I just realized that the input subsystem
-> already has a mechanism for dealing with scancode ranges with
-> (big) holes in them in the form of linux/input/sparse-keymap.h .
->
-> I think that what needs to be done is convert the existing code
-> to use sparse-keymap, keeping the mapping of the "MHKP"
-> returned hkey codes to internal TP_ACPI_HOTKEYSCAN_* values
-> for currently supported "MHKP" hkey codes for compatibility
-> and then for new codes just directly map them in the sparse map
-> aka the struct key_entry table. After converting the existing code
-> to use sparse-keymap, then for the new events we would simply add:
->
->
-> 	{ KE_KEY, 0x131d, { KEY_VENDOR} }, /* Fn + N, system debug info */
-> 	{ KE_KEY, 0x8036, { KEY_PROG1 } }, /* Trackpoint doubletap */
->
-> entries to the table without needing to define intermediate
-> TP_ACPI_HOTKEYSCAN_* values for these.
->
+Regards,
+Christian.
 
-Ah! I didn't know about sparse-keymap but it looks similar to what I was thinking and played with a bit last night. Agreed using existing infrastructure is better.
-
-Only things I'd flag is that:
- - It did look like it would be useful to identify keys that the driver handles (there aren't many but a few). Maybe one of the other key types can help handle that?
- - There are also some keys that use the tpacpi_input_send_key_masked that might need some special consideration.
-
-> I already have somewhat of a design for this in my head and I really
-> believe this is the way forward as it uses existing kernel infra
-> and it will avoid hitting this problem again when some other new
-> "MHKP" hkey codes show up.
+Am 18.04.24 um 13:38 schrieb Zack Rusin:
+> Ping on this one. If we don't want the "_once" then I can quickly
+> prepare a patch that just removes the logging altogether, because
+> while useful it's polluting up the kernel logs too much right now so
+> getting a fix in for 6.9 for this would be great.
 >
-> I plan to start working on implementing conversion of the existing
-> code to use sparse-keymap, which should result in a nice cleanup
-> after lunch and I hope to have something for you to test no later
-> then next Tuesday.
+> z
 >
-
-That would be amazing - do let me know if there is anything I can help with. Agreed this will help clean up a bunch of the keycode handling :)
-
-Mark
+> On Mon, Apr 8, 2024 at 1:46 PM Zack Rusin <zack.rusin@broadcom.com> wrote:
+>> Sorry, apologies to everyone. By accident I replied off the list.
+>> Redoing it now on the list. More below.
+>>
+>> On Mon, Apr 8, 2024 at 12:10 PM Christian König
+>> <christian.koenig@amd.com> wrote:
+>>> Am 08.04.24 um 18:04 schrieb Zack Rusin:
+>>>> On Mon, Apr 8, 2024 at 11:59 AM Christian König
+>>>> <christian.koenig@amd.com> wrote:
+>>>>> Am 08.04.24 um 17:56 schrieb Zack Rusin:
+>>>>>> Stop printing the TT memory decryption status info each time tt is created
+>>>>>> and instead print it just once.
+>>>>>>
+>>>>>> Reduces the spam in the system logs when running guests with SEV enabled.
+>>>>> Do we then really need this in the first place?
+>>>> Thomas asked for it just to have an indication when those paths are
+>>>> being used because they could potentially break things pretty bad. I
+>>>> think it is useful knowing that those paths are hit (but only once).
+>>>> It makes it pretty easy for me to tell whether bug reports with people
+>>>> who report black screen can be answered with "the kernel needs to be
+>>>> upgraded" ;)
+>>> Sounds reasonable, but my expectation was rather that we would print
+>>> something on the device level.
+>>>
+>>> If that's not feasible for whatever reason than printing it once works
+>>> as well of course.
+>> TBH, I think it's pretty convenient to have the drm_info in the TT
+>> just to make sure that when drivers request use_dma_alloc on SEV
+>> systems TT turns decryption on correctly, i.e. it's a nice sanity
+>> check when reading the logs. But if you'd prefer it in the driver I
+>> can move this logic there as well.
+>>
+>> z
 
 
