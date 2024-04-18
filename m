@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-150857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28B0D8AA5B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 01:21:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2296E8AA5B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 01:21:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80304B21EA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:21:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57944B220A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:21:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32FA37D091;
-	Thu, 18 Apr 2024 23:20:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D54757F7;
+	Thu, 18 Apr 2024 23:20:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pn2WQmcr"
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="it1g4hNp"
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08BA97C0A9
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 23:20:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F3D7E0EB
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 23:20:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713482434; cv=none; b=h+vSOsveBK4CuPJ8ga9bO/+xp/mKfXh07bDlj9vsjyAiLXGJf30xeKcf9VtsziUzhyR+7jvbNVAzcLNA20mYk0TVZIpFHQ6zHf321488A/qKTiLM4fUdxf8BPS5OG0VRZ3iGY5ZyBWV5lvFZKl78egteaXmnibZ2rOwg+5aAQQo=
+	t=1713482438; cv=none; b=ni6wov4t2Fk3rS29UEapSNYFTH1bRtkhS9RtNVwbK/+6gpXts9kLP8P4DLfuhpIPXr4bSTyZSwV7ANY+Kv3f/fDkss/PEO60gfHeK8xVVrowNYTDVLwKZwpr+kJr2ntf32qMj8xBjcjyCNaPn8AxoLlbXlFTkaumZOZbHd1yplE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713482434; c=relaxed/simple;
-	bh=7WAgsmWa8I2nRXxoayOV0F/ehsyZq3cQzYa0hL40wdw=;
+	s=arc-20240116; t=1713482438; c=relaxed/simple;
+	bh=YScO9mwjaHbzHT2vhYW5LqoeHviUzo+lvVpjgG9XQ3k=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Otg5/IevzsfTKqthaI/RW7pQhGLlBP8GIvc/PMWWTzfFerPwlBaNDP4gn3EfYN3KpUUhxvjqhcUbA6t9g4h24JTmgRnafKoo/HRmtPITlpBXnRXuYJAmDLb04CQSZ2Tod2+MBIeH5q19V8Wo4WnFZZ952Gqqi/oNkOJp3DwDRCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pn2WQmcr; arc=none smtp.client-ip=209.85.215.202
+	 To:Cc:Content-Type; b=iUrUAeV35qLdo5MvStJIAmWAVjyOCLsYe/q2jCTJSHL6pMxEoJPoPVvmYvL29svytFhdbt5a2gJi2fTgIAFTam5Ousz0wqJPrCNVzXPboLEAzTt8UsnSdG4+D1C5v1gNIWn3C/X5TlOgZL/yJb+oPhYDXEN9Q87UkMA5eAFEMSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=it1g4hNp; arc=none smtp.client-ip=209.85.216.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5f7c0bb1b95so407769a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 16:20:32 -0700 (PDT)
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2a4b48d7a19so1338265a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 16:20:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713482432; x=1714087232; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1713482436; x=1714087236; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PJWz1uvQTzKPjGuvX+wqPQBpUoIACARU5eow85W6RVU=;
-        b=pn2WQmcr1AACnBg5t7LFSPJCbfvLviyF4Z/jvnKO/HCaMnH1ATHN6yAHg6D7ZHxJwY
-         PSlVz3VxmPq1Q0MZHJFL4+Ors94G/RF1eCOVBSgSowkwFf0AsPMrhu+3dsMlQHqZcU9n
-         QK93oCqiqWGkMRwvvuIn6AREpdkTtn755Wa0K+f7a6AVhxKkXc+QH7t5H2dyTRrXnNZg
-         9g1aozYqfFpkW2jUBsni5riM7COFPRRTiJukt7UEWjVpXlT24DmudVdVTyW8IR+Ft1IR
-         ofGN3MCSIneVRslKtO61lu7/px2RxXjgigal61k7wT/k8sTn/fkj2rJPzyn7o8IHzk3/
-         Y9Yg==
+        bh=ntuKGIhl78pmHpDhVuljrWxMFgXG8nBQtJyZ9nYPDms=;
+        b=it1g4hNp5Ye5qfYuW65zW8uvK0L6dEJ3uvlUK0L7gUqk33IndCQLQbDV+gGqxx+mYk
+         TtunhcYOjysRW3f4qQOOFzKymnrizD1uSM99FjxkuejmOQ8vVVCgoDA6roLcvF4P2wFq
+         g9Jskq54AdT11spq3Y+parmkFFC5jt8iRN3y1gyxSw3pE23Vl+ytU/K8hBcr7ZPDOxwk
+         1Hmf9lui5dUG1Sm1wPfL0OPXwMOBWHfuYOMOx/8+jPhK2oG9bO35R/i1mkE4R+3bhNcZ
+         ODSSKk1Wwt1ozOsB5qCz77QrkrShZczi+4QMlxlmmFg5w2CaRjuR4k+yxnHEZv+TiN6O
+         dxAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713482432; x=1714087232;
+        d=1e100.net; s=20230601; t=1713482436; x=1714087236;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PJWz1uvQTzKPjGuvX+wqPQBpUoIACARU5eow85W6RVU=;
-        b=fH1+GsKjqZ/Q47lOzs2Q1DbacE3VYWQy8h8iyB2+/IH2EpdYHdcQ92Bgbc+D4vMqZ4
-         86XbXZxrH/Chu/HSbqGkntEEkoTsq5xmfcVIgREFYF+9P9RDIydn1PeoX5j/bwUCSH2T
-         FLjhIAUzEC7VjSPqjLGpkI/SDfTx1kAHTFBHMGn/zg3pFr9bbGGHsz3snUKHnTYsA9Co
-         iVS/wuqhhmpWpyFjxo4bKsmrF/ES391W7sey1EaoPYI4d7fl1sfX4E8IoLo1E3yICAdY
-         jLXnM/02flLwhgjuq3k0QzLWOs8QIGxx4sQH9+NzorwgO8KFWfH3NqnefRqJt9IO8G3V
-         lBLw==
-X-Forwarded-Encrypted: i=1; AJvYcCWJizEQNuLPP4m1hyOgLoAg7eNBs7l35EauM05r8Vq7/Mm5F/enyeFFORkdksTa/ZgJxNMcNEfmXGPXG83pYka3aJUlD+Yk3NvqgklP
-X-Gm-Message-State: AOJu0YyI1a68bKpj9oNvdrsyXKwmOPCOMtYFyz7NWqWMKaIX0ePw23ka
-	8T89X2vruIZ6+icTxE7BpjEf6XZeDr1zwF4DXsftdmrVdmwdJaCmvrcldwK0FFAVLOZzZ/8Ws+n
-	Biw==
-X-Google-Smtp-Source: AGHT+IGZvpipb458KhuKNr2lT6l2L7v8w6uv6b7TY6/fKUTAKy1KSarqOpYJWvLTO6PRPcEY1aRIn/XdgRg=
+        bh=ntuKGIhl78pmHpDhVuljrWxMFgXG8nBQtJyZ9nYPDms=;
+        b=JRVQtdnEIyc/+IlvV2yI2du9pCFzdcT4VMYfuu3pSjS72Hy0g915W6djRzkL69H0Ql
+         /I/e3emBCV4stxkI1e7E6hc5ZSyHAlkbsHixuDRdqcDX7fDnqnmzbJ+zlP79R52h+l1o
+         jOrewsrQ4Jc0iogsnLy/VWV9q+MLzC5gxAPuH1UpYJESsIDaKn1JbujLYDliHfqKUS4n
+         hTmintOkFl4KR+p41QUCDEM7mkNbXRtBTSRcJEQPWsK8O4tElCUIV3NNiInzCmlmRdwT
+         FQhYG7OnH0cMFvXSXN2iTFucxsyVVQ9D4+1B69J5eSTzCqFpazoUpPpc/vJJEjH8UOjK
+         oe/A==
+X-Forwarded-Encrypted: i=1; AJvYcCXw3cZi9OSf6JoIgTaUYzZbHfXNhD5BukrXIibnz0gqT73oFYJ9YeiCIE4WZ/j26UxPbBgFIr4JSGu6sOwAbf45I1deGAP87ZAKQbl/
+X-Gm-Message-State: AOJu0YwxBeAb+15phfN9A1UsI+Ltrt/OjjfK7V0zxpHrt/DhV3EPWCI/
+	SJQvjbTSxeK3E2svKO048vBRjpTY2peTUu24qf/pxKYVgyBNR1ot3MVJMOXVZ3DrRPmEsEU3Stg
+	RSw==
+X-Google-Smtp-Source: AGHT+IGX3+sK2ZbRibyfYYT7GKwhF6+fOJueP20+WYShxN73szU+fckNs7zUrZwu4bQuzEjoGpGQlExREJI=
 X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a17:90a:3d4f:b0:2a2:bcae:83c1 with SMTP id
- o15-20020a17090a3d4f00b002a2bcae83c1mr28422pjf.3.1713482432421; Thu, 18 Apr
- 2024 16:20:32 -0700 (PDT)
-Date: Thu, 18 Apr 2024 23:19:48 +0000
+ (user=edliaw job=sendgmr) by 2002:a17:90a:8a96:b0:2aa:ab39:fcb6 with SMTP id
+ x22-20020a17090a8a9600b002aaab39fcb6mr8739pjn.1.1713482436246; Thu, 18 Apr
+ 2024 16:20:36 -0700 (PDT)
+Date: Thu, 18 Apr 2024 23:19:49 +0000
 In-Reply-To: <20240418232005.34244-1-edliaw@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,9 +73,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <16430256912363@kroah.com> <20240418232005.34244-1-edliaw@google.com>
 X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <20240418232005.34244-3-edliaw@google.com>
-Subject: [PATCH 5.15.y v3 2/5] bpf: Generalize check_ctx_reg for reuse with
- other types
+Message-ID: <20240418232005.34244-4-edliaw@google.com>
+Subject: [PATCH 5.15.y v3 3/5] bpf: Generally fix helper register offset check
 From: Edward Liaw <edliaw@google.com>
 To: stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
@@ -89,113 +88,109 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Daniel Borkmann <daniel@iogearbox.net>
 
-Generalize the check_ctx_reg() helper function into a more generic named one
-so that it can be reused for other register types as well to check whether
-their offset is non-zero. No functional change.
+Right now the assertion on check_ptr_off_reg() is only enforced for register
+types PTR_TO_CTX (and open coded also for PTR_TO_BTF_ID), however, this is
+insufficient since many other PTR_TO_* register types such as PTR_TO_FUNC do
+not handle/expect register offsets when passed to helper functions.
 
+Given this can slip-through easily when adding new types, make this an explicit
+allow-list and reject all other current and future types by default if this is
+encountered.
+
+Also, extend check_ptr_off_reg() to handle PTR_TO_BTF_ID as well instead of
+duplicating it. For PTR_TO_BTF_ID, reg->off is used for BTF to match expected
+BTF ids if struct offset is used. This part still needs to be allowed, but the
+dynamic off from the tnum must be rejected.
+
+Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
+Fixes: eaa6bcb71ef6 ("bpf: Introduce bpf_per_cpu_ptr()")
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Acked-by: John Fastabend <john.fastabend@gmail.com>
 Acked-by: Alexei Starovoitov <ast@kernel.org>
-(cherry picked from commit be80a1d3f9dbe5aee79a325964f7037fe2d92f30)
+(cherry picked from commit 6788ab23508bddb0a9d88e104284922cb2c22b77)
 Signed-off-by: Edward Liaw <edliaw@google.com>
 ---
- include/linux/bpf_verifier.h |  4 ++--
- kernel/bpf/btf.c             |  2 +-
- kernel/bpf/verifier.c        | 21 +++++++++++----------
- 3 files changed, 14 insertions(+), 13 deletions(-)
+ kernel/bpf/verifier.c | 39 ++++++++++++++++++++++++++++-----------
+ 1 file changed, 28 insertions(+), 11 deletions(-)
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 3d04b48e502d..c0993b079ab5 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -541,8 +541,8 @@ bpf_prog_offload_replace_insn(struct bpf_verifier_env *env, u32 off,
- void
- bpf_prog_offload_remove_insns(struct bpf_verifier_env *env, u32 off, u32 cnt);
- 
--int check_ctx_reg(struct bpf_verifier_env *env,
--		  const struct bpf_reg_state *reg, int regno);
-+int check_ptr_off_reg(struct bpf_verifier_env *env,
-+		      const struct bpf_reg_state *reg, int regno);
- int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
- 		   u32 regno, u32 mem_size);
- 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 77929fd7bcef..a0c7e13e0ab4 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -5558,7 +5558,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 					i, btf_type_str(t));
- 				return -EINVAL;
- 			}
--			if (check_ctx_reg(env, reg, regno))
-+			if (check_ptr_off_reg(env, reg, regno))
- 				return -EINVAL;
- 		} else if (is_kfunc && (reg->type == PTR_TO_BTF_ID ||
- 			   (reg2btf_ids[base_type(reg->type)] && !type_flag(reg->type)))) {
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 008ddb694c8a..6fe805b559c0 100644
+index 6fe805b559c0..8cd265d1df34 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -3980,16 +3980,16 @@ static int get_callee_stack_depth(struct bpf_verifier_env *env,
+@@ -3980,14 +3980,15 @@ static int get_callee_stack_depth(struct bpf_verifier_env *env,
  }
  #endif
  
--int check_ctx_reg(struct bpf_verifier_env *env,
--		  const struct bpf_reg_state *reg, int regno)
-+int check_ptr_off_reg(struct bpf_verifier_env *env,
-+		      const struct bpf_reg_state *reg, int regno)
+-int check_ptr_off_reg(struct bpf_verifier_env *env,
+-		      const struct bpf_reg_state *reg, int regno)
++static int __check_ptr_off_reg(struct bpf_verifier_env *env,
++			       const struct bpf_reg_state *reg, int regno,
++			       bool fixed_off_ok)
  {
--	/* Access to ctx or passing it to a helper is only allowed in
--	 * its original, unmodified form.
-+	/* Access to this pointer-typed register or passing it to a helper
-+	 * is only allowed in its original, unmodified form.
+ 	/* Access to this pointer-typed register or passing it to a helper
+ 	 * is only allowed in its original, unmodified form.
  	 */
  
- 	if (reg->off) {
--		verbose(env, "dereference of modified ctx ptr R%d off=%d disallowed\n",
--			regno, reg->off);
-+		verbose(env, "dereference of modified %s ptr R%d off=%d disallowed\n",
-+			reg_type_str(env, reg->type), regno, reg->off);
+-	if (reg->off) {
++	if (!fixed_off_ok && reg->off) {
+ 		verbose(env, "dereference of modified %s ptr R%d off=%d disallowed\n",
+ 			reg_type_str(env, reg->type), regno, reg->off);
  		return -EACCES;
- 	}
+@@ -4005,6 +4006,12 @@ int check_ptr_off_reg(struct bpf_verifier_env *env,
+ 	return 0;
+ }
  
-@@ -3997,7 +3997,8 @@ int check_ctx_reg(struct bpf_verifier_env *env,
- 		char tn_buf[48];
- 
- 		tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
--		verbose(env, "variable ctx access var_off=%s disallowed\n", tn_buf);
-+		verbose(env, "variable %s access var_off=%s disallowed\n",
-+			reg_type_str(env, reg->type), tn_buf);
- 		return -EACCES;
- 	}
- 
-@@ -4447,7 +4448,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
++int check_ptr_off_reg(struct bpf_verifier_env *env,
++		      const struct bpf_reg_state *reg, int regno)
++{
++	return __check_ptr_off_reg(env, reg, regno, false);
++}
++
+ static int __check_buffer_access(struct bpf_verifier_env *env,
+ 				 const char *buf_info,
+ 				 const struct bpf_reg_state *reg,
+@@ -5267,12 +5274,6 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+ 				kernel_type_name(btf_vmlinux, *arg_btf_id));
  			return -EACCES;
  		}
- 
--		err = check_ctx_reg(env, reg, regno);
-+		err = check_ptr_off_reg(env, reg, regno);
- 		if (err < 0)
- 			return err;
- 
-@@ -5327,7 +5328,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 		return err;
- 
- 	if (type == PTR_TO_CTX) {
--		err = check_ctx_reg(env, reg, regno);
-+		err = check_ptr_off_reg(env, reg, regno);
- 		if (err < 0)
- 			return err;
- 	}
-@@ -9561,7 +9562,7 @@ static int check_ld_abs(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 			return err;
+-
+-		if (!tnum_is_const(reg->var_off) || reg->var_off.value) {
+-			verbose(env, "R%d is a pointer to in-kernel struct with non-zero offset\n",
+-				regno);
+-			return -EACCES;
+-		}
  	}
  
--	err = check_ctx_reg(env, &regs[ctx_reg], ctx_reg);
-+	err = check_ptr_off_reg(env, &regs[ctx_reg], ctx_reg);
- 	if (err < 0)
+ 	return 0;
+@@ -5327,10 +5328,26 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+ 	if (err)
  		return err;
  
+-	if (type == PTR_TO_CTX) {
+-		err = check_ptr_off_reg(env, reg, regno);
++	switch ((u32)type) {
++	case SCALAR_VALUE:
++	/* Pointer types where reg offset is explicitly allowed: */
++	case PTR_TO_PACKET:
++	case PTR_TO_PACKET_META:
++	case PTR_TO_MAP_KEY:
++	case PTR_TO_MAP_VALUE:
++	case PTR_TO_MEM:
++	case PTR_TO_MEM | MEM_RDONLY:
++	case PTR_TO_BUF:
++	case PTR_TO_BUF | MEM_RDONLY:
++	case PTR_TO_STACK:
++		break;
++	/* All the rest must be rejected: */
++	default:
++		err = __check_ptr_off_reg(env, reg, regno,
++					  type == PTR_TO_BTF_ID);
+ 		if (err < 0)
+ 			return err;
++		break;
+ 	}
+ 
+ skip_type_check:
 -- 
 2.44.0.769.g3c40516874-goog
 
