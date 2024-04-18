@@ -1,119 +1,203 @@
-Return-Path: <linux-kernel+bounces-149412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D2D48A90CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:40:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA20F8A90D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:46:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35F5B283888
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:40:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67C901F22957
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD05725757;
-	Thu, 18 Apr 2024 01:40:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Mgt2iQSu"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BD7C38F94;
+	Thu, 18 Apr 2024 01:46:43 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB2883BBEC
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 01:40:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A1279E1;
+	Thu, 18 Apr 2024 01:46:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713404417; cv=none; b=qJ+UfSDFAyVZBBf62zV6Tc/6vAuTu7n2vvdq6DzLASxJJ8KyMDgEweGyqNAdVhRG66FWomwT+OkRyr38qik03DUrOBp6ia2Ws+S/KpRB8ezmsPUCoWqA9Z2JHZ0qvdDG+jKHcrZi5Vp9kCRs7Ome27tD2bi/Zc4QXh/UH3aKr14=
+	t=1713404802; cv=none; b=dpO0/1HckMQiDbjVIybMftmqC53doMkTsUAEBAOe6pnRJYuNGPiK/PhaLN5JelARI4UpOcAkoCRK1FW9rxYyppG4X0eCYIZ8V7DylUV52AdOxEnZEmBG8LFrfcMlfSQa1Un+iyI61rjPxy/b2DLeItl1J7MVeesGDHb08mbCIt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713404417; c=relaxed/simple;
-	bh=e3bCTdtHrF2UnBnEbVCk1MkmyVmZb9X8WMo8KFpypjk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GUnr+PI19ypTVV1wT94dm7xl0KbadtZI9+JGGvHN1MH4lVc9y7WuuV0yG4zqU0X+tUwdrGURO/1CY0g/CMdUx5J5cYDMe2UZv7Wmc+Rc3BIawZAOlHxQ/ClulwwH9FOzlYcI7DpQoqYf8Lg1prEG9jroRIh34ajuiZCk900R5us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Mgt2iQSu; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713404414;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JVgKAS9nz/LG4ge1C9xAdcQzyy8X8VEwsLz7Mq7LgFw=;
-	b=Mgt2iQSuFwm+ip7wsMoAXotGtV2PaUbnNw3CqrgYX3V0iMsFA7cxNGXPpzchfzVu7GSMTA
-	TaWiym1TTVRAwOPySzLWkPtEEhwTQSxDBv+3ZiJaPDH/4daiMG0K1NfGXxi7uOktMZOOLw
-	5NVfjNb0Tpn4SyWgJFtAPSZbR1XR+7w=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-18-kfbkFV6UMVerNtS2MSZ32g-1; Wed, 17 Apr 2024 21:40:13 -0400
-X-MC-Unique: kfbkFV6UMVerNtS2MSZ32g-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1e2a553aad6so4124615ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 18:40:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713404412; x=1714009212;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JVgKAS9nz/LG4ge1C9xAdcQzyy8X8VEwsLz7Mq7LgFw=;
-        b=WQ5957R9YLrzUj1XV6XBsMqmOc3+1pflkYYq3EHVzTwqIQnxsgRerYB7B0pIUuexv8
-         jEe8/VRLuv2U3kzXLuf6ZQeJu93w5a/qtdfyiNCoNBOLMn/aRrE0ABKXZVvnXfc2ELUO
-         pl65Ga7w9+bdWyoeVYarGE0RCx/d2+PjKYDi6XbcijgD95CXws2vHNS17mrIf2dPUHN2
-         31Iybn2xHOP7LO2aAfKwtbt3SDAPOh+CVTUcVjPa7MoUe7lssQK4HrLQ0fv2qz7kNIZV
-         H0gbEf1mOoN0t9384qUKMnc+FMmgE/lIfXQ2yFr/UMuObK0RSklsYllt/m/W5McVmaqJ
-         ZzOg==
-X-Forwarded-Encrypted: i=1; AJvYcCXM1Y/eQ15MadpnPOgmmfLtMv0r9sd1bxtsH2OoqhuONdZK/w1989xpnYHYi8zkfVyII6N+gBrhKPYOYrJvcS3miyW73KN7dS5oaV6+
-X-Gm-Message-State: AOJu0Yz4akKAhkmTnYFTt/tKsbCZOVV4+4Z+WNiGVJjJ8qXjKW/KX/zu
-	U5e4tcZArXgiTvWB4MU/CMngT2NM75LjWxMbIaQH7uoazvTMdzD4a5xmjpqEBtrYz3tH15nOWzj
-	oQedG6ZqOCwNu9jWH+xs/PhU1Uqq6vWWL3qOhZRg3f4JLNrHWjXKb4Jlxn/cFfw==
-X-Received: by 2002:a17:903:228b:b0:1e4:55d8:dfae with SMTP id b11-20020a170903228b00b001e455d8dfaemr1685029plh.4.1713404412271;
-        Wed, 17 Apr 2024 18:40:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE6VvtdAGo5TIQeytuXP1dbMJEhF6NhbLbnVJumMJQ8ijnoQzNd5M6jQzcmCzrBaveFaQNpmw==
-X-Received: by 2002:a17:903:228b:b0:1e4:55d8:dfae with SMTP id b11-20020a170903228b00b001e455d8dfaemr1685010plh.4.1713404411924;
-        Wed, 17 Apr 2024 18:40:11 -0700 (PDT)
-Received: from [10.72.116.40] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id t20-20020a170902b21400b001e3e081dea1sm314514plr.0.2024.04.17.18.40.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Apr 2024 18:40:11 -0700 (PDT)
-Message-ID: <e5b9172c-3123-4926-bd1d-1c1c93f610bb@redhat.com>
-Date: Thu, 18 Apr 2024 09:40:04 +0800
+	s=arc-20240116; t=1713404802; c=relaxed/simple;
+	bh=+Jtc80/f6T5S8x4XYhR5idzmi06r2nnPA1lCZQ9L49c=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=cE2YdvIgOe/VJbYM1XOQFCNYnE4hYlRGAeFmUVSXelfFtK1Ixoexa0k1b4siQtBQYqC0DvgDR7RfNjzf+EJFCzQEWSsz6+Ot4fWwgpmuUKya68W4IfaY5MsIB5DBgNPyXQwDIL/KLvIK/m/LmgG7LPRYcrkZHzaBtLCM+pJL12w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VKgYS0Y04zNncx;
+	Thu, 18 Apr 2024 09:44:12 +0800 (CST)
+Received: from canpemm500005.china.huawei.com (unknown [7.192.104.229])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7D64818007C;
+	Thu, 18 Apr 2024 09:46:36 +0800 (CST)
+Received: from canpemm500004.china.huawei.com (7.192.104.92) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 18 Apr 2024 09:46:36 +0800
+Received: from [10.174.179.14] (10.174.179.14) by
+ canpemm500004.china.huawei.com (7.192.104.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 18 Apr 2024 09:46:35 +0800
+Subject: Re: [PATCH] scsi: libsas: Fix exp-attached end device cannot be
+ scanned in again after probe failed
+To: yangxingui <yangxingui@huawei.com>, <john.g.garry@oracle.com>,
+	<jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+	<damien.lemoal@opensource.wdc.com>
+CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
+	<chenxiang66@hisilicon.com>, <kangfenglong@huawei.com>
+References: <20240416030727.17074-1-yangxingui@huawei.com>
+ <e33272f8-1ff5-561f-60a3-b4d24fe27c6b@huawei.com>
+ <e7e26224-0e0c-f6bf-d24e-5a9a6d84a8e1@huawei.com>
+From: Jason Yan <yanaijie@huawei.com>
+Message-ID: <59f29a27-a7c4-6278-d5ac-be802027b603@huawei.com>
+Date: Thu, 18 Apr 2024 09:46:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/8] ceph: drop usage of page_index
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Kairui Song <kasong@tencent.com>, linux-mm@kvack.org,
- Andrew Morton <akpm@linux-foundation.org>, "Huang, Ying"
- <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>,
- Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>,
- Neil Brown <neilb@suse.de>, Minchan Kim <minchan@kernel.org>,
- Hugh Dickins <hughd@google.com>, David Hildenbrand <david@redhat.com>,
- Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
- Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org
-References: <20240417160842.76665-1-ryncsn@gmail.com>
- <20240417160842.76665-5-ryncsn@gmail.com>
- <fc89e5b9-cfc4-4303-b3ff-81f00a891488@redhat.com>
- <ZiB3rp6m4oWCdszj@casper.infradead.org>
+In-Reply-To: <e7e26224-0e0c-f6bf-d24e-5a9a6d84a8e1@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-From: Xiubo Li <xiubli@redhat.com>
-In-Reply-To: <ZiB3rp6m4oWCdszj@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500004.china.huawei.com (7.192.104.92)
 
+On 2024/4/17 15:47, yangxingui wrote:
+> 
+> 
+> On 2024/4/17 9:46, Jason Yan wrote:
+>> Hi Xingui,
+>>
+>> On 2024/4/16 11:07, Xingui Yang wrote:
+>>> We found that it is judged as broadcast flutter and exits directly 
+>>> when the
+>>> exp-attached end device reconnects after the end device probe failed.
+>>
+>> Can you please describe how to reproduce this issue in detail?
+> The test steps we currently construct are to simulate link abnormalities 
+> and adjust the rate of the remote phy when running IO on all disks.
+> 
+> When the sata disk is probed and the IDENTIFY command is sent to the 
+> disk, the expander return rate is abnormal, causing sata disk probe 
+> fail. But there may be many reasons for device probe failure, including 
+> expander or disk instability or link abnormalities.
+> 
+>>
+>> Thanks,
+>> Jason
+>>
+>>>
+>>> [78779.654026] sas: broadcast received: 0
+>>> [78779.654037] sas: REVALIDATING DOMAIN on port 0, pid:10
+>>> [78779.654680] sas: ex 500e004aaaaaaa1f phy05 change count has changed
+>>> [78779.662977] sas: ex 500e004aaaaaaa1f phy05 originated 
+>>> BROADCAST(CHANGE)
+>>> [78779.662986] sas: ex 500e004aaaaaaa1f phy05 new device attached
+>>> [78779.663079] sas: ex 500e004aaaaaaa1f phy05:U:8 attached: 
+>>> 500e004aaaaaaa05 (stp)
+>>> [78779.693542] hisi_sas_v3_hw 0000:b4:02.0: dev[16:5] found
+>>> [78779.701155] sas: done REVALIDATING DOMAIN on port 0, pid:10, res 0x0
+>>> [78779.707864] sas: Enter sas_scsi_recover_host busy: 0 failed: 0
+>>> ...
+>>> [78835.161307] sas: --- Exit sas_scsi_recover_host: busy: 0 failed: 0 
+>>> tries: 1
+>>> [78835.171344] sas: sas_probe_sata: for exp-attached device 
+>>> 500e004aaaaaaa05 returned -19
+>>> [78835.180879] hisi_sas_v3_hw 0000:b4:02.0: dev[16:5] is gone
+>>> [78835.187487] sas: broadcast received: 0
+>>> [78835.187504] sas: REVALIDATING DOMAIN on port 0, pid:10
+>>> [78835.188263] sas: ex 500e004aaaaaaa1f phy05 change count has changed
+>>> [78835.195870] sas: ex 500e004aaaaaaa1f phy05 originated 
+>>> BROADCAST(CHANGE)
+>>> [78835.195875] sas: ex 500e004aaaaaaa1f rediscovering phy05
+>>> [78835.196022] sas: ex 500e004aaaaaaa1f phy05:U:A attached: 
+>>> 500e004aaaaaaa05 (stp)
+>>> [78835.196026] sas: ex 500e004aaaaaaa1f phy05 broadcast flutter
+>>> [78835.197615] sas: done REVALIDATING DOMAIN on port 0, pid:10, res 0x0
+>>>
+>>> The cause of the problem is that the related ex_phy information was not
+>>> cleared after the end device probe failed. In order to solve the above
+>>> problem, a function sas_ex_unregister_end_dev() is defined to clear the
+>>> ex_phy information and unregister the end device when the 
+>>> exp-attached end
+>>> device probe failed.
+>>>
+>>> As the sata device is an asynchronous probe, the sata device may probe
+>>> failed after done REVALIDATING DOMAIN. Then after the port is added 
+>>> to the
+>>> sas_port_del_list, the port will not be deleted until the end of the 
+>>> next
+>>> REVALIDATING DOMAIN and sas_destruct_ports() is called. A warning about
+>>> creating a duplicate port will occur in the new REVALIDATING DOMAIN when
+>>> the end device reconnects. Therefore, the previous destroy_list and
+>>> sas_port_del_list should be handled before REVALIDATING DOMAIN.
+>>>
+>>> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
+>>> ---
+>>>   drivers/scsi/libsas/sas_discover.c |  2 ++
+>>>   drivers/scsi/libsas/sas_expander.c | 16 ++++++++++++++++
+>>>   drivers/scsi/libsas/sas_internal.h |  6 +++++-
+>>>   3 files changed, 23 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/scsi/libsas/sas_discover.c 
+>>> b/drivers/scsi/libsas/sas_discover.c
+>>> index 8fb7c41c0962..aae90153f4c6 100644
+>>> --- a/drivers/scsi/libsas/sas_discover.c
+>>> +++ b/drivers/scsi/libsas/sas_discover.c
+>>> @@ -517,6 +517,8 @@ static void sas_revalidate_domain(struct 
+>>> work_struct *work)
+>>>       struct sas_ha_struct *ha = port->ha;
+>>>       struct domain_device *ddev = port->port_dev;
+>>> +    sas_destruct_devices(port);
+>>> +    sas_destruct_ports(port);
+>>>       /* prevent revalidation from finding sata links in recovery */
+>>>       mutex_lock(&ha->disco_mutex);
+>>>       if (test_bit(SAS_HA_ATA_EH_ACTIVE, &ha->state)) {
+>>> diff --git a/drivers/scsi/libsas/sas_expander.c 
+>>> b/drivers/scsi/libsas/sas_expander.c
+>>> index f6e6db8b8aba..6ae1f4aaaf61 100644
+>>> --- a/drivers/scsi/libsas/sas_expander.c
+>>> +++ b/drivers/scsi/libsas/sas_expander.c
+>>> @@ -1856,6 +1856,22 @@ static void 
+>>> sas_unregister_devs_sas_addr(struct domain_device *parent,
+>>>       }
+>>>   }
+>>> +void sas_ex_unregister_end_dev(struct domain_device *dev)
+>>> +{
+>>> +    struct domain_device *parent = dev->parent;
+>>> +    struct expander_device *parent_ex = &parent->ex_dev;
+>>> +    int i;
+>>> +
+>>> +    for (i = 0; i < parent_ex->num_phys; i++) {
+>>> +        struct ex_phy *phy = &parent_ex->ex_phy[i];
+>>> +
+>>> +        if (sas_phy_match_dev_addr(dev, phy)) {
+>>> +            sas_unregister_devs_sas_addr(parent, i, true);
+>>> +            break;
+>>> +        }
+>>> +    }
+>>
+>> Did you mean this end device is a wide-port end device ? How could 
+>> this happen?
+> 
+> No, the end device described here is a non-expander device. Such as: 
+> sata/sas disk. But these devices are exp-attached.
 
-On 4/18/24 09:30, Matthew Wilcox wrote:
-> On Thu, Apr 18, 2024 at 08:28:22AM +0800, Xiubo Li wrote:
->> Thanks for you patch and will it be doable to switch to folio_index()
->> instead ?
-> No.  Just use folio->index.  You only need folio_index() if the folio
-> might belong to the swapcache instead of a file.
->
-Hmm, Okay.
-
-Thanks
-
-- Xiubo
-
+If it is not a wide port, why do they have the same sas address here? 
+Why do you add this function to unregister these PHYs? And the last 
+parameter of sas_unregister_devs_sas_addr() means the last PHY of the 
+wide port, you just all passed true, it is irrational.
+> 
+> Thanks.
+> Xingui
+> .
 
