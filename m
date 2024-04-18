@@ -1,146 +1,146 @@
-Return-Path: <linux-kernel+bounces-150113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A283A8A9A95
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:00:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A0938A9AE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:10:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50A591F22857
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:00:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B4311C20EE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84231165FC9;
-	Thu, 18 Apr 2024 12:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4B8415B157;
+	Thu, 18 Apr 2024 13:10:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VX7SseTS"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="FOV+4dQW"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2068.outbound.protection.outlook.com [40.107.93.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F15165FB4;
-	Thu, 18 Apr 2024 12:57:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713445070; cv=none; b=oi4fdO5WmLf9SO4iHq5yO/yfSoTHOOe/ZSJEPVGuznRdiDSUUDpbERIdj/evudCjUxA4qSWfJsamsMqyURH90XGHf915igtRJ19aHoO7f+n4arP+uI+mjVqlTp+PJ2AtAWXXuK6svTedWDBzyZpgEVil1Dc/5QAeMNzRijTAwOU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713445070; c=relaxed/simple;
-	bh=mq0LVEhgLrutQcuF19JR7w3laIzCRdDcXlTvXzp+kR8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kCczj1KGN0CZD5Xr5Di+HgSSwPHc6o8ZYmjTwAPum89MeJJ4kdkU1IJzoSqH7pgiOrL426ylVvjjhy+HqnzmjbYL/ANPkjR9t4+N8kez9J7oML5CSzX7u9TKgyn6eesnHbMHkF42db1XDvaYlaHGuc70737IHEflp+v5X1K4sf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VX7SseTS; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2da0f8f7b24so9948741fa.1;
-        Thu, 18 Apr 2024 05:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713445067; x=1714049867; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=H7TvlJDHh6PM8Lai+72isa4pBtCMtiwvjV7L+/XlE4U=;
-        b=VX7SseTSyaorQla78jmVqGvTMcrIOP9x4/fUZGjX+cwsRV2ZqVveFXYM0ufThK/PvQ
-         W2ck8Lx3KSVk8IZju/2XUH3E55UL+W3ui1keDu1xcMIw3PxYtedXBicYwVkujnei5mx2
-         yaRPQseRLy4J1qbn/6mcM3vRozqEqEXhcYeKV9VtZxihF1OMgAv9GzqfhgYN3FpXCkU/
-         8EfH4l2HQvmOIy0AcKedgwMGmELCJbpnXu32g1Uarz7NJiWFFH+HNSNW1sXnIK5XM7X6
-         PriS8U4FRITTDFkMpi7EN/ZceESsCNpB3Wr23gsUbpegWJIhv1112iGpjBxg4Fxd4BzW
-         Ge7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713445067; x=1714049867;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H7TvlJDHh6PM8Lai+72isa4pBtCMtiwvjV7L+/XlE4U=;
-        b=p1eEfi9DTFqs/u7iBa0sGVkHeh0vAOtx4OgmQ9hZyVXgrvhkm9dydCIX6t8IQV/p5+
-         lAHgUbbwGMO7CXCTFKC0Go3hCLwdHMhAIklfFKoIkgIOZbDYKz0Tk029rGyEdOcWEz43
-         ELAEXHXcWq6+JoPv7Umk+CG+tm4PebIH0Cazx/wdebYelCsrH96rotChM6GKG4O5R67y
-         iPAMDqm33oZiaIadXPsNZ+jj80wwH/WlZZYNIWq/NSw1R0i0zrNMusegYzKhFXvCHQNY
-         9owkO9/DmdXfsIKaPfMa8fUFaIS96zsVqYaHccMfUUDT4wVGOkrsBhqPry7PrOoBp6we
-         jo2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXYDnvHB3pc9CU1qKKFK4kkY1sC2lYlqI2rQbVuBo435GGuyRs4dH546nvIE0uzlMn6JPkNXHVm32K4QHgqLfBD9Bk00GAJg0z4jaKHqviNCmJJ6FKK13ihkV2oAZpVZ7vptlNlbaEDMI+y0MgKKWhHk78/YTSndxaakTh8WtC1ReG/kDh9P8gw1j97u0WAaoPQKR2x2FXE/DRj9g7JJvHAA+3I
-X-Gm-Message-State: AOJu0YxHIvJQ0XPwlI+v1D1GvRFLA5KS2jyaGRn/s6ldg6Hikde0SEpe
-	jUs+3gQo8a3sCT2qqPLtYxbaO0bE5HMRd4PcBrYLaJ4eq7+UCSUU
-X-Google-Smtp-Source: AGHT+IHfKLq2UzaMXO/4uNIuhb8wjwhcxG7kZvjOwkPLDKwcLA+nxELTBqKKXudYnYTNlpQpw0rHVQ==
-X-Received: by 2002:a2e:9f17:0:b0:2d7:1a35:d580 with SMTP id u23-20020a2e9f17000000b002d71a35d580mr683715ljk.15.1713445067067;
-        Thu, 18 Apr 2024 05:57:47 -0700 (PDT)
-Received: from mobilestation.baikal.int (srv1.baikalchip.ru. [87.245.175.227])
-        by smtp.gmail.com with ESMTPSA id f23-20020a2eb5b7000000b002d88804b368sm190667ljn.43.2024.04.18.05.57.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 05:57:46 -0700 (PDT)
-Date: Thu, 18 Apr 2024 15:57:44 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Romain Gantois <romain.gantois@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Russell King <linux@armlinux.org.uk>, 
-	=?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net-next v3 4/5] net: stmmac: add support for RZ/N1 GMAC
-Message-ID: <eqfta73ost45nbzz3aoa2tw5tasg3geehf4fgphu4teq5yfvar@ngif2e6j5j2k>
-References: <20240415-rzn1-gmac1-v3-0-ab12f2c4401d@bootlin.com>
- <20240415-rzn1-gmac1-v3-4-ab12f2c4401d@bootlin.com>
- <xp34tp5cjmdshefxjczltz2prqtiikagfspf4lobznzypvsyah@ihpmwfynwzhh>
- <232e3b0c-ca55-2da0-1c9f-47520a1bcfbd@bootlin.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CEC21DFCF;
+	Thu, 18 Apr 2024 13:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.68
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713445816; cv=fail; b=K+bUz7YbLthfMt7qTsZTl6JHEDq8+9eNCQ7AhqQpdc+3cDgyOIn1Fl9W5gZ+qInNk6YJVyVHFFUGWLnEW/WNsy/AFMvkMizOUuylAFuJfvtaOwVwsDgTO7c3lzbnSdPsgzeHBR0xPDOJxMOSrGqkrDt4Vyjvm8J2MtYnRdLwNYE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713445816; c=relaxed/simple;
+	bh=5pGUrpsICmQLTPWIM8Or6o4cyW3gYlpGBCIU5JKWTF4=;
+	h=References:From:To:CC:Subject:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=FQrLQYZqwx7y8ly+LGeq1XtxGWOdWLCkh0dA3Niq5doNyuaOSkrdNJQzw35CNH2koB03ZGNq/jdyE5EcKP0gFLqd2CiiP16T+8p3MOp38hieMvaLFjw08DcmQ1MimYS1XmziXSvxQXGtrdOxRSwsco5bVi39RXWr3xMgBPCSntY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=FOV+4dQW; arc=fail smtp.client-ip=40.107.93.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kyFxCPKbcx5VbdZsFm9z+DHrCfEMCl2twocLEArwbE3XhlCKfASUdEgF0q0YbZ942SeSLn+zVrPuXjsIn6A4+QJTKhP2tdgRlJyeCaTDVGmgKiS3JDsLwpXYKajNK30XA2CECyoCbSuKIHHI+sU+/H2weZVX+YaaU0L8B0yi6TduLqxAam8gaekaIAykyN5mQ5NNpBp5vrHxuaXqkl1L9Qu630SX0zhSYi8juU04AE6dMsdCn16kOlznb9BI5F7V0NCiSYmrq4Zcj2GrlpBYrVSQcUIccOtyXoCFAkDr5HrYiPbfup66DFmUSWCu4EUgfGs6oU3uvOpxJmUfeThB/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5pGUrpsICmQLTPWIM8Or6o4cyW3gYlpGBCIU5JKWTF4=;
+ b=KBZC83/R5Ni/iUGLCQZSkpug4iyXOtsHkM/3QzIeEfWcdrAWamkMie6QL52P6QCOmcozdIxeOlhUljM/nO50FKrDOZb1lPHsuJKnMcg82Rl+hRfh+kZim6PJIpvH9p+iwrXjI5uT8XdjO0Kgo88ZCpcAtfWfF+mmD0gAyhT+f3uU/Uo8AlHOaiWNlJk0VEwCMjvfvfzRjXm1G1QHyNSDNt/VqyIVAl3KTSDP00XZr34rnE3c4+HuimaNWs6vvm76l6GcOqFBgHHxs2/xLE1PtQbkENtYDxordTvIDzEc92Joxfo0RxI4xztny0joQ7eD5lDjDM1hXhSOc2Ctv3gERQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5pGUrpsICmQLTPWIM8Or6o4cyW3gYlpGBCIU5JKWTF4=;
+ b=FOV+4dQWbfC+o4CFO8dbEeDHmY4aix1crWBlxB6n+/Ddk75YdvInEQqMFdh8TxwRNftTexCkdQN+NKowIcyZyG8dTqNbJCbtOBxSBr+lAKkr5MfzzeJRF9jQCNxYlNUpe/I6oyAyGXIyKqleo4SzSjKQ6NFjLxAzp1V/lNqeOVlrdv6cNAu5BlOn4AXExTU6uJvcjUaI2zJ6H4tfQRiIl0KnTU7gpj4OtYR/viAwK/f4BquHA6f64m9wZWMGwf56fiekzHtHt/Hxk2Ena0bwjy6xurY5jxss+rmMgsCdkNGJJyC9mNdl73ZAT+QAuPTqUwD3PmoTUfHrPYdSmHk7LQ==
+Received: from SJ0PR03CA0388.namprd03.prod.outlook.com (2603:10b6:a03:3a1::33)
+ by DS7PR12MB5766.namprd12.prod.outlook.com (2603:10b6:8:75::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.37; Thu, 18 Apr
+ 2024 13:10:08 +0000
+Received: from SJ1PEPF00001CE2.namprd05.prod.outlook.com
+ (2603:10b6:a03:3a1:cafe::d9) by SJ0PR03CA0388.outlook.office365.com
+ (2603:10b6:a03:3a1::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.20 via Frontend
+ Transport; Thu, 18 Apr 2024 13:10:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ SJ1PEPF00001CE2.mail.protection.outlook.com (10.167.242.10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.22 via Frontend Transport; Thu, 18 Apr 2024 13:10:08 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 18 Apr
+ 2024 06:09:56 -0700
+Received: from yaviefel (10.126.230.35) by drhqmail201.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 18 Apr
+ 2024 06:09:52 -0700
+References: <20240417135131.99921-1-ast@fiberby.net>
+ <87o7a8c76m.fsf@nvidia.com>
+User-agent: mu4e 1.8.11; emacs 28.3
+From: Petr Machata <petrm@nvidia.com>
+To: Petr Machata <petrm@nvidia.com>
+CC: =?utf-8?Q?Asbj=C3=B8rn?= Sloth =?utf-8?Q?T=C3=B8nnesen?=
+	<ast@fiberby.net>, <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Ido
+ Schimmel" <idosch@nvidia.com>
+Subject: Re: [PATCH net-next] mlxsw: spectrum_flower: validate control flags
+Date: Thu, 18 Apr 2024 14:58:50 +0200
+In-Reply-To: <87o7a8c76m.fsf@nvidia.com>
+Message-ID: <87plumbyw3.fsf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <232e3b0c-ca55-2da0-1c9f-47520a1bcfbd@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ drhqmail201.nvidia.com (10.126.190.180)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE2:EE_|DS7PR12MB5766:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2f8636c8-6f5b-40c0-cd94-08dc5fa8df43
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	kgDJ5myEj+l+BoBT8Nojq76EQCWUmYmDWV1zY/8akLQ9L2MLg0uFfRmnOQ/Gj1vZpQd2fO7mo7tjDjKV1BiMIoMNS5bt82cDOT6Jv72wWo7IUo4/UdHEPrnjvewnk/ISAZrwY5T+hAXuBJyefAZUg1DIjBahaa++sbTZo/OicsUshVHBG2PsO7IdNa0Ot31vvMR2Ar9pvYCHDEO+PtdeJfbJz9+tSbSX1xVyDqCNiTTl3xmPw4nIjsBpEu8+h0pmmwM0ySpEGnakwTDVPp71ONdT88Hygx5ntV65iWYt+5HeghqmnZBL9DPjMbtegSDpfkFh/YbnG0gwVyGsUs2u1sL/IuQKOhLkwqCmmi0Dh02L1nM82S2q+UB5beVIT9F/e72/tdyiv/JaS63UBK+kB15oV+7jvGOWYCU3ToXmocWG5SuKKBq+g9s7Z32NxOnxQKYfloFq88tpGiLq99CQM5rlSsNQn+a8M8f5aQAIFHErSyAxNfLlQAcgjxcATmkV1HK3QTT9IjVidGBvEoEHaAz6JOKY/WIdOR86hlsWapev1fczhbqZDKlgAth47GSEvi4oNp7udG/YLnj4dx3x9Z7SOyhFbR0BuOJ/fwOGGldkgFSRdhoE9ZwEO2jcV2f7KQX1XHgypNZ0WIMkGKPEMrZkytpV+O23RTbBW78mMEOFW90dt9nDFoeiNnmcbRC6UW8p1f/zDPAHZUIXWLqfIy/wrnZFN7f2IAsX/mUul+S3JPmxxsp2aJmRrPnnFrBH
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 13:10:08.3893
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2f8636c8-6f5b-40c0-cd94-08dc5fa8df43
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF00001CE2.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5766
 
-On Thu, Apr 18, 2024 at 01:57:47PM +0200, Romain Gantois wrote:
-> Hi Serge,
-> 
-> On Tue, 16 Apr 2024, Serge Semin wrote:
-> 
-> > > +static int rzn1_dwmac_pcs_init(struct stmmac_priv *priv,
-> > 
-> > > +			       struct mac_device_info *hw)
-> > 
-> > AFAICS hw is unused, and the mac_device_info instance is reached via
-> > the priv pointer. What about dropping the unused argument then?
-> 
 
-> Unfortunately, this is an implementation of the pcs_init() callback, which is 
-> also used by socfpga (see patch 4/6 in this series). The socfpga implementations 
-> use the hw parameter for both pcs_init() and pcs_exit() so I can't remove it.
+Petr Machata <petrm@nvidia.com> writes:
 
-I had that patch content in mind when was writing my comment. There is
-no point in passing the hw-pointer there either because you already
-have the stmmac_priv pointer. There is stmmac_priv::hw field which you
-can use instead in the same way as you do in this patch. Here is the
-respective change for your SoCFPGA patch:
+> Asbj=C3=B8rn Sloth T=C3=B8nnesen <ast@fiberby.net> writes:
+>
+>> This driver currently doesn't support any control flags.
+>>
+>> Use flow_rule_has_control_flags() to check for control flags,
+>> such as can be set through `tc flower ... ip_flags frag`.
+>>
+>> In case any control flags are masked, flow_rule_has_control_flags()
+>> sets a NL extended error message, and we return -EOPNOTSUPP.
+>>
+>> Only compile-tested.
+>>
+>> Signed-off-by: Asbj=C3=B8rn Sloth T=C3=B8nnesen <ast@fiberby.net>
+>
+> Thanks, I'll take this through our regression.
 
-+static int socfpga_dwmac_pcs_init(struct stmmac_priv *priv,
-+				  struct mac_device_info *hw)
-+{
-..
-+
-+	priv->hw->phylink_pcs = pcs;
-+	return 0;
-+}
-+
-+static void socfpga_dwmac_pcs_exit(struct stmmac_priv *priv,
-+				   struct mac_device_info *hw)
-+{
-+	if (priv->hw->phylink_pcs)
-+		lynx_pcs_destroy(priv->hw->phylink_pcs);
-+}
+Nothing bombed.
 
--Serge(y)
-
-> 
-> Thanks,
-> 
-> -- 
-> Romain Gantois, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+Tested-by: Petr Machata <petrm@nvidia.com>
 
