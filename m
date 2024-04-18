@@ -1,128 +1,116 @@
-Return-Path: <linux-kernel+bounces-150208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B26F38A9BAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:53:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 458ED8A9BAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:53:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3B161C230E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:53:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D85EB1F2377B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:53:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92D6E165FC4;
-	Thu, 18 Apr 2024 13:52:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9EE1649DE;
+	Thu, 18 Apr 2024 13:52:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AVhCXV/d"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RmxsbDgx"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8A81635C5;
-	Thu, 18 Apr 2024 13:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652C26A8CA;
+	Thu, 18 Apr 2024 13:52:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713448377; cv=none; b=LG118vMstorpggci1tdeXPEFdlarn8bQB3peR7EhYFo+MeYdqTmYsPFBWlVcOuQOSozDI3YRulfQii327mmexHGd5Sa9+AxR577poIUMTLzwQRKDOVvwJimxkI65g8hn9V9gDj85dN9uJAq5SAQYY0lUYBimc0r+4lqIrkLOYlE=
+	t=1713448356; cv=none; b=ZKjOrqTuJE/EF5vU2s7jauO22adZTTuNkzOviX7mgjlL7eXpUSWhAmth2wdN77XYEhWcOr+rBJr8j6Pckr0lc/qaqWrkxxW+mhTFeyCc1pIambwZoWf+U4jdIfDwHirru5c5D+gaTsQl0QIJ7xXHBqLIkwFdlGaz3zma6i0ST/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713448377; c=relaxed/simple;
-	bh=OOfclcgBJP4rjtOQmlOeafKYzgvn9V5QPUbGwmpD9H0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Kx/jTF/ej1kG0g1NRyrf14jRUXA+iLbK6mBeop2azyaEbguPP2D+SrbISmh0t/A/9Zs4Vh6nYqK2YEcmCh0NJty82dgaoxQxX6W0ni8Fq/6MhAa8aptFxUQ9zDCPbsjNViGDxVA2g1lOBzEmp2kYzEIPqT72XVjc6U0hI0U1Ud4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AVhCXV/d; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6f074520c8cso868763b3a.0;
-        Thu, 18 Apr 2024 06:52:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713448376; x=1714053176; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QyA3fzOku9oWwA8R0hs2Mphvf99QfjgFFiLxSpYNLQc=;
-        b=AVhCXV/dDhmFuzVqOhwIwoq/nCiyJGr5iECYptBsOBUCQ47eBZrQ4QlAJY7FQKnHHI
-         1HvCpUttn30Kq54lNnSCo8f+k+dngFDCQwpx/qhzcFm5JAvRZKDD+HJUnR8fYW8C803I
-         mtKm8RqZFZIjt3997sJHgnM58VjNm4nFEONhs4oUZfYI6USTu3Ut/HvyZc0RFxx2N2wD
-         GgArO249F93TVxxlRCCYsC3k89cvW/amqOQoFQ6pjNyRw50fXPSGudgOnhAwQBpYynr4
-         upmyaIktM6ivR+v4TSakpdUj7xiTk0rqTdeHLsrF5cDw0vP3cH/Czb0hNWtmaDwf18vQ
-         nRTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713448376; x=1714053176;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QyA3fzOku9oWwA8R0hs2Mphvf99QfjgFFiLxSpYNLQc=;
-        b=Q5xq8CCl8TKtSBNU6js68iTqkVQVXH+BfGNg3eJUoYCGYiNp5tBRErXyXntQeM84Tx
-         970DwZAP684PtvGGN6SLVJEXGYlmAvKVWLtIdHMhc1wtMaS7xHGdT8o3LN1Eg6ULwYfg
-         lCt2OJxWPiDKk9+zigOribT/IewYKyleJK1+7M5GKlVQeTE33aEfswh0UD20TTIsybmY
-         3VuLqCuld/prA/gbczZTYLZvKD4MRsyd1zeawe8EaU7fHvoaXTUfhmplOX1eyQ0pcQl+
-         ORdFSvDia4S7e1bz5NiebRs32eNQPt2E3uxbHxQTU1KtxLuEInK4IRzo1ReR5lSDGSb2
-         UyQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUmdTtN0lVTJr6cL7oLYRXXp2Kjpk4SSaUdjQqNraL0CHEOu9tPpiX6nT6ApuqnN78dRbwJphgVC8OVIcea/JLFk9xV8TlkBVVRjQx7KJ7ZPBL3vWGSQ9k9MiLgL18xtMX3ntOcN/6Zk5Y=
-X-Gm-Message-State: AOJu0Yx5INB//ki1UFelb0uWQmNvbjkwzk2NzoQ974pfBYML4Him/aHT
-	s3Ufm9qeCyHbj4CFUg2A81BW5uS2aoa45AYXgmr5qlkLeKhUPx6c
-X-Google-Smtp-Source: AGHT+IFKjXEU0yszXeRAs3pRq6UlLYqDpFbI6NzJmKcNmljEtyYAhAhxpmnGaPhWktOFaXkyMjn/2w==
-X-Received: by 2002:a05:6a20:841b:b0:1a9:ccf8:6ea5 with SMTP id c27-20020a056a20841b00b001a9ccf86ea5mr3873023pzd.8.1713448375740;
-        Thu, 18 Apr 2024 06:52:55 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id kg15-20020a170903060f00b001e28d7329e6sm1530208plb.91.2024.04.18.06.52.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 06:52:55 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Thu, 18 Apr 2024 06:52:53 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: "Winiarska, Iwona" <iwona.winiarska@intel.com>
-Cc: "Luck, Tony" <tony.luck@intel.com>,
-	"patches@lists.linux.dev" <patches@lists.linux.dev>,
-	"linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"jdelvare@suse.com" <jdelvare@suse.com>
-Subject: Re: [PATCH v3 50/74] x86/cpu/vfm: Update drivers/hwmon/peci/cputemp.c
-Message-ID: <f1d02e4f-a947-4af1-a7c0-9f7c12c57b3e@roeck-us.net>
-References: <20240416211941.9369-1-tony.luck@intel.com>
- <20240416212216.9605-1-tony.luck@intel.com>
- <5869d164-25c4-42e5-bf87-c4aeeac57388@roeck-us.net>
- <SJ1PR11MB6083D0DFBC7DE286F986A453FC082@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <8690bcea-3ff4-49f1-a671-16583b8d241e@roeck-us.net>
- <SJ1PR11MB6083C8D12885057BF3A0A6AAFC082@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <7cb09d67409c94284928243d8ffb1f8a3128d849.camel@intel.com>
+	s=arc-20240116; t=1713448356; c=relaxed/simple;
+	bh=DFMBpvLg9bEM08JQ9ob6upTO1i+WiZqw2n6cDonSo4w=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=hkLPK5vSU7Qq1oCMXrswgANtXkRoEOkivWE8HPXRsi8HmUIENYbZi/bAkLl+XpSaD9NKBGffq3D9MXtSnB707scAflPYNu8JMHnNsAncAttM2XpQ5VrCdaN97XoLuq2DqfnQihtwFjdVbGTR+Yqit+dLkiTuxM8LXs7nX/l8D+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RmxsbDgx; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C2C281BF209;
+	Thu, 18 Apr 2024 13:52:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713448351;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8wUOi164P3lAmjE1ClSdezuP19LGck9A7BJ4c8R2rWo=;
+	b=RmxsbDgxhNpNQOPoFlayXDpwdP+tytqkGF2OJI6z52D3jvdH0BINaMaSOJABYa6/o6WxeC
+	ghog+bvm/6xdvqTf7B+xQM1u8PJB3QGicA2yN5ueeF17yS8iO+LMOt3yX/95A/69vx0wFU
+	cWHL5OJ6Vcw7APt18HuFE96l5gziHKoup8zj+aF3KookZJxRSzPjCOjoJAU1e0WxFzVysT
+	v/WQR3MUr8UJwvigXjjQu2WXU9bhHEg4YS9NtOcNTo94oqfGuwGimoaaP5yb6TJK1bx/Ff
+	aiZo6SsBfRs+qKWkz/kuZH1VCi7XUvW5NuGt7bGVzPZKfEQBmV9RD8UVbJaq/w==
+Date: Thu, 18 Apr 2024 15:53:07 +0200 (CEST)
+From: Romain Gantois <romain.gantois@bootlin.com>
+To: Serge Semin <fancer.lancer@gmail.com>
+cc: Romain Gantois <romain.gantois@bootlin.com>, 
+    "David S. Miller" <davem@davemloft.net>, 
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+    Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+    Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+    Conor Dooley <conor+dt@kernel.org>, 
+    Geert Uytterhoeven <geert+renesas@glider.be>, 
+    Magnus Damm <magnus.damm@gmail.com>, 
+    Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+    Jose Abreu <joabreu@synopsys.com>, 
+    Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+    Russell King <linux@armlinux.org.uk>, 
+    =?ISO-8859-15?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>, 
+    Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
+    devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+    linux-renesas-soc@vger.kernel.org, 
+    linux-stm32@st-md-mailman.stormreply.com, 
+    linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next v3 4/5] net: stmmac: add support for RZ/N1
+ GMAC
+In-Reply-To: <eqfta73ost45nbzz3aoa2tw5tasg3geehf4fgphu4teq5yfvar@ngif2e6j5j2k>
+Message-ID: <c99b452b-be35-3a67-1c87-042dbc5fce49@bootlin.com>
+References: <20240415-rzn1-gmac1-v3-0-ab12f2c4401d@bootlin.com> <20240415-rzn1-gmac1-v3-4-ab12f2c4401d@bootlin.com> <xp34tp5cjmdshefxjczltz2prqtiikagfspf4lobznzypvsyah@ihpmwfynwzhh> <232e3b0c-ca55-2da0-1c9f-47520a1bcfbd@bootlin.com>
+ <eqfta73ost45nbzz3aoa2tw5tasg3geehf4fgphu4teq5yfvar@ngif2e6j5j2k>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7cb09d67409c94284928243d8ffb1f8a3128d849.camel@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+X-GND-Sasl: romain.gantois@bootlin.com
 
-On Thu, Apr 18, 2024 at 01:32:15PM +0000, Winiarska, Iwona wrote:
-> On Tue, 2024-04-16 at 23:57 +0000, Luck, Tony wrote:
-> > > If the CPU defines and the new macro are to be kept in architecture code,
-> > > maybe include arch/x86/include/asm/cpu_device_id.h from linux/peci.cpu.h.
-> > > That would not be worse than today's include of intel-family.h.
+On Thu, 18 Apr 2024, Serge Semin wrote:
+
+> On Thu, Apr 18, 2024 at 01:57:47PM +0200, Romain Gantois wrote:
+> > Hi Serge,
 > > 
-> > Guenter,
+> > On Tue, 16 Apr 2024, Serge Semin wrote:
 > > 
-> > Looks like I did that to resolve one of the other peci problems. Because I
-> > already have:
+> > > > +static int rzn1_dwmac_pcs_init(struct stmmac_priv *priv,
+> > > 
+> > > > +			       struct mac_device_info *hw)
+> > > 
+> > > AFAICS hw is unused, and the mac_device_info instance is reached via
+> > > the priv pointer. What about dropping the unused argument then?
 > > 
-> > #include "../../arch/x86/include/asm/cpu_device_id.h"
-> > #include "../../arch/x86/include/asm/intel-family.h"
-> > 
-> > in <linux/peci_cpu.h>
-> > 
-> > Simply deleting the include from cputemp.c builds OK in the
-> > context of all the other changes in my patch series.
 > 
-> Hi Tony,
+> > Unfortunately, this is an implementation of the pcs_init() callback, which is 
+> > also used by socfpga (see patch 4/6 in this series). The socfpga implementations 
+> > use the hw parameter for both pcs_init() and pcs_exit() so I can't remove it.
 > 
-> It won't build on non-x86, as cpu_device_id.h includes <asm/intel-family.h>.
-> I think the simplest way to solve the issue is to provide a copy of VFM_* macros
-> and X86_VENDOR_INTEL in include/linux/peci-cpu.h.
+> I had that patch content in mind when was writing my comment. There is
+> no point in passing the hw-pointer there either because you already
+> have the stmmac_priv pointer. There is stmmac_priv::hw field which you
+> can use instead in the same way as you do in this patch. Here is the
+> respective change for your SoCFPGA patch:
 > 
 
-I think the proper fix would really be to move the include files to a
-generic directory, such as include/linux/x86/ or include/linux/cpu/x86/.
-After all, they _are_ now needed in non-Intel code.
+You're right, I'll remove the parameter.
 
-Guenter
+Thanks,
+
+-- 
+Romain Gantois, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
