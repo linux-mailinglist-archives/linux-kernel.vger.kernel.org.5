@@ -1,126 +1,294 @@
-Return-Path: <linux-kernel+bounces-149458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D67978A9167
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:03:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ED098A9169
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 05:05:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54B30B21558
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:03:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71EF51C20C80
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:05:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFDF84F894;
-	Thu, 18 Apr 2024 03:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55E534F888;
+	Thu, 18 Apr 2024 03:04:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DyuRU+nb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XMCD9oDY"
+Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265C16138;
-	Thu, 18 Apr 2024 03:03:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF3965464A;
+	Thu, 18 Apr 2024 03:04:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713409407; cv=none; b=dLQaXfdzMlZDGhEWrQIgNOuAJPzIMKlJmzir68nb/BC0QhcTaHUZcSeQrVfhOt9iMpSetsLpfFh9dLZtXngpJQOFeLvTJLkVmHQIFJQO230Xoe0GmUDXtzKHmKf56NuQNTJ2ylSYGjZaZoQhsuf8nP8+wdGWCii2NtE/L5W8Wyw=
+	t=1713409495; cv=none; b=poc9twVRxtr/EyWHB7CLC8o28sqP/XvizwuQ91LWWsnjkjnx1PJojE1j28a3iFRU/cMJ11teJMl5aa0WPKu7qUkYHtVjybypT8e8LpgrHBVMwBlSxMXKHU69tbtKw8dHp4Ndn2SZYjl5D0JpHtW0123tZxx9MWPuXcYogymOuz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713409407; c=relaxed/simple;
-	bh=kfEJQjTwgGJh4Zkx43Z0VD1r+pL2rJMimsZzyjREVEM=;
+	s=arc-20240116; t=1713409495; c=relaxed/simple;
+	bh=IYbsargPJwgAjYCUljsr0lTnKhEgUmtJDU007J3fZC4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=idbxgrIsfyS/1CyxhANwP59PhrAA7nkhxu0xyZQ2ermbCrKljh5KOAhva0SIVVADTWhU5jurGaLCbweT0OL7tZl4p1dNZjqOYxfQQZibJneayX6xGCxa5qsE2JGRF9JfAsPXF0ubJ2VOJ2aUNIn0FFqHw6cG+5sELUrsM6/CU58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DyuRU+nb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4761C3277B;
-	Thu, 18 Apr 2024 03:03:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713409406;
-	bh=kfEJQjTwgGJh4Zkx43Z0VD1r+pL2rJMimsZzyjREVEM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=DyuRU+nbBlfEefDgkjYMaeHuZxrD+lMlRPMalkQi5IC69YYTWZ6zEdir/RupkAap0
-	 17RzMJVBVaskBzoD8lhK/LtZy2kUP7k21+CDiY0gBXnPmT64owTkQbxHdf0JyAPAYx
-	 tx0a4zLTnGo0CFjFFObQkeT4Qn82jY+d6vAZT/fd9qDpC/vddsmWPQ9f5r1pkH+Cb2
-	 yh2V+NoEvWckhqYS09yUlUYUkVb0oMebHG0BQarTzSCq4o2/7SwOGQyDEXewhte9Sg
-	 Lhmm69YwKDOmE0MM0CShULZ5v9DJpyzWisMvETTr/zB7h29YiU62z1Gam5322XaIMS
-	 pcQhx3sXD225A==
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a557044f2ddso14279466b.2;
-        Wed, 17 Apr 2024 20:03:26 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVYKBvBKXRyEWqu+7BMTN77g23vYSb9E9bArH7hfvTIghiag/MV+qvk4XmR5INFtomffqPPFlh+s8vQWKAi4RnQo85AkDORjSw451cYRAndTDWtxewb3sSYp29xO9zLAfnOrmE8IJ2ABj7V18PlQRY8973N2Y2YKNz8hiBgxA==
-X-Gm-Message-State: AOJu0YwTmdPOq6cIBzMY6EttEpJ6P48l+q/jzt9p7qRSflkzKL6A2qnN
-	gQZx6cmmVQKpw+SE3FrN3Ru5bXY0cEu9Q4J08AmXVKoTNaxtZD8726TNrmwXp5NKClwqWG+BxVX
-	aFcE24gn1dYoTXmH3RufPXhh1N0M=
-X-Google-Smtp-Source: AGHT+IEGnzxcLzKogVMafWt/io2wledXtCG2nYVIAR7Lu4aQp3Gm16la5nxK3JKrgyWlsMhlzCjZG627hEMlqWAR0dk=
-X-Received: by 2002:a17:906:f8da:b0:a55:596b:c9ca with SMTP id
- lh26-20020a170906f8da00b00a55596bc9camr830982ejb.39.1713409405224; Wed, 17
- Apr 2024 20:03:25 -0700 (PDT)
+	 To:Cc:Content-Type; b=tVZrHDKZBjcV+M7nuhFMm951dtExOJrNicua3mBkcNyFreuONWVK/WDVDI2RqlSWoC4T/Gvmuob3INoUeEtD6T7PX2/wqkHYk13TSgsl1vq22EgDMmGG5u3lZ6b0ZbBnt//uquKJWedlmuFRH1mqLGIz/JBlhhprMBaCFKk07Ms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XMCD9oDY; arc=none smtp.client-ip=209.85.166.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-369e3c29aedso1831135ab.1;
+        Wed, 17 Apr 2024 20:04:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713409493; x=1714014293; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bxDTePvUuJpRciyRzWuf/NP9ERBrPpwmGa0ygfJXUdM=;
+        b=XMCD9oDYCWHoSzCGFbc/y/nk/xWvJnImxRDLzTEtQFXNbLYFC725p2lLrX2OYv49hP
+         kau+DkhKdhhcBbKs/HF1TYNa6FCBzbE73OD/VRpbehByO9WtP7DOUU/rYmueoQ1FJpZK
+         LdpDRh3x+deEvvoQmwK8c+kaoEZarvCs6go35Im7c8juPdQRMq95+dzPRJZpqnphh8E/
+         YemZCdCz0nshcJwsBm5CQ1lvKFbbbbxj5gjOYRg8pGM7WF8dqFXya/L82R3OI4fywA11
+         pysdmlgBBn5lWENcXYGwS1UGLa3nwE9CM6zzCJVM7M9LzC+vADzwqLa2iRrsFuwk+9Gn
+         2bHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713409493; x=1714014293;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bxDTePvUuJpRciyRzWuf/NP9ERBrPpwmGa0ygfJXUdM=;
+        b=b4iykXj1xCkvLnzQ6NHBD6k6jyQShZY6L9Fz2T0cbUccUQmPto6QW8Pc5EvDNMKigi
+         kht4A0kQ/v/QXKuhVW3mHVfiB6NDADrlleQl7URwQbMOOD9oOzZzWe8db/IWxCSFl+7L
+         wdtpG0/K8J493kn3cFRUvtza042zAUlPV9B7z9XoB2Co/aDhgFzUFRHtSLm3NpjXdvb4
+         9olS3nEyxPLVQ3yeqD78b0T4gbro+AVUDMPQ1N3eIObsYoWByHzlzFL5Cxd2i2EdtndF
+         0MRjXlG01W7O46VyzPsTrrsFACiQVdryWrRE7AXuXTjMQh+gVefu294SY8z0UQvdZpaW
+         /Iqw==
+X-Forwarded-Encrypted: i=1; AJvYcCVMg1LTdbCr8F1IBfDJuHeIX4iiGn35enmmzCADkJF4hL9GGo5jThHABcbCFZvV5rcQ2KYFjKLiYwmP314gnJ9o/7P/aJyQNh9r3qPQ+nkX5MIY0HlrhkPxkzHTT3DWBnNErCuWS+ullErNkCju72VAmu50mPyMMSlTjEd1j44jAlB7pbTb
+X-Gm-Message-State: AOJu0YzE/3U+2Gy29CrNaXPEMw0utzQanzVa2omEl7gEJKuWHryg14zx
+	7wirsYH4bctFhNVILruC71shmjPxL25bcmjU/cHkeTkw9hPRVIGxJiVq55HaDOiTCBG1C2LMsod
+	iyH2dYzL1EwlKjL0LQL1zOS/WXzY=
+X-Google-Smtp-Source: AGHT+IHRKX1tdI8zogX+a2YNb9TstRLegJJP9XfxDyAqAFU+rTRkTUENh/cfe816KPB4rWxlbPae2hQrCSWBHmTZvIA=
+X-Received: by 2002:a05:6e02:1806:b0:36b:3bc7:f338 with SMTP id
+ a6-20020a056e02180600b0036b3bc7f338mr1625970ilv.3.1713409492972; Wed, 17 Apr
+ 2024 20:04:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416144926.599101-1-david@redhat.com> <CANiq72kACt+FfeYXJxfQpmGH=uPqkDA0oprfnebw52VSKyn7kQ@mail.gmail.com>
- <CAAhV-H5mt0GaaZ3s44CYb4aKqYeDYm+Q16hY__FdQ6xYJh+bgg@mail.gmail.com> <20240417135834.ddaa9c038a8a8af2bd9e39aa@linux-foundation.org>
-In-Reply-To: <20240417135834.ddaa9c038a8a8af2bd9e39aa@linux-foundation.org>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Thu, 18 Apr 2024 11:03:18 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H4O6_9Ukgz-GrPcWTq3cAN2c1OkXQWRbUgMR2ZwUuQQHA@mail.gmail.com>
-Message-ID: <CAAhV-H4O6_9Ukgz-GrPcWTq3cAN2c1OkXQWRbUgMR2ZwUuQQHA@mail.gmail.com>
-Subject: Re: [PATCH v1] LoongArch/tlb: fix "error: parameter 'ptep' set but
- not used" due to __tlb_remove_tlb_entry()
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, David Hildenbrand <david@redhat.com>, 
-	linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-arch@vger.kernel.org, 
-	loongarch@lists.linux.dev, llvm@lists.linux.dev, 
-	Arnd Bergmann <arnd@arndb.de>, WANG Xuerui <kernel@xen0n.name>, Nathan Chancellor <nathan@kernel.org>
+References: <1713345932-6408-1-git-send-email-shengjiu.wang@nxp.com> <c3bcefc9-61de-44aa-8412-17ea42e7048c@kernel.org>
+In-Reply-To: <c3bcefc9-61de-44aa-8412-17ea42e7048c@kernel.org>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Thu, 18 Apr 2024 11:04:38 +0800
+Message-ID: <CAA+D8ANB1v1ei6ez6KSWoXLMqk+6CvThY3qrDsqO=tHOC0DNhg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: dt-bindings: fsl,ssi: Convert to YAML
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, lgirdwood@gmail.com, broonie@kernel.org, 
+	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, 
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi, Andrew,
-
-On Thu, Apr 18, 2024 at 4:58=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
+On Wed, Apr 17, 2024 at 10:16=E2=80=AFPM Krzysztof Kozlowski <krzk@kernel.o=
+rg> wrote:
 >
-> On Wed, 17 Apr 2024 11:18:27 +0800 Huacai Chen <chenhuacai@kernel.org> wr=
-ote:
->
-> > On Wed, Apr 17, 2024 at 3:25=E2=80=AFAM Miguel Ojeda
-> > <miguel.ojeda.sandonis@gmail.com> wrote:
-> > >
-> > > On Tue, Apr 16, 2024 at 4:49=E2=80=AFPM David Hildenbrand <david@redh=
-at.com> wrote:
-> > > >
-> > > > With LLVM=3D1 and W=3D1 we get:
-> > >
-> > > Hmm... I didn't need W=3D1 to trigger it (LLVM 18.1.2).
-> > >
-> > > > Reported-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-> > >
-> > > Thanks, looks good to me -- built-tested:
-> > >
-> > > Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
-> > > Tested-by: Miguel Ojeda <ojeda@kernel.org>
-> > >
-> >
-> > Queued for loongarch-fixes, thanks.
+> On 17/04/2024 11:25, Shengjiu Wang wrote:
+> > Convert the fsl,ssi binding to YAML.
 > >
 >
-> (top-posting repaired so I can sensibly reply to this.  Please avoid
-> top-posting!)
-Sorry, I only top-posting with "Queued ...", "Applied ..." because I
-saw others do like this. If this is also unacceptable, I will not do
-it again.
+> ...
+>
+> > +description:
+> > +  Notes on fsl,playback-dma and fsl,capture-dma
+> > +  On SOCs that have an SSI, specific DMA channels are hard-wired for p=
+layback
+> > +  and capture.  On the MPC8610, for example, SSI1 must use DMA channel=
+ 0 for
+> > +  playback and DMA channel 1 for capture.  SSI2 must use DMA channel 2=
+ for
+> > +  playback and DMA channel 3 for capture.  The developer can choose wh=
+ich
+> > +  DMA controller to use, but the channels themselves are hard-wired.  =
+The
+> > +  purpose of these two properties is to represent this hardware design=
+.
+> > +
+> > +  The device tree nodes for the DMA channels that are referenced by
+> > +  "fsl,playback-dma" and "fsl,capture-dma" must be marked as compatibl=
+e with
+> > +  "fsl,ssi-dma-channel".  The SOC-specific compatible string (e.g.
+> > +  "fsl,mpc8610-dma-channel") can remain.  If these nodes are left as
+> > +  "fsl,elo-dma-channel" or "fsl,eloplus-dma-channel", then the generic=
+ Elo DMA
+> > +  drivers (fsldma) will attempt to use them, and it will conflict with=
+ the
+> > +  sound drivers.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - items:
+> > +          - enum:
+> > +              - fsl,imx50-ssi
+> > +              - fsl,imx53-ssi
+> > +          - enum:
+> > +              - fsl,imx51-ssi
+> > +          - enum:
+> > +              - fsl,imx21-ssi
+>
+> That's a mess... you cannot have enums as fallbacks.
+
+ok, will use const.
+>
+> > +      - items:
+> > +          - enum:
+> > +              - fsl,imx25-ssi
+> > +              - fsl,imx27-ssi
+> > +              - fsl,imx35-ssi
+> > +              - fsl,imx51-ssi
+> > +              - fsl,imx6q-ssi
+> > +              - fsl,imx6sl-ssi
+> > +              - fsl,imx6sx-ssi
+> > +          - enum:
+> > +              - fsl,imx21-ssi
+> > +              - fsl,imx51-ssi
+> > +      - items:
+> > +          - const: fsl,mpc8610-ssi
+> > +
+> > +  cell-index:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    enum: [0, 1, 2]
+> > +    description: The SSI index
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  fsl,fifo-depth:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    description:
+> > +      The number of elements in the transmit and receive FIFOs.
+> > +      This number is the maximum allowed value for SFCSR[TFWM0].
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: The ipg clock for register access
+> > +      - description: clock for SSI master mode
+> > +    minItems: 1
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: ipg
+> > +      - const: baud
+> > +    minItems: 1
+> > +
+> > +  dmas:
+> > +    oneOf:
+> > +      - items:
+> > +          - description: DMA controller phandle and request line for R=
+X
+> > +          - description: DMA controller phandle and request line for T=
+X
+> > +      - items:
+> > +          - description: DMA controller phandle and request line for R=
+X0
+> > +          - description: DMA controller phandle and request line for T=
+X0
+> > +          - description: DMA controller phandle and request line for R=
+X1
+> > +          - description: DMA controller phandle and request line for T=
+X1
+> > +
+> > +  dma-names:
+> > +    oneOf:
+> > +      - items:
+> > +          - const: rx
+> > +          - const: tx
+> > +      - items:
+> > +          - const: rx0
+> > +          - const: tx0
+> > +          - const: rx1
+> > +          - const: tx1
+> > +
+> > +  codec-handle:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description:
+> > +      Phandle to a 'codec' node that defines an audio
+> > +      codec connected to this SSI.  This node is typically
+> > +      a child of an I2C or other control node.
+> > +
+> > +  fsl,fiq-stream-filter:
+> > +    type: boolean
+> > +    description:
+> > +      Disabled DMA and use FIQ instead to filter the codec stream.
+> > +      This is necessary for some boards where an incompatible codec
+> > +      is connected to this SSI, e.g. on pca100 and pcm043.
+> > +
+> > +  fsl,mode:
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    enum: [ ac97-slave, ac97-master, i2s-slave, i2s-master,
+> > +            lj-slave, lj-master, rj-slave, rj-master ]
+> > +    description: |
+> > +      "ac97-slave" - AC97 mode, SSI is clock slave
+> > +      "ac97-master" - AC97 mode, SSI is clock master
+> > +      "i2s-slave" - I2S mode, SSI is clock slave
+> > +      "i2s-master" - I2S mode, SSI is clock master
+> > +      "lj-slave" - Left justified mode, SSI is clock slave
+> > +      "lj-master" - Left justified mode, SSI is clock master
+> > +      "rj-slave" - Right justified mode, SSI is clock slave
+> > +      "rj-master" - Right justified mode, SSI is clock master
+> > +
+> > +  fsl,ssi-asynchronous:
+> > +    type: boolean
+> > +    description: If specified, the SSI is to be programmed in asynchro=
+nous
+> > +      mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
+> > +      all be connected to valid signals.  In synchronous mode,
+> > +      SRCK and SRFS are ignored.  Asynchronous mode allows
+> > +      playback and capture to use different sample sizes and
+> > +      sample rates.  Some drivers may require that SRCK and STCK
+> > +      be connected together, and SRFS and STFS be connected
+> > +      together.  This would still allow different sample sizes,
+> > +      but not different sample rates.
+> > +
+> > +  fsl,playback-dma:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description: Phandle to a node for the DMA channel to use for
+> > +      playback of audio.  This is typically dictated by SOC
+> > +      design. Only used on Power Architecture.
+> > +
+> > +  fsl,capture-dma:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description: Phandle to a node for the DMA channel to use for
+> > +      capture (recording) of audio.  This is typically dictated
+> > +      by SOC design. Only used on Power Architecture.
+> > +
+> > +  "#sound-dai-cells":
+> > +    const: 0
+> > +    description: optional, some dts node didn't add it.
+>
+> The question is: is this DAI or not?
+
+Yes, it is a DAI. so, is there any issue here?
 
 >
-> I'd rather carry this in mm.git with your ack please.  Otherwise mm.git
-> won't compile without it and if I retain this patch we'll get
-> duplicate-patch emails from Stephen and I won't be able to merge
-> mm.git's mm-nonmm-stable tree into Linus until loongarch-fixes has
-> merged.
-loongarch-next always merges loongarch-fixes, so when I apply a patch
-it will be in linux-next. Now this patch I have already applied to
-loongarch-fixes and loongarch-next. In future, I will give an Acked-by
-for you if needed.
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +  - fsl,fifo-depth
+> > +
+> > +unevaluatedProperties: false
+>
+> This must be additionalProperties:false. Use example-schema as
+> reference... unless you want to reference dai-common.yaml, but then that
+> one is missing.
 
-Huacai
+As it is a DAI,  so I should include dai-common.yaml,  right?
+
+Best regards
+Shengjiu Wang
 
 >
+> Best regards,
+> Krzysztof
 >
 
