@@ -1,346 +1,104 @@
-Return-Path: <linux-kernel+bounces-150626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA8178AA1FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CD778AA202
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:27:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AA0F1F2282B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:26:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6B9F1F225A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 18:27:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94E017AD8C;
-	Thu, 18 Apr 2024 18:26:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="hTskooSC"
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D9ED17AD68;
+	Thu, 18 Apr 2024 18:27:19 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E9F17967F
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 18:26:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1B4C16D30B
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 18:27:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713464776; cv=none; b=nqixK8QchQeozdbDfeGsxeOqWZfr27cbVNPeCEmDxQgr4iQxU6QpqTdB15JQcT6x6yz2UioNB9Zt4qn/wsIDIhcpgKO0Dv13KCOREZ2MfLoG7O9KkGmBu8m3L2pQbpaSO64g1nmBoAjwloZWhcGXvXu8vtZOEi0LXRfTFliKJPE=
+	t=1713464838; cv=none; b=axrzttsSf37EIOYdp9ytmk/O9W0HJwJ6EFljHAO2I4Ei9oVnEkiHR93W7dLjMrcx1WhZYfc4mKIaqNZp44o8vYJFbLhMoyMrcseYlSHjohDKTE3MVUnIh8TBhklKvOkE9EQ1b98W+uI3OkqCqbOhb/LLgZCuqZbIrXWPraXp+xk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713464776; c=relaxed/simple;
-	bh=FhDtn/1Oncebi5qTzuSBS0nrpK3TbxVu093eT7IPIoA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=R4NEmpkhj1tCcKSUGlXpKhGe9EQvP2LaSxQben6PCM2FyFUaZakUrluqGMrcxJXdYR5eSDpgaQhDFVtIe5DmlLvrYFvSgUirWhqwCANuHCfqO3bZH/yw0M2NSWXVrh5++nObV70VWiZJFdjd53CV6e20fosPPACrO6N0Lg33OLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hTskooSC; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1e2a553aad6so13252495ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:26:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713464773; x=1714069573; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RmUziw85ELNs5DunGMczbwZRDhKt3LNvBNFMebu6TKQ=;
-        b=hTskooSCAkgxaDEFuU3btjif1PSvVS2WsIJ0A3+Ahx4yIBxpUevhls1HOla39JZslH
-         u7bpeZrFVoFVPeiO23p7L5F3DNN131xbSIekK2QzjeGPcvZYDVjIaGZxDCuu9IeRdqAZ
-         A3NakElPETPYe0pP/w78yYkxylgZU4PFquRgxBV9iOOjMGf+Di6bLvGe9GpGDM/OFFj5
-         3qLskCTb5cBTO+3QpmwKUNV4Aw9tXPAZk5lau/FbvB+Bj7jMNphteEKDoOkDKXRajM1q
-         bgnVA3Ubwp3x4v+/QEoQr0PmAPEhmsZx01NCzlJT8GPaQvfK6cjIrrd8p0W6tqie6SF7
-         e07w==
+	s=arc-20240116; t=1713464838; c=relaxed/simple;
+	bh=UzKx2uEzqgslDAiwUDJyVu5c/uy6CYD26vc1Ic3/26A=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=sy9thJRM7u4SZ6aSvck/FQVk31OGjhn7BrF9WcXxYU2fafYx6QpcY0ZWY2S84Bp8+kF4x33di2dY2Wcb9cbQmCIjCE/qU8libggyAWgcg39hZXBoMs4rGmGi0ySIEiOldvt8M2YbDF1VCr3Ov+LEaO0cjtANZyGjcXOe/RoSJmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36a1a2f396aso15425505ab.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:27:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713464773; x=1714069573;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RmUziw85ELNs5DunGMczbwZRDhKt3LNvBNFMebu6TKQ=;
-        b=ho5LJELkdoePsoRuvyS0n7QhnY6nSgRFx7umZsAn+kkRpDJzgtfRoYm9DMI5NYsENs
-         mrCqjB2TIkUWsyImWrgx+8vNEl0ovwPBDT4dMq2Ggd4ANC7NXgBGsKQyMJvSX1Q90gI9
-         fDuOFL6a7S+7xRaW4ZXx9NSqNFdn1+g+JImOkehfv2gX03PiQYIBHDjU95olW/s6r8gX
-         h2y6Fjyho43voLQaI0JARKf+dKziZK216AuHdEe81f3eDtFSnrEyW+sjdEawsmfHYuWW
-         HxLZ37o9gSF8PbROdGlATLu1tG2mJ9Wo7fxVgILkG7J+PfE/nSciYMth6jAZJCw4qLQL
-         zZmw==
-X-Forwarded-Encrypted: i=1; AJvYcCUNo4EZizOG9825lFv6DAoApoGqJeL3g/e7hnv/9ygnF3aaqgrw3wJ0ECRwFITfpQ+gNHlGLrTPikbZHXSbw4xHse80hqAOedHm3Q8X
-X-Gm-Message-State: AOJu0Yz1b4Ao7h51j+s3bo3Ogm0aE39+ZRv2+R1TjdnoYCdJNBh01lPq
-	njaEVor9EnBiJotpLHillblMYH8BooBqTF12xf2MSgHr7qkggaF0mcbiuLOreppeQkRH932mnBB
-	esA==
-X-Google-Smtp-Source: AGHT+IHi4MYznpirLYLsYvqS5mZfsgjkGMGyYW3vGG4C7v/qV79tzP+wzMFnQyGkJtLGYkIfMLxse2hFPSI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:e5c2:b0:1e0:afa0:cc94 with SMTP id
- u2-20020a170902e5c200b001e0afa0cc94mr8974plf.7.1713464773080; Thu, 18 Apr
- 2024 11:26:13 -0700 (PDT)
-Date: Thu, 18 Apr 2024 11:26:11 -0700
-In-Reply-To: <m536wofeimei4wdronpl3xlr3ljcap3zazi3ffknpxzdfbrzsr@plk4veaz5d22>
+        d=1e100.net; s=20230601; t=1713464837; x=1714069637;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UzKx2uEzqgslDAiwUDJyVu5c/uy6CYD26vc1Ic3/26A=;
+        b=X8X8A+cRI8tguUEr7y4+G4u+COhNwPaiwxBn07N715SVM7XmUTNo8yWMPZXsAhvzjT
+         /ULRNWfvmLMjT8Bl0GLgg948rc+ydn9FJ/wmapL9m9uA2/IIMmSrAW/GEKdSGnKpzaDx
+         9TG/WqnjROztsTlvFAqnVmmOhkKkqR3PDWUF8murNtQTTU0g4XnQgNcXjwdIOhlueuda
+         YbnMzLy5Pow2ZpmaN719s/yH5gCKqPkSQ/ziOxJQUFqYkO7hyMu0DMRDlsfakiA98dnl
+         Jw0mgtpkkw9VNYXDxk7XD1B9rj6pTjm0tRtqZnl5dr7nIrej5DCFYbKAOTCWglk8deXd
+         ciBw==
+X-Forwarded-Encrypted: i=1; AJvYcCVP7Ghk87PHVa5UdMolgV4FIUt128kOgDxMGHMBHdQGIRBPuRGG80//3REHfwqI+EHVb4Z3x40filu8Kbb9kSx2Ny5rsBcAcn2y0DQq
+X-Gm-Message-State: AOJu0YzKU5BaJKC61EBeyip64FbOeEdI8JXHeQQo43zJ5JuEBwWY9dqr
+	1775I/MZHkrknx8SJdmipUuoxjANFM8fF0voNAPUt3WaBpWtoErO4TWe9F98dK/x02Fegrv8JXy
+	xW5yTFv6SQyaXp7TAPJWSNdn1UiYmm57fWfkZAjVGt34uKYOty6vChuo=
+X-Google-Smtp-Source: AGHT+IEzDA31gc0F9RRvsZZF/gSZWsQm4Y6V2uPL90Ae6Iw6pW6GD1T2cNU2+K7lft+xRk0EoqR8YaFFWMJEAeNWAMQhYQXxDrC6
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <8f64043a6c393c017347bf8954d92b84b58603ec.1708933498.git.isaku.yamahata@intel.com>
- <e6e8f585-b718-4f53-88f6-89832a1e4b9f@intel.com> <bd21a37560d4d0695425245658a68fcc2a43f0c0.camel@intel.com>
- <54ae3bbb-34dc-4b10-a14e-2af9e9240ef1@intel.com> <ZfR4UHsW_Y1xWFF-@google.com>
- <ay724yrnkvsuqjffsedi663iharreuu574nzc4v7fc5mqbwdyx@6ffxkqo3x5rv>
- <39e9c5606b525f1b2e915be08cc95ac3aecc658b.camel@intel.com> <m536wofeimei4wdronpl3xlr3ljcap3zazi3ffknpxzdfbrzsr@plk4veaz5d22>
-Message-ID: <ZiFlw_lInUZgv3J_@google.com>
-Subject: Re: [PATCH v19 007/130] x86/virt/tdx: Export SEAMCALL functions
-From: Sean Christopherson <seanjc@google.com>
-To: "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-Cc: Rick P Edgecombe <rick.p.edgecombe@intel.com>, Tina Zhang <tina.zhang@intel.com>, 
-	Dave Hansen <dave.hansen@intel.com>, Hang Yuan <hang.yuan@intel.com>, 
-	"x86@kernel.org" <x86@kernel.org>, Kai Huang <kai.huang@intel.com>, Bo2 Chen <chen.bo@intel.com>, 
-	"sagis@google.com" <sagis@google.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, Erdem Aktas <erdemaktas@google.com>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
-	Isaku Yamahata <isaku.yamahata@intel.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:1fc7:b0:36b:214:bc2f with SMTP id
+ dj7-20020a056e021fc700b0036b0214bc2fmr165289ilb.3.1713464836829; Thu, 18 Apr
+ 2024 11:27:16 -0700 (PDT)
+Date: Thu, 18 Apr 2024 11:27:16 -0700
+In-Reply-To: <000000000000a62351060e363bdc@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ef47400616631ea7@google.com>
+Subject: Re: [syzbot] memory leak in ___neigh_create (2)
+From: syzbot <syzbot+42cfec52b6508887bbe8@syzkaller.appspotmail.com>
+To: alexander.mikhalitsyn@virtuozzo.com, davem@davemloft.net, den@openvz.org, 
+	dsahern@kernel.org, edumazet@google.com, f.fainelli@gmail.com, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
+	nogikh@google.com, pabeni@redhat.com, razor@blackwall.org, 
+	syzkaller-bugs@googlegroups.com, thomas.zeitlhofer+lkml@ze-it.at, 
+	thomas.zeitlhofer@ze-it.at, wangyuweihx@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Apr 18, 2024, kirill.shutemov@linux.intel.com wrote:
-> On Tue, Apr 16, 2024 at 07:45:18PM +0000, Edgecombe, Rick P wrote:
-> > On Wed, 2024-04-10 at 15:49 +0300, Kirill A. Shutemov wrote:
-> > > On Fri, Mar 15, 2024 at 09:33:20AM -0700, Sean Christopherson wrote:
-> > > > So my feedback is to not worry about the exports, and instead focus on
-> > > > figuring
-> > > > out a way to make the generated code less bloated and easier to read/debug.
-> > > 
-> > > I think it was mistake trying to centralize TDCALL/SEAMCALL calls into
-> > > few megawrappers. I think we can get better results by shifting leaf
-> > > function wrappers into assembly.
-> > > 
-> > > We are going to have more assembly, but it should produce better result.
-> > > Adding macros can help to write such wrapper and minimizer boilerplate.
-> > > 
-> > > Below is an example of how it can look like. It's not complete. I only
-> > > converted TDCALLs, but TDVMCALLs or SEAMCALLs. TDVMCALLs are going to be
-> > > more complex.
-> > > 
-> > > Any opinions? Is it something worth investing more time?
-> > 
-> > We discussed offline how implementing these for each TDVM/SEAMCALL increases the
-> > chances of a bug in just one TDVM/SEAMCALL. Which could making debugging
-> > problems more challenging. Kirill raised the possibility of some code generating
-> > solution like cpufeatures.h, that could take a spec and generate correct calls.
-> > 
-> > So far no big wins have presented themselves. Kirill, do we think the path to
-> > move the messy part out-of-line will not work?
-> 
-> I converted all TDCALL and TDVMCALL leafs to direct assembly wrappers.
-> Here's WIP branch: https://github.com/intel/tdx/commits/guest-tdx-asm/
-> 
-> I still need to clean it up and write commit messages and comments for all
-> wrappers.
-> 
-> Now I think it worth the shot.
-> 
-> Any feedback?
+This bug is marked as fixed by commit:
+net: stop syzbot
 
-I find it hard to review for correctness, and extremely susceptible to developer
-error.  E.g. lots of copy+paste, and manual encoding of RCX to expose registers.
-It also bleeds TDX ABI into C code, e.g.
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-	/*
-	 * As per TDX GHCI CPUID ABI, r12-r15 registers contain contents of
-	 * EAX, EBX, ECX, EDX registers after the CPUID instruction execution.
-	 * So copy the register contents back to pt_regs.
-	 */
-	regs->ax = args.r12;
-	regs->bx = args.r13;
-	regs->cx = args.r14;
-	regs->dx = args.r15;
+#syz fix: exact-commit-title
 
-Oh, and it requires input/output paramters, which is quite gross for C code *and*
-for assembly code, e.g.
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-	u64 tdvmcall_map_gpa(u64 *gpa, u64 size);
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=42cfec52b6508887bbe8
 
-and then the accompanying assembly code:
+---
+[1] I expect the commit to be present in:
 
-		FRAME_BEGIN
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
-		save_regs r12,r13
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
 
-		movq	(%rdi), %r12
-		movq	%rsi, %r13
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
 
-		movq	$(TDX_R10 | TDX_R11 | TDX_R12 | TDX_R13), %rcx
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
 
-		tdvmcall	$TDVMCALL_MAP_GPA
-
-		movq	%r11, (%rdi)
-
-		restore_regs r13,r12
-
-		FRAME_END
-		RET
-
-I think having one trampoline makes sense, e.g. to minimize the probability of
-leaking register state to the VMM.  The part that I don't like, and which generates
-awful code, is shoving register state into a memory structure.
-
-The annoying part with the TDX ABI is that it heavily uses r8-r15, and asm()
-constraints don't play nice with r8-15.  But that doesn't mean we can't use asm()
-with macros, it just means we have to play games with registers.
-
-Because REG-REG moves are super cheap, and ignoring the fatal error goofiness,
-there are at most four inputs.  That means having a single trampoline take *all*
-possible inputs is a non-issue.  And we can avoiding polluting the inline code if
-we bury the register shuffling in the trampoline.
-
-And if we use asm() wrappers to call the trampoline, then the trampoline doesn't
-need to precisely follow the C calling convention.  I.e. the trampoline can return
-with the outputs still in r12-r15, and let the asm() wrappers extract the outputs
-they want.
-
-As it stands, TDVMCALLs either have 0, 1, or 4 outputs.  I.e. we only need three
-asm() wrappers.  We could get away with one wrapper, but then users of the wrappers
-would need dummy variables for inputs *and* outputs, and the outputs get gross.
-
-Completely untested, but this is what I'm thinking.  Side topic, I think making
-"tdcall" a macro that takes a leaf is a mistake.  If/when an assembler learns what
-tdcall is, we're going to have to rewrite all of that code.  And what a coincidence,
-my suggestion needs a bare TDCALL!  :-)
-
-Side topic #2, I don't think the trampoline needs a stack frame, its a leaf function.
-
-Side topic #3, the ud2 to induce panic should be out-of-line.
-
-Weird?  Yeah.  But at least we one need to document one weird calling convention,
-and the ugliness is contained to three macros and a small assembly function.
-
-pushsection .noinstr.text, "ax"
-SYM_FUNC_START(tdvmcall_trampoline)
-	movq	$TDX_HYPERCALL_STANDARD, %r10
-	movq	%rax, %r11
-	movq	%rdi, %r12
-	movq	%rsi, %r13
-	movq	%rdx, %r14
-	movq	%rcx, %r15
-
-	movq	$(TDX_R10 | TDX_R11 | TDX_R12 | TDX_R13 | TDX_R14 | TDX_R15), %rcx
-
-	tdcall
-
-	testq	%rax, %rax
-	jnz	.Lpanic
-
-	ret
-
-Lpanic:
-	ud2
-SYM_FUNC_END(tdvmcall_trampoline)
-popsection
-
-
-#define TDVMCALL(reason, in1, in2, in3, in4)				\
-({									\
-	long __ret;							\
-									\
-	asm(								\
-		"call tdvmcall_trampoline\n\t"				\
-		"mov %%r10, %0\n\t"					\
-		: "=r" (__ret)						\
-		: "D" (in1), "S"(in2), "d"(in3), "c" (in4)		\
-		: "r12", "r13", "r14", "r15"				\
-	);								\
-	__ret;								\
-})
-
-#define TDVMCALL_1(reason, in1, in2, in3, in4, out1)			\
-({									\
-	long __ret;							\
-									\
-	asm(								\
-		"call tdvmcall_trampoline\n\t"				\
-		"mov %%r10, %0\n\t"					\
-		"mov %%r12, %1\n\t"					\
-		: "=r"(__ret) "=r" (out1)				\
-		: "a"(reason), "D" (in1), "S"(in2), "d"(in3), "c" (in4)	\
-		: "r12", "r13", "r14", "r15"				\
-	);								\
-	__ret;								\
-})
-
-#define TDVMCALL_4(reason, in1, in2, in3, in4, out1, out2, out3, out4)	\
-({									\
-	long __ret;							\
-									\
-	asm(								\
-		"call tdvmcall_trampoline\n\t"				\
-		"mov %%r10, %0\n\t"					\
-		"mov %%r12, %1\n\t"					\
-		"mov %%r13, %2\n\t"					\
-		"mov %%r14, %3\n\t"					\
-		"mov %%r15, %4\n\t"					\
-		: "=r" (__ret),						\
-		  "=r" (out1), "=r" (out2), "=r" (out3), "=r" (out4)	\
-		: "a"(reason), "D" (in1), "S"(in2), "d"(in3), "c" (in4)	\
-		  [reason] "i" (reason) 				\
-		: "r12", "r13", "r14", "r15"				\
-	);								\
-	__ret;								\
-})
-
-static int handle_halt(struct ve_info *ve)
-{
-	if (TDVMCALL(EXIT_REASON_HALT, irqs_disabled(), 0, 0, 0))
-		return -EIO;
-
-	return ve_instr_len(ve);
-}
-
-void __cpuidle tdx_safe_halt(void)
-{
-	WARN_ONCE(TDVMCALL(EXIT_REASON_HALT, false, 0, 0, 0),
-		  "HLT instruction emulation failed");
-}
-
-static int read_msr(struct pt_regs *regs, struct ve_info *ve)
-{
-	u64 val;
-
-	if (TDVMCALL_1(EXIT_REASON_MSR_READ, regs->cx, 0, 0, 0, val))
-		return -EIO;
-
-	regs->ax = lower_32_bits(val);
-	regs->dx = upper_32_bits(val);
-
-	return ve_instr_len(ve);
-}
-
-static int write_msr(struct pt_regs *regs, struct ve_info *ve)
-{
-	u64 val = (u64)regs->dx << 32 | regs->ax;
-
-	if (TDVMCALL(EXIT_REASON_MSR_WRITE, regs->cx, val, 0, 0))
-		return -EIO;
-
-	return ve_instr_len(ve);
-}
-static int handle_cpuid(struct pt_regs *regs, struct ve_info *ve)
-{
-	/*
-	 * Only allow VMM to control range reserved for hypervisor
-	 * communication.
-	 *
-	 * Return all-zeros for any CPUID outside the range. It matches CPU
-	 * behaviour for non-supported leaf.
-	 */
-	if (regs->ax < 0x40000000 || regs->ax > 0x4FFFFFFF) {
-		regs->ax = regs->bx = regs->cx = regs->dx = 0;
-		return ve_instr_len(ve);
-	}
-
-	if (TDVMCALL_4(EXIT_REASON_CPUID, regs->ax, regs->cx, 0, 0,
-		       regs->ax, regs->bx, regs->cx, regs->dx))
-		return -EIO;
-
-	return ve_instr_len(ve);
-}
-
-static bool mmio_read(int size, u64 gpa, u64 *val)
-{
-	*val = 0;
-	return !TDVMCALL_1(EXIT_REASON_EPT_VIOLATION, size, EPT_READ, gpa, 0, val);
-}
-
-static bool mmio_write(int size, u64 gpa, u64 val)
-{
-	return !TDVMCALL(EXIT_REASON_EPT_VIOLATION, size, EPT_WRITE, gpa, val);
-}
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
