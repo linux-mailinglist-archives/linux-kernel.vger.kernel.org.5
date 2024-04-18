@@ -1,389 +1,149 @@
-Return-Path: <linux-kernel+bounces-150147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D00AA8A9B00
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:17:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ABAD8A9B01
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:18:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F28911C211C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:17:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B44212845AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:18:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 121CF15FD19;
-	Thu, 18 Apr 2024 13:17:31 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81D2DEECF;
-	Thu, 18 Apr 2024 13:17:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713446250; cv=none; b=WoXmJcqE+LVjGR+MDabpwj2OKqptkSUR2Ftm439L/c6iwUeoAtnkVPloTpWpVFhtwYDnNBT7APNb/nQal8FQeyZpn/Ll8AyWmhwK+av30d2lYlAN4KsJxWVwGxvHHM7UFXIeWH2VPoOlmZ6XrUPQIg17/RQPXFdsprq+Y7AsOPU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713446250; c=relaxed/simple;
-	bh=uFBVCzKTwIgEfdvC7/2meAWUHLTgMbNu/QYppjfZugI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YAJl6lxOJF9eh0FCivvtZKueUtxrbPxRI9qmPuWFawCTq3AFBHzwjM0pMIwjM29H/+/B+sP0OVM/CAHoPAt4gVDbapj+8gSXI8vP0cBxYa95xFC9IQQi2QTL0iPwF6tJvqhr7LkCubxuzzp5iv5ub8MNxJS3TWoXmRzfgKOPq2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB529DA7;
-	Thu, 18 Apr 2024 06:17:55 -0700 (PDT)
-Received: from [10.1.35.34] (e122027.cambridge.arm.com [10.1.35.34])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EFCFF3F738;
-	Thu, 18 Apr 2024 06:17:23 -0700 (PDT)
-Message-ID: <f5b87486-89b5-4c86-aadb-47204fb39bea@arm.com>
-Date: Thu, 18 Apr 2024 14:17:23 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCB0215D5AE;
+	Thu, 18 Apr 2024 13:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="DSVapmJm"
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2086.outbound.protection.outlook.com [40.92.99.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39EB78BFA;
+	Thu, 18 Apr 2024 13:17:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.99.86
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713446281; cv=fail; b=erPWBxGA7s04P6ViOJ6Bey8BKLV8y5DeQyuT9nAnBrl49xW827YJK0+WFc2czlkDL5/yY1/DlutvJoHJVxh6xgfcblrLm9MI4iyS7ARYngLYWAlVHlX6TemWbU0zxhLkFadUUHXQdaZdmtIWNxjgvRu79t2saNtO4+7VoE5tTsM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713446281; c=relaxed/simple;
+	bh=WmMBL740Kk82hhBqCL/pL7yLgmPweVZH2qCWFmFT7gU=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=U0xjlX5nEYJEn5xE4iYIhwlrq92qb6Zh/AKRYOpue9PoEoavWdeD/nPQ6KgxmLMZ0aYvX/o3zL8Jxulpk5M16qa2RMxjlYxd3vAHrZ+ArdgOz1gettBgAtWNJieOQj1NUlADno07LFkCN764SgaJrnGCjOdI0CJ8xl4tIy9YBRQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=DSVapmJm; arc=fail smtp.client-ip=40.92.99.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TehIuCPFGaOIquQMPutvbj0Saf3RL6JCN3ZMMXoM05XMmHe+1Dlwlrx1IAE+YlkIunWJJ3BMfP1LVq9Je8S1zZAvSuUSD9SmissvoWeoZpdAycWrpS3TaHvzJangnG5AS1Uy1bNDeYWWjB02hrAMf7G8HCwbSSNfWs0wBGPhcu8GV6x2bg6ToKVBLUVHE8QaSkKA86iIsCZvXMM4gwX/t2Cdtf28SSy6NiRCNzigKiSmR1U6/h0S77smrh3mKWUwiYk3cXyf1ZPn4xhEIRHUqqo1S3oQQIRf9pB/diSXypKwgl8I6gvZcx9JFY3825VxGCS1MT92JSOhRRWYsP23Dw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RRQNjA2yUi/ykrEJkfvRH7/e1C60cBn3WQodco5TWnM=;
+ b=AgsrB6xFwbDUtby+0dlPSJ332n/RBOD9mmp5k9KTTdjWtf3ZVMDzWpcyobIgKthT2pYBRPqf9SsNEmwJhH1ShP+bNwhEJMCpEXIN3hVLvnFlpadEBWlK21kUfVSnDTQpnx/IKUkrBS3hU3ZrQlj+0dxtQfAheNfbG8PWJ/T6iPMuA++nFW8h6dRMHuBw/NC9EH41Rk43eEkbacyErtAxBqIHmqlp9lMknpNr3/VbKczgNzGzKskdiZ+jT1erUF2bPQPNEqZ4mdVOU52jSVYJz6K6OVJ8cPyJyGSI8AyL/Jke1qfOUL+YcqWRhe/gbIwkF5gVHmJ0YMeHLWC6N8BqbQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RRQNjA2yUi/ykrEJkfvRH7/e1C60cBn3WQodco5TWnM=;
+ b=DSVapmJmvVaOoFm0Xt7vQzZ/7mRh/XxDiC092tkRddsoPMTYV4XtIKqZ1KhIuEENBzuyOJHfog8RvWUTUiKGkWy3tyVKlbAzU/6Zm4aoqDHVUHsLInwgidxWUX7LKEoKsO72pYjggZ7yq8rhbgLeeBlqazDgUFi5mBsQxSaY7TrXv8wIOAJc6IS1S/ulQrElfEH0RdQMrfzh+vcbRqiF0xCUCxFSF9M7Bv5N6TBuySg80/7jgDy2K+uzfVhlgjvW7KCSNb0YYP2JUhR+Gi+AIQyWV84NbtL+3aUGsr3plAEM1xlyL2aZ1BeiqaVpWayTbb3ueX6np+c9Y8A9oO3C1w==
+Received: from TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:209::11)
+ by TYWP286MB2794.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:23d::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Thu, 18 Apr
+ 2024 13:17:57 +0000
+Received: from TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::f2c3:e53f:2ea9:55c8]) by TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::f2c3:e53f:2ea9:55c8%4]) with mapi id 15.20.7472.037; Thu, 18 Apr 2024
+ 13:17:57 +0000
+From: ArcticLampyrid <ArcticLampyrid@outlook.com>
+To: sbinding@opensource.cirrus.com
+Cc: david.rhodes@cirrus.com,
+	james.schulman@cirrus.com,
+	linux-kernel@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	patches@opensource.cirrus.com,
+	rf@opensource.cirrus.com,
+	ArcticLampyrid <ArcticLampyrid@outlook.com>
+Subject: [PATCH v3 0/2] ALSA: hda/realtek: Fix internal speakers for Legion Y9000X 2022 IAH7
+Date: Thu, 18 Apr 2024 21:17:46 +0800
+Message-ID:
+ <TYCP286MB25357A4599E935F26A8AAB24C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.44.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [Y8W3xzF5MbNfuG1QdkoZuhQKpCIP+IelmmyeBvUoaSmIgjhpdBZ/pA==]
+X-ClientProxiedBy: TYCPR01CA0085.jpnprd01.prod.outlook.com
+ (2603:1096:405:3::25) To TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:209::11)
+X-Microsoft-Original-Message-ID:
+ <20240418131746.30298-1-ArcticLampyrid@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 05/43] arm64: RME: Add SMC definitions for calling the
- RMM
-To: Suzuki K Poulose <suzuki.poulose@arm.com>, kvm@vger.kernel.org,
- kvmarm@lists.linux.dev
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
- Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
- Oliver Upton <oliver.upton@linux.dev>, Zenghui Yu <yuzenghui@huawei.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Joey Gouly <joey.gouly@arm.com>, Alexandru Elisei
- <alexandru.elisei@arm.com>, Christoffer Dall <christoffer.dall@arm.com>,
- Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
- Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
-References: <20240412084056.1733704-1-steven.price@arm.com>
- <20240412084309.1733783-1-steven.price@arm.com>
- <20240412084309.1733783-6-steven.price@arm.com>
- <e6ece61d-ceb6-44f3-a17c-c678b4562991@arm.com>
-From: Steven Price <steven.price@arm.com>
-Content-Language: en-GB
-In-Reply-To: <e6ece61d-ceb6-44f3-a17c-c678b4562991@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYCP286MB2535:EE_|TYWP286MB2794:EE_
+X-MS-Office365-Filtering-Correlation-Id: e05e4004-09ca-4462-f466-08dc5fa9f674
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	wZ03doDF5iflzuMwyk/H1poA13OSMCwjDtNKyHzxSTmhIg1woYKMzJfO7z/rLCBaRx6WeEMF/Q0iZNgvrqPXtG2FUM2JS9ZBZE5mFQPOEyswiyd4T9Bet+OWZU8cDgBJGEJKnlsfokzmPSIgvbiluX9Z3fzD27u2KalNz6SUf0vFHg6anN7d/+je+LLiz7eBwJKf91OSI4heuXm+ProWUVAwIUgFkrbY4muaUenJ3TZv+JMuEcBihUKhR6OlMGe4eUkDWaqS7B0Zsti6IJEiJd32OTVXfYuNBywej4RI/BZM3YYHOaM8PEmJZOlUhnzByRsjKKyz4ZAAiFUnrwMcyPe8asDOcYIrYAxp2i9FQ2RdAS6Q6ddikVI36H2FNiBeldE4giNKTHvWVv5hfJ02btwR3Cew+emmYrigcoMxP8rhqj+1t4gPYrrEWETVHJVU1Co5uIkz5vDMf42p5kHHtzbMHkMJNFAZR11oQpSJrnW9KdZcJhauQDej/PpS7FxJaQx48LCbVwYMcYhsQDIPipzk9HiVyGi2FRt/SEN0cySfNOQjPvGXvOPf5ETKU0FgGTsOTpsj0C+plq6NnyYfDwXFViF7ER1rdbvrAc5aGhZThe7hG/dczi5x1QBehIXC/seu5o5mCT//9EZTAMaA4xJMsaLLspB6gvuuVbQLvS/aJQFRel1oevWZtcE8M3kLFhr1wu5gYbyXketbBATTHqdzHavZKqyJCxTNOks0U/Y=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?2QalICdqaVDEj7amimYvP0gQrGCZ/tXUjvFOaPZmfhpdNvmWO1pGmsU0pxPr?=
+ =?us-ascii?Q?2r0pzdQk7Rkn3s+NcTL5Q+83wbp64Zq4RVRcSq54tNG3i05j759bqTTmjfKv?=
+ =?us-ascii?Q?z6zOXpqZEiEx7jFXUnTqMQpPX6Y9OLxP7KTEPUMgzk33WO9PJZC2zH/g2+5g?=
+ =?us-ascii?Q?c8A74INfsGymTUlXlFeR5zBsJhULM6TMJ562Uexrm56TXF7vBrA/A5Jbni30?=
+ =?us-ascii?Q?DsP/Wn+3M5n76Sqv4YlIb449jRplRlcdlHN6z0I6dfGOAb/b6uWCplJxPAWM?=
+ =?us-ascii?Q?gpJHGcQIaG1hngHHlZqWPLz/uY4qPwBP785HePRFiRUzBi7RIrnmZHaDVXVw?=
+ =?us-ascii?Q?FBNpw3XM8FFggBJqos15bExGLLvpi/a1/Mv5ZT4yzVBdsYOZ2I5Q1sp8frEZ?=
+ =?us-ascii?Q?iFTU94XRe5IyyXZ6Jnpl3ZcqEAF4RIfAxs82xoifPE+Uwlm1B8iN+pcsJV6g?=
+ =?us-ascii?Q?Kvlq16N+y0cK/zxcNf098Kvp0MqTBsyqeWG21raZk7MoD9jQFx3lYqV54fUz?=
+ =?us-ascii?Q?o77AxZsfzx97PbtLvi74B/M6m+DnCJXFhuQ5A5Pv6NX9Oc7VkK1v1nwJ4TOD?=
+ =?us-ascii?Q?Vn171BH/02sVFPgI+oKrL4L+1EHrSITIQ1FaVbV3240kncZTwqLvhG1YOKf7?=
+ =?us-ascii?Q?6TAIlM6KAKuT6SV8i0g091yhdT2GHv53ZUmInvXj6BhcPx6c0yA2Wvm/L/0d?=
+ =?us-ascii?Q?roWjzURnhMsdz7EZAMCJGKmb6ros7dDk89rG5fIu+FGrPwVUvbmDEhrYuTLq?=
+ =?us-ascii?Q?0XkWyaSE9g3CmN70x2eigwrgaBuNWjEcsxWCUok4w4ZxL9KhrZPO3hS0p1n+?=
+ =?us-ascii?Q?42PGjY2OLf4Z/1rd5CZM9QD4NCqM4NqUdbVWlMLTC903Na4G3kFrSfdKDtqA?=
+ =?us-ascii?Q?eHdtZHZdf6Kf5/tJWR/B6FRABQGFO2aRiVwL5uFqzg/a9Yicp4ZyaCFyhSY5?=
+ =?us-ascii?Q?5FkVelxysNaK/Fb7yJMaQWCbcMRodvOnqtA9K0hZgaWFaeFc/5+os+OBAuGK?=
+ =?us-ascii?Q?+i2kPw3Hlx3OqVKMJwql+dpMhHCBzGlbm/loCL6fA8FPUdmfx+wq0QD4vBPH?=
+ =?us-ascii?Q?cNni57hETNX3OPl1+4GktludL8cjhFpRUFF1mcowPdal3ROgJVTzrfQ5wjI9?=
+ =?us-ascii?Q?3oyV964ciJzL51IE14rkCwYisCBzob/wdr1vy7mg1AVJzhxfSTk/JrybUkVT?=
+ =?us-ascii?Q?X/DO1JRtrzxHXAZFCfbelqukeu+d5C8phxH0PczZkE6GIq21kUJjBjnV5JRX?=
+ =?us-ascii?Q?C5XgM1uNYcKGNf9FvW10m/BMbK06J+3ORQV2xF9NAQ=3D=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e05e4004-09ca-4462-f466-08dc5fa9f674
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 13:17:57.2960
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWP286MB2794
 
-On 16/04/2024 13:38, Suzuki K Poulose wrote:
-> Hi Steven
-> 
-> On 12/04/2024 09:42, Steven Price wrote:
->> The RMM (Realm Management Monitor) provides functionality that can be
->> accessed by SMC calls from the host.
->>
->> The SMC definitions are based on DEN0137[1] version 1.0-eac5
->>
->> [1] https://developer.arm.com/documentation/den0137/1-0eac5/
->>
->> Signed-off-by: Steven Price <steven.price@arm.com>
->> ---
->>   arch/arm64/include/asm/rmi_smc.h | 250 +++++++++++++++++++++++++++++++
->>   1 file changed, 250 insertions(+)
->>   create mode 100644 arch/arm64/include/asm/rmi_smc.h
->>
->> diff --git a/arch/arm64/include/asm/rmi_smc.h
->> b/arch/arm64/include/asm/rmi_smc.h
->> new file mode 100644
->> index 000000000000..c205efdb18d8
->> --- /dev/null
->> +++ b/arch/arm64/include/asm/rmi_smc.h
->> @@ -0,0 +1,250 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * Copyright (C) 2023 ARM Ltd.
->> + *
->> + * The values and structures in this file are from the Realm
->> Management Monitor
->> + * specification (DEN0137) version A-bet0:
->> + * https://developer.arm.com/documentation/den0137/1-0bet0/
-> 
-> This should now point to eac5 instead.
+This fixes the sound not working from internal speakers on
+Lenovo Legion Y9000X 2022 IAH7 models.
 
-Typical - I searched through the commit logs, but forgot I'd put a
-reference in the code too! Thanks for spotting.
+Change from v2 ( https://lore.kernel.org/lkml/TYCP286MB253523D85F6E0ECAA3E03D58C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM/T/ ):
+- Correct spkid gpio index
 
->> + */
->> +
->> +#ifndef __ASM_RME_SMC_H
->> +#define __ASM_RME_SMC_H
->> +
->> +#include <linux/arm-smccc.h>
->> +
->> +#define SMC_RxI_CALL(func)                \
->> +    ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,        \
->> +               ARM_SMCCC_SMC_64,        \
->> +               ARM_SMCCC_OWNER_STANDARD,    \
->> +               (func))
->> +
->> +#define SMC_RMI_DATA_CREATE        SMC_RxI_CALL(0x0153)
->> +#define SMC_RMI_DATA_CREATE_UNKNOWN    SMC_RxI_CALL(0x0154)
->> +#define SMC_RMI_DATA_DESTROY        SMC_RxI_CALL(0x0155)
->> +#define SMC_RMI_FEATURES        SMC_RxI_CALL(0x0165)
->> +#define SMC_RMI_GRANULE_DELEGATE    SMC_RxI_CALL(0x0151)
->> +#define SMC_RMI_GRANULE_UNDELEGATE    SMC_RxI_CALL(0x0152)
->> +#define SMC_RMI_PSCI_COMPLETE        SMC_RxI_CALL(0x0164)
->> +#define SMC_RMI_REALM_ACTIVATE        SMC_RxI_CALL(0x0157)
->> +#define SMC_RMI_REALM_CREATE        SMC_RxI_CALL(0x0158)
->> +#define SMC_RMI_REALM_DESTROY        SMC_RxI_CALL(0x0159)
->> +#define SMC_RMI_REC_AUX_COUNT        SMC_RxI_CALL(0x0167)
->> +#define SMC_RMI_REC_CREATE        SMC_RxI_CALL(0x015a)
->> +#define SMC_RMI_REC_DESTROY        SMC_RxI_CALL(0x015b)
->> +#define SMC_RMI_REC_ENTER        SMC_RxI_CALL(0x015c)
->> +#define SMC_RMI_RTT_CREATE        SMC_RxI_CALL(0x015d)
->> +#define SMC_RMI_RTT_DESTROY        SMC_RxI_CALL(0x015e)
->> +#define SMC_RMI_RTT_FOLD        SMC_RxI_CALL(0x0166)
->> +#define SMC_RMI_RTT_INIT_RIPAS        SMC_RxI_CALL(0x0168)
->> +#define SMC_RMI_RTT_MAP_UNPROTECTED    SMC_RxI_CALL(0x015f)
->> +#define SMC_RMI_RTT_READ_ENTRY        SMC_RxI_CALL(0x0161)
->> +#define SMC_RMI_RTT_SET_RIPAS        SMC_RxI_CALL(0x0169)
->> +#define SMC_RMI_RTT_UNMAP_UNPROTECTED    SMC_RxI_CALL(0x0162)
->> +#define SMC_RMI_VERSION            SMC_RxI_CALL(0x0150)
->> +
->> +#define RMI_ABI_MAJOR_VERSION    1
->> +#define RMI_ABI_MINOR_VERSION    0
->> +
->> +#define RMI_UNASSIGNED            0
->> +#define RMI_ASSIGNED            1
->> +#define RMI_TABLE            2
->> +
->> +#define RMI_ABI_VERSION_GET_MAJOR(version) ((version) >> 16)
->> +#define RMI_ABI_VERSION_GET_MINOR(version) ((version) & 0xFFFF)
->> +#define RMI_ABI_VERSION(major, minor)      (((major) << 16) | (minor))
->> +
->> +#define RMI_RETURN_STATUS(ret)        ((ret) & 0xFF)
->> +#define RMI_RETURN_INDEX(ret)        (((ret) >> 8) & 0xFF)
->> +
->> +#define RMI_SUCCESS        0
->> +#define RMI_ERROR_INPUT        1
->> +#define RMI_ERROR_REALM        2
->> +#define RMI_ERROR_REC        3
->> +#define RMI_ERROR_RTT        4
->> +
->> +#define RMI_EMPTY        0
->> +#define RMI_RAM            1
->> +#define RMI_DESTROYED        2
->> +
->> +#define RMI_NO_MEASURE_CONTENT    0
->> +#define RMI_MEASURE_CONTENT    1
->> +
->> +#define RMI_FEATURE_REGISTER_0_S2SZ        GENMASK(7, 0)
->> +#define RMI_FEATURE_REGISTER_0_LPA2        BIT(8)
->> +#define RMI_FEATURE_REGISTER_0_SVE_EN        BIT(9)
->> +#define RMI_FEATURE_REGISTER_0_SVE_VL        GENMASK(13, 10)
->> +#define RMI_FEATURE_REGISTER_0_NUM_BPS        GENMASK(17, 14)
->> +#define RMI_FEATURE_REGISTER_0_NUM_WPS        GENMASK(21, 18)
->> +#define RMI_FEATURE_REGISTER_0_PMU_EN        BIT(22)
->> +#define RMI_FEATURE_REGISTER_0_PMU_NUM_CTRS    GENMASK(27, 23)
->> +#define RMI_FEATURE_REGISTER_0_HASH_SHA_256    BIT(28)
->> +#define RMI_FEATURE_REGISTER_0_HASH_SHA_512    BIT(29)
->> +
->> +#define RMI_REALM_PARAM_FLAG_LPA2        BIT(0)
->> +#define RMI_REALM_PARAM_FLAG_SVE        BIT(1)
->> +#define RMI_REALM_PARAM_FLAG_PMU        BIT(2)
->> +
->> +/*
->> + * Note many of these fields are smaller than u64 but all fields have
->> u64
->> + * alignment, so use u64 to ensure correct alignment.
->> + */
->> +struct realm_params {
->> +    union { /* 0x0 */
->> +        struct {
->> +            u64 flags;
->> +            u64 s2sz;
->> +            u64 sve_vl;
->> +            u64 num_bps;
->> +            u64 num_wps;
->> +            u64 pmu_num_ctrs;
->> +            u64 hash_algo;
->> +        };
->> +        u8 padding_1[0x400];
->> +    };
->> +    union { /* 0x400 */
->> +        u8 rpv[64];
->> +        u8 padding_2[0x400];
->> +    };
->> +    union { /* 0x800 */
->> +        struct {
->> +            u64 vmid;
->> +            u64 rtt_base;
->> +            s64 rtt_level_start;
->> +            u64 rtt_num_start;
->> +        };
->> +        u8 padding_3[0x800];
->> +    };
->> +};
->> +
->> +/*
->> + * The number of GPRs (starting from X0) that are
->> + * configured by the host when a REC is created.
->> + */
->> +#define REC_CREATE_NR_GPRS        8
->> +
->> +#define REC_PARAMS_FLAG_RUNNABLE    BIT_ULL(0)
->> +
->> +#define REC_PARAMS_AUX_GRANULES        16
->> +
->> +struct rec_params {
->> +    union { /* 0x0 */
->> +        u64 flags;
->> +        u8 padding1[0x100];
->> +    };
->> +    union { /* 0x100 */
->> +        u64 mpidr;
->> +        u8 padding2[0x100];
->> +    };
->> +    union { /* 0x200 */
->> +        u64 pc;
->> +        u8 padding3[0x100];
->> +    };
->> +    union { /* 0x300 */
->> +        u64 gprs[REC_CREATE_NR_GPRS];
->> +        u8 padding4[0x500];
->> +    };
->> +    union { /* 0x800 */
->> +        struct {
->> +            u64 num_rec_aux;
->> +            u64 aux[REC_PARAMS_AUX_GRANULES];
->> +        };
->> +        u8 padding5[0x800];
->> +    };
->> +};
->> +
->> +#define RMI_EMULATED_MMIO        BIT(0)
->> +#define RMI_INJECT_SEA            BIT(1)
->> +#define RMI_TRAP_WFI            BIT(2)
->> +#define RMI_TRAP_WFE            BIT(3)
-> 
-> For completeness, we could add :
-> 
-> #define RMI_RIPAS_RESPONSE        BIT(4)
-> 
-> Not sure if we use it later in the series.
+Change from v1 ( https://lore.kernel.org/lkml/TYCP286MB25352F3E995FED9CCE90F1F6C40B2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM/T/ ):
+- Add a patch for cs35l41 to obey the trigger type from DSDT
+- Avoid disabling interupts for second amps
 
-Yes, I'll add for completeness. Currently KVM will never reject a RIPAS
-change request from the guest. I'm not sure in what situation it would
-make sense to do such a thing. The current uABI doesn't allow the VMM to
-have a say in it either as the RIPAS change is completed before the exit
-to the VMM. The expectation is therefore that the VMM would simply
-terminate a Realm guest that attempted a RIPAS change that it disagreed
-with.
 
->> +
->> +#define REC_RUN_GPRS            31
->> +#define REC_GIC_NUM_LRS            16
->> +
->> +struct rec_entry {
+ArcticLampyrid (2):
+  ALSA: cs35l41: obey the trigger type from DSDT
+  ALSA: hda/realtek: Fix internal speakers for Legion Y9000X 2022 IAH7
 
-While I'm reading this (and the spec) again - I notice that the spec
-says "RecEnter" not 'entry' - I'll rename this to be consistent.
+ sound/pci/hda/cs35l41_hda.c          | 9 +++++++++
+ sound/pci/hda/cs35l41_hda_property.c | 2 ++
+ sound/pci/hda/patch_realtek.c        | 1 +
+ 3 files changed, 12 insertions(+)
 
->> +    union { /* 0x000 */
->> +        u64 flags;
->> +        u8 padding0[0x200];
->> +    };
->> +    union { /* 0x200 */
->> +        u64 gprs[REC_RUN_GPRS];
->> +        u8 padding2[0x100];
->> +    };
->> +    union { /* 0x300 */
->> +        struct {
->> +            u64 gicv3_hcr;
->> +            u64 gicv3_lrs[REC_GIC_NUM_LRS];
->> +        };
->> +        u8 padding3[0x100];
->> +    };
->> +    u8 padding4[0x400];
->> +};
->> +
->> +struct rec_exit {
->> +    union { /* 0x000 */
->> +        u8 exit_reason;
->> +        u8 padding0[0x100];
->> +    };
->> +    union { /* 0x100 */
->> +        struct {
->> +            u64 esr;
->> +            u64 far;
->> +            u64 hpfar;
->> +        };
->> +        u8 padding1[0x100];
->> +    };
->> +    union { /* 0x200 */
->> +        u64 gprs[REC_RUN_GPRS];
->> +        u8 padding2[0x100];
->> +    };
->> +    union { /* 0x300 */
->> +        struct {
->> +            u64 gicv3_hcr;
->> +            u64 gicv3_lrs[REC_GIC_NUM_LRS];
->> +            u64 gicv3_misr;
->> +            u64 gicv3_vmcr;
->> +        };
->> +        u8 padding3[0x100];
->> +    };
->> +    union { /* 0x400 */
->> +        struct {
->> +            u64 cntp_ctl;
->> +            u64 cntp_cval;
->> +            u64 cntv_ctl;
->> +            u64 cntv_cval;
->> +        };
->> +        u8 padding4[0x100];
->> +    };
->> +    union { /* 0x500 */
->> +        struct {
->> +            u64 ripas_base;
->> +            u64 ripas_top;
->> +            u64 ripas_value;
->> +        };
->> +        u8 padding5[0x100];
->> +    };
->> +    union { /* 0x600 */
->> +        u16 imm;
->> +        u8 padding6[0x100];
->> +    };
->> +    union { /* 0x700 */
->> +        struct {
->> +            u64 pmu_ovf_status;
-> 
-> This is u8 as per section B4.4.10 RmiPmuOverflowStatus type.
-
-Indeed - I'm not sure where I got u64 from - it was probably to provide
-padding in an older version of the spec.
-
->> +        };
->> +        u8 padding7[0x100];
->> +    };
->> +};
->> +
->> +struct rec_run {
->> +    struct rec_entry entry;
->> +    struct rec_exit exit;
->> +};
->> +
->> +#define RMI_EXIT_SYNC            0x00
->> +#define RMI_EXIT_IRQ            0x01
->> +#define RMI_EXIT_FIQ            0x02
->> +#define RMI_EXIT_PSCI            0x03
->> +#define RMI_EXIT_RIPAS_CHANGE        0x04
->> +#define RMI_EXIT_HOST_CALL        0x05
->> +#define RMI_EXIT_SERROR            0x06
-> 
-> Minor nit: Like the other definitions, it may be good to keep the
-> defintions of the "exit_reason" above the field declaration.
-
-Yes, makes sense - I'll move these.
-
-Thanks for the review!
-
-Steve
-
-> 
-> Rest looks fine to me.
-> 
-> Suzuki
->> +
->> +#endif
-> 
+-- 
+2.44.0
 
 
