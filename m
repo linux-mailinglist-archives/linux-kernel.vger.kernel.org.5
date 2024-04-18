@@ -1,122 +1,127 @@
-Return-Path: <linux-kernel+bounces-150350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EABA8A9DBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:58:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F07D48A9DC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:58:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8062C1C2174A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:58:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 908B91F21730
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:58:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B5A16C444;
-	Thu, 18 Apr 2024 14:57:52 +0000 (UTC)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF04616C6BA;
+	Thu, 18 Apr 2024 14:57:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Fm81bzrF"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D716016ABC0;
-	Thu, 18 Apr 2024 14:57:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797D816ABD8;
+	Thu, 18 Apr 2024 14:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713452272; cv=none; b=lVoVq8Ol+RGwPirRLPwm6OrVitRr6JACdDWCudwox0++VYXnK/NnaTP2yY1+zGbWKSgC/BS4xKsYs54jgFOqOqzZpcw3gMPFGgv5qZXeNSvb5of9M2DLsjgW31v/RCoIj4953f1O3EqUq5SweN3aIb5gTOEnVzkK8Q4HO6vdlhg=
+	t=1713452275; cv=none; b=Lsn/k1SfuLi4FsuxTpL7Iqa/Gv7Nx3CpMY1psBwLUdM7YK6Q3AU5uiqapJERmjjTP3/u+1Hk5MaOgC9fIrMjeuborappdsE4JuNDdzGt69WuUI4ofnzMFxYDSqmnx6oP7GXdJHlpH8diuVhUXnlp0f8zZ/JPp1F4R1wP/yRcdOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713452272; c=relaxed/simple;
-	bh=Eb/EVSMY879H2500DGFBLbJRSwhWpGh81TIuhr6YDhc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UDDSyr/A5q1p1XAU+iT/QcsASGoNBxCq2RbghyPWwzH44c+lIp+pMkhN3/19bBEqD2MZVK8Bpg6NP+x4yCz/DsYNqKY1XgfIHFCqbuGP+fP7Nf/GH37y9Eqf+fQV8gmAnu86YI303twzHMuyL6D9fTZpF+SDSnB12O+mzMdJD/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc742543119so1112327276.0;
-        Thu, 18 Apr 2024 07:57:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713452269; x=1714057069;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tBkk7IToPf8pTng3q6RoyHKsGOCoZ6cSUuNVh7MUIdE=;
-        b=RPH85LIOwF3MZezkmlgMlGeHuk7ggQtIVMWoozkjNNj/5zwUf6y2lx+eWDILOZMBkM
-         IIV3zztkWEJKcIC1oEaowfOZZjBx4WAQVnUjQQOL9YeaS8mxSCFOA/KMK8SnovhIqymC
-         YM8RzkcAXzazlr0AmOzJLEi56qlm4cxSBpqnNWonYhsXbpu4cOlGVnu5hUk9nc9sGZ5X
-         TC01lg4m3DZaFRk3bI/2TsYD/3HlLho+qIDw4RrmdeLWIFXbNtOvcmKFnzVjeLd36xnn
-         7MFx4yaqAZQbHIsDLj81YE1Z7Rug0+S5umok0GQXKuoNfAEI+/9pwKyiMcaJGtIlB6p3
-         GnsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX+QNy9iNZ/mkuoqIlQmNtDGiZEm4if6HeL8Vanh5Nlo3GqyT/m7qOe1mEZkTuaZwZJ8NL/uxLTF4XwDMFGSMQGoLVGkMJOXRuVYy66MJ+P+hMblLZUYU9U0f6EQAGds6+7acFuK34hjHHn71a8yIW3OHGU7zRJ5wHQN+Ep8LsL+BZH+dkCaOu6I7Lx
-X-Gm-Message-State: AOJu0Yxw5EzKYBO+4HnXimx75hMgofn7orAgVVrGtugmG860+YHkyuWa
-	h6bZizgdrEb8BWcDH/xHjDTHxk/xAjAg0mdj5B6yN/Wp50zCfmjT+DIIwhxE
-X-Google-Smtp-Source: AGHT+IGIyMJFVhgtnxFONQA1/XGvMga9mv7jVfqh26rTZKafJEORDSLkz8+VMvLteIzHPdwn0CkxxA==
-X-Received: by 2002:a25:d30c:0:b0:dcf:f525:2b81 with SMTP id e12-20020a25d30c000000b00dcff5252b81mr3078678ybf.46.1713452268895;
-        Thu, 18 Apr 2024 07:57:48 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id z18-20020a5b0e92000000b00dcdb0f80b69sm385665ybr.48.2024.04.18.07.57.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 07:57:48 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-61ac45807cbso10236837b3.1;
-        Thu, 18 Apr 2024 07:57:48 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX+jo2g0pGOU4qUqoLAoHPzXT/8xDJd8Sv7jEcqhCgPKQveMA1Pr94dZfymlvy2c2cywmNYUKyFqvhJhfJ1FBCd3M+THOgajLCoIxbiwSB5wdLzZdCiTLpRU85lrdP8PHNXjQ+XGqYVIEgU3BBi9IztRIW0n8kBx4TYLF5kHOLvKA+vZ7hyPt1or0Tb
-X-Received: by 2002:a25:aaaa:0:b0:dcc:2f09:4742 with SMTP id
- t39-20020a25aaaa000000b00dcc2f094742mr2918100ybi.51.1713452268112; Thu, 18
- Apr 2024 07:57:48 -0700 (PDT)
+	s=arc-20240116; t=1713452275; c=relaxed/simple;
+	bh=4U3WRbyCnOnkQnZ41bTWd65ADoYW1zIFR/LVWMvI3qU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZX5jwP1HpTtoAsHQ77BSyo+bVOBuB50+VqUasqYQmHSFoI+Vm1UsWHRbhWfq9yxD6jpYexuPsJX+9WvQVkFXW/Pl3feYiP78/8Ns6V3MthHQUzj458Y6U/MmuqYv324A0CM6FvFpXq6/5OVxsatyaaMLZSACd3y5fE91bWTpAKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Fm81bzrF; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 39E6DE0005;
+	Thu, 18 Apr 2024 14:57:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713452269;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=22V/9/vEJpEcidGLVhJgIB+KQKlIxyJ3KNXd2wPelig=;
+	b=Fm81bzrFsXBTdoR/EZ94HL5ogTTkxn9LSc1bNL+ilg4qVmIXTG78tezLsusrXWZuur5xCc
+	qw2fKRBfQK9qCvt09h033nk7SgBL/W6tasONuUi23vzQMP9KfkOvc45QLXi2xX/A1YGIgl
+	gaFN6i0jZr9GrGsi1ebo/MrcOq5MNcimyVXmdbKapBkfI3C7zJe6dh76Yg1uaKl+n2NvZu
+	0Ci4q01o+fo5UG17jZNhWmGtEsQuu58Qqyt4wWWPTOAoBwcxpdu3ZE7MtSE9jLEIhM1UkV
+	vkKHqUjhFi5APEGMQxZ66yUj2vECc1tEuAznQqlYsq47JXhne5L4hR9vYMh6Jg==
+Date: Thu, 18 Apr 2024 16:57:38 +0200
+From: Kory Maincent <kory.maincent@bootlin.com>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: Rob Herring <robh@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
+ Dent Project <dentproject@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org, Conor
+ Dooley <conor+dt@kernel.org>, kernel@pengutronix.de, "Rafael J. Wysocki"
+ <rafael@kernel.org>, linux-doc@vger.kernel.org, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Russell King <linux@armlinux.org.uk>, Russ
+ Weight <russ.weight@linux.dev>, Jakub Kicinski <kuba@kernel.org>, Heiner
+ Kallweit <hkallweit1@gmail.com>, Andrew Lunn <andrew@lunn.ch>, Mark Brown
+ <broonie@kernel.org>, Eric Dumazet <edumazet@google.com>, Frank Rowand
+ <frowand.list@gmail.com>, Paolo Abeni <pabeni@redhat.com>, "David S.
+ Miller" <davem@davemloft.net>, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Jonathan Corbet <corbet@lwn.net>,
+ netdev@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH net-next v9 08/14] dt-bindings: net: pse-pd: Add another
+ way of describing several PSE PIs
+Message-ID: <20240418165738.2443f1a6@kmaincent-XPS-13-7390>
+In-Reply-To: <ZiDwz7_2nGzwVHy8@pengutronix.de>
+References: <20240417-feature_poe-v9-0-242293fd1900@bootlin.com>
+	<20240417-feature_poe-v9-8-242293fd1900@bootlin.com>
+	<171336806575.2618779.157615998420721814.robh@kernel.org>
+	<ZiDwz7_2nGzwVHy8@pengutronix.de>
+Organization: bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403203503.634465-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240403203503.634465-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240403203503.634465-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 18 Apr 2024 16:57:36 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVmat=o-+_KX+G275SEcdC-OxAjOw5CS-rag9ZxnQFHfg@mail.gmail.com>
-Message-ID: <CAMuHMdVmat=o-+_KX+G275SEcdC-OxAjOw5CS-rag9ZxnQFHfg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] riscv: dts: renesas: r9a07g043f: Add IRQC node to
- RZ/Five SoC DTSI
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-Hi Prabhakar,
+On Thu, 18 Apr 2024 12:07:11 +0200
+Oleksij Rempel <o.rempel@pengutronix.de> wrote:
 
-On Wed, Apr 3, 2024 at 10:36=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
-om> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Add the IRQC node to RZ/Five (R9A07G043F) SoC DTSI.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Hi Rob,
+>=20
+> On Wed, Apr 17, 2024 at 10:34:26AM -0500, Rob Herring wrote:
+> > On Wed, 17 Apr 2024 16:39:56 +0200, Kory Maincent wrote: =20
+> ....
+> > > ---
+> > >  .../bindings/net/pse-pd/pse-controller.yaml        | 101
+> > > ++++++++++++++++++++- 1 file changed, 98 insertions(+), 3 deletions(-)
+> > >  =20
+> >=20
+> > My bot found errors running 'make dt_binding_check' on your patch:
+> >=20
+> > yamllint warnings/errors:
+> >=20
+> > dtschema/dtc warnings/errors:
+> >=20
+> >=20
+> > doc reference errors (make refcheckdocs):
+> > Warning: Documentation/devicetree/bindings/net/pse-pd/pse-controller.ya=
+ml
+> > references a file that doesn't exist:
+> > Documentation/networking/pse-pd/pse-pi.rst
+> > Documentation/devicetree/bindings/net/pse-pd/pse-controller.yaml:
+> > Documentation/networking/pse-pd/pse-pi.rst =20
+>=20
+> Hm... this documentation was added by patch 7. I assume refcheckdocs
+> is searching in the wrong place or should the path be relative?
+>=20
+> Is this warning a blocker for this patch set?
 
-Thanks for the update!
+Yeah it is a false positive.
+I don't think so. I assume maintainers time is the blockers for the patch
+series to be accepted.
 
-> ---
-> v1->v2
-> - Dropped using SOC_PERIPHERAL_IRQ() macro
-
-and change the bus-err interrupt to from EDGE_RISING to LEVEL_HIGH,
-to match the documentation ;-)
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v6.10, with patches 4/5 and 5/5.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
