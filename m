@@ -1,54 +1,75 @@
-Return-Path: <linux-kernel+bounces-150420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8292C8A9EF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:47:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AE828A9F00
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:49:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11476B23B63
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:47:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BF651C21191
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:49:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B63B16F830;
-	Thu, 18 Apr 2024 15:47:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF18A16F843;
+	Thu, 18 Apr 2024 15:49:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="YuOnytQw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b78jvRea"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 828CD16E89E
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:47:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B17EE16D4C0;
+	Thu, 18 Apr 2024 15:49:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713455251; cv=none; b=rjJE6hhAdrwnUKnfOD5+7sMy6zK9nhyYJ7ojA16SBI/Vkkh0wJyBo3YoUoLsr1AmQ0PpWOT9hiG0+uU7UAinVtil7qTfTjI/4IYl/7VoECFIBdzhG/DcxlgDiSBPE3dcRzdyp2olBOUoXPXZWO1TfbyNxQNyVud9UnDy4K4DrE8=
+	t=1713455375; cv=none; b=MEFf+jCLu9tP6GQm1u5GFY4txcnQgR4gjyfgptlnkbmlcAnEieieHmKTBWG/PVXSn1ChwnNewWOgB/t4y4Jo9NP2PX/RGi4cT7Uqpnm8VqM3s4rMZQCu3DHJQezftMd1E1GRuL09XZ9t3KB89WTJ/H8hTa8L0KtQQvn+O87QmFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713455251; c=relaxed/simple;
-	bh=7FiDRpIVz9OT1TGiaNEnxUKLX0yRqoUywovgNql2V/8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qZV+mg8YoFOl+5eNG9p+1pq2NVp3FechgfMiQk3x2EKAnc2OCtNvAy+0WwI4VSuWieDjicb9zpaoRtbGqxZQJetUm8TtIQ8/yazoqYC8+amUOIdt9dK8xPWiRGTIH/GAaJXo/Y4Qtc+Pk1N6qaPhY+W2ZZbVeOIb6J7kLYzkuPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=YuOnytQw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B01F9C113CC;
-	Thu, 18 Apr 2024 15:47:30 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="YuOnytQw"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1713455248;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=mPUsA8w471gFFeYcvRttAa3beeKvBN+EzgReXd/Et7A=;
-	b=YuOnytQwOt0SKs0Cm0lQTCZkKp1mSmKGcvQkl/pnFWIlhDAMKOWtICfzkIjSN/la464A2J
-	6a36qfmjajf/BQOaQ3nm0HtFXQJgVjaAJz4YkqFmsIYj8HU1EJj91JNB0tbMsNvXKV/hiM
-	rKG4X2dvClU5O5mkesiAO5Fzf0BxPQE=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 00b403ad (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Thu, 18 Apr 2024 15:47:27 +0000 (UTC)
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [GIT PULL] random number generator fixes for 6.9-rc5
-Date: Thu, 18 Apr 2024 17:47:17 +0200
-Message-ID: <20240418154717.427109-1-Jason@zx2c4.com>
+	s=arc-20240116; t=1713455375; c=relaxed/simple;
+	bh=/ubX+TrhSwxmnlim1SfQGnjKVnNUrHqxciUKFKIgY8Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FCcKp9V1JDXo4FJQL8vVzdCa41wu9mpCl4QFuMG7faF4REA4TReJrP/04uiG/ZUWazOziVkn254A43IgzDuf3KbePktBUSV/lqmiTO29ADvJm89bOfhISTNA752OFBGV00F1v7hZx9zM2IWWhrj4JZrTmwlOfOdlINVC+0h5T5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b78jvRea; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713455373; x=1744991373;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/ubX+TrhSwxmnlim1SfQGnjKVnNUrHqxciUKFKIgY8Q=;
+  b=b78jvRea3kiOPj8Z7XLpzshcSNfnWYMIgKcNXz1L8vakLb06kSEbv3Lo
+   fumDHoZHINGiKP3p7qlPIhu7PQMU2fRZSwCFiRFJzDwBN3rWGXTXTdfFm
+   nrvOWg6NkMv+dad9qGIr2xPd8HEXS/SgaYrSn0aUSGth+3/TcI6OOkmf1
+   CBPcR/s53OjbAD/LTkxEBSVIax9B4p1AUT6sSypHgyEvRzSxl+ay31yF+
+   ZEcHu49qN4l7hqx/5ob39h9ykawfC6aTa3VqMqMUCs+DhgTrBTJm0uNTZ
+   11ZUREAH0SeLW500HLeXxUdhhD/gI5MizaQIXerXPFXZX8zgzq930gD71
+   w==;
+X-CSE-ConnectionGUID: MZWHeU2ySW29xfZIYlarHw==
+X-CSE-MsgGUID: x1S6bDOxTGqiON+OmOhzfw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="19712736"
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="19712736"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 08:49:32 -0700
+X-CSE-ConnectionGUID: SKVz+/+ASyuF10+OCyN9Ag==
+X-CSE-MsgGUID: A+SzQQOnTTah6ztGAJxfaA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="27835070"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa004.jf.intel.com with ESMTP; 18 Apr 2024 08:49:30 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 7741624D; Thu, 18 Apr 2024 18:49:29 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Mathias Nyman <mathias.nyman@linux.intel.com>,
+	Niklas Neronin <niklas.neronin@intel.com>,
+	linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Mathias Nyman <mathias.nyman@intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 0/2] xhci: pci: Little PCI IDs refactoring
+Date: Thu, 18 Apr 2024 18:48:32 +0300
+Message-ID: <20240418154928.3641649-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,45 +78,17 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi Linus,
+Just a couple of updates to the PCI IDs in order of better maintenance.
+No functional change intended.
 
-This pull has two small fixes:
+Andy Shevchenko (2):
+  xhci: pci: Use full names in PCI IDs for Intel platforms
+  xhci: pci: Group out Thunderbolt xHCI IDs
 
-- The input subsystem contributes entropy in some places where a spinlock is
-  held, but the entropy accounting code only handled callers being in an
-  interrupt or non-atomic process context, but not atomic process context. We
-  fix this by removing an optimization and just calling queue_work()
-  unconditionally.
+ drivers/usb/host/xhci-pci.c | 30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
 
-- Greg accidently sent up a patch not intended for his tree and that had been
-  nack'd, so that's now reverted.
+-- 
+2.43.0.rc1.1336.g36b5255a03ac
 
-Please pull.
-
-Thanks,
-Jason
-
-The following changes since commit 4cece764965020c22cff7665b18a012006359095:
-
-  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/crng/random.git tags/random-6.9-rc5-for-linus
-
-for you to fetch changes up to 3aadf100f93d80815685493d60cd8cab206403df:
-
-  Revert "vmgenid: emit uevent when VMGENID updates" (2024-04-18 14:47:23 +0200)
-
-----------------------------------------------------------------
-Random number generator fixes for Linux 6.9-rc5.
-----------------------------------------------------------------
-
-Jason A. Donenfeld (2):
-      random: handle creditable entropy from atomic process context
-      Revert "vmgenid: emit uevent when VMGENID updates"
-
- drivers/char/random.c  | 10 +++++-----
- drivers/virt/vmgenid.c |  2 --
- 2 files changed, 5 insertions(+), 7 deletions(-)
 
