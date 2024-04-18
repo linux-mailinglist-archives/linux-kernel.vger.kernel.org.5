@@ -1,148 +1,122 @@
-Return-Path: <linux-kernel+bounces-150365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 392C68A9DF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:06:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3836B8A9DFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:09:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7DC6286BFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:06:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEB6A1F22FF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:09:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14C216C44E;
-	Thu, 18 Apr 2024 15:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA87165FDF;
+	Thu, 18 Apr 2024 15:09:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b="p6RTzvLK"
-Received: from a.peacevolution.org (a.peacevolution.org [206.189.193.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="B1LZJjoU"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4947E16ABFA;
-	Thu, 18 Apr 2024 15:06:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.193.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 887F916ABFA
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713452809; cv=none; b=lF0vhN1uF/y15BC/Q0BAqUs45o9B4xnMT95jy7lU1x6TwMt9nuWDIlrvHF2bhLOq09FKBNULqKpitaX4+zeWq0OhaZdhlAQhEecOq9yPbn/GfjbnkC/DaQSto+CrBXzahFbnnLEAQblV/eQnMEF1cqZMBrljKJTGL4MzFH9yJEk=
+	t=1713452952; cv=none; b=IiXfr4tA8gK8thNAYVYcRy+PI2oN0zkBlHPlQ7wrOpd12FcM4wzYaYwneqjaEZStoHrzJ2X/f6IJgC0MeoeUSoiXCN4tMiK90Zy+WFzsuDIJEpuwUIZ60ZELZ+BvvYImQJlIFEdokVhEvphSnkyTE8J1ynHRIgsK6c+LFo90wIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713452809; c=relaxed/simple;
-	bh=oGcY+BupHlocn3xxw4/g576DsNISjK2nsy9HQ+Z9ZzE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bbq0bPi8qHN5Rokyzg9yawWN1O5mwHyfmcBT1nxIq1Bk+l01L7z+k5VvV4XlsZpoIv3uRMh+xx6lE0v+QdwSA1DVxvkg++8JAFxuehvPU+wMljkWacPBZNV8VEUjirqDZdHJZ0eHF9tunRozgIlkgiw4jI9MRpdJlLImNgSRK9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org; spf=pass smtp.mailfrom=peacevolution.org; dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b=p6RTzvLK; arc=none smtp.client-ip=206.189.193.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=peacevolution.org
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-	by a.peacevolution.org (Postfix) with ESMTPA id 732C7479B3;
-	Thu, 18 Apr 2024 15:06:35 +0000 (UTC)
-Date: Thu, 18 Apr 2024 11:06:32 -0400
-From: Aren <aren@peacevolution.org>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Jonathan Cameron <jic23@kernel.org>, 
-	Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Ondrej Jirman <megi@xff.cz>, 
-	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, linux-iio@vger.kernel.org, phone-devel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	Willow Barraco <contact@willowbarraco.fr>
-Subject: Re: [PATCH 2/4] iio: light: stk3310: Implement vdd supply and power
- it off during suspend
-Message-ID: <xxeg3as5m5vmmu6fbjujcnvchrerxs2rr42nloirwsktbv4r57@vpxtxblxmspl>
-References: <20240414175300.956243-1-aren@peacevolution.org>
- <20240414175716.958831-1-aren@peacevolution.org>
- <20240414175716.958831-2-aren@peacevolution.org>
- <CAHp75VdZavToGYqLYnkKYt53HXoQxXnRER5Cn5b2==gWTvkAWQ@mail.gmail.com>
+	s=arc-20240116; t=1713452952; c=relaxed/simple;
+	bh=k+6r0GGg1vUggBFS1HFE+EGyXIm1V66bbTL8/78gpIg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tWO2oHltiCCvYjADwAT8PqunQeYV1/NOE+buCWiPELR/ImPXRryICqLb5hNkY3JE4eF8dN5z/nZJwP7IlcqtR5O7e1GEYPnYwlml490LD4bXxJ3k/20tRJgd7nBEr2xkWfYDWbhzS/dbFJW6uhoqg0FvekccWeQVKc22a+js2TQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=B1LZJjoU; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2ab48c1156dso51950a91.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:09:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1713452950; x=1714057750; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p9O3FV94jh7vQc95L9k9nvefdNDVfaT9ibGX8CYdkE0=;
+        b=B1LZJjoUCtuOlGcn9U1cjNB8sFIjuVv1mQmVusLC7U5bSe2BDxPeb7PGK/33ad+bqU
+         ko/ZJ8dY9HhSS6fdKjasdd4PV7gPyYyQgDlre+82dSCb/pmvMzXwQagxGYMz+Co+69wi
+         ycdVvJKuCA3aw+qds9laOO3L3eEkCWoW7tdngejNkRT7gEqFxB0GuVo3ZLJ3lo8YqMgM
+         2jTDaScUD5Ca7toegrIE/OZ7gvt6wBA2oikW4pt+IU8Pv3EK2PEVjm7d3x7QKGmKcxWI
+         iucju/+lE0j7ZW+3LaMz7tFKFpMSJ92Q5E+fehRyMVRNx4LADj2qVaDI6fHUvlFNqfSK
+         Of5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713452950; x=1714057750;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p9O3FV94jh7vQc95L9k9nvefdNDVfaT9ibGX8CYdkE0=;
+        b=UPDTkp5Cy0jwFPO97krSEvv4oKrS3/VDl7oJAvF2gcDb4UX7e5o7ZlYvE77ZnpYxpQ
+         yOTPWtCTPb/+Hy5dP3wkvsNEf06l30GFuujKRZefexnS618ktzktp69ulxSLKS1njp48
+         fIU04cxxQUQjjGcy6Gl/RSM9uew9jtUgJGnZ8Ubx9MDDybO5qXLNknzdt/VKS0dksHxP
+         8gxN83/jvfPQT9If7Fn8sm7y5ru9GQKUKTR5wkStCVmQUpwiu/ipQiyinTpn7RwqENgD
+         OSudGerpO52Aci2nLg7WnBUdSISIs0luEv41gPeYVdyzw/DDPX7Sc8sBED4XedZUGQ92
+         BYcw==
+X-Forwarded-Encrypted: i=1; AJvYcCX1Tcm2UrTrmWIjGqgFbVV8scbrPULLT5rP1t2RoMMUQU/k3mjPQzPcVAr+xq9CDiRQkXynBLQkgIa8UzrPpsGoaa5Vj+Eoq0hHyxR4
+X-Gm-Message-State: AOJu0Yz/u7QnwFT2nUCzWRM5iPVDCOQe7Z/jpz1HRmKyUh+Af9r0++5s
+	Qlgk1G+aoxb/9b1NNQk8P/l83NqxeDFH81OUT3nURBBZpu/osW4apTn/gllM/Mg=
+X-Google-Smtp-Source: AGHT+IEpDI3SLb6DK8eESf91mbfRxTkqd15fvUPDNtPee/hawli5VCPVwcKmvtkaX2PmBdDDW5btOg==
+X-Received: by 2002:a17:90a:7e0e:b0:2a3:be48:23f3 with SMTP id i14-20020a17090a7e0e00b002a3be4823f3mr2885933pjl.4.1713452949760;
+        Thu, 18 Apr 2024 08:09:09 -0700 (PDT)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id s22-20020a17090aa11600b002ab664e5e17sm1547775pjp.1.2024.04.18.08.09.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 08:09:09 -0700 (PDT)
+Message-ID: <362c3c63-6fd9-401c-9281-e2e0c7efc14a@kernel.dk>
+Date: Thu, 18 Apr 2024 09:09:07 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VdZavToGYqLYnkKYt53HXoQxXnRER5Cn5b2==gWTvkAWQ@mail.gmail.com>
-X-Spamd-Bar: /
-Authentication-Results: auth=pass smtp.auth=aren@peacevolution.org smtp.mailfrom=aren@peacevolution.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=peacevolution.org;
-	s=dkim; t=1713452796;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:content-transfer-encoding:in-reply-to:references;
-	bh=VCd0NHg7beAhJoKEm/QgbRTnUak2JYtg99vMXKxsa0M=;
-	b=p6RTzvLKnixYbPyShowQRtk19eTobmvfGZGGbbHynE1W98DtGm0Vh5jeKHhResC5i2ODzI
-	QmnANwv6xJ5A5/etHiIwvwPYQc8XhSBcelf2FJGftSilB6sfgJ4ltbihnMVY+IUz+N9HFF
-	voTKduELX/t3TDY4UpOiD+UwsPnkvag=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] completion: move blk_wait_io to
+ kernel/sched/completion.c
+Content-Language: en-US
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Mikulas Patocka <mpatocka@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Mike Snitzer <msnitzer@redhat.com>,
+ Damien Le Moal <dlemoal@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
+ Guangwu Zhang <guazhang@redhat.com>, dm-devel@lists.linux.dev,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <31b118f3-bc8d-b18b-c4b9-e57d74a73f@redhat.com>
+ <20240417175538.GP40213@noisy.programming.kicks-ass.net>
+ <546473fd-ca4b-3c64-349d-cc739088b748@redhat.com>
+ <ZiCoIHFLAzCva2lU@infradead.org>
+ <5f3d434b-e05c-445f-bee5-2bb1f11a5946@kernel.dk>
+ <ZiEyLvL6Pq_RB-Eh@infradead.org>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <ZiEyLvL6Pq_RB-Eh@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 15, 2024 at 05:04:53PM +0300, Andy Shevchenko wrote:
-> On Sun, Apr 14, 2024 at 8:57 PM Aren Moynihan <aren@peacevolution.org> wrote:
-> >
-> > From: Ondrej Jirman <megi@xff.cz>
-> >
-> > VDD power input can be used to completely power off the chip during
-> > system suspend. Do so if available.
+On 4/18/24 8:46 AM, Christoph Hellwig wrote:
+> On Thu, Apr 18, 2024 at 08:30:14AM -0600, Jens Axboe wrote:
+>> It certainly is a hack/work-around, but unless there are a lot more that
+>> should be using something like this, I don't think adding extra core
+>> complexity in terms of a special task state (or per-task flag, at least
+>> that would be easier) is really warranted.
 > 
-> ...
-> 
-> >  #include <linux/iio/events.h>
-> >  #include <linux/iio/iio.h>
-> >  #include <linux/iio/sysfs.h>
-> 
-> > +#include <linux/regulator/consumer.h>
-> 
-> Move it to be ordered and add a blank line to separate iio/*.h group.
-> 
-> ...
-> 
-> > +       data->vdd_reg = devm_regulator_get_optional(&client->dev, "vdd");
-> > +       if (IS_ERR(data->vdd_reg)) {
-> > +               ret = PTR_ERR(data->vdd_reg);
-> > +               if (ret == -ENODEV)
-> > +                       data->vdd_reg = NULL;
-> 
-> > +               else
-> 
-> Redundant 'else' when you follow the pattern "check for error condition first".
-> 
-> > +                       return dev_err_probe(&client->dev, ret,
-> > +                                            "get regulator vdd failed\n");
-> > +       }
-> 
-> ...
-> 
-> > +       if (data->vdd_reg) {
-> > +               ret = regulator_enable(data->vdd_reg);
-> > +               if (ret)
-> > +                       return dev_err_probe(&client->dev, ret,
-> > +                                            "regulator vdd enable failed\n");
-> > +
-> > +               usleep_range(1000, 2000);
-> 
-> fsleep()
-> 
-> > +       }
-> 
-> ...
-> 
-> >         stk3310_set_state(iio_priv(indio_dev), STK3310_STATE_STANDBY);
-> > +       if (data->vdd_reg)
-> > +               regulator_disable(data->vdd_reg);
-> 
-> I forgot to check the order of freeing resources, be sure you have no
-> devm_*() releases happening before this call.
+> Basically any kernel thread doing on-demand work has the same problem.
+> It just has an easier workaround hack, as the kernel threads can simply
+> claim to do an interruptible sleep to not trigger the softlockup
+> warnings.
 
-If I understand what you're saying, this should be fine. The driver just
-uses devm to clean up acquired resources after remove is called. Or am I
-missing something and resources could be freed before calling
-stk3310_remove?
+A kernel thread can just use TASK_INTERRUPTIBLE, as it doesn't take
+signals anyway. But yeah, I guess you could view that as a work-around
+as well.
 
-> ...
-> 
-> > +               usleep_range(1000, 2000);
-> 
-> fsleep()
+Outside of that, mostly only a block problem, where our sleep is always
+uninterruptible. Unless there are similar hacks elsewhere in the kernel
+that I'm not aware of?
 
-Everything else makes sense, I'll include those in v2 along with a patch
-to switch stk3310_init to dev_err_probe.
+-- 
+Jens Axboe
 
-Thanks for taking the time to review
- - Aren
 
