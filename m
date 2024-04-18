@@ -1,153 +1,294 @@
-Return-Path: <linux-kernel+bounces-149654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AE3A8A9409
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:32:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 804638A941E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:35:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87500B2200B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:32:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBB111F21A95
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 07:34:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFEF574435;
-	Thu, 18 Apr 2024 07:32:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540EF6EB5A;
+	Thu, 18 Apr 2024 07:34:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="rT7vRLN1";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ZdiEr3HP";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="rT7vRLN1";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ZdiEr3HP"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="F8y0JHyH"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362856A8AD;
-	Thu, 18 Apr 2024 07:32:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 813C43D984
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:34:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713425542; cv=none; b=beIImV/aJfz3RxHRwqvnzPzszHrwHHDP/63zKDHBoDjtb/p1jYjzbmji2CXmqJeec+AtpLPwBNEXAElD7RH3enMC9IhGkFcYXQGJKXXaaeHSQm2j5ZRU7HKlE+CD/3gEcY+4M71cWgF1fnI5AavoL7IIJiLO8re0P3oeL0YSbgI=
+	t=1713425664; cv=none; b=VvMoC+y/5m6roYPJw1UI9clS/n208bZbiUWzJAG2WeXEmvGa+p4yp57RamzvrxNDPBOrr64kU4Rx31XU/KLMl7zEITdqADftiwLAp2jcSpxL1UJOYND4Xg7zOp3MqXFlnC8CNBpSRTGhdIb12BxNzRmtVZ0d345+aVi/4OOU5ZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713425542; c=relaxed/simple;
-	bh=90YhdNNJcxrDaRsu55Rjh/2OZ7oiSVLChqVXQkJ6qK0=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oX0yk/ck5o4QnHpIHJeZuaf0b/ZozxQ591sczPWAS6vObci5WepQ5WNX6JtDqt/Zvq3NTxGg+U+CuO3m6Kl4IxMbuByQUvgnUjlEOcCFF29z87ophNHgJnJtITvwqAGZUKWQJW7viiOQOMcVccEKhtPWZjx4g2B4ETnTBRYvMTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=rT7vRLN1; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ZdiEr3HP; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=rT7vRLN1; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ZdiEr3HP; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 57C8534AFC;
-	Thu, 18 Apr 2024 07:32:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713425535; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1713425664; c=relaxed/simple;
+	bh=LGSnJpHQQgKcur6GW4YmxJyXuKfv3XVmRlZs4XKGzio=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HlLrVc+3qF4IyhVVKSRInXnFtpdIcP1jjYIdfFdZf1mphKlqar7bbKSEvW8XWXwaiJI9ULF4LnjEzN0QNX8TfWxeGZ8Q/5sePLpagO1kRz2XczeIfGNmoeKpvjnn4CCmX4ZkP+HzAqSg6HAlHboksoVj0dy5DJbrfiG8oew5hc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=F8y0JHyH; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713425661;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FKRoM0BRzYX0RT/WZrESQAqQcadfdTDQIy5FQXB1umI=;
-	b=rT7vRLN1WzMjsARKZhDofgz4r2kSB6s/87hU82UL8pFiKX4ED29btrxGJ53KUTIFQaslWI
-	2Pd6vw7IXXWFnAjFZcNqH/Nvg788gSNh0YtIi6nhYpjYzE0fo0vghwgNEC3qwLAgqv0YpF
-	u7C29Z2FCt3l5DQJaVnofJFCEekDZc4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713425535;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FKRoM0BRzYX0RT/WZrESQAqQcadfdTDQIy5FQXB1umI=;
-	b=ZdiEr3HPLg4llHafwf4QDgE2lt76Cm9ohE8CWJD5o32RNaLj3mAc+48WvLRWLPffFnJylP
-	8zh8VZmPFvvK96Bw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713425535; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FKRoM0BRzYX0RT/WZrESQAqQcadfdTDQIy5FQXB1umI=;
-	b=rT7vRLN1WzMjsARKZhDofgz4r2kSB6s/87hU82UL8pFiKX4ED29btrxGJ53KUTIFQaslWI
-	2Pd6vw7IXXWFnAjFZcNqH/Nvg788gSNh0YtIi6nhYpjYzE0fo0vghwgNEC3qwLAgqv0YpF
-	u7C29Z2FCt3l5DQJaVnofJFCEekDZc4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713425535;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FKRoM0BRzYX0RT/WZrESQAqQcadfdTDQIy5FQXB1umI=;
-	b=ZdiEr3HPLg4llHafwf4QDgE2lt76Cm9ohE8CWJD5o32RNaLj3mAc+48WvLRWLPffFnJylP
-	8zh8VZmPFvvK96Bw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F36571384C;
-	Thu, 18 Apr 2024 07:32:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id x+kZOn7MIGaACwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 18 Apr 2024 07:32:14 +0000
-Date: Thu, 18 Apr 2024 09:32:23 +0200
-Message-ID: <87bk67xh14.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-sound@vger.kernel.org,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-kernel@vger.kernel.org,
-	"Luke D. Jones" <luke@ljones.dev>,
-	Athaariq Ardhiansyah <foss@athaariq.my.id>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Kailang Yang <kailang@realtek.com>,
-	Matthew Anderson <ruinairas1992@gmail.com>,
-	Shenghao Ding <shenghao-ding@ti.com>,
-	Stefan Binding <sbinding@opensource.cirrus.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirks for Huawei Matebook D14 NBLB-WAX9N
-In-Reply-To: <b92a9e49fb504eec8416bcc6882a52de89450102.1713370457.git.mchehab@kernel.org>
-References: <b92a9e49fb504eec8416bcc6882a52de89450102.1713370457.git.mchehab@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	bh=ydywqdvl5tGhn3V8ZvUI2ohm8v6gM+3x5JsmuXE5oQo=;
+	b=F8y0JHyHmTktEmvsEcK7p4ru8w+OFVNuK8VcZBuCR+qfCfSxpH4KQ9RypK9uTG1Y24fPQ2
+	LUTqU+StRGDKghvb2/7llVBffbvrppjnqHHrim/AGhjMkobh+lP4TSCG/XZVFan4eh4qCY
+	jNTOlw19INMR/14hzMKNfbrN6yiwAzI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-482-CpkWlOJNNB-_fK6TPVGeNg-1; Thu, 18 Apr 2024 03:34:19 -0400
+X-MC-Unique: CpkWlOJNNB-_fK6TPVGeNg-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4183d08093bso3168115e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 00:34:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713425658; x=1714030458;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ydywqdvl5tGhn3V8ZvUI2ohm8v6gM+3x5JsmuXE5oQo=;
+        b=e0U1Jv7qiYJWKLnj+6P6sHpsRUEweEgMKaCk2J3CyPjRa/LrVLDMjmh3zap4PpbwmX
+         Z2y5XBUPYRt266ztlNJ7OHpi5qc5XBpZuHFOWP0o4tv3HILCqVrXMmUkTee9FnyhzwhT
+         LGwAg+oTvN03fa11Xg92imlVYewlLttd67CjiaBbKPraKnVfowgvYOtZQoQGOqvP0X8V
+         mdp1IokJGgfUEOyQBBrVlv9Q3dnWv6snH/ikEhuJLvYGN0wWpC7jfbw27m5vfipgNxR4
+         qv8u/K1ARovmllK9sjyGKCFI3HbFfET3U+LsPFB7Hk8/zy982ldXO9LcDbVIjU4j4f+k
+         HCiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWNtw+4y3iDdpah+G8wMu/UdHx7OVTboC72zy0MlfnF1Kfe9qAagPii1iHmGjCwf3oL5A/9nCu7gdnr+Qkxh3BPVPIUppyxMHqpNvUb
+X-Gm-Message-State: AOJu0Yw+lSoO1q5Y0TwesMP40UiAbOf2uN1e1Xe+YMwFI3XNlp3BXTlE
+	SSUFxUU3Gk5fvEw5by207UwW+uMGp3Hh/ARpO4cQrJIZ8Z6nNlxF11hbjYZgt1LgRfVVTnhUheX
+	U4JgK5zvXVY0oi1cBBWizjtSVOrkJyXdz6Qm4Yop8cVKznVhxKfs7KsqSQTdGFg==
+X-Received: by 2002:a05:600c:3111:b0:418:e561:d0b5 with SMTP id g17-20020a05600c311100b00418e561d0b5mr720671wmo.37.1713425657698;
+        Thu, 18 Apr 2024 00:34:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFvhWHg0a0NuVWZRqdc4rSWNDjVnJcCbbmdis1E8SLdKf95AgXARxMzDAd6QhFNcqERmy+EJQ==
+X-Received: by 2002:a05:600c:3111:b0:418:e561:d0b5 with SMTP id g17-20020a05600c311100b00418e561d0b5mr720650wmo.37.1713425657100;
+        Thu, 18 Apr 2024 00:34:17 -0700 (PDT)
+Received: from redhat.com ([2a02:14f:1fc:1e9b:54cd:34ea:3dbb:5a75])
+        by smtp.gmail.com with ESMTPSA id iv19-20020a05600c549300b004186c58a9b5sm1654720wmb.44.2024.04.18.00.34.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 00:34:16 -0700 (PDT)
+Date: Thu, 18 Apr 2024 03:34:10 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: "Zhu, Lingshan" <lingshan.zhu@intel.com>
+Cc: David Stevens <stevensd@chromium.org>, Jason Wang <jasowang@redhat.com>,
+	Cornelia Huck <cohuck@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	Eugenio Perez <eperezma@redhat.com>,
+	virtio-dev@lists.oasis-open.org, linux-kernel@vger.kernel.org,
+	virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 1/1] virtio: Add support for the virtio suspend feature
+Message-ID: <20240418033313-mutt-send-email-mst@kernel.org>
+References: <20240417085440.4036535-1-stevensd@chromium.org>
+ <20240417085440.4036535-2-stevensd@chromium.org>
+ <a123f8da-a6b9-4923-95ff-7814804cdabb@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Flag: NO
-X-Spam-Score: -1.41
-X-Spam-Level: 
-X-Spamd-Result: default: False [-1.41 / 50.00];
-	BAYES_HAM(-1.11)[88.30%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,suse.com,ljones.dev,athaariq.my.id,perex.cz,realtek.com,gmail.com,ti.com,opensource.cirrus.com,linux.intel.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a123f8da-a6b9-4923-95ff-7814804cdabb@intel.com>
 
-On Wed, 17 Apr 2024 18:16:33 +0200,
-Mauro Carvalho Chehab wrote:
+On Thu, Apr 18, 2024 at 03:14:37PM +0800, Zhu, Lingshan wrote:
 > 
-> The headset mic requires a fixup to be properly detected/used.
 > 
-> As a reference, this specific model from 2021 reports
-> the following devices:
-> 	https://alsa-project.org/db/?f=1a5ddeb0b151db8fe051407f5bb1c075b7dd3e4a
+> On 4/17/2024 4:54 PM, David Stevens wrote:
+> > Add support for the VIRTIO_F_SUSPEND feature. When this feature is
+> > negotiated, power management can use it to suspend virtio devices
+> > instead of resorting to resetting the devices entirely.
+> > 
+> > Signed-off-by: David Stevens <stevensd@chromium.org>
+> > ---
+> >   drivers/virtio/virtio.c            | 32 ++++++++++++++++++++++++++++++
+> >   drivers/virtio/virtio_pci_common.c | 29 +++++++++++----------------
+> >   drivers/virtio/virtio_pci_modern.c | 19 ++++++++++++++++++
+> >   include/linux/virtio.h             |  2 ++
+> >   include/uapi/linux/virtio_config.h | 10 +++++++++-
+> >   5 files changed, 74 insertions(+), 18 deletions(-)
+> > 
+> > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> > index f4080692b351..cd11495a5098 100644
+> > --- a/drivers/virtio/virtio.c
+> > +++ b/drivers/virtio/virtio.c
+> > @@ -1,5 +1,6 @@
+> >   // SPDX-License-Identifier: GPL-2.0-only
+> >   #include <linux/virtio.h>
+> > +#include <linux/delay.h>
+> >   #include <linux/spinlock.h>
+> >   #include <linux/virtio_config.h>
+> >   #include <linux/virtio_anchor.h>
+> > @@ -580,6 +581,37 @@ int virtio_device_restore(struct virtio_device *dev)
+> >   	return ret;
+> >   }
+> >   EXPORT_SYMBOL_GPL(virtio_device_restore);
+> > +
+> > +static int virtio_device_set_suspend_bit(struct virtio_device *dev, bool enabled)
+> > +{
+> > +	u8 status, target;
+> > +
+> > +	status = dev->config->get_status(dev);
+> > +	if (enabled)
+> > +		target = status | VIRTIO_CONFIG_S_SUSPEND;
+> > +	else
+> > +		target = status & ~VIRTIO_CONFIG_S_SUSPEND;
+> > +	dev->config->set_status(dev, target);
+> I think it is better to verify whether the device SUSPEND bit is
+> already set or clear, we can just return if status == target.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Thanks
+> Zhu Lingshan
+> > +
+> > +	while ((status = dev->config->get_status(dev)) != target) {
+> > +		if (status & VIRTIO_CONFIG_S_NEEDS_RESET)
+> > +			return -EIO;
+> > +		mdelay(10);
 
-Applied now.  Thanks.
+Bad device state (set by surprise removal) should also
+be handled here I think.
 
 
-Takashi
+> > +	}
+> > +	return 0;
+> > +}
+> > +
+> > +int virtio_device_suspend(struct virtio_device *dev)
+> > +{
+> > +	return virtio_device_set_suspend_bit(dev, true);
+> > +}
+> > +EXPORT_SYMBOL_GPL(virtio_device_suspend);
+> > +
+> > +int virtio_device_resume(struct virtio_device *dev)
+> > +{
+> > +	return virtio_device_set_suspend_bit(dev, false);
+> > +}
+> > +EXPORT_SYMBOL_GPL(virtio_device_resume);
+> >   #endif
+> >   static int virtio_init(void)
+> > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+> > index b655fccaf773..4d542de05970 100644
+> > --- a/drivers/virtio/virtio_pci_common.c
+> > +++ b/drivers/virtio/virtio_pci_common.c
+> > @@ -495,31 +495,26 @@ static int virtio_pci_restore(struct device *dev)
+> >   	return virtio_device_restore(&vp_dev->vdev);
+> >   }
+> > -static bool vp_supports_pm_no_reset(struct device *dev)
+> > +static int virtio_pci_suspend(struct device *dev)
+> >   {
+> >   	struct pci_dev *pci_dev = to_pci_dev(dev);
+> > -	u16 pmcsr;
+> > -
+> > -	if (!pci_dev->pm_cap)
+> > -		return false;
+> > -
+> > -	pci_read_config_word(pci_dev, pci_dev->pm_cap + PCI_PM_CTRL, &pmcsr);
+> > -	if (PCI_POSSIBLE_ERROR(pmcsr)) {
+> > -		dev_err(dev, "Unable to query pmcsr");
+> > -		return false;
+> > -	}
+> > +	struct virtio_pci_device *vp_dev = pci_get_drvdata(pci_dev);
+> > -	return pmcsr & PCI_PM_CTRL_NO_SOFT_RESET;
+> > -}
+> > +	if (virtio_has_feature(&vp_dev->vdev, VIRTIO_F_SUSPEND))
+> > +		return virtio_device_suspend(&vp_dev->vdev);
+> > -static int virtio_pci_suspend(struct device *dev)
+> > -{
+> > -	return vp_supports_pm_no_reset(dev) ? 0 : virtio_pci_freeze(dev);
+> > +	return virtio_pci_freeze(dev);
+> >   }
+> >   static int virtio_pci_resume(struct device *dev)
+> >   {
+> > -	return vp_supports_pm_no_reset(dev) ? 0 : virtio_pci_restore(dev);
+> > +	struct pci_dev *pci_dev = to_pci_dev(dev);
+> > +	struct virtio_pci_device *vp_dev = pci_get_drvdata(pci_dev);
+> > +
+> > +	if (virtio_has_feature(&vp_dev->vdev, VIRTIO_F_SUSPEND))
+> > +		return virtio_device_resume(&vp_dev->vdev);
+> > +
+> > +	return virtio_pci_restore(dev);
+> >   }
+> >   static const struct dev_pm_ops virtio_pci_pm_ops = {
+> > diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+> > index f62b530aa3b5..ac8734526b8d 100644
+> > --- a/drivers/virtio/virtio_pci_modern.c
+> > +++ b/drivers/virtio/virtio_pci_modern.c
+> > @@ -209,6 +209,22 @@ static void vp_modern_avq_deactivate(struct virtio_device *vdev)
+> >   	__virtqueue_break(admin_vq->info.vq);
+> >   }
+> > +static bool vp_supports_pm_no_reset(struct pci_dev *pci_dev)
+> > +{
+> > +	u16 pmcsr;
+> > +
+> > +	if (!pci_dev->pm_cap)
+> > +		return false;
+> > +
+> > +	pci_read_config_word(pci_dev, pci_dev->pm_cap + PCI_PM_CTRL, &pmcsr);
+> > +	if (PCI_POSSIBLE_ERROR(pmcsr)) {
+> > +		dev_err(&pci_dev->dev, "Unable to query pmcsr");
+> > +		return false;
+> > +	}
+> > +
+> > +	return pmcsr & PCI_PM_CTRL_NO_SOFT_RESET;
+> > +}
+> > +
+> >   static void vp_transport_features(struct virtio_device *vdev, u64 features)
+> >   {
+> >   	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> > @@ -223,6 +239,9 @@ static void vp_transport_features(struct virtio_device *vdev, u64 features)
+> >   	if (features & BIT_ULL(VIRTIO_F_ADMIN_VQ))
+> >   		__virtio_set_bit(vdev, VIRTIO_F_ADMIN_VQ);
+> > +
+> > +	if (features & BIT_ULL(VIRTIO_F_SUSPEND) && vp_supports_pm_no_reset(pci_dev))
+> > +		__virtio_set_bit(vdev, VIRTIO_F_SUSPEND);
+> >   }
+> >   static int __vp_check_common_size_one_feature(struct virtio_device *vdev, u32 fbit,
+> > diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+> > index b0201747a263..8e456b04114e 100644
+> > --- a/include/linux/virtio.h
+> > +++ b/include/linux/virtio.h
+> > @@ -160,6 +160,8 @@ void virtio_config_changed(struct virtio_device *dev);
+> >   #ifdef CONFIG_PM_SLEEP
+> >   int virtio_device_freeze(struct virtio_device *dev);
+> >   int virtio_device_restore(struct virtio_device *dev);
+> > +int virtio_device_suspend(struct virtio_device *dev);
+> > +int virtio_device_resume(struct virtio_device *dev);
+> >   #endif
+> >   void virtio_reset_device(struct virtio_device *dev);
+> > diff --git a/include/uapi/linux/virtio_config.h b/include/uapi/linux/virtio_config.h
+> > index 2445f365bce7..4a6e2c28ea76 100644
+> > --- a/include/uapi/linux/virtio_config.h
+> > +++ b/include/uapi/linux/virtio_config.h
+> > @@ -40,6 +40,8 @@
+> >   #define VIRTIO_CONFIG_S_DRIVER_OK	4
+> >   /* Driver has finished configuring features */
+> >   #define VIRTIO_CONFIG_S_FEATURES_OK	8
+> > +/* Driver has suspended the device */
+> > +#define VIRTIO_CONFIG_S_SUSPEND		0x10
+> >   /* Device entered invalid state, driver must reset it */
+> >   #define VIRTIO_CONFIG_S_NEEDS_RESET	0x40
+> >   /* We've given up on this device. */
+> > @@ -52,7 +54,7 @@
+> >    * rest are per-device feature bits.
+> >    */
+> >   #define VIRTIO_TRANSPORT_F_START	28
+> > -#define VIRTIO_TRANSPORT_F_END		42
+> > +#define VIRTIO_TRANSPORT_F_END		43
+> >   #ifndef VIRTIO_CONFIG_NO_LEGACY
+> >   /* Do we get callbacks when the ring is completely used, even if we've
+> > @@ -120,4 +122,10 @@
+> >    */
+> >   #define VIRTIO_F_ADMIN_VQ		41
+> > +/*
+> > + * This feature indicates that the driver can suspend the device via the
+> > + * suspend bit in the device status byte.
+> > + */
+> > +#define VIRTIO_F_SUSPEND		42
+> > +
+> >   #endif /* _UAPI_LINUX_VIRTIO_CONFIG_H */
+
 
