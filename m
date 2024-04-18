@@ -1,210 +1,367 @@
-Return-Path: <linux-kernel+bounces-150805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A6D58AA4BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:31:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63CE18AA4C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:32:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8C66B21E22
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:31:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19F15281117
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:31:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3B1A194C96;
-	Thu, 18 Apr 2024 21:31:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B75194C9C;
+	Thu, 18 Apr 2024 21:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SubY4FPv"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XLvUDy8j"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B32A2F30;
-	Thu, 18 Apr 2024 21:31:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713475865; cv=fail; b=bRPVJLud15gO1dEa1LKgVTD+qOodo9uJa8ghi8ZtG48G+q46sid7U59Frjwrj2fjCa8+NeaqlVhXAgD72jlXARpsukZQp76e1YNB6sa11l4w/OWJuhIzfAZP0vLLwEzumMX7QIHYHPy8lsP841Nsbe0fiFOGblv0AJgVkg9qJRk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713475865; c=relaxed/simple;
-	bh=ShDqt5xPMf6Tx2iu+qm+rpilMMyHFgbSQ6awThTKQOI=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Jb+9CtUqtpelfv7DXY32yxvKuBkv3nI6mC4KSGOK5S1gLYALPhWShrLK3qDJeCUKkPGkx+FqYArWd+jjlG0pcLE+2z5mGLejT01HtDQK1VJZZZZUihCxxhko1DCneChs0IZYEcOmySKVofR4t4e0W1qu9+mli/RKljH5Hp/1QAc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SubY4FPv; arc=fail smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713475864; x=1745011864;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=ShDqt5xPMf6Tx2iu+qm+rpilMMyHFgbSQ6awThTKQOI=;
-  b=SubY4FPv+Xy+ZnFylxR9NfcnIMVXmpkZNClM/KYzlCW6cn8NzoEmjg78
-   9s/V8EyMXJd/CKbGdRVaoX2QUBLMCH1PP+xfshkgPWSUErUs1G6GuuKwB
-   7UVsr+LV1LoLiYCHpBACeezvxY905NmyIkUTVFJg7PZhPI5jSh/RoCiTa
-   LKqJ4c0vJ4GtWbGPQTNBZSwbbXatJQotwimScfZ2fRQ8hQqdgS8NUYMte
-   Cn2gaQn7Om6NBiW5flOXTdDDA7olOB9Ocn1STRQaf0J5lsoY+WBLXf+zC
-   oGGxm7EMJDXLyZ52mnZUVMG/F8IFjeP7nwUkULIK0f9A+bJfe/bYhb+2M
-   Q==;
-X-CSE-ConnectionGUID: Yly14rQWRJiKNNOg1J7A3w==
-X-CSE-MsgGUID: 2tGAA4FSQsaLRyvTEKn8Qg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="20442529"
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="20442529"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 14:31:03 -0700
-X-CSE-ConnectionGUID: A6RSj06cQSSAJuVkSOFifw==
-X-CSE-MsgGUID: Q/gfIV10TX6Ax9klRtSQ+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="54328244"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Apr 2024 14:30:58 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 18 Apr 2024 14:30:57 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 18 Apr 2024 14:30:57 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 18 Apr 2024 14:30:57 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dRtQDPLm7ttC5SvFzqFZ0fZlpjnqWeiArHJ0Qn5FuXkt61j8LcQAyoXGU+BfVW5N6+CqNwqiSj+Aa4I31VZrRWURW6Ss8gfw1sZ5BSZ90Kusnsbe6j2G4AxuPyA1k5la9b+ovB6/HqX3xiJTgQPoUeo9nNH78Fb8adlpH0mSKTUa4vkOawziEMtg10pQgiuHAw6G+OR0zFTVQAFMZDVePIQ+HeEgsqHFc3q2cCAXPi+obSKSSxr0Ki1LsLI/XeCsxplGXOnn+BsHvU9aZZg1dOLfnNGH4ONH/7X+BsaFUVagSvQPovZkm200I9grHHb3pI9awHK8uNUGNyt05BVDWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ShDqt5xPMf6Tx2iu+qm+rpilMMyHFgbSQ6awThTKQOI=;
- b=SXWeE0uZJJCPPvMQBzlzhmUBO3i1HOlTyy4iGzaw3sCWTt03FD5qG9d2Jx5P4lUnswuKNdKVqZXlCdyEP3gBCWG0dfZ/0NJscTdeUrs1sOn7F02msIQeKOVFYIiRvBpPEUF3ZbyPk+G3+g/RC+ElCn/6mGjemZBfoeuPQb7mjTLHjmnW1X2c414VihfzoIj7etQX4udXktrvEAG0Czd6iu4UGcnryY0pqK3XV6ZgFG+q/3NJtXsMlghacds0754Hk5RBax8N1DL2VCoUY88wudcAhQ9+YohaL2BMkjGZLy+sL1BonZc/XKtTv6ejd1lKotOlg7SAA1jjaMDxYpPG0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SN7PR11MB7590.namprd11.prod.outlook.com (2603:10b6:806:348::13)
- by SJ2PR11MB8500.namprd11.prod.outlook.com (2603:10b6:a03:574::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.37; Thu, 18 Apr
- 2024 21:30:48 +0000
-Received: from SN7PR11MB7590.namprd11.prod.outlook.com
- ([fe80::f454:78c6:2602:4a6b]) by SN7PR11MB7590.namprd11.prod.outlook.com
- ([fe80::f454:78c6:2602:4a6b%7]) with mapi id 15.20.7472.025; Thu, 18 Apr 2024
- 21:30:48 +0000
-From: "Colberg, Peter" <peter.colberg@intel.com>
-To: "yilun.xu@linux.intel.com" <yilun.xu@linux.intel.com>
-CC: "Xu, Yilun" <yilun.xu@intel.com>, "linux-fpga@vger.kernel.org"
-	<linux-fpga@vger.kernel.org>, "mdf@kernel.org" <mdf@kernel.org>,
-	"andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>, "Wu,
- Hao" <hao.wu@intel.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "russ.weight@linux.dev"
-	<russ.weight@linux.dev>, "Pagani, Marco" <marpagan@redhat.com>, "Rix, Tom"
-	<trix@redhat.com>, "matthew.gerlach@linux.intel.com"
-	<matthew.gerlach@linux.intel.com>
-Subject: Re: [PATCH RESEND] fpga: dfl: omit unneeded casts of u64 values for
- dev_dbg()
-Thread-Topic: [PATCH RESEND] fpga: dfl: omit unneeded casts of u64 values for
- dev_dbg()
-Thread-Index: AQHakdeskQoReb334EG4W8nSL0W2eA==
-Date: Thu, 18 Apr 2024 21:30:48 +0000
-Message-ID: <61cf643fda9b983b8a78b9f66c46290becf4f537.camel@intel.com>
-References: <20240329000429.7493-1-peter.colberg@intel.com>
-	 <Zgt7fA/Jfks/iKYi@yilunxu-OptiPlex-7050>
-In-Reply-To: <Zgt7fA/Jfks/iKYi@yilunxu-OptiPlex-7050>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN7PR11MB7590:EE_|SJ2PR11MB8500:EE_
-x-ms-office365-filtering-correlation-id: 8efe42d6-ec22-4013-96d0-08dc5feed07c
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: t2b7lGUstNH8LLy0EwmVHF1IxM588NRqkQeQmOvROP/tsEh9MC8dgdt0xa6Qh68Cjd1xuh/6Z8zzBefw0sm/9dOVCHbB1r7vM2WUoRnXK1/0+FIm6rkwXuCVEgAO7wrVVQwEP/Xly7PaK2ELWt1dyRCVf6TPWgYS+5hkyTg20/yJhD3bpBXD4ok+ty86VwWgcYc1SIzaidRx5Hw2WfrKLkd4lD1s5nPpaxZBr0TgFModG27jIA7TRCkIstOn1heU0IndLYTUGLzT+XihOH09pQnJRTd2IXMzTQTaTvAMHUMsgo25z4SHSBtxBsojz6xwNWbO7uVkgmIauriCuBdj2DP9UWkxBGqwL+0Z9P06zL6r7l4NPoVQcc3CDk9yrhyrpxot3cwkGXYKRQsj+v6myRKCugssPDTONcgRIXGiKcdkamxAdb1ZasaYxgAJma6/IPo5Zc8IJYGYudGScdTsObfKM6iKKkVA2E6G3obiLBpFj+uGKY5PUgmql2xT+pC3eQceniDefyLKCoCdulRqBaM/a5yaNNOwtFjluYr92yA1AzOqmQuXPy0uO8fIYOmeb6O7zjlVYBfcQrmUPakyliINYDUHdvXIZnNIedDHairFjxIW7dHez3zzGMwAuOwLTtIx/rMnyZk9mhUvEXa0iDYJd75OOcZ4Zd1nICzyhm7O2yh+ZuCKFzocTBf2y0xRYZesS6T+j/wET74drrhMNNZNIEM2b0MO5cs4AWBwfnI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7590.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aVN5UDdJdzFQTVQ0M2ZQT05xZEtoS1hoMjR1L0dkU2Iydnk1Qi9PMWFxRUp0?=
- =?utf-8?B?UWpTcm00QW0rS1VsdFhaZ0pNRkJpWEdzREpBSGZxYXRaVGtFYTNxR0RXemll?=
- =?utf-8?B?NDdBVzR1b0ZDcWExQUhDV0cxQ2F6TmZNN09zQlRzelJRblNNVzZiSXF5S1hV?=
- =?utf-8?B?VXlCM202eWQ2SWkvbWNRZHFJS0JJZEc2VXc4dlBjN2N6dFpuRHIxSzFQVjUx?=
- =?utf-8?B?NFJ2ckpDSFN6TktFaTVwNFZLUE04ald0b2d1MVJqM1A2WksyYmhDWXo4QnRy?=
- =?utf-8?B?N1BRUnBYc29CY09ualVDTDZMUVVuS256aUhOamM5NlFFcHNhNmRNRjdvNTJG?=
- =?utf-8?B?N05XdmRnM1NGR2lFZnVZZ3RFN0dveVE0TUt6bU45QU9Vd3hjd2RBbXlCOFZ3?=
- =?utf-8?B?QTRLdGNqelpwTmthbENMVitzYTgxNkdwaENvMzdTNDJXWG5YbUZNb0dWYzIy?=
- =?utf-8?B?Wlp5a0JYcXJkSFJOOWlVck15YmdmQW4yb2pTaE1JNXZ6V3lNUEg2R0hJVGpZ?=
- =?utf-8?B?VzIwdGh5bDN6NjEwQ2RtbGRmZ04vYUV2OUl1ZHFHOUxNd1o3WG1CQ0MwVXJK?=
- =?utf-8?B?VmNEK3Nsd09BSTVRU0FKR2pDclZGcVo2dk5ySzBBVnRLazVmWXZWWjVTbXpX?=
- =?utf-8?B?S0lZc29vcUIvTXJnUXBqcFZoRDF6bXN0byt2SG5yZTF2RGZWVVAwY0E5T0lh?=
- =?utf-8?B?RjEvVGcwdWZ0a1F5d09QSzI4bGUyc1BwOTVPMlU0eVowU2dkMXEyalhtWlpm?=
- =?utf-8?B?ZVl2akphTmtSMS9CTTFuMEhyYkNET1plLzZxdk5mdHMxaGkwMVlsZUhQY0M3?=
- =?utf-8?B?aEVUTlg3WUcwaFo0QldiR0FOdW5DbldHUFF1Z242L1I5QTllZllUcmc2OElR?=
- =?utf-8?B?U3Z2ODZnNmRnWWU4bmJOMGkwaFh0YlNmbnkwLzBZQVVYZzZFZ2N3TkpRSzBP?=
- =?utf-8?B?VWZneXVDS2lvNXkwYVd3b2ZjZFNiTUFySEYwM3hvOFNtQy9JeUMrSmxxY3l1?=
- =?utf-8?B?NVVrd2RWcmU3TXJpSkU3NWV0VlVjWjczREVDeGF6NmJYSk5PSFRhRERSWUFl?=
- =?utf-8?B?eWl6RXV4MUZoOFF3VndNNGJkV0pOUW94Z1ZHczhDRnliaHR2Ujlmdi9CT0ox?=
- =?utf-8?B?cWF0SGZtNHlGMk1HR3MrWVBkSGZtQ1k4dU9tSFVmenl3cm9CN0pHd0ZLdXgv?=
- =?utf-8?B?VDlma01kbEJ2NXBpaW5XTXB2eHFsUFB6aHVJMHNadC9nTi9QZUJIc2pnM0Fy?=
- =?utf-8?B?OHhDM3JHRG41TE42clVoUDdKMDVFVTZuMEZxbmRGcmg2VHJpZEcwdTgwekIz?=
- =?utf-8?B?dHd5bUNUT3FQUkszK2luNkhDT2I4WjhSQzd0NWdTSm1ETEJqZkp2RjdBaVZR?=
- =?utf-8?B?amxUc0NBZUFDS3FKbVpiSUNNYzlzSkFUaGZEQjlRaTVoRzhCSmFmeG9iYU53?=
- =?utf-8?B?MEM5eVQ1VFMxdTNMY3Z2U3g3MmNCSVVzVEVYa09jYS9aelIzMnpVQllBWFRC?=
- =?utf-8?B?Wis4UUNneEVqbEdFeWxTcGwvSWJ5UmtnUkx1ZlhjR3ZPdC9xQkptK2VNeStJ?=
- =?utf-8?B?WlJtMTJ4bU1Kb2NMYS9IOHhzMlUyK0UrUEhnbXRkbEEyaVFyajdadHNRQ2lk?=
- =?utf-8?B?TS9nVlRHcmJBUTdEcmVOR1M0Rmd0U1hZZi8ydHRrSVRiYVNXdkl0VlFVSllJ?=
- =?utf-8?B?NUVUMXY5bDNNUXhCeEJnKzJSTFVsTWo1VG0vR01nTzNGd2xLNndRZGFVbW1m?=
- =?utf-8?B?RU1NWmU4VnFUMGR3UEVqL2ltNmNpeTlsdUlzZ2U0bnlPL0Q3NjRxRUpsZ3ZK?=
- =?utf-8?B?OEZaM2lQWHYzeWF3T3BtSlF3aWI5N3JyQ0ZOWjdXNjJFWHVnVFc5ZlVhSjJQ?=
- =?utf-8?B?WUhZQU1HQ1ZibEpkeDJxaXZvcG1nOUtnS2dxZU40OFZ6N1h2eVVQaG90OEtx?=
- =?utf-8?B?dW95QllzSm1Bc1NGaU95ZE10bURUK3lEbGZoRjRmc2FBNy9KRWFLUmxMMmJ4?=
- =?utf-8?B?TlN4aEtuWGxYRWI4cjBzd3lrUFd2c2JHelpObG5scmxNUEk1Q01yT3JWcHdp?=
- =?utf-8?B?YVF2VjVnQ09RUjVMc0ExaUZ0RnNDR2VsTzJpSHgrRHRpcGZVQzhGb1duQjA3?=
- =?utf-8?B?Qmd2WDdKNjIraXBuMDN6cGU5eFNPeTREMys5YUg3UXU5ZFZGekpRQTduSEhh?=
- =?utf-8?B?cnc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <542B3B3341FF5A488D576BF6AEC0B5D6@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D220E181D1E;
+	Thu, 18 Apr 2024 21:31:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713475909; cv=none; b=sHNrrdGpD+cncdnMzxObFCd8UI94c6s46m4po3LClRFTA0zpnZ1cN6ZAHBaZ1kCXtKd3myx84UozCRlEz21AvAtJUeYistqLOu8NAjYWZoFF6PxnP8OLUc15uD+zcq25KEVZN3A4KilUd3pYvq+PEs6DwQXd/oIHD9Mpes0DdoE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713475909; c=relaxed/simple;
+	bh=Jq9UiSYmoP/hUb1oc1xt0fa0f85qV0bqJGIW/rrDDSQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jXrVeaULugnTuxt9wnNEnfYQ/arlzscQe2K1YeOax3GVbP/6arMpZovo3u+uegNbKdFARi7qOzgorv/TQgwx2Yy+znO93nH57HJR5Z8OqQwJYsM3N6ZZXElgeiMEpM7jVpHCOJ0DWrbsuVZ8Iop4+hRghARmDjYj5w8iXzh9ON4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XLvUDy8j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB984C113CC;
+	Thu, 18 Apr 2024 21:31:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713475909;
+	bh=Jq9UiSYmoP/hUb1oc1xt0fa0f85qV0bqJGIW/rrDDSQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XLvUDy8jnDljx2fyG/dk+gL5lbcECNpf+rrDZXTmf13607jjGmZmuC7MaFbWzrDaG
+	 KwLGnubCKOtWpadIQ+LKRJu0p2S5c2h7M7z4hshQCXWCXlQNqnFI7KhPaKOgevkGNl
+	 70UMvfFDu6vTblu0BRBLoZyBc8B/DfuCW4rBfPb2Oj3cEPnp/R1Sj1kQp+coYxQERZ
+	 tUJOl8tKD7vV8SDXObWnTjAwGAIPy9DzpE/IlIm62i8b4NJUVZDVPujOE03vmnWtvY
+	 yd+aUsYMHkeV9pmY5UXGlbP9d2037dBRZ0Lvh4wA2gWNX/FmX8dcABEEF60Yj7baJh
+	 LeTgstZIeGAwQ==
+Date: Thu, 18 Apr 2024 18:31:45 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@intel.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: [PATCH][RFT] Re: linux-next: build failure after merge of the perf
+ tree
+Message-ID: <ZiGRQZQGl0REHm9A@x1>
+References: <20240402094116.79751030@canb.auug.org.au>
+ <ZhlRn0TUkcDaAZT5@x1>
+ <20240413124340.4d48c6d8@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7590.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8efe42d6-ec22-4013-96d0-08dc5feed07c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Apr 2024 21:30:48.4241
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3SVhQee5/8mDLLmzzh/AkaQuRsiVH24CaKEHFEsmGFmsMl3g2IITXdNBHFzAJqO0StKu2eG0XNzdtyUlD7CdZg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB8500
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240413124340.4d48c6d8@canb.auug.org.au>
 
-T24gVHVlLCAyMDI0LTA0LTAyIGF0IDExOjI5ICswODAwLCBYdSBZaWx1biB3cm90ZToNCj4gT24g
-VGh1LCBNYXIgMjgsIDIwMjQgYXQgMDg6MDQ6MjlQTSAtMDQwMCwgUGV0ZXIgQ29sYmVyZyB3cm90
-ZToNCj4gPiBPbWl0IHVubmVlZGVkIGNhc3RzIG9mIHU2NCB2YWx1ZXMgdG8gdW5zaWduZWQgbG9u
-ZyBsb25nIGZvciB1c2Ugd2l0aA0KPiA+IHByaW50aygpIGZvcm1hdCBzcGVjaWZpZXIgJWxseC4g
-VW5saWtlIHVzZXIgc3BhY2UsIHRoZSBrZXJuZWwgZGVmaW5lcw0KPiA+IHU2NCBhcyB1bnNpZ25l
-ZCBsb25nIGxvbmcgZm9yIGFsbCBhcmNoaXRlY3R1cmVzOyBzZWUgY29tbWl0IDJhNzkzMGJkNzdm
-ZQ0KPiA+ICgiRG9jdW1lbnRhdGlvbi9wcmludGstZm9ybWF0cy50eHQ6IE5vIGNhc3RzIG5lZWRl
-ZCBmb3IgdTY0L3M2NCIpLg0KPiANCj4gVGhlIGNoYW5nZSBpcyBPSy4gQnV0IEkgc3VnZ2VzdCBq
-dXN0IGRlbGV0ZSB0aGUgdW5uZWNlc3NhcnkgZGV2X2RiZygpDQo+IHNpbmNlIG5vdyBwZW9wbGUg
-bm9ybWFsbHkgZG9uJ3Qgd2FudCB0aGVzZSAiSGVsbG8sIEknbSBoZXJlISIgaW5mby4NCg0KSG93
-IHdvdWxkIHlvdSBsaWtlIG1lIHRvIHByb2NlZWQ/IFNob3VsZCBJIHJlbW92ZSBkZXZfZGJnKCkg
-aW4gYWxsIERGTA0KbW9kdWxlcz8gVGhlcmUgYXJlICJIZWxsbywgSSdtIGhlcmUhIiBpbiBub24t
-REZMIEZQR0EgbW9kdWxlcywgdG9vLg0KDQokIHJnIC0tc29ydD1wYXRoIC1jIGRldl9kYmcgZHJp
-dmVycy9mcGdhLw0KZHJpdmVycy9mcGdhL2FsdGVyYS1mcmVlemUtYnJpZGdlLmM6Nw0KZHJpdmVy
-cy9mcGdhL2FsdGVyYS1wci1pcC1jb3JlLmM6MQ0KZHJpdmVycy9mcGdhL2RmbC1hZnUtZG1hLXJl
-Z2lvbi5jOjcNCmRyaXZlcnMvZnBnYS9kZmwtYWZ1LWVycm9yLmM6MQ0KZHJpdmVycy9mcGdhL2Rm
-bC1hZnUtbWFpbi5jOjgNCmRyaXZlcnMvZnBnYS9kZmwtZm1lLWVycm9yLmM6MQ0KZHJpdmVycy9m
-cGdhL2RmbC1mbWUtbWFpbi5jOjMNCmRyaXZlcnMvZnBnYS9kZmwtZm1lLW1nci5jOjEyDQpkcml2
-ZXJzL2ZwZ2EvZGZsLWZtZS1wZXJmLmM6Mg0KZHJpdmVycy9mcGdhL2RmbC1mbWUtcHIuYzoxDQpk
-cml2ZXJzL2ZwZ2EvZGZsLWZtZS1yZWdpb24uYzoxDQpkcml2ZXJzL2ZwZ2EvZGZsLW4zMDAwLW5p
-b3MuYzoxDQpkcml2ZXJzL2ZwZ2EvZGZsLXBjaS5jOjMNCmRyaXZlcnMvZnBnYS9kZmwuYzo0DQpk
-cml2ZXJzL2ZwZ2EvZnBnYS1icmlkZ2UuYzo0DQpkcml2ZXJzL2ZwZ2EvZnBnYS1yZWdpb24uYzoz
-DQpkcml2ZXJzL2ZwZ2Evc29jZnBnYS1hMTAuYzoyDQpkcml2ZXJzL2ZwZ2Evc3RyYXRpeDEwLXNv
-Yy5jOjQNCg0KVGhhbmtzLA0KUGV0ZXINCg==
+On Sat, Apr 13, 2024 at 12:43:40PM +1000, Stephen Rothwell wrote:
+> Hi Arnaldo,
+> 
+> On Fri, 12 Apr 2024 12:22:07 -0300 Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> >
+> > On Tue, Apr 02, 2024 at 09:41:16AM +1100, Stephen Rothwell wrote:
+> > > Hi all,
+> > > 
+> > > After merging the perf tree, today's linux-next build (native i.e. ppc64le
+> > > perf) failed like this:
+> > > 
+> > > make[3]: *** No rule to make target '/home/sfr/next/next/tools/include/uapi/linux/stat.h', needed by '/home/sfr/next/perf/libbpf/staticobjs/libbpf.o'.  Stop.  
+> > 
+> > How is this built? Using O=/home/sfr/next/perf?
+> 
+> Yes.  The actual command line is:
+> 
+> make -C tools/perf -f Makefile.perf -s -O -j60 O=/home/sfr/next/perf NO_BPF_SKEL=1
+> 
+> The source directory is /home/sfr/next/next.  This is a PowerPC 64 little endian
+> build (on a PowerPC 64 little endian host).
+> 
+> OK, I just tested on my x86_64 laptop:
+> (I started with a clone of Linus' current tree)
+
+Ok, I did that sequence:
+
+1. checkout torvalds/master
+2. use the make command line above
+3. git merge perf-tools-next
+4. use the make command line above
+
+And reproduced the problem, find below a patch that reverts the patch
+that removes tools/include/uapi/linux/stat.h, with it applied in the
+sequence above right after the merge of perf-tools-next it seems to
+work, i.e. it builds without problems.
+
+Can you please test this so that I can get it into perf-tools-next?
+
+Thanks again for the report!
+
+- Arnaldo
+
+From cec45ef1ad23059aac607d0db959c73c2198bc2a Mon Sep 17 00:00:00 2001
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
+Date: Thu, 18 Apr 2024 18:15:33 -0300
+Subject: [PATCH 1/1] Revert "tools headers: Remove almost unused copy of
+ uapi/stat.h, add few conditional defines"
+
+This reverts commit a672af9139a843eb7a48fd7846bb6df8f81b5f86.
+
+By now it is not used for building tools/perf, but Stephen Rothwell
+reported that when building on a O= directory that had been built with
+torvalds/master and this perf build command line:
+
+  $ make -C tools/perf -f Makefile.perf -s -O -j60 O=/home/sfr/next/perf NO_BPF_SKEL=1
+
+If we then merge perf-tools-next, as he did for linux-next, then we end
+up with a build failure for libbpf:
+
+    PERF_VERSION = 6.9.rc3.g42c4635c8dee
+  make[3]: *** No rule to make target '/home/sfr/next/next/tools/include/uapi/linux/stat.h', needed by '/home/sfr/next/perf/libbpf/staticobjs/libbpf.o'.  Stop.
+  make[2]: *** [Makefile:157: /home/sfr/next/perf/libbpf/staticobjs/libbpf-in.o] Error 2
+  make[1]: *** [Makefile.perf:892: /home/sfr/next/perf/libbpf/libbpf.a] Error 2
+  make[1]: *** Waiting for unfinished jobs....
+  make: *** [Makefile.perf:264: sub-make] Error 2
+
+This needs to be further investigated to figure out how to check if
+libbpf really needs something that is in that
+tools/include/uapi/linux/stat.h file and if not to remove that file in a
+way that we don't break the build in any situation, to avoid requiring
+doing a 'make clean'.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/lkml/20240413124340.4d48c6d8@canb.auug.org.au
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/include/uapi/linux/stat.h | 195 ++++++++++++++++++++++++++++++++
+ tools/perf/check-headers.sh     |   1 +
+ 2 files changed, 196 insertions(+)
+ create mode 100644 tools/include/uapi/linux/stat.h
+
+diff --git a/tools/include/uapi/linux/stat.h b/tools/include/uapi/linux/stat.h
+new file mode 100644
+index 0000000000000000..2f2ee82d55175d05
+--- /dev/null
++++ b/tools/include/uapi/linux/stat.h
+@@ -0,0 +1,195 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++#ifndef _UAPI_LINUX_STAT_H
++#define _UAPI_LINUX_STAT_H
++
++#include <linux/types.h>
++
++#if defined(__KERNEL__) || !defined(__GLIBC__) || (__GLIBC__ < 2)
++
++#define S_IFMT  00170000
++#define S_IFSOCK 0140000
++#define S_IFLNK	 0120000
++#define S_IFREG  0100000
++#define S_IFBLK  0060000
++#define S_IFDIR  0040000
++#define S_IFCHR  0020000
++#define S_IFIFO  0010000
++#define S_ISUID  0004000
++#define S_ISGID  0002000
++#define S_ISVTX  0001000
++
++#define S_ISLNK(m)	(((m) & S_IFMT) == S_IFLNK)
++#define S_ISREG(m)	(((m) & S_IFMT) == S_IFREG)
++#define S_ISDIR(m)	(((m) & S_IFMT) == S_IFDIR)
++#define S_ISCHR(m)	(((m) & S_IFMT) == S_IFCHR)
++#define S_ISBLK(m)	(((m) & S_IFMT) == S_IFBLK)
++#define S_ISFIFO(m)	(((m) & S_IFMT) == S_IFIFO)
++#define S_ISSOCK(m)	(((m) & S_IFMT) == S_IFSOCK)
++
++#define S_IRWXU 00700
++#define S_IRUSR 00400
++#define S_IWUSR 00200
++#define S_IXUSR 00100
++
++#define S_IRWXG 00070
++#define S_IRGRP 00040
++#define S_IWGRP 00020
++#define S_IXGRP 00010
++
++#define S_IRWXO 00007
++#define S_IROTH 00004
++#define S_IWOTH 00002
++#define S_IXOTH 00001
++
++#endif
++
++/*
++ * Timestamp structure for the timestamps in struct statx.
++ *
++ * tv_sec holds the number of seconds before (negative) or after (positive)
++ * 00:00:00 1st January 1970 UTC.
++ *
++ * tv_nsec holds a number of nanoseconds (0..999,999,999) after the tv_sec time.
++ *
++ * __reserved is held in case we need a yet finer resolution.
++ */
++struct statx_timestamp {
++	__s64	tv_sec;
++	__u32	tv_nsec;
++	__s32	__reserved;
++};
++
++/*
++ * Structures for the extended file attribute retrieval system call
++ * (statx()).
++ *
++ * The caller passes a mask of what they're specifically interested in as a
++ * parameter to statx().  What statx() actually got will be indicated in
++ * st_mask upon return.
++ *
++ * For each bit in the mask argument:
++ *
++ * - if the datum is not supported:
++ *
++ *   - the bit will be cleared, and
++ *
++ *   - the datum will be set to an appropriate fabricated value if one is
++ *     available (eg. CIFS can take a default uid and gid), otherwise
++ *
++ *   - the field will be cleared;
++ *
++ * - otherwise, if explicitly requested:
++ *
++ *   - the datum will be synchronised to the server if AT_STATX_FORCE_SYNC is
++ *     set or if the datum is considered out of date, and
++ *
++ *   - the field will be filled in and the bit will be set;
++ *
++ * - otherwise, if not requested, but available in approximate form without any
++ *   effort, it will be filled in anyway, and the bit will be set upon return
++ *   (it might not be up to date, however, and no attempt will be made to
++ *   synchronise the internal state first);
++ *
++ * - otherwise the field and the bit will be cleared before returning.
++ *
++ * Items in STATX_BASIC_STATS may be marked unavailable on return, but they
++ * will have values installed for compatibility purposes so that stat() and
++ * co. can be emulated in userspace.
++ */
++struct statx {
++	/* 0x00 */
++	__u32	stx_mask;	/* What results were written [uncond] */
++	__u32	stx_blksize;	/* Preferred general I/O size [uncond] */
++	__u64	stx_attributes;	/* Flags conveying information about the file [uncond] */
++	/* 0x10 */
++	__u32	stx_nlink;	/* Number of hard links */
++	__u32	stx_uid;	/* User ID of owner */
++	__u32	stx_gid;	/* Group ID of owner */
++	__u16	stx_mode;	/* File mode */
++	__u16	__spare0[1];
++	/* 0x20 */
++	__u64	stx_ino;	/* Inode number */
++	__u64	stx_size;	/* File size */
++	__u64	stx_blocks;	/* Number of 512-byte blocks allocated */
++	__u64	stx_attributes_mask; /* Mask to show what's supported in stx_attributes */
++	/* 0x40 */
++	struct statx_timestamp	stx_atime;	/* Last access time */
++	struct statx_timestamp	stx_btime;	/* File creation time */
++	struct statx_timestamp	stx_ctime;	/* Last attribute change time */
++	struct statx_timestamp	stx_mtime;	/* Last data modification time */
++	/* 0x80 */
++	__u32	stx_rdev_major;	/* Device ID of special file [if bdev/cdev] */
++	__u32	stx_rdev_minor;
++	__u32	stx_dev_major;	/* ID of device containing file [uncond] */
++	__u32	stx_dev_minor;
++	/* 0x90 */
++	__u64	stx_mnt_id;
++	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
++	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
++	/* 0xa0 */
++	__u64	__spare3[12];	/* Spare space for future expansion */
++	/* 0x100 */
++};
++
++/*
++ * Flags to be stx_mask
++ *
++ * Query request/result mask for statx() and struct statx::stx_mask.
++ *
++ * These bits should be set in the mask argument of statx() to request
++ * particular items when calling statx().
++ */
++#define STATX_TYPE		0x00000001U	/* Want/got stx_mode & S_IFMT */
++#define STATX_MODE		0x00000002U	/* Want/got stx_mode & ~S_IFMT */
++#define STATX_NLINK		0x00000004U	/* Want/got stx_nlink */
++#define STATX_UID		0x00000008U	/* Want/got stx_uid */
++#define STATX_GID		0x00000010U	/* Want/got stx_gid */
++#define STATX_ATIME		0x00000020U	/* Want/got stx_atime */
++#define STATX_MTIME		0x00000040U	/* Want/got stx_mtime */
++#define STATX_CTIME		0x00000080U	/* Want/got stx_ctime */
++#define STATX_INO		0x00000100U	/* Want/got stx_ino */
++#define STATX_SIZE		0x00000200U	/* Want/got stx_size */
++#define STATX_BLOCKS		0x00000400U	/* Want/got stx_blocks */
++#define STATX_BASIC_STATS	0x000007ffU	/* The stuff in the normal stat struct */
++#define STATX_BTIME		0x00000800U	/* Want/got stx_btime */
++#define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
++#define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
++#define STATX_MNT_ID_UNIQUE	0x00004000U	/* Want/got extended stx_mount_id */
++
++#define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
++
++#ifndef __KERNEL__
++/*
++ * This is deprecated, and shall remain the same value in the future.  To avoid
++ * confusion please use the equivalent (STATX_BASIC_STATS | STATX_BTIME)
++ * instead.
++ */
++#define STATX_ALL		0x00000fffU
++#endif
++
++/*
++ * Attributes to be found in stx_attributes and masked in stx_attributes_mask.
++ *
++ * These give information about the features or the state of a file that might
++ * be of use to ordinary userspace programs such as GUIs or ls rather than
++ * specialised tools.
++ *
++ * Note that the flags marked [I] correspond to the FS_IOC_SETFLAGS flags
++ * semantically.  Where possible, the numerical value is picked to correspond
++ * also.  Note that the DAX attribute indicates that the file is in the CPU
++ * direct access state.  It does not correspond to the per-inode flag that
++ * some filesystems support.
++ *
++ */
++#define STATX_ATTR_COMPRESSED		0x00000004 /* [I] File is compressed by the fs */
++#define STATX_ATTR_IMMUTABLE		0x00000010 /* [I] File is marked immutable */
++#define STATX_ATTR_APPEND		0x00000020 /* [I] File is append-only */
++#define STATX_ATTR_NODUMP		0x00000040 /* [I] File is not to be dumped */
++#define STATX_ATTR_ENCRYPTED		0x00000800 /* [I] File requires key to decrypt in fs */
++#define STATX_ATTR_AUTOMOUNT		0x00001000 /* Dir: Automount trigger */
++#define STATX_ATTR_MOUNT_ROOT		0x00002000 /* Root of a mount */
++#define STATX_ATTR_VERITY		0x00100000 /* [I] Verity protected file */
++#define STATX_ATTR_DAX			0x00200000 /* File is currently in DAX state */
++
++
++#endif /* _UAPI_LINUX_STAT_H */
+diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
+index 95a3a404bc6fddde..9c84fd0490707452 100755
+--- a/tools/perf/check-headers.sh
++++ b/tools/perf/check-headers.sh
+@@ -16,6 +16,7 @@ FILES=(
+   "include/uapi/linux/in.h"
+   "include/uapi/linux/perf_event.h"
+   "include/uapi/linux/seccomp.h"
++  "include/uapi/linux/stat.h"
+   "include/linux/bits.h"
+   "include/vdso/bits.h"
+   "include/linux/const.h"
+-- 
+2.44.0
+
 
