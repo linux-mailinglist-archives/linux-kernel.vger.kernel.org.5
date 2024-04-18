@@ -1,298 +1,133 @@
-Return-Path: <linux-kernel+bounces-149406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E53738A90B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:33:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0230B8A90BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:34:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4957FB22457
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:33:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6DA0283ACF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:34:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B985A1E48B;
-	Thu, 18 Apr 2024 01:33:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 453C424B4A;
+	Thu, 18 Apr 2024 01:34:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="jP5AHdzx"
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2041.outbound.protection.outlook.com [40.107.215.41])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="rcaZKQ35"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45F6263D5;
-	Thu, 18 Apr 2024 01:33:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713404012; cv=fail; b=TY874y0Dc8xafAuP53/tuZT6vkdV8P5qLWrIrd+WHpvaZJPIHp3pRlrQ/LjHakaW+9ox+9AWgAgBUDmhtRz75R3mqwsQkB3/iIRMz4wSRUcrlZLU0ax8XXxgYUb5/r1b9eWyV+8oFeVk7pOmzk1oHZsPzyrkD8OGddAALXnZTZk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713404012; c=relaxed/simple;
-	bh=d4D0tcr8zaJ/onTEtEMNARkHyfb6K1HV3nQQN3/7gWw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=qJfrfgR2Xun280av7pSojXGgqFI3x4L/xtKClvXzSCbQOPUoUBAWgMIXZmYJcQtsXkVX9wCqFen6LDyMBEBNvP229+JMSyb5ogS6XGi338Rxd1AuvWmsmmKTCR26yoaae4zlrn5u7tEBtbxV6yaT/XtRa/gU5AjxnwhYs40RNog=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=jP5AHdzx; arc=fail smtp.client-ip=40.107.215.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j+Q+Fi7wXE0DMCDA4Kb5zvYTHAU2aEf4+5XAbPY6GL2fFAxf9R+cy4R8TgXLLW+vXClmMsA8p8JwsoaSqlcf+MnIxntegFvS+5ZBe1qyNwivwYFc4adl6NKsNdyA+x2Px8zN10BmKP0kJu82sqCAuWdZK3scNqcF+GvXxagAmocBN6ASHlpmxbLA9KYXU+iChgbX4yGHSoYdHZFKitEqnkNzIJaLMoy/bRW926UL8CnjAeUanroolhMFOvdi8qzsuVO0EPpWRfzmCP87fUbVRAurrIZlyF2BWulcrW14ivaeg5yUc+wLOdLkiELXNi+wCu8WynjcVDKXWo22FLYx5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8UbpjRJFHjjjrkHsQ+g79VEs6uDhFOo5VzuYeqKSX2I=;
- b=dXm7Zp9XT84aWf5TQpgVYODCa9tTh1ECnAavnakpmmlUDv5VzB/o+FxZdyuwsQrLA/G+ETcMsRcj/tqqu8q3klmh2R+ngmXse1AAlfYFGoUEMFxJNoAJd1C26k63cxpjHi72NmmqerK77rZYvrZ4bPPhmsPNWmSKU73axRH032zWFmguqoscL1pJUN6ngx3+nGSptZzjnNfWsNyuP+K3ct/BTpfNkErlOw+uQouczrRaCie0NecPC6TLInhk1CLCUJ7REDtTPGmp+6thBwWfQJ8brgV4aHgxkd3J1OOW02wlV31DsiUBxpoMPXBKKjbAEgBTAqoSCPWEgmlHqcA95w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8UbpjRJFHjjjrkHsQ+g79VEs6uDhFOo5VzuYeqKSX2I=;
- b=jP5AHdzxyl1kYByZ0umoOW8vaxlBfAB9WFQONzGfewsEuBKBFzMSJbHIz671Q7V79Zav2txTWuCsMGIOxXQfmp7+huJRIWGjk3pkF2x6DxXQBGTCRw4OMZ62boLctj45MFsO9NHZ9DKrl42OKrEjRC4cEWoB/Eh+3he2CD2+XV8LTOB5nxTH5a9VNfi0g1Iyqt5ikRFeTCR5SW6EYJgQizTOqjM1Vp0xeBD6XEY6hK/oq1npPnlYBcGzilMbTet9JE98OLQ/RN4UAHWW5/KvfNZFVcKtGhH3O9cv4Oi7oUAWVKeJQOZWjgmRkUhEiBAAwvjbP96NSiTHQr2a1NlA0A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
- by TYUPR06MB6003.apcprd06.prod.outlook.com (2603:1096:400:352::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Thu, 18 Apr
- 2024 01:33:25 +0000
-Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
- ([fe80::ed24:a6cd:d489:c5ed]) by JH0PR06MB6849.apcprd06.prod.outlook.com
- ([fe80::ed24:a6cd:d489:c5ed%2]) with mapi id 15.20.7409.042; Thu, 18 Apr 2024
- 01:33:24 +0000
-Message-ID: <2ebca2fd-9465-4e64-b3cc-ffb88ef87800@vivo.com>
-Date: Thu, 18 Apr 2024 09:33:20 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dmabuf: fix dmabuf file poll uaf issue
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "T.J. Mercier" <tjmercier@google.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
- linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
-References: <20240327022903.776-1-justinjiang@vivo.com>
- <5cf29162-a29d-4af7-b68e-aac5c862d20e@amd.com>
- <cc7defae-60c1-4cc8-aee5-475d4460e574@vivo.com>
- <23375ba8-9558-4886-9c65-af9fe8e8e8b6@amd.com>
- <CABdmKX2Kf4ZmVzv3LGTz2GyP-9+rAtFY9hSAxdkrwK8mG0gDvQ@mail.gmail.com>
- <e55cad9b-a361-4d27-a351-f6a4f5b8b734@vivo.com>
- <40ac02bb-efe2-4f52-a4f2-7b56d9b93d2c@amd.com>
- <4fedd80c-d5b6-4478-bfd3-02d1ee1a26e5@vivo.com>
- <aab5ec51-fcff-44f2-a4f5-2979bd776a03@amd.com>
-From: zhiguojiang <justinjiang@vivo.com>
-In-Reply-To: <aab5ec51-fcff-44f2-a4f5-2979bd776a03@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR02CA0089.apcprd02.prod.outlook.com
- (2603:1096:4:90::29) To JH0PR06MB6849.apcprd06.prod.outlook.com
- (2603:1096:990:47::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A255F1A5A2;
+	Thu, 18 Apr 2024 01:34:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713404056; cv=none; b=Xd/L/GQtuUJoWuBWPVAAPsM8ni9BDUh+Uxc9l46QTmqLirUtHE4JV9D6qZwioj2OnYrcchpwhI/EHnJpNE/VT9YAP8Cy8NQN0NjDbMLY4Rjxp4OwAMa6gGHBMbTtLybIAKAX+HVJMozzRKsSi+vJC1KG43rtGnt17S9tGD94E5A=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713404056; c=relaxed/simple;
+	bh=40bi0vrhk3vA+zYhVlSbaVcJKKZcL8qD8xwjiiHiDdM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=OYAWqfIYIDpQsWFyda940fE7kI+7FIqW2lZfsX1B1TgjTZQmZ1QsWCAYar8Ts8nmynA6M5etdUCkEo9+hmlyxjsmTkXYaKkpOsGBErXWT5TgxB7e1r6xntYGj9EbONeXhqIlV3+a+BGYJpsC9X8nHHgnUOH7TQbDgThG6ViWjOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=rcaZKQ35; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1713404049;
+	bh=nPXlTkU93bQ4+Q1L6del9DzlcYprWJaUtG5tpvstX4M=;
+	h=Date:From:To:Cc:Subject:From;
+	b=rcaZKQ35lYQC5WF8rfULBgf+9tNcqZ/zSuYcK37Jrt3VdM8ffgcshMO052eLEG2Uk
+	 A89FykxuPuGsRz68QbxYjCY7GN5t7HclpICl8baqgbV9AElO/6+ScnLUbi+o7CRG5D
+	 yYjETNs9G8asN8zpefcpwoT8z0XrXQEe2dPrlgUhYgOxY0XnUqsOVHxe4YmSZj6/Wc
+	 ABIQ4XJEPHkt62ePScJWvYM2BhIAWhD+tXWekY6TYYcl/HCk06LWVdRQaJCMPuYLfX
+	 1KO6nYpkAUCJorC6Wy02M457h7pdndYTLS82VrAE/i0+X8SDid6L5dnecxp4F4Ti7u
+	 IpSukqePfj74A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VKgKr3dRsz4x1x;
+	Thu, 18 Apr 2024 11:34:06 +1000 (AEST)
+Date: Thu, 18 Apr 2024 11:34:03 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Alexandre Torgue <alexandre.torgue@st.com>
+Cc: Networking <netdev@vger.kernel.org>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Gatien Chevallier
+ <gatien.chevallier@foss.st.com>, "Kory Maincent (Dent Project)"
+ <kory.maincent@bootlin.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the net-next tree with the stm32 tree
+Message-ID: <20240418113403.06e5ceed@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|TYUPR06MB6003:EE_
-X-MS-Office365-Filtering-Correlation-Id: 767eba79-327b-4be7-bf9c-08dc5f4789fe
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Y/ovRAzJ+r3EmsLSfgRBUZt0x7kRvk/QvUTV+QGWq6bRknSVvq4B+wPEBOzxAsrTva3nQL50UChujJxD0cabRCvDFlE4D86ZGx3hOA6RPTipL9K0Dwku+9PuozRHxzZStBBLLH3Qzm0O41ITCiJ1ZwSyKHk4W5SsgWnxS6A1+q+LIQR/WAMQGUtWRe3j93wIAjeUrVfEMYlHKwOVRDrCQ5RCLOaRrOh0BqpuazE5G5oy/1lI4v2ca7uQ3WIEsHESIPeF1tQPg7H06QQmYce5NT1ZOHipZXwJGQUZxX6rvVRbwNB9rWWd6MLbh2w1KpoJJ/lWv9nhU6DhxiEQTYWsLc7lmAqnYUZR/qBfXJIzL24/g3UYkFvGZPwC/ZngW6teviXt4oMdQZhgBpB66lS2fhnXeOHXMYM2Qtq3mJocX5qAzK6UWowO4pHpqXfNoMnOfmbc9pI3KXlOyQGYsFwK7cPmc+IutMi0XK/tHg9Bj7Sj+9kCgUDeWZlQOE8Cmnps1D+he7dafAPY9xt6H2YX0zk4aVgVIrXYA6vve5p9TYMqpImuej+LVEwaWnR9doRg58pceYKfC71LnUokJYeGulYEI2hMt5FxK5QSDprJbLcBJqvjgesq8WS3EV/GwlLLoixY/TQogXgOpR8GhYFNJM+npbsHPXnZpnPOVD8IaxOH0986R7hH6yjVyuHNFWjSzf6S8UA6oeNAi5pOvrxaMKXG+7qUwkl94HPasRc7SBjfw8gO96uxHHyRI0DOPUSq
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(1800799015)(376005)(366007)(38350700005)(43062008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bCtFMFJuWkZJUmI0QkFJYzAyYUkvSm01dnVGZ2NWRGFFNFZTZTRnTTZoWnBN?=
- =?utf-8?B?SHVGYkR2S0RNWTA4aDFoNGV6MndtYkdZekc1UFN6dURsczhhaERTUEMrMGVF?=
- =?utf-8?B?eFJYNklHTTl1Nkd4M1pXM09CUGtQelhLaVRjaFJwdkVXa2pUQlRmUEFzdXFP?=
- =?utf-8?B?RWxiYWxYbm9INGM5UXdna2Q2Nll6a3YrVnhmakJjVlNjSGdhOFRNWFMxeVBz?=
- =?utf-8?B?R3NlNmtqbDZDMDUzMHdwL2xmVFF5WFJ3RWRKMTJtVThMTEJaYmtINTdYNU1m?=
- =?utf-8?B?YjM2U0ozTUxaZ004MDhXc01SNDFuOHR4SnU0K1ExTDU3c09SVW8vU1QvWXhS?=
- =?utf-8?B?eDdLRTg2NWdBK1dmejg5WHd6WUJjT2lDVVpNVWNXY3hZb3RTZ2JteUQxdFJz?=
- =?utf-8?B?eDF6czlsV3g3QWJSYVBjNnIzcEl0RHB1ZEJEZ1NTZzVPdGFGVHF5SE9kU1dy?=
- =?utf-8?B?cjJYQnNEa09xa3R1Q1N5ZXhRblZBTnNDNWdXMUhiVnoreklESHZlbHY3TEVV?=
- =?utf-8?B?U2dsQUZWdEd1c0I2RCt5OFVoU3lwdlBZczRUT3VQK05peTU1SEo5OENsbUxm?=
- =?utf-8?B?bWVJQXVtTm9tekRiNW50TXZJZEZUNFhweUsrc3N4clpvUndKOWJ0WndXTzZM?=
- =?utf-8?B?NkpXYW96MmtWbUhIanU1WHlxYkNFSFl1RVRMcHhzQ09kYXRFSHBlYVVGdzM3?=
- =?utf-8?B?Y0dpZEtlcWlydCt4cXA0N0hHdG54cHFybVBlSS9adUEyOUpzNHNjUjF6RExa?=
- =?utf-8?B?ekgxQVhxaTA4UGMwa05RTFJBL3RlVU9rV0lkT0xrcnVhOHFVUmNIQnEvd1VF?=
- =?utf-8?B?RDFjZ0czZFBHaytzZE1YVElmWHM3RVF0OW9mTzJORVlIb1c0bUpReXFFMnps?=
- =?utf-8?B?S2Q1cFlWcDdsWG94WkVVMkRRY1EybEwwckg2Z281bVFtcnZHaC9LTjVTNGxT?=
- =?utf-8?B?NmpueHhmNGtYdFhNR1YvVkdhbmdEaTBIVVByNW5oVmVTei9IU0V2Z1RhTHFS?=
- =?utf-8?B?VU9qaTVGbnJmTGFaSTY4YUorblVjQU5seklNM0dGeEdJeForZjkyLzBUSjhr?=
- =?utf-8?B?eVdjS2xhbDlqNkJvbjVDYzhVWmttUlErbkZNcTZaS0NUdDJzdGkzWW03Wk44?=
- =?utf-8?B?citwYjBzcVJaNnpsRkdRREh2K3Bwd2IzMUNUZStNcDJOWnQ3bkdMcVE0Qkx5?=
- =?utf-8?B?UStxeGhNZUkzUFl6Yi9uMnR4OXhEenRMeXRqQXQxcy9SZnkxY01MTjNPMWo1?=
- =?utf-8?B?enhrOGFRZjQ4VHQ1dTA2ejN2TUJRNy9PVTlzMWI3UWxIUmliTXVlVCt5b1ND?=
- =?utf-8?B?V05HRmVuZE0vMU15TVR0Mm5FV1h5alBVanhnamFRRG8rdlVPNFVIdVp4RkdD?=
- =?utf-8?B?eldWVCtEOVJHTEtpT3UzZXNCdDQzM0F3cVZzWXZjclpxb3l5YzlBV2FaYW00?=
- =?utf-8?B?M1pJS2FKRWU0RmZZalBQdEQ5UVlWcjd2SUNuS2JrZnk1TU5vcjNFS202Z0Qz?=
- =?utf-8?B?dERuSUlOK0VaZkRkRmFBNi9NVGxpOTF5blU2bFVBVEM0NDcvQmI5Rlk1Wmhk?=
- =?utf-8?B?cVhRc2cwbzN6WmZkRFlReFZYVGo5clFpTmhIdGVNN0tmZ2xHTUJYK2Q4QjEy?=
- =?utf-8?B?NUdjcDgrNmtTTGplNWdJU2lqMG96WjdJQmhyL0wrL1NlNVp0WTJEdUFlc1Fi?=
- =?utf-8?B?UmRKejBCMFMyVEozK21qd3dvM0gzMU8yRmZyR3pGdldZbzFVZ3VxNlNyc1dS?=
- =?utf-8?B?bm5OMFgxWHVLMEdITkpOd0s2UU1oVDVkZTlPYVRwdmVWREtzZG12TDlpMlNs?=
- =?utf-8?B?aGNDc2pKaStoM3pjWXVPOVdla1RoUU1QYitEVDdZeWNNNGtoVStValVJblRV?=
- =?utf-8?B?ajhQdVFYVkNIQ2NqaGhUQ1ZqRjVvR0V2NW93NXp1YWxlVjc4azVvcEJTVFJT?=
- =?utf-8?B?NythOTB2a2hQKzJwZDN4K3pJeFF1SnhDSG1BWjlsL1RyUHF1Qmp4akVBaDJV?=
- =?utf-8?B?UW5tYkY5L1ZSNGpGaHI4SGR1VjBhZkJTWi9ScVNzY1VacnFhMnZvYXdRMDJT?=
- =?utf-8?B?OUxxdXh1NGFDcERkd3ZDOXQxZG94Z2VnbUdORk84TDY4b1dsZkJwaFFJQzVQ?=
- =?utf-8?Q?53ID4RJGJcYrQ7qzmlrG9N9US?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 767eba79-327b-4be7-bf9c-08dc5f4789fe
-X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 01:33:24.5837
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: I/7W/XoMFjqGaaNKBvTDGj7MzOdlIkL7lj6CHlcVojBeKwqMU1X1qbMf4mcOjNQyj5whg3nh4NMXY6plyCCiwg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYUPR06MB6003
+Content-Type: multipart/signed; boundary="Sig_/dK=CpwLGHY4MIi=f.grU+VL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/dK=CpwLGHY4MIi=f.grU+VL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-在 2024/4/15 19:57, Christian König 写道:
-> [Some people who received this message don't often get email from 
-> christian.koenig@amd.com. Learn why this is important at 
-> https://aka.ms/LearnAboutSenderIdentification ]
->
-> Am 15.04.24 um 12:35 schrieb zhiguojiang:
->> 在 2024/4/12 14:39, Christian König 写道:
->>> [Some people who received this message don't often get email from
->>> christian.koenig@amd.com. Learn why this is important at
->>> https://aka.ms/LearnAboutSenderIdentification ]
->>>
->>> Am 12.04.24 um 08:19 schrieb zhiguojiang:
->>>> [SNIP]
->>>> -> Here task 2220 do epoll again where internally it will get/put then
->>>> start to free twice and lead to final crash.
->>>>
->>>> Here is the basic flow:
->>>>
->>>> 1. Thread A install the dma_buf_fd via dma_buf_export, the fd refcount
->>>> is 1
->>>>
->>>> 2. Thread A add the fd to epoll list via epoll_ctl(EPOLL_CTL_ADD)
->>>>
->>>> 3. After use the dma buf, Thread A close the fd, then here fd refcount
->>>> is 0,
->>>>   and it will run __fput finally to release the file
->>>
->>> Stop, that isn't correct.
->>>
->>> The fs layer which calls dma_buf_poll() should make sure that the file
->>> can't go away until the function returns.
->>>
->>> Then inside dma_buf_poll() we add another reference to the file while
->>> installing the callback:
->>>
->>>                         /* Paired with fput in dma_buf_poll_cb */
->>>                         get_file(dmabuf->file);
->> Hi,
->>
->> The problem may just occurred here.
->>
->> Is it possible file reference count already decreased to 0 and fput
->> already being in progressing just before calling
->> get_file(dmabuf->file) in dma_buf_poll()?
->
-> No, exactly that isn't possible.
->
-> If a function gets a dma_buf pointer or even more general any reference
-> counted pointer which has already decreased to 0 then that is a major
-> bug in the caller of that function.
->
-> BTW: It's completely illegal to work around such issues by using
-> file_count() or RCU functions. So when you suggest stuff like that it
-> will immediately face rejection.
->
-> Regards,
-> Christian.
-Hi,
+Today's linux-next merge of the net-next tree got a conflict in:
 
-Thanks for your kind comment.
+  drivers/of/property.c
 
-'If a function gets a dma_buf pointer or even more general any reference
+between commit:
 
-counted pointer which has already decreased to 0 then that is a major
+  6a15368c1c6d ("of: property: fw_devlink: Add support for "access-controll=
+er"")
 
-bug in the caller of that function.'
+from the stm32 tree and commit:
 
-According to the issue log, we can see the dma buf file close and epoll 
-operation running in parallel.
+  93c0d8c0ac30 ("of: property: Add fw_devlink support for pse parent")
 
-Apparently at the moment caller calls epoll, although another task 
-caller already called close on the same fd, but this fd was still in 
-progress to close, so fd is still valid, thus no EBADF returned to caller.
+from the net-next tree.
 
-Then the two task contexts operate on same dma buf fd(one is close, 
-another is epoll) in kernel space.
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-Please kindly help to comment whether above scenario is possible.
+--=20
+Cheers,
+Stephen Rothwell
 
-If there is some bug in the caller logic, Can u help to point it out? :)
+diff --cc drivers/of/property.c
+index dfdda94834d5,cc064151853e..000000000000
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@@ -1252,7 -1252,7 +1252,8 @@@ DEFINE_SIMPLE_PROP(backlight, "backligh
+  DEFINE_SIMPLE_PROP(panel, "panel", NULL)
+  DEFINE_SIMPLE_PROP(msi_parent, "msi-parent", "#msi-cells")
+  DEFINE_SIMPLE_PROP(post_init_providers, "post-init-providers", NULL)
+ +DEFINE_SIMPLE_PROP(access_controllers, "access-controllers", "#access-con=
+troller-cells")
++ DEFINE_SIMPLE_PROP(pses, "pses", "#pse-cells")
+  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
+  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
+ =20
 
-Regards,
-Zhiguo
->
->>
->>>
->>> This reference is only dropped after the callback is completed in
->>> dma_buf_poll_cb():
->>>
->>>         /* Paired with get_file in dma_buf_poll */
->>>         fput(dmabuf->file);
->>>
->>> So your explanation for the issue just seems to be incorrect.
->>>
->>>>
->>>> 4. Here Thread A not do epoll_ctl(EPOLL_CTL_DEL) manunally, so it
->>>> still resides in one epoll_list.
->>>>   Although __fput will call eventpoll_release to remove the file from
->>>> binded epoll list,
->>>>   but it has small time window where Thread B jumps in.
->>>
->>> Well if that is really the case then that would then be a bug in
->>> epoll_ctl().
->>>
->>>>
->>>> 5. During the small window, Thread B do the poll action for
->>>> dma_buf_fd, where it will fget/fput for the file,
->>>>   this means the fd refcount will be 0 -> 1 -> 0, and it will call
->>>> __fput again.
->>>>   This will lead to __fput twice for the same file.
->>>>
->>>> 6. So the potenial fix is use get_file_rcu which to check if file
->>>> refcount already zero which means under free.
->>>>   If so, we just return and no need to do the dma_buf_poll.
->>>
->>> Well to say it bluntly as far as I can see this suggestion is 
->>> completely
->>> nonsense.
->>>
->>> When the reference to the file goes away while dma_buf_poll() is
->>> executed then that's a massive bug in the caller of that function.
->>>
->>> Regards,
->>> Christian.
->>>
->>>>
->>>> Here is the race condition:
->>>>
->>>> Thread A Thread B
->>>> dma_buf_export
->>>> fd_refcount is 1
->>>> epoll_ctl(EPOLL_ADD)
->>>> add dma_buf_fd to epoll list
->>>> close(dma_buf_fd)
->>>> fd_refcount is 0
->>>> __fput
->>>> dma_buf_poll
->>>> fget
->>>> fput
->>>> fd_refcount is zero again
->>>>
->>>> Thanks
->>>>
->>>
->>
->
+--Sig_/dK=CpwLGHY4MIi=f.grU+VL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYgeIsACgkQAVBC80lX
+0GyK2gf9F8PsfK2iumwz8tvEIJtyQYl1aDLpokl2QDXys/AAVMjSOZEK4P8aHHea
+WcDdJgjx4CowEHdBsvFRPDRf7ku7D9n1GWhpzmVrkEMrSgl+n/245C7IdbLQcFO8
+P/R5aP82LJZy9r1c52Rbd1o03z2v9bZKJ4e8Y4cxkQzcqv+Bbne+TKI2zHgW8Yy6
+rcYQxI8xvaJK2bFIUJlBqUtFi47db7Ib5TMRtgs2dIKNm8Ly+zYJVRRccWewBlXW
+pkLkGK4826hjOfPSLmhofn/0dfqQA2AH4A0QJU6nKcdxtKzVJ29+/AY1pH3TVK6c
+5Say36uPL9DZ5TxMH+wksle6bl4/FA==
+=e2O8
+-----END PGP SIGNATURE-----
+
+--Sig_/dK=CpwLGHY4MIi=f.grU+VL--
 
