@@ -1,164 +1,224 @@
-Return-Path: <linux-kernel+bounces-150178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4571A8A9B60
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:34:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 481158A9B65
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:36:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4866B2434B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:34:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AE641C22D7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:36:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8BA1161916;
-	Thu, 18 Apr 2024 13:34:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5511161307;
+	Thu, 18 Apr 2024 13:35:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PFJfSqvy"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GK6G+jI2"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF3E97E56C
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 13:34:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FE1369DF5;
+	Thu, 18 Apr 2024 13:35:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713447258; cv=none; b=fU6RRGAxczeDJacpm52t2gxnE+w1+WJjxrwx4IDwtGr7AG4q42Rpuu6Plf4HbBcvzxdmyh0gHdUsmCE5sMLoxb/wDsfv9xRTyGT6O+e0uOOS8vONxoWyLfWXFt1ubInyRbiFkpSWi8ZhZHnIXJZveA1/HihTkHJFTsqq3Czr6Ek=
+	t=1713447357; cv=none; b=bzOlEAOBiCGOCxee8oKiAAd+X+tc6FPT1f189dQfVRI5qq8gt6XrsmX0WeTW5GBK5N9JvO7RAKE3+nuCQAQuxOGuVAVjxxBjJ1aE8noHQirluNgTzx3pIRaG8HD7wLUJ90KHPBanVCiBrcivQgD1usu1Cp29gzUjE4IUhLWJac8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713447258; c=relaxed/simple;
-	bh=0p7Z9PhLHCGbAVcNHG7nPsb7+sUp2srneXXeChzNaCE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=uANiQXR2I8RTFTbgGQZEreYCK3h5MTo1GwbQfxZm7a8UxzNnmmcWSPnI/5EYnboM7MM4IZbfS6X0i0P5zsoyFi7UocyBecYiKXcMDGKiBBXiwRhHSdeXDMxsO2b8pu5SxJ3va0pr3dXYwOb7/zss9EEdgLKBYT5JkE6yuDsjtwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PFJfSqvy; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713447252;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=NrgGLfIAAX/pWHt0D9O5DBKVoy6SoLpfNZ14lOkcm7Q=;
-	b=PFJfSqvyoprsfoIsnAjEK+G+KYX15O2stGHY3sbyb8L6Ukru2hvyDkey5NH63daaljy7yK
-	HldpVej/e+1l30r9UP4i+hPD8v2Lj0z7iKiQlREYD4Wzca+22DOFtVIyAK3iK00UsZwgoh
-	VZXq152Wn55UsoHKQYjrvRv9RxEQjSY=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-212-e4yOYNWFPrKuN6sGEDSmPw-1; Thu, 18 Apr 2024 09:34:11 -0400
-X-MC-Unique: e4yOYNWFPrKuN6sGEDSmPw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-416640b7139so1116425e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:34:11 -0700 (PDT)
+	s=arc-20240116; t=1713447357; c=relaxed/simple;
+	bh=ugSV+/MOGhq9n75FEgYpVvgdy8aFV/GnMHdXlvDcXZs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=oPkzXRYaODBbY2jVdHOg1YTlQL9RQLd173AuzKM93qkTThIkTeBl+Kovn3GbqRpfrZI85KrS9/hBad68BEiYkZwOMAEG51C0yTGjhW9m4d9emE2tMhxwshebc8Kc40dMVwBen5RZ8gBZ2Hhl243PfIn0Hu4wAfRyOEyN6xBGOJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GK6G+jI2; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2da888330b1so13805521fa.1;
+        Thu, 18 Apr 2024 06:35:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713447354; x=1714052154; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=g5fHXSPxLQIiGSd9D1sItraRBNGWAeaK2D+DAOeVHio=;
+        b=GK6G+jI262VQeBRLbEaL1SYqEEXX4M3DomHgmG4EaVcZbDRUZ3gHobf7bcIOS19lmO
+         5ayOlra2d0JSqSNOzO1vYzCWalJFweik+Cf4XNRXrYS4aUb62jd1EausY7wusUKBcunx
+         seJSWYRJb3GT40z8I0K6M7r0guNrUcsGAsg8KWBIuLAkA35qbkDAIlcwTJ2xwJy0QZ7F
+         OjpKdJ4L13O0Pylnn6QSYYmAI66WzxsewWhy2GJ48nblwu6wBRGk7vd2FL1ro7VOAchW
+         qj8PLwic2n9t94jVblEkBDa2ldkKRcyKYCLU+4ljc2iNlDJ2wET5xVWJX8tK0cixxZYL
+         DUEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713447249; x=1714052049;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NrgGLfIAAX/pWHt0D9O5DBKVoy6SoLpfNZ14lOkcm7Q=;
-        b=uYb6UCFYs4/8Dz2bikbOjKibvwtlce534SxoQnd9ihiHtnFpeX1rtNf3fy81ACbyAf
-         Q4fd4ERZyaYlbtQhDoV6K2CWk4drOa/zWcDjzbWBTeEVpDiCdL1KPD2zoDgeVDeYp6hX
-         20MmR5xvIsU7itgbfu3VMUdCMq3rsvrgPWuEYZj5yVmoq4DqglCupYLFWRQtGr7ad1Ab
-         Do7mPFuOxqjyBWPTE9OcXv3RE9dZPbJ8OJaDK5FX3CEvx3Q6NfBc4ZTyusUE9jXak3TT
-         JHXcavihPbh1+Fag863KIpO9f+KSXHEYZlbjN+ydfjKQtVwCha1DshwuLJBonSOJP0IR
-         N3lw==
-X-Forwarded-Encrypted: i=1; AJvYcCUHMz1Ia3AlSlffm9SnXhnXRh2PZ0uPdy3yNURrU1SFDdOMr1FG3kWPm5mgUvvo8OLDIa1ZCapQGPIkSRVm9bjsZ+w2jXnLbJytYqYd
-X-Gm-Message-State: AOJu0YzkLSMUfb4zVTxGA2v/LISVukxrvasFHW3ojGp3IV4IlY5flkt3
-	Hp2eL10woEjcLzxOuwACah1jZ+CHjwJGkWsj4i6JlDKeqDVgGdaYD6QgPmrHS5vDA9IFi2683Jt
-	Ewvr1U8u7r1x59jSsMRcefgt6HNEJbf70rdwEgDahBROHicEbY1xehSDEntYbzQ==
-X-Received: by 2002:adf:f70d:0:b0:343:39d8:bf3a with SMTP id r13-20020adff70d000000b0034339d8bf3amr1847103wrp.4.1713447249296;
-        Thu, 18 Apr 2024 06:34:09 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHAkUsJsRqDf+ajVDzMwmUTX1P0NXRRRaDGkQ8TCIdYz/pnVcp2EurcEBdMy8mIL3vw/5Lc/A==
-X-Received: by 2002:adf:f70d:0:b0:343:39d8:bf3a with SMTP id r13-20020adff70d000000b0034339d8bf3amr1847076wrp.4.1713447248905;
-        Thu, 18 Apr 2024 06:34:08 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-236-143.dyn.eolo.it. [146.241.236.143])
-        by smtp.gmail.com with ESMTPSA id m10-20020a5d4a0a000000b0033e45930f35sm1870497wrq.6.2024.04.18.06.34.07
+        d=1e100.net; s=20230601; t=1713447354; x=1714052154;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g5fHXSPxLQIiGSd9D1sItraRBNGWAeaK2D+DAOeVHio=;
+        b=nCNuJIMsv+8P2fqDRA8mlpOT/DbU0QQNxtHp7R3WcsTtkA8qZhZU5ldpRiKXzLiGuC
+         B1hclH4gTKqhX0snH71231hj9YaGGEnOLYH2Ts/tD17nW8+iVRWdRUEdh5no3fikdiNm
+         oTgTPBtwgD1qrrWuKbZEV+uKxVwcmvhqRuF0TQw8BbcA31BBrTPQIC9fWlgGRmIEAOKz
+         X5cmbAB7mgBBvN0MeT1Hmq8ZjuecJD4qhNvou0uZuuAgklQ28OuWtraoo+TMohyGH+Gp
+         nQK8qwW9xiAqwsT7q8hXZFHOgV0jp023CbCDvnh7hL3FuYI/3Ri7YUO9tWRX487Wcdr7
+         x7aQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUW95JS/ycF/TzaG/nN5rXvUohSPr/71rEwaiZsoIx+dy+JXsShl6cO7BV1K5ENFvVUGXHCHmfcJh8pbCMhTnPMc6ZcrpSW36bLJGdP
+X-Gm-Message-State: AOJu0YyQF12FS6Dy42UQl3qFxvMlfmBH8qT5qAtwr3WnNCbMB8Tpdsgg
+	LsHwNcblASYVx3VI6lb8q8vKobems8FFRdK+GIoxtNgii9i+aCrc
+X-Google-Smtp-Source: AGHT+IFfGTkTqdS07TBOApk8qgPuzYCONLVGs9iFNW/fJbN8O1QdvcYTRQs4s7EBNkVCSq4vAsiQxw==
+X-Received: by 2002:a2e:9104:0:b0:2db:218:b050 with SMTP id m4-20020a2e9104000000b002db0218b050mr1722446ljg.34.1713447353460;
+        Thu, 18 Apr 2024 06:35:53 -0700 (PDT)
+Received: from localhost (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
+        by smtp.gmail.com with ESMTPSA id h25-20020a2e3a19000000b002da968f03f9sm198269lja.89.2024.04.18.06.35.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 06:34:08 -0700 (PDT)
-Message-ID: <0891a0eeea4d771fd8c9760bfc1fcedf4b2d56db.camel@redhat.com>
-Subject: Re: [PATCH 1/2] [v2] net: ethernet: ti-cpsw: fix linking built-in
- code to modules
-From: Paolo Abeni <pabeni@redhat.com>
-To: Arnd Bergmann <arnd@kernel.org>, Jakub Kicinski <kuba@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Siddharth Vadapalli
- <s-vadapalli@ti.com>, Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger
- Quadros <rogerq@kernel.org>, MD Danish Anwar <danishanwar@ti.com>, Vignesh
- Raghavendra <vigneshr@ti.com>, Diogo Ivo <diogo.ivo@siemens.com>, Tanmay
- Patil <t-patil@ti.com>, Simon Horman <horms@kernel.org>, Ratheesh Kannoth
- <rkannoth@marvell.com>, Grygorii Strashko <grygorii.strashko@ti.com>,
- netdev@vger.kernel.org,  linux-kernel@vger.kernel.org,
- linux-omap@vger.kernel.org, bpf@vger.kernel.org
-Date: Thu, 18 Apr 2024 15:34:06 +0200
-In-Reply-To: <20240417084400.3034104-1-arnd@kernel.org>
-References: <20240417084400.3034104-1-arnd@kernel.org>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+        Thu, 18 Apr 2024 06:35:52 -0700 (PDT)
+From: Casper Andersson <casper.casan@gmail.com>
+To: Lukasz Majewski <lukma@denx.de>
+Cc: netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>, Andrew Lunn
+ <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Vladimir Oltean
+ <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>, Jakub
+ Kicinski <kuba@kernel.org>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ Tristram.Ha@microchip.com, Sebastian Andrzej Siewior
+ <bigeasy@linutronix.de>, Ravi Gunasekaran <r-gunasekaran@ti.com>, Simon
+ Horman <horms@kernel.org>, Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+ Murali Karicheri <m-karicheri2@ti.com>, Jiri Pirko <jiri@resnulli.us>, Dan
+ Carpenter <dan.carpenter@linaro.org>, Ziyang Xuan
+ <william.xuanziyang@huawei.com>, Shigeru Yoshida <syoshida@redhat.com>,
+ "Ricardo B. Marliere" <ricardo@marliere.net>, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v5 1/4] net: hsr: Provide RedBox support (HSR-SAN)
+In-Reply-To: <20240416150359.7362c762@wsk>
+References: <20240415124928.1263240-1-lukma@denx.de>
+ <20240415124928.1263240-2-lukma@denx.de> <86mspt7glf.fsf@gmail.com>
+ <20240416150359.7362c762@wsk>
+Date: Thu, 18 Apr 2024 15:35:52 +0200
+Message-ID: <86bk66hjyf.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain
 
-On Wed, 2024-04-17 at 10:43 +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> There are six variants of the cpsw driver, sharing various parts of
-> the code: davinci-emac, cpsw, cpsw-switchdev, netcp, netcp_ethss and
-> am65-cpsw-nuss.
->=20
-> I noticed that this means some files can be linked into more than
-> one loadable module, or even part of vmlinux but also linked into
-> a loadable module, both of which mess up assumptions of the build
-> system.
->=20
-> Change this back to having separate modules for each portion that
-> can be linked standalone, exporting symbols as needed:
->=20
->  - ti-cpsw-common.ko now contains both cpsw-common.o and
->    davinci_cpdma.o as they are always used together
->=20
->  - ti-cpsw-priv.ko contains cpsw_priv.o, cpsw_sl.o and cpsw_ethtool.o,
->    which are the core of the cpsw and cpsw-new drivers.
->=20
->  - ti-cpsw-sl.ko contains the cpsw-sl.o object and is used on
->    ti-am65-cpsw-nuss.ko in addition to the two other cpsw variants.
->=20
->  - ti-cpsw-ale.o is the one standalone module that is used by all
->    except davinci_emac.
->=20
-> Each of these will be built-in if any of its users are built-in,
-> otherwise it's a loadable module if there is at least one module
-> using it. I did not bring back the separate Kconfig symbols for
-> this, but just handle it using Makefile logic.
->=20
-> Note: ideally this is something that Kbuild complains about, but
-> usually we just notice when something using THIS_MODULS misbehaves
-> in a way that a user notices.
->=20
-> Fixes: 99f6297182729 ("net: ethernet: ti: cpsw: drop TI_DAVINCI_CPDMA con=
-fig option")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> v2: rebase on top of v6.9-rc
 
-Does not apply cleanly to net (nor to net-next FWIW).
+Hi,
 
-You should rebase on top of:
+Sorry for the late reply, I was awaiting confirmation on what I can say
+about the hardware I have access to. They won't let me say the name :(
+but I can give some details.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/ main
+On 2024-04-16 15:03 +0200, Lukasz Majewski wrote:
+>> On 2024-04-02 10:58 +0200, Lukasz Majewski wrote:
+>> > Changes for v3:
+>> >
+>> > - Modify frame passed Port C (Interlink) to have RedBox's source
+>> > address (SA) This fixes issue with connecting L2 switch to
+>> > Interlink Port as switches drop frames with SA other than one
+>> > registered in their (internal) routing tables.  
+>> 
+>> > +	/* When HSR node is used as RedBox - the frame received
+>> > from HSR ring
+>> > +	 * requires source MAC address (SA) replacement to one
+>> > which can be
+>> > +	 * recognized by SAN devices (otherwise, frames are
+>> > dropped by switch)
+>> > +	 */
+>> > +	if (port->type == HSR_PT_INTERLINK)
+>> > +		ether_addr_copy(eth_hdr(skb)->h_source,
+>> > +				port->hsr->macaddress_redbox);  
+>> 
+>> I'm not really understanding the reason for this change. Can you
+>> explain it in more detail?
+>
+> According to the HSR standard [1] the RedBox device shall work as a
+> "proxy" [*] between HSR network and SAN (i.e. "normal" ethernet)
+> devices.
+>
+> This particular snippet handles the situation when frame from HSR node
+> is supposed to be sent to SAN network. In that case the SA of HSR
+> (SA_A) is replaced with SA of RedBox (SA_RB) as the MAC address of
+> RedBox is known and used by SAN devices.
+>
+>
+> Node A  hsr1  |======| hsr1 Node Redbox |   |
+> (SA_A) [**]   |	     |           eth3   |---| ethX SAN
+> 	      |      |        	 (SA_RB)|   |  (e.g switch)
+>
+>
+> (the ====== represents duplicate link - like lan1,lan2)
+>
+> If the SA_A would be passed to SAN (e.g. switch) the switch could get
+> confused as also RedBox MAC address would be used. Hence, all the
+> frames going out from "Node Redbox" have SA set to SA_RB.
+>
+> According to [1] - RedBox shall have the MAC address.
+> This is similar to problem from [2].
 
-Also, please don't send patches targeting the net and net-next trees in
-the same series. If the net-next patch depends on the net one, you have
-to wait until the first is applied and the 'net' tree is merged back
-into the 'net-next' tree before submitting the latter (usually after
-the next thu).
+Thanks for the explanation, but I still don't quite follow in what way
+the SAN gets confused. "also RedBox MAC address would be used", when
+does this happen? Do you mean that some frames from Node A end up using
+the RedBox MAC address so it's best if they all do?
 
-Thanks,
+I see there is already some address replacement going on in the HSR
+interface, as you pointed out in [2]. And I get your idea of being a
+proxy. If no one else is opposed to this then I'm fine with it too.
 
-Paolo
+>> The standard does not say to modify the
+>> SA. However, it also does not say to *not* modify it in HSR-SAN mode
+>> like it does in other places. In HSR-HSR and HSR-PRP mode modifying
+>> SA breaks the duplicate discard.
+>
+> IMHO, the HSR-SAN shall be regarded as a "proxy" [*] between two types
+> (and not fully compatible) networks.
+>
+>> So keeping the same behavior for all
+>> modes would be ideal.
+>> 
+>> I imagine any HW offloaded solutions will not modify the SA, so if
+>> possible the SW should also behave as such.
+>
+> The HW offloading in most cases works with HSR-HSR setup (i.e. it
+> duplicates frames automatically or discards them when recived - like
+> ksz9477 [3]).
+>
+> I think that RedBox HW offloading would be difficult to achieve to
+> comply with standard. One "rough" idea would be to configure
+> aforementioned ksz9477 to pass all frames in its HW between SAN and HSR
+> network (but then it wouldn't filter them).
 
+I don't know anything about ksz9477. The hardware I have access to is
+supposed to be compliant with 2016 version in an offloaded situation for
+all modes (HSR-SAN, PRP-SAN, HSR-PRP, HSR-HSR). Though, I haven't
+verified if the operation is fully according to standard. It does not
+modify any addresses in HW.
+
+Does the interlink port also reach the drivers? Does it call
+port_hsr_join and try to join as an HSR port? Do we maybe need a
+separate path or setting for configuring the interlink in the different
+modes (SAN, HSR, PRP interlink)?
+
+> Notes:
+>
+> [*] - However there is no specific "guidelines" on how the "proxy"
+> shall be implemented.
+>
+> [**] - With current approach - the SAN MAC addresses are added to
+> "node table" of Node A. For Node RedBox those are stored in a separate
+> ProxyNodeTable. I'm not sure if this is the best possible approach
+> [***], as ideally only MAC addresses of HSR "network" nodes shall be
+> visible.
+>
+> [***] - I think that this "improvement" could be addressed when HSR
+> support is added to Linux as it is the pre-requisite to add support for
+> it to iproute2. Afterwards, the code can be further refined (as it
+> would be added to net-next anyway).
+>
+> [****] - As I'm now "on the topic" - I can share full setup for busybox
+> to run tests included to v5 of this patch set.
+>
+>
+> Links:
+>
+> [1] - IEC 62439-3:2021
+>
+> [2] -
+> https://elixir.bootlin.com/linux/latest/source/net/hsr/hsr_framereg.c#L397
+>
+> [3] -
+> https://elixir.bootlin.com/linux/latest/source/drivers/net/dsa/microchip/ksz9477.c#L1341
+
+BR,
+Casper
 
