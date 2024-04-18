@@ -1,264 +1,159 @@
-Return-Path: <linux-kernel+bounces-150134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B96FA8A9AE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:09:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CA348A9AE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:10:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6764B2848BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:09:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E0B61C2105C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:10:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AC7A15AAC1;
-	Thu, 18 Apr 2024 13:09:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3366015FD16;
+	Thu, 18 Apr 2024 13:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sm4Xj+Gz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GStT0MXM"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EE1313C3FF;
-	Thu, 18 Apr 2024 13:09:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17440145337;
+	Thu, 18 Apr 2024 13:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713445759; cv=none; b=P3rosMWwJjVLkZNQySb2BlkNYZxGj0qiZN+2fKBmgCfxJRHfjtein96eh6vZv6YQMMU4U9gW3GSMsvViZ3K2OFlsNicMZZPk4LF2NPsHmdORIqU2afeJgx5G4nxGeuvPhCU6jqfAvPlRBsBWyxx0eohcBE+GjvvfG8xgwYUWVW0=
+	t=1713445776; cv=none; b=MZO4gUdzaNju7YKoBPkizDMrTEIpFe7OAl714NNjtB2h4lolKe8ivcDGwj/6UCxooVv4zpQIrZ9MlC53XLlN/tXFwjw0lXGCObRILGPi3iWmw6SxgtAJe+sTWT6+JKJQFAGPpKPJho5O+Qiy6850FTGHaHudaqYh1uJzkL+eyKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713445759; c=relaxed/simple;
-	bh=hvKGkHxZPIW4Pt6T/rjRhahcUnodHa40YaR7g0BoD4g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aPixayGkQRoIXTB0Q8TOu2kIfMRz8wAxAyjTwPCKkKlzKnBPFH+ABeQufnkznYYRHCGdX+esyY37KXqNie4y8S6SNrGH4S/FHRS5hGYURUlhx6frTG1a/qjiOEnrU2cwPehioqlEIjdcw1/FGkUxWR/gvjsgipF5v7ovNPw+Hgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sm4Xj+Gz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02941C2BD11;
-	Thu, 18 Apr 2024 13:09:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713445759;
-	bh=hvKGkHxZPIW4Pt6T/rjRhahcUnodHa40YaR7g0BoD4g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Sm4Xj+GzFlBaqZBkolIpZr8PxUyKoQG2PVErnF19y8dLXpdLOPkOtl2FJ37ynV7/X
-	 LxUEh7KqcTARhBsu7h9l2UroGgxcfjcN9gZoNqlk8P+qmD5USeDLUoV89CNBu4KRHn
-	 qaRqDWMEqquDO4KoXwWPhWoxDJ+RH5WIWSTYrA91J2WEUVA9da5ybx8KlDQScMgSHe
-	 udbgm4Ng1TxyQM/pwyPxeRT+zPSDKfNdXj167YzuRYbZJ5ZCyr6L+oTSZy3jgnsuqy
-	 IKj7vH7rbs10Z0aOCXwdCrYR3Ip7RdV2vK2E6EhWp7Qn9uO5g324KBbUGBWeeXHebt
-	 Z581LFFCjFAyw==
-Date: Thu, 18 Apr 2024 08:09:16 -0500
-From: Rob Herring <robh@kernel.org>
-To: Sylvain Petinot <sylvain.petinot@foss.st.com>
-Cc: benjamin.mugnier@foss.st.com, mchehab@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] media: dt-bindings: Add ST VD56G3 camera sensor
- binding
-Message-ID: <20240418130916.GA1016598-robh@kernel.org>
-References: <20240417133453.17406-1-sylvain.petinot@foss.st.com>
- <20240417133453.17406-2-sylvain.petinot@foss.st.com>
+	s=arc-20240116; t=1713445776; c=relaxed/simple;
+	bh=Z8LqLKETTuqPbNx9AIZuOgf3LNGzlBMZYBlVi5bQc3A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rnDtckvEwxWz9Et4vskt67uJGDbZ7mgaS51UmbTwIstPRn3h9ei9S32ufvpOxnezeITCzP2cIkQjbPBWy+W24YMo1AbYU23lP/LJLrFqEm1yQfBL3gyVI1aY1JGodfeQJPdsNlcUpdG/ivC/WP3D8d/qoKq/CsRz5kuUQuHThSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GStT0MXM; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43ID8jU3007642;
+	Thu, 18 Apr 2024 13:09:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=RaI5RA/Q5QPRrrhoR9duIhNVwqkwcc6C9qMHRKNHl+Q=;
+ b=GStT0MXMLM/fZ9pe8YXt69mb+WpGa4ehYFCflmtI1TebfTGuMbPUuO7bFFnEttDSGBpW
+ wVjQT2tYVG8bdJ5Dp0s8vaUIjKR3RCxcLs48OrDl9BDsHP8mgIt4bC3h/HXWy87Ur1ea
+ OG9YwjXWDQgRJ3xAyBqYuela6as1U9OG3ItFOtMY6xuJO3ksmt8+q6QcY4JBOUX8EU6t
+ aTY6SuWGr6L6Sa3qMYJOWu+A/ACjxwgvja03h9WYrHbiyap/VyGC7jtnVQ3bkhm2zmeo
+ liJWDwa2pRwk/Mgrered6Ws1P8sjCBP9Z2EJssVeAecdv7ag1WdPqSTLHHeM5tyWcBQQ 9g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xk44rr044-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 13:09:28 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43ID9SkW008360;
+	Thu, 18 Apr 2024 13:09:28 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xk44rr041-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 13:09:28 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43IB566T027289;
+	Thu, 18 Apr 2024 13:09:27 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xg4s0aw1y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 13:09:27 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43ID9LH348693672
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 18 Apr 2024 13:09:23 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8FB9520043;
+	Thu, 18 Apr 2024 13:09:21 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 591E320040;
+	Thu, 18 Apr 2024 13:09:21 +0000 (GMT)
+Received: from [9.152.224.222] (unknown [9.152.224.222])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 18 Apr 2024 13:09:21 +0000 (GMT)
+Message-ID: <453afb13-c7e3-4156-9dbb-c6317503c715@linux.ibm.com>
+Date: Thu, 18 Apr 2024 15:09:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240417133453.17406-2-sylvain.petinot@foss.st.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] s390/mm: re-enable the shared zeropage for !PV and
+ !skeys KVM guests
+Content-Language: en-US
+To: David Hildenbrand <david@redhat.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens
+ <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org
+References: <20240411161441.910170-1-david@redhat.com>
+ <20240411161441.910170-3-david@redhat.com>
+ <Zh1w1QTNSy+rrCH7@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+ <8533cb18-42ff-42bc-b9e5-b0537aa51b21@redhat.com>
+ <Zh4cqZkuPR9V1t1o@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+ <20d1d8c5-70e9-4b00-965b-918f275cfae7@linux.ibm.com>
+ <a6a4b284-e21b-4a04-88d1-7402eb5a08ef@redhat.com>
+From: Christian Borntraeger <borntraeger@linux.ibm.com>
+In-Reply-To: <a6a4b284-e21b-4a04-88d1-7402eb5a08ef@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: U_NintKTDQIUuOR8ZvOzcdWvOEEHjrHp
+X-Proofpoint-ORIG-GUID: T0JHOIK5lgqLYJh6QQs6jAcpUgEmZbJt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-18_11,2024-04-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 mlxlogscore=782
+ priorityscore=1501 mlxscore=0 suspectscore=0 phishscore=0 adultscore=0
+ clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404180093
 
-On Wed, Apr 17, 2024 at 03:34:52PM +0200, Sylvain Petinot wrote:
-> Add devicetree bindings Documentation for ST VD56G3 & ST VD66GY camera
-> sensors. Update MAINTAINERS file.
+
+
+Am 16.04.24 um 15:41 schrieb David Hildenbrand:
+> On 16.04.24 14:02, Christian Borntraeger wrote:
+>>
+>>
+>> Am 16.04.24 um 08:37 schrieb Alexander Gordeev:
+>>
+>>>> We could piggy-back on vm_fault_to_errno(). We could use
+>>>> vm_fault_to_errno(rc, FOLL_HWPOISON), and only continue (retry) if the rc is 0 or
+>>>> -EFAULT, otherwise fail with the returned error.
+>>>>
+>>>> But I'd do that as a follow up, and also use it in break_ksm() in the same fashion.
+>>>
+>>> @Christian, do you agree with this suggestion?
+>>
+>> I would need to look into that more closely to give a proper answer. In general I am ok
+>> with this but I prefer to have more eyes on that.
+>>   From what I can tell we should cover all the normal cases with our CI as soon as it hits
+>> next. But maybe we should try to create/change a selftest to trigger these error cases?
 > 
-> Signed-off-by: Sylvain Petinot <sylvain.petinot@foss.st.com>
-> ---
->  .../bindings/media/i2c/st,st-vd56g3.yaml      | 143 ++++++++++++++++++
->  MAINTAINERS                                   |   9 ++
->  2 files changed, 152 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml
+> If we find a shared zeropage we expect the next unsharing fault to succeed except:
 > 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml b/Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml
-> new file mode 100644
-> index 000000000000..6792c02fea5c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml
-> @@ -0,0 +1,143 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright (c) 2024 STMicroelectronics SA.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/st,st-vd56g3.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: STMicroelectronics VD56G3 Global Shutter Image Sensor
-> +
-> +maintainers:
-> +  - Benjamin Mugnier <benjamin.mugnier@foss.st.com>
-> +  - Sylvain Petinot <sylvain.petinot@foss.st.com>
-> +
-> +description: |-
-> +  The STMicroelectronics VD56G3 is a 1.5 M pixel global shutter image sensor
-> +  with an active array size of 1124 x 1364 (portrait orientation).
-> +  It is programmable through I2C, the address is fixed to 0x10.
-> +  The sensor output is available via CSI-2, which is configured as either 1 or
-> +  2 data lanes.
-> +  The sensor provides 8 GPIOS that can be used for either
-> +    - frame synchronization (Master: out-sync or Slave: in-sync)
-> +    - external LED signal (synchronized with sensor integration periods)
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - st,st-vd56g3
-> +      - st,st-vd66gy
-> +    description:
-> +      Two variants are availables; VD56G3 is a monochrome sensor while VD66GY
-> +      is a colour variant.
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  VCORE-supply:
-
-Convention is lowercase.
-
-> +    description: Digital core power supply (1.15V)
-> +
-> +  VDDIO-supply:
-> +    description: Digital IO power supply (1.8V)
-> +
-> +  VANA-supply:
-> +    description: Analog power supply (2.8V)
-> +
-> +  reset-gpios:
-> +    description: Sensor reset active low GPIO (XSHUTDOWN)
-> +    maxItems: 1
-> +
-> +  st,leds:
-> +    description:
-> +      Sensor's GPIOs used for external LED control.
-> +      Signal being the enveloppe of the integration time.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    minItems: 1
-> +    maxItems: 8
-> +    items:
-> +      minimum: 0
-> +      maximum: 7
-> +
-> +  port:
-> +    $ref: /schemas/graph.yaml#/$defs/port-base
-> +
-> +    properties:
-> +      endpoint:
-> +        $ref: /schemas/media/video-interfaces.yaml#
-> +        unevaluatedProperties: false
-> +
-> +        properties:
-> +          clock-lanes:
-> +            const: 0
-
-If required and only 1 possible value, why does this need to be in DT?
-
-> +
-> +          data-lanes:
-> +            minItems: 1
-> +            maxItems: 2
-> +            items:
-> +              enum: [1, 2]
-> +
-> +          link-frequencies:
-> +            minItems: 1
-> +            maxItems: 1
-> +            items:
-> +              enum: [402000000, 750000000]
-> +
-> +          lane-polarities:
-> +            minItems: 1
-> +            maxItems: 3
-> +            items:
-> +              enum: [0, 1]
-
-video-interfaces.yaml already defines this constraint, so you just need 
-to define how many entries.
-
-> +            description: Any lane can be inverted or not.
-> +
-> +        required:
-> +          - clock-lanes
-> +          - data-lanes
-> +          - link-frequencies
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - VCORE-supply
-> +  - VDDIO-supply
-> +  - VANA-supply
-> +  - reset-gpios
-> +  - port
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        vd56g3: camera-sensor@10 {
-
-Drop unused labels.
-
-> +            compatible = "st,st-vd56g3";
-> +            reg = <0x10>;
-> +
-> +            clocks = <&camera_clk_12M>;
-> +
-> +            VCORE-supply = <&camera_vcore_v1v15>;
-> +            VDDIO-supply = <&camera_vddio_v1v8>;
-> +            VANA-supply = <&camera_vana_v2v8>;
-> +
-> +            reset-gpios = <&gpio 5 GPIO_ACTIVE_LOW>;
-> +            st,leds = <6>;
-> +
-> +            port {
-> +                vd56g3_ep: endpoint {
-> +                    clock-lanes = <0>;
-> +                    data-lanes = <1 2>;
-> +                    link-frequencies =
-> +                      /bits/ 64 <402000000>;
-> +                    remote-endpoint = <&csiphy0_ep>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +...
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7c121493f43d..991e65627e18 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -20868,6 +20868,15 @@ S:	Maintained
->  F:	Documentation/hwmon/stpddc60.rst
->  F:	drivers/hwmon/pmbus/stpddc60.c
->  
-> +ST VD56G3 DRIVER
-> +M:	Benjamin Mugnier <benjamin.mugnier@foss.st.com>
-> +M:	Sylvain Petinot <sylvain.petinot@foss.st.com>
-> +L:	linux-media@vger.kernel.org
-> +S:	Maintained
-> +T:	git git://linuxtv.org/media_tree.git
-
-This should be covered by the media maintainer entry.
-
-> +F:	Documentation/devicetree/bindings/media/i2c/st,st-vd56g3.yaml
-> +F:	drivers/media/i2c/st-vd56g3.c
-> +
->  ST VGXY61 DRIVER
->  M:	Benjamin Mugnier <benjamin.mugnier@foss.st.com>
->  M:	Sylvain Petinot <sylvain.petinot@foss.st.com>
-> -- 
-> 2.17.1
+> (1) OOM, in which case we translate to -ENOMEM.
 > 
+> (2) Some obscure race with MADV_DONTNEED paired with concurrent truncate(), in which case we get an error, but if we look again, we will find the shared zeropage no longer mapped. (this is what break_ksm() describes)
+> 
+> (3) MCE while copying the page, which doesn't quite apply here.
+> 
+> For the time being, we only get shared zeropages in (a) anon mappings (b) MAP_PRIVATE shmem mappings via UFFDIO_ZEROPAGE. So (2) is hard or even impossible to trigger. (1) is hard to test as well, and (3) ...
+> 
+> No easy way to extend selftests that I can see.
+
+Yes, lets just go forward.
+> 
+> If we repeatedly find a shared zeropage in a COW mapping and get an error from the unsharing fault, something else would be deeply flawed. So I'm not really worried about that, but I agree that having a more centralized check will make sense.
 
