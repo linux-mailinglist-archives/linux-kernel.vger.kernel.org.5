@@ -1,668 +1,157 @@
-Return-Path: <linux-kernel+bounces-150240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EBE78A9C2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:03:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B41C58A9C2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:03:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 400322876BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:03:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DD6F1F244DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:03:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DBAE1635B2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A2DC165FDE;
 	Thu, 18 Apr 2024 14:03:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bfEWmQ1x"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="VltlHbXc"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38906165FAF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63676165FA9
 	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:03:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713449005; cv=none; b=Kbt9FX1Ngm8xpsRowgfkM7+XO0D/GHr3V9ADm6dbtoztWnJ2l0VixZ/NURFHRIRVbVkEpRRvPOi5pqX11FoN/UiqWviMXzTchINz7gZmohYQfKIXN6mJo3LBUtYCD8pN+VqwnXpMUP0LOqEYDSsZ9f5aNQrSTRVtfk2K2NU+g6s=
+	t=1713449005; cv=none; b=oa3wgL5ohz+C7qNA7B8G1nNX+ZVD4UfIdRYgZjQ+lwg59643ROBXqzuiKetGPmYldMRNuguSsQyqSSbt36LyLl08/VcMQDKvdkz1JXKvqL+wAYtH0DN7W/BV9r7AYcVjZRQqLk6pj7qrj8iGe01l5V+6VTy8W3ptKD9ofH/5Fek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713449005; c=relaxed/simple;
-	bh=yXH9ZC5uZwf6Li9hqU2okU2Y0WKBNOwH6GMx6bQzJXA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MKZQO1LRWFWfgvqsjDrkg9VVE8RI79UgF1Q8kvFt4EgFElRL1Wl9F5oTHTfdpFPVoztgKAFmeEhwp41mpf8/4XXb5DYij0E8TAWWHXAMWjgfQwi4HPIhmaqrkAf5ZOLifBULxDV1Xui2EO+mWDBTp9YPZR1lfcWJjzdgcvzTtAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bfEWmQ1x; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713449003; x=1744985003;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yXH9ZC5uZwf6Li9hqU2okU2Y0WKBNOwH6GMx6bQzJXA=;
-  b=bfEWmQ1xwVIoTxoW7HRQjptfhabDJEpTZZ7jtjMIYHKHIA41lhwa72+y
-   6ZO0BFqmIr5M7nmNdrLgxQ9MlR3xeTTYRncgBCGzFst7vYYXgR7HGRGs0
-   kBJNrCB9oYHlu05eCHKaFXEtESKnkPYp4Mk2xetX9ahKQRA0EW/1cbZJx
-   L7xPFOAgqZ7nFWn80gPCDDr2xo5AOiNx7v3slxt54+Abc7FhS6q55x6qw
-   wtV4KtAMULGk5B6mk9G721FBLt+Y3CDqfhorTp+stw7mKDhJNRpGOLtU1
-   GWMEJlUk6Elxsanyl6N+DB6mDrCoTXJcwTXkQczHdxRcuhlgZDR5sGai4
-   w==;
-X-CSE-ConnectionGUID: b9I0At9DR5WypS9EZGGjFA==
-X-CSE-MsgGUID: 0IO+p2xETCWW8Dn9/yOlaw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="19556176"
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="19556176"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 07:03:23 -0700
-X-CSE-ConnectionGUID: zNL8Nw1YTwSoK0Cqge9fZw==
-X-CSE-MsgGUID: UmeuNqZdT3qiKrdAZCWX2Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="53932081"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 07:03:19 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rxSM7-00000000LUk-0dAN;
-	Thu, 18 Apr 2024 17:03:15 +0300
-Date: Thu, 18 Apr 2024 17:03:14 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Baojun Xu <baojun.xu@ti.com>
-Cc: tiwai@suse.de, robh+dt@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
-	pierre-louis.bossart@linux.intel.com, kevin-lu@ti.com,
-	shenghao-ding@ti.com, navada@ti.com, 13916275206@139.com,
-	v-po@ti.com, niranjan.hy@ti.com, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
-	yung-chuan.liao@linux.intel.com, broonie@kernel.org, soyer@irl.hu
-Subject: Re: [PATCH v3 2/3] ALSA: hda/tas2781: Main code of tas2781 driver
- for SPI
-Message-ID: <ZiEoInH7W3Hfkynh@smile.fi.intel.com>
-References: <20240418040240.2337-1-baojun.xu@ti.com>
- <20240418040240.2337-3-baojun.xu@ti.com>
+	bh=29NSP3ckhchgCk/BenPgTMkiEk28YJODiPFZQnpe0GQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Zij6cK0TkLTJEMwuTDJQFrPyj5ds3aR79DSseMT58IAS8hZSJvCAn9U3RN+ny1JTukYT/Z1fG+qPf5f5q2VUc++ktXZcE40Ifa1ce9Um3E7L/G0Wq7nK3fdQ57m5UcPbDcMPuOMVEkozx9fWOq1PIRkkcDg92Sy4+mrHwnfaQwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=VltlHbXc; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5176f217b7bso1539280e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:03:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713449001; x=1714053801; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=29NSP3ckhchgCk/BenPgTMkiEk28YJODiPFZQnpe0GQ=;
+        b=VltlHbXcY/hXnGG2jz+w5zDZZ/tsvF06fpogDT2sVlKafCF0s0QMQ6AJpIRz7osL47
+         p0+BXPM4xu0D6iHC+6CUnEx4qbRQTFszzCFQoHGG9cWF50ZHK8DPXkmn5TBbOaM+LMWM
+         gCVw8TgQN20h8i7z+RPjpWmm0e/SprTcERH0LhR65IPIQiaqPCG1zQMcXmQ+j7C2g7wu
+         eS0ZdMCy1y7OWt82gzWzxUTZcXGxrzCdN+tm2LaDNI8KgSBnyV9wwmo9orq/pSkQKAmp
+         jhWYNSbkOedth9j/E5AwGkdUlcuHxyE6motV7suJlp91pi1FwqO4pbgKAJ2GhWRUAl/g
+         Bo8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713449001; x=1714053801;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=29NSP3ckhchgCk/BenPgTMkiEk28YJODiPFZQnpe0GQ=;
+        b=Nu7fU2FBZMTnB8cUaKnylbzkPij2D4wYmA9ZyieZivoUwDqr5PaP8ESGJabH5/nZyq
+         EYoSah4MhUKK2K5KNWCJGe9NBnPl5z1v+iUKTKNnNLRGIEg22PhMzWu+qMdEV5vXwOld
+         Y33edtbCG9DSzrDzEJgAtxd3FmVo3ymj+VMoM/xRLJeCsZaj+tUzsVFh96meyUeo9qFp
+         OdxH3oHWgbs6o/q8L1u9Lc6mxQnt6CyX1SLCYr+Iocc6kT60MGQtXXQWwJX5W2eXhDT4
+         hYoVGeIpOu6LwEHGulMK5urhsUu7ZAda6WUl2gSK+V00s8ZJf40G0jHRrlojDFsV8HTZ
+         hsUw==
+X-Forwarded-Encrypted: i=1; AJvYcCVH9z+XeECPbF85X8MMdvuatopfBIDd+J9hlGE8JaifWneR5641jU/jHb3f7mfNV1nr6V66eqJS2zY+IhD6I5JZeH/g1nd/j68Wyrn1
+X-Gm-Message-State: AOJu0Yx0I0EMxAiM7yesn97MpEEbOgs2IfM/cvulfAwWy8mIYRiHiv2I
+	tm8HQAEEDPK8K3di8iC/KshxXAB5rvKDDsH5YRxVi/u2bIFGtZPKfwtdm9wrd3s=
+X-Google-Smtp-Source: AGHT+IEEaAqAaRn0OgbuNYh5fB4s3wbKRYCkPSN2nyv1oCLgvcIRJoVOQEt5V3SOR++8k+CwHg+lTQ==
+X-Received: by 2002:ac2:5b5b:0:b0:518:d5c4:d9b7 with SMTP id i27-20020ac25b5b000000b00518d5c4d9b7mr1966338lfp.16.1713449000512;
+        Thu, 18 Apr 2024 07:03:20 -0700 (PDT)
+Received: from [192.168.1.70] ([84.102.31.74])
+        by smtp.gmail.com with ESMTPSA id w25-20020a17090633d900b00a51cdde5d9bsm931130eja.225.2024.04.18.07.03.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 07:03:19 -0700 (PDT)
+Message-ID: <7f7fb71a-6d15-46f1-b63c-b569a2e230b7@baylibre.com>
+Date: Thu, 18 Apr 2024 16:03:15 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418040240.2337-3-baojun.xu@ti.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-
-On Thu, Apr 18, 2024 at 12:02:38PM +0800, Baojun Xu wrote:
-> Main source code for tas2781 driver for SPI.
-
-..
-
-> +#ifndef __TAS2781_SPI_H__
-> +#define __TAS2781_SPI_H__
-
-> +#include <sound/tas2781-dsp.h>
-
-You have the missing inclusions like
-
-+ types.h // for bool and so on
-
-You missed a lot of forward declarations this header better to have.
-I think I pointed this out already.
-
-..
-
-> +/*PAGE Control Register (available in page0 of each book) */
-
-Missing space.
-
-..
-
-> +#define TASDEVICE_BOOKCTL_REG		127
-> +#define TASDEVICE_BOOK_ID(reg)		(reg / (256 * 128))
-> +#define TASDEVICE_PAGE_ID(reg)		((reg % (256 * 128)) / 128)
-> +#define TASDEVICE_PAGE_REG(reg)		((reg % (256 * 128)) % 128)
-> +#define TASDEVICE_PGRG(reg)		(reg % (256 * 128))
-> +#define TASDEVICE_REG(book, page, reg)	(((book * 256 * 128) + \
-> +					(page * 128)) + reg)
-> +
-> +#define TASDEVICE_MAX_BOOK_NUM		256
-> +#define TASDEVICE_MAX_PAGE		128
-
-So, shouldn't the above use these definitions as well?
-
-..
-
-> +/*Software Reset */
-
-Missing spaces. Please, fix all problems like this in the entire series.
-
-..
-
-> +#define TAS2781_SPI_MAX_FREQ		4000000
-
-(4 * HZ_PER_MHZ) ?
-Will need units.h IIRC for this.
-
-> +#include <linux/acpi.h>
-
-+ array_size.h
-
-> +#include <linux/bits.h>
-> +#include <linux/crc8.h>
-> +#include <linux/crc32.h>
-> +#include <linux/efi.h>
-> +#include <linux/firmware.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/property.h>
-> +#include <linux/regmap.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/time.h>
-> +#include <linux/types.h>
-
-..
-
-> +		.range_max = TASDEVICE_MAX_BOOK_NUM * TASDEVICE_MAX_PAGE,
-> +		.selector_reg = TASDEVICE_PAGE_SELECT,
-> +		.selector_mask = 0xff,
-
-GENMASK() ?
-
-> +		.selector_shift = 0,
-> +		.window_start = 0,
-> +		.window_len = 128,
-
-Shouldn't these 0xff and 128 be applied thry previously defined constants?
-I mean are they have a relation to _BOOK_NUM and _MAX_PAGE?
-
-..
-
-> +static int tasdevice_spi_switch_book(struct tasdevice_priv *tas_priv, int book)
-> +{
-> +	struct tasdevice *tasdev = &tas_priv->tasdevice;
-> +	struct regmap *map = tas_priv->regmap;
-
-> +	int ret = 0;
-
-Redundant assignment, see below
-
-> +	if (tasdev->cur_book != book) {
-
-	if (tasdev->cur_book == book)
-		return 0;
-
-> +		/* Change to page 0 before book change. */
-> +		ret = regmap_write(map, TASDEVICE_PAGE_SELECT, 0);
-> +		if (ret < 0) {
-> +			dev_err(tas_priv->dev, "%s, E=%d\n", __func__, ret);
-> +			return ret;
-> +		}
-> +		ret = regmap_write(map, TASDEVICE_BOOKCTL_REG, book);
-> +		if (ret < 0) {
-> +			dev_err(tas_priv->dev, "%s, E=%d\n", __func__, ret);
-> +			return ret;
-> +		}
-> +		tasdev->cur_book = book;
-> +	}
-> +
-> +	return ret;
-
-	return 0;
-
-> +}
-
-..
-
-> +		ret = regmap_bulk_read(map, TASDEVICE_PGRG(reg),
-> +			buf, len + 1);
-
-THis can be one line.
-
-..
-
-> +	if (tas_dev->reset) {
-> +		gpiod_set_value_cansleep(tas_dev->reset, 0);
-> +		usleep_range(500, 1000);
-
-fsleep()
-
-> +		gpiod_set_value_cansleep(tas_dev->reset, 1);
-> +	} else {
-> +		ret = tasdevice_spi_dev_write(tas_dev,
-> +			TAS2781_REG_SWRESET, TAS2781_REG_SWRESET_RESET);
-
-Indentation is broken and seems you have a room for one parameter above.
-
-> +		if (ret < 0)
-> +			dev_err(tas_dev->dev, "dev sw-reset fail, %d\n", ret);
-> +	}
-> +	usleep_range(1000, 1050);
-
-fsleep()
-
-,,,
-
-> +{
-> +	int ret = 0;
-
-Redundant assignment.
-
-> +	/*
-> +	 * Codec Lock Hold to ensure that codec_probe and firmware parsing and
-> +	 * loading do not simultaneously execute.
-> +	 */
-> +	mutex_lock(&tas_priv->codec_lock);
-> +
-> +	scnprintf(tas_priv->rca_binaryname, 64, "%sRCA%d.bin",
-
-Why 'c' variant as you don't check the return value anyway.
-And shouldn't it be sizeof() in the second parameter?
-
-> +		tas_priv->dev_name, tas_priv->index);
-> +	crc8_populate_msb(tas_priv->crc8_lkp_tbl, TASDEVICE_CRC8_POLYNOMIAL);
-> +	tas_priv->codec = codec;
-> +	ret = request_firmware_nowait(module, FW_ACTION_UEVENT,
-> +		tas_priv->rca_binaryname, tas_priv->dev, GFP_KERNEL, tas_priv,
-> +		cont);
-> +	if (ret)
-> +		dev_err(tas_priv->dev, "request_firmware_nowait err:0x%08x\n",
-> +			ret);
-> +
-> +	/* Codec Lock Release*/
-> +	mutex_unlock(&tas_priv->codec_lock);
-
-Why not using cleanup.h, i.e. guard() and scoped_guard(), from day 1?
-
-> +	return ret;
-> +}
-
-..
-
-> +static int tasdevice_clamp(int val, int max, unsigned int invert)
-> +{
-> +	if (val > max)
-> +		val = max;
-> +	if (invert)
-> +		val = max - val;
-> +	if (val < 0)
-> +		val = 0;
-> +
-> +	return val;
-
-Wouldn't below be the same?
-
-	return clamp(invert ? max - val : val, 0, max);
-
-(if max can be negative the above won't work, but an original code
- would also give a surprising values AFAICS.)
-
-> +}
-
-..
-
-> +	mask = (1 << fls(max)) - 1;
-
-Use respective roundup/down_pow_of_two().
-Same in other similar cases.
-
-..
-
-> +	ret = device_property_count_u32(physdev, property);
-> +	if (ret <= 0)
-
-So, when 0 you return 0. Is it expected?
-
-> +		goto err;
-
-..
-
-> +	p->index = 0xFF;
-
-Why capital? Shouldn't it be rather U8_MAX or something like this?
-
-> +	for (i = 0; i < nval; i++) {
-> +		if (values[i] == id) {
-> +			p->index = i;
-> +			break;
-> +		}
-> +	}
-> +	if (p->index == 0xFF) {
-
-Ditto.
-
-> +		dev_dbg(p->dev, "No index found in %s\n", property);
-> +		ret = -ENODEV;
-> +		goto err;
-> +	}
-
-..
-
-> +	p->reset = devm_gpiod_get_index_optional(physdev,
-> +		"reset", p->index, GPIOD_OUT_LOW);
-
-Broken indentation. You have plenty of lines like this, please fix them all.
-
-> +	if (IS_ERR(p->reset)) {
-> +		ret = PTR_ERR(p->reset);
-> +
-> +		/*
-> +		 * If RESET is shared the first amp to probe will grab the
-> +		 * reset line and reset all the amps
-> +		 */
-> +		if (ret != -EBUSY) {
-> +			dev_err_probe(p->dev, ret,
-> +				"Failed to get reset GPIO\n");
-> +			goto err;
-> +		}
-> +		dev_info(p->dev, "Reset GPIO busy, assume shared reset\n");
-> +		p->reset = NULL;
-> +	}
-
-Why can't this use reset framework which supports shared / exclusive resets?
-
-
-..
-
-> +	 * Manually set the Chip Select for the second amp <cs_gpio_index>
-> +	 * in the node.
-> +	 * This is only supported for systems with 2 amps, since we cannot
-> +	 * expand the default number of chip selects without using cs-gpios
-
-Missing period at the end.
-
-Btw, SPI has multi-CS support, would it help here?
-
-> +	 * The CS GPIO must be set high prior to communicating with the
-> +	 * first amp (which uses a native chip select), to ensure the second
-> +	 * amp does not clash with the first.
-
-> +	if (IS_ENABLED(CONFIG_SPI)) {
-
-I would rather prefer to see in spi.h
-
-#if IS_ENABLED(CONFIG_SPI)
-#define dev_is_spi(d)	((d)->bus == &spi_bus_type)
-#else
-#define dev_is_spi(d)	false
-#endif
-
-and here
-
-	if (dev_is_spi(...)) {
-
-> +		spi = to_spi_device(p->dev);
-> +
-> +		/*
-> +		 * This is obtained using driver_gpios, since only one GPIO
-> +		 * for CS exists, this can be obtained using index 0.
-> +		 */
-> +		cs_gpiod = devm_gpiod_get_index_optional(physdev, "cs",
-> +			p->index, GPIOD_OUT_LOW);
-> +		if (IS_ERR(cs_gpiod)) {
-> +			dev_err(p->dev, "Unable to get CS GPIO descriptor\n");
-> +			ret = PTR_ERR(cs_gpiod);
-> +			goto err;
-> +		}
-> +		if (id == 1) {
-> +			spi_set_csgpiod(spi, 0, cs_gpiod);
-> +			p->chipselect = cs_gpiod;
-> +		} else {
-> +			gpiod_set_value_cansleep(cs_gpiod, true);
-
-> +			gpiod_put(cs_gpiod);
-
-How can this be correct in conjunction with devm?
-
-> +		}
-> +		spi_setup(spi);
-> +	}
-
-..
-
-> +static int tasdevice_set_profile_id(struct snd_kcontrol *kcontrol,
-> +	struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct tasdevice_priv *tas_priv = snd_kcontrol_chip(kcontrol);
-> +	int max = tas_priv->rcabin.ncfgs - 1;
-> +	int val, ret = 0;
-
-Redundant assignment and even entire ret is not needed.
-
-> +	val = clamp(ucontrol->value.integer.value[0], 0, max);
-
-> +
-
-Redundant blank line.
-
-> +	if (tas_priv->rcabin.profile_cfg_id != val) {
-
-	if (tas_priv->rcabin.profile_cfg_id == val)
-		return 0;
-
-> +		tas_priv->rcabin.profile_cfg_id = val;
-> +		ret = 1;
-> +	}
-> +
-> +	return ret;
-
-	return 1;
-
-> +}
-
-..
-
-> +static int tasdevice_program_put(struct snd_kcontrol *kcontrol,
-> +	struct snd_ctl_elem_value *ucontrol)
-
-As per above function comments.
-
-..
-
-> +static int tasdevice_config_put(struct snd_kcontrol *kcontrol,
-> +	struct snd_ctl_elem_value *ucontrol)
-
-Ditto.
-
-..
-
-> +/*
-
-Why not marking it as kernel doc?
-
-> + * tas2781_digital_getvol - get the volum control
-> + * @kcontrol: control pointer
-> + * @ucontrol: User data
-
-+ blank line.
-
-> + * Customer Kcontrol for tas2781 is primarily for regmap booking, paging
-> + * depends on internal regmap mechanism.
-> + * tas2781 contains book and page two-level register map, especially
-> + * book switching will set the register BXXP00R7F, after switching to the
-> + * correct book, then leverage the mechanism for paging to access the
-> + * register.
-
-+ blank line.
-
-+ Return: section.
-
-> + */
-
-..
-
-> +	dev_dbg(tas_priv->dev, "%s : Force FWload %s\n", __func__,
-> +		tas_priv->force_fwload_status ? "ON" : "OFF");
-
-str_on_off() from string_choices.h
-
-..
-
-> +	dev_dbg(tas_priv->dev, "%s : Force FWload %s\n", __func__,
-> +		tas_priv->force_fwload_status ? "ON" : "OFF");
-
-Ditto.
-
-..
-
-> +	for (j = 0; j < CALIB_MAX; j++) {
-> +		rc = tasdevice_spi_dev_bulk_write(tas_priv,
-> +			TASDEVICE_REG(0, page_array[j], rgno_array[j]),
-> +			(unsigned char *)&tas_priv->calibration_data[j], 4);
-> +		if (rc < 0)
-> +			dev_err(tas_priv->dev,
-> +				"chn %d calib %d bulk_wr err = %d\n",
-> +				tas_priv->index, j, rc);
-
-Non-fatal? How it will work then?
-
-> +	}
-> +}
-
-..
-
-> +	efi_guid_t efi_guid = EFI_GUID(0x02f9af02, 0x7734, 0x4233, 0xb4, 0x3d,
-> +		0x93, 0xfe, 0x5a, 0xa3, 0x5d, 0xb3);
-
-Make it look more standard as three line assignment:
-
-	efi_guid_t efi_guid =
-		EFI_GUID(0x02f9af02, 0x7734, 0x4233,
-			 0xb4, 0x3d, 0x93, 0xfe, 0x5a, 0xa3, 0x5d, 0xb3);
-
-Also add a comment that will have this GUID in human-readable format suitable
-for googling.
-
-..
-
-> +	if (status == EFI_BUFFER_TOO_SMALL) {
-> +		/* Allocate data buffer of data_size bytes */
-> +		data = devm_kzalloc(tas_priv->dev, total_sz, GFP_KERNEL);
-> +		if (!data)
-> +			return -ENOMEM;
-> +		/* Get variable contents into buffer */
-> +		status = efi.get_variable(efi_name, &efi_guid, &attr,
-> +			&total_sz, data);
-> +	}
-> +	if (status != EFI_SUCCESS) {
-> +		kfree(data);
-
-Really you should read and understand what devm means and what is the scope
-when you can use it. The code is full of double-free bugs.
-
-> +		return -EINVAL;
-> +	}
-
-..
-
-> +		if (crc == tmp_val[3+tmp_val[0]*6]) {
-
-> +			time64_to_tm(tmp_val[2], 0, tm);
-> +			dev_dbg(tas_priv->dev, "%4ld-%2d-%2d, %2d:%2d:%2d\n",
-> +				tm->tm_year, tm->tm_mon, tm->tm_mday,
-> +				tm->tm_hour, tm->tm_min, tm->tm_sec);
-
-No, use respective %pt.
-
-> +			for (int i = 0; i < CALIB_MAX; i++)
-> +				tas_priv->calibration_data[i] =
-> +					tmp_val[3 + tas_priv->index * 6 + i];
-> +			tas_priv->apply_calibration(tas_priv);
-> +		} else {
-> +			total_sz = 0;
-> +		}
-
-..
-
-> +		if (crc == tmp_val[21]) {
-> +			time64_to_tm(tmp_val[20], 0, tm);
-> +			dev_dbg(tas_priv->dev, "%4ld-%2d-%2d, %2d:%2d:%2d\n",
-> +				tm->tm_year, tm->tm_mon, tm->tm_mday,
-> +				tm->tm_hour, tm->tm_min, tm->tm_sec);
-
-Ditto.
-
-> +			for (int i = 0; i < CALIB_MAX; i++)
-> +				tas_priv->calibration_data[i] =
-> +					tmp_val[tas_priv->index * 5 + i];
-> +			tas_priv->apply_calibration(tas_priv);
-> +		}
-
-> +	kfree(data);
-
-KABOOM!
-
-> +
-> +	return 0;
-> +}
-
-..
-
-> +	for (int i = ARRAY_SIZE(tas_hda->snd_ctls) - 1; i >= 0; i--)
-> +		if (tas_hda->snd_ctls[i])
-> +			snd_ctl_remove(codec->card, tas_hda->snd_ctls[i]);
-
-Cleanup loops are better in a while (i--) form.
-
-
-	unsigned int i = ARRAY_SIZE(tas_hda->snd_ctls);
-
-	while (i--) {
-		if (tas_hda->snd_ctls[i])
-			snd_ctl_remove(codec->card, tas_hda->snd_ctls[i]);
-	}
-
-BUT, if not yet, just add a support of NULL into snd_ctl_remove(), so it
-becomes a NULL-aware one. With that you will have
-
-	while (i--)
-		snd_ctl_remove(codec->card, tas_hda->snd_ctls[i]);
-
-as a traditional pattern for many things in Linux kernel.
-
-.
-
-> +static const struct dev_pm_ops tas2781_hda_pm_ops = {
-> +	RUNTIME_PM_OPS(tas2781_runtime_suspend, tas2781_runtime_resume, NULL)
-> +	SYSTEM_SLEEP_PM_OPS(tas2781_system_suspend, tas2781_system_resume)
-> +};
-> +
-> +static const struct spi_device_id tas2781_hda_spi_id[] = {
-> +	{ "tas2781-hda", 0 },
-
-', 0' part is redundant.
-
-> +	{}
-> +};
-> +
-> +static const struct acpi_device_id tas2781_acpi_hda_match[] = {
-> +	{"TXNW2781", 0 },
-
-Ditto.
-
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(acpi, tas2781_acpi_hda_match);
-> +
-> +static struct spi_driver tas2781_hda_spi_driver = {
-> +	.driver = {
-> +		.name		= "tas2781-hda",
-> +		.acpi_match_table = tas2781_acpi_hda_match,
-
-> +		.pm		= &tas2781_hda_pm_ops,
-
-Use proper pm_*() macro here.
-
-> +	},
-> +	.id_table	= tas2781_hda_spi_id,
-> +	.probe		= tas2781_hda_spi_probe,
-> +	.remove		= tas2781_hda_spi_remove,
-> +};
-
-..
-
-I stop here, you need much more cleaning work on these patches. Also, with
-cleanup.h and other things in mind you can easily shrink the code by 10%
-or so, I will expect -300 LoCs in the next version.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v9 0/3] Add minimal XDP support to TI AM65 CPSW
+ Ethernet driver
+To: Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ Ratheesh Kannoth <rkannoth@marvell.com>,
+ Naveen Mamindlapalli <naveenm@marvell.com>,
+ Jacob Keller <jacob.e.keller@intel.com>, danishanwar@ti.com,
+ yuehaibing@huawei.com, rogerq@kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org
+References: <20240223-am65-cpsw-xdp-basic-v9-0-2c194217e325@baylibre.com>
+ <260d258f-87a1-4aac-8883-aab4746b32d8@ti.com>
+ <08319f88-36a9-445a-9920-ad1fba666b6a@baylibre.com>
+ <1da48c7e-ba87-4f7a-b6d1-d35961005ab0@ti.com>
+Content-Language: en-US
+From: Julien Panis <jpanis@baylibre.com>
+In-Reply-To: <1da48c7e-ba87-4f7a-b6d1-d35961005ab0@ti.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+On 4/18/24 13:25, Siddharth Vadapalli wrote:
+> On Thu, Apr 18, 2024 at 01:17:47PM +0200, Julien Panis wrote:
+>> On 4/18/24 13:00, Siddharth Vadapalli wrote:
+>>> On 12-04-2024 21:08, Julien Panis wrote:
+>>>> This patch adds XDP support to TI AM65 CPSW Ethernet driver.
+>>>>
+>>>> The following features are implemented: NETDEV_XDP_ACT_BASIC,
+>>>> NETDEV_XDP_ACT_REDIRECT, and NETDEV_XDP_ACT_NDO_XMIT.
+>>>>
+>>>> Zero-copy and non-linear XDP buffer supports are NOT implemented.
+>>>>
+>>>> Besides, the page pool memory model is used to get better performance.
+>>>>
+>>>> Signed-off-by: Julien Panis <jpanis@baylibre.com>
+>>> Hello Julien,
+>>>
+>>> This series crashes Linux on AM62ax SoC which also uses the
+>>> AM65-CPSW-NUSS driver:
+>>> https://gist.github.com/Siddharth-Vadapalli-at-TI/5ed0e436606001c247a7da664f75edee
+>>>
+>>> Regards,
+>>> Siddharth.
+>> Hello Siddharth.
+>>
+>> Thanks for the log. I can read:
+>> [    1.966094] Missing net_device from driver
+>>
+>> Did you check that nodes exist in the device tree for the net devices ?
+> Yes it exists. The device-tree used was also built with linux-next
+> tagged next-20240417. The node corresponding to eth0 is cpsw_port1 which
+> is present and enabled in the device-tree:
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts?h=next-20240417#n644
+>
+> Regards,
+> Siddharth.
+
+I could reproduce the bug by disabling 'cpsw_port2' in my device tree,
+which is 'k3-am625-sk.dts' for the board I use.
+
+A condition is missing in am65_cpsw_create_xdp_rxqs() and
+am65_cpsw_destroy_xdp_rxqs() functions.
+
+For these 2 functions, the code which is in the for loop should be
+run only when port ethX is enabled. That's why it crashes with
+your device tree (cpsw_port2 is disabled, which is not the case by
+default for the board I developed with).
+
+I'll send a patch to fix the issue. Thanks for reporting it.
+
+Julien
 
