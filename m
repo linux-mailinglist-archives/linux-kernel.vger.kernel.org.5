@@ -1,96 +1,85 @@
-Return-Path: <linux-kernel+bounces-150713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 035158AA36A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:53:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F95C8AA31D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:44:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 839741F21322
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:53:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEDF5283254
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:44:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674281A0B1D;
-	Thu, 18 Apr 2024 19:49:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DED73199E8D;
+	Thu, 18 Apr 2024 19:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="b0+dBFW+"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2079.outbound.protection.outlook.com [40.107.93.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QYjvgj4p"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C86184127;
-	Thu, 18 Apr 2024 19:49:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.79
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713469744; cv=fail; b=Efp4kTeCWVFwCs+rcQqHwdGWxarabRW0if0z8BTzcwo3kZIjmoch0kfMnD+ia12ma8dG7LwtoJwdj6s1uOf26W6sUOitbWE1T5xL49QhIBjpQRZZ4QFKVKGElcAdecV+0T94J+Ywfutbc5b14V7nj2aByOilXLyhWs75ctkW3DA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713469744; c=relaxed/simple;
-	bh=TywdgYIs4nzhUrcOYx8QmJwkMBIybxLXfN7cAZwuPGc=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bmBjr20y/L3tlhOk9lhaYoNwECX94jMQk9zXkH5QjM1r2FRWvxkMjejLzamwf5LYsjcFIHwqKCM5ntIPBm6Poy8pWbP0XztjtcWFo/SDWpYEK9VxIu5Iocny6Z1nFyaLNmg3Dii6JdyOGFBR+DK5V2NjxflBkkXN3RjWpO+LyLk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=b0+dBFW+; arc=fail smtp.client-ip=40.107.93.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IMoEDIqQYfw291/yF01mkDVXoLBSzF/ibImjNp3z/d84AAiB4S0pPQLfD35Wyb6/fJcXBYrCTZe02BJLgvLsG2ZTAtvCWUEHfG4devi7QkequBoG/Cu79s7OYtBlP8MUDag0fuJ8ThC4L+hVz/JqYMR1+6L32YIdHpG57wBVv+AQN8ieyJVS2LugCsnEudkOIupKZqwnLc67qW2W6bnfpVA4qgL+yFglX9gXd32u1TvEDtlOhv21hCW6lQdSIiMahPeQFQhvsr4X/yQK6+27IUh4/CidzwfZh+MVA28thDHHTyW2Fl4+7R1oceQTZ1HilnE0FIRttShezBE1cyQggw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=odYMF9wN/jQkyJ9bByOpgiL8veyUMzdfUThcHu7U1Dk=;
- b=KzuYDijxY2gkxt9slmJCGkW2RVhn4EMbMrjVOjfKXR+IRYtQiPHexKXEbj0vch8mbBmaCpXZyCBHSIOT1GwdbS6KXcZMNhWf2dRSzzSUkEFs4eDQJuHzeJiNljqW1CMwKgPJ/Ah94M9+PaH7Thxy3WAlAhdJvg6abkREyPUF1wudg2L0lruS/FnL9RgQqIWFz2bNHppoSUcagQDEeflqLor8OkWkpq2M9VI5JHHsgL5LKQwRrDk7iPhMnD8gB2JrQFeFkMeshgiJ4DWDOqH/m0ywD8WSqYPcRjGuKm/MiAv9+/z4a2Lp2DZ1PvgU7WpBRb6hFi5iBaxUeoLPaLgE4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=odYMF9wN/jQkyJ9bByOpgiL8veyUMzdfUThcHu7U1Dk=;
- b=b0+dBFW+W3QcO0F/vx/v8xqRJ9xOI65wRz2HpVqEoBr0rB5GkfBEW4Aeavi3kJTT+CFAJWW3iu6o3ZTc+w9H6VY9dsoAh9aw8HMtFIZPblCwLW6nLfY3nEtbhNN7ZqsXb0kSe885dLyEJ9AamR+qS/o3x35+UBJmuhHaapjtjxA=
-Received: from SN6PR08CA0010.namprd08.prod.outlook.com (2603:10b6:805:66::23)
- by SN7PR12MB7227.namprd12.prod.outlook.com (2603:10b6:806:2aa::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Thu, 18 Apr
- 2024 19:48:58 +0000
-Received: from SN1PEPF0002BA4E.namprd03.prod.outlook.com
- (2603:10b6:805:66:cafe::4f) by SN6PR08CA0010.outlook.office365.com
- (2603:10b6:805:66::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.28 via Frontend
- Transport; Thu, 18 Apr 2024 19:48:58 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF0002BA4E.mail.protection.outlook.com (10.167.242.71) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.22 via Frontend Transport; Thu, 18 Apr 2024 19:48:57 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 18 Apr
- 2024 14:48:57 -0500
-From: Michael Roth <michael.roth@amd.com>
-To: <kvm@vger.kernel.org>
-CC: <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
-	<ardb@kernel.org>, <pbonzini@redhat.com>, <seanjc@google.com>,
-	<vkuznets@redhat.com>, <jmattson@google.com>, <luto@kernel.org>,
-	<dave.hansen@linux.intel.com>, <slp@redhat.com>, <pgonda@google.com>,
-	<peterz@infradead.org>, <srinivas.pandruvada@linux.intel.com>,
-	<rientjes@google.com>, <dovmurik@linux.ibm.com>, <tobin@ibm.com>,
-	<bp@alien8.de>, <vbabka@suse.cz>, <kirill@shutemov.name>,
-	<ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>
-Subject: [PATCH v13 26/26] KVM: SEV: Provide support for SNP_EXTENDED_GUEST_REQUEST NAE event
-Date: Thu, 18 Apr 2024 14:41:33 -0500
-Message-ID: <20240418194133.1452059-27-michael.roth@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240418194133.1452059-1-michael.roth@amd.com>
-References: <20240418194133.1452059-1-michael.roth@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0DA8194C99;
+	Thu, 18 Apr 2024 19:43:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713469395; cv=none; b=Ll2qLMpq+QTcUbXQ9ODFVpFQJdPWddW6xScNrEUYkf4ynMwOu81YI2HelC7Cs+bK1R02FP+n4DOeQ0c/5sR9OtfRkK57wA+/wjsRocGTKC86tJHLgqmwN/9F3O06mlAYKd7yYykah9yG8WLjqyAtvM1LzmyXfOuLZ3V4FGanjjA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713469395; c=relaxed/simple;
+	bh=MRNTrJBsF17use9WkK4TN13OK8uoCL9+cnCZ1MkhyUM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DzrDhaZqQlXdjEPX7dlO/U6wC+eZpytWjfGLJggqR2iax/VF7XT5dG8FjFxDxDq5FX6LZRXlQlPSeGZtDNrUwH4AP7fcQFnIqJPCRTbpi8rq0YOG3feWKgsDimAf2GkphnBDxEtB7GFBPb2R+byYzP+4qnOx1RHZ/p42pWLj4pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QYjvgj4p; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5cedfc32250so837233a12.0;
+        Thu, 18 Apr 2024 12:43:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713469393; x=1714074193; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=38lT2Q9/Wtu/x/mwT7pRtKT/XjJGw1DkTWZ0TLbddro=;
+        b=QYjvgj4pxOtj83a5qdh2tYbszSgpIqhx83tuNucLK2vFnEENQfvFXxzdrbuiUJTSiA
+         UXtitUOdKDBpt1O4smOBQil/zdeNlHmouelLiaisJKFzaQ40inHewFTXw4OpZZg/Boh1
+         dHKHWkF6k+7H1t+gY043GwTJr1uwOQJLEQn8m2xaRKi/x3oPyTzczU79EgLa5NaL0MaN
+         ZI1XP9HCjgxcftIMl8Wd7aTeAq2mNtaE9icv0pm4yCr1+RltE7H835k+7EyEgfh31vjL
+         Ulea9DCdHLyX6OKCkjSixHyUWKB4Z+xTo+twqepf/v/MLkKJScEavCixdAnwjZ/gb2DF
+         tUOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713469393; x=1714074193;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=38lT2Q9/Wtu/x/mwT7pRtKT/XjJGw1DkTWZ0TLbddro=;
+        b=OZ8q25xGZ9HNI/0qBDIRgfgjXbvEwj1nilpvhk1heZU1MhtvEArmylYU1GL5Y6uzHE
+         5Bdvuo/ekCNXkJZt6SEaWKK3csmDVoyOS3R8BmkR6TDe/uHDIsijdVAV614JvQ5vhg3Y
+         jxQPh12PPkYKQUDOqWvdA0z05n562ZROFgRsv3sah6tgAPFVe0IVIxs0K3AuO4L0faN1
+         EnPToIZyIfhqo77t8e9ABWZHKnPqwcC2OLgJRKnqRZCtfuehsGYfW0i+WTIhqAuHCgZL
+         90V+1RX8H8xp18ulnAZCW9Z27U1SQLpyBaCIKOWsi54f36hmoojSG7P6sk4yaRL+9af4
+         ZhjA==
+X-Forwarded-Encrypted: i=1; AJvYcCX9OM8gQ5LV69Jx/w7H0Zka9+tj4fQ79zLETGBBfd2CFolfNvhCvma0bFgPPa9hrV4BAiutENDva/UUFPljYhOeYD5pc7wY6O5zg3m8tyjw5IjNNOPOjFNoemsoY4j1Si88nRSDsjE2E5Q=
+X-Gm-Message-State: AOJu0Yy+51bzK6PMnmuRAGXilbIs/95B6iCG10qhCUsa8u5IPJ6gViUH
+	pYTEuOc/GsuPIouEDlFOi1VlrWmJz0aveFgN0vBxegN1M+k+ytPR
+X-Google-Smtp-Source: AGHT+IFL5Cd2jMq39QbvOOpOS8FadIfe4V5Nx3bG2ekmukhNfIWjmkm1cizoU6hL1T9tr5VD1xV4Pw==
+X-Received: by 2002:a17:90b:3108:b0:2ab:e1ae:d4c6 with SMTP id gc8-20020a17090b310800b002abe1aed4c6mr145328pjb.32.1713469393079;
+        Thu, 18 Apr 2024 12:43:13 -0700 (PDT)
+Received: from localhost.localdomain ([2401:4900:8099:de35:15c0:2623:bd0c:2046])
+        by smtp.gmail.com with ESMTPSA id b24-20020a17090aa59800b002a67b6f4417sm3556327pjq.24.2024.04.18.12.43.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 12:43:12 -0700 (PDT)
+From: Shresth Prasad <shresthprasad7@gmail.com>
+To: lee@kernel.org,
+	daniel.thompson@linaro.org,
+	jingoohan1@gmail.com,
+	deller@gmx.de
+Cc: dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org,
+	javier.carrasco.cruz@gmail.com,
+	Shresth Prasad <shresthprasad7@gmail.com>,
+	Julia Lawall <julia.lawall@inria.fr>
+Subject: [PATCH][next] drivers: video: Simplify device_node cleanup using __free
+Date: Fri, 19 Apr 2024 01:13:02 +0530
+Message-ID: <20240418194302.1466-1-shresthprasad7@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -98,337 +87,62 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA4E:EE_|SN7PR12MB7227:EE_
-X-MS-Office365-Filtering-Correlation-Id: 34b4a03a-5cf5-43ec-a3b6-08dc5fe09664
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	3OVYTlmvENaANFfoxB4n1wqPWAUjtqCfG5HFAcLl2vjWTMQXpTMLFpAQfLCUZpXdpjVSyhqYaSzdzaKY6bPupzx/BBUa4qF9X/6PBaS9rO0ImvoGtIyoysu4L5pxx6MINC2NwimjMa45OQUg6p59BnXlNPfKXuqk6LgkNUPNLz/5KaVgQ3cyXtmmp5aoSG2+cNmdSZMyjkOe0nXI+iRenB+sIXBvGfS38Vj8dhwvY0gxymWu16rjdNsGO59bkVF7YDy3kl0KkJ61OhsFIcSA6fahhXvxTdIW2tbTKqrdFlCh8htbQpw6SW2i1r811yvN1kGTa8S13jsWktJsT9VBLaOln11pU0iRhSWPXBayzbleyixVhyQLdNS2KVfU2AddumM84jT/xwdykF29kSAVo/FMNi0L/JWZgQS8f5mVMvbCAgyaRSTjsKlPegcmi9z9JK2ggaD/XYbdrCTE6ubNJkbBEcaVAfeISija0SLDXqkYJyiQCKgXXVullGgJh3wTIT6CzMuEyqDFVJDI8oCQKNh4q2kxIZiOlqiqeX4OgojUfD8dw7M8bETqqsajaBEQj/XinI1PONSHzPratyS4m4d3kaO87zY/DO2aybu7pu2rlPFrmK+cYzN6ILr63xjdvAMMR+Di+AzksTkvjmwKzdPcC0zMtMbMDivnYZwIUW5h3RdgM+g307PYSQEc2HJcMf1DM+DjXnTkcBXNIpRbv3y6/epFVPIyzpa+0e0yXQvrpYcJZTyX+bOctIRAVBjJ
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(1800799015)(82310400014)(376005)(7416005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 19:48:57.9633
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34b4a03a-5cf5-43ec-a3b6-08dc5fe09664
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002BA4E.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7227
 
-Version 2 of GHCB specification added support for the SNP Extended Guest
-Request Message NAE event. This event serves a nearly identical purpose
-to the previously-added SNP_GUEST_REQUEST event, but allows for
-additional certificate data to be supplied via an additional
-guest-supplied buffer to be used mainly for verifying the signature of
-an attestation report as returned by firmware.
+Add `__free` function attribute to `np` device_node pointer
+initialisation and remove of_node_put cleanup for this pointer.
 
-This certificate data is supplied by userspace, so unlike with
-SNP_GUEST_REQUEST events, SNP_EXTENDED_GUEST_REQUEST events are first
-forwarded to userspace via a KVM_EXIT_VMGEXIT exit type, and then the
-firmware request is made only afterward.
+The `__free` attribute is used for scope based cleanup instead of
+manually freeing the resource using `of_node_put`, making cleanup
+simpler and safer.
 
-Implement handling for these events.
-
-Since there is a potential for race conditions where the
-userspace-supplied certificate data may be out-of-sync relative to the
-reported TCB or VLEK that firmware will use when signing attestation
-reports, make use of the synchronization mechanisms wired up to the
-SNP_{PAUSE,RESUME}_ATTESTATION SEV device ioctls such that the guest
-will be told to retry the request while attestation has been paused due
-to an update being underway on the system.
-
-Signed-off-by: Michael Roth <michael.roth@amd.com>
+Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: Shresth Prasad <shresthprasad7@gmail.com>
 ---
- Documentation/virt/kvm/api.rst | 26 +++++++++++
- arch/x86/include/asm/sev.h     |  6 +++
- arch/x86/kvm/svm/sev.c         | 82 ++++++++++++++++++++++++++++++++++
- arch/x86/kvm/svm/svm.h         |  3 ++
- arch/x86/virt/svm/sev.c        | 37 +++++++++++++++
- include/uapi/linux/kvm.h       |  6 +++
- 6 files changed, 160 insertions(+)
+ drivers/video/backlight/sky81452-backlight.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 85099198a10f..6cf186ed8f66 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -7066,6 +7066,7 @@ values in kvm_run even if the corresponding bit in kvm_dirty_regs is not set.
- 		struct kvm_user_vmgexit {
- 		#define KVM_USER_VMGEXIT_PSC_MSR	1
- 		#define KVM_USER_VMGEXIT_PSC		2
-+		#define KVM_USER_VMGEXIT_EXT_GUEST_REQ	3
- 			__u32 type; /* KVM_USER_VMGEXIT_* type */
- 			union {
- 				struct {
-@@ -7079,6 +7080,11 @@ values in kvm_run even if the corresponding bit in kvm_dirty_regs is not set.
- 					__u64 shared_gpa;
- 					__u64 ret;
- 				} psc;
-+				struct {
-+					__u64 data_gpa;
-+					__u64 data_npages;
-+					__u32 ret;
-+				} ext_guest_req;
- 			};
- 		};
- 
-@@ -7108,6 +7114,26 @@ private/shared state. Userspace will return a value in 'ret' that is in
- agreement with the GHCB-defined return values that the guest will expect
- in the SW_EXITINFO2 field of the GHCB in response to these requests.
- 
-+For the KVM_USER_VMGEXIT_EXT_GUEST_REQ type, the ext_guest_req union type
-+is used. The kernel will supply in 'data_gpa' the value the guest supplies
-+via the RAX field of the GHCB when issued extended guest requests.
-+'data_npages' will similarly contain the value the guest supplies in RBX
-+denoting the number of shared pages available to write the certificate
-+data into.
-+
-+  - If the supplied number of pages is sufficient, userspace should write
-+    the certificate data blob (in the format defined by the GHCB spec) in
-+    the address indicated by 'data_gpa' and set 'ret' to 0.
-+
-+  - If the number of pages supplied is not sufficient, userspace must write
-+    the required number of pages in 'data_npages' and then set 'ret' to 1.
-+
-+  - If userspace is temporarily unable to handle the request, 'ret' should
-+    be set to 2 to inform the guest to retry later.
-+
-+  - If some other error occurred, userspace should set 'ret' to a non-zero
-+    value that is distinct from the specific return values mentioned above.
-+
- 6. Capabilities that can be enabled on vCPUs
- ============================================
- 
-diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-index baf223eb5633..65a012f6bcb4 100644
---- a/arch/x86/include/asm/sev.h
-+++ b/arch/x86/include/asm/sev.h
-@@ -276,6 +276,9 @@ void snp_leak_pages(u64 pfn, unsigned int npages);
- void kdump_sev_callback(void);
- int snp_pause_attestation(u64 *transaction_id);
- void snp_resume_attestation(u64 *transaction_id);
-+u64 snp_transaction_get_id(void);
-+bool __snp_transaction_is_stale(u64 transaction_id);
-+bool snp_transaction_is_stale(u64 transaction_id);
- #else
- static inline bool snp_probe_rmptable_info(void) { return false; }
- static inline int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level) { return -ENODEV; }
-@@ -291,6 +294,9 @@ static inline void snp_leak_pages(u64 pfn, unsigned int npages) {}
- static inline void kdump_sev_callback(void) { }
- static inline int snp_pause_attestation(u64 *transaction_id) { return 0; }
- static inline void snp_resume_attestation(u64 *transaction_id) {}
-+static inline u64 snp_transaction_get_id(void) { return 0; }
-+static inline bool __snp_transaction_is_stale(u64 transaction_id) { return false; }
-+static inline bool snp_transaction_is_stale(u64 transaction_id) { return false; }
- #endif
- 
- #endif
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 953f00ddf31b..8ba29b2b2b0a 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -3283,6 +3283,7 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm)
- 	case SVM_VMGEXIT_PSC:
- 	case SVM_VMGEXIT_TERM_REQUEST:
- 	case SVM_VMGEXIT_GUEST_REQUEST:
-+	case SVM_VMGEXIT_EXT_GUEST_REQUEST:
- 		break;
- 	default:
- 		reason = GHCB_ERR_INVALID_EVENT;
-@@ -3803,6 +3804,84 @@ static void snp_handle_guest_req(struct vcpu_svm *svm, gpa_t req_gpa, gpa_t resp
- 	ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, SNP_GUEST_ERR(vmm_ret, fw_err));
- }
- 
-+static int snp_complete_ext_guest_req(struct kvm_vcpu *vcpu)
-+{
-+	struct vcpu_svm *svm = to_svm(vcpu);
-+	struct vmcb_control_area *control;
-+	struct kvm *kvm = vcpu->kvm;
-+	sev_ret_code fw_err = 0;
-+	int vmm_ret;
-+
-+	vmm_ret = vcpu->run->vmgexit.ext_guest_req.ret;
-+	if (vmm_ret) {
-+		if (vmm_ret == SNP_GUEST_VMM_ERR_INVALID_LEN)
-+			vcpu->arch.regs[VCPU_REGS_RBX] =
-+				vcpu->run->vmgexit.ext_guest_req.data_npages;
-+		goto abort_request;
-+	}
-+
-+	control = &svm->vmcb->control;
-+
-+	/*
-+	 * To avoid the message sequence number getting out of sync between the
-+	 * actual value seen by firmware verses the value expected by the guest,
-+	 * make sure attestations can't get paused on the write-side at this
-+	 * point by holding the lock for the entire duration of the firmware
-+	 * request so that there is no situation where SNP_GUEST_VMM_ERR_BUSY
-+	 * would need to be returned after firmware sees the request.
-+	 */
-+	mutex_lock(&snp_pause_attestation_lock);
-+
-+	if (__snp_transaction_is_stale(svm->snp_transaction_id))
-+		vmm_ret = SNP_GUEST_VMM_ERR_BUSY;
-+	else if (!__snp_handle_guest_req(kvm, control->exit_info_1,
-+					 control->exit_info_2, &fw_err))
-+		vmm_ret = SNP_GUEST_VMM_ERR_GENERIC;
-+
-+	mutex_unlock(&snp_pause_attestation_lock);
-+
-+abort_request:
-+	ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, SNP_GUEST_ERR(vmm_ret, fw_err));
-+
-+	return 1; /* resume guest */
-+}
-+
-+static int snp_begin_ext_guest_req(struct kvm_vcpu *vcpu)
-+{
-+	int vmm_ret = SNP_GUEST_VMM_ERR_GENERIC;
-+	struct vcpu_svm *svm = to_svm(vcpu);
-+	unsigned long data_npages;
-+	sev_ret_code fw_err;
-+	gpa_t data_gpa;
-+
-+	if (!sev_snp_guest(vcpu->kvm))
-+		goto abort_request;
-+
-+	data_gpa = vcpu->arch.regs[VCPU_REGS_RAX];
-+	data_npages = vcpu->arch.regs[VCPU_REGS_RBX];
-+
-+	if (!IS_ALIGNED(data_gpa, PAGE_SIZE))
-+		goto abort_request;
-+
-+	svm->snp_transaction_id = snp_transaction_get_id();
-+	if (snp_transaction_is_stale(svm->snp_transaction_id)) {
-+		vmm_ret = SNP_GUEST_VMM_ERR_BUSY;
-+		goto abort_request;
-+	}
-+
-+	vcpu->run->exit_reason = KVM_EXIT_VMGEXIT;
-+	vcpu->run->vmgexit.type = KVM_USER_VMGEXIT_EXT_GUEST_REQ;
-+	vcpu->run->vmgexit.ext_guest_req.data_gpa = data_gpa;
-+	vcpu->run->vmgexit.ext_guest_req.data_npages = data_npages;
-+	vcpu->arch.complete_userspace_io = snp_complete_ext_guest_req;
-+
-+	return 0; /* forward request to userspace */
-+
-+abort_request:
-+	ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, SNP_GUEST_ERR(vmm_ret, fw_err));
-+	return 1; /* resume guest */
-+}
-+
- static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
+diff --git a/drivers/video/backlight/sky81452-backlight.c b/drivers/video/backlight/sky81452-backlight.c
+index eb18c6eb0ff0..3c5d8125080c 100644
+--- a/drivers/video/backlight/sky81452-backlight.c
++++ b/drivers/video/backlight/sky81452-backlight.c
+@@ -182,7 +182,7 @@ static const struct attribute_group sky81452_bl_attr_group = {
+ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
+ 							struct device *dev)
  {
- 	struct vmcb_control_area *control = &svm->vmcb->control;
-@@ -4067,6 +4146,9 @@ int sev_handle_vmgexit(struct kvm_vcpu *vcpu)
- 		snp_handle_guest_req(svm, control->exit_info_1, control->exit_info_2);
- 		ret = 1;
- 		break;
-+	case SVM_VMGEXIT_EXT_GUEST_REQUEST:
-+		ret = snp_begin_ext_guest_req(vcpu);
-+		break;
- 	case SVM_VMGEXIT_UNSUPPORTED_EVENT:
- 		vcpu_unimpl(vcpu,
- 			    "vmgexit: unsupported event - exit_info_1=%#llx, exit_info_2=%#llx\n",
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 8a8ee475ad86..28140bc8af27 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -303,6 +303,9 @@ struct vcpu_svm {
+-	struct device_node *np = of_node_get(dev->of_node);
++	struct device_node *np __free(device_node) = of_node_get(dev->of_node);
+ 	struct sky81452_bl_platform_data *pdata;
+ 	int num_entry;
+ 	unsigned int sources[6];
+@@ -194,10 +194,8 @@ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
+ 	}
  
- 	/* Guest GIF value, used when vGIF is not enabled */
- 	bool guest_gif;
-+
-+	/* Transaction ID associated with SNP config updates */
-+	u64 snp_transaction_id;
- };
+ 	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+-	if (!pdata) {
+-		of_node_put(np);
++	if (!pdata)
+ 		return ERR_PTR(-ENOMEM);
+-	}
  
- struct svm_cpu_data {
-diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
-index b75f2e7d4012..f1f7486a3dcf 100644
---- a/arch/x86/virt/svm/sev.c
-+++ b/arch/x86/virt/svm/sev.c
-@@ -72,6 +72,7 @@ static unsigned long snp_nr_leaked_pages;
+ 	of_property_read_string(np, "name", &pdata->name);
+ 	pdata->ignore_pwm = of_property_read_bool(np, "skyworks,ignore-pwm");
+@@ -217,7 +215,6 @@ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
+ 					num_entry);
+ 		if (ret < 0) {
+ 			dev_err(dev, "led-sources node is invalid.\n");
+-			of_node_put(np);
+ 			return ERR_PTR(-EINVAL);
+ 		}
  
- /* For synchronizing TCB/certificate updates with extended guest requests */
- DEFINE_MUTEX(snp_pause_attestation_lock);
-+EXPORT_SYMBOL_GPL(snp_pause_attestation_lock);
- static u64 snp_transaction_id;
- static bool snp_attestation_paused;
+@@ -237,7 +234,6 @@ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
+ 	if (ret < 0)
+ 		pdata->boost_current_limit = 2750;
  
-@@ -611,3 +612,39 @@ void snp_resume_attestation(u64 *transaction_id)
- 	mutex_unlock(&snp_pause_attestation_lock);
+-	of_node_put(np);
+ 	return pdata;
  }
- EXPORT_SYMBOL_GPL(snp_resume_attestation);
-+
-+u64 snp_transaction_get_id(void)
-+{
-+	u64 id;
-+
-+	mutex_lock(&snp_pause_attestation_lock);
-+	id = snp_transaction_id;
-+	mutex_unlock(&snp_pause_attestation_lock);
-+
-+	return id;
-+}
-+EXPORT_SYMBOL_GPL(snp_transaction_get_id);
-+
-+/* Must be called with snp_pause_attestion_lock held */
-+bool __snp_transaction_is_stale(u64 transaction_id)
-+{
-+	lockdep_assert_held(&snp_pause_attestation_lock);
-+
-+	return (snp_attestation_paused ||
-+		transaction_id != snp_transaction_id);
-+}
-+EXPORT_SYMBOL_GPL(__snp_transaction_is_stale);
-+
-+bool snp_transaction_is_stale(u64 transaction_id)
-+{
-+	bool stale;
-+
-+	mutex_lock(&snp_pause_attestation_lock);
-+
-+	stale = __snp_transaction_is_stale(transaction_id);
-+
-+	mutex_unlock(&snp_pause_attestation_lock);
-+
-+	return stale;
-+}
-+EXPORT_SYMBOL_GPL(snp_transaction_is_stale);
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index e33c48bfbd67..585de3a2591e 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -138,6 +138,7 @@ struct kvm_xen_exit {
- struct kvm_user_vmgexit {
- #define KVM_USER_VMGEXIT_PSC_MSR	1
- #define KVM_USER_VMGEXIT_PSC		2
-+#define KVM_USER_VMGEXIT_EXT_GUEST_REQ	3
- 	__u32 type; /* KVM_USER_VMGEXIT_* type */
- 	union {
- 		struct {
-@@ -151,6 +152,11 @@ struct kvm_user_vmgexit {
- 			__u64 shared_gpa;
- 			__u64 ret;
- 		} psc;
-+		struct {
-+			__u64 data_gpa;
-+			__u64 data_npages;
-+			__u32 ret;
-+		} ext_guest_req;
- 	};
- };
- 
+ #else
 -- 
-2.25.1
+2.44.0
 
 
