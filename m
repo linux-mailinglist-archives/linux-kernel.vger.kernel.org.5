@@ -1,84 +1,90 @@
-Return-Path: <linux-kernel+bounces-149929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 643008A97FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:58:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ECF28A9800
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:58:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAF01B223AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:58:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D30B228264A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E55315E1F6;
-	Thu, 18 Apr 2024 10:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C9015E5AB;
+	Thu, 18 Apr 2024 10:58:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="je29j5SS"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MfYr9CY7"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29D115D5C1;
-	Thu, 18 Apr 2024 10:58:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD5FA15E1FC
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 10:58:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713437892; cv=none; b=CU0LPkkaYBeG/o8L4ySUm8ol+l8dptXxvqnyOJVPcVfPHl/3prSm54V1Y+cQfMyVpeOXLhhHXoeHIxXlmQTNpDSMXyOCF1lwbs/ApEUm534e2qv+8+vNazWPTBy7/7/rt5KQoM9zB7KKBpMx3E5/ZMy1aQJx3usy9vhNSE9kH5A=
+	t=1713437895; cv=none; b=cPeMegZ9MkMlvV9aN0oQwaNF1Fp8rTzRFm5ekRN8Nd4jGdMKPx2FRm+cN0i1Gq3raVeJ12vI4HNg92g7Lc5ar2KAIHwwArnppwOKPombXvYJ42NEe/Ut56ZClvEfuRT8Cut8EQTghUv8nVNZp0W4Jnzfzkhk113IuzGVQGkwMDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713437892; c=relaxed/simple;
-	bh=c+HtUfU8cE/PCyrZjd9uRjkFQwV2SJ12Ui0Ms0/s8yo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hYGDQszcifkp8N2ulM99Z34KmdNqE8GCu/Thz41RVYm93Go8g7bIUqo2webYGl9efpx7pF8/M9oAOBg5s+XfbIS0jE4mcIpGBSGozbkv8fM6FWdKaUuNDY94LBvXeYK1m5MJAmIP8fetB1olkXbUzVRSU0iyfxeAjawQ6JzqW8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=je29j5SS; arc=none smtp.client-ip=209.85.208.172
+	s=arc-20240116; t=1713437895; c=relaxed/simple;
+	bh=BMKeamrUs5QYDmAt++7NWOeIYtOf6sOdQoLVn34m6EI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PuhKMBjVqX+HDXqn6mbwdJFMQo+Uv8rO8aEuj2UHKIgJM9QJXtiTcq76/a4lxYzJgIuiVui49XtCJS4diab8MmZLQMo11j5CspgVhPHWVmCthRkxmaulTCyTKenVsKEShqgc3m3mdEk//2Y0d2XIS7JhlYy4t/ruegLJIyznSA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MfYr9CY7; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2db2f6cb312so13741621fa.2;
-        Thu, 18 Apr 2024 03:58:10 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ecff9df447so725251b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 03:58:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713437889; x=1714042689; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713437893; x=1714042693; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rrxIXj7RnRz6Inm0MPVjaqJdEXgL4gVk17zWxjNGgWs=;
-        b=je29j5SSHXNsGYz215OVff9d2er5Ylt8DF9tdyXtUKGjcsTCyGKkyhsH5hLRXuQAHH
-         A0CkG9HCp3e/y/lu6cpO30UCDwaYHDutEd+nJgnK73MeNeu29jrAmEO4HClqGLc5pHRq
-         wo7NxvGAvMqt7FPe+Oyk3czKw92jzSMZv5FhWqPVobL/pQOFrxZxU+1fpkM/+Les8omW
-         Cm/iTUjbo7uD8qTV7GB9RM65E3+M8eC1UKS88SIqackM/JNpQYazNBGGu8gkEzM3EXWZ
-         DBG4yPndTbUKj3X923z+ueYgI9vaHltwHHnpKNCgr3nrOs/326OS4wDimn2eFURTNR/0
-         m9Pg==
+        bh=lDh/BDmc4GxVIIPX4vpyqLS6cxtfqtFde9O8+cyucD8=;
+        b=MfYr9CY77z6cvvE36M8vntvitHSMKL6CWhmdCQOJjQDcaKAK057qGI7k84sfe4Bqih
+         3FnVYjrq4GK/6yS2oJynLbwTDpyH3vMflnbuNYYeryXNy9L0r2iqC3yRWB7yDzbnP19K
+         Wy40J5P7OjL5EWZERy1JtouuH54qIslt0qWPg+5K6NcO9G6qLr3989h1hxy8qp9AStfe
+         11VxKmZbe9yjKSMQAOPQ1frm0w+1csYUj81b4FXZPIPuRZ4bavzMB04H74Hx9GclxkI4
+         tyW+PE8r+Vdgvaf1Okfny4imRubgS3hMSeZE5GGzpCP0jA+fLSOP7RqZhg6mCMEWfR6l
+         Iu9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713437889; x=1714042689;
+        d=1e100.net; s=20230601; t=1713437893; x=1714042693;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rrxIXj7RnRz6Inm0MPVjaqJdEXgL4gVk17zWxjNGgWs=;
-        b=XMNlji8ByRtw732W/a/YsDVNKYEK8Db5xDvd8PPbvtXmjlZscSA24S1c4ZMjdWDtHJ
-         cA4Q+MpY/K/R0YHZ1/i2rIP9cNeRNGlKsTziMdwruyK1ONw+c30Au33LMuFTTytLBGMy
-         KZ0uXgnVMduHEhNcjq8N2pcVPviyRfS8oPQhnssh6gjas/7+E6BNB2oAwj569aqDaBTJ
-         Yw1vUFdBthr5Uu8P8RZCpfVqAnAvg1AZXHZkByA7RckHMWvvB6iOOrK6zL2vB3exy/nZ
-         dmW+FF1qkl/HV7c7HKFwIdgI2wIdZCuM+8AMI07uAoSHMgTbUtGkdOwbJmNHIJtMz45n
-         WUKA==
-X-Forwarded-Encrypted: i=1; AJvYcCWb9Ec40foDTdKRNNPGQh+L2WGHr0Kpej7v30iDaqah9TWnd7IEofnT1E/jxtDDcKx2LWhUTSlyfm/ZoJyy4fJs56Fx/ABdtl2gaYAw+qUbeHgxYAYZ44EkRjCuFuwL2jniLHZZyfXXhw==
-X-Gm-Message-State: AOJu0YxSWbdLR3Fp8qPdYSoxSC8p11/klgyGpvYkOdIWKn28/b9S9nCD
-	um+RB05XWZgipbmaEY9xEL2hOrHA9NkntevqeWdePvpqvPMlIQUQW5s1lF1/
-X-Google-Smtp-Source: AGHT+IEnaxJjPFvGEVHV2AJPn5rK9q/wGwFArQkhNwfFo41T53iJo9bm5Ud2gkymL1QDpEaN0drT2g==
-X-Received: by 2002:a05:6512:3f0b:b0:513:ca40:fafc with SMTP id y11-20020a0565123f0b00b00513ca40fafcmr1950544lfa.11.1713437868011;
-        Thu, 18 Apr 2024 03:57:48 -0700 (PDT)
-Received: from andrejs-nb.int.toradex.com (77-59-154-235.dclient.hispeed.ch. [77.59.154.235])
-        by smtp.gmail.com with ESMTPSA id hx11-20020a170906846b00b00a46d2e9fd73sm724794ejc.222.2024.04.18.03.57.46
+        bh=lDh/BDmc4GxVIIPX4vpyqLS6cxtfqtFde9O8+cyucD8=;
+        b=Vl/6d3a/2iR1C9tHi37w7xPS7Myzg13p4UCr4sbs1IEsH4RMg3yK3KzDOcP/bXTLP9
+         xV3c9xzGzepBh+Zc11OvlIENUFdamvkiDfkCaubWaliChFX8clKH5hqkB5LVUw06Sq8D
+         U45NDluUwHGLVUUj/Inm2muyoRj6lRr4WedOYYaE6p6E6t1BHWlS/INabMxL9ivI+oRS
+         je/uXqQO1A9UeWkmaWkRNDup6nx3a7o3wtBvtrY3JbUTjtMchAPY95y+MExsxXCfy2Qc
+         WxoZR03W3dU/bWanvgwwnqhjpR1m8PxANoMedpaH9o+CppPLxII4flyQ6R1xu9ALs3K2
+         LUBA==
+X-Forwarded-Encrypted: i=1; AJvYcCWVLGZoSYOQfHox1Y7wocbTt3LY2N5+6W/rMN+MynTkgLA2f2qLU/RzBqXFMpwfwQ440APgeBPMpieNAWfAxdM8ZHwd1CYEZHUUGhSE
+X-Gm-Message-State: AOJu0Yw3g2lQWCLcdGYZd3Fq7JAbJvZGyNrhFy6L0caLZMG9M0kdXMbi
+	p7AlQ8ICXmzctOMkx4Zg54mLopbKof/WjZKaUlZIQ6adU0xDkgaM
+X-Google-Smtp-Source: AGHT+IFMtKbWnXmmZkOC1fnGlD0vshJ2wQkVFHJuz/Uhj+dQ7fHI58t2TX/J4UwzBWJylBQj0rjcVg==
+X-Received: by 2002:a05:6a00:1906:b0:6ea:b9ef:f482 with SMTP id y6-20020a056a00190600b006eab9eff482mr2986258pfi.24.1713437892925;
+        Thu, 18 Apr 2024 03:58:12 -0700 (PDT)
+Received: from LancedeMBP.lan ([112.10.225.217])
+        by smtp.gmail.com with ESMTPSA id gd26-20020a056a00831a00b006ea923678a6sm1200487pfb.137.2024.04.18.03.58.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 03:57:47 -0700 (PDT)
-From: Andrejs Cainikovs <andrejs.cainikovs@gmail.com>
-To: Nishanth Menon <nm@ti.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1] arm64: dts: k3-am625-verdin: enable nau8822 pll
-Date: Thu, 18 Apr 2024 12:57:30 +0200
-Message-Id: <20240418105730.120913-1-andrejs.cainikovs@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 18 Apr 2024 03:58:12 -0700 (PDT)
+From: Lance Yang <ioworker0@gmail.com>
+To: akpm@linux-foundation.org
+Cc: ryan.roberts@arm.com,
+	david@redhat.com,
+	21cnbao@gmail.com,
+	mhocko@suse.com,
+	fengwei.yin@intel.com,
+	zokeefe@google.com,
+	shy828301@gmail.com,
+	xiehuan09@gmail.com,
+	wangkefeng.wang@huawei.com,
+	songmuchun@bytedance.com,
+	peterx@redhat.com,
+	minchan@kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Lance Yang <ioworker0@gmail.com>
+Subject: [PATCH v9 0/4] mm/madvise: enhance lazyfreeing with mTHP in madvise_free
+Date: Thu, 18 Apr 2024 18:57:46 +0800
+Message-Id: <20240418105750.98866-1-ioworker0@gmail.com>
+X-Mailer: git-send-email 2.33.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,78 +93,136 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
+Hi All,
 
-In current configuration, nau8822 codec on development carrier board
-provides distorted audio output. This happens due to reference clock
-is fixed to 25MHz and no PLL is enabled. Following is the calculation
-of deviation error for different frequencies:
+This patchset adds support for lazyfreeing multi-size THP (mTHP) without
+needing to first split the large folio via split_folio(). However, we
+still need to split a large folio that is not fully mapped within the
+target range.
 
-44100Hz:
+If a large folio is locked or shared, or if we fail to split it, we just
+leave it in place and advance to the next PTE in the range. But note that
+the behavior is changed; previously, any failure of this sort would cause
+the entire operation to give up. As large folios become more common,
+sticking to the old way could result in wasted opportunities.
 
-fs = 256 (fixed)
-prescaler = 2
-target frequency = 44100 * 256 * 2 = 22579200
-deviation = 22579200 vs 25000000 = 9.6832%
+Performance Testing
+===================
 
-48000Hz:
+On an Intel I5 CPU, lazyfreeing a 1GiB VMA backed by PTE-mapped folios of
+the same size results in the following runtimes for madvise(MADV_FREE)
+in seconds (shorter is better):
 
-fs = 256 (fixed)
-prescaler = 2
-target frequency = 48000 * 256 * 2 = 24576000
-deviation = 24576000 vs 25000000 = 1.696%
+Folio Size |   Old    |   New    | Change
+------------------------------------------
+      4KiB | 0.590251 | 0.590259 |    0%
+     16KiB | 2.990447 | 0.185655 |  -94%
+     32KiB | 2.547831 | 0.104870 |  -95%
+     64KiB | 2.457796 | 0.052812 |  -97%
+    128KiB | 2.281034 | 0.032777 |  -99%
+    256KiB | 2.230387 | 0.017496 |  -99%
+    512KiB | 2.189106 | 0.010781 |  -99%
+   1024KiB | 2.183949 | 0.007753 |  -99%
+   2048KiB | 0.002799 | 0.002804 |    0%
 
-Enabling nau822 PLL via providing mclk-fs property to simple-audio-card
-configures clocks properly, but also adjusts audio reference clock
-(mclk), which in case of TI AM62 should be avoided, as it only
-supports 25MHz output [1][2].
-
-This change enables PLL on nau8822 by providing mclk-fs, and moves
-away audio reference clock from DAI configuration, which prevents
-simple-audio-card to adjust it before every playback [3].
-
-[1]: https://e2e.ti.com/support/processors-group/processors/f/processors-forum/1175479/processor-sdk-am62x-output-audio_ext_refclk0-as-mclk-for-codec-and-mcbsp/4444986#4444986
-[2]: https://e2e.ti.com/support/processors-group/processors/f/processors-forum/1188051/am625-audio_ext_refclk1-clock-output---dts-support/4476322#4476322
-[3]: sound/soc/generic/simple-card-utils.c#L441
-
-Signed-off-by: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
 ---
-This patch requires https://lore.kernel.org/all/20240409121719.337709-1-andrejs.cainikovs@gmail.com/ to be applied,
-if not the audio will just stop working because no code will ever enable the required clock to the codec.
----
- arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+This patchset applies against mm-unstable (6723e3b1a668). 
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
-index 74eec1a1abca..5c1284b802ad 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
-@@ -14,6 +14,7 @@ sound {
- 		simple-audio-card,bitclock-master = <&codec_dai>;
- 		simple-audio-card,format = "i2s";
- 		simple-audio-card,frame-master = <&codec_dai>;
-+		simple-audio-card,mclk-fs = <256>;
- 		simple-audio-card,name = "verdin-nau8822";
- 		simple-audio-card,routing =
- 			"Headphones", "LHP",
-@@ -34,7 +35,6 @@ sound {
- 			"Line", "Line In";
- 
- 		codec_dai: simple-audio-card,codec {
--			clocks = <&audio_refclk1>;
- 			sound-dai = <&nau8822_1a>;
- 		};
- 
-@@ -107,6 +107,8 @@ nau8822_1a: audio-codec@1a {
- 		reg = <0x1a>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pinctrl_i2s1_mclk>;
-+		clock-names = "mclk";
-+		clocks = <&audio_refclk1>;
- 		#sound-dai-cells = <0>;
- 	};
- 
+The performance numbers are from v2. I did a quick benchmark run of v9 and
+nothing significantly changed.
+
+Changes since v8 [8]
+====================
+ - mm/madvise: optimize lazyfreeing with mTHP in madvise_free
+    - Leave the split folio code as is in the caller (per David Hildenbrand)
+    - Use cydp_flags here that will make this easier to read (per
+      David Hildenbrand)
+ - Pick up RB's, Thanks to Ryan!
+
+Changes since v7 [7]
+====================
+ - mm/madvise: optimize lazyfreeing with mTHP in madvise_free
+    - Remove the duplicated check for the mapcount (per Ryan Roberts,
+      David Hildenbrand)
+ - Pick up AB's and RB's. Thanks to Ryan and David!
+
+Changes since v6 [6]
+====================
+ - Fix a bug with incorrect bitwise operations (Thanks to Ryan Roberts)
+ - Use a cmpxchg loop to only clear one of the flags to prevent race with
+   the HW (per Ryan Roberts)
+
+Changes since v5 [5]
+====================
+ - Convert mkold_ptes() to clear_young_dirty_ptes() (per Ryan Roberts)
+ - Use the __bitwise flags as the input for clear_young_dirty_ptes()
+   (per David Hildenbrand)
+ - Follow the pattern already established by the original code
+   (per Ryan Roberts)
+
+Changes since v4 [4]
+====================
+ - The first patch implements the MADV_FREE change and introduces
+   mkold_clean_ptes() with a generic implementation. The second patch
+   specializes mkold_clean_ptes() for arm64, providing a performance boost
+   specific to arm64 (per Ryan Roberts)
+ - Drop the full parameter and call ptep_get_and_clear() in mkold_clean_ptes()
+   (per Ryan Roberts)
+ - Keep the previous behavior that avoids locking the folio if it wasn't in the
+   swapcache or if it wasn't dirty (per Ryan Roberts)
+
+Changes since v3 [3]
+====================
+ - Rename refresh_full_ptes -> mkold_clean_ptes (per Ryan Roberts)
+ - Override mkold_clean_ptes() for arm64 to make it faster (per Ryan Roberts)
+ - Update the changelog
+
+Changes since v2 [2]
+====================
+ - Only skip all the PTEs for nr_pages when the number of batched PTEs matches
+   nr_pages (per Barry Song)
+ - Change folio_pte_batch() to consume an optional *any_dirty and *any_young
+   function (per David Hildenbrand)
+ - Move the ptep_get_and_clear_full() loop into refresh_full_ptes() (per
+   David Hildenbrand)
+ - Follow a similar pattern for madvise_free_pte_range() (per Ryan Roberts)
+
+Changes since v1 [1]
+====================
+ - Update the performance numbers
+ - Update the changelog (per Ryan Roberts)
+ - Check the COW folio (per Yin Fengwei)
+ - Check if we are mapping all subpages (per Barry Song, David Hildenbrand,
+   Ryan Roberts)
+
+[1] https://lore.kernel.org/linux-mm/20240225123215.86503-1-ioworker0@gmail.com
+[2] https://lore.kernel.org/linux-mm/20240307061425.21013-1-ioworker0@gmail.com
+[3] https://lore.kernel.org/linux-mm/20240316102952.39233-1-ioworker0@gmail.com
+[4] https://lore.kernel.org/linux-mm/20240402124029.47846-1-ioworker0@gmail.com
+[5] https://lore.kernel.org/linux-mm/20240408042437.10951-1-ioworker0@gmail.com
+[6] https://lore.kernel.org/linux-mm/20240413002219.71246-1-ioworker0@gmail.com
+[7] https://lore.kernel.org/linux-mm/20240416033457.32154-1-ioworker0@gmail.com 
+[8] https://lore.kernel.org/linux-mm/20240417141436.77963-1-ioworker0@gmail.com
+
+Thanks,
+Lance
+
+Lance Yang (4):
+ mm/madvise: introduce clear_young_dirty_ptes() batch helper
+ mm/arm64: override clear_young_dirty_ptes() batch helper
+ mm/memory: add any_dirty optional pointer to folio_pte_batch()
+ mm/madvise: optimize lazyfreeing with mTHP in madvise_free
+
+ arch/arm64/include/asm/pgtable.h |  55 +++++++++++++++++++++++++++++++++++++++
+ arch/arm64/mm/contpte.c          |  29 +++++++++++++++++++++++
+ include/linux/mm_types.h         |   9 ++++++++
+ include/linux/pgtable.h          |  74 +++++++++++++++++++++------------------
+ mm/internal.h                    |  12 ++++++++--
+ mm/madvise.c                     | 107 +++++++++++++++++++--------------------
+ mm/memory.c                      |   4 ++--
+ 7 files changed, 209 insertions(+), 81 deletions(-)
+
 -- 
-2.34.1
+2.33.1
 
 
