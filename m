@@ -1,100 +1,196 @@
-Return-Path: <linux-kernel+bounces-149705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28ED08A94CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:18:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 829058A94C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:17:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9F91282E0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:17:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBD181C21BBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:17:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6A2E839EB;
-	Thu, 18 Apr 2024 08:17:43 +0000 (UTC)
-Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.124.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0432A145332;
+	Thu, 18 Apr 2024 08:16:43 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6282412B175;
-	Thu, 18 Apr 2024 08:17:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.124.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA2513A86D;
+	Thu, 18 Apr 2024 08:16:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713428263; cv=none; b=rXXcL6NWu0mq8n+sJterlo+7heeUmWqOOad2+rHL3PvDxKO73GqtUiM4S3P4P/ONJJRz32IiwEwPsU4jup2FNg+/pNNA3hqLdMd3Uxy2zzTu87U0+XUH0meAfdcjzXDd+1Xqh8Jc+YHbNK4Il0a8WwpTiHhEodpZZTtuc5bEQF8=
+	t=1713428199; cv=none; b=KCgngxxqePKnhpLLT3/VgVEhqEgSfiDuErulacpcu+dFj9wDBJ5YvtvPCHitjZu4AM0Y5TfvZEh1v/C++oN520EzQVBzAYBRef8jFHqzpSQIYr3js3Z7Ti53J4Do8uy1XQkaPB1rm2+iYpFBvnmyDMcyEAXnd0CMK6ZNekEtC9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713428263; c=relaxed/simple;
-	bh=pf85lD8r/4opaS2PQcuNhKY4RQkk6PZivUWjlc/oRvo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sQ1U0EKKDWk3LEfVtXOTaDnRgtRO5jcSrB9WxZtkqwy5+LW5uX9v9iVwvweS/tzzYkUeW5r3ixbfIgcEnpNVJqRfUiyMjsP5VJyeO8UKNgHxjSs9X7kpxd0lLJWpxfNcBNiWfMirWRXRpivetmwCmNpnBGz+FXmkZ2xS/Yq9R34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=114.132.124.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-X-QQ-mid: bizesmtpsz10t1713428166tsdgl4
-X-QQ-Originating-IP: N+tKmcA/ERgx2BiI8yj+P142qjRcxVW8oGXd0CCgU6A=
-Received: from [10.20.53.89] ( [113.57.152.160])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Thu, 18 Apr 2024 16:16:04 +0800 (CST)
-X-QQ-SSF: 01400000000000D0B000000A0000000
-X-QQ-FEAT: E6xLhkkW4u3Va972c78++tikAhBOiEroa65wcG2ieWFgzg7R8mOb/50dTOO3O
-	R119m9bBzMQTN8ptezxmdAvQFd6Xm6ebn8zTi6P6R9GJoFYFsSv9j63YPT9XLztMhuWOD+X
-	TGe4pmIO7oweYK+bBhpkxRALZzOrPEzhjEAXlmxATKddrZkz6l6aYF01mrNeElSZOg+Vpfm
-	cQhmILatzf0wPQRpGtvzBywRPHtQMn1fjFf3hLjdfZuRSiwjdrHraX2kwvfwY4qiBYB+30p
-	SX0jV1mkRJyRyOWAUkpqdSignV570yAouwoMHu0DNb4UVvthzZK54AcMX+4LBrnfsBX6Qrj
-	vZiqvdgIvly4P2rl3i+4+EI+ithikso+CT/EspCoyY78YfL7FBt7p2xEwW+8qpetEgXW4Yg
-	9jYlwk6SuZc=
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 3488498768241902848
-Message-ID: <AA3FCBB9232F6C97+0e28ccd7-11cc-4047-866c-92069ddbb550@uniontech.com>
-Date: Thu, 18 Apr 2024 16:16:03 +0800
+	s=arc-20240116; t=1713428199; c=relaxed/simple;
+	bh=+sCIQ6w4afRiSlqasIZfv0b05YQ2xgJ9KieX+ucnx74=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XLtsxpPVTJjMz06wLKrcUebsOP/1hh7v4961F2+XSCN1clSpfSMg/UAhDwJkWkatABYJjOKmLSmFYqXMmCbaAT52b9Tgi4KwxCZVcApdj0k+/k+rgTuYtkT48jwAb01AZKL3PZdrW38XSsbcknG1YvDejmWeJdsAjMvCHqaeFxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VKr8L2MwSz6D9BV;
+	Thu, 18 Apr 2024 16:11:30 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 256E5140519;
+	Thu, 18 Apr 2024 16:16:29 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 18 Apr
+ 2024 09:16:28 +0100
+Date: Thu, 18 Apr 2024 09:16:27 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra
+	<peterz@infradead.org>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki"
+	<rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, "James Morse"
+	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
+ Brucker <jean-philippe@linaro.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+	<linuxarm@huawei.com>
+CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "Dave
+ Hansen" <dave.hansen@linux.intel.com>, <justin.he@arm.com>,
+	<jianyong.wu@arm.com>
+Subject: Re: [PATCH v6 04/16] ACPI: processor: Move checks and availability
+ of acpi_processor earlier
+Message-ID: <20240417174707.00002e86@huawei.com>
+In-Reply-To: <20240417131909.7925-5-Jonathan.Cameron@huawei.com>
+References: <20240417131909.7925-1-Jonathan.Cameron@huawei.com>
+ <20240417131909.7925-5-Jonathan.Cameron@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Input: PS/2 - add support for Lenovo Xiaoxin keyboard
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: rrangel@chromium.org, shaoyang@uniontech.com, helugang@uniontech.com,
- linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
- huangbibo <huangbibo@uniontech.com>, yesh25@mail2.sysu.edu.cn,
- bernhard.kaindl@cloud.com
-References: <593C1A73FB93BACE+20240326131718.20497-1-wangyuli@uniontech.com>
- <ZgXUZtEwHEF8Rs3i@google.com>
-From: WangYuli <wangyuli@uniontech.com>
-In-Reply-To: <ZgXUZtEwHEF8Rs3i@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpsz:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hi,
+On Wed, 17 Apr 2024 14:18:57 +0100
+Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
 
-On 2024/3/29 04:34, Dmitry Torokhov wrote:
-> Could you please tell me more about the keyboard?
+> Make the per_cpu(processors, cpu) entries available earlier so that
+> they are available in arch_register_cpu() as ARM64 will need access
+> to the acpi_handle to distinguish between acpi_processor_add()
+> and earlier registration attempts (which will fail as _STA cannot
+> be checked).
+> 
+> Reorder the remove flow to clear this per_cpu() after
+> arch_unregister_cpu() has completed, allowing it to be used in
+> there as well.
+> 
+> Note that on x86 for the CPU hotplug case, the pr->id prior to
+> acpi_map_cpu() may be invalid. Thus the per_cpu() structures
+> must be initialized after that call or after checking the ID
+> is valid (not hotplug path).
+> 
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> ---
+> v6: As per discussion in v5 thread, don't use the cpu->dev and
+>     make this data available earlier by moving the assignment checks
+>     int acpi_processor_get_info().
+> ---
+>  drivers/acpi/acpi_processor.c | 79 +++++++++++++++++++++--------------
+>  1 file changed, 47 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index ba0a6f0ac841..2c164451ab53 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -184,7 +184,35 @@ static void __init acpi_pcc_cpufreq_init(void) {}
+>  
+>  /* Initialization */
+>  #ifdef CONFIG_ACPI_HOTPLUG_CPU
+Note I messed up a rebase here.  This ifdef should come after the new function
+(see later)
 
-Link: 
-https://lore.kernel.org/lkml/20230514083336.3811-1-yesh25@mail2.sysu.edu.cn/T/
+Will fix for v7.
+> -static int acpi_processor_hotadd_init(struct acpi_processor *pr)
+> +static DEFINE_PER_CPU(void *, processor_device_array);
+> +
+> +static void acpi_processor_set_per_cpu(struct acpi_processor *pr,
+> +				       struct acpi_device *device)
+> +{
+> +	BUG_ON(pr->id >= nr_cpu_ids);
+> +	/*
+> +	 * Buggy BIOS check.
+> +	 * ACPI id of processors can be reported wrongly by the BIOS.
+> +	 * Don't trust it blindly
+> +	 */
+> +	if (per_cpu(processor_device_array, pr->id) != NULL &&
+> +	    per_cpu(processor_device_array, pr->id) != device) {
+> +		dev_warn(&device->dev,
+> +			 "BIOS reported wrong ACPI id %d for the processor\n",
+> +			 pr->id);
+> +		/* Give up, but do not abort the namespace scan. */
+> +		return;
+> +	}
+> +	/*
+> +	 * processor_device_array is not cleared on errors to allow buggy BIOS
+> +	 * checks.
+> +	 */
+> +	per_cpu(processor_device_array, pr->id) = device;
+> +	per_cpu(processors, pr->id) = pr;
+> +}
+> +
 
-Link: https://gist.github.com/yescallop/5a97d010f226172fafab0933ce8ea8af
+The ifdef should be here as...
 
-Those links above mentioned the same situation.
+> +static int acpi_processor_hotadd_init(struct acpi_processor *pr,
+> +				      struct acpi_device *device)
+>  {
+>  	int ret;
+>  
+> @@ -198,6 +226,8 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
+>  	if (ret)
+>  		goto out;
+>  
+> +	acpi_processor_set_per_cpu(pr, device);
+> +
+>  	ret = arch_register_cpu(pr->id);
+>  	if (ret) {
+>  		acpi_unmap_cpu(pr->id);
+> @@ -217,7 +247,8 @@ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
+>  	return ret;
+>  }
+>  #else
+> -static inline int acpi_processor_hotadd_init(struct acpi_processor *pr)
+> +static inline int acpi_processor_hotadd_init(struct acpi_processor *pr,
+> +					     struct acpi_device *device)
+>  {
+>  	return -ENODEV;
+>  }
+> @@ -232,6 +263,7 @@ static int acpi_processor_get_info(struct acpi_device *device)
+>  	acpi_status status = AE_OK;
+>  	static int cpu0_initialized;
+>  	unsigned long long value;
+> +	int ret;
+>  
+>  	acpi_processor_errata();
+>  
+> @@ -316,10 +348,12 @@ static int acpi_processor_get_info(struct acpi_device *device)
+>  	 *  because cpuid <-> apicid mapping is persistent now.
+>  	 */
+>  	if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
+> -		int ret = acpi_processor_hotadd_init(pr);
+> +		ret = acpi_processor_hotadd_init(pr, device);
+>  
+>  		if (ret)
+> -			return ret;
+> +			goto err;
+> +	} else {
+> +		acpi_processor_set_per_cpu(pr, device);
 
-Lenovo has a batch of laptops shipped in 2021 with the same problem. And
+This is not covered by CONFIG_ACPI_HOTPLUG_CPU
 
-the combined sales of these products are considerable.
+>  	}
 
-> What ID does it use?
-0x83.
-> Majority of keyboards are using 0xab83, does your device forget to send
-> 0xab by chance?
-Unfortunalety, I'm afraid not.
->
-> Thanks.
->
-Thanks.
-
--- 
-
-WangYuli
 
 
