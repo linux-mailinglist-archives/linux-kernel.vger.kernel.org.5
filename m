@@ -1,207 +1,136 @@
-Return-Path: <linux-kernel+bounces-149988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE2398A98D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:40:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC1718A98D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:40:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3B0F1C21F14
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:40:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C7C01F219DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:40:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 509D515F41B;
-	Thu, 18 Apr 2024 11:37:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52EEF15ECCC;
+	Thu, 18 Apr 2024 11:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hzpIyNb0"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="NdqBehYG"
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08DE15F415;
-	Thu, 18 Apr 2024 11:37:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F067815ECE9
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713440253; cv=none; b=qJFLFuGHbcmSD5Rlj0kAjAm/88kKxnHZ0/n/MNUoxnyCTTn9ZWkZAL8dxTZT0j+lP7d0bvn2htFQOTMq5J1Ba1RVuxTkXQ+a5FMaE/dXl9EpzCJM1Xsl+Ii4YPxI9hyrgJWlsfOrWDKxWpKjN+8byGGnDh0BdUCB7L03J6mKhBc=
+	t=1713440293; cv=none; b=H1rJwGWOsY0lUiPrrWfA0U17vFbTeLehAHpBZSKIiOA9se4FDZfI56QM5CPVx02wss4gFvt8GsGmA3a45T0+wYQa7xQeL76aNM5aUXwdoWyEXA84+78R1bhDz0cVori1IAXv1gRKv+m6X+AxE66a90DdFT0NNoGw8q077SlN9ew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713440253; c=relaxed/simple;
-	bh=Nq8Yi29thlbiHkw+aSqvbgnfPnMwcMK/TIXfF/XHa/w=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=RHMIWBb8h6Y6PgF8KJJYQDTuI+cPfK6IEsOBhrtWiwZyK5qjBV8T/RM0UeOCHtF5MtsLmtjfljAkksKhpva/ThQhjqpd0xpvJhVahDPNSXkx95vVooaDCNsb9MjUg4+2t8/Ar0flm0eq8z9+9+Uto+4EmdIK951gT1lLEynAd+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hzpIyNb0; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713440251; x=1744976251;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Nq8Yi29thlbiHkw+aSqvbgnfPnMwcMK/TIXfF/XHa/w=;
-  b=hzpIyNb0c8FbJE+4H8P83nCa/uLGfwGkB4w+P5Y60OstHqiBi5OSvUdQ
-   WD8GBm5bEGFIqmV8GxSWLIVic5EvdLQJ9BihVyiap5cTvKiOiK6zjDuqo
-   vZ7Oq6D5+PjGpeOhJjisllP5s+tXhwWqjp/3dKWEUELxERmQ1AkISFfOc
-   F05Qxb+YzJ8agY3nSGjnIm1mB3d7vmJs3xOSjv9jgX0gCabUVDu0i4r6m
-   W03krMVJNa6AOnLvF9GubuVAbEzBvkpfUmyGTjwaBvlMKPcIEzsbqZ0yl
-   zKLB/C4Tu670JzCrNv70WFsPFX3ksXNDXBYaIce7FVQNk3IHcfj4Y9Gg/
-   Q==;
-X-CSE-ConnectionGUID: vvauLY2pREeXZMnfJLA0Iw==
-X-CSE-MsgGUID: nyx8PDnhRT+oqFrcAPiGWg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="19541721"
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="19541721"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:37:31 -0700
-X-CSE-ConnectionGUID: hkIWchC4TPGV/XX9lMpruA==
-X-CSE-MsgGUID: tGJ9DO0EQC2QrHXIXcEShQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="46246116"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.36])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:37:28 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 18 Apr 2024 14:37:23 +0300 (EEST)
-To: Parker Newman <parker@finest.io>
-cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    Jiri Slaby <jirislaby@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-    linux-serial <linux-serial@vger.kernel.org>, 
-    Parker Newman <pnewman@connecttech.com>
-Subject: Re: [PATCH v4 4/7] serial: exar: moved generic_rs485 further up in
- 8250_exar.c
-In-Reply-To: <a7bf2a42de759908c058246ec15f60bde9a5dc65.1713382717.git.pnewman@connecttech.com>
-Message-ID: <88d1dde8-c32b-a5b2-3eaf-e133ec3c4e33@linux.intel.com>
-References: <cover.1713382717.git.pnewman@connecttech.com> <a7bf2a42de759908c058246ec15f60bde9a5dc65.1713382717.git.pnewman@connecttech.com>
+	s=arc-20240116; t=1713440293; c=relaxed/simple;
+	bh=yPdetuRBjXUV0x/T5+LWombu6Cj3dX6RWAGOI9ScLmc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gnkrHyPRt2Ot496zNz0hQTNCr2FCipb6aHKq7NQPMRPZOXV4NS0bNYdxGnaG46A8Jihr46N+G8iLLYu6OTruhCLGeyGKg6Mjee3XeEUhwkIreDbeD6o6rk8QnKzPoEtPvRNl+4kYXJb5VFewr8ty0KEWtfCVdgL+qWVxV3B5X+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=NdqBehYG; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6153d85053aso6128237b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 04:38:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1713440291; x=1714045091; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yPdetuRBjXUV0x/T5+LWombu6Cj3dX6RWAGOI9ScLmc=;
+        b=NdqBehYGc1RdDeyJCpdGKdih36i2dSIuKfTCKDZxlt2+uH8bYxX88R58bo0UeAFaqZ
+         pxsGjlYcUXzfyAjFFXWLwUaWQxFfrv73KtmndIMg56+FQPB0vp31QVDgTB8PHGySaJDH
+         Ff43+OLgL2I7jm437PG25dKNzYPFCmbYJMT/Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713440291; x=1714045091;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yPdetuRBjXUV0x/T5+LWombu6Cj3dX6RWAGOI9ScLmc=;
+        b=gR0DnySunD1Ktf7vBD1Tzqdh8xe5XaZRaWZFpBNXgNQcP6xqcM8f5VuD5ecdzqmecg
+         X5m/QvQqoaNawylUlQy2ZNXSjsUGOr+wrn+cOvy9PpQ9Rxz2HyD8omsL5RYPWtruSLb8
+         EyUu9D2wAu0KGo5pVqUhxECgbh9Lfus1NNl1Vq+ZN3gMs2clDNpEOyZAUVDZ0MX2pFTA
+         Er5TakSYRjqv5/8CoaGr1oYzMA8OlU35wSRrMDMVI3dr/erZgg/Q65OELrm1rr4u4iJI
+         lY4jh0nXFmHN03jaMXrQmvMawOzrGKhuFznkJyv9vPAerfzUdV/SEtiB9hh7WYBtk/2q
+         aDtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWOVY0zEQECFMmphrCaXOw5xRLZvTeM32m1dr8KEXHjxuofz+Ny6KPCZpxOEmLnxF+5Rl1OEmBZfroc1GaB8A4awZrttuJ0ZsgeiK0E
+X-Gm-Message-State: AOJu0Yw3mv00UPZjBp7T2SkXwFNmXjJvKKngoyozuieHksidadXZR/UT
+	QRcsIGFZxNrJGwmKy9G45tb5pcJ2LItgNS0ptGmFWmX/vmoUvKcjyNXfO00LVE4hmVe6pw5xQr6
+	Mj1S5c9fFEfnQz+q0OKkIa8isL9h/6QFWwHTq
+X-Google-Smtp-Source: AGHT+IHTuymQ0vgyDlw5dewCasXVGfKomv0l6oG6Wss9goffKnGy27+0iGN2IAupwVsZY/T8ZT6sq+P7rk7bBO337k0=
+X-Received: by 2002:a05:690c:700a:b0:61a:b0bc:934c with SMTP id
+ jf10-20020a05690c700a00b0061ab0bc934cmr2704594ywb.3.1713440290952; Thu, 18
+ Apr 2024 04:38:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1651817364-1713440243=:986"
+References: <20240408155605.1398631-1-zack.rusin@broadcom.com>
+ <843fdfa2-348b-410e-8ff1-84ab86cac17d@amd.com> <CABQX2QMtTB9iiQuce36dnk6eO1Xcsm+Xt3vc1Nk93TGD+TtV9w@mail.gmail.com>
+ <5ca415e9-fb3e-4d81-b385-71e8780a1399@amd.com> <CABQX2QMaF6e6o4Ewg6sExfaEZMXRaUrNHNYUCAYG3+44P=7epQ@mail.gmail.com>
+In-Reply-To: <CABQX2QMaF6e6o4Ewg6sExfaEZMXRaUrNHNYUCAYG3+44P=7epQ@mail.gmail.com>
+From: Zack Rusin <zack.rusin@broadcom.com>
+Date: Thu, 18 Apr 2024 07:38:00 -0400
+Message-ID: <CABQX2QNbbM-frtkVwYWZytUAqP0t0gyyd_tZc_s0bDxu+MaFUg@mail.gmail.com>
+Subject: Re: [PATCH] drm/ttm: Print the memory decryption status just once
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	dri-devel@lists.freedesktop.org
+Cc: Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+	Ian Forbes <ian.forbes@broadcom.com>, Martin Krastev <martin.krastev@broadcom.com>, 
+	Maaz Mombasawala <maaz.mombasawala@broadcom.com>, 
+	=?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Ping on this one. If we don't want the "_once" then I can quickly
+prepare a patch that just removes the logging altogether, because
+while useful it's polluting up the kernel logs too much right now so
+getting a fix in for 6.9 for this would be great.
 
---8323328-1651817364-1713440243=:986
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+z
 
-Hi,
-
-In shortlog (Subject),=20
-
-- moved -> move
-- exar: -> 8250_exar:
-
-After those, "in 8250_exar.c" is redundant information and can be removed.
-
-> From: Parker Newman <pnewman@connecttech.com>
->=20
-> Preparatory patch moving generic_rs485_config and
-
-Use () when talking about functions.
-
-After fixing those, feel free to add,
-
-Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
-
---=20
- i.
-
-> generic_rs485_supported higher in the file to allow for CTI setup
-> functions to use them.
->=20
-> Signed-off-by: Parker Newman <pnewman@connecttech.com>
-> ---
-> Changes in v3:
->  - split into separate preparatory patch
->=20
->  drivers/tty/serial/8250/8250_exar.c | 50 ++++++++++++++---------------
->  1 file changed, 25 insertions(+), 25 deletions(-)
->=20
-> diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/825=
-0/8250_exar.c
-> index f14f73d250bb..e68029a59122 100644
-> --- a/drivers/tty/serial/8250/8250_exar.c
-> +++ b/drivers/tty/serial/8250/8250_exar.c
-> @@ -197,6 +197,31 @@ struct exar8250 {
->  =09int=09=09=09line[];
->  };
->=20
-> +static int generic_rs485_config(struct uart_port *port, struct ktermios =
-*termios,
-> +=09=09=09=09struct serial_rs485 *rs485)
-> +{
-> +=09bool is_rs485 =3D !!(rs485->flags & SER_RS485_ENABLED);
-> +=09u8 __iomem *p =3D port->membase;
-> +=09u8 value;
-> +
-> +=09value =3D readb(p + UART_EXAR_FCTR);
-> +=09if (is_rs485)
-> +=09=09value |=3D UART_FCTR_EXAR_485;
-> +=09else
-> +=09=09value &=3D ~UART_FCTR_EXAR_485;
-> +
-> +=09writeb(value, p + UART_EXAR_FCTR);
-> +
-> +=09if (is_rs485)
-> +=09=09writeb(UART_EXAR_RS485_DLY(4), p + UART_MSR);
-> +
-> +=09return 0;
-> +}
-> +
-> +static const struct serial_rs485 generic_rs485_supported =3D {
-> +=09.flags =3D SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND,
-> +};
-> +
->  static void exar_pm(struct uart_port *port, unsigned int state, unsigned=
- int old)
->  {
->  =09/*
-> @@ -459,27 +484,6 @@ static void xr17v35x_unregister_gpio(struct uart_825=
-0_port *port)
->  =09port->port.private_data =3D NULL;
->  }
->=20
-> -static int generic_rs485_config(struct uart_port *port, struct ktermios =
-*termios,
-> -=09=09=09=09struct serial_rs485 *rs485)
-> -{
-> -=09bool is_rs485 =3D !!(rs485->flags & SER_RS485_ENABLED);
-> -=09u8 __iomem *p =3D port->membase;
-> -=09u8 value;
-> -
-> -=09value =3D readb(p + UART_EXAR_FCTR);
-> -=09if (is_rs485)
-> -=09=09value |=3D UART_FCTR_EXAR_485;
-> -=09else
-> -=09=09value &=3D ~UART_FCTR_EXAR_485;
-> -
-> -=09writeb(value, p + UART_EXAR_FCTR);
-> -
-> -=09if (is_rs485)
-> -=09=09writeb(UART_EXAR_RS485_DLY(4), p + UART_MSR);
-> -
-> -=09return 0;
-> -}
-> -
->  static int sealevel_rs485_config(struct uart_port *port, struct ktermios=
- *termios,
->  =09=09=09=09  struct serial_rs485 *rs485)
->  {
-> @@ -518,10 +522,6 @@ static int sealevel_rs485_config(struct uart_port *p=
-ort, struct ktermios *termio
->  =09return 0;
->  }
->=20
-> -static const struct serial_rs485 generic_rs485_supported =3D {
-> -=09.flags =3D SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND,
-> -};
-> -
->  static const struct exar8250_platform exar8250_default_platform =3D {
->  =09.register_gpio =3D xr17v35x_register_gpio,
->  =09.unregister_gpio =3D xr17v35x_unregister_gpio,
-> --
-> 2.43.2
->=20
->=20
---8323328-1651817364-1713440243=:986--
+On Mon, Apr 8, 2024 at 1:46=E2=80=AFPM Zack Rusin <zack.rusin@broadcom.com>=
+ wrote:
+>
+> Sorry, apologies to everyone. By accident I replied off the list.
+> Redoing it now on the list. More below.
+>
+> On Mon, Apr 8, 2024 at 12:10=E2=80=AFPM Christian K=C3=B6nig
+> <christian.koenig@amd.com> wrote:
+> >
+> > Am 08.04.24 um 18:04 schrieb Zack Rusin:
+> > > On Mon, Apr 8, 2024 at 11:59=E2=80=AFAM Christian K=C3=B6nig
+> > > <christian.koenig@amd.com> wrote:
+> > >> Am 08.04.24 um 17:56 schrieb Zack Rusin:
+> > >>> Stop printing the TT memory decryption status info each time tt is =
+created
+> > >>> and instead print it just once.
+> > >>>
+> > >>> Reduces the spam in the system logs when running guests with SEV en=
+abled.
+> > >> Do we then really need this in the first place?
+> > > Thomas asked for it just to have an indication when those paths are
+> > > being used because they could potentially break things pretty bad. I
+> > > think it is useful knowing that those paths are hit (but only once).
+> > > It makes it pretty easy for me to tell whether bug reports with peopl=
+e
+> > > who report black screen can be answered with "the kernel needs to be
+> > > upgraded" ;)
+> >
+> > Sounds reasonable, but my expectation was rather that we would print
+> > something on the device level.
+> >
+> > If that's not feasible for whatever reason than printing it once works
+> > as well of course.
+>
+> TBH, I think it's pretty convenient to have the drm_info in the TT
+> just to make sure that when drivers request use_dma_alloc on SEV
+> systems TT turns decryption on correctly, i.e. it's a nice sanity
+> check when reading the logs. But if you'd prefer it in the driver I
+> can move this logic there as well.
+>
+> z
 
