@@ -1,211 +1,279 @@
-Return-Path: <linux-kernel+bounces-149941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE85D8A9818
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:02:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75BD98A981D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:03:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2AB11C20BD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:02:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 991E11C20CBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:03:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23DB215E5A8;
-	Thu, 18 Apr 2024 11:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744AA15D5C1;
+	Thu, 18 Apr 2024 11:02:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="lpYe4hx/"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="DifVgYHl"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AABC15B129
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:02:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 395FA56464;
+	Thu, 18 Apr 2024 11:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713438137; cv=none; b=Ke/+dIaa2FK8PS//EnYKvc1H9itYF0KoaVeGFv3lGNzoKC6R/A+nvFQeKIdBDCGWMHXL+UKVDHsv1IZKRGaEvAjENyGNR/5gfkTe9lbIuNQ7hvQbXDXQsT0sdhNEv113Nu0QCs/WrlPa9iPCTit2N4CeqRRN9qE19E2mn+S5U9M=
+	t=1713438166; cv=none; b=asKbC3Yd3edw8O0vQgTqhmoH4vhY28AxUj2OYZkmInw9D6BajAKhQY/L4Ons0giCIB6oGpi/vQ2M5cLNVoo4PHc7wJLPlf0DrMDTFgqbG8BCQExSZb7639zKORkn/Tzgz6sxov7OxhLn4AoseLi/PX0IhZ+qpweQ9vu9GZ61xgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713438137; c=relaxed/simple;
-	bh=aWz5Gig2xv2dqOzuJfPq1HgDbmDRmwb4+kS753Y/Y7o=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rxjqSAsaLiT2j4OTiB18d1dV/WfSFJmgkq3kBKx3QjJV6w2VRDl04DXkFB6iW8WszklJYCR318SIEopiOPBolAH2VMVR0GJ41U4XyqByBvfDiCmjI0l3jd7UuRKZm5bYL+/ob++61J9efAKHKqSbMw0H9yHPHEnVoPNGXi3wYKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=lpYe4hx/; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C17873F8EB
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:02:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1713438129;
-	bh=ktW00F9DIAhL7DS4TlvR8U57g+A/C2nEvJUjlW8cwMw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type;
-	b=lpYe4hx/C8c3+Uq4BzQVzrFs2MoXisxVRCW5jlg4WZ8S24xBMwOKPuhdbSsQ67jOg
-	 dCXa7bcAPqBoloz/6lxHT2wGEB1COfjPKOLfhH7gqGgmbLzZtNVsX9vvz/MG0nBm0W
-	 +PKSN047yU1bf+OhZ3A8ONB87b/46XSV8o6AaJvlmk2CFA8ZhY4T/dx6tiXYo8CbiO
-	 nH+v/RAZL8pW20hXXFVpLs6vPvO+qlhggfGyg8B1p/cPiHKe77W3ctDONVasRBUhHD
-	 QnKNVQPjIefaO+xtAvLRAILBKoquGMsNT2RVPfD0iqYR3GXHo9JhBcjTbE4ddQopn4
-	 CyCIRm0HnxpWg==
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-56e678f6d81so1842818a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 04:02:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713438128; x=1714042928;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ktW00F9DIAhL7DS4TlvR8U57g+A/C2nEvJUjlW8cwMw=;
-        b=cp17hGnOmBdY6q3M33/wXELOCZFHNxIQpMKV61HDRWquFpt3ixw7abaI9c8l/z6eYF
-         KFDwr1gKxMSwwnzcdUSZ63YZTmcNKbLR7RvJBXQsA4Lv6l/SWlBO1x0mPe450+yL0KUa
-         4DRR+H8xuH+HJfpkWR3GcTOn4EQN7CFr70D7HNKnVopI3JlOkKtz8vz8UEaFBzLu4pUK
-         UQsl8bpiAomii0GbFrNcHucRb2x6aRGvgZREkdS8LJY13lBBbUhNIgrUHy3zgYvUZKxV
-         2Ihz1zk0JydHji3pKG0F3Wu/z1TIHkjwVKtC45Y5T+mVEIQO4RYhyd73FzrdoIE1o8Pk
-         EIAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWdXL4oycc0bh4qVemTHNP2YF4lDgQecUtJCSvA9YudoLVFbLdL+wHAfW4bqHotXJdlAiG/rooaustS5a4lHZfaMMvdh9xstGDLEnEM
-X-Gm-Message-State: AOJu0YwJzhFORhzpb5bnVaFIGgFibX8oh3Y8SssZOuBQctTr/IyBFZJJ
-	KJTD0BckuKZbnambtTC/cv6gXTsddA/C8YgEUm53mUkBZR1TXd/jXmSM1mSX81Q2ChD4sJIPDID
-	sQ+ghi+eD1/rlHscWM+BRMo50wzCwebheE8y6g4jHjbDPt4qiGkqKVe788h1Eh7Bn2mH7ZiwpU/
-	KMpg==
-X-Received: by 2002:a17:907:9447:b0:a52:30d4:20e6 with SMTP id dl7-20020a170907944700b00a5230d420e6mr1974020ejc.10.1713438128366;
-        Thu, 18 Apr 2024 04:02:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEv+5q9kt1eWZoXNQEPQAWf0LPsfHN7n2d9j+DQUT0Ja9+xBCd4zGciLDlc/mEh9WbiEhFr4w==
-X-Received: by 2002:a17:907:9447:b0:a52:30d4:20e6 with SMTP id dl7-20020a170907944700b00a5230d420e6mr1974004ejc.10.1713438128069;
-        Thu, 18 Apr 2024 04:02:08 -0700 (PDT)
-Received: from amikhalitsyn.lan ([2001:470:6d:781:320c:9c91:fb97:fbfc])
-        by smtp.gmail.com with ESMTPSA id yk18-20020a17090770d200b00a51983e6190sm728594ejb.205.2024.04.18.04.02.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 04:02:07 -0700 (PDT)
-From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-To: horms@verge.net.au
-Cc: netdev@vger.kernel.org,
-	lvs-devel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
-	=?UTF-8?q?St=C3=A9phane=20Graber?= <stgraber@stgraber.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Julian Anastasov <ja@ssi.bg>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Florian Westphal <fw@strlen.de>
-Subject: [PATCH net-next v2 2/2] ipvs: allow some sysctls in non-init user namespaces
-Date: Thu, 18 Apr 2024 13:01:53 +0200
-Message-Id: <20240418110153.102781-2-aleksandr.mikhalitsyn@canonical.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240418110153.102781-1-aleksandr.mikhalitsyn@canonical.com>
-References: <20240418110153.102781-1-aleksandr.mikhalitsyn@canonical.com>
+	s=arc-20240116; t=1713438166; c=relaxed/simple;
+	bh=FyCYOXuQuFnqLJOd0ixM+LSRi8DdC/fR8KXM8DwEEqA=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=es6RQ7vU4FmCDOJ2ViAKKh25hdpzrvKu/lZk6Wria6LIhQ1YCh3D48FQ0MFdG4K2xD7YgFDp9P5hv3VAqeF99nlBcmW2MqDF2hou3YbBkB/RlOWrqKPWwNkFQmYHpcuJOrQchpuY2DVjaqoVOYJUhw+nwudmbE6hcXKe3B/w7rA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=DifVgYHl; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1713438161; x=1744974161;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FyCYOXuQuFnqLJOd0ixM+LSRi8DdC/fR8KXM8DwEEqA=;
+  b=DifVgYHlQfBx5zI6f9CeWUBcx4z3d7M+vK/34ptvXsx3lLJwGEzy2EWK
+   3/ZBD8q6oFk8u1k7Q9XrN/S5k0ncYWzhFFEI1w/LlUeHJHkanKrtDFPgL
+   Qbyu909DLn0CT50D/ukR6JpnrzXvLBY+xdNJV5WZNCggH6IK4IP0gH51H
+   Wo+jhwNzgfd2R6XO6EqIKGSZPDn5tM5VIVry1PkcxFv6N7f0LFPYkDbiy
+   X7H25nEFl4PUEkkstO9xJhR4n776mHLGqPs/ISbAEp11VS7S8q1XYHUk8
+   rHgxaH3ZeM2jA8INnntyofteV5cq6JbmLZBH07VvRkAta4FdPOvN3Lf9k
+   w==;
+X-CSE-ConnectionGUID: rvrVkihjRC23jbRPgAPjgA==
+X-CSE-MsgGUID: 1ioO6pXxSeexXatwL4Ch4w==
+X-IronPort-AV: E=Sophos;i="6.07,212,1708412400"; 
+   d="asc'?scan'208";a="252394332"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Apr 2024 04:02:40 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 18 Apr 2024 04:02:29 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Thu, 18 Apr 2024 04:02:25 -0700
+Date: Thu, 18 Apr 2024 12:02:10 +0100
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Andy Chiu <andy.chiu@sifive.com>, Eric Biggers <ebiggers@google.com>
+CC: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+	<palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Heiko Stuebner
+	<heiko@sntech.de>, Guo Ren <guoren@kernel.org>, Conor Dooley
+	<conor@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Jonathan Corbet <corbet@lwn.net>, Evan
+ Green <evan@rivosinc.com>, =?iso-8859-1?Q?Cl=E9ment_L=E9ger?=
+	<cleger@rivosinc.com>, Shuah Khan <shuah@kernel.org>,
+	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Palmer
+ Dabbelt <palmer@rivosinc.com>, Vincent Chen <vincent.chen@sifive.com>,
+	Greentime Hu <greentime.hu@sifive.com>, <devicetree@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>, Joel Granados
+	<j.granados@samsung.com>, Jerry Shih <jerry.shih@sifive.com>
+Subject: Re: [PATCH v4 7/9] riscv: vector: adjust minimum Vector requirement
+ to ZVE32X
+Message-ID: <20240418-brook-chili-4d3e61d1a55c@wendy>
+References: <20240412-zve-detection-v4-0-e0c45bb6b253@sifive.com>
+ <20240412-zve-detection-v4-7-e0c45bb6b253@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Gv1MjADy0vzlN0Wa"
+Content-Disposition: inline
+In-Reply-To: <20240412-zve-detection-v4-7-e0c45bb6b253@sifive.com>
 
-Let's make all IPVS sysctls writtable even when
-network namespace is owned by non-initial user namespace.
+--Gv1MjADy0vzlN0Wa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Let's make a few sysctls to be read-only for non-privileged users:
-- sync_qlen_max
-- sync_sock_size
-- run_estimation
-- est_cpulist
-- est_nice
++CC Eric, Jerry
 
-I'm trying to be conservative with this to prevent
-introducing any security issues in there. Maybe,
-we can allow more sysctls to be writable, but let's
-do this on-demand and when we see real use-case.
+On Fri, Apr 12, 2024 at 02:49:03PM +0800, Andy Chiu wrote:
+> Make has_vector take one argument. This argument represents the minimum
+> Vector subextension that the following Vector actions assume.
+>=20
+> Also, change riscv_v_first_use_handler(), and boot code that calls
+> riscv_v_setup_vsize() to accept the minimum Vector sub-extension,
+> ZVE32X.
+>=20
+> Most kernel/user interfaces requires minimum of ZVE32X. Thus, programs
+> compiled and run with ZVE32X should be supported by the kernel on most
+> aspects. This includes context-switch, signal, ptrace, prctl, and
+> hwprobe.
+>=20
+> One exception is that ELF_HWCAP returns 'V' only if full V is supported
+> on the platform. This means that the system without a full V must not
+> rely on ELF_HWCAP to tell whether it is allowable to execute Vector
+> without first invoking a prctl() check.
+>=20
+> Signed-off-by: Andy Chiu <andy.chiu@sifive.com>
+> Acked-by: Joel Granados <j.granados@samsung.com>
 
-This patch is motivated by user request in the LXC
-project [1]. Having this can help with running some
-Kubernetes [2] or Docker Swarm [3] workloads inside the system
-containers.
+I'm not sure that I like this patch to be honest. As far as I can tell,
+every user here of has_vector(ext) is ZVE32X, so why bother actually
+having an argument?
 
-[1] https://github.com/lxc/lxc/issues/4278
-[2] https://github.com/kubernetes/kubernetes/blob/b722d017a34b300a2284b890448e5a605f21d01e/pkg/proxy/ipvs/proxier.go#L103
-[3] https://github.com/moby/libnetwork/blob/3797618f9a38372e8107d8c06f6ae199e1133ae8/osl/namespace_linux.go#L682
+Could we just document that has_vector() is just a tyre kick of "is
+there a vector unit and are we allowed to use it", and anything
+requiring more than the bare-minimum (so zve32x?)must explicitly check
+for that form of vector using riscv_has_extension_[un]likely()?
 
-Cc: Stéphane Graber <stgraber@stgraber.org>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Julian Anastasov <ja@ssi.bg>
-Cc: Simon Horman <horms@verge.net.au>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc: Florian Westphal <fw@strlen.de>
-Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
----
- net/netfilter/ipvs/ip_vs_ctl.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+Finally, the in-kernel crypto stuff or other things that use
+can_use_simd() to check for vector support - do they all function correctly
+with all of the vector flavours? I don't understand the vector
+extensions well enough to evaluate that - I know that they do check for
+the individual extensions like Zvkb during probe but don't have anything
+for the vector version (at least in the chacha20 and sha256 glue code).
+If they don't, then we need to make sure those drivers do not probe with
+the cut-down variants.
 
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index daa62b8b2dd1..f84f091626ef 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -4272,6 +4272,7 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
- 	struct ctl_table *tbl;
- 	int idx, ret;
- 	size_t ctl_table_size = ARRAY_SIZE(vs_vars);
-+	bool unpriv = net->user_ns != &init_user_ns;
- 
- 	atomic_set(&ipvs->dropentry, 0);
- 	spin_lock_init(&ipvs->dropentry_lock);
-@@ -4286,12 +4287,6 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
- 		tbl = kmemdup(vs_vars, sizeof(vs_vars), GFP_KERNEL);
- 		if (tbl == NULL)
- 			return -ENOMEM;
--
--		/* Don't export sysctls to unprivileged users */
--		if (net->user_ns != &init_user_ns) {
--			tbl[0].procname = NULL;
--			ctl_table_size = 0;
--		}
- 	} else
- 		tbl = vs_vars;
- 	/* Initialize sysctl defaults */
-@@ -4317,10 +4312,17 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
- 	ipvs->sysctl_sync_ports = 1;
- 	tbl[idx++].data = &ipvs->sysctl_sync_ports;
- 	tbl[idx++].data = &ipvs->sysctl_sync_persist_mode;
-+
- 	ipvs->sysctl_sync_qlen_max = nr_free_buffer_pages() / 32;
-+	if (unpriv)
-+		tbl[idx].mode = 0444;
- 	tbl[idx++].data = &ipvs->sysctl_sync_qlen_max;
-+
- 	ipvs->sysctl_sync_sock_size = 0;
-+	if (unpriv)
-+		tbl[idx].mode = 0444;
- 	tbl[idx++].data = &ipvs->sysctl_sync_sock_size;
-+
- 	tbl[idx++].data = &ipvs->sysctl_cache_bypass;
- 	tbl[idx++].data = &ipvs->sysctl_expire_nodest_conn;
- 	tbl[idx++].data = &ipvs->sysctl_sloppy_tcp;
-@@ -4343,15 +4345,22 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
- 	tbl[idx++].data = &ipvs->sysctl_conn_reuse_mode;
- 	tbl[idx++].data = &ipvs->sysctl_schedule_icmp;
- 	tbl[idx++].data = &ipvs->sysctl_ignore_tunneled;
-+
- 	ipvs->sysctl_run_estimation = 1;
-+	if (unpriv)
-+		tbl[idx].mode = 0444;
- 	tbl[idx].extra2 = ipvs;
- 	tbl[idx++].data = &ipvs->sysctl_run_estimation;
- 
- 	ipvs->est_cpulist_valid = 0;
-+	if (unpriv)
-+		tbl[idx].mode = 0444;
- 	tbl[idx].extra2 = ipvs;
- 	tbl[idx++].data = &ipvs->sysctl_est_cpulist;
- 
- 	ipvs->sysctl_est_nice = IPVS_EST_NICE;
-+	if (unpriv)
-+		tbl[idx].mode = 0444;
- 	tbl[idx].extra2 = ipvs;
- 	tbl[idx++].data = &ipvs->sysctl_est_nice;
- 
--- 
-2.34.1
+Eric/Jerry (although read the previous paragraph too):
+I noticed that the sha256 glue code calls crypto_simd_usable(), and in
+turn may_use_simd() before kernel_vector_begin(). The chacha20 glue code
+does not call either, which seems to violate the edict in
+kernel_vector_begin()'s kerneldoc:
+"Must not be called unless may_use_simd() returns true."
 
+What am I missing there?
+
+Cheers,
+Conor.
+
+
+> diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_hwpr=
+obe.c
+> index c8219b82fbfc..e7c3fcac62a1 100644
+> --- a/arch/riscv/kernel/sys_hwprobe.c
+> +++ b/arch/riscv/kernel/sys_hwprobe.c
+> @@ -69,7 +69,7 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair,
+>  	if (riscv_isa_extension_available(NULL, c))
+>  		pair->value |=3D RISCV_HWPROBE_IMA_C;
+> =20
+> -	if (has_vector())
+> +	if (has_vector(v))
+>  		pair->value |=3D RISCV_HWPROBE_IMA_V;
+> =20
+>  	/*
+> @@ -112,7 +112,11 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *p=
+air,
+>  		EXT_KEY(ZACAS);
+>  		EXT_KEY(ZICOND);
+> =20
+> -		if (has_vector()) {
+> +		/*
+> +		 *  Vector crypto and ZVE* extensions are supported only if
+> +		 *  kernel has minimum V support of ZVE32X.
+> +		 */
+> +		if (has_vector(ZVE32X)) {
+>  			EXT_KEY(ZVE32X);
+>  			EXT_KEY(ZVE32F);
+>  			EXT_KEY(ZVE64X);
+
+I find this to be an indicate of the new has_vector() being a poor API,
+as it is confusing that a check
+> diff --git a/arch/riscv/kernel/vector.c b/arch/riscv/kernel/vector.c
+> index 6727d1d3b8f2..e8a47fa72351 100644
+> --- a/arch/riscv/kernel/vector.c
+> +++ b/arch/riscv/kernel/vector.c
+> @@ -53,7 +53,7 @@ int riscv_v_setup_vsize(void)
+> =20
+>  void __init riscv_v_setup_ctx_cache(void)
+>  {
+> -	if (!has_vector())
+> +	if (!has_vector(ZVE32X))
+>  		return;
+> =20
+>  	riscv_v_user_cachep =3D kmem_cache_create_usercopy("riscv_vector_ctx",
+> @@ -173,8 +173,11 @@ bool riscv_v_first_use_handler(struct pt_regs *regs)
+>  	u32 __user *epc =3D (u32 __user *)regs->epc;
+>  	u32 insn =3D (u32)regs->badaddr;
+> =20
+> +	if (!has_vector(ZVE32X))
+> +		return false;
+> +
+>  	/* Do not handle if V is not supported, or disabled */
+> -	if (!(ELF_HWCAP & COMPAT_HWCAP_ISA_V))
+> +	if (!riscv_v_vstate_ctrl_user_allowed())
+>  		return false;
+> =20
+>  	/* If V has been enabled then it is not the first-use trap */
+> @@ -213,7 +216,7 @@ void riscv_v_vstate_ctrl_init(struct task_struct *tsk)
+>  	bool inherit;
+>  	int cur, next;
+> =20
+> -	if (!has_vector())
+> +	if (!has_vector(ZVE32X))
+>  		return;
+> =20
+>  	next =3D riscv_v_ctrl_get_next(tsk);
+> @@ -235,7 +238,7 @@ void riscv_v_vstate_ctrl_init(struct task_struct *tsk)
+> =20
+>  long riscv_v_vstate_ctrl_get_current(void)
+>  {
+> -	if (!has_vector())
+> +	if (!has_vector(ZVE32X))
+>  		return -EINVAL;
+> =20
+>  	return current->thread.vstate_ctrl & PR_RISCV_V_VSTATE_CTRL_MASK;
+> @@ -246,7 +249,7 @@ long riscv_v_vstate_ctrl_set_current(unsigned long ar=
+g)
+>  	bool inherit;
+>  	int cur, next;
+> =20
+> -	if (!has_vector())
+> +	if (!has_vector(ZVE32X))
+>  		return -EINVAL;
+> =20
+>  	if (arg & ~PR_RISCV_V_VSTATE_CTRL_MASK)
+> @@ -296,7 +299,7 @@ static struct ctl_table riscv_v_default_vstate_table[=
+] =3D {
+> =20
+>  static int __init riscv_v_sysctl_init(void)
+>  {
+> -	if (has_vector())
+> +	if (has_vector(ZVE32X))
+>  		if (!register_sysctl("abi", riscv_v_default_vstate_table))
+>  			return -EINVAL;
+>  	return 0;
+> diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
+> index bc22c078aba8..bbe143bb32a0 100644
+> --- a/arch/riscv/lib/uaccess.S
+> +++ b/arch/riscv/lib/uaccess.S
+> @@ -14,7 +14,7 @@
+> =20
+>  SYM_FUNC_START(__asm_copy_to_user)
+>  #ifdef CONFIG_RISCV_ISA_V
+> -	ALTERNATIVE("j fallback_scalar_usercopy", "nop", 0, RISCV_ISA_EXT_v, CO=
+NFIG_RISCV_ISA_V)
+> +	ALTERNATIVE("j fallback_scalar_usercopy", "nop", 0, RISCV_ISA_EXT_ZVE32=
+X, CONFIG_RISCV_ISA_V)
+>  	REG_L	t0, riscv_v_usercopy_threshold
+>  	bltu	a2, t0, fallback_scalar_usercopy
+>  	tail enter_vector_usercopy
+>=20
+> --=20
+> 2.44.0.rc2
+>=20
+
+--Gv1MjADy0vzlN0Wa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiD9sgAKCRB4tDGHoIJi
+0hS5AQCdwRiPTKaH/dGSkcjf1wQonDQjGD5X0skDUYsM0VZcdQEAz/immLGV5ulM
+Dxx67jswzCJGlWQgDMMvkyy3LXO4fgA=
+=Td09
+-----END PGP SIGNATURE-----
+
+--Gv1MjADy0vzlN0Wa--
 
