@@ -1,161 +1,185 @@
-Return-Path: <linux-kernel+bounces-149869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 896D68A9720
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:19:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 497ED8A9723
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:19:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B61111C21ECA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:19:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05592284E6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:19:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B1115B971;
-	Thu, 18 Apr 2024 10:19:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z3MNcWQS"
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA0F15B96A;
+	Thu, 18 Apr 2024 10:19:37 +0000 (UTC)
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC1315AD8E;
-	Thu, 18 Apr 2024 10:19:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E9D15B57F;
+	Thu, 18 Apr 2024 10:19:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713435556; cv=none; b=hkYV8Q6QcaABz8KNeT5cdghDLhuULlHV0KzQdGkB6Qu0fu7+RY+cJPOYmvHrO2e7qBuoe/BNtcdyKVzrFEWQ0mVnqcyTAPCznnCDCO3zrB6gqFqln4vUhFV2C47gfp1MviW7KapkRYFdlQzPJzbmuTkFC9psqz9vvhuO2QGfwvw=
+	t=1713435576; cv=none; b=gr0HchD6ElpaIkVJcuSJr6Bubzj3gL+CJZWzD80cVuEf9CFrBrODJBaJNxDm88jAXcwfDWJ4LqKpJ+aacmpxmBFU830w81QYCWDYEcLgLE+w6soQ2QebfF0qgULPqtnT2dSTXjmh5EsN/VgUp8Mx2/+LWLTlHr0QVsF9miGfgpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713435556; c=relaxed/simple;
-	bh=VL6pJSQmGCfJDVOYa1cGphoXn4BaHMl8XQjHe6z0SE0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IkaPwxQn4dnApK3/IiAK3QfRaF/1M8ZW78gjUzT2HyWIoYx4fR4SQqOZUcvSOA9WrEog97L3SNRLdiSMqKI8G01ftebutR2KXVO8psz1+IaWj7zh8bDeqVEr27OxxG1PSFpYVEyaUTC6uGXKfnL6/kOYV3Is/0BtlgpxiSOsPSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z3MNcWQS; arc=none smtp.client-ip=209.85.221.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4dac92abe71so179181e0c.2;
-        Thu, 18 Apr 2024 03:19:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713435554; x=1714040354; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7QuOPPA02NXP13o7JH32iH/XYg33BypsERiunyF7/0U=;
-        b=Z3MNcWQS7uQZhyRM/fbKnZX7Js9mX7nCX2zyPrL+AKu6aLeC7a0V0A8xz2I8lpzzdn
-         fnzyn11LBxvwCMy8DXP1wND7b7WbHodOHDFlWDeolZ7cZy2okhmuFczGUMq/p8hf1aOn
-         0hvzs+xEnP2JgBVIsiGcE5CSZL1U1wqBd7ngQwPwWGbLokZ/0HNGCiSmcV8/ch9T9A/s
-         RbqqzCw/ltdo4KoplEPfn/dIPmOdjw2MAhdqrbuXLHb8gP1pWpKApIwZ0lYHTHWeOETk
-         gTht+EVMQdZmIFyyIT4VAXWuPTCrp0RW/IG3S89Fx+H0ePdVuD1k9ks5wEI0Dvw+EWSZ
-         A78w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713435554; x=1714040354;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7QuOPPA02NXP13o7JH32iH/XYg33BypsERiunyF7/0U=;
-        b=qAWk8FdSPdhyQsRR3Jk3N/q9sU5xlX9Mk/U+UFhyezTtIylvacQ0+HHEBzTCb3Rq/w
-         wMlXE7Y+R6m50RzD7ntN6RpnoIbrPgEVBWECWjvO9+wtADWfAep4smh8h++GPpLW9Yno
-         W8+ibU92xg+QgArThZmJPTZLXR3K9rYQwhbhDgZKzbZq78NDGdiveJ1MDyoXPglw3Puk
-         NoMPs8M1j5wCqngB8wcq1VYAsLPcyCV8yaiLSs6vBL1OR/2E7vJ7qrjH/NJfMGEGFJAz
-         99s7mojCY55zsYxrjsEv7zUUAkMXtnVCGIsbtUrUI6mnxjFNI998/wKoL7g2Q5OyhKtq
-         sdnw==
-X-Forwarded-Encrypted: i=1; AJvYcCWIS2ioyk6+85frfLm77fvSvqvoLMreSA6FlKWp4kmXJMFCwzLOcE2jF3o3K+ZcB3qvW4ex0n3EfwUgMXneIrUMRFfrf52v3f2dg6zvu8L7XqLsZlzVIMc+vuDJVH7Nzh+jlbf5rHVRZOki3Q==
-X-Gm-Message-State: AOJu0YyRusVff8by/gIsBv2ExVjhPA5iMnNwYF03NCon22NyXrH0KO5R
-	liwr6MjzZ8zpuZpwB3cSIXsY3uI89eHSpjZWxGefvyItHoXcZUsqOnvHNYntbyVMwZJQdqKRqZT
-	TsFsTtLsJokbDTjRgp16gI8vRF80=
-X-Google-Smtp-Source: AGHT+IGMflGHigU8Eg0vQ4TNMTAXYcW6h8YOwebe7rJ8EymYG4DHBz561WN3t+D6I+iM3orlfSSM2gPpEHnrOBhEBfY=
-X-Received: by 2002:a05:6122:550:b0:4c0:9ed8:57b3 with SMTP id
- y16-20020a056122055000b004c09ed857b3mr2912649vko.1.1713435554013; Thu, 18 Apr
- 2024 03:19:14 -0700 (PDT)
+	s=arc-20240116; t=1713435576; c=relaxed/simple;
+	bh=qbNvLZrXQEQZBcnSGokYUXRmXqLv6nHf87dpUDuMzpg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ALimlr9buR08x/EksvCPnEO/PfM8hD1LYUa3PrK814liSQCUZqsOr2CPz9fMyDcOPsqgOBgumsU/032/dNUApk578OrSpEgluRzXPfqTEy97Eo5nJ7yIYczrEiHJF7AJGAoVOjN10lxfeH54/tPwUvqUJDtQAruzkiWhUAGTU5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=isrc.iscas.ac.cn; spf=none smtp.mailfrom=isrc.iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=isrc.iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=isrc.iscas.ac.cn
+Received: from localhost.localdomain (unknown [124.16.141.245])
+	by APP-05 (Coremail) with SMTP id zQCowAAntRKo8yBmUeZgBA--.29090S2;
+	Thu, 18 Apr 2024 18:19:20 +0800 (CST)
+From: sunying@isrc.iscas.ac.cn
+To: masahiroy@kernel.org
+Cc: linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	pengpeng@iscas.ac.cn,
+	zy21df106@buaa.edu.cn,
+	Ying Sun <sunying@isrc.iscas.ac.cn>
+Subject: [PATCHv4 next] kconfig: add dependency warning print about invalid values while KBUILD_EXTRA_WARN=c
+Date: Thu, 18 Apr 2024 18:19:03 +0800
+Message-ID: <20240418101903.11314-1-sunying@isrc.iscas.ac.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240417160842.76665-1-ryncsn@gmail.com> <20240417160842.76665-8-ryncsn@gmail.com>
- <CAGsJ_4xv8m-Xjih0PmKD1PcUSGVRsti8EH0cbStZOFmX+YhnFA@mail.gmail.com> <CAMgjq7Am+5ftvAW4X2xOhAZ+zotSR8gD8oG+_CV=pJvsqy2Oyw@mail.gmail.com>
-In-Reply-To: <CAMgjq7Am+5ftvAW4X2xOhAZ+zotSR8gD8oG+_CV=pJvsqy2Oyw@mail.gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Thu, 18 Apr 2024 22:19:02 +1200
-Message-ID: <CAGsJ_4zVH+MtB1X4J7X9Gk9c1bg_BNGKbg7viBXDKKKO8TO4EQ@mail.gmail.com>
-Subject: Re: [PATCH 7/8] mm: drop page_index/page_file_offset and convert swap
- helpers to use folio
-To: Kairui Song <ryncsn@gmail.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	"Huang, Ying" <ying.huang@intel.com>, Matthew Wilcox <willy@infradead.org>, Chris Li <chrisl@kernel.org>, 
-	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, 
-	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zQCowAAntRKo8yBmUeZgBA--.29090S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuFy8Kr48JFWrGw4fZrWkZwb_yoW5tr1fp3
+	WrXay3Cr4DAF1fta9xtFy8Ga15tFWvyr17trsxuw17AFy5CFWIgrsrGw1agrWDGrW3A3yr
+	CFyFgFWYkF4DKaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv214x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
+	6r4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8JV
+	W8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lw4CEc2x0rVAKj4xx
+	MxkIecxEwVAFwVW8twCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+	026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+	JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+	vEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa
+	7VUbvzutUUUUU==
+X-CM-SenderInfo: 5vxq5x1qj6x21ufox2xfdvhtffof0/
 
-On Thu, Apr 18, 2024 at 2:42=E2=80=AFPM Kairui Song <ryncsn@gmail.com> wrot=
-e:
->
-> On Thu, Apr 18, 2024 at 9:55=E2=80=AFAM Barry Song <21cnbao@gmail.com> wr=
-ote:
-> >
-> > On Thu, Apr 18, 2024 at 4:12=E2=80=AFAM Kairui Song <ryncsn@gmail.com> =
-wrote:
-> > >
-> > > From: Kairui Song <kasong@tencent.com>
-> > >
-> > > When applied on swap cache pages, page_index / page_file_offset was u=
-sed
-> > > to retrieve the swap cache index or swap file offset of a page, and t=
-hey
-> > > have their folio equivalence version: folio_index / folio_file_pos.
-> > >
-> > > We have eliminated all users for page_index / page_file_offset, every=
-thing
-> > > is using folio_index / folio_file_pos now, so remove the old helpers.
-> > >
-> > > Then convert the implementation of folio_index / folio_file_pos to
-> > > to use folio natively.
-> > >
-> > > After this commit, all users that might encounter mixed usage of swap
-> > > cache and page cache will only use following two helpers:
-> > >
-> > > folio_index (calls __folio_swap_cache_index)
-> > > folio_file_pos (calls __folio_swap_file_pos)
-> > >
-> > > The offset in swap file and index in swap cache is still basically th=
-e
-> > > same thing at this moment, but will be different in following commits=
-.
-> > >
-> > > Signed-off-by: Kairui Song <kasong@tencent.com>
-> >
-> > Hi Kairui, thanks !
-> >
-> > I also find it rather odd that folio_file_page() is utilized for both
-> > swp and file.
-> >
-> > mm/memory.c <<do_swap_page>>
-> >              page =3D folio_file_page(folio, swp_offset(entry));
-> > mm/swap_state.c <<swapin_readahead>>
-> >              return folio_file_page(folio, swp_offset(entry));
-> > mm/swapfile.c <<unuse_pte>>
-> >              page =3D folio_file_page(folio, swp_offset(entry));
-> >
-> > Do you believe it's worthwhile to tidy up?
-> >
->
-> Hi Barry,
->
-> I'm not sure about this. Using folio_file_page doesn't look too bad,
-> and it will be gone once we convert them to always use folio, this
-> shouldn't take too long.
+From: Ying Sun <sunying@isrc.iscas.ac.cn>
 
-HI Kairui,
-I am not quite sure this is going to be quite soon. our swap-in large
-folios refault still have corner cases which can't map large folios even
-we hit large folios in swapcache [1].
-personally, i feel do_swap_page() isn't handling file, and those pages
-are anon but not file.  so a separate helper taking folio and entry as
-arguments seem more readable as Chris even wants to remove
-the assumption large folios have been to swapped to contiguous
-swap offsets. anyway, it is just me :-=EF=BC=89
+The patch enhances kernel error messages, fixes problems with
+ the previous version of v3, and has been thoroughly tested.
+ We believe it will improve the clarity and usefulness
+ of kconfig error messages, which will help developers better diagnose and
+ resolve configuration issues.
 
-[1] https://lore.kernel.org/linux-mm/20240409082631.187483-1-21cnbao@gmail.=
-com/
+----- v3 -> v4:
+1. Fixed the dependency logic print error, distinguishing
+ between unsatisfied dependencies and forced enable
+ errors (related to the select keyword).
+2. Add export KCONFIG_WARN_CHANGED_INPUT=1 to scripts/kconfig/Makefile,
+ which can be enabled by setting KBUILD_EXTRA_WARN to -c.
+
+Signed-off-by: Siyuan Guo <zy21df106@buaa.edu.cn>
+Signed-off-by: Ying Sun <sunying@isrc.iscas.ac.cn>
+---
+ scripts/kconfig/Makefile   |  1 +
+ scripts/kconfig/confdata.c | 60 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 61 insertions(+)
+
+diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
+index ea1bf3b3dbde..b755246fe057 100644
+--- a/scripts/kconfig/Makefile
++++ b/scripts/kconfig/Makefile
+@@ -29,6 +29,7 @@ KCONFIG_DEFCONFIG_LIST += arch/$(SRCARCH)/configs/$(KBUILD_DEFCONFIG)
+ 
+ ifneq ($(findstring c, $(KBUILD_EXTRA_WARN)),)
+ export KCONFIG_WARN_UNKNOWN_SYMBOLS=1
++export KCONFIG_WARN_CHANGED_INPUT=1
+ endif
+ 
+ ifneq ($(findstring e, $(KBUILD_EXTRA_WARN)),)
+diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+index 0e35c4819cf1..91c63bd1cedd 100644
+--- a/scripts/kconfig/confdata.c
++++ b/scripts/kconfig/confdata.c
+@@ -176,6 +176,41 @@ static void conf_warning(const char *fmt, ...)
+ 	conf_warnings++;
+ }
+ 
++static void conf_warn_unmet_rev(struct symbol *sym)
++{
++	struct gstr gs = str_new();
++
++	str_printf(&gs,
++		"WARNING: unmet reverse dependencies detected for %s\n",
++		sym->name);
++
++	expr_gstr_print_revdep(sym->rev_dep.expr, &gs, yes,
++				" Selected by [y]:\n");
++	expr_gstr_print_revdep(sym->rev_dep.expr, &gs, mod,
++				" Selected by [m]:\n");
++
++	fputs(str_get(&gs), stderr);
++	str_free(&gs);
++}
++
++static void conf_warn_dep_error(struct symbol *sym)
++{
++	struct gstr gs = str_new();
++
++	str_printf(&gs,
++		"WARNING: unmet direct dependencies detected for %s\n",
++		sym->name);
++
++	str_printf(&gs,
++		" Depends on [%c]: ",
++		sym->dir_dep.tri == mod ? 'm' : 'n');
++	expr_gstr_print(sym->dir_dep.expr, &gs);
++
++	str_printf(&gs, "\n");
++	fputs(str_get(&gs), stderr);
++	str_free(&gs);
++}
++
+ static void conf_default_message_callback(const char *s)
+ {
+ 	printf("#\n# ");
+@@ -522,6 +557,31 @@ int conf_read(const char *name)
+ 			continue;
+ 		conf_unsaved++;
+ 		/* maybe print value in verbose mode... */
++		if (getenv("KCONFIG_WARN_CHANGED_INPUT")) {
++			if (sym->prop) {
++				switch (sym->type) {
++				case S_BOOLEAN:
++				case S_TRISTATE:
++					if (sym->def[S_DEF_USER].tri != sym_get_tristate_value(sym)) {
++						if (sym->rev_dep.tri < sym->def[S_DEF_USER].tri &&
++							sym->dir_dep.tri < sym->def[S_DEF_USER].tri)
++								conf_warn_dep_error(sym);
++						if (sym->rev_dep.tri > sym->def[S_DEF_USER].tri &&
++							sym->dir_dep.tri >= sym->def[S_DEF_USER].tri)
++								conf_warn_unmet_rev(sym);
++					}
++					break;
++				case S_INT:
++				case S_HEX:
++				case S_STRING:
++					if (sym->dir_dep.tri == no && sym_has_value(sym))
++						conf_warn_dep_error(sym);
++					break;
++				default:
++					break;
++				}
++			}
++		}
+ 	}
+ 
+ 	for_all_symbols(sym) {
+-- 
+2.43.0
+
 
