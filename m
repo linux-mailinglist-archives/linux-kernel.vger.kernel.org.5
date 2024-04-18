@@ -1,96 +1,161 @@
-Return-Path: <linux-kernel+bounces-149868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1394B8A971E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:19:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 896D68A9720
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:19:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C00092841FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:19:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B61111C21ECA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0206A15B969;
-	Thu, 18 Apr 2024 10:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B1115B971;
+	Thu, 18 Apr 2024 10:19:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="fEC7K/qW"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z3MNcWQS"
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE86B15AD8E;
-	Thu, 18 Apr 2024 10:19:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC1315AD8E;
+	Thu, 18 Apr 2024 10:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713435542; cv=none; b=VfWNsvStoygdrX+YS9pzaGtRrnMXPAXIZQ7ydJexikNW07hYG2JzIIJyWBOg8g2l0Lf7kvRw9nuiRObIOhXpZQbB7dsCuaXrO7Qs4AVmBGX+TPxPDTrdY+zzzvJ6jnSlahP6CH0/cPl6alGgBREiPRSnXg+T26upEa5Qe85N234=
+	t=1713435556; cv=none; b=hkYV8Q6QcaABz8KNeT5cdghDLhuULlHV0KzQdGkB6Qu0fu7+RY+cJPOYmvHrO2e7qBuoe/BNtcdyKVzrFEWQ0mVnqcyTAPCznnCDCO3zrB6gqFqln4vUhFV2C47gfp1MviW7KapkRYFdlQzPJzbmuTkFC9psqz9vvhuO2QGfwvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713435542; c=relaxed/simple;
-	bh=z/hUMpplzHibHsKJBgmNXuW8EzCM6xcWFg+5AA3gd78=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cUr4g0zQ5BcPdCkbTf6nLIInu/ip/hTQWyrQxBd2Omw5JHKUmX8G3lMcNSm+7StJ7fBov6fELHcY2rf9vtX24z3+d9xGRNpmV/GX+1SVhio/Lza9lB6DGt0i7O0Ghm6zBRjAAVbAk5GftBRzUjxhpwf18D2XXQUAz3DvMh2uWhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=fEC7K/qW; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43I5vTHo004756;
-	Thu, 18 Apr 2024 05:18:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=u5oDewUAuxPt3nz
-	bwd1BP8yEuLREuEnZJS3DESJidV0=; b=fEC7K/qWfUze9cDg1UO0qN+v5xn0AEG
-	XBUIThLiHcBGR0YaAGg8XXEcECPuDZRXtWSXF2+iJDne86KfYIv8KbG+Qeas5fiu
-	xb4GFTVqHe0t5c4PDiKlcWb1BHpkIZtICAP+Ntq+8TH8+aVP333rwtRy90sTvlr6
-	9SDtTZmQ9fJuAUw/EhLjtwU0sybw5ZHEpQDdeXxGdn4ptOIpi+0c82ZwXHp09Fhn
-	udbRHpEk59uVjkryzYyiCRqHwB2iBxqwsXvlIlw9bDV+2htVhrSAiBDmxxBSn9Bw
-	vP3rYHN8P01RSTQGOH0gnqKTee3jq/wf/G468KR6b9/whbr/dEU7RTg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3xfpfhvmct-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Apr 2024 05:18:42 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 18 Apr
- 2024 11:18:41 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
- via Frontend Transport; Thu, 18 Apr 2024 11:18:41 +0100
-Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id F00FD820245;
-	Thu, 18 Apr 2024 10:18:40 +0000 (UTC)
-Date: Thu, 18 Apr 2024 10:18:39 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Maciej Strozek <mstrozek@opensource.cirrus.com>
-CC: Mark Brown <broonie@kernel.org>, <patches@opensource.cirrus.com>,
-        <alsa-devel@alsa-project.org>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] spi: cs42l43: Correct name of ACPI property
-Message-ID: <ZiDzf4pdS5V4V4F6@ediswmail9.ad.cirrus.com>
-References: <20240418094206.1323489-1-mstrozek@opensource.cirrus.com>
+	s=arc-20240116; t=1713435556; c=relaxed/simple;
+	bh=VL6pJSQmGCfJDVOYa1cGphoXn4BaHMl8XQjHe6z0SE0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IkaPwxQn4dnApK3/IiAK3QfRaF/1M8ZW78gjUzT2HyWIoYx4fR4SQqOZUcvSOA9WrEog97L3SNRLdiSMqKI8G01ftebutR2KXVO8psz1+IaWj7zh8bDeqVEr27OxxG1PSFpYVEyaUTC6uGXKfnL6/kOYV3Is/0BtlgpxiSOsPSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z3MNcWQS; arc=none smtp.client-ip=209.85.221.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4dac92abe71so179181e0c.2;
+        Thu, 18 Apr 2024 03:19:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713435554; x=1714040354; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7QuOPPA02NXP13o7JH32iH/XYg33BypsERiunyF7/0U=;
+        b=Z3MNcWQS7uQZhyRM/fbKnZX7Js9mX7nCX2zyPrL+AKu6aLeC7a0V0A8xz2I8lpzzdn
+         fnzyn11LBxvwCMy8DXP1wND7b7WbHodOHDFlWDeolZ7cZy2okhmuFczGUMq/p8hf1aOn
+         0hvzs+xEnP2JgBVIsiGcE5CSZL1U1wqBd7ngQwPwWGbLokZ/0HNGCiSmcV8/ch9T9A/s
+         RbqqzCw/ltdo4KoplEPfn/dIPmOdjw2MAhdqrbuXLHb8gP1pWpKApIwZ0lYHTHWeOETk
+         gTht+EVMQdZmIFyyIT4VAXWuPTCrp0RW/IG3S89Fx+H0ePdVuD1k9ks5wEI0Dvw+EWSZ
+         A78w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713435554; x=1714040354;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7QuOPPA02NXP13o7JH32iH/XYg33BypsERiunyF7/0U=;
+        b=qAWk8FdSPdhyQsRR3Jk3N/q9sU5xlX9Mk/U+UFhyezTtIylvacQ0+HHEBzTCb3Rq/w
+         wMlXE7Y+R6m50RzD7ntN6RpnoIbrPgEVBWECWjvO9+wtADWfAep4smh8h++GPpLW9Yno
+         W8+ibU92xg+QgArThZmJPTZLXR3K9rYQwhbhDgZKzbZq78NDGdiveJ1MDyoXPglw3Puk
+         NoMPs8M1j5wCqngB8wcq1VYAsLPcyCV8yaiLSs6vBL1OR/2E7vJ7qrjH/NJfMGEGFJAz
+         99s7mojCY55zsYxrjsEv7zUUAkMXtnVCGIsbtUrUI6mnxjFNI998/wKoL7g2Q5OyhKtq
+         sdnw==
+X-Forwarded-Encrypted: i=1; AJvYcCWIS2ioyk6+85frfLm77fvSvqvoLMreSA6FlKWp4kmXJMFCwzLOcE2jF3o3K+ZcB3qvW4ex0n3EfwUgMXneIrUMRFfrf52v3f2dg6zvu8L7XqLsZlzVIMc+vuDJVH7Nzh+jlbf5rHVRZOki3Q==
+X-Gm-Message-State: AOJu0YyRusVff8by/gIsBv2ExVjhPA5iMnNwYF03NCon22NyXrH0KO5R
+	liwr6MjzZ8zpuZpwB3cSIXsY3uI89eHSpjZWxGefvyItHoXcZUsqOnvHNYntbyVMwZJQdqKRqZT
+	TsFsTtLsJokbDTjRgp16gI8vRF80=
+X-Google-Smtp-Source: AGHT+IGMflGHigU8Eg0vQ4TNMTAXYcW6h8YOwebe7rJ8EymYG4DHBz561WN3t+D6I+iM3orlfSSM2gPpEHnrOBhEBfY=
+X-Received: by 2002:a05:6122:550:b0:4c0:9ed8:57b3 with SMTP id
+ y16-20020a056122055000b004c09ed857b3mr2912649vko.1.1713435554013; Thu, 18 Apr
+ 2024 03:19:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240418094206.1323489-1-mstrozek@opensource.cirrus.com>
-X-Proofpoint-ORIG-GUID: 6qytccbZeZ-buVVOdIzPt7C1jCys4bq4
-X-Proofpoint-GUID: 6qytccbZeZ-buVVOdIzPt7C1jCys4bq4
-X-Proofpoint-Spam-Reason: safe
+References: <20240417160842.76665-1-ryncsn@gmail.com> <20240417160842.76665-8-ryncsn@gmail.com>
+ <CAGsJ_4xv8m-Xjih0PmKD1PcUSGVRsti8EH0cbStZOFmX+YhnFA@mail.gmail.com> <CAMgjq7Am+5ftvAW4X2xOhAZ+zotSR8gD8oG+_CV=pJvsqy2Oyw@mail.gmail.com>
+In-Reply-To: <CAMgjq7Am+5ftvAW4X2xOhAZ+zotSR8gD8oG+_CV=pJvsqy2Oyw@mail.gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Thu, 18 Apr 2024 22:19:02 +1200
+Message-ID: <CAGsJ_4zVH+MtB1X4J7X9Gk9c1bg_BNGKbg7viBXDKKKO8TO4EQ@mail.gmail.com>
+Subject: Re: [PATCH 7/8] mm: drop page_index/page_file_offset and convert swap
+ helpers to use folio
+To: Kairui Song <ryncsn@gmail.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	"Huang, Ying" <ying.huang@intel.com>, Matthew Wilcox <willy@infradead.org>, Chris Li <chrisl@kernel.org>, 
+	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, 
+	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 18, 2024 at 10:42:06AM +0100, Maciej Strozek wrote:
-> Fixes: 1f05252a3a95 ("Add bridged amplifiers to cs42l43")
-> 
-> Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
-> ---
+On Thu, Apr 18, 2024 at 2:42=E2=80=AFPM Kairui Song <ryncsn@gmail.com> wrot=
+e:
+>
+> On Thu, Apr 18, 2024 at 9:55=E2=80=AFAM Barry Song <21cnbao@gmail.com> wr=
+ote:
+> >
+> > On Thu, Apr 18, 2024 at 4:12=E2=80=AFAM Kairui Song <ryncsn@gmail.com> =
+wrote:
+> > >
+> > > From: Kairui Song <kasong@tencent.com>
+> > >
+> > > When applied on swap cache pages, page_index / page_file_offset was u=
+sed
+> > > to retrieve the swap cache index or swap file offset of a page, and t=
+hey
+> > > have their folio equivalence version: folio_index / folio_file_pos.
+> > >
+> > > We have eliminated all users for page_index / page_file_offset, every=
+thing
+> > > is using folio_index / folio_file_pos now, so remove the old helpers.
+> > >
+> > > Then convert the implementation of folio_index / folio_file_pos to
+> > > to use folio natively.
+> > >
+> > > After this commit, all users that might encounter mixed usage of swap
+> > > cache and page cache will only use following two helpers:
+> > >
+> > > folio_index (calls __folio_swap_cache_index)
+> > > folio_file_pos (calls __folio_swap_file_pos)
+> > >
+> > > The offset in swap file and index in swap cache is still basically th=
+e
+> > > same thing at this moment, but will be different in following commits=
+.
+> > >
+> > > Signed-off-by: Kairui Song <kasong@tencent.com>
+> >
+> > Hi Kairui, thanks !
+> >
+> > I also find it rather odd that folio_file_page() is utilized for both
+> > swp and file.
+> >
+> > mm/memory.c <<do_swap_page>>
+> >              page =3D folio_file_page(folio, swp_offset(entry));
+> > mm/swap_state.c <<swapin_readahead>>
+> >              return folio_file_page(folio, swp_offset(entry));
+> > mm/swapfile.c <<unuse_pte>>
+> >              page =3D folio_file_page(folio, swp_offset(entry));
+> >
+> > Do you believe it's worthwhile to tidy up?
+> >
+>
+> Hi Barry,
+>
+> I'm not sure about this. Using folio_file_page doesn't look too bad,
+> and it will be gone once we convert them to always use folio, this
+> shouldn't take too long.
 
-Apologies about this one bit of a curve ball from our Windows
-team.
+HI Kairui,
+I am not quite sure this is going to be quite soon. our swap-in large
+folios refault still have corner cases which can't map large folios even
+we hit large folios in swapcache [1].
+personally, i feel do_swap_page() isn't handling file, and those pages
+are anon but not file.  so a separate helper taking folio and entry as
+arguments seem more readable as Chris even wants to remove
+the assumption large folios have been to swapped to contiguous
+swap offsets. anyway, it is just me :-=EF=BC=89
 
-
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Thanks,
-Charles
+[1] https://lore.kernel.org/linux-mm/20240409082631.187483-1-21cnbao@gmail.=
+com/
 
