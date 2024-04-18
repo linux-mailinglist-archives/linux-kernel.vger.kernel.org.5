@@ -1,129 +1,164 @@
-Return-Path: <linux-kernel+bounces-149928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B27298A97F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:56:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 643008A97FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:58:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F9C42823B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:56:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAF01B223AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:58:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF37615E1EE;
-	Thu, 18 Apr 2024 10:55:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E55315E1F6;
+	Thu, 18 Apr 2024 10:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o9EE8h6c"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="je29j5SS"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F5E15AAA5;
-	Thu, 18 Apr 2024 10:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29D115D5C1;
+	Thu, 18 Apr 2024 10:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713437758; cv=none; b=K5rgZytab3stFOJhvpogXWxpDXQP5uOvY2VZOOoFW3Sy3NaiDdENRlo+NEi0e2l41+gEEJGb744dH9Lq6+wh0gAgz3IxmZ0vmyQYxd+OsgI3upHDEHndNO6WKf/jeMMEfAPlamH3OpyKkVaqIHMG2DVdTt1UCF8PJkgvmgAD04c=
+	t=1713437892; cv=none; b=CU0LPkkaYBeG/o8L4ySUm8ol+l8dptXxvqnyOJVPcVfPHl/3prSm54V1Y+cQfMyVpeOXLhhHXoeHIxXlmQTNpDSMXyOCF1lwbs/ApEUm534e2qv+8+vNazWPTBy7/7/rt5KQoM9zB7KKBpMx3E5/ZMy1aQJx3usy9vhNSE9kH5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713437758; c=relaxed/simple;
-	bh=QKZFgiAAxVmB0Ab5Gva4C9DkDubO+iF3SWJEtPIsX54=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bCL78Rw8HjquFGSWQi/inyK1Z3tGti9uPprtrWvN655wUZAr5pusCvy5gnqAg2/o13FC8xh2eNJV2T7IWvXuwzA22InSCFYOMIlA+7Qo4f9MqlElN3QzNE0WmXafjJc23l3+NByEiWoAE62N6wzrrggyu6fTCH5A4I9nNvgHYWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o9EE8h6c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B970C113CC;
-	Thu, 18 Apr 2024 10:55:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713437757;
-	bh=QKZFgiAAxVmB0Ab5Gva4C9DkDubO+iF3SWJEtPIsX54=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=o9EE8h6c6EWLkKWVpIDYsnrXuMlaE30U6yItOJCjmn5/bI3ZabIyA4UKpilHNOIdr
-	 QcM3XONAwYtkblNReNMkGnUWnxmhPXC3l38oIX1599gIR3sr2TMgyY7VnG9Kshg+jT
-	 14j16rC9ARdf0SX+YRY0zBXWMislAXOQsKLpVxpGGGhLICGI1WLSNPsmnivIlaZqgL
-	 ch79sKBN2oGs6LILzeZri63UzbcUYpHD0UiSTRxj2JsuPjsfv9WhANU0yE2+gOeCv6
-	 sLgfsrsCGRJiT0sNsvzJ1vZeGRWQXuqFQbJIl1zqcKFde14VmQJsKRXUgqJWavd08I
-	 2n4Gf9BPpjcAA==
-Date: Thu, 18 Apr 2024 13:54:46 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Nam Cao <namcao@linutronix.de>
-Cc: Andreas Dilger <adilger@dilger.ca>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	linux-riscv@lists.infradead.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"ndesaulniers @ google . com" <ndesaulniers@google.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Tejun Heo <tj@kernel.org>,
-	Krister Johansen <kjlx@templeofstupid.com>,
-	Changbin Du <changbin.du@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] init: fix allocated page overlapping with PTR_ERR
-Message-ID: <ZiD79h1OXbzmpfCi@kernel.org>
-References: <20240418102943.180510-1-namcao@linutronix.de>
+	s=arc-20240116; t=1713437892; c=relaxed/simple;
+	bh=c+HtUfU8cE/PCyrZjd9uRjkFQwV2SJ12Ui0Ms0/s8yo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hYGDQszcifkp8N2ulM99Z34KmdNqE8GCu/Thz41RVYm93Go8g7bIUqo2webYGl9efpx7pF8/M9oAOBg5s+XfbIS0jE4mcIpGBSGozbkv8fM6FWdKaUuNDY94LBvXeYK1m5MJAmIP8fetB1olkXbUzVRSU0iyfxeAjawQ6JzqW8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=je29j5SS; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2db2f6cb312so13741621fa.2;
+        Thu, 18 Apr 2024 03:58:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713437889; x=1714042689; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rrxIXj7RnRz6Inm0MPVjaqJdEXgL4gVk17zWxjNGgWs=;
+        b=je29j5SSHXNsGYz215OVff9d2er5Ylt8DF9tdyXtUKGjcsTCyGKkyhsH5hLRXuQAHH
+         A0CkG9HCp3e/y/lu6cpO30UCDwaYHDutEd+nJgnK73MeNeu29jrAmEO4HClqGLc5pHRq
+         wo7NxvGAvMqt7FPe+Oyk3czKw92jzSMZv5FhWqPVobL/pQOFrxZxU+1fpkM/+Les8omW
+         Cm/iTUjbo7uD8qTV7GB9RM65E3+M8eC1UKS88SIqackM/JNpQYazNBGGu8gkEzM3EXWZ
+         DBG4yPndTbUKj3X923z+ueYgI9vaHltwHHnpKNCgr3nrOs/326OS4wDimn2eFURTNR/0
+         m9Pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713437889; x=1714042689;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rrxIXj7RnRz6Inm0MPVjaqJdEXgL4gVk17zWxjNGgWs=;
+        b=XMNlji8ByRtw732W/a/YsDVNKYEK8Db5xDvd8PPbvtXmjlZscSA24S1c4ZMjdWDtHJ
+         cA4Q+MpY/K/R0YHZ1/i2rIP9cNeRNGlKsTziMdwruyK1ONw+c30Au33LMuFTTytLBGMy
+         KZ0uXgnVMduHEhNcjq8N2pcVPviyRfS8oPQhnssh6gjas/7+E6BNB2oAwj569aqDaBTJ
+         Yw1vUFdBthr5Uu8P8RZCpfVqAnAvg1AZXHZkByA7RckHMWvvB6iOOrK6zL2vB3exy/nZ
+         dmW+FF1qkl/HV7c7HKFwIdgI2wIdZCuM+8AMI07uAoSHMgTbUtGkdOwbJmNHIJtMz45n
+         WUKA==
+X-Forwarded-Encrypted: i=1; AJvYcCWb9Ec40foDTdKRNNPGQh+L2WGHr0Kpej7v30iDaqah9TWnd7IEofnT1E/jxtDDcKx2LWhUTSlyfm/ZoJyy4fJs56Fx/ABdtl2gaYAw+qUbeHgxYAYZ44EkRjCuFuwL2jniLHZZyfXXhw==
+X-Gm-Message-State: AOJu0YxSWbdLR3Fp8qPdYSoxSC8p11/klgyGpvYkOdIWKn28/b9S9nCD
+	um+RB05XWZgipbmaEY9xEL2hOrHA9NkntevqeWdePvpqvPMlIQUQW5s1lF1/
+X-Google-Smtp-Source: AGHT+IEnaxJjPFvGEVHV2AJPn5rK9q/wGwFArQkhNwfFo41T53iJo9bm5Ud2gkymL1QDpEaN0drT2g==
+X-Received: by 2002:a05:6512:3f0b:b0:513:ca40:fafc with SMTP id y11-20020a0565123f0b00b00513ca40fafcmr1950544lfa.11.1713437868011;
+        Thu, 18 Apr 2024 03:57:48 -0700 (PDT)
+Received: from andrejs-nb.int.toradex.com (77-59-154-235.dclient.hispeed.ch. [77.59.154.235])
+        by smtp.gmail.com with ESMTPSA id hx11-20020a170906846b00b00a46d2e9fd73sm724794ejc.222.2024.04.18.03.57.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 03:57:47 -0700 (PDT)
+From: Andrejs Cainikovs <andrejs.cainikovs@gmail.com>
+To: Nishanth Menon <nm@ti.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tero Kristo <kristo@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>,
+	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1] arm64: dts: k3-am625-verdin: enable nau8822 pll
+Date: Thu, 18 Apr 2024 12:57:30 +0200
+Message-Id: <20240418105730.120913-1-andrejs.cainikovs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418102943.180510-1-namcao@linutronix.de>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 18, 2024 at 12:29:43PM +0200, Nam Cao wrote:
-> There is nothing preventing kernel memory allocators from allocating a
-> page that overlaps with PTR_ERR(), except for architecture-specific
-> code that setup memblock.
-> 
-> It was discovered that RISCV architecture doesn't setup memblock
-> corectly, leading to a page overlapping with PTR_ERR() being allocated,
-> and subsequently crashing the kernel (link in Close: )
-> 
-> The reported crash has nothing to do with PTR_ERR(): the last page
-> (at address 0xfffff000) being allocated leads to an unexpected
-> arithmetic overflow in ext4; but still, this page shouldn't be
-> allocated in the first place.
-> 
-> Because PTR_ERR() is an architecture-independent thing, we shouldn't
-> ask every single architecture to set this up. There may be other
-> architectures beside RISCV that have the same problem.
-> 
-> Fix this one and for all by reserving the physical memory page that
-> may be mapped to the last virtual memory page as part of low memory.
-> 
-> Unfortunately, this means if there is actual memory at this reserved
-> location, that memory will become inaccessible. However, if this page
-> is not reserved, it can only be accessed as high memory, so this
-> doesn't matter if high memory is not supported. Even if high memory is
-> supported, it is still only one page.
-> 
-> Closes: https://lore.kernel.org/linux-riscv/878r1ibpdn.fsf@all.your.base.are.belong.to.us
-> Signed-off-by: Nam Cao <namcao@linutronix.de>
-> Cc: <stable@vger.kernel.org> # all versions
+From: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
 
-Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+In current configuration, nau8822 codec on development carrier board
+provides distorted audio output. This happens due to reference clock
+is fixed to 25MHz and no PLL is enabled. Following is the calculation
+of deviation error for different frequencies:
 
-> ---
->  init/main.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/init/main.c b/init/main.c
-> index 881f6230ee59..f8d2793c4641 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -900,6 +900,7 @@ void start_kernel(void)
->  	page_address_init();
->  	pr_notice("%s", linux_banner);
->  	early_security_init();
-> +	memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE); /* reserve last page for ERR_PTR */
->  	setup_arch(&command_line);
->  	setup_boot_config();
->  	setup_command_line(command_line);
-> -- 
-> 2.39.2
-> 
+44100Hz:
 
+fs = 256 (fixed)
+prescaler = 2
+target frequency = 44100 * 256 * 2 = 22579200
+deviation = 22579200 vs 25000000 = 9.6832%
+
+48000Hz:
+
+fs = 256 (fixed)
+prescaler = 2
+target frequency = 48000 * 256 * 2 = 24576000
+deviation = 24576000 vs 25000000 = 1.696%
+
+Enabling nau822 PLL via providing mclk-fs property to simple-audio-card
+configures clocks properly, but also adjusts audio reference clock
+(mclk), which in case of TI AM62 should be avoided, as it only
+supports 25MHz output [1][2].
+
+This change enables PLL on nau8822 by providing mclk-fs, and moves
+away audio reference clock from DAI configuration, which prevents
+simple-audio-card to adjust it before every playback [3].
+
+[1]: https://e2e.ti.com/support/processors-group/processors/f/processors-forum/1175479/processor-sdk-am62x-output-audio_ext_refclk0-as-mclk-for-codec-and-mcbsp/4444986#4444986
+[2]: https://e2e.ti.com/support/processors-group/processors/f/processors-forum/1188051/am625-audio_ext_refclk1-clock-output---dts-support/4476322#4476322
+[3]: sound/soc/generic/simple-card-utils.c#L441
+
+Signed-off-by: Andrejs Cainikovs <andrejs.cainikovs@toradex.com>
+---
+This patch requires https://lore.kernel.org/all/20240409121719.337709-1-andrejs.cainikovs@gmail.com/ to be applied,
+if not the audio will just stop working because no code will ever enable the required clock to the codec.
+---
+ arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
+index 74eec1a1abca..5c1284b802ad 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
+@@ -14,6 +14,7 @@ sound {
+ 		simple-audio-card,bitclock-master = <&codec_dai>;
+ 		simple-audio-card,format = "i2s";
+ 		simple-audio-card,frame-master = <&codec_dai>;
++		simple-audio-card,mclk-fs = <256>;
+ 		simple-audio-card,name = "verdin-nau8822";
+ 		simple-audio-card,routing =
+ 			"Headphones", "LHP",
+@@ -34,7 +35,6 @@ sound {
+ 			"Line", "Line In";
+ 
+ 		codec_dai: simple-audio-card,codec {
+-			clocks = <&audio_refclk1>;
+ 			sound-dai = <&nau8822_1a>;
+ 		};
+ 
+@@ -107,6 +107,8 @@ nau8822_1a: audio-codec@1a {
+ 		reg = <0x1a>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pinctrl_i2s1_mclk>;
++		clock-names = "mclk";
++		clocks = <&audio_refclk1>;
+ 		#sound-dai-cells = <0>;
+ 	};
+ 
 -- 
-Sincerely yours,
-Mike.
+2.34.1
+
 
