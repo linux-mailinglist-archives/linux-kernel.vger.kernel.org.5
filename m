@@ -1,221 +1,321 @@
-Return-Path: <linux-kernel+bounces-150095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A92BE8A9A58
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:49:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70B3F8A9A5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:49:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C89051C21DB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:49:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F06611F21A75
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:49:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DE7F161925;
-	Thu, 18 Apr 2024 12:47:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24F015FA60;
+	Thu, 18 Apr 2024 12:47:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b="VU6aGwsI"
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2074.outbound.protection.outlook.com [40.107.15.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Lo0Di+ey"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B639015F3EA;
-	Thu, 18 Apr 2024 12:47:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.15.74
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713444451; cv=fail; b=Bmt/tCBLuHjGJOhhfJlTm3Ze3Bs3fW9eMKnwqvUvwtv/smyi4wr/hocykTimxMnDRXGUH076V1W1xsGmLgmIjF6B42ySTeAaNTOw62mOoQccDhbuB34Jb1k+K4QYnrXXdey9v4Loa3dPZkN6R9HNIOLE7QQ9Z1Bcv2Haa64W/XM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713444451; c=relaxed/simple;
-	bh=/6kD84WrwSOJr3j/WL4Ss8FKlUJ0D0pW7E9e/WUojkc=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=LlJLKQmMVj84UKxLIun7UVC4IQBHrHeIHIfKGpzjRrX+C9QYxZusPiD6vMbEj7BhhLxonwaBNnDW27TqHsoz8LS7J/sXxM110SRM90oKRhVXaJNK2CHMJjGAQDdVCQ+tjA2r7qPaf2+7jzLjxVcCA/i1B30HPSK+xA+Qirq9bVw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com; spf=pass smtp.mailfrom=axis.com; dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b=VU6aGwsI; arc=fail smtp.client-ip=40.107.15.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=axis.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BOIH8+Bw/8o9jWrDOEXs4LhdVlQS6dIrmZinN5f2cd36FxqXGZk5zINPOAms9M1o3/bbtQKR4sq81biHXi6//aZl+542P0fwl17L/uN9texMqhjbjRnYALbCXGNJd87BpczaaJqdlVvyJO2QZ1CQ6qjOHKVYKQElKSiVXGuhvw8OZdMyjH62am6rmhkNv69aM4p+8s7gBKRxnK6oGtghqEsppjPC1knouF5AlVfHRFp3wgrXl7zQANhc4uqauegZ94RXqbbJJCXqIxmfgYYFNUilTWXcl2UCbKsRtZEkfDSshyrxUPJTcHG3JAvYWGT/DPceEn0nMb2pjdwL3NcmXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sUJPPBJm8oQrxTiVon7EwVzTi5P879kGjYQ77b3IRs8=;
- b=kcw1y3JT+QbJoRm5TJp7EZDdIr4qLNkpALAcBOCFsC5R28/b5B3v0vYvg28YB4FOYhbga4aTIRRjzJlHTjZxzoryMad7YUab83m3BuRz8DgQvxS25I/nrq1AuSBVgQwFu0bAGYWFLVoZCWxyG5w8r8fX9cYIhXwt0uD61tZ/gjprSQpleNnJrLUX8uu7Te+nAEc/i+6bGEGgU5aqoYGL5N9rFFLszhr1fthKT773tklOT3x5q6HHDEbOihE5nW9tSdT0m6uNADKwxctvB1+IU0dUniOc2gFjLhLfsJx9+VjU01+bPTigHAEK3lHBLlwQ3S+9R1jzca6n4Qo/NJewDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axis.com; dmarc=pass action=none header.from=axis.com;
- dkim=pass header.d=axis.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sUJPPBJm8oQrxTiVon7EwVzTi5P879kGjYQ77b3IRs8=;
- b=VU6aGwsIDUFIoS0kqBzYQlFbmi32t4038WReFYa9fvKB7BU18j3nYovq9WC4Ci8lSUAilVtm52f/Jbzy7c01eUKA2oJys4Ft4tvk2UHSLz+4EgSs7vhHv8sj51gF684Mro06I7L1hDU6+/875BmvTH556G4Zd7TMdZxSjZ5JKd4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=axis.com;
-Received: from GV1PR02MB10909.eurprd02.prod.outlook.com (2603:10a6:150:16c::9)
- by PRAPR02MB7836.eurprd02.prod.outlook.com (2603:10a6:102:27a::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Thu, 18 Apr
- 2024 12:47:23 +0000
-Received: from GV1PR02MB10909.eurprd02.prod.outlook.com
- ([fe80::42d7:280:d9dc:e5be]) by GV1PR02MB10909.eurprd02.prod.outlook.com
- ([fe80::42d7:280:d9dc:e5be%4]) with mapi id 15.20.7452.049; Thu, 18 Apr 2024
- 12:47:23 +0000
-Message-ID: <d9fe9fc1-1b28-4547-8845-399aaddc0863@axis.com>
-Date: Thu, 18 Apr 2024 14:47:20 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ata: Add sdev attribute to lower link speed in runtime
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Damien Le Moal <dlemoal@kernel.org>,
- Gustav Ekelund <gustav.ekelund@axis.com>, hare@suse.de,
- martin.petersen@oracle.com, linux-ide@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel@axis.com
-References: <20240412134838.788502-1-gustav.ekelund@axis.com>
- <4e5c88f1-1b24-4f6d-8c11-d7029329ba7a@kernel.org>
- <7e6eb387-5a0e-460c-af08-eff070fa35ca@axis.com> <Zh-hASYS4XkyNJc9@ryzen>
-Content-Language: en-US
-From: Gustav Ekelund <gustaek@axis.com>
-In-Reply-To: <Zh-hASYS4XkyNJc9@ryzen>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MM0P280CA0036.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:190:b::34) To GV1PR02MB10909.eurprd02.prod.outlook.com
- (2603:10a6:150:16c::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F828161B53
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:47:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713444463; cv=none; b=NPuegujbWRuurVCnVEhQGBJ/UNHILqErvOopc9W59xeS91nNe/s1uHkuZ0WLTx+PL2lNyEvQQVLik32KR277tj1E2Nrs1B6h9rAwZjTxaKL0c1JIMQ4p/j7oSJB85OIWQ9ZOnyMNgqhxj5Ct1dTTS+yehbZIvFHBO4bYYLkt0m4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713444463; c=relaxed/simple;
+	bh=fXwFAffAo8kCGdiVlrMcpoDGdDC3lUT8sWS6fHL//6M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TMreW6IRK9IxaTgPIFlMjq0pMzB/1yGQbcCjtB3HXvgAgWqx+hA6RhH7gga5dcf5DmabeeuG8InsyJ10Nei536YyUZMR3LZvR83IJJxzINYTrJNtFD7tdK0z3Ljxyao/cp4U0XihP2nmOoz/uKmGqj4QC1h+5YzYrdtTXALz7RM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Lo0Di+ey; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-418e06c0ef4so6915245e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 05:47:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1713444459; x=1714049259; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2pe4i76QGMsgnmNTahhKPZUvHd7doKMZbCBBwLxJsRU=;
+        b=Lo0Di+eyUhacjlT5cOC9bRVnz9zIv1FYip4yQAkNIfnTtLWregyKENutV+syVYPITd
+         2AOPN54X/MJ8ALangeK8MAlVB6SDjIK3bMCcGfuct8k1mpYOPby/jqkS3r2mPzTJ2eSi
+         oaeMYdfePlazIb8DWhY1sT+0vMH5qNB2ykqbZVGSppTzoc7VuUGl9F8s2Fbe4vAeK2x5
+         /FncIm7x6rPInPyDdjnfpmOsgLYjcs9959DJOssctby4rLvHNiOQ/6Uq1yCBj3168z6a
+         4UaMXKjCvE9YkoAwvvm0O1VE6iYKArtunAJGHFT51sf9fadKC01A8S/srXvelNiaCnNb
+         79Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713444459; x=1714049259;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2pe4i76QGMsgnmNTahhKPZUvHd7doKMZbCBBwLxJsRU=;
+        b=amj+EyVwi/xpGJDxchw7L8TfZTY3ombCjdb9W7q8X7i0kREHQ8XrMUTIDq8089aYS6
+         +OvGYp8uptNod4/TcTLkPqBsjbgn/xFbovu4I19L9iSbFjZXjvs3vokQ0zNQ4v3Ztogl
+         vCY2o0u4FgKXHgBQ1/TsyDgWnwi87DdsQ9YlzcV2NJ6ooKGjZzIum8Pt2DEgeZKTeYNJ
+         rkjoWsLdGc7aPltKaF1Hx8eBwTvtoLnuhA/vynKWLJPEjPpJzhJWG+9hMqueIFQo44z8
+         QFvVcpjyPuWg4x6S0uDcj6V8dDxBo8ftXRKNbch1NtHTiOkYnXYs4B6s2+fKFu8SqF6X
+         n6eQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVuLBmjPQinNPlvEIC9m1U/q4u5ysQX+ccFJo65yI1D9bb4bVsBLDj/NzvWb9wySD3uFbPz02alnC9g2j/yy74/bVNVg/7uEm7azS50
+X-Gm-Message-State: AOJu0YwjFoHo4nHYfGVEXFV3qwMg9+SvUnV47Cl8ZUKeYJGeynMdjJRY
+	RMIgIjcnL1tLiiAhc42jxp+jDnEohRwtcqikxVPBfxOqi7AvYAGr4D6HpyKTtd0=
+X-Google-Smtp-Source: AGHT+IHEZbhJUXt8YUSPehLxlRQv4Yew3Oog7bSfi+qzLLGpi/13ZZE7mu2ypsykqonguKp5MUprUg==
+X-Received: by 2002:a05:600c:45cf:b0:418:e3d5:5c28 with SMTP id s15-20020a05600c45cf00b00418e3d55c28mr1630674wmo.10.1713444458738;
+        Thu, 18 Apr 2024 05:47:38 -0700 (PDT)
+Received: from pathway.suse.cz ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id p6-20020a05600c468600b00418accde252sm2630088wmo.30.2024.04.18.05.47.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 05:47:38 -0700 (PDT)
+Date: Thu, 18 Apr 2024 14:47:36 +0200
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v4 17/27] printk: nbcon: Use nbcon consoles in
+ console_flush_all()
+Message-ID: <ZiEWaA3CeQsccEdj@pathway.suse.cz>
+References: <20240402221129.2613843-1-john.ogness@linutronix.de>
+ <20240402221129.2613843-18-john.ogness@linutronix.de>
+ <ZhfwXsEE2Y8IPPxX@localhost.localdomain>
+ <ZhgCgBK7JdRruvkj@localhost.localdomain>
+ <87plunoai0.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV1PR02MB10909:EE_|PRAPR02MB7836:EE_
-X-MS-Office365-Filtering-Correlation-Id: 656e0f66-9920-43c2-5b3b-08dc5fa5b157
-X-LD-Processed: 78703d3c-b907-432f-b066-88f7af9ca3af,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	lNIJF9bTlhvASVw/zk7xLk2ijpqAws2YXEGraOOdhM9pUXLnSe4U1ZKjQ0Hyxo+b3RkGrrsf+BZRZU7YM0UpUA8sfONBBArr3brsMrQaRWjHkgD1IF6ay6qP+gvEhcRGzX44uDnadSzIUfznVtfsxrXqO+YcJcMNemcvl+gW5zNGuvHHPnf+ukjxwik/p65KZoIpBmbq9QLesngfr65oj/T3L0xr5/mLXjCvnvWXCU2MVciuSs8CZ99jY2sh2ySgM0BLMXVjcHwIrHjFzieGw8EnqS2PHmg7YR66ZDOR3eAFLR9fv7aKNqbeIcwTAn2NNQPNedV70KrugrQemtY7nE1NDdN7ZhvodtYglU0usN8mkQOAxnrsQqeNAInQWm1uO5DmK24qNjwWiR+nFqnVH6gv0R+c1vP0gOHk3MMI8ANQMfUEyuupm1KOwn0HvfqpycNG61Yn11eCX7biONV2wyb16JaCpxV9/ldfPAQr3kjc+WtOwGR8bzr8/Y5kuwjACRBwNWX+LyWO46fzTJpd//II7Btv+N73Y+w0bdoRJb5CUgm8o05CaHPDap9tz92tbhrmLcuc4TZrTDwSDtmmkUMigmeWueva0/Rg2EBX2eIJpVeHKnnFvW3B4kQ3XxxHfG6G1PCm5Yg8VsfxzuistKHz3UezdadqabYyWvSV1Tk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV1PR02MB10909.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NTE3RXYxbEt1VzBmQjdlOFloUTFwdDlUNDZzQ2VkTEhidlVQa0VvQmFJK1M5?=
- =?utf-8?B?RVZKY20xMVh0Q1lpWndTUVROV2E5WDV2TUFxbU15elU1L0FEd2dieDBHWHlV?=
- =?utf-8?B?MDlET2tTRE1Kcmd5dEwwQVNhQnlMaFl3TDJBQ0YxOG11MUtxSFZRcGNLWVZQ?=
- =?utf-8?B?SnFvMzQ1Wm9aN1czbHlzQjJQUEpBS2FmdGRBMEN6WHRYVDNMZFRFbG9velln?=
- =?utf-8?B?Yk9WUSszalBJQnJqa2VDUkxGU0JUZWVodmxvdkdFV1QyMWxOOW5DWUlZVjcy?=
- =?utf-8?B?K1BKdFVSQ1RMVktvNnVKbGNzT0VRTlB1bk1kcjJtbFh1SVJoRDhtcVFvYkpN?=
- =?utf-8?B?YklDOTk4ZGZiQmZxejhFYm1zTWY5anFVMmF1ODhzR3dScWdPYWREOUY5a2c3?=
- =?utf-8?B?Y1RVaStBNzRlNmZnU0I2Q2tJdFBJZmxpdjBMVVhlcG40TEtKOGRaVXk1djlX?=
- =?utf-8?B?ZlJFWjJQNXdUT014Unh2aVpkem9xREpRSlhvanBnaUp6bG5HeHlWRXlFYTZa?=
- =?utf-8?B?S2tWM3o2MW4rUi9HSG43R1lPVG5TSElRVTRnNjA0bWVWeGhkYXFJNytLQkpJ?=
- =?utf-8?B?Tk14Y3p2c1p5SUdaU2JOVzR1MjUvY3V1aGo3VFR3SEQ4WjhXYWdHc3NBa0dW?=
- =?utf-8?B?UTBBNGM0UCs0M2RiUXhwYXBHSkFUWkk4SW9XUDgxeXdFaURPTFkxbm9aL1Vw?=
- =?utf-8?B?T2VUb1ljTlRjczVTQkpQZ0ZSL2s3UVpNOVpoVjN5VENzTUNLK0g0Smg2Vjgv?=
- =?utf-8?B?eStIODQzYjA2b0dhMlIwRml3Mk5qZG5RdHpFbUJ3emxpK3N2Ni9WcDBmZE1o?=
- =?utf-8?B?NUYrcE5vV2VuYTFpRGJNeGZ2UTBDQWk0cEFrYk5meVZBeXJKdlNMaUVYTCtD?=
- =?utf-8?B?b2RCNmtuTGZBNk5saDBTelZSNDlKSjFPaDVkclEzdHYvN3RmTjRYV1JpcE84?=
- =?utf-8?B?dG1CaHhGeUc0RExpa3RVT0YwcGp1Z3d3V29zYU9NSVhkd1NhMnNyRXM5cUR0?=
- =?utf-8?B?K3drekxmTlc0cHRlTTQ5TDY2cldiQjNWVy9vMUNVcGFjdWpEZlhoNFRQdnVR?=
- =?utf-8?B?MXlpeXdzZWxuTTd2MXVUVmhQc29YK3QzRVgvSHc5a3VzcEdjSjdrTW1lSC9T?=
- =?utf-8?B?SkVLajMyTVNyODJ4aGFOYWVSOXRBNUF4b3V4WGdxRVpVWWIyM2pmd1UwcENX?=
- =?utf-8?B?QlFBa3FWdUNMNDYrNGw3N1pvUXBudFBKWTdHVjhOQ0ljSGtiWVhGNUFQaWlC?=
- =?utf-8?B?SHE1TmxqTllWQ3FybFh5eHZPemg4b2dxSFFSVmFZNWt4cUJOQ0o4dkN6OGEx?=
- =?utf-8?B?Qk5pWWlRSi9xQ24yeFNBMnBFSE1zMVVLS1EvQmZWaUREdDNRbVd0cncyQUs3?=
- =?utf-8?B?M2lIV0tiUFhVb2RkTXZsMjIxUXJ4RnZ1UzN0RVhjN1V4cThjOTZoLyt3V0x4?=
- =?utf-8?B?OFZrOGpmSFF2MHRGbExiYjVYQ3l1Q1VGSnE3UDI3Rkx4QXhTVjZaSTIzMXBt?=
- =?utf-8?B?YzVFZGJvNkR3c3ZybzIzRklQSVM3VDMyV3QydWhiRjFBNEgxQWczcEtTRHd4?=
- =?utf-8?B?QmdWcUxGY0tiajI1OVFwUExhVm1vL1E5emF1L0FIR3JYd3FNZXJxVFZaejgz?=
- =?utf-8?B?b2h2UWFmN0tYTW5sdS9ERFhZMGJMb0VTaHBJc1dESTRzS1pTZkFQSHhYVTVF?=
- =?utf-8?B?VEZTYzE3dXlZNTVWQ20wdW5sR3Y5SGE3SmN1V0FhLzh5eVd3eHk2c1llbzVM?=
- =?utf-8?B?cjRxVG9ZaVRSMjNoTFh6TUx6ZlZYTnVRcThsMzAzZ3AyVEp0emtWbGZBUzBu?=
- =?utf-8?B?TGhocmI3OER3SFdjOWl0Qlc0WnR2V0gwek00TzhuZXllOEkvYnVSRlc2WkRs?=
- =?utf-8?B?NlREMWdveWRYVWJuRlZWNWJCRXVmTzlPbTlDbGRZRmwxSXZ3dHU4dVZ4QjV5?=
- =?utf-8?B?aFZSVjFRa3RsUy84c21vc1dCUWxpQWJUaDdzdnozbndGS1dUYmJBVGlCR3RN?=
- =?utf-8?B?TEo0a0NMTWVkc200aDA0Qy9wNXpJNnE0RGhEWEFiQnY5N3dtWm8ydEVUN1Fx?=
- =?utf-8?B?NWtPWFZRLzllMWorMUxFZTRrWDI5ZzlhcVIxMWE3WXIrRW5ldXByZ1BXSGpE?=
- =?utf-8?Q?/UBs=3D?=
-X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 656e0f66-9920-43c2-5b3b-08dc5fa5b157
-X-MS-Exchange-CrossTenant-AuthSource: GV1PR02MB10909.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2024 12:47:23.0939
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: j0LPm3gkDHPa4v3I5tNzonNx032IwibYHSthEcLLG2WV5l5WdcFSs/7gahHb84TwspUBfjCfuuMDG7apC7Hz0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PRAPR02MB7836
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87plunoai0.fsf@jogness.linutronix.de>
 
-On 4/17/24 12:14, Niklas Cassel wrote:
-> On Mon, Apr 15, 2024 at 04:49:46PM +0200, Gustav Ekelund wrote:
->> On 4/13/24 02:29, Damien Le Moal wrote:
->>> On 4/12/24 22:48, Gustav Ekelund wrote:
->>>> Expose a new sysfs attribute to userspace that gives root the ability to
->>>> lower the link speed in a scsi_device at runtime. The handle enables
->>>> programs to, based on external circumstances that may be unbeknownst to
->>>> the kernel, determine if a link should slow down to perhaps achieve a
->>>> stabler signal. External circumstances could include the mission time
->>>> of the connected hardware or observations to temperature trends.
->>>
->>> may, perhaps, could... This does not sound very deterministic. Do you have an
->>> actual practical use case where this patch is useful and solve a real problem ?
->>>
->>> Strictly speaking, if you are seeing link stability issues due to temperature or
->>> other environmental factors (humidity, altitude), then either you are operating
->>> your hardware (board and/or HDD) outside of their environmental specifications,
->>> or you have some serious hardware issues (which can be a simple as a bad SATA
->>> cable or an inappropriate power supply). In both cases, I do not think that this
->>> patch will be of any help.
->>>
->>> Furthermore, libata already lowers a link speed automatically at runtime if it
->>> sees too many NCQ errors. Isn't that enough ? And we also have the horkage flags
->>> to force a maximum link speed for a device/adapter, which can also be specified
->>> as a libata module argument (libata.force).
->>>
->>>> Writing 1 to /sys/block/*/device/down_link_spd signals the kernel to
->>>> first lower the link speed one step with sata_down_spd_limit and then
->>>> finish off with sata_link_hardreset.
->>>
->>> We already have "/sys/class/ata_link/*/hw_sata_spd_limit", which is read-only
->>> for now. So if you can really justify this manual link speed tuning for an
->>> actual use case (not a hypothetical one), then the way to go would be to make
->>> that attribute RW and implement its store() method to lower the link speed at
->>> runtime.
->>>
->>> And by the way, looking at what that attribute says, I always get:
->>> <unknown>
->>>
->>> So it looks like there is an issue with it that went unnoticed (because no one
->>> is using it...). This needs some fixing.
->>>
->> Hello Damien and Niklas,
->>
->> Thank you for the feedback.
->>
->> I have a hotplug system, where the links behave differently depending
->> on the disk model connected. For some models the kernel emits a lot of
->> bus errors, but mostly not enough errors for it to automatically lower
->> the link speed, except during high workloads. I have not observed any
->> data-loss regarding the errors, but the excessive logging becomes a problem.
+On Thu 2024-04-18 01:11:59, John Ogness wrote:
+> On 2024-04-11, Petr Mladek <pmladek@suse.com> wrote:
+> > I am trying to make a full picture when and how the nbcon consoles
+> > will get flushed. My current understanding and view is the following,
+> > starting from the easiest priority:
+> >
+> >
+> >   1. NBCON_PRIO_PANIC messages will be flushed by calling
+> >      nbcon_atomic_flush_pending() directly in vprintk_emit()
+> >
+> >      This will take care of any previously added messages.
+> >
+> >      Non-panic CPUs are not allowed to add messages anymore
+> >      when there is a panic in progress.
+> >
+> >      [ALL OK]
 > 
-> It might be interesting to compare the output of:
-> $ hdparm -I
+> OK, because the end of panic will perform unsafe takeovers if necessary.
 > 
-> for a drive that you can hot plug insert without errors, against a drive
-> that gives you errors on hot plug insertion, to see if this can give you
-> a hint of why they behave differently.
+> >   2. NBCON_PRIO_EMERGENCY messages will be flushed by calling
+> >      nbcon_atomic_flush_pending() directly in nbcon_cpu_emergency_exit().
+> >
+> >      This would cover all previously added messages, including
+> >      the ones printed by the code between
+> >      nbcon_cpu_emergency_enter()/exit().
 > 
-> (e.g. certain features, e.g. DevSleep, is only enabled if there is support
-> in the HBA, the port, and the drive.)
+> This is best effort. If the console is owned by another context and is
+> marked unsafe, nbcon_atomic_flush_pending() will do nothing.
 > 
-> 
-> Kind regards,
-> Niklas
-Hi Niklas,
+> [ PROBLEM: In this case, who will flush the emergency messages? ]
 
-I mostly tested on the 6.1 kernel, and it is a quite peculiar hardware
-problem, so it isn't caused by anythin in the latest 6.9 rc.
+They should get flushed by the current owner when the system is still
+living. Or the system is ready for panic() and the messages would
+be emitted bu the final unsafe flush.
 
-Thank you for the advice of using hdparm, maybe I can diff preset of
-features between the models. I will share any interesting findings I
-come across.
+IMPORTANT: The optimistic scenario would work only when the current
+	   owner really flushes everything. More on this below.
 
-Best regards
-Gustav
+
+> >      This won't cover later added messages which might be
+> >      a problem. Let's look at this closer. Later added
+> >      messages with:
+> >
+> > 	+ NBCON_PRIO_PANIC will be handled in vprintk_emit()
+> > 	  as explained above [OK]
+> >
+> > 	+ NBCON_PRIO_EMERGENCY() will be handled in the
+> > 	  related nbcon_cpu_emergency_exit() as described here.
+> > 	  [OK]
+> >
+> > 	+ NBCON_PRIO_NORMAL will be handled, see below. [?]
+> >
+> >      [ PROBLEM: later added NBCON_PRIO_NORMAL messages, see below. ]
+> 
+> Yes, this is also an issue, although the solution may be the same for
+> this and the above problem.
+
+This is a bit different. There was an existing console owner in the
+above scenario. In this case, the code relies on the printk kthread.
+But we need a solution for situations when the kthread is not working,
+e.g. early boot.
+
+
+> >   3. NBCON_PRIO_NORMAL messages will be flushed by:
+> >
+> >        + the printk kthread when it is available
+> >
+> >        + the legacy loop via
+> >
+> > 	 + console_unlock()
+> > 	    + console_flush_all()
+> > 	      + console nbcon_legacy_emit_next_record() [PROBLEM]
+> >
+> > PROBLEM: console_flush_all() does not guarantee progress with
+> > 	 nbcon consoles as explained above (previous mail).
+> 
+> Not only this. If there is no kthread available, no printing will occur
+> until the _next_ printk(), whenever that is.
+
+> Above we have listed 3 problems:
+> 
+> - emergency messages will not flush if owned by another context and
+>   unsafe
+>
+> - normal messages will not flush if owned by another context
+> 
+> - for the above 2 problems, if there is no kthread, nobody will flush
+>   the messages
+
+All this goes down to the problem who is would flush "ignored"
+messages when the system continues working in "normal" mode.
+
+
+> My question: Is this really a problem?
+
+IMHO, it is. For example, early boot consoles exists for a reason.
+People want to debug early boot problems using printk.
+We should not break the reliability too much by introducing kthreads.
+
+Later update: It is basically only about early boot debugging.
+
+	The kthreads should always be created later. And
+	we assume that they work, except for the emergency
+	and panic context.
+
+	So, this is not a problem as long as the boot consoles
+	are using the legacy code paths.
+
+	Well, I guess that they might use the "atomic_write()"
+	callback in the future. And then this "bug" might hurt.
+
+
+> The main idea behind the rework is that printing is deferred. The
+> kthreads exist for this. If the kthreads are not available (early boot
+> or shutdown) or the kthreads are not reliable enough (emergency
+> messages), a best-safe-effort is made to print in the caller
+> context. Only the panic situation is designed to force output (unsafely,
+> if necessary). Is that not enough?
+
+Simple answer: No, primary because the early boot behavior.
+
+Longer answer: I tried to separate all the variants and point out
+	a particular problem. The above paragraph mixes everything
+	into "Wave this away" proposal.
+
+
+> > My proposal:
+> >
+> > 	1. console_flush_all() will flush nbcon consoles only
+> > 	   in NBCON_PRIO_NORMAL and when the kthreads are not
+> > 	   available.
+> >
+> > 	   It will make it clear that this is the flusher in
+> > 	   this situation.
+> 
+> This is the current PREEMPT_RT implementation.
+> 
+> > 	2. Allow to skip nbcon consoles in console_flush_all() when
+> > 	   it can't take the context (as suggested in my previous
+> > 	   reply).
+> >
+> > 	   This won't guarantee flushing NORMAL messages added
+> > 	   while nbcon_cpu_emergency_exit() calls
+> > 	   nbcon_atomic_flush_pending().
+> 
+> This was the previous version. And I agree that we need to go back to
+> that.
+> 
+> > 	   Solve this problem by introducing[*] nbcon_atomic_flush_all()
+> > 	   which would flush even newly added messages and
+> > 	   call this in nbcon_cpu_emergency_exit() when the printk
+> > 	   kthread does not work. It should bail out when there
+> > 	   is a panic in progress.
+> >
+> > 	   Motivation: It does not matter which "atomic" context
+> > 		flushes NORMAL/EMERGENCY messages when
+> > 		the printk kthread is not available.
+> 
+> I do not think that solves the problem. If the console is in an unsafe
+> section, nothing can be printed.
+
+IMHO, it solves the problem.
+
+The idea is simple:
+
+  "The current nbcon console owner will be responsible for flushing
+   all messages when the printk kthread does not exist."
+
+The prove is more complicated:
+
+   1. Let's put aside panic. We already do the best effort there.
+
+   2. Emergency mode currently violates the rule because
+      nbcon_atomic_flush_pending() ignores the simple rule.
+
+      => FIX: improve nbcon_cpu_emergency_exit() to flush
+	      all messages when kthreads are not ready.
+
+
+   3. Normal mode flushes nbcon consoles via
+      nbcon_legacy_emit_next_record() from console_unlock()
+      before the kthreads are started.
+
+      It is not reliable when nbcon_try_acquire() fails.
+      But it would fail only when there is another user.
+      The other owner might be:
+
+	+ panic: will handle everything
+
+	+ emergency: should flush everything [*]
+
+	+ normal: can't happen because of con->device() lock.
+
+=> The only remaining problem is to fix nbcon_atomic_flush_pending()
+   to flush everything when the kthreads are not started yet.
+
+
+> > 	  [*] Alternatively we could modify nbcon_atomic_flush_pending()
+> > 	      to flush even newly added messages when the kthread is
+> > 	      not working. But it might create another mess.
+> 
+> This discussion is about when kthreads are not available. If this is a
+> concern, I wonder if maybe in this situation an irq_work should be
+> triggered upon release of the console.
+
+Calling irq_work() would solve the problem as well. It would move
+flushing to context with "normal" priority which is serialized
+by con->device_lock(). It works for me.
+
+Does this make any sense?
+
+It is possible that you already knew all this. And it is possible
+that you did not see it as a problem because there was no plan
+to convert boot consoles to nbcon variant. Maybe, it does
+not even make sense because boot consoles could not use
+kthreads. The only motivation would be code sharing and
+simplification of the legacy loop but this is far away dream.
+
+Sigh, all this is so complicated. I wonder how to document
+this so that other people do not have to discover these
+dependencies again and again. Is it even possible?
+
+Well, I still think that it makes sense to improve
+nbcon_cpu_emergency_exit() to fill the potential hole.
+And ideally mention all these details somewhere
+(commit message, comments, Documentation/...)
+
+Best Regards,
+Petr
 
