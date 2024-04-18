@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-150856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDECE8AA5B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 01:21:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28B0D8AA5B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 01:21:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D9621C21405
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:21:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80304B21EA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:21:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F32E37BAFD;
-	Thu, 18 Apr 2024 23:20:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32FA37D091;
+	Thu, 18 Apr 2024 23:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="P9z5IBeK"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pn2WQmcr"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4E77BAF3
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 23:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08BA97C0A9
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 23:20:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713482431; cv=none; b=u+YlUGVAX/FnZJaoByglrI891298oaQtrUB7YGqYKkAcyDLw5oRdOfmJ6cBuVEIC3qg/MT2odprJ+Q/DK54cj5iNdL/Hm46JaTLY/hss+1JnfmgvhXp++Pj3JFbdFfNFpGIUBJCKka+viZcHy+wsMUXlQY6dI1KxiNRyk0gXvHY=
+	t=1713482434; cv=none; b=h+vSOsveBK4CuPJ8ga9bO/+xp/mKfXh07bDlj9vsjyAiLXGJf30xeKcf9VtsziUzhyR+7jvbNVAzcLNA20mYk0TVZIpFHQ6zHf321488A/qKTiLM4fUdxf8BPS5OG0VRZ3iGY5ZyBWV5lvFZKl78egteaXmnibZ2rOwg+5aAQQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713482431; c=relaxed/simple;
-	bh=NcUgjEVg58kGwkb+Jw41HUS9kEgKKWzCNIba4ZWXv2A=;
+	s=arc-20240116; t=1713482434; c=relaxed/simple;
+	bh=7WAgsmWa8I2nRXxoayOV0F/ehsyZq3cQzYa0hL40wdw=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=evyaYOWlUsIGSGtENZCopxCVufgnY/xnWYTXxWmYUay0xKkXThPI4nfnxqMUco1JbPFSWP8MWKaYnxVmtO3qtcfvn+PIMhvkNTcnB0aljSABipJRTUwUo+MMtiJ55Z3MmQeDstk0t6FWGKPu8dmCRnCaOcwfyq5Ggkjv/cbcHNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=P9z5IBeK; arc=none smtp.client-ip=209.85.219.201
+	 To:Cc:Content-Type; b=Otg5/IevzsfTKqthaI/RW7pQhGLlBP8GIvc/PMWWTzfFerPwlBaNDP4gn3EfYN3KpUUhxvjqhcUbA6t9g4h24JTmgRnafKoo/HRmtPITlpBXnRXuYJAmDLb04CQSZ2Tod2+MBIeH5q19V8Wo4WnFZZ952Gqqi/oNkOJp3DwDRCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pn2WQmcr; arc=none smtp.client-ip=209.85.215.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-de465062289so2911530276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 16:20:29 -0700 (PDT)
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5f7c0bb1b95so407769a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 16:20:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713482428; x=1714087228; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1713482432; x=1714087232; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=q/YC6vY8cZ2knPVqCxWC6lAFUPFp69AYOLfV73QO6KQ=;
-        b=P9z5IBeK68QY2BLELLAGvRdFsi2RK+7AUtkt+mKbmNAc5qy5Gb77gBezKJiJAsPxV0
-         Pl2V0QYYH/rSQAJI3tAyPWhPpMUFPbVBUoId+kJGcs3TvWrr88hhMKi6Z/xxQZSKKv3R
-         q60Tcb8g3sxJXsBJY9apGTzi3bcNjouMJW1bnHM9+evADYc08J1NHIiAMbHNJyBaiiI0
-         4UBT8E6DzbM7JKBlHirdGBJnazosbN78d7R3oFoNpkxg6ctoYnmS1p5B2nCitGxtRPFt
-         j2g+3ioEYqIbPzb7jwvecSUztKfvpcPUmGzbC96KyHa1384IKLoTv/AYrflEev3XnPyo
-         Y21Q==
+        bh=PJWz1uvQTzKPjGuvX+wqPQBpUoIACARU5eow85W6RVU=;
+        b=pn2WQmcr1AACnBg5t7LFSPJCbfvLviyF4Z/jvnKO/HCaMnH1ATHN6yAHg6D7ZHxJwY
+         PSlVz3VxmPq1Q0MZHJFL4+Ors94G/RF1eCOVBSgSowkwFf0AsPMrhu+3dsMlQHqZcU9n
+         QK93oCqiqWGkMRwvvuIn6AREpdkTtn755Wa0K+f7a6AVhxKkXc+QH7t5H2dyTRrXnNZg
+         9g1aozYqfFpkW2jUBsni5riM7COFPRRTiJukt7UEWjVpXlT24DmudVdVTyW8IR+Ft1IR
+         ofGN3MCSIneVRslKtO61lu7/px2RxXjgigal61k7wT/k8sTn/fkj2rJPzyn7o8IHzk3/
+         Y9Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713482428; x=1714087228;
+        d=1e100.net; s=20230601; t=1713482432; x=1714087232;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q/YC6vY8cZ2knPVqCxWC6lAFUPFp69AYOLfV73QO6KQ=;
-        b=swJ0xRKFTEvNmm6k18V4Cv4VeXlfXHv3TVKE3Cf3LZnyXLXWyUlk7Gq/b08RjCWtek
-         tDdN/dwZic6Ha+REhxZKrVxtcddkNBs+jOVSyjnOsMcw6GJ923SND4fAgXAuCVcGkS7g
-         xrjCqJ/uZwFliEBFGXR5mvBOWC1MMGI9e+2f9FOvUoDRG9qbdPfJYc8t2sjP3ZSi6FEx
-         9siFAobEfEsGEFrhcxQTEsxJ5lzO/DjgenODpJQzjJ5moQAmuiBWNP5xzapiTZEvA/dj
-         HIjNLeIS5ndebISEXWwvsIrwsadxxl+1DgnRSAFjTnZbovvVuB8PnxmyLsT0zKqAjfpH
-         BIGg==
-X-Forwarded-Encrypted: i=1; AJvYcCWuh44k6mFOj1M9eYGbBPGJhvrT8T45NMeUkIAhmzsJH1E90Nm/9SYFf1t+efbLx7IBhHG+a8D6/+beAwUdnI3TK+4oR5KDoZePVqBr
-X-Gm-Message-State: AOJu0YzL+S5HAaUMjL8l6TipPVNmBuIBwUcCQkOAb93NYqWa5VtzOmzE
-	R0Dsl/sMPGCgjI1WQ3X0txJ8jgqNgR6ekjlu/+bgQv0tTl5SASud6VhC8C/mFOKISOk+iDsXKnU
-	1XA==
-X-Google-Smtp-Source: AGHT+IHrxrrNUKm29ldT/oIgtUJU7kmFT8cDAHOqQdXSx4NR3b72oYNNm2fwp/UDMHZjPkZRE+Y5djysHRQ=
+        bh=PJWz1uvQTzKPjGuvX+wqPQBpUoIACARU5eow85W6RVU=;
+        b=fH1+GsKjqZ/Q47lOzs2Q1DbacE3VYWQy8h8iyB2+/IH2EpdYHdcQ92Bgbc+D4vMqZ4
+         86XbXZxrH/Chu/HSbqGkntEEkoTsq5xmfcVIgREFYF+9P9RDIydn1PeoX5j/bwUCSH2T
+         FLjhIAUzEC7VjSPqjLGpkI/SDfTx1kAHTFBHMGn/zg3pFr9bbGGHsz3snUKHnTYsA9Co
+         iVS/wuqhhmpWpyFjxo4bKsmrF/ES391W7sey1EaoPYI4d7fl1sfX4E8IoLo1E3yICAdY
+         jLXnM/02flLwhgjuq3k0QzLWOs8QIGxx4sQH9+NzorwgO8KFWfH3NqnefRqJt9IO8G3V
+         lBLw==
+X-Forwarded-Encrypted: i=1; AJvYcCWJizEQNuLPP4m1hyOgLoAg7eNBs7l35EauM05r8Vq7/Mm5F/enyeFFORkdksTa/ZgJxNMcNEfmXGPXG83pYka3aJUlD+Yk3NvqgklP
+X-Gm-Message-State: AOJu0YyI1a68bKpj9oNvdrsyXKwmOPCOMtYFyz7NWqWMKaIX0ePw23ka
+	8T89X2vruIZ6+icTxE7BpjEf6XZeDr1zwF4DXsftdmrVdmwdJaCmvrcldwK0FFAVLOZzZ/8Ws+n
+	Biw==
+X-Google-Smtp-Source: AGHT+IGZvpipb458KhuKNr2lT6l2L7v8w6uv6b7TY6/fKUTAKy1KSarqOpYJWvLTO6PRPcEY1aRIn/XdgRg=
 X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a25:fc04:0:b0:dc6:cafd:dce5 with SMTP id
- v4-20020a25fc04000000b00dc6cafddce5mr91879ybd.12.1713482428464; Thu, 18 Apr
- 2024 16:20:28 -0700 (PDT)
-Date: Thu, 18 Apr 2024 23:19:47 +0000
+ (user=edliaw job=sendgmr) by 2002:a17:90a:3d4f:b0:2a2:bcae:83c1 with SMTP id
+ o15-20020a17090a3d4f00b002a2bcae83c1mr28422pjf.3.1713482432421; Thu, 18 Apr
+ 2024 16:20:32 -0700 (PDT)
+Date: Thu, 18 Apr 2024 23:19:48 +0000
 In-Reply-To: <20240418232005.34244-1-edliaw@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,9 +73,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <16430256912363@kroah.com> <20240418232005.34244-1-edliaw@google.com>
 X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <20240418232005.34244-2-edliaw@google.com>
-Subject: [PATCH 5.15.y v3 1/5] bpf: Extend kfunc with PTR_TO_CTX, PTR_TO_MEM
- argument support
+Message-ID: <20240418232005.34244-3-edliaw@google.com>
+Subject: [PATCH 5.15.y v3 2/5] bpf: Generalize check_ctx_reg for reuse with
+ other types
 From: Edward Liaw <edliaw@google.com>
 To: stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
@@ -84,198 +84,119 @@ To: stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
 	Jiri Olsa <jolsa@kernel.org>
 Cc: bpf@vger.kernel.org, kernel-team@android.com, 
-	Edward Liaw <edliaw@google.com>, Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+	Edward Liaw <edliaw@google.com>, Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Allow passing PTR_TO_CTX, if the kfunc expects a matching struct type,
-and punt to PTR_TO_MEM block if reg->type does not fall in one of
-PTR_TO_BTF_ID or PTR_TO_SOCK* types. This will be used by future commits
-to get access to XDP and TC PTR_TO_CTX, and pass various data (flags,
-l4proto, netns_id, etc.) encoded in opts struct passed as pointer to
-kfunc.
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-For PTR_TO_MEM support, arguments are currently limited to pointer to
-scalar, or pointer to struct composed of scalars. This is done so that
-unsafe scenarios (like passing PTR_TO_MEM where PTR_TO_BTF_ID of
-in-kernel valid structure is expected, which may have pointers) are
-avoided. Since the argument checking happens basd on argument register
-type, it is not easy to ascertain what the expected type is. In the
-future, support for PTR_TO_MEM for kfunc can be extended to serve other
-usecases. The struct type whose pointer is passed in may have maximum
-nesting depth of 4, all recursively composed of scalars or struct with
-scalars.
+Generalize the check_ctx_reg() helper function into a more generic named one
+so that it can be reused for other register types as well to check whether
+their offset is non-zero. No functional change.
 
-Future commits will add negative tests that check whether these
-restrictions imposed for kfunc arguments are duly rejected by BPF
-verifier or not.
-
-[edliaw: merged with changes from 45ce4b4f90091 ("bpf: Fix crash due to
- out of bounds access into reg2btf_ids.") and f858c2b2ca04 ("bpf: Fix
- calling global functions from BPF_PROG_TYPE_EXT programs")]
-
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20211217015031.1278167-4-memxor@gmail.com
-(cherry picked from commit 3363bd0cfbb80dfcd25003cd3815b0ad8b68d0ff)
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+(cherry picked from commit be80a1d3f9dbe5aee79a325964f7037fe2d92f30)
 Signed-off-by: Edward Liaw <edliaw@google.com>
 ---
- kernel/bpf/btf.c | 93 +++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 73 insertions(+), 20 deletions(-)
+ include/linux/bpf_verifier.h |  4 ++--
+ kernel/bpf/btf.c             |  2 +-
+ kernel/bpf/verifier.c        | 21 +++++++++++----------
+ 3 files changed, 14 insertions(+), 13 deletions(-)
 
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 3d04b48e502d..c0993b079ab5 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -541,8 +541,8 @@ bpf_prog_offload_replace_insn(struct bpf_verifier_env *env, u32 off,
+ void
+ bpf_prog_offload_remove_insns(struct bpf_verifier_env *env, u32 off, u32 cnt);
+ 
+-int check_ctx_reg(struct bpf_verifier_env *env,
+-		  const struct bpf_reg_state *reg, int regno);
++int check_ptr_off_reg(struct bpf_verifier_env *env,
++		      const struct bpf_reg_state *reg, int regno);
+ int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+ 		   u32 regno, u32 mem_size);
+ 
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 5d4bea53ac1f..77929fd7bcef 100644
+index 77929fd7bcef..a0c7e13e0ab4 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -5447,6 +5447,46 @@ static u32 *reg2btf_ids[__BPF_REG_TYPE_MAX] = {
- #endif
- };
-
-+/* Returns true if struct is composed of scalars, 4 levels of nesting allowed */
-+static bool __btf_type_is_scalar_struct(struct bpf_verifier_log *log,
-+					const struct btf *btf,
-+					const struct btf_type *t, int rec)
-+{
-+	const struct btf_type *member_type;
-+	const struct btf_member *member;
-+	u32 i;
-+
-+	if (!btf_type_is_struct(t))
-+		return false;
-+
-+	for_each_member(i, t, member) {
-+		const struct btf_array *array;
-+
-+		member_type = btf_type_skip_modifiers(btf, member->type, NULL);
-+		if (btf_type_is_struct(member_type)) {
-+			if (rec >= 3) {
-+				bpf_log(log, "max struct nesting depth exceeded\n");
-+				return false;
-+			}
-+			if (!__btf_type_is_scalar_struct(log, btf, member_type, rec + 1))
-+				return false;
-+			continue;
-+		}
-+		if (btf_type_is_array(member_type)) {
-+			array = btf_type_array(member_type);
-+			if (!array->nelems)
-+				return false;
-+			member_type = btf_type_skip_modifiers(btf, array->type, NULL);
-+			if (!btf_type_is_scalar(member_type))
-+				return false;
-+			continue;
-+		}
-+		if (!btf_type_is_scalar(member_type))
-+			return false;
-+	}
-+	return true;
-+}
-+
- static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 				    const struct btf *btf, u32 func_id,
- 				    struct bpf_reg_state *regs,
-@@ -5455,6 +5495,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 	enum bpf_prog_type prog_type = env->prog->type == BPF_PROG_TYPE_EXT ?
- 		env->prog->aux->dst_prog->type : env->prog->type;
- 	struct bpf_verifier_log *log = &env->log;
-+	bool is_kfunc = btf_is_kernel(btf);
- 	const char *func_name, *ref_tname;
- 	const struct btf_type *t, *ref_t;
- 	const struct btf_param *args;
-@@ -5507,7 +5548,20 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
-
- 		ref_t = btf_type_skip_modifiers(btf, t->type, &ref_id);
- 		ref_tname = btf_name_by_offset(btf, ref_t->name_off);
--		if (btf_is_kernel(btf)) {
-+		if (btf_get_prog_ctx_type(log, btf, t, prog_type, i)) {
-+			/* If function expects ctx type in BTF check that caller
-+			 * is passing PTR_TO_CTX.
-+			 */
-+			if (reg->type != PTR_TO_CTX) {
-+				bpf_log(log,
-+					"arg#%d expected pointer to ctx, but got %s\n",
-+					i, btf_type_str(t));
-+				return -EINVAL;
-+			}
-+			if (check_ctx_reg(env, reg, regno))
-+				return -EINVAL;
-+		} else if (is_kfunc && (reg->type == PTR_TO_BTF_ID ||
-+			   (reg2btf_ids[base_type(reg->type)] && !type_flag(reg->type)))) {
- 			const struct btf_type *reg_ref_t;
- 			const struct btf *reg_btf;
- 			const char *reg_ref_tname;
-@@ -5523,14 +5577,9 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 			if (reg->type == PTR_TO_BTF_ID) {
- 				reg_btf = reg->btf;
- 				reg_ref_id = reg->btf_id;
--			} else if (reg2btf_ids[base_type(reg->type)]) {
-+			} else {
- 				reg_btf = btf_vmlinux;
- 				reg_ref_id = *reg2btf_ids[base_type(reg->type)];
--			} else {
--				bpf_log(log, "kernel function %s args#%d expected pointer to %s %s but R%d is not a pointer to btf_id\n",
--					func_name, i,
--					btf_type_str(ref_t), ref_tname, regno);
--				return -EINVAL;
- 			}
-
- 			reg_ref_t = btf_type_skip_modifiers(reg_btf, reg_ref_id,
-@@ -5546,22 +5595,24 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 					reg_ref_tname);
+@@ -5558,7 +5558,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+ 					i, btf_type_str(t));
  				return -EINVAL;
  			}
--		} else if (btf_get_prog_ctx_type(log, btf, t, prog_type, i)) {
--			/* If function expects ctx type in BTF check that caller
--			 * is passing PTR_TO_CTX.
--			 */
--			if (reg->type != PTR_TO_CTX) {
--				bpf_log(log,
--					"arg#%d expected pointer to ctx, but got %s\n",
--					i, btf_type_str(t));
--				return -EINVAL;
--			}
 -			if (check_ctx_reg(env, reg, regno))
--				return -EINVAL;
- 		} else if (ptr_to_mem_ok) {
- 			const struct btf_type *resolve_ret;
- 			u32 type_size;
-
-+			if (is_kfunc) {
-+				/* Permit pointer to mem, but only when argument
-+				 * type is pointer to scalar, or struct composed
-+				 * (recursively) of scalars.
-+				 */
-+				if (!btf_type_is_scalar(ref_t) &&
-+				    !__btf_type_is_scalar_struct(log, btf, ref_t, 0)) {
-+					bpf_log(log,
-+						"arg#%d pointer type %s %s must point to scalar or struct with scalar\n",
-+						i, btf_type_str(ref_t), ref_tname);
-+					return -EINVAL;
-+				}
-+			}
-+
- 			resolve_ret = btf_resolve_size(btf, ref_t, &type_size);
- 			if (IS_ERR(resolve_ret)) {
- 				bpf_log(log,
-@@ -5574,6 +5625,8 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 			if (check_mem_reg(env, reg, regno, type_size))
++			if (check_ptr_off_reg(env, reg, regno))
  				return -EINVAL;
- 		} else {
-+			bpf_log(log, "reg type unsupported for arg#%d %sfunction %s#%d\n", i,
-+				is_kfunc ? "kernel " : "", func_name, func_id);
- 			return -EINVAL;
- 		}
- 	}
-@@ -5623,7 +5676,7 @@ int btf_check_kfunc_arg_match(struct bpf_verifier_env *env,
- 			      const struct btf *btf, u32 func_id,
- 			      struct bpf_reg_state *regs)
- {
--	return btf_check_func_arg_match(env, btf, func_id, regs, false);
-+	return btf_check_func_arg_match(env, btf, func_id, regs, true);
+ 		} else if (is_kfunc && (reg->type == PTR_TO_BTF_ID ||
+ 			   (reg2btf_ids[base_type(reg->type)] && !type_flag(reg->type)))) {
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 008ddb694c8a..6fe805b559c0 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3980,16 +3980,16 @@ static int get_callee_stack_depth(struct bpf_verifier_env *env,
  }
-
- /* Convert BTF of a function into bpf_reg_state if possible
---
+ #endif
+ 
+-int check_ctx_reg(struct bpf_verifier_env *env,
+-		  const struct bpf_reg_state *reg, int regno)
++int check_ptr_off_reg(struct bpf_verifier_env *env,
++		      const struct bpf_reg_state *reg, int regno)
+ {
+-	/* Access to ctx or passing it to a helper is only allowed in
+-	 * its original, unmodified form.
++	/* Access to this pointer-typed register or passing it to a helper
++	 * is only allowed in its original, unmodified form.
+ 	 */
+ 
+ 	if (reg->off) {
+-		verbose(env, "dereference of modified ctx ptr R%d off=%d disallowed\n",
+-			regno, reg->off);
++		verbose(env, "dereference of modified %s ptr R%d off=%d disallowed\n",
++			reg_type_str(env, reg->type), regno, reg->off);
+ 		return -EACCES;
+ 	}
+ 
+@@ -3997,7 +3997,8 @@ int check_ctx_reg(struct bpf_verifier_env *env,
+ 		char tn_buf[48];
+ 
+ 		tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
+-		verbose(env, "variable ctx access var_off=%s disallowed\n", tn_buf);
++		verbose(env, "variable %s access var_off=%s disallowed\n",
++			reg_type_str(env, reg->type), tn_buf);
+ 		return -EACCES;
+ 	}
+ 
+@@ -4447,7 +4448,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 			return -EACCES;
+ 		}
+ 
+-		err = check_ctx_reg(env, reg, regno);
++		err = check_ptr_off_reg(env, reg, regno);
+ 		if (err < 0)
+ 			return err;
+ 
+@@ -5327,7 +5328,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+ 		return err;
+ 
+ 	if (type == PTR_TO_CTX) {
+-		err = check_ctx_reg(env, reg, regno);
++		err = check_ptr_off_reg(env, reg, regno);
+ 		if (err < 0)
+ 			return err;
+ 	}
+@@ -9561,7 +9562,7 @@ static int check_ld_abs(struct bpf_verifier_env *env, struct bpf_insn *insn)
+ 			return err;
+ 	}
+ 
+-	err = check_ctx_reg(env, &regs[ctx_reg], ctx_reg);
++	err = check_ptr_off_reg(env, &regs[ctx_reg], ctx_reg);
+ 	if (err < 0)
+ 		return err;
+ 
+-- 
 2.44.0.769.g3c40516874-goog
 
 
